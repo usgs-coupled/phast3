@@ -249,6 +249,8 @@ int clean_up(void)
 	/* dup_print ("End of flow and transport file.", TRUE); */
 
 /* miscellaneous work space */
+	free_check_null(min_ss_time_step.input);
+	free_check_null(max_ss_time_step.input);
 
 	free_check_null(title_x);
 	free_check_null(line);
@@ -345,11 +347,19 @@ int clean_up(void)
 	times_free(time_end, count_time_end);
 	free_check_null(time_end);
 
+	time_free(&current_time_step);
+	time_free(&current_time_end);
+
 	/* .bcf file */
 	time_series_free(&print_bc_flow);
 	time_series_free(&print_comp);
 	time_series_free(&print_conductances);
 	time_series_free(&print_force_chem);
+
+	time_free(&current_print_bc_flow);
+	time_free(&current_print_comp);
+	time_free(&current_print_conductances);
+	time_free(&current_print_force_chem);
 
 	/* .bal file */
 	time_series_free(&print_flow_balance);
@@ -379,9 +389,6 @@ int clean_up(void)
 	time_free(&current_print_xyz_head);
 	time_free(&current_print_xyz_velocity);
 	time_free(&current_print_xyz_wells);
-
-	time_free(&current_print_xyz_chem);
-
 
 	for (i = 0; i < print_zones_xyz.count_print_zones; i++) {
 		free_check_null(print_zones_xyz.print_zones[i].zone);
