@@ -82,7 +82,7 @@ cp -alr examples/* test/.
 # prep to dist source files
 #
 tar xvzf $RPM_SOURCE_DIR/%{name}-%{version}.tar.gz %{name}-%{version}/src
-
+find %{name}-%{version}/src -type d -name win32 -print | xargs rm -rf
 
 #
 # Linux /usr/bin/phast-ser
