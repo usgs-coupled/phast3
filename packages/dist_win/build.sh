@@ -215,10 +215,10 @@ build() {
   ant -buildfile ./src/phasthdf/build.xml dist-Win32 && \
 # build merge/phast.exe (REBUILD forces the dependencies to be updated)
   msdev `cygpath -w ./src/phast/win32/phast.dsw` /MAKE "phast - Win32 merge" /REBUILD && \
-  cp ./src/phast/win32/phast.plg ./src/phast/win32/phast-merge.plg
+  cp ./src/phast/win32/phast.plg ./src/phast/win32/phast-merge.plg && \
 # build ser/phast.exe (REBUILD forces the dependencies to be updated)
   msdev `cygpath -w ./src/phast/win32/phast.dsw` /MAKE "phast - Win32 ser" /REBUILD && \
-  cp ./src/phast/win32/phast.plg ./src/phast/win32/phast-ser.plg
+  cp ./src/phast/win32/phast.plg ./src/phast/win32/phast-ser.plg && \
 # build modview.exe (REBUILD forces the dependencies to be updated)
   msdev `cygpath -w ./Mv/MvProject.dsw` /MAKE "ModelViewer - Win32 Release" /REBUILD )
 }
@@ -351,7 +351,7 @@ install() {
     ${instdir}/logs/. && \
   /usr/bin/install -m 644 ${objdir}/src/phast/win32/phast-ser.plg \
     ${instdir}/logs/. && \
-  /usr/bin/install -m 644 ${objdir}/src/phast/win32/phast-mpich.plg \
+  /usr/bin/install -m 644 ${objdir}/src/phast/win32/phast-merge.plg \
     ${instdir}/logs/. && \
   /usr/bin/install -m 644 ${objdir}/Mv/ModelViewer/ModelViewer.plg \
     ${instdir}/logs/. && \
