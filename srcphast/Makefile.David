@@ -20,7 +20,7 @@ PROGRAM1 = phastinput
 	${CC} ${CFLAGS} -c -o $@ $<
 
 #hdf options
-###HDF5_ROOT=/z/lobo/home/charlton/hdf5
+#HDF5_ROOT=/z/lobo/home/charlton/hdf5
 HDF5_ROOT=/z/parkplace/usr
 #HDF5_INCLUDES= -I${HDF5_ROOT}/include
 #HDF5_INCLUDES= -I/z/parkplace/home/dlpark/include
@@ -44,7 +44,8 @@ ifeq ($(CFG), MPI_LAHEY)
   CC           = hcc
   CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS)
-  LD_FLAGS     = -static-flib  -lm ${HDF5_LIBS} 
+#  LD_FLAGS     = -static-flib  -lm ${HDF5_LIBS} 
+  LD_FLAGS     = -L/z/lobo/usr/lib -lm ${HDF5_LIBS} 
 endif
 
 ifeq ($(CFG), MPI_LAHEY_DEBUG)
@@ -70,8 +71,9 @@ ifeq ($(CFG), SERIAL_LAHEY)
   CC           = hcc
   CFLAGS       = -Wall -pedantic -g $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS)
-  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
-##LD_FLAGS     = -static -L/z/lobo/usr/lib -lm ${HDF5_LIBS} ## this works with HDF5_ROOT=/z/lobo/home/charlton/hdf5
+#  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
+  LD_FLAGS     = -static -L/z/lobo/usr/lib -lm ${HDF5_LIBS} 
+#  LD_FLAGS     = -static -L/z/lobo/usr/lib -lm ${HDF5_LIBS} ## this works with HDF5_ROOT=/z/lobo/home/charlton/hdf5
 endif
 
 ifeq ($(CFG), SERIAL_LAHEY_DEBUG)

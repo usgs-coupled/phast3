@@ -18,7 +18,7 @@ SUBROUTINE write1
   WRITE (fulp,2001)  &
        '*    PHAST: A Three Dimensional Flow and Solute    *',  &
        '*         Reactive Transport Simulator             *',  &
-       '*         Version:'//version_name//'               *'
+       '*                 Version:'//version_name//'                 *'
 2001 FORMAT(tr36,52('*') /tr36,'*',tr50,'*'/tr36,a/tr36,a/tr36,a)
   WRITE(fulp,2002)
 2002 FORMAT(tr36,'*',tr50,'*'/tr36,52('*')////)

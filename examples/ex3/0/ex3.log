@@ -2143,10 +2143,10 @@ Beginning time step no.    185
           Substrate
           Charge
      Beginning chemistry calculation.
-          Cells processed by root: 37
-          Number of root cells with same aqueous model: 37
-          Total iterations all root cells: 746
-          Number of root cells with zero iterations: 13
+          Cells processed by root: 41
+          Number of root cells with same aqueous model: 41
+          Total iterations all root cells: 791
+          Number of root cells with zero iterations: 14
           Maximum iterations for single root cell: 305
      End of Time Step No.   185
      Time ..................................................    37.0     (d)

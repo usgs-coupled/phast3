@@ -12139,10 +12139,10 @@ Beginning time step no.   1000
           Charge
           No. of solver iterations, Relative residual:    3  6.7827630E-12
      Beginning chemistry calculation.
-          Cells processed by root: 490
-          Number of root cells with same aqueous model: 490
-          Total iterations all root cells: 770
-          Number of root cells with zero iterations: 95
+          Cells processed by root: 521
+          Number of root cells with same aqueous model: 521
+          Total iterations all root cells: 817
+          Number of root cells with zero iterations: 102
           Maximum iterations for single root cell: 2
      End of Time Step No.  1000
      Time ..................................................   1.000E+03 (h)

@@ -167,9 +167,9 @@ Beginning time step no.      1
      Beginning chemistry calculation.
           Cells processed by root: 5
           Number of root cells with same aqueous model: 5
-          Total iterations all root cells: 280
+          Total iterations all root cells: 266
           Number of root cells with zero iterations: 0
-          Maximum iterations for single root cell: 67
+          Maximum iterations for single root cell: 61
      End of Time Step No.     1
      Time ..................................................   0.500     (s)
      Maximum change in potentiometric head  -1.1269E-15      (m ) at location (  2.00    ,  10.0    ,  10.0    )(m)

@@ -1662,19 +1662,19 @@ Beginning time step no.    120
           Sr
           Charge
      Beginning chemistry calculation.
-          Cells processed by root: 71
-          Number of root cells with same aqueous model: 71
-          Total iterations all root cells: 236
+          Cells processed by root: 74
+          Number of root cells with same aqueous model: 74
+          Total iterations all root cells: 251
           Number of root cells with zero iterations: 4
           Maximum iterations for single root cell: 6
      End of Time Step No.   120
      Time ..................................................    60.0     (s)
      Maximum change in potentiometric head  -8.1733E-16      (m ) at location ( 8.000E-02, 1.000E-02, 1.000E-02)(m)
-     Maximum change in H ..................  5.2178E-11 (mol/kgw) at location ( 6.000E-02, 0.000    , 1.000E-02)(m)
+     Maximum change in H ..................  5.2182E-11 (mol/kgw) at location ( 6.000E-02, 1.000E-02, 1.000E-02)(m)
      Maximum change in O ..................  8.5936E-10 (mol/kgw) at location ( 0.103    , 1.000E-02, 1.000E-02)(m)
      Maximum change in Cl .................  1.8433E-05 (mol/kgw) at location ( 6.000E-02, 1.000E-02, 0.000    )(m)
      Maximum change in Na .................  1.8433E-05 (mol/kgw) at location ( 6.000E-02, 1.000E-02, 0.000    )(m)
-     Maximum change in Sr .................  1.1612E-11 (mol/kgw) at location ( 5.900E-02, 0.000    , 1.000E-02)(m)
+     Maximum change in Sr .................  1.1612E-11 (mol/kgw) at location ( 5.900E-02, 1.000E-02, 1.000E-02)(m)
      Maximum change in Charge ............. -1.4177E-11 (mol/kgw) at location ( 6.000E-03, 1.000E-02, 0.000    )(m)
 Done with transient simulation.
 

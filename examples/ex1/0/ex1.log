@@ -1628,9 +1628,9 @@ Beginning time step no.    150
           A
           Charge
      Beginning chemistry calculation.
-          Cells processed by root: 49
-          Number of root cells with same aqueous model: 49
-          Total iterations all root cells: 228
+          Cells processed by root: 41
+          Number of root cells with same aqueous model: 41
+          Total iterations all root cells: 185
           Number of root cells with zero iterations: 11
           Maximum iterations for single root cell: 9
      End of Time Step No.   150
@@ -1638,7 +1638,7 @@ Beginning time step no.    150
      Maximum change in potentiometric head   3.4169E-16      (m ) at location ( 2.600E-02, 0.000    , 0.000    )(m)
      Maximum change in H .................. -4.7649E-13 (mol/kgw) at location ( 6.000E-02, 1.000E-02, 1.000E-02)(m)
      Maximum change in O .................. -2.5991E-13 (mol/kgw) at location ( 6.200E-02, 1.000E-02, 1.000E-02)(m)
-     Maximum change in A ..................  1.3541E-05 (mol/kgw) at location ( 2.800E-02, 0.000    , 0.000    )(m)
+     Maximum change in A ..................  1.3541E-05 (mol/kgw) at location ( 2.800E-02, 1.000E-02, 0.000    )(m)
      Maximum change in Charge .............  2.5531E-14 (mol/kgw) at location ( 6.000E-02, 0.000    , 1.000E-02)(m)
 Reading transient data for simulation: Set  2
      Time at which next set of transient parameters will be read .......... TIMCHG   120.      (s)
@@ -3141,17 +3141,17 @@ Beginning time step no.    300
           A
           Charge
      Beginning chemistry calculation.
-          Cells processed by root: 45
-          Number of root cells with same aqueous model: 45
-          Total iterations all root cells: 235
+          Cells processed by root: 47
+          Number of root cells with same aqueous model: 47
+          Total iterations all root cells: 245
           Number of root cells with zero iterations: 0
           Maximum iterations for single root cell: 8
      End of Time Step No.   300
      Time ..................................................    120.     (s)
      Maximum change in potentiometric head   3.4169E-16      (m ) at location ( 2.600E-02, 0.000    , 0.000    )(m)
-     Maximum change in H ..................  4.7465E-13 (mol/kgw) at location ( 5.800E-02, 1.000E-02, 0.000    )(m)
-     Maximum change in O .................. -5.1986E-11 (mol/kgw) at location ( 6.000E-02, 1.000E-02, 1.000E-02)(m)
-     Maximum change in A .................. -8.9836E-06 (mol/kgw) at location ( 2.800E-02, 1.000E-02, 1.000E-02)(m)
+     Maximum change in H ..................  4.7465E-13 (mol/kgw) at location ( 6.000E-02, 0.000    , 0.000    )(m)
+     Maximum change in O .................. -5.1987E-11 (mol/kgw) at location ( 6.000E-02, 0.000    , 1.000E-02)(m)
+     Maximum change in A .................. -8.9836E-06 (mol/kgw) at location ( 2.800E-02, 0.000    , 1.000E-02)(m)
      Maximum change in Charge ............. -2.5526E-14 (mol/kgw) at location ( 6.000E-02, 0.000    , 0.000    )(m)
 Done with transient simulation.
 

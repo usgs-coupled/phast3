@@ -114,9 +114,9 @@ Beginning time step no.      1
           Na
           Charge
      Beginning chemistry calculation.
-          Cells processed by root: 51
-          Number of root cells with same aqueous model: 51
-          Total iterations all root cells: 155
+          Cells processed by root: 53
+          Number of root cells with same aqueous model: 53
+          Total iterations all root cells: 164
           Number of root cells with zero iterations: 0
           Maximum iterations for single root cell: 8
      End of Time Step No.     1

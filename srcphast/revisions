@@ -1,3 +1,67 @@
+PHAST, Version 1.1 (February 14, 2005)
+      
+    Converted to Subversion version control system. Now includes
+    latest PHREEQC files automatically. PHAST 1.1 includes files from
+    PHREEQC 2.11.
+
+    Fixed file deletion; some temporary files were not deleted at end of run.
+
+    Fixed version number and printing format.
+
+PHAST, Version 1.0 (December 20, 2004)
+
+(1) Flow and transport data files from version RC3 will not run with
+    PHASTINPUT Version 1.0.
+
+    The way that time-series data are defined has changed for boundary
+    conditions, wells, rivers, time step, and print frequencies. A
+    sequence of data blocks separated by END keywords is no longer
+    used to define simulation periods. For boundary conditions, all
+    time-varying properties are defined immediately following the
+    -zone definition. Time series for wells are defined immediately
+    following the -pumping/-injection identifier and following the
+    -solution identifier. Time series for a river point are defined by
+    -head and -solution following the definition of the location of
+    the river point (-point). Time series for time step are defined in
+    a single TIME_CONTROL data block. Print frequencies are defined
+    for a sequence of times. At each time, print frequencies for
+    various files may be redefined.
+
+(2) The handling of the unsaturated zone has changed in free-surface
+    simulations. The unsaturated flow is not modeled, so free-surface
+    calculations still contain major approximations. However, an
+    attempt has been made to avoid some mass-balance errors related to
+    rising and falling water tables. The program now separates the
+    solids in a cell containing the water table into two reservoirs,
+    the saturated and unsaturated reservoirs. As the water table
+    rises, solids are transferred from the unsaturated reservoir to
+    the saturated reservoir. As the water table falls, solids are
+    transferred from the saturated reservoir to the unsaturated
+    reservoir. The main deficiency of the current implementation is that
+    solids in the unsaturated reservoirs are removed from the
+    calculation and do not react with recharge that is, in fact,
+    percolating through these solids. There is also no way to view or
+    print the masses of solids that are in the unsaturated reservoirs.
+
+(3) Mass-balance accounting for reactions has been added and the
+    method for calculating mass-fluxes at boundaries has been changed
+    to be consistent with the selected time-weighting scheme for the
+    finite-difference equations.
+
+(4) The FLOW_ONLY keyword has been replaced with the SOLUTE_TRANSPORT
+    keyword.
+
+(5) Input for rivers has been revised. Each river point location must
+    now be defined with the -point identifier. Default properties have
+    been eliminated. All properties (width, depth, bed thickness, bed
+    hydraulic conductivity, head, and solution composition) are now
+    interpolated. All properties must be defined at the end points of
+    the river. Additional data may be defined at other river
+    points. At the beginning of each simulation period, head and
+    solution properties for river points are updated with any new
+    values and interpolation for head and solution composition is
+    performed.
+
 RC-3 (phast rcsfreeze C_52; phastinput rcsfreeze C_27)
 
 	Added warnings for incompatibilities in boundary conditions.

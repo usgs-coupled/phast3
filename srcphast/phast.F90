@@ -46,7 +46,7 @@ PROGRAM phast
   !     ------------------------------------------------------------------
   !...
   ! ... Extract the version name for the header
-  version_name = ' 1.1'
+  version_name = ' 1.1 '
   !...
   errexi=.FALSE.
   errexe=.FALSE.

@@ -678,20 +678,20 @@ Beginning time step no.     40
      Beginning solute-transport calculation.
           H
           O
-          No. of solver iterations, Relative residual:    5  1.0034854E-16
+          No. of solver iterations, Relative residual:    5  9.9532699E-17
           [A]
-          No. of solver iterations, Relative residual:    5  1.3799535E-16
+          No. of solver iterations, Relative residual:    5  1.3799533E-16
           [B]
-          No. of solver iterations, Relative residual:    5  1.8601024E-16
+          No. of solver iterations, Relative residual:    5  1.8601027E-16
           [C]
-          No. of solver iterations, Relative residual:    5  1.1972213E-16
+          No. of solver iterations, Relative residual:    5  1.1972231E-16
           [D]
-          No. of solver iterations, Relative residual:    5  1.2656016E-16
+          No. of solver iterations, Relative residual:    5  1.2656086E-16
           Charge
      Beginning chemistry calculation.
-          Cells processed by root: 4261
-          Number of root cells with same aqueous model: 4261
-          Total iterations all root cells: 47645
+          Cells processed by root: 4254
+          Number of root cells with same aqueous model: 4254
+          Total iterations all root cells: 47565
           Number of root cells with zero iterations: 172
           Maximum iterations for single root cell: 28
      End of Time Step No.    40
