@@ -1,4 +1,4 @@
-	PHAST, Version VERSION, VER_DATE
+	PHAST, Version @VERSION@, @VER_DATE@
 
 PHAST is a 3-dimensional, reactive-transport simulator that is
 available for Windows and Linux. PHAST simulates constant-density
@@ -15,9 +15,9 @@ Windows Installation:
 
 The Windows version uses InstallShield to install the programs PHAST,
 PHASTHDF, and Model Viewer. You need administrator privileges to
-execute the installation file phast-VERSION.REVISION.exe.
+execute the installation file phast-@VERSION@-@REVISION@.exe.
 
-The installation directory is \Program Files\USGS\phast-VERSION, which
+The installation directory is \Program Files\USGS\phast-@VERSION@, which
 contains the following subdirectories:
 	\bin
 	\database
@@ -30,12 +30,12 @@ contains the following subdirectories:
 Linux Installation with tar:
 ----------------------------
 
-Extract the files from phast-VERSION.REVISION-Linux.tar.gz with the command:
+Extract the files from phast-@VERSION@-@REVISION@-Linux.tar.gz with the command:
 
-tar -xzf phast-VERSION.REVISION-Linux.tar.gz
+tar -xzf phast-@VERSION@-@REVISION@-Linux.tar.gz
 
-Files will be extracted into a directory named phast-VERSION. The 
-following subdirectories will be created within phast-VERSION:
+Files will be extracted into a directory named phast-@VERSION@. The 
+following subdirectories will be created within phast-@VERSION@:
 	/bin
 	/database
 	/doc
@@ -54,10 +54,10 @@ to install with rpm. The --prefix option may be used to change the
 installation directory. The programs are installed with the following
 command, where square brackets indicate an optional field:
 
-rpm -i [--prefix=dirname] phast-VERSION.REVISION.i586.rpm
+rpm -i [--prefix=dirname] phast-@VERSION@-@REVISION@.i586.rpm
 
 The installation directory for the source, documentation, and examples
-is /usr/share/doc/phast-VERSION, where the directory /usr may be changed
+is /usr/share/doc/phast-@VERSION@, where the directory /usr may be changed
 with the --prefix option. The subdirectories of this directory are
 
 	/database
