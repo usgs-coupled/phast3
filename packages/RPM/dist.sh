@@ -180,13 +180,22 @@ fi
 
 VERSION_LONG="$ver_major.$ver_minor.$ver_patch.$REVISION_SVN"
 
-SED_FILES="$DISTPATH/doc/README \
+SED_FILES="$DISTPATH/src/phast/phast_version.h
+           $DISTPATH/src/phasthdf/win32/phasthdf_version.h\
+           $DISTPATH/src/phastinput/win32/phastinput_version.h\
+           $DISTPATH/doc/README \
            $DISTPATH/packages/win32-is/phast.ipr \
            $DISTPATH/packages/win32-is/String?Tables/0009-English/value.shl"
 
 for vsn_file in $SED_FILES
 do
   sed \
+   -e "/#define *PHAST_VER_MAJOR/s/[0-9]\+/$ver_major/" \
+   -e "/#define *PHAST_VER_MINOR/s/[0-9]\+/$ver_minor/" \
+   -e "/#define *PHAST_VER_PATCH/s/[0-9]\+/$ver_patch/" \
+   -e "/#define *PHAST_VER_TAG/s/\".*\"/\" ($VER_TAG)\"/" \
+   -e "/#define *PHAST_VER_NUMTAG/s/\".*\"/\"$VER_NUMTAG\"/" \
+   -e "/#define *PHAST_VER_REVISION/s/[0-9]\+/$REVISION_SVN/" \   
    -e "s/@VERSION@/${VERSION}/g" \
    -e "s/@REVISION@/${REVISION}/g" \
    -e "s/@VER_DATE@/${RELEASE_DATE}/g" \

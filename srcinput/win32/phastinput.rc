@@ -8,7 +8,7 @@
 // Generated from the TEXTINCLUDE 2 resource.
 //
 #include "afxres.h"
-
+#include "phastinput_version.h"
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
 
@@ -54,8 +54,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,0
- PRODUCTVERSION 1,0,0,0
+ FILEVERSION PHAST_VER_MAJOR,PHAST_VER_MINOR,PHAST_VER_PATCH,PHAST_VER_REVISION
+ PRODUCTVERSION PHAST_VER_MAJOR,PHAST_VER_MINOR,PHAST_VER_PATCH,PHAST_VER_REVISION
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x21L
@@ -70,18 +70,16 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "Comments", "Released: December 20, 2004\0"
+            VALUE "Comments", "Released: " RELEASE_DATE "\0"
             VALUE "CompanyName", "U.S. Geological Survey\0"
             VALUE "FileDescription", "PHASTINPUT console application\0"
-            VALUE "FileVersion", "1.0.0.0\0"
-            VALUE "InternalName", "$Name: version-1_0 $\0"
-            VALUE "LegalCopyright", "\0"
+            VALUE "FileVersion", PHAST_VER_NUM "\0"
+            VALUE "InternalName", "phastinput\0"
+            VALUE "LegalCopyright", "public domain\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "phastinput.exe\0"
             VALUE "PrivateBuild", "\0"
-            VALUE "ProductName", "phast-1.0-1\0"
-            VALUE "ProductVersion", "1.0.0.0\0"
-            VALUE "SpecialBuild", "$Date: 2004/12/20 05:40:50 $\0"
+            VALUE "SpecialBuild", "\0"
         END
     END
     BLOCK "VarFileInfo"

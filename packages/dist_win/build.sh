@@ -168,9 +168,9 @@ cvsexport() {
 
 prep() {
   (cd ${topdir} && \
-  tar xvzf ${src_orig_pkg} ; \
+  tar xvzf ${src_orig_pkg} && \
   cd ${topdir}/${PKG}-${VER} && \
-  tar xvzf ${src_orig_pkg_mv} ; \
+  tar xvzf ${src_orig_pkg_mv} && \
   cd ${topdir} && \
   if [ -f ${src_patch} ] ; then \
     patch -p0 --binary < ${src_patch} ;\
@@ -373,7 +373,7 @@ run_examples() {
     fi
     cd ${arg}
     export TD="`cygpath -w -s "${instdir}${prefix}"`" && \
-    ${instdir}${prefix}/bin/${PKG}.bat `basename ${arg}`;
+    echo ${instdir}${prefix}/bin/${PKG}.bat `basename ${arg}`;
     if [ $? != 0 ] ; then
       exit $?;
     fi
@@ -396,6 +396,7 @@ mkpatch() {
   tar xvzf ${src_orig_pkg} && \
   cd ${PKG}-${VER} && \
   tar xvzf ${src_orig_pkg_mv} ; \
+  cd ${srcdir} &&
   mv ${PKG}-${VER} ../${PKG}-${VER}-orig && \
   cd ${topdir} && \
   diff -urN -x '.build' -x '.inst' -x '.sinst' \
