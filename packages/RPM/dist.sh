@@ -100,6 +100,10 @@ else
   VER_TAG="r$REVISION_SVN"
   VER_NUMTAG=""
 fi
+
+case `uname` in
+  CYGWIN*)  WIN=1;;
+esac
   
 if [ -n "$WIN" ] ; then
   EXTRA_EXPORT_OPTIONS="--native-eol CRLF"
@@ -178,7 +182,7 @@ VERSION_LONG="$ver_major.$ver_minor.$ver_patch.$REVISION_SVN"
 
 SED_FILES="$DISTPATH/doc/README \
            $DISTPATH/packages/win32-is/phast.ipr \
-           $DISTPATH/packages/win32-is/STRING~1/0009-English/value.shl"
+           $DISTPATH/packages/win32-is/String?Tables/0009-English/value.shl"
 
 for vsn_file in $SED_FILES
 do

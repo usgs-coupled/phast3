@@ -363,7 +363,6 @@ install() {
   ${instdir}/. && \
   /usr/bin/install -m 755 "${objdir}/packages/win32-is/Media/SingleDisk/Disk Images/Disk1/setup.exe" \
     ${instdir}/${FULLPKG}.exe &&\
-  exit 99 && \
   run_examples )
 }
 
