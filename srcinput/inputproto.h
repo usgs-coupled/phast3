@@ -157,6 +157,7 @@ int time_series_realloc (struct time_series *time_series_ptr);
 struct time_series * time_series_free (struct time_series *ts_ptr);
 struct time_series * time_series_read_property (char *ptr, const char **opt_list, int count_opt_list, int *opt);
 int time_series_sort (struct time_series *time_series_ptr);
+int time_series_init (struct time_series *ts_ptr);
 
 /* utilities.c */
 int backspace (FILE *file, int spaces);

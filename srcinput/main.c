@@ -457,6 +457,7 @@ void initialize(void)
 		grid[i].uniform = UNDEFINED;	
 		grid[i].uniform_expanded = FALSE;
 		grid[i].elt_centroid = NULL;
+		grid[i].min = 0.0;
 		axes[i] = TRUE;
 	}
 	grid[0].c = 'X';
@@ -628,6 +629,25 @@ void initialize(void)
 /*
  *   print parameters
  */
+
+	time_series_init(&print_velocity);
+	time_series_init(&print_hdf_velocity);
+	time_series_init(&print_xyz_velocity);
+	time_series_init(&print_head);
+	time_series_init(&print_hdf_head);
+	time_series_init(&print_xyz_head);
+	time_series_init(&print_force_chem);
+	time_series_init(&print_hdf_chem);
+	time_series_init(&print_xyz_chem);
+	time_series_init(&print_comp);
+	time_series_init(&print_xyz_comp);
+	time_series_init(&print_wells);
+	time_series_init(&print_xyz_wells);
+	time_series_init(&print_statistics);
+	time_series_init(&print_flow_balance);
+	time_series_init(&print_bc_flow);
+	time_series_init(&print_conductances);
+	time_series_init(&print_bc);
 
 	/* .bcf file */
 	current_print_bc_flow.type = STEP;

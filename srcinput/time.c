@@ -155,6 +155,15 @@ int time_series_realloc (struct time_series *time_series_ptr)
 
 }
 /* ---------------------------------------------------------------------- */
+int time_series_init (struct time_series *ts_ptr)
+/* ---------------------------------------------------------------------- */
+{
+	if (ts_ptr == NULL) return(ERROR);
+	ts_ptr->count_properties = 0;
+	ts_ptr->properties = NULL;
+	return(OK);
+}
+/* ---------------------------------------------------------------------- */
 struct time_series * time_series_free (struct time_series *ts_ptr)
 /* ---------------------------------------------------------------------- */
 {
