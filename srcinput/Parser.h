@@ -1,5 +1,6 @@
 #pragma once
 
+#define NOGDI
 #include <windows.h>
 
 LONG ExceptionFilter(DWORD dwExceptionCode);

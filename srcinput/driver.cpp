@@ -2,7 +2,7 @@
 extern "C" {
 #endif
 
-#define EXTERNAL
+#define EXTERNAL extern
 //#define MAIN
 #include "hstinpt.h"
 #undef EXTERNAL
