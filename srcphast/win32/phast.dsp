@@ -307,19 +307,31 @@ LINK32=link.exe
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\advection.c
+SOURCE=..\phreeqc\advection.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\basic.c
+SOURCE=..\phreeqc\basic.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\basicsubs.c
+SOURCE=..\phreeqc\basicsubs.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\cl1.c
+SOURCE=..\phreeqc\cl1.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\phreeqc\cvdense.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\phreeqc\cvode.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\phreeqc\dense.c
 # End Source File
 # Begin Source File
 
@@ -331,23 +343,27 @@ SOURCE=..\hstsubs.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\integrate.c
+SOURCE=..\phreeqc\input.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\inverse.c
+SOURCE=..\phreeqc\integrate.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\isotopes.c
+SOURCE=..\phreeqc\inverse.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\kinetics.c
+SOURCE=..\phreeqc\isotopes.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\mainsubs.c
+SOURCE=..\phreeqc\kinetics.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\phreeqc\mainsubs.c
 # End Source File
 # Begin Source File
 
@@ -355,59 +371,87 @@ SOURCE=..\mix.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\model.c
+SOURCE=..\phreeqc\model.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\p2clib.c
+SOURCE=..\phreeqc\nvector.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\parse.c
+SOURCE=..\phreeqc\nvector_serial.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\phqalloc.c
+SOURCE=..\phreeqc\output.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\prep.c
+SOURCE=..\phreeqc\p2clib.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\print.c
+SOURCE=..\phreeqc\parse.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\read.c
+SOURCE=..\phast_files.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\readtr.c
+SOURCE=..\phreeqc\phqalloc.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\spread.c
+SOURCE=..\phreeqc\prep.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\step.c
+SOURCE=..\phreeqc\print.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\structures.c
+SOURCE=..\phreeqc\read.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\tidy.c
+SOURCE=..\phreeqc\readtr.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\transport.c
+SOURCE=..\phreeqc\smalldense.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\utilities.c
+SOURCE=..\phreeqc\spread.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\phreeqc\step.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\phreeqc\structures.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\phreeqc\sundialsmath.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\phreeqc\tally.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\phreeqc\tidy.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\phreeqc\transport.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\phreeqc\utilities.c
 # End Source File
 # End Group
 # Begin Group "COMMON_FOBJS"
@@ -416,7 +460,7 @@ SOURCE=..\utilities.c
 # Begin Source File
 
 SOURCE=..\abmult.f90
-DEP_F90_ABMUL=\
+NODEP_F90_ABMUL=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcm.mod"\
 	".\ser_debug\mcs.mod"\
@@ -425,7 +469,7 @@ DEP_F90_ABMUL=\
 # Begin Source File
 
 SOURCE=..\aplbce.f90
-DEP_F90_APLBC=\
+NODEP_F90_APLBC=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
@@ -442,7 +486,7 @@ DEP_F90_APLBC=\
 # Begin Source File
 
 SOURCE=..\aplbce_ss_flow.f90
-DEP_F90_APLBCE=\
+NODEP_F90_APLBCE=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
 	".\ser_debug\mcg.mod"\
@@ -457,7 +501,7 @@ DEP_F90_APLBCE=\
 # Begin Source File
 
 SOURCE=..\aplbci.f90
-DEP_F90_APLBCI=\
+NODEP_F90_APLBCI=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
@@ -474,7 +518,7 @@ DEP_F90_APLBCI=\
 # Begin Source File
 
 SOURCE=..\armult.f90
-DEP_F90_ARMUL=\
+NODEP_F90_ARMUL=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcm.mod"\
 	".\ser_debug\mcs.mod"\
@@ -483,7 +527,7 @@ DEP_F90_ARMUL=\
 # Begin Source File
 
 SOURCE=..\asembl.f90
-DEP_F90_ASEMB=\
+NODEP_F90_ASEMB=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
 	".\ser_debug\mcc.mod"\
@@ -499,7 +543,7 @@ DEP_F90_ASEMB=\
 # Begin Source File
 
 SOURCE=..\asmslc.f90
-DEP_F90_ASMSL=\
+NODEP_F90_ASMSL=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcc.mod"\
@@ -516,7 +560,7 @@ DEP_F90_ASMSL=\
 # Begin Source File
 
 SOURCE=..\asmslp.f90
-DEP_F90_ASMSLP=\
+NODEP_F90_ASMSLP=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
@@ -534,7 +578,7 @@ DEP_F90_ASMSLP=\
 # Begin Source File
 
 SOURCE=..\asmslp_ss_flow.f90
-DEP_F90_ASMSLP_=\
+NODEP_F90_ASMSLP_=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
@@ -552,7 +596,7 @@ DEP_F90_ASMSLP_=\
 # Begin Source File
 
 SOURCE=..\bsode.f90
-DEP_F90_BSODE=\
+NODEP_F90_BSODE=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcw.mod"\
 	
@@ -560,7 +604,7 @@ DEP_F90_BSODE=\
 # Begin Source File
 
 SOURCE=..\calc_velocity.f90
-DEP_F90_CALC_=\
+NODEP_F90_CALC_=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
 	".\ser_debug\mcc.mod"\
@@ -574,7 +618,7 @@ DEP_F90_CALC_=\
 # Begin Source File
 
 SOURCE=..\calcc.f90
-DEP_F90_CALCC=\
+NODEP_F90_CALCC=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
 	".\ser_debug\mcc.mod"\
@@ -586,14 +630,14 @@ DEP_F90_CALCC=\
 # Begin Source File
 
 SOURCE=..\clog.f90
-DEP_F90_CLOG_=\
+NODEP_F90_CLOG_=\
 	".\ser_debug\f_units.mod"\
 	
 # End Source File
 # Begin Source File
 
 SOURCE=..\closef.F90
-DEP_F90_CLOSE=\
+NODEP_F90_CLOSE=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\mcb.mod"\
 	".\ser_debug\mcc.mod"\
@@ -613,7 +657,7 @@ DEP_F90_CLOSE=\
 # Begin Source File
 
 SOURCE=..\coeff.f90
-DEP_F90_COEFF=\
+NODEP_F90_COEFF=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
 	".\ser_debug\mcc.mod"\
@@ -627,7 +671,7 @@ DEP_F90_COEFF=\
 # Begin Source File
 
 SOURCE=..\coeff_ss_flow.f90
-DEP_F90_COEFF_=\
+NODEP_F90_COEFF_=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
 	".\ser_debug\mcc.mod"\
@@ -641,7 +685,7 @@ DEP_F90_COEFF_=\
 # Begin Source File
 
 SOURCE=..\crsdsp.f90
-DEP_F90_CRSDS=\
+NODEP_F90_CRSDS=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcc.mod"\
 	".\ser_debug\mcg.mod"\
@@ -653,21 +697,21 @@ DEP_F90_CRSDS=\
 # Begin Source File
 
 SOURCE=..\d4ord.f90
-DEP_F90_D4ORD=\
+NODEP_F90_D4ORD=\
 	".\ser_debug\mcs.mod"\
 	
 # End Source File
 # Begin Source File
 
 SOURCE=..\d4zord.f90
-DEP_F90_D4ZOR=\
+NODEP_F90_D4ZOR=\
 	".\ser_debug\mcs.mod"\
 	
 # End Source File
 # Begin Source File
 
 SOURCE=..\dbmult.f90
-DEP_F90_DBMUL=\
+NODEP_F90_DBMUL=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcm.mod"\
 	".\ser_debug\mcs.mod"\
@@ -676,7 +720,7 @@ DEP_F90_DBMUL=\
 # Begin Source File
 
 SOURCE=..\dump.f90
-DEP_F90_DUMP_=\
+NODEP_F90_DUMP_=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\mcb.mod"\
 	".\ser_debug\mcc.mod"\
@@ -693,7 +737,7 @@ DEP_F90_DUMP_=\
 # Begin Source File
 
 SOURCE=..\efact.f90
-DEP_F90_EFACT=\
+NODEP_F90_EFACT=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcc.mod"\
 	
@@ -701,7 +745,7 @@ DEP_F90_EFACT=\
 # Begin Source File
 
 SOURCE=..\ehoftp.f90
-DEP_F90_EHOFT=\
+NODEP_F90_EHOFT=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcp.mod"\
 	
@@ -709,21 +753,21 @@ DEP_F90_EHOFT=\
 # Begin Source File
 
 SOURCE=..\el1slv.f90
-DEP_F90_EL1SL=\
+NODEP_F90_EL1SL=\
 	".\ser_debug\machine_constants.mod"\
 	
 # End Source File
 # Begin Source File
 
 SOURCE=..\elslv.f90
-DEP_F90_ELSLV=\
+NODEP_F90_ELSLV=\
 	".\ser_debug\machine_constants.mod"\
 	
 # End Source File
 # Begin Source File
 
 SOURCE=..\error1.f90
-DEP_F90_ERROR=\
+NODEP_F90_ERROR=\
 	".\ser_debug\mcb.mod"\
 	".\ser_debug\mcc.mod"\
 	".\ser_debug\mcg.mod"\
@@ -732,7 +776,7 @@ DEP_F90_ERROR=\
 # Begin Source File
 
 SOURCE=..\error2.f90
-DEP_F90_ERROR2=\
+NODEP_F90_ERROR2=\
 	".\ser_debug\mcb.mod"\
 	".\ser_debug\mcc.mod"\
 	".\ser_debug\mcg.mod"\
@@ -742,7 +786,7 @@ DEP_F90_ERROR2=\
 # Begin Source File
 
 SOURCE=..\error3.f90
-DEP_F90_ERROR3=\
+NODEP_F90_ERROR3=\
 	".\ser_debug\mcb.mod"\
 	".\ser_debug\mcc.mod"\
 	".\ser_debug\mcg.mod"\
@@ -757,6 +801,8 @@ DEP_F90_ERROR3=\
 SOURCE=..\error4.f90
 DEP_F90_ERROR4=\
 	"..\ifwr.inc"\
+	
+NODEP_F90_ERROR4=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
@@ -772,7 +818,7 @@ DEP_F90_ERROR4=\
 # Begin Source File
 
 SOURCE=..\errprt.f90
-DEP_F90_ERRPR=\
+NODEP_F90_ERRPR=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\mcc.mod"\
 	
@@ -780,7 +826,7 @@ DEP_F90_ERRPR=\
 # Begin Source File
 
 SOURCE=..\etom1.f90
-DEP_F90_ETOM1=\
+NODEP_F90_ETOM1=\
 	".\ser_debug\mcb.mod"\
 	".\ser_debug\mcc.mod"\
 	".\ser_debug\mcg.mod"\
@@ -793,7 +839,7 @@ DEP_F90_ETOM1=\
 # Begin Source File
 
 SOURCE=..\etom2.f90
-DEP_F90_ETOM2=\
+NODEP_F90_ETOM2=\
 	".\ser_debug\mcb.mod"\
 	".\ser_debug\mcc.mod"\
 	".\ser_debug\mcg.mod"\
@@ -805,14 +851,14 @@ DEP_F90_ETOM2=\
 # Begin Source File
 
 SOURCE=..\euslv.f90
-DEP_F90_EUSLV=\
+NODEP_F90_EUSLV=\
 	".\ser_debug\machine_constants.mod"\
 	
 # End Source File
 # Begin Source File
 
 SOURCE=..\formr.f90
-DEP_F90_FORMR=\
+NODEP_F90_FORMR=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcm.mod"\
 	".\ser_debug\mcs.mod"\
@@ -821,7 +867,7 @@ DEP_F90_FORMR=\
 # Begin Source File
 
 SOURCE=..\gcgris.f90
-DEP_F90_GCGRI=\
+NODEP_F90_GCGRI=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcc.mod"\
@@ -836,21 +882,21 @@ DEP_F90_GCGRI=\
 # Begin Source File
 
 SOURCE=..\hunt.f90
-DEP_F90_HUNT_=\
+NODEP_F90_HUNT_=\
 	".\ser_debug\machine_constants.mod"\
 	
 # End Source File
 # Begin Source File
 
 SOURCE=..\incidx.f90
-DEP_F90_INCID=\
+NODEP_F90_INCID=\
 	".\ser_debug\machine_constants.mod"\
 	
 # End Source File
 # Begin Source File
 
 SOURCE=..\indx_rewi.f90
-DEP_F90_INDX_=\
+NODEP_F90_INDX_=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcc.mod"\
@@ -862,7 +908,7 @@ DEP_F90_INDX_=\
 # Begin Source File
 
 SOURCE=..\indx_rewi_bc.f90
-DEP_F90_INDX_R=\
+NODEP_F90_INDX_R=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcc.mod"\
@@ -875,7 +921,7 @@ DEP_F90_INDX_R=\
 # Begin Source File
 
 SOURCE=..\init1.f90
-DEP_F90_INIT1=\
+NODEP_F90_INIT1=\
 	".\ser_debug\mcb.mod"\
 	".\ser_debug\mcc.mod"\
 	".\ser_debug\mcch.mod"\
@@ -891,7 +937,7 @@ DEP_F90_INIT1=\
 # Begin Source File
 
 SOURCE=..\init2_1.f90
-DEP_F90_INIT2=\
+NODEP_F90_INIT2=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
 	".\ser_debug\mcc.mod"\
@@ -910,7 +956,7 @@ DEP_F90_INIT2=\
 # Begin Source File
 
 SOURCE=..\init2_2.f90
-DEP_F90_INIT2_=\
+NODEP_F90_INIT2_=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
 	".\ser_debug\mcc.mod"\
@@ -925,7 +971,7 @@ DEP_F90_INIT2_=\
 # Begin Source File
 
 SOURCE=..\init2_3.f90
-DEP_F90_INIT2_3=\
+NODEP_F90_INIT2_3=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
 	".\ser_debug\mcc.mod"\
@@ -940,7 +986,7 @@ DEP_F90_INIT2_3=\
 # Begin Source File
 
 SOURCE=..\init2_post_ss.f90
-DEP_F90_INIT2_P=\
+NODEP_F90_INIT2_P=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
 	".\ser_debug\mcc.mod"\
@@ -956,7 +1002,7 @@ DEP_F90_INIT2_P=\
 # Begin Source File
 
 SOURCE=..\init3.f90
-DEP_F90_INIT3=\
+NODEP_F90_INIT3=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
 	".\ser_debug\mcc.mod"\
@@ -972,14 +1018,14 @@ DEP_F90_INIT3=\
 # Begin Source File
 
 SOURCE=..\interp.f90
-DEP_F90_INTER=\
+NODEP_F90_INTER=\
 	".\ser_debug\machine_constants.mod"\
 	
 # End Source File
 # Begin Source File
 
 SOURCE=..\irewi.f90
-DEP_F90_IREWI=\
+NODEP_F90_IREWI=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcc.mod"\
@@ -991,7 +1037,7 @@ DEP_F90_IREWI=\
 # Begin Source File
 
 SOURCE=..\ldchar.f90
-DEP_F90_LDCHA=\
+NODEP_F90_LDCHA=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcc.mod"\
 	".\ser_debug\mcg.mod"\
@@ -1000,7 +1046,7 @@ DEP_F90_LDCHA=\
 # Begin Source File
 
 SOURCE=..\ldci.f90
-DEP_F90_LDCI_=\
+NODEP_F90_LDCI_=\
 	".\ser_debug\mcg.mod"\
 	".\ser_debug\mcs.mod"\
 	
@@ -1008,14 +1054,14 @@ DEP_F90_LDCI_=\
 # Begin Source File
 
 SOURCE=..\ldcir.f90
-DEP_F90_LDCIR=\
+NODEP_F90_LDCIR=\
 	".\ser_debug\mcs.mod"\
 	
 # End Source File
 # Begin Source File
 
 SOURCE=..\ldind.f90
-DEP_F90_LDIND=\
+NODEP_F90_LDIND=\
 	".\ser_debug\mcg.mod"\
 	".\ser_debug\mcs.mod"\
 	
@@ -1023,21 +1069,21 @@ DEP_F90_LDIND=\
 # Begin Source File
 
 SOURCE=..\ldipen.f90
-DEP_F90_LDIPE=\
+NODEP_F90_LDIPE=\
 	".\ser_debug\mcs.mod"\
 	
 # End Source File
 # Begin Source File
 
 SOURCE=..\ldmar1.f90
-DEP_F90_LDMAR=\
+NODEP_F90_LDMAR=\
 	".\ser_debug\mcs.mod"\
 	
 # End Source File
 # Begin Source File
 
 SOURCE=..\load_indx_bc.f90
-DEP_F90_LOAD_=\
+NODEP_F90_LOAD_=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcv.mod"\
 	
@@ -1045,7 +1091,7 @@ DEP_F90_LOAD_=\
 # Begin Source File
 
 SOURCE=..\lsolv.f90
-DEP_F90_LSOLV=\
+NODEP_F90_LSOLV=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcs.mod"\
 	
@@ -1061,14 +1107,14 @@ SOURCE=..\mtoijk.f90
 # Begin Source File
 
 SOURCE=..\nintrp.f90
-DEP_F90_NINTR=\
+NODEP_F90_NINTR=\
 	".\ser_debug\machine_constants.mod"\
 	
 # End Source File
 # Begin Source File
 
 SOURCE=..\openf.F90
-DEP_F90_OPENF=\
+NODEP_F90_OPENF=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\mcch.mod"\
 	
@@ -1076,7 +1122,7 @@ DEP_F90_OPENF=\
 # Begin Source File
 
 SOURCE=..\phast.F90
-DEP_F90_PHAST=\
+NODEP_F90_PHAST=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
 	".\ser_debug\mcc.mod"\
@@ -1091,7 +1137,7 @@ DEP_F90_PHAST=\
 # Begin Source File
 
 SOURCE=..\prchar.f90
-DEP_F90_PRCHA=\
+NODEP_F90_PRCHA=\
 	".\ser_debug\mcc.mod"\
 	".\ser_debug\mcg.mod"\
 	
@@ -1099,7 +1145,7 @@ DEP_F90_PRCHA=\
 # Begin Source File
 
 SOURCE=..\print_control_mod.f90
-DEP_F90_PRINT=\
+NODEP_F90_PRINT=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcp.mod"\
 	".\ser_debug\mcv.mod"\
@@ -1108,7 +1154,7 @@ DEP_F90_PRINT=\
 # Begin Source File
 
 SOURCE=..\prntar.f90
-DEP_F90_PRNTA=\
+NODEP_F90_PRNTA=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcc.mod"\
 	".\ser_debug\mcg.mod"\
@@ -1117,14 +1163,14 @@ DEP_F90_PRNTA=\
 # Begin Source File
 
 SOURCE=..\rbord.f90
-DEP_F90_RBORD=\
+NODEP_F90_RBORD=\
 	".\ser_debug\mcs.mod"\
 	
 # End Source File
 # Begin Source File
 
 SOURCE=..\read1.f90
-DEP_F90_READ1=\
+NODEP_F90_READ1=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\mcb.mod"\
 	".\ser_debug\mcc.mod"\
@@ -1139,6 +1185,8 @@ DEP_F90_READ1=\
 SOURCE=..\read2.f90
 DEP_F90_READ2=\
 	"..\ifrd.inc"\
+	
+NODEP_F90_READ2=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
@@ -1157,6 +1205,8 @@ DEP_F90_READ2=\
 SOURCE=..\read3.f90
 DEP_F90_READ3=\
 	"..\ifrd.inc"\
+	
+NODEP_F90_READ3=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
@@ -1171,7 +1221,7 @@ DEP_F90_READ3=\
 # Begin Source File
 
 SOURCE=..\reordr.f90
-DEP_F90_REORD=\
+NODEP_F90_REORD=\
 	".\ser_debug\mcg.mod"\
 	".\ser_debug\mcs.mod"\
 	
@@ -1179,7 +1229,7 @@ DEP_F90_REORD=\
 # Begin Source File
 
 SOURCE=..\rewi.f90
-DEP_F90_REWI_=\
+NODEP_F90_REWI_=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcc.mod"\
@@ -1193,7 +1243,7 @@ DEP_F90_REWI_=\
 # Begin Source File
 
 SOURCE=..\rewi3.f90
-DEP_F90_REWI3=\
+NODEP_F90_REWI3=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcc.mod"\
@@ -1206,7 +1256,7 @@ DEP_F90_REWI3=\
 # Begin Source File
 
 SOURCE=..\rfact.f90
-DEP_F90_RFACT=\
+NODEP_F90_RFACT=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcs.mod"\
 	
@@ -1214,7 +1264,7 @@ DEP_F90_RFACT=\
 # Begin Source File
 
 SOURCE=..\rfactm.f90
-DEP_F90_RFACTM=\
+NODEP_F90_RFACTM=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcs.mod"\
 	
@@ -1222,7 +1272,7 @@ DEP_F90_RFACTM=\
 # Begin Source File
 
 SOURCE=..\rhsn.f90
-DEP_F90_RHSN_=\
+NODEP_F90_RHSN_=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
@@ -1239,7 +1289,7 @@ DEP_F90_RHSN_=\
 # Begin Source File
 
 SOURCE=..\rhsn_ss_flow.f90
-DEP_F90_RHSN_S=\
+NODEP_F90_RHSN_S=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
 	".\ser_debug\mcc.mod"\
@@ -1255,7 +1305,7 @@ DEP_F90_RHSN_S=\
 # Begin Source File
 
 SOURCE=..\sbcflo.f90
-DEP_F90_SBCFL=\
+NODEP_F90_SBCFL=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
 	".\ser_debug\mcs.mod"\
@@ -1265,7 +1315,7 @@ DEP_F90_SBCFL=\
 # Begin Source File
 
 SOURCE=..\simulate_ss_flow.f90
-DEP_F90_SIMUL=\
+NODEP_F90_SIMUL=\
 	".\ser_debug\mcc.mod"\
 	".\ser_debug\mcp.mod"\
 	".\ser_debug\mcv.mod"\
@@ -1279,7 +1329,7 @@ SOURCE=..\stonb.f90
 # Begin Source File
 
 SOURCE=..\sumcal1.f90
-DEP_F90_SUMCA=\
+NODEP_F90_SUMCA=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
@@ -1297,7 +1347,7 @@ DEP_F90_SUMCA=\
 # Begin Source File
 
 SOURCE=..\sumcal2.f90
-DEP_F90_SUMCAL=\
+NODEP_F90_SUMCAL=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
 	".\ser_debug\mcc.mod"\
@@ -1313,7 +1363,7 @@ DEP_F90_SUMCAL=\
 # Begin Source File
 
 SOURCE=..\sumcal_ss_flow.f90
-DEP_F90_SUMCAL_=\
+NODEP_F90_SUMCAL_=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
@@ -1330,7 +1380,7 @@ DEP_F90_SUMCAL_=\
 # Begin Source File
 
 SOURCE=..\terminate_phast.F90
-DEP_F90_TERMI=\
+NODEP_F90_TERMI=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
@@ -1346,7 +1396,7 @@ DEP_F90_TERMI=\
 # Begin Source File
 
 SOURCE=..\tfrds.f90
-DEP_F90_TFRDS=\
+NODEP_F90_TFRDS=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcm.mod"\
 	".\ser_debug\mcs.mod"\
@@ -1355,7 +1405,7 @@ DEP_F90_TFRDS=\
 # Begin Source File
 
 SOURCE=..\timstp.f90
-DEP_F90_TIMST=\
+NODEP_F90_TIMST=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcc.mod"\
@@ -1369,7 +1419,7 @@ DEP_F90_TIMST=\
 # Begin Source File
 
 SOURCE=..\timstp_ss_flow.f90
-DEP_F90_TIMSTP=\
+NODEP_F90_TIMSTP=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcc.mod"\
@@ -1383,7 +1433,7 @@ DEP_F90_TIMSTP=\
 # Begin Source File
 
 SOURCE=..\update_print_flags.f90
-DEP_F90_UPDAT=\
+NODEP_F90_UPDAT=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcc.mod"\
 	".\ser_debug\mcp.mod"\
@@ -1394,7 +1444,7 @@ DEP_F90_UPDAT=\
 # Begin Source File
 
 SOURCE=..\usolv.f90
-DEP_F90_USOLV=\
+NODEP_F90_USOLV=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcs.mod"\
 	
@@ -1402,7 +1452,7 @@ DEP_F90_USOLV=\
 # Begin Source File
 
 SOURCE=..\viscos.f90
-DEP_F90_VISCO=\
+NODEP_F90_VISCO=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcp.mod"\
 	
@@ -1410,14 +1460,14 @@ DEP_F90_VISCO=\
 # Begin Source File
 
 SOURCE=..\vpsv.f90
-DEP_F90_VPSV_=\
+NODEP_F90_VPSV_=\
 	".\ser_debug\machine_constants.mod"\
 	
 # End Source File
 # Begin Source File
 
 SOURCE=..\wbbal.f90
-DEP_F90_WBBAL=\
+NODEP_F90_WBBAL=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcc.mod"\
@@ -1429,7 +1479,7 @@ DEP_F90_WBBAL=\
 # Begin Source File
 
 SOURCE=..\wbcflo.f90
-DEP_F90_WBCFL=\
+NODEP_F90_WBCFL=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcc.mod"\
@@ -1443,7 +1493,7 @@ DEP_F90_WBCFL=\
 # Begin Source File
 
 SOURCE=..\wellsc.f90
-DEP_F90_WELLS=\
+NODEP_F90_WELLS=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
@@ -1461,7 +1511,7 @@ DEP_F90_WELLS=\
 # Begin Source File
 
 SOURCE=..\wellsc_ss_flow.f90
-DEP_F90_WELLSC=\
+NODEP_F90_WELLSC=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
@@ -1479,7 +1529,7 @@ DEP_F90_WELLSC=\
 # Begin Source File
 
 SOURCE=..\wellsr.f90
-DEP_F90_WELLSR=\
+NODEP_F90_WELLSR=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
@@ -1495,7 +1545,7 @@ DEP_F90_WELLSR=\
 # Begin Source File
 
 SOURCE=..\wellsr_ss_flow.f90
-DEP_F90_WELLSR_=\
+NODEP_F90_WELLSR_=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
@@ -1511,7 +1561,7 @@ DEP_F90_WELLSR_=\
 # Begin Source File
 
 SOURCE=..\welris.f90
-DEP_F90_WELRI=\
+NODEP_F90_WELRI=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcc.mod"\
@@ -1525,7 +1575,7 @@ DEP_F90_WELRI=\
 # Begin Source File
 
 SOURCE=..\wfdydz.f90
-DEP_F90_WFDYD=\
+NODEP_F90_WFDYD=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcc.mod"\
 	".\ser_debug\mcp.mod"\
@@ -1536,7 +1586,7 @@ DEP_F90_WFDYD=\
 # Begin Source File
 
 SOURCE=..\write1.f90
-DEP_F90_WRITE=\
+NODEP_F90_WRITE=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\mcc.mod"\
 	".\ser_debug\mcch.mod"\
@@ -1550,6 +1600,8 @@ DEP_F90_WRITE=\
 SOURCE=..\write2_1.f90
 DEP_F90_WRITE2=\
 	"..\ifwr.inc"\
+	
+NODEP_F90_WRITE2=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
@@ -1571,6 +1623,8 @@ DEP_F90_WRITE2=\
 SOURCE=..\write2_2.f90
 DEP_F90_WRITE2_=\
 	"..\ifwr.inc"\
+	
+NODEP_F90_WRITE2_=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
@@ -1592,6 +1646,8 @@ DEP_F90_WRITE2_=\
 SOURCE=..\write3.f90
 DEP_F90_WRITE3=\
 	"..\ifwr.inc"\
+	
+NODEP_F90_WRITE3=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
@@ -1612,6 +1668,8 @@ DEP_F90_WRITE3=\
 SOURCE=..\write3_ss_flow.f90
 DEP_F90_WRITE3_=\
 	"..\ifwr.inc"\
+	
+NODEP_F90_WRITE3_=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
@@ -1632,6 +1690,8 @@ DEP_F90_WRITE3_=\
 SOURCE=..\write4.f90
 DEP_F90_WRITE4=\
 	"..\ifwr.inc"\
+	
+NODEP_F90_WRITE4=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
@@ -1650,6 +1710,8 @@ DEP_F90_WRITE4=\
 SOURCE=..\write5.f90
 DEP_F90_WRITE5=\
 	"..\ifwr.inc"\
+	
+NODEP_F90_WRITE5=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
@@ -1670,6 +1732,8 @@ DEP_F90_WRITE5=\
 SOURCE=..\write5_ss_flow.f90
 DEP_F90_WRITE5_=\
 	"..\ifwr.inc"\
+	
+NODEP_F90_WRITE5_=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
@@ -1690,6 +1754,8 @@ DEP_F90_WRITE5_=\
 SOURCE=..\write6.f90
 DEP_F90_WRITE6=\
 	"..\ifwr.inc"\
+	
+NODEP_F90_WRITE6=\
 	".\ser_debug\f_units.mod"\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
@@ -1735,7 +1801,7 @@ SOURCE=..\hdf.c
 # Begin Source File
 
 SOURCE=..\hdf_f.f90
-DEP_F90_HDF_F=\
+NODEP_F90_HDF_F=\
 	".\ser_debug\machine_constants.mod"\
 	".\ser_debug\mcb.mod"\
 	".\ser_debug\mcc.mod"\
@@ -1853,53 +1919,5 @@ SOURCE=..\merge.c
 
 # End Source File
 # End Group
-# Begin Source File
-
-SOURCE=..\cvdense.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\cvode.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\dense.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\input.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\nvector.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\nvector_serial.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\output.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\phast.rc
-# End Source File
-# Begin Source File
-
-SOURCE=..\phast_files.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\smalldense.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\sundialsmath.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\tally.c
-# End Source File
 # End Target
 # End Project
