@@ -51,7 +51,7 @@ ex2_clean:
 	cd $(TEST)/ex2; ./clean
 
 ex2_clean_parallel:
-	cd $(TEST)/ex2; rm -rf [0-4]/*
+	cd $(TEST)/ex2; rm -f [0-4]/*
 
 #
 # free
@@ -75,7 +75,7 @@ free_clean:
 	cd $(TEST)/free; ./clean
 
 free_clean_parallel:
-	cd $(TEST)/free; rm -rf [0-4]/*
+	cd $(TEST)/free; rm -f [0-4]/*
 
 #
 # decay
@@ -99,7 +99,7 @@ decay_clean:
 	cd $(TEST)/decay; ./clean
 
 decay_clean_parallel:
-	cd $(TEST)/decay; rm -rf [0-4]/*
+	cd $(TEST)/decay; rm -f [0-4]/*
 
 #
 # disp2d
@@ -123,7 +123,7 @@ disp2d_clean:
 	cd $(TEST)/disp2d; ./clean
 
 disp2d_clean_parallel:
-	cd $(TEST)/disp2d; rm -rf [0-4]/*
+	cd $(TEST)/disp2d; rm -f [0-4]/*
 
 #
 # kindred4.1
@@ -147,7 +147,7 @@ ex3_clean:
 	cd $(TEST)/ex3; ./clean
 
 ex3_clean_parallel:
-	cd $(TEST)/ex3; rm -rf [0-4]/*
+	cd $(TEST)/ex3; rm -f [0-4]/*
 
 #
 # kindred4.4
@@ -171,7 +171,7 @@ kindred4.4_clean:
 	cd $(TEST)/kindred4.4; ./clean
 
 kindred4.4_clean_parallel:
-	cd $(TEST)/kindred4.4; rm -rf [0-4]/*
+	cd $(TEST)/kindred4.4; rm -f [0-4]/*
 
 #
 # leaky
@@ -195,7 +195,7 @@ leaky_clean:
 	cd $(TEST)/leaky; ./clean
 
 leaky_clean_parallel:
-	cd $(TEST)/leaky; rm -rf [0-4]/*
+	cd $(TEST)/leaky; rm -f [0-4]/*
 
 #
 # leakyx
@@ -219,7 +219,7 @@ leakyx_clean:
 	cd $(TEST)/leakyx; ./clean
 
 leakyx_clean_parallel:
-	cd $(TEST)/leakyx; rm -rf [0-4]/*
+	cd $(TEST)/leakyx; rm -f [0-4]/*
 
 
 #
@@ -244,7 +244,7 @@ leakyz_clean:
 	cd $(TEST)/leakyz; ./clean
 
 leakyz_clean_parallel:
-	cd $(TEST)/leakyz; rm -rf [0-4]/*
+	cd $(TEST)/leakyz; rm -f [0-4]/*
 
 #
 # linear_bc
@@ -268,7 +268,7 @@ linear_bc_clean:
 	cd $(TEST)/linear_bc; ./clean
 
 linear_bc_clean_parallel:
-	cd $(TEST)/linear_bc; rm -rf [0-4]/*
+	cd $(TEST)/linear_bc; rm -f [0-4]/*
 
 #
 # linear_ic
@@ -292,7 +292,7 @@ linear_ic_clean:
 	cd $(TEST)/linear_ic; ./clean
 
 linear_ic_clean_parallel:
-	cd $(TEST)/linear_ic; rm -rf [0-4]/*
+	cd $(TEST)/linear_ic; rm -f [0-4]/*
 
 #
 # ok
@@ -316,7 +316,7 @@ ex4_clean:
 	cd $(TEST)/ex4; ./clean
 
 ex4_clean_parallel:
-	cd $(TEST)/ex4; rm -rf [0-4]/*
+	cd $(TEST)/ex4; rm -f [0-4]/*
 
 #
 # phrqex11
@@ -340,7 +340,7 @@ phrqex11_clean:
 	cd $(TEST)/phrqex11; ./clean
 
 phrqex11_clean_parallel:
-	cd $(TEST)/phrqex11; rm -rf [0-4]/*
+	cd $(TEST)/phrqex11; rm -f [0-4]/*
 
 #
 # ex1
@@ -364,7 +364,7 @@ ex1_clean:
 	cd $(TEST)/ex1; ./clean
 
 ex1_clean_parallel:
-	cd $(TEST)/ex1; rm -rf [0-4]/*
+	cd $(TEST)/ex1; rm -f [0-4]/*
 
 #
 # radial
@@ -388,7 +388,7 @@ radial_clean:
 	cd $(TEST)/radial; ./clean
 
 radial_clean_parallel:
-	cd $(TEST)/radial; rm -rf [0-4]/*
+	cd $(TEST)/radial; rm -f [0-4]/*
 
 #
 # river
@@ -412,7 +412,7 @@ river_clean:
 	cd $(TEST)/river; ./clean
 
 river_clean_parallel:
-	cd $(TEST)/river; rm -rf [0-4]/*
+	cd $(TEST)/river; rm -f [0-4]/*
 
 #
 # unconf
@@ -436,7 +436,7 @@ unconf_clean:
 	cd $(TEST)/unconf; ./clean
 
 unconf_clean_parallel:
-	cd $(TEST)/unconf; rm -rf [0-4]/*
+	cd $(TEST)/unconf; rm -f [0-4]/*
 
 #
 # well
@@ -460,9 +460,12 @@ well_clean:
 	cd $(TEST)/well; ./clean
 
 well_clean_parallel:
-	cd $(TEST)/well; rm -rf [0-4]/*
+	cd $(TEST)/well; rm -f [0-4]/*
 
 clean: $(CLEAN_PROBLEMS)
 	rm -f make.out
 
 #ci: $(CI_PROBLEMS)
+
+diff_parallel:
+	rcsdiff ./*/0/*

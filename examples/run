@@ -11,7 +11,8 @@ EXDIR=$PHASTDIR/examples
 #
 NAME=$1
 cd $NAME
-rm -rf 0/*
+mkdir -p 0
+rm -f 0/*
 #
 #   distribute files
 #
