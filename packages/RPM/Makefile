@@ -9,27 +9,20 @@
 PHAST_TOP_DIR := $(shell pwd)/../..
 
 SPECFILE := phast.spec
-###VERSION_FILE := phast_version.h
 
-RPMDIR := rpms_test
+RPMDIR := rpms
 
 NAME := $(shell grep '^Name:' < $(SPECFILE) | sed -e 's/^Name: //')
-###PHAST_VERSION_MAJOR := $(shell grep 'define SVN_VER_MAJOR' < $(VERSION_FILE) | (read one two three; echo $$three) )
-###PHAST_VERSION_MINOR := $(shell grep 'define SVN_VER_MINOR' < $(VERSION_FILE) | (read one two three; echo $$three) )
-###PHAST_VERSION_MICRO := $(shell grep 'define SVN_VER_PATCH' < $(VERSION_FILE) | (read one two three; echo $$three) )
-SVN_VERSION_MAJOR := 1
-SVN_VERSION_MINOR := 1
-###SVN_VERSION_MICRO := 1
 
-###VERSION := $(SVN_VERSION_MAJOR).$(SVN_VERSION_MINOR).$(SVN_VERSION_MICRO)
-VERSION := $(SVN_VERSION_MAJOR).$(SVN_VERSION_MINOR)
 RELEASE := $(shell svn st -v $(SPECFILE) | cut -b 10- | ( read one two ; echo $$one ) )
-###OSREL := $(shell ./find-osrel | ( read one two ; echo $$one ))
 
-## TARBALL := $(NAME)-$(VERSION)-$(RELEASE).tar.gz
-TARBALL := $(NAME)-$(VERSION).tar.gz
+TARBALL := $(NAME)-$(VERSION)-$(RELEASE).tar.gz
 
 SOURCE_RPM_DIR := $(HOME)/$(RPMDIR)/sources/$(NAME)-$(VERSION)-$(RELEASE)
+
+DIST_RPM := $(HOME)/$(RPMDIR)/rpms/i586/$(NAME)-$(VERSION)-$(RELEASE).i586.rpm
+
+DIST_TARBALL := $(HOME)/$(RPMDIR)/rpms/i586/$(NAME)-$(VERSION)-$(RELEASE).`uname`.tar.gz
 
 RPMDIRS := \
 	$(HOME)/$(RPMDIR) \
@@ -48,9 +41,16 @@ RPMDIRS := \
 
 all : rpm
 
-phast rpm : check_release build_srpm_files build_rpm_files brand_files
+phast rpm : check_release build_srpm_files build_rpm_files $(DIST_TARBALL)
 
 check_release :
+	@if [ "$(VERSION)"x = "x" ]; \
+	  then \
+		echo "Please specifiy VERSION with 'make VERSION=<number>'"; \
+		exit 1; \
+	    else \
+		exit 0; \
+	fi
 	@if [ "$(RELEASE)"x = "x" ]; \
 	   then \
 		echo "Please specifiy RELEASE with 'make RELEASE=<number>'"; \
@@ -58,24 +58,51 @@ check_release :
 	    else \
 		exit 0; \
 	fi
-	@echo "Making $(NAME)-$(VERSION)-$(RELEASE) (S)RPM for $(OSREL)  ..."
+	@if [ "$(DATE)"x = "x" ]; \
+	   then \
+		echo "Please specifiy DATE with 'make DATE=<number>'"; \
+		exit 1; \
+	    else \
+		exit 0; \
+	fi
+	@echo "Making $(NAME)-$(VERSION)-$(RELEASE) (S)RPM ..."
+
+$(DIST_TARBALL) : $(DIST_RPM)
+	cd $(HOME)/$(RPMDIR)/rpms/i586; \
+	rm -rf $(NAME)-$(VERSION); \
+	mkdir -p $(NAME)-$(VERSION); \
+	cd $(NAME)-$(VERSION); \
+	rpm2cpio $(DIST_RPM) > $(NAME).cpio; \
+	cpio -i -d < $(NAME).cpio; \
+	rm -f $(NAME).cpio; \
+	mv usr/* .; \
+	rmdir usr; \
+	mv share/doc/$(NAME)-$(VERSION)/* .; \
+	rmdir share/doc/$(NAME)-$(VERSION); \
+	rmdir share/doc; \
+	rmdir share; \
+	cd ..; \
+	tar cvzf $(DIST_TARBALL) $(NAME)-$(VERSION); \
+	rm -rf $(NAME)-$(VERSION)
+
 
 build_rpm_files : build_srpm_files
 	cd $(SOURCE_RPM_DIR); rpmbuild -ba $(SPECFILE)
 
-brand_files :
-###	cd $(SOURCE_RPM_DIR)/../../rpms/i586; for oldfile in *$(RELEASE)*; do newfile=`echo $${oldfile} | sed -e "s/-$(VERSION)-$(RELEASE).i586.rpm/-$(VERSION)-$(RELEASE).$(OSREL).i586.rpm/"`; echo Moving $${oldfile} to $${newfile}; mv -f $${oldfile} $${newfile}; done
-###	cd $(SOURCE_RPM_DIR)/../../srpms; for oldfile in *$(RELEASE)*; do newfile=`echo $${oldfile} | sed -e "s/-$(VERSION)-$(RELEASE).src.rpm/-$(VERSION)-$(RELEASE).$(OSREL).src.rpm/"`; echo Moving $${oldfile} to $${newfile}; mv -f $${oldfile} $${newfile}; done
 
 build_srpm_files : $(HOME)/.rpmmacros $(HOME)/$(RPMDIR) $(SPECFILE) $(TARBALL)
 	rm -rf $(SOURCE_RPM_DIR)
 	mkdir -p $(SOURCE_RPM_DIR)
-	cp $(TARBALL) $(SOURCE_RPM_DIR) # cp * $(SOURCE_RPM_DIR)
+	cp $(TARBALL) Makefile dist.sh $(SOURCE_RPM_DIR)
 	sed -e 's/@RELEASE@/$(RELEASE)/' \
 		-e 's/@VERSION@/$(VERSION)/' \
 		< $(SPECFILE) > $(SOURCE_RPM_DIR)/$(SPECFILE)
 
-###$(TARBALL) : 
+$(TARBALL) : dist.sh
+	@echo "Creating $(TARBALL)"
+	rm -f $(TARBALL) $(NAME)-$(VERSION).tar.gz
+	time ./dist.sh -v $(VERSION) -r $(RELEASE) -d $(DATE) -pr trunk 2>&1 | tee dist-$(RELEASE).log
+	ln $(NAME)-$(VERSION).tar.gz $(TARBALL)
 
 $(HOME)/.rpmmacros : .rpmmacros
 	@if [ ! -f $(HOME)/.rpmmacros ]; \

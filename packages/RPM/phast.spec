@@ -8,7 +8,7 @@ Release: @RELEASE@
 Vendor: USGS
 License: None
 Group: Applications/Modeling
-Source0: %{name}-%{version}.tar.gz
+Source0: %{name}-%{version}-%{release}.tar.gz
 URL: http://wwwbrr.cr.usgs.gov/projects/GWC_coupled
 BuildRoot: %{_tmppath}/phast-%{version}-root
 Prefix: %{_usr}
@@ -81,7 +81,7 @@ cp -alr examples/* test/.
 #
 # prep to dist source files
 #
-tar xvzf $RPM_SOURCE_DIR/%{name}-%{version}.tar.gz %{name}-%{version}/src
+tar xvzf $RPM_SOURCE_DIR/%{name}-%{version}-%{release}.tar.gz %{name}-%{version}/src
 find %{name}-%{version}/src -type d -name win32 -print | xargs rm -rf
 find %{name}-%{version}/src -type d -name Sun -print | xargs rm -rf
 rm -f %{name}-%{version}/src/phast/phreeqc/distribution.checklist

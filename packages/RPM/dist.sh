@@ -161,6 +161,9 @@ find "$DISTPATH/examples" -type f -name 'clean' -print | xargs rm -rf
 echo "Cleaning up srcinput directory"
 rm -rf "$DISTPATH/srcinput/test"
 
+echo "Cleaning up srcphast directory"
+rm -rf "$DISTPATH/srcphast/phreeqc/Sun"
+
 echo "Renaming phreeqc.dat to phast.dat"
 mv "$DISTPATH/database/phreeqc.dat" "$DISTPATH/database/phast.dat"
 
