@@ -81,6 +81,7 @@ int mpi_unpack_surface(struct surface *surface_ptr, int *ints, int *ii, double *
 #endif
 
 void buffer_to_solution(struct solution *solution_ptr);
+void on_error_cleanup_and_exit(void);
 
 /*
  *  hstsubs.c

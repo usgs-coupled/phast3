@@ -786,6 +786,9 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 	LDBLE kin_time;
 	static int write_headings = 1;
 
+
+	on_error_cleanup_and_exit();
+
 	pr.all = *print_out;
 /*
  *   Update solution compositions
@@ -4028,3 +4031,18 @@ int mpi_unpack_surface(struct surface *surface_ptr, int *ints, int *ii, double *
 	return(OK);
 }
 #endif
+
+
+void on_error_cleanup_and_exit(void)
+{
+	int errors;
+/*
+ *   Prepare error handling
+ */
+	errors = setjmp(mark);
+	if (errors != 0) {
+		clean_up();
+		exit(1);
+	}
+	return;
+}
