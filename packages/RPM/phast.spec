@@ -8,9 +8,7 @@ Release: @RELEASE@
 Vendor: USGS
 License: None
 Group: Applications/Modeling
-#####Source0: %{name}-%{version}-%{release}.tar.gz
 Source0: %{name}-%{version}.tar.gz
-#####Patch0: %{name}-%{version}-%{release}-Makefile.David.patch
 URL: http://wwwbrr.cr.usgs.gov/projects/GWC_coupled
 BuildRoot: %{_tmppath}/phast-%{version}-root
 Prefix: %{_usr}
@@ -28,19 +26,13 @@ Reactions
 %prep
 %setup -q
 
-###%ifarch usparc
-###echo "Patch #0:"
-###patch -p1 srcphast/Makefile.David < $RPM_SOURCE_DIR/%{name}-%{version}-%{release}-Makefile.David.patch
-###%else
-###%patch0 -p1
-###%endif
-
 # 
 # Rearrange files
 #
 mv doc/README .
+rm -f doc/README.dist
 mv src/phast/phreeqc.revisions  ./doc/.
-
+cp src/phast/revisions ./doc/RELEASE.TXT
 %build
 
 #
@@ -80,24 +72,6 @@ mkdir -p  $RPM_BUILD_ROOT/%{_bindir}
 #
 mkdir -p  $RPM_BUILD_ROOT/%{_libdir}/phast-%{version}/`uname`
 
-#
-# src/phast src/phastinput src/phasthdf test
-# for
-#   Linux /usr/share/doc/phast-1.0/src
-#   SunOS /usr/local/doc/phast-1.0/src
-#
-####mkdir src
-####cd src
-####tar xvzf $RPM_SOURCE_DIR/%{name}-%{version}-%{release}.tar.gz
-####mv %{name}-%{version}/srcphast ./phast
-####rm -f phast/revisions phast/phast.rev
-####mv %{name}-%{version}/srcinput ./phastinput
-####rm -f phastinput/rivtest.c phastinput/d4ordr.c
-####mv %{name}-%{version}/export ./phastexport
-####mv %{name}-%{version}/examples ../test
-####rm -rf %{name}-%{version}
-####find . -name '.cvsignore' -exec echo rm {} \;
-####cd ..
 #
 # prep to run examples for archive
 #
@@ -230,12 +204,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%doc README examples database doc
+%doc README examples database doc %{name}-%{version}/src
 %{_bindir}/*
 %{_libdir}/*
-#
-# copy src files
-#
-mv %{name}-%{version}/src $RPM_BUILD_ROOT/%{_docdir}
 
 %changelog
