@@ -1,4 +1,4 @@
 # lam schema file
-n0 -np 1 -wd WORKING_DIRECTORY /z/parkplace/home/dlpark/programs/phast/srcphast/mpi_absoft/phast
-n1 -np 2 -wd WORKING_DIRECTORY /z/parkplace/home/dlpark/programs/phast/srcphast/mpi_absoft/phast
+n0 -np 1 -wd WORKING_DIRECTORY EXECUTABLE
+n1 -np 2 -wd WORKING_DIRECTORY EXECUTABLE
 

@@ -1,12 +1,17 @@
 #!/bin/sh
-EXDIR=/z/parkplace/home/dlpark/programs/phast/examples
+if [ $USER == dlpark ]; then
+    PHASTDIR=/z/parkplace/home/dlpark/programs/phast
+fi
+if [ $USER == charlton ]; then
+    PHASTDIR=/z/srv2rcolkr/home/charlton/programs/phast
+fi
+EXDIR=$PHASTDIR/examples
 #
 #   make directory
 #
 NAME=$1
 cd $NAME
-rm -rf 0
-mkdir 0
+rm -rf 0/*
 #
 #   distribute files
 #
@@ -24,10 +29,11 @@ if [ -f phast.dat ]; then
     fi
 cp ../schema 0
 cd 0
-sed "s?WORKING_DIRECTORY?$EXDIR/$NAME/0?" schema > temp; mv temp schema
+sed -e "s?WORKING_DIRECTORY?$EXDIR/$NAME/0?" \
+    -e "s^EXECUTABLE^$PHASTDIR/srcphast/mpi_absoft/phast^" schema > temp; mv temp schema
 #
 #   run phastinput
 #
-/z/parkplace/home/dlpark/parkplace/phast/srcinput/phastinput $NAME
+$PHASTDIR/srcinput/phastinput $NAME
 echo Done phastinput.
 lamboot ../../hosts;  time mpirun -O -v schema; wipe ../../hosts
