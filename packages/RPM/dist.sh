@@ -4,7 +4,7 @@
 #
 # USAGE: ./dist.sh -v VERSION -r REVISION -d RELEASE_DATE
 #                  [-rs REVISION-SVN] [-pr REPOS-PATH]
-#                  [-zip] [-alpha ALPHA_NUM|-beta BETA_NUM|-rc RC_NUM]
+#                  [-win] [-alpha ALPHA_NUM|-beta BETA_NUM|-rc RC_NUM]
 #
 #   Create a distribution tarball, labelling it with the given VERSION.
 #   The REVISION or REVISION-SVN will be used in the version string.
@@ -25,7 +25,7 @@
 #   If neither an -alpha, -beta or -rc option with a number is
 #   specified, it will build a release tarball.
 #  
-#   To build a Windows zip file package pass -zip.
+#   To build a Windows package pass -win.
 
 # echo everything
 # set -x
@@ -34,7 +34,7 @@
 USAGE="USAGE: ./dist.sh -v VERSION -r REVISION -d RELEASE_DATE \
 [-rs REVISION-SVN ] [-pr REPOS-PATH] \
 [-alpha ALPHA_NUM|-beta BETA_NUM|-rc RC_NUM] \
-[-zip]
+[-win]
  EXAMPLES: ./dist.sh -v 1.1 -r 150 -d 2/7/05
            ./dist.sh -v 1.1 -r 150 -d 2/7/05 -pr trunk"
 
@@ -66,8 +66,8 @@ do
       -v|-r|-rs|-pr|-beta|-rc|-alpha|-d)
         ARG_PREV=$ARG
         ;;
-      -zip)
-        ZIP=1
+      -win)
+        WIN=1
         ARG_PREV=""
 	;;
       *)
@@ -101,7 +101,7 @@ else
   VER_NUMTAG=""
 fi
   
-if [ -n "$ZIP" ] ; then
+if [ -n "$WIN" ] ; then
   EXTRA_EXPORT_OPTIONS="--native-eol CRLF"
 fi
 
@@ -190,49 +190,33 @@ do
    -e "s/@VER_UC@/${VER_UC}/g" \
     < "$vsn_file" > "$vsn_file.tmp"
   mv -f "$vsn_file.tmp" "$vsn_file"
+  if [ -n "$WIN" ]; then
+    unix2dos "$vsn_file"
+  fi  
   cp "$vsn_file" "$vsn_file.dist"
 done
 
-if [ -z "$ZIP" ]; then
-  echo "Rolling $DISTNAME.tar ..."
-  (cd "$DIST_SANDBOX" > /dev/null && tar c "$DISTNAME") > \
-    "$DISTNAME.tar"
+echo "Rolling $DISTNAME.tar ..."
+(cd "$DIST_SANDBOX" > /dev/null && tar c "$DISTNAME") > \
+"$DISTNAME.tar"
 
-  echo "Compressing to $DISTNAME.tar.bz2 ..."
-  bzip2 -9fk "$DISTNAME.tar"
+echo "Compressing to $DISTNAME.tar.bz2 ..."
+bzip2 -9fk "$DISTNAME.tar"
 
-  echo "Compressing to $DISTNAME.tar.gz ..."
-  gzip -9f "$DISTNAME.tar"
-else
-  echo "Rolling $DISTNAME.zip ..."
-  (cd "$DIST_SANDBOX" > /dev/null && zip -q -r - "$DISTNAME") > \
-    "$DISTNAME.zip"
-fi
+echo "Compressing to $DISTNAME.tar.gz ..."
+gzip -9f "$DISTNAME.tar"
 echo "Removing sandbox..."
 rm -rf "$DIST_SANDBOX"
 
 echo ""
 echo "Done:"
-if [ -z "$ZIP" ]; then
-  ls -l "$DISTNAME.tar.gz" "$DISTNAME.tar.bz2"
+ls -l "$DISTNAME.tar.gz" "$DISTNAME.tar.bz2"
+echo ""
+echo "md5sums:"
+md5sum "$DISTNAME.tar.gz" "$DISTNAME.tar.bz2"
+type sha1sum > /dev/null 2>&1
+if [ $? -eq 0 ]; then
   echo ""
-  echo "md5sums:"
-  md5sum "$DISTNAME.tar.gz" "$DISTNAME.tar.bz2"
-  type sha1sum > /dev/null 2>&1
-  if [ $? -eq 0 ]; then
-    echo ""
-    echo "sha1sums:"
-    sha1sum "$DISTNAME.tar.gz" "$DISTNAME.tar.bz2"
-  fi
-else
-  ls -l "$DISTNAME.zip"
-  echo ""
-  echo "md5sum:"
-  md5sum "$DISTNAME.zip"
-  type sha1sum > /dev/null 2>&1
-  if [ $? -eq 0 ]; then
-    echo ""
-    echo "sha1sum:"
-    sha1sum "$DISTNAME.zip"
-  fi
+  echo "sha1sums:"
+  sha1sum "$DISTNAME.tar.gz" "$DISTNAME.tar.bz2"
 fi
