@@ -198,6 +198,7 @@ do
    -e "s/@VERSION@/${VERSION}/g" \
    -e "s/@REVISION@/${REVISION}/g" \
    -e "s/@VER_DATE@/${RELEASE_DATE}/g" \
+   -e "s/@RELEASE_DATE@/${RELEASE_DATE}/g" \
    -e "s/@VERSION_LONG@/$VERSION_LONG/g" \
    -e "s/@VER_UC@/${VER_UC}/g" \
     < "$vsn_file" > "$vsn_file.tmp"
