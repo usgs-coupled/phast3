@@ -1897,5 +1897,9 @@ SOURCE=..\merge.c
 
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=.\phast.rc
+# End Source File
 # End Target
 # End Project
