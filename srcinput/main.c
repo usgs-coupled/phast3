@@ -726,6 +726,7 @@ void initialize(void)
 		print_zones_chem.thin_grid_list[i] = NULL;
 	}
 
+	current_time_step.value = 0.0;
 	current_time_step.value_defined = FALSE;
 	current_time_step.input = NULL;
 
