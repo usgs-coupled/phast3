@@ -1,5 +1,6 @@
 #define EXTERNAL
 #include "hstinpt.h"
+static char const svnid[] = "$Id$";
 
 /* ---------------------------------------------------------------------- */
 int tidy_wells(void)

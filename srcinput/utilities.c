@@ -1,6 +1,7 @@
 #define EXTERNAL extern
 #include "hstinpt.h"
 #include "message.h"
+static char const svnid[] = "$Id$";
 
 static int isamong(char c, const char *s_l);
 

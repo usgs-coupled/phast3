@@ -1,6 +1,7 @@
 #define EXTERNAL
 #include "hstinpt.h"
 #include "message.h"
+static char const svnid[] = "$Id$";
 
 /* ---------------------------------------------------------------------- */
 int setup_rivers(void)

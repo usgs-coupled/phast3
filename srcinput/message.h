@@ -1,5 +1,8 @@
 #include <stdarg.h>
 #include <stdio.h>
+#ifdef PHREEQC_IDENT
+static char const svnid[] = "$Id$";
+#endif
 
 extern FILE  *input_file;
 extern FILE  *hst_file;

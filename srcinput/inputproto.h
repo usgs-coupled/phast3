@@ -1,4 +1,7 @@
 /* main.c */
+#ifdef PHREEQC_IDENT
+static char const svnid[] = "$Id$";
+#endif
 int clean_up(void);
 int reset_transient_data(void);
 

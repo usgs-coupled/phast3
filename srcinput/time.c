@@ -6,6 +6,7 @@
 #define OPTION_ERROR -3
 #define OPTION_DEFAULT -4
 #define OPTION_DEFAULT2 -5
+static char const svnid[] = "$Id$";
 
 /* ---------------------------------------------------------------------- */
 struct time_series * time_series_read_property (char *ptr, const char **opt_list, int count_opt_list, int *opt)

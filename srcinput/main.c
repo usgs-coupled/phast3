@@ -7,6 +7,7 @@
 #define main not_used
 #define static
 #endif
+static char const svnid[] = "$Id$";
 
 int main(int argc, char *argv[]);
 

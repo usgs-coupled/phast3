@@ -2,7 +2,7 @@
 #include "hstinpt.h"
 #include "message.h"
 #include "stddef.h"
-
+static char const svnid[] = "$Id$";
 static int setup_grid(void);
 
 /* ---------------------------------------------------------------------- */

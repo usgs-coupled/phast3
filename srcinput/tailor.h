@@ -8,7 +8,9 @@
  * The target dependent functions should be defined in tailor.c.
  */
 
-/* $Id: tailor.h,v 1.1 2004/09/08 21:23:42 dlpark Exp $ */
+#ifdef PHREEQC_IDENT
+static char const svnid[] = "$Id$";
+#endif
 
 #if defined(__MSDOS__) && !defined(MSDOS)
 #  define MSDOS

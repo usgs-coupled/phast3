@@ -1,3 +1,6 @@
+#ifdef PHREEQC_IDENT
+static char const svnid[] = "$Id$";
+#endif
 #define TIME_EPS 1e-8   /* user_units */
 struct property_time {
 	struct time time;

@@ -2,7 +2,7 @@
 #include "hstinpt.h"
 #include "message.h"
 #include <stddef.h>
-static char const rcsid[] = "$RCSfile: message.c,v $  $Revision: 1.2 $";
+static char const svnid[] = "$Id$";
 
  FILE  *input_file;
  FILE  *input;
@@ -25,7 +25,7 @@ char big_buffer[10000];
 int add_message_callback(PFN_MESSAGE_CALLBACK pfn, void *cookie)
 /* ---------------------------------------------------------------------- */
 {
-	if (rcsid == NULL) fprintf(stderr," ");
+	if (svnid == NULL) fprintf(stderr," ");
 	if (pfn) {
 		message_callbacks = (struct message_callback*) realloc(message_callbacks, sizeof(struct message_callback) * (count_message_callback + 1));
 		if (!message_callbacks) malloc_error();

@@ -1,6 +1,9 @@
 #ifndef _INC_HSTINPT
 #define _INC_HSTINPT
 
+#ifdef PHREEQC_IDENT
+static char const svnid[] = "$Id$";
+#endif
 #define NO_DOS
 /*
  *  HST uses: 

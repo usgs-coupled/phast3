@@ -28,6 +28,9 @@ Copyright: (C) 1997, Advanced Interfaces Group, University of Manchester.
 
 ===========================================================================
 */
+#ifdef PHREEQC_IDENT
+static char const svnid[] = "$Id$";
+#endif
 
 #ifndef __gpc_h
 #define __gpc_h

@@ -3,6 +3,7 @@
 #include "message.h"
 #include "stddef.h"
 #define STATIC static
+static char const svnid[] = "$Id$";
 STATIC int next_keyword_or_option(const char **opt_list, int count_opt_list);
 STATIC int read_chemistry_ic(void);
 STATIC int read_flow_only(void);

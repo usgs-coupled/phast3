@@ -2,6 +2,7 @@
 #include "hstinpt.h"
 #include "message.h"
 #include "stddef.h"
+static char const svnid[] = "$Id$";
 
 char *line_from_string(char **ptr);
 double print_value(struct time *time_ptr);
