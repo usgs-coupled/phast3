@@ -3445,7 +3445,7 @@ int UZ_INIT(int * transient_fresur)
 
 	transient_free_surface = *transient_fresur;
 	if (transient_free_surface == TRUE) {
-		old_frac = (double *) PHRQ_malloc((size_t) (ixyz * sizeof(double)));
+		old_frac = (LDBLE *) PHRQ_malloc((size_t) (ixyz * sizeof(LDBLE)));
 		if (old_frac == NULL) malloc_error();
 		for (i = 0; i < ixyz; i++) {
 			old_frac[i] = 1.0;
