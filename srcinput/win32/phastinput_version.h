@@ -9,7 +9,7 @@
 #define APR_STRINGIFY_HELPER(n) #n
 
 /** Version number */
-#define PHREEQC_VER_NUM        APR_STRINGIFY(PHAST_VER_MAJOR) \
+#define PHAST_VER_NUM        APR_STRINGIFY(PHAST_VER_MAJOR) \
                            "." APR_STRINGIFY(PHAST_VER_MINOR) \
                            "." APR_STRINGIFY(PHAST_VER_PATCH) \
                            "." APR_STRINGIFY(PHAST_VER_REVISION)
