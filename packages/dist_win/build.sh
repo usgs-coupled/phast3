@@ -26,9 +26,9 @@
 # time ./phast-1.0-1.sh all 2>&1 | tee phast-1.0-1.sh.build.log
 #
 ##################################################################
-set -x
-# This will change for each release
-export RELEASE_DATE="December 20, 2004"
+
+# echo everything
+# set -x
 
 # find out where the build script is located
 tdir=`echo "$0" | sed 's%[\\/][^\\/][^\\/]*$%%'`
