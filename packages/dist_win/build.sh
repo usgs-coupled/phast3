@@ -353,7 +353,7 @@ install() {
     ${instdir}/logs/. && \
   /usr/bin/install -m 644 ${objdir}/src/phast/win32/phast-merge.plg \
     ${instdir}/logs/. && \
-  /usr/bin/install -m 644 ${objdir}/Mv/ModelViewer/ModelViewer.plg \
+  /usr/bin/install -m 644 ${objdir}/Mv/mv/mv.plg \
     ${instdir}/logs/. && \
   /usr/bin/install -m 644 "${objdir}/packages/win32-is/Media/SingleDisk/Log Files/"* \
   ${instdir}/logs/. && \
@@ -367,9 +367,6 @@ install() {
 
 run_examples() {
   (for arg in ${instdir}${prefix}/examples/*; do
-    if [ ${arg} = "${instdir}${prefix}/examples/CVS" ] ; then
-      continue;
-    fi
     cd ${arg}
     export TD="`cygpath -w -s "${instdir}${prefix}"`" && \
     ${instdir}${prefix}/bin/${PKG}.bat `basename ${arg}`;
@@ -394,8 +391,8 @@ mkpatch() {
   (cd ${srcdir} && \
   tar xvzf ${src_orig_pkg} && \
   cd ${PKG}-${VER} && \
-  tar xvzf ${src_orig_pkg_mv} ; \
-  cd ${srcdir} &&
+  tar xvzf ${src_orig_pkg_mv} && \
+  cd ${srcdir} && \
   mv ${PKG}-${VER} ../${PKG}-${VER}-orig && \
   cd ${topdir} && \
   diff -urN -x '.build' -x '.inst' -x '.sinst' \
