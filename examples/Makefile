@@ -51,7 +51,10 @@ ex2_clean:
 	cd $(TEST)/ex2; ./clean
 
 ex2_clean_parallel:
-	cd $(TEST)/ex2/0; find . -type f -maxdepth 1 | xargs rm -f
+	@if [ -d $(TEST)/ex2/0 ]; \
+	  then \
+	  find $(TEST)/ex2/0 -type f -maxdepth 1 | xargs rm -f; \
+	fi
 
 #
 # free
@@ -75,7 +78,10 @@ free_clean:
 	cd $(TEST)/free; ./clean
 
 free_clean_parallel:
-	cd $(TEST)/free/0; find . -type f -maxdepth 1 | xargs rm -f
+	@if [ -d $(TEST)/free/0 ]; \
+	  then \
+	  find $(TEST)/free/0 -type f -maxdepth 1 | xargs rm -f; \
+	fi
 
 #
 # decay
@@ -99,7 +105,10 @@ decay_clean:
 	cd $(TEST)/decay; ./clean
 
 decay_clean_parallel:
-	cd $(TEST)/decay/0; find . -type f -maxdepth 1 | xargs rm -f
+	@if [ -d $(TEST)/decay/0 ]; \
+	  then \
+	  find $(TEST)/decay/0 -type f -maxdepth 1 | xargs rm -f; \
+	fi
 
 #
 # disp2d
@@ -123,7 +132,10 @@ disp2d_clean:
 	cd $(TEST)/disp2d; ./clean
 
 disp2d_clean_parallel:
-	cd $(TEST)/disp2d/0; find . -type f -maxdepth 1 | xargs rm -f
+	@if [ -d $(TEST)/disp2d/0 ]; \
+	  then \
+	  find $(TEST)/disp2d/0 -type f -maxdepth 1 | xargs rm -f; \
+	fi
 
 #
 # kindred4.1
@@ -147,7 +159,10 @@ ex3_clean:
 	cd $(TEST)/ex3; ./clean
 
 ex3_clean_parallel:
-	cd $(TEST)/ex3/0; find . -type f -maxdepth 1 | xargs rm -f
+	@if [ -d $(TEST)/ex3/0 ]; \
+	  then \
+	  find $(TEST)/ex3/0 -type f -maxdepth 1 | xargs rm -f; \
+	fi
 
 #
 # kindred4.4
@@ -171,7 +186,10 @@ kindred4.4_clean:
 	cd $(TEST)/kindred4.4; ./clean
 
 kindred4.4_clean_parallel:
-	cd $(TEST)/kindred4.4/0; find . -type f -maxdepth 1 | xargs rm -f
+	@if [ -d $(TEST)/kindred4.4/0 ]; \
+	  then \
+	  find $(TEST)/kindred4.4/0 -type f -maxdepth 1 | xargs rm -f; \
+	fi
 
 #
 # leaky
@@ -195,7 +213,10 @@ leaky_clean:
 	cd $(TEST)/leaky; ./clean
 
 leaky_clean_parallel:
-	cd $(TEST)/leaky/0; find . -type f -maxdepth 1 | xargs rm -f
+	@if [ -d $(TEST)/leaky/0 ]; \
+	  then \
+	  find $(TEST)/leaky/0 -type f -maxdepth 1 | xargs rm -f; \
+	fi
 
 #
 # leakyx
@@ -219,7 +240,10 @@ leakyx_clean:
 	cd $(TEST)/leakyx; ./clean
 
 leakyx_clean_parallel:
-	cd $(TEST)/leakyx/0; find . -type f -maxdepth 1 | xargs rm -f
+	@if [ -d $(TEST)/leakyx/0 ]; \
+	  then \
+	  find $(TEST)/leakyx/0 -type f -maxdepth 1 | xargs rm -f; \
+	fi
 
 #
 # leakyz
@@ -243,7 +267,10 @@ leakyz_clean:
 	cd $(TEST)/leakyz; ./clean
 
 leakyz_clean_parallel:
-	cd $(TEST)/leakyz/0; find . -type f -maxdepth 1 | xargs rm -f
+	@if [ -d $(TEST)/leakyz/0 ]; \
+	  then \
+	  find $(TEST)/leakyz/0 -type f -maxdepth 1 | xargs rm -f; \
+	fi
 
 #
 # linear_bc
@@ -267,7 +294,10 @@ linear_bc_clean:
 	cd $(TEST)/linear_bc; ./clean
 
 linear_bc_clean_parallel:
-	cd $(TEST)/linear_bc/0; find . -type f -maxdepth 1 | xargs rm -f
+	@if [ -d $(TEST)/linear_bc/0 ]; \
+	  then \
+	  find $(TEST)/linear_bc/0 -type f -maxdepth 1 | xargs rm -f; \
+	fi
 
 #
 # linear_ic
@@ -291,7 +321,10 @@ linear_ic_clean:
 	cd $(TEST)/linear_ic; ./clean
 
 linear_ic_clean_parallel:
-	cd $(TEST)/linear_ic/0; find . -type f -maxdepth 1 | xargs rm -f
+	@if [ -d $(TEST)/linear_ic/0 ]; \
+	  then \
+	  find $(TEST)/linear_ic/0 -type f -maxdepth 1 | xargs rm -f; \
+	fi
 
 #
 # ok
@@ -315,7 +348,10 @@ ex4_clean:
 	cd $(TEST)/ex4; ./clean
 
 ex4_clean_parallel:
-	cd $(TEST)/ex4/0; find . -type f -maxdepth 1 | xargs rm -f
+	@if [ -d $(TEST)/ex4/0 ]; \
+	  then \
+	  find $(TEST)/ex4/0 -type f -maxdepth 1 | xargs rm -f; \
+	fi
 
 #
 # phrqex11
@@ -339,7 +375,10 @@ phrqex11_clean:
 	cd $(TEST)/phrqex11; ./clean
 
 phrqex11_clean_parallel:
-	cd $(TEST)/phrqex11/0; find . -type f -maxdepth 1 | xargs rm -f
+	@if [ -d $(TEST)/phrqex11/0 ]; \
+	  then \
+	  find $(TEST)/phrqex11/0 -type f -maxdepth 1 | xargs rm -f; \
+	fi
 
 #
 # ex1
@@ -363,7 +402,10 @@ ex1_clean:
 	cd $(TEST)/ex1; ./clean
 
 ex1_clean_parallel:
-	cd $(TEST)/ex1/0; find . -type f -maxdepth 1 | xargs rm -f
+	@if [ -d $(TEST)/ex1/0 ]; \
+	  then \
+	  find $(TEST)/ex1/0 -type f -maxdepth 1 | xargs rm -f; \
+	fi
 
 #
 # radial
@@ -387,7 +429,10 @@ radial_clean:
 	cd $(TEST)/radial; ./clean
 
 radial_clean_parallel:
-	cd $(TEST)/radial/0; find . -type f -maxdepth 1 | xargs rm -f
+	@if [ -d $(TEST)/radial/0 ]; \
+	  then \
+	  find $(TEST)/radial/0 -type f -maxdepth 1 | xargs rm -f; \
+	fi
 
 #
 # river
@@ -411,7 +456,10 @@ river_clean:
 	cd $(TEST)/river; ./clean
 
 river_clean_parallel:
-	cd $(TEST)/river/0; find . -type f -maxdepth 1 | xargs rm -f
+	@if [ -d $(TEST)/river/0 ]; \
+	  then \
+	  find $(TEST)/river/0 -type f -maxdepth 1 | xargs rm -f; \
+	fi
 
 #
 # unconf
@@ -435,7 +483,10 @@ unconf_clean:
 	cd $(TEST)/unconf; ./clean
 
 unconf_clean_parallel:
-	cd $(TEST)/unconf/0; find . -type f -maxdepth 1 | xargs rm -f
+	@if [ -d $(TEST)/unconf/0 ]; \
+	  then \
+	  find $(TEST)/unconf/0 -type f -maxdepth 1 | xargs rm -f; \
+	fi
 
 #
 # well
@@ -459,7 +510,10 @@ well_clean:
 	cd $(TEST)/well; ./clean
 
 well_clean_parallel:
-	cd $(TEST)/well/0; find . -type f -maxdepth 1 | xargs rm -f
+	@if [ -d $(TEST)/well/0 ]; \
+	  then \
+	  find $(TEST)/well/0 -type f -maxdepth 1 | xargs rm -f; \
+	fi
 
 clean: $(CLEAN_PROBLEMS)
 	rm -f make.out
