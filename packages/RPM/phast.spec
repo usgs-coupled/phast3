@@ -83,6 +83,10 @@ cp -alr examples/* test/.
 #
 tar xvzf $RPM_SOURCE_DIR/%{name}-%{version}.tar.gz %{name}-%{version}/src
 find %{name}-%{version}/src -type d -name win32 -print | xargs rm -rf
+find %{name}-%{version}/src -type d -name Sun -print | xargs rm -rf
+rm -f %{name}-%{version}/src/phast/phreeqc/distribution.checklist
+rm -f %{name}-%{version}/src/phast/phreeqc/distribution.mk
+rm -f %{name}-%{version}/src/phast/phreeqc/Makefile
 
 #
 # Linux /usr/bin/phast-ser
