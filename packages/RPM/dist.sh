@@ -112,7 +112,7 @@ fi
 
 LOWER='abcdefghijklmnopqrstuvwxyz'
 UPPER='ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-VER_UC=`echo $VER | sed -e "y/$LOWER/$UPPER/"`
+VER_UC=`echo $VERSION | sed -e "y/$LOWER/$UPPER/"`
 
 # format date string
 RELEASE_DATE="`date -d $RDATE  "+%B %e, %G"`"
@@ -166,18 +166,6 @@ mv "$DISTPATH/srcinput" "$DISTPATH/src/phastinput"
 mv "$DISTPATH/srcphast" "$DISTPATH/src/phast"
 mv "$DISTPATH/phasthdf" "$DISTPATH/src/phasthdf"
 
-# Remove non-windows components
-if [ -z "$ZIP" ]; then
-  echo "Removing win32 directories" 
-  find -type d -name win32 -print | xargs rm -rf
-  
-  echo "Removing packages directories"  
-  rm -rf "$DISTPATH/packages"
-
-  echo "Removing bin directories" 
-  rm -rf "$DISTPATH/bin"
-fi
-
 ver_major=`echo $VERSION | cut -d '.' -f 1`
 ver_minor=`echo $VERSION | cut -d '.' -f 2`
 ver_patch=`echo $VERSION | cut -d '.' -f 3`
@@ -188,7 +176,9 @@ fi
 
 VERSION_LONG="$ver_major.$ver_minor.$ver_patch.$REVISION_SVN"
 
-SED_FILES="$DISTPATH/doc/README"
+SED_FILES="$DISTPATH/doc/README \
+           $DISTPATH/packages/win32-is/phast.ipr \
+           $DISTPATH/packages/win32-is/STRING~1/0009-English/value.shl"
 
 for vsn_file in $SED_FILES
 do
@@ -197,11 +187,11 @@ do
    -e "s/@REVISION@/${REVISION}/g" \
    -e "s/@VER_DATE@/${RELEASE_DATE}/g" \
    -e "s/@VERSION_LONG@/$VERSION_LONG/g" \
+   -e "s/@VER_UC@/${VER_UC}/g" \
     < "$vsn_file" > "$vsn_file.tmp"
   mv -f "$vsn_file.tmp" "$vsn_file"
   cp "$vsn_file" "$vsn_file.dist"
 done
-
 
 if [ -z "$ZIP" ]; then
   echo "Rolling $DISTNAME.tar ..."
