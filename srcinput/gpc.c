@@ -1,3 +1,5 @@
+#define EXTERNAL extern
+#include "hstinpt.h"
 #include "message.h"
 static char const svnid[] = "$Id$";
 /*

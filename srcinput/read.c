@@ -2455,6 +2455,7 @@ int read_specified_value_bc(void)
 				sprintf(error_string,"Head has been redefined %s", tag);
 				warning_msg(error_string);
 				time_series_free(bc_ptr->bc_head);
+				free_check_null(bc_ptr->bc_head);
 				bc_ptr->bc_head = NULL;
 			}
 			bc_ptr->bc_head = time_series_read_property(next_char, opt_list, count_opt_list, &opt);
@@ -2482,6 +2483,7 @@ int read_specified_value_bc(void)
 				sprintf(error_string,"Solution has been redefined %s", tag);
 				warning_msg(error_string);
 				time_series_free(bc_ptr->bc_solution);
+				free_check_null(bc_ptr->bc_solution);
 				bc_ptr->bc_solution = NULL;
 			}
 			bc_ptr->bc_solution_type = FIXED;
@@ -2510,6 +2512,7 @@ int read_specified_value_bc(void)
 				sprintf(error_string,"Associated solution has been redefined %s", tag);
 				warning_msg(error_string);
 				time_series_free(bc_ptr->bc_solution);
+				free_check_null(bc_ptr->bc_solution);
 				bc_ptr->bc_solution = NULL;
 			}
 			bc_ptr->bc_solution_type = ASSOCIATED;
@@ -2657,6 +2660,7 @@ int read_flux_bc(void)
 				sprintf(error_string,"Flux has been redefined %s", tag);
 				warning_msg(error_string);
 				time_series_free(bc_ptr->bc_flux);
+				free_check_null(bc_ptr->bc_flux);
 				bc_ptr->bc_flux = NULL;
 			}
 			bc_ptr->bc_flux = time_series_read_property(next_char, opt_list, count_opt_list, &opt);
@@ -2681,6 +2685,7 @@ int read_flux_bc(void)
 				sprintf(error_string,"Associated solution has been redefined %s", tag);
 				warning_msg(error_string);
 				time_series_free(bc_ptr->bc_solution);
+				free_check_null(bc_ptr->bc_solution);
 				bc_ptr->bc_solution = NULL;
 			}
 			bc_ptr->bc_solution_type = ASSOCIATED;
@@ -2856,6 +2861,7 @@ int read_leaky_bc(void)
 				sprintf(error_string,"Head has been redefined %s", tag);
 				warning_msg(error_string);
 				time_series_free(bc_ptr->bc_head);
+				free_check_null(bc_ptr->bc_head);
 				bc_ptr->bc_head = NULL;
 			}
 			bc_ptr->bc_head = time_series_read_property(next_char, opt_list, count_opt_list, &opt);
@@ -2883,6 +2889,7 @@ int read_leaky_bc(void)
 				sprintf(error_string,"Associated solution has been redefined %s", tag);
 				warning_msg(error_string);
 				time_series_free(bc_ptr->bc_solution);
+				free_check_null(bc_ptr->bc_solution);
 				bc_ptr->bc_solution = NULL;
 			}
 			bc_ptr->bc_solution_type = ASSOCIATED;
@@ -3182,6 +3189,7 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 		p->v = realloc(p->v, (size_t) p->count_v * sizeof(double));
 		p->count_alloc = p->count_v;
 	} else {
+		property_free(p);
 		sprintf(error_string, "Unknown option reading property, %s.", token);
 		input_error++;
 		error_msg(error_string, STOP);
@@ -4635,6 +4643,7 @@ int read_print_frequency (void)
 		}
 		if (return_value == EOF || return_value == KEYWORD) break;
 	}
+	time_free(&current_time);
 	return(return_value);
 }
 /* ---------------------------------------------------------------------- */
@@ -4988,6 +4997,7 @@ int read_river(void)
 				sprintf(error_string,"Solution time series has been redefined %s", tag);
 				warning_msg(error_string);
 				time_series_free(river_ptr->points[point_number].solution);
+				free_check_null(river_ptr->points[point_number].solution);
 				river_ptr->points[point_number].solution = NULL;
 			}
 			river_ptr->points[point_number].solution = time_series_read_property(next_char, opt_list, count_opt_list, &opt);
@@ -5019,6 +5029,7 @@ int read_river(void)
 				sprintf(error_string,"Head time series has been redefined %s", tag);
 				warning_msg(error_string);
 				time_series_free(river_ptr->points[point_number].head);
+				free_check_null(river_ptr->points[point_number].head);
 				river_ptr->points[point_number].head = NULL;
 			}
 			river_ptr->points[point_number].head = time_series_read_property(next_char, opt_list, count_opt_list, &opt);
@@ -5444,6 +5455,7 @@ int read_well(void)
 				sprintf(error_string,"Solution time series has been redefined %s", tag);
 				warning_msg(error_string);
 				time_series_free(well_ptr->solution);
+				free_check_null(well_ptr->solution);
 				well_ptr->solution = NULL;
 			}
 			well_ptr->solution = time_series_read_property(next_char, opt_list, count_opt_list, &opt);
@@ -5564,6 +5576,7 @@ int read_well(void)
 				sprintf(error_string,"Injection/pumping time series has been redefined %s", tag);
 				warning_msg(error_string);
 				time_series_free(well_ptr->q);
+				free_check_null(well_ptr->q);
 				well_ptr->q = NULL;
 			}
 			well_ptr->q = time_series_read_property(next_char, opt_list, count_opt_list, &opt);
@@ -5585,6 +5598,7 @@ int read_well(void)
 				sprintf(error_string,"Injection/pumping time series has been redefined %s", tag);
 				warning_msg(error_string);
 				time_series_free(well_ptr->q);
+				free_check_null(well_ptr->q);
 				well_ptr->q = NULL;
 			}
 			well_ptr->q = time_series_read_property(next_char, opt_list, count_opt_list, &opt);

@@ -658,3 +658,48 @@ int copy_time (struct time *time_source, struct time *time_destination)
 	time_destination->input_to_user = time_source->input_to_user;
 	return(OK);
 }
+/* **********************************************************************
+ *
+ *   Routines related to print_zones_struct
+ *
+ * ********************************************************************** */
+/* ---------------------------------------------------------------------- */
+int print_zone_struct_init (struct print_zones_struct *print_zones_struct_ptr)
+/* ---------------------------------------------------------------------- */
+{
+	int i;
+	if (print_zones_struct_ptr == NULL) return(ERROR);
+
+	print_zones_struct_ptr->print_zones = NULL;
+	print_zones_struct_ptr->count_print_zones = 0;
+
+	for (i = 0; i < 3; ++i) {
+		print_zones_struct_ptr->thin_grid[i] = 0;
+		print_zones_struct_ptr->thin_grid_list[i] = NULL;
+		print_zones_struct_ptr->thin_grid_count[i] = 0;
+	}
+	return(OK);
+}
+/* ---------------------------------------------------------------------- */
+int print_zone_struct_free (struct print_zones_struct *print_zones_struct_ptr)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *   Frees all data associated with print_zones_struct structure.
+ */
+	int i;
+	if (print_zones_struct_ptr == NULL) return(ERROR);
+/*
+ *   Free space allocated for print_zones_struct structure
+ */
+	for (i = 0; i < print_zones_struct_ptr->count_print_zones; ++i) {
+		free_check_null(print_zones_struct_ptr->print_zones[i].zone);
+		property_free(print_zones_struct_ptr->print_zones[i].print);
+		property_free(print_zones_struct_ptr->print_zones[i].mask);
+	}
+	for (i = 0; i < 3; ++i) {
+		free_check_null(print_zones_struct_ptr->thin_grid_list[i]);
+	}
+	free_check_null(print_zones_struct_ptr->print_zones);
+	return(OK);
+}

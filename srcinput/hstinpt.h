@@ -29,10 +29,13 @@ static char const svnid[] = "$Id$";
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-/* #if defined(__WPHAST__) */
+#if defined(__WPHAST__)
+#include "../phqalloc.h"
+#else
 #ifdef _DEBUG
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
+#endif
 #endif
 #include <ctype.h>
 #include <math.h>

@@ -1955,7 +1955,7 @@ int reset_transient_data(void)
 		rivers[i].update = FALSE;
 		for (j = 0; j < rivers[i].count_points; j++) {
 			if (get_current_property_position(rivers[i].points[j].solution, current_start_time, &pt_ptr) >= 0) {
-				rivers[i].points[j].current_solution = pt_ptr->property->v[0];
+				rivers[i].points[j].current_solution = (int)pt_ptr->property->v[0];
 				update = TRUE;
 				rivers[i].update = TRUE;
 			}
@@ -1974,7 +1974,7 @@ int reset_transient_data(void)
 	update = FALSE;
 	for (i = 0; i < count_wells; i++) {
 		if (get_current_property_position(wells[i].solution, current_start_time, &pt_ptr) >= 0) {
-			wells[i].current_solution = pt_ptr->property->v[0];
+			wells[i].current_solution = (int)pt_ptr->property->v[0];
 			update = TRUE;
 		}
 		if (get_current_property_position(wells[i].q, current_start_time, &pt_ptr) >= 0) {

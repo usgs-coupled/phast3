@@ -37,10 +37,12 @@ struct time_series * time_series_read_property (char *ptr, const char **opt_list
 
 		if (property_time_read(next_char, &property_time_ptr, opt_list, count_opt_list, opt) == ERROR) {
 			time_series_free(ts_ptr);
+			free_check_null(ts_ptr);
 			return NULL;
 		}
 		if (time_series_add (ts_ptr, property_time_ptr) == ERROR) {
 			time_series_free(ts_ptr);
+			free_check_null(ts_ptr);
 			return NULL;
 		}
 	} else {
@@ -55,10 +57,12 @@ struct time_series * time_series_read_property (char *ptr, const char **opt_list
 		next_char = line;
 		if (property_time_read(next_char, &property_time_ptr, opt_list, count_opt_list, opt) == ERROR) {
 			time_series_free(ts_ptr);
+			free_check_null(ts_ptr);
 			return NULL;
 		}
 		if (time_series_add (ts_ptr, property_time_ptr) == ERROR) {
 			time_series_free(ts_ptr);
+			free_check_null(ts_ptr);
 			return NULL;
 		}
 	}

@@ -19,11 +19,8 @@ static int process_file_names(int argc, char *argv[]);
  *   MAIN
  * ---------------------------------------------------------------------- */
 int main(int argc, char *argv[])
-/*
- *   Main program for PHREEQC
- */
 {
-#ifdef _DEBUG
+#if defined(_DEBUG) && !defined(__WPHAST__)
 	int tmpDbgFlag;
 
 	/*
@@ -37,12 +34,8 @@ int main(int argc, char *argv[])
 	tmpDbgFlag |= _CRTDBG_CHECK_ALWAYS_DF;
 	_CrtSetDbgFlag(tmpDbgFlag);
 #endif
-#ifdef WINDOWS
-	std_error = fopen("error.gui", "w");
-#else
 	std_error = stderr;
 	error_file = stderr;
-#endif
 	/*
 	 *   Add callbacks for error_msg and warning_msg
 	 */
@@ -355,6 +348,7 @@ int clean_up(void)
 	time_series_free(&print_comp);
 	time_series_free(&print_conductances);
 	time_series_free(&print_force_chem);
+	time_series_free(&print_bc);
 
 	time_free(&current_print_bc_flow);
 	time_free(&current_print_comp);
@@ -390,25 +384,10 @@ int clean_up(void)
 	time_free(&current_print_xyz_velocity);
 	time_free(&current_print_xyz_wells);
 
-	for (i = 0; i < print_zones_xyz.count_print_zones; i++) {
-		free_check_null(print_zones_xyz.print_zones[i].zone);
-		property_free(print_zones_xyz.print_zones[i].print);
-		property_free(print_zones_xyz.print_zones[i].mask);
-	}
-	for (i = 0; i < 3; i++) {
-		free_check_null(print_zones_xyz.thin_grid_list[i]);
-	}
-	free_check_null(print_zones_xyz.print_zones);
+	/* print zones */
+	print_zone_struct_free(&print_zones_xyz);
+	print_zone_struct_free(&print_zones_chem);
 
-	for (i = 0; i < print_zones_chem.count_print_zones; i++) {
-		free_check_null(print_zones_chem.print_zones[i].zone);
-		property_free(print_zones_chem.print_zones[i].print);
-		property_free(print_zones_chem.print_zones[i].mask);
-	}
-	for (i = 0; i < 3; i++) {
-		free_check_null(print_zones_chem.thin_grid_list[i]);
-	}
-	free_check_null(print_zones_chem.print_zones);
 	free_check_null(simulation_periods);
 
 	/* file names */
@@ -648,6 +627,10 @@ void initialize(void)
 	time_series_init(&print_bc_flow);
 	time_series_init(&print_conductances);
 	time_series_init(&print_bc);
+
+	/* print_zones */
+	print_zone_struct_init(&print_zones_xyz);
+	print_zone_struct_init(&print_zones_chem);
 
 	/* .bcf file */
 	current_print_bc_flow.type = STEP;

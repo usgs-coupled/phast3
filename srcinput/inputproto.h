@@ -126,6 +126,8 @@ Well *well_search (int n_user, int *n);
 int well_interval_compare (const void *ptr1, const void *ptr2);
 struct zone *zone_alloc(void);
 int zone_check(struct zone *zone_ptr);
+int print_zone_struct_init (struct print_zones_struct *print_zones_struct_ptr);
+int print_zone_struct_free (struct print_zones_struct *print_zones_struct_ptr);
 
 /* time.c */
 int accumulate_time_series(struct time_series *ts_ptr);
