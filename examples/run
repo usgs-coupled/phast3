@@ -1,0 +1,33 @@
+#!/bin/sh
+EXDIR=/z/parkplace/home/dlpark/programs/phast/examples
+#
+#   make directory
+#
+NAME=$1
+cd $NAME
+rm -rf 0
+mkdir 0
+#
+#   distribute files
+#
+if [ -f $NAME.trans.dat ]; then 
+    cp $NAME.trans.dat 0
+    fi
+if [ -f $NAME.chem.dat ]; then 
+    cp $NAME.chem.dat 0
+    fi
+if [ -f $NAME.head.dat ]; then 
+    cp $NAME.head.dat 0
+    fi
+if [ -f phast.dat ]; then 
+    cp phast.dat 0
+    fi
+cp ../schema 0
+cd 0
+sed "s?WORKING_DIRECTORY?$EXDIR/$NAME/0?" schema > temp; mv temp schema
+#
+#   run phastinput
+#
+/z/parkplace/home/dlpark/parkplace/phast/srcinput/phastinput $NAME
+echo Done phastinput.
+lamboot ../../hosts;  time mpirun -O -v schema; wipe ../../hosts

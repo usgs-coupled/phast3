@@ -1,0 +1,4 @@
+# lam schema file
+n0 -np 1 -wd /z/parkplace/home/dlpark/programs/phast/examples/river/0 /z/parkplace/home/dlpark/programs/phast/srcphast/mpi_absoft/phast
+n1 -np 2 -wd /z/parkplace/home/dlpark/programs/phast/examples/river/0 /z/parkplace/home/dlpark/programs/phast/srcphast/mpi_absoft/phast
+

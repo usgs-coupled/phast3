@@ -1,0 +1,99 @@
+Running PHASTINPUT.
+
+Processing flow and transport data file.
+
+	TITLE
+	        One dimensional confined flow with leakage boundary condition
+	        Hand calculation and HST
+	SOLUTE_TRANSPORT   false
+	UNITS
+	        time           s
+	        horizontal     m
+	        vertical       m
+	        head           m
+	        hydraulic_conductivity      m/s
+	        specific_storage       1/m
+	        flux           m/s
+	        leaky_thickness    m
+	        leaky_k        m/s
+	GRID
+	        uniform X 
+	                0 400 5
+	        uniform Y 
+	                0 400 5
+	        uniform Z 
+	                0 100 2
+	        print_orientation XY
+	MEDIA
+	        zone   0 0 0 400 400 100
+	                kx     .00011572
+	                ky     .00011572
+	                kz     .00011572
+	                porosity       .15
+	                storage        8.70340E-10 
+	SPECIFIED_HEAD_BC
+	        zone   0 400 0 400 400 100
+	                head   0   100
+	LEAKY_BC
+	        zone   0 0 0 400 0 100
+	                face                           Y
+	                thickness                      100
+	                hydraulic_conductivity         0.00011572
+	                head                           0               200
+	FREE_SURFACE_BC false
+	HEAD_IC
+	        zone   0 0 0 400 400 100
+	                head   100
+	SOLUTION_METHOD
+	        direct_solver
+	        space_differencing  0
+	        time_differencing   1
+	TIME_CONTROL
+	        time_step      0       43200
+	        time_change            86400
+	PRINT_FREQUENCY
+	        0
+	        bc_flow_rates  1       step
+	        head           1       step
+	        solver_statistics         1       step
+	        velocity       2       step
+	        xyz_head       2       step
+	        xyz_velocity   2       step
+	END             
+
+PHASTINPUT done.
+
+Running PHAST.
+
+.        One dimensional confined flow with leakage boundary condition
+.        Hand calculation and HST
+Reading static data for flow and transport simulation
+A4 array dimension requirement (D4 direct solver)................ NRAL .        0 elements
+Primary storage requirement (D4 direct solver)................... NPRIST      361 elements
+Overhead storage requirement (D4 direct solver).................. NOHST .     476 elements
+                    *** Calculation Information ***
+
+Beginning transient simulation.
+Reading transient data for simulation: Set  1
+     Time at which next set of transient parameters will be read .......... TIMCHG  8.640E+04  (s)
+
+Beginning time step no.      1
+     Current time step length ...................................   4.320E+04 (s)
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+     End of Time Step No.     1
+     Time ..................................................   4.320E+04 (s)
+     Maximum change in potentiometric head   8.0000E+01      (m ) at location (  200.    , 0.000    ,  100.    )(m)
+
+Beginning time step no.      2
+     Current time step length ...................................   4.320E+04 (s)
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+     End of Time Step No.     2
+     Time ..................................................   8.640E+04 (s)
+     Maximum change in potentiometric head   2.3677E-04      (m ) at location ( 0.000    ,  100.    , 0.000    )(m)
+Done with transient simulation.
+
+                             ***** Simulation Completed *****
+     Last time value calculated ...................................... 8.6400E+04 (s)
+     Last time step index ............................................       2

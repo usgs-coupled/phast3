@@ -1,0 +1,4610 @@
+------------------
+Reading data base.
+------------------
+
+	SOLUTION_MASTER_SPECIES
+	SOLUTION_SPECIES
+	PHASES
+	EXCHANGE_MASTER_SPECIES
+	EXCHANGE_SPECIES
+	SURFACE_MASTER_SPECIES
+	SURFACE_SPECIES
+	RATES
+	END
+------------------------------------
+Reading input data for simulation 1.
+------------------------------------
+
+	TITLE
+	.       Example 1.--Pulse of solute undergoing sorption and decay
+	.       Analytical solution from Quantitative Hydrogeology, de Marsily
+	SOLUTION_MASTER_SPECIES
+	        A       A       0       A       1
+	SOLUTION_SPECIES
+	        A = A
+	        log_k   0
+	SURFACE_MASTER_SPECIES
+	        Surf    Surf
+	SURFACE_SPECIES
+	        Surf = Surf
+	                log_k 0
+	        Surf + A = SurfA 
+	                log_k   -10
+	SOLUTION 1
+	END
+-----
+TITLE
+-----
+
+.       Example 1.--Pulse of solute undergoing sorption and decay
+.       Analytical solution from Quantitative Hydrogeology, de Marsily
+
+-------------------------------------------
+Beginning of initial solution calculations.
+-------------------------------------------
+
+Initial solution 1.	
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Pure water     
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000    
+                                       pe  =   4.000    
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.082e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.082e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   0
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.002e-07   1.001e-07    -6.999    -6.999    -0.000
+	H+                1.001e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e+00     1.744     0.000     0.000
+H(0)             1.416e-25
+	H2                7.079e-26   7.079e-26   -25.150   -25.150     0.000
+O(0)             0.000e+00
+	O2                0.000e+00   0.000e+00   -42.080   -42.080     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -22.00  -25.15   -3.15  H2
+	H2O(g)           -1.51    0.00    1.51  H2O
+	O2(g)           -39.12  -42.08   -2.96  O2
+
+------------------
+End of simulation.
+------------------
+
+------------------------------------
+Reading input data for simulation 2.
+------------------------------------
+
+	SOLUTION 2
+	        A        1.0 mmol/kgw
+	END
+-------------------------------------------
+Beginning of initial solution calculations.
+-------------------------------------------
+
+Initial solution 2.	
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 1.000e-03   1.000e-03
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000    
+                                       pe  =   4.000    
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.065e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.065e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   2
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                1.000e-03
+	A                 1.000e-03   1.000e-03    -3.000    -3.000     0.000
+H(0)             1.416e-25
+	H2                7.079e-26   7.079e-26   -25.150   -25.150     0.000
+O(0)             0.000e+00
+	O2                0.000e+00   0.000e+00   -42.080   -42.080     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -22.00  -25.15   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)           -39.12  -42.08   -2.96  O2
+
+------------------
+End of simulation.
+------------------
+
+------------------------------------
+Reading input data for simulation 3.
+------------------------------------
+
+	SURFACE 1
+	        no_edl
+	        Surf    1e10    
+	END
+------------------
+End of simulation.
+------------------
+
+------------------------------------
+Reading input data for simulation 4.
+------------------------------------
+
+	KINETICS 1
+	        A_decay
+	        formula A 1.0
+	        m 0
+	RATES
+	        A_decay
+	        start
+	10 rate = -(TOT("A") + MOL("SurfA")) * .01
+	20 moles = rate * TIME
+	30 SAVE moles
+	        end
+	END
+------------------
+End of simulation.
+------------------
+
+------------------------------------
+Reading input data for simulation 5.
+------------------------------------
+
+	SELECTED_OUTPUT
+	        file ex1.dummy.sel
+	        reset false
+	USER_PUNCH
+	        headings A SurfA SurfA/A
+	10 PUNCH TOT("A")*1000
+	20 PUNCH MOL("SurfA")*1000
+	30 IF TOT("A") > 0 THEN PUNCH MOL("SurfA")/TOT("A") ELSE PUNCH -1
+	END
+------------------
+End of simulation.
+------------------
+
+------------------------------------
+Reading input data for simulation 6.
+------------------------------------
+
+List of Components:
+	1	H
+	2	O
+	3	A
+	4	Charge
+List of master species:
+	1	A
+Time 120. Cell 1: x=              0	y=              0	z=              0
+Using solution 1.
+Using surface 1.
+Using kinetics 1.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           5.420e-15   1.175e-03   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             6.748e-13       0.000   6.748e-13     -12.171
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 6.748e-13   6.748e-13
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  -1.840      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.082e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.082e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                6.748e-13
+	A                 6.748e-13   6.748e-13   -12.171   -12.171     0.000
+H(0)             6.792e-14
+	H2                3.396e-14   3.396e-14   -13.469   -13.469     0.000
+O(0)             0.000e+00
+	O2                0.000e+00   0.000e+00   -65.442   -65.442     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -10.32  -13.47   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)           -62.48  -65.44   -2.96  O2
+
+Time 120. Cell 2: x=          0.002	y=              0	z=              0
+Using solution 2.
+Using surface 2.
+Using kinetics 2.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           5.453e-12   1.130e-03   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             6.790e-10       0.000   6.790e-10      -9.168
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 6.790e-10   6.790e-10
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  -2.017      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.082e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.082e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                6.790e-10
+	A                 6.790e-10   6.790e-10    -9.168    -9.168     0.000
+H(0)             1.532e-13
+	H2                7.658e-14   7.658e-14   -13.116   -13.116     0.000
+O(0)             0.000e+00
+	O2                0.000e+00   0.000e+00   -66.148   -66.148     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)            -9.97  -13.12   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)           -63.19  -66.15   -2.96  O2
+
+Time 120. Cell 3: x=          0.004	y=              0	z=              0
+Using solution 3.
+Using surface 3.
+Using kinetics 3.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           7.265e-11   1.087e-03   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             9.045e-09       0.000   9.045e-09      -8.044
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 9.045e-09   9.045e-09
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  -2.113      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.082e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.082e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                9.045e-09
+	A                 9.045e-09   9.045e-09    -8.044    -8.044     0.000
+H(0)             2.384e-13
+	H2                1.192e-13   1.192e-13   -12.924   -12.924     0.000
+O(0)             0.000e+00
+	O2                0.000e+00   0.000e+00   -66.533   -66.533     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)            -9.77  -12.92   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)           -63.57  -66.53   -2.96  O2
+
+Time 120. Cell 4: x=          0.006	y=              0	z=              0
+Using solution 4.
+Using surface 4.
+Using kinetics 4.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           4.979e-10   1.045e-03   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             6.199e-08       0.000   6.199e-08      -7.208
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 6.199e-08   6.199e-08
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  -2.189      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.082e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.082e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                6.199e-08
+	A                 6.199e-08   6.199e-08    -7.208    -7.208     0.000
+H(0)             3.379e-13
+	H2                1.689e-13   1.689e-13   -12.772   -12.772     0.000
+O(0)             0.000e+00
+	O2                0.000e+00   0.000e+00   -66.835   -66.835     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)            -9.62  -12.77   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)           -63.88  -66.84   -2.96  O2
+
+Time 120. Cell 5: x=          0.008	y=              0	z=              0
+Using solution 5.
+Using surface 5.
+Using kinetics 5.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           2.321e-09   1.005e-03   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             2.890e-07       0.000   2.890e-07      -6.539
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 2.890e-07   2.890e-07
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  -2.238      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.082e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.082e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                2.890e-07
+	A                 2.890e-07   2.890e-07    -6.539    -6.539     0.000
+H(0)             4.232e-13
+	H2                2.116e-13   2.116e-13   -12.675   -12.675     0.000
+O(0)             0.000e+00
+	O2                0.000e+00   0.000e+00   -67.031   -67.031     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)            -9.52  -12.67   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)           -64.07  -67.03   -2.96  O2
+
+Time 120. Cell 6: x=           0.01	y=              0	z=              0
+Using solution 6.
+Using surface 6.
+Using kinetics 6.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           8.258e-09   9.660e-04   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             1.028e-06       0.000   1.028e-06      -5.988
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 1.028e-06   1.028e-06
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  -2.278      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.082e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.082e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                1.028e-06
+	A                 1.028e-06   1.028e-06    -5.988    -5.988     0.000
+H(0)             5.084e-13
+	H2                2.542e-13   2.542e-13   -12.595   -12.595     0.000
+O(0)             0.000e+00
+	O2                0.000e+00   0.000e+00   -67.190   -67.190     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)            -9.44  -12.59   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)           -64.23  -67.19   -2.96  O2
+
+Time 120. Cell 7: x=          0.012	y=              0	z=              0
+Using solution 7.
+Using surface 7.
+Using kinetics 7.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           2.390e-08   9.287e-04   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             2.975e-06       0.000   2.975e-06      -5.526
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 2.975e-06   2.975e-06
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  -2.170      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.082e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.082e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                2.975e-06
+	A                 2.975e-06   2.975e-06    -5.526    -5.526     0.000
+H(0)             3.095e-13
+	H2                1.547e-13   1.547e-13   -12.810   -12.810     0.000
+O(0)             0.000e+00
+	O2                0.000e+00   0.000e+00   -66.759   -66.759     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)            -9.66  -12.81   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)           -63.80  -66.76   -2.96  O2
+
+Time 120. Cell 8: x=          0.014	y=              0	z=              0
+Using solution 8.
+Using surface 8.
+Using kinetics 8.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           5.857e-08   8.925e-04   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             7.292e-06       0.000   7.292e-06      -5.137
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 7.292e-06   7.292e-06
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  -2.160      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.082e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.082e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                7.292e-06
+	A                 7.292e-06   7.292e-06    -5.137    -5.137     0.000
+H(0)             2.953e-13
+	H2                1.476e-13   1.476e-13   -12.831   -12.831     0.000
+O(0)             0.000e+00
+	O2                0.000e+00   0.000e+00   -66.718   -66.718     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)            -9.68  -12.83   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)           -63.76  -66.72   -2.96  O2
+
+Time 120. Cell 9: x=          0.016	y=              0	z=              0
+Using solution 9.
+Using surface 9.
+Using kinetics 9.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           1.251e-07   8.570e-04   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             1.557e-05       0.000   1.557e-05      -4.808
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 1.557e-05   1.557e-05
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  -2.149      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.082e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.082e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                1.557e-05
+	A                 1.557e-05   1.557e-05    -4.808    -4.808     0.000
+H(0)             2.810e-13
+	H2                1.405e-13   1.405e-13   -12.852   -12.852     0.000
+O(0)             0.000e+00
+	O2                0.000e+00   0.000e+00   -66.676   -66.676     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)            -9.70  -12.85   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)           -63.72  -66.68   -2.96  O2
+
+Time 120. Cell 10: x=          0.018	y=              0	z=              0
+Using solution 10.
+Using surface 10.
+Using kinetics 10.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           2.375e-07   8.218e-04   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             2.957e-05       0.000   2.957e-05      -4.529
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 2.957e-05   2.957e-05
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  -2.086      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.082e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.082e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                2.957e-05
+	A                 2.957e-05   2.957e-05    -4.529    -4.529     0.000
+H(0)             2.100e-13
+	H2                1.050e-13   1.050e-13   -12.979   -12.979     0.000
+O(0)             0.000e+00
+	O2                0.000e+00   0.000e+00   -66.422   -66.422     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)            -9.83  -12.98   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)           -63.46  -66.42   -2.96  O2
+
+Time 120. Cell 11: x=           0.02	y=              0	z=              0
+Using solution 11.
+Using surface 11.
+Using kinetics 11.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           4.078e-07   7.863e-04   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             5.077e-05       0.000   5.077e-05      -4.294
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 5.077e-05   5.077e-05
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  -1.946      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.082e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.082e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                5.077e-05
+	A                 5.077e-05   5.077e-05    -4.294    -4.294     0.000
+H(0)             1.105e-13
+	H2                5.525e-14   5.525e-14   -13.258   -13.258     0.000
+O(0)             0.000e+00
+	O2                0.000e+00   0.000e+00   -65.865   -65.865     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -10.11  -13.26   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)           -62.90  -65.86   -2.96  O2
+
+Time 120. Cell 12: x=          0.022	y=              0	z=              0
+Using solution 12.
+Using surface 12.
+Using kinetics 12.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           6.413e-07   7.500e-04   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             7.984e-05       0.000   7.984e-05      -4.098
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 7.984e-05   7.984e-05
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  -1.840      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.082e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.082e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                7.984e-05
+	A                 7.984e-05   7.984e-05    -4.098    -4.098     0.000
+H(0)             6.783e-14
+	H2                3.391e-14   3.391e-14   -13.470   -13.470     0.000
+O(0)             0.000e+00
+	O2                0.000e+00   0.000e+00   -65.441   -65.441     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -10.32  -13.47   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)           -62.48  -65.44   -2.96  O2
+
+Time 120. Cell 13: x=          0.024	y=              0	z=              0
+Using solution 13.
+Using surface 13.
+Using kinetics 13.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           9.339e-07   7.122e-04   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             1.163e-04       0.000   1.163e-04      -3.935
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 1.163e-04   1.163e-04
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  11.106      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.082e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.082e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                1.163e-04
+	A                 1.163e-04   1.163e-04    -3.935    -3.935     0.000
+H(0)             8.676e-40
+	H2                4.338e-40   4.338e-40   -39.363   -39.363     0.000
+O(0)             4.430e-14
+	O2                2.215e-14   2.215e-14   -13.655   -13.655     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -36.21  -39.36   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)           -10.69  -13.65   -2.96  O2
+
+Time 120. Cell 14: x=          0.026	y=              0	z=              0
+Using solution 14.
+Using surface 14.
+Using kinetics 14.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           1.271e-06   6.727e-04   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             1.583e-04       0.000   1.583e-04      -3.801
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 1.583e-04   1.583e-04
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  11.309      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.082e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.082e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                1.583e-04
+	A                 1.583e-04   1.583e-04    -3.801    -3.801     0.000
+H(0)             3.415e-40
+	H2                1.707e-40   1.707e-40   -39.768   -39.768     0.000
+O(0)             2.860e-13
+	O2                1.430e-13   1.430e-13   -12.845   -12.845     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -36.62  -39.77   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -9.88  -12.84   -2.96  O2
+
+Time 120. Cell 15: x=          0.028	y=              0	z=              0
+Using solution 15.
+Using surface 15.
+Using kinetics 15.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           1.631e-06   6.313e-04   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             2.030e-04       0.000   2.030e-04      -3.693
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 2.030e-04   2.030e-04
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  11.438      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.082e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.082e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                2.030e-04
+	A                 2.030e-04   2.030e-04    -3.693    -3.693     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -40.026   -40.026     0.000
+O(0)             9.400e-13
+	O2                4.700e-13   4.700e-13   -12.328   -12.328     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -36.88  -40.03   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -9.37  -12.33   -2.96  O2
+
+Time 120. Cell 16: x=           0.03	y=              0	z=              0
+Using solution 16.
+Using surface 16.
+Using kinetics 16.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           1.985e-06   5.880e-04   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             2.472e-04       0.000   2.472e-04      -3.607
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 2.472e-04   2.472e-04
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  11.543      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.082e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.082e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                2.472e-04
+	A                 2.472e-04   2.472e-04    -3.607    -3.607     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -40.235   -40.235     0.000
+O(0)             2.461e-12
+	O2                1.231e-12   1.231e-12   -11.910   -11.910     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -37.09  -40.24   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -8.95  -11.91   -2.96  O2
+
+Time 120. Cell 17: x=          0.032	y=              0	z=              0
+Using solution 17.
+Using surface 17.
+Using kinetics 17.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           2.309e-06   5.433e-04   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             2.875e-04       0.000   2.875e-04      -3.541
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 2.875e-04   2.875e-04
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  11.633      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.082e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.082e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   4
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                2.875e-04
+	A                 2.875e-04   2.875e-04    -3.541    -3.541     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -40.416   -40.416     0.000
+O(0)             5.674e-12
+	O2                2.837e-12   2.837e-12   -11.547   -11.547     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -37.27  -40.42   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -8.59  -11.55   -2.96  O2
+
+Time 120. Cell 18: x=          0.034	y=              0	z=              0
+Using solution 18.
+Using surface 18.
+Using kinetics 18.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           2.578e-06   4.978e-04   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             3.213e-04       0.000   3.213e-04      -3.493
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 3.213e-04   3.213e-04
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  11.713      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.082e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.082e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   8
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                3.213e-04
+	A                 3.213e-04   3.213e-04    -3.493    -3.493     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -40.576   -40.576     0.000
+O(0)             1.184e-11
+	O2                5.918e-12   5.918e-12   -11.228   -11.228     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -37.43  -40.58   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -8.27  -11.23   -2.96  O2
+
+Time 120. Cell 19: x=          0.036	y=              0	z=              0
+Using solution 19.
+Using surface 19.
+Using kinetics 19.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           2.784e-06   4.520e-04   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             3.470e-04       0.000   3.470e-04      -3.460
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 3.470e-04   3.470e-04
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  11.785      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.082e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.082e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   8
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                3.470e-04
+	A                 3.470e-04   3.470e-04    -3.460    -3.460     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -40.721   -40.721     0.000
+O(0)             2.302e-11
+	O2                1.151e-11   1.151e-11   -10.939   -10.939     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -37.57  -40.72   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -7.98  -10.94   -2.96  O2
+
+Time 120. Cell 20: x=          0.038	y=              0	z=              0
+Using solution 20.
+Using surface 20.
+Using kinetics 20.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           2.918e-06   4.067e-04   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             3.637e-04       0.000   3.637e-04      -3.439
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 3.637e-04   3.637e-04
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  11.851      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.082e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.082e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   8
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                3.637e-04
+	A                 3.637e-04   3.637e-04    -3.439    -3.439     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -40.852   -40.852     0.000
+O(0)             4.212e-11
+	O2                2.106e-11   2.106e-11   -10.677   -10.677     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -37.70  -40.85   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -7.72  -10.68   -2.96  O2
+
+Time 120. Cell 21: x=           0.04	y=              0	z=              0
+Using solution 21.
+Using surface 21.
+Using kinetics 21.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           2.981e-06   3.625e-04   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             3.716e-04       0.000   3.716e-04      -3.430
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 3.716e-04   3.716e-04
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  11.911      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.082e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.082e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   8
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                3.716e-04
+	A                 3.716e-04   3.716e-04    -3.430    -3.430     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -40.971   -40.971     0.000
+O(0)             7.303e-11
+	O2                3.652e-11   3.652e-11   -10.438   -10.438     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -37.82  -40.97   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -7.48  -10.44   -2.96  O2
+
+Time 120. Cell 22: x=          0.042	y=              0	z=              0
+Using solution 22.
+Using surface 22.
+Using kinetics 22.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           2.978e-06   3.201e-04   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             3.712e-04       0.000   3.712e-04      -3.430
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 3.712e-04   3.712e-04
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  11.965      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.081e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.081e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   7
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                3.712e-04
+	A                 3.712e-04   3.712e-04    -3.430    -3.430     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.080   -41.080     0.000
+O(0)             1.204e-10
+	O2                6.020e-11   6.020e-11   -10.220   -10.220     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -37.93  -41.08   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -7.26  -10.22   -2.96  O2
+
+Time 120. Cell 23: x=          0.044	y=              0	z=              0
+Using solution 23.
+Using surface 23.
+Using kinetics 23.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           2.918e-06   2.798e-04   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             3.637e-04       0.000   3.637e-04      -3.439
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 3.637e-04   3.637e-04
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.013      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.081e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.081e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   8
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                3.637e-04
+	A                 3.637e-04   3.637e-04    -3.439    -3.439     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.176   -41.176     0.000
+O(0)             1.879e-10
+	O2                9.394e-11   9.394e-11   -10.027   -10.027     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.03  -41.18   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -7.07  -10.03   -2.96  O2
+
+Time 120. Cell 24: x=          0.046	y=              0	z=              0
+Using solution 24.
+Using surface 24.
+Using kinetics 24.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           2.809e-06   2.422e-04   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             3.501e-04       0.000   3.501e-04      -3.456
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 3.501e-04   3.501e-04
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.057      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.080e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.080e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   8
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                3.501e-04
+	A                 3.501e-04   3.501e-04    -3.456    -3.456     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.264   -41.264     0.000
+O(0)             2.812e-10
+	O2                1.406e-10   1.406e-10    -9.852    -9.852     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.11  -41.26   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -6.89   -9.85   -2.96  O2
+
+Time 120. Cell 25: x=          0.048	y=              0	z=              0
+Using solution 25.
+Using surface 25.
+Using kinetics 25.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           2.660e-06   2.074e-04   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             3.316e-04       0.000   3.316e-04      -3.479
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 3.316e-04   3.316e-04
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.096      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.080e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.080e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   8
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                3.316e-04
+	A                 3.316e-04   3.316e-04    -3.479    -3.479     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.342   -41.342     0.000
+O(0)             4.036e-10
+	O2                2.018e-10   2.018e-10    -9.695    -9.695     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.19  -41.34   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -6.74   -9.70   -2.96  O2
+
+Time 120. Cell 26: x=           0.05	y=              0	z=              0
+Using solution 26.
+Using surface 26.
+Using kinetics 26.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           2.484e-06   1.757e-04   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             3.093e-04       0.000   3.093e-04      -3.510
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 3.093e-04   3.093e-04
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.131      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.079e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.079e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   4
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                3.093e-04
+	A                 3.093e-04   3.093e-04    -3.510    -3.510     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.413   -41.413     0.000
+O(0)             5.573e-10
+	O2                2.787e-10   2.787e-10    -9.555    -9.555     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.26  -41.41   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -6.59   -9.55   -2.96  O2
+
+Time 120. Cell 27: x=          0.052	y=              0	z=              0
+Using solution 27.
+Using surface 27.
+Using kinetics 27.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           2.282e-06   1.471e-04   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             2.841e-04       0.000   2.841e-04      -3.547
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 2.841e-04   2.841e-04
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.162      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.078e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.078e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   4
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                2.841e-04
+	A                 2.841e-04   2.841e-04    -3.547    -3.547     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.475   -41.475     0.000
+O(0)             7.421e-10
+	O2                3.711e-10   3.711e-10    -9.431    -9.431     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.32  -41.47   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -6.47   -9.43   -2.96  O2
+
+Time 120. Cell 28: x=          0.054	y=              0	z=              0
+Using solution 28.
+Using surface 28.
+Using kinetics 28.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           2.064e-06   1.217e-04   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             2.570e-04       0.000   2.570e-04      -3.590
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 2.570e-04   2.570e-04
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.190      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.077e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.077e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   4
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                2.570e-04
+	A                 2.570e-04   2.570e-04    -3.590    -3.590     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.530   -41.530     0.000
+O(0)             9.553e-10
+	O2                4.777e-10   4.777e-10    -9.321    -9.321     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.38  -41.53   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -6.36   -9.32   -2.96  O2
+
+Time 120. Cell 29: x=          0.056	y=              0	z=              0
+Using solution 29.
+Using surface 29.
+Using kinetics 29.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           1.839e-06   9.941e-05   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             2.290e-04       0.000   2.290e-04      -3.640
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 2.290e-04   2.290e-04
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.214      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.076e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.076e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   4
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                2.290e-04
+	A                 2.290e-04   2.290e-04    -3.640    -3.640     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.578   -41.578     0.000
+O(0)             1.192e-09
+	O2                5.959e-10   5.959e-10    -9.225    -9.225     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.43  -41.58   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -6.26   -9.22   -2.96  O2
+
+Time 120. Cell 30: x=          0.058	y=              0	z=              0
+Using solution 30.
+Using surface 30.
+Using kinetics 30.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           1.613e-06   8.014e-05   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             2.008e-04       0.000   2.008e-04      -3.697
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 2.008e-04   2.008e-04
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.235      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.074e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.074e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   4
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                2.008e-04
+	A                 2.008e-04   2.008e-04    -3.697    -3.697     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.619   -41.619     0.000
+O(0)             1.445e-09
+	O2                7.223e-10   7.223e-10    -9.141    -9.141     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.47  -41.62   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -6.18   -9.14   -2.96  O2
+
+Time 120. Cell 31: x=           0.06	y=              0	z=              0
+Using solution 31.
+Using surface 31.
+Using kinetics 31.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           1.391e-06   6.374e-05   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             1.732e-04       0.000   1.732e-04      -3.761
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 1.732e-04   1.732e-04
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.253      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.073e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.073e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   4
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                1.732e-04
+	A                 1.732e-04   1.732e-04    -3.761    -3.761     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.655   -41.655     0.000
+O(0)             1.705e-09
+	O2                8.525e-10   8.525e-10    -9.069    -9.069     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.51  -41.66   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -6.11   -9.07   -2.96  O2
+
+Time 120. Cell 32: x=          0.062	y=              0	z=              0
+Using solution 32.
+Using surface 32.
+Using kinetics 32.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           1.180e-06   4.999e-05   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             1.469e-04       0.000   1.469e-04      -3.833
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 1.469e-04   1.469e-04
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.268      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.072e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.072e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                1.469e-04
+	A                 1.469e-04   1.469e-04    -3.833    -3.833     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.686   -41.686     0.000
+O(0)             1.965e-09
+	O2                9.823e-10   9.823e-10    -9.008    -9.008     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.54  -41.69   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -6.05   -9.01   -2.96  O2
+
+Time 120. Cell 33: x=          0.064	y=              0	z=              0
+Using solution 33.
+Using surface 33.
+Using kinetics 33.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           9.839e-07   3.865e-05   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             1.225e-04       0.000   1.225e-04      -3.912
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 1.225e-04   1.225e-04
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.281      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.071e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.071e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                1.225e-04
+	A                 1.225e-04   1.225e-04    -3.912    -3.912     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.712   -41.712     0.000
+O(0)             2.215e-09
+	O2                1.107e-09   1.107e-09    -8.956    -8.956     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.56  -41.71   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -6.00   -8.96   -2.96  O2
+
+Time 120. Cell 34: x=          0.066	y=              0	z=              0
+Using solution 34.
+Using surface 34.
+Using kinetics 34.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           8.062e-07   2.944e-05   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             1.004e-04       0.000   1.004e-04      -3.998
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 1.004e-04   1.004e-04
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.292      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.070e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.070e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                1.004e-04
+	A                 1.004e-04   1.004e-04    -3.998    -3.998     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.734   -41.734     0.000
+O(0)             2.448e-09
+	O2                1.224e-09   1.224e-09    -8.912    -8.912     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.58  -41.73   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -5.95   -8.91   -2.96  O2
+
+Time 120. Cell 35: x=          0.068	y=              0	z=              0
+Using solution 35.
+Using surface 35.
+Using kinetics 35.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           6.489e-07   2.209e-05   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             8.079e-05       0.000   8.079e-05      -4.093
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 8.079e-05   8.079e-05
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.301      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.069e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.069e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                8.079e-05
+	A                 8.079e-05   8.079e-05    -4.093    -4.093     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.752   -41.752     0.000
+O(0)             2.659e-09
+	O2                1.330e-09   1.330e-09    -8.876    -8.876     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.60  -41.75   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -5.92   -8.88   -2.96  O2
+
+Time 120. Cell 36: x=           0.07	y=              0	z=              0
+Using solution 36.
+Using surface 36.
+Using kinetics 36.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           5.131e-07   1.633e-05   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             6.388e-05       0.000   6.388e-05      -4.195
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 6.388e-05   6.388e-05
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.308      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.068e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.068e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                6.388e-05
+	A                 6.388e-05   6.388e-05    -4.195    -4.195     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.766   -41.766     0.000
+O(0)             2.844e-09
+	O2                1.422e-09   1.422e-09    -8.847    -8.847     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.62  -41.77   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -5.89   -8.85   -2.96  O2
+
+Time 120. Cell 37: x=          0.072	y=              0	z=              0
+Using solution 37.
+Using surface 37.
+Using kinetics 37.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           3.984e-07   1.189e-05   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             4.960e-05       0.000   4.960e-05      -4.304
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 4.960e-05   4.960e-05
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.314      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.067e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.067e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                4.960e-05
+	A                 4.960e-05   4.960e-05    -4.304    -4.304     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.778   -41.778     0.000
+O(0)             2.999e-09
+	O2                1.500e-09   1.500e-09    -8.824    -8.824     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.63  -41.78   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -5.86   -8.82   -2.96  O2
+
+Time 120. Cell 38: x=          0.074	y=              0	z=              0
+Using solution 38.
+Using surface 38.
+Using kinetics 38.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           3.039e-07   8.520e-06   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             3.783e-05       0.000   3.783e-05      -4.422
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 3.783e-05   3.783e-05
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.318      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.067e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.067e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                3.783e-05
+	A                 3.783e-05   3.783e-05    -4.422    -4.422     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.787   -41.787     0.000
+O(0)             3.125e-09
+	O2                1.562e-09   1.562e-09    -8.806    -8.806     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.64  -41.79   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -5.85   -8.81   -2.96  O2
+
+Time 120. Cell 39: x=          0.076	y=              0	z=              0
+Using solution 39.
+Using surface 39.
+Using kinetics 39.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           2.276e-07   6.013e-06   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             2.834e-05       0.000   2.834e-05      -4.548
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 2.834e-05   2.834e-05
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.322      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.066e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.066e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                2.834e-05
+	A                 2.834e-05   2.834e-05    -4.548    -4.548     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.793   -41.793     0.000
+O(0)             3.220e-09
+	O2                1.610e-09   1.610e-09    -8.793    -8.793     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.64  -41.79   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -5.83   -8.79   -2.96  O2
+
+Time 120. Cell 40: x=          0.078	y=              0	z=              0
+Using solution 40.
+Using surface 40.
+Using kinetics 40.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           1.674e-07   4.179e-06   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             2.085e-05       0.000   2.085e-05      -4.681
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 2.085e-05   2.085e-05
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.324      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.066e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.066e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                2.085e-05
+	A                 2.085e-05   2.085e-05    -4.681    -4.681     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.798   -41.798     0.000
+O(0)             3.284e-09
+	O2                1.642e-09   1.642e-09    -8.785    -8.785     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.65  -41.80   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -5.82   -8.78   -2.96  O2
+
+Time 120. Cell 41: x=           0.08	y=              0	z=              0
+Using solution 41.
+Using surface 41.
+Using kinetics 41.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           1.210e-07   2.859e-06   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             1.507e-05       0.000   1.507e-05      -4.822
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 1.507e-05   1.507e-05
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.325      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e-00
+                 Total alkalinity (eq/kg)  =   1.065e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.065e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                1.507e-05
+	A                 1.507e-05   1.507e-05    -4.822    -4.822     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.800   -41.800     0.000
+O(0)             3.318e-09
+	O2                1.659e-09   1.659e-09    -8.780    -8.780     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.65  -41.80   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -5.82   -8.78   -2.96  O2
+
+Time 120. Cell 42: x=          0.082	y=              0	z=              0
+Using solution 42.
+Using surface 42.
+Using kinetics 42.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           8.593e-08   1.926e-06   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             1.070e-05       0.000   1.070e-05      -4.971
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 1.070e-05   1.070e-05
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.325      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e-00
+                 Total alkalinity (eq/kg)  =   1.065e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.065e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                1.070e-05
+	A                 1.070e-05   1.070e-05    -4.971    -4.971     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.800   -41.800     0.000
+O(0)             3.322e-09
+	O2                1.661e-09   1.661e-09    -8.780    -8.780     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.65  -41.80   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -5.82   -8.78   -2.96  O2
+
+Time 120. Cell 43: x=          0.084	y=              0	z=              0
+Using solution 43.
+Using surface 43.
+Using kinetics 43.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           5.996e-08   1.278e-06   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             7.465e-06       0.000   7.465e-06      -5.127
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 7.465e-06   7.465e-06
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.324      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e-00
+                 Total alkalinity (eq/kg)  =   1.065e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.065e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                7.465e-06
+	A                 7.465e-06   7.465e-06    -5.127    -5.127     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.799   -41.799     0.000
+O(0)             3.298e-09
+	O2                1.649e-09   1.649e-09    -8.783    -8.783     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.65  -41.80   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -5.82   -8.78   -2.96  O2
+
+Time 120. Cell 44: x=          0.086	y=              0	z=              0
+Using solution 44.
+Using surface 44.
+Using kinetics 44.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           4.112e-08   8.350e-07   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             5.120e-06       0.000   5.120e-06      -5.291
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 5.120e-06   5.120e-06
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.323      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e-00
+                 Total alkalinity (eq/kg)  =   1.065e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.065e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                5.120e-06
+	A                 5.120e-06   5.120e-06    -5.291    -5.291     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.795   -41.795     0.000
+O(0)             3.248e-09
+	O2                1.624e-09   1.624e-09    -8.789    -8.789     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.65  -41.80   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -5.83   -8.79   -2.96  O2
+
+Time 120. Cell 45: x=          0.088	y=              0	z=              0
+Using solution 45.
+Using surface 45.
+Using kinetics 45.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           2.773e-08   5.374e-07   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             3.452e-06       0.000   3.452e-06      -5.462
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 3.452e-06   3.452e-06
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.320      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e-00
+                 Total alkalinity (eq/kg)  =   1.065e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.065e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                3.452e-06
+	A                 3.452e-06   3.452e-06    -5.462    -5.462     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.790   -41.790     0.000
+O(0)             3.172e-09
+	O2                1.586e-09   1.586e-09    -8.800    -8.800     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.64  -41.79   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -5.84   -8.80   -2.96  O2
+
+Time 120. Cell 46: x=           0.09	y=              0	z=              0
+Using solution 46.
+Using surface 46.
+Using kinetics 46.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           1.838e-08   3.407e-07   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             2.289e-06       0.000   2.289e-06      -5.640
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 2.289e-06   2.289e-06
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.317      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e-00
+                 Total alkalinity (eq/kg)  =   1.065e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.065e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                2.289e-06
+	A                 2.289e-06   2.289e-06    -5.640    -5.640     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.784   -41.784     0.000
+O(0)             3.077e-09
+	O2                1.539e-09   1.539e-09    -8.813    -8.813     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.63  -41.78   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -5.85   -8.81   -2.96  O2
+
+Time 120. Cell 47: x=          0.092	y=              0	z=              0
+Using solution 47.
+Using surface 47.
+Using kinetics 47.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           1.199e-08   2.128e-07   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             1.493e-06       0.000   1.493e-06      -5.826
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 1.493e-06   1.493e-06
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.313      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e-00
+                 Total alkalinity (eq/kg)  =   1.065e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.065e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                1.493e-06
+	A                 1.493e-06   1.493e-06    -5.826    -5.826     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.776   -41.776     0.000
+O(0)             2.968e-09
+	O2                1.484e-09   1.484e-09    -8.829    -8.829     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.63  -41.78   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -5.87   -8.83   -2.96  O2
+
+Time 120. Cell 48: x=          0.094	y=              0	z=              0
+Using solution 48.
+Using surface 48.
+Using kinetics 48.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           7.691e-09   1.310e-07   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             9.575e-07       0.000   9.575e-07      -6.019
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 9.575e-07   9.575e-07
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.309      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e-00
+                 Total alkalinity (eq/kg)  =   1.065e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.065e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                9.575e-07
+	A                 9.575e-07   9.575e-07    -6.019    -6.019     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.767   -41.767     0.000
+O(0)             2.852e-09
+	O2                1.426e-09   1.426e-09    -8.846    -8.846     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.62  -41.77   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -5.89   -8.85   -2.96  O2
+
+Time 120. Cell 49: x=          0.096	y=              0	z=              0
+Using solution 49.
+Using surface 49.
+Using kinetics 49.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           4.855e-09   7.946e-08   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             6.045e-07       0.000   6.045e-07      -6.219
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 6.045e-07   6.045e-07
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.304      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.066e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.066e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                6.045e-07
+	A                 6.045e-07   6.045e-07    -6.219    -6.219     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.758   -41.758     0.000
+O(0)             2.738e-09
+	O2                1.369e-09   1.369e-09    -8.864    -8.864     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.61  -41.76   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -5.90   -8.86   -2.96  O2
+
+Time 120. Cell 50: x=          0.098	y=              0	z=              0
+Using solution 50.
+Using surface 50.
+Using kinetics 50.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           3.017e-09   4.751e-08   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             3.756e-07       0.000   3.756e-07      -6.425
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 3.756e-07   3.756e-07
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.300      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.066e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.066e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                3.756e-07
+	A                 3.756e-07   3.756e-07    -6.425    -6.425     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.750   -41.750     0.000
+O(0)             2.635e-09
+	O2                1.317e-09   1.317e-09    -8.880    -8.880     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.60  -41.75   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -5.92   -8.88   -2.96  O2
+
+Time 120. Cell 51: x=            0.1	y=              0	z=              0
+Using solution 51.
+Using surface 51.
+Using kinetics 51.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           1.846e-09   2.801e-08   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             2.298e-07       0.000   2.298e-07      -6.639
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 2.298e-07   2.298e-07
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.296      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.066e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.066e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                2.298e-07
+	A                 2.298e-07   2.298e-07    -6.639    -6.639     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.743   -41.743     0.000
+O(0)             2.551e-09
+	O2                1.276e-09   1.276e-09    -8.894    -8.894     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.59  -41.74   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -5.93   -8.89   -2.96  O2
+
+Time 120. Cell 52: x=          0.102	y=              0	z=              0
+Using solution 52.
+Using surface 52.
+Using kinetics 52.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           1.112e-09   1.628e-08   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             1.385e-07       0.000   1.385e-07      -6.859
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 1.385e-07   1.385e-07
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.294      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.067e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.067e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                1.385e-07
+	A                 1.385e-07   1.385e-07    -6.859    -6.859     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.738   -41.738     0.000
+O(0)             2.496e-09
+	O2                1.248e-09   1.248e-09    -8.904    -8.904     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.59  -41.74   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -5.94   -8.90   -2.96  O2
+
+Time 120. Cell 53: x=          0.104	y=              0	z=              0
+Using solution 53.
+Using surface 53.
+Using kinetics 53.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           6.602e-10   9.335e-09   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             8.219e-08       0.000   8.219e-08      -7.085
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 8.219e-08   8.219e-08
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.293      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.067e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.067e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                8.219e-08
+	A                 8.219e-08   8.219e-08    -7.085    -7.085     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.736   -41.736     0.000
+O(0)             2.472e-09
+	O2                1.236e-09   1.236e-09    -8.908    -8.908     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.59  -41.74   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -5.95   -8.91   -2.96  O2
+
+Time 120. Cell 54: x=          0.106	y=              0	z=              0
+Using solution 54.
+Using surface 54.
+Using kinetics 54.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           3.861e-10   5.280e-09   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             4.807e-08       0.000   4.807e-08      -7.318
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 4.807e-08   4.807e-08
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.293      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.068e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.068e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                4.807e-08
+	A                 4.807e-08   4.807e-08    -7.318    -7.318     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.737   -41.737     0.000
+O(0)             2.483e-09
+	O2                1.242e-09   1.242e-09    -8.906    -8.906     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.59  -41.74   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -5.95   -8.91   -2.96  O2
+
+Time 120. Cell 55: x=          0.108	y=              0	z=              0
+Using solution 55.
+Using surface 55.
+Using kinetics 55.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           2.225e-10   2.946e-09   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             2.770e-08       0.000   2.770e-08      -7.557
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 2.770e-08   2.770e-08
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.295      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.069e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.069e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                2.770e-08
+	A                 2.770e-08   2.770e-08    -7.557    -7.557     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.741   -41.741     0.000
+O(0)             2.526e-09
+	O2                1.263e-09   1.263e-09    -8.899    -8.899     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.59  -41.74   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -5.94   -8.90   -2.96  O2
+
+Time 120. Cell 56: x=           0.11	y=              0	z=              0
+Using solution 56.
+Using surface 56.
+Using kinetics 56.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           1.264e-10   1.622e-09   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             1.574e-08       0.000   1.574e-08      -7.803
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 1.574e-08   1.574e-08
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.298      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.069e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.069e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                1.574e-08
+	A                 1.574e-08   1.574e-08    -7.803    -7.803     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.747   -41.747     0.000
+O(0)             2.598e-09
+	O2                1.299e-09   1.299e-09    -8.886    -8.886     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.60  -41.75   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -5.93   -8.89   -2.96  O2
+
+Time 120. Cell 57: x=          0.112	y=              0	z=              0
+Using solution 57.
+Using surface 57.
+Using kinetics 57.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           7.083e-11   8.817e-10   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             8.819e-09       0.000   8.819e-09      -8.055
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 8.819e-09   8.819e-09
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.302      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.070e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.070e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                8.819e-09
+	A                 8.819e-09   8.819e-09    -8.055    -8.055     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.754   -41.754     0.000
+O(0)             2.691e-09
+	O2                1.345e-09   1.345e-09    -8.871    -8.871     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.60  -41.75   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -5.91   -8.87   -2.96  O2
+
+Time 120. Cell 58: x=          0.114	y=              0	z=              0
+Using solution 58.
+Using surface 58.
+Using kinetics 58.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           3.914e-11   4.731e-10   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             4.873e-09       0.000   4.873e-09      -8.312
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 4.873e-09   4.873e-09
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.306      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.071e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.071e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                4.873e-09
+	A                 4.873e-09   4.873e-09    -8.312    -8.312     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.763   -41.763     0.000
+O(0)             2.797e-09
+	O2                1.399e-09   1.399e-09    -8.854    -8.854     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.61  -41.76   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -5.89   -8.85   -2.96  O2
+
+Time 120. Cell 59: x=          0.116	y=              0	z=              0
+Using solution 59.
+Using surface 59.
+Using kinetics 59.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           2.133e-11   2.506e-10   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             2.656e-09       0.000   2.656e-09      -8.576
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 2.656e-09   2.656e-09
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.311      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.072e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.072e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                2.656e-09
+	A                 2.656e-09   2.656e-09    -8.576    -8.576     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.771   -41.771     0.000
+O(0)             2.910e-09
+	O2                1.455e-09   1.455e-09    -8.837    -8.837     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.62  -41.77   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -5.88   -8.84   -2.96  O2
+
+Time 120. Cell 60: x=          0.118	y=              0	z=              0
+Using solution 60.
+Using surface 60.
+Using kinetics 60.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           1.147e-11   1.311e-10   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             1.429e-09       0.000   1.429e-09      -8.845
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 1.429e-09   1.429e-09
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.315      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.073e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.073e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                1.429e-09
+	A                 1.429e-09   1.429e-09    -8.845    -8.845     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.780   -41.780     0.000
+O(0)             3.020e-09
+	O2                1.510e-09   1.510e-09    -8.821    -8.821     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.63  -41.78   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -5.86   -8.82   -2.96  O2
+
+Time 120. Cell 61: x=           0.12	y=              0	z=              0
+Using solution 61.
+Using surface 61.
+Using kinetics 61.
+
+Kinetics.
+
+	Time:      120 seconds
+	Time step: 0.4 seconds
+
+	Rate name       Delta Moles Total Moles   Reactant        Coefficient
+
+	A_decay           7.982e-12   8.959e-11   A                         1
+
+------------------------------Surface composition------------------------------
+
+Surf          
+	  0.000e+00  Surface charge, eq
+Surf          
+	  1.000e+10  moles
+	                                   Mole                     Log
+	Species               Moles    Fraction    Molality    Molality
+
+	Surf              1.000e+10       1.000   1.000e+10      10.000
+	SurfA             9.938e-10       0.000   9.938e-10      -9.003
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	A                 9.938e-10   9.938e-10
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.000      Charge balance
+                                       pe  =  12.317      Adjusted to redox equilibrium
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.073e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -1.073e-10
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
+                               Iterations  =   5
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+	                                           Log       Log         Log 
+	Species            Molality    Activity  Molality  Activity     Gamma
+
+	OH-               1.001e-07   1.001e-07    -6.999    -7.000    -0.000
+	H+                1.000e-07   1.000e-07    -7.000    -7.000    -0.000
+	H2O               5.551e+01   1.000e-00     1.744    -0.000     0.000
+A                9.938e-10
+	A                 9.938e-10   9.938e-10    -9.003    -9.003     0.000
+H(0)             0.000e+00
+	H2                0.000e+00   0.000e+00   -41.783   -41.783     0.000
+O(0)             3.074e-09
+	O2                1.537e-09   1.537e-09    -8.813    -8.813     0.000
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -38.63  -41.78   -3.15  H2
+	H2O(g)           -1.51   -0.00    1.51  H2O
+	O2(g)            -5.85   -8.81   -2.96  O2
+

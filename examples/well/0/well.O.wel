@@ -1,0 +1,97 @@
+
+
+                          ..       Well flow Lohman, 1972, p. 19                                          
+                          .                                                                               
+
+
+                                        *** Well Data ***
+     -------------------------------------------------------------------------------------------------------------------
+     Well       Location            Screen Interval          Screen Interval              Calculation     Well Diameter
+     No.      X          Y           Z1          Z2       Top Depth  Bottom Depth             Type             (m)
+             (m)        (m)         (m)        (m)        (m)         (m)
+     -------------------------------------------------------------------------------------------------------------------
+       1     610.       610.      -30.5      0.000                                                                                                                                                                                                              11               0.305    
+       2     671.       610.      -3.05      0.000                                                                                                                                                                                                              11               0.305    
+       3     732.       610.      -3.05      0.000                                                                                                                                                                                                              11               0.305    
+
+  Well No.   1
+    Specified Flow Rate                              
+    Allocation by Mobility                           
+    Explicit Layer Rates                    
+
+  Well No.   2
+    Specified Flow Rate                              
+    Allocation by Mobility                           
+    Explicit Layer Rates                    
+
+  Well No.   3
+    Specified Flow Rate                              
+    Allocation by Mobility                           
+    Explicit Layer Rates                    
+
+                    Node Layer   Effective Ambient Permeability           Well Flow Factor
+                         No.      Below the node  Above the node
+                                      (m^2)           (m^2)                    (m^3)
+        ------------------------------------------------------------------------------------------
+
+        Well No.   1
+                         2           4.928E-11          0.000E+00             1.117E-09
+                         1           0.000E+00          4.928E-11             1.117E-09
+
+        Well No.   2
+                         2           4.928E-11          0.000E+00             2.233E-10
+
+        Well No.   3
+                         2           4.928E-11          0.000E+00             2.233E-10
+
+
+                                        *** Transient Well Data ***
+          Well      Flow Rate     Surface     Well Datum     Head          Injection or Limiting
+          No.        (m ^3/min)     Head          Head      Limited?          Solution Index No.
+                                   (m )          (m )                              (-)
+        ------------------------------------------------------------------------------------------
+            1      -1.888                                    No                        
+            2      0.0000                                    No                        
+            3      0.0000                                    No                        
+
+                              *** Output at End of Time Step No.    20 ***
+
+     Time .......................................................    10.0      (min)
+
+                                        *** Well Summary ***
+
+                           Flow Rates (positive is injection)
+  Well                    Fluid
+  No.                    (kg/min)
+ ----------------------------------------------------------------------
+   1                      -1888.    
+   2                      0.0000    
+   3                      0.0000    
+ ----------------------------------------------------------------------
+ Total - Production        1888.                                  
+       - Injection        0.0000                                  
+
+                Cumulative Production   Cumulative Injection
+  Well                 Fluid                    Fluid
+  No.                  (kg)                     (kg)
+ ------------------------------------------------------------------------------------------
+    1                1.8880E+04               0.0000    
+    2                0.0000                   0.0000    
+    3                0.0000                   0.0000    
+ ------------------------------------------------------------------------------------------
+ Total - Production  1.8880E+04
+       - Injection                            0.0000    
+
+
+          Current Fluid Production(-)/Injection(+) Rates per layer (kg/min)
+
+ Layer                         Well Sequence Number
+ No.        1           2           3
+ ------------------------------------------------------------------------------------------------------------------------
+   2     -944.       0.000       0.000    
+   1     -944.                            
+
+
+                                       ***** Simulation Completed *****
+               Last time value calculated ......................................  10.00     (min)
+               Last time step index ............................................      20

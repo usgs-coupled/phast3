@@ -1,0 +1,353 @@
+Running PHASTINPUT.
+
+Processing flow and transport data file.
+
+	TITLE
+	        Simple river
+	SOLUTE_TRANSPORT   false
+	STEADY_FLOW     true
+	UNITS
+	        time           sec
+	        horizontal     m
+	        vertical       m
+	        head           m
+	        hydraulic_conductivity      m/s
+	        specific_storage       1/m
+	        flux           m/s
+	        river_k        m/s
+	        river_thickness m
+	GRID
+	        uniform X 
+	                0 400 17
+	        uniform Y
+	                0 400 17
+	        uniform Z 
+	                0 275 12
+	        print_orientation XY
+	MEDIA
+	        zone   0 0 0 400 400 275
+	                kx     .01
+	                ky     .01
+	                kz     .01
+	                porosity       .15
+	                storage        10.E-10 
+	SPECIFIED_HEAD_BC
+	        zone   0 0 0 400 0 275
+	                head   0 200
+	        zone   0 400 0 400 400 275
+	                head   0   200
+	FREE_SURFACE_BC true
+	HEAD_IC
+	        zone   0 0 0 400 400 275
+	                head   200
+	RIVER 1 Platte River
+	        point  0       300
+	                bed_k          .01
+	                bed_thickness  1.
+	                depth          5.0
+	                width          20.
+	                head           0	240.
+	        point  200     300
+	        point  200     0
+	                bed_k          .01
+	                bed_thickness  1.
+	                depth          5.0
+	                width          20.
+	                head           0	200.
+	SOLUTION_METHOD
+	        iterative_solver
+	        space_differencing  0
+	        time_differencing   1
+	TIME_CONTROL
+	        time_step      0	1000.
+	        time_change		5000.
+	PRINT_FREQUENCY
+		0
+	        progress_statistics       1 step
+	        xyz_head       5 step
+	        xyz_velocity   5 step
+	END
+WARNING: River is defined for specified-value cell; river will be ignored for cell 3187 (8,0,11) (200,0,275).
+
+PHASTINPUT done.
+
+Running PHAST.
+
+.        Simple river
+.
+Reading static data for flow and transport simulation
+A4 array dimension requirement (D4ZGCG iterative solver)......... NRAL .        0 elements
+Primary storage requirement (D4ZGCG iterative solver)............ NPRIST    32946 elements
+Overhead storage requirement (D4ZGCG iterative solver)........... NOHST .  180830 elements
+                    *** Calculation Information ***
+          Direction index for d4 zig-zag renumbering ............ IDIR..    1
+          Incomplete LU [f] or modified ILU [t] factorization ... MILU..     T
+          Number of search directions before restart ............ NSDR..   10
+          Tolerance on iterative solution ....................... EPSSLV 1.0E-10
+
+Beginning flow calculation for steady-state i.c.
+Reading transient data for simulation: Set  1
+Automatic Time Step Control Parameters for Steady Flow
+Maximum pressure change allowed per time step.................... DPTAS    8.09E+05  (Pa )
+Minimum time step required ...................................... DTIMMN    1.0      (s  )
+Maximum time step allowed ....................................... DTIMMX   1.00E+06(s  )
+
+Beginning steady state time step no.      1
+     Current time step length ...................................    1.00     (s)
+          No. of solver iterations, Relative residual:   14  7.9706478E-11
+     Maximum change in potentiometric head ..    2.9459E-01     (m) at location ( 0.000    ,  300.    ,  200.    )(m)
+     Fractional flow residual ...............    1.9981E+00
+
+Beginning steady state time step no.      2
+     Current time step length ...................................    1.00     (s)
+          No. of solver iterations, Relative residual:   14  7.9845439E-11
+     Maximum change in potentiometric head ..    2.9328E-01     (m) at location ( 0.000    ,  300.    ,  200.    )(m)
+     Fractional flow residual ...............    1.9962E+00
+
+Beginning steady state time step no.      3
+     Current time step length ...................................    2.00     (s)
+          No. of solver iterations, Relative residual:   15  4.6604786E-11
+     Maximum change in potentiometric head ..    5.5356E-01     (m) at location ( 0.000    ,  300.    ,  200.    )(m)
+     Fractional flow residual ...............    1.9926E+00
+
+Beginning steady state time step no.      4
+     Current time step length ...................................    4.00     (s)
+          No. of solver iterations, Relative residual:   15  7.5183539E-11
+     Maximum change in potentiometric head ..    9.9404E-01     (m) at location ( 0.000    ,  300.    ,  200.    )(m)
+     Fractional flow residual ...............    1.9859E+00
+
+Beginning steady state time step no.      5
+     Current time step length ...................................    8.00     (s)
+          No. of solver iterations, Relative residual:   16  3.5944452E-11
+     Maximum change in potentiometric head ..    1.6451E+00     (m) at location ( 0.000    ,  300.    ,  200.    )(m)
+     Fractional flow residual ...............    1.9742E+00
+
+Beginning steady state time step no.      6
+     Current time step length ...................................    16.0     (s)
+          No. of solver iterations, Relative residual:   16  4.2253990E-11
+     Maximum change in potentiometric head ..    2.4249E+00     (m) at location ( 0.000    ,  300.    ,  200.    )(m)
+     Fractional flow residual ...............    1.9552E+00
+
+Beginning steady state time step no.      7
+     Current time step length ...................................    32.0     (s)
+          No. of solver iterations, Relative residual:   16  4.6141679E-11
+     Maximum change in potentiometric head ..    3.1226E+00     (m) at location ( 0.000    ,  300.    ,  200.    )(m)
+     Fractional flow residual ...............    1.9259E+00
+
+Beginning steady state time step no.      8
+     Current time step length ...................................    64.0     (s)
+          No. of solver iterations, Relative residual:   16  4.9178571E-11
+     Maximum change in potentiometric head ..    3.5550E+00     (m) at location ( 0.000    ,  300.    ,  200.    )(m)
+     Fractional flow residual ...............    1.8787E+00
+
+Beginning steady state time step no.      9
+     Current time step length ...................................    128.     (s)
+          No. of solver iterations, Relative residual:   16  4.6647029E-11
+     Maximum change in potentiometric head ..    4.7874E+00     (m) at location ( 0.000    ,  300.    ,  225.    )(m)
+     Fractional flow residual ...............    1.8052E+00
+
+Beginning steady state time step no.     10
+     Current time step length ...................................    256.     (s)
+          No. of solver iterations, Relative residual:   16  5.7583806E-11
+     Maximum change in potentiometric head ..   -6.1294E+00     (m) at location (  25.0    ,  300.    ,  200.    )(m)
+     Fractional flow residual ...............    1.7134E+00
+
+Beginning steady state time step no.     11
+     Current time step length ...................................    512.     (s)
+          No. of solver iterations, Relative residual:   16  5.3492181E-11
+     Maximum change in potentiometric head ..   -5.3654E+00     (m) at location (  75.0    ,  300.    ,  200.    )(m)
+     Fractional flow residual ...............    1.5835E+00
+
+Beginning steady state time step no.     12
+     Current time step length ...................................   1.024E+03 (s)
+          No. of solver iterations, Relative residual:   16  4.4369388E-11
+     Maximum change in potentiometric head ..    4.6912E+00     (m) at location ( 0.000    ,  300.    ,  225.    )(m)
+     Fractional flow residual ...............    1.4290E+00
+
+Beginning steady state time step no.     13
+     Current time step length ...................................   2.048E+03 (s)
+          No. of solver iterations, Relative residual:   16  8.1783889E-11
+     Maximum change in potentiometric head ..    4.5563E+00     (m) at location ( 0.000    ,  300.    ,  225.    )(m)
+     Fractional flow residual ...............    1.2509E+00
+
+Beginning steady state time step no.     14
+     Current time step length ...................................   4.096E+03 (s)
+          No. of solver iterations, Relative residual:   17  3.7499532E-11
+     Maximum change in potentiometric head ..    3.8251E+00     (m) at location (  50.0    ,  300.    ,  225.    )(m)
+     Fractional flow residual ...............    1.0287E+00
+
+Beginning steady state time step no.     15
+     Current time step length ...................................   8.192E+03 (s)
+          No. of solver iterations, Relative residual:   17  4.1420669E-11
+     Maximum change in potentiometric head ..   -6.1273E+00     (m) at location ( 0.000    ,  300.    ,  225.    )(m)
+     Fractional flow residual ...............    8.3089E-01
+
+Beginning steady state time step no.     16
+     Current time step length ...................................   1.638E+04 (s)
+          No. of solver iterations, Relative residual:   17  9.7037372E-11
+     Maximum change in potentiometric head ..   -3.0868E+00     (m) at location (  200.    ,  250.    ,  200.    )(m)
+     Fractional flow residual ...............    6.5322E-01
+
+Beginning steady state time step no.     17
+     Current time step length ...................................   3.277E+04 (s)
+          No. of solver iterations, Relative residual:   17  8.0836307E-11
+     Maximum change in potentiometric head ..   -2.7291E+00     (m) at location (  175.    ,  300.    ,  200.    )(m)
+     Fractional flow residual ...............    5.9797E-01
+
+Beginning steady state time step no.     18
+     Current time step length ...................................   6.554E+04 (s)
+          No. of solver iterations, Relative residual:   17  4.3302190E-11
+     Maximum change in potentiometric head ..    2.1263E+00     (m) at location (  125.    ,  300.    ,  225.    )(m)
+     Fractional flow residual ...............    5.1255E-01
+
+Beginning steady state time step no.     19
+     Current time step length ...................................   1.311E+05 (s)
+          No. of solver iterations, Relative residual:   18  4.0189939E-11
+     Maximum change in potentiometric head ..   -3.0813E+00     (m) at location (  200.    ,  275.    ,  200.    )(m)
+     Fractional flow residual ...............    4.2226E-01
+
+Beginning steady state time step no.     20
+     Current time step length ...................................   2.621E+05 (s)
+          No. of solver iterations, Relative residual:   16  8.0089338E-11
+     Maximum change in potentiometric head ..    1.6016E+00     (m) at location (  150.    ,  300.    ,  225.    )(m)
+     Fractional flow residual ...............    3.6536E-01
+
+Beginning steady state time step no.     21
+     Current time step length ...................................   5.243E+05 (s)
+          No. of solver iterations, Relative residual:   17  3.3316979E-11
+     Maximum change in potentiometric head ..    1.4888E+00     (m) at location (  150.    ,  300.    ,  225.    )(m)
+     Fractional flow residual ...............    2.5136E-01
+
+Beginning steady state time step no.     22
+     Current time step length ...................................   1.000E+06 (s)
+          No. of solver iterations, Relative residual:   17  5.3742716E-11
+     Maximum change in potentiometric head ..    1.3207E+00     (m) at location (  175.    ,  300.    ,  225.    )(m)
+     Fractional flow residual ...............    2.3275E-01
+
+Beginning steady state time step no.     23
+     Current time step length ...................................   1.000E+06 (s)
+          No. of solver iterations, Relative residual:   17  5.0731418E-11
+     Maximum change in potentiometric head ..    1.2563E+00     (m) at location (  175.    ,  300.    ,  225.    )(m)
+     Fractional flow residual ...............    2.2177E-01
+
+Beginning steady state time step no.     24
+     Current time step length ...................................   1.000E+06 (s)
+          No. of solver iterations, Relative residual:   17  4.9328453E-11
+     Maximum change in potentiometric head ..    1.1917E+00     (m) at location (  175.    ,  300.    ,  225.    )(m)
+     Fractional flow residual ...............    2.1089E-01
+
+Beginning steady state time step no.     25
+     Current time step length ...................................   1.000E+06 (s)
+          No. of solver iterations, Relative residual:   17  5.4360469E-11
+     Maximum change in potentiometric head ..   -3.3273E+00     (m) at location (  200.    ,  300.    ,  200.    )(m)
+     Fractional flow residual ...............    2.4503E-01
+
+Beginning steady state time step no.     26
+     Current time step length ...................................   1.000E+06 (s)
+          No. of solver iterations, Relative residual:   17  6.4685370E-11
+     Maximum change in potentiometric head ..    1.0560E+00     (m) at location (  200.    ,  300.    ,  225.    )(m)
+     Fractional flow residual ...............    9.9969E-02
+
+Beginning steady state time step no.     27
+     Current time step length ...................................   1.000E+06 (s)
+          No. of solver iterations, Relative residual:   16  9.8808567E-11
+     Maximum change in potentiometric head ..    1.0211E+00     (m) at location (  200.    ,  300.    ,  225.    )(m)
+     Fractional flow residual ...............    8.7172E-02
+
+Beginning steady state time step no.     28
+     Current time step length ...................................   1.000E+06 (s)
+          No. of solver iterations, Relative residual:   16  9.5618274E-11
+     Maximum change in potentiometric head ..    9.6782E-01     (m) at location (  200.    ,  300.    ,  225.    )(m)
+     Fractional flow residual ...............    8.2614E-02
+
+Beginning steady state time step no.     29
+     Current time step length ...................................   1.000E+06 (s)
+          No. of solver iterations, Relative residual:   16  9.6164716E-11
+     Maximum change in potentiometric head ..    9.1312E-01     (m) at location (  200.    ,  300.    ,  225.    )(m)
+     Fractional flow residual ...............    7.7953E-02
+
+Beginning steady state time step no.     30
+     Current time step length ...................................   1.000E+06 (s)
+          No. of solver iterations, Relative residual:   16  9.6303971E-11
+     Maximum change in potentiometric head ..    8.5825E-01     (m) at location (  200.    ,  300.    ,  225.    )(m)
+     Fractional flow residual ...............    7.3287E-02
+
+Beginning steady state time step no.     31
+     Current time step length ...................................   1.000E+06 (s)
+          No. of solver iterations, Relative residual:   16  9.6431156E-11
+     Maximum change in potentiometric head ..    8.0380E-01     (m) at location (  200.    ,  300.    ,  225.    )(m)
+     Fractional flow residual ...............    6.8661E-02
+
+Beginning steady state time step no.     32
+     Current time step length ...................................   1.000E+06 (s)
+          No. of solver iterations, Relative residual:   16  9.6550444E-11
+     Maximum change in potentiometric head ..    7.5028E-01     (m) at location (  200.    ,  300.    ,  225.    )(m)
+     Fractional flow residual ...............    6.4118E-02
+
+Beginning steady state time step no.     33
+     Current time step length ...................................   1.000E+06 (s)
+          No. of solver iterations, Relative residual:   16  9.6661755E-11
+     Maximum change in potentiometric head ..    6.9814E-01     (m) at location (  200.    ,  300.    ,  225.    )(m)
+     Fractional flow residual ...............    5.9692E-02
+
+Beginning steady state time step no.     34
+     Current time step length ...................................   1.000E+06 (s)
+          No. of solver iterations, Relative residual:   16  9.6765286E-11
+     Maximum change in potentiometric head ..    6.4774E-01     (m) at location (  200.    ,  300.    ,  225.    )(m)
+     Fractional flow residual ...............    5.5413E-02
+
+Beginning steady state time step no.     35
+     Current time step length ...................................   1.000E+06 (s)
+          No. of solver iterations, Relative residual:   16  9.6861294E-11
+     Maximum change in potentiometric head ..    5.9935E-01     (m) at location (  200.    ,  300.    ,  225.    )(m)
+     Fractional flow residual ...............    5.1303E-02
+
+Beginning steady state time step no.     36
+     Current time step length ...................................   1.000E+06 (s)
+          No. of solver iterations, Relative residual:   16  9.6950082E-11
+     Maximum change in potentiometric head ..    5.5320E-01     (m) at location (  200.    ,  300.    ,  225.    )(m)
+     Fractional flow residual ...............    4.1310E-02
+
+Beginning steady state time step no.     37
+     Current time step length ...................................   1.000E+06 (s)
+          No. of solver iterations, Relative residual:   16  9.6703082E-11
+     Maximum change in potentiometric head ..    4.4289E-01     (m) at location (  200.    ,  300.    ,  225.    )(m)
+     Fractional flow residual ...............    2.5543E-02
+
+Beginning steady state time step no.     38
+     Current time step length ...................................   1.000E+06 (s)
+          No. of solver iterations, Relative residual:   16  9.5978609E-11
+     Maximum change in potentiometric head ..    2.7150E-01     (m) at location (  200.    ,  300.    ,  225.    )(m)
+     Fractional flow residual ...............    1.5322E-02
+
+Beginning steady state time step no.     39
+     Current time step length ...................................   1.000E+06 (s)
+          No. of solver iterations, Relative residual:   16  9.5889256E-11
+     Maximum change in potentiometric head ..    1.6191E-01     (m) at location (  200.    ,  300.    ,  225.    )(m)
+     Fractional flow residual ...............    9.3427E-07
+
+Beginning steady state time step no.     40
+     Current time step length ...................................   1.000E+06 (s)
+          No. of solver iterations, Relative residual:   17  9.1738152E-11
+     Maximum change in potentiometric head ..   -7.1907E-04     (m) at location (  200.    ,  300.    ,  200.    )(m)
+     Fractional flow residual ...............    1.5224E-08
+
+Beginning steady state time step no.     41
+     Current time step length ...................................   1.000E+06 (s)
+          No. of solver iterations, Relative residual:   18  4.0717101E-11
+     Maximum change in potentiometric head ..   -2.0103E-05     (m) at location (  200.    ,  325.    ,  200.    )(m)
+     Fractional flow residual ...............   -5.9138E-10
+
+Beginning steady state time step no.     42
+     Current time step length ...................................   1.000E+06 (s)
+          No. of solver iterations, Relative residual:   17  9.1510592E-11
+     Maximum change in potentiometric head ..    9.6001E-07     (m) at location (  200.    ,  300.    ,  200.    )(m)
+     Fractional flow residual ...............   -1.9977E-11
+
+Done with steady-state flow.
+     Time at which next set of transient parameters will be read .......... TIMCHG  5.000E+03  (s)
+Done with transient simulation.
+
+                             ***** Simulation Completed *****
+     Last time value calculated ...................................... 0.0000     (s)
+     Last time step index ............................................       0

@@ -1,0 +1,110 @@
+                                    ****************************************************
+                                    *                                                  *
+                                    *    PHAST: A Three Dimensional Flow and Solute    *
+                                    *         Reactive Transport Simulator             *
+                                    *         Version:RC3                    *
+                                    *                                                  *
+                                    ****************************************************
+
+
+
+
+
+
+                          .        One dimensional confined flow with leakage boundary condition          
+                          .        Hand calculation and HST                                               
+
+                         *** Fundamental Information ***
+                    Isothermal simulation
+                    No solute transport simulaton
+                    Cartesian coordinates
+                    Data is in metric units
+                    Time unit selected is seconds 
+
+          Direct D4 solver is selected
+
+                         *** Problem Dimension Information ***
+          Number of nodes in x-direction .................................. NX ...      5
+          Number of nodes in y-direction .................................. NY ...      5
+          Number of nodes in z-direction .................................. NZ ...      2
+          Total number of nodes ........................................... NXYZ .     50
+
+          Number of porous media zones .................................... NPMZ .     16
+          Number of specified pressure or mass fraction b.c. .............. NSBC .     10
+          Number of specified flux b.c. cells ............................. NFBC .      0
+          Number of leakage cells ......................................... NLBC .     10
+          Number of river leakage cells ................................... NRBC .      0
+          Number of wells ................................................. NWEL .      0
+
+          A4 array dimension requirement (D4 direct solver)................ NRAL .        0 elements
+ ------------------------------------------------------------------------------------------------------------------------
+
+
+                              ***  Static Data ***
+
+
+                              X-Direction Node Coordinates    (m)
+
+           1           2           3           4           5
+           0.00      100.00      200.00      300.00      400.00
+
+
+
+
+                              Y-Direction Node Coordinates   (m)
+
+           1           2           3           4           5
+           0.00      100.00      200.00      300.00      400.00
+
+
+
+
+                              Z-Direction Node Coordinates   (m)
+
+           1           2
+           0.00      100.00
+
+
+
+
+                              Z-Axis is Positive Vertically Upward
+
+
+                                        *** Fluid Properties ***
+                                             Physical
+                         Fluid compressibility ...................................... BP ...   0.00E+00  (1/Pa )
+
+                         Reference pressure for density ............................. P0 ..         0.0  (Pa )
+                         Reference temperature for density .......................... T0 ..        15.0  (Deg.C)
+                         Fluid density .............................................. DENF0  1000.0      (kg/m^3)
+
+                         Viscosity factor ........................................... VISFAC -1.000E-03
+
+                                        *** Calculation Information ***
+          Backwards-in-time (implicit) differencing for temporal derivative
+
+ ------------------------------------------------------------------------------------------------------------------------
+
+                    Initial fluid in region ...............................  2.400001E+09  (kg) ;  2.400001E+06  (m^3)
+
+ ------------------------------------------------------------------------------------------------------------------------
+ ------------------------------------------------------------------------------------------------------------------------
+
+
+                                        *** Transient Data ***
+
+     Time ..............................   0.000      (s  )
+
+
+                                        *** Calculation Information ***
+
+          Fixed time step length .......................................... DELTIM  4.320E+04  (s  )
+          Time at which next set of transient
+               parameters will be read .................................... TIMCHG  8.640E+04  (s)
+
+ ------------------------------------------------------------------------------------------------------------------------
+
+
+                                       ***** Simulation Completed *****
+               Last time value calculated ...................................... 8.6400E+04 (s)
+               Last time step index ............................................       2

@@ -1,0 +1,449 @@
+Running PHASTINPUT.
+
+Processing flow and transport data file.
+
+	TITLE
+	.       Central Oklahoma aquifer,
+	.       demonstration of PHAST
+	SOLUTE_TRANSPORT   true
+	UNITS
+	      time sec
+	      horizontal_grid meters
+	      vertical_grid meters
+	      head meters
+	      hydraulic_conductivity meters/seconds
+	      specific_storage 1/meters
+	      dispersivity meters
+	      flux meters/s
+	      leaky_hydraulic_conductivity meters/seconds
+	      leaky_thickness meters
+	      well_diameter in
+	      well_flow_rate liter/days
+	      river_bed_hydraulic_conductivity meters/seconds
+	      river_bed_thickness  meters
+	GRID
+	      uniform   X   0 1 2
+	      uniform   Y   0 1 2
+	      uniform   Z   0 4 5
+	      chemistry_dimensions XYZ
+	      print_orientation XY
+	MEDIA
+	      zone 0 0 0 1 1 10
+	            kx 1e-3
+	            ky 1e-3
+	            kz 1e-3
+	            porosity 0.1
+	            specific_storage 0
+	            longitudinal_dispersivity 0.1
+	            horizontal_dispersivity 0.1
+	            vertical_dispersivity 0.1
+	FREE_SURFACE_BC true
+	STEADY_FLOW false
+	      head_tolerance 1E-6
+	      flow_balance_tolerance 0.001
+	SOLUTION_METHOD
+	      iterative_solver false
+	      tolerance 1E-10
+	      save_directions 5
+	      maximum_iterations 500
+	      space_differencing 0
+	      time_differencing 1
+	      cross_dispersion false
+	HEAD_IC
+	      zone 0 0 0 1 1 10
+	            head 0.5
+	CHEMISTRY_IC
+	      zone 0 0 0 1 1 10
+	            solution 1
+	            surface 1
+		    exchange 1
+		    equilibrium_phases  1
+		    solid_solution    1
+		    gas_phase      1
+		    kinetics      1
+	PRINT_FREQUENCY
+		0
+	      bc_flow_rates		1 step
+	      boundary_conditions	false
+	      components		0
+	      conductances		0
+	      flow_balance		1 step
+	      force_chemistry_print	1 step
+	      hdf_chemistry		0
+	      hdf_heads		0 
+	      hdf_velocities		0 
+	      heads			end
+	      progress_statistics	0 
+	      save_final_heads		true
+	      velocities		end
+	      wells			0 
+	      xyz_chemistry		1 step
+	      xyz_components		0 
+	      xyz_heads		end
+	      xyz_velocities		end
+	      xyz_wells		0 years
+	FLUX_BC
+	      zone 0 0 4 1 1 4
+	            flux		 0	-0.01
+					 5	0.01
+	            associated_solution 0	2
+	TIME_CONTROL
+	      time_step 0	.0001 s
+			 .0002	1 s
+	      time_end 	10 s
+	END
+
+PHASTINPUT done.
+
+Running PHAST.
+
+Running PHREEQC for initial conditions.
+
+Processing database file.
+	SOLUTION_MASTER_SPECIES
+	SOLUTION_SPECIES
+	PHASES
+	EXCHANGE_MASTER_SPECIES
+	EXCHANGE_SPECIES
+	SURFACE_MASTER_SPECIES
+	SURFACE_SPECIES
+	RATES
+	END
+
+Processing chemical data file.
+	SOLUTION_MASTER_SPECIES
+	        A       A       0       A       1
+	SOLUTION_SPECIES
+	SURFACE_MASTER_SPECIES
+	        Surf    Surf
+	SURFACE_SPECIES
+	SOLUTION 1
+	END
+	SOLUTION 2
+	END
+	SURFACE 1
+	END
+	EQUILIBRIUM_PHASES 1
+	        Calcite  0 1
+	END
+	SOLID_SOLUTION 1
+	END
+	EXCHANGE 1              
+	END
+	GAS_PHASE 1
+	END
+	KINETICS 1
+	END
+	SELECTED_OUTPUT
+	USER_PUNCH
+	END
+PHREEQC done.
+..       Central Oklahoma aquifer,
+..       demonstration of PHAST
+Reading static data for flow and transport simulation
+A4 array dimension requirement (D4 direct solver)................ NRAL .        0 elements
+Primary storage requirement (D4 direct solver)................... NPRIST       72 elements
+Overhead storage requirement (D4 direct solver).................. NOHST .     191 elements
+                    *** Calculation Information ***
+Equilibration of cells for initial conditions.
+
+Beginning transient simulation.
+Reading transient data for simulation: Set  1
+     Time at which next set of transient parameters will be read .......... TIMCHG  2.000E-04  (s)
+
+Beginning time step no.      1
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          A
+          Al
+          Ba
+          Br
+          C
+          Ca
+          Cl
+          Fe
+          K
+          N
+          Na
+          S
+          Si
+          Sr
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     1
+     Time ..................................................   1.000E-04 (s)
+
+Beginning time step no.      2
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          A
+          Al
+          Ba
+          Br
+          C
+          Ca
+          Cl
+          Fe
+          K
+          N
+          Na
+          S
+          Si
+          Sr
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     2
+     Time ..................................................   2.000E-04 (s)
+Reading transient data for simulation: Set  2
+     Time at which next set of transient parameters will be read .......... TIMCHG   5.00      (s)
+
+Beginning time step no.      3
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          A
+          Al
+          Ba
+          Br
+          C
+          Ca
+          Cl
+          Fe
+          K
+          N
+          Na
+          S
+          Si
+          Sr
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     3
+     Time ..................................................    1.00     (s)
+
+Beginning time step no.      4
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          A
+          Al
+          Ba
+          Br
+          C
+          Ca
+          Cl
+          Fe
+          K
+          N
+          Na
+          S
+          Si
+          Sr
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     4
+     Time ..................................................    2.00     (s)
+
+Beginning time step no.      5
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          A
+          Al
+          Ba
+          Br
+          C
+          Ca
+          Cl
+          Fe
+          K
+          N
+          Na
+          S
+          Si
+          Sr
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     5
+     Time ..................................................    3.00     (s)
+
+Beginning time step no.      6
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          A
+          Al
+          Ba
+          Br
+          C
+          Ca
+          Cl
+          Fe
+          K
+          N
+          Na
+          S
+          Si
+          Sr
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     6
+     Time ..................................................    4.00     (s)
+
+Beginning time step no.      7
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          A
+          Al
+          Ba
+          Br
+          C
+          Ca
+          Cl
+          Fe
+          K
+          N
+          Na
+          S
+          Si
+          Sr
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     7
+     Time ..................................................    5.00     (s)
+Reading transient data for simulation: Set  3
+     Time at which next set of transient parameters will be read .......... TIMCHG   10.0      (s)
+
+Beginning time step no.      8
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          A
+          Al
+          Ba
+          Br
+          C
+          Ca
+          Cl
+          Fe
+          K
+          N
+          Na
+          S
+          Si
+          Sr
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     8
+     Time ..................................................    6.00     (s)
+
+Beginning time step no.      9
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          A
+          Al
+          Ba
+          Br
+          C
+          Ca
+          Cl
+          Fe
+          K
+          N
+          Na
+          S
+          Si
+          Sr
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     9
+     Time ..................................................    7.00     (s)
+
+Beginning time step no.     10
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          A
+          Al
+          Ba
+          Br
+          C
+          Ca
+          Cl
+          Fe
+          K
+          N
+          Na
+          S
+          Si
+          Sr
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    10
+     Time ..................................................    8.00     (s)
+
+Beginning time step no.     11
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          A
+          Al
+          Ba
+          Br
+          C
+          Ca
+          Cl
+          Fe
+          K
+          N
+          Na
+          S
+          Si
+          Sr
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    11
+     Time ..................................................    9.00     (s)
+
+Beginning time step no.     12
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          A
+          Al
+          Ba
+          Br
+          C
+          Ca
+          Cl
+          Fe
+          K
+          N
+          Na
+          S
+          Si
+          Sr
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    12
+     Time ..................................................    10.0     (s)
+Done with transient simulation.
+
+                             ***** Simulation Completed *****
+     Last time value calculated ......................................  10.00     (s)
+     Last time step index ............................................      12
