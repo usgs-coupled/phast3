@@ -62,6 +62,7 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 #define ERRPRT_C errprt_c_
 #define FORWARD_AND_BACK forward_and_back_
 #define LOGPRT_C logprt_c_
+#define ON_ERROR_CLEANUP_AND_EXIT on_error_cleanup_and_exit_
 #define PACK_FOR_HST pack_for_hst_
 #define PHREEQC_FREE phreeqc_free_
 #define PHREEQC_MAIN phreeqc_main_
@@ -91,6 +92,7 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 
 void ERRPRT_C(char *err_str, long l);
 void FORWARD_AND_BACK(int *initial_conditions, int *axes, int *nx, int *ny, int *nz);
+void ON_ERROR_CLEANUP_AND_EXIT(void);
 void PACK_FOR_HST(double *fraction, int *dim);
 void PHREEQC_FREE(int *solute);
 void PHREEQC_MAIN(int *solute, char *chemistry_name, char *database_name, char *prefix,
@@ -240,7 +242,6 @@ void PHREEQC_MAIN(int *solute, char *chemistry_name, char *database_name, char *
 		exit(1);
 		/*return errors;*/
 	}
-
 	if (mpi_myself == 0) {
 		output_msg(OUTPUT_ECHO, "Running PHAST.\n\n");
 	}
@@ -785,9 +786,6 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 	int n_user;
 	LDBLE kin_time;
 	static int write_headings = 1;
-
-
-	on_error_cleanup_and_exit();
 
 	pr.all = *print_out;
 /*
@@ -4033,7 +4031,7 @@ int mpi_unpack_surface(struct surface *surface_ptr, int *ints, int *ii, double *
 #endif
 
 
-void on_error_cleanup_and_exit(void)
+void ON_ERROR_CLEANUP_AND_EXIT(void)
 {
 	int errors;
 /*

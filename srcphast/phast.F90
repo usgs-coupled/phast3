@@ -59,6 +59,7 @@ PROGRAM phast
   ! ... Read memory allocation data
   CALL read1
   CALL phreeqc_main(solute, f1name, f2name, f3name, mpi_tasks, mpi_myself)
+  CALL on_error_cleanup_and_exit
   IF(.NOT.restrt) CALL init1
   CALL error1
   IF(errexi) GO TO 50
