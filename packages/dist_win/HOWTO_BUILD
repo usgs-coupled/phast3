@@ -1,0 +1,29 @@
+/////////////////////////////////////////////////////////////////////////
+//
+// Steps to build PHAST distribution
+//
+// Created: February 15, 2005
+//
+// Last Modified: $LastChangedDate$
+//
+/////////////////////////////////////////////////////////////////////////
+
+1. Run dist.sh to get phast-X.X.tar.gz
+  ie
+    time ../RPM/dist.sh -v 1.1 -r 175 -d 2/14/05 -pr trunk -win 2>&1 | tee dist.log
+    
+2. link build.sh to latest version
+  ie
+    ln build.sh phast-1.1-175.sh
+    
+3. cvs tag model viewer
+  ie
+    cvs tag version-1_1
+    
+4. Run build.sh to get Mv-X.X.tar.gz
+  ie
+    ./phast-1.1-175.sh cvsexport
+    
+5. Run build.sh to create phast-X.X-YYY-src.tar.bz2 and phast-X.X-YYY.tar.bz2
+  ie 
+    time ./phast-1.1-175.sh all 2>&1 | tee build.log
