@@ -109,10 +109,12 @@ function AddMEPath(szPathToAdd)
     string svPathRC2;       // RC2
     BOOL bFoundRC3;         // RC3
     string svPathRC3;       // RC3
+    BOOL bFound1_0;         // 1.0
+    string svPath1_0;       // 1.0
 	//{{
 	// ADD_NEW_VERSION_HERE
-    // BOOL bFound1_0;         // 1.0
-    // string svPath1_0        // 1.0
+    // BOOL bFound1_1;         // 1.1
+    // string svPath1_1;       // 1.1
 	//}}
 begin    
     if (!SYSINFO.WIN9X.bWinMe) then
@@ -133,10 +135,13 @@ begin
     // check for RC3
     bFoundRC3 = CheckForPreviousGUID(@GUID_RC3, svPathRC3); 
 
+    // check for 1.0
+    bFound1_0 = CheckForPreviousGUID(@GUID_1_0, svPath1_0);	
+
 	//{{
 	// ADD_NEW_VERSION_HERE
-    // check for 1.0
-    // bFound1_0 = CheckForPreviousGUID(@GUID_1_0, svPath1_0);	
+    // check for 1.1
+    // bFound1_1 = CheckForPreviousGUID(@GUID_1_1, svPath1_1);	
 	//}}
     
     svPathToAdd = szPathToAdd;
@@ -172,10 +177,13 @@ begin
             // RC3
             nPosFirst = FindFirstPosition(svCurrentPath, nPosFirst, bFoundRC3, svPathRC3);
 
-			//{{
-			// ADD_NEW_VERSION_HERE
             // 1.0
             // nPosFirst = FindFirstPosition(svCurrentPath, nPosFirst, bFound1_0, svPath1_0);
+
+			//{{
+			// ADD_NEW_VERSION_HERE
+            // 1.1
+            // nPosFirst = FindFirstPosition(svCurrentPath, nPosFirst, bFound1_1, svPath1_1);
 			//}}
 
             if ( StrLength( svCurrentPath ) > 0) then
@@ -239,10 +247,12 @@ function AddNTPath(szPathToAdd)
     string svPathRC2;       // RC2
     BOOL bFoundRC3;         // RC3
     string svPathRC3;       // RC3
+    BOOL bFound1_0;         // 1.0
+    string svPath1_0;       // 1.0
 	//{{
 	// ADD_NEW_VERSION_HERE
-    // BOOL bFound1_0;         // 1.0
-    // string svPath1_0        // 1.0
+    // BOOL bFound1_1;         // 1.1
+    // string svPath1_1;       // 1.1
 	//}}
 begin
     if (!SYSINFO.WINNT.bWinNT) then
@@ -263,10 +273,13 @@ begin
     // check for RC3
     bFoundRC3 = CheckForPreviousGUID(@GUID_RC3, svPathRC3);
 
+    // check for 1.0
+    bFound1_0 = CheckForPreviousGUID(@GUID_1_0, svPath1_0);	
+	
 	//{{
 	// ADD_NEW_VERSION_HERE
-    // check for 1.0
-    // bFound1_0 = CheckForPreviousGUID(@GUID_1_0, svPath1_0);	
+    // check for 1.1
+    // bFound1_1 = CheckForPreviousGUID(@GUID_1_1, svPath1_1);	
 	//}}
 
     svPathToAdd = szPathToAdd;
@@ -324,10 +337,13 @@ begin
             // RC3
             nPosFirst = FindFirstPosition(svCurrentPath, nPosFirst, bFoundRC3, svPathRC3);
 
+            // 1.0
+            nPosFirst = FindFirstPosition(svCurrentPath, nPosFirst, bFound1_0, svPath1_0);
+
 			//{{
 			// ADD_NEW_VERSION_HERE
-            // 1.0
-            // nPosFirst = FindFirstPosition(svCurrentPath, nPosFirst, bFound1_0, svPath1_0);
+            // 1.1
+            // nPosFirst = FindFirstPosition(svCurrentPath, nPosFirst, bFound1_1, svPath1_1);
 			//}}
 
             if ( StrLength( svCurrentPath ) > 0) then

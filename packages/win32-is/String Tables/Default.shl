@@ -37,6 +37,7 @@ ENTRY27=PHREEQC_PDF_SHORTCUT_TEXT
 ENTRY28=PHAST_PDF_SHORTCUT_TEXT
 ENTRY29=MV_MENU_FOLDER
 ENTRY30=GUID_1_0
+ENTRY31=GUID_1_1
 
 [TITLE_CAPTIONBAR]
 Comment=Do not delete. Setup requires this Identifier even if your script doesn't use it.
@@ -126,6 +127,9 @@ Comment=
 Comment=
 
 [GUID_1_0]
+Comment=
+
+[GUID_1_1]
 Comment=LATEST
 
 [LANGUAGE]
