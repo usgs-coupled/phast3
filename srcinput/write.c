@@ -823,15 +823,15 @@ int write_bc_static(void)
  */
 	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
 	output_msg(OUTPUT_HST,"C.....Free surface b.c.\n");
-	fprintf(hst_file,"C.2.20 .. FRESUR[T/F] ADJ_WR_RATIO[T/N]\n");
+	output_msg(OUTPUT_HST,"C.2.20 .. FRESUR[T/F] ADJ_WR_RATIO[T/N]\n");
 	if (free_surface == TRUE) {
 		if (steady_flow == FALSE && adjust_water_rock_ratio == TRUE) {
-			fprintf(hst_file, "    t    t\n");
+			output_msg(OUTPUT_HST, "    t    t\n");
 		} else {			
-			fprintf(hst_file, "    t    f\n");
+			output_msg(OUTPUT_HST, "    t    f\n");
 		}
 	} else {
-		fprintf(hst_file, "    f     f\n");
+		output_msg(OUTPUT_HST, "    f     f\n");
 	}
 
 	return(OK);

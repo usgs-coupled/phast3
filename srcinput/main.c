@@ -732,5 +732,11 @@ void initialize(void)
 	head_ic_file_warning = FALSE;
 	adjust_water_rock_ratio = TRUE;
 
+	time_step.count_properties = 0;
+	time_step.properties = NULL;
+
+	time_end = NULL;
+	count_time_end = 0;
+
 	return;
 }

@@ -1,3 +1,6 @@
+#ifndef _INC_TIME_HEADER_
+#define _INC_TIME_HEADER_
+
 #ifdef PHREEQC_IDENT
 static char const svnid[] = "$Id$";
 #endif
@@ -12,25 +15,26 @@ struct time_series {
 	struct property_time **properties;
 	int count_properties;
 };
-double *simulation_periods;
-int count_simulation_periods;
+EXTERNAL double *simulation_periods;
+EXTERNAL int count_simulation_periods;
 
-struct time_series print_velocity;
-struct time_series print_hdf_velocity;
-struct time_series print_xyz_velocity;
-struct time_series print_head;
-struct time_series print_hdf_head;
-struct time_series print_xyz_head;
-struct time_series print_force_chem;
-struct time_series print_hdf_chem;
-struct time_series print_xyz_chem;
-struct time_series print_comp;
-struct time_series print_xyz_comp;
-struct time_series print_wells;
-struct time_series print_xyz_wells;
-struct time_series print_statistics;
-struct time_series print_flow_balance;
-struct time_series print_bc_flow;
-struct time_series print_conductances;
-struct time_series print_bc;
+EXTERNAL struct time_series print_velocity;
+EXTERNAL struct time_series print_hdf_velocity;
+EXTERNAL struct time_series print_xyz_velocity;
+EXTERNAL struct time_series print_head;
+EXTERNAL struct time_series print_hdf_head;
+EXTERNAL struct time_series print_xyz_head;
+EXTERNAL struct time_series print_force_chem;
+EXTERNAL struct time_series print_hdf_chem;
+EXTERNAL struct time_series print_xyz_chem;
+EXTERNAL struct time_series print_comp;
+EXTERNAL struct time_series print_xyz_comp;
+EXTERNAL struct time_series print_wells;
+EXTERNAL struct time_series print_xyz_wells;
+EXTERNAL struct time_series print_statistics;
+EXTERNAL struct time_series print_flow_balance;
+EXTERNAL struct time_series print_bc_flow;
+EXTERNAL struct time_series print_conductances;
+EXTERNAL struct time_series print_bc;
 
+#endif

@@ -2,7 +2,11 @@
 #include "hstinpt.h"
 #include "message.h"
 #include "stddef.h"
+#if defined(__WPHAST__)
+#define STATIC
+#else
 #define STATIC static
+#endif
 static char const svnid[] = "$Id$";
 STATIC int next_keyword_or_option(const char **opt_list, int count_opt_list);
 STATIC int read_chemistry_ic(void);

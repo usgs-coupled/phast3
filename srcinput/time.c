@@ -35,8 +35,14 @@ struct time_series * time_series_read_property (char *ptr, const char **opt_list
 	/* read any remaining data on option line */
 	if (copy_token(token, &ptr1, &l) != EMPTY) {
 
-		if (property_time_read(next_char, &property_time_ptr, opt_list, count_opt_list, opt) == ERROR) return NULL;
-		if (time_series_add (ts_ptr, property_time_ptr) == ERROR) return NULL;
+		if (property_time_read(next_char, &property_time_ptr, opt_list, count_opt_list, opt) == ERROR) {
+			time_series_free(ts_ptr);
+			return NULL;
+		}
+		if (time_series_add (ts_ptr, property_time_ptr) == ERROR) {
+			time_series_free(ts_ptr);
+			return NULL;
+		}
 	} else {
 		*opt = get_option(opt_list, count_opt_list, &next_char);
 	}
@@ -47,8 +53,14 @@ struct time_series * time_series_read_property (char *ptr, const char **opt_list
 			break;
 		} 
 		next_char = line;
-		if (property_time_read(next_char, &property_time_ptr, opt_list, count_opt_list, opt) == ERROR) return NULL;
-		if (time_series_add (ts_ptr, property_time_ptr) == ERROR) return NULL;
+		if (property_time_read(next_char, &property_time_ptr, opt_list, count_opt_list, opt) == ERROR) {
+			time_series_free(ts_ptr);
+			return NULL;
+		}
+		if (time_series_add (ts_ptr, property_time_ptr) == ERROR) {
+			time_series_free(ts_ptr);
+			return NULL;
+		}
 	}
 	return(ts_ptr);
 }
