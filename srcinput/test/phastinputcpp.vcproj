@@ -167,7 +167,7 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat;f90;for;f;fpp">
 			<File
-				RelativePath="..\Parser.cpp">
+				RelativePath="Parser.cpp">
 				<FileConfiguration
 					Name="Release|Win32"
 					ExcludedFromBuild="TRUE">
@@ -188,7 +188,7 @@
 				RelativePath="..\check.c">
 			</File>
 			<File
-				RelativePath="..\driver.cpp">
+				RelativePath="driver.cpp">
 				<FileConfiguration
 					Name="Release|Win32"
 					ExcludedFromBuild="TRUE">
@@ -210,11 +210,6 @@
 			</File>
 			<File
 				RelativePath="..\main.c">
-				<FileConfiguration
-					Name="CPPDebug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\message.c">
@@ -248,7 +243,7 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;fi;fd">
 			<File
-				RelativePath="..\Parser.h">
+				RelativePath="Parser.h">
 			</File>
 			<File
 				RelativePath="..\getopt.h">

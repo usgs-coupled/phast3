@@ -2,9 +2,9 @@
 extern "C" {
 #endif
 
-#define EXTERNAL
+#define EXTERNAL extern
 //#define MAIN
-#include "hstinpt.h"
+#include "../hstinpt.h"
 #undef EXTERNAL
 //#undef MAIN 
 
@@ -48,6 +48,13 @@ int read_file_doubles(char *next_char, double **d, int *count_d, int *count_allo
 static CParser* g_pParser;
 #include <fstream> // std::ifstream
 #include <sstream> // std::istringstream
+
+////#include <stdlib.h>
+////#if defined(__WPHAST__)
+////#define _CRTDBG_MAP_ALLOC
+////#include <crtdbg.h>
+////#endif
+
 
 /* ----------------------------------------------------------------------
  *   MAIN
@@ -194,17 +201,17 @@ int main(int argc, char *argv[])
 	return(0);
 }
 
-/* ---------------------------------------------------------------------- */
-int get_logical_line(FILE *fp, int *l)
-/* ---------------------------------------------------------------------- */
-{
-	return g_pParser->get_logical_line(fp, l);
-}
+/////* ---------------------------------------------------------------------- */
+////int get_logical_line(FILE *fp, int *l)
+/////* ---------------------------------------------------------------------- */
+////{
+////	return g_pParser->get_logical_line(l);
+////}
 /* ---------------------------------------------------------------------- */
 int get_line(FILE *fp)
 /* ---------------------------------------------------------------------- */
 {
-	return g_pParser->get_line(fp);
+	return g_pParser->get_line();
 }
 /* ---------------------------------------------------------------------- */
 int read_file_doubles(char *next_char, double **d, int *count_d, int *count_alloc)
@@ -258,7 +265,7 @@ int read_file_doubles(char *next_char, double **d, int *count_d, int *count_allo
  *   read doubles
  */
 	for(;;) {
-		j = readDoubles.get_line(0);
+		j = readDoubles.get_line();
 		if (j == EMPTY) {
 			continue;
 		} else if (j == EOF) {
