@@ -36,7 +36,7 @@ USAGE="USAGE: ./dist.sh -v VERSION -r REVISION -d RELEASE_DATE \
 [-alpha ALPHA_NUM|-beta BETA_NUM|-rc RC_NUM] \
 [-zip]
  EXAMPLES: ./dist.sh -v 1.1 -r 150 -d 2/7/05
-           ./dist.sh -v 1.1 -r 150 -d 2/7/05 -pr trunk
+           ./dist.sh -v 1.1 -r 150 -d 2/7/05 -pr trunk"
 
 
 # Let's check and set all the arguments
@@ -63,7 +63,7 @@ do
   else
 
     case $ARG in
-      -v|-r|-rs|-pr|-beta|-rc|-alpha)
+      -v|-r|-rs|-pr|-beta|-rc|-alpha|-d)
         ARG_PREV=$ARG
         ;;
       -zip)
@@ -105,7 +105,7 @@ if [ -n "$ZIP" ] ; then
   EXTRA_EXPORT_OPTIONS="--native-eol CRLF"
 fi
 
-if [ -z "$VERSION" ] || [ -z "$REVISION" ] ; then
+if [ -z "$VERSION" ] || [ -z "$REVISION" ] || [ -z "$RDATE" ]; then
   echo " $USAGE"
   exit 1
 fi
@@ -144,7 +144,7 @@ echo "Exporting revision $REVISION of PHAST into sandbox..."
 	     "$DISTNAME")
 	     
 echo "Making examples clean"
-(cd "$DISTPATH/examples" && [ -f Makefile ] && make clean)
+(cd "$DISTPATH/examples" && [ -f Makefile ] && make TOPDIR=.. clean)
 
 echo "Cleaning up examples directory"
 rm -rf "$DISTPATH/examples/hosts"
@@ -218,8 +218,6 @@ else
   (cd "$DIST_SANDBOX" > /dev/null && zip -q -r - "$DISTNAME") > \
     "$DISTNAME.zip"
 fi
-echo "***END OF TEST***"
-exit 1
 echo "Removing sandbox..."
 rm -rf "$DIST_SANDBOX"
 
