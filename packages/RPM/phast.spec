@@ -98,8 +98,17 @@ mkdir -p  $RPM_BUILD_ROOT/%{_libdir}/phast-%{version}/`uname`
 ####rm -rf %{name}-%{version}
 ####find . -name '.cvsignore' -exec echo rm {} \;
 ####cd ..
+#
+# prep to run examples for archive
+#
 mkdir -p test
 cp -alr examples/* test/.
+
+#
+# prep to dist source files
+#
+tar xvzf $RPM_SOURCE_DIR/%{name}-%{version}.tar.gz %{name}-%{version}/src
+
 
 #
 # Linux /usr/bin/phast-ser
@@ -211,7 +220,7 @@ chmod 755 $RPM_BUILD_ROOT/%{_bindir}/phasthdf
 #
 for arg in test/*; do
   cd $arg
-  echo $RPM_BUILD_ROOT/%{_bindir}/phast `basename $arg`
+  $RPM_BUILD_ROOT/%{_bindir}/phast `basename $arg`
   cd ../..
 done
 tar cvzf $RPM_SOURCE_DIR/%{name}-%{version}-%{release}-`uname`-test.tar.gz test
@@ -221,8 +230,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%doc README examples database doc src
+%doc README examples database doc
 %{_bindir}/*
 %{_libdir}/*
+#
+# copy src files
+#
+mv %{name}-%{version}/src $RPM_BUILD_ROOT/%{_docdir}
 
 %changelog
