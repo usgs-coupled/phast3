@@ -1,12 +1,4 @@
-ifeq ($(USER), dlpark)
-  TOPDIR=/z/parkplace/home/dlpark/programs/phast
-endif
-ifeq ($(USER), charlton)
-  TOPDIR=/z/srv2rcolkr/home/charlton/programs/phast
-  LAM_RSH=ssh
-  export LAM_RSH
-endif
-
+TOPDIR=..
 TEST=$(TOPDIR)/examples
 PHAST_INPUT=$(TOPDIR)/srcinput/phastinput
 PHAST=$(TOPDIR)/srcphast/serial_absoft/phast
