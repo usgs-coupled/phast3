@@ -215,26 +215,12 @@ build() {
   ant -buildfile ./src/phasthdf/build.xml dist-Win32 && \
 # build merge/phast.exe (REBUILD forces the dependencies to be updated)
   msdev `cygpath -w ./src/phast/win32/phast.dsw` /MAKE "phast - Win32 merge" /REBUILD && \
+  cp ./src/phast/win32/phast.plg ./src/phast/win32/phast-merge.plg
 # build ser/phast.exe (REBUILD forces the dependencies to be updated)
   msdev `cygpath -w ./src/phast/win32/phast.dsw` /MAKE "phast - Win32 ser" /REBUILD && \
+  cp ./src/phast/win32/phast.plg ./src/phast/win32/phast-ser.plg
 # build modview.exe (REBUILD forces the dependencies to be updated)
   msdev `cygpath -w ./Mv/MvProject.dsw` /MAKE "ModelViewer - Win32 Release" /REBUILD )
-}
-
-dbuild() {
-  (cd ${objdir} && \
-# build phasthdf.exe
-  msdev `cygpath -w ./phastexport/phastexport.dsw` /MAKE "phastexport - Win32 Release" && \
-# build phastinput.exe
-  msdev `cygpath -w ./srcinput/win32/phastinput.dsw` /MAKE "phastinput - Win32 Release" && \
-# build phast.jar
-  ant -buildfile export/build.xml dist-Win32 && \
-# build merge/phast.exe
-  msdev `cygpath -w ./srcphast/win32/phast.dsw` /MAKE "phast - Win32 merge" && \
-# build ser/phast.exe
-  msdev `cygpath -w ./srcphast/win32/phast.dsw` /MAKE "phast - Win32 ser" && \
-# build modview.exe
-  dfdev `cygpath -w ./Mv/MvProject.dsw` /MAKE "ModelViewer - Win32 Release" )
 }
 
 
@@ -259,6 +245,7 @@ clean() {
 install() {
   (cd ${instdir} && \
 # create directory structure
+  /usr/bin/mkdir -p ${instdir}/logs && \
   /usr/bin/mkdir -p ${instdir}${prefix}/bin && \
   /usr/bin/mkdir -p ${instdir}${prefix}/doc && \
   /usr/bin/mkdir -p ${instdir}${prefix}/database && \
@@ -357,10 +344,22 @@ install() {
     ${IS_DEFINITIONS} ${IS_SWITCHES} && \
 # InstallShield build
   "${IS_BUILDER}" -p"${IS_INSTALLPROJECT}" -m"${IS_CURRENTBUILD}" && \
+# logs
+  /usr/bin/install -m 755 ${objdir}/src/phasthdf/win32/phastexport.plg \
+    ${instdir}/logs/. && \
+  /usr/bin/install -m 644 ${objdir}/src/phastinput/win32/phastinput.plg \
+    ${instdir}/logs/. && \
+  /usr/bin/install -m 644 ${objdir}/src/phast/win32/phast-ser.plg \
+    ${instdir}/logs/. && \
+  /usr/bin/install -m 644 ${objdir}/src/phast/win32/phast-mpich.plg \
+    ${instdir}/logs/. && \
+  /usr/bin/install -m 644 ${objdir}/Mv/ModelViewer/ModelViewer.plg \
+    ${instdir}/logs/. && \
   /usr/bin/install -m 644 "${objdir}/packages/win32-is/Media/SingleDisk/Log Files/"* \
-  ${instdir}/. && \
+  ${instdir}/logs/. && \
   /usr/bin/install -m 644 "${objdir}/packages/win32-is/Media/SingleDisk/Report Files/"* \
-  ${instdir}/. && \
+  ${instdir}/logs/. && \
+# the installation executable
   /usr/bin/install -m 755 "${objdir}/packages/win32-is/Media/SingleDisk/Disk Images/Disk1/setup.exe" \
     ${instdir}/${FULLPKG}.exe &&\
   run_examples )
@@ -373,7 +372,7 @@ run_examples() {
     fi
     cd ${arg}
     export TD="`cygpath -w -s "${instdir}${prefix}"`" && \
-    echo ${instdir}${prefix}/bin/${PKG}.bat `basename ${arg}`;
+    ${instdir}${prefix}/bin/${PKG}.bat `basename ${arg}`;
     if [ $? != 0 ] ; then
       exit $?;
     fi
@@ -404,14 +403,6 @@ mkpatch() {
     ${PKG}-${VER}-orig ${PKG}-${VER} > \
     ${srcinstdir}/${src_patch_name} ; \
   rm -rf ${PKG}-${VER}-orig )
-}
-
-##cvs -q diff -I ! -I .build -I .sinst -I Redist phast-1.0/
-dmkpatch() {
-  (cd ${topdir} && \
-  cvs -q diff -I ! -I '.build' -I '.inst' -I '.sinst' -I 'Redist' \
-    ${PKG}-${VER} > \
-    ${topdir}/${src_patch_name} )
 }
 
 spkg() {
