@@ -1,0 +1,2535 @@
+
+RCS file: RCS/README,v
+Working file: README
+head: 1.3
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.2
+	C_3: 1.2
+	C_2: 1.2
+keyword substitution: kv
+total revisions: 3
+=============================================================================
+
+RCS file: srcphast/RCS/abmult.f90,v
+Working file: srcphast/abmult.f90
+head: 1.1
+branch:
+locks: strict
+	dlpark: 1.1
+access list:
+symbolic names:
+	C_8: 1.1
+	C_7: 1.1
+	C_0_2_1: 1.1
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 1
+=============================================================================
+
+RCS file: srcphast/RCS/aplbce.f90,v
+Working file: srcphast/aplbce.f90
+head: 1.7
+branch:
+locks: strict
+	dlpark: 1.7
+access list:
+symbolic names:
+	C_8: 1.7
+	C_7: 1.7
+	C_0_2_1: 1.4
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 7
+=============================================================================
+
+RCS file: srcphast/RCS/aplbce.f90,v
+Working file: srcphast/aplbce.f90
+head: 1.7
+branch:
+locks: strict
+	dlpark: 1.7
+access list:
+symbolic names:
+	C_8: 1.7
+	C_7: 1.7
+	C_0_2_1: 1.4
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 7
+=============================================================================
+
+RCS file: srcphast/RCS/aplbce_ss_flow.f90,v
+Working file: srcphast/aplbce_ss_flow.f90
+head: 1.4
+branch:
+locks: strict
+	dlpark: 1.4
+access list:
+symbolic names:
+	C_8: 1.4
+	C_7: 1.4
+	C_0_2_1: 1.3
+	C_5: 1.1
+keyword substitution: kv
+total revisions: 4
+=============================================================================
+
+RCS file: srcphast/RCS/aplbci.f90,v
+Working file: srcphast/aplbci.f90
+head: 1.8
+branch:
+locks: strict
+	dlpark: 1.8
+access list:
+symbolic names:
+	C_8: 1.8
+	C_7: 1.8
+	C_0_2_1: 1.4
+	C_5: 1.2
+	C_3: 1.2
+	C_2: 1.2
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 8
+=============================================================================
+
+RCS file: srcphast/RCS/armult.f90,v
+Working file: srcphast/armult.f90
+head: 1.1
+branch:
+locks: strict
+	dlpark: 1.1
+access list:
+symbolic names:
+	C_8: 1.1
+	C_7: 1.1
+	C_0_2_1: 1.1
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 1
+=============================================================================
+
+RCS file: srcphast/RCS/asembl.f90,v
+Working file: srcphast/asembl.f90
+head: 1.9
+branch:
+locks: strict
+	dlpark: 1.9
+access list:
+symbolic names:
+	C_8: 1.9
+	C_7: 1.9
+	C_0_2_1: 1.7
+	C_5: 1.6
+	C_3: 1.5
+	C_2: 1.4
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 9
+=============================================================================
+
+RCS file: srcphast/RCS/asmslc.f90,v
+Working file: srcphast/asmslc.f90
+head: 1.9
+branch:
+locks: strict
+	dlpark: 1.9
+access list:
+symbolic names:
+	C_8: 1.9
+	C_7: 1.9
+	C_0_2_1: 1.5
+	C_5: 1.4
+	C_3: 1.3
+	C_2: 1.3
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 9
+=============================================================================
+
+RCS file: srcphast/RCS/asmslp.f90,v
+Working file: srcphast/asmslp.f90
+head: 1.10
+branch:
+locks: strict
+	dlpark: 1.10
+access list:
+symbolic names:
+	C_8: 1.10
+	C_7: 1.10
+	C_0_2_1: 1.6
+	C_5: 1.5
+	C_3: 1.4
+	C_2: 1.4
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 10
+=============================================================================
+
+RCS file: srcphast/RCS/asmslp_ss_flow.f90,v
+Working file: srcphast/asmslp_ss_flow.f90
+head: 1.5
+branch:
+locks: strict
+	dlpark: 1.5
+access list:
+symbolic names:
+	C_8: 1.5
+	C_7: 1.5
+	C_0_2_1: 1.2
+	C_5: 1.1
+keyword substitution: kv
+total revisions: 5
+=============================================================================
+
+RCS file: srcphast/RCS/bsode.f90,v
+Working file: srcphast/bsode.f90
+head: 1.2
+branch:
+locks: strict
+	dlpark: 1.2
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/calcc.f90,v
+Working file: srcphast/calcc.f90
+head: 1.2
+branch:
+locks: strict
+	dlpark: 1.2
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.2
+	C_3: 1.2
+	C_2: 1.2
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/clog.f90,v
+Working file: srcphast/clog.f90
+head: 1.2
+branch:
+locks: strict
+	dlpark: 1.2
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/closef.f90,v
+Working file: srcphast/closef.f90
+head: 1.12
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.12
+	C_7: 1.11
+	C_0_2_1: 1.7
+	C_5: 1.5
+	C_3: 1.5
+	C_2: 1.5
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 12
+=============================================================================
+
+RCS file: srcphast/RCS/coeff.f90,v
+Working file: srcphast/coeff.f90
+head: 1.4
+branch:
+locks: strict
+	dlpark: 1.4
+access list:
+symbolic names:
+	C_8: 1.4
+	C_7: 1.4
+	C_0_2_1: 1.3
+	C_5: 1.2
+	C_3: 1.2
+	C_2: 1.2
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 4
+=============================================================================
+
+RCS file: srcphast/RCS/coeff_ss_flow.f90,v
+Working file: srcphast/coeff_ss_flow.f90
+head: 1.3
+branch:
+locks: strict
+	dlpark: 1.3
+access list:
+symbolic names:
+	C_8: 1.3
+	C_7: 1.3
+	C_0_2_1: 1.2
+	C_5: 1.1
+keyword substitution: kv
+total revisions: 3
+=============================================================================
+
+RCS file: srcphast/RCS/crsdsp.f90,v
+Working file: srcphast/crsdsp.f90
+head: 1.5
+branch:
+locks: strict
+	dlpark: 1.5
+access list:
+symbolic names:
+	C_8: 1.5
+	C_7: 1.5
+	C_0_2_1: 1.3
+	C_5: 1.3
+	C_3: 1.3
+	C_2: 1.3
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 5
+=============================================================================
+
+RCS file: srcphast/RCS/d4ord.f90,v
+Working file: srcphast/d4ord.f90
+head: 1.4
+branch:
+locks: strict
+	dlpark: 1.4
+access list:
+symbolic names:
+	C_8: 1.4
+	C_7: 1.4
+	C_0_2_1: 1.3
+	C_5: 1.2
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 4
+=============================================================================
+
+RCS file: srcphast/RCS/d4zord.f90,v
+Working file: srcphast/d4zord.f90
+head: 1.3
+branch:
+locks: strict
+	dlpark: 1.3
+access list:
+symbolic names:
+	C_8: 1.3
+	C_7: 1.3
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 3
+=============================================================================
+
+RCS file: srcphast/RCS/dbmult.f90,v
+Working file: srcphast/dbmult.f90
+head: 1.1
+branch:
+locks: strict
+	dlpark: 1.1
+access list:
+symbolic names:
+	C_8: 1.1
+	C_7: 1.1
+	C_0_2_1: 1.1
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 1
+=============================================================================
+
+RCS file: srcphast/RCS/dump.f90,v
+Working file: srcphast/dump.f90
+head: 1.4
+branch:
+locks: strict
+	dlpark: 1.4
+access list:
+symbolic names:
+	C_8: 1.4
+	C_7: 1.4
+	C_0_2_1: 1.3
+	C_5: 1.2
+	C_3: 1.2
+	C_2: 1.2
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 4
+=============================================================================
+
+RCS file: srcphast/RCS/efact.f90,v
+Working file: srcphast/efact.f90
+head: 1.3
+branch:
+locks: strict
+	dlpark: 1.3
+access list:
+symbolic names:
+	C_8: 1.3
+	C_7: 1.3
+	C_0_2_1: 1.3
+	C_5: 1.2
+	C_3: 1.2
+	C_2: 1.2
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 3
+=============================================================================
+
+RCS file: srcphast/RCS/ehoftp.f90,v
+Working file: srcphast/ehoftp.f90
+head: 1.1
+branch:
+locks: strict
+	dlpark: 1.1
+access list:
+symbolic names:
+	C_8: 1.1
+	C_7: 1.1
+	C_0_2_1: 1.1
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 1
+=============================================================================
+
+RCS file: srcphast/RCS/el1slv.f90,v
+Working file: srcphast/el1slv.f90
+head: 1.2
+branch:
+locks: strict
+	dlpark: 1.2
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/elslv.f90,v
+Working file: srcphast/elslv.f90
+head: 1.1
+branch:
+locks: strict
+	dlpark: 1.1
+access list:
+symbolic names:
+	C_8: 1.1
+	C_7: 1.1
+	C_0_2_1: 1.1
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 1
+=============================================================================
+
+RCS file: srcphast/RCS/error1.f90,v
+Working file: srcphast/error1.f90
+head: 1.3
+branch:
+locks: strict
+	dlpark: 1.3
+access list:
+symbolic names:
+	C_8: 1.3
+	C_7: 1.3
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 3
+=============================================================================
+
+RCS file: srcphast/RCS/error2.f90,v
+Working file: srcphast/error2.f90
+head: 1.3
+branch:
+locks: strict
+	dlpark: 1.3
+access list:
+symbolic names:
+	C_8: 1.3
+	C_7: 1.3
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 3
+=============================================================================
+
+RCS file: srcphast/RCS/error3.f90,v
+Working file: srcphast/error3.f90
+head: 1.3
+branch:
+locks: strict
+	dlpark: 1.3
+access list:
+symbolic names:
+	C_8: 1.3
+	C_7: 1.3
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 3
+=============================================================================
+
+RCS file: srcphast/RCS/error4.f90,v
+Working file: srcphast/error4.f90
+head: 1.5
+branch:
+locks: strict
+	dlpark: 1.5
+access list:
+symbolic names:
+	C_8: 1.5
+	C_7: 1.5
+	C_0_2_1: 1.4
+	C_5: 1.3
+	C_3: 1.3
+	C_2: 1.3
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 5
+=============================================================================
+
+RCS file: srcphast/RCS/errprt.f90,v
+Working file: srcphast/errprt.f90
+head: 1.4
+branch:
+locks: strict
+	dlpark: 1.4
+access list:
+symbolic names:
+	C_8: 1.4
+	C_7: 1.4
+	C_0_2_1: 1.3
+	C_5: 1.2
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 4
+=============================================================================
+
+RCS file: srcphast/RCS/etom1.f90,v
+Working file: srcphast/etom1.f90
+head: 1.3
+branch:
+locks: strict
+	dlpark: 1.3
+access list:
+symbolic names:
+	C_8: 1.3
+	C_7: 1.3
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 3
+=============================================================================
+
+RCS file: srcphast/RCS/etom2.f90,v
+Working file: srcphast/etom2.f90
+head: 1.4
+branch:
+locks: strict
+	dlpark: 1.4
+access list:
+symbolic names:
+	C_8: 1.4
+	C_7: 1.4
+	C_0_2_1: 1.4
+	C_5: 1.2
+	C_3: 1.2
+	C_2: 1.2
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 4
+=============================================================================
+
+RCS file: srcphast/RCS/euslv.f90,v
+Working file: srcphast/euslv.f90
+head: 1.1
+branch:
+locks: strict
+	dlpark: 1.1
+access list:
+symbolic names:
+	C_8: 1.1
+	C_7: 1.1
+	C_0_2_1: 1.1
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 1
+=============================================================================
+
+RCS file: srcphast/RCS/formr.f90,v
+Working file: srcphast/formr.f90
+head: 1.1
+branch:
+locks: strict
+	dlpark: 1.1
+access list:
+symbolic names:
+	C_8: 1.1
+	C_7: 1.1
+	C_0_2_1: 1.1
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 1
+=============================================================================
+
+RCS file: srcphast/RCS/gcgris.f90,v
+Working file: srcphast/gcgris.f90
+head: 1.10
+branch:
+locks: strict
+	dlpark: 1.10
+access list:
+symbolic names:
+	C_8: 1.10
+	C_7: 1.10
+	C_0_2_1: 1.6
+	C_5: 1.5
+	C_3: 1.4
+	C_2: 1.4
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 10
+=============================================================================
+
+RCS file: srcphast/RCS/hunt.f90,v
+Working file: srcphast/hunt.f90
+head: 1.2
+branch:
+locks: strict
+	dlpark: 1.2
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.2
+	C_3: 1.2
+	C_2: 1.2
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/incidx.f90,v
+Working file: srcphast/incidx.f90
+head: 1.4
+branch:
+locks: strict
+	dlpark: 1.4
+access list:
+symbolic names:
+	C_8: 1.4
+	C_7: 1.4
+	C_0_2_1: 1.3
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 4
+=============================================================================
+
+RCS file: srcphast/RCS/indx_rewi.f90,v
+Working file: srcphast/indx_rewi.f90
+head: 1.2
+branch:
+locks: strict
+	dlpark: 1.2
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/indx_rewi_bc.f90,v
+Working file: srcphast/indx_rewi_bc.f90
+head: 1.3
+branch:
+locks: strict
+	dlpark: 1.3
+access list:
+symbolic names:
+	C_8: 1.3
+	C_7: 1.3
+	C_0_2_1: 1.3
+	C_5: 1.2
+	C_3: 1.2
+	C_2: 1.2
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 3
+=============================================================================
+
+RCS file: srcphast/RCS/init1.f90,v
+Working file: srcphast/init1.f90
+head: 1.11
+branch:
+locks: strict
+	dlpark: 1.11
+access list:
+symbolic names:
+	C_8: 1.11
+	C_7: 1.11
+	C_0_2_1: 1.8
+	C_5: 1.6
+	C_3: 1.6
+	C_2: 1.6
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 11
+=============================================================================
+
+RCS file: srcphast/RCS/init2.f90,v
+Working file: srcphast/init2.f90
+head: 1.29
+branch:
+locks: strict
+	dlpark: 1.29
+access list:
+symbolic names:
+	C_8: 1.29
+	C_7: 1.29
+	C_0_2_1: 1.24
+	C_5: 1.19
+	C_3: 1.18
+	C_2: 1.17
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 29
+=============================================================================
+
+RCS file: srcphast/RCS/init2_post_ss.f90,v
+Working file: srcphast/init2_post_ss.f90
+head: 1.1
+branch:
+locks: strict
+	dlpark: 1.1
+access list:
+symbolic names:
+	C_8: 1.1
+	C_7: 1.1
+keyword substitution: kv
+total revisions: 1
+=============================================================================
+
+RCS file: srcphast/RCS/init3.f90,v
+Working file: srcphast/init3.f90
+head: 1.11
+branch:
+locks: strict
+	dlpark: 1.11
+access list:
+symbolic names:
+	C_8: 1.11
+	C_7: 1.11
+	C_0_2_1: 1.6
+	C_5: 1.4
+	C_3: 1.4
+	C_2: 1.4
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 11
+=============================================================================
+
+RCS file: srcphast/RCS/interp.f90,v
+Working file: srcphast/interp.f90
+head: 1.3
+branch:
+locks: strict
+	dlpark: 1.3
+access list:
+symbolic names:
+	C_8: 1.3
+	C_7: 1.3
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 3
+=============================================================================
+
+RCS file: srcphast/RCS/irewi.f90,v
+Working file: srcphast/irewi.f90
+head: 1.3
+branch:
+locks: strict
+	dlpark: 1.3
+access list:
+symbolic names:
+	C_8: 1.3
+	C_7: 1.3
+	C_0_2_1: 1.1
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 3
+=============================================================================
+
+RCS file: srcphast/RCS/ldchar.f90,v
+Working file: srcphast/ldchar.f90
+head: 1.3
+branch:
+locks: strict
+	dlpark: 1.3
+access list:
+symbolic names:
+	C_8: 1.3
+	C_7: 1.3
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 3
+=============================================================================
+
+RCS file: srcphast/RCS/ldci.f90,v
+Working file: srcphast/ldci.f90
+head: 1.2
+branch:
+locks: strict
+	dlpark: 1.2
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.2
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/ldcir.f90,v
+Working file: srcphast/ldcir.f90
+head: 1.1
+branch:
+locks: strict
+	dlpark: 1.1
+access list:
+symbolic names:
+	C_8: 1.1
+	C_7: 1.1
+	C_0_2_1: 1.1
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 1
+=============================================================================
+
+RCS file: srcphast/RCS/ldind.f90,v
+Working file: srcphast/ldind.f90
+head: 1.2
+branch:
+locks: strict
+	dlpark: 1.2
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/ldipen.f90,v
+Working file: srcphast/ldipen.f90
+head: 1.1
+branch:
+locks: strict
+	dlpark: 1.1
+access list:
+symbolic names:
+	C_8: 1.1
+	C_7: 1.1
+	C_0_2_1: 1.1
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 1
+=============================================================================
+
+RCS file: srcphast/RCS/ldmar1.f90,v
+Working file: srcphast/ldmar1.f90
+head: 1.1
+branch:
+locks: strict
+	dlpark: 1.1
+access list:
+symbolic names:
+	C_8: 1.1
+	C_7: 1.1
+	C_0_2_1: 1.1
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 1
+=============================================================================
+
+RCS file: srcphast/RCS/load_indx_bc.f90,v
+Working file: srcphast/load_indx_bc.f90
+head: 1.2
+branch:
+locks: strict
+	dlpark: 1.2
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.1
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/lsolv.f90,v
+Working file: srcphast/lsolv.f90
+head: 1.1
+branch:
+locks: strict
+	dlpark: 1.1
+access list:
+symbolic names:
+	C_8: 1.1
+	C_7: 1.1
+	C_0_2_1: 1.1
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 1
+=============================================================================
+
+RCS file: srcphast/RCS/modules.f90,v
+Working file: srcphast/modules.f90
+head: 1.11
+branch:
+locks: strict
+	dlpark: 1.11
+access list:
+symbolic names:
+	C_8: 1.11
+	C_7: 1.11
+	C_0_2_1: 1.7
+	C_5: 1.6
+	C_3: 1.5
+	C_2: 1.5
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 11
+=============================================================================
+
+RCS file: srcphast/RCS/mtoijk.f90,v
+Working file: srcphast/mtoijk.f90
+head: 1.2
+branch:
+locks: strict
+	dlpark: 1.2
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/nintrp.f90,v
+Working file: srcphast/nintrp.f90
+head: 1.2
+branch:
+locks: strict
+	dlpark: 1.2
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/openf.f90,v
+Working file: srcphast/openf.f90
+head: 1.8
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.8
+	C_7: 1.7
+	C_0_2_1: 1.4
+	C_5: 1.3
+	C_3: 1.3
+	C_2: 1.3
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 8
+=============================================================================
+
+RCS file: srcphast/RCS/phast.f90,v
+Working file: srcphast/phast.f90
+head: 1.6
+branch:
+locks: strict
+	dlpark: 1.6
+access list:
+symbolic names:
+	C_8: 1.6
+	C_7: 1.6
+	C_0_2_1: 1.4
+	C_5: 1.3
+	C_3: 1.2
+	C_2: 1.2
+keyword substitution: kv
+total revisions: 6
+=============================================================================
+
+RCS file: srcphast/RCS/prchar.f90,v
+Working file: srcphast/prchar.f90
+head: 1.3
+branch:
+locks: strict
+	dlpark: 1.3
+access list:
+symbolic names:
+	C_8: 1.3
+	C_7: 1.3
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 3
+=============================================================================
+
+RCS file: srcphast/RCS/print_control.f90,v
+Working file: srcphast/print_control.f90
+head: 1.1
+branch:
+locks: strict
+	dlpark: 1.1
+access list:
+symbolic names:
+	C_8: 1.1
+	C_7: 1.1
+keyword substitution: kv
+total revisions: 1
+=============================================================================
+
+RCS file: srcphast/RCS/prntar.f90,v
+Working file: srcphast/prntar.f90
+head: 1.3
+branch:
+locks: strict
+	dlpark: 1.3
+access list:
+symbolic names:
+	C_8: 1.3
+	C_7: 1.3
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 3
+=============================================================================
+
+RCS file: srcphast/RCS/rbord.f90,v
+Working file: srcphast/rbord.f90
+head: 1.1
+branch:
+locks: strict
+	dlpark: 1.1
+access list:
+symbolic names:
+	C_8: 1.1
+	C_7: 1.1
+	C_0_2_1: 1.1
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 1
+=============================================================================
+
+RCS file: srcphast/RCS/read1.f90,v
+Working file: srcphast/read1.f90
+head: 1.6
+branch:
+locks: strict
+	dlpark: 1.6
+access list:
+symbolic names:
+	C_8: 1.6
+	C_7: 1.6
+	C_0_2_1: 1.4
+	C_5: 1.3
+	C_3: 1.2
+	C_2: 1.2
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 6
+=============================================================================
+
+RCS file: srcphast/RCS/read2.f90,v
+Working file: srcphast/read2.f90
+head: 1.16
+branch:
+locks: strict
+	dlpark: 1.16
+access list:
+symbolic names:
+	C_8: 1.16
+	C_7: 1.16
+	C_0_2_1: 1.13
+	C_5: 1.11
+	C_3: 1.10
+	C_2: 1.10
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 16
+=============================================================================
+
+RCS file: srcphast/RCS/read3.f90,v
+Working file: srcphast/read3.f90
+head: 1.6
+branch:
+locks: strict
+	dlpark: 1.6
+access list:
+symbolic names:
+	C_8: 1.6
+	C_7: 1.6
+	C_0_2_1: 1.4
+	C_5: 1.3
+	C_3: 1.3
+	C_2: 1.3
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 6
+=============================================================================
+
+RCS file: srcphast/RCS/reordr.f90,v
+Working file: srcphast/reordr.f90
+head: 1.2
+branch:
+locks: strict
+	dlpark: 1.2
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/rewi.f90,v
+Working file: srcphast/rewi.f90
+head: 1.6
+branch:
+locks: strict
+	dlpark: 1.6
+access list:
+symbolic names:
+	C_8: 1.6
+	C_7: 1.6
+	C_0_2_1: 1.4
+	C_5: 1.3
+	C_3: 1.3
+	C_2: 1.3
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 6
+=============================================================================
+
+RCS file: srcphast/RCS/rewi3.f90,v
+Working file: srcphast/rewi3.f90
+head: 1.2
+branch:
+locks: strict
+	dlpark: 1.2
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/rfact.f90,v
+Working file: srcphast/rfact.f90
+head: 1.2
+branch:
+locks: strict
+	dlpark: 1.2
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/rfactm.f90,v
+Working file: srcphast/rfactm.f90
+head: 1.2
+branch:
+locks: strict
+	dlpark: 1.2
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/rhsn.f90,v
+Working file: srcphast/rhsn.f90
+head: 1.9
+branch:
+locks: strict
+	dlpark: 1.9
+access list:
+symbolic names:
+	C_8: 1.9
+	C_7: 1.9
+	C_0_2_1: 1.8
+	C_5: 1.7
+	C_3: 1.6
+	C_2: 1.5
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 9
+=============================================================================
+
+RCS file: srcphast/RCS/rhsn_ss_flow.f90,v
+Working file: srcphast/rhsn_ss_flow.f90
+head: 1.3
+branch:
+locks: strict
+	dlpark: 1.3
+access list:
+symbolic names:
+	C_8: 1.3
+	C_7: 1.3
+	C_0_2_1: 1.2
+	C_5: 1.1
+keyword substitution: kv
+total revisions: 3
+=============================================================================
+
+RCS file: srcphast/RCS/sbcflo.f90,v
+Working file: srcphast/sbcflo.f90
+head: 1.2
+branch:
+locks: strict
+	dlpark: 1.2
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/simulate_ss_flow.f90,v
+Working file: srcphast/simulate_ss_flow.f90
+head: 1.1
+branch:
+locks: strict
+	dlpark: 1.1
+access list:
+symbolic names:
+	C_8: 1.1
+	C_7: 1.1
+keyword substitution: kv
+total revisions: 1
+=============================================================================
+
+RCS file: srcphast/RCS/stonb.f90,v
+Working file: srcphast/stonb.f90
+head: 1.4
+branch:
+locks: strict
+	dlpark: 1.4
+access list:
+symbolic names:
+	C_8: 1.4
+	C_7: 1.4
+	C_0_2_1: 1.4
+	C_5: 1.3
+	C_3: 1.3
+	C_2: 1.3
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 4
+=============================================================================
+
+RCS file: srcphast/RCS/sumcal.f90,v
+Working file: srcphast/sumcal.f90
+head: 1.16
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.16
+	C_7: 1.15
+	C_0_2_1: 1.9
+	C_5: 1.5
+	C_3: 1.4
+	C_2: 1.4
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 16
+=============================================================================
+
+RCS file: srcphast/RCS/sumcal_ss_flow.f90,v
+Working file: srcphast/sumcal_ss_flow.f90
+head: 1.9
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.9
+	C_7: 1.8
+	C_0_2_1: 1.3
+	C_5: 1.1
+keyword substitution: kv
+total revisions: 9
+=============================================================================
+
+RCS file: srcphast/RCS/tfrds.f90,v
+Working file: srcphast/tfrds.f90
+head: 1.1
+branch:
+locks: strict
+	dlpark: 1.1
+access list:
+symbolic names:
+	C_8: 1.1
+	C_7: 1.1
+	C_0_2_1: 1.1
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 1
+=============================================================================
+
+RCS file: srcphast/RCS/timstp.f90,v
+Working file: srcphast/timstp.f90
+head: 1.7
+branch:
+locks: strict
+	dlpark: 1.7
+access list:
+symbolic names:
+	C_8: 1.7
+	C_7: 1.7
+	C_0_2_1: 1.3
+	C_5: 1.2
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 7
+=============================================================================
+
+RCS file: srcphast/RCS/timstp_ss_flow.f90,v
+Working file: srcphast/timstp_ss_flow.f90
+head: 1.6
+branch:
+locks: strict
+	dlpark: 1.6
+access list:
+symbolic names:
+	C_8: 1.6
+	C_7: 1.6
+	C_0_2_1: 1.2
+	C_5: 1.1
+keyword substitution: kv
+total revisions: 6
+=============================================================================
+
+RCS file: srcphast/RCS/usolv.f90,v
+Working file: srcphast/usolv.f90
+head: 1.2
+branch:
+locks: strict
+	dlpark: 1.2
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.2
+	C_3: 1.2
+	C_2: 1.2
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/viscos.f90,v
+Working file: srcphast/viscos.f90
+head: 1.2
+branch:
+locks: strict
+	dlpark: 1.2
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/vpsv.f90,v
+Working file: srcphast/vpsv.f90
+head: 1.2
+branch:
+locks: strict
+	dlpark: 1.2
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.2
+	C_3: 1.2
+	C_2: 1.2
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/wbbal.f90,v
+Working file: srcphast/wbbal.f90
+head: 1.4
+branch:
+locks: strict
+	dlpark: 1.4
+access list:
+symbolic names:
+	C_8: 1.4
+	C_7: 1.4
+	C_0_2_1: 1.4
+	C_5: 1.3
+	C_3: 1.3
+	C_2: 1.3
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 4
+=============================================================================
+
+RCS file: srcphast/RCS/wbcflo.f90,v
+Working file: srcphast/wbcflo.f90
+head: 1.2
+branch:
+locks: strict
+	dlpark: 1.2
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/wellsc.f90,v
+Working file: srcphast/wellsc.f90
+head: 1.4
+branch:
+locks: strict
+	dlpark: 1.4
+access list:
+symbolic names:
+	C_8: 1.4
+	C_7: 1.4
+	C_0_2_1: 1.3
+	C_5: 1.2
+	C_3: 1.2
+	C_2: 1.2
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 4
+=============================================================================
+
+RCS file: srcphast/RCS/wellsc_ss_flow.f90,v
+Working file: srcphast/wellsc_ss_flow.f90
+head: 1.2
+branch:
+locks: strict
+	dlpark: 1.2
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/wellsr.f90,v
+Working file: srcphast/wellsr.f90
+head: 1.7
+branch:
+locks: strict
+	dlpark: 1.7
+access list:
+symbolic names:
+	C_8: 1.7
+	C_7: 1.7
+	C_0_2_1: 1.6
+	C_5: 1.5
+	C_3: 1.5
+	C_2: 1.5
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 7
+=============================================================================
+
+RCS file: srcphast/RCS/wellsr_ss_flow.f90,v
+Working file: srcphast/wellsr_ss_flow.f90
+head: 1.3
+branch:
+locks: strict
+	dlpark: 1.3
+access list:
+symbolic names:
+	C_8: 1.3
+	C_7: 1.3
+	C_0_2_1: 1.2
+	C_5: 1.1
+keyword substitution: kv
+total revisions: 3
+=============================================================================
+
+RCS file: srcphast/RCS/welris.f90,v
+Working file: srcphast/welris.f90
+head: 1.2
+branch:
+locks: strict
+	dlpark: 1.2
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/wfdydz.f90,v
+Working file: srcphast/wfdydz.f90
+head: 1.2
+branch:
+locks: strict
+	dlpark: 1.2
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/write1.f90,v
+Working file: srcphast/write1.f90
+head: 1.3
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.3
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.2
+	C_3: 1.2
+	C_2: 1.2
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 3
+=============================================================================
+
+RCS file: srcphast/RCS/write2.f90,v
+Working file: srcphast/write2.f90
+head: 1.17
+branch:
+locks: strict
+	dlpark: 1.17
+access list:
+symbolic names:
+	C_8: 1.17
+	C_7: 1.14
+	C_0_2_1: 1.6
+	C_5: 1.4
+	C_3: 1.4
+	C_2: 1.4
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 17
+=============================================================================
+
+RCS file: srcphast/RCS/write3.f90,v
+Working file: srcphast/write3.f90
+head: 1.9
+branch:
+locks: strict
+	dlpark: 1.9
+access list:
+symbolic names:
+	C_8: 1.9
+	C_7: 1.9
+	C_0_2_1: 1.5
+	C_5: 1.3
+	C_3: 1.3
+	C_2: 1.3
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 9
+=============================================================================
+
+RCS file: srcphast/RCS/write4.f90,v
+Working file: srcphast/write4.f90
+head: 1.7
+branch:
+locks: strict
+	dlpark: 1.7
+access list:
+symbolic names:
+	C_8: 1.7
+	C_7: 1.7
+	C_0_2_1: 1.3
+	C_5: 1.2
+	C_3: 1.2
+	C_2: 1.2
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 7
+=============================================================================
+
+RCS file: srcphast/RCS/write5.f90,v
+Working file: srcphast/write5.f90
+head: 1.17
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.17
+	C_7: 1.16
+	C_0_2_1: 1.8
+	C_5: 1.6
+	C_3: 1.5
+	C_2: 1.5
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 17
+=============================================================================
+
+RCS file: srcphast/RCS/write5_ss_flow.f90,v
+Working file: srcphast/write5_ss_flow.f90
+head: 1.10
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.9
+	C_7: 1.9
+	C_0_2_1: 1.2
+	C_5: 1.1
+keyword substitution: kv
+total revisions: 10
+=============================================================================
+
+RCS file: srcphast/RCS/write6.f90,v
+Working file: srcphast/write6.f90
+head: 1.9
+branch:
+locks: strict
+	dlpark: 1.9
+access list:
+symbolic names:
+	C_8: 1.9
+	C_7: 1.9
+	C_0_2_1: 1.3
+	C_5: 1.2
+	C_3: 1.2
+	C_2: 1.2
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 9
+=============================================================================
+
+RCS file: srcphast/RCS/ifrd.inc,v
+Working file: srcphast/ifrd.inc
+head: 1.2
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.1
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/ifwr.inc,v
+Working file: srcphast/ifwr.inc
+head: 1.2
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.1
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/advection.c,v
+Working file: srcphast/advection.c
+head: 1.1
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.1
+	C_7: 1.1
+	C_0_2_1: 1.1
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 1
+=============================================================================
+
+RCS file: srcphast/RCS/basic.c,v
+Working file: srcphast/basic.c
+head: 1.6
+branch:
+locks: strict
+	dlpark: 1.6
+access list:
+symbolic names:
+	C_8: 1.6
+	C_7: 1.6
+	C_0_2_1: 1.6
+	C_5: 1.4
+	C_3: 1.4
+	C_2: 1.4
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 6
+=============================================================================
+
+RCS file: srcphast/RCS/cl1.c,v
+Working file: srcphast/cl1.c
+head: 1.1
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.1
+	C_7: 1.1
+	C_0_2_1: 1.1
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 1
+=============================================================================
+
+RCS file: srcphast/RCS/hst.c,v
+Working file: srcphast/hst.c
+head: 1.14
+branch:
+locks: strict
+	dlpark: 1.14
+access list:
+symbolic names:
+	C_8: 1.14
+	C_7: 1.13
+	C_0_2_1: 1.11
+	C_5: 1.10
+	C_3: 1.8
+	C_2: 1.8
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 14
+=============================================================================
+
+RCS file: srcphast/RCS/hstsubs.c,v
+Working file: srcphast/hstsubs.c
+head: 1.7
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.7
+	C_7: 1.7
+	C_0_2_1: 1.6
+	C_5: 1.5
+	C_3: 1.5
+	C_2: 1.5
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 7
+=============================================================================
+
+RCS file: srcphast/RCS/integrate.c,v
+Working file: srcphast/integrate.c
+head: 1.2
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/inverse.c,v
+Working file: srcphast/inverse.c
+head: 1.2
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.2
+	C_3: 1.2
+	C_2: 1.2
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/kinetics.c,v
+Working file: srcphast/kinetics.c
+head: 1.7
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.7
+	C_7: 1.7
+	C_0_2_1: 1.6
+	C_5: 1.4
+	C_3: 1.4
+	C_2: 1.4
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 7
+=============================================================================
+
+RCS file: srcphast/RCS/mainsubs.c,v
+Working file: srcphast/mainsubs.c
+head: 1.6
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.6
+	C_7: 1.6
+	C_0_2_1: 1.6
+	C_5: 1.3
+	C_3: 1.3
+	C_2: 1.3
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 6
+=============================================================================
+
+RCS file: srcphast/RCS/mix.c,v
+Working file: srcphast/mix.c
+head: 1.4
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.4
+	C_7: 1.4
+	C_0_2_1: 1.4
+	C_5: 1.3
+	C_3: 1.3
+	C_2: 1.3
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 4
+=============================================================================
+
+RCS file: srcphast/RCS/model.c,v
+Working file: srcphast/model.c
+head: 1.5
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.5
+	C_7: 1.5
+	C_0_2_1: 1.5
+	C_5: 1.3
+	C_3: 1.3
+	C_2: 1.3
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 5
+=============================================================================
+
+RCS file: srcphast/RCS/p2clib.c,v
+Working file: srcphast/p2clib.c
+head: 1.2
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/parse.c,v
+Working file: srcphast/parse.c
+head: 1.2
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.2
+	C_3: 1.2
+	C_2: 1.2
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/phqalloc.c,v
+Working file: srcphast/phqalloc.c
+head: 1.2
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/prep.c,v
+Working file: srcphast/prep.c
+head: 1.3
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.3
+	C_7: 1.3
+	C_0_2_1: 1.3
+	C_5: 1.2
+	C_3: 1.2
+	C_2: 1.2
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 3
+=============================================================================
+
+RCS file: srcphast/RCS/print.c,v
+Working file: srcphast/print.c
+head: 1.9
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.9
+	C_7: 1.9
+	C_0_2_1: 1.7
+	C_5: 1.4
+	C_3: 1.4
+	C_2: 1.4
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 9
+=============================================================================
+
+RCS file: srcphast/RCS/read.c,v
+Working file: srcphast/read.c
+head: 1.9
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.9
+	C_7: 1.9
+	C_0_2_1: 1.8
+	C_5: 1.4
+	C_3: 1.4
+	C_2: 1.4
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 9
+=============================================================================
+
+RCS file: srcphast/RCS/readtr.c,v
+Working file: srcphast/readtr.c
+head: 1.2
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.2
+	C_3: 1.2
+	C_2: 1.2
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/spread.c,v
+Working file: srcphast/spread.c
+head: 1.5
+branch:
+locks: strict
+	dlpark: 1.5
+access list:
+symbolic names:
+	C_8: 1.5
+	C_7: 1.5
+	C_0_2_1: 1.5
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 5
+=============================================================================
+
+RCS file: srcphast/RCS/step.c,v
+Working file: srcphast/step.c
+head: 1.1
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.1
+	C_7: 1.1
+	C_0_2_1: 1.1
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 1
+=============================================================================
+
+RCS file: srcphast/RCS/structures.c,v
+Working file: srcphast/structures.c
+head: 1.6
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.6
+	C_7: 1.6
+	C_0_2_1: 1.6
+	C_5: 1.3
+	C_3: 1.3
+	C_2: 1.3
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 6
+=============================================================================
+
+RCS file: srcphast/RCS/tidy.c,v
+Working file: srcphast/tidy.c
+head: 1.6
+branch:
+locks: strict
+	dlpark: 1.6
+access list:
+symbolic names:
+	C_8: 1.6
+	C_7: 1.6
+	C_0_2_1: 1.6
+	C_5: 1.3
+	C_3: 1.3
+	C_2: 1.3
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 6
+=============================================================================
+
+RCS file: srcphast/RCS/transport.c,v
+Working file: srcphast/transport.c
+head: 1.2
+branch:
+locks: strict
+	dlpark: 1.2
+access list:
+symbolic names:
+	C_8: 1.2
+	C_7: 1.2
+	C_0_2_1: 1.2
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcphast/RCS/utilities.c,v
+Working file: srcphast/utilities.c
+head: 1.5
+branch:
+locks: strict
+	dlpark: 1.5
+access list:
+symbolic names:
+	C_8: 1.5
+	C_7: 1.5
+	C_0_2_1: 1.5
+	C_5: 1.3
+	C_3: 1.3
+	C_2: 1.3
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 5
+=============================================================================
+
+RCS file: srcphast/RCS/global.h,v
+Working file: srcphast/global.h
+head: 1.6
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.6
+	C_7: 1.6
+	C_0_2_1: 1.5
+	C_5: 1.2
+	C_3: 1.2
+	C_2: 1.2
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 6
+=============================================================================
+
+RCS file: srcphast/RCS/hst.h,v
+Working file: srcphast/hst.h
+head: 1.1
+branch:
+locks: strict
+	dlpark: 1.1
+access list:
+symbolic names:
+	C_8: 1.1
+	C_7: 1.1
+	C_0_2_1: 1.1
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 1
+=============================================================================
+
+RCS file: srcphast/RCS/p2c.h,v
+Working file: srcphast/p2c.h
+head: 1.1
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.1
+	C_7: 1.1
+	C_0_2_1: 1.1
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 1
+=============================================================================
+
+RCS file: srcphast/RCS/phqalloc.h,v
+Working file: srcphast/phqalloc.h
+head: 1.1
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_8: 1.1
+	C_7: 1.1
+	C_0_2_1: 1.1
+	C_5: 1.1
+	C_3: 1.1
+	C_2: 1.1
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 1
+=============================================================================
+
+RCS file: srcinput/RCS/accumulate.c,v
+Working file: srcinput/accumulate.c
+head: 1.8
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_1: 1.8
+keyword substitution: kv
+total revisions: 8
+=============================================================================
+
+RCS file: srcinput/RCS/check.c,v
+Working file: srcinput/check.c
+head: 1.3
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_1: 1.3
+keyword substitution: kv
+total revisions: 3
+=============================================================================
+
+RCS file: srcinput/RCS/d4ordr.c,v
+Working file: srcinput/d4ordr.c
+head: 1.2
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_1: 1.2
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcinput/RCS/gpc.c,v
+Working file: srcinput/gpc.c
+head: 1.1
+branch:
+locks: strict
+	dlpark: 1.1
+access list:
+symbolic names:
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 1
+=============================================================================
+
+RCS file: srcinput/RCS/main.c,v
+Working file: srcinput/main.c
+head: 1.9
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_1: 1.9
+keyword substitution: kv
+total revisions: 9
+=============================================================================
+
+RCS file: srcinput/RCS/read.c,v
+Working file: srcinput/read.c
+head: 1.8
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_1: 1.8
+keyword substitution: kv
+total revisions: 8
+=============================================================================
+
+RCS file: srcinput/RCS/rivers.c,v
+Working file: srcinput/rivers.c
+head: 1.2
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_1: 1.2
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcinput/RCS/structures.c,v
+Working file: srcinput/structures.c
+head: 1.2
+branch:
+locks: strict
+	dlpark: 1.2
+access list:
+symbolic names:
+	C_1: 1.2
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcinput/RCS/utilities.c,v
+Working file: srcinput/utilities.c
+head: 1.2
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_1: 1.2
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcinput/RCS/wells.c,v
+Working file: srcinput/wells.c
+head: 1.2
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_1: 1.2
+keyword substitution: kv
+total revisions: 2
+=============================================================================
+
+RCS file: srcinput/RCS/write.c,v
+Working file: srcinput/write.c
+head: 1.11
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_1: 1.11
+keyword substitution: kv
+total revisions: 11
+=============================================================================
+
+RCS file: srcinput/RCS/gpc.h,v
+Working file: srcinput/gpc.h
+head: 1.1
+branch:
+locks: strict
+	dlpark: 1.1
+access list:
+symbolic names:
+	C_1: 1.1
+keyword substitution: kv
+total revisions: 1
+=============================================================================
+
+RCS file: srcinput/RCS/hstinpt.h,v
+Working file: srcinput/hstinpt.h
+head: 1.7
+branch:
+locks: strict
+access list:
+symbolic names:
+	C_1: 1.7
+keyword substitution: kv
+total revisions: 7
+=============================================================================

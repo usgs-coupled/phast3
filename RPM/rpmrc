@@ -1,0 +1,10 @@
+# The next line is only supported for rpm version <= 2.5.x (see $HOME/.rpmmacros)
+#_topdir: $HOME/mybuild
+
+# The next line is modified from /usr/lib/rpm/rpmrc
+###macrofiles:    /usr/lib/rpm/macros:/usr/lib/rpm/%{_target}/macros:/etc/rpm/macros.specspo:/etc/rpm/macros.db1:/etc/rpm/macros.cdb:/etc/rpm/macros:/etc/rpm/%{_target}/macros:~/phast/RPM/rpmmacros
+###macrofiles:    %{_usr}/lib/rpm/macros:/usr/lib/rpm/%{_target}/macros:/etc/rpm/macros.specspo:/etc/rpm/macros.db1:/etc/rpm/macros.cdb:/etc/rpm/macros:/etc/rpm/%{_target}/macros:~/phast/RPM/rpmmacros
+
+#macrofiles:    /usr/local/lib/rpm/macros:/usr/lib/rpm/%{_target}/macros:/etc/rpm/macros.specspo:/etc/rpm/macros.db1:/etc/rpm/macros.cdb:/etc/rpm/macros:/etc/rpm/%{_target}/macros:~/phast/RPM/rpmmacros
+#macrofiles:    %{_usr}/lib/rpm/macros:~/phast/RPM/rpmmacros
+macrofiles: /usr/lib/rpm/macros:/usr/local/lib/rpm/macros:/usr/lib/rpm/%{_target}/macros:/usr/local/lib/rpm/%{_target}/macros:/etc/rpm/macros.specspo:/etc/rpm/macros.db1:/etc/rpm/macros.cdb:/etc/rpm/macros:/etc/rpm/%{_target}/macros:~/phast/RPM/rpmmacros

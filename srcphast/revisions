@@ -1,0 +1,154 @@
+RC-3 (phast rcsfreeze C_52; phastinput rcsfreeze C_27)
+
+	Added warnings for incompatibilities in boundary conditions.
+
+	Separated print_locations into input for .xyz.chem and .O.chem
+
+	Added vertical dispersivity.
+
+	Added mask to each zone.
+
+	Fixed bug in head tolerance in steady flow; Did not convert 
+		head to pascals for Phast.tmp.
+
+	Changed defaults for print_initial and print_frequency.
+
+	Set water compressibility to zero for all cases,
+		confined and unconfined. Eliminates the error if 
+		storage is less than water compressibility alone.
+
+	set fluid viscosity to 0.001.
+
+	Made FLUID_PROPERTIES data block obsolete.
+
+	Changed allocate_pressure to allocate_head
+
+	added save_head and echo_input in print_frequency.
+
+	added logic to determine number of meters below node and above node
+		for well allocation.
+
+	Minor bug fixes.
+
+	Fixed error in identifying rivers with IBC array, 
+		sometimes had too many river segments.
+
+	Steady flow calculation always uses upstream weighting.
+
+	Fixed bugs in cross dispersion.
+
+	Fixed all uninitialized variables in Fortran and 
+		checked all INTENT statements.
+
+	Error if cell width is less than well bore diameter.
+
+	Made it an error if print frequency is less than time step.
+
+	Added horizontal and vertical transverse dispersivity.
+
+	Fixed velocity calculation for edges of excluded zones.
+
+	Fixed logic related to an inactive cell above a free surface.
+
+	Finished implementing single log file.
+
+	Made print controls more uniform.
+
+	Changed algorithm for multiple river segments with
+		different bottom locations, hydrostatic location of
+		water table.
+
+	Fixed bugs with merging files with MPI.
+
+	MPI algorithm for printing sends one message per processor
+		instead of one message per cell.
+
+	Fixed memory leak with exchange under some conditions.
+
+	Added alkalinity to .xyz.wel file.
+
+	Minimized reallocation of space when rebalancing.
+
+	PRINT_LOCATIONS can be applied to .O.xyz and .O.chem separately.
+
+	Changed allocation of space for cells so that memory would
+		not be as fragmented.
+
+	Allows compilation with long double type for all of PHREEQC.
+
+	Updated to latest PHREEQC: cvode integration, SYS Basic function,
+		string functions for Basic, COPY keyword.
+
+	Added digits to current time in printouts, g3 not enough.
+
+	Added digits to timchg. Needs to be same as number of digits
+		for print frequencies.
+
+RC-2 (phast rcsfreeze C_42; phastinput rcsfreeze C_14)
+	Allow longer file names, check for overflow of field.
+
+	Consistent with PHREEQC version 2.8
+		Initialized rate variables
+		Unlimited Basic string lengths
+		Numbering SOLUTION_SPREAD solutions
+		"," error in input file
+
+	Initialized mass-balance variables once instead of twice.
+
+	Slight modification to keep better mass balance
+		by ensuring that 1 kgw is transported.
+
+	Modified phastinput to make more consistency checks on data. 
+		Check that print frequency >= time step.
+		Use 20 place for heads and other properties in Phast.tmp to avoid 
+			slight variations in linear boundary conditions.
+		Removed flow_only and steady_flow options from steady_flow keyword datablock.
+
+	Fixed cross dispersion to handle nonuniform grid spacing.
+		Added warning if crosd == FALSE and alphal != alphat.
+
+	Added PHAST as a separate state in the 
+		PHREEQC calculations, corrected
+		error when transport was run as
+		part of the PHREEQC calculations
+		in phast.
+
+	Revised and added error message for case where
+		water table is below fixed head cell.
+
+	Fixed bug in distribution of well flow.
+		Flow was distributed incorrectly for
+		nonhomogeneous aquifer. (1/8/03)
+
+	Added alkalinity to .xyz.wel file.
+
+RC-1-2 (C_37)
+	Added some missing files
+
+RC-1
+
+Revised rivers, did not handle multiple river segments within a cell adequately.
+
+Revision of print control.
+
+Default is no cross_dispersion terms.
+
+Added PRINT_LOCATIONS.
+
+
+Working on Cape Cod problem:
+	***Item for documentation
+	Steady-flow calculation, takes effect even for flow only
+		(1) Needs separate time step from transport
+			 or automatic time stepper to find steady flow.
+
+	***Two items for documentation:
+
+	(1) Wells are snapped to nodes, which can make a problem asymetric
+		Ideally, Ken will allocate flow to more than one cell if
+		location is on a cell boundary.
+	(2) Flux and leaky zone definitions are snapped to cells? nodes?
+		Thus total flux varies with grid definition
+	Ideally, flux, leaky, and river bc are accumulated by polygonal
+		area.
+

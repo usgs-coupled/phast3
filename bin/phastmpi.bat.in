@@ -1,0 +1,10 @@
+
+:INPUT
+%TD%\bin\phastinput.exe %1 %2
+IF NOT ERRORLEVEL 1 GOTO RUN
+GOTO END
+
+:RUN
+mpirun -np 2 -localonly %TD%\bin\phast-mpi.exe
+
+:END

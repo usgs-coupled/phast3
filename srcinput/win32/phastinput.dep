@@ -1,0 +1,60 @@
+# Microsoft Developer Studio Generated Dependency File, included by phastinput.mak
+
+..\accumulate.c : \
+	"..\gpc.h"\
+	"..\hstinpt.h"\
+	
+
+..\check.c : \
+	"..\gpc.h"\
+	"..\hstinpt.h"\
+	
+
+..\d4ordr.c : \
+	"..\gpc.h"\
+	"..\hstinpt.h"\
+	
+
+..\getopt.c : \
+	"..\getopt.h"\
+	"..\tailor.h"\
+	
+
+..\gpc.c : \
+	"..\gpc.h"\
+	
+
+..\main.c : \
+	"..\gpc.h"\
+	"..\hstinpt.h"\
+	
+
+..\read.c : \
+	"..\gpc.h"\
+	"..\hstinpt.h"\
+	
+
+..\rivers.c : \
+	"..\gpc.h"\
+	"..\hstinpt.h"\
+	
+
+..\structures.c : \
+	"..\gpc.h"\
+	"..\hstinpt.h"\
+	
+
+..\utilities.c : \
+	"..\gpc.h"\
+	"..\hstinpt.h"\
+	
+
+..\wells.c : \
+	"..\gpc.h"\
+	"..\hstinpt.h"\
+	
+
+..\write.c : \
+	"..\gpc.h"\
+	"..\hstinpt.h"\
+	

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE attributes PUBLIC "-//NetBeans//DTD DefaultAttributes 1.0//EN" "http://www.netbeans.org/dtds/attributes-1_0.dtd">
+<attributes version="1.0">
+    <fileobject name="PhastSuite.java">
+        <attr name="class_dependency_org.netbeans.junit.NbTestCase" stringvalue="PhastSuite"/>
+    </fileobject>
+    <fileobject name="JPage2Test.java">
+        <attr name="class_dependency_org.netbeans.junit.NbTestCase" stringvalue="JPage2Test"/>
+    </fileobject>
+    <fileobject name="JPage3Test.java">
+        <attr name="class_dependency_org.netbeans.junit.NbTestCase" stringvalue="JPage3Test"/>
+    </fileobject>
+    <fileobject name="JPage1Test.java">
+        <attr name="class_dependency_org.netbeans.junit.NbTestCase" stringvalue="JPage1Test"/>
+    </fileobject>
+    <fileobject name="PhastH5FileTest.java">
+        <attr name="class_dependency_org.netbeans.junit.NbTestCase" stringvalue="PhastH5FileTest"/>
+    </fileobject>
+    <fileobject name="JPage2TabTest.java">
+        <attr name="class_dependency_org.netbeans.junit.NbTestCase" stringvalue="JPage2TabTest"/>
+    </fileobject>
+    <fileobject name="JWizardPanelTest.java">
+        <attr name="class_dependency_org.netbeans.junit.NbTestCase" stringvalue="JWizardPanelTest"/>
+    </fileobject>
+    <fileobject name="JCheckListTest.java">
+        <attr name="class_dependency_org.netbeans.junit.NbTestCase" stringvalue="JCheckListTest"/>
+    </fileobject>
+    <fileobject name="JPhastHDFTest.java">
+        <attr name="class_dependency_org.netbeans.junit.NbTestCase" stringvalue="JPhastHDFTest"/>
+    </fileobject>
+    <fileobject name="ModalProgressMonitorTest.java">
+        <attr name="class_dependency_org.netbeans.junit.NbTestCase" stringvalue="ModalProgressMonitorTest"/>
+    </fileobject>
+    <fileobject name="JWizardFrameTest.java">
+        <attr name="class_dependency_org.netbeans.junit.NbTestCase" stringvalue="JWizardFrameTest"/>
+    </fileobject>
+</attributes>
