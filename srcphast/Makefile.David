@@ -37,7 +37,7 @@ DEFINE_MERGE=-DMERGE_FILES
 
 ifeq ($(CFG), MPI_LAHEY)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG
-  VPATH        = ..
+  VPATH        = ..:../phreeqc
   LAMHF77      = /z/lobo/usr/local/lf9562/bin/lf95
   export LAMHF77
   FC           = hf77
@@ -50,7 +50,7 @@ endif
 
 ifeq ($(CFG), MPI_LAHEY_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE)
-  VPATH        = ..
+  VPATH        = ..:../phreeqc
   LAMHF77      = /z/lobo/usr/local/lf9562/bin/lf95
   export LAMHF77
   FC           = hf77
@@ -63,7 +63,7 @@ endif
 
 ifeq ($(CFG), SERIAL_LAHEY)
   DEFINES      = $(DEFINE_HDF) -DNDEBUG
-  VPATH        = ..
+  VPATH        = ..:../phreeqc
   LAMHF77      = /z/lobo/usr/local/lf9562/bin/lf95
   export LAMHF77
   FC           = hf77
@@ -77,7 +77,7 @@ endif
 
 ifeq ($(CFG), SERIAL_LAHEY_DEBUG)
   DEFINES      = $(DEFINE_HDF) 
-  VPATH        = ..
+  VPATH        = ..:../phreeqc
   LAMHF77      = /z/lobo/usr/local/lf9562/bin/lf95
   export LAMHF77
   FC           = hf77
@@ -93,7 +93,7 @@ endif
 
 ifeq ($(CFG), MPI_ABSOFT)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG  
-  VPATH        = ..
+  VPATH        = ..:../phreeqc
   LAMHF77      = /z/parkplace/usr/absoft/bin/f90
   export LAMHF77
   NLSPATH      = /z/parkplace/usr/absoft/lib/nls/cf90
@@ -109,7 +109,7 @@ endif
 
 ifeq ($(CFG), MPI_ABSOFT_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE)
-  VPATH        = ..
+  VPATH        = ..:../phreeqc
   LAMHF77      = /z/parkplace/usr/absoft/bin/f90
   export LAMHF77
   NLSPATH      = /z/parkplace/usr/absoft/lib/nls/cf90
@@ -125,7 +125,7 @@ endif
 
 ifeq ($(CFG), SERIAL_ABSOFT)
   DEFINES      = $(DEFINE_HDF) -DNDEBUG 
-  VPATH        = ..
+  VPATH        = ..:../phreeqc
   NLSPATH      = /z/parkplace/usr/absoft/lib/nls/cf90
   FC           = /z/parkplace/usr/absoft/bin/f90
   FDEBUG       = -O -en  # -C
@@ -139,7 +139,7 @@ endif
 
 ifeq ($(CFG), SERIAL_ABSOFT_DEBUG)
   DEFINES      = $(DEFINE_HDF)
-  VPATH        = ..
+  VPATH        = ..:../phreeqc
   NLSPATH      = /z/parkplace/usr/absoft/lib/nls/cf90
   FC           = /z/parkplace/usr/absoft/bin/f90
   FDEBUG       = -g -en  # -C
@@ -155,7 +155,7 @@ ifeq ($(CFG), SERIAL_SUN)
   HDF5_ROOT    = /z/sunarcolkr/home/klkipp/local
   HDF5_LIBS    = ${HDF5_ROOT}/lib/libhdf5.a -lz
   DEFINES      = $(DEFINE_HDF) -DNDEBUG 
-  VPATH        = ..
+  VPATH        = ..:../phreeqc
   FC           = /opt/SUNWspro/bin/f90-2.0
   FFLAGS       = -fast -ftrap=common $(DEFINES)
   CC		= /opt/SUNWspro/bin/cc
@@ -168,7 +168,7 @@ ifeq ($(CFG), SERIAL_SUN_DEBUG)
   HDF5_ROOT    = /z/sunarcolkr/home/klkipp/local
   HDF5_LIBS    = ${HDF5_ROOT}/lib/libhdf5.a -lz
   DEFINES      = $(DEFINE_HDF)
-  VPATH        = ..
+  VPATH        = ..:../phreeqc
   FC           = /opt/SUNWspro/bin/f90-2.0
   FFLAGS       = -g -C -xtarget=native -ftrap=common $(DEFINES)
   CC		= /opt/SUNWspro/bin/cc

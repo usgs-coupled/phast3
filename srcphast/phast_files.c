@@ -1,10 +1,10 @@
 #define EXTERNAL
-#include "global.h"
-#include "phqalloc.h"
-#include "output.h"
-#include "phrqproto.h"
+#include "phreeqc/global.h"
+#include "phreeqc/phqalloc.h"
+#include "phreeqc/output.h"
+#include "phreeqc/phrqproto.h"
 #include "phastproto.h"
-#include "input.h"
+#include "phreeqc/input.h"
 #include "phast_files.h"
 
 /* following line defines path for default data base file */

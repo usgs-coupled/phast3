@@ -1,9 +1,9 @@
 #define EXTERNAL extern
-#include "global.h"
+#include "phreeqc/global.h"
 #include "hst.h"
-#include "phqalloc.h"
-#include "output.h"
-#include "phrqproto.h"
+#include "phreeqc/phqalloc.h"
+#include "phreeqc/output.h"
+#include "phreeqc/phrqproto.h"
 #include "phastproto.h"
 
 extern int mpi_myself;

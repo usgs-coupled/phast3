@@ -1,12 +1,12 @@
 #define EXTERNAL
 #define MAIN
 #define PHREEQC_IDENT
-#include "global.h"
-#include "output.h"
+#include "phreeqc/global.h"
+#include "phreeqc/output.h"
 #include "hst.h"
-#include "phqalloc.h"
-#include "phrqproto.h"
-#include "input.h"
+#include "phreeqc/phqalloc.h"
+#include "phreeqc/phrqproto.h"
+#include "phreeqc/input.h"
 #include "phast_files.h"
 #undef PHREEQC_IDENT
 #include "phastproto.h"

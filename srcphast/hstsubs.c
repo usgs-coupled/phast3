@@ -1,9 +1,9 @@
 #define EXTERNAL extern
-#include "global.h"
-#include "output.h"
+#include "phreeqc/global.h"
+#include "phreeqc/output.h"
 #include "hst.h"
-#include "phqalloc.h"
-#include "phrqproto.h"
+#include "phreeqc/phqalloc.h"
+#include "phreeqc/phrqproto.h"
 #include "phastproto.h"
 
 /*     $Date: 2004/11/04 15:22:27 $ */

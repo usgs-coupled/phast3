@@ -23,12 +23,12 @@ static char const DEFINE_USE_MPI[] = "#define USE_MPI 0";
 #endif
 
 #define EXTERNAL extern
-#include "global.h"      /* error_string */
-#include "output.h"
-#include "hst.h"         /* struct back_list */
-#include "phqalloc.h"    /* PHRQ_malloc PHRQ_realloc PHRQ_free */
+#include "phreeqc/global.h"      /* error_string */
+#include "phreeqc/output.h"
+#include "hst.h"                 /* struct back_list */
+#include "phreeqc/phqalloc.h"    /* PHRQ_malloc PHRQ_realloc PHRQ_free */
 #undef EXTERNAL
-#include "phrqproto.h"
+#include "phreeqc/phrqproto.h"
 #include "phastproto.h"
 
 /*

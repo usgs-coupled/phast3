@@ -10,11 +10,11 @@
 
 #define EXTERNAL extern
 #define USE_DEFAULT_FPRINTF
-#include "global.h"      /* error_string */
-#include "hst.h"         /* struct back_list */
-#include "phqalloc.h"    /* PHRQ_malloc PHRQ_realloc PHRQ_free */
-#include "output.h"
-#include "phrqproto.h"
+#include "phreeqc/global.h"      /* error_string */
+#include "hst.h"                 /* struct back_list */
+#include "phreeqc/phqalloc.h"    /* PHRQ_malloc PHRQ_realloc PHRQ_free */
+#include "phreeqc/output.h"
+#include "phreeqc/phrqproto.h"
 #include "phastproto.h"
 #include "phast_files.h"
 #undef USE_DEFAULT_FPRINTF
