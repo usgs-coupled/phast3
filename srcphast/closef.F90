@@ -145,7 +145,7 @@ SUBROUTINE closef(mpi_myself)
   st(fubcf) = 'delete'  
   IF(ntprbcf > 0) st(fubcf) = 'keep  '  
 !!$  st(fut) = 'delete'  
-#if defined(merge_files)
+#if defined(MERGE_FILES)
   CALL update_status(st)
 #endif
   ! ... Close the files

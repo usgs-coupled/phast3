@@ -21,14 +21,13 @@ VERSION=0.4
 	${CC} ${CFLAGS} -c -o $@ $<
 
 #hdf options
-#HDF5_ROOT=/z/lobo/home/charlton/hdf5
-HDF5_ROOT=/usr
-#HDF5_ROOT=/z/parkplace/usr
+###HDF5_ROOT=/z/lobo/home/charlton/hdf5
+HDF5_ROOT=/z/parkplace/usr
 #HDF5_INCLUDES= -I${HDF5_ROOT}/include
 #HDF5_INCLUDES= -I/z/parkplace/home/dlpark/include
 #HDF5_INCLUDES= -I/z/lobo/home/charlton/hdf5/include
 #HDF5_LIBS=${HDF5_ROOT}/lib/libhdf5.a -lz -lpthread
-HDF5_INCLUDES=
+HDF5_INCLUDES=-I$(HDF5_ROOT)/include
 HDF5_LIBS=${HDF5_ROOT}/lib/libhdf5.a -lz -lpthread
 EFENCE_LIB=-L/z/parkplace/home/dlpark/packages/efence
 
@@ -39,12 +38,12 @@ DEFINE_MERGE=-DMERGE_FILES
 ifeq ($(CFG), MPI_LAHEY)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG
   VPATH        = ..
-  LAMHF77      = /z/lobo/usr/local/lf9560/bin/lf95
+  LAMHF77      = /z/lobo/usr/local/lf9562/bin/lf95
   export LAMHF77
   FC           = hf77
   FFLAGS       = -O $(DEFINES)
   CC           = hcc
-  CFLAGS       = -Wall -pedantic -O3 $(DEFINES) 
+  CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS)
   LD_FLAGS     = -static-flib  -lm ${HDF5_LIBS} 
 endif
@@ -52,7 +51,7 @@ endif
 ifeq ($(CFG), MPI_LAHEY_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE)
   VPATH        = ..
-  LAMHF77      = /z/lobo/usr/local/lf9560/bin/lf95
+  LAMHF77      = /z/lobo/usr/local/lf9562/bin/lf95
   export LAMHF77
   FC           = hf77
   FFLAGS       = -g --chkglobal --warn --info $(DEFINES)
@@ -65,20 +64,21 @@ endif
 ifeq ($(CFG), SERIAL_LAHEY)
   DEFINES      = $(DEFINE_HDF) -DNDEBUG
   VPATH        = ..
-  LAMHF77      = /z/lobo/usr/local/lf9560/bin/lf95
+  LAMHF77      = /z/lobo/usr/local/lf9562/bin/lf95
   export LAMHF77
   FC           = hf77
   FFLAGS       = -g $(DEFINES)
   CC           = hcc
-  CFLAGS       = -Wall -pedantic -g $(DEFINES)
+  CFLAGS       = -Wall -pedantic -g $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS)
   LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
+##LD_FLAGS     = -static -L/z/lobo/usr/lib -lm ${HDF5_LIBS} ## this works with HDF5_ROOT=/z/lobo/home/charlton/hdf5
 endif
 
 ifeq ($(CFG), SERIAL_LAHEY_DEBUG)
   DEFINES      = $(DEFINE_HDF) 
   VPATH        = ..
-  LAMHF77      = /z/lobo/usr/local/lf9560/bin/lf95
+  LAMHF77      = /z/lobo/usr/local/lf9562/bin/lf95
   export LAMHF77
   FC           = hf77
   FFLAGS       = -g --chkglobal --warn --info $(DEFINES)
@@ -94,8 +94,9 @@ endif
 ifeq ($(CFG), MPI_ABSOFT)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG  
   VPATH        = ..
-  LAMHF77      = /usr/absoft/bin/f90
+  LAMHF77      = /z/parkplace/usr/absoft/bin/f90
   export LAMHF77
+  NLSPATH      = /z/parkplace/usr/absoft/lib/nls/cf90
   FC           = hf77
   FDEBUG       = -O -en  # -C
   FMISC        = -YEXT_NAMES=LCS -s -B108 -YCFRL=1 -trap=DIVBYZERO,OVERFLOW
@@ -103,14 +104,15 @@ ifeq ($(CFG), MPI_ABSOFT)
   CC           = hcc
   CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS)
-  LD_FLAGS     = -lm ${HDF5_LIBS} -L/usr/absoft/lib 
+  LD_FLAGS     = -lm ${HDF5_LIBS} -L/z/parkplace/usr/absoft/lib 
 endif
 
 ifeq ($(CFG), MPI_ABSOFT_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE)
   VPATH        = ..
-  LAMHF77      = /usr/absoft/bin/f90
+  LAMHF77      = /z/parkplace/usr/absoft/bin/f90
   export LAMHF77
+  NLSPATH      = /z/parkplace/usr/absoft/lib/nls/cf90
   FC           = hf77
   FDEBUG       = -g -en  # -C
   FMISC        = -YEXT_NAMES=LCS -s -B108 -YCFRL=1 -trap=DIVBYZERO,OVERFLOW
@@ -118,33 +120,35 @@ ifeq ($(CFG), MPI_ABSOFT_DEBUG)
   CC           = hcc
   CFLAGS       = -Wall -pedantic -ansi -g $(DEFINES) $(HDF5_INCLUDES)# -Wconversion 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS)
-  LD_FLAGS     = -lm ${HDF5_LIBS} -L/usr/absoft/lib # ${EFENCE_LIB} -lefence
+  LD_FLAGS     = -lm ${HDF5_LIBS} -L/z/parkplace/usr/absoft/lib # ${EFENCE_LIB} -lefence
 endif
 
 ifeq ($(CFG), SERIAL_ABSOFT)
   DEFINES      = $(DEFINE_HDF) -DNDEBUG 
   VPATH        = ..
-  FC           = /usr/absoft/bin/f90
+  NLSPATH      = /z/parkplace/usr/absoft/lib/nls/cf90
+  FC           = /z/parkplace/usr/absoft/bin/f90
   FDEBUG       = -O -en  # -C
   FMISC        = -YEXT_NAMES=LCS -s -B108 -YCFRL=1 -trap=DIVBYZERO,OVERFLOW
   FFLAGS       = $(FDEBUG) $(FMISC) $(DEFINES)
   CC           = gcc
   CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS) 
-  LD_FLAGS     = -lm ${HDF5_LIBS} -L/usr/absoft/lib
+  LD_FLAGS     = -lm ${HDF5_LIBS} -L/z/parkplace/usr/absoft/lib
 endif
 
 ifeq ($(CFG), SERIAL_ABSOFT_DEBUG)
   DEFINES      = $(DEFINE_HDF)
   VPATH        = ..
-  FC           = /usr/absoft/bin/f90
+  NLSPATH      = /z/parkplace/usr/absoft/lib/nls/cf90
+  FC           = /z/parkplace/usr/absoft/bin/f90
   FDEBUG       = -g -en  # -C
   FMISC        = -YEXT_NAMES=LCS -s -B108 -YCFRL=1 -trap=DIVBYZERO,OVERFLOW
   FFLAGS       = $(FDEBUG) $(FMISC) $(DEFINES)
   CC           = gcc
   CFLAGS       = -Wall -g $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS) 
-  LD_FLAGS     = -lm ${HDF5_LIBS} -L/usr/absoft/lib # ${EFENCE_LIB} -lefence
+  LD_FLAGS     = -lm ${HDF5_LIBS} -L/z/parkplace/usr/absoft/lib # ${EFENCE_LIB} -lefence
 endif
 
 ifeq ($(CFG), SERIAL_SUN)
