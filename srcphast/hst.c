@@ -1,6 +1,5 @@
 #define EXTERNAL
 #define MAIN
-#define PHREEQC_IDENT
 #include "phreeqc/global.h"
 #include "phreeqc/output.h"
 #include "hst.h"
@@ -8,7 +7,6 @@
 #include "phreeqc/phrqproto.h"
 #include "phreeqc/input.h"
 #include "phast_files.h"
-#undef PHREEQC_IDENT
 #include "phastproto.h"
 
 static void BeginTimeStep(int print_sel, int print_out, int print_hdf);
@@ -16,7 +14,7 @@ static void EndTimeStep(int print_sel, int print_out, int print_hdf);
 static void BeginCell(int print_sel, int print_out, int print_hdf, int index);
 static void EndCell(int print_sel, int print_out, int print_hdf, int index);
 
-static char const rcsid[] = "$RCSfile: hst.c,v $  $Revision: 2.27 $";
+static char const svnid[] = "$Id$";
 #define RANDOM
 #define REBALANCE
 /* #define USE_MPI set in makefile */
@@ -111,7 +109,7 @@ void PHREEQC_FREE(int *solute)
  */
 {
 	int i;
-  if (rcsid == NULL) fprintf(stderr," ");
+  if (svnid == NULL) fprintf(stderr," ");
 #ifdef HDF5_CREATE
   HDF_Finalize();
 #endif

@@ -19,7 +19,7 @@ SUBROUTINE coeff
        tdzy, u1, u2, u3, uden, udx, udxdy, udxdyi, udxdyo, udxdz,  &
        udy, udydz, udz, ufr, ufrac, updxdy, updxdz, updydz, uvel, uvis, wt
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: coeff.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   ! ... Prepare to update conductances

@@ -21,7 +21,7 @@ FUNCTION interp(ndim,xarg,yarg,nx,ny,xs,ys,fs,erflg) RESULT (interp_val)
   INTEGER :: i, j
   CHARACTER(LEN=130) :: logline1
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: interp.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   IF(ndim == 2) THEN

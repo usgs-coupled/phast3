@@ -34,7 +34,7 @@ SUBROUTINE ASMSLC
   INTEGER :: m, ma  
   CHARACTER(LEN=130) :: logline1
   !.....Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: asmslc.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !.....Assemble and solve the transport equation for each component
   IF (ERREXE) RETURN

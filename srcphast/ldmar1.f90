@@ -8,7 +8,7 @@ SUBROUTINE ldmar1
   USE mcs, ONLY: mar1
   IMPLICIT NONE
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: ldmar1.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   mar1( 1, 1) = 10  

@@ -32,7 +32,7 @@ SUBROUTINE efact(neqn,ipenv,envl,envut,diag)
   INTEGER, DIMENSION(:), POINTER :: ipenvv
   REAL(KIND=kdp), DIMENSION(:), POINTER :: envlv, envutv, diagv
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: efact.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   count=0

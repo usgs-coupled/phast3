@@ -18,7 +18,7 @@ SUBROUTINE init2_3
        ugdely, ugdelz, upabd, upor, ut
   INTEGER :: iis, m
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: init2_3.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   DO 810 M = 1, NXYZ  

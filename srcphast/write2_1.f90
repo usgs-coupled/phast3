@@ -48,7 +48,7 @@ SUBROUTINE write2_1
   INTEGER :: da_err
   CHARACTER(LEN=130) :: logline1, logline2, logline3, logline4, logline5
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: write2_1.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   mflbl=' mass '

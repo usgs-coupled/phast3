@@ -24,7 +24,7 @@ SUBROUTINE asembl
   INTEGER :: i, ibckm, ibckp, ic, j, k, m, ma
   INTEGER, PARAMETER :: icxm = 3, icxp = 4, icym = 2, icyp = 5, iczm = 1, iczp = 6
   !.....Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: asembl.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   !.....Compute and assemble coefficients in difference equations

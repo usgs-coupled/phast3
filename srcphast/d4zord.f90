@@ -11,7 +11,7 @@ SUBROUTINE d4zord(nx,ny,nz)
   INTEGER, DIMENSION(6), PARAMETER :: idirev = (/2,1,4,3,6,5/)
   LOGICAL :: odd
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: d4zord.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   nxy=nx*ny

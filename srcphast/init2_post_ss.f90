@@ -17,7 +17,7 @@ SUBROUTINE init2_post_ss
   INTEGER :: imod, iis, iwel, k, l, m, nr, nsa
   LOGICAL :: erflg
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: init2_post_ss.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   nr=nx

@@ -7,7 +7,7 @@ SUBROUTINE ldci
   INTEGER :: j, kx, ky, kz, m, ma
   INTEGER, DIMENSION(6) :: i
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: ldci.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   DO  m=1,nxyz
      CALL mtoijk(m,kx,ky,kz,nx,ny)

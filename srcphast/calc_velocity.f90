@@ -15,8 +15,7 @@ SUBROUTINE calc_velocity
   REAL(KIND=kdp) :: qface, sumq, vapp, vzfs
   REAL(KIND=kdp), DIMENSION(3) :: pa, qs
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string=  &
-       '$RCSfile: calc_velocity.f90,v $//$Revision: 2.1 $//$Date: 2004/12/16 20:17:39 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   ! ... Prepare to update conductances
   ! ... Zero the interfacial conductance and mass flow rate arrays and

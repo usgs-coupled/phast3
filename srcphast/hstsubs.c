@@ -6,10 +6,7 @@
 #include "phreeqc/phrqproto.h"
 #include "phastproto.h"
 
-/*     $Date: 2004/11/04 15:22:27 $ */
-static char const rcsid[] = "$RCSfile: hstsubs.c,v $  $Revision: 1.25 $";
-
-
+static char const svnid[] = "$Id$";
 
 /* ---------------------------------------------------------------------- */
 void add_all_components(void) 
@@ -24,7 +21,7 @@ void add_all_components(void)
  */
 	int i, save_print_use;
 
-	if (rcsid == NULL) fprintf(stderr," ");
+	if (svnid == NULL) fprintf(stderr," ");
 	save_print_use = pr.use;
 	pr.use = FALSE;
 	first_user_number = 1;

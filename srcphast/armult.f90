@@ -10,7 +10,7 @@ SUBROUTINE armult(x,y)
   REAL(KIND=kdp) ::  s  
   INTEGER :: i, ii, j, jcol  
   !.....Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: armult.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   DO i=1,nbn  

@@ -10,7 +10,7 @@ SUBROUTINE abmult(x,y)
   REAL(KIND=kdp) :: s  
   INTEGER :: irn, jc, jcol  
   !.....Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: abmult.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   DO  irn = 1, nrn  

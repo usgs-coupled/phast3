@@ -28,7 +28,7 @@ SUBROUTINE bsode(zwr,yy,dyy,dz,yymax,yyerr,kflag,jstart)
   INTEGER :: i, j, jhvsv, jhvsv1, jodd, k, l, m, m2, mnext, mtwo
   LOGICAL :: convrg
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: bsode.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   IF(jstart > 0) THEN

@@ -22,7 +22,7 @@ SUBROUTINE closef(mpi_myself)
   INTEGER :: da_err, i1p, i2p, ifu, ip  
   CHARACTER(LEN=130) :: logline1, logline2, logline3
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: closef.F90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   ! ... Close and delete the stripped input file

@@ -8,7 +8,7 @@ SUBROUTINE reordr(slmeth)
   !
   INTEGER :: i, n1, n2, n3
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: reordr.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   IF(slmeth == 1) THEN

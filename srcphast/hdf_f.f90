@@ -32,7 +32,7 @@ SUBROUTINE hdf_write_invariant(mpi_myself)
   INTEGER, DIMENSION(:), ALLOCATABLE  :: MWBC ! Well nodes
   ! ... Set string for use with RCS ident command
   INTEGER, DIMENSION(nrbc_seg) :: temp_rbc
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: hdf_f.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   IF (mpi_myself == 0) THEN

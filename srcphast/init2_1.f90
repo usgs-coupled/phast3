@@ -52,7 +52,7 @@ SUBROUTINE init2_1
   REAL(kind=kdp), DIMENSION(:), ALLOCATABLE :: ukbc, uzbc, ubbbc
   TYPE(cell_subdom), DIMENSION(:), ALLOCATABLE :: cell_sd
   ! ... set string for use with rcs ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: init2_1.f90,v $//$Revision: 2.2 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   nr=nx

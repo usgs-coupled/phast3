@@ -14,7 +14,7 @@ SUBROUTINE euslv(neqn,ipenv,env,diag,rhs)
   REAL(kind=kdp) :: s
   INTEGER :: i, iband, k, kstop, kstrt, l
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: euslv.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   i=neqn+1

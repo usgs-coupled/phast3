@@ -5,7 +5,7 @@ SUBROUTINE ldipen
   IMPLICIT NONE
   INTEGER :: ibn, ibncol, ic, idiff, jc, jrnrow, ma, mm
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: ldipen.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   ipenv(1)=1

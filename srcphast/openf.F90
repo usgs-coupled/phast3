@@ -7,7 +7,7 @@ SUBROUTINE openf
   INTEGER :: ios, length
   LOGICAL :: lerror 
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: openf.F90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   ! ... 'Phast.tmp' contains chemistry data filename, chemistry data-base

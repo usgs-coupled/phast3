@@ -11,7 +11,7 @@ SUBROUTINE formr(ra)
   REAL(kind=kdp) :: dd
   INTEGER :: i, irow, j, k, nrow
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: formr.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   DO  k=1,nbn

@@ -11,7 +11,7 @@ SUBROUTINE usolv(yy,ra,w)
   REAL(KIND=kdp) :: s
   INTEGER :: j, jcol, jj, k
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: usolv.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   yy(nbn) = w(nbn)/ra(10,nbn)

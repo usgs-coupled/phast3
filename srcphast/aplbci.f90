@@ -28,7 +28,7 @@ SUBROUTINE aplbci
   LOGICAL :: erflg
   REAL(kind=kdp), DIMENSION(:), ALLOCATABLE ::  qsbc3, qsbc4, qswm
   !.....Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: aplbci.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   ERFLG = .FALSE.  

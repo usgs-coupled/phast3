@@ -12,7 +12,7 @@ SUBROUTINE error3
   CHARACTER(LEN=130) :: logline1
   INTEGER :: i, ic, iis, iwel, l, l2, ls, m, warnflag
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: error3.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   ! ... Specified pressure and unconfined b.c.

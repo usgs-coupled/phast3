@@ -6,7 +6,7 @@ SUBROUTINE ldcir
   IMPLICIT NONE
   INTEGER :: ibn, ix, iy, j, k, kk
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: ldcir.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   DO  k=1,nbn

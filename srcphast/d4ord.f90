@@ -11,7 +11,7 @@ SUBROUTINE d4ord(nx,ny,nz)
   INTEGER :: i, i1, i2, i3, isum, j, k, m, md4, nx1, nx2, nx3, nxy
   LOGICAL :: odd
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: d4ord.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   nxy=nx*ny

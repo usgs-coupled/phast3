@@ -14,7 +14,7 @@ SUBROUTINE el1slv(neqn,ipenv,env,rhs)
   REAL(KIND=kdp) :: s  
   INTEGER :: i, iband, ifirst, k, kstop, kstrt, l, last  
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: el1slv.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   ! ... Find the position of the first non-zero in rhs and put it in IFIRST

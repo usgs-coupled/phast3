@@ -17,7 +17,7 @@ SUBROUTINE write4
   INTEGER :: i, ic, indx, j, k, m, mc
 !!$  REAL(KIND=kdp), DIMENSION(nxyz) :: vx_node, vy_node, vz_node
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: write4.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   rxlbl='X'

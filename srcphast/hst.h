@@ -1,8 +1,5 @@
-
-
-/*     $Date: 2004/10/27 22:36:54 $ */
 #ifdef PHREEQC_IDENT
-static char const rcsidhst[] = "$RCSfile: hst.h,v $  $Revision: 1.5 $";
+static char const svnid[] = "$Id$";
 #endif
 /* 
  *  STRUCTURES

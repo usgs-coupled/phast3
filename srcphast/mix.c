@@ -7,9 +7,7 @@
 #include "phastproto.h"
 
 extern int mpi_myself;
-/*     $Date: 2004/12/22 00:00:49 $ */
-static char const rcsid[] = "$RCSfile: mix.c,v $  $Revision: 2.12 $";
-
+static char const svnid[] = "$Id$";
 
 /* ---------------------------------------------------------------------- */
 int sum_solutions (struct solution *source1, LDBLE f1, struct solution *source2, LDBLE f2, struct solution *target)
@@ -22,7 +20,7 @@ int sum_solutions (struct solution *source1, LDBLE f1, struct solution *source2,
 	struct solution *solution_ptr1, *solution_ptr2;
 
 	LDBLE intensive, extensive;
-	if (rcsid == NULL) fprintf(stderr," ");
+	if (svnid == NULL) fprintf(stderr," ");
 /*
  *   Zero out global solution data
  */

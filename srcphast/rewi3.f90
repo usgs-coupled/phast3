@@ -33,7 +33,7 @@ SUBROUTINE rewi3(par1,par2,par3,icall,ier)
   LOGICAL :: erflg
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: upar1, upar2, upar3
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: rewi3.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   IF(icall == 1) THEN

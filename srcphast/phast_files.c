@@ -24,9 +24,7 @@ static int open_handler(const int type, const char *file_name);
 static int output_handler(const int type, const char *err_str, const int stop, void *cookie, const char *format, va_list args);
 static int rewind_wrapper(FILE* file_ptr);
 
-/*     $Date: 2004/12/14 18:08:37 $ */
-static char const rcsid[] = "$RCSfile: phast_files.c,v $  $Revision: 1.6 $";
-
+static char const svnid[] = "$Id$";
 
 /* ---------------------------------------------------------------------- */
 int phast_handler(const int action, const int type, const char *err_str, const int stop, void *cookie, const char *format, va_list args)

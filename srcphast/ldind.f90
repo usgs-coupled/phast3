@@ -11,7 +11,7 @@ SUBROUTINE ldind(idir)
   INTEGER, INTENT(IN) :: idir
   INTEGER :: i, incli, inclj, inclk, j, k, l, li, lj, lk
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: ldind.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   IF (idir == 1) THEN

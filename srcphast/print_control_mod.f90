@@ -9,7 +9,7 @@ MODULE print_control_mod
   END INTERFACE
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80), PRIVATE :: ident_string=  &
-       '$RCSfile: print_control_mod.f90,v $//$Revision: 2.1 $'
+       '$Id$'
   !     ------------------------------------------------------------------
 
   PRIVATE :: print_control_l, print_control_i

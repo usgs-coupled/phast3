@@ -11,8 +11,7 @@
 #endif
 #include <hdf5.h>        /* HDF routines */
 
-/*     $Date: 2004/11/04 15:22:27 $ */
-static char const rcsid[] = "$RCSfile: hdf.c,v $  $Revision: 1.22 $";
+static char const svnid[] = "$Id$";
 
 #ifdef USE_MPI
 #include <mpi.h>         /* MPI routines */
@@ -147,7 +146,7 @@ void HDF_Init(char* prefix, int prefix_l)
     const int mpi_myself = 0;
 #endif
 
-    if (rcsid == NULL) fprintf(stderr," ");
+    if (svnid == NULL) fprintf(stderr," ");
     if (mpi_myself == 0) {
         /* Open the HDF file */
         root.hdf_file_id = open_hdf_file(prefix, prefix_l);

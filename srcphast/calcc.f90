@@ -24,7 +24,7 @@ SUBROUTINE calcc(c, dc, denn, dp, dpkm, dpkp, dt, fracn, fracnzkp,  &
        pvkdtn, tnp, ufd, ufd2, upct, upv, zfsnp, zk
   REAL(KIND=kdp), PARAMETER :: epssat = 1.e-6_kdp  
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: calcc.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   pnp = p+dp

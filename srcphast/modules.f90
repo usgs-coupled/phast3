@@ -1,5 +1,5 @@
 ! ... Module files used for phast for definition of data groups
-! ... $RCSfile: modules.f90,v $//$Revision: 2.1 $
+! ... $Id$
 MODULE f_units
 ! ... fortran unit assignments
   IMPLICIT NONE

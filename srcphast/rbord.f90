@@ -9,7 +9,7 @@ SUBROUTINE rbord(nx,ny,nz)
   !
   INTEGER :: ix, iy, iz, m, m1, mmod, nxyz
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: rbord.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   nxyz = nx*ny*nz

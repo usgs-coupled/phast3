@@ -38,7 +38,7 @@ SUBROUTINE tfrds(diagra,envlra,envura)
   REAL(KIND=kdp) :: uva, va7i
   INTEGER :: i, ibn, ibnrow, ic, ie, irn, jbncol, jc, joff, jrncol, mbnrow, nenvl
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: tfrds.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   nenvl=ipenv(nbn+1)-1

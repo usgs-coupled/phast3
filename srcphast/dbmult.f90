@@ -9,7 +9,7 @@ SUBROUTINE dbmult(x,y)
   !
   INTEGER :: i, j
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: dbmult.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   DO  i=1,nbn

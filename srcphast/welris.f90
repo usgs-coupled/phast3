@@ -25,7 +25,7 @@ SUBROUTINE welris(iwel,iwfss,uqwmr)
   INTEGER, PARAMETER :: kmax=200
   CHARACTER(LEN=130) :: logline1, logline2, logline3, logline4, logline5, logline6
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: welris.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   ! ... Initialize

@@ -42,11 +42,11 @@ PROGRAM phast
   INTEGER :: mpi_tasks, mpi_myself, stop_msg
   CHARACTER(LEN=130) :: logline1
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: phast.F90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   ! ... Extract the version name for the header
-  version_name = 'RC3'
+  version_name = ' 1.1'
   !...
   errexi=.FALSE.
   errexe=.FALSE.

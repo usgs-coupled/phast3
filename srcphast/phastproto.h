@@ -2,6 +2,9 @@
  * hdf.c
  */
 #ifdef HDF5_CREATE
+#ifdef PHREEQC_IDENT
+static char const svnid[] = "$Id$";
+#endif
 /*
  *   Functions called from C
  */

@@ -29,7 +29,7 @@ SUBROUTINE init3
   INTEGER :: da_err, ic, imod, iis, iwel, k, l, ls, m, m1, mt
   REAL(kind=kdp), PARAMETER :: nodat = bgreal*1.e-15_kdp
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: init3.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   ! ... Convert the data to S.I. time units if necessary

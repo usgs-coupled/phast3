@@ -44,7 +44,7 @@ SUBROUTINE asmslp
   LOGICAL :: convp
   CHARACTER(LEN=130) :: logline1, logline2
   !.....Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: asmslp.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   ! ... Assemble and solve the flow equation for pressure (head)
   errexe = .false.  

@@ -12,7 +12,7 @@ SUBROUTINE etom1
 !!$  REAL(KIND=kdp) :: cnv  
   INTEGER :: i, ipmz, iwel, k, m
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: etom1.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
 !!$  IF( HEAT.AND.NHCBC.GT.0) THEN  

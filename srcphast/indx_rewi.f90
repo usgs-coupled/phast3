@@ -39,7 +39,7 @@ SUBROUTINE indx_rewi(ipar1,ipar2,par3,ip,icall,ier)
   INTEGER, DIMENSION(3) :: imod
   LOGICAL :: erflg
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: indx_rewi.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   IF(icall == 03.AND.ip == 1) THEN

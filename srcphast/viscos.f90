@@ -8,7 +8,7 @@ FUNCTION viscos(p,t,c)
   REAL(KIND=kdp) :: viscos  
   REAL(KIND=kdp) :: c, p, t  
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: viscos.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   IF(visfac < 0._kdp) THEN  

@@ -10,7 +10,7 @@ SUBROUTINE lsolv(ra,rr,w)
   REAL(KIND=kdp) :: s
   INTEGER :: j, jcol, jj, k
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: lsolv.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   w(1) = rr(1)

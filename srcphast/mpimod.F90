@@ -27,7 +27,7 @@ END MODULE mpi_mod
 SUBROUTINE init_mpi(mpi_tasks, mpi_myself)
   USE mpi_mod
   IMPLICIT NONE
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: mpimod.F90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   INTERFACE
     SUBROUTINE MPI_INIT_(ierror)
 #if defined(_WIN32)

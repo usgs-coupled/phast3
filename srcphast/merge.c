@@ -1,4 +1,5 @@
 #include <assert.h>      /* assert */
+static char const svnid[] = "$Id$";
 
 #if defined(_WIN32) && defined(_MT)
 #define _HDF5USEDLL_     /* reqd for Multithreaded run-time library (Win32) */

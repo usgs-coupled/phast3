@@ -43,7 +43,7 @@ SUBROUTINE read2
   REAL(kind=kdp), DIMENSION(:), ALLOCATABLE :: uarbc, ukrb, uzerb
   CHARACTER(len=130) :: logline1, logline2
   ! ... set string for use with rcs ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: read2.f90,v $//$Revision: 2.2 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   ! ... allocate space for read group 2 arrays

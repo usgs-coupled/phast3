@@ -34,7 +34,7 @@ SUBROUTINE write5_ss_flow
   REAL(KIND=kdp), PARAMETER :: cnv = 1._kdp
   CHARACTER(LEN=130) :: logline1, logline2
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: write5_ss_flow.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   erflg=.FALSE.
   ! ... Print out the summary tables

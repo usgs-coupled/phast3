@@ -28,7 +28,7 @@ SUBROUTINE sumcal2
 !!$  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: qsbc3, qsbc4
   REAL(KIND=kdp), DIMENSION(nxy) :: fracn
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: sumcal2.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   ufdt0 = 1._kdp - fdtmth

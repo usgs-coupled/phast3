@@ -11,7 +11,7 @@ SUBROUTINE read1
   CHARACTER (LEN=250) :: LIMAGE  
   INTEGER :: ILAST  
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: read1.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   ! ... Pre-read of data file to strip out comments

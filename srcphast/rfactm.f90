@@ -9,7 +9,7 @@ SUBROUTINE rfactm(ra,sumfil)
   REAL(kind=kdp) :: dd
   INTEGER :: i, ii, irow, j, jj, k, l
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: rfactm.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   DO  k=1,nbn-1

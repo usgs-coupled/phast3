@@ -35,7 +35,7 @@ SUBROUTINE prntar(ndim,array,lprnt,fu,cnv,ifmt,nnoppr)
   LOGICAL :: prwin
   ! ... ORENPR: 12 - Areal layers; 13 - Vertical slices
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: prntar.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   ior=MOD(ABS(orenpr),10)

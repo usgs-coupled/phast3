@@ -14,7 +14,7 @@ SUBROUTINE timstp_ss_flow
   REAL(KIND=kdp) :: adp, uctc, udtim, uptc, utime, utimchg, uttc
   CHARACTER(LEN=130) :: logline1, logline0='    '
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: timstp_ss_flow.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   ! ... Update time step counter

@@ -37,7 +37,7 @@ SUBROUTINE indx_rewi_bc(ipar1,ipar2,par3,ip,icall,ier)
   INTEGER, DIMENSION(:), ALLOCATABLE :: uipar1, uipar2
   REAL(kind=kdp), DIMENSION(:), ALLOCATABLE :: upar
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: indx_rewi_bc.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   ALLOCATE (uipar1(nxyz), uipar2(nxyz), upar(nxyz), &

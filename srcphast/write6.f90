@@ -14,7 +14,7 @@ SUBROUTINE write6
   REAL(KIND=kdp) :: utime, utimchg
   INTEGER :: m
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: write6.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   IF(prkd) THEN

@@ -20,7 +20,7 @@ SUBROUTINE error4
   LOGICAL :: allout
   LOGICAL, DIMENSION(:), ALLOCATABLE :: inzone
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: error4.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   IF(ichwt) THEN

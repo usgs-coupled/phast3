@@ -9,7 +9,7 @@ SUBROUTINE stonb(c,j,incj)
   CHARACTER(LEN=1), PARAMETER :: sp=' '
   INTEGER :: ncol
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: stonb.f90,v $//$Revision: 2.1 $'
+  CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   ncol = len(c)
