@@ -3,19 +3,20 @@
 
 Summary: A 3D Reaction-Transport Model based on PHREEQC and HST3D
 Name: phast
-Version: 1.0
-Release: 1
+Version: @VERSION@
+Release: @RELEASE@
 Vendor: USGS
 License: None
 Group: Applications/Modeling
-Source0: %{name}-%{version}-%{release}.tar.gz
-Patch0: %{name}-%{version}-%{release}-Makefile.David.patch
+#####Source0: %{name}-%{version}-%{release}.tar.gz
+Source0: %{name}-%{version}.tar.gz
+#####Patch0: %{name}-%{version}-%{release}-Makefile.David.patch
 URL: http://wwwbrr.cr.usgs.gov/projects/GWC_coupled
 BuildRoot: %{_tmppath}/phast-%{version}-root
 Prefix: %{_usr}
 
 %description
-PHAST—A Program for Simulating Ground-Water Flow,
+PHAST -- A Program for Simulating Ground-Water Flow,
 Solute Transport, and Multicomponent Geochemical
 Reactions
 
@@ -27,61 +28,42 @@ Reactions
 %prep
 %setup -q
 
-%ifarch usparc
-echo "Patch #0:"
-patch -p1 srcphast/Makefile.David < $RPM_SOURCE_DIR/%{name}-%{version}-%{release}-Makefile.David.patch
-%else
-%patch0 -p1
-%endif
+###%ifarch usparc
+###echo "Patch #0:"
+###patch -p1 srcphast/Makefile.David < $RPM_SOURCE_DIR/%{name}-%{version}-%{release}-Makefile.David.patch
+###%else
+###%patch0 -p1
+###%endif
 
 # 
 # Rearrange files
 #
-mv srcphast/README .
-mv srcphast/phreeqc.revisions  ./doc/.
+mv doc/README .
+mv src/phast/phreeqc.revisions  ./doc/.
 
 %build
 
 #
 # build phastinput
 #
-cd srcinput
+cd src/phastinput
 make
-cd ..
+cd ../..
 
 #
 # build phasthdf
 #
-%ifarch i386 i586
-  cd export
-  ant dist-Linux
-  cd ..
-%endif
-%ifarch usparc
-  cd export
-  ant dist-SunOS
-  cd ..
-%endif
+cd src/phasthdf
+ant dist-Linux
+cd ../..
 
 #
 # build phast-ser and phast-lam
 #
-%ifarch i386 i586
-  cd srcphast
-  make serial_absoft
-  make mpi_absoft
-  cd ..
-%endif
-%ifarch usparc
-  cd srcphast
-  mkdir serial_sun
-  cd serial_sun
-  make -r -f ../Makefile.David CFG=SERIAL_SUN modules.o
-  cd ..
-  make serial_sun
-  cd ..
-%endif
-
+cd src/phast
+make serial_absoft
+make mpi_absoft
+cd ../..
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -104,18 +86,20 @@ mkdir -p  $RPM_BUILD_ROOT/%{_libdir}/phast-%{version}/`uname`
 #   Linux /usr/share/doc/phast-1.0/src
 #   SunOS /usr/local/doc/phast-1.0/src
 #
-mkdir src
-cd src
-tar xvzf $RPM_SOURCE_DIR/%{name}-%{version}-%{release}.tar.gz
-mv %{name}-%{version}/srcphast ./phast
-rm -f phast/revisions phast/phast.rev
-mv %{name}-%{version}/srcinput ./phastinput
-rm -f phastinput/rivtest.c phastinput/d4ordr.c
-mv %{name}-%{version}/export ./phastexport
-mv %{name}-%{version}/examples ../test
-rm -rf %{name}-%{version}
-find . -name '.cvsignore' -exec echo rm {} \;
-cd ..
+####mkdir src
+####cd src
+####tar xvzf $RPM_SOURCE_DIR/%{name}-%{version}-%{release}.tar.gz
+####mv %{name}-%{version}/srcphast ./phast
+####rm -f phast/revisions phast/phast.rev
+####mv %{name}-%{version}/srcinput ./phastinput
+####rm -f phastinput/rivtest.c phastinput/d4ordr.c
+####mv %{name}-%{version}/export ./phastexport
+####mv %{name}-%{version}/examples ../test
+####rm -rf %{name}-%{version}
+####find . -name '.cvsignore' -exec echo rm {} \;
+####cd ..
+mkdir -p test
+cp -alr examples/* test/.
 
 #
 # Linux /usr/bin/phast-ser
@@ -124,19 +108,14 @@ cd ..
 # Linux /usr/bin/phast-lam
 # SunOS None
 #
-%ifarch i386 i586
-  cp srcphast/serial_absoft/phast $RPM_BUILD_ROOT/%{_bindir}/phast-ser
-  cp srcphast/mpi_absoft/phast $RPM_BUILD_ROOT/%{_bindir}/phast-lam
-%endif
-%ifarch usparc
-  cp srcphast/serial_sun/phast $RPM_BUILD_ROOT/%{_bindir}/phast-ser
-%endif
+cp src/phast/serial_absoft/phast $RPM_BUILD_ROOT/%{_bindir}/phast-ser
+cp src/phast/mpi_absoft/phast $RPM_BUILD_ROOT/%{_bindir}/phast-lam
 
 #
 # Linux /usr/bin/phastinput
 # SunOS /usr/local/bin/phastinput
 #
-cp srcinput/phastinput $RPM_BUILD_ROOT/%{_bindir}/phastinput
+cp src/phastinput/phastinput $RPM_BUILD_ROOT/%{_bindir}/phastinput
 
 #
 # Phast/hdf jar's
@@ -144,7 +123,7 @@ cp srcinput/phastinput $RPM_BUILD_ROOT/%{_bindir}/phastinput
 # Linux /usr/lib/phast-%{version}/*.jar
 # SunOS /usr/local/lib/phast-%{version}/*.jar
 #
-cp export/dist/*.jar $RPM_BUILD_ROOT/%{_libdir}/phast-%{version}/.
+cp src/phasthdf/dist/*.jar $RPM_BUILD_ROOT/%{_libdir}/phast-%{version}/.
 
 #
 # Phast/hdf so's
@@ -152,7 +131,7 @@ cp export/dist/*.jar $RPM_BUILD_ROOT/%{_libdir}/phast-%{version}/.
 # Linux /usr/lib/phast-%{version}Linux/*.so
 # SunOS /usr/local/lib/phast-%{version}/SunOS/*.so
 #
-cp export/dist/`uname`/* $RPM_BUILD_ROOT/%{_libdir}/phast-%{version}/`uname`/.
+cp src/phasthdf/dist/`uname`/* $RPM_BUILD_ROOT/%{_libdir}/phast-%{version}/`uname`/.
 
 #
 # Create script to run phast
@@ -232,7 +211,7 @@ chmod 755 $RPM_BUILD_ROOT/%{_bindir}/phasthdf
 #
 for arg in test/*; do
   cd $arg
-  $RPM_BUILD_ROOT/%{_bindir}/phast `basename $arg`
+  echo $RPM_BUILD_ROOT/%{_bindir}/phast `basename $arg`
   cd ../..
 done
 tar cvzf $RPM_SOURCE_DIR/%{name}-%{version}-%{release}-`uname`-test.tar.gz test
