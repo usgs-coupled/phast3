@@ -30,9 +30,9 @@ contains the following subdirectories:
 Linux Installation with tar:
 ----------------------------
 
-Extract the files from phast-@VERSION@-@REVISION@-Linux.tar.gz with the command:
+Extract the files from phast-@VERSION@-@REVISION@.Linux.tar.gz with the command:
 
-tar -xzf phast-@VERSION@-@REVISION@-Linux.tar.gz
+tar -xzf phast-@VERSION@-@REVISION@.Linux.tar.gz
 
 Files will be extracted into a directory named phast-@VERSION@. The 
 following subdirectories will be created within phast-@VERSION@:
