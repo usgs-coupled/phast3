@@ -448,8 +448,6 @@ phast_files.o: phast_files.c global.h phqalloc.h output.h phrqproto.h input.h
 clean:
 	rm -rf serial_absoft serial_absoft_debug mpi_absoft mpi_absoft_debug serial_lahey serial_lahey_debug mpi_lahey mpi_lahey_debug 	
 
--include $(TOPDIR)/src/distribution.mk
-
 # =============================================================================
 # End of makefile.
 # =============================================================================

@@ -1,9 +1,9 @@
-	PHAST, Version 1.0 (December 20, 2004).
+	PHAST, Version VERSION, VER_DATE
 
 PHAST is a 3-dimensional, reactive-transport simulator that is
-available for Windows, Linux, and Sun. PHAST simulates
-constant-density saturated flow, multicomponent transport, and a wide
-range of equilibrium and kinetic chemical reactions.
+available for Windows and Linux. PHAST simulates constant-density
+saturated flow, multicomponent transport, and a wide range of
+equilibrium and kinetic chemical reactions.
 
 
 
@@ -15,9 +15,9 @@ Windows Installation:
 
 The Windows version uses InstallShield to install the programs PHAST,
 PHASTHDF, and Model Viewer. You need administrator privileges to
-execute the installation file phast-1.0-1.exe.
+execute the installation file phast-VERSION.REVISION.exe.
 
-The installation directory is \Program Files\USGS\phast-1.0, which
+The installation directory is \Program Files\USGS\phast-VERSION, which
 contains the following subdirectories:
 	\bin
 	\database
@@ -30,12 +30,12 @@ contains the following subdirectories:
 Linux Installation with tar:
 ----------------------------
 
-Extract the files from phast-1.0.Linux.tar.gz with the command:
+Extract the files from phast-VERSION.REVISION-Linux.tar.gz with the command:
 
-tar -xzf phast-1.0.Linux.tar.gz
+tar -xzf phast-VERSION.REVISION-Linux.tar.gz
 
-Files will be extracted into a directory named phast-1.0. The 
-following subdirectories will be created within phast-1.0:
+Files will be extracted into a directory named phast-VERSION. The 
+following subdirectories will be created within phast-VERSION:
 	/bin
 	/database
 	/doc
@@ -54,10 +54,10 @@ to install with rpm. The --prefix option may be used to change the
 installation directory. The programs are installed with the following
 command, where square brackets indicate an optional field:
 
-rpm -i [--prefix=dirname] phast-1.0-1.i586.rpm
+rpm -i [--prefix=dirname] phast-VERSION.REVISION.i586.rpm
 
 The installation directory for the source, documentation, and examples
-is /usr/share/doc/phast-1.0, where the directory /usr may be changed
+is /usr/share/doc/phast-VERSION, where the directory /usr may be changed
 with the --prefix option. The subdirectories of this directory are
 
 	/database
@@ -75,58 +75,6 @@ using the --prefix option.
 
 PHAST can be uninstalled with the following command:
 
-rpm -e phast
-
-
-Sun installation with tar:
---------------------------
-
-Extract the files from phast-1.0.SunOS.tar.gz with the commands:
-
-gunzip phast-1.0.SunOS.tar.gz
-tar -xf phast-1.0.SunOS.tar
-
-Files will be extracted into a directory named phast-1.0. The 
-following subdirectories will be created within phast-1.0:
-	/bin
-	/database
-	/doc
-	/examples
-	/lib
-	/src
-
-
-Sun installation with RPM:
---------------------------
-
-The Sun version uses rpm to install the programs PHAST and PHASTHDF
-(ModelViewer is only available in the Windows version).  The program
-must be installed using root authority. The --prefix option may be
-used to change the installation directory. The programs are installed
-with the following command, where square brackets indicate an optional
-field:
-  
-rpm -i [--prefix=dirname] phast-1.0-1.usparc.rpm
-
-The installation directory for the source, documentation, and examples is
-/usr/share/doc/phast-1.0, where the directory /usr may be changed with
-the --prefix option. The subdirectories of this directory are
-
-        /database
-        /doc
-        /examples
-        /src
-  
-The installation directory for the scripts and executables is
-/usr/local/bin, where the directory /usr/local may be changed with the
---prefix option.
- 
-Additional files required to run phasthdf are installed into the
-/usr/local/lib directory, where the directory /usr/local may also be
-changed using the --prefix option.
- 
-PHAST can be uninstalled with the following command:
-  
 rpm -e phast
 
 
@@ -168,8 +116,8 @@ argument is not defined, the database file must be named phast.dat.
 PARALLEL (MULTIPROCESSOR) VERSIONS OF PHAST
 
 A parallel version for PHAST for Windows has been compiled with the
-MPICH version of MPI (bin\phast-mpich). For Linux and SunOS, a
-parallel version has been compiled with the LAM version of MPI
+MPICH version of MPI (bin\phast-mpich). For Linux, the parallel
+version has been compiled with the LAM version of MPI
 (bin/phast-lam). The parallel versions use exactly the same input
 files as the serial versions. Limited help with installation and
 running the parallel versions is given in Appendix C of the PHAST
@@ -265,65 +213,10 @@ PHAST that often use only one feature of PHAST. Some of the examples
 contain no chemistry and are simply a test of the flow model.
 
 
+HISTORY--See RELEASE.TXT 
+
 
 Hopefully this is enough to get you started. Please report bugs
 (dlpark@usgs.gov or klkipp@usgs.gov) and we will try to fix any
 problems as soon as possible. Any other comments are appreciated.
-
-
-
-MAJOR CHANGES FROM PHAST VERSION RELEASE CANDIDATE 3 (RC3):
-
-(1) Flow and transport data files from version RC3 will not run with
-    PHASTINPUT Version 1.0.
-
-    The way that time-series data are defined has changed for boundary
-    conditions, wells, rivers, time step, and print frequencies. A
-    sequence of data blocks separated by END keywords is no longer
-    used to define simulation periods. For boundary conditions, all
-    time-varying properties are defined immediately following the
-    -zone definition. Time series for wells are defined immediately
-    following the -pumping/-injection identifier and following the
-    -solution identifier. Time series for a river point are defined by
-    -head and -solution following the definition of the location of
-    the river point (-point). Time series for time step are defined in
-    a single TIME_CONTROL data block. Print frequencies are defined
-    for a sequence of times. At each time, print frequencies for
-    various files may be redefined.
-
-(2) The handling of the unsaturated zone has changed in free-surface
-    simulations. The unsaturated flow is not modeled, so free-surface
-    calculations still contain major approximations. However, an
-    attempt has been made to avoid some mass-balance errors related to
-    rising and falling water tables. The program now separates the
-    solids in a cell containing the water table into two reservoirs,
-    the saturated and unsaturated reservoirs. As the water table
-    rises, solids are transferred from the unsaturated reservoir to
-    the saturated reservoir. As the water table falls, solids are
-    transferred from the saturated reservoir to the unsaturated
-    reservoir. The main deficiency of the current implementation is that
-    solids in the unsaturated reservoirs are removed from the
-    calculation and do not react with recharge that is, in fact,
-    percolating through these solids. There is also no way to view or
-    print the masses of solids that are in the unsaturated reservoirs.
-
-(3) Mass-balance accounting for reactions has been added and the
-    method for calculating mass-fluxes at boundaries has been changed
-    to be consistent with the selected time-weighting scheme for the
-    finite-difference equations.
-
-(4) The FLOW_ONLY keyword has been replaced with the SOLUTE_TRANSPORT
-    keyword.
-
-(5) Input for rivers has been revised. Each river point location must
-    now be defined with the -point identifier. Default properties have
-    been eliminated. All properties (width, depth, bed thickness, bed
-    hydraulic conductivity, head, and solution composition) are now
-    interpolated. All properties must be defined at the end points of
-    the river. Additional data may be defined at other river
-    points. At the beginning of each simulation period, head and
-    solution properties for river points are updated with any new
-    values and interpolation for head and solution composition is
-    performed.
-
 
