@@ -5,13 +5,13 @@ SUBROUTINE gcgris(ap,bp,ra,rr,ss,xx,w,z,sumfil)
   ! ... A restarted ORTHOMIN method
   ! ... Reduced system by red-black or d4 zig-zag reordering
   USE machine_constants, ONLY: kdp
-  USE f_units
+!!$  USE f_units
   USE mcc
   USE mcg
   USE mcm
-  USE mcp, ONLY: cnvtmi
+!!$  USE mcp, ONLY: cnvtmi
   USE mcs
-  USE mcv, ONLY: itime, time
+!!$  USE mcv, ONLY: itime, time
   USE print_control_mod
   IMPLICIT NONE
   REAL(KIND=kdp), DIMENSION(:,0:), INTENT(IN OUT), TARGET :: ap

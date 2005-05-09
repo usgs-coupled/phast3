@@ -1,7 +1,5 @@
-SUBROUTINE init2_1  
+SUBROUTINE init2_1
   ! ... initialize after read2
-  ! ... this is the last initialization outside the p,t,c loop for
-  ! ...      time marching
   ! ... initialization block 1 before chemical reactions
   USE machine_constants, ONLY: kdp
   USE mcb
@@ -17,6 +15,7 @@ SUBROUTINE init2_1
   USE mg2
   USE phys_const
   IMPLICIT NONE
+  !
   REAL(kind=kdp) :: viscos  
   INTRINSIC index
   INTERFACE
@@ -54,7 +53,12 @@ SUBROUTINE init2_1
   ! ... set string for use with rcs ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
-  !...
+  ALLOCATE (axsav(nxyz), aysav(nxyz), azsav(nxyz),  &
+       stat = a_err)
+  IF (a_err /= 0) THEN  
+     PRINT *, "Array allocation failed: init2_1, number 0"  
+     STOP  
+  ENDIF
   nr=nx
   nsa = MAX(ns,1)
   ! ... convert the data to s.i. time units if necessary
@@ -104,12 +108,12 @@ SUBROUTINE init2_1
      IF(.NOT.xd_mask(i,j,k)) ibc(m) = -1
   END DO
   IF(errexi) RETURN  
-  ! ... load the element centroid arrays
-  DO ipmz=1,npmz
-     xele(ipmz) = 0.5_kdp*(x(i1z(ipmz))+x(i2z(ipmz)))
-     yele(ipmz) = 0.5_kdp*(y(j1z(ipmz))+y(j2z(ipmz)))
-     zele(ipmz) = 0.5_kdp*(z(k1z(ipmz))+z(k2z(ipmz)))
-  END DO
+!!$  ! ... load the element centroid arrays
+!!$  DO ipmz=1,npmz
+!!$     xele(ipmz) = 0.5_kdp*(x(i1z(ipmz))+x(i2z(ipmz)))
+!!$     yele(ipmz) = 0.5_kdp*(y(j1z(ipmz))+y(j2z(ipmz)))
+!!$     zele(ipmz) = 0.5_kdp*(z(k1z(ipmz))+z(k2z(ipmz)))
+!!$  END DO
   t = 0._kdp
   IF(paatm <= 0._kdp) paatm = 1.01325e5_kdp
   ! ... calculation of aquifer fluid density and enthalpy at p0,t0,w0
@@ -490,7 +494,7 @@ SUBROUTINE init2_1
           sfsb(nsbc), sfvsb(nsbc), shsb(1), sssb(nsbc,nsa), &
           csbc(nsbc,nsa), psbc(nsbc), tsbc(nsbc), ccfsb(nsbc), ccfvsb(nsbc), cchsb(nsbc), &
           ccssb(nsbc,nsa), &
-          vafsbc(7,nsbc), rhfsbc(nsbc), vahsbc(7,1), rhhsbc(1), &
+          vafsbc(7,nsbc), rhfsbc(nsbc),  &
           vassbc(7,nsbc,nsa), rhssbc(nsbc,nsa), &
           stat = a_err)
      IF (a_err /= 0) THEN  
@@ -659,7 +663,7 @@ SUBROUTINE init2_1
            ccslb(l, iis) = 0._kdp  
 371     END DO
 370  END DO
-     DEALLOCATE (umbc, ukbc, ubbbc, uzbc, &
+     DEALLOCATE (umbc, ukbc, uklb, ubbbc, ubblb, uzbc, uzelb, &
           stat = da_err)
      IF (da_err /= 0) THEN  
         PRINT *, "array deallocation failed, number 4"  
@@ -1121,52 +1125,52 @@ SUBROUTINE init2_1
   ! ... tolerances for iterative solution of p,t,c equations
   ! ...      change in density
   !...***not applicable
-  IF(slmeth == 1) THEN  
-     ALLOCATE (ind(nxyz), mrno(nxyz), mord(nxyz), &
-          ci(6,nxyz), cir(lrcgd1,nxyzh), cirh(lrcgd2,nxyzh), cirl(lrcgd2,nxyzh), &
-          ip1(nxyzh), ip1r(nxyzh), ipenv(nxyzh+2), &
-          stat = a_err)
-     IF (a_err /= 0) THEN  
-        PRINT *, "array allocation failed: init2, number 11"  
-        STOP  
+     IF(slmeth == 1) THEN  
+        ALLOCATE (ind(nxyz), mrno(nxyz), mord(nxyz), &
+             ci(6,nxyz), cir(lrcgd1,nxyzh), cirh(lrcgd2,nxyzh), cirl(lrcgd2,nxyzh), &
+             ip1(nxyzh), ip1r(nxyzh), ipenv(nxyzh+2), &
+             stat = a_err)
+        IF (a_err /= 0) THEN  
+           PRINT *, "array allocation failed: init2, number 11"  
+           STOP  
+        ENDIF
+        ! ... establish d4 cell reordering for reduced matrix, ra
+        CALL reordr(slmeth)  
+        ! ... allocate space for the solver
+        ALLOCATE(diagra(nbn), envlra(ipenv(nbn+1)), envura(ipenv(nbn+1)), &
+             stat = a_err)
+        IF (a_err /= 0) THEN  
+           PRINT *, "array allocation failed: init2, number 12"  
+           STOP  
+        ENDIF
+        ! ... primary and overhead storage
+        nprist = nbn + 2* ipenv(nbn + 1)  
+        nohst = 9* nxyz + nbn + 1  
+        nstslv = nprist + nohst  
+     ELSEIF(slmeth == 3 .OR. slmeth == 5) THEN  
+        ALLOCATE (ind(nxyz), mrno(nxyz), mord(nxyz), ci(6,nxyz), cir(lrcgd1,nxyzh), &
+             cirh(lrcgd2,nxyzh), cirl(lrcgd2,nxyzh), &
+             stat = a_err)
+        IF (a_err /= 0) THEN  
+           PRINT *, "array allocation failed: init2, number 13"  
+           STOP  
+        ENDIF
+        ! ... establish red-black or d4z cell reordering for reduced matrix, ra
+        CALL reordr(slmeth)
+        ! ... allocate space for the solver
+        ALLOCATE(ap(nrn,0:nsdr), bbp(nbn,0:nsdr), ra(lrcgd1,nbn), rr(nrn), sss(nbn), &
+             xx(nxyz), ww(nrn), zz(nbn), sumfil(nbn), &
+             stat = a_err)
+        IF (a_err /= 0) THEN  
+           PRINT *, "array allocation failed: init2, number 14"  
+           STOP  
+        ENDIF
+        ! ... primary and overhead storage
+        nprist = lrcgd1* nbn  
+        nohst = 3*lrcgd1*nbn + 2*(nsdr + 1)*nbn + 10*nxyz + 5*  &
+             nbn + (nsdr - 1)*(nsdr - 1) + nsdr + 19*19 + 42
+        nstslv = nprist + nohst  
      ENDIF
-     ! ... establish d4 cell reordering for reduced matrix, ra
-     CALL reordr(slmeth)  
-     ! ... allocate space for the solver
-     ALLOCATE(diagra(nbn), envlra(ipenv(nbn+1)), envura(ipenv(nbn+1)), &
-          stat = a_err)
-     IF (a_err /= 0) THEN  
-        PRINT *, "array allocation failed: init2, number 12"  
-        STOP  
-     ENDIF
-     ! ... primary and overhead storage
-     nprist = nbn + 2* ipenv(nbn + 1)  
-     nohst = 9* nxyz + nbn + 1  
-     nstslv = nprist + nohst  
-  ELSEIF(slmeth == 3 .OR. slmeth == 5) THEN  
-     ALLOCATE (ind(nxyz), mrno(nxyz), mord(nxyz), ci(6,nxyz), cir(lrcgd1,nxyzh), &
-          cirh(lrcgd2,nxyzh), cirl(lrcgd2,nxyzh), &
-          stat = a_err)
-     IF (a_err /= 0) THEN  
-        PRINT *, "array allocation failed: init2, number 13"  
-        STOP  
-     ENDIF
-     ! ... establish red-black or d4z cell reordering for reduced matrix, ra
-     CALL reordr(slmeth)
-     ! ... allocate space for the solver
-     ALLOCATE(ap(nrn,0:nsdr), bbp(nbn,0:nsdr), ra(lrcgd1,nbn), rr(nrn), sss(nbn), &
-          xx(nxyz), ww(nrn), zz(nbn), sumfil(nbn), &
-          stat = a_err)
-     IF (a_err /= 0) THEN  
-        PRINT *, "array allocation failed: init2, number 14"  
-        STOP  
-     ENDIF
-     ! ... primary and overhead storage
-     nprist = lrcgd1* nbn  
-     nohst = 3*lrcgd1*nbn + 2*(nsdr + 1)*nbn + 10*nxyz + 5*  &
-          nbn + (nsdr - 1)*(nsdr - 1) + nsdr + 19*19 + 42
-     nstslv = nprist + nohst  
-  ENDIF
   ! ... allocate space for the assembly of difference equations
   ALLOCATE(va(7,nxyz), rhs(nxyz), cc34(nxyz), cc35(nxyz), &
        stat = a_err)
@@ -1483,5 +1487,11 @@ SUBROUTINE init2_1
            IF(ABS(alphl(ipmz) - alphtv(ipmz)) > 1.e-6_kdp) crosd = .TRUE.
         END DO
      ENDIF
+  ENDIF
+  DEALLOCATE (axsav, aysav, azsav, hwt,  &
+       stat = da_err)
+  IF (da_err /= 0) THEN  
+     PRINT *, "Array deallocation failed: init2_1"  
+     STOP  
   ENDIF
 END SUBROUTINE init2_1

@@ -1,11 +1,11 @@
 SUBROUTINE ldchar(indx1,indx2,mfrac,ip,cmask,mask,indxdim)
   ! ... Loads the arrays for printing the indices and mixing fractions
   USE machine_constants, ONLY: kdp
-  USE mcc
+!!$  USE mcc
   USE mcg
   IMPLICIT NONE
-  INTEGER, DIMENSION(:,:), INTENT(IN) :: indx1, indx2
-  REAL(KIND=kdp), DIMENSION(:,:), INTENT(IN) :: mfrac
+  INTEGER, DIMENSION(:,:), INTENT(INOUT) :: indx1, indx2
+  REAL(KIND=kdp), DIMENSION(:,:), INTENT(INOUT) :: mfrac
   INTEGER, INTENT(IN) :: ip
   CHARACTER (LEN=11), DIMENSION(:), INTENT(OUT) :: cmask
   INTEGER, DIMENSION(:), INTENT(OUT) :: mask

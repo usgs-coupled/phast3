@@ -23,15 +23,13 @@ SUBROUTINE init1
   nxyzh = (nxyz+MOD(nxyz,2))/2
   ! ... Allocate mesh arrays
   ALLOCATE (caprnt(nxyz), iprint_chem(nxyz), iprint_xyz(nxyz),  &
-       lprnt1(nxyz), lprnt2(nxyz), lprnt3(nxyz), lprnt4(nxyz),  &
-       aprnt1(nxyz), aprnt2(nxyz), aprnt3(nxyz), aprnt4(nxyz), aprnt5(nxyz), aprnt6(nxyz), &
-       aprnt7(nxyz), &
+       lprnt1(nxyz), lprnt2(nxyz),  &
+       aprnt1(nxyz), aprnt2(nxyz), aprnt3(nxyz), aprnt4(nxyz),  &
        rm(nx), x(nx), y(ny), z(nz), x_node(nxyz), y_node(nxyz), z_node(nxyz),  &
-       xele(nxyz), yele(nxyz), zele(nxyz),  &
        x_face(nx-1), y_face(ny-1), z_face(nz-1),  &
        ibc(nxyz), &
        STAT = a_err)
-  IF (a_err.NE.0) THEN  
+  IF (a_err /= 0) THEN  
      PRINT *, "Array allocation failed: init1"  
      STOP  
   ENDIF
@@ -154,9 +152,9 @@ SUBROUTINE init1
   ! ... Allocate component arrays
   nsa = MAX(ns,1)
   ! ... Allocate dependent variable arrays
-  ALLOCATE (COMP_NAME(NSA), ICMAX(NSA), JCMAX(NSA), KCMAX(NSA), &
-       INDX_SOL1_IC(7,NXYZ), INDX_SOL2_IC(7,NXYZ), INDX_SOL1_BC(4,NXYZ), INDX_SOL2_BC(4,NXYZ), &
-       AXSAV(NXYZ), AYSAV(NXYZ), AZSAV(NXYZ), DC(0:NXYZ,NSA), dfracdt(nxy), DP(0:NXYZ), DT(0:0), &
+  ALLOCATE (comp_name(nsa), icmax(nsa), jcmax(nsa), kcmax(nsa), &
+       indx_sol1_ic(7,nxyz), indx_sol2_ic(7,nxyz), indx_sol1_bc(4,nxyz), indx_sol2_bc(4,nxyz), &
+       dc(0:nxyz,nsa), dfracdt(nxy), dp(0:nxyz), dt(0:0), &
        sxx(nxyz), syy(nxyz), szz(nxyz), vxx(nxyz), vyy(nxyz), vzz(nxyz),  &
        vx_node(nxyz), vy_node(nxyz), vz_node(nxyz), vmask(nxyz), zfs(nxy),  &
        dcmax(nsa), dsir(nsa),  dsir_chem(nsa),  &
@@ -164,8 +162,8 @@ SUBROUTINE init1
        stsaif(nsa), stsetb(nsa), stsfbc(nsa), stslbc(nsa), &
        stsrbc(nsa), stssbc(nsa), stswel(nsa), ssresf(nsa), ssres(nsa), stotsi(nsa), stotsp(nsa), &
        tsres(nsa), tsresf(nsa), &
-       dctas(nsa), telc(nsa),  &
-       rf(nxyz), rh(1), rh1(1), rs(nxyz,nsa), rs1(nxyz,nsa), &
+       dctas(nsa),  &
+       rf(nxyz), rs(nxyz,nsa),  &
        c(nxyz,nsa), den(nxyz), eh(1), frac(nxyz), frac_icchem(nxyz),  &
        mxfrac(7,nxyz), p(nxyz), t(1), vis(nxyz), &
        sir(nsa), sir0(nsa), sirn(nsa), sir_prechem(nsa), &
@@ -183,8 +181,8 @@ SUBROUTINE init1
   c = 0._kdp
   zfs = -1.e20_kdp
   IF (SOLUTE) THEN  
-     DO  IIS = 1, NS  
-        COMP_NAME(IIS)  = ucomp_name(iis)
+     DO  iis = 1,ns  
+        comp_name(iis)  = ucomp_name(iis)
      END DO
   ENDIF
   DEALLOCATE (ucomp_name, &

@@ -8,13 +8,13 @@ SUBROUTINE write4
   USE mcg
   USE mcn, ONLY: x, y, z
   USE mcp
-  USE mcs, ONLY: cin
+!!$  USE mcs, ONLY: cin
   USE mcv
   USE print_control_mod
   IMPLICIT NONE
   INCLUDE 'ifwr.inc'
-  REAL(KIND=kdp) :: utime, utimchg, wt
-  INTEGER :: i, ic, indx, j, k, m, mc
+  REAL(KIND=kdp) :: wt
+  INTEGER :: i, ic, indx, j, k, m
 !!$  REAL(KIND=kdp), DIMENSION(nxyz) :: vx_node, vy_node, vz_node
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'

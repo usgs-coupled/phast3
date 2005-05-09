@@ -16,21 +16,21 @@ SUBROUTINE rewi(par,icall,ier)
   INTERFACE
      SUBROUTINE incidx(x1,x2,nx,xs,i1,i2,erflg)
        USE machine_constants, ONLY: kdp
-       REAL(KIND=KDP), INTENT(IN) :: x1, x2
+       REAL(KIND=kdp), INTENT(IN) :: x1, x2
        INTEGER, INTENT(IN) :: nx
-       REAL(KIND=KDP), dimension(:), INTENT(IN) :: xs
+       REAL(KIND=kdp), DIMENSION(:), INTENT(IN) :: xs
        INTEGER, INTENT(OUT) :: i1, i2
        LOGICAL, INTENT(INOUT) :: erflg
      END SUBROUTINE incidx
      FUNCTION interp(ndim,xarg,yarg,nx,ny,xs,ys,fs,erflg)
        USE machine_constants, ONLY: bgint, kdp
        INTEGER, INTENT(IN) :: ndim
-       REAL(KIND=KDP), INTENT(IN) :: xarg, yarg
+       REAL(KIND=kdp), INTENT(IN) :: xarg, yarg
        INTEGER, INTENT(IN) :: nx, ny
-       REAL(KIND=KDP), DIMENSION(:), INTENT(IN) :: xs, ys
-       REAL(KIND=KDP), DIMENSION(:,:), INTENT(IN) :: fs
+       REAL(KIND=kdp), DIMENSION(:), INTENT(IN) :: xs, ys
+       REAL(KIND=kdp), DIMENSION(:,:), INTENT(IN) :: fs
        LOGICAL, INTENT(INOUT) :: erflg
-       REAL(KIND=KDP) :: interp
+       REAL(KIND=kdp) :: interp
      END FUNCTION interp
   END INTERFACE
   !

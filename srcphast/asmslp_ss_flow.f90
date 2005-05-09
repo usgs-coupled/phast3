@@ -3,7 +3,7 @@ SUBROUTINE asmslp_ss_flow
   ! ...      for establishement of steady flow initial condition before
   ! ...      reactive transport
   USE machine_constants, ONLY: kdp
-  USE f_units
+!!$  USE f_units
   USE mcb
   USE mcc
   USE mcch, ONLY: unittm

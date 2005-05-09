@@ -37,31 +37,28 @@ MODULE mcb
        indx1_lbc, indx2_lbc, indx1_rbc, indx2_rbc
   INTEGER, DIMENSION(:), ALLOCATABLE :: ibc,maifc,metbc,mfbc,mfsbc,mhcbc,mlbc,mrbc,msbc,  &
        mrbc_bot, mrseg_bot
-  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: FRACNP, mxf_sbc, mxf_fbc, mxf_lbc, mxf_rbc, &
-       QFSBC, QHSBC, QFLBC, QHLBC, QFRBC, QHRBC, QFETBC, QHETBC, QFAIF, QHAIF, QSAIF, &
-       SFSB, SFVSB, SHSB, SFFB, SFVFB, SHFB, SFLB, SFVLB, SHLB, &
-       SFRB, SFVRB, SHRB, SFETB, SFVETB, SHETB, SFAIF, SFVAIF, SHAIF, SHHCB, &
-       UBBLB, UBBRB, TVZHC, ZTHC
-  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: QSLBC, QSRBC, QSETBC, &
-       SSSB, SSFB, SSLB, SSRB, SSETB
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: fracnp, mxf_sbc, mxf_fbc, mxf_lbc, mxf_rbc, &
+       qfsbc, qhsbc, qflbc, qhlbc, qfrbc, qhrbc, qfetbc, qhetbc, qfaif, qhaif, qsaif, &
+       sfsb, sfvsb, shsb, sffb, sfvfb, shfb, sflb, sfvlb, shlb, &
+       sfrb, sfvrb, shrb, sfetb, sfvetb, shetb, sfaif, sfvaif, shaif, shhcb, &
+       ubblb, ubbrb
+  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: qslbc, qsrbc, qsetbc, &
+       sssb, ssfb, sslb, ssrb, ssetb
   REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE, target :: QSSBC
-  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: PSBC, TSBC, CCFSB, CCFVSB, CCHSB, &
-       DENFBC, QFFBC, QHFBC, TFLX, CCFFB, CCFVFB, CCHFB, ALBC, BBLBC, BLBC, DENLBC, &
-       KLBC, PHILBC, TLBC, VISLBC, ZELBC, CCFLB, CCFVLB, CCHLB, &
-       ARBC, BBRBC, BRBC, DENRBC, KRBC, PHIRBC, TRBC, VISRBC, ZERBC, &
-       CCFRB, CCFVRB, CCHRB
-!..       A1ETBC, A2ETBC, BETBC, QETBC, ZLSETB, CCFETB, CCFVEB, CCHETB, &
-!..       AAIF, BAIF, CAIF, DENOAR, PAIF, TAIF, VAIFC, WCAIF, CCFAIF, CCFVAI, CCHAIF, CCSAIF, &
-!..       A1HC, A2HC, A3HC, CCHHCB, DQHCDT, DTHHC, KARHC, QHCBC, THCBC, TPHCBC, ZHCBC
-  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: CSBC, CCSSB, CFLX, QSFBC, CCSFB, CLBC, &
-       CCSLB, CRBC, CCSRB, CCSETB
-  INTEGER :: IAIF, LNZ1, LNZ2, LNZ3, LNZ4, LNZ7, nsbc=0, nfbc=0, nlbc=0, nrbc=0, nrbc_cells=0, nrbc_seg=0,  &
-       NETBC=0, NAIFC=0,  &
-       NHCBC=0, NHCN=0, NZTPHC=0, num_bndy_cells=0
-  LOGICAL :: FRESUR
-  INTEGER :: ADJ_WR_RATIO, TRANSIENT_FRESUR
-  REAL(KIND=kdp) :: ABOAR, ANGOAR, BOAR, F1AIF, F2AIF, FTDAIF, KOAR, POROAR, RIOAR, &
-       VISOAR, VOAR
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: psbc, tsbc, ccfsb, ccfvsb, cchsb, &
+       denfbc, qffbc, qhfbc, tflx, ccffb, ccfvfb, cchfb, albc, bblbc, blbc, denlbc, &
+       klbc, philbc, tlbc, vislbc, zelbc, ccflb, ccfvlb, cchlb, &
+       arbc, bbrbc, brbc, denrbc, krbc, phirbc, trbc, visrbc, zerbc, &
+       ccfrb, ccfvrb, cchrb
+  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: csbc, ccssb, cflx, qsfbc, ccsfb, clbc, &
+       ccslb, crbc, ccsrb, ccsetb
+  INTEGER :: iaif, lnz1, lnz2, lnz3, lnz4, lnz7, nsbc=0, nfbc=0, nlbc=0, nrbc=0, nrbc_cells=0, nrbc_seg=0,  &
+       netbc=0, naifc=0,  &
+       nhcbc=0, nhcn=0, nztphc=0, num_bndy_cells=0
+  LOGICAL :: fresur
+  INTEGER :: adj_wr_ratio, transient_fresur
+!!$  REAL(KIND=kdp) :: ABOAR, ANGOAR, BOAR, F1AIF, F2AIF, FTDAIF, KOAR, POROAR, RIOAR, &
+!!$       VISOAR, VOAR
   REAL(KIND=kdp), DIMENSION(:), pointer :: qssbcv
   TYPE (bndry_cell), DIMENSION(:), ALLOCATABLE :: b_cell
   TYPE (rbc_indices), DIMENSION(:), ALLOCATABLE :: river_seg_index
@@ -76,9 +73,9 @@ MODULE mcc
   INTEGER, DIMENSION(:), ALLOCATABLE :: lprnt1, lprnt2, lprnt3, lprnt4, vmask
   INTEGER, DIMENSION(100) :: idmptm
   LOGICAL, DIMENSION(200) :: ierr = .false.
-  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: dctas, telc
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: dctas
   REAL(KIND=kdp), DIMENSION(100) :: dmptm
-  INTEGER :: ieq, itnoc, itnop, itnot, itrn, jtime, ltcomr, ltcomn, ltcomy
+  INTEGER :: ieq, itnoc, itnop, itnot, itrn, jtime
   INTEGER :: iprptc, ltcom, maxitn, ntsfal, orenpr, &
        slmeth, tmunit
   REAL(KIND=kdp) :: pribcf, pricpd, pridv,  &
@@ -114,7 +111,7 @@ MODULE mcc
   LOGICAL :: steady_flow, converge_ss
   REAL(KIND=kdp) :: timchg, timrst
   REAL(KIND=kdp) :: dptas=0.0_kdp, dtimmn=0.0_kdp, dtimmx=0.0_kdp, dtimu=0.0_kdp, dttas=0.0_kdp, &
-       eps = 1.e-5_kdp, epsfs, telp, telt, timprt, &
+       eps = 1.e-5_kdp, epsfs, timprt, &
        tolden, toldnc, toldnt
   REAL(KIND=kdp) :: eps_p=1.d2, eps_flow=1.d-4
 END MODULE mcc
@@ -173,17 +170,17 @@ MODULE mcm
   USE machine_constants, ONLY: kdp
   IMPLICIT NONE
   SAVE
-  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: CC24, CC34, CC35, RHFSBC, RHHSBC, URR1
-  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE, TARGET :: RHS
-  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: VA, VAFSBC, VAHSBC
-  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE, target :: RHSSBC
-  REAL(KIND=kdp), DIMENSION(:,:,:), ALLOCATABLE, target :: VASSBC
-  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: RF, RH, RH1
-  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: RS, RS1
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: cc24, cc34, cc35, rhfsbc, urr1
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE, TARGET :: rhs
+  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: va, vafsbc
+  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE, TARGET :: rhssbc
+  REAL(KIND=kdp), DIMENSION(:,:,:), ALLOCATABLE, TARGET :: vassbc
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: rf
+  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: rs, rs1
   REAL(KIND=kdp) :: C11, C12, C13, C21, C22, C23, C24, C31, C32, C33, C34, C35, CFP, CSP, &
        EFP, ESP
-  real(kind=kdp), dimension(:), pointer :: rhs_r, rhs_b, rhsbcv
-  real(kind=kdp), dimension(:,:), pointer :: vasbcv
+  REAL(KIND=kdp), DIMENSION(:), POINTER :: rhs_r, rhs_b, rhsbcv
+  REAL(KIND=kdp), DIMENSION(:,:), POINTER :: vasbcv
 END MODULE mcm
 
 MODULE mcn
@@ -200,31 +197,31 @@ MODULE mcp
   USE machine_constants
   IMPLICIT NONE
   SAVE
-  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: DBKD, KTHX, KTHY, KTHZ, KTHXPM, KTHYPM, KTHZPM, &
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: KTHX, KTHY, KTHZ,  &
        kx, ky, kz,  &
        KXX, KYY, KZZ, RCPPM, TFX, TFY, TFZ, THX, THXY, THXZ, THY, THYX, THYZ, THZ, THZX, THZY, &
        TSX, TSXY, TSXZ, TSY, TSYX, TSYZ, TSZ, TSZX, TSZY
-  ! ... Coefficients for the Fanchi approximating equation to the Van Everdingen and Hurst A.I.F.
-  REAL(KIND=kdp), DIMENSION(0:3) :: BBAIF = (/-0.82092D0,3.68D-4,-0.28908D0,-0.02882D0/)
-! ... Set up the tables of fluid properties
-! ... from Keenan et.al. steam tables (1969)
-! ...    Saturated water enthalpy (J/kg) vs. temperature (deg.C)
-  REAL(KIND=kdp), DIMENSION(14) :: TEHDT = (/0.,20.,40.,60.,80.,100.,120.,140.,160.,180.,200., &
-       260.,300.,350./)
-  REAL(KIND=kdp), DIMENSION(32) :: TEHST = (/0.,10.,20.,30.,40.,50.,60.,70.,80.,90.,100., &
-             120.,140.,160.,180.,200.,220.,240.,250.,260.,270.,280.,290.,300.,310., &
-             320.,330.,340.,350.,0.,0.,0./)
+!!$  ! ... Coefficients for the Fanchi approximating equation to the Van Everdingen and Hurst A.I.F.
+!!$  REAL(KIND=kdp), DIMENSION(0:3) :: BBAIF = (/-0.82092D0,3.68D-4,-0.28908D0,-0.02882D0/)
+!!$! ... Set up the tables of fluid properties
+!!$! ... from Keenan et.al. steam tables (1969)
+!!$! ...    Saturated water enthalpy (J/kg) vs. temperature (deg.C)
+!!$  REAL(KIND=kdp), DIMENSION(14) :: TEHDT = (/0.,20.,40.,60.,80.,100.,120.,140.,160.,180.,200., &
+!!$       260.,300.,350./)
+!!$  REAL(KIND=kdp), DIMENSION(32) :: TEHST = (/0.,10.,20.,30.,40.,50.,60.,70.,80.,90.,100., &
+!!$             120.,140.,160.,180.,200.,220.,240.,250.,260.,270.,280.,290.,300.,310., &
+!!$             320.,330.,340.,350.,0.,0.,0./)
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: abpm, alphl, alphth, alphtv, pmchv, pmcv, pmhv,  &
        pv, pvk, &
        poros, ss, tx, ty, tz
   INTEGER :: npehdt = 10, nehst = 29, ntehdt = 14
-  REAL(KIND=kdp) :: DENF0, DENF1, PINIT, ZPINIT
-  REAL(KIND=kdp) :: BP, BT, CNVTM, CNVCN, CNVD, CNVDF, CNVHC, CNVHE, CNVHF, CNVHTC, CNVFF, &
-       CNVL, CNVL2, CNVL3, CNVM, CNVME, CNVMF, CNVP, CNVSF, CNVTHC, CNVVF, CNVVL, CNVVS, &
-       CNVT1, CNVT2, CNVTMI, CNVCNI, CNVDI, CNVDFI, CNVHCI, CNVHEI, CNVHFI, CNVHTI, CNVFFI, &
-       CNVLI, CNVL2I, CNVL3I, CNVMI, CNVMEI, CNVMFI, CNVPI, CNVSFI, CNVTCI, CNVVFI, CNVVLI, &
-       CNVVSI, CNVT1I, CNVT2I, CPF, DECLAM, DEN0, DENC, DENP, DENT, DM, EH0, FDSMTH, FDTMTH, &
-       GX, GY, GZ, KTHF, P0, P0H, PAATM, T0, T0H, VISFAC, W0, W1
+  REAL(KIND=kdp) :: denf0, denf1, pinit, zpinit
+  REAL(KIND=kdp) :: bp, bt, cnvtm, cnvcn, cnvd, cnvdf, cnvhc, cnvhe, cnvhf, cnvhtc, cnvff, &
+       cnvl, cnvl2, cnvl3, cnvm, cnvme, cnvmf, cnvp, cnvsf, cnvthc, cnvvf, cnvvl, cnvvs, &
+       cnvt1, cnvt2, cnvtmi, cnvcni, cnvdi, cnvdfi, cnvhci, cnvhei, cnvhfi, cnvhti, cnvffi, &
+       cnvli, cnvl2i, cnvl3i, cnvmi, cnvmei, cnvmfi, cnvpi, cnvsfi, cnvtci, cnvvfi, cnvvli, &
+       cnvvsi, cnvt1i, cnvt2i, cpf, declam, den0, denc, denp, dent, dm, eh0, fdsmth, fdtmth, &
+       gx, gy, gz, kthf, p0, p0h, paatm, t0, t0h, visfac, w0, w1
   REAL(KIND=kdp) :: fdtmth_ssflow=1._kdp, fdtmth_trans
 END MODULE mcp
 
@@ -266,8 +263,7 @@ MODULE mct
   USE machine_constants, ONLY: kdp
   IMPLICIT NONE
   SAVE
-  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: aprnt1, aprnt2, aprnt3, aprnt4, aprnt5, &
-       aprnt6, aprnt7
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: aprnt1, aprnt2, aprnt3, aprnt4
   REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: c_mol
 END MODULE mct
 
@@ -276,21 +272,21 @@ MODULE mcv
   USE machine_constants, ONLY: kdp
   IMPLICIT NONE
   SAVE
-  integer, DIMENSION(:), ALLOCATABLE :: ICMAX, JCMAX, KCMAX, icsbc, icflx, iclbc, icrbc
-  integer, DIMENSION(:,:), ALLOCATABLE :: indx_sol1_ic, indx_sol2_ic, indx_sol1_bc, indx_sol2_bc
+  INTEGER, DIMENSION(:), ALLOCATABLE :: ICMAX, JCMAX, KCMAX, icsbc, icflx, iclbc, icrbc
+  INTEGER, DIMENSION(:,:), ALLOCATABLE :: indx_sol1_ic, indx_sol2_ic, indx_sol1_bc, indx_sol2_bc
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: axsav, aysav, azsav, dfracdt, dp, dt, &
        sxx, syy, szz, vxx, vyy, vzz,  &
        vx_node, vy_node, vz_node,  &
        dcmax, dsir, dsir_chem, ssres, ssresf, stotsi, stotsp, stsaif, &
        stsetb, stsfbc, stslbc, stsrbc, stssbc, stswel, tsres, tsresf, zfs
-  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE, TARGET :: QSFX, QSFY, QSFZ
-  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE, target :: DC
-  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE ::  den, eh, frac, frac_icchem,  &
+  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE, TARGET :: qsfx, qsfy, qsfz
+  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE, TARGET :: dc
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE ::  den, eh, frac, fracn, frac_icchem,  &
        p, t, vis, sir, sir0, sirn, sir_prechem,  &
        totsi, totsp, tdsir_chem, tcsaif, tcsetb, tcsfbc, tcslbc, tcsrbc, tcssbc
-  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE ::  C, mxfrac
-  INTEGER :: IPMAX, ITMAX, JPMAX, JTMAX, KPMAX, KTMAX, IS
-  INTEGER :: ITIME, NMAPR, NRSTTP, NS=0
+  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE ::  c, mxfrac
+  INTEGER :: ipmax, itmax, jpmax, jtmax, kpmax, ktmax, is
+  INTEGER :: itime, nmapr, nrsttp, ns=0
   REAL(KIND=kdp) :: DDNMAX, DEHIR, DFIR, dhmax, DPMAX, DTMAX,  &
        SFRES, SFRESF, SHRES, SHRESF, STFAIF,  &
        STFETB, STFFBC, STFLBC, STFRBC, STFSBC, STFWEL, STHAIF, STHETB, STHFBC, STHHCB, STHLBC, &
@@ -337,8 +333,7 @@ MODULE mg2
   USE machine_constants, ONLY: kdp
   IMPLICIT NONE
   SAVE
-  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: UVAIFC, ULSETB, UXX, UBETB, UKLB, UZELB, &
-       UDTHHC, UKHCBC
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: uxx, uklb, uzelb
   REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: wcfl, wcfu
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: hdprnt, delz, arxbc, arybc, arzbc, hwt, &
        qfbcv, uvka
@@ -358,5 +353,5 @@ MODULE phys_const
   USE machine_constants, ONLY: kdp
   IMPLICIT NONE
   SAVE
-  REAL(KIND=kdp), PARAMETER :: pi = 3.1415926535898_kdp, grav = 9.80665_kdp, twopi = 2*pi
+  REAL(KIND=kdp), PARAMETER :: pi = 3.1415926535898_kdp, grav = 9.80665_kdp, twopi = 2._kdp*pi
 END MODULE phys_const

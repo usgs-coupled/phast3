@@ -16,9 +16,9 @@ SUBROUTINE rhsn_ss_flow
   INTRINSIC INT
   REAL(KIND=kdp) :: qfbc, qn, szzw,  &
        ufdt0, ufrac, wt
-  INTEGER :: a_err, da_err, i, iis, iwel, iwfss, j, k, ks, l, lc0, l1, lc, ls,  &
+  INTEGER :: a_err, da_err, i, iwel, iwfss, j, k, ks, l, lc0, l1, lc, ls,  &
        m, mc0, mfs, mkt, nks, nsa
-  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE  :: qsbc3, qsbc4
+!!$  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE  :: qsbc3, qsbc4
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
@@ -39,22 +39,12 @@ SUBROUTINE rhsn_ss_flow
   IF (nwel > 0) stfwp = 0._kdp
   nsa = MAX(ns,1)
   ! ... Allocate scratch space
-  ALLOCATE (qsbc3(nsa), qsbc4(nsa), &
-       stat = a_err)
-  IF (a_err /= 0) THEN  
-     PRINT *, "Array allocation failed: rhsn"  
-     STOP
-  ENDIF
   ! ... Load current total fluid mass amount into storage
   ! ...      for nth time level
   firn=fir
   ! ... Zero r.h.s. arrays in preparation for next time level calculation
-  DO  m=1,nxyz
-     rf(m)=0._kdp
-!!$     DO  iis=1,ns
-!!$        IF(solute) rs(m,iis)=0._kdp
-!!$     END DO
-  END DO
+  rf = 0._kdp
+  IF(solute) rs = 0._kdp
   ! ... Calculate right hand side dispersive flux terms and
   ! ...      convective flux terms (not cross-dispersive flux terms)
   ! ... Inactive cells are excluded by zero flow rate and transmissivity
@@ -63,7 +53,8 @@ SUBROUTINE rhsn_ss_flow
      DO  j=1,ny
         DO  i=1,nx
            m=cellno(i,j,k)
-           IF(i == nx.OR.frac(m+1) <= 0.) GO TO 20
+           IF(i == nx) GO TO 20
+           IF(frac(m+1) <= 0.) GO TO 20
            ! ... X-direction
            wt=fdsmth
            IF(sxx(m) < 0.) wt=1._kdp-wt
@@ -226,10 +217,4 @@ SUBROUTINE rhsn_ss_flow
 !!$     sfaif(l)=qfaif(l)
 !!$     stfaif=stfaif+0.5*qfaif(l)
 !!$  END DO
-  DEALLOCATE (qsbc3, qsbc4, &
-       stat = da_err)
-  IF (da_err /= 0) THEN  
-     PRINT *, "Array deallocation failed"  
-     STOP  
-  ENDIF
 END SUBROUTINE rhsn_ss_flow

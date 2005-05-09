@@ -3,6 +3,7 @@
 #include "phreeqc/phqalloc.h"
 #include "phreeqc/output.h"
 #include "phreeqc/phrqproto.h"
+#include "hst.h"
 #include "phastproto.h"
 #include "phreeqc/input.h"
 #include "phast_files.h"

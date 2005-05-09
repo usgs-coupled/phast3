@@ -19,13 +19,13 @@ SUBROUTINE read2
        INTEGER, INTENT(in) :: nx
        REAL(kind=kdp), DIMENSION(:), INTENT(in) :: xs
        INTEGER, INTENT(out) :: i1, i2
-       LOGICAL, INTENT(out) :: erflg
+       LOGICAL, INTENT(inout) :: erflg
      END SUBROUTINE incidx
   END INTERFACE
   INTRINSIC index  
   CHARACTER(len=9) :: cibc  
   CHARACTER(len=80) :: line  
-  REAL(kind=kdp) :: delx, dely, udelz, u1,  uwb, uxw, uyw, uzwb, uzwt, &
+  REAL(KIND=kdp) :: delx, dely, udelz, u1,  uwb, uxw, uyw, uzwb, uzwt, &
        udwb, udwt, &
        uwcfl, uwcfu, x1z, x2z, y1z, y2z, z1z, z2z
   INTEGER :: a_err, da_err
@@ -37,8 +37,8 @@ SUBROUTINE read2
   INTEGER, DIMENSION(:), ALLOCATABLE :: ui1z, ui2z, uj1z, uj2z, uk1z, uk2z
   INTEGER, DIMENSION(:), ALLOCATABLE :: uwid, uwqm, unkswel
   INTEGER, DIMENSION(:,:), ALLOCATABLE :: uumwel
-  REAL(kind=kdp), DIMENSION(:), ALLOCATABLE :: uuxw, uuyw, uuzwb, uuzwt, uudwb, uudwt, uwbod
-  REAL(kind=kdp), DIMENSION(:,:), ALLOCATABLE :: uuwcfl, uuwcfu
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: uuxw, uuyw, uuzwb, uuzwt, uudwb, uudwt, uwbod
+  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: uuwcfl, uuwcfu
   INTEGER, DIMENSION(:), ALLOCATABLE :: umrbc
   REAL(kind=kdp), DIMENSION(:), ALLOCATABLE :: uarbc, ukrb, uzerb
   CHARACTER(len=130) :: logline1, logline2
@@ -47,12 +47,10 @@ SUBROUTINE read2
   !     ------------------------------------------------------------------
   !...
   ! ... allocate space for read group 2 arrays
-  ALLOCATE (uzelb(nxyz), uklb(nxyz), ubblb(nxyz), uvaifc(nxyz),  &
-       ubetb(nxyz), ulsetb(nxyz), uxx(nxyz), hwt(nxyz), &
+  ALLOCATE (uzelb(nxyz), uklb(nxyz), ubblb(nxyz),  &
+       hwt(nxyz), &
        ui1z(nxyz), ui2z(nxyz), uj1z(nxyz), uj2z(nxyz), uk1z(nxyz), uk2z(nxyz), &
        stat = a_err)
-  !       ubetb(nxyz), ulsetb(nxyz), uxx(nxyz), hwt(nxyz), ukhcbc(1), rh1(1), &
-  !       udthhc(1), rh(1), &
   IF (a_err /= 0) THEN  
      PRINT *, "array allocation failed: read2"  
      STOP  
@@ -72,38 +70,35 @@ SUBROUTINE read2
         READ(fuins, *) x(1), x(nx)  
         IF (print_rde) WRITE(furde, 8002) 'x(1),x(nx),[2.2a.2a]', x(1) , x(nx)  
 8002    FORMAT(tr5,a/(tr2,7(1pg12.5)))  
-        delx = (x(nx) - x(1)) / (nx - 1)  
+        delx = (x(nx) - x(1))/(nx - 1)  
         DO  i = 1, nx - 1  
            x(i + 1) = x(i) + delx  
         END DO
      ELSE  
         READ(fuins, *) (x(i), i = 1, nx)  
-        IF (print_rde) WRITE(furde, 8002) '(x(i),i=1,nx),[2.2a.2b]', (x(i) , i = &
-             1, nx)
+        IF (print_rde) WRITE(furde, 8002) '(x(i),i=1,nx),[2.2a.2b]',(x(i),i=1,nx)
      ENDIF
      IF(unigry) THEN  
         READ(fuins, *) y(1), y(ny)  
         IF (print_rde) WRITE(furde, 8002) 'y(1),y(ny),[2.2a.3a]', y(1) , y(ny)  
-        dely = (y(ny) - y(1)) / (ny - 1)  
+        dely = (y(ny) - y(1))/(ny - 1)  
         DO  j = 1, ny - 1  
            y(j + 1) = y(j) + dely  
         END DO
      ELSE  
         READ(fuins, *) (y(i), i = 1, ny)  
-        IF (print_rde) WRITE(furde, 8002) '(y(i),i=1,ny),[2.2a.3b]', (y(i) , i = &
-             1, ny)
+        IF (print_rde) WRITE(furde, 8002) '(y(i),i=1,ny),[2.2a.3b]',(y(i),i=1,ny)
      ENDIF
      IF(unigrz) THEN  
         READ(fuins, *) z(1), z(nz)  
         IF (print_rde) WRITE(furde, 8002) 'z(1),z(nz),[2.2a.4a]', z(1) , z(nz)  
-        udelz = (z(nz) - z(1)) / (nz - 1)  
+        udelz = (z(nz) - z(1))/(nz - 1)  
         DO  k = 1, nz - 1  
            z(k + 1) = z(k) + udelz  
         END DO
      ELSE  
         READ(fuins, *) (z(i), i = 1, nz)  
-        IF (print_rde) WRITE(furde, 8002) '(z(i),i=1,nz),[2.2a.4b]', (z(i) , i = &
-             1, nz)
+        IF (print_rde) WRITE(furde, 8002) '(z(i),i=1,nz),[2.2a.4b]', (z(i),i=1,nz)
      ENDIF
   ELSE  
      ! ... Cylindrical r-z grid - single well
@@ -113,10 +108,10 @@ SUBROUTINE read2
      ! ... Radial cell node locations
      IF(.NOT.argrid) THEN  
         READ(fuins, *) (x(i), i = 1, nr)  
-        IF (print_rde) WRITE(furde, 8002) '(x(i),i=1,nr),[2.2b.1b]', (x(i) , i = 1, nr)
+        IF (print_rde) WRITE(furde, 8002) '(x(i),i=1,nr),[2.2b.1b]', (x(i),i=1,nr)
      ELSEIF(argrid) THEN  
         ! ... divide the cylindrical grid
-        u1 = (x(nr) / x(1)) **(1.d0/ (nr - 1.d0))  
+        u1 = (x(nr) / x(1)) **(1._kdp/(nr - 1._kdp))  
         ! ... r is node location
         DO  i = 1, nr - 1  
            x(i + 1) = x(i) * u1  
@@ -129,13 +124,13 @@ SUBROUTINE read2
      IF(unigrz) THEN  
         READ(fuins, *) z(1), z(nz)  
         IF (print_rde) WRITE(furde, 8002) 'z(1),z(nz),[2.2b.3a]', z(1) , z(nz)  
-        udelz = (z(nz) - z(1)) / (nz - 1)  
+        udelz = (z(nz) - z(1))/(nz - 1)  
         DO  k = 1, nz - 1  
            z(k + 1) = z(k) + udelz  
         END DO
      ELSE  
         READ(fuins, *) (z(i), i = 1, nz)  
-        IF (print_rde) WRITE(furde, 8002) '(z(i),i=1,nz),[2.2b.3b]', (z(i) , i = 1, nz)
+        IF (print_rde) WRITE(furde, 8002) '(z(i),i=1,nz),[2.2b.3b]', (z(i),i=1,nz)
      ENDIF
   ENDIF
   ! ... load x,y,z coordinates for each cell
@@ -213,13 +208,13 @@ SUBROUTINE read2
   uj1z(ipmz) = 1  
   uj2z(ipmz) = 1  
   erflg = .FALSE.  
-  CALL incidx(x1z, x2z, nx-1, x_face, ui1z(ipmz), ui2z(ipmz),erflg)
+  CALL incidx(x1z, x2z, nx-1, x_face, ui1z(ipmz), ui2z(ipmz), erflg)
   ui2z(ipmz) = ui2z(ipmz) + 1  
   IF(.NOT.cylind) THEN  
-     CALL incidx(y1z, y2z, ny-1, y_face, uj1z(ipmz), uj2z(ipmz),erflg)
+     CALL incidx(y1z, y2z, ny-1, y_face, uj1z(ipmz), uj2z(ipmz), erflg)
      uj2z(ipmz) = uj2z(ipmz) + 1  
   ENDIF
-  CALL incidx(z1z, z2z, nz-1, z_face, uk1z(ipmz), uk2z(ipmz),erflg)
+  CALL incidx(z1z, z2z, nz-1, z_face, uk1z(ipmz), uk2z(ipmz), erflg)
   uk2z(ipmz) = uk2z(ipmz) + 1  
   IF(erflg) THEN 
      logline1 = 'incidx interpolation error in read2, porous media zones'
@@ -235,7 +230,7 @@ SUBROUTINE read2
 120 CONTINUE  
   ! ... allocate the zone arrays
   ALLOCATE (abpm(npmz), alphl(npmz), alphth(npmz), alphtv(npmz), poros(npmz), &
-       dbkd(npmz), kthx(1), kthy(1), kthz(1), kthxpm(1), kthypm(1), kthzpm(1), &
+       kthx(1), kthy(1), kthz(1),  &
        kx(npmz), ky(npmz), kz(npmz),  &
        kxx(npmz),kyy(npmz),kzz(npmz),rcppm(1), &
        i1z(npmz), i2z(npmz), j1z(npmz), j2z(npmz), k1z(npmz), k2z(npmz), &
@@ -270,18 +265,18 @@ SUBROUTINE read2
   ! ... porous media compressibilities
   READ(fuins, *) (abpm(i), i = 1, npmz)  
   IF (print_rde) WRITE(furde, 8002) '(abpm(i),i=1,npmz),[2.9.3]', (abpm(i) , i =1, npmz)
-  IF(heat) THEN  
-     READ(fuins, *) (rcppm(i), i = 1, npmz)  
-     IF (print_rde) WRITE(furde, 8002) '(rcppm(i),i=1,npmz),[2.10.1]', (rcppm(i), i = 1, npmz)
-     READ(fuins, *) (kthxpm(i), kthypm(i), kthzpm(i), i = 1,npmz)
-     IF(cylind) THEN  
-        DO  ipmz = 1, npmz  
-           kthypm(ipmz) = 0.d0  
-        END DO
-     ENDIF
-     IF (print_rde) WRITE(furde, 8007) '(kthxpm(i),kthypm(i),kthzpm(i)', 'i=1,npmz),[2.10.2]', &
-          (kthxpm(i) , kthypm(i) , kthzpm(i) , i = 1, npmz)
-  ENDIF
+!!$  IF(heat) THEN  
+!!$     READ(fuins, *) (rcppm(i), i = 1, npmz)  
+!!$     IF (print_rde) WRITE(furde, 8002) '(rcppm(i),i=1,npmz),[2.10.1]', (rcppm(i), i = 1, npmz)
+!!$     READ(fuins, *) (kthxpm(i), kthypm(i), kthzpm(i), i = 1,npmz)
+!!$     IF(cylind) THEN  
+!!$        DO  ipmz = 1, npmz  
+!!$           kthypm(ipmz) = 0.d0  
+!!$        END DO
+!!$     ENDIF
+!!$     IF (print_rde) WRITE(furde, 8007) '(kthxpm(i),kthypm(i),kthzpm(i)', 'i=1,npmz),[2.10.2]', &
+!!$          (kthxpm(i) , kthypm(i) , kthzpm(i) , i = 1, npmz)
+!!$  ENDIF
   ! ... dispersivities for solute and heat
   IF(solute.OR.heat) THEN  
      READ(fuins, *) (alphl(i), i = 1, npmz)  
@@ -523,12 +518,6 @@ SUBROUTINE read2
      IF (print_rde) WRITE(furde, 8001) 'ichwt,[2.21.2]', ichwt  
   ENDIF
   ! ... i.c. distributions
-  !allocate (p(nxyz), t(1), c(nxyz,ns), &
-  !  stat = a_err)
-  !if (a_err.ne.0) then  
-  !   print *, "array allocation failed: read2"  
-  !   stop  
-  !endif  
   ! ... p at a z-level for hydrostatic pressure distribution
   IF(ichydp.AND..NOT.ichwt) THEN  
      READ(fuins, *) zpinit, pinit  
@@ -539,17 +528,17 @@ SUBROUTINE read2
      CALL rewi(p, 101, 93)  
   ENDIF
   ! ... temperature for the region for i.c.
-  IF(heat) THEN  
-     CALL rewi(t, 103, 95)  
-     ! ... temperature vs. distance i.c. for heat conduction b.c.
-     IF(nhcbc.GT.0) THEN  
-        READ(fuins, *) nztphc, (zthc(i), tvzhc(i), i = 1, &
-             nztphc)
-        IF (print_rde) WRITE(furde, 8015) 'nztphc,(zthc(i),tvzhc(i),i=1,nztphc),', &
-             '[2.21.5]', nztphc, (zthc(i) , tvzhc(i) , i = 1, nztphc)
-8015    FORMAT      (tr5,2a/tr5,i5/(tr5,12(1pg10.3)))  
-     ENDIF
-  ENDIF
+!!$  IF(heat) THEN  
+!!$     CALL rewi(t, 103, 95)  
+!!$     ! ... temperature vs. distance i.c. for heat conduction b.c.
+!!$     IF(nhcbc.GT.0) THEN  
+!!$        READ(fuins, *) nztphc, (zthc(i), tvzhc(i), i = 1, &
+!!$             nztphc)
+!!$        IF (print_rde) WRITE(furde, 8015) 'nztphc,(zthc(i),tvzhc(i),i=1,nztphc),', &
+!!$             '[2.21.5]', nztphc, (zthc(i) , tvzhc(i) , i = 1, nztphc)
+!!$8015    FORMAT      (tr5,2a/tr5,i5/(tr5,12(1pg10.3)))  
+!!$     ENDIF
+!!$  ENDIF
   ! ... mass fraction for the region for i.c.
   IF(solute) THEN  
      CALL indx_rewi(indx_sol1_ic, indx_sol2_ic, mxfrac, 1, 03, 100)  

@@ -3,7 +3,7 @@ SUBROUTINE rhsn
   ! ...      and loads the step cumulative totals for the first portion
   ! ...      of the time step
   USE machine_constants, ONLY: kdp
-  USE f_units
+!!$  USE f_units
   USE mcb
   USE mcc
   USE mcg
@@ -14,11 +14,11 @@ SUBROUTINE rhsn
   USE mcw
   USE mg2, ONLY: qfbcv
   IMPLICIT NONE
-  EXTERNAL ehoftp
-  REAL(KIND=kdp) :: ehoftp
+!$$  EXTERNAL ehoftp
+!$$  REAL(KIND=kdp) :: ehoftp
   INTRINSIC INT
-  REAL(KIND=kdp) :: qfbc, qhbc, qhbc2, qn, szzw,  &
-       ucwt, ufdt0, ufrac, uhwt, wt
+  REAL(KIND=kdp) :: qfbc, qn, szzw,  &
+       ucwt, ufdt0, ufrac, wt
   INTEGER :: a_err, da_err, i, iis, iwel, iwfss, j, k, ks, l, lc0, l1,  &
        lc, ls, m, mc0, mfs, mkt, nks, nsa
   LOGICAL :: erflg
@@ -87,7 +87,8 @@ SUBROUTINE rhsn
            m=cellno(i,j,k)
            IF(ibc(m) == -1) CYCLE
            ! ... X-direction
-           IF(i == nx .OR. frac(m+1) <= 0.) GO TO 20
+           IF(i == nx) GO TO 20
+           IF(frac(m+1) <= 0.) GO TO 20
            wt=fdsmth
            IF(sxx(m) < 0.) wt=1._kdp-wt
            rf(m+1)=rf(m+1)+sxx(m)

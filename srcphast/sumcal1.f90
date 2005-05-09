@@ -2,8 +2,8 @@ SUBROUTINE sumcal1
   ! ... Performs summary calculations at end of time step
   ! ... This is the first block of sumcal. The second block follows the
   ! ...      chemical reaction calculations
-  USE machine_constants, ONLY: kdp
-  USE f_units
+  USE machine_constants
+!!$  USE f_units
   USE mcb
   USE mcc
   USE mcch
@@ -30,22 +30,22 @@ SUBROUTINE sumcal1
 !!$  CHARACTER(LEN=50) :: aform = '(TR5,A45,T47,1PE12.4,TR1,A7,T66,A,3(1PG10.3,A),2A)'
   CHARACTER(LEN=46) :: aformt = '(TR5,A43,1PE12.4,TR1,A7,TR1,A,3(1PG10.3,A),2A)'
   CHARACTER(LEN=9) :: cibc
-  REAL(KIND=kdp) :: denmfs, p1, pmfs, qfbc,  &
+  REAL(KIND=kdp) :: denmfs, qfbc,  &
        qlim, qm_in, qm_net, qn, qnp,  &
        u0, u1, ufdt0, ufdt1,  &
-       ufrac, up0, z0, z1, z2, zfsl, zm1, zmfs, zp1
+       ufrac, up0, z0, zfsl, zm1, zp1
   REAL(KIND=kdp) :: u6
   REAL(KIND=kdp), PARAMETER :: epssat = 1.e-6_kdp  
-  INTEGER :: a_err, da_err, i, imod, iwel, j, k, kfs, l, lc, l1, ls, m, m0, m1,  &
-       m1kp, mfs, mt,  &
+  INTEGER :: a_err, da_err, i, imod, iwel, j, k, l, lc, l1, ls, m,  &
+       mt,  &
        nsa
-  INTEGER :: mpmax, mtmax
+  INTEGER :: mpmax
   INTEGER, DIMENSION(:), ALLOCATABLE :: mcmax
-  LOGICAL :: erflg, ierrw
+  LOGICAL :: erflg
   CHARACTER(LEN=130) :: logline1
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: cavg, sum_cqm_in
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: qsbc3, qsbc4
-  REAL(KIND=kdp), DIMENSION(nxy) :: fracn
+!!$  REAL(KIND=kdp), DIMENSION(nxy) :: fracn
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
@@ -60,14 +60,14 @@ SUBROUTINE sumcal1
   END DO
   ! ... Allocate scratch space
   nsa = MAX(ns,1)
-  ALLOCATE (mcmax(nsa),  &
-       stat = a_err)
+  ALLOCATE (mcmax(nsa), fracn(nxy),  &
+       STAT = a_err)
   IF (a_err /= 0) THEN  
      PRINT *, "Array allocation failed: sumcal1"  
      STOP  
   ENDIF
   DO  m=1,nxyz
-     IF(ibc(m) == -1.OR.frac(m) <= 0.) CYCLE
+     IF(ibc(m) == -1 .OR. frac(m) <= 0.) CYCLE
      ! ... Find maximum changes in dependent variables
      IF(ABS(dp(m)) >= ABS(dpmax)) THEN
         dpmax=dp(m)
@@ -574,7 +574,7 @@ SUBROUTINE sumcal1
 !!$     END IF
      IF(cibc(7:7) == '1') THEN
         DO  is=1,ns
-           IF(qssbc(l,is) <= 0) THEN              ! ... Outflow boundary
+           IF(qssbc(l,is) <= 0._kdp) THEN              ! ... Outflow boundary
               stotsp(is) = stotsp(is)-qssbc(l,is)     ! .. wt factor included
            ELSE                                   ! ... Inflow boundary
               stotsi(is) = stotsi(is)+qssbc(l,is)     ! .. wt factor included
@@ -696,7 +696,7 @@ SUBROUTINE sumcal1
   erflg=.FALSE.
   DO  l=1,nlbc
      DO  is=1,ns
-        sslb(l,is)=0
+        sslb(l,is) = 0._kdp
      END DO
      m=mlbc(l)
      IF(frac(m) <= 0._kdp .OR. m == 0) CYCLE

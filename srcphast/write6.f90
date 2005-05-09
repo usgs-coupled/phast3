@@ -1,6 +1,6 @@
 SUBROUTINE write6
   ! ... Writes out the conductances and dispersive conductances
-  USE machine_constants, ONLY: kdp, one_plus_eps
+  USE machine_constants, ONLY: kdp
   USE f_units
   USE mcb
   USE mcc
@@ -11,7 +11,6 @@ SUBROUTINE write6
   USE print_control_mod
   IMPLICIT NONE
   INCLUDE 'ifwr.inc'
-  REAL(KIND=kdp) :: utime, utimchg
   INTEGER :: m
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'

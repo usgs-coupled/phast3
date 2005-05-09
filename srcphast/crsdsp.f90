@@ -13,10 +13,10 @@ SUBROUTINE crsdsp(m,ucrosc,ucrost)
   REAL(KIND=kdp), INTENT(OUT) :: ucrosc, ucrost
   !
   INTEGER :: i, j, k, mijmkm, mijmkp, mijpkm, mijpkp, mimjkm,  &
-       mimjkp, mimjmk, mimjpk, mipjkm, mipjkp, mipjmk, mipjpk, mm
+       mimjkp, mimjmk, mimjpk, mipjkm, mipjkp, mipjmk, mipjpk
   REAL(KIND=kdp) :: ftxydm, ftxydp, ftxzdm, ftxzdp, ftyxdm, ftyxdp,  &
-       ftyzdm, ftyzdp, ftzxdm, ftzxdp, ftzydm, ftzydp, x1, x1m, x1p, x2, x2m, x2p,  &
-       xtc, dxm, dxp, dym, dyp, dzm, dzp, wtx, wty, wtz
+       ftyzdm, ftyzdp, ftzxdm, ftzxdp, ftzydm, ftzydp,  &
+       dxm, dxp, dym, dyp, dzm, dzp, wtx, wty, wtz
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------

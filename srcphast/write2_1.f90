@@ -10,7 +10,7 @@ SUBROUTINE write2_1
   USE mcp
   USE mcs
   USE mct
-  USE mcv
+!!$  USE mcv
   USE mcw
   USE mg2
   USE phys_const
@@ -19,8 +19,7 @@ SUBROUTINE write2_1
   CHARACTER(LEN=4) :: uword
   CHARACTER(LEN=7) :: cw1
   CHARACTER(LEN=7) :: cw0
-  CHARACTER(LEN=11) :: chu2, chu3, fmt1
-  CHARACTER(LEN=39) :: fmt2, fmt4
+  CHARACTER(LEN=11) :: chu2, chu3
   CHARACTER(LEN=49), DIMENSION(0:5) :: wclbl1 = (/  &
        'Observation Well                                 ', &
        'Specified Flow Rate                              ', &
@@ -36,20 +35,26 @@ SUBROUTINE write2_1
        '                                        ', &
        'Explicit Layer Rates                    ', &
        'Semi-Implicit Layer Rates               '/)
-  REAL(kind=kdp) :: u1, u2, u3, u4, u5, u6, u7, ucnvi, x1z,  &
-       x2z, y1z, y2z, z1z, z2z
-  INTEGER :: i, ifmt, ifu, indx, ipmz, iis, iwel, iwq1, iwq2, iwq3, j,  &
+  REAL(kind=kdp) :: ucnvi
+  INTEGER :: i, ifu, iwel, iwq1, iwq2, iwq3, j,  &
        jprptc, k, ks, kwb, kwt, l, lc, ls, m, mb, mt, nks
   ! ... Set the unit numbers for node point output
   INTEGER, DIMENSION(12), PARAMETER :: fu =(/16,21,22,23,26,27,0,0,0,0,0,0/)
   INTEGER :: nr
   REAL(kind=kdp), PARAMETER :: cnv = 1._kdp
   REAL(KIND=kdp) :: ph
-  INTEGER :: da_err
-  CHARACTER(LEN=130) :: logline1, logline2, logline3, logline4, logline5
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: aprnt5
+  INTEGER :: a_err, da_err
+  CHARACTER(LEN=130) :: logline1, logline2, logline3, logline4
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
+  ALLOCATE (aprnt5(nxyz),  &
+       STAT = a_err)
+  IF (a_err /= 0) THEN  
+     PRINT *, "Array allocation failed: write2_1"  
+     STOP  
+  ENDIF
   !...
   mflbl=' mass '
   rxlbl='X'
@@ -507,7 +512,7 @@ SUBROUTINE write2_1
   END IF
 !!$300 CONTINUE
   IF(fresur) WRITE(fulp,2036) 'A free-surface water table is specified for this simulation'
-380 IF(prtslm) then
+  IF(prtslm) then
      ! ... Calculation information
      WRITE(fulp,2053) '*** Calculation Information ***'
 2053 FORMAT(/tr40,a)
@@ -658,4 +663,9 @@ SUBROUTINE write2_1
 !!$     WRITE(fubnfr,5005) nhcbc
 !!$     WRITE(fubnfr,5005) (mhcbc(l),l=1,nhcbc)
 !!$  END IF
+  DEALLOCATE (aprnt5,  &
+       stat = da_err)
+  IF (da_err /= 0) THEN  
+     PRINT *, "Array allocation failed: write2_1"  
+  ENDIF
 END SUBROUTINE write2_1

@@ -11,11 +11,11 @@ SUBROUTINE init2_post_ss
   USE mg2
   USE phys_const
   IMPLICIT NONE
-  REAL(KIND=kdp) :: ehoftp, viscos  
+  REAL(KIND=kdp) :: viscos  
   REAL(KIND=kdp) :: time_phreeqc, u0, u1, &
        uc, ut
   INTEGER :: imod, iis, iwel, k, l, m, nr, nsa
-  LOGICAL :: erflg
+!!$  LOGICAL :: erflg
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
@@ -86,7 +86,7 @@ SUBROUTINE init2_post_ss
         END IF
         cycle
      endif
-     ERFLG = .FALSE.  
+!!$     ERFLG = .FALSE.  
      IF( HEAT) UT = T( M)  
      DEN(M) = DEN0  
      VIS(M) = VISCOS(P(M),UT,UC)  

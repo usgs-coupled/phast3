@@ -2,6 +2,9 @@ SUBROUTINE openf
   ! ... Opens input and output data files
   USE f_units
   USE mcch
+#if defined(USE_MPI)
+  USE mpi_mod
+#endif
   IMPLICIT NONE
   CHARACTER(LEN=80) :: fname
   INTEGER :: ios, length

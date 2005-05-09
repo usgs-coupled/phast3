@@ -13,7 +13,7 @@ SUBROUTINE wbcflo
   IMPLICIT NONE
   REAL(KIND=kdp) :: uqhw, uqwm
   INTEGER :: a_err, da_err, i, iis, iwel, iwfss, j, k, ks, m, nsa
-  LOGICAL :: erflg, florev
+  LOGICAL :: florev
   INTRINSIC INT
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: uqsw
   INTEGER, PARAMETER :: icxm=3, icxp=4, icym=2, icyp=5, iczm=1, iczp=6
@@ -22,7 +22,7 @@ SUBROUTINE wbcflo
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
-  erflg=.FALSE.
+!!$  erflg=.FALSE.
   iwel=1
   ! ... Allocate scratch space
   nsa = max(ns,1)

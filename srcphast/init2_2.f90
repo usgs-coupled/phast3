@@ -2,7 +2,6 @@ SUBROUTINE init2_2
   ! ... Initialize after READ2
   ! ... This is the last initialization outside the P,T,C loop for
   ! ...      time marching
-  ! ... Initialization block 2 after chemical reaction step
   USE machine_constants, ONLY: kdp
   USE mcb
   USE mcc
@@ -19,8 +18,8 @@ SUBROUTINE init2_2
   INTEGER :: iis, iwel, m, nr, nsa
   LOGICAL :: erflg, exbc
   INTEGER :: mp, n
-  REAL(kind=kdp), DIMENSION(:), ALLOCATABLE :: ukbc, uzbc, ubbbc
-!  REAL(KIND=kdp), DIMENSION(nxyz) :: frac_icchem
+!$$  REAL(kind=kdp), DIMENSION(:), ALLOCATABLE :: ukbc, uzbc, ubbbc
+!$$  REAL(KIND=kdp), DIMENSION(nxyz) :: frac_icchem
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
@@ -54,29 +53,29 @@ SUBROUTINE init2_2
   tcffbc = 0._kdp  
   tcflbc = 0._kdp
   tcfrbc = 0._kdp  
-  do  iis = 1, nsa  
-        totwsi( iis) = 0._kdp  
-        totwsp( iis) = 0._kdp  
-     sir0( iis) = 0._kdp  
-     totsi( iis) = 0._kdp  
-     totsp( iis) = 0._kdp  
-     tcssbc( iis) = 0._kdp  
-     tcsfbc( iis) = 0._kdp  
-     tcslbc( iis) = 0._kdp  
-     tcsrbc( iis) = 0._kdp  
-     tcsaif( iis) = 0._kdp  
+  do  iis = 1,nsa  
+        totwsi(iis) = 0._kdp  
+        totwsp(iis) = 0._kdp  
+     sir0(iis) = 0._kdp  
+     totsi(iis) = 0._kdp  
+     totsp(iis) = 0._kdp  
+     tcssbc(iis) = 0._kdp  
+     tcsfbc(iis) = 0._kdp  
+     tcslbc(iis) = 0._kdp  
+     tcsrbc(iis) = 0._kdp  
+     tcsaif(iis) = 0._kdp  
      tdsir_chem(iis) = 0._kdp
   END DO
   DO  IWEL = 1, NWEL  
-     WFICUM( IWEL) = 0._KDP  
-     WFPCUM( IWEL) = 0._KDP  
-     IF( HEAT) THEN  
-        WHICUM( IWEL) = 0._KDP  
-        WHPCUM( IWEL) = 0._KDP  
+     WFICUM(IWEL) = 0._KDP  
+     WFPCUM(IWEL) = 0._KDP  
+     IF(HEAT) THEN  
+        WHICUM(IWEL) = 0._KDP  
+        WHPCUM(IWEL) = 0._KDP  
      ENDIF
      DO  iis = 1, nsa  
-        WSICUM( IWEL, iis) = 0._KDP  
-        WSPCUM( IWEL, iis) = 0._KDP  
+        WSICUM(IWEL, iis) = 0._KDP  
+        WSPCUM(IWEL, iis) = 0._KDP  
      END DO
   END DO
   DO 810 M = 1, NXYZ  
@@ -88,15 +87,15 @@ SUBROUTINE init2_2
      ENDIF
      ! ... Initial fluid(kg), heat(j), solute(kg) and pore volume(m^3)
      ! ...      in the region
-     U0 = PV( M) * FRAC( M)  
+     U0 = PV(M) * FRAC(M)  
      !..         U1=PVK(M)*FRAC(M)
      U1 = 0._KDP  
-     FIR0 = FIR0 + U0* DEN( M)  
+     FIR0 = FIR0 + U0* DEN(M)  
      FIRV0 = FIRV0 + U0  
-     IF( HEAT) EHIR0 = EHIR0 + U0*DEN(M)*EH(M) + PMHV(M)*T(M)
+     IF(HEAT) EHIR0 = EHIR0 + U0*DEN(M)*EH(M) + PMHV(M)*T(M)
 !     DO 809 IIS = 1, NS  
-!        SIR0( IIS) = SIR0(IIS) + DEN(M)*(U0 + U1)*C(M,IIS)  
-!        SIR( iis) = SIR0(iis)  
+!        SIR0(IIS) = SIR0(IIS) + DEN(M)*(U0 + U1)*C(M,IIS)  
+!        SIR(iis) = SIR0(iis)  
 ! 809  END DO
 810 END DO
   FIR = FIR0  
@@ -116,13 +115,13 @@ SUBROUTINE init2_2
   ! ... Turn off Gauss elimination due to constant density
   GAUSEL = .FALSE.  
   ! ... Set defaults for iteration parameters
-!  MAXITN = MAX( MAXITN, 5)  
+!  MAXITN = MAX(MAXITN, 5)  
   ! ... Use MAXITN for steady state flow iteration limit
 !!$  maxitn = max(maxitn,200)
   ! ... Iterative solver default parameters
   IF(slmeth >= 3) THEN  
-     IF( epsslv <= 0.) epsslv = 1.e-6_kdp  
-     IF( maxit2 == 0) maxit2 = 100  
+     IF(epsslv <= 0.) epsslv = 1.e-6_kdp  
+     IF(maxit2 == 0) maxit2 = 100  
   ENDIF
   ! ... Set initial condition print control for velocity
   prtdv = .false.       ! ... always for constant density

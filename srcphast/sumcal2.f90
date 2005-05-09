@@ -5,7 +5,7 @@ SUBROUTINE sumcal2
   USE mcb
   USE mcc
   USE mcg
-  USE mcm
+!!$  USE mcm
   USE mcn
   USE mcp
   USE mcv
@@ -20,21 +20,16 @@ SUBROUTINE sumcal2
        qlim, qm_in, qm_net, qn, qnp,  &
        u0, u1, ufdt0, ufdt1,  &
        ufrac, up0, z0, z1, z2, zfsl, zm1, zmfs, zp1
-  INTEGER :: a_err, da_err, i, imod, iwel, j, k, kfs, l, lc, l1, ls, m, m0, m1,  &
-       m1kp, mfs, mt,  &
-       nsa
-  LOGICAL :: erflg, ierrw
-!!$  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: cavg, sum_cqm_in
-!!$  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: qsbc3, qsbc4
-  REAL(KIND=kdp), DIMENSION(nxy) :: fracn
+  INTEGER :: da_err, i, imod, iwel, j, k, kfs, l, lc, l1, ls, m, m0, m1,  &
+       m1kp, mfs, mt
+  LOGICAL :: ierrw
+!!$  REAL(KIND=kdp), DIMENSION(nxy) :: fracn
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   ufdt0 = 1._kdp - fdtmth
   ufdt1 = fdtmth
-  ! ... Allocate scratch space
-  nsa = MAX(ns,1)
   ! ... Calculate total solute in region
   ! ...     after reaction step
   sir = 0._kdp
@@ -385,4 +380,10 @@ SUBROUTINE sumcal2
         END DO
      END DO
   END IF
+  DEALLOCATE (fracn, &
+       STAT = da_err)
+  IF (da_err /= 0) THEN  
+     PRINT *, "Array deallocation failed, sumcal2"  
+     STOP  
+  ENDIF
 END SUBROUTINE sumcal2

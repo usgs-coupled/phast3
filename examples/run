@@ -37,4 +37,4 @@ sed -e "s?WORKING_DIRECTORY?$EXDIR/$NAME/0?" \
 #
 $PHASTDIR/srcinput/phastinput $NAME
 echo Done phastinput.
-lamboot ../../hosts;  time mpirun -O -v schema; wipe ../../hosts
+lamboot ../../hosts;  time mpirun-lam -O -v schema; wipe ../../hosts

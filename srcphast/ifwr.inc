@@ -11,8 +11,8 @@
     END SUBROUTINE prntar
     SUBROUTINE ldchar(indx1,indx2,mfrac,ip,cmask,mask,indxdim)
       USE machine_constants, ONLY: kdp
-      INTEGER, DIMENSION(:,:), INTENT(IN OUT) :: indx1, indx2
-      REAL(kind=kdp), DIMENSION(:,:), INTENT(IN OUT) :: mfrac
+      INTEGER, DIMENSION(:,:), INTENT(INOUT) :: indx1, indx2
+      REAL(kind=kdp), DIMENSION(:,:), INTENT(INOUT) :: mfrac
       INTEGER, INTENT(IN) :: ip
       CHARACTER (LEN=11), DIMENSION(:), INTENT(OUT) :: cmask
       INTEGER, DIMENSION(:), INTENT(OUT) :: mask

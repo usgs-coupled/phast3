@@ -17,9 +17,9 @@ FUNCTION ehoftp( txx, pxx, erflg)
   !     ------------------------------------------------------------------
   !...
   erflg = .false.  
-  pabs = pxx + paatm  
-  !      eh1=interp(1,txx,xx(1),nehst,nxx,tehst,xx,ehst,erflg)
-  !      eh2=interp(2,txx,pabs,ntehdt,npehdt,tehdt,paehdt,ehdt,erflg)
-  !      ehoftp=eh1+eh2
+!!$  pabs = pxx + paatm  
+  !!$      eh1=interp(1,txx,xx(1),nehst,nxx,tehst,xx,ehst,erflg)
+  !!$      eh2=interp(2,txx,pabs,ntehdt,npehdt,tehdt,paehdt,ehdt,erflg)
+  !!$      ehoftp=eh1+eh2
   ehoftp = 0._kdp
 END FUNCTION ehoftp

@@ -1,7 +1,7 @@
 SUBROUTINE sumcal_ss_flow
   ! ... Performs summary calculations at end of time step for steady flow
   USE machine_constants, ONLY: kdp
-  USE f_units
+!!$  USE f_units
   USE mcb
   USE mcc
   use mcch
@@ -32,19 +32,25 @@ SUBROUTINE sumcal_ss_flow
   REAL(KIND=kdp) :: denmfs, frac_flowresid, p1, pmfs, qfbc,  &
        qlim, qm_net, qn, qnp, u0, u1, u2, u6, uc,  &
        ufdt1, ufrac, up0, z0, z1, z2, zfsl, zm1, zmfs, zp1
-  REAL(KIND=kdp), DIMENSION(nxy) :: fracn
-  INTEGER :: i, imod, iwel, j, k, kfs, l, l1, lc, ls, m, m0, m1, m1kp, mfs,  &
+!!$  REAL(KIND=kdp), DIMENSION(nxy) :: fracn
+  INTEGER :: a_err, da_err, i, imod, iwel, j, k, kfs, l, l1, lc, ls, m, m0, m1, m1kp, mfs,  &
        mpmax, mt
-  LOGICAL :: erflg, ierrw
+  LOGICAL :: ierrw
   CHARACTER(LEN=130) :: logline1, logline2
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
   ufdt1 = fdtmth
-  erflg=.FALSE.
+!!$  erflg=.FALSE.
   dpmax=0._kdp
   !  dhmax=0._kdp
+  ALLOCATE (fracn(nxy),  &
+       STAT = a_err)
+  IF (a_err /= 0) THEN  
+     PRINT *, "Array allocation failed: sumcal1_ss"  
+     STOP  
+  ENDIF
   DO  m=1,nxyz
      IF(ibc(m) == -1 .OR. frac(m) <= 0.) CYCLE
      ! ... Find maximum changes in dependent variables
@@ -495,7 +501,7 @@ SUBROUTINE sumcal_ss_flow
 !!$     ! ... Fluid flows calculated in ITER
 !!$     !...         CALL SBCFLO(1,DP,FRACNP,QFSBC,RHFSBC,VAFSBC)
 !!$  END IF
-  erflg=.FALSE.
+!!$  erflg=.FALSE.
   DO l=1,nsbc
      m=msbc(l)
      IF(frac(m) <= 0._kdp) CYCLE
@@ -525,7 +531,7 @@ SUBROUTINE sumcal_ss_flow
   ! ... Add to cumulative totals
 !  tcfsbc=tcfsbc+stfsbc
   ! ... Specified flux b.c.
-  erflg=.FALSE.
+!!$  erflg=.FALSE.
   DO  l=1,nfbc
      m=mfbc(l)
      ufrac=frac(m)
@@ -553,7 +559,7 @@ SUBROUTINE sumcal_ss_flow
   stffbc=stffbc*deltim
 !  tcffbc=tcffbc+stffbc
   ! ... Calculate aquifer leakage flow rates
-  erflg=.FALSE.
+!!$  erflg=.FALSE.
   DO  l=1,nlbc
      m=mlbc(l)
      IF(frac(m) <= 0._kdp .OR. m == 0) CYCLE
@@ -573,7 +579,7 @@ SUBROUTINE sumcal_ss_flow
   stflbc=stflbc*deltim
 !  tcflbc=tcflbc+stflbc
   ! ... Calculate river leakage flow rates
-  erflg=.FALSE.
+!!$  erflg=.FALSE.
   DO lc=1,nrbc_cells
      m = river_seg_index(lc)%m
      IF(m == 0) CYCLE
@@ -681,4 +687,10 @@ SUBROUTINE sumcal_ss_flow
   IF(u1 > 0.) sfresf=sfres/u1
 !  u1=MAX(ABS(fir-fir0),totfi,totfp)
 !  IF(u1 > 0.) tfresf=tfres/u1
+  DEALLOCATE (fracn, &
+       STAT = da_err)
+  IF (da_err /= 0) THEN  
+     PRINT *, "Array deallocation failed, sumcal_ss"  
+     STOP  
+  ENDIF
 END SUBROUTINE sumcal_ss_flow

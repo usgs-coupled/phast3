@@ -1,7 +1,7 @@
 SUBROUTINE errprt(ie1,ie2)
   ! ... Prints the index numbers of errors encountered and a brief
   ! ...      message
-  USE f_units
+!!$  USE f_units
   USE mcc
   INTEGER, INTENT(IN) :: ie1, ie2
   INTEGER :: ie

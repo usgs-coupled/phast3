@@ -4,19 +4,22 @@ SUBROUTINE terminate_phast(mpi_myself)
   USE f_units, ONLY: fuich
   USE machine_constants, ONLY: kdp
   USE mcb, ONLY: ibc
-  USE mcc, ONLY: iprint_chem, iprint_xyz, pricphrq, priforce_chem_phrq, &
-        prihdf_conc, prislm, prtichead
+  USE mcc, ONLY: iprint_chem, iprint_xyz, prslmi, prtichead
   USE mcch, ONLY: f3name
   USE mcg, ONLY: nxyz, nxy
   USE mcn, ONLY: x_node, y_node, z_node, z
   USE mcp, ONLY: cnvli, cnvtmi, gz, den0
-  USE mcv, ONLY: c, deltim, frac, time, den, p
+  USE mcv, ONLY: c, deltim, frac, time, p
   USE mg2, ONLY: hdprnt
+#if defined(USE_MPI)
+  USE mpi_mod
+#endif
   IMPLICIT NONE
+  INTEGER, INTENT(IN) :: mpi_myself
+  !
   CHARACTER(LEN=160) :: fname
   INTEGER :: length
-  INTEGER, INTENT(IN) :: mpi_myself
-  INTEGER :: m, stop_msg, prcphrq, prf_chem_phrq, prhdfc, prslm, imod, k
+  INTEGER :: m, stop_msg, imod, k
   INTEGER :: ios
   !
   ! ... Set string for use with RCS ident command
@@ -25,8 +28,8 @@ SUBROUTINE terminate_phast(mpi_myself)
   !...
   IF (mpi_myself == 0) THEN
      stop_msg = 1
-     CALL equilibrate(c,nxyz,0,x_node,y_node,z_node,time,deltim,prslm,cnvtmi,  &
-       frac, iprint_chem, iprint_xyz, 0, stop_msg, 0)
+     CALL equilibrate(c,nxyz,0,x_node,y_node,z_node,time,deltim,prslmi,cnvtmi,  &
+       frac, iprint_chem, iprint_xyz, 0, stop_msg, 0, 0)
      ! ... Print initial condition head distribution to file
      IF(prtichead) THEN
         ! ... Write to file 'FUICH' for initial condition steady-state head or

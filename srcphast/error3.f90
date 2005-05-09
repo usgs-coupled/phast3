@@ -1,5 +1,6 @@
 SUBROUTINE error3
   ! ... Error checks transient data after INIT3
+  USE machine_constants, ONLY: kdp
   USE mcb
   USE mcc
   USE mcg, ONLY: nxy
@@ -7,10 +8,12 @@ SUBROUTINE error3
   USE mcv
   USE mcw
   USE mg2, ONLY: qfbcv
+  IMPLICIT NONE
   INTRINSIC INDEX
   CHARACTER(LEN=9) :: cibc
   CHARACTER(LEN=130) :: logline1
-  INTEGER :: i, ic, iis, iwel, l, l2, ls, m, warnflag
+  INTEGER :: i, ic, iis, iwel, l, l2, ls, m, m1, mt, warnflag
+  REAL(KIND=kdp) :: udeltim
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------

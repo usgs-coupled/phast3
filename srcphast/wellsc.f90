@@ -39,9 +39,9 @@ SUBROUTINE wellsc
   nshut=0
   ufdt2=fdtmth
   nsa = max(ns,1)
-  ALLOCATE (jwell(nxyz), mobw(nxyz), r(nx), ucwkt(nsa), uqsw(nsa), &
+  ALLOCATE (jwell(nwel), mobw(nwel*nz), r(nx), ucwkt(nsa), uqsw(nsa), &
        stat = a_err)
-  IF (a_err.NE.0) THEN  
+  IF (a_err /= 0) THEN  
      PRINT *, "Array allocation failed: wellsc"  
      STOP  
   ENDIF

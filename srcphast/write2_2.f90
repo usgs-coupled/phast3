@@ -8,7 +8,7 @@ SUBROUTINE write2_2
   USE mcg
   USE mcn
   USE mcp
-  USE mcs
+!!$  USE mcs
   USE mct
   USE mcv
   USE mcw
@@ -17,7 +17,7 @@ SUBROUTINE write2_2
   IMPLICIT NONE
   INCLUDE 'ifwr.inc'
   CHARACTER(LEN=4) :: uword
-  CHARACTER(LEN=11) :: chu2, chu3, fmt1
+!!$  CHARACTER(LEN=11) :: chu2, chu3, fmt1
   CHARACTER(LEN=39) :: fmt2, fmt4
   CHARACTER(LEN=49), DIMENSION(0:5) :: wclbl1 = (/  &
        'Observation Well                                 ', &
@@ -34,9 +34,8 @@ SUBROUTINE write2_2
        '                                        ', &
        'Explicit Layer Rates                    ', &
        'Semi-Implicit Layer Rates               '/)
-  REAL(kind=kdp) :: u1, u2, u3, u4, u5, u6, u7, ucnvi, x1z,  &
-       x2z, y1z, y2z, z1z, z2z
-  INTEGER :: i, ifmt, ifu, indx, ipmz, iis, iwel, iwq1, iwq2, iwq3, j,  &
+  REAL(kind=kdp) :: u1, u2
+  INTEGER :: i, ifmt, ifu, indx, ipmz, iis, iwel, j,  &
        jprptc, k, ks, kwb, kwt, l, m, mb, mt, nks
   ! ... Set the unit numbers for node point output
   INTEGER, DIMENSION(12), PARAMETER :: fu =(/16,21,22,23,26,27,0,0,0,0,0,0/)
@@ -278,4 +277,12 @@ SUBROUTINE write2_2
 !!$  WRITE(fuvmap,5006) (cnvli*x(i),i=1,nx)
 !!$  WRITE(fuvmap,5006) (cnvli*y(j),j=1,ny)
 !!$  WRITE(fuvmap,5006) (cnvli*z(k),k=1,nz)
+
+  DEALLOCATE (ss,  &
+       stat = da_err)
+  IF (da_err /= 0) THEN  
+     PRINT *, "Array deallocation failed: write2_2"  
+     STOP  
+  ENDIF
+
 END SUBROUTINE write2_2

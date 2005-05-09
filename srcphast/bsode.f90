@@ -6,11 +6,12 @@ SUBROUTINE bsode(zwr,yy,dyy,dz,yymax,yyerr,kflag,jstart)
   USE machine_constants, ONLY: kdp
   USE mcw
   IMPLICIT NONE
-  REAL(kind=kdp), INTENT(INOUT) :: zwr
-  REAL(kind=kdp), DIMENSION(2), INTENT(OUT) :: yy, dyy
-  REAL(kind=kdp), INTENT(IN OUT) :: dz
-  REAL(kind=kdp), DIMENSION(2), INTENT(IN OUT) :: yymax
-  REAL(kind=kdp), DIMENSION(2), INTENT(OUT) :: yyerr
+  REAL(KIND=kdp), INTENT(INOUT) :: zwr
+  REAL(KIND=kdp), DIMENSION(2), INTENT(INOUT) :: yy
+  REAL(KIND=kdp), DIMENSION(2), INTENT(OUT) :: dyy
+  REAL(KIND=kdp), INTENT(IN OUT) :: dz
+  REAL(KIND=kdp), DIMENSION(2), INTENT(IN OUT) :: yymax
+  REAL(KIND=kdp), DIMENSION(2), INTENT(OUT) :: yyerr
   INTEGER, INTENT(OUT) :: kflag
   INTEGER, INTENT(IN) :: jstart
   !
@@ -53,7 +54,7 @@ SUBROUTINE bsode(zwr,yy,dyy,dz,yymax,yyerr,kflag,jstart)
   mtwo=3
   DO  i=1,2
      DO  j=1,maxpts
-        extrap(i,j)=0.d0
+        extrap(i,j)=0._kdp
      END DO
   END DO
   DO  j=1,maxpts
@@ -63,13 +64,13 @@ SUBROUTINE bsode(zwr,yy,dyy,dz,yymax,yyerr,kflag,jstart)
      IF(j <= maxord/2) convrg=.false.
      IF(j > maxord+1) THEN
         l=maxord+1
-        dzchng=.7071068D0*dzchng
+        dzchng=.7071068_KDP*dzchng
      ELSE
         l=j
-        dzchng=1.d0+(maxord+1-j)/6.d0
+        dzchng=1._kdp+(maxord+1-j)/6._kdp
      END IF
      b0=dz/m
-     a2=b0*.5D0
+     a2=b0*.5_KDP
      IF(j <= jhvsv1) THEN
         ! ... Use the values of the midpoint integration at the half way
         ! ...     point of the previous integration
@@ -115,7 +116,7 @@ SUBROUTINE bsode(zwr,yy,dyy,dz,yymax,yyerr,kflag,jstart)
      DO  i=1,2
         u1=extrap(i,1)
         ! ... Calculate the final value to be used in the extrapolation
-        ta=(yyn(i)+yynm1(i)+a2*dyy(i))*.5D0
+        ta=(yyn(i)+yynm1(i)+a2*dyy(i))*.5_KDP
         a1=ta
         ! ... Insert the integral as the first extrapolated value
         extrap(i,1)=ta

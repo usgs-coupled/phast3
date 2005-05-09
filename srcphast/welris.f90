@@ -16,14 +16,12 @@ SUBROUTINE welris(iwel,iwfss,uqwmr)
   INTEGER, INTENT(IN) :: iwfss
   REAL(KIND=kdp), INTENT(IN) :: uqwmr
   !
-  EXTERNAL ehoftp
-  REAL(KIND=kdp) :: ehoftp
   REAL(KIND=kdp) :: dzw, fcj, htcu, ilnxi, tambk, timed, utime, xi, zwk
   REAL(KIND=kdp), DIMENSION(2) :: dyy, yy, yyerr, yymax
   INTEGER :: jstart, k, kflag
   LOGICAL :: erflg
   INTEGER, PARAMETER :: kmax=200
-  CHARACTER(LEN=130) :: logline1, logline2, logline3, logline4, logline5, logline6
+  CHARACTER(LEN=130) :: logline1, logline2, logline3, logline4, logline5
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------

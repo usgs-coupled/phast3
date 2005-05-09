@@ -15,11 +15,11 @@ SUBROUTINE wellsr_ss_flow
   IMPLICIT NONE
   INTRINSIC INT
   REAL(KIND=kdp) :: sum1, sumdnz, summob, udnkt, udnsur,  &
-       uehwkt, upm, upwkt, upwsur, uqhw, uqvsur, uqwm, uqwmi,  &
-       uqwmr, uqwv, uqwvkt, utwkt
+       upm, upwkt, upwsur, uqvsur, uqwm, uqwmi,  &
+       uqwmr, uqwv, uqwvkt
   INTEGER :: a_err, awqm, da_err, i, iis, itrn1, itrn2, iwel, iwfss, j, k, ks,  &
        kwt, m, mt, nks, nsa
-  LOGICAL :: convd, erflg, florev
+  LOGICAL :: convd, florev
 ! ...  r array is removed
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: mobw, ucwkt, uqsw
   INTEGER, DIMENSION(:), ALLOCATABLE :: jwell
@@ -29,10 +29,10 @@ SUBROUTINE wellsr_ss_flow
   !     ------------------------------------------------------------------
   !...
   ! ... Initialize flow rate variables
-  erflg=.FALSE.
+!!$  erflg=.FALSE.
   nshut=0
   nsa = max(ns,1)
-  ALLOCATE (jwell(nxyz), mobw(nxyz), ucwkt(nsa), uqsw(nsa), &
+  ALLOCATE (jwell(nwel), mobw(nwel*nz), ucwkt(nsa), uqsw(nsa), &
        stat = a_err)
   IF (a_err.NE.0) THEN  
      PRINT *, "Array allocation failed: wellsr"  
@@ -181,8 +181,8 @@ SUBROUTINE wellsr_ss_flow
         IF(ABS(upwkt-pwrend) <= tolfpw*upwkt) THEN
            ! ... We have riser calculation convergence
            upwkt=pwrend
-           utwkt=twrend
-           uehwkt=ehwend
+!!$           utwkt=twrend
+!!$           uehwkt=ehwend
            udnkt=den0
            uqwvkt=uqwmr/udnkt
         ELSE
@@ -241,7 +241,7 @@ SUBROUTINE wellsr_ss_flow
      IF(iwfss >= 0) THEN
         ! ... Production well
         uqwm=0.d0
-        uqhw=0.d0
+!!$        uqhw=0.d0
         DO  iis=1,ns
            uqsw(iis)=0.d0
         END DO
@@ -318,7 +318,7 @@ SUBROUTINE wellsr_ss_flow
            qflyr(iwel,ks)=0.d0
            dqwdpl(iwel,ks)=0.d0
            uqwm=0.d0
-           uqhw=0.d0
+!!$           uqhw=0.d0
            DO  iis=1,ns
               qslyr(iwel,ks,iis)=0.d0
               uqsw(iis)=0.d0

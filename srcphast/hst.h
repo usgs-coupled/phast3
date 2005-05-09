@@ -59,4 +59,6 @@ struct system {
 	struct surface *surface;
 };
 struct system **uz;
-
+struct system **sz;
+double *frac1;
+int *initial1, *initial2;

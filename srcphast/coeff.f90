@@ -17,7 +17,7 @@ SUBROUTINE coeff
   LOGICAL :: ierrw
   REAL(kind=kdp) :: tdx, tdxy, tdxz, tdy, tdyx, tdyz, tdz, tdzx,  &
        tdzy, u1, u2, u3, uden, udx, udxdy, udxdyi, udxdyo, udxdz,  &
-       udy, udydz, udz, ufr, ufrac, updxdy, updxdz, updydz, uvel, uvis, wt
+       udy, udydz, udz, ufr, ufrac, updxdy, updxdz, updydz, uvel, uvis
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------

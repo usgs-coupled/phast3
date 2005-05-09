@@ -4,13 +4,13 @@ SUBROUTINE init2_3
   ! ...      time marching
   ! ... Initialization block 2 after chemical reaction step
   USE machine_constants, ONLY: kdp
-  USE mcb
-  USE mcc
+!!$  USE mcb
+!!$  USE mcc
   USE mcg
   USE mcp
-  USE mcs
+!!$  USE mcs
   USE mcv
-  USE mcw
+!!$  USE mcw
   USE phys_const
   IMPLICIT NONE
   REAL(KIND=kdp) :: u0, u1, up0,  &

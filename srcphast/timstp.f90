@@ -2,7 +2,7 @@ SUBROUTINE timstp
   ! ... Calculates the change in time step for automatic time step control
   ! ...      or print time control
   USE machine_constants, ONLY: kdp, one_plus_eps
-  USE f_units
+!!$  USE f_units
   USE mcc
   USE mcch, ONLY: unittm
   USE mcp

@@ -43,6 +43,12 @@ SUBROUTINE write5
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
+  ALLOCATE (lprnt3(nxyz), lprnt4(nxyz),  &
+       STAT = a_err)
+  IF (a_err /= 0) THEN  
+     PRINT *, "Array allocation failed: write5"  
+     STOP  
+  ENDIF
   erflg=.FALSE.
   ! ... Print out the summary tables
   IF(errexe) THEN
@@ -77,8 +83,7 @@ SUBROUTINE write5
      IF(autots .AND. ntsfal > 0) THEN 
         WRITE(logline1,5007)  &
              'Number of repeats of time step to achieve ','truncation error'//dots,ntsfal
-5007 FORMAT(a42,a23,i4)
-2007 FORMAT(/tr5,a42,a23,i4)
+5007    FORMAT(a42,a23,i4)
         CALL logprt_c(logline1)
      ENDIF
      WRITE(logline1,5027) '     Maximum change in potentiometric head '//dots,  &
@@ -445,7 +450,7 @@ SUBROUTINE write5
 !!$              WRITE(chu3a,2031) cnvhei*whpcum(iwel)
 !!$              WRITE(chu5a,2031) cnvhei*whicum(iwel)
 !!$           END IF
-2031       FORMAT(1PG12.4)
+!!$2031       FORMAT(1PG12.4)
            WRITE(fuwel,2032) welidno(iwel),cnvmi*wfpcum(iwel),cnvmi*wficum(iwel)
 2032       FORMAT(' ',i4,tr14,1pg12.4,tr13,1pg12.4)
         END DO
@@ -1409,4 +1414,9 @@ SUBROUTINE write5
 !!$       timprhdfh, timprhdfv, timprhdfcph,  &
 !!$       timprkd, timprmapc, timprmaph, timprmapv, &
 !!$       timprp, timprc, timprcphrq, timprfchem, timprslm, timprtem, timprvel, timprwel)
+  DEALLOCATE (lprnt3, lprnt4,  &
+       stat = da_err)
+  IF (da_err /= 0) THEN  
+     PRINT *, "Array allocation failed: write5"  
+  ENDIF
 END SUBROUTINE write5

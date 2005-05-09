@@ -15,7 +15,10 @@ SUBROUTINE closef(mpi_myself)
   USE mct
   USE mcv
   USE mcw
-  USE mg2, ONLY: qfbcv, hdprnt, uzelb, uklb, uvaifc, ubetb, ulsetb, uxx, hwt
+  USE mg2, ONLY: qfbcv, hdprnt
+#if defined(USE_MPI)
+  USE mpi_mod
+#endif
   IMPLICIT NONE
   INTEGER, INTENT(IN) :: mpi_myself
   CHARACTER(LEN=6), DIMENSION(40) :: st
@@ -145,9 +148,9 @@ SUBROUTINE closef(mpi_myself)
   st(fubcf) = 'delete'  
   IF(ntprbcf > 0) st(fubcf) = 'keep  '  
 !!$  st(fut) = 'delete'  
-#if defined(MERGE_FILES)
-  CALL update_status(st)
-#endif
+!!$#if defined(MERGE_FILES)
+!!$  CALL update_status(st)
+!!$#endif
   ! ... Close the files
   IF(print_rde) CLOSE(furde,status='keep')  
   CLOSE(fuorst, status = st(fuorst))  
@@ -169,29 +172,39 @@ SUBROUTINE closef(mpi_myself)
   ! ... Close files and free memory in phreeqc
   CALL phreeqc_free(solute)  
   ! ... Deallocate the arrays
+  IF (mpi_myself == 0) THEN
   ! ...      Deallocate mesh arrays
-  DEALLOCATE (caprnt, lprnt1, lprnt2, lprnt3, lprnt4,  &
-       aprnt1, aprnt2, aprnt3, aprnt4, aprnt5, aprnt6,  &
-       aprnt7, c_mol,  &
-       rm, x, y, z, x_node, y_node, z_node,  &
-       xele, yele, zele, x_face, y_face, z_face,  &
-       ibc, xd_mask, vmask,  &
+  DEALLOCATE (caprnt, lprnt1, lprnt2,  &
+       aprnt1, aprnt2, aprnt3, aprnt4,  &
+       rm, x, y, z,  &
+       x_face, y_face, z_face,  &
+       ibc,  &
+       c_mol,  &
+       xd_mask, vmask,  &
        stat = da_err)
   IF (da_err /= 0) THEN  
-     PRINT *, "Array allocation failed: closef: number 1"  
+     PRINT *, "Array allocation failed: closef: number 0"
   ENDIF
+  endif
+  ! ... Allocate mesh arrays for chem slaves
+  DEALLOCATE (x_node, y_node, z_node, iprint_chem, iprint_xyz,  &
+       STAT = da_err)
+  IF (da_err /= 0) THEN  
+     PRINT *, "Array deallocation failed: closef 0.1"  
+     STOP
+  ENDIF
+  IF (mpi_myself == 0) THEN
   ! ...      Deallocate dependent variable arrays
   DEALLOCATE (comp_name, icmax, jcmax, kcmax, &
-       indx_sol1_ic, indx_sol2_ic, indx_sol1_bc, indx_sol2_bc, &
-       axsav, aysav, azsav, dc, dfracdt, dp, dt, &
+       dc, dfracdt, dp, dt, &
        sxx, syy, szz, vxx, vyy, vzz, dcmax, dsir, &
        qsfx, qsfy, qsfz, &
        stsaif, stsetb, stsfbc, stslbc, &
        stsrbc, stssbc, stswel, ssresf, ssres, stotsi, stotsp, &
        tsres, tsresf, &
-       dctas, telc, &
-       rf, rh, rh1, rs, rs1, &
-       c, den, eh, frac, mxfrac, p, t, vis, &
+       dctas,  &
+       rf, rs,  &
+       den, eh, frac, p, t, vis, &
        sir, sir0, sirn, totsi, totsp, tcsaif, tcsetb, &
        tcsfbc, &
        tcslbc, tcsrbc, tcssbc, &
@@ -201,16 +214,19 @@ SUBROUTINE closef(mpi_myself)
   IF (da_err /= 0) THEN  
      PRINT *, "Array allocation failed: closef: number 2"  
   ENDIF
-  ! ...      Deallocate space for read group 2 arrays
-  DEALLOCATE (uzelb, uklb, ubblb, uvaifc,  &
-       ubetb, ulsetb, uxx, hwt, &
-       stat = da_err)
+  endif
+  ! ... Deallocate dependent variable arrays for chem slaves
+  DEALLOCATE (indx_sol1_ic, indx_sol2_ic, indx_sol1_bc, indx_sol2_bc,  &
+       mxfrac,  &
+       c, frac_icchem,  &
+       STAT = da_err)
   IF (da_err /= 0) THEN  
-     PRINT *, "Array allocation failed: closef: number 3"  
+     PRINT *, "Array deallocation failed: closef 2.1"  
+     STOP
   ENDIF
   ! ...      Deallocate the zone arrays
   DEALLOCATE (abpm, alphl, alphth, alphtv, poros, &
-       dbkd, kthx, kthy, kthz, kthxpm, kthypm, kthzpm, &
+       kthx, kthy, kthz,  &
        kxx,kyy,kzz,rcppm, &
        i1z, i2z, j1z, j2z, k1z, k2z, &
        stat = da_err)
@@ -221,7 +237,7 @@ SUBROUTINE closef(mpi_myself)
   IF(nwel > 0) THEN
      DEALLOCATE (welidno, xw, yw, wbod, wqmeth, &
           mwel, &
-          ! wcf, & ! wcf deallocated in write2
+          ! wcf, &                   ! wcf deallocated in write2
           zwb, zwt, wfrac, nkswel, &
           mxf_wel, &
           stat = da_err)
@@ -270,7 +286,7 @@ SUBROUTINE closef(mpi_myself)
   ! ...      Deallocate conductance, capacitance arrays
   DEALLOCATE (tx, ty, tz, arx, ary, arz,  &
        qfbcv, &
-       pv, pmcv, pmhv, pmchv, pvk, ss, &
+       pv, pmcv, pmhv, pmchv, pvk,  &
        tfx, tfy, tfz, thx, thy, thz, thxy, thxz, thyx, &
        thyz, thzx, thzy, &
        tsx, tsy, tsz, tsxy, tsxz, tsyx, tsyz, &
@@ -286,7 +302,7 @@ SUBROUTINE closef(mpi_myself)
           sfsb, sfvsb, shsb, sssb, &
           csbc, psbc, tsbc, ccfsb, ccfvsb, cchsb, &
           ccssb, &
-          vafsbc, rhfsbc, vahsbc, rhhsbc, &
+          vafsbc, rhfsbc,  &
           vassbc, rhssbc, &
           stat = da_err)
      IF (da_err /= 0) THEN  

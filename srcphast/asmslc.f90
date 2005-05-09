@@ -2,12 +2,12 @@ SUBROUTINE ASMSLC
   !.....Performs the assembly and solution of the concentration from the
   !.....     solute transport equations for each component
   USE machine_constants, ONLY: kdp
-  USE f_units
+!!$  USE f_units
   USE mcc
   use mcch
   USE mcg
   USE mcm
-  USE mcp
+!!$  USE mcp
   USE mcs
   USE mcs2
   USE mcv
@@ -18,7 +18,7 @@ SUBROUTINE ASMSLC
        USE machine_constants, ONLY: kdp
        REAL(KIND=kdp), DIMENSION(:,0:), INTENT(IN OUT) :: ap
        REAL(KIND=kdp), DIMENSION(:,0:), INTENT(IN OUT) :: bp
-       REAL(KIND=kdp), DIMENSION(:,:), INTENT(OUT) :: ra
+       REAL(KIND=kdp), DIMENSION(:,:), INTENT(IN OUT) :: ra
        REAL(kind=kdp), DIMENSION(:), INTENT(IN OUT) :: rr
        REAL(kind=kdp), DIMENSION(:), INTENT(IN OUT) :: ss, w, z
        REAL(kind=kdp), DIMENSION(:), INTENT(INOUT) :: sumfil

@@ -21,11 +21,18 @@ SUBROUTINE asembl
        tsxm, tsxp, tsym, tsyp, tszm, tszp, ucrosc, ucrost, ur1, ur2,  &
        urh, urs, utxm, utxp, utym, utyp, utzm, utzp, wtmx, wtmy,  &
        wtmz, wtpx, wtpy, wtpz, zkm, zkp
-  INTEGER :: i, ibckm, ibckp, ic, j, k, m, ma
+  INTEGER :: a_err, da_err, i, ibckm, ibckp, ic, j, k, m, ma, nsa
   INTEGER, PARAMETER :: icxm = 3, icxp = 4, icym = 2, icyp = 5, iczm = 1, iczp = 6
   !.....Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
+  nsa = MAX(ns,1)
+  ALLOCATE (rs1(nxyz,nsa),  &
+       stat = a_err)
+  IF (a_err /= 0) THEN  
+     PRINT *, "Array allocation failed: asembl, number 0"  
+     STOP  
+  ENDIF
   !...
   !.....Compute and assemble coefficients in difference equations
   !.....     cell-by-cell
@@ -170,9 +177,7 @@ SUBROUTINE asembl
         ucrost=0._kdp
         IF(crosd) CALL crsdsp(m,ucrosc,ucrost)
         !.....Save RS and RH with cross derivative dispersive flux terms
-        rh1(1) = 0._kdp
         rs1(m,1) = 0._kdp
-        IF(heat) rh1(m)=rh(m)+ucrost
         IF(solute) rs1(m,1)=rs(m,1)+ucrosc
         utxm=0._kdp
         utxp=0._kdp
@@ -183,10 +188,10 @@ SUBROUTINE asembl
         !.....X-direction
         IF(mimjk > 0) THEN
            ehmx = 0._kdp
-           IF(heat) THEN
-              urh=urh+urf1(thxm,dt(mimjk),dt(m),cpf*sxxm,wtmx)
-              ehmx=urf2(wtmx,eh(mimjk),eh(m),cpf*dt(mimjk),cpf*dt(m))
-           END IF
+!!$           IF(heat) THEN
+!!$              urh=urh+urf1(thxm,dt(mimjk),dt(m),cpf*sxxm,wtmx)
+!!$              ehmx=urf2(wtmx,eh(mimjk),eh(m),cpf*dt(mimjk),cpf*dt(m))
+!!$           END IF
            urs = 0._kdp
            cmx = 0._kdp
            IF(solute) THEN
@@ -200,10 +205,10 @@ SUBROUTINE asembl
         END IF
         IF(mipjk > 0) THEN
            ehpx = 0._kdp
-           IF(heat) THEN
-              urh=urh-urf1(thxp,dt(m),dt(mipjk),cpf*sxxp,wtpx)
-              ehpx=urf2(wtpx,eh(m),eh(mipjk),cpf*dt(m), cpf*dt(mipjk))
-           END IF
+!!$           IF(heat) THEN
+!!$              urh=urh-urf1(thxp,dt(m),dt(mipjk),cpf*sxxp,wtpx)
+!!$              ehpx=urf2(wtpx,eh(m),eh(mipjk),cpf*dt(m), cpf*dt(mipjk))
+!!$           END IF
            urs = 0._kdp
            cpx = 0._kdp
            IF(solute) THEN
@@ -222,10 +227,10 @@ SUBROUTINE asembl
         !.....Y-direction
         IF(mijmk > 0) THEN
            ehmy = 0._kdp
-           IF(heat) THEN
-              urh=urh+urf1(thym,dt(mijmk),dt(m),cpf*syym,wtmy)
-              ehmy=urf2(wtmy,eh(mijmk),eh(m),cpf*dt(mijmk), cpf*dt(m))
-           END IF
+!!$           IF(heat) THEN
+!!$              urh=urh+urf1(thym,dt(mijmk),dt(m),cpf*syym,wtmy)
+!!$              ehmy=urf2(wtmy,eh(mijmk),eh(m),cpf*dt(mijmk), cpf*dt(m))
+!!$           END IF
            urs = 0._kdp
            cmy = 0._kdp
            IF(solute) THEN
@@ -238,10 +243,10 @@ SUBROUTINE asembl
         END IF
         IF(mijpk > 0) THEN
            ehpy = 0._kdp
-           IF(heat) THEN
-              urh=urh-urf1(thyp,dt(m),dt(mijpk),cpf*syyp,wtpy)
-              ehpy=urf2(wtpy,eh(m),eh(mijpk),cpf*dt(m), cpf*dt(mijpk))
-           END IF
+!!$           IF(heat) THEN
+!!$              urh=urh-urf1(thyp,dt(m),dt(mijpk),cpf*syyp,wtpy)
+!!$              ehpy=urf2(wtpy,eh(m),eh(mijpk),cpf*dt(m), cpf*dt(mijpk))
+!!$           END IF
            urs = 0._kdp
            cpy = 0._kdp
            IF(solute) THEN
@@ -255,10 +260,10 @@ SUBROUTINE asembl
         !.....Z-direction
         IF(mijkm > 0) THEN
            ehmz = 0._kdp
-           IF(heat) THEN
-              urh=urh+urf1(thzm,dt(mijkm),dt(m),cpf*szzm,wtmz)
-              ehmz=urf2(wtmz,eh(mijkm),eh(m),cpf*dt(mijkm), cpf*dt(m))
-           END IF
+!!$           IF(heat) THEN
+!!$              urh=urh+urf1(thzm,dt(mijkm),dt(m),cpf*szzm,wtmz)
+!!$              ehmz=urf2(wtmz,eh(mijkm),eh(m),cpf*dt(mijkm), cpf*dt(m))
+!!$           END IF
            urs = 0._kdp
            cmz = 0._kdp
            IF(solute) THEN
@@ -275,10 +280,10 @@ SUBROUTINE asembl
         END IF
         IF(mijkp > 0) THEN
            ehpz = 0._kdp
-           IF(heat) THEN
-              urh=urh-urf1(thzp,dt(m),dt(mijkp),cpf*szzp,wtpz)
-              ehpz=urf2(wtpz,eh(m),eh(mijkp),cpf*dt(m), cpf*dt(mijkp))
-           END IF
+!!$           IF(heat) THEN
+!!$              urh=urh-urf1(thzp,dt(m),dt(mijkp),cpf*szzp,wtpz)
+!!$              ehpz=urf2(wtpz,eh(m),eh(mijkp),cpf*dt(m), cpf*dt(mijkp))
+!!$           END IF
            urs = 0._kdp
            cpz = 0._kdp
            IF(solute) THEN
@@ -294,7 +299,7 @@ SUBROUTINE asembl
            END IF
         END IF
         !  with component 1
-        rhs(ma)=rf(m)+c34*(rs1(m,1)+fdtmth*urs)+c35*(rh1(1)+ fdtmth*urh)
+        rhs(ma)=rf(m)+c34*(rs1(m,1)+fdtmth*urs)
         IF(cylind.AND.i == 1) rhsw(k)=rf(m)-c31*dc(m,1)-c32*dt(0)
         !.....End of flow equation terms
 !!$     ELSE IF(ieq == 2) THEN
@@ -494,6 +499,12 @@ SUBROUTINE asembl
         !.....End of solute terms
      END IF
   END DO
+  DEALLOCATE (rs1,  &
+       stat = da_err)
+  IF (da_err /= 0) THEN  
+     PRINT *, "Array deallocation failed: asembl"  
+     STOP  
+  ENDIF
 
 CONTAINS
 

@@ -50,12 +50,12 @@ SUBROUTINE error4
      END DO chk_fs
   END IF
   ! ... Check that each active cell is in a zone
-  allocate (inzone(nxyz), &
+  ALLOCATE (inzone(nxyz), &
        stat = a_err)
-  if (a_err.ne.0) then  
-     print *, "Array allocation failed: error4"  
-     stop  
-  endif
+  IF (a_err.ne.0) THEN  
+     PRINT *, "Array allocation failed: error4"  
+     STOP  
+  ENDIF
   inzone = .false.
   DO  ipmz=1,npmz
      IF(i1z(ipmz) >= i2z(ipmz) .OR. k1z(ipmz) >= k2z(ipmz)) ierr(64)= .true.
@@ -81,12 +81,12 @@ SUBROUTINE error4
         CALL errprt_c(logline1)
      END IF
   END DO
-  deallocate (inzone, &
+  DEALLOCATE (inzone, &
        stat = da_err)
-  if (da_err /= 0) then  
-     print *, "Array deallocation failed"  
-     stop  
-  endif
+  IF (da_err /= 0) THEN  
+     PRINT *, "Array deallocation failed"  
+     STOP  
+  ENDIF
   DO  i=4,200
      IF(ierr(i)) errexi=.true.
   END DO

@@ -3,7 +3,7 @@ SUBROUTINE aplbce
   ! ... Calculates the conductive heat loss b.c.
   ! ...      and applies to the right hand side
   USE machine_constants, ONLY: kdp
-  USE f_units
+!!$  USE f_units
   USE mcb
   USE mcc
   USE mcg
@@ -66,10 +66,10 @@ SUBROUTINE aplbce
         END DO
      ENDIF
      RF( M) = RF( M) + UFDT2* QFBC  
-     IF( HEAT) THEN  
-        QHBC2 = QHFBC( L) * UFRAC  
-        RH( M) = RH( M) + UFDT2* ( QHBC2 + QHBC)  
-     ENDIF
+!!$     IF( HEAT) THEN  
+!!$        QHBC2 = QHFBC( L) * UFRAC  
+!!$        RH( M) = RH( M) + UFDT2* ( QHBC2 + QHBC)  
+!!$     ENDIF
      DO  iis = 1, ns  
         QSBC2( iis) = QSFBC( L, iis) * UFRAC  
         RS( M, iis) = RS( M, iis) + UFDT2* ( QSBC2( iis) + QSBC( iis) )  
@@ -322,7 +322,7 @@ SUBROUTINE aplbce
   DEALLOCATE (qsbc, qsbc2, &
        stat = da_err)
   IF (da_err /=  0) THEN  
-     PRINT *, "Array deallocation failed"  
+     PRINT *, "Array deallocation failed: aplbce"  
      STOP  
   ENDIF
 END SUBROUTINE aplbce

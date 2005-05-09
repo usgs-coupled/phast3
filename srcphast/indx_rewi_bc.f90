@@ -29,7 +29,7 @@ SUBROUTINE indx_rewi_bc(ipar1,ipar2,par3,ip,icall,ier)
      END SUBROUTINE incidx
   END INTERFACE
   !
-  INTEGER :: a_err, da_err, i, i1, i2, ic, imod, iv, j, j1, j2, k, k1, k2, m, m1, m2, ms, nxyzs
+  INTEGER :: a_err, da_err, i, i1, i2, ic, imod, j, j1, j2, k, k1, k2, m, m1, m2, ms, nxyzs
 !!$  CHARACTER(LEN=2) :: cicall
   CHARACTER(LEN=80) :: line
   REAL(kind=kdp) :: x1, x2, y1, y2, z1, z2

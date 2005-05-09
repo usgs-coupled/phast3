@@ -29,7 +29,8 @@ void add_all_components(void)
  *   Delete solutions less than -1
  */
 	while (count_solution > 0 && solution[0]->n_user < -1) {
-		solution_delete(0);
+		i = solution[0]->n_user;
+		solution_delete(i);
 	}
 /*
  *   add all solutions
@@ -644,6 +645,22 @@ void set_use_hst(void)
 	}
 	return;
 }
+#ifdef USE_MPI
+/* ---------------------------------------------------------------------- */
+void unpack_from_hst(double *fraction, int *dim)
+/* ---------------------------------------------------------------------- */
+{
+	int i, j;
+	for (i = 0; i < ixyz; i++) {
+		j = forward[i];    /* j is 1 to count_chem */
+		if (j < 0) continue;
+		hst_to_buffer(&fraction[i], *dim);
+		buffer_to_moles();
+		buffer_to_solution(sz[j]->solution);
+	}
+	return;
+}
+#else
 /* ---------------------------------------------------------------------- */
 void unpack_from_hst(double *fraction, int *dim)
 /* ---------------------------------------------------------------------- */
@@ -660,6 +677,7 @@ void unpack_from_hst(double *fraction, int *dim)
 	}
 	return;
 }
+#endif
 /* ---------------------------------------------------------------------- */
 int xexchange_save_hst(int n)
 /* ---------------------------------------------------------------------- */
@@ -882,7 +900,7 @@ int xs_s_assemblage_save_hst(int n)
 /* ---------------------------------------------------------------------- */
 {
 /*
- *   Save pure_phase assemblage into structure s_s_assemblage n
+ *   Save pure_phase assemblage into structure s_s_assemblage 
  */
 	int j, i;
 	int count_comps;
@@ -1015,4 +1033,225 @@ int scale_solution(int n_solution, double factor)
 	}
 	xsolution_save_hst(i);
 	return(OK);
+}
+/* ---------------------------------------------------------------------- */
+void copy_system_to_user(struct system *system_ptr, int n_user)
+/* ---------------------------------------------------------------------- */
+{
+	assert(system_ptr != NULL);
+	assert(system_ptr->solution != NULL);
+	/*
+	 *   Copy entities from sz to n_user 
+	 *
+	 *   If an sz entity does not exist, 
+	 *   n_user is deleted.
+	 */
+
+	/*
+	 *   Copy solution
+	 */
+	solution_ptr_to_user(system_ptr->solution, n_user);
+	/*
+	 *   Copy exchange
+	 */
+	if (system_ptr->exchange != NULL) {
+		exchange_ptr_to_user(system_ptr->exchange, n_user);
+	} else {
+		exchange_delete(n_user);
+	}
+	/*
+	 *   Copy surface
+	 */
+	if (system_ptr->surface != NULL) {
+		surface_ptr_to_user(system_ptr->surface, n_user);
+	} else {
+		surface_delete(n_user);
+	}
+	/*
+	 *   Copy pp_assemblage
+	 */
+	if (system_ptr->pp_assemblage != NULL) {
+		pp_assemblage_ptr_to_user(system_ptr->pp_assemblage, n_user);
+	} else {
+		pp_assemblage_delete(n_user);
+	}
+	/*
+	 *   Copy gas_phase
+	 */
+	if (system_ptr->gas_phase != NULL) {
+		gas_phase_ptr_to_user(system_ptr->gas_phase, n_user);
+	} else {
+		gas_phase_delete(n_user);
+	}
+	/*
+	 *   Copy s_s_assemblage
+	 */
+	if (system_ptr->s_s_assemblage != NULL) {
+		s_s_assemblage_ptr_to_user(system_ptr->s_s_assemblage, n_user);
+	} else {
+		s_s_assemblage_delete(n_user);
+	}
+	/*
+	 *   Copy kinetics
+	 */
+	if (system_ptr->kinetics != NULL) {
+		kinetics_ptr_to_user(system_ptr->kinetics, n_user);
+	} else {
+		kinetics_delete(n_user);
+	}
+	return;
+}
+/* ---------------------------------------------------------------------- */
+void copy_user_to_system(struct system *system_ptr, int n_user, int n_user_new)
+/* ---------------------------------------------------------------------- */
+{
+	int n;
+
+	assert(system_ptr != NULL);
+	assert(system_ptr->solution != NULL);
+	/*
+	 *   Copy entities from sz to n_user 
+	 *
+	 *   If an sz entity does not exist, 
+	 *   n_user is deleted.
+	 */
+	system_free(system_ptr);
+	/*
+	 *   Copy solution
+	 */
+	solution_bsearch(n_user, &n, TRUE);
+	system_ptr->solution = solution_replicate(solution[n], n_user_new);
+	/*
+	 *   Copy exchange
+	 */
+	if (exchange_bsearch(n_user, &n) != NULL) {
+		system_ptr->exchange = exchange_replicate(&exchange[n], n_user_new);
+	} 
+	/*
+	 *   Copy surface
+	 */
+	if (surface_bsearch(n_user, &n) != NULL) {
+		system_ptr->surface = surface_replicate(&surface[n], n_user_new);
+	} 
+	/*
+	 *   Copy pp_assemblage
+	 */
+	if (pp_assemblage_bsearch(n_user, &n) != NULL) {
+		system_ptr->pp_assemblage = pp_assemblage_replicate(&pp_assemblage[n], n_user_new);
+	} 
+	/*
+	 *   Copy gas_phase
+	 */
+	if (gas_phase_bsearch(n_user, &n) != NULL) {
+		system_ptr->gas_phase = gas_phase_replicate(&gas_phase[n], n_user_new);
+	} 
+	/*
+	 *   Copy s_s_assemblage
+	 */
+	if (s_s_assemblage_bsearch(n_user, &n) != NULL) {
+		system_ptr->s_s_assemblage = s_s_assemblage_replicate(&s_s_assemblage[n], n_user_new);
+	} 
+	/*
+	 *   Copy kinetics
+	 */
+	if (kinetics_bsearch(n_user, &n) != NULL) {
+		system_ptr->kinetics = kinetics_replicate(&kinetics[n], n_user_new);
+	} 
+	return;
+}
+/* ---------------------------------------------------------------------- */
+struct system *system_initialize(int i, int n_user_new, int *initial_conditions1, int *initial_conditions2, double *fraction1)
+/* ---------------------------------------------------------------------- */
+{
+	struct solution *solution_ptr;
+	struct exchange *exchange_ptr;
+	struct pp_assemblage *pp_assemblage_ptr;
+	struct gas_phase *gas_phase_ptr;
+	struct s_s_assemblage *s_s_assemblage_ptr;
+	struct surface *surface_ptr;
+	struct kinetics *kinetics_ptr;
+	struct system *system_ptr;
+	int n, n_old1, n_old2;
+	double f1;
+
+	system_ptr = system_alloc();   
+	/*
+	 *   Copy solution
+	 */
+	n_old1 = initial_conditions1[7*i];
+	n_old2 = initial_conditions2[7*i];
+	f1 = fraction1[7*i];
+	if (n_old1 >= 0) {
+		mix_solutions(n_old1, n_old2, f1, -1, "initial");
+		solution_ptr = solution_bsearch(-1, &n, TRUE);
+		system_ptr->solution = solution_replicate(solution_ptr, n_user_new);
+	}
+		
+	/*
+	 *   Copy pp_assemblage
+	 */
+	n_old1 = initial_conditions1[ 7*i + 1 ];
+	n_old2 = initial_conditions2[ 7*i + 1 ];
+	f1 = fraction1[7*i + 1];
+	if (n_old1 >= 0) {
+		mix_pp_assemblage(n_old1, n_old2, f1, -1);
+		pp_assemblage_ptr = pp_assemblage_bsearch(-1, &n);
+		system_ptr->pp_assemblage = pp_assemblage_replicate(pp_assemblage_ptr, n_user_new);
+	}
+	/*
+	 *   Copy exchange assemblage
+	 */
+	n_old1 = initial_conditions1[ 7*i + 2 ];
+	n_old2 = initial_conditions2[ 7*i + 2 ];
+	f1 = fraction1[7*i + 2];
+	if (n_old1 >= 0) {
+		mix_exchange(n_old1, n_old2, f1, -1);
+		exchange_ptr = exchange_bsearch(-1, &n);
+		system_ptr->exchange = exchange_replicate(exchange_ptr, n_user_new);
+	}
+	/*
+	 *   Copy surface assemblage
+	 */
+	n_old1 = initial_conditions1[ 7*i + 3 ];
+	n_old2 = initial_conditions2[ 7*i + 3 ];
+	f1 = fraction1[7*i + 3];
+	if (n_old1 >= 0) {
+		mix_surface(n_old1, n_old2, f1, -1);
+		surface_ptr = surface_bsearch(-1, &n);
+		system_ptr->surface = surface_replicate(surface_ptr, n_user_new);
+	}
+	/*
+	 *   Copy gas phase
+	 */
+	n_old1 = initial_conditions1[ 7*i + 4 ];
+	n_old2 = initial_conditions2[ 7*i + 4 ];
+	f1 = fraction1[7*i + 4];
+	if (n_old1 >= 0) {
+		mix_gas_phase(n_old1, n_old2, f1, -1);
+		gas_phase_ptr = gas_phase_bsearch(-1, &n);
+		system_ptr->gas_phase = gas_phase_replicate(gas_phase_ptr, n_user_new);
+	}
+	/*
+	 *   Copy solid solution
+	 */
+	n_old1 = initial_conditions1[ 7*i + 5 ];
+	n_old2 = initial_conditions2[ 7*i + 5 ];
+	f1 = fraction1[7*i + 5];
+	if (n_old1 >= 0) {
+		mix_s_s_assemblage(n_old1, n_old2, f1, -1);
+		s_s_assemblage_ptr = s_s_assemblage_bsearch(-1, &n);
+		system_ptr->s_s_assemblage = s_s_assemblage_replicate(s_s_assemblage_ptr, n_user_new);
+	}
+	/*
+	 *   Copy kinetics
+	 */
+	n_old1 = initial_conditions1[ 7*i + 6 ];
+	n_old2 = initial_conditions2[ 7*i + 6 ];
+	f1 = fraction1[7*i + 6];
+	if (n_old1 >= 0) {
+		mix_kinetics(n_old1, n_old2, f1, -1);
+		kinetics_ptr = kinetics_bsearch(-1, &n);
+		system_ptr->kinetics = kinetics_replicate(kinetics_ptr, n_user_new);
+	}
+	return(system_ptr);
 }

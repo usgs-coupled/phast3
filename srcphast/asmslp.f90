@@ -1,7 +1,7 @@
 SUBROUTINE asmslp  
   ! ... Performs the assembly and solution of the pressure equation
   USE machine_constants, ONLY: kdp
-  USE f_units
+!!$  USE f_units
   USE mcb
   USE mcc
   use mcch, ONLY: unittm
@@ -16,10 +16,10 @@ SUBROUTINE asmslp
   INTERFACE
      SUBROUTINE gcgris(ap,bp,ra,rr,ss,xx,w,z,sumfil)
        USE machine_constants, ONLY: kdp
-       REAL(KIND=kdp), DIMENSION(:,0:), INTENT(IN) :: ap
+       REAL(KIND=kdp), DIMENSION(:,0:), INTENT(IN OUT) :: ap
        REAL(KIND=kdp), DIMENSION(:,0:), INTENT(IN OUT) :: bp
-       REAL(KIND=kdp), DIMENSION(:,:), INTENT(OUT) :: ra
-       REAL(KIND=kdp), DIMENSION(:), INTENT(IN) :: rr
+       REAL(KIND=kdp), DIMENSION(:,:), INTENT(IN OUT) :: ra
+       REAL(KIND=kdp), DIMENSION(:), INTENT(IN OUT) :: rr
        REAL(KIND=kdp), DIMENSION(:), INTENT(IN OUT) :: ss, w, z
        REAL(kind=kdp), DIMENSION(:), INTENT(INOUT) :: sumfil
        REAL(KIND=kdp), DIMENSION(:), INTENT(OUT) :: xx

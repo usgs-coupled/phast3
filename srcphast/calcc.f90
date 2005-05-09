@@ -19,7 +19,7 @@ SUBROUTINE calcc(c, dc, denn, dp, dpkm, dpkp, dt, fracn, fracnzkp,  &
   REAL(KIND=kdp), INTENT(IN) :: p, pkm, &
        pkp, pmchv, pmcv, pmhv, pv, pvk, t, z, zkm, zkp, deltim
   ! ...
-  REAL(KIND=kdp) :: cnp, delp2, dennp, dfdpk, dfdpkm, ufracnp, m21, &
+  REAL(KIND=kdp) :: cnp, dennp, dfdpk, dfdpkm, ufracnp, m21, &
        m31, m32, pk, pkmnp, pknp, pmchdt, pmcvdt, pmhvdt, pnp, pvdtn, &
        pvkdtn, tnp, ufd, ufd2, upct, upv, zfsnp, zk
   REAL(KIND=kdp), PARAMETER :: epssat = 1.e-6_kdp  

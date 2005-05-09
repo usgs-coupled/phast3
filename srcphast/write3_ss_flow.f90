@@ -3,25 +3,24 @@ SUBROUTINE write3_ss_flow
   ! ...      after INIT3 and ERROR3
   USE machine_constants, ONLY: kdp
   USE f_units
-  USE mcb
+!!$  USE mcb
   USE mcc
   USE mcch
-  USE mcg
-  USE mcn
+!!$  USE mcg
+!!$  USE mcn
   USE mcp
-  USE mct
-  USE mcv
+!!$  USE mct
+!!$  USE mcv
   USE mcw
-  USE mg2, ONLY: qfbcv
+!!$  USE mg2, ONLY: qfbcv
   USE mg3
   IMPLICIT NONE
   INCLUDE 'ifwr.inc'
   CHARACTER(LEN=11) :: blank = '           ', ucc, up1c, up2c, uqc, utc
   CHARACTER(LEN=4) :: limit
-  REAL(KIND=kdp), PARAMETER :: cnv = 1._kdp
-  INTEGER :: i, ic, ifmt, iis, iwel, j, k, l, l1, lc, ls, m, nsa
-  LOGICAL :: prnt, prthd
-  CHARACTER(LEN=130) :: logline1, logline2, logline3, logline4, logline5
+!!$  REAL(KIND=kdp), PARAMETER :: cnv = 1._kdp
+  INTEGER :: iwel, ls, m
+  CHARACTER(LEN=130) :: logline1, logline2, logline3, logline4
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------

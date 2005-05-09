@@ -44,6 +44,7 @@ SUBROUTINE hdf_write_invariant(mpi_myself)
   !
   ! Count Well nodes
   !
+  IF (mpi_myself == 0) THEN
   nwbc = 0
   DO IWEL = 1, NWEL
      nwbc = nwbc + NKSWEL(IWEL)
@@ -65,7 +66,6 @@ SUBROUTINE hdf_write_invariant(mpi_myself)
            index = index + 1
 40      END DO
 50   END DO
-  IF (mpi_myself == 0) THEN
      if(nwbc > 0) CALL HDF_WRITE_FEATURE('Wells'    , MWBC, nwbc)
      if(nsbc > 0) CALL HDF_WRITE_FEATURE('Specified', MSBC, nsbc)
      if(nfbc > 0) CALL HDF_WRITE_FEATURE('Flux'     , MFBC, nfbc)
@@ -76,7 +76,6 @@ SUBROUTINE hdf_write_invariant(mpi_myself)
         enddo
         CALL HDF_WRITE_FEATURE('River', temp_rbc, nrbc_seg)
      endif
-  ENDIF
   
   ! 
   ! Free Well Nodes
@@ -86,6 +85,7 @@ SUBROUTINE hdf_write_invariant(mpi_myself)
         PRINT *, 'HDF Error: Unable to deallocate MWBC'  
         STOP  
      ENDIF
+  ENDIF
   IF (mpi_myself == 0) THEN
      CALL HDF_FINALIZE_INVARIANT()
   ENDIF
@@ -125,7 +125,7 @@ END SUBROUTINE hdf_begin_time_step
 !   TODO
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 SUBROUTINE hdf_end_time_step()
-  USE machine_constants, ONLY: kdp
+!!$  USE machine_constants, ONLY: kdp
   USE mcv,               ONLY: frac, vx_node, vy_node, vz_node
   USE mcp,               ONLY: cnvli, cnvvli
   USE mcc,               ONLY: prhdfhi, prhdfvi, vmask, ntprhdfv, ntprhdfh

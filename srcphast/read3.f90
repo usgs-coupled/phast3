@@ -12,6 +12,16 @@ SUBROUTINE read3
   USE mg3
   IMPLICIT NONE
   INCLUDE 'ifrd.inc'
+!!$  INTERFACE
+!!$     SUBROUTINE indx_rewi_bc(ipar1,ipar2,par3,ip,icall,ier)
+!!$       USE machine_constants, ONLY: kdp
+!!$       IMPLICIT NONE
+!!$       INTEGER, DIMENSION(:,:), INTENT(INOUT) :: ipar1, ipar2
+!!$       REAL(KIND=kdp), DIMENSION(:,:), INTENT(INOUT) :: par3
+!!$       INTEGER, INTENT(IN) :: ip
+!!$       INTEGER, INTENT(IN) :: icall, ier
+!!$     END SUBROUTINE indx_rewi_bc
+!!$  END INTERFACE
   CHARACTER(LEN=80) :: line
   REAL(KIND=kdp) :: uhrbc, umxfrac, uq
   INTEGER :: a_err, ic, icall, irecrbc, iis, iwel, uwelseqno, uisolw,  &
@@ -29,10 +39,10 @@ SUBROUTINE read3
   IF(thru) RETURN
   ntd = ntd+1
   ! ... Allocate the temporary group 3 arrays
-  ALLOCATE ( pnp(nxyz), qff(nxyz), qffx(nxyz), qffy(nxyz), qffz(nxyz), &
-       qhfx(nxyz), qhfy(nxyz), qhfz(nxyz), &
+  ALLOCATE (pnp(nxyz), qff(nxyz), qffx(nxyz), qffy(nxyz), qffz(nxyz), &
+       qhfx(1), qhfy(1), qhfz(1), &
        tnp(1), ucbc(nxyz), udenbc(nxyz), udenlb(nxyz), uphilb(nxyz), uphirb(nxyz), &
-       uqetb(nxyz), uqs(ns), utbc(1), uvislb(nxyz), &
+       uqetb(1), uqs(ns), utbc(1), uvislb(nxyz), &
        stat = a_err)
   IF (a_err /= 0) THEN  
      PRINT *, "Array allocation failed: read3"  
@@ -110,9 +120,9 @@ SUBROUTINE read3
      END IF
      ! ... Heat and solute diffusive fluxes for no flow b.c.
      ! ...     Read in as 3 vector components
-     IF(rdflxh) THEN
-        CALL rewi3(qhfx,qhfy,qhfz,4,132)
-     END IF
+!!$     IF(rdflxh) THEN
+!!$        CALL rewi3(qhfx,qhfy,qhfz,4,132)
+!!$     END IF
      IF(rdflxs) THEN
         DO  iis=1,ns
            qsfxis => qsfx(:,iis)

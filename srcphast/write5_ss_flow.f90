@@ -26,8 +26,7 @@ SUBROUTINE write5_ss_flow
   CHARACTER(LEN=9) :: cibc
   CHARACTER(LEN=1), DIMENSION(3) :: lbldir = (/'X','Y','Z'/)
   CHARACTER(LEN=12), DIMENSION(:), allocatable :: chu10a, chu11a
-  REAL(KIND=kdp) :: hwcell, pwcell, tdehir, tdfir, tdsir, u1, u2, u3,  &
-       u4,  u5, u6, u7, upri, utime
+  REAL(KIND=kdp) :: hwcell, pwcell, tdehir, tdfir, tdsir, utime
   INTEGER :: a_err, da_err, i, ic, ifmt, indx, ip, iw1p, iw2p, iwel, iwfss, iwpp, j, jprptc,  &
        k, k1, ks, l, l1, lc, ll, lll, lwk, lwks, m, mfs, mkt, mm, mt, mwk, nsa
   LOGICAL :: erflg, prthd, prthd2, prthd3
@@ -36,6 +35,12 @@ SUBROUTINE write5_ss_flow
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
+  ALLOCATE (lprnt3(nxyz), lprnt4(nxyz),  &
+       STAT = a_err)
+  IF (a_err /= 0) THEN  
+     PRINT *, "Array allocation failed: write5_ss_flow 1"  
+     STOP  
+  ENDIF
   erflg=.FALSE.
   ! ... Print out the summary tables
   ! ... Set table print flags as requested
@@ -84,7 +89,7 @@ SUBROUTINE write5_ss_flow
      END IF
   END IF
 !!  WRITE(*,3001) 'Iteration Step No. ', itime,'; for Steady State Flow'
-  3001 FORMAT(tr5,a,I6,a)
+!!$  3001 FORMAT(tr5,a,I6,a)
   IF(prslm) THEN
 !       Already printed in sumcal_ss_flow
 !!$     WRITE(logline1,5001) '*** Output at End of Steady State Iteration No. ', itime,' ***'
@@ -209,7 +214,7 @@ SUBROUTINE write5_ss_flow
      allocate (chu10a(nsa), chu11a(nsa), &
           stat = a_err)
      if (a_err /= 0) then  
-        print *, "Array allocation failed: write5_ss"  
+        print *, "Array allocation failed: write5_ss 2"  
         stop  
      endif
      ! ... Well summary tables
@@ -238,8 +243,8 @@ SUBROUTINE write5_ss_flow
           cnvmfi*tqwfp,chu1a,chu2a,'- Injection', cnvmfi*tqwfi,chu7a,chu8a
      2029 FORMAT(tr1,a70/tr1,a,tr5,1PG12.4,tr3,a,tr3,a/tr7,  &
           a,tr6,1PG12.4,2(tr3,a))
-     2030 FORMAT(/tr20,a,tr10,a/tr2,a,tr15,a,tr22,a/tr2,a,tr17,a,tr22,a/tr1,a90)
-     2033 FORMAT(tr1,a90/tr1,a,1PG12.4/tr7, a,tr26,1PG12.4)
+!!$     2030 FORMAT(/tr20,a,tr10,a/tr2,a,tr15,a,tr22,a/tr2,a,tr17,a,tr22,a/tr1,a90)
+!!$     2033 FORMAT(tr1,a90/tr1,a,1PG12.4/tr7, a,tr26,1PG12.4)
 !!$     WRITE(fuwel,2034) 'The following parameters are averages over ',  &
 !!$          'the time step just completed','Well',  &
 !!$          'Top Completion Layer','Well Datum', 'No.','Cell Head',  &
@@ -472,4 +477,9 @@ SUBROUTINE write5_ss_flow
   END IF
   ! ... Set the next time for printout if by user time units
 !!$  IF(time >= cnvtm*timprt) timprt=timprt+primin
+  DEALLOCATE (lprnt3, lprnt4,  &
+       stat = da_err)
+  IF (da_err /= 0) THEN  
+     PRINT *, "Array allocation failed: write5_ss_flow"  
+  ENDIF
 END SUBROUTINE write5_ss_flow

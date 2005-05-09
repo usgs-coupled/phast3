@@ -47,24 +47,25 @@ FILE *mpi_fopen(const char *filename, const char *mode);
 
 #ifdef USE_MPI
  int mpi_send_solution(int solution_number, int task_number);
- int mpi_rebalance_load(double time_per_cell, double *frac);
+ int mpi_rebalance_load(double time_per_cell, double *frac, int transfer);
  int mpi_recv_solution(int solution_number, int task_number);
  int mpi_set_subcolumn(double *frac);
  int mpi_send_recv_cells(void);
- int mpi_recv_system(int system_number, int task_number, int iphrq, int ihst, LDBLE *frac);
- int mpi_send_system(int system_number, int task_number, int iphrq, int ihst, LDBLE *frac);
+ int mpi_recv_system(int task_number, int iphrq, int ihst, LDBLE *frac);
+ int mpi_send_system(int task_number, int iphrq, int ihst, LDBLE *frac);
  int mpi_pack_elt_list(struct elt_list *totals, int *ints, int *i, double *doubles, int *d);
- int mpi_pack_solution(int solution_number);
+ int mpi_pack_solution(struct solution *solution_ptr, int *ints, int *ii, double *doubles, int *dd);
+ int mpi_pack_solution_hst(struct solution *solution_ptr);
  int mpi_set_random(void);
  int mpi_unpack_elt_list(struct elt_list **totals, int *ints, int *i, double *doubles, int *d);
- int mpi_unpack_solution(int solution_number, int msg_size);
+ int mpi_unpack_solution_hst(struct solution *solution_ptr, int solution_number, int msg_size);
+ int mpi_unpack_solution(struct solution *solution_ptr, int *ints, int *ii, double *doubles, int *dd);
  int mpi_distribute_root(void);
  int distribute_from_root(double *fraction, int *dim, int *print_sel,
 			  double *time_hst, double *time_step_hst, int *prslm,
 			  double *frac, int *printzone_chem, int *printzone_xyz, int *print_out, int *print_hdf);
  int mpi_update_root(void);
  int int_compare (const void *ptr1, const void *ptr2);
- void collect_from_nonroot(void);
 
 int mpi_pack_pp_assemblage(struct pp_assemblage *pp_assemblage_ptr, int *ints, int *ii, double *doubles, int *dd);
 int mpi_pack_exchange(struct exchange *exchange_ptr, int *ints, int *ii, double *doubles, int *dd);
@@ -92,8 +93,11 @@ void buffer_to_mass_fraction(void);
 void buffer_to_moles(void);
 void buffer_to_solution(struct solution *solution_ptr);
 int calc_dummy_kinetic_reaction(struct kinetics *kinetics_ptr);
+void copy_system_to_user(struct system *system_ptr, int n_user);
+void copy_user_to_system(struct system *system_ptr, int n_user, int n_user_new);
 void hst_moles_to_buffer(double *first, int dim);
 void hst_to_buffer(double *first, int dim);
+struct system *system_initialize(int i, int n_user_new, int *initial_conditions1, int *initial_conditions2, double *fraction1);
 void moles_to_hst(double *first, int dim);
 int print_using_hst(int cell_number);
 int scale_solution(int n_solution, double kg);

@@ -21,27 +21,27 @@ SUBROUTINE wellsc_ss_flow
   INTRINSIC INT
   REAL(KIND=kdp) :: arwb, fpr3, frflm, frflp, lgren, ren, summob,  &
        szzw, uclm, uclp, udnkt, udnlm, udnlp, udnsur, uehwkt,  &
-       ufdt2, uplm, uplp, upm, upwkt, upwsur, uqhw, uqvsur,  &
+       ufdt2, uplm, uplp, upm, upwkt, upwsur, uqvsur,  &
        uqwm, uqwmi, uqwmr, uqwv, uqwvkt, utlm, utlp, utwkt, uvflm,  &
        uvflp, uvwlm, uvwlp, y1, yo
   INTEGER :: a_err, awqm, da_err, i, iis, itrn2, iwel, iwfss, j, k, ks, m,  &
         mkt, nks, nsa
-  LOGICAL :: erflg, florev
-  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: mobw, r, ucwkt, uqsw
+  LOGICAL :: florev
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: mobw, r
   INTEGER, DIMENSION(:), ALLOCATABLE :: jwell
   CHARACTER(LEN=130) :: logline1, logline2, logline3, logline4, logline5, logline6
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
-  erflg=.FALSE.
+!!$  erflg=.FALSE.
   nshut=0
   ufdt2=fdtmth
   nsa = max(ns,1)
-  ALLOCATE (jwell(nxyz), mobw(nxyz), r(nx), ucwkt(nsa), uqsw(nsa), &
+  ALLOCATE (jwell(nwel), mobw(nwel*nz), r(nx),  &
        stat = a_err)
   IF (a_err.NE.0) THEN  
-     PRINT *, "Array allocation failed: wellsc"  
+     PRINT *, "Array allocation failed: wellsc_ss"  
      STOP  
   ENDIF
   r(1) = x(1)
@@ -223,10 +223,7 @@ SUBROUTINE wellsc_ss_flow
      IF(iwfss >= 0) THEN
         ! ... Production well
         uqwm=0.d0
-        uqhw=0.d0
-        DO  iis=1,ns
-           uqsw(iis)=0.d0
-        END DO
+!!$        uqhw=0.d0
         DO  ks=1,nks
            m=mwel(iwel,ks)
            CALL mtoijk(m,i,j,k,nx,ny)
@@ -378,11 +375,10 @@ SUBROUTINE wellsc_ss_flow
               qflyr(iwel,ks)=0.d0
               dqwdpl(iwel,ks)=0.d0
               uqwm=0.d0
-              uqhw=0.d0
+!!$              uqhw=0.d0
               IF(heat) qhlyr(iwel,ks)=0.d0
               DO  iis=1,ns
                  qslyr(iwel,ks,iis)=0.d0
-                 uqsw(iis)=0.d0
               END DO
            END DO
            GO TO 151
@@ -574,10 +570,10 @@ SUBROUTINE wellsc_ss_flow
      call warnprt_c(logline5)
      call warnprt_c(logline6)
   END IF
-  DEALLOCATE (jwell, mobw, r, ucwkt, uqsw, &
+  DEALLOCATE (jwell, mobw, r,  &
        stat = da_err)
-  IF (da_err.NE.0) THEN  
-     PRINT *, "Array deallocation failed"  
+  IF (da_err /= 0) THEN  
+     PRINT *, "Array deallocation failed, wellsc_ss"  
      STOP  
   ENDIF
 END SUBROUTINE wellsc_ss_flow

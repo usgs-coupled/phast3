@@ -54,6 +54,7 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 #endif  /* #ifdef USE_MPI */
 
 #define CALCULATE_WELL_PH calculate_well_ph_
+#define COLLECT_FROM_NONROOT collect_from_nonroot_
 #define COUNT_ALL_COMPONENTS count_all_components_
 #define CONVERT_TO_MOLAL convert_to_molal_
 #define CONVERT_TO_MASS_FRACTION convert_to_mass_fraction_
@@ -72,6 +73,7 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 
 
 void CALCULATE_WELL_PH(double *c, LDBLE *ph, LDBLE *alkalinity);
+void COLLECT_FROM_NONROOT(double *fraction, int *dim);
 void CONVERT_TO_MASS_FRACTION(double *c, int *n, int *dim);
 void CONVERT_TO_MOLAL(double *c, int *n, int *dim);
 void COUNT_ALL_COMPONENTS(int *n_comp, char *names, int length);
@@ -122,6 +124,12 @@ void PHREEQC_FREE(int *solute)
 	free_check_null(random_frac);
 	free_check_null(random_printzone_chem);
 	free_check_null(random_printzone_xyz);
+	for (i = 0; i < count_chem; i++) {
+		system_free(sz[i]);
+		free_check_null(sz[i]);
+	}
+	free_check_null(sz);	
+	free_check_null(frac1);
 #endif
 	if (*solute) {
 		free_model_allocs();
@@ -506,6 +514,103 @@ void COUNT_ALL_COMPONENTS(int *n_comp, char *names, int length)
 	simulation = -1;
 	return;
 }
+#ifdef USE_MPI
+/* ---------------------------------------------------------------------- */
+void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_conditions2, double *fraction1)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *      ixyz - number of cells
+ *      initial_conditions1 - Fortran, 7 x n_cell integer array, containing
+ *           solution number
+ *           pure_phases number
+ *           exchange number
+ *           surface number
+ *           gas number
+ *           solid solution number
+ *           kinetics number
+ *      initial_conditions2 - Fortran, 7 x n_cell integer array, containing
+ *      fraction for 1 - Fortran, 7 x n_cell integer array, containing
+ *
+ *      Routine mixes solutions, pure_phase assemblages,
+ *      exchangers, surface complexers, gases, solid solution assemblages,
+ *      and kinetics for each cell.
+ */
+	int i;
+	int first_cell, last_cell;
+	int *sort_random_list;
+
+	int j, k;
+	/*
+	 *  Save pointers to initial condition arrays
+	 *  When rebalancing, these are used to initialize a system
+	 */
+	initial1 = initial_conditions1;
+	initial2 = initial_conditions2;
+	frac1 = PHRQ_malloc((size_t) 7*ixyz * sizeof(double));
+	if (frac1 == NULL) malloc_error();
+	for (j = 0; j < 7*ixyz; j++) {
+		frac1[j] = fraction1[j];
+	}
+	/*
+	 *  Set up random list for parallel processing
+	 */
+	random_list = PHRQ_malloc((size_t) count_chem * sizeof(int));
+	if (random_list == NULL) malloc_error();
+	random_frac = PHRQ_malloc((size_t) count_chem * sizeof(LDBLE));
+	if (random_frac == NULL) malloc_error();
+	random_printzone_chem = PHRQ_malloc((size_t) count_chem * sizeof(int));
+	if (random_printzone_chem == NULL) malloc_error();
+	random_printzone_xyz = PHRQ_malloc((size_t) count_chem * sizeof(int));
+	if (random_printzone_xyz == NULL) malloc_error();
+	if (mpi_myself == 0) mpi_set_random();
+	MPI_Bcast(random_list, count_chem,                MPI_INT,    0, MPI_COMM_WORLD);
+	count_cells = count_chem;
+	mpi_set_subcolumn(NULL);
+	mpi_buffer = PHRQ_malloc(sizeof(char));
+	if (mpi_buffer == NULL) malloc_error();
+        /*  left in equilibrate */
+	/*
+	wait_time = 0;
+	wait_time_tot = 0;
+	mpi_max_buffer = 1;
+	*/
+	/* 
+	 * sort_random_list is the list of cell numbers that need to be saved for this processor
+	 */
+	first_cell = mpi_first_cell;
+	last_cell = mpi_last_cell;
+	sort_random_list = PHRQ_malloc((size_t) (last_cell - first_cell + 1) * sizeof(int));
+	if (sort_random_list == NULL) malloc_error();
+	memcpy(sort_random_list, &random_list[first_cell], (size_t) (last_cell - first_cell + 1) * sizeof(int));
+	qsort (sort_random_list, (size_t) (last_cell - first_cell + 1), (size_t) sizeof(int), int_compare);
+
+	/*
+	 *  Allocate array for count_chem systems, sz
+	 *  sz[i] == NULL, cell is not calculated by this processor
+	 *  sz[i] != NULL, cell is calculated by this processor
+	 */
+	sz = PHRQ_malloc((size_t) (count_chem * sizeof(struct system)));
+	if (sz == NULL) malloc_error();
+	for (i = 0; i < count_chem; i++) {
+		sz[i] = NULL;
+	}
+/*
+ *  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
+ */
+	for (k = 0; k < last_cell - first_cell + 1; k++) {
+		j = sort_random_list[k];  /* j is count_chem number */
+		i = back[j].list[0];      /* i is ixyz number */
+		assert (forward[i] >= 0); 
+		sz[j] = system_initialize(i, j, initial1, initial2, frac1);   
+	}
+	sort_random_list = free_check_null(sort_random_list);
+	if (input_error > 0) {
+		error_msg("Terminating in distribute_initial_conditions.\n", STOP);
+	}
+	return;
+}
+#else
 /* ---------------------------------------------------------------------- */
 void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_conditions2, double *fraction1)
 /* ---------------------------------------------------------------------- */
@@ -681,9 +786,9 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 	if (input_error > 0) {
 		error_msg("Terminating in distribute_initial_conditions.\n", STOP);
 	}
-	
 	return;
 }
+#endif
 /* ---------------------------------------------------------------------- */
 void SETUP_BOUNDARY_CONDITIONS(const int *n_boundary, int *boundary_solution1,
 			       int *boundary_solution2, double *fraction1,
@@ -735,6 +840,31 @@ void SETUP_BOUNDARY_CONDITIONS(const int *n_boundary, int *boundary_solution1,
 
 	return;
 }
+#ifdef USE_MPI
+/* ---------------------------------------------------------------------- */
+void PACK_FOR_HST(double *fraction, int *dim)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *   Routine takes solution data and makes array of mass fractions for HST
+ *   Input: n_cell - number of cells in model
+ *          dim - leading dimension of 2-d array fraction
+ *
+ *   Output: fraction - mass fractions of all components in all solutions
+ *                      dimensions must be >= n_cell x n_comp
+ */
+	int i, j;
+
+	for (i = 0; i < count_chem; i++) {
+		solution_to_buffer(sz[i]->solution);
+		buffer_to_mass_fraction();
+		for (j = 0; j < count_back_list; j++) {
+			buffer_to_hst(&fraction[back[i].list[j]], *dim);
+		}
+	}
+	return;
+}
+#else
 /* ---------------------------------------------------------------------- */
 void PACK_FOR_HST(double *fraction, int *dim)
 /* ---------------------------------------------------------------------- */
@@ -760,6 +890,7 @@ void PACK_FOR_HST(double *fraction, int *dim)
 	}
 	return;
 }
+#endif
 #ifndef USE_MPI
 /* ---------------------------------------------------------------------- */
 static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
@@ -834,8 +965,8 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 	rate_sim_time_start = *time_hst - *time_step_hst;
 	rate_sim_time_end = *time_hst;
 	initial_total_time = 0;
-	for (i = 0; i < count_chem; i++) {
-		j = back[i].list[0];
+	for (i = 0; i < count_chem; i++) {     /* i is count_chem number */
+		j = back[i].list[0];           /* j is nxyz number */
 		if (transient_free_surface == TRUE) partition_uz(i, j, frac[j]); 
 		if (frac[j] < 1e-10) frac[j] = 0.0;
 		if ( frac[j] > 0.0) {
@@ -1004,11 +1135,12 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 		random_list = free_check_null(random_list);
 		return;
 	}
-	count_cells = count_chem;
 	/*
 	 *  Initialize on first call to equilibrate
 	 */
 	if (call_counter == 0) {
+		/*  moved to distribute_initial_conditions */
+		/*
 		random_list = PHRQ_malloc((size_t) count_chem * sizeof(int));
 		if (random_list == NULL) malloc_error();
 		random_frac = PHRQ_malloc((size_t) count_chem * sizeof(LDBLE));
@@ -1020,10 +1152,13 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 		if (mpi_myself == 0) mpi_set_random();
 		MPI_Bcast(random_list, count_chem,                MPI_INT,    0, MPI_COMM_WORLD);
 		mpi_set_subcolumn(frac);
+		*/
 		wait_time = 0;
 		wait_time_tot = 0;
-		mpi_buffer = PHRQ_malloc(sizeof(char));
-		if (mpi_buffer == NULL) malloc_error();
+		/*
+		  mpi_buffer = PHRQ_malloc(sizeof(char));
+		  if (mpi_buffer == NULL) malloc_error();
+		*/
 		mpi_max_buffer = 1;
 	}
 	call_counter++;
@@ -1107,8 +1242,8 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 	 *  Run chemistry for cells
 	 */
 	for (k = first_cell; k <= last_cell; k++) {
-		i = sort_random_list[k - first_cell];
-		j = back[i].list[0];
+		i = sort_random_list[k - first_cell];    /* 1 to count_chem */
+		j = back[i].list[0];                     /* 1 to nijk */
 		if (transient_free_surface == TRUE) partition_uz(i, j, frac[j]); 
 		if (frac[j] <= 1e-8) frac[j] = 0.0;
 		if (frac[j] > 0.0) {
@@ -1137,9 +1272,10 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 			}
 		}
 		if (active) {
+			copy_system_to_user(sz[i], first_user_number);
 			cell_no = i;
 			solution_bsearch(first_user_number, &first_solution, TRUE);
-			n_solution = first_solution + i;
+			n_solution = first_solution;
 			if (*adjust_water_rock_ratio) scale_solution(n_solution, frac[j]); 
 			set_use_hst();
 			n_user = solution[n_solution]->n_user;
@@ -1158,32 +1294,38 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 			print_all();
 			punch_all();
 		} else {
-				if (pr.all == TRUE ) {
-					output_msg(OUTPUT_MESSAGE, "Time %g. Cell %d: x=%15g\ty=%15g\tz=%15g\n", (*time_hst) * (*cnvtmi), j + 1, x_hst[j], y_hst[j], z_hst[j]);
-					output_msg(OUTPUT_MESSAGE, "Cell is dry.\n");
-				}
+			if (pr.all == TRUE ) {
+				output_msg(OUTPUT_MESSAGE, "Time %g. Cell %d: x=%15g\ty=%15g\tz=%15g\n", (*time_hst) * (*cnvtmi), j + 1, x_hst[j], y_hst[j], z_hst[j]);
+				output_msg(OUTPUT_MESSAGE, "Cell is dry.\n");
+			}
 		}
 /*
  *   Save data
  */
-		xsolution_save_hst(n_solution);
-		if (active && *adjust_water_rock_ratio) scale_solution(n_solution, 1.0/frac[j]); 
-		if (save.exchange == TRUE) {
-			xexchange_save_hst(n_exchange);
+		if (active) {
+			xsolution_save_hst(n_solution);
+			if (save.exchange == TRUE) {
+				xexchange_save_hst(n_exchange);
+			}
+			if (save.gas_phase == TRUE) {
+				xgas_save_hst(n_gas_phase);
+			}
+			if (save.pp_assemblage == TRUE) {
+				xpp_assemblage_save_hst(n_pp_assemblage);
+			}
+			if (save.surface == TRUE) {
+				xsurface_save_hst(n_surface);
+			}
+			if (save.s_s_assemblage == TRUE) {
+				xs_s_assemblage_save_hst(n_s_s_assemblage);
+			}
+			/*
+			 * Be careful, scale_solution zeros some arrays
+			 * can delete some results from run_reaction
+			 */
+			if (active && *adjust_water_rock_ratio) scale_solution(n_solution, 1.0/frac[j]); 
+			copy_user_to_system(sz[i], first_user_number, i);
 		}
-		if (save.gas_phase == TRUE) {
-			xgas_save_hst(n_gas_phase);
-		}
-		if (save.pp_assemblage == TRUE) {
-			xpp_assemblage_save_hst(n_pp_assemblage);
-		}
-		if (save.surface == TRUE) {
-			xsurface_save_hst(n_surface);
-		}
-		if (save.s_s_assemblage == TRUE) {
-			xs_s_assemblage_save_hst(n_s_s_assemblage);
-		}
-
 		EndCell(*print_sel, *print_out, *print_hdf, j);
 	}
 #ifdef TIME
@@ -1200,9 +1342,8 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 /*
  *   Put values back for HST
  */
-	collect_from_nonroot();
-
-	PACK_FOR_HST(fraction, dim);
+	COLLECT_FROM_NONROOT(fraction, dim);
+	/*if (mpi_myself == 0) PACK_FOR_HST(fraction, dim);*/
 #ifdef TIME
 	MPI_Barrier(MPI_COMM_WORLD);
 	if (mpi_myself == 0) {
@@ -1240,7 +1381,7 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 	/* rebalance */
 	rebalance_count++;
 	if (rebalance_count >= 1) {
-		mpi_rebalance_load(time_sum/(last_cell - first_cell + 1), frac);
+		mpi_rebalance_load(time_sum/(last_cell - first_cell + 1), frac, TRUE);
 		rebalance_count = 0;
 		time_sum = 0;
 		first_cell = mpi_first_cell;
@@ -1773,6 +1914,7 @@ int mpi_recv_solution(int solution_number, int task_number)
 	solution_ptr->n_user_end = solution_number;
 
 	/*	char *description; */
+	solution_ptr->description = free_check_null(solution_ptr->description);
 	solution_ptr->description = string_duplicate(" ");
 	/*	double tc; */
 	solution_ptr->tc = doubles[d++];
@@ -1904,11 +2046,11 @@ int mpi_set_subcolumn(double *frac)
 	/*
 	 *  Gather times of all tasks
 	 */
-	mpi_rebalance_load(time_exec, frac);
+	mpi_rebalance_load(time_exec, frac, FALSE);
 	return(OK);
 }
 /* ---------------------------------------------------------------------- */
-int mpi_rebalance_load(double time_per_cell, double *frac)
+int mpi_rebalance_load(double time_per_cell, double *frac, int transfer)
 /* ---------------------------------------------------------------------- */
 {
 #include <time.h>
@@ -1918,7 +2060,7 @@ int mpi_rebalance_load(double time_per_cell, double *frac)
 	int end_cells_new[MPI_MAX_TASKS][2];
 	int cells[MPI_MAX_TASKS];
 	LDBLE new_n, min_time, max_time;
-	int n, total_cells, diff_cells, last, n_user;
+	int n, total_cells, diff_cells, last;
 	int new, old;
 	int change;
 	int error;
@@ -2094,31 +2236,37 @@ int mpi_rebalance_load(double time_per_cell, double *frac)
 	/* MPI_Barrier(MPI_COMM_WORLD); */
 	t0 = (LDBLE) MPI_Wtime();
 #endif
-	solution_bsearch(first_user_number, &first_solution, TRUE);
-	for (k = 0; k < count_cells; k++) {
-		i = random_list[k];
-		iphrq = i;
-		ihst = back[i].list[0];
-		n_solution = first_solution + i;
-		n_user = solution[n_solution]->n_user;
-		while (k > end_cells[old][1]) {
-			old++;
-		}
-		while (k > end_cells_new[new][1]) {
-			new++;
-		}
+	if (transfer == TRUE) {
+		/*solution_bsearch(first_user_number, &first_solution, TRUE);*/
+		for (k = 0; k < count_cells; k++) {
+			i = random_list[k];
+			iphrq = i;                    /* iphrq is 1 to count_chem */
+			ihst = back[i].list[0];       /* ihst is 1 to nxyz */
+			/*
+			n_solution = first_solution + i;
+			n_user = solution[n_solution]->n_user;
+			*/
+			while (k > end_cells[old][1]) {
+				old++;
+			}
+			while (k > end_cells_new[new][1]) {
+				new++;
+			}
 
-		if (old == new) continue;
-		change++;
-		/*
-		  if (mpi_myself == 0) {
-		           fprintf(stderr, "%d [%d]: old %d,  %d-%d. new %d, %d-%d\n", k, i, old, end_cells[old][0], end_cells[old][1], new, end_cells_new[new][0],   end_cells_new[new][1]);
-		  }
-		*/
-		/* Don't need to send solutions */
-		if (mpi_myself == old) 	mpi_send_system(n_user, new, iphrq, ihst, frac);
-		if (mpi_myself == new) 	mpi_recv_system(n_user, old, iphrq, ihst, frac);
-		/* MPI_Barrier(MPI_COMM_WORLD); */
+			if (old == new) continue;
+			change++;
+			/*
+			  if (mpi_myself == 0) {
+			  fprintf(stderr, "%d [%d]: old %d,  %d-%d. new %d, %d-%d\n", k, i, old, end_cells[old][0], end_cells[old][1], new, end_cells_new[new][0],   end_cells_new[new][1]);
+			  }
+			*/
+			if (mpi_myself == old) 	{
+				mpi_send_system(new, iphrq, ihst, frac);
+				system_free(sz[iphrq]);
+				sz[iphrq] = free_check_null(sz[iphrq]);
+			}
+			if (mpi_myself == new) 	mpi_recv_system(old, iphrq, ihst, frac);
+		}
 	}
 #ifdef TIME
 	/* MPI_Barrier(MPI_COMM_WORLD); */
@@ -2142,14 +2290,15 @@ int mpi_rebalance_load(double time_per_cell, double *frac)
 	return(OK);
 }
 /* ---------------------------------------------------------------------- */
-int mpi_send_system(int system_number, int task_number, int iphrq, int ihst, LDBLE *frac)
+int mpi_send_system(int task_number, int iphrq, int ihst, LDBLE *frac)
 /* ---------------------------------------------------------------------- */
 {
-	int i, d, n;
+	int i, d;
 	int max_size, member_size, position;
 	int ints[MESSAGE_MAX_NUMBERS];
 	double doubles[MESSAGE_MAX_NUMBERS];
 	void *buffer;
+	struct solution *solution_ptr;
 	struct exchange *exchange_ptr;
 	struct gas_phase *gas_phase_ptr;
 	struct kinetics *kinetics_ptr;
@@ -2184,34 +2333,45 @@ int mpi_send_system(int system_number, int task_number, int iphrq, int ihst, LDB
 	i = 0;
 	d = 0;
 	/*
+	 *   Solution
+	 */
+	solution_ptr = sz[iphrq]->solution;
+	mpi_pack_solution(solution_ptr, ints, &i, doubles, &d);
+	/*
 	 *   Equilibrium_phases
 	 */
-	pp_assemblage_ptr = pp_assemblage_bsearch(system_number, &n);
+	/*pp_assemblage_ptr = pp_assemblage_bsearch(system_number, &n);*/
+	pp_assemblage_ptr = sz[iphrq]->pp_assemblage;
 	mpi_pack_pp_assemblage(pp_assemblage_ptr, ints, &i, doubles, &d);
 	/*
 	 *   Exchange
 	 */
-	exchange_ptr = exchange_bsearch(system_number, &n);
+	/*exchange_ptr = exchange_bsearch(system_number, &n);*/
+	exchange_ptr = sz[iphrq]->exchange;
 	mpi_pack_exchange(exchange_ptr, ints, &i, doubles, &d);
 	/*
 	 *   Gas phase
 	 */
-	gas_phase_ptr = gas_phase_bsearch(system_number, &n);
+	/*gas_phase_ptr = gas_phase_bsearch(system_number, &n);*/
+	gas_phase_ptr = sz[iphrq]->gas_phase;
 	mpi_pack_gas_phase(gas_phase_ptr, ints, &i, doubles, &d);
 	/*
 	 *   Kinetics phase
 	 */
-	kinetics_ptr = kinetics_bsearch(system_number, &n);
+	/*kinetics_ptr = kinetics_bsearch(system_number, &n);*/
+	kinetics_ptr = sz[iphrq]->kinetics;
 	mpi_pack_kinetics(kinetics_ptr, ints, &i, doubles, &d);
 	/*
 	 *   Solid solutions
 	 */
-	s_s_assemblage_ptr = s_s_assemblage_bsearch(system_number, &n);
+	/*s_s_assemblage_ptr = s_s_assemblage_bsearch(system_number, &n);*/
+	s_s_assemblage_ptr = sz[iphrq]->s_s_assemblage;
 	mpi_pack_s_s_assemblage(s_s_assemblage_ptr, ints, &i, doubles, &d);
 	/*
 	 *   Surface
 	 */
-	surface_ptr = surface_bsearch(system_number, &n);
+	/*surface_ptr = surface_bsearch(system_number, &n);*/
+	surface_ptr = sz[iphrq]->surface;
 	mpi_pack_surface(surface_ptr, ints, &i, doubles, &d);
 	/*
 	 *  Send uz info
@@ -2267,16 +2427,17 @@ int mpi_send_system(int system_number, int task_number, int iphrq, int ihst, LDB
 	return(OK);
 }
 /* ---------------------------------------------------------------------- */
-int mpi_recv_system(int system_number, int task_number, int iphrq, int ihst, LDBLE *frac)
+int mpi_recv_system(int task_number, int iphrq, int ihst, LDBLE *frac)
 /* ---------------------------------------------------------------------- */
 {
-	int i, d, n;
+	int i, d;
 	int max_size, member_size, position, msg_size;
 	MPI_Status mpi_status;
 	int count_ints, count_doubles;
 	int ints[MESSAGE_MAX_NUMBERS];
 	double doubles[MESSAGE_MAX_NUMBERS];
 	void *buffer;
+	struct solution *solution_ptr;
 	struct exchange *exchange_ptr;
 	struct gas_phase *gas_phase_ptr;
 	struct kinetics *kinetics_ptr;
@@ -2325,13 +2486,58 @@ int mpi_recv_system(int system_number, int task_number, int iphrq, int ihst, LDB
 	pp_assemblage_ptr = NULL;
 	surface_ptr = NULL;
 	s_s_assemblage_ptr = NULL;
+	/*
+	 * Allocate or free system
+	 */
+#ifdef SKIP
+	if (sz[iphrq] != NULL) {
+		  system_free(sz[iphrq]);
+		  sz[iphrq] = free_check_null(sz[iphrq]);
+	}
+	sz[iphrq] = system_initialize(ihst, iphrq, initial1, initial2, frac1);   
+#endif
+ 	if (sz[iphrq] != NULL) {
+		/* 
+		 * mpi_myself has system for each solution
+		 * but not necessarily the entire system
+		 * if a cell is moved to process 0
+		 */
+		if(mpi_myself == 0 &&
+		   sz[iphrq]->exchange == NULL &&
+		   sz[iphrq]->pp_assemblage == NULL &&
+		   sz[iphrq]->gas_phase == NULL &&
+		   sz[iphrq]->s_s_assemblage == NULL &&
+		   sz[iphrq]->kinetics == NULL &&
+		   sz[iphrq]->surface == NULL
+		   ) {
+			system_free(sz[iphrq]);
+			sz[iphrq] = free_check_null(sz[iphrq]);
+			sz[iphrq] = system_initialize(ihst, iphrq, initial1, initial2, frac1);   
+		}
+
+	} else {
+		sz[iphrq] = system_initialize(ihst, iphrq, initial1, initial2, frac1);   
+ 	}
+	/*
+	 *   Solution
+	 */
 	i = 0;
 	d = 0;
+	if (ints[i++] != 0) {
+		solution_ptr = sz[iphrq]->solution;
+		if (solution_ptr == NULL) {
+			sprintf(error_string, "Task %d: Did not find recieved solution %d.", mpi_myself, ints[i]);
+			error_msg(error_string, STOP);
+		} else {
+			mpi_unpack_solution(solution_ptr, ints, &i, doubles, &d);
+		}
+	}
 	/*
 	 *   Equilibrium_phases
 	 */
 	if (ints[i++] != 0) {
-		pp_assemblage_ptr = pp_assemblage_bsearch(ints[i], &n);
+		/*pp_assemblage_ptr = pp_assemblage_bsearch(ints[i], &n);*/
+		pp_assemblage_ptr = sz[iphrq]->pp_assemblage;
 		if (pp_assemblage_ptr == NULL) {
 			sprintf(error_string, "Task %d: Did not find recieved pp_assemblage %d.", mpi_myself, ints[i]);
 			error_msg(error_string, STOP);
@@ -2343,7 +2549,8 @@ int mpi_recv_system(int system_number, int task_number, int iphrq, int ihst, LDB
 	 *   Exchange
 	 */
 	if (ints[i++] != 0) {
-		exchange_ptr = exchange_bsearch(ints[i], &n);
+		/*exchange_ptr = exchange_bsearch(ints[i], &n);*/
+		exchange_ptr = sz[iphrq]->exchange;
 		if (exchange_ptr == NULL) {
 			sprintf(error_string, "Task %d: Did not find recieved exchange %d.", mpi_myself, ints[i]);
 			error_msg(error_string, STOP);
@@ -2355,7 +2562,8 @@ int mpi_recv_system(int system_number, int task_number, int iphrq, int ihst, LDB
 	 *   Gas phase
 	 */
 	if (ints[i++] != 0) {
-		gas_phase_ptr = gas_phase_bsearch(ints[i], &n);
+		/*gas_phase_ptr = gas_phase_bsearch(ints[i], &n);*/
+		gas_phase_ptr = sz[iphrq]->gas_phase;
 		if (gas_phase_ptr == NULL) {
 			sprintf(error_string, "Task %d: Did not find recieved gas_phase %d.", mpi_myself, ints[i]);
 			error_msg(error_string, STOP);
@@ -2367,7 +2575,8 @@ int mpi_recv_system(int system_number, int task_number, int iphrq, int ihst, LDB
 	 *   Kinetics phase
 	 */
 	if (ints[i++] != 0) {
-		kinetics_ptr = kinetics_bsearch(ints[i], &n);
+		/*kinetics_ptr = kinetics_bsearch(ints[i], &n);*/
+		kinetics_ptr = sz[iphrq]->kinetics;
 		if (kinetics_ptr == NULL) {
 			sprintf(error_string, "Task %d: Did not find recieved kinetics %d.", mpi_myself, ints[i]);
 			error_msg(error_string, STOP);
@@ -2379,7 +2588,8 @@ int mpi_recv_system(int system_number, int task_number, int iphrq, int ihst, LDB
 	 *   Solid solutions
 	 */
 	if (ints[i++] != 0) {
-		s_s_assemblage_ptr = s_s_assemblage_bsearch(ints[i], &n);
+		/*s_s_assemblage_ptr = s_s_assemblage_bsearch(ints[i], &n);*/
+		s_s_assemblage_ptr = sz[iphrq]->s_s_assemblage;
 		if (s_s_assemblage_ptr == NULL) {
 			sprintf(error_string, "Task %d: Did not find recieved solid_solution %d.", mpi_myself, ints[i]);
 			error_msg(error_string, STOP);
@@ -2391,7 +2601,8 @@ int mpi_recv_system(int system_number, int task_number, int iphrq, int ihst, LDB
 	 *   Surface
 	 */
 	if (ints[i++] != 0) {
-		surface_ptr = surface_bsearch(ints[i], &n);
+		/*surface_ptr = surface_bsearch(ints[i], &n);*/
+		surface_ptr = sz[iphrq]->surface;
 		if (surface_ptr == NULL) {
 			sprintf(error_string, "Task %d: Did not find recieved surface %d.", mpi_myself, ints[i]);
 			error_msg(error_string, STOP);
@@ -2603,15 +2814,15 @@ int int_compare (const void *ptr1, const void *ptr2)
 #endif
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
-int mpi_pack_solution(int solution_number)
+int mpi_pack_solution_hst(struct solution *solution_ptr)
 /* ---------------------------------------------------------------------- */
 {
-	int i, j, d, n;
-	int count_totals, count_totals_position, count_activity, count_activity_position;
+	/* solution_number is 1 to count_chem */
+	int i, j, d;
+	int count_totals, count_totals_position;
 	int max_size, member_size, position;
 	int ints[MESSAGE_MAX_NUMBERS];
 	double doubles[MESSAGE_MAX_NUMBERS];
-	struct solution *solution_ptr;
 	struct master *master_ptr;
 
 	position = mpi_buffer_position;
@@ -2633,7 +2844,8 @@ int mpi_pack_solution(int solution_number)
  *   This list is not the complete structure, but only enough
  *   for batch-reaction, advection, and transport calculations
  */
-	solution_ptr = solution_bsearch(solution_number, &n, TRUE);
+	/*solution_ptr = solution_bsearch(solution_number, &n, TRUE);*/
+	/*solution_ptr = sz[solution_number]->solution;*/
 	i = 0;
 	d = 0;
 	/*	int new_def; */
@@ -2683,23 +2895,6 @@ int mpi_pack_solution(int solution_number)
 		count_totals++;
 	}
 	ints[count_totals_position] = count_totals;
-/*
- *	struct master_activity *master_activity;
- */
-	count_activity_position = i++;
-	count_activity = 0;
-	for (j = 0; solution_ptr->master_activity[j].description != NULL; j++ ) {
-		master_ptr = master_bsearch(solution_ptr->master_activity[j].description);
-		if (master_ptr == NULL) {
-			input_error++;
-			sprintf(error_string,"Packing solution message: %s, element not found\n", solution_ptr->master_activity[j].description);
-			error_msg(error_string, CONTINUE);
-		}
-		ints[i++] = master_ptr->number;
-		doubles[d++] = solution_ptr->master_activity[j].la;
-		count_activity++;
-	}
-	ints[count_activity_position] = count_activity;
 	/*	int count_isotopes; */
 	/*	struct isotope *isotopes; */
 	if (input_error > 0) {
@@ -2720,16 +2915,16 @@ int mpi_pack_solution(int solution_number)
 	return(OK);
 }
 /* ---------------------------------------------------------------------- */
-int mpi_unpack_solution(int solution_number, int msg_size)
+int mpi_unpack_solution_hst(struct solution *solution_ptr, int solution_number, int msg_size)
 /* ---------------------------------------------------------------------- */
 {
-	int i, j, d, n;
+	/* solution_number is 1 to count_chem */
+	int i, j, d;
 	int count_ints, count_doubles;
-	int count_totals, count_activity;
+	int count_totals;
 	int position;
 	int ints[MESSAGE_MAX_NUMBERS];
 	double doubles[MESSAGE_MAX_NUMBERS];
-	struct solution *solution_ptr;
 	struct master *master_ptr;
 /*
  *   Recieve solution
@@ -2743,18 +2938,8 @@ int mpi_unpack_solution(int solution_number, int msg_size)
 /*
  *   Make solution structure
  */
-	if (solution_bsearch(solution_number, &n, FALSE) != NULL) {
-		/* solution_free(solution[n]); */
-		solution[n]->description = free_check_null(solution[n]->description);
-	} else {
-		n=count_solution++;
-		if (count_solution >= max_solution) {
-			space ((void *) &(solution), count_solution, &max_solution, sizeof (struct solution *) );
-		}
-		solution[n] = solution_alloc();
-	}
-	solution_ptr = solution[n];
-	if (solution_ptr == NULL) malloc_error();
+	/* assert(sz[solution_number] != NULL);*/
+	/* solution_ptr = sz[solution_number]->solution; */
 /*
  *   Make list of list of ints and doubles from solution structure
  *   This list is not the complete structure, but only enough
@@ -2774,6 +2959,167 @@ int mpi_unpack_solution(int solution_number, int msg_size)
 	solution_ptr->n_user_end = solution_number;
 
 	/*	char *description; */
+	solution_ptr->description = free_check_null(solution_ptr->description);
+	solution_ptr->description = string_duplicate(" ");
+	/*	double tc; */
+	solution_ptr->tc = doubles[d++];
+	/*	double ph; */
+	solution_ptr->ph = doubles[d++];
+	/*	double solution_pe; */
+	solution_ptr->solution_pe = doubles[d++];
+	/*	double mu; */
+	solution_ptr->mu = doubles[d++];
+	/*	double ah2o; */
+	solution_ptr->ah2o = doubles[d++];
+	/*	double density; */
+	solution_ptr->density = 1.0;
+	/*	LDBLE total_h; */
+	solution_ptr->total_h = doubles[d++];
+	/*	LDBLE total_o; */
+	solution_ptr->total_o = doubles[d++];
+	/*	LDBLE cb; */
+	solution_ptr->cb = doubles[d++];
+	/*	LDBLE mass_water; */
+	solution_ptr->mass_water = doubles[d++];
+	/*	LDBLE total_alkalinity; */
+	solution_ptr->total_alkalinity = 0;
+	/*	LDBLE total_co2; */
+	solution_ptr->total_co2 = 0;
+	/*	char *units; */
+	/*	struct pe_data *pe; */
+	/*	int default_pe; */
+	solution_ptr->default_pe = 0;
+/*
+ *	struct conc *totals;
+*/
+	count_totals = ints[i++];
+	solution_ptr->totals = PHRQ_realloc(solution_ptr->totals, (size_t) (count_totals + 1) * sizeof(struct conc));
+	if (solution_ptr->totals == NULL) malloc_error();
+	for (j = 0; j < count_totals; j++) {
+		master_ptr = master[ints[i++]];
+		solution_ptr->totals[j].description = master_ptr->elt->name;
+		solution_ptr->totals[j].moles = doubles[d++];
+	}
+	solution_ptr->totals[j].description = NULL;
+	/*	int count_isotopes; */
+	solution_ptr->count_isotopes = 0;
+	/*	struct isotope *isotopes; */
+	return(OK);
+}
+
+/* ---------------------------------------------------------------------- */
+int mpi_pack_solution(struct solution *solution_ptr, int *ints, int *ii, double *doubles, int *dd)
+/* ---------------------------------------------------------------------- */
+{
+	/* solution_number is 1 to count_chem */
+	int i, j, d;
+	int count_totals, count_totals_position, count_activity, count_activity_position;
+	struct master *master_ptr;
+
+	i = *ii;
+	d = *dd;
+	if (solution_ptr == NULL) {
+		ints[i++] = 0;
+	} else {
+		ints[i++] = 1;
+		/*	int new_def; */
+		/*	int n_user; */
+		ints[i++] = solution_ptr->n_user;
+		/*	int n_user_end; */
+		/*	char *description; */
+		/*	double tc; */
+		doubles[d++] = solution_ptr->tc;
+		/*	double ph; */
+		doubles[d++] = solution_ptr->ph;
+		/*	double solution_pe; */
+		doubles[d++] = solution_ptr->solution_pe;
+		/*	double mu; */
+		doubles[d++] = solution_ptr->mu;
+		/*	double ah2o; */
+		doubles[d++] = solution_ptr->ah2o;
+		/*	double density; */
+		/*	LDBLE total_h; */
+		doubles[d++] = solution_ptr->total_h;
+		/*	LDBLE total_o; */
+		doubles[d++] = solution_ptr->total_o;
+		/*	LDBLE cb; */
+		doubles[d++] = solution_ptr->cb;
+		/*	LDBLE mass_water; */
+		doubles[d++] = solution_ptr->mass_water;
+
+		/*	LDBLE total_alkalinity; */
+		/*	LDBLE total_co2; */
+		/*	char *units; */
+		/*	struct pe_data *pe; */
+		/*	int default_pe; */
+		/*
+		 *	struct conc *totals;
+		 */
+		count_totals_position = i++;
+		count_totals = 0;
+		for (j = 0; solution_ptr->totals[j].description != NULL; j++ ) {
+			master_ptr = master_bsearch(solution_ptr->totals[j].description);
+			if (master_ptr == NULL) {
+				input_error++;
+				sprintf(error_string,"Packing solution message: %s, element not found\n", solution_ptr->totals[j].description);
+				error_msg(error_string, CONTINUE);
+			}
+			ints[i++] = master_ptr->number;
+			doubles[d++] = solution_ptr->totals[j].moles;
+			count_totals++;
+		}
+		ints[count_totals_position] = count_totals;
+		/*
+		 *	struct master_activity *master_activity;
+		 */
+		count_activity_position = i++;
+		count_activity = 0;
+		for (j = 0; solution_ptr->master_activity[j].description != NULL; j++ ) {
+			master_ptr = master_bsearch(solution_ptr->master_activity[j].description);
+			if (master_ptr == NULL) {
+				input_error++;
+				sprintf(error_string,"Packing solution message: %s, element not found\n", solution_ptr->master_activity[j].description);
+				error_msg(error_string, CONTINUE);
+			}
+			ints[i++] = master_ptr->number;
+			doubles[d++] = solution_ptr->master_activity[j].la;
+			count_activity++;
+		}
+		ints[count_activity_position] = count_activity;
+		/*	int count_isotopes; */
+		/*	struct isotope *isotopes; */
+		if (input_error > 0) {
+			error_msg("Stopping due to errors\n", STOP);
+		}
+	}
+	*dd = d;
+	*ii = i;
+	return(OK);
+}
+/* ---------------------------------------------------------------------- */
+int mpi_unpack_solution(struct solution *solution_ptr, int *ints, int *ii, double *doubles, int *dd)
+/* ---------------------------------------------------------------------- */
+{
+	/* solution_number is 1 to count_chem */
+	int i, j, d;
+	int count_totals, count_activity;
+	struct master *master_ptr;
+	i = *ii;
+	d = *dd;
+	/*	int new_def; */
+	solution_ptr->new_def = FALSE;
+	/*	int n_user; */
+	solution_ptr->n_user = ints[i++];
+	/*	int n_user_end; */
+	solution_ptr->n_user_end = solution_ptr->n_user;
+
+	/*debugging*/
+	/*
+	solution_ptr->n_user = solution_number;
+	solution_ptr->n_user_end = solution_number;
+	*/
+	/*	char *description; */
+	solution_ptr->description = free_check_null(solution_ptr->description);
 	solution_ptr->description = string_duplicate(" ");
 	/*	double tc; */
 	solution_ptr->tc = doubles[d++];
@@ -2832,6 +3178,8 @@ int mpi_unpack_solution(int solution_number, int msg_size)
 	/*	int count_isotopes; */
 	solution_ptr->count_isotopes = 0;
 	/*	struct isotope *isotopes; */
+	*dd = d;
+	*ii = i;
 	return(OK);
 }
 /* ---------------------------------------------------------------------- */
@@ -2843,18 +3191,30 @@ int distribute_from_root(double *fraction, int *dim, int *print_sel,
 /* ---------------------------------------------------------------------- */
 {
 	int task_number;
-	int i, j, k, n_user, mpi_msg_size;
+	int i, j, k, mpi_msg_size;
 	int i1, j1, k1;
 	MPI_Status mpi_status;
+	struct solution *solution_ptr;
 
+	/* initialize a solution */
+	if (mpi_myself == 0) {
+		i = random_list[0];   
+		solution_ptr = solution_replicate(sz[i]->solution, i);
+	} else {
+		solution_ptr = NULL;
+		i = random_list[end_cells[mpi_myself][0]];
+		solution_ptr = solution_replicate(sz[i]->solution, i);
+	}
+	/*
 	if (mpi_myself == 0) {
 		unpack_from_hst(fraction, dim);
 	}
+	*/
 	/*
 	 *  Send from root to nodes
 	 */
 
-	solution_bsearch(first_user_number, &first_solution, TRUE);
+	/*solution_bsearch(first_user_number, &first_solution, TRUE);*/
 	for (task_number = 1; task_number < mpi_tasks; task_number++) {
 		if (mpi_myself == task_number) {
 			MPI_Recv(&mpi_msg_size, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &mpi_status);
@@ -2865,24 +3225,43 @@ int distribute_from_root(double *fraction, int *dim, int *print_sel,
 			MPI_Recv(mpi_buffer, mpi_msg_size, MPI_PACKED, 0, 0, MPI_COMM_WORLD, &mpi_status);
 			mpi_buffer_position = 0;
 			for (k = end_cells[task_number][0]; k <= end_cells[task_number][1]; k++) {
-				i = random_list[k];
-				n_solution = first_solution + i;
-				n_user = solution[n_solution]->n_user;
-				mpi_unpack_solution(n_user, mpi_msg_size);
+				i = random_list[k];                        /* 1, count_chem */
+				/* n_solution = first_solution + i; */
+				/* n_user = solution[n_solution]->n_user; */
+				/*mpi_unpack_solution_hst(sz[i]->solution, i, mpi_msg_size);*/
+				mpi_unpack_solution_hst(solution_ptr, i, mpi_msg_size);
+				solution_to_buffer(solution_ptr);
+				buffer_to_solution(sz[i]->solution);
 			}
 		}
 		if (mpi_myself == 0) {
 			mpi_buffer_position = 0;
 			for (k = end_cells[task_number][0]; k <= end_cells[task_number][1]; k++) {
-				i = random_list[k];
-				n_solution = first_solution + i;
-				n_user = solution[n_solution]->n_user;
-				mpi_pack_solution (n_user);
+				i = random_list[k];                        /* 1, count_chem */
+				j = back[i].list[0];
+				hst_to_buffer(&fraction[j], *dim);
+				buffer_to_moles();
+				buffer_to_solution(solution_ptr);
+				/* n_solution = first_solution + i; */
+				/* n_user = solution[n_solution]->n_user; */
+				mpi_pack_solution_hst (solution_ptr);
 			}
 			MPI_Send(&mpi_buffer_position, 1, MPI_INT, task_number, 0, MPI_COMM_WORLD);
 			MPI_Send(mpi_buffer, mpi_buffer_position, MPI_PACKED, task_number, 0, MPI_COMM_WORLD);
 		}
 	}
+	if (mpi_myself == 0) {
+		/* unpack root solutions */
+		for (k = end_cells[0][0]; k <= end_cells[0][1]; k++) {
+			i = random_list[k];                        /* 1, count_chem */
+			j = back[i].list[0];
+			hst_to_buffer(&fraction[j], *dim);
+			buffer_to_moles();
+			buffer_to_solution(sz[i]->solution);
+		}
+	} 
+	/* free solution_ptr */
+	solution_free(solution_ptr);
 	/*
 	MPI_Bcast(dim, 1,                         MPI_INT,    0, MPI_COMM_WORLD);
 	*/
@@ -2890,7 +3269,7 @@ int distribute_from_root(double *fraction, int *dim, int *print_sel,
 	MPI_Bcast(time_hst, 1,                    MPI_DOUBLE, 0, MPI_COMM_WORLD);
 	MPI_Bcast(time_step_hst, 1,               MPI_DOUBLE, 0, MPI_COMM_WORLD);
 	MPI_Bcast(prslm, 1,                       MPI_INT,    0, MPI_COMM_WORLD);
-	MPI_Bcast(print_out, 1,            MPI_INT,    0, MPI_COMM_WORLD);
+	MPI_Bcast(print_out, 1,                   MPI_INT,    0, MPI_COMM_WORLD);
 	MPI_Bcast(print_hdf, 1,                   MPI_INT,    0, MPI_COMM_WORLD);
 	if (mpi_myself == 0) {
 		for (k = 0; k < count_chem; k++) {
@@ -2949,50 +3328,80 @@ int distribute_from_root(double *fraction, int *dim, int *print_sel,
 	return(OK);
 }
 /* ---------------------------------------------------------------------- */
-void collect_from_nonroot(void)
+void COLLECT_FROM_NONROOT(double *fraction, int *dim)
 /* ---------------------------------------------------------------------- */
 {
-  int task_number;
-  int i, k;
-  int n_user, rank;
-  int mpi_msg_size;
-  MPI_Status mpi_status;
+	int task_number;
+	int i, j, k;
+	int rank;
+	int mpi_msg_size;
+	MPI_Status mpi_status;
+	struct solution *solution_ptr;
 
-  /*
-   *  Pack messages and send from nodes to root
-   */
+	/* initialize a solution */
+	if (mpi_myself == 0) {
+		i = random_list[0];   
+		solution_ptr = solution_replicate(sz[i]->solution, i);
+	} else {
+		solution_ptr = NULL;
+	}
+	/*
+	 *  Pack messages and send from nodes to root
+	 */
 
-  solution_bsearch(first_user_number, &first_solution, TRUE);
-  for (task_number = 1; task_number < mpi_tasks; task_number++) {
-    if (mpi_myself == task_number) {
-      mpi_buffer_position = 0;
-      for (k = end_cells[task_number][0]; k <= end_cells[task_number][1]; k++) {
-	i = random_list[k];
-	n_solution = first_solution + i;
-	n_user = solution[n_solution]->n_user;
-	mpi_pack_solution(n_user);
-      }
-      MPI_Send(&task_number, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
-      MPI_Send(&mpi_buffer_position, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
-      MPI_Send(mpi_buffer, mpi_buffer_position, MPI_PACKED, 0, 0, MPI_COMM_WORLD);
-    }
-    if (mpi_myself == 0) {
-      MPI_Recv(&rank, 1, MPI_INT, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, &mpi_status);
-      MPI_Recv(&mpi_msg_size, 1, MPI_INT, rank, 0, MPI_COMM_WORLD, &mpi_status);
-      if (mpi_max_buffer < mpi_msg_size) {
-	mpi_max_buffer = mpi_msg_size;
-	mpi_buffer = PHRQ_realloc(mpi_buffer, (size_t) mpi_max_buffer);
-      }
-      MPI_Recv(mpi_buffer, mpi_msg_size, MPI_PACKED, rank, 0, MPI_COMM_WORLD, &mpi_status);
-      mpi_buffer_position = 0;
-      for (k = end_cells[rank][0]; k <= end_cells[rank][1]; k++) {
-	i = random_list[k];
-	n_solution = first_solution + i;
-	n_user = solution[n_solution]->n_user;
-	mpi_unpack_solution(n_user, mpi_msg_size);
-      }
-    }
-  }
+	/*solution_bsearch(first_user_number, &first_solution, TRUE);*/
+	for (task_number = 1; task_number < mpi_tasks; task_number++) {
+		if (mpi_myself == task_number) {
+			mpi_buffer_position = 0;
+			for (k = end_cells[task_number][0]; k <= end_cells[task_number][1]; k++) {
+				i = random_list[k];                    /* i is 1 to count_chem */
+				/* n_solution = first_solution + i;*/
+				/* n_user = solution[n_solution]->n_user;*/
+				/*mpi_pack_solution(n_user);*/
+				mpi_pack_solution_hst(sz[i]->solution);
+			}
+			MPI_Send(&task_number, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+			MPI_Send(&mpi_buffer_position, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+			MPI_Send(mpi_buffer, mpi_buffer_position, MPI_PACKED, 0, 0, MPI_COMM_WORLD);
+		}
+		if (mpi_myself == 0) {
+			MPI_Recv(&rank, 1, MPI_INT, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, &mpi_status);
+			MPI_Recv(&mpi_msg_size, 1, MPI_INT, rank, 0, MPI_COMM_WORLD, &mpi_status);
+			if (mpi_max_buffer < mpi_msg_size) {
+				mpi_max_buffer = mpi_msg_size;
+				mpi_buffer = PHRQ_realloc(mpi_buffer, (size_t) mpi_max_buffer);
+			}
+			MPI_Recv(mpi_buffer, mpi_msg_size, MPI_PACKED, rank, 0, MPI_COMM_WORLD, &mpi_status);
+			mpi_buffer_position = 0;
+			for (k = end_cells[rank][0]; k <= end_cells[rank][1]; k++) {
+				i = random_list[k];
+				/*
+				  n_solution = first_solution + i;
+				  n_user = solution[n_solution]->n_user;
+				  mpi_unpack_solution(n_user, mpi_msg_size);
+				*/
+				mpi_unpack_solution_hst(solution_ptr, i, mpi_msg_size);
+				solution_to_buffer(solution_ptr);
+				buffer_to_mass_fraction();
+				for (j = 0; j < count_back_list; j++) {
+					buffer_to_hst(&fraction[back[i].list[j]], *dim);
+				}
+			}
+		}
+	}
+	if (mpi_myself == 0) {
+		/* pack solutions from root process */
+		for (k = end_cells[0][0]; k <= end_cells[0][1]; k++) {
+			i = random_list[k];
+			solution_to_buffer(sz[i]->solution);
+			buffer_to_mass_fraction();
+			for (j = 0; j < count_back_list; j++) {
+				buffer_to_hst(&fraction[back[i].list[j]], *dim);
+			}
+		}
+		/* free solution */
+		solution_free(solution_ptr);
+	} 
 }
 #endif
 /* ---------------------------------------------------------------------- */

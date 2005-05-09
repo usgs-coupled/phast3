@@ -14,7 +14,7 @@
 
 PROGRAM = phast
 
-all: serial_absoft serial_absoft_debug mpi_absoft mpi_absoft_debug serial_lahey serial_lahey_debug # mpi_lahey mpi_lahey_debug 
+all: serial_absoft serial_absoft_debug mpi_absoft mpi_absoft_debug serial_lahey serial_lahey_debug mpi_lahey mpi_lahey_debug 
 
 SERIAL_ABSOFT_DIR       = serial_absoft
 SERIAL_ABSOFT_DEBUG_DIR = serial_absoft_debug
@@ -61,7 +61,7 @@ mpi_lahey:
 .PHONY : mpi_lahey_debug
 mpi_lahey_debug:
 	mkdir -p $(MPI_LAHEY_DEBUG_DIR) 
-	cd $(MPI_LAHEY_DEBUG_DIR); $(MAKE) -r -f $(MAKEFILE) CFG=MPI_LAHEY_DEBUG $(PROGRAM)
+	cd $(MPI_LAHEY_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_LAHEY_DEBUG $(PROGRAM)
 
 .PHONY : mpi_absoft
 mpi_absoft:
@@ -138,7 +138,7 @@ ifeq ($(CFG), SERIAL_ABSOFT_DEBUG)
   VPATH        = ..:../phreeqc
   FC           = $(FABSOFT)
   NLSPATH      = $(NLSABSOFT)
-  FDEBUG       = -g -en  # -C
+  FDEBUG       = -g -en # -Rb -Rc -Rp -Rs # range checking
   FMISC        = -YEXT_NAMES=LCS -s -B108 -YCFRL=1 -trap=DIVBYZERO,OVERFLOW
   FFLAGS       = $(FDEBUG) $(FMISC) $(DEFINES)
   CC           = gcc
@@ -154,11 +154,11 @@ ifeq ($(CFG), MPI_ABSOFT)
   LAMHF77      = $(FABSOFT)
   export LAMHF77
   NLSPATH      = $(NLSABSOFT)
-  FC           = hf77
+  FC           = mpif77
   FDEBUG       = -O -en  # -C
   FMISC        = -YEXT_NAMES=LCS -s -B108 -YCFRL=1 -trap=DIVBYZERO,OVERFLOW
   FFLAGS       = $(FDEBUG) $(FMISC) $(DEFINES)
-  CC           = hcc
+  CC           = mpicc
   CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS)
   LD_FLAGS     = -lm ${HDF5_LIBS} $(LIBABSOFT)
@@ -171,11 +171,11 @@ ifeq ($(CFG), MPI_ABSOFT_DEBUG)
   LAMHF77      = $(FABSOFT)
   export LAMHF77
   NLSPATH      = $(NLSABSOFT)
-  FC           = hf77
-  FDEBUG       = -g -en  # -C
+  FC           = mpif77
+  FDEBUG       = -g -en # -Rb -Rc -Rp -Rs # range checking
   FMISC        = -YEXT_NAMES=LCS -s -B108 -YCFRL=1 -trap=DIVBYZERO,OVERFLOW
   FFLAGS       = $(FDEBUG) $(FMISC) $(DEFINES)
-  CC           = hcc
+  CC           = mpicc
   CFLAGS       = -Wall -pedantic -ansi -g $(DEFINES) $(HDF5_INCLUDES)# -Wconversion 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS)
   LD_FLAGS     = -lm ${HDF5_LIBS} $(LIBABSOFT) # ${EFENCE_LIB} -lefence
@@ -187,9 +187,9 @@ ifeq ($(CFG), MPI_LAHEY)
   VPATH        = ..:../phreeqc
   LAMHF77      = $(FLAHEY)
   export LAMHF77
-  FC           = hf77
+  FC           = mpif77
   FFLAGS       = -O $(DEFINES)
-  CC           = hcc
+  CC           = mpicc
   CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS)
 #  LD_FLAGS     = -static-flib  -lm ${HDF5_LIBS} 
@@ -202,9 +202,9 @@ ifeq ($(CFG), MPI_LAHEY_DEBUG)
   VPATH        = ..:../phreeqc
   LAMHF77      = $(FLAHEY)
   export LAMHF77
-  FC           = hf77
+  FC           = mpif77
   FFLAGS       = -g --chkglobal --warn --info $(DEFINES)
-  CC           = hcc
+  CC           = mpicc
   CFLAGS       = -Wall -pedantic -g $(DEFINES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
@@ -215,12 +215,10 @@ endif
 ifeq ($(CFG), SERIAL_LAHEY)
   DEFINES      = $(DEFINE_HDF) -DNDEBUG
   VPATH        = ..:../phreeqc
-  LAMHF77      = $(FLAHEY)
-  export LAMHF77
-  FC           = hf77
-  FFLAGS       = -g $(DEFINES)
-  CC           = hcc
-  CFLAGS       = -Wall -pedantic -g $(DEFINES) $(HDF5_INCLUDES)
+  FC           = $(FLAHEY)
+  FFLAGS       = -O $(DEFINES)
+  CC           = gcc
+  CFLAGS       = -Wall -pedantic $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
   LD_FLAGS     = -static $(LIBLAHEY) -lm ${HDF5_LIBS} 
@@ -230,11 +228,9 @@ endif
 ifeq ($(CFG), SERIAL_LAHEY_DEBUG)
   DEFINES      = $(DEFINE_HDF) 
   VPATH        = ..:../phreeqc
-  LAMHF77      = $(FLAHEY)
-  export LAMHF77
-  FC           = hf77
-  FFLAGS       = -g --chkglobal --warn --info $(DEFINES)
-  CC           = hcc
+  FC           = $(FLAHEY)
+  FFLAGS       = -g --f95 --chkglobal --warn --info $(DEFINES)
+  CC           = gcc
   CFLAGS       = -Wall -pedantic -g $(DEFINES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
@@ -261,7 +257,8 @@ COMMON_FOBJS =	abmult.o aplbce.o aplbce_ss_flow.o aplbci.o armult.o asembl.o\
 		indx_rewi_bc.o indx_rewi.o init1.o init2_1.o init2_2.o init2_3.o\
 		init2_post_ss.o init3.o interp.o irewi.o ldchar.o ldci.o ldcir.o\
 		ldind.o ldipen.o ldmar1.o load_indx_bc.o lsolv.o modules.o mtoijk.o\
-		nintrp.o openf.o phast.o prchar.o print_control_mod.o prntar.o rbord.o\
+		nintrp.o openf.o phast.o phast_root.o \
+		prchar.o print_control_mod.o prntar.o rbord.o\
 		read1.o read2.o read3.o reordr.o rewi3.o rewi.o rfact.o rfactm.o\
 		rhsn.o rhsn_ss_flow.o sbcflo.o simulate_ss_flow.o stonb.o sumcal1.o sumcal2.o \
 		sumcal_ss_flow.o terminate_phast.o tfrds.o timstp.o timstp_ss_flow.o\
@@ -274,7 +271,7 @@ HDF_OBJS     =  hdf.o hdf_f.o
 
 MERGE_OBJS   =	merge.o
 
-MPI_OBJS     =	mpimod.o
+MPI_OBJS     =	mpimod.o phast_slave.o slavesubs.o
 
 # -----------------------------------------------------------------------------
 #  Assign dependents to target on dependency line & link options on command 
@@ -283,13 +280,11 @@ MPI_OBJS     =	mpimod.o
 
 ${PROGRAM} : ${OBJECT_FILES}
 	${FC} -o $@ ${OBJECT_FILES} ${LD_LIB1} ${LD_FLAGS} 
-
+	@echo; echo Done making for phast
 # -----------------------------------------------------------------------------
 #  SPECIAL TARGET for compiling files containing modules so that
-#  module_name.M and module_name.o files are created or
-#  updated before all other source code object files. Also, a target
-#  is provided for removing object files and the executable. Invoke
-#  this target as make CLEAN. (A tab must proceed the /bin/rm.)
+#  module_name.mod and module_name.o files are created or
+#  updated before all other source code object files. 
 
 modules.o : modules.f90 
 	${FC} -c ${FFLAGS} $<
@@ -300,11 +295,9 @@ print_control_mod.o : print_control_mod.f90
 # Module dependency list
 # -----------------------------------------------------------------------------
 #
-#  HST3D files
+#  PHAST Fortran files
 #
-modules.M:	           modules.f90
-	${FC} -c ${FFLAGS} $<
-phast.o:	           modules.o	print_control_mod.o
+phast.o:	           modules.o	mpimod.o
 abmult.o:		   modules.o
 aplbce.o:		   modules.o
 aplbce_ss_flow.o:	   modules.o
@@ -315,8 +308,10 @@ asmslc.o:		   modules.o
 asmslp.o:		   modules.o
 asmslp_ss_flow.o:	   modules.o
 bsode.o:		   modules.o
+calcc.o:	   	   modules.o
 calc_velocity.o:	   modules.o
-closef.o:		   modules.o
+clog.o:			   modules.o
+closef.o:		   modules.o	mpimod.o
 coeff.o:		   modules.o
 coeff_ss_flow.o:	   modules.o
 crsdsp.o:		   modules.o
@@ -325,17 +320,22 @@ d4zord.o:		   modules.o
 dbmult.o:		   modules.o
 dump.o:			   modules.o
 efact.o:		   modules.o
+ehoftp.o:		   modules.o
+el1slv.o:		   modules.o
+elslv.o:		   modules.o
 error1.o:		   modules.o
 error2.o:		   modules.o
 error3.o:		   modules.o
 error4.o:		   modules.o	ifwr.inc
 errprt.o:		   modules.o
-clog.o:			   modules.o
 etom1.o:		   modules.o
 etom2.o:		   modules.o
+euslv.o:		   modules.o
 formr.o:		   modules.o
 gcgris.o:		   modules.o	print_control_mod.o
 hdf_f.o:		   modules.o	print_control_mod.o
+hunt.o:			   modules.o
+incidx.o:		   modules.o
 indx_rewi.o:		   modules.o
 indx_rewi_bc.o:		   modules.o
 init1.o:		   modules.o
@@ -354,7 +354,10 @@ ldipen.o:		   modules.o
 ldmar1.o:		   modules.o
 load_indx_bc.o:		   modules.o
 lsolv.o:		   modules.o
-openf.o:		   modules.o
+nintrp.o:		   modules.o
+openf.o:		   modules.o	mpimod.o
+phast_root.o:	           modules.o    mpimod.o
+phast_slave.o:		   modules.o    mpimod.o
 prchar.o:		   modules.o
 prntar.o:		   modules.o
 rbord.o:		   modules.o
@@ -373,7 +376,7 @@ simulate_ss_flow.o:	   modules.o
 sumcal1.o:		   modules.o
 sumcal2.o:		   modules.o
 sumcal_ss_flow.o:	   modules.o
-terminate_phast.o:	   modules.o
+terminate_phast.o:	   modules.o	mpimod.o
 tfrds.o:		   modules.o
 timstp.o:		   modules.o	print_control_mod.o
 timstp_ss_flow.o:	   modules.o	print_control_mod.o
@@ -442,6 +445,7 @@ hstsubs.o: hstsubs.c  global.h hst.h phqalloc.h output.h phastproto.h
 merge.o: merge.c global.h phqalloc.h hst.h output.h phastproto.h
 mix.o: mix.c global.h hst.h phqalloc.h output.h phastproto.h
 phast_files.o: phast_files.c global.h phqalloc.h output.h phrqproto.h input.h
+slavesubs.o: slavesubs.c global.h hst.h phqalloc.h output.h phastproto.h
 
 # -----------------------------------------------------------------------------
 
