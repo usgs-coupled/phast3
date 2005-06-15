@@ -5376,51 +5376,52 @@ int read_well(void)
 			if (wells == NULL) malloc_error();
 			n = count_wells++;
 			well_ptr = &(wells[n]);
-			/*
-			 *   Initialize well
-			 */
-			well_ptr->depth = malloc ((size_t) sizeof (Well_Interval));
-			if (well_ptr->depth == NULL) malloc_error();
-			well_ptr->count_depth = 0;
-			well_ptr->elevation = malloc ((size_t) sizeof (Well_Interval));
-			if (well_ptr->elevation == NULL) malloc_error();
-			well_ptr->count_elevation = 0;
-			well_ptr->cell_fraction = malloc((size_t) sizeof(Cell_Fraction));
-			if (well_ptr->cell_fraction == NULL) malloc_error();
-			well_ptr->count_cell_fraction = 0;
-			well_ptr->new_def = TRUE;
-			well_ptr->n_user = n_user;
-			well_ptr->description = description;
-			well_ptr->x = 0;
-			well_ptr->x_defined = FALSE;
-			well_ptr->y = 0;
-			well_ptr->y_defined = FALSE;
-			well_ptr->radius = 0;
-			well_ptr->radius_defined = FALSE;
-			well_ptr->diameter = 0;
-			well_ptr->solution = NULL;
-			well_ptr->solution_defined = FALSE;
-			well_ptr->lsd = 0;
-			well_ptr->lsd_defined = FALSE;
-			well_ptr->mobility_and_pressure = FALSE;
-			well_ptr->depth_defined = FALSE;
-			well_ptr->count_depth = 0;
-			well_ptr->elevation_defined = FALSE;
-			well_ptr->count_elevation = 0;
-			well_ptr->q = NULL;
-			well_ptr->q_defined = FALSE;
-			well_ptr->diameter = 0;
-			well_ptr->diameter_defined = FALSE;
-			well_ptr->radius = 0;
-			well_ptr->radius_defined = FALSE;
 		}
 	} else {
-		if (simulation == 0) {
-			sprintf(error_string,"Well number %d is being deleted and overwritten.", n_user);
-			warning_msg(error_string);
-			well_free(well_ptr);
-		} 
+		assert(simulation == 0);
+		sprintf(error_string,"Well number %d is being deleted and overwritten.", n_user);
+		warning_msg(error_string);
+		well_free(well_ptr);
 	}
+
+	/*
+	 *   Initialize well
+	 */
+	well_ptr->depth = malloc ((size_t) sizeof (Well_Interval));
+	if (well_ptr->depth == NULL) malloc_error();
+	well_ptr->count_depth = 0;
+	well_ptr->elevation = malloc ((size_t) sizeof (Well_Interval));
+	if (well_ptr->elevation == NULL) malloc_error();
+	well_ptr->count_elevation = 0;
+	well_ptr->cell_fraction = malloc((size_t) sizeof(Cell_Fraction));
+	if (well_ptr->cell_fraction == NULL) malloc_error();
+	well_ptr->count_cell_fraction = 0;
+	well_ptr->new_def = TRUE;
+	well_ptr->n_user = n_user;
+	well_ptr->description = description;
+	well_ptr->x = 0;
+	well_ptr->x_defined = FALSE;
+	well_ptr->y = 0;
+	well_ptr->y_defined = FALSE;
+	well_ptr->radius = 0;
+	well_ptr->radius_defined = FALSE;
+	well_ptr->diameter = 0;
+	well_ptr->solution = NULL;
+	well_ptr->solution_defined = FALSE;
+	well_ptr->lsd = 0;
+	well_ptr->lsd_defined = FALSE;
+	well_ptr->mobility_and_pressure = FALSE;
+	well_ptr->depth_defined = FALSE;
+	well_ptr->count_depth = 0;
+	well_ptr->elevation_defined = FALSE;
+	well_ptr->count_elevation = 0;
+	well_ptr->q = NULL;
+	well_ptr->q_defined = FALSE;
+	well_ptr->diameter = 0;
+	well_ptr->diameter_defined = FALSE;
+	well_ptr->radius = 0;
+	well_ptr->radius_defined = FALSE;
+
 	well_number = n;
 /*
  *   get first line
