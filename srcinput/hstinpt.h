@@ -277,6 +277,7 @@ typedef struct {
 	int depth_defined;
 	double z;
 	int z_defined;
+	int z_input_defined;
 	struct time_series *solution;
 	int solution_defined;
 	int current_solution; 

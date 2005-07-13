@@ -5067,6 +5067,7 @@ int read_river(void)
 			} else {
 				sscanf(token, "%lf", &river_ptr->points[point_number].z);
 				river_ptr->points[point_number].z_defined = TRUE;
+				river_ptr->points[point_number].z_input_defined = TRUE;
 			}
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
@@ -5235,6 +5236,7 @@ int read_river(void)
 			river_ptr->points[point_number].depth_defined = FALSE;
 			river_ptr->points[point_number].z = 0.0;
 			river_ptr->points[point_number].z_defined = FALSE;
+			river_ptr->points[point_number].z_input_defined = FALSE;
 			j = copy_token(token, &next_char, &l);
 			if (j != DIGIT) {
 				sprintf(error_string,"Expected an X value of river point. %s", tag);
