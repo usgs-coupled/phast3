@@ -918,10 +918,11 @@ int xsolution_save_hst_ptr(struct solution *solution_ptr)
  *
  *   input:  n is pointer number in solution
  */
-	int j;
+	int i, j;
 
 	solution_ptr->totals = PHRQ_realloc (solution_ptr->totals, (size_t) (count_total - 1) * sizeof(struct conc));
 	solution_ptr->master_activity = PHRQ_realloc (solution_ptr->master_activity, (size_t) (count_activity_list + 1) * sizeof(struct master_activity));
+	solution_ptr->count_master_activity = count_activity_list;
 	solution_ptr->ph = ph_x;
 	solution_ptr->solution_pe = solution_pe_x;
 	solution_ptr->mu = mu_x;
@@ -959,6 +960,27 @@ int xsolution_save_hst_ptr(struct solution *solution_ptr)
 #endif
 	}
 	solution_ptr->master_activity[j].description = NULL;
+
+	if (pitzer_model == TRUE) {
+		i = 0;
+		for (j = 0; j < count_s; j++) {
+			if (s[j]->lg != 0.0) i++;
+		}
+		solution_ptr->species_gamma = PHRQ_realloc(solution_ptr->species_gamma, (size_t) (i * sizeof(struct master_activity)));
+		if (solution_ptr->species_gamma == NULL) malloc_error();
+		i = 0;
+		for (j= 0; j < count_s; j++) {
+			if (s[j]->lg != 0.0) {
+				solution_ptr->species_gamma[i].la = s[j]->lg;
+				solution_ptr->species_gamma[i].description = s[j]->name;
+				i++;
+			}
+		}
+		solution_ptr->count_species_gamma = i;
+	} else {
+		solution_ptr->species_gamma = NULL;
+		solution_ptr->count_species_gamma = 0;
+	}
 	return(OK);
 }
 /* ---------------------------------------------------------------------- */
@@ -1023,6 +1045,7 @@ int mix_solutions (int n_user1, int n_user2, LDBLE f1, int n_user_new, char *con
 	if (solution[i]->totals == NULL) malloc_error();
 	solution[i]->master_activity = PHRQ_realloc (solution[i]->master_activity, (size_t) (count_activity_list + 1) * sizeof(struct master_activity));
 	if (solution[i]->master_activity == NULL) malloc_error();
+	solution[i]->count_master_activity = count_activity_list;
 	for(j = 2; j < count_total; j++) {
 		buffer[j].master->total_primary = buffer[j].master->total;
 	}

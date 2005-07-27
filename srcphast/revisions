@@ -1,3 +1,15 @@
+PHAST, Version 1.2 ?
+
+    Added Pitzer funtionality to serial and parallel version. 
+    However, lack of density-dependent flow makes use for
+    brines problematic.
+
+    Fixed bug with free surface and steady flow. Solution volume
+    was not scaled correctly and gave anomalous results for
+    cells with small water volumes. Volume of water to amount rock
+    was not consistent.
+
+
 PHAST, Version 1.1 (February 14, 2005)
       
     Converted to Subversion version control system. Now includes

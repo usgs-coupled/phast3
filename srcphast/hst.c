@@ -356,10 +356,18 @@ void COUNT_ALL_COMPONENTS(int *n_comp, char *names, int length)
  */
 	buffer = (struct buffer *) PHRQ_malloc ((size_t) count_component * sizeof(struct buffer));
 	buffer[0].name = string_hsave("H");
-	buffer[0].gfw = s_h2->secondary->elt->primary->elt->gfw;
+	if (s_h2 != NULL) {
+		buffer[0].gfw = s_h2->secondary->elt->primary->elt->gfw;
+	} else {
+		buffer[0].gfw = 1.;
+	}
 	buffer[0].master = s_eminus->primary;
 	buffer[1].name = string_hsave("O");
-	buffer[1].gfw = s_o2->secondary->elt->primary->elt->gfw;
+	if (s_o2 != NULL) {
+		buffer[1].gfw = s_o2->secondary->elt->primary->elt->gfw;
+	} else {
+		buffer[1].gfw = 16.;
+	}
 	buffer[1].master = s_h2o->primary;
 	j = 2;
 	for (i = 0; i < count_master; i++) {
@@ -375,7 +383,11 @@ void COUNT_ALL_COMPONENTS(int *n_comp, char *names, int length)
 /* Bogus component used if surface reactions are included */
 	if (transport_charge == TRUE) {
 		buffer[j].name = string_hsave("Charge");
-		buffer[j].gfw = s_h2->secondary->elt->primary->elt->gfw;
+		if (s_h2 != NULL) {
+			buffer[j].gfw = s_h2->secondary->elt->primary->elt->gfw;
+		} else {
+			buffer[j].gfw = 1.0;
+		}
 		buffer[j].master = s_eminus->primary;
 	}
 	output_msg(OUTPUT_MESSAGE, "List of Components:\n");
@@ -459,6 +471,12 @@ void COUNT_ALL_COMPONENTS(int *n_comp, char *names, int length)
 		if (solution[i]->totals == NULL) malloc_error();
 		solution[i]->master_activity = PHRQ_realloc (solution[i]->master_activity, (size_t) (count_activity_list + 1) * sizeof(struct master_activity));
 		if (solution[i]->master_activity == NULL) malloc_error();
+		solution[i]->count_master_activity = count_activity_list;
+		/*solution[i]->species_gamma = PHRQ_realloc (solution[i]->species_gamma, (size_t) (count_activity_list + 1) * sizeof(struct master_activity));
+		if (solution[i]->species_gamma == NULL) malloc_error();*/
+		solution[i]->species_gamma = NULL;
+		solution[i]->count_species_gamma = 0;
+
 		for(j = 2; j < count_total; j++) {
 			buffer[j].master->total_primary = buffer[j].master->total;
 		}
@@ -999,7 +1017,8 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 			cell_no = i;
 			solution_bsearch(first_user_number, &first_solution, TRUE);
 			n_solution = first_solution + i;
-			if (*adjust_water_rock_ratio) scale_solution(n_solution, frac[j]); 
+			/*if (*adjust_water_rock_ratio) scale_solution(n_solution, frac[j]); */
+			if (transient_free_surface == TRUE) scale_solution(n_solution, frac[j]); 
 			set_use_hst();
 			n_user = solution[n_solution]->n_user;
 			set_initial_moles(n_user);
@@ -1025,7 +1044,8 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
  *   Save data
  */
 		xsolution_save_hst(n_solution);
-		if (active && *adjust_water_rock_ratio) scale_solution(n_solution, 1.0/frac[j]); 
+		/*if (active && *adjust_water_rock_ratio) scale_solution(n_solution, 1.0/frac[j]); */
+		if (active && transient_free_surface == TRUE) scale_solution(n_solution, 1.0/frac[j]); 
 		if (save.exchange == TRUE) {
 			xexchange_save_hst(n_exchange);
 		}
@@ -1276,7 +1296,8 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 			cell_no = i;
 			solution_bsearch(first_user_number, &first_solution, TRUE);
 			n_solution = first_solution;
-			if (*adjust_water_rock_ratio) scale_solution(n_solution, frac[j]); 
+			/*if (*adjust_water_rock_ratio) scale_solution(n_solution, frac[j]); */
+			if (transient_free_surface == TRUE) scale_solution(n_solution, frac[j]); 
 			set_use_hst();
 			n_user = solution[n_solution]->n_user;
 			set_initial_moles(n_user);
@@ -1323,7 +1344,8 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 			 * Be careful, scale_solution zeros some arrays
 			 * can delete some results from run_reaction
 			 */
-			if (active && *adjust_water_rock_ratio) scale_solution(n_solution, 1.0/frac[j]); 
+			/*if (active && *adjust_water_rock_ratio) scale_solution(n_solution, 1.0/frac[j]); */
+			if (active && transient_free_surface == TRUE) scale_solution(n_solution, 1.0/frac[j]); 
 			copy_user_to_system(sz[i], first_user_number, i);
 		}
 		EndCell(*print_sel, *print_out, *print_hdf, j);
@@ -1746,6 +1768,7 @@ int mpi_send_solution(int solution_number, int task_number)
 	double doubles[MESSAGE_MAX_NUMBERS];
 	void *buffer;
 	struct solution *solution_ptr;
+	struct species *species_ptr;
 	struct master *master_ptr;
 /*
  *   Malloc space for a buffer
@@ -1804,7 +1827,7 @@ int mpi_send_solution(int solution_number, int task_number)
 		master_ptr = master_bsearch(solution_ptr->totals[j].description);
 		if (master_ptr == NULL) {
 			input_error++;
-			sprintf(error_string,"Packing solution message: %s, element not found\n", solution_ptr->totals[j].description);
+			sprintf(error_string,"Packing solution message: %s, totals element not found\n", solution_ptr->totals[j].description);
 			error_msg(error_string, CONTINUE);
 		}
 		ints[i++] = master_ptr->number;
@@ -1817,11 +1840,12 @@ int mpi_send_solution(int solution_number, int task_number)
  */
 	count_activity_position = i++;
 	count_activity = 0;
-	for (j = 0; solution_ptr->master_activity[j].description != NULL; j++ ) {
+	/*for (j = 0; solution_ptr->master_activity[j].description != NULL; j++ ) {*/
+	for (j = 0; j < solution_ptr->count_master_activity; j++ ) {
 		master_ptr = master_bsearch(solution_ptr->master_activity[j].description);
 		if (master_ptr == NULL) {
 			input_error++;
-			sprintf(error_string,"Packing solution message: %s, element not found\n", solution_ptr->master_activity[j].description);
+			sprintf(error_string,"Packing solution message: %s, %d master_activity element not found\n", solution_ptr->master_activity[j].description, j);
 			error_msg(error_string, CONTINUE);
 		}
 		ints[i++] = master_ptr->number;
@@ -1829,6 +1853,21 @@ int mpi_send_solution(int solution_number, int task_number)
 		count_activity++;
 	}
 	ints[count_activity_position] = count_activity;
+/*
+ *	struct master_activity *species_gamma
+ */
+	ints[i++] = solution_ptr->count_species_gamma;
+	for (j = 0; j < solution_ptr->count_species_gamma; j++ ) {
+		species_ptr = s_search(solution_ptr->species_gamma[j].description);
+		if (species_ptr == NULL) {
+			input_error++;
+			sprintf(error_string,"Packing solution message: %s, species gamma not found\n", solution_ptr->species_gamma[j].description);
+			error_msg(error_string, CONTINUE);
+		} else {
+			ints[i++] = species_ptr->number;
+			doubles[d++] = solution_ptr->species_gamma[j].la;
+		}
+	}
 	/*	int count_isotopes; */
 	/*	struct isotope *isotopes; */
 	if (input_error > 0) {
@@ -1859,6 +1898,7 @@ int mpi_recv_solution(int solution_number, int task_number)
 	double doubles[MESSAGE_MAX_NUMBERS];
 	void *buffer;
 	struct solution *solution_ptr;
+	struct species *species_ptr;
 	struct master *master_ptr;
 	MPI_Status mpi_status;
 /*
@@ -1963,12 +2003,27 @@ int mpi_recv_solution(int solution_number, int task_number)
 	count_activity = ints[i++];
 	solution_ptr->master_activity = PHRQ_realloc(solution_ptr->master_activity, (size_t) (count_activity + 1) * sizeof(struct master_activity));
 	if (solution_ptr->master_activity == NULL) malloc_error();
+	solution_ptr->count_master_activity = count_activity;
 	for (j = 0; j < count_activity; j++) {
 		master_ptr = master[ints[i++]];
 		solution_ptr->master_activity[j].description = master_ptr->elt->name;
 		solution_ptr->master_activity[j].la = doubles[d++];
 	}
 	solution_ptr->master_activity[j].description = NULL;
+
+/*
+ *	struct master_activity *species_gamma;
+ */
+	solution_ptr->count_species_gamma = ints[i++];
+	if (solution_ptr->count_species_gamma > 0) {
+		solution_ptr->species_gamma = PHRQ_realloc(solution_ptr->species_gamma, (size_t) (solution_ptr->count_species_gamma) * sizeof(struct master_activity));
+		if (solution_ptr->species_gamma == NULL) malloc_error();
+		for (j = 0; j < solution_ptr->count_species_gamma; j++) {
+			species_ptr = s[ints[i++]];
+			solution_ptr->species_gamma[j].description = species_ptr->name;
+			solution_ptr->species_gamma[j].la = doubles[d++];
+		}
+	} 
 
 	/*	int count_isotopes; */
 	solution_ptr->count_isotopes = 0;
@@ -2887,7 +2942,7 @@ int mpi_pack_solution_hst(struct solution *solution_ptr)
 		master_ptr = master_bsearch(solution_ptr->totals[j].description);
 		if (master_ptr == NULL) {
 			input_error++;
-			sprintf(error_string,"Packing solution message: %s, element not found\n", solution_ptr->totals[j].description);
+			sprintf(error_string,"Packing solution message: %s, totals element not found\n", solution_ptr->totals[j].description);
 			error_msg(error_string, CONTINUE);
 		}
 		ints[i++] = master_ptr->number;
@@ -3014,6 +3069,7 @@ int mpi_pack_solution(struct solution *solution_ptr, int *ints, int *ii, double 
 	/* solution_number is 1 to count_chem */
 	int i, j, d;
 	int count_totals, count_totals_position, count_activity, count_activity_position;
+	struct species *species_ptr;
 	struct master *master_ptr;
 
 	i = *ii;
@@ -3061,7 +3117,7 @@ int mpi_pack_solution(struct solution *solution_ptr, int *ints, int *ii, double 
 			master_ptr = master_bsearch(solution_ptr->totals[j].description);
 			if (master_ptr == NULL) {
 				input_error++;
-				sprintf(error_string,"Packing solution message: %s, element not found\n", solution_ptr->totals[j].description);
+				sprintf(error_string,"Packing solution message: %s, totals element not found\n", solution_ptr->totals[j].description);
 				error_msg(error_string, CONTINUE);
 			}
 			ints[i++] = master_ptr->number;
@@ -3074,11 +3130,12 @@ int mpi_pack_solution(struct solution *solution_ptr, int *ints, int *ii, double 
 		 */
 		count_activity_position = i++;
 		count_activity = 0;
-		for (j = 0; solution_ptr->master_activity[j].description != NULL; j++ ) {
+		/*for (j = 0; solution_ptr->master_activity[j].description != NULL; j++ ) {*/
+		for (j = 0; j < solution_ptr->count_master_activity; j++ ) {
 			master_ptr = master_bsearch(solution_ptr->master_activity[j].description);
 			if (master_ptr == NULL) {
 				input_error++;
-				sprintf(error_string,"Packing solution message: %s, element not found\n", solution_ptr->master_activity[j].description);
+				sprintf(error_string,"Packing solution message: %s, master activity element not found %d %d\n", solution_ptr->master_activity[j].description, j, solution_ptr->count_master_activity);
 				error_msg(error_string, CONTINUE);
 			}
 			ints[i++] = master_ptr->number;
@@ -3086,6 +3143,21 @@ int mpi_pack_solution(struct solution *solution_ptr, int *ints, int *ii, double 
 			count_activity++;
 		}
 		ints[count_activity_position] = count_activity;
+/*
+ *	struct master_activity *species_gamma
+ */
+		ints[i++] = solution_ptr->count_species_gamma;
+		for (j = 0; j < solution_ptr->count_species_gamma; j++ ) {
+			species_ptr = s_search(solution_ptr->species_gamma[j].description);
+			if (species_ptr == NULL) {
+				input_error++;
+				sprintf(error_string,"Packing solution message: %s, species gamma 2 not found\n", solution_ptr->species_gamma[j].description);
+				error_msg(error_string, CONTINUE);
+			} else {
+				ints[i++] = species_ptr->number;
+				doubles[d++] = solution_ptr->species_gamma[j].la;
+			}
+		}
 		/*	int count_isotopes; */
 		/*	struct isotope *isotopes; */
 		if (input_error > 0) {
@@ -3103,6 +3175,7 @@ int mpi_unpack_solution(struct solution *solution_ptr, int *ints, int *ii, doubl
 	/* solution_number is 1 to count_chem */
 	int i, j, d;
 	int count_totals, count_activity;
+	struct species *species_ptr;
 	struct master *master_ptr;
 	i = *ii;
 	d = *dd;
@@ -3168,12 +3241,27 @@ int mpi_unpack_solution(struct solution *solution_ptr, int *ints, int *ii, doubl
 	count_activity = ints[i++];
 	solution_ptr->master_activity = PHRQ_realloc(solution_ptr->master_activity, (size_t) (count_activity + 1) * sizeof(struct master_activity));
 	if (solution_ptr->master_activity == NULL) malloc_error();
+	solution_ptr->count_master_activity = count_activity;
 	for (j = 0; j < count_activity; j++) {
 		master_ptr = master[ints[i++]];
 		solution_ptr->master_activity[j].description = master_ptr->elt->name;
 		solution_ptr->master_activity[j].la = doubles[d++];
 	}
 	solution_ptr->master_activity[j].description = NULL;
+
+/*
+ *	struct master_activity *species_gamma;
+ */
+	solution_ptr->count_species_gamma = ints[i++];
+	if (solution_ptr->count_species_gamma > 0) {
+		solution_ptr->species_gamma = PHRQ_realloc(solution_ptr->species_gamma, (size_t) (solution_ptr->count_species_gamma) * sizeof(struct master_activity));
+		if (solution_ptr->species_gamma == NULL) malloc_error();
+		for (j = 0; j < solution_ptr->count_species_gamma; j++) {
+			species_ptr = s[ints[i++]];
+			solution_ptr->species_gamma[j].description = species_ptr->name;
+			solution_ptr->species_gamma[j].la = doubles[d++];
+		}
+	} 
 
 	/*	int count_isotopes; */
 	solution_ptr->count_isotopes = 0;
@@ -3431,6 +3519,9 @@ void CALCULATE_WELL_PH(double *c, LDBLE *ph, LDBLE *alkalinity)
   solution[i]->totals = PHRQ_realloc (solution[i]->totals, (size_t) (count_total - 1) * sizeof(struct conc));
   if (solution[i]->totals == NULL) malloc_error();
   solution[i]->master_activity = PHRQ_realloc (solution[i]->master_activity, (size_t) (count_activity_list + 1) * sizeof(struct master_activity));
+  solution[i]->count_master_activity = count_activity_list;
+  solution[i]->species_gamma = NULL;
+  solution[i]->count_species_gamma = 0;
   if (solution[i]->master_activity == NULL) malloc_error();
   /*
    *  Zero out solution
