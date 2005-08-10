@@ -1,0 +1,121 @@
+TITLE
+.       Diffusion
+.
+SOLUTE_TRANSPORT true
+		 -diff 1e-9
+UNITS
+      -time		sec
+      -horizontal_grid	mm
+      -vertical_grid	mm
+      -head		mm
+      -hydraulic_conductivity meters/seconds
+      -specific_storage 1/meters
+      -dispersivity	meters
+      -flux		mm/s
+      -leaky_hydraulic_conductivity meters/seconds
+      -leaky_thickness		    meters
+      -well_diameter		    in
+      -well_flow_rate		    liter/days
+      -river_bed_hydraulic_conductivity meters/seconds
+      -river_bed_thickness		meters
+GRID
+#      -uniform   X   0 10	101   # 0.1 mm
+#      -uniform   X   0 1	101   # 0.01 mm
+      -uniform   X   0 0.5	501   # 0.001 mm
+      -uniform   Y   0 1	2
+      -uniform   Z   0 1	2
+      -chemistry_dimensions X
+      -print_orientation XY
+MEDIA
+      -zone 0 0 0 10 10 1
+            -Kx 1e-10
+            -Ky 1e-10
+            -Kz 1e-10
+            -porosity 1.0
+            -specific_storage 0
+            -longitudinal_dispersivity 0
+            -horizontal_dispersivity   0
+            -vertical_dispersivity     0
+	    -active 1
+STEADY_FLOW true
+      -head_tolerance 1e-10
+      -flow_balance_tolerance 0.001e-3
+SOLUTION_METHOD
+      -iterative_solver false
+      -tolerance 1E-30
+      -save_directions 10
+      -maximum_iterations 500
+      -space_differencing 0.5   # does not matter
+      -time_differencing  0.5
+      -cross_dispersion	  false
+SPECIFIED_HEAD_BC
+      -zone 0 0 0 0 0 1
+            -head 
+		0 1
+#            -associated_solution 
+#		  0     1
+	     -fixed_solution 
+	          0     2
+#      -zone 10 10 0 10 10 1
+#            -head 
+#		0 1.00000001
+#            -associated_solution 
+		  0     1
+HEAD_IC
+      -zone 0 0 0 10 10 1
+            -head 1
+CHEMISTRY_IC
+      -zone 0 0 0 10 10 1
+            -solution 1
+      -zone 0 0 0 0 0 1
+            -solution 2
+PRINT_INITIAL
+      -boundary_conditions false
+      -components false
+      -conductance false
+      -echo_input false
+      -fluid_properties false
+      -force_chemistry_print false
+      -HDF_chemistry true
+      -HDF_heads false
+      -HDF_steady_flow_velocities false
+      -heads false
+      -media_properties false
+      -solution_method false
+      -steady_flow_velocities true
+      -wells false
+      -xyz_chemistry false
+      -xyz_components false
+      -xyz_heads true
+      -xyz_steady_flow_velocities true
+      -xyz_wells false
+PRINT_FREQUENCY
+	0
+      -bc_flow_rates 0 
+      -boundary_conditions false
+      -components 0 
+      -conductance 0 
+      -flow_balance 0 
+      -force_chemistry_print 0 
+      -HDF_chemistry 1 sec
+      -HDF_heads 0 
+      -HDF_velocities 0 
+      -heads 0 
+      -progress_statistics 0 
+      -save_final_heads true
+      -velocities 0 
+      -wells 0 
+      -xyz_chemistry  10
+      -xyz_components 0 
+      -xyz_heads 0 
+      -xyz_velocities 0 
+TIME_CONTROL
+      -time_step 
+#		 0 1 sec
+#		 0 .1 sec
+		 0 .01 sec
+#		 0 .001 sec
+#		 0 0.25 sec
+#      -time_change 200 sec
+      -time_change 1 sec
+END

@@ -28,7 +28,7 @@ SUBROUTINE incidx(x1,x2,nx,xs,i1,i2,erflg)
 !  eps=1.d-6*(x2-x1)+1.d-6
 !  eps = max(eps,abs(x1*1e-7))
 !  eps = max(eps,abs(x2*1e-7))
-  eps=1.d-7*(xs(nx)-xs(1))+1.d-6
+  eps=1.d-7*(xs(nx)-xs(1))+1.d-10
   x1m=x1-eps
   x2p=x2+eps
   IF(x1m > x2p.OR.x1m > xs(nx).OR.x2p < xs(1)) THEN
