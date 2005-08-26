@@ -3,7 +3,7 @@ SUBROUTINE asmslp_ss_flow
   ! ...      for establishement of steady flow initial condition before
   ! ...      reactive transport
   USE machine_constants, ONLY: kdp
-!!$  USE f_units
+  USE f_units
   USE mcb
   USE mcc
   USE mcch, ONLY: unittm
@@ -16,6 +16,27 @@ SUBROUTINE asmslp_ss_flow
   USE mcw
   IMPLICIT NONE
   INTERFACE
+     SUBROUTINE rowscale(nrow,norm,a,diag,ierr)
+       USE machine_constants, ONLY: kdp
+       IMPLICIT NONE
+       INTEGER, INTENT(IN) :: nrow
+       INTEGER, INTENT(IN) :: norm
+       REAL(KIND=kdp), DIMENSION(:,:), INTENT(INOUT) :: a
+       REAL(KIND=kdp), DIMENSION(:), INTENT(OUT) :: diag
+       INTEGER, INTENT(OUT) :: ierr
+     END SUBROUTINE rowscale
+
+     SUBROUTINE colscale(nrow,norm,a,ci,diag,ierr)
+       USE machine_constants, ONLY: kdp
+       IMPLICIT NONE
+       INTEGER, INTENT(IN) :: nrow  
+       INTEGER, INTENT(IN) :: norm  
+       REAL(KIND=kdp), DIMENSION(:,:), INTENT(INOUT) :: a    
+       INTEGER, DIMENSION(:,:), INTENT(IN) :: ci 
+       REAL(KIND=kdp), DIMENSION(:), INTENT(OUT) :: diag
+       INTEGER, INTENT(OUT) :: ierr
+     END SUBROUTINE colscale
+
      SUBROUTINE gcgris(ap,bp,ra,rr,ss,xx,w,z,sumfil)
        USE machine_constants, ONLY: kdp
        REAL(KIND=kdp), DIMENSION(:,0:), INTENT(INOUT) :: ap
@@ -23,10 +44,10 @@ SUBROUTINE asmslp_ss_flow
        REAL(KIND=kdp), DIMENSION(:,:), INTENT(INOUT) :: ra
        REAL(kind=kdp), DIMENSION(:), INTENT(INOUT) :: rr
        REAL(kind=kdp), DIMENSION(:), INTENT(INOUT) :: ss, w, z
-       REAL(kind=kdp), DIMENSION(:), INTENT(OUT) :: xx
        REAL(kind=kdp), DIMENSION(:), INTENT(INOUT) :: sumfil
-!!$       REAL(kind=kdp), DIMENSION(:), INTENT(INOUT) :: xx, sumfil
+       REAL(kind=kdp), DIMENSION(:), INTENT(OUT) :: xx
      END SUBROUTINE gcgris
+
      SUBROUTINE sbcflo(iequ,ddv,ufracnp,qdvsbc,rhssbc,vasbc)
        USE machine_constants, ONLY: kdp
        INTEGER, INTENT(IN) :: iequ
@@ -36,14 +57,16 @@ SUBROUTINE asmslp_ss_flow
        REAL(kind=kdp), DIMENSION(:), INTENT(IN) :: rhssbc
        REAL(kind=kdp), DIMENSION(:,:), INTENT(IN) :: vasbc
      END SUBROUTINE sbcflo
+
      SUBROUTINE tfrds(diagra,envlra,envura)
        USE machine_constants, ONLY: kdp
        REAL(kind=kdp), DIMENSION(:), INTENT(OUT) :: diagra, envlra, envura
      END SUBROUTINE tfrds
   END INTERFACE
 !
+  INTEGER :: norm, iierr  
+  INTEGER :: itrnp, iwel, ks, m, ma  
   REAL(kind=kdp) :: fddp, sum1, sum2, timenp, udpwkt, upwkt
-  INTEGER :: ITRNP, IWEL, ks, M, MA  
   LOGICAL :: convp
   CHARACTER(LEN=130) :: logline1, logline2
   !.....Set string for use with RCS ident command
@@ -51,20 +74,38 @@ SUBROUTINE asmslp_ss_flow
   !     ------------------------------------------------------------------
   !...
   ! ... Assemble and solve the flow equation for pressure (head)
-  ERREXE = .FALSE.  
-  CONVP = .FALSE.  
-  DP = 0._kdp
+  errexe = .FALSE.  
+  convp = .FALSE.  
+  dp = 0._kdp
   dt = 0._kdp
   dc = 0._kdp
-  if (nwel > 0) DPWKT = 0._kdp
-  IEQ = 1  
-  ITRNP = 1
+  if (nwel > 0) dpwkt = 0._kdp
+  ieq = 1  
+  itrnp = 1
 !     component 1 is used for stuff in pressure assembly. Should not
 !     matter since constant density suppresses all transport terms.
   is = 1
 40 CONTINUE
   CALL asembl  
   CALL aplbci  
+  ! ... Scale the matrix equations
+  norm = 0          ! ... use L-infinity norm
+  IF(row_scale) CALL rowscale(nxyz,norm,va,diagr,iierr)
+  IF(col_scale) CALL colscale(nxyz,norm,va,ci,diagc,iierr)
+  IF(iierr /= 0) THEN
+     WRITE(fuclog,*) 'Error in scaling: ', iierr
+     !!        ierr(81) = .TRUE.
+     RETURN
+  END IF
+  IF(col_scale) THEN
+     IF(MINVAL(diagc) /= 1._kdp .AND. MAXVAL(diagc) /= 1._kdp)  &
+          ident_diagc = .FALSE.
+  END IF
+  IF(row_scale) THEN
+     DO ma=1,nxyz
+        rhs(ma) = diagr(ma)*rhs(ma)
+     END DO
+  END IF
   ! ... Solve the matrix equations
   IF(slmeth == 1) THEN  
      ! ... Direct solver
@@ -75,11 +116,18 @@ SUBROUTINE asmslp_ss_flow
   ENDIF
   IF(ERREXE) RETURN  
   ! ... Flow equation has just been solved
-  DPMAX = 0._kdp
-  DO  M = 1, NXYZ  
-     MA = MRNO(M)  
-     DP(M) = RHS(MA)  
-     IF(FRAC(M).GT.0.) DPMAX = MAX(dpmax,ABS(dp(M)))  
+  dpmax = 0._kdp
+  ! ... Descale the solution vector
+  IF(col_scale) THEN
+     DO ma=1,nxyz
+        rhs(ma) = diagc(ma)*rhs(ma)
+     END DO
+  END IF
+  ! ... Extract the solution from the solution vector
+  DO  m=1,nxyz  
+     ma = mrno(m)  
+     dp(m) = rhs(ma)  
+     IF(frac(m) > 0.) dpmax = MAX(dpmax,ABS(dp(m)))
   END DO
   ! ... If adjustable time step, check for unacceptable time step length
   IF(JTIME.GT.2) THEN  
