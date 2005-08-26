@@ -5,7 +5,7 @@ SUBROUTINE gcgris(ap,bp,ra,rr,ss,xx,w,z,sumfil)
   ! ... A restarted ORTHOMIN method
   ! ... Reduced system by red-black or d4 zig-zag reordering
   USE machine_constants, ONLY: kdp
-!!$  USE f_units
+  USE f_units, ONLY: fuclog
   USE mcc
   USE mcg
   USE mcm
@@ -86,14 +86,14 @@ SUBROUTINE gcgris(ap,bp,ra,rr,ss,xx,w,z,sumfil)
   r00 = SQRT(DOT_PRODUCT(rhs,rhs))
      xx = 0.0_kdp
   ! ... Debug output
-!  activate debug output to phast log file if needed
-!  WRITE(fuclog,*) 'Current R00, L2(RHS): ', r00
-  ! If initial residual is less than tolerance, no solve necessary
-  IF (r00 <= epsslv) RETURN
+!***  activate debug output to phast log file if needed
+!$$  WRITE(fuclog,*) 'Current R00, L2(RHS): ', r00
+  ! ... If R00 is tiny, then xx is a solution, skip out
+  IF (r00 <= 2._kdp*EPSILON(1._kdp)) RETURN
   DO  i=1,nbn
-     sumfil(i) = 0.0D0
+     sumfil(i) = 0.0_kdp
      DO  j=1,lrcgd1
-        ra(j,i) = 0.0D0
+        ra(j,i) = 0.0_kdp
      END DO
   END DO
   ! ... Multiply the 2 off-diagonal blocks, scale
@@ -108,8 +108,8 @@ SUBROUTINE gcgris(ap,bp,ra,rr,ss,xx,w,z,sumfil)
   END DO
   ranorm = SQRT(sumfil(1))
   ! ... Debug output
-!  WRITE(FUCLOG,*) 'Current ra-norm: ', RANORM
-         SUMFIL(1) = 0.0D0
+  WRITE(FUCLOG,*) 'Current ra-norm: ', RANORM
+         SUMFIL(1) = 0.0_kdp
   IF (milu) THEN
      CALL rfactm(ra,sumfil)
   ELSE
@@ -159,17 +159,16 @@ SUBROUTINE gcgris(ap,bp,ra,rr,ss,xx,w,z,sumfil)
      r1 = SQRT(DOT_PRODUCT(rr(:nbn),rr(:nbn)))
      ! ...   Use criterion #1 of Templates p.54
      xnorm = SQRT(DOT_PRODUCT(xx_b,xx_b))
-  ! ... Debug output
-!     WRITE(fuclog,*) 'Current x-norm: ', xnorm
+! ... Debug output
+!$$     WRITE(fuclog,*) 'Current x-norm: ', xnorm
      rat = r1/(ranorm*xnorm+r00)
-     ! ...   Alternate criterion #2
-     !..    rat=r1/r00
-  ! ... Debug output
-!     WRITE(fuclog,*) 'Current relative residual: ', rat
-!     WRITE(fuclog,*) 'Current residual: ', r1
+     !..    rat=r1/r00            ! ...   Alternate: criterion #2
+! ... Debug output
+!$$     WRITE(fuclog,*) 'Current relative residual: ', rat
+!$$     WRITE(fuclog,*) 'Current residual: ', r1
      IF(icount > maxit2) GO TO 90
      ! ... Test for convergence
-     IF (rat <= epsslv) GO TO 120
+     IF (r1 <= epsslv*(ranorm*xnorm+r00)) GO TO 120
      IF (l < nsdr-1) THEN
         CALL lsolv(ra,rr,w)
         CALL usolv(ss,ra,w)
@@ -190,23 +189,24 @@ SUBROUTINE gcgris(ap,bp,ra,rr,ss,xx,w,z,sumfil)
      END IF
   END DO
   GO TO 50
-90 continue
+90 CONTINUE
   WRITE(logline1,9001) 'Restarted Conjugate-Gradient Solver Reached Maximum Iterations: ',maxit2
   9001 FORMAT(A,i5)
 !!$  WRITE(fulp,'(/tr10,A)') logline1
   CALL errprt_c(logline1)
   ierr(139) = .TRUE.
   errexe = .TRUE.
+  ! ... Convergence achieved
 120 CONTINUE
   IF(prslm) THEN
 !!$     WRITE(*,9002) 'No. of solver iterations, Relative residual: ',icount,rat
      WRITE(logline1,9002) '          No. of solver iterations, Relative residual: ',icount,rat
-9002 FORMAT(a,i4,1pe15.7)
+9002 FORMAT(a,i4,tr4,1pe15.7)
      CALL logprt_c(logline1)
   ENDIF
-  IF(icount < 2) then
+  IF(icount < 2) THEN
      logline1 = '  Number of iterations is too few (<2); check convergence tolerance'
-     call warnprt_c(logline1)
+     CALL warnprt_c(logline1)
   ENDIF
   ! ... Backsolve for the red solution from the black half
   CALL abmult(w,xx_b)

@@ -1,6 +1,6 @@
 SUBROUTINE sumcal_ss_flow
   ! ... Performs summary calculations at end of time step for steady flow
-  USE machine_constants, ONLY: kdp
+  USE machine_constants, ONLY: kdp, macheps5
 !!$  USE f_units
   USE mcb
   USE mcc
@@ -664,7 +664,7 @@ SUBROUTINE sumcal_ss_flow
   ! ... Change in fluid over time step
   dfir=fir-firn
   ! ... Test for steady-state flow
-  frac_flowresid = (stotfi-stotfp)/(0.5*(stotfi+stotfp))
+  frac_flowresid = (stotfi-stotfp)/(0.5*(stotfi+stotfp)+macheps5)
   WRITE(logline1,3001) '     Maximum change in potentiometric head '//dots,  &
        cnvpi*dhmax,' ('//TRIM(unitl)//')',' at location (',  &
        cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax),')(',TRIM(unitl)//')'

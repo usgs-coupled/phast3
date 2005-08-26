@@ -78,9 +78,9 @@ SUBROUTINE init2_1
   ENDIF
   ! ... calculate gx,gy,gz
   IF(tilt) THEN  
-     gx = grav* COS(thetxz* twopi/ 360.)  
-     gy = grav* COS(thetyz* twopi/ 360.)  
-     gz = grav* COS(thetzz* twopi/ 360.)  
+     gx = grav*COS(thetxz*twopi/ 360.)  
+     gy = grav*COS(thetyz*twopi/ 360.)  
+     gz = grav*COS(thetzz*twopi/ 360.)  
   ELSE  
      gx = 0._kdp  
      gy = 0._kdp  
@@ -167,11 +167,11 @@ SUBROUTINE init2_1
            delz(k) = udz  
            DO 160 j = j1z(ipmz), j2z(ipmz) - 1  
               udy = y(j + 1) - y(j)  
-              udydz = udy* udz* .25  
+              udydz = udy*udz*.25  
               DO 150 i = i1z(ipmz), i2z(ipmz) - 1  
                  udx = x(i + 1) - x(i)  
-                 udxdz = udx* udz* .25  
-                 udxdy = udx* udy* .25  
+                 udxdz = udx*udz*.25  
+                 udxdy = udx*udy*.25  
                  ! ... x-direction conductance factors
                  mm(1) = cellno(i, j, k)  
                  mm(2) = cellno(i, j + 1, k)  
@@ -179,8 +179,8 @@ SUBROUTINE init2_1
                  mm(4) = mm(1) + nxy  
                  DO 110 imm = 1, 4  
                     m = mm(imm)  
-                    tx(m) = tx(m) + kxx(ipmz) * udydz/ udx  
-                    arx(m) = arx(m) + udydz* poros(ipmz)  
+                    tx(m) = tx(m) + kxx(ipmz)*udydz/ udx  
+                    arx(m) = arx(m) + udydz*poros(ipmz)  
                     arxbc(m) = arxbc(m) + udydz  
 110              END DO
                  ! ... y-direction conductance factors
@@ -189,8 +189,8 @@ SUBROUTINE init2_1
                  mm(4) = mm(1) + nxy  
                  DO 120 imm = 1, 4  
                     m = mm(imm)  
-                    ty(m) = ty(m) + kyy(ipmz) * udxdz/ udy  
-                    ary(m) = ary(m) + udxdz* poros(ipmz)  
+                    ty(m) = ty(m) + kyy(ipmz)*udxdz/ udy  
+                    ary(m) = ary(m) + udxdz*poros(ipmz)  
                     arybc(m) = arybc(m) + udxdz  
 120              END DO
                  ! ... z-direction conductance factors
@@ -199,8 +199,8 @@ SUBROUTINE init2_1
                  mm(4) = mm(1) + nx  
                  DO 130 imm = 1, 4  
                     m = mm(imm)  
-                    tz(m) = tz(m) + kzz(ipmz) * udxdy/ udz  
-                    arz(m) = arz(m) + udxdy* poros(ipmz)  
+                    tz(m) = tz(m) + kzz(ipmz)*udxdy/ udz  
+                    arz(m) = arz(m) + udxdy*poros(ipmz)  
                     arzbc(m) = arzbc(m) + udxdy  
 130              END DO
                  ! ... extensive volume properties
@@ -208,20 +208,20 @@ SUBROUTINE init2_1
                  mm(6) = mm(2) + nxy  
                  mm(7) = mm(3) + nxy  
                  mm(8) = mm(4) + nxy  
-                 udxyz = .5* udxdy* (z(k + 1) - z(k) )  
+                 udxyz = .5*udxdy*(z(k + 1) - z(k) )  
                  DO 140 imm = 1, 8  
                     m = mm(imm)  
-                    pv(m) = pv(m) + poros(ipmz) * udxyz  
-                    upabd = abpm(ipmz) * udxyz  
+                    pv(m) = pv(m) + poros(ipmz)*udxyz  
+                    upabd = abpm(ipmz)*udxyz  
                     pmcv(m) = pmcv(m) + upabd  
                     ! ... calculate specific storage distribution
-                    ss(m) = den0* gz* (abpm(ipmz) + poros(ipmz) &
-                         * bp)
+                    ss(m) = den0*gz*(abpm(ipmz) + poros(ipmz) &
+                         *bp)
                     !                        if(solute) pvk(m)=pvk(m)+dbkd(ipmz)*udxyz
                     IF(heat) THEN  
-                       pmhv(m) = pmhv(m) + (1._kdp - poros(ipmz) ) * &
-                            rcppm(ipmz) * udxyz
-                       pmchv(m) = pmchv(m) + upabd* rcppm(ipmz)  
+                       pmhv(m) = pmhv(m) + (1._kdp - poros(ipmz) )*  &
+                            rcppm(ipmz)*udxyz
+                       pmchv(m) = pmchv(m) + upabd*rcppm(ipmz)  
                     ENDIF
                     isd = iisd(imm)
                     cell_sd(m)%sd_active(isd) = .TRUE.
@@ -237,54 +237,54 @@ SUBROUTINE init2_1
            DO 190 i = i1z(ipmz), i2z(ipmz) - 1  
               udx = x(i + 1) - x(i)  
               ! ... r-direction conductance factors
-              udydz = pi* rm(i) * udz  
+              udydz = pi*rm(i)*udz  
               mm(1) = cellno(i, 1, k)  
               mm(2) = mm(1) + nxy  
               DO 180 imm = 1, 2  
                  m = mm(imm)  
-                 tx(m) = tx(m) + kxx(ipmz) * udydz/ udx  
-                 arx(m) = arx(m) + udydz* poros(ipmz)  
-                 arxbc(m) = arxbc(m) + pi* x(i) * udz  
+                 tx(m) = tx(m) + kxx(ipmz)*udydz/ udx  
+                 arx(m) = arx(m) + udydz*poros(ipmz)  
+                 arxbc(m) = arxbc(m) + pi*x(i)*udz  
 180           END DO
               ! ... z-direction conductance factors
               mm(2) = mm(1) + 1  
-              udxdyi = pi* (rm(i) * rm(i) - x(i) * x(i) )  
-              udxdyo = pi* (x(i + 1) * x(i + 1) - rm(i) * &
+              udxdyi = pi*(rm(i)*rm(i) - x(i)*x(i) )  
+              udxdyo = pi*(x(i + 1)*x(i + 1) - rm(i)*  &
                    rm(i) )
-              tz(mm(1) ) = tz(mm(1) ) + kzz(ipmz) * udxdyi/ &
+              tz(mm(1) ) = tz(mm(1) ) + kzz(ipmz)*udxdyi/ &
                    udz
-              tz(mm(2) ) = tz(mm(2) ) + kzz(ipmz) * udxdyo/ &
+              tz(mm(2) ) = tz(mm(2) ) + kzz(ipmz)*udxdyo/ &
                    udz
-              arz(mm(1) ) = arz(mm(1) ) + udxdyi* poros(ipmz)  
-              arz(mm(2) ) = arz(mm(2) ) + udxdyo* poros(ipmz)  
+              arz(mm(1) ) = arz(mm(1) ) + udxdyi*poros(ipmz)  
+              arz(mm(2) ) = arz(mm(2) ) + udxdyo*poros(ipmz)  
               arzbc(mm(1) ) = arzbc(mm(1) ) + udxdyi  
               arzbc(mm(2) ) = arzbc(mm(2) ) + udxdyo  
               ! ... extensive volume properties
               mm(3) = mm(2) + nxy  
               mm(4) = mm(1) + nxy  
-              udxyzi = udxdyi* .5* udz  
-              udxyzo = udxdyo* .5* udz  
-              pv(mm(1) ) = pv(mm(1) ) + poros(ipmz) * udxyzi  
-              pv(mm(4) ) = pv(mm(4) ) + poros(ipmz) * udxyzi  
-              pv(mm(2) ) = pv(mm(2) ) + poros(ipmz) * udxyzo  
-              pv(mm(3) ) = pv(mm(3) ) + poros(ipmz) * udxyzo  
-              pmcv(mm(1) ) = pmcv(mm(1) ) + abpm(ipmz) * &
+              udxyzi = udxdyi*.5*udz  
+              udxyzo = udxdyo*.5*udz  
+              pv(mm(1) ) = pv(mm(1) ) + poros(ipmz)*udxyzi  
+              pv(mm(4) ) = pv(mm(4) ) + poros(ipmz)*udxyzi  
+              pv(mm(2) ) = pv(mm(2) ) + poros(ipmz)*udxyzo  
+              pv(mm(3) ) = pv(mm(3) ) + poros(ipmz)*udxyzo  
+              pmcv(mm(1) ) = pmcv(mm(1) ) + abpm(ipmz)* &
                    udxyzi
-              pmcv(mm(4) ) = pmcv(mm(4) ) + abpm(ipmz) * &
+              pmcv(mm(4) ) = pmcv(mm(4) ) + abpm(ipmz)* &
                    udxyzi
-              pmcv(mm(2) ) = pmcv(mm(2) ) + abpm(ipmz) * &
+              pmcv(mm(2) ) = pmcv(mm(2) ) + abpm(ipmz)* &
                    udxyzo
-              pmcv(mm(3) ) = pmcv(mm(3) ) + abpm(ipmz) * &
+              pmcv(mm(3) ) = pmcv(mm(3) ) + abpm(ipmz)* &
                    udxyzo
               ! ... calculate specific storage distribution
-              ss(mm(1) ) = den0* gz* (abpm(ipmz) + poros(ipmz) &
-                   * bp)
-              ss(mm(2) ) = den0* gz* (abpm(ipmz) + poros(ipmz) &
-                   * bp)
-              ss(mm(3) ) = den0* gz* (abpm(ipmz) + poros(ipmz) &
-                   * bp)
-              ss(mm(4) ) = den0* gz* (abpm(ipmz) + poros(ipmz) &
-                   * bp)
+              ss(mm(1) ) = den0*gz*(abpm(ipmz) + poros(ipmz) &
+                   *bp)
+              ss(mm(2) ) = den0*gz*(abpm(ipmz) + poros(ipmz) &
+                   *bp)
+              ss(mm(3) ) = den0*gz*(abpm(ipmz) + poros(ipmz) &
+                   *bp)
+              ss(mm(4) ) = den0*gz*(abpm(ipmz) + poros(ipmz) &
+                   *bp)
               !                  if(solute) then
               !                     pvk(mm(1))=pvk(mm(1))+dbkd(ipmz)*udxyzi
               !                     pvk(mm(4))=pvk(mm(4))+dbkd(ipmz)*udxyzi
@@ -293,21 +293,21 @@ SUBROUTINE init2_1
               !                  endif
               IF(heat) THEN  
                  pmhv(mm(1) ) = pmhv(mm(1) ) + (1._kdp - poros(&
-                      ipmz) ) * rcppm(ipmz) * udxyzi
+                      ipmz) )*rcppm(ipmz)*udxyzi
                  pmhv(mm(4) ) = pmhv(mm(4) ) + (1._kdp - poros(&
-                      ipmz) ) * rcppm(ipmz) * udxyzi
+                      ipmz) )*rcppm(ipmz)*udxyzi
                  pmhv(mm(2) ) = pmhv(mm(2) ) + (1._kdp - poros(&
-                      ipmz) ) * rcppm(ipmz) * udxyzo
+                      ipmz) )*rcppm(ipmz)*udxyzo
                  pmhv(mm(3) ) = pmhv(mm(3) ) + (1._kdp - poros(&
-                      ipmz) ) * rcppm(ipmz) * udxyzo
-                 pmchv(mm(1) ) = pmchv(mm(1) ) + abpm(ipmz) * &
-                      udxyzi* rcppm(ipmz)
-                 pmchv(mm(4) ) = pmchv(mm(4) ) + abpm(ipmz) * &
-                      udxyzi* rcppm(ipmz)
-                 pmchv(mm(2) ) = pmchv(mm(2) ) + abpm(ipmz) * &
-                      udxyzo* rcppm(ipmz)
-                 pmchv(mm(3) ) = pmchv(mm(3) ) + abpm(ipmz) * &
-                      udxyzo* rcppm(ipmz)
+                      ipmz) )*rcppm(ipmz)*udxyzo
+                 pmchv(mm(1) ) = pmchv(mm(1) ) + abpm(ipmz)*  &
+                      udxyzi*rcppm(ipmz)
+                 pmchv(mm(4) ) = pmchv(mm(4) ) + abpm(ipmz)*  &
+                      udxyzi*rcppm(ipmz)
+                 pmchv(mm(2) ) = pmchv(mm(2) ) + abpm(ipmz)*  &
+                      udxyzo*rcppm(ipmz)
+                 pmchv(mm(3) ) = pmchv(mm(3) ) + abpm(ipmz)*  &
+                      udxyzo*rcppm(ipmz)
               ENDIF
                     cell_sd(mm(1))%num_sd = cell_sd(mm(1))%num_sd+1
                     cell_sd(mm(2))%num_sd = cell_sd(mm(2))%num_sd+1
@@ -371,9 +371,9 @@ SUBROUTINE init2_1
 !!$        ! ... calculate equivalent thermal conductivity for fluid and medium
 !!$        ! ...      for each zone
 !!$        upor = (1._kdp - poros(i) ) / poros(i)  
-!!$        kthx(i) = kthf + upor* kthxpm(i)  
-!!$        if(.not.cylind) kthy(i) = kthf + upor* kthypm(i)  
-!!$        kthz(i) = kthf + upor* kthzpm(i)  
+!!$        kthx(i) = kthf + upor*kthxpm(i)  
+!!$        if(.not.cylind) kthy(i) = kthf + upor*kthypm(i)  
+!!$        kthz(i) = kthf + upor*kthzpm(i)  
 !!$240  end do
 !!$  endif
   IF(nwel > 0) THEN
@@ -421,7 +421,7 @@ SUBROUTINE init2_1
               ! ...      Geometric factor
               rorw2 = 4.*uarz/(pi*wbod(iwel)*wbod(iwel))  
               IF(rorw2 <=1._kdp) ierr(57) = .TRUE.
-              uwi = twopi*wfrac(iwel)*(rorw2-1._kdp)/(0.5*  &
+              uwi = twopi*wfrac(iwel)*(rorw2-1._kdp)/(0.5* &
                    (rorw2*LOG(rorw2) - (rorw2-1._kdp)))
            ELSE
               uwi = 1._kdp  
@@ -630,7 +630,7 @@ SUBROUTINE init2_1
         IF(exbc) THEN  
            l = l + 1  
            umbc(l) = m  
-           ukbc(l) = uklb(m) * uarbc/ubblb(m)  
+           ukbc(l) = uklb(m)*uarbc/ubblb(m)  
            ubbbc(l)=ubblb(m)
            uzbc(l) = uzelb(m)  
         ENDIF
@@ -736,11 +736,11 @@ SUBROUTINE init2_1
 !!$              udz = z(k + 1) - z(k)  
 !!$              do 450 j = j1z(ipmz), j2z(ipmz) - 1  
 !!$                 udy = y(j + 1) - y(j)  
-!!$                 udydz = udy* udz* .25  
+!!$                 udydz = udy*udz*.25  
 !!$                 do 440 i = i1z(ipmz), i2z(ipmz) - 1  
 !!$                    udx = x(i + 1) - x(i)  
-!!$                    udxdz = udx* udz* .25  
-!!$                    udxdy = udx* udy* .25  
+!!$                    udxdz = udx*udz*.25  
+!!$                    udxdy = udx*udy*.25  
 !!$                    ! ...    x-direction face factors
 !!$                    mm(1) = cellno(i, j, k)  
 !!$                    mm(2) = cellno(i, j + 1, k)  
@@ -751,7 +751,7 @@ SUBROUTINE init2_1
 !!$                       if(i.eq.i2z(ipmz) - 1) m = m + 1  
 !!$                       write(cibc, 6001) ibc(m)  
 !!$                       if(cibc(1:1) .eq.'4') uvka(m) = uvka(m) &
-!!$                            + kxx(ipmz) * udydz
+!!$                            + kxx(ipmz)*udydz
 !!$410                 end do
 !!$                    ! ...    y-direction face factors
 !!$                    mm(2) = mm(1) + 1  
@@ -762,7 +762,7 @@ SUBROUTINE init2_1
 !!$                       if(j.eq.j2z(ipmz) - 1) m = m + nx  
 !!$                       write(cibc, 6001) ibc(m)  
 !!$                       if(cibc(2:2) .eq.'4') uvka(m) = uvka(m) &
-!!$                            + kyy(ipmz) * udxdz
+!!$                            + kyy(ipmz)*udxdz
 !!$420                 end do
 !!$                    ! ...    z-direction face factors
 !!$                    mm(2) = mm(1) + 1  
@@ -773,7 +773,7 @@ SUBROUTINE init2_1
 !!$                       if(k.eq.k2z(ipmz) - 1) m = m + nxy  
 !!$                       write(cibc, 6001) ibc(m)  
 !!$                       if(cibc(3:3) .eq.'4') uvka(m) = uvka(m) &
-!!$                            + kzz(ipmz) * udxdy
+!!$                            + kzz(ipmz)*udxdy
 !!$430                 end do
 !!$440              end do
 !!$450           end do
@@ -787,7 +787,7 @@ SUBROUTINE init2_1
 !!$                 ! ...    r-direction face factors
 !!$                 rmm = x(i)  
 !!$                 if(i.eq.i2z(ipmz) - 1) rmm = x(i + 1)  
-!!$                 udydz = pi* rmm* udz  
+!!$                 udydz = pi*rmm*udz  
 !!$                 mm(1) = cellno(i, 1, k)  
 !!$                 mm(2) = mm(1) + nxy  
 !!$                 do 470 imm = 1, 2  
@@ -795,12 +795,12 @@ SUBROUTINE init2_1
 !!$                    if(i.eq.i2z(ipmz) - 1) m = m + 1  
 !!$                    write(cibc, 6001) ibc(m)  
 !!$                    if(cibc(1:1) .eq.'4') uvka(m) = uvka(m) &
-!!$                         + kxx(ipmz) * udydz
+!!$                         + kxx(ipmz)*udydz
 !!$470              end do
 !!$                 ! ...    z-direction face factors
 !!$                 mm(2) = mm(1) + 1  
-!!$                 udxdyi = pi* (rm(i) * rm(i) - x(i) * x(i) )  
-!!$                 udxdyo = pi* (x(i + 1) * x(i + 1) - rm(i) * &
+!!$                 udxdyi = pi*(rm(i)*rm(i) - x(i)*x(i) )  
+!!$                 udxdyo = pi*(x(i + 1)*x(i + 1) - rm(i)*  &
 !!$                      rm(i) )
 !!$                 if(k.eq.k2z(ipmz) - 1) then  
 !!$                    mm(1) = mm(1) + nxy  
@@ -808,10 +808,10 @@ SUBROUTINE init2_1
 !!$                 endif
 !!$                 write(cibc, 6001) ibc(mm(1) )  
 !!$                 if(cibc(3:3) .eq.'4') uvka(mm(1) ) = uvka(mm(&
-!!$                      1) ) + kzz(ipmz) * udxdyi
+!!$                      1) ) + kzz(ipmz)*udxdyi
 !!$                 write(cibc, 6001) ibc(mm(2) )  
 !!$                 if(cibc(3:3) .eq.'4') uvka(mm(2) ) = uvka(mm(&
-!!$                      2) ) + kzz(ipmz) * udxdyo
+!!$                      2) ) + kzz(ipmz)*udxdyo
 !!$480           end do
 !!$490        end do
 !!$        endif
@@ -826,10 +826,10 @@ SUBROUTINE init2_1
 !!$     !        if(ic.gt.0) then  
 !!$     !           l = l + 1  
 !!$     !           maifc(l) = m  
-!!$     !           if(fresur.and.lnz4.eq.laifc + 1.and.m.gt.nxy* (nz - 1) &
+!!$     !           if(fresur.and.lnz4.eq.laifc + 1.and.m.gt.nxy*(nz - 1) &
 !!$     !                ) lnz4 = l - 1
 !!$     !           ! ... lnz4 is last aif node below upper layer
-!!$     !           vaifc(l) = uvka(m) * uvaifc(m)  
+!!$     !           vaifc(l) = uvka(m)*uvaifc(m)  
 !!$     !           sum = sum + vaifc(l)  
 !!$     !        endif
 !!$     !510  end do
@@ -843,19 +843,19 @@ SUBROUTINE init2_1
 !!$     !             &           'naifc =',i5/)
 !!$     !     endif
 !!$     !     if(iaif.eq.2) then  
-!!$     !        f1aif = 2.* pi* koar* boar/ visoar  
-!!$     !        f2aif = 1./ (2.* pi* (aboar + poroar* bp) * rioar* &
-!!$     !             rioar* boar)
-!!$     !        ftdaif = koar/ (visoar* (aboar + poroar* bp) * rioar* &
+!!$     !        f1aif = 2.*pi*koar*boar/ visoar  
+!!$     !        f2aif = 1./ (2.*pi*(aboar + poroar*bp)*rioar*  &
+!!$     !             rioar*boar)
+!!$     !        ftdaif = koar/ (visoar*(aboar + poroar*bp)*rioar*  &
 !!$     !             rioar)
 !!$     !     endif
 !!$     !     u1 = angoar  
-!!$     !     if(iaif.eq.1) u1 = (aboar + poroar* bp) * voar  
+!!$     !     if(iaif.eq.1) u1 = (aboar + poroar*bp)*voar  
 !!$     !     do 520 l = 1, naifc  
 !!$     !        m = maifc(l)  
 !!$     !        wcaif(l) = 0._kdp  
-!!$     !        uvaifc(m) = vaifc(l) / sum  
-!!$     !        vaifc(l) = uvaifc(m) * u1  
+!!$     !        uvaifc(m) = vaifc(l)/sum  
+!!$     !        vaifc(l) = uvaifc(m)*u1  
 !!$     ! 520  end do
 !!$     do 530 l = 1, naifc  
 !!$        qfaif(l) = 0._kdp  
@@ -1137,47 +1137,50 @@ SUBROUTINE init2_1
         ! ... establish d4 cell reordering for reduced matrix, ra
         CALL reordr(slmeth)  
         ! ... allocate space for the solver
-        ALLOCATE(diagra(nbn), envlra(ipenv(nbn+1)), envura(ipenv(nbn+1)), &
+        ALLOCATE(diagra(nbn), envlra(ipenv(nbn+1)), envura(ipenv(nbn+1)),  &
              stat = a_err)
         IF (a_err /= 0) THEN  
            PRINT *, "array allocation failed: init2, number 12"  
            STOP  
         ENDIF
         ! ... primary and overhead storage
-        nprist = nbn + 2* ipenv(nbn + 1)  
-        nohst = 9* nxyz + nbn + 1  
+        nprist = nbn + 2*ipenv(nbn + 1)  
+        nohst = 9*nxyz + nbn + 1  
         nstslv = nprist + nohst  
      ELSEIF(slmeth == 3 .OR. slmeth == 5) THEN  
         ALLOCATE (ind(nxyz), mrno(nxyz), mord(nxyz), ci(6,nxyz), cir(lrcgd1,nxyzh), &
              cirh(lrcgd2,nxyzh), cirl(lrcgd2,nxyzh), &
              stat = a_err)
-        IF (a_err /= 0) THEN  
+        IF (a_err /= 0) THEN
            PRINT *, "array allocation failed: init2, number 13"  
            STOP  
         ENDIF
         ! ... establish red-black or d4z cell reordering for reduced matrix, ra
         CALL reordr(slmeth)
         ! ... allocate space for the solver
-        ALLOCATE(ap(nrn,0:nsdr), bbp(nbn,0:nsdr), ra(lrcgd1,nbn), rr(nrn), sss(nbn), &
-             xx(nxyz), ww(nrn), zz(nbn), sumfil(nbn), &
+        ALLOCATE(ap(nrn,0:nsdr), bbp(nbn,0:nsdr), ra(lrcgd1,nbn), rr(nrn), sss(nbn),  &
+             xx(nxyz), ww(nrn), zz(nbn), sumfil(nbn),  &
              stat = a_err)
         IF (a_err /= 0) THEN  
            PRINT *, "array allocation failed: init2, number 14"  
            STOP  
         ENDIF
         ! ... primary and overhead storage
-        nprist = lrcgd1* nbn  
-        nohst = 3*lrcgd1*nbn + 2*(nsdr + 1)*nbn + 10*nxyz + 5*  &
+        nprist = lrcgd1*nbn  
+        nohst = 3*lrcgd1*nbn + 2*(nsdr + 1)*nbn + 10*nxyz + 5* &
              nbn + (nsdr - 1)*(nsdr - 1) + nsdr + 19*19 + 42
         nstslv = nprist + nohst  
      ENDIF
   ! ... allocate space for the assembly of difference equations
-  ALLOCATE(va(7,nxyz), rhs(nxyz), cc34(nxyz), cc35(nxyz), &
+  ALLOCATE(va(7,nxyz), rhs(nxyz), cc34(nxyz), cc35(nxyz),  &
+       diagc(nxyz), diagr(nxyz),  &
        stat = a_err)
   IF (a_err /= 0) THEN  
      PRINT *, "array allocation failed: init2, number 15"
      STOP
   ENDIF
+!*****special flag for diagnostic
+  ident_diagc = .TRUE.
   ! ... initialize heat conduction b.c. temperatures
 !!$  !...***not available in phast
   ! ... initialize pressure if hydrostatic i.c.
@@ -1189,27 +1192,27 @@ SUBROUTINE init2_1
      k1 = 1  
      IF(zpinit > 0.5*(z(nz) + z(1))) k1 = nz  
      ! ...      first cell
-     ugdelx = gx* (x(1) - x0)  
-     ugdely = gy* (y(1) - y0)  
-     ugdelz = gz* (z(k1) - z0)  
+     ugdelx = gx*(x(1) - x0)  
+     ugdely = gy*(y(1) - y0)  
+     ugdelz = gz*(z(k1) - z0)  
      m = cellno(1, 1, k1)  
      ut = t0  
      uc = w0  
      IF(heat) ut = t(m)  
      uden = den0  
-     p(m) = (pinit - uden* ugdelz) / (1._kdp + .5* denp* ugdelz)  
+     p(m) = (pinit - uden*ugdelz) / (1._kdp + .5*denp*ugdelz)  
      ! ...       first layer, j=1 row
      DO  i = 2, nx  
         m = cellno(i, 1, k1)  
-        ugdelx = gx* (x(i) - x(i - 1) )  
+        ugdelx = gx*(x(i) - x(i - 1) )  
         !            if(heat) udt=t(m)+t(m-1)-2.*t0
         uden = den0  
-        p(m) = (p(m-1) - uden*ugdelx)/(1._kdp + .5* denp*ugdelx)
+        p(m) = (p(m-1) - uden*ugdelx)/(1._kdp + .5*denp*ugdelx)
      END DO
      ! ...      first layer, remaining rows by column
      IF(.NOT.cylind) THEN  
         DO 660 j = 2, ny  
-           ugdely = gy* (y(j) - y(j - 1) )  
+           ugdely = gy*(y(j) - y(j - 1) )  
            DO 650 i = 1, nx  
               m = cellno(i, j, k1)  
               mijmk = m - nx  
@@ -1231,11 +1234,11 @@ SUBROUTINE init2_1
         kinc = - 1  
      ENDIF
      DO 690 k = kf, kl, kinc  
-        ugdelz = gz* (z(k) - z(k - kinc) )  
+        ugdelz = gz*(z(k) - z(k - kinc) )  
         DO 680 j = 1, ny  
            DO 670 i = 1, nx  
               m = cellno(i, j, k)  
-              mijkm = m - kinc* nxy  
+              mijkm = m - kinc*nxy  
               !                  if(heat) udt=t(m)+t(mijkm)-2.*t0
               !                  if(solute) udc=c(m)+c(mijkm)-2.*w0
               uden = den0  
@@ -1254,19 +1257,19 @@ SUBROUTINE init2_1
      DO 720 j = 1, ny  
         DO 710 i = 1, nx  
            m = cellno(i, j, nz)  
-           ugdelz = gz* (hwt(m) - z(nz) )  
+           ugdelz = gz*(hwt(m) - z(nz) )  
            !               if(heat) udt=t(m)-t0
            uden = den0  
-           p(m) = uden* ugdelz  
+           p(m) = uden*ugdelz  
            ! ...      remaining layers
            DO 700 k2 = nz - 1, 1, - 1  
               m2 = cellno(i, j, k2)  
               m1 = m2 + nxy  
-              ugdelz = gz* (z(k2) - z(k2 + 1) )  
+              ugdelz = gz*(z(k2) - z(k2 + 1) )  
               !                  if(heat) udt=t(m2)+t(m1)-2.*t0
               !                  if(solute) udc=c(m2)+c(m1)-2.*w0
               uden = den0  
-              p(m2) = p(m1) - uden* ugdelz  
+              p(m2) = p(m1) - uden*ugdelz  
 700        END DO
 710     END DO
 720  END DO

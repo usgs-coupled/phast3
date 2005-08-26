@@ -18,7 +18,8 @@ MODULE machine_constants
 ! ... BGREAL: A large real number representable in single precision
 ! ... BGINT:  A large integer number representable in 4 bytes
   INTEGER, PARAMETER :: BGINT=9999
-  REAL(KIND=kdp), PARAMETER :: bgreal=HUGE(1._kdp), one_plus_eps=1._kdp+5._kdp*epsilon(1._kdp)
+  REAL(KIND=kdp), PARAMETER :: bgreal=HUGE(1._kdp), one_plus_eps=1._kdp+5._kdp*EPSILON(1._kdp)
+  REAL(KIND=kdp), PARAMETER :: macheps5=5._kdp*EPSILON(1._kdp)
 END MODULE machine_constants
 
 MODULE mcb
@@ -177,8 +178,8 @@ MODULE mcm
   REAL(KIND=kdp), DIMENSION(:,:,:), ALLOCATABLE, TARGET :: vassbc
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: rf
   REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: rs, rs1
-  REAL(KIND=kdp) :: C11, C12, C13, C21, C22, C23, C24, C31, C32, C33, C34, C35, CFP, CSP, &
-       EFP, ESP
+  REAL(KIND=kdp) :: c11, c12, c13, c21, c22, c23, c24, c31, c32, c33, c34, c35, cfp, csp, &
+       efp, esp
   REAL(KIND=kdp), DIMENSION(:), POINTER :: rhs_r, rhs_b, rhsbcv
   REAL(KIND=kdp), DIMENSION(:,:), POINTER :: vasbcv
 END MODULE mcm
@@ -230,23 +231,23 @@ MODULE mcs
   USE machine_constants, ONLY: kdp
   IMPLICIT NONE
   SAVE
-  INTEGER, DIMENSION(3) :: ISORD
-  INTEGER, DIMENSION(3) :: OMOPT, SPR
-  INTEGER, DIMENSION(:), ALLOCATABLE :: IND, IP1, IP1R, IPENV, MRNO, MORD
-  INTEGER, DIMENSION(:,:), ALLOCATABLE :: CI, CIN, CIR, CIRL, CIRH
+  INTEGER, DIMENSION(:), ALLOCATABLE :: ind, ip1, ip1r, ipenv, mrno, mord
+  INTEGER, DIMENSION(:,:), ALLOCATABLE :: ci, cin, cir, cirl, cirh
   ! ... MAR for RCG solver
   ! ... The M array relates the local 19-point stencil indices of the
   ! ...      reduced matrix to the VA matrix. 
-  INTEGER, DIMENSION(6,6) :: MAR = reshape((/10,5,4,3,2,1, 15,10,8,7,6,2, 16,12,10,9,7,3,  &
+  INTEGER, DIMENSION(6,6) :: mar = reshape((/10,5,4,3,2,1, 15,10,8,7,6,2, 16,12,10,9,7,3,  &
            17,13,11,10,8,4, 18,14,13,12,10,5, 19,18,17,16,15,10/), (/6,6/))
-  INTEGER, DIMENSION(19,19) :: MAR1
-  INTEGER ::  IDIR, MAXIT1, MAXIT2, NBN, NRN, NOHST, ND4N, NPRIST, &
-       NRAL, NSDR, NSTSLV, NSTSOR, NTSOPT
-  REAL(KIND=kdp) :: EVMAX, EVMIN, OMEGA, SPRAD
-  REAL(KIND=kdp) :: EPSOMG, EPSSLV
+  INTEGER, DIMENSION(19,19) :: mar1
+  INTEGER ::  idir, maxit1, maxit2, nbn, nrn, nohst, nd4n, nprist, &
+       nral, nsdr, nstslv, nstsor, ntsopt
+  REAL(KIND=kdp) :: epsomg, epsslv
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: diagc, diagr
   ! ... LRCGD1=37 and LRCGD2=18 if LU fill-in is desired,
   ! ...      otherwise LRCGD1=19 and LRCGD2=10 for no fill-in
-  INTEGER, PARAMETER :: LSDR=5, LRCGD1=19, LRCGD2=10
+  INTEGER, PARAMETER :: lsdr=5, lrcgd1=19, lrcgd2=10
+  LOGICAL :: col_scale=.true., row_scale=.true.
+  LOGICAL :: ident_diagc
 END MODULE mcs
 
 MODULE mcs2

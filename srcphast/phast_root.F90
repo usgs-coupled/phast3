@@ -1,4 +1,4 @@
-subroutine phast_root(mpi_tasks, mpi_myself)
+SUBROUTINE phast_root(mpi_tasks, mpi_myself)
   USE machine_constants, ONLY: kdp, one_plus_eps
   USE mcb, ONLY: adj_wr_ratio, transient_fresur
   USE mcc
@@ -6,6 +6,7 @@ subroutine phast_root(mpi_tasks, mpi_myself)
   USE mcg, ONLY: naxes, nx, ny, nz, nxyz
   USE mcn, ONLY: x_node, y_node, z_node
   USE mcp
+  USE mcs
   USE mcv
   USE mcw
 !!$#if defined(USE_MPI)
@@ -13,13 +14,13 @@ subroutine phast_root(mpi_tasks, mpi_myself)
 !!$#endif
 !  USE print_control_mod
   IMPLICIT NONE
-  INTEGER, intent(inout) :: mpi_myself, mpi_tasks
+  INTEGER, INTENT(inout) :: mpi_myself, mpi_tasks
   REAL(kind=kdp) :: time_phreeqc
   REAL(KIND=kdp) :: deltim_dummy
   INTEGER :: stop_msg
   CHARACTER(LEN=130) :: logline1
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: phast_root.F90,v 1.2 2005/05/06 15:35:51 klkipp Exp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: phast_root.F90,v 1.3 2005/08/26 19:55:59 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   !...
@@ -183,6 +184,12 @@ subroutine phast_root(mpi_tasks, mpi_myself)
      WRITE(*,3001) TRIM(logline1)
      CALL logprt_c(logline1)
   END IF
+! *** special diagnostic message ***
+  IF(col_scale .and. ident_diagc) THEN
+     logline1 = '***INFORMATION: all column scaling was unnecessary.'
+     WRITE(*,3001) TRIM(logline1)
+     CALL logprt_c(logline1)
+  END IF
   CALL terminate_phast(mpi_myself)
   STOP 'Simulation Completed'
-END subroutine phast_root
+END SUBROUTINE phast_root

@@ -367,7 +367,7 @@ SUBROUTINE closef(mpi_myself)
      ENDIF
   ENDIF
   ! ...      Deallocate space for the assembly of difference equations
-  DEALLOCATE(va, rhs, cc34, cc35, & 
+  DEALLOCATE(va, rhs, cc34, cc35, diagc, diagr,  & 
        stat = da_err)
   IF (da_err /= 0) THEN  
      PRINT *, "Array deallocation failed: closef: number 18"  

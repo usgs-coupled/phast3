@@ -1,10 +1,10 @@
 SUBROUTINE asmslp  
   ! ... Performs the assembly and solution of the pressure equation
   USE machine_constants, ONLY: kdp
-!!$  USE f_units
+  USE f_units
   USE mcb
   USE mcc
-  use mcch, ONLY: unittm
+  USE mcch, ONLY: unittm
   USE mcg
   USE mcm
   USE mcp
@@ -14,6 +14,27 @@ SUBROUTINE asmslp
   USE mcw
   IMPLICIT NONE
   INTERFACE
+     SUBROUTINE rowscale(nrow,norm,a,diag,ierr)
+       USE machine_constants, ONLY: kdp
+       IMPLICIT NONE
+       INTEGER, INTENT(IN) :: nrow
+       INTEGER, INTENT(IN) :: norm
+       REAL(KIND=kdp), DIMENSION(:,:), INTENT(INOUT) :: a
+       REAL(KIND=kdp), DIMENSION(:), INTENT(OUT) :: diag
+       INTEGER, INTENT(OUT) :: ierr
+     END SUBROUTINE rowscale
+
+     SUBROUTINE colscale(nrow,norm,a,ci,diag,ierr)
+       USE machine_constants, ONLY: kdp
+       IMPLICIT NONE
+       INTEGER, INTENT(IN) :: nrow  
+       INTEGER, INTENT(IN) :: norm  
+       REAL(KIND=kdp), DIMENSION(:,:), INTENT(INOUT) :: a    
+       INTEGER, DIMENSION(:,:), INTENT(IN) :: ci 
+       REAL(KIND=kdp), DIMENSION(:), INTENT(OUT) :: diag
+       INTEGER, INTENT(OUT) :: ierr
+     END SUBROUTINE colscale
+
      SUBROUTINE gcgris(ap,bp,ra,rr,ss,xx,w,z,sumfil)
        USE machine_constants, ONLY: kdp
        REAL(KIND=kdp), DIMENSION(:,0:), INTENT(IN OUT) :: ap
@@ -24,6 +45,7 @@ SUBROUTINE asmslp
        REAL(kind=kdp), DIMENSION(:), INTENT(INOUT) :: sumfil
        REAL(KIND=kdp), DIMENSION(:), INTENT(OUT) :: xx
      END SUBROUTINE gcgris
+
      SUBROUTINE sbcflo(iequ,ddv,ufracnp,qdvsbc,rhssbc,vasbc)
        USE machine_constants, ONLY: kdp
       INTEGER, INTENT(IN) :: iequ
@@ -33,52 +55,79 @@ SUBROUTINE asmslp
        REAL(KIND=kdp), DIMENSION(:), INTENT(IN) :: rhssbc
        REAL(KIND=kdp), DIMENSION(:,:), INTENT(IN) :: vasbc
      END SUBROUTINE sbcflo
+
      SUBROUTINE tfrds(diagra,envlra,envura)
        USE machine_constants, ONLY: kdp
        REAL(KIND=kdp), DIMENSION(:), INTENT(OUT) :: diagra, envlra, envura
      END SUBROUTINE tfrds
   END INTERFACE
 !
-  REAL(kind=kdp) :: fddp, sum1, sum2, timenp, udpwkt, upwkt
+  INTEGER :: m, ma, norm, iierr  
   INTEGER :: itrnp, iwel, ks, m, ma  
+  REAL(kind=kdp) :: fddp, sum1, sum2, timenp, udpwkt, upwkt
   LOGICAL :: convp
   CHARACTER(LEN=130) :: logline1, logline2
-  !.....Set string for use with RCS ident command
+  ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   ! ... Assemble and solve the flow equation for pressure (head)
-  errexe = .false.  
-  convp = .false.  
+  errexe = .FALSE.  
+  convp = .FALSE.  
   dp = 0._kdp
   dt = 0._kdp
   dc = 0._kdp
-  if (nwel > 0) dpwkt = 0._kdp
+  IF (nwel > 0) dpwkt = 0._kdp
   ieq = 1  
   itrnp = 1
 !     component 1 is used for stuff in pressure assembly. Should not
 !     matter since constant density suppresses all transport terms.
   is = 1
   logline1 =  '     Beginning flow calculation.'
-  WRITE(*,'(a)') trim(logline1)
+  WRITE(*,'(a)') TRIM(logline1)
   CALL logprt_c(logline1)
 40 CONTINUE
   CALL asembl  
   CALL aplbci  
+     ! ... Scale the matrix equations
+     norm = 0          ! ... use L-infinity norm
+     IF(row_scale) CALL rowscale(nxyz,norm,va,diagr,iierr)
+     IF(col_scale) CALL colscale(nxyz,norm,va,ci,diagc,iierr)
+     IF(iierr /= 0) THEN
+        WRITE(fuclog,*) 'Error in scaling: ', iierr
+!!        ierr(81) = .TRUE.
+        RETURN
+     END IF
+     IF(col_scale) THEN
+        IF(MINVAL(diagc) /= 1._kdp .AND. MAXVAL(diagc) /= 1._kdp)  &
+             ident_diagc = .FALSE.
+     END IF
+     IF(row_scale) THEN
+        DO ma=1,nxyz
+           rhs(ma) = diagr(ma)*rhs(ma)
+        END DO
+     END IF
   ! ... Solve the matrix equations
   IF(slmeth == 1) THEN  
      ! ... Direct solver
      CALL tfrds(diagra, envlra, envura)  
-  ELSEIF(slmeth == 3 .or. slmeth == 5) THEN  
+  ELSEIF(slmeth == 3 .OR. slmeth == 5) THEN  
      ! ... Generalized conjugate gradient iterative solver on reduced matrix
      CALL gcgris(ap, bbp, ra, rr, sss, xx, ww, zz, sumfil)
   ENDIF
   IF(ERREXE) RETURN  
   ! ... Flow equation has just been solved
-  DPMAX = 0._kdp
-  DO  M = 1, NXYZ  
-     MA = MRNO(M)  
-     DP(M) = RHS(MA)  
-     IF(FRAC(M).GT.0.) DPMAX = MAX(DPMAX, ABS(DP(M)))  
+  dpmax = 0._kdp
+  ! ... Descale the solution vector
+  IF(col_scale) THEN
+     DO ma=1,nxyz
+        rhs(ma) = diagc(ma)*rhs(ma)
+     END DO
+  END IF
+  ! ... Extract the solution from the solution vector
+  DO  m=1,nxyz  
+     ma = mrno(m)  
+     dp(m) = rhs(ma)  
+     IF(frac(m) > 0.) dpmax = MAX(dpmax,ABS(dp(m)))
   END DO
   ! ... If adjustable time step, check for unacceptable time step length
   IF(AUTOTS.AND.JTIME.GT.2) THEN  
@@ -129,7 +178,7 @@ SUBROUTINE asmslp
              ' for Well Bore Pressure Loop'
 5003    FORMAT(a,I4,2a)
         WRITE(logline2,5013) '          Calculating for Time =',cnvtmi*timenp,'  ('//unittm//')'
-5013    format(a,1PG12.5,a)
+5013    FORMAT(a,1PG12.5,a)
 !!$        WRITE(*,'(//TR10,a/TR15,a/)') logline1,logline2
         CALL errprt_c(logline1)
         CALL errprt_c(logline2)
