@@ -114,7 +114,7 @@ SUBROUTINE asmslc
         END DO
      END IF
 !!$  !*****special output for solver testing
-      OPEN(60,file='vaph.dat')
+!!$      OPEN(60,file='vaph.dat')
 !!$      write(60,*) 
 !!$      write(60,*) 'scaled matrices  ', 'component:',is
 !!$      nnn=0

@@ -62,7 +62,7 @@ SUBROUTINE asmslp
      END SUBROUTINE tfrds
   END INTERFACE
 !
-  INTEGER :: m, ma, norm, iierr  
+  INTEGER :: norm, iierr  
   INTEGER :: itrnp, iwel, ks, m, ma  
   REAL(kind=kdp) :: fddp, sum1, sum2, timenp, udpwkt, upwkt
   LOGICAL :: convp
