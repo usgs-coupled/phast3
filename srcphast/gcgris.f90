@@ -86,7 +86,7 @@ SUBROUTINE gcgris(ap,bp,ra,rr,ss,xx,w,z,sumfil)
   r00 = SQRT(DOT_PRODUCT(rhs,rhs))
      xx = 0.0_kdp
   ! ... Debug output
-!***  activate debug output to phast log file if needed
+!***  activate debug output to phast fuclog file, if needed
 !$$  WRITE(fuclog,*) 'Current R00, L2(RHS): ', r00
   ! ... If R00 is tiny, then xx is a solution, skip out
   IF (r00 <= 2._kdp*EPSILON(1._kdp)) RETURN
@@ -108,8 +108,8 @@ SUBROUTINE gcgris(ap,bp,ra,rr,ss,xx,w,z,sumfil)
   END DO
   ranorm = SQRT(sumfil(1))
   ! ... Debug output
-  WRITE(FUCLOG,*) 'Current ra-norm: ', RANORM
-         SUMFIL(1) = 0.0_kdp
+!!$  WRITE(fuclog,*) 'Current ra-norm: ', ranorm
+  SUMFIL(1) = 0.0_kdp
   IF (milu) THEN
      CALL rfactm(ra,sumfil)
   ELSE

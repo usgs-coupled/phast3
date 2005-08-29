@@ -571,40 +571,58 @@ SUBROUTINE write2_1
         endif
 !!$     call logprt_c(logline1)
      END IF
+     IF(row_scale .and. col_scale) THEN
+        WRITE(fulp,2159) 'Row and column scaling, using L-inf norm, will be done'
+2159    FORMAT(/tr10,a65)
+        WRITE(logline1,5201)  &
+             '          Row and column scaling, using L-inf norm, will be done'
+5201    FORMAT(a)
+        call logprt_c(logline1)
+     ELSEIF(row_scale .and. .not.col_scale) THEN
+        WRITE(fulp,2159) 'Row scaling only, using L-inf norm, will be done'
+        WRITE(logline1,5201)  &
+             '          Row scaling only, using L-inf norm, will be done'
+        call logprt_c(logline1)
+     ELSEIF(.not.row_scale .and. col_scale) THEN
+        WRITE(fulp,2159) 'Column scaling only, using L-inf norm, will be done'
+        WRITE(logline1,5201)  &
+             '          Column scaling only, using L-inf norm, will be done'
+        call logprt_c(logline1)
+     END IF
      IF(slmeth == 3) THEN
-        WRITE(fulp,2059) 'Direction index for red-black renumbering '//dots,  &
-             ' IDIR..',idir, 'Incomplete LU [f] or modified ILU [t] factorization '//  &
-             dots,' MILU.. ',milu,  &
-             'Number of search directions before restart '//dots,  &
-             ' NSDR..',nsdr,'Tolerance on iterative solution '//dots, ' EPSSLV',epsslv
+        WRITE(fulp,2059) 'Direction index for red-black renumbering '//dots,' IDIR..',idir,  &
+             'Incomplete LU [f] or modified ILU [t] factorization '//dots,' MILU.. ',milu,  &
+             'Number of search directions before restart '//dots,' NSDR..',nsdr,  &
+             'Tolerance on iterative solution '//dots, ' EPSSLV',epsslv
 2059    FORMAT(/tr10,a65,a,i5/tr10,a65,a,l5/tr10,a65,a,i5/tr10,a65,a,1PE8.1)
-        WRITE(logline1,5059) '          Direction index for red-black renumbering '//dots,  &
-             ' IDIR..',idir
+        WRITE(logline1,5059)  & 
+             '          Direction index for red-black renumbering '//dots,' IDIR..',idir
 5059    FORMAT(a65,a,i5)
-        WRITE(logline2,5159) '          Incomplete LU [f] or modified ILU [t] factorization '//  &
-             dots,' MILU.. ',milu
+        WRITE(logline2,5159)  &
+             '          Incomplete LU [f] or modified ILU [t] factorization '//dots,' MILU.. ',milu
 5159    FORMAT(a65,a,l5)
-        WRITE(logline3,5059) '          Number of search directions before restart '//dots,  &
-             ' NSDR..',nsdr
-        WRITE(logline4,5060) '          Tolerance on iterative solution '//dots,' EPSSLV',epsslv
+        WRITE(logline3,5059)  &
+             '          Number of search directions before restart '//dots,' NSDR..',nsdr
+        WRITE(logline4,5060)  &
+             '          Tolerance on iterative solution '//dots,' EPSSLV',epsslv
 5060    FORMAT(a65,a,1pe8.1)
         call logprt_c(logline1)
         call logprt_c(logline2)
         call logprt_c(logline3)
         call logprt_c(logline4)
      ELSE IF(slmeth == 5) THEN
-        WRITE(fulp,2059) 'Direction index for d4 zig-zag renumbering '//dots,  &
-             ' IDIR..',idir, 'Incomplete LU [f] or modified ILU [t] factorization '//  &
-             dots,' MILU.. ',milu,  &
-             'Number of search directions before restart '//dots,  &
-             ' NSDR..',nsdr,'Tolerance on iterative solution '//dots, ' EPSSLV',epsslv
-        WRITE(logline1,5059) '          Direction index for d4 zig-zag renumbering '//dots,  &
-             ' IDIR..',idir
-        WRITE(logline2,5159) '          Incomplete LU [f] or modified ILU [t] factorization '//  &
-             dots,' MILU.. ',milu
-        WRITE(logline3,5059) '          Number of search directions before restart '//dots,  &
-             ' NSDR..',nsdr
-        WRITE(logline4,5060) '          Tolerance on iterative solution '//dots,' EPSSLV',epsslv
+        WRITE(fulp,2059) 'Direction index for d4 zig-zag renumbering '//dots,' IDIR..',idir,  &
+             'Incomplete LU [f] or modified ILU [t] factorization '//dots,' MILU.. ',milu,  &
+             'Number of search directions before restart '//dots,' NSDR..',nsdr,  &
+             'Tolerance on iterative solution '//dots, ' EPSSLV',epsslv
+        WRITE(logline1,5059)  &
+             '          Direction index for d4 zig-zag renumbering '//dots,' IDIR..',idir
+        WRITE(logline2,5159)  &
+             '          Incomplete LU [f] or modified ILU [t] factorization '//dots,' MILU.. ',milu
+        WRITE(logline3,5059)  &
+             '          Number of search directions before restart '//dots,' NSDR..',nsdr
+        WRITE(logline4,5060)  &
+             '          Tolerance on iterative solution '//dots,' EPSSLV',epsslv
         call logprt_c(logline1)
         call logprt_c(logline2)
         call logprt_c(logline3)

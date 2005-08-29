@@ -100,15 +100,15 @@ SUBROUTINE WBBAL
 14            end do
            ENDIF
            DENWK( IWEL, Ks) = DEN0  
-           !               IF(ERFLG) THEN
-           !                  WRITE(FUCLOG,9001)
-           !     &                 'TOFEP interpolation error in WBBAL',
-           !     &                 'Production well no. ',IWEL
-           ! 9001             FORMAT(TR10,2A,I4)
-           !                  IERR(129)=.TRUE.
-           !                  ERREXE=.TRUE.
-           !                  RETURN
-           !               ENDIF
+!!$                   IF(ERFLG) THEN
+!!$                        WRITE(FUCLOG,9001)
+!!$            &                 'TOFEP interpolation error in WBBAL',
+!!$            &                 'Production well no. ',IWEL
+!!$           9001             FORMAT(TR10,2A,I4)
+!!$                         IERR(129)=.TRUE.
+!!$                         ERREXE=.TRUE.
+!!$                         RETURN
+!!$                      ENDIF
            IF(UQWM < 0.D0) THEN  
               WRITE(logline1,9012) 'Production well no. ', IWEL, &
                    ' has down bore flow from level ', Ks + 1, ' to ', Ks, &
@@ -128,16 +128,16 @@ SUBROUTINE WBBAL
         ELSEIF( IWFSS.LT.0) THEN  
            ! ... Injection well
         UQWMI = UQWM  
-!        IF( HEAT) EHWKT( IWEL) = EHOFTP( TWKT( IWEL), PWKT( IWEL), &
-!             ERFLG)
-        !            IF(ERFLG) THEN
-        !               WRITE(FUCLOG,9001) 'EHOFTP interpolation error in WBBAL'
-        !     &              'Injection well no. ',IWEL
-        !               IERR(134)=.TRUE.
-        !               ERREXE=.TRUE.
-        !               RETURN
-        !            ENDIF
-        !            UQHW=UQWM*EHWKT(IWEL)
+!!$!        IF( HEAT) EHWKT( IWEL) = EHOFTP( TWKT( IWEL), PWKT( IWEL), &
+!!$!             ERFLG)
+!!$        !            IF(ERFLG) THEN
+!!$        !               WRITE(FUCLOG,9001) 'EHOFTP interpolation error in WBBAL'
+!!$        !     &              'Injection well no. ',IWEL
+!!$        !               IERR(134)=.TRUE.
+!!$        !               ERREXE=.TRUE.
+!!$        !               RETURN
+!!$        !            ENDIF
+!!$        !            UQHW=UQWM*EHWKT(IWEL)
         do  iis = 1, ns  
            UQSW( iis) = UQWM* CWKT( IWEL, iis)  
         end do

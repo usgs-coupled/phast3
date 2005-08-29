@@ -89,12 +89,17 @@ SUBROUTINE asmslp
   CALL asembl  
   CALL aplbci  
      ! ... Scale the matrix equations
+     ! ...     row scaling only is default
      norm = 0          ! ... use L-infinity norm
      IF(row_scale) CALL rowscale(nxyz,norm,va,diagr,iierr)
      IF(col_scale) CALL colscale(nxyz,norm,va,ci,diagc,iierr)
      IF(iierr /= 0) THEN
-        WRITE(fuclog,*) 'Error in scaling: ', iierr
-!!        ierr(81) = .TRUE.
+!!$        WRITE(fuclog,*) 'Error in scaling: ', iierr
+!!$        ierr(81) = .TRUE.
+        WRITE(logline1,*) 'Error in scaling; equation:', iierr
+        WRITE(*,3001) TRIM(logline1)
+3001    FORMAT(/a)
+        CALL errprt_c(logline1)
         RETURN
      END IF
      IF(col_scale) THEN

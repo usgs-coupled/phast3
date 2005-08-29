@@ -246,7 +246,7 @@ MODULE mcs
   ! ... LRCGD1=37 and LRCGD2=18 if LU fill-in is desired,
   ! ...      otherwise LRCGD1=19 and LRCGD2=10 for no fill-in
   INTEGER, PARAMETER :: lsdr=5, lrcgd1=19, lrcgd2=10
-  LOGICAL :: col_scale=.true., row_scale=.true.
+  LOGICAL :: col_scale=.false., row_scale=.true.
   LOGICAL :: ident_diagc
 END MODULE mcs
 
