@@ -260,7 +260,7 @@ COMMON_FOBJS =	abmult.o aplbce.o aplbce_ss_flow.o aplbci.o armult.o asembl.o\
 		nintrp.o openf.o phast.o phast_root.o \
 		prchar.o print_control_mod.o prntar.o rbord.o\
 		read1.o read2.o read3.o reordr.o rewi3.o rewi.o rfact.o rfactm.o\
-		rhsn.o rhsn_ss_flow.o sbcflo.o simulate_ss_flow.o stonb.o sumcal1.o sumcal2.o \
+		rhsn.o rhsn_ss_flow.o sbcflo.o scale_jds.o simulate_ss_flow.o stonb.o sumcal1.o sumcal2.o \
 		sumcal_ss_flow.o terminate_phast.o tfrds.o timstp.o timstp_ss_flow.o\
 		update_print_flags.o\
 		usolv.o viscos.o vpsv.o wbbal.o wbcflo.o wellsc.o wellsc_ss_flow.o\
@@ -372,6 +372,7 @@ rfactm.o:		   modules.o
 rhsn.o:			   modules.o
 rhsn_ss_flow.o:		   modules.o
 sbcflo.o:		   modules.o
+scale_jds.o:     	   modules.o
 simulate_ss_flow.o:	   modules.o
 sumcal1.o:		   modules.o
 sumcal2.o:		   modules.o

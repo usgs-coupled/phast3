@@ -185,10 +185,16 @@ SUBROUTINE phast_root(mpi_tasks, mpi_myself)
      CALL logprt_c(logline1)
   END IF
 ! *** special diagnostic message ***
-  IF(col_scale .and. ident_diagc) THEN
-     logline1 = '***INFORMATION: all column scaling was unnecessary.'
-     WRITE(*,3001) TRIM(logline1)
-     CALL logprt_c(logline1)
+  IF(col_scale) then
+     if (ident_diagc) THEN
+        logline1 = '***INFORMATION: all column scaling was unnecessary.'
+        WRITE(*,3001) TRIM(logline1)
+        CALL logprt_c(logline1)
+     else
+        logline1 = '***INFORMATION: column scaling was necessary!'
+        WRITE(*,3001) TRIM(logline1)
+        CALL logprt_c(logline1)
+     endif
   END IF
   CALL terminate_phast(mpi_myself)
   STOP 'Simulation Completed'

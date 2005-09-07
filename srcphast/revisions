@@ -1,8 +1,26 @@
 PHAST, Version 1.2 ?
 
-    Added Pitzer funtionality to serial and parallel version. 
-    However, lack of density-dependent flow makes use for
-    brines problematic.
+    Updated to PHREEQC 2.12, which includes Pitzer aqueous model.
+    Pitzer funtionality is now available in serial and parallel
+    versions, simply use a chemistry database file that includes 
+    the PITZER keyword datablock. However, lack of density-dependent 
+    flow makes use for brines problematic.
+
+    Major revision of parallel calculation. Now has one routine
+    for master process that calculates flow and transport (and 
+    chemistry) and one routine for processes that calculate only 
+    chemistry. New version has major savings in memory requirements.
+    However, the master process may still have large memory 
+    requirements.
+
+    Added scaling for flow and transport equations using L-infinity
+    norm. A diffusion-only problem failed unless "SOUTION_METHOD; 
+    -tolerance x" was extremely small. -tolerance 1e-14 should now 
+    be minumum tolerance and same tolerance should apply equally 
+    well to all flow and transport.
+
+    Fixed convergence test for steady-state with no flow. Avoids 
+    error with NAN in calculation of relative flow-rate imbalance.
 
     Fixed bug with free surface and steady flow. Solution volume
     was not scaled correctly and gave anomalous results for
