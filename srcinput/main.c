@@ -575,7 +575,7 @@ void initialize(void)
  */
 	solver_method = ITERATIVE;
 	solver_tolerance = 1e-10;
-	solver_save_directions = 10;
+	solver_save_directions = 20;
 	solver_maximum = 500;
 	solver_space = 0.0;
 	solver_time = 1.0;
