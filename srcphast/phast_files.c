@@ -95,6 +95,7 @@ int close_input_files(void)
 	input_file = database_file = NULL;
 	return (i);
 }
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 int process_file_names(int argc, char *argv[], void **db_cookie, void **input_cookie, int log)
 /* ---------------------------------------------------------------------- */
@@ -272,6 +273,7 @@ int process_file_names(int argc, char *argv[], void **db_cookie, void **input_co
 
 	return 0;
 }
+#endif
 /* ---------------------------------------------------------------------- */
 int open_input_files_phast(char *chemistry_name, char *database_name, void **db_cookie, void **input_cookie)
 /* ---------------------------------------------------------------------- */

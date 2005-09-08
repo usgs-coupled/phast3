@@ -193,6 +193,10 @@ void PHREEQC_MAIN(int *solute, char *chemistry_name, char *database_name, char *
 		exit(1);
 		/* return(-1);*/
 	}
+
+	/* Open error (screen) file */
+	if (output_open(OUTPUT_ERROR, "Dummy") != OK) exit(4);
+
 #if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
 	/*
 	 *   Add callbacks for merge

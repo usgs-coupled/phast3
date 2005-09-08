@@ -17,7 +17,11 @@ PHAST, Version 1.2 ?
     norm. A diffusion-only problem failed unless "SOUTION_METHOD; 
     -tolerance x" was extremely small. -tolerance 1e-14 should now 
     be minumum tolerance and same tolerance should apply equally 
-    well to all flow and transport.
+    well to all flow and transport. Only rows are scaled; column
+    scaling is not used at this time.
+
+    Fixed file opening logic for flow-only calculation. Error 
+    messages now printed to screen.
 
     Fixed convergence test for steady-state with no flow. Avoids 
     error with NAN in calculation of relative flow-rate imbalance.
