@@ -631,7 +631,7 @@ EXTERNAL int solver_save_directions;
 EXTERNAL int solver_maximum;
 EXTERNAL double solver_space;
 EXTERNAL double solver_time;
-EXTERNAL double cross_dispersion;
+EXTERNAL int cross_dispersion;
 
 /* time stepping */
 EXTERNAL struct time_series time_step;
