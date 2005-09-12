@@ -1,5 +1,15 @@
 PHAST, Version 1.2 ?
 
+    Added new identifier in SOLUTION_METHOD, 
+       -rebalance_fraction f
+    where f is a number in the range of 0 to 1. This option applies
+    only to the parallel version of phast. After each time step, phast
+    evaluates how to optimally rebalance the cells among the
+    processors for the chemical calculation. It estimates a number of
+    cells to transfer from one processor to the next. The factor f is
+    multiplied times the estimated number of cells to obtain the
+    actual number of cells transferred. Default is 0.5. 
+
     Updated to PHREEQC 2.12, which includes Pitzer aqueous model.
     Pitzer funtionality is now available in serial and parallel
     versions, simply use a chemistry database file that includes 

@@ -52,13 +52,13 @@ SUBROUTINE phast_slave(mpi_tasks, mpi_myself)
      adj_wr_ratio = 1
      CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time_phreeqc,deltim_dummy,prslmi,  &
            cnvtmi,frac_icchem,iprint_chem,iprint_xyz, &
-           prf_chem_phrqi,stop_msg,prhdfci,adj_wr_ratio)
+           prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f)
      stop_msg = 0
      deltim_dummy = 0._kdp
      ! ... The transient loop
      DO
            CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time,deltim,prslmi,cnvtmi,  &
-                frac,iprint_chem,iprint_xyz,prf_chem_phrqi,stop_msg,prhdfci,adj_wr_ratio)
+                frac,iprint_chem,iprint_xyz,prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f)
            IF (stop_msg == 1) EXIT
      ENDDO
   ENDIF

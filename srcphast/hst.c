@@ -50,7 +50,7 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 			 double *time_hst, double *time_step_hst, int *prslm, double *cnvtmi,
 			 double *frac, int *printzone_chem, int *printzone_xyz,
 			 int *print_out, int *print_hdf,
-			 int *adjust_water_rock_ratio);
+			 double *rebalance_fraction_hst);
 #endif  /* #ifdef USE_MPI */
 
 #define CALCULATE_WELL_PH calculate_well_ph_
@@ -89,7 +89,7 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 		 double *time_hst, double *time_step_hst, int *prslm, double *cnvtmi,
 		 double *frac, int *printzone_chem, int *printzone_xyz, 
 		 int *print_out, int *stop_msg, int *print_hdf,
-		 int *adjust_water_rock_ratio);
+		 double *rebalance_fraction_hst);
 /*  #endif                                                                             */
 
 void ERRPRT_C(char *err_str, long l);
@@ -921,7 +921,7 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 			double *frac, 
 			int *printzone_chem,  int *printzone_xyz,
 			int *print_out, int *print_hdf,
-			int *adjust_water_rock_ratio)
+			double *rebalance_fraction_hst)
 /* ---------------------------------------------------------------------- */
 {
 /*
@@ -1102,7 +1102,7 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 		 double *frac, 
 		 int *printzone_chem, int *printzone_xyz,
 		 int *print_out, int *stop_msg, int *print_hdf,
-                 int *adjust_water_rock_ratio)
+                 double *rebalance_fraction_hst)
 /* ---------------------------------------------------------------------- */
 {
 #ifndef USE_MPI
@@ -1111,7 +1111,7 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 		       x_hst, y_hst, z_hst,
 		       time_hst, time_step_hst, prslm, cnvtmi,
 		       frac, printzone_chem, printzone_xyz, print_out, print_hdf,
-		       adjust_water_rock_ratio);
+		       rebalance_fraction_hst);
   }
   return;
 #else  /* #ifndef USE_MPI */
@@ -1186,6 +1186,7 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 		mpi_max_buffer = 1;
 	}
 	call_counter++;
+	rebalance_fraction = *rebalance_fraction_hst;
 	initial_prep = total_prep;
 	first_cell = 0;
 	last_cell = count_chem;
@@ -2125,6 +2126,7 @@ int mpi_rebalance_load(double time_per_cell, double *frac, int transfer)
 	int error;
 	LDBLE max_old, max_new, t;
 	int ihst, iphrq; /* ihst is natural number to ixyz; iphrq is 0 to count_chem */
+	int icells;
 #ifdef TIME
 	LDBLE t0;
 #endif
@@ -2255,9 +2257,11 @@ int mpi_rebalance_load(double time_per_cell, double *frac, int transfer)
 			}
 		} else {
 			for (i = 0; i < mpi_tasks - 1; i++) {
-				end_cells_new[i][1] = (end_cells_new[i][1] + end_cells[i][1])/2;
+				/*end_cells_new[i][1] = (end_cells_new[i][1] + end_cells[i][1])/2;*/
 				/*end_cells_new[i][1] = end_cells_new[i][1];*/
-				/*end_cells_new[i][1] = end_cells[i][1] + (end_cells_new[i][1] - end_cells[i][1])/3;*/
+				icells = (int) ((end_cells_new[i][1] - end_cells[i][1])*rebalance_fraction);
+				/*fprintf(stderr, "i %d, new %d, old %d, rebal_fraction %g, icells %d\n",i, end_cells_new[i][1], end_cells[i][1], rebalance_fraction, icells);*/
+				end_cells_new[i][1] = end_cells[i][1] + icells;
 				end_cells_new[i+1][0] = end_cells_new[i][1] + 1;
 			}
 		}

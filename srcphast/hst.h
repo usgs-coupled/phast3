@@ -47,8 +47,8 @@ EXTERNAL int ix, iy, iz;
 EXTERNAL int ixy, ixz, iyz, ixyz;
 EXTERNAL int count_chem;
 /* extra for transient free surface calculation */
-LDBLE * old_frac;
-int transient_free_surface;
+EXTERNAL LDBLE * old_frac;
+EXTERNAL int transient_free_surface;
 struct system {
 	struct solution *solution;
 	struct exchange *exchange;
@@ -58,7 +58,8 @@ struct system {
 	struct kinetics *kinetics;
 	struct surface *surface;
 };
-struct system **uz;
-struct system **sz;
-double *frac1;
-int *initial1, *initial2;
+EXTERNAL struct system **uz;
+EXTERNAL struct system **sz;
+EXTERNAL double *frac1;
+EXTERNAL int *initial1, *initial2;
+EXTERNAL double rebalance_fraction;
