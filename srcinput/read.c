@@ -3987,9 +3987,10 @@ int read_solution_method (void)
 		"space",                  /* 11 */
 		"time_differencing",      /* 12 */
 		"time",                   /* 13 */
-		"cross_dispersion"        /* 14 */
+		"cross_dispersion",       /* 14 */
+		"rebalance_fraction"      /* 15 */
 	};
-	int count_opt_list = 15;
+	int count_opt_list = 16;
 /*
  *   Read flags:
  */
@@ -4077,6 +4078,17 @@ int read_solution_method (void)
 		    case 14:                        /* cross_dispersion */
 			    cross_dispersion = get_true_false(next_char, TRUE);
 			    break;
+		    case 15:                        /* rebalance_fraction */
+			if (copy_token(token, &next_char, &l) != DIGIT ||
+			    (sscanf(token, "%lf", &rebalance_fraction) != 1) ||
+			    rebalance_fraction  < 0.0 ||
+			    rebalance_fraction > 1.0) {
+				input_error++;
+				sprintf(error_string, "Expected rebalance weight between 0.0 and 1.0, for rebalance_fraction in SOLUTION_METHOD.");
+				warning_msg(error_string);
+				rebalance_fraction = 0.5;
+			}
+			break;
 		}
 		if (return_value == EOF || return_value == KEYWORD) break;
 	}

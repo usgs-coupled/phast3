@@ -580,6 +580,7 @@ void initialize(void)
 	solver_space = 0.0;
 	solver_time = 1.0;
 	cross_dispersion = FALSE;
+	rebalance_fraction = 0.5;
 /*
  *   print input values set to false, xy true
  */
