@@ -74,7 +74,7 @@ fi
 
 ##echo "Testing FLOW_ONLY false (chem.dat req'd)"
 echo "Testing SOLUTE_TRANSPORT true (chem.dat req'd)"
-grep -v SOLUTE_TRANSPORT ../examples/well/well.trans.dat > well.trans.dat
+grep -v SOLUTE_TRANSPORT ../../examples/well/well.trans.dat > well.trans.dat
 rm -f phast.dat well.chem.dat
 ../phastinput well 2> /dev/null
 if [ $? -eq 0 ]; then
