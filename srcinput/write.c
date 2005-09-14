@@ -1590,6 +1590,7 @@ int write_bc_transient(void)
 				assert (solution2 != -999999);
 				/* entry number, head, solution1, w, solution2 */
 				if (rivers[river_number].update == TRUE) {
+					assert(0.0 <= w0 && w0 <= 1.0);
 					output_msg(OUTPUT_HST,"%d %e %d %d %e\n", k, head, solution1, solution2, w0);
 					/* Debug
 					fprintf(stderr,"%d %d %e %d %d %e\n", point_number, k, head, solution1, solution2, w0);

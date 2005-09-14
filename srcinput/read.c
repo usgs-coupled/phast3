@@ -4893,7 +4893,7 @@ int read_river(void)
 	char *next_char, *ptr;
 	int return_value, opt;
 	int n_user, n_user_end;
-	int j, l, n;
+	int i, j, l, n;
 	River *river_ptr;
 	char *description;
 	int river_number, point_number;
@@ -5229,26 +5229,33 @@ int read_river(void)
 			river_ptr->points[point_number].x_defined = FALSE;
 			river_ptr->points[point_number].y = 0.0;
 			river_ptr->points[point_number].y_defined = FALSE;
-			river_ptr->points[point_number].head = NULL;
-			river_ptr->points[point_number].current_head = 0.0;
-			river_ptr->points[point_number].head_defined = FALSE;
-			river_ptr->points[point_number].polygon = NULL;
-			river_ptr->points[point_number].solution = NULL;
-			river_ptr->points[point_number].current_solution = -999999;
-			river_ptr->points[point_number].solution1 = -99;
-			river_ptr->points[point_number].solution2 = -99;
-			river_ptr->points[point_number].solution_defined = FALSE;
+			river_ptr->points[point_number].width = 0.0;
+			river_ptr->points[point_number].width_defined = FALSE;
 			river_ptr->points[point_number].k = 0.0;
 			river_ptr->points[point_number].k_defined = FALSE;
 			river_ptr->points[point_number].thickness = 0.0;
 			river_ptr->points[point_number].thickness_defined = FALSE;
-			river_ptr->points[point_number].width = 0.0;
-			river_ptr->points[point_number].width_defined = FALSE;
+			river_ptr->points[point_number].head = NULL;
+			river_ptr->points[point_number].head_defined = FALSE;
+			river_ptr->points[point_number].current_head = 0.0;
 			river_ptr->points[point_number].depth = 0.0;
 			river_ptr->points[point_number].depth_defined = FALSE;
 			river_ptr->points[point_number].z = 0.0;
 			river_ptr->points[point_number].z_defined = FALSE;
 			river_ptr->points[point_number].z_input_defined = FALSE;
+			river_ptr->points[point_number].solution = NULL;
+			river_ptr->points[point_number].solution_defined = FALSE;
+			river_ptr->points[point_number].current_solution = -999999;
+			river_ptr->points[point_number].solution1 = -99;
+			river_ptr->points[point_number].solution2 = -99;
+			river_ptr->points[point_number].f1 = 1.0;
+			for (i = 0; i < 4; i++)
+			{
+				river_ptr->points[point_number].vertex[i].x = 0.0;
+				river_ptr->points[point_number].vertex[i].y = 0.0;
+			}
+			river_ptr->points[point_number].polygon = NULL;
+			river_ptr->points[point_number].update  = 0;			
 			j = copy_token(token, &next_char, &l);
 			if (j != DIGIT) {
 				sprintf(error_string,"Expected an X value of river point. %s", tag);
