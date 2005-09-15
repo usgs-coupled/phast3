@@ -101,9 +101,11 @@ LIBABSOFT=-L/z/parkplace/usr/absoft/lib
 
 # -----------------------------------------------------------------------------
 #hdf options
-HDF5_ROOT=$(HOME)/../../usr
+#HDF5_ROOT=$(HOME)/../../usr
+HDF5_ROOT=/z/lobo/usr
+#HDF5_ROOT=/z/parkplace/home/dlpark/packages/hdf5-1.4.5-post2
 HDF5_INCLUDES=-I$(HDF5_ROOT)/include
-HDF5_LIBS=${HDF5_ROOT}/lib/libhdf5.a -lz -lpthread
+HDF5_LIBS=${HDF5_ROOT}/lib/libhdf5.a -lz -lpthread  
 
 # -----------------------------------------------------------------------------
 # #define compile options

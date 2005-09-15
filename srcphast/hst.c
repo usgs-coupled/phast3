@@ -265,6 +265,11 @@ void PHREEQC_MAIN(int *solute, char *chemistry_name, char *database_name, char *
 	 *   Open input files
 	 */
 	errors = open_input_files_phast(chemistry_name, database_name, &db_cookie, &input_cookie);
+	if (errors != 0) {
+		clean_up();
+		exit(1);
+		/*return errors;*/
+	}
 	/*
 	 *   Initialize arrays
 	 */
