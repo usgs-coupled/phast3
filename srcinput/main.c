@@ -634,24 +634,24 @@ void initialize(void)
 	print_zone_struct_init(&print_zones_chem);
 
 	/* .bcf file */
-	current_print_bc_flow.type = STEP;
+	current_print_bc_flow.type = UNITS;
 	current_print_bc_flow.value = 0;
 	current_print_bc_flow.value_defined = FALSE;
 	current_print_bc_flow.input = NULL;
 
 	current_print_bc = FALSE;
 
-	current_print_comp.type = STEP;
+	current_print_comp.type = UNITS;
 	current_print_comp.value = 0;
 	current_print_comp.value_defined = FALSE;
 	current_print_comp.input = NULL;
 
-	current_print_conductances.type = STEP;
+	current_print_conductances.type = UNITS;
 	current_print_conductances.value = 0;
 	current_print_conductances.value_defined = FALSE;
 	current_print_conductances.input = NULL;
 
-	current_print_force_chem.type = STEP;
+	current_print_force_chem.type = UNITS;
 	current_print_force_chem.value = 0;
 	current_print_force_chem.value_defined = FALSE;
 	current_print_force_chem.input = NULL;
@@ -683,7 +683,7 @@ void initialize(void)
 
 	save_final_heads = FALSE;
 
-	current_print_velocity.type = STEP;
+	current_print_velocity.type = UNITS;
 	current_print_velocity.value = 0;
 	current_print_velocity.value_defined = FALSE;
 	current_print_velocity.input = NULL;
@@ -692,27 +692,27 @@ void initialize(void)
 	current_print_wells.value_defined = FALSE;
 	current_print_wells.input = NULL;
 
-	current_print_xyz_chem.type = STEP;
+	current_print_xyz_chem.type = UNITS;
 	current_print_xyz_chem.value = 0;
 	current_print_xyz_chem.value_defined = FALSE;
 	current_print_xyz_chem.input = NULL;
 
-	current_print_xyz_comp.type = STEP;
+	current_print_xyz_comp.type = UNITS;
 	current_print_xyz_comp.value = 0;
 	current_print_xyz_comp.value_defined = FALSE;
 	current_print_xyz_comp.input = NULL;
 
-	current_print_xyz_head.type = STEP;
+	current_print_xyz_head.type = UNITS;
 	current_print_xyz_head.value = 0;
 	current_print_xyz_head.value_defined = FALSE;
 	current_print_xyz_head.input = NULL;
 
-	current_print_xyz_velocity.type = STEP;
+	current_print_xyz_velocity.type = UNITS;
 	current_print_xyz_velocity.value = 0;
 	current_print_xyz_velocity.value_defined = FALSE;
 	current_print_xyz_velocity.input = NULL;
 
-	current_print_xyz_wells.type = STEP;
+	current_print_xyz_wells.type = UNITS;
 	current_print_xyz_wells.value = 0;
 	current_print_xyz_wells.value_defined = FALSE;
 	current_print_xyz_wells.input = NULL;
