@@ -41,8 +41,8 @@ STEADY_FLOW true
       -head_tolerance 1e-10
       -flow_balance_tolerance 0.001e-3
 SOLUTION_METHOD
-      -iterative_solver false
-      -tolerance 1E-30
+      -iterative_solver true
+      -tolerance 1E-10
       -save_directions 10
       -maximum_iterations 500
       -space_differencing 0.5   # does not matter

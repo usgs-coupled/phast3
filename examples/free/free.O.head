@@ -81,7 +81,7 @@
                               *** Output at End of Time Step No.     2 ***
 
      Time .......................................................   2.000E-04  (s)
-     Maximum change in pressure ..............  9.8067E-02     (Pa )   at location (  1.00    ,  1.00    , 0.000    )(m )
+     Maximum change in pressure ..............  9.8067E-02     (Pa )   at location (  1.00    , 0.000    , 0.000    )(m )
 
                               Fluid Head (m )
 
@@ -111,7 +111,7 @@
                               *** Output at End of Time Step No.     7 ***
 
      Time .......................................................    5.00      (s)
-     Maximum change in pressure ..............  9.8047E+02     (Pa )   at location (  1.00    , 0.000    , 0.000    )(m )
+     Maximum change in pressure ..............  9.8047E+02     (Pa )   at location ( 0.000    ,  1.00    ,  1.00    )(m )
 
                               Fluid Head (m )
 
@@ -147,7 +147,7 @@
                               *** Output at End of Time Step No.    12 ***
 
      Time .......................................................    10.0      (s)
-     Maximum change in pressure .............. -9.8066E+02     (Pa )   at location (  1.00    ,  1.00    , 0.000    )(m )
+     Maximum change in pressure .............. -9.8067E+02     (Pa )   at location (  1.00    ,  1.00    , 0.000    )(m )
 
                               Fluid Head (m )
 

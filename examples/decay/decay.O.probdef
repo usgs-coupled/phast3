@@ -2,7 +2,7 @@
                                     *                                                  *
                                     *    PHAST: A Three Dimensional Flow and Solute    *
                                     *         Reactive Transport Simulator             *
-                                    *                 Version: 1.1                     *
+                                    *                 Version: 1.2                     *
                                     *                                                  *
                                     ****************************************************
 
@@ -146,6 +146,8 @@
           Centered-in-time (Crank-Nicholson) differencing for temporal derivative
           Centered-in-space differencing for advective terms
           The cross-derivative solute flux terms will NOT BE calculated
+
+                           Row scaling only, using L-inf norm, will be done
 
  ------------------------------------------------------------------------------------------------------------------------
 

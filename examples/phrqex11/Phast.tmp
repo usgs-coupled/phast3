@@ -328,6 +328,8 @@ C.2.22.1 .. FDSMTH,FDTMTH
      0.5  0.5
 C.2.22.1a .. CROSD [T/F]
      F
+C..          rebalance fraction for parallel processing
+     0.5 
 C.2.22.2 .. TOLDEN{.001},MAXITN{5}
      .001  100
 C.....     Red-black restarted conjugate gradient solver
@@ -440,7 +442,7 @@ C.3.7.4 .. TIMCHG
 C------------------------------------------------------------------------------
 C.....Output information
 C.3.8.1 .. PRISLM,PRIKD,PRIP,PRIC,PRICPHRQ,PRIFORCE_CHEM_PHRQ,PRIVEL,PRIGFB,PRIBCF,PRIWEL; all [I]
-     -1.000000 0.000000 -1.000000 0.000000 -0.010000 0.000000 0.000000 -1.000000 0.000000 -1.000000
+     -1.000000 -0.000000 -1.000000 -0.000000 -0.010000 -0.000000 -0.000000 -1.000000 -0.000000 -1.000000
 C.3.8.1.1 .. PRT_BC; [T/F]
      F
 C.3.8.2 .. PRIHDF_CONC, PRIHDF_HEAD, PRIHDF_VEL
@@ -452,9 +454,9 @@ f 0 f
 C------------------------------------------------------------------------------
 C.....Contour and vector map information
 C.3.9.1 .. CNTMAP[T/F], PRIMAPHEAD, COMPMAP[T/F], PRIMAPCOMP,VECMAP[T/F], PRIMAPV
-     t -1.000000     f 0.000000     t -1.000000
+     t -1.000000     f -0.000000     t -1.000000
 C.3.9.2 .. PRIXYZ_WELL
-     0.000000
+     -0.000000
 C...Cell print information for .O.chem file, transient chemistry
   0.0000000e+00   1.0000000e+00   0.0000000e+00   1.0000000e+00   0.0000000e+00   8.0000000e-02
      0 4

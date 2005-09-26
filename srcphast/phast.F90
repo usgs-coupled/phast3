@@ -36,7 +36,7 @@ PROGRAM phast
   !     ------------------------------------------------------------------
   !...
   ! ... Extract the version name for the header
-  version_name = ' 1.1 '
+  version_name = ' 1.2'
   !...
   mpi_tasks = 1
   mpi_myself = 0

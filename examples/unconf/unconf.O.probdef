@@ -2,7 +2,7 @@
                                     *                                                  *
                                     *    PHAST: A Three Dimensional Flow and Solute    *
                                     *         Reactive Transport Simulator             *
-                                    *                 Version: 1.1                     *
+                                    *                 Version: 1.2                     *
                                     *                                                  *
                                     ****************************************************
 
@@ -84,6 +84,8 @@
 
                                         *** Calculation Information ***
           Backwards-in-time (implicit) differencing for temporal derivative
+
+                           Row scaling only, using L-inf norm, will be done
 
  ------------------------------------------------------------------------------------------------------------------------
 

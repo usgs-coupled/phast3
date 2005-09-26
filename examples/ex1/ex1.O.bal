@@ -66,7 +66,7 @@
  Solute outflow .............................................  2.383596E-34  (kg/s)     9.534383E-35  (kg)
  Change in solute in region from reactions .................. -7.257456E-12  (kg/s)    -2.902983E-12  (kg)
  Change in solute in region .................................  2.742544E-12  (kg/s)     1.097017E-12  (kg)
- Residual imbalance ......................................... -1.979094E-25  (kg/s)    -7.916377E-26  (kg)
+ Residual imbalance ......................................... -6.866245E-26  (kg/s)    -2.746498E-26  (kg)
  Fractional imbalance .......................................                              0.0000
 
 
@@ -170,7 +170,7 @@
  Cumulative change in solute in region from reactions ....... -3.749133E-10  (kg)
  Cumulative change in solute in region ......................  2.250867E-10  (kg)
  Current solute in region ...................................  2.250867E-10  (kg)
- Residual imbalance.......................................... -4.135903E-25  (kg)
+ Residual imbalance.......................................... -1.550964E-25  (kg)
  Fractional imbalance .......................................      0.0000
 
 
@@ -274,7 +274,7 @@
  Solute outflow .............................................  9.977760E-18  (kg/s)     3.991104E-18  (kg)
  Change in solute in region from reactions .................. -1.238746E-12  (kg/s)    -4.954984E-13  (kg)
  Change in solute in region ................................. -1.238756E-12  (kg/s)    -4.955024E-13  (kg)
- Residual imbalance .........................................  3.281661E-27  (kg/s)     1.312665E-27  (kg)
+ Residual imbalance ......................................... -1.259653E-25  (kg/s)    -5.038612E-26  (kg)
  Fractional imbalance .......................................                              0.0000
 
 
@@ -378,7 +378,7 @@
  Cumulative change in solute in region from reactions ....... -4.765524E-10  (kg)
  Cumulative change in solute in region ......................  1.234475E-10  (kg)
  Current solute in region ...................................  1.234475E-10  (kg)
- Residual imbalance..........................................  1.033976E-25  (kg)
+ Residual imbalance..........................................  9.305782E-25  (kg)
  Fractional imbalance .......................................      0.0000
 
 
@@ -389,7 +389,7 @@
  Cumulative change in solute in region from reactions ....... -6.257577E-22  (kg)
  Cumulative change in solute in region ......................  9.447768E-19  (kg)
  Current solute in region ................................... -1.299491E-16  (kg)
- Residual imbalance..........................................  6.680666E-30  (kg)
+ Residual imbalance..........................................  6.705318E-30  (kg)
  Fractional imbalance .......................................      0.0000
 
                Cumulative Summary by Boundary Condition Type

@@ -3,15 +3,16 @@ TEST=$(TOPDIR)/examples
 PHAST_INPUT=$(TOPDIR)/srcinput/phastinput
 PHAST=$(TOPDIR)/srcphast/serial_absoft/phast
 
-SERIAL = decay disp2d ex3 kindred4.4 leaky leakyx leakyz linear_bc linear_ic ex4 phrqex11 ex1 radial river unconf well ex2 free
+SERIAL = decay diffusion1d diffusion2d disp2d ex3 kindred4.4 leaky leakyx leakyz linear_bc linear_ic ex4 phrqex11 ex1 radial river unconf well ex2 free
 
-PARALLEL =  decay_parallel disp2d_parallel ex3_parallel kindred4.4_parallel leaky_parallel leakyx_parallel leakyz_parallel linear_bc_parallel linear_ic_parallel ex4_parallel phrqex11_parallel ex1_parallel radial_parallel river_parallel unconf_parallel well_parallel ex2_parallel free_parallel
+PARALLEL =  decay_parallel diffusion1d_parallel diffusion2d_parallel disp2d_parallel ex3_parallel kindred4.4_parallel leaky_parallel leakyx_parallel leakyz_parallel linear_bc_parallel linear_ic_parallel ex4_parallel phrqex11_parallel ex1_parallel radial_parallel river_parallel unconf_parallel well_parallel ex2_parallel free_parallel
 
-SERIAL_COMPARE = decay_compare disp2d_compare ex3_compare kindred4.4_compare leaky_compare leakyx_compare leakyz_compare linear_bc_compare linear_ic_compare ex4_compare phrqex11_compare ex1_compare radial_compare river_compare unconf_compare well_compare ex2_compare free_compare
+SERIAL_COMPARE = decay_compare diffusion1d_compare diffusion2d_compare disp2d_compare ex3_compare kindred4.4_compare leaky_compare leakyx_compare leakyz_compare linear_bc_compare linear_ic_compare ex4_compare phrqex11_compare ex1_compare radial_compare river_compare unconf_compare well_compare ex2_compare free_compare
 
-PARALLEL_COMPARE = decay_compare_parallel disp2d_compare_parallel ex3_compare_parallel kindred4.4_compare_parallel leaky_compare_parallel leakyx_compare_parallel leakyz_compare_parallel linear_bc_compare_parallel linear_ic_compare_parallel ex4_compare_parallel phrqex11_compare_parallel ex1_compare_parallel radial_compare_parallel river_compare_parallel unconf_compare_parallel well_compare_parallel ex2_compare_parallel free_compare_parallel
+PARALLEL_COMPARE = decay_compare_parallel diffusion1d_compare_parallel diffusion2d_compare_parallel disp2d_compare_parallel ex3_compare_parallel kindred4.4_compare_parallel leaky_compare_parallel leakyx_compare_parallel leakyz_compare_parallel linear_bc_compare_parallel linear_ic_compare_parallel ex4_compare_parallel phrqex11_compare_parallel ex1_compare_parallel radial_compare_parallel river_compare_parallel unconf_compare_parallel well_compare_parallel ex2_compare_parallel free_compare_parallel
 
-CLEAN_PROBLEMS = decay_clean disp2d_clean ex3_clean kindred4.4_clean leaky_clean leakyx_clean leakyz_clean \
+CLEAN_PROBLEMS = decay_clean diffusion1d_clean diffusion2d_clean disp2d_clean ex3_clean \
+	kindred4.4_clean leaky_clean leakyx_clean leakyz_clean \
 	linear_bc_clean linear_ic_clean ex4_clean phrqex11_clean ex1_clean \
 	radial_clean river_clean unconf_clean well_clean ex2_clean free_clean \
 	decay_clean_parallel disp2d_clean_parallel ex3_clean_parallel kindred4.4_clean_parallel \
@@ -21,7 +22,7 @@ CLEAN_PROBLEMS = decay_clean disp2d_clean ex3_clean kindred4.4_clean leaky_clean
 	river_clean_parallel unconf_clean_parallel well_clean_parallel ex2_clean_parallel \
 	free_clean_parallel
 
-CI_PROBLEMS = ci_decay ci_disp2d ci_ex3 ci_kindred4.4 ci_leaky ci_leakyx ci_leakyz ci_linear_bc ci_linear_ic ci_ex4 ci_phrqex11 ci_ex1 ci_radial ci_river ci_unconf ci_well ci_ex2 ci_free
+CI_PROBLEMS = ci_decay ci_diffusion1d ci_diffusion2d ci_disp2d ci_ex3 ci_kindred4.4 ci_leaky ci_leakyx ci_leakyz ci_linear_bc ci_linear_ic ci_ex4 ci_phrqex11 ci_ex1 ci_radial ci_river ci_unconf ci_well ci_ex2 ci_free
 
 all: $(PARALLEL) $(SERIAL) 
 
@@ -53,7 +54,7 @@ ex2_clean:
 ex2_clean_parallel:
 	@if [ -d $(TEST)/ex2/0 ]; \
 	  then \
-	  find $(TEST)/ex2/0 -type f -maxdepth 1 | xargs rm -f; \
+	  find $(TEST)/ex2/0 -maxdepth 1 -type f | xargs rm -f; \
 	fi
 
 #
@@ -80,7 +81,7 @@ free_clean:
 free_clean_parallel:
 	@if [ -d $(TEST)/free/0 ]; \
 	  then \
-	  find $(TEST)/free/0 -type f -maxdepth 1 | xargs rm -f; \
+	  find $(TEST)/free/0 -maxdepth 1 -type f | xargs rm -f; \
 	fi
 
 #
@@ -107,7 +108,60 @@ decay_clean:
 decay_clean_parallel:
 	@if [ -d $(TEST)/decay/0 ]; \
 	  then \
-	  find $(TEST)/decay/0 -type f -maxdepth 1 | xargs rm -f; \
+	  find $(TEST)/decay/0 -maxdepth 1 -type f | xargs rm -f; \
+	fi
+
+#
+# diffusion1d
+#
+diffusion1d: diffusion1d_clean
+	echo ; 
+	echo ============= diffusion1d
+	echo ; 
+	cd $(TEST)/diffusion1d; ./clean
+	cd $(TEST)/diffusion1d; $(PHAST_INPUT) diffusion1d; time $(PHAST)
+	echo ============= Done diffusion1d
+
+diffusion1d_parallel: diffusion1d_clean_parallel
+	echo ; 
+	echo ============= diffusion1d Parallel
+	echo ; 
+	./run diffusion1d
+	echo ============= Done diffusion1d Parallel
+
+diffusion1d_clean:
+	cd $(TEST)/diffusion1d; ./clean
+
+diffusion1d_clean_parallel:
+	@if [ -d $(TEST)/diffusion1d/0 ]; \
+	  then \
+	  find $(TEST)/diffusion1d/0 -maxdepth 1 -type f | xargs rm -f; \
+	fi
+#
+# diffusion2d
+#
+diffusion2d: diffusion2d_clean
+	echo ; 
+	echo ============= diffusion2d
+	echo ; 
+	cd $(TEST)/diffusion2d; ./clean
+	cd $(TEST)/diffusion2d; $(PHAST_INPUT) diffusion2d; time $(PHAST)
+	echo ============= Done diffusion2d
+
+diffusion2d_parallel: diffusion2d_clean_parallel
+	echo ; 
+	echo ============= diffusion2d Parallel
+	echo ; 
+	./run diffusion2d
+	echo ============= Done diffusion2d Parallel
+
+diffusion2d_clean:
+	cd $(TEST)/diffusion2d; ./clean
+
+diffusion2d_clean_parallel:
+	@if [ -d $(TEST)/diffusion2d/0 ]; \
+	  then \
+	  find $(TEST)/diffusion2d/0 -maxdepth 1 -type f | xargs rm -f; \
 	fi
 
 #
@@ -134,7 +188,7 @@ disp2d_clean:
 disp2d_clean_parallel:
 	@if [ -d $(TEST)/disp2d/0 ]; \
 	  then \
-	  find $(TEST)/disp2d/0 -type f -maxdepth 1 | xargs rm -f; \
+	  find $(TEST)/disp2d/0 -maxdepth 1 -type f | xargs rm -f; \
 	fi
 
 #
@@ -161,7 +215,7 @@ ex3_clean:
 ex3_clean_parallel:
 	@if [ -d $(TEST)/ex3/0 ]; \
 	  then \
-	  find $(TEST)/ex3/0 -type f -maxdepth 1 | xargs rm -f; \
+	  find $(TEST)/ex3/0 -maxdepth 1 -type f | xargs rm -f; \
 	fi
 
 #
@@ -188,7 +242,7 @@ kindred4.4_clean:
 kindred4.4_clean_parallel:
 	@if [ -d $(TEST)/kindred4.4/0 ]; \
 	  then \
-	  find $(TEST)/kindred4.4/0 -type f -maxdepth 1 | xargs rm -f; \
+	  find $(TEST)/kindred4.4/0 -maxdepth 1 -type f | xargs rm -f; \
 	fi
 
 #
@@ -215,7 +269,7 @@ leaky_clean:
 leaky_clean_parallel:
 	@if [ -d $(TEST)/leaky/0 ]; \
 	  then \
-	  find $(TEST)/leaky/0 -type f -maxdepth 1 | xargs rm -f; \
+	  find $(TEST)/leaky/0 -maxdepth 1 -type f | xargs rm -f; \
 	fi
 
 #
@@ -242,7 +296,7 @@ leakyx_clean:
 leakyx_clean_parallel:
 	@if [ -d $(TEST)/leakyx/0 ]; \
 	  then \
-	  find $(TEST)/leakyx/0 -type f -maxdepth 1 | xargs rm -f; \
+	  find $(TEST)/leakyx/0 -maxdepth 1 -type f | xargs rm -f; \
 	fi
 
 #
@@ -269,7 +323,7 @@ leakyz_clean:
 leakyz_clean_parallel:
 	@if [ -d $(TEST)/leakyz/0 ]; \
 	  then \
-	  find $(TEST)/leakyz/0 -type f -maxdepth 1 | xargs rm -f; \
+	  find $(TEST)/leakyz/0 -maxdepth 1 -type f | xargs rm -f; \
 	fi
 
 #
@@ -296,7 +350,7 @@ linear_bc_clean:
 linear_bc_clean_parallel:
 	@if [ -d $(TEST)/linear_bc/0 ]; \
 	  then \
-	  find $(TEST)/linear_bc/0 -type f -maxdepth 1 | xargs rm -f; \
+	  find $(TEST)/linear_bc/0 -maxdepth 1 -type f | xargs rm -f; \
 	fi
 
 #
@@ -323,7 +377,7 @@ linear_ic_clean:
 linear_ic_clean_parallel:
 	@if [ -d $(TEST)/linear_ic/0 ]; \
 	  then \
-	  find $(TEST)/linear_ic/0 -type f -maxdepth 1 | xargs rm -f; \
+	  find $(TEST)/linear_ic/0 -maxdepth 1 -type f | xargs rm -f; \
 	fi
 
 #
@@ -350,7 +404,7 @@ ex4_clean:
 ex4_clean_parallel:
 	@if [ -d $(TEST)/ex4/0 ]; \
 	  then \
-	  find $(TEST)/ex4/0 -type f -maxdepth 1 | xargs rm -f; \
+	  find $(TEST)/ex4/0 -maxdepth 1 -type f | xargs rm -f; \
 	fi
 
 #
@@ -377,7 +431,7 @@ phrqex11_clean:
 phrqex11_clean_parallel:
 	@if [ -d $(TEST)/phrqex11/0 ]; \
 	  then \
-	  find $(TEST)/phrqex11/0 -type f -maxdepth 1 | xargs rm -f; \
+	  find $(TEST)/phrqex11/0 -maxdepth 1 -type f | xargs rm -f; \
 	fi
 
 #
@@ -404,7 +458,7 @@ ex1_clean:
 ex1_clean_parallel:
 	@if [ -d $(TEST)/ex1/0 ]; \
 	  then \
-	  find $(TEST)/ex1/0 -type f -maxdepth 1 | xargs rm -f; \
+	  find $(TEST)/ex1/0 -maxdepth 1 -type f | xargs rm -f; \
 	fi
 
 #
@@ -431,7 +485,7 @@ radial_clean:
 radial_clean_parallel:
 	@if [ -d $(TEST)/radial/0 ]; \
 	  then \
-	  find $(TEST)/radial/0 -type f -maxdepth 1 | xargs rm -f; \
+	  find $(TEST)/radial/0 -maxdepth 1 -type f | xargs rm -f; \
 	fi
 
 #
@@ -458,7 +512,7 @@ river_clean:
 river_clean_parallel:
 	@if [ -d $(TEST)/river/0 ]; \
 	  then \
-	  find $(TEST)/river/0 -type f -maxdepth 1 | xargs rm -f; \
+	  find $(TEST)/river/0 -maxdepth 1 -type f | xargs rm -f; \
 	fi
 
 #
@@ -485,7 +539,7 @@ unconf_clean:
 unconf_clean_parallel:
 	@if [ -d $(TEST)/unconf/0 ]; \
 	  then \
-	  find $(TEST)/unconf/0 -type f -maxdepth 1 | xargs rm -f; \
+	  find $(TEST)/unconf/0 -maxdepth 1 -type f | xargs rm -f; \
 	fi
 
 #
@@ -512,7 +566,7 @@ well_clean:
 well_clean_parallel:
 	@if [ -d $(TEST)/well/0 ]; \
 	  then \
-	  find $(TEST)/well/0 -type f -maxdepth 1 | xargs rm -f; \
+	  find $(TEST)/well/0  -maxdepth 1 -type f  | xargs rm -f; \
 	fi
 
 clean: $(CLEAN_PROBLEMS)

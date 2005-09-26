@@ -2,7 +2,7 @@
                                     *                                                  *
                                     *    PHAST: A Three Dimensional Flow and Solute    *
                                     *         Reactive Transport Simulator             *
-                                    *                 Version: 1.1                     *
+                                    *                 Version: 1.2                     *
                                     *                                                  *
                                     ****************************************************
 
@@ -131,9 +131,11 @@
           Backwards-in-space (upstream) differencing for advective terms
           The cross-derivative solute flux terms will NOT BE calculated
 
+                           Row scaling only, using L-inf norm, will be done
+
           Direction index for d4 zig-zag renumbering ...................... IDIR..    1
           Incomplete LU [f] or modified ILU [t] factorization ............. MILU..     T
-          Number of search directions before restart ...................... NSDR..   10
+          Number of search directions before restart ...................... NSDR..   20
           Tolerance on iterative solution ................................. EPSSLV 1.0E-10
 
  ------------------------------------------------------------------------------------------------------------------------
