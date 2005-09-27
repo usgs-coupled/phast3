@@ -157,6 +157,8 @@ rm -rf "$DISTPATH/examples/run"
 rm -rf "$DISTPATH/examples/schema"
 find "$DISTPATH/examples" -type d -name '0' -print | xargs rm -rf
 find "$DISTPATH/examples" -type f -name 'clean' -print | xargs rm -rf
+cp "$DISTPATH/examples/ex1/phast.dat" "$DISTPATH/examples/diffusion1d/phast.dat" 
+cp "$DISTPATH/examples/ex1/phast.dat" "$DISTPATH/examples/diffusion2d/phast.dat" 
 
 echo "Cleaning up srcinput directory"
 rm -rf "$DISTPATH/srcinput/test"
