@@ -1865,12 +1865,27 @@ SOURCE=..\mpimod.F90
 # Begin Source File
 
 SOURCE=..\phast_slave.F90
+DEP_F90_PHAST_S=\
+	".\merge\f_units.mod"\
+	".\merge\machine_constants.mod"\
+	".\merge\mcb.mod"\
+	".\merge\mcc.mod"\
+	".\merge\mcch.mod"\
+	".\merge\mcg.mod"\
+	".\merge\mcn.mod"\
+	".\merge\mcp.mod"\
+	".\merge\mcv.mod"\
+	".\merge\mcw.mod"\
+	".\merge\mpi_mod.mod"\
+	
 
 !IF  "$(CFG)" == "phast - Win32 ser"
 
 # PROP Exclude_From_Build 1
 
 !ELSEIF  "$(CFG)" == "phast - Win32 ser_debug"
+
+# PROP Exclude_From_Build 1
 
 !ELSEIF  "$(CFG)" == "phast - Win32 mpich_debug"
 
@@ -1885,6 +1900,39 @@ SOURCE=..\phast_slave.F90
 !ELSEIF  "$(CFG)" == "phast - Win32 merge_debug"
 
 !ELSEIF  "$(CFG)" == "phast - Win32 ser_debug_mem"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\slavesubs.c
+
+!IF  "$(CFG)" == "phast - Win32 ser"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "phast - Win32 ser_debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "phast - Win32 mpich_debug"
+
+!ELSEIF  "$(CFG)" == "phast - Win32 mpich_no_hdf_debug"
+
+!ELSEIF  "$(CFG)" == "phast - Win32 mpich"
+
+!ELSEIF  "$(CFG)" == "phast - Win32 mpich_profile"
+
+!ELSEIF  "$(CFG)" == "phast - Win32 merge"
+
+!ELSEIF  "$(CFG)" == "phast - Win32 merge_debug"
+
+!ELSEIF  "$(CFG)" == "phast - Win32 ser_debug_mem"
+
+# PROP Exclude_From_Build 1
 
 !ENDIF 
 
