@@ -38,6 +38,7 @@ ENTRY28=PHAST_PDF_SHORTCUT_TEXT
 ENTRY29=MV_MENU_FOLDER
 ENTRY30=GUID_1_0
 ENTRY31=GUID_1_1
+ENTRY32=GUID_1_2
 
 [TITLE_CAPTIONBAR]
 Comment=Do not delete. Setup requires this Identifier even if your script doesn't use it.
@@ -131,6 +132,9 @@ Comment=
 
 [GUID_1_1]
 Comment=LATEST
+
+[GUID_1_2]
+Comment=
 
 [LANGUAGE]
 CURRENTLANG=0
