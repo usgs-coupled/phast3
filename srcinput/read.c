@@ -1066,6 +1066,7 @@ int read_grid(void)
 			grid_overlay[i].coord = (double *) malloc ( (size_t) 2 * sizeof(double));
 			if(grid_overlay[i].coord == NULL) malloc_error();
 			grid_overlay[i].count_coord = 0;
+			grid_overlay[i].elt_centroid = NULL;
 			ptr = next_char;
 			/*
 			 * set values
