@@ -10,6 +10,15 @@ PHAST, Version 1.2 (October 1, 2005)
     multiplied times the estimated number of cells to obtain the
     actual number of cells transferred. Default is 0.5. 
 
+    Modified PHREEQC to avoid a convergence problem that occurred in
+    trying to find the stable phase assemblage in a simulation with
+    many, many time steps. Occasionally an exponentiation would
+    underflow stopping the simulation. Limited log activities of
+    master species to be greater than the smallest machine precision
+    exponential number.  Avoids a matherr exception and allows trial
+    of additional parameter sets to attempt to solve the system of
+    equations.
+
     Updated to PHREEQC 2.12, which includes Pitzer aqueous model.
     Pitzer funtionality is now available in serial and parallel
     versions, simply use a chemistry database file that includes 
