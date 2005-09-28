@@ -760,6 +760,7 @@ int Merge_fpunchf(const int length, const char* format, va_list argptr)
 		/* determine length of buffer reqd */
 		ret_val = vsprintf(big_buffer, format, argptr);
 
+		assert(ret_val < 200);
         ret_val = FileInfo_capture(&s_fiPunch, ret_val, format, argptr);
     }
     else if (mpi_myself == 0)

@@ -65,7 +65,7 @@ static struct root_info {
     double* recv_array;
     int     recv_array_count;
 #endif
-    char    timestep_units[10];
+    char    timestep_units[40];
     char    timestep_buffer[120];
     int     active_count;
     int*    active;
