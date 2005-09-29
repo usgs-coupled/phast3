@@ -15,7 +15,8 @@ CLEAN_PROBLEMS = decay_clean diffusion1d_clean diffusion2d_clean disp2d_clean ex
 	kindred4.4_clean leaky_clean leakyx_clean leakyz_clean \
 	linear_bc_clean linear_ic_clean ex4_clean phrqex11_clean ex1_clean \
 	radial_clean river_clean unconf_clean well_clean ex2_clean free_clean \
-	decay_clean_parallel disp2d_clean_parallel ex3_clean_parallel kindred4.4_clean_parallel \
+	decay_clean_parallel diffusion1d_clean_parallel diffusion2d_clean_parallel \
+	disp2d_clean_parallel ex3_clean_parallel kindred4.4_clean_parallel \
 	leaky_clean_parallel leakyx_clean_parallel leakyz_clean_parallel \
 	linear_bc_clean_parallel linear_ic_clean_parallel ex4_clean_parallel \
 	phrqex11_clean_parallel ex1_clean_parallel radial_clean_parallel \
