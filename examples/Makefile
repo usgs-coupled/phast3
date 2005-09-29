@@ -22,6 +22,8 @@ CLEAN_PROBLEMS = decay_clean diffusion1d_clean diffusion2d_clean disp2d_clean ex
 	river_clean_parallel unconf_clean_parallel well_clean_parallel ex2_clean_parallel \
 	free_clean_parallel
 
+CLEAN_CMD =  rm -f *~ *.O.* *.log *.h5 *.h5~ abs* *.h5dump *.sel *.xyz* Phast.tmp 
+
 CI_PROBLEMS = ci_decay ci_diffusion1d ci_diffusion2d ci_disp2d ci_ex3 ci_kindred4.4 ci_leaky ci_leakyx ci_leakyz ci_linear_bc ci_linear_ic ci_ex4 ci_phrqex11 ci_ex1 ci_radial ci_river ci_unconf ci_well ci_ex2 ci_free
 
 all: $(PARALLEL) $(SERIAL) 
@@ -37,7 +39,7 @@ ex2: ex2_clean
 	echo ; 
 	echo ============= ex2
 	echo ; 
-	cd $(TEST)/ex2; ./clean
+	cd $(TEST)/ex2
 	cd $(TEST)/ex2; $(PHAST_INPUT) ex2; time $(PHAST)
 	echo ============= Done ex2
 
@@ -49,7 +51,7 @@ ex2_parallel: ex2_clean_parallel
 	echo ============= Done ex2 Parallel
 
 ex2_clean:
-	cd $(TEST)/ex2; ./clean
+	cd $(TEST)/ex2; $(CLEAN_CMD)
 
 ex2_clean_parallel:
 	@if [ -d $(TEST)/ex2/0 ]; \
@@ -64,7 +66,7 @@ free: free_clean
 	echo ; 
 	echo ============= free
 	echo ; 
-	cd $(TEST)/free; ./clean
+	cd $(TEST)/free
 	cd $(TEST)/free; $(PHAST_INPUT) free; time $(PHAST)
 	echo ============= Done free
 
@@ -76,7 +78,7 @@ free_parallel: free_clean_parallel
 	echo ============= Done free Parallel
 
 free_clean:
-	cd $(TEST)/free; ./clean
+	cd $(TEST)/free; $(CLEAN_CMD)
 
 free_clean_parallel:
 	@if [ -d $(TEST)/free/0 ]; \
@@ -91,7 +93,7 @@ decay: decay_clean
 	echo ; 
 	echo ============= decay
 	echo ; 
-	cd $(TEST)/decay; ./clean
+	cd $(TEST)/decay;
 	cd $(TEST)/decay; $(PHAST_INPUT) decay; time $(PHAST)
 	echo ============= Done decay
 
@@ -103,7 +105,8 @@ decay_parallel: decay_clean_parallel
 	echo ============= Done decay Parallel
 
 decay_clean:
-	cd $(TEST)/decay; ./clean
+	cd $(TEST)/decay; $(CLEAN_CMD)
+
 
 decay_clean_parallel:
 	@if [ -d $(TEST)/decay/0 ]; \
@@ -118,7 +121,7 @@ diffusion1d: diffusion1d_clean
 	echo ; 
 	echo ============= diffusion1d
 	echo ; 
-	cd $(TEST)/diffusion1d; ./clean
+	cd $(TEST)/diffusion1d;
 	cd $(TEST)/diffusion1d; $(PHAST_INPUT) diffusion1d; time $(PHAST)
 	echo ============= Done diffusion1d
 
@@ -130,7 +133,7 @@ diffusion1d_parallel: diffusion1d_clean_parallel
 	echo ============= Done diffusion1d Parallel
 
 diffusion1d_clean:
-	cd $(TEST)/diffusion1d; ./clean
+	cd $(TEST)/diffusion1d; $(CLEAN_CMD)
 
 diffusion1d_clean_parallel:
 	@if [ -d $(TEST)/diffusion1d/0 ]; \
@@ -144,7 +147,7 @@ diffusion2d: diffusion2d_clean
 	echo ; 
 	echo ============= diffusion2d
 	echo ; 
-	cd $(TEST)/diffusion2d; ./clean
+	cd $(TEST)/diffusion2d;
 	cd $(TEST)/diffusion2d; $(PHAST_INPUT) diffusion2d; time $(PHAST)
 	echo ============= Done diffusion2d
 
@@ -156,7 +159,7 @@ diffusion2d_parallel: diffusion2d_clean_parallel
 	echo ============= Done diffusion2d Parallel
 
 diffusion2d_clean:
-	cd $(TEST)/diffusion2d; ./clean
+	cd $(TEST)/diffusion2d; $(CLEAN_CMD)
 
 diffusion2d_clean_parallel:
 	@if [ -d $(TEST)/diffusion2d/0 ]; \
@@ -171,7 +174,7 @@ disp2d: disp2d_clean
 	echo ; 
 	echo ============= disp2d
 	echo ; 
-	cd $(TEST)/disp2d; ./clean
+	cd $(TEST)/disp2d;
 	cd $(TEST)/disp2d; $(PHAST_INPUT) disp2d; time $(PHAST)
 	echo ============= Done disp2d
 
@@ -183,7 +186,7 @@ disp2d_parallel: disp2d_clean_parallel
 	echo ============= Done disp2d Parallel
 
 disp2d_clean:
-	cd $(TEST)/disp2d; ./clean
+	cd $(TEST)/disp2d; $(CLEAN_CMD)
 
 disp2d_clean_parallel:
 	@if [ -d $(TEST)/disp2d/0 ]; \
@@ -198,7 +201,7 @@ ex3: ex3_clean
 	echo ; 
 	echo ============= ex3
 	echo ; 
-	cd $(TEST)/ex3; ./clean
+	cd $(TEST)/ex3;
 	cd $(TEST)/ex3; $(PHAST_INPUT) ex3; time $(PHAST)
 	echo ============= Done ex3
 
@@ -210,7 +213,7 @@ ex3_parallel: ex3_clean_parallel
 	echo ============= Done ex3 Parallel
 
 ex3_clean:
-	cd $(TEST)/ex3; ./clean
+	cd $(TEST)/ex3; $(CLEAN_CMD)
 
 ex3_clean_parallel:
 	@if [ -d $(TEST)/ex3/0 ]; \
@@ -225,7 +228,7 @@ kindred4.4: kindred4.4_clean
 	echo ; 
 	echo ============= kindred4.4
 	echo ; 
-	cd $(TEST)/kindred4.4; ./clean
+	cd $(TEST)/kindred4.4;
 	cd $(TEST)/kindred4.4; $(PHAST_INPUT) kindred4.4; time $(PHAST)
 	echo ============= Done kindred4.4
 
@@ -237,7 +240,7 @@ kindred4.4_parallel: kindred4.4_clean_parallel
 	echo ============= Done kindred4.4 Parallel
 
 kindred4.4_clean:
-	cd $(TEST)/kindred4.4; ./clean
+	cd $(TEST)/kindred4.4; $(CLEAN_CMD)
 
 kindred4.4_clean_parallel:
 	@if [ -d $(TEST)/kindred4.4/0 ]; \
@@ -252,7 +255,7 @@ leaky: leaky_clean
 	echo ; 
 	echo ============= leaky
 	echo ; 
-	cd $(TEST)/leaky; ./clean
+	cd $(TEST)/leaky;
 	cd $(TEST)/leaky; $(PHAST_INPUT) leaky; time $(PHAST)
 	echo ============= Done leaky
 
@@ -264,7 +267,7 @@ leaky_parallel: leaky_clean_parallel
 	echo ============= Done leaky Parallel
 
 leaky_clean:
-	cd $(TEST)/leaky; ./clean
+	cd $(TEST)/leaky; $(CLEAN_CMD)
 
 leaky_clean_parallel:
 	@if [ -d $(TEST)/leaky/0 ]; \
@@ -279,7 +282,7 @@ leakyx: leakyx_clean
 	echo ; 
 	echo ============= leakyx
 	echo ; 
-	cd $(TEST)/leakyx; ./clean
+	cd $(TEST)/leakyx;
 	cd $(TEST)/leakyx; $(PHAST_INPUT) leakyx; time $(PHAST)
 	echo ============= Done leakyx
 
@@ -291,7 +294,7 @@ leakyx_parallel: leakyx_clean_parallel
 	echo ============= Done leakyx Parallel
 
 leakyx_clean:
-	cd $(TEST)/leakyx; ./clean
+	cd $(TEST)/leakyx; $(CLEAN_CMD)
 
 leakyx_clean_parallel:
 	@if [ -d $(TEST)/leakyx/0 ]; \
@@ -306,7 +309,7 @@ leakyz: leakyz_clean
 	echo ; 
 	echo ============= leakyz
 	echo ; 
-	cd $(TEST)/leakyz; ./clean
+	cd $(TEST)/leakyz;
 	cd $(TEST)/leakyz; $(PHAST_INPUT) leakyz; time $(PHAST)
 	echo ============= Done leakyz
 
@@ -318,7 +321,7 @@ leakyz_parallel: leakyz_clean_parallel
 	echo ============= Done leakyz Parallel
 
 leakyz_clean:
-	cd $(TEST)/leakyz; ./clean
+	cd $(TEST)/leakyz; $(CLEAN_CMD)
 
 leakyz_clean_parallel:
 	@if [ -d $(TEST)/leakyz/0 ]; \
@@ -333,7 +336,7 @@ linear_bc: linear_bc_clean
 	echo ; 
 	echo ============= linear_bc
 	echo ; 
-	cd $(TEST)/linear_bc; ./clean
+	cd $(TEST)/linear_bc;
 	cd $(TEST)/linear_bc; $(PHAST_INPUT) linear_bc; time $(PHAST)
 	echo ============= Done linear_bc
 
@@ -345,7 +348,7 @@ linear_bc_parallel: linear_bc_clean_parallel
 	echo ============= Done linear_bc Parallel
 
 linear_bc_clean:
-	cd $(TEST)/linear_bc; ./clean
+	cd $(TEST)/linear_bc; $(CLEAN_CMD)
 
 linear_bc_clean_parallel:
 	@if [ -d $(TEST)/linear_bc/0 ]; \
@@ -360,7 +363,7 @@ linear_ic: linear_ic_clean
 	echo ; 
 	echo ============= linear_ic
 	echo ; 
-	cd $(TEST)/linear_ic; ./clean
+	cd $(TEST)/linear_ic;
 	cd $(TEST)/linear_ic; $(PHAST_INPUT) linear_ic; time $(PHAST)
 	echo ============= Done linear_ic
 
@@ -372,7 +375,7 @@ linear_ic_parallel: linear_ic_clean_parallel
 	echo ============= Done linear_ic Parallel
 
 linear_ic_clean:
-	cd $(TEST)/linear_ic; ./clean
+	cd $(TEST)/linear_ic; $(CLEAN_CMD)
 
 linear_ic_clean_parallel:
 	@if [ -d $(TEST)/linear_ic/0 ]; \
@@ -387,7 +390,7 @@ ex4: ex4_clean
 	echo ; 
 	echo ============= ex4
 	echo ; 
-	cd $(TEST)/ex4; ./clean
+	cd $(TEST)/ex4;
 	cd $(TEST)/ex4; $(PHAST_INPUT) ex4; time $(PHAST)
 	echo ============= Done ex4
 
@@ -399,7 +402,7 @@ ex4_parallel: ex4_clean_parallel
 	echo ============= Done ex4 Parallel
 
 ex4_clean:
-	cd $(TEST)/ex4; ./clean
+	cd $(TEST)/ex4; $(CLEAN_CMD) ex4.head.dat
 
 ex4_clean_parallel:
 	@if [ -d $(TEST)/ex4/0 ]; \
@@ -414,7 +417,7 @@ phrqex11: phrqex11_clean
 	echo ; 
 	echo ============= phrqex11
 	echo ; 
-	cd $(TEST)/phrqex11; ./clean
+	cd $(TEST)/phrqex11;
 	cd $(TEST)/phrqex11; $(PHAST_INPUT) phrqex11; time $(PHAST)
 	echo ============= Done phrqex11
 
@@ -426,7 +429,7 @@ phrqex11_parallel: phrqex11_clean_parallel
 	echo ============= Done phrqex11 Parallel
 
 phrqex11_clean:
-	cd $(TEST)/phrqex11; ./clean
+	cd $(TEST)/phrqex11; $(CLEAN_CMD)
 
 phrqex11_clean_parallel:
 	@if [ -d $(TEST)/phrqex11/0 ]; \
@@ -441,7 +444,7 @@ ex1: ex1_clean
 	echo ; 
 	echo ============= ex1
 	echo ; 
-	cd $(TEST)/ex1; ./clean
+	cd $(TEST)/ex1;
 	cd $(TEST)/ex1; $(PHAST_INPUT) ex1; time $(PHAST)
 	echo ============= Done ex1
 
@@ -453,7 +456,7 @@ ex1_parallel: ex1_clean_parallel
 	echo ============= Done ex1 Parallel
 
 ex1_clean:
-	cd $(TEST)/ex1; ./clean
+	cd $(TEST)/ex1; $(CLEAN_CMD)
 
 ex1_clean_parallel:
 	@if [ -d $(TEST)/ex1/0 ]; \
@@ -468,7 +471,7 @@ radial: radial_clean
 	echo ; 
 	echo ============= radial
 	echo ; 
-	cd $(TEST)/radial; ./clean
+	cd $(TEST)/radial;
 	cd $(TEST)/radial; $(PHAST_INPUT) radial; time $(PHAST)
 	echo ============= Done radial
 
@@ -480,7 +483,7 @@ radial_parallel: radial_clean_parallel
 	echo ============= Done radial Parallel
 
 radial_clean:
-	cd $(TEST)/radial; ./clean
+	cd $(TEST)/radial; $(CLEAN_CMD)
 
 radial_clean_parallel:
 	@if [ -d $(TEST)/radial/0 ]; \
@@ -495,7 +498,7 @@ river: river_clean
 	echo ; 
 	echo ============= river
 	echo ; 
-	cd $(TEST)/river; ./clean
+	cd $(TEST)/river;
 	cd $(TEST)/river; $(PHAST_INPUT) river; time $(PHAST)
 	echo ============= Done river
 
@@ -507,7 +510,7 @@ river_parallel: river_clean_parallel
 	echo ============= Done river Parallel
 
 river_clean:
-	cd $(TEST)/river; ./clean
+	cd $(TEST)/river; $(CLEAN_CMD)
 
 river_clean_parallel:
 	@if [ -d $(TEST)/river/0 ]; \
@@ -522,7 +525,7 @@ unconf: unconf_clean
 	echo ; 
 	echo ============= unconf
 	echo ; 
-	cd $(TEST)/unconf; ./clean
+	cd $(TEST)/unconf;
 	cd $(TEST)/unconf; $(PHAST_INPUT) unconf; time $(PHAST)
 	echo ============= Done unconf
 
@@ -534,7 +537,7 @@ unconf_parallel: unconf_clean_parallel
 	echo ============= Done unconf Parallel
 
 unconf_clean:
-	cd $(TEST)/unconf; ./clean
+	cd $(TEST)/unconf; $(CLEAN_CMD)
 
 unconf_clean_parallel:
 	@if [ -d $(TEST)/unconf/0 ]; \
@@ -549,7 +552,7 @@ well: well_clean
 	echo ; 
 	echo ============= well
 	echo ; 
-	cd $(TEST)/well; ./clean
+	cd $(TEST)/well;
 	cd $(TEST)/well; $(PHAST_INPUT) well; time $(PHAST)
 	echo ============= Done well
 
@@ -561,7 +564,7 @@ well_parallel: well_clean_parallel
 	echo ============= Done well Parallel
 
 well_clean:
-	cd $(TEST)/well; ./clean
+	cd $(TEST)/well; $(CLEAN_CMD)
 
 well_clean_parallel:
 	@if [ -d $(TEST)/well/0 ]; \
