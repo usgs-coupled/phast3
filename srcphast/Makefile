@@ -114,6 +114,13 @@ DEFINE_MPI=-DUSE_MPI
 DEFINE_MERGE=-DMERGE_FILES
 
 # -----------------------------------------------------------------------------
+# #define gmp for inverse modeling
+# comment the following lines to remove multiprecision option
+DINVERSE_CL1MP=TRUE
+CL1MP_LIB=-lgmp
+CL1MP_OBJS=cl1mp.o
+
+# -----------------------------------------------------------------------------
 #efence for debugging
 EFENCE_LIB=-L$(HOME)/packages/efence
 
@@ -130,8 +137,8 @@ ifeq ($(CFG), SERIAL_ABSOFT)
   FFLAGS       = $(FDEBUG) $(FMISC) $(DEFINES)
   CC           = gcc
   CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES)
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS) 
-  LD_FLAGS     = -lm ${HDF5_LIBS} $(LIBABSOFT)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS) $(CL1MP_OBJS)
+  LD_FLAGS     = -lm ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT)
 endif
 
 # -----------------------------------------------------------------------------
@@ -145,8 +152,8 @@ ifeq ($(CFG), SERIAL_ABSOFT_DEBUG)
   FFLAGS       = $(FDEBUG) $(FMISC) $(DEFINES)
   CC           = gcc
   CFLAGS       = -Wall -g $(DEFINES) $(HDF5_INCLUDES) 
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS) 
-  LD_FLAGS     = -lm ${HDF5_LIBS} $(LIBABSOFT) # ${EFENCE_LIB} -lefence
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS) $(CL1MP_OBJS)
+  LD_FLAGS     = -lm ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT) # ${EFENCE_LIB} -lefence
 endif
 
 # -----------------------------------------------------------------------------
@@ -162,8 +169,8 @@ ifeq ($(CFG), MPI_ABSOFT)
   FFLAGS       = $(FDEBUG) $(FMISC) $(DEFINES)
   CC           = mpicc
   CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES)
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS)
-  LD_FLAGS     = -lm ${HDF5_LIBS} $(LIBABSOFT)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
+  LD_FLAGS     = -lm ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT)
 endif
 
 # -----------------------------------------------------------------------------
@@ -179,8 +186,8 @@ ifeq ($(CFG), MPI_ABSOFT_DEBUG)
   FFLAGS       = $(FDEBUG) $(FMISC) $(DEFINES)
   CC           = mpicc
   CFLAGS       = -Wall -pedantic -ansi -g $(DEFINES) $(HDF5_INCLUDES)# -Wconversion 
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS)
-  LD_FLAGS     = -lm ${HDF5_LIBS} $(LIBABSOFT) # ${EFENCE_LIB} -lefence
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
+  LD_FLAGS     = -lm ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT) # ${EFENCE_LIB} -lefence
 endif
 
 # -----------------------------------------------------------------------------
@@ -193,9 +200,9 @@ ifeq ($(CFG), MPI_LAHEY)
   FFLAGS       = -O $(DEFINES)
   CC           = mpicc
   CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES)
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
 #  LD_FLAGS     = -static-flib  -lm ${HDF5_LIBS} 
-  LD_FLAGS     = -static $(LIBLAHEY) -lm ${HDF5_LIBS} 
+  LD_FLAGS     = -static $(LIBLAHEY) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
 endif
 
 # -----------------------------------------------------------------------------
@@ -207,10 +214,10 @@ ifeq ($(CFG), MPI_LAHEY_DEBUG)
   FC           = mpif77
   FFLAGS       = -g --chkglobal --warn --info $(DEFINES)
   CC           = mpicc
-  CFLAGS       = -Wall -pedantic -g $(DEFINES)
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS)
+  CFLAGS       = -Wall -pedantic -g $(DEFINES) $(HDF5_INCLUDES)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
-  LD_FLAGS     = -static $(LIBLAHEY) -lm ${HDF5_LIBS} 
+  LD_FLAGS     = -static $(LIBLAHEY) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
 endif
 
 # -----------------------------------------------------------------------------
@@ -221,9 +228,9 @@ ifeq ($(CFG), SERIAL_LAHEY)
   FFLAGS       = -O $(DEFINES)
   CC           = gcc
   CFLAGS       = -Wall -pedantic $(DEFINES) $(HDF5_INCLUDES)
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS) $(CL1MP_OBJS)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
-  LD_FLAGS     = -static $(LIBLAHEY) -lm ${HDF5_LIBS} 
+  LD_FLAGS     = -static $(LIBLAHEY) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
 endif
 
 # -----------------------------------------------------------------------------
@@ -234,9 +241,9 @@ ifeq ($(CFG), SERIAL_LAHEY_DEBUG)
   FFLAGS       = -g --f95 --chkglobal --warn --info $(DEFINES)
   CC           = gcc
   CFLAGS       = -Wall -pedantic -g $(DEFINES)
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS) $(CL1MP_OBJS)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
-  LD_FLAGS     = -static $(LIBLAHEY) -lm ${HDF5_LIBS} 
+  LD_FLAGS     = -static $(LIBLAHEY) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
 endif
 
 # -----------------------------------------------------------------------------
