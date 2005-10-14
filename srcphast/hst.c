@@ -183,6 +183,9 @@ void PHREEQC_MAIN(int *solute, char *chemistry_name, char *database_name, char *
 	prefix[prefix_l-1] = '\0';
 	database_name[database_l-1] = '\0';
 	file_prefix = string_duplicate(prefix);
+	input_file_name[0] = '\0';
+	output_file_name[0] = '\0';
+	database_file_name[0] = '\0';
 	/*
 	 *   Add callbacks for echo_file
 	 */
@@ -260,7 +263,9 @@ void PHREEQC_MAIN(int *solute, char *chemistry_name, char *database_name, char *
 	/*
 	 *  Return if flow only simulation
 	 */
-	if (*solute == FALSE) return/*(0)*/;
+	if (*solute == FALSE) {
+		return/*(0)*/;
+	}
 	/*
 	 *   Open input files
 	 */
@@ -269,6 +274,14 @@ void PHREEQC_MAIN(int *solute, char *chemistry_name, char *database_name, char *
 		clean_up();
 		exit(1);
 		/*return errors;*/
+	}
+	if (mpi_myself == 0) {
+		output_msg(OUTPUT_ECHO, "Output file:    %s\n", output_file_name);
+		output_msg(OUTPUT_ECHO, "Chemistry file: %s\n", input_file_name);
+		output_msg(OUTPUT_ECHO, "Database file:  %s\n\n", database_file_name);
+		output_msg(OUTPUT_MESSAGE, "Output file:    %s\n", output_file_name);
+		output_msg(OUTPUT_MESSAGE, "Chemistry file: %s\n", input_file_name);
+		output_msg(OUTPUT_MESSAGE, "Database file:  %s\n\n", database_file_name);
 	}
 	/*
 	 *   Initialize arrays

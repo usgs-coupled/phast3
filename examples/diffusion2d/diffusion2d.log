@@ -72,6 +72,10 @@ PHASTINPUT done.
 
 Running PHAST.
 
+Output file:    diffusion2d.O.chem
+Chemistry file: diffusion2d.chem.dat
+Database file:  phast.dat
+
 Running PHREEQC for initial conditions.
 
 Processing database file.

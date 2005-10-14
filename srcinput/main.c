@@ -67,9 +67,11 @@ int main(int argc, char *argv[])
 	if (read_input() == EOF) {
 		error_msg("No data defined.", STOP);
 	}
+	/*
 	if (flow_only == FALSE && input_error == 0) {
 		process_chem_names();
 	}
+	*/
 	check_hst_units();
 	check_time_series_data();
 	if (input_error == 0) {

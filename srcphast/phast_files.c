@@ -280,7 +280,6 @@ int open_input_files_phast(char *chemistry_name, char *database_name, void **db_
 {
 	int l;
 	char token[2*MAX_LENGTH];
-	char input_file_name[2*MAX_LENGTH];
 	char *ptr;
 	int errors;
 	ENTRY item, *found_item;
@@ -333,7 +332,8 @@ int open_input_files_phast(char *chemistry_name, char *database_name, void **db_
 	ptr = chemistry_name;
 	copy_token(input_file_name, &ptr, &l);
 	if ( (input_file = fopen(input_file_name, "r")) == NULL) {
-		error_msg("Can't open input file.", STOP);
+		sprintf(error_string, "Can't open input file, %s", input_file_name);
+		error_msg(error_string, STOP);
 	}
 	/*
 	 *  Read input file for DATABASE keyword
@@ -351,19 +351,21 @@ int open_input_files_phast(char *chemistry_name, char *database_name, void **db_
 	}
 	fclose(input_file);
 	if ((input_file = fopen(input_file_name,"r")) == NULL) {
-		error_msg ("Can't reopen input file.", STOP);
+		sprintf(error_string, "Can't reopen input file, %s", input_file_name);
+		error_msg (error_string, STOP);
 	}
 	/*
 	 *   Open data base
 	 */
 	if (user_database != NULL) {
-		strcpy(token, user_database);
+		strcpy(database_file_name, user_database);
 	} else {
 		ptr = database_name;
-		copy_token(token, &ptr, &l);
+		copy_token(database_file_name, &ptr, &l);
 	} 
-	if ( ( database_file = fopen(token, "r")) == NULL) {
-		error_msg ("Can't open database file.", STOP);
+	if ( ( database_file = fopen(database_file_name, "r")) == NULL) {
+		sprintf(error_string, "Can't open database file, %s", database_file_name);
+		error_msg (error_string, STOP);
 	}
 /*
  *   local cleanup
@@ -711,17 +713,17 @@ FILE *open_echo(const char *prefix)
 int open_output_file(char *prefix, int solute)
 /* ---------------------------------------------------------------------- */
 {
-	char token[2*MAX_LENGTH];
 	char *ptr;
 	int l;
 	if (solute == FALSE) return(OK);
 
 	/* ouput file */
 	ptr = prefix;
-	copy_token(token, &ptr, &l);
-	strcat(token, ".O.chem");
-	if ( (output = fopen(token, "w")) == NULL) {
-		error_msg("Could not open output file.", STOP);
+	copy_token(output_file_name, &ptr, &l);
+	strcat(output_file_name, ".O.chem");
+	if ( (output = fopen(output_file_name, "w")) == NULL) {
+		sprintf(error_string,"Could not open output file, %s", output_file_name);
+		error_msg(error_string, STOP);
 	}
 	return OK;
 }
@@ -739,7 +741,8 @@ int open_punch_file(char *prefix, int solute)
 	copy_token(token, &ptr, &l);
 	strcat(token, ".xyz.chem");
 	if ( (punch_file = fopen(token, "w")) == NULL) {
-		error_msg("Could not open punch file.", STOP);
+		sprintf(error_string,"Could not open punch file, %s", token);
+		error_msg(error_string, STOP);
 	}
 	return OK;
 }

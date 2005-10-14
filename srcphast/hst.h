@@ -33,6 +33,10 @@ EXTERNAL struct activity_list *activity_list;
 EXTERNAL int count_activity_list;
 EXTERNAL int transport_charge;
 EXTERNAL char *file_prefix;
+EXTERNAL char input_file_name[2*MAX_LENGTH];
+EXTERNAL char output_file_name[2*MAX_LENGTH];
+EXTERNAL char database_file_name[2*MAX_LENGTH];
+
 
 struct back_list {
 	int list[4];

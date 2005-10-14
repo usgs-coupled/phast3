@@ -1,3 +1,9 @@
+    svn 602: 
+    Added print of database, input, and output files to .log and
+    .O.chem files.
+
+    Removed check for .chem.dat and database files from phastinput.
+
 PHAST, Version 1.2 (September 28, 2005)
 
     Added new identifier in SOLUTION_METHOD, 
