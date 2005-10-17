@@ -117,7 +117,7 @@ DEFINE_MERGE=-DMERGE_FILES
 # #define gmp for inverse modeling
 # comment the following lines to remove multiprecision option
 DINVERSE_CL1MP=TRUE
-CL1MP_LIB=-lgmp
+CL1MP_LIB=/z/parkplace/usr/lib/libgmp.a 
 CL1MP_OBJS=cl1mp.o
 
 # -----------------------------------------------------------------------------
