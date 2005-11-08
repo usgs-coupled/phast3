@@ -1816,7 +1816,7 @@ int snap_out_to_range(double x1, double x2, double *coord, int count_coord, int 
 		}
 	}
 	if (*i2 == 0) {
-		error_msg("Polygon is outside domain", CONTINUE);
+		warning_msg("River polygon is outside model domain.");
 		return(ERROR);
 	}
 	return(OK);

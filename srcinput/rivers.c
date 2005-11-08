@@ -51,6 +51,7 @@ int setup_rivers(void)
 			/*
 			 *   Set gpc_polygon for cell boundary
 			 */
+			if (range_ptr == NULL) continue;
 			k = range_ptr->k1;
 			for (i = range_ptr->i1; i <= range_ptr->i2; i++) {
 				for (j = range_ptr->j1; j <= range_ptr->j2; j++) {
