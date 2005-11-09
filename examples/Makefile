@@ -25,8 +25,6 @@ CLEAN_PROBLEMS = decay_clean diffusion1d_clean diffusion2d_clean disp2d_clean ex
 
 CLEAN_CMD =  rm -f *~ *.O.* *.log *.h5 *.h5~ abs* *.h5dump *.sel *.xyz* Phast.tmp 
 
-CI_PROBLEMS = ci_decay ci_diffusion1d ci_diffusion2d ci_disp2d ci_ex3 ci_kindred4.4 ci_leaky ci_leakyx ci_leakyz ci_linear_bc ci_linear_ic ci_ex4 ci_phrqex11 ci_ex1 ci_radial ci_river ci_unconf ci_well ci_ex2 ci_free
-
 all: $(PARALLEL) $(SERIAL) 
 
 serial: $(SERIAL)
@@ -580,3 +578,7 @@ clean: $(CLEAN_PROBLEMS)
 
 diff_parallel:
 	rcsdiff ./*/0/*
+
+ci_parallel:
+	for FILE in $(SERIAL); do \
+		cd $$FILE/0; ci -l -m"latest" *.dat *.O.* *.xyz.* Phast.tmp; cd ../..; done

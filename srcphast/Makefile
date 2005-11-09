@@ -84,8 +84,10 @@ SRC     = ../phreeqc
 .SUFFIXES : .o .f .F90 .f90 .c 
 
 # compilers
-FLAHEY=/z/lobo/usr/local/lf9562/bin/lf95
-LIBLAHEY=-L/z/lobo/usr/lib
+FLAHEY=/usr/local/lf9562/bin/lf95
+LIBLAHEY=-L/usr/lib 
+#FLAHEY=/z/niwot/usr/local/lf9562/bin/lf95
+#LIBLAHEY=-L/z/niwot/usr/lib -L/z/niwot/usr/local/lf9562/lib 
 
 FABSOFT=/z/parkplace/usr/absoft/bin/f90
 NLSABSOFT=/z/parkplace/usr/absoft/lib/nls/cf90
@@ -204,7 +206,7 @@ ifeq ($(CFG), MPI_LAHEY)
   CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
 #  LD_FLAGS     = -static-flib  -lm ${HDF5_LIBS} 
-  LD_FLAGS     = -static $(LIBLAHEY) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
+  LD_FLAGS     = $(LIBLAHEY) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
 endif
 
 # -----------------------------------------------------------------------------
