@@ -11,9 +11,13 @@
 #include <mpi.h>
 #include <time.h>
 
+#ifdef COMPILE_G95
+#define SLAVE_GET_SOLUTE slave_get_solute
+#define SLAVE_GET_INDEXES slave_get_indexes
+#else
 #define SLAVE_GET_SOLUTE slave_get_solute_
 #define SLAVE_GET_INDEXES slave_get_indexes_
-
+#endif
 void SLAVE_GET_SOLUTE(int *solute, int *nx, int *ny, int *nz)
 {
 	MPI_Bcast(solute, 1, MPI_INT, 0, MPI_COMM_WORLD);

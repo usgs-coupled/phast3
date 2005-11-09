@@ -10,6 +10,11 @@ MODULE mpi_mod
 #define MPI_COMM_SIZE MPI_COMM_SIZE_
 #define MPI_COMM_RANK MPI_COMM_RANK_
 #endif
+#ifdef COMPILE_G95
+#define MPI_INIT_ MPI_INIT__
+#define MPI_COMM_SIZE_ MPI_COMM_SIZE__
+#define MPI_COMM_RANK_ MPI_COMM_RANK__
+#endif
 
   IMPLICIT NONE
   INTEGER :: g_mpi_tasks

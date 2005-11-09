@@ -17,6 +17,16 @@ void HDFEndCTimeStep(void);
  *   Functions called from FORTRAN
  */
 
+#ifdef COMPILE_G95
+#define HDF_INIT_INVARIANT     hdf_init_invariant
+#define HDF_FINALIZE_INVARIANT hdf_finalize_invariant
+#define HDF_WRITE_FEATURE      hdf_write_feature
+#define HDF_WRITE_GRID         hdf_write_grid
+#define HDF_OPEN_TIME_STEP     hdf_open_time_step
+#define HDF_CLOSE_TIME_STEP    hdf_close_time_step
+#define PRNTAR_HDF             prntar_hdf
+#define HDF_VEL                hdf_vel
+#else
 #define HDF_INIT_INVARIANT     hdf_init_invariant_
 #define HDF_FINALIZE_INVARIANT hdf_finalize_invariant_
 #define HDF_WRITE_FEATURE      hdf_write_feature_
@@ -25,7 +35,7 @@ void HDFEndCTimeStep(void);
 #define HDF_CLOSE_TIME_STEP    hdf_close_time_step_
 #define PRNTAR_HDF             prntar_hdf_
 #define HDF_VEL                hdf_vel_
-
+#endif
 void HDF_INIT_INVARIANT(void);
 void HDF_Finalize(void);
 void HDF_FINALIZE_INVARIANT(void);

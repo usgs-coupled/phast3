@@ -53,6 +53,25 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 			 double *rebalance_fraction_hst);
 #endif  /* #ifdef USE_MPI */
 
+#ifdef COMPILE_G95
+#define CALCULATE_WELL_PH calculate_well_ph
+#define COLLECT_FROM_NONROOT collect_from_nonroot
+#define COUNT_ALL_COMPONENTS count_all_components
+#define CONVERT_TO_MOLAL convert_to_molal
+#define CONVERT_TO_MASS_FRACTION convert_to_mass_fraction
+#define DISTRIBUTE_INITIAL_CONDITIONS distribute_initial_conditions
+#define EQUILIBRATE equilibrate
+#define ERRPRT_C errprt_c
+#define FORWARD_AND_BACK forward_and_back
+#define LOGPRT_C logprt_c
+#define ON_ERROR_CLEANUP_AND_EXIT on_error_cleanup_and_exit
+#define PACK_FOR_HST pack_for_hst
+#define PHREEQC_FREE phreeqc_free
+#define PHREEQC_MAIN phreeqc_main
+#define SETUP_BOUNDARY_CONDITIONS setup_boundary_conditions
+#define WARNPRT_C warnprt_c
+#define UZ_INIT uz_init
+#else
 #define CALCULATE_WELL_PH calculate_well_ph_
 #define COLLECT_FROM_NONROOT collect_from_nonroot_
 #define COUNT_ALL_COMPONENTS count_all_components_
@@ -70,7 +89,7 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 #define SETUP_BOUNDARY_CONDITIONS setup_boundary_conditions_
 #define WARNPRT_C warnprt_c_
 #define UZ_INIT uz_init_
-
+#endif
 
 void CALCULATE_WELL_PH(double *c, LDBLE *ph, LDBLE *alkalinity);
 void COLLECT_FROM_NONROOT(double *fraction, int *dim);

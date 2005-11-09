@@ -14,16 +14,23 @@
 
 PROGRAM = phast
 
-all: serial_absoft serial_absoft_debug mpi_absoft mpi_absoft_debug serial_lahey serial_lahey_debug mpi_lahey mpi_lahey_debug 
+all: serial_absoft serial_absoft_debug mpi_absoft mpi_absoft_debug \
+	serial_g95 serial_g95_debug mpi_g95 mpi_g95_debug 
+
+# serial_lahey serial_lahey_debug mpi_lahey mpi_lahey_debug 
 
 SERIAL_ABSOFT_DIR       = serial_absoft
 SERIAL_ABSOFT_DEBUG_DIR = serial_absoft_debug
 SERIAL_LAHEY_DIR        = serial_lahey
 SERIAL_LAHEY_DEBUG_DIR  = serial_lahey_debug
+SERIAL_G95_DIR          = serial_g95
+SERIAL_G95_DEBUG_DIR    = serial_g95_debug
 MPI_LAHEY_DIR           = mpi_lahey
 MPI_LAHEY_DEBUG_DIR     = mpi_lahey_debug
 MPI_ABSOFT_DIR          = mpi_absoft
 MPI_ABSOFT_DEBUG_DIR    = mpi_absoft_debug
+MPI_G95_DIR             = mpi_g95
+MPI_G95_DEBUG_DIR       = mpi_g95_debug
 MAKEFILE                = Makefile
 
 #########################
@@ -49,6 +56,16 @@ serial_lahey_debug:
 	mkdir -p $(SERIAL_LAHEY_DEBUG_DIR);
 	cd $(SERIAL_LAHEY_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_LAHEY_DEBUG $(PROGRAM)
 
+.PHONY : serial_g95
+serial_g95:
+	mkdir -p $(SERIAL_G95_DIR)
+	cd $(SERIAL_G95_DIR);	$(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_G95 $(PROGRAM)
+
+.PHONY : serial_g95_debug
+serial_g95_debug:
+	mkdir -p $(SERIAL_G95_DEBUG_DIR);
+	cd $(SERIAL_G95_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_G95_DEBUG $(PROGRAM)
+
 #########################
 ##### MPI Versions ######
 #########################
@@ -73,6 +90,16 @@ mpi_absoft_debug:
 	mkdir -p $(MPI_ABSOFT_DEBUG_DIR);
 	cd $(MPI_ABSOFT_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_ABSOFT_DEBUG $(PROGRAM)
 
+.PHONY : mpi_g95
+mpi_g95:
+	mkdir -p $(MPI_G95_DIR)
+	cd $(MPI_G95_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_G95 $(PROGRAM)
+
+.PHONY : mpi_g95_debug
+mpi_g95_debug:
+	mkdir -p $(MPI_G95_DEBUG_DIR);
+	cd $(MPI_G95_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_G95_DEBUG $(PROGRAM)
+
 # Recursive make begins here
 #
 # =============================================================================
@@ -84,14 +111,19 @@ SRC     = ../phreeqc
 .SUFFIXES : .o .f .F90 .f90 .c 
 
 # compilers
-FLAHEY=/usr/local/lf9562/bin/lf95
-LIBLAHEY=-L/usr/lib 
+#FLAHEY=/usr/local/lf9562/bin/lf95
+#LIBLAHEY=-L/usr/lib 
 #FLAHEY=/z/niwot/usr/local/lf9562/bin/lf95
 #LIBLAHEY=-L/z/niwot/usr/lib -L/z/niwot/usr/local/lf9562/lib 
+FLAHEY=/usr/local/bin/g95
+
 
 FABSOFT=/z/parkplace/usr/absoft/bin/f90
 NLSABSOFT=/z/parkplace/usr/absoft/lib/nls/cf90
 LIBABSOFT=-L/z/parkplace/usr/absoft/lib 
+
+FG95=/z/parkplace/usr/local//bin/g95
+LIBG95=
 
 # -----------------------------------------------------------------------------
 .f90.o :
@@ -226,15 +258,15 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_LAHEY)
-  DEFINES      = $(DEFINE_HDF) -DNDEBUG
+  DEFINES      = $(DEFINE_HDF) -DNDEBUG 
   VPATH        = ..:../phreeqc
   FC           = $(FLAHEY)
   FFLAGS       = -O $(DEFINES)
   CC           = gcc
-  CFLAGS       = -Wall -pedantic $(DEFINES) $(HDF5_INCLUDES)
+  CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS) $(CL1MP_OBJS)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
-  LD_FLAGS     = -static $(LIBLAHEY) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
+  LD_FLAGS     = $(LIBLAHEY) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
 endif
 
 # -----------------------------------------------------------------------------
@@ -248,6 +280,61 @@ ifeq ($(CFG), SERIAL_LAHEY_DEBUG)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS) $(CL1MP_OBJS)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
   LD_FLAGS     = -static $(LIBLAHEY) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
+endif
+# -----------------------------------------------------------------------------
+ifeq ($(CFG), MPI_G95)
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DCOMPILE_G95
+  VPATH        = ..:../phreeqc
+  LAMHF77      = $(FG95)
+  export LAMHF77
+  FC           = mpif77
+  FFLAGS       = -O3 $(DEFINES) -fno-underscoring
+  CC           = mpicc
+  CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
+#  LD_FLAGS     = -static-flib  -lm ${HDF5_LIBS} 
+  LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
+endif
+
+# -----------------------------------------------------------------------------
+ifeq ($(CFG), MPI_G95_DEBUG)
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DCOMPILE_G95
+  VPATH        = ..:../phreeqc
+  LAMHF77      = $(FG95)
+  export LAMHF77
+  FC           = mpif77
+  FFLAGS       = -g  -fno-underscoring $(DEFINES)
+  CC           = mpicc
+  CFLAGS       = -Wall -pedantic -g $(DEFINES) $(HDF5_INCLUDES)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
+#  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
+  LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
+endif
+
+# -----------------------------------------------------------------------------
+ifeq ($(CFG), SERIAL_G95)
+  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DCOMPILE_G95
+  VPATH        = ..:../phreeqc
+  FC           = $(FG95)
+  FFLAGS       = -O3 $(DEFINES) -fno-underscoring
+  CC           = gcc
+  CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS) $(CL1MP_OBJS)
+#  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
+  LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
+endif
+
+# -----------------------------------------------------------------------------
+ifeq ($(CFG), SERIAL_G95_DEBUG)
+  DEFINES      = $(DEFINE_HDF) -DCOMPILE_G95
+  VPATH        = ..:../phreeqc
+  FC           = $(FG95)
+  FFLAGS       = -g -fno-underscoring $(DEFINES)
+  CC           = gcc
+  CFLAGS       = -Wall -pedantic -g $(DEFINES)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS) $(CL1MP_OBJS)
+#  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
+  LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
 endif
 
 # -----------------------------------------------------------------------------
@@ -467,7 +554,7 @@ slavesubs.o: slavesubs.c global.h hst.h phqalloc.h output.h phastproto.h
 # -----------------------------------------------------------------------------
 
 clean:
-	rm -rf serial_absoft serial_absoft_debug mpi_absoft mpi_absoft_debug serial_lahey serial_lahey_debug mpi_lahey mpi_lahey_debug 	
+	rm -rf serial_absoft serial_absoft_debug mpi_absoft mpi_absoft_debug serial_lahey serial_lahey_debug mpi_lahey mpi_lahey_debug 	serial_g95 serial_g95_debug mpi_g95 mpi_g95_debug 	
 
 # =============================================================================
 # End of makefile.
