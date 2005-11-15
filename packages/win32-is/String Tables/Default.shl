@@ -39,6 +39,7 @@ ENTRY29=MV_MENU_FOLDER
 ENTRY30=GUID_1_0
 ENTRY31=GUID_1_1
 ENTRY32=GUID_1_2
+ENTRY33=GUID_1_2_1
 
 [TITLE_CAPTIONBAR]
 Comment=Do not delete. Setup requires this Identifier even if your script doesn't use it.
@@ -131,10 +132,13 @@ Comment=
 Comment=
 
 [GUID_1_1]
-Comment=LATEST
+Comment=
 
 [GUID_1_2]
 Comment=
+
+[GUID_1_2_1]
+Comment=LATEST
 
 [LANGUAGE]
 CURRENTLANG=0

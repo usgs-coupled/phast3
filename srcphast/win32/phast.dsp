@@ -52,7 +52,7 @@ RSC=rc.exe
 # ADD BASE F90 /compile_only /nologo /warn:nofileopt
 # ADD F90 /assume:underscore /compile_only /debug:full /define:"HDF5_CREATE" /fpp /iface:nomixed_str_len_arg /iface:cref /names:lowercase /nologo /warn:nofileopt
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /W3 /GX /Zi /O2 /Op /I "$(DEV_HDF5_INC)" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "HDF5_CREATE" /YX /FD /c
+# ADD CPP /nologo /W3 /GX /Zi /O2 /Op /I "$(DEV_HDF5_INC)" /D "NDEBUG" /D "HDF5_CREATE" /D "INVERSE_CL1MP" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -79,7 +79,7 @@ LINK32=link.exe
 # ADD BASE F90 /check:bounds /compile_only /debug:full /nologo /traceback /warn:argument_checking /warn:nofileopt
 # ADD F90 /assume:underscore /browser /check:bounds /compile_only /debug:full /define:"HDF5_CREATE" /fpp /iface:nomixed_str_len_arg /iface:cref /names:lowercase /nologo /traceback /warn:argument_checking /warn:nofileopt
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /I "$(DEV_HDF5_INC)" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "HDF5_CREATE" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /I "$(DEV_HDF5_INC)" /D "_DEBUG" /D "HDF5_CREATE" /D "INVERSE_CL1MP" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /FR /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -107,7 +107,7 @@ LINK32=link.exe
 # ADD BASE F90 /assume:underscore /check:bounds /compile_only /debug:full /define:"HDF5_CREATE" /iface:nomixed_str_len_arg /iface:cref /names:lowercase /nologo /traceback /warn:argument_checking /warn:nofileopt
 # ADD F90 /assume:underscore /check:bounds /compile_only /debug:full /define:"HDF5_CREATE" /define:"MPICH_NAME" /define:"USE_MPI" /fpp /fpscomp:general /iface:nomixed_str_len_arg /iface:cref /include:"$(DEV_MPICH_INC)" /names:lowercase /nologo /threads /traceback /warn:argument_checking /warn:nofileopt
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /I "$(DEV_HDF5_INC)" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "HDF5_CREATE" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "$(DEV_HDF5_INC)" /I "$(DEV_MPICH_INC)" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "USE_MPI" /D "HDF5_CREATE" /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "$(DEV_HDF5_INC)" /I "$(DEV_MPICH_INC)" /D "_DEBUG" /D "USE_MPI" /D "HDF5_CREATE" /D "INVERSE_CL1MP" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -136,7 +136,7 @@ LINK32=link.exe
 # ADD BASE F90 /assume:underscore /check:bounds /compile_only /debug:full /define:"MPICH_NAME" /define:"USE_MPI" /fpscomp:general /iface:nomixed_str_len_arg /iface:cref /include:"$(DEV_MPICH_INC)" /names:lowercase /nologo /threads /traceback /warn:argument_checking /warn:nofileopt
 # ADD F90 /assume:underscore /check:bounds /compile_only /debug:full /define:"MPICH_NAME" /define:"USE_MPI" /fpp /fpscomp:general /iface:nomixed_str_len_arg /iface:cref /include:"$(DEV_MPICH_INC)" /names:lowercase /nologo /threads /traceback /warn:argument_checking /warn:nofileopt
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /I "$(DEV_HDF5_INC)" /I "$(DEV_MPICH_INC)" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "USE_MPI" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /I "$(DEV_MPICH_INC)" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "USE_MPI" /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /I "$(DEV_MPICH_INC)" /D "_DEBUG" /D "USE_MPI" /D "INVERSE_CL1MP" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -166,7 +166,7 @@ LINK32=link.exe
 # ADD F90 /assume:underscore /compile_only /debug:full /define:"HDF5_CREATE" /define:"USE_MPI" /define:"MPICH_NAME" /fpp /fpscomp:nolibs /iface:nomixed_str_len_arg /iface:cref /include:"$(DEV_MPICH_INC)" /names:lowercase /nologo /threads /warn:nofileopt
 # SUBTRACT F90 /fpscomp:general
 # ADD BASE CPP /nologo /W3 /GX /O2 /I "$(DEV_HDF5_INC)" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "HDF5_CREATE" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /Zi /O2 /Op /I "$(DEV_HDF5_INC)" /I "$(DEV_MPICH_INC)" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "USE_MPI" /D "HDF5_CREATE" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /Zi /O2 /Op /I "$(DEV_HDF5_INC)" /I "$(DEV_MPICH_INC)" /D "NDEBUG" /D "USE_MPI" /D "HDF5_CREATE" /D "INVERSE_CL1MP" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -194,7 +194,7 @@ LINK32=link.exe
 # ADD BASE F90 /assume:underscore /compile_only /debug:full /define:"HDF5_CREATE" /define:"MPICH_NAME" /define:"USE_MPI" /fpscomp:general /iface:nomixed_str_len_arg /iface:cref /names:lowercase /nologo /threads /warn:nofileopt
 # ADD F90 /assume:underscore /compile_only /define:"HDF5_CREATE" /define:"MPICH_NAME" /define:"USE_MPI" /fpp /fpscomp:general /iface:nomixed_str_len_arg /iface:cref /names:lowercase /nologo /threads /warn:nofileopt
 # ADD BASE CPP /nologo /MT /W3 /GX /Zi /O2 /I "$(DEV_HDF5_INC)" /I "$(DEV_MPICH_INC)" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "USE_MPI" /D "HDF5_CREATE" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /Zi /O2 /I "$(DEV_HDF5_INC)" /I "$(DEV_MPICH_INC)" /D "_DEBUG" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "USE_MPI" /D "HDF5_CREATE" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /Zi /O2 /I "$(DEV_HDF5_INC)" /I "$(DEV_MPICH_INC)" /D "_DEBUG" /D "NDEBUG" /D "USE_MPI" /D "HDF5_CREATE" /D "INVERSE_CL1MP" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -221,7 +221,7 @@ LINK32=link.exe
 # ADD BASE F90 /assume:underscore /compile_only /debug:full /define:"HDF5_CREATE" /define:"MPICH_NAME" /define:"USE_MPI" /fpscomp:general /iface:nomixed_str_len_arg /iface:cref /names:lowercase /nologo /threads /warn:nofileopt
 # ADD F90 /assume:underscore /compile_only /debug:full /define:"MERGE_FILES" /define:"HDF5_CREATE" /define:"USE_MPI" /define:"MPICH_NAME" /fpp /fpscomp:general /iface:nomixed_str_len_arg /iface:cref /names:lowercase /nologo /threads /warn:nofileopt
 # ADD BASE CPP /nologo /MT /W3 /GX /Zi /O2 /I "$(DEV_HDF5_INC)" /I "$(DEV_MPICH_INC)" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "USE_MPI" /D "HDF5_CREATE" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /Zi /O2 /Op /I "$(DEV_HDF5_INC)" /I "$(DEV_MPICH_INC)" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "MERGE_FILES" /D "USE_MPI" /D "HDF5_CREATE" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /Zi /O2 /Op /I "$(DEV_HDF5_INC)" /I "$(DEV_MPICH_INC)" /D "NDEBUG" /D "MERGE_FILES" /D "USE_MPI" /D "HDF5_CREATE" /D "INVERSE_CL1MP" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -248,7 +248,7 @@ LINK32=link.exe
 # ADD BASE F90 /assume:underscore /check:bounds /compile_only /debug:full /define:"HDF5_CREATE" /define:"MPICH_NAME" /define:"USE_MPI" /fpscomp:general /iface:nomixed_str_len_arg /iface:cref /include:"$(DEV_MPICH_INC)" /names:lowercase /nologo /threads /traceback /warn:argument_checking /warn:nofileopt
 # ADD F90 /assume:underscore /browser /check:bounds /compile_only /debug:full /define:"MERGE_FILES" /define:"HDF5_CREATE" /define:"MPICH_NAME" /define:"USE_MPI" /fpp /fpscomp:general /iface:nomixed_str_len_arg /iface:cref /include:"$(DEV_MPICH_INC)" /names:lowercase /nologo /threads /traceback /warn:argument_checking /warn:nofileopt
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "$(DEV_HDF5_INC)" /I "$(DEV_MPICH_INC)" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "USE_MPI" /D "HDF5_CREATE" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "$(DEV_HDF5_INC)" /I "$(DEV_MPICH_INC)" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "MERGE_FILES" /D "USE_MPI" /D "HDF5_CREATE" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "$(DEV_HDF5_INC)" /I "$(DEV_MPICH_INC)" /D "_DEBUG" /D "MERGE_FILES" /D "USE_MPI" /D "HDF5_CREATE" /D "INVERSE_CL1MP" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /FR /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -277,7 +277,7 @@ LINK32=link.exe
 # ADD BASE F90 /assume:underscore /browser /check:bounds /compile_only /debug:full /define:"HDF5_CREATE" /fpp /iface:nomixed_str_len_arg /iface:cref /names:lowercase /nologo /traceback /warn:argument_checking /warn:nofileopt
 # ADD F90 /assume:underscore /browser /check:bounds /compile_only /debug:full /define:"HDF5_CREATE" /fpp /iface:nomixed_str_len_arg /iface:cref /names:lowercase /nologo /traceback /warn:argument_checking /warn:nofileopt
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /I "$(DEV_HDF5_INC)" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "HDF5_CREATE" /FR /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /I "$(DEV_HDF5_INC)" /D "WIN32_MEMORY_DEBUG" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "HDF5_CREATE" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /I "$(DEV_HDF5_INC)" /D "WIN32_MEMORY_DEBUG" /D "_DEBUG" /D "HDF5_CREATE" /D "INVERSE_CL1MP" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /FR /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
