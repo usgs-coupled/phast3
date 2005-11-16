@@ -14,8 +14,7 @@
 
 PROGRAM = phast
 
-all: serial_absoft serial_absoft_debug mpi_absoft mpi_absoft_debug \
-	serial_g95 serial_g95_debug mpi_g95 mpi_g95_debug 
+all: absoft g95 lahey
 
 # serial_lahey serial_lahey_debug mpi_lahey mpi_lahey_debug 
 
@@ -49,12 +48,12 @@ serial_absoft_debug:
 .PHONY : serial_lahey
 serial_lahey:
 	mkdir -p $(SERIAL_LAHEY_DIR)
-	cd $(SERIAL_LAHEY_DIR);	$(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_LAHEY $(PROGRAM)
+	ssh $(LAHEY_MACHINE) "cd programs/phast/srcphast; cd $(SERIAL_LAHEY_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_LAHEY $(PROGRAM)"
 
 .PHONY : serial_lahey_debug
 serial_lahey_debug:
 	mkdir -p $(SERIAL_LAHEY_DEBUG_DIR);
-	cd $(SERIAL_LAHEY_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_LAHEY_DEBUG $(PROGRAM)
+	ssh $(LAHEY_MACHINE) "cd programs/phast/srcphast; cd $(SERIAL_LAHEY_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_LAHEY_DEBUG $(PROGRAM)"
 
 .PHONY : serial_g95
 serial_g95:
@@ -73,12 +72,12 @@ serial_g95_debug:
 .PHONY : mpi_lahey
 mpi_lahey:
 	mkdir -p $(MPI_LAHEY_DIR) 
-	cd $(MPI_LAHEY_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_LAHEY $(PROGRAM)
+	ssh $(LAHEY_MACHINE) "cd programs/phast/srcphast; cd $(MPI_LAHEY_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_LAHEY $(PROGRAM)"
 
 .PHONY : mpi_lahey_debug
 mpi_lahey_debug:
 	mkdir -p $(MPI_LAHEY_DEBUG_DIR) 
-	cd $(MPI_LAHEY_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_LAHEY_DEBUG $(PROGRAM)
+	ssh $(LAHEY_MACHINE) "cd programs/phast/srcphast; cd $(MPI_LAHEY_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_LAHEY_DEBUG $(PROGRAM)"
 
 .PHONY : mpi_absoft
 mpi_absoft:
@@ -111,8 +110,9 @@ SRC     = ../phreeqc
 .SUFFIXES : .o .f .F90 .f90 .c 
 
 # compilers
-FLAHEY=/usr/local/lf9562/bin/lf95
-#LIBLAHEY=-L/usr/lib 
+FLAHEY=/usr/local/lf95/bin/lf95
+LIBLAHEY=
+LAHEY_MACHINE=niwot
 #FLAHEY=/z/niwot/usr/local/lf9562/bin/lf95
 #LIBLAHEY=-L/z/niwot/usr/lib -L/z/niwot/usr/local/lf9562/lib 
 
@@ -172,6 +172,7 @@ ifeq ($(CFG), SERIAL_ABSOFT)
   FFLAGS       = $(FDEBUG) $(FMISC) $(DEFINES)
   CC           = gcc
   CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES)
+  CFLAGS_MODEL = -Wall -pedantic -O2 $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS) $(CL1MP_OBJS)
   LD_FLAGS     = -lm ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT)
 endif
@@ -187,6 +188,7 @@ ifeq ($(CFG), SERIAL_ABSOFT_DEBUG)
   FFLAGS       = $(FDEBUG) $(FMISC) $(DEFINES)
   CC           = gcc
   CFLAGS       = -Wall -g $(DEFINES) $(HDF5_INCLUDES) 
+  CFLAGS_MODEL = -Wall -g $(DEFINES) $(HDF5_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS) $(CL1MP_OBJS)
   LD_FLAGS     = -lm ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT) # ${EFENCE_LIB} -lefence
 endif
@@ -204,6 +206,7 @@ ifeq ($(CFG), MPI_ABSOFT)
   FFLAGS       = $(FDEBUG) $(FMISC) $(DEFINES)
   CC           = mpicc
   CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES)
+  CFLAGS_MODEL = -Wall -pedantic -O2 $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
   LD_FLAGS     = -lm -lc ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT)
 endif
@@ -221,6 +224,7 @@ ifeq ($(CFG), MPI_ABSOFT_DEBUG)
   FFLAGS       = $(FDEBUG) $(FMISC) $(DEFINES)
   CC           = mpicc
   CFLAGS       = -Wall -pedantic -ansi -g $(DEFINES) $(HDF5_INCLUDES)# -Wconversion 
+  CFLAGS_MODEL = -Wall -pedantic -ansi -g $(DEFINES) $(HDF5_INCLUDES)# -Wconversion 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
   LD_FLAGS     = -lm -lc ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT) # ${EFENCE_LIB} -lefence
 endif
@@ -235,9 +239,10 @@ ifeq ($(CFG), MPI_LAHEY)
   FFLAGS       = -O $(DEFINES)
   CC           = mpicc
   CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
+  CFLAGS_MODEL = -Wall -pedantic -O2 $(DEFINES) $(HDF5_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
 #  LD_FLAGS     = -static-flib  -lm ${HDF5_LIBS} 
-  LD_FLAGS     = -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS}
+  LD_FLAGS     = --staticlink -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} 
 endif
 
 # -----------------------------------------------------------------------------
@@ -250,9 +255,10 @@ ifeq ($(CFG), MPI_LAHEY_DEBUG)
   FFLAGS       = -g --chkglobal --warn --info $(DEFINES)
   CC           = mpicc
   CFLAGS       = -Wall -pedantic -g $(DEFINES) $(HDF5_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
+  CFLAGS_MODEL = -Wall -pedantic -g $(DEFINES) $(HDF5_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
-  LD_FLAGS     = -static $(LIBLAHEY) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
+  LD_FLAGS     = --staticlink -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} 
 endif
 
 # -----------------------------------------------------------------------------
@@ -263,9 +269,10 @@ ifeq ($(CFG), SERIAL_LAHEY)
   FFLAGS       = -O $(DEFINES)
   CC           = gcc
   CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
+  CFLAGS_MODEL = -Wall -pedantic -O2 $(DEFINES) $(HDF5_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS) $(CL1MP_OBJS)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
-  LD_FLAGS     = $(LIBLAHEY) -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} 
+  LD_FLAGS     = --staticlink -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} 
 endif
 
 # -----------------------------------------------------------------------------
@@ -276,9 +283,10 @@ ifeq ($(CFG), SERIAL_LAHEY_DEBUG)
   FFLAGS       = -g --f95 --chkglobal --warn --info $(DEFINES)
   CC           = gcc
   CFLAGS       = -Wall -pedantic -g $(DEFINES) -I/z/srv2rcolkr/home/charlton/include
+  CFLAGS_MODEL = -Wall -pedantic -g $(DEFINES) -I/z/srv2rcolkr/home/charlton/include
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS) $(CL1MP_OBJS)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
-  LD_FLAGS     = -static $(LIBLAHEY) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
+  LD_FLAGS     = --staticlink -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} 
 endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), MPI_G95)
@@ -290,6 +298,7 @@ ifeq ($(CFG), MPI_G95)
   FFLAGS       = -O3 $(DEFINES) -fno-underscoring
   CC           = mpicc
   CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES)
+  CFLAGS_MODEL = -Wall -pedantic -O2 $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
 #  LD_FLAGS     = -static-flib  -lm ${HDF5_LIBS} 
   LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
@@ -305,6 +314,7 @@ ifeq ($(CFG), MPI_G95_DEBUG)
   FFLAGS       = -g  -fno-underscoring $(DEFINES)
   CC           = mpicc
   CFLAGS       = -Wall -pedantic -g $(DEFINES) $(HDF5_INCLUDES)
+  CFLAGS_MODEL = -Wall -pedantic -g $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
   LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
@@ -318,6 +328,7 @@ ifeq ($(CFG), SERIAL_G95)
   FFLAGS       = -O3 $(DEFINES) -fno-underscoring
   CC           = gcc
   CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES)
+  CFLAGS_MODEL = -Wall -pedantic -O2 $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS) $(CL1MP_OBJS)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
   LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
@@ -331,6 +342,7 @@ ifeq ($(CFG), SERIAL_G95_DEBUG)
   FFLAGS       = -g -fno-underscoring $(DEFINES)
   CC           = gcc
   CFLAGS       = -Wall -pedantic -g $(DEFINES)
+  CFLAGS_MODEL = -Wall -pedantic -g $(DEFINES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS) $(CL1MP_OBJS)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
   LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
@@ -518,6 +530,7 @@ isotopes.o: $(SRC)/isotopes.c $(SRC)/global.h $(SRC)/phrqtype.h $(SRC)/phqalloc.
 kinetics.o: $(SRC)/kinetics.c $(SRC)/global.h $(SRC)/phrqtype.h $(SRC)/phqalloc.h $(SRC)/output.h $(SRC)/phrqproto.h $(SRC)/sundialstypes.h $(SRC)/cvode.h $(SRC)/nvector.h $(SRC)/cvdense.h $(SRC)/dense.h $(SRC)/smalldense.h $(SRC)/nvector_serial.h $(SRC)/kinetics.h
 mainsubs.o: $(SRC)/mainsubs.c $(SRC)/global.h $(SRC)/phrqtype.h $(SRC)/phqalloc.h $(SRC)/output.h $(SRC)/phrqproto.h $(SRC)/input.h
 model.o: $(SRC)/model.c $(SRC)/global.h $(SRC)/phrqtype.h $(SRC)/phqalloc.h $(SRC)/output.h $(SRC)/phrqproto.h
+	${CC} $(SRC)/model.c ${CFLAGS_MODEL} -c -o model.o
 nvector.o: $(SRC)/nvector.c $(SRC)/nvector.h $(SRC)/sundialstypes.h $(SRC)/phrqtype.h $(SRC)/output.h
 nvector_serial.o: $(SRC)/nvector_serial.c $(SRC)/nvector_serial.h $(SRC)/nvector.h $(SRC)/sundialstypes.h $(SRC)/phrqtype.h $(SRC)/sundialsmath.h $(SRC)/output.h $(SRC)/phqalloc.h
 output.o: $(SRC)/output.c $(SRC)/global.h $(SRC)/phrqtype.h $(SRC)/output.h $(SRC)/phrqproto.h $(SRC)/phqalloc.h
@@ -554,6 +567,12 @@ slavesubs.o: slavesubs.c global.h hst.h phqalloc.h output.h phastproto.h
 
 clean:
 	rm -rf serial_absoft serial_absoft_debug mpi_absoft mpi_absoft_debug serial_lahey serial_lahey_debug mpi_lahey mpi_lahey_debug 	serial_g95 serial_g95_debug mpi_g95 mpi_g95_debug 	
+
+absoft: serial_absoft serial_absoft_debug mpi_absoft mpi_absoft_debug
+
+g95: serial_g95 serial_g95_debug mpi_g95 mpi_g95_debug
+
+lahey: serial_lahey serial_lahey_debug mpi_lahey mpi_lahey_debug
 
 # =============================================================================
 # End of makefile.
