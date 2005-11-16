@@ -17,7 +17,7 @@ void HDFEndCTimeStep(void);
  *   Functions called from FORTRAN
  */
 
-#ifdef COMPILE_G95
+#if !defined(LAHEY_F95)
 #define HDF_INIT_INVARIANT     hdf_init_invariant
 #define HDF_FINALIZE_INVARIANT hdf_finalize_invariant
 #define HDF_WRITE_FEATURE      hdf_write_feature

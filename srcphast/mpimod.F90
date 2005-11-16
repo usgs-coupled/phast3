@@ -5,15 +5,10 @@ MODULE mpi_mod
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! ... $Id$
 
-#if !defined(_WIN32)
-#define MPI_INIT MPI_INIT_
-#define MPI_COMM_SIZE MPI_COMM_SIZE_
-#define MPI_COMM_RANK MPI_COMM_RANK_
-#endif
-#ifdef COMPILE_G95
-#define MPI_INIT_ MPI_INIT__
-#define MPI_COMM_SIZE_ MPI_COMM_SIZE__
-#define MPI_COMM_RANK_ MPI_COMM_RANK__
+#if defined(LAHEY_F95)
+#define MPI_INIT_      MPI_INIT
+#define MPI_COMM_SIZE_ MPI_COMM_SIZE
+#define MPI_COMM_RANK_ MPI_COMM_RANK
 #endif
 
   IMPLICIT NONE
@@ -48,14 +43,14 @@ CONTAINS
          INTEGER size
          INTEGER ierror
        END SUBROUTINE MPI_COMM_SIZE_
-       SUBROUTINE MPI_COMM_RANK(comm, rank, ierror)
+       SUBROUTINE MPI_COMM_RANK_(comm, rank, ierror)
 #if defined(_WIN32)
          !MS$ ATTRIBUTES Default :: MPI_COMM_RANK
 #endif
          INTEGER comm
          INTEGER rank
          INTEGER ierror
-       END SUBROUTINE MPI_COMM_RANK
+       END SUBROUTINE MPI_COMM_RANK_
     END INTERFACE
 
     INTEGER MPI_COMM_WORLD

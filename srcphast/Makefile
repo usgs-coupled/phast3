@@ -111,11 +111,10 @@ SRC     = ../phreeqc
 .SUFFIXES : .o .f .F90 .f90 .c 
 
 # compilers
-#FLAHEY=/usr/local/lf9562/bin/lf95
+FLAHEY=/usr/local/lf9562/bin/lf95
 #LIBLAHEY=-L/usr/lib 
 #FLAHEY=/z/niwot/usr/local/lf9562/bin/lf95
 #LIBLAHEY=-L/z/niwot/usr/lib -L/z/niwot/usr/local/lf9562/lib 
-FLAHEY=/usr/local/bin/g95
 
 
 FABSOFT=/z/parkplace/usr/absoft/bin/f90
@@ -169,7 +168,7 @@ ifeq ($(CFG), SERIAL_ABSOFT)
   FC           = $(FABSOFT)
   NLSPATH      = $(NLSABSOFT)
   FDEBUG       = -O -en  # -C
-  FMISC        = -YEXT_NAMES=LCS -s -B108 -YCFRL=1 -trap=DIVBYZERO,OVERFLOW
+  FMISC        = -YEXT_NAMES=LCS -s -YCFRL=1 -trap=DIVBYZERO,OVERFLOW
   FFLAGS       = $(FDEBUG) $(FMISC) $(DEFINES)
   CC           = gcc
   CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES)
@@ -184,7 +183,7 @@ ifeq ($(CFG), SERIAL_ABSOFT_DEBUG)
   FC           = $(FABSOFT)
   NLSPATH      = $(NLSABSOFT)
   FDEBUG       = -g -en # -Rb -Rc -Rp -Rs # range checking
-  FMISC        = -YEXT_NAMES=LCS -s -B108 -YCFRL=1 -trap=DIVBYZERO,OVERFLOW
+  FMISC        = -YEXT_NAMES=LCS -s -YCFRL=1 -trap=DIVBYZERO,OVERFLOW
   FFLAGS       = $(FDEBUG) $(FMISC) $(DEFINES)
   CC           = gcc
   CFLAGS       = -Wall -g $(DEFINES) $(HDF5_INCLUDES) 
@@ -201,12 +200,12 @@ ifeq ($(CFG), MPI_ABSOFT)
   NLSPATH      = $(NLSABSOFT)
   FC           = mpif77
   FDEBUG       = -O -en  # -C
-  FMISC        = -YEXT_NAMES=LCS -s -B108 -YCFRL=1 -trap=DIVBYZERO,OVERFLOW
+  FMISC        = -YEXT_NAMES=LCS -s -YCFRL=1 -trap=DIVBYZERO,OVERFLOW
   FFLAGS       = $(FDEBUG) $(FMISC) $(DEFINES)
   CC           = mpicc
   CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = -lm ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT)
+  LD_FLAGS     = -lm -lc ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT)
 endif
 
 # -----------------------------------------------------------------------------
@@ -218,39 +217,39 @@ ifeq ($(CFG), MPI_ABSOFT_DEBUG)
   NLSPATH      = $(NLSABSOFT)
   FC           = mpif77
   FDEBUG       = -g -en # -Rb -Rc -Rp -Rs # range checking
-  FMISC        = -YEXT_NAMES=LCS -s -B108 -YCFRL=1 -trap=DIVBYZERO,OVERFLOW
+  FMISC        = -YEXT_NAMES=LCS -s -YCFRL=1 -trap=DIVBYZERO,OVERFLOW
   FFLAGS       = $(FDEBUG) $(FMISC) $(DEFINES)
   CC           = mpicc
   CFLAGS       = -Wall -pedantic -ansi -g $(DEFINES) $(HDF5_INCLUDES)# -Wconversion 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = -lm ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT) # ${EFENCE_LIB} -lefence
+  LD_FLAGS     = -lm -lc ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT) # ${EFENCE_LIB} -lefence
 endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), MPI_LAHEY)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DLAHEY_F95 -DNDEBUG
   VPATH        = ..:../phreeqc
   LAMHF77      = $(FLAHEY)
   export LAMHF77
   FC           = mpif77
   FFLAGS       = -O $(DEFINES)
   CC           = mpicc
-  CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES)
+  CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
 #  LD_FLAGS     = -static-flib  -lm ${HDF5_LIBS} 
-  LD_FLAGS     = $(LIBLAHEY) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
+  LD_FLAGS     = -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS}
 endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), MPI_LAHEY_DEBUG)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE)
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DLAHEY_F95
   VPATH        = ..:../phreeqc
   LAMHF77      = $(FLAHEY)
   export LAMHF77
   FC           = mpif77
   FFLAGS       = -g --chkglobal --warn --info $(DEFINES)
   CC           = mpicc
-  CFLAGS       = -Wall -pedantic -g $(DEFINES) $(HDF5_INCLUDES)
+  CFLAGS       = -Wall -pedantic -g $(DEFINES) $(HDF5_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
   LD_FLAGS     = -static $(LIBLAHEY) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
@@ -258,32 +257,32 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_LAHEY)
-  DEFINES      = $(DEFINE_HDF) -DNDEBUG 
+  DEFINES      = $(DEFINE_HDF) -DLAHEY_F95 -DNDEBUG 
   VPATH        = ..:../phreeqc
   FC           = $(FLAHEY)
   FFLAGS       = -O $(DEFINES)
   CC           = gcc
-  CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES)
+  CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS) $(CL1MP_OBJS)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
-  LD_FLAGS     = $(LIBLAHEY) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
+  LD_FLAGS     = $(LIBLAHEY) -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} 
 endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_LAHEY_DEBUG)
-  DEFINES      = $(DEFINE_HDF) 
+  DEFINES      = $(DEFINE_HDF) -DLAHEY_F95
   VPATH        = ..:../phreeqc
   FC           = $(FLAHEY)
   FFLAGS       = -g --f95 --chkglobal --warn --info $(DEFINES)
   CC           = gcc
-  CFLAGS       = -Wall -pedantic -g $(DEFINES)
+  CFLAGS       = -Wall -pedantic -g $(DEFINES) -I/z/srv2rcolkr/home/charlton/include
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS) $(CL1MP_OBJS)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
   LD_FLAGS     = -static $(LIBLAHEY) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
 endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), MPI_G95)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DCOMPILE_G95
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG
   VPATH        = ..:../phreeqc
   LAMHF77      = $(FG95)
   export LAMHF77
@@ -298,7 +297,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), MPI_G95_DEBUG)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DCOMPILE_G95
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE)
   VPATH        = ..:../phreeqc
   LAMHF77      = $(FG95)
   export LAMHF77
@@ -313,7 +312,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_G95)
-  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DCOMPILE_G95
+  DEFINES      = $(DEFINE_HDF) -DNDEBUG
   VPATH        = ..:../phreeqc
   FC           = $(FG95)
   FFLAGS       = -O3 $(DEFINES) -fno-underscoring
@@ -326,7 +325,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_G95_DEBUG)
-  DEFINES      = $(DEFINE_HDF) -DCOMPILE_G95
+  DEFINES      = $(DEFINE_HDF)
   VPATH        = ..:../phreeqc
   FC           = $(FG95)
   FFLAGS       = -g -fno-underscoring $(DEFINES)
