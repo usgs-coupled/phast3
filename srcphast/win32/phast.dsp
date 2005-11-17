@@ -1993,6 +1993,14 @@ SOURCE=..\merge.c
 
 # End Source File
 # End Group
+# Begin Group "CL1MP_OBJS"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\phreeqc\cl1mp.c
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=.\phast.rc
