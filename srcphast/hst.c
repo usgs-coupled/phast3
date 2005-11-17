@@ -53,7 +53,7 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 			 double *rebalance_fraction_hst);
 #endif  /* #ifdef USE_MPI */
 
-#if !defined(LAHEY_F95)
+#if !defined(LAHEY_F95) && !defined(_WIN32)
 #define CALCULATE_WELL_PH calculate_well_ph
 #define COLLECT_FROM_NONROOT collect_from_nonroot
 #define COUNT_ALL_COMPONENTS count_all_components

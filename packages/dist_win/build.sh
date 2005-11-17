@@ -28,7 +28,7 @@
 ##################################################################
 
 # echo everything
-# set -x
+set -x
 
 # find out where the build script is located
 tdir=`echo "$0" | sed 's%[\\/][^\\/][^\\/]*$%%'`
@@ -74,7 +74,7 @@ export objdir=${srcdir}/.build
 export instdir=${srcdir}/.inst
 export srcinstdir=${srcdir}/.sinst
 export checkfile=${topdir}/${FULLPKG}.check
-export cvstag=version-`echo "${VER}" | sed -e 's/\./_/'`
+export cvstag=version-`echo "${VER}" | sed -e 's/\./_/g'`
 # run on
 host=i686-pc-cygwin
 # if this package creates binaries, they run on
