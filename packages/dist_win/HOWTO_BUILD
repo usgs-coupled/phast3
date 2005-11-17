@@ -22,7 +22,7 @@ b. In ModifyPath.rul search for ADD_NEW_VERSION_HERE and make the
     
 3. cvs tag model viewer
   ie
-    cvs tag version-1_1
+    cvs rtag version-1_2 mv_phast/Mv
     
 4. Run build.sh to get Mv-X.X.tar.gz
   ie
