@@ -1,0 +1,277 @@
+    svn 602: 
+    Added print of database, input, and output files to .log and
+    .O.chem files.
+
+    Removed check for .chem.dat and database files from phastinput.
+
+PHAST, Version 1.2 (September 28, 2005)
+
+    Added new identifier in SOLUTION_METHOD, 
+       -rebalance_fraction f
+    where f is a number in the range of 0 to 1. This option applies
+    only to the parallel version of phast. After each time step, phast
+    evaluates how to optimally rebalance the cells among the
+    processors for the chemical calculation. It estimates a number of
+    cells to transfer from one processor to the next. The factor f is
+    multiplied times the estimated number of cells to obtain the
+    actual number of cells transferred. Default is 0.5. 
+
+    Modified PHREEQC to avoid a convergence problem that occurred in
+    trying to find the stable phase assemblage in a simulation with
+    many, many time steps. Occasionally an exponentiation would
+    underflow stopping the simulation. Limited log activities of
+    master species to be greater than the smallest machine precision
+    exponential number.  Avoids a matherr exception and allows trial
+    of additional parameter sets to attempt to solve the system of
+    equations.
+
+    Updated to PHREEQC 2.12, which includes Pitzer aqueous model.
+    Pitzer funtionality is now available in serial and parallel
+    versions, simply use a chemistry database file that includes 
+    the PITZER keyword datablock. However, lack of density-dependent 
+    flow makes use for brines problematic.
+
+    Major revision of parallel calculation. Now has one routine
+    for master process that calculates flow and transport (and 
+    chemistry) and one routine for processes that calculate only 
+    chemistry. New version has major savings in memory requirements.
+    However, the master process may still have large memory 
+    requirements.
+
+    Added scaling for flow and transport equations using L-infinity
+    norm. A diffusion-only problem failed unless "SOUTION_METHOD; 
+    -tolerance x" was extremely small. -tolerance 1e-14 should now 
+    be minumum tolerance and same tolerance should apply equally 
+    well to all flow and transport. Only rows are scaled; column
+    scaling is not used at this time.
+
+    Fixed file opening logic for flow-only calculation. Error 
+    messages now printed to screen.
+
+    Fixed convergence test for steady-state with no flow. Avoids 
+    error with NAN in calculation of relative flow-rate imbalance.
+
+    Fixed bug with free surface and steady flow. Solution volume
+    was not scaled correctly and gave anomalous results for
+    cells with small water volumes. Volume of water to amount rock
+    was not consistent.
+
+
+PHAST, Version 1.1 (February 14, 2005)
+      
+    Converted to Subversion version control system. Now includes
+    latest PHREEQC files automatically. PHAST 1.1 includes files from
+    PHREEQC 2.11.
+
+    Fixed file deletion; some temporary files were not deleted at end of run.
+
+    Fixed version number and printing format.
+
+PHAST, Version 1.0 (December 20, 2004)
+
+(1) Flow and transport data files from version RC3 will not run with
+    PHASTINPUT Version 1.0.
+
+    The way that time-series data are defined has changed for boundary
+    conditions, wells, rivers, time step, and print frequencies. A
+    sequence of data blocks separated by END keywords is no longer
+    used to define simulation periods. For boundary conditions, all
+    time-varying properties are defined immediately following the
+    -zone definition. Time series for wells are defined immediately
+    following the -pumping/-injection identifier and following the
+    -solution identifier. Time series for a river point are defined by
+    -head and -solution following the definition of the location of
+    the river point (-point). Time series for time step are defined in
+    a single TIME_CONTROL data block. Print frequencies are defined
+    for a sequence of times. At each time, print frequencies for
+    various files may be redefined.
+
+(2) The handling of the unsaturated zone has changed in free-surface
+    simulations. The unsaturated flow is not modeled, so free-surface
+    calculations still contain major approximations. However, an
+    attempt has been made to avoid some mass-balance errors related to
+    rising and falling water tables. The program now separates the
+    solids in a cell containing the water table into two reservoirs,
+    the saturated and unsaturated reservoirs. As the water table
+    rises, solids are transferred from the unsaturated reservoir to
+    the saturated reservoir. As the water table falls, solids are
+    transferred from the saturated reservoir to the unsaturated
+    reservoir. The main deficiency of the current implementation is that
+    solids in the unsaturated reservoirs are removed from the
+    calculation and do not react with recharge that is, in fact,
+    percolating through these solids. There is also no way to view or
+    print the masses of solids that are in the unsaturated reservoirs.
+
+(3) Mass-balance accounting for reactions has been added and the
+    method for calculating mass-fluxes at boundaries has been changed
+    to be consistent with the selected time-weighting scheme for the
+    finite-difference equations.
+
+(4) The FLOW_ONLY keyword has been replaced with the SOLUTE_TRANSPORT
+    keyword.
+
+(5) Input for rivers has been revised. Each river point location must
+    now be defined with the -point identifier. Default properties have
+    been eliminated. All properties (width, depth, bed thickness, bed
+    hydraulic conductivity, head, and solution composition) are now
+    interpolated. All properties must be defined at the end points of
+    the river. Additional data may be defined at other river
+    points. At the beginning of each simulation period, head and
+    solution properties for river points are updated with any new
+    values and interpolation for head and solution composition is
+    performed.
+
+RC-3 (phast rcsfreeze C_52; phastinput rcsfreeze C_27)
+
+	Added warnings for incompatibilities in boundary conditions.
+
+	Separated print_locations into input for .xyz.chem and .O.chem
+
+	Added vertical dispersivity.
+
+	Added mask to each zone.
+
+	Fixed bug in head tolerance in steady flow; Did not convert 
+		head to pascals for Phast.tmp.
+
+	Changed defaults for print_initial and print_frequency.
+
+	Set water compressibility to zero for all cases,
+		confined and unconfined. Eliminates the error if 
+		storage is less than water compressibility alone.
+
+	set fluid viscosity to 0.001.
+
+	Made FLUID_PROPERTIES data block obsolete.
+
+	Changed allocate_pressure to allocate_head
+
+	added save_head and echo_input in print_frequency.
+
+	added logic to determine number of meters below node and above node
+		for well allocation.
+
+	Minor bug fixes.
+
+	Fixed error in identifying rivers with IBC array, 
+		sometimes had too many river segments.
+
+	Steady flow calculation always uses upstream weighting.
+
+	Fixed bugs in cross dispersion.
+
+	Fixed all uninitialized variables in Fortran and 
+		checked all INTENT statements.
+
+	Error if cell width is less than well bore diameter.
+
+	Made it an error if print frequency is less than time step.
+
+	Added horizontal and vertical transverse dispersivity.
+
+	Fixed velocity calculation for edges of excluded zones.
+
+	Fixed logic related to an inactive cell above a free surface.
+
+	Finished implementing single log file.
+
+	Made print controls more uniform.
+
+	Changed algorithm for multiple river segments with
+		different bottom locations, hydrostatic location of
+		water table.
+
+	Fixed bugs with merging files with MPI.
+
+	MPI algorithm for printing sends one message per processor
+		instead of one message per cell.
+
+	Fixed memory leak with exchange under some conditions.
+
+	Added alkalinity to .xyz.wel file.
+
+	Minimized reallocation of space when rebalancing.
+
+	PRINT_LOCATIONS can be applied to .O.xyz and .O.chem separately.
+
+	Changed allocation of space for cells so that memory would
+		not be as fragmented.
+
+	Allows compilation with long double type for all of PHREEQC.
+
+	Updated to latest PHREEQC: cvode integration, SYS Basic function,
+		string functions for Basic, COPY keyword.
+
+	Added digits to current time in printouts, g3 not enough.
+
+	Added digits to timchg. Needs to be same as number of digits
+		for print frequencies.
+
+RC-2 (phast rcsfreeze C_42; phastinput rcsfreeze C_14)
+	Allow longer file names, check for overflow of field.
+
+	Consistent with PHREEQC version 2.8
+		Initialized rate variables
+		Unlimited Basic string lengths
+		Numbering SOLUTION_SPREAD solutions
+		"," error in input file
+
+	Initialized mass-balance variables once instead of twice.
+
+	Slight modification to keep better mass balance
+		by ensuring that 1 kgw is transported.
+
+	Modified phastinput to make more consistency checks on data. 
+		Check that print frequency >= time step.
+		Use 20 place for heads and other properties in Phast.tmp to avoid 
+			slight variations in linear boundary conditions.
+		Removed flow_only and steady_flow options from steady_flow keyword datablock.
+
+	Fixed cross dispersion to handle nonuniform grid spacing.
+		Added warning if crosd == FALSE and alphal != alphat.
+
+	Added PHAST as a separate state in the 
+		PHREEQC calculations, corrected
+		error when transport was run as
+		part of the PHREEQC calculations
+		in phast.
+
+	Revised and added error message for case where
+		water table is below fixed head cell.
+
+	Fixed bug in distribution of well flow.
+		Flow was distributed incorrectly for
+		nonhomogeneous aquifer. (1/8/03)
+
+	Added alkalinity to .xyz.wel file.
+
+RC-1-2 (C_37)
+	Added some missing files
+
+RC-1
+
+Revised rivers, did not handle multiple river segments within a cell adequately.
+
+Revision of print control.
+
+Default is no cross_dispersion terms.
+
+Added PRINT_LOCATIONS.
+
+
+Working on Cape Cod problem:
+	***Item for documentation
+	Steady-flow calculation, takes effect even for flow only
+		(1) Needs separate time step from transport
+			 or automatic time stepper to find steady flow.
+
+	***Two items for documentation:
+
+	(1) Wells are snapped to nodes, which can make a problem asymetric
+		Ideally, Ken will allocate flow to more than one cell if
+		location is on a cell boundary.
+	(2) Flux and leaky zone definitions are snapped to cells? nodes?
+		Thus total flux varies with grid definition
+	Ideally, flux, leaky, and river bc are accumulated by polygonal
+		area.
+

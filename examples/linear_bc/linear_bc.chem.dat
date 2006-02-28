@@ -1,0 +1,13 @@
+SOLUTION 1
+        Na      1.0
+        Cl      1.0
+SOLUTION 2
+        Na      2.0
+        Cl      2.0
+END
+SELECTED_OUTPUT
+        -file linear_bc.sel
+        -reset false
+        -totals Na      Cl
+END
+

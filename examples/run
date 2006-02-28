@@ -1,0 +1,40 @@
+#!/bin/sh
+if [ $USER == dlpark ]; then
+    PHASTDIR=/z/parkplace/home/dlpark/programs/phast
+fi
+if [ $USER == charlton ]; then
+    PHASTDIR=/z/srv2rcolkr/home/charlton/programs/phast
+fi
+EXDIR=$PHASTDIR/examples
+#
+#   make directory
+#
+NAME=$1
+cd $NAME
+mkdir -p 0
+rm -f 0/*
+#
+#   distribute files
+#
+if [ -f $NAME.trans.dat ]; then 
+    cp $NAME.trans.dat 0
+    fi
+if [ -f $NAME.chem.dat ]; then 
+    cp $NAME.chem.dat 0
+    fi
+if [ -f $NAME.head.dat ]; then 
+    cp $NAME.head.dat 0
+    fi
+if [ -f phast.dat ]; then 
+    cp phast.dat 0
+    fi
+cp ../schema 0
+cd 0
+sed -e "s?WORKING_DIRECTORY?$EXDIR/$NAME/0?" \
+    -e "s^EXECUTABLE^$PHASTDIR/srcphast/mpi_absoft/phast^" schema > temp; mv temp schema
+#
+#   run phastinput
+#
+$PHASTDIR/srcinput/phastinput $NAME
+echo Done phastinput.
+lamboot ../../hosts;  time mpirun-lam -O -v schema; wipe ../../hosts

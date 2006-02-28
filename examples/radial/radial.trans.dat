@@ -1,0 +1,88 @@
+TITLE
+.       MOC p. 49
+SOLUTE_TRANSPORT true
+UNITS
+        -time           hr
+        -horizontal     m
+        -vertical       m
+        -head           m
+        -hydraulic_cond m/hr
+        -specific_stor  1/m
+        -disp           m
+        -well_diameter  m
+        -well_flow_rate m^3/hr
+GRID
+        -uniform X 
+                0 300   31
+        -uniform Y
+                0 300   31
+        -uniform Z 
+                0 10    2
+        -print_orientation XY
+        -chemistry_dimensions XY
+MEDIA
+        -zone   0 0 0 300 300 10
+                -Kx                             .36
+                -Ky                             .36
+                -Kz                             .36
+                -longitudinal_dispersivity      10
+                -horizontal_dispersivity        10
+                -vertical_dispersivity          10
+                -porosity                       .2
+                -storage                        1.37e-5
+SPECIFIED_HEAD_BC
+-zone   0 300 0 300 300 10
+-associated_solution 0	0
+-head 0   by_cell <
+      13.4473      13.4418      13.4253      13.3978      13.3597      13.3111
+      13.2523      13.1837      13.1057      13.0187      12.9233      12.8200
+      12.7092      12.5915      12.4674      12.3375      12.2023      12.0623
+      11.9180      11.7699      11.6184      11.4640      11.3070      11.1479
+      10.9869      10.8245      10.6609      10.4964      10.3312      10.1657
+      9.99990
+      13.4473      13.4418      13.4253      13.3978      13.3597      13.3111
+      13.2523      13.1837      13.1057      13.0187      12.9233      12.8200
+      12.7092      12.5915      12.4674      12.3375      12.2023      12.0623
+      11.9180      11.7699      11.6184      11.4640      11.3070      11.1479
+      10.9869      10.8245      10.6609      10.4964      10.3312      10.1657
+      9.99990 >
+-zone   300 0 0 300 300 10
+-associated_solution	0	0
+-head 0 by_cell <
+      13.4473      13.4418      13.4253      13.3978      13.3597      13.3111
+      13.2523      13.1837      13.1057      13.0187      12.9233      12.8200
+      12.7092      12.5915      12.4674      12.3375      12.2023      12.0623
+      11.9180      11.7699      11.6184      11.4640      11.3070      11.1479
+      10.9869      10.8245      10.6609      10.4964      10.3312      10.1657
+      9.99990
+      13.4473      13.4418      13.4253      13.3978      13.3597      13.3111
+      13.2523      13.1837      13.1057      13.0187      12.9233      12.8200
+      12.7092      12.5915      12.4674      12.3375      12.2023      12.0623
+      11.9180      11.7699      11.6184      11.4640      11.3070      11.1479
+      10.9869      10.8245      10.6609      10.4964      10.3312      10.1657
+      9.99990 
+FREE_SURFACE_BC false
+WELL 1 Injection well
+        0       0
+                -diameter       .2
+                -elevation      0.      10.
+                -injection_rate         0	56.25
+                -solution		0	1
+HEAD_IC
+        -zone   0 0 0 300 300   10
+                -head file radial.head.dat
+CHEMISTRY_IC
+        -zone   0 0 0 300 300   10
+                -solution 0
+SOLUTION_METHOD
+        -iterative
+        -space  0.
+        -time   1.
+PRINT_FREQUENCY
+	0
+        -xyz_chemistry  1000    hr
+        -hdf_chemistry  25      hr
+TIME_CONTROL
+        -time_step      0	1       hr
+        -time_change		1000    hr
+END             

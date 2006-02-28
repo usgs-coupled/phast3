@@ -1,0 +1,48 @@
+TITLE
+.       Example 1.--Pulse of solute undergoing sorption and decay
+.       Analytical solution from Quantitative Hydrogeology, de Marsily
+#       Kd = 1 mol sorbed/mol dissolved
+#       K  = 0.01 1/s   Decay constant
+SOLUTION_MASTER_SPECIES
+        A       A       0       A       1
+SOLUTION_SPECIES
+        A = A
+        log_k   0
+SURFACE_MASTER_SPECIES
+        Surf    Surf
+SURFACE_SPECIES
+        Surf = Surf
+                log_k 0
+        Surf + A = SurfA 
+                log_k   -10
+SOLUTION 1
+END
+SOLUTION 2
+        A        1.0 mmol/kgw
+END
+SURFACE 1
+        -no_edl
+        Surf    1e10    
+END
+KINETICS 1
+        A_decay
+        -formula A 1.0
+        -m 0
+RATES
+        A_decay
+        -start
+10 rate = -(TOT("A") + MOL("SurfA")) * .01
+20 moles = rate * TIME
+30 SAVE moles
+        -end
+END
+SELECTED_OUTPUT
+        -file ex1.dummy.sel
+        -reset false
+USER_PUNCH
+        -headings A SurfA SurfA/A
+10 PUNCH TOT("A")*1000
+20 PUNCH MOL("SurfA")*1000
+30 IF TOT("A") > 0 THEN PUNCH MOL("SurfA")/TOT("A") ELSE PUNCH -1
+END
+

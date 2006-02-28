@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="dist" name="phasthdf">
+    <description>
+        Builds phast.jar
+    </description>
+
+    <property location="src" name="src"/>
+    <property location="build" name="build"/>
+    <property location="dist" name="dist"/>
+    <property location="apidoc" name="apidoc"/>
+    <property location="test" name="test"/>
+    <property location="C:\Program Files\s1studio_jdk\s1studio\modules\ext\junit-ext.jar" name="junit-ext"/>
+    <property location="C:\Program Files\s1studio_jdk\s1studio\modules\ext\junit.jar" name="junit"/>
+    <property location="lib" name="lib"/>
+    <property location="lib/hdf-java/lib" name="hdf"/>
+    <property location="hdf-java" name="hdfjar"/>
+  
+    <target name="init">
+        <!-- Create the time stamp -->
+        <tstamp/>
+        <!-- Create the build directory structure used by compile -->
+        <mkdir dir="${build}"/>
+        <mkdir dir="${build}/images"/>
+        <mkdir dir="${dist}"/>
+        <mkdir dir="${dist}/Linux"/>
+        <mkdir dir="${dist}/Win32"/>
+        <mkdir dir="${dist}/SunOS"/>
+        <mkdir dir="${apidoc}"/>
+        <!-- extract jars and shared dlls/libs -->
+        <mkdir dir="${lib}"/>
+        <unjar src="${hdfjar}/solaris/hdf-java-2.0.jar" dest="${lib}"/>
+        <unjar src="${hdfjar}/linux/hdf-java-2.0.jar" dest="${lib}"/>
+        <unjar src="${hdfjar}/win/hdf-java-2.0.jar" dest="${lib}"/>
+    </target>
+    
+    <target depends="init" description="compile the source" name="compile">
+        <javac classpath="${hdf}\jhdf.jar;${hdf}\jhdf5.jar;${hdf}\jhdfobj.jar;${hdf}\jhdf5obj.jar" destdir="${build}" srcdir="${src}">
+        </javac>
+        <javac classpath="${hdf}\jhdf.jar;${hdf}\jhdf5.jar;${hdf}\jhdfobj.jar;${hdf}\jhdf5obj.jar" destdir="${src}" srcdir="${src}">
+        </javac>
+        <copy file="${src}/images/splash.jpeg" todir="${build}/images"/>
+    </target>
+    
+    <target depends="init" description="Javadoc for Phast API." name="javadoc">
+        <javadoc destdir="apidoc" packagenames="gov.usgs.phast.*,corejava.*,sample.*" windowtitle="Phast HDF5 Exporter" classpath="${hdf}\jhdf.jar;${hdf}\jhdf5.jar;${hdf}\jhdfobj.jar;${hdf}\jhdf5obj.jar">
+            <sourcepath>
+                <pathelement location="${src}"/>
+            </sourcepath>
+        </javadoc>
+    </target>    
+
+    <target depends="compile" description="generate the distribution" name="dist">
+        <jar basedir="${build}" jarfile="${dist}/phast.jar">
+        <manifest>
+            <attribute name="Main-Class" value="gov.usgs.phast.JWizardFrame"/>
+            <attribute name="Class-Path" value="jhdf.jar jhdf5.jar jhdfobj.jar jhdf5obj.jar"/>
+        </manifest>
+        </jar>
+        <copy file="${hdf}\jhdf.jar" todir="${dist}"/>
+        <copy file="${hdf}\jhdf5.jar" todir="${dist}"/>
+        <copy file="${hdf}\jhdfobj.jar" todir="${dist}"/>
+        <copy file="${hdf}\jhdf5obj.jar" todir="${dist}"/>
+    </target>
+    
+    <target depends="dist" description="generate the Windows distribution" name="dist-Win32">
+        <copy todir="${dist}/Win32">
+            <fileset dir="${hdf}\win"/>
+        </copy>
+    </target>
+    
+    <target depends="dist" description="generate the Linux distribution" name="dist-Linux">
+        <copy todir="${dist}/Linux">
+            <fileset dir="${hdf}\linux"/>
+        </copy>
+    </target>
+    
+    <target depends="dist" description="generate the Solaris distribution" name="dist-SunOS">
+        <copy todir="${dist}/SunOS">
+            <fileset dir="${hdf}\solaris"/>
+        </copy>
+    </target>
+    
+    <target depends="dist-Win32,dist-Linux,dist-SunOS" description="generate all of the distributions" name="dist-all">
+    </target>    
+        
+    <target depends="dist-Win32" description="Try running it." name="run-Win32">
+        <java dir="${dist}/Win32" failonerror="true" fork="true" jar="${dist}/phast.jar">
+            <arg value="${dist}/../../examples/ex4/ex4.h5"/>
+        </java>
+    </target>   
+    
+    <target depends="dist-Win32" description="Run in debug mode." name="run-debug">
+        <java dir="${dist}/Win32" failonerror="true" fork="true" jar="${dist}/phast.jar">
+            <sysproperty key="phast.debug" value="true"/>
+            <arg value="${dist}/../../examples/ex4/ex4.h5"/>
+        </java>
+    </target>     
+
+   <target depends="dist" description="Run in debug mode using the metal laf." name="run_metal">
+        <java dir="C:\cygwin\home\charlton\programs\phast\export\dist\win" failonerror="true" fork="true" jar="${dist}/phast.jar">
+            <sysproperty key="phast.debug" value="true"/>
+            <sysproperty key="swing.defaultlaf" value="javax.swing.plaf.metal.MetalLookAndFeel"/>
+            <arg value="C:\cygwin\home\charlton\programs\phast\examples\ok_no_vec\ok.h5"/>
+        </java>
+    </target>
+    
+   <target depends="dist" description="Run in debug mode using the metal laf." name="run_motif">
+        <java dir="C:\cygwin\home\charlton\programs\phast\export\dist\win" failonerror="true" fork="true" jar="${dist}/phast.jar">
+            <sysproperty key="phast.debug" value="true"/>
+            <sysproperty key="swing.defaultlaf" value="com.sun.java.swing.plaf.motif.MotifLookAndFeel"/>
+            <arg value="C:\cygwin\home\charlton\programs\phast\examples\ok_no_vec\ok.h5"/>
+        </java>
+    </target>     
+    
+    <target depends="compile" description="Run unit tests" name="test">
+        <javac classpath="${build};${junit};${junit-ext};${hdf}\jhdf.jar;${hdf}\jhdf5.jar;${hdf}\jhdfobj.jar;${hdf}\jhdf5obj.jar" destdir="${test}" srcdir="${test}">
+        </javac>
+        <junit printsummary="withOutAndErr">
+            <classpath path="${build};${test};${junit};${junit-ext}"/>
+            <test name="corejava.FormatTest"/>
+        </junit>
+    </target>    
+        
+    
+    <target description="clean up" name="clean">
+        <delete dir="${build}"/>
+        <delete dir="${lib}"/>
+        <delete dir="${dist}"/>
+        <delete dir="${apidoc}"/>
+        <delete>
+            <fileset dir="${src}" includes="**/*.class"/>
+        </delete>        
+        <delete>
+            <fileset dir="${test}" includes="**/*.class"/>
+        </delete>        
+    </target>
+</project>
