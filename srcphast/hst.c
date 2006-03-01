@@ -2021,7 +2021,7 @@ int mpi_recv_solution(int solution_number, int task_number)
 	/*	LDBLE total_alkalinity; */
 	solution_ptr->total_alkalinity = 0;
 	/*	LDBLE total_co2; */
-	solution_ptr->total_co2 = 0;
+	/*solution_ptr->total_co2 = 0;*/
 	/*	char *units; */
 	/*	struct pe_data *pe; */
 	/*	int default_pe; */
@@ -3084,7 +3084,7 @@ int mpi_unpack_solution_hst(struct solution *solution_ptr, int solution_number, 
 	/*	LDBLE total_alkalinity; */
 	solution_ptr->total_alkalinity = 0;
 	/*	LDBLE total_co2; */
-	solution_ptr->total_co2 = 0;
+	/*solution_ptr->total_co2 = 0;*/
 	/*	char *units; */
 	/*	struct pe_data *pe; */
 	/*	int default_pe; */
@@ -3262,7 +3262,7 @@ int mpi_unpack_solution(struct solution *solution_ptr, int *ints, int *ii, doubl
 	/*	LDBLE total_alkalinity; */
 	solution_ptr->total_alkalinity = 0;
 	/*	LDBLE total_co2; */
-	solution_ptr->total_co2 = 0;
+	/*solution_ptr->total_co2 = 0;*/
 	/*	char *units; */
 	/*	struct pe_data *pe; */
 	/*	int default_pe; */
@@ -3931,7 +3931,7 @@ int dump_kinetics_hst (struct kinetics *kinetics_ptr)
 	/* LDBLE step_divide; */
 	output_msg(OUTPUT_DUMP, "\tstep_divide = %15.6e\n", (double) kinetics_ptr->step_divide);
 	/* char *units;*/
-	output_msg(OUTPUT_DUMP, "\tunits = %s\n", kinetics_ptr->units);
+	/* output_msg(OUTPUT_DUMP, "\tunits = %s\n", kinetics_ptr->units); */
 	/* struct elt_list *totals;*/
 	output_msg(OUTPUT_DUMP,"\ttotals\n");
 	if (kinetics_ptr->totals != NULL) {

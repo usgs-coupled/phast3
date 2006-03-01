@@ -110,9 +110,9 @@ SRC     = ../phreeqc
 .SUFFIXES : .o .f .F90 .f90 .c 
 
 # compilers
-FLAHEY=/usr/local/lf95/bin/lf95
+FLAHEY=/z/niwot/usr/local/lf95/bin/lf95
 LIBLAHEY=
-LAHEY_MACHINE=niwot
+LAHEY_MACHINE=parkplace
 #FLAHEY=/z/niwot/usr/local/lf9562/bin/lf95
 #LIBLAHEY=-L/z/niwot/usr/lib -L/z/niwot/usr/local/lf9562/lib 
 

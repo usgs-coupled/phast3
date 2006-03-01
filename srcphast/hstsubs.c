@@ -806,7 +806,7 @@ int xsolution_save_hst(int n)
 	solution_ptr->total_h = total_h_x;
 	solution_ptr->total_o = total_o_x;
 	solution_ptr->total_alkalinity = total_alkalinity;
-	solution_ptr->total_co2 = total_co2 / mass_water_aq_x;
+	/*solution_ptr->total_co2 = total_co2 / mass_water_aq_x;*/
 	solution_ptr->cb = cb_x;   /* cb_x does not include surface charge */
 	solution_ptr->mass_water = mass_water_aq_x;
 /*
@@ -816,7 +816,7 @@ int xsolution_save_hst(int n)
 		solution_ptr->totals[j-2].moles = buffer[j].master->total_primary;
 		solution_ptr->totals[j-2].description = buffer[j].master->elt->name;
 /*		solution_ptr->totals[j-2].input_conc = master[i]->total; */
-		solution_ptr->totals[j-2].skip = FALSE;
+/*		solution_ptr->totals[j-2].skip = FALSE; */
 		solution_ptr->totals[j-2].units = solution_ptr->units;
 		solution_ptr->totals[j-2].equation_name = NULL;
 		solution_ptr->totals[j-2].n_pe = 0;
