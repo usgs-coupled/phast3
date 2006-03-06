@@ -6,7 +6,7 @@
 static char const svnid[] = "$Id$";
 #endif
 
-FILE *open_echo(const char *prefix);
+FILE *open_echo(const char *prefix, int local_mpi_myself);
 int close_input_files(void);
 int close_output_files(void);
 int getc_callback(void* cookie);

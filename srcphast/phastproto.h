@@ -8,10 +8,12 @@ static char const svnid[] = "$Id$";
 /*
  *   Functions called from C
  */
-void HDF_Init(char* prefix, int prefix_l);
-void HDFBeginCTimeStep(void);
-void HDFSetCell(const int n);
-void HDFEndCTimeStep(void);
+extern "C" {
+	void HDF_Init(char* prefix, int prefix_l);
+	void HDFBeginCTimeStep(void);
+	void HDFSetCell(const int n);
+	void HDFEndCTimeStep(void);
+}
 
 /*
  *   Functions called from FORTRAN
@@ -36,6 +38,7 @@ void HDFEndCTimeStep(void);
 #define PRNTAR_HDF             prntar_hdf_
 #define HDF_VEL                hdf_vel_
 #endif
+extern "C" {
 void HDF_INIT_INVARIANT(void);
 void HDF_Finalize(void);
 void HDF_FINALIZE_INVARIANT(void);
@@ -45,6 +48,7 @@ void HDF_VEL(double vx_node[], double vy_node[], double vz_node[], int vmask[]);
 void HDF_WRITE_FEATURE(char* feature_name, int* nodes1, int* node_count, int feature_name_l);
 void HDF_WRITE_GRID(double x[], double y[], double z[], int *nx, int *ny, int *nz, int ibc[], char* UTULBL, int UTULBL_l);
 void PRNTAR_HDF(double array[], double frac[], double* cnv, char* name, int name_l);
+}
 #endif
 
 /* 

@@ -48,12 +48,14 @@ serial_absoft_debug:
 .PHONY : serial_lahey
 serial_lahey:
 	mkdir -p $(SERIAL_LAHEY_DIR)
-	ssh $(LAHEY_MACHINE) "cd programs/phast/srcphast; cd $(SERIAL_LAHEY_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_LAHEY $(PROGRAM)"
+#	ssh $(LAHEY_MACHINE) "cd programs/phast/srcphast; cd $(SERIAL_LAHEY_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_LAHEY $(PROGRAM)"
+	cd $(SERIAL_LAHEY_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_LAHEY $(PROGRAM)
 
 .PHONY : serial_lahey_debug
 serial_lahey_debug:
 	mkdir -p $(SERIAL_LAHEY_DEBUG_DIR);
-	ssh $(LAHEY_MACHINE) "cd programs/phast/srcphast; cd $(SERIAL_LAHEY_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_LAHEY_DEBUG $(PROGRAM)"
+#	ssh $(LAHEY_MACHINE) "cd programs/phast/srcphast; cd $(SERIAL_LAHEY_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_LAHEY_DEBUG $(PROGRAM)"
+	cd $(SERIAL_LAHEY_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_LAHEY_DEBUG $(PROGRAM)
 
 .PHONY : serial_g95
 serial_g95:
@@ -72,12 +74,14 @@ serial_g95_debug:
 .PHONY : mpi_lahey
 mpi_lahey:
 	mkdir -p $(MPI_LAHEY_DIR) 
-	ssh $(LAHEY_MACHINE) "cd programs/phast/srcphast; cd $(MPI_LAHEY_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_LAHEY $(PROGRAM)"
+#	ssh $(LAHEY_MACHINE) "cd programs/phastpp/srcphast; cd $(MPI_LAHEY_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_LAHEY $(PROGRAM)"
+	cd $(MPI_LAHEY_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_LAHEY $(PROGRAM)
 
 .PHONY : mpi_lahey_debug
 mpi_lahey_debug:
 	mkdir -p $(MPI_LAHEY_DEBUG_DIR) 
-	ssh $(LAHEY_MACHINE) "cd programs/phast/srcphast; cd $(MPI_LAHEY_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_LAHEY_DEBUG $(PROGRAM)"
+#	ssh $(LAHEY_MACHINE) "cd programs/phastpp/srcphast; cd $(MPI_LAHEY_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_LAHEY_DEBUG $(PROGRAM)"
+	cd $(MPI_LAHEY_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_LAHEY_DEBUG $(PROGRAM)
 
 .PHONY : mpi_absoft
 mpi_absoft:
@@ -106,12 +110,15 @@ mpi_g95_debug:
 # Significant suffixes [assuming Fortran 90 (.F90)  source code, needs to be preprocessed ]:
 # =============================================================================
 
-SRC     = ../phreeqc
-.SUFFIXES : .o .f .F90 .f90 .c 
+SRC              = ../phreeqcpp/phreeqc
+PHREEQC_INCLUDES = -I../phreeqcpp -I../phreeqcpp/phreeqc
+LAM_INCLUDES     = # -I/usr/lib/lam/include
+
+.SUFFIXES : .o .f .F90 .f90 .c .cxx
 
 # compilers
 FLAHEY=/z/niwot/usr/local/lf95/bin/lf95
-LIBLAHEY=
+LIBLAHEY=-L/z/niwot/usr/local/lf95/lib -lfj9i6 -lfj9f6 -lfj9e6 -lfccx86_6a -lc -lm
 LAHEY_MACHINE=parkplace
 #FLAHEY=/z/niwot/usr/local/lf9562/bin/lf95
 #LIBLAHEY=-L/z/niwot/usr/lib -L/z/niwot/usr/local/lf9562/lib 
@@ -119,10 +126,10 @@ LAHEY_MACHINE=parkplace
 
 FABSOFT=/z/parkplace/usr/absoft/bin/f90
 NLSABSOFT=/z/parkplace/usr/absoft/lib/nls/cf90
-LIBABSOFT=-L/z/parkplace/usr/absoft/lib 
+LIBABSOFT=-L/z/parkplace/usr/absoft/lib  -lfio -lU77 -lf77math -lf90math 
 
 FG95=/z/parkplace/usr/local//bin/g95
-LIBG95=
+LIBG95=-L/usr/local/g95/lib/gcc-lib/i686-pc-linux-gnu/4.0.1/ -lf95
 
 # -----------------------------------------------------------------------------
 .f90.o :
@@ -130,7 +137,9 @@ LIBG95=
 .F90.o :
 	${FC} -c ${FFLAGS} $< -o $@
 .c.o :
-	${CC} ${CFLAGS} -c -o $@ $<
+	${CXX} ${CFLAGS} -c -o $@ $<
+.cxx.o :
+	${CXX} ${CFLAGS} -c -o $@ $<
 
 # -----------------------------------------------------------------------------
 #hdf options
@@ -159,44 +168,46 @@ CL1MP_OBJS=cl1mp.o
 #efence for debugging
 EFENCE_LIB=-L$(HOME)/packages/efence
 
+
+
 # -----------------------------------------------------------------------------
-# 8 Versions
+# 12 Versions
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_ABSOFT)
   DEFINES      = $(DEFINE_HDF) -DNDEBUG 
-  VPATH        = ..:../phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   FC           = $(FABSOFT)
   NLSPATH      = $(NLSABSOFT)
   FDEBUG       = -O -en  # -C
   FMISC        = -YEXT_NAMES=LCS -s -YCFRL=1 -trap=DIVBYZERO,OVERFLOW
   FFLAGS       = $(FDEBUG) $(FMISC) $(DEFINES)
-  CC           = gcc
-  CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES)
-  CFLAGS_MODEL = -Wall -pedantic -O2 $(DEFINES) $(HDF5_INCLUDES)
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS) $(CL1MP_OBJS)
+  CC           = g++
+  CFLAGS       = -Wall -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
+  CFLAGS_MODEL = -Wall -O2 $(DEFINES) $(HDF5_INCLUDES)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS)
   LD_FLAGS     = -lm ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT)
 endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_ABSOFT_DEBUG)
   DEFINES      = $(DEFINE_HDF)
-  VPATH        = ..:../phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   FC           = $(FABSOFT)
   NLSPATH      = $(NLSABSOFT)
   FDEBUG       = -g -en # -Rb -Rc -Rp -Rs # range checking
   FMISC        = -YEXT_NAMES=LCS -s -YCFRL=1 -trap=DIVBYZERO,OVERFLOW
   FFLAGS       = $(FDEBUG) $(FMISC) $(DEFINES)
-  CC           = gcc
-  CFLAGS       = -Wall -g $(DEFINES) $(HDF5_INCLUDES) 
+  CC           = g++
+  CFLAGS       = -Wall -g $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   CFLAGS_MODEL = -Wall -g $(DEFINES) $(HDF5_INCLUDES) 
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS) $(CL1MP_OBJS)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS)  $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS)
   LD_FLAGS     = -lm ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT) # ${EFENCE_LIB} -lefence
 endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), MPI_ABSOFT)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG  
-  VPATH        = ..:../phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   LAMHF77      = $(FABSOFT)
   export LAMHF77
   NLSPATH      = $(NLSABSOFT)
@@ -204,148 +215,155 @@ ifeq ($(CFG), MPI_ABSOFT)
   FDEBUG       = -O -en  # -C
   FMISC        = -YEXT_NAMES=LCS -s -YCFRL=1 -trap=DIVBYZERO,OVERFLOW
   FFLAGS       = $(FDEBUG) $(FMISC) $(DEFINES)
-  CC           = mpicc
-  CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES)
-  CFLAGS_MODEL = -Wall -pedantic -O2 $(DEFINES) $(HDF5_INCLUDES)
+  CXX          = mpiCC
+  CC           = mpiCC
+  CFLAGS       = -Wall -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) $(LAM_INCLUDES)
+  CFLAGS_MODEL = -Wall -O2 $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = -lm -lc ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT)
+  LD_FLAGS     = -lm -lc ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT) -ldl
 endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), MPI_ABSOFT_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE)
-  VPATH        = ..:../phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   LAMHF77      = $(FABSOFT)
   export LAMHF77
+#  LAMHCC      = g++
+#  export LAMHCC
   NLSPATH      = $(NLSABSOFT)
   FC           = mpif77
   FDEBUG       = -g -en # -Rb -Rc -Rp -Rs # range checking
   FMISC        = -YEXT_NAMES=LCS -s -YCFRL=1 -trap=DIVBYZERO,OVERFLOW
   FFLAGS       = $(FDEBUG) $(FMISC) $(DEFINES)
-  CC           = mpicc
-  CFLAGS       = -Wall -pedantic -ansi -g $(DEFINES) $(HDF5_INCLUDES)# -Wconversion 
-  CFLAGS_MODEL = -Wall -pedantic -ansi -g $(DEFINES) $(HDF5_INCLUDES)# -Wconversion 
+  CXX          = mpiCC
+  CC           = mpiCC
+  CFLAGS       = -Wall  -ansi -g $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) $(LAM_INCLUDES)# -Wconversion 
+  CFLAGS_MODEL = -Wall  -ansi -g $(DEFINES) $(HDF5_INCLUDES)# -Wconversion 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = -lm -lc ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT) # ${EFENCE_LIB} -lefence
-endif
-
-# -----------------------------------------------------------------------------
-ifeq ($(CFG), MPI_LAHEY)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DLAHEY_F95 -DNDEBUG
-  VPATH        = ..:../phreeqc
-  LAMHF77      = $(FLAHEY)
-  export LAMHF77
-  FC           = mpif77
-  FFLAGS       = -O $(DEFINES)
-  CC           = mpicc
-  CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
-  CFLAGS_MODEL = -Wall -pedantic -O2 $(DEFINES) $(HDF5_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
-#  LD_FLAGS     = -static-flib  -lm ${HDF5_LIBS} 
-  LD_FLAGS     = --staticlink -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} 
-endif
-
-# -----------------------------------------------------------------------------
-ifeq ($(CFG), MPI_LAHEY_DEBUG)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DLAHEY_F95
-  VPATH        = ..:../phreeqc
-  LAMHF77      = $(FLAHEY)
-  export LAMHF77
-  FC           = mpif77
-  FFLAGS       = -g --chkglobal --warn --info $(DEFINES)
-  CC           = mpicc
-  CFLAGS       = -Wall -pedantic -g $(DEFINES) $(HDF5_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
-  CFLAGS_MODEL = -Wall -pedantic -g $(DEFINES) $(HDF5_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
-#  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
-  LD_FLAGS     = --staticlink -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} 
+  LD_FLAGS     = -lm -lc ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT) -ldl # ${EFENCE_LIB} -lefence
 endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_LAHEY)
   DEFINES      = $(DEFINE_HDF) -DLAHEY_F95 -DNDEBUG 
-  VPATH        = ..:../phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   FC           = $(FLAHEY)
   FFLAGS       = -O $(DEFINES)
-  CC           = gcc
-  CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
-  CFLAGS_MODEL = -Wall -pedantic -O2 $(DEFINES) $(HDF5_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS) $(CL1MP_OBJS)
+  CC           = g++
+  CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
+  CFLAGS_MODEL = -Wall  -O2 $(DEFINES) $(HDF5_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS)  $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
-  LD_FLAGS     = --staticlink -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} 
+  LD_FLAGS     = --staticlink -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY)
 endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_LAHEY_DEBUG)
   DEFINES      = $(DEFINE_HDF) -DLAHEY_F95
-  VPATH        = ..:../phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   FC           = $(FLAHEY)
   FFLAGS       = -g --f95 --chkglobal --warn --info $(DEFINES)
-  CC           = gcc
-  CFLAGS       = -Wall -pedantic -g $(DEFINES) -I/z/srv2rcolkr/home/charlton/include
-  CFLAGS_MODEL = -Wall -pedantic -g $(DEFINES) -I/z/srv2rcolkr/home/charlton/include
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS) $(CL1MP_OBJS)
+  CC           = g++
+  CFLAGS       = -Wall  -g $(DEFINES)  $(PHREEQC_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
+  CFLAGS_MODEL = -Wall  -g $(DEFINES) -I/z/srv2rcolkr/home/charlton/include
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS)  $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
-  LD_FLAGS     = --staticlink -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} 
+  LD_FLAGS     = --staticlink -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY)
 endif
 # -----------------------------------------------------------------------------
-ifeq ($(CFG), MPI_G95)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG
-  VPATH        = ..:../phreeqc
-  LAMHF77      = $(FG95)
+ifeq ($(CFG), MPI_LAHEY)
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DLAHEY_F95 -DNDEBUG
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  LAMHF77      = $(FLAHEY)
   export LAMHF77
   FC           = mpif77
-  FFLAGS       = -O3 $(DEFINES) -fno-underscoring
-  CC           = mpicc
-  CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES)
-  CFLAGS_MODEL = -Wall -pedantic -O2 $(DEFINES) $(HDF5_INCLUDES)
+  FFLAGS       = -O $(DEFINES)
+  CXX          = mpiCC
+  CC           = mpiCC
+  CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) $(LAM_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
+  CFLAGS_MODEL = -Wall  -O2 $(DEFINES) $(HDF5_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
 #  LD_FLAGS     = -static-flib  -lm ${HDF5_LIBS} 
-  LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
+  LD_FLAGS     = --staticlink -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY)
 endif
 
 # -----------------------------------------------------------------------------
-ifeq ($(CFG), MPI_G95_DEBUG)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE)
-  VPATH        = ..:../phreeqc
-  LAMHF77      = $(FG95)
+ifeq ($(CFG), MPI_LAHEY_DEBUG)
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DLAHEY_F95
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  LAMHF77      = $(FLAHEY)
   export LAMHF77
   FC           = mpif77
-  FFLAGS       = -g  -fno-underscoring $(DEFINES)
+  FFLAGS       = -g --chkglobal --warn --info $(DEFINES)
   CC           = mpicc
-  CFLAGS       = -Wall -pedantic -g $(DEFINES) $(HDF5_INCLUDES)
-  CFLAGS_MODEL = -Wall -pedantic -g $(DEFINES) $(HDF5_INCLUDES)
+  CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) $(LAM_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
+  CFLAGS_MODEL = -Wall  -g $(DEFINES) $(HDF5_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
-  LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
+  LD_FLAGS     = --staticlink -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY)
 endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_G95)
   DEFINES      = $(DEFINE_HDF) -DNDEBUG
-  VPATH        = ..:../phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   FC           = $(FG95)
   FFLAGS       = -O3 $(DEFINES) -fno-underscoring
-  CC           = gcc
-  CFLAGS       = -Wall -pedantic -O3 $(DEFINES) $(HDF5_INCLUDES)
-  CFLAGS_MODEL = -Wall -pedantic -O2 $(DEFINES) $(HDF5_INCLUDES)
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS) $(CL1MP_OBJS)
+  CC           = g++
+  CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
+  CFLAGS_MODEL = -Wall  -O2 $(DEFINES) $(HDF5_INCLUDES)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS)  $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
   LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
 endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_G95_DEBUG)
-  DEFINES      = $(DEFINE_HDF)
-  VPATH        = ..:../phreeqc
+  DEFINES      = $(DEFINE_HDF) 
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   FC           = $(FG95)
   FFLAGS       = -g -fno-underscoring $(DEFINES)
-  CC           = gcc
-  CFLAGS       = -Wall -pedantic -g $(DEFINES)
-  CFLAGS_MODEL = -Wall -pedantic -g $(DEFINES)
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(HDF_OBJS) $(CL1MP_OBJS)
+  CC           = g++
+  CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
+  CFLAGS_MODEL = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS)  $(HDF_OBJS) $(CL1MP_OBJS)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
   LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
+endif
+
+# -----------------------------------------------------------------------------
+ifeq ($(CFG), MPI_G95)
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  LAMHF77      = $(FG95)
+  export LAMHF77
+  FC           = mpif77
+  FFLAGS       = -O3 $(DEFINES) -fno-underscoring
+  CXX          = mpiCC
+  CC           = mpiCC
+  CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) $(LAM_INCLUDES)
+  CFLAGS_MODEL = -Wall  -O2 $(DEFINES) $(HDF5_INCLUDES)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
+#  LD_FLAGS     = -static-flib  -lm ${HDF5_LIBS} 
+  LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS} -ldl
+endif
+
+# -----------------------------------------------------------------------------
+ifeq ($(CFG), MPI_G95_DEBUG)
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE)
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  LAMHF77      = $(FG95)
+  export LAMHF77
+  FC           = mpif77
+  FFLAGS       = -g  -fno-underscoring $(DEFINES)
+  CXX          = mpiCC
+  CC           = mpiCC
+  CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) $(LAM_INCLUDES)
+  CFLAGS_MODEL = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
+#  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
+  LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS}  -ldl
 endif
 
 # -----------------------------------------------------------------------------
@@ -378,6 +396,33 @@ COMMON_FOBJS =	abmult.o aplbce.o aplbce_ss_flow.o aplbci.o armult.o asembl.o\
 		wellsr.o wellsr_ss_flow.o welris.o wfdydz.o write1.o write2_1.o write2_2.o write3.o\
 		write3_ss_flow.o write4.o write5.o write5_ss_flow.o write6.o 
 
+COMMON_CXXOBJS = \
+	       Exchange.o \
+	       ExchComp.o \
+	       GasPhase.o \
+	       ISolution.o \
+	       SolutionIsotope.o \
+	       KineticsComp.o \
+	       KineticsCxx.o \
+	       Mix.o \
+	       NameDouble.o \
+	       NumKeyword.o \
+	       Parser.o \
+	       PPassemblageComp.o \
+	       PPassemblage.o \
+	       Reaction.o \
+	       ReadClass.o \
+	       Solution.o \
+	       ISolutionComp.o \
+	       SSassemblage.o \
+	       SSassemblageSS.o \
+               StorageBin.o \
+	       Surface.o \
+	       SurfCharge.o \
+	       SurfComp.o \
+	       Temperature.o \
+	       Utils.o 
+
 HDF_OBJS     =  hdf.o hdf_f.o
 
 MERGE_OBJS   =	merge.o
@@ -390,7 +435,8 @@ MPI_OBJS     =	mpimod.o phast_slave.o slavesubs.o
 #  the current target.) 
 
 ${PROGRAM} : ${OBJECT_FILES}
-	${FC} -o $@ ${OBJECT_FILES} ${LD_LIB1} ${LD_FLAGS} 
+#	${FC} -o $@ ${OBJECT_FILES} ${LD_LIB1} ${LD_FLAGS} 
+	${CXX} -o $@ ${OBJECT_FILES} ${LD_LIB1} ${LD_FLAGS} 
 	@echo; echo Done making for phast
 # -----------------------------------------------------------------------------
 #  SPECIAL TARGET for compiling files containing modules so that
@@ -562,6 +608,273 @@ merge.o: merge.c global.h phqalloc.h hst.h output.h phastproto.h
 mix.o: mix.c global.h hst.h phqalloc.h output.h phastproto.h
 phast_files.o: phast_files.c global.h phqalloc.h output.h phrqproto.h input.h
 slavesubs.o: slavesubs.c global.h hst.h phqalloc.h output.h phastproto.h
+#
+#  Cxx files
+#
+#Exchange.o: ../phreeqcpp/Exchange.cxx ../phreeqcpp/Utils.h \
+#  ../phreeqcpp/char_star.h ../phreeqcpp/Exchange.h \
+#  ../phreeqcpp/NumKeyword.h ../phreeqcpp/Parser.h \
+#  ../phreeqcpp/char_star.h ../phreeqcpp/phreeqc/global.h \
+#  ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/char_star.h \
+#  ../phreeqcpp/ExchComp.h ../phreeqcpp/NameDouble.h \
+#  ../phreeqcpp/char_star.h ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h \
+#  ../phreeqcpp/ExchComp.h ../phreeqcpp/phreeqc/phqalloc.h \
+#  ../phreeqcpp/phreeqc/phrqproto.h
+
+Exchange.o: Exchange.cxx Utils.h \
+  char_star.h Exchange.h \
+  NumKeyword.h Parser.h \
+  char_star.h global.h \
+  phrqtype.h char_star.h \
+  ExchComp.h NameDouble.h \
+  phqalloc.h \
+  phrqproto.h
+ExchComp.o: ../phreeqcpp/ExchComp.cxx ../phreeqcpp/Utils.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/ExchComp.h \
+  ../phreeqcpp/NameDouble.h ../phreeqcpp/phreeqc/global.h \
+  ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/phreeqc/phqalloc.h ../phreeqcpp/phreeqc/phrqproto.h \
+  ../phreeqcpp/phreeqc/output.h
+GasPhase.o: ../phreeqcpp/GasPhase.cxx ../phreeqcpp/Utils.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/GasPhase.h \
+  ../phreeqcpp/NumKeyword.h ../phreeqcpp/Parser.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/NameDouble.h \
+  ../phreeqcpp/phreeqc/global.h ../phreeqcpp/phreeqc/phrqtype.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/phreeqc/phqalloc.h ../phreeqcpp/phreeqc/phrqproto.h
+ISolutionComp.o: ../phreeqcpp/ISolutionComp.cxx \
+  ../phreeqcpp/ISolutionComp.h ../phreeqcpp/Utils.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/ISolution.h ../phreeqcpp/ISolutionComp.h \
+  ../phreeqcpp/NumKeyword.h ../phreeqcpp/Parser.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/Solution.h \
+  ../phreeqcpp/NumKeyword.h ../phreeqcpp/SolutionIsotope.h \
+  ../phreeqcpp/Parser.h ../phreeqcpp/NameDouble.h \
+  ../phreeqcpp/phreeqc/global.h ../phreeqcpp/phreeqc/phrqtype.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/Utils.h ../phreeqcpp/phreeqc/phrqproto.h \
+  ../phreeqcpp/phreeqc/phqalloc.h
+ISolution.o: ../phreeqcpp/ISolution.cxx ../phreeqcpp/ISolution.h \
+  ../phreeqcpp/ISolutionComp.h ../phreeqcpp/Utils.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/NumKeyword.h ../phreeqcpp/Parser.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/Solution.h \
+  ../phreeqcpp/NumKeyword.h ../phreeqcpp/SolutionIsotope.h \
+  ../phreeqcpp/Parser.h ../phreeqcpp/NameDouble.h \
+  ../phreeqcpp/phreeqc/global.h ../phreeqcpp/phreeqc/phrqtype.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/phreeqc/phqalloc.h ../phreeqcpp/phreeqc/phrqproto.h
+KineticsComp.o: ../phreeqcpp/KineticsComp.cxx ../phreeqcpp/Utils.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/KineticsComp.h \
+  ../phreeqcpp/NameDouble.h ../phreeqcpp/phreeqc/global.h \
+  ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/phreeqc/phqalloc.h ../phreeqcpp/phreeqc/phrqproto.h
+KineticsCxx.o: ../phreeqcpp/KineticsCxx.cxx ../phreeqcpp/Utils.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/KineticsCxx.h \
+  ../phreeqcpp/NumKeyword.h ../phreeqcpp/Parser.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/phreeqc/global.h \
+  ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/KineticsComp.h ../phreeqcpp/NameDouble.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/KineticsComp.h ../phreeqcpp/phreeqc/phqalloc.h \
+  ../phreeqcpp/phreeqc/phrqproto.h
+Mix.o: ../phreeqcpp/Mix.cxx ../phreeqcpp/Utils.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/Mix.h ../phreeqcpp/NumKeyword.h ../phreeqcpp/Parser.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/phreeqc/global.h \
+  ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/phreeqc/phqalloc.h ../phreeqcpp/phreeqc/phrqproto.h
+NameDouble.o: ../phreeqcpp/NameDouble.cxx ../phreeqcpp/Utils.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/NameDouble.h \
+  ../phreeqcpp/phreeqc/global.h ../phreeqcpp/phreeqc/phrqtype.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/phreeqc/phqalloc.h ../phreeqcpp/phreeqc/phrqproto.h
+NumKeyword.o: ../phreeqcpp/NumKeyword.cxx ../phreeqcpp/NumKeyword.h \
+  ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h
+Parser.o: ../phreeqcpp/Parser.cxx ../phreeqcpp/Parser.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/Utils.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/char_star.h
+PPassemblageComp.o: ../phreeqcpp/PPassemblageComp.cxx \
+  ../phreeqcpp/Utils.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/PPassemblageComp.h ../phreeqcpp/NameDouble.h \
+  ../phreeqcpp/phreeqc/global.h ../phreeqcpp/phreeqc/phrqtype.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/phreeqc/phqalloc.h \
+  ../phreeqcpp/phreeqc/phrqproto.h
+PPassemblage.o: ../phreeqcpp/PPassemblage.cxx ../phreeqcpp/Utils.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/PPassemblage.h \
+  ../phreeqcpp/NumKeyword.h ../phreeqcpp/Parser.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/phreeqc/global.h \
+  ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/PPassemblageComp.h ../phreeqcpp/NameDouble.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/PPassemblageComp.h ../phreeqcpp/phreeqc/phqalloc.h \
+  ../phreeqcpp/phreeqc/phrqproto.h
+Reaction.o: ../phreeqcpp/Reaction.cxx ../phreeqcpp/Utils.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/Reaction.h \
+  ../phreeqcpp/NumKeyword.h ../phreeqcpp/Parser.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/NameDouble.h \
+  ../phreeqcpp/phreeqc/global.h ../phreeqcpp/phreeqc/phrqtype.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/phreeqc/phqalloc.h ../phreeqcpp/phreeqc/phrqproto.h
+ReadClass.o: ../phreeqcpp/ReadClass.cxx ../phreeqcpp/Parser.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/Solution.h \
+  ../phreeqcpp/NumKeyword.h ../phreeqcpp/Parser.h \
+  ../phreeqcpp/SolutionIsotope.h ../phreeqcpp/Parser.h \
+  ../phreeqcpp/NameDouble.h ../phreeqcpp/phreeqc/global.h \
+  ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h ../phreeqcpp/Exchange.h \
+  ../phreeqcpp/NumKeyword.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/ExchComp.h ../phreeqcpp/NameDouble.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/Surface.h \
+  ../phreeqcpp/NumKeyword.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/SurfComp.h ../phreeqcpp/NameDouble.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/SurfCharge.h \
+  ../phreeqcpp/NameDouble.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/PPassemblage.h ../phreeqcpp/NumKeyword.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/PPassemblageComp.h \
+  ../phreeqcpp/NameDouble.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/KineticsCxx.h ../phreeqcpp/NumKeyword.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/KineticsComp.h \
+  ../phreeqcpp/NameDouble.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/SSassemblage.h ../phreeqcpp/NumKeyword.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/SSassemblageSS.h \
+  ../phreeqcpp/NameDouble.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/GasPhase.h ../phreeqcpp/NumKeyword.h \
+  ../phreeqcpp/NameDouble.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/Reaction.h ../phreeqcpp/NumKeyword.h \
+  ../phreeqcpp/NameDouble.h ../phreeqcpp/char_star.h ../phreeqcpp/Mix.h \
+  ../phreeqcpp/NumKeyword.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/Temperature.h ../phreeqcpp/NumKeyword.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/phreeqc/phqalloc.h \
+  ../phreeqcpp/phreeqc/output.h ../phreeqcpp/phreeqc/phrqproto.h
+Solution.o: ../phreeqcpp/Solution.cxx ../phreeqcpp/Utils.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/Solution.h \
+  ../phreeqcpp/NumKeyword.h ../phreeqcpp/Parser.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/SolutionIsotope.h \
+  ../phreeqcpp/Parser.h ../phreeqcpp/NameDouble.h \
+  ../phreeqcpp/phreeqc/global.h ../phreeqcpp/phreeqc/phrqtype.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/phreeqc/phqalloc.h ../phreeqcpp/phreeqc/phrqproto.h \
+  ../phreeqcpp/ISolution.h ../phreeqcpp/ISolutionComp.h \
+  ../phreeqcpp/Utils.h ../phreeqcpp/char_star.h ../phreeqcpp/NumKeyword.h \
+  ../phreeqcpp/Solution.h ../phreeqcpp/Exchange.h \
+  ../phreeqcpp/NumKeyword.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/ExchComp.h ../phreeqcpp/NameDouble.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/Surface.h \
+  ../phreeqcpp/NumKeyword.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/SurfComp.h ../phreeqcpp/NameDouble.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/SurfCharge.h \
+  ../phreeqcpp/NameDouble.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/PPassemblage.h ../phreeqcpp/NumKeyword.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/PPassemblageComp.h \
+  ../phreeqcpp/NameDouble.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/KineticsCxx.h ../phreeqcpp/NumKeyword.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/KineticsComp.h \
+  ../phreeqcpp/NameDouble.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/SSassemblage.h ../phreeqcpp/NumKeyword.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/SSassemblageSS.h \
+  ../phreeqcpp/NameDouble.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/GasPhase.h ../phreeqcpp/NumKeyword.h \
+  ../phreeqcpp/NameDouble.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/Reaction.h ../phreeqcpp/NumKeyword.h \
+  ../phreeqcpp/NameDouble.h ../phreeqcpp/char_star.h ../phreeqcpp/Mix.h \
+  ../phreeqcpp/NumKeyword.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/Temperature.h ../phreeqcpp/NumKeyword.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/StorageBin.h \
+  ../phreeqcpp/Parser.h ../phreeqcpp/Solution.h ../phreeqcpp/Exchange.h \
+  ../phreeqcpp/GasPhase.h ../phreeqcpp/KineticsCxx.h \
+  ../phreeqcpp/PPassemblage.h ../phreeqcpp/SSassemblage.h \
+  ../phreeqcpp/Surface.h ../phreeqcpp/Mix.h ../phreeqcpp/Reaction.h \
+  ../phreeqcpp/Temperature.h ../phreeqcpp/NumKeyword.h
+SolutionIsotope.o: ../phreeqcpp/SolutionIsotope.cxx \
+  ../phreeqcpp/SolutionIsotope.h ../phreeqcpp/Parser.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/Utils.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/Parser.h ../phreeqcpp/phreeqc/global.h \
+  ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/phreeqc/phqalloc.h \
+  ../phreeqcpp/phreeqc/phrqproto.h
+SSassemblage.o: ../phreeqcpp/SSassemblage.cxx ../phreeqcpp/Utils.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/SSassemblage.h \
+  ../phreeqcpp/NumKeyword.h ../phreeqcpp/Parser.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/phreeqc/global.h \
+  ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/SSassemblageSS.h ../phreeqcpp/NameDouble.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/SSassemblageSS.h ../phreeqcpp/phreeqc/phqalloc.h \
+  ../phreeqcpp/phreeqc/phrqproto.h
+SSassemblageSS.o: ../phreeqcpp/SSassemblageSS.cxx ../phreeqcpp/Utils.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/SSassemblageSS.h \
+  ../phreeqcpp/NameDouble.h ../phreeqcpp/phreeqc/global.h \
+  ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/NameDouble.h ../phreeqcpp/phreeqc/phqalloc.h \
+  ../phreeqcpp/phreeqc/phrqproto.h
+StorageBin.o: ../phreeqcpp/StorageBin.cxx ../phreeqcpp/Utils.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/StorageBin.h \
+  ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h ../phreeqcpp/Solution.h \
+  ../phreeqcpp/NumKeyword.h ../phreeqcpp/Parser.h \
+  ../phreeqcpp/SolutionIsotope.h ../phreeqcpp/Parser.h \
+  ../phreeqcpp/NameDouble.h ../phreeqcpp/phreeqc/global.h \
+  ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h ../phreeqcpp/Exchange.h \
+  ../phreeqcpp/NumKeyword.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/ExchComp.h ../phreeqcpp/NameDouble.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/GasPhase.h \
+  ../phreeqcpp/NumKeyword.h ../phreeqcpp/NameDouble.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/KineticsCxx.h \
+  ../phreeqcpp/NumKeyword.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/KineticsComp.h ../phreeqcpp/NameDouble.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/PPassemblage.h \
+  ../phreeqcpp/NumKeyword.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/PPassemblageComp.h ../phreeqcpp/NameDouble.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/SSassemblage.h \
+  ../phreeqcpp/NumKeyword.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/SSassemblageSS.h ../phreeqcpp/NameDouble.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/Surface.h \
+  ../phreeqcpp/NumKeyword.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/SurfComp.h ../phreeqcpp/NameDouble.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/SurfCharge.h \
+  ../phreeqcpp/NameDouble.h ../phreeqcpp/char_star.h ../phreeqcpp/Mix.h \
+  ../phreeqcpp/NumKeyword.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/Reaction.h ../phreeqcpp/NumKeyword.h \
+  ../phreeqcpp/NameDouble.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/Temperature.h ../phreeqcpp/NumKeyword.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/Solution.h \
+  ../phreeqcpp/phreeqc/phqalloc.h ../phreeqcpp/phreeqc/phrqproto.h
+Surface.o: ../phreeqcpp/Surface.cxx ../phreeqcpp/Utils.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/Surface.h \
+  ../phreeqcpp/NumKeyword.h ../phreeqcpp/Parser.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/phreeqc/global.h \
+  ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/SurfComp.h ../phreeqcpp/NameDouble.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/SurfCharge.h ../phreeqcpp/NameDouble.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/SurfComp.h \
+  ../phreeqcpp/phreeqc/phqalloc.h ../phreeqcpp/phreeqc/phrqproto.h
+SurfCharge.o: ../phreeqcpp/SurfCharge.cxx ../phreeqcpp/Utils.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/SurfCharge.h \
+  ../phreeqcpp/NameDouble.h ../phreeqcpp/phreeqc/global.h \
+  ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/phreeqc/output.h ../phreeqcpp/phreeqc/phqalloc.h \
+  ../phreeqcpp/phreeqc/phrqproto.h
+SurfComp.o: ../phreeqcpp/SurfComp.cxx ../phreeqcpp/Utils.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/SurfComp.h \
+  ../phreeqcpp/NameDouble.h ../phreeqcpp/phreeqc/global.h \
+  ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/phreeqc/phqalloc.h ../phreeqcpp/phreeqc/phrqproto.h \
+  ../phreeqcpp/phreeqc/output.h
+Temperature.o: ../phreeqcpp/Temperature.cxx ../phreeqcpp/Utils.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/Temperature.h \
+  ../phreeqcpp/NumKeyword.h ../phreeqcpp/Parser.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/phreeqc/global.h \
+  ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/phreeqc/phqalloc.h ../phreeqcpp/phreeqc/phrqproto.h
+Utils.o: ../phreeqcpp/Utils.cxx ../phreeqcpp/Utils.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/phreeqc/output.h
 
 # -----------------------------------------------------------------------------
 
@@ -573,6 +886,10 @@ absoft: serial_absoft serial_absoft_debug mpi_absoft mpi_absoft_debug
 g95: serial_g95 serial_g95_debug mpi_g95 mpi_g95_debug
 
 lahey: serial_lahey serial_lahey_debug mpi_lahey mpi_lahey_debug
+
+dependencies:
+	mkdir -p $(SERIAL_ABSOFT_DIR) 
+	cd $(SERIAL_ABSOFT_DIR); gcc -MM -I../phreeqcpp -I../phreeqcpp/phreeqc ../phreeqcpp/*.cxx
 
 # =============================================================================
 # End of makefile.

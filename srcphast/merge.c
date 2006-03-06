@@ -66,7 +66,7 @@ void FileInfo_alloc(struct FileInfo* pFileInfo, int size)
 {
     /* initialize storage */
     pFileInfo->buffer_size = size;
-    space ((void *) &(pFileInfo->buffer), INIT, &pFileInfo->buffer_size, sizeof(char));
+    space ((void **) &(pFileInfo->buffer), INIT, &pFileInfo->buffer_size, sizeof(char));
     assert(pFileInfo->buffer != NULL);
 }
 
@@ -77,7 +77,7 @@ void FileInfo_del(struct FileInfo* pFileInfo)
     /* for some reason, needed to flush buffer on large version of chain3d problem */
     fflush(pFileInfo->stream);
     pFileInfo->buffer_size = 0;
-    pFileInfo->buffer = free_check_null(pFileInfo->buffer);
+    pFileInfo->buffer = (char *) free_check_null(pFileInfo->buffer);
 }
 
 void FileInfo_open(struct FileInfo* pFileInfo, const char* name, const char *mode)
@@ -117,14 +117,14 @@ void FileInfo_merge(struct FileInfo* ptr_info, hid_t xfer_pid, hid_t mem_dspace,
     root_record_size_buffer = NULL;
     if (mpi_myself != 0) {
 	buffer_size = 2*local_count_chem;
-	local_record_size_array = PHRQ_malloc((size_t) (local_count_chem * sizeof(int)));
+	local_record_size_array = (int *) PHRQ_malloc((size_t) (local_count_chem * sizeof(int)));
 	if (local_record_size_array == NULL) malloc_error();
-	local_record_size_buffer = PHRQ_malloc((size_t) (buffer_size * sizeof(int)));
+	local_record_size_buffer = (int *) PHRQ_malloc((size_t) (buffer_size * sizeof(int)));
 	if (local_record_size_buffer == NULL) malloc_error();
     } else {
-	root_record_size_array = PHRQ_malloc((size_t) (count_chem * sizeof(int)));
+	root_record_size_array = (int *) PHRQ_malloc((size_t) (count_chem * sizeof(int)));
 	if (root_record_size_array == NULL) malloc_error();
-	root_record_size_buffer = PHRQ_malloc((size_t) 2 * count_chem * sizeof(int));
+	root_record_size_buffer = (int *) PHRQ_malloc((size_t) 2 * count_chem * sizeof(int));
 	if (root_record_size_buffer == NULL) malloc_error();
     }
     /* find record sizes */
@@ -249,7 +249,7 @@ void FileInfo_merge(struct FileInfo* ptr_info, hid_t xfer_pid, hid_t mem_dspace,
 		if (root_record_size_array[e] > 1) {
 		    /* recv size */
 		    count_char = root_record_size_array[e];
-		    space ((void *) &(ptr_info->buffer), count_char, &ptr_info->buffer_size, sizeof(char));
+		    space ((void **) &(ptr_info->buffer), count_char, &ptr_info->buffer_size, sizeof(char));
 		    /* recv cell */
 		    mpi_return = MPI_Recv((void*)ptr_info->buffer, count_char, MPI_CHAR, cell_to_proc[e], ptr_info->MSG_TAG, MPI_COMM_WORLD, &mpi_status);
 		    assert(mpi_return == MPI_SUCCESS);
@@ -267,11 +267,11 @@ void FileInfo_merge(struct FileInfo* ptr_info, hid_t xfer_pid, hid_t mem_dspace,
     ptr_info->dset_id = 0;
     /* free space */
     if (mpi_myself != 0) {
-	local_record_size_buffer = free_check_null(local_record_size_buffer);
-	local_record_size_array = free_check_null(local_record_size_array);
+	local_record_size_buffer = (int *) free_check_null(local_record_size_buffer);
+	local_record_size_array = (int *) free_check_null(local_record_size_array);
     } else {
-	root_record_size_buffer = free_check_null(root_record_size_buffer);
-	root_record_size_array = free_check_null(root_record_size_array);
+	root_record_size_buffer = (int *) free_check_null(root_record_size_buffer);
+	root_record_size_array = (int *) free_check_null(root_record_size_array);
     }
 }
 
@@ -283,7 +283,7 @@ int FileInfo_capture(struct FileInfo* ptr_info, const int length, const char* fo
     assert(ptr_info->dset_id > 0); /* should be open */
 
 
-    space ((void *) &(ptr_info->buffer), ptr_info->buffer_pos + length, &ptr_info->buffer_size, sizeof(char));
+    space ((void **) &(ptr_info->buffer), ptr_info->buffer_pos + length, &ptr_info->buffer_size, sizeof(char));
 
     retval = vsprintf(ptr_info->buffer + ptr_info->buffer_pos, format, argptr);
 
@@ -513,7 +513,7 @@ void MergeEndTimeStep(int print_sel, int print_out)
     /* Always open file for output in case of a warning message */
 
     /* create list of cell-index to proc-index */
-    cell_to_proc = PHRQ_malloc((size_t) count_chem * sizeof(int));
+    cell_to_proc = (int *) PHRQ_malloc((size_t) count_chem * sizeof(int));
     if (cell_to_proc == NULL) malloc_error();
     for (task_number = 0; task_number < mpi_tasks; ++task_number)
     {

@@ -1,4 +1,4 @@
-#define EXTERNAL
+#define EXTERNAL extern
 #define MAIN
 #include "phreeqc/global.h"
 #include "phreeqc/output.h"
@@ -90,7 +90,7 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 #define WARNPRT_C warnprt_c_
 #define UZ_INIT uz_init_
 #endif
-
+extern "C" { 
 void CALCULATE_WELL_PH(double *c, LDBLE *ph, LDBLE *alkalinity);
 void COLLECT_FROM_NONROOT(double *fraction, int *dim);
 void CONVERT_TO_MASS_FRACTION(double *c, int *n, int *dim);
@@ -110,9 +110,9 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 		 int *print_out, int *stop_msg, int *print_hdf,
 		 double *rebalance_fraction_hst);
 /*  #endif                                                                             */
-
 void ERRPRT_C(char *err_str, long l);
 void FORWARD_AND_BACK(int *initial_conditions, int *axes, int *nx, int *ny, int *nz);
+void LOGPRT_C(char *err_str, long l);
 void ON_ERROR_CLEANUP_AND_EXIT(void);
 void PACK_FOR_HST(double *fraction, int *dim);
 void PHREEQC_FREE(int *solute);
@@ -122,8 +122,9 @@ void SETUP_BOUNDARY_CONDITIONS(const int *n_boundary, int *boundary_solution1,
 			       int *boundary_solution2, double *fraction1,
 			       double *boundary_fraction, int *dim);
 int UZ_INIT(int * transient_fresur);
+void WARNPRT_C(char *err_str, long l);
 int n_to_ijk(int n_cell, int *i, int *j, int *k);
-
+}
 /* ---------------------------------------------------------------------- */
 void PHREEQC_FREE(int *solute)
 /* ---------------------------------------------------------------------- */
@@ -261,7 +262,7 @@ void PHREEQC_MAIN(int *solute, char *chemistry_name, char *database_name, char *
 	 *  Must precede MergeInit, output_open could delete .log file
 	 *  on mpi version.
 	 */
-	open_echo(prefix);
+	open_echo(prefix, mpi_myself);
 	/*
 	 *   initialize merge
 	 */
@@ -508,9 +509,9 @@ void COUNT_ALL_COMPONENTS(int *n_comp, char *names, int length)
 	for (i = 0; i < count_solution; i++) {
 		xsolution_zero();
 		add_solution(solution[i], 1.0/solution[i]->mass_water, 1.0);
-		solution[i]->totals = PHRQ_realloc (solution[i]->totals, (size_t) (count_total - 1) * sizeof(struct conc));
+		solution[i]->totals = (struct conc *) PHRQ_realloc (solution[i]->totals, (size_t) (count_total - 1) * sizeof(struct conc));
 		if (solution[i]->totals == NULL) malloc_error();
-		solution[i]->master_activity = PHRQ_realloc (solution[i]->master_activity, (size_t) (count_activity_list + 1) * sizeof(struct master_activity));
+		solution[i]->master_activity = (struct master_activity *) PHRQ_realloc (solution[i]->master_activity, (size_t) (count_activity_list + 1) * sizeof(struct master_activity));
 		if (solution[i]->master_activity == NULL) malloc_error();
 		solution[i]->count_master_activity = count_activity_list;
 		/*solution[i]->species_gamma = PHRQ_realloc (solution[i]->species_gamma, (size_t) (count_activity_list + 1) * sizeof(struct master_activity));
@@ -606,7 +607,7 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 	 */
 	initial1 = initial_conditions1;
 	initial2 = initial_conditions2;
-	frac1 = PHRQ_malloc((size_t) 7*ixyz * sizeof(double));
+	frac1 = (double *) PHRQ_malloc((size_t) 7*ixyz * sizeof(double));
 	if (frac1 == NULL) malloc_error();
 	for (j = 0; j < 7*ixyz; j++) {
 		frac1[j] = fraction1[j];
@@ -614,13 +615,13 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 	/*
 	 *  Set up random list for parallel processing
 	 */
-	random_list = PHRQ_malloc((size_t) count_chem * sizeof(int));
+	random_list = (int *) PHRQ_malloc((size_t) count_chem * sizeof(int));
 	if (random_list == NULL) malloc_error();
-	random_frac = PHRQ_malloc((size_t) count_chem * sizeof(LDBLE));
+	random_frac = (LDBLE *) PHRQ_malloc((size_t) count_chem * sizeof(LDBLE));
 	if (random_frac == NULL) malloc_error();
-	random_printzone_chem = PHRQ_malloc((size_t) count_chem * sizeof(int));
+	random_printzone_chem = (int *) PHRQ_malloc((size_t) count_chem * sizeof(int));
 	if (random_printzone_chem == NULL) malloc_error();
-	random_printzone_xyz = PHRQ_malloc((size_t) count_chem * sizeof(int));
+	random_printzone_xyz = (int *) PHRQ_malloc((size_t) count_chem * sizeof(int));
 	if (random_printzone_xyz == NULL) malloc_error();
 	if (mpi_myself == 0) mpi_set_random();
 	MPI_Bcast(random_list, count_chem,                MPI_INT,    0, MPI_COMM_WORLD);
@@ -639,7 +640,7 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 	 */
 	first_cell = mpi_first_cell;
 	last_cell = mpi_last_cell;
-	sort_random_list = PHRQ_malloc((size_t) (last_cell - first_cell + 1) * sizeof(int));
+	sort_random_list = (int *) PHRQ_malloc((size_t) (last_cell - first_cell + 1) * sizeof(int));
 	if (sort_random_list == NULL) malloc_error();
 	memcpy(sort_random_list, &random_list[first_cell], (size_t) (last_cell - first_cell + 1) * sizeof(int));
 	qsort (sort_random_list, (size_t) (last_cell - first_cell + 1), (size_t) sizeof(int), int_compare);
@@ -649,7 +650,7 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 	 *  sz[i] == NULL, cell is not calculated by this processor
 	 *  sz[i] != NULL, cell is calculated by this processor
 	 */
-	sz = PHRQ_malloc((size_t) (count_chem * sizeof(struct system)));
+	sz = (struct system **) PHRQ_malloc((size_t) (count_chem * sizeof(struct system)));
 	if (sz == NULL) malloc_error();
 	for (i = 0; i < count_chem; i++) {
 		sz[i] = NULL;
@@ -663,7 +664,7 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 		assert (forward[i] >= 0); 
 		sz[j] = system_initialize(i, j, initial1, initial2, frac1);   
 	}
-	sort_random_list = free_check_null(sort_random_list);
+	sort_random_list = (int *) free_check_null(sort_random_list);
 	if (input_error > 0) {
 		error_msg("Terminating in distribute_initial_conditions.\n", STOP);
 	}
@@ -765,13 +766,13 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
  *  Allocate space for solution, pp_assemblage, exchange, surface,
  *  gas_phase, kinetics, and solid solutions to allocate
  */
-	space ((void *) &(solution), count_solution + alloc_solution, &max_solution, sizeof (struct solution *) );
-	space ((void *) &pp_assemblage, count_pp_assemblage + alloc_pp_assemblage, &max_pp_assemblage, sizeof(struct pp_assemblage));
-	space ((void *) &exchange, count_exchange + alloc_exchange, &max_exchange, sizeof(struct exchange));
-	space ((void *) &surface, count_surface + alloc_surface, &max_surface, sizeof(struct surface));
-	space ((void *) &gas_phase, count_gas_phase + alloc_gas_phase, &max_gas_phase, sizeof(struct gas_phase));
-	space ((void *) &kinetics, count_kinetics + alloc_kinetics, &max_kinetics, sizeof(struct kinetics));
-	space ((void *) &s_s_assemblage, count_s_s_assemblage + alloc_s_s_assemblage, &max_s_s_assemblage, sizeof(struct s_s_assemblage));
+	space ((void **) ((void *) &(solution)), count_solution + alloc_solution, &max_solution, sizeof (struct solution *) );
+	space ((void **) ((void *) &pp_assemblage), count_pp_assemblage + alloc_pp_assemblage, &max_pp_assemblage, sizeof(struct pp_assemblage));
+	space ((void **) ((void *) &exchange), count_exchange + alloc_exchange, &max_exchange, sizeof(struct exchange));
+	space ((void **) ((void *) &surface), count_surface + alloc_surface, &max_surface, sizeof(struct surface));
+	space ((void **) ((void *) &gas_phase), count_gas_phase + alloc_gas_phase, &max_gas_phase, sizeof(struct gas_phase));
+	space ((void **) ((void *) &kinetics), count_kinetics + alloc_kinetics, &max_kinetics, sizeof(struct kinetics));
+	space ((void **) ((void *) &s_s_assemblage), count_s_s_assemblage + alloc_s_s_assemblage, &max_s_s_assemblage, sizeof(struct s_s_assemblage));
 /*
  *  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
  */
@@ -1193,7 +1194,7 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 #endif
 	MPI_Bcast(stop_msg, 1,                   MPI_INT,    0, MPI_COMM_WORLD);
 	if (*stop_msg == 1) {
-		random_list = free_check_null(random_list);
+		random_list = (int *) free_check_null(random_list);
 		return;
 	}
 	/*
@@ -1296,7 +1297,7 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 	/*
 	 *  Sort list for processor
 	 */
-	sort_random_list = PHRQ_malloc((size_t) (last_cell - first_cell + 1) * sizeof(int));
+	sort_random_list = (int *) PHRQ_malloc((size_t) (last_cell - first_cell + 1) * sizeof(int));
 	if (sort_random_list == NULL) malloc_error();
 	memcpy(sort_random_list, &random_list[first_cell], (size_t) (last_cell - first_cell + 1) * sizeof(int));
 	qsort (sort_random_list, (size_t) (last_cell - first_cell + 1), (size_t) sizeof(int), int_compare);
@@ -1509,9 +1510,9 @@ void FORWARD_AND_BACK(int *initial_conditions, int *axes, int *nx, int *ny, int 
 /*
  *   malloc space
  */
-	forward = PHRQ_malloc((size_t) ixyz * sizeof(int));
+	forward = (int *) PHRQ_malloc((size_t) ixyz * sizeof(int));
 	if (forward == NULL) malloc_error();
-	back = PHRQ_malloc((size_t) count_chem * sizeof(struct back_list ));
+	back = (struct back_list *) PHRQ_malloc((size_t) count_chem * sizeof(struct back_list ));
 	if (back == NULL) malloc_error();
 
 /*
@@ -1751,7 +1752,7 @@ void ERRPRT_C(char *err_str, long l)
 {
         char *e_string;
 
-	e_string = PHRQ_malloc((size_t) (l+1)*sizeof(char));
+	e_string = (char *) PHRQ_malloc((size_t) (l+1)*sizeof(char));
 	strncpy(e_string, err_str, (size_t) (l));
 	e_string[l] = '\0';
 	string_trim_right(e_string);
@@ -1766,7 +1767,7 @@ void WARNPRT_C(char *err_str, long l)
 {
         char *e_string;
 
-	e_string = PHRQ_malloc((size_t) (l+1)*sizeof(char));
+	e_string = (char *) PHRQ_malloc((size_t) (l+1)*sizeof(char));
 	strncpy(e_string, err_str, (size_t) (l));
 	e_string[l] = '\0';
 	string_trim_right(e_string);
@@ -1784,7 +1785,7 @@ void LOGPRT_C(char *err_str, long l)
         char *e_string;
 
 	if (mpi_myself != 0) return;
-	e_string = PHRQ_malloc((size_t) (l+1)*sizeof(char));
+	e_string = (char *) PHRQ_malloc((size_t) (l+1)*sizeof(char));
 	strncpy(e_string, err_str, (size_t) (l));
 	e_string[l] = '\0';
 	string_trim_right(e_string);
@@ -1971,7 +1972,7 @@ int mpi_recv_solution(int solution_number, int task_number)
 	} else {
 		n=count_solution++;
 		if (count_solution >= max_solution) {
-			space ((void *) &(solution), count_solution, &max_solution, sizeof (struct solution *) );
+			space ((void **) ((void *) &(solution)), count_solution, &max_solution, sizeof (struct solution *) );
 		}
 	}
 	solution[n] = solution_alloc();
@@ -1996,7 +1997,7 @@ int mpi_recv_solution(int solution_number, int task_number)
 	solution_ptr->n_user_end = solution_number;
 
 	/*	char *description; */
-	solution_ptr->description = free_check_null(solution_ptr->description);
+	solution_ptr->description = (char *) free_check_null(solution_ptr->description);
 	solution_ptr->description = string_duplicate(" ");
 	/*	double tc; */
 	solution_ptr->tc = doubles[d++];
@@ -2030,7 +2031,7 @@ int mpi_recv_solution(int solution_number, int task_number)
  *	struct conc *totals;
 */
 	count_totals = ints[i++];
-	solution_ptr->totals = PHRQ_realloc(solution_ptr->totals, (size_t) (count_totals + 1) * sizeof(struct conc));
+	solution_ptr->totals = (struct conc *) PHRQ_realloc(solution_ptr->totals, (size_t) (count_totals + 1) * sizeof(struct conc));
 	if (solution_ptr->totals == NULL) malloc_error();
 	for (j = 0; j < count_totals; j++) {
 		master_ptr = master[ints[i++]];
@@ -2043,7 +2044,7 @@ int mpi_recv_solution(int solution_number, int task_number)
  *	struct master_activity *master_activity;
  */
 	count_activity = ints[i++];
-	solution_ptr->master_activity = PHRQ_realloc(solution_ptr->master_activity, (size_t) (count_activity + 1) * sizeof(struct master_activity));
+	solution_ptr->master_activity = (struct master_activity *) PHRQ_realloc(solution_ptr->master_activity, (size_t) (count_activity + 1) * sizeof(struct master_activity));
 	if (solution_ptr->master_activity == NULL) malloc_error();
 	solution_ptr->count_master_activity = count_activity;
 	for (j = 0; j < count_activity; j++) {
@@ -2058,7 +2059,7 @@ int mpi_recv_solution(int solution_number, int task_number)
  */
 	solution_ptr->count_species_gamma = ints[i++];
 	if (solution_ptr->count_species_gamma > 0) {
-		solution_ptr->species_gamma = PHRQ_realloc(solution_ptr->species_gamma, (size_t) (solution_ptr->count_species_gamma) * sizeof(struct master_activity));
+		solution_ptr->species_gamma = (struct master_activity *) PHRQ_realloc(solution_ptr->species_gamma, (size_t) (solution_ptr->count_species_gamma) * sizeof(struct master_activity));
 		if (solution_ptr->species_gamma == NULL) malloc_error();
 		for (j = 0; j < solution_ptr->count_species_gamma; j++) {
 			species_ptr = s[ints[i++]];
@@ -2158,7 +2159,7 @@ int mpi_rebalance_load(double time_per_cell, double *frac, int transfer)
 	int cells[MPI_MAX_TASKS];
 	LDBLE new_n, min_time, max_time;
 	int n, total_cells, diff_cells, last;
-	int new, old;
+	int nnew, old;
 	int change;
 	int error;
 	LDBLE max_old, max_new, t;
@@ -2329,7 +2330,7 @@ int mpi_rebalance_load(double time_per_cell, double *frac, int transfer)
 	/*
 	 *   Redefine columns
 	 */
-	new = 0;
+	nnew = 0;
 	old = 0;
 	change = 0;
 #ifdef TIME
@@ -2349,11 +2350,11 @@ int mpi_rebalance_load(double time_per_cell, double *frac, int transfer)
 			while (k > end_cells[old][1]) {
 				old++;
 			}
-			while (k > end_cells_new[new][1]) {
-				new++;
+			while (k > end_cells_new[nnew][1]) {
+				nnew++;
 			}
 
-			if (old == new) continue;
+			if (old == nnew) continue;
 			change++;
 			/*
 			  if (mpi_myself == 0) {
@@ -2361,11 +2362,11 @@ int mpi_rebalance_load(double time_per_cell, double *frac, int transfer)
 			  }
 			*/
 			if (mpi_myself == old) 	{
-				mpi_send_system(new, iphrq, ihst, frac);
+				mpi_send_system(nnew, iphrq, ihst, frac);
 				system_free(sz[iphrq]);
-				sz[iphrq] = free_check_null(sz[iphrq]);
+				sz[iphrq] = (struct system *) free_check_null(sz[iphrq]);
 			}
-			if (mpi_myself == new) 	mpi_recv_system(old, iphrq, ihst, frac);
+			if (mpi_myself == nnew)	mpi_recv_system(old, iphrq, ihst, frac);
 		}
 	}
 #ifdef TIME
@@ -2611,7 +2612,7 @@ int mpi_recv_system(int task_number, int iphrq, int ihst, LDBLE *frac)
 		   sz[iphrq]->surface == NULL
 		   ) {
 			system_free(sz[iphrq]);
-			sz[iphrq] = free_check_null(sz[iphrq]);
+			sz[iphrq] = (struct system *) free_check_null(sz[iphrq]);
 			sz[iphrq] = system_initialize(ihst, iphrq, initial1, initial2, frac1);   
 		}
 
@@ -2848,7 +2849,7 @@ int mpi_unpack_elt_list(struct elt_list **totals, int *ints, int *i, double *dou
 	/*
 	 *  Realloc space
 	 */
-	*totals = PHRQ_realloc(*totals, (size_t) (count + 1) * sizeof(struct elt_list));
+	*totals = (struct elt_list *) PHRQ_realloc(*totals, (size_t) (count + 1) * sizeof(struct elt_list));
 	if (*totals == NULL) malloc_error();
 	/*
 	 *  Fill in totals
@@ -2872,7 +2873,7 @@ int mpi_set_random(void)
 	/*
 	 *   Generate array random with chemistry cells randomized
 	 */
-	temp_random = PHRQ_malloc((size_t) count_chem * sizeof(int));
+	temp_random = (int *) PHRQ_malloc((size_t) count_chem * sizeof(int));
 	if (temp_random == NULL) malloc_error();
 	for (i = 0; i < count_chem; i++) {
 		temp_random[i] = i;
@@ -2897,7 +2898,7 @@ int mpi_set_random(void)
 		random_list[i] = i;
 	}
 #endif
-	temp_random = free_check_null(temp_random);
+	temp_random = (int *) free_check_null(temp_random);
 	return(OK);
 }
 /* ---------------------------------------------------------------------- */
@@ -3059,7 +3060,7 @@ int mpi_unpack_solution_hst(struct solution *solution_ptr, int solution_number, 
 	solution_ptr->n_user_end = solution_number;
 
 	/*	char *description; */
-	solution_ptr->description = free_check_null(solution_ptr->description);
+	solution_ptr->description = (char *) free_check_null(solution_ptr->description);
 	solution_ptr->description = string_duplicate(" ");
 	/*	double tc; */
 	solution_ptr->tc = doubles[d++];
@@ -3093,7 +3094,7 @@ int mpi_unpack_solution_hst(struct solution *solution_ptr, int solution_number, 
  *	struct conc *totals;
 */
 	count_totals = ints[i++];
-	solution_ptr->totals = PHRQ_realloc(solution_ptr->totals, (size_t) (count_totals + 1) * sizeof(struct conc));
+	solution_ptr->totals = (struct conc *) PHRQ_realloc(solution_ptr->totals, (size_t) (count_totals + 1) * sizeof(struct conc));
 	if (solution_ptr->totals == NULL) malloc_error();
 	for (j = 0; j < count_totals; j++) {
 		master_ptr = master[ints[i++]];
@@ -3237,7 +3238,7 @@ int mpi_unpack_solution(struct solution *solution_ptr, int *ints, int *ii, doubl
 	solution_ptr->n_user_end = solution_number;
 	*/
 	/*	char *description; */
-	solution_ptr->description = free_check_null(solution_ptr->description);
+	solution_ptr->description = (char *) free_check_null(solution_ptr->description);
 	solution_ptr->description = string_duplicate(" ");
 	/*	double tc; */
 	solution_ptr->tc = doubles[d++];
@@ -3271,7 +3272,7 @@ int mpi_unpack_solution(struct solution *solution_ptr, int *ints, int *ii, doubl
  *	struct conc *totals;
 */
 	count_totals = ints[i++];
-	solution_ptr->totals = PHRQ_realloc(solution_ptr->totals, (size_t) (count_totals + 1) * sizeof(struct conc));
+	solution_ptr->totals = (struct conc *) PHRQ_realloc(solution_ptr->totals, (size_t) (count_totals + 1) * sizeof(struct conc));
 	if (solution_ptr->totals == NULL) malloc_error();
 	for (j = 0; j < count_totals; j++) {
 		master_ptr = master[ints[i++]];
@@ -3284,7 +3285,7 @@ int mpi_unpack_solution(struct solution *solution_ptr, int *ints, int *ii, doubl
  *	struct master_activity *master_activity;
  */
 	count_activity = ints[i++];
-	solution_ptr->master_activity = PHRQ_realloc(solution_ptr->master_activity, (size_t) (count_activity + 1) * sizeof(struct master_activity));
+	solution_ptr->master_activity = (struct master_activity *) PHRQ_realloc(solution_ptr->master_activity, (size_t) (count_activity + 1) * sizeof(struct master_activity));
 	if (solution_ptr->master_activity == NULL) malloc_error();
 	solution_ptr->count_master_activity = count_activity;
 	for (j = 0; j < count_activity; j++) {
@@ -3299,7 +3300,7 @@ int mpi_unpack_solution(struct solution *solution_ptr, int *ints, int *ii, doubl
  */
 	solution_ptr->count_species_gamma = ints[i++];
 	if (solution_ptr->count_species_gamma > 0) {
-		solution_ptr->species_gamma = PHRQ_realloc(solution_ptr->species_gamma, (size_t) (solution_ptr->count_species_gamma) * sizeof(struct master_activity));
+		solution_ptr->species_gamma = (struct master_activity *) PHRQ_realloc(solution_ptr->species_gamma, (size_t) (solution_ptr->count_species_gamma) * sizeof(struct master_activity));
 		if (solution_ptr->species_gamma == NULL) malloc_error();
 		for (j = 0; j < solution_ptr->count_species_gamma; j++) {
 			species_ptr = s[ints[i++]];
@@ -3561,9 +3562,9 @@ void CALCULATE_WELL_PH(double *c, LDBLE *ph, LDBLE *alkalinity)
   /*
    * Make enough space
    */
-  solution[i]->totals = PHRQ_realloc (solution[i]->totals, (size_t) (count_total - 1) * sizeof(struct conc));
+  solution[i]->totals = (struct conc *) PHRQ_realloc (solution[i]->totals, (size_t) (count_total - 1) * sizeof(struct conc));
   if (solution[i]->totals == NULL) malloc_error();
-  solution[i]->master_activity = PHRQ_realloc (solution[i]->master_activity, (size_t) (count_activity_list + 1) * sizeof(struct master_activity));
+  solution[i]->master_activity = (struct master_activity *) PHRQ_realloc (solution[i]->master_activity, (size_t) (count_activity_list + 1) * sizeof(struct master_activity));
   solution[i]->count_master_activity = count_activity_list;
   solution[i]->species_gamma = NULL;
   solution[i]->count_species_gamma = 0;
@@ -3996,7 +3997,7 @@ int UZ_INIT(int * transient_fresur)
 		for (i = 0; i < ixyz; i++) {
 			old_frac[i] = 1.0;
 		}
-		uz = PHRQ_malloc((size_t) (count_chem * sizeof(struct system)));
+		uz = (struct system **) PHRQ_malloc((size_t) (count_chem * sizeof(struct system)));
 		if (uz == NULL) malloc_error();
 		for (i = 0; i < count_chem; i++) {
 			uz[i] = NULL;

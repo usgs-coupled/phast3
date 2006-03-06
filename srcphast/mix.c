@@ -507,7 +507,7 @@ int sum_s_s_assemblage (struct s_s_assemblage *source1, LDBLE f1, struct s_s_ass
 
 				/* copy components */
 				count_comps2 = s_s_assemblage_ptr2->s_s[i2].count_comps;
-				temp_s_s_assemblage.s_s[count_s_s].comps = PHRQ_malloc((size_t) (count_comps2 * sizeof(struct s_s_comp)));
+				temp_s_s_assemblage.s_s[count_s_s].comps = (struct s_s_comp *) PHRQ_malloc((size_t) (count_comps2 * sizeof(struct s_s_comp)));
 				if (temp_s_s_assemblage.s_s[count_s_s].comps == NULL) malloc_error();
 				memcpy( (void *) temp_s_s_assemblage.s_s[count_s_s].comps, 
 					(void *) s_s_assemblage_ptr2->s_s[i2].comps,
@@ -920,8 +920,8 @@ int xsolution_save_hst_ptr(struct solution *solution_ptr)
  */
 	int i, j;
 
-	solution_ptr->totals = PHRQ_realloc (solution_ptr->totals, (size_t) (count_total - 1) * sizeof(struct conc));
-	solution_ptr->master_activity = PHRQ_realloc (solution_ptr->master_activity, (size_t) (count_activity_list + 1) * sizeof(struct master_activity));
+	solution_ptr->totals = (struct conc *) PHRQ_realloc (solution_ptr->totals, (size_t) (count_total - 1) * sizeof(struct conc));
+	solution_ptr->master_activity = (struct master_activity *) PHRQ_realloc (solution_ptr->master_activity, (size_t) (count_activity_list + 1) * sizeof(struct master_activity));
 	solution_ptr->count_master_activity = count_activity_list;
 	solution_ptr->ph = ph_x;
 	solution_ptr->solution_pe = solution_pe_x;
@@ -966,7 +966,7 @@ int xsolution_save_hst_ptr(struct solution *solution_ptr)
 		for (j = 0; j < count_s; j++) {
 			if (s[j]->lg != 0.0) i++;
 		}
-		solution_ptr->species_gamma = PHRQ_realloc(solution_ptr->species_gamma, (size_t) (i * sizeof(struct master_activity)));
+		solution_ptr->species_gamma = (struct master_activity *) PHRQ_realloc(solution_ptr->species_gamma, (size_t) (i * sizeof(struct master_activity)));
 		if (solution_ptr->species_gamma == NULL) malloc_error();
 		i = 0;
 		for (j= 0; j < count_s; j++) {
@@ -1041,9 +1041,9 @@ int mix_solutions (int n_user1, int n_user2, LDBLE f1, int n_user_new, char *con
 		error_msg(error_string, STOP);
 	}
 	add_solution(solution[i], (LDBLE) 1.0/solution[i]->mass_water, (LDBLE) 1.0);
-	solution[i]->totals = PHRQ_realloc (solution[i]->totals, (size_t) (count_total - 1) * sizeof(struct conc));
+	solution[i]->totals = (struct conc *) PHRQ_realloc (solution[i]->totals, (size_t) (count_total - 1) * sizeof(struct conc));
 	if (solution[i]->totals == NULL) malloc_error();
-	solution[i]->master_activity = PHRQ_realloc (solution[i]->master_activity, (size_t) (count_activity_list + 1) * sizeof(struct master_activity));
+	solution[i]->master_activity = (struct master_activity *) PHRQ_realloc (solution[i]->master_activity, (size_t) (count_activity_list + 1) * sizeof(struct master_activity));
 	if (solution[i]->master_activity == NULL) malloc_error();
 	solution[i]->count_master_activity = count_activity_list;
 	for(j = 2; j < count_total; j++) {
@@ -1109,7 +1109,7 @@ int mix_exchange (int n_user1, int n_user2, LDBLE f1, int new_n_user)
 	exchange_ptr = exchange_bsearch(new_n_user, &n);
 	if (exchange_ptr == NULL) {
 		n = count_exchange++;
-		space ((void *) &exchange, count_exchange, &max_exchange, sizeof(struct exchange));
+		space ((void **) ((void *) &exchange), count_exchange, &max_exchange, sizeof(struct exchange));
 	} else {
 		exchange_free(&exchange[n]); 
 	}
@@ -1182,7 +1182,7 @@ int mix_pp_assemblage (int n_user1, int n_user2, LDBLE f1, int new_n_user)
  */
 	pp_assemblage_ptr = pp_assemblage_bsearch(new_n_user, &n);
 	if (pp_assemblage_ptr == NULL) {
-		space ((void *) &pp_assemblage, count_pp_assemblage, &max_pp_assemblage, sizeof(struct pp_assemblage));
+		space ((void **) ((void *) &pp_assemblage), count_pp_assemblage, &max_pp_assemblage, sizeof(struct pp_assemblage));
 		n = count_pp_assemblage++;
 	} else {
 		pp_assemblage_free(&pp_assemblage[n]); 
@@ -1263,7 +1263,7 @@ int mix_gas_phase (int n_user1, int n_user2, LDBLE f1, int new_n_user)
 	gas_phase_ptr = gas_phase_bsearch(new_n_user, &n);
 	if (gas_phase_ptr == NULL) {
 		n = count_gas_phase++;
-		space ((void *) &gas_phase, count_gas_phase, &max_gas_phase, sizeof(struct gas_phase));
+		space ((void **) ((void *) &gas_phase), count_gas_phase, &max_gas_phase, sizeof(struct gas_phase));
 	} else {
 		gas_phase_free(&gas_phase[n]); 
 	}
@@ -1335,7 +1335,7 @@ int mix_s_s_assemblage (int n_user1, int n_user2, LDBLE f1, int new_n_user)
  */
 	s_s_assemblage_ptr = s_s_assemblage_bsearch(new_n_user, &n);
 	if (s_s_assemblage_ptr == NULL) {
-		space ((void *) &s_s_assemblage, count_s_s_assemblage, &max_s_s_assemblage, sizeof(struct s_s_assemblage));
+		space ((void **) ((void *) &s_s_assemblage), count_s_s_assemblage, &max_s_s_assemblage, sizeof(struct s_s_assemblage));
 		n = count_s_s_assemblage++;
 	} else {
 		s_s_assemblage_free(&s_s_assemblage[n]); 
@@ -1407,7 +1407,7 @@ int mix_kinetics (int n_user1, int n_user2, LDBLE f1, int new_n_user)
  */
 	kinetics_ptr = kinetics_bsearch(new_n_user, &n);
 	if (kinetics_ptr == NULL) {
-		space ((void *) &kinetics, count_kinetics, &max_kinetics, sizeof(struct kinetics));
+		space ((void **) ((void *) &kinetics), count_kinetics, &max_kinetics, sizeof(struct kinetics));
 		n = count_kinetics++;
 	} else {
 		kinetics_free(&kinetics[n]); 
@@ -1511,7 +1511,7 @@ int mix_surface (int n_user1, int n_user2, LDBLE f1, int new_n_user)
 	surface_ptr = surface_bsearch(new_n_user, &n);
 	if (surface_ptr == NULL) {
 		n = count_surface++;
-		space ((void *) &surface, count_surface, &max_surface, sizeof(struct surface));
+		space ((void **) ((void *) &surface), count_surface, &max_surface, sizeof(struct surface));
 	} else {
 		surface_free(&surface[n]); 
 	}
@@ -2178,7 +2178,7 @@ struct system *system_alloc(void)
 {
 	struct system *system_ptr;
 
-	system_ptr = PHRQ_malloc(sizeof (struct system));
+	system_ptr = (struct system *) PHRQ_malloc(sizeof (struct system));
 	if (system_ptr == NULL) malloc_error();
 	system_init(system_ptr);
 	return(system_ptr);

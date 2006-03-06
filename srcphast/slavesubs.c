@@ -1,4 +1,4 @@
-#define EXTERNAL
+#define EXTERNAL extern
 #define MAIN
 #include "phreeqc/global.h"
 #include "phreeqc/output.h"
@@ -18,6 +18,10 @@
 #define SLAVE_GET_SOLUTE slave_get_solute_
 #define SLAVE_GET_INDEXES slave_get_indexes_
 #endif
+extern "C" {
+	void SLAVE_GET_SOLUTE(int *solute, int *nx, int *ny, int *nz);
+	void SLAVE_GET_INDEXES(int *indx_sol1_ic, int *indx_sol2_ic, double *mxfrac, int *naxes, int *nxyz, double *x_node, double *y_node, double *z_node, double *cnvtmi, int *transient_fresur);
+}
 void SLAVE_GET_SOLUTE(int *solute, int *nx, int *ny, int *nz)
 {
 	MPI_Bcast(solute, 1, MPI_INT, 0, MPI_COMM_WORLD);

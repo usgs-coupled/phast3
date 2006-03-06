@@ -267,7 +267,7 @@ void HDF_Finalize(void)
             }
 
             /* copy variable length scalar names to fixed length scalar names */
-            scalar_names = PHRQ_calloc(root.scalar_name_max_len * root.scalar_name_count, sizeof(char));
+            scalar_names = (char *) PHRQ_calloc(root.scalar_name_max_len * root.scalar_name_count, sizeof(char));
 			/* java req'd */
             for (i = 0; i < root.scalar_name_count; ++i) {
                 strcpy(scalar_names + i * root.scalar_name_max_len, root.scalar_names[i]);	      
@@ -340,7 +340,7 @@ void HDF_Finalize(void)
             }
 
             /* copy variable length vectors to fixed length strings */
-            vector_names = PHRQ_calloc(root.vector_name_max_len * root.vector_name_count, sizeof(char));
+            vector_names = (char *) PHRQ_calloc(root.vector_name_max_len * root.vector_name_count, sizeof(char));
             for (i = 0; i < root.vector_name_count; ++i) {
                 strcpy(vector_names + i * root.vector_name_max_len, root.vector_names[i]);	      
             }
@@ -409,7 +409,7 @@ void HDF_Finalize(void)
             }
 
             /* copy variable length time steps to fixed length strings */
-            time_steps = PHRQ_calloc(root.time_step_max_len * root.time_step_count, sizeof(char));
+            time_steps = (char *) PHRQ_calloc(root.time_step_max_len * root.time_step_count, sizeof(char));
             for (i = 0; i < root.time_step_count; ++i) {
                 strcpy(time_steps + i * root.time_step_max_len, root.time_steps[i]);	      
             }
@@ -697,7 +697,7 @@ void HDF_WRITE_GRID(double x[], double y[], double z[],
 
         /* allocate space for fortran scalars */
         assert(root.f_array == NULL);
-        root.f_array = PHRQ_malloc(sizeof(double) * root.active_count);
+        root.f_array = (double *) PHRQ_malloc(sizeof(double) * root.active_count);
         if (root.f_array == NULL) malloc_error();
         
         if (root.active_count != root.nxyz) { /* Don't write if all are active */
@@ -868,12 +868,12 @@ void HDF_OPEN_TIME_STEP(double* time, double* cnvtmi, int* print_chem, int* prin
     size_t len;
 
 #ifdef USE_MPI
-    extern int mpi_myself;
+    /*    extern int mpi_myself; */
 #else
-    const int mpi_myself = 0;
+    /*    const int mpi_myself = 0; */
 #endif
 
-    assert(mpi_myself == 0);                    /* should only be called by proc 0 */
+    /*    assert(mpi_myself == 0); */                  /* should only be called by proc 0 */
     assert(root.current_timestep_gr_id == -1);  /* shouldn't be open yet */  
     assert(root.current_file_dset_id   == -1);  /* shouldn't be open yet */
     assert(root.current_file_dspace_id == -1);  /* shouldn't be open yet */
@@ -884,7 +884,7 @@ void HDF_OPEN_TIME_STEP(double* time, double* cnvtmi, int* print_chem, int* prin
         assert(proc.scalar_count == get_c_scalar_count(0, NULL));
         /* load chemistry scalar names */
         if (proc.scalar_count > 0) {
-            root.scalar_names = PHRQ_malloc(sizeof(char*) * proc.scalar_count);
+            root.scalar_names = (char **) PHRQ_malloc(sizeof(char*) * proc.scalar_count);
             if (root.scalar_names == NULL) malloc_error();
             get_c_scalar_count(1, root.scalar_names);
             for (i = 0; i < proc.scalar_count; ++i) {
@@ -906,11 +906,11 @@ void HDF_OPEN_TIME_STEP(double* time, double* cnvtmi, int* print_chem, int* prin
     sprintf(root.timestep_buffer, szTimeStepFormat, (*time) * (*cnvtmi), root.timestep_units);
 
     /* add time step string to list */
-    root.time_steps = PHRQ_realloc(root.time_steps, sizeof(char*) * (root.time_step_count + 1));
+    root.time_steps = (char **) PHRQ_realloc(root.time_steps, sizeof(char*) * (root.time_step_count + 1));
     if (root.time_steps == NULL) malloc_error();
     len = strlen(root.timestep_buffer) + 1;
     if (root.time_step_max_len < len) root.time_step_max_len = len;
-    root.time_steps[root.time_step_count] = PHRQ_malloc(len);
+    root.time_steps[root.time_step_count] = (char *) PHRQ_malloc(len);
     if (root.time_steps[root.time_step_count] == NULL) malloc_error();
     strcpy(root.time_steps[root.time_step_count], root.timestep_buffer);
     ++root.time_step_count;
@@ -928,7 +928,7 @@ void HDF_OPEN_TIME_STEP(double* time, double* cnvtmi, int* print_chem, int* prin
 
         /* allocate space for time step scalar indices */
         assert(root.time_step_scalar_indices == NULL);
-        root.time_step_scalar_indices = PHRQ_malloc(sizeof(int) * root.time_step_scalar_count);
+        root.time_step_scalar_indices = (int *) PHRQ_malloc(sizeof(int) * root.time_step_scalar_count);
         if (root.time_step_scalar_indices == NULL) malloc_error();
 
         /* add cscalar indices (fortran indices are added one by one in PRNARR_HDF) */
@@ -974,12 +974,12 @@ void HDF_CLOSE_TIME_STEP(void)
 {
     herr_t status;
 #ifdef USE_MPI
-    extern int mpi_myself;
+    /*extern int mpi_myself;*/
 #else
-    const int mpi_myself = 0;
+    /*const int mpi_myself = 0;*/
 #endif
 
-    assert(mpi_myself == 0); /* should only be called by proc 0 */
+    /*assert(mpi_myself == 0);*/ /* should only be called by proc 0 */
  
     if (root.current_file_dset_id > 0) {
         status = H5Dclose(root.current_file_dset_id);
@@ -1210,7 +1210,7 @@ void HDFEndCTimeStep(void)
 
             array_count = cell_count * proc.scalar_count;
             if (root.recv_array_count <  array_count) {
-                root.recv_array = PHRQ_realloc(root.recv_array, sizeof(double) * array_count);
+                root.recv_array = (double *) PHRQ_realloc(root.recv_array, sizeof(double) * array_count);
                 if (root.recv_array == NULL) malloc_error();
                 root.recv_array_count = array_count;
             }
@@ -1239,7 +1239,7 @@ static void write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id, 
     extern int int_compare(const void*, const void*);
     int* sort_random_list;
 #else
-    extern int count_chem;
+    /*extern int count_chem;*/
 #endif
 
     hssize_t (*coor)[1];
@@ -1258,12 +1258,12 @@ static void write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id, 
     }
 
     /* allocate coordinates for file dataspace selection */
-    coor = PHRQ_malloc(sizeof(hssize_t[1]) * cell_count * proc.scalar_count);
+    coor = (hssize_t (*)[1]) PHRQ_malloc(sizeof(hssize_t[1]) * cell_count * proc.scalar_count);
     if (coor == NULL) malloc_error();
   
 #ifndef USE_MPI
     /* Non-MPI */
-    assert(cell_count == count_chem);
+    /*assert(cell_count == count_chem);*/
 
     /*
      * make the file dataspace selection
@@ -1505,7 +1505,7 @@ void HDFWriteHyperSlabV(const char* name, const char* format, va_list argptr)
                 return;
                 break;
             case HDF_GET_NAMES:
-                g_hdf_scalar_names[g_hdf_scalar_count] = PHRQ_malloc(strlen(name) + 1);
+                g_hdf_scalar_names[g_hdf_scalar_count] = (char *) PHRQ_malloc(strlen(name) + 1);
                 if (g_hdf_scalar_names[g_hdf_scalar_count] == NULL) malloc_error();
                 strcpy(g_hdf_scalar_names[g_hdf_scalar_count], name);
                 ++g_hdf_scalar_count;
@@ -1585,9 +1585,9 @@ void PRNTAR_HDF(double array[], double frac[], double* cnv, char* name, int name
         /* new scalar name */
         size_t len = strlen(name_buffer) + 1;
         if (root.scalar_name_max_len < len) root.scalar_name_max_len = len;
-        root.scalar_names = PHRQ_realloc(root.scalar_names, sizeof(char*) * (root.scalar_name_count + 1));
+        root.scalar_names = (char **) PHRQ_realloc(root.scalar_names, sizeof(char*) * (root.scalar_name_count + 1));
         if (root.scalar_names == NULL) malloc_error();
-        root.scalar_names[root.scalar_name_count] = PHRQ_malloc(strlen(name_buffer) + 1);
+        root.scalar_names[root.scalar_name_count] = (char *) PHRQ_malloc(strlen(name_buffer) + 1);
         if (root.scalar_names[root.scalar_name_count] == NULL) malloc_error();
         strcpy(root.scalar_names[root.scalar_name_count], name_buffer);
         ++root.scalar_name_count;
@@ -1668,10 +1668,10 @@ void HDF_VEL(double vx_node[], double vy_node[], double vz_node[], int vmask[])
     {
         /* new scalar name */
         size_t len = strlen(name) + 1;
-        root.vector_names = PHRQ_realloc(root.vector_names, sizeof(char*) * (root.vector_name_count + 1));
+        root.vector_names = (char **) PHRQ_realloc(root.vector_names, sizeof(char*) * (root.vector_name_count + 1));
         if (root.vector_names == NULL) malloc_error();
         if (root.vector_name_max_len < len) root.vector_name_max_len = len;
-        root.vector_names[root.vector_name_count] = PHRQ_malloc(len);
+        root.vector_names[root.vector_name_count] = (char *) PHRQ_malloc(len);
         if (root.vector_names[root.vector_name_count] == NULL) malloc_error();
         strcpy(root.vector_names[root.vector_name_count], name);
         ++root.vector_name_count;
