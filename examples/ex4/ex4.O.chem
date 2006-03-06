@@ -37,6 +37,24 @@ Reading input data for simulation 1.
 	SOLUTION_MASTER_SPECIES
 	        As       H3AsO4        -1.0     74.9216         74.9216
 	SOLUTION_SPECIES
+		H3AsO4 = H2AsO4- + H+
+		log_k	-2.3
+		delta_h	-7.066	kJ
+		H3AsO4 = HAsO4-2 + 2H+
+		log_k	-9.46
+		delta_h	-3.846	kJ
+		H3AsO4 = AsO4-3 + 3H+
+		log_k	-21.11
+		delta_h	14.354	kJ
+	        H3AsO4 = H2AsO4- + H+ 
+	        log_k           -2.243
+	        delta_h -1.69 kcal
+	        H3AsO4 = HAsO4-2 + 2H+ 
+	        log_k           -9.001
+	        delta_h -0.92 kcal
+	        H3AsO4 = AsO4-3 + 3H+
+	        log_k           -20.597
+	        delta_h 3.43 kcal
 	        H3AsO4 = H3AsO4
 	        log_k           0.0
 	        H3AsO4 = AsO4-3 + 3H+
@@ -188,12 +206,12 @@ Reaction step 1.
 
 -------------------------------Phase assemblage--------------------------------
 
-                                                     Moles in assemblage
-	Phase               SI log IAP  log KT    Initial      Final      Delta
+                                                       Moles in assemblage
+	Phase               SI log IAP  log KT     Initial       Final       Delta
 
-	Calcite           0.00   -8.48   -8.48  1.000e-01  9.966e-02 -3.441e-04
-	CO2(g)           -1.50   -2.97   -1.47  1.000e+02  1.000e+02 -4.066e-03
-	Dolomite          0.00  -17.09  -17.09  1.600e+00  1.599e+00 -1.349e-03
+	Calcite           0.00   -8.48   -8.48   1.000e-01   9.966e-02  -3.441e-04
+	CO2(g)           -1.50   -2.97   -1.47   1.000e+02   1.000e+02  -4.066e-03
+	Dolomite          0.00  -17.09  -17.09   1.600e+00   1.599e+00  -1.349e-03
 
 -----------------------------Solution composition------------------------------
 
@@ -454,11 +472,11 @@ Reaction step 1.
 
 -------------------------------Phase assemblage--------------------------------
 
-                                                     Moles in assemblage
-	Phase               SI log IAP  log KT    Initial      Final      Delta
+                                                       Moles in assemblage
+	Phase               SI log IAP  log KT     Initial       Final       Delta
 
-	Calcite           0.00   -8.48   -8.48  1.000e-01  1.002e-01  2.185e-04
-	Dolomite          0.00  -17.09  -17.09  1.600e+00  1.600e+00 -1.093e-04
+	Calcite           0.00   -8.48   -8.48   1.000e-01   1.002e-01   2.185e-04
+	Dolomite          0.00  -17.09  -17.09   1.600e+00   1.600e+00  -1.093e-04
 
 -----------------------------Solution composition------------------------------
 

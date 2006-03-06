@@ -16,6 +16,42 @@ SURFACE_SPECIES
 SOLUTION_MASTER_SPECIES
         As       H3AsO4        -1.0     74.9216         74.9216
 SOLUTION_SPECIES
+#
+# Nordstrom and Archer
+#
+#H2AsO4- 		482	
+	H3AsO4 = H2AsO4- + H+
+	log_k	-2.3
+	delta_h	-7.066	kJ
+#HAsO4-2 		483	
+	H3AsO4 = HAsO4-2 + 2H+
+	log_k	-9.46
+	delta_h	-3.846	kJ
+
+#AsO43- 		484	
+	H3AsO4 = AsO4-3 + 3H+
+	log_k	-21.11
+	delta_h	14.354	kJ
+#
+# Old Wateq4f
+#
+#H2AsO4-             482
+        H3AsO4 = H2AsO4- + H+ 
+        log_k           -2.243
+        delta_h -1.69 kcal
+
+#HAsO4-2             483
+        H3AsO4 = HAsO4-2 + 2H+ 
+        log_k           -9.001
+        delta_h -0.92 kcal
+
+#AsO4-3              484
+        H3AsO4 = AsO4-3 + 3H+
+        log_k           -20.597
+        delta_h 3.43 kcal
+#
+#  Dzombak and Morel
+#
 #H3AsO4 primary master species
         H3AsO4 = H3AsO4
         log_k           0.0
@@ -28,6 +64,7 @@ SOLUTION_SPECIES
 #AsO4-3              484
         2H+ + AsO4-3 = H2AsO4-
         log_k           18.46
+
 SOLUTION 1 20 x precipitation
         pH      4.6
         pe      4.0     O2(g)   -0.7

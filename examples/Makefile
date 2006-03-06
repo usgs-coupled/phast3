@@ -1,4 +1,4 @@
-TOPDIR=$(HOME)/programs/phast
+TOPDIR=$(HOME)/programs/phastpp
 TEST=$(TOPDIR)/examples
 PHAST_INPUT=$(TOPDIR)/srcinput/phastinput
 PHAST=$(TOPDIR)/srcphast/serial_absoft/phast

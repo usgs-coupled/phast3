@@ -1,9 +1,9 @@
 #!/bin/sh
 if [ $USER == dlpark ]; then
-    PHASTDIR=/z/parkplace/home/dlpark/programs/phast
+    PHASTDIR=/z/parkplace/home/dlpark/programs/phastpp
 fi
 if [ $USER == charlton ]; then
-    PHASTDIR=/z/srv2rcolkr/home/charlton/programs/phast
+    PHASTDIR=/z/srv2rcolkr/home/charlton/programs/phastpp
 fi
 EXDIR=$PHASTDIR/examples
 #
