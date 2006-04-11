@@ -112,14 +112,17 @@ mpi_g95_debug:
 
 SRC              = ../phreeqcpp/phreeqc
 PHREEQC_INCLUDES = -I../phreeqcpp -I../phreeqcpp/phreeqc
-LAM_INCLUDES     = # -I/usr/lib/lam/include
+LAM_INCLUDES     =  # -I/usr/lib/lam/include/mpi2cxx
+LAM_LIB          =  -L/usr/lib/lam/lib
 
-.SUFFIXES : .o .f .F90 .f90 .c .cxx
+.SUFFIXES : .o .f .F90 .f90 .c .cxx 
 
 # compilers
 FLAHEY=/z/niwot/usr/local/lf95/bin/lf95
-LIBLAHEY=-L/z/niwot/usr/local/lf95/lib -lfj9i6 -lfj9f6 -lfj9e6 -lfccx86_6a -lc -lm
+# include lam library first to avoid lahey mpi library
+LIBLAHEY=$(LAM_LIB) -L/z/niwot/usr/local/lf95/lib -Xlinker -Bstatic -Xlinker -lfj9i6 -Xlinker -lfj9f6 -Xlinker -lfj9e6 -Xlinker -lfccx86_6a -Xlinker -Bdynamic 
 LAHEY_MACHINE=parkplace
+LAHEY_RUNTIME=/z/niwot/usr/local/lf95/lib/fj90rt0.o 
 #FLAHEY=/z/niwot/usr/local/lf9562/bin/lf95
 #LIBLAHEY=-L/z/niwot/usr/lib -L/z/niwot/usr/local/lf9562/lib 
 
@@ -253,9 +256,10 @@ ifeq ($(CFG), SERIAL_LAHEY)
   CC           = g++
   CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
   CFLAGS_MODEL = -Wall  -O2 $(DEFINES) $(HDF5_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS)  $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS)  $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS) $(LAHEY_RUNTIME)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
-  LD_FLAGS     = --staticlink -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY)
+#  LD_FLAGS     = --staticlink -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY)
+  LD_FLAGS     = -lm  ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY)
 endif
 
 # -----------------------------------------------------------------------------
@@ -267,10 +271,11 @@ ifeq ($(CFG), SERIAL_LAHEY_DEBUG)
   CC           = g++
   CFLAGS       = -Wall  -g $(DEFINES)  $(PHREEQC_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
   CFLAGS_MODEL = -Wall  -g $(DEFINES) -I/z/srv2rcolkr/home/charlton/include
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS)  $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS)  $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS) $(LAHEY_RUNTIME)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
-  LD_FLAGS     = --staticlink -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY)
+  LD_FLAGS     = -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY)
 endif
+
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), MPI_LAHEY)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DLAHEY_F95 -DNDEBUG
@@ -283,9 +288,10 @@ ifeq ($(CFG), MPI_LAHEY)
   CC           = mpiCC
   CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) $(LAM_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
   CFLAGS_MODEL = -Wall  -O2 $(DEFINES) $(HDF5_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS) $(LAHEY_RUNTIME)
 #  LD_FLAGS     = -static-flib  -lm ${HDF5_LIBS} 
-  LD_FLAGS     = --staticlink -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY)
+#  LD_FLAGS     = --staticlink -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY) -llammpio -llamf77mpi -lmpi -llam -llammpi++ 
+  LD_FLAGS     = -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY)  -ldl
 endif
 
 # -----------------------------------------------------------------------------
@@ -296,12 +302,13 @@ ifeq ($(CFG), MPI_LAHEY_DEBUG)
   export LAMHF77
   FC           = mpif77
   FFLAGS       = -g --chkglobal --warn --info $(DEFINES)
-  CC           = mpicc
+  CXX          = mpiCC
+  CC           = mpiCC
   CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) $(LAM_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
   CFLAGS_MODEL = -Wall  -g $(DEFINES) $(HDF5_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS) $(LAHEY_RUNTIME)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
-  LD_FLAGS     = --staticlink -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY)
+  LD_FLAGS     = -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY) -ldl
 endif
 
 # -----------------------------------------------------------------------------
@@ -401,7 +408,7 @@ COMMON_CXXOBJS = \
 	       ExchComp.o \
 	       GasPhase.o \
 	       ISolution.o \
-	       SolutionIsotope.o \
+	       ISolutionComp.o \
 	       KineticsComp.o \
 	       KineticsCxx.o \
 	       Mix.o \
@@ -413,7 +420,8 @@ COMMON_CXXOBJS = \
 	       Reaction.o \
 	       ReadClass.o \
 	       Solution.o \
-	       ISolutionComp.o \
+	       SolutionIsotope.o \
+	       SolutionIsotopeList.o \
 	       SSassemblage.o \
 	       SSassemblageSS.o \
                StorageBin.o \
@@ -602,7 +610,7 @@ utilities.o: $(SRC)/utilities.c $(SRC)/global.h $(SRC)/phrqtype.h $(SRC)/phqallo
 #  Glue files
 #
 hdf.o:hdf.c  global.h hst.h phqalloc.h output.h phastproto.h
-hst.o: hst.c  global.h hst.h phqalloc.h output.h phastproto.h
+hst.o: hst.cxx  global.h hst.h phqalloc.h output.h phastproto.h
 hstsubs.o: hstsubs.c  global.h hst.h phqalloc.h output.h phastproto.h
 merge.o: merge.c global.h phqalloc.h hst.h output.h phastproto.h
 mix.o: mix.c global.h hst.h phqalloc.h output.h phastproto.h
@@ -755,10 +763,12 @@ Solution.o: ../phreeqcpp/Solution.cxx ../phreeqcpp/Utils.h \
   ../phreeqcpp/char_star.h ../phreeqcpp/SolutionIsotope.h \
   ../phreeqcpp/Parser.h ../phreeqcpp/NameDouble.h \
   ../phreeqcpp/phreeqc/global.h ../phreeqcpp/phreeqc/phrqtype.h \
-  ../phreeqcpp/char_star.h ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h \
-  ../phreeqcpp/phreeqc/phqalloc.h ../phreeqcpp/phreeqc/phrqproto.h \
-  ../phreeqcpp/ISolution.h ../phreeqcpp/ISolutionComp.h \
-  ../phreeqcpp/Utils.h ../phreeqcpp/char_star.h ../phreeqcpp/NumKeyword.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/Parser.h ../phreeqcpp/Mix.h \
+  ../phreeqcpp/NumKeyword.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/phreeqc/phqalloc.h \
+  ../phreeqcpp/phreeqc/phrqproto.h ../phreeqcpp/ISolution.h \
+  ../phreeqcpp/ISolutionComp.h ../phreeqcpp/Utils.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/NumKeyword.h \
   ../phreeqcpp/Solution.h ../phreeqcpp/Exchange.h \
   ../phreeqcpp/NumKeyword.h ../phreeqcpp/char_star.h \
   ../phreeqcpp/ExchComp.h ../phreeqcpp/NameDouble.h \
@@ -780,9 +790,8 @@ Solution.o: ../phreeqcpp/Solution.cxx ../phreeqcpp/Utils.h \
   ../phreeqcpp/NameDouble.h ../phreeqcpp/char_star.h \
   ../phreeqcpp/Reaction.h ../phreeqcpp/NumKeyword.h \
   ../phreeqcpp/NameDouble.h ../phreeqcpp/char_star.h ../phreeqcpp/Mix.h \
-  ../phreeqcpp/NumKeyword.h ../phreeqcpp/char_star.h \
   ../phreeqcpp/Temperature.h ../phreeqcpp/NumKeyword.h \
-  ../phreeqcpp/char_star.h ../phreeqcpp/StorageBin.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/StorageBin.h ../phreeqcpp/Utils.h \
   ../phreeqcpp/Parser.h ../phreeqcpp/Solution.h ../phreeqcpp/Exchange.h \
   ../phreeqcpp/GasPhase.h ../phreeqcpp/KineticsCxx.h \
   ../phreeqcpp/PPassemblage.h ../phreeqcpp/SSassemblage.h \
@@ -794,6 +803,13 @@ SolutionIsotope.o: ../phreeqcpp/SolutionIsotope.cxx \
   ../phreeqcpp/Parser.h ../phreeqcpp/phreeqc/global.h \
   ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/phreeqc/phqalloc.h \
   ../phreeqcpp/phreeqc/phrqproto.h
+SolutionIsotopeList.o: ../phreeqcpp/SolutionIsotopeList.cxx \
+  ../phreeqcpp/Utils.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/SolutionIsotopeList.h ../phreeqcpp/SolutionIsotope.h \
+  ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/phreeqc/global.h ../phreeqcpp/phreeqc/phrqtype.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/Parser.h \
+  ../phreeqcpp/phreeqc/phqalloc.h ../phreeqcpp/phreeqc/phrqproto.h
 SSassemblage.o: ../phreeqcpp/SSassemblage.cxx ../phreeqcpp/Utils.h \
   ../phreeqcpp/char_star.h ../phreeqcpp/SSassemblage.h \
   ../phreeqcpp/NumKeyword.h ../phreeqcpp/Parser.h \

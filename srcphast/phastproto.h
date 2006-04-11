@@ -8,12 +8,12 @@ static char const svnid[] = "$Id$";
 /*
  *   Functions called from C
  */
-extern "C" {
+/*extern "C" {*/
 	void HDF_Init(char* prefix, int prefix_l);
 	void HDFBeginCTimeStep(void);
 	void HDFSetCell(const int n);
 	void HDFEndCTimeStep(void);
-}
+/*}*/
 
 /*
  *   Functions called from FORTRAN

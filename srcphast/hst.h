@@ -53,15 +53,6 @@ EXTERNAL int count_chem;
 /* extra for transient free surface calculation */
 EXTERNAL LDBLE * old_frac;
 EXTERNAL int transient_free_surface;
-struct system {
-	struct solution *solution;
-	struct exchange *exchange;
-	struct pp_assemblage *pp_assemblage;
-	struct gas_phase *gas_phase;
-	struct s_s_assemblage *s_s_assemblage;
-	struct kinetics *kinetics;
-	struct surface *surface;
-};
 EXTERNAL struct system **uz;
 EXTERNAL struct system **sz;
 EXTERNAL double *frac1;
