@@ -115,7 +115,7 @@ struct system *system_initialize(int i, int n_user_new, int *initial_conditions1
 void moles_to_hst(double *first, int dim);
 int print_using_hst(int cell_number);
 int scale_solution(int n_solution, double kg);
-void set_use_hst(void);
+void set_use_hst(int i);
 void solution_to_buffer(struct solution *solution_ptr);
 void unpack_from_hst(double *fraction, int *dim);
 int xexchange_save_hst(int n);

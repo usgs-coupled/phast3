@@ -9,7 +9,11 @@
 #include "phreeqc/input.h"
 #include "phast_files.h"
 #include "phastproto.h"
+
+extern void buffer_to_cxxsolution(int n);
 extern void cxxsolution_to_buffer(cxxSolution *solution_ptr);
+extern void unpackcxx_from_hst(double *fraction, int *dim);
+
 static void BeginTimeStep(int print_sel, int print_out, int print_hdf);
 static void EndTimeStep(int print_sel, int print_out, int print_hdf);
 static void BeginCell(int print_sel, int print_out, int print_hdf, int index);
@@ -180,6 +184,7 @@ void PHREEQC_FREE(int *solute)
 	close_output_files();
 	return;
 }
+#include <iostream>     // std::cout std::cerr
 /* ---------------------------------------------------------------------- */
 void PHREEQC_MAIN(int *solute, char *chemistry_name, char *database_name, char *prefix,
 		  int *mpi_tasks_fort, int *mpi_myself_fort, int chemistry_l, int database_l, int prefix_l)
@@ -367,8 +372,11 @@ void PHREEQC_MAIN(int *solute, char *chemistry_name, char *database_name, char *
 	/*
 	 *  set up C++ storage
 	 */
-	cxxStorageBin bin(cxxStorageBin::SB_GLOBAL);
-	phreeqcBin = bin;
+
+	phreeqcBin.import_phreeqc();
+	//std::ostringstream oss;
+	//phreeqcBin.dump_raw(oss,0);
+	//std::cerr << oss.str();
 
 	return;
 }
@@ -409,6 +417,8 @@ void COUNT_ALL_COMPONENTS(int *n_comp, char *names, int length)
  *   Each entry in buffer is sent to HST for transort.
  */
 	buffer = (struct buffer *) PHRQ_malloc ((size_t) count_component * sizeof(struct buffer));
+	if (buffer == NULL) malloc_error();
+	buffer_dbg = buffer;
 	buffer[0].name = string_hsave("H");
 	if (s_h2 != NULL) {
 		buffer[0].gfw = s_h2->secondary->elt->primary->elt->gfw;
@@ -475,6 +485,9 @@ void COUNT_ALL_COMPONENTS(int *n_comp, char *names, int length)
  *   malloc space
  */
 	activity_list = (struct activity_list *) PHRQ_malloc ((size_t) count_activity_list * sizeof(struct activity_list));
+	if (activity_list == NULL) malloc_error();
+	activity_list_dbg = activity_list;
+
 	count_activity_list = 0;
 	for (i = 0; i < count_master; i++) {
 		if (master[i]->total > 0.0 && master[i]->s->type == AQ) {
@@ -726,186 +739,10 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 		system_free(system_ptr);
 		system_ptr = (struct system *) free_check_null(system_ptr);
 	}
+	//std::ostringstream oss;
+	//szBin.dump_raw(oss,0);
+	//std::cerr << oss.str();
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_conditions2, double *fraction1)
-/* ---------------------------------------------------------------------- */
-{
-/*
- *      ixyz - number of cells
- *      initial_conditions1 - Fortran, 7 x n_cell integer array, containing
- *           solution number
- *           pure_phases number
- *           exchange number
- *           surface number
- *           gas number
- *           solid solution number
- *           kinetics number
- *      initial_conditions2 - Fortran, 7 x n_cell integer array, containing
- *      fraction for 1 - Fortran, 7 x n_cell integer array, containing
- *
- *      Routine mixes solutions, pure_phase assemblages,
- *      exchangers, surface complexers, gases, solid solution assemblages,
- *      and kinetics for each cell.
- */
-	int i, n_new, n_old1, n_old2;
-	LDBLE f1;
-	int alloc_solution, alloc_pp_assemblage, alloc_exchange, alloc_surface;
-	int alloc_gas_phase, alloc_kinetics, alloc_s_s_assemblage;
-
-	alloc_solution = 10;
-	alloc_pp_assemblage = 10;
-	alloc_exchange = 10;
-	alloc_surface = 10;
-	alloc_gas_phase = 10;
-	alloc_kinetics = 10;
-	alloc_s_s_assemblage = 10;
-
-/*
- *  Count numbers of pp_assemblage, exchange, surface,
- *  gas_phase, kinetics, and solid solutions to allocate
- */
-	for (i = 0; i < ixyz; i++) {
-		if (forward[i] < 0) continue;
-/*
- *   Count solutions
- */
-		n_old1 = initial_conditions1[7*i];
-		if (n_old1 >= 0) {
-			alloc_solution++;
-		}
-/*
- *   Count pp_assemblage
- */
-		n_old1 = initial_conditions1[ 7*i + 1 ];
-		if (n_old1 >= 0) {
-			alloc_pp_assemblage++;
-		}
-/*
- *   Count exchange assemblage
- */
-		n_old1 = initial_conditions1[ 7*i + 2 ];
-		if (n_old1 >= 0) {
-			alloc_exchange++;
-		}
-/*
- *   Count surface assemblage
- */
-		n_old1 = initial_conditions1[ 7*i + 3 ];
-		if (n_old1 >= 0) {
-			alloc_surface++;
-		}
-/*
- *   Count gas phase
- */
-		n_old1 = initial_conditions1[ 7*i + 4 ];
-		if (n_old1 >= 0) {
-			alloc_gas_phase++;
-		}
-/*
- *   Count solid solution
- */
-		n_old1 = initial_conditions1[ 7*i + 5 ];
-		if (n_old1 >= 0) {
-			alloc_s_s_assemblage++;
-		}
-/*
- *   Count kinetics
- */
-		n_old1 = initial_conditions1[ 7*i + 6 ];
-		if (n_old1 >= 0) {
-			alloc_kinetics++;
-		}
-	}
-
-/*
- *  Allocate space for solution, pp_assemblage, exchange, surface,
- *  gas_phase, kinetics, and solid solutions to allocate
- */
-	space ((void **) ((void *) &(solution)), count_solution + alloc_solution, &max_solution, sizeof (struct solution *) );
-	space ((void **) ((void *) &pp_assemblage), count_pp_assemblage + alloc_pp_assemblage, &max_pp_assemblage, sizeof(struct pp_assemblage));
-	space ((void **) ((void *) &exchange), count_exchange + alloc_exchange, &max_exchange, sizeof(struct exchange));
-	space ((void **) ((void *) &surface), count_surface + alloc_surface, &max_surface, sizeof(struct surface));
-	space ((void **) ((void *) &gas_phase), count_gas_phase + alloc_gas_phase, &max_gas_phase, sizeof(struct gas_phase));
-	space ((void **) ((void *) &kinetics), count_kinetics + alloc_kinetics, &max_kinetics, sizeof(struct kinetics));
-	space ((void **) ((void *) &s_s_assemblage), count_s_s_assemblage + alloc_s_s_assemblage, &max_s_s_assemblage, sizeof(struct s_s_assemblage));
-/*
- *  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
- */
-	for (i = 0; i < ixyz; i++) {
-		if (forward[i] < 0) continue;
-		n_new = count_solution - first_solution + first_user_number;
-/*
- *   Copy solution
- */
-		n_old1 = initial_conditions1[7*i];
-		n_old2 = initial_conditions2[7*i];
-		f1 = fraction1[7*i];
-		if (n_old1 >= 0) {
-			mix_solutions(n_old1, n_old2, f1, n_new, "initial");
-		}
-/*
- *   Copy pp_assemblage
- */
-		n_old1 = initial_conditions1[ 7*i + 1 ];
-		n_old2 = initial_conditions2[ 7*i + 1 ];
-		f1 = fraction1[7*i + 1];
-		if (n_old1 >= 0) {
-			mix_pp_assemblage(n_old1, n_old2, f1, n_new);
-		}
-/*
- *   Copy exchange assemblage
- */
-		n_old1 = initial_conditions1[ 7*i + 2 ];
-		n_old2 = initial_conditions2[ 7*i + 2 ];
-		f1 = fraction1[7*i + 2];
-		if (n_old1 >= 0) {
-			mix_exchange(n_old1, n_old2, f1, n_new);
-		}
-/*
- *   Copy surface assemblage
- */
-		n_old1 = initial_conditions1[ 7*i + 3 ];
-		n_old2 = initial_conditions2[ 7*i + 3 ];
-		f1 = fraction1[7*i + 3];
-		if (n_old1 >= 0) {
-			mix_surface(n_old1, n_old2, f1, n_new);
-		}
-/*
- *   Copy gas phase
- */
-		n_old1 = initial_conditions1[ 7*i + 4 ];
-		n_old2 = initial_conditions2[ 7*i + 4 ];
-		f1 = fraction1[7*i + 4];
-		if (n_old1 >= 0) {
-			mix_gas_phase(n_old1, n_old2, f1, n_new);
-		}
-/*
- *   Copy solid solution
- */
-		n_old1 = initial_conditions1[ 7*i + 5 ];
-		n_old2 = initial_conditions2[ 7*i + 5 ];
-		f1 = fraction1[7*i + 5];
-		if (n_old1 >= 0) {
-			mix_s_s_assemblage(n_old1, n_old2, f1, n_new);
-		}
-/*
- *   Copy kinetics
- */
-		n_old1 = initial_conditions1[ 7*i + 6 ];
-		n_old2 = initial_conditions2[ 7*i + 6 ];
-		f1 = fraction1[7*i + 6];
-		if (n_old1 >= 0) {
-			mix_kinetics(n_old1, n_old2, f1, n_new);
-		}
-	}
-	if (input_error > 0) {
-		error_msg("Terminating in distribute_initial_conditions.\n", STOP);
-	}
-	return;
-}
-#endif
 #endif
 /* ---------------------------------------------------------------------- */
 void SETUP_BOUNDARY_CONDITIONS(const int *n_boundary, int *boundary_solution1,
@@ -958,6 +795,59 @@ void SETUP_BOUNDARY_CONDITIONS(const int *n_boundary, int *boundary_solution1,
 
 	return;
 }
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+void SETUP_BOUNDARY_CONDITIONS(const int *n_boundary, int *boundary_solution1,
+			       int *boundary_solution2, double *fraction1,
+			       double *boundary_fraction, int *dim)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *   Routine takes a list of solution numbers and returns a set of
+ *   mass fractions
+ *   Input: n_boundary - number of boundary conditions in list
+ *          boundary_solution1 - list of first solution numbers to be mixed
+ *          boundary_solution2 - list of second solution numbers to be mixed
+ *          fraction1 - fraction of first solution 0 <= f <= 1
+ *          dim - leading dimension of array boundary mass fractions
+ *                must be >= to n_boundary
+ *
+ *   Output: boundary_fraction - mass fractions for boundary conditions
+ *                             - dimensions must be >= n_boundary x n_comp
+ *
+ */
+	int i, n_old1, n_old2;
+	int n;
+	LDBLE f1;
+
+	struct solution *solution_ptr;
+	for (i = 0; i < *n_boundary; i++) {
+		n_old1 = boundary_solution1[i];
+		n_old2 = boundary_solution2[i];
+		f1 = fraction1[i];
+		if (n_old1 >= 0) {
+			mix_solutions(n_old1, n_old2, f1, -1, "boundary");
+		} else {
+			continue;
+#ifdef SKIP
+			/* allow negative number, should be for pumping well solution is not required */
+			input_error++;
+			error_msg("Negative solution number in boundary conditions.", CONTINUE);
+#endif
+		}
+		solution_ptr = solution_bsearch(-1, &n, TRUE);
+		solution_to_buffer(solution[n]);
+		buffer_to_mass_fraction();
+/*
+		fprintf(stderr,"setup_boundary_conditions\n");
+		buffer_print("Boundary", i);
+ */
+		buffer_to_hst(&boundary_fraction[i], *dim);
+	}
+
+	return;
+}
+#endif
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 void PACK_FOR_HST(double *fraction, int *dim)
@@ -996,19 +886,10 @@ void PACK_FOR_HST(double *fraction, int *dim)
  *                      dimensions must be >= n_cell x n_comp
  */
 	int i, j;
-	cxxSolution *solution_ptr;
-	//solution_bsearch(first_user_number, &first_solution, TRUE);
+	cxxSolution *cxxsoln_ptr;
 	for (i = 0; i < count_chem; i++) {
-		/*
-		n = first_solution + i;
-		solution_to_buffer(solution[n]);
-		buffer_to_mass_fraction();
-		for (j = 0; j < count_back_list; j++) {
-			buffer_to_hst(&fraction[back[i].list[j]], *dim);
-		}
-		*/
-		solution_ptr = szBin.get_solution(i);
-		cxxsolution_to_buffer(solution_ptr);
+		cxxsoln_ptr = szBin.get_solution(i);
+		cxxsolution_to_buffer(cxxsoln_ptr);
 		buffer_to_mass_fraction();
 		for (j = 0; j < count_back_list; j++) {
 			buffer_to_hst(&fraction[back[i].list[j]], *dim);
@@ -1016,33 +897,6 @@ void PACK_FOR_HST(double *fraction, int *dim)
 	}
 	return;
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void PACK_FOR_HST(double *fraction, int *dim)
-/* ---------------------------------------------------------------------- */
-{
-/*
- *   Routine takes solution data and makes array of mass fractions for HST
- *   Input: n_cell - number of cells in model
- *          dim - leading dimension of 2-d array fraction
- *
- *   Output: fraction - mass fractions of all components in all solutions
- *                      dimensions must be >= n_cell x n_comp
- */
-	int i, j, n;
-
-	solution_bsearch(first_user_number, &first_solution, TRUE);
-	for (i = 0; i < count_chem; i++) {
-		n = first_solution + i;
-		solution_to_buffer(solution[n]);
-		buffer_to_mass_fraction();
-		for (j = 0; j < count_back_list; j++) {
-			buffer_to_hst(&fraction[back[i].list[j]], *dim);
-		}
-	}
-	return;
-}
-#endif
 #endif
 #ifndef USE_MPI
 /* ---------------------------------------------------------------------- */
@@ -1075,16 +929,10 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 /*
  *   Update solution compositions
  */
-	unpack_from_hst(fraction, dim);
+	unpackcxx_from_hst(fraction, dim);
 /*
  *   Calculate equilibrium
  */
-	n_gas_phase = first_gas_phase;
-	n_exchange = first_exchange;
-	n_pp_assemblage = first_pp_assemblage;
-	n_surface = first_surface;
-	n_s_s_assemblage = first_s_s_assemblage;
-	n_kinetics = first_kinetics;
 	kin_time = *time_step_hst;
  	timest = kin_time;
 
@@ -1122,22 +970,13 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 		j = back[i].list[0];           /* j is nxyz number */
 		if (transient_free_surface == TRUE) partition_uz(i, j, frac[j]); 
 		if (frac[j] < 1e-10) frac[j] = 0.0;
-		if ( frac[j] > 0.0) {
-			active = TRUE;
-		} else {
-			active = FALSE;
-		}
-
-		if (*print_out == TRUE && printzone_chem[j] == TRUE) {
-			pr.all = TRUE;
-		} else {
-			pr.all = FALSE;
-		}
-		if (*print_sel == TRUE && printzone_xyz[j] == TRUE && punch.in == TRUE) {
-			pr.punch = TRUE;
-		} else {
-			pr.punch = FALSE;
-		}
+		// set flags
+		active = FALSE;
+		if ( frac[j] > 0.0) active = TRUE;
+		pr.all = FALSE;
+		if (*print_out == TRUE && printzone_chem[j] == TRUE) pr.all = TRUE;
+		pr.punch = FALSE;
+		if (*print_sel == TRUE && printzone_xyz[j] == TRUE && punch.in == TRUE) pr.punch = TRUE;
 
 		BeginCell(*print_sel, *print_out, *print_hdf, j);
 
@@ -1150,12 +989,16 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 		}
 		if (active) {
 			cell_no = i;
-			solution_bsearch(first_user_number, &first_solution, TRUE);
-			n_solution = first_solution + i;
-			/*if (*adjust_water_rock_ratio) scale_solution(n_solution, frac[j]); */
+			// copy cxx data to c structures
+			reinitialize();
+			szBin.cxxStorageBin2phreeqc(i);
+			cxxSolution *cxxsoln_ptr = szBin.get_solution(i);
+			std::ostringstream oss;
+			cxxsoln_ptr->dump_raw(oss,0);
+			std::cerr << oss.str();
 			if (transient_free_surface == TRUE) scale_solution(n_solution, frac[j]); 
-			set_use_hst();
-			n_user = solution[n_solution]->n_user;
+			set_use_hst(i);
+			n_user = i;
 			set_initial_moles(n_user);
 			run_reactions(n_user, kin_time, FALSE, 1.0);
 			if (iterations == 0) tot_zero++;
@@ -1196,6 +1039,7 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 		if (save.s_s_assemblage == TRUE) {
 			xs_s_assemblage_save_hst(n_s_s_assemblage);
 		}
+		szBin.phreeqc2cxxStorageBin(i);
 		EndCell(*print_sel, *print_out, *print_hdf, j);
 	}
 	EndTimeStep(*print_sel, *print_out, *print_hdf);

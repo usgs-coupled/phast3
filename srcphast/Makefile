@@ -383,7 +383,7 @@ COMMON_COBJS =  advection.o basic.o basicsubs.o cl1.o input.o integrate.o invers
 		phqalloc.o prep.o print.o read.o readtr.o spread.o step.o structures.o \
 		tally.o tidy.o transport.o utilities.o \
 		cvdense.o cvode.o dense.o nvector.o nvector_serial.o smalldense.o sundialsmath.o \
-		hst.o hstsubs.o mix.o phast_files.o pitzer.o pitzer_structures.o dw.o
+		hst.o hstcxxsubs.o hstsubs.o mix.o phast_files.o pitzer.o pitzer_structures.o dw.o
 
 COMMON_FOBJS =	abmult.o aplbce.o aplbce_ss_flow.o aplbci.o armult.o asembl.o\
 		asmslc.o asmslp.o asmslp_ss_flow.o bsode.o calcc.o calc_velocity.o clog.o closef.o\
@@ -609,13 +609,69 @@ utilities.o: $(SRC)/utilities.c $(SRC)/global.h $(SRC)/phrqtype.h $(SRC)/phqallo
 #
 #  Glue files
 #
-hdf.o:hdf.c  global.h hst.h phqalloc.h output.h phastproto.h
-hst.o: hst.cxx  global.h hst.h phqalloc.h output.h phastproto.h
-hstsubs.o: hstsubs.c  global.h hst.h phqalloc.h output.h phastproto.h
 merge.o: merge.c global.h phqalloc.h hst.h output.h phastproto.h
 mix.o: mix.c global.h hst.h phqalloc.h output.h phastproto.h
 phast_files.o: phast_files.c global.h phqalloc.h output.h phrqproto.h input.h
 slavesubs.o: slavesubs.c global.h hst.h phqalloc.h output.h phastproto.h
+hst.o: hst.cxx phreeqcpp/StorageBin.h phreeqcpp/Utils.h \
+  phreeqcpp/char_star.h phreeqcpp/Parser.h phreeqcpp/char_star.h \
+  phreeqcpp/Solution.h phreeqcpp/NumKeyword.h phreeqcpp/Parser.h \
+  phreeqcpp/SolutionIsotopeList.h phreeqcpp/SolutionIsotope.h \
+  phreeqcpp/Parser.h phreeqcpp/phreeqc/global.h \
+  phreeqcpp/phreeqc/phrqtype.h phreeqcpp/char_star.h phreeqcpp/Parser.h \
+  phreeqcpp/NameDouble.h phreeqcpp/char_star.h phreeqcpp/Parser.h \
+  phreeqcpp/Mix.h phreeqcpp/NumKeyword.h phreeqcpp/char_star.h \
+  phreeqcpp/char_star.h phreeqcpp/Exchange.h phreeqcpp/NumKeyword.h \
+  phreeqcpp/char_star.h phreeqcpp/ExchComp.h phreeqcpp/NameDouble.h \
+  phreeqcpp/char_star.h phreeqcpp/GasPhase.h phreeqcpp/NumKeyword.h \
+  phreeqcpp/NameDouble.h phreeqcpp/char_star.h phreeqcpp/KineticsCxx.h \
+  phreeqcpp/NumKeyword.h phreeqcpp/char_star.h phreeqcpp/KineticsComp.h \
+  phreeqcpp/NameDouble.h phreeqcpp/char_star.h phreeqcpp/PPassemblage.h \
+  phreeqcpp/NumKeyword.h phreeqcpp/char_star.h \
+  phreeqcpp/PPassemblageComp.h phreeqcpp/NameDouble.h \
+  phreeqcpp/char_star.h phreeqcpp/SSassemblage.h phreeqcpp/NumKeyword.h \
+  phreeqcpp/char_star.h phreeqcpp/SSassemblageSS.h phreeqcpp/NameDouble.h \
+  phreeqcpp/char_star.h phreeqcpp/Surface.h phreeqcpp/NumKeyword.h \
+  phreeqcpp/char_star.h phreeqcpp/SurfComp.h phreeqcpp/NameDouble.h \
+  phreeqcpp/char_star.h phreeqcpp/SurfCharge.h phreeqcpp/NameDouble.h \
+  phreeqcpp/char_star.h phreeqcpp/Mix.h phreeqcpp/Reaction.h \
+  phreeqcpp/NumKeyword.h phreeqcpp/NameDouble.h phreeqcpp/char_star.h \
+  phreeqcpp/Temperature.h phreeqcpp/NumKeyword.h phreeqcpp/char_star.h \
+  phreeqcpp/phreeqc/global.h phreeqcpp/phreeqc/output.h hst.h \
+  phreeqcpp/phreeqc/phqalloc.h phreeqcpp/phreeqc/phrqproto.h \
+  phreeqcpp/phreeqc/input.h phast_files.h phastproto.h
+hstcxxsubs.o: hstcxxsubs.cxx phreeqcpp/StorageBin.h phreeqcpp/Utils.h \
+  phreeqcpp/char_star.h phreeqcpp/Parser.h phreeqcpp/char_star.h \
+  phreeqcpp/Solution.h phreeqcpp/NumKeyword.h phreeqcpp/Parser.h \
+  phreeqcpp/SolutionIsotopeList.h phreeqcpp/SolutionIsotope.h \
+  phreeqcpp/Parser.h phreeqcpp/phreeqc/global.h \
+  phreeqcpp/phreeqc/phrqtype.h phreeqcpp/char_star.h phreeqcpp/Parser.h \
+  phreeqcpp/NameDouble.h phreeqcpp/char_star.h phreeqcpp/Parser.h \
+  phreeqcpp/Mix.h phreeqcpp/NumKeyword.h phreeqcpp/char_star.h \
+  phreeqcpp/char_star.h phreeqcpp/Exchange.h phreeqcpp/NumKeyword.h \
+  phreeqcpp/char_star.h phreeqcpp/ExchComp.h phreeqcpp/NameDouble.h \
+  phreeqcpp/char_star.h phreeqcpp/GasPhase.h phreeqcpp/NumKeyword.h \
+  phreeqcpp/NameDouble.h phreeqcpp/char_star.h phreeqcpp/KineticsCxx.h \
+  phreeqcpp/NumKeyword.h phreeqcpp/char_star.h phreeqcpp/KineticsComp.h \
+  phreeqcpp/NameDouble.h phreeqcpp/char_star.h phreeqcpp/PPassemblage.h \
+  phreeqcpp/NumKeyword.h phreeqcpp/char_star.h \
+  phreeqcpp/PPassemblageComp.h phreeqcpp/NameDouble.h \
+  phreeqcpp/char_star.h phreeqcpp/SSassemblage.h phreeqcpp/NumKeyword.h \
+  phreeqcpp/char_star.h phreeqcpp/SSassemblageSS.h phreeqcpp/NameDouble.h \
+  phreeqcpp/char_star.h phreeqcpp/Surface.h phreeqcpp/NumKeyword.h \
+  phreeqcpp/char_star.h phreeqcpp/SurfComp.h phreeqcpp/NameDouble.h \
+  phreeqcpp/char_star.h phreeqcpp/SurfCharge.h phreeqcpp/NameDouble.h \
+  phreeqcpp/char_star.h phreeqcpp/Mix.h phreeqcpp/Reaction.h \
+  phreeqcpp/NumKeyword.h phreeqcpp/NameDouble.h phreeqcpp/char_star.h \
+  phreeqcpp/Temperature.h phreeqcpp/NumKeyword.h phreeqcpp/char_star.h \
+  phreeqcpp/Solution.h hst.h phreeqcpp/phreeqc/phqalloc.h \
+  phreeqcpp/phreeqc/phrqproto.h phastproto.h
+hdf.o: hdf.c phreeqcpp/phreeqc/global.h phreeqcpp/phreeqc/phrqtype.h \
+  phreeqcpp/phreeqc/output.h hst.h phreeqcpp/phreeqc/phqalloc.h \
+  phreeqcpp/phreeqc/phrqproto.h phastproto.h
+hstsubs.o: hstsubs.c phreeqcpp/phreeqc/global.h \
+  phreeqcpp/phreeqc/phrqtype.h phreeqcpp/phreeqc/output.h hst.h \
+  phreeqcpp/phreeqc/phqalloc.h phreeqcpp/phreeqc/phrqproto.h phastproto.h
 #
 #  Cxx files
 #
@@ -905,7 +961,8 @@ lahey: serial_lahey serial_lahey_debug mpi_lahey mpi_lahey_debug
 
 dependencies:
 	mkdir -p $(SERIAL_ABSOFT_DIR) 
-	cd $(SERIAL_ABSOFT_DIR); gcc -MM -I../phreeqcpp -I../phreeqcpp/phreeqc ../phreeqcpp/*.cxx
+	gcc -MM -I./phreeqcpp -I./phreeqcpp/phreeqc *.cxx *.c
+	cd $(SERIAL_ABSOFT_DIR); gcc -MM -I../phreeqcpp -I../phreeqcpp/phreeqc ../*.cxx ../phreeqcpp/*.cxx
 
 # =============================================================================
 # End of makefile.

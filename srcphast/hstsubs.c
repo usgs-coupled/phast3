@@ -515,7 +515,7 @@ void solution_to_buffer(struct solution *solution_ptr)
 	return;
 }
 /* ---------------------------------------------------------------------- */
-void set_use_hst(void)
+void set_use_hst(int n)
 /* ---------------------------------------------------------------------- */
 {
 	int n_user;
@@ -530,11 +530,13 @@ void set_use_hst(void)
 	use.irrev_ptr = NULL;
 	use.mix_ptr = NULL;
 
-	n_user = solution[n_solution]->n_user;
+	//n_user = solution[n_solution]->n_user;
+	n_solution = 0;
+	n_user = n;
 /*
  *   set solution
  */
-	use.solution_ptr = solution[n_solution];
+	use.solution_ptr = solution_bsearch(n_user, &n_solution, TRUE);
 	use.n_solution_user = n_user;
 	use.n_solution = n_solution;
 	use.solution_in = TRUE;

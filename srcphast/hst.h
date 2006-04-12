@@ -27,9 +27,11 @@ EXTERNAL int first_solution, first_gas_phase, first_exchange,
 EXTERNAL int n_solution, n_gas_phase, n_exchange, n_pp_assemblage, n_surface,
 	n_s_s_assemblage, n_kinetics;
 EXTERNAL struct buffer *buffer;
+EXTERNAL struct buffer *buffer_dbg;
 EXTERNAL int count_component;
 EXTERNAL int count_total;
 EXTERNAL struct activity_list *activity_list;
+EXTERNAL struct activity_list *activity_list_dbg;
 EXTERNAL int count_activity_list;
 EXTERNAL int transport_charge;
 EXTERNAL char *file_prefix;
