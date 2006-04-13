@@ -765,34 +765,31 @@ void SETUP_BOUNDARY_CONDITIONS(const int *n_boundary, int *boundary_solution1,
  *
  */
 	int i, n_old1, n_old2;
-	int n;
-	LDBLE f1;
+	double f1, f2;
+	cxxMix mixmap;
+	std::map<int,double> *comps;
+	comps = mixmap.comps();
 
-	struct solution *solution_ptr;
 	for (i = 0; i < *n_boundary; i++) {
+		comps->clear();
 		n_old1 = boundary_solution1[i];
 		n_old2 = boundary_solution2[i];
 		f1 = fraction1[i];
-		if (n_old1 >= 0) {
-			mix_solutions(n_old1, n_old2, f1, -1, "boundary");
-		} else {
-			continue;
-#ifdef SKIP
-			/* allow negative number, should be for pumping well solution is not required */
-			input_error++;
-			error_msg("Negative solution number in boundary conditions.", CONTINUE);
-#endif
+		f2 = 1 - f1;
+		(*comps)[n_old1] = f1;
+		if (f2 > 0.0) {
+			(*comps)[n_old2] = f2;
 		}
-		solution_ptr = solution_bsearch(-1, &n, TRUE);
-		solution_to_buffer(solution[n]);
+		cxxSolution *cxxsoln_ptr = phreeqcBin.mix_cxxSolutions(mixmap);
+		if (cxxsoln_ptr == NULL) {
+			input_error++;
+			error_msg("Solution not found for boundary condition.", CONTINUE);
+		}
+		cxxsolution_to_buffer(cxxsoln_ptr);
 		buffer_to_mass_fraction();
-/*
-		fprintf(stderr,"setup_boundary_conditions\n");
-		buffer_print("Boundary", i);
- */
 		buffer_to_hst(&boundary_fraction[i], *dim);
+		delete cxxsoln_ptr;
 	}
-
 	return;
 }
 #ifdef SKIP
@@ -966,6 +963,8 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 	rate_sim_time_start = *time_hst - *time_step_hst;
 	rate_sim_time_end = *time_hst;
 	initial_total_time = 0;
+	// free all c structures
+	reinitialize();
 	for (i = 0; i < count_chem; i++) {     /* i is count_chem number */
 		j = back[i].list[0];           /* j is nxyz number */
 		if (transient_free_surface == TRUE) partition_uz(i, j, frac[j]); 
@@ -990,12 +989,7 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 		if (active) {
 			cell_no = i;
 			// copy cxx data to c structures
-			reinitialize();
 			szBin.cxxStorageBin2phreeqc(i);
-			cxxSolution *cxxsoln_ptr = szBin.get_solution(i);
-			std::ostringstream oss;
-			cxxsoln_ptr->dump_raw(oss,0);
-			std::cerr << oss.str();
 			if (transient_free_surface == TRUE) scale_solution(n_solution, frac[j]); 
 			set_use_hst(i);
 			n_user = i;
@@ -1021,27 +1015,35 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 /*
  *   Save data
  */
+		solution_bsearch(i, &n_solution, TRUE);
 		xsolution_save_hst(n_solution);
-		/*if (active && *adjust_water_rock_ratio) scale_solution(n_solution, 1.0/frac[j]); */
 		if (active && transient_free_surface == TRUE) scale_solution(n_solution, 1.0/frac[j]); 
 		if (save.exchange == TRUE) {
+			exchange_bsearch(i, &n_exchange);
 			xexchange_save_hst(n_exchange);
 		}
 		if (save.gas_phase == TRUE) {
+			gas_phase_bsearch(i, &n_gas_phase);
 			xgas_save_hst(n_gas_phase);
 		}
 		if (save.pp_assemblage == TRUE) {
+			pp_assemblage_bsearch(i, &n_pp_assemblage);
 			xpp_assemblage_save_hst(n_pp_assemblage);
 		}
 		if (save.surface == TRUE) {
+			surface_bsearch(i, &n_surface);
 			xsurface_save_hst(n_surface);
 		}
 		if (save.s_s_assemblage == TRUE) {
+			s_s_assemblage_bsearch(i, &n_s_s_assemblage);
 			xs_s_assemblage_save_hst(n_s_s_assemblage);
 		}
 		szBin.phreeqc2cxxStorageBin(i);
+		// free phreeqc structures
+		reinitialize();
 		EndCell(*print_sel, *print_out, *print_hdf, j);
 	}
+
 	EndTimeStep(*print_sel, *print_out, *print_hdf);
 /*
  *   Put values back for HST

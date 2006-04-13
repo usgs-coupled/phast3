@@ -31,9 +31,9 @@ void buffer_to_cxxsolution(int n)
 	//std::cerr << oss.str();
 
 	cxxsoln_ptr = szBin.get_solution(n);
-	std::ostringstream oss;
-	cxxsoln_ptr->dump_raw(oss,0);
-	std::cerr << oss.str();
+	//std::ostringstream oss;
+	//cxxsoln_ptr->dump_raw(oss,0);
+	//std::cerr << oss.str();
 
 	cxxsoln_ptr->set_total_h( buffer[0].moles + 2  / gfw_water);
 	cxxsoln_ptr->set_total_o( buffer[1].moles + 1 / gfw_water);
