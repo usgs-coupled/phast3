@@ -11,6 +11,7 @@
 void buffer_to_cxxsolution(int n);
 void cxxsolution_to_buffer(cxxSolution *solution_ptr);
 void unpackcxx_from_hst(double *fraction, int *dim);
+void scale_cxxsolution(int n_solution, double factor);
 
 extern cxxStorageBin szBin;
 
@@ -30,7 +31,14 @@ void buffer_to_cxxsolution(int n)
 	//szBin.dump_raw(oss,0);
 	//std::cerr << oss.str();
 
-	cxxsoln_ptr = szBin.get_solution(n);
+	cxxsoln_ptr = szBin.getSolution(n);
+	if (cxxsoln_ptr == NULL) {
+		cxxSolution cxxsoln;
+		szBin.setSolution(n, &cxxsoln);
+		cxxsoln_ptr = szBin.getSolution(n);
+		cxxsoln_ptr->set_n_user(n);
+		cxxsoln_ptr->set_n_user_end(n);
+	}
 	//std::ostringstream oss;
 	//cxxsoln_ptr->dump_raw(oss,0);
 	//std::cerr << oss.str();
@@ -118,4 +126,24 @@ void unpackcxx_from_hst(double *fraction, int *dim)
 		buffer_to_cxxsolution(j);
 	}
 	return;
+}
+/* ---------------------------------------------------------------------- */
+void scale_cxxsolution(int n_solution, double factor)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *   Print entities used in calculation
+ */
+	//xsolution_zero();
+	//add_solution(solution[i], factor, 1.0);
+	//for(j = 2; j < count_total; j++) {
+	//	buffer[j].master->total_primary = buffer[j].master->total;
+	//}
+	//xsolution_save_hst(i);
+	cxxMix mixmap;
+	std::map<int,double> *comps;
+	comps = mixmap.comps();
+	(*comps)[n_solution] = factor;
+	cxxSolution *cxxsoln = szBin.mix_cxxSolutions(mixmap);
+	szBin.setSolution(n_solution, cxxsoln);
 }

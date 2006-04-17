@@ -1,4 +1,5 @@
 #define EXTERNAL extern
+#include "StorageBin.h"
 #include "phreeqc/global.h"
 #include "hst.h"
 #include "phreeqc/phqalloc.h"
@@ -6,6 +7,7 @@
 #include "phreeqc/phrqproto.h"
 #include "phastproto.h"
 
+extern cxxStorageBin szBin;
 extern int mpi_myself;
 static char const svnid[] = "$Id$";
 
@@ -1841,6 +1843,351 @@ int partition_uz(int iphrq, int ihst, LDBLE new_frac)
 int partition_uz(int iphrq, int ihst, LDBLE new_frac)
 /* ---------------------------------------------------------------------- */
 {
+	int n_user;
+	LDBLE s1, s2, uz1, uz2;
+	struct system *sys_ptr;
+
+	struct exchange *exchange_ptr, *exchange_ptr_unsat, sat_exchange, unsat_exchange;
+	struct pp_assemblage *pp_assemblage_ptr, *pp_assemblage_ptr_unsat, sat_pp_assemblage, unsat_pp_assemblage;
+	struct gas_phase *gas_phase_ptr, *gas_phase_ptr_unsat, sat_gas_phase, unsat_gas_phase;
+	struct s_s_assemblage *s_s_assemblage_ptr, *s_s_assemblage_ptr_unsat, sat_s_s_assemblage, unsat_s_s_assemblage;
+	struct surface *surface_ptr, *surface_ptr_unsat, sat_surface, unsat_surface;
+	struct kinetics *kinetics_ptr, *kinetics_ptr_unsat, sat_kinetics, unsat_kinetics;
+	//struct solution *solution_ptr;
+	
+	/* 
+	 * repartition solids for partially saturated cells
+	 */
+	
+	if (equal(old_frac[ihst], new_frac, 1e-8) == TRUE)  return(OK);
+
+	/* solution number */
+	//solution_bsearch(first_user_number, &first_solution, TRUE);
+	//n_solution = first_solution + iphrq;
+	//n_user = solution[n_solution]->n_user;
+	//solution_ptr = (szBin.get_Solution(iphrq))->cxxSolution2solution();
+	/*
+	exchange_ptr = exchange_bsearch(n_user, &n);
+	pp_assemblage_ptr = pp_assemblage_bsearch(n_user, &n);
+	gas_phase_ptr = gas_phase_bsearch(n_user, &n);
+	s_s_assemblage_ptr = s_s_assemblage_bsearch(n_user, &n);
+	kinetics_ptr = kinetics_bsearch(n_user, &n);
+	surface_ptr = surface_bsearch(n_user, &n);
+	*/
+	n_user = iphrq;
+	exchange_ptr = NULL;
+	pp_assemblage_ptr = NULL;
+	gas_phase_ptr = NULL;
+	s_s_assemblage_ptr = NULL;
+	kinetics_ptr = NULL;
+	surface_ptr = NULL;
+	{
+		cxxExchange *entity = szBin.getExchange(iphrq);
+		if (entity != NULL) exchange_ptr = entity->cxxExchange2exchange();
+	}
+	{
+		cxxPPassemblage *entity = szBin.getPPassemblage(iphrq);
+		if (entity != NULL) pp_assemblage_ptr = entity->cxxPPassemblage2pp_assemblage();
+	}
+	{
+		cxxGasPhase *entity = szBin.getGasPhase(iphrq);
+		if (entity != NULL) gas_phase_ptr = entity->cxxGasPhase2gas_phase();
+	}
+	{
+		cxxSSassemblage *entity = szBin.getSSassemblage(iphrq);
+		if (entity != NULL) s_s_assemblage_ptr = entity->cxxSSassemblage2s_s_assemblage();
+	}
+	{
+		cxxKinetics *entity = szBin.getKinetics(iphrq);
+		if (entity != NULL) kinetics_ptr = entity->cxxKinetics2kinetics();
+	}
+	{
+		cxxSurface *entity = szBin.getSurface(iphrq);
+		if (entity != NULL) surface_ptr = entity->cxxSurface2surface();
+	}
+
+
+	if (new_frac >= 1.0) {
+		/* put everything in saturated zone */
+		uz1 = 0;
+		uz2 = 0;
+		s1 = 1.0; 
+		s2 = 1.0;
+	} else if (new_frac <= 1e-10) {
+		/* put everything in unsaturated zone */
+		uz1 = 1.0;
+		uz2 = 1.0;
+		s1 = 0.0; 
+		s2 = 0.0;
+	} else if (new_frac > old_frac[ihst]) {
+		/* wetting cell */
+		uz1 = 0.;
+		uz2 = (1.0 - new_frac)/(1.0 - old_frac[ihst]);
+		s1 = 1.;
+		s2 = 1.0 - uz2;
+	} else {
+		/* draining cell */
+		s1 = new_frac/old_frac[ihst];
+		s2 = 0.0;
+		uz1 = 1.0 - s1;
+		uz2 = 1.0;
+	}
+	/*
+	 *  Set current uz pointers
+	 */
+
+	sys_ptr = uz[iphrq];
+	if (sys_ptr == NULL) {
+		exchange_ptr_unsat = NULL;
+		pp_assemblage_ptr_unsat = NULL;
+		gas_phase_ptr_unsat = NULL;
+		s_s_assemblage_ptr_unsat = NULL;
+		kinetics_ptr_unsat = NULL;
+		surface_ptr_unsat = NULL;
+	} else {
+		exchange_ptr_unsat = sys_ptr->exchange;
+		pp_assemblage_ptr_unsat = sys_ptr->pp_assemblage;
+		gas_phase_ptr_unsat = sys_ptr->gas_phase;
+		s_s_assemblage_ptr_unsat = sys_ptr->s_s_assemblage;
+		kinetics_ptr_unsat = sys_ptr->kinetics;
+		surface_ptr_unsat = sys_ptr->surface;
+	}
+	/*
+	 *   Calculate new compositions
+	 */
+	if (exchange_ptr != NULL) {
+		if (sum_exchange(exchange_ptr, s1, exchange_ptr_unsat, s2, &sat_exchange) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}
+		if (sum_exchange(exchange_ptr, uz1, exchange_ptr_unsat, uz2, &unsat_exchange) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}			
+	}
+	if (pp_assemblage_ptr != NULL) {
+		if (sum_pp_assemblage(pp_assemblage_ptr, s1, pp_assemblage_ptr_unsat, s2, &sat_pp_assemblage) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}
+		if (sum_pp_assemblage(pp_assemblage_ptr, uz1, pp_assemblage_ptr_unsat, uz2, &unsat_pp_assemblage) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}			
+	}
+	if (gas_phase_ptr != NULL) {
+		if (sum_gas_phase(gas_phase_ptr, s1, gas_phase_ptr_unsat, s2, &sat_gas_phase) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}
+		if (sum_gas_phase(gas_phase_ptr, uz1, gas_phase_ptr_unsat, uz2, &unsat_gas_phase) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}			
+	}
+	if (s_s_assemblage_ptr != NULL) {
+		if (sum_s_s_assemblage(s_s_assemblage_ptr, s1, s_s_assemblage_ptr_unsat, s2, &sat_s_s_assemblage) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}
+		if (sum_s_s_assemblage(s_s_assemblage_ptr, uz1, s_s_assemblage_ptr_unsat, uz2, &unsat_s_s_assemblage) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}			
+	}
+	if (kinetics_ptr != NULL) {
+		if (sum_kinetics(kinetics_ptr, s1, kinetics_ptr_unsat, s2, &sat_kinetics) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}
+		if (sum_kinetics(kinetics_ptr, uz1, kinetics_ptr_unsat, uz2, &unsat_kinetics) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}			
+	}
+	if (surface_ptr != NULL) {
+		if (sum_surface(surface_ptr, s1, surface_ptr_unsat, s2, &sat_surface) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}
+		if (sum_surface(surface_ptr, uz1, surface_ptr_unsat, uz2, &unsat_surface) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}			
+	}
+	/*
+	 *   Make uz if new fraction is less than zero
+	 */
+	if (new_frac < 1.0 && uz[iphrq] == NULL) {
+		uz[iphrq] = system_alloc();
+		if (exchange_ptr != NULL) {
+			/*
+			uz[iphrq]->exchange = exchange_alloc(); 
+			memcpy(uz[iphrq]->exchange, exchange_ptr, sizeof(struct exchange));
+			*/
+			uz[iphrq]->exchange = exchange_alloc(); 
+			exchange_copy(exchange_ptr, uz[iphrq]->exchange, exchange_ptr->n_user); 
+		}
+		if (pp_assemblage_ptr != NULL) {
+			/*
+			uz[iphrq]->pp_assemblage = pp_assemblage_alloc();
+			memcpy(uz[iphrq]->pp_assemblage, pp_assemblage_ptr, sizeof(struct pp_assemblage));
+			*/
+			uz[iphrq]->pp_assemblage = pp_assemblage_alloc(); 
+			pp_assemblage_copy(pp_assemblage_ptr, uz[iphrq]->pp_assemblage, pp_assemblage_ptr->n_user); 
+		}
+		if (gas_phase_ptr != NULL) {
+			/*
+			uz[iphrq]->gas_phase = gas_phase_alloc();
+			memcpy(uz[iphrq]->gas_phase, gas_phase_ptr, sizeof(struct gas_phase));
+			*/
+			uz[iphrq]->gas_phase = gas_phase_alloc(); 
+			gas_phase_copy(gas_phase_ptr, uz[iphrq]->gas_phase, gas_phase_ptr->n_user); 
+		}
+		if (s_s_assemblage_ptr != NULL) {
+			/*
+			uz[iphrq]->s_s_assemblage = s_s_assemblage_alloc();
+			memcpy(uz[iphrq]->s_s_assemblage, s_s_assemblage_ptr, sizeof(struct s_s_assemblage));
+			*/
+			uz[iphrq]->s_s_assemblage = s_s_assemblage_alloc(); 
+			s_s_assemblage_copy(s_s_assemblage_ptr, uz[iphrq]->s_s_assemblage, s_s_assemblage_ptr->n_user); 
+		}
+		if (kinetics_ptr != NULL) {
+			/*
+			uz[iphrq]->kinetics = kinetics_alloc();
+			memcpy(uz[iphrq]->kinetics, kinetics, sizeof(struct kinetics));
+			*/
+			uz[iphrq]->kinetics = kinetics_alloc(); 
+			kinetics_copy(kinetics_ptr, uz[iphrq]->kinetics, kinetics_ptr->n_user); 
+		}
+		if (surface_ptr != NULL) {
+			/*n
+			uz[iphrq]->surface = surface_alloc();
+			memcpy(uz[iphrq]->surface, surface, sizeof(struct surface));
+			*/
+			uz[iphrq]->surface = surface_alloc(); 
+			surface_copy(surface_ptr, uz[iphrq]->surface, surface_ptr->n_user); 
+		}
+	}
+	/*
+	 *   Eliminate uz if new fraction 1.0
+	 */
+	if (new_frac >= 1.0 && uz[iphrq] != NULL) {
+		system_free(uz[iphrq]);
+		free_check_null(uz[iphrq]);
+		uz[iphrq] = NULL;
+	}
+	sys_ptr = uz[iphrq];
+
+	if (sys_ptr == NULL) {
+		exchange_ptr_unsat = NULL;
+		pp_assemblage_ptr_unsat = NULL;
+		gas_phase_ptr_unsat = NULL;
+		s_s_assemblage_ptr_unsat = NULL;
+		kinetics_ptr_unsat = NULL;
+		surface_ptr_unsat = NULL;
+	} else {
+		exchange_ptr_unsat = sys_ptr->exchange;
+		pp_assemblage_ptr_unsat = sys_ptr->pp_assemblage;
+		gas_phase_ptr_unsat = sys_ptr->gas_phase;
+		s_s_assemblage_ptr_unsat = sys_ptr->s_s_assemblage;
+		kinetics_ptr_unsat = sys_ptr->kinetics;
+		surface_ptr_unsat = sys_ptr->surface;
+	}
+
+	/*
+	 *   Copy into sat and unsat
+	 */
+	if (exchange_ptr != NULL) {
+		if (exchange_ptr_unsat != NULL) {
+			exchange_free(exchange_ptr_unsat);
+			exchange_copy(&unsat_exchange, exchange_ptr_unsat, n_user);
+		}
+		exchange_free(exchange_ptr);
+		exchange_ptr = (struct exchange *) free_check_null(exchange_ptr);
+		//exchange_copy(&sat_exchange, exchange_ptr, n_user);
+		cxxExchange entity(&sat_exchange);
+		szBin.setExchange(iphrq, &entity);
+		exchange_free(&unsat_exchange);
+		exchange_free(&sat_exchange);
+	}
+	if (pp_assemblage_ptr != NULL) {
+		if (pp_assemblage_ptr_unsat != NULL) {
+			pp_assemblage_free(pp_assemblage_ptr_unsat);
+			pp_assemblage_copy(&unsat_pp_assemblage, pp_assemblage_ptr_unsat, n_user);
+		}
+		pp_assemblage_free(pp_assemblage_ptr);
+		pp_assemblage_ptr = (struct pp_assemblage *) free_check_null(pp_assemblage_ptr);
+		//pp_assemblage_copy(&sat_pp_assemblage, pp_assemblage_ptr, n_user);
+		cxxPPassemblage entity(&sat_pp_assemblage);
+		szBin.setPPassemblage(iphrq, &entity);
+		pp_assemblage_free(&unsat_pp_assemblage);
+		pp_assemblage_free(&sat_pp_assemblage);
+	}
+	if (gas_phase_ptr != NULL) {
+		if (gas_phase_ptr_unsat != NULL) {
+			gas_phase_free(gas_phase_ptr_unsat);
+			gas_phase_copy(&unsat_gas_phase, gas_phase_ptr_unsat, n_user);
+		}
+		gas_phase_free(gas_phase_ptr);
+		gas_phase_ptr = (struct gas_phase *) free_check_null(gas_phase_ptr);
+		//gas_phase_copy(&sat_gas_phase, gas_phase_ptr, n_user);
+		cxxGasPhase entity(&sat_gas_phase);
+		szBin.setGasPhase(iphrq, &entity);
+		gas_phase_free(&unsat_gas_phase);
+		gas_phase_free(&sat_gas_phase);
+	}
+	if (s_s_assemblage_ptr != NULL) {
+		if (s_s_assemblage_ptr_unsat != NULL) {
+			s_s_assemblage_free(s_s_assemblage_ptr_unsat);
+			s_s_assemblage_copy(&unsat_s_s_assemblage, s_s_assemblage_ptr_unsat, n_user);
+		}
+		s_s_assemblage_free(s_s_assemblage_ptr);
+		s_s_assemblage_ptr = (struct s_s_assemblage *) free_check_null(s_s_assemblage_ptr);
+		//s_s_assemblage_copy(&sat_s_s_assemblage, s_s_assemblage_ptr, n_user);
+		cxxSSassemblage entity(&sat_s_s_assemblage);
+		szBin.setSSassemblage(iphrq, &entity);
+		s_s_assemblage_free(&unsat_s_s_assemblage);
+		s_s_assemblage_free(&sat_s_s_assemblage);
+	}
+	if (kinetics_ptr != NULL) {
+		if (kinetics_ptr_unsat != NULL) {
+			kinetics_free(kinetics_ptr_unsat);
+			kinetics_copy(&unsat_kinetics, kinetics_ptr_unsat, n_user);
+		}
+		kinetics_free(kinetics_ptr);
+		kinetics_ptr = (struct kinetics *) free_check_null(kinetics_ptr);
+		//kinetics_copy(&sat_kinetics, kinetics_ptr, n_user);
+		cxxKinetics entity(&sat_kinetics);
+		szBin.setKinetics(iphrq, &entity);
+		kinetics_free(&unsat_kinetics);
+		kinetics_free(&sat_kinetics);
+	}
+	if (surface_ptr != NULL) {
+		if (surface_ptr_unsat != NULL) {
+			surface_free(surface_ptr_unsat);
+			surface_copy(&unsat_surface, surface_ptr_unsat, n_user);
+		}
+		surface_free(surface_ptr);
+		surface_ptr = (struct surface *) free_check_null(surface_ptr);
+		//surface_copy(&sat_surface, surface_ptr, n_user);
+		cxxSurface entity(&sat_surface);
+		szBin.setSurface(iphrq, &entity);
+		surface_free(&unsat_surface);
+		surface_free(&sat_surface);
+	}
+#ifdef SKIP
+	/*
+	 * debugging
+	 */
+	system_total_solids(exchange_ptr, pp_assemblage_ptr, gas_phase_ptr, s_s_assemblage_ptr, surface_ptr);
+	output_msg(OUTPUT_STDERR, "\nChemistry cell %d of %d, old %f, new %f: \n", iphrq, count_chem, old_frac[ihst], new_frac);
+	output_msg(OUTPUT_STDERR, "\ns1 %f, s2 %f, uz1, %f, uz2, %f \n", s1, s2, uz1, uz2);
+	output_msg(OUTPUT_STDERR, "\nSaturated zone solids: \n");
+	elt_list_print0(elt_list);
+
+	output_msg(OUTPUT_STDERR, "\nUnsaturated zone solids: \n");
+	system_total_solids(exchange_ptr_unsat, pp_assemblage_ptr_unsat, gas_phase_ptr_unsat, s_s_assemblage_ptr_unsat, surface_ptr_unsat);
+	elt_list_print0(elt_list);
+#endif
+
+	old_frac[ihst] = new_frac;
+
+	return(OK);
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+int partition_uz(int iphrq, int ihst, LDBLE new_frac)
+/* ---------------------------------------------------------------------- */
+{
 	int n;
 	int first_solution, n_solution, n_user;
 	LDBLE s1, s2, uz1, uz2;
@@ -2128,6 +2475,7 @@ int partition_uz(int iphrq, int ihst, LDBLE new_frac)
 
 	return(OK);
 }
+#endif
 #endif
 /* ---------------------------------------------------------------------- */
 int system_free(struct system *system_ptr) 

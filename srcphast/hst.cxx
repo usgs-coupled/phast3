@@ -13,6 +13,7 @@
 extern void buffer_to_cxxsolution(int n);
 extern void cxxsolution_to_buffer(cxxSolution *solution_ptr);
 extern void unpackcxx_from_hst(double *fraction, int *dim);
+extern void scale_cxxsolution(int n_solution, double factor);
 
 static void BeginTimeStep(int print_sel, int print_out, int print_hdf);
 static void EndTimeStep(int print_sel, int print_out, int print_hdf);
@@ -885,7 +886,7 @@ void PACK_FOR_HST(double *fraction, int *dim)
 	int i, j;
 	cxxSolution *cxxsoln_ptr;
 	for (i = 0; i < count_chem; i++) {
-		cxxsoln_ptr = szBin.get_solution(i);
+		cxxsoln_ptr = szBin.getSolution(i);
 		cxxsolution_to_buffer(cxxsoln_ptr);
 		buffer_to_mass_fraction();
 		for (j = 0; j < count_back_list; j++) {
@@ -988,9 +989,11 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 		}
 		if (active) {
 			cell_no = i;
+			//if (transient_free_surface == TRUE) scale_solution(n_solution, frac[j]); 
+			if (transient_free_surface == TRUE) scale_cxxsolution(i, frac[j]); 
+
 			// copy cxx data to c structures
 			szBin.cxxStorageBin2phreeqc(i);
-			if (transient_free_surface == TRUE) scale_solution(n_solution, frac[j]); 
 			set_use_hst(i);
 			n_user = i;
 			set_initial_moles(n_user);
@@ -1006,39 +1009,42 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 			}
 			print_all();
 			punch_all();
+			/*
+			 *   Save data
+			 */
+			solution_bsearch(i, &n_solution, TRUE);
+			if (n_solution == -999) {
+				error_msg("How did this happen?", STOP);
+			}
+			xsolution_save_hst(n_solution);
+			if (active && transient_free_surface == TRUE) scale_solution(n_solution, 1.0/frac[j]); 
+			if (save.exchange == TRUE) {
+				exchange_bsearch(i, &n_exchange);
+				xexchange_save_hst(n_exchange);
+			}
+			if (save.gas_phase == TRUE) {
+				gas_phase_bsearch(i, &n_gas_phase);
+				xgas_save_hst(n_gas_phase);
+			}
+			if (save.pp_assemblage == TRUE) {
+				pp_assemblage_bsearch(i, &n_pp_assemblage);
+				xpp_assemblage_save_hst(n_pp_assemblage);
+			}
+			if (save.surface == TRUE) {
+				surface_bsearch(i, &n_surface);
+				xsurface_save_hst(n_surface);
+			}
+			if (save.s_s_assemblage == TRUE) {
+				s_s_assemblage_bsearch(i, &n_s_s_assemblage);
+				xs_s_assemblage_save_hst(n_s_s_assemblage);
+			}
+			szBin.phreeqc2cxxStorageBin(i);
 		} else {
 				if (pr.all == TRUE ) {
 					output_msg(OUTPUT_MESSAGE, "Time %g. Cell %d: x=%15g\ty=%15g\tz=%15g\n", (*time_hst) * (*cnvtmi), j + 1, x_hst[j], y_hst[j], z_hst[j]);
 					output_msg(OUTPUT_MESSAGE, "Cell is dry.\n");
 				}
 		}
-/*
- *   Save data
- */
-		solution_bsearch(i, &n_solution, TRUE);
-		xsolution_save_hst(n_solution);
-		if (active && transient_free_surface == TRUE) scale_solution(n_solution, 1.0/frac[j]); 
-		if (save.exchange == TRUE) {
-			exchange_bsearch(i, &n_exchange);
-			xexchange_save_hst(n_exchange);
-		}
-		if (save.gas_phase == TRUE) {
-			gas_phase_bsearch(i, &n_gas_phase);
-			xgas_save_hst(n_gas_phase);
-		}
-		if (save.pp_assemblage == TRUE) {
-			pp_assemblage_bsearch(i, &n_pp_assemblage);
-			xpp_assemblage_save_hst(n_pp_assemblage);
-		}
-		if (save.surface == TRUE) {
-			surface_bsearch(i, &n_surface);
-			xsurface_save_hst(n_surface);
-		}
-		if (save.s_s_assemblage == TRUE) {
-			s_s_assemblage_bsearch(i, &n_s_s_assemblage);
-			xs_s_assemblage_save_hst(n_s_s_assemblage);
-		}
-		szBin.phreeqc2cxxStorageBin(i);
 		// free phreeqc structures
 		reinitialize();
 		EndCell(*print_sel, *print_out, *print_hdf, j);
@@ -3491,6 +3497,114 @@ void CALCULATE_WELL_PH(double *c, LDBLE *ph, LDBLE *alkalinity)
     buffer[j].moles = c[j];
   }
   n_user = -2;
+  buffer_to_cxxsolution(n_user);
+  cxxSolution *cxxsoln = szBin.getSolution(n_user);
+  reinitialize();
+  solution[0] = cxxsoln->cxxSolution2solution();
+  count_solution++;
+
+  //  solution_duplicate(solution[first_solution]->n_user, n_user);
+  //  solution_bsearch(first_user_number, &first_solution, TRUE);
+  solution_ptr = solution_bsearch(n_user, &i, FALSE);
+  if (solution_ptr == NULL) {
+    sprintf(error_string,"Could not find solution %d in calculate_well_ph\n", n_user);
+    error_msg(error_string, STOP);
+  }
+  /*
+   * Make enough space
+   */
+  // solution[i]->totals = (struct conc *) PHRQ_realloc (solution[i]->totals, (size_t) (count_total - 1) * sizeof(struct conc));
+  //if (solution[i]->totals == NULL) malloc_error();
+  //solution[i]->master_activity = (struct master_activity *) PHRQ_realloc (solution[i]->master_activity, (size_t) (count_activity_list + 1) * sizeof(struct master_activity));
+  //solution[i]->count_master_activity = count_activity_list;
+  //solution[i]->species_gamma = NULL;
+  //solution[i]->count_species_gamma = 0;
+  //if (solution[i]->master_activity == NULL) malloc_error();
+  /*
+   *  Zero out solution
+   */
+  //for (j = 0; j < count_total - 1; j++) {
+  //  solution_ptr->totals[j].moles = 0;
+  //}
+  /*
+   *  copy buffer to solution
+   */
+  //buffer_to_solution(solution_ptr);
+  /*
+   * set use flags
+   */
+  use.temperature_ptr = NULL;
+  use.irrev_ptr = NULL;
+  use.mix_ptr = NULL;
+  /*
+ *   set solution
+ */
+  use.solution_ptr = solution[i];
+  use.n_solution_user = n_user;
+  use.n_solution = i;
+  use.solution_in = TRUE;
+  save.solution = TRUE;
+  save.n_solution_user = n_user;
+  save.n_solution_user_end = n_user;
+  /*
+   *   Switch out exchange
+   */
+  use.exchange_ptr = NULL;
+  use.exchange_in = FALSE;
+  save.exchange = FALSE;
+  /*
+ *   Switch out gas_phase
+ */
+  use.gas_phase_ptr = NULL;
+  use.gas_phase_in = FALSE;
+  save.gas_phase = FALSE;
+  /*
+ *   Switch out pp_assemblage
+ */
+  use.pp_assemblage_ptr = NULL;
+  use.pp_assemblage_in = FALSE;
+  save.pp_assemblage = FALSE;
+  /*
+ *   Switch out surface
+ */
+  use.surface_ptr = NULL;
+  use.surface_in = FALSE;
+  save.surface = FALSE;
+  /*
+ *   Switch out s_s_assemblage
+ */
+  use.s_s_assemblage_ptr = NULL;
+  use.s_s_assemblage_in = FALSE;
+  save.s_s_assemblage = FALSE;
+  /*
+ *   Switch out kinetics
+ */
+  use.kinetics_ptr = NULL;
+  use.kinetics_in = FALSE;
+  save.kinetics = FALSE;
+
+  state = REACTION;
+  run_reactions(n_user, 0.0, FALSE, 0.0);
+  state = PHAST;
+  *ph = -(s_hplus->la);
+  *alkalinity = total_alkalinity/mass_water_aq_x;
+  return;
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+void CALCULATE_WELL_PH(double *c, LDBLE *ph, LDBLE *alkalinity)
+/* ---------------------------------------------------------------------- */
+{
+  struct solution *solution_ptr;
+  int i, j, n_user;
+
+  /*
+   *  put moles into buffer
+   */
+  for (j = 0; j < count_component; j++) {
+    buffer[j].moles = c[j];
+  }
+  n_user = -2;
   solution_duplicate(solution[first_solution]->n_user, n_user);
   solution_bsearch(first_user_number, &first_solution, TRUE);
   solution_ptr = solution_bsearch(n_user, &i, FALSE);
@@ -3578,7 +3692,7 @@ void CALCULATE_WELL_PH(double *c, LDBLE *ph, LDBLE *alkalinity)
   *alkalinity = total_alkalinity/mass_water_aq_x;
   return;
 }
-
+#endif
 
 /*-------------------------------------------------------------------------
  * Function          BeginTimeStep
