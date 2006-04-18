@@ -766,19 +766,16 @@ void SETUP_BOUNDARY_CONDITIONS(const int *n_boundary, int *boundary_solution1,
  */
 	int i, n_old1, n_old2;
 	double f1, f2;
-	cxxMix mixmap;
-	std::map<int,double> *comps;
-	comps = mixmap.comps();
 
 	for (i = 0; i < *n_boundary; i++) {
-		comps->clear();
+		cxxMix mixmap;
 		n_old1 = boundary_solution1[i];
 		n_old2 = boundary_solution2[i];
 		f1 = fraction1[i];
 		f2 = 1 - f1;
-		(*comps)[n_old1] = f1;
+		mixmap.add(n_old1, f1);
 		if (f2 > 0.0) {
-			(*comps)[n_old2] = f2;
+			mixmap.add(n_old2, f2);
 		}
 		cxxSolution *cxxsoln_ptr = phreeqcBin.mix_cxxSolutions(mixmap);
 		if (cxxsoln_ptr == NULL) {

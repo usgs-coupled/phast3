@@ -182,9 +182,10 @@ void scale_cxxsolution(int n_solution, double factor)
 	//}
 	//xsolution_save_hst(i);
 	cxxMix mixmap;
-	std::map<int,double> *comps;
-	comps = mixmap.comps();
-	(*comps)[n_solution] = factor;
+	//std::map<int,double> *comps;
+	//comps = mixmap.comps();
+	//(*comps)[n_solution] = factor;
+	mixmap.add(n_solution, factor);
 	cxxSolution *cxxsoln = szBin.mix_cxxSolutions(mixmap);
 	szBin.setSolution(n_solution, cxxsoln);
 }
