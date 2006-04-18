@@ -370,15 +370,6 @@ void PHREEQC_MAIN(int *solute, char *chemistry_name, char *database_name, char *
 #endif
 	if (mpi_myself == 0) output_msg(OUTPUT_ECHO, "PHREEQC done.\n");
 
-	/*
-	 *  set up C++ storage
-	 */
-
-	phreeqcBin.import_phreeqc();
-	//std::ostringstream oss;
-	//phreeqcBin.dump_raw(oss,0);
-	//std::cerr << oss.str();
-
 	return;
 }
 /* ---------------------------------------------------------------------- */
@@ -598,6 +589,14 @@ void COUNT_ALL_COMPONENTS(int *n_comp, char *names, int length)
 	delay_mass_water = FALSE;
 	last_model.force_prep = TRUE;
 	simulation = -1;
+	/*
+	 *  set up C++ storage
+	 */
+
+	phreeqcBin.import_phreeqc();
+	//std::ostringstream oss;
+	//phreeqcBin.dump_raw(oss,0);
+	//std::cerr << oss.str();
 	return;
 }
 #ifdef USE_MPI

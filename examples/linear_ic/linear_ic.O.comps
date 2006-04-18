@@ -1122,7 +1122,7 @@
   1 2.06165E-14
 
 
-     Maximum change in Mn        molality ....  4.2608E-07 (mol/kgw)   at location (  10.0    , 0.000    , 0.000    )(m )
+     Maximum change in Mn        molality ....  4.2608E-07 (mol/kgw)   at location (  10.0    ,  10.0    , 0.000    )(m )
 
                               Molality (mol/kgw)
 
@@ -1188,7 +1188,7 @@
   1 7.61847E-04
 
 
-     Maximum change in Na        molality .... -3.3619E-02 (mol/kgw)   at location ( 0.000    , 0.000    , 0.000    )(m )
+     Maximum change in Na        molality .... -3.3619E-02 (mol/kgw)   at location ( 0.000    ,  10.0    , 0.000    )(m )
 
                               Molality (mol/kgw)
 
@@ -1254,7 +1254,7 @@
   1 0.19894    
 
 
-     Maximum change in Si        molality .... -2.2484E-05 (mol/kgw)   at location ( 0.000    ,  10.0    , 0.000    )(m )
+     Maximum change in Si        molality .... -2.2484E-05 (mol/kgw)   at location ( 0.000    , 0.000    , 0.000    )(m )
 
                               Molality (mol/kgw)
 
@@ -1320,7 +1320,7 @@
   1 7.79212E-06
 
 
-     Maximum change in Charge    molality .... -6.0438E-06 (mol/kgw)   at location (  10.0    ,  10.0    , 0.000    )(m )
+     Maximum change in Charge    molality .... -6.0438E-06 (mol/kgw)   at location (  10.0    , 0.000    , 0.000    )(m )
 
                               Molality (mol/kgw)
 

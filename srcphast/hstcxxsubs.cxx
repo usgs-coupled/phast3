@@ -91,20 +91,61 @@ void buffer_to_cxxsolution(int n)
 	return;
 }
 /* ---------------------------------------------------------------------- */
+#ifdef SKIP
 void cxxsolution_to_buffer(cxxSolution *cxxsoln_ptr)
 /* ---------------------------------------------------------------------- */
 {
+	struct solution *solution_ptr;
 	int i;
 	cxxNameDouble::iterator it;
 	LDBLE moles_water;
+
+	/* gfw_water = 0.018 */
+	moles_water = 1/gfw_water;
+
+	buffer[0].moles = cxxsoln_ptr->get_total_h() - 2 * moles_water;
+	buffer[1].moles = cxxsoln_ptr->get_total_o() - moles_water;
+
+	/*
+	 *  Sum valence states
+	 */
+	solution_ptr = cxxsoln_ptr->cxxSolution2solution();
+	xsolution_zero();
+	add_solution(solution_ptr, 1.0, 1.0);
+	for (i = 2; i < count_total; i++) {
+		buffer[i].moles = buffer[i].master->total;
+	}	
+	/*
+	 *   Switch in transport of charge
+	 */
+	if (transport_charge == TRUE) {
+		buffer[i].moles = cxxsoln_ptr->get_cb();
+	}
+	solution_free(solution_ptr);
+	return;
+}
+#endif
+/* ---------------------------------------------------------------------- */
+void cxxsolution_to_buffer(cxxSolution *cxxsoln_ptr)
+/* ---------------------------------------------------------------------- */
+{
+	// Assumes all solutions are defined with totals, not valence states
+	// Count_all_components puts solutions in standard form
+        // before they are transferred to cxx classes
+
+	int i;
+	cxxNameDouble::iterator it;
+	LDBLE moles_water;
+
+	/* gfw_water = 0.018 */
 	//moles_water = solution_ptr->get_mass_water / gfw_water;
 	moles_water = 1/gfw_water;
-/* gfw_water = 0.018 */
+
 	buffer[0].moles = cxxsoln_ptr->get_total_h() - 2 * moles_water;
 	buffer[1].moles = cxxsoln_ptr->get_total_o() - moles_water;
 	for (i = 2; i < count_total; i++) {
 		buffer[i].moles = cxxsoln_ptr->get_total(buffer[i].name);
-	}
+	}	
 /*
  *   Switch in transport of charge
  */
