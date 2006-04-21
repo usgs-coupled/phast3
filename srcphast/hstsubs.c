@@ -8,6 +8,8 @@
 
 static char const svnid[] = "$Id$";
 
+extern void buffer_to_cxxsolution(int n);
+
 /* ---------------------------------------------------------------------- */
 void add_all_components(void) 
 /* ---------------------------------------------------------------------- */
@@ -658,7 +660,8 @@ void unpack_from_hst(double *fraction, int *dim)
 		if (j < 0) continue;
 		hst_to_buffer(&fraction[i], *dim);
 		buffer_to_moles();
-		buffer_to_solution(sz[j]->solution);
+		//buffer_to_solution(sz[j]->solution);
+		buffer_to_cxxsolution(j);
 	}
 	return;
 }

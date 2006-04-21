@@ -222,7 +222,7 @@ ifeq ($(CFG), MPI_ABSOFT)
   CC           = mpiCC
   CFLAGS       = -Wall -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) $(LAM_INCLUDES)
   CFLAGS_MODEL = -Wall -O2 $(DEFINES) $(HDF5_INCLUDES)
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
   LD_FLAGS     = -lm -lc ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT) -ldl
 endif
 
@@ -243,7 +243,7 @@ ifeq ($(CFG), MPI_ABSOFT_DEBUG)
   CC           = mpiCC
   CFLAGS       = -Wall  -ansi -g $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) $(LAM_INCLUDES)# -Wconversion 
   CFLAGS_MODEL = -Wall  -ansi -g $(DEFINES) $(HDF5_INCLUDES)# -Wconversion 
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
   LD_FLAGS     = -lm -lc ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT) -ldl # ${EFENCE_LIB} -lefence
 endif
 
@@ -288,7 +288,7 @@ ifeq ($(CFG), MPI_LAHEY)
   CC           = mpiCC
   CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) $(LAM_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
   CFLAGS_MODEL = -Wall  -O2 $(DEFINES) $(HDF5_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS) $(LAHEY_RUNTIME)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS) $(LAHEY_RUNTIME)
 #  LD_FLAGS     = -static-flib  -lm ${HDF5_LIBS} 
 #  LD_FLAGS     = --staticlink -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY) -llammpio -llamf77mpi -lmpi -llam -llammpi++ 
   LD_FLAGS     = -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY)  -ldl
@@ -306,7 +306,7 @@ ifeq ($(CFG), MPI_LAHEY_DEBUG)
   CC           = mpiCC
   CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) $(LAM_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
   CFLAGS_MODEL = -Wall  -g $(DEFINES) $(HDF5_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS) $(LAHEY_RUNTIME)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS) $(LAHEY_RUNTIME)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
   LD_FLAGS     = -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY) -ldl
 endif
@@ -320,7 +320,7 @@ ifeq ($(CFG), SERIAL_G95)
   CC           = g++
   CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   CFLAGS_MODEL = -Wall  -O2 $(DEFINES) $(HDF5_INCLUDES)
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS)  $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
   LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
 endif
