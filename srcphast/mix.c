@@ -8,6 +8,8 @@
 #include "phastproto.h"
 
 extern cxxStorageBin szBin;
+extern cxxStorageBin uzBin;
+
 extern int mpi_myself;
 static char const svnid[] = "$Id$";
 
@@ -1536,6 +1538,145 @@ int partition_uz(int iphrq, int ihst, LDBLE new_frac)
 {
 	int n_user;
 	LDBLE s1, s2, uz1, uz2;
+
+	/* 
+	 * repartition solids for partially saturated cells
+	 */
+	
+	if (equal(old_frac[ihst], new_frac, 1e-8) == TRUE)  return(OK);
+
+	n_user = iphrq;
+
+	/*
+	 *  Set current sz pointers
+	 */
+	struct system *current_sz = szBin.cxxStorageBin2system(iphrq);
+	struct system *new_sz = (struct system *) system_alloc();
+	/*
+	 *  Set current uz pointers
+	 */
+	struct system *current_uz = uzBin.cxxStorageBin2system(iphrq);
+	struct system *new_uz = (struct system *) system_alloc();
+
+	if (new_frac >= 1.0) {
+		/* put everything in saturated zone */
+		uz1 = 0;
+		uz2 = 0;
+		s1 = 1.0; 
+		s2 = 1.0;
+	} else if (new_frac <= 1e-10) {
+		/* put everything in unsaturated zone */
+		uz1 = 1.0;
+		uz2 = 1.0;
+		s1 = 0.0; 
+		s2 = 0.0;
+	} else if (new_frac > old_frac[ihst]) {
+		/* wetting cell */
+		uz1 = 0.;
+		uz2 = (1.0 - new_frac)/(1.0 - old_frac[ihst]);
+		s1 = 1.;
+		s2 = 1.0 - uz2;
+	} else {
+		/* draining cell */
+		s1 = new_frac/old_frac[ihst];
+		s2 = 0.0;
+		uz1 = 1.0 - s1;
+		uz2 = 1.0;
+	}
+
+	/*
+	 *   Calculate new compositions
+	 */
+	if (current_sz->exchange != NULL) {
+		new_sz->exchange = (struct exchange *) exchange_alloc();
+		new_uz->exchange = (struct exchange *) exchange_alloc();
+		if(sum_exchange(current_sz->exchange, s1, current_uz->exchange, s2, new_sz->exchange) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}
+		if (sum_exchange(current_sz->exchange, uz1, current_uz->exchange, uz2, new_uz->exchange) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}			
+	}
+	if (current_sz->pp_assemblage != NULL) {
+		new_sz->pp_assemblage = (struct pp_assemblage *) pp_assemblage_alloc();
+		new_uz->pp_assemblage = (struct pp_assemblage *) pp_assemblage_alloc();
+		if (sum_pp_assemblage(current_sz->pp_assemblage, s1, current_uz->pp_assemblage, s2, new_sz->pp_assemblage) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}
+		if (sum_pp_assemblage(current_sz->pp_assemblage, uz1, current_uz->pp_assemblage, uz2, new_uz->pp_assemblage) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}			
+	}
+	if (current_sz->gas_phase != NULL) {
+		new_sz->gas_phase = (struct gas_phase *) gas_phase_alloc();
+		new_uz->gas_phase = (struct gas_phase *) gas_phase_alloc();
+		if (sum_gas_phase(current_sz->gas_phase, s1, current_uz->gas_phase, s2, new_sz->gas_phase) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}
+		if (sum_gas_phase(current_sz->gas_phase, uz1, current_uz->gas_phase, uz2, new_uz->gas_phase) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}			
+	}
+	if (current_sz->s_s_assemblage != NULL) {
+		new_sz->s_s_assemblage = (struct s_s_assemblage *) s_s_assemblage_alloc();
+		new_uz->s_s_assemblage = (struct s_s_assemblage *) s_s_assemblage_alloc();
+		if (sum_s_s_assemblage(current_sz->s_s_assemblage, s1, current_uz->s_s_assemblage, s2, new_sz->s_s_assemblage) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}
+		if (sum_s_s_assemblage(current_sz->s_s_assemblage, uz1, current_uz->s_s_assemblage, uz2, new_uz->s_s_assemblage) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}			
+	}
+	if (current_sz->kinetics != NULL) {
+		new_sz->kinetics = (struct kinetics *) kinetics_alloc();
+		new_uz->kinetics = (struct kinetics *) kinetics_alloc();
+		if (sum_kinetics(current_sz->kinetics, s1, current_uz->kinetics, s2, new_sz->kinetics) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}
+		if (sum_kinetics(current_sz->kinetics, uz1, current_uz->kinetics, uz2, new_uz->kinetics) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}			
+	}
+	if (current_sz->surface != NULL) {
+		new_sz->surface = (struct surface *) surface_alloc();
+		new_uz->surface = (struct surface *) surface_alloc();
+		if (sum_surface(current_sz->surface, s1, current_uz->surface, s2, new_sz->surface) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}
+		if (sum_surface(current_sz->surface, uz1, current_uz->surface, uz2, new_uz->surface) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}			
+	}
+	/*
+	 *   Eliminate uz if new fraction 1.0
+	 */
+	if (new_frac >= 1.0) {
+		uzBin.remove(iphrq);
+	} else {
+		uzBin.add(new_uz);
+	}
+
+	szBin.add(new_sz);
+
+	old_frac[ihst] = new_frac;
+
+	system_free(current_sz);
+	system_free(current_uz);
+	system_free(new_sz);
+	system_free(new_uz);
+	free_check_null(current_sz);
+	free_check_null(current_uz);
+	free_check_null(new_sz);
+	free_check_null(new_uz);
+	return(OK);
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+int partition_uz(int iphrq, int ihst, LDBLE new_frac)
+/* ---------------------------------------------------------------------- */
+{
+	int n_user;
+	LDBLE s1, s2, uz1, uz2;
 	struct system *sys_ptr;
 
 	struct exchange *exchange_ptr, *exchange_ptr_unsat, sat_exchange, unsat_exchange;
@@ -1874,6 +2015,7 @@ int partition_uz(int iphrq, int ihst, LDBLE new_frac)
 
 	return(OK);
 }
+#endif
 /* ---------------------------------------------------------------------- */
 int system_free(struct system *system_ptr) 
 /* ---------------------------------------------------------------------- */

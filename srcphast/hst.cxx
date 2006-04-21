@@ -143,7 +143,7 @@ void PHREEQC_FREE(int *solute)
  *   free space
  */
 {
-	int i;
+	//int i;
   if (svnid == NULL) fprintf(stderr," ");
 #ifdef HDF5_CREATE
   HDF_Finalize();
@@ -172,6 +172,7 @@ void PHREEQC_FREE(int *solute)
 		free_check_null(back);
 		free_check_null(file_prefix);
 		free_check_null(old_frac);
+#ifdef REPLACED
 		if (uz != NULL) {
 			for (i = 0; i < count_chem; i++) {
 				system_free(uz[i]);
@@ -179,6 +180,7 @@ void PHREEQC_FREE(int *solute)
 			}
 			free_check_null(uz);
 		}
+#endif
 		clean_up();
 	} else {
 #if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
@@ -877,6 +879,14 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 	reinitialize();
 	for (i = 0; i < count_chem; i++) {     /* i is count_chem number */
 		j = back[i].list[0];           /* j is nxyz number */
+		/*
+		if (*time_hst > 0) {
+			  std::ostringstream oss;
+			  cxxSolution *cxxsoln_ptr = szBin.getSolution(i);
+			  cxxsoln_ptr->dump_raw(oss,0);
+			  std::cerr << oss.str();
+		}
+		*/
 		if (transient_free_surface == TRUE) partition_uz(i, j, frac[j]); 
 		if (frac[j] < 1e-10) frac[j] = 0.0;
 		// set flags
@@ -900,11 +910,6 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 			cell_no = i;
 			//if (transient_free_surface == TRUE) scale_solution(n_solution, frac[j]); 
 			if (transient_free_surface == TRUE) scale_cxxsolution(i, frac[j]); 
-
-			  std::ostringstream oss;
-			  cxxSolution *cxxsoln_ptr = szBin.getSolution(i);
-			  cxxsoln_ptr->dump_raw(oss,0);
-			  std::cerr << oss.str();
 			/*
 			  std::ostringstream oss;
 			  cxxSolution *cxxsoln_ptr = szBin.getSolution(i);
@@ -2309,46 +2314,47 @@ int mpi_send_system(int task_number, int iphrq, int ihst, LDBLE *frac)
 	mpi_pack_surface(system_ptr->surface, ints, &i, doubles, &d);
 
 	system_free(system_ptr);
-	delete system_ptr;
-
-	//free_check_null(system_ptr);
+	free_check_null(system_ptr);
 
 	/*
 	 *  Send uz info
 	 */
 	if (uz != NULL && uz[iphrq] != NULL) {
+		struct system *system_ptr = uzBin.cxxStorageBin2system(iphrq);
 		ints[i++] = 1;
 		doubles[d++] = frac[ihst];
 		/*
 		 *   Equilibrium_phases
 		 */
-		pp_assemblage_ptr = uz[iphrq]->pp_assemblage;
+		pp_assemblage_ptr = system_ptr->pp_assemblage;
 		mpi_pack_pp_assemblage(pp_assemblage_ptr, ints, &i, doubles, &d);
 		/*
 		 *   Exchange
 		 */
-		exchange_ptr = uz[iphrq]->exchange;
+		exchange_ptr = system_ptr->exchange;
 		mpi_pack_exchange(exchange_ptr, ints, &i, doubles, &d);
 		/*
 		 *   Gas phase
 		 */
-		gas_phase_ptr = uz[iphrq]->gas_phase;
+		gas_phase_ptr = system_ptr->gas_phase;
 		mpi_pack_gas_phase(gas_phase_ptr, ints, &i, doubles, &d);
 		/*
 		 *   Kinetics phase
 		 */
-		kinetics_ptr = uz[iphrq]->kinetics;
+		kinetics_ptr = system_ptr->kinetics;
 		mpi_pack_kinetics(kinetics_ptr, ints, &i, doubles, &d);
 		/*
 		 *   Solid solutions
 		 */
-		s_s_assemblage_ptr = uz[iphrq]->s_s_assemblage;
+		s_s_assemblage_ptr = system_ptr->s_s_assemblage;
 		mpi_pack_s_s_assemblage(s_s_assemblage_ptr, ints, &i, doubles, &d);
 		/*
 		 *   Surface
 		 */
-		surface_ptr = uz[iphrq]->surface;
+		surface_ptr = system_ptr->surface;
 		mpi_pack_surface(surface_ptr, ints, &i, doubles, &d);
+		system_free(system_ptr);
+		free_check_null(system_ptr);
 	} else {
 		ints[i++] = 0;
 	}
@@ -2547,97 +2553,53 @@ int mpi_recv_system(int task_number, int iphrq, int ihst, LDBLE *frac)
 		/*
 		 * Allocate or free system
 		 */
-		if (uz[iphrq] == NULL) {
-			uz[iphrq] = system_alloc();
-		} else {
-			system_free(uz[iphrq]);
-		}
+		struct system *uz_system_ptr = cxxsystem_initialize(ihst, iphrq, initial1, initial2, frac1);   
+
+		/* do not need solution */
+		solution_free(uz_system_ptr->solution);
+		uz_system_ptr->solution = NULL;
+
 		frac[ihst] = doubles[d++];
 		old_frac[ihst] = frac[ihst];
 		/*
 		 *   Equilibrium_phases
 		 */
 		if (ints[i++] != 0) {
-			if (uz[iphrq]->pp_assemblage == NULL) {
-				if (pp_assemblage_ptr == NULL) {
-					sprintf(error_string, "Task %d: Error in UZ pp_assemblage %d.", mpi_myself, iphrq);
-					error_msg(error_string, STOP);
-				} 
-				uz[iphrq]->pp_assemblage = pp_assemblage_alloc();
-				pp_assemblage_copy(pp_assemblage_ptr, uz[iphrq]->pp_assemblage, pp_assemblage_ptr->n_user); 
-			} 
-			mpi_unpack_pp_assemblage(uz[iphrq]->pp_assemblage, ints, &i, doubles, &d);
+			mpi_unpack_pp_assemblage(uz_system_ptr->pp_assemblage, ints, &i, doubles, &d);
 		}
 		/*
 		 *   Exchange
 		 */
 		if (ints[i++] != 0) {
-			if (uz[iphrq]->exchange == NULL) {
-				if (exchange_ptr == NULL) {
-					sprintf(error_string, "Task %d: Error in UZ exchange %d.", mpi_myself, iphrq);
-					error_msg(error_string, STOP);
-				} 
-				uz[iphrq]->exchange = exchange_alloc();
-				exchange_copy(exchange_ptr, uz[iphrq]->exchange, exchange_ptr->n_user); 
-			} 
-			mpi_unpack_exchange(uz[iphrq]->exchange, ints, &i, doubles, &d);
+			mpi_unpack_exchange(uz_system_ptr->exchange, ints, &i, doubles, &d);
 		}
 		/*
 		 *   Gas phase
 		 */
 		if (ints[i++] != 0) {
-			if (uz[iphrq]->gas_phase == NULL) {
-				if (gas_phase_ptr == NULL) {
-					sprintf(error_string, "Task %d: Error in UZ gas_phase %d.", mpi_myself, iphrq);
-					error_msg(error_string, STOP);
-				} 
-				uz[iphrq]->gas_phase = gas_phase_alloc();
-				gas_phase_copy(gas_phase_ptr, uz[iphrq]->gas_phase, gas_phase_ptr->n_user); 
-			} 
-			mpi_unpack_gas_phase(uz[iphrq]->gas_phase, ints, &i, doubles, &d);
+			mpi_unpack_gas_phase(uz_system_ptr->gas_phase, ints, &i, doubles, &d);
 		}
 		/*
 		 *   Kinetics phase
 		 */
 		if (ints[i++] != 0) {
-			if (uz[iphrq]->kinetics == NULL) {
-				if (kinetics_ptr == NULL) {
-					sprintf(error_string, "Task %d: Error in UZ kinetics %d.", mpi_myself, iphrq);
-					error_msg(error_string, STOP);
-				} 
-				uz[iphrq]->kinetics = kinetics_alloc();
-				kinetics_copy(kinetics_ptr, uz[iphrq]->kinetics, kinetics_ptr->n_user); 
-			} 
-			mpi_unpack_kinetics(uz[iphrq]->kinetics, ints, &i, doubles, &d);
+			mpi_unpack_kinetics(uz_system_ptr->kinetics, ints, &i, doubles, &d);
 		}
 		/*
 		 *   Solid solutions
 		 */
 		if (ints[i++] != 0) {
-			if (uz[iphrq]->s_s_assemblage == NULL) {
-				if (s_s_assemblage_ptr == NULL) {
-					sprintf(error_string, "Task %d: Error in UZ s_s_assemblage %d.", mpi_myself, iphrq);
-					error_msg(error_string, STOP);
-				} 
-				uz[iphrq]->s_s_assemblage = s_s_assemblage_alloc();
-				s_s_assemblage_copy(s_s_assemblage_ptr, uz[iphrq]->s_s_assemblage, s_s_assemblage_ptr->n_user); 
-			} 
-			mpi_unpack_s_s_assemblage(uz[iphrq]->s_s_assemblage, ints, &i, doubles, &d);
+			mpi_unpack_s_s_assemblage(uz_system_ptr->s_s_assemblage, ints, &i, doubles, &d);
 		}
 		/*
 		 *   Surface
 		 */
 		if (ints[i++] != 0) {
-			if (uz[iphrq]->surface == NULL) {
-				if (surface_ptr == NULL) {
-					sprintf(error_string, "Task %d: Error in UZ surface %d.", mpi_myself, iphrq);
-					error_msg(error_string, STOP);
-				} 
-				uz[iphrq]->surface = surface_alloc();
-				surface_copy(surface_ptr, uz[iphrq]->surface, surface_ptr->n_user); 
-			} 
-			mpi_unpack_surface(uz[iphrq]->surface, ints, &i, doubles, &d);
+			mpi_unpack_surface(uz_system_ptr->surface, ints, &i, doubles, &d);
 		}
+		uzBin.add(uz_system_ptr);
+		system_free(uz_system_ptr);
+		free_check_null(uz_system_ptr);
 	}
 	assert(count_ints == i);
 	assert(count_doubles == d);
@@ -3833,14 +3795,15 @@ int UZ_INIT(int * transient_fresur)
 		for (i = 0; i < ixyz; i++) {
 			old_frac[i] = 1.0;
 		}
+#ifdef REPLACED
 		uz = (struct system **) PHRQ_malloc((size_t) (count_chem * sizeof(struct system)));
 		if (uz == NULL) malloc_error();
 		for (i = 0; i < count_chem; i++) {
 			uz[i] = NULL;
 		}
+#endif
 	} else {
 		old_frac = NULL;
-		uz = NULL;
 	}
 	
 	return(OK);
