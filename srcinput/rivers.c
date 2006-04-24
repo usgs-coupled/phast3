@@ -1,4 +1,4 @@
-#define EXTERNAL
+#define EXTERNAL extern
 #include "hstinpt.h"
 #include "message.h"
 static char const svnid[] = "$Id$";
@@ -23,12 +23,12 @@ int setup_rivers(void)
 	/*
 	 *   gpc_vertex list for cell boundary
 	 */
-	p = malloc((size_t) 4 * sizeof (gpc_vertex));
+	p = (gpc_vertex *) malloc((size_t) 4 * sizeof (gpc_vertex));
 	if (p == NULL) malloc_error();
 	/*
 	 *   gpc_polygon for cell boundary
 	 */
-	poly2.contour = malloc((size_t) sizeof(gpc_vertex_list));
+	poly2.contour = (gpc_vertex_list*) malloc((size_t) sizeof(gpc_vertex_list));
 	if (poly2.contour == NULL) malloc_error();
 	poly2.contour[0].vertex = p;
 	poly2.contour[0].num_vertices = 4;
@@ -76,7 +76,7 @@ int setup_rivers(void)
 					 *   Allocate space
 					 */
 					count_river_polygons = cells[n].count_river_polygons++;
-					cells[n].river_polygons = realloc ( cells[n].river_polygons, (size_t) (count_river_polygons + 1) * sizeof (River_Polygon));
+					cells[n].river_polygons = (River_Polygon *) realloc ( cells[n].river_polygons, (size_t) (count_river_polygons + 1) * sizeof (River_Polygon));
 					if (cells[n].river_polygons == NULL) malloc_error();
 					/*
 					 *   Save River_Polygon for cell
@@ -471,7 +471,7 @@ int build_rivers(void)
 	gpc_polygon *trapezoid, *gap_polygon;
 
 	return_code = OK;
-	p = malloc((size_t) sizeof (gpc_vertex));
+	p = (gpc_vertex*) malloc((size_t) sizeof (gpc_vertex));
 	if (p == NULL) malloc_error();
 
 	if (count_rivers <= 0) { 
@@ -492,7 +492,7 @@ int build_rivers(void)
 		/*
 		 *  Build river topology
 		 */
-		p = realloc(p, (size_t) river_ptr->count_points * sizeof (gpc_vertex));
+		p = (gpc_vertex*) realloc(p, (size_t) river_ptr->count_points * sizeof (gpc_vertex));
 		if (p == NULL) malloc_error();
 		for (i=0; i < river_ptr->count_points; i++) {
 			p[i].x = river_ptr->points[i].x;
@@ -1064,10 +1064,12 @@ int interpolate(River_Polygon *river_polygon_ptr)
 }
 #endif
 /* ---------------------------------------------------------------------- */
-double PolygonArea(polygon, N)
+double PolygonArea(gpc_vertex *polygon, int N)
 /* ---------------------------------------------------------------------- */
+/*
 gpc_vertex *polygon;
 int N;
+*/
 {
    int i,j;
    double area = 0;
@@ -1111,7 +1113,7 @@ gpc_polygon *gpc_polygon_duplicate(gpc_polygon *in_poly)
 	/*
 	 *   Malloc space and initialize
 	 */
-	out_poly = malloc ((size_t) sizeof(gpc_polygon));
+	out_poly = (gpc_polygon*) malloc ((size_t) sizeof(gpc_polygon));
 	if (out_poly == NULL) malloc_error();
 
 	out_poly->num_contours = in_poly->num_contours;
@@ -1120,7 +1122,7 @@ gpc_polygon *gpc_polygon_duplicate(gpc_polygon *in_poly)
 	/*
 	 *   Malloc contours
 	 */
-	out_poly->contour = malloc ((size_t) (in_poly->num_contours * sizeof(gpc_vertex_list)));
+	out_poly->contour = (gpc_vertex_list*) malloc ((size_t) (in_poly->num_contours * sizeof(gpc_vertex_list)));
 	if (out_poly->contour == NULL) malloc_error();
 	/*
 	 *   Copy each contour
@@ -1129,7 +1131,7 @@ gpc_polygon *gpc_polygon_duplicate(gpc_polygon *in_poly)
 		out_poly->contour[k].num_vertices = in_poly->contour[k].num_vertices;
 		out_poly->contour[k].vertex = NULL;
 		if (out_poly->contour[k].num_vertices == 0) continue;
-		out_poly->contour[k].vertex = malloc((size_t) in_poly->contour[k].num_vertices * sizeof(gpc_vertex));
+		out_poly->contour[k].vertex = (gpc_vertex*) malloc((size_t) in_poly->contour[k].num_vertices * sizeof(gpc_vertex));
 		for (i=0; i < out_poly->contour[k].num_vertices; i++) {
 			out_poly->contour[k].vertex[i].x = in_poly->contour[k].vertex[i].x;
 			out_poly->contour[k].vertex[i].y = in_poly->contour[k].vertex[i].y;
@@ -1167,14 +1169,14 @@ gpc_polygon *vertex_to_poly(gpc_vertex *v, int n)
 	int i;
 	gpc_vertex *p;
 
-	poly_ptr =  malloc((size_t) sizeof(gpc_polygon));
+	poly_ptr =  (gpc_polygon*) malloc((size_t) sizeof(gpc_polygon));
 	if (poly_ptr == NULL) malloc_error();
 	/*
 	 *   gpc_polygon for river polygon
 	 */
-	poly_ptr->contour = malloc((size_t) sizeof(gpc_vertex_list));
+	poly_ptr->contour = (gpc_vertex_list*) malloc((size_t) sizeof(gpc_vertex_list));
 	if (poly_ptr->contour == NULL) malloc_error();
-	p = malloc((size_t) n * sizeof (gpc_vertex));
+	p = (gpc_vertex*) malloc((size_t) n * sizeof (gpc_vertex));
 	if (p == NULL) malloc_error();
 	poly_ptr->contour[0].vertex = p;
 	poly_ptr->contour[0].num_vertices = n;

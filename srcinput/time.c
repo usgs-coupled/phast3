@@ -128,7 +128,7 @@ struct time_series * time_series_alloc (void)
 {
 	struct time_series *ts_ptr;
 
-	ts_ptr = malloc(sizeof(struct time_series));
+	ts_ptr = (struct time_series *) malloc(sizeof(struct time_series));
 	if (ts_ptr == NULL) malloc_error();
 	ts_ptr->count_properties=0;
 	ts_ptr->properties=NULL;
@@ -393,7 +393,7 @@ int collate_simulation_periods(void)
 	/*
 	 *  Add in all but last time_end
 	 */
-	simulation_periods = realloc(simulation_periods, (size_t) (count_simulation_periods + count_time_end - 1)*sizeof(double));
+	simulation_periods = (double *) realloc(simulation_periods, (size_t) (count_simulation_periods + count_time_end - 1)*sizeof(double));
 	if (simulation_periods == NULL) malloc_error();
 	for (i = 0; i < count_time_end - 1; i++) {
 		simulation_periods[count_simulation_periods++] = time_end[i].value*time_end[i].input_to_user;
@@ -429,7 +429,7 @@ int accumulate_time_series(struct time_series *ts_ptr)
 	/*
 	 *  realloc space
 	 */
-	simulation_periods = realloc(simulation_periods, (size_t) (count_simulation_periods + count)*sizeof(double));
+	simulation_periods = (double *) realloc(simulation_periods, (size_t) (count_simulation_periods + count)*sizeof(double));
 	if (simulation_periods == NULL) malloc_error();
 	for (i = 0; i < count; i++) {
 		simulation_periods[count_simulation_periods++] = ts_ptr->properties[i]->time.value*ts_ptr->properties[i]->time.input_to_user;
@@ -525,7 +525,7 @@ int read_line_times(char *ptr, struct time **times, int *count_times)
 		if (j == DIGIT) {
 			if (sscanf(token,"%lf", &value) == 1) {
 				*count_times = *count_times + 1;
-				*times = realloc(*times, (size_t) (*count_times) * sizeof (struct time));
+				*times = (struct time*) realloc(*times, (size_t) (*count_times) * sizeof (struct time));
 				if (times == NULL) malloc_error();
 				(*times)[ (*count_times) - 1].input = NULL;
 				(*times)[ (*count_times) - 1].value = value;

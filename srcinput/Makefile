@@ -6,7 +6,8 @@ PROGRAM=phastinput
 #.SILENT:
 
 # Linux
-CC=gcc
+#CC=gcc
+CC=g++
 #CCFLAGS=-O2 -Wall -ansi -pedantic 
 CCFLAGS=-g -Wall -ansi -pedantic 
 

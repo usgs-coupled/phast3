@@ -213,7 +213,7 @@ char *line_from_string(char **ptr)
 	} else {
 		l = strlen(*ptr) + 2;
 	}
-	return_string = malloc((size_t) l * sizeof(char) );
+	return_string = (char *) malloc((size_t) l * sizeof(char) );
 	if (return_string == NULL) malloc_error();
 	if (*ptr == NULL) {
 		strcpy(return_string,"");

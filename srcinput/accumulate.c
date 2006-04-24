@@ -110,7 +110,7 @@ int setup_grid(void)
 		if (grid_ptr->uniform == TRUE) {
 			d1 = grid_ptr->coord[0];
 			d2 = grid_ptr->coord[1];
-			grid_ptr->coord = realloc(grid_ptr->coord, (size_t) grid_ptr->count_coord * sizeof(double));
+			grid_ptr->coord = (double *) realloc(grid_ptr->coord, (size_t) grid_ptr->count_coord * sizeof(double));
 			if (grid_ptr->coord == NULL) malloc_error();
 			for (k = 0; k < grid_ptr->count_coord; k++) {
 				grid_ptr->coord[k] = d1 + (double) k * (d2 - d1) / ((double) (grid_ptr->count_coord - 1));
@@ -325,7 +325,7 @@ struct index_range *zone_to_range(struct zone *zone_ptr)
 			    &k1, &k2) == ERROR) {
 		return(NULL);
 	}
-	range_ptr = malloc (sizeof(struct index_range));
+	range_ptr = (struct index_range *) malloc (sizeof(struct index_range));
 	if (range_ptr == NULL) malloc_error();
 	range_ptr->i1 = i1;
 	range_ptr->i2 = i2;
@@ -363,7 +363,7 @@ struct index_range *zone_to_elt_range(struct zone *zone_ptr)
 			    &k1, &k2) == ERROR) {
 		return(NULL);
 	}
-	range_ptr = malloc (sizeof(struct index_range));
+	range_ptr = (struct index_range *) malloc (sizeof(struct index_range));
 	if (range_ptr == NULL) malloc_error();
 	range_ptr->i1 = i1;
 	range_ptr->i2 = i2;
@@ -553,7 +553,7 @@ int setup_print_locations(struct print_zones_struct *print_zones_struct_ptr, siz
 	if (print_zones_struct_ptr->thin_grid[0] > 0 || print_zones_struct_ptr->thin_grid[1] > 0 || print_zones_struct_ptr->thin_grid[2] > 0) {
 		for (i = 0; i < 3; i++) {
 			if (print_zones_struct_ptr->thin_grid_list[i] != NULL) free_check_null(print_zones_struct_ptr->thin_grid_list[i]);
-			print_zones_struct_ptr->thin_grid_list[i] = malloc((size_t) (grid[i].count_coord * sizeof(int)));
+			print_zones_struct_ptr->thin_grid_list[i] = (int *) malloc((size_t) (grid[i].count_coord * sizeof(int)));
 			if (print_zones_struct_ptr->thin_grid_list[i] == NULL) malloc_error();
 			if (print_zones_struct_ptr->thin_grid[i] <= 0) {
 				/* print all node numbers */
@@ -1195,6 +1195,19 @@ int setup_bc(void)
 	int i, match_bc;
 	int face;
 	struct index_range *range_ptr;
+	int
+		bc_type_pos,
+		bc_flux_pos,
+		bc_flux_defined_pos,
+		bc_solution_pos,
+		bc_solution_defined_pos,
+		bc_solution_type_pos,
+		bc_head_pos,
+		bc_head_defined_pos,
+		bc_k_pos,
+		bc_k_defined_pos,
+		bc_thick_pos,
+		bc_thick_defined_pos;
 
 	if (simulation > 0) {
 		match_bc = TRUE;
@@ -1242,6 +1255,50 @@ int setup_bc(void)
 		} else {
 			face = 0;
 		}
+		switch (face) {
+		case 0:
+			bc_type_pos = offsetof(struct cell, bc_face[0].bc_type);
+			bc_flux_pos = offsetof(struct cell, bc_face[0].bc_flux);
+			bc_flux_defined_pos = offsetof(struct cell, bc_face[0].bc_flux_defined);
+			bc_solution_pos = offsetof(struct cell, bc_face[0].bc_solution);
+			bc_solution_defined_pos = offsetof(struct cell, bc_face[0].bc_solution_defined);
+			bc_solution_type_pos = offsetof(struct cell, bc_face[0].bc_solution_type);
+			bc_head_pos = offsetof(struct cell, bc_face[0].bc_head);
+			bc_head_defined_pos = offsetof(struct cell, bc_face[0].bc_head_defined);
+			bc_k_pos = offsetof(struct cell, bc_face[0].bc_k);
+			bc_k_defined_pos = offsetof(struct cell, bc_face[0].bc_k_defined);
+			bc_thick_pos = offsetof(struct cell, bc_face[0].bc_thick);
+			bc_thick_defined_pos = offsetof(struct cell, bc_face[0].bc_thick_defined);
+			break;
+		case 1:
+			bc_type_pos = offsetof(struct cell, bc_face[1].bc_type);
+			bc_flux_pos = offsetof(struct cell, bc_face[1].bc_flux);
+			bc_flux_defined_pos = offsetof(struct cell, bc_face[1].bc_flux_defined);
+			bc_solution_pos = offsetof(struct cell, bc_face[1].bc_solution);
+			bc_solution_defined_pos = offsetof(struct cell, bc_face[1].bc_solution_defined);
+			bc_solution_type_pos = offsetof(struct cell, bc_face[1].bc_solution_type);
+			bc_head_pos = offsetof(struct cell, bc_face[1].bc_head);
+			bc_head_defined_pos = offsetof(struct cell, bc_face[1].bc_head_defined);
+			bc_k_pos = offsetof(struct cell, bc_face[1].bc_k);
+			bc_k_defined_pos = offsetof(struct cell, bc_face[1].bc_k_defined);
+			bc_thick_pos = offsetof(struct cell, bc_face[1].bc_thick);
+			bc_thick_defined_pos = offsetof(struct cell, bc_face[1].bc_thick_defined);
+			break;
+		case 2:
+			bc_type_pos = offsetof(struct cell, bc_face[2].bc_type);
+			bc_flux_pos = offsetof(struct cell, bc_face[2].bc_flux);
+			bc_flux_defined_pos = offsetof(struct cell, bc_face[2].bc_flux_defined);
+			bc_solution_pos = offsetof(struct cell, bc_face[2].bc_solution);
+			bc_solution_defined_pos = offsetof(struct cell, bc_face[2].bc_solution_defined);
+			bc_solution_type_pos = offsetof(struct cell, bc_face[2].bc_solution_type);
+			bc_head_pos = offsetof(struct cell, bc_face[2].bc_head);
+			bc_head_defined_pos = offsetof(struct cell, bc_face[2].bc_head_defined);
+			bc_k_pos = offsetof(struct cell, bc_face[2].bc_k);
+			bc_k_defined_pos = offsetof(struct cell, bc_face[2].bc_k_defined);
+			bc_thick_pos = offsetof(struct cell, bc_face[2].bc_thick);
+			bc_thick_defined_pos = offsetof(struct cell, bc_face[2].bc_thick_defined);
+			break;
+		}
 
 		/* bc type SPECIFIED, FLUX, LEAKY */
 		if (simulation == 0) {
@@ -1261,7 +1318,8 @@ int setup_bc(void)
 			if (distribute_type_to_cells(range_ptr, 
 						     bc[i]->mask, 
 						     bc[i]->bc_type, 
-						     offsetof(struct cell, bc_face[face].bc_type),
+						     /*offsetof(struct cell, bc_face[face].bc_type),*/
+						     bc_type_pos,
 						     FALSE, 0, 0) == ERROR) {
 				sprintf(error_string,"Boundary condition type %s", tag);
 				error_msg(error_string, CONTINUE);
@@ -1332,8 +1390,10 @@ int setup_bc(void)
 				if (distribute_property_to_cells(range_ptr, 
 								 bc[i]->mask, 
 								 bc[i]->current_bc_flux, 
-								 offsetof(struct cell, bc_face[face].bc_flux),
-								 offsetof(struct cell, bc_face[face].bc_flux_defined),
+								 /*offsetof(struct cell, bc_face[face].bc_flux),*/
+								 /*offsetof(struct cell, bc_face[face].bc_flux_defined),*/
+								 bc_flux_pos,
+								 bc_flux_defined_pos,
 								 PT_DOUBLE, match_bc, face, FLUX) == ERROR) {
 					sprintf(error_string,"Flux %s", tag);
 					error_msg(error_string, CONTINUE);
@@ -1347,8 +1407,12 @@ int setup_bc(void)
 				if (distribute_property_to_cells(range_ptr, 
 								 bc[i]->mask,
 								 bc[i]->current_bc_solution, 
+								 /*
 								 offsetof(struct cell, bc_face[face].bc_solution),
 								 offsetof(struct cell, bc_face[face].bc_solution_defined),
+								 */
+								 bc_solution_pos,
+								 bc_solution_defined_pos,
 								 PT_MIX, match_bc, face, FLUX) == ERROR) {
 					sprintf(error_string,"Solution number %s", tag);
 					error_msg(error_string, CONTINUE);
@@ -1361,7 +1425,8 @@ int setup_bc(void)
 			if (distribute_type_to_cells(range_ptr, 
 						     bc[i]->mask, 
 						     bc[i]->bc_solution_type, 
-						     offsetof(struct cell, bc_face[face].bc_solution_type),
+						     /*offsetof(struct cell, bc_face[face].bc_solution_type),*/
+						     bc_solution_type_pos,
 						     match_bc, face, FLUX) == ERROR) {
 				sprintf(error_string,"Solution type %s", tag);
 				error_msg(error_string, CONTINUE);
@@ -1378,8 +1443,12 @@ int setup_bc(void)
 				if (distribute_property_to_cells(range_ptr, 
 								 bc[i]->mask, 
 								 bc[i]->current_bc_head, 
+								 /*
 								 offsetof(struct cell, bc_face[face].bc_head),
 								 offsetof(struct cell, bc_face[face].bc_head_defined),
+								 */
+								 bc_head_pos,
+								 bc_head_defined_pos,
 								 PT_DOUBLE, match_bc, face, LEAKY) == ERROR) {
 					sprintf(error_string,"Head %s", tag);
 					error_msg(error_string, CONTINUE);
@@ -1393,8 +1462,12 @@ int setup_bc(void)
 				if (distribute_property_to_cells(range_ptr, 
 								 bc[i]->mask, 
 								 bc[i]->bc_k, 
+								 /*
 								 offsetof(struct cell, bc_face[face].bc_k),
 								 offsetof(struct cell, bc_face[face].bc_k_defined),
+								 */
+								 bc_k_pos,
+								 bc_k_defined_pos,
 								 PT_DOUBLE, match_bc, face, LEAKY) == ERROR) {
 					sprintf(error_string,"Hydraulic conductivity %s", tag);
 					error_msg(error_string, CONTINUE);
@@ -1407,8 +1480,12 @@ int setup_bc(void)
 				if (distribute_property_to_cells(range_ptr, 
 								 bc[i]->mask,
 								 bc[i]->bc_thick, 
+								 /*
 								 offsetof(struct cell, bc_face[face].bc_thick),
 								 offsetof(struct cell, bc_face[face].bc_thick_defined),
+								 */
+								 bc_thick_pos,
+								 bc_thick_defined_pos,
 								 PT_DOUBLE, match_bc, face, LEAKY) == ERROR) {
 					sprintf(error_string,"Thickness %s", tag);
 					error_msg(error_string, CONTINUE);
@@ -1422,8 +1499,12 @@ int setup_bc(void)
 				if (distribute_property_to_cells(range_ptr, 
 								 bc[i]->mask, 
 								 bc[i]->current_bc_solution, 
+								 /*
 								 offsetof(struct cell, bc_face[face].bc_solution),
 								 offsetof(struct cell, bc_face[face].bc_solution_defined),
+								 */
+								 bc_solution_pos,
+								 bc_solution_defined_pos,
 								 PT_MIX, match_bc, face, LEAKY) == ERROR) {
 					sprintf(error_string,"Solution number %s", tag);
 					error_msg(error_string, CONTINUE);
@@ -1436,7 +1517,8 @@ int setup_bc(void)
 			if (distribute_type_to_cells(range_ptr, 
 						     bc[i]->mask, 
 						     bc[i]->bc_solution_type, 
-						     offsetof(struct cell, bc_face[face].bc_solution_type),
+						     /*offsetof(struct cell, bc_face[face].bc_solution_type),*/
+						     bc_solution_type_pos,
 						     match_bc, face, LEAKY) == ERROR) {
 				sprintf(error_string,"Solution type %s", tag);
 				error_msg(error_string, CONTINUE);
@@ -1779,7 +1861,7 @@ struct index_range *vertex_to_range(gpc_vertex *poly, int count_points)
 			    &j1, &j2) == ERROR) {
 		return(NULL);
 	}
-	range_ptr = malloc (sizeof(struct index_range));
+	range_ptr = (struct index_range *) malloc (sizeof(struct index_range));
 	if (range_ptr == NULL) malloc_error();
 	range_ptr->i1 = i1;
 	range_ptr->i2 = i2;

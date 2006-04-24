@@ -12,12 +12,13 @@ extern FILE  *database_file;
 extern char *user_database;
 extern char *selected_output_file;
 extern int first_read_input;
+/*
 extern FILE  *log_file;
 extern FILE  *punch_file;
 extern FILE  *error_file;
 extern FILE  *dump_file;
 extern FILE  *echo_file;
-
+*/
 typedef int (*PFN_MESSAGE_CALLBACK)(const int type, const char *err_str, const int stop, void *cookie, const char *, va_list args);
 
 struct message_callback {

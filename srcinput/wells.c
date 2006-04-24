@@ -1,4 +1,4 @@
-#define EXTERNAL
+#define EXTERNAL extern
 #include "hstinpt.h"
 static char const svnid[] = "$Id$";
 
@@ -102,7 +102,7 @@ int build_wells(void)
 		/* convert depth into elevation */
 		if (well_ptr->depth_defined == TRUE) {
 			for (i = 0; i < well_ptr->count_depth; i++) {
-				well_ptr->elevation = realloc(well_ptr->elevation, (size_t) (well_ptr->count_elevation + 1) * sizeof(Well_Interval));
+				well_ptr->elevation = (Well_Interval*) realloc(well_ptr->elevation, (size_t) (well_ptr->count_elevation + 1) * sizeof(Well_Interval));
 				if (well_ptr->elevation == NULL) malloc_error();
 				well_ptr->elevation[well_ptr->count_elevation].top = well_ptr->lsd - well_ptr->depth[i].top;
 				well_ptr->elevation[well_ptr->count_elevation].bottom = well_ptr->lsd - well_ptr->depth[i].bottom;
@@ -166,11 +166,11 @@ int setup_wells(void)
 	wells_update = TRUE;
 	/* malloc scratch space */
 	count_coord = grid[2].count_coord;
-	f = malloc ((size_t) count_coord * sizeof(double));
+	f = (double *) malloc ((size_t) count_coord * sizeof(double));
 	if (f == NULL) malloc_error();
-	dl = malloc ((size_t) count_coord * sizeof(double));
+	dl = (double *) malloc ((size_t) count_coord * sizeof(double));
 	if (dl == NULL) malloc_error();
-	du = malloc ((size_t) count_coord * sizeof(double));
+	du = (double *) malloc ((size_t) count_coord * sizeof(double));
 	if (du == NULL) malloc_error();
 	for (j = 0; j < count_wells; j++) {
 		well_ptr = &(wells[j]);
@@ -249,7 +249,7 @@ int setup_wells(void)
 #endif
 		for (k = 0; k < count_coord; k++) {
 			if (f[k] > 0) {
-				well_ptr->cell_fraction = realloc(well_ptr->cell_fraction, (size_t) (well_ptr->count_cell_fraction + 1) * sizeof(Cell_Fraction));
+				well_ptr->cell_fraction = (Cell_Fraction *) realloc(well_ptr->cell_fraction, (size_t) (well_ptr->count_cell_fraction + 1) * sizeof(Cell_Fraction));
 				if (well_ptr->cell_fraction == NULL) malloc_error();
 				n = ijk_to_n(i_cell, j_cell, k);
 				well_ptr->cell_fraction[well_ptr->count_cell_fraction].cell = n;

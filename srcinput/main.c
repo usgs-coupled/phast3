@@ -12,8 +12,10 @@ static char const svnid[] = "$Id$";
 int main(int argc, char *argv[]);
 
 static void initialize(void);
-static int process_chem_names(void);
+/*static int process_chem_names(void);*/
 static int process_file_names(int argc, char *argv[]);
+
+extern FILE *echo_file;
 
 /* ----------------------------------------------------------------------
  *   MAIN
@@ -34,8 +36,8 @@ int main(int argc, char *argv[])
 	tmpDbgFlag |= _CRTDBG_CHECK_ALWAYS_DF;
 	_CrtSetDbgFlag(tmpDbgFlag);
 #endif
-	std_error = stderr;
-	error_file = stderr;
+	/*std_error = stderr;*/
+	/*error_file = stderr;*/
 	/*
 	 *   Add callbacks for error_msg and warning_msg
 	 */
@@ -201,6 +203,7 @@ int process_file_names(int argc, char *argv[])
 	}
 	return OK;
 }
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 int process_chem_names(void)
 /* ---------------------------------------------------------------------- */
@@ -231,7 +234,7 @@ int process_chem_names(void)
 	}
 	return OK;
 }
-
+#endif
 /* ---------------------------------------------------------------------- */
 int clean_up(void)
 /* ---------------------------------------------------------------------- */
@@ -458,25 +461,25 @@ void initialize(void)
  *   initialize grid_elt_zones to contain definition
  *   of media properties
  */
-	grid_elt_zones = malloc (sizeof(struct grid_elt *));
+	grid_elt_zones = (struct grid_elt **) malloc (sizeof(struct grid_elt *));
 	if (grid_elt_zones == NULL) malloc_error();
 	count_grid_elt_zones = 0;
 /*
  *   initialize head_ic 
  */
-	head_ic = malloc (sizeof(struct head_ic *));
+	head_ic = (struct head_ic **) malloc (sizeof(struct head_ic *));
 	if (head_ic == NULL) malloc_error();
 	count_head_ic = 0;
 /*
  *   initialize chem_ic 
  */
-	chem_ic = malloc (sizeof(struct chem_ic *));
+	chem_ic = (struct chem_ic **) malloc (sizeof(struct chem_ic *));
 	if (chem_ic == NULL) malloc_error();
 	count_chem_ic = 0;
 /*
  *   initialize bc
  */
-	bc = malloc (sizeof(struct bc *));
+	bc = (struct bc **) malloc (sizeof(struct bc *));
 	if (bc == NULL) malloc_error();
 	count_bc = 0;
 	count_specified = count_flux = count_leaky = 0;

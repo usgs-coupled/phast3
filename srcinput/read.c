@@ -252,7 +252,7 @@ int read_title (void)
 	if (copy_token(token, &ptr, &l) != EMPTY) {
 		title_x = string_duplicate(ptr1);
 	} else {
-		title_x = malloc(sizeof(char));
+		title_x = (char *) malloc(sizeof(char));
 		title_x[0] = '\0';
 	}
 			
@@ -268,7 +268,7 @@ int read_title (void)
  */
 		title_x_length = strlen(title_x);
 		line_length = strlen(line);
-		title_x = realloc(title_x, (size_t) (title_x_length + line_length + 2) * sizeof(char));
+		title_x = (char *) realloc(title_x, (size_t) (title_x_length + line_length + 2) * sizeof(char));
 		if (title_x_length > 0) {
 			title_x[title_x_length] = '\n';
 			title_x[title_x_length+1] = '\0';
@@ -449,7 +449,7 @@ int check_units (char *tot_units,  int alkalinity, int check_compatibility,
  *   Check if unit in list
  */
 	found = FALSE;
-	for (i=0; i < NUNITS; i++) {
+	for (i=0; i < (int) NUNITS; i++) {
 		if (strcmp(tot_units, units[i]) == 0) {
 			found=TRUE;
 			break;
@@ -779,7 +779,7 @@ double *read_list_doubles(char **ptr, int *count_doubles )
 	char *ptr_save;
 	int l;
 
-	double_list = malloc (sizeof(double));
+	double_list = (double *) malloc (sizeof(double));
 	if (double_list == NULL) malloc_error();
 	*count_doubles = 0;
 
@@ -787,7 +787,7 @@ double *read_list_doubles(char **ptr, int *count_doubles )
 	while ( copy_token(token, ptr, &l) != EMPTY) {
 		if (sscanf(token,"%lf", &value) == 1) {
 			*count_doubles = *count_doubles + 1;
-			double_list = realloc(double_list, (size_t) (*count_doubles) * sizeof (double));
+			double_list = (double *) realloc(double_list, (size_t) (*count_doubles) * sizeof (double));
 			if (double_list == NULL) malloc_error();
 			double_list[ (*count_doubles) - 1] = value;
 			ptr_save = *ptr;
@@ -935,7 +935,7 @@ int read_grid(void)
 			}
 			if (count_doubles > 0) {
 				count = grid[j].count_coord;
-				grid[j].coord = realloc ( grid[j].coord, (size_t) (count +count_doubles + 1) * sizeof(double));
+				grid[j].coord = (double *) realloc ( grid[j].coord, (size_t) (count +count_doubles + 1) * sizeof(double));
 				if (grid[j].coord == NULL) malloc_error();
 				memcpy(&(grid[j].coord[count]),
 					 temp,
@@ -1082,7 +1082,7 @@ int read_grid(void)
 			}
 			if (count_doubles > 0) {
 				count = grid_ptr->count_coord;
-				grid_ptr->coord = realloc ( grid_ptr->coord, (size_t) (count +count_doubles + 1) * sizeof(double));
+				grid_ptr->coord = (double *) realloc ( grid_ptr->coord, (size_t) (count +count_doubles + 1) * sizeof(double));
 				if (grid_ptr->coord == NULL) malloc_error();
 				memcpy(&(grid_ptr->coord[count]),
 					 temp,
@@ -1134,7 +1134,7 @@ int read_grid(void)
 			}
 			if (count_doubles > 0) {
 				count = grid_ptr->count_coord;
-				grid_ptr->coord = realloc ( grid_ptr->coord, (size_t) (count +count_doubles + 1) * sizeof(double));
+				grid_ptr->coord = (double *) realloc ( grid_ptr->coord, (size_t) (count +count_doubles + 1) * sizeof(double));
 				if (grid_ptr->coord == NULL) malloc_error();
 				memcpy(&(grid_ptr->coord[count]),
 					 temp,
@@ -3143,7 +3143,7 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 			return(NULL);
 		}
 
-		p->v = realloc(p->v, (size_t) p->count_v * sizeof(double));
+		p->v = (double *) realloc(p->v, (size_t) p->count_v * sizeof(double));
 		p->count_alloc = p->count_v;
 	} else if ( token[0] == 'F' || token[0] == 'f') {
 /*
@@ -3187,7 +3187,7 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 			return(NULL);
 		}
 
-		p->v = realloc(p->v, (size_t) p->count_v * sizeof(double));
+		p->v = (double *) realloc(p->v, (size_t) p->count_v * sizeof(double));
 		p->count_alloc = p->count_v;
 	} else {
 		property_free(p);
@@ -3236,7 +3236,7 @@ struct property *read_property_file_or_doubles(char *ptr, const char **opt_list,
 			property_free(p);
 			return(NULL);
 		}
-		p->v = realloc(p->v, (size_t) p->count_v * sizeof(double));
+		p->v = (double *) realloc(p->v, (size_t) p->count_v * sizeof(double));
 		p->count_alloc = p->count_v;
 	} else if (token[0] == 'B' || token[0] == 'b') {
 /*
@@ -3248,7 +3248,7 @@ struct property *read_property_file_or_doubles(char *ptr, const char **opt_list,
 			property_free(p);
 			return(NULL);
 		}
-		p->v = realloc(p->v, (size_t) p->count_v * sizeof(double));
+		p->v = (double *) realloc(p->v, (size_t) p->count_v * sizeof(double));
 		p->count_alloc = p->count_v;
 	} else if ( token[0] == 'F' || token[0] == 'f') {
 /*
@@ -3417,7 +3417,7 @@ int read_line_doubles(char *next_char, double **d, int *count_d, int *count_allo
 		for (;;) {
 			if ((*count_d) + n > (*count_alloc)) {
 				*count_alloc *= 2;
-				*d = realloc(*d, (size_t) (*count_alloc) * sizeof(double));
+				*d = (double *) realloc(*d, (size_t) (*count_alloc) * sizeof(double));
 				if (*d == NULL ) malloc_error();
 			} else {
 				break;
@@ -3460,7 +3460,7 @@ int read_line_doubles_delimited(char *next_char, double **d, int *count_d, int *
 		for (;;) {
 			if ((*count_d) + n > (*count_alloc)) {
 				*count_alloc *= 2;
-				*d = realloc(*d, (size_t) (*count_alloc) * sizeof(double));
+				*d = (double *) realloc(*d, (size_t) (*count_alloc) * sizeof(double));
 				if (*d == NULL ) malloc_error();
 			} else {
 				break;
@@ -3538,7 +3538,7 @@ int read_file_doubles(char *next_char, double **d, int *count_d, int *count_allo
 		}
 	}
 	if (*count_d > 0) {
-		*d = realloc(*d, (size_t) *count_d * sizeof(double));
+		*d = (double *) realloc(*d, (size_t) *count_d * sizeof(double));
 		*count_alloc = *count_d;
 	}
 	fclose(file_ptr);
@@ -4173,7 +4173,7 @@ int read_time_control (void)
 				    times_free(time_step_temp, count_time_step_temp);
 				    time_step_temp = NULL;
 			    }
-			    time_step_temp = malloc(sizeof(struct time *));
+			    time_step_temp = (struct time *) malloc(sizeof(struct time));
 			    count_time_step_temp = 0;
 			    if (read_lines_times(next_char, &time_step_temp, &count_time_step_temp, opt_list, count_opt_list, &opt) == ERROR) {
 				    input_error++;
@@ -4210,7 +4210,7 @@ int read_time_control (void)
 			error_msg(error_string, CONTINUE);
 		} else {
 			count = (count_time_step_temp) / 2;
-			time_step.properties = malloc((size_t) (count*sizeof(struct property_time *)));
+			time_step.properties = (struct property_time **) malloc((size_t) (count*sizeof(struct property_time *)));
 			if (time_step.properties == NULL) malloc_error();
 			for (i = 0; i < count; i++) {
 				time_step.properties[i] = property_time_alloc();
@@ -4960,7 +4960,7 @@ int read_river(void)
 		river_ptr = &(rivers[n]);
 	}
 	river_number = n;
-	rivers[river_number].points = malloc ((size_t) sizeof (River_Point));
+	rivers[river_number].points = (River_Point *) malloc ((size_t) sizeof (River_Point));
 	if (rivers[river_number].points == NULL) malloc_error();
 	rivers[river_number].count_points = 0;
 	rivers[river_number].points->polygon = NULL;
@@ -5409,13 +5409,13 @@ int read_well(void)
 	/*
 	 *   Initialize well
 	 */
-	well_ptr->depth = malloc ((size_t) sizeof (Well_Interval));
+	well_ptr->depth = (Well_Interval *) malloc ((size_t) sizeof (Well_Interval));
 	if (well_ptr->depth == NULL) malloc_error();
 	well_ptr->count_depth = 0;
-	well_ptr->elevation = malloc ((size_t) sizeof (Well_Interval));
+	well_ptr->elevation = (Well_Interval *) malloc ((size_t) sizeof (Well_Interval));
 	if (well_ptr->elevation == NULL) malloc_error();
 	well_ptr->count_elevation = 0;
-	well_ptr->cell_fraction = malloc((size_t) sizeof(Cell_Fraction));
+	well_ptr->cell_fraction = (Cell_Fraction *) malloc((size_t) sizeof(Cell_Fraction));
 	if (well_ptr->cell_fraction == NULL) malloc_error();
 	well_ptr->count_cell_fraction = 0;
 	well_ptr->new_def = TRUE;
@@ -5544,7 +5544,7 @@ int read_well(void)
 			break;
 		case 7:                       /* depth */
 		case 5:                       /* depths */
-			well_ptr->depth = realloc(well_ptr->depth, (size_t) (well_ptr->count_depth + 1) * sizeof(Well_Interval));
+			well_ptr->depth = (Well_Interval *) realloc(well_ptr->depth, (size_t) (well_ptr->count_depth + 1) * sizeof(Well_Interval));
 			if (well_ptr->depth == NULL) malloc_error();
 			j = copy_token(token, &next_char , &l);
 			if (j != DIGIT) {
@@ -5569,7 +5569,7 @@ int read_well(void)
 			break;
 		case 9:                       /* elevation */
 		case 10:                       /* elevations */
-			well_ptr->elevation = realloc(well_ptr->elevation, (size_t) (well_ptr->count_elevation + 1) * sizeof(Well_Interval));
+			well_ptr->elevation = (Well_Interval *) realloc(well_ptr->elevation, (size_t) (well_ptr->count_elevation + 1) * sizeof(Well_Interval));
 			if (well_ptr->elevation == NULL) malloc_error();
 			j = copy_token(token, &next_char , &l);
 			if (j != DIGIT) {

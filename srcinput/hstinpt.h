@@ -1,6 +1,5 @@
 #ifndef _INC_HSTINPT
 #define _INC_HSTINPT
-
 #ifdef PHREEQC_IDENT
 static char const svnid[] = "$Id$";
 #endif
@@ -458,6 +457,7 @@ struct unit {
 /*	double si_to_user; */
 	double input_to_user;
 	int defined;
+#ifdef SKIP
 #if defined(__cplusplus)
 // Constructors
 	unit(void);
@@ -469,6 +469,7 @@ struct unit {
 // Utilities
 	int set_input(const char* input);
 	const char* c_str(void)const;
+#endif
 #endif
 };
 struct units {
@@ -486,6 +487,7 @@ struct units {
 	struct unit well_pumpage;	
 	struct unit river_bed_k;	
 	struct unit river_bed_thickness;	
+#ifdef SKIP
 #if defined(__cplusplus)
 // Constructors
 	units(void);
@@ -493,6 +495,7 @@ struct units {
 //	units(const units& src);
 // Assignment Operators
 	units& operator=(const units& rhs);
+#endif
 #endif
 };
 EXTERNAL struct units units;
@@ -588,11 +591,13 @@ EXTERNAL char *title_x;
 /* ----------------------------------------------------------------------
  *   GLOBAL DECLARATIONS 
  * ---------------------------------------------------------------------- */
+/*
 EXTERNAL FILE  *input_file;
 EXTERNAL FILE  *input;                        
 EXTERNAL FILE  *database_file;
 EXTERNAL FILE  *log_file;
 EXTERNAL FILE  *echo_file;
+*/
 EXTERNAL FILE  *std_error;
 EXTERNAL FILE  *error_log;
 EXTERNAL FILE  *hst_file;
@@ -612,7 +617,7 @@ EXTERNAL char  *line_save;
 EXTERNAL int   check_line_return;
 
 EXTERNAL int   simulation;
-EXTERNAL double *simulation_periods;
+/*EXTERNAL double *simulation_periods;*/
 EXTERNAL char  dimension[3];
 EXTERNAL int   nx, ny, nz, nxyz;
 EXTERNAL int count_specified, count_flux, count_leaky, count_river_segments;

@@ -119,7 +119,7 @@ int cell_init(struct cell *cell_ptr)
 	cell_ptr->print_hdf_defined = FALSE;
 	cell_ptr->print_chem = TRUE;
 	cell_ptr->print_chem_defined = FALSE;
-	cell_ptr->zone = malloc((size_t) sizeof (struct zone));
+	cell_ptr->zone = (struct zone *) malloc((size_t) sizeof (struct zone));
 	if (cell_ptr->zone == NULL) malloc_error();
 	cell_ptr->mask = NULL; /* cell_alloc is never called */
 
@@ -157,7 +157,7 @@ int cell_init(struct cell *cell_ptr)
 	}
 
 	/* rivers */
-	cell_ptr->river_polygons = malloc((size_t) sizeof(River_Polygon));
+	cell_ptr->river_polygons = (River_Polygon *) malloc((size_t) sizeof(River_Polygon));
 	if (cell_ptr->river_polygons == NULL) malloc_error();
 	cell_ptr->count_river_polygons = 0;
 
@@ -475,7 +475,7 @@ struct property *property_alloc(void)
 
 	property_ptr = (struct property *) malloc (sizeof(struct property));
 	if (property_ptr == NULL) malloc_error();
-	property_ptr->v = malloc ((size_t) 2 * sizeof(double));
+	property_ptr->v = (double *) malloc ((size_t) 2 * sizeof(double));
 	if (property_ptr->v == NULL) malloc_error();
 	property_ptr->count_v = 0;
 	property_ptr->count_alloc = 2;
