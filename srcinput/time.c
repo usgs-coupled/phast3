@@ -388,7 +388,7 @@ int collate_simulation_periods(void)
 	accumulate_time_series(&print_bc_flow);
 	accumulate_time_series(&print_conductances);
 	accumulate_time_series(&print_bc);
-
+	accumulate_time_series(&print_restart);
 
 	/*
 	 *  Add in all but last time_end

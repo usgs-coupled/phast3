@@ -1,5 +1,7 @@
 #define EXTERNAL extern
 #define MAIN
+#include <fstream>
+#include <iostream>     // std::cout std::cerr
 #include "StorageBin.h"
 #include "phreeqc/global.h"
 #include "phreeqc/output.h"
@@ -16,8 +18,8 @@ extern void unpackcxx_from_hst(double *fraction, int *dim);
 extern void scale_cxxsolution(int n_solution, double factor);
 extern struct system *cxxsystem_initialize(int i, int n_user_new, int *initial_conditions1, int *initial_conditions2, double *fraction1);
 
-static void BeginTimeStep(int print_sel, int print_out, int print_hdf);
-static void EndTimeStep(int print_sel, int print_out, int print_hdf);
+static void BeginTimeStep(int print_sel, int print_out, int print_hdf, int print_restart);
+static void EndTimeStep(int print_sel, int print_out, int print_hdf, int print_restart);
 static void BeginCell(int print_sel, int print_out, int print_hdf, int index);
 static void EndCell(int print_sel, int print_out, int print_hdf, int index);
 
@@ -57,12 +59,13 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 			 double *time_hst, double *time_step_hst, int *prslm, double *cnvtmi,
 			 double *frac, int *printzone_chem, int *printzone_xyz,
 			 int *print_out, int *print_hdf,
-			 double *rebalance_fraction_hst);
+			 double *rebalance_fraction_hst,
+			 int *print_restart);
 #endif  /* #ifdef USE_MPI */
 cxxStorageBin uzBin;
 cxxStorageBin szBin;
 cxxStorageBin phreeqcBin;
-
+std::map<std::string, int> FileMap;
 
 #if !defined(LAHEY_F95) && !defined(_WIN32)
 #define CALCULATE_WELL_PH calculate_well_ph
@@ -79,6 +82,7 @@ cxxStorageBin phreeqcBin;
 #define PACK_FOR_HST pack_for_hst
 #define PHREEQC_FREE phreeqc_free
 #define PHREEQC_MAIN phreeqc_main
+#define SEND_RESTART_NAME send_restart_name
 #define SETUP_BOUNDARY_CONDITIONS setup_boundary_conditions
 #define WARNPRT_C warnprt_c
 #define UZ_INIT uz_init
@@ -97,6 +101,7 @@ cxxStorageBin phreeqcBin;
 #define PACK_FOR_HST pack_for_hst_
 #define PHREEQC_FREE phreeqc_free_
 #define PHREEQC_MAIN phreeqc_main_
+#define SEND_RESTART_NAME send_restart_name_
 #define SETUP_BOUNDARY_CONDITIONS setup_boundary_conditions_
 #define WARNPRT_C warnprt_c_
 #define UZ_INIT uz_init_
@@ -119,7 +124,8 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 		 double *time_hst, double *time_step_hst, int *prslm, double *cnvtmi,
 		 double *frac, int *printzone_chem, int *printzone_xyz, 
 		 int *print_out, int *stop_msg, int *print_hdf,
-		 double *rebalance_fraction_hst);
+		 double *rebalance_fraction_hst,
+	         int *print_restart);
 /*  #endif                                                                             */
 void ERRPRT_C(char *err_str, long l);
 void FORWARD_AND_BACK(int *initial_conditions, int *axes, int *nx, int *ny, int *nz);
@@ -129,6 +135,7 @@ void PACK_FOR_HST(double *fraction, int *dim);
 void PHREEQC_FREE(int *solute);
 void PHREEQC_MAIN(int *solute, char *chemistry_name, char *database_name, char *prefix,
 		  int *mpi_tasks_fort, int *mpi_myself_fort, int chemistry_l, int database_l, int prefix_l);
+void SEND_RESTART_NAME(char *name, int nchar);
 void SETUP_BOUNDARY_CONDITIONS(const int *n_boundary, int *boundary_solution1,
 			       int *boundary_solution2, double *fraction1,
 			       double *boundary_fraction, int *dim);
@@ -190,7 +197,6 @@ void PHREEQC_FREE(int *solute)
 	close_output_files();
 	return;
 }
-#include <iostream>     // std::cout std::cerr
 /* ---------------------------------------------------------------------- */
 void PHREEQC_MAIN(int *solute, char *chemistry_name, char *database_name, char *prefix,
 		  int *mpi_tasks_fort, int *mpi_myself_fort, int chemistry_l, int database_l, int prefix_l)
@@ -736,6 +742,159 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 	//std::ostringstream oss;
 	//szBin.dump_raw(oss,0);
 	//std::cerr << oss.str();
+	/*
+	 * Read any restart files
+	 */
+	for (std::map<std::string, int>::iterator it = FileMap.begin(); it != FileMap.end(); it++) {
+		int ifile = -100 - it->second;
+		// Storage bin
+		cxxStorageBin tempBin;
+		// parser
+		std::fstream myfile;
+		myfile.open(it->first.c_str(), std::ios_base::in);
+		std::ostringstream oss;
+		CParser cparser(myfile, oss, std::cerr);
+		// read data
+		tempBin.read_raw(cparser);
+		//std::ostringstream oss1;
+		//tempBin.dump_raw(oss1, 0);
+		//std::cerr << oss1.str();
+		// put data into szBin
+		// solutions
+		std::vector<int> warn;
+		warn.reserve(7);
+		for (i = 0; i < 7; i++) {
+			warn[i] = 0;
+		}
+		//fprintf(stderr, "%d\n", warn[0]);
+		for (i = 0; i < ixyz; i++) { 	  /* i is ixyz number */
+			int n_old1;
+			j = forward[i];           /* j is count_chem number */
+			if (j < 0) continue;
+			/*
+			 *   Copy solution
+			 */
+			n_old1 = initial_conditions1[7*i];
+			if (n_old1 == ifile) {
+				if (tempBin.getSolution(j) != NULL) {
+					szBin.setSolution(j, tempBin.getSolution(j));
+				} else {
+					input_error++;
+					sprintf(error_string, "Solution %d not found in restart file %s", j, it->first.c_str());
+					error_msg(error_string, CONTINUE);
+				}
+			}
+			/*
+			 *   Copy pp_assemblage
+			 */
+			n_old1 = initial_conditions1[ 7*i + 1 ];
+			if (n_old1 == ifile) {
+				if (tempBin.getPPassemblage(j) != NULL) {
+					szBin.setPPassemblage(j, tempBin.getPPassemblage(j));
+				} else {
+					warn[1]++;
+					//error_msg("PPassemblage %d not found in restart file %s", j, it->first.c_str());
+				}
+			}
+			/*
+			 *   Copy exchange assemblage
+			 */
+			n_old1 = initial_conditions1[ 7*i + 2 ];
+			if (n_old1 == ifile) {
+				if (tempBin.getExchange(j) != NULL) {
+					szBin.setExchange(j, tempBin.getExchange(j));
+				} else {
+					warn[2]++;
+					//error_msg("Exchange %d not found in restart file %s", j, it->first.c_str());
+				}
+			}
+			/*
+			 *   Copy surface assemblage
+			 */
+			n_old1 = initial_conditions1[ 7*i + 3 ];
+			if (n_old1 == ifile) {
+				if (tempBin.getSurface(j) != NULL) {
+					szBin.setSurface(j, tempBin.getSurface(j));
+				} else {
+					warn[3]++;
+					//error_msg("Surface %d not found in restart file %s", j, it->first.c_str());
+				}
+			}
+			/*
+			 *   Copy gas phase
+			 */
+			n_old1 = initial_conditions1[ 7*i + 4 ];
+			if (n_old1 == ifile) {
+				if (tempBin.getGasPhase(j) != NULL) {
+					szBin.setGasPhase(j, tempBin.getGasPhase(j));
+				} else {
+					warn[4]++;
+					//error_msg("GasPhase %d not found in restart file %s", j, it->first.c_str());
+				}
+			}
+			/*
+			 *   Copy solid solution
+			 */
+			n_old1 = initial_conditions1[ 7*i + 5 ];
+			if (n_old1 == ifile) {
+				if (tempBin.getSSassemblage(j) != NULL) {
+					szBin.setSSassemblage(j, tempBin.getSSassemblage(j));
+				} else {
+					warn[5]++;
+					//error_msg("SSassemblage %d not found in restart file %s", j, it->first.c_str());
+				}
+			}
+			/*
+			 *   Copy kinetics
+			 */
+			n_old1 = initial_conditions1[ 7*i + 6 ];
+			if (n_old1 == ifile) {
+				if (tempBin.getKinetics(j) != NULL) {
+					szBin.setKinetics(j, tempBin.getKinetics(j));
+				} else {
+					warn[6]++;
+					//error_msg("Kinetics %d not found in restart file %s", j, it->first.c_str());
+				}
+			}
+		}
+		for (i = 1; i < 7; i++) {
+			if (warn[i] > 0) {
+				std::ostringstream os;
+				os << "Reading file " << it->first << ":" << std::endl;
+				for (j = 1; j < 7; j++) {
+					if (warn[j] == 0) continue;
+					os << "\t" << warn[j];
+					switch (j) {
+					case 1:
+						os << " PPassemblages";
+						break;
+					case 2:
+						os << " Exchangers";
+						break;
+					case 3:
+						os << " Surfaces";
+						break;
+					case 4:
+						os << " GasPhase";
+						break;
+					case 5:
+						os << " SSassemblages";
+						break;
+					case 6:
+						os << " Kinetics";
+						break;
+					}
+					os << " were not found for cells defined by restart file." << std::endl;
+				}
+				std::string token = os.str();
+				warning_msg(token.c_str());
+				break;
+			}
+		}
+	}
+	if (input_error > 0) {
+		error_msg("Terminating in distribute_initial_conditions.\n", STOP);
+	}
 }
 #endif
 /* ---------------------------------------------------------------------- */
@@ -810,12 +969,13 @@ void PACK_FOR_HST(double *fraction, int *dim)
 #ifndef USE_MPI
 /* ---------------------------------------------------------------------- */
 static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
-			double *x_hst, double *y_hst, double *z_hst,
-			double *time_hst, double *time_step_hst, int *prslm, double *cnvtmi,
-			double *frac, 
-			int *printzone_chem,  int *printzone_xyz,
-			int *print_out, int *print_hdf,
-			double *rebalance_fraction_hst)
+			       double *x_hst, double *y_hst, double *z_hst,
+			       double *time_hst, double *time_step_hst, int *prslm, double *cnvtmi,
+			       double *frac, 
+			       int *printzone_chem,  int *printzone_xyz,
+			       int *print_out, int *print_hdf,
+			       double *rebalance_fraction_hst,
+			       int *print_restart)
 /* ---------------------------------------------------------------------- */
 {
 /*
@@ -858,7 +1018,7 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 	}
 	pr.hdf = *print_hdf;
 
-	BeginTimeStep(*print_sel, *print_out, *print_hdf);
+	BeginTimeStep(*print_sel, *print_out, *print_hdf, *print_restart);
 	if (punch.in == TRUE && write_headings) {
 		int pr_punch = pr.punch;
 		pr.punch = TRUE;
@@ -973,8 +1133,12 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 		reinitialize();
 		EndCell(*print_sel, *print_out, *print_hdf, j);
 	}
+	/*
+	 *  Write restart data
+	 */
+	if (*print_restart == 1) write_restart((*time_hst) * (*cnvtmi));
 
-	EndTimeStep(*print_sel, *print_out, *print_hdf);
+	EndTimeStep(*print_sel, *print_out, *print_hdf, *print_restart);
 /*
  *   Put values back for HST
  */
@@ -1009,7 +1173,8 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 		 double *frac, 
 		 int *printzone_chem, int *printzone_xyz,
 		 int *print_out, int *stop_msg, int *print_hdf,
-                 double *rebalance_fraction_hst)
+                 double *rebalance_fraction_hst,
+		 int *print_restart)
 /* ---------------------------------------------------------------------- */
 {
 #ifndef USE_MPI
@@ -1018,7 +1183,8 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 		       x_hst, y_hst, z_hst,
 		       time_hst, time_step_hst, prslm, cnvtmi,
 		       frac, printzone_chem, printzone_xyz, print_out, print_hdf,
-		       rebalance_fraction_hst);
+		       rebalance_fraction_hst,
+		       print_restart);
   }
   return;
 #else  /* #ifndef USE_MPI */
@@ -1389,7 +1555,7 @@ void FORWARD_AND_BACK(int *initial_conditions, int *axes, int *nx, int *ny, int 
 		count_back_list = 1;
 		n = 0;
 		for (i = 0; i < ixyz; i++) {
-			if (initial_conditions[7*i] >= 0) {
+			if (initial_conditions[7*i] >= 0 || initial_conditions[7*i] <= -100) {
 				forward[i] = n;
 				back[n].list[0] = i;
 				n++;
@@ -1406,7 +1572,7 @@ void FORWARD_AND_BACK(int *initial_conditions, int *axes, int *nx, int *ny, int 
 		n = 0;
 		for (i = 0; i < ixyz; i++) {
 			n_to_ijk(i, &ii, &jj, &kk);
-			if (kk == 0 && initial_conditions[7*i] >= 0) {
+			if (kk == 0 && (initial_conditions[7*i] >= 0 || initial_conditions[7*i] <= -100)) {
 				forward[i] = n;
 				back[n].list[0] = i;
 				back[n].list[1] = i + ixy;
@@ -1424,7 +1590,7 @@ void FORWARD_AND_BACK(int *initial_conditions, int *axes, int *nx, int *ny, int 
 		n = 0;
 		for (i = 0; i < ixyz; i++) {
 			n_to_ijk(i, &ii, &jj, &kk);
-			if (jj == 0 && initial_conditions[7*i] >= 0) {
+			if (jj == 0 && (initial_conditions[7*i] >= 0 || initial_conditions[7*i] <= -100)) {
 				forward[i] = n;
 				back[n].list[0] = i;
 				back[n].list[1] = i + ix;
@@ -1447,7 +1613,7 @@ void FORWARD_AND_BACK(int *initial_conditions, int *axes, int *nx, int *ny, int 
 		n = 0;
 		for (i = 0; i < ixyz; i++) {
 			n_to_ijk(i, &ii, &jj, &kk);
-			if (ii == 0 && initial_conditions[7*i] >= 0) {
+			if (ii == 0 && (initial_conditions[7*i] >= 0 || initial_conditions[7*i] <= -100)) {
 				forward[i] = n;
 				back[n].list[0] = i;
 				back[n].list[1] = i + 1;
@@ -1473,7 +1639,7 @@ void FORWARD_AND_BACK(int *initial_conditions, int *axes, int *nx, int *ny, int 
 		count_back_list = 4;
 		n = 0;
 		for (i = 0; i < ixyz; i++) {
-			if (initial_conditions[i*7] < 0) {
+			if (initial_conditions[i*7] < 0 && initial_conditions[7*i] > -100) {
 				input_error++;
 				sprintf(error_string, "Can not have inactive cells in a 1D simulation.");
 				error_msg(error_string, STOP);
@@ -1507,7 +1673,7 @@ void FORWARD_AND_BACK(int *initial_conditions, int *axes, int *nx, int *ny, int 
 		count_back_list = 4;
 		n = 0;
 		for (i = 0; i < ixyz; i++) {
-			if (initial_conditions[i*7] < 0) {
+			if (initial_conditions[i*7] < 0 && initial_conditions[7*i] > -100) {
 				input_error++;
 				sprintf(error_string, "Can not have inactive cells in a 1D simulation.");
 				error_msg(error_string, STOP);
@@ -1532,7 +1698,7 @@ void FORWARD_AND_BACK(int *initial_conditions, int *axes, int *nx, int *ny, int 
 		count_back_list = 4;
 		n = 0;
 		for (i = 0; i < ixyz; i++) {
-			if (initial_conditions[i*7] < 0) {
+			if (initial_conditions[i*7] < 0 && initial_conditions[7*i] > -100) {
 				input_error++;
 				sprintf(error_string, "Can not have inactive cells in a 1D simulation.");
 				error_msg(error_string, STOP);
@@ -3451,7 +3617,7 @@ void CALCULATE_WELL_PH(double *c, LDBLE *ph, LDBLE *alkalinity)
  * Function          BeginTimeStep
  *-------------------------------------------------------------------------
  */
-void BeginTimeStep(int print_sel, int print_out, int print_hdf)
+void BeginTimeStep(int print_sel, int print_out, int print_hdf, int print_restart)
 {
 #ifdef HDF5_CREATE
 	if (print_hdf == TRUE) {
@@ -3460,7 +3626,7 @@ void BeginTimeStep(int print_sel, int print_out, int print_hdf)
 #endif
 #if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
 	/* Always open file for output in case of a warning message */
-		MergeBeginTimeStep(print_sel, print_out);
+		MergeBeginTimeStep(print_sel, print_out, print_restart);
 #endif
 }
 
@@ -3468,7 +3634,7 @@ void BeginTimeStep(int print_sel, int print_out, int print_hdf)
  * Function          EndTimeStep
  *-------------------------------------------------------------------------
  */
-void EndTimeStep(int print_sel, int print_out, int print_hdf)
+void EndTimeStep(int print_sel, int print_out, int print_hdf, int print_restart)
 {
 #ifdef HDF5_CREATE
 	if (print_hdf == TRUE) {
@@ -3477,7 +3643,7 @@ void EndTimeStep(int print_sel, int print_out, int print_hdf)
 #endif
 #if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
 	/* Always open file for output in case of a warning message */
-	MergeEndTimeStep(print_sel, print_out);
+	MergeEndTimeStep(print_sel, print_out, print_restart);
 #endif
 }
 
@@ -4388,4 +4554,12 @@ void ON_ERROR_CLEANUP_AND_EXIT(void)
 		exit(1);
 	}
 	return;
+}
+void SEND_RESTART_NAME(char * name, int nchar)
+{
+	int i = FileMap.size();
+	name[nchar - 1] = '\0';
+	string_trim(name);
+	std::string stdstring(name);
+	FileMap[stdstring] = i;
 }

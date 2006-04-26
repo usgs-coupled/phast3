@@ -131,6 +131,7 @@ SUBROUTINE timstp
      CALL print_control(prislm,utime,itime,utimchg,timprslm,prslm)
      IF(prslm) prslmi = 1
   END IF
+  CALL pc_set(print_restart, utime, itime, utimchg)
   ! ... P,C tables of dependent variables in the cells
   IF(ABS(prip) > 0._kdp .AND. .NOT.steady_flow) THEN
      CALL print_control(prip,utime,itime,utimchg,timprp,prp)

@@ -11,6 +11,7 @@ SUBROUTINE init3
   USE mcw
   USE mg2, ONLY: qfbcv
   USE mg3
+  USE print_control_mod
   IMPLICIT NONE
   INTERFACE
      SUBROUTINE load_indx_bc(ibct,indx1_bc,indx2_bc,mxf_bc,mbc,nbc)
@@ -412,6 +413,12 @@ SUBROUTINE init3
   ELSE
      timprslm=utimchg
   ENDIF
+!  if (print_restart%freq > 0._kdp) THEN
+!     print_restart%time_print = (1._kdp+INT(utime/print_restart%freq))*print_restart%freq
+!  ELSE 
+!     print_restart%time_print = utimchg
+!  ENDIF
+  CALL pc_set_time_print_init(print_restart, utime, utimchg)
   IF(privel > 0._kdp) THEN
      timprvel=(1._kdp+INT(utime/privel))*privel
   ELSE
@@ -457,7 +464,8 @@ SUBROUTINE init3
   timprtnxt=MIN(utimchg,timprbcf, timprcpd, timprgfb,  &
        timprhdfh, timprhdfv, timprhdfcph,  &
        timprkd, timprmapc, timprmaph, timprmapv, &
-       timprp, timprc, timprcphrq, timprfchem, timprslm, timprtem, timprvel, timprwel)
+       timprp, timprc, timprcphrq, timprfchem, timprslm, timprtem, timprvel, timprwel, &
+       print_restart%time_print)
   ! ... Turn off all print control flags that may have been set for i.c. or s.s. output
   prslm = .FALSE.
   prvel = .FALSE.

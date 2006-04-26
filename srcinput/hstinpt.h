@@ -675,6 +675,7 @@ EXTERNAL struct time current_print_flow_balance;
 EXTERNAL struct time current_print_bc_flow;
 EXTERNAL struct time current_print_conductances;
 EXTERNAL int current_print_bc;
+EXTERNAL struct time current_print_restart;
 
 /* print input data */
 EXTERNAL int print_input_media;
@@ -724,6 +725,12 @@ EXTERNAL double max_ss_head_change;
 EXTERNAL int max_ss_iterations;
 EXTERNAL int save_final_heads;
 EXTERNAL int adjust_water_rock_ratio;
+
+#include <cassert> // assert
+#include <map>     // std::map
+#include <string>  // std::string
+
+EXTERNAL std::map <std::string, int> FileMap;
 
 #include "inputproto.h"
 

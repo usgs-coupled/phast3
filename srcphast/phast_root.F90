@@ -9,6 +9,7 @@ SUBROUTINE phast_root(mpi_tasks, mpi_myself)
   USE mcs
   USE mcv
   USE mcw
+  USE print_control_mod
 !!$#if defined(USE_MPI)
 !!$  USE mpi_mod
 !!$#endif
@@ -90,7 +91,8 @@ SUBROUTINE phast_root(mpi_tasks, mpi_myself)
      ! but equilibrate needs to be called after ss calculation for correct frac
      CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time_phreeqc,deltim_dummy,prslmi,  &
            cnvtmi,frac_icchem,iprint_chem,iprint_xyz, &
-           prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f)
+           prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f, &
+           0)
      stop_msg = 0
      deltim_dummy = 0._kdp
      CALL init2_3
@@ -158,7 +160,8 @@ SUBROUTINE phast_root(mpi_tasks, mpi_myself)
            WRITE(logline1,'(a)') '     Beginning chemistry calculation.'
            CALL logprt_c(logline1)
            CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time,deltim,prslmi,cnvtmi,  &
-                frac,iprint_chem,iprint_xyz,prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f)
+                frac,iprint_chem,iprint_xyz,prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f, &
+                print_restart%print_int)
         ENDIF
         CALL sumcal2
         CALL write5

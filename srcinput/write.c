@@ -80,13 +80,16 @@ int write_file_names(void)
  *          OK
  *
  */
-
 	if (hst_file == NULL) {
 		error_msg("Can not open temporary data file (Phast.tmp)", STOP);
 	}
 	output_msg(OUTPUT_HST,"%s\n", chemistry_name);
 	output_msg(OUTPUT_HST,"%s\n", database_name);
 	output_msg(OUTPUT_HST,"%s\n", prefix);
+	output_msg(OUTPUT_HST,"%d\n", FileMap.size());
+	for (std::map<std::string, int>::const_iterator it = FileMap.begin(); it != FileMap.end(); it++) {
+		output_msg(OUTPUT_HST,"%s\n", (it->first).c_str());
+	}
 	return(OK);
 }
 /* ---------------------------------------------------------------------- */
@@ -1706,7 +1709,7 @@ int write_output_transient(void)
  */
 	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
 	output_msg(OUTPUT_HST,"C.....Contour and vector map information\n");
-	output_msg(OUTPUT_HST,"C.3.9.1 .. CNTMAP[T/F], PRIMAPHEAD, COMPMAP[T/F], PRIMAPCOMP,VECMAP[T/F], PRIMAPV\n");
+	output_msg(OUTPUT_HST,"C.3.9.1 .. CNTMAP[T/F], PRIMAPHEAD, COMPMAP[T/F], PRINT_XYZ_COMP, VECMAP[T/F], PRIMAPV\n");
 	cntmap = print_value(&current_print_xyz_head);
 	velmap = print_value(&current_print_xyz_velocity);
 	compmap = print_value(&current_print_xyz_comp);
@@ -1727,8 +1730,8 @@ int write_output_transient(void)
 		output_msg(OUTPUT_HST,"     f %f\n", velmap);
 	}
 
-	output_msg(OUTPUT_HST,"C.3.9.2 .. PRIXYZ_WELL\n");
-	output_msg(OUTPUT_HST,"     %f\n", print_value(&current_print_xyz_wells));
+	output_msg(OUTPUT_HST,"C.3.10.2 .. PRIXYZ_WELL, PRINT_RESTART\n");
+	output_msg(OUTPUT_HST,"     %f %f\n", print_value(&current_print_xyz_wells), print_value(&current_print_restart));
 /*
  *   Print information by node
  */	

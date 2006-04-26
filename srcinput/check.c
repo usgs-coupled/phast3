@@ -750,6 +750,7 @@ int check_time_series_data(void)
 	if (print_bc_flow.properties != NULL) check_time_series(&print_bc_flow, FALSE);
 	if (print_conductances.properties != NULL) check_time_series(&print_conductances, FALSE);
 	if (print_bc.properties != NULL) check_time_series(&print_bc, FALSE);
+	if (print_restart.properties != NULL) check_time_series(&print_restart, FALSE);
 	/* 
 	 * check defaults
 	 */

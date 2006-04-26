@@ -9,6 +9,8 @@ SUBROUTINE openf
   CHARACTER(LEN=80) :: fname
   INTEGER :: ios, length
   LOGICAL :: lerror 
+  integer num_files, i
+  character(len=256) :: restart_name
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
@@ -25,6 +27,11 @@ SUBROUTINE openf
   READ(fuinc,'(A)') f1name
   READ(fuinc,'(A)') f2name
   READ(fuinc,'(A)') f3name
+  READ(fuinc,'(I10)') num_files
+  DO i = 1, num_files
+     READ(fuinc,'(A)') restart_name
+     CALL SEND_RESTART_NAME(restart_name)
+  ENDDO
   OPEN(fuins,STATUS='scratch')
   REWIND fuins
   f3name = TRIM(f3name)

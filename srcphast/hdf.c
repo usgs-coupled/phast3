@@ -33,7 +33,7 @@ static char const DEFINE_USE_MPI[] = "#define USE_MPI 0";
 /*
  *   static functions
  */
-static int file_exists(const char* name);
+extern int file_exists(const char* name);
 static hid_t open_hdf_file(char* prefix, int prefix_l);
 static void write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id, hid_t dset_id, double* array);
 static int get_c_scalar_count(int load_names, char** names);
@@ -534,23 +534,6 @@ static hid_t open_hdf_file(char* prefix, int prefix_l)
     return file_id;
 }
 
-/*-------------------------------------------------------------------------
- * Function          file_exists
- *
- * Preconditions:    TODO:
- *
- * Postconditions:   TODO:
- *-------------------------------------------------------------------------
- */
-static int file_exists(const char* name)
-{
-    FILE* stream;
-    if ((stream = fopen(name, "r")) == NULL) {
-        return 0; /* doesn't exist */
-    }
-    fclose(stream);
-    return 1; /* exists */
-}
 
 /*-------------------------------------------------------------------------
  * Function          HDF_INIT_INVARIANT (called only by proc 0)

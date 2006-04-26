@@ -1279,3 +1279,31 @@ struct system *system_initialize(int i, int n_user_new, int *initial_conditions1
 	}
 	return(system_ptr);
 }
+/*-------------------------------------------------------------------------
+ * Function          file_exists
+ *
+ * Preconditions:    TODO:
+ *
+ * Postconditions:   TODO:
+ *-------------------------------------------------------------------------
+ */
+int file_exists(const char* name)
+{
+    FILE* stream;
+    if ((stream = fopen(name, "r")) == NULL) {
+        return 0; /* doesn't exist */
+    }
+    fclose(stream);
+    return 1; /* exists */
+}
+int file_rename(const char *temp_name, const char* name, const char* backup_name)
+{
+        if (file_exists(name)) {
+		if (file_exists(backup_name)) remove(backup_name);
+		rename(name, backup_name);
+		rename(temp_name, name);
+        } else {
+		rename(temp_name, name);
+	}
+	return(OK);
+}

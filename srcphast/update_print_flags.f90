@@ -7,6 +7,7 @@ SUBROUTINE update_print_flags
   USE mcp
   USE mcv
   USE mcw
+  USE print_control_mod
   IMPLICIT NONE
   REAL(KIND=kdp) :: utime, udeltim, utimchg
   ! ... Set string for use with RCS ident command
@@ -25,6 +26,7 @@ SUBROUTINE update_print_flags
   IF(prslm .AND. prislm > 0._kdp) THEN
      timprslm=(1._kdp+INT(utime/prislm))*prislm
   END IF
+  CALL pc_set_time_print(print_restart, utime)
   ! ... P,C tables of dependent variables in the cells
   IF(prp .AND. prip > 0._kdp) THEN
      timprp=(1._kdp+INT(utime/prip))*prip

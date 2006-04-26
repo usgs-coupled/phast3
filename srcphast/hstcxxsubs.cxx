@@ -1,3 +1,5 @@
+#include <fstream>
+#include <iostream>     // std::cout std::cerr
 #include "StorageBin.h"
 #include "phreeqcpp/Solution.h"
 #include "hst.h"
@@ -368,4 +370,30 @@ struct system *cxxsystem_initialize(int i, int n_user_new, int *initial_conditio
 		system_ptr->kinetics = kinetics_replicate(kinetics_ptr, n_user_new);
 	}
 	return(system_ptr);
+}
+/* ---------------------------------------------------------------------- */
+int write_restart(double time_hst)
+/* ---------------------------------------------------------------------- */
+{
+	std::string temp_name("temp_restart_file");
+	string_trim(file_prefix);
+	std::string name(file_prefix);
+	name.append(".restart");
+	std::string backup_name = name;
+	backup_name.append(".backup");
+	// open file 
+	std::ofstream ofs(temp_name.c_str());
+	// write header
+	ofs << "#PHAST restart file" << std::endl;
+	time_t *tptr;
+	time(tptr);
+	ofs << "#Prefix: " << file_prefix << std::endl;
+	ofs << "#Date: " << ctime(tptr);
+	ofs << "#Current model time: " << time_hst << std::endl;
+	ofs << "#nx, ny, nz: " << ix << ", " << iy << ", " << iz << std::endl;
+	// write data
+	szBin.dump_raw(ofs, 0);
+	// rename files
+	file_rename(temp_name.c_str(), name.c_str(), backup_name.c_str());
+	return(OK);
 }

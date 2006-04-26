@@ -36,5 +36,6 @@ EXTERNAL struct time_series print_flow_balance;
 EXTERNAL struct time_series print_bc_flow;
 EXTERNAL struct time_series print_conductances;
 EXTERNAL struct time_series print_bc;
+EXTERNAL struct time_series print_restart;
 
 #endif

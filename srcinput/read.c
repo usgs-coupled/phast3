@@ -3032,6 +3032,7 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
  *         (3) b[y_element] or b[y_cell] followed by list of doubles
  *             on same and (or) succeeding lines
  *         (4) f[ile] followed by file name
+ *         (5) r[estart_file] followed by file name
  *
  *      Arguments:
  *         ptr    entry: points to line to read from
@@ -3145,6 +3146,28 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 
 		p->v = (double *) realloc(p->v, (size_t) p->count_v * sizeof(double));
 		p->count_alloc = p->count_v;
+	} else if ( token[0] == 'R' || token[0] == 'r') {
+/*
+ *   phast will read from restart file by_cell only
+ */
+		j = copy_token(token, &next_char, &l);
+		std::string stdtoken(token);
+		std::map<std::string, int>::iterator it = FileMap.find(stdtoken);
+		if (it != FileMap.end()) {
+			j = it->second;
+		} else {
+			j = FileMap.size();
+			FileMap[stdtoken] = j;
+		}
+		p->v = (double *) malloc(sizeof(double));
+		p->v[0] = -100 - j;
+		p->count_v = 1;
+		p->type = FIXED;
+		if (delimited == TRUE) {
+			*opt = get_option(opt_list, count_opt_list, &next_char);
+		} else {
+			*opt = next_keyword_or_option(opt_list, count_opt_list);
+		}
 	} else if ( token[0] == 'F' || token[0] == 'f') {
 /*
  *   read from file by_cell or by_element
@@ -4404,9 +4427,11 @@ int read_print_frequency (void)
 		"echo_input",          /* 50 */
 		"boundary_conditions", /* 51 */
 		"boundary",            /* 52 */
-		"bc_flow_rates"        /* 53*/
+		"bc_flow_rates",       /* 53*/
+		"restart",             /* 54*/
+		"restart_file"         /* 55*/
 	};
-	int count_opt_list = 54;
+	int count_opt_list = 56;
 /*
  *   Read flags:
  */
@@ -4652,6 +4677,19 @@ int read_print_frequency (void)
 				input_error++;
 				error_msg("No start time for print frequency data", CONTINUE);
 			}				
+			break;
+		    case 54:                       /* restart */
+		    case 55:                       /* restart_file */
+			if (current_time.value_defined == TRUE) {
+				property_time_ptr = time_series_alloc_property_time(&print_restart);
+				read_frequency_data(&next_char, &(property_time_ptr->time_value), "Print frequency for restart file, in PRINT_FREQUENCY.");
+				time_copy(&current_time, &(property_time_ptr->time));
+			} else {
+				input_error++;
+				error_msg("No start time for print frequency data", CONTINUE);
+			}				
+			break;
+			break;
 			break;
 		}
 		if (return_value == EOF || return_value == KEYWORD) break;

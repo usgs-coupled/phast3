@@ -374,6 +374,7 @@ int clean_up(void)
 	time_series_free(&print_xyz_head);
 	time_series_free(&print_xyz_velocity);
 	time_series_free(&print_xyz_wells);
+	time_series_free(&print_restart);
 
 	time_free(&current_print_flow_balance);
 	time_free(&current_print_hdf_chem);
@@ -388,6 +389,7 @@ int clean_up(void)
 	time_free(&current_print_xyz_head);
 	time_free(&current_print_xyz_velocity);
 	time_free(&current_print_xyz_wells);
+	time_free(&current_print_restart);
 
 	/* print zones */
 	print_zone_struct_free(&print_zones_xyz);
@@ -633,6 +635,7 @@ void initialize(void)
 	time_series_init(&print_bc_flow);
 	time_series_init(&print_conductances);
 	time_series_init(&print_bc);
+	time_series_init(&print_restart);
 
 	/* print_zones */
 	print_zone_struct_init(&print_zones_xyz);
@@ -687,6 +690,11 @@ void initialize(void)
 	current_print_statistics.input = NULL;
 
 	save_final_heads = FALSE;
+
+	current_print_restart.type = UNITS;
+	current_print_restart.value = 0;
+	current_print_restart.value_defined = FALSE;
+	current_print_restart.input = NULL;
 
 	current_print_velocity.type = UNITS;
 	current_print_velocity.value = 0;

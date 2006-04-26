@@ -8,6 +8,7 @@ SUBROUTINE phast_slave(mpi_tasks, mpi_myself)
   USE mcp
   USE mcv
   USE mcw
+  USE print_control_mod
 !!$  USE mpi_mod
   IMPLICIT NONE
   INTEGER, INTENT(INOUT) :: mpi_myself, mpi_tasks
@@ -52,13 +53,15 @@ SUBROUTINE phast_slave(mpi_tasks, mpi_myself)
      adj_wr_ratio = 1
      CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time_phreeqc,deltim_dummy,prslmi,  &
            cnvtmi,frac_icchem,iprint_chem,iprint_xyz, &
-           prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f)
+           prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f,&
+           0)
      stop_msg = 0
      deltim_dummy = 0._kdp
      ! ... The transient loop
      DO
            CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time,deltim,prslmi,cnvtmi,  &
-                frac,iprint_chem,iprint_xyz,prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f)
+                frac,iprint_chem,iprint_xyz,prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f, &
+                print_restart%print_int)
            IF (stop_msg == 1) EXIT
      ENDDO
   ENDIF
