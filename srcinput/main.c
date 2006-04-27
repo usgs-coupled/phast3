@@ -494,7 +494,7 @@ void initialize(void)
 	rivers->points = NULL;
 	count_rivers = 0;
 #ifndef PI
-	PI = acos(-1);
+	PI = acos(-1.);
 #endif
 /*
  *   wells
