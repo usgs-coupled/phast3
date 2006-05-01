@@ -19,7 +19,6 @@ struct system *cxxsystem_initialize(int i, int n_user_new, int *initial_conditio
 extern cxxStorageBin szBin;
 extern cxxStorageBin phreeqcBin;
 
-#include <iostream>     // std::cout std::cerr
 /* ---------------------------------------------------------------------- */
 void buffer_to_cxxsolution(int n)
 /* ---------------------------------------------------------------------- */
@@ -385,15 +384,27 @@ int write_restart(double time_hst)
 	std::ofstream ofs(temp_name.c_str());
 	// write header
 	ofs << "#PHAST restart file" << std::endl;
-	time_t *tptr;
-	time(tptr);
+	time_t now = time(NULL);
 	ofs << "#Prefix: " << file_prefix << std::endl;
-	ofs << "#Date: " << ctime(tptr);
+	ofs << "#Date: " << ctime(&now);
 	ofs << "#Current model time: " << time_hst << std::endl;
 	ofs << "#nx, ny, nz: " << ix << ", " << iy << ", " << iz << std::endl;
 	// write data
 	szBin.dump_raw(ofs, 0);
 	// rename files
 	file_rename(temp_name.c_str(), name.c_str(), backup_name.c_str());
+	return(OK);
+}
+/* ---------------------------------------------------------------------- */
+int write_restart_init(std::ofstream& ofs, double time_hst)
+/* ---------------------------------------------------------------------- */
+{
+	// write header
+	ofs << "#PHAST restart file" << std::endl;
+	ofs << "#Prefix: " << file_prefix << std::endl;
+	time_t now = time(NULL);
+	ofs << "#Date: " << ctime(&now);
+	ofs << "#Current model time: " << time_hst << std::endl;
+	ofs << "#nx, ny, nz: " << ix << ", " << iy << ", " << iz << std::endl;
 	return(OK);
 }

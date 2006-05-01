@@ -1,3 +1,59 @@
+    svn 884: Added restart capability.
+
+    Chemical data can be saved and used as initial conditions for
+    subsequent runs. The grid should be the same for the restart run
+    as for the run that generated the restart file. In general, it is
+    assumed that the boundary conditions and media properties will be
+    the same for the restart run. It may be possible to 
+    change boundary conditions and media properties, provided the grid
+    remains the same, but this has not been tested.
+
+    To save data to a restart file:
+
+    PRINT_FREQUENCY
+	-restart 100 yr
+    
+    In this example, the chemical state of the system will be written
+    to file (prefix.restart) every 100 years. At each time of writing,
+    the old prefix.restart file will be copied to
+    prefix.restart.backup and the new time plane will be written to
+    prefix.restart. Only one time plane is saved in prefix.restart and
+    one in prefix.restart.backup. You must be careful to save (rename)
+    your restart file following a run so that it does not get
+    overwritten in subsequent runs.
+
+    To use data from a restart file, use the identifier "restart" in 
+    CHEMISTRY_IC in the same way that the identifier "file" can be
+    used. 
+
+    CHEMISTRY_IC
+    -zone  0 0 0 1000 1000 100
+	   -solution restart prefix.restart.save
+	   -exchange restart prefix.restart.save
+	   -surface restart prefix.restart.save
+	   -kinetics restart prefix.restart.save
+	   -equilibrium_phases restart prefix.restart.save
+	   -gas_phase restart prefix.restart.save
+
+    This example defines all the chemical data for the cells in the
+    zone to be taken from the file prefix.restart.save (assuming a
+    file prefix.restart was generated and renamed to
+    prefix.restart.save). The data for cells in this zone may be
+    overwritten by subsequent zone definitions in CHEMISTRY_IC. As is
+    always the case, the last zone definition that includes a property
+    for a cell is the definition that is used for that property.
+
+    If the last definition for a solution is specified to be from a
+    restart file and a solution for that cell is not found in the
+    restart file, it is a fatal error. If any other entity (exchange,
+    surface, etc) is not found in the restart file for a cell, it a
+    warning is printed.
+
+    Prefix, date, current model time, and the number of nodes in each
+    coordinate direction (nx, ny, nz) are written as comments at the
+    top of the restart file.
+
+
     svn 602: 
     Added print of database, input, and output files to .log and
     .O.chem files.

@@ -1,6 +1,7 @@
 /* 
  * hdf.c
  */
+#include <iostream>     // std::cout std::cerr
 #ifdef HDF5_CREATE
 #ifdef PHREEQC_IDENT
 static char const svnid[] = "$Id$";
@@ -121,6 +122,7 @@ void set_use_hst(int i);
 void solution_to_buffer(struct solution *solution_ptr);
 void unpack_from_hst(double *fraction, int *dim);
 int write_restart(double hst_time);
+int write_restart_init(std::ofstream& ofs, double time_hst);
 int xexchange_save_hst(int n);
 int xgas_save_hst(int n);
 int xpp_assemblage_save_hst(int n);
