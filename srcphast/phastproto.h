@@ -20,7 +20,7 @@ static char const svnid[] = "$Id$";
  *   Functions called from FORTRAN
  */
 
-#if !defined(LAHEY_F95) && !defined(_WIN32)
+#if !defined(LAHEY_F95) && !defined(_WIN32) || defined(NO_UNDERSCORES)
 #define HDF_INIT_INVARIANT     hdf_init_invariant
 #define HDF_FINALIZE_INVARIANT hdf_finalize_invariant
 #define HDF_WRITE_FEATURE      hdf_write_feature

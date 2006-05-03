@@ -1506,7 +1506,8 @@ void HDFWriteHyperSlabV(const char* name, const char* format, va_list argptr)
             value = va_arg(argptr, double);
         }
 
-        assert(proc.array != NULL); /* Has HDFBeginCTimeStep been called? */
+        assert(proc.array != NULL); /* Has HDFBeginCTimeStep been called?
+                                       Is HDF5_CREATE defined in Fortran? */
     
         /* validate scalar_index */
         assert(proc.scalar_index >= 0);

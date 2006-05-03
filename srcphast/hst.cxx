@@ -67,7 +67,7 @@ cxxStorageBin szBin;
 cxxStorageBin phreeqcBin;
 std::map<std::string, int> FileMap;
 
-#if !defined(LAHEY_F95) && !defined(_WIN32)
+#if !defined(LAHEY_F95) && !defined(_WIN32) || defined(NO_UNDERSCORES)
 #define CALCULATE_WELL_PH calculate_well_ph
 #define COLLECT_FROM_NONROOT collect_from_nonroot
 #define COUNT_ALL_COMPONENTS count_all_components

@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iostream>     // std::cout std::cerr
+#include <ctime>
 #include "StorageBin.h"
 #include "phreeqcpp/Solution.h"
 #include "hst.h"
