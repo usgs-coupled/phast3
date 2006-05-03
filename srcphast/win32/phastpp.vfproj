@@ -3,33 +3,33 @@
 	<Platforms>
 		<Platform Name="Win32"/></Platforms>
 	<Configurations>
-		<Configuration Name="ser_debug|Win32" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)" Command="$(TargetPath)" WorkingDirectory="C:\cygwin\home\charlton\programs\phastpp\examples\ex4">
+		<Configuration Name="ser_debug|Win32" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)" Command="$(TargetPath)" WorkingDirectory="$(ProjectDir)\..\..\examples\ex4">
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true" HeaderFileName="$(InputName).h" TypeLibraryName="$(IntDir)/$(InputName).tlb"/>
 				<Tool Name="VFPreBuildEventTool"/>
-				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" PreprocessorDefinitions="HDF5_CREATE" CallingConvention="callConventionCRef" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtSingleThreadedDebug" CompileOnly="true"/>
+				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFCustomBuildTool"/>
 				<Tool Name="VFLinkerTool" OutputFile="$(OUTDIR)/phast.exe" ShowProgress="linkProgressLibs" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(DEV_HDF5_LIB_D);$(DEV_GMP_LIB);$(OUTDIR)" IgnoreDefaultLibraryNames="LIBC" GenerateDebugInformation="true" ProgramDatabaseFile="$(OUTDIR)/phastpp.pdb" SubSystem="subSystemConsole" AdditionalDependencies="phreeqcpp.lib gmp.lib hdf5.lib"/>
-				<Tool Name="VFPreLinkEventTool"/>
-				<Tool Name="VFResourceCompilerTool" ResourceOutputFileName="$(IntDir)/$(InputName).res"/></Configuration>
-		<Configuration Name="ser|Win32" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)" Command="$(TargetPath)" WorkingDirectory="C:\cygwin\home\charlton\programs\phastpp\examples\ex4">
+				<Tool Name="VFResourceCompilerTool" ResourceOutputFileName="$(IntDir)/$(InputName).res"/>
+				<Tool Name="VFPreLinkEventTool"/></Configuration>
+		<Configuration Name="ser|Win32" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)" Command="$(TargetPath)" WorkingDirectory="$(ProjectDir)\..\..\examples\ex4">
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true" HeaderFileName="$(InputName).h" TypeLibraryName="$(IntDir)/$(InputName).tlb"/>
 				<Tool Name="VFPreBuildEventTool"/>
-				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="HDF5_CREATE" CallingConvention="callConventionCRef" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" CompileOnly="true"/>
+				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFCustomBuildTool"/>
 				<Tool Name="VFLinkerTool" OutputFile="$(OUTDIR)/phast.exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(DEV_HDF5_LIB);$(DEV_GMP_LIB);$(OUTDIR)" SubSystem="subSystemConsole" AdditionalDependencies="phreeqcpp.lib hdf5.lib gmp.lib"/>
-				<Tool Name="VFPreLinkEventTool"/>
-				<Tool Name="VFResourceCompilerTool" ResourceOutputFileName="$(IntDir)/$(InputName).res"/></Configuration>
-		<Configuration Name="merge|Win32" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)" Command="$(TargetPath)" WorkingDirectory="C:\cygwin\home\charlton\programs\phastpp\examples\ex4">
+				<Tool Name="VFResourceCompilerTool" ResourceOutputFileName="$(IntDir)/$(InputName).res"/>
+				<Tool Name="VFPreLinkEventTool"/></Configuration>
+		<Configuration Name="merge|Win32" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)" Command="$(TargetPath)" WorkingDirectory="$(ProjectDir)\..\..\examples\ex4">
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true" HeaderFileName="$(InputName).h" TypeLibraryName="$(IntDir)/$(InputName).tlb"/>
 				<Tool Name="VFPreBuildEventTool"/>
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="MERGE_FILES;HDF5_CREATE;USE_MPI;MPICH_NAME" CallingConvention="callConventionCRef" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" CompileOnly="true"/>
 				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="MERGE_FILES;HDF5_CREATE;USE_MPI;MPICH_NAME" CallingConvention="callConventionCRef" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" CompileOnly="true"/>
 				<Tool Name="VFCustomBuildTool"/>
 				<Tool Name="VFLinkerTool" SwitchesHaveChanged="true" MustRebuild="true" OutputFile="$(OUTDIR)/phast.exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(DEV_HDF5_LIBDLL);$(DEV_MPICH_LIB);$(DEV_GMP_LIB);$(OUTDIR)" IgnoreDefaultLibraryNames="LIBC" SubSystem="subSystemConsole" AdditionalDependencies="phreeqcpp.lib hdf5dll.lib gmp.lib"/>
-				<Tool Name="VFResourceCompilerTool" ResourceOutputFileName="$(IntDir)/$(InputName).res"/>
-				<Tool Name="VFPreLinkEventTool"/></Configuration></Configurations>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFResourceCompilerTool" ResourceOutputFileName="$(IntDir)/$(InputName).res"/></Configuration></Configurations>
 	<Files>
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
 		<Filter Name="COMMON_FOBJS">
@@ -100,9 +100,9 @@
 			<FileConfiguration Name="ser_debug|Win32">
 				<Tool Name="VFFortranCompilerTool"/></FileConfiguration></File>
 		<File RelativePath="..\phast_root.F90">
-			<FileConfiguration Name="ser|Win32">
-				<Tool Name="VFFortranCompilerTool"/></FileConfiguration>
 			<FileConfiguration Name="ser_debug|Win32">
+				<Tool Name="VFFortranCompilerTool"/></FileConfiguration>
+			<FileConfiguration Name="ser|Win32">
 				<Tool Name="VFFortranCompilerTool"/></FileConfiguration>
 			<FileConfiguration Name="merge|Win32">
 				<Tool Name="VFFortranCompilerTool"/></FileConfiguration></File>
@@ -158,16 +158,16 @@
 				<Tool Name="VFFortranCompilerTool"/></FileConfiguration></File></Filter>
 		<Filter Name="MPI_OBJS">
 		<File RelativePath="..\mpimod.F90">
-			<FileConfiguration Name="ser|Win32" ExcludedFromBuild="true">
-				<Tool Name="VFFortranCompilerTool"/></FileConfiguration>
 			<FileConfiguration Name="ser_debug|Win32" ExcludedFromBuild="true">
+				<Tool Name="VFFortranCompilerTool"/></FileConfiguration>
+			<FileConfiguration Name="ser|Win32" ExcludedFromBuild="true">
 				<Tool Name="VFFortranCompilerTool"/></FileConfiguration>
 			<FileConfiguration Name="merge|Win32">
 				<Tool Name="VFFortranCompilerTool"/></FileConfiguration></File>
 		<File RelativePath="..\phast_slave.F90">
-			<FileConfiguration Name="ser|Win32" ExcludedFromBuild="true">
-				<Tool Name="VFFortranCompilerTool"/></FileConfiguration>
 			<FileConfiguration Name="ser_debug|Win32" ExcludedFromBuild="true">
+				<Tool Name="VFFortranCompilerTool"/></FileConfiguration>
+			<FileConfiguration Name="ser|Win32" ExcludedFromBuild="true">
 				<Tool Name="VFFortranCompilerTool"/></FileConfiguration>
 			<FileConfiguration Name="merge|Win32">
 				<Tool Name="VFFortranCompilerTool"/></FileConfiguration></File></Filter></Filter>
