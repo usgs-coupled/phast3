@@ -4724,27 +4724,21 @@ int mpi_write_restart(double time_hst)
 		if (mpi_myself == task_number) {
 			std::ostringstream oss_restart;
 			szBin.dump_raw(oss_restart, 0);
-			int string_size = oss_restart.str().size() + 1;
-			const char *string = oss_restart.str().c_str();
-			/*
-			MPI_Send(&task_number, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
-			MPI_Send(&mpi_buffer_position, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
-			MPI_Send(mpi_buffer, mpi_buffer_position, MPI_PACKED, 0, 0, MPI_COMM_WORLD);
-			*/
+			//const char *string = oss_restart.str().c_str();
+			char * string = string_duplicate(oss_restart.str().c_str());
+			int string_size = strlen(string) + 1;
 			MPI_Send(&task_number, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
 			MPI_Send(&string_size, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
 			MPI_Send((void *)string, string_size, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
+			free_check_null(string);
 		}
 		if (mpi_myself == 0) {
 			MPI_Recv(&rank, 1, MPI_INT, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, &mpi_status);
 			MPI_Recv(&mpi_msg_size, 1, MPI_INT, rank, 0, MPI_COMM_WORLD, &mpi_status);
 			if (mpi_max_buffer < mpi_msg_size) {
-				mpi_max_buffer = mpi_msg_size;
+				mpi_max_buffer = mpi_msg_size + 10;
 				mpi_buffer = PHRQ_realloc(mpi_buffer, (size_t) mpi_max_buffer);
 			}
-			/*
-			MPI_Recv(mpi_buffer, mpi_msg_size, MPI_PACKED, rank, 0, MPI_COMM_WORLD, &mpi_status);
-			*/
 			MPI_Recv(mpi_buffer, mpi_msg_size, MPI_CHAR, rank, 0, MPI_COMM_WORLD, &mpi_status);
 			ofs_restart << (char *) mpi_buffer;
 		}
@@ -4754,6 +4748,7 @@ int mpi_write_restart(double time_hst)
 	if (mpi_myself == 0) {
 		file_rename(temp_name.c_str(), name.c_str(), backup_name.c_str());
 	}
+	MPI_Barrier(MPI_COMM_WORLD);
 	return(OK);
 }
 #endif
