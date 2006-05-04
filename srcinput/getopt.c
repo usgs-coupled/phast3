@@ -25,11 +25,13 @@ static char const svnid[] = "$Id$";
 #include "config.h"
 #endif
 
+/*
 #ifndef __STDC__
 #  ifndef const
 #    define const
 #  endif
 #endif
+*/
 
 /* This tells Alpha OSF/1 not to define a getopt prototype in <stdio.h>.  */
 #ifndef _NO_PROTO
@@ -37,7 +39,11 @@ static char const svnid[] = "$Id$";
 #endif
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+/*
 #include "tailor.h"
+*/
 
 /* Comment out all this code if we are using the GNU C Library, and are not
    actually compiling the library itself.  This code is part of the GNU C
@@ -183,8 +189,7 @@ extern char *getenv ();
 #endif
 
 static int
-my_strlen (str)
-     const char *str;
+my_strlen (const char *str)
 {
   int n = 0;
   while (*str++)
@@ -193,9 +198,7 @@ my_strlen (str)
 }
 
 static char *
-my_index (str, chr)
-     const char *str;
-     int chr;
+my_index (const char *str, int chr)
 {
   while (*str)
     {
@@ -241,8 +244,7 @@ static void exchange (char **argv);
 #endif
 
 static void
-exchange (argv)
-     char **argv;
+exchange (char **argv)
 {
   char *temp, **first, **last;
 
@@ -326,13 +328,7 @@ exchange (argv)
    long-named options.  */
 
 int
-_getopt_internal (argc, argv, optstring, longopts, longind, long_only)
-     int argc;
-     char *const *argv;
-     const char *optstring;
-     const struct option *longopts;
-     int *longind;
-     int long_only;
+_getopt_internal (int argc, char *const *argv, const char *optstring, const struct option *longopts, int *longind, int long_only)
 {
   int option_index;
 
@@ -666,10 +662,7 @@ _getopt_internal (argc, argv, optstring, longopts, longind, long_only)
 }
 
 int
-getopt (argc, argv, optstring)
-     int argc;
-     char *const *argv;
-     const char *optstring;
+getopt (int argc, char *const *argv, const char *optstring)
 {
   return _getopt_internal (argc, argv, optstring,
 			   (const struct option *) 0,
@@ -678,12 +671,7 @@ getopt (argc, argv, optstring)
 }
 
 int
-getopt_long (argc, argv, options, long_options, opt_index)
-     int argc;
-     char *const *argv;
-     const char *options;
-     const struct option *long_options;
-     int *opt_index;
+getopt_long (int argc, char *const *argv, const char *options, const struct option *long_options, int *opt_index)
 {
   return _getopt_internal (argc, argv, options, long_options, opt_index, 0);
 }
