@@ -55,7 +55,7 @@ EXTERNAL int count_chem;
 /* extra for transient free surface calculation */
 EXTERNAL LDBLE * old_frac;
 EXTERNAL int transient_free_surface;
-EXTERNAL struct system **uz;
+//EXTERNAL struct system **uz;
 //EXTERNAL struct system **sz;
 EXTERNAL double *frac1;
 EXTERNAL int *initial1, *initial2;

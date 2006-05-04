@@ -78,7 +78,8 @@ FILE *mpi_fopen(const char *filename, const char *mode);
  int mpi_distribute_root(void);
  int distribute_from_root(double *fraction, int *dim, int *print_sel,
 			  double *time_hst, double *time_step_hst, int *prslm,
-			  double *frac, int *printzone_chem, int *printzone_xyz, int *print_out, int *print_hdf);
+			  double *frac, int *printzone_chem, int *printzone_xyz, 
+			  int *print_out, int *print_hdf, int *print_restart);
  int mpi_update_root(void);
  int int_compare (const void *ptr1, const void *ptr2);
 

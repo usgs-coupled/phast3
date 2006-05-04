@@ -11,6 +11,7 @@
 #include "phreeqc/input.h"
 #include "phast_files.h"
 #include "phastproto.h"
+#include "Dictionary.h"
 
 extern void buffer_to_cxxsolution(int n);
 extern void cxxsolution_to_buffer(cxxSolution *solution_ptr);
@@ -18,8 +19,8 @@ extern void unpackcxx_from_hst(double *fraction, int *dim);
 extern void scale_cxxsolution(int n_solution, double factor);
 extern struct system *cxxsystem_initialize(int i, int n_user_new, int *initial_conditions1, int *initial_conditions2, double *fraction1);
 
-static void BeginTimeStep(int print_sel, int print_out, int print_hdf, int print_restart);
-static void EndTimeStep(int print_sel, int print_out, int print_hdf, int print_restart);
+static void BeginTimeStep(int print_sel, int print_out, int print_hdf);
+static void EndTimeStep(int print_sel, int print_out, int print_hdf);
 static void BeginCell(int print_sel, int print_out, int print_hdf, int index);
 static void EndCell(int print_sel, int print_out, int print_hdf, int index);
 
@@ -28,6 +29,7 @@ static char const svnid[] = "$Id: hst.c 827 2006-03-06 20:19:41Z dlpark $";
 #define REBALANCE
 /* #define USE_MPI set in makefile */
 #ifdef USE_MPI
+static int mpi_write_restart(double time_hst);
  #define MESSAGE_MAX_NUMBERS 1000
  #include <mpi.h>
  #define MPI_MAX_TASKS 50
@@ -66,6 +68,7 @@ cxxStorageBin uzBin;
 cxxStorageBin szBin;
 cxxStorageBin phreeqcBin;
 std::map<std::string, int> FileMap;
+cxxDictionary dictionary;
 
 #if !defined(LAHEY_F95) && !defined(_WIN32) || defined(NO_UNDERSCORES)
 #define CALCULATE_WELL_PH calculate_well_ph
@@ -600,6 +603,13 @@ void COUNT_ALL_COMPONENTS(int *n_comp, char *names, int length)
 	 */
 
 	phreeqcBin.import_phreeqc();
+	dictionary.add_phreeqc();
+	/*
+	fprintf(stderr, "Size of dictionary %d\n", dictionary.size());
+	for (i = 0; i < 10; i++) {
+		std::cerr << *dictionary.int2string(i) << std::endl;
+	}
+	*/
 	//std::ostringstream oss;
 	//phreeqcBin.dump_raw(oss,0);
 	//std::cerr << oss.str();
@@ -670,19 +680,6 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 	memcpy(sort_random_list, &random_list[first_cell], (size_t) (last_cell - first_cell + 1) * sizeof(int));
 	qsort (sort_random_list, (size_t) (last_cell - first_cell + 1), (size_t) sizeof(int), int_compare);
 
-#ifdef REPLACED
-	/*
-	 *  Allocate array for count_chem systems, sz
-	 *  sz[i] == NULL, cell is not calculated by this processor
-	 *  sz[i] != NULL, cell is calculated by this processor
-	 */
-	/* C++ */
-	sz = (struct system **) PHRQ_malloc((size_t) (count_chem * sizeof(struct system)));
-	if (sz == NULL) malloc_error();
-	for (i = 0; i < count_chem; i++) {
-		sz[i] = NULL;
-	}
-#endif
 /*
  *  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
  */
@@ -695,6 +692,138 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 		szBin.add(system_ptr);
 		system_free(system_ptr);
 		system_ptr = (struct system *) free_check_null(system_ptr);
+	}
+	/*
+	 * Read any restart files
+	 */
+	for (std::map<std::string, int>::iterator it = FileMap.begin(); it != FileMap.end(); it++) {
+		int ifile = -100 - it->second;
+		// Storage bin
+		cxxStorageBin tempBin;
+		// parser
+		std::fstream myfile;
+		myfile.open(it->first.c_str(), std::ios_base::in);
+		std::ostringstream oss;
+		CParser cparser(myfile, oss, std::cerr);
+		// read data
+		tempBin.read_raw(cparser);
+		// solutions
+		std::vector<int> warn;
+		std::string entity_type[7] = {"Solutions", "PPassemblages", "Exchangers", "Surfaces", "GasPhase", "SSassemblages", "Kinetics"};
+		warn.reserve(7);
+		for (i = 0; i < 7; i++) {
+			warn[i] = 0;
+		}
+		for (k = 0; k < last_cell - first_cell + 1; k++) {
+			int n_old1;
+			j = sort_random_list[k];  /* j is count_chem number */
+			i = back[j].list[0];      /* i is ixyz number */
+			assert (forward[i] >= 0); 
+			system_ptr = system_initialize(i, j, initial1, initial2, frac1);   
+			/* C++ */
+			szBin.add(system_ptr);
+			system_free(system_ptr);
+			system_ptr = (struct system *) free_check_null(system_ptr);
+			if (j < 0) continue;
+			/*
+			 *   Copy solution
+			 */
+			n_old1 = initial_conditions1[7*i];
+			if (n_old1 == ifile) {
+				if (tempBin.getSolution(j) != NULL) {
+					szBin.setSolution(j, tempBin.getSolution(j));
+				} else {
+					input_error++;
+					sprintf(error_string, "Solution %d not found in restart file %s", j, it->first.c_str());
+					error_msg(error_string, CONTINUE);
+				}
+			}
+			/*
+			 *   Copy pp_assemblage
+			 */
+			n_old1 = initial_conditions1[ 7*i + 1 ];
+			if (n_old1 == ifile) {
+				if (tempBin.getPPassemblage(j) != NULL) {
+					szBin.setPPassemblage(j, tempBin.getPPassemblage(j));
+				} else {
+					warn[1]++;
+					//error_msg("PPassemblage %d not found in restart file %s", j, it->first.c_str());
+				}
+			}
+			/*
+			 *   Copy exchange assemblage
+			 */
+			n_old1 = initial_conditions1[ 7*i + 2 ];
+			if (n_old1 == ifile) {
+				if (tempBin.getExchange(j) != NULL) {
+					szBin.setExchange(j, tempBin.getExchange(j));
+				} else {
+					warn[2]++;
+					//error_msg("Exchange %d not found in restart file %s", j, it->first.c_str());
+				}
+			}
+			/*
+			 *   Copy surface assemblage
+			 */
+			n_old1 = initial_conditions1[ 7*i + 3 ];
+			if (n_old1 == ifile) {
+				if (tempBin.getSurface(j) != NULL) {
+					szBin.setSurface(j, tempBin.getSurface(j));
+				} else {
+					warn[3]++;
+					//error_msg("Surface %d not found in restart file %s", j, it->first.c_str());
+				}
+			}
+			/*
+			 *   Copy gas phase
+			 */
+			n_old1 = initial_conditions1[ 7*i + 4 ];
+			if (n_old1 == ifile) {
+				if (tempBin.getGasPhase(j) != NULL) {
+					szBin.setGasPhase(j, tempBin.getGasPhase(j));
+				} else {
+					warn[4]++;
+					//error_msg("GasPhase %d not found in restart file %s", j, it->first.c_str());
+				}
+			}
+			/*
+			 *   Copy solid solution
+			 */
+			n_old1 = initial_conditions1[ 7*i + 5 ];
+			if (n_old1 == ifile) {
+				if (tempBin.getSSassemblage(j) != NULL) {
+					szBin.setSSassemblage(j, tempBin.getSSassemblage(j));
+				} else {
+					warn[5]++;
+					//error_msg("SSassemblage %d not found in restart file %s", j, it->first.c_str());
+				}
+			}
+			/*
+			 *   Copy kinetics
+			 */
+			n_old1 = initial_conditions1[ 7*i + 6 ];
+			if (n_old1 == ifile) {
+				if (tempBin.getKinetics(j) != NULL) {
+					szBin.setKinetics(j, tempBin.getKinetics(j));
+				} else {
+					warn[6]++;
+					//error_msg("Kinetics %d not found in restart file %s", j, it->first.c_str());
+				}
+			}
+		}
+		for (i = 1; i < 7; i++) {
+			if (warn[i] > 0) {
+				std::ostringstream os;
+				os << "Reading file " << it->first << ":" << std::endl;
+				for (j = 1; j < 7; j++) {
+					if (warn[j] == 0) continue;
+					os << "\t" << warn[j] << " " << entity_type[j] << " were not found for cells defined by restart file." << std::endl;
+				}
+				std::string token = os.str();
+				warning_msg(token.c_str());
+				break;
+			}
+		}
 	}
 	sort_random_list = (int *) free_check_null(sort_random_list);
 	if (input_error > 0) {
@@ -761,6 +890,7 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 		//std::cerr << oss1.str();
 		// put data into szBin
 		// solutions
+		std::string entity_type[7] = {"Solutions", "PPassemblages", "Exchangers", "Surfaces", "GasPhase", "SSassemblages", "Kinetics"};
 		std::vector<int> warn;
 		warn.reserve(7);
 		for (i = 0; i < 7; i++) {
@@ -863,28 +993,7 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 				os << "Reading file " << it->first << ":" << std::endl;
 				for (j = 1; j < 7; j++) {
 					if (warn[j] == 0) continue;
-					os << "\t" << warn[j];
-					switch (j) {
-					case 1:
-						os << " PPassemblages";
-						break;
-					case 2:
-						os << " Exchangers";
-						break;
-					case 3:
-						os << " Surfaces";
-						break;
-					case 4:
-						os << " GasPhase";
-						break;
-					case 5:
-						os << " SSassemblages";
-						break;
-					case 6:
-						os << " Kinetics";
-						break;
-					}
-					os << " were not found for cells defined by restart file." << std::endl;
+					os << "\t" << warn[j] << " " << entity_type[j] << " were not found for cells defined by restart file." << std::endl;
 				}
 				std::string token = os.str();
 				warning_msg(token.c_str());
@@ -1018,7 +1127,7 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 	}
 	pr.hdf = *print_hdf;
 
-	BeginTimeStep(*print_sel, *print_out, *print_hdf, *print_restart);
+	BeginTimeStep(*print_sel, *print_out, *print_hdf);
 	if (punch.in == TRUE && write_headings) {
 		int pr_punch = pr.punch;
 		pr.punch = TRUE;
@@ -1138,7 +1247,7 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 	 */
 	if (*print_restart == 1) write_restart((*time_hst) * (*cnvtmi));
 
-	EndTimeStep(*print_sel, *print_out, *print_hdf, *print_restart);
+	EndTimeStep(*print_sel, *print_out, *print_hdf);
 /*
  *   Put values back for HST
  */
@@ -1227,6 +1336,26 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 	start_time = end_time;
 	t0 = end_time;
 #endif
+#ifdef SKIP
+	/*
+	 * Test send solution
+	 */
+	if (mpi_myself == 0) {
+		cxxSolution *cxxsoln = phreeqcBin.getSolution(2);
+		std::ostringstream oss;
+		cxxsoln->dump_raw(oss, 0);
+		std::cerr << "Sending solution" << std::endl;
+		std::cerr << oss.str() << std::endl;
+		cxxsoln->mpi_send(1);
+	} else {
+		cxxSolution cxxsoln;
+		std::cerr << "Receiving solution" << std::endl;
+		cxxsoln.mpi_recv(0);
+		std::ostringstream oss;
+		cxxsoln.dump_raw(oss, 0);
+		std::cerr << oss.str() << std::endl;
+	}
+#endif
 	MPI_Bcast(stop_msg, 1,                   MPI_INT,    0, MPI_COMM_WORLD);
 	if (*stop_msg == 1) {
 		random_list = (int *) free_check_null(random_list);
@@ -1256,8 +1385,9 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 	/* Set time at beginning of calculations */
 	/* Distribute arguments from root */
 	distribute_from_root(fraction, dim, print_sel,
-			  time_hst, time_step_hst, prslm,
-			  frac, printzone_chem, printzone_xyz, print_out, print_hdf);
+			     time_hst, time_step_hst, prslm,
+			     frac, printzone_chem, printzone_xyz, 
+			     print_out, print_hdf, print_restart);
 #ifdef TIME
 	end_time = (LDBLE) MPI_Wtime();
 	time_distribute = end_time - start_time;
@@ -1440,6 +1570,7 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 /*
  *   Put values back for HST
  */
+	if (*print_restart == 1) mpi_write_restart((*time_hst) * (*cnvtmi));
 	COLLECT_FROM_NONROOT(fraction, dim);
 	/*if (mpi_myself == 0) PACK_FOR_HST(fraction, dim);*/
 #ifdef TIME
@@ -1833,6 +1964,7 @@ void LOGPRT_C(char *err_str, long l)
 }
 
 #ifdef USE_MPI
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 int mpi_send_solution(int solution_number, int task_number)
 /* ---------------------------------------------------------------------- */
@@ -2132,6 +2264,7 @@ int mpi_send_recv_cells(void)
 	}
 	return(OK);
 }
+#endif
 /* ---------------------------------------------------------------------- */
 int mpi_set_subcolumn(double *frac)
 /* ---------------------------------------------------------------------- */
@@ -2360,15 +2493,10 @@ int mpi_rebalance_load(double time_per_cell, double *frac, int transfer)
 	t0 = (LDBLE) MPI_Wtime();
 #endif
 	if (transfer == TRUE) {
-		/*solution_bsearch(first_user_number, &first_solution, TRUE);*/
 		for (k = 0; k < count_cells; k++) {
 			i = random_list[k];
 			iphrq = i;                    /* iphrq is 1 to count_chem */
 			ihst = back[i].list[0];       /* ihst is 1 to nxyz */
-			/*
-			n_solution = first_solution + i;
-			n_user = solution[n_solution]->n_user;
-			*/
 			while (k > end_cells[old][1]) {
 				old++;
 			}
@@ -2378,19 +2506,22 @@ int mpi_rebalance_load(double time_per_cell, double *frac, int transfer)
 
 			if (old == nnew) continue;
 			change++;
-			/*
-			  if (mpi_myself == 0) {
-			  fprintf(stderr, "%d [%d]: old %d,  %d-%d. new %d, %d-%d\n", k, i, old, end_cells[old][0], end_cells[old][1], new, end_cells_new[new][0],   end_cells_new[new][1]);
-			  }
-			*/
 			if (mpi_myself == old) 	{
-				mpi_send_system(nnew, iphrq, ihst, frac);
-				//system_free(sz[iphrq]);
-				//sz[iphrq] = (struct system *) free_check_null(sz[iphrq]);
+				szBin.mpi_send(iphrq, nnew);
+				if (transient_free_surface) {
+					uzBin.mpi_send(iphrq, nnew);
+					MPI_Send(&(frac[ihst]), 1, MPI_DOUBLE, nnew, 0, MPI_COMM_WORLD);
+				}
 				szBin.remove(iphrq);
 			}
 			if (mpi_myself == nnew)	{
-				mpi_recv_system(old, iphrq, ihst, frac);
+				szBin.mpi_recv(old);
+				if (transient_free_surface) {
+					uzBin.mpi_recv(old);
+					MPI_Status mpi_status;
+					MPI_Recv(&(frac[ihst]), 1, MPI_DOUBLE, old, 0, MPI_COMM_WORLD, &mpi_status);
+					old_frac[ihst] = frac[ihst];
+				}
 			}
 		}
 	}
@@ -2405,6 +2536,7 @@ int mpi_rebalance_load(double time_per_cell, double *frac, int transfer)
 	}
 	return(OK);
 }
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 int mpi_send_system(int task_number, int iphrq, int ihst, LDBLE *frac)
 /* ---------------------------------------------------------------------- */
@@ -2426,8 +2558,6 @@ int mpi_send_system(int task_number, int iphrq, int ihst, LDBLE *frac)
  */
 	max_size = 0;
 	MPI_Pack_size(MESSAGE_MAX_NUMBERS, MPI_INT, MPI_COMM_WORLD, &member_size);
-	max_size += member_size;
-	MPI_Pack_size(MESSAGE_MAX_NUMBERS, MPI_DOUBLE, MPI_COMM_WORLD, &member_size);
 	max_size += member_size;
 	buffer = PHRQ_malloc(max_size);
 	if (buffer == NULL) malloc_error();
@@ -2481,11 +2611,10 @@ int mpi_send_system(int task_number, int iphrq, int ihst, LDBLE *frac)
 
 	system_free(system_ptr);
 	free_check_null(system_ptr);
-
 	/*
 	 *  Send uz info
 	 */
-	if (uz != NULL && uz[iphrq] != NULL) {
+	if (transient_free_surface == TRUE) {
 		struct system *system_ptr = uzBin.cxxStorageBin2system(iphrq);
 		ints[i++] = 1;
 		doubles[d++] = frac[ihst];
@@ -2823,6 +2952,7 @@ int mpi_unpack_elt_list(struct elt_list **totals, int *ints, int *i, double *dou
 	*i = ii;
 	return(OK);
 }
+#endif
 /* ---------------------------------------------------------------------- */
 int mpi_set_random(void)
 /* ---------------------------------------------------------------------- */
@@ -3066,6 +3196,7 @@ int mpi_unpack_solution_hst(struct solution *solution_ptr, int solution_number, 
 	/*	struct isotope *isotopes; */
 	return(OK);
 }
+#ifdef SKIP
 
 /* ---------------------------------------------------------------------- */
 int mpi_pack_solution(struct solution *solution_ptr, int *ints, int *ii, double *doubles, int *dd)
@@ -3276,12 +3407,13 @@ int mpi_unpack_solution(struct solution *solution_ptr, int *ints, int *ii, doubl
 	*ii = i;
 	return(OK);
 }
+#endif
 /* ---------------------------------------------------------------------- */
 int distribute_from_root(double *fraction, int *dim, int *print_sel,
 			 double *time_hst, double *time_step_hst, int *prslm,
 			 double *frac, 
 			 int *printzone_chem, int *printzone_xyz, 
-			 int *print_out, int *print_hdf)
+			 int *print_out, int *print_hdf, int *print_restart)
 /* ---------------------------------------------------------------------- */
 {
 	int task_number;
@@ -3363,6 +3495,7 @@ int distribute_from_root(double *fraction, int *dim, int *print_sel,
 	MPI_Bcast(prslm, 1,                       MPI_INT,    0, MPI_COMM_WORLD);
 	MPI_Bcast(print_out, 1,                   MPI_INT,    0, MPI_COMM_WORLD);
 	MPI_Bcast(print_hdf, 1,                   MPI_INT,    0, MPI_COMM_WORLD);
+	MPI_Bcast(print_restart, 1,               MPI_INT,    0, MPI_COMM_WORLD);
 	if (mpi_myself == 0) {
 		for (k = 0; k < count_chem; k++) {
 			i = random_list[k];
@@ -3617,7 +3750,7 @@ void CALCULATE_WELL_PH(double *c, LDBLE *ph, LDBLE *alkalinity)
  * Function          BeginTimeStep
  *-------------------------------------------------------------------------
  */
-void BeginTimeStep(int print_sel, int print_out, int print_hdf, int print_restart)
+void BeginTimeStep(int print_sel, int print_out, int print_hdf)
 {
 #ifdef HDF5_CREATE
 	if (print_hdf == TRUE) {
@@ -3626,7 +3759,7 @@ void BeginTimeStep(int print_sel, int print_out, int print_hdf, int print_restar
 #endif
 #if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
 	/* Always open file for output in case of a warning message */
-		MergeBeginTimeStep(print_sel, print_out, print_restart);
+		MergeBeginTimeStep(print_sel, print_out);
 #endif
 }
 
@@ -3634,7 +3767,7 @@ void BeginTimeStep(int print_sel, int print_out, int print_hdf, int print_restar
  * Function          EndTimeStep
  *-------------------------------------------------------------------------
  */
-void EndTimeStep(int print_sel, int print_out, int print_hdf, int print_restart)
+void EndTimeStep(int print_sel, int print_out, int print_hdf)
 {
 #ifdef HDF5_CREATE
 	if (print_hdf == TRUE) {
@@ -3643,7 +3776,7 @@ void EndTimeStep(int print_sel, int print_out, int print_hdf, int print_restart)
 #endif
 #if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
 	/* Always open file for output in case of a warning message */
-	MergeEndTimeStep(print_sel, print_out, print_restart);
+	MergeEndTimeStep(print_sel, print_out);
 #endif
 }
 
@@ -3961,19 +4094,13 @@ int UZ_INIT(int * transient_fresur)
 		for (i = 0; i < ixyz; i++) {
 			old_frac[i] = 1.0;
 		}
-#ifdef REPLACED
-		uz = (struct system **) PHRQ_malloc((size_t) (count_chem * sizeof(struct system)));
-		if (uz == NULL) malloc_error();
-		for (i = 0; i < count_chem; i++) {
-			uz[i] = NULL;
-		}
-#endif
 	} else {
 		old_frac = NULL;
 	}
 	
 	return(OK);
 }
+#ifdef SKIP
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 int mpi_pack_pp_assemblage(struct pp_assemblage *pp_assemblage_ptr, int *ints, int *ii, double *doubles, int *dd)
@@ -4540,7 +4667,7 @@ int mpi_unpack_surface(struct surface *surface_ptr, int *ints, int *ii, double *
 	return(OK);
 }
 #endif
-
+#endif
 
 void ON_ERROR_CLEANUP_AND_EXIT(void)
 {
@@ -4563,3 +4690,70 @@ void SEND_RESTART_NAME(char * name, int nchar)
 	std::string stdstring(name);
 	FileMap[stdstring] = i;
 }
+#ifdef USE_MPI
+/* ---------------------------------------------------------------------- */
+int mpi_write_restart(double time_hst)
+/* ---------------------------------------------------------------------- */
+{
+	std::ofstream ofs_restart;
+
+	std::string temp_name("temp_restart_file");
+	string_trim(file_prefix);
+	std::string name(file_prefix);
+	name.append(".restart");
+	std::string backup_name = name;
+	backup_name.append(".backup");
+	// open file 
+	if (mpi_myself == 0) {
+		ofs_restart.open(temp_name.c_str());
+		// write header
+		ofs_restart << "#PHAST restart file" << std::endl;
+		time_t now = time(NULL);
+		ofs_restart << "#Prefix: " << file_prefix << std::endl;
+		ofs_restart << "#Date: " << ctime(&now);
+		ofs_restart << "#Current model time: " << time_hst << std::endl;
+		ofs_restart << "#nx, ny, nz: " << ix << ", " << iy << ", " << iz << std::endl;
+		szBin.dump_raw(ofs_restart, 0);
+	}
+	//
+	// collect and write data from nonroot nodes
+	//
+	int task_number, rank, mpi_msg_size;
+	MPI_Status mpi_status;
+	for (task_number = 1; task_number < mpi_tasks; task_number++) {
+		if (mpi_myself == task_number) {
+			std::ostringstream oss_restart;
+			szBin.dump_raw(oss_restart, 0);
+			int string_size = oss_restart.str().size() + 1;
+			const char *string = oss_restart.str().c_str();
+			/*
+			MPI_Send(&task_number, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+			MPI_Send(&mpi_buffer_position, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+			MPI_Send(mpi_buffer, mpi_buffer_position, MPI_PACKED, 0, 0, MPI_COMM_WORLD);
+			*/
+			MPI_Send(&task_number, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+			MPI_Send(&string_size, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+			MPI_Send((void *)string, string_size, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
+		}
+		if (mpi_myself == 0) {
+			MPI_Recv(&rank, 1, MPI_INT, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, &mpi_status);
+			MPI_Recv(&mpi_msg_size, 1, MPI_INT, rank, 0, MPI_COMM_WORLD, &mpi_status);
+			if (mpi_max_buffer < mpi_msg_size) {
+				mpi_max_buffer = mpi_msg_size;
+				mpi_buffer = PHRQ_realloc(mpi_buffer, (size_t) mpi_max_buffer);
+			}
+			/*
+			MPI_Recv(mpi_buffer, mpi_msg_size, MPI_PACKED, rank, 0, MPI_COMM_WORLD, &mpi_status);
+			*/
+			MPI_Recv(mpi_buffer, mpi_msg_size, MPI_CHAR, rank, 0, MPI_COMM_WORLD, &mpi_status);
+			ofs_restart << (char *) mpi_buffer;
+		}
+	}
+
+	// rename files
+	if (mpi_myself == 0) {
+		file_rename(temp_name.c_str(), name.c_str(), backup_name.c_str());
+	}
+	return(OK);
+}
+#endif
