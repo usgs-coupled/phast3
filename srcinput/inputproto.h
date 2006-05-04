@@ -74,7 +74,7 @@ int set_active_cells(void);
 int read_file_doubles(char *next_char, double **d, int *count_d, int *count_alloc);
 int read_input(void);
 int read_lines_times(char *next_char, struct time **times, int *count_times, const char **opt_list, int count_opt_list, int *opt);
-struct property *read_property(char *ptr, const char **opt_list, int count_opt_list, int *opt, int delimited);
+struct property *read_property(char *ptr, const char **opt_list, int count_opt_list, int *opt, int delimited, int allow_restart);
 int get_option (const char **opt_list, int count_opt_list, char **next_char);
 
 /* rivers */

@@ -1274,7 +1274,7 @@ int read_media(void)
 				property_free(grid_elt_ptr->kx);
 				grid_elt_ptr->kx = NULL;
 			}
-			grid_elt_ptr->kx = read_property(next_char, opt_list, count_opt_list, &opt, TRUE);
+			grid_elt_ptr->kx = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
 			if (grid_elt_ptr->kx == NULL) {
 				input_error++;
 				sprintf(error_string,"Reading X direction hydraulic conductivity %s", tag);
@@ -1297,7 +1297,7 @@ int read_media(void)
 				property_free(grid_elt_ptr->ky);
 				grid_elt_ptr->ky = NULL;
 			}
-			grid_elt_ptr->ky = read_property(next_char, opt_list, count_opt_list, &opt, TRUE);
+			grid_elt_ptr->ky = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
 			if (grid_elt_ptr->ky == NULL) {
 				input_error++;
 				sprintf(error_string,"Reading Y direction hydraulic conductivity %s", tag);
@@ -1320,7 +1320,7 @@ int read_media(void)
 				property_free(grid_elt_ptr->kz);
 				grid_elt_ptr->kz = NULL;
 			}
-			grid_elt_ptr->kz = read_property(next_char, opt_list, count_opt_list, &opt, TRUE);
+			grid_elt_ptr->kz = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
 			if (grid_elt_ptr->kz == NULL) {
 				input_error++;
 				sprintf(error_string,"Reading Z direction hydraulic conductivity %s", tag);
@@ -1341,7 +1341,7 @@ int read_media(void)
 				property_free(grid_elt_ptr->porosity);
 				grid_elt_ptr->porosity = NULL;
 			}
-			grid_elt_ptr->porosity = read_property(next_char, opt_list, count_opt_list, &opt, TRUE);
+			grid_elt_ptr->porosity = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
 			if (grid_elt_ptr->porosity == NULL) {
 				input_error++;
 				sprintf(error_string,"Reading porosity %s", tag);
@@ -1363,7 +1363,7 @@ int read_media(void)
 				property_free(grid_elt_ptr->storage);
 				grid_elt_ptr->storage = NULL;
 			}
-			grid_elt_ptr->storage = read_property(next_char, opt_list, count_opt_list, &opt, TRUE);
+			grid_elt_ptr->storage = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
 			if (grid_elt_ptr->storage == NULL) {
 				input_error++;
 				sprintf(error_string,"Reading storage %s", tag);
@@ -1391,7 +1391,7 @@ int read_media(void)
 				property_free(grid_elt_ptr->alpha_long);
 				grid_elt_ptr->alpha_long = NULL;
 			}
-			grid_elt_ptr->alpha_long = read_property(next_char, opt_list, count_opt_list, &opt, TRUE);
+			grid_elt_ptr->alpha_long = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
 			if (grid_elt_ptr->alpha_long == NULL) {
 				input_error++;
 				sprintf(error_string,"Reading longitudinal dispersivity %s", tag);
@@ -1421,7 +1421,7 @@ int read_media(void)
 				property_free(grid_elt_ptr->alpha_trans);
 				grid_elt_ptr->alpha_trans = NULL;
 			}
-			grid_elt_ptr->alpha_trans = read_property(next_char, opt_list, count_opt_list, &opt, TRUE);
+			grid_elt_ptr->alpha_trans = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
 			if (grid_elt_ptr->alpha_trans == NULL) {
 				input_error++;
 				sprintf(error_string,"Reading transverse dispersivity %s", tag);
@@ -1460,7 +1460,7 @@ int read_media(void)
 				property_free(grid_elt_ptr->active);
 				grid_elt_ptr->active = NULL;
 			}
-			grid_elt_ptr->active = read_property(next_char, opt_list, count_opt_list, &opt, TRUE);
+			grid_elt_ptr->active = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
 			if (grid_elt_ptr->active == NULL) {
 				input_error++;
 				sprintf(error_string,"Reading active cells %s", tag);
@@ -1482,7 +1482,7 @@ int read_media(void)
 				property_free(grid_elt_ptr->mask);
 				grid_elt_ptr->mask = NULL;
 			}
-			grid_elt_ptr->mask = read_property(next_char, opt_list, count_opt_list, &opt, TRUE);
+			grid_elt_ptr->mask = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
 			if (grid_elt_ptr->mask == NULL) {
 				input_error++;
 				sprintf(error_string,"Reading mask %s", tag);
@@ -1505,7 +1505,7 @@ int read_media(void)
 				property_free(grid_elt_ptr->alpha_horizontal);
 				grid_elt_ptr->alpha_horizontal = NULL;
 			}
-			grid_elt_ptr->alpha_horizontal = read_property(next_char, opt_list, count_opt_list, &opt, TRUE);
+			grid_elt_ptr->alpha_horizontal = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
 			if (grid_elt_ptr->alpha_horizontal == NULL) {
 				input_error++;
 				sprintf(error_string,"Reading horizontal dispersivity %s", tag);
@@ -1528,7 +1528,7 @@ int read_media(void)
 				property_free(grid_elt_ptr->alpha_vertical);
 				grid_elt_ptr->alpha_vertical = NULL;
 			}
-			grid_elt_ptr->alpha_vertical = read_property(next_char, opt_list, count_opt_list, &opt, TRUE);
+			grid_elt_ptr->alpha_vertical = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
 			if (grid_elt_ptr->alpha_vertical == NULL) {
 				input_error++;
 				sprintf(error_string,"Reading vertical dispersivity %s", tag);
@@ -1696,7 +1696,7 @@ int read_head_ic(void)
 				property_free(head_ic_ptr->head);
 				head_ic_ptr->head = NULL;
 			}
-			head_ic_ptr->head = read_property(next_char, opt_list, count_opt_list, &opt, TRUE);
+			head_ic_ptr->head = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
 			if (head_ic_ptr->head == NULL) {
 				input_error++;
 				sprintf(error_string,"Reading initial head condition %s", tag);
@@ -1718,7 +1718,7 @@ int read_head_ic(void)
 				property_free(head_ic_ptr->mask);
 				head_ic_ptr->mask = NULL;
 			}
-			head_ic_ptr->mask = read_property(next_char, opt_list, count_opt_list, &opt, TRUE);
+			head_ic_ptr->mask = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
 			if (head_ic_ptr->mask == NULL) {
 				input_error++;
 				sprintf(error_string,"Reading mask %s", tag);
@@ -1839,7 +1839,7 @@ int read_chemistry_ic(void)
 				property_free(chem_ic_ptr->solution);
 				chem_ic_ptr->solution = NULL;
 			}
-			chem_ic_ptr->solution = read_property(next_char, opt_list, count_opt_list, &opt, TRUE);
+			chem_ic_ptr->solution = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, TRUE);
 			if (chem_ic_ptr->solution == NULL) {
 				input_error++;
 				sprintf(error_string,"Reading initial solution %s", tag);
@@ -1865,7 +1865,7 @@ int read_chemistry_ic(void)
 				property_free(chem_ic_ptr->equilibrium_phases);
 				chem_ic_ptr->equilibrium_phases = NULL;
 			}
-			chem_ic_ptr->equilibrium_phases = read_property(next_char, opt_list, count_opt_list, &opt, TRUE);
+			chem_ic_ptr->equilibrium_phases = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, TRUE);
 			if (chem_ic_ptr->equilibrium_phases == NULL) {
 				input_error++;
 				sprintf(error_string,"Reading initial equilibrium_phases %s", tag);
@@ -1889,7 +1889,7 @@ int read_chemistry_ic(void)
 				property_free(chem_ic_ptr->exchange);
 				chem_ic_ptr->exchange = NULL;
 			}
-			chem_ic_ptr->exchange = read_property(next_char, opt_list, count_opt_list, &opt, TRUE);
+			chem_ic_ptr->exchange = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, TRUE);
 			if (chem_ic_ptr->exchange == NULL) {
 				input_error++;
 				sprintf(error_string,"Reading initial exchange assemblage %s", tag);
@@ -1913,7 +1913,7 @@ int read_chemistry_ic(void)
 				property_free(chem_ic_ptr->surface);
 				chem_ic_ptr->surface = NULL;
 			}
-			chem_ic_ptr->surface = read_property(next_char, opt_list, count_opt_list, &opt, TRUE);
+			chem_ic_ptr->surface = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, TRUE);
 			if (chem_ic_ptr->surface == NULL) {
 				input_error++;
 				sprintf(error_string,"Reading initial surface assemblage %s", tag);
@@ -1937,7 +1937,7 @@ int read_chemistry_ic(void)
 				property_free(chem_ic_ptr->gas_phase);
 				chem_ic_ptr->gas_phase = NULL;
 			}
-			chem_ic_ptr->gas_phase = read_property(next_char, opt_list, count_opt_list, &opt, TRUE);
+			chem_ic_ptr->gas_phase = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, TRUE);
 			if (chem_ic_ptr->gas_phase == NULL) {
 				input_error++;
 				sprintf(error_string,"Reading initial gas_phase %s", tag);
@@ -1962,7 +1962,7 @@ int read_chemistry_ic(void)
 				property_free(chem_ic_ptr->solid_solutions);
 				chem_ic_ptr->solid_solutions = NULL;
 			}
-			chem_ic_ptr->solid_solutions = read_property(next_char, opt_list, count_opt_list, &opt, TRUE);
+			chem_ic_ptr->solid_solutions = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, TRUE);
 			if (chem_ic_ptr->solid_solutions == NULL) {
 				input_error++;
 				sprintf(error_string,"Reading initial solid_solution %s", tag);
@@ -1986,7 +1986,7 @@ int read_chemistry_ic(void)
 				property_free(chem_ic_ptr->kinetics);
 				chem_ic_ptr->kinetics = NULL;
 			}
-			chem_ic_ptr->kinetics = read_property(next_char, opt_list, count_opt_list, &opt, TRUE);
+			chem_ic_ptr->kinetics = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, TRUE);
 			if (chem_ic_ptr->kinetics == NULL) {
 				input_error++;
 				sprintf(error_string,"Reading initial kinetics %s", tag);
@@ -2008,7 +2008,7 @@ int read_chemistry_ic(void)
 				property_free(chem_ic_ptr->mask);
 				chem_ic_ptr->mask = NULL;
 			}
-			chem_ic_ptr->mask = read_property(next_char, opt_list, count_opt_list, &opt, TRUE);
+			chem_ic_ptr->mask = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
 			if (chem_ic_ptr->mask == NULL) {
 				input_error++;
 				sprintf(error_string,"Reading mask %s", tag);
@@ -2540,7 +2540,7 @@ int read_specified_value_bc(void)
 				property_free(bc_ptr->mask);
 				bc_ptr->mask = NULL;
 			}
-			bc_ptr->mask = read_property(next_char, opt_list, count_opt_list, &opt, TRUE);
+			bc_ptr->mask = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
 			if (bc_ptr->mask == NULL) {
 				input_error++;
 				sprintf(error_string,"Reading mask %s", tag);
@@ -2743,7 +2743,7 @@ int read_flux_bc(void)
 				property_free(bc_ptr->mask);
 				bc_ptr->mask = NULL;
 			}
-			bc_ptr->mask = read_property(next_char, opt_list, count_opt_list, &opt, TRUE);
+			bc_ptr->mask = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
 			if (bc_ptr->mask == NULL) {
 				input_error++;
 				sprintf(error_string,"Reading mask %s", tag);
@@ -2926,7 +2926,7 @@ int read_leaky_bc(void)
 				property_free(bc_ptr->bc_k);
 				bc_ptr->bc_k = NULL;
 			}
-			bc_ptr->bc_k = read_property(next_char, opt_list, count_opt_list, &opt, TRUE);
+			bc_ptr->bc_k = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
 			if (bc_ptr->bc_k == NULL) {
 				input_error++;
 				sprintf(error_string,"Reading hydraulic conductivity %s", tag);
@@ -2956,7 +2956,7 @@ int read_leaky_bc(void)
 				property_free(bc_ptr->bc_thick);
 				bc_ptr->bc_thick = NULL;
 			}
-			bc_ptr->bc_thick = read_property(next_char, opt_list, count_opt_list, &opt, TRUE);
+			bc_ptr->bc_thick = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
 			if (bc_ptr->bc_thick == NULL) {
 				input_error++;
 				sprintf(error_string,"Reading thickness %s", tag);
@@ -3008,7 +3008,7 @@ int read_leaky_bc(void)
 				property_free(bc_ptr->mask);
 				bc_ptr->mask = NULL;
 			}
-			bc_ptr->mask = read_property(next_char, opt_list, count_opt_list, &opt, TRUE);
+			bc_ptr->mask = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
 			if (bc_ptr->mask == NULL) {
 				input_error++;
 				sprintf(error_string,"Reading mask %s", tag);
@@ -3022,7 +3022,7 @@ int read_leaky_bc(void)
 	return(return_value);
 }
 /* ---------------------------------------------------------------------- */
-struct property *read_property(char *ptr, const char **opt_list, int count_opt_list, int *opt, int delimited)
+struct property *read_property(char *ptr, const char **opt_list, int count_opt_list, int *opt, int delimited, int allow_restart)
 /* ---------------------------------------------------------------------- */
 {
 /*
@@ -3150,19 +3150,26 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 /*
  *   phast will read from restart file by_cell only
  */
-		j = copy_token(token, &next_char, &l);
-		std::string stdtoken(token);
-		std::map<std::string, int>::iterator it = FileMap.find(stdtoken);
-		if (it != FileMap.end()) {
-			j = it->second;
+		if (allow_restart == TRUE) {
+			j = copy_token(token, &next_char, &l);
+			std::string stdtoken(token);
+			std::map<std::string, int>::iterator it = FileMap.find(stdtoken);
+			if (it != FileMap.end()) {
+				j = it->second;
+			} else {
+				j = FileMap.size();
+				FileMap[stdtoken] = j;
+			}
+			p->v = (double *) malloc(sizeof(double));
+			p->v[0] = -100 - j;
+			p->count_v = 1;
+			p->type = FIXED;
 		} else {
-			j = FileMap.size();
-			FileMap[stdtoken] = j;
+			property_free(p);
+			p = NULL;
+			input_error++;
+			error_msg("Restart file can only be used for CHEMISTRY_IC chemical properties.", CONTINUE);
 		}
-		p->v = (double *) malloc(sizeof(double));
-		p->v[0] = -100 - j;
-		p->count_v = 1;
-		p->type = FIXED;
 		if (delimited == TRUE) {
 			*opt = get_option(opt_list, count_opt_list, &next_char);
 		} else {
@@ -3214,6 +3221,7 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 		p->count_alloc = p->count_v;
 	} else {
 		property_free(p);
+		p = NULL;
 		sprintf(error_string, "Unknown option reading property, %s.", token);
 		input_error++;
 		error_msg(error_string, STOP);
@@ -5825,7 +5833,7 @@ int read_print_locations(void)
 		    property_free(print_zones_ptr->print);
 		    print_zones_ptr->print = NULL;
 		  }
-		  print_zones_ptr->print = read_property(next_char, opt_list, count_opt_list, &opt, TRUE);
+		  print_zones_ptr->print = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
 		  break;
 		case 2:                       /* thin_grid */
 		case 3:                       /* thin */
@@ -5918,7 +5926,7 @@ int read_print_locations(void)
 			  property_free(print_zones_ptr->mask);
 			  print_zones_ptr->mask = NULL;
 		  }
-		  print_zones_ptr->mask = read_property(next_char, opt_list, count_opt_list, &opt, TRUE);
+		  print_zones_ptr->mask = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
 		  if (print_zones_ptr->mask == NULL) {
 			  input_error++;
 			  sprintf(error_string,"Reading mask %s", tag);

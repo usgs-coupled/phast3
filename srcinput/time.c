@@ -259,7 +259,7 @@ int property_time_read(char *next_char, struct property_time **property_time_ptr
 		(*property_time_ptr)->time.input = string_duplicate(token);
 		(*property_time_ptr)->time.type = UNITS;
 	}
-	(*property_time_ptr)->property = read_property(next_char, opt_list, count_opt_list, opt, TRUE);
+	(*property_time_ptr)->property = read_property(next_char, opt_list, count_opt_list, opt, TRUE, FALSE);
 	/*(*property_time_ptr)->property = read_property(next_char);*/
 	if ((*property_time_ptr)->property == NULL) {
 		input_error++;

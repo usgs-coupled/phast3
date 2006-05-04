@@ -25,6 +25,8 @@ char big_buffer[10000];
 int add_message_callback(PFN_MESSAGE_CALLBACK pfn, void *cookie)
 /* ---------------------------------------------------------------------- */
 {
+	std_error = stderr;
+	error_file = stderr;
 	if (svnid == NULL) fprintf(stderr," ");
 	if (pfn) {
 		message_callbacks = (struct message_callback*) realloc(message_callbacks, sizeof(struct message_callback) * (count_message_callback + 1));
