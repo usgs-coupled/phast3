@@ -139,6 +139,7 @@ PRINT_FREQUENCY
         -hdf_chemistry          2000    yr
         -xyz_well               2000    yr
         -save_final_heads       true
+	-restart		1000000 yr
 PRINT_LOCATIONS
 # Don't print bottom layer to ex4.xyz.chem file
         -xyz_chemistry

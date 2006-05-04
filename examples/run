@@ -25,6 +25,10 @@ if [ -f $NAME.chem.dat ]; then
 if [ -f $NAME.head.dat ]; then 
     cp $NAME.head.dat 0
     fi
+if [ $NAME == "ex4restart" ]; then 
+    cp ex4.head.dat 0
+    cp ex4.restart 0
+    fi
 if [ -f phast.dat ]; then 
     cp phast.dat 0
     fi
