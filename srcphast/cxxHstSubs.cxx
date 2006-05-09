@@ -3,12 +3,13 @@
 #include <ctime>
 #include "StorageBin.h"
 #include "phreeqcpp/Solution.h"
+#include "phreeqc/output.h"
 #include "hst.h"
 #include "phreeqc/phqalloc.h"
 #include "phreeqc/phrqproto.h"
 #include "phastproto.h"
 /*
- * hstcxxsubs.c
+ * cxxhstsubs.cxx
  */
 
 void buffer_to_cxxsolution(int n);
@@ -28,34 +29,19 @@ void buffer_to_cxxsolution(int n)
 	LDBLE old_moles, old_la;
 	LDBLE t;
 	cxxSolution *cxxsoln_ptr;
-/* 
- *  add water to hydrogen and oxygen
- */
-	//std::ostringstream oss;
-	//szBin.dump_raw(oss,0);
-	//std::cerr << oss.str();
-
+	/* 
+	 *  add water to hydrogen and oxygen
+	 */
 	cxxsoln_ptr = szBin.getSolution(n);
 	if (cxxsoln_ptr == NULL) {
-		cxxSolution cxxsoln;
-		szBin.setSolution(n, &cxxsoln);
-		cxxsoln_ptr = szBin.getSolution(n);
-		cxxsoln_ptr->set_n_user(n);
-		cxxsoln_ptr->set_n_user_end(n);
+		error_msg("Solution not found, buffer_to_cxxsolution.", STOP);
 	}
-	//std::ostringstream oss;
-	//cxxsoln_ptr->dump_raw(oss,0);
-	//std::cerr << oss.str();
-
 	cxxsoln_ptr->set_total_h( buffer[0].moles + 2  / gfw_water);
 	cxxsoln_ptr->set_total_o( buffer[1].moles + 1 / gfw_water);
 
 /* 
  *  Put totals in solution structure
  */
-#ifdef PRINT
-	output_msg(OUTPUT_STDERR,"Unpack solution %d.\n", solution_ptr->n_user);
-#endif
 	for (i = 2; i < count_total; i++) {
 		if (buffer[i].moles <= 1e-14) {
 			//solution_ptr->totals[i-2].moles = 0;
@@ -81,9 +67,6 @@ void buffer_to_cxxsolution(int n)
 			//solution_ptr->totals[i-2].moles = buffer[i].moles;
 			cxxsoln_ptr->set_total(buffer[i].name, buffer[i].moles);
 		}
-#ifdef PRINT
-		output_msg(OUTPUT_STDERR,"\t%s\t%g\n", solution_ptr->totals[i-2].description, solution_ptr->totals[i-2].moles);
-#endif
 	}
 /*
  *   Switch in transport of charge
@@ -94,41 +77,6 @@ void buffer_to_cxxsolution(int n)
 	}
 	return;
 }
-/* ---------------------------------------------------------------------- */
-#ifdef SKIP
-void cxxsolution_to_buffer(cxxSolution *cxxsoln_ptr)
-/* ---------------------------------------------------------------------- */
-{
-	struct solution *solution_ptr;
-	int i;
-	cxxNameDouble::iterator it;
-	LDBLE moles_water;
-
-	/* gfw_water = 0.018 */
-	moles_water = 1/gfw_water;
-
-	buffer[0].moles = cxxsoln_ptr->get_total_h() - 2 * moles_water;
-	buffer[1].moles = cxxsoln_ptr->get_total_o() - moles_water;
-
-	/*
-	 *  Sum valence states
-	 */
-	solution_ptr = cxxsoln_ptr->cxxSolution2solution();
-	xsolution_zero();
-	add_solution(solution_ptr, 1.0, 1.0);
-	for (i = 2; i < count_total; i++) {
-		buffer[i].moles = buffer[i].master->total;
-	}	
-	/*
-	 *   Switch in transport of charge
-	 */
-	if (transport_charge == TRUE) {
-		buffer[i].moles = cxxsoln_ptr->get_cb();
-	}
-	solution_free(solution_ptr);
-	return;
-}
-#endif
 /* ---------------------------------------------------------------------- */
 void cxxsolution_to_buffer(cxxSolution *cxxsoln_ptr)
 /* ---------------------------------------------------------------------- */
