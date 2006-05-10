@@ -173,3 +173,13 @@ int Merge_vfprintf(FILE *stream, const char *format, va_list args);
 FILE *mpi_fopen(const char *filename, const char *mode);
 #endif
 int phast_handler(const int action, const int type, const char *err_str, const int stop, void *cookie, const char *format, va_list args);
+/*
+ * cxxHstSubs.cxx
+ */
+#include "Solution.h"
+void buffer_to_cxxsolution(int n);
+void cxxsolution_to_buffer(cxxSolution *solution_ptr);
+void unpackcxx_from_hst(double *fraction, int *dim);
+void scale_cxxsolution(int n_solution, double factor);
+struct system *cxxsystem_initialize(int i, int n_user_new, int *initial_conditions1, int *initial_conditions2, double *fraction1);
+int scale_cxxsystem(int iphrq, LDBLE frac);

@@ -13,12 +13,6 @@
 #include "phastproto.h"
 #include "Dictionary.h"
 
-extern void buffer_to_cxxsolution(int n);
-extern void cxxsolution_to_buffer(cxxSolution *solution_ptr);
-extern void unpackcxx_from_hst(double *fraction, int *dim);
-extern void scale_cxxsolution(int n_solution, double factor);
-extern struct system *cxxsystem_initialize(int i, int n_user_new, int *initial_conditions1, int *initial_conditions2, double *fraction1);
-
 static void BeginTimeStep(int print_sel, int print_out, int print_hdf);
 static void EndTimeStep(int print_sel, int print_out, int print_hdf);
 static void BeginCell(int print_sel, int print_out, int print_hdf, int index);
@@ -1178,7 +1172,8 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 		if (active) {
 			cell_no = i;
 			//if (transient_free_surface == TRUE) scale_solution(n_solution, frac[j]); 
-			if (transient_free_surface == TRUE) scale_cxxsolution(i, frac[j]); 
+			//if (transient_free_surface == TRUE) scale_cxxsolution(i, frac[j]); 
+			if (transient_free_surface == TRUE) scale_cxxsystem(i, 1.0/frac[j]);
 			/*
 			  std::ostringstream oss;
 			  cxxSolution *cxxsoln_ptr = szBin.getSolution(i);
@@ -1210,7 +1205,7 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 				error_msg("How did this happen?", STOP);
 			}
 			xsolution_save_hst(n_solution);
-			if (active && transient_free_surface == TRUE) scale_solution(n_solution, 1.0/frac[j]); 
+			//if (active && transient_free_surface == TRUE) scale_solution(n_solution, 1.0/frac[j]); 
 			if (save.exchange == TRUE) {
 				exchange_bsearch(i, &n_exchange);
 				xexchange_save_hst(n_exchange);
@@ -1232,6 +1227,7 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 				xs_s_assemblage_save_hst(n_s_s_assemblage);
 			}
 			szBin.phreeqc2cxxStorageBin(i);
+			if (active && transient_free_surface == TRUE) scale_cxxsystem(i, frac[j]);
 		} else {
 				if (pr.all == TRUE ) {
 					output_msg(OUTPUT_MESSAGE, "Time %g. Cell %d: x=%15g\ty=%15g\tz=%15g\n", (*time_hst) * (*cnvtmi), j + 1, x_hst[j], y_hst[j], z_hst[j]);
@@ -1469,7 +1465,8 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 			//solution_bsearch(first_user_number, &first_solution, TRUE);
 			//n_solution = first_solution;
 			/*if (*adjust_water_rock_ratio) scale_solution(n_solution, frac[j]); */
-			if (transient_free_surface == TRUE) scale_cxxsolution(i, frac[j]); 
+			//if (transient_free_surface == TRUE) scale_cxxsolution(i, frac[j]); 
+			if (transient_free_surface == TRUE) scale_cxxsystem(i, 1.0/frac[j]);
 			szBin.cxxStorageBin2phreeqc(i);
 			set_use_hst(i);
 			//n_user = solution[n_solution]->n_user;
@@ -1528,9 +1525,10 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 			 * can delete some results from run_reaction
 			 */
 			/*if (active && *adjust_water_rock_ratio) scale_solution(n_solution, 1.0/frac[j]); */
-			if (active && transient_free_surface == TRUE) scale_solution(n_solution, 1.0/frac[j]);
+			//if (active && transient_free_surface == TRUE) scale_solution(n_solution, 1.0/frac[j]);
  			//copy_user_to_system(sz[i], first_user_number, i);
 			szBin.phreeqc2cxxStorageBin(i);
+			if (active && transient_free_surface == TRUE) scale_cxxsystem(i, frac[j]);
 		}
 		// free phreeqc structures
 		reinitialize();
@@ -1552,7 +1550,6 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
  */
 	if (*print_restart == 1) mpi_write_restart((*time_hst) * (*cnvtmi));
 	COLLECT_FROM_NONROOT(fraction, dim);
-	/*if (mpi_myself == 0) PACK_FOR_HST(fraction, dim);*/
 #ifdef TIME
 	MPI_Barrier(MPI_COMM_WORLD);
 	if (mpi_myself == 0) {

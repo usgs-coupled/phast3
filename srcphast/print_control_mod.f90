@@ -60,7 +60,7 @@ CONTAINS
     ELSE IF(pc%freq < 0._kdp) THEN
        IF(MOD(itime,INT(ABS(pc%freq))) == 0) pc%print=.TRUE.
     END IF
-    IF(utime >= timchg) then
+    IF(utime >= timchg .and. pc%freq /= 0) then
        pc%print=.TRUE.
     ENDIF
     if (pc%print) pc%print_int = 1

@@ -12,12 +12,6 @@
  * cxxhstsubs.cxx
  */
 
-void buffer_to_cxxsolution(int n);
-void cxxsolution_to_buffer(cxxSolution *solution_ptr);
-void unpackcxx_from_hst(double *fraction, int *dim);
-void scale_cxxsolution(int n_solution, double factor);
-struct system *cxxsystem_initialize(int i, int n_user_new, int *initial_conditions1, int *initial_conditions2, double *fraction1);
-
 extern cxxStorageBin szBin;
 extern cxxStorageBin phreeqcBin;
 
@@ -34,7 +28,11 @@ void buffer_to_cxxsolution(int n)
 	 */
 	cxxsoln_ptr = szBin.getSolution(n);
 	if (cxxsoln_ptr == NULL) {
-		error_msg("Solution not found, buffer_to_cxxsolution.", STOP);
+		cxxSolution cxxsoln;
+		szBin.setSolution(n, &cxxsoln);
+		cxxsoln_ptr = szBin.getSolution(n);
+		cxxsoln_ptr->set_n_user(n);
+		cxxsoln_ptr->set_n_user_end(n);
 	}
 	cxxsoln_ptr->set_total_h( buffer[0].moles + 2  / gfw_water);
 	cxxsoln_ptr->set_total_o( buffer[1].moles + 1 / gfw_water);
@@ -355,5 +353,75 @@ int write_restart_init(std::ofstream& ofs, double time_hst)
 	ofs << "#Date: " << ctime(&now);
 	ofs << "#Current model time: " << time_hst << std::endl;
 	ofs << "#nx, ny, nz: " << ix << ", " << iy << ", " << iz << std::endl;
+	return(OK);
+}
+/* ---------------------------------------------------------------------- */
+int scale_cxxsystem(int iphrq, LDBLE frac)
+/* ---------------------------------------------------------------------- */
+{
+	int n_user;
+
+	/* 
+	 * repartition solids for partially saturated cells
+	 */
+	
+	//if (equal(old_frac[ihst], new_frac, 1e-8) == TRUE)  return(OK);
+
+	n_user = iphrq;
+
+	/*
+	 *  Set current sz pointers
+	 */
+	struct system *current_sz = szBin.cxxStorageBin2system(iphrq);
+	struct system *new_sz = (struct system *) system_alloc();
+	/*
+	 *   Scale compositions
+	 */
+	if (current_sz->exchange != NULL) {
+		new_sz->exchange = (struct exchange *) exchange_alloc();
+		if(sum_exchange(current_sz->exchange, frac, NULL, 0.0, new_sz->exchange) == ERROR) {
+			error_msg("scaling calculation", STOP);
+		}
+	}
+	if (current_sz->pp_assemblage != NULL) {
+		new_sz->pp_assemblage = (struct pp_assemblage *) pp_assemblage_alloc();
+		if (sum_pp_assemblage(current_sz->pp_assemblage, frac, NULL, 0.0, new_sz->pp_assemblage) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}
+	}
+	if (current_sz->gas_phase != NULL) {
+		new_sz->gas_phase = (struct gas_phase *) gas_phase_alloc();
+		if (sum_gas_phase(current_sz->gas_phase, frac, NULL, 0.0, new_sz->gas_phase) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}
+	}
+	if (current_sz->s_s_assemblage != NULL) {
+		new_sz->s_s_assemblage = (struct s_s_assemblage *) s_s_assemblage_alloc();
+		if (sum_s_s_assemblage(current_sz->s_s_assemblage, frac, NULL, 0.0, new_sz->s_s_assemblage) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}
+	}
+	if (current_sz->kinetics != NULL) {
+		new_sz->kinetics = (struct kinetics *) kinetics_alloc();
+		if (sum_kinetics(current_sz->kinetics, frac, NULL, 0.0, new_sz->kinetics) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}
+	}
+	if (current_sz->surface != NULL) {
+		new_sz->surface = (struct surface *) surface_alloc();
+		if (sum_surface(current_sz->surface, frac, NULL, 0.0, new_sz->surface) == ERROR) {
+			error_msg("UZ calculation", STOP);
+		}
+	}
+	/*
+	 *   Save scaled system
+	 */
+
+	szBin.add(new_sz);
+
+	system_free(current_sz);
+	system_free(new_sz);
+	free_check_null(current_sz);
+	free_check_null(new_sz);
 	return(OK);
 }
