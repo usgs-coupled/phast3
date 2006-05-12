@@ -61,7 +61,7 @@ SUBROUTINE phast_slave(mpi_tasks, mpi_myself)
      DO
            CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time,deltim,prslmi,cnvtmi,  &
                 frac,iprint_chem,iprint_xyz,prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f, &
-                print_restart%print_int)
+                print_restart%print_flag_integer)
            IF (stop_msg == 1) EXIT
      ENDDO
   ENDIF

@@ -856,7 +856,8 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 		j = forward[i];           /* j is count_chem number */
 		if (j < 0) continue;
 		assert (forward[i] >= 0); 
-		system_ptr = system_initialize(i, j, initial_conditions1, initial_conditions2, fraction1);   
+		//system_ptr = system_initialize(i, j, initial_conditions1, initial_conditions2, fraction1);   
+		system_ptr = system_cxxInitialize(i, j, initial_conditions1, initial_conditions2, fraction1);   
 		/* C++ */
 		szBin.add(system_ptr);
 		system_free(system_ptr);
@@ -1205,7 +1206,6 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 				error_msg("How did this happen?", STOP);
 			}
 			xsolution_save_hst(n_solution);
-			//if (active && transient_free_surface == TRUE) scale_solution(n_solution, 1.0/frac[j]); 
 			if (save.exchange == TRUE) {
 				exchange_bsearch(i, &n_exchange);
 				xexchange_save_hst(n_exchange);

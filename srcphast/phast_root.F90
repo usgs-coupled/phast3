@@ -161,7 +161,7 @@ SUBROUTINE phast_root(mpi_tasks, mpi_myself)
            CALL logprt_c(logline1)
            CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time,deltim,prslmi,cnvtmi,  &
                 frac,iprint_chem,iprint_xyz,prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f, &
-                print_restart%print_int)
+                print_restart%print_flag_integer)
         ENDIF
         CALL sumcal2
         CALL write5

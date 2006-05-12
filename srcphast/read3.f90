@@ -278,14 +278,14 @@ SUBROUTINE read3
   primapcomp = -primapcomp
   primapv = -primapv
   ! ... Well data time series
-  READ(fuins,*) pri_well_timser, print_restart%freq
+  READ(fuins,*) pri_well_timser, print_restart%print_interval
   if (print_rde) WRITE(furde,8111) 'pri_well_timser,[3.10.2]',  &
        pri_well_timser, &
-       print_restart%freq
+       print_restart%print_interval
 8111 FORMAT(tr5,a/tr5,f10.2)
   ! ... ***special patch
   pri_well_timser = -pri_well_timser
-  print_restart%freq = -print_restart%freq
+  print_restart%print_interval = -print_restart%print_interval
   if (solute) then
      ! ... Print control index for .O.chem concentrations on a sub-grid
      icall = 8

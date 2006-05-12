@@ -97,7 +97,7 @@ SUBROUTINE error3
   IF(pricphrq > 0._kdp .AND. pricphrq < udeltim) warnflag = warnflag + 1
   IF(priforce_chem_phrq > 0._kdp .AND. priforce_chem_phrq < udeltim) warnflag = warnflag + 1
   IF(prislm > 0._kdp .AND. prislm < udeltim) warnflag = warnflag + 1
-  IF(print_restart%freq > 0._kdp .AND. print_restart%freq < udeltim) warnflag = warnflag + 1
+  IF(print_restart%print_interval > 0._kdp .AND. print_restart%print_interval < udeltim) warnflag = warnflag + 1
   IF(privel > 0._kdp .AND. privel < udeltim) warnflag = warnflag + 1
   IF(priwel > 0._kdp .AND. priwel < udeltim) warnflag = warnflag + 1
   IF(pri_well_timser > 0._kdp .AND. pri_well_timser < udeltim) warnflag = warnflag + 1

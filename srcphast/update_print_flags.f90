@@ -26,7 +26,7 @@ SUBROUTINE update_print_flags
   IF(prslm .AND. prislm > 0._kdp) THEN
      timprslm=(1._kdp+INT(utime/prislm))*prislm
   END IF
-  CALL pc_set_time_print(print_restart, utime)
+  CALL pc_set_print_time(print_restart, utime)
   ! ... P,C tables of dependent variables in the cells
   IF(prp .AND. prip > 0._kdp) THEN
      timprp=(1._kdp+INT(utime/prip))*prip

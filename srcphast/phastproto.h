@@ -183,3 +183,4 @@ void unpackcxx_from_hst(double *fraction, int *dim);
 void scale_cxxsolution(int n_solution, double factor);
 struct system *cxxsystem_initialize(int i, int n_user_new, int *initial_conditions1, int *initial_conditions2, double *fraction1);
 int scale_cxxsystem(int iphrq, LDBLE frac);
+struct system *system_cxxInitialize(int i, int n_user_new, int *initial_conditions1, int *initial_conditions2, double *fraction1);

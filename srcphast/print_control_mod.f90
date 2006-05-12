@@ -14,9 +14,9 @@ MODULE print_control_mod
 
 
   TYPE :: PrintControl
-     LOGICAL :: print
-     INTEGER :: print_int, next_time
-     REAL(KIND=kdp) :: freq, time_print
+     LOGICAL :: print_flag, keep_file
+     INTEGER :: print_flag_integer
+     REAL(KIND=kdp) :: print_interval, print_time
   END TYPE PrintControl
 
   TYPE (PrintControl) print_restart
@@ -29,18 +29,18 @@ CONTAINS
     IMPLICIT NONE
     TYPE (PrintControl) :: pc
     ! ...
-    pc%print = .false.
-    pc%print_int = 0
-    pc%freq = 0.0
-    pc%time_print = 0.0
+    pc%print_flag = .false.
+    pc%print_flag_integer = 0
+    pc%print_interval = 0.0
+    pc%print_time = 0.0
   END SUBROUTINE pc_initialize
 
   SUBROUTINE pc_reset(pc)
     IMPLICIT NONE
     TYPE (PrintControl) :: pc
     ! ...
-    pc%print = .false.
-    pc%print_int = 0
+    pc%print_flag = .false.
+    pc%print_flag_integer = 0
   END SUBROUTINE pc_reset
 
   SUBROUTINE pc_set(pc, utime, itime, timchg)
@@ -48,45 +48,45 @@ CONTAINS
     TYPE (PrintControl) :: pc
     INTEGER, INTENT(IN) :: itime
     REAL(KIND=kdp), INTENT(IN) :: timchg, utime
-    ! ... freq = prislm = privar
-    ! ... time_print = timprslm = timprvar
+    ! ... print_interval = prislm = privar
+    ! ... print_time = timprslm = timprvar
     ! ... transient = prslm = prvar
-    pc%print = .false.
-    pc%print_int = 0
-    IF (pc%freq > 0.0_kdp) THEN
-       IF(ABS(pc%time_print-utime) <= .01_kdp*deltim*cnvtmi) THEN
-          pc%print=.TRUE.
+    pc%print_flag = .false.
+    pc%print_flag_integer = 0
+    IF (pc%print_interval > 0.0_kdp) THEN
+       IF(ABS(pc%print_time-utime) <= .01_kdp*deltim*cnvtmi) THEN
+          pc%print_flag=.TRUE.
        END IF
-    ELSE IF(pc%freq < 0._kdp) THEN
-       IF(MOD(itime,INT(ABS(pc%freq))) == 0) pc%print=.TRUE.
+    ELSE IF(pc%print_interval < 0._kdp) THEN
+       IF(MOD(itime,INT(ABS(pc%print_interval))) == 0) pc%print_flag=.TRUE.
     END IF
-    IF(utime >= timchg .and. pc%freq /= 0) then
-       pc%print=.TRUE.
+    IF(utime >= timchg .and. pc%print_interval /= 0) then
+       pc%print_flag=.TRUE.
     ENDIF
-    if (pc%print) pc%print_int = 1
+    if (pc%print_flag) pc%print_flag_integer = 1
   END SUBROUTINE pc_set
 
-  SUBROUTINE pc_set_time_print_init(pc, utime, utimchg)
+  SUBROUTINE pc_set_print_time_init(pc, utime, utimchg)
     IMPLICIT NONE
     TYPE (PrintControl) :: pc
     REAL(KIND=kdp), INTENT(IN) ::  utimchg, utime
 
-    if (pc%freq > 0._kdp) THEN
-       pc%time_print = (1._kdp+INT(utime/pc%freq))*pc%freq
+    if (pc%print_interval > 0._kdp) THEN
+       pc%print_time = (1._kdp+INT(utime/pc%print_interval))*pc%print_interval
     ELSE 
-       pc%time_print = utimchg
+       pc%print_time = utimchg
     ENDIF
-  END SUBROUTINE pc_set_time_print_init
+  END SUBROUTINE pc_set_print_time_init
 
-  SUBROUTINE pc_set_time_print(pc, utime)
+  SUBROUTINE pc_set_print_time(pc, utime)
     IMPLICIT NONE
     TYPE (PrintControl) :: pc
     REAL(KIND=kdp), INTENT(IN) :: utime
 
-    IF(pc%print .AND. pc%freq > 0._kdp) THEN
-       pc%time_print=(1._kdp+INT(utime/pc%freq))*pc%freq
+    IF(pc%print_flag .AND. pc%print_interval > 0._kdp) THEN
+       pc%print_time=(1._kdp+INT(utime/pc%print_interval))*pc%print_interval
     END IF
-  END SUBROUTINE pc_set_time_print
+  END SUBROUTINE pc_set_print_time
 
   SUBROUTINE print_control_l(privar,utime,itime,timchg,timprvar,prvar)
     IMPLICIT NONE

@@ -139,6 +139,7 @@ void scale_cxxsolution(int n_solution, double factor)
 	cxxSolution *cxxsoln = szBin.mix_cxxSolutions(mixmap);
 	szBin.setSolution(n_solution, cxxsoln);
 }
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 struct system *cxxsystem_initialize(int i, int n_user_new, int *initial_conditions1, int *initial_conditions2, double *fraction1)
 /* ---------------------------------------------------------------------- */
@@ -311,6 +312,112 @@ struct system *cxxsystem_initialize(int i, int n_user_new, int *initial_conditio
 			free_check_null(kinetics_ptr2);
 		}
 		f1 = fraction1[7*i + 6];
+		mix_kinetics(n_old1, n_old2, f1, -1);
+		kinetics_ptr = kinetics_bsearch(-1, &n);
+		system_ptr->kinetics = kinetics_replicate(kinetics_ptr, n_user_new);
+	}
+	return(system_ptr);
+}
+#endif
+/* ---------------------------------------------------------------------- */
+struct system *system_cxxInitialize(int i, int n_user_new, int *initial_conditions1, int *initial_conditions2, double *fraction1)
+/* ---------------------------------------------------------------------- */
+{
+	struct solution *solution_ptr;
+	struct pp_assemblage *pp_assemblage_ptr;
+	struct gas_phase *gas_phase_ptr;
+	struct s_s_assemblage *s_s_assemblage_ptr;
+	struct surface *surface_ptr;
+	struct kinetics *kinetics_ptr;
+	struct system *system_ptr;
+	int n, n_old1, n_old2;
+	double f1;
+
+	system_ptr = system_alloc();   
+	/*
+	 *   Copy solution
+	 */
+	n_old1 = initial_conditions1[7*i];
+	n_old2 = initial_conditions2[7*i];
+	f1 = fraction1[7*i];
+	if (n_old1 >= 0) {
+		mix_solutions(n_old1, n_old2, f1, -1, "initial");
+		solution_ptr = solution_bsearch(-1, &n, TRUE);
+		system_ptr->solution = solution_replicate(solution_ptr, n_user_new);
+	}
+		
+	/*
+	 *   Copy pp_assemblage
+	 */
+	n_old1 = initial_conditions1[ 7*i + 1 ];
+	n_old2 = initial_conditions2[ 7*i + 1 ];
+	f1 = fraction1[7*i + 1];
+	if (n_old1 >= 0) {
+		mix_pp_assemblage(n_old1, n_old2, f1, -1);
+		pp_assemblage_ptr = pp_assemblage_bsearch(-1, &n);
+		system_ptr->pp_assemblage = pp_assemblage_replicate(pp_assemblage_ptr, n_user_new);
+	}
+	/*
+	 *   Copy exchange assemblage
+	 */
+
+	n_old1 = initial_conditions1[ 7*i + 2 ];
+	n_old2 = initial_conditions2[ 7*i + 2 ];
+	f1 = fraction1[7*i + 2];
+	if (n_old1 >= 0) {
+#ifdef SKIP		
+		struct exchange *exchange_ptr;
+		mix_exchange(n_old1, n_old2, f1, -1);
+		exchange_ptr = exchange_bsearch(-1, &n);
+		system_ptr->exchange = exchange_replicate(exchange_ptr, n_user_new);
+#endif
+		cxxMix mx;
+		mx.add(n_old1, f1);
+		if (n_old2 >= 0) mx.add(n_old2, 1 - f1);
+		cxxExchange *cxxex_ptr;
+		cxxex_ptr = phreeqcBin.mix_cxxExchange(mx);
+		szBin.setExchange(i, cxxex_ptr);
+	}
+	/*
+	 *   Copy surface assemblage
+	 */
+	n_old1 = initial_conditions1[ 7*i + 3 ];
+	n_old2 = initial_conditions2[ 7*i + 3 ];
+	f1 = fraction1[7*i + 3];
+	if (n_old1 >= 0) {
+		mix_surface(n_old1, n_old2, f1, -1);
+		surface_ptr = surface_bsearch(-1, &n);
+		system_ptr->surface = surface_replicate(surface_ptr, n_user_new);
+	}
+	/*
+	 *   Copy gas phase
+	 */
+	n_old1 = initial_conditions1[ 7*i + 4 ];
+	n_old2 = initial_conditions2[ 7*i + 4 ];
+	f1 = fraction1[7*i + 4];
+	if (n_old1 >= 0) {
+		mix_gas_phase(n_old1, n_old2, f1, -1);
+		gas_phase_ptr = gas_phase_bsearch(-1, &n);
+		system_ptr->gas_phase = gas_phase_replicate(gas_phase_ptr, n_user_new);
+	}
+	/*
+	 *   Copy solid solution
+	 */
+	n_old1 = initial_conditions1[ 7*i + 5 ];
+	n_old2 = initial_conditions2[ 7*i + 5 ];
+	f1 = fraction1[7*i + 5];
+	if (n_old1 >= 0) {
+		mix_s_s_assemblage(n_old1, n_old2, f1, -1);
+		s_s_assemblage_ptr = s_s_assemblage_bsearch(-1, &n);
+		system_ptr->s_s_assemblage = s_s_assemblage_replicate(s_s_assemblage_ptr, n_user_new);
+	}
+	/*
+	 *   Copy kinetics
+	 */
+	n_old1 = initial_conditions1[ 7*i + 6 ];
+	n_old2 = initial_conditions2[ 7*i + 6 ];
+	f1 = fraction1[7*i + 6];
+	if (n_old1 >= 0) {
 		mix_kinetics(n_old1, n_old2, f1, -1);
 		kinetics_ptr = kinetics_bsearch(-1, &n);
 		system_ptr->kinetics = kinetics_replicate(kinetics_ptr, n_user_new);
