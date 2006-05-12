@@ -680,9 +680,9 @@ int check_time_series_data(void)
 	 * Boundary conditions
 	 */
 	for (i = 0; i < count_bc; i++) {
-		if (bc[i]->bc_head != NULL) check_time_series(bc[i]->bc_head, TRUE);
-		if (bc[i]->bc_flux != NULL) check_time_series(bc[i]->bc_flux, TRUE);
-		if (bc[i]->bc_solution != NULL && flow_only == FALSE) check_time_series(bc[i]->bc_solution, TRUE);
+		if (bc[i]->bc_head != NULL) check_time_series(bc[i]->bc_head, TRUE, "bc head");
+		if (bc[i]->bc_flux != NULL) check_time_series(bc[i]->bc_flux, TRUE, "bc head");
+		if (bc[i]->bc_solution != NULL && flow_only == FALSE) check_time_series(bc[i]->bc_solution, TRUE, "bc solution");
 	}
 	/*
 	 * Rivers
@@ -690,10 +690,10 @@ int check_time_series_data(void)
 	for (i = 0; i < count_rivers; i++) {
 		for (j = 0; j < rivers[i].count_points; j++) {
 			if (rivers[i].points[j].solution != NULL && flow_only == FALSE) {
-				check_time_series(rivers[i].points[j].solution, TRUE);
+				check_time_series(rivers[i].points[j].solution, TRUE, "river solution");
 			}
 			if (rivers[i].points[j].head != NULL) {
-				check_time_series(rivers[i].points[j].head, TRUE);
+				check_time_series(rivers[i].points[j].head, TRUE, "river head");
 			}
 		}
 	}
@@ -702,16 +702,16 @@ int check_time_series_data(void)
 	 */
 	for (i = 0; i < count_wells; i++) {
 		if (wells[i].solution != NULL && flow_only == FALSE) {
-			check_time_series(wells[i].solution, TRUE);
+			check_time_series(wells[i].solution, TRUE, "well solution");
 		}
 		if (wells[i].q != NULL) {
-			check_time_series(wells[i].q, TRUE);
+			check_time_series(wells[i].q, TRUE, "well pumping rate");
 		}
 	}
 	/*
 	 * Time step
 	 */
-	if (time_step.properties != NULL) check_time_series(&time_step, TRUE);
+	if (time_step.properties != NULL) check_time_series(&time_step, TRUE, "time step");
 	/*
 	 *  Sort end times
 	 */
@@ -730,27 +730,27 @@ int check_time_series_data(void)
 	/*
 	 *  Print frequencies
 	 */
-	if (print_velocity.properties != NULL) check_time_series(&print_velocity, FALSE);
-	if (print_hdf_velocity.properties != NULL) check_time_series(&print_hdf_velocity, FALSE);
-	if (print_xyz_velocity.properties != NULL) check_time_series(&print_xyz_velocity, FALSE);
-	if (print_head.properties != NULL) check_time_series(&print_head, FALSE);
-	if (print_hdf_head.properties != NULL) check_time_series(&print_hdf_head, FALSE);
-	if (print_xyz_head.properties != NULL) check_time_series(&print_xyz_head, FALSE);
+	if (print_velocity.properties != NULL) check_time_series(&print_velocity, FALSE, "print velocity");
+	if (print_hdf_velocity.properties != NULL) check_time_series(&print_hdf_velocity, FALSE, "print hdf velocity");
+	if (print_xyz_velocity.properties != NULL) check_time_series(&print_xyz_velocity, FALSE, "print xyz velocity");
+	if (print_head.properties != NULL) check_time_series(&print_head, FALSE, "print head");
+	if (print_hdf_head.properties != NULL) check_time_series(&print_hdf_head, FALSE, "print hdf head");
+	if (print_xyz_head.properties != NULL) check_time_series(&print_xyz_head, FALSE, "print xyz head");
 	if (flow_only == FALSE) {
-		if (print_force_chem.properties != NULL) check_time_series(&print_force_chem, FALSE);
-		if (print_hdf_chem.properties != NULL) check_time_series(&print_hdf_chem, FALSE);
-		if (print_xyz_chem.properties != NULL) check_time_series(&print_xyz_chem, FALSE);
-		if (print_comp.properties != NULL) check_time_series(&print_comp, FALSE);
-		if (print_xyz_comp.properties != NULL) check_time_series(&print_xyz_comp, FALSE);
+		if (print_force_chem.properties != NULL) check_time_series(&print_force_chem, FALSE, "force chemistry print");
+		if (print_hdf_chem.properties != NULL) check_time_series(&print_hdf_chem, FALSE, "print hdf chemistry");
+		if (print_xyz_chem.properties != NULL) check_time_series(&print_xyz_chem, FALSE, "print xyz chemistry");
+		if (print_comp.properties != NULL) check_time_series(&print_comp, FALSE, "print components");
+		if (print_xyz_comp.properties != NULL) check_time_series(&print_xyz_comp, FALSE, "print xyz components");
 	}
-	if (print_wells.properties != NULL) check_time_series(&print_wells, FALSE);
-	if (print_xyz_wells.properties != NULL) check_time_series(&print_xyz_wells, FALSE);
-	if (print_statistics.properties != NULL) check_time_series(&print_statistics, FALSE);
-	if (print_flow_balance.properties != NULL) check_time_series(&print_flow_balance, FALSE);
-	if (print_bc_flow.properties != NULL) check_time_series(&print_bc_flow, FALSE);
-	if (print_conductances.properties != NULL) check_time_series(&print_conductances, FALSE);
-	if (print_bc.properties != NULL) check_time_series(&print_bc, FALSE);
-	if (print_restart.properties != NULL) check_time_series(&print_restart, FALSE);
+	if (print_wells.properties != NULL) check_time_series(&print_wells, FALSE, "print wells");
+	if (print_xyz_wells.properties != NULL) check_time_series(&print_xyz_wells, FALSE, "print xyz wells");
+	if (print_statistics.properties != NULL) check_time_series(&print_statistics, FALSE, "print statistics");
+	if (print_flow_balance.properties != NULL) check_time_series(&print_flow_balance, FALSE, "print flow balance");
+	if (print_bc_flow.properties != NULL) check_time_series(&print_bc_flow, FALSE, "print bc flow");
+	if (print_conductances.properties != NULL) check_time_series(&print_conductances, FALSE, "print conductances");
+	if (print_bc.properties != NULL) check_time_series(&print_bc, FALSE, "print boundary conditions");
+	if (print_restart.properties != NULL) check_time_series(&print_restart, FALSE, "print restart");
 	/* 
 	 * check defaults
 	 */
@@ -777,7 +777,7 @@ int check_time_series_data(void)
 	return(OK);
 }
 /* ---------------------------------------------------------------------- */
-int check_time_series(struct time_series *ts_ptr, int start_at_zero)
+int check_time_series(struct time_series *ts_ptr, int start_at_zero, char * errorString)
 /* ---------------------------------------------------------------------- */
 {
 	int i, count;
@@ -785,18 +785,36 @@ int check_time_series(struct time_series *ts_ptr, int start_at_zero)
 	count = ts_ptr->count_properties;
 
 	for (i = 0; i < count; i++) {
-		if (check_time_units(&(ts_ptr->properties[i]->time), FALSE, "time series") == ERROR) return(ERROR);
+		if (check_time_units(&(ts_ptr->properties[i]->time), FALSE, "time series") == ERROR) {
+			input_error++;
+			sprintf(error_string,"Time units error %s:", errorString);
+			error_msg(error_string, CONTINUE);
+			return(ERROR);
+		}
 		if (ts_ptr->properties[i]->time_value.value_defined == TRUE) {
-			if (check_time_units(&(ts_ptr->properties[i]->time_value), FALSE, "time series") == ERROR) return(ERROR);
+			if (check_time_units(&(ts_ptr->properties[i]->time_value), FALSE, "time series") == ERROR) {
+				input_error++;
+				sprintf(error_string,"Time units error: %s", errorString);
+				error_msg(error_string, CONTINUE);
+				return(ERROR);
+			}
 		}
 	}
 	
 
 	time_series_sort (ts_ptr);
 	if (start_at_zero == TRUE) {
-		if (ts_ptr->properties[0]->time.value != 0.0) {
+		if (ts_ptr->properties != NULL) {
+			if (ts_ptr->properties[0]->time.value != 0.0) {
+				input_error++;
+				sprintf(error_string,"Time series must start at time zero: %s", errorString);
+				error_msg(error_string, CONTINUE);
+				return(ERROR);
+			}
+		} else {
 			input_error++;
-			error_msg("Time series must start at time zero", CONTINUE);
+			sprintf(error_string,"Time series is unreadable: %s", errorString);
+			error_msg(error_string, CONTINUE);
 			return(ERROR);
 		}
 	}

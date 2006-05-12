@@ -65,7 +65,7 @@ int check_leaky_for_face(int i, int j);
 int check_time_data(void);
 int check_ss_time_units(struct time *time_ptr, char *errstr);
 int check_time_units(struct time *time_ptr, int required, char *errstr);
-int check_time_series(struct time_series *ts_ptr, int start_at_zero);
+int check_time_series(struct time_series *ts_ptr, int start_at_zero, char * errorString);
 int check_time_series_data(void);
 int ijk_to_n_no_error(int i, int j, int k);
 int set_active_cells(void);
