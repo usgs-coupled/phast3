@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(DEV_HDF5_INC)&quot;;&quot;$(DEV_GMP_INC)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;"
-				PreprocessorDefinitions="_DEBUG;HDF5_CREATE;INVERSE_CL1MP;WIN32;_CONSOLE;NO_UNDERSCORES;H5_HAVE_FUNCTION"
+				PreprocessorDefinitions="_DEBUG;HDF5_CREATE;INVERSE_CL1MP;WIN32;_CONSOLE;NO_UNDERSCORES;H5_HAVE_FUNCTION;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -175,7 +175,7 @@
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
 				AdditionalIncludeDirectories="&quot;$(DEV_HDF5_INC)&quot;;&quot;$(DEV_GMP_INC)&quot;;&quot;$(DEV_MPICH_INC)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;"
-				PreprocessorDefinitions="NDEBUG;MERGE_FILES;USE_MPI;HDF5_CREATE;INVERSE_CL1MP;WIN32;_CONSOLE;NO_UNDERSCORES"
+				PreprocessorDefinitions="NDEBUG;MERGE_FILES;USE_MPI;HDF5_CREATE;INVERSE_CL1MP;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -1641,11 +1641,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\kinetics.h"
+				RelativePath="..\phreeqcpp\phreeqc\kinetics.h"
 				>
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\kinetics.h"
+				RelativePath="..\phreeqcpp\kinetics.h"
 				>
 			</File>
 			<File
