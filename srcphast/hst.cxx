@@ -2277,7 +2277,7 @@ int distribute_from_root(double *fraction, int *dim, int *print_sel,
 	for (task_number = 1; task_number < mpi_tasks; task_number++) {
 		if (mpi_myself == task_number) {
 			MPI_Recv(&mpi_msg_size, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &mpi_status);
-			double doubles[mpi_msg_size];
+			double *doubles = new double[mpi_msg_size];
 			MPI_Recv(doubles, mpi_msg_size, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, &mpi_status);
 			int d = 0;
 			for (k = end_cells[task_number][0]; k <= end_cells[task_number][1]; k++) {
@@ -2290,6 +2290,7 @@ int distribute_from_root(double *fraction, int *dim, int *print_sel,
 				i = random_list[k];                        /* 1, count_chem */
 				buffer_to_cxxsolution(i);
 			}
+			delete[] doubles;
 		}
 		if (mpi_myself == 0) {
 			std::vector<double> doubles;
@@ -2422,7 +2423,7 @@ void COLLECT_FROM_NONROOT(double *fraction, int *dim)
 		if (mpi_myself == 0) {
 			MPI_Recv(&rank, 1, MPI_INT, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, &mpi_status);
 			MPI_Recv(&mpi_msg_size, 1, MPI_INT, rank, 0, MPI_COMM_WORLD, &mpi_status);
-			double doubles[mpi_msg_size];
+			double *doubles = new double[mpi_msg_size];
 			MPI_Recv(doubles, mpi_msg_size, MPI_DOUBLE, rank, 0, MPI_COMM_WORLD, &mpi_status);
 			int d = 0;
 			for (k = end_cells[rank][0]; k <= end_cells[rank][1]; k++) {
@@ -2438,6 +2439,7 @@ void COLLECT_FROM_NONROOT(double *fraction, int *dim)
 					buffer_to_hst(&fraction[back[i].list[j]], *dim);
 				}
 			}
+			delete[] doubles;
 		}
 	}
 	if (mpi_myself == 0) {
