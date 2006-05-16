@@ -11,7 +11,7 @@
 #include <mpi.h>
 #include <time.h>
 
-#if !defined(LAHEY_F95) && !defined(_WIN32)
+#if !defined(LAHEY_F95) && !defined(_WIN32) || defined(NO_UNDERSCORES)
 #define SLAVE_GET_SOLUTE slave_get_solute
 #define SLAVE_GET_INDEXES slave_get_indexes
 #else

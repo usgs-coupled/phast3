@@ -5,7 +5,7 @@ MODULE mpi_mod
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! ... $Id$
 
-#if defined(LAHEY_F95)
+#if defined(LAHEY_F95) || defined(NO_UNDERSCORES)
 #define MPI_INIT_      MPI_INIT
 #define MPI_COMM_SIZE_ MPI_COMM_SIZE
 #define MPI_COMM_RANK_ MPI_COMM_RANK
