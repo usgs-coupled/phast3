@@ -257,6 +257,9 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\cxxHstSubs.cxx">
+				</File>
+				<File
 					RelativePath="..\phreeqcpp\phreeqc\dense.c">
 					<FileConfiguration
 						Name="ser_debug|Win32">
@@ -300,14 +303,6 @@
 				</File>
 				<File
 					RelativePath="..\hst.cxx">
-					<FileConfiguration
-						Name="merge|Win32">
-						<Tool
-							Name="VCCLCompilerTool"/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\hstcxxsubs.cxx">
 				</File>
 				<File
 					RelativePath="..\hstsubs.c">
@@ -965,6 +960,9 @@
 				Name="COMMON_CXXOBJS"
 				Filter="">
 				<File
+					RelativePath="..\phreeqcpp\Dictionary.cxx">
+				</File>
+				<File
 					RelativePath="..\phreeqcpp\ExchComp.cxx">
 				</File>
 				<File
@@ -981,30 +979,6 @@
 				</File>
 				<File
 					RelativePath="..\phreeqcpp\KineticsComp.cxx">
-				</File>
-				<File
-					RelativePath="..\phreeqcpp\KineticsCxx.cxx">
-				</File>
-				<File
-					RelativePath="..\phreeqcpp\Mix.cxx">
-					<FileConfiguration
-						Name="ser_debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="ser|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="merge|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\phreeqcpp\NameDouble.cxx">
@@ -1046,19 +1020,25 @@
 					RelativePath="..\phreeqcpp\StorageBin.cxx">
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\SurfCharge.cxx">
-				</File>
-				<File
-					RelativePath="..\phreeqcpp\SurfComp.cxx">
-				</File>
-				<File
 					RelativePath="..\phreeqcpp\Surface.cxx">
+				</File>
+				<File
+					RelativePath="..\phreeqcpp\SurfaceCharge.cxx">
+				</File>
+				<File
+					RelativePath="..\phreeqcpp\SurfaceComp.cxx">
 				</File>
 				<File
 					RelativePath="..\phreeqcpp\Temperature.cxx">
 				</File>
 				<File
 					RelativePath="..\phreeqcpp\Utils.cxx">
+				</File>
+				<File
+					RelativePath="..\phreeqcpp\cxxKinetics.cxx">
+				</File>
+				<File
+					RelativePath="..\phreeqcpp\cxxMix.cxx">
 				</File>
 			</Filter>
 			<Filter
@@ -1106,10 +1086,10 @@
 							Name="VCCLCompilerTool"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						ExcludedFromBuild="TRUE">
+						Name="merge|Win32">
 						<Tool
-							Name="VCCLCompilerTool"/>
+							Name="VCCLCompilerTool"
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 			</Filter>
@@ -1168,6 +1148,9 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc">
 			<File
+				RelativePath="..\phreeqcpp\Dictionary.h">
+			</File>
+			<File
 				RelativePath="..\phreeqcpp\ExchComp.h">
 			</File>
 			<File
@@ -1184,12 +1167,6 @@
 			</File>
 			<File
 				RelativePath="..\phreeqcpp\KineticsComp.h">
-			</File>
-			<File
-				RelativePath="..\phreeqcpp\KineticsCxx.h">
-			</File>
-			<File
-				RelativePath="..\phreeqcpp\Mix.h">
 			</File>
 			<File
 				RelativePath="..\phreeqcpp\NameDouble.h">
@@ -1237,13 +1214,13 @@
 				RelativePath="..\phreeqcpp\StorageBin.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\SurfCharge.h">
-			</File>
-			<File
-				RelativePath="..\phreeqcpp\SurfComp.h">
-			</File>
-			<File
 				RelativePath="..\phreeqcpp\Surface.h">
+			</File>
+			<File
+				RelativePath="..\phreeqcpp\SurfaceCharge.h">
+			</File>
+			<File
+				RelativePath="..\phreeqcpp\SurfaceComp.h">
 			</File>
 			<File
 				RelativePath="..\phreeqcpp\Temperature.h">
@@ -1259,6 +1236,12 @@
 			</File>
 			<File
 				RelativePath="..\phreeqcpp\phreeqc\cvode.h">
+			</File>
+			<File
+				RelativePath="..\phreeqcpp\cxxKinetics.h">
+			</File>
+			<File
+				RelativePath="..\phreeqcpp\cxxMix.h">
 			</File>
 			<File
 				RelativePath="..\phreeqcpp\phreeqc\dense.h">
@@ -1279,10 +1262,10 @@
 				RelativePath="..\phreeqcpp\phreeqc\input.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\kinetics.h">
+				RelativePath="..\phreeqcpp\kinetics.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\kinetics.h">
+				RelativePath="..\phreeqcpp\phreeqc\kinetics.h">
 			</File>
 			<File
 				RelativePath="..\phreeqcpp\phreeqc\nvector.h">
