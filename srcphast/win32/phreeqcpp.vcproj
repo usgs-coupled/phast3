@@ -1,1794 +1,1327 @@
-<?xml version="1.0" encoding="Windows-1252"?>
+<?xml version="1.0" encoding = "Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="7.00"
 	Name="phreeqcpp"
 	ProjectGUID="{9B65F71A-2D27-4121-9724-6CD0ED7D975A}"
-	Keyword="Win32Proj"
-	>
+	Keyword="Win32Proj">
 	<Platforms>
 		<Platform
-			Name="Win32"
-		/>
+			Name="Win32"/>
 	</Platforms>
-	<ToolFiles>
-	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="ser_debug|Win32"
 			OutputDirectory="ser_debug"
 			IntermediateDirectory="ser_debug\c"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
+			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(DEV_HDF5_INC)&quot;;&quot;$(DEV_GMP_INC)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;"
 				PreprocessorDefinitions="_DEBUG;HDF5_CREATE;INVERSE_CL1MP;WIN32;_CONSOLE;NO_UNDERSCORES;H5_HAVE_FUNCTION"
-				MinimalRebuild="true"
+				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
+				RuntimeLibrary="5"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
-			/>
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="4"/>
 			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
+				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/phreeqcpp.lib"
-			/>
+				OutputFile="$(OutDir)/phreeqcpp.lib"/>
 			<Tool
-				Name="VCALinkTool"
-			/>
+				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCXDCMakeTool"
-			/>
+				Name="VCPostBuildEventTool"/>
 			<Tool
-				Name="VCBscMakeTool"
-			/>
+				Name="VCPreBuildEventTool"/>
 			<Tool
-				Name="VCFxCopTool"
-			/>
+				Name="VCPreLinkEventTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"
-			/>
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="ser|Win32"
 			OutputDirectory="ser"
 			IntermediateDirectory="ser\c"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
+			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				OmitFramePointers="true"
+				OmitFramePointers="TRUE"
 				AdditionalIncludeDirectories="&quot;$(DEV_HDF5_INC)&quot;;&quot;$(DEV_GMP_INC)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;"
-				PreprocessorDefinitions="NDEBUG;HDF5_CREATE;INVERSE_CL1MP;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE"
-				StringPooling="true"
-				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="true"
+				PreprocessorDefinitions="NDEBUG;HDF5_CREATE;INVERSE_CL1MP;WIN32;_CONSOLE;NO_UNDERSCORES"
+				StringPooling="TRUE"
+				RuntimeLibrary="4"
+				EnableFunctionLevelLinking="TRUE"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
-			/>
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="3"/>
 			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
+				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/phreeqcpp.lib"
-			/>
+				OutputFile="$(OutDir)/phreeqcpp.lib"/>
 			<Tool
-				Name="VCALinkTool"
-			/>
+				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCXDCMakeTool"
-			/>
+				Name="VCPostBuildEventTool"/>
 			<Tool
-				Name="VCBscMakeTool"
-			/>
+				Name="VCPreBuildEventTool"/>
 			<Tool
-				Name="VCFxCopTool"
-			/>
+				Name="VCPreLinkEventTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"
-			/>
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="merge|Win32"
 			OutputDirectory="merge"
 			IntermediateDirectory="merge\c"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
+			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				OmitFramePointers="true"
+				OmitFramePointers="TRUE"
 				AdditionalIncludeDirectories="&quot;$(DEV_HDF5_INC)&quot;;&quot;$(DEV_GMP_INC)&quot;;&quot;$(DEV_MPICH_INC)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;"
 				PreprocessorDefinitions="NDEBUG;MERGE_FILES;USE_MPI;HDF5_CREATE;INVERSE_CL1MP;WIN32;_CONSOLE;NO_UNDERSCORES"
-				StringPooling="true"
+				StringPooling="TRUE"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="true"
+				EnableFunctionLevelLinking="TRUE"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
-			/>
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="3"/>
 			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
+				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/phreeqcpp.lib"
-			/>
+				OutputFile="$(OutDir)/phreeqcpp.lib"/>
 			<Tool
-				Name="VCALinkTool"
-			/>
+				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCXDCMakeTool"
-			/>
+				Name="VCPostBuildEventTool"/>
 			<Tool
-				Name="VCBscMakeTool"
-			/>
+				Name="VCPreBuildEventTool"/>
 			<Tool
-				Name="VCFxCopTool"
-			/>
+				Name="VCPreLinkEventTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"
-			/>
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
 		</Configuration>
 	</Configurations>
-	<References>
-	</References>
 	<Files>
 		<Filter
 			Name="Source Files"
-			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm"
-			>
+			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<Filter
 				Name="COMMON_COBJS"
-				>
+				Filter="">
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\advection.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\advection.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\basic.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\basic.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\basicsubs.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\basicsubs.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\cl1.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\cl1.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\cvdense.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\cvdense.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\cvode.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\cvode.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\cxxHstSubs.cxx"
-					>
+					RelativePath="..\cxxHstSubs.cxx">
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\dense.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\dense.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\dw.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\dw.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\hst.cxx"
-					>
+					RelativePath="..\hst.cxx">
 				</File>
 				<File
-					RelativePath="..\hstsubs.c"
-					>
+					RelativePath="..\hstsubs.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\input.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\input.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\integrate.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\integrate.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\inverse.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\inverse.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\isotopes.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\isotopes.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\kinetics.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\kinetics.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\mainsubs.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\mainsubs.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\mix.c"
-					>
+					RelativePath="..\mix.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\model.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\model.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\nvector.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\nvector.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\nvector_serial.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\nvector_serial.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\output.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\output.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\p2clib.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\p2clib.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\parse.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\parse.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phast_files.c"
-					>
+					RelativePath="..\phast_files.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\phqalloc.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\phqalloc.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\pitzer.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\pitzer.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\pitzer_structures.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\pitzer_structures.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\prep.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\prep.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\print.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\print.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\read.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\read.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\readtr.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\readtr.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\smalldense.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\smalldense.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\spread.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\spread.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\step.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\step.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\structures.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\structures.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\sundialsmath.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\sundialsmath.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\tally.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\tally.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\tidy.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\tidy.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\transport.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\transport.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\utilities.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\utilities.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 			</Filter>
 			<Filter
 				Name="COMMON_CXXOBJS"
-				>
+				Filter="">
 				<File
-					RelativePath="..\phreeqcpp\cxxKinetics.cxx"
-					>
+					RelativePath="..\phreeqcpp\Dictionary.cxx">
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\cxxMix.cxx"
-					>
+					RelativePath="..\phreeqcpp\ExchComp.cxx">
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\Dictionary.cxx"
-					>
+					RelativePath="..\phreeqcpp\Exchange.cxx">
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\Exchange.cxx"
-					>
+					RelativePath="..\phreeqcpp\GasPhase.cxx">
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\ExchComp.cxx"
-					>
+					RelativePath="..\phreeqcpp\ISolution.cxx">
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\GasPhase.cxx"
-					>
+					RelativePath="..\phreeqcpp\ISolutionComp.cxx">
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\ISolution.cxx"
-					>
+					RelativePath="..\phreeqcpp\KineticsComp.cxx">
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\ISolutionComp.cxx"
-					>
+					RelativePath="..\phreeqcpp\NameDouble.cxx">
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\KineticsComp.cxx"
-					>
+					RelativePath="..\phreeqcpp\NumKeyword.cxx">
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\NameDouble.cxx"
-					>
+					RelativePath="..\phreeqcpp\PPassemblage.cxx">
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\NumKeyword.cxx"
-					>
+					RelativePath="..\phreeqcpp\PPassemblageComp.cxx">
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\Parser.cxx"
-					>
+					RelativePath="..\phreeqcpp\Parser.cxx">
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\PPassemblage.cxx"
-					>
+					RelativePath="..\phreeqcpp\Reaction.cxx">
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\PPassemblageComp.cxx"
-					>
+					RelativePath="..\phreeqcpp\ReadClass.cxx">
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\Reaction.cxx"
-					>
+					RelativePath="..\phreeqcpp\SSassemblage.cxx">
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\ReadClass.cxx"
-					>
+					RelativePath="..\phreeqcpp\SSassemblageSS.cxx">
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\Solution.cxx"
-					>
+					RelativePath="..\phreeqcpp\Solution.cxx">
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\SolutionIsotope.cxx"
-					>
+					RelativePath="..\phreeqcpp\SolutionIsotope.cxx">
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\SolutionIsotopeList.cxx"
-					>
+					RelativePath="..\phreeqcpp\SolutionIsotopeList.cxx">
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\SSassemblage.cxx"
-					>
+					RelativePath="..\phreeqcpp\StorageBin.cxx">
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\SSassemblageSS.cxx"
-					>
+					RelativePath="..\phreeqcpp\Surface.cxx">
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\StorageBin.cxx"
-					>
+					RelativePath="..\phreeqcpp\SurfaceCharge.cxx">
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\Surface.cxx"
-					>
+					RelativePath="..\phreeqcpp\SurfaceComp.cxx">
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\SurfaceCharge.cxx"
-					>
+					RelativePath="..\phreeqcpp\Temperature.cxx">
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\SurfaceComp.cxx"
-					>
+					RelativePath="..\phreeqcpp\Utils.cxx">
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\Temperature.cxx"
-					>
+					RelativePath="..\phreeqcpp\cxxKinetics.cxx">
 				</File>
 				<File
-					RelativePath="..\phreeqcpp\Utils.cxx"
-					>
+					RelativePath="..\phreeqcpp\cxxMix.cxx">
 				</File>
 			</Filter>
 			<Filter
 				Name="MPI_OBJS"
-				>
+				Filter="">
 				<File
-					RelativePath="..\slavesubs.c"
-					>
+					RelativePath="..\slavesubs.c">
 					<FileConfiguration
 						Name="ser_debug|Win32"
-						ExcludedFromBuild="true"
-						>
+						ExcludedFromBuild="TRUE">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
 						Name="ser|Win32"
-						ExcludedFromBuild="true"
-						>
+						ExcludedFromBuild="TRUE">
 						<Tool
-							Name="VCCLCompilerTool"
-						/>
+							Name="VCCLCompilerTool"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 			</Filter>
 			<Filter
 				Name="MERGE_OBJS"
-				>
+				Filter="">
 				<File
-					RelativePath="..\merge.c"
-					>
+					RelativePath="..\merge.c">
 					<FileConfiguration
 						Name="ser_debug|Win32"
-						ExcludedFromBuild="true"
-						>
+						ExcludedFromBuild="TRUE">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
 						Name="ser|Win32"
-						ExcludedFromBuild="true"
-						>
+						ExcludedFromBuild="TRUE">
 						<Tool
-							Name="VCCLCompilerTool"
-						/>
+							Name="VCCLCompilerTool"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 			</Filter>
 			<Filter
 				Name="HDF_OBJS"
-				>
+				Filter="">
 				<File
-					RelativePath="..\hdf.c"
-					>
+					RelativePath="..\hdf.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 			</Filter>
 			<Filter
 				Name="CL1MP_OBJS"
-				>
+				Filter="">
 				<File
-					RelativePath="..\phreeqcpp\phreeqc\cl1mp.c"
-					>
+					RelativePath="..\phreeqcpp\phreeqc\cl1mp.c">
 					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
+						Name="ser_debug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="ser|Win32"
-						>
+						Name="ser|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 					<FileConfiguration
-						Name="merge|Win32"
-						>
+						Name="merge|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
+							CompileAs="2"/>
 					</FileConfiguration>
 				</File>
 			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl;inc"
-			>
+			Filter="h;hpp;hxx;hm;inl;inc">
 			<File
-				RelativePath="..\phreeqcpp\char_star.h"
-				>
+				RelativePath="..\phreeqcpp\Dictionary.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\cvdense.h"
-				>
+				RelativePath="..\phreeqcpp\ExchComp.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\cvode.h"
-				>
+				RelativePath="..\phreeqcpp\Exchange.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\cxxKinetics.h"
-				>
+				RelativePath="..\phreeqcpp\GasPhase.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\cxxMix.h"
-				>
+				RelativePath="..\phreeqcpp\ISolution.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\dense.h"
-				>
+				RelativePath="..\phreeqcpp\ISolutionComp.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\Dictionary.h"
-				>
+				RelativePath="..\phreeqcpp\KineticsComp.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\Exchange.h"
-				>
+				RelativePath="..\phreeqcpp\KineticsCxx.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\ExchComp.h"
-				>
+				RelativePath="..\phreeqcpp\Mix.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\GasPhase.h"
-				>
+				RelativePath="..\phreeqcpp\NameDouble.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\global.h"
-				>
+				RelativePath="..\phreeqcpp\NumKeyword.h">
 			</File>
 			<File
-				RelativePath="..\hst.h"
-				>
+				RelativePath="..\phreeqcpp\PPassemblage.h">
 			</File>
 			<File
-				RelativePath="..\ifrd.inc"
-				>
+				RelativePath="..\phreeqcpp\PPassemblageComp.h">
 			</File>
 			<File
-				RelativePath="..\ifwr.inc"
-				>
+				RelativePath="..\phreeqcpp\Parser.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\input.h"
-				>
+				RelativePath="..\phreeqcpp\Pe_Data.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\ISolution.h"
-				>
+				RelativePath="..\phreeqcpp\Reaction.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\ISolutionComp.h"
-				>
+				RelativePath="..\phreeqcpp\SAXPhreeqc.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\kinetics.h"
-				>
+				RelativePath="..\phreeqcpp\SSassemblage.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\kinetics.h"
-				>
+				RelativePath="..\phreeqcpp\SSassemblageSS.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\KineticsComp.h"
-				>
+				RelativePath="..\phreeqcpp\SaxPhreeqcHandlers.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\NameDouble.h"
-				>
+				RelativePath="..\phreeqcpp\Solution.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\NumKeyword.h"
-				>
+				RelativePath="..\phreeqcpp\SolutionIsotope.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\nvector.h"
-				>
+				RelativePath="..\phreeqcpp\SolutionIsotopeList.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\nvector_serial.h"
-				>
+				RelativePath="..\phreeqcpp\StorageBin.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\output.h"
-				>
+				RelativePath="..\phreeqcpp\SurfCharge.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\p2c.h"
-				>
+				RelativePath="..\phreeqcpp\SurfComp.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\Parser.h"
-				>
+				RelativePath="..\phreeqcpp\Surface.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\Pe_Data.h"
-				>
+				RelativePath="..\phreeqcpp\SurfaceCharge.h">
 			</File>
 			<File
-				RelativePath="..\phast_files.h"
-				>
+				RelativePath="..\phreeqcpp\SurfaceComp.h">
 			</File>
 			<File
-				RelativePath="..\phastproto.h"
-				>
+				RelativePath="..\phreeqcpp\Temperature.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\phqalloc.h"
-				>
+				RelativePath="..\phreeqcpp\Utils.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\phrqproto.h"
-				>
+				RelativePath="..\phreeqcpp\char_star.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\phrqtype.h"
-				>
+				RelativePath="..\phreeqcpp\phreeqc\cvdense.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\pitzer.h"
-				>
+				RelativePath="..\phreeqcpp\phreeqc\cvode.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\PPassemblage.h"
-				>
+				RelativePath="..\phreeqcpp\cxxKinetics.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\PPassemblageComp.h"
-				>
+				RelativePath="..\phreeqcpp\cxxMix.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\Reaction.h"
-				>
+				RelativePath="..\phreeqcpp\phreeqc\dense.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\SAXPhreeqc.h"
-				>
+				RelativePath="..\phreeqcpp\phreeqc\global.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\SaxPhreeqcHandlers.h"
-				>
+				RelativePath="..\hst.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\smalldense.h"
-				>
+				RelativePath="..\ifrd.inc">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\Solution.h"
-				>
+				RelativePath="..\ifwr.inc">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\SolutionIsotope.h"
-				>
+				RelativePath="..\phreeqcpp\phreeqc\input.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\SolutionIsotopeList.h"
-				>
+				RelativePath="..\phreeqcpp\phreeqc\kinetics.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\SSassemblage.h"
-				>
+				RelativePath="..\phreeqcpp\kinetics.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\SSassemblageSS.h"
-				>
+				RelativePath="..\phreeqcpp\phreeqc\nvector.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\StorageBin.h"
-				>
+				RelativePath="..\phreeqcpp\phreeqc\nvector_serial.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\sundialsmath.h"
-				>
+				RelativePath="..\phreeqcpp\phreeqc\output.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\sundialstypes.h"
-				>
+				RelativePath="..\phreeqcpp\phreeqc\p2c.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\Surface.h"
-				>
+				RelativePath="..\phast_files.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\SurfaceCharge.h"
-				>
+				RelativePath="..\phastproto.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\SurfaceComp.h"
-				>
+				RelativePath="..\phreeqcpp\phreeqc\phqalloc.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\Temperature.h"
-				>
+				RelativePath="..\phreeqcpp\phreeqc\phrqproto.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\Utils.h"
-				>
+				RelativePath="..\phreeqcpp\phreeqc\phrqtype.h">
+			</File>
+			<File
+				RelativePath="..\phreeqcpp\phreeqc\pitzer.h">
+			</File>
+			<File
+				RelativePath="..\phreeqcpp\phreeqc\smalldense.h">
+			</File>
+			<File
+				RelativePath="..\phreeqcpp\phreeqc\sundialsmath.h">
+			</File>
+			<File
+				RelativePath="..\phreeqcpp\phreeqc\sundialstypes.h">
 			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
-			>
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
 		</Filter>
 	</Files>
 	<Globals>
