@@ -1,6 +1,7 @@
 ex3.chem.dat
 phast.dat
 ex3
+0
 C.....PHAST Data-Input Form
 C.....UNRELEASE 1.0
 C...   Notes:
@@ -578,10 +579,10 @@ C.3.8.3 .. CHKPTD[T/F],PRICPD,SAVLDO[T/F]
 f 0 f
 C------------------------------------------------------------------------------
 C.....Contour and vector map information
-C.3.9.1 .. CNTMAP[T/F], PRIMAPHEAD, COMPMAP[T/F], PRIMAPCOMP,VECMAP[T/F], PRIMAPV
+C.3.9.1 .. CNTMAP[T/F], PRIMAPHEAD, COMPMAP[T/F], PRINT_XYZ_COMP, VECMAP[T/F], PRIMAPV
      f -0.000000     f -0.000000     f -0.000000
-C.3.9.2 .. PRIXYZ_WELL
-     -0.000000
+C.3.10.2 .. PRIXYZ_WELL, PRINT_RESTART, PRINT_END_OF_PERIOD [t/t]
+     -0.000000 -0.000000     T
 C...Cell print information for .O.chem file, transient chemistry
   0.0000000e+00   5.0000000e+01   0.0000000e+00   1.0000000e+00   0.0000000e+00   1.0000000e+00
      0 4

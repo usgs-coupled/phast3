@@ -34,6 +34,7 @@ EXTERNAL struct time_series print_xyz_wells;
 EXTERNAL struct time_series print_statistics;
 EXTERNAL struct time_series print_flow_balance;
 EXTERNAL struct time_series print_bc_flow;
+EXTERNAL struct time_series print_end_of_period;
 EXTERNAL struct time_series print_conductances;
 EXTERNAL struct time_series print_bc;
 EXTERNAL struct time_series print_restart;

@@ -675,6 +675,7 @@ EXTERNAL struct time current_print_flow_balance;
 EXTERNAL struct time current_print_bc_flow;
 EXTERNAL struct time current_print_conductances;
 EXTERNAL int current_print_bc;
+EXTERNAL int current_print_end_of_period;
 EXTERNAL struct time current_print_restart;
 
 /* print input data */

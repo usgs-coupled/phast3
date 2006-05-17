@@ -2128,6 +2128,9 @@ int reset_transient_data(void)
 	if (get_current_property_position(&print_bc, current_start_time, &pt_ptr) >= 0) {
 		current_print_bc = pt_ptr->int_value;
 	}
+	if (get_current_property_position(&print_end_of_period, current_start_time, &pt_ptr) >= 0) {
+		current_print_end_of_period = pt_ptr->int_value;
+	}
 	if (get_current_property_position(&print_restart, current_start_time, &pt_ptr) >= 0) {
 		time_copy(&(pt_ptr->time_value), &current_print_restart);
 	}

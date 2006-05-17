@@ -750,6 +750,7 @@ int check_time_series_data(void)
 	if (print_bc_flow.properties != NULL) check_time_series(&print_bc_flow, FALSE, "print bc flow");
 	if (print_conductances.properties != NULL) check_time_series(&print_conductances, FALSE, "print conductances");
 	if (print_bc.properties != NULL) check_time_series(&print_bc, FALSE, "print boundary conditions");
+	if (print_end_of_period.properties != NULL) check_time_series(&print_end_of_period, FALSE, "print end of period default");
 	if (print_restart.properties != NULL) check_time_series(&print_restart, FALSE, "print restart");
 	/* 
 	 * check defaults

@@ -354,6 +354,7 @@ int clean_up(void)
 	time_series_free(&print_conductances);
 	time_series_free(&print_force_chem);
 	time_series_free(&print_bc);
+	time_series_free(&print_end_of_period);
 
 	time_free(&current_print_bc_flow);
 	time_free(&current_print_comp);
@@ -635,6 +636,7 @@ void initialize(void)
 	time_series_init(&print_bc_flow);
 	time_series_init(&print_conductances);
 	time_series_init(&print_bc);
+	time_series_init(&print_end_of_period);
 	time_series_init(&print_restart);
 
 	/* print_zones */
@@ -648,6 +650,8 @@ void initialize(void)
 	current_print_bc_flow.input = NULL;
 
 	current_print_bc = FALSE;
+
+	current_print_end_of_period = TRUE;
 
 	current_print_comp.type = UNITS;
 	current_print_comp.value = 0;

@@ -4437,7 +4437,9 @@ int read_print_frequency (void)
 		"boundary",            /* 52 */
 		"bc_flow_rates",       /* 53*/
 		"restart",             /* 54*/
-		"restart_file"         /* 55*/
+		"restart_file",        /* 55*/
+		"print_default_end_of_period",  /* 56*/
+		"end_of_period_default"/* 57*/
 	};
 	int count_opt_list = 56;
 /*
@@ -4698,6 +4700,17 @@ int read_print_frequency (void)
 			}				
 			break;
 			break;
+			break;
+		case 56:                          /* print_default_end_of_period */
+		case 57:                          /* end_of_period_default */
+			if (current_time.value_defined == TRUE) {
+				property_time_ptr = time_series_alloc_property_time(&print_end_of_period);
+				property_time_ptr->int_value = get_true_false(next_char, TRUE);
+				time_copy(&current_time, &(property_time_ptr->time));
+			} else {
+				input_error++;
+				error_msg("No start time for print frequency data", CONTINUE);
+			}				
 			break;
 		}
 		if (return_value == EOF || return_value == KEYWORD) break;

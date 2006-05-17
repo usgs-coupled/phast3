@@ -681,7 +681,8 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 		j = sort_random_list[k];  /* j is count_chem number */
 		i = back[j].list[0];      /* i is ixyz number */
 		assert (forward[i] >= 0); 
-		system_ptr = system_initialize(i, j, initial1, initial2, frac1);   
+		//system_ptr = system_initialize(i, j, initial1, initial2, frac1);   
+		system_ptr = system_cxxInitialize(i, j, initial_conditions1, initial_conditions2, fraction1);   
 		/* C++ */
 		szBin.add(system_ptr);
 		system_free(system_ptr);
@@ -697,6 +698,10 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 		// parser
 		std::fstream myfile;
 		myfile.open(it->first.c_str(), std::ios_base::in);
+		if (!myfile.is_open()) {
+			sprintf(error_string, "File could not be opened: %s.", it->first.c_str());
+			error_msg(error_string, STOP);
+		}
 		std::ostringstream oss;
 		CParser cparser(myfile, oss, std::cerr);
 		// read data
@@ -876,6 +881,10 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 		// parser
 		std::fstream myfile;
 		myfile.open(it->first.c_str(), std::ios_base::in);
+		if (!myfile.is_open()) {
+			sprintf(error_string, "File could not be opened: %s.", it->first.c_str());
+			error_msg(error_string, STOP);
+		}
 		std::ostringstream oss;
 		CParser cparser(myfile, oss, std::cerr);
 		// read data

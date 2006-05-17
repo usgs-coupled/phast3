@@ -19,7 +19,16 @@ MODULE print_control_mod
      REAL(KIND=kdp) :: print_interval, print_time
   END TYPE PrintControl
 
-  TYPE (PrintControl) print_restart
+  TYPE (PrintControl) &
+       print_progress_statistics,  &
+       print_components, print_global_flow_balance, print_bc_flows, print_wells, &
+       print_conductances, print_heads, print_velocities, print_force_chemistry, &
+       print_hdf_chemistry, print_xyz_components, print_hdf_heads, print_hdf_velocities, &
+       print_xyz_chemistry, print_xyz_heads, print_xyz_velocities, print_xyz_wells, &
+       print_restart, print_restart_hst
+
+  LOGICAL print_end_of_period
+  DOUBLE PRECISION next_print_time
 
   PRIVATE :: print_control_l, print_control_i
 
@@ -43,7 +52,7 @@ CONTAINS
     pc%print_flag_integer = 0
   END SUBROUTINE pc_reset
 
-  SUBROUTINE pc_set(pc, utime, itime, timchg)
+  SUBROUTINE pc_set_print_flag(pc, utime, itime, timchg)  ! timstp.f90
     IMPLICIT NONE
     TYPE (PrintControl) :: pc
     INTEGER, INTENT(IN) :: itime
@@ -60,13 +69,13 @@ CONTAINS
     ELSE IF(pc%print_interval < 0._kdp) THEN
        IF(MOD(itime,INT(ABS(pc%print_interval))) == 0) pc%print_flag=.TRUE.
     END IF
-    IF(utime >= timchg .and. pc%print_interval /= 0) then
+    IF((utime >= timchg) .and. (pc%print_interval /= 0) .and. print_end_of_period) then
        pc%print_flag=.TRUE.
     ENDIF
     if (pc%print_flag) pc%print_flag_integer = 1
-  END SUBROUTINE pc_set
+  END SUBROUTINE pc_set_print_flag
 
-  SUBROUTINE pc_set_print_time_init(pc, utime, utimchg)
+  SUBROUTINE pc_set_print_time_init3(pc, utime, utimchg)  ! init3
     IMPLICIT NONE
     TYPE (PrintControl) :: pc
     REAL(KIND=kdp), INTENT(IN) ::  utimchg, utime
@@ -76,9 +85,9 @@ CONTAINS
     ELSE 
        pc%print_time = utimchg
     ENDIF
-  END SUBROUTINE pc_set_print_time_init
+  END SUBROUTINE pc_set_print_time_init3
 
-  SUBROUTINE pc_set_print_time(pc, utime)
+  SUBROUTINE pc_set_print_time(pc, utime)  ! update_print_flags
     IMPLICIT NONE
     TYPE (PrintControl) :: pc
     REAL(KIND=kdp), INTENT(IN) :: utime
@@ -87,6 +96,31 @@ CONTAINS
        pc%print_time=(1._kdp+INT(utime/pc%print_interval))*pc%print_interval
     END IF
   END SUBROUTINE pc_set_print_time
+
+  SUBROUTINE pc_set_next_print_time(utimchg)
+    IMPLICIT NONE
+    REAL(KIND=kdp), INTENT(IN) :: utimchg
+    next_print_time = MIN(utimchg, &
+              print_progress_statistics%print_time,  &
+              print_components%print_time, &
+              print_global_flow_balance%print_time, &
+              print_bc_flows%print_time, &
+              print_wells%print_time, &
+              print_conductances%print_time, &
+              print_heads%print_time, &
+              print_velocities%print_time, &
+              print_force_chemistry%print_time, &
+              print_hdf_chemistry%print_time, &
+              print_xyz_components%print_time, &
+              print_hdf_heads%print_time, &
+              print_hdf_velocities%print_time, &
+              print_xyz_chemistry%print_time, &
+              print_xyz_heads%print_time, &
+              print_xyz_velocities%print_time, &
+              print_xyz_wells%print_time, &
+              print_restart%print_time, &
+              print_restart_hst%print_time)
+  END SUBROUTINE pc_set_next_print_time
 
   SUBROUTINE print_control_l(privar,utime,itime,timchg,timprvar,prvar)
     IMPLICIT NONE

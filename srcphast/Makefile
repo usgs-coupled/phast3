@@ -492,7 +492,7 @@ el1slv.o:		   modules.o
 elslv.o:		   modules.o
 error1.o:		   modules.o
 error2.o:		   modules.o
-error3.o:		   modules.o
+error3.o:		   modules.o    print_control_mod.o
 error4.o:		   modules.o	ifwr.inc
 errprt.o:		   modules.o
 etom1.o:		   modules.o
@@ -510,7 +510,7 @@ init2_1.o:		   modules.o
 init2_2.o:		   modules.o
 init2_3.o:		   modules.o
 init2_post_ss.o:	   modules.o
-init3.o:		   modules.o
+init3.o:		   modules.o    print_control_mod.o
 interp.o:		   modules.o
 irewi.o:		   modules.o
 ldchar.o:		   modules.o
@@ -523,14 +523,14 @@ load_indx_bc.o:		   modules.o
 lsolv.o:		   modules.o
 nintrp.o:		   modules.o
 openf.o:		   modules.o	mpimod.o
-phast_root.o:	           modules.o    mpimod.o
-phast_slave.o:		   modules.o    mpimod.o
+phast_root.o:	           modules.o    mpimod.o    print_control_mod.o
+phast_slave.o:		   modules.o    mpimod.o    print_control_mod.o
 prchar.o:		   modules.o
 prntar.o:		   modules.o
 rbord.o:		   modules.o
 read1.o:		   modules.o
 read2.o:		   modules.o 	ifrd.inc
-read3.o:		   modules.o
+read3.o:		   modules.o    print_control_mod.o
 reordr.o:		   modules.o
 rewi.o:			   modules.o
 rewi3.o:		   modules.o
@@ -548,7 +548,7 @@ terminate_phast.o:	   modules.o	mpimod.o
 tfrds.o:		   modules.o
 timstp.o:		   modules.o	print_control_mod.o
 timstp_ss_flow.o:	   modules.o	print_control_mod.o
-update_print_flags.o:	   modules.o	
+update_print_flags.o:	   modules.o    print_control_mod.o
 usolv.o:		   modules.o
 viscos.o:		   modules.o
 wbbal.o:		   modules.o

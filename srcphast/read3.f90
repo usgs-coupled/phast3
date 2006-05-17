@@ -278,11 +278,12 @@ SUBROUTINE read3
   primapcomp = -primapcomp
   primapv = -primapv
   ! ... Well data time series
-  READ(fuins,*) pri_well_timser, print_restart%print_interval
+  READ(fuins,*) pri_well_timser, print_restart%print_interval, print_end_of_period
   if (print_rde) WRITE(furde,8111) 'pri_well_timser,[3.10.2]',  &
        pri_well_timser, &
-       print_restart%print_interval
-8111 FORMAT(tr5,a/tr5,f10.2)
+       print_restart%print_interval, &
+       print_end_of_period
+8111 FORMAT(tr5,a/tr5,f10.2, f10.2, l5)
   ! ... ***special patch
   pri_well_timser = -pri_well_timser
   print_restart%print_interval = -print_restart%print_interval

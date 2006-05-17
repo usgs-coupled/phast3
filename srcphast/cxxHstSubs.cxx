@@ -376,7 +376,10 @@ struct system *system_cxxInitialize(int i, int n_user_new, int *initial_conditio
 		if (n_old2 >= 0) mx.add(n_old2, 1 - f1);
 		cxxExchange *cxxex_ptr;
 		cxxex_ptr = phreeqcBin.mix_cxxExchange(mx);
-		szBin.setExchange(i, cxxex_ptr);
+		cxxex_ptr->set_n_user(n_user_new);
+		cxxex_ptr->set_n_user_end(n_user_new);
+		//szBin.setExchange(i, cxxex_ptr);
+		szBin.setExchange(n_user_new, cxxex_ptr);
 	}
 	/*
 	 *   Copy surface assemblage

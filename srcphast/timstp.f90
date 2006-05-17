@@ -131,7 +131,8 @@ SUBROUTINE timstp
      CALL print_control(prislm,utime,itime,utimchg,timprslm,prslm)
      IF(prslm) prslmi = 1
   END IF
-  CALL pc_set(print_restart, utime, itime, utimchg)
+!  CALL pc_set_print_flag(print_progress_statistics, utime, itime, utimchg)
+  CALL pc_set_print_flag(print_restart, utime, itime, utimchg)
   ! ... P,C tables of dependent variables in the cells
   IF(ABS(prip) > 0._kdp .AND. .NOT.steady_flow) THEN
      CALL print_control(prip,utime,itime,utimchg,timprp,prp)
@@ -221,6 +222,7 @@ SUBROUTINE timstp
      CALL print_control(prikd,utime,itime,utimchg,timprkd,prkd)
   END IF
   IF(prslm) THEN
+!  IF(print_progress_statistics%print_flag) THEN
      WRITE(*,3002) 'Current time step length ..........', cnvtmi*deltim,'('//TRIM(unittm)//')'
 3002 FORMAT(tr5,a,1PG12.3,tr1,a)
      WRITE(logline1,5001) '     Current time step length .........................'//  &

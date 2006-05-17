@@ -1,12 +1,25 @@
+    svn 940: Added option to include or exclude prints at end of 
+    simulation periods. 
+
+    PRINT_FREQUENCY
+    0
+	-end_of_period_default t/f
+
+    If set to true, printing will occur at the end of each simulation
+    period for all print frequency options that are not equal to zero. If set
+    to false, printing will occur only at the interval specified for
+    each print frequency option.
+
+
     svn 884: Added restart capability.
 
     Chemical data can be saved and used as initial conditions for
     subsequent runs. The grid should be the same for the restart run
     as for the run that generated the restart file. In general, it is
-    assumed that the boundary conditions and media properties will be
-    the same for the restart run. It may be possible to 
-    change boundary conditions and media properties, provided the grid
-    remains the same, but this has not been tested.
+    assumed that the boundary condition types and media properties
+    will be the same for the restart run. However, it should be
+    possible to change boundary condition types and media properties
+    in subsequent simulations, provided the grid remains the same.
 
     To save data to a restart file:
 

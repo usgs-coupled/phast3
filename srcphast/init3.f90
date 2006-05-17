@@ -418,7 +418,7 @@ SUBROUTINE init3
 !  ELSE 
 !     print_restart%time_print = utimchg
 !  ENDIF
-  CALL pc_set_print_time_init(print_restart, utime, utimchg)
+  CALL pc_set_print_time_init3(print_restart, utime, utimchg)
   IF(privel > 0._kdp) THEN
      timprvel=(1._kdp+INT(utime/privel))*privel
   ELSE

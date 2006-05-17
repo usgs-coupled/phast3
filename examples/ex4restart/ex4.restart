@@ -1,6 +1,6 @@
 #PHAST restart file
 #Prefix: ex4
-#Date: Thu May  4 09:09:54 2006
+#Date: Wed May 17 11:23:51 2006
 #Current model time: 100000
 #nx, ny, nz: 16, 9, 5
 SOLUTION_RAW       -2 
@@ -28609,7 +28609,7 @@ EXCHANGE_RAW       512 Exchanger defined in simulation 1.
       X   0.49999998546313
     -formula_totals
       X   0.5
-EXCHANGE_RAW       513 Exchanger defined in simulation -1.
+EXCHANGE_RAW       513 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -28625,7 +28625,7 @@ EXCHANGE_RAW       513 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       514 Exchanger defined in simulation -1.
+EXCHANGE_RAW       514 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -28641,7 +28641,7 @@ EXCHANGE_RAW       514 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       515 Exchanger defined in simulation -1.
+EXCHANGE_RAW       515 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -28657,7 +28657,7 @@ EXCHANGE_RAW       515 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       516 Exchanger defined in simulation -1.
+EXCHANGE_RAW       516 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -28673,7 +28673,7 @@ EXCHANGE_RAW       516 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       517 Exchanger defined in simulation -1.
+EXCHANGE_RAW       517 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -28689,7 +28689,7 @@ EXCHANGE_RAW       517 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       518 Exchanger defined in simulation -1.
+EXCHANGE_RAW       518 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -28705,7 +28705,7 @@ EXCHANGE_RAW       518 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       519 Exchanger defined in simulation -1.
+EXCHANGE_RAW       519 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -28721,7 +28721,7 @@ EXCHANGE_RAW       519 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       520 Exchanger defined in simulation -1.
+EXCHANGE_RAW       520 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -28737,7 +28737,7 @@ EXCHANGE_RAW       520 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       521 Exchanger defined in simulation -1.
+EXCHANGE_RAW       521 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -28753,7 +28753,7 @@ EXCHANGE_RAW       521 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       522 Exchanger defined in simulation -1.
+EXCHANGE_RAW       522 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -28769,7 +28769,7 @@ EXCHANGE_RAW       522 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       523 Exchanger defined in simulation -1.
+EXCHANGE_RAW       523 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -28785,7 +28785,7 @@ EXCHANGE_RAW       523 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       524 Exchanger defined in simulation -1.
+EXCHANGE_RAW       524 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -28801,7 +28801,7 @@ EXCHANGE_RAW       524 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       525 Exchanger defined in simulation -1.
+EXCHANGE_RAW       525 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -28817,7 +28817,7 @@ EXCHANGE_RAW       525 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       526 Exchanger defined in simulation -1.
+EXCHANGE_RAW       526 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -28833,7 +28833,7 @@ EXCHANGE_RAW       526 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       527 Exchanger defined in simulation -1.
+EXCHANGE_RAW       527 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -28849,7 +28849,7 @@ EXCHANGE_RAW       527 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       528 Exchanger defined in simulation -1.
+EXCHANGE_RAW       528 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -28865,7 +28865,7 @@ EXCHANGE_RAW       528 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       529 Exchanger defined in simulation -1.
+EXCHANGE_RAW       529 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -28881,7 +28881,7 @@ EXCHANGE_RAW       529 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       530 Exchanger defined in simulation -1.
+EXCHANGE_RAW       530 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -28897,7 +28897,7 @@ EXCHANGE_RAW       530 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       531 Exchanger defined in simulation -1.
+EXCHANGE_RAW       531 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -28913,7 +28913,7 @@ EXCHANGE_RAW       531 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       532 Exchanger defined in simulation -1.
+EXCHANGE_RAW       532 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -28929,7 +28929,7 @@ EXCHANGE_RAW       532 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       533 Exchanger defined in simulation -1.
+EXCHANGE_RAW       533 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -28945,7 +28945,7 @@ EXCHANGE_RAW       533 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       534 Exchanger defined in simulation -1.
+EXCHANGE_RAW       534 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -28961,7 +28961,7 @@ EXCHANGE_RAW       534 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       535 Exchanger defined in simulation -1.
+EXCHANGE_RAW       535 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -28977,7 +28977,7 @@ EXCHANGE_RAW       535 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       536 Exchanger defined in simulation -1.
+EXCHANGE_RAW       536 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -28993,7 +28993,7 @@ EXCHANGE_RAW       536 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       537 Exchanger defined in simulation -1.
+EXCHANGE_RAW       537 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29009,7 +29009,7 @@ EXCHANGE_RAW       537 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       538 Exchanger defined in simulation -1.
+EXCHANGE_RAW       538 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29025,7 +29025,7 @@ EXCHANGE_RAW       538 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       539 Exchanger defined in simulation -1.
+EXCHANGE_RAW       539 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29041,7 +29041,7 @@ EXCHANGE_RAW       539 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       540 Exchanger defined in simulation -1.
+EXCHANGE_RAW       540 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29057,7 +29057,7 @@ EXCHANGE_RAW       540 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       541 Exchanger defined in simulation -1.
+EXCHANGE_RAW       541 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29073,7 +29073,7 @@ EXCHANGE_RAW       541 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       542 Exchanger defined in simulation -1.
+EXCHANGE_RAW       542 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29089,7 +29089,7 @@ EXCHANGE_RAW       542 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       543 Exchanger defined in simulation -1.
+EXCHANGE_RAW       543 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29105,7 +29105,7 @@ EXCHANGE_RAW       543 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       544 Exchanger defined in simulation -1.
+EXCHANGE_RAW       544 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29121,7 +29121,7 @@ EXCHANGE_RAW       544 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       545 Exchanger defined in simulation -1.
+EXCHANGE_RAW       545 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29137,7 +29137,7 @@ EXCHANGE_RAW       545 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       546 Exchanger defined in simulation -1.
+EXCHANGE_RAW       546 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29153,7 +29153,7 @@ EXCHANGE_RAW       546 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       547 Exchanger defined in simulation -1.
+EXCHANGE_RAW       547 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29169,7 +29169,7 @@ EXCHANGE_RAW       547 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       548 Exchanger defined in simulation -1.
+EXCHANGE_RAW       548 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29185,7 +29185,7 @@ EXCHANGE_RAW       548 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       549 Exchanger defined in simulation -1.
+EXCHANGE_RAW       549 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29233,7 +29233,7 @@ EXCHANGE_RAW       551 Exchanger defined in simulation 1.
       X   0.49999999378
     -formula_totals
       X   0.5
-EXCHANGE_RAW       552 Exchanger defined in simulation -1.
+EXCHANGE_RAW       552 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29313,7 +29313,7 @@ EXCHANGE_RAW       556 Exchanger defined in simulation 1.
       X   0.49999999335626
     -formula_totals
       X   0.5
-EXCHANGE_RAW       557 Exchanger defined in simulation -1.
+EXCHANGE_RAW       557 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29329,7 +29329,7 @@ EXCHANGE_RAW       557 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       558 Exchanger defined in simulation -1.
+EXCHANGE_RAW       558 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29345,7 +29345,7 @@ EXCHANGE_RAW       558 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       559 Exchanger defined in simulation -1.
+EXCHANGE_RAW       559 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29361,7 +29361,7 @@ EXCHANGE_RAW       559 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       560 Exchanger defined in simulation -1.
+EXCHANGE_RAW       560 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29377,7 +29377,7 @@ EXCHANGE_RAW       560 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       561 Exchanger defined in simulation -1.
+EXCHANGE_RAW       561 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29393,7 +29393,7 @@ EXCHANGE_RAW       561 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       562 Exchanger defined in simulation -1.
+EXCHANGE_RAW       562 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29409,7 +29409,7 @@ EXCHANGE_RAW       562 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       563 Exchanger defined in simulation -1.
+EXCHANGE_RAW       563 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29425,7 +29425,7 @@ EXCHANGE_RAW       563 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       564 Exchanger defined in simulation -1.
+EXCHANGE_RAW       564 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29441,7 +29441,7 @@ EXCHANGE_RAW       564 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       565 Exchanger defined in simulation -1.
+EXCHANGE_RAW       565 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29457,7 +29457,7 @@ EXCHANGE_RAW       565 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       566 Exchanger defined in simulation -1.
+EXCHANGE_RAW       566 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29569,7 +29569,7 @@ EXCHANGE_RAW       572 Exchanger defined in simulation 1.
       X   0.49999998642723
     -formula_totals
       X   0.5
-EXCHANGE_RAW       573 Exchanger defined in simulation -1.
+EXCHANGE_RAW       573 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29585,7 +29585,7 @@ EXCHANGE_RAW       573 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       574 Exchanger defined in simulation -1.
+EXCHANGE_RAW       574 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29601,7 +29601,7 @@ EXCHANGE_RAW       574 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       575 Exchanger defined in simulation -1.
+EXCHANGE_RAW       575 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29617,7 +29617,7 @@ EXCHANGE_RAW       575 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       576 Exchanger defined in simulation -1.
+EXCHANGE_RAW       576 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29633,7 +29633,7 @@ EXCHANGE_RAW       576 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       577 Exchanger defined in simulation -1.
+EXCHANGE_RAW       577 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29649,7 +29649,7 @@ EXCHANGE_RAW       577 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       578 Exchanger defined in simulation -1.
+EXCHANGE_RAW       578 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29665,7 +29665,7 @@ EXCHANGE_RAW       578 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       579 Exchanger defined in simulation -1.
+EXCHANGE_RAW       579 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29681,7 +29681,7 @@ EXCHANGE_RAW       579 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       580 Exchanger defined in simulation -1.
+EXCHANGE_RAW       580 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29697,7 +29697,7 @@ EXCHANGE_RAW       580 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       581 Exchanger defined in simulation -1.
+EXCHANGE_RAW       581 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29809,7 +29809,7 @@ EXCHANGE_RAW       587 Exchanger defined in simulation 1.
       X   0.49999999401704
     -formula_totals
       X   0.5
-EXCHANGE_RAW       588 Exchanger defined in simulation -1.
+EXCHANGE_RAW       588 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29825,7 +29825,7 @@ EXCHANGE_RAW       588 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       589 Exchanger defined in simulation -1.
+EXCHANGE_RAW       589 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29841,7 +29841,7 @@ EXCHANGE_RAW       589 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       590 Exchanger defined in simulation -1.
+EXCHANGE_RAW       590 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29857,7 +29857,7 @@ EXCHANGE_RAW       590 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       591 Exchanger defined in simulation -1.
+EXCHANGE_RAW       591 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29873,7 +29873,7 @@ EXCHANGE_RAW       591 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       592 Exchanger defined in simulation -1.
+EXCHANGE_RAW       592 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29889,7 +29889,7 @@ EXCHANGE_RAW       592 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       593 Exchanger defined in simulation -1.
+EXCHANGE_RAW       593 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29905,7 +29905,7 @@ EXCHANGE_RAW       593 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       594 Exchanger defined in simulation -1.
+EXCHANGE_RAW       594 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29921,7 +29921,7 @@ EXCHANGE_RAW       594 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       595 Exchanger defined in simulation -1.
+EXCHANGE_RAW       595 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29937,7 +29937,7 @@ EXCHANGE_RAW       595 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       596 Exchanger defined in simulation -1.
+EXCHANGE_RAW       596 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -29953,7 +29953,7 @@ EXCHANGE_RAW       596 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       597 Exchanger defined in simulation -1.
+EXCHANGE_RAW       597 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30049,7 +30049,7 @@ EXCHANGE_RAW       602 Exchanger defined in simulation 1.
       X   0.49999998976717
     -formula_totals
       X   0.5
-EXCHANGE_RAW       603 Exchanger defined in simulation -1.
+EXCHANGE_RAW       603 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30065,7 +30065,7 @@ EXCHANGE_RAW       603 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       604 Exchanger defined in simulation -1.
+EXCHANGE_RAW       604 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30081,7 +30081,7 @@ EXCHANGE_RAW       604 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       605 Exchanger defined in simulation -1.
+EXCHANGE_RAW       605 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30097,7 +30097,7 @@ EXCHANGE_RAW       605 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       606 Exchanger defined in simulation -1.
+EXCHANGE_RAW       606 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30113,7 +30113,7 @@ EXCHANGE_RAW       606 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       607 Exchanger defined in simulation -1.
+EXCHANGE_RAW       607 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30129,7 +30129,7 @@ EXCHANGE_RAW       607 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       608 Exchanger defined in simulation -1.
+EXCHANGE_RAW       608 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30145,7 +30145,7 @@ EXCHANGE_RAW       608 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       609 Exchanger defined in simulation -1.
+EXCHANGE_RAW       609 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30161,7 +30161,7 @@ EXCHANGE_RAW       609 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       610 Exchanger defined in simulation -1.
+EXCHANGE_RAW       610 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30177,7 +30177,7 @@ EXCHANGE_RAW       610 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       611 Exchanger defined in simulation -1.
+EXCHANGE_RAW       611 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30193,7 +30193,7 @@ EXCHANGE_RAW       611 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       612 Exchanger defined in simulation -1.
+EXCHANGE_RAW       612 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30209,7 +30209,7 @@ EXCHANGE_RAW       612 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       613 Exchanger defined in simulation -1.
+EXCHANGE_RAW       613 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30225,7 +30225,7 @@ EXCHANGE_RAW       613 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       614 Exchanger defined in simulation -1.
+EXCHANGE_RAW       614 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30321,7 +30321,7 @@ EXCHANGE_RAW       619 Exchanger defined in simulation 1.
       X   0.49999999047375
     -formula_totals
       X   0.5
-EXCHANGE_RAW       620 Exchanger defined in simulation -1.
+EXCHANGE_RAW       620 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30337,7 +30337,7 @@ EXCHANGE_RAW       620 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       621 Exchanger defined in simulation -1.
+EXCHANGE_RAW       621 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30353,7 +30353,7 @@ EXCHANGE_RAW       621 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       622 Exchanger defined in simulation -1.
+EXCHANGE_RAW       622 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30369,7 +30369,7 @@ EXCHANGE_RAW       622 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       623 Exchanger defined in simulation -1.
+EXCHANGE_RAW       623 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30385,7 +30385,7 @@ EXCHANGE_RAW       623 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       624 Exchanger defined in simulation -1.
+EXCHANGE_RAW       624 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30401,7 +30401,7 @@ EXCHANGE_RAW       624 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       625 Exchanger defined in simulation -1.
+EXCHANGE_RAW       625 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30417,7 +30417,7 @@ EXCHANGE_RAW       625 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       626 Exchanger defined in simulation -1.
+EXCHANGE_RAW       626 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30433,7 +30433,7 @@ EXCHANGE_RAW       626 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       627 Exchanger defined in simulation -1.
+EXCHANGE_RAW       627 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30449,7 +30449,7 @@ EXCHANGE_RAW       627 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       628 Exchanger defined in simulation -1.
+EXCHANGE_RAW       628 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30465,7 +30465,7 @@ EXCHANGE_RAW       628 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       629 Exchanger defined in simulation -1.
+EXCHANGE_RAW       629 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30481,7 +30481,7 @@ EXCHANGE_RAW       629 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       630 Exchanger defined in simulation -1.
+EXCHANGE_RAW       630 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30497,7 +30497,7 @@ EXCHANGE_RAW       630 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       631 Exchanger defined in simulation -1.
+EXCHANGE_RAW       631 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30513,7 +30513,7 @@ EXCHANGE_RAW       631 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       632 Exchanger defined in simulation -1.
+EXCHANGE_RAW       632 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30529,7 +30529,7 @@ EXCHANGE_RAW       632 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       633 Exchanger defined in simulation -1.
+EXCHANGE_RAW       633 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30545,7 +30545,7 @@ EXCHANGE_RAW       633 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       634 Exchanger defined in simulation -1.
+EXCHANGE_RAW       634 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30561,7 +30561,7 @@ EXCHANGE_RAW       634 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       635 Exchanger defined in simulation -1.
+EXCHANGE_RAW       635 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30577,7 +30577,7 @@ EXCHANGE_RAW       635 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       636 Exchanger defined in simulation -1.
+EXCHANGE_RAW       636 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30593,7 +30593,7 @@ EXCHANGE_RAW       636 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       637 Exchanger defined in simulation -1.
+EXCHANGE_RAW       637 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30609,7 +30609,7 @@ EXCHANGE_RAW       637 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       638 Exchanger defined in simulation -1.
+EXCHANGE_RAW       638 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30625,7 +30625,7 @@ EXCHANGE_RAW       638 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       639 Exchanger defined in simulation -1.
+EXCHANGE_RAW       639 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30641,7 +30641,7 @@ EXCHANGE_RAW       639 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       640 Exchanger defined in simulation -1.
+EXCHANGE_RAW       640 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30657,7 +30657,7 @@ EXCHANGE_RAW       640 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       641 Exchanger defined in simulation -1.
+EXCHANGE_RAW       641 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30673,7 +30673,7 @@ EXCHANGE_RAW       641 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       642 Exchanger defined in simulation -1.
+EXCHANGE_RAW       642 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30689,7 +30689,7 @@ EXCHANGE_RAW       642 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       643 Exchanger defined in simulation -1.
+EXCHANGE_RAW       643 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30705,7 +30705,7 @@ EXCHANGE_RAW       643 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       644 Exchanger defined in simulation -1.
+EXCHANGE_RAW       644 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30721,7 +30721,7 @@ EXCHANGE_RAW       644 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       645 Exchanger defined in simulation -1.
+EXCHANGE_RAW       645 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30737,7 +30737,7 @@ EXCHANGE_RAW       645 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       646 Exchanger defined in simulation -1.
+EXCHANGE_RAW       646 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30753,7 +30753,7 @@ EXCHANGE_RAW       646 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       647 Exchanger defined in simulation -1.
+EXCHANGE_RAW       647 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30769,7 +30769,7 @@ EXCHANGE_RAW       647 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       648 Exchanger defined in simulation -1.
+EXCHANGE_RAW       648 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30785,7 +30785,7 @@ EXCHANGE_RAW       648 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       649 Exchanger defined in simulation -1.
+EXCHANGE_RAW       649 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30801,7 +30801,7 @@ EXCHANGE_RAW       649 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       650 Exchanger defined in simulation -1.
+EXCHANGE_RAW       650 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30817,7 +30817,7 @@ EXCHANGE_RAW       650 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       651 Exchanger defined in simulation -1.
+EXCHANGE_RAW       651 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30833,7 +30833,7 @@ EXCHANGE_RAW       651 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       652 Exchanger defined in simulation -1.
+EXCHANGE_RAW       652 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30849,7 +30849,7 @@ EXCHANGE_RAW       652 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       653 Exchanger defined in simulation -1.
+EXCHANGE_RAW       653 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30865,7 +30865,7 @@ EXCHANGE_RAW       653 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       654 Exchanger defined in simulation -1.
+EXCHANGE_RAW       654 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30881,7 +30881,7 @@ EXCHANGE_RAW       654 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       655 Exchanger defined in simulation -1.
+EXCHANGE_RAW       655 
   -pitzer_exchange_gammas 1
   -component
     -formula               X
@@ -30897,7 +30897,7 @@ EXCHANGE_RAW       655 Exchanger defined in simulation -1.
       X   0.5000000000061
     -formula_totals
       X   0.5
-EXCHANGE_RAW       656 Exchanger defined in simulation -1.
+EXCHANGE_RAW       656 
   -pitzer_exchange_gammas 1
   -component
     -formula               X

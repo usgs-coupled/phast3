@@ -1730,8 +1730,10 @@ int write_output_transient(void)
 		output_msg(OUTPUT_HST,"     f %f\n", velmap);
 	}
 
-	output_msg(OUTPUT_HST,"C.3.10.2 .. PRIXYZ_WELL, PRINT_RESTART\n");
-	output_msg(OUTPUT_HST,"     %f %f\n", print_value(&current_print_xyz_wells), print_value(&current_print_restart));
+	output_msg(OUTPUT_HST,"C.3.10.2 .. PRIXYZ_WELL, PRINT_RESTART, PRINT_END_OF_PERIOD [t/t]\n");
+	output_msg(OUTPUT_HST,"     %f %f", print_value(&current_print_xyz_wells), print_value(&current_print_restart));
+	if (current_print_end_of_period == TRUE) output_msg(OUTPUT_HST,"     T\n");
+	if (current_print_end_of_period == FALSE) output_msg(OUTPUT_HST,"     F\n");
 /*
  *   Print information by node
  */	
