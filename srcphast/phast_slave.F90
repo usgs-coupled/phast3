@@ -16,6 +16,7 @@ SUBROUTINE phast_slave(mpi_tasks, mpi_myself)
   REAL(KIND=kdp) :: time_phreeqc
   REAL(KIND=kdp) :: deltim_dummy
   INTEGER :: stop_msg
+  INTEGER :: print_restart_flag
 !!$  CHARACTER(LEN=130) :: logline1
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id: phast_slave.F90,v 1.1 2005/08/19 00:03:47 klkipp Exp $'
@@ -51,10 +52,11 @@ SUBROUTINE phast_slave(mpi_tasks, mpi_myself)
      ! moved equilibrate before write2_1, where initial conditions are printed to O.comps
      ! but equilibrate needs to be called after ss calculation for correct frac
      adj_wr_ratio = 1
+     print_restart_flag = 0 
      CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time_phreeqc,deltim_dummy,prslmi,  &
            cnvtmi,frac_icchem,iprint_chem,iprint_xyz, &
            prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f,&
-           0)
+           print_restart_flag)
      stop_msg = 0
      deltim_dummy = 0._kdp
      ! ... The transient loop
