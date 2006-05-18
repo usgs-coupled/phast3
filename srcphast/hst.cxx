@@ -2315,7 +2315,7 @@ int distribute_from_root(double *fraction, int *dim, int *print_sel,
 					doubles.push_back(buffer[i].moles);
 				}
 			}
-			mpi_buffer_position = doubles.size();
+			mpi_buffer_position = (int) doubles.size();
 			MPI_Send(&mpi_buffer_position, 1, MPI_INT, task_number, 0, MPI_COMM_WORLD);
 			MPI_Send(&(doubles.front()), mpi_buffer_position, MPI_DOUBLE, task_number, 0, MPI_COMM_WORLD);
 		}
@@ -2424,7 +2424,7 @@ void COLLECT_FROM_NONROOT(double *fraction, int *dim)
 					doubles.push_back(buffer[i].moles);
 				}
 			}
-			mpi_buffer_position = doubles.size();
+			mpi_buffer_position = (int) doubles.size();
 			MPI_Send(&task_number, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
 			MPI_Send(&mpi_buffer_position, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
 			MPI_Send(&(doubles.front()), mpi_buffer_position, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
@@ -2728,7 +2728,7 @@ int mpi_write_restart(double time_hst)
 			szBin.dump_raw(oss_restart, 0);
 			std::string stdstring = oss_restart.str();
 			const char *string = stdstring.c_str();
-			int string_size = stdstring.size() + 1;
+			int string_size = (int) stdstring.size() + 1;
 			//const char *string = oss_restart.str().c_str();
 			//char * string = string_duplicate(oss_restart.str().c_str());
 			//int string_size = strlen(string) + 1;

@@ -1052,7 +1052,7 @@ void HDFBeginCTimeStep(void)
     /* determine how many cells we're going to be doing */
     ptr_begin  = &(random_list[end_cells[mpi_myself][0]]);
     ptr_end    = &(random_list[end_cells[mpi_myself][1]]);
-    proc.cell_count = ptr_end - ptr_begin + 1;
+    proc.cell_count = (int) (ptr_end - ptr_begin + 1);
 #else
     proc.cell_count = count_chem;
 #endif
