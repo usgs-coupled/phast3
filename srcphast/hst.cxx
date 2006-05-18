@@ -2686,7 +2686,7 @@ void ON_ERROR_CLEANUP_AND_EXIT(void)
 void SEND_RESTART_NAME(char * name, int nchar)
 /* ---------------------------------------------------------------------- */
 {
-	int i = FileMap.size();
+	int i = (int) FileMap.size();
 	name[nchar - 1] = '\0';
 	string_trim(name);
 	std::string stdstring(name);

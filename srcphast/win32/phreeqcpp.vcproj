@@ -1220,12 +1220,6 @@
 				RelativePath="..\phreeqcpp\StorageBin.h">
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\SurfCharge.h">
-			</File>
-			<File
-				RelativePath="..\phreeqcpp\SurfComp.h">
-			</File>
-			<File
 				RelativePath="..\phreeqcpp\Surface.h">
 			</File>
 			<File
