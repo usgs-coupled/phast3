@@ -87,7 +87,7 @@ SUBROUTINE write3
                  end do
               end do
               CALL convert_to_molal(c_mol,nsbc,nxyz)
-              CALL ldchar(indx_sol1_bc,indx_sol2_bc,mxfrac,1,csolmask,solmask,4)
+              CALL ldchar(indx_sol1_bc,indx_sol2_bc,bc_mxfrac,1,csolmask,solmask,4)
               prthd=.FALSE.
               DO  l=1,nsbc
                  m=msbc(l)
@@ -134,7 +134,7 @@ SUBROUTINE write3
         IF(solute.AND.rdscbc) THEN
            lprnt1 = -1
            !        CALL convert_to_molal(csbc, nsbc, nxyz)
-           CALL ldchar(indx_sol1_bc,indx_sol2_bc,mxfrac,1, csolmask,solmask,4)
+           CALL ldchar(indx_sol1_bc,indx_sol2_bc,bc_mxfrac,1, csolmask,solmask,4)
            prthd=.FALSE.
            DO  l=1,nsbc
               m=msbc(l)
@@ -214,7 +214,7 @@ SUBROUTINE write3
                  end do
               end do
               CALL convert_to_molal(c_mol,nfbc,nxyz)
-              CALL ldchar(indx_sol1_bc,indx_sol2_bc,mxfrac,2,csolmask,solmask,4)
+              CALL ldchar(indx_sol1_bc,indx_sol2_bc,bc_mxfrac,2,csolmask,solmask,4)
               prthd=.FALSE.
               DO  l=1,nfbc
                  m=mfbc(l)
@@ -344,7 +344,7 @@ SUBROUTINE write3
                  end do
               end do
               CALL convert_to_molal(c_mol,nlbc,nxyz)
-              CALL ldchar(indx_sol1_bc,indx_sol2_bc,mxfrac,3,csolmask,solmask,4)
+              CALL ldchar(indx_sol1_bc,indx_sol2_bc,bc_mxfrac,3,csolmask,solmask,4)
               WRITE(fulp,2004) 'Leakage B.C.: Associated solution indices'
               CALL prchar(2,csolmask,lprnt1,fulp,000)
               DO  iis=1,ns
@@ -384,7 +384,7 @@ SUBROUTINE write3
            DO lc=1,nrbc
               DO  ls=river_seg_index(lc)%seg_first,river_seg_index(lc)%seg_last
                  WRITE(fulp,2125) ls,mrbc_bot(lc),cnvli*phirbc(ls)/gz,indx_sol1_bc(4,ls), &
-                      indx_sol2_bc(4,ls), mxfrac(4,ls)
+                      indx_sol2_bc(4,ls), bc_mxfrac(4,ls)
 2125             FORMAT(tr15,i5,tr5,i3,tr9,1PG12.4,I10,I10,F10.4)
               END DO
            END DO

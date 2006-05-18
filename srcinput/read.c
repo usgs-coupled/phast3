@@ -4441,7 +4441,7 @@ int read_print_frequency (void)
 		"print_default_end_of_period",  /* 56*/
 		"end_of_period_default"/* 57*/
 	};
-	int count_opt_list = 56;
+	int count_opt_list = 58;
 /*
  *   Read flags:
  */

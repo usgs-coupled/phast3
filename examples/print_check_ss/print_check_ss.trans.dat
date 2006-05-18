@@ -137,14 +137,14 @@ PRINT_INITIAL
 #	-echo_input             true
 #	-fluid_properties       true
 	-force_chemistry_print  true
-	-HDF_chemistry          true
-	-HDF_heads              true
-	-HDF_steady_flow_velocities   true
-	-heads                  true
+#	-HDF_chemistry          true
+#	-HDF_heads              true
+#	-HDF_steady_flow_velocities   true
+#	-heads                  true
 	-media_properties       true
-	-solution_method        true
+#	-solution_method        true
 	-steady_flow_velocities true
-	-wells                  true
+#	-wells                  true
 	-xyz_chemistry          true
         -xyz_components         true
         -xyz_heads              true

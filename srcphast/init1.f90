@@ -165,7 +165,7 @@ SUBROUTINE init1
        dctas(nsa),  &
        rf(nxyz), rs(nxyz,nsa),  &
        c(nxyz,nsa), den(nxyz), eh(1), frac(nxyz), frac_icchem(nxyz),  &
-       mxfrac(7,nxyz), p(nxyz), t(1), vis(nxyz), &
+       ic_mxfrac(7,nxyz), bc_mxfrac(7,nxyz), p(nxyz), t(1), vis(nxyz), &
        sir(nsa), sir0(nsa), sirn(nsa), sir_prechem(nsa), &
        totsi(nsa), totsp(nsa), tdsir_chem(nsa), tcsaif(nsa), tcsetb(nsa), &
        tcsfbc(nsa), &

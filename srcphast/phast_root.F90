@@ -56,11 +56,11 @@ SUBROUTINE phast_root(mpi_tasks, mpi_myself)
 #endif
      IF(solute) THEN  
 #ifdef USE_MPI
-        CALL slave_get_indexes(indx_sol1_ic, indx_sol2_ic, mxfrac, naxes, nxyz, &
+        CALL slave_get_indexes(indx_sol1_ic, indx_sol2_ic, ic_mxfrac, naxes, nxyz, &
             x_node, y_node, z_node, cnvtmi, transient_fresur)
 #endif
         CALL forward_and_back(indx_sol1_ic, naxes, nx, ny, nz)  
-        CALL distribute_initial_conditions(indx_sol1_ic, indx_sol2_ic, mxfrac)
+        CALL distribute_initial_conditions(indx_sol1_ic, indx_sol2_ic, ic_mxfrac)
         CALL uz_init(transient_fresur)
 #ifdef USE_MPI
         CALL collect_from_nonroot(c, nxyz) ! stores data for transport
@@ -91,12 +91,12 @@ SUBROUTINE phast_root(mpi_tasks, mpi_myself)
      ! moved equilibrate before write2_1, where initial conditions are printed to O.comps
      ! but equilibrate needs to be called after ss calculation for correct frac
      print_restart_flag = 0 
+     stop_msg = 0
+     deltim_dummy = 0._kdp
      CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time_phreeqc,deltim_dummy,prslmi,  &
            cnvtmi,frac_icchem,iprint_chem,iprint_xyz, &
            prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f, &
            print_restart_flag)
-     stop_msg = 0
-     deltim_dummy = 0._kdp
      CALL init2_3
   ENDIF
 !

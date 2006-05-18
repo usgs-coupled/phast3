@@ -21,14 +21,14 @@ SUBROUTINE load_indx_bc(ibct,indx1_bc,indx2_bc,mxf_bc,mbc,nbc)
         m=mbc(l)
         indx1_bc(l)=indx_sol1_bc(ibct,m)
         indx2_bc(l)=indx_sol2_bc(ibct,m)
-        mxf_bc(l)=mxfrac(ibct,m)
+        mxf_bc(l)=bc_mxfrac(ibct,m)
      END DO
   ELSE
 ! ... Rivers are loaded in the first nrbc positions of the indx_sol arrays
      DO  l=1,nbc
         indx1_bc(l)=indx_sol1_bc(ibct,l)
         indx2_bc(l)=indx_sol2_bc(ibct,l)
-        mxf_bc(l)=mxfrac(ibct,l)
+        mxf_bc(l)=bc_mxfrac(ibct,l)
      END DO
   END IF
 END SUBROUTINE load_indx_bc

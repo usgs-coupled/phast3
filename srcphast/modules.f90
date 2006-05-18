@@ -285,7 +285,7 @@ MODULE mcv
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE ::  den, eh, frac, fracn, frac_icchem,  &
        p, t, vis, sir, sir0, sirn, sir_prechem,  &
        totsi, totsp, tdsir_chem, tcsaif, tcsetb, tcsfbc, tcslbc, tcsrbc, tcssbc
-  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE ::  c, mxfrac
+  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE ::  c, ic_mxfrac, bc_mxfrac
   INTEGER :: ipmax, itmax, jpmax, jtmax, kpmax, ktmax, is
   INTEGER :: itime, nmapr, nrsttp, ns=0
   REAL(KIND=kdp) :: DDNMAX, DEHIR, DFIR, dhmax, DPMAX, DTMAX,  &

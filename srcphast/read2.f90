@@ -541,13 +541,13 @@ SUBROUTINE read2
 !!$  ENDIF
   ! ... mass fraction for the region for i.c.
   IF(solute) THEN  
-     CALL indx_rewi(indx_sol1_ic, indx_sol2_ic, mxfrac, 1, 03, 100)  
-     CALL indx_rewi(indx_sol1_ic, indx_sol2_ic, mxfrac, 2, 03, 100)  
-     CALL indx_rewi(indx_sol1_ic, indx_sol2_ic, mxfrac, 3, 03, 100)  
-     CALL indx_rewi(indx_sol1_ic, indx_sol2_ic, mxfrac, 4, 03, 100)  
-     CALL indx_rewi(indx_sol1_ic, indx_sol2_ic, mxfrac, 5, 03, 100)  
-     CALL indx_rewi(indx_sol1_ic, indx_sol2_ic, mxfrac, 6, 03, 100)  
-     CALL indx_rewi(indx_sol1_ic, indx_sol2_ic, mxfrac, 7, 03, 100)  
+     CALL indx_rewi(indx_sol1_ic, indx_sol2_ic, ic_mxfrac, 1, 03, 100)  
+     CALL indx_rewi(indx_sol1_ic, indx_sol2_ic, ic_mxfrac, 2, 03, 100)  
+     CALL indx_rewi(indx_sol1_ic, indx_sol2_ic, ic_mxfrac, 3, 03, 100)  
+     CALL indx_rewi(indx_sol1_ic, indx_sol2_ic, ic_mxfrac, 4, 03, 100)  
+     CALL indx_rewi(indx_sol1_ic, indx_sol2_ic, ic_mxfrac, 5, 03, 100)  
+     CALL indx_rewi(indx_sol1_ic, indx_sol2_ic, ic_mxfrac, 6, 03, 100)  
+     CALL indx_rewi(indx_sol1_ic, indx_sol2_ic, ic_mxfrac, 7, 03, 100)  
   ENDIF
   ! ... calculation data - solution time & space differencing
   ! ...      method factors

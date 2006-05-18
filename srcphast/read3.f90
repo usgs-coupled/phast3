@@ -90,7 +90,7 @@ SUBROUTINE read3
         IF(heat) CALL rewi(utbc,313,109)
         IF(solute) THEN
            ! ... Read specified b.c. solutions into csbc
-           CALL indx_rewi_bc(indx_sol1_bc,indx_sol2_bc,mxfrac,1, 113,127)
+           CALL indx_rewi_bc(indx_sol1_bc,indx_sol2_bc,bc_mxfrac,1, 113,127)
         END IF
      END IF
      IF(rdstbc) CALL rewi(tnp,303,171)
@@ -98,7 +98,7 @@ SUBROUTINE read3
         ! rdscbc always false, otherwise conflict with previous call to indx_rewi_bc
         IF(solute) THEN
            ! ... Read specified b.c. solutions into csbc
-           CALL indx_rewi_bc(indx_sol1_bc,indx_sol2_bc,mxfrac,1, 13,127)
+           CALL indx_rewi_bc(indx_sol1_bc,indx_sol2_bc,bc_mxfrac,1, 13,127)
         END IF
      END IF
   END IF
@@ -116,7 +116,7 @@ SUBROUTINE read3
         IF(heat) CALL rewi(utbc,323,112)
         IF(solute) THEN
            ! ... Read associated b.c. solutions into cfbc
-           CALL indx_rewi_bc(indx_sol1_bc,indx_sol2_bc,mxfrac,2, 213,127)
+           CALL indx_rewi_bc(indx_sol1_bc,indx_sol2_bc,bc_mxfrac,2, 213,127)
         END IF
      END IF
      ! ... Heat and solute diffusive fluxes for no flow b.c.
@@ -145,7 +145,7 @@ SUBROUTINE read3
         IF(heat) CALL rewi(utbc,333,125)
         IF(solute) THEN
            ! ... Read associated b.c. solutions into clbc
-           CALL indx_rewi_bc(indx_sol1_bc,indx_sol2_bc,mxfrac,3, 313,127)
+           CALL indx_rewi_bc(indx_sol1_bc,indx_sol2_bc,bc_mxfrac,3, 313,127)
         END IF
      END IF
   END IF
@@ -171,7 +171,7 @@ SUBROUTINE read3
         IF(solute) THEN
            indx_sol1_bc(4,irecrbc)=uisolrbc1
            indx_sol2_bc(4,irecrbc)=uisolrbc2
-           mxfrac(4,irecrbc)=umxfrac
+           bc_mxfrac(4,irecrbc)=umxfrac
         END IF
         GO TO 90
      END IF

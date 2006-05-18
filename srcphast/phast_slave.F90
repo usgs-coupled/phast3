@@ -42,10 +42,10 @@ SUBROUTINE phast_slave(mpi_tasks, mpi_myself)
 #endif
 
   IF(solute) THEN
-     CALL slave_get_indexes(indx_sol1_ic, indx_sol2_ic, mxfrac, naxes, nxyz, &
+     CALL slave_get_indexes(indx_sol1_ic, indx_sol2_ic, ic_mxfrac, naxes, nxyz, &
           x_node, y_node, z_node, cnvtmi, transient_fresur)
      CALL forward_and_back(indx_sol1_ic, naxes, nx, ny, nz)  
-     CALL distribute_initial_conditions(indx_sol1_ic, indx_sol2_ic, mxfrac)
+     CALL distribute_initial_conditions(indx_sol1_ic, indx_sol2_ic, ic_mxfrac)
      CALL uz_init(transient_fresur)
      CALL collect_from_nonroot(c, nxyz) ! stores data for transport
      ! ... Equilibrate the initial conditions for component concentrations
@@ -119,7 +119,7 @@ SUBROUTINE slave_init1
        indx_sol1_ic(7,nxyz), indx_sol2_ic(7,nxyz), &
        frac(nxyz), frac_icchem(nxyz),  &
        c(nxyz,nsa), &
-       mxfrac(7,nxyz), &
+       ic_mxfrac(7,nxyz), bc_mxfrac(7,nxyz), &
        STAT = a_err)
   IF (a_err /= 0) THEN  
      PRINT *, "Array allocation failed: slave_init1 3"  
@@ -263,7 +263,7 @@ SUBROUTINE slave_closef
        indx_sol1_ic, indx_sol2_ic, &
        frac, frac_icchem,  &
        c, &
-       mxfrac, &
+       ic_mxfrac, bc_mxfrac, &
        STAT = a_err)
   IF (a_err /= 0) THEN  
      PRINT *, "Array deallocation failed slave_closef: 2"  

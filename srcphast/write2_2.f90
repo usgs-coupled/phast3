@@ -130,26 +130,26 @@ SUBROUTINE write2_2
 !!$  END IF
      IF(solute .AND. prtic_c) THEN
         WRITE(fuc,2048) '*** Initial Conditions ***'
-        CALL ldchar(indx_sol1_ic,indx_sol2_ic,mxfrac,1,caprnt,lprnt1,7)
+        CALL ldchar(indx_sol1_ic,indx_sol2_ic,ic_mxfrac,1,caprnt,lprnt1,7)
         WRITE(fuc,2051) 'Initial Solution Indices and Mixing Fraction'
 2051    FORMAT(/tr30,a)
         CALL prchar(2,caprnt,lprnt1,fuc,000)
-        CALL ldchar(indx_sol1_ic,indx_sol2_ic,mxfrac,2,caprnt,lprnt1,7)
+        CALL ldchar(indx_sol1_ic,indx_sol2_ic,ic_mxfrac,2,caprnt,lprnt1,7)
         WRITE(fuc,2051) 'Initial Equilibrium-Phase Indices and Mixing Fraction'
         CALL prchar(2,caprnt,lprnt1,fuc,000)
-        CALL ldchar(indx_sol1_ic,indx_sol2_ic,mxfrac,3,caprnt,lprnt1,7)
+        CALL ldchar(indx_sol1_ic,indx_sol2_ic,ic_mxfrac,3,caprnt,lprnt1,7)
         WRITE(fuc,2051) 'Initial Exchange Indices and Mixing Fraction'
         CALL prchar(2,caprnt,lprnt1,fuc,000)
-        CALL ldchar(indx_sol1_ic,indx_sol2_ic,mxfrac,4,caprnt,lprnt1,7)
+        CALL ldchar(indx_sol1_ic,indx_sol2_ic,ic_mxfrac,4,caprnt,lprnt1,7)
         WRITE(fuc,2051) 'Initial Surface Indices and Mixing Fraction'
         CALL prchar(2,caprnt,lprnt1,fuc,000)
-        CALL ldchar(indx_sol1_ic,indx_sol2_ic,mxfrac,5,caprnt,lprnt1,7)
+        CALL ldchar(indx_sol1_ic,indx_sol2_ic,ic_mxfrac,5,caprnt,lprnt1,7)
         WRITE(fuc,2051) 'Initial Gas-Phase Indices and Mixing Fraction'
         CALL prchar(2,caprnt,lprnt1,fuc,000)
-        CALL ldchar(indx_sol1_ic,indx_sol2_ic,mxfrac,6,caprnt,lprnt1,7)
+        CALL ldchar(indx_sol1_ic,indx_sol2_ic,ic_mxfrac,6,caprnt,lprnt1,7)
         WRITE(fuc,2051) 'Initial Solid-Solution Indices and Mixing Fraction'
         CALL prchar(2,caprnt,lprnt1,fuc,000)
-        CALL ldchar(indx_sol1_ic,indx_sol2_ic,mxfrac,7,caprnt,lprnt1,7)
+        CALL ldchar(indx_sol1_ic,indx_sol2_ic,ic_mxfrac,7,caprnt,lprnt1,7)
         WRITE(fuc,2051) 'Initial Kinetic-Reaction Indices and Mixing Fraction'
         CALL prchar(2,caprnt,lprnt1,fuc,000)
         DO  iis=1,ns

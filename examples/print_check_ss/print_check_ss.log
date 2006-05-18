@@ -134,17 +134,9 @@ Processing flow and transport data file.
 		boundary_conditions    true
 		components		true
 		conductances           true
-		echo_input             true
-		fluid_properties       true
 		force_chemistry_print  true
-		hdf_chemistry          true
-		hdf_heads              true
-		hdf_steady_flow_velocities   true
-		heads                  true
 		media_properties       true
-		solution_method        true
 		steady_flow_velocities true
-		wells                  true
 		xyz_chemistry          true
 	        xyz_components         true
 	        xyz_heads              true

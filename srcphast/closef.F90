@@ -217,7 +217,7 @@ SUBROUTINE closef(mpi_myself)
   endif
   ! ... Deallocate dependent variable arrays for chem slaves
   DEALLOCATE (indx_sol1_ic, indx_sol2_ic, indx_sol1_bc, indx_sol2_bc,  &
-       mxfrac,  &
+       ic_mxfrac, bc_mxfrac, &
        c, frac_icchem,  &
        STAT = da_err)
   IF (da_err /= 0) THEN  
