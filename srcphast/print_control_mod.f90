@@ -14,7 +14,7 @@ MODULE print_control_mod
 
 
   TYPE :: PrintControl
-     LOGICAL :: print_flag, keep_file
+     LOGICAL :: print_flag, keep_file, once, initial
      INTEGER :: print_flag_integer
      REAL(KIND=kdp) :: print_interval, print_time
   END TYPE PrintControl
@@ -34,15 +34,46 @@ MODULE print_control_mod
 
 CONTAINS
 
-  SUBROUTINE pc_initialize(pc)
+  SUBROUTINE pc_initialize()
+    IMPLICIT NONE
+    ! ...
+    CALL pc_init(print_progress_statistics, .false.)
+    CALL pc_init(print_components, .false.)
+    CALL pc_init(print_global_flow_balance, .false.)
+    CALL pc_init(print_bc_flows, .false.)
+    CALL pc_init(print_wells, .false.)
+    CALL pc_init(print_conductances, .false.)
+    CALL pc_init(print_heads, .true.)
+    CALL pc_init(print_velocities, .true.)
+    CALL pc_init(print_force_chemistry, .false.)
+    CALL pc_init(print_hdf_chemistry, .false.)
+    CALL pc_init(print_xyz_components, .false.)
+    CALL pc_init(print_hdf_heads, .true.)
+    CALL pc_init(print_hdf_velocities, .true.)
+    CALL pc_init(print_xyz_chemistry, .false.)
+    CALL pc_init(print_xyz_heads, .true.)
+    CALL pc_init(print_xyz_velocities, .true.)
+    CALL pc_init(print_xyz_wells, .false.)
+    CALL pc_init(print_restart, .false.)
+    CALL pc_init(print_restart_hst, .false.)
+    
+  END SUBROUTINE pc_initialize
+
+
+  SUBROUTINE pc_init(pc, once)
     IMPLICIT NONE
     TYPE (PrintControl) :: pc
+    LOGICAL :: once
     ! ...
     pc%print_flag = .false.
+    pc%keep_file = .false.
+    pc%once = once
+    pc%initial = .false.
     pc%print_flag_integer = 0
     pc%print_interval = 0.0
     pc%print_time = 0.0
-  END SUBROUTINE pc_initialize
+
+  END SUBROUTINE pc_init
 
   SUBROUTINE pc_reset(pc)
     IMPLICIT NONE
@@ -50,29 +81,39 @@ CONTAINS
     ! ...
     pc%print_flag = .false.
     pc%print_flag_integer = 0
+
   END SUBROUTINE pc_reset
 
-  SUBROUTINE pc_set_print_flag(pc, utime, itime, timchg)  ! timstp.f90
+  SUBROUTINE pc_set_print_flag(pc, utime, itime, utimchg)  ! timstp.f90
+    USE mcc
     IMPLICIT NONE
     TYPE (PrintControl) :: pc
     INTEGER, INTENT(IN) :: itime
-    REAL(KIND=kdp), INTENT(IN) :: timchg, utime
+    REAL(KIND=kdp), INTENT(IN) :: utimchg, utime
     ! ... print_interval = prislm = privar
     ! ... print_time = timprslm = timprvar
     ! ... transient = prslm = prvar
     pc%print_flag = .false.
     pc%print_flag_integer = 0
+    ! print interval is in time units
     IF (pc%print_interval > 0.0_kdp) THEN
        IF(ABS(pc%print_time-utime) <= .01_kdp*deltim*cnvtmi) THEN
           pc%print_flag=.TRUE.
        END IF
+    ! print interval is in steps
     ELSE IF(pc%print_interval < 0._kdp) THEN
        IF(MOD(itime,INT(ABS(pc%print_interval))) == 0) pc%print_flag=.TRUE.
     END IF
-    IF((utime >= timchg) .and. (pc%print_interval /= 0) .and. print_end_of_period) then
+    ! logic for end of simulation period
+    IF((utime >= utimchg) .and. (pc%print_interval /= 0) .and. print_end_of_period) then
        pc%print_flag=.TRUE.
     ENDIF
+    ! logic for one time printing
+    if (steady_flow .and. pc%once) then
+    endif
+
     if (pc%print_flag) pc%print_flag_integer = 1
+
   END SUBROUTINE pc_set_print_flag
 
   SUBROUTINE pc_set_print_time_init3(pc, utime, utimchg)  ! init3
