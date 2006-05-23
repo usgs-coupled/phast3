@@ -336,142 +336,148 @@ SUBROUTINE init3
   IF(autots .OR. (steady_flow .AND. time <= 0.0_kdp)) deltim=dtimmn
   ! ... Set first time for printout of each output file
   ! ... TIMPRTxxx and PRIMIN are in user time marching units
-  IF(nwel == 0) THEN
-     priwel = 0._kdp
-     pri_well_timser = 0._kdp
-  END IF
-  IF(.NOT.chkptd) pricpd=0._kdp
-  IF(.NOT.cntmaph) primaphead=0._kdp
-  IF(.NOT.cntmapc) primapcomp=0._kdp
-  IF(.NOT.vecmap) primapv=0._kdp
-  IF (.NOT.solute) THEN
-     primapcomp = 0._kdp
-     prihdf_conc = 0._kdp
-     pricphrq = 0._kdp
-     priforce_chem_phrq = 0._kdp
-     pri_well_timser = 0._kdp
-  ENDIF
+!!$  IF(nwel == 0) THEN
+!!$     priwel = 0._kdp
+!!$     pri_well_timser = 0._kdp
+!!$  END IF
+!!$  IF(.NOT.chkptd) pricpd=0._kdp
+!!$  IF(.NOT.cntmaph) primaphead=0._kdp
+!!$  IF(.NOT.cntmapc) primapcomp=0._kdp
+!!$  IF(.NOT.vecmap) primapv=0._kdp
+!!$  IF (.NOT.solute) THEN
+!!$     primapcomp = 0._kdp
+!!$     prihdf_conc = 0._kdp
+!!$     pricphrq = 0._kdp
+!!$     priforce_chem_phrq = 0._kdp
+!!$     pri_well_timser = 0._kdp
+!!$  ENDIF
   utime=cnvtmi*time
   utimchg=cnvtmi*timchg
-  IF(pribcf > 0._kdp) THEN
-     timprbcf=(1._kdp+INT(utime/pribcf))*pribcf
-  ELSE
-     timprbcf=utimchg
-  ENDIF
-  IF(pricpd > 0._kdp) THEN
-     timprcpd=(1._kdp+INT(utime/pricpd))*pricpd
-  ELSE
-     timprcpd=utimchg
-  ENDIF
-  IF(prigfb > 0._kdp) THEN
-     timprgfb=(1._kdp+INT(utime/prigfb))*prigfb
-  ELSE
-     timprgfb=utimchg
-  ENDIF
-  IF(prikd > 0._kdp) THEN
-     timprkd=(1._kdp+INT(utime/prikd))*prikd
-  ELSE
-     timprkd=utimchg
-  ENDIF
-  IF(primaphead > 0._kdp) THEN
-     timprmaph=(1._kdp+INT(utime/primaphead))*primaphead
-  ELSE
-     timprmaph=utimchg
-  ENDIF
-  IF(primapcomp > 0._kdp) THEN
-     timprmapc=(1._kdp+INT(utime/primapcomp))*primapcomp
-  ELSE
-     timprmapc=utimchg
-  ENDIF
-  IF(primapv > 0._kdp) THEN
-     timprmapv=(1._kdp+INT(utime/primapv))*primapv
-  ELSE
-     timprmapv=utimchg
-  ENDIF
-  IF(prip > 0._kdp) THEN
-     timprp=(1._kdp+INT(utime/prip))*prip
-  ELSE
-     timprp=utimchg
-  ENDIF
-  IF(pric > 0._kdp) THEN
-     timprc=(1._kdp+INT(utime/pric))*pric
-  ELSE
-     timprc=utimchg
-  ENDIF
-  IF(pricphrq > 0._kdp) THEN
-     timprcphrq=(1._kdp+INT(utime/pricphrq))*pricphrq
-  ELSE
-     timprcphrq=utimchg
-  ENDIF
-  IF(priforce_chem_phrq > 0._kdp) THEN
-     timprfchem=(1._kdp+INT(utime/priforce_chem_phrq))*priforce_chem_phrq
-  ELSE
-     timprfchem=utimchg
-  ENDIF
-  IF(prislm > 0._kdp) THEN
-     timprslm=(1._kdp+INT(utime/prislm))*prislm
-  ELSE
-     timprslm=utimchg
-  ENDIF
-!  if (print_restart%freq > 0._kdp) THEN
-!     print_restart%time_print = (1._kdp+INT(utime/print_restart%freq))*print_restart%freq
-!  ELSE 
-!     print_restart%time_print = utimchg
-!  ENDIF
-  CALL pc_set_print_time_init3(print_restart, utime, utimchg)
-  IF(privel > 0._kdp) THEN
-     timprvel=(1._kdp+INT(utime/privel))*privel
-  ELSE
-     timprvel=utimchg
-  ENDIF
-  IF(priwel > 0._kdp) THEN
-     timprwel=(1._kdp+INT(utime/priwel))*priwel
-  ELSE
-     timprwel=utimchg
-  ENDIF
-  IF(pri_well_timser > 0._kdp) THEN
-     timprtem=(1._kdp+INT(utime/pri_well_timser))*pri_well_timser
-  ELSE
-     timprtem=utimchg
-  ENDIF
-  IF(prihdf_head > 0._kdp) THEN
-     timprhdfh=(1._kdp+INT(utime/prihdf_head))*prihdf_head
-  ELSE
-     timprhdfh=utimchg
-  ENDIF
-  IF(prihdf_vel > 0._kdp) THEN
-     timprhdfv=(1._kdp+INT(utime/prihdf_vel))*prihdf_vel
-  ELSE
-     timprhdfv=utimchg
-  ENDIF
-  IF(prihdf_conc > 0._kdp) THEN
-     timprhdfcph=(1._kdp+INT(utime/prihdf_conc))*prihdf_conc
-  ELSE
-     timprhdfcph=utimchg
-  ENDIF
-  IF(steady_flow) THEN
-     ! ... Move stop signs for print to end of time period for steady-state
-     ! ...     parameters
-!     timprkd = utimchg   ! decided to print out as defined by prikd regardless
-     timprmaph = utimchg
-     timprmapv = utimchg
-     timprp = utimchg
-     timprvel = utimchg
-     timprhdfh=utimchg
-     timprhdfv=utimchg
-  END IF
+  ! sets print_time for each variable and sets next_print_time to be minimum
+  ! of print_time's and utimchg
+  CALL pc_set_print_times(utime, utimchg)
+
+
+!!$  IF(pribcf > 0._kdp) THEN
+!!$     timprbcf=(1._kdp+INT(utime/pribcf))*pribcf
+!!$  ELSE
+!!$     timprbcf=utimchg
+!!$  ENDIF
+!!$  IF(pricpd > 0._kdp) THEN
+!!$     timprcpd=(1._kdp+INT(utime/pricpd))*pricpd
+!!$  ELSE
+!!$     timprcpd=utimchg
+!!$  ENDIF
+!!$  IF(prigfb > 0._kdp) THEN
+!!$     timprgfb=(1._kdp+INT(utime/prigfb))*prigfb
+!!$  ELSE
+!!$     timprgfb=utimchg
+!!$  ENDIF
+!!$  IF(prikd > 0._kdp) THEN
+!!$     timprkd=(1._kdp+INT(utime/prikd))*prikd
+!!$  ELSE
+!!$     timprkd=utimchg
+!!$  ENDIF
+!!$  IF(primaphead > 0._kdp) THEN
+!!$     timprmaph=(1._kdp+INT(utime/primaphead))*primaphead
+!!$  ELSE
+!!$     timprmaph=utimchg
+!!$  ENDIF
+!!$  IF(primapcomp > 0._kdp) THEN
+!!$     timprmapc=(1._kdp+INT(utime/primapcomp))*primapcomp
+!!$  ELSE
+!!$     timprmapc=utimchg
+!!$  ENDIF
+!!$  IF(primapv > 0._kdp) THEN
+!!$     timprmapv=(1._kdp+INT(utime/primapv))*primapv
+!!$  ELSE
+!!$     timprmapv=utimchg
+!!$  ENDIF
+!!$  IF(prip > 0._kdp) THEN
+!!$     timprp=(1._kdp+INT(utime/prip))*prip
+!!$  ELSE
+!!$     timprp=utimchg
+!!$  ENDIF
+!!$  IF(pric > 0._kdp) THEN
+!!$     timprc=(1._kdp+INT(utime/pric))*pric
+!!$  ELSE
+!!$     timprc=utimchg
+!!$  ENDIF
+!!$  IF(pricphrq > 0._kdp) THEN
+!!$     timprcphrq=(1._kdp+INT(utime/pricphrq))*pricphrq
+!!$  ELSE
+!!$     timprcphrq=utimchg
+!!$  ENDIF
+!!$  IF(priforce_chem_phrq > 0._kdp) THEN
+!!$     timprfchem=(1._kdp+INT(utime/priforce_chem_phrq))*priforce_chem_phrq
+!!$  ELSE
+!!$     timprfchem=utimchg
+!!$  ENDIF
+!!$  IF(prislm > 0._kdp) THEN
+!!$     timprslm=(1._kdp+INT(utime/prislm))*prislm
+!!$  ELSE
+!!$     timprslm=utimchg
+!!$  ENDIF
+!!$!  if (print_restart%freq > 0._kdp) THEN
+!!$!     print_restart%time_print = (1._kdp+INT(utime/print_restart%freq))*print_restart%freq
+!!$!  ELSE 
+!!$!     print_restart%time_print = utimchg
+!!$!  ENDIF
+!!$  CALL pc_set_print_time_init3(print_restart, utime, utimchg)
+!!$  IF(privel > 0._kdp) THEN
+!!$     timprvel=(1._kdp+INT(utime/privel))*privel
+!!$  ELSE
+!!$     timprvel=utimchg
+!!$  ENDIF
+!!$  IF(priwel > 0._kdp) THEN
+!!$     timprwel=(1._kdp+INT(utime/priwel))*priwel
+!!$  ELSE
+!!$     timprwel=utimchg
+!!$  ENDIF
+!!$  IF(pri_well_timser > 0._kdp) THEN
+!!$     timprtem=(1._kdp+INT(utime/pri_well_timser))*pri_well_timser
+!!$  ELSE
+!!$     timprtem=utimchg
+!!$  ENDIF
+!!$  IF(prihdf_head > 0._kdp) THEN
+!!$     timprhdfh=(1._kdp+INT(utime/prihdf_head))*prihdf_head
+!!$  ELSE
+!!$     timprhdfh=utimchg
+!!$  ENDIF
+!!$  IF(prihdf_vel > 0._kdp) THEN
+!!$     timprhdfv=(1._kdp+INT(utime/prihdf_vel))*prihdf_vel
+!!$  ELSE
+!!$     timprhdfv=utimchg
+!!$  ENDIF
+!!$  IF(prihdf_conc > 0._kdp) THEN
+!!$     timprhdfcph=(1._kdp+INT(utime/prihdf_conc))*prihdf_conc
+!!$  ELSE
+!!$     timprhdfcph=utimchg
+!!$  ENDIF
+!!$  IF(steady_flow) THEN
+!!$     ! ... Move stop signs for print to end of time period for steady-state
+!!$     ! ...     parameters
+!!$!     timprkd = utimchg   ! decided to print out as defined by prikd regardless
+!!$     timprmaph = utimchg
+!!$     timprmapv = utimchg
+!!$     timprp = utimchg
+!!$     timprvel = utimchg
+!!$     timprhdfh=utimchg
+!!$     timprhdfv=utimchg
+!!$  END IF
   ! ... Set the next time for printout by user time units
-  timprtnxt=MIN(utimchg,timprbcf, timprcpd, timprgfb,  &
-       timprhdfh, timprhdfv, timprhdfcph,  &
-       timprkd, timprmapc, timprmaph, timprmapv, &
-       timprp, timprc, timprcphrq, timprfchem, timprslm, timprtem, timprvel, timprwel, &
-       print_restart%print_time)
-  ! ... Turn off all print control flags that may have been set for i.c. or s.s. output
-  prslm = .FALSE.
-  prvel = .FALSE.
-  prmapv = .FALSE.
-  prhdfv = .FALSE.
-  ! ... Deallocate the temporary group 3 arrays
+!!$  timprtnxt=MIN(utimchg,timprbcf, timprcpd, timprgfb,  &
+!!$       timprhdfh, timprhdfv, timprhdfcph,  &
+!!$       timprkd, timprmapc, timprmaph, timprmapv, &
+!!$       timprp, timprc, timprcphrq, timprfchem, timprslm, timprtem, timprvel, timprwel, &
+!!$       print_restart%print_time)
+!!$  ! ... Turn off all print control flags that may have been set for i.c. or s.s. output
+!!$  prslm = .FALSE.
+!!$  prvel = .FALSE.
+!!$  prmapv = .FALSE.
+!!$  prhdfv = .FALSE.
+!!$  ! ... Deallocate the temporary group 3 arrays
+  timprtnxt = next_print_time
   DEALLOCATE ( pnp, qff, qffx, qffy, qffz, &
        qhfx, qhfy, qhfz, &
        tnp, ucbc, udenbc, udenlb, uphilb, uphirb, &

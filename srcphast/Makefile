@@ -455,7 +455,7 @@ ${PROGRAM} : ${OBJECT_FILES}
 
 modules.o : modules.f90 
 	${FC} -c ${FFLAGS} $<
-print_control_mod.o : print_control_mod.f90
+print_control_mod.o : ../print_control_mod.f90 modules.o
 	${FC} -c ${FFLAGS} $<
 
 # -----------------------------------------------------------------------------
@@ -464,110 +464,110 @@ print_control_mod.o : print_control_mod.f90
 #
 #  PHAST Fortran files
 #
-phast.o:	           modules.o	mpimod.o
-abmult.o:		   modules.o
-aplbce.o:		   modules.o
-aplbce_ss_flow.o:	   modules.o
-aplbci.o:		   modules.o
-armult.o:		   modules.o
-asembl.o:		   modules.o
-asmslc.o:		   modules.o
-asmslp.o:		   modules.o
-asmslp_ss_flow.o:	   modules.o
-bsode.o:		   modules.o
-calcc.o:	   	   modules.o
-calc_velocity.o:	   modules.o
-clog.o:			   modules.o
-closef.o:		   modules.o	mpimod.o
-coeff.o:		   modules.o
-coeff_ss_flow.o:	   modules.o
-crsdsp.o:		   modules.o
-d4ord.o:		   modules.o
-d4zord.o:		   modules.o
-dbmult.o:		   modules.o
-dump.o:			   modules.o
-efact.o:		   modules.o
-ehoftp.o:		   modules.o
-el1slv.o:		   modules.o
-elslv.o:		   modules.o
-error1.o:		   modules.o
-error2.o:		   modules.o
-error3.o:		   modules.o    print_control_mod.o
-error4.o:		   modules.o	ifwr.inc
-errprt.o:		   modules.o
-etom1.o:		   modules.o
-etom2.o:		   modules.o
-euslv.o:		   modules.o
-formr.o:		   modules.o
-gcgris.o:		   modules.o	print_control_mod.o
-hdf_f.o:		   modules.o	print_control_mod.o
-hunt.o:			   modules.o
-incidx.o:		   modules.o
-indx_rewi.o:		   modules.o
-indx_rewi_bc.o:		   modules.o
-init1.o:		   modules.o
-init2_1.o:		   modules.o
-init2_2.o:		   modules.o
-init2_3.o:		   modules.o
-init2_post_ss.o:	   modules.o
-init3.o:		   modules.o    print_control_mod.o
-interp.o:		   modules.o
-irewi.o:		   modules.o
-ldchar.o:		   modules.o
-ldci.o:			   modules.o
-ldcir.o:		   modules.o
-ldind.o:		   modules.o
-ldipen.o:		   modules.o
-ldmar1.o:		   modules.o
-load_indx_bc.o:		   modules.o
-lsolv.o:		   modules.o
-nintrp.o:		   modules.o
-openf.o:		   modules.o	mpimod.o
-phast_root.o:	           modules.o    mpimod.o    print_control_mod.o
-phast_slave.o:		   modules.o    mpimod.o    print_control_mod.o
-prchar.o:		   modules.o
-prntar.o:		   modules.o
-rbord.o:		   modules.o
-read1.o:		   modules.o
-read2.o:		   modules.o 	ifrd.inc
-read3.o:		   modules.o    print_control_mod.o
-reordr.o:		   modules.o
-rewi.o:			   modules.o
-rewi3.o:		   modules.o
-rfact.o:		   modules.o
-rfactm.o:		   modules.o
-rhsn.o:			   modules.o
-rhsn_ss_flow.o:		   modules.o
-sbcflo.o:		   modules.o
-scale_jds.o:     	   modules.o
-simulate_ss_flow.o:	   modules.o
-sumcal1.o:		   modules.o
-sumcal2.o:		   modules.o
-sumcal_ss_flow.o:	   modules.o
-terminate_phast.o:	   modules.o	mpimod.o
-tfrds.o:		   modules.o
-timstp.o:		   modules.o	print_control_mod.o
-timstp_ss_flow.o:	   modules.o	print_control_mod.o
-update_print_flags.o:	   modules.o    print_control_mod.o
-usolv.o:		   modules.o
-viscos.o:		   modules.o
-wbbal.o:		   modules.o
-wbcflo.o:		   modules.o
-wellsc.o:		   modules.o
-wellsc_ss_flow.o:	   modules.o
-wellsr.o:		   modules.o
-wellsr_ss_flow.o:	   modules.o
-welris.o:		   modules.o
-wfdydz.o:		   modules.o
-write1.o:		   modules.o
-write2_1.o:		   modules.o	ifwr.inc
-write2_2.o:		   modules.o	ifwr.inc
-write3.o:		   modules.o	ifwr.inc
-write3_ss_flow.o:	   modules.o	ifwr.inc
-write4.o:		   modules.o	ifwr.inc	print_control_mod.o
-write5.o:		   modules.o	ifwr.inc	print_control_mod.o
-write5_ss_flow.o:	   modules.o	ifwr.inc	print_control_mod.o
-write6.o:		   modules.o	ifwr.inc	print_control_mod.o
+phast.o:	  	../phast.F90	modules.o  mpimod.o
+abmult.o:		../abmult.f90	modules.o
+aplbce.o:		../aplbce.f90	modules.o
+aplbce_ss_flow.o:	../aplbce_ss_flow.f90  modules.o
+aplbci.o:		../aplbci.f90	modules.o
+armult.o:		../armult.f90	modules.o
+asembl.o:		../asembl.f90	modules.o
+asmslc.o:		../asmslc.f90	modules.o
+asmslp.o:		../asmslp.f90	modules.o
+asmslp_ss_flow.o:	../asmslp_ss_flow.f90  modules.o
+bsode.o:		../bsode.f90	modules.o
+calcc.o:		../calcc.f90	modules.o
+calc_velocity.o:	../calc_velocity.f90  modules.o
+clog.o:			../clog.f90		modules.o
+closef.o:		../closef.F90	modules.o	mpimod.o
+coeff.o:		../coeff.f90	modules.o
+coeff_ss_flow.o:	../coeff_ss_flow.f90  modules.o
+crsdsp.o:		../crsdsp.f90	modules.o
+d4ord.o:		../d4ord.f90	modules.o
+d4zord.o:		../d4zord.f90	modules.o
+dbmult.o:		../dbmult.f90	modules.o
+dump.o:			../dump.f90		modules.o
+efact.o:		../efact.f90	modules.o
+ehoftp.o:		../ehoftp.f90	modules.o
+el1slv.o:		../el1slv.f90	modules.o
+elslv.o:		../elslv.f90	modules.o
+error1.o:		../error1.f90	modules.o
+error2.o:		../error2.f90	modules.o
+error3.o:		../error3.f90	modules.o    print_control_mod.o
+error4.o:		../error4.f90	modules.o	ifwr.inc
+errprt.o:		../errprt.f90	modules.o
+etom1.o:		../etom1.f90	modules.o
+etom2.o:		../etom2.f90	modules.o
+euslv.o:		../euslv.f90	modules.o
+formr.o:		../formr.f90	modules.o
+gcgris.o:		../gcgris.f90	modules.o	print_control_mod.o
+hdf_f.o:		../hdf_f.f90	modules.o	print_control_mod.o
+hunt.o:			../hunt.f90		modules.o
+incidx.o:		../incidx.f90	modules.o
+indx_rewi.o:		../indx_rewi.f90	modules.o
+indx_rewi_bc.o:		../indx_rewi_bc.f90	modules.o
+init1.o:		../init1.f90	modules.o
+init2_1.o:		../init2_1.f90	modules.o
+init2_2.o:		../init2_2.f90	modules.o
+init2_3.o:		../init2_3.f90	modules.o
+init2_post_ss.o:	../init2_post_ss.f90  modules.o
+init3.o:		../init3.f90	modules.o    print_control_mod.o
+interp.o:		../interp.f90	modules.o
+irewi.o:		../irewi.f90	modules.o
+ldchar.o:		../ldchar.f90	modules.o
+ldci.o:			../ldci.f90		modules.o
+ldcir.o:		../ldcir.f90	modules.o
+ldind.o:		../ldind.f90	modules.o
+ldipen.o:		../ldipen.f90	modules.o
+ldmar1.o:		../ldmar1.f90	modules.o
+load_indx_bc.o:		../load_indx_bc.f90   modules.o
+lsolv.o:		../lsolv.f90	modules.o
+nintrp.o:		../nintrp.f90	modules.o
+openf.o:		../openf.F90	modules.o    mpimod.o
+phast_root.o:		../phast_root.F90	modules.o    mpimod.o    print_control_mod.o
+phast_slave.o:		../phast_slave.F90	modules.o    mpimod.o    print_control_mod.o
+prchar.o:		../prchar.f90	modules.o
+prntar.o:		../prntar.f90	modules.o
+rbord.o:		../rbord.f90	modules.o
+read1.o:		../read1.f90	modules.o
+read2.o:		../read2.f90	modules.o    ifrd.inc
+read3.o:		../read3.f90	modules.o    print_control_mod.o
+reordr.o:		../reordr.f90	modules.o
+rewi.o:			../rewi.f90		modules.o
+rewi3.o:		../rewi3.f90	modules.o
+rfact.o:		../rfact.f90	modules.o
+rfactm.o:		../rfactm.f90	modules.o
+rhsn.o:			../rhsn.f90		modules.o
+rhsn_ss_flow.o:		../rhsn_ss_flow.f90	modules.o
+sbcflo.o:		../sbcflo.f90	modules.o
+scale_jds.o:		../scale_jds.f90	modules.o
+simulate_ss_flow.o:	../simulate_ss_flow.f90  modules.o
+sumcal1.o:		../sumcal1.f90	modules.o
+sumcal2.o:		../sumcal2.f90	modules.o
+sumcal_ss_flow.o:	../sumcal_ss_flow.f90  modules.o
+terminate_phast.o:	../terminate_phast.F90  modules.o	mpimod.o
+tfrds.o:		../tfrds.f90	modules.o
+timstp.o:		../timstp.f90	modules.o	print_control_mod.o
+timstp_ss_flow.o:	../timstp_ss_flow.f90  modules.o	print_control_mod.o
+update_print_flags.o:	../update_print_flags.f90  modules.o    print_control_mod.o
+usolv.o:		../usolv.f90	modules.o
+viscos.o:		../viscos.f90	modules.o
+wbbal.o:		../wbbal.f90	modules.o
+wbcflo.o:		../wbcflo.f90	modules.o
+wellsc.o:		../wellsc.f90	modules.o
+wellsc_ss_flow.o:	../wellsc_ss_flow.f90  modules.o
+wellsr.o:		../wellsr.f90	modules.o
+wellsr_ss_flow.o:	../wellsr_ss_flow.f90  modules.o
+welris.o:		../welris.f90	modules.o
+wfdydz.o:		../wfdydz.f90	modules.o
+write1.o:		../write1.f90	modules.o
+write2_1.o:		../write2_1.f90	modules.o	ifwr.inc
+write2_2.o:		../write2_2.f90	modules.o	ifwr.inc
+write3.o:		../write3.f90	modules.o	ifwr.inc
+write3_ss_flow.o:	../write3_ss_flow.f90  modules.o	ifwr.inc
+write4.o:		../write4.f90	modules.o	ifwr.inc	print_control_mod.o
+write5.o:		../write5.f90	modules.o	ifwr.inc	print_control_mod.o
+write5_ss_flow.o:	../write5_ss_flow.f90  modules.o	ifwr.inc	print_control_mod.o
+write6.o:		../write6.f90	modules.o	ifwr.inc	print_control_mod.o
 #
 #  PHREEQC files
 #

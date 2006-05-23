@@ -1,6 +1,6 @@
 #PHAST restart file
 #Prefix: print_check_transient
-#Date: Thu May 18 09:50:47 2006
+#Date: Tue May 23 16:26:38 2006
 #Current model time: 31000
 #nx, ny, nz: 16, 9, 3
 SOLUTION_RAW       -2 

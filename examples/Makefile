@@ -3,7 +3,7 @@ TEST=$(TOPDIR)/examples
 PHAST_INPUT=$(TOPDIR)/srcinput/phastinput
 PHAST=$(TOPDIR)/srcphast/serial_absoft/phast
 
-SERIAL = decay diffusion1d diffusion2d disp2d ex3 kindred4.4 leaky leakyx leakyz linear_bc linear_ic ex4 phrqex11 ex1 radial river unconf well ex2 free ex4restart print_check_ss print_check_ss_transient
+SERIAL = decay diffusion1d diffusion2d disp2d ex3 kindred4.4 leaky leakyx leakyz linear_bc linear_ic ex4 phrqex11 ex1 radial river unconf well ex2 free ex4restart print_check_ss print_check_transient
 
 PARALLEL =  decay_parallel diffusion1d_parallel diffusion2d_parallel disp2d_parallel ex3_parallel kindred4.4_parallel leaky_parallel leakyx_parallel leakyz_parallel linear_bc_parallel linear_ic_parallel ex4_parallel phrqex11_parallel ex1_parallel radial_parallel river_parallel unconf_parallel well_parallel ex2_parallel free_parallel ex4restart_parallel print_check_ss_parallel print_check_transient_parallel
 
@@ -19,7 +19,7 @@ CLEAN_PROBLEMS = decay_clean diffusion1d_clean diffusion2d_clean disp2d_clean ex
 	phrqex11_clean_parallel ex1_clean_parallel radial_clean_parallel \
 	river_clean_parallel unconf_clean_parallel well_clean_parallel ex2_clean_parallel \
 	free_clean_parallel \
-	ex4restart_clean_parallel print_check_ss_parallel_clean print_check_transient_parallel_clean 
+	ex4restart_clean_parallel print_check_ss_clean_parallel print_check_transient_clean_parallel
 
 CLEAN_CMD =  rm -f *~ *.O.* *.log *.h5 *.h5~ abs* *.h5dump *.sel *.xyz* Phast.tmp 
 
@@ -438,7 +438,7 @@ ex4restart_clean_parallel:
 #
 print_check_ss: print_check_ss_clean
 	echo ; 
-	echo ============= ex4
+	echo ============= print_check_ss
 	echo ; 
 	cd $(TEST)/print_check_ss;
 	cd $(TEST)/print_check_ss; $(PHAST_INPUT) print_check_ss; time $(PHAST)

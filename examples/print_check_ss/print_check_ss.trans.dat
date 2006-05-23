@@ -152,7 +152,8 @@ PRINT_INITIAL
 	-xyz_wells              true
 PRINT_FREQUENCY
 0
-	-end_of_period          false
+#	-end_of_period          false
+	-end_of_period          true
 	-bc_flow_rates          1000 yr
 	-boundary_conditions    true
 	-components             2000 yr
@@ -172,7 +173,8 @@ PRINT_FREQUENCY
         -xyz_velocities         14000 yr
         -xyz_wells              15000 yr
 15000
-	-end_of_period          false
+#	-end_of_period          false
+	-end_of_period          true
 	-bc_flow_rates          15000 yr
 	-boundary_conditions    false
 	-components             14000 yr

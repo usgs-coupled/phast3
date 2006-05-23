@@ -32,6 +32,7 @@ SUBROUTINE phast_root(mpi_tasks, mpi_myself)
   CALL openf
   ! ... Read memory allocation data
   CALL read1
+  CALL pc_initialize
 #ifdef USE_MPI
    CALL slave_get_solute(solute, nx, ny, nz)
 #endif

@@ -126,102 +126,101 @@ SUBROUTINE timstp
   utime=cnvtmi*(time+deltim)*one_plus_eps
   ! ... Set table print flags as requested
   ! ... Solution method data
-  prslmi = 0
-  IF(ABS(prislm) > 0._kdp) THEN
-     CALL print_control(prislm,utime,itime,utimchg,timprslm,prslm)
-     IF(prslm) prslmi = 1
-  END IF
-!  CALL pc_set_print_flag(print_progress_statistics, utime, itime, utimchg)
-  CALL pc_set_print_flag(print_restart, utime, itime, utimchg)
-  ! ... P,C tables of dependent variables in the cells
-  IF(ABS(prip) > 0._kdp .AND. .NOT.steady_flow) THEN
-     CALL print_control(prip,utime,itime,utimchg,timprp,prp)
-  END IF
-  IF(ABS(pric) > 0._kdp) THEN
-     CALL print_control(pric,utime,itime,utimchg,timprc,prc)
-  END IF
-  ! ... Global flow balance tables
-  IF(ABS(prigfb) > 0._kdp) THEN
-     CALL print_control(prigfb,utime,itime,utimchg,timprgfb,prgfb)
-  END IF
-  ! ... B.C. flow rates
-  IF(ABS(pribcf) > 0._kdp) THEN
-     CALL print_control(pribcf,utime,itime,utimchg,timprbcf,prbcf)
-  END IF
-  IF(nwel > 0) THEN
-     ! ... Well summary
-     IF(ABS(priwel) > 0._kdp) THEN
-        CALL print_control(priwel,utime,itime,utimchg,timprwel,prwel)
-     END IF
-     ! ... Well time series plot data
-     IF(ABS(pri_well_timser) > 0._kdp) THEN
-        CALL print_control(pri_well_timser,utime,itime,utimchg,timprtem,prtem)
-     END IF
-  END IF
-  IF(cntmapc) THEN
-     IF(ABS(primapcomp) > 0._kdp) THEN
-        CALL print_control(primapcomp,utime,itime,utimchg,timprmapc,prmapc)
-     END IF
-  END IF
-  IF(cntmaph .AND. .NOT.steady_flow) THEN
-     IF(ABS(primaphead) > 0._kdp) THEN
-        CALL print_control(primaphead,utime,itime,utimchg,timprmaph,prmaph)
-     END IF
-  END IF
-  prvel = .FALSE.
-  IF(ABS(privel) > 0._kdp) THEN
-     CALL print_control(privel,utime,itime,utimchg,timprvel,prvel)
-     IF(steady_flow .AND. ntprvel > 0) prvel = .FALSE.
-  END IF
-  prmapv = .FALSE.
-  IF(ABS(primapv) > 0._kdp) THEN
-     CALL print_control(primapv,utime,itime,utimchg,timprmapv,prmapv)
-     IF(steady_flow .AND. ntprmapv > 0) prmapv = .FALSE.
-  END IF
-  IF (solute) THEN
-     ! ... Need write control here to pass to PHREEQC
-     prcphrqi = 0     
-     IF(ABS(pricphrq) > 0._kdp) THEN
-        CALL print_control(pricphrq,utime,itime,utimchg,timprcphrq,prcphrq)
-        IF(prcphrq) prcphrqi = 1
-     END IF
-     prf_chem_phrqi = 0
-     IF(ABS(priforce_chem_phrq) > 0._kdp) THEN
-        CALL print_control(priforce_chem_phrq,utime,itime,utimchg,timprfchem,  &
-             prf_chem_phrq)
-        IF(prf_chem_phrq) prf_chem_phrqi = 1
-     END IF
-     prhdfci = 0
-     IF(ABS(prihdf_conc) > 0._kdp) THEN
-        CALL print_control(prihdf_conc,utime,itime,utimchg,timprhdfcph,prhdfc)
-        IF(prhdfc) prhdfci = 1
-     END IF
-  END IF
-  IF(pricpd > 0._kdp) THEN
-     CALL print_control(pricpd,utime,itime,utimchg,timprcpd,prcpd)
-  END IF
-  prhdfhi = 0
-  IF(ABS(prihdf_head) > 0._kdp) THEN
-     CALL print_control(prihdf_head,utime,itime,utimchg,timprhdfh,prhdfh)
-     IF(steady_flow .AND. ntprhdfh > 0) prhdfh = .FALSE.
-     IF (prhdfh) prhdfhi = 1
-  END IF
-  prhdfvi = 0
-  prhdfv = .FALSE.
-  IF(ABS(prihdf_vel) > 0._kdp) THEN
-     CALL print_control(prihdf_vel,utime,itime,utimchg,timprhdfv,prhdfv)
-     IF(steady_flow .AND. ntprhdfv > 0) prhdfv = .FALSE.
-     IF (prhdfv) prhdfvi = 1
-  END IF
-  prkd = .FALSE.
-  ! ... Fluid and solute conductances
-  IF(itime == 1 .AND. prt_kd) THEN
-     prkd = .TRUE.
-     timprkd = utimchg
-  ELSEIF(ABS(prikd) > 0._kdp) THEN
-     CALL print_control(prikd,utime,itime,utimchg,timprkd,prkd)
-  END IF
-  IF(prslm) THEN
+!!$  prslmi = 0
+!!$  IF(ABS(prislm) > 0._kdp) THEN
+!!$     CALL print_control(prislm,utime,itime,utimchg,timprslm,prslm)
+!!$     IF(prslm) prslmi = 1
+!!$  END IF
+!!$  ! ... P,C tables of dependent variables in the cells
+!!$  IF(ABS(prip) > 0._kdp .AND. .NOT.steady_flow) THEN
+!!$     CALL print_control(prip,utime,itime,utimchg,timprp,prp)
+!!$  END IF
+!!$  IF(ABS(pric) > 0._kdp) THEN
+!!$     CALL print_control(pric,utime,itime,utimchg,timprc,prc)
+!!$  END IF
+!!$  ! ... Global flow balance tables
+!!$  IF(ABS(prigfb) > 0._kdp) THEN
+!!$     CALL print_control(prigfb,utime,itime,utimchg,timprgfb,prgfb)
+!!$  END IF
+!!$  ! ... B.C. flow rates
+!!$  IF(ABS(pribcf) > 0._kdp) THEN
+!!$     CALL print_control(pribcf,utime,itime,utimchg,timprbcf,prbcf)
+!!$  END IF
+!!$  IF(nwel > 0) THEN
+!!$     ! ... Well summary
+!!$     IF(ABS(priwel) > 0._kdp) THEN
+!!$        CALL print_control(priwel,utime,itime,utimchg,timprwel,prwel)
+!!$     END IF
+!!$     ! ... Well time series plot data
+!!$     IF(ABS(pri_well_timser) > 0._kdp) THEN
+!!$        CALL print_control(pri_well_timser,utime,itime,utimchg,timprtem,prtem)
+!!$     END IF
+!!$  END IF
+!!$  IF(cntmapc) THEN
+!!$     IF(ABS(primapcomp) > 0._kdp) THEN
+!!$        CALL print_control(primapcomp,utime,itime,utimchg,timprmapc,prmapc)
+!!$     END IF
+!!$  END IF
+!!$  IF(cntmaph .AND. .NOT.steady_flow) THEN
+!!$     IF(ABS(primaphead) > 0._kdp) THEN
+!!$        CALL print_control(primaphead,utime,itime,utimchg,timprmaph,prmaph)
+!!$     END IF
+!!$  END IF
+!!$  prvel = .FALSE.
+!!$  IF(ABS(privel) > 0._kdp) THEN
+!!$     CALL print_control(privel,utime,itime,utimchg,timprvel,prvel)
+!!$     IF(steady_flow .AND. ntprvel > 0) prvel = .FALSE.
+!!$  END IF
+!!$  prmapv = .FALSE.
+!!$  IF(ABS(primapv) > 0._kdp) THEN
+!!$     CALL print_control(primapv,utime,itime,utimchg,timprmapv,prmapv)
+!!$     IF(steady_flow .AND. ntprmapv > 0) prmapv = .FALSE.
+!!$  END IF
+!!$  IF (solute) THEN
+!!$     ! ... Need write control here to pass to PHREEQC
+!!$     prcphrqi = 0     
+!!$     IF(ABS(pricphrq) > 0._kdp) THEN
+!!$        CALL print_control(pricphrq,utime,itime,utimchg,timprcphrq,prcphrq)
+!!$        IF(prcphrq) prcphrqi = 1
+!!$     END IF
+!!$     prf_chem_phrqi = 0
+!!$     IF(ABS(priforce_chem_phrq) > 0._kdp) THEN
+!!$        CALL print_control(priforce_chem_phrq,utime,itime,utimchg,timprfchem,  &
+!!$             prf_chem_phrq)
+!!$        IF(prf_chem_phrq) prf_chem_phrqi = 1
+!!$     END IF
+!!$     prhdfci = 0
+!!$     IF(ABS(prihdf_conc) > 0._kdp) THEN
+!!$        CALL print_control(prihdf_conc,utime,itime,utimchg,timprhdfcph,prhdfc)
+!!$        IF(prhdfc) prhdfci = 1
+!!$     END IF
+!!$  END IF
+!!$  IF(pricpd > 0._kdp) THEN
+!!$     CALL print_control(pricpd,utime,itime,utimchg,timprcpd,prcpd)
+!!$  END IF
+!!$  prhdfhi = 0
+!!$  IF(ABS(prihdf_head) > 0._kdp) THEN
+!!$     CALL print_control(prihdf_head,utime,itime,utimchg,timprhdfh,prhdfh)
+!!$     IF(steady_flow .AND. ntprhdfh > 0) prhdfh = .FALSE.
+!!$     IF (prhdfh) prhdfhi = 1
+!!$  END IF
+!!$  prhdfvi = 0
+!!$  prhdfv = .FALSE.
+!!$  IF(ABS(prihdf_vel) > 0._kdp) THEN
+!!$     CALL print_control(prihdf_vel,utime,itime,utimchg,timprhdfv,prhdfv)
+!!$     IF(steady_flow .AND. ntprhdfv > 0) prhdfv = .FALSE.
+!!$     IF (prhdfv) prhdfvi = 1
+!!$  END IF
+!!$  prkd = .FALSE.
+!!$  ! ... Fluid and solute conductances
+!!$  IF(itime == 1 .AND. prt_kd) THEN
+!!$     prkd = .TRUE.
+!!$     timprkd = utimchg
+!!$  ELSEIF(ABS(prikd) > 0._kdp) THEN
+!!$     CALL print_control(prikd,utime,itime,utimchg,timprkd,prkd)
+!!$  END IF
+  CALL pc_set_print_flags(utime, itime, utimchg)
+  IF(print_progress_statistics%print_flag) THEN
 !  IF(print_progress_statistics%print_flag) THEN
      WRITE(*,3002) 'Current time step length ..........', cnvtmi*deltim,'('//TRIM(unittm)//')'
 3002 FORMAT(tr5,a,1PG12.3,tr1,a)

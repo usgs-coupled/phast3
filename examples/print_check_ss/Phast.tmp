@@ -1086,7 +1086,7 @@ C.....Contour and vector map information
 C.3.9.1 .. CNTMAP[T/F], PRIMAPHEAD, COMPMAP[T/F], PRINT_XYZ_COMP, VECMAP[T/F], PRIMAPV
      f -0.000000     t -13000.000000     t -14000.000000
 C.3.10.2 .. PRIXYZ_WELL, PRINT_RESTART, PRINT_END_OF_PERIOD [t/t]
-     -15000.000000 -0.000000     F
+     -15000.000000 -0.000000     T
 C...Cell print information for .O.chem file, transient chemistry
   0.0000000e+00   9.0000000e+04   0.0000000e+00   4.8000000e+04   0.0000000e+00   4.0000000e+02
      0 4
@@ -1253,7 +1253,7 @@ C.....Contour and vector map information
 C.3.9.1 .. CNTMAP[T/F], PRIMAPHEAD, COMPMAP[T/F], PRINT_XYZ_COMP, VECMAP[T/F], PRIMAPV
      f -0.000000     t -3000.000000     t -2000.000000
 C.3.10.2 .. PRIXYZ_WELL, PRINT_RESTART, PRINT_END_OF_PERIOD [t/t]
-     -1000.000000 -1000000.000000     F
+     -1000.000000 -1000000.000000     T
 C...Cell print information for .O.chem file, transient chemistry
   0.0000000e+00   9.0000000e+04   0.0000000e+00   4.8000000e+04   0.0000000e+00   4.0000000e+02
      0 4
