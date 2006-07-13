@@ -195,8 +195,8 @@ SUBROUTINE asembl
            urs = 0._kdp
            cmx = 0._kdp
            IF(solute) THEN
-              urs=urs+urf1(tsxm,dc(mimjk,1),dc(m,1),sxxm,wtmx)
-              cmx=urf2(wtmx,c(mimjk,1),c(m,1),dc(mimjk,1),dc(m,1))
+              !urs=urs+urf1(tsxm,dc(mimjk,1),dc(m,1),sxxm,wtmx)
+              !cmx=urf2(wtmx,c(mimjk,1),c(m,1),dc(mimjk,1),dc(m,1))
            END IF
            utxm=tfxm*(1._kdp+c34*cmx+c35*ehmx)
            va(icxm,ma)=-fdtmth*utxm
@@ -212,8 +212,8 @@ SUBROUTINE asembl
            urs = 0._kdp
            cpx = 0._kdp
            IF(solute) THEN
-              urs=urs-urf1(tsxp,dc(m,1),dc(mipjk,1),sxxp,wtpx)
-              cpx=urf2(wtpx,c(m,1),c(mipjk,1),dc(m,1),dc(mipjk,1))
+              !urs=urs-urf1(tsxp,dc(m,1),dc(mipjk,1),sxxp,wtpx)
+              !cpx=urf2(wtpx,c(m,1),c(mipjk,1),dc(m,1),dc(mipjk,1))
            END IF
            utxp=tfxp*(1._kdp+c34*cpx+c35*ehpx)
            va(icxp,ma)=-fdtmth*utxp
@@ -234,8 +234,8 @@ SUBROUTINE asembl
            urs = 0._kdp
            cmy = 0._kdp
            IF(solute) THEN
-              urs=urs+urf1(tsym,dc(mijmk,1),dc(m,1),syym,wtmy)
-              cmy=urf2(wtmy,c(mijmk,1),c(m,1),dc(mijmk,1),dc(m,1))
+              !urs=urs+urf1(tsym,dc(mijmk,1),dc(m,1),syym,wtmy)
+              !cmy=urf2(wtmy,c(mijmk,1),c(m,1),dc(mijmk,1),dc(m,1))
            END IF
            utym=tfym*(1._kdp+c34*cmy+c35*ehmy)
            va(icym,ma)=-fdtmth*utym
@@ -250,8 +250,8 @@ SUBROUTINE asembl
            urs = 0._kdp
            cpy = 0._kdp
            IF(solute) THEN
-              urs=urs-urf1(tsyp,dc(m,1),dc(mijpk,1),syyp,wtpy)
-              cpy=urf2(wtpy,c(m,1),c(mijpk,1),dc(m,1),dc(mijpk,1))
+              !urs=urs-urf1(tsyp,dc(m,1),dc(mijpk,1),syyp,wtpy)
+              !cpy=urf2(wtpy,c(m,1),c(mijpk,1),dc(m,1),dc(mijpk,1))
            END IF
            utyp=tfyp*(1._kdp+c34*cpy+c35*ehpy)
            va(icyp,ma)=-fdtmth*utyp
@@ -267,8 +267,8 @@ SUBROUTINE asembl
            urs = 0._kdp
            cmz = 0._kdp
            IF(solute) THEN
-              urs=urs+urf1(tszm,dc(mijkm,1),dc(m,1),szzm,wtmz)
-              cmz=urf2(wtmz,c(mijkm,1),c(m,1),dc(mijkm,1),dc(m,1))
+              !urs=urs+urf1(tszm,dc(mijkm,1),dc(m,1),szzm,wtmz)
+              !cmz=urf2(wtmz,c(mijkm,1),c(m,1),dc(mijkm,1),dc(m,1))
            END IF
            utzm=tfzm*(1._kdp+c34*cmz+c35*ehmz)
            va(iczm,ma)=-fdtmth*utzm+cfp+c34*csp
@@ -287,8 +287,8 @@ SUBROUTINE asembl
            urs = 0._kdp
            cpz = 0._kdp
            IF(solute) THEN
-              urs=urs-urf1(tszp,dc(m,1),dc(mijkp,1),szzp,wtpz)
-              cpz=urf2(wtpz,c(m,1),c(mijkp,1),dc(m,1),dc(mijkp,1))
+              !urs=urs-urf1(tszp,dc(m,1),dc(mijkp,1),szzp,wtpz)
+              !cpz=urf2(wtpz,c(m,1),c(mijkp,1),dc(m,1),dc(mijkp,1))
            END IF
            utzp=tfzp*(1._kdp+c34*cpz+c35*ehpz)
            va(iczp,ma)=-fdtmth*utzp+efp+c34*esp
@@ -299,7 +299,8 @@ SUBROUTINE asembl
            END IF
         END IF
         !  with component 1
-        rhs(ma)=rf(m)+c34*(rs1(m,1)+fdtmth*urs)
+        !rhs(ma)=rf(m)+c34*(rs1(m,1)+fdtmth*urs)
+        rhs(ma)=rf(m)
         IF(cylind.AND.i == 1) rhsw(k)=rf(m)-c31*dc(m,1)-c32*dt(0)
         !.....End of flow equation terms
 !!$     ELSE IF(ieq == 2) THEN
