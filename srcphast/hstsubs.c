@@ -70,7 +70,8 @@ void add_all_components(void)
  *   Surfaces
  */
 	for (i = 0; i < count_surface; i++) {
-		if (surface[i].diffuse_layer == FALSE) transport_charge = TRUE;
+		/*if (surface[i].diffuse_layer == FALSE) transport_charge = TRUE;*/
+		transport_charge = TRUE;
 		if (surface[i].n_user > first_user_number) first_user_number = surface[i].n_user;
 		add_surface(&surface[i]);
 	}
@@ -612,7 +613,8 @@ void set_use_hst(int n)
 		use.surface_ptr = NULL;
 		use.surface_in = FALSE;
 		save.surface = FALSE;
-		diffuse_layer_x = FALSE;
+		/*diffuse_layer_x = FALSE;*/
+		dl_type_x = NO_DL;
 	}
 /*
  *   Switch in s_s_assemblage
@@ -903,12 +905,13 @@ int xsurface_save_hst(int n)
 		} else if (x[i]->type == SURFACE_CB) {
 			charge_ptr[count_charge].charge_balance = x[i]->f; 
 			charge_ptr[count_charge].mass_water = x[i]->surface_charge->mass_water;
-			charge_ptr[count_charge].psi_master = x[i]->master[0];
+			/*charge_ptr[count_charge].psi_master = x[i]->master[0];*/
 			charge_ptr[count_charge].la_psi = x[i]->master[0]->s->la;
 /*
  *   Store moles from diffuse_layer
  */
-			if (diffuse_layer_x == TRUE) {
+			/*if (diffuse_layer_x == TRUE) {*/
+			if (dl_type_x != NO_DL) {
 				sum_diffuse_layer(x[i]->surface_charge);
 				free_check_null(charge_ptr[count_charge].diffuse_layer_totals); 
 				charge_ptr[count_charge].diffuse_layer_totals = elt_list_save();

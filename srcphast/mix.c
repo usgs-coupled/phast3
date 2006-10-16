@@ -690,13 +690,15 @@ int sum_surface (struct surface *source1, LDBLE f1, struct surface *source2, LDB
  *   Logical checks
  */
 	if (surface_ptr2 != NULL) {
-		if (surface_ptr1->diffuse_layer != surface_ptr2->diffuse_layer) {
+		/*if (surface_ptr1->diffuse_layer != surface_ptr2->diffuse_layer) {*/
+		if (surface_ptr1->dl_type != surface_ptr2->dl_type) {
 			sprintf(error_string, "Surfaces differ in definition of diffuse layer. Can not mix.");
 			error_msg(error_string, CONTINUE);
 			input_error++;
 			return(ERROR);
 		}
-		if (surface_ptr1->edl != surface_ptr2->edl) {
+		/*if (surface_ptr1->edl != surface_ptr2->edl) {*/
+		if (surface_ptr1->type != surface_ptr2->type) {
 			sprintf(error_string, "Surfaces differ in use of electrical double layer. Can not mix.");
 			error_msg(error_string, CONTINUE);
 			input_error++;
