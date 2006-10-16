@@ -612,6 +612,7 @@ void set_use_hst(int n)
 		use.surface_ptr = NULL;
 		use.surface_in = FALSE;
 		save.surface = FALSE;
+		diffuse_layer_x = FALSE;
 	}
 /*
  *   Switch in s_s_assemblage
