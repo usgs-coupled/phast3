@@ -744,7 +744,8 @@ int sum_surface (struct surface *source1, LDBLE f1, struct surface *source2, LDB
 		free_check_null(temp_surface.comps[i].totals);
 		temp_surface.comps[i].totals = elt_list_save();
 	}
-	if (temp_surface.edl == TRUE) {
+	/*if (temp_surface.edl == TRUE) {*/
+	if (temp_surface.type != NO_EDL) {
 		for (i = 0; i < surface_ptr1->count_charge; i++) {
 			temp_surface.charge[i].grams *= f1;
 			temp_surface.charge[i].charge_balance *= f1;
@@ -837,7 +838,8 @@ int sum_surface (struct surface *source1, LDBLE f1, struct surface *source2, LDB
 		/*
 		 *  Now handle charge
 		 */
-		if (temp_surface.edl == TRUE) {
+		/*if (temp_surface.edl == TRUE) {*/
+		if (temp_surface.type != NO_EDL) {
 			for(i2 = 0; i2 < count_charge2; i2++) {
 				found = FALSE;
 				for(i1 = 0; i1 < count_charge1; i1++) {
@@ -881,7 +883,8 @@ int sum_surface (struct surface *source1, LDBLE f1, struct surface *source2, LDB
 /*
  *   set charge, integer number of position in charge structures
  */	
-	if (temp_surface.edl == TRUE) {
+	/*if (temp_surface.edl == TRUE) {*/
+	if (temp_surface.type != NO_EDL) {
 		for (i = 0; i < count_comps; i++) {
 			strcpy(token, temp_surface.comps[i].formula);
 			ptr = token;
@@ -1472,13 +1475,15 @@ int mix_surface (int n_user1, int n_user2, LDBLE f1, int new_n_user)
 /*	
  *   Logical checks
  */
-	if (surface_ptr1->diffuse_layer != surface_ptr2->diffuse_layer) {
+	/*if (surface_ptr1->diffuse_layer != surface_ptr2->diffuse_layer) {*/
+	if (surface_ptr1->dl_type != surface_ptr2->dl_type) {
 			sprintf(error_string, "Surfaces %d and %d differ in definition of diffuse layer. Can not mix.", n_user1, n_user2);
 			error_msg(error_string, CONTINUE);
 			return_code = ERROR;
 			input_error++;
 	}
-	if (surface_ptr1->edl != surface_ptr2->edl) {
+	/*if (surface_ptr1->edl != surface_ptr2->edl) {*/
+	if (surface_ptr1->type != surface_ptr2->type) {
 			sprintf(error_string, "Surfaces %d and %d differ in use of electrical double layer. Can not mix.", n_user1, n_user2);
 			error_msg(error_string, CONTINUE);
 			return_code = ERROR;
