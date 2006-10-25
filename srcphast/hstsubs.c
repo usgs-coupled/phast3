@@ -1302,11 +1302,11 @@ int file_exists(const char* name)
 }
 int file_rename(const char *temp_name, const char* name, const char* backup_name)
 {
-        if (file_exists(name)) {
+    if (file_exists(name)) {
 		if (file_exists(backup_name)) remove(backup_name);
 		rename(name, backup_name);
 		rename(temp_name, name);
-        } else {
+    } else {
 		rename(temp_name, name);
 	}
 	return(OK);

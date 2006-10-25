@@ -448,6 +448,7 @@ int write_restart(double time_hst)
 	ofs << "#nx, ny, nz: " << ix << ", " << iy << ", " << iz << std::endl;
 	// write data
 	szBin.dump_raw(ofs, 0);
+	ofs.close();
 	// rename files
 	file_rename(temp_name.c_str(), name.c_str(), backup_name.c_str());
 	return(OK);
