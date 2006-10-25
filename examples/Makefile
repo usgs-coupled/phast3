@@ -464,7 +464,7 @@ print_check_ss_clean_parallel:
 #
 print_check_transient: print_check_transient_clean
 	echo ; 
-	echo ============= ex4
+	echo ============= print_check_transient
 	echo ; 
 	cd $(TEST)/print_check_transient;
 	cd $(TEST)/print_check_transient; $(PHAST_INPUT) print_check_transient; time $(PHAST)

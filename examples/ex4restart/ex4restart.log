@@ -353,25 +353,25 @@ Beginning time step no.      5
           As
           No. of solver iterations, Relative residual:    7      9.5265093E-11
           C
-          No. of solver iterations, Relative residual:    7      4.5993908E-11
+          No. of solver iterations, Relative residual:    7      4.5993907E-11
           Ca
-          No. of solver iterations, Relative residual:    7      5.1451289E-11
+          No. of solver iterations, Relative residual:    7      5.1451288E-11
           Cl
           No. of solver iterations, Relative residual:    6      1.0788657E-11
           Mg
           No. of solver iterations, Relative residual:    7      5.1551266E-11
           Na
-          No. of solver iterations, Relative residual:    7      4.4031030E-11
+          No. of solver iterations, Relative residual:    7      4.4031029E-11
           S
-          No. of solver iterations, Relative residual:    6      1.0944548E-11
+          No. of solver iterations, Relative residual:    6      1.0944532E-11
           Charge
-          No. of solver iterations, Relative residual:    7      1.3954692E-11
+          No. of solver iterations, Relative residual:    7      1.3954693E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 0
-          Total iterations all cells: 3781
+          Total iterations all cells: 3787
           Number of cells with zero iterations: 0
-          Maximum iterations for one cell: 14
+          Maximum iterations for one cell: 16
 
      End of Time Step No.     5
      Time ..................................................   1.000E+04 (yr)
