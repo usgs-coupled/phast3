@@ -412,7 +412,7 @@ ex4_clean_parallel:
 #
 ex4restart: ex4restart_clean
 	echo ; 
-	echo ============= ex4
+	echo ============= ex4restart
 	echo ; 
 	cd $(TEST)/ex4restart;
 	cd $(TEST)/ex4restart; $(PHAST_INPUT) ex4restart; time $(PHAST)
@@ -654,7 +654,7 @@ clean: $(CLEAN_PROBLEMS)
 #ci: $(CI_PROBLEMS)
 
 diff_parallel:
-	rcsdiff ./*/0/*
+	rcsdiff -bw ./*/0/*
 
 ci_parallel:
 	for FILE in $(SERIAL); do \

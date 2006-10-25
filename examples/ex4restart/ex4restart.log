@@ -177,7 +177,6 @@ Processing database file.
 
 Processing chemical data file.
 	SURFACE_MASTER_SPECIES
-	        Surf    SurfOH
 	SURFACE_SPECIES
 	SOLUTION_MASTER_SPECIES
 	        As       H3AsO4        -1.0     74.9216         74.9216
@@ -186,17 +185,12 @@ Processing chemical data file.
 	END
 	USE solution 1
 	EQUILIBRIUM_PHASES 1
-	        Dolomite        0.0     1.6
-	        Calcite         0.0     0.1
-	        CO2(g)          -1.5    100.
 	SAVE solution 1
 	END
 	SOLUTION 2 Brine
 	END
 	USE solution 2
 	EQUILIBRIUM_PHASES 2
-	        Dolomite        0.0     1.6
-	        Calcite         0.0     0.1
 	SAVE solution 2
 	END
 	EXCHANGE 2
@@ -361,21 +355,21 @@ Beginning time step no.      5
           C
           No. of solver iterations, Relative residual:    7      4.5993908E-11
           Ca
-          No. of solver iterations, Relative residual:    7      5.1451288E-11
+          No. of solver iterations, Relative residual:    7      5.1451289E-11
           Cl
           No. of solver iterations, Relative residual:    6      1.0788657E-11
           Mg
           No. of solver iterations, Relative residual:    7      5.1551266E-11
           Na
-          No. of solver iterations, Relative residual:    7      4.4031029E-11
+          No. of solver iterations, Relative residual:    7      4.4031030E-11
           S
-          No. of solver iterations, Relative residual:    6      1.0944536E-11
+          No. of solver iterations, Relative residual:    6      1.0944548E-11
           Charge
-          No. of solver iterations, Relative residual:    7      1.3954693E-11
+          No. of solver iterations, Relative residual:    7      1.3954692E-11
      Beginning chemistry calculation.
           Total cells: 657
-          Number of cells with same aqueous model: 540
-          Total iterations all cells: 3774
+          Number of cells with same aqueous model: 0
+          Total iterations all cells: 3781
           Number of cells with zero iterations: 0
           Maximum iterations for one cell: 14
 
