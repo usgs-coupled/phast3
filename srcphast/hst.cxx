@@ -889,18 +889,14 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 		CParser cparser(myfile, oss, std::cerr);
 		// read data
 		tempBin.read_raw(cparser);
-		//std::ostringstream oss1;
-		//tempBin.dump_raw(oss1, 0);
-		//std::cerr << oss1.str();
-		// put data into szBin
-		// solutions
+
+		// storage to count warnings
 		std::string entity_type[7] = {"Solutions", "PPassemblages", "Exchangers", "Surfaces", "GasPhase", "SSassemblages", "Kinetics"};
 		std::vector<int> warn;
-		warn.reserve(7);
 		for (i = 0; i < 7; i++) {
-			warn[i] = 0;
+			warn.push_back(0);
 		}
-		//fprintf(stderr, "%d\n", warn[0]);
+
 		for (i = 0; i < ixyz; i++) { 	  /* i is ixyz number */
 			int n_old1;
 			j = forward[i];           /* j is count_chem number */
