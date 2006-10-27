@@ -144,7 +144,7 @@ echo "Removed and recreated $DIST_SANDBOX"
 echo "Exporting revision $REVISION of PHAST into sandbox..."
 (cd "$DIST_SANDBOX" && \
  	${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS -r "$REVISION" \
-	     "http://internalbrr/svn_GW/phast/$REPOS_PATH" \
+	     "http://internalbrr/svn_GW/phastpp/$REPOS_PATH" \
 	     "$DISTNAME")
 	     
 echo "Making examples clean"
