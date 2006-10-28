@@ -139,15 +139,15 @@ mkdirs() {
 
 precheck() {
   (
-  if [ ! -s "${DEVENV} ] ; then \
+  if [ ! -s "${DEVENV}" ] ; then \
     echo "Error: Can't find Microsoft Visual Studio 8 (2005): ${DEVENV}"; \
     exit 1; \
   fi && \
-  if [ ! -s "${PHAST_SLN} ] ; then \
+  if [ ! -s "${PHAST_SLN}" ] ; then \
     echo "Error: Can't find solution file: ${PHAST_SLN}"; \
     exit 1; \
   fi && \
-  if [ ! -s "${PHASTINPUT_SLN} ] ; then \
+  if [ ! -s "${PHASTINPUT_SLN}" ] ; then \
     echo "Error: Can't find solution file: ${PHASTINPUT_SLN}"; \
     exit 1; \
   fi && \
