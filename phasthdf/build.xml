@@ -4,6 +4,9 @@
         Builds phast.jar
     </description>
 
+    <property name="ver" value="1.2"/>
+    <property name="depr" value="on"/>
+
     <property location="src" name="src"/>
     <property location="build" name="build"/>
     <property location="dist" name="dist"/>
@@ -34,9 +37,9 @@
     </target>
     
     <target depends="init" description="compile the source" name="compile">
-        <javac classpath="${hdf}\jhdf.jar;${hdf}\jhdf5.jar;${hdf}\jhdfobj.jar;${hdf}\jhdf5obj.jar" destdir="${build}" srcdir="${src}">
+        <javac source="${ver}" target="${ver}" deprecation="${depr}" classpath="${hdf}\jhdf.jar;${hdf}\jhdf5.jar;${hdf}\jhdfobj.jar;${hdf}\jhdf5obj.jar" destdir="${build}" srcdir="${src}">
         </javac>
-        <javac classpath="${hdf}\jhdf.jar;${hdf}\jhdf5.jar;${hdf}\jhdfobj.jar;${hdf}\jhdf5obj.jar" destdir="${src}" srcdir="${src}">
+        <javac source="${ver}" target="${ver}" deprecation="${depr}" classpath="${hdf}\jhdf.jar;${hdf}\jhdf5.jar;${hdf}\jhdfobj.jar;${hdf}\jhdf5obj.jar" destdir="${src}" srcdir="${src}">
         </javac>
         <copy file="${src}/images/splash.jpeg" todir="${build}/images"/>
     </target>
@@ -87,8 +90,8 @@
         <java dir="${dist}/Win32" failonerror="true" fork="true" jar="${dist}/phast.jar">
             <arg value="${dist}/../../examples/ex4/ex4.h5"/>
         </java>
-    </target>   
-    
+    </target>
+
     <target depends="dist-Win32" description="Run in debug mode." name="run-debug">
         <java dir="${dist}/Win32" failonerror="true" fork="true" jar="${dist}/phast.jar">
             <sysproperty key="phast.debug" value="true"/>
@@ -113,7 +116,7 @@
     </target>     
     
     <target depends="compile" description="Run unit tests" name="test">
-        <javac classpath="${build};${junit};${junit-ext};${hdf}\jhdf.jar;${hdf}\jhdf5.jar;${hdf}\jhdfobj.jar;${hdf}\jhdf5obj.jar" destdir="${test}" srcdir="${test}">
+        <javac source="${ver}" target="${ver}" deprecation="${depr}" classpath="${build};${junit};${junit-ext};${hdf}\jhdf.jar;${hdf}\jhdf5.jar;${hdf}\jhdfobj.jar;${hdf}\jhdf5obj.jar" destdir="${test}" srcdir="${test}">
         </javac>
         <junit printsummary="withOutAndErr">
             <classpath path="${build};${test};${junit};${junit-ext}"/>
