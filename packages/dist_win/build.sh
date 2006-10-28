@@ -2,6 +2,8 @@
 #
 # Requirements:
 #
+# o Visual Studio 2005
+# o Intel(R) Fortran Compiler 9.1
 # o Visual Studio 6 w/ SP5
 # o Visual Fortran 6.1a
 # o InstallShield Professional 6.31
@@ -52,15 +54,16 @@ fi
 
 tscriptname=`basename $0 .sh`
 export PKG=`echo $tscriptname | sed -e 's/\-[^\-]*\-[^\-]*$//'`
-export VER=`echo $tscriptname | sed -e 's/^[^\-]*\-//' -e 's/\-[^\-]*$//'`
-export REL=`echo $tscriptname | sed -e 's/^[^\-]*\-[^\-]*\-//'`
-export FULLPKG=${PKG}-${VER}-${REL}
+export VER=`echo $tscriptname | sed -e "s/${PKG}\-//" -e 's/\-[^\-]*$//'`
+export REL=`echo $tscriptname | sed -e "s/${PKG}\-${VER}\-//"`
+export BASEPKG=${PKG}-${VER}-${REL}
+export FULLPKG=${BASEPKG}
 LOWER='abcdefghijklmnopqrstuvwxyz'
 UPPER='ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 export VER_UC=`echo $VER | sed -e "y/$LOWER/$UPPER/"`
 export DIFF_IGNORE="-x *.aps -x *.ncb -x *.opt"
 
-export src_orig_pkg_name=${PKG}-${VER}.tar.gz
+export src_orig_pkg_name=${FULLPKG}.tar.gz
 export src_pkg_name=${FULLPKG}-src.tar.bz2
 export src_patch_name=${FULLPKG}.patch
 export bin_pkg_name=${FULLPKG}.tar.bz2
@@ -69,7 +72,7 @@ export src_orig_pkg_mv=${topdir}/Mv-${VER}.tar.gz
 export src_pkg=${topdir}/${src_pkg_name}
 export src_patch=${topdir}/${src_patch_name}
 export bin_pkg=${topdir}/${bin_pkg_name}
-export srcdir=${topdir}/${PKG}-${VER}
+export srcdir=${topdir}/${BASEPKG}
 export objdir=${srcdir}/.build
 export instdir=${srcdir}/.inst
 export srcinstdir=${srcdir}/.sinst
@@ -84,14 +87,22 @@ sysconfdir=/etc
 MY_CFLAGS="-O2 -g"
 MY_LDFLAGS=
 
+##{{
 # DF.EXE
 # path_df=`locate DF.EXE|grep DF98`
-if [ ! -s "/cygdrive/c/Program Files/Microsoft Visual Studio/DF98/BIN/DF.EXE" ] ; then
-  echo "Error: Can't find fortran compiler"
-  exit 1;
-fi
-path_df="/cygdrive/c/Program Files/Microsoft Visual Studio/DF98/BIN/DF.EXE"
-path_df=`dirname "$path_df"`
+#####if [ ! -s "/cygdrive/c/Program Files/Microsoft Visual Studio/DF98/BIN/DF.EXE" ] ; then
+#####  echo "Error: Can't find fortran compiler"
+#####  exit 1;
+#####fi
+#####path_df="/cygdrive/c/Program Files/Microsoft Visual Studio/DF98/BIN/DF.EXE"
+#####path_df=`dirname "$path_df"`
+
+# use Visual Studio 2005 to compile
+DEVENV="/cygdrive/c/Program Files/Microsoft Visual Studio 8/Common7/IDE/devenv.exe"
+PHAST_SLN=`cygpath -w ./src/phast/win32_2005/phastpp.sln`
+PHASTINPUT_SLN=`cygpath -w ./src/phastinput/win32_2005/phastinput.sln`
+##}}
+
 
 # InstallShield settings (based on exported build file
 # IS_COMPILER=`locate Compile.exe | grep InstallShield`
@@ -128,6 +139,18 @@ mkdirs() {
 
 precheck() {
   (
+  if [ ! -s "${DEVENV} ] ; then \
+    echo "Error: Can't find Microsoft Visual Studio 8 (2005): ${DEVENV}"; \
+    exit 1; \
+  fi && \
+  if [ ! -s "${PHAST_SLN} ] ; then \
+    echo "Error: Can't find solution file: ${PHAST_SLN}"; \
+    exit 1; \
+  fi && \
+  if [ ! -s "${PHASTINPUT_SLN} ] ; then \
+    echo "Error: Can't find solution file: ${PHASTINPUT_SLN}"; \
+    exit 1; \
+  fi && \
   if [ "x$DEV_VTK_LIBDLL" = "x" ] ; then \
     echo "Error: DEV_VTK_LIBDLL must be set"; \
     exit 1; \
@@ -169,7 +192,7 @@ cvsexport() {
 prep() {
   (cd ${topdir} && \
   tar xvzf ${src_orig_pkg} && \
-  cd ${topdir}/${PKG}-${VER} && \
+  cd ${topdir}/${FULLPKG} && \
   tar xvzf ${src_orig_pkg_mv} && \
   cd ${topdir} && \
   if [ -f ${src_patch} ] ; then \
@@ -210,15 +233,13 @@ build() {
 # build phasthdf.exe
   msdev `cygpath -w ./src/phasthdf/win32/phastexport.dsw` /MAKE "phastexport - Win32 Release" && \
 # build phastinput.exe
-  msdev `cygpath -w ./src/phastinput/win32/phastinput.dsw` /MAKE "phastinput - Win32 Release" && \
+  "${DEVENV}" "${PHASTINPUT_SLN}" /out phastinput.log /build Release && \
 # build phast.jar
   ant -buildfile ./src/phasthdf/build.xml dist-Win32 && \
 # build merge/phast.exe (REBUILD forces the dependencies to be updated)
-  msdev `cygpath -w ./src/phast/win32/phast.dsw` /MAKE "phast - Win32 merge" /REBUILD && \
-  cp ./src/phast/win32/phast.plg ./src/phast/win32/phast-merge.plg && \
+  "${DEVENV}" "${PHAST_SLN}" /out phast-merge.log /build merge && \
 # build ser/phast.exe (REBUILD forces the dependencies to be updated)
-  msdev `cygpath -w ./src/phast/win32/phast.dsw` /MAKE "phast - Win32 ser" /REBUILD && \
-  cp ./src/phast/win32/phast.plg ./src/phast/win32/phast-ser.plg && \
+  "${DEVENV}" "${PHAST_SLN}" /out phast-ser.log /build ser && \
 # build modview.exe (REBUILD forces the dependencies to be updated)
   msdev `cygpath -w ./Mv/MvProject.dsw` /MAKE "ModelViewer - Win32 Release" /REBUILD )
 }
@@ -259,11 +280,11 @@ install() {
   /usr/bin/install -m 644 ${objdir}/doc/README \
     ${instdir}${prefix}/README.txt && \
 # (bin dir) phast-ser, phast-mpich, hdf5dll.dll, zlib.dll phast.bat
-  /usr/bin/install -m 755 ${objdir}/src/phastinput/win32/Release/phastinput.exe \
+  /usr/bin/install -m 755 ${objdir}/src/phastinput/win32_2005/Release/phastinput.exe \
     ${instdir}${prefix}/bin/phastinput.exe && \
-  /usr/bin/install -m 755 ${objdir}/src/phast/win32/merge/phast.exe \
+  /usr/bin/install -m 755 ${objdir}/src/phast/win32_2005/merge/phast.exe \
     ${instdir}${prefix}/bin/phast-mpich.exe && \
-  /usr/bin/install -m 755 ${objdir}/src/phast/win32/ser/phast.exe \
+  /usr/bin/install -m 755 ${objdir}/src/phast/win32_2005/ser/phast.exe \
     ${instdir}${prefix}/bin/phast-ser.exe && \
   /usr/bin/install -m 755 ${objdir}/Redist/hdf5dll.dll \
     ${instdir}${prefix}/bin/hdf5dll.dll && \
@@ -347,11 +368,11 @@ install() {
 # logs
   /usr/bin/install -m 755 ${objdir}/src/phasthdf/win32/phastexport.plg \
     ${instdir}/logs/. && \
-  /usr/bin/install -m 644 ${objdir}/src/phastinput/win32/phastinput.plg \
+  /usr/bin/install -m 644 ${objdir}/phastinput.log \
     ${instdir}/logs/. && \
-  /usr/bin/install -m 644 ${objdir}/src/phast/win32/phast-ser.plg \
+  /usr/bin/install -m 644 ${objdir}/phast-ser.log \
     ${instdir}/logs/. && \
-  /usr/bin/install -m 644 ${objdir}/src/phast/win32/phast-merge.plg \
+  /usr/bin/install -m 644 ${objdir}/phast-merge.log \
     ${instdir}/logs/. && \
   /usr/bin/install -m 644 ${objdir}/Mv/mv/mv.plg \
     ${instdir}/logs/. && \

@@ -98,7 +98,7 @@ elif [ -n "$RC" ] ; then
   VER_NUMTAG="-rc$RC"
 else
   VER_TAG="r$REVISION_SVN"
-  VER_NUMTAG=""
+  VER_NUMTAG="-$REVISION"
 fi
 
 case `uname` in
@@ -143,9 +143,27 @@ echo "Removed and recreated $DIST_SANDBOX"
 
 echo "Exporting revision $REVISION of PHAST into sandbox..."
 (cd "$DIST_SANDBOX" && \
- 	${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS -r "$REVISION" \
+ 	${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
 	     "http://internalbrr/svn_GW/phastpp/$REPOS_PATH" \
 	     "$DISTNAME")
+	     
+echo "Exporting revision $REVISION of external srcphast/phreeqcpp into sandbox..."
+(cd "$DIST_SANDBOX" && \
+ 	${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
+	     "http://internalbrr.cr.usgs.gov/svn_GW/phreeqc/trunk/database" \
+	     "$DISTNAME/database")
+	     
+echo "Exporting revision $REVISION of external srcphast/phreeqcpp into sandbox..."
+(cd "$DIST_SANDBOX" && \
+ 	${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
+	     "http://internalbrr.cr.usgs.gov/svn_GW/phreeqcpp/trunk/src" \
+	     "$DISTNAME/srcphast/phreeqcpp")
+	     
+echo "Exporting revision $REVISION of external srcphast/phreeqcpp/phreeqc into sandbox..."
+(cd "$DIST_SANDBOX" && \
+ 	${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
+	     "http://internalbrr.cr.usgs.gov/svn_GW/phreeqc/trunk/src" \
+	     "$DISTNAME/srcphast/phreeqcpp/phreeqc")
 	     
 echo "Making examples clean"
 (cd "$DISTPATH/examples" && [ -f Makefile ] && make TOPDIR=.. clean > /dev/null)
@@ -217,9 +235,6 @@ echo "Rolling $DISTNAME.tar ..."
 (cd "$DIST_SANDBOX" > /dev/null && tar c "$DISTNAME") > \
 "$DISTNAME.tar"
 
-echo "Compressing to $DISTNAME.tar.bz2 ..."
-bzip2 -9fk "$DISTNAME.tar"
-
 echo "Compressing to $DISTNAME.tar.gz ..."
 gzip -9f "$DISTNAME.tar"
 echo "Removing sandbox..."
@@ -227,13 +242,13 @@ rm -rf "$DIST_SANDBOX"
 
 echo ""
 echo "Done:"
-ls -l "$DISTNAME.tar.gz" "$DISTNAME.tar.bz2"
+ls -l "$DISTNAME.tar.gz"
 echo ""
 echo "md5sums:"
-md5sum "$DISTNAME.tar.gz" "$DISTNAME.tar.bz2"
+md5sum "$DISTNAME.tar.gz"
 type sha1sum > /dev/null 2>&1
 if [ $? -eq 0 ]; then
   echo ""
   echo "sha1sums:"
-  sha1sum "$DISTNAME.tar.gz" "$DISTNAME.tar.bz2"
+  sha1sum "$DISTNAME.tar.gz"
 fi
