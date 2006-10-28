@@ -411,16 +411,16 @@ pkg() {
 mkpatch() {
   (cd ${srcdir} && \
   tar xvzf ${src_orig_pkg} && \
-  cd ${PKG}-${VER} && \
+  cd ${srcdir}/${BASEPKG} && \
   tar xvzf ${src_orig_pkg_mv} && \
   cd ${srcdir} && \
-  mv ${PKG}-${VER} ../${PKG}-${VER}-orig && \
+  mv ${BASEPKG} ../${BASEPKG}-orig && \
   cd ${topdir} && \
   diff -urN -x '.build' -x '.inst' -x '.sinst' \
     ${DIFF_IGNORE} \
-    ${PKG}-${VER}-orig ${PKG}-${VER} > \
-    ${srcinstdir}/${src_patch_name} ; \
-  rm -rf ${PKG}-${VER}-orig )
+    ${BASEPKG}-orig ${BASEPKG} > \
+    ${srcinstdir}/${src_patch_name} && \
+  rm -r ${BASEPKG}-orig )
 }
 
 spkg() {
