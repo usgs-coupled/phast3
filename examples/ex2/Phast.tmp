@@ -10335,7 +10335,7 @@ C.3.7.4 .. TIMCHG
 C------------------------------------------------------------------------------
 C.....Output information
 C.3.8.1 .. PRISLM,PRIKD,PRIP,PRIC,PRICPHRQ,PRIFORCE_CHEM_PHRQ,PRIVEL,PRIGFB,PRIBCF,PRIWEL; all [I]
-     -400.000000 -0.000000 -400.000000 -0.000000 -400.000000 -0.000000 -400.000000 -400.000000 -0.000000 -400.000000
+     -400.000000  0.000000 -400.000000  0.000000 -400.000000  0.000000 -400.000000 -400.000000  0.000000 -400.000000
 C.3.8.1.1 .. PRT_BC; [T/F]
      F
 C.3.8.2 .. PRIHDF_CONC, PRIHDF_HEAD, PRIHDF_VEL
@@ -10347,9 +10347,9 @@ f 0 f
 C------------------------------------------------------------------------------
 C.....Contour and vector map information
 C.3.9.1 .. CNTMAP[T/F], PRIMAPHEAD, COMPMAP[T/F], PRINT_XYZ_COMP, VECMAP[T/F], PRIMAPV
-     t -400.000000     f -0.000000     t -400.000000
+     t -400.000000     f  0.000000     t -400.000000
 C.3.10.2 .. PRIXYZ_WELL, PRINT_RESTART, PRINT_END_OF_PERIOD [t/t]
-     -0.000000 -0.000000     T
+      0.000000  0.000000     T
 C...Cell print information for .O.chem file, transient chemistry
   0.0000000e+00   1.0000000e+02   0.0000000e+00   2.0500000e+01   0.0000000e+00   1.2500000e+01
      0 4
