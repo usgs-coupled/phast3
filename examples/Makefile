@@ -1,7 +1,13 @@
-TOPDIR=$(HOME)/programs/phastpp
+#TOPDIR=$(HOME)/programs/phastpp
+#TEST=$(TOPDIR)/examples
+#PHAST_INPUT=$(TOPDIR)/srcinput/phastinput
+#PHAST=$(TOPDIR)/srcphast/serial_absoft/phast
+TOPDIR=/cygdrive/c/programs/phastpp
 TEST=$(TOPDIR)/examples
-PHAST_INPUT=$(TOPDIR)/srcinput/phastinput
-PHAST=$(TOPDIR)/srcphast/serial_absoft/phast
+PHAST_INPUT=/cygdrive/c/Programs/phastpp/srcinput/win32_2005/Debug/phastinput.exe
+PHAST=/cygdrive/c/Programs/phastpp/srcphast/win32_2005/ser_debug/phast.exe
+PHAST=/cygdrive/c/Programs/phastpp/srcphast/win32_2005/ser/phast.exe
+
 
 SERIAL = decay diffusion1d diffusion2d disp2d ex3 kindred4.4 leaky leakyx leakyz linear_bc linear_ic ex4 phrqex11 ex1 radial river unconf well ex2 free ex4restart print_check_ss print_check_transient
 
@@ -659,3 +665,20 @@ diff_parallel:
 ci_parallel:
 	for FILE in $(SERIAL); do \
 		cd $$FILE/0; ci -l -m"latest" *.dat *.O.* *.xyz.* Phast.tmp; cd ../..; done
+
+diff:
+	svn diff --diff-cmd diff -x -bw	
+
+zero:
+	for DIR in $(SERIAL); \
+		do echo $$DIR; cd $$DIR; \
+			for FILE in *.O.* *.sel *.xyz.* Phast.tmp; \
+				do \
+					if [ -f $$FILE ]; then \
+						echo "   " $$FILE; \
+						../zero.sed $$FILE; \
+					fi; \
+				done; \
+			cd ..; \
+		done;
+
