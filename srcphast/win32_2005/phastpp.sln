@@ -9,17 +9,22 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "phreeqcpp", "phreeqcpp.vcpr
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		merge_debug|Win32 = merge_debug|Win32
 		merge|Win32 = merge|Win32
 		ser_debug|Win32 = ser_debug|Win32
 		ser|Win32 = ser|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F64F3B2F-6F9B-48D1-98BC-A714F23B1533}.merge_debug|Win32.ActiveCfg = merge_debug|Win32
+		{F64F3B2F-6F9B-48D1-98BC-A714F23B1533}.merge_debug|Win32.Build.0 = merge_debug|Win32
 		{F64F3B2F-6F9B-48D1-98BC-A714F23B1533}.merge|Win32.ActiveCfg = merge|Win32
 		{F64F3B2F-6F9B-48D1-98BC-A714F23B1533}.merge|Win32.Build.0 = merge|Win32
 		{F64F3B2F-6F9B-48D1-98BC-A714F23B1533}.ser_debug|Win32.ActiveCfg = ser_debug|Win32
 		{F64F3B2F-6F9B-48D1-98BC-A714F23B1533}.ser_debug|Win32.Build.0 = ser_debug|Win32
 		{F64F3B2F-6F9B-48D1-98BC-A714F23B1533}.ser|Win32.ActiveCfg = ser|Win32
 		{F64F3B2F-6F9B-48D1-98BC-A714F23B1533}.ser|Win32.Build.0 = ser|Win32
+		{9B65F71A-2D27-4121-9724-6CD0ED7D975A}.merge_debug|Win32.ActiveCfg = merge_debug|Win32
+		{9B65F71A-2D27-4121-9724-6CD0ED7D975A}.merge_debug|Win32.Build.0 = merge_debug|Win32
 		{9B65F71A-2D27-4121-9724-6CD0ED7D975A}.merge|Win32.ActiveCfg = merge|Win32
 		{9B65F71A-2D27-4121-9724-6CD0ED7D975A}.merge|Win32.Build.0 = merge|Win32
 		{9B65F71A-2D27-4121-9724-6CD0ED7D975A}.ser_debug|Win32.ActiveCfg = ser_debug|Win32

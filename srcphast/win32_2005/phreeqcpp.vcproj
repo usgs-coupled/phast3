@@ -213,6 +213,75 @@
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
+		<Configuration
+			Name="merge_debug|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)\c"
+			ConfigurationType="4"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				InlineFunctionExpansion="0"
+				OmitFramePointers="false"
+				AdditionalIncludeDirectories="&quot;$(DEV_HDF5_INC)&quot;;&quot;$(DEV_GMP_INC)&quot;;&quot;$(DEV_MPICH_INC)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;"
+				PreprocessorDefinitions="_DEBUG;MERGE_FILES;USE_MPI;HDF5_CREATE;INVERSE_CL1MP;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE"
+				StringPooling="false"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				EnableFunctionLevelLinking="false"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="4"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/phreeqcpp.lib"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -251,6 +320,14 @@
 							CompileAs="2"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\phreeqcpp\phreeqc\basic.c"
@@ -273,6 +350,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="merge|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -307,6 +392,14 @@
 							CompileAs="2"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\phreeqcpp\phreeqc\cl1.c"
@@ -329,6 +422,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="merge|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -363,6 +464,14 @@
 							CompileAs="2"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\phreeqcpp\phreeqc\cvode.c"
@@ -385,6 +494,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="merge|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -423,6 +540,14 @@
 							CompileAs="2"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\phreeqcpp\phreeqc\dw.c"
@@ -445,6 +570,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="merge|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -483,6 +616,14 @@
 							CompileAs="2"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\phreeqcpp\phreeqc\input.c"
@@ -505,6 +646,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="merge|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -539,6 +688,14 @@
 							CompileAs="2"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\phreeqcpp\phreeqc\inverse.c"
@@ -561,6 +718,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="merge|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -595,6 +760,14 @@
 							CompileAs="2"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\phreeqcpp\phreeqc\kinetics.c"
@@ -617,6 +790,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="merge|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -651,6 +832,14 @@
 							CompileAs="2"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\mix.c"
@@ -673,6 +862,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="merge|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -707,6 +904,14 @@
 							CompileAs="2"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\phreeqcpp\phreeqc\nvector.c"
@@ -729,6 +934,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="merge|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -763,6 +976,14 @@
 							CompileAs="2"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\phreeqcpp\phreeqc\output.c"
@@ -785,6 +1006,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="merge|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -819,6 +1048,14 @@
 							CompileAs="2"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\phreeqcpp\phreeqc\parse.c"
@@ -841,6 +1078,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="merge|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -875,6 +1120,14 @@
 							CompileAs="2"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\phreeqcpp\phreeqc\phqalloc.c"
@@ -897,6 +1150,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="merge|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -931,6 +1192,14 @@
 							CompileAs="2"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\phreeqcpp\phreeqc\pitzer_structures.c"
@@ -953,6 +1222,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="merge|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -987,6 +1264,14 @@
 							CompileAs="2"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\phreeqcpp\phreeqc\print.c"
@@ -1009,6 +1294,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="merge|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1043,6 +1336,14 @@
 							CompileAs="2"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\phreeqcpp\phreeqc\readtr.c"
@@ -1065,6 +1366,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="merge|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1099,6 +1408,14 @@
 							CompileAs="2"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\phreeqcpp\phreeqc\spread.c"
@@ -1121,6 +1438,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="merge|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1155,6 +1480,14 @@
 							CompileAs="2"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\phreeqcpp\phreeqc\structures.c"
@@ -1177,6 +1510,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="merge|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1211,6 +1552,14 @@
 							CompileAs="2"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\phreeqcpp\phreeqc\tally.c"
@@ -1233,6 +1582,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="merge|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1267,6 +1624,14 @@
 							CompileAs="2"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\phreeqcpp\phreeqc\transport.c"
@@ -1295,6 +1660,14 @@
 							CompileAs="2"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\phreeqcpp\phreeqc\utilities.c"
@@ -1317,6 +1690,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="merge|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1468,6 +1849,14 @@
 							CompileAs="2"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
 				</File>
 			</Filter>
 			<Filter
@@ -1495,6 +1884,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="merge|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1533,6 +1930,14 @@
 							CompileAs="2"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
 				</File>
 			</Filter>
 			<Filter
@@ -1559,6 +1964,14 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="merge|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1641,11 +2054,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\kinetics.h"
+				RelativePath="..\phreeqcpp\kinetics.h"
 				>
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\kinetics.h"
+				RelativePath="..\phreeqcpp\phreeqc\kinetics.h"
 				>
 			</File>
 			<File
