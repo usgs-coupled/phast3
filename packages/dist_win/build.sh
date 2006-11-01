@@ -143,20 +143,32 @@ precheck() {
     echo "Error: Can't find Microsoft Visual Studio 8 (2005): ${DEVENV}"; \
     exit 1; \
   fi && \
-  if [ ! -s "${PHAST_SLN}" ] ; then \
-    echo "Error: Can't find solution file: ${PHAST_SLN}"; \
-    exit 1; \
-  fi && \
-  if [ ! -s "${PHASTINPUT_SLN}" ] ; then \
-    echo "Error: Can't find solution file: ${PHASTINPUT_SLN}"; \
-    exit 1; \
-  fi && \
   if [ "x$DEV_VTK_LIBDLL" = "x" ] ; then \
     echo "Error: DEV_VTK_LIBDLL must be set"; \
     exit 1; \
   fi && \
   if [ "x$DEV_HDF5_LIBDLL" = "x" ] ; then \
     echo "Error: DEV_HDF5_LIBDLL must be set"; \
+    exit 1; \
+  fi && \
+  if [ "x$DEV_HDF5_INC" = "x" ] ; then \
+    echo "Error: DEV_HDF5_INC must be set"; \
+    exit 1; \
+  fi && \
+  if [ "x$DEV_HDF5_LIB" = "x" ] ; then \
+    echo "Error: DEV_HDF5_LIB must be set"; \
+    exit 1; \
+  fi && \
+  if [ "x$DEV_MPICH_INC" = "x" ] ; then \
+    echo "Error: DEV_MPICH_INC must be set"; \
+    exit 1; \
+  fi && \
+  if [ "x$DEV_MPICH_LIB" = "x" ] ; then \
+    echo "Error: DEV_MPICH_LIB must be set"; \
+    exit 1; \
+  fi && \
+  if [ "x$DEV_VTK_INC" = "x" ] ; then \
+    echo "Error: DEV_VTK_INC must be set"; \
     exit 1; \
   fi && \
   if [ ! -d "${MODELVIEWER}" ] ; then \
@@ -456,10 +468,10 @@ case $1 in
   finish)       finish   ; STATUS=$? ;;
   cvsexport)    cvsexport; STATUS=$? ;;
   run)          run_examples;  STATUS=$? ;;
-  all) prep && conf && build && install && \
+  all) precheck && prep && conf && build && install && \
        strip && pkg && spkg && finish ; \
        STATUS=$? ;;
-  sofar)  prep && conf && build && install && \
+  sofar)  precheck && prep && conf && build && install && \
        STATUS=$? ;;
   *) echo "Error: bad arguments" ; exit 1 ;;
 esac
