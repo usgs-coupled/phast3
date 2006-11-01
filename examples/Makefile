@@ -704,6 +704,6 @@ mpich:
 			if [ -f ex4.restart ]; then cp ex4.restart 0; fi;\
 			cd 0; \
 			$(PHAST_INPUT) $$DIR; \
-			mpirun -np 2 -localonly -dir $(TEST)/$$DIR/0 $(PHAST_MPICH); \
+			time mpirun -np 2 -localonly -dir $(TEST)/$$DIR/0 $(PHAST_MPICH); \
 			cd $(TEST); \
 		done;
