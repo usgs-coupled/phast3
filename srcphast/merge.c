@@ -846,6 +846,8 @@ int Merge_vfprintf2(struct FileInfo *pFileInfo, const char *format, va_list args
     int retval;
 	static char buffer[500];
 
+	retval = 0;
+
     if (s_ci.captured == TRUE)
     {
 		retval = vsprintf(buffer, format, args);

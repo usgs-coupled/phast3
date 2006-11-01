@@ -206,15 +206,20 @@ void PHREEQC_MAIN(int *solute, char *chemistry_name, char *database_name, char *
 	void *db_cookie = NULL;
 	void *input_cookie = NULL;
 
+	/*
+	* Set the debug-heap flag to keep freed blocks in the
+	* heap's linked list - This will allow us to catch any
+	* inadvertent use of freed memory
+	*/
+
 #if defined(WIN32_MEMORY_DEBUG)	
 	int tmpDbgFlag;
 	tmpDbgFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
 	tmpDbgFlag |= _CRTDBG_LEAK_CHECK_DF;
-	/**
 	tmpDbgFlag |= _CRTDBG_DELAY_FREE_MEM_DF;
-	tmpDbgFlag |= _CRTDBG_CHECK_ALWAYS_DF;
-	**/
+	//tmpDbgFlag |= _CRTDBG_CHECK_ALWAYS_DF;
 	_CrtSetDbgFlag(tmpDbgFlag);
+	setbuf(stderr, NULL);
 #endif
 
 	phast = TRUE;
@@ -711,7 +716,7 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 		std::string entity_type[7] = {"Solutions", "PPassemblages", "Exchangers", "Surfaces", "GasPhase", "SSassemblages", "Kinetics"};
 		warn.reserve(7);
 		for (i = 0; i < 7; i++) {
-			warn[i] = 0;
+			warn.push_back(0);
 		}
 		for (k = 0; k < last_cell - first_cell + 1; k++) {
 			int n_old1;
