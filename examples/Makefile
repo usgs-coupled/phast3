@@ -1,13 +1,21 @@
-#TOPDIR=$(HOME)/programs/phastpp
-#TEST=$(TOPDIR)/examples
-#PHAST_INPUT=$(TOPDIR)/srcinput/phastinput
-#PHAST=$(TOPDIR)/srcphast/serial_absoft/phast
-TOPDIR=/cygdrive/c/programs/phastpp
-TEST=$(TOPDIR)/examples
-PHAST_INPUT=/cygdrive/c/Programs/phastpp/srcinput/win32_2005/Debug/phastinput.exe
-PHAST=/cygdrive/c/Programs/phastpp/srcphast/win32_2005/ser_debug/phast.exe
-PHAST=/cygdrive/c/Programs/phastpp/srcphast/win32_2005/ser/phast.exe
+CFG1 :=`uname`
+CFG :=$(shell echo $(CFG1) | sed "s/CYGWIN.*/CYGWIN/")
 
+ifeq ($(CFG), Linux)
+  TOPDIR=$(HOME)/programs/phastpp
+  TEST=$(TOPDIR)/examples
+  PHAST_INPUT=$(TOPDIR)/srcinput/phastinput
+  PHAST=$(TOPDIR)/srcphast/serial_absoft/phast
+endif
+
+ifeq ($(CFG), CYGWIN)
+  TOPDIR=/cygdrive/c/programs/phastpp
+  TEST=$(TOPDIR)/examples
+  PHAST_INPUT=/cygdrive/c/Programs/phastpp/srcinput/win32_2005/Debug/phastinput.exe
+  PHAST=/cygdrive/c/Programs/phastpp/srcphast/win32_2005/ser/phast.exe
+  PHAST_MPICH=c:/Programs/phastpp/srcphast/win32_2005/merge_debug/phast.exe
+  PHAST_MPICH=c:/Programs/phastpp/srcphast/win32_2005/merge/phast.exe
+endif
 
 SERIAL = decay diffusion1d diffusion2d disp2d ex3 kindred4.4 leaky leakyx leakyz linear_bc linear_ic ex4 phrqex11 ex1 radial river unconf well ex2 free ex4restart print_check_ss print_check_transient
 
@@ -682,3 +690,20 @@ zero:
 			cd ..; \
 		done;
 
+mpich:
+#	echo $(CFG)
+#	echo $(TOPDIR)
+#	echo $(PHAST)
+#	echo $(PHAST_MPICH)
+	for DIR in $(SERIAL); \
+		do cd $$DIR; \
+			mkdir -p 0; \
+			cp -f *.trans.dat 0; \
+			if [ -f $$DIR.chem.dat ]; then cp *.chem.dat phast.dat 0; fi;\
+			if [ -f $$DIR.head.dat ]; then cp *.head.dat 0; fi;\
+			if [ -f ex4.restart ]; then cp ex4.restart 0; fi;\
+			cd 0; \
+			$(PHAST_INPUT) $$DIR; \
+			mpirun -np 2 -localonly -dir $(TEST)/$$DIR/0 $(PHAST_MPICH); \
+			cd $(TEST); \
+		done;
