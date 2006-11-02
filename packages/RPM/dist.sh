@@ -173,6 +173,7 @@ rm -rf "$DISTPATH/examples/hosts"
 rm -rf "$DISTPATH/examples/Makefile"
 rm -rf "$DISTPATH/examples/run"
 rm -rf "$DISTPATH/examples/schema"
+rm -rf "$DISTPATH/examples/zero.sed"
 find "$DISTPATH/examples" -type d -name '0' -print | xargs rm -rf
 find "$DISTPATH/examples" -type f -name 'clean' -print | xargs rm -rf
 find "$DISTPATH/examples" -type f -name 'notes' -print | xargs rm -rf

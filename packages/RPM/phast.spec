@@ -24,7 +24,7 @@ Reactions
 %endif
 
 %prep
-%setup -q
+%setup -n %{name}-%{version}-%{release}
 
 # 
 # Rearrange files
@@ -81,12 +81,13 @@ cp -alr examples/* test/.
 #
 # prep to dist source files
 #
-tar xvzf $RPM_SOURCE_DIR/%{name}-%{version}-%{release}.tar.gz %{name}-%{version}/src
-find %{name}-%{version}/src -type d -name win32 -print | xargs rm -rf
-find %{name}-%{version}/src -type d -name Sun -print | xargs rm -rf
-rm -f %{name}-%{version}/src/phast/phreeqc/distribution.checklist
-rm -f %{name}-%{version}/src/phast/phreeqc/distribution.mk
-rm -f %{name}-%{version}/src/phast/phreeqc/Makefile
+tar xvzf $RPM_SOURCE_DIR/%{name}-%{version}-%{release}.tar.gz %{name}-%{version}-%{release}/src
+find %{name}-%{version}-%{release}/src -type d -name win32 -print | xargs rm -rf
+find %{name}-%{version}-%{release}/src -type d -name win32_2005 -print | xargs rm -rf
+find %{name}-%{version}-%{release}/src -type d -name Sun -print | xargs rm -rf
+rm -f %{name}-%{version}-%{release}/src/phast/phreeqc/distribution.checklist
+rm -f %{name}-%{version}-%{release}/src/phast/phreeqc/distribution.mk
+rm -f %{name}-%{version}-%{release}/src/phast/phreeqc/Makefile
 
 #
 # Linux /usr/bin/phast-ser
@@ -196,7 +197,7 @@ chmod 755 $RPM_BUILD_ROOT/%{_bindir}/phasthdf
 #
 # run and store examples
 #
-for arg in test/*; do
+for arg in `find test -mindepth 1 -type d`; do
   cd $arg
   $RPM_BUILD_ROOT/%{_bindir}/phast `basename $arg`
   cd ../..
@@ -208,7 +209,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%doc README examples database doc %{name}-%{version}/src
+%doc README examples database doc %{name}-%{version}-%{release}/src
 %{_bindir}/*
 %{_libdir}/*
 

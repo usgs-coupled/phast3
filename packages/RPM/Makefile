@@ -100,9 +100,8 @@ build_srpm_files : $(HOME)/.rpmmacros $(HOME)/$(RPMDIR) $(SPECFILE) $(TARBALL)
 
 $(TARBALL) : dist.sh
 	@echo "Creating $(TARBALL)"
-	rm -f $(TARBALL) $(NAME)-$(VERSION).tar.gz
+	rm -f $(TARBALL)
 	time ./dist.sh -v $(VERSION) -r $(RELEASE) -d $(DATE) -pr trunk 2>&1 | tee dist-$(RELEASE).log
-	ln $(NAME)-$(VERSION).tar.gz $(TARBALL)
 
 $(HOME)/.rpmmacros : .rpmmacros
 	@if [ ! -f $(HOME)/.rpmmacros ]; \
