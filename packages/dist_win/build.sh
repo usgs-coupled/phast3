@@ -440,6 +440,7 @@ spkg() {
   cp -al ${src_orig_pkg} ${srcinstdir}/${src_orig_pkg_name} && \
   cp -al ${src_orig_pkg_mv} ${srcinstdir}/. && \
   cp -al $0 ${srcinstdir}/`basename $0` && \
+  cp Makefile ${srcinstdir}/. && \
   cd ${srcinstdir} && \
   tar cvjf ${src_pkg} * )
 }
