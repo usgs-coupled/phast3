@@ -189,6 +189,7 @@ mv "$DISTPATH/database/phreeqc.dat" "$DISTPATH/database/phast.dat"
 
 echo "Rearranging source directories"
 mkdir -p "$DISTPATH/src"
+cp "$DISTPATH/srcphast/phreeqcpp/phreeqc/revisions" "$DISTPATH/srcphast/phreeqc.revisions"
 mv "$DISTPATH/srcinput" "$DISTPATH/src/phastinput"
 mv "$DISTPATH/srcphast" "$DISTPATH/src/phast"
 mv "$DISTPATH/phasthdf" "$DISTPATH/src/phasthdf"

@@ -29,7 +29,7 @@ Reactions
 # 
 # Rearrange files
 #
-mv doc/README .
+cp doc/README .
 rm -f doc/README.dist
 mv src/phast/phreeqc.revisions  ./doc/.
 cp src/phast/revisions ./doc/RELEASE.TXT
