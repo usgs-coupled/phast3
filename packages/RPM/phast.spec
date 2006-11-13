@@ -29,10 +29,11 @@ Reactions
 # 
 # Rearrange files
 #
-cp doc/README .
+mv doc/README .
+mv doc/NOTICE.TXT ./NOTICE
 rm -f doc/README.dist
 mv src/phast/phreeqc.revisions  ./doc/.
-cp src/phast/revisions ./doc/RELEASE.TXT
+cp src/phast/revisions ./RELEASE
 %build
 
 #
@@ -209,7 +210,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%doc README examples database doc %{name}-%{version}-%{release}/src
+%doc README RELEASE NOTICE examples database doc %{name}-%{version}-%{release}/src
 %{_bindir}/*
 %{_libdir}/*
 
