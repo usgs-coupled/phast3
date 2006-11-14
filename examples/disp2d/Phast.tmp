@@ -3825,7 +3825,7 @@ C.3.7.3.B .. DPTAS{5E4},DCTAS{.25},DTIMMN{1.E4},DTIMMX{1.E7};
      2941.99 1 0.001 1000
 C..           (O) - RDCALC [3.7.1] and AUTOTS [3.7.2]
 C.3.7.4 .. TIMCHG
-     10.000000
+     10
 C------------------------------------------------------------------------------
 C.....Output information
 C.3.8.1 .. PRISLM,PRIKD,PRIP,PRIC,PRICPHRQ,PRIFORCE_CHEM_PHRQ,PRIVEL,PRIGFB,PRIBCF,PRIWEL; all [I]

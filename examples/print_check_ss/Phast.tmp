@@ -1068,7 +1068,7 @@ C.3.7.3.B .. DPTAS{5E4},DCTAS{.25},DTIMMN{1.E4},DTIMMX{1.E7};
      1.1768e+06 1 2 2e+06
 C..           (O) - RDCALC [3.7.1] and AUTOTS [3.7.2]
 C.3.7.4 .. TIMCHG
-     15000.000000
+     15000
 C------------------------------------------------------------------------------
 C.....Output information
 C.3.8.1 .. PRISLM,PRIKD,PRIP,PRIC,PRICPHRQ,PRIFORCE_CHEM_PHRQ,PRIVEL,PRIGFB,PRIBCF,PRIWEL; all [I]
@@ -1235,7 +1235,7 @@ C.3.7.3.B .. DPTAS{5E4},DCTAS{.25},DTIMMN{1.E4},DTIMMX{1.E7};
      1.1768e+06 1 2 2e+06
 C..           (O) - RDCALC [3.7.1] and AUTOTS [3.7.2]
 C.3.7.4 .. TIMCHG
-     30000.000000
+     30000
 C------------------------------------------------------------------------------
 C.....Output information
 C.3.8.1 .. PRISLM,PRIKD,PRIP,PRIC,PRICPHRQ,PRIFORCE_CHEM_PHRQ,PRIVEL,PRIGFB,PRIBCF,PRIWEL; all [I]
@@ -1402,7 +1402,7 @@ C.3.7.3.B .. DPTAS{5E4},DCTAS{.25},DTIMMN{1.E4},DTIMMX{1.E7};
      1.1768e+06 1 2 2e+06
 C..           (O) - RDCALC [3.7.1] and AUTOTS [3.7.2]
 C.3.7.4 .. TIMCHG
-     31000.000000
+     31000
 C------------------------------------------------------------------------------
 C.....Output information
 C.3.8.1 .. PRISLM,PRIKD,PRIP,PRIC,PRICPHRQ,PRIFORCE_CHEM_PHRQ,PRIVEL,PRIGFB,PRIBCF,PRIWEL; all [I]
