@@ -129,7 +129,7 @@ MODULE mcch
             &----------------------------------------------------------------------', &
             dots = '........................................................................&
             &..........................................................'
-  CHARACTER(LEN=80) :: f1name, f2name, f3name
+  CHARACTER(LEN=256) :: f1name, f2name, f3name
   CHARACTER(LEN=15) :: name 
   CHARACTER(LEN=1) :: rxlbl, unitt
   CHARACTER(LEN=6) :: mflbl

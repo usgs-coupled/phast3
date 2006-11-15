@@ -6,7 +6,7 @@ SUBROUTINE openf
   USE mpi_mod
 #endif
   IMPLICIT NONE
-  CHARACTER(LEN=80) :: fname
+  CHARACTER(LEN=256) :: fname
   INTEGER :: ios, length
   LOGICAL :: lerror 
   integer num_files, i
