@@ -1,10 +1,14 @@
+#if defined(__WPHAST__)
+#include "../StdAfx.h"
+#endif
+
 #include <cassert>
 
 #define EXTERNAL extern
 #include "hstinpt.h"
 #undef EXTERNAL
 
-#ifdef _DEBUG
+#if defined(_DEBUG) && defined(__WPHAST__)
 #define new DEBUG_NEW
 #endif
 

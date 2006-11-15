@@ -1,12 +1,17 @@
+#if defined(__WPHAST__)
+#include "../StdAfx.h"
+#endif
+
 #define EXTERNAL extern
 #include "hstinpt.h"
 #undef EXTERNAL
 
 #include <cassert>
 
-#ifdef _DEBUG
+#if defined(_DEBUG) && defined(__WPHAST__)
 #define new DEBUG_NEW
 #endif
+
 
 cunit::cunit(void)
 : input(0)
