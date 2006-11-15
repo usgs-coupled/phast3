@@ -6,11 +6,11 @@ SUBROUTINE openf
   USE mpi_mod
 #endif
   IMPLICIT NONE
-  CHARACTER(LEN=256) :: fname
+  CHARACTER(LEN=255) :: fname
   INTEGER :: ios, length
   LOGICAL :: lerror 
   integer num_files, i
-  character(len=256) :: restart_name
+  character(len=255) :: restart_name
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
