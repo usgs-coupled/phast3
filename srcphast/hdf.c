@@ -504,9 +504,9 @@ static hid_t open_hdf_file(char* prefix, int prefix_l)
     const int mpi_tasks  = 1;
 #endif
     hid_t file_id;
-    char hdf_prefix[120];
-    char hdf_file_name[120];
-    char hdf_backup_name[120];
+    char hdf_prefix[257];
+    char hdf_file_name[257];
+    char hdf_backup_name[257];
     
     strncpy(hdf_prefix, prefix, prefix_l);
     hdf_prefix[prefix_l] = '\0';
