@@ -452,6 +452,14 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\unit_impl.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\units_impl.cxx"
+				>
+			</File>
+			<File
 				RelativePath="..\utilities.c"
 				>
 				<FileConfiguration

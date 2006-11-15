@@ -1,9 +1,7 @@
-#include "StdAfx.h"
-
 #include <cassert>
 
 #define EXTERNAL extern
-#include "srcinput/hstinpt.h"
+#include "hstinpt.h"
 #undef EXTERNAL
 
 #ifdef _DEBUG
@@ -15,16 +13,16 @@ cunits::cunits(void)
 , horizontal("m")
 , vertical("m")
 , head("m")
-, k("m/s")	
-, s("1/m")	
-, alpha("m")	
-, leaky_k("m/s")	
-, leaky_thick("m")	
-, flux("m/s")	
-, well_diameter("m")	
-, well_pumpage("m^3/s")	
-, river_bed_k("m/s")	
-, river_bed_thickness("m")	
+, k("m/s")
+, s("1/m")
+, alpha("m")
+, leaky_k("m/s")
+, leaky_thick("m")
+, flux("m/s")
+, well_diameter("m")
+, well_pumpage("m^3/s")
+, river_bed_k("m/s")
+, river_bed_thickness("m")
 {
 }
 
@@ -72,14 +70,14 @@ void cunits::undefine(void)
 	this->horizontal.undefine();
 	this->vertical.undefine();
 	this->head.undefine();
-	this->k.undefine();	
-	this->s.undefine();	
-	this->alpha.undefine();	
-	this->leaky_k.undefine();	
-	this->leaky_thick.undefine();	
-	this->flux.undefine();	
-	this->well_diameter.undefine();	
-	this->well_pumpage.undefine();	
-	this->river_bed_k.undefine();	
-	this->river_bed_thickness.undefine();	
+	this->k.undefine();
+	this->s.undefine();
+	this->alpha.undefine();
+	this->leaky_k.undefine();
+	this->leaky_thick.undefine();
+	this->flux.undefine();
+	this->well_diameter.undefine();
+	this->well_pumpage.undefine();
+	this->river_bed_k.undefine();
+	this->river_bed_thickness.undefine();
 }

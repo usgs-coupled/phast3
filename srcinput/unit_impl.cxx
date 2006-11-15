@@ -1,7 +1,5 @@
-#include "StdAfx.h"
-
 #define EXTERNAL extern
-#include "srcinput/hstinpt.h"
+#include "hstinpt.h"
 #undef EXTERNAL
 
 #include <cassert>
