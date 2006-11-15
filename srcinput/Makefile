@@ -29,12 +29,12 @@ LOADFLAGS= -lm
 FILES=\
 	main.c		accumulate.c 	check.c 	gpc.c 		message.c\
 	read.c		rivers.c 	structures.c	utilities.c	wells.c \
-	write.c		Makefile
+	write.c		Makefile	unit_impl.cxx units_impl.cxx
 
 OBJECTS=\
 	main.o 		accumulate.o 	check.o 	gpc.o 		message.o \
 	read.o 		rivers.o	structures.o 	time.o utilities.o 	wells.o \
-	write.o
+	write.o		unit_impl.o		units_impl.o
 
 $(PROGRAM): $(OBJECTS) 
 	$(CC) -o $(PROGRAM) $(OBJECTS) $(LOADFLAGS) 
@@ -75,6 +75,13 @@ wells.o: wells.c hstinpt.h inputproto.h message.h time.h
 
 write.o: write.c hstinpt.h inputproto.h message.h time.h
 	$(CC) $(CCFLAGS) write.c -c
+	
+unit_impl.o: unit_impl.cxx hstinpt.h gpc.h time.h inputproto.h
+	$(CC) $(CCFLAGS) unit_impl.cxx -c
+
+units_impl.o: units_impl.cxx hstinpt.h gpc.h time.h inputproto.h
+	$(CC) $(CCFLAGS) units_impl.cxx -c
+	
 
 
 diff: 
