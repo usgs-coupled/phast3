@@ -321,7 +321,7 @@ typedef struct {
 	double lower;
 } Cell_Fraction;
 
-typedef struct {
+typedef struct Well {
 	int n_user;
 	char *description;
 	int new_def;
@@ -450,55 +450,53 @@ struct cell {
 /* ---------------------------------------------------------------------- 
  *   units conversion
  * ---------------------------------------------------------------------- */
-struct unit {
+struct cunit {
 	char *input;
 	char *si; 
 	double input_to_si;
 /*	double si_to_user; */
 	double input_to_user;
 	int defined;
-#ifdef SKIP
-#if defined(__cplusplus)
+
 // Constructors
-	unit(void);
-	unit(const char* si);
-	~unit(void);
-	unit(const unit& src);
+	cunit(void);
+	cunit(const char* si);
+	~cunit(void);
+	cunit(const cunit& src);
 // Assignment Operators
-	unit& operator=(const unit& src);
+	cunit& operator=(const cunit& src);
 // Utilities
 	int set_input(const char* input);
+	void define(const char* input);
+	void undefine(void);
 	const char* c_str(void)const;
-#endif
-#endif
 };
-struct units {
-	struct unit time;
-	struct unit horizontal;
-	struct unit vertical;
-	struct unit head;
-	struct unit k;	
-	struct unit s;	
-	struct unit alpha;	
-	struct unit leaky_k;	
-	struct unit leaky_thick;	
-	struct unit flux;	
-	struct unit well_diameter;	
-	struct unit well_pumpage;	
-	struct unit river_bed_k;	
-	struct unit river_bed_thickness;	
-#ifdef SKIP
-#if defined(__cplusplus)
+struct cunits {
+	struct cunit time;
+	struct cunit horizontal;
+	struct cunit vertical;
+	struct cunit head;
+	struct cunit k;	
+	struct cunit s;	
+	struct cunit alpha;	
+	struct cunit leaky_k;	
+	struct cunit leaky_thick;	
+	struct cunit flux;	
+	struct cunit well_diameter;	
+	struct cunit well_pumpage;	
+	struct cunit river_bed_k;	
+	struct cunit river_bed_thickness;	
+
 // Constructors
-	units(void);
-	~units(void);
+	cunits(void);
+	~cunits(void);
 //	units(const units& src);
 // Assignment Operators
-	units& operator=(const units& rhs);
-#endif
-#endif
+	cunits& operator=(const cunits& rhs);
+// Utilities
+	void undefine(void);
 };
-EXTERNAL struct units units;
+EXTERNAL struct cunits units;
 EXTERNAL struct head_ic **head_ic;
 EXTERNAL int count_head_ic;
 EXTERNAL struct chem_ic **chem_ic;

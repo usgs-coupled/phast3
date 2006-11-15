@@ -25,7 +25,6 @@ char big_buffer[10000];
 int add_message_callback(PFN_MESSAGE_CALLBACK pfn, void *cookie)
 /* ---------------------------------------------------------------------- */
 {
-	std_error = stderr;
 	error_file = stderr;
 	if (svnid == NULL) fprintf(stderr," ");
 	if (pfn) {

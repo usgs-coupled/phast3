@@ -36,8 +36,7 @@ int main(int argc, char *argv[])
 	tmpDbgFlag |= _CRTDBG_CHECK_ALWAYS_DF;
 	_CrtSetDbgFlag(tmpDbgFlag);
 #endif
-	/*std_error = stderr;*/
-	/*error_file = stderr;*/
+	std_error = stderr;
 	/*
 	 *   Add callbacks for error_msg and warning_msg
 	 */
@@ -311,34 +310,7 @@ int clean_up(void)
 	free_check_null(wells);
 
 	/* Units */
-	free_check_null(units.time.si);
-	free_check_null(units.time.input);
-	free_check_null(units.horizontal.si);
-	free_check_null(units.horizontal.input);
-	free_check_null(units.vertical.si);
-	free_check_null(units.vertical.input);
-	free_check_null(units.head.si);
-	free_check_null(units.head.input);
-	free_check_null(units.k.si);	
-	free_check_null(units.k.input);	
-	free_check_null(units.s.si);	
-	free_check_null(units.s.input);	
-	free_check_null(units.alpha.si);	
-	free_check_null(units.alpha.input);	
-	free_check_null(units.leaky_k.si);	
-	free_check_null(units.leaky_k.input);	
-	free_check_null(units.leaky_thick.si);	
-	free_check_null(units.leaky_thick.input);	
-	free_check_null(units.flux.si);	
-	free_check_null(units.flux.input);	
-	free_check_null(units.well_diameter.si);	
-	free_check_null(units.well_diameter.input);	
-	free_check_null(units.well_pumpage.si);	
-	free_check_null(units.well_pumpage.input);	
-	free_check_null(units.river_bed_k.si);	
-	free_check_null(units.river_bed_k.input);	
-	free_check_null(units.river_bed_thickness.si);
-	free_check_null(units.river_bed_thickness.input);	
+	units.undefine();
 
 	/* time stepping */
 	time_series_free(&time_step);
@@ -536,48 +508,7 @@ void initialize(void)
 /*
  *   units
  */
-	units.time.si = string_duplicate("s");
-	units.time.input = NULL;
-	units.time.defined = FALSE;
-	units.horizontal.si = string_duplicate("m");
-	units.horizontal.input = NULL;
-	units.horizontal.defined = FALSE;
-	units.vertical.si = string_duplicate("m");
-	units.vertical.input = NULL;
-	units.vertical.defined = FALSE;
-	units.head.si = string_duplicate("m");
-	units.head.input = NULL;
-	units.head.defined = FALSE;
-	units.k.si = string_duplicate("m/s");
-	units.k.input = NULL;
-	units.k.defined = FALSE;
-	units.s.si = string_duplicate("1/m");
-	units.s.input = NULL;
-	units.s.defined = FALSE;
-	units.alpha.si = string_duplicate("m");
-	units.alpha.input = NULL;
-	units.alpha.defined = FALSE;
-	units.leaky_k.si = string_duplicate("m/s");
-	units.leaky_k.input = NULL;
-	units.leaky_k.defined = FALSE;
-	units.leaky_thick.si = string_duplicate("m");
-	units.leaky_thick.input = NULL;
-	units.leaky_thick.defined = FALSE;
-	units.flux.si = string_duplicate("m/s");
-	units.flux.input = NULL;
-	units.flux.defined = FALSE;
-	units.river_bed_k.si = string_duplicate("m/s");
-	units.river_bed_k.input = NULL;
-	units.river_bed_k.defined = FALSE;
-	units.river_bed_thickness.si = string_duplicate("m");
-	units.river_bed_thickness.input = NULL;
-	units.river_bed_thickness.defined = FALSE;
-	units.well_diameter.si = string_duplicate("m");
-	units.well_diameter.input = NULL;
-	units.well_diameter.defined = FALSE;
-	units.well_pumpage.si = string_duplicate("m^3/s");
-	units.well_pumpage.input = NULL;
-	units.well_pumpage.defined = FALSE;
+	units.undefine();
 /*
  *   Solver parameters
  */

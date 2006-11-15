@@ -3685,8 +3685,7 @@ int read_units (void)
 				error_msg(error_string, CONTINUE);
 				units.time.defined = FALSE;
 			} else {
-				units.time.input = string_duplicate(token);
-				units.time.defined = TRUE;
+				units.time.define(token);
 			}
 			break;
 		    case 1:                       /* horizontal */
@@ -3700,8 +3699,7 @@ int read_units (void)
 				error_msg(error_string, CONTINUE);
 				units.horizontal.defined = FALSE;
 			} else {
-				units.horizontal.defined = TRUE;
-				units.horizontal.input = string_duplicate(token);
+				units.horizontal.define(token);
 			}
 			break;
 		    case 3:                       /* vertical */
@@ -3715,8 +3713,7 @@ int read_units (void)
 				error_msg(error_string, CONTINUE);
 				units.vertical.defined = FALSE;
 			} else {
-				units.vertical.defined = TRUE;
-				units.vertical.input = string_duplicate(token);
+				units.vertical.define(token);
 			}
 			break;
 		    case 5:                       /* head */
@@ -3729,8 +3726,7 @@ int read_units (void)
 				error_msg(error_string, CONTINUE);
 				units.head.defined = FALSE;
 			} else {
-				units.head.defined = TRUE;
-				units.head.input = string_duplicate(token);
+				units.head.define(token);
 			}
 			break;
 		    case 6:                       /* hydraulic_conductivity */
@@ -3744,8 +3740,7 @@ int read_units (void)
 				error_msg(error_string, CONTINUE);
 				units.k.defined = FALSE;
 			} else {
-				units.k.defined = TRUE;
-				units.k.input = string_duplicate(token);
+				units.k.define(token);
 			}
 			break;
 		    case 8:                       /* specific_storage */
@@ -3759,8 +3754,7 @@ int read_units (void)
 				error_msg(error_string, CONTINUE);
 				units.s.defined = FALSE;
 			} else {
-				units.s.defined = TRUE;
-				units.s.input = string_duplicate(token);
+				units.s.define(token);
 			}
 			break;
 		    case 10:                       /* dispersivity */
@@ -3774,8 +3768,7 @@ int read_units (void)
 				error_msg(error_string, CONTINUE);
 				units.alpha.defined = FALSE;
 			} else {
-				units.alpha.defined = TRUE;
-				units.alpha.input = string_duplicate(token);
+				units.alpha.define(token);
 			}
 			break;
 		    case 12:                       /* leaky_hydraulic_conductivity */
@@ -3789,8 +3782,7 @@ int read_units (void)
 				error_msg(error_string, CONTINUE);
 				units.leaky_k.defined = FALSE;
 			} else {
-				units.leaky_k.defined = TRUE;
-				units.leaky_k.input = string_duplicate(token);
+				units.leaky_k.define(token);
 			}
 			break;
 		    case 14:                       /* leaky_thickness */
@@ -3804,8 +3796,7 @@ int read_units (void)
 				error_msg(error_string, CONTINUE);
 				units.leaky_thick.defined = FALSE;
 			} else {
-				units.leaky_thick.defined = TRUE;
-				units.leaky_thick.input = string_duplicate(token);
+				units.leaky_thick.define(token);
 			}
 			break;
 		    case 16:                       /* flux */
@@ -3818,8 +3809,7 @@ int read_units (void)
 				error_msg(error_string, CONTINUE);
 				units.flux.defined = FALSE;
 			} else {
-				units.flux.defined = TRUE;
-				units.flux.input = string_duplicate(token);
+				units.flux.define(token);
 			}
 			break;
 		    case 17:                       /* well_diameter */
@@ -3832,8 +3822,7 @@ int read_units (void)
 				error_msg(error_string, CONTINUE);
 				units.well_diameter.defined = FALSE;
 			} else {
-				units.well_diameter.defined = TRUE;
-				units.well_diameter.input = string_duplicate(token);
+				units.well_diameter.define(token);
 			}
 			break;
 		    case 18:                       /* well_flow_rate */
@@ -3847,8 +3836,7 @@ int read_units (void)
 				error_msg(error_string, CONTINUE);
 				units.well_pumpage.defined = FALSE;
 			} else {
-				units.well_pumpage.defined = TRUE;
-				units.well_pumpage.input = string_duplicate(token);
+				units.well_pumpage.define(token);
 			}
 			break;
 		    case 20:                       /* river_bed_k */
@@ -3863,8 +3851,7 @@ int read_units (void)
 				error_msg(error_string, CONTINUE);
 				units.river_bed_k.defined = FALSE;
 			} else {
-				units.river_bed_k.defined = TRUE;
-				units.river_bed_k.input = string_duplicate(token);
+				units.river_bed_k.define(token);
 			}
 			break;
 		    case 23:                       /* river_bed_thickness */
@@ -3878,8 +3865,7 @@ int read_units (void)
 				error_msg(error_string, CONTINUE);
 				units.river_bed_thickness.defined = FALSE;
 			} else {
-				units.river_bed_thickness.defined = TRUE;
-				units.river_bed_thickness.input = string_duplicate(token);
+				units.river_bed_thickness.define(token);
 			}
 			break;
 		}
