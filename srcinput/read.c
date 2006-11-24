@@ -3157,7 +3157,7 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 			if (it != FileMap.end()) {
 				j = it->second;
 			} else {
-				j = FileMap.size();
+				j = (int) FileMap.size();
 				FileMap[stdtoken] = j;
 			}
 			p->v = (double *) malloc(sizeof(double));

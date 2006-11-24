@@ -1257,46 +1257,46 @@ int setup_bc(void)
 		}
 		switch (face) {
 		case 0:
-			bc_type_pos = offsetof(struct cell, bc_face[0].bc_type);
-			bc_flux_pos = offsetof(struct cell, bc_face[0].bc_flux);
-			bc_flux_defined_pos = offsetof(struct cell, bc_face[0].bc_flux_defined);
-			bc_solution_pos = offsetof(struct cell, bc_face[0].bc_solution);
-			bc_solution_defined_pos = offsetof(struct cell, bc_face[0].bc_solution_defined);
-			bc_solution_type_pos = offsetof(struct cell, bc_face[0].bc_solution_type);
-			bc_head_pos = offsetof(struct cell, bc_face[0].bc_head);
-			bc_head_defined_pos = offsetof(struct cell, bc_face[0].bc_head_defined);
-			bc_k_pos = offsetof(struct cell, bc_face[0].bc_k);
-			bc_k_defined_pos = offsetof(struct cell, bc_face[0].bc_k_defined);
-			bc_thick_pos = offsetof(struct cell, bc_face[0].bc_thick);
-			bc_thick_defined_pos = offsetof(struct cell, bc_face[0].bc_thick_defined);
+			bc_type_pos = (int) offsetof(struct cell, bc_face[0].bc_type);
+			bc_flux_pos = (int) offsetof(struct cell, bc_face[0].bc_flux);
+			bc_flux_defined_pos = (int) offsetof(struct cell, bc_face[0].bc_flux_defined);
+			bc_solution_pos = (int) offsetof(struct cell, bc_face[0].bc_solution);
+			bc_solution_defined_pos = (int) offsetof(struct cell, bc_face[0].bc_solution_defined);
+			bc_solution_type_pos = (int) offsetof(struct cell, bc_face[0].bc_solution_type);
+			bc_head_pos = (int) offsetof(struct cell, bc_face[0].bc_head);
+			bc_head_defined_pos = (int) offsetof(struct cell, bc_face[0].bc_head_defined);
+			bc_k_pos = (int) offsetof(struct cell, bc_face[0].bc_k);
+			bc_k_defined_pos = (int) offsetof(struct cell, bc_face[0].bc_k_defined);
+			bc_thick_pos = (int) offsetof(struct cell, bc_face[0].bc_thick);
+			bc_thick_defined_pos = (int) offsetof(struct cell, bc_face[0].bc_thick_defined);
 			break;
 		case 1:
-			bc_type_pos = offsetof(struct cell, bc_face[1].bc_type);
-			bc_flux_pos = offsetof(struct cell, bc_face[1].bc_flux);
-			bc_flux_defined_pos = offsetof(struct cell, bc_face[1].bc_flux_defined);
-			bc_solution_pos = offsetof(struct cell, bc_face[1].bc_solution);
-			bc_solution_defined_pos = offsetof(struct cell, bc_face[1].bc_solution_defined);
-			bc_solution_type_pos = offsetof(struct cell, bc_face[1].bc_solution_type);
-			bc_head_pos = offsetof(struct cell, bc_face[1].bc_head);
-			bc_head_defined_pos = offsetof(struct cell, bc_face[1].bc_head_defined);
-			bc_k_pos = offsetof(struct cell, bc_face[1].bc_k);
-			bc_k_defined_pos = offsetof(struct cell, bc_face[1].bc_k_defined);
-			bc_thick_pos = offsetof(struct cell, bc_face[1].bc_thick);
-			bc_thick_defined_pos = offsetof(struct cell, bc_face[1].bc_thick_defined);
+			bc_type_pos = (int) offsetof(struct cell, bc_face[1].bc_type);
+			bc_flux_pos = (int) offsetof(struct cell, bc_face[1].bc_flux);
+			bc_flux_defined_pos = (int) offsetof(struct cell, bc_face[1].bc_flux_defined);
+			bc_solution_pos = (int) offsetof(struct cell, bc_face[1].bc_solution);
+			bc_solution_defined_pos = (int) offsetof(struct cell, bc_face[1].bc_solution_defined);
+			bc_solution_type_pos = (int) offsetof(struct cell, bc_face[1].bc_solution_type);
+			bc_head_pos = (int) offsetof(struct cell, bc_face[1].bc_head);
+			bc_head_defined_pos = (int) offsetof(struct cell, bc_face[1].bc_head_defined);
+			bc_k_pos = (int) offsetof(struct cell, bc_face[1].bc_k);
+			bc_k_defined_pos = (int) offsetof(struct cell, bc_face[1].bc_k_defined);
+			bc_thick_pos = (int) offsetof(struct cell, bc_face[1].bc_thick);
+			bc_thick_defined_pos = (int) offsetof(struct cell, bc_face[1].bc_thick_defined);
 			break;
 		case 2:
-			bc_type_pos = offsetof(struct cell, bc_face[2].bc_type);
-			bc_flux_pos = offsetof(struct cell, bc_face[2].bc_flux);
-			bc_flux_defined_pos = offsetof(struct cell, bc_face[2].bc_flux_defined);
-			bc_solution_pos = offsetof(struct cell, bc_face[2].bc_solution);
-			bc_solution_defined_pos = offsetof(struct cell, bc_face[2].bc_solution_defined);
-			bc_solution_type_pos = offsetof(struct cell, bc_face[2].bc_solution_type);
-			bc_head_pos = offsetof(struct cell, bc_face[2].bc_head);
-			bc_head_defined_pos = offsetof(struct cell, bc_face[2].bc_head_defined);
-			bc_k_pos = offsetof(struct cell, bc_face[2].bc_k);
-			bc_k_defined_pos = offsetof(struct cell, bc_face[2].bc_k_defined);
-			bc_thick_pos = offsetof(struct cell, bc_face[2].bc_thick);
-			bc_thick_defined_pos = offsetof(struct cell, bc_face[2].bc_thick_defined);
+			bc_type_pos = (int) offsetof(struct cell, bc_face[2].bc_type);
+			bc_flux_pos = (int) offsetof(struct cell, bc_face[2].bc_flux);
+			bc_flux_defined_pos = (int) offsetof(struct cell, bc_face[2].bc_flux_defined);
+			bc_solution_pos = (int) offsetof(struct cell, bc_face[2].bc_solution);
+			bc_solution_defined_pos = (int) offsetof(struct cell, bc_face[2].bc_solution_defined);
+			bc_solution_type_pos = (int) offsetof(struct cell, bc_face[2].bc_solution_type);
+			bc_head_pos = (int) offsetof(struct cell, bc_face[2].bc_head);
+			bc_head_defined_pos = (int) offsetof(struct cell, bc_face[2].bc_head_defined);
+			bc_k_pos = (int) offsetof(struct cell, bc_face[2].bc_k);
+			bc_k_defined_pos = (int) offsetof(struct cell, bc_face[2].bc_k_defined);
+			bc_thick_pos = (int) offsetof(struct cell, bc_face[2].bc_thick);
+			bc_thick_defined_pos = (int) offsetof(struct cell, bc_face[2].bc_thick_defined);
 			break;
 		}
 
