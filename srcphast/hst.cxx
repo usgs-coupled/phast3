@@ -709,6 +709,8 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 		}
 		std::ostringstream oss;
 		CParser cparser(myfile, oss, std::cerr);
+		cparser.set_echo_file(CParser::EO_NONE);
+		cparser.set_echo_stream(CParser::EO_NONE);
 		// read data
 		tempBin.read_raw(cparser);
 		// solutions
@@ -892,6 +894,8 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 		}
 		std::ostringstream oss;
 		CParser cparser(myfile, oss, std::cerr);
+		cparser.set_echo_file(CParser::EO_NONE);
+		cparser.set_echo_stream(CParser::EO_NONE);
 		// read data
 		tempBin.read_raw(cparser);
 
