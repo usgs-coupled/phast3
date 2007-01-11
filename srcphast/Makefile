@@ -177,7 +177,7 @@ EFENCE_LIB=-L$(HOME)/packages/efence
 # 12 Versions
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_ABSOFT)
-  DEFINES      = $(DEFINE_HDF) -DNDEBUG 
+  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DPHREEQC_CPP
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   FC           = $(FABSOFT)
   NLSPATH      = $(NLSABSOFT)
@@ -193,7 +193,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_ABSOFT_DEBUG)
-  DEFINES      = $(DEFINE_HDF)
+  DEFINES      = $(DEFINE_HDF) -DPHREEQC_CPP
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   FC           = $(FABSOFT)
   NLSPATH      = $(NLSABSOFT)
@@ -209,7 +209,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), MPI_ABSOFT)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG  
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG  -DPHREEQC_CPP
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   LAMHF77      = $(FABSOFT)
   export LAMHF77
@@ -228,7 +228,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), MPI_ABSOFT_DEBUG)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE)
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   LAMHF77      = $(FABSOFT)
   export LAMHF77
@@ -249,7 +249,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_LAHEY)
-  DEFINES      = $(DEFINE_HDF) -DLAHEY_F95 -DNDEBUG 
+  DEFINES      = $(DEFINE_HDF) -DLAHEY_F95 -DNDEBUG -DPHREEQC_CPP
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   FC           = $(FLAHEY)
   FFLAGS       = -O $(DEFINES)
@@ -264,7 +264,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_LAHEY_DEBUG)
-  DEFINES      = $(DEFINE_HDF) -DLAHEY_F95
+  DEFINES      = $(DEFINE_HDF) -DLAHEY_F95 -DPHREEQC_CPP
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   FC           = $(FLAHEY)
   FFLAGS       = -g --f95 --chkglobal --warn --info $(DEFINES)
@@ -278,7 +278,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), MPI_LAHEY)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DLAHEY_F95 -DNDEBUG
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DLAHEY_F95 -DNDEBUG -DPHREEQC_CPP
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   LAMHF77      = $(FLAHEY)
   export LAMHF77
@@ -296,7 +296,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), MPI_LAHEY_DEBUG)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DLAHEY_F95
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DLAHEY_F95 -DPHREEQC_CPP
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   LAMHF77      = $(FLAHEY)
   export LAMHF77
@@ -313,7 +313,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_G95)
-  DEFINES      = $(DEFINE_HDF) -DNDEBUG
+  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DPHREEQC_CPP
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   FC           = $(FG95)
   FFLAGS       = -O3 $(DEFINES) -fno-underscoring
@@ -327,7 +327,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_G95_DEBUG)
-  DEFINES      = $(DEFINE_HDF) 
+  DEFINES      = $(DEFINE_HDF) -DPHREEQC_CPP
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   FC           = $(FG95)
   FFLAGS       = -g -fno-underscoring $(DEFINES)
@@ -341,7 +341,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), MPI_G95)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   LAMHF77      = $(FG95)
   export LAMHF77
@@ -358,7 +358,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), MPI_G95_DEBUG)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE)
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   LAMHF77      = $(FG95)
   export LAMHF77

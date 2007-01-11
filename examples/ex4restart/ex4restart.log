@@ -368,7 +368,7 @@ Beginning time step no.      5
           No. of solver iterations, Relative residual:    7      1.3954693E-11
      Beginning chemistry calculation.
           Total cells: 657
-          Number of cells with same aqueous model: 0
+          Number of cells with same aqueous model: 540
           Total iterations all cells: 3787
           Number of cells with zero iterations: 0
           Maximum iterations for one cell: 16
