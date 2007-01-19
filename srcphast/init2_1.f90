@@ -416,10 +416,13 @@ SUBROUTINE init2_1
      DO ibf=1,3
         IF(b_cell(lbc)%face_indx(ibf) == 4) THEN
            arx(m) = arx(m-1)
+           arxbc(m) = arxbc(m-1)
         ELSEIF(b_cell(lbc)%face_indx(ibf) == 5) THEN
            ary(m) = ary(m-nx) 
+           arybc(m) = arybc(m-nx) 
         ELSEIF(b_cell(lbc)%face_indx(ibf) == 6) THEN
            arz(m) = arz(m-nxy)
+           arzbc(m) = arzbc(m-nxy)
         END IF
      END DO
   END DO
