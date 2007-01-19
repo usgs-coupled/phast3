@@ -21,10 +21,10 @@ SUBROUTINE init2_1
   INTERFACE
      FUNCTION nintrp(xarg,nx,xs,erflg)
        USE machine_constants, ONLY: kdp
-       REAL(kind=kdp), INTENT(in) :: xarg
-       INTEGER, INTENT(in) :: nx
-       REAL(kind=kdp), DIMENSION(:), INTENT(in) :: xs
-       LOGICAL, INTENT(inout) :: erflg
+       REAL(KIND=kdp), INTENT(IN) :: xarg
+       INTEGER, INTENT(IN) :: nx
+       REAL(KIND=kdp), DIMENSION(:), INTENT(IN) :: xs
+       LOGICAL, INTENT(INOUT) :: erflg
        INTEGER :: nintrp
      END FUNCTION nintrp
   END INTERFACE
@@ -32,7 +32,7 @@ SUBROUTINE init2_1
      INTEGER :: num_sd
      LOGICAL, DIMENSION(8) :: sd_active
   END TYPE cell_subdom
-  CHARACTER(len=9) :: cibc  
+  CHARACTER(len=9) :: cibc
   REAL(kind=kdp) :: keffl, keffu, up0, p1, rmm, rorw2, sum,  &
        uarbc, uarx, uary, uarz, uc, uden, udx, udxdy, udxdyi, &
        udxdyo, udxdz, udxyz, udxyzi, udxyzo, udy, udydz, udz, ugdelx, &
@@ -63,7 +63,7 @@ SUBROUTINE init2_1
   nsa = MAX(ns,1)
   ! ... convert the data to s.i. time units if necessary
   ! ...      even if an error abort is set
-  IF(tmunit.GT.1) CALL etom1  
+  IF(tmunit > 1) CALL etom1  
   thetxz = 90._kdp  
   thetyz = 90._kdp  
   thetzz = 0._kdp  
@@ -72,7 +72,7 @@ SUBROUTINE init2_1
      ! ...       observation wells
      ! ...      heterogeneous in z only
      y(1) = 0._kdp  
-     DO  i = 1, nr - 1  
+     DO  i=1,nr-1  
         rm(i) = (x(i+1) - x(i))/LOG(x(i+1)/x(i))  
      END DO
   ENDIF
@@ -86,7 +86,8 @@ SUBROUTINE init2_1
      gy = 0._kdp  
      gz = grav  
   ENDIF
-  ! ... Identify excluded cells from zone definitions
+  ! ... Build the mask for cross dispersion calculation
+  ! ...     identifying inactive neighbor nodes
   ALLOCATE (xd_mask(0:nx+1,0:ny+1,0:nz+1),  &
        stat = a_err)
   IF (a_err /= 0) THEN  
@@ -103,6 +104,7 @@ SUBROUTINE init2_1
         END DO
      END DO
   END DO
+  ! ... Identify excluded (inactive) cells from zone definitions
   DO  m=1,nxyz
      CALL mtoijk(m,i,j,k,nx,ny)
      IF(.NOT.xd_mask(i,j,k)) ibc(m) = -1
@@ -136,25 +138,24 @@ SUBROUTINE init2_1
      STOP  
   ENDIF
   ! ... calculate conductance zone by zone
-  DO m = 1, nxyz  
-     ! ...      zero the extensive interfacial property arrays
-     tx(m) = 0._kdp  
-     ty(m) = 0._kdp  
-     tz(m) = 0._kdp  
-     ! ...      these are void space areas,i.e. area*porosity
-     arx(m) = 0._kdp  
-     ary(m) = 0._kdp  
-     arz(m) = 0._kdp  
-     ! ...      these are total facial areas
-     arxbc(m) = 0._kdp  
-     arybc(m) = 0._kdp  
-     arzbc(m) = 0._kdp  
-     cell_sd(m)%num_sd = 0     ! ...      The subdomain counter
-     cell_sd(m)%sd_active = .FALSE.    ! ... active subdomain flags
-     ! ...      zero the extensive volumetric arrays
-     pv(m) = 0._kdp  
-     pmcv(m) = 0._kdp  
-  END DO
+  ! ...      zero the extensive interfacial property arrays
+  tx = 0._kdp  
+  ty = 0._kdp  
+  tz = 0._kdp  
+  ! ...      these are void space areas,i.e. area*porosity
+  arx = 0._kdp  
+  ary = 0._kdp  
+  arz = 0._kdp  
+  ! ...      these are total facial areas
+  arxbc = 0._kdp  
+  arybc = 0._kdp  
+  arzbc = 0._kdp  
+!!$  cell_sd%num_sd = 0     ! ...      The subdomain counter
+!!$  cell_sd%sd_active = .FALSE.    ! ... init subdomain flags to inactive
+  cell_sd = cell_subdom(0,(/.FALSE.,.FALSE.,.FALSE.,.FALSE.,.FALSE.,.FALSE.,.FALSE.,.FALSE./))
+  ! ...      zero the extensive volumetric arrays
+  pv = 0._kdp  
+  pmcv = 0._kdp  
   pmhv = 0._kdp
   pmchv = 0._kdp
   pvk = 0._kdp
@@ -309,63 +310,139 @@ SUBROUTINE init2_1
                  pmchv(mm(3) ) = pmchv(mm(3) ) + abpm(ipmz)*  &
                       udxyzo*rcppm(ipmz)
               ENDIF
-                    cell_sd(mm(1))%num_sd = cell_sd(mm(1))%num_sd+1
-                    cell_sd(mm(2))%num_sd = cell_sd(mm(2))%num_sd+1
-                    cell_sd(mm(3))%num_sd = cell_sd(mm(3))%num_sd+1
-                    cell_sd(mm(4))%num_sd = cell_sd(mm(4))%num_sd+1
+              cell_sd(mm(1))%num_sd = cell_sd(mm(1))%num_sd+1
+              cell_sd(mm(2))%num_sd = cell_sd(mm(2))%num_sd+1
+              cell_sd(mm(3))%num_sd = cell_sd(mm(3))%num_sd+1
+              cell_sd(mm(4))%num_sd = cell_sd(mm(4))%num_sd+1
 190        END DO
 200     END DO
      ENDIF
 210 END DO
-  ! ... fill in the cell porosity*area values at high end of region
-  DO m=1,nxyz
-     IF(ibc(m) == -1) CYCLE
-     CALL mtoijk(m,i,j,k,nx,ny)
-     IF(i == nx) arx(m) = arx(m-1)
-     IF(j == ny) ary(m) = ary(m-nx)
-     IF(k == nz) arz(m) = arz(m-nxy)
-     IF(i < nx) THEN
-        IF (ibc(m+1) == -1) arx(m) = arx(m-1)
-     ENDIF
-     IF(j < ny) THEN
-        IF (ibc(m+nx) == -1) ary(m) = ary(m-nx)
-     ENDIF
-     IF(k < nz) THEN
-        IF (ibc(m+nxy)== -1) arz(m) = arz(m-nxy)
-     ENDIF
+  ! ... determine size needed for boundary cell array
+  nbc = 0
+  lprnt2 = 0
+  DO  m=1,nxyz
+     IF(cell_sd(m)%num_sd == 0) THEN        ! ... an exterior cell
+        CYCLE
+     ELSEIF(cell_sd(m)%num_sd < 8) THEN     ! ... a boundary cell
+        nbc = nbc + 1
+        lprnt2(nbc) = m      ! ... scratch storage
+     END IF
   END DO
-  ! ... calculate b.c. facial areas with outward normal vector for
-  ! ...      sign
-  DO 220 m = 1, nxyz  
-     axsav(m) = arxbc(m)  
-     aysav(m) = arybc(m)  
-     azsav(m) = arzbc(m)  
-220 END DO
-  ! ... put the correct sign on outward normal vector for the
+  ! ... allocate space for boundary cell structure
+  ALLOCATE (b_cell(nbc),  &
+       STAT = a_err)
+  IF (a_err /= 0) THEN  
+     PRINT *, "array allocation failed: init2, number 15.1"  
+     STOP
+  ENDIF
+  ! ... load the boundary cell array structure; part 1, geometry
+  num_bndy_cells = nbc
+  DO l = 1,num_bndy_cells
+     b_cell(l)%m_cell = lprnt2(l)
+  END DO
+  DO  l=1,num_bndy_cells
+     m = b_cell(l)%m_cell
+     face_x = 0
+     face_y = 0
+     face_z = 0
+     num_indx = 0
+     b_cell(l)%face_indx = 0
+     b_cell(l)%bc_type = -1
+     b_cell(l)%lbc_indx = -100
+     DO msd=1,8
+        IF(.NOT.cell_sd(m)%sd_active(msd)) THEN
+           ! ... local subdomain msd is outside the active region
+           SELECT CASE (msd)
+           CASE (1,4,5,8)
+              face_x(msd) = 3
+              num_indx(3) = num_indx(3)+1
+           CASE (2,3,6,7)
+              face_x(msd) = 4
+              num_indx(4) = num_indx(4)+1
+           END SELECT
+           SELECT CASE (msd)
+           CASE (1,2,5,6)
+              face_y(msd) = 2
+              num_indx(2) = num_indx(2)+1
+           CASE (3,4,7,8)
+              face_y(msd) = 5
+              num_indx(5) = num_indx(5)+1
+           END SELECT
+           SELECT CASE (msd)
+           CASE (1,2,3,4)
+              face_z(msd) = 1
+              num_indx(1) = num_indx(1)+1
+           CASE (5,6,7,8)
+              face_z(msd) = 6
+              num_indx(6) = num_indx(6)+1
+           END SELECT
+        END IF
+     END DO
+     IF(num_indx(3) > num_indx(4)) b_cell(l)%face_indx(1) = 3
+     IF(num_indx(3) < num_indx(4)) b_cell(l)%face_indx(1) = 4
+     IF(num_indx(2) > num_indx(5)) b_cell(l)%face_indx(2) = 2
+     IF(num_indx(2) < num_indx(5)) b_cell(l)%face_indx(2) = 5
+     IF(num_indx(1) > num_indx(6)) b_cell(l)%face_indx(3) = 1
+     IF(num_indx(1) < num_indx(6)) b_cell(l)%face_indx(3) = 6
+     nbf = 0
+     DO ibf=1,3
+        IF(b_cell(l)%face_indx(ibf) > 0) nbf = nbf+1
+     END DO
+     b_cell(l)%num_faces = nbf
+     ! ... move exterior faces to top of list
+     DO
+        no_ex = .TRUE.
+        DO ibf = 1,2
+           IF(b_cell(l)%face_indx(ibf) <  b_cell(l)%face_indx(ibf+1)) THEN
+              t_findx = b_cell(l)%face_indx(ibf)
+              b_cell(l)%face_indx(ibf) = b_cell(l)%face_indx(ibf+1)
+              b_cell(l)%face_indx(ibf+1) = t_findx
+!!$              t_bctype = b_cell(l)%bc_type(ibf)
+!!$              b_cell(l)%bc_type(ibf) = b_cell(l)%bc_type(ibf+1)
+!!$              b_cell(l)%bc_type(ibf+1) = t_bctype
+!!$              t_lindx = b_cell(l)%lbc_indx(ibf)
+!!$              b_cell(l)%lbc_indx(ibf) = b_cell(l)%lbc_indx(ibf+1)
+!!$              b_cell(l)%lbc_indx(ibf+1) = t_lindx
+              no_ex = .FALSE.
+           END IF
+        END DO
+        IF(no_ex) EXIT
+     END DO
+  END DO
+  ! ... Fill in the cell porosity*area values at high end of region
+  DO  lbc=1,num_bndy_cells
+     m = b_cell(lbc)%m_cell
+     DO ibf=1,3
+        IF(b_cell(lbc)%face_indx(ibf) == 4) THEN
+           arx(m) = arx(m-1)
+        ELSEIF(b_cell(lbc)%face_indx(ibf) == 5) THEN
+           ary(m) = ary(m-nx) 
+        ELSEIF(b_cell(lbc)%face_indx(ibf) == 6) THEN
+           arz(m) = arz(m-nxy)
+        END IF
+     END DO
+  END DO
+  ! ... Calculate b.c. facial areas with outward normal vector for sign
+  DO  m=1,nxyz
+     axsav(m)=arxbc(m)
+     aysav(m)=arybc(m)
+     azsav(m)=arzbc(m)
+  END DO
+  ! ... Put the correct sign on outward normal vector for the
   ! ...      boundary faces
-  DO 230 m = 1, nxyz  
-     CALL mtoijk(m, i, j, k, nx, ny)  
-     IF(cell_sd(m)%num_sd > 0 .AND. cell_sd(m)%num_sd < 8) THEN
-        IF(i > 1) THEN
-           arxbc(m)=axsav(m-1)-axsav(m)
-        ELSE
-           arxbc(m)=-axsav(m)
+  DO  lbc=1,num_bndy_cells
+     m = b_cell(lbc)%m_cell
+     DO ibf=1,3
+        IF(b_cell(lbc)%face_indx(ibf) == 3) THEN
+           arxbc(m) = -arxbc(m)
+        ELSEIF(b_cell(lbc)%face_indx(ibf) == 2) THEN
+           arybc(m) = -arybc(m) 
+        ELSEIF(b_cell(lbc)%face_indx(ibf) == 1) THEN
+           arzbc(m) = -arzbc(m)
         END IF
-        IF(j > 1) THEN
-           arybc(m)=aysav(m-nx)-aysav(m)
-        ELSE
-           arybc(m)=-aysav(m)
-        END IF
-        IF(k > 1) THEN
-           arzbc(m)=azsav(m-nxy)-azsav(m)
-        ELSE
-           arzbc(m)=-azsav(m)
-        END IF
-        IF(ABS(arxbc(m)) < 1.e-7_kdp*axsav(m)) arxbc(m)=axsav(m)
-        IF(ABS(arybc(m)) < 1.e-7_kdp*aysav(m)) arybc(m)=aysav(m)
-        IF(ABS(arzbc(m)) < 1.e-7_kdp*azsav(m)) arzbc(m)=azsav(m)
-     ENDIF
-230 END DO
+     END DO
+  END DO
 !!$  if(heat) then  
 !!$     do 240 i = 1, npmz  
 !!$        ! ... calculate equivalent thermal conductivity for fluid and medium
@@ -931,100 +1008,12 @@ SUBROUTINE init2_1
         ENDIF
      END DO
 600 END DO
-  ! ... determine size needed for boundary cell array
-  nbc = 0
-  lprnt2 = 0
-  DO  m=1,nxyz
-     IF(cell_sd(m)%num_sd == 0) THEN     ! ... an exterior cell
-        CYCLE
-     ELSEIF(cell_sd(m)%num_sd < 8) THEN       ! ... a boundary cell
-        nbc = nbc + 1
-        lprnt2(nbc) = m      ! ... scratch storage
-     END IF
-  END DO
-  ! ... allocate space
-  ALLOCATE (b_cell(nbc),  &
-       stat = a_err)
-  IF (a_err /= 0) THEN  
-     PRINT *, "array allocation failed: init2, number 11"  
-     STOP  
-  ENDIF
-  ! ... load the boundary cell array structure
-  num_bndy_cells = nbc
-  DO l=1,num_bndy_cells
-     b_cell(l)%m_cell = lprnt2(l)
-  END DO
+
+  ! ... load the boundary cell array structure; part 2, b.c. types
   DO  l=1,num_bndy_cells
      m = b_cell(l)%m_cell
-     face_x = 0
-     face_y = 0
-     face_z = 0
-     num_indx = 0
-     b_cell(l)%face_indx = 0
-     b_cell(l)%bc_type = -1
-     b_cell(l)%lbc_indx = -100
-     DO msd=1,8
-!!$        if(.not.xd_mask(i_ele(msd),j_ele(msd),k_ele(msd))) then
-        IF(.NOT.cell_sd(m)%sd_active(msd)) THEN
-           ! ... local subdomain msd is outside the active region
-           SELECT CASE (msd)
-           CASE (1,4,5,8)
-              face_x(msd) = 3
-              num_indx(3) = num_indx(3)+1
-           CASE (2,3,6,7)
-              face_x(msd) = 4
-              num_indx(4) = num_indx(4)+1
-           END SELECT
-           SELECT CASE (msd)
-           CASE (1,2,5,6)
-              face_y(msd) = 2
-              num_indx(2) = num_indx(2)+1
-           CASE (3,4,7,8)
-              face_y(msd) = 5
-              num_indx(5) = num_indx(5)+1
-           END SELECT
-           SELECT CASE (msd)
-           CASE (1,2,3,4)
-              face_z(msd) = 1
-              num_indx(1) = num_indx(1)+1
-           CASE (5,6,7,8)
-              face_z(msd) = 6
-              num_indx(6) = num_indx(6)+1
-           END SELECT
-        END IF
-     END DO
-     IF(num_indx(3) > num_indx(4)) b_cell(l)%face_indx(1) = 3
-     IF(num_indx(3) < num_indx(4)) b_cell(l)%face_indx(1) = 4
-     IF(num_indx(2) > num_indx(5)) b_cell(l)%face_indx(2) = 2
-     IF(num_indx(2) < num_indx(5)) b_cell(l)%face_indx(2) = 5
-     IF(num_indx(1) > num_indx(6)) b_cell(l)%face_indx(3) = 1
-     IF(num_indx(1) < num_indx(6)) b_cell(l)%face_indx(3) = 6
-     nbf = 0
-     DO ibf=1,3
-        IF(b_cell(l)%face_indx(ibf) > 0) nbf = nbf+1
-     END DO
-     b_cell(l)%num_faces = nbf
-     ! ... move exterior faces to top of list
-     DO
-        no_ex = .TRUE.
-        DO ibf = 1,2
-           IF(b_cell(l)%face_indx(ibf) <  b_cell(l)%face_indx(ibf+1)) THEN
-              t_findx = b_cell(l)%face_indx(ibf)
-              b_cell(l)%face_indx(ibf) = b_cell(l)%face_indx(ibf+1)
-              b_cell(l)%face_indx(ibf+1) = t_findx
-!!$              t_bctype = b_cell(l)%bc_type(ibf)
-!!$              b_cell(l)%bc_type(ibf) = b_cell(l)%bc_type(ibf+1)
-!!$              b_cell(l)%bc_type(ibf+1) = t_bctype
-!!$              t_lindx = b_cell(l)%lbc_indx(ibf)
-!!$              b_cell(l)%lbc_indx(ibf) = b_cell(l)%lbc_indx(ibf+1)
-!!$              b_cell(l)%lbc_indx(ibf+1) = t_lindx
-              no_ex = .FALSE.
-           END IF
-        END DO
-        IF(no_ex) EXIT
-     END DO
      IF(ibc(m)/100000000 == 1) THEN     ! ... specified pressure b.c. node
-        b_cell(l)%bc_type = 1       ! ... set all 3 faces even if fewer external
+        b_cell(l)%bc_type = 1       ! ... set type for all 3 faces even if fewer external
         DO lbc=1,nsbc
            IF(msbc(lbc) == m) THEN
               b_cell(l)%lbc_indx = lbc
@@ -1058,7 +1047,7 @@ SUBROUTINE init2_1
                     EXIT
                  END IF
               END DO
-!*** need to handle river and river + flux and aifbc
+              !*** need to handle river and river + flux and aifbc
 !!$           ELSEIF(b_cell(l)%bc_type(ibf) == 6 .OR. b_cell(l)%bc_type(ibf) == 8) THEN
 !!$              DO lbc=1,nrbc_seg
 !!$                 IF(mrbc(lbc) == m) THEN
@@ -1125,52 +1114,52 @@ SUBROUTINE init2_1
   ! ... tolerances for iterative solution of p,t,c equations
   ! ...      change in density
   !...***not applicable
-     IF(slmeth == 1) THEN  
-        ALLOCATE (ind(nxyz), mrno(nxyz), mord(nxyz), &
-             ci(6,nxyz), cir(lrcgd1,nxyzh), cirh(lrcgd2,nxyzh), cirl(lrcgd2,nxyzh), &
-             ip1(nxyzh), ip1r(nxyzh), ipenv(nxyzh+2), &
-             stat = a_err)
-        IF (a_err /= 0) THEN  
-           PRINT *, "array allocation failed: init2, number 11"  
-           STOP  
-        ENDIF
-        ! ... establish d4 cell reordering for reduced matrix, ra
-        CALL reordr(slmeth)  
-        ! ... allocate space for the solver
-        ALLOCATE(diagra(nbn), envlra(ipenv(nbn+1)), envura(ipenv(nbn+1)),  &
-             stat = a_err)
-        IF (a_err /= 0) THEN  
-           PRINT *, "array allocation failed: init2, number 12"  
-           STOP  
-        ENDIF
-        ! ... primary and overhead storage
-        nprist = nbn + 2*ipenv(nbn + 1)  
-        nohst = 9*nxyz + nbn + 1  
-        nstslv = nprist + nohst  
-     ELSEIF(slmeth == 3 .OR. slmeth == 5) THEN  
-        ALLOCATE (ind(nxyz), mrno(nxyz), mord(nxyz), ci(6,nxyz), cir(lrcgd1,nxyzh), &
-             cirh(lrcgd2,nxyzh), cirl(lrcgd2,nxyzh), &
-             stat = a_err)
-        IF (a_err /= 0) THEN
-           PRINT *, "array allocation failed: init2, number 13"  
-           STOP  
-        ENDIF
-        ! ... establish red-black or d4z cell reordering for reduced matrix, ra
-        CALL reordr(slmeth)
-        ! ... allocate space for the solver
-        ALLOCATE(ap(nrn,0:nsdr), bbp(nbn,0:nsdr), ra(lrcgd1,nbn), rr(nrn), sss(nbn),  &
-             xx(nxyz), ww(nrn), zz(nbn), sumfil(nbn),  &
-             stat = a_err)
-        IF (a_err /= 0) THEN  
-           PRINT *, "array allocation failed: init2, number 14"  
-           STOP  
-        ENDIF
-        ! ... primary and overhead storage
-        nprist = lrcgd1*nbn  
-        nohst = 3*lrcgd1*nbn + 2*(nsdr + 1)*nbn + 10*nxyz + 5* &
-             nbn + (nsdr - 1)*(nsdr - 1) + nsdr + 19*19 + 42
-        nstslv = nprist + nohst  
+  IF(slmeth == 1) THEN  
+     ALLOCATE (ind(nxyz), mrno(nxyz), mord(nxyz), &
+          ci(6,nxyz), cir(lrcgd1,nxyzh), cirh(lrcgd2,nxyzh), cirl(lrcgd2,nxyzh), &
+          ip1(nxyzh), ip1r(nxyzh), ipenv(nxyzh+2), &
+          stat = a_err)
+     IF (a_err /= 0) THEN  
+        PRINT *, "array allocation failed: init2, number 11"  
+        STOP  
      ENDIF
+     ! ... establish d4 cell reordering for reduced matrix, ra
+     CALL reordr(slmeth)  
+     ! ... allocate space for the solver
+     ALLOCATE(diagra(nbn), envlra(ipenv(nbn+1)), envura(ipenv(nbn+1)),  &
+          stat = a_err)
+     IF (a_err /= 0) THEN  
+        PRINT *, "array allocation failed: init2, number 12"  
+        STOP  
+     ENDIF
+     ! ... primary and overhead storage
+     nprist = nbn + 2*ipenv(nbn + 1)  
+     nohst = 9*nxyz + nbn + 1  
+     nstslv = nprist + nohst  
+  ELSEIF(slmeth == 3 .OR. slmeth == 5) THEN  
+     ALLOCATE (ind(nxyz), mrno(nxyz), mord(nxyz), ci(6,nxyz), cir(lrcgd1,nxyzh), &
+          cirh(lrcgd2,nxyzh), cirl(lrcgd2,nxyzh), &
+          stat = a_err)
+     IF (a_err /= 0) THEN
+        PRINT *, "array allocation failed: init2, number 13"  
+        STOP  
+     ENDIF
+     ! ... establish red-black or d4z cell reordering for reduced matrix, ra
+     CALL reordr(slmeth)
+     ! ... allocate space for the solver
+     ALLOCATE(ap(nrn,0:nsdr), bbp(nbn,0:nsdr), ra(lrcgd1,nbn), rr(nrn), sss(nbn),  &
+          xx(nxyz), ww(nrn), zz(nbn), sumfil(nbn),  &
+          stat = a_err)
+     IF (a_err /= 0) THEN  
+        PRINT *, "array allocation failed: init2, number 14"  
+        STOP  
+     ENDIF
+     ! ... primary and overhead storage
+     nprist = lrcgd1*nbn  
+     nohst = 3*lrcgd1*nbn + 2*(nsdr + 1)*nbn + 10*nxyz + 5* &
+          nbn + (nsdr - 1)*(nsdr - 1) + nsdr + 19*19 + 42
+     nstslv = nprist + nohst  
+  ENDIF
   ! ... allocate space for the assembly of difference equations
   ALLOCATE(va(7,nxyz), rhs(nxyz), cc34(nxyz), cc35(nxyz),  &
        diagc(nxyz), diagr(nxyz),  &
@@ -1179,7 +1168,7 @@ SUBROUTINE init2_1
      PRINT *, "array allocation failed: init2, number 15"
      STOP
   ENDIF
-!*****special flag for diagnostic
+  !*****special flag for diagnostic
   ident_diagc = .TRUE.
   ! ... initialize heat conduction b.c. temperatures
 !!$  !...***not available in phast
