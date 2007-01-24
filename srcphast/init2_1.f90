@@ -32,11 +32,11 @@ SUBROUTINE init2_1
      INTEGER :: num_sd
      LOGICAL, DIMENSION(8) :: sd_active
   END TYPE cell_subdom
-  CHARACTER(len=9) :: cibc
-  REAL(kind=kdp) :: keffl, keffu, up0, p1, rmm, rorw2, sum,  &
-       uarbc, uarx, uary, uarz, uc, uden, udx, udxdy, udxdyi, &
-       udxdyo, udxdz, udxyz, udxyzi, udxyzo, udy, udydz, udz, ugdelx, &
-       ugdely, ugdelz, upabd, upor, ut, uwi, x0, y0, z0, z1, &
+  CHARACTER(LEN=9) :: cibc
+  REAL(KIND=kdp) :: keffl, keffu, up0, p1, rmm, rorw2, sum, t_rswap,  &
+       uarbc, uarx, uary, uarz, uc, uden, udx, udxdy, udxdyi,  &
+       udxdyo, udxdz, udxyz, udxyzi, udxyzo, udy, udydz, udz, ugdelx,  &
+       ugdely, ugdelz, upabd, upor, ut, uwi, x0, y0, z0, z1,  &
        zfsl, zm1, zp1
   INTEGER :: a_err, da_err, i, ic, imm, imod, ipmz, iis, iwel, j, jc, k, k1, k2, kf, &
        kinc, kl, kr, ks, kw, l, l1, lc, ls, m, mb, mc, m1, m2, &
@@ -336,6 +336,12 @@ SUBROUTINE init2_1
      PRINT *, "array allocation failed: init2, number 15.1"  
      STOP
   ENDIF
+  ALLOCATE (uarxbc(nxyz), uarybc(nxyz), uarzbc(nxyz), &
+       stat = a_err)
+  IF (a_err /= 0) THEN  
+     PRINT *, "array allocation failed: init2, number 6"  
+     STOP  
+  ENDIF
   ! ... load the boundary cell array structure; part 1, geometry
   num_bndy_cells = nbc
   DO l = 1,num_bndy_cells
@@ -350,6 +356,7 @@ SUBROUTINE init2_1
      b_cell(l)%face_indx = 0
      b_cell(l)%bc_type = -1
      b_cell(l)%lbc_indx = -100
+     b_cell(l)%por_areabc = 0.
      DO msd=1,8
         IF(.NOT.cell_sd(m)%sd_active(msd)) THEN
            ! ... local subdomain msd is outside the active region
@@ -410,39 +417,60 @@ SUBROUTINE init2_1
         IF(no_ex) EXIT
      END DO
   END DO
-  ! ... Fill in the cell porosity*area values at high end of region
-  DO  lbc=1,num_bndy_cells
-     m = b_cell(lbc)%m_cell
-     DO ibf=1,3
-        IF(b_cell(lbc)%face_indx(ibf) == 4) THEN
-           arx(m) = arx(m-1)
-           arxbc(m) = arxbc(m-1)
-        ELSEIF(b_cell(lbc)%face_indx(ibf) == 5) THEN
-           ary(m) = ary(m-nx) 
-           arybc(m) = arybc(m-nx) 
-        ELSEIF(b_cell(lbc)%face_indx(ibf) == 6) THEN
-           arz(m) = arz(m-nxy)
-           arzbc(m) = arzbc(m-nxy)
-        END IF
-     END DO
-  END DO
-  ! ... Calculate b.c. facial areas with outward normal vector for sign
-  DO  m=1,nxyz
-     axsav(m)=arxbc(m)
-     aysav(m)=arybc(m)
-     azsav(m)=arzbc(m)
-  END DO
-  ! ... Put the correct sign on outward normal vector for the
+  ! ... Calculate exterior face areas for boundary cells
+  ! ... The correct sign will be given on outward normal vector for the
   ! ...      boundary faces
   DO  lbc=1,num_bndy_cells
      m = b_cell(lbc)%m_cell
-     DO ibf=1,3
-        IF(b_cell(lbc)%face_indx(ibf) == 3) THEN
-           arxbc(m) = -arxbc(m)
-        ELSEIF(b_cell(lbc)%face_indx(ibf) == 2) THEN
-           arybc(m) = -arybc(m) 
-        ELSEIF(b_cell(lbc)%face_indx(ibf) == 1) THEN
-           arzbc(m) = -arzbc(m)
+     CALL mtoijk(m,i,j,k,nx,ny)
+     IF(i > 1) THEN
+        uarxbc(m) = arxbc(m-1)-arxbc(m)
+     ELSE
+        uarxbc(m) = -arxbc(m)
+     END IF
+     IF(j > 1) THEN
+        uarybc(m) = arybc(m-nx)-arybc(m)
+     ELSE
+        uarybc(m) = -arybc(m)
+     END IF
+     IF(k > 1) THEN
+        uarzbc(m) = arzbc(m-nxy)-arzbc(m)
+     ELSE
+        uarzbc(m) = -arzbc(m)
+     END IF
+  END DO
+  ! ... Calculate porosity*area for exterior faces of boundary cells
+  DO  lbc=1,num_bndy_cells
+     m = b_cell(lbc)%m_cell
+     DO ibf=1,b_cell(lbc)%num_faces
+        ic = b_cell(lbc)%face_indx(ibf)
+        IF(fresur .AND. ic == 6) CYCLE
+        IF(ic == 3) THEN
+           b_cell(lbc)%por_areabc(ibf) = (arx(m)/arxbc(m))*ABS(uarxbc(m))
+        ELSEIF(ic == 4) THEN
+           b_cell(lbc)%por_areabc(ibf) = (arx(m-1)/arxbc(m-1))*ABS(uarxbc(m))
+        ELSEIF(ic == 2) THEN
+           b_cell(lbc)%por_areabc(ibf) = (ary(m)/arybc(m))*ABS(uarybc(m))
+        ELSEIF(ic == 5) THEN
+           b_cell(lbc)%por_areabc(ibf) = (ary(m-nx)/arybc(m-nx))*ABS(uarybc(m))
+        ELSEIF(ic == 1) THEN
+           b_cell(lbc)%por_areabc(ibf) = (arz(m)/arzbc(m))*ABS(uarzbc(m))
+        ELSEIF(ic == 6) THEN
+           b_cell(lbc)%por_areabc(ibf) = (arz(m-nxy)/arzbc(m-nxy))*ABS(uarzbc(m))
+        END IF
+     END DO
+  END DO
+  ! ... Load exterior face areas for boundary cells
+  DO  lbc=1,num_bndy_cells
+     m = b_cell(lbc)%m_cell
+     DO ibf=1,b_cell(lbc)%num_faces
+        ic = b_cell(lbc)%face_indx(ibf)
+        IF(ic == 3 .OR. ic == 4) THEN
+           arxbc(m) = uarxbc(m)
+        ELSEIF(ic == 2 .OR. ic == 5) THEN
+           arybc(m) = uarybc(m)
+        ELSEIF(ic == 1 .OR. ic == 6) THEN
+           arzbc(m) = uarzbc(m)
         END IF
      END DO
   END DO
@@ -601,7 +629,7 @@ SUBROUTINE init2_1
      ! ... specified flux b.c.
      l = 0  
      lnz2 = nxyz + 1  
-     ALLOCATE (umbc(nxyz), uarxbc(nxyz), uarybc(nxyz), uarzbc(nxyz), &
+     ALLOCATE (umbc(nxyz),  &
           stat = a_err)
      IF (a_err /= 0) THEN  
         PRINT *, "array allocation failed: init2, number 6"  
@@ -1011,7 +1039,6 @@ SUBROUTINE init2_1
         ENDIF
      END DO
 600 END DO
-
   ! ... load the boundary cell array structure; part 2, b.c. types
   DO  l=1,num_bndy_cells
      m = b_cell(l)%m_cell
@@ -1095,6 +1122,9 @@ SUBROUTINE init2_1
            t_lindx = b_cell(l)%lbc_indx(1)
            b_cell(l)%lbc_indx(1) = b_cell(l)%lbc_indx(3)
            b_cell(l)%lbc_indx(3) = t_lindx
+           t_rswap = b_cell(l)%por_areabc(1)
+           b_cell(l)%por_areabc(1) = b_cell(l)%por_areabc(3)
+           b_cell(l)%por_areabc(3) = t_rswap
         ELSEIF(b_cell(l)%bc_type(1) == b_cell(l)%bc_type(3)) THEN
            t_bctype = b_cell(l)%bc_type(2)
            b_cell(l)%bc_type(2) = b_cell(l)%bc_type(3)
@@ -1105,6 +1135,9 @@ SUBROUTINE init2_1
            t_lindx = b_cell(l)%lbc_indx(2)
            b_cell(l)%lbc_indx(2) = b_cell(l)%lbc_indx(3)
            b_cell(l)%lbc_indx(3) = t_lindx
+           t_rswap = b_cell(l)%por_areabc(2)
+           b_cell(l)%por_areabc(2) = b_cell(l)%por_areabc(3)
+           b_cell(l)%por_areabc(3) = t_rswap
         END IF
      END IF
   END DO

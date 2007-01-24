@@ -119,11 +119,11 @@ SUBROUTINE calc_velocity
            IF(ic >= 4) qface = -qface     ! ... Product of q vector with outward normal
 !           if(abs(qface) > 0._kdp) then
               IF(ic == 3 .OR. ic == 4) THEN
-                 vx_node(m) = qface/(den(m)*frac(m)*arx(m))
+                 vx_node(m) = qface/(den(m)*frac(m)*b_cell(l)%por_areabc(ibf))
               ELSEIF(ic == 2 .OR. ic == 5) THEN
-                 vy_node(m) = qface/(den(m)*frac(m)*ary(m))
+                 vy_node(m) = qface/(den(m)*frac(m)*b_cell(l)%por_areabc(ibf))
               ELSEIF(ic == 1 .OR. ic == 6) THEN
-                 vz_node(m) = qface/(den(m)*arz(m))
+                 vz_node(m) = qface/(den(m)*b_cell(l)%por_areabc(ibf))
               END IF
 !           end if
         END DO
@@ -146,22 +146,22 @@ SUBROUTINE calc_velocity
            IF(fresur .AND. ic == 6) CYCLE
            IF(ic == 3) THEN
               qs(ibf) = ABS(sxx(m))
-              pa(ibf) = arx(m)*frac(m)
+              pa(ibf) = frac(m)*b_cell(l)%por_areabc(ibf)
            ELSEIF(ic == 4) THEN
               qs(ibf) = ABS(sxx(m-1))
-              pa(ibf) = -arx(m)*frac(m)
+              pa(ibf) = frac(m)*b_cell(l)%por_areabc(ibf)
            ELSEIF(ic == 2) THEN
               qs(ibf) = ABS(syy(m))
-              pa(ibf) = ary(m)*frac(m)
+              pa(ibf) = frac(m)*b_cell(l)%por_areabc(ibf)
            ELSEIF(ic == 5) THEN
               qs(ibf) = ABS(syy(m-nx))
-              pa(ibf) = -ary(m)*frac(m)
+              pa(ibf) = frac(m)*b_cell(l)%por_areabc(ibf)
            ELSEIF(ic == 1) THEN
               qs(ibf) = ABS(szz(m))
-              pa(ibf) = arz(m)
+              pa(ibf) = b_cell(l)%por_areabc(ibf)
            ELSEIF(ic == 6) THEN
               qs(ibf) = ABS(szz(m-nxy))
-              pa(ibf) = -arz(m)
+              pa(ibf) = b_cell(l)%por_areabc(ibf)
            END IF
            sumq = sumq + qs(ibf)
         END DO
@@ -170,12 +170,18 @@ SUBROUTINE calc_velocity
            vapp = qface*(qs(ibf)/sumq)/(den(m)*pa(ibf))
            ic = b_cell(l)%face_indx(ibf)
            IF(fresur .AND. ic == 6) CYCLE
-           IF(ic == 3 .OR. ic == 4) THEN
+           IF(ic == 3) THEN
               vx_node(m) = vapp
-           ELSEIF(ic == 2 .OR. ic == 5) THEN
+           ELSEIF(ic == 4) THEN
+              vx_node(m) = -vapp
+           ELSEIF(ic == 2) THEN
               vy_node(m) = vapp
-           ELSEIF(ic == 1 .OR. ic == 6) THEN
+           ELSEIF(ic == 5) THEN
+              vy_node(m) = -vapp
+           ELSEIF(ic == 1) THEN
               vz_node(m) = vapp
+           ELSEIF(ic == 6) THEN
+              vz_node(m) = -vapp
            END IF
         END DO
      ELSEIF(b_cell(l)%num_faces == 3 .AND. b_cell(l)%num_same_bc == 2) THEN 
@@ -199,22 +205,22 @@ SUBROUTINE calc_velocity
            IF(fresur .AND. ic == 6) CYCLE
            IF(ic == 3) THEN
               qs(ibf) = ABS(sxx(m))
-              pa(ibf) = arx(m)*frac(m)
+              pa(ibf) = frac(m)*b_cell(l)%por_areabc(ibf)
            ELSEIF(ic == 4) THEN
               qs(ibf) = ABS(sxx(m-1))
-              pa(ibf) = -arx(m)*frac(m)
+              pa(ibf) = frac(m)*b_cell(l)%por_areabc(ibf)
            ELSEIF(ic == 2) THEN
               qs(ibf) = ABS(syy(m))
-              pa(ibf) = ary(m)*frac(m)
+              pa(ibf) = frac(m)*b_cell(l)%por_areabc(ibf)
            ELSEIF(ic == 5) THEN
               qs(ibf) = ABS(syy(m-nx))
-              pa(ibf) = -ary(m)*frac(m)
+              pa(ibf) = frac(m)*b_cell(l)%por_areabc(ibf)
            ELSEIF(ic == 1) THEN
               qs(ibf) = ABS(szz(m))
-              pa(ibf) = arz(m)
+              pa(ibf) = b_cell(l)%por_areabc(ibf)
            ELSEIF(ic == 6) THEN
               qs(ibf) = ABS(szz(m-nxy))
-              pa(ibf) = -arz(m)
+              pa(ibf) = b_cell(l)%por_areabc(ibf)
            END IF
            sumq = sumq + qs(ibf)
         END DO
@@ -223,12 +229,18 @@ SUBROUTINE calc_velocity
            ic = b_cell(l)%face_indx(ibf)
            IF(fresur .AND. ic == 6) CYCLE
            vapp = qface*(qs(ibf)/sumq)/(den(m)*pa(ibf))
-           IF(ic == 3 .OR. ic == 4) THEN
+           IF(ic == 3) THEN
               vx_node(m) = vapp
-           ELSEIF(ic == 2 .OR. ic == 5) THEN
+           ELSEIF(ic == 4) THEN
+              vx_node(m) = -vapp
+           ELSEIF(ic == 2) THEN
               vy_node(m) = vapp
-           ELSEIF(ic == 1 .OR. ic == 6) THEN
+           ELSEIF(ic == 5) THEN
+              vy_node(m) = -vapp
+           ELSEIF(ic == 1) THEN
               vz_node(m) = vapp
+           ELSEIF(ic == 6) THEN
+              vz_node(m) = -vapp
            END IF
         END DO
         ! ... Do the remaining face
@@ -249,11 +261,11 @@ SUBROUTINE calc_velocity
         IF(ic >= 4) qface = -qface     ! ... Product of q vector with outward normal
 !        if(abs(qface) > 0._kdp) then
            IF(ic == 3 .OR. ic == 4) THEN
-              vx_node(m) = qface/(den(m)*frac(m)*arx(m))
+              vx_node(m) = qface/(den(m)*frac(m)*b_cell(l)%por_areabc(ibf))
            ELSEIF(ic == 2 .OR. ic == 5) THEN
-              vy_node(m) = qface/(den(m)*frac(m)*ary(m))
+              vy_node(m) = qface/(den(m)*frac(m)*b_cell(l)%por_areabc(ibf))
            ELSEIF(ic == 1 .OR. ic == 6) THEN
-              vz_node(m) = qface/(den(m)*arz(m))
+              vz_node(m) = qface/(den(m)*b_cell(l)%por_areabc(ibf))
            END IF
 !        end if
      END IF

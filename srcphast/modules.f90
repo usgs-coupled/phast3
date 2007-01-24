@@ -30,6 +30,7 @@ MODULE mcb
   TYPE :: bndry_cell
      INTEGER :: m_cell, num_faces, num_same_bc
      INTEGER, DIMENSION(3) :: face_indx, bc_type, lbc_indx
+     REAL(KIND=kdp), DIMENSION(3) :: por_areabc
   END TYPE bndry_cell
   TYPE :: rbc_indices
      INTEGER :: m, seg_first, seg_last

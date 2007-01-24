@@ -23,7 +23,7 @@ SUBROUTINE rowscale(nrow,norm,a,diag,ierr)
   INTEGER :: i, nd
   INTEGER :: a_err, da_err
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: scale_jds.f90,v $//$Revision: 1.3 $'
+  CHARACTER(LEN=80) :: ident_string='$RCSfile: scale_jds.f90,v $//$Revision: 1.1 $'
   !     ------------------------------------------------------------------
   !...
   nd = SIZE(a,1)          ! ... maximum number of diagonals (elements) per row
@@ -143,7 +143,7 @@ SUBROUTINE colscale(nrow,norm,a,ci,diag,ierr)
   INTEGER :: j, nd
   INTEGER :: a_err, da_err
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$RCSfile: scale_jds.f90,v $//$Revision: 1.3 $'
+  CHARACTER(LEN=80) :: ident_string='$RCSfile: scale_jds.f90,v $//$Revision: 1.1 $'
   !     ------------------------------------------------------------------
   !...
   nd = SIZE(a,1)
