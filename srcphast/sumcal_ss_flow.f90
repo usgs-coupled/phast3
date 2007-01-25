@@ -545,10 +545,12 @@ SUBROUTINE sumcal_ss_flow
      END IF
      qn=qfbcv(l)
      IF(qn <= 0._kdp) THEN     ! ... Outflow
-        qfbc=den(m)*qn*ufrac
+        qfbc = den(m)*qn*ufrac
+        qffbc(l) = qfbc
         stotfp = stotfp-ufdt1*qfbc
      ELSE                      ! ... Inflow
-        qfbc=denfbc(l)*qn*ufrac
+        qfbc = denfbc(l)*qn*ufrac
+        qffbc(l) = qfbc
         stotfi = stotfi+ufdt1*qfbc
      END IF
 !     sffb(l)=sffb(l)+qfbc

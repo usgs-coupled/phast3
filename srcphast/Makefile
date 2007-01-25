@@ -155,8 +155,8 @@ HDF5_INCLUDES=-I$(HDF5_ROOT)/include
 HDF5_LIBS=${HDF5_ROOT}/lib/libhdf5.a -lz -lpthread  
 
 # -----------------------------------------------------------------------------
-# #define compile options
-DEFINE_HDF=-DHDF5_CREATE
+##DEFINE_HDF=-DHDF5_CREATE
+DEFINE_HDF=
 DEFINE_MPI=-DUSE_MPI
 DEFINE_MERGE=-DMERGE_FILES
 
