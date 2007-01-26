@@ -17,19 +17,19 @@ ifeq ($(CFG), CYGWIN)
   PHAST_MPICH=c:/Programs/phastpp/srcphast/win32_2005/merge/phast.exe
 endif
 
-SERIAL = decay diffusion1d diffusion2d disp2d ex3 kindred4.4 leaky leakyx leakyz linear_bc linear_ic ex4 phrqex11 ex1 radial river unconf well ex2 free ex4restart print_check_ss print_check_transient
+SERIAL = decay diffusion1d diffusion2d disp2d ex3 kindred4.4 leaky leakyx leakyz linear_bc linear_ic ex4 notch phrqex11 ex1 radial river unconf well ex2 free ex4restart print_check_ss print_check_transient
 
-PARALLEL =  decay_parallel diffusion1d_parallel diffusion2d_parallel disp2d_parallel ex3_parallel kindred4.4_parallel leaky_parallel leakyx_parallel leakyz_parallel linear_bc_parallel linear_ic_parallel ex4_parallel phrqex11_parallel ex1_parallel radial_parallel river_parallel unconf_parallel well_parallel ex2_parallel free_parallel ex4restart_parallel print_check_ss_parallel print_check_transient_parallel
+PARALLEL =  decay_parallel diffusion1d_parallel diffusion2d_parallel disp2d_parallel ex3_parallel kindred4.4_parallel leaky_parallel leakyx_parallel leakyz_parallel linear_bc_parallel linear_ic_parallel ex4_parallel notch_parallel phrqex11_parallel ex1_parallel radial_parallel river_parallel unconf_parallel well_parallel ex2_parallel free_parallel ex4restart_parallel print_check_ss_parallel print_check_transient_parallel
 
 CLEAN_PROBLEMS = decay_clean diffusion1d_clean diffusion2d_clean disp2d_clean ex3_clean \
 	kindred4.4_clean leaky_clean leakyx_clean leakyz_clean \
-	linear_bc_clean linear_ic_clean ex4_clean phrqex11_clean ex1_clean \
+	linear_bc_clean linear_ic_clean ex4_clean notch_clean phrqex11_clean ex1_clean \
 	radial_clean river_clean unconf_clean well_clean ex2_clean free_clean \
 	ex4restart_clean print_check_ss_clean print_check_transient_clean \
 	decay_clean_parallel diffusion1d_clean_parallel diffusion2d_clean_parallel \
 	disp2d_clean_parallel ex3_clean_parallel kindred4.4_clean_parallel \
 	leaky_clean_parallel leakyx_clean_parallel leakyz_clean_parallel \
-	linear_bc_clean_parallel linear_ic_clean_parallel ex4_clean_parallel \
+	linear_bc_clean_parallel linear_ic_clean_parallel ex4_clean_parallel notch_clean_parallel \
 	phrqex11_clean_parallel ex1_clean_parallel radial_clean_parallel \
 	river_clean_parallel unconf_clean_parallel well_clean_parallel ex2_clean_parallel \
 	free_clean_parallel \
@@ -447,6 +447,33 @@ ex4restart_clean_parallel:
 	  then \
 	  find $(TEST)/ex4restart/0 -maxdepth 1 -type f | xargs rm -f; \
 	fi
+#
+# Notch
+#
+notch: notch_clean
+	echo ; 
+	echo ============= notch
+	echo ; 
+	cd $(TEST)/notch;
+	cd $(TEST)/notch; $(PHAST_INPUT) notch; time $(PHAST)
+	echo ============= Done notch
+
+notch_parallel: notch_clean_parallel
+	echo ; 
+	echo ============= notch Parallel
+	echo ; 
+	./run notch
+	echo ============= Done notch Parallel
+
+notch_clean:
+	cd $(TEST)/notch; $(CLEAN_CMD) notch.head.dat
+
+notch_clean_parallel:
+	@if [ -d $(TEST)/notch/0 ]; \
+	  then \
+	  find $(TEST)/notch/0 -maxdepth 1 -type f | xargs rm -f; \
+	fi
+
 #
 # print_check_ss
 #
