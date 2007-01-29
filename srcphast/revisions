@@ -1,9 +1,11 @@
 ---------------------------------------
-PHAST, Version 1.3.2 (January 18, 2007)
+PHAST, Version 1.3.2 (February 1, 2007)
 ---------------------------------------
-    svn 1641: Updated to PHREEQC 2.13.2.
-    Fixed bug in velocity interpolation for 1 element inactive
-    zone.
+
+    svn 1700: Updated to PHREEQC 2.13.2.
+
+    svn 1641: Fixed bug in velocity interpolation for 1 element
+    inactive zone.
 
 ---------------------------------------
 PHAST, Version 1.3.1 (January 16, 2007)
