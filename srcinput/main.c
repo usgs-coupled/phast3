@@ -376,6 +376,8 @@ int clean_up(void)
 	free_check_null(chemistry_name);
 	free_check_null(database_name);	
 
+	FileMap.clear();
+
 /* files */
 	if (input != NULL) fclose (input);
 	if (echo_file != NULL) fclose (echo_file);
@@ -697,6 +699,8 @@ void initialize(void)
 
 	time_end = NULL;
 	count_time_end = 0;
+
+	FileMap.clear();
 
 	return;
 }
