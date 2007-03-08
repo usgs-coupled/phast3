@@ -209,7 +209,7 @@ SUBROUTINE closef(mpi_myself)
        tcsfbc, &
        tcslbc, tcsrbc, tcssbc, &
        totwsi, totwsp, &
-       tqwsi, tqwsp, u10, zfs, zfsn, &
+       tqwsi, tqwsp, u10, zfs, &
        stat = da_err)
   IF (da_err /= 0) THEN  
      PRINT *, "Array allocation failed: closef: number 2"  
