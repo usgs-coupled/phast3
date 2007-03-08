@@ -276,14 +276,14 @@ MODULE mcv
   SAVE
   INTEGER, DIMENSION(:), ALLOCATABLE :: ICMAX, JCMAX, KCMAX, icsbc, icflx, iclbc, icrbc
   INTEGER, DIMENSION(:,:), ALLOCATABLE :: indx_sol1_ic, indx_sol2_ic, indx_sol1_bc, indx_sol2_bc
-  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: axsav, aysav, azsav, dfracdt, dp, dt, &
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: axsav, aysav, azsav, dzfsdt, dp, dt, &
        sxx, syy, szz, vxx, vyy, vzz,  &
        vx_node, vy_node, vz_node,  &
        dcmax, dsir, dsir_chem, ssres, ssresf, stotsi, stotsp, stsaif, &
        stsetb, stsfbc, stslbc, stsrbc, stssbc, stswel, tsres, tsresf, zfs
   REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE, TARGET :: qsfx, qsfy, qsfz
   REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE, TARGET :: dc
-  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE ::  den, eh, frac, fracn, frac_icchem,  &
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE ::  den, eh, frac, zfsn, frac_icchem,  &
        p, t, vis, sir, sir0, sirn, sir_prechem,  &
        totsi, totsp, tdsir_chem, tcsaif, tcsetb, tcsfbc, tcslbc, tcsrbc, tcssbc
   REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE ::  c, ic_mxfrac, bc_mxfrac

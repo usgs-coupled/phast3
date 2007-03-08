@@ -60,7 +60,7 @@ SUBROUTINE sumcal1
   END DO
   ! ... Allocate scratch space
   nsa = MAX(ns,1)
-  ALLOCATE (mcmax(nsa), fracn(nxy),  &
+  ALLOCATE (mcmax(nsa), zfsn(nxy),  &
        STAT = a_err)
   IF (a_err /= 0) THEN  
      PRINT *, "Array allocation failed: sumcal1"  
@@ -195,8 +195,8 @@ SUBROUTINE sumcal1
      DO  mt=1,nxy
         m=mfsbc(mt)          ! ... w.t. cell at time n
         IF(m == 0) CYCLE     ! ... Column of dry cells; can not rewet
-        ! ... Save previous frac for rate of free surface movement approximation
-        fracn(mt) = frac(m)
+        ! ... Save previous free surface elev for rate of free surface movement approximation
+        zfsn(mt) = zfs(mt)
         WRITE(cibc,6001) ibc(m)
 6001    FORMAT(i9)
 !!$        IF(cibc(1:1) == '1') CYCLE     ! Frac is already calculated in INIT3 for 

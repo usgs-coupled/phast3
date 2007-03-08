@@ -154,7 +154,7 @@ SUBROUTINE init1
   ! ... Allocate dependent variable arrays
   ALLOCATE (comp_name(nsa), icmax(nsa), jcmax(nsa), kcmax(nsa), &
        indx_sol1_ic(7,nxyz), indx_sol2_ic(7,nxyz), indx_sol1_bc(4,nxyz), indx_sol2_bc(4,nxyz), &
-       dc(0:nxyz,nsa), dfracdt(nxy), dp(0:nxyz), dt(0:0), &
+       dc(0:nxyz,nsa), dzfsdt(nxy), dp(0:nxyz), dt(0:0), &
        sxx(nxyz), syy(nxyz), szz(nxyz), vxx(nxyz), vyy(nxyz), vzz(nxyz),  &
        vx_node(nxyz), vy_node(nxyz), vz_node(nxyz), vmask(nxyz), zfs(nxy),  &
        dcmax(nsa), dsir(nsa),  dsir_chem(nsa),  &

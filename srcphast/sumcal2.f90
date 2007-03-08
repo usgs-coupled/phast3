@@ -295,7 +295,7 @@ SUBROUTINE sumcal2
         IF(m == 0) CYCLE
         ! ... save rate of free surface movement
         ! ... not valid if cell has gone dry
-        dfracdt(mt) = (frac(m) - fracn(mt))/deltim
+        dzfsdt(mt) = (zfs(mt) - zfsn(mt))/deltim
         IF(frac(m) > 1._kdp) THEN
            imod = MOD(m,nxy)
            k = (m-imod)/nxy + MIN(1,imod)

@@ -196,7 +196,7 @@ SUBROUTINE closef(mpi_myself)
   IF (mpi_myself == 0) THEN
   ! ...      Deallocate dependent variable arrays
   DEALLOCATE (comp_name, icmax, jcmax, kcmax, &
-       dc, dfracdt, dp, dt, &
+       dc, dzfsdt, dp, dt, &
        sxx, syy, szz, vxx, vyy, vzz, dcmax, dsir, &
        qsfx, qsfy, qsfz, &
        stsaif, stsetb, stsfbc, stslbc, &
@@ -209,7 +209,7 @@ SUBROUTINE closef(mpi_myself)
        tcsfbc, &
        tcslbc, tcsrbc, tcssbc, &
        totwsi, totwsp, &
-       tqwsi, tqwsp, u10, zfs, &
+       tqwsi, tqwsp, u10, zfs, zfsn, &
        stat = da_err)
   IF (da_err /= 0) THEN  
      PRINT *, "Array allocation failed: closef: number 2"  

@@ -45,7 +45,7 @@ SUBROUTINE sumcal_ss_flow
 !!$  erflg=.FALSE.
   dpmax=0._kdp
   !  dhmax=0._kdp
-  ALLOCATE (fracn(nxy),  &
+  ALLOCATE (zfsn(nxy),  &
        STAT = a_err)
   IF (a_err /= 0) THEN  
      PRINT *, "Array allocation failed: sumcal1_ss"  
@@ -112,7 +112,7 @@ SUBROUTINE sumcal_ss_flow
         m=mfsbc(mt)          ! ... w.t. cell at time n
         IF(m == 0) CYCLE     ! ... Column of dry cells
         ! ... Save previous frac for rate of free surface movement approximation
-        fracn(mt) = frac(m)
+        zfsn(mt) = zfs(mt)
         WRITE(cibc,6001) ibc(m)
         IF(cibc(1:1) == '1') CYCLE     ! Frac will be calculated below for 
                                        !  free surface in a specified pressure cell
@@ -371,7 +371,7 @@ SUBROUTINE sumcal_ss_flow
         m=mfsbc(mt)          ! f.s. cell at time n
         IF(m == 0) CYCLE     !  Column of dry cells
         ! ... save rate of free surface movement
-        dfracdt(mt) = (frac(m) - fracn(mt))/deltim
+        dzfsdt(mt) = (zfs(mt) - zfsn(mt))/deltim
         WRITE(cibc,6001) ibc(m)
 !!$        IF(cibc(1:1) == '1') CYCLE             ! ... Skip specified pressure cells
         IF(frac(m) > 1._kdp) THEN          ! ... Rewet cell above
@@ -689,7 +689,7 @@ SUBROUTINE sumcal_ss_flow
   IF(u1 > 0.) sfresf=sfres/u1
 !  u1=MAX(ABS(fir-fir0),totfi,totfp)
 !  IF(u1 > 0.) tfresf=tfres/u1
-  DEALLOCATE (fracn, &
+  DEALLOCATE (zfsn, &
        STAT = da_err)
   IF (da_err /= 0) THEN  
      PRINT *, "Array deallocation failed, sumcal_ss"  

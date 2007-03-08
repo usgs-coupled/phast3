@@ -280,7 +280,7 @@ SUBROUTINE calc_velocity
            vy_node(m) = 0._kdp
            vz_node(m) = 0._kdp
         ELSE
-           vzfs = dfracdt(ij)*pv(m)/arz(m)
+           vzfs = dzfsdt(ij)
            CALL mtoijk(m,i,j,k,nx,ny)
            IF(k == 1) CYCLE
            wt = (z(k) - z_face(k-1))/(zfs(ij) - z_face(k-1))
