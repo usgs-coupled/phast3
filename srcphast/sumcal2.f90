@@ -380,7 +380,7 @@ SUBROUTINE sumcal2
         END DO
      END DO
   END IF
-  DEALLOCATE (fracn, &
+  DEALLOCATE (zfsn, &
        STAT = da_err)
   IF (da_err /= 0) THEN  
      PRINT *, "Array deallocation failed, sumcal2"  
