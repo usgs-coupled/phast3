@@ -30,6 +30,10 @@ MPI_ABSOFT_DIR          = mpi_absoft
 MPI_ABSOFT_DEBUG_DIR    = mpi_absoft_debug
 MPI_G95_DIR             = mpi_g95
 MPI_G95_DEBUG_DIR       = mpi_g95_debug
+OPENMPI_GFORTRAN_DEBUG_DIR       = openmpi_gfortran_debug
+OPENMPI_GFORTRAN_DIR             = openmpi_gfortran
+OPENMPI_GFORTRAN_64_DEBUG_DIR    = openmpi_gfortran_64_debug
+OPENMPI_GFORTRAN_64_DIR          = openmpi_gfortran_64
 MAKEFILE                = Makefile
 
 #########################
@@ -103,6 +107,16 @@ mpi_g95_debug:
 	mkdir -p $(MPI_G95_DEBUG_DIR);
 	cd $(MPI_G95_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_G95_DEBUG $(PROGRAM)
 
+.PHONY : openmpi_gfortran_debug
+openmpi_gfortran_debug:
+	mkdir -p $(OPENMPI_GFORTRAN_DEBUG_DIR);
+	cd $(OPENMPI_GFORTRAN_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_GFORTRAN_DEBUG $(PROGRAM)
+
+.PHONY : openmpi_gfortran
+openmpi_gfortran:
+	mkdir -p $(OPENMPI_GFORTRAN_DIR);
+	cd $(OPENMPI_GFORTRAN_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_GFORTRAN $(PROGRAM)
+
 # Recursive make begins here
 #
 # =============================================================================
@@ -134,6 +148,10 @@ LIBABSOFT=-L/z/parkplace/usr/absoft/lib  -lfio -lU77 -lf77math -lf90math
 FG95=/z/parkplace/usr/local//bin/g95
 LIBG95=-L/usr/local/g95/lib/gcc-lib/i686-pc-linux-gnu/4.0.1/ -lf95
 
+#LIBGFORTRAN=-L/usr/lib64 -lgfortranbegin -lgfortran
+LIBGFORTRAN= -lgfortranbegin -lgfortran
+
+
 # -----------------------------------------------------------------------------
 .f90.o :
 	${FC} -c ${FFLAGS} $<
@@ -146,13 +164,15 @@ LIBG95=-L/usr/local/g95/lib/gcc-lib/i686-pc-linux-gnu/4.0.1/ -lf95
 
 # -----------------------------------------------------------------------------
 #hdf options
-#HDF5_ROOT=$(HOME)/../../usr
 #HDF5_ROOT=/z/lobo/usr
 #HDF5_ROOT=/z/parkplace/home/dlparkpackages/hdf5-1.4.5-post2
-HDF5_ROOT=/z/parkplace/home/dlpark
-HDF5_INCLUDES=-I$(HDF5_ROOT)/include
-#HDF5_INCLUDES=-I$(HDF5_ROOT)/src
-HDF5_LIBS=${HDF5_ROOT}/lib/libhdf5.a -lz -lpthread  
+#HDF5_ROOT=/z/parkplace/home/dlpark
+#HDF5_ROOT=/home/dlpark
+HDF5_ROOT=/z/parkplace/usr
+#HDF5_ROOT=/usr
+HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
+HDF5_LIBS=${HDF5_ROOT}/lib/libhdf5.a -lpthread -lz
+HDF5_LIBS_64=${HDF5_ROOT}/lib64/libhdf5.a -lpthread 
 
 # -----------------------------------------------------------------------------
 DEFINE_HDF=-DHDF5_CREATE
@@ -370,6 +390,36 @@ ifeq ($(CFG), MPI_G95_DEBUG)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
   LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS}  -ldl
+endif
+
+# -----------------------------------------------------------------------------
+ifeq ($(CFG), OPENMPI_GFORTRAN_DEBUG)
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  DINVERSE_CL1MP=
+  FC           = mpif90
+  FFLAGS       = -g  -fno-underscoring $(DEFINES)
+  CXX          = mpiCC
+  CC           = mpiCC
+  CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
+  CFLAGS_MODEL = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
+  LD_FLAGS     = $(LIBGFORTRAN) ${HDF5_LIBS}  -ldl # -lm ${CL1MP_LIB}
+endif
+
+# -----------------------------------------------------------------------------
+ifeq ($(CFG), OPENMPI_GFORTRAN)
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  DINVERSE_CL1MP=
+  FC           = mpif90
+  FFLAGS       = -O3 -fno-underscoring -I.. -I. $(DEFINES)
+  CXX          = mpiCC
+  CC           = mpiCC
+  CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
+  CFLAGS_MODEL = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
+  LD_FLAGS     = $(LIBGFORTRAN) ${HDF5_LIBS}  -ldl # -lm ${CL1MP_LIB}
 endif
 
 # -----------------------------------------------------------------------------
