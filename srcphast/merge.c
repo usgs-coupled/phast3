@@ -326,7 +326,6 @@ void FileInfo_dataset_create(struct FileInfo* ptr_info, const char* name)
 void MergeInit(char* prefix, int prefix_l, int solute)
 {
     extern int mpi_myself;
-    extern int mpi_tasks;
 
     s_ci.captured       = 0;
     s_ci.file_id        = 0;
@@ -393,8 +392,6 @@ void MergeInit(char* prefix, int prefix_l, int solute)
  */
 void MergeFinalize(void)
 {
-    extern int mpi_tasks;
-
 
     /* release variable length string type */
     assert(s_ci.vls_id);
@@ -410,7 +407,6 @@ void MergeFinalize(void)
 
 void MergeFinalizeEcho(void)
 {
-    extern int mpi_tasks;
 
     /* release variable length string type */
     assert(s_ci.vls_id);
@@ -435,7 +431,6 @@ void MergeBeginTimeStep(int print_sel, int print_out)
     extern int end_cells[MPI_MAX_TASKS][2];
     extern int* random_list;
     extern int mpi_myself;
-    extern int mpi_tasks;
 
     hsize_t dims[1];    
     int* ptr_beg;
@@ -613,8 +608,6 @@ void MergeBeginCell(void)
  */
 void MergeEndCell(void)
 {
-    extern int mpi_tasks;
-
     assert(s_ci.captured != 0);
     s_ci.captured = 0;
 
@@ -748,7 +741,6 @@ int Merge_fpunchf(const int length, const char* format, va_list argptr)
 /* ---------------------------------------------------------------------- */
 {
     extern int mpi_myself;
-    extern int mpi_tasks;
     int ret_val;
 
 
@@ -841,25 +833,24 @@ static int output_handler(const int type, const char *err_str, const int stop, v
 int Merge_vfprintf2(struct FileInfo *pFileInfo, const char *format, va_list args)
 /* ---------------------------------------------------------------------- */
 {
-    extern int mpi_myself;
-    extern int mpi_tasks;
-    int retval;
-	static char buffer[500];
-
-	retval = 0;
-
-    if (s_ci.captured == TRUE)
-    {
-		retval = vsprintf(buffer, format, args);
-		assert(retval < 500);
-		assert(pFileInfo->dset_id > 0);
-		FileInfo_capture(pFileInfo, retval, format, args);
-    }
-    else if (mpi_myself == 0)
-    {
-		retval = FileInfo_printf(pFileInfo, format, args);
-    }
-    return retval;
+  extern int mpi_myself;
+  int retval;
+  static char buffer[500];
+  
+  retval = 0;
+  
+  if (s_ci.captured == TRUE)
+  {
+    retval = vsprintf(buffer, format, args);
+    assert(retval < 500);
+    assert(pFileInfo->dset_id > 0);
+    FileInfo_capture(pFileInfo, retval, format, args);
+  }
+  else if (mpi_myself == 0)
+  {
+    retval = FileInfo_printf(pFileInfo, format, args);
+  }
+  return retval;
 }
 
 /* ---------------------------------------------------------------------- */
