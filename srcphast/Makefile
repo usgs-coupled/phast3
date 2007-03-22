@@ -165,13 +165,16 @@ LIBGFORTRAN= -lgfortranbegin -lgfortran
 # -----------------------------------------------------------------------------
 #hdf options
 #HDF5_ROOT=/z/lobo/usr
+HDF5_ROOT=/z/srv2rcolkr/home/charlton/5-1.6.5-linux-gcc
+#HDF5_ROOT=/z/srv2rcolkr/usr
 #HDF5_ROOT=/z/parkplace/home/dlparkpackages/hdf5-1.4.5-post2
 #HDF5_ROOT=/z/parkplace/home/dlpark
 #HDF5_ROOT=/home/dlpark
-HDF5_ROOT=/z/parkplace/usr
+#HDF5_ROOT=/z/parkplace/usr
 #HDF5_ROOT=/usr
 HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
-HDF5_LIBS=${HDF5_ROOT}/lib/libhdf5.a -lpthread -lz
+#HDF5_LIBS=${HDF5_ROOT}/lib/libhdf5.a -lpthread -lz
+HDF5_LIBS=${HDF5_ROOT}/lib/libhdf5.a ${HDF5_ROOT}/lib/libsz.a -lz -lpthread
 HDF5_LIBS_64=${HDF5_ROOT}/lib64/libhdf5.a -lpthread 
 
 # -----------------------------------------------------------------------------
