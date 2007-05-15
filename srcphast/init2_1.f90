@@ -584,8 +584,8 @@ SUBROUTINE init2_1
         PRINT *, "array allocation failed: init2, number 4"  
         STOP  
      ENDIF
-     DO 300 m = 1, nxyz  
-        IF(ibc(m) .EQ. - 1) GOTO 300  
+     DO m = 1, nxyz  
+        IF(ibc(m) .EQ. - 1) CYCLE
         WRITE(cibc, 6001) ibc(m)  
 6001    FORMAT(i9)  
         ic = INDEX(cibc(1:7) , '1')  
@@ -595,7 +595,7 @@ SUBROUTINE init2_1
            IF(fresur.AND.lnz1.EQ.nxyz+1.AND.m.GT.nxy*(nz-1)) lnz1 = l1 - 1
            ! ...      lnz1 is last sbc node below upper layer
         ENDIF
-300  END DO
+      ENDDO
      nsbc = l1  
      ALLOCATE (msbc(nsbc), indx1_sbc(nsbc), indx2_sbc(nsbc), &
           fracnp(nsbc), mxf_sbc(nsbc), qfsbc(nsbc), qhsbc(1), qssbc(nsbc,nsa), &
@@ -635,8 +635,8 @@ SUBROUTINE init2_1
         PRINT *, "array allocation failed: init2, number 6"  
         STOP  
      ENDIF
-     DO 330 m = 1, nxyz  
-        IF(ibc(m) .EQ. - 1) GOTO 330  
+     DO m = 1, nxyz  
+        IF(ibc(m) .EQ. - 1) CYCLE
         WRITE(cibc, 6001) ibc(m)  
         jc = 1  
         uarx = 0._kdp  
@@ -668,7 +668,7 @@ SUBROUTINE init2_1
            IF(fresur.AND.lnz2.EQ.nxyz+1.AND.m.GT.nxy*(nz-1)) lnz2 = l - 1
            ! ...      lnz2 is last fbc node below upper layer
         ENDIF
-330  END DO
+     END DO
      nfbc = l  
      nsa = MAX(ns,1)
      ALLOCATE (mfbc(nfbc), indx1_fbc(nfbc), indx2_fbc(nfbc),  &

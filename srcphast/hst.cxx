@@ -79,6 +79,7 @@ cxxDictionary dictionary;
 #define PACK_FOR_HST pack_for_hst
 #define PHREEQC_FREE phreeqc_free
 #define PHREEQC_MAIN phreeqc_main
+#define SCREENPRT_C screenprt_c
 #define SEND_RESTART_NAME send_restart_name
 #define SETUP_BOUNDARY_CONDITIONS setup_boundary_conditions
 #define WARNPRT_C warnprt_c
@@ -98,6 +99,7 @@ cxxDictionary dictionary;
 #define PACK_FOR_HST pack_for_hst_
 #define PHREEQC_FREE phreeqc_free_
 #define PHREEQC_MAIN phreeqc_main_
+#define SCREENPRT_C screenprt_c_
 #define SEND_RESTART_NAME send_restart_name_
 #define SETUP_BOUNDARY_CONDITIONS setup_boundary_conditions_
 #define WARNPRT_C warnprt_c_
@@ -132,6 +134,7 @@ void PACK_FOR_HST(double *fraction, int *dim);
 void PHREEQC_FREE(int *solute);
 void PHREEQC_MAIN(int *solute, char *chemistry_name, char *database_name, char *prefix,
 		  int *mpi_tasks_fort, int *mpi_myself_fort, int chemistry_l, int database_l, int prefix_l);
+void SCREENPRT_C(char *err_str, long l);
 void SEND_RESTART_NAME(char *name, int nchar);
 void SETUP_BOUNDARY_CONDITIONS(const int *n_boundary, int *boundary_solution1,
 			       int *boundary_solution2, double *fraction1,
@@ -1169,7 +1172,7 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 		if (frac[j] < 1e-10) frac[j] = 0.0;
 		// set flags
 		active = FALSE;
-		if ( frac[j] > 0.0) active = TRUE;
+		if ( frac[j] > 1.0e-6) active = TRUE;
 		pr.all = FALSE;
 		if (*print_out == TRUE && printzone_chem[j] == TRUE) pr.all = TRUE;
 		pr.punch = FALSE;
@@ -1948,6 +1951,22 @@ void LOGPRT_C(char *err_str, long l)
         fprintf(error_file,"%s\n", e_string);
         fflush(error_file);
 	*/
+	free_check_null(e_string);
+	return;
+}
+/* ---------------------------------------------------------------------- */
+void SCREENPRT_C(char *err_str, long l)
+/* ---------------------------------------------------------------------- */
+{
+        char *e_string;
+
+	if (mpi_myself != 0) return;
+	e_string = (char *) PHRQ_malloc((size_t) (l+1)*sizeof(char));
+	strncpy(e_string, err_str, (size_t) (l));
+	e_string[l] = '\0';
+	string_trim_right(e_string);
+        output_msg(OUTPUT_SCREEN,"%s\n", e_string);
+        output_fflush(OUTPUT_SCREEN);
 	free_check_null(e_string);
 	return;
 }

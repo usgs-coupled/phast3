@@ -16,10 +16,12 @@ SUBROUTINE simulate_ss_flow
   !.....Start of the transient loop for marching to steady state
   logline1 = '     '
   logline2 = 'Beginning flow calculation for steady-state i.c.'
-  WRITE(*,3001) TRIM(logline2)
-3001 FORMAT(/a)  
+!  WRITE(*,3001) TRIM(logline2)
+!3001 FORMAT(/a)  
   CALL logprt_c(logline1)
   CALL logprt_c(logline2)
+  CALL screenprt_c(logline1)
+  CALL screenprt_c(logline2)
   fdtmth = fdtmth_ssflow     ! ... set time differencing method to flow ss 
   DO
      CALL coeff_ss_flow
@@ -59,13 +61,15 @@ SUBROUTINE simulate_ss_flow
      IF(errexe) EXIT
   END DO
   logline2 = 'Done with steady-state flow.'
-  WRITE(*,'(/A)') TRIM(logline2)
+!  WRITE(*,'(/A)') TRIM(logline2)
   CALL logprt_c(' ')
   CALL logprt_c(logline2)
+  CALL screenprt_c(logline2)
   IF(errexe .OR. errexi) THEN
      logline1 = 'ERROR exit.'
-     WRITE(*,'(A)') TRIM(logline1)
+!     WRITE(*,'(A)') TRIM(logline1)
      CALL logprt_c(logline1)
+     CALL screenprt_c(logline1)
   END IF
   !..  CALL write4               ! ... calculate and print velocity fields if requested
   CALL init2_post_ss

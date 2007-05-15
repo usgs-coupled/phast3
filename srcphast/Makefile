@@ -1,7 +1,7 @@
 # Makefile for PHAST
 #
 # Generates object files and executables for 8 versions of PHAST
-#	    Absoft/Lahey compiler
+#	    Gfortran/Lahey compiler
 #           Serial/MPI version
 #           Optimize/Debug
 #
@@ -14,7 +14,9 @@
 
 PROGRAM = phast
 
-all: absoft g95 lahey
+COMPUTER=/z/parkplace
+
+all: gfortran lahey # absoft g95
 
 # serial_lahey serial_lahey_debug mpi_lahey mpi_lahey_debug 
 
@@ -24,12 +26,16 @@ SERIAL_LAHEY_DIR        = serial_lahey
 SERIAL_LAHEY_DEBUG_DIR  = serial_lahey_debug
 SERIAL_G95_DIR          = serial_g95
 SERIAL_G95_DEBUG_DIR    = serial_g95_debug
+SERIAL_GFORTRAN_DIR          = serial_gfortran
+SERIAL_GFORTRAN_DEBUG_DIR    = serial_gfortran_debug
 MPI_LAHEY_DIR           = mpi_lahey
 MPI_LAHEY_DEBUG_DIR     = mpi_lahey_debug
 MPI_ABSOFT_DIR          = mpi_absoft
 MPI_ABSOFT_DEBUG_DIR    = mpi_absoft_debug
 MPI_G95_DIR             = mpi_g95
 MPI_G95_DEBUG_DIR       = mpi_g95_debug
+MPI_GFORTRAN_DIR        = mpi_gfortran
+MPI_GFORTRAN_DEBUG_DIR  = mpi_gfortran_debug
 OPENMPI_GFORTRAN_DEBUG_DIR       = openmpi_gfortran_debug
 OPENMPI_GFORTRAN_DIR             = openmpi_gfortran
 OPENMPI_GFORTRAN_64_DEBUG_DIR    = openmpi_gfortran_64_debug
@@ -71,6 +77,15 @@ serial_g95_debug:
 	mkdir -p $(SERIAL_G95_DEBUG_DIR);
 	cd $(SERIAL_G95_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_G95_DEBUG $(PROGRAM)
 
+.PHONY : serial_gfortran
+serial_gfortran:
+	mkdir -p $(SERIAL_GFORTRAN_DIR)
+	cd $(SERIAL_GFORTRAN_DIR);	$(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_GFORTRAN $(PROGRAM)
+
+.PHONY : serial_gfortran_debug
+serial_gfortran_debug:
+	mkdir -p $(SERIAL_GFORTRAN_DEBUG_DIR);
+	cd $(SERIAL_GFORTRAN_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_GFORTRAN_DEBUG $(PROGRAM)
 #########################
 ##### MPI Versions ######
 #########################
@@ -107,6 +122,16 @@ mpi_g95_debug:
 	mkdir -p $(MPI_G95_DEBUG_DIR);
 	cd $(MPI_G95_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_G95_DEBUG $(PROGRAM)
 
+.PHONY : mpi_gfortran
+mpi_gfortran:
+	mkdir -p $(MPI_GFORTRAN_DIR)
+	cd $(MPI_GFORTRAN_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_GFORTRAN $(PROGRAM)
+
+.PHONY : mpi_gfortran_debug
+mpi_gfortran_debug:
+	mkdir -p $(MPI_GFORTRAN_DEBUG_DIR);
+	cd $(MPI_GFORTRAN_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_GFORTRAN_DEBUG $(PROGRAM)
+
 .PHONY : openmpi_gfortran_debug
 openmpi_gfortran_debug:
 	mkdir -p $(OPENMPI_GFORTRAN_DEBUG_DIR);
@@ -126,8 +151,8 @@ openmpi_gfortran:
 
 SRC              = ../phreeqcpp/phreeqc
 PHREEQC_INCLUDES = -I../phreeqcpp -I../phreeqcpp/phreeqc
-LAM_INCLUDES     =  # -I/usr/lib/lam/include/mpi2cxx
-LAM_LIB          =  -L/usr/lib/lam/lib
+LAM_INCLUDES     =  
+LAM_LIB          =  -L$(COMPUTER)/usr/lib/ -llam
 
 .SUFFIXES : .o .f .F90 .f90 .c .cxx 
 
@@ -135,20 +160,18 @@ LAM_LIB          =  -L/usr/lib/lam/lib
 FLAHEY=/z/niwot/usr/local/lf95/bin/lf95
 # include lam library first to avoid lahey mpi library
 LIBLAHEY=$(LAM_LIB) -L/z/niwot/usr/local/lf95/lib -Xlinker -Bstatic -Xlinker -lfj9i6 -Xlinker -lfj9f6 -Xlinker -lfj9e6 -Xlinker -lfccx86_6a -Xlinker -Bdynamic 
-LAHEY_MACHINE=parkplace
+LAHEY_MACHINE=$(COMPUTER)
 LAHEY_RUNTIME=/z/niwot/usr/local/lf95/lib/fj90rt0.o 
-#FLAHEY=/z/niwot/usr/local/lf9562/bin/lf95
-#LIBLAHEY=-L/z/niwot/usr/lib -L/z/niwot/usr/local/lf9562/lib 
 
+FABSOFT=$(COMPUTER)/usr/absoft/bin/f90
+NLSABSOFT=$(COMPUTER)/usr/absoft/lib/nls/cf90
+LIBABSOFT=-L$(COMPUTER)/usr/absoft/lib  -lfio -lU77 -lf77math -lf90math 
 
-FABSOFT=/z/parkplace/usr/absoft/bin/f90
-NLSABSOFT=/z/parkplace/usr/absoft/lib/nls/cf90
-LIBABSOFT=-L/z/parkplace/usr/absoft/lib  -lfio -lU77 -lf77math -lf90math 
-
-FG95=/z/parkplace/usr/local//bin/g95
-LIBG95=-L/usr/local/g95/lib/gcc-lib/i686-pc-linux-gnu/4.0.1/ -lf95
+FG95=$(COMPUTER)/usr/local/bin/g95
+LIBG95=-L$(COMPUTER)/usr/local/g95/lib/gcc-lib/i686-pc-linux-gnu/4.0.1/ -lf95
 
 #LIBGFORTRAN=-L/usr/lib64 -lgfortranbegin -lgfortran
+FGFORTRAN=gfortran
 LIBGFORTRAN= -lgfortranbegin -lgfortran
 
 
@@ -164,17 +187,9 @@ LIBGFORTRAN= -lgfortranbegin -lgfortran
 
 # -----------------------------------------------------------------------------
 #hdf options
-#HDF5_ROOT=/z/lobo/usr
-HDF5_ROOT=/z/srv2rcolkr/home/charlton/5-1.6.5-linux-gcc
-#HDF5_ROOT=/z/srv2rcolkr/usr
-#HDF5_ROOT=/z/parkplace/home/dlparkpackages/hdf5-1.4.5-post2
-#HDF5_ROOT=/z/parkplace/home/dlpark
-#HDF5_ROOT=/home/dlpark
-#HDF5_ROOT=/z/parkplace/usr
-#HDF5_ROOT=/usr
+HDF5_ROOT=$(COMPUTER)/usr
 HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
-#HDF5_LIBS=${HDF5_ROOT}/lib/libhdf5.a -lpthread -lz
-HDF5_LIBS=${HDF5_ROOT}/lib/libhdf5.a ${HDF5_ROOT}/lib/libsz.a -lz -lpthread
+HDF5_LIBS=${HDF5_ROOT}/lib/libhdf5.a  -lz -lpthread
 HDF5_LIBS_64=${HDF5_ROOT}/lib64/libhdf5.a -lpthread 
 
 # -----------------------------------------------------------------------------
@@ -185,18 +200,18 @@ DEFINE_MERGE=-DMERGE_FILES
 # -----------------------------------------------------------------------------
 # #define gmp for inverse modeling
 # comment the following lines to remove multiprecision option
-DINVERSE_CL1MP=TRUE
-CL1MP_LIB=/z/parkplace/usr/lib/libgmp.a 
-CL1MP_OBJS=cl1mp.o
+#DINVERSE_CL1MP=TRUE
+##CL1MP_LIB=/z/parkplace/usr/lib/libgmp.a 
+#CL1MP_LIB=/usr/lib/libgmp.a 
+#CL1MP_OBJS=cl1mp.o
 
 # -----------------------------------------------------------------------------
 #efence for debugging
 EFENCE_LIB=-L$(HOME)/packages/efence
 
 
-
 # -----------------------------------------------------------------------------
-# 12 Versions
+# Versions
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_ABSOFT)
   DEFINES      = $(DEFINE_HDF) -DNDEBUG -DPHREEQC_CPP
@@ -276,8 +291,8 @@ ifeq ($(CFG), SERIAL_LAHEY)
   FC           = $(FLAHEY)
   FFLAGS       = -O $(DEFINES)
   CC           = g++
-  CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
-  CFLAGS_MODEL = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
+  CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
+  CFLAGS_MODEL = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS)  $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS) $(LAHEY_RUNTIME)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
 #  LD_FLAGS     = --staticlink -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY)
@@ -291,8 +306,8 @@ ifeq ($(CFG), SERIAL_LAHEY_DEBUG)
   FC           = $(FLAHEY)
   FFLAGS       = -g --f95 --chkglobal --warn --info $(DEFINES)
   CC           = g++
-  CFLAGS       = -Wall  -g $(DEFINES)  $(PHREEQC_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
-  CFLAGS_MODEL = -Wall  -g $(DEFINES) -I/z/srv2rcolkr/home/charlton/include
+  CFLAGS       = -Wall  -g $(DEFINES)  $(PHREEQC_INCLUDES) 
+  CFLAGS_MODEL = -Wall  -g $(DEFINES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS)  $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS) $(LAHEY_RUNTIME)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
   LD_FLAGS     = -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY)
@@ -308,12 +323,12 @@ ifeq ($(CFG), MPI_LAHEY)
   FFLAGS       = -O $(DEFINES)
   CXX          = mpiCC
   CC           = mpiCC
-  CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) $(LAM_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
-  CFLAGS_MODEL = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
+  CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) $(LAM_INCLUDES) 
+  CFLAGS_MODEL = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS) $(LAHEY_RUNTIME)
 #  LD_FLAGS     = -static-flib  -lm ${HDF5_LIBS} 
-#  LD_FLAGS     = --staticlink -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY) -llammpio -llamf77mpi -lmpi -llam -llammpi++ 
-  LD_FLAGS     = -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY)  -ldl
+#  LD_FLAGS     = --staticlink -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY) -llammpio -llamf77mpi -lmpi -llam-llammpi++ 
+  LD_FLAGS     = -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY) -ldl
 endif
 
 # -----------------------------------------------------------------------------
@@ -326,8 +341,8 @@ ifeq ($(CFG), MPI_LAHEY_DEBUG)
   FFLAGS       = -g --chkglobal --warn --info $(DEFINES)
   CXX          = mpiCC
   CC           = mpiCC
-  CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) $(LAM_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
-  CFLAGS_MODEL = -Wall  -g $(DEFINES) $(HDF5_INCLUDES) -I/z/srv2rcolkr/home/charlton/include
+  CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) $(LAM_INCLUDES) 
+  CFLAGS_MODEL = -Wall  -g $(DEFINES) $(HDF5_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS) $(LAHEY_RUNTIME)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
   LD_FLAGS     = -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY) -ldl
@@ -393,6 +408,67 @@ ifeq ($(CFG), MPI_G95_DEBUG)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
 #  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
   LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS}  -ldl
+endif
+# -----------------------------------------------------------------------------
+ifeq ($(CFG), SERIAL_GFORTRAN)
+  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DPHREEQC_CPP
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  FC           = $(FGFORTRAN)
+  FFLAGS       = -O3 $(DEFINES) -fno-underscoring
+  CC           = g++
+  CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
+  CFLAGS_MODEL = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS)
+#  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
+  LD_FLAGS     = $(LIBGFORTRAN) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
+endif
+
+# -----------------------------------------------------------------------------
+ifeq ($(CFG), SERIAL_GFORTRAN_DEBUG)
+  DEFINES      = $(DEFINE_HDF) -DPHREEQC_CPP
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  FC           = $(FGFORTRAN)
+  FFLAGS       = -g -fno-underscoring $(DEFINES)
+  CC           = g++
+  CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
+  CFLAGS_MODEL = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS)  $(HDF_OBJS) $(CL1MP_OBJS)
+#  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
+  LD_FLAGS     = $(LIBGFORTRAN) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
+endif
+
+# -----------------------------------------------------------------------------
+ifeq ($(CFG), MPI_GFORTRAN)
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  LAMHF77      = $(FGFORTRAN)
+  export LAMHF77
+  FC           = mpif77
+  FFLAGS       = -O3 $(DEFINES) -fno-underscoring
+  CXX          = mpiCC
+  CC           = mpiCC
+  CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) $(LAM_INCLUDES)
+  CFLAGS_MODEL = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
+#  LD_FLAGS     = -static-flib  -lm ${HDF5_LIBS} 
+  LD_FLAGS     = $(LIBGFORTRAN) -lm ${CL1MP_LIB} ${HDF5_LIBS} -ldl
+endif
+
+# -----------------------------------------------------------------------------
+ifeq ($(CFG), MPI_GFORTRAN_DEBUG)
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  LAMHF77      = $(FGFORTRAN)
+  export LAMHF77
+  FC           = mpif77
+  FFLAGS       = -g  -fno-underscoring $(DEFINES)
+  CXX          = mpiCC
+  CC           = mpiCC
+  CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) $(LAM_INCLUDES)
+  CFLAGS_MODEL = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
+#  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
+  LD_FLAGS     = $(LIBGFORTRAN) -lm ${CL1MP_LIB} ${HDF5_LIBS}  -ldl
 endif
 
 # -----------------------------------------------------------------------------
@@ -1030,11 +1106,13 @@ Utils.o: ../phreeqcpp/Utils.cxx ../phreeqcpp/Utils.h \
 # -----------------------------------------------------------------------------
 
 clean:
-	rm -rf serial_absoft serial_absoft_debug mpi_absoft mpi_absoft_debug serial_lahey serial_lahey_debug mpi_lahey mpi_lahey_debug 	serial_g95 serial_g95_debug mpi_g95 mpi_g95_debug 	
+	rm -rf serial_absoft serial_absoft_debug mpi_absoft mpi_absoft_debug serial_lahey serial_lahey_debug mpi_lahey mpi_lahey_debug 	serial_g95 serial_g95_debug mpi_g95 mpi_g95_debug serial_gfortran serial_gfortran_debug mpi_gfortran mpi_gfortran_debug 
 
 absoft: serial_absoft serial_absoft_debug mpi_absoft mpi_absoft_debug
 
 g95: serial_g95 serial_g95_debug mpi_g95 mpi_g95_debug
+
+gfortran: serial_gfortran serial_gfortran_debug mpi_gfortran mpi_gfortran_debug
 
 lahey: serial_lahey serial_lahey_debug mpi_lahey mpi_lahey_debug
 

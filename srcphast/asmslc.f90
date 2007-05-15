@@ -61,14 +61,16 @@ SUBROUTINE asmslc
   ! ... Assemble and solve the transport equation for each component
   IF (ERREXE) RETURN
   logline1 =  '     Beginning solute-transport calculation.'
-  WRITE(*,'(a)') TRIM(logline1)
+!  WRITE(*,'(a)') TRIM(logline1)
   CALL logprt_c(logline1)
+  CALL screenprt_c(logline1)
   dc = 0._kdp
   ieq = 3  
   DO is=1,ns  
      logline1 =  '          '//comp_name(is)
-     WRITE(*,'(a)') TRIM(logline1)
+!     WRITE(*,'(a)') TRIM(logline1)
      CALL logprt_c(logline1)
+     CALL screenprt_c(logline1)
      itrn = 0  
 30   itrn = itrn + 1
      CALL asembl  
@@ -103,8 +105,8 @@ SUBROUTINE asmslc
 !!$        WRITE(fuclog,*) 'Error in scaling: ', iierr
 !!$        ierr(81) = .TRUE.
         WRITE(logline1,*) 'Error in scaling; component:',is,'  equation:', iierr
-        WRITE(*,3001) TRIM(logline1)
-3001    FORMAT(/a)
+!        WRITE(*,3001) TRIM(logline1)
+!3001    FORMAT(/a)
         CALL errprt_c(logline1)
         RETURN
      END IF

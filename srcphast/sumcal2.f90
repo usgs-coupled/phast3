@@ -23,6 +23,7 @@ SUBROUTINE sumcal2
   INTEGER :: da_err, i, imod, iwel, j, k, kfs, l, lc, l1, ls, m, m0, m1,  &
        m1kp, mfs, mt
   LOGICAL :: ierrw
+  CHARACTER(LEN=130) :: logline
 !!$  REAL(KIND=kdp), DIMENSION(nxy) :: fracn
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
@@ -353,8 +354,11 @@ SUBROUTINE sumcal2
            frac(m) = 1._kdp
         END DO
      END DO
-     IF(ierrw) WRITE(*,*) 'WARNING: Free surface has moved more than one layer of cells'//  &
+     IF(ierrw) then
+        WRITE(logline,*) 'WARNING: Free surface has moved more than one layer of cells'//  &
           ' in one or more cell columns'
+        call screenprt_c(logline)
+     endif
      ! ... Calculate hydrostatic pressure for cells up to top of region
      ! ...      This gives a pressure field that may be used for an initial
      ! ...           condition for a future simulation

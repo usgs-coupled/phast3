@@ -165,7 +165,7 @@ SUBROUTINE read3
         BACKSPACE(UNIT=fuins)
         READ(fuins,*) irecrbc,uhrbc,uisolrbc1,uisolrbc2,umxfrac
         if (print_rde) WRITE(furde,8005) irecrbc,uhrbc,uisolrbc1,uisolrbc2,umxfrac
-8005    FORMAT(tr1,i5,1PG11.3,2I5,f10.2)
+8005    FORMAT(tr1,i5,1PG11.3,2I5,0Pf10.2)
 !        imrbc=mrbc(irecrbc)
         uphirb(irecrbc)=gz*uhrbc
         IF(solute) THEN

@@ -96,7 +96,7 @@ SUBROUTINE indx_rewi(ipar1,ipar2,par3,ip,icall,ier)
   ! ... Echo write the mods
   if (print_rde) WRITE(furde,2008) x1,x2,y1,y2,z1,z2,ip,  &
        ivar1,imod(1),ivar2,imod(2),var3,imod(3)
-2008 FORMAT(tr1,6(1PG11.3),tr5,i3/tr3,2I4,tr2,2I4,tr2,f5.1,i4)
+2008 FORMAT(tr1,6(1PG11.3),tr5,i3/tr3,2I4,tr2,2I4,tr2,0Pf5.1,i4)
   !      X1=CNVL*X1
   !      X2=CNVL*X2
   !      Y1=CNVL*Y1

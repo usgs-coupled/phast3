@@ -378,7 +378,8 @@ SUBROUTINE coeff
                 tsyz(m) <  0._kdp .OR. tszx(m) <  0._kdp .OR. tszy(m) <  0._kdp) ierrw = .TRUE.
         END DO
         !  if(ierr(171)) errexe = .true.
-        IF(ierrw) WRITE(*,*) 'WARNING: One or more negative dispersion coefficients computed'
+!        IF(ierrw) WRITE(*,*) 'WARNING: One or more negative dispersion coefficients computed'
+        IF(ierrw) call screenprt_c('WARNING: One or more negative dispersion coefficients computed');
      ENDIF
   END IF
 END SUBROUTINE coeff

@@ -27,8 +27,8 @@ SUBROUTINE WBBAL
         PRINT *, "Array allocation failed: wbbal"  
         STOP  
      ENDIF
-  DO 60 IWEL = 1, NWEL  
-     IF( WQMETH( IWEL) .EQ.0) GOTO 60  
+  DO IWEL = 1, NWEL  
+     IF( WQMETH( IWEL) .EQ.0) CYCLE
      !         WRCALC=.FALSE.
      UQWM = - QWM( IWEL)  
      IWFSS = INT(SIGN(1._kdp,uqwm))  
@@ -252,7 +252,7 @@ SUBROUTINE WBBAL
      end do
      ! ... Well riser calculations
      !...  ** not available in PHAST
-60 END DO
+   END DO
   DEALLOCATE (uqsw, &
        STAT = da_err)
   IF (da_err.ne.0) THEN  

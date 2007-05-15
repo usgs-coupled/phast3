@@ -20,12 +20,15 @@ SUBROUTINE timstp
   !...
   ! ... Update time step counter
   itime=itime+1
-  WRITE(*,3001) 'Beginning time step no. ',itime
-3001 FORMAT(/a,i6)
+!  WRITE(*,3001) 'Beginning time step no. ',itime
+!3001 FORMAT(/a,i6)
   WRITE(logline1,5011) 'Beginning time step no. ',itime
 5011 FORMAT(a,i6)
   CALL logprt_c(logline0)
   CALL logprt_c(logline1)
+  CALL screenprt_c(logline0)
+  CALL screenprt_c(logline1)
+
   jtime=jtime+1
   tsfail=.FALSE.
   ! ... Restore the saved time step length if previous step was adjusted for
@@ -222,11 +225,12 @@ SUBROUTINE timstp
   CALL pc_set_print_flags(utime, itime, utimchg)
   IF(print_progress_statistics%print_flag) THEN
 !  IF(print_progress_statistics%print_flag) THEN
-     WRITE(*,3002) 'Current time step length ..........', cnvtmi*deltim,'('//TRIM(unittm)//')'
-3002 FORMAT(tr5,a,1PG12.3,tr1,a)
+!     WRITE(*,3002) 'Current time step length ..........', cnvtmi*deltim,'('//TRIM(unittm)//')'
+!3002 FORMAT(tr5,a,1PG12.3,tr1,a)
      WRITE(logline1,5001) '     Current time step length .........................'//  &
           '..........',cnvtmi*deltim,' ('//TRIM(unittm)//')'
 5001 FORMAT(a,1PG12.3,a)
      CALL logprt_c(logline1)
+     CALL screenprt_c(logline1)
   ENDIF
 END SUBROUTINE timstp

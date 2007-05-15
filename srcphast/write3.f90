@@ -385,7 +385,7 @@ SUBROUTINE write3
               DO  ls=river_seg_index(lc)%seg_first,river_seg_index(lc)%seg_last
                  WRITE(fulp,2125) ls,mrbc_bot(lc),cnvli*phirbc(ls)/gz,indx_sol1_bc(4,ls), &
                       indx_sol2_bc(4,ls), bc_mxfrac(4,ls)
-2125             FORMAT(tr15,i5,tr5,i3,tr9,1PG12.4,I10,I10,F10.4)
+2125             FORMAT(tr15,i5,tr5,i3,tr9,1PG12.4,I10,I10,0PF10.4)
               END DO
            END DO
            IF(solute) THEN

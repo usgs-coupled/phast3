@@ -430,8 +430,11 @@ SUBROUTINE sumcal_ss_flow
            frac(m) = 1._kdp
         end do
      END DO
-     if(ierrw) write(*,*) 'WARNING: Free surface has moved more than one layer of cells'//  &
-          ' in one or more cell columns'
+     if(ierrw) then
+        write(logline1,*) 'WARNING: Free surface has moved more than one layer of cells'//  &
+             ' in one or more cell columns'
+        call screenprt_c(logline1)
+     endif
      ! ... Calculate hydrostatic pressure for cells up to top of region
      ! ...      This gives a pressure field that may be used for an initial
      ! ...           condition for a future simulation
@@ -671,10 +674,12 @@ SUBROUTINE sumcal_ss_flow
        cnvpi*dhmax,' ('//TRIM(unitl)//')',' at location (',  &
        cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax),')(',TRIM(unitl)//')'
   WRITE(logline2,3001) '     Fractional flow residual '//dots,frac_flowresid
-  WRITE(*,'(a)') trim(logline1)
-  WRITE(*,'(a)') trim(logline2)
+!  WRITE(*,'(a)') trim(logline1)
+!  WRITE(*,'(a)') trim(logline2)
   CALL logprt_c(logline1)
   CALL logprt_c(logline2)
+  CALL screenprt_c(logline1)
+  CALL screenprt_c(logline2)
   IF((ABS(dpmax) <= eps_p) .AND. ABS(frac_flowresid) <= eps_flow) converge_ss = .TRUE.
   ! ... Convert step total flow rates to step total amounts
   stotfi=stotfi*deltim

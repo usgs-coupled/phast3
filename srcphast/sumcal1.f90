@@ -122,16 +122,18 @@ SUBROUTINE sumcal1
         CALL logprt_c(logline1)
         WRITE(logline1,2002) 'Current time step length .....',cnvtmi*deltim,'  ('//unittm//')'
 2002    FORMAT(a,1PG12.3,A)
-        WRITE(*,2012) TRIM(logline1)
-2012    FORMAT(/tr5,a)
+!        WRITE(*,2012) TRIM(logline1)
+!2012    FORMAT(/tr5,a)
+        CALL screenprt_c(logline1)
         WRITE(logline1,5001) 'Maximum change in potentiometric head '//dots,  &
              cnvpi*dhmax,' ('//unitl//')',' at location (',  &
              cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax), ')(',unitl//')'
 5001    FORMAT(A45,1PE14.4,A8,A,3(1PG10.3,A),A)
         CALL logprt_c(logline1)
-        WRITE(*,aformt) 'Maximum change in potentiometric head '//dots,  &
-             cnvpi*dhmax,'('//unitl//')','at location (',  &
-             cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax), ')(',unitl,')'
+        CALL screenprt_c(logline1)
+!        WRITE(*,aformt) 'Maximum change in potentiometric head '//dots,  &
+!             cnvpi*dhmax,'('//unitl//')','at location (',  &
+!             cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax), ')(',unitl,')'
 !!$        IF(heat) THEN
 !!$           WRITE(fuclog,aform) 'Maximum change in temperature '//dots,  &
 !!$                cnvt1i*dtmax+cnvt2i,'(Deg.'//unitt//')',  &
@@ -145,17 +147,19 @@ SUBROUTINE sumcal1
            WRITE(logline1,3102) 'Component no. ',is,'  ',comp_name(is)
 3102       FORMAT(a,i4,a,a)
            CALL logprt_c(logline1)
-           WRITE(*,2102) 'Component no. ',is,comp_name(is)
-2102       FORMAT(/tr10,a,i4,tr2,a)
+           CALL screenprt_c(logline1)
+!           WRITE(*,2102) 'Component no. ',is,comp_name(is)
+!2102       FORMAT(/tr10,a,i4,tr2,a)
            u6=dcmax(is)
            WRITE(logline1,5001) 'Maximum change in '//mflbl//'fraction '//dots,  &
                 u6,'(-)','at location (',cnvli*x(icmax(is)),',',cnvli*y(jcmax(is)),',',  &
                 cnvli*z(kcmax(is)),' )(',unitl//')'
            CALL logprt_c(logline1)
-           WRITE(*,aformt) 'Maximum change in '//mflbl//'fraction '//dots,  &
-                u6,'(-)','at location (',  &
-                cnvli*x(icmax(is)),',',cnvli*y(jcmax(is)),',',  &
-                cnvli*z(kcmax(is)),')(',unitl,')'
+           CALL screenprt_c(logline1)
+!           WRITE(*,aformt) 'Maximum change in '//mflbl//'fraction '//dots,  &
+!                u6,'(-)','at location (',  &
+!                cnvli*x(icmax(is)),',',cnvli*y(jcmax(is)),',',  &
+!                cnvli*z(kcmax(is)),')(',unitl,')'
         END DO
         RETURN
      END IF

@@ -19,12 +19,14 @@ SUBROUTINE timstp_ss_flow
   !...
   ! ... Update time step counter
   itime=itime+1
-  WRITE(*,3001) 'Beginning steady state time step no. ',itime
-3001 FORMAT(/a,i6)
+!  WRITE(*,3001) 'Beginning steady state time step no. ',itime
+!3001 FORMAT(/a,i6)
   WRITE(logline1,5011) 'Beginning steady state time step no. ',itime
 5011 FORMAT(a,i6)
   CALL logprt_c(logline0)
   CALL logprt_c(logline1)
+  CALL screenprt_c(logline0)
+  CALL screenprt_c(logline1)
   jtime=jtime+1
   tsfail=.FALSE.
   ! ... Adjust the time step if automatic or print time control
@@ -96,8 +98,9 @@ SUBROUTINE timstp_ss_flow
      IF(ntprkd > 0) prkd = .FALSE.
   END IF
   IF(prslm) THEN
-     WRITE(*,3002) 'Current time step length ..........', cnvtmi*deltim,'('//TRIM(unittm)//')'
+     WRITE(logline1,3002) 'Current time step length ..........', cnvtmi*deltim,'('//TRIM(unittm)//')'
 3002 FORMAT(tr5,a,1PG12.3,tr1,a)
+     CALL screenprt_c(logline1)
      WRITE(logline1,5001) '     Current time step length .........................'//  &
           '..........',cnvtmi*deltim,' ('//TRIM(unittm)//')'
 5001 FORMAT(a,1PG12.3,a)

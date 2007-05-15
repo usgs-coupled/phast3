@@ -94,9 +94,10 @@ SUBROUTINE write5
      !      WRITE(*,aformt) 'Maximum change in potentiometric head '//dots,  &
      !           cnvpi*dhmax,'('//unitl//')','at location (',  &
      !           cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax),')(',TRIM(unitl),')'
-     WRITE(*,aformt) 'Maximum change in potentiometric head '//dots,  &
+     WRITE(logline1,aformt) 'Maximum change in potentiometric head '//dots,  &
           cnvpi*dhmax,'('//unitl//')','at (',  &
           cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax),')(',TRIM(unitl),')'
+     call screenprt_c(logline1)
 !!$     IF(heat) THEN
 !!$        WRITE(fuclog,aform) 'Maximum change in temperature '//dots,  &
 !!$             cnvt1i*dtmax+cnvt2i,'(Deg.'//unitt//')',  &
@@ -112,9 +113,10 @@ SUBROUTINE write5
                 dots, u6,' (mol/kgw)',' at location (',  &
                 cnvli*x(icmax(is)),',',cnvli*y(jcmax(is)),',', cnvli*z(kcmax(is)),')(',TRIM(unitl)//')'
            CALL logprt_c(logline1)
-           WRITE(*,aformt) 'Maximum change in '//TRIM(comp_name(is))  &
+           WRITE(logline1,aformt) 'Maximum change in '//TRIM(comp_name(is))  &
                 //dots, u6,'(mol/kgw)','at (',  &
                 cnvli*x(icmax(is)),',',cnvli*y(jcmax(is)),',', cnvli*z(kcmax(is)),')(',TRIM(unitl),')'
+           call screenprt_c(logline1)
         END DO
      END IF
   END IF
@@ -1398,8 +1400,9 @@ SUBROUTINE write5
 !!$           WRITE(fubnfr,5008) (cnvmi*ccsaif(l),l=1,naifc)
 !!$        END IF
 !!$     END IF
-  WRITE(*,3001) 'Finished time step no. ',itime,'; Time '//dots(1:30),cnvtmi*time,'('//TRIM(unittm)//')'
+  WRITE(logline1,3001) 'Finished time step no. ',itime,'; Time '//dots(1:30),cnvtmi*time,'('//TRIM(unittm)//')'
 3001 FORMAT(a,I6,a,1PG18.9,tr2,a)
+  call screenprt_c(logline1)
 !!$     IF(nhcbc > 0) THEN
 !!$        !... ** not implemented in PHAST
 !!$        WRITE(fubnfr,2046) 'Heat Conduction B.C. Heat Flow Rates '

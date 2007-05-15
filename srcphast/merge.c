@@ -66,7 +66,7 @@ void FileInfo_alloc(struct FileInfo* pFileInfo, int size)
 {
     /* initialize storage */
     pFileInfo->buffer_size = size;
-    space ((void **) &(pFileInfo->buffer), INIT, &pFileInfo->buffer_size, sizeof(char));
+    space ((void **) ((void *) &(pFileInfo->buffer)), INIT, &pFileInfo->buffer_size, sizeof(char));
     assert(pFileInfo->buffer != NULL);
 }
 
@@ -136,7 +136,7 @@ void FileInfo_merge(struct FileInfo* ptr_info, hid_t xfer_pid, hid_t mem_dspace,
 	if (cell_to_proc[e] == mpi_myself) { 
 	    /* select dataspace */
 	    assert((int)s_ci.coord[0][0] <= local_count_chem);
-	    status = H5Sselect_elements(s_ci.dspace_id, H5S_SELECT_SET, 1, (const hssize_t **)s_ci.coord);
+	    status = H5Sselect_elements(s_ci.dspace_id, H5S_SELECT_SET, 1, (const hssize_t **) ((void *) s_ci.coord));
 	    assert(status >= 0);
 				    
 	    /* get size */
@@ -201,7 +201,7 @@ void FileInfo_merge(struct FileInfo* ptr_info, hid_t xfer_pid, hid_t mem_dspace,
 		if (root_record_size_array[e] > 0) {
 		    /* select dataspace */
 		    assert((int)s_ci.coord[0][0] <= local_count_chem);
-		    status = H5Sselect_elements(s_ci.dspace_id, H5S_SELECT_SET, 1, (const hssize_t **)s_ci.coord);
+		    status = H5Sselect_elements(s_ci.dspace_id, H5S_SELECT_SET, 1, (const hssize_t **) ((void *) s_ci.coord));
 		    assert(status >= 0);
 		    /* just read cell */
 		    assert((int)s_ci.coord[0][0] <= local_count_chem);
@@ -212,7 +212,7 @@ void FileInfo_merge(struct FileInfo* ptr_info, hid_t xfer_pid, hid_t mem_dspace,
 		if (local_record_size_array[i] > 1) {
 		    /* select dataspace */
 		    assert((int)s_ci.coord[0][0] <= local_count_chem);
-		    status = H5Sselect_elements(s_ci.dspace_id, H5S_SELECT_SET, 1, (const hssize_t **)s_ci.coord);
+		    status = H5Sselect_elements(s_ci.dspace_id, H5S_SELECT_SET, 1, (const hssize_t **) ((void *) s_ci.coord));
 		    assert(status >= 0);
 		    /* read cell */
 		    assert((int)s_ci.coord[0][0] <= local_count_chem);
@@ -249,7 +249,7 @@ void FileInfo_merge(struct FileInfo* ptr_info, hid_t xfer_pid, hid_t mem_dspace,
 		if (root_record_size_array[e] > 1) {
 		    /* recv size */
 		    count_char = root_record_size_array[e];
-		    space ((void **) &(ptr_info->buffer), count_char, &ptr_info->buffer_size, sizeof(char));
+		    space ((void **) ((void *) &(ptr_info->buffer)), count_char, &ptr_info->buffer_size, sizeof(char));
 		    /* recv cell */
 		    mpi_return = MPI_Recv((void*)ptr_info->buffer, count_char, MPI_CHAR, cell_to_proc[e], ptr_info->MSG_TAG, MPI_COMM_WORLD, &mpi_status);
 		    assert(mpi_return == MPI_SUCCESS);
@@ -283,7 +283,7 @@ int FileInfo_capture(struct FileInfo* ptr_info, const int length, const char* fo
     assert(ptr_info->dset_id > 0); /* should be open */
 
 
-    space ((void **) &(ptr_info->buffer), ptr_info->buffer_pos + length, &ptr_info->buffer_size, sizeof(char));
+    space ((void **) ((void *) &(ptr_info->buffer)), ptr_info->buffer_pos + length, &ptr_info->buffer_size, sizeof(char));
 
     retval = vsprintf(ptr_info->buffer + ptr_info->buffer_pos, format, argptr);
 
@@ -626,7 +626,7 @@ void MergeEndCell(void)
         }
 
         /* make dataspace selection */
-        status = H5Sselect_elements(s_ci.dspace_id, H5S_SELECT_SET, 1, (const hssize_t **)s_ci.coord);
+        status = H5Sselect_elements(s_ci.dspace_id, H5S_SELECT_SET, 1, (const hssize_t **) ((void *) s_ci.coord));
         if (status < 0) {
             sprintf(error_string, "HDF ERROR: Unable to write dataset.\n");
             error_msg(error_string, STOP);
@@ -666,7 +666,7 @@ void MergeEndCell(void)
         }
 
         /* make dataspace selection */
-        status = H5Sselect_elements(s_ci.dspace_id, H5S_SELECT_SET, 1, (const hssize_t **)s_ci.coord);
+        status = H5Sselect_elements(s_ci.dspace_id, H5S_SELECT_SET, 1, (const hssize_t **) ((void *) s_ci.coord));
         if (status < 0) {
             sprintf(error_string, "HDF ERROR: Unable to write dataset.\n");
             error_msg(error_string, STOP);
@@ -706,7 +706,7 @@ void MergeEndCell(void)
         }
 
         /* make dataspace selection */
-        status = H5Sselect_elements(s_ci.dspace_id, H5S_SELECT_SET, 1, (const hssize_t **)s_ci.coord);
+        status = H5Sselect_elements(s_ci.dspace_id, H5S_SELECT_SET, 1, (const hssize_t **) ((void *) s_ci.coord));
         if (status < 0) {
             sprintf(error_string, "HDF ERROR: Unable to write dataset.\n");
             error_msg(error_string, STOP);

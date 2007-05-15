@@ -83,8 +83,9 @@ SUBROUTINE asmslp
 !     matter since constant density suppresses all transport terms.
   is = 1
   logline1 =  '     Beginning flow calculation.'
-  WRITE(*,'(a)') TRIM(logline1)
+!  WRITE(*,'(a)') TRIM(logline1)
   CALL logprt_c(logline1)
+  CALL screenprt_c(logline1)
 40 CONTINUE
   CALL asembl  
   CALL aplbci  
@@ -97,8 +98,8 @@ SUBROUTINE asmslp
 !!$        WRITE(fuclog,*) 'Error in scaling: ', iierr
 !!$        ierr(81) = .TRUE.
         WRITE(logline1,*) 'Error in scaling; equation:', iierr
-        WRITE(*,3001) TRIM(logline1)
-3001    FORMAT(/a)
+!        WRITE(*,3001) TRIM(logline1)
+!3001    FORMAT(/a)
         CALL errprt_c(logline1)
         RETURN
      END IF
@@ -147,9 +148,10 @@ SUBROUTINE asmslp
   ! ...      flow rate, and test for convergence, rectangular region
   CONVP = .TRUE.  
   IF(.NOT.CYLIND) THEN  
-     DO 70 IWEL = 1, NWEL  
+     DO IWEL = 1, NWEL  
         IF(wqmeth(iwel) == 0.OR.ABS(qwm(iwel)) <= 1.e-6_kdp.OR.wqmeth(iwel) == 11.OR. &
-             wqmeth(iwel) == 13) GOTO 70
+             wqmeth(iwel) == 13) CYCLE
+        !     wqmeth(iwel) == 13) GOTO 70
         !               IF(WQMETH(IWEL).EQ.20.OR.WQMETH(IWEL).EQ.40) GO TO 70
         ! ... Calculate change in well datum pressure.
         ! ...      Neglects change in flow direction from time N to N+NU
@@ -173,7 +175,7 @@ SUBROUTINE asmslp
            pwkt(iwel) = upwkt  
         ENDIF
         DPWKT(IWEL) = UDPWKT  
-70   END DO
+     END DO
   ENDIF
   IF(.NOT.CONVP) THEN  
      ITRNP = ITRNP + 1  

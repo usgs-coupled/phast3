@@ -85,10 +85,11 @@ SUBROUTINE phast_root(mpi_tasks, mpi_myself)
 !
   IF (solute) THEN
      ! ... Equilibrate the initial conditions for component concentrations
-     WRITE(*,3201) 'Equilibration of cells for initial conditions.'
-3201 FORMAT(/a)
+!     WRITE(logline1,3201) 'Equilibration of cells for initial conditions.'
+!3201 FORMAT(/a)
      WRITE(logline1,'(a)') 'Equilibration of cells for initial conditions.'
      CALL logprt_c(logline1)
+     CALL screenprt_c(logline1)
      ! moved equilibrate before write2_1, where initial conditions are printed to O.comps
      ! but equilibrate needs to be called after ss calculation for correct frac
      print_restart_flag = 0 
@@ -117,8 +118,9 @@ SUBROUTINE phast_root(mpi_tasks, mpi_myself)
 !
   IF(solute .OR. .NOT.steady_flow) THEN
      logline1 = 'Beginning transient simulation.'
-     WRITE(*,3001) TRIM(logline1)
-3001 FORMAT(/a)  
+     CALL screenprt_c(logline1)
+!     WRITE(*,3001) TRIM(logline1)
+!3001 FORMAT(/a)  
      CALL logprt_c(' ')
      CALL logprt_c(logline1)
      fdtmth = fdtmth_trans     ! ... set time differencing method to transient
@@ -159,9 +161,10 @@ SUBROUTINE phast_root(mpi_tasks, mpi_myself)
         ! ... This is the connection to the equilibration step after transport
         IF (solute) THEN
            stop_msg = 0
-           WRITE(*,'(tr5,a)') 'Beginning chemistry calculation.'
+!           WRITE(*,'(tr5,a)') 'Beginning chemistry calculation.'
            WRITE(logline1,'(a)') '     Beginning chemistry calculation.'
            CALL logprt_c(logline1)
+           CALL screenprt_c(logline1)
            CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time,deltim,prslmi,cnvtmi,  &
                 frac,iprint_chem,iprint_xyz,prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f, &
                 print_restart%print_flag_integer)
@@ -183,23 +186,27 @@ SUBROUTINE phast_root(mpi_tasks, mpi_myself)
 !  Cleanup and stop
 !
   logline1 = 'Done with transient simulation.'
-  WRITE(*,3001) TRIM(logline1)
+!  WRITE(*,3001) TRIM(logline1)
   CALL logprt_c(logline1)
+  CALL screenprt_c(logline1)
   IF(errexe .OR. errexi) THEN
      logline1 = 'ERROR exit.'
-     WRITE(*,3001) TRIM(logline1)
+!     WRITE(*,3001) TRIM(logline1)
      CALL logprt_c(logline1)
+     CALL screenprt_c(logline1)
   END IF
 ! *** special diagnostic message ***
   IF(col_scale) then
      if (ident_diagc) THEN
         logline1 = '***INFORMATION: all column scaling was unnecessary.'
-        WRITE(*,3001) TRIM(logline1)
+!        WRITE(*,3001) TRIM(logline1)
         CALL logprt_c(logline1)
+        CALL screenprt_c(logline1)
      else
         logline1 = '***INFORMATION: column scaling was necessary!'
-        WRITE(*,3001) TRIM(logline1)
+!        WRITE(*,3001) TRIM(logline1)
         CALL logprt_c(logline1)
+        CALL screenprt_c(logline1)
      endif
   END IF
   CALL terminate_phast(mpi_myself)
