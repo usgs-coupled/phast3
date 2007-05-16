@@ -38,10 +38,11 @@ if [ -f phast.dat ]; then
 cp ../schema 0
 cd 0
 sed -e "s?WORKING_DIRECTORY?$EXDIR/$NAME/0?" \
-    -e "s^EXECUTABLE^$PHASTDIR/srcphast/mpi_absoft/phast^" schema > temp; mv temp schema
+    -e "s^EXECUTABLE^$PHASTDIR/srcphast/mpi_lahey/phast^" schema > temp; mv temp schema
 #
 #   run phastinput
 #
 $PHASTDIR/srcinput/phastinput $NAME
 echo Done phastinput.
 lamboot ../../hosts;  time mpirun-lam -O -v schema; wipe ../../hosts
+#lamboot ../../hosts;  time mpirun -O -v schema; wipe ../../hosts

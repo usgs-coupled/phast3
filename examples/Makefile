@@ -5,7 +5,8 @@ ifeq ($(CFG), Linux)
   TOPDIR=$(HOME)/programs/phastpp
   TEST=$(TOPDIR)/examples
   PHAST_INPUT=$(TOPDIR)/srcinput/phastinput
-  PHAST=$(TOPDIR)/srcphast/serial_absoft/phast
+#  PHAST=$(TOPDIR)/srcphast/serial_gfortran/phast
+  PHAST=$(TOPDIR)/srcphast/serial_lahey/phast
 endif
 
 ifeq ($(CFG), CYGWIN)
@@ -712,6 +713,32 @@ zero:
 					if [ -f $$FILE ]; then \
 						echo "   " $$FILE; \
 						../zero.sed $$FILE; \
+					fi; \
+				done; \
+			cd ..; \
+		done;
+
+zero_parallel:
+	for DIR in $(SERIAL); \
+		do echo $$DIR; cd $$DIR/0; \
+			for FILE in *.O.* *.sel *.xyz.* Phast.tmp; \
+				do \
+					if [ -f $$FILE ]; then \
+						echo "   " $$FILE; \
+						../../zero.sed $$FILE; \
+					fi; \
+				done; \
+			cd ../..; \
+		done;
+
+zero1:
+	for DIR in $(SERIAL); \
+		do echo $$DIR; cd $$DIR; \
+			for FILE in *.O.bcf *.O.comps *.O.probdef *.O.head *.O.kd *.O.vel *.O.wel *.xyz.comps *.xyz.head *.xyz.vel *.xyz.wel; \
+				do \
+					if [ -f $$FILE ]; then \
+						echo "   " $$FILE; \
+						../zero1.sed $$FILE; \
 					fi; \
 				done; \
 			cd ..; \
