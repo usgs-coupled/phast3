@@ -5,7 +5,7 @@
 
                               *** Output at End of Steady State Iteration No.     1 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -28,7 +28,7 @@
 
                               *** Output at End of Steady State Iteration No.     2 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -51,7 +51,7 @@
 
                               *** Output at End of Steady State Iteration No.     3 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -74,7 +74,7 @@
 
                               *** Output at End of Steady State Iteration No.     4 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -97,7 +97,7 @@
 
                               *** Output at End of Steady State Iteration No.     5 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -120,7 +120,7 @@
 
                               *** Output at End of Steady State Iteration No.     6 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -143,7 +143,7 @@
 
                               *** Output at End of Steady State Iteration No.     7 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -166,7 +166,7 @@
 
                               *** Output at End of Steady State Iteration No.     8 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -189,7 +189,7 @@
 
                               *** Output at End of Steady State Iteration No.     9 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -212,7 +212,7 @@
 
                               *** Output at End of Steady State Iteration No.    10 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -235,7 +235,7 @@
 
                               *** Output at End of Steady State Iteration No.    11 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -258,7 +258,7 @@
 
                               *** Output at End of Steady State Iteration No.    12 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -281,7 +281,7 @@
 
                               *** Output at End of Steady State Iteration No.    13 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -304,7 +304,7 @@
 
                               *** Output at End of Steady State Iteration No.    14 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -327,7 +327,7 @@
 
                               *** Output at End of Steady State Iteration No.    15 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -350,7 +350,7 @@
 
                               *** Output at End of Steady State Iteration No.    16 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -373,7 +373,7 @@
 
                               *** Output at End of Steady State Iteration No.    17 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -396,7 +396,7 @@
 
                               *** Output at End of Steady State Iteration No.    18 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -419,7 +419,7 @@
 
                               *** Output at End of Steady State Iteration No.    19 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -442,7 +442,7 @@
 
                               *** Output at End of Steady State Iteration No.    20 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -465,7 +465,7 @@
 
                               *** Output at End of Steady State Iteration No.    21 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -488,7 +488,7 @@
 
                               *** Output at End of Steady State Iteration No.    22 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -511,7 +511,7 @@
 
                               *** Output at End of Steady State Iteration No.    23 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -534,7 +534,7 @@
 
                               *** Output at End of Steady State Iteration No.    24 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -557,7 +557,7 @@
 
                               *** Output at End of Steady State Iteration No.    25 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -580,7 +580,7 @@
 
                               *** Output at End of Steady State Iteration No.    26 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -603,7 +603,7 @@
 
                               *** Output at End of Steady State Iteration No.    27 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -626,7 +626,7 @@
 
                               *** Output at End of Steady State Iteration No.    28 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -649,7 +649,7 @@
 
                               *** Output at End of Steady State Iteration No.    29 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -672,7 +672,7 @@
 
                               *** Output at End of Steady State Iteration No.    30 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -695,7 +695,7 @@
 
                               *** Output at End of Steady State Iteration No.    31 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -718,7 +718,7 @@
 
                               *** Output at End of Steady State Iteration No.    32 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -741,7 +741,7 @@
 
                               *** Output at End of Steady State Iteration No.    33 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -764,7 +764,7 @@
 
                               *** Output at End of Steady State Iteration No.    34 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -787,7 +787,7 @@
 
                               *** Output at End of Steady State Iteration No.    35 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -810,7 +810,7 @@
 
                               *** Output at End of Steady State Iteration No.    36 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -833,7 +833,7 @@
 
                               *** Output at End of Steady State Iteration No.    37 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -856,7 +856,7 @@
 
                               *** Output at End of Steady State Iteration No.    38 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -879,7 +879,7 @@
 
                               *** Output at End of Steady State Iteration No.    39 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -888,7 +888,7 @@
  Fluid outflow ..............................................  5.141622E+04  (kg/s)     5.141622E+10  (kg)
  Change in fluid in region ..................................  4.803384E-02  (kg/s)     4.803384E+04  (kg)
  Residual imbalance ......................................... -1.728539E-06  (kg/s)    -1.728539E+00  (kg)
- Fractional imbalance .......................................                              0.0000
+ Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
                                                                  Amounts
@@ -902,7 +902,7 @@
 
                               *** Output at End of Steady State Iteration No.    40 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -911,7 +911,7 @@
  Fluid outflow ..............................................  5.141700E+04  (kg/s)     5.141700E+10  (kg)
  Change in fluid in region ..................................  7.827991E-04  (kg/s)     7.827991E+02  (kg)
  Residual imbalance .........................................  8.705139E-09  (kg/s)     8.705139E-03  (kg)
- Fractional imbalance .......................................                              0.0000
+ Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
                                                                  Amounts
@@ -925,7 +925,7 @@
 
                               *** Output at End of Steady State Iteration No.    41 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -934,7 +934,7 @@
  Fluid outflow ..............................................  5.141699E+04  (kg/s)     5.141699E+10  (kg)
  Change in fluid in region .................................. -3.040705E-05  (kg/s)    -3.040705E+01  (kg)
  Residual imbalance .........................................  4.577637E-11  (kg/s)     4.577637E-05  (kg)
- Fractional imbalance .......................................                              0.0000
+ Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
                                                                  Amounts
@@ -948,7 +948,7 @@
 
                               *** Output at End of Steady State Iteration No.    42 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -957,7 +957,7 @@
  Fluid outflow ..............................................  5.141699E+04  (kg/s)     5.141699E+10  (kg)
  Change in fluid in region .................................. -1.027183E-06  (kg/s)    -1.027183E+00  (kg)
  Residual imbalance ......................................... -3.051758E-11  (kg/s)    -3.051758E-05  (kg)
- Fractional imbalance .......................................                              0.0000
+ Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
                                                                  Amounts
@@ -971,5 +971,5 @@
 
 
                                        ***** Simulation Completed *****
-               Last time value calculated ...................................... 0.0000     (s)
+               Last time value calculated ......................................      0     (s)
                Last time step index ............................................       0

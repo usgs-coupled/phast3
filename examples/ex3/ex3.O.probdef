@@ -47,7 +47,7 @@
                               X-Direction Node Coordinates    (m)
 
            1           2           3           4           5           6           7           8           9          10
-           0.00        0.50        1.00        1.50        2.00        2.50        3.00        3.50        4.00        4.50
+              0        0.50        1.00        1.50        2.00        2.50        3.00        3.50        4.00        4.50
 
 
 
@@ -105,7 +105,7 @@
                               Y-Direction Node Coordinates   (m)
 
            1           2
-           0.00        1.00
+              0        1.00
 
 
 
@@ -113,7 +113,7 @@
                               Z-Direction Node Coordinates   (m)
 
            1           2
-           0.00        1.00
+              0        1.00
 
 
 
@@ -157,7 +157,7 @@
 
                                         *** Transient Data ***
 
-     Time ..............................   0.000      (d  )
+     Time ..............................       0      (d  )
 
 
                                         *** Calculation Information ***

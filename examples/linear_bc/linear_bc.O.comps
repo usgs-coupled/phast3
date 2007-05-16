@@ -7,7 +7,7 @@
                               X-Direction Node Coordinates    (m)
 
            1           2           3           4           5           6           7           8           9          10
-           0.00        1.00        2.00        3.00        4.00        5.00        6.00        7.00        8.00        9.00
+              0        1.00        2.00        3.00        4.00        5.00        6.00        7.00        8.00        9.00
 
 
 
@@ -20,7 +20,7 @@
                               Y-Direction Node Coordinates   (m)
 
            1           2           3           4           5           6           7           8           9          10
-           0.00        1.00        2.00        3.00        4.00        5.00        6.00        7.00        8.00        9.00
+              0        1.00        2.00        3.00        4.00        5.00        6.00        7.00        8.00        9.00
 
 
 
@@ -33,7 +33,7 @@
                               Z-Direction Node Coordinates   (m)
 
            1           2
-           0.00       10.00
+              0       10.00
 
 
 
@@ -845,7 +845,7 @@
                               *** Output at End of Time Step No.     1 ***
 
      Time .......................................................   0.500      (s)
-     Maximum change in H         molality ....  2.6331E-10 (mol/kgw)   at location ( 0.000    ,  10.0    , 0.000    )(m )
+     Maximum change in H         molality ....  2.6331E-10 (mol/kgw)   at location (     0    ,  10.0    ,     0    )(m )
 
                               Molality (mol/kgw)
 
@@ -914,7 +914,7 @@
   1 2.10072E-07
 
 
-     Maximum change in O         molality ....  1.4270E-10 (mol/kgw)   at location ( 0.000    ,  10.0    ,  10.0    )(m )
+     Maximum change in O         molality ....  1.4270E-10 (mol/kgw)   at location (     0    ,  10.0    ,  10.0    )(m )
 
                               Molality (mol/kgw)
 
@@ -983,7 +983,7 @@
   1 1.05348E-07
 
 
-     Maximum change in Cl        molality ....  9.3272E-05 (mol/kgw)   at location ( 0.000    ,  10.0    , 0.000    )(m )
+     Maximum change in Cl        molality ....  9.3272E-05 (mol/kgw)   at location (     0    ,  10.0    ,     0    )(m )
 
                               Molality (mol/kgw)
 
@@ -1052,7 +1052,7 @@
   1 1.99403E-03
 
 
-     Maximum change in Na        molality ....  9.3272E-05 (mol/kgw)   at location ( 0.000    ,  10.0    , 0.000    )(m )
+     Maximum change in Na        molality ....  9.3272E-05 (mol/kgw)   at location (     0    ,  10.0    ,     0    )(m )
 
                               Molality (mol/kgw)
 
@@ -1121,7 +1121,7 @@
   1 1.99403E-03
 
 
-     Maximum change in Charge    molality .... -2.2364E-11 (mol/kgw)   at location ( 0.000    ,  10.0    , 0.000    )(m )
+     Maximum change in Charge    molality .... -2.2364E-11 (mol/kgw)   at location (     0    ,  10.0    ,     0    )(m )
 
                               Molality (mol/kgw)
 

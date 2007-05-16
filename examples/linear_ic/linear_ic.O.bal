@@ -14,7 +14,7 @@
  Fluid outflow ..............................................  1.000000E+03  (kg/s)     5.000000E+02  (kg)
  Change in fluid in region ..................................  0.000000E+00  (kg/s)     0.000000E+00  (kg)
  Residual imbalance .........................................  0.000000E+00  (kg/s)     0.000000E+00  (kg)
- Fractional imbalance .......................................                              0.0000
+ Fractional imbalance .......................................                                   0
 
 
           Component: H         
@@ -24,7 +24,7 @@
  Change in solute in region from reactions .................. -1.737243E-04  (kg/s)    -8.686213E-05  (kg)
  Change in solute in region ................................. -4.516578E-02  (kg/s)    -2.258289E-02  (kg)
  Residual imbalance .........................................  2.532696E-15  (kg/s)     1.266348E-15  (kg)
- Fractional imbalance .......................................                              0.0000
+ Fractional imbalance .......................................                                   0
 
 
           Component: O         
@@ -34,7 +34,7 @@
  Change in solute in region from reactions ..................  8.047237E+00  (kg/s)     4.023619E+00  (kg)
  Change in solute in region ................................. -5.084335E+00  (kg/s)    -2.542167E+00  (kg)
  Residual imbalance ......................................... -1.270095E-12  (kg/s)    -6.350476E-13  (kg)
- Fractional imbalance .......................................                              0.0000
+ Fractional imbalance .......................................                                   0
 
 
           Component: Al        
@@ -44,7 +44,7 @@
  Change in solute in region from reactions ..................  2.502294E-09  (kg/s)     1.251147E-09  (kg)
  Change in solute in region .................................  2.502294E-09  (kg/s)     1.251147E-09  (kg)
  Residual imbalance .........................................  0.000000E+00  (kg/s)     0.000000E+00  (kg)
- Fractional imbalance .......................................                              0.0000
+ Fractional imbalance .......................................                                   0
 
 
           Component: Ba        
@@ -54,7 +54,7 @@
  Change in solute in region from reactions ..................  1.219462E-07  (kg/s)     6.097310E-08  (kg)
  Change in solute in region .................................  2.417324E-08  (kg/s)     1.208662E-08  (kg)
  Residual imbalance ......................................... -3.546950E-21  (kg/s)    -1.773475E-21  (kg)
- Fractional imbalance .......................................                              0.0000
+ Fractional imbalance .......................................                                   0
 
 
           Component: Br        
@@ -64,7 +64,7 @@
  Change in solute in region from reactions .................. -3.836931E-13  (kg/s)    -1.918465E-13  (kg)
  Change in solute in region .................................  7.907236E-02  (kg/s)     3.953618E-02  (kg)
  Residual imbalance ......................................... -4.663804E-15  (kg/s)    -2.331902E-15  (kg)
- Fractional imbalance .......................................                              0.0000
+ Fractional imbalance .......................................                                   0
 
 
           Component: C         
@@ -74,7 +74,7 @@
  Change in solute in region from reactions ..................  9.971345E-03  (kg/s)     4.985672E-03  (kg)
  Change in solute in region ................................. -3.066361E-03  (kg/s)    -1.533181E-03  (kg)
  Residual imbalance .........................................  2.515349E-16  (kg/s)     1.257675E-16  (kg)
- Fractional imbalance .......................................                              0.0000
+ Fractional imbalance .......................................                                   0
 
 
           Component: Ca        
@@ -84,7 +84,7 @@
  Change in solute in region from reactions ..................  4.946934E-01  (kg/s)     2.473467E-01  (kg)
  Change in solute in region .................................  2.417173E-02  (kg/s)     1.208587E-02  (kg)
  Residual imbalance .........................................  1.249001E-14  (kg/s)     6.245005E-15  (kg)
- Fractional imbalance .......................................                              0.0000
+ Fractional imbalance .......................................                                   0
 
 
           Component: Cl        
@@ -94,7 +94,7 @@
  Change in solute in region from reactions .................. -2.273737E-13  (kg/s)    -1.136868E-13  (kg)
  Change in solute in region ................................. -3.508401E-02  (kg/s)    -1.754200E-02  (kg)
  Residual imbalance ......................................... -3.816392E-15  (kg/s)    -1.908196E-15  (kg)
- Fractional imbalance .......................................                              0.0000
+ Fractional imbalance .......................................                                   0
 
 
           Component: Fe        
@@ -104,7 +104,7 @@
  Change in solute in region from reactions ..................  1.499545E-04  (kg/s)     7.497726E-05  (kg)
  Change in solute in region .................................  5.704893E-05  (kg/s)     2.852447E-05  (kg)
  Residual imbalance ......................................... -3.615814E-17  (kg/s)    -1.807907E-17  (kg)
- Fractional imbalance .......................................                              0.0000
+ Fractional imbalance .......................................                                   0
 
 
           Component: K         
@@ -114,7 +114,7 @@
  Change in solute in region from reactions ..................  2.248331E-10  (kg/s)     1.124166E-10  (kg)
  Change in solute in region .................................  2.248331E-10  (kg/s)     1.124166E-10  (kg)
  Residual imbalance .........................................  0.000000E+00  (kg/s)     0.000000E+00  (kg)
- Fractional imbalance .......................................                              0.0000
+ Fractional imbalance .......................................                                   0
 
 
           Component: Mn        
@@ -124,7 +124,7 @@
  Change in solute in region from reactions ..................  2.896007E-05  (kg/s)     1.448004E-05  (kg)
  Change in solute in region .................................  5.551996E-06  (kg/s)     2.775998E-06  (kg)
  Residual imbalance ......................................... -1.830946E-17  (kg/s)    -9.154732E-18  (kg)
- Fractional imbalance .......................................                              0.0000
+ Fractional imbalance .......................................                                   0
 
 
           Component: N         
@@ -134,7 +134,7 @@
  Change in solute in region from reactions ..................  1.095000E-02  (kg/s)     5.474998E-03  (kg)
  Change in solute in region .................................  2.793092E-04  (kg/s)     1.396546E-04  (kg)
  Residual imbalance .........................................  3.556183E-16  (kg/s)     1.778092E-16  (kg)
- Fractional imbalance .......................................                              0.0000
+ Fractional imbalance .......................................                                   0
 
 
           Component: Na        
@@ -144,7 +144,7 @@
  Change in solute in region from reactions ..................  5.203151E+00  (kg/s)     2.601575E+00  (kg)
  Change in solute in region ................................. -3.428997E+00  (kg/s)    -1.714499E+00  (kg)
  Residual imbalance .........................................  7.958079E-13  (kg/s)     3.979039E-13  (kg)
- Fractional imbalance .......................................                              0.0000
+ Fractional imbalance .......................................                                   0
 
 
           Component: S         
@@ -154,7 +154,7 @@
  Change in solute in region from reactions ..................  4.011440E+00  (kg/s)     2.005720E+00  (kg)
  Change in solute in region ................................. -2.366587E+00  (kg/s)    -1.183293E+00  (kg)
  Residual imbalance .........................................  7.815970E-14  (kg/s)     3.907985E-14  (kg)
- Fractional imbalance .......................................                              0.0000
+ Fractional imbalance .......................................                                   0
 
 
           Component: Si        
@@ -164,7 +164,7 @@
  Change in solute in region from reactions ..................  7.439460E-03  (kg/s)     3.719730E-03  (kg)
  Change in solute in region .................................  7.147580E-03  (kg/s)     3.573790E-03  (kg)
  Residual imbalance .........................................  1.144917E-16  (kg/s)     5.724587E-17  (kg)
- Fractional imbalance .......................................                              0.0000
+ Fractional imbalance .......................................                                   0
 
 
           Component: Sr        
@@ -174,7 +174,7 @@
  Change in solute in region from reactions ..................  8.771639E-04  (kg/s)     4.385819E-04  (kg)
  Change in solute in region .................................  1.923485E-04  (kg/s)     9.617424E-05  (kg)
  Residual imbalance ......................................... -2.602085E-18  (kg/s)    -1.301043E-18  (kg)
- Fractional imbalance .......................................                              0.0000
+ Fractional imbalance .......................................                                   0
 
 
           Component: Charge    
@@ -184,7 +184,7 @@
  Change in solute in region from reactions .................. -1.716885E-05  (kg/s)    -8.584424E-06  (kg)
  Change in solute in region ................................. -5.909204E-05  (kg/s)    -2.954602E-05  (kg)
  Residual imbalance ......................................... -2.398797E-18  (kg/s)    -1.199399E-18  (kg)
- Fractional imbalance .......................................                              0.0000
+ Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
                                                                  Amounts
@@ -375,7 +375,7 @@
  Current Fluid in region ....................................  1.000000E+05  (kg)
  Current Fluid volume in region .............................  1.000000E+02  (m ^3)
  Residual imbalance .........................................  0.000000E+00  (kg)
- Fractional imbalance .......................................      0.0000
+ Fractional imbalance .......................................           0
 
 
           Component: H         
@@ -386,7 +386,7 @@
  Cumulative change in solute in region ...................... -2.258289E-02  (kg)
  Current solute in region ...................................  2.517447E+00  (kg)
  Residual imbalance..........................................  1.266348E-15  (kg)
- Fractional imbalance .......................................      0.0000
+ Fractional imbalance .......................................           0
 
 
           Component: O         
@@ -397,7 +397,7 @@
  Cumulative change in solute in region ...................... -2.542167E+00  (kg)
  Current solute in region ...................................  1.292520E+03  (kg)
  Residual imbalance.......................................... -6.350476E-13  (kg)
- Fractional imbalance .......................................      0.0000
+ Fractional imbalance .......................................           0
 
 
           Component: Al        
@@ -408,7 +408,7 @@
  Cumulative change in solute in region ......................  1.251147E-09  (kg)
  Current solute in region ...................................  1.251147E-09  (kg)
  Residual imbalance..........................................  0.000000E+00  (kg)
- Fractional imbalance .......................................      0.0000
+ Fractional imbalance .......................................           0
 
 
           Component: Ba        
@@ -419,7 +419,7 @@
  Cumulative change in solute in region ......................  1.208662E-08  (kg)
  Current solute in region ...................................  1.069784E-05  (kg)
  Residual imbalance.......................................... -1.773475E-21  (kg)
- Fractional imbalance .......................................      0.0000
+ Fractional imbalance .......................................           0
 
 
           Component: Br        
@@ -430,7 +430,7 @@
  Cumulative change in solute in region ......................  3.953618E-02  (kg)
  Current solute in region ...................................  4.034736E+00  (kg)
  Residual imbalance.......................................... -2.331902E-15  (kg)
- Fractional imbalance .......................................      0.0000
+ Fractional imbalance .......................................           0
 
 
           Component: C         
@@ -441,7 +441,7 @@
  Cumulative change in solute in region ...................... -1.533181E-03  (kg)
  Current solute in region ...................................  2.157716E+00  (kg)
  Residual imbalance..........................................  1.257675E-16  (kg)
- Fractional imbalance .......................................      0.0000
+ Fractional imbalance .......................................           0
 
 
           Component: Ca        
@@ -452,7 +452,7 @@
  Cumulative change in solute in region ......................  1.208587E-02  (kg)
  Current solute in region ...................................  4.655415E+01  (kg)
  Residual imbalance..........................................  6.245005E-15  (kg)
- Fractional imbalance .......................................      0.0000
+ Fractional imbalance .......................................           0
 
 
           Component: Cl        
@@ -463,7 +463,7 @@
  Cumulative change in solute in region ...................... -1.754200E-02  (kg)
  Current solute in region ...................................  5.300408E+00  (kg)
  Residual imbalance.......................................... -1.908196E-15  (kg)
- Fractional imbalance .......................................      0.0000
+ Fractional imbalance .......................................           0
 
 
           Component: Fe        
@@ -474,7 +474,7 @@
  Cumulative change in solute in region ......................  2.852447E-05  (kg)
  Current solute in region ...................................  3.226127E-01  (kg)
  Residual imbalance.......................................... -1.807907E-17  (kg)
- Fractional imbalance .......................................      0.0000
+ Fractional imbalance .......................................           0
 
 
           Component: K         
@@ -485,7 +485,7 @@
  Cumulative change in solute in region ......................  1.124166E-10  (kg)
  Current solute in region ...................................  1.124166E-10  (kg)
  Residual imbalance..........................................  0.000000E+00  (kg)
- Fractional imbalance .......................................      0.0000
+ Fractional imbalance .......................................           0
 
 
           Component: Mn        
@@ -496,7 +496,7 @@
  Cumulative change in solute in region ......................  2.775998E-06  (kg)
  Current solute in region ...................................  1.895316E-02  (kg)
  Residual imbalance.......................................... -9.154732E-18  (kg)
- Fractional imbalance .......................................      0.0000
+ Fractional imbalance .......................................           0
 
 
           Component: N         
@@ -507,7 +507,7 @@
  Cumulative change in solute in region ......................  1.396546E-04  (kg)
  Current solute in region ...................................  1.064943E+00  (kg)
  Residual imbalance..........................................  1.778092E-16  (kg)
- Fractional imbalance .......................................      0.0000
+ Fractional imbalance .......................................           0
 
 
           Component: Na        
@@ -518,7 +518,7 @@
  Cumulative change in solute in region ...................... -1.714499E+00  (kg)
  Current solute in region ...................................  8.635145E+02  (kg)
  Residual imbalance..........................................  3.979039E-13  (kg)
- Fractional imbalance .......................................      0.0000
+ Fractional imbalance .......................................           0
 
 
           Component: S         
@@ -529,7 +529,7 @@
  Cumulative change in solute in region ...................... -1.183293E+00  (kg)
  Current solute in region ...................................  6.335681E+02  (kg)
  Residual imbalance..........................................  3.907985E-14  (kg)
- Fractional imbalance .......................................      0.0000
+ Fractional imbalance .......................................           0
 
 
           Component: Si        
@@ -540,7 +540,7 @@
  Cumulative change in solute in region ......................  3.573790E-03  (kg)
  Current solute in region ...................................  6.131132E-01  (kg)
  Residual imbalance..........................................  5.724587E-17  (kg)
- Fractional imbalance .......................................      0.0000
+ Fractional imbalance .......................................           0
 
 
           Component: Sr        
@@ -551,7 +551,7 @@
  Cumulative change in solute in region ......................  9.617424E-05  (kg)
  Current solute in region ...................................  7.502780E-02  (kg)
  Residual imbalance.......................................... -1.301043E-18  (kg)
- Fractional imbalance .......................................      0.0000
+ Fractional imbalance .......................................           0
 
 
           Component: Charge    
@@ -562,7 +562,7 @@
  Cumulative change in solute in region ...................... -2.954602E-05  (kg)
  Current solute in region ................................... -4.595450E-03  (kg)
  Residual imbalance.......................................... -1.199399E-18  (kg)
- Fractional imbalance .......................................      0.0000
+ Fractional imbalance .......................................           0
 
                Cumulative Summary by Boundary Condition Type
                                                                  Amounts

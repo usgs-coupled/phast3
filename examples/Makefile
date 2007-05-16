@@ -734,7 +734,7 @@ zero_parallel:
 zero1:
 	for DIR in $(SERIAL); \
 		do echo $$DIR; cd $$DIR; \
-			for FILE in *.O.bcf *.O.comps *.O.probdef *.O.head *.O.kd *.O.vel *.O.wel *.xyz.comps *.xyz.head *.xyz.vel *.xyz.wel; \
+			for FILE in *.O.* *.xyz.*; \
 				do \
 					if [ -f $$FILE ]; then \
 						echo "   " $$FILE; \

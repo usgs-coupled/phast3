@@ -5,7 +5,7 @@
 
                               *** Output at End of Steady State Iteration No.     1 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -14,7 +14,7 @@
  Fluid outflow ..............................................  6.600000E-02  (kg/s)     6.600000E-02  (kg)
  Change in fluid in region ..................................  0.000000E+00  (kg/s)     0.000000E+00  (kg)
  Residual imbalance .........................................  1.559767E-10  (kg/s)     1.559767E-10  (kg)
- Fractional imbalance .......................................                              0.0000
+ Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
                                                                  Amounts
@@ -28,7 +28,7 @@
 
                               *** Output at End of Steady State Iteration No.     2 ***
 
-     Time .......................................................   0.000      (s)
+     Time .......................................................       0      (s)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
@@ -37,7 +37,7 @@
  Fluid outflow ..............................................  6.600000E-02  (kg/s)     6.600000E-02  (kg)
  Change in fluid in region ..................................  0.000000E+00  (kg/s)     0.000000E+00  (kg)
  Residual imbalance .........................................  0.000000E+00  (kg/s)     0.000000E+00  (kg)
- Fractional imbalance .......................................                              0.0000
+ Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
                                                                  Amounts
@@ -51,5 +51,5 @@
 
 
                                        ***** Simulation Completed *****
-               Last time value calculated ...................................... 0.0000     (s)
+               Last time value calculated ......................................      0     (s)
                Last time step index ............................................       0

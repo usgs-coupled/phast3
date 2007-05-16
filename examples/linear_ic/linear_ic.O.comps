@@ -7,7 +7,7 @@
                               X-Direction Node Coordinates    (m)
 
            1           2           3           4           5           6           7           8           9          10
-           0.00        1.00        2.00        3.00        4.00        5.00        6.00        7.00        8.00        9.00
+              0        1.00        2.00        3.00        4.00        5.00        6.00        7.00        8.00        9.00
 
 
 
@@ -20,7 +20,7 @@
                               Y-Direction Node Coordinates   (m)
 
            1           2
-           0.00       10.00
+              0       10.00
 
 
 
@@ -28,7 +28,7 @@
                               Z-Direction Node Coordinates   (m)
 
            1           2
-           0.00       10.00
+              0       10.00
 
 
 
@@ -318,26 +318,26 @@
                                                             K =  1
 
            1           2           3           4           5           6           7           8           9          10
-  2  0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000    
-  1  0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000    
+  2       0           0           0           0           0           0           0           0           0           0    
+  1       0           0           0           0           0           0           0           0           0           0    
 
 
 
           11
-  2  0.0000    
-  1  0.0000    
+  2       0    
+  1       0    
 
                                                             K =  2
 
            1           2           3           4           5           6           7           8           9          10
-  2  0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000    
-  1  0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000    
+  2       0           0           0           0           0           0           0           0           0           0    
+  1       0           0           0           0           0           0           0           0           0           0    
 
 
 
           11
-  2  0.0000    
-  1  0.0000    
+  2       0    
+  1       0    
 
 
 
@@ -388,8 +388,8 @@
 
 
           11
-  2  0.0000    
-  1  0.0000    
+  2       0    
+  1       0    
 
                                                             K =  2
 
@@ -400,8 +400,8 @@
 
 
           11
-  2  0.0000    
-  1  0.0000    
+  2       0    
+  1       0    
 
 
 
@@ -516,8 +516,8 @@
 
 
           11
-  2  0.0000    
-  1  0.0000    
+  2       0    
+  1       0    
 
                                                             K =  2
 
@@ -528,8 +528,8 @@
 
 
           11
-  2  0.0000    
-  1  0.0000    
+  2       0    
+  1       0    
 
 
 
@@ -542,26 +542,26 @@
                                                             K =  1
 
            1           2           3           4           5           6           7           8           9          10
-  2  0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000    
-  1  0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000    
+  2       0           0           0           0           0           0           0           0           0           0    
+  1       0           0           0           0           0           0           0           0           0           0    
 
 
 
           11
-  2  0.0000    
-  1  0.0000    
+  2       0    
+  1       0    
 
                                                             K =  2
 
            1           2           3           4           5           6           7           8           9          10
-  2  0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000    
-  1  0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000      0.0000    
+  2       0           0           0           0           0           0           0           0           0           0    
+  1       0           0           0           0           0           0           0           0           0           0    
 
 
 
           11
-  2  0.0000    
-  1  0.0000    
+  2       0    
+  1       0    
 
 
 
@@ -580,8 +580,8 @@
 
 
           11
-  2  0.0000    
-  1  0.0000    
+  2       0    
+  1       0    
 
                                                             K =  2
 
@@ -592,8 +592,8 @@
 
 
           11
-  2  0.0000    
-  1  0.0000    
+  2       0    
+  1       0    
 
 
 
@@ -708,8 +708,8 @@
 
 
           11
-  2  0.0000    
-  1  0.0000    
+  2       0    
+  1       0    
 
                                                             K =  2
 
@@ -720,8 +720,8 @@
 
 
           11
-  2  0.0000    
-  1  0.0000    
+  2       0    
+  1       0    
 
 
 
@@ -792,7 +792,7 @@
                               *** Output at End of Time Step No.     1 ***
 
      Time .......................................................   0.500      (s)
-     Maximum change in H         molality .... -1.6587E-03 (mol/kgw)   at location (  10.0    , 0.000    , 0.000    )(m )
+     Maximum change in H         molality .... -1.6587E-03 (mol/kgw)   at location (  10.0    ,     0    ,     0    )(m )
 
                               Molality (mol/kgw)
 
@@ -825,7 +825,7 @@
   1 4.46023E-02
 
 
-     Maximum change in O         molality .... -7.2287E-02 (mol/kgw)   at location ( 0.000    ,  10.0    , 0.000    )(m )
+     Maximum change in O         molality .... -7.2287E-02 (mol/kgw)   at location (     0    ,  10.0    ,     0    )(m )
 
                               Molality (mol/kgw)
 
@@ -891,7 +891,7 @@
   1 4.50324E-13
 
 
-     Maximum change in Ba        molality .... -7.6145E-11 (mol/kgw)   at location ( 0.000    , 0.000    , 0.000    )(m )
+     Maximum change in Ba        molality .... -7.6145E-11 (mol/kgw)   at location (     0    ,     0    ,     0    )(m )
 
                               Molality (mol/kgw)
 
@@ -924,7 +924,7 @@
   1 7.09791E-10
 
 
-     Maximum change in Br        molality ....  1.0408E-05 (mol/kgw)   at location (  10.0    , 0.000    , 0.000    )(m )
+     Maximum change in Br        molality ....  1.0408E-05 (mol/kgw)   at location (  10.0    ,     0    ,     0    )(m )
 
                               Molality (mol/kgw)
 
@@ -957,7 +957,7 @@
   1 1.04079E-05
 
 
-     Maximum change in C         molality .... -1.7324E-04 (mol/kgw)   at location ( 0.000    , 0.000    , 0.000    )(m )
+     Maximum change in C         molality .... -1.7324E-04 (mol/kgw)   at location (     0    ,     0    ,     0    )(m )
 
                               Molality (mol/kgw)
 
@@ -990,7 +990,7 @@
   1 1.05116E-03
 
 
-     Maximum change in Ca        molality .... -1.0340E-03 (mol/kgw)   at location ( 0.000    ,  10.0    , 0.000    )(m )
+     Maximum change in Ca        molality .... -1.0340E-03 (mol/kgw)   at location (     0    ,  10.0    ,     0    )(m )
 
                               Molality (mol/kgw)
 
@@ -1056,7 +1056,7 @@
   1 1.98959E-03
 
 
-     Maximum change in Fe        molality .... -7.9983E-06 (mol/kgw)   at location ( 0.000    ,  10.0    , 0.000    )(m )
+     Maximum change in Fe        molality .... -7.9983E-06 (mol/kgw)   at location (     0    ,  10.0    ,     0    )(m )
 
                               Molality (mol/kgw)
 
@@ -1122,7 +1122,7 @@
   1 2.06165E-14
 
 
-     Maximum change in Mn        molality ....  4.2608E-07 (mol/kgw)   at location (  10.0    ,  10.0    , 0.000    )(m )
+     Maximum change in Mn        molality ....  4.2608E-07 (mol/kgw)   at location (  10.0    ,  10.0    ,     0    )(m )
 
                               Molality (mol/kgw)
 
@@ -1155,7 +1155,7 @@
   1 1.06650E-10
 
 
-     Maximum change in N         molality .... -6.8285E-05 (mol/kgw)   at location ( 0.000    ,  10.0    , 0.000    )(m )
+     Maximum change in N         molality .... -6.8285E-05 (mol/kgw)   at location (     0    ,  10.0    ,     0    )(m )
 
                               Molality (mol/kgw)
 
@@ -1188,7 +1188,7 @@
   1 7.61847E-04
 
 
-     Maximum change in Na        molality .... -3.3619E-02 (mol/kgw)   at location ( 0.000    ,  10.0    , 0.000    )(m )
+     Maximum change in Na        molality .... -3.3619E-02 (mol/kgw)   at location (     0    ,  10.0    ,     0    )(m )
 
                               Molality (mol/kgw)
 
@@ -1221,7 +1221,7 @@
   1 0.37749    
 
 
-     Maximum change in S         molality .... -1.7764E-02 (mol/kgw)   at location ( 0.000    ,  10.0    , 0.000    )(m )
+     Maximum change in S         molality .... -1.7764E-02 (mol/kgw)   at location (     0    ,  10.0    ,     0    )(m )
 
                               Molality (mol/kgw)
 
@@ -1254,7 +1254,7 @@
   1 0.19894    
 
 
-     Maximum change in Si        molality .... -2.2484E-05 (mol/kgw)   at location ( 0.000    , 0.000    , 0.000    )(m )
+     Maximum change in Si        molality .... -2.2484E-05 (mol/kgw)   at location (     0    ,     0    ,     0    )(m )
 
                               Molality (mol/kgw)
 
@@ -1287,7 +1287,7 @@
   1 1.03930E-05
 
 
-     Maximum change in Sr        molality .... -8.3722E-07 (mol/kgw)   at location ( 0.000    , 0.000    , 0.000    )(m )
+     Maximum change in Sr        molality .... -8.3722E-07 (mol/kgw)   at location (     0    ,     0    ,     0    )(m )
 
                               Molality (mol/kgw)
 
@@ -1320,7 +1320,7 @@
   1 7.79212E-06
 
 
-     Maximum change in Charge    molality .... -6.0438E-06 (mol/kgw)   at location (  10.0    , 0.000    , 0.000    )(m )
+     Maximum change in Charge    molality .... -6.0438E-06 (mol/kgw)   at location (  10.0    ,     0    ,     0    )(m )
 
                               Molality (mol/kgw)
 
