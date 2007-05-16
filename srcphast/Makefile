@@ -20,31 +20,43 @@ all: gfortran lahey g95 # absoft
 
 SERIAL_ABSOFT_DIR       = serial_absoft
 SERIAL_ABSOFT_DEBUG_DIR = serial_absoft_debug
-SERIAL_LAHEY_DIR        = serial_lahey
-SERIAL_LAHEY_DEBUG_DIR  = serial_lahey_debug
-SERIAL_G95_DIR          = serial_g95
-SERIAL_G95_DEBUG_DIR    = serial_g95_debug
-SERIAL_GFORTRAN_DIR          = serial_gfortran
-SERIAL_GFORTRAN_DEBUG_DIR    = serial_gfortran_debug
-SERIAL_GFORTRAN_64_DIR       = serial_gfortran
-SERIAL_GFORTRAN_64_DEBUG_DIR = serial_gfortran_debug
-MPI_LAHEY_DIR           = mpi_lahey
-MPI_LAHEY_DEBUG_DIR     = mpi_lahey_debug
 MPI_ABSOFT_DIR          = mpi_absoft
 MPI_ABSOFT_DEBUG_DIR    = mpi_absoft_debug
+absoft: serial_absoft serial_absoft_debug mpi_absoft mpi_absoft_debug
+
+SERIAL_LAHEY_DIR        = serial_lahey
+SERIAL_LAHEY_DEBUG_DIR  = serial_lahey_debug
+MPI_LAHEY_DIR           = mpi_lahey
+MPI_LAHEY_DEBUG_DIR     = mpi_lahey_debug
+lahey: serial_lahey serial_lahey_debug mpi_lahey mpi_lahey_debug
+
+SERIAL_G95_DIR          = serial_g95
+SERIAL_G95_DEBUG_DIR    = serial_g95_debug
 MPI_G95_DIR             = mpi_g95
 MPI_G95_DEBUG_DIR       = mpi_g95_debug
-MPI_GFORTRAN_DIR        = mpi_gfortran
-MPI_GFORTRAN_DEBUG_DIR  = mpi_gfortran_debug
-OPENMPI_GFORTRAN_DEBUG_DIR       = openmpi_gfortran_debug
-OPENMPI_GFORTRAN_DIR             = openmpi_gfortran
-OPENMPI_GFORTRAN_64_DEBUG_DIR    = openmpi_gfortran_64_debug
-OPENMPI_GFORTRAN_64_DIR          = openmpi_gfortran_64
+g95: serial_g95 serial_g95_debug mpi_g95 mpi_g95_debug
+
+SERIAL_GFORTRAN_DIR          = serial_gfortran
+SERIAL_GFORTRAN_DEBUG_DIR    = serial_gfortran_debug
+MPI_GFORTRAN_DIR             = mpi_gfortran
+MPI_GFORTRAN_DEBUG_DIR       = mpi_gfortran_debug
+OPENMPI_GFORTRAN_DIR         = openmpi_gfortran
+OPENMPI_GFORTRAN_DEBUG_DIR   = openmpi_gfortran_debug
+gfortran: serial_gfortran serial_gfortran_debug mpi_gfortran mpi_gfortran_debug 
+open_mpi: openmpi_gfortran openmpi_gfortran_debug
+
+SERIAL_GFORTRAN_64_DIR       = serial_gfortran_64
+SERIAL_GFORTRAN_64_DEBUG_DIR = serial_gfortran_debug_64
+OPENMPI_GFORTRAN_64_DIR      = openmpi_gfortran_64
+OPENMPI_GFORTRAN_64_DEBUG_DIR= openmpi_gfortran_64_debug
+gfortran_64: serial_gfortran_64 serial_gfortran_64_debug openmpi_gfortran_64 openmpi_gfortran_64_debug
+
 MAKEFILE                = Makefile
 
 #########################
-#### Serial Versions ####
+####    Absoft       ####
 #########################
+
 .PHONY : serial_absoft
 serial_absoft:
 	mkdir -p $(SERIAL_ABSOFT_DIR) 
@@ -54,18 +66,43 @@ serial_absoft:
 serial_absoft_debug:
 	mkdir -p $(SERIAL_ABSOFT_DEBUG_DIR) 
 	cd $(SERIAL_ABSOFT_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_ABSOFT_DEBUG $(PROGRAM)
+.PHONY : mpi_absoft
+mpi_absoft:
+	mkdir -p $(MPI_ABSOFT_DIR)
+	cd $(MPI_ABSOFT_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_ABSOFT $(PROGRAM)
+
+.PHONY : mpi_absoft_debug
+mpi_absoft_debug:
+	mkdir -p $(MPI_ABSOFT_DEBUG_DIR);
+	cd $(MPI_ABSOFT_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_ABSOFT_DEBUG $(PROGRAM)
+
+#########################
+####    Lahey        ####
+#########################
 
 .PHONY : serial_lahey
 serial_lahey:
 	mkdir -p $(SERIAL_LAHEY_DIR)
-#	ssh $(LAHEY_MACHINE) "cd programs/phast/srcphast; cd $(SERIAL_LAHEY_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_LAHEY $(PROGRAM)"
 	cd $(SERIAL_LAHEY_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_LAHEY $(PROGRAM)
 
 .PHONY : serial_lahey_debug
 serial_lahey_debug:
 	mkdir -p $(SERIAL_LAHEY_DEBUG_DIR);
-#	ssh $(LAHEY_MACHINE) "cd programs/phast/srcphast; cd $(SERIAL_LAHEY_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_LAHEY_DEBUG $(PROGRAM)"
 	cd $(SERIAL_LAHEY_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_LAHEY_DEBUG $(PROGRAM)
+
+.PHONY : mpi_lahey
+mpi_lahey:
+	mkdir -p $(MPI_LAHEY_DIR) 
+	cd $(MPI_LAHEY_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_LAHEY $(PROGRAM)
+
+.PHONY : mpi_lahey_debug
+mpi_lahey_debug:
+	mkdir -p $(MPI_LAHEY_DEBUG_DIR) 
+	cd $(MPI_LAHEY_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_LAHEY_DEBUG $(PROGRAM)
+
+#########################
+####    g95          ####
+#########################
 
 .PHONY : serial_g95
 serial_g95:
@@ -77,54 +114,6 @@ serial_g95_debug:
 	mkdir -p $(SERIAL_G95_DEBUG_DIR);
 	cd $(SERIAL_G95_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_G95_DEBUG $(PROGRAM)
 
-.PHONY : serial_gfortran
-serial_gfortran:
-	mkdir -p $(SERIAL_GFORTRAN_DIR)
-	cd $(SERIAL_GFORTRAN_DIR);	$(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_GFORTRAN $(PROGRAM)
-
-.PHONY : serial_gfortran_debug
-serial_gfortran_debug:
-	mkdir -p $(SERIAL_GFORTRAN_DEBUG_DIR);
-	cd $(SERIAL_GFORTRAN_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_GFORTRAN_DEBUG $(PROGRAM)
-
-.PHONY : serial_gfortran_64
-serial_gfortran_64:
-	mkdir -p $(SERIAL_GFORTRAN_64_DIR)
-	cd $(SERIAL_GFORTRAN_64_DIR);	$(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_GFORTRAN_64 $(PROGRAM)
-
-.PHONY : serial_gfortran_64_debug
-serial_gfortran_64_debug:
-	mkdir -p $(SERIAL_GFORTRAN_64_DEBUG_DIR);
-	cd $(SERIAL_GFORTRAN_64_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_GFORTRAN_64_DEBUG $(PROGRAM)
-#	ssh lobo "cd /work2/dlpark; svn co http://internalbrr/svn_GW/phreeqcpp/srcphast
-#	ssh lobo "cd /work2/dlpark; rm -rf srcphast; mkdir srcphast; cd srcphast; cp ~/programs/phastpp/srcphast/* ."
-
-#########################
-##### MPI Versions ######
-#########################
-
-.PHONY : mpi_lahey
-mpi_lahey:
-	mkdir -p $(MPI_LAHEY_DIR) 
-#	ssh $(LAHEY_MACHINE) "cd programs/phastpp/srcphast; cd $(MPI_LAHEY_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_LAHEY $(PROGRAM)"
-	cd $(MPI_LAHEY_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_LAHEY $(PROGRAM)
-
-.PHONY : mpi_lahey_debug
-mpi_lahey_debug:
-	mkdir -p $(MPI_LAHEY_DEBUG_DIR) 
-#	ssh $(LAHEY_MACHINE) "cd programs/phastpp/srcphast; cd $(MPI_LAHEY_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_LAHEY_DEBUG $(PROGRAM)"
-	cd $(MPI_LAHEY_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_LAHEY_DEBUG $(PROGRAM)
-
-.PHONY : mpi_absoft
-mpi_absoft:
-	mkdir -p $(MPI_ABSOFT_DIR)
-	cd $(MPI_ABSOFT_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_ABSOFT $(PROGRAM)
-
-.PHONY : mpi_absoft_debug
-mpi_absoft_debug:
-	mkdir -p $(MPI_ABSOFT_DEBUG_DIR);
-	cd $(MPI_ABSOFT_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_ABSOFT_DEBUG $(PROGRAM)
-
 .PHONY : mpi_g95
 mpi_g95:
 	mkdir -p $(MPI_G95_DIR)
@@ -134,6 +123,20 @@ mpi_g95:
 mpi_g95_debug:
 	mkdir -p $(MPI_G95_DEBUG_DIR);
 	cd $(MPI_G95_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_G95_DEBUG $(PROGRAM)
+
+#########################
+####    gfortran     ####
+#########################
+
+.PHONY : serial_gfortran
+serial_gfortran:
+	mkdir -p $(SERIAL_GFORTRAN_DIR)
+	cd $(SERIAL_GFORTRAN_DIR);	$(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_GFORTRAN $(PROGRAM)
+
+.PHONY : serial_gfortran_debug
+serial_gfortran_debug:
+	mkdir -p $(SERIAL_GFORTRAN_DEBUG_DIR);
+	cd $(SERIAL_GFORTRAN_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_GFORTRAN_DEBUG $(PROGRAM)
 
 .PHONY : mpi_gfortran
 mpi_gfortran:
@@ -148,12 +151,28 @@ mpi_gfortran_debug:
 .PHONY : openmpi_gfortran_debug
 openmpi_gfortran_debug:
 	mkdir -p $(OPENMPI_GFORTRAN_DEBUG_DIR);
-	ssh $(OPENMPI_COMPUTER) "cd programs/phastpp/srcphast; cd $(OPENMPI_GFORTRAN_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_GFORTRAN_DEBUG $(PROGRAM)"
+	cd $(OPENMPI_GFORTRAN_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_GFORTRAN_DEBUG $(PROGRAM)
+#	ssh $(OPENMPI_COMPUTER) "cd programs/phastpp/srcphast; cd $(OPENMPI_GFORTRAN_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_GFORTRAN_DEBUG $(PROGRAM)"
 
 .PHONY : openmpi_gfortran
 openmpi_gfortran:
 	mkdir -p $(OPENMPI_GFORTRAN_DIR);
-	ssh $(OPENMPI_COMPUTER) "cd programs/phastpp/srcphast; cd $(OPENMPI_GFORTRAN_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_GFORTRAN $(PROGRAM)"
+	cd $(OPENMPI_GFORTRAN_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_GFORTRAN $(PROGRAM)
+#	ssh $(OPENMPI_COMPUTER) "cd programs/phastpp/srcphast; cd $(OPENMPI_GFORTRAN_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_GFORTRAN $(PROGRAM)"
+
+#########################
+####    gfortran_64  ####
+#########################
+
+.PHONY : serial_gfortran_64
+serial_gfortran_64:
+	mkdir -p $(SERIAL_GFORTRAN_64_DIR)
+	cd $(SERIAL_GFORTRAN_64_DIR);	$(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_GFORTRAN_64 $(PROGRAM)
+
+.PHONY : serial_gfortran_64_debug
+serial_gfortran_64_debug:
+	mkdir -p $(SERIAL_GFORTRAN_64_DEBUG_DIR);
+	cd $(SERIAL_GFORTRAN_64_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_GFORTRAN_64_DEBUG $(PROGRAM)
 
 .PHONY : openmpi_gfortran_64_debug
 openmpi_gfortran_64_debug:
@@ -164,7 +183,6 @@ openmpi_gfortran_64_debug:
 openmpi_gfortran_64:
 	mkdir -p $(OPENMPI_GFORTRAN_64_DIR);
 	cd $(OPENMPI_GFORTRAN_64_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_GFORTRAN_64 $(PROGRAM)
-
 # Recursive make begins here
 #
 # =============================================================================
@@ -216,7 +234,7 @@ OPENMPI_COMPUTER=grundvand
 HDF5_ROOT=/usr
 HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
 HDF5_LIBS=${HDF5_ROOT}/lib/libhdf5.a  -lz -lpthread
-HDF5_LIBS_64=${HDF5_ROOT}/lib64/libhdf5.a -lpthread 
+HDF5_LIBS_64=${HDF5_ROOT}/lib64/libhdf5.a -lpthread -lz
 
 # -----------------------------------------------------------------------------
 DEFINE_HDF=-DHDF5_CREATE
@@ -461,7 +479,7 @@ ifeq ($(CFG), SERIAL_GFORTRAN_64)
   CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   CFLAGS_MODEL = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN_64) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
+  LD_FLAGS     = $(LIBGFORTRAN_64) -lm ${CL1MP_LIB} ${HDF5_LIBS_64} 
 endif
 
 # -----------------------------------------------------------------------------
@@ -474,7 +492,7 @@ ifeq ($(CFG), SERIAL_GFORTRAN_64_DEBUG)
   CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   CFLAGS_MODEL = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS)  $(HDF_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN_64) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
+  LD_FLAGS     = $(LIBGFORTRAN_64) -lm ${CL1MP_LIB} ${HDF5_LIBS_64} 
 endif
 
 # -----------------------------------------------------------------------------
@@ -546,7 +564,6 @@ ifeq ($(CFG), OPENMPI_GFORTRAN_64)
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   HDF5_ROOT=/usr
   HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
-  HDF5_LIBS=${HDF5_ROOT}/lib64/libhdf5.a -lpthread -lz
   DINVERSE_CL1MP=
   FC           = mpif90
   FFLAGS       = -O3 -fno-underscoring $(DEFINES)
@@ -555,8 +572,7 @@ ifeq ($(CFG), OPENMPI_GFORTRAN_64)
   CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
   CFLAGS_MODEL = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
-#  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
-  LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS}  -ldl # -lm ${CL1MP_LIB}
+  LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS_64}  -ldl # -lm ${CL1MP_LIB}
 endif
 
 # -----------------------------------------------------------------------------
@@ -566,7 +582,6 @@ ifeq ($(CFG), OPENMPI_GFORTRAN_64_DEBUG)
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   HDF5_ROOT    =/usr
   HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
-  HDF5_LIBS    =${HDF5_ROOT}/lib64/libhdf5.a -lpthread -lz
   DINVERSE_CL1MP=
   FC           = mpif90
   FFLAGS       = -g  -fno-underscoring $(DEFINES)
@@ -575,8 +590,7 @@ ifeq ($(CFG), OPENMPI_GFORTRAN_64_DEBUG)
   CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
   CFLAGS_MODEL = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
-#  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
-  LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS}  -ldl 
+  LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS_64}  -ldl 
 endif
 # -----------------------------------------------------------------------------
 # (d) Create expected object file list, with .o extension:     [TARGETS OF PRE-
@@ -1183,19 +1197,10 @@ Utils.o: ../phreeqcpp/Utils.cxx ../phreeqcpp/Utils.h \
 # -----------------------------------------------------------------------------
 
 clean:
-	rm -rf serial_absoft serial_absoft_debug mpi_absoft mpi_absoft_debug serial_lahey serial_lahey_debug mpi_lahey mpi_lahey_debug 	serial_g95 serial_g95_debug mpi_g95 mpi_g95_debug serial_gfortran serial_gfortran_debug mpi_gfortran mpi_gfortran_debug openmpi_gfortran openmpi_gfortran_debug
-
-absoft: serial_absoft serial_absoft_debug mpi_absoft mpi_absoft_debug
-
-g95: serial_g95 serial_g95_debug mpi_g95 mpi_g95_debug
-
-gfortran: serial_gfortran serial_gfortran_debug mpi_gfortran mpi_gfortran_debug openmpi_gfortran openmpi_gfortran_debug
-
-lahey: serial_lahey serial_lahey_debug mpi_lahey mpi_lahey_debug
+	rm -rf serial_absoft serial_absoft_debug mpi_absoft mpi_absoft_debug serial_lahey serial_lahey_debug mpi_lahey mpi_lahey_debug serial_g95 serial_g95_debug mpi_g95 mpi_g95_debug serial_gfortran serial_gfortran_debug mpi_gfortran mpi_gfortran_debug openmpi_gfortran openmpi_gfortran_debug serial_gfortran_64 serial_gfortran_64_debug openmpi_gfortran_64 openmpi_gfortran_64_debug
 
 dependencies:
 	mkdir -p $(SERIAL_ABSOFT_DIR) 
-	#gcc -MM -I./phreeqcpp -I./phreeqcpp/phreeqc *.cxx *.c
 	cd $(SERIAL_ABSOFT_DIR); gcc -MM -I../phreeqcpp -I../phreeqcpp/phreeqc ../*.cxx ../phreeqcpp/*.cxx
 
 # =============================================================================
