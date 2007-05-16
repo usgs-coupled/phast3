@@ -14,9 +14,7 @@
 
 PROGRAM = phast
 
-COMPUTER=/z/parkplace
-
-all: gfortran lahey # absoft g95
+all: gfortran lahey g95 # absoft
 
 # serial_lahey serial_lahey_debug mpi_lahey mpi_lahey_debug 
 
@@ -28,6 +26,8 @@ SERIAL_G95_DIR          = serial_g95
 SERIAL_G95_DEBUG_DIR    = serial_g95_debug
 SERIAL_GFORTRAN_DIR          = serial_gfortran
 SERIAL_GFORTRAN_DEBUG_DIR    = serial_gfortran_debug
+SERIAL_GFORTRAN_64_DIR       = serial_gfortran
+SERIAL_GFORTRAN_64_DEBUG_DIR = serial_gfortran_debug
 MPI_LAHEY_DIR           = mpi_lahey
 MPI_LAHEY_DEBUG_DIR     = mpi_lahey_debug
 MPI_ABSOFT_DIR          = mpi_absoft
@@ -86,6 +86,19 @@ serial_gfortran:
 serial_gfortran_debug:
 	mkdir -p $(SERIAL_GFORTRAN_DEBUG_DIR);
 	cd $(SERIAL_GFORTRAN_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_GFORTRAN_DEBUG $(PROGRAM)
+
+.PHONY : serial_gfortran_64
+serial_gfortran_64:
+	mkdir -p $(SERIAL_GFORTRAN_64_DIR)
+	cd $(SERIAL_GFORTRAN_64_DIR);	$(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_GFORTRAN_64 $(PROGRAM)
+
+.PHONY : serial_gfortran_64_debug
+serial_gfortran_64_debug:
+	mkdir -p $(SERIAL_GFORTRAN_64_DEBUG_DIR);
+	cd $(SERIAL_GFORTRAN_64_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_GFORTRAN_64_DEBUG $(PROGRAM)
+#	ssh lobo "cd /work2/dlpark; svn co http://internalbrr/svn_GW/phreeqcpp/srcphast
+#	ssh lobo "cd /work2/dlpark; rm -rf srcphast; mkdir srcphast; cd srcphast; cp ~/programs/phastpp/srcphast/* ."
+
 #########################
 ##### MPI Versions ######
 #########################
@@ -135,12 +148,22 @@ mpi_gfortran_debug:
 .PHONY : openmpi_gfortran_debug
 openmpi_gfortran_debug:
 	mkdir -p $(OPENMPI_GFORTRAN_DEBUG_DIR);
-	cd $(OPENMPI_GFORTRAN_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_GFORTRAN_DEBUG $(PROGRAM)
+	ssh $(OPENMPI_COMPUTER) "cd programs/phastpp/srcphast; cd $(OPENMPI_GFORTRAN_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_GFORTRAN_DEBUG $(PROGRAM)"
 
 .PHONY : openmpi_gfortran
 openmpi_gfortran:
 	mkdir -p $(OPENMPI_GFORTRAN_DIR);
-	cd $(OPENMPI_GFORTRAN_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_GFORTRAN $(PROGRAM)
+	ssh $(OPENMPI_COMPUTER) "cd programs/phastpp/srcphast; cd $(OPENMPI_GFORTRAN_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_GFORTRAN $(PROGRAM)"
+
+.PHONY : openmpi_gfortran_64_debug
+openmpi_gfortran_64_debug:
+	mkdir -p $(OPENMPI_GFORTRAN_64_DEBUG_DIR);
+	cd $(OPENMPI_GFORTRAN_64_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_GFORTRAN_64_DEBUG $(PROGRAM)
+
+.PHONY : openmpi_gfortran_64
+openmpi_gfortran_64:
+	mkdir -p $(OPENMPI_GFORTRAN_64_DIR);
+	cd $(OPENMPI_GFORTRAN_64_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_GFORTRAN_64 $(PROGRAM)
 
 # Recursive make begins here
 #
@@ -152,7 +175,7 @@ openmpi_gfortran:
 SRC              = ../phreeqcpp/phreeqc
 PHREEQC_INCLUDES = -I../phreeqcpp -I../phreeqcpp/phreeqc
 LAM_INCLUDES     =  
-LAM_LIB          =  -L$(COMPUTER)/usr/lib/ -llam
+LAM_LIB          =  -L/usr/lib/ -llam
 
 .SUFFIXES : .o .f .F90 .f90 .c .cxx 
 
@@ -160,20 +183,23 @@ LAM_LIB          =  -L$(COMPUTER)/usr/lib/ -llam
 FLAHEY=/z/niwot/usr/local/lf95/bin/lf95
 # include lam library first to avoid lahey mpi library
 LIBLAHEY=$(LAM_LIB) -L/z/niwot/usr/local/lf95/lib -Xlinker -Bstatic -Xlinker -lfj9i6 -Xlinker -lfj9f6 -Xlinker -lfj9e6 -Xlinker -lfccx86_6a -Xlinker -Bdynamic 
-LAHEY_MACHINE=$(COMPUTER)
+LAHEY_MACHINE=
 LAHEY_RUNTIME=/z/niwot/usr/local/lf95/lib/fj90rt0.o 
 
-FABSOFT=$(COMPUTER)/usr/absoft/bin/f90
-NLSABSOFT=$(COMPUTER)/usr/absoft/lib/nls/cf90
-LIBABSOFT=-L$(COMPUTER)/usr/absoft/lib  -lfio -lU77 -lf77math -lf90math 
+FABSOFT=/usr/absoft/bin/f90
+NLSABSOFT=/usr/absoft/lib/nls/cf90
+LIBABSOFT=-L/usr/absoft/lib  -lfio -lU77 -lf77math -lf90math 
 
-FG95=$(COMPUTER)/usr/local/bin/g95
-LIBG95=-L$(COMPUTER)/usr/local/g95/lib/gcc-lib/i686-pc-linux-gnu/4.0.1/ -lf95
+FG95=/usr/local/bin/g95
+LIBG95=-L/usr/local/g95/lib/gcc-lib/i686-pc-linux-gnu/4.0.1/ -lf95
 
-#LIBGFORTRAN=-L/usr/lib64 -lgfortranbegin -lgfortran
+LIBGFORTRAN_64=-L/usr/lib64 -lgfortranbegin -lgfortran
 FGFORTRAN=gfortran
 LIBGFORTRAN= -lgfortranbegin -lgfortran
+# for static linking of gfortran library
+#LIBGFORTRAN= -lgfortranbegin /usr/lib/gcc/i586-mandriva-linux-gnu/4.1.2/libgfortran.a
 
+OPENMPI_COMPUTER=grundvand
 
 # -----------------------------------------------------------------------------
 .f90.o :
@@ -187,7 +213,7 @@ LIBGFORTRAN= -lgfortranbegin -lgfortran
 
 # -----------------------------------------------------------------------------
 #hdf options
-HDF5_ROOT=$(COMPUTER)/usr
+HDF5_ROOT=/usr
 HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
 HDF5_LIBS=${HDF5_ROOT}/lib/libhdf5.a  -lz -lpthread
 HDF5_LIBS_64=${HDF5_ROOT}/lib64/libhdf5.a -lpthread 
@@ -294,8 +320,6 @@ ifeq ($(CFG), SERIAL_LAHEY)
   CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
   CFLAGS_MODEL = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS)  $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS) $(LAHEY_RUNTIME)
-#  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
-#  LD_FLAGS     = --staticlink -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY)
   LD_FLAGS     = -lm  ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY)
 endif
 
@@ -309,7 +333,6 @@ ifeq ($(CFG), SERIAL_LAHEY_DEBUG)
   CFLAGS       = -Wall  -g $(DEFINES)  $(PHREEQC_INCLUDES) 
   CFLAGS_MODEL = -Wall  -g $(DEFINES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS)  $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS) $(LAHEY_RUNTIME)
-#  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
   LD_FLAGS     = -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY)
 endif
 
@@ -326,8 +349,6 @@ ifeq ($(CFG), MPI_LAHEY)
   CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) $(LAM_INCLUDES) 
   CFLAGS_MODEL = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS) $(LAHEY_RUNTIME)
-#  LD_FLAGS     = -static-flib  -lm ${HDF5_LIBS} 
-#  LD_FLAGS     = --staticlink -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY) -llammpio -llamf77mpi -lmpi -llam-llammpi++ 
   LD_FLAGS     = -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY) -ldl
 endif
 
@@ -344,7 +365,6 @@ ifeq ($(CFG), MPI_LAHEY_DEBUG)
   CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) $(LAM_INCLUDES) 
   CFLAGS_MODEL = -Wall  -g $(DEFINES) $(HDF5_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS) $(LAHEY_RUNTIME)
-#  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
   LD_FLAGS     = -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY) -ldl
 endif
 
@@ -358,7 +378,6 @@ ifeq ($(CFG), SERIAL_G95)
   CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   CFLAGS_MODEL = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS)
-#  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
   LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
 endif
 
@@ -372,7 +391,6 @@ ifeq ($(CFG), SERIAL_G95_DEBUG)
   CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   CFLAGS_MODEL = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS)  $(HDF_OBJS) $(CL1MP_OBJS)
-#  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
   LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
 endif
 
@@ -389,7 +407,6 @@ ifeq ($(CFG), MPI_G95)
   CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) $(LAM_INCLUDES)
   CFLAGS_MODEL = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
-#  LD_FLAGS     = -static-flib  -lm ${HDF5_LIBS} 
   LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS} -ldl
 endif
 
@@ -406,7 +423,6 @@ ifeq ($(CFG), MPI_G95_DEBUG)
   CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) $(LAM_INCLUDES)
   CFLAGS_MODEL = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
-#  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
   LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS}  -ldl
 endif
 # -----------------------------------------------------------------------------
@@ -419,7 +435,6 @@ ifeq ($(CFG), SERIAL_GFORTRAN)
   CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   CFLAGS_MODEL = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS)
-#  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
   LD_FLAGS     = $(LIBGFORTRAN) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
 endif
 
@@ -433,8 +448,33 @@ ifeq ($(CFG), SERIAL_GFORTRAN_DEBUG)
   CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   CFLAGS_MODEL = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS)  $(HDF_OBJS) $(CL1MP_OBJS)
-#  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
   LD_FLAGS     = $(LIBGFORTRAN) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
+endif
+
+# -----------------------------------------------------------------------------
+ifeq ($(CFG), SERIAL_GFORTRAN_64)
+  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DPHREEQC_CPP
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  FC           = $(FGFORTRAN)
+  FFLAGS       = -O3 $(DEFINES) -fno-underscoring
+  CC           = g++
+  CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
+  CFLAGS_MODEL = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS)
+  LD_FLAGS     = $(LIBGFORTRAN_64) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
+endif
+
+# -----------------------------------------------------------------------------
+ifeq ($(CFG), SERIAL_GFORTRAN_64_DEBUG)
+  DEFINES      = $(DEFINE_HDF) -DPHREEQC_CPP
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  FC           = $(FGFORTRAN)
+  FFLAGS       = -g -fno-underscoring $(DEFINES)
+  CC           = g++
+  CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
+  CFLAGS_MODEL = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS)  $(HDF_OBJS) $(CL1MP_OBJS)
+  LD_FLAGS     = $(LIBGFORTRAN_64) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
 endif
 
 # -----------------------------------------------------------------------------
@@ -450,7 +490,6 @@ ifeq ($(CFG), MPI_GFORTRAN)
   CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) $(LAM_INCLUDES)
   CFLAGS_MODEL = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
-#  LD_FLAGS     = -static-flib  -lm ${HDF5_LIBS} 
   LD_FLAGS     = $(LIBGFORTRAN) -lm ${CL1MP_LIB} ${HDF5_LIBS} -ldl
 endif
 
@@ -467,23 +506,7 @@ ifeq ($(CFG), MPI_GFORTRAN_DEBUG)
   CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) $(LAM_INCLUDES)
   CFLAGS_MODEL = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
-#  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
   LD_FLAGS     = $(LIBGFORTRAN) -lm ${CL1MP_LIB} ${HDF5_LIBS}  -ldl
-endif
-
-# -----------------------------------------------------------------------------
-ifeq ($(CFG), OPENMPI_GFORTRAN_DEBUG)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
-  DINVERSE_CL1MP=
-  FC           = mpif90
-  FFLAGS       = -g  -fno-underscoring $(DEFINES)
-  CXX          = mpiCC
-  CC           = mpiCC
-  CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
-  CFLAGS_MODEL = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN) ${HDF5_LIBS}  -ldl # -lm ${CL1MP_LIB}
 endif
 
 # -----------------------------------------------------------------------------
@@ -493,14 +516,68 @@ ifeq ($(CFG), OPENMPI_GFORTRAN)
   DINVERSE_CL1MP=
   FC           = mpif90
   FFLAGS       = -O3 -fno-underscoring -I.. -I. $(DEFINES)
-  CXX          = mpiCC
-  CC           = mpiCC
+  CXX          = mpicxx
+  CC           = mpicxx
   CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
   CFLAGS_MODEL = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
   LD_FLAGS     = $(LIBGFORTRAN) ${HDF5_LIBS}  -ldl # -lm ${CL1MP_LIB}
 endif
 
+# -----------------------------------------------------------------------------
+ifeq ($(CFG), OPENMPI_GFORTRAN_DEBUG)
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  DINVERSE_CL1MP=
+  FC           = mpif90
+  FFLAGS       = -g  -fno-underscoring $(DEFINES)
+  CXX          = mpicxx
+  CC           = mpicxx
+  CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
+  CFLAGS_MODEL = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
+  LD_FLAGS     = $(LIBGFORTRAN) ${HDF5_LIBS}  -ldl # -lm ${CL1MP_LIB}
+endif
+
+# -----------------------------------------------------------------------------
+
+ifeq ($(CFG), OPENMPI_GFORTRAN_64)
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  HDF5_ROOT=/usr
+  HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
+  HDF5_LIBS=${HDF5_ROOT}/lib64/libhdf5.a -lpthread -lz
+  DINVERSE_CL1MP=
+  FC           = mpif90
+  FFLAGS       = -O3 -fno-underscoring $(DEFINES)
+  CXX          = mpiCC
+  CC           = mpiCC
+  CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
+  CFLAGS_MODEL = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
+#  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
+  LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS}  -ldl # -lm ${CL1MP_LIB}
+endif
+
+# -----------------------------------------------------------------------------
+
+ifeq ($(CFG), OPENMPI_GFORTRAN_64_DEBUG)
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  HDF5_ROOT    =/usr
+  HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
+  HDF5_LIBS    =${HDF5_ROOT}/lib64/libhdf5.a -lpthread -lz
+  DINVERSE_CL1MP=
+  FC           = mpif90
+  FFLAGS       = -g  -fno-underscoring $(DEFINES)
+  CXX          = mpiCC
+  CC           = mpiCC
+  CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
+  CFLAGS_MODEL = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
+#  LD_FLAGS     = -static-flib -lm ${HDF5_LIBS} 
+  LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS}  -ldl 
+endif
 # -----------------------------------------------------------------------------
 # (d) Create expected object file list, with .o extension:     [TARGETS OF PRE-
 #     REQUISITE (.f90,.f) SOURCE FILES]
@@ -1106,13 +1183,13 @@ Utils.o: ../phreeqcpp/Utils.cxx ../phreeqcpp/Utils.h \
 # -----------------------------------------------------------------------------
 
 clean:
-	rm -rf serial_absoft serial_absoft_debug mpi_absoft mpi_absoft_debug serial_lahey serial_lahey_debug mpi_lahey mpi_lahey_debug 	serial_g95 serial_g95_debug mpi_g95 mpi_g95_debug serial_gfortran serial_gfortran_debug mpi_gfortran mpi_gfortran_debug 
+	rm -rf serial_absoft serial_absoft_debug mpi_absoft mpi_absoft_debug serial_lahey serial_lahey_debug mpi_lahey mpi_lahey_debug 	serial_g95 serial_g95_debug mpi_g95 mpi_g95_debug serial_gfortran serial_gfortran_debug mpi_gfortran mpi_gfortran_debug openmpi_gfortran openmpi_gfortran_debug
 
 absoft: serial_absoft serial_absoft_debug mpi_absoft mpi_absoft_debug
 
 g95: serial_g95 serial_g95_debug mpi_g95 mpi_g95_debug
 
-gfortran: serial_gfortran serial_gfortran_debug mpi_gfortran mpi_gfortran_debug
+gfortran: serial_gfortran serial_gfortran_debug mpi_gfortran mpi_gfortran_debug openmpi_gfortran openmpi_gfortran_debug
 
 lahey: serial_lahey serial_lahey_debug mpi_lahey mpi_lahey_debug
 
