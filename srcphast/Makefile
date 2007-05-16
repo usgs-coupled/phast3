@@ -43,10 +43,10 @@ MPI_GFORTRAN_DEBUG_DIR       = mpi_gfortran_debug
 OPENMPI_GFORTRAN_DIR         = openmpi_gfortran
 OPENMPI_GFORTRAN_DEBUG_DIR   = openmpi_gfortran_debug
 gfortran: serial_gfortran serial_gfortran_debug mpi_gfortran mpi_gfortran_debug 
-open_mpi: openmpi_gfortran openmpi_gfortran_debug
+openmpi: openmpi_gfortran openmpi_gfortran_debug
 
 SERIAL_GFORTRAN_64_DIR       = serial_gfortran_64
-SERIAL_GFORTRAN_64_DEBUG_DIR = serial_gfortran_debug_64
+SERIAL_GFORTRAN_64_DEBUG_DIR = serial_gfortran_64_debug
 OPENMPI_GFORTRAN_64_DIR      = openmpi_gfortran_64
 OPENMPI_GFORTRAN_64_DEBUG_DIR= openmpi_gfortran_64_debug
 gfortran_64: serial_gfortran_64 serial_gfortran_64_debug openmpi_gfortran_64 openmpi_gfortran_64_debug
@@ -216,8 +216,6 @@ FGFORTRAN=gfortran
 LIBGFORTRAN= -lgfortranbegin -lgfortran
 # for static linking of gfortran library
 #LIBGFORTRAN= -lgfortranbegin /usr/lib/gcc/i586-mandriva-linux-gnu/4.1.2/libgfortran.a
-
-OPENMPI_COMPUTER=grundvand
 
 # -----------------------------------------------------------------------------
 .f90.o :
