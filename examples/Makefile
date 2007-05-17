@@ -6,6 +6,7 @@ ifeq ($(CFG), Linux)
   TEST=$(TOPDIR)/examples
   PHAST_INPUT=$(TOPDIR)/srcinput/phastinput
 #  PHAST=$(TOPDIR)/srcphast/serial_gfortran/phast
+#  PHAST=$(TOPDIR)/srcphast/serial_g95/phast
   PHAST=$(TOPDIR)/srcphast/serial_lahey/phast
 endif
 
@@ -22,12 +23,13 @@ SERIAL = decay diffusion1d diffusion2d disp2d ex3 kindred4.4 leaky leakyx leakyz
 
 PARALLEL =  decay_parallel diffusion1d_parallel diffusion2d_parallel disp2d_parallel ex3_parallel kindred4.4_parallel leaky_parallel leakyx_parallel leakyz_parallel linear_bc_parallel linear_ic_parallel ex4_parallel notch_parallel phrqex11_parallel ex1_parallel radial_parallel river_parallel unconf_parallel well_parallel ex2_parallel free_parallel ex4restart_parallel print_check_ss_parallel print_check_transient_parallel
 
-CLEAN_PROBLEMS = decay_clean diffusion1d_clean diffusion2d_clean disp2d_clean ex3_clean \
+CLEAN_SERIAL = decay_clean diffusion1d_clean diffusion2d_clean disp2d_clean ex3_clean \
 	kindred4.4_clean leaky_clean leakyx_clean leakyz_clean \
 	linear_bc_clean linear_ic_clean ex4_clean notch_clean phrqex11_clean ex1_clean \
 	radial_clean river_clean unconf_clean well_clean ex2_clean free_clean \
-	ex4restart_clean print_check_ss_clean print_check_transient_clean \
-	decay_clean_parallel diffusion1d_clean_parallel diffusion2d_clean_parallel \
+	ex4restart_clean print_check_ss_clean print_check_transient_clean 
+
+CLEAN_PARALLEL = decay_clean_parallel diffusion1d_clean_parallel diffusion2d_clean_parallel \
 	disp2d_clean_parallel ex3_clean_parallel kindred4.4_clean_parallel \
 	leaky_clean_parallel leakyx_clean_parallel leakyz_clean_parallel \
 	linear_bc_clean_parallel linear_ic_clean_parallel ex4_clean_parallel notch_clean_parallel \
@@ -690,13 +692,22 @@ well_clean_parallel:
 	  find $(TEST)/well/0  -maxdepth 1 -type f  | xargs rm -f; \
 	fi
 
-clean: $(CLEAN_PROBLEMS)
-	rm -f make.out
+clean: clean_serial clean_parallel
+	rm -f all.out
+
+clean_serial: $(CLEAN_SERIAL)
+	rm -f make.out serial.out diff.out diff
+
+clean_parallel: $(CLEAN_PARALLEL)
+	rm -f make.out parallel.out diff.out diff
 
 #ci: $(CI_PROBLEMS)
 
 diff_parallel:
-	rcsdiff -bw ./*/0/*
+	#rcsdiff -bw ./*/0/*
+	for DIR in $(SERIAL); \
+		do diff -r $$DIR $$DIR/0; \
+		done;
 
 ci_parallel:
 	for FILE in $(SERIAL); do \
@@ -742,6 +753,19 @@ zero1:
 					fi; \
 				done; \
 			cd ..; \
+		done;
+
+zero1_parallel:
+	for DIR in $(SERIAL); \
+		do echo $$DIR; cd $$DIR/0; \
+			for FILE in *.O.* *.xyz.*; \
+				do \
+					if [ -f $$FILE ]; then \
+						echo "   " $$FILE; \
+						../../zero1.sed $$FILE; \
+					fi; \
+				done; \
+			cd ../..; \
 		done;
 
 mpich:
