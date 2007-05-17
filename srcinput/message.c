@@ -70,7 +70,7 @@ int clean_up_message(void)
 int error_msg (const char *err_str, const int stop)
 /* ---------------------------------------------------------------------- */
 {
-	va_list args = NULL;
+        va_list args;
 	if (input_error <= 0) input_error = 1;
 
 	return output_message(OUTPUT_ERROR, err_str, stop, "", args);
@@ -80,7 +80,7 @@ int error_msg (const char *err_str, const int stop)
 int warning_msg (const char *err_str)
 /* ---------------------------------------------------------------------- */
 {
-	va_list args = NULL;
+	va_list args;
 	int return_value;
 
 	return_value = output_message(OUTPUT_WARNING, err_str, CONTINUE, "", args);
