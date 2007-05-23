@@ -140,7 +140,7 @@ void MergeInit(char* prefix, int prefix_l, int solute);
 void MergeBeginTimeStep(int print_sel, int print_out);
 void MergeEndTimeStep(int print_sel, int print_out);
 void MergeBeginCell(void);
-void MergeEndCell(void);
+void MergeEndCell(int print_sel, int print_out, int print_hdf, int n_proc);
 int merge_handler(const int action, const int type, const char *name, const int stop, void *cookie, const char *format, va_list args);
 #endif
 /* 

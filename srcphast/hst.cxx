@@ -1332,10 +1332,12 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 	int rebalance_count;
 	LDBLE t0;
 	static int write_headings = 1;
+	int n_proc;
 
 #ifdef TIME
 	static LDBLE time_distribute = 0.0, time_collect = 0.0, time_rebalance = 0.0;
 	static LDBLE time_distribute_tot = 0.0, time_collect_tot = 0.0, time_rebalance_tot;
+	static LDBLE time_merge = 0.0, time_merge_tot = 0.0;
 #endif
 	static LDBLE time_equilibrate = 0.0, time_equilibrate_tot = 0.0;
 	/* Message for end of calculation */
@@ -1446,6 +1448,7 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 	 */
 	// free all c structures
 	reinitialize();
+	n_proc = 0;
 	for (k = first_cell; k <= last_cell; k++) {
 		i = sort_random_list[k - first_cell];    /* 1 to count_chem */
 		j = back[i].list[0];                     /* 1 to nijk */
@@ -1549,7 +1552,8 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 		}
 		// free phreeqc structures
 		reinitialize();
-		EndCell(*print_sel, *print_out, *print_hdf, j);
+		EndCell(*print_sel, *print_out, *print_hdf, n_proc);
+		n_proc++;
 	}
 #ifdef TIME
 	time_sum = (LDBLE) MPI_Wtime() - start_time;
@@ -1561,6 +1565,13 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 #endif
 
 	EndTimeStep(*print_sel, *print_out, *print_hdf);
+#ifdef TIME
+	MPI_Barrier(MPI_COMM_WORLD);
+	end_time = (LDBLE) MPI_Wtime();
+	time_merge = end_time - start_time;
+	time_merge_tot += time_merge;
+	start_time = end_time;
+#endif
 
 /*
  *   Put values back for HST
@@ -1616,7 +1627,7 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 	time_rebalance = end_time - start_time;
 	time_rebalance_tot += time_rebalance;
 	start_time = end_time;
-	chemistry_time = time_distribute + time_equilibrate + time_collect + time_rebalance;
+	chemistry_time = time_distribute + time_equilibrate + time_merge + time_collect + time_rebalance;
 	chemistry_time_tot += chemistry_time;
 	start_time = end_time;
 	if (mpi_myself == 0) {
@@ -1627,6 +1638,7 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 		output_msg(OUTPUT_SCREEN, "\t\tDistributing: %e.\tCumulative: %e\n", (double) time_distribute, (double) time_distribute_tot);
 		output_msg(OUTPUT_SCREEN, "\t\tChem + wait:  %e.\tCumulative: %e\n", (double) time_equilibrate, (double) time_equilibrate_tot);
 		output_msg(OUTPUT_SCREEN, "\t\tWait:         %e.\tCumulative: %e\n", (double) wait_time, (double) wait_time_tot);
+		output_msg(OUTPUT_SCREEN, "\t\tMerging:      %e.\tCumulative: %e\n", (double) time_merge, (double) time_merge_tot);
 		output_msg(OUTPUT_SCREEN, "\t\tGathering:    %e.\tCumulative: %e\n", (double) time_collect, (double) time_collect_tot);
 		output_msg(OUTPUT_SCREEN, "\t\tRebalance:    %e.\tCumulative: %e\n", (double) time_rebalance, (double) time_rebalance_tot);
 		output_msg(OUTPUT_SCREEN, "\t\tNon-Chemistry %e.\tCumulative: %e\n", (double) (chemistry_time - time_equilibrate), (double) (chemistry_time_tot - time_equilibrate_tot));
@@ -2655,7 +2667,7 @@ void EndCell(int print_sel, int print_out, int print_hdf, int index)
 {
 #if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
 	/* Always open file for output in case of a warning message */
-	MergeEndCell();
+	MergeEndCell(print_sel, print_out, print_hdf, index);
 #endif
 }
 

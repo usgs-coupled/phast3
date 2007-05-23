@@ -41,6 +41,8 @@ struct FileInfo {
     hid_t dset_id;
     FILE* stream;
     int MSG_TAG;
+  int *buffer_size_array;
+  int max_buffer_size_array;
 };
 
 int Merge_fprintf2(struct FileInfo *pFileInfo, const char *format, ...);
@@ -59,6 +61,8 @@ void FileInfo_init(struct FileInfo* pFileInfo, const int msg_val)
     pFileInfo->dset_id     = 0;
     pFileInfo->stream      = NULL;
     pFileInfo->MSG_TAG     = msg_val;
+    pFileInfo->buffer_size_array      = NULL;
+    pFileInfo->max_buffer_size_array  = 0;
 }
 
 
@@ -68,6 +72,10 @@ void FileInfo_alloc(struct FileInfo* pFileInfo, int size)
     pFileInfo->buffer_size = size;
     space ((void **) ((void *) &(pFileInfo->buffer)), INIT, &pFileInfo->buffer_size, sizeof(char));
     assert(pFileInfo->buffer != NULL);
+
+    pFileInfo->max_buffer_size_array = size;
+    space ((void **) ((void *) &(pFileInfo->buffer_size_array)), INIT, &pFileInfo->max_buffer_size_array, sizeof(int));
+    assert(pFileInfo->buffer_size_array != NULL);
 }
 
 void FileInfo_del(struct FileInfo* pFileInfo)
@@ -78,6 +86,8 @@ void FileInfo_del(struct FileInfo* pFileInfo)
     fflush(pFileInfo->stream);
     pFileInfo->buffer_size = 0;
     pFileInfo->buffer = (char *) free_check_null(pFileInfo->buffer);
+    pFileInfo->max_buffer_size_array = 0;
+    pFileInfo->buffer_size_array = (int *) free_check_null(pFileInfo->buffer_size_array);
 }
 
 void FileInfo_open(struct FileInfo* pFileInfo, const char* name, const char *mode)
@@ -99,11 +109,13 @@ void FileInfo_merge(struct FileInfo* ptr_info, hid_t xfer_pid, hid_t mem_dspace,
     herr_t status;
     int e;
     char *rdata[1];
-    hsize_t hsize;
     int size;
     int mpi_return;
     int *local_record_size_array, *local_record_size_buffer, *root_record_size_array, *root_record_size_buffer;
     int local_count_chem, buffer_size, i, j, k;
+
+    double time_buff_size;
+    time_buff_size = (double) MPI_Wtime();
 
     assert(ptr_info->dset_id > 0);
 
@@ -135,6 +147,7 @@ void FileInfo_merge(struct FileInfo* ptr_info, hid_t xfer_pid, hid_t mem_dspace,
 	/* read (and if nec send cell) */
 	if (cell_to_proc[e] == mpi_myself) { 
 	    /* select dataspace */
+#ifdef SKIP
 	    assert((int)s_ci.coord[0][0] <= local_count_chem);
 	    status = H5Sselect_elements(s_ci.dspace_id, H5S_SELECT_SET, 1, (const hssize_t **) ((void *) s_ci.coord));
 	    assert(status >= 0);
@@ -144,15 +157,19 @@ void FileInfo_merge(struct FileInfo* ptr_info, hid_t xfer_pid, hid_t mem_dspace,
 	    status = H5Dvlen_get_buf_size(ptr_info->dset_id, s_ci.vls_id, s_ci.dspace_id, &hsize);
 	    assert(status >= 0);
 	    size = (int)hsize;
+#endif
 	    if (mpi_myself != 0) {
-		assert(j < local_count_chem);
-		local_record_size_array[j++] = size;
-		local_record_size_buffer[i++] = e;
-		assert(i < buffer_size);
-		local_record_size_buffer[i++] = size;
+	      size = ptr_info->buffer_size_array[j];
+	      assert(j < local_count_chem);
+	      local_record_size_array[j++] = size;
+	      local_record_size_buffer[i++] = e;
+	      assert(i < buffer_size);
+	      local_record_size_buffer[i++] = size;
 	    } else {
-		assert(e < count_chem);
-		root_record_size_array[e] = size;
+	      size = ptr_info->buffer_size_array[j];
+	      assert(e < count_chem);
+	      root_record_size_array[e] = size;
+	      j++;
 	    }
 	    /* increment dataspace index for this proc */
 	    ++s_ci.coord[0][0];
@@ -187,7 +204,12 @@ void FileInfo_merge(struct FileInfo* ptr_info, hid_t xfer_pid, hid_t mem_dspace,
 	    }
 	}
     }
-
+    if (mpi_myself == 0) 
+    {
+      time_buff_size = (double) MPI_Wtime() - time_buff_size;
+      fprintf(stderr, "Time sending buff sizes: %e\n", time_buff_size);
+      time_buff_size = (double) MPI_Wtime();
+    }
     /*
      *   Now actually send the strings that are needed
      */
@@ -273,6 +295,11 @@ void FileInfo_merge(struct FileInfo* ptr_info, hid_t xfer_pid, hid_t mem_dspace,
 	root_record_size_buffer = (int *) free_check_null(root_record_size_buffer);
 	root_record_size_array = (int *) free_check_null(root_record_size_array);
     }
+    if (mpi_myself == 0) 
+    {
+      time_buff_size = (double) MPI_Wtime() - time_buff_size;
+      fprintf(stderr, "Time sending strings: %e\n", time_buff_size);
+    }
 }
 
 int FileInfo_capture(struct FileInfo* ptr_info, const int length, const char* format, va_list argptr)
@@ -300,13 +327,17 @@ int FileInfo_printf(struct FileInfo* ptr_info, const char* format, va_list argpt
     return vfprintf(ptr_info->stream, format, argptr);	
 }
 
-void FileInfo_dataset_create(struct FileInfo* ptr_info, const char* name)
+void FileInfo_dataset_create(struct FileInfo* ptr_info, const char* name, int count_buffer_size_array)
 {
     assert(s_ci.file_id   != 0);
     assert(s_ci.vls_id    != 0);
     assert(s_ci.dspace_id != 0);
 
     assert(ptr_info->dset_id == 0);
+
+    /* reallocate buffer_size_array if necessary*/
+    space ((void **) ((void *) &(ptr_info->buffer_size_array)), count_buffer_size_array, &ptr_info->max_buffer_size_array, sizeof(int));
+
     ptr_info->dset_id = H5Dcreate(s_ci.file_id, name, s_ci.vls_id, s_ci.dspace_id, H5P_DEFAULT);
     if (ptr_info->dset_id <= 0 ) {
         sprintf(error_string, "HDF ERROR: Unable to create \"%s\" dataset.\n", name);
@@ -373,11 +404,11 @@ void MergeInit(char* prefix, int prefix_l, int solute)
     }
 
     /* initialize storage */
-	if (solute)
-	{
-		FileInfo_alloc(&s_fiOutput, 6000);
-		FileInfo_alloc(&s_fiPunch, 6000);
-	}
+    if (solute)
+    {
+      FileInfo_alloc(&s_fiOutput, 6000);
+      FileInfo_alloc(&s_fiPunch, 6000);
+    }
     FileInfo_alloc(&s_fiEcho, 6000);
 }
 
@@ -462,20 +493,20 @@ void MergeBeginTimeStep(int print_sel, int print_out)
 
     /* Always open file for output in case of a warning message */
     {
-        /* create the O.chem dataset */
-        FileInfo_dataset_create(&s_fiOutput, "O.chem");
+      /* create the O.chem dataset */
+      FileInfo_dataset_create(&s_fiOutput, "O.chem", dims[0]);
     } 
 
     if (print_sel == TRUE)
     {
-        /* create the xyz.chem dataset */
-        FileInfo_dataset_create(&s_fiPunch, "xyz.chem");
+      /* create the xyz.chem dataset */
+      FileInfo_dataset_create(&s_fiPunch, "xyz.chem", dims[0]);
     }
 
     /* Always open file for echo in case of a warning message */
     {
-        /* create the O.chem dataset */
-        FileInfo_dataset_create(&s_fiEcho, "log");
+      /* create the O.chem dataset */
+      FileInfo_dataset_create(&s_fiEcho, "log", dims[0]);
     } 
     /* init dspace coordinates */
     s_ci.coord[0][0] = 0;
@@ -505,7 +536,6 @@ void MergeEndTimeStep(int print_sel, int print_out)
     hid_t mem_dspace;
     hsize_t dims[1];
     int task_number, k;
-
     /* Always open file for output in case of a warning message */
 
     /* create list of cell-index to proc-index */
@@ -569,11 +599,11 @@ void MergeEndTimeStep(int print_sel, int print_out)
 
 
     /* clean-up */
-	if (mpi_myself != 0)
-	{
-		if (s_fiOutput.stream) rewind(s_fiOutput.stream);
-		if (s_fiPunch.stream)  rewind(s_fiPunch.stream);
-	}
+    if (mpi_myself != 0)
+    {
+      if (s_fiOutput.stream) rewind(s_fiOutput.stream);
+      if (s_fiPunch.stream)  rewind(s_fiPunch.stream);
+    }
     PHRQ_free(cell_to_proc);
 }
 
@@ -606,10 +636,14 @@ void MergeBeginCell(void)
  *                   s_fiOutput.buffer_pos and s_ci.captured reset
  *-------------------------------------------------------------------------
  */
-void MergeEndCell(void)
+void MergeEndCell(int print_sel, int print_out, int print_hdf, int n_proc)
 {
     assert(s_ci.captured != 0);
     s_ci.captured = 0;
+
+    s_fiOutput.buffer_size_array[n_proc] = 0;
+    if (print_sel == TRUE) s_fiPunch.buffer_size_array[n_proc] = 0;
+    s_fiEcho.buffer_size_array[n_proc] = 0;
 
     if (s_fiOutput.buffer_pos > 0)
     {
@@ -634,6 +668,7 @@ void MergeEndCell(void)
 
         assert(s_fiOutput.buffer[s_fiOutput.buffer_pos] == 0);
         assert(strlen(s_fiOutput.buffer) == (size_t)s_fiOutput.buffer_pos);
+	s_fiOutput.buffer_size_array[n_proc] = s_fiOutput.buffer_pos + 1;
 
         /* write the dataset */
         assert(s_fiOutput.dset_id > 0);
@@ -674,6 +709,7 @@ void MergeEndCell(void)
 
         assert(s_fiPunch.buffer[s_fiPunch.buffer_pos] == 0);
         assert(strlen(s_fiPunch.buffer) == (size_t)s_fiPunch.buffer_pos);
+	s_fiPunch.buffer_size_array[n_proc] = s_fiPunch.buffer_pos + 1;
 
         /* write the dataset */
         assert(s_fiPunch.dset_id > 0);
@@ -714,6 +750,7 @@ void MergeEndCell(void)
 
         assert(s_fiEcho.buffer[s_fiEcho.buffer_pos] == 0);
         assert(strlen(s_fiEcho.buffer) == (size_t)s_fiEcho.buffer_pos);
+	s_fiEcho.buffer_size_array[n_proc] = s_fiEcho.buffer_pos + 1;
 
         /* write the dataset */
         assert(s_fiEcho.dset_id > 0);
