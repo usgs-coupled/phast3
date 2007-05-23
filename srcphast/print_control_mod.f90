@@ -81,6 +81,7 @@ CONTAINS
        CALL pc_out(print_xyz_wells)
     endif
     CALL pc_out(print_restart_hst)
+    call pc_mod2hst
     
   END SUBROUTINE pc_initialize
 

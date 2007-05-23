@@ -114,9 +114,6 @@ void FileInfo_merge(struct FileInfo* ptr_info, hid_t xfer_pid, hid_t mem_dspace,
     int *local_record_size_array, *local_record_size_buffer, *root_record_size_array, *root_record_size_buffer;
     int local_count_chem, buffer_size, i, j, k;
 
-    double time_buff_size;
-    time_buff_size = (double) MPI_Wtime();
-
     assert(ptr_info->dset_id > 0);
 
     /* find size of each record */
@@ -142,22 +139,9 @@ void FileInfo_merge(struct FileInfo* ptr_info, hid_t xfer_pid, hid_t mem_dspace,
     /* find record sizes */
     i = 0;
     j = 0;
-    s_ci.coord[0][0] = 0;
     for (e = 0; e < count_chem; ++e) {
 	/* read (and if nec send cell) */
 	if (cell_to_proc[e] == mpi_myself) { 
-	    /* select dataspace */
-#ifdef SKIP
-	    assert((int)s_ci.coord[0][0] <= local_count_chem);
-	    status = H5Sselect_elements(s_ci.dspace_id, H5S_SELECT_SET, 1, (const hssize_t **) ((void *) s_ci.coord));
-	    assert(status >= 0);
-				    
-	    /* get size */
-	    assert((int)s_ci.coord[0][0] <= local_count_chem);
-	    status = H5Dvlen_get_buf_size(ptr_info->dset_id, s_ci.vls_id, s_ci.dspace_id, &hsize);
-	    assert(status >= 0);
-	    size = (int)hsize;
-#endif
 	    if (mpi_myself != 0) {
 	      size = ptr_info->buffer_size_array[j];
 	      assert(j < local_count_chem);
@@ -171,8 +155,6 @@ void FileInfo_merge(struct FileInfo* ptr_info, hid_t xfer_pid, hid_t mem_dspace,
 	      root_record_size_array[e] = size;
 	      j++;
 	    }
-	    /* increment dataspace index for this proc */
-	    ++s_ci.coord[0][0];
 	}
     }
     /*
@@ -203,12 +185,6 @@ void FileInfo_merge(struct FileInfo* ptr_info, hid_t xfer_pid, hid_t mem_dspace,
 		root_record_size_array[e] = root_record_size_buffer[i++];
 	    }
 	}
-    }
-    if (mpi_myself == 0) 
-    {
-      time_buff_size = (double) MPI_Wtime() - time_buff_size;
-      fprintf(stderr, "Time sending buff sizes: %e\n", time_buff_size);
-      time_buff_size = (double) MPI_Wtime();
     }
     /*
      *   Now actually send the strings that are needed
@@ -294,11 +270,6 @@ void FileInfo_merge(struct FileInfo* ptr_info, hid_t xfer_pid, hid_t mem_dspace,
     } else {
 	root_record_size_buffer = (int *) free_check_null(root_record_size_buffer);
 	root_record_size_array = (int *) free_check_null(root_record_size_array);
-    }
-    if (mpi_myself == 0) 
-    {
-      time_buff_size = (double) MPI_Wtime() - time_buff_size;
-      fprintf(stderr, "Time sending strings: %e\n", time_buff_size);
     }
 }
 
