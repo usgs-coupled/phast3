@@ -792,7 +792,7 @@
                               *** Output at End of Time Step No.     1 ***
 
      Time .......................................................   0.500      (s)
-     Maximum change in H         molality .... -1.6587E-03 (mol/kgw)   at location (  10.0    ,     0    ,     0    )(m )
+     Maximum change in H         molality .... -1.6587E-03 (mol/kgw)   at location (  10.0    ,  10.0    ,     0    )(m )
 
                               Molality (mol/kgw)
 
@@ -891,7 +891,7 @@
   1 4.50324E-13
 
 
-     Maximum change in Ba        molality .... -7.6145E-11 (mol/kgw)   at location (     0    ,     0    ,     0    )(m )
+     Maximum change in Ba        molality .... -7.6145E-11 (mol/kgw)   at location (     0    ,  10.0    ,     0    )(m )
 
                               Molality (mol/kgw)
 
@@ -990,7 +990,7 @@
   1 1.05116E-03
 
 
-     Maximum change in Ca        molality .... -1.0340E-03 (mol/kgw)   at location (     0    ,  10.0    ,     0    )(m )
+     Maximum change in Ca        molality .... -1.0340E-03 (mol/kgw)   at location (     0    ,     0    ,     0    )(m )
 
                               Molality (mol/kgw)
 
@@ -1254,7 +1254,7 @@
   1 0.19894    
 
 
-     Maximum change in Si        molality .... -2.2484E-05 (mol/kgw)   at location (     0    ,     0    ,     0    )(m )
+     Maximum change in Si        molality .... -2.2484E-05 (mol/kgw)   at location (     0    ,  10.0    ,     0    )(m )
 
                               Molality (mol/kgw)
 
