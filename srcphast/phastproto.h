@@ -109,19 +109,13 @@ void buffer_to_mass_fraction(void);
 void buffer_to_moles(void);
 void buffer_to_solution(struct solution *solution_ptr);
 int calc_dummy_kinetic_reaction(struct kinetics *kinetics_ptr);
-void copy_system_to_user(struct system *system_ptr, int n_user);
-void copy_user_to_system(struct system *system_ptr, int n_user, int n_user_new);
 int file_exists(const char* name);
 int file_rename(const char *temp_name, const char* name, const char* backup_name);
 void hst_moles_to_buffer(double *first, int dim);
 void hst_to_buffer(double *first, int dim);
-struct system *system_initialize(int i, int n_user_new, int *initial_conditions1, int *initial_conditions2, double *fraction1);
 void moles_to_hst(double *first, int dim);
 int print_using_hst(int cell_number);
-int scale_solution(int n_solution, double kg);
 void set_use_hst(int i);
-void solution_to_buffer(struct solution *solution_ptr);
-void unpack_from_hst(double *fraction, int *dim);
 int write_restart(double hst_time);
 int write_restart_init(std::ofstream& ofs, double time_hst);
 int xexchange_save_hst(int n);
@@ -146,25 +140,7 @@ int merge_handler(const int action, const int type, const char *name, const int 
 /* 
  * mix.c
  */
-int mix_solutions (int n_user1, int n_user2, LDBLE f1, int n_user_new, char *conditions);
-int mix_exchange (int n_user1, int n_user2, LDBLE f1, int new_n_user);
-int mix_pp_assemblage (int n_user1, int n_user2, LDBLE f1, int new_n_user);
-int mix_gas_phase (int n_user1, int n_user2, LDBLE f1, int new_n_user);
-int mix_s_s_assemblage (int n_user1, int n_user2, LDBLE f1, int new_n_user);
-int mix_kinetics (int n_user1, int n_user2, LDBLE f1, int new_n_user);
-int mix_surface (int n_user1, int n_user2, LDBLE f1, int new_n_user);
 int partition_uz(int iphrq, int ihst, LDBLE new_frac);
-int sum_solutions (struct solution *source1, LDBLE f1, struct solution *source2, LDBLE f2, struct solution *target);
-int sum_exchange (struct exchange *source1, LDBLE f1, struct exchange *source2, LDBLE f2, struct exchange *target);
-int sum_pp_assemblage (struct pp_assemblage *source1, LDBLE f1, struct pp_assemblage *source2, LDBLE f2, struct pp_assemblage *target);
-int sum_gas_phase (struct gas_phase *source1, LDBLE f1, struct gas_phase *source2, LDBLE f2, struct gas_phase *target);
-int sum_s_s_assemblage (struct s_s_assemblage *source1, LDBLE f1, struct s_s_assemblage *source2, LDBLE f2, struct s_s_assemblage *target);
-int sum_kinetics (struct kinetics *source1, LDBLE f1, struct kinetics *source2, LDBLE f2, struct kinetics *target);
-int sum_surface (struct surface *source1, LDBLE f1, struct surface *source2, LDBLE f2, struct surface *target);
-struct system *system_alloc(void);
-int system_free(struct system *system_ptr);
-int system_init(struct system *system_ptr);
-int xsolution_save_hst_ptr(struct solution *solution_ptr);
 /*
  * phast_files.c
  */
@@ -183,4 +159,4 @@ void unpackcxx_from_hst(double *fraction, int *dim);
 void scale_cxxsolution(int n_solution, double factor);
 struct system *cxxsystem_initialize(int i, int n_user_new, int *initial_conditions1, int *initial_conditions2, double *fraction1);
 int scale_cxxsystem(int iphrq, LDBLE frac);
-struct system *system_cxxInitialize(int i, int n_user_new, int *initial_conditions1, int *initial_conditions2, double *fraction1);
+void system_cxxInitialize(int i, int n_user_new, int *initial_conditions1, int *initial_conditions2, double *fraction1);

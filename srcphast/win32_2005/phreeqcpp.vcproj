@@ -510,10 +510,6 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\cxxHstSubs.cxx"
-					>
-				</File>
-				<File
 					RelativePath="..\phreeqcpp\phreeqc\dense.c"
 					>
 					<FileConfiguration
@@ -584,10 +580,6 @@
 							CompileAs="2"
 						/>
 					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\hst.cxx"
-					>
 				</File>
 				<File
 					RelativePath="..\hstsubs.c"
@@ -1710,6 +1702,10 @@
 				Name="COMMON_CXXOBJS"
 				>
 				<File
+					RelativePath="..\cxxHstSubs.cxx"
+					>
+				</File>
+				<File
 					RelativePath="..\phreeqcpp\cxxKinetics.cxx"
 					>
 				</File>
@@ -1731,6 +1727,10 @@
 				</File>
 				<File
 					RelativePath="..\phreeqcpp\GasPhase.cxx"
+					>
+				</File>
+				<File
+					RelativePath="..\hst.cxx"
 					>
 				</File>
 				<File
@@ -2055,10 +2055,6 @@
 			</File>
 			<File
 				RelativePath="..\phreeqcpp\phreeqc\kinetics.h"
-				>
-			</File>
-			<File
-				RelativePath="..\phreeqcpp\kinetics.h"
 				>
 			</File>
 			<File

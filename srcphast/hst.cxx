@@ -642,7 +642,7 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 	int i;
 	int first_cell, last_cell;
 	int *sort_random_list;
-	struct system *system_ptr;
+	//struct system *system_ptr;
 	int j, k;
 	/*
 	 *  Save pointers to initial condition arrays
@@ -690,11 +690,12 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 		i = back[j].list[0];      /* i is ixyz number */
 		assert (forward[i] >= 0); 
 		//system_ptr = system_initialize(i, j, initial1, initial2, frac1);   
-		system_ptr = system_cxxInitialize(i, j, initial_conditions1, initial_conditions2, fraction1);   
+		//system_ptr = system_cxxInitialize(i, j, initial_conditions1, initial_conditions2, fraction1);   
+		system_cxxInitialize(i, j, initial_conditions1, initial_conditions2, fraction1); 
 		/* C++ */
-		szBin.add(system_ptr);
-		system_free(system_ptr);
-		system_ptr = (struct system *) free_check_null(system_ptr);
+		//szBin.add(system_ptr);
+		//system_free(system_ptr);
+		//system_ptr = (struct system *) free_check_null(system_ptr);
 	}
 	/*
 	 * Read any restart files
@@ -728,11 +729,13 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 			j = sort_random_list[k];  /* j is count_chem number */
 			i = back[j].list[0];      /* i is ixyz number */
 			assert (forward[i] >= 0); 
-			system_ptr = system_initialize(i, j, initial1, initial2, frac1);   
+			//system_ptr = system_initialize(i, j, initial1, initial2, frac1); 
+			//system_ptr = system_cxxInitialize(i, j, initial_conditions1, initial_conditions2, fraction1);
+			system_cxxInitialize(i, j, initial_conditions1, initial_conditions2, fraction1);
 			/* C++ */
-			szBin.add(system_ptr);
-			system_free(system_ptr);
-			system_ptr = (struct system *) free_check_null(system_ptr);
+			//szBin.add(system_ptr);
+			//system_free(system_ptr);
+			//system_ptr = (struct system *) free_check_null(system_ptr);
 			if (j < 0) continue;
 			/*
 			 *   Copy solution
@@ -863,7 +866,7 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
  *      and kinetics for each cell.
  */
 	int i, j;
-	struct system *system_ptr;
+	//struct system *system_ptr;
 /*
  *  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
  */
@@ -872,11 +875,12 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 		if (j < 0) continue;
 		assert (forward[i] >= 0); 
 		//system_ptr = system_initialize(i, j, initial_conditions1, initial_conditions2, fraction1);   
-		system_ptr = system_cxxInitialize(i, j, initial_conditions1, initial_conditions2, fraction1);   
+		//system_ptr = system_cxxInitialize(i, j, initial_conditions1, initial_conditions2, fraction1);
+		system_cxxInitialize(i, j, initial_conditions1, initial_conditions2, fraction1);
 		/* C++ */
-		szBin.add(system_ptr);
-		system_free(system_ptr);
-		system_ptr = (struct system *) free_check_null(system_ptr);
+		//szBin.add(system_ptr);
+		//system_free(system_ptr);
+		//system_ptr = (struct system *) free_check_null(system_ptr);
 	}
 	//std::ostringstream oss;
 	//szBin.dump_raw(oss,0);
@@ -1018,6 +1022,7 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 	}
 }
 #endif
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void SETUP_BOUNDARY_CONDITIONS(const int *n_boundary, int *boundary_solution1,
 			       int *boundary_solution2, double *fraction1,
@@ -1060,6 +1065,48 @@ void SETUP_BOUNDARY_CONDITIONS(const int *n_boundary, int *boundary_solution1,
 		buffer_to_mass_fraction();
 		buffer_to_hst(&boundary_fraction[i], *dim);
 		delete cxxsoln_ptr;
+	}
+	return;
+}
+#endif
+/* ---------------------------------------------------------------------- */
+void SETUP_BOUNDARY_CONDITIONS(const int *n_boundary, int *boundary_solution1,
+			       int *boundary_solution2, double *fraction1,
+			       double *boundary_fraction, int *dim)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *   Routine takes a list of solution numbers and returns a set of
+ *   mass fractions
+ *   Input: n_boundary - number of boundary conditions in list
+ *          boundary_solution1 - list of first solution numbers to be mixed
+ *          boundary_solution2 - list of second solution numbers to be mixed
+ *          fraction1 - fraction of first solution 0 <= f <= 1
+ *          dim - leading dimension of array boundary mass fractions
+ *                must be >= to n_boundary
+ *
+ *   Output: boundary_fraction - mass fractions for boundary conditions
+ *                             - dimensions must be >= n_boundary x n_comp
+ *
+ */
+	int i, n_old1, n_old2;
+	double f1, f2;
+
+	for (i = 0; i < *n_boundary; i++) {
+		cxxMix mixmap;
+		n_old1 = boundary_solution1[i];
+		n_old2 = boundary_solution2[i];
+		f1 = fraction1[i];
+		f2 = 1 - f1;
+		mixmap.add(n_old1, f1);
+		if (f2 > 0.0) {
+			mixmap.add(n_old2, f2);
+		}
+		//cxxSolution *cxxsoln_ptr = phreeqcBin.mix_cxxSolutions(mixmap);
+		cxxSolution cxxsoln(phreeqcBin.getSolutions(), mixmap, 0);
+		cxxsolution_to_buffer(&cxxsoln);
+		buffer_to_mass_fraction();
+		buffer_to_hst(&boundary_fraction[i], *dim);
 	}
 	return;
 }
