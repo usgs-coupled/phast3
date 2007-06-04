@@ -717,6 +717,7 @@ int xsolution_save_hst(int n)
 	solution_ptr->totals = (struct conc *) PHRQ_realloc (solution_ptr->totals, (size_t) (count_total - 1) * sizeof(struct conc));
 	solution_ptr->master_activity = (struct master_activity *) PHRQ_realloc (solution_ptr->master_activity, (size_t) (count_activity_list + 1) * sizeof(struct master_activity));
 	solution_ptr->count_master_activity = count_activity_list;
+	solution_ptr->tc = tc_x;
 	solution_ptr->ph = ph_x;
 	solution_ptr->solution_pe = solution_pe_x;
 	solution_ptr->mu = mu_x;
