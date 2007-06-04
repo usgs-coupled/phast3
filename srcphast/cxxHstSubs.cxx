@@ -40,6 +40,72 @@ void buffer_to_cxxsolution(int n)
 /* 
  *  Put totals in solution structure
  */
+	cxxNameDouble nd;
+	nd.type = cxxNameDouble::ND_ELT_MOLES;
+	for (i = 2; i < count_total; i++) {
+		if (buffer[i].moles <= 1e-14) {
+			//solution_ptr->totals[i-2].moles = 0;
+			//cxxsoln_ptr->set_total(buffer[i].name, 0);
+			nd[buffer[i].name] = 0;
+		} else {
+			old_moles = cxxsoln_ptr->get_total(buffer[i].name);
+			//if (solution_ptr->totals[i-2].moles <= 0) {
+			if (old_moles <= 0) {
+				t = log10(buffer[i].moles) - 2.0;
+				for (j = buffer[i].first_master; j <= buffer[i].last_master; j++) {
+					//solution_ptr->master_activity[j].la = t;
+					cxxsoln_ptr->set_master_activity(activity_list[j].name, t);
+				}
+			} else {
+				//t = log10(buffer[i].moles / solution_ptr->totals[i-2].moles);
+				t = log10(buffer[i].moles / old_moles);
+				for (j = buffer[i].first_master; j <= buffer[i].last_master; j++) {
+					//solution_ptr->master_activity[j].la += t;
+					old_la = cxxsoln_ptr->get_master_activity(activity_list[j].name);
+					cxxsoln_ptr->set_master_activity(activity_list[j].name, old_la + t);
+				}
+			}
+			//solution_ptr->totals[i-2].moles = buffer[i].moles;
+			//cxxsoln_ptr->set_total(buffer[i].name, buffer[i].moles);
+			nd[buffer[i].name] = buffer[i].moles;
+		}
+	}
+	cxxsoln_ptr->set_totals(nd);
+/*
+ *   Switch in transport of charge
+ */
+	if (transport_charge == TRUE) {
+		//solution_ptr->cb = buffer[i].moles;
+		cxxsoln_ptr->set_cb(buffer[i].moles);
+	}
+	return;
+}
+#ifdef ORIGINAL
+/* ---------------------------------------------------------------------- */
+void buffer_to_cxxsolution(int n)
+/* ---------------------------------------------------------------------- */
+{
+	int i, j;
+	LDBLE old_moles, old_la;
+	LDBLE t;
+	cxxSolution *cxxsoln_ptr;
+	/* 
+	 *  add water to hydrogen and oxygen
+	 */
+	cxxsoln_ptr = szBin.getSolution(n);
+	if (cxxsoln_ptr == NULL) {
+		cxxSolution cxxsoln;
+		szBin.setSolution(n, &cxxsoln);
+		cxxsoln_ptr = szBin.getSolution(n);
+		cxxsoln_ptr->set_n_user(n);
+		cxxsoln_ptr->set_n_user_end(n);
+	}
+	cxxsoln_ptr->set_total_h( buffer[0].moles + 2  / gfw_water);
+	cxxsoln_ptr->set_total_o( buffer[1].moles + 1 / gfw_water);
+
+/* 
+ *  Put totals in solution structure
+ */
 	for (i = 2; i < count_total; i++) {
 		if (buffer[i].moles <= 1e-14) {
 			//solution_ptr->totals[i-2].moles = 0;
@@ -75,6 +141,7 @@ void buffer_to_cxxsolution(int n)
 	}
 	return;
 }
+#endif
 /* ---------------------------------------------------------------------- */
 void cxxsolution_to_buffer(cxxSolution *cxxsoln_ptr)
 /* ---------------------------------------------------------------------- */
@@ -94,7 +161,7 @@ void cxxsolution_to_buffer(cxxSolution *cxxsoln_ptr)
 	buffer[0].moles = cxxsoln_ptr->get_total_h() - 2 * moles_water;
 	buffer[1].moles = cxxsoln_ptr->get_total_o() - moles_water;
 	for (i = 2; i < count_total; i++) {
-		buffer[i].moles = cxxsoln_ptr->get_total(buffer[i].name);
+		buffer[i].moles = cxxsoln_ptr->get_total_element(buffer[i].name);
 	}	
 /*
  *   Switch in transport of charge
