@@ -666,6 +666,10 @@ int check_time_data(void)
 		}
 		check_ss_time_units(&max_ss_time_step, "maximum time_step in STEADY_FLOW data block.");
 	}
+	if (time_start.value_defined == FALSE) {
+	  time_start.value = 0.0;
+	}
+	check_ss_time_units(&time_start, "starting time in TIME_CONTROL data block.");
 	return(OK);
 }
 /* ---------------------------------------------------------------------- */

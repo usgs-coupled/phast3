@@ -641,6 +641,7 @@ EXTERNAL double rebalance_fraction;
 EXTERNAL struct time_series time_step;
 EXTERNAL struct time current_time_step;
 EXTERNAL struct time *time_end;
+EXTERNAL struct time time_start;
 EXTERNAL int count_time_end;
 EXTERNAL struct time current_time_end;
 EXTERNAL double last_time_end;

@@ -4149,9 +4149,13 @@ int read_time_control (void)
 		"change_time",        /* 5 */
 		"end_time",           /* 6 */
 		"time_end",           /* 7 */
-		"end"                 /* 8 */
+		"end",                /* 8 */
+		"initial_time",       /* 9 */
+		"time_initial",       /* 10 */
+		"start_time",         /* 11 */
+		"time_start"          /* 12 */
 	};
-	int count_opt_list = 9;
+	int count_opt_list = 13;
 /*
  *   Read flags:
  */
@@ -4215,6 +4219,14 @@ int read_time_control (void)
 				    sprintf(error_string,"List of time_end %s", tag);
 				    error_msg(error_string, CONTINUE);
 			    }
+			    break;
+		    case 9:                         /* initial_time */
+		    case 10:                        /* time_initial */
+		    case 11:                        /* start_time */
+		    case 12:                        /* time_start */
+			    read_time_data(&next_char, &time_start, "Starting time in PRINT_CONTROL");
+			    opt = get_option(opt_list, count_opt_list, &next_char);
+			    break;
 		}
 		if (return_value == EOF || return_value == KEYWORD) break;
 	}

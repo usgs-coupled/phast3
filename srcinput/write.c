@@ -148,7 +148,8 @@ int write_initial(void)
 	free_check_null(title_line);
 
 	output_msg(OUTPUT_HST,"C.1.3 .. RESTRT[T/F],TIMRST\n");
-	output_msg(OUTPUT_HST,"     f 0.\n");
+/*	output_msg(OUTPUT_HST,"     f 0.\n");*/
+	output_msg(OUTPUT_HST,"     f %g\n", time_start.value * time_start.input_to_user);
 	output_msg(OUTPUT_HST,"C.....If RESTART, skip to READ3 group\n");
 	output_msg(OUTPUT_HST,"C.1.4 .. HEAT[T/F],SOLUTE[T/F],EEUNIT[T/F],CYLIND[T/F],SCALMF[T/F]\n");
 	if (flow_only == TRUE) {

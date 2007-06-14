@@ -248,6 +248,7 @@ int clean_up(void)
 /* miscellaneous work space */
 	free_check_null(min_ss_time_step.input);
 	free_check_null(max_ss_time_step.input);
+	free_check_null(time_start.input);
 
 	free_check_null(title_x);
 	free_check_null(line);
@@ -497,6 +498,10 @@ void initialize(void)
 	max_ss_time_step.input = NULL;
 	max_ss_head_change = -1;
 	max_ss_iterations = 100;
+
+	time_start.value_defined = FALSE;
+	time_start.input = NULL;
+	time_start.value = 0.0;
 
 	title_x = NULL;
 /*
