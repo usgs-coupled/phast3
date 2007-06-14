@@ -48,7 +48,8 @@ SUBROUTINE phast_root(mpi_tasks, mpi_myself)
      CALL init2_1
      CALL init2_2
      CALL error2
-     time_phreeqc = 0.d0  
+!     time_phreeqc = 0.d0 
+     time_phreeqc = time
 #if defined(HDF5_CREATE)
      CALL hdf_write_invariant(mpi_myself)
 #endif

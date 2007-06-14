@@ -14,6 +14,7 @@ SUBROUTINE simulate_ss_flow
   !     ------------------------------------------------------------------
   !...
   !.....Start of the transient loop for marching to steady state
+  time = 0.0_kdp
   logline1 = '     '
   logline2 = 'Beginning flow calculation for steady-state i.c.'
 !  WRITE(*,3001) TRIM(logline2)

@@ -9,6 +9,7 @@ SUBROUTINE init2_post_ss
   USE mcv
   USE mcw
   USE mg2
+  USE print_control_mod
   USE phys_const
   IMPLICIT NONE
   REAL(KIND=kdp) :: viscos  
@@ -108,8 +109,13 @@ SUBROUTINE init2_post_ss
 780 END DO
   !.....Reinitialize accumulation arrays and time counting and summation
   !.....     variables
-  time = 0._kdp
-  time_phreeqc = 0._kdp
+!  time = 0._kdp
+  time = timrst * cnvtm
+  ! set print times starting with with restart time
+  CALL pc_set_print_times(time*cnvtmi, timchg*cnvtmi)
+  timprtnxt = next_print_time
+!  time_phreeqc = 0._kdp
+  time_phreeqc = time
   deltim = deltim_transient
   deltim_sav = 0._kdp
   itime = 0  

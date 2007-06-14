@@ -407,6 +407,7 @@ CONTAINS
     REAL(KIND=kdp), INTENT(IN) :: utimchg, utime
     ! ... 
     call pc_hst2mod
+!    call pc_dump_all
     next_print_time = utimchg
     CALL pc_set_print_time(print_progress_statistics, utime)
     CALL pc_set_print_time(print_components, utime)
@@ -428,6 +429,7 @@ CONTAINS
     CALL pc_set_print_time(print_restart, utime)
     CALL pc_set_print_time(print_restart_hst, utime)
     call pc_mod2hst
+!    call pc_dump_all
   END SUBROUTINE pc_set_print_times
 
   SUBROUTINE pc_set_print_time(pc, utime)  ! init3
@@ -512,6 +514,7 @@ CONTAINS
     CALL pc_dump(print_xyz_wells)
     CALL pc_dump(print_restart)
     CALL pc_dump(print_restart_hst)
+    write (*,*) "Next_print_time: ", next_print_time
   END SUBROUTINE pc_dump_all
 
   SUBROUTINE pc_dump(pc)

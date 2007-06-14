@@ -29,7 +29,8 @@ SUBROUTINE init2_2
   ! ... Initialize accumulation arrays and time counting and summation
   ! ...      variables
   fdtmth_trans = fdtmth     ! ... save the input time difference weight
-  time = 0._kdp
+!  time = 0._kdp
+  time = timrst * cnvtm
   deltim_sav = 0._kdp
   itime = 0  
   fir0 = 0._kdp  

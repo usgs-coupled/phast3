@@ -35,7 +35,8 @@ SUBROUTINE phast_slave(mpi_tasks, mpi_myself)
   CALL on_error_cleanup_and_exit
   ! ... Allocates space
   CALL slave_init1
-  time_phreeqc = 0.d0  
+!  time_phreeqc = 0.d0  
+  time_phreeqc = time
 
 #if defined(HDF5_CREATE)
      CALL hdf_write_invariant(mpi_myself)
