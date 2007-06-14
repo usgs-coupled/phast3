@@ -151,4 +151,18 @@
 
                                         *** Transient Data ***
 
-     Time ..............................   5.000
+     Time ..............................   5.000E+04  (yr )
+
+
+                                        *** Calculation Information ***
+
+          Fixed time step length .......................................... DELTIM  2.000E+03  (yr )
+          Time at which next set of transient
+               parameters will be read .................................... TIMCHG  1.500E+05  (yr)
+
+ ------------------------------------------------------------------------------------------------------------------------
+
+
+                                       ***** Simulation Completed *****
+               Last time value calculated ...................................... 1.5000E+05 (yr)
+               Last time step index ............................................      50
