@@ -9,6 +9,7 @@
 # o InstallShield Professional 6.31
 # o ModelViewer 1.0
 # o jdk >= 1.4.1
+# o hdf5 >= 1.6.5
 # o htmlhelp
 # o cygwin
 # o   sh/bash
@@ -188,15 +189,16 @@ cvsexport() {
   cd ${topdir} && \
 # external files
   mkdir -p Redist && \
-  cp "`cygpath ${DEV_VTK_LIBDLL}`/vtkdll.dll"       ${topdir}/Redist/. && \
-  cp "`cygpath ${DEV_HDF5_LIBDLL}`/hdf5dll.dll"     ${topdir}/Redist/. && \
-  cp "`cygpath ${DEV_HDF5_LIBDLL}`/zlib.dll"        ${topdir}/Redist/. && \
-  cp "`cygpath "${MODELVIEWER}"`/notice.txt"        ${topdir}/Redist/. && \
-  cp "`cygpath "${MODELVIEWER}"`/readme.txt"        ${topdir}/Redist/. && \
-  cp "`cygpath "${MODELVIEWER}"`/doc/ofr02-106.pdf" ${topdir}/Redist/. && \
-  cp "`cygpath "${MODELVIEWER}"`/bin/modview.chm"   ${topdir}/Redist/. && \
-  cp "`cygpath "${MODELVIEWER}"`/bin/DFORRT.DLL"    ${topdir}/Redist/. && \
-  cp "`cygpath "${MODELVIEWER}"`/bin/lf90.eer"      ${topdir}/Redist/. && \
+  cp "`cygpath ${DEV_VTK_LIBDLL}`/vtkdll.dll"           ${topdir}/Redist/. && \
+  cp "`cygpath ${DEV_HDF5_LIBDLL}`/hdf5dll.dll"         ${topdir}/Redist/. && \
+  cp "`cygpath ${DEV_HDF5_LIBDLL}`/../bin/zlib1.dll"    ${topdir}/Redist/. && \
+  cp "`cygpath ${DEV_HDF5_LIBDLL}`/../bin/szlibdll.dll" ${topdir}/Redist/. && \
+  cp "`cygpath "${MODELVIEWER}"`/notice.txt"            ${topdir}/Redist/. && \
+  cp "`cygpath "${MODELVIEWER}"`/readme.txt"            ${topdir}/Redist/. && \
+  cp "`cygpath "${MODELVIEWER}"`/doc/ofr02-106.pdf"     ${topdir}/Redist/. && \
+  cp "`cygpath "${MODELVIEWER}"`/bin/modview.chm"       ${topdir}/Redist/. && \
+  cp "`cygpath "${MODELVIEWER}"`/bin/DFORRT.DLL"        ${topdir}/Redist/. && \
+  cp "`cygpath "${MODELVIEWER}"`/bin/lf90.eer"          ${topdir}/Redist/. && \
   tar cvzf ${src_orig_pkg_mv} Mv Redist && \
   rm -rf Mv Redist )
 }
@@ -291,7 +293,7 @@ install() {
   /usr/bin/mkdir -p ${instdir}${prefix}/export/lib/Win32 && \
   /usr/bin/install -m 644 ${objdir}/doc/README \
     ${instdir}${prefix}/README.txt && \
-# (bin dir) phast-ser, phast-mpich, hdf5dll.dll, zlib.dll phast.bat
+# (bin dir) phast-ser, phast-mpich, hdf5dll.dll, zlib1.dll, szlibdll.dll phast.bat
   /usr/bin/install -m 755 ${objdir}/src/phastinput/win32_2005/Release/phastinput.exe \
     ${instdir}${prefix}/bin/phastinput.exe && \
   /usr/bin/install -m 755 ${objdir}/src/phast/win32_2005/merge/phast.exe \
@@ -300,8 +302,10 @@ install() {
     ${instdir}${prefix}/bin/phast-ser.exe && \
   /usr/bin/install -m 755 ${objdir}/Redist/hdf5dll.dll \
     ${instdir}${prefix}/bin/hdf5dll.dll && \
-  /usr/bin/install -m 755 ${objdir}/Redist/zlib.dll \
-    ${instdir}${prefix}/bin/zlib.dll && \
+  /usr/bin/install -m 755 ${objdir}/Redist/zlib1.dll \
+    ${instdir}${prefix}/bin/zlib1.dll && \
+  /usr/bin/install -m 755 ${objdir}/Redist/szlibdll.dll \
+    ${instdir}${prefix}/bin/szlibdll.dll && \
   /usr/bin/install -m 755 ${objdir}/bin/${PKG}.bat \
     ${instdir}${prefix}/bin/${PKG}.bat && \
 # doc directory
@@ -369,7 +373,9 @@ install() {
     ${instdir}${prefix}/mv/bin/. && \
   /usr/bin/install -m 755 ${objdir}/Redist/hdf5dll.dll \
     ${instdir}${prefix}/mv/bin/. && \
-  /usr/bin/install -m 755 ${objdir}/Redist/zlib.dll \
+  /usr/bin/install -m 755 ${objdir}/Redist/zlib1.dll \
+    ${instdir}${prefix}/mv/bin/. && \
+  /usr/bin/install -m 755 ${objdir}/Redist/szlibdll.dll \
     ${instdir}${prefix}/mv/bin/. && \
 # InstallShield compile
   "${IS_COMPILER}" "${IS_RULFILES}" -I"${IS_INCLUDEIFX}" -I"${IS_INCLUDEISRT}" \
