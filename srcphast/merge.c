@@ -45,14 +45,14 @@ struct FileInfo {
   int max_buffer_size_array;
 };
 
-int Merge_fprintf2(struct FileInfo *pFileInfo, const char *format, ...);
-int Merge_vfprintf2(struct FileInfo *pFileInfo, const char *format, va_list args);
+static int Merge_fprintf2(struct FileInfo *pFileInfo, const char *format, ...);
+static int Merge_vfprintf2(struct FileInfo *pFileInfo, const char *format, va_list args);
 
 static struct FileInfo s_fiOutput;
 static struct FileInfo s_fiPunch;
 static struct FileInfo s_fiEcho;
 
-void FileInfo_init(struct FileInfo* pFileInfo, const int msg_val)
+static void FileInfo_init(struct FileInfo* pFileInfo, const int msg_val)
 {
     /* init vars */
     pFileInfo->buffer      = NULL;
@@ -66,7 +66,7 @@ void FileInfo_init(struct FileInfo* pFileInfo, const int msg_val)
 }
 
 
-void FileInfo_alloc(struct FileInfo* pFileInfo, int size)
+static void FileInfo_alloc(struct FileInfo* pFileInfo, int size)
 {
     /* initialize storage */
     pFileInfo->buffer_size = size;
@@ -78,7 +78,7 @@ void FileInfo_alloc(struct FileInfo* pFileInfo, int size)
     assert(pFileInfo->buffer_size_array != NULL);
 }
 
-void FileInfo_del(struct FileInfo* pFileInfo)
+static void FileInfo_del(struct FileInfo* pFileInfo)
 {
     /* release storage */
     /* may want to close file here */
@@ -90,7 +90,7 @@ void FileInfo_del(struct FileInfo* pFileInfo)
     pFileInfo->buffer_size_array = (int *) free_check_null(pFileInfo->buffer_size_array);
 }
 
-void FileInfo_open(struct FileInfo* pFileInfo, const char* name, const char *mode)
+static void FileInfo_open(struct FileInfo* pFileInfo, const char* name, const char *mode)
 {
     /* open stream */
     if ((pFileInfo->stream = fopen(name, mode)) == NULL)
@@ -100,7 +100,7 @@ void FileInfo_open(struct FileInfo* pFileInfo, const char* name, const char *mod
     }
 }
 
-void FileInfo_merge(struct FileInfo* ptr_info, hid_t xfer_pid, hid_t mem_dspace, int *cell_to_proc)
+static void FileInfo_merge(struct FileInfo* ptr_info, hid_t xfer_pid, hid_t mem_dspace, int *cell_to_proc)
 {
     extern int end_cells[MPI_MAX_TASKS][2];
     extern int mpi_myself;
@@ -273,7 +273,7 @@ void FileInfo_merge(struct FileInfo* ptr_info, hid_t xfer_pid, hid_t mem_dspace,
     }
 }
 
-int FileInfo_capture(struct FileInfo* ptr_info, const int length, const char* format, va_list argptr)
+static int FileInfo_capture(struct FileInfo* ptr_info, const int length, const char* format, va_list argptr)
 {
     int retval;
 
@@ -292,13 +292,13 @@ int FileInfo_capture(struct FileInfo* ptr_info, const int length, const char* fo
     return retval;
 }
 
-int FileInfo_printf(struct FileInfo* ptr_info, const char* format, va_list argptr)
+static int FileInfo_printf(struct FileInfo* ptr_info, const char* format, va_list argptr)
 {
     assert(ptr_info->stream != NULL);
     return vfprintf(ptr_info->stream, format, argptr);	
 }
 
-void FileInfo_dataset_create(struct FileInfo* ptr_info, const char* name, int count_buffer_size_array)
+static void FileInfo_dataset_create(struct FileInfo* ptr_info, const char* name, int count_buffer_size_array)
 {
     assert(s_ci.file_id   != 0);
     assert(s_ci.vls_id    != 0);
@@ -838,7 +838,7 @@ static int output_handler(const int type, const char *err_str, const int stop, v
 }
 
 /* ---------------------------------------------------------------------- */
-int Merge_vfprintf2(struct FileInfo *pFileInfo, const char *format, va_list args)
+static int Merge_vfprintf2(struct FileInfo *pFileInfo, const char *format, va_list args)
 /* ---------------------------------------------------------------------- */
 {
   extern int mpi_myself;
@@ -862,7 +862,7 @@ int Merge_vfprintf2(struct FileInfo *pFileInfo, const char *format, va_list args
 }
 
 /* ---------------------------------------------------------------------- */
-int Merge_fprintf2(struct FileInfo *pFileInfo, const char *format, ...)
+static int Merge_fprintf2(struct FileInfo *pFileInfo, const char *format, ...)
 /* ---------------------------------------------------------------------- */
 {
     va_list args;

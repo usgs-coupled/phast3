@@ -601,7 +601,7 @@ COMMON_COBJS =  advection.o basic.o basicsubs.o cl1.o input.o integrate.o invers
 		tally.o tidy.o transport.o utilities.o \
 		cvdense.o cvode.o dense.o nvector.o nvector_serial.o smalldense.o sundialsmath.o \
 		pitzer.o pitzer_structures.o dw.o \
-		hst.o cxxHstSubs.o hstsubs.o mix.o phast_files.o 
+		hst.o cxxHstSubs.o hstsubs.o phast_files.o 
 
 COMMON_FOBJS =	abmult.o aplbce.o aplbce_ss_flow.o aplbci.o armult.o asembl.o\
 		asmslc.o asmslp.o asmslp_ss_flow.o bsode.o calcc.o calc_velocity.o clog.o closef.o\
@@ -829,7 +829,6 @@ utilities.o: $(SRC)/utilities.c $(SRC)/global.h $(SRC)/phrqtype.h $(SRC)/phqallo
 #  Glue files
 #
 merge.o: merge.c global.h phqalloc.h hst.h output.h phastproto.h
-mix.o: mix.c global.h hst.h phqalloc.h output.h phastproto.h
 phast_files.o: phast_files.c global.h phqalloc.h output.h phrqproto.h input.h
 slavesubs.o: slavesubs.c global.h hst.h phqalloc.h output.h phastproto.h
 hst.o: ../hst.cxx ../phreeqcpp/StorageBin.h ../phreeqcpp/Utils.h \

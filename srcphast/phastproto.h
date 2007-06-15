@@ -53,51 +53,21 @@ void PRNTAR_HDF(double array[], double frac[], double* cnv, char* name, int name
 #endif
 
 /* 
- * hst.c
+ * hst.cxx
  */
 
-#if defined(USE_MPI)
-FILE *mpi_fopen(const char *filename, const char *mode);
-#endif
-
 #ifdef USE_MPI
- int mpi_send_solution(int solution_number, int task_number);
- int mpi_rebalance_load(double time_per_cell, double *frac, int transfer);
- int mpi_recv_solution(int solution_number, int task_number);
+ FILE *mpi_fopen(const char *filename, const char *mode);
  int mpi_set_subcolumn(double *frac);
- int mpi_send_recv_cells(void);
- int mpi_recv_system(int task_number, int iphrq, int ihst, LDBLE *frac);
- int mpi_send_system(int task_number, int iphrq, int ihst, LDBLE *frac);
- int mpi_pack_elt_list(struct elt_list *totals, int *ints, int *i, double *doubles, int *d);
- int mpi_pack_solution(struct solution *solution_ptr, int *ints, int *ii, double *doubles, int *dd);
- int mpi_pack_solution_hst(struct solution *solution_ptr);
+ int mpi_rebalance_load(double time_per_cell, double *frac, int transfer);
  int mpi_set_random(void);
- int mpi_unpack_elt_list(struct elt_list **totals, int *ints, int *i, double *doubles, int *d);
- int mpi_unpack_solution_hst(struct solution *solution_ptr, int solution_number, int msg_size);
- int mpi_unpack_solution(struct solution *solution_ptr, int *ints, int *ii, double *doubles, int *dd);
- int mpi_distribute_root(void);
  int distribute_from_root(double *fraction, int *dim, int *print_sel,
 			  double *time_hst, double *time_step_hst, int *prslm,
 			  double *frac, int *printzone_chem, int *printzone_xyz, 
 			  int *print_out, int *print_hdf, int *print_restart);
- int mpi_update_root(void);
- int int_compare (const void *ptr1, const void *ptr2);
-
-int mpi_pack_pp_assemblage(struct pp_assemblage *pp_assemblage_ptr, int *ints, int *ii, double *doubles, int *dd);
-int mpi_pack_exchange(struct exchange *exchange_ptr, int *ints, int *ii, double *doubles, int *dd);
-int mpi_pack_gas_phase(struct gas_phase *gas_phase_ptr, int *ints, int *ii, double *doubles, int *dd);
-int mpi_pack_kinetics(struct kinetics *kinetics_ptr, int *ints, int *ii, double *doubles, int *dd);
-int mpi_pack_s_s_assemblage(struct s_s_assemblage *s_s_assemblage_ptr, int *ints, int *ii, double *doubles, int *dd);
-int mpi_pack_surface(struct surface *surface_ptr, int *ints, int *ii, double *doubles, int *dd);
-int mpi_unpack_pp_assemblage(struct pp_assemblage *pp_assemblage_ptr, int *ints, int *ii, double *doubles, int *dd);
-int mpi_unpack_exchange(struct exchange *exchange_ptr, int *ints, int *ii, double *doubles, int *dd);
-int mpi_unpack_gas_phase(struct gas_phase *gas_phase_ptr, int *ints, int *ii, double *doubles, int *dd);
-int mpi_unpack_kinetics(struct kinetics *kinetics_ptr, int *ints, int *ii, double *doubles, int *dd);
-int mpi_unpack_s_s_assemblage(struct s_s_assemblage *s_s_assemblage_ptr, int *ints, int *ii, double *doubles, int *dd);
-int mpi_unpack_surface(struct surface *surface_ptr, int *ints, int *ii, double *doubles, int *dd);
+ FILE *mpi_fopen(const char *filename, const char *mode);
 #endif
-
-void buffer_to_solution(struct solution *solution_ptr);
+int int_compare (const void *ptr1, const void *ptr2);
 
 /*
  *  hstsubs.c
@@ -105,50 +75,37 @@ void buffer_to_solution(struct solution *solution_ptr);
 void add_all_components(void);
 void buffer_print(const char *ptr, int n);
 void buffer_to_hst(double *first, int dim);
+void moles_to_hst(double *first, int dim);
 void buffer_to_mass_fraction(void);
 void buffer_to_moles(void);
 void buffer_to_solution(struct solution *solution_ptr);
-int calc_dummy_kinetic_reaction(struct kinetics *kinetics_ptr);
-int file_exists(const char* name);
-int file_rename(const char *temp_name, const char* name, const char* backup_name);
-void hst_moles_to_buffer(double *first, int dim);
 void hst_to_buffer(double *first, int dim);
-void moles_to_hst(double *first, int dim);
-int print_using_hst(int cell_number);
+void hst_moles_to_buffer(double *first, int dim);
 void set_use_hst(int i);
-int write_restart(double hst_time);
-int write_restart_init(std::ofstream& ofs, double time_hst);
 int xexchange_save_hst(int n);
 int xgas_save_hst(int n);
 int xpp_assemblage_save_hst(int n);
 int xsolution_save_hst(int n);
 int xsurface_save_hst(int n);
 int xs_s_assemblage_save_hst(int n);
+int calc_dummy_kinetic_reaction(struct kinetics *kinetics_ptr);
+int print_using_hst(int cell_number);
+int file_exists(const char* name);
+int file_rename(const char *temp_name, const char* name, const char* backup_name);
 /*
  * merge.c
  */
 #if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
+void MergeInit(char* prefix, int prefix_l, int solute);
 void MergeFinalize(void);
 void MergeFinalizeEcho(void);
-void MergeInit(char* prefix, int prefix_l, int solute);
 void MergeBeginTimeStep(int print_sel, int print_out);
 void MergeEndTimeStep(int print_sel, int print_out);
 void MergeBeginCell(void);
 void MergeEndCell(int print_sel, int print_out, int print_hdf, int n_proc);
 int merge_handler(const int action, const int type, const char *name, const int stop, void *cookie, const char *format, va_list args);
-#endif
-/* 
- * mix.c
- */
-int partition_uz(int iphrq, int ihst, LDBLE new_frac);
-/*
- * phast_files.c
- */
-#if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
 int Merge_vfprintf(FILE *stream, const char *format, va_list args);
-FILE *mpi_fopen(const char *filename, const char *mode);
 #endif
-int phast_handler(const int action, const int type, const char *err_str, const int stop, void *cookie, const char *format, va_list args);
 /*
  * cxxHstSubs.cxx
  */
@@ -156,7 +113,8 @@ int phast_handler(const int action, const int type, const char *err_str, const i
 void buffer_to_cxxsolution(int n);
 void cxxsolution_to_buffer(cxxSolution *solution_ptr);
 void unpackcxx_from_hst(double *fraction, int *dim);
-void scale_cxxsolution(int n_solution, double factor);
-struct system *cxxsystem_initialize(int i, int n_user_new, int *initial_conditions1, int *initial_conditions2, double *fraction1);
-int scale_cxxsystem(int iphrq, LDBLE frac);
 void system_cxxInitialize(int i, int n_user_new, int *initial_conditions1, int *initial_conditions2, double *fraction1);
+int write_restart(double hst_time);
+int scale_cxxsystem(int iphrq, LDBLE frac);
+int partition_uz(int iphrq, int ihst, LDBLE new_frac);
+

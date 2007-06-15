@@ -17,6 +17,7 @@ static void BeginTimeStep(int print_sel, int print_out, int print_hdf);
 static void EndTimeStep(int print_sel, int print_out, int print_hdf);
 static void BeginCell(int print_sel, int print_out, int print_hdf, int index);
 static void EndCell(int print_sel, int print_out, int print_hdf, int index);
+static int n_to_ijk(int n_cell, int *i, int *j, int *k);
 
 static char const svnid[] = "$Id: hst.c 827 2006-03-06 20:19:41Z dlpark $";
 #define RANDOM
@@ -141,7 +142,6 @@ void SETUP_BOUNDARY_CONDITIONS(const int *n_boundary, int *boundary_solution1,
 			       double *boundary_fraction, int *dim);
 int UZ_INIT(int * transient_fresur);
 void WARNPRT_C(char *err_str, long l);
-int n_to_ijk(int n_cell, int *i, int *j, int *k);
 }
 /* ---------------------------------------------------------------------- */
 void PHREEQC_FREE(int *solute)
@@ -1236,8 +1236,6 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 		}
 		if (active) {
 			cell_no = i;
-			//if (transient_free_surface == TRUE) scale_solution(n_solution, frac[j]); 
-			//if (transient_free_surface == TRUE) scale_cxxsolution(i, frac[j]); 
 			if (transient_free_surface == TRUE) scale_cxxsystem(i, 1.0/frac[j]);
 			/*
 			  std::ostringstream oss;
@@ -1531,8 +1529,6 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 			cell_no = i;
 			//solution_bsearch(first_user_number, &first_solution, TRUE);
 			//n_solution = first_solution;
-			/*if (*adjust_water_rock_ratio) scale_solution(n_solution, frac[j]); */
-			//if (transient_free_surface == TRUE) scale_cxxsolution(i, frac[j]); 
 			if (transient_free_surface == TRUE) scale_cxxsystem(i, 1.0/frac[j]);
 			szBin.cxxStorageBin2phreeqc(i);
 			set_use_hst(i);
@@ -1587,12 +1583,6 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 				s_s_assemblage_bsearch(i, &n_s_s_assemblage);
 				xs_s_assemblage_save_hst(n_s_s_assemblage);
 			}
-			/*
-			 * Be careful, scale_solution zeros some arrays
-			 * can delete some results from run_reaction
-			 */
-			/*if (active && *adjust_water_rock_ratio) scale_solution(n_solution, 1.0/frac[j]); */
-			//if (active && transient_free_surface == TRUE) scale_solution(n_solution, 1.0/frac[j]);
  			//copy_user_to_system(sz[i], first_user_number, i);
 			szBin.phreeqc2cxxStorageBin(i);
 			if (active && transient_free_surface == TRUE) scale_cxxsystem(i, frac[j]);
