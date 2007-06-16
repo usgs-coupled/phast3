@@ -8,72 +8,71 @@
 package gov.usgs.phast;
 
 import junit.framework.*;
-import org.netbeans.junit.*;
 
 /**
  *
  * @author charlton
  */
-public class JWizardPanelTest extends NbTestCase {
-    
+public class JWizardPanelTest extends TestCase {
+
     public JWizardPanelTest(java.lang.String testName) {
         super(testName);
     }
-    
+
     public static void main(java.lang.String[] args) {
         junit.textui.TestRunner.run(suite());
     }
-    
+
     public static Test suite() {
-        TestSuite suite = new NbTestSuite(JWizardPanelTest.class);
-        
+        TestSuite suite = new TestSuite(JWizardPanelTest.class);
+
         return suite;
     }
-    
+
     /** Test of getMainPanel method, of class gov.usgs.phast.JWizardPanel. */
     public void testGetMainPanel() {
         System.out.println("testGetMainPanel");
-        
+
         // Add your test code below by replacing the default call to fail.
-        fail("The test case is empty.");
+        Assert.fail("The test case is empty.");
     }
-    
+
     /** Test of addComponent method, of class gov.usgs.phast.JWizardPanel. */
     public void testAddComponent() {
         System.out.println("testAddComponent");
-        
+
         // Add your test code below by replacing the default call to fail.
-        fail("The test case is empty.");
+        Assert.fail("The test case is empty.");
     }
-    
+
     /** Test of setEnabledBack method, of class gov.usgs.phast.JWizardPanel. */
     public void testSetEnabledBack() {
         System.out.println("testSetEnabledBack");
-        
+
         // Add your test code below by replacing the default call to fail.
-        fail("The test case is empty.");
+        Assert.fail("The test case is empty.");
     }
-    
+
     /** Test of setEnabledNext method, of class gov.usgs.phast.JWizardPanel. */
     public void testSetEnabledNext() {
         System.out.println("testSetEnabledNext");
-        
+
         // Add your test code below by replacing the default call to fail.
-        fail("The test case is empty.");
+        Assert.fail("The test case is empty.");
     }
-    
+
     /** Test of setEnabledFinish method, of class gov.usgs.phast.JWizardPanel. */
     public void testSetEnabledFinish() {
         System.out.println("testSetEnabledFinish");
-        
+
         // Add your test code below by replacing the default call to fail.
-        fail("The test case is empty.");
+        Assert.fail("The test case is empty.");
     }
-    
+
     // Add test methods here, they have to start with 'test' name.
     // for example:
     // public void testHello() {}
-    
-    
-    
+
+
+
 }

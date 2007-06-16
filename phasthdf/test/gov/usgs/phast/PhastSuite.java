@@ -8,28 +8,27 @@
 package gov.usgs.phast;
 
 import junit.framework.*;
-import org.netbeans.junit.*;
 
 /**
  *
  * @author charlton
  */
-public class PhastSuite extends NbTestCase {
-    
+public class PhastSuite extends TestCase {
+
     public PhastSuite(java.lang.String testName) {
         super(testName);
     }
-    
+
     public static void main(java.lang.String[] args) {
         junit.textui.TestRunner.run(suite());
     }
-    
+
     public static Test suite() {
         //--JUNIT:
         //This block was automatically generated and can be regenerated again.
         //Do NOT change lines enclosed by the --JUNIT: and :JUNIT-- tags.
-        
-        TestSuite suite = new NbTestSuite("PhastSuite");
+
+        TestSuite suite = new TestSuite("PhastSuite");
         suite.addTest(gov.usgs.phast.JCheckListTest.suite());
         suite.addTest(gov.usgs.phast.JPage1Test.suite());
         suite.addTest(gov.usgs.phast.JPage2Test.suite());
@@ -44,11 +43,11 @@ public class PhastSuite extends NbTestCase {
         //This value MUST ALWAYS be returned from this function.
         return suite;
     }
-    
+
     // Add test methods here, they have to start with 'test' name.
     // for example:
     // public void testHello() {}
-    
-    
-    
+
+
+
 }

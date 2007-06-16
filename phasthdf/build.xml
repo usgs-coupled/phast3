@@ -12,8 +12,6 @@
     <property location="dist" name="dist"/>
     <property location="apidoc" name="apidoc"/>
     <property location="test" name="test"/>
-    <property location="C:\Program Files\s1studio_jdk\s1studio\modules\ext\junit-ext.jar" name="junit-ext"/>
-    <property location="C:\Program Files\s1studio_jdk\s1studio\modules\ext\junit.jar" name="junit"/>
     <property location="lib" name="lib"/>
     <property location="lib/hdf-java/lib" name="hdf"/>
     <property location="hdf-java" name="hdfjar"/>
@@ -31,9 +29,9 @@
         <mkdir dir="${apidoc}"/>
         <!-- extract jars and shared dlls/libs -->
         <mkdir dir="${lib}"/>
-        <unjar src="${hdfjar}/solaris/hdf-java-2.0.jar" dest="${lib}"/>
-        <unjar src="${hdfjar}/linux/hdf-java-2.0.jar" dest="${lib}"/>
-        <unjar src="${hdfjar}/win/hdf-java-2.0.jar" dest="${lib}"/>
+        <unjar src="${hdfjar}/solaris/hdf-java-2.3.jar" dest="${lib}"/>
+        <unjar src="${hdfjar}/linux/hdf-java-2.3.jar" dest="${lib}"/>
+        <unjar src="${hdfjar}/win/hdf-java-2.3.jar" dest="${lib}"/>
     </target>
     
     <target depends="init" description="compile the source" name="compile">
@@ -92,6 +90,13 @@
         </java>
     </target>
 
+    <target depends="dist-Linux" description="Try running it." name="run-Linux">
+        <java dir="${dist}/Linux" failonerror="true" fork="true" jar="${dist}/phast.jar">
+            <sysproperty key="java.library.path" value="${dist}/Linux"/>
+            <arg value="${dist}/../../examples/ex4/ex4.h5"/>
+        </java>
+    </target>
+
     <target depends="dist-Win32" description="Run in debug mode." name="run-debug">
         <java dir="${dist}/Win32" failonerror="true" fork="true" jar="${dist}/phast.jar">
             <sysproperty key="phast.debug" value="true"/>
@@ -99,27 +104,27 @@
         </java>
     </target>     
 
-   <target depends="dist" description="Run in debug mode using the metal laf." name="run_metal">
-        <java dir="C:\cygwin\home\charlton\programs\phast\export\dist\win" failonerror="true" fork="true" jar="${dist}/phast.jar">
+    <target depends="dist" description="Run in debug mode using the metal laf." name="run_metal">
+        <java dir="${dist}/Win32" failonerror="true" fork="true" jar="${dist}/phast.jar">
             <sysproperty key="phast.debug" value="true"/>
             <sysproperty key="swing.defaultlaf" value="javax.swing.plaf.metal.MetalLookAndFeel"/>
-            <arg value="C:\cygwin\home\charlton\programs\phast\examples\ok_no_vec\ok.h5"/>
+            <arg value="${dist}/../../examples/ex4/ex4.h5"/>
         </java>
     </target>
     
-   <target depends="dist" description="Run in debug mode using the metal laf." name="run_motif">
-        <java dir="C:\cygwin\home\charlton\programs\phast\export\dist\win" failonerror="true" fork="true" jar="${dist}/phast.jar">
+    <target depends="dist" description="Run in debug mode using the metal laf." name="run_motif">
+        <java dir="${dist}/Win32" failonerror="true" fork="true" jar="${dist}/phast.jar">
             <sysproperty key="phast.debug" value="true"/>
             <sysproperty key="swing.defaultlaf" value="com.sun.java.swing.plaf.motif.MotifLookAndFeel"/>
-            <arg value="C:\cygwin\home\charlton\programs\phast\examples\ok_no_vec\ok.h5"/>
+            <arg value="${dist}/../../examples/ex4/ex4.h5"/>
         </java>
     </target>     
     
     <target depends="compile" description="Run unit tests" name="test">
-        <javac source="${ver}" target="${ver}" deprecation="${depr}" classpath="${build};${junit};${junit-ext};${hdf}\jhdf.jar;${hdf}\jhdf5.jar;${hdf}\jhdfobj.jar;${hdf}\jhdf5obj.jar" destdir="${test}" srcdir="${test}">
+        <javac source="${ver}" target="${ver}" deprecation="${depr}" classpath="${build};${hdf}\jhdf.jar;${hdf}\jhdf5.jar;${hdf}\jhdfobj.jar;${hdf}\jhdf5obj.jar" destdir="${test}" srcdir="${test}">
         </javac>
         <junit printsummary="withOutAndErr">
-            <classpath path="${build};${test};${junit};${junit-ext}"/>
+            <classpath path="${build};${test}"/>
             <test name="corejava.FormatTest"/>
         </junit>
     </target>    
