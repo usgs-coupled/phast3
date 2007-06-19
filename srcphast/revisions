@@ -1,3 +1,5 @@
+    svn 2088: Now uses hdf5 1.6.5. for both linux and windows.
+
     svn 2066: Fixed error trap for boundary condition solution that
     was not defined in .chem.dat file.
 
