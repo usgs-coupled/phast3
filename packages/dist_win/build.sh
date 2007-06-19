@@ -310,7 +310,7 @@ install() {
   /usr/bin/cp -r ${srcdir}/src ${instdir}${prefix}/. && \
   /usr/bin/rm -rf ${instdir}${prefix}/src/phasthdf/hdf-java &&\
   /usr/bin/rm -rf ${instdir}${prefix}/src/phasthdf/test &&\
-  /usr/bin/find ${srcdir}/src ${instdir}${prefix}/. -type f -name ".nbattrs" -exec /usr/bin/rm -f {} \; && \
+  /usr/bin/find ${instdir}${prefix}/src/phasthdf/. -type f -name ".nbattrs" -exec /usr/bin/rm -f {} \; && \
 # src/phast directory
   /usr/bin/rm -f ${instdir}${prefix}/src/phast/phreeqc.revisions &&\
   /usr/bin/rm -rf ${instdir}${prefix}/src/phast/phreeqc/Sun &&\

@@ -174,6 +174,9 @@ rm -rf "$DISTPATH/examples/Makefile"
 rm -rf "$DISTPATH/examples/run"
 rm -rf "$DISTPATH/examples/schema"
 rm -rf "$DISTPATH/examples/zero.sed"
+rm -rf "$DISTPATH/examples/zero1.sed"
+rm -rf "$DISTPATH/examples/ex4/ex4.restart"
+find "$DISTPATH/examples" -type f -name '*.restart' ! -wholename '*/ex4restart/ex4.restart' -print | xargs rm -rf
 find "$DISTPATH/examples" -type d -name '0' -print | xargs rm -rf
 find "$DISTPATH/examples" -type f -name 'clean' -print | xargs rm -rf
 find "$DISTPATH/examples" -type f -name 'notes' -print | xargs rm -rf
