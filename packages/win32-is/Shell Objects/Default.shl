@@ -21,6 +21,7 @@ Shortcut6=Folder4\PHREEQC_REVISIONS_SHORTCUT_TEXT
 Shortcut7=Folder4\WRIR02_4172_PDF_SHORTCUT_TEXT
 Shortcut8=Folder4\PHREEQC_PDF_SHORTCUT_TEXT
 Shortcut9=Folder4\PHAST_PDF_SHORTCUT_TEXT
+Shortcut10=Folder4\PHAST_RELEASE_SHORTCUT_TEXT
 
 [Folder4]
 Comments=
@@ -197,6 +198,23 @@ FileGroup0=doc
 [Shortcut9]
 DisplayText=PHAST_PDF_SHORTCUT_TEXT
 Target=<TARGETDIR>\doc\phast.pdf
+Parameters=
+StartIn=
+ShortcutKey=
+Run=Normal Window
+IconFile=
+IconIndex=
+Replace=Yes
+SeparateMemorySpace=No
+InternetShortcut=No
+Uninstall=Yes
+Type=Automatic
+Comments=
+FileGroup0=doc
+
+[Shortcut10]
+DisplayText=PHAST_RELEASE_SHORTCUT_TEXT
+Target=<TARGETDIR>\doc\RELEASE.txt
 Parameters=
 StartIn=
 ShortcutKey=
