@@ -88,21 +88,10 @@ sysconfdir=/etc
 MY_CFLAGS="-O2 -g"
 MY_LDFLAGS=
 
-##{{
-# DF.EXE
-# path_df=`locate DF.EXE|grep DF98`
-#####if [ ! -s "/cygdrive/c/Program Files/Microsoft Visual Studio/DF98/BIN/DF.EXE" ] ; then
-#####  echo "Error: Can't find fortran compiler"
-#####  exit 1;
-#####fi
-#####path_df="/cygdrive/c/Program Files/Microsoft Visual Studio/DF98/BIN/DF.EXE"
-#####path_df=`dirname "$path_df"`
-
 # use Visual Studio 2005 to compile
 DEVENV="/cygdrive/c/Program Files/Microsoft Visual Studio 8/Common7/IDE/devenv.exe"
 PHAST_SLN=`cygpath -w ./src/phast/win32_2005/phastpp.sln`
 PHASTINPUT_SLN=`cygpath -w ./src/phastinput/win32_2005/phastinput.sln`
-##}}
 
 
 # InstallShield settings (based on exported build file
@@ -154,10 +143,6 @@ precheck() {
   fi && \
   if [ "x$DEV_HDF5_INC" = "x" ] ; then \
     echo "Error: DEV_HDF5_INC must be set"; \
-    exit 1; \
-  fi && \
-  if [ "x$DEV_HDF5_LIB" = "x" ] ; then \
-    echo "Error: DEV_HDF5_LIB must be set"; \
     exit 1; \
   fi && \
   if [ "x$DEV_MPICH_INC" = "x" ] ; then \
@@ -318,8 +303,14 @@ install() {
   /usr/bin/install -m 644 ${srcdir}/src/phast/phreeqc.revisions \
     ${instdir}${prefix}/doc/phreeqc.revisions.txt && \
   /usr/bin/unix2dos ${instdir}${prefix}/doc/phreeqc.revisions.txt && \
+  /usr/bin/install -m 644 ${srcdir}/src/phast/revisions \
+    ${instdir}${prefix}/doc/RELEASE.txt && \
+  /usr/bin/unix2dos ${instdir}${prefix}/doc/RELEASE.txt && \
 # src directories
   /usr/bin/cp -r ${srcdir}/src ${instdir}${prefix}/. && \
+  /usr/bin/rm -rf ${instdir}${prefix}/src/phasthdf/hdf-java &&\
+  /usr/bin/rm -rf ${instdir}${prefix}/src/phasthdf/test &&\
+  /usr/bin/find ${srcdir}/src ${instdir}${prefix}/. -type f -name ".nbattrs" -exec /usr/bin/rm -f {} \; && \
 # src/phast directory
   /usr/bin/rm -f ${instdir}${prefix}/src/phast/phreeqc.revisions &&\
   /usr/bin/rm -rf ${instdir}${prefix}/src/phast/phreeqc/Sun &&\
