@@ -219,28 +219,13 @@ void buffer_to_mass_fraction(void)
 /* ---------------------------------------------------------------------- */
 {
 /*
- *   Uses the moles in component structure to calculate
- *   mass fraction
+ *  Assumes density is 1 kg/L = 1000 kg/m3
+ *  in this case, mass fraction = mass per liter
+ *  1/1000 converts grams to kilograms
  */
-	/* fraction = mass solute(g) / (1000 + mass solute (g)) 
-	   note:
-	        (1) 1 kg water is fixed and is not the real mass of water
-	        (2) each component is calculated separately, changes in mass of a solute
-		    do not affect other solutes
-                (3) Excess H and O are transported, that is total H minus H in water and
-		    total O minus O in water
-                (4) For each solute, Mass is calculated by f/(1-f)
-                (5) Total mass of H is 1 kg water plus mass of excess H, same for O
-
-           This approach avoids mass balance errors resulting from consumption or production
-           of water by reactions or change in mass fraction due to change in another solute.
-	*/
 	int i;
 
 	for (i = 0; i < count_component; i++) {
-		/*
-		buffer[i].fraction = buffer[i].moles * buffer[i].gfw / (1000. + buffer[i].moles * buffer[i].gfw );
-		*/
 		buffer[i].fraction = buffer[i].moles * buffer[i].gfw / 1000.;
 #ifdef PRINT
 		output_msg(OUTPUT_STDERR, "Buffer[%d].fraction: %20.10e, moles: %20.10e, gfw: %20.10e, total_mass: %20.10e\n", i, buffer[i].fraction, buffer[i].moles, buffer[i].gfw, total_mass);
@@ -459,6 +444,19 @@ void hst_moles_to_buffer(double *first, int dim)
 	int j;
 	for (j = 0; j < count_component; j++) {
 		buffer[j].moles = first[dim*j];
+	}
+	return;
+}
+/* ---------------------------------------------------------------------- */
+void buffer_scale_moles(double f)
+/* ---------------------------------------------------------------------- */
+/*
+ *   Multiplies fractions times a factor
+ */
+{
+	int j;
+	for (j = 0; j < count_component; j++) {
+		buffer[j].moles *= f;
 	}
 	return;
 }

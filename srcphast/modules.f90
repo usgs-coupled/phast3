@@ -191,7 +191,7 @@ MODULE mcn
   IMPLICIT NONE
   SAVE
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: rm, x, y, z, x_node, y_node, z_node, &
-       xele, yele, zele, x_face, y_face, z_face
+       xele, yele, zele, x_face, y_face, z_face, pv0
 END MODULE mcn
 
 MODULE mcp

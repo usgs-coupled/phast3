@@ -27,12 +27,13 @@ SUBROUTINE init1
        aprnt1(nxyz), aprnt2(nxyz), aprnt3(nxyz), aprnt4(nxyz),  &
        rm(nx), x(nx), y(ny), z(nz), x_node(nxyz), y_node(nxyz), z_node(nxyz),  &
        x_face(nx-1), y_face(ny-1), z_face(nz-1),  &
-       ibc(nxyz), &
+       ibc(nxyz), pv0(nxyz), &
        STAT = a_err)
   IF (a_err /= 0) THEN  
      PRINT *, "Array allocation failed: init1"  
      STOP  
   ENDIF
+  pv0 = 0
   ibc = 0
   ! ... Set up units and metric to english (U.S. customary) conversion
   ! ...      factors, if necessary

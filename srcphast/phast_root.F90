@@ -4,7 +4,7 @@ SUBROUTINE phast_root(mpi_tasks, mpi_myself)
   USE mcc
   USE mcch, ONLY: f1name, f2name, f3name, version_name
   USE mcg, ONLY: naxes, nx, ny, nz, nxyz
-  USE mcn, ONLY: x_node, y_node, z_node
+  USE mcn, ONLY: x_node, y_node, z_node, pv0
   USE mcp
   USE mcs
   USE mcv
@@ -47,6 +47,7 @@ SUBROUTINE phast_root(mpi_tasks, mpi_myself)
      CALL read2
      CALL init2_1
      CALL init2_2
+     pv0 = pv
      CALL error2
 !     time_phreeqc = 0.d0 
      time_phreeqc = time
@@ -59,7 +60,7 @@ SUBROUTINE phast_root(mpi_tasks, mpi_myself)
      IF(solute) THEN  
 #ifdef USE_MPI
         CALL slave_get_indexes(indx_sol1_ic, indx_sol2_ic, ic_mxfrac, naxes, nxyz, &
-            x_node, y_node, z_node, cnvtmi, transient_fresur)
+            x_node, y_node, z_node, cnvtmi, transient_fresur, steady_flow, pv0)
 #endif
         CALL forward_and_back(indx_sol1_ic, naxes, nx, ny, nz)  
         CALL distribute_initial_conditions(indx_sol1_ic, indx_sol2_ic, ic_mxfrac)
@@ -99,7 +100,7 @@ SUBROUTINE phast_root(mpi_tasks, mpi_myself)
      CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time_phreeqc,deltim_dummy,prslmi,  &
            cnvtmi,frac_icchem,iprint_chem,iprint_xyz, &
            prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f, &
-           print_restart_flag)
+           print_restart_flag, pv, pv0, steady_flow)
      CALL init2_3
   ENDIF
 !
@@ -168,7 +169,7 @@ SUBROUTINE phast_root(mpi_tasks, mpi_myself)
            CALL screenprt_c(logline1)
            CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time,deltim,prslmi,cnvtmi,  &
                 frac,iprint_chem,iprint_xyz,prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f, &
-                print_restart%print_flag_integer)
+                print_restart%print_flag_integer, pv, pv0, steady_flow)
         ENDIF
         CALL sumcal2
         CALL write5

@@ -64,7 +64,7 @@ void PRNTAR_HDF(double array[], double frac[], double* cnv, char* name, int name
  int distribute_from_root(double *fraction, int *dim, int *print_sel,
 			  double *time_hst, double *time_step_hst, int *prslm,
 			  double *frac, int *printzone_chem, int *printzone_xyz, 
-			  int *print_out, int *print_hdf, int *print_restart);
+			  int *print_out, int *print_hdf, int *print_restart, double *pv, double *pv0);
  FILE *mpi_fopen(const char *filename, const char *mode);
 #endif
 int int_compare (const void *ptr1, const void *ptr2);
@@ -79,6 +79,7 @@ void moles_to_hst(double *first, int dim);
 void buffer_to_mass_fraction(void);
 void buffer_to_moles(void);
 void buffer_to_solution(struct solution *solution_ptr);
+void buffer_scale_moles(double f);
 void hst_to_buffer(double *first, int dim);
 void hst_moles_to_buffer(double *first, int dim);
 void set_use_hst(int i);
@@ -113,6 +114,7 @@ int Merge_vfprintf(FILE *stream, const char *format, va_list args);
 void buffer_to_cxxsolution(int n);
 void cxxsolution_to_buffer(cxxSolution *solution_ptr);
 void unpackcxx_from_hst(double *fraction, int *dim);
+void unpackcxx_from_hst_confined(double *fraction, int *dim, double *pv0, double *pv);
 void system_cxxInitialize(int i, int n_user_new, int *initial_conditions1, int *initial_conditions2, double *fraction1);
 int write_restart(double hst_time);
 int scale_cxxsystem(int iphrq, LDBLE frac);
