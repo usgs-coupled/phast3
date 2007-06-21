@@ -1,0 +1,56 @@
+TITLE PHREEQC example 11.--Transport and ion exchange
+SOLUTION 0  CaCl2
+        units   mmol/kgw
+        pH      7.0     charge
+        pe      12.5   O2(g)  -0.68
+        temp    25.0
+        Ca      0.6
+        Cl      1.2
+SOLUTION 1  Initial solution for column
+        units   mmol/kgw
+        pH      7.0     charge
+        pe      12.5   O2(g)  -0.68
+        temp    25.0
+        Na      1.0
+        K       0.2
+        N(5)    1.2
+END
+EXCHANGE 1
+        equilibrate 1
+        X       0.0011
+END
+PHASES
+LiBr
+	LiBr:H2O = Li+ + Br- + H2O
+	log_k  1
+#EQUILIBRIUM_PHASES 1
+#  LiBr  0 1000
+END
+RATES
+Add_Br
+-start
+10 k = 20  #moles/day
+20 moles = k * time/3600/24
+30 save moles
+-end
+KINETICS 1
+Add_Br
+	-formula  LiBr
+	-m0 1000
+END
+SELECTED_OUTPUT
+        -file mass_balance.sel
+        -reset false
+END
+USER_PUNCH
+-heading Pore_volume Na Cl K Ca SolidCa,cell FluidCa,cell exchCa totCa PV kg_water
+10 PUNCH TOTAL_TIME/86400*3
+20 PUNCH TOT("Na") * 1000
+30 PUNCH TOT("Cl") * 1000
+40 PUNCH TOT("K") * 1000
+50 PUNCH TOT("Ca") * 1000
+60 PUNCH MOL("CaX2")*TOT("water") * porevolume * 40.08 * 1e-3
+70 PUNCH TOT("Ca")*TOT("water") * porevolume * 40.08 * 1e-3
+80 PUNCH MOL("CaX2")*TOT("water"), TOT("Ca")*TOT("water"), porevolume, TOT("water")
+
+END

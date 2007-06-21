@@ -1,0 +1,3157 @@
+head	1.1;
+access;
+symbols;
+locks
+	dlpark:1.1; strict;
+comment	@# @;
+
+
+1.1
+date	2005.02.16.00.09.29;	author dlpark;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@Running PHASTINPUT.
+
+Processing flow and transport data file.
+
+	TITLE
+	 1D transport and ion exchange
+	 PHREEQC example 11 (Parkhurst and Appelo, 1999)
+	UNITS
+	        time                   day
+	        horizontal_grid        meters
+	        vertical_grid          meters
+	        head                   meters
+	        hydraulic_conductivity m/day
+	        specific_storage       1/m
+	        dispersivity           m
+	SOLUTION_METHOD
+	        direct_solver          true
+	        space_differencing     0.5
+	        time_differencing      0.5
+	SOLUTE_TRANSPORT		true
+	        diffusivity            0.0             #m^2/s
+	GRID
+	        uniform x
+	                0.00000      1.0    2
+	        uniform y
+	                0.00000      1.0    2
+	        uniform z
+	                0.00000      .08    41
+	        print_orientation XZ 
+	        chemistry_dimensions Z
+	MEDIA
+	        zone   0. 0. 0. 1.  1. 1.
+	                porosity                       0.1
+	                longitudinal_dispersivity      0.002
+	                horizontal_dispersivity        0.002
+	                vertical_dispersivity          0.002
+	                kx                             1
+	                ky                             1
+	                kz                             .024    # m/d
+	                storage                        0
+	SPECIFIED_HEAD_BC
+	        zone           0. 0. 0. 1.  1.  0.
+	                head			 0	.08
+	                associated_solution_composition	 0	0
+	        zone   0. 0. .08 1.  1.  .08
+	                head			 0	0
+	                associated_solution_composition	 0	1
+	FREE_SURFACE_BC false
+	HEAD_IC
+	        zone   0. 0. 0. 1. 1. 1.
+	                head   Z .08 0. 0. .08
+	CHEMISTRY_IC
+	        zone   0. 0. 0. 1. 1. 1.
+	                solution               1
+	                exchange               1
+	TIME_CONTROL
+	        delta_time     0	.005    day
+	        end_time		1       day
+	PRINT_LOCATIONS
+	        xyz_chemistry
+	                zone  0 0 0 1 1 .08
+	                        print 0
+	                zone  0 0 .08 1 1 .08
+	                        print 1
+	PRINT_FREQUENCY
+		0
+	        hdf_chemistry          .01     day
+	        xyz_chemistry          .01     day
+	        xyz_head               1       day
+	        xyz_velocity           1       day
+	END
+
+PHASTINPUT done.
+
+Running PHAST.
+
+Running PHREEQC for initial conditions.
+
+Processing database file.
+	SOLUTION_MASTER_SPECIES
+	SOLUTION_SPECIES
+	PHASES
+	EXCHANGE_MASTER_SPECIES
+	EXCHANGE_SPECIES
+	SURFACE_MASTER_SPECIES
+	SURFACE_SPECIES
+	RATES
+	END
+
+Processing chemical data file.
+	TITLE PHREEQC example 11.--Transport and ion exchange
+	SOLUTION 0  CaCl2
+	SOLUTION 1  Initial solution for column
+	END
+	EXCHANGE 1
+	END
+	SELECTED_OUTPUT
+	END
+	USER_PUNCH
+	END
+PHREEQC done.
+. 1D transport and ion exchange
+. PHREEQC example 11 (Parkhurst and Appelo, 1999)
+Reading static data for flow and transport simulation
+A4 array dimension requirement (D4 direct solver)................ NRAL .        0 elements
+Primary storage requirement (D4 direct solver)................... NPRIST      720 elements
+Overhead storage requirement (D4 direct solver).................. NOHST .    1559 elements
+                    *** Calculation Information ***
+Equilibration of cells for initial conditions.
+
+Beginning transient simulation.
+Reading transient data for simulation: Set  1
+     Time at which next set of transient parameters will be read .......... TIMCHG   1.00      (d)
+
+Beginning time step no.      1
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     1
+     Time ..................................................   5.000E-03 (d)
+
+Beginning time step no.      2
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     2
+     Time ..................................................   1.000E-02 (d)
+
+Beginning time step no.      3
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     3
+     Time ..................................................   1.500E-02 (d)
+
+Beginning time step no.      4
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     4
+     Time ..................................................   2.000E-02 (d)
+
+Beginning time step no.      5
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     5
+     Time ..................................................   2.500E-02 (d)
+
+Beginning time step no.      6
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     6
+     Time ..................................................   3.000E-02 (d)
+
+Beginning time step no.      7
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     7
+     Time ..................................................   3.500E-02 (d)
+
+Beginning time step no.      8
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     8
+     Time ..................................................   4.000E-02 (d)
+
+Beginning time step no.      9
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     9
+     Time ..................................................   4.500E-02 (d)
+
+Beginning time step no.     10
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    10
+     Time ..................................................   5.000E-02 (d)
+
+Beginning time step no.     11
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    11
+     Time ..................................................   5.500E-02 (d)
+
+Beginning time step no.     12
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    12
+     Time ..................................................   6.000E-02 (d)
+
+Beginning time step no.     13
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    13
+     Time ..................................................   6.500E-02 (d)
+
+Beginning time step no.     14
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    14
+     Time ..................................................   7.000E-02 (d)
+
+Beginning time step no.     15
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    15
+     Time ..................................................   7.500E-02 (d)
+
+Beginning time step no.     16
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    16
+     Time ..................................................   8.000E-02 (d)
+
+Beginning time step no.     17
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    17
+     Time ..................................................   8.500E-02 (d)
+
+Beginning time step no.     18
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    18
+     Time ..................................................   9.000E-02 (d)
+
+Beginning time step no.     19
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    19
+     Time ..................................................   9.500E-02 (d)
+
+Beginning time step no.     20
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    20
+     Time ..................................................   0.100     (d)
+
+Beginning time step no.     21
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    21
+     Time ..................................................   0.105     (d)
+
+Beginning time step no.     22
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    22
+     Time ..................................................   0.110     (d)
+
+Beginning time step no.     23
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    23
+     Time ..................................................   0.115     (d)
+
+Beginning time step no.     24
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    24
+     Time ..................................................   0.120     (d)
+
+Beginning time step no.     25
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    25
+     Time ..................................................   0.125     (d)
+
+Beginning time step no.     26
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    26
+     Time ..................................................   0.130     (d)
+
+Beginning time step no.     27
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    27
+     Time ..................................................   0.135     (d)
+
+Beginning time step no.     28
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    28
+     Time ..................................................   0.140     (d)
+
+Beginning time step no.     29
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    29
+     Time ..................................................   0.145     (d)
+
+Beginning time step no.     30
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    30
+     Time ..................................................   0.150     (d)
+
+Beginning time step no.     31
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    31
+     Time ..................................................   0.155     (d)
+
+Beginning time step no.     32
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    32
+     Time ..................................................   0.160     (d)
+
+Beginning time step no.     33
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    33
+     Time ..................................................   0.165     (d)
+
+Beginning time step no.     34
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    34
+     Time ..................................................   0.170     (d)
+
+Beginning time step no.     35
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    35
+     Time ..................................................   0.175     (d)
+
+Beginning time step no.     36
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    36
+     Time ..................................................   0.180     (d)
+
+Beginning time step no.     37
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    37
+     Time ..................................................   0.185     (d)
+
+Beginning time step no.     38
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    38
+     Time ..................................................   0.190     (d)
+
+Beginning time step no.     39
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    39
+     Time ..................................................   0.195     (d)
+
+Beginning time step no.     40
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    40
+     Time ..................................................   0.200     (d)
+
+Beginning time step no.     41
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    41
+     Time ..................................................   0.205     (d)
+
+Beginning time step no.     42
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    42
+     Time ..................................................   0.210     (d)
+
+Beginning time step no.     43
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    43
+     Time ..................................................   0.215     (d)
+
+Beginning time step no.     44
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    44
+     Time ..................................................   0.220     (d)
+
+Beginning time step no.     45
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    45
+     Time ..................................................   0.225     (d)
+
+Beginning time step no.     46
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    46
+     Time ..................................................   0.230     (d)
+
+Beginning time step no.     47
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    47
+     Time ..................................................   0.235     (d)
+
+Beginning time step no.     48
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    48
+     Time ..................................................   0.240     (d)
+
+Beginning time step no.     49
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    49
+     Time ..................................................   0.245     (d)
+
+Beginning time step no.     50
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    50
+     Time ..................................................   0.250     (d)
+
+Beginning time step no.     51
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    51
+     Time ..................................................   0.255     (d)
+
+Beginning time step no.     52
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    52
+     Time ..................................................   0.260     (d)
+
+Beginning time step no.     53
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    53
+     Time ..................................................   0.265     (d)
+
+Beginning time step no.     54
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    54
+     Time ..................................................   0.270     (d)
+
+Beginning time step no.     55
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    55
+     Time ..................................................   0.275     (d)
+
+Beginning time step no.     56
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    56
+     Time ..................................................   0.280     (d)
+
+Beginning time step no.     57
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    57
+     Time ..................................................   0.285     (d)
+
+Beginning time step no.     58
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    58
+     Time ..................................................   0.290     (d)
+
+Beginning time step no.     59
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    59
+     Time ..................................................   0.295     (d)
+
+Beginning time step no.     60
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    60
+     Time ..................................................   0.300     (d)
+
+Beginning time step no.     61
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    61
+     Time ..................................................   0.305     (d)
+
+Beginning time step no.     62
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    62
+     Time ..................................................   0.310     (d)
+
+Beginning time step no.     63
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    63
+     Time ..................................................   0.315     (d)
+
+Beginning time step no.     64
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    64
+     Time ..................................................   0.320     (d)
+
+Beginning time step no.     65
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    65
+     Time ..................................................   0.325     (d)
+
+Beginning time step no.     66
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    66
+     Time ..................................................   0.330     (d)
+
+Beginning time step no.     67
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    67
+     Time ..................................................   0.335     (d)
+
+Beginning time step no.     68
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    68
+     Time ..................................................   0.340     (d)
+
+Beginning time step no.     69
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    69
+     Time ..................................................   0.345     (d)
+
+Beginning time step no.     70
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    70
+     Time ..................................................   0.350     (d)
+
+Beginning time step no.     71
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    71
+     Time ..................................................   0.355     (d)
+
+Beginning time step no.     72
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    72
+     Time ..................................................   0.360     (d)
+
+Beginning time step no.     73
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    73
+     Time ..................................................   0.365     (d)
+
+Beginning time step no.     74
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    74
+     Time ..................................................   0.370     (d)
+
+Beginning time step no.     75
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    75
+     Time ..................................................   0.375     (d)
+
+Beginning time step no.     76
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    76
+     Time ..................................................   0.380     (d)
+
+Beginning time step no.     77
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    77
+     Time ..................................................   0.385     (d)
+
+Beginning time step no.     78
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    78
+     Time ..................................................   0.390     (d)
+
+Beginning time step no.     79
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    79
+     Time ..................................................   0.395     (d)
+
+Beginning time step no.     80
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    80
+     Time ..................................................   0.400     (d)
+
+Beginning time step no.     81
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    81
+     Time ..................................................   0.405     (d)
+
+Beginning time step no.     82
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    82
+     Time ..................................................   0.410     (d)
+
+Beginning time step no.     83
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    83
+     Time ..................................................   0.415     (d)
+
+Beginning time step no.     84
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    84
+     Time ..................................................   0.420     (d)
+
+Beginning time step no.     85
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    85
+     Time ..................................................   0.425     (d)
+
+Beginning time step no.     86
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    86
+     Time ..................................................   0.430     (d)
+
+Beginning time step no.     87
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    87
+     Time ..................................................   0.435     (d)
+
+Beginning time step no.     88
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    88
+     Time ..................................................   0.440     (d)
+
+Beginning time step no.     89
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    89
+     Time ..................................................   0.445     (d)
+
+Beginning time step no.     90
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    90
+     Time ..................................................   0.450     (d)
+
+Beginning time step no.     91
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    91
+     Time ..................................................   0.455     (d)
+
+Beginning time step no.     92
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    92
+     Time ..................................................   0.460     (d)
+
+Beginning time step no.     93
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    93
+     Time ..................................................   0.465     (d)
+
+Beginning time step no.     94
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    94
+     Time ..................................................   0.470     (d)
+
+Beginning time step no.     95
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    95
+     Time ..................................................   0.475     (d)
+
+Beginning time step no.     96
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    96
+     Time ..................................................   0.480     (d)
+
+Beginning time step no.     97
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    97
+     Time ..................................................   0.485     (d)
+
+Beginning time step no.     98
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    98
+     Time ..................................................   0.490     (d)
+
+Beginning time step no.     99
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.    99
+     Time ..................................................   0.495     (d)
+
+Beginning time step no.    100
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   100
+     Time ..................................................   0.500     (d)
+
+Beginning time step no.    101
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   101
+     Time ..................................................   0.505     (d)
+
+Beginning time step no.    102
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   102
+     Time ..................................................   0.510     (d)
+
+Beginning time step no.    103
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   103
+     Time ..................................................   0.515     (d)
+
+Beginning time step no.    104
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   104
+     Time ..................................................   0.520     (d)
+
+Beginning time step no.    105
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   105
+     Time ..................................................   0.525     (d)
+
+Beginning time step no.    106
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   106
+     Time ..................................................   0.530     (d)
+
+Beginning time step no.    107
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   107
+     Time ..................................................   0.535     (d)
+
+Beginning time step no.    108
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   108
+     Time ..................................................   0.540     (d)
+
+Beginning time step no.    109
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   109
+     Time ..................................................   0.545     (d)
+
+Beginning time step no.    110
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   110
+     Time ..................................................   0.550     (d)
+
+Beginning time step no.    111
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   111
+     Time ..................................................   0.555     (d)
+
+Beginning time step no.    112
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   112
+     Time ..................................................   0.560     (d)
+
+Beginning time step no.    113
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   113
+     Time ..................................................   0.565     (d)
+
+Beginning time step no.    114
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   114
+     Time ..................................................   0.570     (d)
+
+Beginning time step no.    115
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   115
+     Time ..................................................   0.575     (d)
+
+Beginning time step no.    116
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   116
+     Time ..................................................   0.580     (d)
+
+Beginning time step no.    117
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   117
+     Time ..................................................   0.585     (d)
+
+Beginning time step no.    118
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   118
+     Time ..................................................   0.590     (d)
+
+Beginning time step no.    119
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   119
+     Time ..................................................   0.595     (d)
+
+Beginning time step no.    120
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   120
+     Time ..................................................   0.600     (d)
+
+Beginning time step no.    121
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   121
+     Time ..................................................   0.605     (d)
+
+Beginning time step no.    122
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   122
+     Time ..................................................   0.610     (d)
+
+Beginning time step no.    123
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   123
+     Time ..................................................   0.615     (d)
+
+Beginning time step no.    124
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   124
+     Time ..................................................   0.620     (d)
+
+Beginning time step no.    125
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   125
+     Time ..................................................   0.625     (d)
+
+Beginning time step no.    126
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   126
+     Time ..................................................   0.630     (d)
+
+Beginning time step no.    127
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   127
+     Time ..................................................   0.635     (d)
+
+Beginning time step no.    128
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   128
+     Time ..................................................   0.640     (d)
+
+Beginning time step no.    129
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   129
+     Time ..................................................   0.645     (d)
+
+Beginning time step no.    130
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   130
+     Time ..................................................   0.650     (d)
+
+Beginning time step no.    131
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   131
+     Time ..................................................   0.655     (d)
+
+Beginning time step no.    132
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   132
+     Time ..................................................   0.660     (d)
+
+Beginning time step no.    133
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   133
+     Time ..................................................   0.665     (d)
+
+Beginning time step no.    134
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   134
+     Time ..................................................   0.670     (d)
+
+Beginning time step no.    135
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   135
+     Time ..................................................   0.675     (d)
+
+Beginning time step no.    136
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   136
+     Time ..................................................   0.680     (d)
+
+Beginning time step no.    137
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   137
+     Time ..................................................   0.685     (d)
+
+Beginning time step no.    138
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   138
+     Time ..................................................   0.690     (d)
+
+Beginning time step no.    139
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   139
+     Time ..................................................   0.695     (d)
+
+Beginning time step no.    140
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   140
+     Time ..................................................   0.700     (d)
+
+Beginning time step no.    141
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   141
+     Time ..................................................   0.705     (d)
+
+Beginning time step no.    142
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   142
+     Time ..................................................   0.710     (d)
+
+Beginning time step no.    143
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   143
+     Time ..................................................   0.715     (d)
+
+Beginning time step no.    144
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   144
+     Time ..................................................   0.720     (d)
+
+Beginning time step no.    145
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   145
+     Time ..................................................   0.725     (d)
+
+Beginning time step no.    146
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   146
+     Time ..................................................   0.730     (d)
+
+Beginning time step no.    147
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   147
+     Time ..................................................   0.735     (d)
+
+Beginning time step no.    148
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   148
+     Time ..................................................   0.740     (d)
+
+Beginning time step no.    149
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   149
+     Time ..................................................   0.745     (d)
+
+Beginning time step no.    150
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   150
+     Time ..................................................   0.750     (d)
+
+Beginning time step no.    151
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   151
+     Time ..................................................   0.755     (d)
+
+Beginning time step no.    152
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   152
+     Time ..................................................   0.760     (d)
+
+Beginning time step no.    153
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   153
+     Time ..................................................   0.765     (d)
+
+Beginning time step no.    154
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   154
+     Time ..................................................   0.770     (d)
+
+Beginning time step no.    155
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   155
+     Time ..................................................   0.775     (d)
+
+Beginning time step no.    156
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   156
+     Time ..................................................   0.780     (d)
+
+Beginning time step no.    157
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   157
+     Time ..................................................   0.785     (d)
+
+Beginning time step no.    158
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   158
+     Time ..................................................   0.790     (d)
+
+Beginning time step no.    159
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   159
+     Time ..................................................   0.795     (d)
+
+Beginning time step no.    160
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   160
+     Time ..................................................   0.800     (d)
+
+Beginning time step no.    161
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   161
+     Time ..................................................   0.805     (d)
+
+Beginning time step no.    162
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   162
+     Time ..................................................   0.810     (d)
+
+Beginning time step no.    163
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   163
+     Time ..................................................   0.815     (d)
+
+Beginning time step no.    164
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   164
+     Time ..................................................   0.820     (d)
+
+Beginning time step no.    165
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   165
+     Time ..................................................   0.825     (d)
+
+Beginning time step no.    166
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   166
+     Time ..................................................   0.830     (d)
+
+Beginning time step no.    167
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   167
+     Time ..................................................   0.835     (d)
+
+Beginning time step no.    168
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   168
+     Time ..................................................   0.840     (d)
+
+Beginning time step no.    169
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   169
+     Time ..................................................   0.845     (d)
+
+Beginning time step no.    170
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   170
+     Time ..................................................   0.850     (d)
+
+Beginning time step no.    171
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   171
+     Time ..................................................   0.855     (d)
+
+Beginning time step no.    172
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   172
+     Time ..................................................   0.860     (d)
+
+Beginning time step no.    173
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   173
+     Time ..................................................   0.865     (d)
+
+Beginning time step no.    174
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   174
+     Time ..................................................   0.870     (d)
+
+Beginning time step no.    175
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   175
+     Time ..................................................   0.875     (d)
+
+Beginning time step no.    176
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   176
+     Time ..................................................   0.880     (d)
+
+Beginning time step no.    177
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   177
+     Time ..................................................   0.885     (d)
+
+Beginning time step no.    178
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   178
+     Time ..................................................   0.890     (d)
+
+Beginning time step no.    179
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   179
+     Time ..................................................   0.895     (d)
+
+Beginning time step no.    180
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   180
+     Time ..................................................   0.900     (d)
+
+Beginning time step no.    181
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   181
+     Time ..................................................   0.905     (d)
+
+Beginning time step no.    182
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   182
+     Time ..................................................   0.910     (d)
+
+Beginning time step no.    183
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   183
+     Time ..................................................   0.915     (d)
+
+Beginning time step no.    184
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   184
+     Time ..................................................   0.920     (d)
+
+Beginning time step no.    185
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   185
+     Time ..................................................   0.925     (d)
+
+Beginning time step no.    186
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   186
+     Time ..................................................   0.930     (d)
+
+Beginning time step no.    187
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   187
+     Time ..................................................   0.935     (d)
+
+Beginning time step no.    188
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   188
+     Time ..................................................   0.940     (d)
+
+Beginning time step no.    189
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   189
+     Time ..................................................   0.945     (d)
+
+Beginning time step no.    190
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   190
+     Time ..................................................   0.950     (d)
+
+Beginning time step no.    191
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   191
+     Time ..................................................   0.955     (d)
+
+Beginning time step no.    192
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   192
+     Time ..................................................   0.960     (d)
+
+Beginning time step no.    193
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   193
+     Time ..................................................   0.965     (d)
+
+Beginning time step no.    194
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   194
+     Time ..................................................   0.970     (d)
+
+Beginning time step no.    195
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   195
+     Time ..................................................   0.975     (d)
+
+Beginning time step no.    196
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   196
+     Time ..................................................   0.980     (d)
+
+Beginning time step no.    197
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   197
+     Time ..................................................   0.985     (d)
+
+Beginning time step no.    198
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   198
+     Time ..................................................   0.990     (d)
+
+Beginning time step no.    199
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.   199
+     Time ..................................................   0.995     (d)
+
+Beginning time step no.    200
+     Current time step length ...................................   5.000E-03 (d)
+     Beginning flow calculation.
+     Beginning solute-transport calculation.
+          H
+          O
+          Ca
+          Cl
+          K
+          N
+          Na
+          Charge
+     Beginning chemistry calculation.
+          Cells processed by root: 38
+          Number of root cells with same aqueous model: 38
+          Total iterations all root cells: 51
+          Number of root cells with zero iterations: 14
+          Maximum iterations for single root cell: 3
+     End of Time Step No.   200
+     Time ..................................................    1.00     (d)
+     Maximum change in potentiometric head   1.1819E-16      (m ) at location (  1.00    ,  1.00    , 4.800E-02)(m)
+     Maximum change in H ..................  3.9662E-14 (mol/kgw) at location (  1.00    ,  1.00    , 7.200E-02)(m)
+     Maximum change in O .................. -1.2091E-11 (mol/kgw) at location (  1.00    ,  1.00    , 8.000E-02)(m)
+     Maximum change in Ca .................  5.6928E-10 (mol/kgw) at location ( 0.000    ,  1.00    , 8.000E-02)(m)
+     Maximum change in Cl .................  4.0306E-12 (mol/kgw) at location ( 0.000    ,  1.00    , 8.000E-02)(m)
+     Maximum change in K .................. -1.0897E-09 (mol/kgw) at location ( 0.000    ,  1.00    , 8.000E-02)(m)
+     Maximum change in N .................. -4.0311E-12 (mol/kgw) at location ( 0.000    ,  1.00    , 8.000E-02)(m)
+     Maximum change in Na ................. -4.8817E-11 (mol/kgw) at location ( 0.000    ,  1.00    , 8.000E-02)(m)
+     Maximum change in Charge .............  3.8302E-15 (mol/kgw) at location (  1.00    ,  1.00    , 2.400E-02)(m)
+Done with transient simulation.
+
+                             ***** Simulation Completed *****
+     Last time value calculated ......................................  1.000     (d)
+     Last time step index ............................................     200
+@

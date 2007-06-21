@@ -1,0 +1,171 @@
+                                    ****************************************************
+                                    *                                                  *
+                                    *    PHAST: A Three Dimensional Flow and Solute    *
+                                    *         Reactive Transport Simulator             *
+                                    *                 Version: 1.2                     *
+                                    *                                                  *
+                                    ****************************************************
+
+
+
+
+
+
+                          . 1D transport and ion exchange                                                 
+                          . PHREEQC example 11 (Parkhurst and Appelo, 1999)                               
+
+                         *** Fundamental Information ***
+                    Isothermal simulation
+                    Solute transport simulation
+                    Cartesian coordinates
+                    Data is in metric units
+                    Time unit selected is days    
+                    Solute concentration is expressed as mass fraction
+
+          Direct D4 solver is selected
+
+                         *** Problem Dimension Information ***
+          Number of nodes in x-direction .................................. NX ...      2
+          Number of nodes in y-direction .................................. NY ...      2
+          Number of nodes in z-direction .................................. NZ ...     41
+          Total number of nodes ........................................... NXYZ .    164
+
+          Number of porous media zones .................................... NPMZ .     40
+          Number of specified pressure or mass fraction b.c. .............. NSBC .      8
+          Number of specified flux b.c. cells ............................. NFBC .      0
+          Number of leakage cells ......................................... NLBC .      0
+          Number of river leakage cells ................................... NRBC .      0
+          Number of wells ................................................. NWEL .      0
+
+          A4 array dimension requirement (D4 direct solver)................ NRAL .        0 elements
+ ------------------------------------------------------------------------------------------------------------------------
+
+
+                              ***  Static Data ***
+
+
+                              X-Direction Node Coordinates    (m)
+
+           1           2
+              0        1.00
+
+
+
+
+                              Y-Direction Node Coordinates   (m)
+
+           1           2
+              0        1.00
+
+
+
+
+                              Z-Direction Node Coordinates   (m)
+
+           1           2           3           4           5           6           7           8           9          10
+              0           0           0        0.01        0.01        0.01        0.01        0.01        0.02        0.02
+
+
+
+          11          12          13          14          15          16          17          18          19          20
+           0.02        0.02        0.02        0.03        0.03        0.03        0.03        0.03        0.04        0.04
+
+
+
+          21          22          23          24          25          26          27          28          29          30
+           0.04        0.04        0.04        0.05        0.05        0.05        0.05        0.05        0.06        0.06
+
+
+
+          31          32          33          34          35          36          37          38          39          40
+           0.06        0.06        0.06        0.07        0.07        0.07        0.07        0.07        0.08        0.08
+
+
+
+          41
+           0.08
+
+
+
+
+                              Z-Axis is Positive Vertically Upward
+
+
+                                        *** Fluid Properties ***
+                                             Physical
+                         Fluid compressibility ...................................... BP ...   0.00E+00  (1/Pa )
+
+                         Reference pressure for density ............................. P0 ..         0.0  (Pa )
+                         Reference temperature for density .......................... T0 ..        15.0  (Deg.C)
+                         Fluid density .............................................. DENF0  1000.0      (kg/m^3)
+                         Fluid density at solute  mass fraction of  0.0500........... DENF1  1000.0      (kg/m^3)
+
+                         Viscosity factor ........................................... VISFAC -1.000E-03
+
+                                        *** Calculation Information ***
+          Backwards-in-time (implicit) differencing for temporal derivative
+          Backwards-in-space (upstream) differencing for advective terms
+          The cross-derivative solute flux terms will NOT BE calculated
+
+                           Row scaling only, using L-inf norm, will be done
+
+ ------------------------------------------------------------------------------------------------------------------------
+
+                    Initial fluid in region ...............................  8.000000E+00  (kg) ;  8.000000E-03  (m^3)
+
+                    Initial solute in region:H         ....................  1.676635E-09  (kg)
+
+                    Initial solute in region:O         ....................  5.194433E-04  (kg)
+
+                    Initial solute in region:Br        ....................  0.000000E+00  (kg)
+
+                    Initial solute in region:Ca        ....................  0.000000E+00  (kg)
+
+                    Initial solute in region:Cl        ....................  0.000000E+00  (kg)
+
+                    Initial solute in region:K         ....................  6.256320E-05  (kg)
+
+                    Initial solute in region:Li        ....................  0.000000E+00  (kg)
+
+                    Initial solute in region:N         ....................  1.344643E-04  (kg)
+
+                    Initial solute in region:Na        ....................  1.839184E-04  (kg)
+
+                    Initial solute in region:Charge    .................... -2.851273E-18  (kg)
+
+ ------------------------------------------------------------------------------------------------------------------------
+ ------------------------------------------------------------------------------------------------------------------------
+
+
+                                        *** Transient Data ***
+
+     Time ..............................       0      (d  )
+
+
+                                        *** Calculation Information ***
+
+          Fixed time step length .......................................... DELTIM  5.000E-03  (d  )
+          Time at which next set of transient
+               parameters will be read .................................... TIMCHG  0.500      (d)
+
+ ------------------------------------------------------------------------------------------------------------------------
+ ------------------------------------------------------------------------------------------------------------------------
+
+
+                                        *** Transient Data ***
+
+     Time ..............................   0.500      (d  )
+
+
+                                        *** Calculation Information ***
+
+          Fixed time step length .......................................... DELTIM  5.000E-03  (d  )
+          Time at which next set of transient
+               parameters will be read .................................... TIMCHG   1.00      (d)
+
+ ------------------------------------------------------------------------------------------------------------------------
+
+
+                                       ***** Simulation Completed *****
+               Last time value calculated ......................................  1.000     (d)
+               Last time step index ............................................     200
