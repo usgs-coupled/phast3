@@ -70,22 +70,21 @@ int clean_up_message(void)
 int error_msg (const char *err_str, const int stop)
 /* ---------------------------------------------------------------------- */
 {
-        va_list args;
-	if (input_error <= 0) input_error = 1;
-
-	return output_message(OUTPUT_ERROR, err_str, stop, "", args);
+  va_list args(0);
+  if (input_error <= 0) input_error = 1;
+  return output_message(OUTPUT_ERROR, err_str, stop, "", args);
 }
 
 /* ---------------------------------------------------------------------- */
 int warning_msg (const char *err_str)
 /* ---------------------------------------------------------------------- */
 {
-	va_list args;
-	int return_value;
+  va_list args(0);
+  int return_value;
 
-	return_value = output_message(OUTPUT_WARNING, err_str, CONTINUE, "", args);
-	count_warnings++;
-	return (return_value);
+  return_value = output_message(OUTPUT_WARNING, err_str, CONTINUE, "", args);
+  count_warnings++;
+  return (return_value);
 }
 /* ---------------------------------------------------------------------- */
 int output_msg (const int type, const char* format, ...)
