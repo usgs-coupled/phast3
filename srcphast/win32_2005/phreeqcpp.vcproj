@@ -1775,6 +1775,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\phreeqcpp\System.cxx"
+					>
+				</File>
+				<File
 					RelativePath="..\phreeqcpp\Temperature.cxx"
 					>
 				</File>
@@ -2148,6 +2152,10 @@
 			</File>
 			<File
 				RelativePath="..\phreeqcpp\SurfaceComp.h"
+				>
+			</File>
+			<File
+				RelativePath="..\phreeqcpp\System.h"
 				>
 			</File>
 			<File
