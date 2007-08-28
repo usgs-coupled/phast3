@@ -1,3 +1,10 @@
+    svn 2188: Revised for MPICH2: new comm_world number, 
+    rearranged header files.
+    
+    Fixed bug with print_frequency sometimes failed with
+    a zero deltim when using gfortran.
+
+
     svn 2088: Now uses hdf5 1.6.5. for both linux and windows.
 
     svn 2066: Fixed error trap for boundary condition solution that
@@ -19,7 +26,7 @@
     head should also be saved in the original run (PRINT_FREQUENCY;
     -save_final_heads) and set as initial conditions for the
     subsequent run (HEAD_IC).  In the subsequent run, boundary
-    conditions will be applied in according to their time-series
+    conditions will be applied according to their time-series
     sequence, even if the changes are earlier than -start_time. No
     time stepping for flow and chemistry will occur until -start_time.
 

@@ -4,9 +4,9 @@ static char const svnid[] = "$Id$";
 #if defined(_WIN32) && defined(_MT)
 #define _HDF5USEDLL_     /* reqd for Multithreaded run-time library (Win32) */
 #endif
+#include <mpi.h>         /* MPI routines */
 #include <hdf5.h>        /* HDF routines */
 #include <stdarg.h>      /* va_start va_list va_end */
-#include <mpi.h>         /* MPI routines */
 #define MPI_MAX_TASKS 50 /* from hst.c */
 
 #define EXTERNAL extern

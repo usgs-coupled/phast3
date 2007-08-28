@@ -51,6 +51,9 @@ OPENMPI_GFORTRAN_64_DIR      = openmpi_gfortran_64
 OPENMPI_GFORTRAN_64_DEBUG_DIR= openmpi_gfortran_64_debug
 gfortran_64: serial_gfortran_64 serial_gfortran_64_debug openmpi_gfortran_64 openmpi_gfortran_64_debug
 
+MPICH_GFORTRAN_DIR           = mpich_gfortran
+mpich: mpich_gfortran
+
 MAKEFILE                = Makefile
 
 #########################
@@ -183,6 +186,12 @@ openmpi_gfortran_64_debug:
 openmpi_gfortran_64:
 	mkdir -p $(OPENMPI_GFORTRAN_64_DIR);
 	cd $(OPENMPI_GFORTRAN_64_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_GFORTRAN_64 $(PROGRAM)
+
+.PHONY : mpich_gfortran
+mpich_gfortran:
+	mkdir -p $(MPICH_GFORTRAN_DIR);
+	cd $(MPICH_GFORTRAN_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPICH_GFORTRAN $(PROGRAM)
+
 # Recursive make begins here
 #
 # =============================================================================
@@ -590,6 +599,34 @@ ifeq ($(CFG), OPENMPI_GFORTRAN_64_DEBUG)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
   LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS_64}  -ldl 
 endif
+
+# -----------------------------------------------------------------------------
+
+ifeq ($(CFG), MPICH_GFORTRAN)
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP -DMPICH_NAME
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  DINVERSE_CL1MP=
+  SZIP_ROOT=/home/dlpark/packages/szip2.0-linux-gcc3.2.3-enc
+  SZIP_LIB=${SZIP_ROOT}/lib/libsz.a
+  ZLIB_ROOT=/home/dlpark/packages/zlib121-linux2.4
+  ZLIB_LIB=${ZLIB_ROOT}/lib/libz.a
+  HDF5_ROOT    =/z/parkplace/home/dlpark/packages/5-1.6.6-linux
+  HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
+  HDF5_LIBS=${HDF5_ROOT}/lib/libhdf5.a -lpthread $(SZIP_LIB) $(ZLIB_LIB)
+  MPICH_ROOT=/z/parkplace/home/dlpark/packages/mpich2-1.0.5p4
+  MPICH_BIN=$(MPICH_ROOT)/bin
+  MPICH_INCLUDES=-I$(MPICH_ROOT)/src/include
+#  MPICH_LIB=-L$(MPICH_ROOT)/lib -lfmpich -lmpich -lmpichcxx -lmpichf90
+  FC           = $(MPICH_BIN)/mpif90
+  FFLAGS       = -O3 -fno-underscoring -I.. -I. $(DEFINES)
+  CXX          = $(MPICH_BIN)/mpicxx
+  CC           = $(MPICH_BIN)/mpicxx
+  CFLAGS       = -Wall  -O3 $(DEFINES) $(MPICH_INCLUDES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
+  CFLAGS_MODEL = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
+  LD_FLAGS     = $(LIBGFORTRAN) ${HDF5_LIBS}  -ldl ${MPICH_LIB} # -lm ${CL1MP_LIB}
+endif
+
 # -----------------------------------------------------------------------------
 # (d) Create expected object file list, with .o extension:     [TARGETS OF PRE-
 #     REQUISITE (.f90,.f) SOURCE FILES]
@@ -647,6 +684,7 @@ COMMON_CXXOBJS = \
 	       Surface.o \
 	       SurfaceCharge.o \
 	       SurfaceComp.o \
+	       System.o \
 	       Temperature.o \
 	       Utils.o 
 
@@ -738,6 +776,7 @@ ldipen.o:		../ldipen.f90	modules.o
 ldmar1.o:		../ldmar1.f90	modules.o
 load_indx_bc.o:		../load_indx_bc.f90   modules.o
 lsolv.o:		../lsolv.f90	modules.o
+mpimod.o:               ../mpimod.F90 
 nintrp.o:		../nintrp.f90	modules.o
 openf.o:		../openf.F90	modules.o    mpimod.o
 phast_root.o:		../phast_root.F90	modules.o    mpimod.o    print_control_mod.o
@@ -1182,6 +1221,19 @@ Surface.o: ../phreeqcpp/Surface.cxx ../phreeqcpp/Utils.h \
   ../phreeqcpp/SurfaceCharge.h ../phreeqcpp/NameDouble.h \
   ../phreeqcpp/char_star.h ../phreeqcpp/SurfaceComp.h \
   ../phreeqcpp/phreeqc/phqalloc.h ../phreeqcpp/phreeqc/phrqproto.h
+System.o: ../phreeqcpp/System.cxx ../phreeqcpp/System.h \
+  ../phreeqcpp/Solution.h ../phreeqcpp/NumKeyword.h ../phreeqcpp/Parser.h \
+  ../phreeqcpp/char_star.h ../phreeqcpp/SolutionIsotopeList.h \
+  ../phreeqcpp/SolutionIsotope.h ../phreeqcpp/NameDouble.h \
+  ../phreeqcpp/cxxMix.h ../phreeqcpp/Exchange.h \
+  ../phreeqcpp/phreeqc/global.h ../phreeqcpp/phreeqc/phrqtype.h \
+  ../phreeqcpp/ExchComp.h ../phreeqcpp/GasPhase.h \
+  ../phreeqcpp/cxxKinetics.h ../phreeqcpp/KineticsComp.h \
+  ../phreeqcpp/PPassemblage.h ../phreeqcpp/PPassemblageComp.h \
+  ../phreeqcpp/SSassemblage.h ../phreeqcpp/SSassemblageSS.h \
+  ../phreeqcpp/Surface.h ../phreeqcpp/SurfaceComp.h \
+  ../phreeqcpp/phreeqc/phrqproto.h ../phreeqcpp/SurfaceCharge.h \
+  ../phreeqcpp/Reaction.h ../phreeqcpp/Temperature.h
 Temperature.o: ../phreeqcpp/Temperature.cxx ../phreeqcpp/Utils.h \
   ../phreeqcpp/char_star.h ../phreeqcpp/Temperature.h \
   ../phreeqcpp/NumKeyword.h ../phreeqcpp/Parser.h \

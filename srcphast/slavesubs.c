@@ -1,5 +1,6 @@
 #define EXTERNAL extern
 #define MAIN
+#include <mpi.h>
 #include "phreeqc/global.h"
 #include "phreeqc/output.h"
 #include "hst.h"
@@ -8,7 +9,6 @@
 #include "phreeqc/input.h"
 #include "phast_files.h"
 #include "phastproto.h"
-#include <mpi.h>
 #include <time.h>
 
 #if !defined(LAHEY_F95) && !defined(_WIN32) || defined(NO_UNDERSCORES)

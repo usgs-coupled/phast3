@@ -439,7 +439,8 @@ CONTAINS
     ! ... 
     if (.not. pc%in) return
     if (pc%print_interval > 0._kdp) THEN
-       pc%print_time = (1._kdp+INT(utime/pc%print_interval))*pc%print_interval
+!       pc%print_time = (1._kdp+INT(utime/pc%print_interval))*pc%print_interval
+       pc%print_time = (1._kdp+INT((1.0_kdp+1e-10_kdp)*utime/pc%print_interval))*pc%print_interval
        if (pc%print_time < next_print_time) next_print_time = pc%print_time
     ENDIF
   END SUBROUTINE pc_set_print_time

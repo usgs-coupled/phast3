@@ -2,6 +2,10 @@
   hdf.c
 */
 
+#ifdef USE_MPI
+//MPICH seems to require mpi.h to be first
+  #include <mpi.h>
+#endif
 #include <stdio.h>       /* printf sprintf */
 #include <string.h>      /* strncpy strtok strcat */
 #include <assert.h>      /* assert */
@@ -14,7 +18,6 @@
 static char const svnid[] = "$Id$";
 
 #ifdef USE_MPI
-#include <mpi.h>         /* MPI routines */
 #define MPI_MAX_TASKS 50 /* from hst.c */
 static char const DEFINE_USE_MPI[] = "#define USE_MPI 1";
 #else

@@ -1,5 +1,8 @@
 #define EXTERNAL extern
 #define MAIN
+#ifdef USE_MPI
+ #include <mpi.h>
+#endif
 #include <fstream>
 #include <iostream>     // std::cout std::cerr
 #include "StorageBin.h"
@@ -26,7 +29,6 @@ static char const svnid[] = "$Id: hst.c 827 2006-03-06 20:19:41Z dlpark $";
 #ifdef USE_MPI
 static int mpi_write_restart(double time_hst);
  #define MESSAGE_MAX_NUMBERS 1000
- #include <mpi.h>
  #define MPI_MAX_TASKS 50
  #include <time.h>
  int mpi_tasks;
