@@ -278,11 +278,11 @@ install() {
   /usr/bin/mkdir -p ${instdir}${prefix}/export/lib/Win32 && \
   /usr/bin/install -m 644 ${objdir}/doc/README \
     ${instdir}${prefix}/README.txt && \
-# (bin dir) phast-ser, phast-mpich, hdf5dll.dll, zlib1.dll, szlibdll.dll phast.bat
+# (bin dir) phast-ser, phast-mpich2, hdf5dll.dll, zlib1.dll, szlibdll.dll phast.bat
   /usr/bin/install -m 755 ${objdir}/src/phastinput/win32_2005/Release/phastinput.exe \
     ${instdir}${prefix}/bin/phastinput.exe && \
   /usr/bin/install -m 755 ${objdir}/src/phast/win32_2005/merge/phast.exe \
-    ${instdir}${prefix}/bin/phast-mpich.exe && \
+    ${instdir}${prefix}/bin/phast-mpich2.exe && \
   /usr/bin/install -m 755 ${objdir}/src/phast/win32_2005/ser/phast.exe \
     ${instdir}${prefix}/bin/phast-ser.exe && \
   /usr/bin/install -m 755 ${objdir}/Redist/hdf5dll.dll \

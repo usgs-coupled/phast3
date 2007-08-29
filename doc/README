@@ -116,7 +116,7 @@ argument is not defined, the database file must be named phast.dat.
 PARALLEL (MULTIPROCESSOR) VERSIONS OF PHAST
 
 A parallel version for PHAST for Windows has been compiled with the
-MPICH version of MPI (bin\phast-mpich). For Linux, the parallel
+MPICH2 version of MPI (bin\phast-mpich2). For Linux, the parallel
 version has been compiled with the LAM version of MPI
 (bin/phast-lam). The parallel versions use exactly the same input
 files as the serial versions. Limited help with installation and
