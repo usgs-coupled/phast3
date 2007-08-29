@@ -603,7 +603,7 @@ endif
 # -----------------------------------------------------------------------------
 
 ifeq ($(CFG), MPICH_GFORTRAN)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP -DMPICH_NAME
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP 
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   DINVERSE_CL1MP=
   SZIP_ROOT=/home/dlpark/packages/szip2.0-linux-gcc3.2.3-enc
@@ -618,7 +618,7 @@ ifeq ($(CFG), MPICH_GFORTRAN)
   MPICH_INCLUDES=-I$(MPICH_ROOT)/src/include
 #  MPICH_LIB=-L$(MPICH_ROOT)/lib -lfmpich -lmpich -lmpichcxx -lmpichf90
   FC           = $(MPICH_BIN)/mpif90
-  FFLAGS       = -O3 -fno-underscoring -I.. -I. $(DEFINES)
+  FFLAGS       = -O3 -fno-underscoring -I.. -I. $(DEFINES) 
   CXX          = $(MPICH_BIN)/mpicxx
   CC           = $(MPICH_BIN)/mpicxx
   CFLAGS       = -Wall  -O3 $(DEFINES) $(MPICH_INCLUDES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
