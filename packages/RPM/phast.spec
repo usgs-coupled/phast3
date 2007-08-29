@@ -54,8 +54,8 @@ cd ../..
 # build phast-ser and phast-lam
 #
 cd src/phast
-make serial_absoft
-make mpi_absoft
+make serial_lahey
+make mpi_lahey
 cd ../..
 
 %install
@@ -97,8 +97,8 @@ rm -f %{name}-%{version}-%{release}/src/phast/phreeqc/Makefile
 # Linux /usr/bin/phast-lam
 # SunOS None
 #
-cp src/phast/serial_absoft/phast $RPM_BUILD_ROOT/%{_bindir}/phast-ser
-cp src/phast/mpi_absoft/phast $RPM_BUILD_ROOT/%{_bindir}/phast-lam
+cp src/phast/serial_lahey/phast $RPM_BUILD_ROOT/%{_bindir}/phast-ser
+cp src/phast/mpi_lahey/phast $RPM_BUILD_ROOT/%{_bindir}/phast-lam
 
 #
 # Linux /usr/bin/phastinput
