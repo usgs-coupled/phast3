@@ -60,7 +60,7 @@ SPECIFIED_HEAD_BC
 #            -head 
 #		0 1.00000001
 #            -associated_solution 
-		  0     1
+#		  0     1
 HEAD_IC
       -zone 0 0 0 10 10 1
             -head 1

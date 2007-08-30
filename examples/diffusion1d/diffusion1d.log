@@ -56,7 +56,6 @@ Processing flow and transport data file.
 			0 1
 		     fixed_solution_composition 
 		          0     2
-			  0     1
 	HEAD_IC
 	      zone 0 0 0 10 10 1
 	            head 1
