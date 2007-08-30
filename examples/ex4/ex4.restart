@@ -1,6 +1,6 @@
 #PHAST restart file
 #Prefix: ex4
-#Date: Wed Aug 29 11:51:39 2007
+#Date: Thu Aug 30 11:45:20 2007
 #Current model time: 100000
 #nx, ny, nz: 16, 9, 5
 SOLUTION_RAW       -2 

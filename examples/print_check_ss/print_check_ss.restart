@@ -1,6 +1,6 @@
 #PHAST restart file
 #Prefix: print_check_ss
-#Date: Wed Aug 29 11:55:56 2007
+#Date: Thu Aug 30 11:49:35 2007
 #Current model time: 31000
 #nx, ny, nz: 16, 9, 3
 SOLUTION_RAW       -2 
