@@ -18,6 +18,10 @@ PHAST -- A Program for Simulating Ground-Water Flow,
 Solute Transport, and Multicomponent Geochemical
 Reactions
 
+# Don't build debug packages
+%define _enable_debug_packages 0
+%define debug_package %{nil}
+
 # Solaris /bin/id doesn't have id -u option
 %ifarch usparc
 %define __id   /usr/xpg4/bin/id
