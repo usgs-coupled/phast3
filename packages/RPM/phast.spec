@@ -91,8 +91,8 @@ find %{name}-%{version}-%{release}/src -type d -name win32 -print | xargs rm -rf
 find %{name}-%{version}-%{release}/src -type d -name win32_2005 -print | xargs rm -rf
 find %{name}-%{version}-%{release}/src -type d -name Sun -print | xargs rm -rf
 find %{name}-%{version}-%{release}/src/phasthdf/. -type f -name ".nbattrs" -print | xargs rm -rf
-rm -f %{name}-%{version}-%{release}/src/phasthdf/hdf-java
-rm -f %{name}-%{version}-%{release}/src/phasthdf/test
+rm -rf %{name}-%{version}-%{release}/src/phasthdf/hdf-java
+rm -rf %{name}-%{version}-%{release}/src/phasthdf/test
 rm -f %{name}-%{version}-%{release}/src/phast/phreeqc/distribution.checklist
 rm -f %{name}-%{version}-%{release}/src/phast/phreeqc/distribution.mk
 rm -f %{name}-%{version}-%{release}/src/phast/phreeqc/Makefile
