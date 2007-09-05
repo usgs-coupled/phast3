@@ -1,4 +1,11 @@
 ---------------------------------------
+PHAST, Version 1.4.1 (September 5, 2007)
+---------------------------------------
+
+    svn 2220: Fixed bug in WPhast, was not setting chemistry
+    dimensions correctly when initializing from an h5 file.
+
+---------------------------------------
 PHAST, Version 1.3.4 (August 30, 2007)
 ---------------------------------------
 
