@@ -852,6 +852,7 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 	return;
 }
 #else
+#ifdef SKIP // Need to rewrite for use in parallel version. Does not work with large files
 /* ---------------------------------------------------------------------- */
 void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_conditions2, double *fraction1)
 /* ---------------------------------------------------------------------- */
@@ -1028,6 +1029,129 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 	if (input_error > 0) {
 		error_msg("Terminating in distribute_initial_conditions.\n", STOP);
 	}
+}
+#endif // SKIP
+/* ---------------------------------------------------------------------- */
+void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_conditions2, double *fraction1)
+/* ---------------------------------------------------------------------- */
+{
+  /*
+  *      ixyz - number of cells
+  *      initial_conditions1 - Fortran, 7 x n_cell integer array, containing
+  *           solution number
+  *           pure_phases number
+  *           exchange number
+  *           surface number
+  *           gas number
+  *           solid solution number
+  *           kinetics number
+  *      initial_conditions2 - Fortran, 7 x n_cell integer array, containing
+  *      fraction for 1 - Fortran, 7 x n_cell integer array, containing
+  *
+  *      Routine mixes solutions, pure_phase assemblages,
+  *      exchangers, surface complexers, gases, solid solution assemblages,
+  *      and kinetics for each cell.
+  */
+  int i, j;
+  //struct system *system_ptr;
+  /*
+  *  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
+  *  Does nothing for indexes less than 0 (i.e. restart files)
+  */
+  for (i = 0; i < ixyz; i++) { 	  /* i is ixyz number */
+    j = forward[i];           /* j is count_chem number */
+    if (j < 0) continue;
+    assert (forward[i] >= 0); 
+    system_cxxInitialize(i, j, initial_conditions1, initial_conditions2, fraction1);
+  }
+  /*
+  * Read any restart files
+  */
+  for (std::map<std::string, int>::iterator it = FileMap.begin(); it != FileMap.end(); it++) {
+    int ifile = -100 - it->second;
+    // parser
+    std::fstream myfile;
+    myfile.open(it->first.c_str(), std::ios_base::in);
+    if (!myfile.is_open()) {
+      sprintf(error_string, "File could not be opened: %s.", it->first.c_str());
+      error_msg(error_string, STOP);
+    }
+    std::ostringstream oss;
+    CParser cparser(myfile, oss, std::cerr);
+    cparser.set_echo_file(CParser::EO_NONE);
+    cparser.set_echo_stream(CParser::EO_NONE);
+
+    // Process restart file by keyword
+    while (cparser.next_keyword() != CParser::KT_EOF)
+    {
+      int n_old1;
+      // Storage bin
+      cxxStorageBin tempBin;
+      // read data
+      j = tempBin.read_raw_keyword(cparser);  /* j is count_chem number */
+      if (j < 0) continue;
+      i = back[j].list[0];                    /* i is ixyz number */
+
+      // solution
+      n_old1 = initial_conditions1[7*i];
+      if (n_old1 == ifile) {
+	if (tempBin.getSolution(j) != NULL) {
+	  szBin.setSolution(j, tempBin.getSolution(j));
+	} 
+      }
+
+      // PPassemblage
+      n_old1 = initial_conditions1[ 7*i + 1 ];
+      if (n_old1 == ifile) {
+	if (tempBin.getPPassemblage(j) != NULL) {
+	  szBin.setPPassemblage(j, tempBin.getPPassemblage(j));
+	} 
+      }
+
+      // Exchange
+      n_old1 = initial_conditions1[ 7*i + 2 ];
+      if (n_old1 == ifile) {
+	if (tempBin.getExchange(j) != NULL) {
+	  szBin.setExchange(j, tempBin.getExchange(j));
+	}
+      }
+
+      // Surface
+      n_old1 = initial_conditions1[ 7*i + 3 ];
+      if (n_old1 == ifile) {
+	if (tempBin.getSurface(j) != NULL) {
+	  szBin.setSurface(j, tempBin.getSurface(j));
+	}
+      }
+
+      // Gas phase
+      n_old1 = initial_conditions1[ 7*i + 4 ];
+      if (n_old1 == ifile) {
+	if (tempBin.getGasPhase(j) != NULL) {
+	  szBin.setGasPhase(j, tempBin.getGasPhase(j));
+	}
+      }
+
+      // Solid solution
+      n_old1 = initial_conditions1[ 7*i + 5 ];
+      if (n_old1 == ifile) {
+	if (tempBin.getSSassemblage(j) != NULL) {
+	  szBin.setSSassemblage(j, tempBin.getSSassemblage(j));
+	}
+      }
+
+      // Kinetics
+      n_old1 = initial_conditions1[ 7*i + 6 ];
+      if (n_old1 == ifile) {
+	if (tempBin.getKinetics(j) != NULL) {
+	  szBin.setKinetics(j, tempBin.getKinetics(j));
+	}
+      }
+    }
+  }
+  if (input_error > 0) {
+    error_msg("Terminating in distribute_initial_conditions.\n", STOP);
+  }
 }
 #endif
 #ifdef SKIP
