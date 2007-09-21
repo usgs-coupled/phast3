@@ -933,12 +933,15 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 	sprintf(error_string, "File could not be opened: %s.", it->first.c_str());
 	error_msg(error_string, STOP);
       }
+      sprintf(error_string,"Reading restart file %s", it->first.c_str());
+      output_msg(OUTPUT_SCREEN, "%s\n", error_string);
       std::ostringstream oss;
       CParser cparser(myfile, oss, std::cerr);
       cparser.set_echo_file(CParser::EO_NONE);
       cparser.set_echo_stream(CParser::EO_NONE);
 
       // Process restart file by keyword
+      int count = 0;
       while (cparser.next_keyword() != CParser::KT_EOF)
       {
 	int n_old1;
@@ -949,6 +952,13 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 	j = tempBin.read_raw_keyword(cparser);  /* j is count_chem number */
 	if (j < 0) continue;
 	i = back[j].list[0];                    /* i is ixyz number */
+
+	count++;
+	if (count%50000 == 0) 
+	{
+	  sprintf(error_string,"\tKeywords read: %d\n", count);
+	  output_msg(OUTPUT_SCREEN, "%s", error_string);
+	}
 
 	// Determine which task_number gets this entity
 	int task_number;
