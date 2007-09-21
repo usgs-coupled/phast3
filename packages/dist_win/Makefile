@@ -20,7 +20,7 @@ FORCE_UPDATE := $(shell svn up ..)
 
 RELEASE ?= $(shell svn st -v ../RPM/dist.sh | cut -b 10- | ( read one two ; echo $$one ) )
 
-DATE_STAMP := $(shell echo $(DATE) | sed -e "y^/^-^" )
+DATE_STAMP := $(shell date -d $(DATE) "+%m-%d-%Y")
 
 MV_CVS_TAG := version-`echo "$(VERSION)" | sed -e 's/\./_/g'`
 
