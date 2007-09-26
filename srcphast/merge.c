@@ -849,10 +849,20 @@ static int Merge_vfprintf2(struct FileInfo *pFileInfo, const char *format, va_li
   
   if (s_ci.captured == TRUE)
   {
+#ifdef VACOPY
+    va_list args_copy;
+    va_copy (args_copy, args);
+    retval = vsprintf(buffer, format, args);
+    assert(retval < 500);
+    assert(pFileInfo->dset_id > 0);
+    FileInfo_capture(pFileInfo, retval, format, args_copy);
+    va_end(args_copy);
+#else
     retval = vsprintf(buffer, format, args);
     assert(retval < 500);
     assert(pFileInfo->dset_id > 0);
     FileInfo_capture(pFileInfo, retval, format, args);
+#endif
   }
   else if (mpi_myself == 0)
   {

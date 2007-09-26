@@ -623,228 +623,6 @@ void COUNT_ALL_COMPONENTS(int *n_comp, char *names, int length)
 	return;
 }
 #ifdef USE_MPI
-#ifdef SKIP // Slow for large files, needs replacing
-/* ---------------------------------------------------------------------- */
-void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_conditions2, double *fraction1)
-/* ---------------------------------------------------------------------- */
-{
-/*
- *      ixyz - number of cells
- *      initial_conditions1 - Fortran, 7 x n_cell integer array, containing
- *           solution number
- *           pure_phases number
- *           exchange number
- *           surface number
- *           gas number
- *           solid solution number
- *           kinetics number
- *      initial_conditions2 - Fortran, 7 x n_cell integer array, containing
- *      fraction for 1 - Fortran, 7 x n_cell integer array, containing
- *
- *      Routine mixes solutions, pure_phase assemblages,
- *      exchangers, surface complexers, gases, solid solution assemblages,
- *      and kinetics for each cell.
- */
-	int i;
-	int first_cell, last_cell;
-	int *sort_random_list;
-	//struct system *system_ptr;
-	int j, k;
-	/*
-	 *  Save pointers to initial condition arrays
-	 *  When rebalancing, these are used to initialize a system
-	 */
-	initial1 = initial_conditions1;
-	initial2 = initial_conditions2;
-	/*
-	 *  Set up random list for parallel processing
-	 */
-	random_list = (int *) PHRQ_malloc((size_t) count_chem * sizeof(int));
-	if (random_list == NULL) malloc_error();
-	random_frac = (LDBLE *) PHRQ_malloc((size_t) count_chem * sizeof(LDBLE));
-	if (random_frac == NULL) malloc_error();
-	random_printzone_chem = (int *) PHRQ_malloc((size_t) count_chem * sizeof(int));
-	if (random_printzone_chem == NULL) malloc_error();
-	random_printzone_xyz = (int *) PHRQ_malloc((size_t) count_chem * sizeof(int));
-	if (random_printzone_xyz == NULL) malloc_error();
-	random_pv = (LDBLE *) PHRQ_malloc((size_t) count_chem * sizeof(LDBLE));
-	if (random_pv == NULL) malloc_error();
-	if (mpi_myself == 0) mpi_set_random();
-	MPI_Bcast(random_list, count_chem,                MPI_INT,    0, MPI_COMM_WORLD);
-	count_cells = count_chem;
-	mpi_set_subcolumn(NULL);
-	mpi_buffer = PHRQ_malloc(sizeof(char));
-	if (mpi_buffer == NULL) malloc_error();
-	/* 
-	 * sort_random_list is the list of cell numbers that need to be saved for this processor
-	 */
-	first_cell = mpi_first_cell;
-	last_cell = mpi_last_cell;
-	sort_random_list = (int *) PHRQ_malloc((size_t) (last_cell - first_cell + 1) * sizeof(int));
-	if (sort_random_list == NULL) malloc_error();
-	memcpy(sort_random_list, &random_list[first_cell], (size_t) (last_cell - first_cell + 1) * sizeof(int));
-	qsort (sort_random_list, (size_t) (last_cell - first_cell + 1), (size_t) sizeof(int), int_compare);
-
-/*
- *  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
- */
-	for (k = 0; k < last_cell - first_cell + 1; k++) {
-		j = sort_random_list[k];  /* j is count_chem number */
-		i = back[j].list[0];      /* i is ixyz number */
-		assert (forward[i] >= 0); 
-		//system_ptr = system_cxxInitialize(i, j, initial_conditions1, initial_conditions2, fraction1);   
-		system_cxxInitialize(i, j, initial_conditions1, initial_conditions2, fraction1); 
-		/* C++ */
-		//szBin.add(system_ptr);
-		//system_free(system_ptr);
-		//system_ptr = (struct system *) free_check_null(system_ptr);
-	}
-	/*
-	 * Read any restart files
-	 */
-	for (std::map<std::string, int>::iterator it = FileMap.begin(); it != FileMap.end(); it++) {
-		int ifile = -100 - it->second;
-		// Storage bin
-		cxxStorageBin tempBin;
-		// parser
-		std::fstream myfile;
-		myfile.open(it->first.c_str(), std::ios_base::in);
-		if (!myfile.is_open()) {
-			sprintf(error_string, "File could not be opened: %s.", it->first.c_str());
-			error_msg(error_string, STOP);
-		}
-		std::ostringstream oss;
-		CParser cparser(myfile, oss, std::cerr);
-		cparser.set_echo_file(CParser::EO_NONE);
-		cparser.set_echo_stream(CParser::EO_NONE);
-		// read data
-		tempBin.read_raw(cparser);
-		// solutions
-		std::vector<int> warn;
-		std::string entity_type[7] = {"Solutions", "PPassemblages", "Exchangers", "Surfaces", "GasPhase", "SSassemblages", "Kinetics"};
-		warn.reserve(7);
-		for (i = 0; i < 7; i++) {
-			warn.push_back(0);
-		}
-		for (k = 0; k < last_cell - first_cell + 1; k++) {
-			int n_old1;
-			j = sort_random_list[k];  /* j is count_chem number */
-			i = back[j].list[0];      /* i is ixyz number */
-			assert (forward[i] >= 0); 
-			//system_ptr = system_cxxInitialize(i, j, initial_conditions1, initial_conditions2, fraction1);
-			system_cxxInitialize(i, j, initial_conditions1, initial_conditions2, fraction1);
-			/* C++ */
-			//szBin.add(system_ptr);
-			//system_free(system_ptr);
-			//system_ptr = (struct system *) free_check_null(system_ptr);
-			if (j < 0) continue;
-			/*
-			 *   Copy solution
-			 */
-			n_old1 = initial_conditions1[7*i];
-			if (n_old1 == ifile) {
-				if (tempBin.getSolution(j) != NULL) {
-					szBin.setSolution(j, tempBin.getSolution(j));
-				} else {
-					input_error++;
-					sprintf(error_string, "Solution %d not found in restart file %s", j, it->first.c_str());
-					error_msg(error_string, CONTINUE);
-				}
-			}
-			/*
-			 *   Copy pp_assemblage
-			 */
-			n_old1 = initial_conditions1[ 7*i + 1 ];
-			if (n_old1 == ifile) {
-				if (tempBin.getPPassemblage(j) != NULL) {
-					szBin.setPPassemblage(j, tempBin.getPPassemblage(j));
-				} else {
-					warn[1]++;
-					//error_msg("PPassemblage %d not found in restart file %s", j, it->first.c_str());
-				}
-			}
-			/*
-			 *   Copy exchange assemblage
-			 */
-			n_old1 = initial_conditions1[ 7*i + 2 ];
-			if (n_old1 == ifile) {
-				if (tempBin.getExchange(j) != NULL) {
-					szBin.setExchange(j, tempBin.getExchange(j));
-				} else {
-					warn[2]++;
-					//error_msg("Exchange %d not found in restart file %s", j, it->first.c_str());
-				}
-			}
-			/*
-			 *   Copy surface assemblage
-			 */
-			n_old1 = initial_conditions1[ 7*i + 3 ];
-			if (n_old1 == ifile) {
-				if (tempBin.getSurface(j) != NULL) {
-					szBin.setSurface(j, tempBin.getSurface(j));
-				} else {
-					warn[3]++;
-					//error_msg("Surface %d not found in restart file %s", j, it->first.c_str());
-				}
-			}
-			/*
-			 *   Copy gas phase
-			 */
-			n_old1 = initial_conditions1[ 7*i + 4 ];
-			if (n_old1 == ifile) {
-				if (tempBin.getGasPhase(j) != NULL) {
-					szBin.setGasPhase(j, tempBin.getGasPhase(j));
-				} else {
-					warn[4]++;
-					//error_msg("GasPhase %d not found in restart file %s", j, it->first.c_str());
-				}
-			}
-			/*
-			 *   Copy solid solution
-			 */
-			n_old1 = initial_conditions1[ 7*i + 5 ];
-			if (n_old1 == ifile) {
-				if (tempBin.getSSassemblage(j) != NULL) {
-					szBin.setSSassemblage(j, tempBin.getSSassemblage(j));
-				} else {
-					warn[5]++;
-					//error_msg("SSassemblage %d not found in restart file %s", j, it->first.c_str());
-				}
-			}
-			/*
-			 *   Copy kinetics
-			 */
-			n_old1 = initial_conditions1[ 7*i + 6 ];
-			if (n_old1 == ifile) {
-				if (tempBin.getKinetics(j) != NULL) {
-					szBin.setKinetics(j, tempBin.getKinetics(j));
-				} else {
-					warn[6]++;
-					//error_msg("Kinetics %d not found in restart file %s", j, it->first.c_str());
-				}
-			}
-		}
-		for (i = 1; i < 7; i++) {
-			if (warn[i] > 0) {
-				std::ostringstream os;
-				os << "Reading file " << it->first << ":" << std::endl;
-				for (j = 1; j < 7; j++) {
-					if (warn[j] == 0) continue;
-					os << "\t" << warn[j] << " " << entity_type[j] << " were not found for cells defined by restart file." << std::endl;
-				}
-				std::string token = os.str();
-				warning_msg(token.c_str());
-				break;
-			}
-		}
-	}
-	sort_random_list = (int *) free_check_null(sort_random_list);
-	if (input_error > 0) {
-		error_msg("Terminating in distribute_initial_conditions.\n", STOP);
-	}
-	return;
-}
-#endif
 /* ---------------------------------------------------------------------- */
 void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_conditions2, double *fraction1)
 /* ---------------------------------------------------------------------- */
@@ -1063,18 +841,23 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 	}
 	if (send)
 	{
+	  MPI_Status mpi_status;
 	  MPI_Send(&j, 1, MPI_INT, task_number, 0, MPI_COMM_WORLD);
+	  /* openmpi on opteron seems to need this extra handshake */
+	  MPI_Recv(&j, 1, MPI_INT, task_number, 0, MPI_COMM_WORLD, &mpi_status);
 	  tempBin.mpi_send(j, task_number);
 	}
       }
     }
     // Send signal that initial condition transfers are done
-    j = -1;
+    j = -2;
     for (i = 1; i < mpi_tasks; i++) {
+	  MPI_Status mpi_status;
 	  MPI_Send(&j, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
+	  /* openmpi on opteron seems to need this extra handshake */
+	  MPI_Recv(&j, 1, MPI_INT, i, 0, MPI_COMM_WORLD, &mpi_status);
     }
-  }
-  if (mpi_myself > 0)
+  } else
   {
     j = 0;
     while (j >= 0)
@@ -1082,10 +865,12 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
       // Recieve message, either recv data or end of data transfers for initial conditions
       MPI_Status mpi_status;
       MPI_Recv(&j, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &mpi_status);
+      /* openmpi on opteron seems to need this extra handshake */
+      MPI_Send(&j, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
       if (j >= 0)
       {
 	szBin.mpi_recv(0);
-      } 
+      }
     }
   }
   MPI_Barrier(MPI_COMM_WORLD);

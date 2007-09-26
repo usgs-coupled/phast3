@@ -480,16 +480,29 @@ static int output_handler(const int type, const char *err_str, const int stop, v
 
 	case OUTPUT_CHECKLINE:
 		if (pr.echo_input == TRUE) {
-			if (output != NULL) {
-				vfprintf(output, format, args);
-				if (flush) fflush(output);
-			}
-			if (phreeqc_mpi_myself == 0) {
-				if (echo_file != NULL) {
-					vfprintf(echo_file, format, args);
-					if (flush) fflush(echo_file);
-				}
-			}
+#ifdef VACOPY
+		  va_list args_copy;
+		  va_copy(args_copy, args);
+		  if (phreeqc_mpi_myself == 0) {
+		    if (echo_file != NULL) {
+		      vfprintf(echo_file, format, args_copy);
+		      if (flush) fflush(echo_file);
+		    }
+		  }
+		  va_end(args_copy);
+#else
+		  if (phreeqc_mpi_myself == 0) {
+		    if (echo_file != NULL) {
+		      vfprintf(echo_file, format, args);
+		      if (flush) fflush(echo_file);
+		    }
+		  }
+#endif
+		  if (output != NULL) {
+		    vfprintf(output, format, args);
+		    if (flush) fflush(output);
+		  }
+
 		}
 		break;
 
