@@ -808,10 +808,18 @@ static int output_handler(const int type, const char *err_str, const int stop, v
 		break;
 	case OUTPUT_CHECKLINE:
 		if (pr.echo_input == TRUE) {
-			Merge_vfprintf2(&s_fiOutput, format, args);
-			if (phreeqc_mpi_myself == 0) {
-				Merge_vfprintf2(&s_fiEcho, format, args);
-			}
+#ifdef VACOPY
+		  va_list args_copy;
+		  va_copy(args_copy, args);
+		  Merge_vfprintf2(&s_fiOutput, format, args_copy);
+		  va_end(args_copy);
+#else
+		  Merge_vfprintf2(&s_fiOutput, format, args);
+#endif
+		  if (phreeqc_mpi_myself == 0) {
+		    Merge_vfprintf2(&s_fiEcho, format, args);
+		  }
+
 		}
 		break;
 	case OUTPUT_MESSAGE:
