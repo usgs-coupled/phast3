@@ -8,6 +8,9 @@
 #include "phreeqc/phqalloc.h"
 #include "phreeqc/phrqproto.h"
 #include "phastproto.h"
+#ifdef GZIP_RESTART
+#include "gzstream.h"
+#endif
 /*
  * cxxhstsubs.cxx
  */
@@ -305,6 +308,7 @@ void system_cxxInitialize(int i, int n_user_new, int *initial_conditions1, int *
 
 	return;
 }
+#ifndef GZIP_RESTART
 /* ---------------------------------------------------------------------- */
 int write_restart(double time_hst)
 /* ---------------------------------------------------------------------- */
@@ -331,6 +335,42 @@ int write_restart(double time_hst)
 	file_rename(temp_name.c_str(), name.c_str(), backup_name.c_str());
 	return(OK);
 }
+#else
+/* ---------------------------------------------------------------------- */
+int write_restart(double time_hst)
+/* ---------------------------------------------------------------------- */
+{
+
+	std::string temp_name("temp_restart_file.gz");
+	string_trim(file_prefix);
+	std::string name(file_prefix);
+	name.append(".restart.gz");
+	std::string backup_name(file_prefix);
+	backup_name.append(".restart.backup.gz");
+	// open file 
+	//std::ofstream ofs(temp_name.c_str());
+	ogzstream ofs;
+	ofs.open( temp_name.c_str() );
+	if ( ! ofs.good()) {
+	  sprintf(error_string, "File could not be opened: %s.", temp_name.c_str());
+	  error_msg(error_string, STOP);
+	}
+
+	// write header
+	ofs << "#PHAST restart file" << std::endl;
+	time_t now = time(NULL);
+	ofs << "#Prefix: " << file_prefix << std::endl;
+	ofs << "#Date: " << ctime(&now);
+	ofs << "#Current model time: " << time_hst << std::endl;
+	ofs << "#nx, ny, nz: " << ix << ", " << iy << ", " << iz << std::endl;
+	// write data
+	szBin.dump_raw(ofs, 0);
+	ofs.close();
+	// rename files
+	file_rename(temp_name.c_str(), name.c_str(), backup_name.c_str());
+	return(OK);
+}
+#endif
 /* ---------------------------------------------------------------------- */
 int scale_cxxsystem(int iphrq, LDBLE frac)
 /* ---------------------------------------------------------------------- */
