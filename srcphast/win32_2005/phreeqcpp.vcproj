@@ -41,8 +41,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DEV_HDF5_INC)&quot;;&quot;$(DEV_GMP_INC_MT)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;"
-				PreprocessorDefinitions="USE_PHRQ_ALLOC;PHREEQC_CPP;_DEBUG;HDF5_CREATE;INVERSE_CL1MP;WIN32;_CONSOLE;NO_UNDERSCORES;H5_HAVE_FUNCTION;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
+				AdditionalIncludeDirectories="&quot;$(DEV_ZLIB122_INC)&quot;;&quot;$(DEV_HDF5_INC)&quot;;&quot;$(DEV_GMP_INC_MT)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;;&quot;$(ProjectDir)..&quot;"
+				PreprocessorDefinitions="GZIP_RESTART;USE_PHRQ_ALLOC;PHREEQC_CPP;_DEBUG;HDF5_CREATE;INVERSE_CL1MP;WIN32;_CONSOLE;NO_UNDERSCORES;H5_HAVE_FUNCTION;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -245,8 +245,8 @@
 				Optimization="0"
 				InlineFunctionExpansion="0"
 				OmitFramePointers="false"
-				AdditionalIncludeDirectories="&quot;$(DEV_HDF5_INC)&quot;;&quot;$(DEV_GMP_INC_MT)&quot;;&quot;$(DEV_MPICH2_INC)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;"
-				PreprocessorDefinitions="USE_PHRQ_ALLOC;PHREEQC_CPP;_DEBUG;MERGE_FILES;USE_MPI;HDF5_CREATE;INVERSE_CL1MP;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
+				AdditionalIncludeDirectories="&quot;$(DEV_ZLIB122_INC)&quot;;&quot;$(DEV_HDF5_INC)&quot;;&quot;$(DEV_GMP_INC_MT)&quot;;&quot;$(DEV_MPICH2_INC)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;"
+				PreprocessorDefinitions="GZIP_RESTART;USE_PHRQ_ALLOC;PHREEQC_CPP;_DEBUG;MERGE_FILES;USE_MPI;HDF5_CREATE;INVERSE_CL1MP;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
 				StringPooling="false"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -1698,6 +1698,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\gzstream.cxx"
+					>
+				</File>
+				<File
 					RelativePath="..\hst.cxx"
 					>
 				</File>
@@ -1999,6 +2003,10 @@
 			</File>
 			<File
 				RelativePath="..\phreeqcpp\phreeqc\global.h"
+				>
+			</File>
+			<File
+				RelativePath="..\gzstream.h"
 				>
 			</File>
 			<File

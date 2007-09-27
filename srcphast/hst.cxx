@@ -629,30 +629,30 @@ void COUNT_ALL_COMPONENTS(int *n_comp, char *names, int length)
 void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_conditions2, double *fraction1)
 /* ---------------------------------------------------------------------- */
 {
-/*
- *      ixyz - number of cells
- *      initial_conditions1 - Fortran, 7 x n_cell integer array, containing
- *           solution number
- *           pure_phases number
- *           exchange number
- *           surface number
- *           gas number
- *           solid solution number
- *           kinetics number
- *      initial_conditions2 - Fortran, 7 x n_cell integer array, containing
- *      fraction for 1 - Fortran, 7 x n_cell integer array, containing
- *
- *      Routine mixes solutions, pure_phase assemblages,
- *      exchangers, surface complexers, gases, solid solution assemblages,
- *      and kinetics for each cell.
- */
+  /*
+  *      ixyz - number of cells
+  *      initial_conditions1 - Fortran, 7 x n_cell integer array, containing
+  *           solution number
+  *           pure_phases number
+  *           exchange number
+  *           surface number
+  *           gas number
+  *           solid solution number
+  *           kinetics number
+  *      initial_conditions2 - Fortran, 7 x n_cell integer array, containing
+  *      fraction for 1 - Fortran, 7 x n_cell integer array, containing
+  *
+  *      Routine mixes solutions, pure_phase assemblages,
+  *      exchangers, surface complexers, gases, solid solution assemblages,
+  *      and kinetics for each cell.
+  */
   int i;
   int first_cell, last_cell;
   int *sort_random_list;
   int j, k;
   /*
-   *  Set up random list for parallel processing
-   */
+  *  Set up random list for parallel processing
+  */
   random_list = (int *) PHRQ_malloc((size_t) count_chem * sizeof(int));
   if (random_list == NULL) malloc_error();
   random_frac = (LDBLE *) PHRQ_malloc((size_t) count_chem * sizeof(LDBLE));
@@ -680,18 +680,18 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
     }
   }
   /* 
-   * sort_random_list is the list of cell numbers that need to be saved for this processor
-   */
+  * sort_random_list is the list of cell numbers that need to be saved for this processor
+  */
   first_cell = mpi_first_cell;
   last_cell = mpi_last_cell;
   sort_random_list = (int *) PHRQ_malloc((size_t) (last_cell - first_cell + 1) * sizeof(int));
   if (sort_random_list == NULL) malloc_error();
   memcpy(sort_random_list, &random_list[first_cell], (size_t) (last_cell - first_cell + 1) * sizeof(int));
   qsort (sort_random_list, (size_t) (last_cell - first_cell + 1), (size_t) sizeof(int), int_compare);
-/*
- *  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
- *  Does nothing if i < 0, i.e. values to be gotten from restart files
- */
+  /*
+  *  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
+  *  Does nothing if i < 0, i.e. values to be gotten from restart files
+  */
   for (k = 0; k < last_cell - first_cell + 1; k++) {
     j = sort_random_list[k];  /* j is count_chem number */
     i = back[j].list[0];      /* i is ixyz number */
@@ -699,9 +699,9 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
     system_cxxInitialize(i, j, initial_conditions1, initial_conditions2, fraction1); 
   }
   sort_random_list = (int *) free_check_null(sort_random_list);
-/*
-* Only root reads restart files, then sends to appropriate processes
-*/
+  /*
+  * Only root reads restart files, then sends to appropriate processes
+  */
   if (mpi_myself == 0) {
     for (std::map<std::string, int>::iterator it = FileMap.begin(); it != FileMap.end(); it++) 
     {
@@ -714,11 +714,13 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
       myfile.open(it->first.c_str());
       if (!myfile.good())
 #else
-    // use gsztream 
-    igzstream myfile;
-    if (!myfile.rdbuf()->is_open()) 
+      // use gsztream 
+      igzstream myfile;
+      myfile.open(it->first.c_str());
+      if (!myfile.good()) 
 #endif
       {
+	input_error++;
 	sprintf(error_string, "File could not be opened: %s.", it->first.c_str());
 	error_msg(error_string, STOP);
       }
@@ -858,15 +860,16 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 	  MPI_Recv(&j, 1, MPI_INT, task_number, 0, MPI_COMM_WORLD, &mpi_status);
 	  tempBin.mpi_send(j, task_number);
 	}
-      }
-    }
+      } // end of file
+      myfile.close();
+    } // end of files
     // Send signal that initial condition transfers are done
     j = -2;
     for (i = 1; i < mpi_tasks; i++) {
-	  MPI_Status mpi_status;
-	  MPI_Send(&j, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
-	  /* openmpi on opteron seems to need this extra handshake */
-	  MPI_Recv(&j, 1, MPI_INT, i, 0, MPI_COMM_WORLD, &mpi_status);
+      MPI_Status mpi_status;
+      MPI_Send(&j, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
+      /* openmpi on opteron seems to need this extra handshake */
+      MPI_Recv(&j, 1, MPI_INT, i, 0, MPI_COMM_WORLD, &mpi_status);
     }
   } else
   {
@@ -940,13 +943,11 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
     if (!myfile.is_open())
 #else
     // use gsztream 
-    igzstream myfile(it->first.c_str());
-    //if (!myfile.rdbuf()->is_open())
+    igzstream myfile;
+    myfile.open(it->first.c_str());
     if (!myfile.good())
-    {
 #endif   
- 
-
+    {
       sprintf(error_string, "File could not be opened: %s.", it->first.c_str());
       input_error++;
       error_msg(error_string, CONTINUE);
@@ -2842,13 +2843,13 @@ int mpi_write_restart(double time_hst)
 	std::string name(file_prefix);
 	name.append(".restart.gz");
 	std::string backup_name(file_prefix);
-	backup_name.append("restart.backup.gz");
+	backup_name.append(".restart.backup.gz");
 #endif
 	// open file 
 	if (mpi_myself == 0) {
 		ofs_restart.open(temp_name.c_str());
 #ifdef GZIP_RESTART
-		if ( ! ofs_restart.rdbuf()->is_open()) 
+		if ( ! ofs_restart.good()) 
 #else
 		if ( ! ofs_restart.is_open())
 #endif
