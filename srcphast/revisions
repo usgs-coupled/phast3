@@ -1,3 +1,17 @@
+	
+    svn 2283: Now writes .restart.gz, a gzip file. File can be 
+    by unzipped and edited. On restarting, either ascii or gzipped
+    file can be read; type is determined automatically. Removed 
+    old code for restart file.
+
+    svn 2228: Rewrote code for reading a restart file. Fixed a bug
+    where a stream was receiving the echo of the restart file, which
+    made it fail for large restart files. Also, previously,
+    every process tried to read the entire restart file into memory.
+    This also would cause problems if the restart file was large.
+    Now the restart file is read by root keyword by keyword and
+    data are passed to the appropriate process with MPI.
+
 ---------------------------------------
 PHAST, Version 1.4.1 (September 5, 2007)
 ---------------------------------------

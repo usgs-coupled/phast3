@@ -640,6 +640,7 @@ COMMON_CXXOBJS = \
 	       Exchange.o \
 	       ExchComp.o \
 	       GasPhase.o \
+	       gzstream.o \
 	       ISolution.o \
 	       ISolutionComp.o \
 	       KineticsComp.o \
@@ -846,7 +847,7 @@ utilities.o: $(SRC)/utilities.c $(SRC)/global.h $(SRC)/phrqtype.h $(SRC)/phqallo
 merge.o: merge.c global.h phqalloc.h hst.h output.h phastproto.h
 phast_files.o: phast_files.c global.h phqalloc.h output.h phrqproto.h input.h
 slavesubs.o: slavesubs.c global.h hst.h phqalloc.h output.h phastproto.h
-hst.o: ../hst.cxx ../phreeqcpp/StorageBin.h ../phreeqcpp/Utils.h \
+hst.o: ../hst.cxx ../phreeqcpp/StorageBin.h ../phreeqcpp/Utils.h ../gzstream.h \
   ../phreeqcpp/char_star.h ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h \
   ../phreeqcpp/Solution.h ../phreeqcpp/NumKeyword.h ../phreeqcpp/Parser.h \
   ../phreeqcpp/SolutionIsotopeList.h ../phreeqcpp/SolutionIsotope.h \
@@ -882,7 +883,7 @@ hst.o: ../hst.cxx ../phreeqcpp/StorageBin.h ../phreeqcpp/Utils.h \
   ../phreeqcpp/phreeqc/phrqproto.h ../phreeqcpp/phreeqc/input.h \
   ../phast_files.h ../phastproto.h ../phreeqcpp/Dictionary.h \
   ../phreeqcpp/Solution.h ../phreeqcpp/NameDouble.h
-cxxHstSubs.o: ../cxxHstSubs.cxx ../phreeqcpp/StorageBin.h \
+cxxHstSubs.o: ../cxxHstSubs.cxx ../phreeqcpp/StorageBin.h ../gzstream.h \
   ../phreeqcpp/Utils.h ../phreeqcpp/char_star.h ../phreeqcpp/Parser.h \
   ../phreeqcpp/char_star.h ../phreeqcpp/Solution.h \
   ../phreeqcpp/NumKeyword.h ../phreeqcpp/Parser.h \
@@ -966,6 +967,7 @@ GasPhase.o: ../phreeqcpp/GasPhase.cxx ../phreeqcpp/Utils.h \
   ../phreeqcpp/phreeqc/global.h ../phreeqcpp/phreeqc/phrqtype.h \
   ../phreeqcpp/char_star.h ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h \
   ../phreeqcpp/phreeqc/phqalloc.h ../phreeqcpp/phreeqc/phrqproto.h
+gzstream.o: ../gzstream.cxx ../gzstream.h
 ISolutionComp.o: ../phreeqcpp/ISolutionComp.cxx \
   ../phreeqcpp/ISolutionComp.h ../phreeqcpp/Utils.h \
   ../phreeqcpp/char_star.h ../phreeqcpp/char_star.h \

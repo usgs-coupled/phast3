@@ -15,9 +15,7 @@
 #include "phast_files.h"
 #include "phastproto.h"
 #include "Dictionary.h"
-#ifdef GZIP_RESTART
 #include "gzstream.h"
-#endif
 static void BeginTimeStep(int print_sel, int print_out, int print_hdf);
 static void EndTimeStep(int print_sel, int print_out, int print_hdf);
 static void BeginCell(int print_sel, int print_out, int print_hdf, int index);
@@ -708,17 +706,10 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
       int ifile = -100 - it->second;
       // parser
       // stream
-#ifndef GZIP_RESTART
-      std::fstream myfile;
-      myfile.open(it->first.c_str(), std::ios_base::in);
-      myfile.open(it->first.c_str());
-      if (!myfile.good())
-#else
       // use gsztream 
       igzstream myfile;
       myfile.open(it->first.c_str());
       if (!myfile.good()) 
-#endif
       {
 	input_error++;
 	sprintf(error_string, "File could not be opened: %s.", it->first.c_str());
@@ -936,17 +927,11 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
   for (std::map<std::string, int>::iterator it = FileMap.begin(); it != FileMap.end(); it++) {
     int ifile = -100 - it->second;
 
-#ifndef GZIP_RESTART
-    // use stream
-    std::fstream myfile;
-    myfile.open(it->first.c_str(), std::ios_base::in);
-    if (!myfile.is_open())
-#else
     // use gsztream 
     igzstream myfile;
     myfile.open(it->first.c_str());
     if (!myfile.good())
-#endif   
+
     {
       sprintf(error_string, "File could not be opened: %s.", it->first.c_str());
       input_error++;
@@ -2828,15 +2813,6 @@ void SEND_RESTART_NAME(char * name, int nchar)
 int mpi_write_restart(double time_hst)
 /* ---------------------------------------------------------------------- */
 {
-#ifndef GZIP_RESTART
-	std::ofstream ofs_restart;
-	std::string temp_name("temp_restart_file");
-	string_trim(file_prefix);
-	std::string name(file_prefix);
-	name.append(".restart");
-	std::string backup_name(file_prefix);
-	backup_name.append(".backup");
-#else
 	ogzstream ofs_restart;
 	std::string temp_name("temp_restart_file.gz");
 	string_trim(file_prefix);
@@ -2844,15 +2820,11 @@ int mpi_write_restart(double time_hst)
 	name.append(".restart.gz");
 	std::string backup_name(file_prefix);
 	backup_name.append(".restart.backup.gz");
-#endif
+
 	// open file 
 	if (mpi_myself == 0) {
 		ofs_restart.open(temp_name.c_str());
-#ifdef GZIP_RESTART
 		if ( ! ofs_restart.good()) 
-#else
-		if ( ! ofs_restart.is_open())
-#endif
 		{
 		  sprintf(error_string, "File could not be opened: %s.", temp_name.c_str());
 		  error_msg(error_string, STOP);
