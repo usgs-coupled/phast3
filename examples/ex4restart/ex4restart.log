@@ -123,10 +123,10 @@ Processing flow and transport data file.
 	                exchange               2
 	                surface                2       
 	        zone   0. 0. 0. 90000. 48000. 400.
-	                solution               restart ex4.restart
-	                equilibrium_phases     restart ex4.restart
-	                exchange               restart ex4.restart
-	                surface                restart ex4.restart
+	                solution               restart ex4.restart.gz
+	                equilibrium_phases     restart ex4.restart.gz
+	                exchange               restart ex4.restart.gz
+	                surface                restart ex4.restart.gz
 	SOLUTION_METHOD
 	        iterative_solver       true
 	        tolerance              1e-10
@@ -369,9 +369,9 @@ Beginning time step no.      5
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 540
-          Total iterations all cells: 3787
+          Total iterations all cells: 3784
           Number of cells with zero iterations: 0
-          Maximum iterations for one cell: 16
+          Maximum iterations for one cell: 19
 
      End of Time Step No.     5
      Time ..................................................   1.000E+04 (yr)

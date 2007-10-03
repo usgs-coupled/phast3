@@ -122,10 +122,10 @@ CHEMISTRY_IC
                 -exchange               2
                 -surface                2       
         -zone   0. 0. 0. 90000. 48000. 400.
-                -solution               restart ex4.restart
-                -equilibrium_phases     restart ex4.restart
-                -exchange               restart ex4.restart
-                -surface                restart ex4.restart
+                -solution               restart ex4.restart.gz
+                -equilibrium_phases     restart ex4.restart.gz
+                -exchange               restart ex4.restart.gz
+                -surface                restart ex4.restart.gz
 SOLUTION_METHOD
         -iterative_solver       true
         -tolerance              1e-10

@@ -504,7 +504,7 @@ Beginning time step no.      9
      Beginning chemistry calculation.
           Total cells: 369
           Number of cells with same aqueous model: 359
-          Total iterations all cells: 2286
+          Total iterations all cells: 2291
           Number of cells with zero iterations: 0
           Maximum iterations for one cell: 12
 
@@ -610,7 +610,7 @@ Beginning time step no.     15
           O
           No. of solver iterations, Relative residual:    6      1.8538345E-11
           As
-          No. of solver iterations, Relative residual:    6      9.9639304E-12
+          No. of solver iterations, Relative residual:    6      9.9639305E-12
           C
           No. of solver iterations, Relative residual:    6      1.8631880E-11
           Ca
@@ -628,9 +628,9 @@ Beginning time step no.     15
      Beginning chemistry calculation.
           Total cells: 369
           Number of cells with same aqueous model: 359
-          Total iterations all cells: 2672
+          Total iterations all cells: 2695
           Number of cells with zero iterations: 0
-          Maximum iterations for one cell: 26
+          Maximum iterations for one cell: 15
 
      End of Time Step No.    15
      Time ..................................................   1.500E+04 (yr)
@@ -733,11 +733,11 @@ Beginning time step no.     21
      Current time step length ...................................   1.000E+03 (yr)
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    6      7.3214843E-12
+          No. of solver iterations, Relative residual:    6      7.3214846E-12
           O
-          No. of solver iterations, Relative residual:    6      1.4401424E-11
+          No. of solver iterations, Relative residual:    6      1.4401425E-11
           As
-          No. of solver iterations, Relative residual:    6      3.8014883E-11
+          No. of solver iterations, Relative residual:    6      3.8014882E-11
           C
           No. of solver iterations, Relative residual:    6      1.4377770E-11
           Ca
@@ -751,11 +751,11 @@ Beginning time step no.     21
           S
           No. of solver iterations, Relative residual:    6      3.0588025E-12
           Charge
-          No. of solver iterations, Relative residual:    6      6.9853143E-12
+          No. of solver iterations, Relative residual:    6      6.9853145E-12
      Beginning chemistry calculation.
           Total cells: 369
           Number of cells with same aqueous model: 358
-          Total iterations all cells: 2837
+          Total iterations all cells: 2883
           Number of cells with zero iterations: 0
           Maximum iterations for one cell: 15
 
@@ -877,7 +877,7 @@ Beginning time step no.     28
           O
           No. of solver iterations, Relative residual:    6      1.1084349E-11
           As
-          No. of solver iterations, Relative residual:    6      2.7831342E-11
+          No. of solver iterations, Relative residual:    6      2.7831341E-11
           C
           No. of solver iterations, Relative residual:    6      1.1068759E-11
           Ca
@@ -895,9 +895,9 @@ Beginning time step no.     28
      Beginning chemistry calculation.
           Total cells: 369
           Number of cells with same aqueous model: 358
-          Total iterations all cells: 3023
+          Total iterations all cells: 3035
           Number of cells with zero iterations: 0
-          Maximum iterations for one cell: 26
+          Maximum iterations for one cell: 30
 
      End of Time Step No.    28
      Time ..................................................   2.800E+04 (yr)
@@ -933,13 +933,13 @@ Beginning time step no.     30
      Current time step length ...................................   1.000E+03 (yr)
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    6      3.7245890E-12
+          No. of solver iterations, Relative residual:    6      3.7245891E-12
           O
-          No. of solver iterations, Relative residual:    6      9.7683394E-12
+          No. of solver iterations, Relative residual:    6      9.7683400E-12
           As
-          No. of solver iterations, Relative residual:    6      4.4877974E-11
+          No. of solver iterations, Relative residual:    6      4.4877972E-11
           C
-          No. of solver iterations, Relative residual:    6      9.7635340E-12
+          No. of solver iterations, Relative residual:    6      9.7635345E-12
           Ca
           No. of solver iterations, Relative residual:    6      6.0796819E-12
           Cl
@@ -955,9 +955,9 @@ Beginning time step no.     30
      Beginning chemistry calculation.
           Total cells: 369
           Number of cells with same aqueous model: 358
-          Total iterations all cells: 3076
+          Total iterations all cells: 3110
           Number of cells with zero iterations: 0
-          Maximum iterations for one cell: 15
+          Maximum iterations for one cell: 25
 
      End of Time Step No.    30
      Time ..................................................   3.000E+04 (yr)
@@ -982,11 +982,11 @@ Beginning time step no.     31
           H
           No. of solver iterations, Relative residual:    6      3.6334584E-12
           O
-          No. of solver iterations, Relative residual:    6      9.0979573E-12
+          No. of solver iterations, Relative residual:    6      9.0979579E-12
           As
-          No. of solver iterations, Relative residual:    6      4.9372869E-11
+          No. of solver iterations, Relative residual:    6      4.9372868E-11
           C
-          No. of solver iterations, Relative residual:    6      9.0984163E-12
+          No. of solver iterations, Relative residual:    6      9.0984169E-12
           Ca
           No. of solver iterations, Relative residual:    6      6.1966690E-12
           Cl
@@ -1002,9 +1002,9 @@ Beginning time step no.     31
      Beginning chemistry calculation.
           Total cells: 369
           Number of cells with same aqueous model: 358
-          Total iterations all cells: 3145
+          Total iterations all cells: 3136
           Number of cells with zero iterations: 0
-          Maximum iterations for one cell: 18
+          Maximum iterations for one cell: 28
 
      End of Time Step No.    31
      Time ..................................................   3.100E+04 (yr)
