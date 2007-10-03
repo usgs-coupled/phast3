@@ -1,0 +1,50 @@
+#!/bin/sh
+#
+#   make directory
+#
+NAME=$1
+cd $NAME
+mkdir -p 0
+rm -f 0/*
+#
+#  Set names
+#
+PHASTDIR=/cygdrive/c/Programs/phastpp
+PHAST_MPICH=c:/Programs/phastpp/srcphast/win32_2005/merge/phast.exe
+PHAST_INPUT=/cygdrive/c/Programs/phastpp/srcinput/win32_2005/Debug/phastinput.exe
+EXDIR=$PHASTDIR/examples
+MPICHRUN=/cygdrive/c/Program\ Files/MPICH2/bin/mpiexec
+#
+#   distribute files
+#
+if [ -f $NAME.trans.dat ]; then 
+    cp $NAME.trans.dat 0
+    fi
+if [ -f $NAME.chem.dat ]; then 
+    cp $NAME.chem.dat 0
+    fi
+if [ -f $NAME.head.dat ]; then 
+    cp $NAME.head.dat 0
+    fi
+if [ $NAME = 'ex4restart' ]; then 
+    cp ex4.head.dat 0
+    cp ex4.restart.gz 0
+    fi
+if [ $NAME = "print_check_transient" ]; then 
+    cp print_check_ss.head.dat 0
+    fi
+if [ -f phast.dat ]; then 
+    cp phast.dat 0
+    fi
+##cp ../schema 0
+cd 0
+#
+#   run phastinput
+#
+$PHAST_INPUT $NAME
+echo Done phastinput.
+#
+#   run phast_mpich
+#
+echo $MPICHRUN
+time "$MPICHRUN" -np 2 -localonly -wdir $EXDIR/$NAME/0 $PHAST_MPICH
