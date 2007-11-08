@@ -11,7 +11,7 @@ SUBROUTINE init1
   USE mcv
   USE mcw, ONLY: totwsi, totwsp, tqwsi, tqwsp, u10
   IMPLICIT NONE
-  INTEGER :: a_err, da_err, iis, nsa
+  INTEGER :: a_err, da_err, iis, nsa, i
   CHARACTER(LEN=10), DIMENSION(:), ALLOCATABLE :: ucomp_name
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
@@ -28,11 +28,16 @@ SUBROUTINE init1
        rm(nx), x(nx), y(ny), z(nz), x_node(nxyz), y_node(nxyz), z_node(nxyz),  &
        x_face(nx-1), y_face(ny-1), z_face(nz-1),  &
        ibc(nxyz), pv0(nxyz), &
+       cellijk(nxyz), &
        STAT = a_err)
   IF (a_err /= 0) THEN  
      PRINT *, "Array allocation failed: init1"  
      STOP  
   ENDIF
+
+  ! store index numbers for natural numbering
+  call mtoijk_orig
+
   pv0 = 0
   ibc = 0
   ! ... Set up units and metric to english (U.S. customary) conversion

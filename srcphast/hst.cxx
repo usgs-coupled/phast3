@@ -2099,7 +2099,8 @@ int mpi_set_subcolumn(double *frac)
 	time_exec = 0;
 	j = 100*100*100*10;
 	for (i = 1; i < j; i++) {
-		time_exec += 1.0/(double) i;
+//		time_exec += 1.0/(double) i;
+		time_exec += 1.0/sqrt((double) i);
 	}
 	time_exec = (LDBLE) MPI_Wtime() - t0;
 	/*

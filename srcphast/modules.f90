@@ -156,6 +156,10 @@ MODULE mcg
   INTEGER :: npmz, nx, nxy, nxyz, ny, nz, nxyzh
   LOGICAL :: tilt,unigrx,unigry,unigrz
   REAL(KIND=kdp) :: thetxz, thetyz, thetzz
+  TYPE :: CellIndices
+     integer ix, iy, iz
+  END TYPE CellIndices
+  TYPE (CellIndices), DIMENSION(:), ALLOCATABLE :: cellijk
   !
   CONTAINS
     FUNCTION cellno(i,j,k) 
