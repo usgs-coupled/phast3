@@ -1,0 +1,175 @@
+Output file:    simple.O.chem
+Chemistry file: simple.chem.dat
+Database file:  phast.dat
+
+------------------
+Reading data base.
+------------------
+
+	SOLUTION_MASTER_SPECIES
+	SOLUTION_SPECIES
+	PHASES
+	EXCHANGE_MASTER_SPECIES
+	EXCHANGE_SPECIES
+	SURFACE_MASTER_SPECIES
+	SURFACE_SPECIES
+	RATES
+	END
+------------------------------------
+Reading input data for simulation 1.
+------------------------------------
+
+	SOLUTION 1
+	    units umol/l
+	    pH 6.5
+	    Na 1e3
+	    Br 1e3
+	END
+-------------------------------------------
+Beginning of initial solution calculations.
+-------------------------------------------
+
+Initial solution 1.	
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Br                1.000e-03   1.000e-03
+	Na                1.000e-03   1.000e-03
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   6.500    
+                                       pe  =   4.000    
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.000e-03
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =  -2.943e-07
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =   2.943e-07
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.01
+                               Iterations  =   3
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+                                                   Log       Log         Log 
+   Species                 Molality    Activity  Molality  Activity     Gamma
+
+   H+                     3.271e-07   3.162e-07    -6.485    -6.500    -0.015
+   OH-                    3.281e-08   3.166e-08    -7.484    -7.500    -0.016
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
+Br               1.000e-03
+   Br-                    1.000e-03   9.648e-04    -3.000    -3.016    -0.016
+H(0)             1.416e-24
+   H2                     7.078e-25   7.079e-25   -24.150   -24.150         0
+Na               1.000e-03
+   Na+                    1.000e-03   9.653e-04    -3.000    -3.015    -0.015
+   NaOH                   2.016e-11   2.017e-11   -10.695   -10.695         0
+O(0)             0.000e+00
+   O2                     0.000e+00   0.000e+00   -44.080   -44.080         0
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -21.00  -24.15   -3.15  H2
+	H2O(g)           -1.51       0    1.51  H2O
+	O2(g)           -41.12  -44.08   -2.96  O2
+
+------------------
+End of simulation.
+------------------
+
+------------------------------------
+Reading input data for simulation 2.
+------------------------------------
+
+	SOLUTION 2
+	     units umol/l
+	    pH 7.15
+	    Na 1e3
+	    Cl 1e3
+	END
+-------------------------------------------
+Beginning of initial solution calculations.
+-------------------------------------------
+
+Initial solution 2.	
+
+-----------------------------Solution composition------------------------------
+
+	Elements           Molality       Moles
+
+	Cl                1.000e-03   1.000e-03
+	Na                1.000e-03   1.000e-03
+
+----------------------------Description of solution----------------------------
+
+                                       pH  =   7.150    
+                                       pe  =   4.000    
+                        Activity of water  =   1.000
+                           Ionic strength  =   1.000e-03
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   7.341e-08
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
+                      Temperature (deg C)  =  25.000
+                  Electrical balance (eq)  =  -7.341e-08
+ Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
+                               Iterations  =   3
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
+
+----------------------------Distribution of species----------------------------
+
+                                                   Log       Log         Log 
+   Species                 Molality    Activity  Molality  Activity     Gamma
+
+   OH-                    1.466e-07   1.414e-07    -6.834    -6.850    -0.016
+   H+                     7.324e-08   7.079e-08    -7.135    -7.150    -0.015
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
+Cl               1.000e-03
+   Cl-                    1.000e-03   9.649e-04    -3.000    -3.016    -0.016
+H(0)             7.095e-26
+   H2                     3.547e-26   3.548e-26   -25.450   -25.450         0
+Na               1.000e-03
+   Na+                    1.000e-03   9.652e-04    -3.000    -3.015    -0.015
+   NaOH                   9.006e-11   9.008e-11   -10.045   -10.045         0
+O(0)             0.000e+00
+   O2                     0.000e+00   0.000e+00   -41.480   -41.480         0
+
+------------------------------Saturation indices-------------------------------
+
+	Phase               SI log IAP  log KT
+
+	H2(g)           -22.30  -25.45   -3.15  H2
+	H2O(g)           -1.51       0    1.51  H2O
+	Halite           -7.61   -6.03    1.58  NaCl
+	O2(g)           -38.52  -41.48   -2.96  O2
+
+------------------
+End of simulation.
+------------------
+
+------------------------------------
+Reading input data for simulation 3.
+------------------------------------
+
+	PRINT
+	        reset false
+List of Components:
+	1	H
+	2	O
+	3	Br
+	4	Cl
+	5	Na
+	6	Charge
+List of master species:
+	1	Br
+	2	Cl
+	3	Na
