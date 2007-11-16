@@ -46,6 +46,7 @@ ENTRY36=GUID_1_3_2
 ENTRY37=GUID_1_3_3
 ENTRY38=PHAST_RELEASE_SHORTCUT_TEXT
 ENTRY39=GUID_1_3_4
+ENTRY40=GUID_1_4_2
 
 [TITLE_CAPTIONBAR]
 Comment=Do not delete. Setup requires this Identifier even if your script doesn't use it.
@@ -162,6 +163,9 @@ Comment=
 Comment=
 
 [GUID_1_3_4]
+Comment=
+
+[GUID_1_4_2]
 Comment=LATEST
 
 [LANGUAGE]
