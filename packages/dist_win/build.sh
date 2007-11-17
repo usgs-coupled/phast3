@@ -157,6 +157,14 @@ precheck() {
     echo "Error: DEV_VTK_INC must be set"; \
     exit 1; \
   fi && \
+  if [ "x$DEV_ZLIB122_INC" = "x" ] ; then \
+    echo "Error: DEV_ZLIB122_LIB must be set"; \
+    exit 1; \
+  fi && \
+  if [ "x$DEV_ZLIB122_LIB" = "x" ] ; then \
+    echo "Error: DEV_ZLIB122_LIB must be set"; \
+    exit 1; \
+  fi && \
   if [ ! -d "${MODELVIEWER}" ] ; then \
     echo "Error: ${MODELVIEWER} not found"; \
     echo "Error: ModelViewer must be installed"; \
