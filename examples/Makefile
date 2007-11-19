@@ -8,6 +8,7 @@ ifeq ($(CFG), Linux)
 #  PHAST=$(TOPDIR)/srcphast/serial_gfortran/phast
 #  PHAST=$(TOPDIR)/srcphast/serial_g95/phast
   PHAST=$(TOPDIR)/srcphast/serial_lahey/phast
+  RUN=$(TEST)/run
 endif
 
 ifeq ($(CFG), CYGWIN)
@@ -17,6 +18,7 @@ ifeq ($(CFG), CYGWIN)
   PHAST=/cygdrive/c/Programs/phastpp/srcphast/win32_2005/ser/phast.exe
   PHAST_MPICH=c:/Programs/phastpp/srcphast/win32_2005/merge_debug/phast.exe
   PHAST_MPICH=c:/Programs/phastpp/srcphast/win32_2005/merge/phast.exe
+  RUN=$(TEST)/runmpich
 endif
 
 SERIAL = decay diffusion1d diffusion2d disp2d ex3 kindred4.4 leaky leakyx leakyz linear_bc linear_ic ex4 notch phrqex11 ex1 radial river unconf well ex2 free ex4restart print_check_ss print_check_transient ex4_start_time mass_balance simple
@@ -63,7 +65,7 @@ ex2_parallel: ex2_clean_parallel
 	echo ; 
 	echo ============= ex2 Parallel
 	echo ; 
-	./run ex2
+	$(RUN) ex2
 	echo ============= Done ex2 Parallel
 
 ex2_clean:
@@ -90,7 +92,7 @@ free_parallel: free_clean_parallel
 	echo ; 
 	echo ============= free Parallel
 	echo ; 
-	./run free
+	$(RUN) free
 	echo ============= Done free Parallel
 
 free_clean:
@@ -117,7 +119,7 @@ decay_parallel: decay_clean_parallel
 	echo ; 
 	echo ============= decay Parallel
 	echo ; 
-	./run decay
+	$(RUN) decay
 	echo ============= Done decay Parallel
 
 decay_clean:
@@ -144,7 +146,7 @@ simple_parallel: simple_clean_parallel
 	echo ; 
 	echo ============= simple Parallel
 	echo ; 
-	./run simple
+	$(RUN) simple
 	echo ============= Done simple Parallel
 
 simple_clean:
@@ -172,7 +174,7 @@ diffusion1d_parallel: diffusion1d_clean_parallel
 	echo ; 
 	echo ============= diffusion1d Parallel
 	echo ; 
-	./run diffusion1d
+	$(RUN) diffusion1d
 	echo ============= Done diffusion1d Parallel
 
 diffusion1d_clean:
@@ -198,7 +200,7 @@ diffusion2d_parallel: diffusion2d_clean_parallel
 	echo ; 
 	echo ============= diffusion2d Parallel
 	echo ; 
-	./run diffusion2d
+	$(RUN) diffusion2d
 	echo ============= Done diffusion2d Parallel
 
 diffusion2d_clean:
@@ -225,7 +227,7 @@ disp2d_parallel: disp2d_clean_parallel
 	echo ; 
 	echo ============= disp2d Parallel
 	echo ; 
-	./run disp2d
+	$(RUN) disp2d
 	echo ============= Done disp2d Parallel
 
 disp2d_clean:
@@ -252,7 +254,7 @@ ex3_parallel: ex3_clean_parallel
 	echo ; 
 	echo ============= ex3 Parallel
 	echo ; 
-	./run ex3
+	$(RUN) ex3
 	echo ============= Done ex3 Parallel
 
 ex3_clean:
@@ -279,7 +281,7 @@ kindred4.4_parallel: kindred4.4_clean_parallel
 	echo ; 
 	echo ============= kindred4.4 Parallel
 	echo ; 
-	./run kindred4.4
+	$(RUN) kindred4.4
 	echo ============= Done kindred4.4 Parallel
 
 kindred4.4_clean:
@@ -306,7 +308,7 @@ leaky_parallel: leaky_clean_parallel
 	echo ; 
 	echo ============= leaky Parallel
 	echo ; 
-	./run leaky
+	$(RUN) leaky
 	echo ============= Done leaky Parallel
 
 leaky_clean:
@@ -333,7 +335,7 @@ leakyx_parallel: leakyx_clean_parallel
 	echo ; 
 	echo ============= leakyx Parallel
 	echo ; 
-	./run leakyx
+	$(RUN) leakyx
 	echo ============= Done leakyx Parallel
 
 leakyx_clean:
@@ -360,7 +362,7 @@ leakyz_parallel: leakyz_clean_parallel
 	echo ; 
 	echo ============= leakyz Parallel
 	echo ; 
-	./run leakyz
+	$(RUN) leakyz
 	echo ============= Done leakyz Parallel
 
 leakyz_clean:
@@ -387,7 +389,7 @@ linear_bc_parallel: linear_bc_clean_parallel
 	echo ; 
 	echo ============= linear_bc Parallel
 	echo ; 
-	./run linear_bc
+	$(RUN) linear_bc
 	echo ============= Done linear_bc Parallel
 
 linear_bc_clean:
@@ -414,7 +416,7 @@ linear_ic_parallel: linear_ic_clean_parallel
 	echo ; 
 	echo ============= linear_ic Parallel
 	echo ; 
-	./run linear_ic
+	$(RUN) linear_ic
 	echo ============= Done linear_ic Parallel
 
 linear_ic_clean:
@@ -441,7 +443,7 @@ ex4_parallel: ex4_clean_parallel
 	echo ; 
 	echo ============= ex4 Parallel
 	echo ; 
-	./run ex4
+	$(RUN) ex4
 	echo ============= Done ex4 Parallel
 
 ex4_clean:
@@ -468,7 +470,7 @@ ex4_start_time_parallel: ex4_start_time_clean_parallel
 	echo ; 
 	echo ============= ex4_start_time Parallel
 	echo ; 
-	./run ex4_start_time
+	$(RUN) ex4_start_time
 	echo ============= Done ex4_start_time Parallel
 
 ex4_start_time_clean:
@@ -495,7 +497,7 @@ ex4restart_parallel: ex4restart_clean_parallel
 	echo ; 
 	echo ============= ex4restart Parallel
 	echo ; 
-	./run ex4restart
+	$(RUN) ex4restart
 	echo ============= Done ex4restart Parallel
 
 ex4restart_clean:
@@ -521,7 +523,7 @@ notch_parallel: notch_clean_parallel
 	echo ; 
 	echo ============= notch Parallel
 	echo ; 
-	./run notch
+	$(RUN) notch
 	echo ============= Done notch Parallel
 
 notch_clean:
@@ -548,7 +550,7 @@ mass_balance_parallel: mass_balance_clean_parallel
 	echo ; 
 	echo ============= mass_balance Parallel
 	echo ; 
-	./run mass_balance
+	$(RUN) mass_balance
 	echo ============= Done mass_balance Parallel
 
 mass_balance_clean:
@@ -574,7 +576,7 @@ print_check_ss_parallel: print_check_ss_clean_parallel
 	echo ; 
 	echo ============= print_check_ss Parallel
 	echo ; 
-	./run print_check_ss
+	$(RUN) print_check_ss
 	echo ============= Done print_check_ss Parallel
 
 print_check_ss_clean:
@@ -600,7 +602,7 @@ print_check_transient_parallel: print_check_transient_clean_parallel
 	echo ; 
 	echo ============= print_check_transient Parallel
 	echo ; 
-	./run print_check_transient
+	$(RUN) print_check_transient
 	echo ============= Done print_check_transient Parallel
 
 print_check_transient_clean:
@@ -627,7 +629,7 @@ phrqex11_parallel: phrqex11_clean_parallel
 	echo ; 
 	echo ============= phrqex11 Parallel
 	echo ; 
-	./run phrqex11
+	$(RUN) phrqex11
 	echo ============= Done phrqex11 Parallel
 
 phrqex11_clean:
@@ -654,7 +656,7 @@ ex1_parallel: ex1_clean_parallel
 	echo ; 
 	echo ============= ex1 Parallel
 	echo ; 
-	./run ex1
+	$(RUN) ex1
 	echo ============= Done ex1 Parallel
 
 ex1_clean:
@@ -681,7 +683,7 @@ radial_parallel: radial_clean_parallel
 	echo ; 
 	echo ============= radial Parallel
 	echo ; 
-	./run radial
+	$(RUN) radial
 	echo ============= Done radial Parallel
 
 radial_clean:
@@ -708,7 +710,7 @@ river_parallel: river_clean_parallel
 	echo ; 
 	echo ============= river Parallel
 	echo ; 
-	./run river
+	$(RUN) river
 	echo ============= Done river Parallel
 
 river_clean:
@@ -735,7 +737,7 @@ unconf_parallel: unconf_clean_parallel
 	echo ; 
 	echo ============= unconf Parallel
 	echo ; 
-	./run unconf
+	$(RUN) unconf
 	echo ============= Done unconf Parallel
 
 unconf_clean:
@@ -762,7 +764,7 @@ well_parallel: well_clean_parallel
 	echo ; 
 	echo ============= well Parallel
 	echo ; 
-	./run well
+	$(RUN) well
 	echo ============= Done well Parallel
 
 well_clean:
