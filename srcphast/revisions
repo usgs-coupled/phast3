@@ -1,6 +1,9 @@
+---------------------------------------
+PHAST, Version 1.4.2 (November 17, 2007)
+---------------------------------------
 	
     svn 2283: Now writes .restart.gz, a gzip file. File can be 
-    by unzipped and edited. On restarting, either ascii or gzipped
+    unzipped and edited. On restarting, either ascii or gzipped
     file can be read; type is determined automatically. Removed 
     old code for restart file.
 

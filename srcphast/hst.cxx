@@ -953,6 +953,12 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
       // read data
       j = tempBin.read_raw_keyword(cparser);  /* j is count_chem number */
       if (j < 0) continue;
+      if (j > count_chem)
+      {
+	error_msg("Terminating in distribute_initial_conditions.\n", CONTINUE);
+	error_msg("Cell number is greater than number of chemistry cells.\n", CONTINUE);
+	error_msg("Is .trans.dat file compatible with restart file?\n", STOP);
+      }
       i = back[j].list[0];                    /* i is ixyz number */
 
       // solution

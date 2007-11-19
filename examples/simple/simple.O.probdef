@@ -152,19 +152,19 @@
           Maximum time step allowed ....................................... DTIMMX   1.00E+04  (yr )
 
 
-                    Initial fluid in region ...............................  0.100009E+04  (kg) ;  0.100009E+01  (m^3)
+                    Initial fluid in region ...............................  1.000090E+03  (kg) ;  1.000090E+00  (m^3)
 
-                    Initial solute in region:H         ....................  0.362880E-06  (kg)
+                    Initial solute in region:H         ....................  3.628801E-07  (kg)
 
-                    Initial solute in region:O         ....................  0.525319E-06  (kg)
+                    Initial solute in region:O         ....................  5.253193E-07  (kg)
 
-                    Initial solute in region:Br        ....................  0.799194E-01  (kg)
+                    Initial solute in region:Br        ....................  7.991941E-02  (kg)
 
                     Initial solute in region:Cl        ....................  0.000000E+00  (kg)
 
-                    Initial solute in region:Na        ....................  0.229942E-01  (kg)
+                    Initial solute in region:Na        ....................  2.299424E-02  (kg)
 
-                    Initial solute in region:Charge    ....................  0.296690E-06  (kg)
+                    Initial solute in region:Charge    ....................  2.966898E-07  (kg)
 
  ------------------------------------------------------------------------------------------------------------------------
  ------------------------------------------------------------------------------------------------------------------------
