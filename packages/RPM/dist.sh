@@ -175,12 +175,16 @@ rm -rf "$DISTPATH/examples/run"
 rm -rf "$DISTPATH/examples/schema"
 rm -rf "$DISTPATH/examples/zero.sed"
 rm -rf "$DISTPATH/examples/zero1.sed"
+rm -rf "$DISTPATH/examples/runmpich"
 rm -rf "$DISTPATH/examples/ex4/ex4.restart"
+rm -rf "$DISTPATH/examples/print_check_ss/print_check_ss.head.dat"
+rm -rf "$DISTPATH/examples/print_check_ss/print_check_ss.dmp"
 rm -rf "$DISTPATH/src/phast/win32_2005/*.user"
 find "$DISTPATH/examples" -type f -name '*.restart' ! -wholename '*/ex4restart/ex4.restart' -print | xargs rm -rf
 find "$DISTPATH/examples" -type d -name '0' -print | xargs rm -rf
 find "$DISTPATH/examples" -type f -name 'clean' -print | xargs rm -rf
 find "$DISTPATH/examples" -type f -name 'notes' -print | xargs rm -rf
+find "$DISTPATH/examples" -type f -name '*.wphast' -print | xargs rm -rf
 
 echo "Cleaning up srcinput directory"
 rm -rf "$DISTPATH/srcinput/test"
