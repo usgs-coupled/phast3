@@ -260,6 +260,9 @@ DEFINE_MERGE=-DMERGE_FILES
 #efence for debugging
 EFENCE_LIB=-L$(HOME)/packages/efence
 
+# -----------------------------------------------------------------------------
+# fixes shared object lookup error(SIGFPE floating point exception)
+HASH_STYLE=-Wl,--hash-style=sysv
 
 # -----------------------------------------------------------------------------
 # Versions
@@ -275,7 +278,7 @@ ifeq ($(CFG), SERIAL_ABSOFT)
   CC           = g++
   CFLAGS       = -Wall -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = -lm ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT)
+  LD_FLAGS     = -lm ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT) ${HASH_STYLE}
 endif
 
 # -----------------------------------------------------------------------------
@@ -290,7 +293,7 @@ ifeq ($(CFG), SERIAL_ABSOFT_DEBUG)
   CC           = g++
   CFLAGS       = -Wall -g $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS)  $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = -lm ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT) # ${EFENCE_LIB} -lefence
+  LD_FLAGS     = -lm ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT) ${HASH_STYLE} # ${EFENCE_LIB} -lefence
 endif
 
 # -----------------------------------------------------------------------------
@@ -308,7 +311,7 @@ ifeq ($(CFG), MPI_ABSOFT)
   CC           = mpiCC
   CFLAGS       = -Wall -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) $(LAM_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = -lm -lc ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT) -ldl
+  LD_FLAGS     = -lm -lc ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT) -ldl ${HASH_STYLE}
 endif
 
 # -----------------------------------------------------------------------------
@@ -328,7 +331,7 @@ ifeq ($(CFG), MPI_ABSOFT_DEBUG)
   CC           = mpiCC
   CFLAGS       = -Wall  -ansi -g $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) $(LAM_INCLUDES)# -Wconversion 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = -lm -lc ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT) -ldl # ${EFENCE_LIB} -lefence
+  LD_FLAGS     = -lm -lc ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT) -ldl ${HASH_STYLE} # ${EFENCE_LIB} -lefence
 endif
 
 # -----------------------------------------------------------------------------
@@ -340,7 +343,7 @@ ifeq ($(CFG), SERIAL_LAHEY)
   CC           = g++
   CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS)  $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS) $(LAHEY_RUNTIME)
-  LD_FLAGS     = -lm  ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY)
+  LD_FLAGS     = -lm  ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY) ${HASH_STYLE}
 endif
 
 # -----------------------------------------------------------------------------
@@ -352,7 +355,7 @@ ifeq ($(CFG), SERIAL_LAHEY_DEBUG)
   CC           = g++
   CFLAGS       = -Wall  -g $(DEFINES)  $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS)  $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS) $(LAHEY_RUNTIME)
-  LD_FLAGS     = -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY)
+  LD_FLAGS     = -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY) ${HASH_STYLE}
 endif
 
 # -----------------------------------------------------------------------------
@@ -367,7 +370,7 @@ ifeq ($(CFG), MPI_LAHEY)
   CC           = mpiCC
   CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) $(LAM_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS) $(LAHEY_RUNTIME)
-  LD_FLAGS     = -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY) -ldl
+  LD_FLAGS     = -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY) -ldl ${HASH_STYLE}
 endif
 
 # -----------------------------------------------------------------------------
@@ -382,7 +385,7 @@ ifeq ($(CFG), MPI_LAHEY_DEBUG)
   CC           = mpiCC
   CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) $(LAM_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS) $(LAHEY_RUNTIME)
-  LD_FLAGS     = -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY) -ldl
+  LD_FLAGS     = -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY) -ldl ${HASH_STYLE}
 endif
 
 # -----------------------------------------------------------------------------
@@ -394,7 +397,7 @@ ifeq ($(CFG), SERIAL_G95)
   CC           = g++
   CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
+  LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS} ${HASH_STYLE} 
 endif
 
 # -----------------------------------------------------------------------------
@@ -406,7 +409,7 @@ ifeq ($(CFG), SERIAL_G95_DEBUG)
   CC           = g++
   CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS)  $(HDF_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
+  LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS} ${HASH_STYLE}
 endif
 
 # -----------------------------------------------------------------------------
@@ -421,7 +424,7 @@ ifeq ($(CFG), MPI_G95)
   CC           = mpiCC
   CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) $(LAM_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS} -ldl
+  LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS} -ldl ${HASH_STYLE}
 endif
 
 # -----------------------------------------------------------------------------
@@ -436,7 +439,7 @@ ifeq ($(CFG), MPI_G95_DEBUG)
   CC           = mpiCC
   CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) $(LAM_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS}  -ldl
+  LD_FLAGS     = $(LIBG95) -lm ${CL1MP_LIB} ${HDF5_LIBS}  -ldl ${HASH_STYLE}
 endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_GFORTRAN)
@@ -447,7 +450,7 @@ ifeq ($(CFG), SERIAL_GFORTRAN)
   CC           = g++
   CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
+  LD_FLAGS     = $(LIBGFORTRAN) -lm ${CL1MP_LIB} ${HDF5_LIBS} ${HASH_STYLE}
 endif
 
 # -----------------------------------------------------------------------------
@@ -459,7 +462,7 @@ ifeq ($(CFG), SERIAL_GFORTRAN_DEBUG)
   CC           = g++
   CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS)  $(HDF_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN) -lm ${CL1MP_LIB} ${HDF5_LIBS} 
+  LD_FLAGS     = $(LIBGFORTRAN) -lm ${CL1MP_LIB} ${HDF5_LIBS} ${HASH_STYLE}
 endif
 
 # -----------------------------------------------------------------------------
@@ -471,7 +474,7 @@ ifeq ($(CFG), SERIAL_GFORTRAN_64)
   CC           = g++
   CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN_64) -lm ${CL1MP_LIB} ${HDF5_LIBS_64} 
+  LD_FLAGS     = $(LIBGFORTRAN_64) -lm ${CL1MP_LIB} ${HDF5_LIBS_64} ${HASH_STYLE}
 endif
 
 # -----------------------------------------------------------------------------
@@ -483,7 +486,7 @@ ifeq ($(CFG), SERIAL_GFORTRAN_64_DEBUG)
   CC           = g++
   CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS)  $(HDF_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN_64) -lm ${CL1MP_LIB} ${HDF5_LIBS_64} 
+  LD_FLAGS     = $(LIBGFORTRAN_64) -lm ${CL1MP_LIB} ${HDF5_LIBS_64} ${HASH_STYLE}
 endif
 
 # -----------------------------------------------------------------------------
@@ -498,7 +501,7 @@ ifeq ($(CFG), MPI_GFORTRAN)
   CC           = mpiCC
   CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) $(LAM_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN) -lm ${CL1MP_LIB} ${HDF5_LIBS} -ldl
+  LD_FLAGS     = $(LIBGFORTRAN) -lm ${CL1MP_LIB} ${HDF5_LIBS} -ldl ${HASH_STYLE}
 endif
 
 # -----------------------------------------------------------------------------
@@ -513,7 +516,7 @@ ifeq ($(CFG), MPI_GFORTRAN_DEBUG)
   CC           = mpiCC
   CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) $(LAM_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN) -lm ${CL1MP_LIB} ${HDF5_LIBS}  -ldl
+  LD_FLAGS     = $(LIBGFORTRAN) -lm ${CL1MP_LIB} ${HDF5_LIBS}  -ldl ${HASH_STYLE}
 endif
 
 # -----------------------------------------------------------------------------
@@ -527,7 +530,7 @@ ifeq ($(CFG), OPENMPI_GFORTRAN)
   CC           = mpicxx
   CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN) ${HDF5_LIBS}  -ldl # -lm ${CL1MP_LIB}
+  LD_FLAGS     = $(LIBGFORTRAN) ${HDF5_LIBS}  -ldl ${HASH_STYLE} # -lm ${CL1MP_LIB}
 endif
 
 # -----------------------------------------------------------------------------
@@ -541,7 +544,7 @@ ifeq ($(CFG), OPENMPI_GFORTRAN_DEBUG)
   CC           = mpicxx
   CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN) ${HDF5_LIBS}  -ldl # -lm ${CL1MP_LIB}
+  LD_FLAGS     = $(LIBGFORTRAN) ${HDF5_LIBS}  -ldl ${HASH_STYLE} # -lm ${CL1MP_LIB}
 endif
 
 # -----------------------------------------------------------------------------
@@ -558,7 +561,7 @@ ifeq ($(CFG), OPENMPI_GFORTRAN_64)
   CC           = mpiCC
   CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS_64}  -ldl # -lm ${CL1MP_LIB}
+  LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS_64}  -ldl ${HASH_STYLE} # -lm ${CL1MP_LIB}
 endif
 
 # -----------------------------------------------------------------------------
@@ -575,7 +578,7 @@ ifeq ($(CFG), OPENMPI_GFORTRAN_64_DEBUG)
   CC           = mpiCC
   CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS_64}  -ldl 
+  LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS_64}  -ldl ${HASH_STYLE}
 endif
 
 # -----------------------------------------------------------------------------
@@ -601,7 +604,7 @@ ifeq ($(CFG), MPICH_GFORTRAN)
   CC           = $(MPICH_BIN)/mpicxx
   CFLAGS       = -Wall  -O3 $(DEFINES) $(MPICH_INCLUDES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN) ${HDF5_LIBS}  -ldl ${MPICH_LIB} # -lm ${CL1MP_LIB}
+  LD_FLAGS     = $(LIBGFORTRAN) ${HDF5_LIBS}  -ldl ${MPICH_LIB} ${HASH_STYLE} # -lm ${CL1MP_LIB}
 endif
 
 # -----------------------------------------------------------------------------
