@@ -25,7 +25,7 @@ CCFLAGS=-g -Wall -ansi -pedantic
 
 LOADFLAGS= -lm 
 LOADFLAGS+=$(call ld-option, -Wl$(comma)--hash-style=sysv)
-#LOADFLAGS= -lm -lefence
+#LOADFLAGS+= -lefence
 
 FILES=\
 	main.c		accumulate.c 	check.c 	gpc.c 		message.c\
