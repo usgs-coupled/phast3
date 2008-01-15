@@ -262,7 +262,7 @@ EFENCE_LIB=-L$(HOME)/packages/efence
 
 # -----------------------------------------------------------------------------
 # fixes shared object lookup error(SIGFPE floating point exception)
-HASH_STYLE=-Wl,--hash-style=sysv
+HASH_STYLE=$(call ld-option, -Wl$(comma)--hash-style=sysv)
 
 # -----------------------------------------------------------------------------
 # Versions
@@ -1232,6 +1232,15 @@ clean:
 dependencies:
 	mkdir -p $(SERIAL_ABSOFT_DIR) 
 	cd $(SERIAL_ABSOFT_DIR); gcc -MM -I../phreeqcpp -I../phreeqcpp/phreeqc ../*.cxx ../phreeqcpp/*.cxx
+
+
+#ld-option
+# Usage: ldflags += $(call ld-option, -Wl$(comma)--hash-style=sysv)
+comma=,
+ld-option = $(shell if $(CC) $(1) \
+              -nostdlib -o /dev/null -xc /dev/null \
+              > /dev/null 2>&1 ; then echo "$(1)" ; else echo "$(2)"; fi)
+
 
 # =============================================================================
 # End of makefile.
