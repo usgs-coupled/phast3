@@ -70,7 +70,7 @@ time.o: time.c hstinpt.h inputproto.h message.h time.h
 
 utilities.o: utilities.c hstinpt.h inputproto.h message.h time.h
 	$(CC) $(CCFLAGS) utilities.c -c
-v
+
 wells.o: wells.c hstinpt.h inputproto.h message.h time.h
 	$(CC) $(CCFLAGS) wells.c -c
 
