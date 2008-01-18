@@ -21,13 +21,13 @@ static void EndTimeStep(int print_sel, int print_out, int print_hdf);
 static void BeginCell(int print_sel, int print_out, int print_hdf, int index);
 static void EndCell(int print_sel, int print_out, int print_hdf, int index);
 static int n_to_ijk(int n_cell, int *i, int *j, int *k);
-
 static char const svnid[] = "$Id: hst.c 827 2006-03-06 20:19:41Z dlpark $";
-#define RANDOM
+/*#define RANDOM*/
 #define REBALANCE
 /* #define USE_MPI set in makefile */
 #ifdef USE_MPI
 static int mpi_write_restart(double time_hst);
+static int mpi_rebalance_load_per_cell(double *times_per_cell, double *frac, int transfer);
  #define MESSAGE_MAX_NUMBERS 1000
  #define MPI_MAX_TASKS 50
  #include <time.h>
@@ -45,7 +45,6 @@ static int mpi_write_restart(double time_hst);
  LDBLE mpi_processor_test_time;
  int end_cells[MPI_MAX_TASKS][2];
  int number_cells[MPI_MAX_TASKS];
-
 #define TIME
 #ifdef TIME
 LDBLE start_time, end_time, transport_time, transport_time_tot, chemistry_time, chemistry_time_tot, wait_time, wait_time_tot, optimum_chemistry, optimum_serial_time;
@@ -1403,6 +1402,8 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 	LDBLE t0;
 	static int write_headings = 1;
 	int n_proc;
+	std::vector<double> send_cell_times;
+	
 
 #ifdef TIME
 	static LDBLE time_distribute = 0.0, time_collect = 0.0, time_rebalance = 0.0;
@@ -1521,6 +1522,7 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 	reinitialize();
 	n_proc = 0;
 	for (k = first_cell; k <= last_cell; k++) {
+	  double cell_time = MPI_Wtime();
 		i = sort_random_list[k - first_cell];    /* 1 to count_chem */
 		j = back[i].list[0];                     /* 1 to nijk */
 		if (transient_free_surface == TRUE) partition_uz(i, j, frac[j]); 
@@ -1635,6 +1637,8 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 		// free phreeqc structures
 		reinitialize();
 		EndCell(*print_sel, *print_out, *print_hdf, n_proc);
+		cell_time = MPI_Wtime() - cell_time;
+		send_cell_times.push_back(cell_time);
 		n_proc++;
 	}
 #ifdef TIME
@@ -1696,8 +1700,10 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 
 	/* rebalance */
 	rebalance_count++;
+
 	if (rebalance_count >= 1) {
-		mpi_rebalance_load(time_sum/(last_cell - first_cell + 1), frac, TRUE);
+		//mpi_rebalance_load(time_sum/(last_cell - first_cell + 1), frac, TRUE);
+		mpi_rebalance_load_per_cell(&(send_cell_times.front()), frac, TRUE);
 		rebalance_count = 0;
 		time_sum = 0;
 		first_cell = mpi_first_cell;
@@ -2337,6 +2343,293 @@ int mpi_rebalance_load(double time_per_cell, double *frac, int transfer)
 		}
 	}
 	return(OK);
+}
+/* ---------------------------------------------------------------------- */
+int mpi_rebalance_load_per_cell(double *times_per_cell, double *frac, int transfer)
+/* ---------------------------------------------------------------------- */
+{
+#include <time.h>
+  std::vector<double> recv_cell_times_vector;
+  double *recv_cell_times;
+  if (mpi_myself == 0)
+  {
+    recv_cell_times_vector.push_back(0.0);
+    recv_cell_times_vector.reserve(count_chem);
+    recv_cell_times = &(recv_cell_times_vector.front());
+  }
+
+  double recv_buffer[MPI_MAX_TASKS + 1];
+  LDBLE total;
+  int i, j, k, min_cell, max_cell;
+  int end_cells_new[MPI_MAX_TASKS][2];
+  int cells[MPI_MAX_TASKS];
+  LDBLE new_n, min_time, max_time;
+  int n, total_cells, diff_cells, last;
+  int nnew, old;
+  int change;
+  int error;
+  LDBLE max_old, max_new, t;
+  int ihst, iphrq; /* ihst is natural number to ixyz; iphrq is 0 to count_chem */
+  int icells;
+#ifdef TIME
+  LDBLE t0;
+#endif
+  /*
+  * Put in root times 
+  */
+  if (mpi_myself == 0)
+  {
+    k = end_cells[0][1] - end_cells[0][0] + 1;
+    for (i = 0; i < k; i++)
+    {
+      recv_cell_times[i] = times_per_cell[i];
+    }
+  }
+  /*
+   *  Gather times of all cells
+   */
+  for (i = 1; i < mpi_tasks; i++) 
+  {
+    j = end_cells[i][0];
+    k = end_cells[i][1] - end_cells[i][0] + 1;
+    if (mpi_myself == i)
+    {
+      MPI_Send(times_per_cell, k, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
+    }
+    if (mpi_myself == 0)
+    {
+      MPI_Status mpi_status;
+      MPI_Recv(&recv_cell_times[j], k, MPI_DOUBLE, i, 0, MPI_COMM_WORLD, &mpi_status);
+    }
+  }
+/*
+  if (mpi_myself == 0) 
+  {
+    for (i = 0; i < count_chem; i++)
+    {
+      std::cout << i << "  " << recv_cell_times[i] << std::endl;
+    }
+    std::cerr << "Recver is done." << std::endl;
+
+  } else
+  {
+      std::cerr << "Sender is done." << std::endl;
+  }
+*/
+  /* hard code processor speeds for now */
+
+  if (mpi_myself == 0) 
+  {
+
+    std::vector<double> std_processor_time_vector;
+    for (i = 0; i < mpi_tasks; i++)
+    {
+      std_processor_time_vector.push_back(1.0);
+    }
+    double *std_processor_time = &(std_processor_time_vector.front());
+    //std::cerr << "Print root 2" << std::endl; 
+
+    // calculate fastest processor
+    double fastest_std_processor_time = 1e10;
+    for (i = 0; i < mpi_tasks; i++)
+    {
+      if (std_processor_time[i] < fastest_std_processor_time) fastest_std_processor_time = std_processor_time[i];
+    }
+
+    // calculate virtual processors relative to fastest processor
+    double virtual_processors = 0;
+    for (i = 0; i < mpi_tasks; i++)
+    {
+      virtual_processors += fastest_std_processor_time/ std_processor_time[i];
+    }
+    //std::cerr << "virtual_processors: " << virtual_processors << std::endl;
+
+    // calculate fraction of work for each processor
+    std::vector<double> processor_fraction_vector;
+    for (i = 0; i < mpi_tasks; i++)
+    {
+      processor_fraction_vector.push_back( (fastest_std_processor_time / std_processor_time[i]) / virtual_processors );
+    }
+    double *processor_fraction = &(processor_fraction_vector.front());
+    //for ( i = 0; i < mpi_tasks; i++)
+    //{
+      //std::cerr << i << "\tProcessor_fraction: " << processor_fraction[i] << std::endl;
+    //}
+
+    // calculate work on fastest processor
+    //std::vector<double> normalized_times_vector; 
+    //double *normalized_times; 
+
+    double total_normalized_time = 0;
+    for (i = 0; i < mpi_tasks; i++) 
+    {
+      //std::cerr << i << "\tNormalizing cells: " << end_cells[i][0] << "  to  " << end_cells[i][1] << std::endl;
+      for (k = end_cells[i][0]; k <= end_cells[i][1]; k++)
+      {
+	//std::cerr << k <<std::endl;
+	recv_cell_times[k] *= fastest_std_processor_time / std_processor_time[i];
+	total_normalized_time += recv_cell_times[k];
+      }
+    }
+    //
+    // recv_cell_times are now times normalized to fastest processor
+    //
+    //std::cerr << i << "\tTotal normalized_time: " << total_normalized_time << std::endl;
+
+    // split up work
+    j = 0;
+    end_cells_new[0][0] = 0;
+    for (i = 0; i < mpi_tasks - 1; i++)
+    {
+      if (i > 0) end_cells_new[i][0] = end_cells_new[i - 1][1] + 1;
+      double sum_work = 0; 
+      while ( (sum_work + (recv_cell_times[j] / total_normalized_time)) < processor_fraction[i] )
+      {
+	sum_work += recv_cell_times[j] / total_normalized_time;
+	j++;
+      }
+      if (j == end_cells_new[i][0])
+      {
+	end_cells_new[i][1] = j;
+	j++;
+      } else {
+	end_cells_new[i][1] = j - 1;
+      }
+    }
+    //std::cerr << i << "\tLast j: " << j << std::endl;
+    assert(j < count_chem);
+    assert(mpi_tasks > 1);
+    end_cells_new[mpi_tasks - 1][0] = end_cells_new[mpi_tasks - 2][1] + 1;
+    end_cells_new[mpi_tasks - 1][1] = count_chem - 1;
+    for (i = 0; i < mpi_tasks; i++)
+    {
+      std::cerr << i << "\tFirst cell: " << end_cells_new[i][0] << "\tLast cell: " << end_cells_new[i][1] << std::endl;
+    }
+
+    /*
+     *  Check that all cells are distributed
+     */
+    if (end_cells_new[mpi_tasks - 1][1] != count_cells - 1 ) {
+      output_msg(OUTPUT_STDERR,"Failed: %d, count_cells %d, last cell %d\n", diff_cells, count_cells, end_cells_new[mpi_tasks - 1][1]);
+      for (i = 0; i < mpi_tasks; i++) {
+	output_msg(OUTPUT_STDERR,"%d: first %d\tlast %d\n",i, end_cells_new[i][0], end_cells_new[i][1]);
+      }
+      error_msg("Failed to redistribute cells.", STOP);
+    }
+#ifdef SKIP_FOR_NOW
+    /*
+     *   Compare old and new times
+     */
+    max_old = 0.0;
+    max_new = 0.0;
+    for (i = 0; i < mpi_tasks; i++) {
+      t = cells[i]*recv_buffer[i];
+      if (t > max_new) max_new = t;
+      t = (end_cells[i][1] - end_cells[i][0] + 1)*recv_buffer[i];
+      if (t > max_old) max_old = t;
+    }
+#ifdef TIME
+    optimum_serial_time = 1e20;
+    for (i = 0; i < mpi_tasks; i++) {
+      t = count_cells*recv_buffer[i];
+      if (t < optimum_serial_time) {
+	optimum_serial_time = t;
+	/* fprintf(stderr,"%d, Optimum serial time: %e\n", i, (double) optimum_serial_time); */
+      }
+    }
+    optimum_chemistry = max_new;
+#endif
+    /* fprintf(stdout,"\tMax time new: %e. Max time old: %e. Estimated efficiency: %5.1f%%\n", max_new, max_old, 100.*max_new/max_old); */
+    output_msg(OUTPUT_STDERR,"          Estimated efficiency of chemistry without communication: %5.1f %%\n", (float) ((LDBLE)100.*max_new/max_old));
+    wait_time = max_old - max_new;
+    wait_time_tot += wait_time;
+#endif // SKIP_FOR_NOW
+
+#ifdef SKIP_FOR_NOW
+#ifdef REBALANCE
+    if ((max_old - max_new)/max_old < 0.01) {
+      /*			fprintf(stderr,"Stick\n"); */
+      for (i = 0; i < mpi_tasks; i++) {
+	end_cells_new[i][0] = end_cells[i][0];
+	end_cells_new[i][1] = end_cells[i][1];
+      }
+    } else {
+      for (i = 0; i < mpi_tasks - 1; i++) {
+	/*end_cells_new[i][1] = (end_cells_new[i][1] + end_cells[i][1])/2;*/
+	/*end_cells_new[i][1] = end_cells_new[i][1];*/
+	icells = (int) ((end_cells_new[i][1] - end_cells[i][1])*rebalance_fraction);
+	/*fprintf(stderr, "i %d, new %d, old %d, rebal_fraction %g, icells %d\n",i, end_cells_new[i][1], end_cells[i][1], rebalance_fraction, icells);*/
+	end_cells_new[i][1] = end_cells[i][1] + icells;
+	end_cells_new[i+1][0] = end_cells_new[i][1] + 1;
+      }
+    }
+#else
+    if (call_counter >= 1) {
+      for (i = 0; i < mpi_tasks; i++) {
+	end_cells_new[i][0] = end_cells[i][0];
+	end_cells_new[i][1] = end_cells[i][1];
+      }
+    }
+#endif
+#endif // SKIP_FOR_NOW
+  }
+  /*
+   *   Broadcast new subcolumns
+   */
+  MPI_Bcast(end_cells_new, 2*mpi_tasks, MPI_INT, 0, MPI_COMM_WORLD);
+  /*
+   *   Redefine columns
+   */
+  nnew = 0;
+  old = 0;
+  change = 0;
+#ifdef TIME
+  /* MPI_Barrier(MPI_COMM_WORLD); */
+  t0 = (LDBLE) MPI_Wtime();
+#endif
+  if (transfer == TRUE) {
+    for (k = 0; k < count_cells; k++) {
+      i = random_list[k];
+      iphrq = i;                    /* iphrq is 1 to count_chem */
+      ihst = back[i].list[0];       /* ihst is 1 to nxyz */
+      while (k > end_cells[old][1]) {
+	old++;
+      }
+      while (k > end_cells_new[nnew][1]) {
+	nnew++;
+      }
+
+      if (old == nnew) continue;
+      change++;
+      if (mpi_myself == old) 	{
+	szBin.mpi_send(iphrq, nnew);
+	if (transient_free_surface) {
+	  uzBin.mpi_send(iphrq, nnew);
+	  MPI_Send(&(frac[ihst]), 1, MPI_DOUBLE, nnew, 0, MPI_COMM_WORLD);
+	}
+	szBin.remove(iphrq);
+      }
+      if (mpi_myself == nnew)	{
+	szBin.mpi_recv(old);
+	if (transient_free_surface) {
+	  uzBin.mpi_recv(old);
+	  MPI_Status mpi_status;
+	  MPI_Recv(&(frac[ihst]), 1, MPI_DOUBLE, old, 0, MPI_COMM_WORLD, &mpi_status);
+	  old_frac[ihst] = frac[ihst];
+	}
+      }
+    }
+  }
+  mpi_first_cell = end_cells_new[mpi_myself][0];
+  mpi_last_cell = end_cells_new[mpi_myself][1];
+  for (i = 0; i < mpi_tasks; i++) {
+    end_cells[i][0] = end_cells_new[i][0];
+    end_cells[i][1] = end_cells_new[i][1];
+    if (mpi_myself == 0) {
+      /* fprintf(stderr, "Task %d: %d\t-\t%d\n", i, end_cells[i][0], end_cells[i][1]); */
+    }
+  }
+  return(OK);
 }
 /* ---------------------------------------------------------------------- */
 int mpi_set_random(void)
