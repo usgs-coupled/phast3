@@ -2461,29 +2461,53 @@ int mpi_rebalance_load_per_cell(double *times_per_cell, double *frac, int transf
     //double *normalized_times; 
 
     double total_normalized_time = 0;
+    std::vector<double> total_processor_time_vector;
     for (i = 0; i < mpi_tasks; i++) 
     {
+      double tot = 0;
       //std::cerr << i << "\tNormalizing cells: " << end_cells[i][0] << "  to  " << end_cells[i][1] << std::endl;
       for (k = end_cells[i][0]; k <= end_cells[i][1]; k++)
       {
 	//std::cerr << k <<std::endl;
+	tot += recv_cell_times[k];
 	recv_cell_times[k] *= fastest_std_processor_time / std_processor_time[i];
 	total_normalized_time += recv_cell_times[k];
       }
+      total_processor_time_vector.push_back(tot);
     }
     //
     // recv_cell_times are now times normalized to fastest processor
     //
     //std::cerr << i << "\tTotal normalized_time: " << total_normalized_time << std::endl;
-
+    // calculate max processor time
+    double max_processor_time = 0;
+    double *total_processor_time = &(total_processor_time_vector.front());
+    for (i = 0; i < mpi_tasks; i++) 
+    {
+      if (total_processor_time[i] > max_processor_time) max_processor_time = total_processor_time[i];
+    }
+    // calculate efficiency
+    double efficiency = 0;
+    double wait_time = 0;
+    for (i = 0; i < mpi_tasks; i++) 
+    {
+      efficiency += total_processor_time[i] / max_processor_time * processor_fraction[i];
+      std::cerr << i << "\tTime: " << total_processor_time[i] << std::endl;
+      wait_time += (max_processor_time - total_processor_time[i]);
+    }
+    std::cerr << "          Estimated efficiency of chemistry without communication" << efficiency << std::endl;
+    wait_time = wait_time/mpi_tasks;
+    wait_time_tot += wait_time;
+    //
     // split up work
+    //
     j = 0;
     end_cells_new[0][0] = 0;
     for (i = 0; i < mpi_tasks - 1; i++)
     {
       if (i > 0) end_cells_new[i][0] = end_cells_new[i - 1][1] + 1;
       double sum_work = 0;
-      while ( ((sum_work + (recv_cell_times[j] / total_normalized_time)) < processor_fraction[i] )
+      while ( ((sum_work + (recv_cell_times[j] / total_normalized_time)) < 1.05 * processor_fraction[i] )
 	      && (count_chem - j) > (mpi_tasks - i))
       {
 	sum_work += recv_cell_times[j] / total_normalized_time;
@@ -2517,6 +2541,7 @@ int mpi_rebalance_load_per_cell(double *times_per_cell, double *frac, int transf
       }
       error_msg("Failed to redistribute cells.", STOP);
     }
+
 #ifdef SKIP_FOR_NOW
     /*
      *   Compare old and new times
