@@ -2482,8 +2482,9 @@ int mpi_rebalance_load_per_cell(double *times_per_cell, double *frac, int transf
     for (i = 0; i < mpi_tasks - 1; i++)
     {
       if (i > 0) end_cells_new[i][0] = end_cells_new[i - 1][1] + 1;
-      double sum_work = 0; 
-      while ( (sum_work + (recv_cell_times[j] / total_normalized_time)) < processor_fraction[i] )
+      double sum_work = 0;
+      while ( ((sum_work + (recv_cell_times[j] / total_normalized_time)) < processor_fraction[i] )
+	      && (count_chem - j) > (mpi_tasks - i))
       {
 	sum_work += recv_cell_times[j] / total_normalized_time;
 	j++;
