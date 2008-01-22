@@ -2495,8 +2495,10 @@ int mpi_rebalance_load_per_cell(double *times_per_cell, double *frac, int transf
       std::cerr << i << "\tTime: " << total_processor_time[i] << std::endl;
       wait_time += (max_processor_time - total_processor_time[i]);
     }
-    std::cerr << "          Estimated efficiency of chemistry without communication" << efficiency << std::endl;
-    wait_time = wait_time/mpi_tasks;
+    output_msg(OUTPUT_STDERR,"          Estimated efficiency of chemistry without communication: %5.1f %%\n", (float) (100.* efficiency));
+
+    //wait_time = wait_time/mpi_tasks;
+    wait_time = 0.0;
     wait_time_tot += wait_time;
     //
     // split up work
