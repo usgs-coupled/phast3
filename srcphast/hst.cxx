@@ -2492,7 +2492,7 @@ int mpi_rebalance_load_per_cell(double *times_per_cell, double *frac, int transf
     for (i = 0; i < mpi_tasks; i++) 
     {
       efficiency += total_processor_time[i] / max_processor_time * processor_fraction[i];
-      std::cerr << i << "\tTime: " << total_processor_time[i] << std::endl;
+      std::cerr << i << "\tTime: " << total_processor_time[i] << "\tFirst cell: " << end_cells[i][0] << "\tLast cell: " << end_cells[i][1] << std::endl;
       wait_time += (max_processor_time - total_processor_time[i]);
     }
     output_msg(OUTPUT_STDERR,"          Estimated efficiency of chemistry without communication: %5.1f %%\n", (float) (100.* efficiency));
@@ -2528,10 +2528,10 @@ int mpi_rebalance_load_per_cell(double *times_per_cell, double *frac, int transf
     assert(mpi_tasks > 1);
     end_cells_new[mpi_tasks - 1][0] = end_cells_new[mpi_tasks - 2][1] + 1;
     end_cells_new[mpi_tasks - 1][1] = count_chem - 1;
-    for (i = 0; i < mpi_tasks; i++)
-    {
-      std::cerr << i << "\tFirst cell: " << end_cells_new[i][0] << "\tLast cell: " << end_cells_new[i][1] << std::endl;
-    }
+    //for (i = 0; i < mpi_tasks; i++)
+    //{
+    //  std::cerr << i << "\tFirst cell: " << end_cells_new[i][0] << "\tLast cell: " << end_cells_new[i][1] << std::endl;
+    //}
 
     /*
      *  Check that all cells are distributed
