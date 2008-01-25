@@ -22,7 +22,7 @@ static void BeginCell(int print_sel, int print_out, int print_hdf, int index);
 static void EndCell(int print_sel, int print_out, int print_hdf, int index);
 static int n_to_ijk(int n_cell, int *i, int *j, int *k);
 static char const svnid[] = "$Id: hst.c 827 2006-03-06 20:19:41Z dlpark $";
-/*#define RANDOM*/
+#define RANDOM
 #define REBALANCE
 /* #define USE_MPI set in makefile */
 #ifdef USE_MPI
@@ -49,6 +49,7 @@ static int mpi_rebalance_load_per_cell(double *times_per_cell, double *frac, int
 #ifdef TIME
 LDBLE start_time, end_time, transport_time, transport_time_tot, chemistry_time, chemistry_time_tot, wait_time, wait_time_tot, optimum_chemistry, optimum_serial_time;
 #endif
+std::vector<double> std_processor_time_vector;
 int static call_counter=0;
 #else  /* #ifdef USE_MPI */
  const int mpi_tasks      = 1;
@@ -1702,12 +1703,12 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 	rebalance_count++;
 
 	if (rebalance_count >= 1) {
-		//mpi_rebalance_load(time_sum/(last_cell - first_cell + 1), frac, TRUE);
-		mpi_rebalance_load_per_cell(&(send_cell_times.front()), frac, TRUE);
-		rebalance_count = 0;
-		time_sum = 0;
-		first_cell = mpi_first_cell;
-		last_cell = mpi_last_cell;
+	  //mpi_rebalance_load(time_sum/(last_cell - first_cell + 1), frac, TRUE);
+	  mpi_rebalance_load_per_cell(&(send_cell_times.front()), frac, TRUE);
+	  rebalance_count = 0;
+	  time_sum = 0;
+	  first_cell = mpi_first_cell;
+	  last_cell = mpi_last_cell;
 	}
 	sort_random_list = (int *) free_check_null(sort_random_list);
 #ifdef TIME
@@ -2108,13 +2109,29 @@ int mpi_set_subcolumn(double *frac)
 	 *  Timing loop
 	 */
 	t0 = (LDBLE) MPI_Wtime();
+#ifdef SKIP
 	time_exec = 0;
-	j = 100*100*100*10;
+	j = 100*100*100*10*100*2;
 	for (i = 1; i < j; i++) {
 //		time_exec += 1.0/(double) i;
 		time_exec += 1.0/sqrt((double) i);
 	}
 	time_exec = (LDBLE) MPI_Wtime() - t0;
+#endif
+	int jmax = 1000000;
+	int imax = 10000;
+	double t = 0;
+	double time_test = 15.0;
+	for (j = 1; j < jmax; j++)
+	{
+	  for (i = 1; i < imax; i++) {
+	    t += 1.0/sqrt((double) i);
+	  }
+	  time_exec = (LDBLE) MPI_Wtime() - t0;
+	  if (time_exec > time_test && t > 0) break;
+	}
+	time_exec = ((double) jmax * (double) imax) / ((double) j * (double) imax + (double) i) * time_exec;
+
 	/*
 	 *  Gather times of all tasks
 	 */
@@ -2163,6 +2180,12 @@ int mpi_rebalance_load(double time_per_cell, double *frac, int transfer)
 		if (error == FALSE) {
 			/* new_n is number of cells for root */
 			new_n = count_cells/total;
+		}
+		for (i = 0; i < mpi_tasks; i++)
+		{
+		  std_processor_time_vector.push_back(recv_buffer[i]);
+		  //std_processor_time_vector.push_back(1.0);
+		  std::cerr << i << "Std time: " << recv_buffer[i] << std::endl;
 		}
 	}
 	/*
@@ -2358,19 +2381,12 @@ int mpi_rebalance_load_per_cell(double *times_per_cell, double *frac, int transf
     recv_cell_times = &(recv_cell_times_vector.front());
   }
 
-  double recv_buffer[MPI_MAX_TASKS + 1];
-  LDBLE total;
-  int i, j, k, min_cell, max_cell;
+  int i, j, k;
   int end_cells_new[MPI_MAX_TASKS][2];
-  int cells[MPI_MAX_TASKS];
-  LDBLE new_n, min_time, max_time;
-  int n, total_cells, diff_cells, last;
+  int diff_cells;
   int nnew, old;
   int change;
-  int error;
-  LDBLE max_old, max_new, t;
   int ihst, iphrq; /* ihst is natural number to ixyz; iphrq is 0 to count_chem */
-  int icells;
 #ifdef TIME
   LDBLE t0;
 #endif
@@ -2421,11 +2437,13 @@ int mpi_rebalance_load_per_cell(double *times_per_cell, double *frac, int transf
   if (mpi_myself == 0) 
   {
 
+#ifdef  SKIP
     std::vector<double> std_processor_time_vector;
     for (i = 0; i < mpi_tasks; i++)
     {
       std_processor_time_vector.push_back(1.0);
     }
+#endif
     double *std_processor_time = &(std_processor_time_vector.front());
     //std::cerr << "Print root 2" << std::endl; 
 
@@ -2488,27 +2506,78 @@ int mpi_rebalance_load_per_cell(double *times_per_cell, double *frac, int transf
     }
     // calculate efficiency
     double efficiency = 0;
-    double wait_time = 0;
     for (i = 0; i < mpi_tasks; i++) 
     {
       efficiency += total_processor_time[i] / max_processor_time * processor_fraction[i];
       std::cerr << i << "\tTime: " << total_processor_time[i] << "\tFirst cell: " << end_cells[i][0] << "\tLast cell: " << end_cells[i][1] << std::endl;
-      wait_time += (max_processor_time - total_processor_time[i]);
     }
     output_msg(OUTPUT_STDERR,"          Estimated efficiency of chemistry without communication: %5.1f %%\n", (float) (100.* efficiency));
 
     //wait_time = wait_time/mpi_tasks;
-    wait_time = 0.0;
+    optimum_chemistry = efficiency * max_processor_time;
+    wait_time = max_processor_time - optimum_chemistry;
     wait_time_tot += wait_time;
     //
     // split up work
     //
+    double f_low, f_high;
+    f_high = 1 + 0.5/((double)mpi_tasks);
+    f_low = 1;
     j = 0;
     end_cells_new[0][0] = 0;
     for (i = 0; i < mpi_tasks - 1; i++)
     {
       if (i > 0) end_cells_new[i][0] = end_cells_new[i - 1][1] + 1;
       double sum_work = 0;
+      double temp_sum_work = 0;
+      int next = TRUE;
+      while (next == TRUE) 
+      {
+	temp_sum_work += recv_cell_times[j] / total_normalized_time;
+	if (( (
+	       (temp_sum_work < f_high * processor_fraction[i]) 
+	       /* && !(temp_sum_work > f_low * processor_fraction[i]) */
+	       )
+	    ||
+	      (sum_work < 0.5 * processor_fraction[i]))
+	    && (count_chem - j) > (mpi_tasks - i))
+	{
+	  sum_work = temp_sum_work;
+	  j++;
+	  next = TRUE;
+	} else 
+	{
+	  if (j == end_cells_new[i][0])
+	  {
+	    end_cells_new[i][1] = j;
+	    j++;
+	  } else {
+	    end_cells_new[i][1] = j - 1;
+	  }
+	  next = FALSE;
+	}
+	/*
+	if (( (temp_sum_work < 1.1 * processor_fraction[i]) ||
+	      (sum_work < 0.5 * processor_fraction[i])) 
+	    && (count_chem - j) > (mpi_tasks - i))
+	{
+	  sum_work = temp_sum_work;
+	  j++;
+	  next = TRUE;
+	} else 
+	{
+	  if (j == end_cells_new[i][0])
+	  {
+	    end_cells_new[i][1] = j;
+	    j++;
+	  } else {
+	    end_cells_new[i][1] = j - 1;
+	  }
+	  next = FALSE;
+	}
+	*/
+      }
+#ifdef SKIP
       while ( ((sum_work + (recv_cell_times[j] / total_normalized_time)) < 1.05 * processor_fraction[i] )
 	      && (count_chem - j) > (mpi_tasks - i))
       {
@@ -2522,6 +2591,7 @@ int mpi_rebalance_load_per_cell(double *times_per_cell, double *frac, int transf
       } else {
 	end_cells_new[i][1] = j - 1;
       }
+#endif
     }
     //std::cerr << i << "\tLast j: " << j << std::endl;
     assert(j < count_chem);
@@ -2573,6 +2643,7 @@ int mpi_rebalance_load_per_cell(double *times_per_cell, double *frac, int transf
     wait_time_tot += wait_time;
 #endif // SKIP_FOR_NOW
 
+
 #ifdef SKIP_FOR_NOW
 #ifdef REBALANCE
     if ((max_old - max_new)/max_old < 0.01) {
@@ -2581,8 +2652,10 @@ int mpi_rebalance_load_per_cell(double *times_per_cell, double *frac, int transf
 	end_cells_new[i][0] = end_cells[i][0];
 	end_cells_new[i][1] = end_cells[i][1];
       }
-    } else {
-      for (i = 0; i < mpi_tasks - 1; i++) {
+    } else
+    {
+      for (i = 0; i < mpi_tasks - 1; i++)
+      {
 	/*end_cells_new[i][1] = (end_cells_new[i][1] + end_cells[i][1])/2;*/
 	/*end_cells_new[i][1] = end_cells_new[i][1];*/
 	icells = (int) ((end_cells_new[i][1] - end_cells[i][1])*rebalance_fraction);
@@ -2599,8 +2672,16 @@ int mpi_rebalance_load_per_cell(double *times_per_cell, double *frac, int transf
       }
     }
 #endif
-#endif // SKIP_FOR_NOW
-  }
+#endif
+    for (i = 0; i < mpi_tasks - 1; i++)
+    {
+      int icells;
+      icells = (int) ((end_cells_new[i][1] - end_cells[i][1])*rebalance_fraction);
+      if (icells == 0) icells = end_cells_new[i][1] - end_cells[i][1];
+      end_cells_new[i][1] = end_cells[i][1] + icells;
+      end_cells_new[i+1][0] = end_cells_new[i][1] + 1;
+    }
+  } // mpi_myself = 0
   /*
    *   Broadcast new subcolumns
    */
