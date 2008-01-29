@@ -60,7 +60,7 @@ SUBROUTINE phast_root(mpi_tasks, mpi_myself)
      IF(solute) THEN  
 #ifdef USE_MPI
         CALL slave_get_indexes(indx_sol1_ic, indx_sol2_ic, ic_mxfrac, naxes, nxyz, &
-            x_node, y_node, z_node, cnvtmi, transient_fresur, steady_flow, pv0)
+            x_node, y_node, z_node, cnvtmi, transient_fresur, steady_flow, pv0, rebalance_method_f)
 #endif
         CALL forward_and_back(indx_sol1_ic, naxes, nx, ny, nz)  
         CALL distribute_initial_conditions(indx_sol1_ic, indx_sol2_ic, ic_mxfrac)

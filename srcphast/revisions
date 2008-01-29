@@ -1,3 +1,15 @@
+    svn 2628: Added optional rebalance algorithm for parallel
+    version, -rebalance_by_cell T/F. Default is false. By default,
+    PHAST looks at the total time taken to run chemistry on a 
+    block of cells and from that calculates the average time per
+    cell, which is used to rebalance the load among the available
+    processors. The new algorithm (-rebalance_by_cell T) measures the 
+    time for each cell individually and rebalances based on this 
+    information. The new method should only be needed for kinetic 
+    problems where some cells take much longer to run than other
+    cells.
+
+
 ---------------------------------------
 PHAST, Version 1.4.2 (November 17, 2007)
 ---------------------------------------

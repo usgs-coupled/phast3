@@ -1703,8 +1703,13 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 	rebalance_count++;
 
 	if (rebalance_count >= 1) {
-	  //mpi_rebalance_load(time_sum/(last_cell - first_cell + 1), frac, TRUE);
-	  mpi_rebalance_load_per_cell(&(send_cell_times.front()), frac, TRUE);
+	  if (rebalance_method == 0)
+	  {
+	    mpi_rebalance_load(time_sum/(last_cell - first_cell + 1), frac, TRUE);
+	  } else
+	  {
+	    mpi_rebalance_load_per_cell(&(send_cell_times.front()), frac, TRUE);
+	  }
 	  rebalance_count = 0;
 	  time_sum = 0;
 	  first_cell = mpi_first_cell;
@@ -2185,7 +2190,8 @@ int mpi_rebalance_load(double time_per_cell, double *frac, int transfer)
 		{
 		  std_processor_time_vector.push_back(recv_buffer[i]);
 		  //std_processor_time_vector.push_back(1.0);
-		  std::cerr << i << "Std time: " << recv_buffer[i] << std::endl;
+		  // Print std times
+		  //std::cerr << i << "  Std time: " << recv_buffer[i] << std::endl;
 		}
 	}
 	/*
@@ -2509,7 +2515,8 @@ int mpi_rebalance_load_per_cell(double *times_per_cell, double *frac, int transf
     for (i = 0; i < mpi_tasks; i++) 
     {
       efficiency += total_processor_time[i] / max_processor_time * processor_fraction[i];
-      std::cerr << i << "\tTime: " << total_processor_time[i] << "\tFirst cell: " << end_cells[i][0] << "\tLast cell: " << end_cells[i][1] << std::endl;
+      // Print cell distribution
+      //std::cerr << i << "\tTime: " << total_processor_time[i] << "\tFirst cell: " << end_cells[i][0] << "\tLast cell: " << end_cells[i][1] << std::endl;
     }
     output_msg(OUTPUT_STDERR,"          Estimated efficiency of chemistry without communication: %5.1f %%\n", (float) (100.* efficiency));
 

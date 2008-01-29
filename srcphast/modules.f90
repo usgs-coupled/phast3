@@ -112,6 +112,7 @@ MODULE mcc
        ntprc, ntprvel, ntprwel, ntprtem
   LOGICAL :: steady_flow, converge_ss
   REAL(KIND=kdp) :: timchg, timrst, rebalance_fraction_f = 0.5_kdp
+  INTEGER :: rebalance_method_f
   REAL(KIND=kdp) :: dptas=0.0_kdp, dtimmn=0.0_kdp, dtimmx=0.0_kdp, dtimu=0.0_kdp, dttas=0.0_kdp, &
        eps = 1.e-5_kdp, epsfs, timprt, &
        tolden, toldnc, toldnt

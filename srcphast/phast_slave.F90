@@ -44,7 +44,7 @@ SUBROUTINE phast_slave(mpi_tasks, mpi_myself)
 
   IF(solute) THEN
      CALL slave_get_indexes(indx_sol1_ic, indx_sol2_ic, ic_mxfrac, naxes, nxyz, &
-          x_node, y_node, z_node, cnvtmi, transient_fresur, steady_flow, pv0)
+          x_node, y_node, z_node, cnvtmi, transient_fresur, steady_flow, pv0, rebalance_method_f)
      CALL forward_and_back(indx_sol1_ic, naxes, nx, ny, nz)  
      CALL distribute_initial_conditions(indx_sol1_ic, indx_sol2_ic, ic_mxfrac)
      CALL uz_init(transient_fresur)
@@ -56,7 +56,7 @@ SUBROUTINE phast_slave(mpi_tasks, mpi_myself)
      print_restart_flag = 0 
      CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time_phreeqc,deltim_dummy,prslmi,  &
            cnvtmi,frac_icchem,iprint_chem,iprint_xyz, &
-           prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f,&
+           prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f, &
            print_restart_flag, pv, pv0, steady_flow)
      stop_msg = 0
      deltim_dummy = 0._kdp

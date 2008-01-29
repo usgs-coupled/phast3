@@ -559,8 +559,9 @@ SUBROUTINE read2
      READ(fuins,*) crosd
      IF (print_rde) WRITE(furde,8001) 'crosd,[2.22.1a]', crosd
      ! ... cross dispersion calculation
-     READ(fuins,*) rebalance_fraction_f
-     IF (print_rde) WRITE(furde,8001) 'rebalance_fraction', rebalance_fraction_f
+     READ(fuins,*) rebalance_fraction_f, rebalance_method_f
+     IF (print_rde) WRITE(furde,"(tr5,a/tr5,1pg12.5)") 'rebalance_fraction', rebalance_fraction_f
+     IF (print_rde) WRITE(furde,"(tr5,a/tr5,i12)") 'rebalance_method', rebalance_method_f
   ENDIF
   READ(fuins, *) tolden, maxitn  
   IF (print_rde) WRITE(furde, 8025) 'tolden,maxitn,[2.22.2]', tolden, maxitn  
