@@ -4006,9 +4006,10 @@ int read_solution_method (void)
 		"time_differencing",      /* 12 */
 		"time",                   /* 13 */
 		"cross_dispersion",       /* 14 */
-		"rebalance_fraction"      /* 15 */
+		"rebalance_fraction",     /* 15 */
+		"rebalance_by_cell"       /* 16 */
 	};
-	int count_opt_list = 16;
+	int count_opt_list = 17;
 /*
  *   Read flags:
  */
@@ -4107,6 +4108,9 @@ int read_solution_method (void)
 				rebalance_fraction = 0.5;
 			}
 			break;
+		    case 16:                        /* rebalance_by_cell */
+			    rebalance_by_cell = get_true_false(next_char, TRUE);
+			    break;
 		}
 		if (return_value == EOF || return_value == KEYWORD) break;
 	}

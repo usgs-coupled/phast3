@@ -1057,8 +1057,8 @@ int write_calculation_static(void)
 		} else {
 			output_msg(OUTPUT_HST,"     F\n");
 		}
-		output_msg(OUTPUT_HST,"C..          rebalance fraction for parallel processing\n");
-		output_msg(OUTPUT_HST,"     %g \n", rebalance_fraction);
+		output_msg(OUTPUT_HST,"C..          rebalance fraction for parallel processing, rebalance_by_cell 0/1\n");
+		output_msg(OUTPUT_HST,"     %g %d\n", rebalance_fraction, rebalance_by_cell);
 	}
 	output_msg(OUTPUT_HST,"C.2.22.2 .. TOLDEN{.001},MAXITN{5}\n");
 	output_msg(OUTPUT_HST,"     .001  %d\n", max_ss_iterations);

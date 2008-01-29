@@ -527,6 +527,7 @@ void initialize(void)
 	solver_time = 1.0;
 	cross_dispersion = FALSE;
 	rebalance_fraction = 0.5;
+	rebalance_by_cell = FALSE;
 /*
  *   print input values set to false, xy true
  */
