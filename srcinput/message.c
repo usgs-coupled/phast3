@@ -55,6 +55,16 @@ int output_message(const int type, const char *err_str, const int stop, const ch
 }
 
 /* ---------------------------------------------------------------------- */
+int output_message_noargs(const int type, const char *err_str, const int stop, ...)
+/* ---------------------------------------------------------------------- */
+{
+  va_list args;
+  va_start(args, stop);
+  return output_message(type, err_str, stop, "", args);
+  va_end(args);
+}
+
+/* ---------------------------------------------------------------------- */
 int clean_up_message(void)
 /* ---------------------------------------------------------------------- */
 {
@@ -70,19 +80,21 @@ int clean_up_message(void)
 int error_msg (const char *err_str, const int stop)
 /* ---------------------------------------------------------------------- */
 {
-  va_list args(0);
+  //va_list args(0);
   if (input_error <= 0) input_error = 1;
-  return output_message(OUTPUT_ERROR, err_str, stop, "", args);
+  //return output_message(OUTPUT_ERROR, err_str, stop, "", args);
+  return output_message_noargs(OUTPUT_ERROR, err_str, stop);
 }
 
 /* ---------------------------------------------------------------------- */
 int warning_msg (const char *err_str)
 /* ---------------------------------------------------------------------- */
 {
-  va_list args(0);
+  //va_list args(0);
   int return_value;
 
-  return_value = output_message(OUTPUT_WARNING, err_str, CONTINUE, "", args);
+  //return_value = output_message(OUTPUT_WARNING, err_str, CONTINUE, "", args);
+  return_value = output_message_noargs(OUTPUT_WARNING, err_str, CONTINUE);
   count_warnings++;
   return (return_value);
 }
