@@ -72,7 +72,7 @@ SUBROUTINE write5
   WRITE(logline1,5001) '     End of Time Step No. ', itime
 5001 FORMAT(a,i5)
   WRITE(logline2,5002) '     Time '//dots,cnvtmi*time,' ('//TRIM(TRIM(unittm))//')'
-5002 FORMAT(a60,1PG12.3,a)
+5002 FORMAT(a60,1PG15.6,a)
   CALL logprt_c(logline1)
   CALL logprt_c(logline2)
   IF(prslm) THEN
