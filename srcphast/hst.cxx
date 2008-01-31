@@ -2126,7 +2126,11 @@ int mpi_set_subcolumn(double *frac)
 	int jmax = 1000000;
 	int imax = 10000;
 	double t = 0;
-	double time_test = 15.0;
+	double time_test = 1.0;
+	if (rebalance_method != 0)
+	{
+	  time_test = 15.0;
+	}
 	for (j = 1; j < jmax; j++)
 	{
 	  for (i = 1; i < imax; i++) {
@@ -2379,7 +2383,7 @@ int mpi_rebalance_load_per_cell(double *times_per_cell, double *frac, int transf
 {
 #include <time.h>
   std::vector<double> recv_cell_times_vector;
-  double *recv_cell_times;
+  double *recv_cell_times=NULL;
   if (mpi_myself == 0)
   {
     recv_cell_times_vector.push_back(0.0);
@@ -2389,7 +2393,6 @@ int mpi_rebalance_load_per_cell(double *times_per_cell, double *frac, int transf
 
   int i, j, k;
   int end_cells_new[MPI_MAX_TASKS][2];
-  int diff_cells;
   int nnew, old;
   int change;
   int ihst, iphrq; /* ihst is natural number to ixyz; iphrq is 0 to count_chem */
@@ -2424,20 +2427,6 @@ int mpi_rebalance_load_per_cell(double *times_per_cell, double *frac, int transf
       MPI_Recv(&recv_cell_times[j], k, MPI_DOUBLE, i, 0, MPI_COMM_WORLD, &mpi_status);
     }
   }
-/*
-  if (mpi_myself == 0) 
-  {
-    for (i = 0; i < count_chem; i++)
-    {
-      std::cout << i << "  " << recv_cell_times[i] << std::endl;
-    }
-    std::cerr << "Recver is done." << std::endl;
-
-  } else
-  {
-      std::cerr << "Sender is done." << std::endl;
-  }
-*/
   /* hard code processor speeds for now */
 
   if (mpi_myself == 0) 
@@ -2451,7 +2440,6 @@ int mpi_rebalance_load_per_cell(double *times_per_cell, double *frac, int transf
     }
 #endif
     double *std_processor_time = &(std_processor_time_vector.front());
-    //std::cerr << "Print root 2" << std::endl; 
 
     // calculate fastest processor
     double fastest_std_processor_time = 1e10;
@@ -2563,123 +2551,23 @@ int mpi_rebalance_load_per_cell(double *times_per_cell, double *frac, int transf
 	  }
 	  next = FALSE;
 	}
-	/*
-	if (( (temp_sum_work < 1.1 * processor_fraction[i]) ||
-	      (sum_work < 0.5 * processor_fraction[i])) 
-	    && (count_chem - j) > (mpi_tasks - i))
-	{
-	  sum_work = temp_sum_work;
-	  j++;
-	  next = TRUE;
-	} else 
-	{
-	  if (j == end_cells_new[i][0])
-	  {
-	    end_cells_new[i][1] = j;
-	    j++;
-	  } else {
-	    end_cells_new[i][1] = j - 1;
-	  }
-	  next = FALSE;
-	}
-	*/
       }
-#ifdef SKIP
-      while ( ((sum_work + (recv_cell_times[j] / total_normalized_time)) < 1.05 * processor_fraction[i] )
-	      && (count_chem - j) > (mpi_tasks - i))
-      {
-	sum_work += recv_cell_times[j] / total_normalized_time;
-	j++;
-      }
-      if (j == end_cells_new[i][0])
-      {
-	end_cells_new[i][1] = j;
-	j++;
-      } else {
-	end_cells_new[i][1] = j - 1;
-      }
-#endif
     }
-    //std::cerr << i << "\tLast j: " << j << std::endl;
     assert(j < count_chem);
     assert(mpi_tasks > 1);
     end_cells_new[mpi_tasks - 1][0] = end_cells_new[mpi_tasks - 2][1] + 1;
     end_cells_new[mpi_tasks - 1][1] = count_chem - 1;
-    //for (i = 0; i < mpi_tasks; i++)
-    //{
-    //  std::cerr << i << "\tFirst cell: " << end_cells_new[i][0] << "\tLast cell: " << end_cells_new[i][1] << std::endl;
-    //}
 
     /*
      *  Check that all cells are distributed
      */
     if (end_cells_new[mpi_tasks - 1][1] != count_cells - 1 ) {
-      output_msg(OUTPUT_STDERR,"Failed: %d, count_cells %d, last cell %d\n", diff_cells, count_cells, end_cells_new[mpi_tasks - 1][1]);
       for (i = 0; i < mpi_tasks; i++) {
 	output_msg(OUTPUT_STDERR,"%d: first %d\tlast %d\n",i, end_cells_new[i][0], end_cells_new[i][1]);
       }
       error_msg("Failed to redistribute cells.", STOP);
     }
 
-#ifdef SKIP_FOR_NOW
-    /*
-     *   Compare old and new times
-     */
-    max_old = 0.0;
-    max_new = 0.0;
-    for (i = 0; i < mpi_tasks; i++) {
-      t = cells[i]*recv_buffer[i];
-      if (t > max_new) max_new = t;
-      t = (end_cells[i][1] - end_cells[i][0] + 1)*recv_buffer[i];
-      if (t > max_old) max_old = t;
-    }
-#ifdef TIME
-    optimum_serial_time = 1e20;
-    for (i = 0; i < mpi_tasks; i++) {
-      t = count_cells*recv_buffer[i];
-      if (t < optimum_serial_time) {
-	optimum_serial_time = t;
-	/* fprintf(stderr,"%d, Optimum serial time: %e\n", i, (double) optimum_serial_time); */
-      }
-    }
-    optimum_chemistry = max_new;
-#endif
-    /* fprintf(stdout,"\tMax time new: %e. Max time old: %e. Estimated efficiency: %5.1f%%\n", max_new, max_old, 100.*max_new/max_old); */
-    output_msg(OUTPUT_STDERR,"          Estimated efficiency of chemistry without communication: %5.1f %%\n", (float) ((LDBLE)100.*max_new/max_old));
-    wait_time = max_old - max_new;
-    wait_time_tot += wait_time;
-#endif // SKIP_FOR_NOW
-
-
-#ifdef SKIP_FOR_NOW
-#ifdef REBALANCE
-    if ((max_old - max_new)/max_old < 0.01) {
-      /*			fprintf(stderr,"Stick\n"); */
-      for (i = 0; i < mpi_tasks; i++) {
-	end_cells_new[i][0] = end_cells[i][0];
-	end_cells_new[i][1] = end_cells[i][1];
-      }
-    } else
-    {
-      for (i = 0; i < mpi_tasks - 1; i++)
-      {
-	/*end_cells_new[i][1] = (end_cells_new[i][1] + end_cells[i][1])/2;*/
-	/*end_cells_new[i][1] = end_cells_new[i][1];*/
-	icells = (int) ((end_cells_new[i][1] - end_cells[i][1])*rebalance_fraction);
-	/*fprintf(stderr, "i %d, new %d, old %d, rebal_fraction %g, icells %d\n",i, end_cells_new[i][1], end_cells[i][1], rebalance_fraction, icells);*/
-	end_cells_new[i][1] = end_cells[i][1] + icells;
-	end_cells_new[i+1][0] = end_cells_new[i][1] + 1;
-      }
-    }
-#else
-    if (call_counter >= 1) {
-      for (i = 0; i < mpi_tasks; i++) {
-	end_cells_new[i][0] = end_cells[i][0];
-	end_cells_new[i][1] = end_cells[i][1];
-      }
-    }
-#endif
-#endif
     for (i = 0; i < mpi_tasks - 1; i++)
     {
       int icells;
