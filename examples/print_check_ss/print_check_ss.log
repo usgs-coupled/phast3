@@ -364,7 +364,7 @@ Beginning time step no.      1
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     1
-     Time ..................................................   1.000E+03 (yr)
+     Time ..................................................    1000.00     (yr)
 
 Beginning time step no.      2
      Beginning solute-transport calculation.
@@ -380,7 +380,7 @@ Beginning time step no.      2
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     2
-     Time ..................................................   2.000E+03 (yr)
+     Time ..................................................    2000.00     (yr)
 
 Beginning time step no.      3
      Beginning solute-transport calculation.
@@ -396,7 +396,7 @@ Beginning time step no.      3
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     3
-     Time ..................................................   3.000E+03 (yr)
+     Time ..................................................    3000.00     (yr)
 
 Beginning time step no.      4
      Beginning solute-transport calculation.
@@ -412,7 +412,7 @@ Beginning time step no.      4
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     4
-     Time ..................................................   4.000E+03 (yr)
+     Time ..................................................    4000.00     (yr)
 
 Beginning time step no.      5
      Beginning solute-transport calculation.
@@ -428,7 +428,7 @@ Beginning time step no.      5
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     5
-     Time ..................................................   5.000E+03 (yr)
+     Time ..................................................    5000.00     (yr)
 
 Beginning time step no.      6
      Beginning solute-transport calculation.
@@ -444,7 +444,7 @@ Beginning time step no.      6
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     6
-     Time ..................................................   6.000E+03 (yr)
+     Time ..................................................    6000.00     (yr)
 
 Beginning time step no.      7
      Beginning solute-transport calculation.
@@ -460,7 +460,7 @@ Beginning time step no.      7
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     7
-     Time ..................................................   7.000E+03 (yr)
+     Time ..................................................    7000.00     (yr)
 
 Beginning time step no.      8
      Beginning solute-transport calculation.
@@ -476,7 +476,7 @@ Beginning time step no.      8
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     8
-     Time ..................................................   8.000E+03 (yr)
+     Time ..................................................    8000.00     (yr)
 
 Beginning time step no.      9
      Current time step length ...................................   1.000E+03 (yr)
@@ -509,7 +509,7 @@ Beginning time step no.      9
           Maximum iterations for one cell: 12
 
      End of Time Step No.     9
-     Time ..................................................   9.000E+03 (yr)
+     Time ..................................................    9000.00     (yr)
      Maximum change in potentiometric head  -2.3467E-07      (m ) at location (  0.00    , 4.800E+04,  400.    )(m)
      Maximum change in H .................. -9.7527E-03 (mol/kgw) at location ( 4.200E+04,  0.00    ,  0.00    )(m)
      Maximum change in O .................. -1.9799E-02 (mol/kgw) at location ( 4.200E+04,  0.00    ,  0.00    )(m)
@@ -536,7 +536,7 @@ Beginning time step no.     10
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    10
-     Time ..................................................   1.000E+04 (yr)
+     Time ..................................................    10000.0     (yr)
 
 Beginning time step no.     11
      Beginning solute-transport calculation.
@@ -552,7 +552,7 @@ Beginning time step no.     11
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    11
-     Time ..................................................   1.100E+04 (yr)
+     Time ..................................................    11000.0     (yr)
 
 Beginning time step no.     12
      Beginning solute-transport calculation.
@@ -568,7 +568,7 @@ Beginning time step no.     12
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    12
-     Time ..................................................   1.200E+04 (yr)
+     Time ..................................................    12000.0     (yr)
 
 Beginning time step no.     13
      Beginning solute-transport calculation.
@@ -584,7 +584,7 @@ Beginning time step no.     13
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    13
-     Time ..................................................   1.300E+04 (yr)
+     Time ..................................................    13000.0     (yr)
 
 Beginning time step no.     14
      Beginning solute-transport calculation.
@@ -600,7 +600,7 @@ Beginning time step no.     14
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    14
-     Time ..................................................   1.400E+04 (yr)
+     Time ..................................................    14000.0     (yr)
 
 Beginning time step no.     15
      Current time step length ...................................   1.000E+03 (yr)
@@ -633,7 +633,7 @@ Beginning time step no.     15
           Maximum iterations for one cell: 15
 
      End of Time Step No.    15
-     Time ..................................................   1.500E+04 (yr)
+     Time ..................................................    15000.0     (yr)
      Maximum change in potentiometric head  -2.3467E-07      (m ) at location (  0.00    , 4.800E+04,  400.    )(m)
      Maximum change in H .................. -5.6912E-03 (mol/kgw) at location ( 2.400E+04, 3.600E+04,  200.    )(m)
      Maximum change in O .................. -1.1046E-02 (mol/kgw) at location ( 3.000E+04, 4.800E+04,  0.00    )(m)
@@ -663,7 +663,7 @@ Beginning time step no.     16
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    16
-     Time ..................................................   1.600E+04 (yr)
+     Time ..................................................    16000.0     (yr)
 
 Beginning time step no.     17
      Beginning solute-transport calculation.
@@ -679,7 +679,7 @@ Beginning time step no.     17
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    17
-     Time ..................................................   1.700E+04 (yr)
+     Time ..................................................    17000.0     (yr)
 
 Beginning time step no.     18
      Beginning solute-transport calculation.
@@ -695,7 +695,7 @@ Beginning time step no.     18
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    18
-     Time ..................................................   1.800E+04 (yr)
+     Time ..................................................    18000.0     (yr)
 
 Beginning time step no.     19
      Beginning solute-transport calculation.
@@ -711,7 +711,7 @@ Beginning time step no.     19
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    19
-     Time ..................................................   1.900E+04 (yr)
+     Time ..................................................    19000.0     (yr)
 
 Beginning time step no.     20
      Beginning solute-transport calculation.
@@ -727,7 +727,7 @@ Beginning time step no.     20
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    20
-     Time ..................................................   2.000E+04 (yr)
+     Time ..................................................    20000.0     (yr)
 
 Beginning time step no.     21
      Current time step length ...................................   1.000E+03 (yr)
@@ -760,7 +760,7 @@ Beginning time step no.     21
           Maximum iterations for one cell: 15
 
      End of Time Step No.    21
-     Time ..................................................   2.100E+04 (yr)
+     Time ..................................................    21000.0     (yr)
      Maximum change in potentiometric head  -2.3467E-07      (m ) at location (  0.00    , 4.800E+04,  400.    )(m)
      Maximum change in H .................. -5.5631E-03 (mol/kgw) at location ( 2.400E+04, 4.800E+04,  200.    )(m)
      Maximum change in O .................. -1.0259E-02 (mol/kgw) at location ( 2.400E+04, 4.800E+04,  200.    )(m)
@@ -787,7 +787,7 @@ Beginning time step no.     22
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    22
-     Time ..................................................   2.200E+04 (yr)
+     Time ..................................................    22000.0     (yr)
 
 Beginning time step no.     23
      Beginning solute-transport calculation.
@@ -803,7 +803,7 @@ Beginning time step no.     23
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    23
-     Time ..................................................   2.300E+04 (yr)
+     Time ..................................................    23000.0     (yr)
 
 Beginning time step no.     24
      Beginning solute-transport calculation.
@@ -819,7 +819,7 @@ Beginning time step no.     24
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    24
-     Time ..................................................   2.400E+04 (yr)
+     Time ..................................................    24000.0     (yr)
 
 Beginning time step no.     25
      Beginning solute-transport calculation.
@@ -835,7 +835,7 @@ Beginning time step no.     25
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    25
-     Time ..................................................   2.500E+04 (yr)
+     Time ..................................................    25000.0     (yr)
 
 Beginning time step no.     26
      Beginning solute-transport calculation.
@@ -851,7 +851,7 @@ Beginning time step no.     26
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    26
-     Time ..................................................   2.600E+04 (yr)
+     Time ..................................................    26000.0     (yr)
 
 Beginning time step no.     27
      Beginning solute-transport calculation.
@@ -867,7 +867,7 @@ Beginning time step no.     27
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    27
-     Time ..................................................   2.700E+04 (yr)
+     Time ..................................................    27000.0     (yr)
 
 Beginning time step no.     28
      Current time step length ...................................   1.000E+03 (yr)
@@ -900,7 +900,7 @@ Beginning time step no.     28
           Maximum iterations for one cell: 30
 
      End of Time Step No.    28
-     Time ..................................................   2.800E+04 (yr)
+     Time ..................................................    28000.0     (yr)
      Maximum change in potentiometric head  -2.3467E-07      (m ) at location (  0.00    , 4.800E+04,  400.    )(m)
      Maximum change in H .................. -4.5309E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,  200.    )(m)
      Maximum change in O .................. -8.1850E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,  200.    )(m)
@@ -927,7 +927,7 @@ Beginning time step no.     29
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    29
-     Time ..................................................   2.900E+04 (yr)
+     Time ..................................................    29000.0     (yr)
 
 Beginning time step no.     30
      Current time step length ...................................   1.000E+03 (yr)
@@ -960,7 +960,7 @@ Beginning time step no.     30
           Maximum iterations for one cell: 25
 
      End of Time Step No.    30
-     Time ..................................................   3.000E+04 (yr)
+     Time ..................................................    30000.0     (yr)
      Maximum change in potentiometric head  -2.3467E-07      (m ) at location (  0.00    , 4.800E+04,  400.    )(m)
      Maximum change in H .................. -4.3344E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,  200.    )(m)
      Maximum change in O .................. -7.9902E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,  200.    )(m)
@@ -1007,7 +1007,7 @@ Beginning time step no.     31
           Maximum iterations for one cell: 28
 
      End of Time Step No.    31
-     Time ..................................................   3.100E+04 (yr)
+     Time ..................................................    31000.0     (yr)
      Maximum change in potentiometric head  -2.3467E-07      (m ) at location (  0.00    , 4.800E+04,  400.    )(m)
      Maximum change in H .................. -4.1851E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,  200.    )(m)
      Maximum change in O .................. -7.8217E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,  200.    )(m)

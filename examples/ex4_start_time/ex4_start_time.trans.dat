@@ -126,6 +126,7 @@ SOLUTION_METHOD
         -tolerance              1e-10
         -space_differencing     0.
         -time_differencing      1.
+	-rebalance_by_cell      true
 TIME_CONTROL
         -delta_time     0               2000    yr
 	-start_time                     50000   yr

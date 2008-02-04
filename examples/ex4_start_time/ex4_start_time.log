@@ -127,6 +127,7 @@ Processing flow and transport data file.
 	        tolerance              1e-10
 	        space_differencing     0.
 	        time_differencing      1.
+		rebalance_by_cell      true
 	TIME_CONTROL
 	        delta_time     0               2000    yr
 		start_time                     50000   yr
@@ -305,7 +306,7 @@ Beginning time step no.      1
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     1
-     Time ..................................................   5.200E+04 (yr)
+     Time ..................................................    52000.0     (yr)
 
 Beginning time step no.      2
      Beginning solute-transport calculation.
@@ -321,7 +322,7 @@ Beginning time step no.      2
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     2
-     Time ..................................................   5.400E+04 (yr)
+     Time ..................................................    54000.0     (yr)
 
 Beginning time step no.      3
      Beginning solute-transport calculation.
@@ -337,7 +338,7 @@ Beginning time step no.      3
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     3
-     Time ..................................................   5.600E+04 (yr)
+     Time ..................................................    56000.0     (yr)
 
 Beginning time step no.      4
      Beginning solute-transport calculation.
@@ -353,7 +354,7 @@ Beginning time step no.      4
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     4
-     Time ..................................................   5.800E+04 (yr)
+     Time ..................................................    58000.0     (yr)
 
 Beginning time step no.      5
      Beginning solute-transport calculation.
@@ -369,7 +370,7 @@ Beginning time step no.      5
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     5
-     Time ..................................................   6.000E+04 (yr)
+     Time ..................................................    60000.0     (yr)
 
 Beginning time step no.      6
      Beginning solute-transport calculation.
@@ -385,7 +386,7 @@ Beginning time step no.      6
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     6
-     Time ..................................................   6.200E+04 (yr)
+     Time ..................................................    62000.0     (yr)
 
 Beginning time step no.      7
      Beginning solute-transport calculation.
@@ -401,7 +402,7 @@ Beginning time step no.      7
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     7
-     Time ..................................................   6.400E+04 (yr)
+     Time ..................................................    64000.0     (yr)
 
 Beginning time step no.      8
      Beginning solute-transport calculation.
@@ -417,7 +418,7 @@ Beginning time step no.      8
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     8
-     Time ..................................................   6.600E+04 (yr)
+     Time ..................................................    66000.0     (yr)
 
 Beginning time step no.      9
      Beginning solute-transport calculation.
@@ -433,7 +434,7 @@ Beginning time step no.      9
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     9
-     Time ..................................................   6.800E+04 (yr)
+     Time ..................................................    68000.0     (yr)
 
 Beginning time step no.     10
      Beginning solute-transport calculation.
@@ -449,7 +450,7 @@ Beginning time step no.     10
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    10
-     Time ..................................................   7.000E+04 (yr)
+     Time ..................................................    70000.0     (yr)
 
 Beginning time step no.     11
      Beginning solute-transport calculation.
@@ -465,7 +466,7 @@ Beginning time step no.     11
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    11
-     Time ..................................................   7.200E+04 (yr)
+     Time ..................................................    72000.0     (yr)
 
 Beginning time step no.     12
      Beginning solute-transport calculation.
@@ -481,7 +482,7 @@ Beginning time step no.     12
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    12
-     Time ..................................................   7.400E+04 (yr)
+     Time ..................................................    74000.0     (yr)
 
 Beginning time step no.     13
      Beginning solute-transport calculation.
@@ -497,7 +498,7 @@ Beginning time step no.     13
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    13
-     Time ..................................................   7.600E+04 (yr)
+     Time ..................................................    76000.0     (yr)
 
 Beginning time step no.     14
      Beginning solute-transport calculation.
@@ -513,7 +514,7 @@ Beginning time step no.     14
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    14
-     Time ..................................................   7.800E+04 (yr)
+     Time ..................................................    78000.0     (yr)
 
 Beginning time step no.     15
      Beginning solute-transport calculation.
@@ -529,7 +530,7 @@ Beginning time step no.     15
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    15
-     Time ..................................................   8.000E+04 (yr)
+     Time ..................................................    80000.0     (yr)
 
 Beginning time step no.     16
      Beginning solute-transport calculation.
@@ -545,7 +546,7 @@ Beginning time step no.     16
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    16
-     Time ..................................................   8.200E+04 (yr)
+     Time ..................................................    82000.0     (yr)
 
 Beginning time step no.     17
      Beginning solute-transport calculation.
@@ -561,7 +562,7 @@ Beginning time step no.     17
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    17
-     Time ..................................................   8.400E+04 (yr)
+     Time ..................................................    84000.0     (yr)
 
 Beginning time step no.     18
      Beginning solute-transport calculation.
@@ -577,7 +578,7 @@ Beginning time step no.     18
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    18
-     Time ..................................................   8.600E+04 (yr)
+     Time ..................................................    86000.0     (yr)
 
 Beginning time step no.     19
      Beginning solute-transport calculation.
@@ -593,7 +594,7 @@ Beginning time step no.     19
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    19
-     Time ..................................................   8.800E+04 (yr)
+     Time ..................................................    88000.0     (yr)
 
 Beginning time step no.     20
      Beginning solute-transport calculation.
@@ -609,7 +610,7 @@ Beginning time step no.     20
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    20
-     Time ..................................................   9.000E+04 (yr)
+     Time ..................................................    90000.0     (yr)
 
 Beginning time step no.     21
      Beginning solute-transport calculation.
@@ -625,7 +626,7 @@ Beginning time step no.     21
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    21
-     Time ..................................................   9.200E+04 (yr)
+     Time ..................................................    92000.0     (yr)
 
 Beginning time step no.     22
      Beginning solute-transport calculation.
@@ -641,7 +642,7 @@ Beginning time step no.     22
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    22
-     Time ..................................................   9.400E+04 (yr)
+     Time ..................................................    94000.0     (yr)
 
 Beginning time step no.     23
      Beginning solute-transport calculation.
@@ -657,7 +658,7 @@ Beginning time step no.     23
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    23
-     Time ..................................................   9.600E+04 (yr)
+     Time ..................................................    96000.0     (yr)
 
 Beginning time step no.     24
      Beginning solute-transport calculation.
@@ -673,7 +674,7 @@ Beginning time step no.     24
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    24
-     Time ..................................................   9.800E+04 (yr)
+     Time ..................................................    98000.0     (yr)
 
 Beginning time step no.     25
      Beginning solute-transport calculation.
@@ -689,7 +690,7 @@ Beginning time step no.     25
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    25
-     Time ..................................................   1.000E+05 (yr)
+     Time ..................................................    100000.     (yr)
 
 Beginning time step no.     26
      Beginning solute-transport calculation.
@@ -705,7 +706,7 @@ Beginning time step no.     26
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    26
-     Time ..................................................   1.020E+05 (yr)
+     Time ..................................................    102000.     (yr)
 
 Beginning time step no.     27
      Beginning solute-transport calculation.
@@ -721,7 +722,7 @@ Beginning time step no.     27
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    27
-     Time ..................................................   1.040E+05 (yr)
+     Time ..................................................    104000.     (yr)
 
 Beginning time step no.     28
      Beginning solute-transport calculation.
@@ -737,7 +738,7 @@ Beginning time step no.     28
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    28
-     Time ..................................................   1.060E+05 (yr)
+     Time ..................................................    106000.     (yr)
 
 Beginning time step no.     29
      Beginning solute-transport calculation.
@@ -753,7 +754,7 @@ Beginning time step no.     29
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    29
-     Time ..................................................   1.080E+05 (yr)
+     Time ..................................................    108000.     (yr)
 
 Beginning time step no.     30
      Beginning solute-transport calculation.
@@ -769,7 +770,7 @@ Beginning time step no.     30
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    30
-     Time ..................................................   1.100E+05 (yr)
+     Time ..................................................    110000.     (yr)
 
 Beginning time step no.     31
      Beginning solute-transport calculation.
@@ -785,7 +786,7 @@ Beginning time step no.     31
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    31
-     Time ..................................................   1.120E+05 (yr)
+     Time ..................................................    112000.     (yr)
 
 Beginning time step no.     32
      Beginning solute-transport calculation.
@@ -801,7 +802,7 @@ Beginning time step no.     32
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    32
-     Time ..................................................   1.140E+05 (yr)
+     Time ..................................................    114000.     (yr)
 
 Beginning time step no.     33
      Beginning solute-transport calculation.
@@ -817,7 +818,7 @@ Beginning time step no.     33
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    33
-     Time ..................................................   1.160E+05 (yr)
+     Time ..................................................    116000.     (yr)
 
 Beginning time step no.     34
      Beginning solute-transport calculation.
@@ -833,7 +834,7 @@ Beginning time step no.     34
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    34
-     Time ..................................................   1.180E+05 (yr)
+     Time ..................................................    118000.     (yr)
 
 Beginning time step no.     35
      Beginning solute-transport calculation.
@@ -849,7 +850,7 @@ Beginning time step no.     35
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    35
-     Time ..................................................   1.200E+05 (yr)
+     Time ..................................................    120000.     (yr)
 
 Beginning time step no.     36
      Beginning solute-transport calculation.
@@ -865,7 +866,7 @@ Beginning time step no.     36
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    36
-     Time ..................................................   1.220E+05 (yr)
+     Time ..................................................    122000.     (yr)
 
 Beginning time step no.     37
      Beginning solute-transport calculation.
@@ -881,7 +882,7 @@ Beginning time step no.     37
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    37
-     Time ..................................................   1.240E+05 (yr)
+     Time ..................................................    124000.     (yr)
 
 Beginning time step no.     38
      Beginning solute-transport calculation.
@@ -897,7 +898,7 @@ Beginning time step no.     38
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    38
-     Time ..................................................   1.260E+05 (yr)
+     Time ..................................................    126000.     (yr)
 
 Beginning time step no.     39
      Beginning solute-transport calculation.
@@ -913,7 +914,7 @@ Beginning time step no.     39
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    39
-     Time ..................................................   1.280E+05 (yr)
+     Time ..................................................    128000.     (yr)
 
 Beginning time step no.     40
      Beginning solute-transport calculation.
@@ -929,7 +930,7 @@ Beginning time step no.     40
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    40
-     Time ..................................................   1.300E+05 (yr)
+     Time ..................................................    130000.     (yr)
 
 Beginning time step no.     41
      Beginning solute-transport calculation.
@@ -945,7 +946,7 @@ Beginning time step no.     41
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    41
-     Time ..................................................   1.320E+05 (yr)
+     Time ..................................................    132000.     (yr)
 
 Beginning time step no.     42
      Beginning solute-transport calculation.
@@ -961,7 +962,7 @@ Beginning time step no.     42
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    42
-     Time ..................................................   1.340E+05 (yr)
+     Time ..................................................    134000.     (yr)
 
 Beginning time step no.     43
      Beginning solute-transport calculation.
@@ -977,7 +978,7 @@ Beginning time step no.     43
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    43
-     Time ..................................................   1.360E+05 (yr)
+     Time ..................................................    136000.     (yr)
 
 Beginning time step no.     44
      Beginning solute-transport calculation.
@@ -993,7 +994,7 @@ Beginning time step no.     44
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    44
-     Time ..................................................   1.380E+05 (yr)
+     Time ..................................................    138000.     (yr)
 
 Beginning time step no.     45
      Beginning solute-transport calculation.
@@ -1009,7 +1010,7 @@ Beginning time step no.     45
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    45
-     Time ..................................................   1.400E+05 (yr)
+     Time ..................................................    140000.     (yr)
 
 Beginning time step no.     46
      Beginning solute-transport calculation.
@@ -1025,7 +1026,7 @@ Beginning time step no.     46
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    46
-     Time ..................................................   1.420E+05 (yr)
+     Time ..................................................    142000.     (yr)
 
 Beginning time step no.     47
      Beginning solute-transport calculation.
@@ -1041,7 +1042,7 @@ Beginning time step no.     47
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    47
-     Time ..................................................   1.440E+05 (yr)
+     Time ..................................................    144000.     (yr)
 
 Beginning time step no.     48
      Beginning solute-transport calculation.
@@ -1057,7 +1058,7 @@ Beginning time step no.     48
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    48
-     Time ..................................................   1.460E+05 (yr)
+     Time ..................................................    146000.     (yr)
 
 Beginning time step no.     49
      Beginning solute-transport calculation.
@@ -1073,7 +1074,7 @@ Beginning time step no.     49
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    49
-     Time ..................................................   1.480E+05 (yr)
+     Time ..................................................    148000.     (yr)
 
 Beginning time step no.     50
      Current time step length ...................................   2.000E+03 (yr)
@@ -1106,7 +1107,7 @@ Beginning time step no.     50
           Maximum iterations for one cell: 27
 
      End of Time Step No.    50
-     Time ..................................................   1.500E+05 (yr)
+     Time ..................................................    150000.     (yr)
      Maximum change in potentiometric head   5.9663E-08      (m ) at location ( 1.800E+04, 3.000E+04,  300.    )(m)
      Maximum change in H .................. -2.9405E-03 (mol/kgw) at location (  0.00    , 4.800E+04,  0.00    )(m)
      Maximum change in O .................. -5.6959E-03 (mol/kgw) at location (  0.00    , 4.800E+04,  0.00    )(m)

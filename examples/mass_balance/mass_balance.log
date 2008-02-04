@@ -135,7 +135,7 @@ Beginning time step no.      1
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     1
-     Time ..................................................   5.000E-03 (d)
+     Time ..................................................   5.000000E-03 (d)
 
 Beginning time step no.      2
      Beginning flow calculation.
@@ -152,7 +152,7 @@ Beginning time step no.      2
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     2
-     Time ..................................................   1.000E-02 (d)
+     Time ..................................................   1.000000E-02 (d)
 
 Beginning time step no.      3
      Beginning flow calculation.
@@ -169,7 +169,7 @@ Beginning time step no.      3
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     3
-     Time ..................................................   1.500E-02 (d)
+     Time ..................................................   1.500000E-02 (d)
 
 Beginning time step no.      4
      Beginning flow calculation.
@@ -186,7 +186,7 @@ Beginning time step no.      4
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     4
-     Time ..................................................   2.000E-02 (d)
+     Time ..................................................   2.000000E-02 (d)
 
 Beginning time step no.      5
      Beginning flow calculation.
@@ -203,7 +203,7 @@ Beginning time step no.      5
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     5
-     Time ..................................................   2.500E-02 (d)
+     Time ..................................................   2.500000E-02 (d)
 
 Beginning time step no.      6
      Beginning flow calculation.
@@ -220,7 +220,7 @@ Beginning time step no.      6
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     6
-     Time ..................................................   3.000E-02 (d)
+     Time ..................................................   3.000000E-02 (d)
 
 Beginning time step no.      7
      Beginning flow calculation.
@@ -237,7 +237,7 @@ Beginning time step no.      7
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     7
-     Time ..................................................   3.500E-02 (d)
+     Time ..................................................   3.500000E-02 (d)
 
 Beginning time step no.      8
      Beginning flow calculation.
@@ -254,7 +254,7 @@ Beginning time step no.      8
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     8
-     Time ..................................................   4.000E-02 (d)
+     Time ..................................................   4.000000E-02 (d)
 
 Beginning time step no.      9
      Beginning flow calculation.
@@ -271,7 +271,7 @@ Beginning time step no.      9
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     9
-     Time ..................................................   4.500E-02 (d)
+     Time ..................................................   4.500000E-02 (d)
 
 Beginning time step no.     10
      Beginning flow calculation.
@@ -288,7 +288,7 @@ Beginning time step no.     10
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    10
-     Time ..................................................   5.000E-02 (d)
+     Time ..................................................   5.000000E-02 (d)
 
 Beginning time step no.     11
      Beginning flow calculation.
@@ -305,7 +305,7 @@ Beginning time step no.     11
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    11
-     Time ..................................................   5.500E-02 (d)
+     Time ..................................................   5.500000E-02 (d)
 
 Beginning time step no.     12
      Beginning flow calculation.
@@ -322,7 +322,7 @@ Beginning time step no.     12
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    12
-     Time ..................................................   6.000E-02 (d)
+     Time ..................................................   6.000000E-02 (d)
 
 Beginning time step no.     13
      Beginning flow calculation.
@@ -339,7 +339,7 @@ Beginning time step no.     13
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    13
-     Time ..................................................   6.500E-02 (d)
+     Time ..................................................   6.500000E-02 (d)
 
 Beginning time step no.     14
      Beginning flow calculation.
@@ -356,7 +356,7 @@ Beginning time step no.     14
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    14
-     Time ..................................................   7.000E-02 (d)
+     Time ..................................................   7.000000E-02 (d)
 
 Beginning time step no.     15
      Beginning flow calculation.
@@ -373,7 +373,7 @@ Beginning time step no.     15
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    15
-     Time ..................................................   7.500E-02 (d)
+     Time ..................................................   7.500000E-02 (d)
 
 Beginning time step no.     16
      Beginning flow calculation.
@@ -390,7 +390,7 @@ Beginning time step no.     16
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    16
-     Time ..................................................   8.000E-02 (d)
+     Time ..................................................   8.000000E-02 (d)
 
 Beginning time step no.     17
      Beginning flow calculation.
@@ -407,7 +407,7 @@ Beginning time step no.     17
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    17
-     Time ..................................................   8.500E-02 (d)
+     Time ..................................................   8.500000E-02 (d)
 
 Beginning time step no.     18
      Beginning flow calculation.
@@ -424,7 +424,7 @@ Beginning time step no.     18
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    18
-     Time ..................................................   9.000E-02 (d)
+     Time ..................................................   9.000000E-02 (d)
 
 Beginning time step no.     19
      Beginning flow calculation.
@@ -441,7 +441,7 @@ Beginning time step no.     19
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    19
-     Time ..................................................   9.500E-02 (d)
+     Time ..................................................   9.500000E-02 (d)
 
 Beginning time step no.     20
      Beginning flow calculation.
@@ -458,7 +458,7 @@ Beginning time step no.     20
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    20
-     Time ..................................................   0.100     (d)
+     Time ..................................................   0.100000     (d)
 
 Beginning time step no.     21
      Beginning flow calculation.
@@ -475,7 +475,7 @@ Beginning time step no.     21
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    21
-     Time ..................................................   0.105     (d)
+     Time ..................................................   0.105000     (d)
 
 Beginning time step no.     22
      Beginning flow calculation.
@@ -492,7 +492,7 @@ Beginning time step no.     22
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    22
-     Time ..................................................   0.110     (d)
+     Time ..................................................   0.110000     (d)
 
 Beginning time step no.     23
      Beginning flow calculation.
@@ -509,7 +509,7 @@ Beginning time step no.     23
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    23
-     Time ..................................................   0.115     (d)
+     Time ..................................................   0.115000     (d)
 
 Beginning time step no.     24
      Beginning flow calculation.
@@ -526,7 +526,7 @@ Beginning time step no.     24
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    24
-     Time ..................................................   0.120     (d)
+     Time ..................................................   0.120000     (d)
 
 Beginning time step no.     25
      Beginning flow calculation.
@@ -543,7 +543,7 @@ Beginning time step no.     25
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    25
-     Time ..................................................   0.125     (d)
+     Time ..................................................   0.125000     (d)
 
 Beginning time step no.     26
      Beginning flow calculation.
@@ -560,7 +560,7 @@ Beginning time step no.     26
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    26
-     Time ..................................................   0.130     (d)
+     Time ..................................................   0.130000     (d)
 
 Beginning time step no.     27
      Beginning flow calculation.
@@ -577,7 +577,7 @@ Beginning time step no.     27
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    27
-     Time ..................................................   0.135     (d)
+     Time ..................................................   0.135000     (d)
 
 Beginning time step no.     28
      Beginning flow calculation.
@@ -594,7 +594,7 @@ Beginning time step no.     28
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    28
-     Time ..................................................   0.140     (d)
+     Time ..................................................   0.140000     (d)
 
 Beginning time step no.     29
      Beginning flow calculation.
@@ -611,7 +611,7 @@ Beginning time step no.     29
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    29
-     Time ..................................................   0.145     (d)
+     Time ..................................................   0.145000     (d)
 
 Beginning time step no.     30
      Beginning flow calculation.
@@ -628,7 +628,7 @@ Beginning time step no.     30
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    30
-     Time ..................................................   0.150     (d)
+     Time ..................................................   0.150000     (d)
 
 Beginning time step no.     31
      Beginning flow calculation.
@@ -645,7 +645,7 @@ Beginning time step no.     31
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    31
-     Time ..................................................   0.155     (d)
+     Time ..................................................   0.155000     (d)
 
 Beginning time step no.     32
      Beginning flow calculation.
@@ -662,7 +662,7 @@ Beginning time step no.     32
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    32
-     Time ..................................................   0.160     (d)
+     Time ..................................................   0.160000     (d)
 
 Beginning time step no.     33
      Beginning flow calculation.
@@ -679,7 +679,7 @@ Beginning time step no.     33
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    33
-     Time ..................................................   0.165     (d)
+     Time ..................................................   0.165000     (d)
 
 Beginning time step no.     34
      Beginning flow calculation.
@@ -696,7 +696,7 @@ Beginning time step no.     34
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    34
-     Time ..................................................   0.170     (d)
+     Time ..................................................   0.170000     (d)
 
 Beginning time step no.     35
      Beginning flow calculation.
@@ -713,7 +713,7 @@ Beginning time step no.     35
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    35
-     Time ..................................................   0.175     (d)
+     Time ..................................................   0.175000     (d)
 
 Beginning time step no.     36
      Beginning flow calculation.
@@ -730,7 +730,7 @@ Beginning time step no.     36
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    36
-     Time ..................................................   0.180     (d)
+     Time ..................................................   0.180000     (d)
 
 Beginning time step no.     37
      Beginning flow calculation.
@@ -747,7 +747,7 @@ Beginning time step no.     37
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    37
-     Time ..................................................   0.185     (d)
+     Time ..................................................   0.185000     (d)
 
 Beginning time step no.     38
      Beginning flow calculation.
@@ -764,7 +764,7 @@ Beginning time step no.     38
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    38
-     Time ..................................................   0.190     (d)
+     Time ..................................................   0.190000     (d)
 
 Beginning time step no.     39
      Beginning flow calculation.
@@ -781,7 +781,7 @@ Beginning time step no.     39
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    39
-     Time ..................................................   0.195     (d)
+     Time ..................................................   0.195000     (d)
 
 Beginning time step no.     40
      Beginning flow calculation.
@@ -798,7 +798,7 @@ Beginning time step no.     40
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    40
-     Time ..................................................   0.200     (d)
+     Time ..................................................   0.200000     (d)
 
 Beginning time step no.     41
      Beginning flow calculation.
@@ -815,7 +815,7 @@ Beginning time step no.     41
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    41
-     Time ..................................................   0.205     (d)
+     Time ..................................................   0.205000     (d)
 
 Beginning time step no.     42
      Beginning flow calculation.
@@ -832,7 +832,7 @@ Beginning time step no.     42
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    42
-     Time ..................................................   0.210     (d)
+     Time ..................................................   0.210000     (d)
 
 Beginning time step no.     43
      Beginning flow calculation.
@@ -849,7 +849,7 @@ Beginning time step no.     43
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    43
-     Time ..................................................   0.215     (d)
+     Time ..................................................   0.215000     (d)
 
 Beginning time step no.     44
      Beginning flow calculation.
@@ -866,7 +866,7 @@ Beginning time step no.     44
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    44
-     Time ..................................................   0.220     (d)
+     Time ..................................................   0.220000     (d)
 
 Beginning time step no.     45
      Beginning flow calculation.
@@ -883,7 +883,7 @@ Beginning time step no.     45
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    45
-     Time ..................................................   0.225     (d)
+     Time ..................................................   0.225000     (d)
 
 Beginning time step no.     46
      Beginning flow calculation.
@@ -900,7 +900,7 @@ Beginning time step no.     46
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    46
-     Time ..................................................   0.230     (d)
+     Time ..................................................   0.230000     (d)
 
 Beginning time step no.     47
      Beginning flow calculation.
@@ -917,7 +917,7 @@ Beginning time step no.     47
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    47
-     Time ..................................................   0.235     (d)
+     Time ..................................................   0.235000     (d)
 
 Beginning time step no.     48
      Beginning flow calculation.
@@ -934,7 +934,7 @@ Beginning time step no.     48
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    48
-     Time ..................................................   0.240     (d)
+     Time ..................................................   0.240000     (d)
 
 Beginning time step no.     49
      Beginning flow calculation.
@@ -951,7 +951,7 @@ Beginning time step no.     49
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    49
-     Time ..................................................   0.245     (d)
+     Time ..................................................   0.245000     (d)
 
 Beginning time step no.     50
      Beginning flow calculation.
@@ -968,7 +968,7 @@ Beginning time step no.     50
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    50
-     Time ..................................................   0.250     (d)
+     Time ..................................................   0.250000     (d)
 
 Beginning time step no.     51
      Beginning flow calculation.
@@ -985,7 +985,7 @@ Beginning time step no.     51
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    51
-     Time ..................................................   0.255     (d)
+     Time ..................................................   0.255000     (d)
 
 Beginning time step no.     52
      Beginning flow calculation.
@@ -1002,7 +1002,7 @@ Beginning time step no.     52
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    52
-     Time ..................................................   0.260     (d)
+     Time ..................................................   0.260000     (d)
 
 Beginning time step no.     53
      Beginning flow calculation.
@@ -1019,7 +1019,7 @@ Beginning time step no.     53
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    53
-     Time ..................................................   0.265     (d)
+     Time ..................................................   0.265000     (d)
 
 Beginning time step no.     54
      Beginning flow calculation.
@@ -1036,7 +1036,7 @@ Beginning time step no.     54
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    54
-     Time ..................................................   0.270     (d)
+     Time ..................................................   0.270000     (d)
 
 Beginning time step no.     55
      Beginning flow calculation.
@@ -1053,7 +1053,7 @@ Beginning time step no.     55
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    55
-     Time ..................................................   0.275     (d)
+     Time ..................................................   0.275000     (d)
 
 Beginning time step no.     56
      Beginning flow calculation.
@@ -1070,7 +1070,7 @@ Beginning time step no.     56
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    56
-     Time ..................................................   0.280     (d)
+     Time ..................................................   0.280000     (d)
 
 Beginning time step no.     57
      Beginning flow calculation.
@@ -1087,7 +1087,7 @@ Beginning time step no.     57
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    57
-     Time ..................................................   0.285     (d)
+     Time ..................................................   0.285000     (d)
 
 Beginning time step no.     58
      Beginning flow calculation.
@@ -1104,7 +1104,7 @@ Beginning time step no.     58
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    58
-     Time ..................................................   0.290     (d)
+     Time ..................................................   0.290000     (d)
 
 Beginning time step no.     59
      Beginning flow calculation.
@@ -1121,7 +1121,7 @@ Beginning time step no.     59
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    59
-     Time ..................................................   0.295     (d)
+     Time ..................................................   0.295000     (d)
 
 Beginning time step no.     60
      Beginning flow calculation.
@@ -1138,7 +1138,7 @@ Beginning time step no.     60
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    60
-     Time ..................................................   0.300     (d)
+     Time ..................................................   0.300000     (d)
 
 Beginning time step no.     61
      Beginning flow calculation.
@@ -1155,7 +1155,7 @@ Beginning time step no.     61
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    61
-     Time ..................................................   0.305     (d)
+     Time ..................................................   0.305000     (d)
 
 Beginning time step no.     62
      Beginning flow calculation.
@@ -1172,7 +1172,7 @@ Beginning time step no.     62
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    62
-     Time ..................................................   0.310     (d)
+     Time ..................................................   0.310000     (d)
 
 Beginning time step no.     63
      Beginning flow calculation.
@@ -1189,7 +1189,7 @@ Beginning time step no.     63
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    63
-     Time ..................................................   0.315     (d)
+     Time ..................................................   0.315000     (d)
 
 Beginning time step no.     64
      Beginning flow calculation.
@@ -1206,7 +1206,7 @@ Beginning time step no.     64
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    64
-     Time ..................................................   0.320     (d)
+     Time ..................................................   0.320000     (d)
 
 Beginning time step no.     65
      Beginning flow calculation.
@@ -1223,7 +1223,7 @@ Beginning time step no.     65
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    65
-     Time ..................................................   0.325     (d)
+     Time ..................................................   0.325000     (d)
 
 Beginning time step no.     66
      Beginning flow calculation.
@@ -1240,7 +1240,7 @@ Beginning time step no.     66
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    66
-     Time ..................................................   0.330     (d)
+     Time ..................................................   0.330000     (d)
 
 Beginning time step no.     67
      Beginning flow calculation.
@@ -1257,7 +1257,7 @@ Beginning time step no.     67
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    67
-     Time ..................................................   0.335     (d)
+     Time ..................................................   0.335000     (d)
 
 Beginning time step no.     68
      Beginning flow calculation.
@@ -1274,7 +1274,7 @@ Beginning time step no.     68
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    68
-     Time ..................................................   0.340     (d)
+     Time ..................................................   0.340000     (d)
 
 Beginning time step no.     69
      Beginning flow calculation.
@@ -1291,7 +1291,7 @@ Beginning time step no.     69
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    69
-     Time ..................................................   0.345     (d)
+     Time ..................................................   0.345000     (d)
 
 Beginning time step no.     70
      Beginning flow calculation.
@@ -1308,7 +1308,7 @@ Beginning time step no.     70
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    70
-     Time ..................................................   0.350     (d)
+     Time ..................................................   0.350000     (d)
 
 Beginning time step no.     71
      Beginning flow calculation.
@@ -1325,7 +1325,7 @@ Beginning time step no.     71
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    71
-     Time ..................................................   0.355     (d)
+     Time ..................................................   0.355000     (d)
 
 Beginning time step no.     72
      Beginning flow calculation.
@@ -1342,7 +1342,7 @@ Beginning time step no.     72
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    72
-     Time ..................................................   0.360     (d)
+     Time ..................................................   0.360000     (d)
 
 Beginning time step no.     73
      Beginning flow calculation.
@@ -1359,7 +1359,7 @@ Beginning time step no.     73
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    73
-     Time ..................................................   0.365     (d)
+     Time ..................................................   0.365000     (d)
 
 Beginning time step no.     74
      Beginning flow calculation.
@@ -1376,7 +1376,7 @@ Beginning time step no.     74
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    74
-     Time ..................................................   0.370     (d)
+     Time ..................................................   0.370000     (d)
 
 Beginning time step no.     75
      Beginning flow calculation.
@@ -1393,7 +1393,7 @@ Beginning time step no.     75
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    75
-     Time ..................................................   0.375     (d)
+     Time ..................................................   0.375000     (d)
 
 Beginning time step no.     76
      Beginning flow calculation.
@@ -1410,7 +1410,7 @@ Beginning time step no.     76
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    76
-     Time ..................................................   0.380     (d)
+     Time ..................................................   0.380000     (d)
 
 Beginning time step no.     77
      Beginning flow calculation.
@@ -1427,7 +1427,7 @@ Beginning time step no.     77
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    77
-     Time ..................................................   0.385     (d)
+     Time ..................................................   0.385000     (d)
 
 Beginning time step no.     78
      Beginning flow calculation.
@@ -1444,7 +1444,7 @@ Beginning time step no.     78
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    78
-     Time ..................................................   0.390     (d)
+     Time ..................................................   0.390000     (d)
 
 Beginning time step no.     79
      Beginning flow calculation.
@@ -1461,7 +1461,7 @@ Beginning time step no.     79
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    79
-     Time ..................................................   0.395     (d)
+     Time ..................................................   0.395000     (d)
 
 Beginning time step no.     80
      Beginning flow calculation.
@@ -1478,7 +1478,7 @@ Beginning time step no.     80
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    80
-     Time ..................................................   0.400     (d)
+     Time ..................................................   0.400000     (d)
 
 Beginning time step no.     81
      Beginning flow calculation.
@@ -1495,7 +1495,7 @@ Beginning time step no.     81
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    81
-     Time ..................................................   0.405     (d)
+     Time ..................................................   0.405000     (d)
 
 Beginning time step no.     82
      Beginning flow calculation.
@@ -1512,7 +1512,7 @@ Beginning time step no.     82
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    82
-     Time ..................................................   0.410     (d)
+     Time ..................................................   0.410000     (d)
 
 Beginning time step no.     83
      Beginning flow calculation.
@@ -1529,7 +1529,7 @@ Beginning time step no.     83
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    83
-     Time ..................................................   0.415     (d)
+     Time ..................................................   0.415000     (d)
 
 Beginning time step no.     84
      Beginning flow calculation.
@@ -1546,7 +1546,7 @@ Beginning time step no.     84
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    84
-     Time ..................................................   0.420     (d)
+     Time ..................................................   0.420000     (d)
 
 Beginning time step no.     85
      Beginning flow calculation.
@@ -1563,7 +1563,7 @@ Beginning time step no.     85
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    85
-     Time ..................................................   0.425     (d)
+     Time ..................................................   0.425000     (d)
 
 Beginning time step no.     86
      Beginning flow calculation.
@@ -1580,7 +1580,7 @@ Beginning time step no.     86
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    86
-     Time ..................................................   0.430     (d)
+     Time ..................................................   0.430000     (d)
 
 Beginning time step no.     87
      Beginning flow calculation.
@@ -1597,7 +1597,7 @@ Beginning time step no.     87
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    87
-     Time ..................................................   0.435     (d)
+     Time ..................................................   0.435000     (d)
 
 Beginning time step no.     88
      Beginning flow calculation.
@@ -1614,7 +1614,7 @@ Beginning time step no.     88
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    88
-     Time ..................................................   0.440     (d)
+     Time ..................................................   0.440000     (d)
 
 Beginning time step no.     89
      Beginning flow calculation.
@@ -1631,7 +1631,7 @@ Beginning time step no.     89
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    89
-     Time ..................................................   0.445     (d)
+     Time ..................................................   0.445000     (d)
 
 Beginning time step no.     90
      Beginning flow calculation.
@@ -1648,7 +1648,7 @@ Beginning time step no.     90
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    90
-     Time ..................................................   0.450     (d)
+     Time ..................................................   0.450000     (d)
 
 Beginning time step no.     91
      Beginning flow calculation.
@@ -1665,7 +1665,7 @@ Beginning time step no.     91
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    91
-     Time ..................................................   0.455     (d)
+     Time ..................................................   0.455000     (d)
 
 Beginning time step no.     92
      Beginning flow calculation.
@@ -1682,7 +1682,7 @@ Beginning time step no.     92
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    92
-     Time ..................................................   0.460     (d)
+     Time ..................................................   0.460000     (d)
 
 Beginning time step no.     93
      Beginning flow calculation.
@@ -1699,7 +1699,7 @@ Beginning time step no.     93
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    93
-     Time ..................................................   0.465     (d)
+     Time ..................................................   0.465000     (d)
 
 Beginning time step no.     94
      Beginning flow calculation.
@@ -1716,7 +1716,7 @@ Beginning time step no.     94
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    94
-     Time ..................................................   0.470     (d)
+     Time ..................................................   0.470000     (d)
 
 Beginning time step no.     95
      Beginning flow calculation.
@@ -1733,7 +1733,7 @@ Beginning time step no.     95
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    95
-     Time ..................................................   0.475     (d)
+     Time ..................................................   0.475000     (d)
 
 Beginning time step no.     96
      Beginning flow calculation.
@@ -1750,7 +1750,7 @@ Beginning time step no.     96
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    96
-     Time ..................................................   0.480     (d)
+     Time ..................................................   0.480000     (d)
 
 Beginning time step no.     97
      Beginning flow calculation.
@@ -1767,7 +1767,7 @@ Beginning time step no.     97
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    97
-     Time ..................................................   0.485     (d)
+     Time ..................................................   0.485000     (d)
 
 Beginning time step no.     98
      Beginning flow calculation.
@@ -1784,7 +1784,7 @@ Beginning time step no.     98
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    98
-     Time ..................................................   0.490     (d)
+     Time ..................................................   0.490000     (d)
 
 Beginning time step no.     99
      Beginning flow calculation.
@@ -1801,7 +1801,7 @@ Beginning time step no.     99
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    99
-     Time ..................................................   0.495     (d)
+     Time ..................................................   0.495000     (d)
 
 Beginning time step no.    100
      Current time step length ...................................   5.000E-03 (d)
@@ -1825,7 +1825,7 @@ Beginning time step no.    100
           Maximum iterations for one cell: 12
 
      End of Time Step No.   100
-     Time ..................................................   0.500     (d)
+     Time ..................................................   0.500000     (d)
      Maximum change in potentiometric head   5.5623E-18      (m ) at location (  0.00    ,  1.00    , 1.000E-02)(m)
      Maximum change in H ..................  1.1364E-11 (mol/kgw) at location (  0.00    ,  0.00    , 8.000E-02)(m)
      Maximum change in O .................. -1.6782E-05 (mol/kgw) at location (  0.00    ,  1.00    , 8.000E-02)(m)
@@ -1855,7 +1855,7 @@ Beginning time step no.    101
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   101
-     Time ..................................................   0.505     (d)
+     Time ..................................................   0.505000     (d)
 
 Beginning time step no.    102
      Beginning flow calculation.
@@ -1872,7 +1872,7 @@ Beginning time step no.    102
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   102
-     Time ..................................................   0.510     (d)
+     Time ..................................................   0.510000     (d)
 
 Beginning time step no.    103
      Beginning flow calculation.
@@ -1889,7 +1889,7 @@ Beginning time step no.    103
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   103
-     Time ..................................................   0.515     (d)
+     Time ..................................................   0.515000     (d)
 
 Beginning time step no.    104
      Beginning flow calculation.
@@ -1906,7 +1906,7 @@ Beginning time step no.    104
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   104
-     Time ..................................................   0.520     (d)
+     Time ..................................................   0.520000     (d)
 
 Beginning time step no.    105
      Beginning flow calculation.
@@ -1923,7 +1923,7 @@ Beginning time step no.    105
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   105
-     Time ..................................................   0.525     (d)
+     Time ..................................................   0.525000     (d)
 
 Beginning time step no.    106
      Beginning flow calculation.
@@ -1940,7 +1940,7 @@ Beginning time step no.    106
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   106
-     Time ..................................................   0.530     (d)
+     Time ..................................................   0.530000     (d)
 
 Beginning time step no.    107
      Beginning flow calculation.
@@ -1957,7 +1957,7 @@ Beginning time step no.    107
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   107
-     Time ..................................................   0.535     (d)
+     Time ..................................................   0.535000     (d)
 
 Beginning time step no.    108
      Beginning flow calculation.
@@ -1974,7 +1974,7 @@ Beginning time step no.    108
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   108
-     Time ..................................................   0.540     (d)
+     Time ..................................................   0.540000     (d)
 
 Beginning time step no.    109
      Beginning flow calculation.
@@ -1991,7 +1991,7 @@ Beginning time step no.    109
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   109
-     Time ..................................................   0.545     (d)
+     Time ..................................................   0.545000     (d)
 
 Beginning time step no.    110
      Beginning flow calculation.
@@ -2008,7 +2008,7 @@ Beginning time step no.    110
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   110
-     Time ..................................................   0.550     (d)
+     Time ..................................................   0.550000     (d)
 
 Beginning time step no.    111
      Beginning flow calculation.
@@ -2025,7 +2025,7 @@ Beginning time step no.    111
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   111
-     Time ..................................................   0.555     (d)
+     Time ..................................................   0.555000     (d)
 
 Beginning time step no.    112
      Beginning flow calculation.
@@ -2042,7 +2042,7 @@ Beginning time step no.    112
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   112
-     Time ..................................................   0.560     (d)
+     Time ..................................................   0.560000     (d)
 
 Beginning time step no.    113
      Beginning flow calculation.
@@ -2059,7 +2059,7 @@ Beginning time step no.    113
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   113
-     Time ..................................................   0.565     (d)
+     Time ..................................................   0.565000     (d)
 
 Beginning time step no.    114
      Beginning flow calculation.
@@ -2076,7 +2076,7 @@ Beginning time step no.    114
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   114
-     Time ..................................................   0.570     (d)
+     Time ..................................................   0.570000     (d)
 
 Beginning time step no.    115
      Beginning flow calculation.
@@ -2093,7 +2093,7 @@ Beginning time step no.    115
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   115
-     Time ..................................................   0.575     (d)
+     Time ..................................................   0.575000     (d)
 
 Beginning time step no.    116
      Beginning flow calculation.
@@ -2110,7 +2110,7 @@ Beginning time step no.    116
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   116
-     Time ..................................................   0.580     (d)
+     Time ..................................................   0.580000     (d)
 
 Beginning time step no.    117
      Beginning flow calculation.
@@ -2127,7 +2127,7 @@ Beginning time step no.    117
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   117
-     Time ..................................................   0.585     (d)
+     Time ..................................................   0.585000     (d)
 
 Beginning time step no.    118
      Beginning flow calculation.
@@ -2144,7 +2144,7 @@ Beginning time step no.    118
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   118
-     Time ..................................................   0.590     (d)
+     Time ..................................................   0.590000     (d)
 
 Beginning time step no.    119
      Beginning flow calculation.
@@ -2161,7 +2161,7 @@ Beginning time step no.    119
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   119
-     Time ..................................................   0.595     (d)
+     Time ..................................................   0.595000     (d)
 
 Beginning time step no.    120
      Beginning flow calculation.
@@ -2178,7 +2178,7 @@ Beginning time step no.    120
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   120
-     Time ..................................................   0.600     (d)
+     Time ..................................................   0.600000     (d)
 
 Beginning time step no.    121
      Beginning flow calculation.
@@ -2195,7 +2195,7 @@ Beginning time step no.    121
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   121
-     Time ..................................................   0.605     (d)
+     Time ..................................................   0.605000     (d)
 
 Beginning time step no.    122
      Beginning flow calculation.
@@ -2212,7 +2212,7 @@ Beginning time step no.    122
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   122
-     Time ..................................................   0.610     (d)
+     Time ..................................................   0.610000     (d)
 
 Beginning time step no.    123
      Beginning flow calculation.
@@ -2229,7 +2229,7 @@ Beginning time step no.    123
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   123
-     Time ..................................................   0.615     (d)
+     Time ..................................................   0.615000     (d)
 
 Beginning time step no.    124
      Beginning flow calculation.
@@ -2246,7 +2246,7 @@ Beginning time step no.    124
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   124
-     Time ..................................................   0.620     (d)
+     Time ..................................................   0.620000     (d)
 
 Beginning time step no.    125
      Beginning flow calculation.
@@ -2263,7 +2263,7 @@ Beginning time step no.    125
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   125
-     Time ..................................................   0.625     (d)
+     Time ..................................................   0.625000     (d)
 
 Beginning time step no.    126
      Beginning flow calculation.
@@ -2280,7 +2280,7 @@ Beginning time step no.    126
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   126
-     Time ..................................................   0.630     (d)
+     Time ..................................................   0.630000     (d)
 
 Beginning time step no.    127
      Beginning flow calculation.
@@ -2297,7 +2297,7 @@ Beginning time step no.    127
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   127
-     Time ..................................................   0.635     (d)
+     Time ..................................................   0.635000     (d)
 
 Beginning time step no.    128
      Beginning flow calculation.
@@ -2314,7 +2314,7 @@ Beginning time step no.    128
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   128
-     Time ..................................................   0.640     (d)
+     Time ..................................................   0.640000     (d)
 
 Beginning time step no.    129
      Beginning flow calculation.
@@ -2331,7 +2331,7 @@ Beginning time step no.    129
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   129
-     Time ..................................................   0.645     (d)
+     Time ..................................................   0.645000     (d)
 
 Beginning time step no.    130
      Beginning flow calculation.
@@ -2348,7 +2348,7 @@ Beginning time step no.    130
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   130
-     Time ..................................................   0.650     (d)
+     Time ..................................................   0.650000     (d)
 
 Beginning time step no.    131
      Beginning flow calculation.
@@ -2365,7 +2365,7 @@ Beginning time step no.    131
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   131
-     Time ..................................................   0.655     (d)
+     Time ..................................................   0.655000     (d)
 
 Beginning time step no.    132
      Beginning flow calculation.
@@ -2382,7 +2382,7 @@ Beginning time step no.    132
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   132
-     Time ..................................................   0.660     (d)
+     Time ..................................................   0.660000     (d)
 
 Beginning time step no.    133
      Beginning flow calculation.
@@ -2399,7 +2399,7 @@ Beginning time step no.    133
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   133
-     Time ..................................................   0.665     (d)
+     Time ..................................................   0.665000     (d)
 
 Beginning time step no.    134
      Beginning flow calculation.
@@ -2416,7 +2416,7 @@ Beginning time step no.    134
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   134
-     Time ..................................................   0.670     (d)
+     Time ..................................................   0.670000     (d)
 
 Beginning time step no.    135
      Beginning flow calculation.
@@ -2433,7 +2433,7 @@ Beginning time step no.    135
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   135
-     Time ..................................................   0.675     (d)
+     Time ..................................................   0.675000     (d)
 
 Beginning time step no.    136
      Beginning flow calculation.
@@ -2450,7 +2450,7 @@ Beginning time step no.    136
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   136
-     Time ..................................................   0.680     (d)
+     Time ..................................................   0.680000     (d)
 
 Beginning time step no.    137
      Beginning flow calculation.
@@ -2467,7 +2467,7 @@ Beginning time step no.    137
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   137
-     Time ..................................................   0.685     (d)
+     Time ..................................................   0.685000     (d)
 
 Beginning time step no.    138
      Beginning flow calculation.
@@ -2484,7 +2484,7 @@ Beginning time step no.    138
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   138
-     Time ..................................................   0.690     (d)
+     Time ..................................................   0.690000     (d)
 
 Beginning time step no.    139
      Beginning flow calculation.
@@ -2501,7 +2501,7 @@ Beginning time step no.    139
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   139
-     Time ..................................................   0.695     (d)
+     Time ..................................................   0.695000     (d)
 
 Beginning time step no.    140
      Beginning flow calculation.
@@ -2518,7 +2518,7 @@ Beginning time step no.    140
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   140
-     Time ..................................................   0.700     (d)
+     Time ..................................................   0.700000     (d)
 
 Beginning time step no.    141
      Beginning flow calculation.
@@ -2535,7 +2535,7 @@ Beginning time step no.    141
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   141
-     Time ..................................................   0.705     (d)
+     Time ..................................................   0.705000     (d)
 
 Beginning time step no.    142
      Beginning flow calculation.
@@ -2552,7 +2552,7 @@ Beginning time step no.    142
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   142
-     Time ..................................................   0.710     (d)
+     Time ..................................................   0.710000     (d)
 
 Beginning time step no.    143
      Beginning flow calculation.
@@ -2569,7 +2569,7 @@ Beginning time step no.    143
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   143
-     Time ..................................................   0.715     (d)
+     Time ..................................................   0.715000     (d)
 
 Beginning time step no.    144
      Beginning flow calculation.
@@ -2586,7 +2586,7 @@ Beginning time step no.    144
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   144
-     Time ..................................................   0.720     (d)
+     Time ..................................................   0.720000     (d)
 
 Beginning time step no.    145
      Beginning flow calculation.
@@ -2603,7 +2603,7 @@ Beginning time step no.    145
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   145
-     Time ..................................................   0.725     (d)
+     Time ..................................................   0.725000     (d)
 
 Beginning time step no.    146
      Beginning flow calculation.
@@ -2620,7 +2620,7 @@ Beginning time step no.    146
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   146
-     Time ..................................................   0.730     (d)
+     Time ..................................................   0.730000     (d)
 
 Beginning time step no.    147
      Beginning flow calculation.
@@ -2637,7 +2637,7 @@ Beginning time step no.    147
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   147
-     Time ..................................................   0.735     (d)
+     Time ..................................................   0.735000     (d)
 
 Beginning time step no.    148
      Beginning flow calculation.
@@ -2654,7 +2654,7 @@ Beginning time step no.    148
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   148
-     Time ..................................................   0.740     (d)
+     Time ..................................................   0.740000     (d)
 
 Beginning time step no.    149
      Beginning flow calculation.
@@ -2671,7 +2671,7 @@ Beginning time step no.    149
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   149
-     Time ..................................................   0.745     (d)
+     Time ..................................................   0.745000     (d)
 
 Beginning time step no.    150
      Beginning flow calculation.
@@ -2688,7 +2688,7 @@ Beginning time step no.    150
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   150
-     Time ..................................................   0.750     (d)
+     Time ..................................................   0.750000     (d)
 
 Beginning time step no.    151
      Beginning flow calculation.
@@ -2705,7 +2705,7 @@ Beginning time step no.    151
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   151
-     Time ..................................................   0.755     (d)
+     Time ..................................................   0.755000     (d)
 
 Beginning time step no.    152
      Beginning flow calculation.
@@ -2722,7 +2722,7 @@ Beginning time step no.    152
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   152
-     Time ..................................................   0.760     (d)
+     Time ..................................................   0.760000     (d)
 
 Beginning time step no.    153
      Beginning flow calculation.
@@ -2739,7 +2739,7 @@ Beginning time step no.    153
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   153
-     Time ..................................................   0.765     (d)
+     Time ..................................................   0.765000     (d)
 
 Beginning time step no.    154
      Beginning flow calculation.
@@ -2756,7 +2756,7 @@ Beginning time step no.    154
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   154
-     Time ..................................................   0.770     (d)
+     Time ..................................................   0.770000     (d)
 
 Beginning time step no.    155
      Beginning flow calculation.
@@ -2773,7 +2773,7 @@ Beginning time step no.    155
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   155
-     Time ..................................................   0.775     (d)
+     Time ..................................................   0.775000     (d)
 
 Beginning time step no.    156
      Beginning flow calculation.
@@ -2790,7 +2790,7 @@ Beginning time step no.    156
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   156
-     Time ..................................................   0.780     (d)
+     Time ..................................................   0.780000     (d)
 
 Beginning time step no.    157
      Beginning flow calculation.
@@ -2807,7 +2807,7 @@ Beginning time step no.    157
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   157
-     Time ..................................................   0.785     (d)
+     Time ..................................................   0.785000     (d)
 
 Beginning time step no.    158
      Beginning flow calculation.
@@ -2824,7 +2824,7 @@ Beginning time step no.    158
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   158
-     Time ..................................................   0.790     (d)
+     Time ..................................................   0.790000     (d)
 
 Beginning time step no.    159
      Beginning flow calculation.
@@ -2841,7 +2841,7 @@ Beginning time step no.    159
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   159
-     Time ..................................................   0.795     (d)
+     Time ..................................................   0.795000     (d)
 
 Beginning time step no.    160
      Beginning flow calculation.
@@ -2858,7 +2858,7 @@ Beginning time step no.    160
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   160
-     Time ..................................................   0.800     (d)
+     Time ..................................................   0.800000     (d)
 
 Beginning time step no.    161
      Beginning flow calculation.
@@ -2875,7 +2875,7 @@ Beginning time step no.    161
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   161
-     Time ..................................................   0.805     (d)
+     Time ..................................................   0.805000     (d)
 
 Beginning time step no.    162
      Beginning flow calculation.
@@ -2892,7 +2892,7 @@ Beginning time step no.    162
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   162
-     Time ..................................................   0.810     (d)
+     Time ..................................................   0.810000     (d)
 
 Beginning time step no.    163
      Beginning flow calculation.
@@ -2909,7 +2909,7 @@ Beginning time step no.    163
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   163
-     Time ..................................................   0.815     (d)
+     Time ..................................................   0.815000     (d)
 
 Beginning time step no.    164
      Beginning flow calculation.
@@ -2926,7 +2926,7 @@ Beginning time step no.    164
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   164
-     Time ..................................................   0.820     (d)
+     Time ..................................................   0.820000     (d)
 
 Beginning time step no.    165
      Beginning flow calculation.
@@ -2943,7 +2943,7 @@ Beginning time step no.    165
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   165
-     Time ..................................................   0.825     (d)
+     Time ..................................................   0.825000     (d)
 
 Beginning time step no.    166
      Beginning flow calculation.
@@ -2960,7 +2960,7 @@ Beginning time step no.    166
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   166
-     Time ..................................................   0.830     (d)
+     Time ..................................................   0.830000     (d)
 
 Beginning time step no.    167
      Beginning flow calculation.
@@ -2977,7 +2977,7 @@ Beginning time step no.    167
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   167
-     Time ..................................................   0.835     (d)
+     Time ..................................................   0.835000     (d)
 
 Beginning time step no.    168
      Beginning flow calculation.
@@ -2994,7 +2994,7 @@ Beginning time step no.    168
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   168
-     Time ..................................................   0.840     (d)
+     Time ..................................................   0.840000     (d)
 
 Beginning time step no.    169
      Beginning flow calculation.
@@ -3011,7 +3011,7 @@ Beginning time step no.    169
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   169
-     Time ..................................................   0.845     (d)
+     Time ..................................................   0.845000     (d)
 
 Beginning time step no.    170
      Beginning flow calculation.
@@ -3028,7 +3028,7 @@ Beginning time step no.    170
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   170
-     Time ..................................................   0.850     (d)
+     Time ..................................................   0.850000     (d)
 
 Beginning time step no.    171
      Beginning flow calculation.
@@ -3045,7 +3045,7 @@ Beginning time step no.    171
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   171
-     Time ..................................................   0.855     (d)
+     Time ..................................................   0.855000     (d)
 
 Beginning time step no.    172
      Beginning flow calculation.
@@ -3062,7 +3062,7 @@ Beginning time step no.    172
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   172
-     Time ..................................................   0.860     (d)
+     Time ..................................................   0.860000     (d)
 
 Beginning time step no.    173
      Beginning flow calculation.
@@ -3079,7 +3079,7 @@ Beginning time step no.    173
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   173
-     Time ..................................................   0.865     (d)
+     Time ..................................................   0.865000     (d)
 
 Beginning time step no.    174
      Beginning flow calculation.
@@ -3096,7 +3096,7 @@ Beginning time step no.    174
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   174
-     Time ..................................................   0.870     (d)
+     Time ..................................................   0.870000     (d)
 
 Beginning time step no.    175
      Beginning flow calculation.
@@ -3113,7 +3113,7 @@ Beginning time step no.    175
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   175
-     Time ..................................................   0.875     (d)
+     Time ..................................................   0.875000     (d)
 
 Beginning time step no.    176
      Beginning flow calculation.
@@ -3130,7 +3130,7 @@ Beginning time step no.    176
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   176
-     Time ..................................................   0.880     (d)
+     Time ..................................................   0.880000     (d)
 
 Beginning time step no.    177
      Beginning flow calculation.
@@ -3147,7 +3147,7 @@ Beginning time step no.    177
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   177
-     Time ..................................................   0.885     (d)
+     Time ..................................................   0.885000     (d)
 
 Beginning time step no.    178
      Beginning flow calculation.
@@ -3164,7 +3164,7 @@ Beginning time step no.    178
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   178
-     Time ..................................................   0.890     (d)
+     Time ..................................................   0.890000     (d)
 
 Beginning time step no.    179
      Beginning flow calculation.
@@ -3181,7 +3181,7 @@ Beginning time step no.    179
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   179
-     Time ..................................................   0.895     (d)
+     Time ..................................................   0.895000     (d)
 
 Beginning time step no.    180
      Beginning flow calculation.
@@ -3198,7 +3198,7 @@ Beginning time step no.    180
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   180
-     Time ..................................................   0.900     (d)
+     Time ..................................................   0.900000     (d)
 
 Beginning time step no.    181
      Beginning flow calculation.
@@ -3215,7 +3215,7 @@ Beginning time step no.    181
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   181
-     Time ..................................................   0.905     (d)
+     Time ..................................................   0.905000     (d)
 
 Beginning time step no.    182
      Beginning flow calculation.
@@ -3232,7 +3232,7 @@ Beginning time step no.    182
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   182
-     Time ..................................................   0.910     (d)
+     Time ..................................................   0.910000     (d)
 
 Beginning time step no.    183
      Beginning flow calculation.
@@ -3249,7 +3249,7 @@ Beginning time step no.    183
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   183
-     Time ..................................................   0.915     (d)
+     Time ..................................................   0.915000     (d)
 
 Beginning time step no.    184
      Beginning flow calculation.
@@ -3266,7 +3266,7 @@ Beginning time step no.    184
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   184
-     Time ..................................................   0.920     (d)
+     Time ..................................................   0.920000     (d)
 
 Beginning time step no.    185
      Beginning flow calculation.
@@ -3283,7 +3283,7 @@ Beginning time step no.    185
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   185
-     Time ..................................................   0.925     (d)
+     Time ..................................................   0.925000     (d)
 
 Beginning time step no.    186
      Beginning flow calculation.
@@ -3300,7 +3300,7 @@ Beginning time step no.    186
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   186
-     Time ..................................................   0.930     (d)
+     Time ..................................................   0.930000     (d)
 
 Beginning time step no.    187
      Beginning flow calculation.
@@ -3317,7 +3317,7 @@ Beginning time step no.    187
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   187
-     Time ..................................................   0.935     (d)
+     Time ..................................................   0.935000     (d)
 
 Beginning time step no.    188
      Beginning flow calculation.
@@ -3334,7 +3334,7 @@ Beginning time step no.    188
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   188
-     Time ..................................................   0.940     (d)
+     Time ..................................................   0.940000     (d)
 
 Beginning time step no.    189
      Beginning flow calculation.
@@ -3351,7 +3351,7 @@ Beginning time step no.    189
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   189
-     Time ..................................................   0.945     (d)
+     Time ..................................................   0.945000     (d)
 
 Beginning time step no.    190
      Beginning flow calculation.
@@ -3368,7 +3368,7 @@ Beginning time step no.    190
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   190
-     Time ..................................................   0.950     (d)
+     Time ..................................................   0.950000     (d)
 
 Beginning time step no.    191
      Beginning flow calculation.
@@ -3385,7 +3385,7 @@ Beginning time step no.    191
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   191
-     Time ..................................................   0.955     (d)
+     Time ..................................................   0.955000     (d)
 
 Beginning time step no.    192
      Beginning flow calculation.
@@ -3402,7 +3402,7 @@ Beginning time step no.    192
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   192
-     Time ..................................................   0.960     (d)
+     Time ..................................................   0.960000     (d)
 
 Beginning time step no.    193
      Beginning flow calculation.
@@ -3419,7 +3419,7 @@ Beginning time step no.    193
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   193
-     Time ..................................................   0.965     (d)
+     Time ..................................................   0.965000     (d)
 
 Beginning time step no.    194
      Beginning flow calculation.
@@ -3436,7 +3436,7 @@ Beginning time step no.    194
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   194
-     Time ..................................................   0.970     (d)
+     Time ..................................................   0.970000     (d)
 
 Beginning time step no.    195
      Beginning flow calculation.
@@ -3453,7 +3453,7 @@ Beginning time step no.    195
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   195
-     Time ..................................................   0.975     (d)
+     Time ..................................................   0.975000     (d)
 
 Beginning time step no.    196
      Beginning flow calculation.
@@ -3470,7 +3470,7 @@ Beginning time step no.    196
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   196
-     Time ..................................................   0.980     (d)
+     Time ..................................................   0.980000     (d)
 
 Beginning time step no.    197
      Beginning flow calculation.
@@ -3487,7 +3487,7 @@ Beginning time step no.    197
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   197
-     Time ..................................................   0.985     (d)
+     Time ..................................................   0.985000     (d)
 
 Beginning time step no.    198
      Beginning flow calculation.
@@ -3504,7 +3504,7 @@ Beginning time step no.    198
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   198
-     Time ..................................................   0.990     (d)
+     Time ..................................................   0.990000     (d)
 
 Beginning time step no.    199
      Beginning flow calculation.
@@ -3521,7 +3521,7 @@ Beginning time step no.    199
           Charge
      Beginning chemistry calculation.
      End of Time Step No.   199
-     Time ..................................................   0.995     (d)
+     Time ..................................................   0.995000     (d)
 
 Beginning time step no.    200
      Current time step length ...................................   5.000E-03 (d)
@@ -3545,7 +3545,7 @@ Beginning time step no.    200
           Maximum iterations for one cell: 0
 
      End of Time Step No.   200
-     Time ..................................................    1.00     (d)
+     Time ..................................................    1.00000     (d)
      Maximum change in potentiometric head   4.3729E-17      (m ) at location (  1.00    ,  1.00    , 1.600E-02)(m)
      Maximum change in H .................. -1.0044E-12 (mol/kgw) at location (  0.00    ,  0.00    , 3.600E-02)(m)
      Maximum change in O .................. -5.0238E-13 (mol/kgw) at location (  0.00    ,  0.00    , 3.600E-02)(m)

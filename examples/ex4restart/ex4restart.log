@@ -293,7 +293,7 @@ Beginning time step no.      1
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     1
-     Time ..................................................   2.000E+03 (yr)
+     Time ..................................................    2000.00     (yr)
 
 Beginning time step no.      2
      Beginning solute-transport calculation.
@@ -309,7 +309,7 @@ Beginning time step no.      2
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     2
-     Time ..................................................   4.000E+03 (yr)
+     Time ..................................................    4000.00     (yr)
 
 Beginning time step no.      3
      Beginning solute-transport calculation.
@@ -325,7 +325,7 @@ Beginning time step no.      3
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     3
-     Time ..................................................   6.000E+03 (yr)
+     Time ..................................................    6000.00     (yr)
 
 Beginning time step no.      4
      Beginning solute-transport calculation.
@@ -341,7 +341,7 @@ Beginning time step no.      4
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     4
-     Time ..................................................   8.000E+03 (yr)
+     Time ..................................................    8000.00     (yr)
 
 Beginning time step no.      5
      Current time step length ...................................   2.000E+03 (yr)
@@ -374,7 +374,7 @@ Beginning time step no.      5
           Maximum iterations for one cell: 19
 
      End of Time Step No.     5
-     Time ..................................................   1.000E+04 (yr)
+     Time ..................................................    10000.0     (yr)
      Maximum change in potentiometric head  -5.9027E-07      (m ) at location (  0.00    , 3.000E+04,  300.    )(m)
      Maximum change in H .................. -2.3620E-03 (mol/kgw) at location (  0.00    , 4.800E+04,  0.00    )(m)
      Maximum change in O .................. -5.0275E-03 (mol/kgw) at location (  0.00    , 4.800E+04,  0.00    )(m)
