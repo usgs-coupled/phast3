@@ -1,3 +1,7 @@
+---------------------------------------
+PHAST, Version 1.5.1 (February 5, 2008)
+---------------------------------------
+
     svn 2628: Added optional rebalance algorithm for parallel
     version, -rebalance_by_cell T/F. Default is false. By default,
     PHAST looks at the total time taken to run chemistry on a 
@@ -8,6 +12,11 @@
     information. The new method should only be needed for kinetic 
     problems where some cells take much longer to run than other
     cells.
+
+    svn 2529: Changed linker option for --hash-style. By default
+    compilation used gnu style hash, which was incompatible 
+    with C libraries compiled with old style hash. New option
+    should work with all libraries.
 
 
 ---------------------------------------
