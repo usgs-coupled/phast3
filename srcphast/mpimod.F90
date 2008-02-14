@@ -28,7 +28,24 @@ CONTAINS
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   SUBROUTINE init_mpi(mpi_tasks, mpi_myself)
     IMPLICIT NONE
-    include 'mpif.h'
+!MS$ NOFREEFORM
+      include 'mpif.h'
+!MS$ FREEFORM
+#if defined(_WIN32)
+!MS$ ATTRIBUTES Default :: mpi_dup_fn    
+!MS$ ATTRIBUTES Default :: mpi_null_delete_fn    
+!MS$ ATTRIBUTES Default :: mpi_null_copy_fn    
+!MS$ ATTRIBUTES Default :: mpi_comm_dup_fn    
+!MS$ ATTRIBUTES Default :: mpi_comm_null_delete_fn
+!MS$ ATTRIBUTES Default :: mpi_comm_null_copy_fn
+!MS$ ATTRIBUTES Default :: mpi_win_dup_fn
+!MS$ ATTRIBUTES Default :: mpi_win_null_delete_fn
+!MS$ ATTRIBUTES Default :: mpi_win_null_copy_fn
+!MS$ ATTRIBUTES Default :: mpi_type_dup_fn
+!MS$ ATTRIBUTES Default :: mpi_type_null_delete_fn
+!MS$ ATTRIBUTES Default :: mpi_type_null_copy_fn
+!MS$ ATTRIBUTES Default :: mpi_conversion_fn_null
+#endif
     INTERFACE
        SUBROUTINE MPI_INIT_(ierror)
 #if defined(_WIN32)
