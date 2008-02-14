@@ -1,4 +1,5 @@
 MODULE mpi_mod
+#if defined USE_MPI
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   ! mpimod.F90
   !
@@ -148,5 +149,5 @@ CONTAINS
 !!$    ENDIF
 !!$ END DO
 !!$END SUBROUTINE ltrim
-
+#endif    /* USE_MPI */
 END MODULE mpi_mod

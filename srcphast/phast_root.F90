@@ -10,10 +10,6 @@ SUBROUTINE phast_root(mpi_tasks, mpi_myself)
   USE mcv
   USE mcw
   USE print_control_mod
-!!$#if defined(USE_MPI)
-!!$  USE mpi_mod
-!!$#endif
-!  USE print_control_mod
   IMPLICIT NONE
   INTEGER, INTENT(inout) :: mpi_myself, mpi_tasks
   REAL(kind=kdp) :: time_phreeqc
