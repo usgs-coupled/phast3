@@ -4,7 +4,6 @@ MODULE mpi_mod
   !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! ... $Id$
-
 #if defined(LAHEY_F95) || defined(NO_UNDERSCORES)
 #define MPI_INIT_      MPI_INIT
 #define MPI_COMM_SIZE_ MPI_COMM_SIZE
@@ -28,6 +27,7 @@ CONTAINS
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   SUBROUTINE init_mpi(mpi_tasks, mpi_myself)
     IMPLICIT NONE
+    include 'mpif.h'
     INTERFACE
        SUBROUTINE MPI_INIT_(ierror)
 #if defined(_WIN32)
@@ -53,31 +53,22 @@ CONTAINS
        END SUBROUTINE MPI_COMM_RANK_
     END INTERFACE
 
-    INTEGER MPI_COMM_WORLD
-
-#if defined(MPICH_NAME)
-!    PARAMETER (MPI_COMM_WORLD = 91)        ! Windows mpich 1?
-    PARAMETER (MPI_COMM_WORLD = 1140850688) ! MPICH 2
-#else
-    PARAMETER (MPI_COMM_WORLD = 0)
-#endif
-
     INTEGER, INTENT(OUT) :: mpi_tasks
     INTEGER, INTENT(OUT) :: mpi_myself
-    INTEGER :: mpi_error
+    INTEGER :: my_mpi_error
 
-    CALL MPI_INIT_(mpi_error)
-    IF (mpi_error /= 0) THEN
+    CALL MPI_INIT_(my_mpi_error)
+    IF (my_mpi_error /= 0) THEN
        WRITE(*,*) "MPI_INIT failed."
        STOP "Stopping."
     ENDIF
-    CALL MPI_COMM_SIZE_(MPI_COMM_WORLD, mpi_tasks, mpi_error)
-    IF (mpi_error /= 0) THEN
+    CALL MPI_COMM_SIZE_(MPI_COMM_WORLD, mpi_tasks, my_mpi_error)
+    IF (my_mpi_error /= 0) THEN
        WRITE(*,*) "MPI_COMM_SIZE failed."
        STOP "Stopping."
     ENDIF
-    CALL MPI_COMM_RANK_(MPI_COMM_WORLD, mpi_myself, mpi_error)
-    IF (mpi_error /= 0) THEN
+    CALL MPI_COMM_RANK_(MPI_COMM_WORLD, mpi_myself, my_mpi_error)
+    IF (my_mpi_error /= 0) THEN
        WRITE(*,*) "MPI_COMM_RANK failed."
        STOP "Stopping."
     ENDIF
