@@ -388,7 +388,7 @@ int vector_print(double *d, double scalar, int n, FILE *file)
 	return(OK);
 }
 /* ---------------------------------------------------------------------- */
-int units_conversion(char *input, char *target, double *conversion, int report_error)
+int units_conversion(char *input, const char *target, double *conversion, int report_error)
 /* ---------------------------------------------------------------------- */
 {
 	char token[MAX_LENGTH], numer[MAX_LENGTH], denom[MAX_LENGTH];

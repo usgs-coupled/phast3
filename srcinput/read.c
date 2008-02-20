@@ -41,7 +41,7 @@ STATIC int read_solution_method (void);
 STATIC int read_specified_value_bc(void);
 STATIC int read_steady_flow(void);
 STATIC int read_time_control (void);
-STATIC int read_time_data(char **next_char, struct time *time_ptr, char *errstr);
+STATIC int read_time_data(char **next_char, struct time *time_ptr, const char *errstr);
 STATIC int read_title (void);
 STATIC int read_units (void);
 STATIC int read_well(void);
@@ -4261,7 +4261,7 @@ int read_time_control (void)
 	return(return_value);
 }
 /* ---------------------------------------------------------------------- */
-int read_time_data(char **next_char, struct time *time_ptr, char *errstr)
+int read_time_data(char **next_char, struct time *time_ptr, const char *errstr)
 /* ---------------------------------------------------------------------- */
 {
 	int j, l;
@@ -4301,7 +4301,7 @@ int read_time_data(char **next_char, struct time *time_ptr, char *errstr)
 
 }
 /* ---------------------------------------------------------------------- */
-int read_frequency_data(char **next_char, struct time *time_ptr, char *errstr)
+int read_frequency_data(char **next_char, struct time *time_ptr, const char *errstr)
 /* ---------------------------------------------------------------------- */
 {
 	int i, j, l;

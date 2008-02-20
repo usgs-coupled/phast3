@@ -179,7 +179,7 @@ int check_hst_units(void)
 	return(OK);
 }
 /* ---------------------------------------------------------------------- */
-int check_time_units(struct time *time_ptr, int required, char *errstr)
+int check_time_units(struct time *time_ptr, int required, const char *errstr)
 /* ---------------------------------------------------------------------- */
 {
 /*
@@ -245,7 +245,7 @@ int check_time_units(struct time *time_ptr, int required, char *errstr)
 	return(OK);
 }
 /* ---------------------------------------------------------------------- */
-int check_ss_time_units(struct time *time_ptr, char *errstr)
+int check_ss_time_units(struct time *time_ptr, const char *errstr)
 /* ---------------------------------------------------------------------- */
 {
 /*
@@ -782,7 +782,7 @@ int check_time_series_data(void)
 	return(OK);
 }
 /* ---------------------------------------------------------------------- */
-int check_time_series(struct time_series *ts_ptr, int start_at_zero, char * errorString)
+int check_time_series(struct time_series *ts_ptr, int start_at_zero, const char * errorString)
 /* ---------------------------------------------------------------------- */
 {
 	int i, count;
