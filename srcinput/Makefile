@@ -41,40 +41,40 @@ $(PROGRAM): $(OBJECTS)
 	$(CC) -o $(PROGRAM) $(OBJECTS) $(LOADFLAGS) 
 
 
-main.o: main.c hstinpt.h inputproto.h message.h time.h
+main.o: main.c hstinpt.h gpc.h time.h inputproto.h message.h
 	$(CC) $(CCFLAGS) main.c -c
 
-accumulate.o: accumulate.c hstinpt.h inputproto.h message.h time.h
+accumulate.o: accumulate.c hstinpt.h gpc.h time.h inputproto.h message.h
 	$(CC) $(CCFLAGS) accumulate.c -c
 
-check.o: check.c hstinpt.h inputproto.h message.h time.h
+check.o: check.c hstinpt.h gpc.h time.h inputproto.h
 	$(CC) $(CCFLAGS) check.c -c
 
-gpc.o: gpc.c message.h gpc.h 
+gpc.o: gpc.c hstinpt.h gpc.h time.h inputproto.h message.h
 	$(CC) $(CCFLAGS) gpc.c -c
 
-message.o: message.c hstinpt.h inputproto.h message.h time.h
+message.o: message.c hstinpt.h gpc.h time.h inputproto.h message.h
 	$(CC) $(CCFLAGS) message.c -c
 
-read.o: read.c hstinpt.h inputproto.h message.h time.h
+read.o: read.c hstinpt.h gpc.h time.h inputproto.h message.h
 	$(CC) $(CCFLAGS) read.c -c
 
-rivers.o: rivers.c hstinpt.h time.h message.h gpc.h
+rivers.o: rivers.c hstinpt.h gpc.h time.h inputproto.h message.h
 	$(CC) $(CCFLAGS) rivers.c -c
 
-structures.o: structures.c hstinpt.h inputproto.h message.h time.h
+structures.o: structures.c hstinpt.h gpc.h time.h inputproto.h
 	$(CC) $(CCFLAGS) structures.c -c
 
-time.o: time.c hstinpt.h inputproto.h message.h time.h
+time.o: time.c hstinpt.h gpc.h time.h inputproto.h
 	$(CC) $(CCFLAGS) time.c -c
 
-utilities.o: utilities.c hstinpt.h inputproto.h message.h time.h
+utilities.o: utilities.c hstinpt.h gpc.h time.h inputproto.h message.h
 	$(CC) $(CCFLAGS) utilities.c -c
 
-wells.o: wells.c hstinpt.h inputproto.h message.h time.h
+wells.o: wells.c hstinpt.h gpc.h time.h inputproto.h
 	$(CC) $(CCFLAGS) wells.c -c
 
-write.o: write.c hstinpt.h inputproto.h message.h time.h
+write.o: write.c hstinpt.h gpc.h time.h inputproto.h message.h
 	$(CC) $(CCFLAGS) write.c -c
 
 unit_impl.o: unit_impl.cxx hstinpt.h gpc.h time.h inputproto.h
@@ -97,3 +97,6 @@ comma=,
 ld-option = $(shell if $(CC) $(1) \
               -nostdlib -o /dev/null -xc /dev/null \
               > /dev/null 2>&1 ; then echo "$(1)" ; else echo "$(2)"; fi)
+
+depends:
+	gcc -MM *.c *.cxx > dependencies

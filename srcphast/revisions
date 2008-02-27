@@ -1,3 +1,9 @@
+    svn 2729: Fixed bug in delimited values (values delimited by
+    "< >" in the .trans.dat file. Earlier versions failed
+    to handle multiple sets of delimited values unless there
+    was a space before the concluding ">" for each set. Now,
+    the space is not necessary.
+
 ---------------------------------------
 PHAST, Version 1.5.0 (February 5, 2008)
 ---------------------------------------

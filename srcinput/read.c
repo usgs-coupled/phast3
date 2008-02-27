@@ -3469,6 +3469,7 @@ int read_line_doubles_delimited(char *next_char, double **d, int *count_d, int *
 	double value;
 	char token[MAX_LENGTH];
 
+	replace(">", " >", next_char);
 	for (;;) {
 		j = copy_token(token, &next_char, &l);
 		if(j == EMPTY) {
