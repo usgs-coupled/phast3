@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(DEV_ZLIB122_INC)&quot;;&quot;$(DEV_HDF5_INC)&quot;;&quot;$(DEV_GMP_INC_MT)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;;&quot;$(ProjectDir)..&quot;"
-				PreprocessorDefinitions="GZIP_RESTART;USE_PHRQ_ALLOC;PHREEQC_CPP;_DEBUG;HDF5_CREATE;INVERSE_CL1MP;WIN32;_CONSOLE;NO_UNDERSCORES;H5_HAVE_FUNCTION;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
+				PreprocessorDefinitions="GZIP_RESTART;USE_PHRQ_ALLOC;PHREEQC_CPP;_DEBUG;HDF5_CREATE;WIN32;_CONSOLE;NO_UNDERSCORES;H5_HAVE_FUNCTION;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -111,8 +111,8 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="&quot;$(DEV_ZLIB122_INC)&quot;;&quot;$(DEV_HDF5_INC)&quot;;&quot;$(DEV_GMP_INC_MT)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;"
-				PreprocessorDefinitions="PHREEQC_CPP;PHREEQC_CPP;NDEBUG;HDF5_CREATE;INVERSE_CL1MP;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
+				AdditionalIncludeDirectories="&quot;$(DEV_ZLIB122_INC)&quot;;&quot;$(DEV_HDF5_INC)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;"
+				PreprocessorDefinitions="PHREEQC_CPP;NDEBUG;HDF5_CREATE;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -178,8 +178,8 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="&quot;$(DEV_ZLIB122_INC)&quot;;&quot;$(DEV_HDF5_INC)&quot;;&quot;$(DEV_GMP_INC_MT)&quot;;&quot;$(DEV_MPICH2_INC)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;"
-				PreprocessorDefinitions="PHREEQC_CPP;NDEBUG;MERGE_FILES;USE_MPI;HDF5_CREATE;INVERSE_CL1MP;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
+				AdditionalIncludeDirectories="&quot;$(DEV_ZLIB122_INC)&quot;;&quot;$(DEV_HDF5_INC)&quot;;&quot;$(DEV_MPICH2_INC)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;"
+				PreprocessorDefinitions="PHREEQC_CPP;NDEBUG;MERGE_FILES;USE_MPI;HDF5_CREATE;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -246,7 +246,7 @@
 				InlineFunctionExpansion="0"
 				OmitFramePointers="false"
 				AdditionalIncludeDirectories="&quot;$(DEV_ZLIB122_INC)&quot;;&quot;$(DEV_HDF5_INC)&quot;;&quot;$(DEV_GMP_INC_MT)&quot;;&quot;$(DEV_MPICH2_INC)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;"
-				PreprocessorDefinitions="GZIP_RESTART;USE_PHRQ_ALLOC;PHREEQC_CPP;_DEBUG;MERGE_FILES;USE_MPI;HDF5_CREATE;INVERSE_CL1MP;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
+				PreprocessorDefinitions="GZIP_RESTART;USE_PHRQ_ALLOC;PHREEQC_CPP;_DEBUG;MERGE_FILES;USE_MPI;HDF5_CREATE;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
 				StringPooling="false"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -1919,42 +1919,6 @@
 			<Filter
 				Name="CL1MP_OBJS"
 				>
-				<File
-					RelativePath="..\phreeqcpp\phreeqc\cl1mp.c"
-					>
-					<FileConfiguration
-						Name="ser_debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="ser|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="merge|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="merge_debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							CompileAs="2"
-						/>
-					</FileConfiguration>
-				</File>
 			</Filter>
 		</Filter>
 		<Filter
