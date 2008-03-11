@@ -147,7 +147,7 @@ PRINT_LOCATIONS
                -zone   0 0 0  90000 48000 0
                -print 0
 	-chemistry
-	       -sample X 2
-	       -sample Y 2
-	       -sample Z 2
+	       -sample X 3
+	       -sample Y 3
+	       -sample Z 3
 END
