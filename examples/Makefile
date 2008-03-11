@@ -482,6 +482,33 @@ ex4_noedl_clean_parallel:
 	fi
 
 #
+# ex4_ddl
+#
+ex4_ddl: ex4_ddl_clean
+	echo ; 
+	echo ============= ex4_ddl
+	echo ; 
+	cd $(TEST)/ex4_ddl;
+	cd $(TEST)/ex4_ddl; $(PHAST_INPUT) ex4_ddl; time $(PHAST)
+	echo ============= Done ex4_ddl
+
+ex4_ddl_parallel: ex4_ddl_clean_parallel
+	echo ; 
+	echo ============= ex4_ddl Parallel
+	echo ; 
+	$(RUN) ex4_ddl
+	echo ============= Done ex4_ddl Parallel
+
+ex4_ddl_clean:
+	cd $(TEST)/ex4_ddl; $(CLEAN_CMD) ex4_ddl.head.dat
+
+ex4_ddl_clean_parallel:
+	@if [ -d $(TEST)/ex4_ddl/0 ]; \
+	  then \
+	  find $(TEST)/ex4_ddl/0 -maxdepth 1 -type f | xargs rm -f; \
+	fi
+
+#
 # ex4_start_time
 #
 ex4_start_time: ex4_start_time_clean
