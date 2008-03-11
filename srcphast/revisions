@@ -1,8 +1,21 @@
+    svn 2745: Fixed major bug related to surfaces. The charge
+    developed on a surface was not saved correctly in
+    xsurface_save_hst. This routine was replaced with
+    xsurface_save, which should give results equivalent
+    to PHREEQC.
+
+
     svn 2729: Fixed bug in delimited values (values delimited by
     "< >" in the .trans.dat file. Earlier versions failed
     to handle multiple sets of delimited values unless there
     was a space before the concluding ">" for each set. Now,
     the space is not necessary.
+
+    svn 2707: Modified mpimod.F90 to use mpif.h, which should be more
+    robust than previous usage of mpi routines and variables. Made
+    serial and parallel dependencies identical. Revised dependencies
+    in Makefile.
+
 
 ---------------------------------------
 PHAST, Version 1.5.0 (February 5, 2008)

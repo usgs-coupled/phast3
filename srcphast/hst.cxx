@@ -16,6 +16,7 @@
 #include "phastproto.h"
 #include "Dictionary.h"
 #include "gzstream.h"
+extern int xsurface_save (int n_user);
 static void BeginTimeStep(int print_sel, int print_out, int print_hdf);
 static void EndTimeStep(int print_sel, int print_out, int print_hdf);
 static void BeginCell(int print_sel, int print_out, int print_hdf, int index);
@@ -1294,7 +1295,8 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 			}
 			if (save.surface == TRUE) {
 				surface_bsearch(i, &n_surface);
-				xsurface_save_hst(n_surface);
+				//xsurface_save_hst(n_surface);
+				xsurface_save(i);
 			}
 			if (save.s_s_assemblage == TRUE) {
 				s_s_assemblage_bsearch(i, &n_s_s_assemblage);
