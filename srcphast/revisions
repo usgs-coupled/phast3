@@ -1,3 +1,6 @@
+    svn 2751: Fixed bug with xyz_well print frequency. Caused
+    an array deallocation error if no wells included in problem.
+
     svn 2745: Fixed major bug related to surfaces. The charge
     developed on a surface was not saved correctly in
     xsurface_save_hst. This routine was replaced with

@@ -77,7 +77,7 @@ CONTAINS
     if (nwel <= 0) then
        CALL pc_out(print_wells)
     endif
-    if (.not. solute) then
+    if (.not. solute .or. nwel <= 0) then
        CALL pc_out(print_xyz_wells)
     endif
     CALL pc_out(print_restart_hst)
