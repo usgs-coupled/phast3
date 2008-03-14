@@ -22,6 +22,9 @@ Reactions
 %define _enable_debug_packages 0
 %define debug_package %{nil}
 
+# Fix for rpmbuild 4.4.8
+%define _docdir_fmt %{NAME}-%{VERSION}
+
 # Solaris /bin/id doesn't have id -u option
 %ifarch usparc
 %define __id   /usr/xpg4/bin/id
