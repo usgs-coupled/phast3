@@ -11,6 +11,8 @@ a. Update installshield GUID
 
 b. In ModifyPath.rul search for ADD_NEW_VERSION_HERE and make the 
    necessary modifications.
+   
+c. Add appropriate header to srcphast/revisions (check w/ David)
 
 1. Run dist.sh to get phast-X.X.tar.gz
   ie
