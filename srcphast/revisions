@@ -1,11 +1,13 @@
+    svn 2766: Fixed bug with surfaces (svn 2745) in parallel version.
+
     svn 2751: Fixed bug with xyz_well print frequency. Caused
     an array deallocation error if no wells included in problem.
 
-    svn 2745: Fixed major bug related to surfaces. The charge
-    developed on a surface was not saved correctly in
-    xsurface_save_hst. This routine was replaced with
-    xsurface_save, which should give results equivalent
-    to PHREEQC.
+    svn 2745: Fixed bug related to surfaces. The error was a major bug
+    when using the -no_edl surface option. The charge developed on a
+    surface was not saved correctly in xsurface_save_hst. This routine
+    was replaced with xsurface_save, which should give results
+    equivalent to PHREEQC.
 
 
     svn 2729: Fixed bug in delimited values (values delimited by

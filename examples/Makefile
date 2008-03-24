@@ -5,6 +5,7 @@ ifeq ($(CFG), Linux)
   TOPDIR=$(HOME)/programs/phastpp
   TEST=$(TOPDIR)/examples
   PHAST_INPUT=$(TOPDIR)/srcinput/phastinput
+#   PHAST_INPUT=$(TOPDIR)/srcinput-wedge/phastinput
 #  PHAST=$(TOPDIR)/srcphast/serial_gfortran/phast
 #  PHAST=$(TOPDIR)/srcphast/serial_g95/phast
   PHAST=$(TOPDIR)/srcphast/serial_lahey/phast
@@ -923,3 +924,10 @@ mpich:
 			time mpirun -np 2 -localonly -dir $(TEST)/$$DIR/0 $(PHAST_MPICH); \
 			cd $(TEST); \
 		done;
+
+tester:
+	make -f Makefile clean
+	make -f Makefile all >& all.out
+	make -f Makefile zero zero1 zero_parallel zero1_parallel >> all.out
+	make -f Makefile diff >& diff.out
+	make -f Makefile diff_parallel >& diff_parallel.out

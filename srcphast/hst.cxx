@@ -1617,7 +1617,8 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 			}
 			if (save.surface == TRUE) {
 				surface_bsearch(i, &n_surface);
-				xsurface_save_hst(n_surface);
+				//xsurface_save_hst(n_surface);
+				xsurface_save(i);
 			}
 			if (save.s_s_assemblage == TRUE) {
 				s_s_assemblage_bsearch(i, &n_s_s_assemblage);
