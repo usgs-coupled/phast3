@@ -46,7 +46,7 @@ RIVER 1 Little River
                 -bed_thickness                1.
                 -bed_hydraulic_conductivity   1.
                 -head                         0         335.
-					      1000      338.
+                			      1000      338.
                 -solution                     0         1
 					      2000      2
         -point  44000. 0.
@@ -64,7 +64,9 @@ RIVER 2 North Fork River
                 -bed_thickness                1.
                 -bed_hydraulic_conductivity   1
                 -head                         0         335.
+                			      2200      339.
                 -solution                     0         1
+                                              2300      2
         -point  30000. 48000.
         -point  90000. 48000.
                 -width                        200.
@@ -90,10 +92,15 @@ RIVER 3 North Canadian River
                 -solution                     0         1
 FLUX_BC
         -zone   30000. 3000. 400.  90000. 45000. 400.
-                -flux                         0         -0.055
-					      3000      -0.025		
+                -flux                         0         -0.01
+					      3000      -0.02		
                 -associated_solution          0         1
 					      4000      2
+	-zone   60000. 3000. 400.  90000. 45000. 400.
+                -flux                         0         -0.03
+					      3100      -0.04		
+                -associated_solution          0         2
+					      3200      1				      
 SPECIFIED_HEAD_BC
         # Lake Stanley Draper
         -zone   30000. 14000 300. 32000.  20000.  400.
@@ -101,25 +108,44 @@ SPECIFIED_HEAD_BC
 					      5000      340.
                 -associated_solution          0         1
 					      6000      2
+        # Lake Stanley Draper
+        -zone   40000. 14000 300. 44000.  20000.  400.
+                -head                         0         336.
+					      6100      340.
+                -associated_solution          0         1
+					      6200     2					      
 LEAKY_BC
         -zone   0. 48000. 0. 29000. 48000. 400.
                 -hydraulic                    1.5e-5
                 -thickness                   30000.
                 -head                         0         305.0
-					      7000      305.0
+					      7000      306.0
                 -associated                   0         1
 					      8000      2
        -zone 0 0 0 39000 0 400
                 -hydraulic_conductivity       1.5E-5
                 -thickness                    20000
                 -head                         0         320
+                                              8100      321
                 -associated_solution          0         2
+                                              8200      1
 FREE_SURFACE_BC true
 WELL 1 Observation well 1 in arsenic zone
         12000 36000
                 -diameter       2                               # inches
                 -pumping                      0         1       # L/day
+                			      8000      2      
                 -elevation      90 110                          # m
+                -associated                   0         1
+                                              9000      2
+WELL 2 Observation well 1 in arsenic zone
+        24000 36000
+                -diameter       2                               # inches
+                -inject                       0         2       # L/day
+                			      11000     1      
+                -elevation      90 110                          # m
+                -associated                   0         2
+                                              12000     1                                              
 HEAD_IC
         -zone   0. 0. 0. 90000. 48000. 400.
                 #-head   380.
@@ -137,7 +163,7 @@ SOLUTION_METHOD
         -time_differencing      1.
 TIME_CONTROL
         -delta_time     0               2000    yr
-        -end_time                       10000   yr
+        -end_time                       15000   yr
 PRINT_INITIAL
         -velocities             true
         -xyz_head               true
