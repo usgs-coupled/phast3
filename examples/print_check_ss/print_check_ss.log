@@ -194,6 +194,12 @@ Processing flow and transport data file.
 	               zone   0 0 0  90000 48000 0
 	               print 0
 	END
+WARNING: Guessing boundary condition face to be Z+
+Please specify X-, X+, Y-, Y+, Z- or Z+ for LEAKY_BC and FLUX_BC.
+WARNING: Guessing boundary condition face to be Y+
+Please specify X-, X+, Y-, Y+, Z- or Z+ for LEAKY_BC and FLUX_BC.
+WARNING: Guessing boundary condition face to be Y-
+Please specify X-, X+, Y-, Y+, Z- or Z+ for LEAKY_BC and FLUX_BC.
 WARNING: Horizontal, vertical, and longitudinal dispersivities are not equal for at least one element.
 	However, cross-dispersion calculation is disabled (-cross_dispersion in SOLUTION_METHOD).
 
