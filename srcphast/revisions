@@ -1,3 +1,9 @@
+    svn 2785: Fixed bug with transient river boundary condition
+    data. Worked correctly if changes were made to all rivers,
+    but incorrectly if only one of multiple rivers changed
+    conditions (head or solution). Similar change was made
+    for wells.
+
 ---------------------------------------
 PHAST, Version 1.5.1 (March 24, 2008)
 ---------------------------------------
