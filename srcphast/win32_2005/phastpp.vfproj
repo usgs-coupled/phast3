@@ -3,7 +3,7 @@
 	<Platforms>
 		<Platform Name="Win32"/></Platforms>
 	<Configurations>
-		<Configuration Name="ser_debug|Win32" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)" WorkingDirectory="c:\programs\phastpp\examples\ex4">
+		<Configuration Name="ser_debug|Win32" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)" WorkingDirectory="c:\programs\phastpp\examples\leakytest">
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true" HeaderFileName="$(InputName).h" TypeLibraryName="$(IntDir)/$(InputName).tlb"/>
 				<Tool Name="VFPreBuildEventTool"/>
 				<Tool Name="VFPostBuildEventTool"/>

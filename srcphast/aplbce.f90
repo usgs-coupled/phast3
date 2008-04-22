@@ -103,7 +103,7 @@ SUBROUTINE aplbce
            UZAV = ZELBC( L)  
         ENDIF
         UPHIM = P( M) + GZ* ( DENLBC( L) - DEN( M) ) * UZAV  
-        BLBC( L) = KLBC( L) * UFRAC/ VISLBC( L)  
+        BLBC( L) = KLBC( L) / VISLBC( L)  
         ALBC( L) = BLBC( L) * ( ( DENLBC( L) * PHILBC( L) - DEN( M) &
              * GZ* Z( K) ) - UPHIM)
         ! ... Attenuate the flow rate for a partially saturated cell with

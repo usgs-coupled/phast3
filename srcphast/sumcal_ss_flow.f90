@@ -377,7 +377,9 @@ SUBROUTINE sumcal_ss_flow
         IF(frac(m) > 1._kdp) THEN          ! ... Rewet cell above
            imod = MOD(m,nxy)
            k = (m-imod)/nxy + MIN(1,imod)
-           IF(k == nz .OR. ibc(m+nxy) == -1) CYCLE     !  Treat as top layer
+           !IF(k == nz .OR. ibc(m+nxy) == -1) CYCLE     !  Treat as top layer
+           IF(k == nz) CYCLE
+           IF(ibc(m+nxy) == -1) CYCLE
            ! ... Calculate pressure and fraction of saturation in m+nxy cell;
            ! ...      the new free-surface cell
            if (frac(m) < 1._kdp + 1.e-6_kdp) CYCLE
