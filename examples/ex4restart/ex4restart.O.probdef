@@ -123,27 +123,27 @@
           Maximum time step allowed ....................................... DTIMMX   2.00E+06  (yr )
 
 
-                    Initial fluid in region ...............................  2.785737E+14  (kg) ;  2.785737E+11  (m^3)
+                    Initial fluid in region ...............................  2.784841E+14  (kg) ;  2.784841E+11  (m^3)
 
-                    Initial solute in region:H         ....................  2.086779E+09  (kg)
+                    Initial solute in region:H         ....................  2.085788E+09  (kg)
 
-                    Initial solute in region:O         ....................  1.226888E+11  (kg)
+                    Initial solute in region:O         ....................  1.226350E+11  (kg)
 
-                    Initial solute in region:As        ....................  3.251227E+06  (kg)
+                    Initial solute in region:As        ....................  3.248712E+06  (kg)
 
-                    Initial solute in region:C         ....................  3.035812E+10  (kg)
+                    Initial solute in region:C         ....................  3.034476E+10  (kg)
 
-                    Initial solute in region:Ca        ....................  6.339858E+09  (kg)
+                    Initial solute in region:Ca        ....................  6.338123E+09  (kg)
 
-                    Initial solute in region:Cl        ....................  5.484810E+10  (kg)
+                    Initial solute in region:Cl        ....................  5.478961E+10  (kg)
 
-                    Initial solute in region:Mg        ....................  2.795078E+09  (kg)
+                    Initial solute in region:Mg        ....................  2.794334E+09  (kg)
 
-                    Initial solute in region:Na        ....................  8.990402E+10  (kg)
+                    Initial solute in region:Na        ....................  8.983415E+10  (kg)
 
-                    Initial solute in region:S         ....................  2.132384E+09  (kg)
+                    Initial solute in region:S         ....................  2.131674E+09  (kg)
 
-                    Initial solute in region:Charge    ....................  3.999602E+08  (kg)
+                    Initial solute in region:Charge    ....................  3.995055E+08  (kg)
 
  ------------------------------------------------------------------------------------------------------------------------
  ------------------------------------------------------------------------------------------------------------------------

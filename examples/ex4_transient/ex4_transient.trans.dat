@@ -149,7 +149,7 @@ WELL 2 Observation well 1 in arsenic zone
 HEAD_IC
         -zone   0. 0. 0. 90000. 48000. 400.
                 #-head   380.
-		-head   file initial_head
+		-head   file initial.head.dat
 CHEMISTRY_IC
         -zone   0. 0. 0. 90000. 48000. 400.
                 -solution               2
