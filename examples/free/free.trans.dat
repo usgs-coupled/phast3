@@ -1,6 +1,3 @@
-TITLE
-.       Central Oklahoma aquifer,
-.       demonstration of PHAST
 SOLUTE_TRANSPORT   true
 UNITS
       -time sec

@@ -91,12 +91,12 @@ RIVER 3 North Canadian River
                 -head                         0         305.
                 -solution                     0         1
 FLUX_BC
-        -zone   30000. 3000. 400.  90000. 45000. 400.
+        -zone   27000. 3000. 400.  90000. 45000. 400.
                 -flux                         0         -0.01
 					      3000      -0.02		
                 -associated_solution          0         1
 					      4000      2
-	-zone   60000. 3000. 400.  90000. 45000. 400.
+	-zone   57000. 3000. 400.  90000. 45000. 400.
                 -flux                         0         -0.03
 					      3100      -0.04		
                 -associated_solution          0         2
@@ -115,7 +115,7 @@ SPECIFIED_HEAD_BC
                 -associated_solution          0         1
 					      6200     2					      
 LEAKY_BC
-        -zone   0. 48000. 0. 29000. 48000. 400.
+        -zone   0. 48000. 0. 27000. 48000. 400.
                 -hydraulic                    1.5e-5
                 -thickness                   30000.
                 -head                         0         305.0
