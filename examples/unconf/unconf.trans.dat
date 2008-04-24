@@ -31,7 +31,7 @@ SPECIFIED_HEAD_BC
         -zone   0 400 0 400 400 275
                 -head   0   150
 FLUX_BC
-        -zone   0 51 275 400 349 275
+        -zone   0 50 275 400 350 275
                 -face Z
                 -flux   0	-1.157e-3
 FREE_SURFACE_BC true

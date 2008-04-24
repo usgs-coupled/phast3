@@ -93,12 +93,12 @@ Processing flow and transport data file.
 	                head                         0         305.
 	                solution                     0         1
 	FLUX_BC
-	        zone   30000. 3000. 400.  90000. 45000. 400.
+	        zone   27000. 3000. 400.  90000. 45000. 400.
 	                flux                         0         -0.01
 						      3000      -0.02		
 	                associated_solution          0         1
 						      4000      2
-		zone   60000. 3000. 400.  90000. 45000. 400.
+		zone   57000. 3000. 400.  90000. 45000. 400.
 	                flux                         0         -0.03
 						      3100      -0.04		
 	                associated_solution          0         2
@@ -115,7 +115,7 @@ Processing flow and transport data file.
 	                associated_solution_composition          0         1
 						      6200     2					      
 	LEAKY_BC
-	        zone   0. 48000. 0. 29000. 48000. 400.
+	        zone   0. 48000. 0. 27000. 48000. 400.
 	                hydraulic_conductivity                    1.5e-5
 	                thickness                   30000.
 	                head                         0         305.0
@@ -260,36 +260,36 @@ Beginning time step no.      1
           No. of solver iterations, Relative residual:   11      6.7454786E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    6      6.3343244E-12
+          No. of solver iterations, Relative residual:    6      7.9605043E-12
           O
-          No. of solver iterations, Relative residual:    6      6.0948759E-12
+          No. of solver iterations, Relative residual:    6      7.3393147E-12
           As
-          No. of solver iterations, Relative residual:    6      6.8025585E-11
+          No. of solver iterations, Relative residual:    6      7.6027881E-11
           C
-          No. of solver iterations, Relative residual:    6      7.3418517E-11
+          No. of solver iterations, Relative residual:    6      7.9297234E-11
           Ca
-          No. of solver iterations, Relative residual:    6      6.8000924E-11
+          No. of solver iterations, Relative residual:    6      7.6017710E-11
           Cl
-          No. of solver iterations, Relative residual:    6      6.8025463E-11
+          No. of solver iterations, Relative residual:    6      7.6027831E-11
           Mg
-          No. of solver iterations, Relative residual:    6      6.7972944E-11
+          No. of solver iterations, Relative residual:    6      7.6006168E-11
           Na
-          No. of solver iterations, Relative residual:    6      6.8025447E-11
+          No. of solver iterations, Relative residual:    6      7.6027824E-11
           S
-          No. of solver iterations, Relative residual:    6      6.7706183E-11
+          No. of solver iterations, Relative residual:    6      7.5896020E-11
           Charge
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 513
-          Total iterations all cells: 1923
+          Total iterations all cells: 1844
           Number of cells with zero iterations: 0
-          Maximum iterations for one cell: 8
+          Maximum iterations for one cell: 7
 
      End of Time Step No.     1
      Time ..................................................    1000.00     (yr)
      Maximum change in potentiometric head  -3.1754E+01      (m ) at location ( 4.800E+04, 2.400E+04,  400.    )(m)
-     Maximum change in H .................. -3.5904E+01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
-     Maximum change in O .................. -1.7962E+01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
+     Maximum change in H .................. -1.9920E+01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
+     Maximum change in O .................. -9.9655E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
      Maximum change in As ................. -5.9037E-09 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
      Maximum change in C ..................  1.8651E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
      Maximum change in Ca ................. -2.7364E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
@@ -308,44 +308,44 @@ Beginning time step no.      2
           No. of solver iterations, Relative residual:   11      4.1025577E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    5      4.1517984E-12
+          No. of solver iterations, Relative residual:    5      4.7146413E-11
           O
-          No. of solver iterations, Relative residual:    5      6.5178039E-12
+          No. of solver iterations, Relative residual:    5      4.7894446E-11
           As
-          No. of solver iterations, Relative residual:    6      2.1930124E-11
+          No. of solver iterations, Relative residual:    6      2.2706159E-11
           C
-          No. of solver iterations, Relative residual:    6      2.0253115E-11
+          No. of solver iterations, Relative residual:    6      1.9153419E-11
           Ca
-          No. of solver iterations, Relative residual:    6      1.3420583E-11
+          No. of solver iterations, Relative residual:    6      1.4398130E-11
           Cl
-          No. of solver iterations, Relative residual:    6      1.4143849E-11
+          No. of solver iterations, Relative residual:    6      1.5025376E-11
           Mg
-          No. of solver iterations, Relative residual:    6      1.5713959E-11
+          No. of solver iterations, Relative residual:    6      1.6565577E-11
           Na
-          No. of solver iterations, Relative residual:    6      1.4183897E-11
+          No. of solver iterations, Relative residual:    6      1.5062105E-11
           S
-          No. of solver iterations, Relative residual:    6      1.4055318E-11
+          No. of solver iterations, Relative residual:    6      1.5007446E-11
           Charge
-          No. of solver iterations, Relative residual:    6      2.4236907E-11
+          No. of solver iterations, Relative residual:    6      1.9725272E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 512
-          Total iterations all cells: 1991
+          Total iterations all cells: 1937
           Number of cells with zero iterations: 0
-          Maximum iterations for one cell: 7
+          Maximum iterations for one cell: 6
 
      End of Time Step No.     2
      Time ..................................................    2000.00     (yr)
      Maximum change in potentiometric head  -2.8654E+00      (m ) at location ( 4.800E+04, 3.000E+04,  300.    )(m)
-     Maximum change in H .................. -2.7083E+01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
-     Maximum change in O .................. -1.3549E+01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
-     Maximum change in As ................. -6.6034E-09 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in H .................. -1.9824E+01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
+     Maximum change in O .................. -9.9171E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
+     Maximum change in As ................. -6.6035E-09 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
      Maximum change in C .................. -5.9757E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Ca ................. -1.1517E-01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
-     Maximum change in Cl ................. -1.6754E+00 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in Ca ................. -1.0521E-01 (mol/kgw) at location ( 3.000E+04, 1.200E+04,  0.00    )(m)
+     Maximum change in Cl ................. -1.6753E+00 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
      Maximum change in Mg ................. -4.9343E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in Na ................. -1.3758E+00 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in S .................. -1.1845E-03 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
+     Maximum change in Na ................. -1.3757E+00 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in S .................. -1.1326E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
      Maximum change in Charge ............. -1.0411E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
 Reading transient data for simulation: Set  3
 WARNING:  2 print control intervals are less than defined time step length.
@@ -357,45 +357,45 @@ Beginning time step no.      3
           No. of solver iterations, Relative residual:    9      7.3636747E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    4      9.2797495E-13
+          No. of solver iterations, Relative residual:    4      3.3875624E-12
           O
-          No. of solver iterations, Relative residual:    4      9.8051669E-13
+          No. of solver iterations, Relative residual:    4      7.0760571E-12
           As
-          No. of solver iterations, Relative residual:    4      3.6664437E-11
+          No. of solver iterations, Relative residual:    4      3.6904118E-11
           C
-          No. of solver iterations, Relative residual:    4      2.4269382E-11
+          No. of solver iterations, Relative residual:    4      1.9947550E-11
           Ca
-          No. of solver iterations, Relative residual:    4      7.6047052E-12
+          No. of solver iterations, Relative residual:    4      9.0792146E-12
           Cl
-          No. of solver iterations, Relative residual:    4      1.0331177E-11
+          No. of solver iterations, Relative residual:    4      1.2510866E-11
           Mg
-          No. of solver iterations, Relative residual:    4      1.2995152E-11
+          No. of solver iterations, Relative residual:    4      1.3592035E-11
           Na
-          No. of solver iterations, Relative residual:    4      1.0409485E-11
+          No. of solver iterations, Relative residual:    4      1.2401460E-11
           S
-          No. of solver iterations, Relative residual:    4      1.0283546E-11
+          No. of solver iterations, Relative residual:    4      1.2618138E-11
           Charge
-          No. of solver iterations, Relative residual:    4      2.3676423E-11
+          No. of solver iterations, Relative residual:    4      1.8704455E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 512
-          Total iterations all cells: 1689
+          Total iterations all cells: 1643
           Number of cells with zero iterations: 0
-          Maximum iterations for one cell: 5
+          Maximum iterations for one cell: 4
 
      End of Time Step No.     3
      Time ..................................................    2200.00     (yr)
      Maximum change in potentiometric head  -2.3330E-01      (m ) at location (  0.00    , 2.400E+04,  300.    )(m)
-     Maximum change in H .................. -4.1391E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
-     Maximum change in O .................. -2.0707E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
+     Maximum change in H .................. -2.9506E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
+     Maximum change in O .................. -1.4761E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
      Maximum change in As ................. -1.1924E-09 (mol/kgw) at location ( 3.000E+04, 1.200E+04,  300.    )(m)
-     Maximum change in C .................. -4.9085E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
+     Maximum change in C .................. -4.9084E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
      Maximum change in Ca ................. -1.9514E-02 (mol/kgw) at location ( 3.000E+04, 1.200E+04,  0.00    )(m)
      Maximum change in Cl ................. -2.9139E-01 (mol/kgw) at location ( 3.000E+04, 1.200E+04,  0.00    )(m)
-     Maximum change in Mg ................. -8.9012E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in Mg ................. -8.9010E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
      Maximum change in Na ................. -2.3599E-01 (mol/kgw) at location ( 3.000E+04, 1.200E+04,  0.00    )(m)
-     Maximum change in S .................. -1.9700E-04 (mol/kgw) at location ( 3.000E+04, 1.200E+04,  0.00    )(m)
-     Maximum change in Charge ............. -7.9825E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
+     Maximum change in S .................. -1.9699E-04 (mol/kgw) at location ( 3.000E+04, 1.200E+04,  0.00    )(m)
+     Maximum change in Charge ............. -7.9824E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
 Reading transient data for simulation: Set  4
 WARNING:  2 print control intervals are less than defined time step length.
      Time at which next set of transient parameters will be read .......... TIMCHG  2.300E+03  (yr)
@@ -406,45 +406,45 @@ Beginning time step no.      4
           No. of solver iterations, Relative residual:    9      1.1331850E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    3      5.0514091E-11
+          No. of solver iterations, Relative residual:    3      5.1971503E-11
           O
-          No. of solver iterations, Relative residual:    3      5.2795896E-11
+          No. of solver iterations, Relative residual:    3      5.4019133E-11
           As
-          No. of solver iterations, Relative residual:    4      5.6373070E-13
+          No. of solver iterations, Relative residual:    4      5.6958454E-13
           C
-          No. of solver iterations, Relative residual:    4      4.5260136E-13
+          No. of solver iterations, Relative residual:    4      4.4504448E-13
           Ca
-          No. of solver iterations, Relative residual:    4      2.8313704E-13
+          No. of solver iterations, Relative residual:    4      3.0267426E-13
           Cl
-          No. of solver iterations, Relative residual:    4      2.8797193E-13
+          No. of solver iterations, Relative residual:    4      3.0526250E-13
           Mg
-          No. of solver iterations, Relative residual:    4      2.9914112E-13
+          No. of solver iterations, Relative residual:    4      3.0979570E-13
           Na
-          No. of solver iterations, Relative residual:    4      2.8726078E-13
+          No. of solver iterations, Relative residual:    4      3.0432632E-13
           S
-          No. of solver iterations, Relative residual:    4      2.9037276E-13
+          No. of solver iterations, Relative residual:    4      3.0810319E-13
           Charge
-          No. of solver iterations, Relative residual:    4      4.3738955E-13
+          No. of solver iterations, Relative residual:    4      4.0606255E-13
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 512
-          Total iterations all cells: 1636
+          Total iterations all cells: 1606
           Number of cells with zero iterations: 0
-          Maximum iterations for one cell: 4
+          Maximum iterations for one cell: 5
 
      End of Time Step No.     4
      Time ..................................................    2300.00     (yr)
      Maximum change in potentiometric head   3.9166E+00      (m ) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
-     Maximum change in H .................. -8.5612E+00 (mol/kgw) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
-     Maximum change in O .................. -4.2838E+00 (mol/kgw) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
-     Maximum change in As ................. -1.6012E-09 (mol/kgw) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
+     Maximum change in H .................. -1.0204E+01 (mol/kgw) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
+     Maximum change in O .................. -5.1054E+00 (mol/kgw) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
+     Maximum change in As ................. -1.6909E-09 (mol/kgw) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
      Maximum change in C .................. -2.2032E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Ca ................. -2.7496E-02 (mol/kgw) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
-     Maximum change in Cl ................. -4.3538E-01 (mol/kgw) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
-     Maximum change in Mg ................. -1.3078E-02 (mol/kgw) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
-     Maximum change in Na ................. -3.5610E-01 (mol/kgw) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
-     Maximum change in S .................. -3.1245E-04 (mol/kgw) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
-     Maximum change in Charge ............. -3.5490E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
+     Maximum change in Ca ................. -3.3918E-02 (mol/kgw) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
+     Maximum change in Cl ................. -5.2176E-01 (mol/kgw) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
+     Maximum change in Mg ................. -1.4867E-02 (mol/kgw) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
+     Maximum change in Na ................. -4.2593E-01 (mol/kgw) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
+     Maximum change in S .................. -3.7433E-04 (mol/kgw) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
+     Maximum change in Charge ............. -3.5489E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
 Reading transient data for simulation: Set  5
 WARNING:  2 print control intervals are less than defined time step length.
      Time at which next set of transient parameters will be read .......... TIMCHG  3.000E+03  (yr)
@@ -455,43 +455,43 @@ Beginning time step no.      5
           No. of solver iterations, Relative residual:   11      2.4558285E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    5      5.1217003E-11
+          No. of solver iterations, Relative residual:    5      8.4112927E-11
           O
-          No. of solver iterations, Relative residual:    5      5.1225912E-11
+          No. of solver iterations, Relative residual:    5      8.4140000E-11
           As
-          No. of solver iterations, Relative residual:    5      9.4783794E-11
+          No. of solver iterations, Relative residual:    5      9.7303070E-11
           C
-          No. of solver iterations, Relative residual:    6      2.1924572E-12
+          No. of solver iterations, Relative residual:    6      2.0133749E-12
           Ca
-          No. of solver iterations, Relative residual:    5      4.1743080E-11
+          No. of solver iterations, Relative residual:    5      4.8518784E-11
           Cl
-          No. of solver iterations, Relative residual:    5      4.3273464E-11
+          No. of solver iterations, Relative residual:    5      4.9604729E-11
           Mg
-          No. of solver iterations, Relative residual:    5      4.9159600E-11
+          No. of solver iterations, Relative residual:    5      5.4097285E-11
           Na
-          No. of solver iterations, Relative residual:    5      4.3426178E-11
+          No. of solver iterations, Relative residual:    5      4.9639813E-11
           S
-          No. of solver iterations, Relative residual:    5      4.3289499E-11
+          No. of solver iterations, Relative residual:    5      4.9730366E-11
           Charge
-          No. of solver iterations, Relative residual:    6      2.2530384E-12
+          No. of solver iterations, Relative residual:    6      2.0784482E-12
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 512
-          Total iterations all cells: 1925
+          Total iterations all cells: 1875
           Number of cells with zero iterations: 0
           Maximum iterations for one cell: 5
 
      End of Time Step No.     5
      Time ..................................................    3000.00     (yr)
      Maximum change in potentiometric head   8.2389E-01      (m ) at location ( 4.200E+04, 3.600E+04,  300.    )(m)
-     Maximum change in H .................. -6.8627E+00 (mol/kgw) at location ( 6.600E+04, 3.000E+04,  100.    )(m)
-     Maximum change in O .................. -3.4333E+00 (mol/kgw) at location ( 6.600E+04, 3.000E+04,  100.    )(m)
-     Maximum change in As ................. -3.3423E-09 (mol/kgw) at location ( 3.000E+04, 1.200E+04,  0.00    )(m)
-     Maximum change in C .................. -6.3846E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in Ca ................. -4.7659E-02 (mol/kgw) at location ( 3.000E+04, 1.200E+04,  0.00    )(m)
-     Maximum change in Cl ................. -7.5626E-01 (mol/kgw) at location ( 3.000E+04, 1.200E+04,  0.00    )(m)
+     Maximum change in H ..................  6.5786E+00 (mol/kgw) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
+     Maximum change in O ..................  3.2896E+00 (mol/kgw) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
+     Maximum change in As ................. -3.3422E-09 (mol/kgw) at location ( 3.000E+04, 1.200E+04,  0.00    )(m)
+     Maximum change in C .................. -6.3845E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in Ca ................. -4.7658E-02 (mol/kgw) at location ( 3.000E+04, 1.200E+04,  0.00    )(m)
+     Maximum change in Cl ................. -7.5624E-01 (mol/kgw) at location ( 3.000E+04, 1.200E+04,  0.00    )(m)
      Maximum change in Mg ................. -2.1743E-02 (mol/kgw) at location ( 3.000E+04, 1.200E+04,  0.00    )(m)
-     Maximum change in Na ................. -6.1939E-01 (mol/kgw) at location ( 3.000E+04, 1.200E+04,  0.00    )(m)
+     Maximum change in Na ................. -6.1938E-01 (mol/kgw) at location ( 3.000E+04, 1.200E+04,  0.00    )(m)
      Maximum change in S .................. -5.1126E-04 (mol/kgw) at location ( 3.000E+04, 1.200E+04,  0.00    )(m)
      Maximum change in Charge ............. -1.0598E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
 Reading transient data for simulation: Set  6
@@ -504,45 +504,45 @@ Beginning time step no.      6
           No. of solver iterations, Relative residual:    9      1.5988985E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    3      2.4394944E-11
+          No. of solver iterations, Relative residual:    3      3.9959031E-11
           O
-          No. of solver iterations, Relative residual:    3      2.4588872E-11
+          No. of solver iterations, Relative residual:    3      4.0375996E-11
           As
-          No. of solver iterations, Relative residual:    4      1.6029923E-13
+          No. of solver iterations, Relative residual:    4      2.7289051E-13
           C
-          No. of solver iterations, Relative residual:    4      2.1845589E-13
+          No. of solver iterations, Relative residual:    4      1.1294151E-13
           Ca
-          No. of solver iterations, Relative residual:    3      7.4704945E-11
+          No. of solver iterations, Relative residual:    3      9.9692933E-11
           Cl
-          No. of solver iterations, Relative residual:    3      8.2987559E-11
+          No. of solver iterations, Relative residual:    3      9.6311959E-11
           Mg
-          No. of solver iterations, Relative residual:    4      1.5235129E-13
+          No. of solver iterations, Relative residual:    4      1.9916987E-13
           Na
-          No. of solver iterations, Relative residual:    3      8.2458826E-11
+          No. of solver iterations, Relative residual:    3      9.2981169E-11
           S
-          No. of solver iterations, Relative residual:    3      8.2837856E-11
+          No. of solver iterations, Relative residual:    3      9.6159092E-11
           Charge
-          No. of solver iterations, Relative residual:    4      2.6294612E-13
+          No. of solver iterations, Relative residual:    4      2.0303746E-13
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 512
-          Total iterations all cells: 1650
+          Total iterations all cells: 1610
           Number of cells with zero iterations: 0
-          Maximum iterations for one cell: 5
+          Maximum iterations for one cell: 4
 
      End of Time Step No.     6
      Time ..................................................    3100.00     (yr)
      Maximum change in potentiometric head   2.9029E+00      (m ) at location ( 4.800E+04, 3.000E+04,  300.    )(m)
-     Maximum change in H ..................  2.5857E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
-     Maximum change in O ..................  1.2935E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
-     Maximum change in As ................. -7.9311E-10 (mol/kgw) at location ( 3.600E+04, 3.000E+04,  300.    )(m)
+     Maximum change in H ..................  1.1047E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
+     Maximum change in O ..................  5.5265E-01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
+     Maximum change in As ................. -7.9470E-10 (mol/kgw) at location ( 3.600E+04, 3.000E+04,  300.    )(m)
      Maximum change in C .................. -1.3185E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  200.    )(m)
-     Maximum change in Ca ................. -1.3208E-02 (mol/kgw) at location ( 5.400E+04, 2.400E+04,  300.    )(m)
-     Maximum change in Cl ................. -2.1306E-01 (mol/kgw) at location ( 5.400E+04, 2.400E+04,  300.    )(m)
-     Maximum change in Mg ................. -6.7095E-03 (mol/kgw) at location ( 3.600E+04, 2.400E+04,  300.    )(m)
-     Maximum change in Na ................. -1.7430E-01 (mol/kgw) at location ( 3.600E+04, 2.400E+04,  300.    )(m)
-     Maximum change in S .................. -1.4390E-04 (mol/kgw) at location ( 5.400E+04, 2.400E+04,  300.    )(m)
-     Maximum change in Charge ............. -2.1555E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in Ca ................. -1.5401E-02 (mol/kgw) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
+     Maximum change in Cl ................. -2.3464E-01 (mol/kgw) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
+     Maximum change in Mg ................. -6.7796E-03 (mol/kgw) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
+     Maximum change in Na ................. -1.9056E-01 (mol/kgw) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
+     Maximum change in S .................. -1.5752E-04 (mol/kgw) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
+     Maximum change in Charge ............. -2.1554E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
 Reading transient data for simulation: Set  7
 WARNING:  2 print control intervals are less than defined time step length.
      Time at which next set of transient parameters will be read .......... TIMCHG  3.200E+03  (yr)
@@ -553,44 +553,44 @@ Beginning time step no.      7
           No. of solver iterations, Relative residual:    8      5.9062943E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    3      2.1456135E-11
+          No. of solver iterations, Relative residual:    3      1.8698013E-11
           O
-          No. of solver iterations, Relative residual:    3      2.1439548E-11
+          No. of solver iterations, Relative residual:    3      1.8717923E-11
           As
-          No. of solver iterations, Relative residual:    4      2.5300288E-13
+          No. of solver iterations, Relative residual:    4      2.8540499E-13
           C
-          No. of solver iterations, Relative residual:    4      3.6220556E-13
+          No. of solver iterations, Relative residual:    4      3.6720299E-13
           Ca
-          No. of solver iterations, Relative residual:    3      7.9844439E-11
+          No. of solver iterations, Relative residual:    3      8.2694834E-11
           Cl
-          No. of solver iterations, Relative residual:    3      7.7036346E-11
+          No. of solver iterations, Relative residual:    3      7.8868584E-11
           Mg
-          No. of solver iterations, Relative residual:    3      7.3114529E-11
+          No. of solver iterations, Relative residual:    3      7.3751021E-11
           Na
-          No. of solver iterations, Relative residual:    3      7.6613046E-11
+          No. of solver iterations, Relative residual:    3      7.8451390E-11
           S
-          No. of solver iterations, Relative residual:    3      7.6976987E-11
+          No. of solver iterations, Relative residual:    3      7.8625300E-11
           Charge
-          No. of solver iterations, Relative residual:    4      3.7802928E-13
+          No. of solver iterations, Relative residual:    4      3.8265801E-13
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 512
-          Total iterations all cells: 1629
+          Total iterations all cells: 1603
           Number of cells with zero iterations: 0
           Maximum iterations for one cell: 5
 
      End of Time Step No.     7
      Time ..................................................    3200.00     (yr)
      Maximum change in potentiometric head   2.9842E+00      (m ) at location ( 6.600E+04, 1.200E+04,  300.    )(m)
-     Maximum change in H ..................  3.4016E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
-     Maximum change in O ..................  1.7017E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
-     Maximum change in As ................. -7.0003E-10 (mol/kgw) at location ( 5.400E+04, 2.400E+04,  300.    )(m)
+     Maximum change in H ..................  5.5649E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
+     Maximum change in O ..................  2.7839E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
+     Maximum change in As ................. -7.0797E-10 (mol/kgw) at location ( 5.400E+04, 2.400E+04,  300.    )(m)
      Maximum change in C .................. -1.1845E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in Ca .................  1.5263E-02 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
-     Maximum change in Cl .................  2.1416E-01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
-     Maximum change in Mg ................. -5.9156E-03 (mol/kgw) at location ( 5.400E+04, 2.400E+04,  300.    )(m)
-     Maximum change in Na .................  1.7419E-01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
-     Maximum change in S ..................  1.5199E-04 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
+     Maximum change in Ca .................  2.4826E-02 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
+     Maximum change in Cl .................  3.5129E-01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
+     Maximum change in Mg .................  8.3034E-03 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
+     Maximum change in Na .................  2.8571E-01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
+     Maximum change in S ..................  2.4927E-04 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
      Maximum change in Charge ............. -1.9428E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
 Reading transient data for simulation: Set  8
 WARNING:  2 print control intervals are less than defined time step length.
@@ -602,45 +602,45 @@ Beginning time step no.      8
           No. of solver iterations, Relative residual:   10      9.6810709E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    5      1.8410699E-11
+          No. of solver iterations, Relative residual:    5      3.1977975E-11
           O
-          No. of solver iterations, Relative residual:    5      1.9253033E-11
+          No. of solver iterations, Relative residual:    5      3.2282343E-11
           As
-          No. of solver iterations, Relative residual:    5      9.0149876E-11
+          No. of solver iterations, Relative residual:    6      1.7635569E-12
           C
-          No. of solver iterations, Relative residual:    6      1.0952899E-11
+          No. of solver iterations, Relative residual:    6      1.0512561E-11
           Ca
-          No. of solver iterations, Relative residual:    5      3.1609921E-11
+          No. of solver iterations, Relative residual:    5      3.2993646E-11
           Cl
-          No. of solver iterations, Relative residual:    5      2.5782311E-11
+          No. of solver iterations, Relative residual:    5      4.2990998E-11
           Mg
-          No. of solver iterations, Relative residual:    5      4.7469655E-11
+          No. of solver iterations, Relative residual:    5      4.7100821E-11
           Na
-          No. of solver iterations, Relative residual:    5      2.5886301E-11
+          No. of solver iterations, Relative residual:    5      4.2859797E-11
           S
-          No. of solver iterations, Relative residual:    5      2.5516774E-11
+          No. of solver iterations, Relative residual:    5      4.2588400E-11
           Charge
-          No. of solver iterations, Relative residual:    6      1.5026524E-11
+          No. of solver iterations, Relative residual:    6      1.4801875E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 512
-          Total iterations all cells: 2501
+          Total iterations all cells: 2488
           Number of cells with zero iterations: 0
           Maximum iterations for one cell: 8
 
      End of Time Step No.     8
      Time ..................................................    4000.00     (yr)
      Maximum change in potentiometric head   3.1133E+00      (m ) at location ( 6.600E+04, 1.200E+04,  300.    )(m)
-     Maximum change in H ..................  2.0288E+01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
-     Maximum change in O ..................  1.0147E+01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
-     Maximum change in As ................. -5.4844E-09 (mol/kgw) at location ( 9.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in C .................. -4.9565E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in Ca ................. -2.5421E-01 (mol/kgw) at location ( 9.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Cl ................. -3.6425E+00 (mol/kgw) at location ( 9.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Mg ................. -8.7546E-02 (mol/kgw) at location ( 9.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Na ................. -2.9627E+00 (mol/kgw) at location ( 9.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in S .................. -2.4625E-03 (mol/kgw) at location ( 9.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Charge ............. -8.0183E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in H ..................  1.7626E+01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  200.    )(m)
+     Maximum change in O ..................  8.8144E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  200.    )(m)
+     Maximum change in As ................. -4.2830E-09 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  300.    )(m)
+     Maximum change in C .................. -4.9562E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in Ca ................. -1.9853E-01 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  300.    )(m)
+     Maximum change in Cl ................. -2.8446E+00 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  300.    )(m)
+     Maximum change in Mg ................. -6.8369E-02 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  300.    )(m)
+     Maximum change in Na ................. -2.3137E+00 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  300.    )(m)
+     Maximum change in S .................. -1.9231E-03 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  300.    )(m)
+     Maximum change in Charge ............. -8.0179E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
 Reading transient data for simulation: Set  9
 WARNING:  2 print control intervals are less than defined time step length.
      Time at which next set of transient parameters will be read .......... TIMCHG  5.000E+03  (yr)
@@ -651,45 +651,45 @@ Beginning time step no.      9
           No. of solver iterations, Relative residual:   11      3.2380568E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    5      4.5306932E-11
+          No. of solver iterations, Relative residual:    6      1.7150776E-12
           O
-          No. of solver iterations, Relative residual:    5      5.4708581E-11
+          No. of solver iterations, Relative residual:    6      2.4055261E-12
           As
-          No. of solver iterations, Relative residual:    6      5.4083006E-12
+          No. of solver iterations, Relative residual:    6      5.1590940E-12
           C
-          No. of solver iterations, Relative residual:    6      3.2303747E-11
+          No. of solver iterations, Relative residual:    6      3.3605665E-11
           Ca
-          No. of solver iterations, Relative residual:    6      1.2497006E-11
+          No. of solver iterations, Relative residual:    6      1.2148570E-11
           Cl
-          No. of solver iterations, Relative residual:    6      1.1402676E-11
+          No. of solver iterations, Relative residual:    6      1.1078922E-11
           Mg
-          No. of solver iterations, Relative residual:    6      9.3707103E-12
+          No. of solver iterations, Relative residual:    6      9.0769974E-12
           Na
-          No. of solver iterations, Relative residual:    6      1.1284089E-11
+          No. of solver iterations, Relative residual:    6      1.0966944E-11
           S
-          No. of solver iterations, Relative residual:    6      1.1410868E-11
+          No. of solver iterations, Relative residual:    6      1.1085828E-11
           Charge
-          No. of solver iterations, Relative residual:    6      3.0600144E-11
+          No. of solver iterations, Relative residual:    6      3.2018028E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 514
-          Total iterations all cells: 2416
+          Total iterations all cells: 2419
           Number of cells with zero iterations: 0
           Maximum iterations for one cell: 10
 
      End of Time Step No.     9
      Time ..................................................    5000.00     (yr)
      Maximum change in potentiometric head   1.0577E+00      (m ) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
-     Maximum change in H ..................  1.5330E+01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
-     Maximum change in O ..................  7.6657E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
-     Maximum change in As ................. -8.0774E-09 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
-     Maximum change in C .................. -4.7282E-03 (mol/kgw) at location ( 9.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Ca .................  1.5754E-01 (mol/kgw) at location ( 5.400E+04, 2.400E+04,  400.    )(m)
-     Maximum change in Cl ................. -2.2677E+00 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
-     Maximum change in Mg ................. -6.4906E-02 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
-     Maximum change in Na ................. -1.8596E+00 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
-     Maximum change in S .................. -1.5323E-03 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
-     Maximum change in Charge ............. -8.5133E-03 (mol/kgw) at location ( 9.000E+04, 1.800E+04,  300.    )(m)
+     Maximum change in H ..................  1.1234E+01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
+     Maximum change in O ..................  5.6147E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
+     Maximum change in As ................. -8.1011E-09 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
+     Maximum change in C .................. -4.6619E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in Ca .................  1.5639E-01 (mol/kgw) at location ( 5.400E+04, 2.400E+04,  400.    )(m)
+     Maximum change in Cl ................. -2.2776E+00 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
+     Maximum change in Mg ................. -6.5167E-02 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
+     Maximum change in Na ................. -1.8675E+00 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
+     Maximum change in S .................. -1.5393E-03 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
+     Maximum change in Charge ............. -7.3462E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
 Reading transient data for simulation: Set 10
 WARNING:  2 print control intervals are less than defined time step length.
      Time at which next set of transient parameters will be read .......... TIMCHG  6.000E+03  (yr)
@@ -700,45 +700,45 @@ Beginning time step no.     10
           No. of solver iterations, Relative residual:   11      4.9191082E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    5      4.7004775E-11
+          No. of solver iterations, Relative residual:    6      2.4741454E-12
           O
-          No. of solver iterations, Relative residual:    5      4.9410208E-11
+          No. of solver iterations, Relative residual:    6      2.5682029E-12
           As
-          No. of solver iterations, Relative residual:    6      8.4614910E-12
+          No. of solver iterations, Relative residual:    6      8.1750585E-12
           C
-          No. of solver iterations, Relative residual:    6      9.3858539E-12
+          No. of solver iterations, Relative residual:    6      9.1825258E-12
           Ca
-          No. of solver iterations, Relative residual:    6      6.8248595E-12
+          No. of solver iterations, Relative residual:    6      6.5381064E-12
           Cl
-          No. of solver iterations, Relative residual:    6      6.1421669E-12
+          No. of solver iterations, Relative residual:    6      5.8856461E-12
           Mg
-          No. of solver iterations, Relative residual:    6      5.2049726E-12
+          No. of solver iterations, Relative residual:    6      4.9855765E-12
           Na
-          No. of solver iterations, Relative residual:    6      6.0480797E-12
+          No. of solver iterations, Relative residual:    6      5.7984148E-12
           S
-          No. of solver iterations, Relative residual:    6      6.1511731E-12
+          No. of solver iterations, Relative residual:    6      5.8931827E-12
           Charge
-          No. of solver iterations, Relative residual:    6      8.1230120E-12
+          No. of solver iterations, Relative residual:    6      7.9748799E-12
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 514
-          Total iterations all cells: 2330
+          Total iterations all cells: 2336
           Number of cells with zero iterations: 0
           Maximum iterations for one cell: 7
 
      End of Time Step No.    10
      Time ..................................................    6000.00     (yr)
      Maximum change in potentiometric head  -8.0000E+00      (m ) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in H ..................  8.8667E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
-     Maximum change in O ..................  4.4284E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
-     Maximum change in As ................. -4.4624E-09 (mol/kgw) at location ( 7.200E+04,  0.00    ,  100.    )(m)
-     Maximum change in C .................. -1.3181E-02 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
-     Maximum change in Ca .................  8.7201E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Cl .................  1.3019E+00 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Mg .................  3.7482E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Na .................  1.0521E+00 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in S ..................  8.8017E-04 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Charge ............. -2.1514E-02 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
+     Maximum change in H ..................  5.8754E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
+     Maximum change in O ..................  2.9280E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
+     Maximum change in As ................. -4.4632E-09 (mol/kgw) at location ( 7.200E+04,  0.00    ,  100.    )(m)
+     Maximum change in C .................. -1.3144E-02 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
+     Maximum change in Ca .................  8.7227E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
+     Maximum change in Cl .................  1.3023E+00 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
+     Maximum change in Mg .................  3.7490E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
+     Maximum change in Na .................  1.0524E+00 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
+     Maximum change in S ..................  8.8041E-04 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
+     Maximum change in Charge ............. -2.1453E-02 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
 Reading transient data for simulation: Set 11
 WARNING:  2 print control intervals are less than defined time step length.
      Time at which next set of transient parameters will be read .......... TIMCHG  6.100E+03  (yr)
@@ -749,45 +749,45 @@ Beginning time step no.     11
           No. of solver iterations, Relative residual:    9      1.3296667E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    3      1.4310982E-11
+          No. of solver iterations, Relative residual:    3      2.2102969E-11
           O
-          No. of solver iterations, Relative residual:    3      1.6301960E-11
+          No. of solver iterations, Relative residual:    3      2.4205539E-11
           As
-          No. of solver iterations, Relative residual:    3      5.4768518E-11
+          No. of solver iterations, Relative residual:    3      5.4270387E-11
           C
-          No. of solver iterations, Relative residual:    3      6.1414578E-11
+          No. of solver iterations, Relative residual:    3      6.2083865E-11
           Ca
-          No. of solver iterations, Relative residual:    3      7.5485168E-11
+          No. of solver iterations, Relative residual:    3      7.3397138E-11
           Cl
-          No. of solver iterations, Relative residual:    3      6.3183596E-11
+          No. of solver iterations, Relative residual:    3      6.0843801E-11
           Mg
-          No. of solver iterations, Relative residual:    3      4.5030096E-11
+          No. of solver iterations, Relative residual:    3      4.2443806E-11
           Na
-          No. of solver iterations, Relative residual:    3      6.1602094E-11
+          No. of solver iterations, Relative residual:    3      5.9297473E-11
           S
-          No. of solver iterations, Relative residual:    3      6.3268326E-11
+          No. of solver iterations, Relative residual:    3      6.0899645E-11
           Charge
-          No. of solver iterations, Relative residual:    3      5.5505361E-11
+          No. of solver iterations, Relative residual:    3      5.5624654E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 514
-          Total iterations all cells: 1759
+          Total iterations all cells: 1766
           Number of cells with zero iterations: 0
           Maximum iterations for one cell: 6
 
      End of Time Step No.    11
      Time ..................................................    6100.00     (yr)
      Maximum change in potentiometric head  -1.4766E-01      (m ) at location ( 2.400E+04, 1.800E+04,  300.    )(m)
-     Maximum change in H ..................  8.2268E-01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
-     Maximum change in O ..................  4.1058E-01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
-     Maximum change in As ................. -3.6257E-09 (mol/kgw) at location ( 5.400E+04, 2.400E+04,  400.    )(m)
-     Maximum change in C .................. -2.6023E-03 (mol/kgw) at location ( 9.000E+04, 1.800E+04,  300.    )(m)
+     Maximum change in H ..................  5.3659E-01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
+     Maximum change in O ..................  2.6672E-01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
+     Maximum change in As ................. -3.5948E-09 (mol/kgw) at location ( 5.400E+04, 2.400E+04,  400.    )(m)
+     Maximum change in C .................. -1.7274E-03 (mol/kgw) at location ( 5.400E+04, 2.400E+04,  400.    )(m)
      Maximum change in Ca .................  1.1933E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
      Maximum change in Cl .................  1.8431E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Mg ................. -3.3078E-03 (mol/kgw) at location ( 7.200E+04,  0.00    ,  100.    )(m)
-     Maximum change in Na .................  1.5511E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
+     Maximum change in Mg ................. -3.3084E-03 (mol/kgw) at location ( 7.200E+04,  0.00    ,  100.    )(m)
+     Maximum change in Na .................  1.5512E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
      Maximum change in S ..................  1.2460E-04 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Charge ............. -3.9661E-03 (mol/kgw) at location ( 9.000E+04, 1.800E+04,  300.    )(m)
+     Maximum change in Charge ............. -2.4199E-03 (mol/kgw) at location ( 7.200E+04, 3.000E+04,  300.    )(m)
 Reading transient data for simulation: Set 12
 WARNING:  2 print control intervals are less than defined time step length.
      Time at which next set of transient parameters will be read .......... TIMCHG  6.200E+03  (yr)
@@ -798,45 +798,45 @@ Beginning time step no.     12
           No. of solver iterations, Relative residual:    8      9.4185213E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    3      1.3058783E-11
+          No. of solver iterations, Relative residual:    3      2.0083495E-11
           O
-          No. of solver iterations, Relative residual:    3      1.4982981E-11
+          No. of solver iterations, Relative residual:    3      2.2829125E-11
           As
-          No. of solver iterations, Relative residual:    3      5.9114656E-11
+          No. of solver iterations, Relative residual:    3      5.8585304E-11
           C
-          No. of solver iterations, Relative residual:    3      4.7545528E-11
+          No. of solver iterations, Relative residual:    3      4.6616626E-11
           Ca
-          No. of solver iterations, Relative residual:    3      7.6575187E-11
+          No. of solver iterations, Relative residual:    3      7.4368741E-11
           Cl
-          No. of solver iterations, Relative residual:    3      6.3912145E-11
+          No. of solver iterations, Relative residual:    3      6.1440201E-11
           Mg
-          No. of solver iterations, Relative residual:    3      4.7202028E-11
+          No. of solver iterations, Relative residual:    3      4.4511441E-11
           Na
-          No. of solver iterations, Relative residual:    3      6.2129916E-11
+          No. of solver iterations, Relative residual:    3      5.9676719E-11
           S
-          No. of solver iterations, Relative residual:    3      6.4003984E-11
+          No. of solver iterations, Relative residual:    3      6.1500241E-11
           Charge
-          No. of solver iterations, Relative residual:    3      4.1257815E-11
+          No. of solver iterations, Relative residual:    3      3.9811529E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 514
-          Total iterations all cells: 1748
+          Total iterations all cells: 1757
           Number of cells with zero iterations: 0
           Maximum iterations for one cell: 6
 
      End of Time Step No.    12
      Time ..................................................    6200.00     (yr)
      Maximum change in potentiometric head   4.0000E+00      (m ) at location ( 4.200E+04, 1.800E+04,  300.    )(m)
-     Maximum change in H ..................  8.7103E-01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
-     Maximum change in O ..................  4.3426E-01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
-     Maximum change in As ................. -2.5681E-09 (mol/kgw) at location ( 5.400E+04, 2.400E+04,  400.    )(m)
-     Maximum change in C .................. -2.0307E-03 (mol/kgw) at location ( 9.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Ca .................  9.1850E-03 (mol/kgw) at location ( 3.600E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Cl .................  1.1632E-01 (mol/kgw) at location ( 3.600E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Mg ................. -3.0830E-03 (mol/kgw) at location ( 7.200E+04,  0.00    ,  100.    )(m)
-     Maximum change in Na .................  9.5080E-02 (mol/kgw) at location ( 3.600E+04, 1.800E+04,  300.    )(m)
-     Maximum change in S ..................  7.8639E-05 (mol/kgw) at location ( 3.600E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Charge ............. -3.0389E-03 (mol/kgw) at location ( 9.000E+04, 1.800E+04,  300.    )(m)
+     Maximum change in H ..................  4.9363E-01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
+     Maximum change in O ..................  2.4495E-01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
+     Maximum change in As ................. -2.5468E-09 (mol/kgw) at location ( 5.400E+04, 2.400E+04,  400.    )(m)
+     Maximum change in C .................. -1.2737E-03 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  300.    )(m)
+     Maximum change in Ca .................  9.1852E-03 (mol/kgw) at location ( 3.600E+04, 1.800E+04,  300.    )(m)
+     Maximum change in Cl .................  1.1633E-01 (mol/kgw) at location ( 3.600E+04, 1.800E+04,  300.    )(m)
+     Maximum change in Mg ................. -3.0837E-03 (mol/kgw) at location ( 7.200E+04,  0.00    ,  100.    )(m)
+     Maximum change in Na .................  9.5084E-02 (mol/kgw) at location ( 3.600E+04, 1.800E+04,  300.    )(m)
+     Maximum change in S ..................  7.8642E-05 (mol/kgw) at location ( 3.600E+04, 1.800E+04,  300.    )(m)
+     Maximum change in Charge ............. -2.0452E-03 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  300.    )(m)
 Reading transient data for simulation: Set 13
 WARNING:  2 print control intervals are less than defined time step length.
      Time at which next set of transient parameters will be read .......... TIMCHG  7.000E+03  (yr)
@@ -847,45 +847,45 @@ Beginning time step no.     13
           No. of solver iterations, Relative residual:   11      2.8959721E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    5      1.2883516E-11
+          No. of solver iterations, Relative residual:    5      3.0937299E-11
           O
-          No. of solver iterations, Relative residual:    5      1.5281393E-11
+          No. of solver iterations, Relative residual:    5      2.9764651E-11
           As
-          No. of solver iterations, Relative residual:    6      3.9847847E-12
+          No. of solver iterations, Relative residual:    6      3.8884130E-12
           C
-          No. of solver iterations, Relative residual:    5      4.1350786E-11
+          No. of solver iterations, Relative residual:    5      3.9633146E-11
           Ca
-          No. of solver iterations, Relative residual:    5      9.4945263E-11
+          No. of solver iterations, Relative residual:    5      9.3828457E-11
           Cl
-          No. of solver iterations, Relative residual:    5      8.2771891E-11
+          No. of solver iterations, Relative residual:    5      8.1136150E-11
           Mg
-          No. of solver iterations, Relative residual:    5      3.6500927E-11
+          No. of solver iterations, Relative residual:    5      3.5179382E-11
           Na
-          No. of solver iterations, Relative residual:    5      8.2886775E-11
+          No. of solver iterations, Relative residual:    5      8.0713321E-11
           S
-          No. of solver iterations, Relative residual:    5      8.2874871E-11
+          No. of solver iterations, Relative residual:    5      8.1138758E-11
           Charge
-          No. of solver iterations, Relative residual:    5      3.8219953E-11
+          No. of solver iterations, Relative residual:    5      3.6205303E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 514
-          Total iterations all cells: 2186
+          Total iterations all cells: 2189
           Number of cells with zero iterations: 0
           Maximum iterations for one cell: 9
 
      End of Time Step No.    13
      Time ..................................................    7000.00     (yr)
      Maximum change in potentiometric head   4.5601E-01      (m ) at location ( 4.800E+04, 2.400E+04,  300.    )(m)
-     Maximum change in H ..................  5.7098E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
-     Maximum change in O ..................  2.8481E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
-     Maximum change in As ................. -2.1390E-09 (mol/kgw) at location ( 5.400E+04, 2.400E+04,  400.    )(m)
-     Maximum change in C .................. -7.4997E-03 (mol/kgw) at location ( 9.000E+04, 1.800E+04,  100.    )(m)
-     Maximum change in Ca .................  4.5449E-02 (mol/kgw) at location ( 3.600E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Cl .................  5.8890E-01 (mol/kgw) at location ( 3.600E+04, 1.800E+04,  200.    )(m)
-     Maximum change in Mg ................. -1.5790E-02 (mol/kgw) at location ( 7.200E+04,  0.00    ,  100.    )(m)
-     Maximum change in Na .................  4.8636E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  200.    )(m)
-     Maximum change in S ..................  3.9812E-04 (mol/kgw) at location ( 3.600E+04, 1.800E+04,  200.    )(m)
-     Maximum change in Charge ............. -1.1912E-02 (mol/kgw) at location ( 9.000E+04, 1.800E+04,  100.    )(m)
+     Maximum change in H ..................  2.2967E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
+     Maximum change in O ..................  1.1362E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
+     Maximum change in As ................. -2.1306E-09 (mol/kgw) at location ( 5.400E+04, 2.400E+04,  400.    )(m)
+     Maximum change in C .................. -6.1401E-03 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  100.    )(m)
+     Maximum change in Ca .................  4.5447E-02 (mol/kgw) at location ( 3.600E+04, 1.800E+04,  300.    )(m)
+     Maximum change in Cl .................  5.8887E-01 (mol/kgw) at location ( 3.600E+04, 1.800E+04,  200.    )(m)
+     Maximum change in Mg ................. -1.5800E-02 (mol/kgw) at location ( 7.200E+04,  0.00    ,  100.    )(m)
+     Maximum change in Na .................  4.8641E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  200.    )(m)
+     Maximum change in S ..................  3.9810E-04 (mol/kgw) at location ( 3.600E+04, 1.800E+04,  200.    )(m)
+     Maximum change in Charge ............. -1.0082E-02 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  100.    )(m)
 Reading transient data for simulation: Set 14
 WARNING:  2 print control intervals are less than defined time step length.
      Time at which next set of transient parameters will be read .......... TIMCHG  8.000E+03  (yr)
@@ -896,45 +896,45 @@ Beginning time step no.     14
           No. of solver iterations, Relative residual:   11      4.9301636E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    5      3.5745373E-11
+          No. of solver iterations, Relative residual:    6      2.7034978E-12
           O
-          No. of solver iterations, Relative residual:    5      3.7907297E-11
+          No. of solver iterations, Relative residual:    6      2.8741195E-12
           As
-          No. of solver iterations, Relative residual:    6      1.2733202E-11
+          No. of solver iterations, Relative residual:    6      1.2523839E-11
           C
-          No. of solver iterations, Relative residual:    6      2.6540502E-12
+          No. of solver iterations, Relative residual:    6      2.5869907E-12
           Ca
-          No. of solver iterations, Relative residual:    6      4.8955284E-12
+          No. of solver iterations, Relative residual:    6      4.6325931E-12
           Cl
-          No. of solver iterations, Relative residual:    6      4.5620728E-12
+          No. of solver iterations, Relative residual:    6      4.2086160E-12
           Mg
-          No. of solver iterations, Relative residual:    6      4.9744585E-12
+          No. of solver iterations, Relative residual:    6      4.6917561E-12
           Na
-          No. of solver iterations, Relative residual:    6      4.3314340E-12
+          No. of solver iterations, Relative residual:    6      4.0485396E-12
           S
-          No. of solver iterations, Relative residual:    6      4.5706223E-12
+          No. of solver iterations, Relative residual:    6      4.2193773E-12
           Charge
-          No. of solver iterations, Relative residual:    6      2.2913638E-12
+          No. of solver iterations, Relative residual:    5      9.7875241E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 514
-          Total iterations all cells: 2248
+          Total iterations all cells: 2254
           Number of cells with zero iterations: 0
-          Maximum iterations for one cell: 12
+          Maximum iterations for one cell: 11
 
      End of Time Step No.    14
      Time ..................................................    8000.00     (yr)
      Maximum change in potentiometric head   3.3155E-01      (m ) at location (  0.00    , 4.800E+04,  0.00    )(m)
-     Maximum change in H ..................  4.7122E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
-     Maximum change in O ..................  2.3479E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
-     Maximum change in As .................  1.9973E-09 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in C .................. -9.0258E-03 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
-     Maximum change in Ca .................  4.3581E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in Cl .................  6.4572E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in H ..................  1.5190E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
+     Maximum change in O ..................  7.4678E-01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
+     Maximum change in As .................  1.9976E-09 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
+     Maximum change in C .................. -9.0143E-03 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
+     Maximum change in Ca .................  4.3583E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in Cl .................  6.4575E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
      Maximum change in Mg .................  1.2364E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in Na .................  5.3650E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in S ..................  4.3654E-04 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in Charge ............. -1.4053E-02 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
+     Maximum change in Na .................  5.3653E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in S ..................  4.3655E-04 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in Charge ............. -1.4039E-02 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
 Reading transient data for simulation: Set 15
 WARNING:  2 print control intervals are less than defined time step length.
      Time at which next set of transient parameters will be read .......... TIMCHG  8.100E+03  (yr)
@@ -945,45 +945,45 @@ Beginning time step no.     15
           No. of solver iterations, Relative residual:    9      1.2658425E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    3      1.2786554E-11
+          No. of solver iterations, Relative residual:    3      2.6390285E-11
           O
-          No. of solver iterations, Relative residual:    3      1.3777896E-11
+          No. of solver iterations, Relative residual:    3      2.6922487E-11
           As
-          No. of solver iterations, Relative residual:    4      2.1145896E-13
+          No. of solver iterations, Relative residual:    4      2.1249990E-13
           C
-          No. of solver iterations, Relative residual:    3      2.6019135E-11
+          No. of solver iterations, Relative residual:    3      2.5436159E-11
           Ca
-          No. of solver iterations, Relative residual:    3      5.0801230E-11
+          No. of solver iterations, Relative residual:    3      5.1211981E-11
           Cl
-          No. of solver iterations, Relative residual:    3      5.1844182E-11
+          No. of solver iterations, Relative residual:    3      5.1607773E-11
           Mg
-          No. of solver iterations, Relative residual:    3      5.9141302E-11
+          No. of solver iterations, Relative residual:    3      5.7624306E-11
           Na
-          No. of solver iterations, Relative residual:    3      4.9420849E-11
+          No. of solver iterations, Relative residual:    3      4.9005031E-11
           S
-          No. of solver iterations, Relative residual:    3      5.1872377E-11
+          No. of solver iterations, Relative residual:    3      5.1609746E-11
           Charge
-          No. of solver iterations, Relative residual:    3      2.0071367E-11
+          No. of solver iterations, Relative residual:    3      1.9568847E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 514
-          Total iterations all cells: 1748
+          Total iterations all cells: 1755
           Number of cells with zero iterations: 0
-          Maximum iterations for one cell: 11
+          Maximum iterations for one cell: 10
 
      End of Time Step No.    15
      Time ..................................................    8100.00     (yr)
      Maximum change in potentiometric head   1.4653E-02      (m ) at location (  0.00    , 4.800E+04,  300.    )(m)
-     Maximum change in H ..................  4.4633E-01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
-     Maximum change in O ..................  2.2220E-01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
-     Maximum change in As ................. -1.3224E-09 (mol/kgw) at location ( 5.400E+04, 2.400E+04,  400.    )(m)
-     Maximum change in C .................. -2.5124E-03 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
-     Maximum change in Ca .................  4.2859E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Cl .................  6.3754E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in Mg ................. -1.9119E-03 (mol/kgw) at location ( 6.000E+04,  0.00    ,  300.    )(m)
-     Maximum change in Na .................  5.3511E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in S ..................  4.3100E-05 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in Charge ............. -3.4851E-03 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
+     Maximum change in H ..................  1.3925E-01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
+     Maximum change in O ..................  6.8107E-02 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
+     Maximum change in As ................. -1.3133E-09 (mol/kgw) at location ( 5.400E+04, 2.400E+04,  400.    )(m)
+     Maximum change in C .................. -2.5113E-03 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
+     Maximum change in Ca .................  4.2860E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
+     Maximum change in Cl .................  6.3756E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in Mg ................. -1.9140E-03 (mol/kgw) at location ( 6.000E+04,  0.00    ,  300.    )(m)
+     Maximum change in Na .................  5.3513E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in S ..................  4.3102E-05 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in Charge ............. -3.4854E-03 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
 Reading transient data for simulation: Set 16
 WARNING:  2 print control intervals are less than defined time step length.
      Time at which next set of transient parameters will be read .......... TIMCHG  8.200E+03  (yr)
@@ -994,45 +994,45 @@ Beginning time step no.     16
           No. of solver iterations, Relative residual:    9      2.0056619E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    3      1.2748435E-11
+          No. of solver iterations, Relative residual:    3      2.6400106E-11
           O
-          No. of solver iterations, Relative residual:    3      1.3120841E-11
+          No. of solver iterations, Relative residual:    3      2.6945438E-11
           As
-          No. of solver iterations, Relative residual:    4      2.2002002E-13
+          No. of solver iterations, Relative residual:    4      2.2124148E-13
           C
-          No. of solver iterations, Relative residual:    3      2.0291696E-11
+          No. of solver iterations, Relative residual:    3      1.9765616E-11
           Ca
-          No. of solver iterations, Relative residual:    3      4.8811271E-11
+          No. of solver iterations, Relative residual:    3      4.9258383E-11
           Cl
-          No. of solver iterations, Relative residual:    3      5.1138653E-11
+          No. of solver iterations, Relative residual:    3      5.0958086E-11
           Mg
-          No. of solver iterations, Relative residual:    3      6.0049304E-11
+          No. of solver iterations, Relative residual:    3      5.8573715E-11
           Na
-          No. of solver iterations, Relative residual:    3      4.9083418E-11
+          No. of solver iterations, Relative residual:    3      4.8756736E-11
           S
-          No. of solver iterations, Relative residual:    3      5.1163820E-11
+          No. of solver iterations, Relative residual:    3      5.0958733E-11
           Charge
-          No. of solver iterations, Relative residual:    3      1.6846207E-11
+          No. of solver iterations, Relative residual:    3      1.6486662E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 514
-          Total iterations all cells: 1767
+          Total iterations all cells: 1771
           Number of cells with zero iterations: 0
           Maximum iterations for one cell: 11
 
      End of Time Step No.    16
      Time ..................................................    8200.00     (yr)
      Maximum change in potentiometric head   2.9266E-01      (m ) at location (  0.00    ,  0.00    ,  0.00    )(m)
-     Maximum change in H ..................  4.2168E-01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
-     Maximum change in O ..................  2.0988E-01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
-     Maximum change in As ................. -1.0280E-09 (mol/kgw) at location ( 5.400E+04, 2.400E+04,  400.    )(m)
-     Maximum change in C .................. -1.4937E-03 (mol/kgw) at location ( 9.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Ca .................  4.0392E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in Cl .................  6.2609E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in Mg ................. -1.8390E-03 (mol/kgw) at location ( 6.000E+04,  0.00    ,  300.    )(m)
-     Maximum change in Na .................  5.2605E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in S ..................  4.2326E-05 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in Charge ............. -1.8891E-03 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  100.    )(m)
+     Maximum change in H ..................  1.2786E-01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
+     Maximum change in O ..................  6.2425E-02 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
+     Maximum change in As ................. -1.0206E-09 (mol/kgw) at location ( 5.400E+04, 2.400E+04,  400.    )(m)
+     Maximum change in C .................. -1.3925E-03 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
+     Maximum change in Ca .................  4.0394E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in Cl .................  6.2611E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in Mg ................. -1.8410E-03 (mol/kgw) at location ( 6.000E+04,  0.00    ,  300.    )(m)
+     Maximum change in Na .................  5.2607E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in S ..................  4.2328E-05 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in Charge ............. -1.8323E-03 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  100.    )(m)
 Reading transient data for simulation: Set 17
 WARNING:  2 print control intervals are less than defined time step length.
      Time at which next set of transient parameters will be read .......... TIMCHG  9.000E+03  (yr)
@@ -1043,45 +1043,45 @@ Beginning time step no.     17
           No. of solver iterations, Relative residual:   10      8.3441883E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    5      1.8231142E-11
+          No. of solver iterations, Relative residual:    5      4.2677311E-11
           O
-          No. of solver iterations, Relative residual:    5      1.9238454E-11
+          No. of solver iterations, Relative residual:    5      4.6428951E-11
           As
-          No. of solver iterations, Relative residual:    6      4.2858864E-12
+          No. of solver iterations, Relative residual:    6      4.2655398E-12
           C
-          No. of solver iterations, Relative residual:    5      4.0416555E-11
+          No. of solver iterations, Relative residual:    5      3.6748998E-11
           Ca
-          No. of solver iterations, Relative residual:    5      6.7575813E-11
+          No. of solver iterations, Relative residual:    5      6.5492910E-11
           Cl
-          No. of solver iterations, Relative residual:    5      6.8297995E-11
+          No. of solver iterations, Relative residual:    5      6.5522939E-11
           Mg
-          No. of solver iterations, Relative residual:    5      7.7716039E-11
+          No. of solver iterations, Relative residual:    5      7.5367105E-11
           Na
-          No. of solver iterations, Relative residual:    5      7.0151166E-11
+          No. of solver iterations, Relative residual:    5      6.6480650E-11
           S
-          No. of solver iterations, Relative residual:    5      6.8368081E-11
+          No. of solver iterations, Relative residual:    5      6.5621342E-11
           Charge
-          No. of solver iterations, Relative residual:    5      3.8090884E-11
+          No. of solver iterations, Relative residual:    5      3.3942458E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 514
-          Total iterations all cells: 2167
+          Total iterations all cells: 2161
           Number of cells with zero iterations: 0
           Maximum iterations for one cell: 13
 
      End of Time Step No.    17
      Time ..................................................    9000.00     (yr)
      Maximum change in potentiometric head   2.5814E-01      (m ) at location (  0.00    , 6.000E+03,  300.    )(m)
-     Maximum change in H ..................  2.2888E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
-     Maximum change in O ..................  1.1381E+00 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
-     Maximum change in As .................  1.6087E-09 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in C .................. -6.8560E-03 (mol/kgw) at location ( 9.000E+04,  0.00    ,  100.    )(m)
-     Maximum change in Ca .................  2.8573E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in H ..................  6.0771E-01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
+     Maximum change in O ..................  2.9541E-01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
+     Maximum change in As .................  1.6090E-09 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
+     Maximum change in C .................. -6.7495E-03 (mol/kgw) at location ( 9.000E+04,  0.00    ,  100.    )(m)
+     Maximum change in Ca .................  2.8574E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
      Maximum change in Cl .................  4.2614E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in Mg .................  7.0273E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in Mg .................  7.0269E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
      Maximum change in Na .................  3.5705E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
      Maximum change in S ..................  2.8809E-04 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in Charge ............. -1.0428E-02 (mol/kgw) at location ( 9.000E+04,  0.00    ,  100.    )(m)
+     Maximum change in Charge ............. -1.0291E-02 (mol/kgw) at location ( 9.000E+04,  0.00    ,  100.    )(m)
 Reading transient data for simulation: Set 18
 WARNING:  2 print control intervals are less than defined time step length.
      Time at which next set of transient parameters will be read .......... TIMCHG  1.100E+04  (yr)
@@ -1109,45 +1109,45 @@ Beginning time step no.     19
           No. of solver iterations, Relative residual:   11      2.4737836E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    5      2.9198361E-11
+          No. of solver iterations, Relative residual:    5      7.9613074E-11
           O
-          No. of solver iterations, Relative residual:    5      3.8012468E-11
+          No. of solver iterations, Relative residual:    5      9.7111712E-11
           As
-          No. of solver iterations, Relative residual:    6      1.0736016E-11
+          No. of solver iterations, Relative residual:    6      1.0905959E-11
           C
-          No. of solver iterations, Relative residual:    5      9.0503158E-11
+          No. of solver iterations, Relative residual:    5      8.0370137E-11
           Ca
-          No. of solver iterations, Relative residual:    6      7.4315937E-12
+          No. of solver iterations, Relative residual:    6      7.4428619E-12
           Cl
-          No. of solver iterations, Relative residual:    6      7.5812451E-12
+          No. of solver iterations, Relative residual:    6      7.5784351E-12
           Mg
-          No. of solver iterations, Relative residual:    6      7.8710093E-12
+          No. of solver iterations, Relative residual:    6      7.8942410E-12
           Na
-          No. of solver iterations, Relative residual:    6      7.4061018E-12
+          No. of solver iterations, Relative residual:    6      7.3888659E-12
           S
-          No. of solver iterations, Relative residual:    6      7.5788334E-12
+          No. of solver iterations, Relative residual:    6      7.5767038E-12
           Charge
-          No. of solver iterations, Relative residual:    5      8.7293511E-11
+          No. of solver iterations, Relative residual:    5      7.6106187E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 514
-          Total iterations all cells: 2233
+          Total iterations all cells: 2237
           Number of cells with zero iterations: 0
           Maximum iterations for one cell: 13
 
      End of Time Step No.    19
      Time ..................................................    11000.0     (yr)
      Maximum change in potentiometric head   1.8804E-02      (m ) at location (  0.00    , 1.800E+04,  300.    )(m)
-     Maximum change in H ..................  1.2644E+00 (mol/kgw) at location ( 6.600E+04, 3.000E+04,  100.    )(m)
-     Maximum change in O ..................  6.2373E-01 (mol/kgw) at location ( 6.600E+04, 3.000E+04,  100.    )(m)
-     Maximum change in As .................  1.7813E-09 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in C .................. -6.6875E-03 (mol/kgw) at location ( 9.000E+04,  0.00    ,  100.    )(m)
-     Maximum change in Ca .................  2.6354E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in Cl .................  3.8101E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in Mg .................  6.6564E-03 (mol/kgw) at location ( 2.400E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in H ..................  3.3193E-01 (mol/kgw) at location ( 5.400E+04, 3.000E+04,  100.    )(m)
+     Maximum change in O ..................  1.6657E-01 (mol/kgw) at location ( 5.400E+04, 3.000E+04,  100.    )(m)
+     Maximum change in As .................  1.7816E-09 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
+     Maximum change in C .................. -6.6800E-03 (mol/kgw) at location ( 7.800E+04, 4.800E+04,  100.    )(m)
+     Maximum change in Ca .................  2.6353E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in Cl .................  3.8100E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in Mg .................  6.6562E-03 (mol/kgw) at location ( 2.400E+04, 1.800E+04,  0.00    )(m)
      Maximum change in Na .................  3.1955E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in S ..................  2.5758E-04 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in Charge ............. -9.0155E-03 (mol/kgw) at location ( 7.800E+04, 4.800E+04,  100.    )(m)
+     Maximum change in S ..................  2.5757E-04 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in Charge ............. -9.0525E-03 (mol/kgw) at location ( 7.800E+04, 4.800E+04,  100.    )(m)
 Reading transient data for simulation: Set 19
 WARNING:  2 print control intervals are less than defined time step length.
      Time at which next set of transient parameters will be read .......... TIMCHG  1.200E+04  (yr)
@@ -1158,45 +1158,45 @@ Beginning time step no.     20
           No. of solver iterations, Relative residual:   11      2.9884016E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    5      3.3912104E-11
+          No. of solver iterations, Relative residual:    6      2.2956748E-12
           O
-          No. of solver iterations, Relative residual:    5      4.5008232E-11
+          No. of solver iterations, Relative residual:    6      3.2205841E-12
           As
-          No. of solver iterations, Relative residual:    6      8.5987598E-12
+          No. of solver iterations, Relative residual:    6      9.1271614E-12
           C
-          No. of solver iterations, Relative residual:    5      8.9160641E-11
+          No. of solver iterations, Relative residual:    5      7.8196516E-11
           Ca
-          No. of solver iterations, Relative residual:    6      7.6118390E-12
+          No. of solver iterations, Relative residual:    6      7.6347859E-12
           Cl
-          No. of solver iterations, Relative residual:    6      7.9140750E-12
+          No. of solver iterations, Relative residual:    6      7.9306448E-12
           Mg
-          No. of solver iterations, Relative residual:    6      7.7065440E-12
+          No. of solver iterations, Relative residual:    6      7.6853172E-12
           Na
-          No. of solver iterations, Relative residual:    6      7.8178779E-12
+          No. of solver iterations, Relative residual:    6      7.8251552E-12
           S
-          No. of solver iterations, Relative residual:    6      7.9109936E-12
+          No. of solver iterations, Relative residual:    6      7.9283920E-12
           Charge
-          No. of solver iterations, Relative residual:    5      8.8370354E-11
+          No. of solver iterations, Relative residual:    5      7.6354137E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 514
-          Total iterations all cells: 2217
+          Total iterations all cells: 2219
           Number of cells with zero iterations: 0
           Maximum iterations for one cell: 13
 
      End of Time Step No.    20
      Time ..................................................    12000.0     (yr)
      Maximum change in potentiometric head   5.2243E-03      (m ) at location (  0.00    , 2.400E+04,  300.    )(m)
-     Maximum change in H ..................  8.4211E-01 (mol/kgw) at location ( 6.600E+04, 3.000E+04,  100.    )(m)
-     Maximum change in O ..................  4.1400E-01 (mol/kgw) at location ( 6.600E+04, 3.000E+04,  100.    )(m)
-     Maximum change in As ................. -2.6299E-09 (mol/kgw) at location ( 9.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in C .................. -5.8744E-03 (mol/kgw) at location ( 7.800E+04, 4.800E+04,  100.    )(m)
-     Maximum change in Ca .................  2.2716E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in Cl .................  3.2374E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in Mg .................  5.8727E-03 (mol/kgw) at location ( 2.400E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in Na .................  2.7151E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in S ..................  2.1886E-04 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in Charge ............. -7.2857E-03 (mol/kgw) at location ( 7.800E+04, 4.800E+04,  100.    )(m)
+     Maximum change in H ..................  2.2535E-01 (mol/kgw) at location ( 5.400E+04, 3.000E+04,  100.    )(m)
+     Maximum change in O ..................  1.1321E-01 (mol/kgw) at location ( 5.400E+04, 3.000E+04,  100.    )(m)
+     Maximum change in As .................  1.7545E-09 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
+     Maximum change in C .................. -5.9007E-03 (mol/kgw) at location ( 7.800E+04, 4.800E+04,  100.    )(m)
+     Maximum change in Ca .................  2.2715E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in Cl .................  3.2372E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in Mg .................  5.8724E-03 (mol/kgw) at location ( 2.400E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in Na .................  2.7149E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in S ..................  2.1885E-04 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in Charge ............. -7.3530E-03 (mol/kgw) at location ( 7.800E+04, 4.800E+04,  100.    )(m)
 Reading transient data for simulation: Set 20
 WARNING:  2 print control intervals are less than defined time step length.
      Time at which next set of transient parameters will be read .......... TIMCHG  1.500E+04  (yr)
@@ -1224,45 +1224,45 @@ Beginning time step no.     22
           No. of solver iterations, Relative residual:   11      2.9476599E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    5      8.3317924E-11
+          No. of solver iterations, Relative residual:    6      2.7296079E-12
           O
-          No. of solver iterations, Relative residual:    5      9.5821845E-11
+          No. of solver iterations, Relative residual:    6      4.1155576E-12
           As
-          No. of solver iterations, Relative residual:    6      2.1848091E-12
+          No. of solver iterations, Relative residual:    6      2.7095354E-12
           C
-          No. of solver iterations, Relative residual:    5      9.6192790E-11
+          No. of solver iterations, Relative residual:    5      8.2946042E-11
           Ca
-          No. of solver iterations, Relative residual:    6      7.7676711E-12
+          No. of solver iterations, Relative residual:    6      7.7910385E-12
           Cl
-          No. of solver iterations, Relative residual:    6      8.0995151E-12
+          No. of solver iterations, Relative residual:    6      8.0669122E-12
           Mg
-          No. of solver iterations, Relative residual:    6      6.3237766E-12
+          No. of solver iterations, Relative residual:    6      6.3299868E-12
           Na
-          No. of solver iterations, Relative residual:    6      8.0442671E-12
+          No. of solver iterations, Relative residual:    6      8.0072825E-12
           S
-          No. of solver iterations, Relative residual:    6      8.0982434E-12
+          No. of solver iterations, Relative residual:    6      8.0667233E-12
           Charge
-          No. of solver iterations, Relative residual:    6      3.0257956E-12
+          No. of solver iterations, Relative residual:    5      8.9121614E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 514
-          Total iterations all cells: 2136
+          Total iterations all cells: 2117
           Number of cells with zero iterations: 0
-          Maximum iterations for one cell: 12
+          Maximum iterations for one cell: 11
 
      End of Time Step No.    22
      Time ..................................................    15000.0     (yr)
      Maximum change in potentiometric head   2.4216E-04      (m ) at location (  0.00    , 2.400E+04,  300.    )(m)
-     Maximum change in H ..................  2.7259E-01 (mol/kgw) at location ( 6.600E+04, 3.000E+04,  100.    )(m)
-     Maximum change in O ..................  1.3245E-01 (mol/kgw) at location ( 6.600E+04, 3.000E+04,  100.    )(m)
-     Maximum change in As ................. -1.9220E-08 (mol/kgw) at location ( 9.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in C .................. -3.6087E-03 (mol/kgw) at location ( 7.800E+04,  0.00    ,  100.    )(m)
-     Maximum change in Ca .................  1.7588E-02 (mol/kgw) at location ( 2.400E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in Cl .................  2.4553E-01 (mol/kgw) at location ( 2.400E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in Mg ................. -4.5241E-03 (mol/kgw) at location ( 6.000E+04,  0.00    ,  100.    )(m)
-     Maximum change in Na .................  2.0290E-01 (mol/kgw) at location ( 2.400E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in S ..................  1.6599E-04 (mol/kgw) at location ( 2.400E+04, 1.800E+04,  0.00    )(m)
-     Maximum change in Charge ............. -4.0515E-03 (mol/kgw) at location ( 7.200E+04, 3.000E+04,  100.    )(m)
+     Maximum change in H ..................  8.6150E-02 (mol/kgw) at location ( 5.400E+04, 4.800E+04,  100.    )(m)
+     Maximum change in O ..................  4.3402E-02 (mol/kgw) at location ( 5.400E+04, 4.800E+04,  100.    )(m)
+     Maximum change in As ................. -7.4667E-09 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  300.    )(m)
+     Maximum change in C .................. -3.6499E-03 (mol/kgw) at location ( 7.800E+04, 4.800E+04,  100.    )(m)
+     Maximum change in Ca .................  1.7587E-02 (mol/kgw) at location ( 2.400E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in Cl .................  2.4552E-01 (mol/kgw) at location ( 2.400E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in Mg ................. -4.5254E-03 (mol/kgw) at location ( 6.000E+04,  0.00    ,  100.    )(m)
+     Maximum change in Na .................  2.0289E-01 (mol/kgw) at location ( 2.400E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in S ..................  1.6598E-04 (mol/kgw) at location ( 2.400E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in Charge ............. -3.6799E-03 (mol/kgw) at location ( 7.800E+04, 4.800E+04,  100.    )(m)
 Done with transient simulation.
 
                              ***** Simulation Completed *****

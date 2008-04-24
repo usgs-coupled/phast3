@@ -1,7 +1,7 @@
 
 
-                          ..       Central Oklahoma aquifer,                                              
-                          ..       demonstration of PHAST                                                 
+                          .                                                                               
+                          .                                                                               
 
                               *** Output at End of Time Step No.     1 ***
 
