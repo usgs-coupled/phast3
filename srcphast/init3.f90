@@ -228,7 +228,7 @@ SUBROUTINE init3
         IF(ic > 0.) THEN
            IF(cibc(1:1) == '2') uq=qff(m)*arxfbc(l)
            IF(cibc(2:2) == '2') uq=qff(m)*aryfbc(l)
-           IF(cibc(3:3) == '2') uq=qff(m)*arzfbc(l)
+           IF(cibc(3:3) == '2' .OR. cibc(3:3) == '8') uq=qff(m)*arzfbc(l)
            qfbcv(l)=-uq
            denfbc(l)=denf0
            IF(heat) tflx(l)=utbc(m)
