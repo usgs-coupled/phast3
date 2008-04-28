@@ -1,0 +1,125 @@
+                                    ****************************************************
+                                    *                                                  *
+                                    *    PHAST: A Three Dimensional Flow and Solute    *
+                                    *         Reactive Transport Simulator             *
+                                    *                 Version: 1.2                     *
+                                    *                                                  *
+                                    ****************************************************
+
+
+
+
+
+
+                          .                                                                               
+                          .                                                                               
+
+                         *** Fundamental Information ***
+                    Isothermal simulation
+                    No solute transport simulaton
+                    Cartesian coordinates
+                    Data is in metric units
+                    Time unit selected is years   
+
+          Direct D4 solver is selected
+
+                         *** Problem Dimension Information ***
+          Number of nodes in x-direction .................................. NX ...     16
+          Number of nodes in y-direction .................................. NY ...      2
+          Number of nodes in z-direction .................................. NZ ...      2
+          Total number of nodes ........................................... NXYZ .     64
+
+          Number of porous media zones .................................... NPMZ .     15
+          Number of specified pressure or mass fraction b.c. .............. NSBC .      4
+          Number of specified flux b.c. cells ............................. NFBC .      0
+          Number of leakage cells ......................................... NLBC .      4
+          Number of river leakage cells ................................... NRBC .      0
+          Number of wells ................................................. NWEL .      0
+
+          A4 array dimension requirement (D4 direct solver)................ NRAL .        0 elements
+ ------------------------------------------------------------------------------------------------------------------------
+
+
+                              ***  Static Data ***
+
+
+                              X-Direction Node Coordinates    (m)
+
+           1           2           3           4           5           6           7           8           9          10
+              0     6000.00    12000.00    18000.00    24000.00    30000.00    36000.00    42000.00    48000.00    54000.00
+
+
+
+          11          12          13          14          15          16
+       60000.00    66000.00    72000.00    78000.00    84000.00    90000.00
+
+
+
+
+                              Y-Direction Node Coordinates   (m)
+
+           1           2
+              0    48000.00
+
+
+
+
+                              Z-Direction Node Coordinates   (m)
+
+           1           2
+              0      400.00
+
+
+
+
+                              Z-Axis is Positive Vertically Upward
+
+
+                                        *** Fluid Properties ***
+                                             Physical
+                         Fluid compressibility ...................................... BP ...   0.00E+00  (1/Pa )
+
+                         Reference pressure for density ............................. P0 ..         0.0  (Pa )
+                         Reference temperature for density .......................... T0 ..        15.0  (Deg.C)
+                         Fluid density .............................................. DENF0  1000.0      (kg/m^3)
+
+                         Viscosity factor ........................................... VISFAC -1.000E-03
+
+                                   A free-surface water table is specified for this simulation
+
+                                        *** Calculation Information ***
+          Backwards-in-time (implicit) differencing for temporal derivative
+
+                           Row scaling only, using L-inf norm, will be done
+
+ ------------------------------------------------------------------------------------------------------------------------
+
+                    Automatic Time Step Control Parameters for Steady Flow
+          Maximum pressure change allowed per time step.................... DPTAS    1.18E+06  (Pa )
+          Minimum time step required ...................................... DTIMMN    2.0      (yr )
+          Maximum time step allowed ....................................... DTIMMX   2.00E+06  (yr )
+
+
+                    Initial fluid in region ...............................  4.124932E+14  (kg) ;  4.124932E+11  (m^3)
+
+ ------------------------------------------------------------------------------------------------------------------------
+ ------------------------------------------------------------------------------------------------------------------------
+
+
+                                        *** Transient Data ***
+
+     Time ..............................       0      (yr )
+
+
+                                        *** Calculation Information ***
+
+          Fixed time step length .......................................... DELTIM  2.000E+03  (yr )
+          Time at which next set of transient
+               parameters will be read .................................... TIMCHG  1.000E+05  (yr)
+
+ ------------------------------------------------------------------------------------------------------------------------
+
+
+                                       ***** Simulation Completed *****
+               Last time value calculated ......................................      0     (yr)
+               Last time step index ............................................       0
