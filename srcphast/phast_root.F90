@@ -18,7 +18,7 @@ SUBROUTINE phast_root(mpi_tasks, mpi_myself)
   INTEGER :: print_restart_flag
   CHARACTER(LEN=130) :: logline1
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: phast_root.F90,v 1.1 2007/01/19 19:35:56 klkipp Exp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: phast_root.F90,v 1.2 2008/04/18 17:18:08 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   !...
@@ -149,7 +149,7 @@ SUBROUTINE phast_root(mpi_tasks, mpi_myself)
 20      CALL timstp
         CALL write6      ! ... print conductance values
         IF(.NOT.steady_flow) CALL asmslp
-        CALL asmslc
+        if (solute) CALL asmslc
         CALL sumcal1
         IF(tsfail .AND. .NOT.errexe) GO TO 20
 #if defined(HDF5_CREATE)

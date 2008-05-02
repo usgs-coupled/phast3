@@ -15,15 +15,15 @@ SUBROUTINE aplbce
   USE phys_const
   IMPLICIT NONE
   EXTERNAL EHOFTP  
-  REAL(kind=kdp) :: EHOFTP  
-  REAL(kind=kdp) ::  DELP2, DPUDT, DQETDP, DZFSDP, ETA, &
-       LTD, P00, P1, PU, QFBC, QHBC, QHBC2, QN, TIMED, &
-       TIMEDN, UFDT2, UFRAC, UPHIM, UZAV, Z0, Z1, ZFSA
-  REAL(kind=kdp), DIMENSION(10) :: BETA( 10), GAMMA( 10)
+  REAL(KIND=kdp) :: ehoftp  
+  REAL(KIND=kdp) ::  delp2, dpudt, dqetdp, dzfsdp, eta, &
+       ltd, p00, p1, pu, qfbc, qhbc, qhbc2, qn, timed, &
+       timedn, ufdt2, ufrac, uphim, uzav, z0, z1, zfsa
+  REAL(KIND=kdp), DIMENSION(10) :: beta(10), gamma(10)
   INTEGER :: a_err, da_err, imod, iis, k, ks, l, l1, lc, ll, ls, lll, m, mc, ms  
-  LOGICAL :: ERFLG  
-  CHARACTER(len=9) :: CIBC
-  REAL(kind=kdp), DIMENSION(:), ALLOCATABLE :: qsbc, qsbc2
+  LOGICAL :: erflg  
+!$$  CHARACTER(LEN=9) :: cibc
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: qsbc, qsbc2
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
@@ -34,47 +34,48 @@ SUBROUTINE aplbce
   ERFLG = .FALSE.  
   ALLOCATE (qsbc(ns), qsbc2(ns), &
        stat = a_err)
-  IF (a_err.NE.0) THEN  
+  IF (a_err /= 0) THEN  
      PRINT *, "Array allocation failed: aplbce"  
      STOP  
   ENDIF
-  DO 10 L = 1, NFBC  
-     M = MFBC( L)  
-     UFRAC = 1._kdp  
-     IF( L.LT.LNZ2) UFRAC = FRAC( M)  
-     ! ... Redirect the flux to the free-surface cell, if necessary
-     IF( L.GE.LNZ2) THEN  
-        L1 = MOD( M, NXY)  
-        IF( L1.EQ.0) L1 = NXY  
-        M = MFSBC( L1)  
-        UFRAC = 1._kdp  
+  ! ... Specified flux b.c.
+  DO lc=1,nfbc_cells
+     m = flux_seg_index(lc)%m
+     IF(m == 0) CYCLE     ! ... dry column
+     DO ls=flux_seg_index(lc)%seg_first,flux_seg_index(lc)%seg_last
+        ufrac = 1._kdp
+        IF(ifacefbc(ls) < 3) ufrac = frac(m)  
+        IF(fresur .AND. ifacefbc(ls) == 3 .AND. m >= mtp1) THEN
+           ! ... Redirect the flux to the free-surface cell
+           l1 = MOD(m,nxy)
+           IF(l1 == 0) l1 = nxy
+           m = mfsbc(l1)
      ENDIF
-     QN = QFBCV( L)  
-     IF( QN.LE.0.) THEN  
-        ! ... Outflow
-        QFBC = DEN( M) * QN* UFRAC  
-        if (heat) QHBC = QFBC* EH( M)  
+        qn = qfflx(ls)*areafbc(ls)
+        IF(qn <= 0.) THEN             ! ... Outflow
+           qfbc = den(m)*qn*ufrac
+!$$           if (heat) qhbc = qfbc*eh(m)  
         DO  iis = 1, ns  
-           QSBC(iis) = QFBC* C( M,iis)  
+              qsbc(iis) = qfbc*c(m,iis)
         END DO
-     ELSE  
-        ! ... Inflow
-        QFBC = DENFBC( L) * QN* UFRAC  
-        IF( HEAT) QHBC = QFBC* EHOFTP( TFLX( L), P( M), ERFLG)  
+        ELSE                          ! ... Inflow
+           qfbc = denfbc(ls)*qn*ufrac
+!$$        IF( HEAT) QHBC = QFBC* EHOFTP( TFLX( L), P( M), ERFLG)  
         DO  iis = 1, ns  
-           QSBC(iis) = QFBC* CFLX( L,iis)  
+              qsbc(iis) = qfbc*cfbc(ls,iis)
         END DO
      ENDIF
-     RF( M) = RF( M) + UFDT2* QFBC  
+        rf(m) = rf(m) + ufdt2*qfbc
 !!$     IF( HEAT) THEN  
 !!$        QHBC2 = QHFBC( L) * UFRAC  
 !!$        RH( M) = RH( M) + UFDT2* ( QHBC2 + QHBC)  
 !!$     ENDIF
      DO  iis = 1, ns  
-        QSBC2( iis) = QSFBC( L, iis) * UFRAC  
-        RS( M, iis) = RS( M, iis) + UFDT2* ( QSBC2( iis) + QSBC( iis) )  
+           qsbc2(iis) = qsflx(ls,iis)*areafbc(ls)*ufrac
+           rs(m,iis) = rs(m,iis) + ufdt2*(qsbc2(iis) + qsbc(iis))
      END DO
-10 END DO
+     END DO
+  END DO
 !!$  IF( ERFLG) THEN  
 !!$     WRITE( FUCLOG, 9006) 'EHOFTP interpolation error in APLBCE ', &
 !!$          'Associated heat flux: Specified flux b.c.'
@@ -85,34 +86,31 @@ SUBROUTINE aplbce
 !!$  ENDIF
   ! ... Calculate leakage b.c. coefficients
   ! ...      only for horizontal coordinates
-  DO L = 1, NLBC  
-     m = mlbc(l)  
-     albc(l) = 0._kdp
-     blbc(l) = 0._kdp
+  DO lc=1,nlbc_cells
+     m = leak_seg_index(lc)%m  
+     IF(m == 0) CYCLE     ! ... dry column
+     DO ls=leak_seg_index(lc)%seg_first,leak_seg_index(lc)%seg_last
+        albc(ls) = 0._kdp
+        blbc(ls) = 0._kdp
      ufrac = frac(m)  
      ! ... No flow to or from empty cells, and attenuate flows
      ! ...      at partially saturated cells.
-     IF( UFRAC.GT.0.) THEN  
-        IMOD = MOD( M, NXY)  
-        K = ( M - IMOD) / NXY + MIN( 1, IMOD)  
-        WRITE( CIBC, 6001) IBC( M)  
-6001    FORMAT      (I9)  
-        IF( CIBC( 3:3) .EQ.'3') THEN  
-           UZAV = ZELBC( L) - .5* BBLBC( L)  
+        imod = MOD(m,nxy)
+        k = (m - imod)/nxy + MIN(1,imod)  
+        IF(ifacelbc(ls) == 3) THEN  
+           uzav = zelbc(ls) - .5_kdp*bblbc(ls)  
         ELSE  
-           UZAV = ZELBC( L)  
+           uzav = zelbc(ls)
         ENDIF
-        UPHIM = P( M) + GZ* ( DENLBC( L) - DEN( M) ) * UZAV  
-        BLBC( L) = KLBC( L) / VISLBC( L)  
-        ALBC( L) = BLBC( L) * ( ( DENLBC( L) * PHILBC( L) - DEN( M) &
-             * GZ* Z( K) ) - UPHIM)
+        uphim = p(m) + gz*(denlbc(ls) - den(m))*uzav  
+        blbc(ls) = klbc(ls)/vislbc(ls)
+        albc(ls) = blbc(ls)*((denlbc(ls)*philbc(ls) - den(m)*gz*z(k)) - uphim)
         ! ... Attenuate the flow rate for a partially saturated cell with
         ! ...      leakage through a lateral face
-        IF( CIBC( 1:1) .EQ.'3'.OR.CIBC( 2:2) .EQ.'3') THEN  
-           ALBC( L) = UFRAC* ALBC( L)  
-           BLBC( L) = UFRAC* BLBC( L)  
+        IF(ifacelbc(ls) < 3) THEN  
+           albc(ls) = ufrac*albc(ls)  
+           blbc(ls) = ufrac*blbc(ls)  
         ENDIF
-     ENDIF
      ! ... It is too late to do this. Read3 data is in for this time step.
 !!$     ! ... Load flow rates for balance calculation
 !!$     qn = albc(l)
@@ -130,6 +128,7 @@ SUBROUTINE aplbce
 !!$        END DO
 !!$     END IF
   END DO
+  END DO
   ! ... Calculate river leakage b.c. coefficients
   ! ...      only for horizontal coordinates; No lateral river leakage
   DO lc=1,nrbc_cells
@@ -141,8 +140,8 @@ SUBROUTINE aplbce
         uzav = zerbc(ls) - .5_kdp*bbrbc(ls)     
         ms = mrbc(ls)        ! ... current river segment cell for aquifer head
                              ! ... now ms = mc
-        imod = mod(ms,nxy)
-        ks = (ms - imod)/nxy + min(1,imod)
+        imod = MOD(ms,nxy)
+        ks = (ms - imod)/nxy + MIN(1,imod)
         uphim = p(ms) + gz*(denrbc(ls) - den(ms))*uzav
         brbc(ls) = krbc(ls)/visrbc(ls)
         arbc(ls) = brbc(ls)*((denrbc(ls)*phirbc(ls) - den(ms)*gz*z(ks)) - uphim)
@@ -208,6 +207,22 @@ SUBROUTINE aplbce
 !!$        END DO
 !!$     END IF
 !!$  END DO
+  ! ... Calculate drain leakage b.c. coefficients
+  ! ...      only for horizontal coordinates; No lateral drain leakage
+  DO lc=1,ndbc_cells
+     mc = drain_seg_index(lc)%m
+     IF(mc == 0) CYCLE     ! ... dry column
+     DO ls=drain_seg_index(lc)%seg_first,drain_seg_index(lc)%seg_last
+        adbc(ls) = 0._kdp
+        bdbc(ls) = 0._kdp
+        ms = mdbc(ls)        ! ... current drain segment cell for aquifer head
+                             ! ... now ms = mc
+        imod = MOD(ms,nxy)
+        ks = (ms - imod)/nxy + MIN(1,imod)
+        bdbc(ls) = kdbc(ls)/visdbc
+        adbc(ls) = bdbc(ls)*(den0*gz*zedbc(ls) - (p(ms) + den(ms)*gz*z(ks)))
+     END DO
+  END DO
 !!$  IF( NAIFC.GT.0) THEN  
 !!$     !... *** not implemented for PHAST
 !!$     ! ... Calculate aquifer influence function b.c. terms

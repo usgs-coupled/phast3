@@ -21,7 +21,8 @@ SUBROUTINE hdf_write_invariant(mpi_myself)
   USE mcg, ONLY: nx, ny, nz
   USE mcn, ONLY: x, y, z
   USE mcw, ONLY: nkswel, nwel, mwel
-  USE mcb, ONLY: ibc, msbc, nsbc, mfbc, nfbc, mlbc, nlbc, mrbc, nrbc_seg ! ... b.c. information
+  USE mcb, ONLY: ibc, msbc, nsbc, mfbc, nfbc, mlbc, nlbc, mrbc, nrbc_seg,  &
+       mdbc, ndbc_seg   ! ... b.c. information
   USE mcch, ONLY: utulbl
   IMPLICIT NONE
   INTEGER, INTENT(IN) :: mpi_myself
@@ -76,7 +77,12 @@ SUBROUTINE hdf_write_invariant(mpi_myself)
         enddo
         CALL HDF_WRITE_FEATURE('River', temp_rbc, nrbc_seg)
      endif
-  
+     if(ndbc_seg > 0) then
+        do i = 1, ndbc_seg
+           temp_rbc(i) = mdbc(i)
+        enddo
+        CALL HDF_WRITE_FEATURE('Drain', temp_rbc, ndbc_seg)
+     end if
   ! 
   ! Free Well Nodes
   !

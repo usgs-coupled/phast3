@@ -14,6 +14,7 @@ SUBROUTINE write2_1
   USE mcw
   USE mg2
   USE phys_const
+  use ld_seg_mod
   IMPLICIT NONE
   INCLUDE 'ifwr.inc'
   CHARACTER(LEN=4) :: uword
@@ -41,10 +42,11 @@ SUBROUTINE write2_1
   ! ... Set the unit numbers for node point output
   INTEGER, DIMENSION(12), PARAMETER :: fu =(/16,21,22,23,26,27,0,0,0,0,0,0/)
   INTEGER :: nr
-  REAL(kind=kdp), PARAMETER :: cnv = 1._kdp
+  REAL(KIND=kdp), PARAMETER :: cnv=1._kdp, one=1._kdp
   REAL(KIND=kdp) :: ph
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: aprnt5
   INTEGER :: a_err, da_err
+!!  type(rbc_indices), dimension(:), pointer :: ptr
   CHARACTER(LEN=130) :: logline1, logline2, logline3, logline4
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
@@ -66,6 +68,7 @@ SUBROUTINE write2_1
        'Number of specified flux b.c. cells '//dots, ' NFBC . ',nfbc,  &
        'Number of leakage cells '//dots,' NLBC . ',nlbc,  &
        'Number of river leakage cells '//dots,' NRBC . ',nrbc,  &
+       'Number of drain leakage cells '//dots,' NDBC . ',ndbc,  &
        !     &     'Number of aquifer influence function cells '//DOTS,
        !     &     ' NAIFC  ',NAIFC,
        !     &     'Number of heat conduction b.c. cells '//DOTS,
@@ -81,6 +84,7 @@ SUBROUTINE write2_1
 !!$  WRITE(logline3,5009) 'Number of specified flux b.c. cells '//dots, ' NFBC . ',nfbc
 !!$  WRITE(logline4,5009) 'Number of leakage cells '//dots,' NLBC . ',nlbc
 !!$  WRITE(logline5,5009) 'Number of river leakage cells '//dots,' NRBC . ',nrbc
+!!$  WRITE(logline5,5009) 'Number of drain leakage cells '//dots,' NDBC . ',ndbc
 !!$  WRITE(logline6,5009) 'Number of wells '//dots,' NWEL . ',nwel
 !!$5009 format(a65,a,i6)
 !!$  call logprt_c(logline1)
@@ -91,10 +95,10 @@ SUBROUTINE write2_1
 !!$  call logprt_c(logline6)
   IF(.NOT.restrt) THEN
      IF(slmeth == 1) THEN
-        WRITE(fulp,2002) 'A4 array dimension requirement (D4 direct solver)'//  &
-             dots,' NRAL . ',nral,'elements'
-        WRITE(logline1,5001) 'A4 array dimension requirement (D4 direct solver)'//  &
-             dots,' NRAL . ',nral,' elements'
+        WRITE(fulp,2002) 'Linear solver array dimension requirement (D4 direct solver)'//  &
+             dots,' NSTSLV ',nstslv,' elements'
+        WRITE(logline1,5001) 'Linear solver array dimension requirement (D4 direct solver)'//  &
+             dots,' NSTSLV ',nstslv,' elements'
         WRITE(logline2,5001) 'Primary storage requirement (D4 direct solver)'//  &
              dots,' NPRIST ',nprist,' elements'
         WRITE(logline3,5001) 'Overhead storage requirement (D4 direct solver)'//  &
@@ -103,10 +107,10 @@ SUBROUTINE write2_1
         call logprt_c(logline2)
         call logprt_c(logline3)
      ELSE IF(slmeth == 3) THEN
-        WRITE(fulp,2002) 'A4 array dimension requirement (RBGCG iterative solver)'//  &
-             dots,' NRAL . ',nral,'elements'
-        WRITE(logline1,5001) 'A4 array dimension requirement (RBGCG iterative solver)'//  &
-             dots,' NRAL . ',nral,' elements'
+        WRITE(fulp,2002) 'Linear solver array dimension requirement (RBGCG iterative solver)'//  &
+             dots,' NSTSLV ',nstslv,' elements'
+        WRITE(logline1,5001) 'Linear solver array dimension requirement (RBGCG iterative solver)'//  &
+             dots,' NSTSLV ',nstslv,' elements'
         WRITE(logline2,5001) 'Primary storage requirement (RBGCG iterative solver)'//  &
              dots,' NPRIST ',nprist,' elements'
         WRITE(logline3,5001) 'Overhead storage requirement (RBGCG iterative solver)'//  &
@@ -115,10 +119,10 @@ SUBROUTINE write2_1
         call logprt_c(logline2)
         call logprt_c(logline3)
      ELSE IF(slmeth >= 5) THEN
-        WRITE(fulp,2002) 'A4 array dimension requirement (D4ZGCG iterative '//  &
-             'solver)'//dots,' NRAL . ',nral,'elements'
-        WRITE(logline1,5001) 'A4 array dimension requirement (D4ZGCG iterative solver)'//  &
-             dots,' NRAL . ',nral,' elements'
+        WRITE(fulp,2002) 'Linear solver array dimension requirement (D4ZGCG iterative '//  &
+             'solver)'//dots,' NSTSLV ',nstslv,' elements'
+        WRITE(logline1,5001) 'Linear solver array dimension requirement (D4ZGCG iterative '//  &
+             'solver)'//dots,' NSTSLV ',nstslv,' elements'
         WRITE(logline2,5001) 'Primary storage requirement (D4ZGCG iterative solver)'//  &
              dots,' NPRIST ',nprist,' elements'
         WRITE(logline3,5001) 'Overhead storage requirement (D4ZGCG iterative solver)'//  &
@@ -128,8 +132,8 @@ SUBROUTINE write2_1
         call logprt_c(logline3)
      END IF
   END IF
-2002 FORMAT(/(tr10,a65,a,i8,tr1,a))
-5001 FORMAT(a65,a,i8,a)
+2002 FORMAT(/(tr10,a70,a,i8,a))
+5001 FORMAT(a70,a,i8,a)
   IF(errexi) WRITE(fulp,9001)
 9001 FORMAT(/tr10,'**This is an abbreviated printout due to error ',  &
        'exit conditions.'/tr15, 'Data calculated in INIT2 are omitted.**')
@@ -400,62 +404,129 @@ SUBROUTINE write2_1
         WRITE(fulp,2036) 'Index Numbers For Specified P or C Nodes'
 2036    FORMAT(/tr35,a)
         CALL prntar(2,aprnt1,lprnt1,fulp,cnv,10,000)
+!$$        WRITE(fulp,2036) 'Segment Numbers For Specified P or C Nodes'
+!$$        CALL ldchar_seg(sv_seg_indx, 1, caprnt, lprnt1)
+!$$        CALL prchar(2,caprnt,lprnt1,fulp,000)
      END IF
      IF(nfbc > 0) THEN
         ! ... Specified flux b.c.
         lprnt1 = -1
-        DO  l=1,nfbc
-           m=mfbc(l)
-           lprnt1(m)=1
-           aprnt1(m)=l
+        DO  lc=1,nfbc
+           m = flux_seg_index(lc)%m
+           lprnt1(m) = 1
+           aprnt1(m) = lc
         END DO
         WRITE(fulp,2036) 'Index Numbers For Specified Flux Nodes'
         CALL prntar(2,aprnt1,lprnt1,fulp,cnv,10,000)
+        WRITE(fulp,2036) 'Segment Numbers For Specified Flux Nodes'
+        CALL ldchar_seg(flux_seg_index, 2, caprnt, lprnt1)
+!!        ptr => flux_seg_index
+!!        CALL ldchar_seg( 2, caprnt, lprnt1)
+!!        nullify (ptr)
+        CALL prchar(2,caprnt,lprnt1,fulp,000)
+        WRITE(fulp,2034)'*** Flux B.C. Data by Segment ***',  &
+             dash,  &
+             'Segment', 'Cell', 'Face','Face',  &
+             'No.','No.','Area','Orientation',  &
+             '('//TRIM(unitl)//'^2)',  &
+             dash
+2034    FORMAT(//tr40,a/tr10,a95/  &
+             tr15,a,tr7,a,tr11,a,tr7,a/tr15,  &
+             a,tr12,a,tr10,a,tr7,a/tr43,a/  &
+             tr10,a95)
+        DO  ls=1,nfbc_seg
+           WRITE(fulp,2035) ls, mfbc(ls), cnvl2i*areafbc(ls), ifacefbc(ls)
+2035       FORMAT(tr15,i5,tr6,i5,tr7,1PG11.3,tr9,i2)
+        END DO
      END IF
      IF(nlbc > 0) THEN
         ! ... Leakage b.c.
         lprnt1 = -1
-        DO  l=1,nlbc
-           m=mlbc(l)
+        DO  lc=1,nlbc
+           m = flux_seg_index(lc)%m
            lprnt1(m)=1
-           aprnt3(m)=klbc(l)
-           aprnt4(m)=zelbc(l)
-           aprnt5(m)=bblbc(l)
-           aprnt1(m)=l
+           aprnt1(m)=lc
         END DO
         WRITE(fulp,2036) 'Index Numbers for Aquifer Leakage B.C. Cells'
         CALL prntar(2,aprnt1,lprnt1,fulp,cnv,10,000)
-        WRITE(fulp,2037) 'Aquifer Leakage Factors (',TRIM(unitl),'^2)'
-2037    FORMAT(tr35,3A)
-        CALL prntar(2,aprnt3,lprnt1,fulp,cnvl3i,24,000)
-        WRITE(fulp,2037) 'Elevation of External Surface of Aquitard '//  &
-             '(',TRIM(unitl),')'
-        CALL prntar(2,aprnt4,lprnt1,fulp,cnvli,24,000)
-        !            WRITE(FULP,2037)
-        !     &           'Thickness of Aquitard (',TRIM(UNITL),')'
-        !            CALL PRNTAR(2,APRNT5,LPRNT1,FULP,CNVLI,24,000)
+        WRITE(fulp,2036) 'Segment Numbers For Leakage B.C. Nodes'
+        CALL ldchar_seg(leak_seg_index, 3, caprnt, lprnt1)
+        CALL prchar(2,caprnt,lprnt1,fulp,000)
+        WRITE(fulp,2044)'*** Leakage B.C. Data by Segment ***',  &
+             dash,  &
+             'Segment', 'Cell', 'Face', 'Face', 'Leakage Factor','Thickness','Elevation',  &
+             'No.','No.','Area','Orientation','of Aquitard','of Aquitard',  &
+             '('//TRIM(unitl)//'^2)','('//TRIM(unitl)//'^3)','('//TRIM(unitl)//')',  &
+             '('//TRIM(unitl)//')',  &
+             dash
+2044    FORMAT(//tr40,a/tr10,a95/  &
+             tr15,a,tr7,a,tr9,a,tr7,a,tr7,a,tr3,a,tr4,a/tr15,  &
+             a,tr11,a,tr10,a,tr5,a,tr3,a,tr4,a/tr41,a,tr21,a,tr10,a,tr12,a/  &
+             tr10,a95)
+        DO  ls=1,nlbc_seg
+           WRITE(fulp,2045) ls, mfbc(ls), cnvl2i*arealbc(ls), ifacelbc(ls),  &
+                cnvl3i*klbc(ls), cnvli*bblbc(ls), cnvli*zelbc(ls)
+2045       FORMAT(tr15,i5,tr10,i5,1PG11.3,tr9,i2,tr5,1pg11.3,tr5,1pg11.3,tr5,1pg11.3)
+        END DO
      END IF
      IF(nrbc > 0) THEN
         ! ... River leakage b.c.
         lprnt1 = -1
         DO  lc=1,nrbc_cells
-           m=mrbc_bot(lc)
-           lprnt1(m)=1
-           aprnt1(m)=m
+           m = river_seg_index(lc)%m
+           lprnt1(m) = 1
+           aprnt1(m) = lc
         END DO
         WRITE(fulp,2036) 'Cell Numbers for River Leakage B.C. Cells'
         WRITE(fulp,2036) '(based on bottom elevation of lowest river segment)'
         CALL prntar(2,aprnt1,lprnt1,fulp,cnv,10,000)
-        WRITE(fulp,2124)'*** River Leakage Data ***',dash,  &
-             'Segment','Segment Cell','Min. Cell',  &
-             'Leakage Factor','Elevation of River Bed', 'No.','No.','No.',  &
-             '('//TRIM(unitl)//'^2)','('//TRIM(unitl)//')', dash
-2124    FORMAT(//tr40,a/tr10,a95/ tr13,a,tr1,a,tr3,a,tr4,a,tr8,a/tr16,  &
-             a,tr7,a,tr9,a,tr12,a,tr21,a/tr10,a95)
+        WRITE(fulp,2036) 'Segment Numbers For River Leakage Nodes'
+        CALL ldchar_seg(river_seg_index, 4, caprnt, lprnt1)
+        CALL prchar(2,caprnt,lprnt1,fulp,000)
+        WRITE(fulp,2054)'*** River Leakage Data by Segment ***',  &
+             dash,  &
+             'Segment', 'Cell', 'Min. Cell', 'Face', 'Leakage Factor','Thickness','Elevation',  &
+             'No.','No.','Area','of River Bed','of River Bed',  &
+             '('//TRIM(unitl)//'^2)','('//TRIM(unitl)//'^3)','('//TRIM(unitl)//')',  &
+             '('//TRIM(unitl)//')',  &
+             dash
+2054    FORMAT(//tr40,a/tr10,a95/  &
+             tr15,a,tr7,a,tr3,a,tr5,a,tr7,a,tr3,a,tr4,a/tr15,  &
+             a,tr11,a,tr18,a,tr8,a,tr3,a/tr49,a,tr9,a,tr10,a,tr12,a/  &
+             tr10,a95)
         DO lc=1,nrbc
            DO  ls=river_seg_index(lc)%seg_first,river_seg_index(lc)%seg_last
-              WRITE(fulp,2125) ls,mrbc(ls),mrbc_bot(lc),cnvl2i*krbc(ls),cnvli*zerbc(ls)
-2125          FORMAT(tr13,i5,tr7,i3,tr10,i3,tr8,1PG12.3,tr15,1PG12.3)
+              WRITE(fulp,2055) ls, mrbc(ls), mrbc_bot(lc), cnvl2i*arearbc(ls), cnvl3i*krbc(ls),  &
+                   cnvli*one, cnvli*zerbc(ls)
+2055          FORMAT(tr15,i5,tr6,i5,tr5,i5,tr3,1PG11.3,tr5,1pg11.3,tr5,1pg11.3,tr5,1pg11.3)
+           END DO
+        END DO
+     END IF
+     IF(ndbc > 0) THEN
+        ! ... Drain leakage b.c.
+        lprnt1 = -1
+        DO  lc=1,ndbc_cells
+           m = drain_seg_index(lc)%m
+           lprnt1(m) = 1
+           aprnt1(m) = lc
+        END DO
+        WRITE(fulp,2036) 'Cell Numbers for Drain Leakage B.C. Cells'
+        WRITE(fulp,2036) '(based on bottom elevation of lowest drain segment)'
+        CALL prntar(2,aprnt1,lprnt1,fulp,cnv,10,000)
+        WRITE(fulp,2036) 'Segment Numbers for Drain Leakage Nodes'
+        CALL ldchar_seg(drain_seg_index, 4, caprnt, lprnt1)
+        CALL prchar(2,caprnt,lprnt1,fulp,000)
+        WRITE(fulp,2054)'*** Drain Leakage Data by Segment ***',  &
+             dash,  &
+             'Segment', 'Cell', 'Min. Cell', 'Face', 'Leakage Factor','Thickness','Elevation',  &
+             'No.','No.','Area','of Drain Bed','of Drain Bed',  &
+             '('//TRIM(unitl)//'^2)','('//TRIM(unitl)//'^3)','('//TRIM(unitl)//')',  &
+             '('//TRIM(unitl)//')',  &
+             dash
+        DO lc=1,ndbc
+           DO  ls=drain_seg_index(lc)%seg_first,drain_seg_index(lc)%seg_last
+              WRITE(fulp,2055) ls, mdbc(ls), mdbc_bot(lc), cnvl2i*areadbc(ls), cnvl3i*kdbc(ls),  &
+                   cnvli*one, cnvli*zedbc(ls)
            END DO
         END DO
      END IF
@@ -514,8 +585,8 @@ SUBROUTINE write2_1
   IF(fresur) WRITE(fulp,2036) 'A free-surface water table is specified for this simulation'
   IF(prtslm) then
      ! ... Calculation information
-     WRITE(fulp,2053) '*** Calculation Information ***'
-2053 FORMAT(/tr40,a)
+     WRITE(fulp,2063) '*** Calculation Information ***'
+2063 FORMAT(/tr40,a)
      WRITE(logline1,5053) '                    *** Calculation Information ***'
 5053 format(a)
      call logprt_c(logline1)
@@ -534,14 +605,14 @@ SUBROUTINE write2_1
      ! 2054    FORMAT(/TR10,A80,A,F6.4/TR10,A80,A,I6)
      !      ENDIF
      IF(fdtmth > 0.5) THEN
-        WRITE(fulp,2055) 'Backwards-in-time (implicit) differencing for '//  &
+        WRITE(fulp,2064) 'Backwards-in-time (implicit) differencing for '//  &
              'temporal derivative'
-2055    FORMAT(tr10,a)
+2064    FORMAT(tr10,a)
 !!$     WRITE(logline1,5053) 'Backwards-in-time (implicit) differencing for '//  &
 !!$          'temporal derivative'
 !!$     call logprt_c(logline1)
      ELSE
-        WRITE(fulp,2055) 'Centered-in-time (Crank-Nicholson) differencing '//  &
+        WRITE(fulp,2064) 'Centered-in-time (Crank-Nicholson) differencing '//  &
              'for temporal derivative'
 !!$     WRITE(logline1,5053) 'Centered-in-time (Crank-Nicholson) differencing '//  &
 !!$          'for temporal derivative'
@@ -549,22 +620,22 @@ SUBROUTINE write2_1
      END IF
      IF(heat .OR. solute) THEN
         IF(fdsmth < 0.5) THEN
-           WRITE(fulp,2055) 'Backwards-in-space (upstream) differencing for '//  &
+           WRITE(fulp,2064) 'Backwards-in-space (upstream) differencing for '//  &
                 'advective terms'
 !!$        WRITE(logline1,5053) 'Backwards-in-space (upstream) differencing for '//  &
 !!$             'advective terms'
         ELSE
-           WRITE(fulp,2055) 'Centered-in-space differencing for advective terms'
+           WRITE(fulp,2064) 'Centered-in-space differencing for advective terms'
 !!$        WRITE(logline1,5053) 'Centered-in-space differencing for advective terms'
         END IF
 !!$     call logprt_c(logline1)
         IF(crosd) then
-           WRITE(fulp,2055) 'The cross-derivative solute flux terms '//  &
+           WRITE(fulp,2064) 'The cross-derivative solute flux terms '//  &
                 'will be calculated explicitly'
 !!$        WRITE(logline1,5053) 'The cross-derivative solute flux terms '//  &
 !!$             'will be calculated explicitly'
         else
-           WRITE(fulp,2055) 'The cross-derivative solute flux terms '//  &
+           WRITE(fulp,2064) 'The cross-derivative solute flux terms '//  &
                 'will NOT BE calculated'
 !!$        WRITE(logline1,5053) 'The cross-derivative solute flux terms '//  &
 !!$             'will NOT BE calculated'

@@ -12,7 +12,7 @@ SUBROUTINE write5
   USE mct
   USE mcv
   USE mcw
-  USE mg2, ONLY: hdprnt, qfbcv
+  USE mg2, ONLY: hdprnt
   USE print_control_mod
   IMPLICIT NONE
   INCLUDE 'ifwr.inc'
@@ -31,7 +31,7 @@ SUBROUTINE write5
   CHARACTER(LEN=12), DIMENSION(:), ALLOCATABLE :: chu10a, chu11a
   REAL(KIND=kdp) :: hwcell, pwcell, tdehir, tdfir, tdsir, u1, u2, u3,  &
        u4,  u5, u6, u7
-  INTEGER :: a_err, da_err, i, ic, ifmt, indx,  &
+  INTEGER :: a_err, da_err, i, ic, ifmt, iis, indx,  &
        ip, is1, is2, iw1p, iw2p, iwel, iwfss, iwpp, j, jprptc,  &
        k, k1, ks, l, l1, lc, ll, ls, lll, lwk, lwks, m, mfs, mkt, mm, mt, mwk, nsa
   LOGICAL :: erflg, prthd, prthd2, prthd3
@@ -97,7 +97,7 @@ SUBROUTINE write5
      WRITE(logline1,aformt) 'Maximum change in potentiometric head '//dots,  &
           cnvpi*dhmax,'('//unitl//')','at (',  &
           cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax),')(',TRIM(unitl),')'
-     call screenprt_c(logline1)
+     CALL screenprt_c(logline1)
 !!$     IF(heat) THEN
 !!$        WRITE(fuclog,aform) 'Maximum change in temperature '//dots,  &
 !!$             cnvt1i*dtmax+cnvt2i,'(Deg.'//unitt//')',  &
@@ -116,7 +116,7 @@ SUBROUTINE write5
            WRITE(logline1,aformt) 'Maximum change in '//TRIM(comp_name(is))  &
                 //dots, u6,'(mol/kgw)','at (',  &
                 cnvli*x(icmax(is)),',',cnvli*y(jcmax(is)),',', cnvli*z(kcmax(is)),')(',TRIM(unitl),')'
-           call screenprt_c(logline1)
+           CALL screenprt_c(logline1)
         END DO
      END IF
   END IF
@@ -132,15 +132,18 @@ SUBROUTINE write5
      IF(prp .AND. .NOT.steady_flow) THEN
         WRITE(fup,2001)  '*** Output at End of Time Step No. ', itime,' ***'
         WRITE(fup,2002) 'Time '//dots,cnvtmi*time,'('//TRIM(unittm)//')'
-        WRITE(fup,aform) 'Maximum change in pressure '//dots,  &
-             cnvpi*dpmax,'('//unitp//')','at location (',  &
+        WRITE(fup,aform) 'Maximum change in potentiometric head '//dots,  &
+             cnvpi*dhmax,'('//unitl//')','at location (',  &
              cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax),')(', unitl,')'
-        ! WRITE(fup,2008) 'Pressure   (',unitp,')'
+!!$        WRITE(fup,aform) 'Maximum change in pressure '//dots,  &
+!!$             cnvpi*dpmax,'('//unitp//')','at location (',  &
+!!$             cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax),')(', unitl,')'
+!!$        ! WRITE(fup,2008) 'Pressure   (',unitp,')'
 2008    FORMAT(/tr30,10A)
-        ! CALL prntar(2,p,lprnt1,fup,cnvpi,24,000)
+!!$        ! CALL prntar(2,p,lprnt1,fup,cnvpi,24,000)
         ifmt=13
         IF(eeunit) ifmt=12
-        WRITE(fup,2009) 'Fluid Head (',unitl,')'
+        WRITE(fup,2009) 'Fluid Potentiometric Head ('//TRIM(unitl)//')'
 2009    FORMAT(/tr30,3A/tr35,a,1PG10.2,tr2,5A)
         CALL prntar(2,hdprnt,lprnt1,fup,cnvli,ifmt,000)
         IF(fresur) THEN
@@ -231,7 +234,7 @@ SUBROUTINE write5
                 'Change in solute in region '//dots, cnvmfi*dsir(is)/deltim,  &
                 '(',unitm,'/',TRIM(unittm),')',cnvmi*dsir(is),'(',unitm,')'
 2012       FORMAT(/3(tr1,a60,1PE14.6,tr2,5A,tr3,e14.6,tr2,3A/),  &
-                     tr1,a60,1PE14.6,tr2,5A,tr3,e14.6,tr2,3A)
+                tr1,a60,1PE14.6,tr2,5A,tr3,e14.6,tr2,3A)
            WRITE(fubal,2014) 'Residual imbalance '//dots,  &
                 cnvmfi*ssres(is)/deltim,'(',unitm,'/',TRIM(unittm),')',  &
                 cnvmi*ssres(is),'(',unitm,')', 'Fractional imbalance '//dots,ssresf(is)
@@ -244,10 +247,11 @@ SUBROUTINE write5
           'Step total flux b.c. fluid net inflow '//dots,cnvmi*stffbc,'(',unitm,')',  &
           'Step total leakage b.c. fluid net inflow '//dots,cnvmi*stflbc,'(',unitm,')',  &
           'Step total river leakage b.c. fluid net inflow '//dots,cnvmi*stfrbc,'(',unitm,')', &
-          !     &        'Step total evapotranspiration b.c. fluid net inflow '//
-          !     &        DOTS,CNVMI*STFETB,'(',UNITM,')',
-          !     &        'Step total aquifer influence fluid net inflow '//DOTS,
-          !     &        CNVMI*STFAIF,'(',UNITM,')',  &
+          'Step total drain leakage b.c. fluid net inflow '//dots,cnvmi*stfdbc,'(',unitm,')', &
+                                !     &        'Step total evapotranspiration b.c. fluid net inflow '//
+                                !     &        DOTS,CNVMI*STFETB,'(',UNITM,')',
+                                !     &        'Step total aquifer influence fluid net inflow '//DOTS,
+                                !     &        CNVMI*STFAIF,'(',UNITM,')',  &
           'Step total well fluid net inflow '//dots,cnvmi*stfwel, '(',unitm,')'
 !!$         IF(HEAT) THEN
 !!$            WRITE(FUBAL,2016)
@@ -277,11 +281,13 @@ SUBROUTINE write5
              'Step total leakage b.c. solute net inflow '//dots,cnvmi*stslbc(is),'(',unitm,')',  &
              'Step total river leakage b.c. solute net inflow '// dots,cnvmi*stsrbc(is), &
              '(',unitm,')', &
-             !     &           'Step total evapotranspiration b.c. solute net inflow '
-             !     &           //DOTS,CNVMI*STSETB,'(',UNITM,')',
-             !     &           'Step total aquifer influence solute net inflow '//
-             !     &           DOTS,CNVMI*STSAIF,'(',UNITM,')',  &
-        'Step total well solute net inflow '//dots, cnvmi*stswel(is),'(',unitm,')'
+             'Step total drain leakage b.c. solute net inflow '// dots,cnvmi*stsdbc(is), &
+             '(',unitm,')', &
+                                !     &           'Step total evapotranspiration b.c. solute net inflow '
+                                !     &           //DOTS,CNVMI*STSETB,'(',UNITM,')',
+                                !     &           'Step total aquifer influence solute net inflow '//
+                                !     &           DOTS,CNVMI*STSAIF,'(',UNITM,')',  &
+             'Step total well solute net inflow '//dots, cnvmi*stswel(is),'(',unitm,')'
      END DO
      WRITE(fubal,2017) 'Cumulative Summary','Amounts'
 2017 FORMAT(/tr15,a/tr65,a)
@@ -328,10 +334,12 @@ SUBROUTINE write5
           cnvmi*tcflbc,'(',unitm,')',  &
           'Cumulative river leakage b.c. fluid net inflow '//dots,  &
           cnvmi*tcfrbc,'(',unitm,')', &
-          !     &        'Cumulative evapotranspiration b.c. fluid net inflow '//
-          !     &        DOTS,CNVMI*TCFETB,'(',UNITM,')',
-          !     &        'Cumulative aquifer influence fluid net inflow '//DOTS,
-          !     &        CNVMI*TCFAIF,'(',UNITM,')',  &
+          'Cumulative drain leakage b.c. fluid net inflow '//dots,  &
+          cnvmi*tcfdbc,'(',unitm,')', &
+                                !     &        'Cumulative evapotranspiration b.c. fluid net inflow '//
+                                !     &        DOTS,CNVMI*TCFETB,'(',UNITM,')',
+                                !     &        'Cumulative aquifer influence fluid net inflow '//DOTS,
+                                !     &        CNVMI*TCFAIF,'(',UNITM,')',  &
           'Cumulative well fluid net inflow '//dots,  &
           cnvmi*(totwfi-totwfp),'(',unitm,')'
 2023 FORMAT(/6(tr1,a60,1PE14.6,tr2,3A/))
@@ -364,10 +372,12 @@ SUBROUTINE write5
                 cnvmi*tcslbc(is),'(',unitm,')',  &
                 'Cumulative river leakage b.c. solute net inflow '// dots,  &
                 cnvmi*tcsrbc(is),'(',unitm,')', &
-                !     &           'Cumulative evapotranspiration b.c. solute net inflow '
-                !     &           //DOTS,CNVMI*TCSETB,'(',UNITM,')',
-                !     &           'Cumulative aquifer influence solute net inflow '//
-                !     &           DOTS,CNVMI*TCSAIF,'(',UNITM,')',  &
+                'Cumulative drain leakage b.c. solute net inflow '// dots,  &
+                cnvmi*tcsdbc(is),'(',unitm,')', &
+                                !     &           'Cumulative evapotranspiration b.c. solute net inflow '
+                                !     &           //DOTS,CNVMI*TCSETB,'(',UNITM,')',
+                                !     &           'Cumulative aquifer influence solute net inflow '//
+                                !     &           DOTS,CNVMI*TCSAIF,'(',UNITM,')',  &
                 'Cumulative well solute net inflow '//dots,  &
                 cnvmi*(totwsi(is)-totwsp(is)),'(',unitm,')'
 2024       FORMAT(/6(tr1,a60,1PE14.6,tr2,3A/))
@@ -560,8 +570,8 @@ SUBROUTINE write5
            DO is1=1,ns,9
               is2 = MIN(is1 + 8,ns)
               WRITE(fuwel,2126) 'The following parameters are averages over the time step just completed',  &
-                'Well','Well Datum Solute Component Molality','No.','(mol/kgw)',  &
-                (comp_name(is),is=is1,is2)
+                   'Well','Well Datum Solute Component Molality','No.','(mol/kgw)',  &
+                   (comp_name(is),is=is1,is2)
               WRITE(fuwel,2326) dash
               DO  iwel=1,nwel
                  IF(wqmeth(iwel) < 0) CYCLE
@@ -712,19 +722,19 @@ SUBROUTINE write5
         DO  iwel=1,nwel
            mkt=mwel(iwel,nkswel(iwel))
            u2=0.d0
-!           hwcell=p(mkt)/(den0*gz)+zwt(iwel)  !***wrong formula
+           !           hwcell=p(mkt)/(den0*gz)+zwt(iwel)  !***wrong formula
            u1=time
            iwfss=INT(SIGN(1.d0,qwm(iwel)))
            IF(ABS(qwm(iwel)) < 1.e-8_kdp) iwfss=0
            IF(wqmeth(iwel) > 0 .AND. iwfss /= 0) THEN
               ! ... Production or injection well
-!              u2=pwkt(iwel)/(den0*gz)+zwt(iwel)  !***incorrect
+              !              u2=pwkt(iwel)/(den0*gz)+zwt(iwel)  !***incorrect
               DO  is=1,ns
                  u10(is)=cwkt_mol(iwel,is)
               END DO
            ELSE
               ! ... Observation well Q=0 ,WQMETH=0
-!              u2=p(mkt)/(den0*gz)+zwt(iwel)   !***incorrect
+              !              u2=p(mkt)/(den0*gz)+zwt(iwel)   !***incorrect
               IF (solute) THEN
                  DO  is=1,ns
                     u10(is)=c_mol(mkt,is)
@@ -762,13 +772,13 @@ SUBROUTINE write5
         prthd=.FALSE.
         prthd2=.FALSE.
         prthd3=.FALSE.
-        WRITE(fubcf,2041) 'Specified Head B.C.: Flow Rates (average over time step)','(positive is into the region)'
+        WRITE(fubcf,2041) 'Specified Head B.C.: Flow Rates (average over time step)',  &
+             '(positive is into the region)'
 2041    FORMAT(//tr25,a/tr25,a)
-             
         DO  l=1,nsbc
            m=msbc(l)
            WRITE(cibc,3007) ibc(m)
-3007          FORMAT(i9)
+3007       FORMAT(i9.9)
            IF(cibc(1:1) == '1') THEN
               lprnt1(m)=1
               prthd=.TRUE.
@@ -860,38 +870,25 @@ SUBROUTINE write5
         END IF
      ENDIF
      IF(nfbc > 0) THEN
-        WRITE(fubcf,2043)  'Specified Flux B.C.: Flow Rates (at end of time step)', &
+        WRITE(fubcf,2043)  'Specified Flux B.C.: Flow Rates (at end of time step)',  &
              '(positive is into the region)'
 2043    FORMAT(//tr25,a/tr25,a)
-        DO  m=1,nxyz
-           !               LPRNT2(M)=-1
-           !               LPRNT3(M)=-1
-           lprnt1(m)=-1
-        END DO
-        prthd=.FALSE.
-        DO  l=1,nfbc
-           m=mfbc(l)
-           WRITE(cibc,3007) ibc(m)
-           ic=INDEX(cibc(1:3),'2')
-           IF(ic == 0) ic=INDEX(cibc(1:3),'8')
-           ! ... Locate the flux at the cell containing the free-surface
-           IF(l > lnz2) THEN
-              l1=MOD(m,nxy)
-              IF(l1 == 0) l1=nxy
-              m=mfsbc(l1)
-           END IF
-           IF(ic > 0) THEN
-              lprnt1(m)=1
-              prthd=.TRUE.
-              IF(qfbcv(l) > 0.) THEN
-                 aprnt1(m)=denfbc(l)*qfbcv(l)
-                 IF(heat) aprnt2(m)=denfbc(l)*qfbcv(l)* ehoftp(tflx(l),p(m),erflg)
-                 !                     APRNT3(M)=DENFBC(L)*QFBCV(L)*CFLX(L)
-              ELSE
-                 aprnt1(m)=den(m)*qfbcv(l)
-                 !                 aprnt2(m)=den(m)*qfbcv(l)*eh(m)
-                 !                     APRNT3(M)=DEN(M)*QFBCV(L)*C(M)
+        lprnt1 = -1
+        !$$        prthd=.FALSE.
+        DO  lc=1,nfbc_cells
+           m = flux_seg_index(lc)%m
+           IF(fresur) THEN
+              ls = flux_seg_index(lc)%seg_first
+              IF(ifacefbc(ls) == 3 .AND. m >= mtp1) THEN
+                 l1 = MOD(m,nxy)
+                 IF(l1 == 0) l1 = nxy
+                 m = mfsbc(l1)
               END IF
+           END IF
+           IF (m > 0) THEN
+              lprnt1(m) = 1
+              !$$              prthd=.TRUE.
+              aprnt1(m) = qffbc(lc)
            END IF
         END DO
 !!$        IF(erflg) THEN
@@ -908,31 +905,28 @@ SUBROUTINE write5
 !!$           CALL prntar(2,aprnt2,lprnt1,fubcf,cnvmfi,24,000)
 !!$        END IF
         IF (solute) THEN
-           DO  is=1,ns
-              DO  l=1,nfbc
-                 m=mfbc(l)
-                 WRITE(cibc,3007) ibc(m)
-                 ic=INDEX(cibc(1:3),'2')
-                 IF(ic == 0) ic=INDEX(cibc(1:3),'8')
-                 ! ... Locate the flux at the cell containing the free-surface
-                 IF(l > lnz2) THEN
-                    l1=MOD(m,nxy)
-                    IF(l1 == 0) l1=nxy
-                    m=mfsbc(l1)
-                 END IF
-                 IF(ic > 0) THEN
-                    lprnt1(m)=1
-                    prthd=.TRUE.
-                    IF(qfbcv(l) > 0.) THEN
-                       aprnt3(m)=denfbc(l)*qfbcv(l)*cflx(l,is)
-                    ELSE
-                       aprnt3(m)=den(m)*qfbcv(l)*c(m,is)
+           DO  iis=1,ns
+              DO  lc=1,nfbc_cells
+                 m = flux_seg_index(lc)%m
+                 IF(.NOT.fresur) THEN
+                    lprnt1(m) = 1
+                    aprnt3(m) = qsfbc(lc,iis)
+                 ELSEIF(fresur) THEN
+                    ls = flux_seg_index(lc)%seg_first
+                    IF(ifacefbc(ls) == 3 .AND. m >= mtp1) THEN
+                       l1 = MOD(m,nxy)
+                       IF(l1 == 0) l1 = nxy
+                       m = mfsbc(l1)
                     END IF
+                    lprnt1(m) = 1
+                    prthd=.TRUE.
+                    aprnt3(m) = qsfbc(lc,iis)
                  END IF
               END DO
               IF(prthd) THEN
-                 WRITE(fubcf,2042) 'Flux B.C.: Associated Advective Solute   ('//unitm//'/'//TRIM(unittm)//')'
-                 WRITE(fubcf,2042) 'Component: ', comp_name(is)
+                 WRITE(fubcf,2042) 'Flux B.C.: Associated Advective Solute   ('  &
+                      //unitm//'/'//TRIM(unittm)//')'
+                 WRITE(fubcf,2042) 'Component: ', comp_name(iis)
                  CALL prntar(2,aprnt3,lprnt1,fubcf,cnvmfi,24,000)
               END IF
            END DO
@@ -945,7 +939,6 @@ SUBROUTINE write5
 !!$           DO  l=1,nfbc
 !!$              m=mfbc(l)
 !!$              WRITE(cibc,3007) ibc(m)
-
 !!$              ic=INDEX(cibc(4:6),'2')
 !!$              IF(ic > 0) THEN
 !!$                 lprnt1(m)=1
@@ -959,25 +952,38 @@ SUBROUTINE write5
 !!$           END IF
 !!$        END IF
         IF (solute) THEN
-           DO  is=1,ns
-              DO  m=1,nxyz
-                 lprnt1(m)=-1
-              END DO
-              prthd=.FALSE.
-              DO  l=1,nfbc
-                 m=mfbc(l)
+           lprnt1 = -1
+           prthd = .FALSE.
+           DO  iis=1,ns
+              DO  lc=1,nfbc_cells
+                 m = flux_seg_index(lc)%m
                  WRITE(cibc,3007) ibc(m)
                  ic=INDEX(cibc(7:9),'2')
-                 IF(ic > 0) THEN
-                    lprnt1(m)=1
-                    prthd=.TRUE.
-                    aprnt1(m)=qsfbc(l,is)
+                 IF(.NOT.fresur) THEN
+                    IF(ic > 0) THEN
+                       lprnt1(m) = 1
+                       prthd=.TRUE.
+                       aprnt3(m) = qsfbc(lc,iis)
+                    END IF
+                 ELSEIF(fresur) THEN
+                    ls = flux_seg_index(lc)%seg_last
+                    IF(ifacefbc(ls) == 3 .AND. m >= mtp1) THEN
+                       l1 = MOD(m,nxy)
+                       IF(l1 == 0) l1 = nxy
+                       m = mfsbc(l1)
+                    END IF
+                    IF(ic > 0) THEN
+                       lprnt1(m) = 1
+                       prthd=.TRUE.
+                       aprnt3(m) = qsfbc(lc,iis)
+                    END IF
                  END IF
               END DO
               IF(prthd) THEN
-                 WRITE(fubcf,2042) 'Solute   (',unitm,'/',TRIM(unittm),')'
-                 WRITE(fubcf,2042) 'Component: ', comp_name(is)
-                 CALL prntar(2,aprnt1,lprnt1,fubcf,cnvmfi,24,000)
+                 WRITE(fubcf,2042) 'Solute Flux B.C.: Diffusive   ('  &
+                      //unitm//'/'//TRIM(unittm)//')'
+                 WRITE(fubcf,2042) 'Component: ', comp_name(iis)
+                 CALL prntar(2,aprnt3,lprnt1,fubcf,cnvmfi,24,000)
               END IF
            END DO
         END IF
@@ -985,15 +991,13 @@ SUBROUTINE write5
      IF(nlbc > 0) THEN
         WRITE(fubcf,2043) 'Leakage B.C.: Flow Rates ','(positive is into the region)'
         WRITE(fubcf,2042) 'Fluid   (',unitm,'/',TRIM(unittm),')'
-        DO  m=1,nxyz
-           lprnt1(m)=-1
-        END DO
-        DO  l=1,nlbc
-           m=mlbc(l)
-           aprnt1(m)=qflbc(l)
-           !               APRNT2(M)=QHLBC(L)
-           !               APRNT3(M)=QSLBC(L)
-           lprnt1(m)=1
+        lprnt1 = -1
+        DO  lc=1,nlbc
+           m = leak_seg_index(lc)%m
+           lprnt1(m) = 1
+           aprnt1(m) = qflbc(lc)
+           !$$                 APRNT2(M)=QHLBC(L)
+           !$$                 APRNT3(M)=QSLBC(L)
         END DO
         CALL prntar(2,aprnt1,lprnt1,fubcf,cnvmfi,24,000)
 !!$        IF(heat) THEN
@@ -1001,14 +1005,15 @@ SUBROUTINE write5
 !!$           CALL prntar(2,aprnt2,lprnt1,fubcf,cnvhfi,24,000)
 !!$        END IF
         IF (solute) THEN
-           DO  is=1,ns
-              DO  l=1,nlbc
-                 m=mlbc(l)
-                 aprnt3(m)=qslbc(l,is)
-                 lprnt1(m)=1
+           DO  iis=1,ns
+              DO  lc=1,nlbc
+                 m = leak_seg_index(lc)%m
+                 lprnt1(m) = 1
+                 aprnt3(m) = qslbc(lc,iis)
               END DO
-              WRITE(fubcf,2042) 'Leakage B.C.: Associated Advective Solute   ('//unitm//'/'//TRIM(unittm)//')'
-              WRITE(fubcf,2042) 'Component: ', comp_name(is)
+              WRITE(fubcf,2042) 'Leakage B.C.: Associated Advective Solute   ('  &
+                   //unitm//'/'//TRIM(unittm)//')'
+              WRITE(fubcf,2042) 'Component: ', comp_name(iis)
               CALL prntar(2,aprnt3,lprnt1,fubcf,cnvmfi,24,000)
            END DO
         END IF
@@ -1021,7 +1026,7 @@ SUBROUTINE write5
         DO  lc=1,nrbc
            m = river_seg_index(lc)%m
            lprnt4(m) = 1
-           aprnt4(m) = aprnt4(m)+qfrbc(lc)
+           aprnt4(m) = qfrbc(lc)
         END DO
         CALL prntar(2,aprnt4,lprnt4,fubcf,cnvmfi,24,000)
 !!$        IF(heat) THEN
@@ -1029,13 +1034,42 @@ SUBROUTINE write5
 !!$           CALL prntar(2,aprnt2,lprnt1,fubcf,cnvhfi,24,000)
 !!$        END IF
         IF (solute) THEN
-           DO  is=1,ns
-              DO  lc = 1,nrbc
+           DO  iis=1,ns
+              DO  lc=1,nrbc
                  m = river_seg_index(lc)%m
-                 aprnt3(m) = qsrbc(lc,is)
+                 aprnt3(m) = qsrbc(lc,iis)
               END DO
-              WRITE(fubcf,2042) 'River Leakage B.C.: Associated Advective Solute   ('//unitm//'/'//TRIM(unittm)//')'
-              WRITE(fubcf,2042) 'Component: ', comp_name(is)
+              WRITE(fubcf,2042) 'River Leakage B.C.: Associated Advective Solute   ('  &
+                   //unitm//'/'//TRIM(unittm)//')'
+              WRITE(fubcf,2042) 'Component: ', comp_name(iis)
+              CALL prntar(2,aprnt3,lprnt4,fubcf,cnvmfi,24,000)
+           END DO
+        END IF
+     END IF
+     IF(ndbc > 0) THEN
+        WRITE(fubcf,2043) 'Drain Leakage B.C.: Flow Rates ','(positive is into the region)'
+        WRITE(fubcf,2042) 'Fluid   (',unitm,'/',TRIM(unittm),')'
+        lprnt4 = -1
+        aprnt4 = 0._kdp
+        DO  lc=1,ndbc
+           m = drain_seg_index(lc)%m
+           lprnt4(m) = 1
+           aprnt4(m) = qfdbc(lc)
+        END DO
+        CALL prntar(2,aprnt4,lprnt4,fubcf,cnvmfi,24,000)
+!!$        IF(heat) THEN
+!!$           WRITE(fubcf,2042) 'Associated Advective Heat   ('// unithf//')'
+!!$           CALL prntar(2,aprnt2,lprnt1,fubcf,cnvhfi,24,000)
+!!$        END IF
+        IF (solute) THEN
+           DO  iis=1,ns
+              DO  lc=1,ndbc
+                 m = drain_seg_index(lc)%m
+                 aprnt3(m) = qsdbc(lc,iis)
+              END DO
+              WRITE(fubcf,2042) 'Drain Leakage B.C.: Associated Advective Solute   ('  &
+                   //unitm//'/'//TRIM(unittm)//')'
+              WRITE(fubcf,2042) 'Component: ', comp_name(iis)
               CALL prntar(2,aprnt3,lprnt4,fubcf,cnvmfi,24,000)
            END DO
         END IF
@@ -1234,7 +1268,7 @@ SUBROUTINE write5
 !!$           IF(qfbcv(l) > 0.) THEN
 !!$              aprnt1(l)=denfbc(l)*qfbcv(l)
 !!$              IF(heat) aprnt2(l)=denfbc(l)*qfbcv(l)*ehoftp(tflx(l), p(m),erflg)
-!!$              !                  APRNT3(L)=DENFBC(L)*QFBCV(L)*CFLX(L)
+!!$              !                  APRNT3(L)=DENFBC(L)*QFBCV(L)*cfbc(L)
 !!$           ELSE
 !!$              aprnt1(l)=den(m)*qfbcv(l)
 !!$              !              aprnt2(l)=den(m)*qfbcv(l)*eh(m)
@@ -1251,7 +1285,7 @@ SUBROUTINE write5
 !!$           DO  l=1,nfbc
 !!$              m=mfbc(l)
 !!$              IF(qfbcv(l) > 0.) THEN
-!!$                 aprnt3(l)=denfbc(l)*qfbcv(l)*cflx(l,is)
+!!$                 aprnt3(l)=denfbc(l)*qfbcv(l)*cfbc(l,is)
 !!$              ELSE
 !!$                 aprnt3(l)=den(m)*qfbcv(l)*c(m,is)
 !!$              END IF
@@ -1402,7 +1436,7 @@ SUBROUTINE write5
 !!$     END IF
   WRITE(logline1,3001) 'Finished time step no. ',itime,'; Time '//dots(1:30),cnvtmi*time,'('//TRIM(unittm)//')'
 3001 FORMAT(a,I6,a,1PG18.9,tr2,a)
-  call screenprt_c(logline1)
+  CALL screenprt_c(logline1)
 !!$     IF(nhcbc > 0) THEN
 !!$        !... ** not implemented in PHAST
 !!$        WRITE(fubnfr,2046) 'Heat Conduction B.C. Heat Flow Rates '

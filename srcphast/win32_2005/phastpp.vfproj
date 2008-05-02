@@ -3,7 +3,7 @@
 	<Platforms>
 		<Platform Name="Win32"/></Platforms>
 	<Configurations>
-		<Configuration Name="ser_debug|Win32" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)" WorkingDirectory="c:\programs\phastpp\examples\leakytest">
+		<Configuration Name="ser_debug|Win32" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)" WorkingDirectory="c:\programs\phast_bc\examples\free">
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true" HeaderFileName="$(InputName).h" TypeLibraryName="$(IntDir)/$(InputName).tlb"/>
 				<Tool Name="VFPreBuildEventTool"/>
 				<Tool Name="VFPostBuildEventTool"/>
@@ -18,7 +18,7 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="HDF5_CREATE" CallingConvention="callConventionCRef" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" RuntimeLibrary="static /threads" CompileOnly="true"/>
 				<Tool Name="VFCustomBuildTool"/>
-				<Tool Name="VFLinkerTool" OutputFile="$(OUTDIR)/phast.exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(DEV_GMP_LIB_MT);$(OUTDIR)" IgnoreDefaultLibraryNames="LIBC" SubSystem="subSystemConsole" AdditionalDependencies="zdll.lib phreeqcpp.lib hdf5dll.lib gmp.lib"/>
+				<Tool Name="VFLinkerTool" MustRebuild="true" OutputFile="$(OUTDIR)/phast.exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(DEV_GMP_LIB_MT);$(OUTDIR)" IgnoreDefaultLibraryNames="LIBC" SubSystem="subSystemConsole" AdditionalDependencies="zdll.lib phreeqcpp.lib hdf5dll.lib gmp.lib"/>
 				<Tool Name="VFPreLinkEventTool"/>
 				<Tool Name="VFResourceCompilerTool" ResourceOutputFileName="$(IntDir)/$(InputName).res"/></Configuration>
 		<Configuration Name="merge|Win32" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)" WorkingDirectory="$(ProjectDir)\..\..\examples\ex4">
@@ -27,7 +27,7 @@
 				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(DEV_MPICH2_INC)" PreprocessorDefinitions="MERGE_FILES;HDF5_CREATE;USE_MPI;MPICH_NAME;NO_UNDERSCORES" CallingConvention="callConventionCRef" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" RuntimeLibrary="static /threads" CompileOnly="true"/>
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFCustomBuildTool"/>
-				<Tool Name="VFLinkerTool" OutputFile="$(OUTDIR)/phast.exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(DEV_MPICH2_LIB);$(DEV_GMP_LIB_MT);$(OUTDIR)" IgnoreDefaultLibraryNames="LIBC" SubSystem="subSystemConsole" AdditionalDependencies="zdll.lib phreeqcpp.lib hdf5dll.lib gmp.lib fmpich2.lib mpi.lib"/>
+				<Tool Name="VFLinkerTool" MustRebuild="true" OutputFile="$(OUTDIR)/phast.exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(DEV_MPICH2_LIB);$(DEV_GMP_LIB_MT);$(OUTDIR)" IgnoreDefaultLibraryNames="LIBC" SubSystem="subSystemConsole" AdditionalDependencies="zdll.lib phreeqcpp.lib hdf5dll.lib gmp.lib fmpich2.lib mpi.lib"/>
 				<Tool Name="VFResourceCompilerTool" ResourceOutputFileName="$(IntDir)/$(InputName).res"/>
 				<Tool Name="VFPreLinkEventTool"/></Configuration>
 		<Configuration Name="merge_debug|Win32" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)" WorkingDirectory="$(ProjectDir)\..\..\examples\ex4restart">
@@ -36,7 +36,7 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(DEV_MPICH2_INC)" PreprocessorDefinitions="MERGE_FILES;HDF5_CREATE;USE_MPI;MPICH_NAME;NO_UNDERSCORES" CallingConvention="callConventionCRef" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" CompileOnly="true"/>
 				<Tool Name="VFCustomBuildTool"/>
-				<Tool Name="VFLinkerTool" OutputFile="$(OUTDIR)/phast.exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(DEV_MPICH2_LIB);$(DEV_GMP_LIB_MT);$(OUTDIR)" IgnoreDefaultLibraryNames="LIBCMT" GenerateDebugInformation="true" SubSystem="subSystemConsole" AdditionalDependencies="zdll.lib phreeqcpp.lib hdf5dll.lib gmp.lib fmpich2.lib mpi.lib"/>
+				<Tool Name="VFLinkerTool" MustRebuild="true" OutputFile="$(OUTDIR)/phast.exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(DEV_MPICH2_LIB);$(DEV_GMP_LIB_MT);$(OUTDIR)" IgnoreDefaultLibraryNames="LIBCMT" GenerateDebugInformation="true" SubSystem="subSystemConsole" AdditionalDependencies="zdll.lib phreeqcpp.lib hdf5dll.lib gmp.lib fmpich2.lib mpi.lib"/>
 				<Tool Name="VFPreLinkEventTool"/>
 				<Tool Name="VFResourceCompilerTool" ResourceOutputFileName="$(IntDir)/$(InputName).res"/></Configuration></Configurations>
 	<Files>
@@ -87,18 +87,19 @@
 		<File RelativePath="..\init2_3.f90"/>
 		<File RelativePath="..\init2_post_ss.f90"/>
 		<File RelativePath="..\init3.f90"/>
-		<File RelativePath="..\interp.f90"/>
-		<File RelativePath="..\irewi.f90"/>
+		<File RelativePath="..\interpolate_mod.f90"/>
+		<File RelativePath="..\ld_seg_mod.f90"/>
 		<File RelativePath="..\ldchar.f90"/>
+		<File RelativePath="..\ldchar_bc.f90"/>
 		<File RelativePath="..\ldci.f90"/>
 		<File RelativePath="..\ldcir.f90"/>
 		<File RelativePath="..\ldind.f90"/>
 		<File RelativePath="..\ldipen.f90"/>
 		<File RelativePath="..\ldmar1.f90"/>
-		<File RelativePath="..\load_indx_bc.f90"/>
 		<File RelativePath="..\lsolv.f90"/>
 		<File RelativePath="..\modules.f90"/>
 		<File RelativePath="..\mtoijk.f90"/>
+		<Filter Name="NewFolder1"/>
 		<File RelativePath="..\nintrp.f90"/>
 		<File RelativePath="..\openf.F90"/>
 		<File RelativePath="..\phast.F90"/>
@@ -111,8 +112,7 @@
 		<File RelativePath="..\read2.f90"/>
 		<File RelativePath="..\read3.f90"/>
 		<File RelativePath="..\reordr.f90"/>
-		<File RelativePath="..\rewi.f90"/>
-		<File RelativePath="..\rewi3.f90"/>
+		<File RelativePath="..\rewi_mod.f90"/>
 		<File RelativePath="..\rfact.f90"/>
 		<File RelativePath="..\rfactm.f90"/>
 		<File RelativePath="..\rhsn.f90"/>
@@ -129,6 +129,7 @@
 		<File RelativePath="..\timstp.f90"/>
 		<File RelativePath="..\timstp_ss_flow.f90"/>
 		<File RelativePath="..\update_print_flags.f90"/>
+		<File RelativePath="..\uppercase.f90"/>
 		<File RelativePath="..\usolv.f90"/>
 		<File RelativePath="..\viscos.f90"/>
 		<File RelativePath="..\vpsv.f90"/>

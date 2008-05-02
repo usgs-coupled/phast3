@@ -11,16 +11,16 @@ SUBROUTINE error2
   !...
   ! ... Cylindrical coordinates
   nr=nx
-  IF( CYLIND.AND.X( 1) .GE.X( NR) ) IERR( 21) = .TRUE.  
+  IF(cylind .AND. x(1) >= x(nr)) ierr(21) = .TRUE.  
   ! ... Check for tilt greater than 45 deg.
-  IF(THETXZ > 135._kdp.OR.THETYZ > 135._kdp.OR.THETZZ > 45._kdp) ierr(27) = .TRUE.
-  IF( FRESUR.AND.TILT) IERR( 31) = .TRUE.  
-  IF( HEAT.AND.FRESUR) IERR( 32) = .TRUE.  
+  IF(thetxz > 135._kdp .OR. thetyz > 135._kdp .OR. thetzz > 45._kdp) ierr(27) = .TRUE.
+  IF( fresur .AND. tilt) ierr(31) = .TRUE.  
+  IF( heat .AND. fresur) ierr(32) = .TRUE.  
   ! ... Initial conditions
-  IF( ICHYDP.AND.ICHWT) IERR( 43) = .TRUE.  
-  IF( ICHWT.AND..NOT.FRESUR) IERR( 44) = .TRUE.  
-  DO  I = 6, 200  
-     IF( IERR( I) ) ERREXI = .TRUE.  
+  IF(ichydp .AND. ichwt) ierr(43) = .TRUE.  
+  IF(ichwt .AND. .NOT.fresur) ierr(44) = .TRUE.  
+  DO  i=6,200  
+     IF(ierr(i)) errexi = .TRUE.  
   END DO
-  IF( ERREXI) CALL ERRPRT( 6, 200)  
+  IF(errexi) CALL errprt(6,200)  
 END SUBROUTINE error2

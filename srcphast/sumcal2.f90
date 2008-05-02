@@ -10,13 +10,13 @@ SUBROUTINE sumcal2
   USE mcp
   USE mcv
   USE mcw
-  USE mg2, ONLY: hdprnt, qfbcv
+  USE mg2, ONLY: hdprnt
   IMPLICIT NONE
   !
   !  CHARACTER(LEN=50) :: aform = '(TR5,A45,T47,1PE12.4,TR1,A7,T66,A,3(1PG10.3,A),2A)'
   !  CHARACTER(LEN=46) :: aformt = '(TR5,A43,1PE12.4,TR1,A7,TR1,A,3(1PG10.3,A),2A)'
   CHARACTER(LEN=9) :: cibc
-  REAL(KIND=kdp) :: denmfs, p1, pmfs, qfbc,  &
+  REAL(KIND=kdp) :: denmfs, p1, pmfs,  &
        qlim, qm_in, qm_net, qn, qnp,  &
        u0, u1, ufdt0, ufdt1,  &
        ufrac, up0, z0, z1, z2, zfsl, zm1, zmfs, zp1
@@ -377,7 +377,7 @@ SUBROUTINE sumcal2
            m1kp=mfs+k*nxy
            ! ... Skip specified pressure cells
            WRITE(cibc,6001) ibc(m1kp)
-6001       FORMAT(i9)
+6001       FORMAT(i9.9)
            IF(cibc(1:1) /= '1') p(m1kp)=pmfs-denmfs*gz*(z(kfs+k)-zmfs)
            IF(solute) THEN
               DO  is=1,ns

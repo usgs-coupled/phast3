@@ -620,20 +620,22 @@ COMMON_COBJS =  advection.o basic.o basicsubs.o cl1.o input.o integrate.o invers
 		pitzer.o pitzer_structures.o dw.o \
 		hst.o cxxHstSubs.o hstsubs.o phast_files.o 
 
-COMMON_FOBJS =	abmult.o aplbce.o aplbce_ss_flow.o aplbci.o armult.o asembl.o\
+COMMON_FOBJS =	interpolate_mod.o print_control_mod.o rewi_mod.o \
+		ld_seg_mod.o  \
+		abmult.o aplbce.o aplbce_ss_flow.o aplbci.o armult.o asembl.o\
 		asmslc.o asmslp.o asmslp_ss_flow.o bsode.o calcc.o calc_velocity.o clog.o closef.o\
 		coeff.o coeff_ss_flow.o crsdsp.o d4ord.o d4zord.o dbmult.o dump.o\
 		efact.o ehoftp.o el1slv.o elslv.o error1.o error2.o error3.o error4.o\
 		errprt.o etom1.o etom2.o euslv.o formr.o gcgris.o hunt.o incidx.o\
 		indx_rewi_bc.o indx_rewi.o init1.o init2_1.o init2_2.o init2_3.o\
-		init2_post_ss.o init3.o interp.o irewi.o ldchar.o ldci.o ldcir.o\
-		ldind.o ldipen.o ldmar1.o load_indx_bc.o lsolv.o modules.o mtoijk.o\
+		init2_post_ss.o init3.o ldchar.o ldchar_bc.o  ldci.o ldcir.o\
+		ldind.o ldipen.o ldmar1.o lsolv.o modules.o mtoijk.o\
 		nintrp.o openf.o phast.o phast_root.o \
-		prchar.o print_control_mod.o prntar.o rbord.o\
-		read1.o read2.o read3.o reordr.o rewi3.o rewi.o rfact.o rfactm.o\
+		prchar.o  prntar.o rbord.o\
+		read1.o read2.o read3.o reordr.o rfact.o rfactm.o\
 		rhsn.o rhsn_ss_flow.o sbcflo.o scale_jds.o simulate_ss_flow.o stonb.o sumcal1.o sumcal2.o \
 		sumcal_ss_flow.o terminate_phast.o tfrds.o timstp.o timstp_ss_flow.o\
-		update_print_flags.o\
+		update_print_flags.o uppercase.o \
 		usolv.o viscos.o vpsv.o wbbal.o wbcflo.o wellsc.o wellsc_ss_flow.o\
 		wellsr.o wellsr_ss_flow.o welris.o wfdydz.o write1.o write2_1.o write2_2.o write3.o\
 		write3_ss_flow.o write4.o write5.o write5_ss_flow.o write6.o 
@@ -693,6 +695,7 @@ modules.o : modules.f90
 	${FC} -c ${FFLAGS} $<
 print_control_mod.o : ../print_control_mod.f90 modules.o
 	${FC} -c ${FFLAGS} $<
+ld_seg_mod.o:      ../ld_seg_mod.f90  modules.o
 
 # -----------------------------------------------------------------------------
 # Module dependency list
@@ -747,17 +750,17 @@ init2_2.o:		../init2_2.f90		modules.o
 init2_3.o:		../init2_3.f90		modules.o
 init2_post_ss.o:	../init2_post_ss.f90	modules.o	print_control_mod.o
 init3.o:		../init3.f90		modules.o	print_control_mod.o
-interp.o:		../interp.f90		modules.o
-irewi.o:		../irewi.f90		modules.o
+interpolate_mod.o:	../interpolate_mod.f90	modules.o
 ldchar.o:		../ldchar.f90		modules.o
+ldchar_bc.o:		../ldchar_bc.f90	modules.o
 ldci.o:			../ldci.f90		modules.o
 ldcir.o:		../ldcir.f90		modules.o
 ldind.o:		../ldind.f90		modules.o
 ldipen.o:		../ldipen.f90		modules.o
 ldmar1.o:		../ldmar1.f90		modules.o
-load_indx_bc.o:		../load_indx_bc.f90	modules.o
 lsolv.o:		../lsolv.f90		modules.o
 mpimod.o:               ../mpimod.F90 
+mtoijk.o:		../mtoijk.f90		modules.o
 nintrp.o:		../nintrp.f90		modules.o
 openf.o:		../openf.F90		modules.o	mpimod.o
 phast_root.o:		../phast_root.F90	modules.o	print_control_mod.o
@@ -766,11 +769,10 @@ prchar.o:		../prchar.f90		modules.o
 prntar.o:		../prntar.f90		modules.o
 rbord.o:		../rbord.f90		modules.o
 read1.o:		../read1.f90		modules.o
-read2.o:		../read2.f90		modules.o	ifrd.inc
-read3.o:		../read3.f90		modules.o	print_control_mod.o
+read2.o:		../read2.f90		modules.o	rewi_mod.o     ifrd.inc 
+read3.o:		../read3.f90		modules.o	print_control_mod.o     rewi_mod.o
 reordr.o:		../reordr.f90		modules.o
-rewi.o:			../rewi.f90		modules.o
-rewi3.o:		../rewi3.f90		modules.o
+rewi_mod.o:		../rewi_mod.f90		modules.o       interpolate_mod.o
 rfact.o:		../rfact.f90		modules.o
 rfactm.o:		../rfactm.f90		modules.o
 rhsn.o:			../rhsn.f90		modules.o
@@ -786,6 +788,7 @@ tfrds.o:		../tfrds.f90		modules.o
 timstp.o:		../timstp.f90		modules.o	print_control_mod.o
 timstp_ss_flow.o:	../timstp_ss_flow.f90	modules.o	print_control_mod.o
 update_print_flags.o:	../update_print_flags.f90  modules.o    print_control_mod.o
+uppercase.o:		../uppercase.f90	
 usolv.o:		../usolv.f90		modules.o
 viscos.o:		../viscos.f90		modules.o
 wbbal.o:		../wbbal.f90		modules.o

@@ -8,23 +8,20 @@ SUBROUTINE etom2
   USE mcv
   USE mg3
   IMPLICIT NONE
-  INTEGER :: iis, m, mt  
+  INTEGER :: iis, ls, m, mt  
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
-  ! ... Specified fluid flux b.c. - input by x,y,z range
+  ! ... Specified fluid flux b.c. - input by segment number
   IF(nfbc > 0) THEN  
-     ! ... If any flux node values are read, all flux nodes must be read
-     IF(RDFLXQ) THEN  
-        DO  M = 1, NXYZ  
-           qff(m) = cnvff*qff(m)
-!           QFFX(M) = CNVFF* QFFX(M)  
-!           QFFY(M) = CNVFF* QFFY(M)  
-!           QFFZ(M) = CNVFF* QFFZ(M)  
+     ! ... If any flux segment values are read, all flux segments must be read
+     IF(rdflxq) THEN
+        DO  ls=1,nfbc_seg
+           qfflx(ls) = cnvff*qfflx(ls)
         END DO
      ENDIF
-     ! ... Heat and solute diffusive fluxes for no flow b.c.
+     ! ... Heat diffusive fluxes for no flow b.c.
 !!$     IF(RDFLXH) THEN  
 !!$        DO  M = 1, NXYZ  
 !!$           QHFX(M) = CNVHF* QHFX(M)  
@@ -32,17 +29,17 @@ SUBROUTINE etom2
 !!$           QHFZ(M) = CNVHF* QHFZ(M)  
 !!$        END DO
 !!$     ENDIF
-     IF(RDFLXS) THEN  
-        do  iis = 1, ns  
-           DO  M = 1, NXYZ  
-              QSFX(M, IIS) = CNVSF* QSFX(M, IIS)  
-              QSFY(M, IIS) = CNVSF* QSFY(M, IIS)  
-              QSFZ(M, IIS) = CNVSF* QSFZ(M, IIS)  
+     ! ... Solute diffusive fluxes for no flow b.c.
+     IF(rdflxs) THEN
+        DO  iis=1,ns  
+           DO  ls=1,nfbc_seg
+              qsflx(ls,iis) = cnvsf*qsflx(ls,iis)
            END DO
-        end do
+        END DO
      ENDIF
   ENDIF
   ! ... Aquifer or river leakage b.c.
+  ! ... Drain b.c.
   ! ... Evapotranspiration b.c.
 !!$  IF(NETBC.GT.0.AND.RDETBC) THEN  
 !!$     DO  MT = 1, NXY  

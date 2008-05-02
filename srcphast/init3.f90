@@ -9,7 +9,6 @@ SUBROUTINE init3
   USE mcp
   USE mcv
   USE mcw
-  USE mg2, ONLY: qfbcv
   USE mg3
   USE print_control_mod
   IMPLICIT NONE
@@ -28,7 +27,7 @@ SUBROUTINE init3
   REAL(kind=kdp) :: uq, uqh, utime, utimchg
   REAL(kind=kdp) :: up0, p1, z0, z1, zfsl, zm1, zp1
   INTEGER :: da_err, ic, imod, iis, iwel, k, l, ls, m, m1, mt
-  REAL(kind=kdp), PARAMETER :: nodat = bgreal*1.e-15_kdp
+  REAL(KIND=kdp), PARAMETER :: nodat = bgreal*1.e-15_kdp
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
@@ -59,34 +58,15 @@ SUBROUTINE init3
      END DO
   END IF
   IF(rdspbc .OR. rdstbc .OR. rdscbc) THEN
-     ! ... Load the specified pressures and
-     ! ...      the associated temperatures and mass fractions for
+     ! ... Load the mass fractions for
      ! ...      specified pressure nodes into the b.c. arrays
-     ! ... TSBC and CSBC can also be the specified temperatures and
-     ! ...      mass fractions
-     DO  l=1,nsbc
-        m=msbc(l)
-        WRITE(cibc,6001) ibc(m)
-6001    FORMAT(i9)
-        IF(cibc(1:1) == '1') THEN
-           psbc(l)=pnp(m)
-           IF(heat) tsbc(l)=utbc(m)
-           !               do 31 iis=1,ns
-           !                  CSBC(L,iis)=UCBC(M,iis)
-           !   31          continue
-        END IF
-        IF(heat.AND.cibc(4:4) == '1') tsbc(l)=utbc(m)
-        !            IF(CIBC(7:7).EQ.'1') then
-        !            do 32 iis=1,ns
-        !             CSBC(L,iis)=UCBC(M,iis)
-        !   32       continue
-        !            endif
-     END DO
+     ! ... CSBC can also be the specified temperatures and
+     ! ...      mass fractions ***** not presently
      ! ... The following loads the associated and specified concentrations
      IF(solute) THEN
-        CALL load_indx_bc(1,indx1_sbc,indx2_sbc,mxf_sbc,msbc,nsbc)
+!$$        CALL load_indx_bc(1,indx1_sbc,indx2_sbc,mxf_sbc,msbc,nsbc)
         CALL setup_boundary_conditions(nsbc,indx1_sbc,indx2_sbc, mxf_sbc,  &
-             csbc,nsbc)
+             csbc, nsbc_seg)
      END IF
      IF(fresur) THEN
         ! ... Calculate fraction of specified pressure cell that is
@@ -211,92 +191,54 @@ SUBROUTINE init3
      IF(m1 > 0) go to 750
      m1 = 0
 760  mfsbc(mt) = m1
-     do m=m1-nxy,1,-nxy
+     DO m=m1-nxy,1,-nxy
         frac(m) = 1._kdp
-     end do
   END DO
-  IF(rdflxq .OR. rdflxh .OR. rdflxs) THEN
-     ! ... Calculate the flux*area to get flow rates
-     DO  l=1,nfbc
-        m=mfbc(l)
-        WRITE(cibc,6001) ibc(m)
-        ! ... Calculate fluid,enthalpy and solute b.c. flow rates
-        ! ... Sign of ARXFBC,ARYFBC,or ARZFBC indicates the outward normal
-        ! ...      direction
-        ic=INDEX(cibc(1:3),'2')
-        IF(ic == 0) ic=INDEX(cibc(1:3),'8')
-        IF(ic > 0.) THEN
-           IF(cibc(1:1) == '2') uq=qff(m)*arxfbc(l)
-           IF(cibc(2:2) == '2') uq=qff(m)*aryfbc(l)
-           IF(cibc(3:3) == '2' .OR. cibc(3:3) == '8') uq=qff(m)*arzfbc(l)
-           qfbcv(l)=-uq
-           denfbc(l)=denf0
-           IF(heat) tflx(l)=utbc(m)
-           !                     do 41 iis=1,ns
-           !                      CFLX(L,iis)=UCBC(M,iis)
-           !   41                continue
-        END IF
-        IF(heat) THEN
-           ic=INDEX(cibc(4:6),'2')
-           IF(ic == 0) ic=INDEX(cibc(4:6),'8')
-           IF(ic > 0) THEN
-              IF(ABS(qhfx(m)) < nodat) THEN
-                 uqh=qhfx(m)*arxfbc(l)+qhfy(m)*aryfbc(l)+qhfz(m)* arzfbc(l)
-                 IF(ABS(uqh) < nodat) qhfbc(l)=-uqh
-              END IF
-           END IF
-        END IF
-        ic=INDEX(cibc(7:9),'2')
-        IF(ic == 0) ic=INDEX(cibc(7:9),'8')
-        ! ... Diffusive flux read in as 3 vector components
-        IF(ic > 0) THEN
-           DO  iis=1,ns
-              uqs(iis)=qsfx(m,iis)*arxfbc(l)+qsfy(m,iis)*aryfbc(l)+  &
-                   qsfz(m,iis)*arzfbc(l)
-              qsfbc(l,iis)=-uqs(iis)
            END DO
-        END IF
+  ! ... Specified flux b.c.
+  IF(rdflxq) THEN
+     DO  ls=1,nfbc_seg
+!$$        qfbcv(ls) = qfbcv(ls)*areafbc(ls)     ! ... Calculate the flux*area to get flow rates
+        denfbc(ls) = den0
      END DO
-     ! ... The following loads the associated concentrations
-     IF(solute) THEN
-        CALL load_indx_bc(2,indx1_fbc,indx2_fbc,mxf_fbc,mfbc,nfbc)
-        CALL setup_boundary_conditions(nfbc,indx1_fbc,indx2_fbc, mxf_fbc,  &
-             cflx,nfbc)
+     IF(solute) THEN                          ! ... Load the associated concentrations
+!$$        CALL load_indx_bc(2, indx1_fbc, indx2_fbc, mxf_fbc, mfbc, nfbc_seg)
+        CALL setup_boundary_conditions(nfbc_seg, indx1_fbc, indx2_fbc, mxf_fbc,  &
+             cfbc, nfbc_seg)
      END IF
   END IF
+!!$  IF(rdflxs) THEN
+!!$     DO  ls=1,nfbc_seg
+!!$        DO  iis=1,ns               ! ... Calculate the flux*area to get flow rates
+!!$           qsfbc(lc,iis) = qsflx(ls,iis)*areafbc(ls)
+!!$        END DO
+!!$     END DO
+!!$  END IF
   ! ... Aquifer leakage b.c.
   IF(rdlbc) THEN
-     DO  l=1,nlbc
-        m=mlbc(l)
-        philbc(l)=uphilb(m)
-        denlbc(l)=den0
-        vislbc(l)=vis(m)
-        IF(heat) tlbc(l)=utbc(m)
-        !              do 46 iis=1,ns
-        !                CLBC(L,iis)=UCBC(M,iis)
-        !   46        continue
+     DO  ls=1,nlbc_seg
+        denlbc(ls) = den0
+        vislbc(ls) = -visfac
      END DO
-     ! ... The following loads the associated concentrations
-     IF(solute) THEN
-        CALL load_indx_bc(3,indx1_lbc,indx2_lbc,mxf_lbc,mlbc,nlbc)
-        CALL setup_boundary_conditions(nlbc,indx1_lbc,indx2_lbc, mxf_lbc,  &
-             clbc,nlbc)
+     IF(solute) THEN               ! ... Load the associated concentrations
+        CALL setup_boundary_conditions(nlbc_seg, indx1_lbc, indx2_lbc, mxf_lbc,  &
+             clbc, nlbc_seg)
      END IF
   END IF
   ! ... River leakage b.c.
   IF(rdrbc) THEN
      DO  ls=1,nrbc_seg
-        phirbc(ls) = uphirb(ls)
         denrbc(ls) = den0
         visrbc(ls) = -visfac
      END DO
      ! ... Load the associated concentrations
      IF(solute) THEN
-        CALL load_indx_bc(4,indx1_rbc,indx2_rbc,mxf_rbc,mrbc,nrbc_seg)
         CALL setup_boundary_conditions(nrbc_seg,indx1_rbc,indx2_rbc, mxf_rbc,  &
              crbc, nrbc_seg)
      END IF
   END IF
+  ! ... Drain leakage b.c.
+     visdbc = -visfac
 !!$  ! ... Load the associated temperatures and mass fractions for a.i.f.
 !!$  ! ...      b.c. cells
 !!$  ! ...  *** not implemented for PHAST
@@ -476,15 +418,5 @@ SUBROUTINE init3
 !!$  prvel = .FALSE.
 !!$  prmapv = .FALSE.
 !!$  prhdfv = .FALSE.
-!!$  ! ... Deallocate the temporary group 3 arrays
   timprtnxt = next_print_time
-  DEALLOCATE ( pnp, qff, qffx, qffy, qffz, &
-       qhfx, qhfy, qhfz, &
-       tnp, ucbc, udenbc, udenlb, uphilb, uphirb, &
-       uqetb, uqs, utbc, uvislb, &
-       stat = da_err)
-  IF (da_err.NE.0) THEN  
-     PRINT *, "Array deallocation failed: init3"  
-     STOP  
-  ENDIF
 END SUBROUTINE init3

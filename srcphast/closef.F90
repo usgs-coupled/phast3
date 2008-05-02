@@ -15,7 +15,7 @@ SUBROUTINE closef(mpi_myself)
   USE mct
   USE mcv
   USE mcw
-  USE mg2, ONLY: qfbcv, hdprnt
+  USE mg2, ONLY: hdprnt
 #if defined(USE_MPI)
   USE mpi_mod
 #endif
@@ -216,8 +216,8 @@ SUBROUTINE closef(mpi_myself)
   ENDIF
   endif
   ! ... Deallocate dependent variable arrays for chem slaves
-  DEALLOCATE (indx_sol1_ic, indx_sol2_ic, indx_sol1_bc, indx_sol2_bc,  &
-       ic_mxfrac, bc_mxfrac, &
+  DEALLOCATE (indx_sol1_ic, indx_sol2_ic,  &
+       ic_mxfrac,  &
        c, frac_icchem,  &
        STAT = da_err)
   IF (da_err /= 0) THEN  
@@ -233,7 +233,7 @@ SUBROUTINE closef(mpi_myself)
   IF (da_err /= 0) THEN  
      PRINT *, "Array allocation failed: closef: number 4"  
   ENDIF
-  ! ...      Deallocate and load the final well arrays
+  ! ...      Deallocate the final well arrays
   IF(nwel > 0) THEN
      DEALLOCATE (welidno, xw, yw, wbod, wqmeth, &
           mwel, &
@@ -272,20 +272,36 @@ SUBROUTINE closef(mpi_myself)
   ENDIF
   ! ...      Deallocate river arrays
   IF(nrbc > 0) THEN
-     DEALLOCATE (mrbc, arbc, brbc, krbc, bbrbc, zerbc, mrbc_bot,  &
+     DEALLOCATE (mrbc, arearbc,  &
+          arbc, brbc,  &
+          krbc, bbrbc, zerbc,  &
+          mrbc_bot, mrseg_bot,  &
+          phirbc, denrbc, visrbc,  &
           crbc, indx1_rbc, indx2_rbc, mxf_rbc,  &
-          qfrbc, ccfrb, ccfvrb, qsrbc, ccsrb, &
-          sfrb, sfvrb, ssrb, &
-          phirbc, denrbc, visrbc, &
+          qfrbc, ccfrb, ccfvrb, qsrbc, ccsrb,  &
+          sfrb, sfvrb, ssrb,  &
           river_seg_index,  &
           stat = da_err)
      IF (da_err /= 0) THEN  
         PRINT *, "Array deallocation failed: closef: number 8"  
      ENDIF
   ENDIF
+  ! ...      Deallocate drain arrays
+  IF(ndbc > 0) THEN
+     DEALLOCATE (mdbc, areadbc,  &
+          adbc, bdbc,  &
+          kdbc, bbdbc, zedbc,  &
+          mdbc_bot, mdseg_bot,  &
+          qfdbc, ccfdb, ccfvdb, qsdbc, ccsdb,  &
+          sfdb, sfvdb, ssdb,  &
+          drain_seg_index,  &
+          stat = da_err)
+     IF (da_err /= 0) THEN  
+        PRINT *, "Array deallocation failed: closef: number 8.1"  
+     ENDIF
+  ENDIF
   ! ...      Deallocate conductance, capacitance arrays
   DEALLOCATE (tx, ty, tz, arx, ary, arz,  &
-       qfbcv, &
        pv, pmcv, pmhv, pmchv, pvk,  &
        tfx, tfy, tfz, thx, thy, thz, thxy, thxz, thyx, &
        thyz, thzx, thzy, &
@@ -297,13 +313,13 @@ SUBROUTINE closef(mpi_myself)
   ENDIF
   ! ...      Deallocate specified value b.c. arrays
   IF(nsbc > 0) THEN
-     DEALLOCATE (msbc, indx1_sbc, indx2_sbc, &
-          fracnp, mxf_sbc, qfsbc, qhsbc, qssbc, &
-          sfsb, sfvsb, shsb, sssb, &
-          csbc, psbc, tsbc, ccfsb, ccfvsb, cchsb, &
-          ccssb, &
+     DEALLOCATE (msbc, indx1_sbc, indx2_sbc,  &
+          fracnp, mxf_sbc, qfsbc, qhsbc, qssbc,  &
+          sfsb, sfvsb, sssb,  &
+          csbc, psbc,  &
+          ccfsb, ccfvsb, ccssb,  &
           vafsbc, rhfsbc,  &
-          vassbc, rhssbc, &
+          vassbc, rhssbc,  &
           stat = da_err)
      IF (da_err /= 0) THEN  
         PRINT *, "Array deallocation failed: closef: number 10"  
@@ -311,11 +327,13 @@ SUBROUTINE closef(mpi_myself)
   ENDIF
   ! ...      Deallocate specified flux b.c. arrays
   IF(nfbc > 0) THEN
-     DEALLOCATE (mfbc, indx1_fbc, indx2_fbc,  &
-          mxf_fbc, sffb, sfvfb, shfb, ssfb, &
-          cflx, denfbc, qffbc, qhfbc, qsfbc, &
-          tflx, ccffb, ccfvfb, cchfb, ccsfb, &
-          arxfbc, aryfbc, arzfbc, &
+     DEALLOCATE (mfbc, ifacefbc, areafbc,  &
+          qfflx, denfbc,  &
+          cfbc, indx1_fbc, indx2_fbc, mxf_fbc,  &
+          qffbc, qfbcv, ccffb, ccfvfb, qsfbc, ccsfb, qhfbc,  &
+          sffb, sfvfb, ssfb,  &
+          flux_seg_index,  &
+          qsflx,  &
           stat = da_err)
      IF (da_err /= 0) THEN  
         PRINT *, "Array deallocation failed: closef: number 11"  
@@ -323,12 +341,14 @@ SUBROUTINE closef(mpi_myself)
   ENDIF
   ! ...      Deallocate leakage b.c. arrays
   IF(nlbc > 0) THEN
-     DEALLOCATE (mlbc, indx1_lbc, indx2_lbc, &
-          mxf_lbc, qflbc, qhlbc, qslbc, &
-          sflb, sfvlb, shlb, sslb, &
-          albc, bblbc, blbc, clbc, &
-          denlbc, klbc, philbc, tlbc, vislbc, &
-          zelbc, ccflb, ccfvlb, cchlb, ccslb, &
+     DEALLOCATE (mlbc, ifacelbc, arealbc,  &
+          albc, blbc,  &
+          klbc, bblbc, zelbc, &
+          philbc, denlbc, vislbc,  &
+          clbc, indx1_lbc, indx2_lbc, mxf_lbc,  &
+          qflbc, ccflb, ccfvlb, qslbc, ccslb,  &
+          sflb, sfvlb, sslb,  &
+          leak_seg_index,  &
           stat = da_err)
      IF (da_err /= 0) THEN  
         PRINT *, "Array deallocation failed: closef: number 12"  

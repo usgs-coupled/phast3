@@ -19,7 +19,7 @@ SUBROUTINE phast_slave(mpi_tasks, mpi_myself)
   INTEGER :: print_restart_flag
 !!$  CHARACTER(LEN=130) :: logline1
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: phast_slave.F90,v 1.1 2007/01/19 19:35:56 klkipp Exp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: phast_slave.F90,v 1.2 2008/04/18 17:18:08 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ! ... Extract the version name for the header
@@ -89,7 +89,7 @@ SUBROUTINE slave_init1
   INTEGER :: a_err, da_err, iis, nsa
   CHARACTER(LEN=10), DIMENSION(:), ALLOCATABLE :: ucomp_name
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: phast_slave.F90,v 1.1 2007/01/19 19:35:56 klkipp Exp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: phast_slave.F90,v 1.2 2008/04/18 17:18:08 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ! ... Allocate scratch space for component names
@@ -121,7 +121,8 @@ SUBROUTINE slave_init1
        indx_sol1_ic(7,nxyz), indx_sol2_ic(7,nxyz), &
        frac(nxyz), frac_icchem(nxyz),  &
        c(nxyz,nsa), &
-       ic_mxfrac(7,nxyz), bc_mxfrac(7,nxyz), &
+!$$       ic_mxfrac(7,nxyz), bc_mxfrac(7,nxyz), &
+       ic_mxfrac(7,nxyz), &
        STAT = a_err)
   IF (a_err /= 0) THEN  
      PRINT *, "Array allocation failed: slave_init1 3"  
@@ -186,7 +187,7 @@ SUBROUTINE slave_closef
   INTEGER :: da_err
 !!$  CHARACTER(LEN=130) :: logline1, logline2, logline3
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: phast_slave.F90,v 1.1 2007/01/19 19:35:56 klkipp Exp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: phast_slave.F90,v 1.2 2008/04/18 17:18:08 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ! ... Close and delete the stripped input file
@@ -265,7 +266,8 @@ SUBROUTINE slave_closef
        indx_sol1_ic, indx_sol2_ic, &
        frac, frac_icchem,  &
        c, &
-       ic_mxfrac, bc_mxfrac, &
+!$$       ic_mxfrac, bc_mxfrac, &
+       ic_mxfrac, &
        STAT = a_err)
   IF (a_err /= 0) THEN  
      PRINT *, "Array deallocation failed slave_closef: 2"  

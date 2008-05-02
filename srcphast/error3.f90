@@ -7,7 +7,6 @@ SUBROUTINE error3
   USE mcp
   USE mcv
   USE mcw
-  USE mg2, ONLY: qfbcv
   USE print_control_mod
   IMPLICIT NONE
   INTRINSIC INDEX
@@ -28,6 +27,7 @@ SUBROUTINE error3
      IF(frac(m) <= 0._kdp) CYCLE
      IF((m-nxy) > 0) THEN
         WRITE(cibc,6001) ibc(m-nxy)
+6001    FORMAT(i9.9)
         IF(cibc(1:1) == '1') CYCLE
         IF(frac(m-nxy) < 1._kdp) ierr(147) = .TRUE.
      ENDIF
@@ -49,19 +49,18 @@ SUBROUTINE error3
      END DO chk_fs
   END IF
   ! ... Flux b.c.
-  IF(rdflxq.OR.rdflxh.OR.rdflxs) THEN
+  IF(rdflxq .OR. rdflxh .OR. rdflxs) THEN
      DO  l2=1,nfbc
         m=mfbc(l2)
         WRITE(cibc,6001) ibc(m)
-6001    FORMAT(i9)
-        ic=INDEX(cibc(1:3),'1')
-        IF(ABS(qfbcv(l2)) > 0..AND.ic > 0) ierr(70)=.TRUE.
+        ic = INDEX(cibc(1:3),'1')
+        IF(ABS(qfbcv(l2)) > 0. .AND. ic > 0) ierr(70)=.TRUE.
         IF(mfbc(l2) == 0) ierr(77)=.TRUE.
-        ic=INDEX(cibc(4:6),'1')
-        IF(heat.AND.ABS(qhfbc(l2)) > 0..AND.ic > 0) ierr(71)=.TRUE.
+        ic = INDEX(cibc(4:6),'1')
+!$$        IF(heat .AND. ABS(qhfbc(l2)) > 0. .AND. ic > 0) ierr(71)=.TRUE.
         ic=INDEX(cibc(7:9),'1')
         DO  iis=1,ns
-           IF(solute.AND.ABS(qsfbc(l2,iis)) > 0..AND.ic > 0) ierr(72)=.TRUE.
+           IF(solute .AND. ABS(qsfbc(l2,iis)) > 0. .AND. ic > 0) ierr(72)=.TRUE.
         END DO
      END DO
   END IF
@@ -71,6 +70,7 @@ SUBROUTINE error3
         IF(phirbc(ls) < gz*zerbc(ls)) ierr(74)=.TRUE.
      END DO
   END IF
+  ! ... Drain b.c.: nothing to be done
   ! ... Check well data
   DO  iwel=1,nwel
      IF(iwel > 1.AND.cylind.AND.wqmeth(iwel) /= 0) ierr(78)=.TRUE.

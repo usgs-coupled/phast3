@@ -4,7 +4,7 @@ MODULE mpi_mod
   ! mpimod.F90
   !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! ... $Id$
+  ! ... $Id$
 #if defined(LAHEY_F95) || defined(NO_UNDERSCORES)
 #define MPI_INIT_      MPI_INIT
 #define MPI_COMM_SIZE_ MPI_COMM_SIZE
@@ -29,22 +29,22 @@ CONTAINS
   SUBROUTINE init_mpi(mpi_tasks, mpi_myself)
     IMPLICIT NONE
 !MS$ NOFREEFORM
-      include 'mpif.h'
+      INCLUDE 'mpif.h'
 !MS$ FREEFORM
 #if defined(_WIN32)
-!MS$ ATTRIBUTES Default :: mpi_dup_fn    
-!MS$ ATTRIBUTES Default :: mpi_null_delete_fn    
-!MS$ ATTRIBUTES Default :: mpi_null_copy_fn    
-!MS$ ATTRIBUTES Default :: mpi_comm_dup_fn    
-!MS$ ATTRIBUTES Default :: mpi_comm_null_delete_fn
-!MS$ ATTRIBUTES Default :: mpi_comm_null_copy_fn
-!MS$ ATTRIBUTES Default :: mpi_win_dup_fn
-!MS$ ATTRIBUTES Default :: mpi_win_null_delete_fn
-!MS$ ATTRIBUTES Default :: mpi_win_null_copy_fn
-!MS$ ATTRIBUTES Default :: mpi_type_dup_fn
-!MS$ ATTRIBUTES Default :: mpi_type_null_delete_fn
-!MS$ ATTRIBUTES Default :: mpi_type_null_copy_fn
-!MS$ ATTRIBUTES Default :: mpi_conversion_fn_null
+    !MS$ ATTRIBUTES Default :: mpi_dup_fn    
+    !MS$ ATTRIBUTES Default :: mpi_null_delete_fn    
+    !MS$ ATTRIBUTES Default :: mpi_null_copy_fn    
+    !MS$ ATTRIBUTES Default :: mpi_comm_dup_fn    
+    !MS$ ATTRIBUTES Default :: mpi_comm_null_delete_fn
+    !MS$ ATTRIBUTES Default :: mpi_comm_null_copy_fn
+    !MS$ ATTRIBUTES Default :: mpi_win_dup_fn
+    !MS$ ATTRIBUTES Default :: mpi_win_null_delete_fn
+    !MS$ ATTRIBUTES Default :: mpi_win_null_copy_fn
+    !MS$ ATTRIBUTES Default :: mpi_type_dup_fn
+    !MS$ ATTRIBUTES Default :: mpi_type_null_delete_fn
+    !MS$ ATTRIBUTES Default :: mpi_type_null_copy_fn
+    !MS$ ATTRIBUTES Default :: mpi_conversion_fn_null
 #endif
     INTERFACE
        SUBROUTINE MPI_INIT_(ierror)
@@ -57,17 +57,17 @@ CONTAINS
 #if defined(_WIN32)
          !MS$ ATTRIBUTES Default :: MPI_COMM_SIZE
 #endif
-         INTEGER comm
-         INTEGER size
-         INTEGER ierror
+         INTEGER :: comm
+         INTEGER :: size
+         INTEGER :: ierror
        END SUBROUTINE MPI_COMM_SIZE_
        SUBROUTINE MPI_COMM_RANK_(comm, rank, ierror)
 #if defined(_WIN32)
          !MS$ ATTRIBUTES Default :: MPI_COMM_RANK
 #endif
-         INTEGER comm
-         INTEGER rank
-         INTEGER ierror
+         INTEGER :: comm
+         INTEGER :: rank
+         INTEGER :: ierror
        END SUBROUTINE MPI_COMM_RANK_
     END INTERFACE
 
@@ -108,7 +108,7 @@ CONTAINS
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   SUBROUTINE get_mpi_filename(fname)
     IMPLICIT NONE
-    CHARACTER (LEN=*) :: fname
+    CHARACTER(LEN=*), INTENT(inout) :: fname
     CHARACTER(LEN=30) :: char_10
 
 #if defined(MERGE_FILES)
@@ -116,9 +116,9 @@ CONTAINS
 #endif
 
     WRITE(char_10,*) g_mpi_myself
+    char_10 = ADJUSTL(char_10)
     char_10 = TRIM(char_10)
-    char_10 = ADJUSTL(char_10);
-    IF (LEN_TRIM(fname(1:LEN_TRIM(fname))//'.'//char_10) .GT. LEN(fname)) THEN
+    IF (LEN_TRIM(fname(1:LEN_TRIM(fname))//'.'//char_10) > LEN(fname)) THEN
        WRITE(*,*) 'Filename too long:' , fname(1:LEN_TRIM(fname))//'.'//char_10
        STOP "Stopping."
     ENDIF
@@ -139,7 +139,7 @@ CONTAINS
   SUBROUTINE update_status(ST)
     IMPLICIT NONE
     CHARACTER(LEN=6), DIMENSION(40), INTENT(INOUT) :: ST
-    INTEGER i
+    INTEGER :: i
 
     IF (g_mpi_myself == 0) RETURN
     DO i=1,40

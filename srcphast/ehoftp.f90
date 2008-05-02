@@ -5,13 +5,13 @@ FUNCTION ehoftp( txx, pxx, erflg)
   USE machine_constants, ONLY: kdp
   USE mcp
   REAL(KIND=kdp) :: ehoftp  
-  EXTERNAL INTERP  
-  REAL(KIND=kdp) :: interp  
+!!$  EXTERNAL INTERP  
+!!$  REAL(KIND=kdp) :: interp  
   REAL(KIND=kdp) :: pxx, txx  
   LOGICAL :: erflg  
   REAL(KIND=kdp) :: eh1, eh2, pabs
   REAL(KIND=kdp), DIMENSION(1) :: xx
-  INTEGER :: nxx = 1  
+  INTEGER :: nxx=1  
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------

@@ -17,10 +17,11 @@ SUBROUTINE init1
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
-  IF (CYLIND) NY = 1  
-  NXY = NX * NY  
-  NXYZ = NXY * NZ  
+  IF (cylind) ny = 1  
+  nxy = nx*ny  
+  nxyz = nxy*nz  
   nxyzh = (nxyz+MOD(nxyz,2))/2
+  mtp1 = nxyz - nxy + 1          ! ... first cell in top plane of global mesh
   ! ... Allocate mesh arrays
   ALLOCATE (caprnt(nxyz), iprint_chem(nxyz), iprint_xyz(nxyz),  &
        lprnt1(nxyz), lprnt2(nxyz),  &
@@ -34,10 +35,8 @@ SUBROUTINE init1
      PRINT *, "Array allocation failed: init1"  
      STOP  
   ENDIF
-
-  ! store index numbers for natural numbering
+  ! ... store index numbers for natural numbering
   call mtoijk_orig
-
   pv0 = 0
   ibc = 0
   ! ... Set up units and metric to english (U.S. customary) conversion
@@ -158,32 +157,32 @@ SUBROUTINE init1
   ! ... Allocate component arrays
   nsa = MAX(ns,1)
   ! ... Allocate dependent variable arrays
-  ALLOCATE (comp_name(nsa), icmax(nsa), jcmax(nsa), kcmax(nsa), &
-       indx_sol1_ic(7,nxyz), indx_sol2_ic(7,nxyz), indx_sol1_bc(4,nxyz), indx_sol2_bc(4,nxyz), &
-       dc(0:nxyz,nsa), dzfsdt(nxy), dp(0:nxyz), dt(0:0), &
+  ALLOCATE (comp_name(nsa), icmax(nsa), jcmax(nsa), kcmax(nsa),  &
+       indx_sol1_ic(7,nxyz), indx_sol2_ic(7,nxyz),  &
+       dc(0:nxyz,nsa), dzfsdt(nxy), dp(0:nxyz), dt(0:0),  &
        sxx(nxyz), syy(nxyz), szz(nxyz), vxx(nxyz), vyy(nxyz), vzz(nxyz),  &
        vx_node(nxyz), vy_node(nxyz), vz_node(nxyz), vmask(nxyz), zfs(nxy),  &
        dcmax(nsa), dsir(nsa),  dsir_chem(nsa),  &
        qsfx(nxyz,nsa), qsfy(nxyz,nsa), qsfz(nxyz,nsa), &
-       stsaif(nsa), stsetb(nsa), stsfbc(nsa), stslbc(nsa), &
-       stsrbc(nsa), stssbc(nsa), stswel(nsa), ssresf(nsa), ssres(nsa), stotsi(nsa), stotsp(nsa), &
-       tsres(nsa), tsresf(nsa), &
+       stsaif(nsa), stsetb(nsa), stsfbc(nsa), stslbc(nsa),  &
+       stsrbc(nsa), stsdbc(nsa), stssbc(nsa),  &
+       stswel(nsa), ssresf(nsa), ssres(nsa), stotsi(nsa), stotsp(nsa),  &
+       tsres(nsa), tsresf(nsa),  &
        dctas(nsa),  &
        rf(nxyz), rs(nxyz,nsa),  &
        c(nxyz,nsa), den(nxyz), eh(1), frac(nxyz), frac_icchem(nxyz),  &
-       ic_mxfrac(7,nxyz), bc_mxfrac(7,nxyz), p(nxyz), t(1), vis(nxyz), &
-       sir(nsa), sir0(nsa), sirn(nsa), sir_prechem(nsa), &
-       totsi(nsa), totsp(nsa), tdsir_chem(nsa), tcsaif(nsa), tcsetb(nsa), &
-       tcsfbc(nsa), &
-       tcslbc(nsa), tcsrbc(nsa), tcssbc(nsa), &
-       totwsi(nsa), totwsp(nsa), &
-       tqwsi(nsa), tqwsp(nsa), u10(nsa), c_mol(nxyz,nsa), &
+       ic_mxfrac(7,nxyz), p(nxyz), t(1), vis(nxyz),  &
+       sir(nsa), sir0(nsa), sirn(nsa), sir_prechem(nsa),  &
+       totsi(nsa), totsp(nsa), tdsir_chem(nsa), tcsaif(nsa), tcsetb(nsa),  &
+       tcsfbc(nsa),  &
+       tcslbc(nsa), tcsrbc(nsa), tcsdbc(nsa), tcssbc(nsa),  &
+       totwsi(nsa), totwsp(nsa),  &
+       tqwsi(nsa), tqwsp(nsa), u10(nsa), c_mol(nxyz,nsa),  &
        STAT = a_err)
-  IF (a_err /= 0) THEN  
+  IF (a_err /= 0) THEN
      PRINT *, "Array allocation failed: init1"  
      STOP  
   ENDIF
-  indx_sol1_bc = -100
   c = 0._kdp
   zfs = -1.e20_kdp
   IF (SOLUTE) THEN  

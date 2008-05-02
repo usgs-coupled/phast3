@@ -9,10 +9,10 @@ SUBROUTINE calc_velocity
   USE mcv
   USE phys_const
   IMPLICIT NONE
-  INTEGER :: i, ibf, ic, ij, ipmz, j, k, l, m
-  REAL(KIND=kdp) :: uden,  &
-       ufrac, uvis, wt
-  REAL(KIND=kdp) :: qface, sumq, vapp, vzfs
+  CHARACTER(LEN=9) :: cibc
+  INTEGER :: i, ibf, ic, ij, ipmz, j, k, l, lc, ls, l1, m, mbc
+  REAL(KIND=kdp) :: uden, ufrac, uvis, wt
+  REAL(KIND=kdp) :: qface, qlim, qn, sumq, vapp, vzfs
   REAL(KIND=kdp), DIMENSION(3) :: pa, qs
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
@@ -99,175 +99,203 @@ SUBROUTINE calc_velocity
   END DO
   ! ... Calculate velocity at nodes on boundaries
   DO  l=1,num_bndy_cells
+     b_cell(l)%qfbc = 0._kdp         ! ... Zero the flow rate structure elements 
+  END DO  
+  ! ... Specified flux b.c.
+  DO l=1,nfbc_cells
+     m = flux_seg_index(l)%m
+     IF(m == 0) CYCLE     ! ... dry cell
+     DO  lc=1,num_bndy_cells
+        mbc = b_cell(lc)%m_cell
+        IF(mbc == m) THEN               ! ... found the b.c. cell
+           DO ls=flux_seg_index(l)%seg_first,flux_seg_index(l)%seg_last
+              ufrac = 1._kdp
+              IF(ifacefbc(ls) < 3) ufrac = frac(mbc)
+              IF(fresur .AND. ifacefbc(ls) == 3 .AND. m >= mtp1) THEN
+                 ! ... Redirect the flux to the free-surface cell
+                 l1 = MOD(mbc,nxy)
+                 IF(l1 == 0) l1 = nxy
+                 mbc = mfsbc(l1)
+              ENDIF
+              qn = qfflx(ls)*areafbc(ls)
+              IF(qn <= 0.) THEN        ! ... Outflow
+                 qface = den(mbc)*qn*ufrac
+              ELSE                     ! ... Inflow
+                 qface = denfbc(ls)*qn*ufrac
+              END IF
+              DO ibf=1,b_cell(lc)%num_faces
+                 IF(ifacefbc(ls) == 1) THEN
+                    IF(b_cell(lc)%face_indx(ibf) == 3 .OR. b_cell(lc)%face_indx(ibf) == 4) EXIT
+                 ELSEIF(ifacefbc(ls) == 2) THEN
+                    IF(b_cell(lc)%face_indx(ibf) == 2 .OR. b_cell(lc)%face_indx(ibf) == 5) EXIT
+                 ELSEIF(ifacefbc(ls) == 3) THEN
+                    IF(b_cell(lc)%face_indx(ibf) == 1 .OR. b_cell(lc)%face_indx(ibf) == 6) EXIT
+                 END IF
+              END DO
+              b_cell(lc)%qfbc(ibf) = b_cell(lc)%qfbc(ibf) + qface
+           END DO
+           EXIT
+        END IF
+     END DO
+  END DO
+  ! ... Calculate leakage b.c. terms
+  DO  l=1,nlbc
+     m = leak_seg_index(l)%m
+     IF(m == 0) CYCLE              ! ... empty cell
+     DO  lc=1,num_bndy_cells
+        mbc = b_cell(lc)%m_cell
+        IF(mbc == m) THEN               ! ... found the b.c. cell
+           DO ls=leak_seg_index(l)%seg_first,leak_seg_index(l)%seg_last
+              qn =  albc(ls) - blbc(ls)*dp(mbc)
+              IF(qn <= 0._kdp) THEN           ! ... Outflow
+                 qface = den(mbc)*qn
+              ELSE                            ! ... Inflow
+                 qface = denlbc(ls)*qn
+              ENDIF
+              DO ibf=1,b_cell(lc)%num_faces
+                 IF(ifacelbc(ls) == 1) THEN
+                    IF(b_cell(lc)%face_indx(ibf) == 3 .OR. b_cell(lc)%face_indx(ibf) == 4) EXIT
+                 ELSEIF(ifacelbc(ls) == 2) THEN
+                    IF(b_cell(lc)%face_indx(ibf) == 2 .OR. b_cell(lc)%face_indx(ibf) == 5) EXIT
+                 ELSEIF(ifacelbc(ls) == 3) THEN
+                    IF(b_cell(lc)%face_indx(ibf) == 1 .OR. b_cell(lc)%face_indx(ibf) == 6) EXIT
+                 END IF
+              END DO
+              b_cell(lc)%qfbc(ibf) = b_cell(lc)%qfbc(ibf) + qface
+           END DO
+           EXIT
+        END IF
+     END DO
+  END DO
+  ! ... River leakage b.c. terms
+  DO l=1,nrbc
+     m = river_seg_index(l)%m     ! ... current communicating cell 
+     IF(m == 0) CYCLE              ! ... empty cell
+     DO  lc=1,num_bndy_cells
+        mbc = b_cell(lc)%m_cell
+        IF(mbc == m) THEN               ! ... found the b.c. cell
+           DO ls=river_seg_index(l)%seg_first,river_seg_index(l)%seg_last
+              qn = arbc(ls) - brbc(ls)*dp(mbc)  
+              IF(qn <= 0._kdp) THEN           ! ... Outflow
+                 qface = den(mbc)*qn
+              ELSE                            ! ... Inflow
+                 ! ... Limit the flow rate for a river leakage
+                 qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &
+                      - 0.5_kdp*den(mbc)*bbrbc(ls)))
+                 qn = MIN(qn,qlim)
+                 qface = denrbc(ls)*qn
+              ENDIF
+              DO ibf=1,b_cell(lc)%num_faces
+                 IF(b_cell(lc)%face_indx(ibf) == 1 .OR. b_cell(lc)%face_indx(ibf) == 6) EXIT
+              END DO
+              b_cell(lc)%qfbc(ibf) = b_cell(lc)%qfbc(ibf) + qface
+           END DO
+           EXIT
+        END IF
+     END DO
+  END DO
+  ! ... Drain leakage b.c. terms
+  DO l=1,ndbc
+     m = drain_seg_index(l)%m     ! ... current communicating cell 
+     IF(m == 0) CYCLE              ! ... empty cell
+     DO  lc=1,num_bndy_cells
+        mbc = b_cell(lc)%m_cell
+        IF(mbc == m) THEN               ! ... found the b.c. cell
+           DO ls=drain_seg_index(l)%seg_first,drain_seg_index(l)%seg_last
+              qn = adbc(ls) - bdbc(ls)*dp(mbc)
+              IF(qn <= 0._kdp) THEN           ! ... Outflow
+                 qface = den(mbc)*qn
+              ELSE                            ! ... Inflow
+                 qface = 0._kdp
+              ENDIF
+              DO ibf=1,b_cell(lc)%num_faces
+                 IF(b_cell(lc)%face_indx(ibf) == 1 .OR. b_cell(lc)%face_indx(ibf) == 6) EXIT
+              END DO
+              b_cell(lc)%qfbc(ibf) = b_cell(lc)%qfbc(ibf) + qface
+           END DO
+           EXIT
+        END IF
+     END DO
+  END DO
+  DO  l=1,num_bndy_cells
      m = b_cell(l)%m_cell
      IF(ABS(frac(m)) <= 0._kdp) CYCLE        ! ... skip dry cells 
-     IF(b_cell(l)%num_same_bc == 1) THEN     ! ... all different b.c. types
-        DO ibf=1,b_cell(l)%num_faces
-           ic = b_cell(l)%face_indx(ibf)
-           IF(fresur .AND. ic == 6) CYCLE    ! ... f.s. velocity later
-           IF(b_cell(l)%bc_type(ibf) == 0) THEN
-              qface = 0._kdp
-           ELSEIF(b_cell(l)%bc_type(ibf) == 1) THEN
-              qface = qfsbc(b_cell(l)%lbc_indx(ibf))
-           ELSEIF(b_cell(l)%bc_type(ibf) == 2) THEN
-              qface = qffbc(b_cell(l)%lbc_indx(ibf))
-           ELSEIF(b_cell(l)%bc_type(ibf) == 3) THEN
-              qface = qflbc(b_cell(l)%lbc_indx(ibf))
-           elseif(b_cell(l)%bc_type(ibf) == 6 .or. b_cell(l)%bc_type(ibf) == 8) then
-              qface = qfrbc(b_cell(l)%lbc_indx(ibf))
-           END IF
-           IF(ic >= 4) qface = -qface     ! ... Product of q vector with outward normal
-!           if(abs(qface) > 0._kdp) then
-              IF(ic == 3 .OR. ic == 4) THEN
-                 vx_node(m) = qface/(den(m)*frac(m)*b_cell(l)%por_areabc(ibf))
-              ELSEIF(ic == 2 .OR. ic == 5) THEN
-                 vy_node(m) = qface/(den(m)*frac(m)*b_cell(l)%por_areabc(ibf))
-              ELSEIF(ic == 1 .OR. ic == 6) THEN
-                 vz_node(m) = qface/(den(m)*b_cell(l)%por_areabc(ibf))
-              END IF
-!           end if
-        END DO
-     ELSEIF(b_cell(l)%num_same_bc == b_cell(l)%num_faces) THEN     ! ... all same b.c. types
-        IF(b_cell(l)%bc_type(1) == 0) THEN
-           qface = 0._kdp
-        ELSEIF(b_cell(l)%bc_type(1) == 1) THEN
-           qface = qfsbc(b_cell(l)%lbc_indx(1))
-        ELSEIF(b_cell(l)%bc_type(1) == 2) THEN
-           qface = qffbc(b_cell(l)%lbc_indx(1))
-        ELSEIF(b_cell(l)%bc_type(1) == 3) THEN
-           qface = qflbc(b_cell(l)%lbc_indx(1))
-        elseif(b_cell(l)%bc_type(1) == 6 .or. b_cell(l)%bc_type(1) == 8) then
-           qface = qfrbc(b_cell(l)%lbc_indx(ibf))
-        END IF
-        ! ... sum the internal face flow rates for apportionment
-        sumq = 0._kdp
-        DO ibf=1,b_cell(l)%num_faces
-           ic = b_cell(l)%face_indx(ibf)
-           IF(fresur .AND. ic == 6) CYCLE
-           IF(ic == 3) THEN
-              qs(ibf) = ABS(sxx(m))
-              pa(ibf) = frac(m)*b_cell(l)%por_areabc(ibf)
-           ELSEIF(ic == 4) THEN
-              qs(ibf) = ABS(sxx(m-1))
-              pa(ibf) = frac(m)*b_cell(l)%por_areabc(ibf)
-           ELSEIF(ic == 2) THEN
-              qs(ibf) = ABS(syy(m))
-              pa(ibf) = frac(m)*b_cell(l)%por_areabc(ibf)
-           ELSEIF(ic == 5) THEN
-              qs(ibf) = ABS(syy(m-nx))
-              pa(ibf) = frac(m)*b_cell(l)%por_areabc(ibf)
-           ELSEIF(ic == 1) THEN
-              qs(ibf) = ABS(szz(m))
-              pa(ibf) = b_cell(l)%por_areabc(ibf)
-           ELSEIF(ic == 6) THEN
-              qs(ibf) = ABS(szz(m-nxy))
-              pa(ibf) = b_cell(l)%por_areabc(ibf)
-           END IF
-           sumq = sumq + qs(ibf)
-        END DO
-        sumq = MAX(sumq,1.e-20_kdp)
-        DO ibf=1,b_cell(l)%num_faces
-           vapp = qface*(qs(ibf)/sumq)/(den(m)*pa(ibf))
-           ic = b_cell(l)%face_indx(ibf)
-           IF(fresur .AND. ic == 6) CYCLE
-           IF(ic == 3) THEN
-              vx_node(m) = vapp
-           ELSEIF(ic == 4) THEN
-              vx_node(m) = -vapp
-           ELSEIF(ic == 2) THEN
-              vy_node(m) = vapp
-           ELSEIF(ic == 5) THEN
-              vy_node(m) = -vapp
-           ELSEIF(ic == 1) THEN
-              vz_node(m) = vapp
-           ELSEIF(ic == 6) THEN
-              vz_node(m) = -vapp
-           END IF
-        END DO
-     ELSEIF(b_cell(l)%num_faces == 3 .AND. b_cell(l)%num_same_bc == 2) THEN 
-        ! ... 3 faces, 2 same b.c. types
-        ! ... Do the two faces with same b.c. type (first two)
-        IF(b_cell(l)%bc_type(1) == 0) THEN
-           qface = 0._kdp
-        ELSEIF(b_cell(l)%bc_type(1) == 1) THEN
-           qface = qfsbc(b_cell(l)%lbc_indx(1))
-        ELSEIF(b_cell(l)%bc_type(1) == 2) THEN
-           qface = qffbc(b_cell(l)%lbc_indx(1))
-        ELSEIF(b_cell(l)%bc_type(1) == 3) THEN
-           qface = qflbc(b_cell(l)%lbc_indx(1))
-        elseif(b_cell(l)%bc_type(1) == 6 .or. b_cell(l)%bc_type(1) == 8) then
-           qface = qfrbc(b_cell(l)%lbc_indx(ibf))
-        END IF
-        ! ... sum the internal face flow rates for apportionment
-        sumq = 0._kdp
-        DO ibf=1,2
-           ic = b_cell(l)%face_indx(ibf)
-           IF(fresur .AND. ic == 6) CYCLE
-           IF(ic == 3) THEN
-              qs(ibf) = ABS(sxx(m))
-              pa(ibf) = frac(m)*b_cell(l)%por_areabc(ibf)
-           ELSEIF(ic == 4) THEN
-              qs(ibf) = ABS(sxx(m-1))
-              pa(ibf) = frac(m)*b_cell(l)%por_areabc(ibf)
-           ELSEIF(ic == 2) THEN
-              qs(ibf) = ABS(syy(m))
-              pa(ibf) = frac(m)*b_cell(l)%por_areabc(ibf)
-           ELSEIF(ic == 5) THEN
-              qs(ibf) = ABS(syy(m-nx))
-              pa(ibf) = frac(m)*b_cell(l)%por_areabc(ibf)
-           ELSEIF(ic == 1) THEN
-              qs(ibf) = ABS(szz(m))
-              pa(ibf) = b_cell(l)%por_areabc(ibf)
-           ELSEIF(ic == 6) THEN
-              qs(ibf) = ABS(szz(m-nxy))
-              pa(ibf) = b_cell(l)%por_areabc(ibf)
-           END IF
-           sumq = sumq + qs(ibf)
-        END DO
-        sumq = MAX(sumq,1.e-20_kdp)
-        DO ibf=1,2
-           ic = b_cell(l)%face_indx(ibf)
-           IF(fresur .AND. ic == 6) CYCLE
-           vapp = qface*(qs(ibf)/sumq)/(den(m)*pa(ibf))
-           IF(ic == 3) THEN
-              vx_node(m) = vapp
-           ELSEIF(ic == 4) THEN
-              vx_node(m) = -vapp
-           ELSEIF(ic == 2) THEN
-              vy_node(m) = vapp
-           ELSEIF(ic == 5) THEN
-              vy_node(m) = -vapp
-           ELSEIF(ic == 1) THEN
-              vz_node(m) = vapp
-           ELSEIF(ic == 6) THEN
-              vz_node(m) = -vapp
-           END IF
-        END DO
-        ! ... Do the remaining face
-        ibf = 3
-        IF(b_cell(l)%bc_type(ibf) == 0) THEN
-           qface = 0._kdp
-        ELSEIF(b_cell(l)%bc_type(ibf) == 1) THEN
-           qface = qfsbc(b_cell(l)%lbc_indx(ibf))
-        ELSEIF(b_cell(l)%bc_type(ibf) == 2) THEN
-           qface = qffbc(b_cell(l)%lbc_indx(ibf))
-        ELSEIF(b_cell(l)%bc_type(ibf) == 3) THEN
-           qface = qflbc(b_cell(l)%lbc_indx(ibf))
-        elseif(b_cell(l)%bc_type(ibf) == 6 .or. b_cell(l)%bc_type(ibf) == 8) then
-           qface = qfrbc(b_cell(l)%lbc_indx(ibf))
-        END IF
+     DO ibf=1,b_cell(l)%num_faces
         ic = b_cell(l)%face_indx(ibf)
-        IF(fresur .AND. ic == 6) CYCLE
+        IF(fresur .AND. ic == 6) CYCLE    ! ... f.s. velocity later
+        qface = b_cell(l)%qfbc(ibf)/(den(m)*frac(m)*b_cell(l)%por_areabc(ibf))
         IF(ic >= 4) qface = -qface     ! ... Product of q vector with outward normal
-!        if(abs(qface) > 0._kdp) then
-           IF(ic == 3 .OR. ic == 4) THEN
-              vx_node(m) = qface/(den(m)*frac(m)*b_cell(l)%por_areabc(ibf))
-           ELSEIF(ic == 2 .OR. ic == 5) THEN
-              vy_node(m) = qface/(den(m)*frac(m)*b_cell(l)%por_areabc(ibf))
-           ELSEIF(ic == 1 .OR. ic == 6) THEN
-              vz_node(m) = qface/(den(m)*b_cell(l)%por_areabc(ibf))
+        IF(ic == 3 .OR. ic == 4) THEN
+           vx_node(m) = qface
+        ELSEIF(ic == 2 .OR. ic == 5) THEN
+           vy_node(m) = qface
+        ELSEIF(ic == 1 .OR. ic == 6) THEN
+           vz_node(m) = qface
+        END IF
+     END DO
+  END DO
+  ! ... Specified P b.c. flow rates
+  DO l=1,nsbc
+     m = msbc(l)
+     IF(frac(m) <= 0._kdp) CYCLE
+     WRITE(cibc,6001) ibc(m)
+6001    FORMAT(i9.9)
+     ! ... Sum fluid fluxes
+     ! ...      Flow rates calculated in SBCFLO
+     IF(cibc(1:1) == '1') THEN
+        DO  lc=1,num_bndy_cells
+           mbc = b_cell(lc)%m_cell
+           IF(ABS(frac(mbc)) <= 0._kdp) CYCLE        ! ... skip dry cells 
+           IF(mbc == m) THEN               ! ... found the b.c. cell
+              qface = qfsbc(l)
+              ! ... sum the internal face flow rates for apportionment
+              sumq = 0._kdp
+              DO ibf=1,b_cell(lc)%num_faces
+                 ic = b_cell(lc)%face_indx(ibf)
+                 IF(fresur .AND. ic == 6) CYCLE
+                 IF(ic == 3) THEN
+                    qs(ibf) = ABS(sxx(mbc))
+                    pa(ibf) = frac(mbc)*b_cell(lc)%por_areabc(ibf)
+                 ELSEIF(ic == 4) THEN
+                    qs(ibf) = ABS(sxx(mbc-1))
+                    pa(ibf) = frac(mbc)*b_cell(lc)%por_areabc(ibf)
+                 ELSEIF(ic == 2) THEN
+                    qs(ibf) = ABS(syy(mbc))
+                    pa(ibf) = frac(mbc)*b_cell(lc)%por_areabc(ibf)
+                 ELSEIF(ic == 5) THEN
+                    qs(ibf) = ABS(syy(mbc-nx))
+                    pa(ibf) = frac(mbc)*b_cell(lc)%por_areabc(ibf)
+                 ELSEIF(ic == 1) THEN
+                    qs(ibf) = ABS(szz(mbc))
+                    pa(ibf) = b_cell(lc)%por_areabc(ibf)
+                 ELSEIF(ic == 6) THEN
+                    qs(ibf) = ABS(szz(mbc-nxy))
+                    pa(ibf) = b_cell(lc)%por_areabc(ibf)
+                 END IF
+                 sumq = sumq + qs(ibf)
+              END DO
+              sumq = MAX(sumq,1.e-20_kdp)
+              DO ibf=1,b_cell(lc)%num_faces
+                 vapp = qface*(qs(ibf)/sumq)/(den(m)*pa(ibf))
+                 ic = b_cell(lc)%face_indx(ibf)
+                 IF(fresur .AND. ic == 6) CYCLE
+                 IF(ic == 3) THEN
+                    vx_node(mbc) = vapp
+                 ELSEIF(ic == 4) THEN
+                    vx_node(mbc) = -vapp
+                 ELSEIF(ic == 2) THEN
+                    vy_node(mbc) = vapp
+                 ELSEIF(ic == 5) THEN
+                    vy_node(mbc) = -vapp
+                 ELSEIF(ic == 1) THEN
+                    vz_node(mbc) = vapp
+                 ELSEIF(ic == 6) THEN
+                    vz_node(mbc) = -vapp
+                 END IF
+              END DO
+              EXIT
            END IF
-!        end if
+        END DO
      END IF
   END DO
   IF(fresur) THEN

@@ -13,7 +13,7 @@ SUBROUTINE sumcal1
   USE mcp
   USE mcv
   USE mcw
-  USE mg2, ONLY: hdprnt, qfbcv
+  USE mg2, ONLY: hdprnt
   IMPLICIT NONE
   INTERFACE
      SUBROUTINE sbcflo(iequ,ddv,ufracnp,qdvsbc,rhssbc,vasbc)
@@ -36,9 +36,7 @@ SUBROUTINE sumcal1
        ufrac, up0, z0, zfsl, zm1, zp1
   REAL(KIND=kdp) :: u6
   REAL(KIND=kdp), PARAMETER :: epssat = 1.e-6_kdp  
-  INTEGER :: a_err, da_err, i, imod, iwel, j, k, l, lc, l1, ls, m,  &
-       mt,  &
-       nsa
+  INTEGER :: a_err, da_err, i, iis, imod, iwel, j, k, l, lc, l1, ls, m, mt, nsa
   INTEGER :: mpmax
   INTEGER, DIMENSION(:), ALLOCATABLE :: mcmax
   LOGICAL :: erflg
@@ -55,16 +53,16 @@ SUBROUTINE sumcal1
   dpmax=0._kdp
   dhmax=0._kdp
   dtmax=0._kdp
-  DO  is=1,ns
-     dcmax(is)=0._kdp
+  DO  iis=1,ns
+     dcmax(iis)=0._kdp
   END DO
   ! ... Allocate scratch space
   nsa = MAX(ns,1)
   ALLOCATE (mcmax(nsa), zfsn(nxy),  &
        STAT = a_err)
   IF (a_err /= 0) THEN  
-     PRINT *, "Array allocation failed: sumcal1"  
-     STOP  
+     PRINT *, "Array allocation failed: sumcal1, point 1"
+     STOP
   ENDIF
   DO  m=1,nxyz
      IF(ibc(m) == -1 .OR. frac(m) <= 0.) CYCLE
@@ -80,10 +78,10 @@ SUBROUTINE sumcal1
 !!$        END IF
 !!$     END IF
      IF(solute) THEN
-        DO  is=1,ns
-           IF((ABS(dc(m,is)) >= ABS(dcmax(is)))) THEN
-              dcmax(is)=dc(m,is)
-              mcmax(is)=m
+        DO  iis=1,ns
+           IF((ABS(dc(m,iis)) >= ABS(dcmax(iis)))) THEN
+              dcmax(iis)=dc(m,iis)
+              mcmax(iis)=m
            END IF
         END DO
      END IF
@@ -92,14 +90,14 @@ SUBROUTINE sumcal1
   CALL mtoijk(mpmax,ipmax,jpmax,kpmax,nx,ny)
   dhmax=dpmax/(den0*gz)
 !!$  IF(heat) CALL mtoijk(mtmax,itmax,jtmax,ktmax,nx,ny)
-  DO  is=1,ns
-     CALL mtoijk(mcmax(is),icmax(is),jcmax(is),kcmax(is),nx,ny)
+  DO  iis=1,ns
+     CALL mtoijk(mcmax(iis),icmax(iis),jcmax(iis),kcmax(iis),nx,ny)
   END DO
   DEALLOCATE (mcmax, &
        stat = da_err)
   IF (da_err /= 0) THEN  
      PRINT *, "Array deallocation failed, sumcal1"  
-     STOP  
+     STOP
   ENDIF
   ! ... Check for unacceptable time step length
   ! ...  ***not used at present ***
@@ -107,8 +105,8 @@ SUBROUTINE sumcal1
      ! ... Algorithm from Aziz & Settari p.404
      IF(ABS(dpmax) > 1.5*dptas) tsfail=.TRUE.
      IF(ABS(dtmax) > 1.5*dttas) tsfail=.TRUE.
-     DO  is=1,ns
-        IF(ABS(dcmax(is)) > 1.5*dctas(is)) tsfail=.TRUE.
+     DO  iis=1,ns
+        IF(ABS(dcmax(iis)) > 1.5*dctas(iis)) tsfail=.TRUE.
      END DO
      IF(tsfail) THEN
         itime=itime-1
@@ -122,8 +120,8 @@ SUBROUTINE sumcal1
         CALL logprt_c(logline1)
         WRITE(logline1,2002) 'Current time step length .....',cnvtmi*deltim,'  ('//unittm//')'
 2002    FORMAT(a,1PG12.3,A)
-!        WRITE(*,2012) TRIM(logline1)
-!2012    FORMAT(/tr5,a)
+        !        WRITE(*,2012) TRIM(logline1)
+        !2012    FORMAT(/tr5,a)
         CALL screenprt_c(logline1)
         WRITE(logline1,5001) 'Maximum change in potentiometric head '//dots,  &
              cnvpi*dhmax,' ('//unitl//')',' at location (',  &
@@ -131,9 +129,9 @@ SUBROUTINE sumcal1
 5001    FORMAT(A45,1PE14.4,A8,A,3(1PG10.3,A),A)
         CALL logprt_c(logline1)
         CALL screenprt_c(logline1)
-!        WRITE(*,aformt) 'Maximum change in potentiometric head '//dots,  &
-!             cnvpi*dhmax,'('//unitl//')','at location (',  &
-!             cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax), ')(',unitl,')'
+        !        WRITE(*,aformt) 'Maximum change in potentiometric head '//dots,  &
+        !             cnvpi*dhmax,'('//unitl//')','at location (',  &
+        !             cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax), ')(',unitl,')'
 !!$        IF(heat) THEN
 !!$           WRITE(fuclog,aform) 'Maximum change in temperature '//dots,  &
 !!$                cnvt1i*dtmax+cnvt2i,'(Deg.'//unitt//')',  &
@@ -143,23 +141,23 @@ SUBROUTINE sumcal1
 !!$                cnvt1i*dtmax+cnvt2i,'(Deg.'//unitt//')','at location (',cnvli*x(itmax),',',  &
 !!$                cnvli*y(jtmax),',',cnvli*z(ktmax),')(',unitl,')'
 !!$        END IF
-        DO  is=1,ns
-           WRITE(logline1,3102) 'Component no. ',is,'  ',comp_name(is)
+        DO  iis=1,ns
+           WRITE(logline1,3102) 'Component no. ',iis,'  ',comp_name(iis)
 3102       FORMAT(a,i4,a,a)
            CALL logprt_c(logline1)
            CALL screenprt_c(logline1)
-!           WRITE(*,2102) 'Component no. ',is,comp_name(is)
-!2102       FORMAT(/tr10,a,i4,tr2,a)
-           u6=dcmax(is)
+           !           WRITE(*,2102) 'Component no. ',iis,comp_name(iis)
+           !2102       FORMAT(/tr10,a,i4,tr2,a)
+           u6=dcmax(iis)
            WRITE(logline1,5001) 'Maximum change in '//mflbl//'fraction '//dots,  &
-                u6,'(-)','at location (',cnvli*x(icmax(is)),',',cnvli*y(jcmax(is)),',',  &
-                cnvli*z(kcmax(is)),' )(',unitl//')'
+                u6,'(-)','at location (',cnvli*x(icmax(iis)),',',cnvli*y(jcmax(iis)),',',  &
+                cnvli*z(kcmax(iis)),' )(',unitl//')'
            CALL logprt_c(logline1)
            CALL screenprt_c(logline1)
-!           WRITE(*,aformt) 'Maximum change in '//mflbl//'fraction '//dots,  &
-!                u6,'(-)','at location (',  &
-!                cnvli*x(icmax(is)),',',cnvli*y(jcmax(is)),',',  &
-!                cnvli*z(kcmax(is)),')(',unitl,')'
+           !           WRITE(*,aformt) 'Maximum change in '//mflbl//'fraction '//dots,  &
+           !                u6,'(-)','at location (',  &
+           !                cnvli*x(icmax(iis)),',',cnvli*y(jcmax(iis)),',',  &
+           !                cnvli*z(kcmax(iis)),')(',unitl,')'
         END DO
         RETURN
      END IF
@@ -179,8 +177,8 @@ SUBROUTINE sumcal1
 !!$        !            UT=T(M)
 !!$        pmhv(m)=pmhv(m)+pmchv(m)*dp(m)
 !!$     END IF
-     DO  is=1,ns
-        c(m,is)=c(m,is)+dc(m,is)
+     DO  iis=1,ns
+        c(m,iis)=c(m,iis)+dc(m,iis)
      END DO
      ! ... Update density, viscosity, and enthalpy
      !... *** not needed for PHAST
@@ -202,7 +200,7 @@ SUBROUTINE sumcal1
         ! ... Save previous free surface elev for rate of free surface movement approximation
         zfsn(mt) = zfs(mt)
         WRITE(cibc,6001) ibc(m)
-6001    FORMAT(i9)
+6001    FORMAT(i9.9)
 !!$        IF(cibc(1:1) == '1') CYCLE     ! Frac is already calculated in INIT3 for 
         ! ... Do the specified pressure cells anyway so that a compatible pressure field
         ! ...    is used for interpolation
@@ -429,11 +427,11 @@ SUBROUTINE sumcal1
      totwfp=0._kdp
      totwhi=0._kdp
      totwhp=0._kdp
-     DO  is=1,ns
-        tqwsp(is)=0._kdp
-        tqwsi(is)=0._kdp
-        totwsi(is)=0._kdp
-        totwsp(is)=0._kdp
+     DO  iis=1,ns
+        tqwsp(iis)=0._kdp
+        tqwsi(iis)=0._kdp
+        totwsi(iis)=0._kdp
+        totwsp(iis)=0._kdp
      END DO
      ! ... Obtain well flow rates and conditions
      CALL wbbal
@@ -451,10 +449,10 @@ SUBROUTINE sumcal1
 !!$              tqwhp=tqwhp-qhw(iwel)
 !!$              sthwp(iwel)=sthwp(iwel)-ufdt1*qhw(iwel)
 !!$           END IF
-           DO  is=1,ns
-              stotsp(is) = stotsp(is)-ufdt1*qsw(iwel,is)
-              tqwsp(is)=tqwsp(is)-qsw(iwel,is)
-              stswp(iwel,is) = stswp(iwel,is)-ufdt1*qsw(iwel,is)
+           DO  iis=1,ns
+              stotsp(iis) = stotsp(iis)-ufdt1*qsw(iwel,iis)
+              tqwsp(iis)=tqwsp(iis)-qsw(iwel,iis)
+              stswp(iwel,iis) = stswp(iwel,iis)-ufdt1*qsw(iwel,iis)
            END DO
         ELSE                             ! ... Injection wells
            ! ... Step total flow rates
@@ -468,10 +466,10 @@ SUBROUTINE sumcal1
 !!$              tqwhi=tqwhi+qhw(iwel)
 !!$              sthwi(iwel)=sthwi(iwel)+ufdt1*qhw(iwel)
 !!$           END IF
-           DO  is=1,ns
-              stotsi(is) = stotsi(is)+ufdt1*qsw(iwel,is)
-              tqwsi(is)=tqwsi(is)+qsw(iwel,is)
-              stswi(iwel,is) = stswi(iwel,is)+ufdt1*qsw(iwel,is)
+           DO  iis=1,ns
+              stotsi(iis) = stotsi(iis)+ufdt1*qsw(iwel,iis)
+              tqwsi(iis)=tqwsi(iis)+qsw(iwel,iis)
+              stswi(iwel,iis) = stswi(iwel,iis)+ufdt1*qsw(iwel,iis)
            END DO
         END IF
         ! ... Cumulative amounts for each well and for all wells
@@ -481,8 +479,8 @@ SUBROUTINE sumcal1
         ! ...      the sum for the wells
         stfwel=stfwel+(stfwi(iwel)-stfwp(iwel))*deltim
 !!$        sthwel=sthwel+(sthwi(iwel)-sthwp(iwel))*deltim
-        DO  is=1,ns
-           stswel(is)=stswel(is)+(stswi(iwel,is)-stswp(iwel,is))*deltim
+        DO  iis=1,ns
+           stswel(iis)=stswel(iis)+(stswi(iwel,iis)-stswp(iwel,iis))*deltim
         END DO
         totwfp=totwfp+wfpcum(iwel)
         totwfi=totwfi+wficum(iwel)
@@ -492,11 +490,11 @@ SUBROUTINE sumcal1
 !!$           totwhp=totwhp+whpcum(iwel)
 !!$           totwhi=totwhi+whicum(iwel)
 !!$        END IF
-        DO  is=1,ns
-           wspcum(iwel,is)=wspcum(iwel,is)+stswp(iwel,is)*deltim
-           wsicum(iwel,is)=wsicum(iwel,is)+stswi(iwel,is)*deltim
-           totwsp(is)=totwsp(is)+wspcum(iwel,is)
-           totwsi(is)=totwsi(is)+wsicum(iwel,is)
+        DO  iis=1,ns
+           wspcum(iwel,iis)=wspcum(iwel,iis)+stswp(iwel,iis)*deltim
+           wsicum(iwel,iis)=wsicum(iwel,iis)+stswi(iwel,iis)*deltim
+           totwsp(iis)=totwsp(iis)+wspcum(iwel,iis)
+           totwsi(iis)=totwsi(iis)+wsicum(iwel,iis)
         END DO
      END DO
   END IF
@@ -506,11 +504,11 @@ SUBROUTINE sumcal1
      ! ... Fluid flows calculated in ASMSLP
      !...         CALL SBCFLO(1,DP,FRACNP,QFSBC,RHFSBC,VAFSBC)
 !!$     IF(heat) CALL sbcflo(2,dt,fracnp,qhsbc,rhhsbc,vahsbc)
-     DO  is=1,ns
-        dcv => dc(0:,is)
-        qssbcv => qssbc(:,is)
-        rhsbcv => rhssbc(:,is)
-        vasbcv => vassbc(:,:,is)
+     DO  iis=1,ns
+        dcv => dc(0:,iis)
+        qssbcv => qssbc(:,iis)
+        rhsbcv => rhssbc(:,iis)
+        vasbcv => vassbc(:,:,iis)
         CALL sbcflo(3,dcv,fracnp,qssbcv,rhsbcv,vasbcv)
      END DO
   END IF
@@ -520,8 +518,8 @@ SUBROUTINE sumcal1
      ! ... In case of specified head in dry cells
      sfsb(l) = 0._kdp
      sfvsb(l) = 0._kdp
-     DO  is=1,ns
-        sssb(l,is) = 0._kdp
+     DO  iis=1,ns
+        sssb(l,iis) = 0._kdp
      END DO
      IF(frac(m) <= 0._kdp) CYCLE
      WRITE(cibc,6001) ibc(m)
@@ -551,17 +549,17 @@ SUBROUTINE sumcal1
 !!$           !               STHSBC=STHSBC+QHSBC(L)
 !!$        END IF
         IF(cibc(7:7) /= '1') THEN
-           DO  is=1,ns
+           DO  iis=1,ns
               IF(qfsbc(l) <= 0._kdp) THEN
-!!$                 qssbc(l,is)=qfsbc(l)*c(m,is)
-                 qssbc(l,is)=qfsbc(l)*(c(m,is)-ufdt0*dc(m,is))
-                 stotsp(is) = stotsp(is)-qssbc(l,is)     ! .. wt factor included
+!!$                 qssbc(l,iis)=qfsbc(l)*c(m,iis)
+                 qssbc(l,iis)=qfsbc(l)*(c(m,iis)-ufdt0*dc(m,iis))
+                 stotsp(iis) = stotsp(iis)-qssbc(l,iis)     ! .. wt factor included
               ELSE
-                 qssbc(l,is)=qfsbc(l)*csbc(l,is)
-                 stotsi(is) = stotsi(is)+qssbc(l,is)     ! .. wt factor included
+                 qssbc(l,iis)=qfsbc(l)*csbc(l,iis)
+                 stotsi(iis) = stotsi(iis)+qssbc(l,iis)     ! .. wt factor included
               END IF
-              sssb(l,is)=qssbc(l,is)
-              stssbc(is) = stssbc(is)+qssbc(l,is)   ! .. wt factor included
+              sssb(l,iis)=qssbc(l,iis)
+              stssbc(iis) = stssbc(iis)+qssbc(l,iis)   ! .. wt factor included
            END DO
         END IF
      END IF
@@ -577,14 +575,14 @@ SUBROUTINE sumcal1
 !!$        !            STHSBC=STHSBC+QHSBC(L)
 !!$     END IF
      IF(cibc(7:7) == '1') THEN
-        DO  is=1,ns
-           IF(qssbc(l,is) <= 0._kdp) THEN              ! ... Outflow boundary
-              stotsp(is) = stotsp(is)-qssbc(l,is)     ! .. wt factor included
+        DO  iis=1,ns
+           IF(qssbc(l,iis) <= 0._kdp) THEN              ! ... Outflow boundary
+              stotsp(iis) = stotsp(iis)-qssbc(l,iis)     ! .. wt factor included
            ELSE                                   ! ... Inflow boundary
-              stotsi(is) = stotsi(is)+qssbc(l,is)     ! .. wt factor included
+              stotsi(iis) = stotsi(iis)+qssbc(l,iis)     ! .. wt factor included
            END IF
-           sssb(l,is)=qssbc(l,is)
-           stssbc(is) = stssbc(is)+qssbc(l,is)     ! .. wt factor included
+           sssb(l,iis)=qssbc(l,iis)
+           stssbc(iis) = stssbc(iis)+qssbc(l,iis)     ! .. wt factor included
         END DO
      END IF
   END DO
@@ -594,8 +592,8 @@ SUBROUTINE sumcal1
      ccfsb(l) = ccfsb(l)+sfsb(l)*deltim
      ccfvsb(l) = ccfvsb(l)+sfvsb(l)*deltim
 !!$     CCHSB(L)=CCHSB(L)+SHSB(L)*DELTIM
-     DO  is=1,ns
-        ccssb(l,is) = ccssb(l,is)+sssb(l,is)*deltim
+     DO  iis=1,ns
+        ccssb(l,iis) = ccssb(l,iis)+sssb(l,iis)*deltim
      END DO
   END DO
   ! ... Convert step total flow rates to step total amounts
@@ -604,53 +602,61 @@ SUBROUTINE sumcal1
   ! ... Add to cumulative totals
   tcfsbc=tcfsbc+stfsbc
 !!$  TCHSBC=TCHSBC+STHSBC
-  DO  is=1,ns
-     stssbc(is)=stssbc(is)*deltim
-     tcssbc(is)=tcssbc(is)+stssbc(is)
+  DO  iis=1,ns
+     stssbc(iis)=stssbc(iis)*deltim
+     tcssbc(iis)=tcssbc(iis)+stssbc(iis)
   END DO
   ! ... Specified flux b.c.
   erflg=.FALSE.
   ! ... Allocate scratch space
-  ALLOCATE (qsbc3(nsa), qsbc4(nsa), &
+  ALLOCATE (qsbc3(nsa), qsbc4(nsa),  &
        stat = a_err)
   IF (a_err /= 0) THEN  
-     PRINT *, "Array allocation failed: sumcal1"  
+     PRINT *, "Array allocation failed: sumcal1, point 2"  
      STOP
   ENDIF
-  DO  l=1,nfbc
-     m=mfbc(l)
-     ufrac=frac(m)
-     ! ... Identify the cell containing the free surface
-     IF(l >= lnz2) THEN
-        l1=MOD(m,nxy)
-        IF(l1 == 0) l1=nxy
-        m=mfsbc(l1)
-        IF(m == 0) CYCLE
-        ufrac=1._kdp
-     END IF
-     qn=qfbcv(l)
-     IF(qn <= 0._kdp) THEN     ! ... Outflow
-        qfbc=den(m)*qn*ufrac
-        qffbc(l) = qfbc
-        stotfp = stotfp-ufdt1*qfbc
+  DO lc=1,nfbc_cells
+     m = flux_seg_index(lc)%m
+     qffbc(lc) = 0._kdp
+     qsfbc(lc,:) = 0._kdp
+     sffb(lc) = 0._kdp
+     sfvfb(lc) = 0._kdp
+     ssfb(lc,:) = 0._kdp
+     IF(m == 0) CYCLE     ! ... dry column
+     DO ls=flux_seg_index(lc)%seg_first,flux_seg_index(lc)%seg_last
+        ufrac = 1._kdp
+        IF(ifacefbc(ls) < 3) ufrac = frac(m)  
+        IF(fresur .AND. ifacefbc(ls) == 3 .AND. m >= mtp1) THEN
+           ! ... Redirect the flux to the free-surface cell
+           l1 = MOD(m,nxy)
+           IF(l1 == 0) l1 = nxy
+           m = mfsbc(l1)
+        ENDIF
+        qn = qfflx(ls)*areafbc(ls)
+        IF(qn <= 0.) THEN             ! ... Outflow
+           qfbc = den(m)*qn*ufrac  
+           qffbc(lc) = qffbc(lc) + qfbc
+           stotfp = stotfp-ufdt1*qfbc
 !!$        qhbc=qfbc*eh(m)
 !!$        stothp=stothp-ufdt1*qhbc
-        DO  is=1,ns
-           qsbc3(is)=qfbc*c(m,is)
-           stotsp(is) = stotsp(is)-ufdt1*qsbc3(is)
-        END DO
-     ELSE                      ! ... Inflow
-        qfbc=denfbc(l)*qn*ufrac
-        qffbc(l) = qfbc
-        stotfi = stotfi+ufdt1*qfbc
-        DO  is=1,ns
-           qsbc3(is)=qfbc*cflx(l,is)
-           stotsi(is) = stotsi(is)+ufdt1*qsbc3(is)
-        END DO
-     END IF
-     sffb(l)=sffb(l)+qfbc
-     sfvfb(l)=sfvfb(l)+qn
-     stffbc = stffbc+ufdt1*qfbc
+           DO  iis=1,ns
+              qsbc3(iis) = qfbc*c(m,iis)
+              qsfbc(lc,iis) = qsfbc(lc,iis) + qsbc3(iis)
+              stotsp(iis) = stotsp(iis)-ufdt1*qsbc3(iis)
+           END DO
+        ELSE                      ! ... Inflow
+           qfbc = denfbc(ls)*qn*ufrac
+           qffbc(lc) = qffbc(lc) + qfbc
+           stotfi = stotfi+ufdt1*qfbc
+           DO  iis=1,ns
+              qsbc3(iis) = qfbc*cfbc(ls,iis)
+              qsfbc(lc,iis) = qsfbc(lc,iis) + qsbc3(iis)
+              stotsi(iis) = stotsi(iis)+ufdt1*qsbc3(iis)
+           END DO
+        END IF
+        sffb(lc) = sffb(lc) + qfbc
+        sfvfb(lc) = sfvfb(lc) + qn
+        stffbc = stffbc+ufdt1*qfbc
 !!$     IF(heat) THEN
 !!$        qhbc2=qhfbc(l)*ufrac
 !!$        IF(qhbc2 <= 0._kdp) THEN
@@ -661,194 +667,294 @@ SUBROUTINE sumcal1
 !!$        !            SHFB(L)=SHFB(L)+QHBC+QHBC2
 !!$        !            STHFBC=STHFBC+0.5*(QHBC2+QHBC)
 !!$     END IF
-     DO  is=1,ns
-        qsbc4(is)=qsfbc(l,is)*ufrac
-        IF(qsbc4(is) <= 0._kdp) THEN
-           stotsp(is) = stotsp(is)-ufdt1*qsbc4(is)
-        ELSE
-           stotsi(is) = stotsi(is)+ufdt1*qsbc4(is)
-        END IF
-        ssfb(l,is) = ssfb(l,is)+qsbc4(is)+qsbc3(is)
-        stsfbc(is) = stsfbc(is)+ufdt1*(qsbc4(is)+qsbc3(is))
+        DO  iis=1,ns
+           qsbc4(iis) = qsflx(ls,iis)*areafbc(ls)*ufrac
+           IF(qsbc4(iis) <= 0._kdp) THEN
+              stotsp(iis) = stotsp(iis)-ufdt1*qsbc4(iis)
+           ELSE
+              stotsi(iis) = stotsi(iis)+ufdt1*qsbc4(iis)
+           END IF
+           ssfb(lc,iis) = ssfb(lc,iis) + qsbc4(iis) + qsbc3(iis)
+           stsfbc(iis) = stsfbc(iis)+ufdt1*(qsbc4(iis)+qsbc3(iis))
+        END DO
      END DO
   END DO
   ! ... Compute cumulative cell flow amounts
-  DO  l=1,nfbc
-     ccffb(l) = ccffb(l)+0.5*sffb(l)*deltim
-     ccfvfb(l) = ccfvfb(l)+0.5*sfvfb(l)*deltim
+  DO  lc=1,nfbc
+     ccffb(lc) = ccffb(lc)+0.5*sffb(lc)*deltim
+     ccfvfb(lc) = ccfvfb(lc)+0.5*sfvfb(lc)*deltim
 !!$     CCHFB(L)=CCHFB(L)+0.5*SHFB(L)*DELTIM
-     DO  is=1,ns
-        ccsfb(l,is)=ccsfb(l,is)+0.5*ssfb(l,is)*deltim
+     DO  iis=1,ns
+        ccsfb(lc,iis) = ccsfb(lc,iis)+0.5*ssfb(lc,iis)*deltim
      END DO
   END DO
-  DEALLOCATE (qsbc3, qsbc4, &
+  DEALLOCATE (qsbc3, qsbc4,  &
        stat = da_err)
-  IF (da_err /= 0) THEN  
-     PRINT *, "Array deallocation failed, sumcal1"  
+  IF (da_err /= 0) THEN
+     PRINT *, "Array deallocation failed, sumcal1"
      STOP
   ENDIF
   ! ... Convert step total flow rates to step total amounts
-  stffbc=stffbc*deltim
+  stffbc = stffbc*deltim
 !!$  sthfbc=sthfbc*deltim
-  tcffbc=tcffbc+stffbc
+  tcffbc = tcffbc+stffbc
 !!$  tchfbc=tchfbc+sthfbc
-  DO  is=1,ns
-     stsfbc(is)=stsfbc(is)*deltim
-     tcsfbc(is)=tcsfbc(is)+stsfbc(is)
+  DO  iis=1,ns
+     stsfbc(iis) = stsfbc(iis)*deltim
+     tcsfbc(iis) = tcsfbc(iis)+stsfbc(iis)
   END DO
-  ! ... Calculate aquifer leakage flow rates
+  ! ... Aquifer leakage b.c.
   erflg=.FALSE.
-  DO  l=1,nlbc
-     DO  is=1,ns
-        sslb(l,is) = 0._kdp
-     END DO
-     m=mlbc(l)
-     IF(frac(m) <= 0._kdp .OR. m == 0) CYCLE
-     qnp=albc(l) - blbc(l)*dp(m)
-     IF(qnp < 0._kdp) THEN        ! ... Outflow
-        qflbc(l)=den(m)*qnp
-        stotfp = stotfp-ufdt1*qflbc(l)
-!!$        IF(heat) THEN
-!!$           qhlbc(l)=qflbc(l)*eh(m)
-!!$           stothp=stothp-ufdt1*qhlbc(l)
-!!$        END IF
-        DO  is=1,ns
-           qslbc(l,is)=qflbc(l)*c(m,is)
-           stotsp(is) = stotsp(is)-ufdt1*qslbc(l,is)
-        END DO
-     ELSE                         ! ... Inflow
-        qflbc(l)=denlbc(l)*qnp
-        stotfi = stotfi+ufdt1*qflbc(l)
-!!$        IF(heat) THEN
-!!$          qhlbc(l)=qflbc(l)*ehoftp(tlbc(l),p(m),erflg)
-!!$          stothi=stothi+ufdt1*qhlbc(l)
-!!$        END IF
-        DO  is=1,ns
-           qslbc(l,is)=qflbc(l)*clbc(l,is)
-           stotsi(is) = stotsi(is)+ufdt1*qslbc(l,is)
-        END DO
-     END IF
-     sflb(l)=sflb(l)+qflbc(l)
-     sfvlb(l)=sfvlb(l)+qnp
-!!$     SHLB(L)=SHLB(L)+QHLBC(L)
-     stflbc = stflbc+ufdt1*qflbc(l)
-!!$     STHLBC=STHLBC+ufdt1*QHLBC(L)
-     DO  is=1,ns
-        sslb(l,is)=sslb(l,is)+qslbc(l,is)
-        stslbc(is) = stslbc(is)+ufdt1*qslbc(l,is)
-     END DO
-  END DO
-  ! ... Compute cumulative cell flow amounts
-  DO  l=1,nlbc
-     m=mlbc(l)
-     IF(frac(m) <= 0._kdp) CYCLE
-     ccflb(l)=ccflb(l)+0.5*sflb(l)*deltim
-     ccfvlb(l)=ccfvlb(l)+0.5*sfvlb(l)*deltim
-!!$     CCHLB(L)=CCHLB(L)+0.5*SHLB(L)*DELTIM
-     DO  is=1,ns
-        ccslb(l,is)=ccslb(l,is)+0.5*sslb(l,is)*deltim
-     END DO
-  END DO
-  ! ... Convert step total flow rates to step total amounts
-  stflbc=stflbc*deltim
-!!$  sthlbc=sthlbc*deltim
-  tcflbc=tcflbc+stflbc
-!!$  tchlbc=tchlbc+sthlbc
-  DO  is=1,ns
-     stslbc(is)=stslbc(is)*deltim
-     tcslbc(is)=tcslbc(is)+stslbc(is)
-  END DO
-  ! ... Calculate river leakage flow rates
-  erflg=.FALSE.
+  ! ... Allocate scratch space
   ALLOCATE (cavg(nsa), sum_cqm_in(nsa),  &
        stat = a_err)
   IF (a_err /= 0) THEN  
-     PRINT *, "Array allocation failed: sumcal1"  
-     STOP  
+     PRINT *, "Array allocation failed: sumcal1, point 2"  
+     STOP
   ENDIF
-  DO lc=1,nrbc_cells
-     m = river_seg_index(lc)%m
+  DO lc=1,nlbc_cells
+     m = leak_seg_index(lc)%m
+     qflbc(lc) = 0._kdp
+     qslbc(lc,:) = 0._kdp
+     sflb(lc) = 0._kdp
+     sfvlb(lc) = 0._kdp
+     sslb(lc,:) = 0._kdp
      IF(m == 0) CYCLE
      ! ... Calculate current net aquifer leakage flow rate
-     ! ...      Possible attenuation included explicitly
      qm_net = 0._kdp
-     DO ls=river_seg_index(lc)%seg_first,river_seg_index(lc)%seg_last
-        qnp = arbc(ls) - brbc(ls)*dp(m)  
-        IF(qnp < 0._kdp) THEN           ! ... Outflow
+     DO ls=leak_seg_index(lc)%seg_first,leak_seg_index(lc)%seg_last
+        qnp = albc(ls) - blbc(ls)*dp(m)
+        IF(qnp <= 0._kdp) THEN           ! ... Outflow
            qm_net = qm_net + den(m)*qnp
+           sfvlb(lc) = sfvlb(lc) + qnp
         ELSE                            ! ... Inflow
-           ! ... Limit the flow rate for a river leakage
-           qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &
-                - 0.5_kdp*den(m)*bbrbc(ls)))
-           qnp = MIN(qnp,qlim)
-           qm_net = qm_net + denrbc(ls)*qnp
+           qm_net = qm_net + denlbc(ls)*qnp
+           sfvlb(lc) = sfvlb(lc) + qnp
         ENDIF
      END DO
-     qfrbc(lc) = qm_net
-     IF(qm_net < 0._kdp) THEN        ! ... Outflow
-        stotfp = stotfp - ufdt1*qfrbc(lc)
-        DO  is=1,ns
-           qsrbc(lc,is) = qfrbc(lc)*c(m,is)
-           stotsp(is) = stotsp(is) - ufdt1*qsrbc(lc,is)
+     qflbc(lc) = qm_net
+     sflb(lc) = sflb(lc) + qflbc(lc)
+     stflbc = stflbc + ufdt1*qflbc(lc)
+     IF(qm_net <= 0._kdp) THEN           ! ... net outflow
+	stotfp = stotfp - ufdt1*qflbc(lc)
+        DO  iis=1,ns
+           qslbc(lc,iis) = qflbc(lc)*c(m,iis)
+           stotsp(iis) = stotsp(iis) - ufdt1*qslbc(lc,iis)
         END DO
-     ELSEIF(qm_net > 0._kdp) THEN    ! ... Inflow
+     ELSEIF(qm_net > 0._kdp) THEN        ! ... net inflow
+        stotfi = stotfi + ufdt1*qflbc(lc)
+        ! ... calculate flow weighted average concentrations for inflow segments
         qm_in = 0._kdp
         sum_cqm_in = 0._kdp
-        DO ls=river_seg_index(lc)%seg_first,river_seg_index(lc)%seg_last
-           qnp = arbc(ls) - brbc(ls)*dp(m)
-           IF(qnp > 0._kdp) THEN  ! ... Inflow
-              ! ... Limit the flow rate for a river leakage
-              qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*  &
-                   (zerbc(ls)-0.5_kdp*bbrbc(ls)) - 0.5_kdp*den(m)*bbrbc(ls)))
-              qnp = MIN(qnp,qlim)
-              qm_in = qm_in + denrbc(ls)*qnp
-              DO is=1,ns
-                 sum_cqm_in(is) = sum_cqm_in(is) + denrbc(ls)*qnp*crbc(ls,is)  
+        DO ls=leak_seg_index(lc)%seg_first,leak_seg_index(lc)%seg_last
+           qnp = albc(ls) - blbc(ls)*dp(m)
+           IF(qnp > 0._kdp) THEN                   ! ... inflow
+              qm_in = qm_in + denlbc(ls)*qnp
+              DO  iis=1,ns
+                 sum_cqm_in(iis) = sum_cqm_in(iis) + denlbc(ls)*qnp*clbc(ls,iis)
               END DO
            ENDIF
         END DO
-        DO is=1,ns
-           cavg(is) = sum_cqm_in(is)/qm_in
-        END DO
-        stotfi = stotfi + ufdt1*qfrbc(lc)
-        DO is=1,ns
-           qsrbc(lc,is) = qfrbc(lc)*cavg(is)
-           stotsi(is) = stotsi(is) + ufdt1*qsrbc(lc,is)
-        END DO
+        DO iis=1,ns
+           cavg(iis) = sum_cqm_in(iis)/qm_in
+           qslbc(lc,iis) = qflbc(lc)*cavg(iis)
+           stotsi(iis) = stotsi(iis) + ufdt1*qslbc(lc,iis)
+	END DO
      END IF
-     sfrb(lc)=sfrb(lc)+qfrbc(lc)
-     sfvrb(lc)=sfvrb(lc)+qm_net/den0   ! *** Only valid for constant density
-     stfrbc = stfrbc+ufdt1*qfrbc(lc)
-     DO  is=1,ns
-        ssrb(lc,is)=ssrb(lc,is)+qsrbc(lc,is)
-        stsrbc(is) = stsrbc(is)+ufdt1*qsrbc(lc,is)
+     DO  iis=1,ns
+        sslb(lc,iis)=sslb(lc,iis) + qslbc(lc,iis)
+        stslbc(iis) = stslbc(iis) + ufdt1*qslbc(lc,iis)
      END DO
   END DO
   ! ... Compute cumulative cell flow amounts
-  DO lc=1,nrbc
-     ccfrb(lc) = ccfrb(lc)+0.5*sfrb(lc)*deltim
-     ccfvrb(lc) = ccfvrb(lc)+0.5*sfvrb(lc)*deltim
-     DO is=1,ns
-        ccsrb(lc,is) = ccsrb(lc,is)+0.5*ssrb(lc,is)*deltim
+  DO lc=1,nlbc
+     ccflb(lc) = ccflb(lc) + 0.5*sflb(lc)*deltim
+     ccfvlb(lc) = ccfvlb(lc) + 0.5*sfvlb(lc)*deltim
+     DO iis=1,ns
+        ccslb(lc,iis) = ccslb(lc,iis) + 0.5*sslb(lc,iis)*deltim
      END DO
   END DO
   ! ... Convert step total flow rates to step total amounts
   ! ...     and sum for cumulative amounts
-  stfrbc=stfrbc*deltim
-!!$  sthrbc=sthrbc*deltim
-  tcfrbc=tcfrbc+stfrbc
-!!$  tchrbc=tchrbc+sthrbc
-  DO  is=1,ns
-     stsrbc(is)=stsrbc(is)*deltim
-     tcsrbc(is)=tcsrbc(is)+stsrbc(is)
+  stflbc = stflbc*deltim
+  tcflbc = tcflbc + stflbc
+  DO  iis=1,ns
+     stslbc(iis) = stslbc(iis)*deltim
+     tcslbc(iis) = tcslbc(iis) + stslbc(iis)
   END DO
+  ! ... Do not update the indices connecting river to aquifer yet!
   DEALLOCATE (cavg, sum_cqm_in, &
        stat = da_err)
   IF (da_err /= 0) THEN  
      PRINT *, "Array deallocation failed, sumcal1"  
      STOP
   ENDIF
+  ! ... River leakage b.c.
+  erflg=.FALSE.
+  ! ... Allocate scratch space
+  ALLOCATE (cavg(nsa), sum_cqm_in(nsa),  &
+       stat = a_err)
+  IF (a_err /= 0) THEN  
+     PRINT *, "Array allocation failed: sumcal1, point 3"  
+     STOP
+  ENDIF
+  DO lc=1,nrbc_cells
+     m = river_seg_index(lc)%m
+     qfrbc(lc) = 0._kdp
+     qsrbc(lc,:) = 0._kdp
+     sfrb(lc) = 0._kdp
+     sfvrb(lc) = 0._kdp
+     ssrb(lc,:) = 0._kdp
+     IF(m == 0) CYCLE
+     ! ... Calculate current net aquifer leakage flow rate
+     qm_net = 0._kdp
+     DO ls=river_seg_index(lc)%seg_first,river_seg_index(lc)%seg_last
+        qnp = arbc(ls) - brbc(ls)*dp(m)
+        IF(qnp <= 0._kdp) THEN          ! ... Outflow
+           qm_net = qm_net + den(m)*qnp
+           sfvrb(lc) = sfvrb(lc) + qnp
+        ELSE                            ! ... Inflow
+           ! ... Limit the flow rate for a river leakage
+           qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &
+                - 0.5_kdp*den(m)*bbrbc(ls)))
+           qnp = MIN(qnp,qlim)
+           qm_net = qm_net + denrbc(ls)*qnp
+           sfvrb(lc) = sfvrb(lc) + qnp
+        ENDIF
+     END DO
+     qfrbc(lc) = qm_net
+     sfrb(lc) = sfrb(lc) + qfrbc(lc)
+     stfrbc = stfrbc + ufdt1*qfrbc(lc)
+     IF(qm_net <= 0._kdp) THEN           ! ... net outflow
+	stotfp = stotfp - ufdt1*qfrbc(lc)
+        DO  iis=1,ns
+           qsrbc(lc,iis) = qfrbc(lc)*c(m,iis)
+           stotsp(iis) = stotsp(iis) - ufdt1*qsrbc(lc,iis)
+        END DO
+     ELSEIF(qm_net > 0._kdp) THEN        ! ... net inflow
+        stotfi = stotfi + ufdt1*qfrbc(lc)
+        ! ... calculate flow weighted average concentrations for inflow segments
+        qm_in = 0._kdp
+        sum_cqm_in = 0._kdp
+        DO ls=river_seg_index(lc)%seg_first,river_seg_index(lc)%seg_last
+           qnp = arbc(ls) - brbc(ls)*dp(m)
+           IF(qnp > 0._kdp) THEN                   ! ... inflow
+              ! ... limit the flow rate for a river leakage
+              qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*  &
+                   (zerbc(ls)-0.5_kdp*bbrbc(ls)) - 0.5_kdp*den(m)*bbrbc(ls)))
+              qnp = MIN(qnp,qlim)
+              qm_in = qm_in + denrbc(ls)*qnp
+              DO  iis=1,ns
+                 sum_cqm_in(iis) = sum_cqm_in(iis) + denrbc(ls)*qnp*crbc(ls,iis)
+              END DO
+           ENDIF
+        END DO
+        DO iis=1,ns
+           cavg(iis) = sum_cqm_in(iis)/qm_in
+           qsrbc(lc,iis) = qfrbc(lc)*cavg(iis)
+           stotsi(iis) = stotsi(iis) + ufdt1*qsrbc(lc,iis)
+	END DO
+     ENDIF
+     DO  iis=1,ns
+        ssrb(lc,iis)=ssrb(lc,iis) + qsrbc(lc,iis)
+        stsrbc(iis) = stsrbc(iis) + ufdt1*qsrbc(lc,iis)
+     END DO
+  END DO
+  ! ... Compute cumulative cell flow amounts
+  DO lc=1,nrbc
+     ccfrb(lc) = ccfrb(lc) + 0.5*sfrb(lc)*deltim
+     ccfvrb(lc) = ccfvrb(lc) + 0.5*sfvrb(lc)*deltim
+     DO iis=1,ns
+        ccsrb(lc,iis) = ccsrb(lc,iis) + 0.5*ssrb(lc,iis)*deltim
+     END DO
+  END DO
+  ! ... Convert step total flow rates to step total amounts
+  ! ...     and sum for cumulative amounts
+  stfrbc = stfrbc*deltim
+  tcfrbc = tcfrbc + stfrbc
+  DO  iis=1,ns
+     stsrbc(iis) = stsrbc(iis)*deltim
+     tcsrbc(iis) = tcsrbc(iis) + stsrbc(iis)
+  END DO
   ! ... Do not update the indices connecting river to aquifer yet!
+  DEALLOCATE (cavg, sum_cqm_in, &
+       stat = da_err)
+  IF (da_err /= 0) THEN  
+     PRINT *, "Array deallocation failed, sumcal1"  
+     STOP
+  ENDIF
+  ! ... Drain leakage b.c.
+  erflg=.FALSE.
+  ! ... Allocate scratch space
+  ALLOCATE (qsbc3(nsa), qsbc4(nsa),  &
+       stat = a_err)
+  IF (a_err /= 0) THEN  
+     PRINT *, "Array allocation failed: sumcal1, point 3.1"  
+     STOP
+  ENDIF
+  DO lc=1,ndbc_cells
+     m = drain_seg_index(lc)%m
+     qfdbc(lc) = 0._kdp
+     qsdbc(lc,:) = 0._kdp
+     sfdb(lc) = 0._kdp
+     sfvdb(lc) = 0._kdp
+     ssdb(lc,:) = 0._kdp
+     IF(m == 0) CYCLE
+     DO ls=drain_seg_index(lc)%seg_first,drain_seg_index(lc)%seg_last
+        qnp = adbc(ls) - bdbc(ls)*dp(m)
+        IF(qnp <= 0._kdp) THEN           ! ... Outflow
+           qfbc = den(m)*qnp
+           qfdbc(lc) = qfdbc(lc) + qfbc
+           stotfp = stotfp-ufdt1*qfbc
+           DO  iis=1,ns
+              qsbc3(iis) = qfbc*c(m,iis)
+              qsdbc(lc,iis) = qsdbc(lc,iis) + qsbc3(iis)
+              stotsp(iis) = stotsp(iis)-ufdt1*qsbc3(iis)
+           END DO
+        ELSE                            ! ... Inflow
+           qfbc = 0._kdp
+           qfdbc(lc) = qfdbc(lc) + qfbc
+           stotfi = stotfi+ufdt1*qfbc
+           DO  iis=1,ns
+              qsbc3(iis) = 0._kdp
+              qsdbc(lc,iis) = qsdbc(lc,iis) + qsbc3(iis)
+              stotsi(iis) = stotsi(iis) + ufdt1*qsbc3(iis)
+           END DO
+        ENDIF
+     END DO
+     sfdb(lc) = sfdb(lc) + qfdbc(lc)
+     sfvdb(lc) = sfvdb(lc) + qfdbc(lc)/den0   ! *** Only valid for constant density
+     stfdbc = stfdbc + ufdt1*qfdbc(lc)
+     DO  iis=1,ns
+        ssdb(lc,iis) = ssdb(lc,iis) + qsdbc(lc,iis)
+        stsdbc(iis) = stsdbc(iis) + ufdt1*qsdbc(lc,iis)
+     END DO
+  END DO
+  ! ... Compute cumulative cell flow amounts
+  DO lc=1,ndbc
+     ccfdb(lc) = ccfdb(lc) + 0.5*sfdb(lc)*deltim
+     ccfvdb(lc) = ccfvdb(lc) + 0.5*sfvdb(lc)*deltim
+     DO iis=1,ns
+        ccsdb(lc,iis) = ccsdb(lc,iis) + 0.5*ssdb(lc,iis)*deltim
+     END DO
+  END DO
+  DEALLOCATE (qsbc3, qsbc4,  &
+       stat = da_err)
+  IF (da_err /= 0) THEN
+     PRINT *, "Array deallocation failed, sumcal1"
+     STOP
+  ENDIF
+  ! ... Convert step total flow rates to step total amounts
+  ! ...     and sum for cumulative amounts
+  stfdbc = stfdbc*deltim
+!!$  sthdbc=sthdbc*deltim
+  tcfdbc = tcfdbc+stfdbc
+!!$  tchdbc=tchdbc+sthdbc
+  DO  iis=1,ns
+     stsdbc(iis) = stsdbc(iis)*deltim
+     tcsdbc(iis) = tcsdbc(iis)+stsdbc(iis)
+  END DO
+  ! ... Do not update the indices connecting drain to aquifer yet!
 !!$  ! ... Calculate aquifer influence function boundary flow rates
 !!$  !... *** not implemented for PHAST
 !!$  erflg=.FALSE.
@@ -948,8 +1054,8 @@ SUBROUTINE sumcal1
      u1=0._kdp
      fir = fir+u0*den(m)
      firv = firv+u0
-     DO  is=1,ns
-        sir_prechem(is) = sir_prechem(is) + den(m)*(u0+u1)*c(m,is)
+     DO  iis=1,ns
+        sir_prechem(iis) = sir_prechem(iis) + den(m)*(u0+u1)*c(m,iis)
      END DO
      IF(ABS(prip) > 0. .OR. ABS(prihdf_head) > 0. .OR. ABS(primaphead) > 0.) THEN
         ! ... Calculate head field
@@ -958,5 +1064,4 @@ SUBROUTINE sumcal1
         hdprnt(m) = z(k)+p(m)/(den(m)*gz)
      END IF
   END DO
-
 END SUBROUTINE sumcal1

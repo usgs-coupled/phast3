@@ -54,6 +54,7 @@ SUBROUTINE init2_2
   tcffbc = 0._kdp  
   tcflbc = 0._kdp
   tcfrbc = 0._kdp  
+  tcfdbc = 0._kdp
   do  iis = 1,nsa  
         totwsi(iis) = 0._kdp  
         totwsp(iis) = 0._kdp  
@@ -64,6 +65,7 @@ SUBROUTINE init2_2
      tcsfbc(iis) = 0._kdp  
      tcslbc(iis) = 0._kdp  
      tcsrbc(iis) = 0._kdp  
+     tcsdbc(iis) = 0._kdp  
      tcsaif(iis) = 0._kdp  
      tdsir_chem(iis) = 0._kdp
   END DO

@@ -12,7 +12,7 @@ SUBROUTINE write5_ss_flow
   USE mct
   USE mcv
   USE mcw
-  USE mg2, ONLY: hdprnt, qfbcv
+  USE mg2, ONLY: hdprnt
   USE print_control_mod
   IMPLICIT NONE
   INCLUDE 'ifwr.inc'
@@ -28,9 +28,9 @@ SUBROUTINE write5_ss_flow
   CHARACTER(LEN=12), DIMENSION(:), allocatable :: chu10a, chu11a
   REAL(KIND=kdp) :: hwcell, pwcell, tdehir, tdfir, tdsir, utime
   INTEGER :: a_err, da_err, i, ic, ifmt, indx, ip, iw1p, iw2p, iwel, iwfss, iwpp, j, jprptc,  &
-       k, k1, ks, l, l1, lc, ll, lll, lwk, lwks, m, mfs, mkt, mm, mt, mwk, nsa
+       k, k1, ks, l, l1, lc, ll, lll, ls, lwk, lwks, m, mfs, mkt, mm, mt, mwk, nsa
   LOGICAL :: erflg, prthd, prthd2, prthd3
-  REAL(KIND=kdp), PARAMETER :: cnv = 1._kdp
+  REAL(KIND=kdp), PARAMETER :: cnv=1._kdp
   CHARACTER(LEN=130) :: logline1, logline2
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
@@ -133,8 +133,8 @@ SUBROUTINE write5_ss_flow
         ! CALL prntar(2,p,lprnt1,fup,cnvpi,24,000)
         ifmt=13
         IF(eeunit) ifmt=12
-        WRITE(fup,2009) 'Fluid Potentiometric Head (',TRIM(unitl),')'
-        2009    FORMAT(/tr30,3A/tr35,a,1PG10.2,tr2,5A)
+        WRITE(fup,2009) 'Fluid Potentiometric Head ('//TRIM(unitl)//')'
+2009    FORMAT(/tr30,3A/tr35,a,1PG10.2,tr2,5A)
         CALL prntar(2,hdprnt,lprnt1,fup,cnvli,ifmt,000)
         IF(fresur) THEN
            DO  m=1,nxyz
@@ -204,7 +204,8 @@ SUBROUTINE write5_ss_flow
           dots,cnvmi*stfsbc,'(',unitm,')',  &
           'Step total flux b.c. fluid net inflow '//dots,cnvmi*stffbc,'(',unitm,')',  &
           'Step total leakage b.c. fluid net inflow '//dots,cnvmi*stflbc,'(',unitm,')',  &
-          'Step total river leakage b.c. fluid net inflow '//dots,cnvmi*stfrbc,'(',unitm,')', &
+          'Step total river leakage b.c. fluid net inflow '//dots,cnvmi*stfrbc,'(',unitm,')',  &
+          'Step total drain leakage b.c. fluid net inflow '//dots,cnvmi*stfdbc,'(',unitm,')',  &
           'Step total well fluid net inflow '//dots,cnvmi*stfwel, '(',unitm,')'
      2023 FORMAT(/6(tr1,a60,1PE14.6,tr2,3A/))
      ntprgfb = ntprgfb+1
@@ -355,12 +356,13 @@ SUBROUTINE write5_ss_flow
         prthd=.FALSE.
         prthd2=.FALSE.
         prthd3=.FALSE.
-        WRITE(fubcf,2041) 'Specified Head B.C.: Flow Rates (average over time step)','(positive is into the region)'
+        WRITE(fubcf,2041) 'Specified Head B.C.: Flow Rates (average over time step)',  &
+             '(positive is into the region)'
 2041    FORMAT(//tr25,a/tr25,a)
         DO  l=1,nsbc
            m=msbc(l)
            WRITE(cibc,3007) ibc(m)
-           3007   FORMAT(i9)
+3007       FORMAT(i9.9)
            IF(cibc(1:1) == '1') THEN
               lprnt1(m)=1
               prthd=.TRUE.
@@ -382,32 +384,25 @@ SUBROUTINE write5_ss_flow
         END IF
      END IF
      IF(nfbc > 0) THEN
-        WRITE(fubcf,2043)  'Specified Flux B.C.: Flow Rates (at end of time step)', &
+        WRITE(fubcf,2043)  'Specified Flux B.C.: Flow Rates (at end of time step)',  &
              '(positive is into the region)'
 2043    FORMAT(//tr25,a/tr25,a)
-        DO  m=1,nxyz
-           lprnt1(m)=-1
-        END DO
-        prthd=.FALSE.
-        DO  l=1,nfbc
-           m=mfbc(l)
-           WRITE(cibc,3007) ibc(m)
-           ic=INDEX(cibc(1:3),'2')
-           IF(ic == 0) ic=INDEX(cibc(1:3),'8')
-           ! ... Locate the flux at the cell containing the free-surface
-           IF(l > lnz2) THEN
-              l1=MOD(m,nxy)
-              IF(l1 == 0) l1=nxy
-              m=mfsbc(l1)
-           END IF
-           IF(ic > 0) THEN
-              lprnt1(m)=1
-              prthd=.TRUE.
-              IF(qfbcv(l) > 0.) THEN
-                 aprnt1(m)=denfbc(l)*qfbcv(l)
-              ELSE
-                 aprnt1(m)=den(m)*qfbcv(l)
+        lprnt1 = -1
+!$$        prthd=.FALSE.
+        DO  lc=1,nfbc_cells
+           m = flux_seg_index(lc)%m
+           IF(fresur) THEN
+              ls = flux_seg_index(lc)%seg_first
+              IF(ifacefbc(ls) == 3 .AND. m >= mtp1) THEN
+                 l1 = MOD(m,nxy)
+                 IF(l1 == 0) l1 = nxy
+                 m = mfsbc(l1)
               END IF
+           END IF
+           IF (m > 0) THEN
+              lprnt1(m) = 1
+              !$$              prthd=.TRUE.
+              aprnt1(m) = qffbc(lc)
            END IF
         END DO
         WRITE(fubcf,2042) 'Fluid Mass   (',unitm,'/',TRIM(unittm),')'
@@ -416,13 +411,13 @@ SUBROUTINE write5_ss_flow
      IF(nlbc > 0) THEN
         WRITE(fubcf,2043) 'Leakage B.C.: Flow Rates ','(positive is into the region)'
         WRITE(fubcf,2042) 'Fluid   (',unitm,'/',TRIM(unittm),')'
-        DO  m=1,nxyz
-           lprnt1(m)=-1
-        END DO
-        DO  l=1,nlbc
-           m=mlbc(l)
-           aprnt1(m)=qflbc(l)
-           lprnt1(m)=1
+        lprnt1 = -1
+        DO  lc=1,nlbc
+           m = leak_seg_index(lc)%m
+           lprnt1(m) = 1
+           aprnt1(m) = qflbc(lc)
+!$$                 APRNT2(M)=QHLBC(L)
+!$$                 APRNT3(M)=QSLBC(L)
         END DO
         CALL prntar(2,aprnt1,lprnt1,fubcf,cnvmfi,24,000)
      END IF
@@ -430,11 +425,21 @@ SUBROUTINE write5_ss_flow
         WRITE(fubcf,2043) 'River Leakage B.C.: Flow Rates ','(positive is into the region)'
         WRITE(fubcf,2042) 'Fluid   (',unitm,'/',TRIM(unittm),')'
         lprnt4 = -1
-        aprnt4 = 0._kdp
         DO  lc=1,nrbc
            m = river_seg_index(lc)%m
            lprnt4(m) = 1
-           aprnt4(m) = aprnt4(m)+qfrbc(lc)
+           aprnt4(m) = qfrbc(lc)
+        END DO
+        CALL prntar(2,aprnt4,lprnt4,fubcf,cnvmfi,24,000)
+     END IF
+     IF(ndbc > 0) THEN
+        WRITE(fubcf,2043) 'Drain Leakage B.C.: Flow Rates ','(positive is into the region)'
+        WRITE(fubcf,2042) 'Fluid   (',unitm,'/',TRIM(unittm),')'
+        lprnt4 = -1
+        DO  lc=1,ndbc
+           m = drain_seg_index(lc)%m
+           lprnt4(m) = 1
+           aprnt4(m) = qfdbc(lc)
         END DO
         CALL prntar(2,aprnt4,lprnt4,fubcf,cnvmfi,24,000)
      END IF

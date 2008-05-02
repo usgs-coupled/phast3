@@ -1,73 +1,93 @@
 ! ... Module files used for phast for definition of data groups
 ! ... $Id$
 MODULE f_units
-! ... fortran unit assignments
+  ! ... fortran unit assignments
   IMPLICIT NONE
   SAVE
   INTEGER, PARAMETER :: fuins=15, fulp=16, fuplt=7, fuorst=8, fuirst=9, fuinc=10, furde=11, &
-           fupmap=13, fuvmap=14, fup=21, fut=29, fuc=22, fuvel=23, fud=30, fuvs=31, fuwel=24, &
-           fubal=25, fukd=26, fubcf=27, fuclog=28, fubnfr=32, fupmp2=33, fupzon=34, fuich=35
+       fupmap=13, fuvmap=14, fup=21, fut=29, fuc=22, fuvel=23, fud=30, fuvs=31, fuwel=24, &
+       fubal=25, fukd=26, fubcf=27, fuclog=28, fubnfr=32, fupmp2=33, fupzon=34, fuich=35
   LOGICAL :: print_rde=.false.
 END MODULE f_units
 
 MODULE machine_constants
-! ... machine dependent parameters
+  ! ... machine dependent parameters
   IMPLICIT NONE
   SAVE
   INTEGER, PARAMETER :: kdp = SELECTED_REAL_KIND(14,60)
-! ... BGREAL: A large real number representable in single precision
-! ... BGINT:  A large integer number representable in 4 bytes
+  ! ... BGREAL: A large real number representable in single precision
+  ! ... BGINT:  A large integer number representable in 4 bytes
   INTEGER, PARAMETER :: BGINT=9999
   REAL(KIND=kdp), PARAMETER :: bgreal=HUGE(1._kdp), one_plus_eps=1._kdp+5._kdp*EPSILON(1._kdp)
   REAL(KIND=kdp), PARAMETER :: macheps5=5._kdp*EPSILON(1._kdp)
 END MODULE machine_constants
 
 MODULE mcb
-! ... boundary condition information
+  ! ... boundary condition information
   USE machine_constants, ONLY: kdp
   IMPLICIT NONE
   SAVE
   TYPE :: bndry_cell
-     INTEGER :: m_cell, num_faces, num_same_bc
-     INTEGER, DIMENSION(3) :: face_indx, bc_type, lbc_indx
-     REAL(KIND=kdp), DIMENSION(3) :: por_areabc
+     INTEGER :: m_cell, num_faces
+     INTEGER, DIMENSION(3) :: face_indx
+     REAL(KIND=kdp), DIMENSION(3) :: por_areabc, qfbc
   END TYPE bndry_cell
   TYPE :: rbc_indices
      INTEGER :: m, seg_first, seg_last
   END TYPE rbc_indices
   INTEGER, DIMENSION(:), ALLOCATABLE :: indx1_sbc, indx2_sbc, indx1_fbc, indx2_fbc, &
        indx1_lbc, indx2_lbc, indx1_rbc, indx2_rbc
-  INTEGER, DIMENSION(:), ALLOCATABLE :: ibc,maifc,metbc,mfbc,mfsbc,mhcbc,mlbc,mrbc,msbc,  &
-       mrbc_bot, mrseg_bot
-  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: fracnp, mxf_sbc, mxf_fbc, mxf_lbc, mxf_rbc, &
-       qfsbc, qhsbc, qflbc, qhlbc, qfrbc, qhrbc, qfetbc, qhetbc, qfaif, qhaif, qsaif, &
+  INTEGER, DIMENSION(:), ALLOCATABLE :: ibc,  &
+       maifc, mdbc, metbc, mfbc, mfsbc, mhcbc, mlbc, mrbc, msbc,  &
+       mdbc_bot, mdseg_bot,  &
+       mrbc_bot, mrseg_bot,  &
+       ifacefbc, ifacelbc
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: fracnp,  &
+       qfsbc, qhsbc, qffbc, qfbcv, qhfbc, qflbc, qhlbc, qfrbc, qhrbc,  &
+       qfdbc, qhdbc,  &
+       qfetbc, qhetbc, qfaif, qhaif, qsaif,  &
+       ccfsb, ccfvsb, cchsb,  &
+       ccffb, ccfvfb, cchfb,  &
+       ccflb, ccfvlb, cchlb,  &
+       ccfrb, ccfvrb, cchrb,  &
+       ccfdb, ccfvdb, cchdb,  &
        sfsb, sfvsb, shsb, sffb, sfvfb, shfb, sflb, sfvlb, shlb, &
+       sfdb, sfvdb, shdb,  &
        sfrb, sfvrb, shrb, sfetb, sfvetb, shetb, sfaif, sfvaif, shaif, shhcb, &
        ubblb, ubbrb
-  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: qslbc, qsrbc, qsetbc, &
-       sssb, ssfb, sslb, ssrb, ssetb
-  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE, target :: QSSBC
-  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: psbc, tsbc, ccfsb, ccfvsb, cchsb, &
-       denfbc, qffbc, qhfbc, tflx, ccffb, ccfvfb, cchfb, albc, bblbc, blbc, denlbc, &
-       klbc, philbc, tlbc, vislbc, zelbc, ccflb, ccfvlb, cchlb, &
-       arbc, bbrbc, brbc, denrbc, krbc, phirbc, trbc, visrbc, zerbc, &
-       ccfrb, ccfvrb, cchrb
-  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: csbc, ccssb, cflx, qsfbc, ccsfb, clbc, &
-       ccslb, crbc, ccsrb, ccsetb
-  INTEGER :: iaif, lnz1, lnz2, lnz3, lnz4, lnz7, nsbc=0, nfbc=0, nlbc=0, nrbc=0, nrbc_cells=0, nrbc_seg=0,  &
+  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: csbc, ccssb, cfbc, ccsfb, clbc, &
+       ccslb, crbc, ccsrb, ccsdb, ccsetb,  &
+       qsflx
+  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: qsfbc, qslbc, qsrbc, qsdbc, qsetbc, &
+       sssb, ssfb, sslb, ssrb, ssdb, ssetb
+  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE, TARGET :: qssbc
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: psbc, tsbc,  &
+       areafbc, denfbc, tflx, qfflx, &
+       arealbc, albc, bblbc, blbc, denlbc, klbc, philbc, tlbc, vislbc, zelbc,  &
+       arearbc, arbc, bbrbc, brbc, denrbc, krbc, phirbc, trbc, visrbc, zerbc,  &
+       areadbc, adbc, bbdbc, bdbc, kdbc, zedbc,  &
+       mxf_sbc, mxf_fbc, mxf_lbc, mxf_rbc
+  INTEGER :: iaif, lnz1, lnz2, lnz3, lnz4, lnz7,  &
+       nsbc=0, nsbc_cells=0, nsbc_seg=0,  &
+       nfbc=0, nfbc_cells=0, nfbc_seg=0,  &
+       nlbc=0, nlbc_cells=0, nlbc_seg=0,  &
+       nrbc=0, nrbc_cells=0, nrbc_seg=0,  &
+       ndbc=0, ndbc_cells=0, ndbc_seg=0,  &
        netbc=0, naifc=0,  &
        nhcbc=0, nhcn=0, nztphc=0, num_bndy_cells=0
   LOGICAL :: fresur
   INTEGER :: adj_wr_ratio, transient_fresur
+  REAL(KIND=kdp) :: visdbc
 !!$  REAL(KIND=kdp) :: ABOAR, ANGOAR, BOAR, F1AIF, F2AIF, FTDAIF, KOAR, POROAR, RIOAR, &
 !!$       VISOAR, VOAR
   REAL(KIND=kdp), DIMENSION(:), pointer :: qssbcv
   TYPE (bndry_cell), DIMENSION(:), ALLOCATABLE :: b_cell
-  TYPE (rbc_indices), DIMENSION(:), ALLOCATABLE :: river_seg_index
+  TYPE (rbc_indices), DIMENSION(:), ALLOCATABLE :: flux_seg_index, leak_seg_index,  &
+       river_seg_index, drain_seg_index
 END MODULE mcb
 
 MODULE mcc
-! ... program control information
+  ! ... program control information
   USE machine_constants, ONLY: kdp
   IMPLICIT NONE
   SAVE
@@ -91,7 +111,7 @@ MODULE mcc
        timprfchem, timprslm, timprtem, &
        timprvel, timprwel, timprtnxt
   LOGICAL :: argrid, comopt, errexe, errexi, ichwt, ichydp, pltzon, prtbc, prtdv, prtfp,  &
-       prtic, prtichead, prtpmp, prtslm, prtwel, prt_kd, prt_bc,  &
+       prtic, prtichead=.false., prtpmp, prtslm, prtwel, prt_kd, prt_bc,  &
        prtic_c, prtic_mapc, prtic_p, prtic_maphead, prtic_conc, prtic_force_chem,  &
        prtss_vel, prtss_mapvel, prtic_well_timser,  &
        prtichdf_conc, prtichdf_head, prtsshdf_vel,  &
@@ -120,7 +140,7 @@ MODULE mcc
 END MODULE mcc
 
 MODULE mcch
-! ... character strings for output
+  ! ... character strings for output
   IMPLICIT NONE
   SAVE
   CHARACTER(LEN=11), DIMENSION(:), ALLOCATABLE :: caprnt
@@ -128,9 +148,9 @@ MODULE mcch
   CHARACTER(LEN=160) :: titleo, title
   CHARACTER(LEN=14) :: plbl = 'Pressures     ', tlbl = 'Temperatures  ', clbl = 'Mass Fractions'
   CHARACTER(LEN=130) :: dash = '------------------------------------------------------------&
-            &----------------------------------------------------------------------', &
-            dots = '........................................................................&
-            &..........................................................'
+       &----------------------------------------------------------------------', &
+       dots = '........................................................................&
+       &..........................................................'
   CHARACTER(LEN=255) :: f1name, f2name, f3name
   CHARACTER(LEN=15) :: name 
   CHARACTER(LEN=1) :: rxlbl, unitt
@@ -145,7 +165,7 @@ MODULE mcch
 END MODULE mcch
 
 MODULE mcg
-! ... region geometry information
+  ! ... region geometry information
   USE machine_constants, ONLY: kdp
   IMPLICIT NONE
   SAVE
@@ -154,6 +174,7 @@ MODULE mcg
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: arx, ary, arz, arxfbc, aryfbc, arzfbc, arzetb
   INTEGER, DIMENSION(3) :: naxes
   INTEGER :: mijkm, mijkp, mijmk, mijpk, mimjk, mipjk
+  INTEGER :: mtp1
   INTEGER :: npmz, nx, nxy, nxyz, ny, nz, nxyzh
   LOGICAL :: tilt,unigrx,unigry,unigrz
   REAL(KIND=kdp) :: thetxz, thetyz, thetzz
@@ -162,18 +183,18 @@ MODULE mcg
   END TYPE CellIndices
   TYPE (CellIndices), DIMENSION(:), ALLOCATABLE :: cellijk
   !
-  CONTAINS
-    FUNCTION cellno(i,j,k) 
-      IMPLICIT NONE
-      INTEGER :: cellno
-      INTEGER :: i,j,k
-      cellno=(k-1)*nxy+(j-1)*nx+i
-    END FUNCTION cellno
- !
+CONTAINS
+  FUNCTION cellno(i,j,k) 
+    IMPLICIT NONE
+    INTEGER :: cellno
+    INTEGER :: i,j,k
+    cellno=(k-1)*nxy+(j-1)*nx+i
+  END FUNCTION cellno
+  !
 END MODULE mcg
 
 MODULE mcm
-! ... matrix of difference equations information
+  ! ... matrix of difference equations information
   USE machine_constants, ONLY: kdp
   IMPLICIT NONE
   SAVE
@@ -191,7 +212,7 @@ MODULE mcm
 END MODULE mcm
 
 MODULE mcn
-! ... node information
+  ! ... node information
   USE machine_constants, ONLY: kdp
   IMPLICIT NONE
   SAVE
@@ -200,7 +221,7 @@ MODULE mcn
 END MODULE mcn
 
 MODULE mcp
-! ... parameter information
+  ! ... parameter information
   USE machine_constants
   IMPLICIT NONE
   SAVE
@@ -233,7 +254,7 @@ MODULE mcp
 END MODULE mcp
 
 MODULE mcs
-! ... equation solver information
+  ! ... equation solver information
   USE machine_constants, ONLY: kdp
   IMPLICIT NONE
   SAVE
@@ -243,7 +264,7 @@ MODULE mcs
   ! ... The M array relates the local 19-point stencil indices of the
   ! ...      reduced matrix to the VA matrix. 
   INTEGER, DIMENSION(6,6) :: mar = reshape((/10,5,4,3,2,1, 15,10,8,7,6,2, 16,12,10,9,7,3,  &
-           17,13,11,10,8,4, 18,14,13,12,10,5, 19,18,17,16,15,10/), (/6,6/))
+       17,13,11,10,8,4, 18,14,13,12,10,5, 19,18,17,16,15,10/), (/6,6/))
   INTEGER, DIMENSION(19,19) :: mar1
   INTEGER ::  idir, maxit1, maxit2, nbn, nrn, nohst, nd4n, nprist, &
        nral, nsdr, nstslv, nstsor, ntsopt
@@ -257,7 +278,7 @@ MODULE mcs
 END MODULE mcs
 
 MODULE mcs2
-! ... equation solver data arrays
+  ! ... equation solver data arrays
   USE machine_constants, ONLY: kdp
   IMPLICIT NONE
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE, SAVE :: diagra, envlra, envura, rr, sss, ww, xx, zz, &
@@ -266,7 +287,7 @@ MODULE mcs2
 END MODULE mcs2
 
 MODULE mct
-! ... temporary arrays for output
+  ! ... temporary arrays for output
   USE machine_constants, ONLY: kdp
   IMPLICIT NONE
   SAVE
@@ -275,88 +296,91 @@ MODULE mct
 END MODULE mct
 
 MODULE mcv
-! ... dependent variable information
+  ! ... dependent variable information
   USE machine_constants, ONLY: kdp
   IMPLICIT NONE
   SAVE
-  INTEGER, DIMENSION(:), ALLOCATABLE :: ICMAX, JCMAX, KCMAX, icsbc, icflx, iclbc, icrbc
-  INTEGER, DIMENSION(:,:), ALLOCATABLE :: indx_sol1_ic, indx_sol2_ic, indx_sol1_bc, indx_sol2_bc
+  INTEGER, DIMENSION(:), ALLOCATABLE :: icmax, jcmax, kcmax, icsbc, icfbc, iclbc, icrbc
+  INTEGER, DIMENSION(:,:), ALLOCATABLE :: indx_sol1_ic, indx_sol2_ic
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: axsav, aysav, azsav, dzfsdt, dp, dt, &
        sxx, syy, szz, vxx, vyy, vzz,  &
        vx_node, vy_node, vz_node,  &
        dcmax, dsir, dsir_chem, ssres, ssresf, stotsi, stotsp, stsaif, &
-       stsetb, stsfbc, stslbc, stsrbc, stssbc, stswel, tsres, tsresf, zfs
+       stsetb, stsfbc, stslbc, stsrbc, stsdbc, stssbc, stswel, tsres, tsresf, zfs
   REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE, TARGET :: qsfx, qsfy, qsfz
   REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE, TARGET :: dc
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE ::  den, eh, frac, zfsn, frac_icchem,  &
        p, t, vis, sir, sir0, sirn, sir_prechem,  &
-       totsi, totsp, tdsir_chem, tcsaif, tcsetb, tcsfbc, tcslbc, tcsrbc, tcssbc
-  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE ::  c, ic_mxfrac, bc_mxfrac
+       totsi, totsp, tdsir_chem, tcsaif, tcsetb, tcsfbc, tcslbc, tcsrbc, tcsdbc, tcssbc
+!$$  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE ::  c, ic_mxfrac, bc_mxfrac
+  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE ::  c, ic_mxfrac
   INTEGER :: ipmax, itmax, jpmax, jtmax, kpmax, ktmax, is
   INTEGER :: itime, nmapr, nrsttp, ns=0
-  REAL(KIND=kdp) :: DDNMAX, DEHIR, DFIR, dhmax, DPMAX, DTMAX,  &
-       SFRES, SFRESF, SHRES, SHRESF, STFAIF,  &
-       STFETB, STFFBC, STFLBC, STFRBC, STFSBC, STFWEL, STHAIF, STHETB, STHFBC, STHHCB, STHLBC, &
-       STHRBC, STHSBC, STHWEL, STOTFI, STOTFP, STOTHI, STOTHP, TFRES, TFRESF, THRES, THRESF
+  REAL(KIND=kdp) :: ddnmax, dehir, dfir, dhmax, dpmax, dtmax,  &
+       sfres, sfresf, shres, shresf, stfaif,  &
+       stfetb, stffbc, stflbc, stfrbc, stfdbc, stfsbc, stfwel,  &
+       sthaif, sthetb, sthfbc, sthhcb, sthlbc, &
+       sthrbc, sthsbc, sthwel, stotfi, stotfp, stothi, stothp, tfres, tfresf, thres, thresf
   REAL(KIND=kdp) :: deltim, deltim_sav, deltim_transient, ehir, ehir0, ehirn, fir, fir0, firn,  &
        firv0, firv, time, &
        totfi, &
-       totfp, tothi, tothp, tcfaif, tcfetb, tcffbc, tcflbc, tcfrbc, tcfsbc, tchaif, tchetb, &
+       totfp, tothi, tothp,  &
+       tcfaif, tcfetb, tcffbc, tcflbc, tcfrbc, tcfdbc, tcfsbc, tchaif, tchetb, &
        tchfbc, tchhcb, tchlbc, tchrbc, tchsbc
   REAL(KIND=kdp), DIMENSION(:), POINTER :: dcv, qsfxis, qsfyis, qsfzis
 END MODULE mcv
 
 MODULE mcw
-! ... well information
+  ! ... well information
   USE machine_constants, ONLY: kdp
   IMPLICIT NONE
   SAVE
-  INTEGER, DIMENSION(:), ALLOCATABLE :: INDX1_WEL, INDX2_WEL, IW, JW, LCBW, LCTW, NKSWEL, &
-       WELIDNO, WQMETH
-  INTEGER, DIMENSION(:,:), ALLOCATABLE :: MWEL
-  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: DPWKT, TFW, QHW, QWM, RHSW, &
-       STFWI, STHWI, STFWP, STHWP, UDENW, TQWSI, TQWSP , U10
-  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: QFLYR, QHLYR, QSW, QWLYR, STSWI, STSWP, VAW
-  REAL(KIND=kdp), DIMENSION(:,:,:), ALLOCATABLE :: QSLYR
-  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: DTHAWR, EHWKT, EHWSUR, HTCWR, KTHAWR, KTHWR, &
-       MXF_WEL, PWKT, PWKTS, PWSUR, PWSURS, QWV, TABWR, TATWR, TWKT, TWSRKT, TWSUR, WBOD, &
-       WFRAC, WFICUM, WFPCUM, WHICUM, WHPCUM, WRANGL, WRID, WRISL, WRRUF, XW, YW, ZWB, ZWT, &
-       dwb, dwt, TOTWSI, TOTWSP
-  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: CWKT, CWKTS, DENWK, DQWDPL, EHWK, &
-       PWK, TWK, WI, WSICUM, WSPCUM, WSF
-  REAL(KIND=kdp), DIMENSION(:,:,:), ALLOCATABLE :: CWK
-  INTEGER :: ISIGN, NSHUT
-  INTEGER, PARAMETER :: MAXORD = 6, MAXPTS = 10, METH = 1
-  INTEGER ::  MXITQW, NWEL
-  LOGICAL :: CWATCH, WRCALC
-  REAL(KIND=kdp) :: B0, B1, B2, C00, DENGL, DNTEST, EHWEND, GCOSTH, P00, PWREND, QHFAC, T00, &
-       TQWFI, TQWFP, TQWHI, TQWHP, TWREND, WRIDT
-  REAL(KIND=kdp) :: DAMWRC, DENWKT, DENWRK, DTADZW, DZMIN, EH00, EOD, EPSWR, QWR, TAMBI, TOLDPW, &
-       TOLFPW, TOLQW, TOTWFI, TOTWFP, TOTWHI, TOTWHP
+  INTEGER, DIMENSION(:), ALLOCATABLE :: indx1_wel, indx2_wel, iw, jw, lcbw, lctw, nkswel, &
+       welidno, wqmeth
+  INTEGER, DIMENSION(:,:), ALLOCATABLE :: mwel
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: dpwkt, tfw, qhw, qwm, rhsw, &
+       stfwi, sthwi, stfwp, sthwp, udenw, tqwsi, tqwsp , u10
+  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: qflyr, qhlyr, qsw, qwlyr, stswi, stswp, vaw
+  REAL(KIND=kdp), DIMENSION(:,:,:), ALLOCATABLE :: qslyr
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: dthawr, ehwkt, ehwsur, htcwr, kthawr, kthwr, &
+       mxf_wel, pwkt, pwkts, pwsur, pwsurs, qwv, tabwr, tatwr, twkt, twsrkt, twsur, wbod, &
+       wfrac, wficum, wfpcum, whicum, whpcum, wrangl, wrid, wrisl, wrruf, xw, yw, zwb, zwt, &
+       dwb, dwt, totwsi, totwsp
+  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: cwkt, cwkts, denwk, dqwdpl, ehwk, &
+       pwk, twk, wi, wsicum, wspcum, wsf
+  REAL(KIND=kdp), DIMENSION(:,:,:), ALLOCATABLE :: cwk
+  INTEGER :: isign, nshut
+  INTEGER, PARAMETER :: maxord=6, maxpts=10, meth=1
+  INTEGER ::  mxitqw, nwel
+  LOGICAL :: cwatch, wrcalc
+  REAL(KIND=kdp) :: b0, b1, b2, c00, dengl, dntest, ehwend, gcosth, p00, pwrend, qhfac, t00, &
+       tqwfi, tqwfp, tqwhi, tqwhp, twrend, wridt
+  REAL(KIND=kdp) :: damwrc, denwkt, denwrk, dtadzw, dzmin, eh00, eod, epswr, qwr, tambi, toldpw, &
+       tolfpw, tolqw, totwfi, totwfp, totwhi, totwhp
 END MODULE mcw
 
 MODULE mg2
-! ... read group 2 global parameters
+  ! ... read group 2 global parameters
   USE machine_constants, ONLY: kdp
   IMPLICIT NONE
   SAVE
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: uxx, uklb, uzelb
   REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: wcfl, wcfu
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: hdprnt, delz, arxbc, arybc, arzbc, hwt, &
-       qfbcv, uvka
+       uvka
 END MODULE mg2
 
 MODULE mg3
-! ... read group 3 global parameters
+  ! ... read group 3 global parameters
   USE machine_constants, ONLY: kdp
   IMPLICIT NONE
   SAVE
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: pnp, qff, qffx, qffy, qffz, qhfx, qhfy, qhfz, &
-            tnp, ucbc, udenbc, udenlb, uphilb, uphirb, uqetb, uqs, utbc, uvislb
+       tnp, ucbc, udenbc, udenlb, uphilb, uphirb, uqetb, uqs, utbc, uvislb
 END MODULE mg3
 
 MODULE phys_const
-! ... physical and mathematical constants
+  ! ... physical and mathematical constants
   USE machine_constants, ONLY: kdp
   IMPLICIT NONE
   SAVE

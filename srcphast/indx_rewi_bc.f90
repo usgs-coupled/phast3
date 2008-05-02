@@ -31,7 +31,8 @@ SUBROUTINE indx_rewi_bc(ipar1,ipar2,par3,ip,icall,ier)
   !
   INTEGER :: a_err, da_err, i, i1, i2, ic, imod, j, j1, j2, k, k1, k2, m, m1, m2, ms, nxyzs
 !!$  CHARACTER(LEN=2) :: cicall
-  CHARACTER(LEN=80) :: line
+  CHARACTER(LEN=130), EXTERNAL :: uppercase
+  CHARACTER(LEN=130) :: line
   REAL(kind=kdp) :: x1, x2, y1, y2, z1, z2
   LOGICAL :: erflg
   INTEGER, DIMENSION(:), ALLOCATABLE :: uipar1, uipar2
@@ -73,12 +74,11 @@ SUBROUTINE indx_rewi_bc(ipar1,ipar2,par3,ip,icall,ier)
   if (print_rde) WRITE(furde,2106) 'Modification code: 1-replace, ',  &
        '2-multiply, 3-add, 4-node-by-node, 5-linear interpolate'
 2106 FORMAT(/tr5,2A/(tr18,2A/))
-11 READ(fuins,'(A)') line
+11 READ(fuins,'(a)') line  
+  line = uppercase(line)
   ic=INDEX(line(1:20),'END')
-  IF(ic == 0) ic=INDEX(line(1:20),'end')
   IF(ic > 0) GO TO 99
-  BACKSPACE(UNIT=fuins)
-  READ(fuins,*) x1,x2,y1,y2,z1,z2
+  READ(line,*) x1,x2,y1,y2,z1,z2
   ! ... Read the data; always node by node
 !  READ(fuins,*) ipar1(1,1),imod       ! after spbc, ipar1(1,1) has information, can't overwrite
   READ(fuins,*) j1, imod
@@ -159,7 +159,7 @@ SUBROUTINE indx_rewi_bc(ipar1,ipar2,par3,ip,icall,ier)
 99 continue
   DEALLOCATE (uipar1, uipar2, upar, &
        stat = da_err)
-  IF (da_err.NE.0) THEN  
+  IF (da_err /= 0) THEN  
      PRINT *, "Array deallocation failed: indx_rewi_bc"  
      STOP  
   ENDIF

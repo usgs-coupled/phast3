@@ -16,7 +16,7 @@ SUBROUTINE init2_1
   USE phys_const
   IMPLICIT NONE
   !
-  REAL(kind=kdp) :: viscos  
+  REAL(KIND=kdp) :: viscos  
   INTRINSIC index
   INTERFACE
      FUNCTION nintrp(xarg,nx,xs,erflg)
@@ -47,8 +47,7 @@ SUBROUTINE init2_1
   INTEGER, DIMENSION(8) :: face_x, face_y, face_z, i_ele, j_ele, k_ele, mm
   LOGICAL :: erflg, exbc, no_ex
   INTEGER, DIMENSION(:), ALLOCATABLE :: umbc
-  REAL(kind=kdp), DIMENSION(:), ALLOCATABLE :: uarxbc, uarybc, uarzbc
-  REAL(kind=kdp), DIMENSION(:), ALLOCATABLE :: ukbc, uzbc, ubbbc
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: uarxbc, uarybc, uarzbc
   TYPE(cell_subdom), DIMENSION(:), ALLOCATABLE :: cell_sd
   ! ... set string for use with rcs ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
@@ -124,13 +123,13 @@ SUBROUTINE init2_1
   dent = 0._kdp  
   denc = 0._kdp  
   ! ... allocate conductance, capacitance arrays
-  ALLOCATE (tx(nxyz), ty(nxyz), tz(nxyz), arx(nxyz), ary(nxyz), arz(nxyz), arxbc(nxyz), &
-       arybc(nxyz), arzbc(nxyz), qfbcv(nxyz), &
-       pv(nxyz), pmcv(nxyz), pmhv(1), pmchv(1), pvk(1), delz(nz), ss(nxyz), &
-       tfx(nxyz), tfy(nxyz), tfz(nxyz), thx(1), thy(1), thz(1), thxy(1), thxz(1), thyx(1), &
-       thyz(1), thzx(1), thzy(1), &
-       tsx(nxyz), tsy(nxyz), tsz(nxyz), tsxy(nxyz), tsxz(nxyz), tsyx(nxyz), tsyz(nxyz), &
-       tszx(nxyz), tszy(nxyz), &
+  ALLOCATE (tx(nxyz), ty(nxyz), tz(nxyz), arx(nxyz), ary(nxyz), arz(nxyz),  &
+       arxbc(nxyz), arybc(nxyz), arzbc(nxyz),  &
+       pv(nxyz), pmcv(nxyz), pmhv(1), pmchv(1), pvk(1), delz(nz), ss(nxyz),  &
+       tfx(nxyz), tfy(nxyz), tfz(nxyz), thx(1), thy(1), thz(1), thxy(1), thxz(1), thyx(1),  &
+       thyz(1), thzx(1), thzy(1),  &
+       tsx(nxyz), tsy(nxyz), tsz(nxyz), tsxy(nxyz), tsxz(nxyz), tsyx(nxyz), tsyz(nxyz),  &
+       tszx(nxyz), tszy(nxyz),  &
        cell_sd(nxyz),  &
        stat = a_err)
   IF (a_err /= 0) THEN  
@@ -352,11 +351,9 @@ SUBROUTINE init2_1
      face_x = 0
      face_y = 0
      face_z = 0
-     num_indx = 0
+     num_indx = 0          ! array(1:6)
      b_cell(l)%face_indx = 0
-     b_cell(l)%bc_type = -1
-     b_cell(l)%lbc_indx = -100
-     b_cell(l)%por_areabc = 0.
+     b_cell(l)%por_areabc = 0._kdp
      DO msd=1,8
         IF(.NOT.cell_sd(m)%sd_active(msd)) THEN
            ! ... local subdomain msd is outside the active region
@@ -405,12 +402,6 @@ SUBROUTINE init2_1
               t_findx = b_cell(l)%face_indx(ibf)
               b_cell(l)%face_indx(ibf) = b_cell(l)%face_indx(ibf+1)
               b_cell(l)%face_indx(ibf+1) = t_findx
-!!$              t_bctype = b_cell(l)%bc_type(ibf)
-!!$              b_cell(l)%bc_type(ibf) = b_cell(l)%bc_type(ibf+1)
-!!$              b_cell(l)%bc_type(ibf+1) = t_bctype
-!!$              t_lindx = b_cell(l)%lbc_indx(ibf)
-!!$              b_cell(l)%lbc_indx(ibf) = b_cell(l)%lbc_indx(ibf+1)
-!!$              b_cell(l)%lbc_indx(ibf+1) = t_lindx
               no_ex = .FALSE.
            END IF
         END DO
@@ -474,6 +465,7 @@ SUBROUTINE init2_1
         END IF
      END DO
   END DO
+! *** todo--make ar_bc part of b_cell structure 
 !!$  if(heat) then  
 !!$     do 240 i = 1, npmz  
 !!$        ! ... calculate equivalent thermal conductivity for fluid and medium
@@ -574,230 +566,135 @@ SUBROUTINE init2_1
         ENDIF
      END DO
   END IF
+  ! ... Specified value b.c.
   IF(nsbc > 0) THEN  
-     ! ... identify nodes for which a specified p,t or c b.c. applies
-     l1 = 0  
-     lnz1 = nxyz + 1
-     ALLOCATE (umbc(nxyz), &
-          stat = a_err)
-     IF (a_err.NE.0) THEN  
-        PRINT *, "array allocation failed: init2, number 4"  
-        STOP  
-     ENDIF
-     DO m = 1, nxyz  
-        IF(ibc(m) .EQ. - 1) CYCLE
-        WRITE(cibc, 6001) ibc(m)  
-6001    FORMAT(i9)  
-        ic = INDEX(cibc(1:7) , '1')  
-        IF(ic.GT.0) THEN  
-           l1 = l1 + 1  
-           umbc(l1) = m  
-           IF(fresur.AND.lnz1.EQ.nxyz+1.AND.m.GT.nxy*(nz-1)) lnz1 = l1 - 1
-           ! ...      lnz1 is last sbc node below upper layer
-        ENDIF
-      ENDDO
-     nsbc = l1  
-     ALLOCATE (msbc(nsbc), indx1_sbc(nsbc), indx2_sbc(nsbc), &
-          fracnp(nsbc), mxf_sbc(nsbc), qfsbc(nsbc), qhsbc(1), qssbc(nsbc,nsa), &
-          sfsb(nsbc), sfvsb(nsbc), shsb(1), sssb(nsbc,nsa), &
-          csbc(nsbc,nsa), psbc(nsbc), tsbc(nsbc), ccfsb(nsbc), ccfvsb(nsbc), cchsb(nsbc), &
-          ccssb(nsbc,nsa), &
+     nsa = MAX(ns,1)
+     ALLOCATE (qfsbc(nsbc),  &
+          qhsbc(1), qssbc(nsbc,nsa),  &
+          sfsb(nsbc), sfvsb(nsbc), sssb(nsbc,nsa),  &
+          ccfsb(nsbc), ccfvsb(nsbc), ccssb(nsbc,nsa),  &
+          fracnp(nsbc),  &
           vafsbc(7,nsbc), rhfsbc(nsbc),  &
-          vassbc(7,nsbc,nsa), rhssbc(nsbc,nsa), &
+          vassbc(7,nsbc,nsa), rhssbc(nsbc,nsa),  &
           stat = a_err)
      IF (a_err /= 0) THEN  
         PRINT *, "array allocation failed: init2, number 5"  
-        STOP  
+        STOP
      ENDIF
-     DO 310 l = 1, nsbc  
-        msbc(l) = umbc(l)
-        ccfsb(l) = 0._kdp  
-        ccfvsb(l) = 0._kdp  
-        cchsb(l) = 0._kdp  
-        DO 311 iis = 1, ns  
-           ccssb(l, iis) = 0._kdp  
-311     END DO
-310  END DO
-     DEALLOCATE (umbc, &
-          stat = da_err)
-     IF (da_err /= 0) THEN  
-        PRINT *, "array deallocation failed, number 2"  
-        STOP  
-     ENDIF
+     ccfsb = 0._kdp  
+     ccfvsb = 0._kdp  
+!$$     cchsb = 0._kdp  
+     ccssb = 0._kdp  
   ENDIF
-  IF(nfbc > 0) THEN  
-     ! ... specified flux b.c.
-     l = 0  
-     lnz2 = nxyz + 1  
-     ALLOCATE (umbc(nxyz),  &
+  ! ... Specified flux b.c.
+  IF(nfbc > 0) THEN
+     nsa = MAX(ns,1)
+     ALLOCATE (qffbc(nfbc), qfbcv(nfbc), ccffb(nfbc), ccfvfb(nfbc), ccsfb(nfbc,nsa),  &
+          qhfbc(1), qsfbc(nfbc,nsa),  &
+          sffb(nfbc), sfvfb(nfbc), ssfb(nfbc,nsa),  &
+          flux_seg_index(nfbc),  &
           stat = a_err)
      IF (a_err /= 0) THEN  
-        PRINT *, "array allocation failed: init2, number 6"  
-        STOP  
+        PRINT *, "array allocation failed: init2.1, flux"  
+        STOP
      ENDIF
-     DO m = 1, nxyz  
-        IF(ibc(m) .EQ. - 1) CYCLE
-        WRITE(cibc, 6001) ibc(m)  
-        jc = 1  
-        uarx = 0._kdp  
-        uary = 0._kdp  
-        uarz = 0._kdp  
-        exbc = .FALSE.  
-320     ic = INDEX(cibc(jc:9),'2')  
-        IF(ic == 0) ic = INDEX(cibc(jc:9),'8')  
-        IF(ic.GT.0) THEN  
-           exbc = .TRUE.  
-           ic = jc - 1 + ic  
-           ! ... ic is the position of the digit 2 or 8
-           IF(ic.EQ.1.OR.ic.EQ.4.OR.ic.EQ.7) THEN  
-              uarx = arxbc(m)  
-           ELSEIF(ic.EQ.2.OR.ic.EQ.5.OR.ic.EQ.8) THEN  
-              uary = arybc(m)  
-           ELSEIF(ic.EQ.3.OR.ic.EQ.6.OR.ic.EQ.9) THEN  
-              uarz = arzbc(m)  
-           ENDIF
-           jc = ic + 1  
-           IF(jc.LE.9) GOTO 320  
-        ENDIF
-        IF(exbc) THEN  
-           l = l + 1  
-           umbc(l) = m  
-           uarxbc(l) = uarx  
-           uarybc(l) = uary  
-           uarzbc(l) = uarz  
-           IF(fresur.AND.lnz2.EQ.nxyz+1.AND.m.GT.nxy*(nz-1)) lnz2 = l - 1
-           ! ...      lnz2 is last fbc node below upper layer
-        ENDIF
+     ! ... load the flux index structure; first and last segments per flux cell
+     lc = 1
+     ms = mfbc(1)
+     flux_seg_index(lc)%m = ms
+     flux_seg_index(lc)%seg_first = 1
+     DO ls=2,nfbc_seg
+        ! ... This loop expects all segments attached to a given cell to be 
+        ! ...      contiguous
+        IF(mfbc(ls) == ms) CYCLE
+        flux_seg_index(lc)%seg_last = ls - 1
+        flux_seg_index(lc+1)%seg_first = ls
+        lc = lc + 1
+        ms = mfbc(ls)
+        flux_seg_index(lc)%m = ms
      END DO
-     nfbc = l  
-     nsa = MAX(ns,1)
-     ALLOCATE (mfbc(nfbc), indx1_fbc(nfbc), indx2_fbc(nfbc),  &
-          mxf_fbc(nfbc), sffb(nfbc), sfvfb(nfbc), shfb(1), ssfb(nfbc,nsa), &
-          cflx(nfbc,nsa), denfbc(nfbc), qffbc(nfbc), qhfbc(nfbc), qsfbc(nfbc,nsa), &
-          tflx(nfbc), ccffb(nfbc), ccfvfb(nfbc), cchfb(nfbc), ccsfb(nfbc,nsa), &
-          arxfbc(nfbc), aryfbc(nfbc), arzfbc(nfbc), &
-          stat = a_err)
-     IF (a_err /= 0) THEN  
-        PRINT *, "array allocation failed: init2, number 7"
-        STOP  
-     ENDIF
-     DO 340 l = 1, nfbc  
-        mfbc(l) = umbc(l)
-        arxfbc(l) = uarxbc(l)  
-        aryfbc(l) = uarybc(l)  
-        arzfbc(l) = uarzbc(l)  
-        qfbcv(l) = 0._kdp  
-        qhfbc(l) = 0._kdp  
-        ccffb(l) = 0._kdp  
-        ccfvfb(l) = 0._kdp  
-        cchfb(l) = 0._kdp  
-        DO 342 iis = 1, ns  
-           qsfbc(l,iis) = 0._kdp  
-           ccsfb(l,iis) = 0._kdp  
-342     END DO
-340  END DO
-     DEALLOCATE (umbc, uarxbc, uarybc, uarzbc, &
-          stat = da_err)
-     IF (da_err /= 0) THEN  
-        PRINT *, "array deallocation failed, number 3"  
-        STOP  
-     ENDIF
+     flux_seg_index(lc)%seg_last = nfbc_seg
+     ! ... Zero the arrays for flux b.c.
+     qfflx = 0._kdp
+     qsflx = 0._kdp
+     qffbc = 0._kdp
+     qfbcv = 0._kdp
+     qsfbc = 0._kdp
+     qhfbc = 0._kdp
+     ccffb = 0._kdp
+     ccfvfb = 0._kdp
+     ccsfb = 0._kdp
   ENDIF
+  ! ... Aquifer leakage
   IF(nlbc > 0) THEN  
-     ! ... aquifer leakage
-     l = 0  
-     lnz3 = nxyz + 1
-     ALLOCATE (umbc(nxyz), ukbc(nxyz), ubbbc(nxyz), uzbc(nxyz), &
-          stat = a_err)
-     IF (a_err /= 0) THEN  
-        PRINT *, "array allocation failed: init2, number 8"  
-        STOP  
-     ENDIF
-     DO 360 m = 1, nxyz  
-        IF(ibc(m) == -1) CYCLE
-        WRITE(cibc, 6001) ibc(m)  
-        jc = 1  
-        exbc = .FALSE.  
-350     ic = INDEX(cibc(jc:3) , '3')
-        IF(ic.GT.0) THEN  
-           exbc = .TRUE.  
-           ic = jc - 1 + ic  
-           ! ... ic is the position of the digit 3
-           IF(ic.EQ.1.OR.ic.EQ.2) THEN  
-              IF(ic.EQ.1) uarbc = ABS(arxbc(m) )  
-              IF(ic.EQ.2) uarbc = ABS(arybc(m) )  
-              imod = MOD(m, nxy)  
-              k = (m - imod) / nxy + MIN(1, imod)  
-              uzelb(m) = z(k)  
-           ELSEIF(ic.EQ.3) THEN  
-              uarbc = ABS(arzbc(m) )  
-           ENDIF
-           jc = ic + 1  
-           IF(jc.LE.3) GOTO 350  
-        ENDIF
-        IF(exbc) THEN  
-           l = l + 1  
-           umbc(l) = m  
-           ukbc(l) = uklb(m)*uarbc/ubblb(m)  
-           ubbbc(l)=ubblb(m)
-           uzbc(l) = uzelb(m)  
-        ENDIF
-360  END DO
-     nlbc = l  
      nsa = MAX(ns,1)
-     ALLOCATE (mlbc(nlbc), indx1_lbc(nlbc), indx2_lbc(nlbc), &
-          mxf_lbc(nlbc), qflbc(nlbc), qhlbc(1), qslbc(nlbc,nsa), &
-          sflb(nlbc), sfvlb(nlbc), shlb(1), sslb(nlbc,nsa), &
-          albc(nlbc), bblbc(nlbc), blbc(nlbc), clbc(nlbc,nsa), &
-          denlbc(nlbc), klbc(nlbc), philbc(nlbc), tlbc(nlbc), vislbc(nlbc), &
-          zelbc(nlbc), ccflb(nlbc), ccfvlb(nlbc), cchlb(nlbc), ccslb(nlbc,nsa), &
+     ALLOCATE (qflbc(nlbc), ccflb(nlbc), ccfvlb(nlbc), qslbc(nlbc,nsa), ccslb(nlbc,nsa),  &
+          sflb(nlbc), sfvlb(nlbc), sslb(nlbc,nsa),  &
+          leak_seg_index(nlbc),  &
           stat = a_err)
      IF (a_err /= 0) THEN  
-        PRINT *, "array allocation failed: init2, number 9"  
-        STOP  
+        PRINT *, "array allocation failed: init2.1, leak"  
+        STOP
      ENDIF
-     DO 370 l = 1, nlbc
-        mlbc(l) = umbc(l)
-        klbc(l) = ukbc(l)
-        bblbc(l) = ubbbc(l)
-        zelbc(l) = uzbc(l)  
-        qflbc(l) = 0._kdp  
-        !        qhlbc(l) = 0._kdp  
-        ccflb(l) = 0._kdp  
-        ccfvlb(l) = 0._kdp  
-        !        cchlb(l) = 0._kdp  
-        DO 371 iis = 1, ns  
-           qslbc(l, iis) = 0._kdp  
-           ccslb(l, iis) = 0._kdp  
-371     END DO
-370  END DO
-     DEALLOCATE (umbc, ukbc, uklb, ubbbc, ubblb, uzbc, uzelb, &
-          stat = da_err)
-     IF (da_err /= 0) THEN  
-        PRINT *, "array deallocation failed, number 4"  
-        STOP  
-     ENDIF
+     ! ... Load the leakage index structure; first and last segments per leakage cell
+     lc = 1
+     ms = mlbc(1)
+     leak_seg_index(lc)%m = ms
+     leak_seg_index(lc)%seg_first = 1
+     DO ls=2,nlbc_seg
+        ! ... This loop expects all segments attached to a given cell to be 
+        ! ...      contiguous
+        IF(mlbc(ls) == ms) CYCLE
+        leak_seg_index(lc)%seg_last = ls - 1
+        leak_seg_index(lc+1)%seg_first = ls
+        lc = lc + 1
+        ms = mlbc(ls)
+        leak_seg_index(lc)%m = ms
+     END DO
+     leak_seg_index(lc)%seg_last = nlbc_seg
+     DO ls=1,nlbc_seg
+        klbc(ls) = klbc(ls)*arealbc(ls)/bblbc(ls)    ! ... include area and thickness into leakance 
+     END DO
+     ! ... Zero the arrays for aquifer leakage
+     albc = 0._kdp
+     qflbc = 0._kdp  
+     qslbc = 0._kdp  
+     ccflb = 0._kdp  
+     ccfvlb = 0._kdp  
+     ccslb = 0._kdp  
   ENDIF
+  ! ... River leakage
   IF(nrbc > 0) THEN  
-     ! ... river leakage
-     ! ... load the river index structure; first and last segments per river cell
+     nsa = MAX(ns,1)
+     ALLOCATE (mrbc_bot(nrbc),  &
+          qfrbc(nrbc), ccfrb(nrbc), ccfvrb(nrbc), qsrbc(nrbc,nsa), ccsrb(nrbc,nsa),  &
+          sfrb(nrbc), sfvrb(nrbc), ssrb(nrbc,nsa),  &
+          river_seg_index(nrbc),  &
+          stat = a_err)
+     IF (a_err /= 0) THEN  
+        PRINT *, "array allocation failed: init2.1, river"  
+        STOP
+     ENDIF
+     ! ... Load the river index structure; first and last segments per river cell
      lc = 1
      ms = mrbc(1)
-     river_seg_index(lc)%m = mrbc(1)
+     river_seg_index(lc)%m = ms
      river_seg_index(lc)%seg_first = 1
      DO ls=2,nrbc_seg
+        ! ... This loop expects all segments attached to a given cell to be 
+        ! ...      contiguous
         IF(mrbc(ls) == ms) CYCLE
         river_seg_index(lc)%seg_last = ls - 1
         river_seg_index(lc+1)%seg_first = ls
-        ms = mrbc(ls)
         lc = lc + 1
+        ms = mrbc(ls)
      END DO
      river_seg_index(lc)%seg_last = nrbc_seg
-     ! ... load the river cell and segment connections
+     ! ... Load the river cell and segment connections
      DO lc=1,nrbc_cells
         mrbc_bot(lc) = nxyz+1
         DO ls=river_seg_index(lc)%seg_first,river_seg_index(lc)%seg_last
-           krbc(ls) = krbc(ls)*arbc(ls)    ! ... include area into leakance 
+           krbc(ls) = krbc(ls)*arearbc(ls)    ! ... include area into leakance 
            ! ... connect the river segment to the cell containing river bottom
            erflg = .FALSE.  
            ks = nintrp(zerbc(ls) - bbrbc(ls), nz, z, erflg)  
@@ -817,14 +714,72 @@ SUBROUTINE init2_1
         END DO
         river_seg_index(lc)%m = mrbc_bot(lc)
      END DO
-     ! ... zero the arrays for river leakage
+     ! ... Zero the arrays for river leakage
+     arbc = 0._kdp
      qfrbc = 0._kdp  
-     !            qhrbc(l)=0._kdp
+     qsrbc = 0._kdp  
      ccfrb = 0._kdp  
      ccfvrb = 0._kdp  
-     !        cchrb(l) = 0._kdp  
-     qsrbc = 0._kdp  
      ccsrb = 0._kdp  
+  ENDIF
+  ! ... Drain leakage
+  IF(ndbc > 0) THEN  
+     nsa = MAX(ns,1)
+     ALLOCATE (mdbc_bot(ndbc),  &
+          qfdbc(ndbc), ccfdb(ndbc), ccfvdb(ndbc), qsdbc(ndbc,nsa), ccsdb(ndbc,nsa),  &
+          sfdb(ndbc), sfvdb(ndbc), ssdb(ndbc,nsa),  &
+          drain_seg_index(ndbc),  &
+          stat = a_err)
+     IF (a_err /= 0) THEN  
+        PRINT *, "array allocation failed: init2.1, drain"  
+        STOP
+     ENDIF
+     ! ... Load the drain index structure; first and last segments per drain cell
+     lc = 1
+     ms = mdbc(1)
+     drain_seg_index(lc)%m = ms
+     drain_seg_index(lc)%seg_first = 1
+     DO ls=2,ndbc_seg
+        ! ... This loop expects all segments attached to a given cell to be 
+        ! ...      contiguous
+        IF(mdbc(ls) == ms) CYCLE
+        drain_seg_index(lc)%seg_last = ls - 1
+        drain_seg_index(lc+1)%seg_first = ls
+        lc = lc + 1
+        ms = mdbc(ls)
+     END DO
+     drain_seg_index(lc)%seg_last = ndbc_seg
+     ! ... Load the drain cell and segment connections
+     DO lc=1,ndbc_cells
+        mdbc_bot(lc) = nxyz+1
+        DO ls=drain_seg_index(lc)%seg_first,drain_seg_index(lc)%seg_last
+           kdbc(ls) = kdbc(ls)*areadbc(ls)    ! ... include area into leakance 
+           ! ... connect the drain segment to the cell containing drain bottom
+           erflg = .FALSE.  
+           ks = nintrp(zedbc(ls) - bbdbc(ls), nz, z, erflg)
+           IF (erflg) THEN     ! ... out of range of mesh, use top or bottom cell
+              IF ((zedbc(ls) - bbdbc(ls)) > z(nz)) THEN
+                 ks = nz
+              ELSE
+                 ks = 1
+              ENDIF
+           ENDIF
+           m = mdbc(ls)
+           mr = m - (nz - ks)*nxy
+           mdbc(ls) = mr
+           mdseg_bot(ls) = mr            ! ... static index for drain segment bottom
+           ! ... ibc for drain is always at the top of the mesh region
+           mdbc_bot(lc) = MIN(mdbc_bot(lc),mr)     ! ... set to lowest drain seg bottom
+        END DO
+        drain_seg_index(lc)%m = mdbc_bot(lc)
+     END DO
+     ! ... Zero the arrays for drain leakage
+     adbc = 0._kdp
+     qfdbc = 0._kdp  
+     qsdbc = 0._kdp  
+     ccfdb = 0._kdp  
+     ccfvdb = 0._kdp  
+     ccsdb = 0._kdp  
   ENDIF
 !!$  if(naifc.gt.0) then  
 !!$     ! ... aquifer influence functions b.c.
@@ -1039,108 +994,6 @@ SUBROUTINE init2_1
         ENDIF
      END DO
 600 END DO
-  ! ... load the boundary cell array structure; part 2, b.c. types
-  DO  l=1,num_bndy_cells
-     m = b_cell(l)%m_cell
-     IF(ibc(m)/100000000 == 1) THEN     ! ... specified pressure b.c. node
-        b_cell(l)%bc_type = 1       ! ... set type for all 3 faces even if fewer external
-        DO lbc=1,nsbc
-           IF(msbc(lbc) == m) THEN
-              b_cell(l)%lbc_indx = lbc
-              EXIT
-           END IF
-        END DO
-     ELSE
-        DO ibf=1,b_cell(l)%num_faces
-!!$           write(*,*) l, ibf, b_cell(l)%num_faces
-!!$           write(*,*) l, ibf,b_cell(l)%face_indx(ibf) 
-           SELECT CASE (b_cell(l)%face_indx(ibf))
-           CASE (3,4)     ! ... x face
-              b_cell(l)%bc_type(ibf) = ibc(m)/100000000
-           CASE (2,5)     ! ... y face
-              b_cell(l)%bc_type(ibf) = MOD(ibc(m),100000000)/10000000
-           CASE (1,6)     ! ... z face
-              b_cell(l)%bc_type(ibf) = MOD(ibc(m),10000000)/1000000
-           END SELECT
-!!$           write(*,*) l, ibf,b_cell(l)%bc_type(ibf) 
-           IF(b_cell(l)%bc_type(ibf) == 2) THEN
-              DO lbc=1,nfbc
-                 IF(mfbc(lbc) == m) THEN
-                    b_cell(l)%lbc_indx(ibf) = lbc
-                    EXIT
-                 END IF
-              END DO
-           ELSEIF(b_cell(l)%bc_type(ibf) == 3) THEN
-              DO lbc=1,nlbc
-                 IF(mlbc(lbc) == m) THEN
-                    b_cell(l)%lbc_indx(ibf) = lbc
-                    EXIT
-                 END IF
-              END DO
-              !*** need to handle river and river + flux and aifbc
-!!$           ELSEIF(b_cell(l)%bc_type(ibf) == 6 .OR. b_cell(l)%bc_type(ibf) == 8) THEN
-!!$              DO lbc=1,nrbc_seg
-!!$                 IF(mrbc(lbc) == m) THEN
-!!$                    b_cell(l)%lbc_indx(ibf) = lbc
-!!$                    EXIT
-!!$                 END IF
-!!$              END DO
-           END IF
-        END DO
-     END IF
-     ! ... count number of faces with same b.c. type
-     SELECT CASE (b_cell(l)%num_faces)
-     CASE (1)
-        b_cell(l)%num_same_bc = 1
-     CASE (2)
-        IF(b_cell(l)%bc_type(1) == b_cell(l)%bc_type(2)) THEN
-           b_cell(l)%num_same_bc = 2
-        ELSE
-           b_cell(l)%num_same_bc = 1
-        END IF
-     CASE (3)
-        IF(b_cell(l)%bc_type(1) == b_cell(l)%bc_type(2) .AND.  &
-             b_cell(l)%bc_type(2) == b_cell(l)%bc_type(3)) THEN
-           b_cell(l)%num_same_bc = 3
-        ELSEIF(b_cell(l)%bc_type(1) == b_cell(l)%bc_type(2) .OR.  &
-             b_cell(l)%bc_type(1) == b_cell(l)%bc_type(3) .OR.   &
-             b_cell(l)%bc_type(2) == b_cell(l)%bc_type(3)) THEN
-           b_cell(l)%num_same_bc = 2
-        ELSE
-           b_cell(l)%num_same_bc = 1
-        END IF
-     END SELECT
-     IF(b_cell(l)%num_faces == 3 .AND. b_cell(l)%num_same_bc == 2) THEN
-        ! ... two faces are the same b.c. type; make them the first two
-        IF(b_cell(l)%bc_type(2) == b_cell(l)%bc_type(3)) THEN
-           t_bctype = b_cell(l)%bc_type(1)
-           b_cell(l)%bc_type(1) = b_cell(l)%bc_type(3)
-           b_cell(l)%bc_type(3) = t_bctype
-           t_findx = b_cell(l)%face_indx(1)
-           b_cell(l)%face_indx(1) = b_cell(l)%face_indx(3)
-           b_cell(l)%face_indx(3) = t_findx
-           t_lindx = b_cell(l)%lbc_indx(1)
-           b_cell(l)%lbc_indx(1) = b_cell(l)%lbc_indx(3)
-           b_cell(l)%lbc_indx(3) = t_lindx
-           t_rswap = b_cell(l)%por_areabc(1)
-           b_cell(l)%por_areabc(1) = b_cell(l)%por_areabc(3)
-           b_cell(l)%por_areabc(3) = t_rswap
-        ELSEIF(b_cell(l)%bc_type(1) == b_cell(l)%bc_type(3)) THEN
-           t_bctype = b_cell(l)%bc_type(2)
-           b_cell(l)%bc_type(2) = b_cell(l)%bc_type(3)
-           b_cell(l)%bc_type(3) = t_bctype
-           t_findx = b_cell(l)%face_indx(2)
-           b_cell(l)%face_indx(2) = b_cell(l)%face_indx(3)
-           b_cell(l)%face_indx(3) = t_findx
-           t_lindx = b_cell(l)%lbc_indx(2)
-           b_cell(l)%lbc_indx(2) = b_cell(l)%lbc_indx(3)
-           b_cell(l)%lbc_indx(3) = t_lindx
-           t_rswap = b_cell(l)%por_areabc(2)
-           b_cell(l)%por_areabc(2) = b_cell(l)%por_areabc(3)
-           b_cell(l)%por_areabc(3) = t_rswap
-        END IF
-     END IF
-  END DO
   DEALLOCATE (cell_sd,  &
        STAT = da_err)
   IF (da_err /= 0) THEN  

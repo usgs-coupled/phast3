@@ -27,7 +27,7 @@ SUBROUTINE sbcflo(iequ,ddv,ufracnp,qdvsbc,rhssbc,vasbc)
      ! ... Explicit treatment of f.s.b.c.
      IF(frac(m) <= 0.) CYCLE
      WRITE(cibc,6001) ibc(m)
-     6001 FORMAT(i9)
+6001 FORMAT(i9.9)
      IF((iequ == 1 .AND. cibc(1:1) == '1') .OR.  &
           (iequ == 2 .AND. cibc(4:4) == '1') .OR.  &
           (iequ == 3 .AND. cibc(7:7) == '1')) THEN

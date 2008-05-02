@@ -28,7 +28,8 @@ SUBROUTINE indx_rewi(ipar1,ipar2,par3,ip,icall,ier)
      END SUBROUTINE incidx
   END INTERFACE
   !
-  CHARACTER(LEN=80) :: line
+  CHARACTER(LEN=130), EXTERNAL :: uppercase
+  CHARACTER(LEN=130) :: line
   REAL(kind=kdp) :: x1, x2, y1, y2, z1, z2
   REAL(kind=kdp) ::  var3
 !!$  REAL(kind=kdp), DIMENSION(2,1) :: fs
@@ -85,12 +86,11 @@ SUBROUTINE indx_rewi(ipar1,ipar2,par3,ip,icall,ier)
   if (print_rde) WRITE(furde,2006) 'Modification code: 1-replace, ',  &
        '2-multiply, 3-add, 4-node-by-node, 5-linear interpolate'
 2006 FORMAT(/tr5,2A/(tr18,2A/))
-11 READ(fuins,'(A)') line
+11 READ(fuins,'(a)') line  
+  line = uppercase(line)
   ic=INDEX(line(1:20),'END')
-  IF(ic == 0) ic=INDEX(line(1:20),'end')
   IF(ic > 0) GO TO 70
-  BACKSPACE(UNIT=fuins)
-  READ(fuins,*) x1,x2,y1,y2,z1,z2
+  READ(line,*) x1,x2,y1,y2,z1,z2
   ! ... Read the modification data
   READ(fuins,*) ivar1,imod(1),ivar2,imod(2),var3,imod(3)
   ! ... Echo write the mods

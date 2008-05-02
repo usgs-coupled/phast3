@@ -4,13 +4,13 @@ SUBROUTINE sumcal_ss_flow
 !!$  USE f_units
   USE mcb
   USE mcc
-  use mcch
+  USE mcch
   USE mcg
   USE mcn
   USE mcp
   USE mcv
   USE mcw
-  USE mg2, ONLY: hdprnt, qfbcv
+  USE mg2, ONLY: hdprnt
   IMPLICIT NONE
 !!$  INTERFACE
 !!$     SUBROUTINE sbcflo(iequ,ddv,ufracnp,qdvsbc,rhssbc,vasbc)
@@ -76,14 +76,14 @@ SUBROUTINE sumcal_ss_flow
         END IF
         WRITE(logline1,2001) '     Current time step length '//dots, cnvtmi*deltim,' ('//unittm//')'
 2001    FORMAT(a60,1PG12.3,A)
-        call errprt_c(logline1)
+        CALL errprt_c(logline1)
 !!$        WRITE(*,2002) 'Current time step length .....', cnvtmi*deltim,'('//unittm//')'
 !!$2002    FORMAT(/tr5,a,1PG12.3,tr2,A)
         WRITE(logline1,3001) 'Maximum change in potentiometric head '//dots,  &
              cnvpi*dhmax,' ('//unitl//')',' at location (',  &
              cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax),')(',unitl//')'
-3001    format(A45,1PE14.4,A8,A,3(1PG10.3,A),A)
-        call errprt_c(logline1)
+3001    FORMAT(A45,1PE14.4,A8,A,3(1PG10.3,A),A)
+        CALL errprt_c(logline1)
         !$        WRITE(*,aformt) 'Maximum change in potentiometric head '//dots,  &
 !!$             cnvpi*dhmax,'('//unitl//')','at location (',  &
 !!$             cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax), ')(',unitl,')'
@@ -114,6 +114,7 @@ SUBROUTINE sumcal_ss_flow
         ! ... Save previous frac for rate of free surface movement approximation
         zfsn(mt) = zfs(mt)
         WRITE(cibc,6001) ibc(m)
+6001    FORMAT(i9.9)
         IF(cibc(1:1) == '1') CYCLE     ! Frac will be calculated below for 
                                        !  free surface in a specified pressure cell
         imod = MOD(m,nxy)
@@ -159,7 +160,7 @@ SUBROUTINE sumcal_ss_flow
                  z0 = z(k-1)
                  zm1=z(k-2)
                  frac(m-nxy)=(2.*zfs(mt)-(z0+zm1))/(z1-zm1)
-                 frac(m-nxy)=max(0._kdp,frac(m-nxy))     
+                 frac(m-nxy)=MAX(0._kdp,frac(m-nxy))     
                  vmask(m-nxy) = 1                        
                  IF(frac(m-nxy) < 0.5_kdp) vmask(m-nxy) = 0
               ELSE
@@ -171,7 +172,7 @@ SUBROUTINE sumcal_ss_flow
                     zfs(mt)=up0/(den(m-nxy)*gz) + z0
                     frac(m-nxy)=2.*(zfs(mt)-z0)/(z1-z0)
                     !  Do not limit frac to < = 1 yet
-                    frac(m-nxy)=max(0._kdp,frac(m-nxy))
+                    frac(m-nxy)=MAX(0._kdp,frac(m-nxy))
                     vmask(m-nxy) = 1
                  ELSE
                     frac(m)=0._kdp      ! ... Empty column of cells
@@ -181,7 +182,7 @@ SUBROUTINE sumcal_ss_flow
            END IF
         ELSE
            ! ... Intermediate plane
-           IF(ibc(m-nxy) == -1) then
+           IF(ibc(m-nxy) == -1) THEN
               IF(p(m) > 0._kdp) THEN
                  up0=p(m)
                  z0=z(k)
@@ -242,7 +243,7 @@ SUBROUTINE sumcal_ss_flow
                  z0=z(k-1)
                  z1=z(k)
                  frac(m-nxy)=(2.*zfs(mt)-(z0+zm1))/(z1-zm1)
-                 frac(m-nxy)=max(0._kdp,frac(m-nxy))
+                 frac(m-nxy)=MAX(0._kdp,frac(m-nxy))
                  vmask(m-nxy) = 1
                  IF(frac(m-nxy) < 0.5_kdp) vmask(m-nxy) = 0
               END IF
@@ -300,7 +301,7 @@ SUBROUTINE sumcal_ss_flow
               END IF
            ELSE
               ! ... Intermediate plane
-              if(ibc(m-nxy) == -1) then
+              IF(ibc(m-nxy) == -1) THEN
                  ! ... Treat as bottom plane
                  IF(p(m) > 0._kdp) THEN
                     up0=p(m)
@@ -382,7 +383,7 @@ SUBROUTINE sumcal_ss_flow
            IF(ibc(m+nxy) == -1) CYCLE
            ! ... Calculate pressure and fraction of saturation in m+nxy cell;
            ! ...      the new free-surface cell
-           if (frac(m) < 1._kdp + 1.e-6_kdp) CYCLE
+           IF (frac(m) < 1._kdp + 1.e-6_kdp) CYCLE
            up0=p(m)
            z0=z(k)
            z1=z(k+1)
@@ -420,23 +421,23 @@ SUBROUTINE sumcal_ss_flow
      ! ... also set all frac to one for cells below the f.s. cell
      DO  mt=1,nxy
         m0 = mfsbc(mt)
-        ierrw = .false.
+        ierrw = .FALSE.
         m1=nxyz-nxy+mt
 200     IF(frac(m1) > 0._kdp) GO TO 210
         m1=m1-nxy
         IF(m1 > 0) GO TO 200
         m1=0
-210     if(abs(m1 - m0) > nxy) ierrw = .true.
+210     IF(ABS(m1 - m0) > nxy) ierrw = .TRUE.
         mfsbc(mt)=m1
-        do m=m1-nxy,1,-nxy
+        DO m=m1-nxy,1,-nxy
            frac(m) = 1._kdp
-        end do
+        END DO
      END DO
-     if(ierrw) then
-        write(logline1,*) 'WARNING: Free surface has moved more than one layer of cells'//  &
+     IF(ierrw) THEN
+        WRITE(logline1,*) 'WARNING: Free surface has moved more than one layer of cells'//  &
              ' in one or more cell columns'
-        call screenprt_c(logline1)
-     endif
+        CALL screenprt_c(logline1)
+     ENDIF
      ! ... Calculate hydrostatic pressure for cells up to top of region
      ! ...      This gives a pressure field that may be used for an initial
      ! ...           condition for a future simulation
@@ -511,7 +512,6 @@ SUBROUTINE sumcal_ss_flow
      m=msbc(l)
      IF(frac(m) <= 0._kdp) CYCLE
      WRITE(cibc,6001) ibc(m)
-6001 FORMAT(i9)
      ! ... Sum fluid and diffusive or associated heat and solute fluxes
      ! ...      Flow rates calculated in SBCFLO
      IF(cibc(1:1) == '1') THEN
@@ -536,66 +536,81 @@ SUBROUTINE sumcal_ss_flow
   ! ... Add to cumulative totals
 !  tcfsbc=tcfsbc+stfsbc
   ! ... Specified flux b.c.
-!!$  erflg=.FALSE.
-  DO  l=1,nfbc
-     m=mfbc(l)
-     ufrac=frac(m)
-     ! ... Identify the cell containing the free surface
-     IF(l >= lnz2) THEN
-        l1=MOD(m,nxy)
-        IF(l1 == 0) l1=nxy
-        m=mfsbc(l1)
-        IF(m == 0) CYCLE
-        ufrac=1._kdp
-     END IF
-     qn=qfbcv(l)
-     IF(qn <= 0._kdp) THEN     ! ... Outflow
-        qfbc = den(m)*qn*ufrac
-        qffbc(l) = qfbc
-        stotfp = stotfp-ufdt1*qfbc
-     ELSE                      ! ... Inflow
-        qfbc = denfbc(l)*qn*ufrac
-        qffbc(l) = qfbc
-        stotfi = stotfi+ufdt1*qfbc
-     END IF
-!     sffb(l)=sffb(l)+qfbc
-!     sfvfb(l)=sfvfb(l)+qn
+!$$  erflg=.FALSE.
+  DO lc=1,nfbc_cells
+     m = flux_seg_index(lc)%m
+     qffbc(lc) = 0._kdp
+!$$     qsfbc(lc,:) = 0._kdp
+!$$     sffb(lc) = 0._kdp
+!$$     sfvfb(lc) = 0._kdp
+     IF(m == 0) CYCLE     ! ... dry column
+     DO ls=flux_seg_index(lc)%seg_first,flux_seg_index(lc)%seg_last
+        ufrac = 1._kdp
+        IF(ifacefbc(ls) < 3) ufrac = frac(m)  
+        IF(fresur .AND. ifacefbc(ls) == 3 .AND. m >= mtp1) THEN
+           ! ... Redirect the flux to the free-surface cell
+           l1 = MOD(m,nxy)
+           IF(l1 == 0) l1 = nxy
+           m = mfsbc(l1)
+        ENDIF
+        qn = qfflx(ls)*areafbc(ls)
+        IF(qn <= 0.) THEN              ! ... Outflow
+           qfbc = den(m)*qn*ufrac
+           qffbc(lc) = qffbc(lc) + qfbc
+           stotfp = stotfp-ufdt1*qfbc
+        ELSE                           ! ... Inflow
+           qfbc = denfbc(ls)*qn*ufrac
+           qffbc(lc) = qffbc(lc) + qfbc
+           stotfi = stotfi+ufdt1*qfbc
+        END IF
+     END DO
+!$$     sffb(l)=sffb(l)+qfbc
+!$$     sfvfb(l)=sfvfb(l)+qn
      stffbc = stffbc+ufdt1*qfbc
   END DO
   ! ... Convert step total flow rates to step total amounts
-  stffbc=stffbc*deltim
-!  tcffbc=tcffbc+stffbc
-  ! ... Calculate aquifer leakage flow rates
-!!$  erflg=.FALSE.
-  DO  l=1,nlbc
-     m=mlbc(l)
-     IF(frac(m) <= 0._kdp .OR. m == 0) CYCLE
-     qnp=albc(l)-blbc(l)*dp(m)
-     IF(qnp < 0._kdp) THEN        ! ... Outflow
-        qflbc(l)=den(m)*qnp
-        stotfp = stotfp-ufdt1*qflbc(l)
-     ELSE                         ! ... Inflow
-        qflbc(l)=denlbc(l)*qnp
-        stotfi = stotfi+ufdt1*qflbc(l)
-     END IF
-!     sflb(l)=sflb(l)+qflbc(l)
-!     sfvlb(l)=sfvlb(l)+qnp
-     stflbc=stflbc+ufdt1*qflbc(l)
-  END DO
-  ! ... Convert step total flow rates to step total amounts
-  stflbc=stflbc*deltim
-!  tcflbc=tcflbc+stflbc
-  ! ... Calculate river leakage flow rates
-!!$  erflg=.FALSE.
-  DO lc=1,nrbc_cells
-     m = river_seg_index(lc)%m
+  stffbc = stffbc*deltim
+!$$  tcffbc=tcffbc+stffbc
+  ! ... Aquifer leakage b.c.
+  DO lc=1,nlbc_cells
+     m = leak_seg_index(lc)%m
+     qflbc(lc) = 0._kdp
+!$$     sflb(lc) = 0._kdp
+!$$     sfvlb(lc) = 0._kdp
      IF(m == 0) CYCLE
      ! ... Calculate current net aquifer leakage flow rate
-     ! ...      Possible attenuation included explicitly
+     qm_net = 0._kdp
+     DO ls=leak_seg_index(lc)%seg_first,leak_seg_index(lc)%seg_last
+        qnp = albc(ls) - blbc(ls)*dp(m)  
+        IF(qnp <= 0._kdp) THEN           ! ... Outflow
+           qm_net = qm_net + den(m)*qnp
+        ELSE                            ! ... Inflow
+           qm_net = qm_net + denlbc(ls)*qnp
+        ENDIF
+     END DO
+     qflbc(lc) = qm_net
+     stflbc = stflbc + ufdt1*qflbc(lc)
+     IF(qm_net <= 0._kdp) THEN           ! ... net outflow
+	stotfp = stotfp - ufdt1*qflbc(lc)			
+     ELSEIF(qm_net > 0._kdp) THEN        ! ... net inflow
+        stotfi = stotfi + ufdt1*qflbc(lc)
+     END IF
+  END DO
+  ! ... Convert step total flow rates to step total amounts
+  stflbc = stflbc*deltim
+!$$  tcflbc=tcflbc+stflbc
+  ! ... River leakage b.c.
+  DO lc=1,nrbc_cells
+     m = river_seg_index(lc)%m
+     qfrbc(lc) = 0._kdp
+!$$     sfrb(lc) = 0._kdp
+!$$     sfvrb(lc) = 0._kdp
+     IF(m == 0) CYCLE
+     ! ... Calculate current net aquifer leakage flow rate
      qm_net = 0._kdp
      DO ls=river_seg_index(lc)%seg_first,river_seg_index(lc)%seg_last
         qnp = arbc(ls) - brbc(ls)*dp(m)
-        IF(qnp < 0._kdp) THEN           ! ... Outflow
+        IF(qnp <= 0._kdp) THEN          ! ... Outflow
            qm_net = qm_net + den(m)*qnp
         ELSE                            ! ... Inflow
            ! ... Limit the flow rate for a river leakage
@@ -606,18 +621,43 @@ SUBROUTINE sumcal_ss_flow
         ENDIF
      END DO
      qfrbc(lc) = qm_net
-     IF(qm_net < 0._kdp) THEN        ! ... Outflow
-        stotfp = stotfp - ufdt1*qfrbc(lc)
-     ELSEIF(qm_net > 0._kdp) THEN    ! ... Inflow
+     stfrbc = stfrbc + ufdt1*qfrbc(lc)
+     IF(qm_net <= 0._kdp) THEN           ! ... net outflow
+	stotfp = stotfp - ufdt1*qfrbc(lc)			
+     ELSEIF(qm_net > 0._kdp) THEN        ! ... net inflow
         stotfi = stotfi + ufdt1*qfrbc(lc)
      END IF
-!     sfrb(lc)=sfrb(lc)+qfrbc(lc)
-!     sfvrb(lc)=sfvrb(lc)+qm_net/den0   ! *** Only valid for constant density
-     stfrbc = stfrbc+ufdt1*qfrbc(lc)
   END DO
   ! ... Convert step total flow rates to step total amounts
-  stfrbc=stfrbc*deltim
+  stfrbc = stfrbc*deltim
   ! ... Do not update the indices connecting river to aquifer yet!
+  ! ... Drain leakage b.c.
+!!$  erflg=.FALSE.
+  DO lc=1,ndbc_cells
+     m = drain_seg_index(lc)%m
+     qfdbc(lc) = 0._kdp
+!$$     sfdb(lc) = 0._kdp
+!$$     sfvdb(lc) = 0._kdp
+     IF(m == 0) CYCLE
+     DO ls=drain_seg_index(lc)%seg_first,drain_seg_index(lc)%seg_last
+        qnp = adbc(ls) - bdbc(ls)*dp(m)
+        IF(qnp <= 0._kdp) THEN           ! ... Outflow
+           qfbc = den(m)*qnp
+           qfdbc(lc) = qfdbc(lc) + qfbc
+           stotfp = stotfp - ufdt1*qfbc
+        ELSE                            ! ... Inflow
+           qfbc = 0._kdp
+           qfdbc(lc) = qfdbc(lc) + qfbc
+           stotfi = stotfi + ufdt1*qfbc
+        ENDIF
+     END DO
+!$$     sfdb(lc)=sfdb(lc) + qfdbc(lc)
+!$$     sfvdb(lc)=sfvdb(lc) + qm_net/den0   ! *** Only valid for constant density
+     stfdbc = stfdbc + ufdt1*qfdbc(lc)
+  END DO
+  ! ... Convert step total flow rates to step total amounts
+  stfdbc = stfdbc*deltim
+  ! ... Do not update the indices connecting drain to aquifer yet!
 !!$  ! ... Calculate aquifer influence function boundary flow rates
 !!$  !... *** not implemented for PHAST
 !!$  erflg=.FALSE.

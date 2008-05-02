@@ -49,11 +49,11 @@ SUBROUTINE asembl
         CYCLE
      END IF
      WRITE(cibc,6001) ibc(m)
-6001 FORMAT(i9)
+6001 FORMAT(i9.9)
      !.....Conductances and free-surface b.c. treated explicitly
      !.....Skip dry cells, unless they are specified value b.c.
-     IF(((ieq == 1.AND.cibc(1:1) /= '1').OR.(ieq == 3.AND.cibc(7:7) /= '1')).AND. &
-           frac(m) <= 0.) CYCLE
+     IF(((ieq == 1 .AND. cibc(1:1) /= '1') .OR. (ieq == 3 .AND. cibc(7:7) /= '1'))  &
+          .AND. frac(m) <= 0.) CYCLE
      !.....Decode M into K
      CALL mtoijk(m,i,j,k,nx,ny)
      tfxm=0._kdp

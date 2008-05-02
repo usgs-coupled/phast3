@@ -10,6 +10,7 @@ SUBROUTINE read2
   USE mcv
   USE mcw
   USE mg2
+  USE rewi_mod
   IMPLICIT NONE
   INCLUDE 'ifrd.inc'
   INTERFACE
@@ -23,25 +24,26 @@ SUBROUTINE read2
      END SUBROUTINE incidx
   END INTERFACE
   INTRINSIC index  
-  CHARACTER(len=9) :: cibc  
-  CHARACTER(len=80) :: line  
+  CHARACTER(LEN=9) :: cibc  
+  CHARACTER(LEN=130) :: line  
+  CHARACTER(LEN=130), EXTERNAL :: uppercase
   REAL(KIND=kdp) :: delx, dely, udelz, u1,  uwb, uxw, uyw, uzwb, uzwt, &
        udwb, udwt, &
        uwcfl, uwcfu, x1z, x2z, y1z, y2z, z1z, z2z
   INTEGER :: a_err, da_err
-  INTEGER :: i, ic, icall, ipmz, iwel, j, k, ks, lc, ls, m, nsa, umwel, &
+  INTEGER :: i, ic, icall, ifc, ipmz, iwel, j, k, ks, lc, ls, lsmax, m, nsa, umwel, &
        uwelidno, uwq
   LOGICAL :: erflg
   LOGICAL :: temp_logical
-  INTEGER :: nr  
+  INTEGER :: nr, uibc
   INTEGER, DIMENSION(:), ALLOCATABLE :: ui1z, ui2z, uj1z, uj2z, uk1z, uk2z
   INTEGER, DIMENSION(:), ALLOCATABLE :: uwid, uwqm, unkswel
   INTEGER, DIMENSION(:,:), ALLOCATABLE :: uumwel
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: uuxw, uuyw, uuzwb, uuzwt, uudwb, uudwt, uwbod
   REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: uuwcfl, uuwcfu
-  INTEGER, DIMENSION(:), ALLOCATABLE :: umrbc
-  REAL(kind=kdp), DIMENSION(:), ALLOCATABLE :: uarbc, ukrb, uzerb
-  CHARACTER(len=130) :: logline1, logline2
+  INTEGER, DIMENSION(:), ALLOCATABLE :: umbc, uiface
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: uabc, ubbbc, ukbc, uzebc
+  CHARACTER(LEN=130) :: logline1, logline2
   ! ... set string for use with rcs ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
@@ -191,23 +193,22 @@ SUBROUTINE read2
      READ(fuins, *) dm  
      IF (print_rde) WRITE(furde, 8002) 'dm,[2.7]', dm  
   ENDIF
-  ! ... porous media physical properties
-  ! ...      porous media zones
+  ! ... Porous media physical properties
+  ! ...      Porous media zones
   IF (print_rde) WRITE(furde, 8005) 'ipmz,x1z,x2z,y1z,', 'y2z,z1z,z2z,[2.8.1]'  
 8005 FORMAT(tr5,2a/tr5,a/tr10,a)  
-  npmz = 0  
-110 READ(fuins, '(a)') line  
-  ic = INDEX(line(1:20) , 'END')  
-  IF(ic == 0) ic = INDEX(line(1:20),'end')  
-  IF(ic > 0) GOTO 120  
-  BACKSPACE(unit = fuins)  
-  READ(fuins, *) ipmz, x1z, x2z, y1z, y2z, z1z, z2z  
+  npmz = 0
+110 READ(fuins,'(a)') line  
+  line = uppercase(line)
+  ic=INDEX(line(1:20),'END')
+  IF(ic > 0) GO TO 120
+  READ(line, *) ipmz, x1z, x2z, y1z, y2z, z1z, z2z  
   IF (print_rde) WRITE(furde, 8006) ipmz, x1z, x2z, y1z, y2z, z1z, z2z  
 8006 FORMAT(tr5,i5,6(1pg11.3))  
-  npmz = MAX(npmz, ipmz)  
-  uj1z(ipmz) = 1  
-  uj2z(ipmz) = 1  
-  erflg = .FALSE.  
+  npmz = MAX(npmz,ipmz)  
+  uj1z(ipmz) = 1
+  uj2z(ipmz) = 1
+  erflg = .FALSE.
   CALL incidx(x1z, x2z, nx-1, x_face, ui1z(ipmz), ui2z(ipmz), erflg)
   ui2z(ipmz) = ui2z(ipmz) + 1  
   IF(.NOT.cylind) THEN  
@@ -224,20 +225,20 @@ SUBROUTINE read2
 9002 FORMAT(6(1pg13.4))
      CALL errprt_c(logline2)
      ierr(138) = .TRUE.  
-     errexe = .TRUE.  
+     errexe = .TRUE.
   ENDIF
-  GOTO 110  
-120 CONTINUE  
-  ! ... allocate the zone arrays
+  GOTO 110
+120 CONTINUE
+  ! ... Allocate the zone arrays
   ALLOCATE (abpm(npmz), alphl(npmz), alphth(npmz), alphtv(npmz), poros(npmz), &
        kthx(1), kthy(1), kthz(1),  &
        kx(npmz), ky(npmz), kz(npmz),  &
        kxx(npmz),kyy(npmz),kzz(npmz),rcppm(1), &
        i1z(npmz), i2z(npmz), j1z(npmz), j2z(npmz), k1z(npmz), k2z(npmz), &
        stat = a_err)
-  IF(a_err.NE.0) THEN  
+  IF(a_err /= 0) THEN  
      PRINT * , "array allocation failed: read2"  
-     STOP  
+     STOP
   ENDIF
   DO ipmz = 1, npmz
      i1z(ipmz) = ui1z(ipmz)
@@ -247,20 +248,18 @@ SUBROUTINE read2
      k1z(ipmz) = uk1z(ipmz)
      k2z(ipmz) = uk2z(ipmz)
   END DO
-  ! ... permeability
+  ! ... Permeability
   READ(fuins, *) (kxx(ipmz), ipmz = 1, npmz)  
   READ(fuins, *) (kyy(ipmz), ipmz = 1, npmz)  
   READ(fuins, *) (kzz(ipmz), ipmz = 1, npmz)  
   IF(cylind) THEN  
-     DO  ipmz = 1, npmz  
-        kyy(ipmz) = 0._kdp
-     END DO
+     kyy = 0._kdp
   ENDIF
   IF (print_rde) WRITE(furde,8007) '(kxx(ipmz),kyy(ipmz),kzz(ipmz),','ipmz=1,npmz),[2.9.1]', &
        (kxx(ipmz),kyy(ipmz),kzz(ipmz),ipmz=1,npmz)
 8007 FORMAT(tr5,2a/(tr5,3(1pg12.4)))  
-  ! ... porosity
-  READ(fuins, *) (poros(i), i = 1, npmz)  
+  ! ... Porosity
+  READ(fuins,*) (poros(i), i = 1, npmz)  
   IF (print_rde) WRITE(furde, 8002) '(poros(i),i=1,npmz),[2.9.2]', (poros(i) , i = 1, npmz)
   ! ... porous media compressibilities
   READ(fuins, *) (abpm(i), i = 1, npmz)  
@@ -278,7 +277,7 @@ SUBROUTINE read2
 !!$          (kthxpm(i) , kthypm(i) , kthzpm(i) , i = 1, npmz)
 !!$  ENDIF
   ! ... dispersivities for solute and heat
-  IF(solute.OR.heat) THEN  
+  IF(solute .OR. heat) THEN  
      READ(fuins, *) (alphl(i), i = 1, npmz)  
      READ(fuins,*) (alphth(i),i=1,npmz)  
      READ(fuins,*) (alphtv(i),i=1,npmz)  
@@ -286,8 +285,8 @@ SUBROUTINE read2
           (alphl(i),alphth(i),alphtv(npmz),i=1,npmz)
 8008 FORMAT(tr5,2a/(tr5,3(1pg12.4)))  
   ENDIF
-  ! ... well bore model information
-  IF(nwel.GT.0) THEN  
+  ! ... Well bore model information
+  IF(nwel > 0) THEN  
      ! ... Well bore location and structural data
      ! ... Allocate scratch space for well data
      ALLOCATE (uwid(nxy), uuxw(nxy), uuyw(nxy), uuzwb(nxy), uuzwt(nxy), &
@@ -305,17 +304,13 @@ SUBROUTINE read2
      IF (print_rde) WRITE(furde, 8005) 'welidno(iwel),xw(iwel),yw(iwel),zwb(iwel),zwt(iwel),', &
           'dwb(iwel),dwt(iwel),wbod(iwel),wqmeth(iwel),[2.13.1]'
      iwel = 0  
-160  READ(fuins, '(a)') line  
-     ic = INDEX(line(1:20) , 'END')  
-     IF(ic == 0) ic = INDEX(line(1:20) , 'end')  
-     IF(ic > 0) THEN  
-        nwel = iwel  
-        GOTO 180  
-     ENDIF
-     BACKSPACE(unit = fuins)  
-     READ(fuins, *) uwelidno, uxw, uyw, uzwb, uzwt, udwb, udwt, uwb, uwq  
-     iwel = iwel + 1  
-     IF(iwel.GT.nxy) GOTO 170  
+160  READ(fuins,'(a)') line  
+     line = uppercase(line)
+     ic=INDEX(line(1:20),'END')
+     IF(ic > 0) GO TO 180
+     READ(line, *) uwelidno, uxw, uyw, uzwb, uzwt, udwb, udwt, uwb, uwq  
+     iwel = iwel + 1
+     IF(iwel > nxy) GO TO 170  
      uwid(iwel) = uwelidno  
      uuxw(iwel) = uxw  
      uuyw(iwel) = uyw
@@ -330,28 +325,27 @@ SUBROUTINE read2
           uudwb(iwel), uudwt(iwel), uwbod(iwel), uwqm(iwel)
 8009 FORMAT(tr5,i5,7(1pg10.3),i5)  
      ! ... Read well completion cells and screen lengths in lower and upper parts
-     ks = 0  
-165  READ(fuins, '(a)') line  
-     ic = INDEX(line(1:20) , 'END')  
-     IF(ic == 0) ic = INDEX(line(1:20),'end')  
-     IF(ic > 0) THEN
-        unkswel(iwel) = ks
-        GOTO 159  
-     ENDIF
-     BACKSPACE(unit = fuins)  
-     READ(fuins,*) umwel, uwcfl, uwcfu  
-     ks = ks + 1  
-     uumwel(iwel,ks) = umwel  
-     uuwcfl(iwel,ks) = uwcfl
-     uuwcfu(iwel,ks) = uwcfu
-     GOTO 165  
-159  CONTINUE  
-     IF (print_rde) WRITE(furde, 8010) '(mwel(iwel,ks),wcfl(iwel,ks),wcfu(iwel,ks), '//  &
-          'ks=1,nkswel(iwel)),[2.13.2]',   &
-          (uumwel(iwel,ks), uuwcfl(iwel,ks), uuwcfu(iwel,ks), ks=1,unkswel(iwel))
-8010 FORMAT(tr5,a/tr5,8(i5,1pg10.2,1pg10.2,tr4))  
-     ! ... no well riser calculations allowed in phast
-     GOTO 160  
+     ks = 0
+     DO
+        READ(fuins,'(a)') line
+        line = uppercase(line)
+        ic=INDEX(line(1:20),'END')
+        IF(ic > 0) THEN
+           unkswel(iwel) = ks
+           GOTO 160
+        ENDIF
+        READ(line,*) umwel, uwcfl, uwcfu  
+        ks = ks + 1  
+        uumwel(iwel,ks) = umwel  
+        uuwcfl(iwel,ks) = uwcfl
+        uuwcfu(iwel,ks) = uwcfu
+        IF (print_rde) WRITE(furde, 8010) '(mwel(iwel,ks),wcfl(iwel,ks),wcfu(iwel,ks), '//  &
+             'ks=1,nkswel(iwel)),[2.13.2]',   &
+             (uumwel(iwel,ks), uuwcfl(iwel,ks), uuwcfu(iwel,ks), ks=1,unkswel(iwel))
+8010    FORMAT(tr5,a/tr5,8(i5,1pg10.2,1pg10.2,tr4))  
+        ! ... no well riser calculations allowed in phast
+     END DO
+     GOTO 160 
 170  ierr(116) = .TRUE.  
      RETURN  
 180  CONTINUE  
@@ -363,7 +357,7 @@ SUBROUTINE read2
           wfrac(nwel), nkswel(nwel),  &
           mxf_wel(nwel), &
           stat = a_err)
-     IF (a_err.NE.0) THEN  
+     IF (a_err /= 0) THEN  
         PRINT *, "array allocation failed: read2"  
         STOP  
      ENDIF
@@ -394,84 +388,321 @@ SUBROUTINE read2
         STOP  
      ENDIF
   ENDIF
-  ! ... boundary conditions
-  ! ... specified p,t,or c b.c.
-  icall = 1  
-  IF(nsbc.GT.0) CALL irewi(ibc, icall, 101)  
-  ! ... specified flux b.c.
-  icall = 2  
-  IF(nfbc.GT.0) CALL irewi(ibc, icall, 102)  
-  ! ... aquifer leakage b.c.
-  IF(nlbc.GT.0) THEN  
-     icall = 3  
-     CALL irewi(ibc, icall, 103)  
-     CALL rewi3(uklb, ubblb, uzelb, 31, 131)  
-  ENDIF
-  IF(nrbc > 0) THEN  
-     ! ... river information
-     ! ... allocate scratch space for river data
-     ALLOCATE (umrbc(nxy), uarbc(nxy), ukrb(nxy), uzerb(nxy), &
+  ! ... Boundary conditions
+  ! ... Specified p,t,or c b.c.
+  IF(nsbc > 0) THEN
+     ! ... Allocate scratch space for specified value b.c. data
+     ALLOCATE (umbc(nxyz),  &
           stat = a_err)
      IF (a_err /= 0) THEN  
-        PRINT *, "array allocation failed: read2"  
-        STOP  
+        PRINT *, "array allocation failed: read2, spec. value"  
+        STOP
      ENDIF
-     ls = 0
-     lc = 0
-     READ(fuins, '(a)') line  
-     ic = INDEX(line(1:20) , 'END')  
-     IF(ic.EQ.0) ic = INDEX(line(1:20) , 'end')  
-     IF(ic.GT.0) GOTO 230  
-     IF (print_rde) WRITE(furde, 8005) '** river leakage parameters **',  &
+     lsmax = 0
+     IF (print_rde) WRITE(furde, 8005) '** Specified Value B.C. Parameters **',  &
           '  (read echo[2.16.3])',  &
-          ' mrbc', '     arbc    kbrbc    zerbc'
-     BACKSPACE(unit = fuins)  
-210  READ(fuins, '(a)') line  
-     ic = INDEX(line(1:20) , 'END')  
-     IF(ic.EQ.0) ic = INDEX(line(1:20) , 'end')  
-     IF(ic.GT.0) GOTO 230  
-     BACKSPACE(unit = fuins)  
-     ls = ls + 1  
-     READ(fuins,*) umrbc(ls), uarbc(ls), ukrb(ls), uzerb(ls)  
-     IF (print_rde) WRITE(furde,8013) umrbc(ls), uarbc(ls), ukrb(ls), uzerb(ls)  
-8013 FORMAT(tr1,i10,4(1pg11.3))
-     m = umrbc(ls)          ! ... surface trace cells  
-     WRITE(cibc, 6001) ibc(m)  
-6001 FORMAT (i9)  
-     IF(cibc(3:3) /= '6' .AND. cibc(3:3) /= '8') THEN
-        ibc(m) = ibc(m) + 6000000
-        lc = lc + 1
-     END IF
-     GOTO 210
-230  CONTINUE
-     nrbc_seg = ls
-     nrbc_cells = lc
-     nrbc = nrbc_cells
-     ALLOCATE (mrbc(nrbc_seg), arbc(nrbc_seg), brbc(nrbc_seg), krbc(nrbc_seg), bbrbc(nrbc_seg),  &
-          mrbc_bot(nrbc), mrseg_bot(nrbc_seg), zerbc(nrbc_seg), &
-          crbc(nrbc_seg,nsa), indx1_rbc(nrbc_seg), indx2_rbc(nrbc_seg), mxf_rbc(nrbc_seg),  &
-          qfrbc(nrbc), ccfrb(nrbc), ccfvrb(nrbc), qsrbc(nrbc,nsa), ccsrb(nrbc,nsa), &
-          sfrb(nrbc), sfvrb(nrbc), ssrb(nrbc,nsa), &
-          phirbc(nrbc_seg), denrbc(nrbc_seg), visrbc(nrbc_seg), &
-          river_seg_index(nrbc),  &
+          ' seg_no   mfbc  svbc_type'
+     DO
+        READ(fuins,'(A)') line
+        line = uppercase(line)
+        ic=INDEX(line(1:20),'END')
+        IF(ic > 0) EXIT
+        READ(line,*) ls, umbc(ls), uibc
+        IF (print_rde) WRITE(furde,8113) ls, umbc(ls), uibc
+        m = umbc(ls)
+        lsmax = MAX(ls, lsmax)
+        WRITE(cibc,6001) uibc
+        cibc(1:1) = cibc(7:7)
+        cibc(4:4) = cibc(8:8)
+        cibc(7:7) = cibc(9:9)
+        cibc(8:8) = '0'
+        cibc(9:9) = '0'
+        READ(cibc,6001) ibc(m)
+     END DO
+     lc = 1
+     m = umbc(1)
+     DO ls=2,lsmax
+        IF(umbc(ls) == m) CYCLE
+        lc = lc+1
+        m = umbc(ls)
+     END DO
+     nsbc_seg = lsmax
+     nsbc_cells = lc
+     nsbc = nsbc_cells
+     nsa = MAX(ns,1)
+     ALLOCATE (msbc(nsbc_seg),  &
+          psbc(nsbc_seg), csbc(nsbc_seg,nsa), indx1_sbc(nsbc_seg), indx2_sbc(nsbc_seg), mxf_sbc(nsbc_seg),  &
           stat = a_err)
      IF (a_err /= 0) THEN  
-        PRINT *, "array allocation failed: read2"  
+        PRINT *, "array allocation failed: read2, svbc.2"  
         STOP  
      ENDIF
-     DO ls=1,nrbc_seg
-        mrbc(ls) = umrbc(ls)  
-        arbc(ls) = uarbc(ls)  
-        krbc(ls) = ukrb(ls)  
-        bbrbc(ls) = 1._kdp
-        zerbc(ls) = uzerb(ls)      
+     DO ls=1,nsbc_seg
+        msbc(ls) = umbc(ls)
      END DO
-     ! ... deallocate scratch space for river data
-     DEALLOCATE (umrbc, uarbc, ukrb, uzerb, &
+     ! ... Deallocate scratch space for svbc data
+     DEALLOCATE (umbc,  &
           stat = da_err)
      IF (da_err /= 0) THEN  
         PRINT *, "array deallocation failed"  
+        STOP
+     ENDIF
+  ENDIF
+  ! ... Specified flux b.c.
+  IF(nfbc > 0) THEN
+     ! ... Allocate scratch space for flux data
+     ALLOCATE (umbc(nxyz), uiface(nxyz), uabc(nxyz),  &
+          stat = a_err)
+     IF (a_err /= 0) THEN  
+        PRINT *, "array allocation failed: read2, flux"  
+        STOP
+     ENDIF
+     lsmax = 0
+     IF (print_rde) WRITE(furde, 8005) '** Flux B.C. Parameters **',  &
+          '  (read echo[2.16.3])',  &
+          ' seg_no   mfbc', '     iface      afbc'
+     DO
+        READ(fuins,'(A)') line
+        line = uppercase(line)
+        ic=INDEX(line(1:20),'END')
+        IF(ic > 0) EXIT
+        READ(line,*) ls, umbc(ls), uiface(ls), uabc(ls)
+        IF (print_rde) WRITE(furde,8113) ls, umbc(ls), uiface(ls), uabc(ls) 
+8113    FORMAT(tr1,3i8,4(1pg11.3))
+        m = umbc(ls)
+        lsmax = MAX(ls, lsmax)
+        WRITE(cibc,6001) ibc(m)
+6001    FORMAT (i9.9)
+        ifc = uiface(ls)
+        IF(cibc(ifc:ifc) /= '2') THEN
+           cibc(ifc:ifc) = '2'
+           READ(cibc,6001) ibc(m)
+        END IF
+     END DO
+     lc = 1
+     m = umbc(1)
+     DO ls=2,lsmax
+        IF(umbc(ls) == m) CYCLE
+        lc = lc+1
+        m = umbc(ls)
+     END DO
+     nfbc_seg = lsmax
+     nfbc_cells = lc
+     nfbc = nfbc_cells
+     nsa = MAX(ns,1)
+     ALLOCATE (mfbc(nfbc_seg), ifacefbc(nfbc_seg), areafbc(nfbc_seg),  &
+          qfflx(nfbc_seg), denfbc(nfbc_seg), qsflx(nfbc_seg,nsa),  &
+          cfbc(nfbc_seg,nsa), indx1_fbc(nfbc_seg), indx2_fbc(nfbc_seg), mxf_fbc(nfbc_seg),  &
+          stat = a_err)
+     IF (a_err /= 0) THEN  
+        PRINT *, "array allocation failed: read2, flux.2"  
         STOP  
+     ENDIF
+     DO ls=1,nfbc_seg
+        mfbc(ls) = umbc(ls)
+        ifacefbc(ls) = uiface(ls)
+        areafbc(ls) = uabc(ls)
+     END DO
+     ! ... Deallocate scratch space for flux data
+     DEALLOCATE (umbc, uiface, uabc,  &
+          stat = da_err)
+     IF (da_err /= 0) THEN  
+        PRINT *, "array deallocation failed"  
+        STOP
+     ENDIF
+  ENDIF
+  ! ... Aquifer leakage b.c.
+  IF(nlbc > 0) THEN  
+     ! ... Allocate scratch space for leakage data
+     ALLOCATE (umbc(nxyz), uiface(nxyz), uabc(nxyz), ukbc(nxyz), ubbbc(nxyz), uzebc(nxyz),  &
+          stat = a_err)
+     IF (a_err /= 0) THEN
+        PRINT *, "array allocation failed: read2, leakage"  
+        STOP
+     ENDIF
+     lsmax = 0
+     IF (print_rde) WRITE(furde, 8005) '** Aquifer Leakage Parameters **',  &
+          '  (read echo[2.16.3])',  &
+          'seg_no   mlbc', '     iface    albc    klbc    bblbc   zelbc'
+     DO
+        READ(fuins,'(A)') line
+        line = uppercase(line)
+        ic=INDEX(line(1:20),'END')
+        IF(ic > 0) EXIT
+        READ(line,*) ls, umbc(ls), uiface(ls), uabc(ls), ukbc(ls), ubbbc(ls), uzebc(ls)  
+        IF (print_rde) WRITE(furde,8113) ls, umbc(ls), uiface(ls), uabc(ls), ukbc(ls),  &
+             ubbbc(ls), uzebc(ls)
+        m = umbc(ls)
+        lsmax = MAX(ls, lsmax)
+        WRITE(cibc,6001) ibc(m)  
+        ifc = uiface(ls)
+        IF(cibc(ifc:ifc) /= '3') THEN
+           cibc(ifc:ifc) = '3'
+           READ(cibc,6001) ibc(m)
+        END IF
+     END DO
+     lc = 1
+     m = umbc(1)
+     DO ls=2,lsmax
+        IF(umbc(ls) == m) CYCLE
+        lc = lc+1
+        m = umbc(ls)
+     END DO
+     nlbc_seg = lsmax
+     nlbc_cells = lc
+     nlbc = nlbc_cells
+     nsa = MAX(ns,1)
+     ALLOCATE (mlbc(nlbc_seg), ifacelbc(nlbc_seg), arealbc(nlbc_seg),  &
+          albc(nlbc_seg), blbc(nlbc_seg),  &
+          klbc(nlbc_seg), bblbc(nlbc_seg), zelbc(nlbc_seg), &
+          philbc(nlbc_seg), denlbc(nlbc_seg), vislbc(nlbc_seg),  &
+          clbc(nlbc_seg,nsa), indx1_lbc(nlbc_seg), indx2_lbc(nlbc_seg), mxf_lbc(nlbc_seg),  &
+          stat = a_err)
+     IF (a_err /= 0) THEN  
+        PRINT *, "array allocation failed: read2, leak.2"  
+        STOP
+     ENDIF
+     DO ls=1,nlbc_seg
+        mlbc(ls) = umbc(ls)
+        ifacelbc(ls) = uiface(ls)
+        arealbc(ls) = uabc(ls)
+        klbc(ls) = ukbc(ls)
+        bblbc(ls) = ubbbc(ls)
+        zelbc(ls) = uzebc(ls)
+     END DO
+     ! ... Deallocate scratch space for leakage data
+     DEALLOCATE (umbc, uiface, uabc, ukbc, ubbbc, uzebc,  &
+          stat = da_err)
+     IF (da_err /= 0) THEN
+        PRINT *, "array deallocation failed"
+        STOP
+     ENDIF
+  ENDIF
+  ! ... River b.c. 
+  IF(nrbc > 0) THEN  
+     ! ... Allocate scratch space for river data
+     ALLOCATE (umbc(nxy), uabc(nxy), ukbc(nxy), uzebc(nxy),  &
+          stat = a_err)
+     IF (a_err /= 0) THEN  
+        PRINT *, "array allocation failed: read2, river"  
+        STOP
+     ENDIF
+     lsmax = 0
+     IF (print_rde) WRITE(furde, 8005) '** River Leakage Parameters **',  &
+          '  (read echo[2.16.3])',  &
+          'seg_no   mrbc', '     arbc    kbrbc    zerbc'
+     DO
+        READ(fuins,'(A)') line
+        line = uppercase(line)
+        ic=INDEX(line(1:20),'END')
+        IF(ic > 0) EXIT
+        READ(line,*) ls, umbc(ls), uabc(ls), ukbc(ls), uzebc(ls)  
+        IF (print_rde) WRITE(furde,8013) ls, umbc(ls), uabc(ls), ukbc(ls), uzebc(ls)  
+8013    FORMAT(tr1,2i8,4(1pg11.3))
+        m = umbc(ls)          ! ... surface trace cells  
+        lsmax = MAX(ls, lsmax)
+        WRITE(cibc,6001) ibc(m)  
+        IF(cibc(3:3) /= '6' .AND. cibc(3:3) /= '8') THEN
+           ibc(m) = ibc(m) + 6000000
+        END IF
+     END DO
+     lc = 1
+     m = umbc(1)
+     DO ls=2,lsmax
+        IF(umbc(ls) == m) CYCLE
+        lc = lc+1
+        m = umbc(ls)
+     END DO
+     nrbc_seg = lsmax
+     nrbc_cells = lc
+     nrbc = nrbc_cells
+     nsa = MAX(ns,1)
+     ALLOCATE (mrbc(nrbc_seg), arearbc(nrbc_seg),  &
+          arbc(nrbc_seg), brbc(nrbc_seg),  &
+          krbc(nrbc_seg), bbrbc(nrbc_seg), zerbc(nrbc_seg),  &
+          mrseg_bot(nrbc_seg),  &
+          phirbc(nrbc_seg), denrbc(nrbc_seg), visrbc(nrbc_seg),  &
+          crbc(nrbc_seg,nsa), indx1_rbc(nrbc_seg), indx2_rbc(nrbc_seg), mxf_rbc(nrbc_seg),  &
+          stat = a_err)
+     IF (a_err /= 0) THEN  
+        PRINT *, "array allocation failed: read2, river.2"  
+        STOP
+     ENDIF
+     DO ls=1,nrbc_seg
+        mrbc(ls) = umbc(ls)
+        arearbc(ls) = uabc(ls)
+        krbc(ls) = ukbc(ls)
+        bbrbc(ls) = 1._kdp
+        zerbc(ls) = uzebc(ls)      
+     END DO
+     ! ... deallocate scratch space for river data
+     DEALLOCATE (umbc, uabc, ukbc, uzebc,  &
+          stat = da_err)
+     IF (da_err /= 0) THEN  
+        PRINT *, "array deallocation failed"  
+        STOP
+     ENDIF
+  ENDIF
+  ! ... Drain b.c. 
+  IF(ndbc > 0) THEN  
+     ! ... Allocate scratch space for river data
+     ALLOCATE (umbc(nxy), uabc(nxy), ukbc(nxy), uzebc(nxy),  &
+          stat = a_err)
+     IF (a_err /= 0) THEN  
+        PRINT *, "array allocation failed: read2, drain"  
+        STOP
+     ENDIF
+     lsmax = 0
+     IF (print_rde) WRITE(furde, 8005) '** Drain Parameters **',  &
+          '  (read echo[2.16.3])',  &
+          'seg_no   mdbc', '     adbc    kbdbc    zedbc'
+     DO
+        READ(fuins,'(A)') line
+        line = uppercase(line)
+        ic=INDEX(line(1:20),'END')
+        IF(ic > 0) EXIT
+        READ(line,*) ls, umbc(ls), uabc(ls), ukbc(ls), uzebc(ls)  
+        IF (print_rde) WRITE(furde,8013) ls, umbc(ls), uabc(ls), ukbc(ls), uzebc(ls)  
+        m = umbc(ls)          ! ... drain cells  
+        lsmax = MAX(ls, lsmax)
+        WRITE(cibc,6001) ibc(m)
+        IF(cibc(3:3) /= '7' .AND. cibc(3:3) /= '9') THEN
+           ibc(m) = ibc(m) + 7000000
+        END IF
+     END DO
+     lc = 1
+     m = umbc(1)
+     DO ls=2,lsmax
+        IF(umbc(ls) == m) CYCLE
+        lc = lc+1
+        m = umbc(ls)
+     END DO
+     ndbc_seg = lsmax
+     ndbc_cells = lc
+     ndbc = ndbc_cells
+     nsa = MAX(ns,1)
+     ALLOCATE (mdbc(ndbc_seg), areadbc(ndbc_seg),  &
+          adbc(ndbc_seg), bdbc(ndbc_seg),  &
+          kdbc(ndbc_seg), bbdbc(ndbc_seg), zedbc(ndbc_seg),  &
+          mdseg_bot(ndbc_seg),  &
+          stat = a_err)
+     IF (a_err /= 0) THEN  
+        PRINT *, "array allocation failed: read2, drain.2"  
+        STOP
+     ENDIF
+     DO ls=1,ndbc_seg
+        mdbc(ls) = umbc(ls)
+        areadbc(ls) = uabc(ls)
+        kdbc(ls) = ukbc(ls)
+        bbdbc(ls) = 1._kdp
+        zedbc(ls) = uzebc(ls)      
+     END DO
+     ! ... deallocate scratch space for drain data
+     DEALLOCATE (umbc, uabc, ukbc, uzebc,  &
+          stat = da_err)
+     IF (da_err /= 0) THEN  
+        PRINT *, "array deallocation failed"  
+        STOP
      ENDIF
   ENDIF
 !!$  if(naifc.gt.0) then  
@@ -481,7 +712,7 @@ SUBROUTINE read2
 !!$        uvaifc(m) = 1.d0  
 !!$240  end do
 !!$     icall = 4  
-!!$     call irewi(ibc, icall, 104)  
+!!$     call rewi(ibc, icall, 104)  
 !!$     call rewi(uvaifc, 41, 141)  
 !!$     read(fuins, *) iaif  
 !!$     if (print_rde) write(furde, 8014) 'iaif,[2.18.3]', iaif  
@@ -505,9 +736,9 @@ SUBROUTINE read2
   READ(fuins, *) fresur, temp_logical
   IF (print_rde) WRITE(furde, 8001) 'fresur,[2.20], adjust_wr_ratio', fresur, temp_logical
   adj_wr_ratio = 0 
-  if (temp_logical) adj_wr_ratio = 1 
+  IF (temp_logical) adj_wr_ratio = 1 
   transient_fresur = 0
-  if (fresur .AND. .NOT.steady_flow) transient_fresur = 1
+  IF (fresur .AND. .NOT.steady_flow) transient_fresur = 1
   ! ... initial conditions
   ichydp = .FALSE.  
   ichwt = .FALSE.  
@@ -624,9 +855,9 @@ SUBROUTINE read2
   IF (solute) THEN
      icall = 8
      ! ... print conrol index for concentrations on a sub-grid
-     CALL irewi(iprint_chem, icall, 125)
+     CALL rewi(iprint_chem, icall, 125)
      ! ... Print control index for .xyz.chem concentrations on a sub-grid
      icall = 9
-     call irewi(iprint_xyz, icall, 125)
+     CALL rewi(iprint_xyz, icall, 125)
   ENDIF
 END SUBROUTINE read2

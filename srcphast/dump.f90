@@ -30,7 +30,7 @@ SUBROUTINE dump_hst
 !!$       indx1_wel, indx2_wel, IW, JW, LCBW, LCTW, mwel, nkswel, welidno, WQMETH
 !!$  WRITE(fuorst) &  
 !!$       CSBC, PSBC, TSBC, &
-!!$       CCFSB, CCFVSB, CCHSB, CCSSB, CFLX, &
+!!$       CCFSB, CCFVSB, CCHSB, CCSSB, cfbc, &
 !!$       DENFBC, QFFBC, QHFBC, QSFBC, TFLX, CCFFB, CCFVFB, CCHFB, CCSFB, &
 !!$       ALBC, BBLBC, BLBC, CLBC, DENLBC, KLBC, PHILBC, TLBC, VISLBC, &
 !!$       ZELBC, &

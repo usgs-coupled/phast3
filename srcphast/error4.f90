@@ -132,22 +132,24 @@ SUBROUTINE error4
      IF(cibc(4:6) /= '000') ierr(34)=.true.
      ! ... Only specified value solute b.c.
      IF(cibc(8:9) /= '00') ierr(35)=.true.
-     ! ... No flux on 2 or 3 faces
-     IF(cibc(1:3) == '222' .or. cibc(1:3) == '220' .or. cibc(1:3) == '202' .or.  &
-          cibc(1:3) == '022') ierr(36)=.true.
-     IF(cibc(1:3) == '228' .or. cibc(1:3) == '208' .or. cibc(1:3) == '028') ierr(36)=.true.
-     ! ... No leakage on 2 or 3 faces
-     IF(cibc(1:3) == '333' .or. cibc(1:3) == '330' .or. cibc(1:3) == '303' .or.  &
-          cibc(1:3) == '033') ierr(37)=.true.
+!!$     ! ... No flux on 2 or 3 faces
+!!$     IF(cibc(1:3) == '222' .or. cibc(1:3) == '220' .or. cibc(1:3) == '202' .or.  &
+!!$          cibc(1:3) == '022') ierr(36)=.true.
+!!$     IF(cibc(1:3) == '228' .or. cibc(1:3) == '208' .or. cibc(1:3) == '028') ierr(36)=.true.
+!!$     ! ... No leakage on 2 or 3 faces
+!!$     IF(cibc(1:3) == '333' .or. cibc(1:3) == '330' .or. cibc(1:3) == '303' .or.  &
+!!$          cibc(1:3) == '033') ierr(37)=.true.
      ! ... No river on x or y face
      IF(cibc(1:1) == '6' .or. cibc(2:2) == '6') ierr(38)=.true.
      ! ... No flux and river on x or y face
      IF(cibc(1:1) == '8' .or. cibc(2:2) == '8') ierr(38)=.true.
      ! ... Illegal b.c. code
      IF(cibc(1:1) == '4' .or. cibc(2:2) == '4' .or. cibc(3:3) == '4') ierr(39)=.true.
-     IF(cibc(1:1) == '5' .or. cibc(2:2) == '5' .or. cibc(3:3) == '5') ierr(39)=.true.
-     IF(cibc(1:1) == '7' .or. cibc(2:2) == '7' .or. cibc(3:3) == '7') ierr(39)=.true.
-     IF(cibc(1:1) == '9' .or. cibc(2:2) == '9' .or. cibc(3:3) == '9') ierr(39)=.true.
+! ... allow for all types of flux, leaky, river, drain to coexist on same cell face
+! ...      with the segment method
+!!$     IF(cibc(1:1) == '5' .or. cibc(2:2) == '5' .or. cibc(3:3) == '5') ierr(39)=.true.
+!!$     IF(cibc(1:1) == '7' .or. cibc(2:2) == '7' .or. cibc(3:3) == '7') ierr(39)=.true.
+!!$     IF(cibc(1:1) == '9' .or. cibc(2:2) == '9' .or. cibc(3:3) == '9') ierr(39)=.true.
      IF(cibc(7:7) > '1') ierr(39)=.true.
   END DO
   ! ... Aquifer leakage b.c.
