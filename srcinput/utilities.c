@@ -325,36 +325,7 @@ char * string_duplicate (const char *token)
 	strcpy (str, token);
 	return(str);
 }
-#ifdef SKIP
-#if !defined(__WPHAST__)
-/* ---------------------------------------------------------------------- */
-int error_msg (const char *err_str, const int stop)
-/* ---------------------------------------------------------------------- */
-{
-        fprintf(std_error,"ERROR: %s\n", err_str);
-        fflush(std_error);
-        fprintf(echo_file,"ERROR: %s\n", err_str);
-        fflush(echo_file);
-	if (stop == STOP) {
-		fprintf(std_error,"Stopping.\n");
-		fprintf(echo_file,"Stopping.\n");
-		clean_up();
-	        exit(1);
-        }
-	return(OK);
-}
-#endif
-/* ---------------------------------------------------------------------- */
-int warning_msg (const char *err_str)
-/* ---------------------------------------------------------------------- */
-{
-        fprintf(std_error,"WARNING: %s\n", err_str);
-        fflush(std_error);
-        fprintf(echo_file,"WARNING: %s\n", err_str);
-        fflush(echo_file);
-	return(OK);
-}
-#endif
+
 /* ---------------------------------------------------------------------- */
 int backspace (FILE *file, int spaces)
 /* ---------------------------------------------------------------------- */

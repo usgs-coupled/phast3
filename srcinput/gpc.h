@@ -118,6 +118,7 @@ void gpc_free_polygon        (gpc_polygon     *polygon);
 
 void gpc_free_tristrip       (gpc_tristrip    *tristrip);
 
+#include "gpc_helper.h"
 #endif
 
 /*

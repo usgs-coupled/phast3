@@ -27,7 +27,7 @@ int write_source_sink(void);
 int write_hst(void)
 /* ---------------------------------------------------------------------- */
 {
-	int i, j;
+	int i;
 /*
  *   calculate number of boundary conditions
  */
@@ -35,18 +35,21 @@ int write_hst(void)
 	count_flux = 0;
 	count_leaky = 0;
 	count_river_segments = 0;
+	count_drain_segments = 0;
+
 	for (i = 0; i < nxyz; i++) {
 		if (cells[i].cell_active == FALSE) continue;
-		if (cells[i].bc_type == SPECIFIED) {
-			count_specified++;
-			continue;
+		if (cells[i].specified) count_specified++;
+		if (cells[i].flux) count_flux++;
+		if (cells[i].leaky) count_leaky++;
+		if (!cells[i].specified) 
+		{
+		  count_river_segments += cells[i].count_river_polygons;
+		  count_drain_segments += cells[i].drain_polygons->size();
 		}
-		for (j = 0; j < 3; j++) {
-			if (cells[i].bc_face[j].bc_type == FLUX) count_flux++;
-			if (cells[i].bc_face[j].bc_type == LEAKY) count_leaky++;
+		
 		}
-		if (cells[i].bc_face[2].bc_type != LEAKY) count_river_segments += cells[i].count_river_polygons;
-	}
+
 	if (simulation == 0) {
 		write_file_names();
 		write_initial();
@@ -86,7 +89,7 @@ int write_file_names(void)
 	output_msg(OUTPUT_HST,"%s\n", chemistry_name);
 	output_msg(OUTPUT_HST,"%s\n", database_name);
 	output_msg(OUTPUT_HST,"%s\n", prefix);
-	output_msg(OUTPUT_HST,"%d\n", FileMap.size());
+	output_msg(OUTPUT_HST,"%10d\n", FileMap.size());
 	for (std::map<std::string, int>::const_iterator it = FileMap.begin(); it != FileMap.end(); it++) {
 		output_msg(OUTPUT_HST,"%s\n", (it->first).c_str());
 	}
@@ -188,8 +191,9 @@ int write_initial(void)
  */
 	output_msg(OUTPUT_HST,"C.1.6 .. NX,NY,NZ,NHCN, Number of elements\n");
 	output_msg(OUTPUT_HST,"     %d %d %d 0 %d\n", grid[0].count_coord, grid[1].count_coord, grid[2].count_coord, (nx-1) * (ny-1) * (nz-1));
-	output_msg(OUTPUT_HST,"C.1.7 .. NSBC,NFBC,NLBC,NRBC,NAIFC,NHCBC,NWEL\n");
+	output_msg(OUTPUT_HST,"C.1.7 .. NSBC,NFBC,NLBC,NRBC,NDBC, NAIFC,NHCBC,NWEL\n");
 	output_msg(OUTPUT_HST,"     %d %d %d %d 0 0 %d\n", count_specified, count_flux, count_leaky, count_river_segments, count_wells);
+	//output_msg(OUTPUT_HST,"     %d %d %d %d %d 0 0 %d\n", count_specified, count_flux, count_leaky, count_river_segments, count_drain_segments, count_wells);
 /*
  *   solution method
  */
@@ -566,7 +570,7 @@ int write_source_sink(void)
 			output_msg(OUTPUT_HST,"C..  cell number, screened interval below node (m), screened interval above node (m)\n"); 
 			for (j = 0; j < wells[i].count_cell_fraction; j++) {
 				/* output_msg(OUTPUT_HST,"\t%d %e\n", wells[i].cell_fraction[j].cell + 1, wells[i].cell_fraction[j].f); */
-				output_msg(OUTPUT_HST,"\t%d %e %e\n", wells[i].cell_fraction[j].cell + 1, wells[i].cell_fraction[j].lower * units.vertical.input_to_si, wells[i].cell_fraction[j].upper * units.vertical.input_to_si); 
+				output_msg(OUTPUT_HST,"    %d %e %e\n", wells[i].cell_fraction[j].cell + 1, wells[i].cell_fraction[j].lower * units.vertical.input_to_si, wells[i].cell_fraction[j].upper * units.vertical.input_to_si); 
 			}
 				
 			output_msg(OUTPUT_HST,"END\n");
@@ -589,8 +593,8 @@ int write_bc_static(void)
  *
  */
 
-	int i, j, n;
-	double elevation, factor;
+  int i, j;
+  double elevation;
 	double river_k, thickness;
 	double area, w0, w1, leakance, z, z0, z1;
 	int river_number, point_number;
@@ -604,13 +608,16 @@ int write_bc_static(void)
  *   Specified value
  */
 	output_msg(OUTPUT_HST,"C.....     Specified value b.c.\n");
-	output_msg(OUTPUT_HST,"C.2.15 .. IBC by x,y,z range {0.1-0.3} with no IMOD parameter;(O) -\n");
-	output_msg(OUTPUT_HST,"C..          NSBC [1.6] > 0\n");
+  //output_msg(OUTPUT_HST,"C.2.15 .. IBC by x,y,z range {0.1-0.3} with no IMOD parameter;(O) -\n");
+  //output_msg(OUTPUT_HST,"C..          NSBC [1.6] > 0\n");
+  output_msg(OUTPUT_HST,"C.2.15 .. segment, cell number, ibc code\n");
 
 	if (count_specified > 0) {
+    int segment = 1;
 		for (i = 0; i < nxyz; i++) {
 			if (cells[i].cell_active == FALSE) continue;
-			if (cells[i].bc_type == SPECIFIED) {
+#ifdef OLD
+      if (cells[i].bc_type == BC_info::BC_SPECIFIED) {
 				output_msg(OUTPUT_HST,"     %15.7e %15.7e %15.7e %15.7e %15.7e %15.7e\n",
 					cells[i].x * units.horizontal.input_to_si,
 					cells[i].x * units.horizontal.input_to_si,
@@ -624,7 +631,8 @@ int write_bc_static(void)
 				/* 1 specified pressure */
 				/* 2 temperature = 0 */
 				/* 3 solution  0 = associated, 1 = specified */
-					if (cells[i].bc_face[0].bc_solution_type == ASSOCIATED) {
+	  std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin();
+	  if (rit->bc_solution_type == ASSOCIATED) {
 						j = 0;
 					} else {
 						j = 1;
@@ -632,7 +640,25 @@ int write_bc_static(void)
 				}
 				output_msg(OUTPUT_HST,"10%d\n", j);
 			}
+#endif
+      if (cells[i].bc_type == BC_info::BC_SPECIFIED) {
+	if (flow_only == TRUE) {
+	  j = 0;
+	} else {
+	  /* 1 specified pressure */
+	  /* 2 temperature = 0 */
+	  /* 3 solution  0 = associated, 1 = specified */
+	  std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin();
+	  if (rit->bc_solution_type == ASSOCIATED) {
+	    j = 0;
+	  } else {
+	    j = 1;
 		}
+	}
+	output_msg(OUTPUT_HST,"%d %d 10%d\n", segment, i + 1, j);
+	segment++;
+      }
+    }
 		output_msg(OUTPUT_HST,"END\n");
 	}
 /*
@@ -640,30 +666,29 @@ int write_bc_static(void)
  */
 	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
 	output_msg(OUTPUT_HST,"C.....     Specified flux b.c.\n");
-	output_msg(OUTPUT_HST,"C.2.16 .. IBC by x,y,z range {0.1-0.3} with no IMOD parameter;(O) -\n");
-	output_msg(OUTPUT_HST,"C..          NFBC [1.6] > 0\n");
+  output_msg(OUTPUT_HST,"C.2.16 modified: segment number, cell_number, face, area\n");
 	if (count_flux > 0 ) {
+    int segment = 1;
+
 		for (i = 0; i < nxyz; i++) {
 			if (cells[i].cell_active == FALSE) continue;
-			if (cells[i].bc_type == SPECIFIED) continue;
-			for (j = 0; j < 3; j++) {
-				if (cells[i].bc_face[j].bc_type == FLUX) {
-					output_msg(OUTPUT_HST,"     %15.7e %15.7e %15.7e %15.7e %15.7e %15.7e\n",
-						cells[i].x * units.horizontal.input_to_si,
-						cells[i].x * units.horizontal.input_to_si,
-						cells[i].y * units.horizontal.input_to_si, 
-						cells[i].y * units.horizontal.input_to_si,
-						cells[i].z * units.vertical.input_to_si, 
-						cells[i].z * units.vertical.input_to_si);
+      if (!cells[i].flux) continue;
+      // Reverse iterator on list of BC_info
+      for (std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin() ; rit != cells[i].all_bc_info->rend(); rit++)
+      {
+	if (rit->bc_type != BC_info::BC_FLUX) continue;
 				
-					/* 1 direction 1=x */
-					/* 2 0 */
-					/* 3 0 */
-					/* 4 2 = fluid flux */
-					/* 5 0 head flux */
-					/* 6 0 pure solute flux */
-					output_msg(OUTPUT_HST,"%d00200\n", j + 1);
+	// area
+	area = rit->area;
+	if (rit->face == CF_Z) {
+	  area *= units.horizontal.input_to_si * units.horizontal.input_to_si;
+	} else {
+	  area *= units.horizontal.input_to_si * units.vertical.input_to_si;
 				}
+
+	// segment number, cell number, face, area
+	output_msg(OUTPUT_HST,"   %d %d %d %20.10e\n", segment, i + 1, ((int) rit->face + 1), area);
+	segment++;
 			}
 		}
 		output_msg(OUTPUT_HST,"END\n");
@@ -673,77 +698,45 @@ int write_bc_static(void)
  */
 	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
 	output_msg(OUTPUT_HST,"C.....     Aquifer and river leakage b.c.\n");
-	output_msg(OUTPUT_HST,"C.2.16.1 .. IBC by x,y,z range {0.1-0.3} with no IMOD parameter;(O) -\n");
-	output_msg(OUTPUT_HST,"C..          NLBC [1.6] >0\n");
+  output_msg(OUTPUT_HST,"C.2.16.1 modified: segment number, cell_number, face, area, permeability, thickness, elevation\n");
 
 	/* zone, index codes */
 	if (count_leaky > 0) {
+    int segment = 1;
 		for (i = 0; i < nxyz; i++) {
 			if (cells[i].cell_active == FALSE) continue;
-			if (cells[i].bc_type == SPECIFIED) continue;
-			for (j = 0; j < 3; j++) {
-				if (cells[i].bc_face[j].bc_type == LEAKY) {
-					output_msg(OUTPUT_HST,"     %15.7e %15.7e %15.7e %15.7e %15.7e %15.7e\n",
-						cells[i].x * units.horizontal.input_to_si,
-						cells[i].x * units.horizontal.input_to_si,
-						cells[i].y * units.horizontal.input_to_si, 
-						cells[i].y * units.horizontal.input_to_si,
-						cells[i].z * units.vertical.input_to_si, 
-						cells[i].z * units.vertical.input_to_si);
-					/* 2 0 */
-					/* 3 0 */
-					/* 4 3 = leakage */
-					/* 5 0 head flux */
-					/* 6 0 pure solute flux */
-					output_msg(OUTPUT_HST,"%d00300\n", j + 1);
-				}
-
-			}
-		}
-		output_msg(OUTPUT_HST,"END\n");
-		
-		/* zone, hydraulic conductivity, thickness, elevation */
-		output_msg(OUTPUT_HST,"C.2.16.2 .. KLBC,BBLBC,ZELBC by x,y,z range {0.1-0.3};(O) - NLBC [1.6] >0\n");
-		for (i = 0; i < nxyz; i++) {
-			if (cells[i].cell_active == FALSE) continue;
-			if (cells[i].bc_type == SPECIFIED) continue;
-			for (j = 0; j < 3; j++) {
-				if (cells[i].bc_face[j].bc_type == LEAKY) {
-					if (j == 2) {
-						if (cells[i].iz == 0) {
-							factor = -1.0;
-						} else if (cells[i].iz == (nz - 1)) {
-							factor = 1.0;
+      if (!cells[i].leaky) continue;
+      // Reverse terator on list of BC_info
+      for (std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin() ; rit != cells[i].all_bc_info->rend(); rit++)
+      {
+	if (rit->bc_type != BC_info::BC_LEAKY) continue;
+	// area
+	area = rit->area;
+	if (rit->face == CF_Z) {
+	  area *= units.horizontal.input_to_si * units.horizontal.input_to_si;
 						} else {
-							n = ijk_to_n(cells[i].ix, cells[i].iy, cells[i].iz - 1);
-							if (cells[n].cell_active == FALSE) {
-								factor = -1.0;
-							} else {
-								factor = 1.0;
+	  area *= units.horizontal.input_to_si * units.vertical.input_to_si;
 							}
-						}
+	// permeability
+	double permeability = rit->bc_k * units.leaky_k.input_to_si * fluid_viscosity / (fluid_density * GRAVITY);
 
-						elevation = cells[i].z * units.vertical.input_to_si  
-							+ factor * cells[i].bc_face[j].bc_thick * units.leaky_thick.input_to_si;
-					} else {
+	// segment number, cell number, face, area, permeability, thickness, elevation
+
+	// thickness
+	thickness = rit->bc_thick * units.leaky_thick.input_to_si;
+	// elevation
 						elevation = cells[i].z * units.vertical.input_to_si;
+	if (rit->face == CF_Z)
+	{
+	  if (cells[i].exterior->zn) elevation -= thickness;
+	  if (cells[i].exterior->zp) elevation += thickness;
 					}
-					output_msg(OUTPUT_HST,"     %15.7e %15.7e %15.7e %15.7e %15.7e %15.7e\n",
-						cells[i].x * units.horizontal.input_to_si,
-						cells[i].x * units.horizontal.input_to_si,
-						cells[i].y * units.horizontal.input_to_si, 
-						cells[i].y * units.horizontal.input_to_si,
-						cells[i].z * units.vertical.input_to_si, 
-						cells[i].z * units.vertical.input_to_si);
 
-					/* convert bc_k to permeability */
-					output_msg(OUTPUT_HST,"     %11g 1 %11g 1 %11g 1\n", 
-						cells[i].bc_face[j].bc_k * units.leaky_k.input_to_si * fluid_viscosity / (fluid_density * GRAVITY), 
-						cells[i].bc_face[j].bc_thick * units.leaky_thick.input_to_si, 
-						elevation);
+	// write segment info
+	output_msg(OUTPUT_HST,"   %d %d %d %20.10e %20.10e %20.10e %20.10e\n", segment, i + 1, ((int) rit->face + 1), area, permeability, thickness, elevation);
+	segment++;
 				}
 			}
-		}
 		output_msg(OUTPUT_HST,"END\n");
 	}
 
@@ -751,15 +744,15 @@ int write_bc_static(void)
  *   River leakage bc,
  */
 	output_msg(OUTPUT_HST,"C.....          River leakage b.c.\n");
-	output_msg(OUTPUT_HST,"C.2.16.3 .. X1,Y1,X2,Y2,KRBC,BBRBC,ZERBC;(O) - NLBC [1.6] > 0\n");
-	output_msg(OUTPUT_HST,"C.2.16.3 .. cell number, area, leakance, z\n");
+  output_msg(OUTPUT_HST,"C.2.16.3 .. X1,Y1,X2,Y2,KRBC,BBRBC,ZERBC;(O) - NLBC [1.6] > 0 ***obsolete\n"); 
+  output_msg(OUTPUT_HST,"C.2.16.3 .. seg number cell number, area, leakance, z\n");
 	output_msg(OUTPUT_HST,"C.2.16.4 .. End with END\n");
 
         if (count_river_segments > 0) {
+    int segment = 1;
 		for (i = 0; i < count_cells; i++) {
 			if (cells[i].cell_active == FALSE) continue;
-			if (cells[i].bc_type == SPECIFIED) continue;
-			if (cells[i].bc_face[2].bc_type == LEAKY) continue;
+      if (cells[i].specified) continue;
 
 			for (j = 0; j < cells[i].count_river_polygons; j++) {
 				area = cells[i].river_polygons[j].area * units.horizontal.input_to_si * units.horizontal.input_to_si;
@@ -790,13 +783,53 @@ int write_bc_static(void)
 #endif
 				z = (z0*w0 + z1*w1);
 
-				/* cell no., area, leakance, z */
-				output_msg(OUTPUT_HST,"%d %e %e %e\n", i + 1, area, leakance, z);
+	/* segment number, cell no., area, leakance, z */
+	output_msg(OUTPUT_HST,"%d %d %e %e %e\n", segment, i + 1, area, leakance, z);
+	segment++;
 			}
 		}
 		output_msg(OUTPUT_HST,"END\n");
 	}
 /*
+  *   drain bc,
+  */
+  output_msg(OUTPUT_HST,"C.....          Drain leakage b.c.\n");
+  output_msg(OUTPUT_HST,"C.2.17.3 .. seg number, cell number, area, leakance, z\n");
+  output_msg(OUTPUT_HST,"C.2.17.4 .. End with END\n");
+
+  if (count_drain_segments > 0) 
+  {
+    int segment = 1;
+    for (i = 0; i < count_cells; i++) {
+      if (cells[i].cell_active == FALSE) continue;
+      if (cells[i].specified) continue;
+      if (cells[i].drain_segments->size() == 0) continue;
+      std::vector<River_Polygon>::iterator j_it = cells[i].drain_segments->begin();
+      for ( ; j_it != cells[i].drain_segments->end(); j_it++)
+      {
+	area = j_it->area * units.horizontal.input_to_si * units.horizontal.input_to_si;
+	int drain_number = j_it->river_number;
+	point_number = j_it->point_number;
+	w0 = j_it->w;
+	w1 = 1. - w0;
+	double drain_k = (drains[drain_number]->points[point_number].k*w0 + drains[drain_number]->points[point_number + 1].k*w1) * units.drain_bed_k.input_to_si;
+	thickness = (drains[drain_number]->points[point_number].thickness*w0 + drains[drain_number]->points[point_number + 1].thickness*w1) * units.drain_bed_thickness.input_to_si;
+
+	leakance =  drain_k / thickness * fluid_viscosity / (fluid_density * GRAVITY);
+
+	/*  get elevations, convert to SI*/
+	z0 = drains[drain_number]->points[point_number].z * units.vertical.input_to_si;
+	z1 = drains[drain_number]->points[point_number + 1].z * units.vertical.input_to_si;
+	z = (z0*w0 + z1*w1);
+
+	/* segment number, cell no., area, leakance, z */
+	output_msg(OUTPUT_HST,"%d %d %e %e %e\n", segment, i + 1, area, leakance, z);
+	segment++;
+      }
+    }
+    output_msg(OUTPUT_HST,"END\n");
+  }
+  /*
  *   Aquifer influence functions NOT USED
  */
 	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
@@ -1221,7 +1254,7 @@ int write_bc_transient(void)
 	int solution;
 	int def1, def2;
 /*
- *  Write zones
+  *  Write Wells
  */ 
 	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
 	output_msg(OUTPUT_HST,"C.....The following is for NOT THRU\n");
@@ -1241,8 +1274,8 @@ int write_bc_transient(void)
 	if (count_wells > 0 && well_defined == TRUE) {
 		output_msg(OUTPUT_HST,"C..  well sequence number, q, solution number\n");
 		for (i = 0; i < count_wells; i++) {
-			//if (wells[i].update == TRUE) {
-			// Update all well information if any info changes
+      //if (wells[i].update == TRUE) {
+      //write all well information
 				if (wells[i].solution_defined == TRUE) {
 					solution = wells[i].current_solution; 
 				} else {
@@ -1252,8 +1285,8 @@ int write_bc_transient(void)
 					i + 1,
 					wells[i].current_q * units.well_pumpage.input_to_user, 
 					solution);
-			//}				
-		}
+      //}				
+    }
 		output_msg(OUTPUT_HST,"END\n");
 	}
 
@@ -1271,8 +1304,8 @@ int write_bc_transient(void)
 		output_msg(OUTPUT_HST,"     f f f\n");
 	}
 	if (count_specified > 0 && bc_specified_defined == TRUE) {
+#ifdef SKIP
 		output_msg(OUTPUT_HST,"C.3.3.2 .. PNP B.C. by x,y,z range {0.1-0.3};(O) - RDSPBC [3.3.1]\n");
-
 		/* write head data for every node */
 		output_msg(OUTPUT_HST,"     %15.7e %15.7e %15.7e %15.7e %15.7e %15.7e\n",
 			cells[0].x * units.horizontal.input_to_si, 
@@ -1286,11 +1319,16 @@ int write_bc_transient(void)
 		/* Convert bc_head to bc_pressure */
 		for (i = 0; i < nxyz; i++) {
 			cells[i].value = 0;
+      mix_init(&cells[i].temp_mix);
 			if (cells[i].cell_active == FALSE) continue;
-			if (cells[i].bc_type == SPECIFIED) {
+      if (cells[i].specified) {
+	std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin();
 				cells[i].value = fluid_density * GRAVITY * 
-					(cells[i].bc_face[0].bc_head * units.head.input_to_si -
+	  (rit->bc_head * units.head.input_to_si -
 					 cells[i].z * units.vertical.input_to_si);
+	cells[i].temp_mix.i1 = rit->bc_solution.i1;
+	cells[i].temp_mix.i2 = rit->bc_solution.i2;
+	cells[i].temp_mix.f1 = rit->bc_solution.f1;
 			}
 		}
 		write_double_cell_property(offsetof(struct cell, value), 1.0);
@@ -1312,12 +1350,33 @@ int write_bc_transient(void)
 				cells[0].z * units.vertical.input_to_si, 
 				cells[nxyz-1].z * units.vertical.input_to_si);
 			output_msg(OUTPUT_HST,"     0 4 0 4 0 4\n");
+      /*
 			write_integer_cell_property(offsetof(struct cell, bc_face[0].bc_solution.i1));
 			write_integer_cell_property(offsetof(struct cell, bc_face[0].bc_solution.i2));
 			write_double_cell_property(offsetof(struct cell, bc_face[0].bc_solution.f1), 1.0);
+      */
+      write_integer_cell_property(offsetof(struct cell, temp_mix.i1));
+      write_integer_cell_property(offsetof(struct cell, temp_mix.i2));
+      write_double_cell_property(offsetof(struct cell, temp_mix.f1), 1.0);
 			output_msg(OUTPUT_HST,"END\n");
 		}
+#endif
+    output_msg(OUTPUT_HST,"C.3.3.2 .. segment, psbc, solution 1, solution 2, mix factor\n");
 
+    int segment = 1;
+    for (i = 0; i < nxyz; i++) {
+      if (cells[i].cell_active == FALSE) continue;
+      if (cells[i].specified) {
+	std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin();
+	double pressure = fluid_density * GRAVITY * 
+	  (rit->bc_head * units.head.input_to_si -
+	  cells[i].z * units.vertical.input_to_si);
+	output_msg(OUTPUT_HST, "%d %20.10e %d %d %e\n", segment, pressure, 
+	  rit->bc_solution.i1, rit->bc_solution.i2, rit->bc_solution.f1);
+	segment++;
+      }
+    }
+    output_msg(OUTPUT_HST,"END\n");
 	} else {
 		output_msg(OUTPUT_HST,"C.3.3.2 .. PNP B.C. by x,y,z range {0.1-0.3};(O) - RDSPBC [3.3.1]\n");
 		output_msg(OUTPUT_HST,"C.3.3.3 .. TSBC by x,y,z range {0.1-0.3};(O) - RDSPBC [3.3.1] and\n");
@@ -1345,91 +1404,53 @@ int write_bc_transient(void)
 		output_msg(OUTPUT_HST,"     f f f\n");
 	}
 	if (count_flux > 0 && bc_flux_defined == TRUE) {
-		output_msg(OUTPUT_HST,"C.3.4.2 .. QFFX,QFFY,QFFZ B.C. by x,y,z range {0.1-0.3};(O) -\n");
-		output_msg(OUTPUT_HST,"C..          RDFLXQ [3.4.1]\n");
-
-		/* write flux data for every node */
-		output_msg(OUTPUT_HST,"     %15.7e %15.7e %15.7e %15.7e %15.7e %15.7e\n",
-			cells[0].x * units.horizontal.input_to_si, 
-			cells[nxyz-1].x * units.horizontal.input_to_si,
-			cells[0].y * units.horizontal.input_to_si, 
-			cells[nxyz-1].y * units.horizontal.input_to_si,
-			cells[0].z * units.vertical.input_to_si, 
-			cells[nxyz-1].z * units.vertical.input_to_si);
-		output_msg(OUTPUT_HST,"     0.0  4\n");
-
-		/* Accumulate flux bc info in value */
-		for (i = 0; i < nxyz; i++) {
-			cells[i].value = 0;
+    output_msg(OUTPUT_HST,"C.3.4.2 Modified Segment number, flux (relative to cell), solution 1, solution 2, mix factor\n");
+    int segment = 1;
+    for (i = 0; i < nxyz; i++)
+    {
 			if (cells[i].cell_active == FALSE) continue;
-			if (cells[i].bc_type != SPECIFIED) {
-				for (j = 0; j < 3; j++) {
-					if (cells[i].bc_face[j].bc_type == FLUX) {
-						cells[i].value = cells[i].bc_face[j].bc_flux * units.flux.input_to_user;
+      if (!cells[i].flux) continue;
+      // Reverse iterator on list of BC_info
+      for (std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin() ; rit != cells[i].all_bc_info->rend(); rit++)
+      {
+	if (rit->bc_type != BC_info::BC_FLUX) continue;
+	double sign = 1.0;
+	switch (rit->face)
+	{
+	case CF_X:
+	  if (cells[i].exterior->xp)
+	  {
+	    sign = -1;
 					}
+	  break;
+	case CF_Y:
+	  if (cells[i].exterior->yp)
+	  {
+	    sign = -1;
 				}
+	  break;
+	case CF_Z:
+	  if (cells[i].exterior->zp)
+	  {
+	    sign = -1;
 			}
+	  break;
+	default:
+	  error_msg("Wrong face for flux definition.", STOP);
 		}
-		write_double_cell_property(offsetof(struct cell, value), 1.0);
-		output_msg(OUTPUT_HST,"END\n");
-
-		/* Density */
-		output_msg(OUTPUT_HST,"C.3.4.3 .. UDENBC  by x,y,z range {0.1-0.3};(O) - RDFLXQ [3.4.1]\n");
-		output_msg(OUTPUT_HST,"     %15.7e %15.7e %15.7e %15.7e %15.7e %15.7e\n",
-			cells[0].x * units.horizontal.input_to_si, 
-			cells[nxyz-1].x * units.horizontal.input_to_si,
-			cells[0].y * units.horizontal.input_to_si, 
-			cells[nxyz-1].y * units.horizontal.input_to_si,
-			cells[0].z * units.vertical.input_to_si, 
-			cells[nxyz-1].z * units.vertical.input_to_si);
-		output_msg(OUTPUT_HST,"     %g  1\n", fluid_density);
+	// segment number, flux, solution 1, solution 2, factor
+	// Note: convention is positive flux is into the cell
+	output_msg(OUTPUT_HST,"   %d %20.10e %d %d %e %d\n", segment, sign * rit->bc_flux * units.flux.input_to_user, 
+	  rit->bc_solution.i1, rit->bc_solution.i2, rit->bc_solution.f1, i + 1);
+	segment++;
+      }
+    }
 		output_msg(OUTPUT_HST,"END\n");
 
 		/* NOT USED */
 		output_msg(OUTPUT_HST,"C.3.4.4 .. TFLX B.C. by x,y,z range {0.1-0.3};(O) - RDFLXQ [3.4.1] and\n");
 		output_msg(OUTPUT_HST,"C..          HEAT [1.4]\n");
-
-		/* write solution data for every node */
-		output_msg(OUTPUT_HST,"C.3.4.5 .. CFLX B.C. by x,y,z range {0.1-0.3};(O) - RDFLXQ [3.4.1] and\n");
-		output_msg(OUTPUT_HST,"C..          SOLUTE [1.4]\n");
-		if (flow_only == FALSE) {
-			output_msg(OUTPUT_HST,"     %15.7e %15.7e %15.7e %15.7e %15.7e %15.7e\n",
-				cells[0].x * units.horizontal.input_to_si, 
-				cells[nxyz-1].x * units.horizontal.input_to_si,
-				cells[0].y * units.horizontal.input_to_si, 
-				cells[nxyz-1].y * units.horizontal.input_to_si,
-				cells[0].z * units.vertical.input_to_si, 
-				cells[nxyz-1].z * units.vertical.input_to_si);
-			output_msg(OUTPUT_HST,"     0 4 0 4 0 4\n");
-
-			/* Accumulate solution info in integer_value */
-			for (i = 0; i < nxyz; i++) {
-				mix_init(&cells[i].temp_mix);
-				if (cells[i].cell_active == FALSE) continue;
-				if (cells[i].bc_type != SPECIFIED) {
-					for (j = 0; j < 3; j++) {
-						if (cells[i].bc_face[j].bc_type == FLUX) {
-							cells[i].temp_mix.i1 = cells[i].bc_face[j].bc_solution.i1;
-							cells[i].temp_mix.i2 = cells[i].bc_face[j].bc_solution.i2;
-							cells[i].temp_mix.f1 = cells[i].bc_face[j].bc_solution.f1;
 						}
-					}
-				}
-			}
-			write_integer_cell_property(offsetof(struct cell, temp_mix.i1));
-			write_integer_cell_property(offsetof(struct cell, temp_mix.i2));
-			write_double_cell_property(offsetof(struct cell, temp_mix.f1), 1.0);
-			output_msg(OUTPUT_HST,"END\n");
-		}
-	} else {
-		output_msg(OUTPUT_HST,"C.3.4.2 .. QFFX,QFFY,QFFZ B.C. by x,y,z range {0.1-0.3};(O) -\n");
-		output_msg(OUTPUT_HST,"C..          RDFLXQ [3.4.1]\n");
-		output_msg(OUTPUT_HST,"C.3.4.3 .. UDENBC  by x,y,z range {0.1-0.3};(O) - RDFLXQ [3.4.1]\n");
-		output_msg(OUTPUT_HST,"C.3.4.4 .. TFLX B.C. by x,y,z range {0.1-0.3};(O) - RDFLXQ [3.4.1] and\n");
-		output_msg(OUTPUT_HST,"C..          HEAT [1.4]\n");
-		output_msg(OUTPUT_HST,"C.3.4.5 .. CFLX B.C. by x,y,z range {0.1-0.3};(O) - RDFLXQ [3.4.1] and\n");
-		output_msg(OUTPUT_HST,"C..          SOLUTE [1.4]\n");
-	}
 
 	/* NOT USED */
 	output_msg(OUTPUT_HST,"C.3.4.6 .. QHFX,QHFY,QHFZ B.C. by x,y,z range {0.1-0.3};(O) - RDFLXH [3.4.5]\n");
@@ -1448,95 +1469,35 @@ int write_bc_transient(void)
 		}
 	}
 	if (count_leaky > 0 && bc_leaky_defined == TRUE) {
-
-		/* print g*head */
-/*
- *   Convert bc_head to energy per unit mass
- */
-		output_msg(OUTPUT_HST,"C.3.5.2a .. PHILBC by x,y,z range {0.1-0.3};(O) - RDLBC [3.5.1]\n");
-		output_msg(OUTPUT_HST,"     %15.7e %15.7e %15.7e %15.7e %15.7e %15.7e\n",
-			cells[0].x * units.horizontal.input_to_si, 
-			cells[nxyz-1].x * units.horizontal.input_to_si,
-			cells[0].y * units.horizontal.input_to_si, 
-			cells[nxyz-1].y * units.horizontal.input_to_si,
-			cells[0].z * units.vertical.input_to_si, 
-			cells[nxyz-1].z * units.vertical.input_to_si);
-		output_msg(OUTPUT_HST,"     0.0  4 \n");
-		for (i = 0; i < nxyz; i++) {
-			cells[i].value = 0;
+    output_msg(OUTPUT_HST,"C.3.4.2 Modified Segment number, head, solution 1, solution 2, mix factor\n");
+    int segment = 1;
+    for (i = 0; i < nxyz; i++)
+    {
 			if (cells[i].cell_active == FALSE) continue;
-			if (cells[i].bc_type != SPECIFIED) {
-				for (j = 0; j < 3; j++) {
-					if (cells[i].bc_face[j].bc_type == LEAKY) {
-						cells[i].value = GRAVITY * cells[i].bc_face[j].bc_head * units.head.input_to_si;
+      if (!cells[i].leaky) continue;
+      // Reverse iterator on list of BC_info
+      for (std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin() ; rit != cells[i].all_bc_info->rend(); rit++)
+      {
+	if (rit->bc_type != BC_info::BC_LEAKY) continue;
+
+	// energy per unit mass
+	double head = rit->bc_head * units.head.input_to_si;
+
+	// segment number, head, solution 1, solution 2, factor
+	output_msg(OUTPUT_HST,"   %d %20.10e %d %d %e %d\n", segment, head, 
+	  rit->bc_solution.i1, rit->bc_solution.i2, rit->bc_solution.f1, i + 1);
+	segment++;
 					}
 				}
-			}
-		}
-		write_double_cell_property(offsetof(struct cell, value), 1.0);
 		output_msg(OUTPUT_HST,"END\n");
 
-		output_msg(OUTPUT_HST,"C.3.5.2b .. DENLBC by x,y,z range {0.1-0.3};(O) - RDLBC [3.5.1]\n");
-		output_msg(OUTPUT_HST,"     %15.7e %15.7e %15.7e %15.7e %15.7e %15.7e\n",
-			cells[0].x * units.horizontal.input_to_si, 
-			cells[nxyz-1].x * units.horizontal.input_to_si,
-			cells[0].y * units.horizontal.input_to_si, 
-			cells[nxyz-1].y * units.horizontal.input_to_si,
-			cells[0].z * units.vertical.input_to_si, 
-			cells[nxyz-1].z * units.vertical.input_to_si);
-		output_msg(OUTPUT_HST,"     %g  1 \n", fluid_density);
-		output_msg(OUTPUT_HST,"END\n");
-
-		output_msg(OUTPUT_HST,"C.3.5.2c .. ,VISLBC by x,y,z range {0.1-0.3};(O) - RDLBC [3.5.1]\n");
-		output_msg(OUTPUT_HST,"     %15.7e %15.7e %15.7e %15.7e %15.7e %15.7e\n",
-			cells[0].x * units.horizontal.input_to_si, 
-			cells[nxyz-1].x * units.horizontal.input_to_si,
-			cells[0].y * units.horizontal.input_to_si, 
-			cells[nxyz-1].y * units.horizontal.input_to_si,
-			cells[0].z * units.vertical.input_to_si, 
-			cells[nxyz-1].z * units.vertical.input_to_si);
-		output_msg(OUTPUT_HST,"     %g  1\n", fluid_viscosity);
-		output_msg(OUTPUT_HST,"END\n");
-		
 		/* NOT USED */
-		output_msg(OUTPUT_HST,"C.3.5.3 .. TLBC by x,y,z range {0.1-0.3};(O) - RDLBC [3.5.1] and HEAT [1.4]\n");
-
-		/* solution data for leaky bc */
-		output_msg(OUTPUT_HST,"C.3.5.4 .. CLBC by x,y,z range {0.1-0.3};(O) - RDLBC [3.5.1] and SOLUTE [1.4]\n");
-		if (flow_only == FALSE) {
-			output_msg(OUTPUT_HST,"     %15.7e %15.7e %15.7e %15.7e %15.7e %15.7e\n",
-				cells[0].x * units.horizontal.input_to_si, 
-				cells[nxyz-1].x * units.horizontal.input_to_si,
-				cells[0].y * units.horizontal.input_to_si, 
-				cells[nxyz-1].y * units.horizontal.input_to_si,
-				cells[0].z * units.vertical.input_to_si, 
-				cells[nxyz-1].z * units.vertical.input_to_si);
-			output_msg(OUTPUT_HST,"     0 4 0 4 0 4\n");
-			/* Accumulate solution info in integer_value */
-			for (i = 0; i < nxyz; i++) {
-				mix_init(&cells[i].temp_mix);
-				if (cells[i].cell_active == FALSE) continue;
-				if (cells[i].bc_type != SPECIFIED) {
-					for (j = 0; j < 3; j++) {
-						if (cells[i].bc_face[j].bc_type == LEAKY) {
-							cells[i].temp_mix.i1 = cells[i].bc_face[j].bc_solution.i1;
-							cells[i].temp_mix.i2 = cells[i].bc_face[j].bc_solution.i2;
-							cells[i].temp_mix.f1 = cells[i].bc_face[j].bc_solution.f1;
-							
+    output_msg(OUTPUT_HST,"C.3.4.4 .. TFLX B.C. by x,y,z range {0.1-0.3};(O) - RDFLXQ [3.4.1] and\n");
+    output_msg(OUTPUT_HST,"C..          HEAT [1.4]\n");
 						}
-					}
-				}
-			}
-			write_integer_cell_property(offsetof(struct cell, temp_mix.i1));
-			write_integer_cell_property(offsetof(struct cell, temp_mix.i2));
-			write_double_cell_property(offsetof(struct cell, temp_mix.f1), 1.0);
-			output_msg(OUTPUT_HST,"END\n");
-		}
-	} else {
-		output_msg(OUTPUT_HST,"C.3.5.2 .. PHILBC,DENLBC,VISLBC by x,y,z range {0.1-0.3};(O) - RDLBC [3.5.1]\n");
-		output_msg(OUTPUT_HST,"C.3.5.3 .. TLBC by x,y,z range {0.1-0.3};(O) - RDLBC [3.5.1] and HEAT [1.4]\n");
-		output_msg(OUTPUT_HST,"C.3.5.4 .. CLBC by x,y,z range {0.1-0.3};(O) - RDLBC [3.5.1] and SOLUTE [1.4]\n");
-	}
+/*
+ * River leakage
+ */
 	output_msg(OUTPUT_HST,"C.....River Leakage\n");
 	output_msg(OUTPUT_HST,"C.3.5.5 .. RDRBC t/f\n");
 	if (count_river_segments > 0) {
@@ -1554,8 +1515,8 @@ int write_bc_transient(void)
 		k = 1;
 		for (i = 0; i < count_cells; i++) {
 			if (cells[i].cell_active == FALSE) continue;
-			if (cells[i].bc_type == SPECIFIED) continue;
-			if (cells[i].bc_face[2].bc_type == LEAKY) continue;
+      if (cells[i].bc_type == BC_info::BC_SPECIFIED) continue;
+      
 			for (j = 0; j < cells[i].count_river_polygons; j++) {
 				river_number = cells[i].river_polygons[j].river_number;
 				point_number = cells[i].river_polygons[j].point_number;
@@ -1594,14 +1555,15 @@ int write_bc_transient(void)
 				}
 				assert (solution2 != -999999);
 				/* entry number, head, solution1, w, solution2 */
-				//if (rivers[river_number].update == TRUE) {
+	//if (rivers[river_number].update == TRUE) {
+	// Write all rivers if anything changes
 					assert(0.0 <= w0 && w0 <= 1.0);
 					output_msg(OUTPUT_HST,"%d %e %d %d %e\n", k, head, solution1, solution2, w0);
 					/* Debug
 					fprintf(stderr,"%d %d %e %d %d %e\n", point_number, k, head, solution1, solution2, w0);
 					fprintf(stderr,"\t%e\t%e\t%e\n", rivers[river_number].points[point_number].f1, rivers[river_number].points[point_number + 1].f1, 1.-w1);
 					*/
-				//}
+	//}
 				k++;
 			}
 		}
@@ -1619,6 +1581,7 @@ int write_bc_transient(void)
 
 	return(OK);
 }
+
 /* ---------------------------------------------------------------------- */
 int write_calculation_transient(void)
 /* ---------------------------------------------------------------------- */

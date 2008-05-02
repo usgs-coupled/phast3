@@ -1,8 +1,15 @@
 #define EXTERNAL
 #define MAIN
+#include <iostream>     // std::cout std::cerr
+#include <sstream>      // basic_ostringstream
 #include "hstinpt.h"
 #include "message.h"
+// testing ...
+#include "Shapefiles/Shapefile.h"
+#include "NNInterpolator/NNInterpolator.h"
 
+//... testing
+#include <algorithm>
 #if defined(__WPHAST__)
 #define main not_used
 #define static
@@ -33,7 +40,7 @@ int main(int argc, char *argv[])
 	tmpDbgFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
 	tmpDbgFlag |= _CRTDBG_DELAY_FREE_MEM_DF;
 	tmpDbgFlag |= _CRTDBG_LEAK_CHECK_DF;
-	tmpDbgFlag |= _CRTDBG_CHECK_ALWAYS_DF;
+	//tmpDbgFlag |= _CRTDBG_CHECK_ALWAYS_DF;
 	_CrtSetDbgFlag(tmpDbgFlag);
 #endif
 	std_error = stderr;
@@ -73,6 +80,64 @@ int main(int argc, char *argv[])
 		process_chem_names();
 	}
 	*/
+#ifdef SKIP
+	//std::string fname("UpperAquiferBottom");
+	//
+	{
+	std::string fname("ArcData/bath_83m");
+	Shapefile sf(fname);
+	std::ostringstream oss;
+	//sf.Dump(oss);
+	//std::cout << oss.str();
+	
+	std::vector<Point> pts;
+	sf.Extract(pts, 7);
+	for (std::vector<Point>::iterator it = pts.begin(); it != pts.end(); it++)
+	{
+	  printf("%e\t%e\t%e\t\n", it->x(), it->y(), it->get_v());
+	}
+	}
+        exit(4);
+	/*
+	std::sort(pts.begin(), pts.end());
+	std::vector<Point>::iterator newend = std::unique(pts.begin(), pts.end());
+	newend = pts.begin() + 100;
+	pts.erase(newend, pts.end());
+	printf("Start Shep2d:\n");
+	Shep2d shep(pts, CF_Z);
+	*/
+#ifdef SKIP
+	std::vector<Point> pts_out;
+	Point p;
+	int i, j;
+	int ndiv = 50;
+	for (i = 5; i < ndiv; i++)
+	{
+	  for (j = 5; j < ndiv; j++)
+	  {
+	    p.set_x(sf.shpinfo->adBoundsMin[0] + 
+	      (((double) i) / ((double) ndiv)) * (sf.shpinfo->adBoundsMax[0] - sf.shpinfo->adBoundsMin[0]));
+	    p.set_y(sf.shpinfo->adBoundsMin[1] + 
+	      (((double) j) / ((double) ndiv)) * (sf.shpinfo->adBoundsMax[1] - sf.shpinfo->adBoundsMin[1]));
+	    //v = shep.Evaluate(p, CF_Z);
+	    //v = interpolate_inverse_square(pts, p);
+	    //v = interpolate_nearest(pts, p);
+	    //printf("%e\t%e\t%e\t\n", p.x(), p.y(), v);
+	    pts_out.push_back(p);
+	  }
+	}
+	double wmin = 0.0;
+	nnpi_interpolate(pts, pts_out, wmin);
+	for (std::vector<Point>::iterator it = pts_out.begin(); it != pts_out.end(); it++)
+	{
+	  printf("%e\t%e\t%e\t\n", it->x(), it->y(), it->get_v());
+	}
+
+	//exit(0);
+
+#endif
+#endif
+
 	check_hst_units();
 	check_time_series_data();
 	if (input_error == 0) {
@@ -259,6 +324,8 @@ int clean_up(void)
 		cell_free(&cells[i]);
 	}
 	free_check_null(cells);
+	delete cell_xyz;
+	delete element_xyz;
 
 	/* Grid */
 	for (i = 0; i < 3; i++) {
@@ -303,6 +370,11 @@ int clean_up(void)
 		river_free(&rivers[i]);
 	}
 	free_check_null(rivers);
+
+	/* Drains */
+	for (std::vector<Drain *>::iterator it = drains.begin(); it != drains.end(); it++) {
+	  delete *it;
+	}
 
 	/* Wells */
 	for (i = 0; i < count_wells; i++) {
@@ -408,6 +480,8 @@ void initialize(void)
 	/* Cells */
 	count_cells = 0;
 	cells = NULL;
+	cell_xyz = new std::vector<Point>;
+	element_xyz = new std::vector<Point>;
 
 /*
  *   Make minimum space for grid
@@ -445,7 +519,7 @@ void initialize(void)
 /*
  *   initialize head_ic 
  */
-	head_ic = (struct head_ic **) malloc (sizeof(struct head_ic *));
+	head_ic = (struct Head_ic **) malloc (sizeof(struct Head_ic *));
 	if (head_ic == NULL) malloc_error();
 	count_head_ic = 0;
 /*
@@ -457,7 +531,7 @@ void initialize(void)
 /*
  *   initialize bc
  */
-	bc = (struct bc **) malloc (sizeof(struct bc *));
+	bc = (struct BC **) malloc (sizeof(struct BC *));
 	if (bc == NULL) malloc_error();
 	count_bc = 0;
 	count_specified = count_flux = count_leaky = 0;

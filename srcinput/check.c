@@ -162,6 +162,28 @@ int check_hst_units(void)
 	} else {
 		units.river_bed_thickness.input_to_user = units.river_bed_thickness.input_to_si;
 	}
+	if (drains.size() > 0 && units.drain_bed_k.defined == FALSE) {
+		input_error++;
+		sprintf(error_string, "Drain bed hydraulic conductivity units not defined in UNITS data block.");
+		error_msg(error_string, CONTINUE);
+	} else {
+		units.drain_bed_k.input_to_user = units.drain_bed_k.input_to_si * (1/si_to_user);
+	}
+	if (drains.size() > 0 && units.drain_bed_thickness.defined == FALSE) {
+		input_error++;
+		sprintf(error_string, "Drain bed thickness units not defined in UNITS data block.");
+		error_msg(error_string, CONTINUE);
+	} else {
+		units.drain_bed_thickness.input_to_user = units.drain_bed_thickness.input_to_si;
+	}
+	if (drains.size() > 0 && units.drain_width.defined == FALSE) {
+		input_error++;
+		sprintf(error_string, "Drain bed width units not defined in UNITS data block.");
+		error_msg(error_string, CONTINUE);
+	} else {
+		units.drain_width.input_to_user = units.drain_bed_thickness.input_to_si;
+	}
+
 /*
  *   These units do not involve time
  *   only need to convert to m
@@ -321,153 +343,201 @@ int set_active_cells(void)
 	}
 	return(OK);
 }
+
 /* ---------------------------------------------------------------------- */
 int check_cells(void)
 /* ---------------------------------------------------------------------- */
 {
-	int i, j, count_l, count_f;
-/*
- *   check values
- */
-	for (i = 0; i < nxyz; i++) {
-		if (cells[i].cell_active == FALSE) continue;
-		sprintf(tag,"for cell %d (%d,%d,%d) (%g,%g,%g).", 
-			cells[i].number,
-			cells[i].ix, cells[i].iy,cells[i].iz,
-			cells[i].x, cells[i].y,cells[i].z);
+  int i;
+  /*
+  *   check values
+  */
+  for (i = 0; i < nxyz; i++) {
+    if (cells[i].cell_active == FALSE) continue;
+    sprintf(tag,"for cell %d (%d,%d,%d) (%g,%g,%g).", 
+      cells[i].number,
+      cells[i].ix, cells[i].iy,cells[i].iz,
+      cells[i].x, cells[i].y,cells[i].z);
 
-/* 
- *   Head initial condition
- */
-		if (cells[i].ic_head_defined == FALSE) {
-			input_error++;
-			sprintf(error_string,"Head initial condition not defined %s", tag);
-			error_msg(error_string, CONTINUE);
-		}
+    /* 
+    *   Head initial condition
+    */
+    if (cells[i].ic_head_defined == FALSE) {
+      input_error++;
+      sprintf(error_string,"Head initial condition not defined %s", tag);
+      error_msg(error_string, CONTINUE);
+    }
 
-/* 
- *   Solution initial condition
- */
-		if (cells[i].ic_solution_defined == FALSE && flow_only == FALSE ) {
-			input_error++;
-			sprintf(error_string,"Solution initial condition not defined %s", tag);
-			error_msg(error_string, CONTINUE);
-		}
+    /* 
+    *   Solution initial condition
+    */
+    if (cells[i].ic_solution_defined == FALSE && flow_only == FALSE ) {
+      input_error++;
+      sprintf(error_string,"Solution initial condition not defined %s", tag);
+      error_msg(error_string, CONTINUE);
+    }
 
-/* 
- *   Boundary conditions
- */
-		switch (cells[i].bc_type) {
-		    case UNDEFINED:
-			continue;
-		    case SPECIFIED:
-			if (cells[i].count_river_polygons > 0) {
-				sprintf(error_string,"River is defined for specified-value cell; river will be ignored %s", tag);
-				warning_msg(error_string);
-			}
-			if (cells[i].bc_face[0].bc_head_defined == FALSE) {
-				input_error++;
-				sprintf(error_string,"Head for SPECIFIED_BC not defined %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-			if (cells[i].bc_face[0].bc_solution_type == UNDEFINED && flow_only == FALSE ) {
-				input_error++;
-				sprintf(error_string,"Solution for SPECIFIED_BC not defined %s", tag);
-				error_msg(error_string, CONTINUE);
-				break;
-			}
-			if (cells[i].bc_face[0].bc_solution_defined == FALSE && flow_only == FALSE ) {
-				input_error++;
-				sprintf(error_string,"Solution for SPECIFIED_BC not defined %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
+    /* 
+    *   Boundary conditions
+    */
 
-			break;
-		    case LEAKY:
-		    case FLUX:
-			count_f = 0;
-			count_l = 0;
-			if (cells[i].bc_face[2].bc_type == LEAKY && cells[i].count_river_polygons > 0) {
-				sprintf(error_string,"River boundary condition is ignored for LEAKY boundary %s", tag);
-				warning_msg(error_string);
-			}
-			for (j = 0; j < 3; j++) {
-				if (cells[i].bc_face[j].bc_type == SPECIFIED) {
-					cells[i].bc_face[j].bc_type = UNDEFINED;
-					continue;
-				} else if (cells[i].bc_face[j].bc_type == UNDEFINED) {
-					continue;
-				} else if (cells[i].bc_face[j].bc_type == FLUX) {
-					count_f++;
-					if (cells[i].bc_face[j].bc_flux_defined == FALSE) {
-						input_error++;
-						sprintf(error_string,"Flux for FLUX_BC not defined %s", tag);
-						error_msg(error_string, CONTINUE);
-					}
-					if (cells[i].bc_face[j].bc_solution_type != ASSOCIATED && flow_only == FALSE ) {
-						input_error++;
-						sprintf(error_string,"Associated solution for FLUX_BC not defined %s", tag);
-						error_msg(error_string, CONTINUE);
-						break;
-					}
-					if (cells[i].bc_face[j].bc_solution_defined == FALSE && flow_only == FALSE ) {
-						input_error++;
-						sprintf(error_string,"Associated solution for FLUX_BC not defined %s", tag);
-						error_msg(error_string, CONTINUE);
-					}
-				} else if (cells[i].bc_face[j].bc_type == LEAKY) {
-					count_l++;
-					if (cells[i].bc_face[j].bc_head_defined == FALSE) {
-						input_error++;
-						sprintf(error_string,"Head for LEAKY_BC not defined %s", tag);
-						error_msg(error_string, CONTINUE);
-					}
-					if (cells[i].bc_face[j].bc_k_defined == FALSE) {
-						input_error++;
-						sprintf(error_string,"Hydraulic conductivity for LEAKY_BC not defined %s", tag);
-						error_msg(error_string, CONTINUE);
-					}
-					if (cells[i].bc_face[j].bc_thick_defined == FALSE) {
-						input_error++;
-						sprintf(error_string,"Thickness for LEAKY_BC not defined %s", tag);
-						error_msg(error_string, CONTINUE);
-					}
-					if (cells[i].bc_face[j].bc_solution_type != ASSOCIATED && flow_only == FALSE ) {
-						input_error++;
-						sprintf(error_string,"Associated solution for LEAKY_BC not defined %s", tag);
-						error_msg(error_string, CONTINUE);
-						break;
-					}
-					if (cells[i].bc_face[j].bc_solution_defined == FALSE && flow_only == FALSE ) {
-						input_error++;
-						sprintf(error_string,"Associated solution for LEAKY_BC not defined %s", tag);
-						error_msg(error_string, CONTINUE);
-					}
-/*
- *   check that leaky cell is next to boundary or inactive cell
- */
-					if (check_leaky_for_face(i, j) == ERROR) {
-						input_error++;
-						sprintf(error_string,"Cell is not next to inactive node in the %c direction for LEAKY_BC %s", grid[j].c, tag);
-						error_msg(error_string, CONTINUE);
-					}
-				}
-			}
-			if (count_f > 1) {
-				input_error++;
-				sprintf(error_string,"Only one flux boundary per cell is allowed FLUX_BC %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-			if (count_l > 1) {
-				input_error++;
-				sprintf(error_string,"Only one leaky boundary per cell is allowed LEAKY_BC %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
+    // Specified value
+    if (cells[i].specified)
+    {
+      if (cells[i].count_river_polygons > 0) {
+	sprintf(error_string,"River is defined for specified-value cell; river will be ignored %s", tag);
+	warning_msg(error_string);
+      }
+      if (cells[i].drain_polygons->size() > 0) {
+	sprintf(error_string,"Drain is defined for specified-value cell; drain will be ignored %s", tag);
+	warning_msg(error_string);
+      }
+      std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin();
 
-		}		
+      // Head defined
+      if (!rit->bc_head_defined)
+      {
+	// Search for earlier head definition
+	for (std::list<BC_info>::reverse_iterator rit1 = cells[i].all_bc_info->rbegin(); rit1 != cells[i].all_bc_info->rend(); rit1++)
+	{
+	  if (rit1->bc_head_defined)
+	  {
+	    rit->bc_head = rit1->bc_head;
+	    rit->bc_head_defined = true;
+	    break;
+	  }
 	}
-	return(OK);
+	if (!rit->bc_head_defined)
+	{
+	  input_error++;
+	  sprintf(error_string,"Head for SPECIFIED_BC not defined %s", tag);
+	  error_msg(error_string, CONTINUE);
+	}
+      }
+
+      // Solution type defined
+      if (rit->bc_solution_type == UNDEFINED && flow_only == FALSE)
+      {
+	// Search for earlier solution type definition
+	for (std::list<BC_info>::reverse_iterator rit1 = cells[i].all_bc_info->rbegin(); rit1 != cells[i].all_bc_info->rend(); rit1++)
+	{
+	  if (rit1->bc_solution_type != UNDEFINED)
+	  {
+	    rit->bc_solution_type = rit1->bc_solution_type;
+	    break;
+	  }
+	}
+	if (rit->bc_solution_type == UNDEFINED)
+	{
+	  input_error++;
+	  sprintf(error_string,"Solution type for SPECIFIED_BC not defined %s", tag);
+	  error_msg(error_string, CONTINUE);
+	}
+      }
+
+      // Solution defined
+      if (!rit->bc_solution_defined && flow_only == FALSE)
+      {
+	// Search for earlier solution definition
+	for (std::list<BC_info>::reverse_iterator rit1 = cells[i].all_bc_info->rbegin(); rit1 != cells[i].all_bc_info->rend(); rit1++)
+	{
+	  if (rit1->bc_solution_defined)
+	  {
+	    rit->bc_solution.i1 = rit1->bc_solution.i1;
+	    rit->bc_solution.i2 = rit1->bc_solution.i2;
+	    rit->bc_solution.f1 = rit1->bc_solution.f1;
+	    rit->bc_solution_defined = true;
+	    break;
+	  }
+	}
+	if (!rit->bc_solution_defined)
+	{
+	  input_error++;
+	  sprintf(error_string,"Solution for SPECIFIED_BC not defined %s", tag);
+	  error_msg(error_string, CONTINUE);
+	}
+      }
+    }
+
+    // Flux bc
+    if (cells[i].flux)
+    {
+      for (std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin(); rit != cells[i].all_bc_info->rend(); rit++)
+      {
+	if (rit->bc_type != BC_info::BC_FLUX) continue;
+
+	// Flux defined
+	if (!rit->bc_flux_defined) {
+	  input_error++;
+	  sprintf(error_string,"Flux for FLUX_BC not defined %s", tag);
+	  error_msg(error_string, CONTINUE);
+	}
+
+	// Solution type defined
+	if (rit->bc_solution_type != ASSOCIATED && flow_only == FALSE ) {
+	  input_error++;
+	  sprintf(error_string,"Associated solution for FLUX_BC not defined %s", tag);
+	  error_msg(error_string, CONTINUE);
+	  break;
+	}
+
+	// Solution defined
+	if (!rit->bc_solution_defined && flow_only == FALSE ) {
+	  input_error++;
+	  sprintf(error_string,"Associated solution for FLUX_BC not defined %s", tag);
+	  error_msg(error_string, CONTINUE);
+	}
+      }
+    }
+
+    // Leaky bc
+    if (cells[i].leaky)
+    {
+      for (std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin(); rit != cells[i].all_bc_info->rend(); rit++)
+      {
+	if (rit->bc_type != BC_info::BC_LEAKY) continue;
+
+	// Head defined
+	if (!rit->bc_head_defined) {
+	  input_error++;
+	  sprintf(error_string,"Head for LEAKY_BC not defined %s", tag);
+	  error_msg(error_string, CONTINUE);
+	}
+
+	// K defined
+	if (!rit->bc_k_defined) {
+	  input_error++;
+	  sprintf(error_string,"Hydraulic conductivity for LEAKY_BC not defined %s", tag);
+	  error_msg(error_string, CONTINUE);
+	}
+
+	// Thickness defined
+	if (!rit->bc_thick_defined) {
+	  input_error++;
+	  sprintf(error_string,"Thickness for LEAKY_BC not defined %s", tag);
+	  error_msg(error_string, CONTINUE);
+	}
+
+	// Solution type defined
+	if (rit->bc_solution_type != ASSOCIATED && flow_only == FALSE ) {
+	  input_error++;
+	  sprintf(error_string,"Associated solution for LEAKY_BC not defined %s", tag);
+	  error_msg(error_string, CONTINUE);
+	  break;
+	}
+
+	// Solution defined
+	if (!rit->bc_solution_defined && flow_only == FALSE ) {
+	  input_error++;
+	  sprintf(error_string,"Solution for LEAKY_BC not defined %s", tag);
+	  error_msg(error_string, CONTINUE);
+	}
+      }
+    }
+  }
+  return(OK);
 }
+
 /* ---------------------------------------------------------------------- */
 int check_elements(void)
 /* ---------------------------------------------------------------------- */
@@ -826,6 +896,3 @@ int check_time_series(struct time_series *ts_ptr, int start_at_zero, const char 
 	return(OK);
 
 }
-
-
-

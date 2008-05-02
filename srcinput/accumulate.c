@@ -1,10 +1,18 @@
 #define EXTERNAL extern
+#include <iostream>
+
 #include "hstinpt.h"
 #include "message.h"
 #include "stddef.h"
+#include "Polyhedron.h"
+#include "Exterior_cell.h"
 static char const svnid[] = "$Id$";
 static int setup_grid(void);
-
+static void distribute_flux_bc (int i,std::list<int> &pts, char *tag); 
+static void distribute_leaky_bc (int i,std::list<int> &pts, char *tag); 
+static void distribute_specified_bc (int i,std::list<int> &pts, char *tag); 
+static void cells_with_exterior_faces_in_zone(std::list<int> &pts, struct zone *zone_ptr);
+void process_bc (struct cell *cell_ptr);
 /* ---------------------------------------------------------------------- */
 int accumulate(void)
 /* ---------------------------------------------------------------------- */
@@ -16,21 +24,29 @@ int accumulate(void)
 				setup_rivers();
 			}
 		}
+		if (tidy_drains() == OK) {
+			if (build_drains() == OK) {
+				setup_drains();
+			}
+		}
 		if (tidy_wells() == OK) {
 			if (build_wells() == OK) {
 				setup_wells();
 			}
 		}
-#ifdef DEBUG
+#ifdef DEBUG_RIVERS
 		write_rivers();
 #endif
 	} else {
 		update_rivers();
 		update_wells();
 	}
-	setup_head_ic();
-	setup_chem_ic();
-	setup_media();
+	if (simulation == 0)
+	{
+	  setup_head_ic();
+	  setup_chem_ic();
+	  setup_media();
+	}
 	setup_bc();
 	setup_print_locations(&print_zones_chem, offsetof(struct cell, print_chem), offsetof(struct cell, print_chem_defined));
 	setup_print_locations(&print_zones_xyz, offsetof(struct cell, print_xyz), offsetof(struct cell, print_xyz_defined));
@@ -281,6 +297,16 @@ int setup_grid(void)
 		}
 		grid[k].min *= 1e-6;
 	}
+/*
+*  Save locations of cells and elements
+*/
+	for (i = 0; i < nxyz; i++) 
+	{
+	  cell_xyz->push_back(Point(cells[i].x, cells[i].y, cells[i].z));
+	  element_xyz->push_back(Point(cells[i].elt_x, cells[i].elt_y, cells[i].elt_z));
+	}
+
+
 	return(OK);
 }
 /* ---------------------------------------------------------------------- */
@@ -297,6 +323,7 @@ int ijk_to_n(int i, int j, int k)
 	}
 	return(return_value);
 }
+
 /* ---------------------------------------------------------------------- */
 struct index_range *zone_to_range(struct zone *zone_ptr)
 /* ---------------------------------------------------------------------- */
@@ -409,6 +436,7 @@ int coords_to_range(double x1, double x2, double *coord, int count_coord, double
 	}
 	return(OK);
 }
+
 /* ---------------------------------------------------------------------- */
 int coords_to_elt_range(double x1, double x2, double *coord, int count_coord, double eps, int uniform,
 		    int *i1, int *i2)
@@ -445,436 +473,454 @@ int coords_to_elt_range(double x1, double x2, double *coord, int count_coord, do
 	}
 	return(OK);
 }
+
 /* ---------------------------------------------------------------------- */
 int setup_head_ic(void)
 /* ---------------------------------------------------------------------- */
 {
-	int i, n;
-	int ii, jj, kk, nn;
-	int return_value;
-	struct index_range *range_ptr;
-	int head_ic_type;
+  int i, n;
+  int ii, jj, kk, nn;
+  int return_value;
+  struct index_range *range_ptr;
+  int head_ic_type;
 
-	head_ic_type = UNDEFINED;
-	for (i = 0; i < count_head_ic; i++) {
-		sprintf(tag,"in HEAD_IC, definition %d.\n", i+1);
-		switch (head_ic[i]->ic_type) {
-		    case UNDEFINED:
-			input_error++;
-			sprintf(error_string, "Initial condition type undefined %s", tag);
-			error_msg(error_string, CONTINUE);
-			break;
-		    case ZONE:
-			if (head_ic_type != UNDEFINED && head_ic_type != ZONE) {
-				sprintf(error_string, "ZONE and WATER_TABLE are mutually exclusive initial conditions %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				return_value = ERROR;
-			}
-			if (head_ic[i]->zone == NULL) {
-				input_error++;
-				sprintf(error_string, "No zone definition %s", tag);
-				error_msg(error_string, CONTINUE);
-				break;
-			}
-			range_ptr = zone_to_range(head_ic[i]->zone);
-			if (range_ptr == NULL) {
-				input_error++;
-				sprintf(error_string, "Bad zone definition %s", tag);
-				error_msg(error_string, CONTINUE);
-				break;
-			}
+  head_ic_type = UNDEFINED;
+  for (i = 0; i < count_head_ic; i++) {
+    sprintf(tag,"in HEAD_IC, definition %d.\n", i+1);
+    switch (head_ic[i]->ic_type) {
+    case UNDEFINED:
+      input_error++;
+      sprintf(error_string, "Initial condition type undefined %s", tag);
+      error_msg(error_string, CONTINUE);
+      break;
+    case ZONE:
+      if (head_ic_type != UNDEFINED && head_ic_type != ZONE) {
+	sprintf(error_string, "ZONE and WATER_TABLE are mutually exclusive initial conditions %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	return_value = ERROR;
+      }
 
-			if (head_ic[i]->head != NULL) {
-				if (distribute_property_to_cells(range_ptr, 
-								 head_ic[i]->mask,
-								 head_ic[i]->head, 
-								 offsetof(struct cell, ic_head),
-								 offsetof(struct cell, ic_head_defined),
-								 PT_DOUBLE, FALSE, 0, 0) == ERROR) {
-					input_error++;
-					sprintf(error_string, "Bad head definition %s", tag);
-					error_msg(error_string, CONTINUE);
-				}
-			}
-			free_check_null(range_ptr);
-			head_ic_type = ZONE;
-			break;
-		    case WATER_TABLE:
-			if (head_ic_type != UNDEFINED && head_ic_type != WATER_TABLE) {
-				sprintf(error_string, "ZONE and WATER_TABLE are mutually exclusive initial conditions %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				return_value = ERROR;
-			}
-			if (head_ic_type == WATER_TABLE) {
-				sprintf(error_string,"Water_table has been redefined %s", tag);
-				warning_msg(error_string);
-			}
-			if (head_ic[i]->head == NULL) {
-				sprintf(error_string,"Heads for water_table have not been defined %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-			}
-			if (head_ic[i]->head->count_v != nx * ny) {
-				sprintf(error_string, 
-					"Number of head values for water table, %d, not equal nx * ny, %d %s", head_ic[i]->head->count_v, nx * ny, tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				break;
-			}
-
-			/* copy data vertically from head_list to cells */
-			for (ii = 0; ii < nx; ii++) {
-				for (jj = 0; jj < ny; jj++) {
-					nn = jj * nx + ii;
-					for (kk = 0; kk < nz; kk++) {
-						n = ijk_to_n(ii, jj, kk);
-						cells[n].ic_head = head_ic[i]->head->v[nn];
-						cells[n].ic_head_defined = TRUE;
-					}
-				}
-			}
-			head_ic_type = WATER_TABLE;
-			break;
-		}
+      if (head_ic[i]->polyh == NULL) {
+	input_error++;
+	sprintf(error_string, "No zone definition %s", tag);
+	error_msg(error_string, CONTINUE);
+	break;
+      } 
+      else
+      {
+	struct zone *zone_ptr = head_ic[i]->polyh->Get_box();
+	range_ptr = zone_to_range(zone_ptr);
+	std::list<int> list_of_cells;
+	range_to_list(range_ptr, list_of_cells);
+	free_check_null(range_ptr);
+	range_ptr = NULL;
+	{
+	  head_ic[i]->polyh->Points_in_polyhedron(list_of_cells, *cell_xyz);
+	  if (list_of_cells.size() == 0) {
+	    input_error++;
+	    sprintf(error_string, "Bad zone or wedge definition %s", tag);
+	    error_msg(error_string, CONTINUE);
+	    break;
+	  }
+	  if (head_ic[i]->head != NULL) {
+	    if (distribute_property_to_list_of_cells(list_of_cells, 
+	      head_ic[i]->mask,
+	      head_ic[i]->head, 
+	      offsetof(struct cell, ic_head),
+	      offsetof(struct cell, ic_head_defined),
+	      PT_DOUBLE, FALSE, 0, BC_info::BC_UNDEFINED ) == ERROR) 
+	    {
+	      input_error++;
+	      sprintf(error_string, "Bad head definition %s", tag);
+	      error_msg(error_string, CONTINUE);
+	    }
+	  }
+	  //free_check_null(range_ptr);
+	  head_ic_type = ZONE;
 	}
-	return(OK);
+      }
+      break;
+    case WATER_TABLE:
+      if (head_ic_type != UNDEFINED && head_ic_type != WATER_TABLE) {
+	sprintf(error_string, "ZONE and WATER_TABLE are mutually exclusive initial conditions %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	return_value = ERROR;
+      }
+      if (head_ic_type == WATER_TABLE) {
+	sprintf(error_string,"Water_table has been redefined %s", tag);
+	warning_msg(error_string);
+      }
+      if (head_ic[i]->head == NULL) {
+	sprintf(error_string,"Heads for water_table have not been defined %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+      }
+      if (head_ic[i]->head->count_v != nx * ny) {
+	sprintf(error_string, 
+	  "Number of head values for water table, %d, not equal nx * ny, %d %s", head_ic[i]->head->count_v, nx * ny, tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	break;
+      }
+
+      /* copy data vertically from head_list to cells */
+      for (ii = 0; ii < nx; ii++) {
+	for (jj = 0; jj < ny; jj++) {
+	  nn = jj * nx + ii;
+	  for (kk = 0; kk < nz; kk++) {
+	    n = ijk_to_n(ii, jj, kk);
+	    cells[n].ic_head = head_ic[i]->head->v[nn];
+	    cells[n].ic_head_defined = TRUE;
+	  }
+	}
+      }
+      head_ic_type = WATER_TABLE;
+      break;
+    }
+  }
+  return(OK);
 }
+
 /* ---------------------------------------------------------------------- */
 int setup_print_locations(struct print_zones_struct *print_zones_struct_ptr, size_t offset1, size_t offset2)
 /* ---------------------------------------------------------------------- */
 {
-	int i;
-	int j, j1, i0, i1, i2, n, count, quit;
-	struct index_range *range_ptr;
+  int i;
+  int j, j1, i0, i1, i2, n, count, quit;
+  struct index_range *range_ptr;
 
-	/* set print flags for subgrid */
-	if (print_zones_struct_ptr->thin_grid[0] > 0 || print_zones_struct_ptr->thin_grid[1] > 0 || print_zones_struct_ptr->thin_grid[2] > 0) {
-		for (i = 0; i < 3; i++) {
-			if (print_zones_struct_ptr->thin_grid_list[i] != NULL) free_check_null(print_zones_struct_ptr->thin_grid_list[i]);
-			print_zones_struct_ptr->thin_grid_list[i] = (int *) malloc((size_t) (grid[i].count_coord * sizeof(int)));
-			if (print_zones_struct_ptr->thin_grid_list[i] == NULL) malloc_error();
-			if (print_zones_struct_ptr->thin_grid[i] <= 0) {
-				/* print all node numbers */
-				for (j = 0; j < grid[i].count_coord; j++) {
-					print_zones_struct_ptr->thin_grid_list[i][j] = j;
-				}
-				print_zones_struct_ptr->thin_grid_count[i] = grid[i].count_coord;
-			} else {
-				/* make list of node numbers to print */
-				j = 0 - print_zones_struct_ptr->thin_grid[i];
-				j1 = (grid[i].count_coord - 1) + print_zones_struct_ptr->thin_grid[i];
-				count = 0;
-				quit = FALSE;
-				while (quit == FALSE) {
-					j = j + print_zones_struct_ptr->thin_grid[i];
-					if (j < j1) {
-						print_zones_struct_ptr->thin_grid_list[i][count++] = j;
-					} else {
-						quit = TRUE;
-					}
-					j1 = j1 - print_zones_struct_ptr->thin_grid[i];
-					if (j1 > j) {
-						print_zones_struct_ptr->thin_grid_list[i][count++] = j1;
-					} else {
-						quit = TRUE;
-					}
-				}
-				print_zones_struct_ptr->thin_grid_count[i] = count;
-				/*
-				 *  Sort node indexes
-				 */
-				qsort (print_zones_struct_ptr->thin_grid_list[i], (size_t) count, sizeof(int), int_compare);		
-			}
-		}
-		for(i = 0; i < nxyz; i++) {
-		  *(int *) ((char * ) &(cells[i]) + offset1) = 0;
-		  *(int *) ((char * ) &(cells[i]) + offset2) = TRUE;
-		  /*
-			cells[i].print = 0;
-			cells[i].print_defined = TRUE;
-		  */
-		}
-		for (i0 = 0; i0 < print_zones_struct_ptr->thin_grid_count[0]; i0++) {
-			for (i1 = 0; i1 < print_zones_struct_ptr->thin_grid_count[1]; i1++) {
-				for (i2 = 0; i2 < print_zones_struct_ptr->thin_grid_count[2]; i2++) {
-					n = ijk_to_n(print_zones_struct_ptr->thin_grid_list[0][i0], print_zones_struct_ptr->thin_grid_list[1][i1], print_zones_struct_ptr->thin_grid_list[2][i2]);
-					/* cells[n].print = 1;*/
-					*(int *) ((char * ) &(cells[n]) + offset1) = 1;
-				}
-			}
-		}
+  /* set print flags for subgrid */
+  if (print_zones_struct_ptr->thin_grid[0] > 0 || print_zones_struct_ptr->thin_grid[1] > 0 || print_zones_struct_ptr->thin_grid[2] > 0) {
+    for (i = 0; i < 3; i++) {
+      if (print_zones_struct_ptr->thin_grid_list[i] != NULL) free_check_null(print_zones_struct_ptr->thin_grid_list[i]);
+      print_zones_struct_ptr->thin_grid_list[i] = (int *) malloc((size_t) (grid[i].count_coord * sizeof(int)));
+      if (print_zones_struct_ptr->thin_grid_list[i] == NULL) malloc_error();
+      if (print_zones_struct_ptr->thin_grid[i] <= 0) {
+	/* print all node numbers */
+	for (j = 0; j < grid[i].count_coord; j++) {
+	  print_zones_struct_ptr->thin_grid_list[i][j] = j;
 	}
-	for (i = 0; i < print_zones_struct_ptr->count_print_zones; i++) {
-		sprintf(tag,"in PRINT_LOCATIONS, definition %d.\n", i+1);
-		if (print_zones_struct_ptr->print_zones[i].zone == NULL) {
-			input_error++;
-			sprintf(error_string, "No zone definition %s", tag);
-			error_msg(error_string, CONTINUE);
-			break;
-		}
-		range_ptr = zone_to_range(print_zones_struct_ptr->print_zones[i].zone);
-		if (range_ptr == NULL) {
-			input_error++;
-			sprintf(error_string, "Bad zone definition %s", tag);
-			error_msg(error_string, CONTINUE);
-			break;
-		}
-		if (print_zones_struct_ptr->print_zones[i].print != NULL) {
-			if (distribute_property_to_cells(range_ptr, 
-							 print_zones_struct_ptr->print_zones[i].mask, 
-							 print_zones_struct_ptr->print_zones[i].print, 
-							 offset1,
-							 offset2,
-							 PT_INTEGER, FALSE, 0, 0) == ERROR) {
-				input_error++;
-				sprintf(error_string, "Bad print definition %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-		}
-		free_check_null(range_ptr);
+	print_zones_struct_ptr->thin_grid_count[i] = grid[i].count_coord;
+      } else {
+	/* make list of node numbers to print */
+	j = 0 - print_zones_struct_ptr->thin_grid[i];
+	j1 = (grid[i].count_coord - 1) + print_zones_struct_ptr->thin_grid[i];
+	count = 0;
+	quit = FALSE;
+	while (quit == FALSE) {
+	  j = j + print_zones_struct_ptr->thin_grid[i];
+	  if (j < j1) {
+	    print_zones_struct_ptr->thin_grid_list[i][count++] = j;
+	  } else {
+	    quit = TRUE;
+	  }
+	  j1 = j1 - print_zones_struct_ptr->thin_grid[i];
+	  if (j1 > j) {
+	    print_zones_struct_ptr->thin_grid_list[i][count++] = j1;
+	  } else {
+	    quit = TRUE;
+	  }
 	}
-	return(OK);
+	print_zones_struct_ptr->thin_grid_count[i] = count;
+	/*
+	*  Sort node indexes
+	*/
+	qsort (print_zones_struct_ptr->thin_grid_list[i], (size_t) count, sizeof(int), int_compare);		
+      }
+    }
+    for(i = 0; i < nxyz; i++) {
+      *(int *) ((char * ) &(cells[i]) + offset1) = 0;
+      *(int *) ((char * ) &(cells[i]) + offset2) = TRUE;
+      /*
+      cells[i].print = 0;
+      cells[i].print_defined = TRUE;
+      */
+    }
+    for (i0 = 0; i0 < print_zones_struct_ptr->thin_grid_count[0]; i0++) {
+      for (i1 = 0; i1 < print_zones_struct_ptr->thin_grid_count[1]; i1++) {
+	for (i2 = 0; i2 < print_zones_struct_ptr->thin_grid_count[2]; i2++) {
+	  n = ijk_to_n(print_zones_struct_ptr->thin_grid_list[0][i0], print_zones_struct_ptr->thin_grid_list[1][i1], print_zones_struct_ptr->thin_grid_list[2][i2]);
+	  /* cells[n].print = 1;*/
+	  *(int *) ((char * ) &(cells[n]) + offset1) = 1;
+	}
+      }
+    }
+  }
+  for (i = 0; i < print_zones_struct_ptr->count_print_zones; i++) {
+    sprintf(tag,"in PRINT_LOCATIONS, definition %d.\n", i+1);
+
+    if (print_zones_struct_ptr->print_zones[i].polyh == NULL) {
+      input_error++;
+      sprintf(error_string, "No zone definition %s", tag);
+      error_msg(error_string, CONTINUE);
+      break;
+    }
+    else
+    {
+      struct zone *zone_ptr = print_zones_struct_ptr->print_zones[i].polyh->Get_box();
+      range_ptr = zone_to_range(zone_ptr);
+      if (range_ptr == NULL) {
+	input_error++;
+	sprintf(error_string, "Bad zone or wedge definition %s", tag);
+	error_msg(error_string, CONTINUE);
+	break;
+      }
+      std::list<int> list_of_cells;
+      range_to_list(range_ptr, list_of_cells);
+      free_check_null(range_ptr);
+	  range_ptr = NULL;
+      print_zones_struct_ptr->print_zones[i].polyh->Points_in_polyhedron(list_of_cells, *cell_xyz);
+
+      if (list_of_cells.size() == 0) {
+	input_error++;
+	sprintf(error_string, "Bad zone or wedge definition %s", tag);
+	error_msg(error_string, CONTINUE);
+	break;
+      }
+      if (print_zones_struct_ptr->print_zones[i].print != NULL) 
+      {
+	if (distribute_property_to_list_of_cells(list_of_cells, 
+	  print_zones_struct_ptr->print_zones[i].mask, 
+	  print_zones_struct_ptr->print_zones[i].print, 
+	  offset1,
+	  offset2,
+	  PT_INTEGER, FALSE, 0, BC_info::BC_UNDEFINED) == ERROR) 
+	{ 
+	  input_error++;
+	  sprintf(error_string, "Bad print definition %s", tag);
+	  error_msg(error_string, CONTINUE);
+	}
+      }
+    }
+  }
+  return(OK);
 }
 /* ---------------------------------------------------------------------- */
-int distribute_property_to_cells(struct index_range *range_ptr, 
-				 struct property *mask,
-				 struct property *property_ptr,
-				 size_t offset, size_t offset_defined,
-				 property_type p_type,
-				 int match_bc_type,
-				 int face,
-				 int bc_type)
+int distribute_property_to_list_of_cells(
+  std::list<int> &pts,   // list of cell numbers in natural order
+  struct property *mask,
+  struct property *property_ptr,
+  size_t offset, size_t offset_defined,
+  property_type p_type,
+  int match_bc_type,
+  int face,
+  BC_info::BC_TYPE bc_type)
+  /* ---------------------------------------------------------------------- */
+{
+  int n, node_sequence;
+  int *i_ptr;
+  double value, mask_value;
+  double *d_ptr;
+  struct mix *mix_ptr;
+  n = pts.size();
+  if (property_ptr->type == ZONE) {
+    if (n != property_ptr->count_v) {
+      sprintf(error_string,"Zone has %d nodes,"
+	" property has %d values.", n, property_ptr->count_v);
+      error_msg(error_string, CONTINUE);
+      input_error++;
+      return(ERROR);
+    }
+  }
+  if (property_ptr->type == MIXTURE) {
+    if (n != property_ptr->count_v - 2) {
+      sprintf(error_string,"Zone has %d nodes,"
+	" property has %d values.", n, property_ptr->count_v - 2);
+      error_msg(error_string, CONTINUE);
+      input_error++;
+      return(ERROR);
+    }
+  }
+  if (mask != NULL && mask->type == ZONE) {
+    if (n != mask->count_v) {
+      sprintf(error_string,"Zone has %d nodes,"
+	" mask has %d values.", n, mask->count_v);
+      error_msg(error_string, CONTINUE);
+      input_error++;
+      return(ERROR);
+    }
+  }
+  node_sequence = 0;
+  for(std::list<int>::iterator it = pts.begin(); it != pts.end(); it++)
+  {
+    n = *it;
+    mask_value = 1;
+    if (mask != NULL) {
+      if (get_double_property_value(&(cells[n]), mask, node_sequence, &mask_value) == ERROR) {
+	error_msg("Error in mask.", CONTINUE);
+	return(ERROR);
+      }
+    }
+    if (mask_value > 0) {
+      //if (match_bc_type == TRUE && cells[n].bc_face[face].bc_type != bc_type) continue;
+      if (p_type == PT_MIX) {
+	mix_ptr = (struct mix *) ((char *) &(cells[n]) + offset);
+	if (get_integer_property_value_mix(&(cells[n]), property_ptr, node_sequence, mix_ptr) == ERROR) {
+	  return(ERROR);
+	}
+      } else if (p_type == PT_INTEGER) {
+	/*
+	if (get_integer_property_value(&(cells[n]), property_ptr, node_sequence, &value, &integer_value) == ERROR) {
+	return(ERROR);
+	} 
+	*/
+	if (get_double_property_value(&(cells[n]), property_ptr, node_sequence, &value) == ERROR) {
+	  return(ERROR);
+	}
+	i_ptr = (int *) ((char * ) &(cells[n]) + offset);
+	if (value > 0) {
+	  *i_ptr = TRUE;
+	} else {
+	  *i_ptr = FALSE;
+	}
+      } else if (p_type == PT_DOUBLE) {
+	if (get_double_property_value(&(cells[n]), property_ptr, node_sequence, &value) == ERROR) {
+	  return(ERROR);
+	}
+	d_ptr = (double *) ((char * ) &(cells[n]) + offset);
+	*d_ptr = value;
+      } else {
+	error_msg("Unknown property type in distribute_property_to_cells", STOP);
+      }
+      i_ptr = (int *) ((char *) &(cells[n]) + offset_defined);
+      *i_ptr = TRUE;
+    }
+    node_sequence++;
+  }
+  return(OK);
+}
+
+/* ---------------------------------------------------------------------- */
+int distribute_property_to_list_of_elements(
+  std::list<int> &pts,   // list of cell numbers in natural order
+  struct property *mask,
+  struct property *property_ptr,
+  size_t offset, size_t offset_defined,
+  int integer)
 /* ---------------------------------------------------------------------- */
 {
-	int i, j, k, n, node_sequence;
-	int *i_ptr;
-	double value, mask_value;
-	double *d_ptr;
-	struct mix *mix_ptr;
-	if (property_ptr->type == ZONE) {
-		n = (range_ptr->k2 - range_ptr->k1 + 1) * 
-			(range_ptr->j2 - range_ptr->j1 + 1) * 
-			(range_ptr->i2 - range_ptr->i1 + 1);
-		if (n != property_ptr->count_v) {
-			sprintf(error_string,"Zone has %d nodes,"
-				" property has %d values.", n, property_ptr->count_v);
-			error_msg(error_string, CONTINUE);
-			input_error++;
-			return(ERROR);
-		}
+  int n, element_sequence;
+  int integer_value;
+  int *i_ptr;
+  double value, mask_value;
+  double *d_ptr;
+  /*
+  *  element_sequence tells which property value to retrieve from a list
+  */
+  n = pts.size();
+  if (n <= 0) {
+    sprintf(error_string,"Zone contains no elements.");
+    error_msg(error_string, CONTINUE);
+    input_error++;
+    return(ERROR);
+  }
+  if (property_ptr->type == ZONE) {
+    if (n != property_ptr->count_v) {
+      sprintf(error_string,"Zone has %d elements,"
+	" property has %d values.", n, property_ptr->count_v);
+      error_msg(error_string, CONTINUE);
+      input_error++;
+      return(ERROR);
+    }
+  }
+  if (mask != NULL && mask->type == LINEAR) {
+    sprintf(error_string,"LINEAR property definition not allowed for mask.");
+    error_msg(error_string, CONTINUE);
+    input_error++;
+    return(ERROR);
+  }
+  if (mask != NULL && mask->type == ZONE) {
+    if (n != mask->count_v) {
+      sprintf(error_string,"Zone has %d elements,"
+	" mask has %d values.", n, mask->count_v);
+      error_msg(error_string, CONTINUE);
+      input_error++;
+      return(ERROR);
+    }
+  }
+  element_sequence = 0;
+  for (std::list<int>::iterator it = pts.begin(); it != pts.end(); it++)
+  {
+    n = *it;
+    mask_value = 1;
+    if (mask != NULL) {
+      if (get_property_value_element(&(cells[n]), mask, element_sequence, &mask_value, &integer_value) == ERROR) {
+	error_msg("Error in mask.", CONTINUE);
+	return(ERROR);
+      }
+    }
+    if (mask_value > 0) {
+      if (cells[n].is_element == FALSE) {
+	error_msg("Node is not an element node.", CONTINUE);
+      }
+      if (get_property_value_element(&(cells[n]), property_ptr, element_sequence, &value, &integer_value) == ERROR) {
+	return(ERROR);
+      }
+      if (integer == TRUE) {
+	i_ptr = (int *) ((char * ) &(cells[n]) + offset);
+	if (value > 0) {
+	  *i_ptr = TRUE;
+	} else {
+	  *i_ptr = FALSE;
 	}
-	if (property_ptr->type == MIXTURE) {
-		n = (range_ptr->k2 - range_ptr->k1 + 1) * 
-			(range_ptr->j2 - range_ptr->j1 + 1) * 
-			(range_ptr->i2 - range_ptr->i1 + 1);
-		if (n != property_ptr->count_v - 2) {
-			sprintf(error_string,"Zone has %d nodes,"
-				" property has %d values.", n, property_ptr->count_v - 2);
-			error_msg(error_string, CONTINUE);
-			input_error++;
-			return(ERROR);
-		}
-	}
-	if (mask != NULL && mask->type == ZONE) {
-		n = (range_ptr->k2 - range_ptr->k1 + 1) * 
-			(range_ptr->j2 - range_ptr->j1 + 1) * 
-			(range_ptr->i2 - range_ptr->i1 + 1);
-		if (n != mask->count_v) {
-			sprintf(error_string,"Zone has %d nodes,"
-				" mask has %d values.", n, mask->count_v);
-			error_msg(error_string, CONTINUE);
-			input_error++;
-			return(ERROR);
-		}
-	}
-	node_sequence = 0;
-	for (k = range_ptr->k1; k <= range_ptr->k2; k++) {
-		for (j = range_ptr->j1; j <= range_ptr->j2; j++) {
-			for (i = range_ptr->i1; i <= range_ptr->i2; i++) {
-				n = ijk_to_n(i, j, k);
-				mask_value = 1;
-				if (mask != NULL) {
-					if (get_double_property_value(&(cells[n]), mask, node_sequence, &mask_value) == ERROR) {
-						error_msg("Error in mask.", CONTINUE);
-						return(ERROR);
-					}
-				}
-				if (mask_value > 0) {
-					if (match_bc_type == TRUE && cells[n].bc_face[face].bc_type != bc_type) continue;
-					if (p_type == PT_MIX) {
-						mix_ptr = (struct mix *) ((char *) &(cells[n]) + offset);
-						if (get_integer_property_value_mix(&(cells[n]), property_ptr, node_sequence, mix_ptr) == ERROR) {
-							return(ERROR);
-						}
-					} else if (p_type == PT_INTEGER) {
-						/*
-						if (get_integer_property_value(&(cells[n]), property_ptr, node_sequence, &value, &integer_value) == ERROR) {
-							return(ERROR);
-						} 
-						*/
-						if (get_double_property_value(&(cells[n]), property_ptr, node_sequence, &value) == ERROR) {
-							return(ERROR);
-						}
-						i_ptr = (int *) ((char * ) &(cells[n]) + offset);
-						if (value > 0) {
-							*i_ptr = TRUE;
-						} else {
-							*i_ptr = FALSE;
-						}
-					} else if (p_type == PT_DOUBLE) {
-						if (get_double_property_value(&(cells[n]), property_ptr, node_sequence, &value) == ERROR) {
-							return(ERROR);
-						}
-						d_ptr = (double *) ((char * ) &(cells[n]) + offset);
-						*d_ptr = value;
-					} else {
-						error_msg("Unknown property type in distribute_property_to_cells", STOP);
-					}
-					i_ptr = (int *) ((char *) &(cells[n]) + offset_defined);
-					*i_ptr = TRUE;
-				}
-				node_sequence++;
-			}
-		}
-	}
-	return(OK);
+      } else {
+	d_ptr = (double *) ((char * ) &(cells[n]) + offset);
+	*d_ptr = value;
+      }
+      i_ptr = (int *) ((char *) &(cells[n]) + offset_defined);
+      *i_ptr = TRUE;
+    }
+    element_sequence++;
+  }
+  return(OK);
 }
+
 /* ---------------------------------------------------------------------- */
-int distribute_property_to_elements(struct index_range *range_ptr, struct property *mask,
-				 struct property *property_ptr,
-				 size_t offset, size_t offset_defined,
-				 int integer)
-/* ---------------------------------------------------------------------- */
-{
-	int i, j, k, n, element_sequence;
-	int integer_value;
-	int *i_ptr;
-	double value, mask_value;
-	double *d_ptr;
-/*
- *  element_sequence tells which property value to retrieve from a list
- */
-	n = (range_ptr->k2 - range_ptr->k1 + 1) * (range_ptr->j2 - range_ptr->j1 + 1) * 
-		(range_ptr->i2 - range_ptr->i1 + 1);
-	if (n < 0) {
-		sprintf(error_string,"Zone contains no elements.");
-		error_msg(error_string, CONTINUE);
-		input_error++;
-		return(ERROR);
-	}
-	if (property_ptr->type == ZONE) {
-		if (n != property_ptr->count_v) {
-			sprintf(error_string,"Zone has %d elements,"
-				" property has %d values.", n, property_ptr->count_v);
-			error_msg(error_string, CONTINUE);
-			input_error++;
-			return(ERROR);
-		}
-	}
-	if (mask != NULL && mask->type == LINEAR) {
-		sprintf(error_string,"LINEAR property definition not allowed for mask.");
-		error_msg(error_string, CONTINUE);
-		input_error++;
-		return(ERROR);
-	}
-	if (mask != NULL && mask->type == ZONE) {
-		if (n != mask->count_v) {
-			sprintf(error_string,"Zone has %d elements,"
-				" mask has %d values.", n, mask->count_v);
-			error_msg(error_string, CONTINUE);
-			input_error++;
-			return(ERROR);
-		}
-	}
-	element_sequence = 0;
-	for (k = range_ptr->k1; k <= range_ptr->k2; k++) {
-		for (j = range_ptr->j1; j <= range_ptr->j2; j++) {
-			for (i = range_ptr->i1; i <= range_ptr->i2; i++) {
-				n = ijk_to_n(i, j, k);
-				mask_value = 1;
-				if (mask != NULL) {
-					if (get_property_value_element(&(cells[n]), mask, element_sequence, &mask_value, &integer_value) == ERROR) {
-						error_msg("Error in mask.", CONTINUE);
-						return(ERROR);
-					}
-				}
-				if (mask_value > 0) {
-					if (cells[n].is_element == FALSE) {
-						error_msg("Node is not an element node.", CONTINUE);
-					}
-					if (get_property_value_element(&(cells[n]), property_ptr, element_sequence, &value, &integer_value) == ERROR) {
-						return(ERROR);
-					}
-					if (integer == TRUE) {
-						i_ptr = (int *) ((char * ) &(cells[n]) + offset);
-						if (value > 0) {
-							*i_ptr = TRUE;
-						} else {
-							*i_ptr = FALSE;
-						}
-					} else {
-						d_ptr = (double *) ((char * ) &(cells[n]) + offset);
-						*d_ptr = value;
-					}
-					i_ptr = (int *) ((char *) &(cells[n]) + offset_defined);
-					*i_ptr = TRUE;
-				}
-				element_sequence++;
-			}
-		}
-	}
-	return(OK);
-}
-/* ---------------------------------------------------------------------- */
-int distribute_type_to_cells(struct index_range *range_ptr, 
+int distribute_type_to_list_of_cells(std::list<int> &pts, 
 			     struct property *mask,
 			     int integer_value,
 			     size_t offset,
-			     int match_bc_type, int face, int bc_type)
+			     int match_bc_type, int face, 
+			     BC_info::BC_TYPE bc_type)
 /* ---------------------------------------------------------------------- */
 {
-	int i, j, k, n;
-	int node_sequence;
-	double mask_value;
-	int *i_ptr;
-
-	if (mask != NULL && mask->type == ZONE) {
-		n = (range_ptr->k2 - range_ptr->k1 + 1) * 
-			(range_ptr->j2 - range_ptr->j1 + 1) * 
-			(range_ptr->i2 - range_ptr->i1 + 1);
-		if (n != mask->count_v) {
-			sprintf(error_string,"Zone has %d nodes,"
-				" mask has %d values.", n, mask->count_v);
-			error_msg(error_string, CONTINUE);
-			input_error++;
-			return(ERROR);
-		}
-	}
-	node_sequence = 0;
-	for (k = range_ptr->k1; k <= range_ptr->k2; k++) {
-		for (j = range_ptr->j1; j <= range_ptr->j2; j++) {
-			for (i = range_ptr->i1; i <= range_ptr->i2; i++) {
-				n = ijk_to_n(i, j, k);
-				mask_value = 1;
-				if (mask != NULL) {
-					if (get_double_property_value(&(cells[n]), mask, node_sequence, &mask_value) == ERROR) {
-						error_msg("Error in mask.", CONTINUE);
-						return(ERROR);
-					}
-				}
-				if (mask_value > 0) {
-					if (match_bc_type == TRUE && cells[n].bc_face[face].bc_type != bc_type) continue;
-					i_ptr = (int *) ((char * ) &(cells[n]) + offset);
-					*i_ptr = integer_value;
-				}
-				node_sequence++;
-			}
-		}
-	}
-	return(OK);
+  int n;
+  int node_sequence;
+  double mask_value;
+  int *i_ptr;
+  n = pts.size();
+  if (mask != NULL && mask->type == ZONE) {
+    if (n != mask->count_v) {
+      sprintf(error_string,"Zone has %d nodes,"
+	" mask has %d values.", n, mask->count_v);
+      error_msg(error_string, CONTINUE);
+      input_error++;
+      return(ERROR);
+    }
+  }
+  node_sequence = 0;
+  for (std::list<int>::iterator it = pts.begin(); it != pts.end(); it++)  
+  {
+    n = *it;
+    mask_value = 1;
+    if (mask != NULL) {
+      if (get_double_property_value(&(cells[n]), mask, node_sequence, &mask_value) == ERROR) {
+	error_msg("Error in mask.", CONTINUE);
+	return(ERROR);
+      }
+    }
+    if (mask_value > 0) {
+      //if (match_bc_type == TRUE && cells[n].bc_face[face].bc_type != bc_type) continue;
+      i_ptr = (int *) ((char * ) &(cells[n]) + offset);
+      *i_ptr = integer_value;
+    }
+    node_sequence++;
+  }
+  return(OK);
 }
+
 /* ---------------------------------------------------------------------- */
 int get_double_property_value(struct cell *cell_ptr, struct property *property_ptr, 
 		       int node_sequence, double *value)
@@ -1044,132 +1090,149 @@ int get_property_value_element(struct cell *cell_ptr, struct property *property_
 int setup_chem_ic(void)
 /* ---------------------------------------------------------------------- */
 {
-	int i;
-	struct index_range *range_ptr;
+  int i;
+  struct index_range *range_ptr;
 
-	for (i = 0; i < count_chem_ic; i++) {
-		sprintf(tag,"in CHEMISTRY_IC, definition %d.\n", i+1);
-		if (chem_ic[i]->zone == NULL) {
-			input_error++;
-			sprintf(error_string, "No zone definition %s", tag);
-			error_msg(error_string, CONTINUE);
-			break;
-		}
-		range_ptr = zone_to_range(chem_ic[i]->zone);
-		if (range_ptr == NULL) {
-			input_error++;
-			sprintf(error_string, "Bad zone definition %s", tag);
-			error_msg(error_string, CONTINUE);
-			continue;
-		}
-/*
- *   Solution initial condition
- */
-		if (chem_ic[i]->solution != NULL) {
-			if (distribute_property_to_cells(range_ptr, 
-							 chem_ic[i]->mask, 
-							 chem_ic[i]->solution, 
-							 offsetof(struct cell, ic_solution),
-							 offsetof(struct cell, ic_solution_defined),
-							 PT_MIX, FALSE, 0, 0) == ERROR) {
-				sprintf(error_string, "Bad solution definition %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-			}
-		}
-/*
- *   Equilibrium_Phases initial condition
- */
-		if (chem_ic[i]->equilibrium_phases != NULL) {
-			if (distribute_property_to_cells(range_ptr, 
-					 chem_ic[i]->mask,
-					 chem_ic[i]->equilibrium_phases,
-					 offsetof(struct cell, ic_equilibrium_phases),
-					 offsetof(struct cell, ic_equilibrium_phases_defined),
-					 PT_MIX, FALSE, 0, 0) == ERROR) {
-				sprintf(error_string, "Bad equilibrium_phases definition %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-			}
-		}
-/*
- *   Exchange initial condition
- */
-		if (chem_ic[i]->exchange != NULL) {
-			if (distribute_property_to_cells(range_ptr, 
-							 chem_ic[i]->mask, 
-							 chem_ic[i]->exchange, 
-							 offsetof(struct cell, ic_exchange),
-							 offsetof(struct cell, ic_exchange_defined),
-							 PT_MIX, FALSE, 0, 0) == ERROR) {
-				sprintf(error_string, "Bad exchange definition %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-			}
-		}
-/*
- *   Surface initial condition
- */
-		if (chem_ic[i]->surface != NULL) {
-			if (distribute_property_to_cells(range_ptr, 
-							 chem_ic[i]->mask, 
-							 chem_ic[i]->surface, 
-							 offsetof(struct cell, ic_surface),
-							 offsetof(struct cell, ic_surface_defined),
-							 PT_MIX, FALSE, 0, 0) == ERROR) {
-				sprintf(error_string, "Bad surface definition %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-			}
-		}
-/*
- *   Gas_Phase initial condition
- */
-		if (chem_ic[i]->gas_phase != NULL) {
-			if (distribute_property_to_cells(range_ptr, 
-							 chem_ic[i]->mask,
-							 chem_ic[i]->gas_phase, 
-							 offsetof(struct cell, ic_gas_phase),
-							 offsetof(struct cell, ic_gas_phase_defined),
-							 PT_MIX, FALSE, 0, 0) == ERROR) {
-				sprintf(error_string, "Bad gas_phase definition %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-			}
-		}
-/*
- *   Solid_Solutions initial condition
- */
-		if (chem_ic[i]->solid_solutions != NULL) {
-			if (distribute_property_to_cells(range_ptr, 
-							 chem_ic[i]->mask, 
-							 chem_ic[i]->solid_solutions, 
-							 offsetof(struct cell, ic_solid_solutions),
-							 offsetof(struct cell, ic_solid_solutions_defined),
-							 PT_MIX, FALSE, 0, 0) == ERROR) {
-				sprintf(error_string, "Bad solid_solutions definition %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-			}
-		}
-/*
- *   Kinetics initial condition
- */
-		if (chem_ic[i]->kinetics != NULL) {
-			if (distribute_property_to_cells(range_ptr, 
-							 chem_ic[i]->mask, 
-							 chem_ic[i]->kinetics, 
-							 offsetof(struct cell, ic_kinetics),
-							 offsetof(struct cell, ic_kinetics_defined),
-							 PT_MIX, FALSE, 0, 0) == ERROR) {
-				sprintf(error_string, "Bad kinetics definition %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-			}
-		}
-		free_check_null(range_ptr);
+  for (i = 0; i < count_chem_ic; i++) {
+    sprintf(tag,"in CHEMISTRY_IC, definition %d.\n", i+1);
+
+    if (chem_ic[i]->polyh == NULL) {
+      input_error++;
+      sprintf(error_string, "No zone or wedge definition %s", tag);
+      error_msg(error_string, CONTINUE);
+      break;
+    }
+    else
+    {
+      struct zone *zone_ptr = chem_ic[i]->polyh->Get_box();
+      range_ptr = zone_to_range(zone_ptr);
+      if (range_ptr == NULL) {
+	input_error++;
+	sprintf(error_string, "Bad zone or wedge definition %s", tag);
+	error_msg(error_string, CONTINUE);
+	break;
+      }
+      std::list<int> list_of_cells;
+      range_to_list(range_ptr, list_of_cells);
+      free_check_null(range_ptr);
+	  range_ptr = NULL;
+      chem_ic[i]->polyh->Points_in_polyhedron(list_of_cells, *cell_xyz);
+
+      if (list_of_cells.size() == 0) {
+	input_error++;
+	sprintf(error_string, "Bad zone or wedge definition %s", tag);
+	error_msg(error_string, CONTINUE);
+	break;
+      }
+
+      /*
+      *   Solution initial condition
+      */
+      if (chem_ic[i]->solution != NULL) {
+	if (distribute_property_to_list_of_cells(list_of_cells,
+	  chem_ic[i]->mask, 
+	  chem_ic[i]->solution, 
+	  offsetof(struct cell, ic_solution),
+	  offsetof(struct cell, ic_solution_defined),
+	  PT_MIX, FALSE, 0, BC_info::BC_UNDEFINED) == ERROR) {
+	    sprintf(error_string, "Bad solution definition %s", tag);
+	    error_msg(error_string, CONTINUE);
+	    input_error++;
 	}
-	return(OK);
+      }
+      /*
+      *   Equilibrium_Phases initial condition
+      */
+      if (chem_ic[i]->equilibrium_phases != NULL) {
+	if (distribute_property_to_list_of_cells(list_of_cells,
+	  chem_ic[i]->mask,
+	  chem_ic[i]->equilibrium_phases,
+	  offsetof(struct cell, ic_equilibrium_phases),
+	  offsetof(struct cell, ic_equilibrium_phases_defined),
+	  PT_MIX, FALSE, 0, BC_info::BC_UNDEFINED) == ERROR) {
+	    sprintf(error_string, "Bad equilibrium_phases definition %s", tag);
+	    error_msg(error_string, CONTINUE);
+	    input_error++;
+	}
+      }
+      /*
+      *   Exchange initial condition
+      */
+      if (chem_ic[i]->exchange != NULL) {
+	if (distribute_property_to_list_of_cells(list_of_cells,
+	  chem_ic[i]->mask, 
+	  chem_ic[i]->exchange, 
+	  offsetof(struct cell, ic_exchange),
+	  offsetof(struct cell, ic_exchange_defined),
+	  PT_MIX, FALSE, 0, BC_info::BC_UNDEFINED) == ERROR) {
+	    sprintf(error_string, "Bad exchange definition %s", tag);
+	    error_msg(error_string, CONTINUE);
+	    input_error++;
+	}
+      }
+      /*
+      *   Surface initial condition
+      */
+      if (chem_ic[i]->surface != NULL) {
+	if (distribute_property_to_list_of_cells(list_of_cells, 
+	  chem_ic[i]->mask, 
+	  chem_ic[i]->surface, 
+	  offsetof(struct cell, ic_surface),
+	  offsetof(struct cell, ic_surface_defined),
+	  PT_MIX, FALSE, 0, BC_info::BC_UNDEFINED) == ERROR) {
+	    sprintf(error_string, "Bad surface definition %s", tag);
+	    error_msg(error_string, CONTINUE);
+	    input_error++;
+	}
+      }
+      /*
+      *   Gas_Phase initial condition
+      */
+      if (chem_ic[i]->gas_phase != NULL) {
+	if (distribute_property_to_list_of_cells(list_of_cells,
+	  chem_ic[i]->mask,
+	  chem_ic[i]->gas_phase, 
+	  offsetof(struct cell, ic_gas_phase),
+	  offsetof(struct cell, ic_gas_phase_defined),
+	  PT_MIX, FALSE, 0, BC_info::BC_UNDEFINED) == ERROR) {
+	    sprintf(error_string, "Bad gas_phase definition %s", tag);
+	    error_msg(error_string, CONTINUE);
+	    input_error++;
+	}
+      }
+      /*
+      *   Solid_Solutions initial condition
+      */
+      if (chem_ic[i]->solid_solutions != NULL) {
+	if (distribute_property_to_list_of_cells(list_of_cells, 
+	  chem_ic[i]->mask, 
+	  chem_ic[i]->solid_solutions, 
+	  offsetof(struct cell, ic_solid_solutions),
+	  offsetof(struct cell, ic_solid_solutions_defined),
+	  PT_MIX, FALSE, 0, BC_info::BC_UNDEFINED) == ERROR) {
+	    sprintf(error_string, "Bad solid_solutions definition %s", tag);
+	    error_msg(error_string, CONTINUE);
+	    input_error++;
+	}
+      }
+      /*
+      *   Kinetics initial condition
+      */
+      if (chem_ic[i]->kinetics != NULL) {
+	if (distribute_property_to_list_of_cells(list_of_cells,
+	  chem_ic[i]->mask, 
+	  chem_ic[i]->kinetics, 
+	  offsetof(struct cell, ic_kinetics),
+	  offsetof(struct cell, ic_kinetics_defined),
+	  PT_MIX, FALSE, 0, BC_info::BC_UNDEFINED) == ERROR) {
+	    sprintf(error_string, "Bad kinetics definition %s", tag);
+	    error_msg(error_string, CONTINUE);
+	    input_error++;
+	}
+      }
+    }
+  }
+  return(OK);
 }
 /* ---------------------------------------------------------------------- */
 int zone_to_string(struct zone *zone_ptr, char *ptr)
@@ -1192,631 +1255,460 @@ int zone_to_string(struct zone *zone_ptr, char *ptr)
 int setup_bc(void)
 /* ---------------------------------------------------------------------- */
 {
-	int i, match_bc;
-	int face;
-	struct index_range *range_ptr;
-	int
-		bc_type_pos,
-		bc_flux_pos,
-		bc_flux_defined_pos,
-		bc_solution_pos,
-		bc_solution_defined_pos,
-		bc_solution_type_pos,
-		bc_head_pos,
-		bc_head_defined_pos,
-		bc_k_pos,
-		bc_k_defined_pos,
-		bc_thick_pos,
-		bc_thick_defined_pos;
+  int i, match_bc;
+  struct index_range *range_ptr;
 
-	if (simulation > 0) {
-		match_bc = TRUE;
-	} else {
-		match_bc = FALSE;
+  if (simulation > 0) {
+    match_bc = TRUE;
+    for (i = 0; i < nxyz; i++)
+    {
+      cells[i].all_bc_info->clear();
+    }
+  } else {
+    match_bc = FALSE;
+  }
+  count_specified = count_flux = count_leaky = 0;
+  for (i = 0; i < count_bc; i++) {
+    if (bc[i]->bc_type == BC_info::BC_SPECIFIED) {
+      count_specified++;
+      sprintf(tag,"in SPECIFIED_HEAD_BC, definition %d.\n", count_specified);
+    } else if (bc[i]->bc_type == BC_info::BC_FLUX) {
+      count_flux++;
+      sprintf(tag,"in FLUX_BC, definition %d.\n", count_flux);
+    } else if (bc[i]->bc_type == BC_info::BC_LEAKY) {
+      count_leaky++;
+      sprintf(tag,"in LEAKY_BC, definition %d.\n", count_leaky);
+    } else {
+      error_msg("No bc type in subroutine setup_bc", STOP);
+    }
+
+      
+    if (bc[i]->polyh == NULL) {
+      input_error++;
+      sprintf(error_string, "No zone or wedge definition %s", tag);
+      error_msg(error_string, CONTINUE);
+      break;
+    }
+    else
+    {
+      std::list<int> list_of_cells;
+      struct zone *zone_ptr = bc[i]->polyh->Get_box();
+
+      if (bc[i]->bc_type == BC_info::BC_SPECIFIED)
+      {
+	range_ptr = zone_to_range(zone_ptr);
+	range_to_list(range_ptr, list_of_cells);
+	if (range_ptr == NULL) {
+	  input_error++;
+	  sprintf(error_string, "Bad zone or wedge definition %s", tag);
+	  error_msg(error_string, CONTINUE);
+	  break;
 	}
-	count_specified = count_flux = count_leaky = 0;
-	for (i = 0; i < count_bc; i++) {
-		if (bc[i]->bc_type == SPECIFIED) {
-			count_specified++;
-			sprintf(tag,"in SPECIFIED_HEAD_BC, definition %d.\n", count_specified);
-		} else if (bc[i]->bc_type == FLUX) {
-			count_flux++;
-			sprintf(tag,"in FLUX_BC, definition %d.\n", count_flux);
-		} else if (bc[i]->bc_type == LEAKY) {
-			count_leaky++;
-			sprintf(tag,"in LEAKY_BC, definition %d.\n", count_leaky);
-		} else {
-			error_msg("No bc type in subroutine setup_bc", STOP);
-		}
-		if (bc[i]->zone == NULL) {
-			input_error++;
-			sprintf(error_string,"No zone definition %s", tag);
-			error_msg(error_string, CONTINUE);
-			input_error++;
-			continue;
-		}
-		range_ptr = zone_to_range(bc[i]->zone);
-		if (range_ptr == NULL) {
-			sprintf(error_string,"Bad zone definition %s", tag);
-			error_msg(error_string, CONTINUE);
-			input_error++;
-			continue;
-		}
-		
-		if (bc[i]->bc_type == FLUX || bc[i]->bc_type == LEAKY) {
-			/* check flux face for consistency */
-			if (check_face(bc[i], range_ptr) == ERROR) {
-				sprintf(error_string,"Flux face %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				continue;
-			}
-			face = bc[i]->face;
-		} else {
-			face = 0;
-		}
-		switch (face) {
-		case 0:
-			bc_type_pos = (int) offsetof(struct cell, bc_face[0].bc_type);
-			bc_flux_pos = (int) offsetof(struct cell, bc_face[0].bc_flux);
-			bc_flux_defined_pos = (int) offsetof(struct cell, bc_face[0].bc_flux_defined);
-			bc_solution_pos = (int) offsetof(struct cell, bc_face[0].bc_solution);
-			bc_solution_defined_pos = (int) offsetof(struct cell, bc_face[0].bc_solution_defined);
-			bc_solution_type_pos = (int) offsetof(struct cell, bc_face[0].bc_solution_type);
-			bc_head_pos = (int) offsetof(struct cell, bc_face[0].bc_head);
-			bc_head_defined_pos = (int) offsetof(struct cell, bc_face[0].bc_head_defined);
-			bc_k_pos = (int) offsetof(struct cell, bc_face[0].bc_k);
-			bc_k_defined_pos = (int) offsetof(struct cell, bc_face[0].bc_k_defined);
-			bc_thick_pos = (int) offsetof(struct cell, bc_face[0].bc_thick);
-			bc_thick_defined_pos = (int) offsetof(struct cell, bc_face[0].bc_thick_defined);
-			break;
-		case 1:
-			bc_type_pos = (int) offsetof(struct cell, bc_face[1].bc_type);
-			bc_flux_pos = (int) offsetof(struct cell, bc_face[1].bc_flux);
-			bc_flux_defined_pos = (int) offsetof(struct cell, bc_face[1].bc_flux_defined);
-			bc_solution_pos = (int) offsetof(struct cell, bc_face[1].bc_solution);
-			bc_solution_defined_pos = (int) offsetof(struct cell, bc_face[1].bc_solution_defined);
-			bc_solution_type_pos = (int) offsetof(struct cell, bc_face[1].bc_solution_type);
-			bc_head_pos = (int) offsetof(struct cell, bc_face[1].bc_head);
-			bc_head_defined_pos = (int) offsetof(struct cell, bc_face[1].bc_head_defined);
-			bc_k_pos = (int) offsetof(struct cell, bc_face[1].bc_k);
-			bc_k_defined_pos = (int) offsetof(struct cell, bc_face[1].bc_k_defined);
-			bc_thick_pos = (int) offsetof(struct cell, bc_face[1].bc_thick);
-			bc_thick_defined_pos = (int) offsetof(struct cell, bc_face[1].bc_thick_defined);
-			break;
-		case 2:
-			bc_type_pos = (int) offsetof(struct cell, bc_face[2].bc_type);
-			bc_flux_pos = (int) offsetof(struct cell, bc_face[2].bc_flux);
-			bc_flux_defined_pos = (int) offsetof(struct cell, bc_face[2].bc_flux_defined);
-			bc_solution_pos = (int) offsetof(struct cell, bc_face[2].bc_solution);
-			bc_solution_defined_pos = (int) offsetof(struct cell, bc_face[2].bc_solution_defined);
-			bc_solution_type_pos = (int) offsetof(struct cell, bc_face[2].bc_solution_type);
-			bc_head_pos = (int) offsetof(struct cell, bc_face[2].bc_head);
-			bc_head_defined_pos = (int) offsetof(struct cell, bc_face[2].bc_head_defined);
-			bc_k_pos = (int) offsetof(struct cell, bc_face[2].bc_k);
-			bc_k_defined_pos = (int) offsetof(struct cell, bc_face[2].bc_k_defined);
-			bc_thick_pos = (int) offsetof(struct cell, bc_face[2].bc_thick);
-			bc_thick_defined_pos = (int) offsetof(struct cell, bc_face[2].bc_thick_defined);
-			break;
-		}
-
-		/* bc type SPECIFIED, FLUX, LEAKY */
-		if (simulation == 0) {
-			/* this flag makes specified mutually exclusive with flux and leaky */
-			if (distribute_type_to_cells(range_ptr, 
-						     bc[i]->mask, 
-						     bc[i]->bc_type, 
-						     offsetof(struct cell, bc_type),
-						     FALSE, 0, 0) == ERROR) {
-				sprintf(error_string,"Boundary condition type %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				continue;
-			}
-			
-			/* this flag is for x, y, or z face */
-			if (distribute_type_to_cells(range_ptr, 
-						     bc[i]->mask, 
-						     bc[i]->bc_type, 
-						     /*offsetof(struct cell, bc_face[face].bc_type),*/
-						     bc_type_pos,
-						     FALSE, 0, 0) == ERROR) {
-				sprintf(error_string,"Boundary condition type %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				continue;
-			}
-		}
-
-		switch (bc[i]->bc_type) {
-		case UNDEFINED:
-			input_error++;
-			error_msg("Bad bc type in setup_ic.", CONTINUE);
-			free_check_null(range_ptr);
-			break;
-/*
- *   Specified head boundary condition
- */
-		case SPECIFIED:
-
-			/* head value */
-			if (bc[i]->bc_head != NULL /* && bc[i]->current_bc_head->new_def == TRUE */) {
-				if (distribute_property_to_cells(range_ptr, 
-								 bc[i]->mask, 
-								 bc[i]->current_bc_head,
-								 offsetof(struct cell, bc_face[0].bc_head),
-								 offsetof(struct cell, bc_face[0].bc_head_defined),
-								 PT_DOUBLE, match_bc, 0, SPECIFIED) == ERROR) {
-					sprintf(error_string,"Head %s", tag);
-					error_msg(error_string, CONTINUE);
-					input_error++;
-				}
-				bc[i]->current_bc_head->new_def = FALSE;
-			}
-
-			/* solution number */
-			if (bc[i]->bc_solution != NULL && flow_only == FALSE /* && bc[i]->current_bc_solution->new_def == TRUE */) {
-				if (distribute_property_to_cells(range_ptr, 
-								 bc[i]->mask,
-								 bc[i]->current_bc_solution, 
-								 offsetof(struct cell, bc_face[0].bc_solution),
-								 offsetof(struct cell, bc_face[0].bc_solution_defined),
-								 PT_MIX, match_bc, 0, SPECIFIED) == ERROR) {
-					sprintf(error_string,"Solution number %s", tag);
-					error_msg(error_string, CONTINUE);
-					input_error++;
-				}
-				bc[i]->current_bc_solution->new_def = FALSE;
-			}
-
-			/* solution type FIXED or ASSOCIATED */
-			if (distribute_type_to_cells(range_ptr, 
-						     bc[i]->mask,
-						     bc[i]->bc_solution_type, 
-						     offsetof(struct cell, bc_face[0].bc_solution_type),
-						     match_bc, 0, SPECIFIED) == ERROR) {
-				sprintf(error_string,"Solution type %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-			}
-			free_check_null(range_ptr);
-			break;
-/*
- *   Flux boundary condition
- */
-		case FLUX:
-			/* flux value */
-			if (bc[i]->bc_flux != NULL /* && bc[i]->current_bc_flux->new_def == TRUE */) {
-				if (distribute_property_to_cells(range_ptr, 
-								 bc[i]->mask, 
-								 bc[i]->current_bc_flux, 
-								 /*offsetof(struct cell, bc_face[face].bc_flux),*/
-								 /*offsetof(struct cell, bc_face[face].bc_flux_defined),*/
-								 bc_flux_pos,
-								 bc_flux_defined_pos,
-								 PT_DOUBLE, match_bc, face, FLUX) == ERROR) {
-					sprintf(error_string,"Flux %s", tag);
-					error_msg(error_string, CONTINUE);
-					input_error++;
-				}
-				bc[i]->current_bc_flux->new_def = FALSE;
-			}
-			
-			/* solution number */
-			if (bc[i]->bc_solution != NULL && flow_only == FALSE /* && bc[i]->current_bc_solution->new_def == TRUE */) {
-				if (distribute_property_to_cells(range_ptr, 
-								 bc[i]->mask,
-								 bc[i]->current_bc_solution, 
-								 /*
-								 offsetof(struct cell, bc_face[face].bc_solution),
-								 offsetof(struct cell, bc_face[face].bc_solution_defined),
-								 */
-								 bc_solution_pos,
-								 bc_solution_defined_pos,
-								 PT_MIX, match_bc, face, FLUX) == ERROR) {
-					sprintf(error_string,"Solution number %s", tag);
-					error_msg(error_string, CONTINUE);
-					input_error++;
-				}
-				bc[i]->current_bc_solution->new_def = FALSE;
-			}
-
-			/* solution type ASSOCIATED */
-			if (distribute_type_to_cells(range_ptr, 
-						     bc[i]->mask, 
-						     bc[i]->bc_solution_type, 
-						     /*offsetof(struct cell, bc_face[face].bc_solution_type),*/
-						     bc_solution_type_pos,
-						     match_bc, face, FLUX) == ERROR) {
-				sprintf(error_string,"Solution type %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-			}
-			free_check_null(range_ptr);
-			break;
-/*
- *   Leaky boundary condition
- */
-		case LEAKY:
-			/* head value */
-			if (bc[i]->bc_head != NULL /* && bc[i]->current_bc_head->new_def == TRUE */) {
-				if (distribute_property_to_cells(range_ptr, 
-								 bc[i]->mask, 
-								 bc[i]->current_bc_head, 
-								 /*
-								 offsetof(struct cell, bc_face[face].bc_head),
-								 offsetof(struct cell, bc_face[face].bc_head_defined),
-								 */
-								 bc_head_pos,
-								 bc_head_defined_pos,
-								 PT_DOUBLE, match_bc, face, LEAKY) == ERROR) {
-					sprintf(error_string,"Head %s", tag);
-					error_msg(error_string, CONTINUE);
-					input_error++;
-				}
-				bc[i]->current_bc_head->new_def = FALSE;
-			}
-
-			/* hydraulic conductivity value */
-			if (bc[i]->bc_k != NULL) {
-				if (distribute_property_to_cells(range_ptr, 
-								 bc[i]->mask, 
-								 bc[i]->bc_k, 
-								 /*
-								 offsetof(struct cell, bc_face[face].bc_k),
-								 offsetof(struct cell, bc_face[face].bc_k_defined),
-								 */
-								 bc_k_pos,
-								 bc_k_defined_pos,
-								 PT_DOUBLE, match_bc, face, LEAKY) == ERROR) {
-					sprintf(error_string,"Hydraulic conductivity %s", tag);
-					error_msg(error_string, CONTINUE);
-					input_error++;
-				}
-			}
-
-			/* thickness value */
-			if (bc[i]->bc_thick != NULL) {
-				if (distribute_property_to_cells(range_ptr, 
-								 bc[i]->mask,
-								 bc[i]->bc_thick, 
-								 /*
-								 offsetof(struct cell, bc_face[face].bc_thick),
-								 offsetof(struct cell, bc_face[face].bc_thick_defined),
-								 */
-								 bc_thick_pos,
-								 bc_thick_defined_pos,
-								 PT_DOUBLE, match_bc, face, LEAKY) == ERROR) {
-					sprintf(error_string,"Thickness %s", tag);
-					error_msg(error_string, CONTINUE);
-					input_error++;
-				}
-			}
-
-                        /* solution number */
-
-			if (bc[i]->bc_solution != NULL && flow_only == FALSE /* && bc[i]->current_bc_solution->new_def == TRUE */) {
-				if (distribute_property_to_cells(range_ptr, 
-								 bc[i]->mask, 
-								 bc[i]->current_bc_solution, 
-								 /*
-								 offsetof(struct cell, bc_face[face].bc_solution),
-								 offsetof(struct cell, bc_face[face].bc_solution_defined),
-								 */
-								 bc_solution_pos,
-								 bc_solution_defined_pos,
-								 PT_MIX, match_bc, face, LEAKY) == ERROR) {
-					sprintf(error_string,"Solution number %s", tag);
-					error_msg(error_string, CONTINUE);
-					input_error++;
-				}
-				bc[i]->current_bc_solution->new_def = FALSE;
-			}
-
-			/* solution type ASSOCIATED */
-			if (distribute_type_to_cells(range_ptr, 
-						     bc[i]->mask, 
-						     bc[i]->bc_solution_type, 
-						     /*offsetof(struct cell, bc_face[face].bc_solution_type),*/
-						     bc_solution_type_pos,
-						     match_bc, face, LEAKY) == ERROR) {
-				sprintf(error_string,"Solution type %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-			}
-			free_check_null(range_ptr);
-			break;
-		}
+	free_check_null(range_ptr);
+	bc[i]->polyh->Points_in_polyhedron(list_of_cells, *cell_xyz);
+	bc[i]->cell_face = CF_NONE;
+	bc[i]->face = 0;
+      } else
+      {
+	cells_with_exterior_faces_in_zone(list_of_cells, zone_ptr);
+	if (bc[i]->cell_face == CF_UNKNOWN )
+	{
+	  // Guess face
+	  bc[i]->cell_face = guess_face(list_of_cells, zone_ptr);
+	  if (bc[i]->cell_face == CF_UNKNOWN) continue;
 	}
-/*
- *  for specified concentration bc (-fixed_solution), no reactions
- *  should be allowed
- */
-	for (i = 0; i < nxyz; i++) {
-		if (cells[i].bc_type == SPECIFIED &&
-		    cells[i].bc_face[0].bc_solution_type == FIXED) {
-			mix_init(&cells[i].ic_equilibrium_phases);
-			mix_init(&cells[i].ic_exchange);
-			mix_init(&cells[i].ic_surface);
-			mix_init(&cells[i].ic_gas_phase);
-			mix_init(&cells[i].ic_solid_solutions);
-			mix_init(&cells[i].ic_kinetics);
-		}
-	}
-	return(OK);
+	bc[i]->face = bc[i]->cell_face;
+	cells_with_faces(list_of_cells, bc[i]->cell_face);
+      }
+
+
+      if (list_of_cells.size() == 0) {
+	input_error++;
+	sprintf(error_string, "Bad zone or wedge definition %s", tag);
+	error_msg(error_string, CONTINUE);
+	break;
+      }
+
+      switch (bc[i]->bc_type) {
+      case BC_info::BC_UNDEFINED:
+	input_error++;
+	error_msg("Bad bc type in setup_ic.", CONTINUE);
+	break;
+	/*
+	*   Specified head boundary condition
+	*/
+      case BC_info::BC_SPECIFIED:
+
+	distribute_specified_bc (i, list_of_cells, tag);
+	break;
+	/*
+	*   Flux boundary condition
+	*/
+      case BC_info::BC_FLUX:
+
+	distribute_flux_bc (i, list_of_cells, tag);
+	
+	break;
+	/*
+	*   Leaky boundary condition
+	*/
+      case BC_info::BC_LEAKY:
+
+	distribute_leaky_bc (i, list_of_cells, tag);
+	break;
+      }
+    }
+  }
+
+  // Tidy boundary conditions
+  if (simulation == 0)
+  {
+    for (i = 0; i < nxyz; i++)
+    {
+      process_bc(&cells[i]);
+    }
+  }
+  /*
+  *  for specified concentration bc (-fixed_solution), no reactions
+  *  should be allowed
+  */
+  for (i = 0; i < nxyz; i++) {
+    if (cells[i].specified)
+    {
+      std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin();
+
+      if (rit->bc_solution_type == FIXED) {
+	mix_init(&cells[i].ic_equilibrium_phases);
+	mix_init(&cells[i].ic_exchange);
+	mix_init(&cells[i].ic_surface);
+	mix_init(&cells[i].ic_gas_phase);
+	mix_init(&cells[i].ic_solid_solutions);
+	mix_init(&cells[i].ic_kinetics);
+      }
+    }
+  }
+
+  return(OK);
 }
+
 /* ---------------------------------------------------------------------- */
-int check_face(struct bc *bc_ptr, struct index_range *range_ptr)
+Cell_Face guess_face(std::list<int> & list_of_numbers, struct zone *zone_ptr)
 /* ---------------------------------------------------------------------- */
 {
-/*
- *  OK
- *  ERROR
- */
-	int i;
-	int i_coord=-1;
+  //try using range pointer
 /*
  *   Find dimension of zone
  */
-	i = 3;
-	if (range_ptr->i1 == range_ptr->i2) i--;
-	if (range_ptr->j1 == range_ptr->j2) i--;
-	if (range_ptr->k1 == range_ptr->k2) i--;
-/*
- *   Volume is error
- */	
-	if (i == 3) {
-		input_error++;
-		sprintf(error_string, "BC zone must define a plane, line, or point.");
-		error_msg(error_string, CONTINUE);
-		return(ERROR);
-	} 
-/*
- *   Determine direction if a plane
- */	
-	if (i == 2) {
-		if (range_ptr->i1 == range_ptr->i2) i_coord = 0;
-		if (range_ptr->j1 == range_ptr->j2) i_coord = 1;
-		if (range_ptr->k1 == range_ptr->k2) i_coord = 2;
-		if (bc_ptr->face_defined == TRUE) {
-			if (i_coord != bc_ptr->face) {
-				input_error++;
-				sprintf(error_string, "Face from plane definition, %c, is not the same as specified face, %c.", grid[i_coord].c, grid[bc_ptr->face].c);
-				error_msg(error_string, CONTINUE);
-				return(ERROR);
-			} 
-		} else {
-			bc_ptr->face = i_coord;
-			bc_ptr->face_defined = TRUE;
-		}
-	}
-/*
- *   Determine direction for a line
- */	
-	if (i == 1) {
-		if (range_ptr->i1 != range_ptr->i2) i_coord = 0;
-		if (range_ptr->j1 != range_ptr->j2) i_coord = 1;
-		if (range_ptr->k1 != range_ptr->k2) i_coord = 2;
-		if (bc_ptr->face_defined == TRUE) {
-			if (i_coord == bc_ptr->face) {
-				input_error++;
-				sprintf(error_string, "Face specified to be %c, which is inconsistent with zone definition.", grid[bc_ptr->face].c);
-				error_msg(error_string, CONTINUE);
-				return(ERROR);
-			} 
-		} else {
-			input_error++;
-			sprintf(error_string, "Face must be specified for a line bc.");
-			error_msg(error_string, CONTINUE);
-			return(ERROR);
-		}
-	}
-/*
- *   Determine direction for a point
- */	
-	if (i == 0) {
-		if (bc_ptr->face_defined != TRUE) {
-			input_error++;
-			sprintf(error_string, "Face must be specified for a point.");
-			error_msg(error_string, CONTINUE);
-			return(ERROR);
-		}
-	}
-	return(OK);
+  int idim = 3;
+  if (zone_ptr->x1 == zone_ptr->x2) idim--;
+  if (zone_ptr->y1 == zone_ptr->y2) idim--;
+  if (zone_ptr->z1 == zone_ptr->z2) idim--;
+  /*
+  *   Find possible faces from range
+  */
+  bool ix_range, iy_range, iz_range;
+  ix_range = iy_range = iz_range = false;
+  if (zone_ptr->x1 == zone_ptr->x2) ix_range = true;
+  if (zone_ptr->y1 == zone_ptr->y2) iy_range = true;
+  if (zone_ptr->z1 == zone_ptr->z2) iz_range = true;
+
+
+  // count each type of face
+  int fcount[3];
+  int i;
+  for (i = 0; i < 3; i++) fcount[i] = 0;
+
+  std::list<int>::iterator it = list_of_numbers.begin();
+  while (it != list_of_numbers.end())
+  {
+    int n = *it;
+    if (cells[n].exterior != NULL)
+    {
+	if (cells[n].exterior->xn == true || cells[n].exterior->xp == true) fcount[0]++;
+	if (cells[n].exterior->yn == true || cells[n].exterior->yp == true) fcount[1]++;
+	if (cells[n].exterior->zn == true || cells[n].exterior->zp == true) fcount[2]++;
+    }
+    it++;
+  }
+
+  // determine maximum face count
+  int max = fcount[0];
+  int imax = 0;
+  for (i = 1; i < 3; i++)
+  {
+    if (fcount[i] > max) 
+    {
+	max = fcount[i];
+	imax = i;
+    }
+  }
+  if (max == 0) 
+  {
+    input_error++;
+    sprintf(error_string, "No exterior faces in zone for Flux or Leaky bc.");
+    error_msg(error_string, CONTINUE);
+    return(CF_UNKNOWN);
+  }
+
+  // are there more than 1 maximum face count
+  int count_max = 0;
+  for (i = 0; i < 3; i++)
+  {
+    if (fcount[i] == max) count_max++;
+  }
+
+  // Logic
+  Cell_Face face = CF_UNKNOWN; 
+  if (idim == 2)
+  {
+    if (ix_range) face = CF_X;
+    if (iy_range) face = CF_Y;
+    if (iz_range) face = CF_Z;
+  } else if (count_max == 1)
+  {
+    if (imax == 0) face = CF_X;
+    if (imax == 1) face = CF_Y;
+    if (imax == 2) face = CF_Z;
+  } else
+  {
+    input_error++;
+    error_msg("Can not determine face, please specify X, y, or Z face for LEAKY_BC and FLUX_BC.", STOP);
+  }
+
+  std::string dir;
+  switch (face)
+  {
+    case CF_X:
+      dir.append("X");
+      break;
+    case CF_Y:
+      dir.append("Y");
+      break;
+    case CF_Z:
+      dir.append("Z");
+      break;
+    default:
+      return(face);
+      break;
+  }
+  sprintf(error_string, "Guessing boundary condition face to be %s\nPlease specify X, Y, or Z face for LEAKY_BC and FLUX_BC.", dir.c_str());
+  warning_msg(error_string);
+  return(face);
 }
+
 /* ---------------------------------------------------------------------- */
 int setup_media(void)
 /* ---------------------------------------------------------------------- */
 {
-	int i;
-	struct index_range *range_ptr;
+  int i;
+  struct index_range *range_ptr;
 
-	for (i = 0; i < count_grid_elt_zones; i++) {
-		sprintf(tag,"in MEDIA, definition %d.\n", i+1);
-/*
- *   process zone information
- */
-		if (grid_elt_zones[i]->zone == NULL) {
-			input_error++;
-			sprintf(error_string, "No zone definition %s", tag);
-			error_msg(error_string, CONTINUE);
-			break;
-		}
-		range_ptr = zone_to_elt_range(grid_elt_zones[i]->zone);
-		if (range_ptr == NULL) {
-			input_error++;
-			sprintf(error_string, "Bad zone definition %s", tag);
-			error_msg(error_string, CONTINUE);
-			break;
-		}
-/*
- *   process active 
- */
-		if (grid_elt_zones[i]->active != NULL) {
-			if (distribute_property_to_elements(range_ptr, 
-							    grid_elt_zones[i]->mask, 
-							    grid_elt_zones[i]->active, 
-							    offsetof(struct cell, elt_active),
-							    offsetof(struct cell, elt_active_defined),
-							    TRUE) == ERROR) {
-				input_error++;
-				sprintf(error_string, "Bad definition of active cells %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-		}
-/*
- *   process porosity 
- */
-		if (grid_elt_zones[i]->porosity != NULL) {
-			if (distribute_property_to_elements(range_ptr, 
-							    grid_elt_zones[i]->mask, 
-							    grid_elt_zones[i]->porosity, 
-							    offsetof(struct cell, porosity),
-							    offsetof(struct cell, porosity_defined),
-							    FALSE) == ERROR) {
-				input_error++;
-				sprintf(error_string, "Bad definition of porosity %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-		}
+  for (i = 0; i < count_grid_elt_zones; i++) {
+    sprintf(tag,"in MEDIA, definition %d.\n", i+1);
+    /*
+    *   process zone information
+    */
 
-/*
- *   process kx 
- */
-		if (grid_elt_zones[i]->kx != NULL) {
-			if (distribute_property_to_elements(range_ptr, 
-							    grid_elt_zones[i]->mask, 
-							    grid_elt_zones[i]->kx, 
-							    offsetof(struct cell, kx),
-							    offsetof(struct cell, kx_defined),
-							    FALSE) == ERROR) {
-				input_error++;
-				sprintf(error_string, "Bad definition of X hydraulic conductivity %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-		}
+    if (grid_elt_zones[i]->polyh == NULL) {
+      input_error++;
+      sprintf(error_string, "No zone or wedge definition %s", tag);
+      error_msg(error_string, CONTINUE);
+      break;
+    }
+    else
+    {
+      struct zone *zone_ptr = grid_elt_zones[i]->polyh->Get_box();
+      range_ptr = zone_to_elt_range(zone_ptr);
+      if (range_ptr == NULL) {
+	input_error++;
+	sprintf(error_string, "Bad zone or wedge definition %s", tag);
+	error_msg(error_string, CONTINUE);
+	break;
+      }
+      std::list<int> list_of_cells;
+      range_to_list(range_ptr, list_of_cells);
+      free_check_null(range_ptr);
+	  range_ptr = NULL;
+      grid_elt_zones[i]->polyh->Points_in_polyhedron(list_of_cells, *element_xyz);
 
-/*
- *   process ky 
- */
-		if (grid_elt_zones[i]->ky != NULL) {
-			if (distribute_property_to_elements(range_ptr, 
-							    grid_elt_zones[i]->mask, 
-							    grid_elt_zones[i]->ky, 
-							    offsetof(struct cell, ky),
-							    offsetof(struct cell, ky_defined),
-							    FALSE) == ERROR) {
-				input_error++;
-				sprintf(error_string, "Bad definition of Y hydraulic conductivity %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-		}
-/*
- *   process kz 
- */
-		if (grid_elt_zones[i]->kz != NULL) {
-			if (distribute_property_to_elements(range_ptr, 
-							    grid_elt_zones[i]->mask, 
-							    grid_elt_zones[i]->kz, 
-							    offsetof(struct cell, kz),
-							    offsetof(struct cell, kz_defined),
-							    FALSE) == ERROR) {
-				input_error++;
-				sprintf(error_string, "Bad definition of Z hydraulic conductivity %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-		}
-/*
- *   process storage 
- */
-		if (grid_elt_zones[i]->storage != NULL) {
-			if (distribute_property_to_elements(range_ptr, 
-							    grid_elt_zones[i]->mask, 
-							    grid_elt_zones[i]->storage, 
-							    offsetof(struct cell, storage),
-							    offsetof(struct cell, storage_defined),
-							    FALSE) == ERROR) {
-				input_error++;
-				sprintf(error_string, "Bad definition of specific storage %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-		}
-/*
- *   process alpha_long 
- */
-		if (grid_elt_zones[i]->alpha_long != NULL) {
-			if (distribute_property_to_elements(range_ptr, 
-							    grid_elt_zones[i]->mask, 
-							    grid_elt_zones[i]->alpha_long, 
-							    offsetof(struct cell, alpha_long),
-							    offsetof(struct cell, alpha_long_defined),
-							    FALSE) == ERROR) {
-				input_error++;
-				sprintf(error_string, "Bad definition of longitudinal dispersivity %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-		}
-/*
- *   process alpha_trans
- *   Should use alpha_horizontal and alpha vertical instead
- */
-		if (grid_elt_zones[i]->alpha_trans != NULL) {
-			if (distribute_property_to_elements(range_ptr, 
-							    grid_elt_zones[i]->mask, 
-							    grid_elt_zones[i]->alpha_trans, 
-							    offsetof(struct cell, alpha_horizontal),
-							    offsetof(struct cell, alpha_horizontal_defined),
-							    FALSE) == ERROR) {
-				input_error++;
-				sprintf(error_string, "Bad definition of transverse dispersivity %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-		}
-		if (grid_elt_zones[i]->alpha_trans != NULL) {
-			if (distribute_property_to_elements(range_ptr, 
-							    grid_elt_zones[i]->mask, 
-							    grid_elt_zones[i]->alpha_trans, 
-							    offsetof(struct cell, alpha_vertical),
-							    offsetof(struct cell, alpha_vertical_defined),
-							    FALSE) == ERROR) {
-				input_error++;
-				sprintf(error_string, "Bad definition of transverse dispersivity %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-		}
-/*
- *   process alpha_horizontal
- */
-		if (grid_elt_zones[i]->alpha_horizontal != NULL) {
-			if (distribute_property_to_elements(range_ptr, 
-							    grid_elt_zones[i]->mask, 
-							    grid_elt_zones[i]->alpha_horizontal, 
-							    offsetof(struct cell, alpha_horizontal),
-							    offsetof(struct cell, alpha_horizontal_defined),
-							    FALSE) == ERROR) {
-				input_error++;
-				sprintf(error_string, "Bad definition of horizontal_dispersivity %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-		}
-/*
- *   process alpha_vertical
- */
-		if (grid_elt_zones[i]->alpha_vertical != NULL) {
-			if (distribute_property_to_elements(range_ptr, 
-							    grid_elt_zones[i]->mask, 
-							    grid_elt_zones[i]->alpha_vertical, 
-							    offsetof(struct cell, alpha_vertical),
-							    offsetof(struct cell, alpha_vertical_defined),
-							    FALSE) == ERROR) {
-				input_error++;
-				sprintf(error_string, "Bad definition of vertical_dispersivity %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-		}
-		free_check_null(range_ptr);
+      if (list_of_cells.size() == 0) {
+	input_error++;
+	sprintf(error_string, "Bad zone or wedge definition %s", tag);
+	error_msg(error_string, CONTINUE);
+	break;
+      }
+      /*
+      *   process active 
+      */
+      if (grid_elt_zones[i]->active != NULL) {
+	if (distribute_property_to_list_of_elements(list_of_cells, 
+	  grid_elt_zones[i]->mask, 
+	  grid_elt_zones[i]->active, 
+	  offsetof(struct cell, elt_active),
+	  offsetof(struct cell, elt_active_defined),
+	  TRUE) == ERROR) {
+	    input_error++;
+	    sprintf(error_string, "Bad definition of active cells %s", tag);
+	    error_msg(error_string, CONTINUE);
 	}
-	return(OK);
+      }
+      /*
+      *   process porosity 
+      */
+      if (grid_elt_zones[i]->porosity != NULL) {
+	if (distribute_property_to_list_of_elements(list_of_cells,
+	  grid_elt_zones[i]->mask, 
+	  grid_elt_zones[i]->porosity, 
+	  offsetof(struct cell, porosity),
+	  offsetof(struct cell, porosity_defined),
+	  FALSE) == ERROR) {
+	    input_error++;
+	    sprintf(error_string, "Bad definition of porosity %s", tag);
+	    error_msg(error_string, CONTINUE);
+	}
+      }
+
+      /*
+      *   process kx 
+      */
+      if (grid_elt_zones[i]->kx != NULL) {
+	if (distribute_property_to_list_of_elements(list_of_cells,
+	  grid_elt_zones[i]->mask, 
+	  grid_elt_zones[i]->kx, 
+	  offsetof(struct cell, kx),
+	  offsetof(struct cell, kx_defined),
+	  FALSE) == ERROR) {
+	    input_error++;
+	    sprintf(error_string, "Bad definition of X hydraulic conductivity %s", tag);
+	    error_msg(error_string, CONTINUE);
+	}
+      }
+
+      /*
+      *   process ky 
+      */
+      if (grid_elt_zones[i]->ky != NULL) {
+	if (distribute_property_to_list_of_elements(list_of_cells,
+	  grid_elt_zones[i]->mask, 
+	  grid_elt_zones[i]->ky, 
+	  offsetof(struct cell, ky),
+	  offsetof(struct cell, ky_defined),
+	  FALSE) == ERROR) {
+	    input_error++;
+	    sprintf(error_string, "Bad definition of Y hydraulic conductivity %s", tag);
+	    error_msg(error_string, CONTINUE);
+	}
+      }
+      /*
+      *   process kz 
+      */
+      if (grid_elt_zones[i]->kz != NULL) {
+	if (distribute_property_to_list_of_elements(list_of_cells,
+	  grid_elt_zones[i]->mask, 
+	  grid_elt_zones[i]->kz, 
+	  offsetof(struct cell, kz),
+	  offsetof(struct cell, kz_defined),
+	  FALSE) == ERROR) {
+	    input_error++;
+	    sprintf(error_string, "Bad definition of Z hydraulic conductivity %s", tag);
+	    error_msg(error_string, CONTINUE);
+	}
+      }
+      /*
+      *   process storage 
+      */
+      if (grid_elt_zones[i]->storage != NULL) {
+	if (distribute_property_to_list_of_elements(list_of_cells,
+	  grid_elt_zones[i]->mask, 
+	  grid_elt_zones[i]->storage, 
+	  offsetof(struct cell, storage),
+	  offsetof(struct cell, storage_defined),
+	  FALSE) == ERROR) {
+	    input_error++;
+	    sprintf(error_string, "Bad definition of specific storage %s", tag);
+	    error_msg(error_string, CONTINUE);
+	}
+      }
+      /*
+      *   process alpha_long 
+      */
+      if (grid_elt_zones[i]->alpha_long != NULL) {
+	if (distribute_property_to_list_of_elements(list_of_cells,
+	  grid_elt_zones[i]->mask, 
+	  grid_elt_zones[i]->alpha_long, 
+	  offsetof(struct cell, alpha_long),
+	  offsetof(struct cell, alpha_long_defined),
+	  FALSE) == ERROR) {
+	    input_error++;
+	    sprintf(error_string, "Bad definition of longitudinal dispersivity %s", tag);
+	    error_msg(error_string, CONTINUE);
+	}
+      }
+      /*
+      *   process alpha_trans
+      *   Should use alpha_horizontal and alpha vertical instead
+      */
+      if (grid_elt_zones[i]->alpha_trans != NULL) {
+	if (distribute_property_to_list_of_elements(list_of_cells,
+	  grid_elt_zones[i]->mask, 
+	  grid_elt_zones[i]->alpha_trans, 
+	  offsetof(struct cell, alpha_horizontal),
+	  offsetof(struct cell, alpha_horizontal_defined),
+	  FALSE) == ERROR) {
+	    input_error++;
+	    sprintf(error_string, "Bad definition of transverse dispersivity %s", tag);
+	    error_msg(error_string, CONTINUE);
+	}
+      }
+      if (grid_elt_zones[i]->alpha_trans != NULL) {
+	if (distribute_property_to_list_of_elements(list_of_cells,
+	  grid_elt_zones[i]->mask, 
+	  grid_elt_zones[i]->alpha_trans, 
+	  offsetof(struct cell, alpha_vertical),
+	  offsetof(struct cell, alpha_vertical_defined),
+	  FALSE) == ERROR) {
+	    input_error++;
+	    sprintf(error_string, "Bad definition of transverse dispersivity %s", tag);
+	    error_msg(error_string, CONTINUE);
+	}
+      }
+      /*
+      *   process alpha_horizontal
+      */
+      if (grid_elt_zones[i]->alpha_horizontal != NULL) {
+	if (distribute_property_to_list_of_elements(list_of_cells,
+	  grid_elt_zones[i]->mask, 
+	  grid_elt_zones[i]->alpha_horizontal, 
+	  offsetof(struct cell, alpha_horizontal),
+	  offsetof(struct cell, alpha_horizontal_defined),
+	  FALSE) == ERROR) {
+	    input_error++;
+	    sprintf(error_string, "Bad definition of horizontal_dispersivity %s", tag);
+	    error_msg(error_string, CONTINUE);
+	}
+      }
+      /*
+      *   process alpha_vertical
+      */
+      if (grid_elt_zones[i]->alpha_vertical != NULL) {
+	if (distribute_property_to_list_of_elements(list_of_cells,
+	  grid_elt_zones[i]->mask, 
+	  grid_elt_zones[i]->alpha_vertical, 
+	  offsetof(struct cell, alpha_vertical),
+	  offsetof(struct cell, alpha_vertical_defined),
+	  FALSE) == ERROR) {
+	    input_error++;
+	    sprintf(error_string, "Bad definition of vertical_dispersivity %s", tag);
+	    error_msg(error_string, CONTINUE);
+	}
+      }
+    }
+  }
+  /*
+* Determine exterior cells
+*/
+  set_exterior_cells();
+  return(OK);
 }
 /* ---------------------------------------------------------------------- */
 struct index_range *vertex_to_range(gpc_vertex *poly, int count_points)
@@ -2023,11 +1915,11 @@ int reset_transient_data(void)
 		 *  Set boundary condition definition flags
 		 */
 		if (update == TRUE) {
-			if (bc[i]->bc_type == SPECIFIED) {
+			if (bc[i]->bc_type == BC_info::BC_SPECIFIED) {
 				bc_specified_defined = TRUE;
-			} else if (bc[i]->bc_type == FLUX) {
+			} else if (bc[i]->bc_type == BC_info::BC_FLUX) {
 				bc_flux_defined = update;
-			} else if (bc[i]->bc_type == LEAKY) {
+			} else if (bc[i]->bc_type == BC_info::BC_LEAKY) {
 				bc_leaky_defined = update;
 			}
 		}
@@ -2137,5 +2029,933 @@ int reset_transient_data(void)
 	
 	return(OK);
 }
+/* ---------------------------------------------------------------------- */
+void range_to_list (struct index_range *range_ptr, std::list<int> &vec)
+/* ---------------------------------------------------------------------- */
+{
+  int i, j, k;
+  vec.clear();
+  for (k = range_ptr->k1; k <= range_ptr->k2; k++) {
+    for (j = range_ptr->j1; j <= range_ptr->j2; j++) {
+      for (i = range_ptr->i1; i <= range_ptr->i2; i++) {
+	vec.push_back(ijk_to_n(i, j, k));
+      }
+    }
+  }
+  return;
+}
+/* ---------------------------------------------------------------------- */
+void set_exterior_cells ()
+/* ---------------------------------------------------------------------- */
+{
+  int k, j, i, n, l;
+  for (k = 0; k < nz; k++) 
+  {
+    for (j = 0; j < ny; j++) 
+    {
+      for (i = 0; i < nx; i++) 
+      {
+	n = ijk_to_n(i, j, k);
+	cells[n].exterior = NULL;
+	int e[8];
+	for (l = 0; l < 8; l++)
+	{
+	  e[l] = -1;
+	}
+
+	// lower 4 elements (natrual order)
+	if (i > 0 && j > 0 && k > 0)                   e[0] = ijk_to_n(i - 1, j - 1, k - 1);
+	if (i < (nx - 1) && j > 0 && k > 0)            e[1] = ijk_to_n(i, j - 1, k - 1);
+	if (i > 0 && j < (ny - 1) && k > 0)            e[2] = ijk_to_n(i - 1, j, k - 1);
+	if (i < (nx - 1) && j < (ny - 1) && k > 0)     e[3] = ijk_to_n(i , j , k - 1);
+
+	// upper 4 elements (natrual order)
+	if (i > 0 && j > 0 && k < (nz - 1))                   e[4] = ijk_to_n(i - 1, j - 1, k);
+	if (i < (nx - 1) && j > 0 && k < (nz - 1))            e[5] = ijk_to_n(i, j - 1, k);
+	if (i > 0 && j < (ny - 1) && k < (nz - 1))            e[6] = ijk_to_n(i - 1, j, k);
+	if (i < (nx - 1) && j < (ny - 1) && k < (nz - 1))     e[7] = ijk_to_n(i, j, k);
+
+	// Add faces for elements that are inactive
+	// Cell is exterior if at least one element is marked -1	
+	bool exterior = false;
+	for (l = 0; l < 8; l++)
+	{
+	  if (e[l] >= 0 && cells[e[l]].elt_active == FALSE) e[l] = -1;
+	  if (e[l] >= 0) exterior = true;
+	}
+	if (exterior == false) continue;
+
+	// now determine areas
+	struct zone *zone_ptr = cells[n].zone;
+	double x_areas[4], y_areas[4], z_areas[4];
+	gpc_polygon *x_gon[4], *y_gon[4], *z_gon[4];
+
+	gpc_polygon *xn_gon = empty_polygon();
+	gpc_polygon *xp_gon = empty_polygon();
+	gpc_polygon *yn_gon = empty_polygon();
+	gpc_polygon *yp_gon = empty_polygon();
+	gpc_polygon *zn_gon = empty_polygon();
+	gpc_polygon *zp_gon = empty_polygon();
+
+	// X
+	x_areas[0] = (cells[n].y - zone_ptr->y1) * (cells[n].z - zone_ptr->z1); 
+	x_gon[0] = rectangle(zone_ptr->y1, zone_ptr->z1, cells[n].y, cells[n].z);
+
+	x_areas[1] = (cells[n].y - zone_ptr->y1) * (zone_ptr->z2 - cells[n].z); 
+	x_gon[1] = rectangle(zone_ptr->y1, cells[n].z, cells[n].y, zone_ptr->z2);
+
+	x_areas[2] = (zone_ptr->y2 - cells[n].y) * (zone_ptr->z2 - cells[n].z); 
+	x_gon[2] = rectangle(cells[n].y, cells[n].z, zone_ptr->y2, zone_ptr->z2);
+
+	x_areas[3] = (zone_ptr->y2 - cells[n].y) * (cells[n].z - zone_ptr->z1); 
+	x_gon[3] = rectangle(cells[n].y, zone_ptr->z1, zone_ptr->y2, cells[n].z);
+
+	// y
+	y_areas[0] = (cells[n].x - zone_ptr->x1) * (cells[n].z - zone_ptr->z1); 
+	y_gon[0] = rectangle(zone_ptr->x1, zone_ptr->z1, cells[n].x, cells[n].z);
+
+	y_areas[1] = (zone_ptr->x2 - cells[n].x) * (cells[n].z - zone_ptr->z1);
+	y_gon[1] = rectangle(cells[n].x, zone_ptr->z1, zone_ptr->x2, cells[n].z);
+
+	y_areas[2] = (zone_ptr->x2 - cells[n].x) * (zone_ptr->z2 - cells[n].z); 
+	y_gon[2] = rectangle(cells[n].x, cells[n].z, zone_ptr->x2, zone_ptr->z2);
+
+	y_areas[3] = (cells[n].x - zone_ptr->x1) * (zone_ptr->z2 - cells[n].z);
+	y_gon[3] = rectangle(zone_ptr->x1, cells[n].z, cells[n].x, zone_ptr->z2);
+
+	// z
+	z_areas[0] = (cells[n].x - zone_ptr->x1) * (cells[n].y - zone_ptr->y1);
+	z_gon[0] = rectangle(zone_ptr->x1, zone_ptr->y1, cells[n].x, cells[n].y);
+
+	z_areas[1] = (zone_ptr->x2 - cells[n].x) * (cells[n].y - zone_ptr->y1); 
+	z_gon[1] = rectangle(cells[n].x, zone_ptr->y1, zone_ptr->x2, cells[n].y);
+
+	z_areas[2] = (zone_ptr->x2 - cells[n].x) * (zone_ptr->y2 - cells[n].y); 
+	z_gon[2] = rectangle(cells[n].x, cells[n].y, zone_ptr->x2, zone_ptr->y2);
+
+	z_areas[3] = (cells[n].x - zone_ptr->x1) * (zone_ptr->y2 - cells[n].y);
+	z_gon[3] = rectangle(zone_ptr->x1, cells[n].y, cells[n].x, zone_ptr->y2);
+
+	Exterior_cell * ext = new Exterior_cell();
+	double xn_area = 0.0, yn_area = 0.0, zn_area = 0.0;
+	double xp_area = 0.0, yp_area = 0.0, zp_area = 0.0;
+
+	// X negative face
+	if (e[0] < 0 && e[1] >= 0) 
+	{
+	  xn_area += x_areas[0];
+	  gpc_polygon_clip (GPC_UNION, xn_gon, x_gon[0], xn_gon);
+	}
+	if (e[2] < 0 && e[3] >= 0) 
+	{
+	  xn_area += x_areas[3];
+	  gpc_polygon_clip (GPC_UNION, xn_gon, x_gon[3], xn_gon);
+	}
+	if (e[4] < 0 && e[5] >= 0) 
+	{
+	  xn_area += x_areas[1];
+	  gpc_polygon_clip (GPC_UNION, xn_gon, x_gon[1], xn_gon);
+	}
+	if (e[6] < 0 && e[7] >= 0) 
+	{
+	  xn_area += x_areas[2];
+	  gpc_polygon_clip (GPC_UNION, xn_gon, x_gon[2], xn_gon);
+	}
+	//gpc_polygon_write(xn_gon);
+
+	// X positive face
+	if (e[1] < 0 && e[0] >= 0) 
+	{
+	  xp_area += x_areas[0];
+	  gpc_polygon_clip (GPC_UNION, xp_gon, x_gon[0], xp_gon);
+	}
+	if (e[3] < 0 && e[2] >= 0)
+	{
+	  xp_area += x_areas[3];
+	  gpc_polygon_clip (GPC_UNION, xp_gon, x_gon[3], xp_gon);
+	}
+	if (e[5] < 0 && e[4] >= 0)
+	{
+	  xp_area += x_areas[1];
+	  gpc_polygon_clip (GPC_UNION, xp_gon, x_gon[1], xp_gon);
+	}
+	if (e[7] < 0 && e[6] >= 0) 
+	{
+	  xp_area += x_areas[2];
+	  gpc_polygon_clip (GPC_UNION, xp_gon, x_gon[2], xp_gon);
+	}
+
+	// Y negative face
+	if (e[0] < 0 && e[2] >= 0) 
+	{
+	  yn_area += y_areas[0];
+	  gpc_polygon_clip (GPC_UNION, yn_gon, y_gon[0], yn_gon);
+	}
+	if (e[1] < 0 && e[3] >= 0) 
+	{
+	  yn_area += y_areas[1];
+	  gpc_polygon_clip (GPC_UNION, yn_gon, y_gon[1], yn_gon);
+	}
+	if (e[4] < 0 && e[6] >= 0) 
+	{
+	  yn_area += y_areas[3];
+	  gpc_polygon_clip (GPC_UNION, yn_gon, y_gon[3], yn_gon);
+	}
+	if (e[5] < 0 && e[7] >= 0) 
+	{
+	  yn_area += y_areas[2];
+	  gpc_polygon_clip (GPC_UNION, yn_gon, y_gon[2], yn_gon);
+	}
+
+	// Y positive face
+	if (e[2] < 0 && e[0] >= 0) 
+	{
+	  yp_area += y_areas[0];
+	  gpc_polygon_clip (GPC_UNION, yp_gon, y_gon[0], yp_gon);
+	}
+	if (e[3] < 0 && e[1] >= 0) 
+	{
+	  yp_area += y_areas[1];
+	  gpc_polygon_clip (GPC_UNION, yp_gon, y_gon[1], yp_gon);
+	}
+	if (e[6] < 0 && e[4] >= 0) 
+	{
+	  yp_area += y_areas[3];
+	  gpc_polygon_clip (GPC_UNION, yp_gon, y_gon[3], yp_gon);
+	}
+	if (e[7] < 0 && e[5] >= 0) {
+	  yp_area += y_areas[2];
+	  gpc_polygon_clip (GPC_UNION, yp_gon, y_gon[2], yp_gon);
+	}
+
+	// Z negative face
+	if (e[0] < 0 && e[4] >= 0) {
+	  zn_area += z_areas[0];
+	  gpc_polygon_clip (GPC_UNION, zn_gon, z_gon[0], zn_gon);
+	}
+	if (e[1] < 0 && e[5] >= 0) 
+	{
+	  zn_area += z_areas[1];
+	  gpc_polygon_clip (GPC_UNION, zn_gon, z_gon[1], zn_gon);
+	}
+	if (e[2] < 0 && e[6] >= 0) 
+	{
+	  zn_area += z_areas[3];
+	  gpc_polygon_clip (GPC_UNION, zn_gon, z_gon[3], zn_gon);
+	}
+	if (e[3] < 0 && e[7] >= 0) 
+	{
+	  zn_area += z_areas[2];
+	  gpc_polygon_clip (GPC_UNION, zn_gon, z_gon[2], zn_gon);
+	}
+
+	// Z positive face
+	if (e[4] < 0 && e[0] >= 0) 
+	{
+	  zp_area += z_areas[0];
+	  gpc_polygon_clip (GPC_UNION, zp_gon, z_gon[0], zp_gon);
+	}
+	if (e[5] < 0 && e[1] >= 0) 
+	{
+	  zp_area += z_areas[1];
+	  gpc_polygon_clip (GPC_UNION, zp_gon, z_gon[1], zp_gon);
+	}
+	if (e[6] < 0 && e[2] >= 0) 
+	{
+	  zp_area += z_areas[3];
+	  gpc_polygon_clip (GPC_UNION, zp_gon, z_gon[3], zp_gon);
+	}
+	if (e[7] < 0 && e[3] >= 0) 
+	{
+	  zp_area += z_areas[2];
+	  gpc_polygon_clip (GPC_UNION, zp_gon, z_gon[2], zp_gon);
+	}
+
+	ext->xn_gon = xn_gon;
+	ext->xp_gon = xp_gon;
+	ext->yn_gon = yn_gon;
+	ext->yp_gon = yp_gon;
+	ext->zn_gon = zn_gon;
+	ext->zp_gon = zp_gon;
+
+	if (xn_area > 0.0)
+	{
+	  ext->xn = true;
+	  ext->xn_area = xn_area;
+	}
+	if (xp_area > 0.0)
+	{
+	  ext->xp = true;
+	  ext->xp_area = xp_area;
+	}
+	if (yn_area > 0.0)
+	{
+	  ext->yn = true;
+	  ext->yn_area = yn_area;
+	}
+	if (yp_area > 0.0)
+	{
+	  ext->yp = true;
+	  ext->yp_area = yp_area;
+	}
+	if (zn_area > 0.0)
+	{
+	  ext->zn = true;
+	  ext->zn_area = zn_area;
+	}
+	if (zp_area > 0.0)
+	{
+	  ext->zp = true;
+	  ext->zp_area = zp_area;
+	}
+	// save pointer to exterior face information
+	cells[n].exterior = ext;
+	//fprintf(stderr, "\nCell %d: \n", n);
+	//cells[n].exterior->dump();
+	for (l = 0; l < 4; l++)
+	{
+	  gpc_free_polygon(x_gon[l]);
+	  free_check_null(x_gon[l]);
+	  gpc_free_polygon(y_gon[l]);
+	  free_check_null(y_gon[l]);
+	  gpc_free_polygon(z_gon[l]);
+	  free_check_null(z_gon[l]);
+	}
+      }
+    }
+  }
+#ifdef DEBUG_AREAS
+  double xn = 0, yn = 0, zn = 0, xp = 0, yp = 0, zp = 0;
+  for (i = 0; i < nxyz; i++)
+  {
+    if (cells[i].exterior != NULL)
+    {
+      xn += cells[i].exterior->xn_area;
+      yn += cells[i].exterior->yn_area;
+      zn += cells[i].exterior->zn_area;
+      xp += cells[i].exterior->xp_area;
+      yp += cells[i].exterior->yp_area;
+      zp += cells[i].exterior->zp_area;
+    }
+  }
+  fprintf(stderr, "xn_area: %g\n", xn);
+  fprintf(stderr, "yn_area: %g\n", yn); 
+  fprintf(stderr, "zn_area: %g\n", zn); 
+  fprintf(stderr, "xp_area: %g\n", xp);
+  fprintf(stderr, "yp_area: %g\n", yp); 
+  fprintf(stderr, "zp_area: %g\n", zp); 
+#endif
+  return;
+}
+
+void cells_with_faces(std::list<int> & list_of_numbers, Cell_Face face)
+{
+  std::list<int>::iterator it = list_of_numbers.begin();
+  while (it != list_of_numbers.end())
+  {
+    int n = *it;
+    if (face == CF_UNKNOWN)
+    {
+      input_error++;
+      error_msg("Face not defined", STOP);
+    }
+    if (cells[n].exterior == NULL ||
+	(face == CF_X && cells[n].exterior->xn == false && cells[n].exterior->xp == false) ||
+	(face == CF_Y && cells[n].exterior->yn == false && cells[n].exterior->yp == false) ||
+	(face == CF_Z && cells[n].exterior->zn == false && cells[n].exterior->zp == false) )
+    {
+      it = list_of_numbers.erase(it);
+    }
+    else
+    {
+      it++;
+    }
+  }
+  return;
+}
+bool get_property_for_cell(
+  int ncells,                      // number of point in zone
+  int n,                           // cell_number
+  int node_sequence,               // sequence of node in zone
+  struct property *mask,           // mask pointer
+  struct property *property_ptr,   // property pointer
+  property_type p_type,            // property type
+  int *i_ptr,                      // return integer
+  double *d_ptr,                   // return double
+  struct mix *mix_ptr)             // return mix
+/* ---------------------------------------------------------------------- */
+{
+
+  double value, mask_value;
+
+  // n = pts.size();
+  if (property_ptr->type == ZONE) {
+    if (ncells != property_ptr->count_v) {
+      sprintf(error_string,"Zone has %d nodes,"
+	" property has %d values.", n, property_ptr->count_v);
+      error_msg(error_string, CONTINUE);
+      input_error++;
+      return(false);
+    }
+  }
+  if (property_ptr->type == MIXTURE) {
+    if (ncells != property_ptr->count_v - 2) {
+      sprintf(error_string,"Zone has %d nodes,"
+	" property has %d values.", n, property_ptr->count_v - 2);
+      error_msg(error_string, CONTINUE);
+      input_error++;
+      return(false);
+    }
+  }
+  if (mask != NULL && mask->type == ZONE) {
+    if (ncells != mask->count_v) {
+      sprintf(error_string,"Zone has %d nodes,"
+	" mask has %d values.", n, mask->count_v);
+      error_msg(error_string, CONTINUE);
+      input_error++;
+      return(false);
+    }
+  }
+  //node_sequence = 0;
+  //for(std::list<int>::iterator it = pts.begin(); it != pts.end(); it++)
+  //{
+  //  n = *it;
+  mask_value = 1;
+  if (mask != NULL) {
+    if (get_double_property_value(&(cells[n]), mask, node_sequence, &mask_value) == ERROR) {
+	error_msg("Error in mask.", CONTINUE);
+	return(false);
+    }
+  }
+  if (mask_value > 0) {
+    //if (match_bc_type == TRUE && cells[n].bc_face[face].bc_type != bc_type) continue;
+    if (p_type == PT_MIX) {
+	if (get_integer_property_value_mix(&(cells[n]), property_ptr, node_sequence, mix_ptr) == ERROR) {
+	  return(false);
+	}
+    } else if (p_type == PT_INTEGER) {
+	if (get_double_property_value(&(cells[n]), property_ptr, node_sequence, &value) == ERROR) {
+	  return(false);
+	}
+	if (value > 0) {
+	  *i_ptr = TRUE;
+	} else {
+	  *i_ptr = FALSE;
+	}
+    } else if (p_type == PT_DOUBLE) {
+	if (get_double_property_value(&(cells[n]), property_ptr, node_sequence, &value) == ERROR) {
+	  return(false);
+	}
+	*d_ptr = value;
+    } else {
+	error_msg("Unknown property type in distribute_property_to_cells", STOP);
+    }
+  }
+  return(true);
+}
 
 
+/* ---------------------------------------------------------------------- */
+void distribute_specified_bc (
+  int i,                 // bc[i]
+  std::list<int> &pts,   // list of cell numbers in natural order
+  char *tag)   
+/* ---------------------------------------------------------------------- */
+{
+  int ncells = pts.size();
+  int node_sequence = -1;
+  
+  for(std::list<int>::iterator it = pts.begin(); it != pts.end(); it++)
+  {
+    int n = *it;
+    BC_info bc_info; 
+
+    int i_dummy;
+    double d_dummy;
+    struct mix mix_dummy;
+
+    node_sequence++;
+
+    // bc_head
+    if (bc[i]->bc_head != NULL ) {
+      if (get_property_for_cell(ncells, n, node_sequence, bc[i]->mask, 
+	bc[i]->current_bc_head, 
+	PT_DOUBLE, 
+	&i_dummy,
+	&bc_info.bc_head,
+	&mix_dummy)) 
+      {
+	bc_info.bc_head_defined = true;
+      } else 
+      {
+	bc_info.bc_head_defined = false;
+  	sprintf(error_string,"Head %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+      }
+      bc[i]->current_bc_head->new_def = FALSE;
+    }
+
+    // solution mix
+    if (bc[i]->bc_solution != NULL && flow_only == FALSE)
+    {
+      bc_info.bc_solution_defined = false;
+      if (get_property_for_cell(ncells, n, node_sequence, bc[i]->mask, 
+	bc[i]->current_bc_solution, 
+	PT_MIX, 
+	&i_dummy,
+	&d_dummy,
+	&bc_info.bc_solution)) 
+      {
+	bc_info.bc_solution_defined = true;
+      } else {
+	bc_info.bc_solution_defined = false;
+  	sprintf(error_string,"Solution %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+      }
+      bc[i]->current_bc_solution->new_def = FALSE;
+    }
+
+    // solution type
+    bc_info.bc_solution_type = bc[i]->bc_solution_type;
+    bc_info.bc_definition = i;
+    bc_info.face = bc[i]->cell_face;
+    bc_info.bc_type = BC_info::BC_SPECIFIED;
+
+    // no areas for specifie need areas for simulation == 0
+ 
+    // Store info
+    cells[n].all_bc_info->push_back(bc_info);
+
+  }
+
+  return;
+}
+/* ---------------------------------------------------------------------- */
+void distribute_flux_bc (
+  int i,                 // bc[i]
+  std::list<int> &pts,   // list of cell numbers in natural order
+  char *tag)   
+/* ---------------------------------------------------------------------- */
+{
+  int ncells = pts.size();
+  int node_sequence = -1;
+
+  for(std::list<int>::iterator it = pts.begin(); it != pts.end(); it++)
+  {
+    int n = *it;
+    BC_info bc_info; 
+
+    int i_dummy;
+    double d_dummy;
+    struct mix mix_dummy;
+
+    node_sequence++;
+
+    // bc_flux
+    if (bc[i]->bc_flux != NULL ) {
+      bc_info.bc_flux_defined = false;
+      if (get_property_for_cell(ncells, n, node_sequence, bc[i]->mask, 
+	bc[i]->current_bc_flux, 
+	PT_DOUBLE, 
+	&i_dummy,
+	&bc_info.bc_flux,
+	&mix_dummy)) 
+      {
+	bc_info.bc_flux_defined = true;
+      } else 
+      {
+	bc_info.bc_flux_defined = false;
+  	sprintf(error_string,"Flux %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+      }
+      bc[i]->current_bc_flux->new_def = FALSE;
+    }
+    struct zone zo;
+    zo.x1 = 0;
+    zo.y1 = 0;
+    zo.z1 = 0;
+    zo.x2 = 1;
+    zo.y2 = 1;
+    zo.z2 = 1;
+
+    // solution mix
+    if (bc[i]->bc_solution != NULL && flow_only == FALSE)
+    {
+      bc_info.bc_solution_defined = false;
+      if (get_property_for_cell(ncells, n, node_sequence, bc[i]->mask, 
+	bc[i]->current_bc_solution, 
+	PT_MIX, 
+	&i_dummy,
+	&d_dummy,
+	&bc_info.bc_solution)) 
+      {
+	bc_info.bc_solution_defined = true;
+      } else {
+	bc_info.bc_solution_defined = false;
+  	sprintf(error_string,"Solution %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+      }
+      bc[i]->current_bc_solution->new_def = FALSE;
+    }
+
+    // solution type
+    bc_info.bc_solution_type = bc[i]->bc_solution_type;
+    bc_info.bc_definition = i;
+    bc_info.face = bc[i]->cell_face;
+    bc_info.bc_type = BC_info::BC_FLUX;
+
+    // only need areas for simulation == 0
+    if (simulation == 0) 
+    {
+      //gpc_polygon *bc_area = bc[i]->polyh->Face_polygon(bc[i]->cell_face);
+      double coord;
+  
+      switch (bc[i]->cell_face)
+      {
+      case CF_X:
+	coord = cells[n].x;
+	break;
+      case CF_Y:
+	coord = cells[n].y;
+	break;
+      case CF_Z:
+	coord = cells[n].z;
+	break;
+      default:
+	std::cerr << "Wrong face defined in distribute_flux_bc" << std::endl;
+	break;
+      }
+      //gpc_polygon *bc_area = bc[i]->polyh->Face_polygon(bc[i]->cell_face);
+      gpc_polygon *bc_area = bc[i]->polyh->Slice(bc[i]->cell_face, coord);
+      if (bc_area != NULL)
+      {
+
+	// get polygon for cell face
+	// This is a pointer to the cell face polygon in exterior, do not destroy.
+	gpc_polygon *polygon_ptr = cells[n].exterior->get_exterior_polygon(bc[i]->cell_face);
+	if (polygon_ptr == NULL)
+	{
+	  sprintf(error_string,"Exterior cell face not found %s", tag);
+	  error_msg(error_string, CONTINUE);
+	  input_error++;
+	  continue;
+	}
+
+	// Intersect cell face with boundary condition polygon
+	gpc_polygon *cell_face_polygon = empty_polygon();
+	gpc_polygon_clip (GPC_INT, bc_area, polygon_ptr, cell_face_polygon);  
+	bc_info.poly = cell_face_polygon; 
+      }
+
+      // Free space
+      if (bc_area != NULL)
+      {
+	gpc_free_polygon(bc_area);
+	free_check_null(bc_area);
+      }
+    }
+
+    // Store info
+    cells[n].all_bc_info->push_back(bc_info);
+
+  }
+
+  return;
+}
+
+
+/* ---------------------------------------------------------------------- */
+void distribute_leaky_bc (
+  int i,                 // bc[i]
+  std::list<int> &pts,   // list of cell numbers in natural order
+  char *tag)   
+/* ---------------------------------------------------------------------- */
+{
+  int ncells = pts.size();
+  int node_sequence = -1;
+  //gpc_polygon *bc_area = bc[i]->polyh->Face_polygon(bc[i]->cell_face);
+
+  for(std::list<int>::iterator it = pts.begin(); it != pts.end(); it++)
+  {
+    int n = *it;
+    //BC_info *bc_info = new BC_info; 
+    BC_info bc_info;
+
+    int i_dummy;
+    double d_dummy;
+    struct mix mix_dummy;
+
+    node_sequence++;
+
+    // bc_head
+    if (bc[i]->bc_head != NULL ) {
+      if (get_property_for_cell(ncells, n, node_sequence, bc[i]->mask, 
+	bc[i]->current_bc_head, 
+	PT_DOUBLE, 
+	&i_dummy,
+	&bc_info.bc_head,
+	&mix_dummy)) 
+      {
+	bc_info.bc_head_defined = true;
+      } else 
+      {
+	bc_info.bc_head_defined = false;
+  	sprintf(error_string,"Head %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+      }
+      bc[i]->current_bc_head->new_def = FALSE;
+    }
+
+    // Hydraulic conductivity
+    if (bc[i]->bc_k != NULL ) {
+      if (get_property_for_cell(ncells, n, node_sequence, bc[i]->mask, 
+	bc[i]->bc_k, 
+	PT_DOUBLE, 
+	&i_dummy,
+	&bc_info.bc_k,
+	&mix_dummy)) 
+      {
+	bc_info.bc_k_defined = true;
+      } else 
+      {
+	bc_info.bc_k_defined = false;
+  	sprintf(error_string,"Hydraulic conductivity %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+      }
+    }
+    
+    // Thickness
+    if (bc[i]->bc_thick != NULL ) {
+      if (get_property_for_cell(ncells, n, node_sequence, bc[i]->mask, 
+	bc[i]->bc_thick, 
+	PT_DOUBLE, 
+	&i_dummy,
+	&bc_info.bc_thick,
+	&mix_dummy)) 
+      {
+	bc_info.bc_thick_defined = true;
+      } else 
+      {
+	bc_info.bc_thick_defined = false;
+  	sprintf(error_string,"Thick %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+      }
+    }
+
+    // Solution mix
+    if (bc[i]->bc_solution != NULL && flow_only == FALSE)
+    {
+      if (get_property_for_cell(ncells, n, node_sequence, bc[i]->mask, 
+	bc[i]->current_bc_solution, 
+	PT_MIX, 
+	&i_dummy,
+	&d_dummy,
+	&bc_info.bc_solution)) 
+      {
+	bc_info.bc_solution_defined = true;
+      } else 
+      {
+	bc_info.bc_solution_defined = false;
+  	sprintf(error_string,"Solution %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+      }
+      bc[i]->current_bc_solution->new_def = FALSE;
+    }
+
+    // solution type
+    bc_info.bc_solution_type = bc[i]->bc_solution_type;
+    bc_info.bc_definition = i;
+    bc_info.face = bc[i]->cell_face;
+    bc_info.bc_type = BC_info::BC_LEAKY;
+
+    // only need areas for simulation == 0
+    if (simulation == 0) 
+    {
+      double coord;
+  
+      switch (bc[i]->cell_face)
+      {
+      case CF_X:
+	coord = cells[n].x;
+	break;
+      case CF_Y:
+	coord = cells[n].y;
+	break;
+      case CF_Z:
+	coord = cells[n].z;
+	break;
+      default:
+	std::cerr << "Wrong face defined in distribute_leaky_bc" << std::endl;
+	break;
+      }
+      //gpc_polygon *bc_area = bc[i]->polyh->Face_polygon(bc[i]->cell_face);
+      gpc_polygon *bc_area = bc[i]->polyh->Slice(bc[i]->cell_face, coord);
+      if (bc_area != NULL)
+      {
+	// get polygon for cell face
+	// This is a pointer to the cell face polygon in exterior, do not destroy.
+	gpc_polygon *polygon_ptr = cells[n].exterior->get_exterior_polygon(bc[i]->cell_face);
+	if (polygon_ptr == NULL)
+	{
+	  sprintf(error_string,"Exterior cell face not found %s", tag);
+	  error_msg(error_string, CONTINUE);
+	  input_error++;
+	  continue;
+	}
+
+	// Intersect cell face with boundary condition polygon
+	gpc_polygon *cell_face_polygon = empty_polygon();
+	gpc_polygon_clip (GPC_INT, bc_area, polygon_ptr, cell_face_polygon); 
+	bc_info.poly = cell_face_polygon; 
+      }
+
+      // Free space
+      if (bc_area != NULL)
+      {
+	gpc_free_polygon(bc_area);
+	free_check_null(bc_area);
+      }
+    }
+     
+    // Store info
+    cells[n].all_bc_info->push_back(bc_info);
+
+  }
+
+  return;
+}
+/* ---------------------------------------------------------------------- */
+void process_bc (struct cell *cell_ptr)
+  
+/* ---------------------------------------------------------------------- */
+{
+  if ( cell_ptr->all_bc_info->size() == 0) return;
+
+  // Reverse terator on list of BC_info
+  std::list<BC_info>::reverse_iterator rit = cell_ptr->all_bc_info->rbegin();
+
+  cell_ptr->specified = false;
+  cell_ptr->leaky = false;
+  cell_ptr->flux = false;
+  // type is last defined
+  cell_ptr->bc_type = rit->bc_type;
+  if (cell_ptr->bc_type == BC_info::BC_SPECIFIED) 
+  {
+    cell_ptr->specified = true;
+    return;
+  } 
+  bool check = false;
+  for (int type = 0; type < 2; type++)
+  {
+    BC_info::BC_TYPE bctype;
+    if (type == 0) bctype = BC_info::BC_FLUX;
+    if (type == 1) bctype = BC_info::BC_LEAKY;
+    for (int face = 0; face < 4; face++)
+    {
+      Cell_Face cf = (Cell_Face) face;
+      // Intersect areas for all other boundary types
+      gpc_polygon *excluded_area = empty_polygon();
+      for (rit = cell_ptr->all_bc_info->rbegin() ; rit != cell_ptr->all_bc_info->rend(); rit++)
+      {
+	if (rit->bc_type == bctype && rit->face == cf)
+	{
+	  if (type == 0) {
+	    cell_ptr->flux = true;
+	  }
+	  if (type == 1) 
+	  {
+	    cell_ptr->leaky = true;
+	  }
+	  if (rit->poly != NULL)
+	  {
+	    // remove excluded area from polygon
+	    gpc_polygon_clip(GPC_DIFF, rit->poly, excluded_area, rit->poly);
+
+	    // add area to excluded area
+	    gpc_polygon_clip(GPC_UNION, rit->poly, excluded_area, excluded_area);
+
+	    // calculate area
+	    rit->area = gpc_polygon_area(rit->poly);
+	  }
+	  check = true;
+	}
+      }
+      gpc_free_polygon(excluded_area);
+      free_check_null(excluded_area);
+    }
+  }
+  assert(check);
+  return;
+}
+/* ---------------------------------------------------------------------- */
+void cells_with_exterior_faces_in_zone(std::list<int> &pts, struct zone *zone_ptr)
+/* ---------------------------------------------------------------------- */
+{
+  int i;
+  for (i = 0; i < nxyz; i++)
+  {
+    if (cells[i].exterior == NULL) continue;
+
+
+    struct zone *cell_zone_ptr = cells[i].zone;
+
+    // cell does not intersect zone
+    if (
+      (cell_zone_ptr->x1 > zone_ptr->x2 || cell_zone_ptr->x2 < zone_ptr->x1) ||
+      (cell_zone_ptr->y1 > zone_ptr->y2 || cell_zone_ptr->y2 < zone_ptr->y1) ||
+      (cell_zone_ptr->z1 > zone_ptr->z2 || cell_zone_ptr->z2 < zone_ptr->z1) ) continue;
+
+    bool face_in_zone = false;
+    // Check each possible face
+
+    // X
+    if ((cells[i].exterior->xn || cells[i].exterior->xp) && (cells[i].x >= zone_ptr->x1 && cells[i].x <= zone_ptr->x2) )
+    {
+      // Must be non trivial intersection
+      if (
+	(cell_zone_ptr->y1 < zone_ptr->y2) && 
+	(cell_zone_ptr->y2 > zone_ptr->y1) &&
+	(cell_zone_ptr->z1 < zone_ptr->z2) && 
+	(cell_zone_ptr->z2 > zone_ptr->z1) )
+      {
+	face_in_zone = true;
+      }
+    }
+    // Y
+    if ((cells[i].exterior->yn || cells[i].exterior->yp) && (cells[i].y >= zone_ptr->y1 && cells[i].y <= zone_ptr->y2) )
+    {
+      // Must be non trivial intersection
+      if (
+	(cell_zone_ptr->x1 < zone_ptr->x2) && 
+	(cell_zone_ptr->x2 > zone_ptr->x1) &&
+	(cell_zone_ptr->z1 < zone_ptr->z2) && 
+	(cell_zone_ptr->z2 > zone_ptr->z1) )
+      {
+	face_in_zone = true;
+      }
+    }
+    // Z
+    if ((cells[i].exterior->zn || cells[i].exterior->zp) && (cells[i].z >= zone_ptr->z1 && cells[i].z <= zone_ptr->z2) )
+    {
+      // Must be non trivial intersection
+      if (
+	(cell_zone_ptr->x1 < zone_ptr->x2) && 
+	(cell_zone_ptr->x2 > zone_ptr->x1) &&
+	(cell_zone_ptr->y1 < zone_ptr->y2) && 
+	(cell_zone_ptr->y2 > zone_ptr->y1) )
+      {
+	face_in_zone = true;
+      }
+    }
+
+    if (face_in_zone) pts.push_back(i);
+  }
+}

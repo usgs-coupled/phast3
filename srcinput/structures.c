@@ -20,7 +20,8 @@ int grid_elt_free(struct grid_elt *grid_elt_ptr)
  *      return: OK
  */
 {
-     free_check_null(grid_elt_ptr->zone);
+     //free_check_null(grid_elt_ptr->zone);
+     delete grid_elt_ptr->polyh;
      property_free(grid_elt_ptr->mask);
      property_free(grid_elt_ptr->active);
      property_free(grid_elt_ptr->porosity);
@@ -52,8 +53,9 @@ struct grid_elt *grid_elt_alloc(void)
 
 	grid_elt_ptr = (struct grid_elt *) malloc (sizeof(struct grid_elt));
 	if (grid_elt_ptr == NULL) malloc_error();
-	grid_elt_ptr->zone = (struct zone *) zone_alloc();
-	if (grid_elt_ptr->zone == NULL) malloc_error();
+	//grid_elt_ptr->zone = (struct zone *) zone_alloc();
+	//if (grid_elt_ptr->zone == NULL) malloc_error();
+	grid_elt_ptr->polyh = NULL;
 	grid_elt_ptr->mask = NULL;
 	grid_elt_ptr->active = NULL;
 	grid_elt_ptr->porosity = NULL;
@@ -85,14 +87,37 @@ int cell_free(struct cell *cell_ptr)
  */
 {
 	int i;
+        for (std::list<BC_info>::iterator it = cell_ptr->all_bc_info->begin(); 
+	    it != cell_ptr->all_bc_info->end(); it++)
+	{
+	  //it->Free_poly();
+	}
+	delete cell_ptr->all_bc_info;
 	free_check_null(cell_ptr->zone);
 	property_free(cell_ptr->mask);
+
+	// Rivers
 	for (i = 0; i < cell_ptr->count_river_polygons; i++) {
 		gpc_free_polygon(cell_ptr->river_polygons[i].poly);
 		free_check_null(cell_ptr->river_polygons[i].poly);
 	}
 	free_check_null(cell_ptr->river_polygons);
-	
+
+	// Drains
+	for (std::vector<River_Polygon>::iterator it = cell_ptr->drain_polygons->begin(); it != cell_ptr->drain_polygons->end(); it++)
+	{
+	  if (it->poly != NULL)
+	  {
+	    gpc_free_polygon(it->poly);
+	    free_check_null(it->poly);
+	  }
+	}
+	delete cell_ptr->drain_polygons;
+	// Drain segments point to drain_polygons, do not free
+	delete cell_ptr->drain_segments;
+
+	delete cell_ptr->exterior;
+
 	return(OK);
 }
 /* ---------------------------------------------------------------------- */
@@ -110,7 +135,14 @@ int cell_init(struct cell *cell_ptr)
 /*
  *   Initialize
  */
-	int i;
+	cell_ptr->zone = (struct zone *) malloc((size_t) sizeof (struct zone));
+	if (cell_ptr->zone == NULL) malloc_error();
+	cell_ptr->mask = NULL; /* cell_alloc is never called */
+	cell_ptr->number = 0;
+	cell_ptr->ix = cell_ptr->iy = cell_ptr->iz = 0;
+	cell_ptr->x = cell_ptr->y = cell_ptr->z = 0;
+	cell_ptr->elt_x = cell_ptr->elt_y = cell_ptr->elt_z = 0;
+
 
 	cell_ptr->cell_active = FALSE;
 	cell_ptr->print_xyz = TRUE;
@@ -119,12 +151,13 @@ int cell_init(struct cell *cell_ptr)
 	cell_ptr->print_hdf_defined = FALSE;
 	cell_ptr->print_chem = TRUE;
 	cell_ptr->print_chem_defined = FALSE;
-	cell_ptr->zone = (struct zone *) malloc((size_t) sizeof (struct zone));
-	if (cell_ptr->zone == NULL) malloc_error();
-	cell_ptr->mask = NULL; /* cell_alloc is never called */
+
 
 	/* head ic */
+	cell_ptr->ic_head = 0;
 	cell_ptr->ic_head_defined = FALSE;
+
+	cell_ptr->ic_pressure = 0;
 
 	/* chemistry ic */
 	mix_init(&cell_ptr->ic_solution);
@@ -142,12 +175,14 @@ int cell_init(struct cell *cell_ptr)
 	mix_init(&cell_ptr->ic_kinetics);
 	cell_ptr->ic_kinetics_defined = FALSE;
 
+	mix_init(&cell_ptr->temp_mix);
 	/* boundary conditions */
 
-	cell_ptr->bc_type = UNDEFINED;
-
+	cell_ptr->bc_type = BC_info::BC_UNDEFINED;
+#ifdef SKIP
+	int i;
 	for (i = 0; i < 3; i++) {
-		cell_ptr->bc_face[i].bc_type = UNDEFINED;
+		cell_ptr->bc_face[i].bc_type = BC_info::BC_UNDEFINED;
 		cell_ptr->bc_face[i].bc_head_defined = FALSE;
 		cell_ptr->bc_face[i].bc_flux_defined = FALSE;
 		cell_ptr->bc_face[i].bc_k_defined = FALSE;
@@ -155,11 +190,18 @@ int cell_init(struct cell *cell_ptr)
 		cell_ptr->bc_face[i].bc_solution_type = UNDEFINED;
 		mix_init(&cell_ptr->bc_face[i].bc_solution);
 	}
+#endif
+	cell_ptr->all_bc_info = new std::list<BC_info>;
+	cell_ptr->specified = cell_ptr->flux = cell_ptr->leaky = false;
 
 	/* rivers */
 	cell_ptr->river_polygons = (River_Polygon *) malloc((size_t) sizeof(River_Polygon));
 	if (cell_ptr->river_polygons == NULL) malloc_error();
 	cell_ptr->count_river_polygons = 0;
+
+	/* Drains */
+	cell_ptr->drain_polygons = new std::vector<River_Polygon>;
+	cell_ptr->drain_segments = new std::vector<River_Polygon>;
 
 	/* grid_elt */
 	cell_ptr->is_element = FALSE;
@@ -236,7 +278,7 @@ int zone_check(struct zone *zone_ptr)
  *
  * ********************************************************************** */
 /* ---------------------------------------------------------------------- */
-struct bc *bc_alloc(void)
+struct BC *bc_alloc(void)
 /* ---------------------------------------------------------------------- */
 /*
  *  Allocates bc structure 
@@ -247,15 +289,15 @@ struct bc *bc_alloc(void)
  *      return: new bc structure
  */
 {
-	struct bc *bc_ptr;
+	struct BC *bc_ptr;
 
-	bc_ptr = (struct bc *) malloc (sizeof(struct bc));
+	bc_ptr = (struct BC *) malloc (sizeof(struct BC));
 	if (bc_ptr == NULL) malloc_error();
 	bc_init(bc_ptr);
 	return(bc_ptr);
 }
 /* ---------------------------------------------------------------------- */
-int bc_free(struct bc *bc_ptr)
+int bc_free(struct BC *bc_ptr)
 /* ---------------------------------------------------------------------- */
 /*
  *  frees a bc structure
@@ -266,7 +308,8 @@ int bc_free(struct bc *bc_ptr)
  *      return: OK
  */
 {
-     free_check_null(bc_ptr->zone);
+     //free_check_null(bc_ptr->zone);
+     delete bc_ptr->polyh;
      time_series_free(bc_ptr->bc_head);
      time_series_free(bc_ptr->bc_flux);
      property_free(bc_ptr->bc_k);
@@ -280,7 +323,7 @@ int bc_free(struct bc *bc_ptr)
      return(OK);
 }
 /* ---------------------------------------------------------------------- */
-int bc_init(struct bc *bc_ptr)
+int bc_init(struct BC *bc_ptr)
 /* ---------------------------------------------------------------------- */
 /*
  *  Initializes a bc structure that has already been allocated
@@ -295,17 +338,19 @@ int bc_init(struct bc *bc_ptr)
  *   Initialize
  */
 	/* head ic */
-	bc_ptr->zone = NULL;
+	//bc_ptr->zone = NULL;
+        bc_ptr->polyh = NULL;
 	bc_ptr->mask = NULL;
 
 	/* boundary conditions */
-	bc_ptr->bc_type = UNDEFINED;
+	bc_ptr->bc_type = BC_info::BC_UNDEFINED;
 	bc_ptr->bc_head = NULL;
 	bc_ptr->bc_flux = NULL;
 	bc_ptr->current_bc_flux = NULL;
 	bc_ptr->bc_k = NULL;
 	bc_ptr->bc_thick = NULL;
 	bc_ptr->face = -1;
+	bc_ptr->cell_face = CF_UNKNOWN;
 	bc_ptr->face_defined = FALSE;
 	bc_ptr->bc_solution_type = UNDEFINED;
 	bc_ptr->bc_solution = NULL;
@@ -350,7 +395,8 @@ int chem_ic_free(struct chem_ic *chem_ic_ptr)
  *      return: OK
  */
 {
-     free_check_null(chem_ic_ptr->zone);
+     //free_check_null(chem_ic_ptr->zone);
+     delete chem_ic_ptr->polyh;
      property_free(chem_ic_ptr->mask);
      property_free(chem_ic_ptr->solution);
      property_free(chem_ic_ptr->equilibrium_phases);
@@ -377,7 +423,8 @@ int chem_ic_init(struct chem_ic *chem_ic_ptr)
  *   Initialize
  */
 	/* head ic */
-	chem_ic_ptr->zone = NULL;
+	//chem_ic_ptr->zone = NULL;
+        chem_ic_ptr->polyh = NULL;;
 
 	/* chemistry ic */
 	chem_ic_ptr->solution = NULL;
@@ -396,7 +443,7 @@ int chem_ic_init(struct chem_ic *chem_ic_ptr)
  *
  * ********************************************************************** */
 /* ---------------------------------------------------------------------- */
-struct head_ic *head_ic_alloc(void)
+struct Head_ic *head_ic_alloc(void)
 /* ---------------------------------------------------------------------- */
 /*
  *  Allocates head_ic structure 
@@ -407,15 +454,15 @@ struct head_ic *head_ic_alloc(void)
  *      return: new head_ic structure
  */
 {
-	struct head_ic *head_ic_ptr;
+	struct Head_ic *head_ic_ptr;
 
-	head_ic_ptr = (struct head_ic *) malloc (sizeof(struct head_ic));
+	head_ic_ptr = (struct Head_ic *) malloc (sizeof(struct Head_ic));
 	if (head_ic_ptr == NULL) malloc_error();
 	head_ic_ptr->mask = NULL;
 	return(head_ic_ptr);
 }
 /* ---------------------------------------------------------------------- */
-int head_ic_free(struct head_ic *head_ic_ptr)
+int head_ic_free(struct Head_ic *head_ic_ptr)
 /* ---------------------------------------------------------------------- */
 /*
  *  frees a head_ic structure
@@ -426,13 +473,14 @@ int head_ic_free(struct head_ic *head_ic_ptr)
  *      return: OK
  */
 {
-     free_check_null(head_ic_ptr->zone);
+     //free_check_null(head_ic_ptr->zone);
+     delete head_ic_ptr->polyh;
      property_free(head_ic_ptr->head);
      property_free(head_ic_ptr->mask);
      return(OK);
 }
 /* ---------------------------------------------------------------------- */
-int head_ic_init(struct head_ic *head_ic_ptr)
+int head_ic_init(struct Head_ic *head_ic_ptr)
 /* ---------------------------------------------------------------------- */
 /*
  *  Initializes a head_ic structure that has already been allocated
@@ -447,7 +495,8 @@ int head_ic_init(struct head_ic *head_ic_ptr)
  *   Initialize
  */
 	/* head ic */
-	head_ic_ptr->zone = NULL;
+	//head_ic_ptr->zone = NULL;
+	head_ic_ptr->polyh = NULL;
 
 	/* headistry ic */
 	head_ic_ptr->ic_type = UNDEFINED;
@@ -693,7 +742,8 @@ int print_zone_struct_free (struct print_zones_struct *print_zones_struct_ptr)
  *   Free space allocated for print_zones_struct structure
  */
 	for (i = 0; i < print_zones_struct_ptr->count_print_zones; ++i) {
-		free_check_null(print_zones_struct_ptr->print_zones[i].zone);
+		//free_check_null(print_zones_struct_ptr->print_zones[i].zone);
+		delete print_zones_struct_ptr->print_zones[i].polyh;
 		property_free(print_zones_struct_ptr->print_zones[i].print);
 		property_free(print_zones_struct_ptr->print_zones[i].mask);
 	}

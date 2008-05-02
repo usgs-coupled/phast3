@@ -5,13 +5,13 @@ static char const svnid[] = "$Id$";
 #endif
 #define NO_DOS
 /*
- *  HST uses: 
+ *  HST uses:
  *  pressure, not head
  *     h = p / (fluid_density*g) + (z -z0)
  *
  *  permeability, not hydraulic conductivity
  *     permeability(k) = hydraulic conductivity(K) * fluid_viscosity / (fluid_density*g)
- *  
+ *
  *  Compressibility, not specific storage
  *     compressibility = storage / (fluid_density*g) - porosity * fluid_compressibility
  */
@@ -41,6 +41,18 @@ static char const svnid[] = "$Id$";
 #include <errno.h>
 #include <float.h>
 #include "gpc.h"
+
+#include "index_range.h"
+#include "zone.h"
+#include "property.h"
+#include "Polyhedron.h"
+#include "Exterior_cell.h"
+#include "BC_info.h"
+#include "Mix.h"
+#include "Cell_Face.h"
+#include "River.h"
+#include "Drain.h"
+
 /* ----------------------------------------------------------------------
  *   DEFINITIONS
  * ---------------------------------------------------------------------- */
@@ -77,9 +89,9 @@ typedef enum { PT_MIX, PT_DOUBLE, PT_INTEGER } property_type;
 #define WATER_TABLE 5
 #define FULL 6
 #define CHEMISTRY 7
-#define SPECIFIED 8
-#define FLUX 9
-#define LEAKY 10
+//#define SPECIFIED 8
+//#define FLUX 9
+//#define LEAKY 10
 #define LINEAR 11
 #define FIXED 12
 #define ASSOCIATED 13
@@ -95,7 +107,7 @@ typedef enum { PT_MIX, PT_DOUBLE, PT_INTEGER } property_type;
 /* bc_solution_type: UNDEFINED, FIXED, ASSOCIATED */
 /* time */
 
-/* ---------------------------------------------------------------------- 
+/* ----------------------------------------------------------------------
  *   time/frequency data
  * ---------------------------------------------------------------------- */
 struct time {
@@ -107,7 +119,7 @@ struct time {
 	double input_to_user;
 };
 #include "time.h"
-/* ---------------------------------------------------------------------- 
+/* ----------------------------------------------------------------------
  *   Grid definition
  * ---------------------------------------------------------------------- */
 struct grid {
@@ -121,37 +133,16 @@ struct grid {
 	double *elt_centroid;
 };
 EXTERNAL struct grid grid[3];         /* x=0, y=1, z=2 */
-EXTERNAL struct grid *grid_overlay;  
+EXTERNAL struct grid *grid_overlay;
 EXTERNAL int count_grid_overlay;
 EXTERNAL double snap[3];
-/* ---------------------------------------------------------------------- 
- *   Zone
- * ---------------------------------------------------------------------- */
-struct zone {
-	int zone_defined;
-	double x1;
-	double y1;
-	double z1;
-	double x2;
-	double y2;
-	double z2;
-};
-/* ---------------------------------------------------------------------- 
- *   Index Range
- * ---------------------------------------------------------------------- */
-struct index_range {
-	int i1;
-	int j1;
-	int k1;
-	int i2;
-	int j2;
-	int k2;
-};
-/* ---------------------------------------------------------------------- 
+
+/* ----------------------------------------------------------------------
  *   Grid Elements
  * ---------------------------------------------------------------------- */
 struct grid_elt {
-	struct zone *zone;
+	//struct zone *zone;
+        Polyhedron *polyh;
 	struct property *mask;
 	struct property *active;
 	struct property *porosity;
@@ -166,52 +157,31 @@ struct grid_elt {
 };
 EXTERNAL struct grid_elt **grid_elt_zones;   /* contains input media properties */
 EXTERNAL int count_grid_elt_zones;
-/* ---------------------------------------------------------------------- 
- *   Mixture structure
- * ---------------------------------------------------------------------- */
-struct mix {
-	int i1;
-	int i2;
-	double f1;
-};
-
-/* ---------------------------------------------------------------------- 
- *   Property structure
- * ---------------------------------------------------------------------- */
-struct property {
-	int type;   /* UNDEFINED, FIXED, LINEAR, ZONE */
-	double *v;
-	int count_v;
-	int count_alloc;
-	char coord;
-	int icoord;
-	double dist1;
-	double dist2;
-	int new_def;
-};
 
 /*   Allowed values */
 /*
    HEAD_IC_TYPE:     UNDEFINED, ZONE, WATER_TABLE
    BC_TYPE:          UNDEFINED, SPECIFIED, FLUX, LEAKY
    BC_SOLUTION_TYPE: UNDEFINED, FIXED, ASSOCIATED
-   PROPERTY_TYPE:    UNDEFINED, LINEAR, FIXED, ZONE  
+   PROPERTY_TYPE:    UNDEFINED, LINEAR, FIXED, ZONE
  */
-/* ---------------------------------------------------------------------- 
+/* ----------------------------------------------------------------------
  *   head initial conditions
  * ---------------------------------------------------------------------- */
-struct head_ic {
-	struct zone *zone;
+struct Head_ic {
+	//struct zone *zone;
+        Polyhedron *polyh;
 	struct property *mask;
 	int ic_type;      /* UNDEFINED, ZONE, WATER_TABLE */
 	/* storage for specified head distribution and linear head distribution */
-	struct property *head; 
+	struct property *head;
 };
-/* ---------------------------------------------------------------------- 
+/* ----------------------------------------------------------------------
  *   chemistry initial conditions
  * ---------------------------------------------------------------------- */
 struct chem_ic {
-	struct zone *zone;
+	//struct zone *zone;
+        Polyhedron *polyh;
 	struct property *mask;
 
 	/* cell chemistry ic*/
@@ -223,15 +193,17 @@ struct chem_ic {
 	struct property *solid_solutions;
 	struct property *kinetics;
 };
-/* ---------------------------------------------------------------------- 
+/* ----------------------------------------------------------------------
  *   boundary conditions
  * ---------------------------------------------------------------------- */
-struct bc {
-	struct zone *zone;
+
+struct BC {
+	//struct zone *zone;
+        Polyhedron *polyh;
 	struct property *mask;
-	
+
 	/* boundary condition information */
-	int bc_type;      /* UNDEFINED, SPECIFIED, FLUX, LEAKY */
+	BC_info::BC_TYPE bc_type;      /* UNDEFINED, SPECIFIED, FLUX, LEAKY */
 	int new_def;
 
 	/* head for SPECIFIED and LEAKY */
@@ -245,9 +217,10 @@ struct bc {
 	/* other parameters for LEAKY */
 	struct property *bc_k;
 	struct property *bc_thick;
-	
+
 	/* flux face for FLUX and LEAKY, 0, 1, or 2 */
 	int face;
+	Cell_Face cell_face;
 	int face_defined;
 
 	/* solution information for bc */
@@ -255,58 +228,16 @@ struct bc {
 	struct time_series *bc_solution;
 	struct property *current_bc_solution;
 };
-/* ---------------------------------------------------------------------- 
+/* ----------------------------------------------------------------------
  *   Rivers
  * ---------------------------------------------------------------------- */
-typedef struct {
-	double x;
-	int x_defined;
-	double y;
-	int y_defined;
-	double width;
-	int width_defined;
-	double k;
-	int k_defined;
-	double thickness;
-	int thickness_defined;
-	struct time_series *head;
-	int head_defined;
-	double current_head;
-	double depth;
-	int depth_defined;
-	double z;
-	int z_defined;
-	int z_input_defined;
-	struct time_series *solution;
-	int solution_defined;
-	int current_solution; 
-	int solution1;
-	int solution2; 
-	double f1;
-  /*	gpc_vertex right, left; */
-	gpc_vertex vertex[4];
-	gpc_polygon *polygon;
-	int update;
-} River_Point;
-typedef struct {
-	River_Point *points;
-	int count_points;
-	int new_def;
-	int update;
-	int n_user;
-	char *description;
-} River;
-typedef struct {
-	gpc_polygon *poly;
-	double x;
-	double y;
-	double area;
-	int river_number;
-	int point_number;
-	double w;
-} River_Polygon;
 EXTERNAL River *rivers;
 EXTERNAL int count_rivers;
+
+/* ----------------------------------------------------------------------
+ *   Drains
+ * ---------------------------------------------------------------------- */
+EXTERNAL std::vector<Drain *> drains;
 /*
  *    Well data
  */
@@ -355,15 +286,12 @@ typedef struct Well {
 } Well;
 EXTERNAL Well *wells;
 EXTERNAL int count_wells;
-/* ---------------------------------------------------------------------- 
+/* ----------------------------------------------------------------------
  *   all cell and element properties
  * ---------------------------------------------------------------------- */
 struct bc_face {
-	int bc_type;
+	BC_info::BC_TYPE bc_type;
 	double bc_head;
-#ifdef SKIP
-	double bc_pressure; 
-#endif
 	int bc_head_defined;
 	double bc_flux;
 	int bc_flux_defined;
@@ -371,17 +299,9 @@ struct bc_face {
 	int bc_k_defined;
 	double bc_thick;
 	int bc_thick_defined;
-#ifdef SKIP
-	int bc_face;
-	int bc_face_defined;
-#endif
 	int bc_solution_type;
-#ifdef MIX
-	int bc_solution;
-#endif
 	struct mix bc_solution;
 	int bc_solution_defined;
-	int old_bc_solution_type;
 };
 struct cell {
 	struct zone *zone;
@@ -419,9 +339,14 @@ struct cell {
 	/* boundary conditions  triplicate flux and leaky for x, y, and z face */
 	struct mix temp_mix;
 	double value;
-	int bc_type;
-	struct bc_face bc_face[3];
+	//int bc_type;
+	BC_info::BC_TYPE bc_type;
+	bool specified, flux, leaky;
+	//struct bc_face bc_face[3];
+	std::list<BC_info> *all_bc_info;
 	River_Polygon *river_polygons;
+	std::vector<River_Polygon> *drain_polygons;  // all segments attached to uppermost cell
+	std::vector<River_Polygon> *drain_segments;  // segments attached to correct vertical cell
 	int count_river_polygons;
 
 	/* associated grid element (node is left, forward, lower corner) */
@@ -446,13 +371,17 @@ struct cell {
 	int alpha_horizontal_defined;
 	double alpha_vertical;
 	int alpha_vertical_defined;
+	// Info on exterior faces
+	Exterior_cell *exterior;
 };
-/* ---------------------------------------------------------------------- 
+EXTERNAL std::vector<Point> *cell_xyz;
+EXTERNAL std::vector<Point> *element_xyz;
+/* ----------------------------------------------------------------------
  *   units conversion
  * ---------------------------------------------------------------------- */
 struct cunit {
 	char *input;
-	char *si; 
+	char *si;
 	double input_to_si;
 /*	double si_to_user; */
 	double input_to_user;
@@ -476,16 +405,19 @@ struct cunits {
 	struct cunit horizontal;
 	struct cunit vertical;
 	struct cunit head;
-	struct cunit k;	
-	struct cunit s;	
-	struct cunit alpha;	
-	struct cunit leaky_k;	
-	struct cunit leaky_thick;	
-	struct cunit flux;	
-	struct cunit well_diameter;	
-	struct cunit well_pumpage;	
-	struct cunit river_bed_k;	
-	struct cunit river_bed_thickness;	
+	struct cunit k;
+	struct cunit s;
+	struct cunit alpha;
+	struct cunit leaky_k;
+	struct cunit leaky_thick;
+	struct cunit flux;
+	struct cunit well_diameter;
+	struct cunit well_pumpage;
+	struct cunit river_bed_k;
+	struct cunit river_bed_thickness;
+	struct cunit drain_bed_k;
+	struct cunit drain_bed_thickness;
+	struct cunit drain_width;
 
 // Constructors
 	cunits(void);
@@ -497,11 +429,11 @@ struct cunits {
 	void undefine(void);
 };
 EXTERNAL struct cunits units;
-EXTERNAL struct head_ic **head_ic;
+EXTERNAL struct Head_ic **head_ic;
 EXTERNAL int count_head_ic;
 EXTERNAL struct chem_ic **chem_ic;
 EXTERNAL int count_chem_ic;
-EXTERNAL struct bc **bc;
+EXTERNAL struct BC **bc;
 EXTERNAL int count_bc;
 
 EXTERNAL struct cell *cells;
@@ -509,7 +441,7 @@ EXTERNAL int count_cells;
 
 EXTERNAL int free_surface;
 
-/*---------------------------------------------------------------------- 
+/*----------------------------------------------------------------------
  *   Keywords
  *---------------------------------------------------------------------- */
 struct key {
@@ -518,7 +450,7 @@ struct key {
 };
 #ifdef MAIN
                           /* list of valid keywords */
-struct key keyword[] = {            
+struct key keyword[] = {
 	{"eof", 0},
 	{"end", 0},
 	{"title", 0},
@@ -551,7 +483,8 @@ struct key keyword[] = {
 	{"steady_state_flow"},
 	{"print_initial"},
 	{"solute_transport"},
-	{"specified_head_bc"}
+	{"specified_head_bc"},
+	{"drain"}
 };
 int NKEYS = (sizeof(keyword) / sizeof(struct key));  /* Number of valid keywords */
 #else
@@ -571,7 +504,8 @@ struct prints pr = {TRUE};
      extern struct prints pr;
 #endif
 struct print_zones {
-	struct zone *zone;
+	//struct zone *zone;
+        Polyhedron *polyh;
 	struct property *print;
 	struct property *mask;
 };
@@ -587,11 +521,11 @@ EXTERNAL struct print_zones_struct print_zones_xyz, print_zones_chem;
 EXTERNAL char *title_x;
 
 /* ----------------------------------------------------------------------
- *   GLOBAL DECLARATIONS 
+ *   GLOBAL DECLARATIONS
  * ---------------------------------------------------------------------- */
 /*
 EXTERNAL FILE  *input_file;
-EXTERNAL FILE  *input;                        
+EXTERNAL FILE  *input;
 EXTERNAL FILE  *database_file;
 EXTERNAL FILE  *log_file;
 EXTERNAL FILE  *echo_file;
@@ -618,7 +552,7 @@ EXTERNAL int   simulation;
 /*EXTERNAL double *simulation_periods;*/
 EXTERNAL char  dimension[3];
 EXTERNAL int   nx, ny, nz, nxyz;
-EXTERNAL int count_specified, count_flux, count_leaky, count_river_segments;
+EXTERNAL int count_specified, count_flux, count_leaky, count_river_segments, count_drain_segments;
 
 /* Fluid properties */
 EXTERNAL double fluid_compressibility;
@@ -709,6 +643,7 @@ EXTERNAL int bc_flux_defined;
 EXTERNAL int bc_leaky_defined;
 EXTERNAL int river_defined;
 EXTERNAL int rivers_update;
+EXTERNAL bool drain_defined;
 EXTERNAL int well_defined;
 EXTERNAL int wells_update;
 
@@ -732,6 +667,7 @@ EXTERNAL int adjust_water_rock_ratio;
 #include <string>  // std::string
 
 EXTERNAL std::map <std::string, int> FileMap;
+
 
 #include "inputproto.h"
 

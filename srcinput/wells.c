@@ -244,7 +244,7 @@ int setup_wells(void)
 			well_ptr->screen_depth_top = 0;
 			well_ptr->screen_depth_bottom = 0;
 		}
-#ifdef DEBUG
+#ifdef DEBUG_WELLS
 		output_msg(OUTPUT_STDERR,"Well %d:\n", well_ptr->n_user);
 #endif
 		for (k = 0; k < count_coord; k++) {
@@ -257,7 +257,7 @@ int setup_wells(void)
 				well_ptr->cell_fraction[well_ptr->count_cell_fraction].upper = du[k];
 				well_ptr->cell_fraction[well_ptr->count_cell_fraction].lower = dl[k];
 				well_ptr->count_cell_fraction++;
-#ifdef DEBUG
+#ifdef DEBUG_WELLS
 				output_msg(OUTPUT_STDERR,"\tijk: %d %d %d\tn: %d\tf:%g\n", i_cell, j_cell, k, n, f[k]);
 #endif
 			}

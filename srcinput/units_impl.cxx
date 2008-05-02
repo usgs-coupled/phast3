@@ -27,6 +27,9 @@ cunits::cunits(void)
 , well_pumpage("m^3/s")
 , river_bed_k("m/s")
 , river_bed_thickness("m")
+, drain_bed_k("m/s")
+, drain_bed_thickness("m")
+, drain_width("m")
 {
 }
 
@@ -49,6 +52,10 @@ struct cunits& cunits::operator=(const struct cunits& rhs)
 	assert(::strcmp(this->well_pumpage.si,         rhs.well_pumpage.si)        == 0);
 	assert(::strcmp(this->river_bed_k.si,          rhs.river_bed_k.si)         == 0);
 	assert(::strcmp(this->river_bed_thickness.si,  rhs.river_bed_thickness.si) == 0);
+	assert(::strcmp(this->drain_bed_k.si,          rhs.drain_bed_k.si)         == 0);
+	assert(::strcmp(this->drain_bed_thickness.si,  rhs.drain_bed_thickness.si) == 0);
+	assert(::strcmp(this->drain_width.si,          rhs.drain_width.si)         == 0);
+
 	if (this != &rhs) {
 		this->time                = rhs.time;
 		this->horizontal          = rhs.horizontal;
@@ -64,6 +71,9 @@ struct cunits& cunits::operator=(const struct cunits& rhs)
 		this->well_pumpage        = rhs.well_pumpage;
 		this->river_bed_k         = rhs.river_bed_k;
 		this->river_bed_thickness = rhs.river_bed_thickness;
+		this->drain_bed_k         = rhs.drain_bed_k;
+		this->drain_bed_thickness = rhs.drain_bed_thickness;
+		this->drain_width         = rhs.drain_width;
 	}
 	return *this;
 }
@@ -84,4 +94,8 @@ void cunits::undefine(void)
 	this->well_pumpage.undefine();
 	this->river_bed_k.undefine();
 	this->river_bed_thickness.undefine();
+	this->drain_bed_k.undefine();
+	this->drain_bed_thickness.undefine();
+	this->drain_width.undefine();
+
 }

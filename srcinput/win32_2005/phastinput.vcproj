@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="phastinput"
 	ProjectGUID="{B9409A75-93BD-44F4-A6E7-50590875C542}"
+	RootNamespace="phastinput"
 	>
 	<Platforms>
 		<Platform
@@ -42,7 +43,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				PreprocessorDefinitions="WIN32,NDEBUG,_CONSOLE,_CRT_SECURE_NO_DEPRECATE"
+				AdditionalIncludeDirectories="&quot;$(BOOSTROOT)&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;ANSI_DECLARATORS"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -130,7 +132,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32,_DEBUG,_CONSOLE,_CRT_SECURE_NO_DEPRECATE"
+				AdditionalIncludeDirectories="&quot;$(BOOSTROOT)&quot;"
+				PreprocessorDefinitions="WIN32,_DEBUG,_CONSOLE,_CRT_SECURE_NO_DEPRECATE,ANSI_DECLARATORS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				DisableLanguageExtensions="false"
@@ -227,6 +230,18 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\BC_info.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="..\check.c"
 				>
 				<FileConfiguration
@@ -247,6 +262,58 @@
 						BasicRuntimeChecks="3"
 						UsePrecompiledHeader="0"
 						BrowseInformation="1"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\Cube.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\Shapefiles\dbfopen.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\NNInterpolator\delaunay.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\Drain.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\Exterior_cell.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
 						CompileAs="2"
 					/>
 				</FileConfiguration>
@@ -302,6 +369,62 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\gpc_helper.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\NNInterpolator\hash.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\NNInterpolator\istack.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\KDtree\KDtree.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\KDtree\kdtree2.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\NNInterpolator\lpi.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="..\main.c"
 				>
 				<FileConfiguration
@@ -347,6 +470,114 @@
 						BasicRuntimeChecks="3"
 						UsePrecompiledHeader="0"
 						BrowseInformation="1"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\NNInterpolator\minell.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\NNInterpolator\nnai.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\NNInterpolator\nncommon-vulnerable.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\NNInterpolator\nncommon.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\NNInterpolator\NNInterpolator.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\NNInterpolator\nnpi.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\Point.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\Polyhedron.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\NNInterpolator\preader.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
 						CompileAs="2"
 					/>
 				</FileConfiguration>
@@ -402,6 +633,42 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\Shapefiles\Shapefile.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\Shapefiles\shpopen.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\Shapefiles\shptree.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="..\structures.c"
 				>
 				<FileConfiguration
@@ -452,12 +719,40 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\NNInterpolator\triangle.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="..\unit_impl.cxx"
 				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\units_impl.cxx"
 				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\utilities.c"
@@ -480,6 +775,18 @@
 						BasicRuntimeChecks="3"
 						UsePrecompiledHeader="0"
 						BrowseInformation="1"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\Wedge.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
 						CompileAs="2"
 					/>
 				</FileConfiguration>
@@ -540,6 +847,34 @@
 			Filter="h;hpp;hxx;hm;inl;fi;fd"
 			>
 			<File
+				RelativePath="..\BC_info.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Cell_Face.h"
+				>
+			</File>
+			<File
+				RelativePath="..\NNInterpolator\config.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Cube.h"
+				>
+			</File>
+			<File
+				RelativePath="..\NNInterpolator\delaunay.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Drain.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Exterior_cell.h"
+				>
+			</File>
+			<File
 				RelativePath="..\getopt.h"
 				>
 			</File>
@@ -548,7 +883,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\gpc_helper.h"
+				>
+			</File>
+			<File
+				RelativePath="..\NNInterpolator\hash.h"
+				>
+			</File>
+			<File
 				RelativePath="..\hstinpt.h"
+				>
+			</File>
+			<File
+				RelativePath="..\index_range.h"
 				>
 			</File>
 			<File
@@ -556,7 +903,71 @@
 				>
 			</File>
 			<File
+				RelativePath="..\NNInterpolator\istack.h"
+				>
+			</File>
+			<File
+				RelativePath="..\KDtree\KDtree.h"
+				>
+			</File>
+			<File
+				RelativePath="..\KDtree\kdtree2.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\message.h"
+				>
+			</File>
+			<File
+				RelativePath="..\NNInterpolator\minell.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Mix.h"
+				>
+			</File>
+			<File
+				RelativePath="..\NNInterpolator\nan.h"
+				>
+			</File>
+			<File
+				RelativePath="..\NNInterpolator\nn.h"
+				>
+			</File>
+			<File
+				RelativePath="..\NNInterpolator\nn_internal.h"
+				>
+			</File>
+			<File
+				RelativePath="..\NNInterpolator\NNInterpolator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Point.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Polyhedron.h"
+				>
+			</File>
+			<File
+				RelativePath="..\NNInterpolator\preader.h"
+				>
+			</File>
+			<File
+				RelativePath="..\property.h"
+				>
+			</File>
+			<File
+				RelativePath="..\River.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Shapefiles\shapefil.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Shapefiles\Shapefile.h"
 				>
 			</File>
 			<File
@@ -565,6 +976,22 @@
 			</File>
 			<File
 				RelativePath="..\time.h"
+				>
+			</File>
+			<File
+				RelativePath="..\NNInterpolator\triangle.h"
+				>
+			</File>
+			<File
+				RelativePath="..\NNInterpolator\version.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Wedge.h"
+				>
+			</File>
+			<File
+				RelativePath="..\zone.h"
 				>
 			</File>
 		</Filter>
