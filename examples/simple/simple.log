@@ -144,9 +144,9 @@ PHREEQC done.
 .
 .
 Reading static data for flow and transport simulation
-A4 array dimension requirement (D4ZGCG iterative solver)......... NRAL .        0 elements
-Primary storage requirement (D4ZGCG iterative solver)............ NPRIST     3838 elements
-Overhead storage requirement (D4ZGCG iterative solver)........... NOHST .   25832 elements
+Linear solver array dimension requirement (D4ZGCG iterative solver)... NSTSLV    29670 elements
+Primary storage requirement (D4ZGCG iterative solver)................. NPRIST     3838 elements
+Overhead storage requirement (D4ZGCG iterative solver)................ NOHST .   25832 elements
                     *** Calculation Information ***
           Row scaling only, using L-inf norm, will be done
           Direction index for d4 zig-zag renumbering ............ IDIR..    1

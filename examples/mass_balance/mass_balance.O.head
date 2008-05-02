@@ -149,10 +149,9 @@
                               *** Output at End of Time Step No.   100 ***
 
      Time .......................................................   0.500      (d)
-     Maximum change in pressure ..............  5.4548E-14     (Pa )   at location (     0    ,  1.00    , 1.000E-02)(m )
+     Maximum change in potentiometric head ...  5.5623E-18      (m )   at location (     0    ,  1.00    , 1.000E-02)(m )
 
-                              Fluid Head (m )
-
+                              Fluid Potentiometric Head (m)
 
                     Vertical Slices
 
@@ -251,10 +250,9 @@
                               *** Output at End of Time Step No.   200 ***
 
      Time .......................................................    1.00      (d)
-     Maximum change in pressure ..............  4.2884E-13     (Pa )   at location (  1.00    ,  1.00    , 1.600E-02)(m )
+     Maximum change in potentiometric head ...  4.3729E-17      (m )   at location (  1.00    ,  1.00    , 1.600E-02)(m )
 
-                              Fluid Head (m )
-
+                              Fluid Potentiometric Head (m)
 
                     Vertical Slices
 

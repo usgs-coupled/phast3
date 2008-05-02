@@ -151,6 +151,12 @@ Processing flow and transport data file.
 		       sample_grid Y 3
 		       sample_grid Z 3
 	END
+WARNING: Guessing boundary condition face to be Z
+Please specify X, Y, or Z face for LEAKY_BC and FLUX_BC.
+WARNING: Guessing boundary condition face to be Y
+Please specify X, Y, or Z face for LEAKY_BC and FLUX_BC.
+WARNING: Guessing boundary condition face to be Y
+Please specify X, Y, or Z face for LEAKY_BC and FLUX_BC.
 WARNING: Horizontal, vertical, and longitudinal dispersivities are not equal for at least one element.
 	However, cross-dispersion calculation is disabled (-cross_dispersion in SOLUTION_METHOD).
 
@@ -203,9 +209,9 @@ PHREEQC done.
 . Central Oklahoma aquifer,
 . demonstration of PHAST
 Reading static data for flow and transport simulation
-A4 array dimension requirement (D4ZGCG iterative solver)......... NRAL .        0 elements
-Primary storage requirement (D4ZGCG iterative solver)............ NPRIST     6840 elements
-Overhead storage requirement (D4ZGCG iterative solver)........... NOHST .   45424 elements
+Linear solver array dimension requirement (D4ZGCG iterative solver)... NSTSLV    52264 elements
+Primary storage requirement (D4ZGCG iterative solver)................. NPRIST     6840 elements
+Overhead storage requirement (D4ZGCG iterative solver)................ NOHST .   45424 elements
                     *** Calculation Information ***
           Row scaling only, using L-inf norm, will be done
           Direction index for d4 zig-zag renumbering ............ IDIR..    1
@@ -247,15 +253,15 @@ Beginning steady state time step no.      6
 
 Beginning steady state time step no.      7
      Maximum change in potentiometric head ..   -1.2601E+01     (m) at location ( 9.000E+04, 6.000E+03,  300.    )(m)
-     Fractional flow residual ...............   -3.8825E-01
+     Fractional flow residual ...............   -3.8826E-01
 
 Beginning steady state time step no.      8
      Maximum change in potentiometric head ..   -1.0075E+01     (m) at location ( 9.000E+04, 3.600E+04,  400.    )(m)
-     Fractional flow residual ...............   -2.3225E-01
+     Fractional flow residual ...............   -2.3298E-01
 
 Beginning steady state time step no.      9
      Maximum change in potentiometric head ..   -1.1976E+01     (m) at location (  0.00    , 3.000E+04,  400.    )(m)
-     Fractional flow residual ...............   -1.0868E-01
+     Fractional flow residual ...............   -1.0871E-01
 
 Beginning steady state time step no.     10
      Maximum change in potentiometric head ..   -1.0996E+01     (m) at location (  0.00    , 2.400E+04,  400.    )(m)
@@ -279,21 +285,21 @@ Beginning steady state time step no.     14
 
 Beginning steady state time step no.     15
      Current time step length ...................................   1.638E+04 (yr)
-          No. of solver iterations, Relative residual:   12      4.0774471E-11
+          No. of solver iterations, Relative residual:   12      4.0774386E-11
      Maximum change in potentiometric head ..   -1.1224E-03     (m) at location (  0.00    , 3.000E+04,  300.    )(m)
-     Fractional flow residual ...............   -8.3176E-08
+     Fractional flow residual ...............   -8.3184E-08
 
 Beginning steady state time step no.     16
      Current time step length ...................................   3.277E+04 (yr)
-          No. of solver iterations, Relative residual:   12      5.0931394E-11
+          No. of solver iterations, Relative residual:   12      5.0931325E-11
      Maximum change in potentiometric head ..   -1.6560E-05     (m) at location (  0.00    , 4.200E+04,  300.    )(m)
-     Fractional flow residual ...............   -4.4141E-10
+     Fractional flow residual ...............   -4.3654E-10
 
 Beginning steady state time step no.     17
      Current time step length ...................................   6.554E+04 (yr)
-          No. of solver iterations, Relative residual:   12      8.4371060E-11
+          No. of solver iterations, Relative residual:   12      8.4367013E-11
      Maximum change in potentiometric head ..    1.1627E-07     (m) at location ( 1.800E+04, 2.400E+04,  300.    )(m)
-     Fractional flow residual ...............   -5.2161E-12
+     Fractional flow residual ...............   -6.8979E-12
 
 Done with steady-state flow.
 Equilibration of cells for initial conditions.
@@ -375,29 +381,29 @@ Beginning time step no.      5
      Current time step length ...................................   2.000E+03 (yr)
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    7      2.5207123E-11
+          No. of solver iterations, Relative residual:    7      2.5207148E-11
           O
-          No. of solver iterations, Relative residual:    7      2.3002742E-11
+          No. of solver iterations, Relative residual:    7      2.3002765E-11
           As
-          No. of solver iterations, Relative residual:    7      7.2372780E-11
+          No. of solver iterations, Relative residual:    7      7.2372792E-11
           C
-          No. of solver iterations, Relative residual:    7      2.5191615E-11
+          No. of solver iterations, Relative residual:    7      2.5191642E-11
           Ca
-          No. of solver iterations, Relative residual:    7      6.2258890E-11
+          No. of solver iterations, Relative residual:    7      6.2258930E-11
           Cl
-          No. of solver iterations, Relative residual:    7      5.6177293E-11
+          No. of solver iterations, Relative residual:    7      5.6177358E-11
           Mg
-          No. of solver iterations, Relative residual:    7      7.2533115E-11
+          No. of solver iterations, Relative residual:    7      7.2533222E-11
           Na
-          No. of solver iterations, Relative residual:    7      5.2540244E-11
+          No. of solver iterations, Relative residual:    7      5.2540307E-11
           S
-          No. of solver iterations, Relative residual:    7      5.6177293E-11
+          No. of solver iterations, Relative residual:    7      5.6177358E-11
           Charge
-          No. of solver iterations, Relative residual:    7      2.4473639E-11
+          No. of solver iterations, Relative residual:    7      2.4473663E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 540
-          Total iterations all cells: 2873
+          Total iterations all cells: 2874
           Number of cells with zero iterations: 0
           Maximum iterations for one cell: 6
 

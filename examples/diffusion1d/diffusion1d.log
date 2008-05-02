@@ -99,9 +99,9 @@ PHREEQC done.
 ..       Diffusion
 ..
 Reading static data for flow and transport simulation
-A4 array dimension requirement (D4ZGCG iterative solver)......... NRAL .        0 elements
-Primary storage requirement (D4ZGCG iterative solver)............ NPRIST    19038 elements
-Overhead storage requirement (D4ZGCG iterative solver)........... NOHST .  104702 elements
+Linear solver array dimension requirement (D4ZGCG iterative solver)... NSTSLV   123740 elements
+Primary storage requirement (D4ZGCG iterative solver)................. NPRIST    19038 elements
+Overhead storage requirement (D4ZGCG iterative solver)................ NOHST .  104702 elements
 
 Beginning flow calculation for steady-state i.c.
 Reading transient data for simulation: Set  1

@@ -34,9 +34,10 @@
           Number of specified flux b.c. cells ............................. NFBC .      0
           Number of leakage cells ......................................... NLBC .      0
           Number of river leakage cells ................................... NRBC .      0
+          Number of drain leakage cells ................................... NDBC .      0
           Number of wells ................................................. NWEL .      3
 
-          A4 array dimension requirement (D4ZGCG iterative solver)......... NRAL .        0 elements
+          Linear solver array dimension requirement (D4ZGCG iterative solver)... NSTSLV   207257 elements
  ------------------------------------------------------------------------------------------------------------------------
 
 

@@ -35,9 +35,10 @@
           Number of specified flux b.c. cells ............................. NFBC .     75
           Number of leakage cells ......................................... NLBC .     60
           Number of river leakage cells ................................... NRBC .     34
+          Number of drain leakage cells ................................... NDBC .      0
           Number of wells ................................................. NWEL .      2
 
-          A4 array dimension requirement (D4ZGCG iterative solver)......... NRAL .        0 elements
+          Linear solver array dimension requirement (D4ZGCG iterative solver)... NSTSLV    52264 elements
  ------------------------------------------------------------------------------------------------------------------------
 
 
@@ -123,7 +124,7 @@
 
  ------------------------------------------------------------------------------------------------------------------------
 
-                    Initial fluid in region ...............................  2.784842E+14  (kg) ;  2.784842E+11  (m^3)
+                    Initial fluid in region ...............................  2.784841E+14  (kg) ;  2.784841E+11  (m^3)
 
                     Initial solute in region:H         ....................  1.055554E+09  (kg)
 
@@ -151,12 +152,12 @@
 
                                         *** Transient Data ***
 
-     Time ..............................       0      (yr )
+     Time ..............................       0      (yr)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  2.000E+03  (yr )
+          Fixed time step length .......................................... DELTIM  2.000E+03  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  1.000E+03  (yr)
 
@@ -166,12 +167,12 @@
 
                                         *** Transient Data ***
 
-     Time ..............................   1.000E+03  (yr )
+     Time ..............................   1.000E+03  (yr)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  2.000E+03  (yr )
+          Fixed time step length .......................................... DELTIM  2.000E+03  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  2.000E+03  (yr)
 
@@ -181,12 +182,12 @@
 
                                         *** Transient Data ***
 
-     Time ..............................   2.000E+03  (yr )
+     Time ..............................   2.000E+03  (yr)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  2.000E+03  (yr )
+          Fixed time step length .......................................... DELTIM  2.000E+03  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  2.200E+03  (yr)
 
@@ -196,12 +197,12 @@
 
                                         *** Transient Data ***
 
-     Time ..............................   2.200E+03  (yr )
+     Time ..............................   2.200E+03  (yr)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  2.000E+03  (yr )
+          Fixed time step length .......................................... DELTIM  2.000E+03  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  2.300E+03  (yr)
 
@@ -211,12 +212,12 @@
 
                                         *** Transient Data ***
 
-     Time ..............................   2.300E+03  (yr )
+     Time ..............................   2.300E+03  (yr)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  2.000E+03  (yr )
+          Fixed time step length .......................................... DELTIM  2.000E+03  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  3.000E+03  (yr)
 
@@ -226,12 +227,12 @@
 
                                         *** Transient Data ***
 
-     Time ..............................   3.000E+03  (yr )
+     Time ..............................   3.000E+03  (yr)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  2.000E+03  (yr )
+          Fixed time step length .......................................... DELTIM  2.000E+03  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  3.100E+03  (yr)
 
@@ -241,12 +242,12 @@
 
                                         *** Transient Data ***
 
-     Time ..............................   3.100E+03  (yr )
+     Time ..............................   3.100E+03  (yr)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  2.000E+03  (yr )
+          Fixed time step length .......................................... DELTIM  2.000E+03  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  3.200E+03  (yr)
 
@@ -256,12 +257,12 @@
 
                                         *** Transient Data ***
 
-     Time ..............................   3.200E+03  (yr )
+     Time ..............................   3.200E+03  (yr)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  2.000E+03  (yr )
+          Fixed time step length .......................................... DELTIM  2.000E+03  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  4.000E+03  (yr)
 
@@ -271,12 +272,12 @@
 
                                         *** Transient Data ***
 
-     Time ..............................   4.000E+03  (yr )
+     Time ..............................   4.000E+03  (yr)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  2.000E+03  (yr )
+          Fixed time step length .......................................... DELTIM  2.000E+03  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  5.000E+03  (yr)
 
@@ -286,12 +287,12 @@
 
                                         *** Transient Data ***
 
-     Time ..............................   5.000E+03  (yr )
+     Time ..............................   5.000E+03  (yr)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  2.000E+03  (yr )
+          Fixed time step length .......................................... DELTIM  2.000E+03  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  6.000E+03  (yr)
 
@@ -301,12 +302,12 @@
 
                                         *** Transient Data ***
 
-     Time ..............................   6.000E+03  (yr )
+     Time ..............................   6.000E+03  (yr)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  2.000E+03  (yr )
+          Fixed time step length .......................................... DELTIM  2.000E+03  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  6.100E+03  (yr)
 
@@ -316,12 +317,12 @@
 
                                         *** Transient Data ***
 
-     Time ..............................   6.100E+03  (yr )
+     Time ..............................   6.100E+03  (yr)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  2.000E+03  (yr )
+          Fixed time step length .......................................... DELTIM  2.000E+03  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  6.200E+03  (yr)
 
@@ -331,12 +332,12 @@
 
                                         *** Transient Data ***
 
-     Time ..............................   6.200E+03  (yr )
+     Time ..............................   6.200E+03  (yr)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  2.000E+03  (yr )
+          Fixed time step length .......................................... DELTIM  2.000E+03  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  7.000E+03  (yr)
 
@@ -346,12 +347,12 @@
 
                                         *** Transient Data ***
 
-     Time ..............................   7.000E+03  (yr )
+     Time ..............................   7.000E+03  (yr)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  2.000E+03  (yr )
+          Fixed time step length .......................................... DELTIM  2.000E+03  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  8.000E+03  (yr)
 
@@ -361,12 +362,12 @@
 
                                         *** Transient Data ***
 
-     Time ..............................   8.000E+03  (yr )
+     Time ..............................   8.000E+03  (yr)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  2.000E+03  (yr )
+          Fixed time step length .......................................... DELTIM  2.000E+03  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  8.100E+03  (yr)
 
@@ -376,12 +377,12 @@
 
                                         *** Transient Data ***
 
-     Time ..............................   8.100E+03  (yr )
+     Time ..............................   8.100E+03  (yr)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  2.000E+03  (yr )
+          Fixed time step length .......................................... DELTIM  2.000E+03  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  8.200E+03  (yr)
 
@@ -391,12 +392,12 @@
 
                                         *** Transient Data ***
 
-     Time ..............................   8.200E+03  (yr )
+     Time ..............................   8.200E+03  (yr)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  2.000E+03  (yr )
+          Fixed time step length .......................................... DELTIM  2.000E+03  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  9.000E+03  (yr)
 
@@ -406,12 +407,12 @@
 
                                         *** Transient Data ***
 
-     Time ..............................   9.000E+03  (yr )
+     Time ..............................   9.000E+03  (yr)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  2.000E+03  (yr )
+          Fixed time step length .......................................... DELTIM  2.000E+03  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  1.100E+04  (yr)
 
@@ -421,12 +422,12 @@
 
                                         *** Transient Data ***
 
-     Time ..............................   1.100E+04  (yr )
+     Time ..............................   1.100E+04  (yr)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  2.000E+03  (yr )
+          Fixed time step length .......................................... DELTIM  2.000E+03  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  1.200E+04  (yr)
 
@@ -436,12 +437,12 @@
 
                                         *** Transient Data ***
 
-     Time ..............................   1.200E+04  (yr )
+     Time ..............................   1.200E+04  (yr)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  2.000E+03  (yr )
+          Fixed time step length .......................................... DELTIM  2.000E+03  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  1.500E+04  (yr)
 

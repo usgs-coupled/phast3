@@ -23,6 +23,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  3.093691E+05  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -46,6 +47,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  3.079399E+05  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -69,6 +71,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  6.107572E+05  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -92,6 +95,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  1.195202E+06  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -115,6 +119,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  2.297187E+06  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -138,6 +143,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  4.325330E+06  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -161,6 +167,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  8.060266E+06  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -184,6 +191,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  1.490472E+07  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -207,6 +215,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  2.807520E+07  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -230,6 +239,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  5.423846E+07  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -253,6 +263,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  1.024304E+08  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -276,6 +287,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  1.997855E+08  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -299,6 +311,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  3.552400E+08  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -322,6 +335,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  5.648353E+08  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -345,6 +359,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  9.399745E+08  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -368,6 +383,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  1.566035E+09  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -391,6 +407,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  2.955761E+09  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -414,6 +431,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  5.509508E+09  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -437,6 +455,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  9.930967E+09  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -460,6 +479,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  1.893852E+10  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -483,6 +503,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  3.406950E+10  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -506,6 +527,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  6.425033E+10  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -529,6 +551,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  6.397586E+10  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -552,6 +575,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  6.368692E+10  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -575,6 +599,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  6.395799E+10  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -598,6 +623,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  5.556198E+10  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -621,6 +647,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  5.501438E+10  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -644,6 +671,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  5.489854E+10  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -667,6 +695,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  5.476960E+10  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -690,6 +719,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  5.463328E+10  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -713,6 +743,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  5.449222E+10  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -736,6 +767,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  5.434880E+10  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -759,6 +791,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  5.420511E+10  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -782,6 +815,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  5.406293E+10  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -805,6 +839,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  5.392373E+10  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -828,6 +863,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  5.346304E+10  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -851,6 +887,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  5.268664E+10  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -874,6 +911,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  5.218793E+10  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -897,6 +935,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  5.141626E+10  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -920,6 +959,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  5.141700E+10  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -943,6 +983,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  5.141699E+10  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 
@@ -966,6 +1007,7 @@
  Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
  Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
  Step total river leakage b.c. fluid net inflow .............  5.141699E+10  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
  Step total well fluid net inflow ...........................  0.000000E+00  (kg)
 
 

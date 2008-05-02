@@ -81,10 +81,9 @@
                               *** Output at End of Time Step No.     2 ***
 
      Time .......................................................   2.000E-04  (s)
-     Maximum change in pressure ..............  9.8067E-02     (Pa )   at location (  1.00    ,     0    ,     0    )(m )
+     Maximum change in potentiometric head ...  1.0000E-05      (m )   at location (  1.00    ,     0    ,     0    )(m )
 
-                              Fluid Head (m )
-
+                              Fluid Potentiometric Head (m)
 
                     Areal Layers
 
@@ -111,10 +110,9 @@
                               *** Output at End of Time Step No.     7 ***
 
      Time .......................................................    5.00      (s)
-     Maximum change in pressure ..............  9.8047E+02     (Pa )   at location (     0    ,  1.00    ,  1.00    )(m )
+     Maximum change in potentiometric head ...  9.9980E-02      (m )   at location (     0    ,  1.00    ,  1.00    )(m )
 
-                              Fluid Head (m )
-
+                              Fluid Potentiometric Head (m)
 
                     Areal Layers
 
@@ -147,10 +145,9 @@
                               *** Output at End of Time Step No.    12 ***
 
      Time .......................................................    10.0      (s)
-     Maximum change in pressure .............. -9.8067E+02     (Pa )   at location (  1.00    ,  1.00    ,     0    )(m )
+     Maximum change in potentiometric head ... -1.0000E-01      (m )   at location (  1.00    ,  1.00    ,     0    )(m )
 
-                              Fluid Head (m )
-
+                              Fluid Potentiometric Head (m)
 
                     Areal Layers
 

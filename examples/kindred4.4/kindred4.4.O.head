@@ -391,10 +391,9 @@
                               *** Output at End of Time Step No.   272 ***
 
      Time .......................................................    68.0      (d)
-     Maximum change in pressure ..............  1.9457E-08     (Pa )   at location (  3.50    ,  1.00    ,  1.00    )(m )
+     Maximum change in potentiometric head ...  1.9745E-12      (m )   at location (  3.50    ,  1.00    ,  1.00    )(m )
 
-                              Fluid Head (m )
-
+                              Fluid Potentiometric Head (m)
 
                     Vertical Slices
 

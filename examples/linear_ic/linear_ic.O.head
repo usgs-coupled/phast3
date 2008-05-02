@@ -68,10 +68,9 @@
                               *** Output at End of Time Step No.     1 ***
 
      Time .......................................................   0.500      (s)
-     Maximum change in pressure .............. -1.1051E-11     (Pa )   at location (  2.00    ,  10.0    ,  10.0    )(m )
+     Maximum change in potentiometric head ... -1.1269E-15      (m )   at location (  2.00    ,  10.0    ,  10.0    )(m )
 
-                              Fluid Head (m )
-
+                              Fluid Potentiometric Head (m)
 
                     Areal Layers
 

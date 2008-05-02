@@ -47,8 +47,8 @@
 
                                         *** Transient Well Data ***
           Well      Flow Rate     Surface     Well Datum     Head          Injection or Limiting
-          No.        (m ^3/min)     Head          Head      Limited?          Solution Index No.
-                                   (m )          (m )                              (-)
+          No.        (m^3/min)     Head          Head      Limited?          Solution Index No.
+                                   (m)          (m)                              (-)
         ------------------------------------------------------------------------------------------
             1      -1.888                                    No                        
             2           0                                    No                        

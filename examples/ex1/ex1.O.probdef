@@ -35,9 +35,10 @@
           Number of specified flux b.c. cells ............................. NFBC .      0
           Number of leakage cells ......................................... NLBC .      0
           Number of river leakage cells ................................... NRBC .      0
+          Number of drain leakage cells ................................... NDBC .      0
           Number of wells ................................................. NWEL .      0
 
-          A4 array dimension requirement (D4 direct solver)................ NRAL .        0 elements
+          Linear solver array dimension requirement (D4 direct solver).......... NSTSLV     3399 elements
  ------------------------------------------------------------------------------------------------------------------------
 
 
@@ -143,12 +144,12 @@
 
                                         *** Transient Data ***
 
-     Time ..............................       0      (s  )
+     Time ..............................       0      (s)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  0.400      (s  )
+          Fixed time step length .......................................... DELTIM  0.400      (s)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG   60.0      (s)
 
@@ -158,12 +159,12 @@
 
                                         *** Transient Data ***
 
-     Time ..............................    60.0      (s  )
+     Time ..............................    60.0      (s)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  0.400      (s  )
+          Fixed time step length .......................................... DELTIM  0.400      (s)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG   120.      (s)
 

@@ -255,10 +255,9 @@
                               *** Output at End of Time Step No.   120 ***
 
      Time .......................................................    60.0      (s)
-     Maximum change in pressure .............. -8.0153E-12     (Pa )   at location ( 8.000E-02, 1.000E-02, 1.000E-02)(m )
+     Maximum change in potentiometric head ... -8.1733E-16      (m )   at location ( 8.000E-02, 1.000E-02, 1.000E-02)(m )
 
-                              Fluid Head (m )
-
+                              Fluid Potentiometric Head (m)
 
                     Areal Layers
 

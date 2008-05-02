@@ -84,7 +84,6 @@
 
                               Fluid Potentiometric Head (m)
 
-
                     Areal Layers
 
                                                             K =  1
@@ -752,10 +751,9 @@
                               *** Output at End of Steady State Iteration No.     2 ***
 
      Time .......................................................       0      (d)
-     Maximum change in potentiometric head ... -5.1136E-14    (m ) at location (  19.0    ,  23.0    ,  1.00    )(m)
+     Maximum change in potentiometric head ... -5.1328E-14    (m ) at location (  19.0    ,  22.0    ,     0    )(m)
 
                               Fluid Potentiometric Head (m)
-
 
                     Areal Layers
 

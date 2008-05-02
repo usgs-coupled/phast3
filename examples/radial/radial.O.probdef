@@ -35,9 +35,10 @@
           Number of specified flux b.c. cells ............................. NFBC .      0
           Number of leakage cells ......................................... NLBC .      0
           Number of river leakage cells ................................... NRBC .      0
+          Number of drain leakage cells ................................... NDBC .      0
           Number of wells ................................................. NWEL .      1
 
-          A4 array dimension requirement (D4ZGCG iterative solver)......... NRAL .        0 elements
+          Linear solver array dimension requirement (D4ZGCG iterative solver)... NSTSLV   138207 elements
  ------------------------------------------------------------------------------------------------------------------------
 
 
@@ -158,12 +159,12 @@
 
                                         *** Transient Data ***
 
-     Time ..............................       0      (h  )
+     Time ..............................       0      (h)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM   1.00      (h  )
+          Fixed time step length .......................................... DELTIM   1.00      (h)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  1.000E+03  (h)
 

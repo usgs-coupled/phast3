@@ -35,9 +35,10 @@
           Number of specified flux b.c. cells ............................. NFBC .     76
           Number of leakage cells ......................................... NLBC .     60
           Number of river leakage cells ................................... NRBC .     34
+          Number of drain leakage cells ................................... NDBC .      0
           Number of wells ................................................. NWEL .      1
 
-          A4 array dimension requirement (D4ZGCG iterative solver)......... NRAL .        0 elements
+          Linear solver array dimension requirement (D4ZGCG iterative solver)... NSTSLV    52264 elements
  ------------------------------------------------------------------------------------------------------------------------
 
 
@@ -143,7 +144,7 @@
 
                     Initial solute in region:S         ....................  4.219101E+10  (kg)
 
-                    Initial solute in region:Charge    ....................  2.863302E-01  (kg)
+                    Initial solute in region:Charge    ....................  2.863301E-01  (kg)
 
  ------------------------------------------------------------------------------------------------------------------------
  ------------------------------------------------------------------------------------------------------------------------
@@ -151,12 +152,12 @@
 
                                         *** Transient Data ***
 
-     Time ..............................       0      (yr )
+     Time ..............................       0      (yr)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  2.000E+03  (yr )
+          Fixed time step length .......................................... DELTIM  2.000E+03  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  1.000E+05  (yr)
 

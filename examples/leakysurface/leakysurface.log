@@ -62,6 +62,8 @@ Processing flow and transport data file.
 	        xyz_head               true
 	        xyz_ss_velocities      true
 	END
+WARNING: Guessing boundary condition face to be X
+Please specify X, Y, or Z face for LEAKY_BC and FLUX_BC.
 
 PHASTINPUT done.
 
@@ -70,9 +72,9 @@ Running PHAST.
 .
 .
 Reading static data for flow and transport simulation
-A4 array dimension requirement (D4 direct solver)................ NRAL .        0 elements
-Primary storage requirement (D4 direct solver)................... NPRIST      270 elements
-Overhead storage requirement (D4 direct solver).................. NOHST .     609 elements
+Linear solver array dimension requirement (D4 direct solver).......... NSTSLV      879 elements
+Primary storage requirement (D4 direct solver)........................ NPRIST      270 elements
+Overhead storage requirement (D4 direct solver)....................... NOHST .     609 elements
                     *** Calculation Information ***
           Row scaling only, using L-inf norm, will be done
 
@@ -84,7 +86,7 @@ Minimum time step required ...................................... DTIMMN    2.0 
 Maximum time step allowed ....................................... DTIMMX   2.00E+06(yr )
 
 Beginning steady state time step no.      1
-     Maximum change in potentiometric head ..   -1.4426E+01     (m) at location (  0.00    ,  0.00    ,  0.00    )(m)
+     Maximum change in potentiometric head ..   -1.4426E+01     (m) at location (  0.00    , 4.800E+04,  0.00    )(m)
      Fractional flow residual ...............   -2.0000E+00
 
 Beginning steady state time step no.      2
@@ -100,7 +102,7 @@ Beginning steady state time step no.      4
      Fractional flow residual ...............   -2.0000E+00
 
 Beginning steady state time step no.      5
-     Maximum change in potentiometric head ..   -1.0438E+01     (m) at location (  0.00    , 4.800E+04,  400.    )(m)
+     Maximum change in potentiometric head ..   -1.0438E+01     (m) at location (  0.00    ,  0.00    ,  400.    )(m)
      Fractional flow residual ...............   -2.0000E+00
 
 Beginning steady state time step no.      6
@@ -108,7 +110,7 @@ Beginning steady state time step no.      6
      Fractional flow residual ...............   -2.0000E+00
 
 Beginning steady state time step no.      7
-     Maximum change in potentiometric head ..   -1.3931E+01     (m) at location (  0.00    , 4.800E+04,  400.    )(m)
+     Maximum change in potentiometric head ..   -1.3931E+01     (m) at location (  0.00    ,  0.00    ,  400.    )(m)
      Fractional flow residual ...............   -1.9990E+00
 
 Beginning steady state time step no.      8
@@ -121,14 +123,14 @@ Beginning steady state time step no.      9
 
 Beginning steady state time step no.     10
      Maximum change in potentiometric head ..   -2.0848E+01     (m) at location ( 1.800E+04,  0.00    ,  400.    )(m)
-     Fractional flow residual ...............   -1.4657E+00
+     Fractional flow residual ...............   -1.4656E+00
 
 Beginning steady state time step no.     11
-     Maximum change in potentiometric head ..   -2.0665E+01     (m) at location ( 2.400E+04, 4.800E+04,  400.    )(m)
+     Maximum change in potentiometric head ..   -2.0665E+01     (m) at location ( 2.400E+04,  0.00    ,  400.    )(m)
      Fractional flow residual ...............   -8.4404E-01
 
 Beginning steady state time step no.     12
-     Maximum change in potentiometric head ..   -1.5630E+01     (m) at location ( 2.400E+04,  0.00    ,  400.    )(m)
+     Maximum change in potentiometric head ..   -1.5630E+01     (m) at location ( 2.400E+04, 4.800E+04,  400.    )(m)
      Fractional flow residual ...............   -3.3002E-01
 
 Beginning steady state time step no.     13
@@ -136,35 +138,35 @@ Beginning steady state time step no.     13
      Fractional flow residual ...............   -8.0706E-02
 
 Beginning steady state time step no.     14
-     Maximum change in potentiometric head ..   -2.0887E+00     (m) at location ( 2.400E+04,  0.00    ,  400.    )(m)
+     Maximum change in potentiometric head ..   -2.0887E+00     (m) at location ( 2.400E+04, 4.800E+04,  400.    )(m)
      Fractional flow residual ...............   -1.0824E-02
 
 Beginning steady state time step no.     15
-     Maximum change in potentiometric head ..   -2.7033E-01     (m) at location ( 1.800E+04, 4.800E+04,  400.    )(m)
+     Maximum change in potentiometric head ..   -2.7033E-01     (m) at location ( 1.800E+04,  0.00    ,  400.    )(m)
      Fractional flow residual ...............   -6.5057E-04
 
 Beginning steady state time step no.     16
-     Maximum change in potentiometric head ..   -1.0894E-02     (m) at location ( 6.000E+03,  0.00    ,  400.    )(m)
-     Fractional flow residual ...............   -7.2833E-06
+     Maximum change in potentiometric head ..   -1.0894E-02     (m) at location ( 6.000E+03, 4.800E+04,  400.    )(m)
+     Fractional flow residual ...............   -7.2832E-06
 
 Beginning steady state time step no.     17
-     Maximum change in potentiometric head ..    8.4910E-04     (m) at location ( 3.600E+04, 4.800E+04,  400.    )(m)
+     Maximum change in potentiometric head ..    8.4910E-04     (m) at location ( 3.600E+04,  0.00    ,  400.    )(m)
      Fractional flow residual ...............    5.3964E-07
 
 Beginning steady state time step no.     18
      Current time step length ...................................   1.311E+05 (yr)
-     Maximum change in potentiometric head ..    2.6953E-05     (m) at location ( 1.200E+04, 4.800E+04,  400.    )(m)
+     Maximum change in potentiometric head ..    2.6953E-05     (m) at location ( 1.200E+04,  0.00    ,  400.    )(m)
      Fractional flow residual ...............    1.0122E-09
 
 Beginning steady state time step no.     19
      Current time step length ...................................   2.621E+05 (yr)
-     Maximum change in potentiometric head ..   -3.7638E-06     (m) at location ( 3.000E+04, 4.800E+04,  400.    )(m)
+     Maximum change in potentiometric head ..   -3.7638E-06     (m) at location ( 3.000E+04,  0.00    ,  400.    )(m)
      Fractional flow residual ...............   -5.7687E-10
 
 Beginning steady state time step no.     20
      Current time step length ...................................   5.243E+05 (yr)
      Maximum change in potentiometric head ..    1.4933E-07     (m) at location ( 5.400E+04, 4.800E+04,  400.    )(m)
-     Fractional flow residual ...............    8.6697E-12
+     Fractional flow residual ...............    8.6693E-12
 
 Done with steady-state flow.
      Time at which next set of transient parameters will be read .......... TIMCHG  1.000E+05  (yr)

@@ -109,9 +109,9 @@ PHREEQC done.
 . 1D transport and ion exchange
 . PHREEQC example 11 (Parkhurst and Appelo, 1999)
 Reading static data for flow and transport simulation
-A4 array dimension requirement (D4 direct solver)................ NRAL .        0 elements
-Primary storage requirement (D4 direct solver)................... NPRIST      720 elements
-Overhead storage requirement (D4 direct solver).................. NOHST .    1559 elements
+Linear solver array dimension requirement (D4 direct solver).......... NSTSLV     2279 elements
+Primary storage requirement (D4 direct solver)........................ NPRIST      720 elements
+Overhead storage requirement (D4 direct solver)....................... NOHST .    1559 elements
                     *** Calculation Information ***
           Row scaling only, using L-inf norm, will be done
 Equilibration of cells for initial conditions.
