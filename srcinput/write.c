@@ -192,8 +192,8 @@ int write_initial(void)
 	output_msg(OUTPUT_HST,"C.1.6 .. NX,NY,NZ,NHCN, Number of elements\n");
 	output_msg(OUTPUT_HST,"     %d %d %d 0 %d\n", grid[0].count_coord, grid[1].count_coord, grid[2].count_coord, (nx-1) * (ny-1) * (nz-1));
 	output_msg(OUTPUT_HST,"C.1.7 .. NSBC,NFBC,NLBC,NRBC,NDBC, NAIFC,NHCBC,NWEL\n");
-	output_msg(OUTPUT_HST,"     %d %d %d %d 0 0 %d\n", count_specified, count_flux, count_leaky, count_river_segments, count_wells);
-	//output_msg(OUTPUT_HST,"     %d %d %d %d %d 0 0 %d\n", count_specified, count_flux, count_leaky, count_river_segments, count_drain_segments, count_wells);
+	//output_msg(OUTPUT_HST,"     %d %d %d %d 0 0 %d\n", count_specified, count_flux, count_leaky, count_river_segments, count_wells);
+	output_msg(OUTPUT_HST,"     %d %d %d %d %d 0 0 %d\n", count_specified, count_flux, count_leaky, count_river_segments, count_drain_segments, count_wells);
 /*
  *   solution method
  */
