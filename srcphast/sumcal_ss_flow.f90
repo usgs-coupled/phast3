@@ -390,7 +390,10 @@ SUBROUTINE sumcal_ss_flow
            ! ... Calculate fraction of cell that is newly saturated using
            ! ...      residual volume of fluid from cell below
            frac(m+nxy)=(frac(m)-1._kdp)*pv(m)/pv(m+nxy)
-           IF(k+1 == nz .OR. ibc(m+2*nxy) == -1) THEN
+           !IF(k+1 == nz .OR. ibc(m+2*nxy) == -1) THEN
+           IF(k+1 == nz) THEN
+              zfs(mt)=.5*(z1+z0+frac(m+nxy)*(z1-z0))     ! half cell thickness
+           else if (ibc(m+2*nxy) == -1) then
               zfs(mt)=.5*(z1+z0+frac(m+nxy)*(z1-z0))     ! half cell thickness
            ELSE
               z2=z(k+2)

@@ -50,8 +50,9 @@ SUBROUTINE read1
           NHCN, NPMZ
 8003 FORMAT(TR5,A/TR5,4I5,I8)  
 !!$ for later     READ(FUINS,*) nsbc, nfbc, nlbc, nrbc, ndbc, naifc, nhcbc, nwel
-     ndbc = 0
-     READ(FUINS,*) nsbc, nfbc, nlbc, nrbc, naifc, nhcbc, nwel
+!!     ndbc = 0
+!!    READ(FUINS,*) nsbc, nfbc, nlbc, nrbc, naifc, nhcbc, nwel
+     READ(FUINS,*) nsbc, nfbc, nlbc, nrbc, ndbc, naifc, nhcbc, nwel
      IF (print_rde) WRITE(FURDE, 8103) 'NSBC,NFBC,NLBC,NRBC,NAIFC,NHCBC,NWEL,[1.7]',  &
            nsbc, nfbc, nlbc, nrbc, ndbc, naifc, nhcbc, nwel
 8103 FORMAT(TR5,A/TR5,10I5)

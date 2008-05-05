@@ -33,6 +33,7 @@ SUBROUTINE hdf_write_invariant(mpi_myself)
   INTEGER, DIMENSION(:), ALLOCATABLE  :: MWBC ! Well nodes
   ! ... Set string for use with RCS ident command
   INTEGER, DIMENSION(nrbc_seg) :: temp_rbc
+  INTEGER, DIMENSION(ndbc_seg) :: temp_dbc
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
@@ -79,9 +80,9 @@ SUBROUTINE hdf_write_invariant(mpi_myself)
      endif
      if(ndbc_seg > 0) then
         do i = 1, ndbc_seg
-           temp_rbc(i) = mdbc(i)
+           temp_dbc(i) = mdbc(i)
         enddo
-        CALL HDF_WRITE_FEATURE('Drain', temp_rbc, ndbc_seg)
+        CALL HDF_WRITE_FEATURE('Drain', temp_dbc, ndbc_seg)
      end if
   ! 
   ! Free Well Nodes

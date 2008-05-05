@@ -116,6 +116,14 @@ SUBROUTINE errprt(ie1,ie2)
      erline='39  - READ2 - Invalid b.c. code at one or more nodes '
      CALL errprt_c(erline)
   END IF
+  IF(ierr(40)) THEN
+     erline='40  - INIT2_1 - All cell columns are dry '
+     CALL errprt_c(erline)
+  END IF
+!  IF(ierr(41)) THEN
+!     erline='41  - INIT2_1 - One or more cell columns are dry '
+!     CALL errprt_c(erline)
+!  END IF   
   IF(ierr(45)) THEN
      erline='45  - READ2 - Input water table elevation above the '//  &
           'top of the expanded full cells in the uppermost plane'

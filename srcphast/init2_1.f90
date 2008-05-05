@@ -49,6 +49,7 @@ SUBROUTINE init2_1
   INTEGER, DIMENSION(:), ALLOCATABLE :: umbc
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: uarxbc, uarybc, uarzbc
   TYPE(cell_subdom), DIMENSION(:), ALLOCATABLE :: cell_sd
+  LOGICAL :: all_dry, some_dry
   ! ... set string for use with rcs ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
@@ -1299,6 +1300,8 @@ SUBROUTINE init2_1
   ! ... set the pointer to the cell containing the free surface
   ! ...      at each node location over the horizontal area
   ! ... also set all frac to one for cells below the f.s. cell
+  all_dry = .true.
+  some_dry = .false.
   DO mt=1,nxy
      m1 = nxyz-nxy+mt
 750  IF(frac(m1) > 0._kdp) go to 760  
@@ -1309,7 +1312,13 @@ SUBROUTINE init2_1
      DO m=m1-nxy,1,-nxy
         frac(m) = 1._kdp
      END DO
+     if(mfsbc(mt) /= 0) all_dry = .false.
+     if(mfsbc(mt) == 0) some_dry = .true.
   END DO
+  if (all_dry) ierr(40) = .true.
+  if (some_dry) then
+     CALL warnprt_c('One or more columns are dry.')
+  endif
   ! ... calculate initial density, viscosity, and enthalpy distributions
   ut = t0  
   uc = w0  
