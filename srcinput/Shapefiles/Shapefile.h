@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>   // std::vector
 #include "../Point.h"
+#include "../gpc.h"
 
 class Shapefile 
 {
@@ -12,7 +13,8 @@ public:
   Shapefile(void);
   Shapefile(std::string &fname);
   void Dump(std::ostream &oss);
-  void Extract(std::vector<Point> &pts, const int field);
+  void Extract_surface(std::vector<Point> &pts, const int field);
+  gpc_polygon *Extract_polygon(void);
   // destructor
   ~Shapefile(void);
 

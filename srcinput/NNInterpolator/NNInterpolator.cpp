@@ -11,9 +11,8 @@
 NNInterpolator::NNInterpolator(void)
 {
   this->delaunay_triangulation = NULL;
-
-  // Set bounding box
   this->nn = NULL;
+  this->pin = NULL;
 
 }
 // Destructor
@@ -21,6 +20,7 @@ NNInterpolator::~NNInterpolator(void)
 {
   if (this->nn != NULL) nnpi_destroy(this->nn);
   if (this->delaunay_triangulation != NULL) delaunay_destroy(this->delaunay_triangulation);
+  if (this->pin != NULL) delete this->pin;
 }
 bool nnpi_interpolate(std::vector<Point> &pts_in, std::vector<Point> &pts_out, double wmin)
 {
@@ -133,7 +133,7 @@ bool nnpi_interpolate(std::vector<Point> &pts_in, std::vector<Point> &pts_out, d
   delete [] pout;
   return true;
 }
-bool NNInterpolator::preprocess(std::vector<Point> &pts_in, std::vector<Point> corners)
+bool NNInterpolator::preprocess(std::vector<Point> &pts_in, std::vector<Point> &corners)
 {
 
   if (pts_in.size() == 0)
@@ -143,49 +143,54 @@ bool NNInterpolator::preprocess(std::vector<Point> &pts_in, std::vector<Point> c
 
   // set up points in input array
   int nin = pts_in.size();
-  point * pin = new point[nin];
+  this->pin = new point[nin + corners.size()];
 
   int i;
   for (i = 0; i < nin; i++)
   {
-    pin[i].x = pts_in[i].x();
-    pin[i].y = pts_in[i].y();
-    pin[i].z = pts_in[i].get_v();
+    this->pin[i].x = pts_in[i].x();
+    this->pin[i].y = pts_in[i].y();
+    this->pin[i].z = pts_in[i].get_v();
   }
 
   assert(this->delaunay_triangulation == 0);
   assert(this->nn == 0);
 
-  this->delaunay_triangulation = delaunay_build(nin, pin, 0, NULL, 0, NULL);
+  this->delaunay_triangulation = delaunay_build(nin, this->pin, 0, NULL, 0, NULL);
   this->nn = nnpi_create(this->delaunay_triangulation);
   int seed = 0;
 
   double wmin = 0;  // no extrapolation
   nnpi_setwmin(this->nn, wmin);
 
-
-#ifdef SKIP //need some more work to extrapolate to edges
-  // extend region to corners if necessary
+  // find corners not in convex hull 
+  int new_nin = nin;
   if (corners.size() > 0) {
-    for (i = 0; i < int corners.size(); i++)
+    for (i = 0; i < (int) corners.size(); i++)
     {
-      point p;
-      p.x = corners[i].x();
-      p.y = corners[i].y();
-      p.z = 0.0;
-      
-      if (isnan(this->interpolate(&p))
+      Point p = corners[i];
+   
+      if (isnan(this->interpolate(p)))
       {
-	
+	this->pin[new_nin].x = corners[i].x();
+	this->pin[new_nin].y = corners[i].y();
+
+	// find value of nearest point in pts_in
+	this->pin[new_nin].z = interpolate_nearest(pts_in, corners[i]);
+	new_nin++;
       }
     }
   }
-#endif
-
-
-  
-  // delete points
-  delete [] pin;
+  if (new_nin > nin)
+  {
+    if (this->nn != NULL) nnpi_destroy(this->nn);
+    if (this->delaunay_triangulation != NULL) delaunay_destroy(this->delaunay_triangulation);
+    this->nn = NULL;
+    this->delaunay_triangulation = NULL;
+    this->delaunay_triangulation = delaunay_build(new_nin, this->pin, 0, NULL, 0, NULL);
+    this->nn = nnpi_create(this->delaunay_triangulation);
+    nnpi_setwmin(this->nn, wmin);
+  }
 
   return true;
 }

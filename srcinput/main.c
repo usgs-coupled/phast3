@@ -81,63 +81,59 @@ int main(int argc, char *argv[])
 	}
 	*/
 #ifdef SKIP
-	//std::string fname("UpperAquiferBottom");
+	std::string fname("UpperAquiferBottom");
 	//
-	{
-	std::string fname("ArcData/bath_83m");
+	//std::string fname("ArcData/bath_83m");
 	Shapefile sf(fname);
 	std::ostringstream oss;
 	//sf.Dump(oss);
 	//std::cout << oss.str();
 	
 	std::vector<Point> pts;
-	sf.Extract(pts, 7);
-	for (std::vector<Point>::iterator it = pts.begin(); it != pts.end(); it++)
-	{
-	  printf("%e\t%e\t%e\t\n", it->x(), it->y(), it->get_v());
-	}
-	}
-        exit(4);
-	/*
-	std::sort(pts.begin(), pts.end());
-	std::vector<Point>::iterator newend = std::unique(pts.begin(), pts.end());
-	newend = pts.begin() + 100;
-	pts.erase(newend, pts.end());
-	printf("Start Shep2d:\n");
-	Shep2d shep(pts, CF_Z);
-	*/
-#ifdef SKIP
-	std::vector<Point> pts_out;
+	sf.Extract_surface(pts, 1);
+	NNInterpolator nni;
+	std::vector<Point> corners;
+
+	
+	
+
+	Point p1(sf.shpinfo->adBoundsMin[0], sf.shpinfo->adBoundsMin[1], 0.0);
+	Point p2(sf.shpinfo->adBoundsMax[1], sf.shpinfo->adBoundsMin[1], 0.0);
+	Point p3(sf.shpinfo->adBoundsMax[0], sf.shpinfo->adBoundsMax[1], 0.0);
+	Point p4(sf.shpinfo->adBoundsMin[0], sf.shpinfo->adBoundsMax[1], 0.0);
+	corners.push_back(p1);
+	corners.push_back(p2);
+	corners.push_back(p3);
+	corners.push_back(p4);
+
+	nni.preprocess(pts, corners);
+
+	//std::vector<Point> pts_out;
 	Point p;
 	int i, j;
 	int ndiv = 50;
-	for (i = 5; i < ndiv; i++)
+	for (i = 1; i < ndiv; i++)
 	{
-	  for (j = 5; j < ndiv; j++)
+	  for (j = 2; j < ndiv; j++)
 	  {
 	    p.set_x(sf.shpinfo->adBoundsMin[0] + 
 	      (((double) i) / ((double) ndiv)) * (sf.shpinfo->adBoundsMax[0] - sf.shpinfo->adBoundsMin[0]));
 	    p.set_y(sf.shpinfo->adBoundsMin[1] + 
 	      (((double) j) / ((double) ndiv)) * (sf.shpinfo->adBoundsMax[1] - sf.shpinfo->adBoundsMin[1]));
-	    //v = shep.Evaluate(p, CF_Z);
-	    //v = interpolate_inverse_square(pts, p);
-	    //v = interpolate_nearest(pts, p);
-	    //printf("%e\t%e\t%e\t\n", p.x(), p.y(), v);
-	    pts_out.push_back(p);
+	    double v = nni.interpolate(p);
+	    printf("%e\t%e\t%e\t\n", p.x(), p.y(), v);
+	    //pts_out.push_back(p);
 	  }
 	}
-	double wmin = 0.0;
-	nnpi_interpolate(pts, pts_out, wmin);
-	for (std::vector<Point>::iterator it = pts_out.begin(); it != pts_out.end(); it++)
-	{
-	  printf("%e\t%e\t%e\t\n", it->x(), it->y(), it->get_v());
-	}
+	//double wmin = 0.0;
+	//nnpi_interpolate(pts, pts_out, wmin);
+	//for (std::vector<Point>::iterator it = pts_out.begin(); it != pts_out.end(); it++)
+	//{
+	  //printf("%e\t%e\t%e\t\n", it->x(), it->y(), it->get_v());
+	//}
 
-	//exit(0);
-
+	exit(0);
 #endif
-#endif
-
 	check_hst_units();
 	check_time_series_data();
 	if (input_error == 0) {

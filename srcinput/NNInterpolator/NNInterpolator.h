@@ -15,13 +15,14 @@ public:
   
   // destructor
   virtual ~NNInterpolator(void);
-  bool preprocess(std::vector<Point> &pts_in, std::vector<Point> corners);
+  bool preprocess(std::vector<Point> &pts_in, std::vector<Point> &corners);
   double interpolate(Point &pt);
 
 public:
   // data
   delaunay* delaunay_triangulation;
   nnpi* nn;
+  point *pin;
 
 friend bool nnpi_interpolate(std::vector<Point> &pts_in, std::vector<Point> &pts_out, double wmin); 
 };

@@ -1,5 +1,5 @@
 #include "Shapefile.h"
-
+extern int free_check_null(void *);
 Shapefile::Shapefile(void)
 {
 }
@@ -366,7 +366,7 @@ void Shapefile::Dump(std::ostream &oss)
     }
 }
 
-void Shapefile::Extract(std::vector<Point> &pts, const int field)
+void Shapefile::Extract_surface(std::vector<Point> &pts, const int field)
 {
   // Point contains a x, y, z + value
 
@@ -455,4 +455,69 @@ void Shapefile::Extract(std::vector<Point> &pts, const int field)
       }
     }
   }
+}
+gpc_polygon *Shapefile::Extract_polygon(void)
+{
+  // Point contains a x, y, z + value
+
+  std::vector<double> m;  // rough-in in case M values are given in .shp file
+
+  SHPInfo *hSHP = this->shpinfo;
+  DBFInfo *hDBF = this->dbfinfo;
+
+
+  // get info
+  int		nShapeType, nEntities, i, bValidate = 0,nInvalidCount=0;
+  double 	adfMinBound[4], adfMaxBound[4];
+
+  SHPGetInfo( hSHP, &nEntities, &nShapeType, adfMinBound, adfMaxBound );
+
+  // Shape type should be polygon
+  if (nShapeType != 5) {
+      std::cerr << "Shape file does not have shape type of polygon." <<  std::endl;
+      exit(4);
+  }
+
+  double xlast = -99, ylast = -99, zlast = -99;
+
+  gpc_polygon *cumulative_polygon = empty_polygon();
+  for( i = 0; i < nEntities; i++ )
+  {
+    int		j;
+    SHPObject	*psShape;
+
+    psShape = this->objects[i];
+    std::vector<Point> pts;
+
+    // Make polygon from  vertices
+    for( j = 0; j < psShape->nVertices; j++ )
+    {
+      if ((i == 0 && j == 0) ||
+	psShape->padfX[j] != xlast ||
+	psShape->padfY[j] != ylast ||
+	psShape->padfZ[j] != zlast )
+      {
+	// add to list
+	Point pt;
+	pt.set_x(psShape->padfX[j]);
+	pt.set_y(psShape->padfY[j]);
+	pt.set_z(psShape->padfZ[j]);
+	pt.set_v(0.0);
+	pts.push_back(pt);
+
+	// Place holder for implementing m shape files
+	m.push_back(psShape->padfM[j]);
+
+	// save last point
+	xlast = psShape->padfX[j];
+	ylast = psShape->padfY[j];
+	zlast = psShape->padfZ[j];
+      }
+    }
+    gpc_polygon *temp_polygon = points_to_poly(pts);
+    gpc_polygon_clip(GPC_UNION, cumulative_polygon, temp_polygon, cumulative_polygon);
+    gpc_free_polygon(temp_polygon);
+    free_check_null(temp_polygon);
+  }
+  return(cumulative_polygon);
 }

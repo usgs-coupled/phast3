@@ -242,6 +242,36 @@ gpc_polygon *vertex_to_poly(gpc_vertex *v, int n)
 	}
 	return(poly_ptr);
 }
+/* ---------------------------------------------------------------------- */
+gpc_polygon *points_to_poly(std::vector<Point> &pts)
+/* ---------------------------------------------------------------------- */
+{
+	gpc_polygon *poly_ptr;
+	int i;
+	gpc_vertex *p;
+
+	int n = pts.size();
+	poly_ptr =  (gpc_polygon*) malloc((size_t) sizeof(gpc_polygon));
+	if (poly_ptr == NULL) malloc_error();
+	/*
+	 *   gpc_polygon for river polygon
+	 */
+	poly_ptr->contour = (gpc_vertex_list*) malloc((size_t) sizeof(gpc_vertex_list));
+	if (poly_ptr->contour == NULL) malloc_error();
+	p = (gpc_vertex*) malloc((size_t) n * sizeof (gpc_vertex));
+	if (p == NULL) malloc_error();
+	poly_ptr->contour[0].vertex = p;
+	poly_ptr->contour[0].num_vertices = n;
+	poly_ptr->num_contours = 1;
+	/*
+	 *   gpc_vertex list for cell boundary
+	 */
+	for (i = 0; i < n; i++) {
+		p[i].x = pts[i].x();
+		p[i].y = pts[i].y();
+	}
+	return(poly_ptr);
+}
 /*
         Written by Joseph O'Rourke
         orourke@cs.smith.edu
