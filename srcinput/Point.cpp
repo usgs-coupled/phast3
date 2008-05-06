@@ -1,7 +1,7 @@
 #include "Point.h"
 #include <iostream>
 #include <map>
-
+#include "gpc.h"
 // constructor
 Point::Point(void)
 {
@@ -132,6 +132,91 @@ double interpolate_inverse_square(std::vector<Point> &pts, Point &grid_pt)
 
   return(v);
 }
+#ifdef SKIP
+bool Point::point_in_polygon(gpc_polygon *poly_ptr) 
+{
+  int i, j;
+  Point p1, p2;
+  double anglesum = 0;
+  double costheta;
+  for (i = 0; i < poly_ptr->num_contours; i++)
+  {
+    for (j = 0; j < poly_ptr->contour[i].num_vertices ; j++)
+    {
+      p1 = Point(poly_ptr->contour[i].vertex[j].x - this->x(), poly_ptr->contour[i].vertex[j].y - this->y(), 0.0);
+      if (j <  poly_ptr->contour[i].num_vertices - 1)
+      {
+	p2 = Point(poly_ptr->contour[i].vertex[j+1].x - this->x(), poly_ptr->contour[i].vertex[j+1].y - this->y(), 0.0);
+      } else
+      {
+	p2 = Point(poly_ptr->contour[i].vertex[0].x - this->x(), poly_ptr->contour[i].vertex[0].y - this->y(), 0.0);
+      }
+
+      double m1 = p1.modulus();
+      double m2 = p2.modulus();
+      if (m1*m2 <= EPSILON)
+      {
+	return(true); /* We are on a node, consider this inside */
+      } else
+      {
+	costheta = (p1.x()*p2.x() + p1.y()*p2.y() + p1.z()*p2.z()) / (m1*m2);
+      }
+      anglesum += acos(costheta);
+    }
+    if (fabs(anglesum - TWOPI) < EPSILON) return(true);
+  }
+  return false;
+}
+#endif
+bool Point::point_in_polygon(gpc_polygon *poly_ptr) 
+{
+//int pnpoly(int npol, float *xp, float *yp, float x, float y)
+  
+  double x = this->x();
+  double y = this->y();
+  double z = 0;
+  int l;
+  for (l = 0; l < poly_ptr->num_contours; l++)
+  {
+    bool in = false;
+    int i, j;
+    int npol = poly_ptr->contour[l].num_vertices;
+    for (i = 0, j = npol-1; i < npol; j = i++) {
+      double xpi = poly_ptr->contour[l].vertex[i].x;
+      double xpj = poly_ptr->contour[l].vertex[j].x;
+      double ypi = poly_ptr->contour[l].vertex[i].y;
+      double ypj = poly_ptr->contour[l].vertex[j].y;
+      if ((((ypi <= y) && (y < ypj)) ||
+	((ypj <= y) && (y < ypi))) &&
+	(x < (xpj - xpi) * (y - ypi) / (ypj - ypi) + xpi))
+	in = !in;
+    }
+    if (in) return(true);
+  }
+#ifdef SKIP
+  // Also check if point is on an edge
+  double z = 0.0; z1 = 0.0; z2 = 0.0;
+  for (l = 0; l < poly_ptr->num_contours; l++)
+  {
+    bool in = false;
+    int i, j;
+    for (i = 0; i < poly_ptr->contour[l].num_vertices - 1; i++)
+    {
+      double x1, y1, x2, y2;
+      x1 = poly_ptr->contour[l].vertex[i].x;
+      y1 = poly_ptr->contour[l].vertex[i].x;
+      double xn, yn, zn, dist, t;
+      line_seg_point_near_3d(
+    }
+  void line_seg_point_near_3d ( double x1, double y1, double z1,
+  double x2, double y2, double z2, double x, double y, double z,
+  double *xn, double *yn, double *zn, double *dist, double *t )
+#endif
+  return(false);
+
+}
+
+
 // constructor
 Segment::Segment(void)
 {

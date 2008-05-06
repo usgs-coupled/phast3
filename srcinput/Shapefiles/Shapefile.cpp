@@ -478,8 +478,7 @@ gpc_polygon *Shapefile::Extract_polygon(void)
       exit(4);
   }
 
-  double xlast = -99, ylast = -99, zlast = -99;
-
+  
   gpc_polygon *cumulative_polygon = empty_polygon();
   for( i = 0; i < nEntities; i++ )
   {
@@ -488,6 +487,7 @@ gpc_polygon *Shapefile::Extract_polygon(void)
 
     psShape = this->objects[i];
     std::vector<Point> pts;
+    double xlast = -99, ylast = -99, zlast = -99;
 
     // Make polygon from  vertices
     for( j = 0; j < psShape->nVertices; j++ )
@@ -506,7 +506,7 @@ gpc_polygon *Shapefile::Extract_polygon(void)
 	pts.push_back(pt);
 
 	// Place holder for implementing m shape files
-	m.push_back(psShape->padfM[j]);
+	//m.push_back(psShape->padfM[j]);
 
 	// save last point
 	xlast = psShape->padfX[j];

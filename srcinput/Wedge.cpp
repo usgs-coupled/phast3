@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cctype>
 #include <iostream>
+#include "gpc.h"
 extern int free_check_null(void *ptr);
 // Constructors
 

@@ -1,6 +1,7 @@
 #include "message.h"
 #include "gpc.h"
 #include "gpc_helper.h"
+#include "Point.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -272,6 +273,8 @@ gpc_polygon *points_to_poly(std::vector<Point> &pts)
 	}
 	return(poly_ptr);
 }
+
+
 /*
         Written by Joseph O'Rourke
         orourke@cs.smith.edu
