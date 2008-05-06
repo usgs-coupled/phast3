@@ -16,7 +16,7 @@ public:
   // destructor
   virtual ~NNInterpolator(void);
   bool preprocess(std::vector<Point> &pts_in, std::vector<Point> &corners);
-  double interpolate(Point &pt);
+  double interpolate(const Point pt);
 
 public:
   // data
