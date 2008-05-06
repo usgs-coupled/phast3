@@ -153,12 +153,15 @@ bool NNInterpolator::preprocess(std::vector<Point> &pts_in, std::vector<Point> c
     pin[i].z = pts_in[i].get_v();
   }
 
-  delaunay* d = delaunay_build(nin, pin, 0, NULL, 0, NULL);
-  nnpi* nn = nnpi_create(d);
+  assert(this->delaunay_triangulation == 0);
+  assert(this->nn == 0);
+
+  this->delaunay_triangulation = delaunay_build(nin, pin, 0, NULL, 0, NULL);
+  this->nn = nnpi_create(this->delaunay_triangulation);
   int seed = 0;
 
   double wmin = 0;  // no extrapolation
-  nnpi_setwmin(nn, wmin);
+  nnpi_setwmin(this->nn, wmin);
 
 
 #ifdef SKIP //need some more work to extrapolate to edges
