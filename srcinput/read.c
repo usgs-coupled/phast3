@@ -5,6 +5,7 @@
 #include "Polyhedron.h"
 #include "Cube.h"
 #include "Wedge.h"
+#include "Prism.h"
 #if defined(__WPHAST__)
 #define STATIC
 #else
@@ -2557,15 +2558,21 @@ int read_specified_value_bc(void)
 		"associated_solution",              /* 6 */
 		"associated",                       /* 7 */
 		"mask",                             /* 8 */
-		"wedge"                             /* 9 */
+		"wedge",                            /* 9 */
+		"prism",                            /* 10 */
+		"vector",                           /* 11 */
+		"perimeter",                        /* 12 */
+		"top",                              /* 13 */
+		"bottom"                            /* 14 */
 	};
-	int count_opt_list = 10;
+	int count_opt_list = 15;
 /*
  *   Read chemical initial condition data
  */
 	bc_specified_defined = TRUE;
 	return_value = UNKNOWN;
 	bc_ptr = NULL;
+	Prism *prism_ptr;
 /*
  *   get first line
  */
@@ -2725,6 +2732,7 @@ int read_specified_value_bc(void)
 			}
 			break;
 		    case 9:                         /* wedge */
+		      {
 /*
  *   Allocate space for bc, read wedge data
  */
@@ -2748,6 +2756,37 @@ int read_specified_value_bc(void)
 			}
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
+		      }
+		    case 10: 	      /* prism */
+		      {
+			bc = (struct BC **) realloc(bc, (size_t) (count_bc + 1) * sizeof (struct BC *));
+			if (bc == NULL) malloc_error();
+
+			bc[count_bc] = bc_alloc();
+			bc_ptr = bc[count_bc];
+			bc_init(bc_ptr);
+			bc_ptr->bc_type = BC_info::BC_SPECIFIED;
+			count_specified++;
+			sprintf(tag,"in SPECIFIED_HEAD_BC, definition %d.", count_specified);
+			count_bc++;
+
+			prism_ptr = new Prism;
+			bc_ptr->polyh = prism_ptr;
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+
+			break;
+		      }
+		    case 11:                         /* vector */
+		      if (bc_ptr == NULL || 
+			bc_ptr->polyh == NULL || 
+			prism_ptr->read(Prism::VECTOR, next_char))
+		      {
+			  input_error++;
+			  sprintf(error_string,"Reading prism %s", tag);
+			  error_msg(error_string, CONTINUE);
+			  break;
+		      }
+		      break;
 		}
 		return_value = check_line_return;
 		if (return_value == EOF || return_value == KEYWORD) break;

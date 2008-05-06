@@ -1,12 +1,27 @@
 // This is the main DLL file.
 #include <float.h>
-#include "NNInterpolator.h"
-#include "nn.h"
+
 #include "../Point.h"
 #include "config.h"
 #include "nan.h"
 #include "../KDtree/KDtree.h"
+#include "NNInterpolator.h"
 
+// Constructors
+NNInterpolator::NNInterpolator(void)
+{
+  this->delaunay_triangulation = NULL;
+
+  // Set bounding box
+  this->nn = NULL;
+
+}
+// Destructor
+NNInterpolator::~NNInterpolator(void)
+{
+  if (this->nn != NULL) nnpi_destroy(this->nn);
+  if (this->delaunay_triangulation != NULL) delaunay_destroy(this->delaunay_triangulation);
+}
 bool nnpi_interpolate(std::vector<Point> &pts_in, std::vector<Point> &pts_out, double wmin)
 {
   if (pts_in.size() == 0 || pts_out.size() == 0)
@@ -117,4 +132,66 @@ bool nnpi_interpolate(std::vector<Point> &pts_in, std::vector<Point> &pts_out, d
   delete [] pin;
   delete [] pout;
   return true;
+}
+bool NNInterpolator::preprocess(std::vector<Point> &pts_in, std::vector<Point> corners)
+{
+
+  if (pts_in.size() == 0)
+  {
+    return false;
+  }
+
+  // set up points in input array
+  int nin = pts_in.size();
+  point * pin = new point[nin];
+
+  int i;
+  for (i = 0; i < nin; i++)
+  {
+    pin[i].x = pts_in[i].x();
+    pin[i].y = pts_in[i].y();
+    pin[i].z = pts_in[i].get_v();
+  }
+
+  delaunay* d = delaunay_build(nin, pin, 0, NULL, 0, NULL);
+  nnpi* nn = nnpi_create(d);
+  int seed = 0;
+
+  double wmin = 0;  // no extrapolation
+  nnpi_setwmin(nn, wmin);
+
+
+#ifdef SKIP //need some more work to extrapolate to edges
+  // extend region to corners if necessary
+  if (corners.size() > 0) {
+    for (i = 0; i < int corners.size(); i++)
+    {
+      point p;
+      p.x = corners[i].x();
+      p.y = corners[i].y();
+      p.z = 0.0;
+      
+      if (isnan(this->interpolate(&p))
+      {
+	
+      }
+    }
+  }
+#endif
+
+
+  
+  // delete points
+  delete [] pin;
+
+  return true;
+}
+double NNInterpolator::interpolate(Point &pt)
+{
+  point pout;
+  pout.x = pt.x();
+  pout.y = pt.y();
+  pout.z = 0.0;
+  nnpi_interpolate_point(this->nn, &pout);
+  return (pout.z);
 }

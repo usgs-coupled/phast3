@@ -2,13 +2,28 @@
 #define NNINTERPOLATOR__H_INCLUDED
 #include <vector>
 #include "../Point.h"
+#include "nn.h"
+
 
 
 class NNInterpolator
 {
   // TODO: Add your methods for this class here.
 public:
-  friend bool nnpi_interpolate(std::vector<Point> &pts_in, std::vector<Point> &pts_out, double wmin); 
+  // constructors
+  NNInterpolator(void);
+  
+  // destructor
+  virtual ~NNInterpolator(void);
+  bool preprocess(std::vector<Point> &pts_in, std::vector<Point> corners);
+  double interpolate(Point &pt);
+
+public:
+  // data
+  delaunay* delaunay_triangulation;
+  nnpi* nn;
+
+friend bool nnpi_interpolate(std::vector<Point> &pts_in, std::vector<Point> &pts_out, double wmin); 
 };
 
 

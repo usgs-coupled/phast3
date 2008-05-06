@@ -27,12 +27,13 @@ public:
 
   // Methods
   virtual void Points_in_polyhedron(std::list<int> & list, std::vector<Point> &point_xyz) = 0;
-  struct zone *Get_box() {return &(this->box);}
   virtual Polyhedron* clone() const = 0;
   virtual Polyhedron* create() const = 0;
-  bool Point_in_bounding_box(const Point &pt);
   virtual gpc_polygon *Face_polygon(Cell_Face face) = 0;
   virtual gpc_polygon * Slice(Cell_Face face, double coord) = 0;
+
+  struct zone *Get_box() {return &(this->box);}
+  bool Point_in_bounding_box(const Point &pt);
   enum POLYHEDRON_TYPE get_type(void)const;
 
   friend std::ostream& operator<< (std::ostream& o, const Polyhedron& p);
