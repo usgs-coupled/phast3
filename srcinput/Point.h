@@ -2,6 +2,7 @@
 #define POINT_H_INCLUDED
 #include <vector>
 #include <math.h>
+#include "gpc.h"
 class Point
 {
 public:
@@ -83,11 +84,11 @@ public:
   double modulus() {return sqrt(this->coord[0]*this->coord[0] + this->coord[1]*this->coord[1] + this->coord[2]*this->coord[2]);}
 
   // get methods
-  double x(void) {return this->coord[0];}
-  double y(void) {return this->coord[1];}
-  double z(void) {return this->coord[2];}
+  double x(void)const {return this->coord[0];}
+  double y(void)const {return this->coord[1];}
+  double z(void)const {return this->coord[2];}
   double *get_coord() {return this->coord;}
-  double get_v() {return this->v;}
+  double get_v()const {return this->v;}
 
   // set methods
   void set_x(double t) {this->coord[0] = t;}
@@ -104,6 +105,7 @@ public:
   friend Point operator*(double b, Point a);
   friend bool operator < (Point &a, Point &b);
   friend bool operator == (Point &a, Point &b);
+  bool point_in_polygon(gpc_polygon *poly_ptr);
 
   // Required to be in header?
   // 3D point in polygon routine
