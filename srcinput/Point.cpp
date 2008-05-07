@@ -168,13 +168,13 @@ bool Point::point_in_polygon(gpc_polygon *poly_ptr)
   return false;
 }
 #endif
-bool Point::point_in_polygon(gpc_polygon *poly_ptr) 
+bool Point::point_in_gpc_polygon(gpc_polygon *poly_ptr) 
 {
 //int pnpoly(int npol, float *xp, float *yp, float x, float y)
   
   double x = this->x();
   double y = this->y();
-  double z = 0;
+
   int l;
   for (l = 0; l < poly_ptr->num_contours; l++)
   {
@@ -193,27 +193,76 @@ bool Point::point_in_polygon(gpc_polygon *poly_ptr)
     }
     if (in) return(true);
   }
-#ifdef SKIP
+
   // Also check if point is on an edge
-  double z = 0.0; z1 = 0.0; z2 = 0.0;
+  double z = 0.0, z1 = 0.0, z2 = 0.0;
   for (l = 0; l < poly_ptr->num_contours; l++)
   {
     bool in = false;
     int i, j;
-    for (i = 0; i < poly_ptr->contour[l].num_vertices - 1; i++)
+    j = poly_ptr->contour[l].num_vertices - 1;
+    for (i = 0; i < poly_ptr->contour[l].num_vertices; i++)
     {
       double x1, y1, x2, y2;
       x1 = poly_ptr->contour[l].vertex[i].x;
-      y1 = poly_ptr->contour[l].vertex[i].x;
+      y1 = poly_ptr->contour[l].vertex[i].y;
+      x2 = poly_ptr->contour[l].vertex[j].x;
+      y2 = poly_ptr->contour[l].vertex[j].y;
       double xn, yn, zn, dist, t;
-      line_seg_point_near_3d(
+      line_seg_point_near_3d(x1, y1, z1, x2, y2, z2, x, y, z, &xn, &yn, &zn, &dist, &t);
+      if (dist < 1e-6) {
+	return(true);
+      }
+      j = i;
     }
-  void line_seg_point_near_3d ( double x1, double y1, double z1,
-  double x2, double y2, double z2, double x, double y, double z,
-  double *xn, double *yn, double *zn, double *dist, double *t )
-#endif
+  }
+
   return(false);
 
+}
+bool Point::point_in_polygon(std::vector<Point> &pts) 
+{
+//int pnpoly(int npol, float *xp, float *yp, float x, float y)
+  
+  double x = this->x();
+  double y = this->y();
+
+  bool in = false;
+  int i, j;
+  int npol = pts.size();
+  for (i = 0, j = npol-1; i < npol; j = i++) {
+    double xpi = pts[i].x();
+    double xpj = pts[j].x();
+    double ypi = pts[i].y();
+    double ypj = pts[j].y();
+    if ((((ypi <= y) && (y < ypj)) ||
+      ((ypj <= y) && (y < ypi))) &&
+      (x < (xpj - xpi) * (y - ypi) / (ypj - ypi) + xpi))
+      in = !in;
+  }
+  if (in) return(true);
+
+
+  // Also check if point is on an edge
+  double z = 0.0, z1 = 0.0, z2 = 0.0;
+
+  j = pts.size() - 1;
+  for (i = 0; i < (int) pts.size(); i++)
+  {
+    double x1, y1, x2, y2;
+    x1 = pts[i].x();
+    y1 = pts[i].y();
+    x2 = pts[j].x();
+    y2 = pts[j].y();
+    double xn, yn, zn, dist, t;
+    line_seg_point_near_3d(x1, y1, z1, x2, y2, z2, x, y, z, &xn, &yn, &zn, &dist, &t);
+    if (dist < 1e-6) {
+      return(true);
+    }
+    j = i;
+  }
+
+  return(false);
 }
 
 

@@ -105,7 +105,8 @@ public:
   friend Point operator*(double b, Point a);
   friend bool operator < (Point &a, Point &b);
   friend bool operator == (Point &a, Point &b);
-  bool point_in_polygon(gpc_polygon *poly_ptr);
+  bool point_in_gpc_polygon(gpc_polygon *poly_ptr);
+  bool point_in_polygon(std::vector<Point> &pts);
 
   // Required to be in header?
   // 3D point in polygon routine

@@ -521,3 +521,65 @@ gpc_polygon *Shapefile::Extract_polygon(void)
   }
   return(cumulative_polygon);
 }
+bool Shapefile::Point_in_polygon(const Point p)
+{
+  // Point contains a x, y, z + value
+
+  Point work = p;
+  std::vector<double> m;  // rough-in in case M values are given in .shp file
+
+  SHPInfo *hSHP = this->shpinfo;
+  DBFInfo *hDBF = this->dbfinfo;
+
+
+  // get info
+  int		nShapeType, nEntities, i, bValidate = 0,nInvalidCount=0;
+  double 	adfMinBound[4], adfMaxBound[4];
+
+  SHPGetInfo( hSHP, &nEntities, &nShapeType, adfMinBound, adfMaxBound );
+
+  // Shape type should be polygon
+  if (nShapeType != 5) {
+      std::cerr << "Shape file does not have shape type of polygon." <<  std::endl;
+      exit(4);
+  }
+
+  for( i = 0; i < nEntities; i++ )
+  {
+    int		j;
+    SHPObject	*psShape;
+
+    psShape = this->objects[i];
+    std::vector<Point> pts;
+    double xlast = -99, ylast = -99, zlast = -99;
+
+    // Make polygon from  vertices
+    for( j = 0; j < psShape->nVertices; j++ )
+    {
+      if ((i == 0 && j == 0) ||
+	psShape->padfX[j] != xlast ||
+	psShape->padfY[j] != ylast ||
+	psShape->padfZ[j] != zlast )
+      {
+	// add to list
+	Point pt;
+	pt.set_x(psShape->padfX[j]);
+	pt.set_y(psShape->padfY[j]);
+	pt.set_z(psShape->padfZ[j]);
+	pt.set_v(0.0);
+	pts.push_back(pt);
+
+	// Place holder for implementing m shape files
+	//m.push_back(psShape->padfM[j]);
+
+	// save last point
+	xlast = psShape->padfX[j];
+	ylast = psShape->padfY[j];
+	zlast = psShape->padfZ[j];
+      }
+    }
+    bool in = work.point_in_polygon(pts);
+    if (in) return(true);
+  }
+  return(false);
+}

@@ -14,6 +14,7 @@ public:
   Shapefile(std::string &fname);
   void Dump(std::ostream &oss);
   void Extract_surface(std::vector<Point> &pts, const int field);
+  bool Point_in_polygon(const Point p);
   gpc_polygon *Extract_polygon(void);
   // destructor
   ~Shapefile(void);
