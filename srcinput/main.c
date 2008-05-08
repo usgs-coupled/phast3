@@ -1,13 +1,12 @@
 #define EXTERNAL
 #define MAIN
-#include <iostream>     // std::cout std::cerr
 #include <sstream>      // basic_ostringstream
 #include "hstinpt.h"
 #include "message.h"
 // testing ...
 #include "Shapefiles/Shapefile.h"
 #include "NNInterpolator/NNInterpolator.h"
-
+#include "ArcRaster.h"
 //... testing
 #include <algorithm>
 #if defined(__WPHAST__)
@@ -81,11 +80,11 @@ int main(int argc, char *argv[])
 	}
 	*/
 #ifdef SKIP
-	std::string fname("UpperAquiferBottom");
+	//std::string fname("UpperAquiferBottom");
 	//
-	//std::string fname("ArcData/bath_83m");
+	std::string fname("ArcData/coast");
 	Shapefile sf(fname);
-	std::ostringstream oss;
+	//std::ostringstream oss;
 	//sf.Dump(oss);
 	//std::cout << oss.str();
 	
@@ -133,6 +132,25 @@ int main(int argc, char *argv[])
 	//}
 
 	exit(0);
+#endif
+#ifdef SKIP
+	std::string raster_name("h:/capecod/revisit/ArcData/rastert_bedtest1.txt");
+	ArcRaster rd(raster_name);
+
+	NNInterpolator nnrd;
+	std::vector<Point> corners;
+	//nnrd.preprocess(rd.get_points(), corners);
+
+
+
+	std::string fname("ArcData/coast");
+	Shapefile sf(fname);
+	//gpc_polygon *poly = sf.Extract_polygon();
+	//Point p(267500., 820000, 0);
+	//Point p(280000, 820000, 0);
+	Point p(275553.15625, 810937.3125, 0);
+	//bool in = p.point_in_gpc_polygon(poly);
+	bool in = sf.Point_in_polygon(p);
 #endif
 	check_hst_units();
 	check_time_series_data();

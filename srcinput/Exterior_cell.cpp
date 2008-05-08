@@ -1,5 +1,5 @@
 #include "Exterior_cell.h"
-#include <iostream>
+#include "message.h"
 Exterior_cell::Exterior_cell(void)
 {
   xn = xp = yn = yp = zn = zp = false;
@@ -70,21 +70,24 @@ gpc_polygon * Exterior_cell::get_exterior_polygon(Cell_Face face)
 extern double gpc_polygon_area(gpc_polygon *p_ptr);
 void Exterior_cell::dump(void)
 {
-  if (this->xn) std::cerr << "xn: " << this->xn << " area: " << this->xn_area << std::endl;
-  if (this->xn) std::cerr << "xn: " << this->xn << " area: " << gpc_polygon_area(this->xn_gon) << std::endl;
+  std::ostringstream ostring;
+  if (this->xn) ostring << "xn: " << this->xn << " area: " << this->xn_area << std::endl;
+  if (this->xn) ostring << "xn: " << this->xn << " area: " << gpc_polygon_area(this->xn_gon) << std::endl;
 
-  if (this->xp) std::cerr << "xp: " << this->xp << " area: " << this->xp_area << std::endl;
-  if (this->xp) std::cerr << "xp: " << this->xp << " area: " << gpc_polygon_area(this->xp_gon) << std::endl;
+  if (this->xp) ostring << "xp: " << this->xp << " area: " << this->xp_area << std::endl;
+  if (this->xp) ostring << "xp: " << this->xp << " area: " << gpc_polygon_area(this->xp_gon) << std::endl;
 
-  if (this->yn) std::cerr << "yn: " << this->yn << " area: " << this->yn_area << std::endl;
-  if (this->yn) std::cerr << "yn: " << this->yn << " area: " << gpc_polygon_area(this->yn_gon) << std::endl;
+  if (this->yn) ostring << "yn: " << this->yn << " area: " << this->yn_area << std::endl;
+  if (this->yn) ostring << "yn: " << this->yn << " area: " << gpc_polygon_area(this->yn_gon) << std::endl;
 
-  if (this->yp) std::cerr << "yp: " << this->yp << " area: " << this->yp_area << std::endl;
-  if (this->yp) std::cerr << "yp: " << this->yp << " area: " << gpc_polygon_area(this->yp_gon) << std::endl;
+  if (this->yp) ostring << "yp: " << this->yp << " area: " << this->yp_area << std::endl;
+  if (this->yp) ostring << "yp: " << this->yp << " area: " << gpc_polygon_area(this->yp_gon) << std::endl;
 
-  if (this->zn) std::cerr << "zn: " << this->zn << " area: " << this->zn_area << std::endl;
-  if (this->zn) std::cerr << "zn: " << this->zn << " area: " << gpc_polygon_area(this->zn_gon) << std::endl;
+  if (this->zn) ostring << "zn: " << this->zn << " area: " << this->zn_area << std::endl;
+  if (this->zn) ostring << "zn: " << this->zn << " area: " << gpc_polygon_area(this->zn_gon) << std::endl;
 
-  if (this->zp) std::cerr << "zp: " << this->zp << " area: " << this->zp_area << std::endl;
-  if (this->zp) std::cerr << "zp: " << this->zp << " area: " << gpc_polygon_area(this->zp_gon) << std::endl;
+  if (this->zp) ostring << "zp: " << this->zp << " area: " << this->zp_area << std::endl;
+  if (this->zp) ostring << "zp: " << this->zp << " area: " << gpc_polygon_area(this->zp_gon) << std::endl;
+
+  output_msg(OUTPUT_MESSAGE, "%s\n", ostring.str().c_str());
 }

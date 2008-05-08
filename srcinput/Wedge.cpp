@@ -1,7 +1,7 @@
 #include "Wedge.h"
 #include <algorithm>
 #include <cctype>
-#include <iostream>
+#include "message.h"
 #include "gpc.h"
 extern int free_check_null(void *ptr);
 // Constructors
@@ -223,7 +223,9 @@ Wedge::Wedge(const struct zone *zone_ptr, std::string &orientation)
   {
     this->orientation = WEDGE_ERROR;
     this->wedge_number = CF_UNKNOWN;
-    std::cerr << "Unknown wedge orientation " << orientation.c_str() << std::endl;
+    std::ostringstream estring;
+    estring << "Unknown wedge orientation " << orientation.c_str() << std::endl;
+    error_msg(estring.str().c_str(), EA_STOP);
   }
 }
 
@@ -253,7 +255,9 @@ bool Wedge::Point_in_polyhedron(Point &t)
     test_pt.set_z(zo->z1);
     break;
   default:
-    std::cerr << "Wrong face defined in Wedge::Point_in_polyhedron" << std::endl;
+    std::ostringstream estring;
+    estring << "Wrong face defined in Wedge::Point_in_polyhedron" << std::endl;
+    error_msg(estring.str().c_str(), EA_STOP);
     break;
   }
 
@@ -323,8 +327,9 @@ gpc_polygon * Wedge::Face_polygon(Cell_Face face)
     }
     break;
   default:
-    std::cerr << "Error in Wedge::face_polygon" << std::endl;
-    exit(4);
+    std::ostringstream estring;
+    estring << "Error in Wedge::face_polygon" << std::endl;
+    error_msg(estring.str().c_str(), EA_STOP);
   }
   return(poly_ptr);
 }
@@ -393,11 +398,15 @@ gpc_polygon * Wedge::Slice(Cell_Face face, double coord)
 	    slice_zone.z2 = z[1];
 	  } else
 	  {
-	    std::cerr << "Error in Wedge::Slice 1" << std::endl;
+	    std::ostringstream estring;
+	    estring << "Error in Wedge::Slice 1" << std::endl;
+	    error_msg(estring.str().c_str(), EA_STOP);
 	  }
 	} else
 	{
-	  std::cerr << "Error in Wedge::Slice 2" << std::endl;
+	  std::ostringstream estring;
+	  estring << "Error in Wedge::Slice 2" << std::endl;
+	  error_msg(estring.str().c_str(), EA_STOP);
 	}
       }
       break;
@@ -441,16 +450,22 @@ gpc_polygon * Wedge::Slice(Cell_Face face, double coord)
 	    slice_zone.z2 = coord;
 	  } else
 	  {
-	    std::cerr << "Error in Wedge::Slice 3" << std::endl;
+	    std::ostringstream estring;
+	    estring << "Error in Wedge::Slice 3" << std::endl;
+	    error_msg(estring.str().c_str(), EA_STOP);
 	  }
 	} else
 	{
-	  std::cerr << "Error in Wedge::Slice 4" << std::endl;
+	  std::ostringstream estring;
+	  estring << "Error in Wedge::Slice 4" << std::endl;
+	  error_msg(estring.str().c_str(), EA_STOP);
 	}
       }
       break;
     default:
-      std::cerr << "Wrong face defined in Wedge::Slice" << std::endl;
+      std::ostringstream estring;
+      estring << "Wrong face defined in Wedge::Slice" << std::endl;
+      error_msg(estring.str().c_str(), EA_STOP);
       break;
 
     } // end of Wedge direction CF_X
@@ -504,11 +519,15 @@ gpc_polygon * Wedge::Slice(Cell_Face face, double coord)
 	    slice_zone.z2 = z[1];
 	  } else
 	  {
-	    std::cerr << "Error in Wedge::Slice 5" << std::endl;
+	    std::ostringstream estring;
+	    estring << "Error in Wedge::Slice 5" << std::endl;
+	    error_msg(estring.str().c_str(), EA_STOP);
 	  }
 	} else
 	{
-	  std::cerr << "Error in Wedge::Slice 6" << std::endl;
+	  std::ostringstream estring;
+	  estring << "Error in Wedge::Slice 6" << std::endl;
+	  error_msg(estring.str().c_str(), EA_STOP);
 	}
       }
       break;
@@ -558,16 +577,22 @@ gpc_polygon * Wedge::Slice(Cell_Face face, double coord)
 	    slice_zone.z2 = coord;
 	  } else
 	  {
-	    std::cerr << "Error in Wedge::Slice 7" << std::endl;
+	    std::ostringstream estring;
+	    estring << "Error in Wedge::Slice 7" << std::endl;
+	    error_msg(estring.str().c_str(), EA_STOP);
 	  }
 	} else
 	{
-	  std::cerr << "Error in Wedge::Slice 8" << std::endl;
+	  std::ostringstream estring;
+	  estring << "Error in Wedge::Slice 8" << std::endl;
+	  error_msg(estring.str().c_str(), EA_STOP);
 	}
       }
       break;
     default:
-      std::cerr << "Wrong face defined in Wedge::Slice" << std::endl;
+      std::ostringstream estring;
+      estring << "Wrong face defined in Wedge::Slice" << std::endl;
+      error_msg(estring.str().c_str(), EA_STOP);
       break;
     } // end of Wedge direction CF_Y
     break;
@@ -620,11 +645,15 @@ gpc_polygon * Wedge::Slice(Cell_Face face, double coord)
 	    slice_zone.z2 = zone_ptr->z2;
 	  } else
 	  {
-	    std::cerr << "Error in Wedge::Slice 9" << std::endl;
+	    std::ostringstream estring;
+	    estring << "Error in Wedge::Slice 9" << std::endl;
+	    error_msg(estring.str().c_str(), EA_STOP);
 	  }
 	} else
 	{
-	  std::cerr << "Error in Wedge::Slice 10" << std::endl;
+	  std::ostringstream estring;
+	  estring << "Error in Wedge::Slice 10" << std::endl;
+	  error_msg(estring.str().c_str(), EA_STOP);
 	}
       }
       break;
@@ -669,11 +698,15 @@ gpc_polygon * Wedge::Slice(Cell_Face face, double coord)
 	    slice_zone.z2 = zone_ptr->z2;
 	  } else
 	  {
-	    std::cerr << "Error in Wedge::Slice 11" << std::endl;
+	    std::ostringstream estring;
+	    estring << "Error in Wedge::Slice 11" << std::endl;
+	    error_msg(estring.str().c_str(), EA_STOP);
 	  }
 	} else
 	{
-	  std::cerr << "Error in Wedge::Slice 12" << std::endl;
+	  std::ostringstream estring;
+	  estring << "Error in Wedge::Slice 12" << std::endl;
+	  error_msg(estring.str().c_str(), EA_STOP);
 	}
       }
       break;
@@ -682,12 +715,16 @@ gpc_polygon * Wedge::Slice(Cell_Face face, double coord)
       slice = gpc_polygon_duplicate(tri);
       break;
     default:
-      std::cerr << "Wrong face defined in Wedge::Slice" << std::endl;
+      std::ostringstream estring;
+      estring << "Wrong face defined in Wedge::Slice" << std::endl;
+      error_msg(estring.str().c_str(), EA_STOP);
       break;
     } // end of Wedge direction CF_Z
     break;
   default:
-    std::cerr << "Wrong face defined in Wedge::Slice" << std::endl;
+    std::ostringstream estring;
+    estring << "Wrong face defined in Wedge::Slice" << std::endl;
+    error_msg(estring.str().c_str(), EA_STOP);
     break;
   }
   if (tri != NULL)
@@ -705,11 +742,13 @@ gpc_polygon * Wedge::Slice(Cell_Face face, double coord)
     gpc_free_polygon(result);
     free_check_null(result);
   }
-  if (slice != NULL && slice->contour != NULL && slice->contour->num_vertices == 4)
+ /* if (slice != NULL && slice->contour != NULL && slice->contour->num_vertices == 4)
   {
-    std::cerr << "Zone point 1: " << slice_zone.x1 << "  " << slice_zone.y1 << "   " << slice_zone.z1 << std::endl;
-    std::cerr << "Zone point 2: " << slice_zone.x2 << "  " << slice_zone.y2 << "   " << slice_zone.z2 << std::endl;
-  }
+    std::ostringstream ostring;
+    ostring << "Zone point 1: " << slice_zone.x1 << "  " << slice_zone.y1 << "   " << slice_zone.z1 << std::endl;
+    ostring << "Zone point 2: " << slice_zone.x2 << "  " << slice_zone.y2 << "   " << slice_zone.z2 << std::endl;
+    output_msg(OUTPUT_MESSAGE, "%s\n", ostring.str().c_str());
+  }*/
   return(slice);
 }
 

@@ -14,9 +14,16 @@ public:
   enum PRISM_OPTION
   {
     PERIMETER    = 0,
-    VECTOR       = 1,
+    DIP          = 1,
     TOP          = 2,
     BOTTOM       = 3
+  };
+  enum PRISM_FILE_TYPE
+  {
+    SHAPE        = 0,
+    ARCRASTER    = 1,
+    XYZ          = 2,
+    NONE         = 3
   };
 public:
   // Virtual methods
@@ -31,17 +38,19 @@ protected:
   void printOn(std::ostream& o) const;
 public:
   // Mthods
-  bool read(PRISM_OPTION p_opt, char *next_char);
+  bool read(PRISM_OPTION p_opt, std::istream &lines);
 
   // data
   std::string prism_file;
   gpc_polygon *perimeter;
-  Point prism_vector;
+  Point prism_dip;
 
   std::string top_file;
+  PRISM_FILE_TYPE top_file_type;
   std::vector<Point> top;
 
   std::string bottom_file;
+  PRISM_FILE_TYPE bottom_file_type;
   std::vector<Point> bottom;
 
 

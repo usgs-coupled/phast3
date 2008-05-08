@@ -1,4 +1,6 @@
 #include "Shapefile.h"
+#include "../Point.h"
+#include "../message.h"
 extern int free_check_null(void *);
 Shapefile::Shapefile(void)
 {
@@ -388,10 +390,11 @@ void Shapefile::Extract_surface(std::vector<Point> &pts, const int field)
 
   if (field < 0 || field >= dbf_fields)
   {
-    std::cerr << "Requested field number, " << field 
+    std::ostringstream estring;
+    estring << "Requested field number, " << field 
       << " (starting from zero), is greater than maximum field number in dbf file " 
       << dbf_fields - 1 << std::endl;
-    exit(4);
+    error_msg(estring.str().c_str(), EA_STOP);
   }
 
   char	szTitle[12];
@@ -401,14 +404,17 @@ void Shapefile::Extract_surface(std::vector<Point> &pts, const int field)
   eType = DBFGetFieldInfo( hDBF, field, szTitle, &nWidth, &nDecimals );
   if (eType != FTDouble && eType != FTInteger)
   {
-    std::cerr << "Requested field number, " << field 
+    std::ostringstream estring;
+    estring << "Requested field number, " << field 
       << " is not a real or integer number in dbf file" 
       << std::endl;
-    exit(4);
+    error_msg(estring.str().c_str(), EA_STOP);
   } else
   {
-    std::cerr << "Extracting field " << field << " "
+    std::ostringstream ostring;
+    ostring << "Extracting field " << field << " "
       << szTitle << std::endl;
+    output_msg(OUTPUT_SCREEN, "%s\n", ostring.str().c_str());
   }
 
   double xlast = -99, ylast = -99, zlast = -99;
@@ -422,10 +428,11 @@ void Shapefile::Extract_surface(std::vector<Point> &pts, const int field)
     // get corresponding value from dbf
     if (i >= dbf_records)
     {
-      std::cerr << "Requested record number, " << j 
+      std::ostringstream estring;
+      estring << "Requested record number, " << j 
 	<< " (starting from zero), is greater than number of records in dbf file " 
 	<< dbf_records << std::endl;
-      exit(4);
+      error_msg(estring.str().c_str(), EA_STOP);
     }
     double value = DBFReadDoubleAttribute( hDBF, i, field );
 
@@ -474,8 +481,9 @@ gpc_polygon *Shapefile::Extract_polygon(void)
 
   // Shape type should be polygon
   if (nShapeType != 5) {
-      std::cerr << "Shape file does not have shape type of polygon." <<  std::endl;
-      exit(4);
+    std::ostringstream estring;
+    estring << "Shape file does not have shape type of polygon." <<  std::endl;
+    error_msg(estring.str().c_str(), EA_STOP);
   }
 
   
@@ -540,8 +548,9 @@ bool Shapefile::Point_in_polygon(const Point p)
 
   // Shape type should be polygon
   if (nShapeType != 5) {
-      std::cerr << "Shape file does not have shape type of polygon." <<  std::endl;
-      exit(4);
+    std::ostringstream estring;
+    estring << "Shape file does not have shape type of polygon." <<  std::endl;
+    error_msg(estring.str().c_str(), EA_STOP);
   }
 
   for( i = 0; i < nEntities; i++ )

@@ -2626,7 +2626,7 @@ void distribute_flux_bc (
 	coord = cells[n].z;
 	break;
       default:
-	std::cerr << "Wrong face defined in distribute_flux_bc" << std::endl;
+	error_msg("Wrong face defined in distribute_flux_bc", EA_CONTINUE);
 	break;
       }
       //gpc_polygon *bc_area = bc[i]->polyh->Face_polygon(bc[i]->cell_face);
@@ -2793,7 +2793,7 @@ void distribute_leaky_bc (
 	coord = cells[n].z;
 	break;
       default:
-	std::cerr << "Wrong face defined in distribute_leaky_bc" << std::endl;
+	error_msg("Wrong face defined in distribute_flux_bc", EA_CONTINUE);
 	break;
       }
       //gpc_polygon *bc_area = bc[i]->polyh->Face_polygon(bc[i]->cell_face);

@@ -5,7 +5,6 @@
 #include "gpc.h"
 #include "River.h"
 
-
 class Drain
 {
 public:

@@ -1,7 +1,7 @@
 #include "Point.h"
-#include <iostream>
 #include <map>
 #include "gpc.h"
+#include "message.h"
 // constructor
 Point::Point(void)
 {
@@ -66,7 +66,7 @@ double interpolate_nearest(std::vector<Point> &pts, Point &grid_pt)
 {
 
   if(pts.size() == 0) {
-    std::cerr << "Nearest neighbor search had no points." << std::endl;
+    warning_msg("Nearest neighbor search had no points.");
     return(0);
   }
 
@@ -96,7 +96,7 @@ double interpolate_inverse_square(std::vector<Point> &pts, Point &grid_pt)
 {
 
   if(pts.size() == 0) {
-    std::cerr << "Inverse_square calculation had no points." << std::endl;
+    warning_msg("Inverse_square calculation had no points.");
     return(0);
   }
 

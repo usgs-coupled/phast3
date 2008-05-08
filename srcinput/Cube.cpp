@@ -7,6 +7,7 @@
 #include "stddef.h"
 #include "index_range.h"
 #include "zone.h"
+#include "message.h"
 
 
 // Constructors
@@ -101,8 +102,7 @@ gpc_polygon * Cube::Face_polygon(Cell_Face face)
     poly_ptr = rectangle(zone_ptr->x1, zone_ptr->y1, zone_ptr->x2, zone_ptr->y2);
     break;
   default:
-    std::cerr << "Error in Cube::Face_polygon" << std::endl;
-    exit(4);
+    error_msg("Error in Cube::Face_polygon", EA_STOP);
   }
   return(poly_ptr);
 }
@@ -140,8 +140,7 @@ gpc_polygon * Cube::Slice(Cell_Face face, double coord)
     }
     break;
   default:
-    std::cerr << "Error in Cube::Slice" << std::endl;
-    exit(4);
+    error_msg("Error in Cube::Slice", EA_STOP);
   }
   return(poly_ptr);
 }

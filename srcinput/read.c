@@ -6,6 +6,9 @@
 #include "Cube.h"
 #include "Wedge.h"
 #include "Prism.h"
+#include <sstream>
+#include <iostream>
+
 #if defined(__WPHAST__)
 #define STATIC
 #else
@@ -13,6 +16,7 @@
 #endif
 static char const svnid[] = "$Id$";
 STATIC int next_keyword_or_option(const char **opt_list, int count_opt_list);
+STATIC int streamify_to_next_keyword_or_option(const char **opt_list, int count_opt_list, std::istringstream &lines);
 STATIC int read_chemistry_ic(void);
 STATIC Cube *read_cube(char **next_char);
 STATIC Wedge *read_wedge(char **next_char);
@@ -2777,14 +2781,33 @@ int read_specified_value_bc(void)
 			break;
 		      }
 		    case 11:                         /* vector */
-		      if (bc_ptr == NULL || 
-			bc_ptr->polyh == NULL || 
-			prism_ptr->read(Prism::VECTOR, next_char))
 		      {
+			std::istringstream lines;
+			opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
+			if (bc_ptr == NULL || 
+			  bc_ptr->polyh == NULL || 
+			  !prism_ptr->read(Prism::DIP, lines))
+			{
 			  input_error++;
 			  sprintf(error_string,"Reading prism %s", tag);
 			  error_msg(error_string, CONTINUE);
 			  break;
+			}
+		      }
+		      break;
+		    case 13:                         /* top */
+		      {
+			std::istringstream lines;
+			opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
+			if (bc_ptr == NULL || 
+			  bc_ptr->polyh == NULL || 
+			  !prism_ptr->read(Prism::TOP, lines))
+			{
+			  input_error++;
+			  sprintf(error_string,"Reading prism %s", tag);
+			  error_msg(error_string, CONTINUE);
+			  break;
+			}
 		      }
 		      break;
 		}
@@ -2856,7 +2879,8 @@ int read_flux_bc(void)
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			input_error++;
 			break;
-		    case 0:                         /* zone */
+		    case 0:  
+		      /* zone */
 /*
  *   Allocate space for bc, read zone data
  */
@@ -3959,6 +3983,38 @@ int next_keyword_or_option(const char **opt_list, int count_opt_list)
 			input_error++;
 		}
 	}
+	return(opt);
+}
+/* ---------------------------------------------------------------------- */
+int streamify_to_next_keyword_or_option(const char **opt_list, int count_opt_list, std::istringstream &lines)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *   Reads to next keyword or option or eof
+ *
+ *   Returns:
+ *       KEYWORD
+ *       OPTION
+ *       EOF
+ */
+	int opt;
+	char *next_char;
+	std::string accumulate(line);
+	accumulate.append("\n");
+	for(;;) {
+		opt = get_option(opt_list, count_opt_list, &next_char);
+		if (opt == OPTION_EOF) {               /* end of file */
+			break;
+		} else if (opt == OPTION_KEYWORD) {           /* keyword */
+			break;
+		} else if (opt >= 0 && opt < count_opt_list) {
+			break;
+		} else  {
+		  accumulate.append(line);
+		  accumulate.append("\n");
+		}
+	}
+	lines.str(accumulate);
 	return(opt);
 }
 /* ---------------------------------------------------------------------- */

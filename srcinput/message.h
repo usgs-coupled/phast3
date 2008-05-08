@@ -1,5 +1,6 @@
 #include <stdarg.h>
 #include <stdio.h>
+#include <sstream>
 #ifdef PHREEQC_IDENT
 static char const svnid[] = "$Id$";
 #endif
@@ -35,4 +36,8 @@ int default_handler(const int type, const char *err_str, const int stop, void *c
 
 
 typedef enum { OUTPUT_ERROR, OUTPUT_WARNING, OUTPUT_MESSAGE, OUTPUT_PUNCH, OUTPUT_SCREEN, OUTPUT_LOG, OUTPUT_ECHO, OUTPUT_GUI_ERROR, OUTPUT_BASIC, OUTPUT_CVODE, OUTPUT_DUMP, OUTPUT_STDERR, OUTPUT_HST } output_type;
+enum ERROR_ACTION {
+  EA_CONTINUE  = 0,
+  EA_STOP      = 1 
+};
 

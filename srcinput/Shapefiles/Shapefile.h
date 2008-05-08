@@ -2,9 +2,8 @@
 #define SHAPEFILE_H_INCLUDED
 #include "shapefil.h"
 #include <stdio.h>
-#include <iostream>
 #include <vector>   // std::vector
-#include "../Point.h"
+class Point;
 #include "../gpc.h"
 
 class Shapefile 
