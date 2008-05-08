@@ -1,12 +1,12 @@
 #include "Exterior_cell.h"
 #include "message.h"
+#include "Helpers.h"
 Exterior_cell::Exterior_cell(void)
 {
   xn = xp = yn = yp = zn = zp = false;
   xn_area = xp_area = yn_area = yp_area = zn_area = zp_area = 0.0;
   xn_gon = xp_gon = yn_gon = yp_gon = zn_gon = zp_gon = NULL;
 }
-extern int free_check_null(void *ptr);
 Exterior_cell::~Exterior_cell(void)
 {
   gpc_free_polygon(this->xn_gon);

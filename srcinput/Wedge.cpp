@@ -3,7 +3,7 @@
 #include <cctype>
 #include "message.h"
 #include "gpc.h"
-extern int free_check_null(void *ptr);
+#include "Helpers.h"
 // Constructors
 
 Wedge::Wedge(void)

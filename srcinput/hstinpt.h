@@ -670,5 +670,6 @@ EXTERNAL std::map <std::string, int> FileMap;
 
 
 #include "inputproto.h"
+#include "Helpers.h"
 
 #endif /* _INC_HSTINPT */

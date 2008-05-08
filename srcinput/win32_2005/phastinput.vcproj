@@ -397,6 +397,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\Helpers.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\NNInterpolator\istack.c"
 				>
 				<FileConfiguration
@@ -900,6 +904,10 @@
 			</File>
 			<File
 				RelativePath="..\NNInterpolator\hash.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Helpers.h"
 				>
 			</File>
 			<File

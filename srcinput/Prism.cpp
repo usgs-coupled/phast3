@@ -2,10 +2,19 @@
 #include "message.h"
 #include <sstream>
 #include <iostream>
-extern int free_check_null(void *ptr);
+#include <algorithm>
+#include "Helpers.h"
 Prism::Prism(void)
 {
   this->perimeter = NULL;
+  this->perimeter_defined = false;
+  this->perimeter_file_type = Prism::NONE;
+
+  this->top_defined = false;
+  this->top_file_type = Prism::NONE;
+
+  this->bottom_defined = false;
+  this->bottom_file_type = Prism::NONE;
 }
 
 Prism::~Prism(void)
@@ -44,13 +53,28 @@ bool Prism::read(PRISM_OPTION p_opt, std::istream &lines)
     {
       this->top.clear();
       this->top_file.clear();
+
+      const char *opt_list[] = {
+      	"constant",                         /* 0 */
+	"points",                           /* 1 */
+	"shape",                            /* 2 */
+	"xyz",                              /* 3 */
+	"arcraster"                         /* 4 */
+      };
+      int count_opt_list = 5; 
+      std::vector<std::string> std_opt_list;
+      int i;
+      for (i = 0; i < count_opt_list; i++) std_opt_list.push_back(opt_list[i]);
+
       std::string type;
       lines >> type;
-
+      int j = case_picker(std_opt_list, type);
       
-      if (strstr(type.c_str(), "const") == type.c_str())
-	// constant
+      switch (j)
       {
+	// constant
+      case 0:
+	this->top_file_type = Prism::CONSTANT;
 	double elev;
 	if (!(lines >> elev))
 	{
@@ -59,25 +83,42 @@ bool Prism::read(PRISM_OPTION p_opt, std::istream &lines)
 	} else
 	{
 	  this->top.push_back(Point(0.0, 0.0, elev));
+	  this->top_defined = true;
 	}
+	break;
 
-      } else if (strstr(type.c_str(), "point") == type.c_str())
 	// points
-      {
-	int i = 0;
-	Point p;
-	double *coord = p.get_coord();
-	while (lines >> coord[i%3])
+      case 1:
+	this->top_file_type = Prism::POINTS;
 	{
-	  if (i%3 == 2) this->top.push_back(p);
+	  i = 0;
+	  Point p;
+	  double *coord = p.get_coord();
+	  while (lines >> coord[i%3])
+	  {
+	    if (i%3 == 2) this->top.push_back(p);
+	  }
 	}
 	if (this->top.size() < 3)
 	{
 	  error_msg("Error reading top of prism, expected at least 3 points.", EA_CONTINUE);
 	  success = false;
+	} else
+	{
+	  this->top_defined = true;
 	}
-      } else if (strstr(type.c_str(), "shape") == type.c_str())
-      {
+	break;
+
+	// Shape file
+      case 2:
+	this->top_file_type = Prism::SHAPE;
+	break;
+
+	// Arc Raster file
+      case 3:
+	break;
+
+      
       }
      }
     break;
@@ -114,3 +155,4 @@ struct zone *Prism::Bounding_box()
 void Prism::printOn(std::ostream& o) const
 {
 }
+

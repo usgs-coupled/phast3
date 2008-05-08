@@ -1,7 +1,7 @@
 #include "Shapefile.h"
 #include "../Point.h"
 #include "../message.h"
-extern int free_check_null(void *);
+#include "../Helpers.h"
 Shapefile::Shapefile(void)
 {
 }

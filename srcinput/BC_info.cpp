@@ -1,5 +1,5 @@
 #include "BC_info.h"
-extern int free_check_null(void *ptr);
+#include "Helpers.h"
 extern int mix_init(struct mix *mix_ptr);
 BC_info::BC_info(void)
 {

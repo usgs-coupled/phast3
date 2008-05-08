@@ -18,12 +18,14 @@ public:
     TOP          = 2,
     BOTTOM       = 3
   };
-  enum PRISM_FILE_TYPE
+  enum PRISM_DATA_TYPE
   {
     SHAPE        = 0,
     ARCRASTER    = 1,
     XYZ          = 2,
-    NONE         = 3
+    CONSTANT     = 3,
+    POINTS       = 4,
+    NONE         = 5
   };
 public:
   // Virtual methods
@@ -41,17 +43,22 @@ public:
   bool read(PRISM_OPTION p_opt, std::istream &lines);
 
   // data
-  std::string prism_file;
+  bool perimeter_defined;
+  std::string perimeter_file;
+  PRISM_DATA_TYPE perimeter_file_type;
   gpc_polygon *perimeter;
-  Point prism_dip;
 
+  bool top_defined;
   std::string top_file;
-  PRISM_FILE_TYPE top_file_type;
+  PRISM_DATA_TYPE top_file_type;
   std::vector<Point> top;
 
+  bool bottom_defined;
   std::string bottom_file;
-  PRISM_FILE_TYPE bottom_file_type;
+  PRISM_DATA_TYPE bottom_file_type;
   std::vector<Point> bottom;
+
+  Point prism_dip;
 
 
   
