@@ -84,7 +84,7 @@ void Cube::Points_in_polyhedron(std::list<int> & list_of_numbers, std::vector<Po
   }
   return;
 }
-
+#ifdef SKIP
 gpc_polygon * Cube::Face_polygon(Cell_Face face)
 {
   // Generates a new gpc_polygon
@@ -106,7 +106,7 @@ gpc_polygon * Cube::Face_polygon(Cell_Face face)
   }
   return(poly_ptr);
 }
-
+#endif
 gpc_polygon * Cube::Slice(Cell_Face face, double coord)
 {
   // Generates a new gpc_polygon

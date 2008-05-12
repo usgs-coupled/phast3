@@ -35,6 +35,7 @@ protected:
 public:
   // Methods
   bool read(PRISM_OPTION p_opt, std::istream &lines);
+  bool read(std::istream &lines);
 
   // data
 

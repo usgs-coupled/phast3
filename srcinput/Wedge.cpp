@@ -283,7 +283,7 @@ void Wedge::Points_in_polyhedron(std::list<int> & list_of_numbers, std::vector<P
   }
   return;
 }
-
+#ifdef SKIP
 gpc_polygon * Wedge::Face_polygon(Cell_Face face)
 {
   gpc_polygon *poly_ptr;
@@ -333,7 +333,7 @@ gpc_polygon * Wedge::Face_polygon(Cell_Face face)
   }
   return(poly_ptr);
 }
-
+#endif
 gpc_polygon * Wedge::Slice(Cell_Face face, double coord)
 {
 

@@ -28,7 +28,7 @@ public:
   virtual void Points_in_polyhedron(std::list<int> & list, std::vector<Point> &point_xyz) = 0;
   virtual Polyhedron* clone() const = 0;
   virtual Polyhedron* create() const = 0;
-  virtual gpc_polygon *Face_polygon(Cell_Face face) = 0;
+  //virtual gpc_polygon *Face_polygon(Cell_Face face) = 0;
   virtual gpc_polygon * Slice(Cell_Face face, double coord) = 0;
 
   struct zone *Get_box() {return &(this->box);}

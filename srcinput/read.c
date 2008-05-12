@@ -1190,402 +1190,458 @@ int read_grid(void)
 int read_media(void)
 /* ---------------------------------------------------------------------- */
 {
-/*
- *      Reads media properties
- *
- *      Arguments:
- *         none
- *
- *      Returns:
- *         KEYWORD if keyword encountered, input_error may be incremented if
- *                    a keyword is encountered in an unexpected position
- *         EOF     if eof encountered while reading mass balance concentrations
- *         ERROR   if error occurred reading data
- *
- */
-	struct grid_elt *grid_elt_ptr;
-	int return_value, opt;
-	char *next_char;
-	int l;
-	char token[MAX_LENGTH];
-	const char *opt_list[] = {
-		"kx",               /* 0 */
-		"kxx",              /* 1 */
-		"ky",               /* 2 */
-		"kyy",              /* 3 */
-		"kz",               /* 4 */
-		"kzz",              /* 5 */
-		"porosity",         /* 6 */
-		"specific_storage", /* 7 */
-		"storage",          /* 8 */
-		"dispersivity_longitudinal",  /* 9 */
-		"dispersivity_long",          /* 10 */
-		"long_alpha",                 /* 11 */
-		"longitudinal_alpha",         /* 12 */
-		"alphat",           /* 13 */
-		"alpha_t",          /* 14 */
-		"transverse_alpha", /* 15 */
-		"trans_alpha",      /* 16 */
-		"zone",             /* 17 */
-		"active",           /* 18 */
-		"long_dispersivity",           /* 19 */
-		"longitudinal_dispersivity",   /* 20 */
-		"long_disp",                   /* 21 */
-		"long",                        /* 22 */
-		"trans_dispersivity",          /* 23 */
-		"transverse_dispersivity",     /* 24 */
-		"trans_disp",                  /* 25 */
-		"trans",                       /* 26 */
-		"mask",                        /* 27 */
-		"horizontal_dispersivity",     /* 28 */
-		"dispersivity_horizontal",     /* 29 */
-		"alpha_horizontal",            /* 30 */
-		"vertical_dispersivity",       /* 31 */
-		"dispersivity_vertical",       /* 32 */
-		"alpha_vertical",              /* 33 */
-		"wedge"                        /* 34 */
-	};
-	int count_opt_list = 35;
-/*
- *   Read grid data
- */
-	return_value = UNKNOWN;
-	grid_elt_ptr = NULL;
-/*
- *   get first line
- */
+  /*
+  *      Reads media properties
+  *
+  *      Arguments:
+  *         none
+  *
+  *      Returns:
+  *         KEYWORD if keyword encountered, input_error may be incremented if
+  *                    a keyword is encountered in an unexpected position
+  *         EOF     if eof encountered while reading mass balance concentrations
+  *         ERROR   if error occurred reading data
+  *
+  */
+  struct grid_elt *grid_elt_ptr;
+  int return_value, opt;
+  char *next_char;
+  int l;
+  char token[MAX_LENGTH];
+  const char *opt_list[] = {
+    "kx",               /* 0 */
+    "kxx",              /* 1 */
+    "ky",               /* 2 */
+    "kyy",              /* 3 */
+    "kz",               /* 4 */
+    "kzz",              /* 5 */
+    "porosity",         /* 6 */
+    "specific_storage", /* 7 */
+    "storage",          /* 8 */
+    "dispersivity_longitudinal",  /* 9 */
+    "dispersivity_long",          /* 10 */
+    "long_alpha",                 /* 11 */
+    "longitudinal_alpha",         /* 12 */
+    "alphat",           /* 13 */
+    "alpha_t",          /* 14 */
+    "transverse_alpha", /* 15 */
+    "trans_alpha",      /* 16 */
+    "zone",             /* 17 */
+    "active",           /* 18 */
+    "long_dispersivity",           /* 19 */
+    "longitudinal_dispersivity",   /* 20 */
+    "long_disp",                   /* 21 */
+    "long",                        /* 22 */
+    "trans_dispersivity",          /* 23 */
+    "transverse_dispersivity",     /* 24 */
+    "trans_disp",                  /* 25 */
+    "trans",                       /* 26 */
+    "mask",                        /* 27 */
+    "horizontal_dispersivity",     /* 28 */
+    "dispersivity_horizontal",     /* 29 */
+    "alpha_horizontal",            /* 30 */
+    "vertical_dispersivity",       /* 31 */
+    "dispersivity_vertical",       /* 32 */
+    "alpha_vertical",              /* 33 */
+    "wedge"                        /* 34 */
+    "prism",                            /* 35 */
+    "vector",                           /* 36 */
+    "perimeter",                        /* 37 */
+    "top",                              /* 38 */
+    "bottom"                            /* 39 */
+
+  };
+  int count_opt_list = 40;
+  /*
+  *   Read grid data
+  */
+  return_value = UNKNOWN;
+  grid_elt_ptr = NULL;
+  Prism *prism_ptr = NULL; 
+  /*
+  *   get first line
+  */
+  sprintf(tag,"in MEDIA, definition %d.", count_grid_elt_zones);
+  opt = get_option(opt_list, count_opt_list, &next_char);
+  for (;;) {
+    next_char = line;
+    if (opt >= 0) {
+      copy_token(token, &next_char , &l);
+    }
+    switch (opt) {
+    case OPTION_EOF:                /* end of file */
+      return_value = EOF;
+      break;
+    case OPTION_KEYWORD:           /* keyword */
+      return_value = KEYWORD;
+      break;
+    case OPTION_DEFAULT:
+    case OPTION_ERROR:
+      sprintf(error_string,"Expected an identifier %s", tag);
+      error_msg(error_string, CONTINUE);
+      error_msg(line_save, CONTINUE);
+      input_error++;
+      opt = next_keyword_or_option(opt_list, count_opt_list);
+      break;
+    case 0:                       /* kx */
+    case 1:                       /* kxx */
+      /* read hydraulic conductivity */
+      if (grid_elt_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for X direction hydraulic conductivity %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (grid_elt_ptr->kx != NULL) {
+	sprintf(error_string,"X direction hydraulic conductivity has been redefined %s", tag);
+	warning_msg(error_string);
+	property_free(grid_elt_ptr->kx);
+	grid_elt_ptr->kx = NULL;
+      }
+      grid_elt_ptr->kx = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
+      if (grid_elt_ptr->kx == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading X direction hydraulic conductivity %s", tag);
+	error_msg(error_string, CONTINUE);
+      } 
+      break;
+    case 2:                       /* ky */
+    case 3:                       /* kyy */
+      /* read Y hydraulic conductivity */
+      if (grid_elt_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for Y direction hydraulic conductivity %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (grid_elt_ptr->ky != NULL) {
+	sprintf(error_string,"Y direction hydraulic conductivity has been redefined %s", tag);
+	warning_msg(error_string);
+	property_free(grid_elt_ptr->ky);
+	grid_elt_ptr->ky = NULL;
+      }
+      grid_elt_ptr->ky = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
+      if (grid_elt_ptr->ky == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading Y direction hydraulic conductivity %s", tag);
+	error_msg(error_string, CONTINUE);
+      }
+      break;
+    case 4:                       /* kz */
+    case 5:                       /* kzz */
+      /* read Z hydraulic conductivity */
+      if (grid_elt_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for Z direction hydraulic conductivity %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (grid_elt_ptr->kz != NULL) {
+	sprintf(error_string,"Z direction hydraulic conductivity has been redefined %s", tag);
+	warning_msg(error_string);
+	property_free(grid_elt_ptr->kz);
+	grid_elt_ptr->kz = NULL;
+      }
+      grid_elt_ptr->kz = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
+      if (grid_elt_ptr->kz == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading Z direction hydraulic conductivity %s", tag);
+	error_msg(error_string, CONTINUE);
+      }
+      break;
+    case 6:                       /* porosity */
+      if (grid_elt_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for porosity %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (grid_elt_ptr->porosity != NULL) {
+	sprintf(error_string,"Porosity has been redefined %s", tag);
+	warning_msg(error_string);
+	property_free(grid_elt_ptr->porosity);
+	grid_elt_ptr->porosity = NULL;
+      }
+      grid_elt_ptr->porosity = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
+      if (grid_elt_ptr->porosity == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading porosity %s", tag);
+	error_msg(error_string, CONTINUE);
+      }
+      break;
+    case 7:                       /* specific storage */
+    case 8:                       /* storage */
+      if (grid_elt_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for specific storage %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (grid_elt_ptr->storage != NULL) {
+	sprintf(error_string,"Specific storage has been redefined %s", tag);
+	warning_msg(error_string);
+	property_free(grid_elt_ptr->storage);
+	grid_elt_ptr->storage = NULL;
+      }
+      grid_elt_ptr->storage = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
+      if (grid_elt_ptr->storage == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading storage %s", tag);
+	error_msg(error_string, CONTINUE);
+      }
+      break;
+    case 9:                       /* dispersivity_longitudinal */
+    case 10:                      /* dispersivity_long */
+    case 11:                      /* long_alpha */
+    case 12:                      /* longitudinal_alpha */
+    case 19:                      /* long_dispersivity */
+    case 20:                      /* longitudinal_dispersivity */
+    case 21:                      /* long_disp */
+    case 22:                      /* long */
+      if (grid_elt_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for longitudinal dispersivity %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (grid_elt_ptr->alpha_long != NULL) {
+	sprintf(error_string,"Longitudinal dispersivity has been redefined %s", tag);
+	warning_msg(error_string);
+	property_free(grid_elt_ptr->alpha_long);
+	grid_elt_ptr->alpha_long = NULL;
+      }
+      grid_elt_ptr->alpha_long = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
+      if (grid_elt_ptr->alpha_long == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading longitudinal dispersivity %s", tag);
+	error_msg(error_string, CONTINUE);
+      }
+      break;
+    case 13:                      /* alphat */
+    case 14:                      /* alpha_t */
+    case 15:                      /* transverse_alpha */
+    case 16:                      /* trans_alpha */
+    case 23:                      /* trans_dispersivity */
+    case 24:                      /* transverse_dispersivity */
+    case 25:                      /* trans_disp */
+    case 26:                      /* trans */
+      sprintf(error_string,"Transverse_dispersivity option is obsolete.\n\tUse -horizontal_dispersivity and -vertical_dispersivity.");
+      warning_msg(error_string);
+      if (grid_elt_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for transverse dispersivity %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (grid_elt_ptr->alpha_trans != NULL) {
+	sprintf(error_string,"Transverse dispersivity has been redefined %s", tag);
+	warning_msg(error_string);
+	property_free(grid_elt_ptr->alpha_trans);
+	grid_elt_ptr->alpha_trans = NULL;
+      }
+      grid_elt_ptr->alpha_trans = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
+      if (grid_elt_ptr->alpha_trans == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading transverse dispersivity %s", tag);
+	error_msg(error_string, CONTINUE);
+      }
+      break;
+    case 17:                    /* zone */
+      /*
+      *   Allocate space for grid_elt, read zone data
+      */
+      grid_elt_zones = (struct grid_elt **) realloc(grid_elt_zones, (size_t) (count_grid_elt_zones + 1) * sizeof (struct grid_elt *));
+      if (grid_elt_zones == NULL) malloc_error();
+
+      grid_elt_zones[count_grid_elt_zones] = grid_elt_alloc();
+      grid_elt_ptr = grid_elt_zones[count_grid_elt_zones];
+      count_grid_elt_zones++;
+      sprintf(tag,"in MEDIA, definition %d.", count_grid_elt_zones);
+
+      grid_elt_ptr->polyh = read_cube( &next_char );
+      if (grid_elt_ptr->polyh == NULL) {
+	sprintf(error_string,"Reading zone %s", tag);
+	error_msg(error_string, CONTINUE);
+      }
+      opt = next_keyword_or_option(opt_list, count_opt_list);
+      break;
+    case 18:                      /* active */
+      if (grid_elt_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for "
+	  "active cell input %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (grid_elt_ptr->active != NULL) {
+	sprintf(error_string,"Active cells have been redefined %s", tag);
+	warning_msg(error_string);
+	property_free(grid_elt_ptr->active);
+	grid_elt_ptr->active = NULL;
+      }
+      grid_elt_ptr->active = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
+      if (grid_elt_ptr->active == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading active cells %s", tag);
+	error_msg(error_string, CONTINUE);
+      }
+      break;
+    case 27:                      /* mask */
+      if (grid_elt_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for "
+	  "mask %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (grid_elt_ptr->mask != NULL) {
+	sprintf(error_string,"Mask for this zone is being redefined %s", tag);
+	warning_msg(error_string);
+	property_free(grid_elt_ptr->mask);
+	grid_elt_ptr->mask = NULL;
+      }
+      grid_elt_ptr->mask = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
+      if (grid_elt_ptr->mask == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading mask %s", tag);
+	error_msg(error_string, CONTINUE);
+      }
+      break;
+    case 28:                      /* horizontal_dispersivity */
+    case 29:                      /* dispersivity_horizontal */
+    case 30:                      /* alpha_horizontal */
+      if (grid_elt_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for horizontal_dispersivity %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (grid_elt_ptr->alpha_horizontal != NULL) {
+	sprintf(error_string,"Horizontal_dispersivity has been redefined %s", tag);
+	warning_msg(error_string);
+	property_free(grid_elt_ptr->alpha_horizontal);
+	grid_elt_ptr->alpha_horizontal = NULL;
+      }
+      grid_elt_ptr->alpha_horizontal = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
+      if (grid_elt_ptr->alpha_horizontal == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading horizontal dispersivity %s", tag);
+	error_msg(error_string, CONTINUE);
+      }
+      break;
+    case 31:                      /* vertical_dispersivity */
+    case 32:                      /* dispersivity_vertical */
+    case 33:                      /* alpha_vertical */
+      if (grid_elt_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for vertical_dispersivity %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (grid_elt_ptr->alpha_vertical != NULL) {
+	sprintf(error_string,"Vertical_dispersivity has been redefined %s", tag);
+	warning_msg(error_string);
+	property_free(grid_elt_ptr->alpha_vertical);
+	grid_elt_ptr->alpha_vertical = NULL;
+      }
+      grid_elt_ptr->alpha_vertical = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
+      if (grid_elt_ptr->alpha_vertical == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading vertical dispersivity %s", tag);
+	error_msg(error_string, CONTINUE);
+      }
+      break;
+    case 34:                    /* wedge */
+      /*
+      *   Allocate space for grid_elt, read wedge data
+      */
+      grid_elt_zones = (struct grid_elt **) realloc(grid_elt_zones, (size_t) (count_grid_elt_zones + 1) * sizeof (struct grid_elt *));
+      if (grid_elt_zones == NULL) malloc_error();
+
+      grid_elt_zones[count_grid_elt_zones] = grid_elt_alloc();
+      grid_elt_ptr = grid_elt_zones[count_grid_elt_zones];
+      count_grid_elt_zones++;
+      sprintf(tag,"in MEDIA, definition %d.", count_grid_elt_zones);
+
+      grid_elt_ptr->polyh = read_wedge( &next_char );
+      {
+	Wedge *w_ptr = dynamic_cast<Wedge *> (grid_elt_ptr->polyh);
+	if (grid_elt_ptr->polyh == NULL || w_ptr->orientation == Wedge::WEDGE_ERROR) {
+	  input_error++;
+	  sprintf(error_string,"Reading wedge %s", tag);
+	  error_msg(error_string, CONTINUE);
+	}
+      }
+      opt = next_keyword_or_option(opt_list, count_opt_list);
+      break;
+    case 35: 	      /* prism */
+ 
+      {
+	Wedge *w_ptr = dynamic_cast<Wedge *> (grid_elt_ptr->polyh);
+	if (grid_elt_ptr->polyh == NULL || w_ptr->orientation == Wedge::WEDGE_ERROR) {
+	  input_error++;
+	  sprintf(error_string,"Reading wedge %s", tag);
+	  error_msg(error_string, CONTINUE);
+	}
+      }
+      opt = next_keyword_or_option(opt_list, count_opt_list);
+      {
+	/*
+	*   Allocate space for grid_elt, read wedge data
+	*/
+	grid_elt_zones = (struct grid_elt **) realloc(grid_elt_zones, (size_t) (count_grid_elt_zones + 1) * sizeof (struct grid_elt *));
+	if (grid_elt_zones == NULL) malloc_error();
+
+	grid_elt_zones[count_grid_elt_zones] = grid_elt_alloc();
+	grid_elt_ptr = grid_elt_zones[count_grid_elt_zones];
+	count_grid_elt_zones++;
 	sprintf(tag,"in MEDIA, definition %d.", count_grid_elt_zones);
-	opt = get_option(opt_list, count_opt_list, &next_char);
-	for (;;) {
-		next_char = line;
-		if (opt >= 0) {
-			copy_token(token, &next_char , &l);
-		}
-		switch (opt) {
-		    case OPTION_EOF:                /* end of file */
-			return_value = EOF;
-			break;
-		    case OPTION_KEYWORD:           /* keyword */
-			return_value = KEYWORD;
-			break;
-		    case OPTION_DEFAULT:
-		    case OPTION_ERROR:
-			sprintf(error_string,"Expected an identifier %s", tag);
-			error_msg(error_string, CONTINUE);
-			error_msg(line_save, CONTINUE);
-			input_error++;
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			break;
-		    case 0:                       /* kx */
-		    case 1:                       /* kxx */
-			/* read hydraulic conductivity */
-			if (grid_elt_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for X direction hydraulic conductivity %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (grid_elt_ptr->kx != NULL) {
-				sprintf(error_string,"X direction hydraulic conductivity has been redefined %s", tag);
-				warning_msg(error_string);
-				property_free(grid_elt_ptr->kx);
-				grid_elt_ptr->kx = NULL;
-			}
-			grid_elt_ptr->kx = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
-			if (grid_elt_ptr->kx == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading X direction hydraulic conductivity %s", tag);
-				error_msg(error_string, CONTINUE);
-			} 
-			break;
-		    case 2:                       /* ky */
-		    case 3:                       /* kyy */
-			/* read Y hydraulic conductivity */
-			if (grid_elt_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for Y direction hydraulic conductivity %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (grid_elt_ptr->ky != NULL) {
-				sprintf(error_string,"Y direction hydraulic conductivity has been redefined %s", tag);
-				warning_msg(error_string);
-				property_free(grid_elt_ptr->ky);
-				grid_elt_ptr->ky = NULL;
-			}
-			grid_elt_ptr->ky = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
-			if (grid_elt_ptr->ky == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading Y direction hydraulic conductivity %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-			break;
-		    case 4:                       /* kz */
-		    case 5:                       /* kzz */
-			/* read Z hydraulic conductivity */
-			if (grid_elt_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for Z direction hydraulic conductivity %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (grid_elt_ptr->kz != NULL) {
-				sprintf(error_string,"Z direction hydraulic conductivity has been redefined %s", tag);
-				warning_msg(error_string);
-				property_free(grid_elt_ptr->kz);
-				grid_elt_ptr->kz = NULL;
-			}
-			grid_elt_ptr->kz = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
-			if (grid_elt_ptr->kz == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading Z direction hydraulic conductivity %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-			break;
-		    case 6:                       /* porosity */
-			if (grid_elt_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for porosity %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (grid_elt_ptr->porosity != NULL) {
-				sprintf(error_string,"Porosity has been redefined %s", tag);
-				warning_msg(error_string);
-				property_free(grid_elt_ptr->porosity);
-				grid_elt_ptr->porosity = NULL;
-			}
-			grid_elt_ptr->porosity = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
-			if (grid_elt_ptr->porosity == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading porosity %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-			break;
-		    case 7:                       /* specific storage */
-		    case 8:                       /* storage */
-			if (grid_elt_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for specific storage %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (grid_elt_ptr->storage != NULL) {
-				sprintf(error_string,"Specific storage has been redefined %s", tag);
-				warning_msg(error_string);
-				property_free(grid_elt_ptr->storage);
-				grid_elt_ptr->storage = NULL;
-			}
-			grid_elt_ptr->storage = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
-			if (grid_elt_ptr->storage == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading storage %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-			break;
-		    case 9:                       /* dispersivity_longitudinal */
-		    case 10:                      /* dispersivity_long */
-		    case 11:                      /* long_alpha */
-		    case 12:                      /* longitudinal_alpha */
-		    case 19:                      /* long_dispersivity */
-		    case 20:                      /* longitudinal_dispersivity */
-		    case 21:                      /* long_disp */
-		    case 22:                      /* long */
-			if (grid_elt_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for longitudinal dispersivity %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (grid_elt_ptr->alpha_long != NULL) {
-				sprintf(error_string,"Longitudinal dispersivity has been redefined %s", tag);
-				warning_msg(error_string);
-				property_free(grid_elt_ptr->alpha_long);
-				grid_elt_ptr->alpha_long = NULL;
-			}
-			grid_elt_ptr->alpha_long = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
-			if (grid_elt_ptr->alpha_long == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading longitudinal dispersivity %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-			break;
-		    case 13:                      /* alphat */
-		    case 14:                      /* alpha_t */
-		    case 15:                      /* transverse_alpha */
-		    case 16:                      /* trans_alpha */
-		    case 23:                      /* trans_dispersivity */
-		    case 24:                      /* transverse_dispersivity */
-		    case 25:                      /* trans_disp */
-		    case 26:                      /* trans */
-			sprintf(error_string,"Transverse_dispersivity option is obsolete.\n\tUse -horizontal_dispersivity and -vertical_dispersivity.");
-			warning_msg(error_string);
-			if (grid_elt_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for transverse dispersivity %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (grid_elt_ptr->alpha_trans != NULL) {
-				sprintf(error_string,"Transverse dispersivity has been redefined %s", tag);
-				warning_msg(error_string);
-				property_free(grid_elt_ptr->alpha_trans);
-				grid_elt_ptr->alpha_trans = NULL;
-			}
-			grid_elt_ptr->alpha_trans = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
-			if (grid_elt_ptr->alpha_trans == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading transverse dispersivity %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-			break;
-		    case 17:                    /* zone */
-/*
- *   Allocate space for grid_elt, read zone data
- */
-			grid_elt_zones = (struct grid_elt **) realloc(grid_elt_zones, (size_t) (count_grid_elt_zones + 1) * sizeof (struct grid_elt *));
-			if (grid_elt_zones == NULL) malloc_error();
+	prism_ptr = new Prism;
+	grid_elt_ptr->polyh = prism_ptr;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
 
-			grid_elt_zones[count_grid_elt_zones] = grid_elt_alloc();
-			grid_elt_ptr = grid_elt_zones[count_grid_elt_zones];
-			count_grid_elt_zones++;
-			sprintf(tag,"in MEDIA, definition %d.", count_grid_elt_zones);
-
-			grid_elt_ptr->polyh = read_cube( &next_char );
-			if (grid_elt_ptr->polyh == NULL) {
-				sprintf(error_string,"Reading zone %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			break;
-		    case 18:                      /* active */
-			if (grid_elt_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for "
-					"active cell input %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (grid_elt_ptr->active != NULL) {
-				sprintf(error_string,"Active cells have been redefined %s", tag);
-				warning_msg(error_string);
-				property_free(grid_elt_ptr->active);
-				grid_elt_ptr->active = NULL;
-			}
-			grid_elt_ptr->active = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
-			if (grid_elt_ptr->active == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading active cells %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-			break;
-		    case 27:                      /* mask */
-			if (grid_elt_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for "
-					"mask %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (grid_elt_ptr->mask != NULL) {
-				sprintf(error_string,"Mask for this zone is being redefined %s", tag);
-				warning_msg(error_string);
-				property_free(grid_elt_ptr->mask);
-				grid_elt_ptr->mask = NULL;
-			}
-			grid_elt_ptr->mask = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
-			if (grid_elt_ptr->mask == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading mask %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-			break;
-		    case 28:                      /* horizontal_dispersivity */
-		    case 29:                      /* dispersivity_horizontal */
-		    case 30:                      /* alpha_horizontal */
-			if (grid_elt_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for horizontal_dispersivity %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (grid_elt_ptr->alpha_horizontal != NULL) {
-				sprintf(error_string,"Horizontal_dispersivity has been redefined %s", tag);
-				warning_msg(error_string);
-				property_free(grid_elt_ptr->alpha_horizontal);
-				grid_elt_ptr->alpha_horizontal = NULL;
-			}
-			grid_elt_ptr->alpha_horizontal = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
-			if (grid_elt_ptr->alpha_horizontal == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading horizontal dispersivity %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-			break;
-		    case 31:                      /* vertical_dispersivity */
-		    case 32:                      /* dispersivity_vertical */
-		    case 33:                      /* alpha_vertical */
-			if (grid_elt_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for vertical_dispersivity %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (grid_elt_ptr->alpha_vertical != NULL) {
-				sprintf(error_string,"Vertical_dispersivity has been redefined %s", tag);
-				warning_msg(error_string);
-				property_free(grid_elt_ptr->alpha_vertical);
-				grid_elt_ptr->alpha_vertical = NULL;
-			}
-			grid_elt_ptr->alpha_vertical = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
-			if (grid_elt_ptr->alpha_vertical == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading vertical dispersivity %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-			break;
-		    case 34:                    /* wedge */
-/*
- *   Allocate space for grid_elt, read wedge data
- */
-			grid_elt_zones = (struct grid_elt **) realloc(grid_elt_zones, (size_t) (count_grid_elt_zones + 1) * sizeof (struct grid_elt *));
-			if (grid_elt_zones == NULL) malloc_error();
-
-			grid_elt_zones[count_grid_elt_zones] = grid_elt_alloc();
-			grid_elt_ptr = grid_elt_zones[count_grid_elt_zones];
-			count_grid_elt_zones++;
-			sprintf(tag,"in MEDIA, definition %d.", count_grid_elt_zones);
-
-			grid_elt_ptr->polyh = read_wedge( &next_char );
-			Wedge *w_ptr = dynamic_cast<Wedge *> (grid_elt_ptr->polyh);
-			if (grid_elt_ptr->polyh == NULL || w_ptr->orientation == Wedge::WEDGE_ERROR) {
-			  	input_error++;
-				sprintf(error_string,"Reading wedge %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			break;
-		}
-		return_value = check_line_return;
-		if (return_value == EOF || return_value == KEYWORD) break;
+    case 36:                         /* vector */
+    case 37:                         /* perimeter */
+    case 38:                         /* top */
+    case 39:                         /* bottom */
+      {
+	std::istringstream lines;
+	opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
+	if (grid_elt_ptr == NULL || 
+	  grid_elt_ptr->polyh == NULL || 
+	  prism_ptr == NULL ||
+	  !prism_ptr->read(lines))
+	{
+	  input_error++;
+	  sprintf(error_string,"Reading prism %s", tag);
+	  error_msg(error_string, CONTINUE);
+	  break;
 	}
-	if (simulation > 0) {
-		input_error++;
-		sprintf(error_string,"MEDIA properties can only be defined in first simulation period.");
-		error_msg(error_string, CONTINUE);
-	}
-	return(return_value);
+      }
+      break;
+    }
+    return_value = check_line_return;
+    if (return_value == EOF || return_value == KEYWORD) break;
+  }
+  if (simulation > 0) {
+    input_error++;
+    sprintf(error_string,"MEDIA properties can only be defined in first simulation period.");
+    error_msg(error_string, CONTINUE);
+  }
+  return(return_value);
 }
 #ifdef SKIP
 /* ---------------------------------------------------------------------- */
@@ -1733,14 +1789,21 @@ int read_head_ic(void)
     "water_table",        /* 1 */
     "head",               /* 2 */
     "mask" ,              /* 3 */
-    "wedge"               /* 4 */
+    "wedge",              /* 4 */
+    "prism",                            /* 5 */ 
+    "vector",                           /* 6 */
+    "perimeter",                        /* 7 */
+    "top",                              /* 8 */
+    "bottom"                            /* 9 */
   };
-  int count_opt_list = 5;
+  int count_opt_list = 10;
   /*
   *   Read grid data
   */
   return_value = UNKNOWN;
   head_ic_ptr = NULL;
+  Prism *prism_ptr = NULL;
+
   /*
   *   get first line
   */
@@ -1868,14 +1931,54 @@ int read_head_ic(void)
       head_ic_init(head_ic_ptr);
 
       head_ic_ptr->polyh = read_wedge( &next_char );
-      Wedge *w_ptr = dynamic_cast<Wedge *> (head_ic_ptr->polyh);
-      if (head_ic_ptr->polyh == NULL || w_ptr->orientation == Wedge::WEDGE_ERROR) {
-	input_error++;
-	sprintf(error_string,"Reading wedge %s", tag);
-	error_msg(error_string, CONTINUE);
+      {
+	Wedge *w_ptr = dynamic_cast<Wedge *> (head_ic_ptr->polyh);
+	if (head_ic_ptr->polyh == NULL || w_ptr->orientation == Wedge::WEDGE_ERROR) {
+	  input_error++;
+	  sprintf(error_string,"Reading wedge %s", tag);
+	  error_msg(error_string, CONTINUE);
+	}
       }
       head_ic_ptr->ic_type = ZONE;
       opt = next_keyword_or_option(opt_list, count_opt_list);
+      break;
+    case 5: 	      /* prism */
+      {
+	/*
+	*   Allocate space for head_ic, read zone data
+	*/
+	head_ic = (struct Head_ic **) realloc(head_ic, (size_t) (count_head_ic + 1) * sizeof (struct Head_ic *));
+	if (head_ic == NULL) malloc_error();
+
+	head_ic[count_head_ic] = head_ic_alloc();
+	head_ic_ptr = head_ic[count_head_ic];
+	count_head_ic++;
+	sprintf(tag,"in HEAD_IC, definition %d.", count_head_ic);
+	head_ic_init(head_ic_ptr);
+	prism_ptr = new Prism;
+	head_ic_ptr->polyh = prism_ptr;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+
+    case 6:                         /* vector */
+    case 7:                         /* perimeter */
+    case 8:                         /* top */
+    case 9:                         /* bottom */
+      {
+	std::istringstream lines;
+	opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
+	if (head_ic_ptr == NULL || 
+	  head_ic_ptr->polyh == NULL || 
+	  prism_ptr == NULL ||
+	  !prism_ptr->read(lines))
+	{
+	  input_error++;
+	  sprintf(error_string,"Reading prism %s", tag);
+	  error_msg(error_string, CONTINUE);
+	  break;
+	}
+      }
       break;
     }
     return_value = check_line_return;
@@ -1892,319 +1995,364 @@ int read_head_ic(void)
 int read_chemistry_ic(void)
 /* ---------------------------------------------------------------------- */
 {
-/*
- *      Reads chemistry initial conditions 
- *
- *      Arguments:
- *         none
- *
- *      Returns:
- *         KEYWORD if keyword encountered, input_error may be incremented if
- *                    a keyword is encountered in an unexpected position
- *         EOF     if eof encountered while reading mass balance concentrations
- *         ERROR   if error occurred reading data
- *
- */
-	char *next_char;
-	struct chem_ic *chem_ic_ptr;
-	int return_value, opt;
-	int l;
-	char token[MAX_LENGTH];
-	const char *opt_list[] = {
-		"zone",                      /* 0 */
-		"solution",                  /* 1 */
-		"equilibrium_phases",        /* 2 */
-		"pure_phases",               /* 3 */
-		"phases",                    /* 4 */
-		"exchange",                  /* 5 */
-		"surface",                   /* 6 */
-		"gas_phase",                 /* 7 */
-		"solid_solution",            /* 8 */
-		"kinetics",                  /* 9 */
-		"solid_solutions",           /* 10 */
-		"mask",                      /* 11 */
-		"wedge"                      /* 12 */
-	};
-	int count_opt_list = 13;
-/*
- *   Read chemical initial condition data
- */
-	return_value = UNKNOWN;
-	chem_ic_ptr = NULL;
-/*
- *   get first line
- */
+  /*
+  *      Reads chemistry initial conditions 
+  *
+  *      Arguments:
+  *         none
+  *
+  *      Returns:
+  *         KEYWORD if keyword encountered, input_error may be incremented if
+  *                    a keyword is encountered in an unexpected position
+  *         EOF     if eof encountered while reading mass balance concentrations
+  *         ERROR   if error occurred reading data
+  *
+  */
+  char *next_char;
+  struct chem_ic *chem_ic_ptr;
+  int return_value, opt;
+  int l;
+  char token[MAX_LENGTH];
+  const char *opt_list[] = {
+    "zone",                      /* 0 */
+    "solution",                  /* 1 */
+    "equilibrium_phases",        /* 2 */
+    "pure_phases",               /* 3 */
+    "phases",                    /* 4 */
+    "exchange",                  /* 5 */
+    "surface",                   /* 6 */
+    "gas_phase",                 /* 7 */
+    "solid_solution",            /* 8 */
+    "kinetics",                  /* 9 */
+    "solid_solutions",           /* 10 */
+    "mask",                      /* 11 */
+    "wedge",                     /* 12 */
+    "prism",                            /* 13 */ 
+    "vector",                           /* 14 */
+    "perimeter",                        /* 15 */
+    "top",                              /* 16 */
+    "bottom"                            /* 17 */
+  };
+  int count_opt_list = 18;
+  /*
+  *   Read chemical initial condition data
+  */
+  return_value = UNKNOWN;
+  chem_ic_ptr = NULL;
+  Prism *prism_ptr = NULL;
+  /*
+  *   get first line
+  */
+  sprintf(tag,"in CHEMISTRY_IC, definition %d.", count_chem_ic);
+  opt = get_option(opt_list, count_opt_list, &next_char);
+  for (;;) {
+    next_char = line;
+    if (opt >= 0) {
+      copy_token(token, &next_char , &l);
+    }
+    switch (opt) {
+    case OPTION_EOF:                /* end of file */
+      return_value = EOF;
+      break;
+    case OPTION_KEYWORD:           /* keyword */
+      return_value = KEYWORD;
+      break;
+    case OPTION_DEFAULT:
+    case OPTION_ERROR:
+      sprintf(error_string,"Expected an identifier %s", tag);
+      error_msg(error_string, CONTINUE);
+      error_msg(line_save, CONTINUE);
+      opt = next_keyword_or_option(opt_list, count_opt_list);
+      input_error++;
+      break;
+    case 0:                    /* zone */
+      /*
+      *   Allocate space for chem_ic, read zone data
+      */
+      chem_ic = (struct chem_ic **) realloc(chem_ic, (size_t) (count_chem_ic + 1) * sizeof (struct chem_ic *));
+      if (chem_ic == NULL) malloc_error();
+
+      chem_ic[count_chem_ic] = chem_ic_alloc();
+      chem_ic_ptr = chem_ic[count_chem_ic];
+      count_chem_ic++;
+      sprintf(tag,"in CHEMISTRY_IC, definition %d.", count_chem_ic);
+      chem_ic_init(chem_ic_ptr);
+
+      chem_ic_ptr->polyh = read_cube( &next_char );
+      if (chem_ic_ptr->polyh == NULL) {
+	sprintf(error_string,"Reading zone %s", tag);
+	error_msg(error_string, CONTINUE);
+      }
+      opt = next_keyword_or_option(opt_list, count_opt_list);
+      break;
+      opt = next_keyword_or_option(opt_list, count_opt_list);
+      break;
+    case 1:                       /* solution */
+      /*
+      *   Read solution number as property
+      */
+      if (chem_ic_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for initial solution %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (chem_ic_ptr->solution != NULL) {
+	sprintf(error_string,"Initial solution has been redefined %s", tag);
+	warning_msg(error_string);
+	property_free(chem_ic_ptr->solution);
+	chem_ic_ptr->solution = NULL;
+      }
+      chem_ic_ptr->solution = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, TRUE);
+      if (chem_ic_ptr->solution == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading initial solution %s", tag);
+	error_msg(error_string, CONTINUE);
+      } 
+      break;
+    case 2:                       /* equilibrium_phases */
+    case 3:                       /* pure_phases */
+    case 4:                       /* phases */
+      /*
+      *   Read equilibrium_phases number as property
+      */
+      if (chem_ic_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for initial equilibrium_phases %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (chem_ic_ptr->equilibrium_phases != NULL) {
+	sprintf(error_string,"Initial equiluilibrium_phases have been redefined %s", tag);
+	warning_msg(error_string);
+	property_free(chem_ic_ptr->equilibrium_phases);
+	chem_ic_ptr->equilibrium_phases = NULL;
+      }
+      chem_ic_ptr->equilibrium_phases = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, TRUE);
+      if (chem_ic_ptr->equilibrium_phases == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading initial equilibrium_phases %s", tag);
+	error_msg(error_string, CONTINUE);
+      } 
+      break;
+    case 5:                       /* exchange */
+      /*
+      *   Read exchange number as property
+      */
+      if (chem_ic_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for initial exchange assemblage %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (chem_ic_ptr->exchange != NULL) {
+	sprintf(error_string,"Initial exchange assemblage has been redefined %s", tag);
+	warning_msg(error_string);
+	property_free(chem_ic_ptr->exchange);
+	chem_ic_ptr->exchange = NULL;
+      }
+      chem_ic_ptr->exchange = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, TRUE);
+      if (chem_ic_ptr->exchange == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading initial exchange assemblage %s", tag);
+	error_msg(error_string, CONTINUE);
+      } 
+      break;
+    case 6:                       /* surface */
+      /*
+      *   Read surface number as property
+      */
+      if (chem_ic_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for initial surface assemblage %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (chem_ic_ptr->surface != NULL) {
+	sprintf(error_string,"Initial surface assemblage has been redefined %s", tag);
+	warning_msg(error_string);
+	property_free(chem_ic_ptr->surface);
+	chem_ic_ptr->surface = NULL;
+      }
+      chem_ic_ptr->surface = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, TRUE);
+      if (chem_ic_ptr->surface == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading initial surface assemblage %s", tag);
+	error_msg(error_string, CONTINUE);
+      } 
+      break;
+    case 7:                       /* gas_phase */
+      /*
+      *   Read gas_phase number as property
+      */
+      if (chem_ic_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for initial gas_phase %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (chem_ic_ptr->gas_phase != NULL) {
+	sprintf(error_string,"Initial gas_phase has been redefined %s", tag);
+	warning_msg(error_string);
+	property_free(chem_ic_ptr->gas_phase);
+	chem_ic_ptr->gas_phase = NULL;
+      }
+      chem_ic_ptr->gas_phase = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, TRUE);
+      if (chem_ic_ptr->gas_phase == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading initial gas_phase %s", tag);
+	error_msg(error_string, CONTINUE);
+      } 
+      break;
+    case 8:                       /* solid_solution */
+    case 10:                      /* solid_solutions */
+      /*
+      *   Read solid_solution number as property
+      */
+      if (chem_ic_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for initial solid_solution %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (chem_ic_ptr->solid_solutions != NULL) {
+	sprintf(error_string,"Initial solid_solution has been redefined %s", tag);
+	warning_msg(error_string);
+	property_free(chem_ic_ptr->solid_solutions);
+	chem_ic_ptr->solid_solutions = NULL;
+      }
+      chem_ic_ptr->solid_solutions = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, TRUE);
+      if (chem_ic_ptr->solid_solutions == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading initial solid_solution %s", tag);
+	error_msg(error_string, CONTINUE);
+      } 
+      break;
+    case 9:                       /* kinetics */
+      /*
+      *   Read kinetics number as property
+      */
+      if (chem_ic_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for initial kinetics %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (chem_ic_ptr->kinetics != NULL) {
+	sprintf(error_string,"Initial kinetics has been redefined %s", tag);
+	warning_msg(error_string);
+	property_free(chem_ic_ptr->kinetics);
+	chem_ic_ptr->kinetics = NULL;
+      }
+      chem_ic_ptr->kinetics = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, TRUE);
+      if (chem_ic_ptr->kinetics == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading initial kinetics %s", tag);
+	error_msg(error_string, CONTINUE);
+      } 
+      break;
+    case 11:                      /* mask */
+      if (chem_ic_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for "
+	  "initial chemistry condition %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (chem_ic_ptr->mask != NULL) {
+	sprintf(error_string,"Mask for this zone is being redefined %s", tag);
+	warning_msg(error_string);
+	property_free(chem_ic_ptr->mask);
+	chem_ic_ptr->mask = NULL;
+      }
+      chem_ic_ptr->mask = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
+      if (chem_ic_ptr->mask == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading mask %s", tag);
+	error_msg(error_string, CONTINUE);
+      }
+      break;
+    case 12:                    /* wedge */
+      /*
+      *   Allocate space for chem_ic, read wedge data
+      */
+      chem_ic = (struct chem_ic **) realloc(chem_ic, (size_t) (count_chem_ic + 1) * sizeof (struct chem_ic *));
+      if (chem_ic == NULL) malloc_error();
+
+      chem_ic[count_chem_ic] = chem_ic_alloc();
+      chem_ic_ptr = chem_ic[count_chem_ic];
+      count_chem_ic++;
+      sprintf(tag,"in CHEMISTRY_IC, definition %d.", count_chem_ic);
+      chem_ic_init(chem_ic_ptr);
+
+      chem_ic_ptr->polyh = read_wedge( &next_char );
+      {
+	Wedge *w_ptr = dynamic_cast<Wedge *> (chem_ic_ptr->polyh);
+	if (chem_ic_ptr->polyh == NULL || w_ptr->orientation == Wedge::WEDGE_ERROR) {
+	  input_error++;
+	  sprintf(error_string,"Reading wedge %s", tag);
+	  error_msg(error_string, CONTINUE);
+	}
+      }
+      opt = next_keyword_or_option(opt_list, count_opt_list);
+      break;
+    case 13: 	      /* prism */
+      {
+	/*
+	*   Allocate space for chem_ic, read wedge data
+	*/
+	chem_ic = (struct chem_ic **) realloc(chem_ic, (size_t) (count_chem_ic + 1) * sizeof (struct chem_ic *));
+	if (chem_ic == NULL) malloc_error();
+
+	chem_ic[count_chem_ic] = chem_ic_alloc();
+	chem_ic_ptr = chem_ic[count_chem_ic];
+	count_chem_ic++;
 	sprintf(tag,"in CHEMISTRY_IC, definition %d.", count_chem_ic);
-	opt = get_option(opt_list, count_opt_list, &next_char);
-	for (;;) {
-		next_char = line;
-		if (opt >= 0) {
-			copy_token(token, &next_char , &l);
-		}
-		switch (opt) {
-		    case OPTION_EOF:                /* end of file */
-			return_value = EOF;
-			break;
-		    case OPTION_KEYWORD:           /* keyword */
-			return_value = KEYWORD;
-			break;
-                    case OPTION_DEFAULT:
-		    case OPTION_ERROR:
-			sprintf(error_string,"Expected an identifier %s", tag);
-			error_msg(error_string, CONTINUE);
-			error_msg(line_save, CONTINUE);
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			input_error++;
-			break;
-		    case 0:                    /* zone */
-/*
- *   Allocate space for chem_ic, read zone data
- */
-			chem_ic = (struct chem_ic **) realloc(chem_ic, (size_t) (count_chem_ic + 1) * sizeof (struct chem_ic *));
-			if (chem_ic == NULL) malloc_error();
+	chem_ic_init(chem_ic_ptr);
 
-			chem_ic[count_chem_ic] = chem_ic_alloc();
-			chem_ic_ptr = chem_ic[count_chem_ic];
-			count_chem_ic++;
-			sprintf(tag,"in CHEMISTRY_IC, definition %d.", count_chem_ic);
-			chem_ic_init(chem_ic_ptr);
+	prism_ptr = new Prism;
+	chem_ic_ptr->polyh = prism_ptr;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
 
-			chem_ic_ptr->polyh = read_cube( &next_char );
-			if (chem_ic_ptr->polyh == NULL) {
-				sprintf(error_string,"Reading zone %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			break;
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			break;
-		    case 1:                       /* solution */
-			/*
-			 *   Read solution number as property
-			 */
-			if (chem_ic_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for initial solution %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (chem_ic_ptr->solution != NULL) {
-				sprintf(error_string,"Initial solution has been redefined %s", tag);
-				warning_msg(error_string);
-				property_free(chem_ic_ptr->solution);
-				chem_ic_ptr->solution = NULL;
-			}
-			chem_ic_ptr->solution = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, TRUE);
-			if (chem_ic_ptr->solution == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading initial solution %s", tag);
-				error_msg(error_string, CONTINUE);
-			} 
-			break;
-		    case 2:                       /* equilibrium_phases */
-		    case 3:                       /* pure_phases */
-		    case 4:                       /* phases */
-			/*
-			 *   Read equilibrium_phases number as property
-			 */
-			if (chem_ic_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for initial equilibrium_phases %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (chem_ic_ptr->equilibrium_phases != NULL) {
-				sprintf(error_string,"Initial equiluilibrium_phases have been redefined %s", tag);
-				warning_msg(error_string);
-				property_free(chem_ic_ptr->equilibrium_phases);
-				chem_ic_ptr->equilibrium_phases = NULL;
-			}
-			chem_ic_ptr->equilibrium_phases = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, TRUE);
-			if (chem_ic_ptr->equilibrium_phases == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading initial equilibrium_phases %s", tag);
-				error_msg(error_string, CONTINUE);
-			} 
-			break;
-		    case 5:                       /* exchange */
-			/*
-			 *   Read exchange number as property
-			 */
-			if (chem_ic_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for initial exchange assemblage %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (chem_ic_ptr->exchange != NULL) {
-				sprintf(error_string,"Initial exchange assemblage has been redefined %s", tag);
-				warning_msg(error_string);
-				property_free(chem_ic_ptr->exchange);
-				chem_ic_ptr->exchange = NULL;
-			}
-			chem_ic_ptr->exchange = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, TRUE);
-			if (chem_ic_ptr->exchange == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading initial exchange assemblage %s", tag);
-				error_msg(error_string, CONTINUE);
-			} 
-			break;
-		    case 6:                       /* surface */
-			/*
-			 *   Read surface number as property
-			 */
-			if (chem_ic_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for initial surface assemblage %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (chem_ic_ptr->surface != NULL) {
-				sprintf(error_string,"Initial surface assemblage has been redefined %s", tag);
-				warning_msg(error_string);
-				property_free(chem_ic_ptr->surface);
-				chem_ic_ptr->surface = NULL;
-			}
-			chem_ic_ptr->surface = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, TRUE);
-			if (chem_ic_ptr->surface == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading initial surface assemblage %s", tag);
-				error_msg(error_string, CONTINUE);
-			} 
-			break;
-		    case 7:                       /* gas_phase */
-			/*
-			 *   Read gas_phase number as property
-			 */
-			if (chem_ic_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for initial gas_phase %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (chem_ic_ptr->gas_phase != NULL) {
-				sprintf(error_string,"Initial gas_phase has been redefined %s", tag);
-				warning_msg(error_string);
-				property_free(chem_ic_ptr->gas_phase);
-				chem_ic_ptr->gas_phase = NULL;
-			}
-			chem_ic_ptr->gas_phase = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, TRUE);
-			if (chem_ic_ptr->gas_phase == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading initial gas_phase %s", tag);
-				error_msg(error_string, CONTINUE);
-			} 
-			break;
-		    case 8:                       /* solid_solution */
-		    case 10:                      /* solid_solutions */
-			/*
-			 *   Read solid_solution number as property
-			 */
-			if (chem_ic_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for initial solid_solution %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (chem_ic_ptr->solid_solutions != NULL) {
-				sprintf(error_string,"Initial solid_solution has been redefined %s", tag);
-				warning_msg(error_string);
-				property_free(chem_ic_ptr->solid_solutions);
-				chem_ic_ptr->solid_solutions = NULL;
-			}
-			chem_ic_ptr->solid_solutions = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, TRUE);
-			if (chem_ic_ptr->solid_solutions == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading initial solid_solution %s", tag);
-				error_msg(error_string, CONTINUE);
-			} 
-			break;
-		    case 9:                       /* kinetics */
-			/*
-			 *   Read kinetics number as property
-			 */
-			if (chem_ic_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for initial kinetics %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (chem_ic_ptr->kinetics != NULL) {
-				sprintf(error_string,"Initial kinetics has been redefined %s", tag);
-				warning_msg(error_string);
-				property_free(chem_ic_ptr->kinetics);
-				chem_ic_ptr->kinetics = NULL;
-			}
-			chem_ic_ptr->kinetics = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, TRUE);
-			if (chem_ic_ptr->kinetics == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading initial kinetics %s", tag);
-				error_msg(error_string, CONTINUE);
-			} 
-			break;
-		    case 11:                      /* mask */
-			if (chem_ic_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for "
-					"initial chemistry condition %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (chem_ic_ptr->mask != NULL) {
-				sprintf(error_string,"Mask for this zone is being redefined %s", tag);
-				warning_msg(error_string);
-				property_free(chem_ic_ptr->mask);
-				chem_ic_ptr->mask = NULL;
-			}
-			chem_ic_ptr->mask = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
-			if (chem_ic_ptr->mask == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading mask %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-			break;
-		    case 12:                    /* wedge */
-/*
- *   Allocate space for chem_ic, read wedge data
- */
-			chem_ic = (struct chem_ic **) realloc(chem_ic, (size_t) (count_chem_ic + 1) * sizeof (struct chem_ic *));
-			if (chem_ic == NULL) malloc_error();
-
-			chem_ic[count_chem_ic] = chem_ic_alloc();
-			chem_ic_ptr = chem_ic[count_chem_ic];
-			count_chem_ic++;
-			sprintf(tag,"in CHEMISTRY_IC, definition %d.", count_chem_ic);
-			chem_ic_init(chem_ic_ptr);
-
-			chem_ic_ptr->polyh = read_wedge( &next_char );
-			Wedge *w_ptr = dynamic_cast<Wedge *> (chem_ic_ptr->polyh);
-			if (chem_ic_ptr->polyh == NULL || w_ptr->orientation == Wedge::WEDGE_ERROR) {
-			    input_error++;
-			    sprintf(error_string,"Reading wedge %s", tag);
-			    error_msg(error_string, CONTINUE);
-			}
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			break;
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			break;
-		}
-		return_value = check_line_return;
-		if (return_value == EOF || return_value == KEYWORD) break;
+    case 14:                         /* vector */
+    case 15:                         /* perimeter */
+    case 16:                         /* top */
+    case 17:                         /* bottom */
+      {
+	std::istringstream lines;
+	opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
+	if (chem_ic_ptr == NULL || 
+	  chem_ic_ptr->polyh == NULL || 
+	  prism_ptr == NULL ||
+	  !prism_ptr->read(lines))
+	{
+	  input_error++;
+	  sprintf(error_string,"Reading prism %s", tag);
+	  error_msg(error_string, CONTINUE);
+	  break;
 	}
-	if (simulation > 0) {
-		input_error++;
-		sprintf(error_string,"CHEMISTRY_IC can only be defined in first simulation period.");
-		error_msg(error_string, CONTINUE);
-	}
-	return(return_value);
+      }
+      break;
+    }
+    return_value = check_line_return;
+    if (return_value == EOF || return_value == KEYWORD) break;
+  }
+  if (simulation > 0) {
+    input_error++;
+    sprintf(error_string,"CHEMISTRY_IC can only be defined in first simulation period.");
+    error_msg(error_string, CONTINUE);
+  }
+  return(return_value);
 }
 /* ---------------------------------------------------------------------- */
 int read_free_surface_bc(void)
@@ -2534,899 +2682,921 @@ int read_solute_transport(void)
 int read_specified_value_bc(void)
 /* ---------------------------------------------------------------------- */
 {
-/*
- *      Reads specified value boundary conditions
- *
- *      Arguments:
- *         none
- *
- *      Returns:
- *         KEYWORD if keyword encountered, input_error may be incremented if
- *                    a keyword is encountered in an unexpected position
- *         EOF     if eof encountered while reading mass balance concentrations
- *         ERROR   if error occurred reading data
- *
- */
-	char *next_char;
-	struct BC *bc_ptr;
-	int return_value, opt;
-	int l;
-	char token[MAX_LENGTH];
-	const char *opt_list[] = {
-		"zone",                             /* 0 */
-		"head",                             /* 1 */
-		"fixed_solution_composition",       /* 2 */
-		"associated_solution_composition",  /* 3 */
-		"fixed_solution",                   /* 4 */
-		"fixed",                            /* 5 */
-		"associated_solution",              /* 6 */
-		"associated",                       /* 7 */
-		"mask",                             /* 8 */
-		"wedge",                            /* 9 */
-		"prism",                            /* 10 */
-		"vector",                           /* 11 */
-		"perimeter",                        /* 12 */
-		"top",                              /* 13 */
-		"bottom"                            /* 14 */
-	};
-	int count_opt_list = 15;
-/*
- *   Read chemical initial condition data
- */
-	bc_specified_defined = TRUE;
-	return_value = UNKNOWN;
-	bc_ptr = NULL;
-	Prism *prism_ptr;
-/*
- *   get first line
- */
-	sprintf(tag,"in SPECIFIED_HEAD_BC, definition %d.", count_specified + 1);
-	opt = get_option(opt_list, count_opt_list, &next_char);
-	for (;;) {
-		next_char = line;
-		if (opt >= 0) {
-			copy_token(token, &next_char , &l);
-		}
-		switch (opt) {
-		    case OPTION_EOF:                /* end of file */
-			return_value = EOF;
-			break;
-		    case OPTION_KEYWORD:            /* keyword */
-			return_value = KEYWORD;
-			break;
-                    case OPTION_DEFAULT:
-		    case OPTION_ERROR:
-			sprintf(error_string,"Expected an identifier %s", tag);
-			error_msg(error_string, CONTINUE);
-			error_msg(line_save, CONTINUE);
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			input_error++;
-			break;
-		    case 0:                         /* zone */
-/*
- *   Allocate space for bc, read zone data
- */
-			bc = (struct BC **) realloc(bc, (size_t) (count_bc + 1) * sizeof (struct BC *));
-			if (bc == NULL) malloc_error();
+  /*
+  *      Reads specified value boundary conditions
+  *
+  *      Arguments:
+  *         none
+  *
+  *      Returns:
+  *         KEYWORD if keyword encountered, input_error may be incremented if
+  *                    a keyword is encountered in an unexpected position
+  *         EOF     if eof encountered while reading mass balance concentrations
+  *         ERROR   if error occurred reading data
+  *
+  */
+  char *next_char;
+  struct BC *bc_ptr;
+  int return_value, opt;
+  int l;
+  char token[MAX_LENGTH];
+  const char *opt_list[] = {
+    "zone",                             /* 0 */
+    "head",                             /* 1 */
+    "fixed_solution_composition",       /* 2 */
+    "associated_solution_composition",  /* 3 */
+    "fixed_solution",                   /* 4 */
+    "fixed",                            /* 5 */
+    "associated_solution",              /* 6 */
+    "associated",                       /* 7 */
+    "mask",                             /* 8 */
+    "wedge",                            /* 9 */
+    "prism",                            /* 10 */
+    "vector",                           /* 11 */
+    "perimeter",                        /* 12 */
+    "top",                              /* 13 */
+    "bottom"                            /* 14 */
+  };
+  int count_opt_list = 15;
+  /*
+  *   Read chemical initial condition data
+  */
+  bc_specified_defined = TRUE;
+  return_value = UNKNOWN;
+  bc_ptr = NULL;
+  Prism *prism_ptr = NULL;
+  /*
+  *   get first line
+  */
+  sprintf(tag,"in SPECIFIED_HEAD_BC, definition %d.", count_specified + 1);
+  opt = get_option(opt_list, count_opt_list, &next_char);
+  for (;;) {
+    next_char = line;
+    if (opt >= 0) {
+      copy_token(token, &next_char , &l);
+    }
+    switch (opt) {
+    case OPTION_EOF:                /* end of file */
+      return_value = EOF;
+      break;
+    case OPTION_KEYWORD:            /* keyword */
+      return_value = KEYWORD;
+      break;
+    case OPTION_DEFAULT:
+    case OPTION_ERROR:
+      sprintf(error_string,"Expected an identifier %s", tag);
+      error_msg(error_string, CONTINUE);
+      error_msg(line_save, CONTINUE);
+      opt = next_keyword_or_option(opt_list, count_opt_list);
+      input_error++;
+      break;
+    case 0:                         /* zone */
+      /*
+      *   Allocate space for bc, read zone data
+      */
+      bc = (struct BC **) realloc(bc, (size_t) (count_bc + 1) * sizeof (struct BC *));
+      if (bc == NULL) malloc_error();
 
-			bc[count_bc] = bc_alloc();
-			bc_ptr = bc[count_bc];
-			bc_init(bc_ptr);
-			bc_ptr->bc_type = BC_info::BC_SPECIFIED;
-			count_specified++;
-			sprintf(tag,"in SPECIFIED_HEAD_BC, definition %d.", count_specified);
-			count_bc++;
+      bc[count_bc] = bc_alloc();
+      bc_ptr = bc[count_bc];
+      bc_init(bc_ptr);
+      bc_ptr->bc_type = BC_info::BC_SPECIFIED;
+      count_specified++;
+      sprintf(tag,"in SPECIFIED_HEAD_BC, definition %d.", count_specified);
+      count_bc++;
 
-			bc_ptr->polyh = read_cube( &next_char );
-			if (bc_ptr->polyh == NULL) {
-				sprintf(error_string,"Reading zone %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			break;
-		    case 1:                       /* head */
-			/*
-			 *   Read head property
-			 */
-			if (simulation > 0 && steady_flow == TRUE) {
-				input_error++;
-				sprintf(error_string,"Head for specified value boundary condition can not be changed in STEADY_FLOW calculations.");
-				error_msg(error_string, CONTINUE);
-			}
-			if (bc_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for head %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (bc_ptr->bc_head != NULL) {
-				sprintf(error_string,"Head has been redefined %s", tag);
-				warning_msg(error_string);
-				time_series_free(bc_ptr->bc_head);
-				free_check_null(bc_ptr->bc_head);
-				bc_ptr->bc_head = NULL;
-			}
-			bc_ptr->bc_head = time_series_read_property(next_char, opt_list, count_opt_list, &opt);
-			if (bc_ptr->bc_head == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading head %s", tag);
-				error_msg(error_string, CONTINUE);
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-			} 
-			break;
-		    case 2:                       /* fixed solution composition */
-		    case 4:                       /* fixed solution */
-		    case 5:                       /* fixed  */
-			/*
-			 *   Read solution property
-			 */
-			if (bc_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for solution %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (bc_ptr->bc_solution != NULL) {
-				sprintf(error_string,"Solution has been redefined %s", tag);
-				warning_msg(error_string);
-				time_series_free(bc_ptr->bc_solution);
-				free_check_null(bc_ptr->bc_solution);
-				bc_ptr->bc_solution = NULL;
-			}
-			bc_ptr->bc_solution_type = FIXED;
-			bc_ptr->bc_solution = time_series_read_property(next_char, opt_list, count_opt_list, &opt);
-			if (bc_ptr->bc_solution == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading solution %s", tag);
-				error_msg(error_string, CONTINUE);
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-			} 
-			break;
-		    case 3:                       /* associated solution composition */
-		    case 6:                       /* associated solution */
-		    case 7:                       /* associated */
-			/*
-			 *   Read associated solution property
-			 */
-			if (bc_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for associated solution %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (bc_ptr->bc_solution != NULL) {
-				sprintf(error_string,"Associated solution has been redefined %s", tag);
-				warning_msg(error_string);
-				time_series_free(bc_ptr->bc_solution);
-				free_check_null(bc_ptr->bc_solution);
-				bc_ptr->bc_solution = NULL;
-			}
-			bc_ptr->bc_solution_type = ASSOCIATED;
-			bc_ptr->bc_solution = time_series_read_property(next_char, opt_list, count_opt_list, &opt);
-			if (bc_ptr->bc_solution == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading associated solution %s", tag);
-				error_msg(error_string, CONTINUE);
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-			} 
-			break;
-		    case 8:                      /* mask */
-			if (bc_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for "
-					"mask %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (bc_ptr->mask != NULL) {
-				sprintf(error_string,"Mask for this zone is being redefined %s", tag);
-				warning_msg(error_string);
-				property_free(bc_ptr->mask);
-				bc_ptr->mask = NULL;
-			}
-			bc_ptr->mask = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
-			if (bc_ptr->mask == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading mask %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-			break;
-		    case 9:                         /* wedge */
-		      {
-/*
- *   Allocate space for bc, read wedge data
- */
-			bc = (struct BC **) realloc(bc, (size_t) (count_bc + 1) * sizeof (struct BC *));
-			if (bc == NULL) malloc_error();
+      bc_ptr->polyh = read_cube( &next_char );
+      if (bc_ptr->polyh == NULL) {
+	sprintf(error_string,"Reading zone %s", tag);
+	error_msg(error_string, CONTINUE);
+      }
+      opt = next_keyword_or_option(opt_list, count_opt_list);
+      break;
+    case 1:                       /* head */
+      /*
+      *   Read head property
+      */
+      if (simulation > 0 && steady_flow == TRUE) {
+	input_error++;
+	sprintf(error_string,"Head for specified value boundary condition can not be changed in STEADY_FLOW calculations.");
+	error_msg(error_string, CONTINUE);
+      }
+      if (bc_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for head %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (bc_ptr->bc_head != NULL) {
+	sprintf(error_string,"Head has been redefined %s", tag);
+	warning_msg(error_string);
+	time_series_free(bc_ptr->bc_head);
+	free_check_null(bc_ptr->bc_head);
+	bc_ptr->bc_head = NULL;
+      }
+      bc_ptr->bc_head = time_series_read_property(next_char, opt_list, count_opt_list, &opt);
+      if (bc_ptr->bc_head == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading head %s", tag);
+	error_msg(error_string, CONTINUE);
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+      } 
+      break;
+    case 2:                       /* fixed solution composition */
+    case 4:                       /* fixed solution */
+    case 5:                       /* fixed  */
+      /*
+      *   Read solution property
+      */
+      if (bc_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for solution %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (bc_ptr->bc_solution != NULL) {
+	sprintf(error_string,"Solution has been redefined %s", tag);
+	warning_msg(error_string);
+	time_series_free(bc_ptr->bc_solution);
+	free_check_null(bc_ptr->bc_solution);
+	bc_ptr->bc_solution = NULL;
+      }
+      bc_ptr->bc_solution_type = FIXED;
+      bc_ptr->bc_solution = time_series_read_property(next_char, opt_list, count_opt_list, &opt);
+      if (bc_ptr->bc_solution == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading solution %s", tag);
+	error_msg(error_string, CONTINUE);
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+      } 
+      break;
+    case 3:                       /* associated solution composition */
+    case 6:                       /* associated solution */
+    case 7:                       /* associated */
+      /*
+      *   Read associated solution property
+      */
+      if (bc_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for associated solution %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (bc_ptr->bc_solution != NULL) {
+	sprintf(error_string,"Associated solution has been redefined %s", tag);
+	warning_msg(error_string);
+	time_series_free(bc_ptr->bc_solution);
+	free_check_null(bc_ptr->bc_solution);
+	bc_ptr->bc_solution = NULL;
+      }
+      bc_ptr->bc_solution_type = ASSOCIATED;
+      bc_ptr->bc_solution = time_series_read_property(next_char, opt_list, count_opt_list, &opt);
+      if (bc_ptr->bc_solution == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading associated solution %s", tag);
+	error_msg(error_string, CONTINUE);
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+      } 
+      break;
+    case 8:                      /* mask */
+      if (bc_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for "
+	  "mask %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (bc_ptr->mask != NULL) {
+	sprintf(error_string,"Mask for this zone is being redefined %s", tag);
+	warning_msg(error_string);
+	property_free(bc_ptr->mask);
+	bc_ptr->mask = NULL;
+      }
+      bc_ptr->mask = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
+      if (bc_ptr->mask == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading mask %s", tag);
+	error_msg(error_string, CONTINUE);
+      }
+      break;
+    case 9:                         /* wedge */
+      {
+	/*
+	*   Allocate space for bc, read wedge data
+	*/
+	bc = (struct BC **) realloc(bc, (size_t) (count_bc + 1) * sizeof (struct BC *));
+	if (bc == NULL) malloc_error();
 
-			bc[count_bc] = bc_alloc();
-			bc_ptr = bc[count_bc];
-			bc_init(bc_ptr);
-			bc_ptr->bc_type = BC_info::BC_SPECIFIED;
-			count_specified++;
-			sprintf(tag,"in SPECIFIED_HEAD_BC, definition %d.", count_specified);
-			count_bc++;
+	bc[count_bc] = bc_alloc();
+	bc_ptr = bc[count_bc];
+	bc_init(bc_ptr);
+	bc_ptr->bc_type = BC_info::BC_SPECIFIED;
+	count_specified++;
+	sprintf(tag,"in SPECIFIED_HEAD_BC, definition %d.", count_specified);
+	count_bc++;
 
-			bc_ptr->polyh = read_wedge( &next_char );
-			Wedge *w_ptr = dynamic_cast<Wedge *> (bc_ptr->polyh);
-			if (bc_ptr->polyh == NULL || w_ptr->orientation == Wedge::WEDGE_ERROR) {
-			  input_error++;
-			  sprintf(error_string,"Reading wedge %s", tag);
-			  error_msg(error_string, CONTINUE);
-			}
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			break;
-		      }
-		    case 10: 	      /* prism */
-		      {
-			bc = (struct BC **) realloc(bc, (size_t) (count_bc + 1) * sizeof (struct BC *));
-			if (bc == NULL) malloc_error();
-
-			bc[count_bc] = bc_alloc();
-			bc_ptr = bc[count_bc];
-			bc_init(bc_ptr);
-			bc_ptr->bc_type = BC_info::BC_SPECIFIED;
-			count_specified++;
-			sprintf(tag,"in SPECIFIED_HEAD_BC, definition %d.", count_specified);
-			count_bc++;
-
-			prism_ptr = new Prism;
-			bc_ptr->polyh = prism_ptr;
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-
-			break;
-		      }
-		    case 11:                         /* vector */
-		      {
-			std::istringstream lines;
-			opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
-			if (bc_ptr == NULL || 
-			  bc_ptr->polyh == NULL || 
-			  !prism_ptr->read(Prism::DIP, lines))
-			{
-			  input_error++;
-			  sprintf(error_string,"Reading prism %s", tag);
-			  error_msg(error_string, CONTINUE);
-			  break;
-			}
-		      }
-		      break;
-		    case 12:                         /* perimeter */
-		      {
-			std::istringstream lines;
-			opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
-			if (bc_ptr == NULL || 
-			  bc_ptr->polyh == NULL || 
-			  !prism_ptr->read(Prism::PERIMETER, lines))
-			{
-			  input_error++;
-			  sprintf(error_string,"Reading prism %s", tag);
-			  error_msg(error_string, CONTINUE);
-			  break;
-			}
-		      }
-		      break;
-		    case 13:                         /* top */
-		      {
-			std::istringstream lines;
-			opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
-			if (bc_ptr == NULL || 
-			  bc_ptr->polyh == NULL || 
-			  !prism_ptr->read(Prism::TOP, lines))
-			{
-			  input_error++;
-			  sprintf(error_string,"Reading prism %s", tag);
-			  error_msg(error_string, CONTINUE);
-			  break;
-			}
-		      }
-		      break;
-		    case 14:                         /* bottom */
-		      {
-			std::istringstream lines;
-			opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
-			if (bc_ptr == NULL || 
-			  bc_ptr->polyh == NULL || 
-			  !prism_ptr->read(Prism::BOTTOM, lines))
-			{
-			  input_error++;
-			  sprintf(error_string,"Reading prism %s", tag);
-			  error_msg(error_string, CONTINUE);
-			  break;
-			}
-		      }
-		      break;
-		}
-		return_value = check_line_return;
-		if (return_value == EOF || return_value == KEYWORD) break;
+	bc_ptr->polyh = read_wedge( &next_char );
+	Wedge *w_ptr = dynamic_cast<Wedge *> (bc_ptr->polyh);
+	if (bc_ptr->polyh == NULL || w_ptr->orientation == Wedge::WEDGE_ERROR) {
+	  input_error++;
+	  sprintf(error_string,"Reading wedge %s", tag);
+	  error_msg(error_string, CONTINUE);
 	}
-	return(return_value);
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+    case 10: 	      /* prism */
+      {
+	bc = (struct BC **) realloc(bc, (size_t) (count_bc + 1) * sizeof (struct BC *));
+	if (bc == NULL) malloc_error();
+
+	bc[count_bc] = bc_alloc();
+	bc_ptr = bc[count_bc];
+	bc_init(bc_ptr);
+	bc_ptr->bc_type = BC_info::BC_SPECIFIED;
+	count_specified++;
+	sprintf(tag,"in SPECIFIED_HEAD_BC, definition %d.", count_specified);
+	count_bc++;
+
+	prism_ptr = new Prism;
+	bc_ptr->polyh = prism_ptr;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+
+    case 11:                         /* vector */
+    case 12:                         /* perimeter */
+    case 13:                         /* top */
+    case 14:                         /* bottom */
+      {
+	std::istringstream lines;
+	opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
+	if (bc_ptr == NULL || 
+	  bc_ptr->polyh == NULL || 
+	  prism_ptr == NULL ||
+	  !prism_ptr->read(lines))
+	{
+	  input_error++;
+	  sprintf(error_string,"Reading prism %s", tag);
+	  error_msg(error_string, CONTINUE);
+	  break;
+	}
+      }
+      break;
+    }
+    return_value = check_line_return;
+    if (return_value == EOF || return_value == KEYWORD) break;
+  }
+  return(return_value);
 }
 /* ---------------------------------------------------------------------- */
 int read_flux_bc(void)
 /* ---------------------------------------------------------------------- */
 {
-/*
- *      Reads flux boundary conditions
- *
- *      Arguments:
- *         none
- *
- *      Returns:
- *         KEYWORD if keyword encountered, input_error may be incremented if
- *                    a keyword is encountered in an unexpected position
- *         EOF     if eof encountered while reading mass balance concentrations
- *         ERROR   if error occurred reading data
- *
- */
-	char *next_char;
-	struct BC *bc_ptr;
-	int return_value, opt;
-	int j, l;
-	char token[MAX_LENGTH];
-	const char *opt_list[] = {
-		"zone",                             /* 0 */
-		"flux",                             /* 1 */
-		"associated_solution",              /* 2 */
-		"face",                             /* 3 */
-		"solution",                         /* 4 */
-		"mask",                             /* 5 */
-		"wedge"                             /* 6 */
-	};
-	int count_opt_list = 7;
-/*
- *   Read flux boundary condition
- */
-	bc_flux_defined = TRUE;
-	return_value = UNKNOWN;
-	bc_ptr = NULL;
-/*
- *   get first line
- */
-	sprintf(tag,"in FLUX_BC, definition %d.", count_flux + 1);
-	opt = get_option(opt_list, count_opt_list, &next_char);
-	for (;;) {
-		next_char = line;
-		if (opt >= 0) {
-			copy_token(token, &next_char , &l);
-		}
-		switch (opt) {
-		    case OPTION_EOF:                /* end of file */
-			return_value = EOF;
-			break;
-		    case OPTION_KEYWORD:            /* keyword */
-			return_value = KEYWORD;
-			break;
-                    case OPTION_DEFAULT:
-		    case OPTION_ERROR:
-			sprintf(error_string,"Expected an identifier %s", tag);
-			error_msg(error_string, CONTINUE);
-			error_msg(line_save, CONTINUE);
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			input_error++;
-			break;
-		    case 0:  
-		      /* zone */
-/*
- *   Allocate space for bc, read zone data
- */
-			bc = (struct BC **) realloc(bc, (size_t) (count_bc + 1) * sizeof (struct BC *));
-			if (bc == NULL) malloc_error();
+  /*
+  *      Reads flux boundary conditions
+  *
+  *      Arguments:
+  *         none
+  *
+  *      Returns:
+  *         KEYWORD if keyword encountered, input_error may be incremented if
+  *                    a keyword is encountered in an unexpected position
+  *         EOF     if eof encountered while reading mass balance concentrations
+  *         ERROR   if error occurred reading data
+  *
+  */
+  char *next_char;
+  struct BC *bc_ptr;
+  int return_value, opt;
+  int j, l;
+  char token[MAX_LENGTH];
+  const char *opt_list[] = {
+    "zone",                             /* 0 */
+    "flux",                             /* 1 */
+    "associated_solution",              /* 2 */
+    "face",                             /* 3 */
+    "solution",                         /* 4 */
+    "mask",                             /* 5 */
+    "wedge",                            /* 6 */
+    "prism",                            /* 7 */ 
+    "vector",                           /* 8 */
+    "perimeter",                        /* 9 */
+    "top",                              /* 10 */
+    "bottom"                            /* 11 */
+  };
+  int count_opt_list = 12;
+  /*
+  *   Read flux boundary condition
+  */
+  bc_flux_defined = TRUE;
+  return_value = UNKNOWN;
+  bc_ptr = NULL;
+  Prism *prism_ptr = NULL;
+  /*
+  *   get first line
+  */
+  sprintf(tag,"in FLUX_BC, definition %d.", count_flux + 1);
+  opt = get_option(opt_list, count_opt_list, &next_char);
+  for (;;) {
+    next_char = line;
+    if (opt >= 0) {
+      copy_token(token, &next_char , &l);
+    }
+    switch (opt) {
+    case OPTION_EOF:                /* end of file */
+      return_value = EOF;
+      break;
+    case OPTION_KEYWORD:            /* keyword */
+      return_value = KEYWORD;
+      break;
+    case OPTION_DEFAULT:
+    case OPTION_ERROR:
+      sprintf(error_string,"Expected an identifier %s", tag);
+      error_msg(error_string, CONTINUE);
+      error_msg(line_save, CONTINUE);
+      opt = next_keyword_or_option(opt_list, count_opt_list);
+      input_error++;
+      break;
+    case 0:  
+      /* zone */
+      /*
+      *   Allocate space for bc, read zone data
+      */
+      bc = (struct BC **) realloc(bc, (size_t) (count_bc + 1) * sizeof (struct BC *));
+      if (bc == NULL) malloc_error();
 
-			bc[count_bc] = bc_alloc();
-			bc_ptr = bc[count_bc];
-			bc_init(bc_ptr);
-			bc_ptr->bc_type = BC_info::BC_FLUX;
-			count_flux++;
-			sprintf(tag,"in FLUX_BC, definition %d.", count_flux);
-			count_bc++;
+      bc[count_bc] = bc_alloc();
+      bc_ptr = bc[count_bc];
+      bc_init(bc_ptr);
+      bc_ptr->bc_type = BC_info::BC_FLUX;
+      count_flux++;
+      sprintf(tag,"in FLUX_BC, definition %d.", count_flux);
+      count_bc++;
 
-			/* read zone */
-			bc_ptr->polyh = read_cube( &next_char );
-			if (bc_ptr->polyh == NULL) {
-				sprintf(error_string,"Reading zone %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-			/* read to next */
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			break;
-		    case 1:                       /* flux */
-			/*
-			 *   Read flux property
-			 */
-			if (simulation > 0 && steady_flow == TRUE) {
-				input_error++;
-				sprintf(error_string,"Flux for specified flux boundary condition can not be changed in STEADY_FLOW calculations.");
-				error_msg(error_string, CONTINUE);
-			}
-			if (bc_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for "
-					"flux %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (bc_ptr->bc_flux != NULL) {
-				sprintf(error_string,"Flux has been redefined %s", tag);
-				warning_msg(error_string);
-				time_series_free(bc_ptr->bc_flux);
-				free_check_null(bc_ptr->bc_flux);
-				bc_ptr->bc_flux = NULL;
-			}
-			bc_ptr->bc_flux = time_series_read_property(next_char, opt_list, count_opt_list, &opt);
-			if (bc_ptr->bc_flux == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading flux %s", tag);
-				error_msg(error_string, CONTINUE);
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-			} 
-			break;
-		    case 2:                       /* associated solution */
-		    case 4:                       /* solution */
-			if (bc_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for "
-					"associated solution %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (bc_ptr->bc_solution != NULL) {
-				sprintf(error_string,"Associated solution has been redefined %s", tag);
-				warning_msg(error_string);
-				time_series_free(bc_ptr->bc_solution);
-				free_check_null(bc_ptr->bc_solution);
-				bc_ptr->bc_solution = NULL;
-			}
-			bc_ptr->bc_solution_type = ASSOCIATED;
-			bc_ptr->bc_solution = time_series_read_property(next_char, opt_list, count_opt_list, &opt);
-			if (bc_ptr->bc_solution == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading associated solution %s", tag);
-				error_msg(error_string, CONTINUE);
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-			} 
-			break;
-		    case 3:                       /* face */
-			/*
-			 *   Read face for flux
-			 */
-			if (bc_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for "
-					"flux face %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			j = copy_token(token, &next_char, &l);
-			str_tolower(token);
-			if (strcmp(token, "x") == 0) {
-			  bc_ptr->face = 0;
-			  bc_ptr->cell_face = CF_X;
-			} else if (strcmp(token, "y") == 0) {
-			  bc_ptr->face = 1;
-			  bc_ptr->cell_face = CF_Y;
-			} else if (strcmp(token, "z") == 0) {
-			  bc_ptr->face = 2;
-			  bc_ptr->cell_face = CF_Z;
-			} else 
-			{
-			  input_error++;
-			  sprintf(error_string,"Expected coordinate direction (X, Y, or Z) for flux face %s", tag);
-			  error_msg(error_string, CONTINUE);
-			} 
+      /* read zone */
+      bc_ptr->polyh = read_cube( &next_char );
+      if (bc_ptr->polyh == NULL) {
+	sprintf(error_string,"Reading zone %s", tag);
+	error_msg(error_string, CONTINUE);
+      }
+      /* read to next */
+      opt = next_keyword_or_option(opt_list, count_opt_list);
+      break;
+    case 1:                       /* flux */
+      /*
+      *   Read flux property
+      */
+      if (simulation > 0 && steady_flow == TRUE) {
+	input_error++;
+	sprintf(error_string,"Flux for specified flux boundary condition can not be changed in STEADY_FLOW calculations.");
+	error_msg(error_string, CONTINUE);
+      }
+      if (bc_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for "
+	  "flux %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (bc_ptr->bc_flux != NULL) {
+	sprintf(error_string,"Flux has been redefined %s", tag);
+	warning_msg(error_string);
+	time_series_free(bc_ptr->bc_flux);
+	free_check_null(bc_ptr->bc_flux);
+	bc_ptr->bc_flux = NULL;
+      }
+      bc_ptr->bc_flux = time_series_read_property(next_char, opt_list, count_opt_list, &opt);
+      if (bc_ptr->bc_flux == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading flux %s", tag);
+	error_msg(error_string, CONTINUE);
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+      } 
+      break;
+    case 2:                       /* associated solution */
+    case 4:                       /* solution */
+      if (bc_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for "
+	  "associated solution %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (bc_ptr->bc_solution != NULL) {
+	sprintf(error_string,"Associated solution has been redefined %s", tag);
+	warning_msg(error_string);
+	time_series_free(bc_ptr->bc_solution);
+	free_check_null(bc_ptr->bc_solution);
+	bc_ptr->bc_solution = NULL;
+      }
+      bc_ptr->bc_solution_type = ASSOCIATED;
+      bc_ptr->bc_solution = time_series_read_property(next_char, opt_list, count_opt_list, &opt);
+      if (bc_ptr->bc_solution == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading associated solution %s", tag);
+	error_msg(error_string, CONTINUE);
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+      } 
+      break;
+    case 3:                       /* face */
+      /*
+      *   Read face for flux
+      */
+      if (bc_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for "
+	  "flux face %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      j = copy_token(token, &next_char, &l);
+      str_tolower(token);
+      if (strcmp(token, "x") == 0) {
+	bc_ptr->face = 0;
+	bc_ptr->cell_face = CF_X;
+      } else if (strcmp(token, "y") == 0) {
+	bc_ptr->face = 1;
+	bc_ptr->cell_face = CF_Y;
+      } else if (strcmp(token, "z") == 0) {
+	bc_ptr->face = 2;
+	bc_ptr->cell_face = CF_Z;
+      } else 
+      {
+	input_error++;
+	sprintf(error_string,"Expected coordinate direction (X, Y, or Z) for flux face %s", tag);
+	error_msg(error_string, CONTINUE);
+      } 
 #ifdef SKIP
-			replace("p", "+", token);
-			replace("m", "-", token);
-			replace("n", "-", token);
-			if (strcmp(token, "x+") == 0) {
-				bc_ptr->cell_face = CF_XP;
-			} else if (strcmp(token, "y+") == 0) {
-				bc_ptr->cell_face = CF_YP;
-			} else if (strcmp(token, "z+") == 0) {
-				bc_ptr->cell_face = CF_ZP;
-			} else if (strcmp(token, "x-") == 0) {
-				bc_ptr->cell_face = CF_XN;
-			} else if (strcmp(token, "y-") == 0) {
-				bc_ptr->cell_face = CF_YN;
-			} else if (strcmp(token, "z-") == 0) {
-				bc_ptr->cell_face = CF_ZN;
-			} else if (strcmp(token, "x") == 0) {
-				bc_ptr->cell_face = CF_X;
-			} else if (strcmp(token, "y") == 0) {
-				bc_ptr->cell_face = CF_Y;
-			} else if (strcmp(token, "z") == 0) {
-				bc_ptr->cell_face = CF_Z;
-			} else 
-			{
-			  input_error++;
-			  sprintf(error_string,"Expected signed coordinate direction (X+, X-, Y+, Y-, Z+, or Z-) for flux face %s", tag);
-			  error_msg(error_string, CONTINUE);
-			}
+      replace("p", "+", token);
+      replace("m", "-", token);
+      replace("n", "-", token);
+      if (strcmp(token, "x+") == 0) {
+	bc_ptr->cell_face = CF_XP;
+      } else if (strcmp(token, "y+") == 0) {
+	bc_ptr->cell_face = CF_YP;
+      } else if (strcmp(token, "z+") == 0) {
+	bc_ptr->cell_face = CF_ZP;
+      } else if (strcmp(token, "x-") == 0) {
+	bc_ptr->cell_face = CF_XN;
+      } else if (strcmp(token, "y-") == 0) {
+	bc_ptr->cell_face = CF_YN;
+      } else if (strcmp(token, "z-") == 0) {
+	bc_ptr->cell_face = CF_ZN;
+      } else if (strcmp(token, "x") == 0) {
+	bc_ptr->cell_face = CF_X;
+      } else if (strcmp(token, "y") == 0) {
+	bc_ptr->cell_face = CF_Y;
+      } else if (strcmp(token, "z") == 0) {
+	bc_ptr->cell_face = CF_Z;
+      } else 
+      {
+	input_error++;
+	sprintf(error_string,"Expected signed coordinate direction (X+, X-, Y+, Y-, Z+, or Z-) for flux face %s", tag);
+	error_msg(error_string, CONTINUE);
+      }
 #endif
-			bc_ptr->face_defined = TRUE;
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			break;
-		    case 5:                      /* mask */
-			if (bc_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for "
-					"mask %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (bc_ptr->mask != NULL) {
-				sprintf(error_string,"Mask for this zone is being redefined %s", tag);
-				warning_msg(error_string);
-				property_free(bc_ptr->mask);
-				bc_ptr->mask = NULL;
-			}
-			bc_ptr->mask = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
-			if (bc_ptr->mask == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading mask %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-			break;
-		    case 6:                         /* wedge */
-/*
- *   Allocate space for bc, read wedge data
- */
-			bc = (struct BC **) realloc(bc, (size_t) (count_bc + 1) * sizeof (struct BC *));
-			if (bc == NULL) malloc_error();
+      bc_ptr->face_defined = TRUE;
+      opt = next_keyword_or_option(opt_list, count_opt_list);
+      break;
+    case 5:                      /* mask */
+      if (bc_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for "
+	  "mask %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (bc_ptr->mask != NULL) {
+	sprintf(error_string,"Mask for this zone is being redefined %s", tag);
+	warning_msg(error_string);
+	property_free(bc_ptr->mask);
+	bc_ptr->mask = NULL;
+      }
+      bc_ptr->mask = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
+      if (bc_ptr->mask == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading mask %s", tag);
+	error_msg(error_string, CONTINUE);
+      }
+      break;
+    case 6:                         /* wedge */
+      /*
+      *   Allocate space for bc, read wedge data
+      */
+      bc = (struct BC **) realloc(bc, (size_t) (count_bc + 1) * sizeof (struct BC *));
+      if (bc == NULL) malloc_error();
 
-			bc[count_bc] = bc_alloc();
-			bc_ptr = bc[count_bc];
-			bc_init(bc_ptr);
-			bc_ptr->bc_type = BC_info::BC_FLUX;
-			count_flux++;
-			sprintf(tag,"in FLUX_BC, definition %d.", count_flux);
-			count_bc++;
+      bc[count_bc] = bc_alloc();
+      bc_ptr = bc[count_bc];
+      bc_init(bc_ptr);
+      bc_ptr->bc_type = BC_info::BC_FLUX;
+      count_flux++;
+      sprintf(tag,"in FLUX_BC, definition %d.", count_flux);
+      count_bc++;
 
-			/* read wedge */
-			bc_ptr->polyh = read_wedge( &next_char );
-			Wedge *w_ptr = dynamic_cast<Wedge *> (bc_ptr->polyh);
-			if (bc_ptr->polyh == NULL || w_ptr->orientation == Wedge::WEDGE_ERROR) {
-			  input_error++;
-			  sprintf(error_string,"Reading wedge %s", tag);
-			  error_msg(error_string, CONTINUE);
-			}
-			/* read to next */
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			break;
-		}
-		return_value = check_line_return;
-		if (return_value == EOF || return_value == KEYWORD) break;
+      /* read wedge */
+      bc_ptr->polyh = read_wedge( &next_char );
+      {
+	Wedge *w_ptr = dynamic_cast<Wedge *> (bc_ptr->polyh);
+	if (bc_ptr->polyh == NULL || w_ptr->orientation == Wedge::WEDGE_ERROR) {
+	  input_error++;
+	  sprintf(error_string,"Reading wedge %s", tag);
+	  error_msg(error_string, CONTINUE);
 	}
-	return(return_value);
+      }
+      /* read to next */
+      opt = next_keyword_or_option(opt_list, count_opt_list);
+      break;
+    case 7: 	      /* prism */
+      {
+	bc = (struct BC **) realloc(bc, (size_t) (count_bc + 1) * sizeof (struct BC *));
+	if (bc == NULL) malloc_error();
+
+	bc[count_bc] = bc_alloc();
+	bc_ptr = bc[count_bc];
+	bc_init(bc_ptr);
+	bc_ptr->bc_type = BC_info::BC_FLUX;
+	count_flux++;
+	sprintf(tag,"in FLUX_BC, definition %d.", count_flux);
+	count_bc++;
+
+	prism_ptr = new Prism;
+	bc_ptr->polyh = prism_ptr;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+
+    case 8:                         /* vector */
+    case 9:                         /* perimeter */
+    case 10:                         /* top */
+    case 11:                         /* bottom */
+      {
+	std::istringstream lines;
+	opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
+	if (bc_ptr == NULL || 
+	  bc_ptr->polyh == NULL || 
+	  prism_ptr == NULL ||
+	  !prism_ptr->read(lines))
+	{
+	  input_error++;
+	  sprintf(error_string,"Reading prism %s", tag);
+	  error_msg(error_string, CONTINUE);
+	  break;
+	}
+      }
+      break;
+    }
+    return_value = check_line_return;
+    if (return_value == EOF || return_value == KEYWORD) break;
+  }
+  return(return_value);
 }
 /* ---------------------------------------------------------------------- */
 int read_leaky_bc(void)
 /* ---------------------------------------------------------------------- */
 {
-/*
- *      Reads leaky boundary conditions
- *
- *      Arguments:
- *         none
- *
- *      Returns:
- *         KEYWORD if keyword encountered, input_error may be incremented if
- *                    a keyword is encountered in an unexpected position
- *         EOF     if eof encountered while reading mass balance concentrations
- *         ERROR   if error occurred reading data
- *
- */
-	char *next_char;
-	struct BC *bc_ptr;
-	int return_value, opt;
-	int j, l;
-	char token[MAX_LENGTH];
-	const char *opt_list[] = {
-		"zone",                             /* 0 */
-		"head",                             /* 1 */
-		"associated_solution",              /* 2 */
-		"hydraulic_conductivity",           /* 3 */
-		"k",                                /* 4 */
-		"thickness",                        /* 5 */
-		"face",                             /* 6 */
-		"solution",                         /* 7 */
-		"mask",                             /* 8 */
-		"wedge"                             /* 9 */
-	};
-	int count_opt_list = 10;
-/*
- *   Read chemical initial condition data
- */
-	bc_leaky_defined = TRUE;
-	return_value = UNKNOWN;
-	bc_ptr = NULL;
-/*
- *   get first line
- */
-	sprintf(tag,"in LEAKY_BC, definition %d.", count_leaky + 1);
-	opt = get_option(opt_list, count_opt_list, &next_char);
-	for (;;) {
-		next_char = line;
-		if (opt >= 0) {
-			copy_token(token, &next_char , &l);
-		}
-		switch (opt) {
-		    case OPTION_EOF:                /* end of file */
-			return_value = EOF;
-			break;
-		    case OPTION_KEYWORD:            /* keyword */
-			return_value = KEYWORD;
-			break;
-                    case OPTION_DEFAULT:
-		    case OPTION_ERROR:
-			sprintf(error_string,"Expected an identifier %s", tag);
-			error_msg(error_string, CONTINUE);
-			error_msg(line_save, CONTINUE);
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			input_error++;
-			break;
-		    case 0:                         /* zone */
-/*
- *   Allocate space for bc, read zone data
- */
-			bc = (struct BC **) realloc(bc, (size_t) (count_bc + 1) * sizeof (struct BC *));
-			if (bc == NULL) malloc_error();
-			bc[count_bc] = bc_alloc();
-			bc_ptr = bc[count_bc];
-			bc_init(bc_ptr);
-			bc_ptr->bc_type = BC_info::BC_LEAKY;
-			count_leaky++;
-			sprintf(tag,"in LEAKY_BC, definition %d.", count_leaky);
-			count_bc++;
+  /*
+  *      Reads leaky boundary conditions
+  *
+  *      Arguments:
+  *         none
+  *
+  *      Returns:
+  *         KEYWORD if keyword encountered, input_error may be incremented if
+  *                    a keyword is encountered in an unexpected position
+  *         EOF     if eof encountered while reading mass balance concentrations
+  *         ERROR   if error occurred reading data
+  *
+  */
+  char *next_char;
+  struct BC *bc_ptr;
+  int return_value, opt;
+  int j, l;
+  char token[MAX_LENGTH];
+  const char *opt_list[] = {
+    "zone",                             /* 0 */
+    "head",                             /* 1 */
+    "associated_solution",              /* 2 */
+    "hydraulic_conductivity",           /* 3 */
+    "k",                                /* 4 */
+    "thickness",                        /* 5 */
+    "face",                             /* 6 */
+    "solution",                         /* 7 */
+    "mask",                             /* 8 */
+    "wedge",                            /* 9 */
+    "prism",                            /* 10 */ 
+    "vector",                           /* 11 */
+    "perimeter",                        /* 12 */
+    "top",                              /* 13 */
+    "bottom"                            /* 14 */
 
-			bc_ptr->polyh = read_cube( &next_char );
-			if (bc_ptr->polyh == NULL) {
-				sprintf(error_string,"Reading zone %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			break;
-		    case 1:                       /* head */
-			/*
-			 *   Read head property
-			 */
-			if (simulation > 0 && steady_flow == TRUE) {
-				input_error++;
-				sprintf(error_string,"Head for leaky boundary condition can not be changed in STEADY_FLOW calculations.");
-				error_msg(error_string, CONTINUE);
-			}
-			if (bc_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for "
-					"head %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (bc_ptr->bc_head != NULL) {
-				sprintf(error_string,"Head has been redefined %s", tag);
-				warning_msg(error_string);
-				time_series_free(bc_ptr->bc_head);
-				free_check_null(bc_ptr->bc_head);
-				bc_ptr->bc_head = NULL;
-			}
-			bc_ptr->bc_head = time_series_read_property(next_char, opt_list, count_opt_list, &opt);
-			if (bc_ptr->bc_head == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading head %s", tag);
-				error_msg(error_string, CONTINUE);
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-			} 
-			break;
-		    case 2:                       /* associated solution */
-		    case 7:                       /* solution */
-			/*
-			 *   Read associated solution property
-			 */
-			if (bc_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for "
-					"associated solution %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (bc_ptr->bc_solution != NULL) {
-				sprintf(error_string,"Associated solution has been redefined %s", tag);
-				warning_msg(error_string);
-				time_series_free(bc_ptr->bc_solution);
-				free_check_null(bc_ptr->bc_solution);
-				bc_ptr->bc_solution = NULL;
-			}
-			bc_ptr->bc_solution_type = ASSOCIATED;
-			bc_ptr->bc_solution = time_series_read_property(next_char, opt_list, count_opt_list, &opt);
-			if (bc_ptr->bc_solution == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading associated solution %s", tag);
-				error_msg(error_string, CONTINUE);
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-			} 
-			break;
-		    case 3:                       /* hydraulic conductivity */
-		    case 4:                       /* k */
-			/*
-			 *   Read hydraulic conductivity
-			 */
-			if (simulation > 0) {
-				input_error++;
-				sprintf(error_string,"Hydraulic conductivity can only be defined in first simulation period\n\t%s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-			if (bc_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for "
-					"hydraulic conductivity %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (bc_ptr->bc_k != NULL) {
-				sprintf(error_string,"Hydraulic conductivity has been redefined %s", tag);
-				warning_msg(error_string);
-				property_free(bc_ptr->bc_k);
-				bc_ptr->bc_k = NULL;
-			}
-			bc_ptr->bc_k = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
-			if (bc_ptr->bc_k == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading hydraulic conductivity %s", tag);
-				error_msg(error_string, CONTINUE);
-			} 
-			break;
-		    case 5:                       /* thickness */
-			/*
-			 *   Read thickness
-			 */
-			if (simulation > 0) {
-				input_error++;
-				sprintf(error_string,"Thickness can only be defined in first simulation period %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-			if (bc_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for "
-					"thickness %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (bc_ptr->bc_thick != NULL) {
-				sprintf(error_string,"Thickness has been redefined %s", tag);
-				warning_msg(error_string);
-				property_free(bc_ptr->bc_thick);
-				bc_ptr->bc_thick = NULL;
-			}
-			bc_ptr->bc_thick = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
-			if (bc_ptr->bc_thick == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading thickness %s", tag);
-				error_msg(error_string, CONTINUE);
-			} 
-			break;
-		    case 6:                       /* face */
-			/*
-			 *   Read face for flux
-			 */
-			if (bc_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for "
-					"flux face %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			j = copy_token(token, &next_char, &l);
-			str_tolower(token);
-			if (strcmp(token, "x") == 0) {
-			  bc_ptr->face = 0;
-			  bc_ptr->cell_face = CF_X;
-			} else if (strcmp(token, "y") == 0) {
-			  bc_ptr->face = 1;
-			  bc_ptr->cell_face = CF_Y;
-			} else if (strcmp(token, "z") == 0) {
-			  bc_ptr->face = 2;
-			  bc_ptr->cell_face = CF_Z;
-			} else 
-			{
-			  input_error++;
-			  sprintf(error_string,"Expected coordinate direction (X, Y, or Z) for flux face %s", tag);
-			  error_msg(error_string, CONTINUE);
-			} 
-#ifdef SKIP
-			replace("p", "+", token);
-			replace("m", "-", token);
-			replace("n", "-", token);
-			if (strcmp(token, "x+") == 0) {
-				bc_ptr->cell_face = CF_XP;
-			} else if (strcmp(token, "y+") == 0) {
-				bc_ptr->cell_face = CF_YP;
-			} else if (strcmp(token, "z+") == 0) {
-				bc_ptr->cell_face = CF_ZP;
-			} else if (strcmp(token, "x-") == 0) {
-				bc_ptr->cell_face = CF_XN;
-			} else if (strcmp(token, "y-") == 0) {
-				bc_ptr->cell_face = CF_YN;
-			} else if (strcmp(token, "z-") == 0) {
-				bc_ptr->cell_face = CF_ZN;
-			} else if (strcmp(token, "x") == 0) {
-				bc_ptr->cell_face = CF_X;
-			} else if (strcmp(token, "y") == 0) {
-				bc_ptr->cell_face = CF_Y;
-			} else if (strcmp(token, "z") == 0) {
-				bc_ptr->cell_face = CF_Z;
-			} else 
-			{
-			  input_error++;
-			  sprintf(error_string,"Expected signed coordinate direction (X+, X-, Y+, Y-, Z+, or Z-) for flux face %s", tag);
-			  error_msg(error_string, CONTINUE);
-			}
-#endif
-			bc_ptr->face_defined = TRUE;
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			break;
-		    case 8:                      /* mask */
-			if (bc_ptr == NULL) {
-				sprintf(error_string,"Zone has not been defined for "
-					"mask %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			if (bc_ptr->mask != NULL) {
-				sprintf(error_string,"Mask for this zone is being redefined %s", tag);
-				warning_msg(error_string);
-				property_free(bc_ptr->mask);
-				bc_ptr->mask = NULL;
-			}
-			bc_ptr->mask = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
-			if (bc_ptr->mask == NULL) {
-				input_error++;
-				sprintf(error_string,"Reading mask %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-			break;
-		    case 9:                         /* wedge */
-/*
- *   Allocate space for bc, read wedge data
- */
-			bc = (struct BC **) realloc(bc, (size_t) (count_bc + 1) * sizeof (struct BC *));
-			if (bc == NULL) malloc_error();
-			bc[count_bc] = bc_alloc();
-			bc_ptr = bc[count_bc];
-			bc_init(bc_ptr);
-			bc_ptr->bc_type = BC_info::BC_LEAKY;
-			count_leaky++;
-			sprintf(tag,"in LEAKY_BC, definition %d.", count_leaky);
-			count_bc++;
+  };
+  int count_opt_list = 15;
+  /*
+  *   Read chemical initial condition data
+  */
+  bc_leaky_defined = TRUE;
+  return_value = UNKNOWN;
+  bc_ptr = NULL;
+  Prism *prism_ptr = NULL;
+  /*
+  *   get first line
+  */
+  sprintf(tag,"in LEAKY_BC, definition %d.", count_leaky + 1);
+  opt = get_option(opt_list, count_opt_list, &next_char);
+  for (;;) {
+    next_char = line;
+    if (opt >= 0) {
+      copy_token(token, &next_char , &l);
+    }
+    switch (opt) {
+    case OPTION_EOF:                /* end of file */
+      return_value = EOF;
+      break;
+    case OPTION_KEYWORD:            /* keyword */
+      return_value = KEYWORD;
+      break;
+    case OPTION_DEFAULT:
+    case OPTION_ERROR:
+      sprintf(error_string,"Expected an identifier %s", tag);
+      error_msg(error_string, CONTINUE);
+      error_msg(line_save, CONTINUE);
+      opt = next_keyword_or_option(opt_list, count_opt_list);
+      input_error++;
+      break;
+    case 0:                         /* zone */
+      /*
+      *   Allocate space for bc, read zone data
+      */
+      bc = (struct BC **) realloc(bc, (size_t) (count_bc + 1) * sizeof (struct BC *));
+      if (bc == NULL) malloc_error();
+      bc[count_bc] = bc_alloc();
+      bc_ptr = bc[count_bc];
+      bc_init(bc_ptr);
+      bc_ptr->bc_type = BC_info::BC_LEAKY;
+      count_leaky++;
+      sprintf(tag,"in LEAKY_BC, definition %d.", count_leaky);
+      count_bc++;
 
-			bc_ptr->polyh = read_wedge( &next_char );
-			Wedge *w_ptr = dynamic_cast<Wedge *> (bc_ptr->polyh);
-			if (bc_ptr->polyh == NULL || w_ptr->orientation == Wedge::WEDGE_ERROR) {
-			  input_error++;
-			  sprintf(error_string,"Reading wedge %s", tag);
-			  error_msg(error_string, CONTINUE);
-			}
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			break;
-		}
-		return_value = check_line_return;
-		if (return_value == EOF || return_value == KEYWORD) break;
+      bc_ptr->polyh = read_cube( &next_char );
+      if (bc_ptr->polyh == NULL) {
+	sprintf(error_string,"Reading zone %s", tag);
+	error_msg(error_string, CONTINUE);
+      }
+      opt = next_keyword_or_option(opt_list, count_opt_list);
+      break;
+    case 1:                       /* head */
+      /*
+      *   Read head property
+      */
+      if (simulation > 0 && steady_flow == TRUE) {
+	input_error++;
+	sprintf(error_string,"Head for leaky boundary condition can not be changed in STEADY_FLOW calculations.");
+	error_msg(error_string, CONTINUE);
+      }
+      if (bc_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for "
+	  "head %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (bc_ptr->bc_head != NULL) {
+	sprintf(error_string,"Head has been redefined %s", tag);
+	warning_msg(error_string);
+	time_series_free(bc_ptr->bc_head);
+	free_check_null(bc_ptr->bc_head);
+	bc_ptr->bc_head = NULL;
+      }
+      bc_ptr->bc_head = time_series_read_property(next_char, opt_list, count_opt_list, &opt);
+      if (bc_ptr->bc_head == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading head %s", tag);
+	error_msg(error_string, CONTINUE);
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+      } 
+      break;
+    case 2:                       /* associated solution */
+    case 7:                       /* solution */
+      /*
+      *   Read associated solution property
+      */
+      if (bc_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for "
+	  "associated solution %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (bc_ptr->bc_solution != NULL) {
+	sprintf(error_string,"Associated solution has been redefined %s", tag);
+	warning_msg(error_string);
+	time_series_free(bc_ptr->bc_solution);
+	free_check_null(bc_ptr->bc_solution);
+	bc_ptr->bc_solution = NULL;
+      }
+      bc_ptr->bc_solution_type = ASSOCIATED;
+      bc_ptr->bc_solution = time_series_read_property(next_char, opt_list, count_opt_list, &opt);
+      if (bc_ptr->bc_solution == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading associated solution %s", tag);
+	error_msg(error_string, CONTINUE);
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+      } 
+      break;
+    case 3:                       /* hydraulic conductivity */
+    case 4:                       /* k */
+      /*
+      *   Read hydraulic conductivity
+      */
+      if (simulation > 0) {
+	input_error++;
+	sprintf(error_string,"Hydraulic conductivity can only be defined in first simulation period\n\t%s", tag);
+	error_msg(error_string, CONTINUE);
+      }
+      if (bc_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for "
+	  "hydraulic conductivity %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (bc_ptr->bc_k != NULL) {
+	sprintf(error_string,"Hydraulic conductivity has been redefined %s", tag);
+	warning_msg(error_string);
+	property_free(bc_ptr->bc_k);
+	bc_ptr->bc_k = NULL;
+      }
+      bc_ptr->bc_k = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
+      if (bc_ptr->bc_k == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading hydraulic conductivity %s", tag);
+	error_msg(error_string, CONTINUE);
+      } 
+      break;
+    case 5:                       /* thickness */
+      /*
+      *   Read thickness
+      */
+      if (simulation > 0) {
+	input_error++;
+	sprintf(error_string,"Thickness can only be defined in first simulation period %s", tag);
+	error_msg(error_string, CONTINUE);
+      }
+      if (bc_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for "
+	  "thickness %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (bc_ptr->bc_thick != NULL) {
+	sprintf(error_string,"Thickness has been redefined %s", tag);
+	warning_msg(error_string);
+	property_free(bc_ptr->bc_thick);
+	bc_ptr->bc_thick = NULL;
+      }
+      bc_ptr->bc_thick = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
+      if (bc_ptr->bc_thick == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading thickness %s", tag);
+	error_msg(error_string, CONTINUE);
+      } 
+      break;
+    case 6:                       /* face */
+      /*
+      *   Read face for flux
+      */
+      if (bc_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for "
+	  "flux face %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      j = copy_token(token, &next_char, &l);
+      str_tolower(token);
+      if (strcmp(token, "x") == 0) {
+	bc_ptr->face = 0;
+	bc_ptr->cell_face = CF_X;
+      } else if (strcmp(token, "y") == 0) {
+	bc_ptr->face = 1;
+	bc_ptr->cell_face = CF_Y;
+      } else if (strcmp(token, "z") == 0) {
+	bc_ptr->face = 2;
+	bc_ptr->cell_face = CF_Z;
+      } else 
+      {
+	input_error++;
+	sprintf(error_string,"Expected coordinate direction (X, Y, or Z) for flux face %s", tag);
+	error_msg(error_string, CONTINUE);
+      } 
+      bc_ptr->face_defined = TRUE;
+      opt = next_keyword_or_option(opt_list, count_opt_list);
+      break;
+    case 8:                      /* mask */
+      if (bc_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for "
+	  "mask %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (bc_ptr->mask != NULL) {
+	sprintf(error_string,"Mask for this zone is being redefined %s", tag);
+	warning_msg(error_string);
+	property_free(bc_ptr->mask);
+	bc_ptr->mask = NULL;
+      }
+      bc_ptr->mask = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
+      if (bc_ptr->mask == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading mask %s", tag);
+	error_msg(error_string, CONTINUE);
+      }
+      break;
+    case 9:                         /* wedge */
+      /*
+      *   Allocate space for bc, read wedge data
+      */
+      bc = (struct BC **) realloc(bc, (size_t) (count_bc + 1) * sizeof (struct BC *));
+      if (bc == NULL) malloc_error();
+      bc[count_bc] = bc_alloc();
+      bc_ptr = bc[count_bc];
+      bc_init(bc_ptr);
+      bc_ptr->bc_type = BC_info::BC_LEAKY;
+      count_leaky++;
+      sprintf(tag,"in LEAKY_BC, definition %d.", count_leaky);
+      count_bc++;
+
+      bc_ptr->polyh = read_wedge( &next_char );
+      {
+	Wedge *w_ptr = dynamic_cast<Wedge *> (bc_ptr->polyh);
+	if (bc_ptr->polyh == NULL || w_ptr->orientation == Wedge::WEDGE_ERROR) {
+	  input_error++;
+	  sprintf(error_string,"Reading wedge %s", tag);
+	  error_msg(error_string, CONTINUE);
 	}
-	return(return_value);
+      }
+      opt = next_keyword_or_option(opt_list, count_opt_list);
+      break;
+    case 10: 	      /* prism */
+      {
+	bc = (struct BC **) realloc(bc, (size_t) (count_bc + 1) * sizeof (struct BC *));
+	if (bc == NULL) malloc_error();
+	bc[count_bc] = bc_alloc();
+	bc_ptr = bc[count_bc];
+	bc_init(bc_ptr);
+	bc_ptr->bc_type = BC_info::BC_LEAKY;
+	count_leaky++;
+	sprintf(tag,"in LEAKY_BC, definition %d.", count_leaky);
+	count_bc++;
+
+	prism_ptr = new Prism;
+	bc_ptr->polyh = prism_ptr;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+
+    case 11:                         /* vector */
+    case 12:                         /* perimeter */
+    case 13:                         /* top */
+    case 14:                         /* bottom */
+      {
+	std::istringstream lines;
+	opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
+	if (bc_ptr == NULL || 
+	  bc_ptr->polyh == NULL || 
+	  prism_ptr == NULL ||
+	  !prism_ptr->read(lines))
+	{
+	  input_error++;
+	  sprintf(error_string,"Reading prism %s", tag);
+	  error_msg(error_string, CONTINUE);
+	  break;
+	}
+      }
+      break;
+    }
+    return_value = check_line_return;
+    if (return_value == EOF || return_value == KEYWORD) break;
+  }
+  return(return_value);
 }
 /* ---------------------------------------------------------------------- */
 struct property *read_property(char *ptr, const char **opt_list, int count_opt_list, int *opt, int delimited, int allow_restart)
@@ -6216,245 +6386,298 @@ int read_well(void)
 int read_print_locations(void)
 /* ---------------------------------------------------------------------- */
 {
-/*
- *      Reads zones for printing
- *
- *      Arguments:
- *         none
- *
- *      Returns:
- *         KEYWORD if keyword encountered, input_error may be incremented if
- *                    a keyword is encountered in an unexpected position
- *         EOF     if eof encountered while reading mass balance concentrations
- *         ERROR   if error occurred reading data
- *
- */
-	char *next_char, *ptr;
-	int return_value, opt;
-	int  i, j, l;
-	char token[MAX_LENGTH];
-	struct print_zones *print_zones_ptr;
-	struct print_zones_struct *print_zones_struct_ptr;
-	const char *opt_list[] = {
-		"zone",                             /* 0 */
-		"print",                            /* 1 */
-		"thin_grid",                        /* 2 */
-		"thin",                             /* 3 */
-		"sample_grid",                      /* 4 */
-		"sample",                           /* 5 */
-		"xyz_chemistry",                    /* 6 */
-		"hdf_chemistry",                    /* 7 */
-		"chemistry",                        /* 8 */
-		"mask",                             /* 9 */
-		"wedge"                             /* 10 */
-	};
-	int count_opt_list = 11;
-	int count_zones = 0;
-/*
- *   Read zones for printing
- */
-	return_value = UNKNOWN;
-/*
- *   get first line
- */
-	print_zones_ptr = NULL;
-	print_zones_struct_ptr = NULL;
-	/* if 3 print zones are used (chem, xyz, hdf), remove following statement */
-	print_zones_struct_ptr = &print_zones_xyz; 
-	sprintf(tag,"in PRINT_LOCATIONS, definition %d.", count_zones+1);
-	opt = get_option(opt_list, count_opt_list, &next_char);
-	for (;;) {
-		next_char = line;
-		if (opt >= 0) {
-			copy_token(token, &next_char , &l);
-		}
-		switch (opt) {
-		case OPTION_EOF:                /* end of file */
-			return_value = EOF;
-			break;
-		case OPTION_KEYWORD:            /* keyword */
-			return_value = KEYWORD;
-			break;
-		case OPTION_DEFAULT:
-		case OPTION_ERROR:
-			sprintf(error_string,"Expected an identifier %s", tag);
-			error_msg(error_string, CONTINUE);
-			error_msg(line_save, CONTINUE);
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			input_error++;
-			break;
-		case 0:                         /* zone */
-		  count_zones++;
-/*
- *   Allocate space for print_zone, read zone data
- */
-		  if (print_zones_struct_ptr == NULL) {
-		    sprintf(error_string,"First identifier must be -xyz_chemistry or -chemistry %s", tag);
-		    error_msg(error_string, CONTINUE);
-		    input_error++;
-		    opt = next_keyword_or_option(opt_list, count_opt_list);
-		    break;
-		  }
+  /*
+  *      Reads zones for printing
+  *
+  *      Arguments:
+  *         none
+  *
+  *      Returns:
+  *         KEYWORD if keyword encountered, input_error may be incremented if
+  *                    a keyword is encountered in an unexpected position
+  *         EOF     if eof encountered while reading mass balance concentrations
+  *         ERROR   if error occurred reading data
+  *
+  */
+  char *next_char, *ptr;
+  int return_value, opt;
+  int  i, j, l;
+  char token[MAX_LENGTH];
+  struct print_zones *print_zones_ptr;
+  struct print_zones_struct *print_zones_struct_ptr;
+  const char *opt_list[] = {
+    "zone",                             /* 0 */
+    "print",                            /* 1 */
+    "thin_grid",                        /* 2 */
+    "thin",                             /* 3 */
+    "sample_grid",                      /* 4 */
+    "sample",                           /* 5 */
+    "xyz_chemistry",                    /* 6 */
+    "hdf_chemistry",                    /* 7 */
+    "chemistry",                        /* 8 */
+    "mask",                             /* 9 */
+    "wedge",                            /* 10 */
+    "prism",                            /* 11 */ 
+    "vector",                           /* 12 */
+    "perimeter",                        /* 13 */
+    "top",                              /* 14 */
+    "bottom"                            /* 15 */
+  };
+  int count_opt_list = 16;
+  int count_zones = 0;
 
-		  print_zones_struct_ptr->print_zones = (struct print_zones *) realloc(print_zones_struct_ptr->print_zones, (size_t) ((print_zones_struct_ptr)->count_print_zones + 1) * sizeof (struct print_zones ));
-		  if (print_zones_struct_ptr->print_zones == NULL) malloc_error();
-		  print_zones_ptr = &(print_zones_struct_ptr->print_zones[print_zones_struct_ptr->count_print_zones]);
-		  /* initialize */
-		  print_zones_ptr->print = NULL;
-		  print_zones_ptr->mask = NULL;
-		  print_zones_struct_ptr->count_print_zones++;
-		  sprintf(tag,"in PRINT_LOCATIONS, definition %d.", count_zones);
+  /*
+  *   Read zones for printing
+  */
+  return_value = UNKNOWN;
+  /*
+  *   get first line
+  */
+  print_zones_ptr = NULL;
+  print_zones_struct_ptr = NULL;
+  Prism *prism_ptr = NULL;
+  /* if 3 print zones are used (chem, xyz, hdf), remove following statement */
+  print_zones_struct_ptr = &print_zones_xyz; 
+  sprintf(tag,"in PRINT_LOCATIONS, definition %d.", count_zones+1);
+  opt = get_option(opt_list, count_opt_list, &next_char);
+  for (;;) {
+    next_char = line;
+    if (opt >= 0) {
+      copy_token(token, &next_char , &l);
+    }
+    switch (opt) {
+    case OPTION_EOF:                /* end of file */
+      return_value = EOF;
+      break;
+    case OPTION_KEYWORD:            /* keyword */
+      return_value = KEYWORD;
+      break;
+    case OPTION_DEFAULT:
+    case OPTION_ERROR:
+      sprintf(error_string,"Expected an identifier %s", tag);
+      error_msg(error_string, CONTINUE);
+      error_msg(line_save, CONTINUE);
+      opt = next_keyword_or_option(opt_list, count_opt_list);
+      input_error++;
+      break;
+    case 0:                         /* zone */
+      count_zones++;
+      /*
+      *   Allocate space for print_zone, read zone data
+      */
+      if (print_zones_struct_ptr == NULL) {
+	sprintf(error_string,"First identifier must be -xyz_chemistry or -chemistry %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
 
-		  print_zones_ptr->polyh = read_cube( &next_char );
-		  if (print_zones_ptr->polyh == NULL) {
-		    sprintf(error_string,"Reading zone %s", tag);
-		    error_msg(error_string, CONTINUE);
-		  }
-		  opt = next_keyword_or_option(opt_list, count_opt_list);
-		  break;
-		case 1:                       /* print */
-		  count_zones++;
-		  /*
-		   *   Read print property
-		   */
-		  if (print_zones_ptr == NULL) {
-		    sprintf(error_string,"Zone has not been defined for "
-			    "-print %s", tag);
-		    error_msg(error_string, CONTINUE);
-		    input_error++;
-		    opt = next_keyword_or_option(opt_list, count_opt_list);
-		    break;
-		  }
-		  if (print_zones_ptr->print != NULL) {
-		    sprintf(error_string,"Print has been redefined %s", tag);
-		    warning_msg(error_string);
-		    property_free(print_zones_ptr->print);
-		    print_zones_ptr->print = NULL;
-		  }
-		  print_zones_ptr->print = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
-		  break;
-		case 2:                       /* thin_grid */
-		case 3:                       /* thin */
-		case 4:                       /* sample_grid */
-		case 5:                       /* sample */
-		  count_zones++;
-		  /* read direction */
-		  i = copy_token(token, &next_char, &l);
-		  if (i == EMPTY) {
-		    error_msg("Expected a coordinate direction, x, y, or z.", CONTINUE);
-		    error_msg(line_save, CONTINUE);
-		    input_error++;
-		    opt = next_keyword_or_option(opt_list, count_opt_list);
-		    break;
-		  }
-		  str_tolower(token);
-		  if (token[0] == 'x') {
-		    j = 0;
-		  } else if (token[0] == 'y') {
-		    j = 1;
-		  } else if (token[0] == 'z') {
-		    j = 2;
-		  } else {
-		    error_msg("Expected a coordinate direction, x, y, or z.", CONTINUE);
-		    error_msg(line_save, CONTINUE);
-		    input_error++;
-		    opt = next_keyword_or_option(opt_list, count_opt_list);
-		    break;
-		  }
-		  ptr = next_char;
-		  if (sscanf(next_char, "%d", &(print_zones_struct_ptr->thin_grid[j])) != 1) {
-		    sprintf(error_string,"Expected frequency of nodes to sample for %c -sample_grid information.", grid[j].c);
-		    error_msg(error_string, CONTINUE);
-		    error_msg(line_save, CONTINUE);
-		    input_error++;
-		  }
-		  opt = next_keyword_or_option(opt_list, count_opt_list);
-		  break;
-		case 6:                       /* xyz_chemistry */
-		  count_zones++;
-		  /*
-		   *   Reading xyz_chemistry print mask
-		   */
-		  print_zones_struct_ptr = &print_zones_xyz;
-		  opt = next_keyword_or_option(opt_list, count_opt_list);
-		  break;
-		case 7:                       /* hdf_chemistry */
-		  count_zones++;
-		  /*
-		   *   Reading hdf_chemistry print mask
-		   */
-		  sprintf(error_string,"-hdf_chemistry not supported for data block PRINT_LOCATIONS");
-		  error_msg(error_string, CONTINUE);
-		  input_error++;
+      print_zones_struct_ptr->print_zones = (struct print_zones *) realloc(print_zones_struct_ptr->print_zones, (size_t) ((print_zones_struct_ptr)->count_print_zones + 1) * sizeof (struct print_zones ));
+      if (print_zones_struct_ptr->print_zones == NULL) malloc_error();
+      print_zones_ptr = &(print_zones_struct_ptr->print_zones[print_zones_struct_ptr->count_print_zones]);
+      /* initialize */
+      print_zones_ptr->print = NULL;
+      print_zones_ptr->mask = NULL;
+      print_zones_struct_ptr->count_print_zones++;
+      sprintf(tag,"in PRINT_LOCATIONS, definition %d.", count_zones);
 
-		  opt = next_keyword_or_option(opt_list, count_opt_list);
-		  break;
-		case 8:                       /* chemistry */
-		  count_zones++;
-		  /*
-		   *   Reading chemistry print mask
-		   */
-		  print_zones_struct_ptr = &print_zones_chem;
-		  opt = next_keyword_or_option(opt_list, count_opt_list);
-		  break;
-		case 9:                      /* mask */
-		  if (print_zones_ptr == NULL) {
-			  sprintf(error_string,"Zone has not been defined for "
-				  "mask %s", tag);
-			  error_msg(error_string, CONTINUE);
-			  input_error++;
-			  opt = next_keyword_or_option(opt_list, count_opt_list);
-			  break;
-		  }
-		  if (print_zones_ptr->mask != NULL) {
-			  sprintf(error_string,"Mask for this zone is being redefined %s", tag);
-			  warning_msg(error_string);
-			  property_free(print_zones_ptr->mask);
-			  print_zones_ptr->mask = NULL;
-		  }
-		  print_zones_ptr->mask = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
-		  if (print_zones_ptr->mask == NULL) {
-			  input_error++;
-			  sprintf(error_string,"Reading mask %s", tag);
-			  error_msg(error_string, CONTINUE);
-		  }
-		  break;
-		case 10:                         /* wedge */
-		  count_zones++;
-/*
- *   Allocate space for print_zone, read wedge data
- */
-		  if (print_zones_struct_ptr == NULL) {
-		    sprintf(error_string,"First identifier must be -xyz_chemistry or -chemistry %s", tag);
-		    error_msg(error_string, CONTINUE);
-		    input_error++;
-		    opt = next_keyword_or_option(opt_list, count_opt_list);
-		    break;
-		  }
+      print_zones_ptr->polyh = read_cube( &next_char );
+      if (print_zones_ptr->polyh == NULL) {
+	sprintf(error_string,"Reading zone %s", tag);
+	error_msg(error_string, CONTINUE);
+      }
+      opt = next_keyword_or_option(opt_list, count_opt_list);
+      break;
+    case 1:                       /* print */
+      count_zones++;
+      /*
+      *   Read print property
+      */
+      if (print_zones_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for "
+	  "-print %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (print_zones_ptr->print != NULL) {
+	sprintf(error_string,"Print has been redefined %s", tag);
+	warning_msg(error_string);
+	property_free(print_zones_ptr->print);
+	print_zones_ptr->print = NULL;
+      }
+      print_zones_ptr->print = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
+      break;
+    case 2:                       /* thin_grid */
+    case 3:                       /* thin */
+    case 4:                       /* sample_grid */
+    case 5:                       /* sample */
+      count_zones++;
+      /* read direction */
+      i = copy_token(token, &next_char, &l);
+      if (i == EMPTY) {
+	error_msg("Expected a coordinate direction, x, y, or z.", CONTINUE);
+	error_msg(line_save, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      str_tolower(token);
+      if (token[0] == 'x') {
+	j = 0;
+      } else if (token[0] == 'y') {
+	j = 1;
+      } else if (token[0] == 'z') {
+	j = 2;
+      } else {
+	error_msg("Expected a coordinate direction, x, y, or z.", CONTINUE);
+	error_msg(line_save, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      ptr = next_char;
+      if (sscanf(next_char, "%d", &(print_zones_struct_ptr->thin_grid[j])) != 1) {
+	sprintf(error_string,"Expected frequency of nodes to sample for %c -sample_grid information.", grid[j].c);
+	error_msg(error_string, CONTINUE);
+	error_msg(line_save, CONTINUE);
+	input_error++;
+      }
+      opt = next_keyword_or_option(opt_list, count_opt_list);
+      break;
+    case 6:                       /* xyz_chemistry */
+      count_zones++;
+      /*
+      *   Reading xyz_chemistry print mask
+      */
+      print_zones_struct_ptr = &print_zones_xyz;
+      opt = next_keyword_or_option(opt_list, count_opt_list);
+      break;
+    case 7:                       /* hdf_chemistry */
+      count_zones++;
+      /*
+      *   Reading hdf_chemistry print mask
+      */
+      sprintf(error_string,"-hdf_chemistry not supported for data block PRINT_LOCATIONS");
+      error_msg(error_string, CONTINUE);
+      input_error++;
 
-		  print_zones_struct_ptr->print_zones = (struct print_zones *) realloc(print_zones_struct_ptr->print_zones, (size_t) ((print_zones_struct_ptr)->count_print_zones + 1) * sizeof (struct print_zones ));
-		  if (print_zones_struct_ptr->print_zones == NULL) malloc_error();
-		  print_zones_ptr = &(print_zones_struct_ptr->print_zones[print_zones_struct_ptr->count_print_zones]);
-		  /* initialize */
-		  print_zones_ptr->print = NULL;
-		  print_zones_ptr->mask = NULL;
-		  print_zones_struct_ptr->count_print_zones++;
-		  sprintf(tag,"in PRINT_LOCATIONS, definition %d.", count_zones);
+      opt = next_keyword_or_option(opt_list, count_opt_list);
+      break;
+    case 8:                       /* chemistry */
+      count_zones++;
+      /*
+      *   Reading chemistry print mask
+      */
+      print_zones_struct_ptr = &print_zones_chem;
+      opt = next_keyword_or_option(opt_list, count_opt_list);
+      break;
+    case 9:                      /* mask */
+      if (print_zones_ptr == NULL) {
+	sprintf(error_string,"Zone has not been defined for "
+	  "mask %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+      if (print_zones_ptr->mask != NULL) {
+	sprintf(error_string,"Mask for this zone is being redefined %s", tag);
+	warning_msg(error_string);
+	property_free(print_zones_ptr->mask);
+	print_zones_ptr->mask = NULL;
+      }
+      print_zones_ptr->mask = read_property(next_char, opt_list, count_opt_list, &opt, TRUE, FALSE);
+      if (print_zones_ptr->mask == NULL) {
+	input_error++;
+	sprintf(error_string,"Reading mask %s", tag);
+	error_msg(error_string, CONTINUE);
+      }
+      break;
+    case 10:                         /* wedge */
+      count_zones++;
+      /*
+      *   Allocate space for print_zone, read wedge data
+      */
+      if (print_zones_struct_ptr == NULL) {
+	sprintf(error_string,"First identifier must be -xyz_chemistry or -chemistry %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
 
-		  print_zones_ptr->polyh = read_wedge( &next_char );
-		  Wedge *w_ptr = dynamic_cast<Wedge *> (print_zones_ptr->polyh);
-		  if (print_zones_ptr->polyh == NULL || w_ptr->orientation == Wedge::WEDGE_ERROR) {
-		    input_error++;
-		    sprintf(error_string,"Reading wedge %s", tag);
-		    error_msg(error_string, CONTINUE);
-		  }
-		  opt = next_keyword_or_option(opt_list, count_opt_list);
-		  break;
-		}
-		return_value = check_line_return;
-		if (return_value == EOF || return_value == KEYWORD) break;
+      print_zones_struct_ptr->print_zones = (struct print_zones *) realloc(print_zones_struct_ptr->print_zones, (size_t) ((print_zones_struct_ptr)->count_print_zones + 1) * sizeof (struct print_zones ));
+      if (print_zones_struct_ptr->print_zones == NULL) malloc_error();
+      print_zones_ptr = &(print_zones_struct_ptr->print_zones[print_zones_struct_ptr->count_print_zones]);
+      /* initialize */
+      print_zones_ptr->print = NULL;
+      print_zones_ptr->mask = NULL;
+      print_zones_struct_ptr->count_print_zones++;
+      sprintf(tag,"in PRINT_LOCATIONS, definition %d.", count_zones);
+
+      print_zones_ptr->polyh = read_wedge( &next_char );
+      {
+	Wedge *w_ptr = dynamic_cast<Wedge *> (print_zones_ptr->polyh);
+	if (print_zones_ptr->polyh == NULL || w_ptr->orientation == Wedge::WEDGE_ERROR) {
+	  input_error++;
+	  sprintf(error_string,"Reading wedge %s", tag);
+	  error_msg(error_string, CONTINUE);
 	}
-	return(return_value);
+      }
+      opt = next_keyword_or_option(opt_list, count_opt_list);
+      break;
+    case 11: 	      /* prism */
+      {
+      if (print_zones_struct_ptr == NULL) {
+	sprintf(error_string,"First identifier must be -xyz_chemistry or -chemistry %s", tag);
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	opt = next_keyword_or_option(opt_list, count_opt_list);
+	break;
+      }
+
+      print_zones_struct_ptr->print_zones = (struct print_zones *) realloc(print_zones_struct_ptr->print_zones, (size_t) ((print_zones_struct_ptr)->count_print_zones + 1) * sizeof (struct print_zones ));
+      if (print_zones_struct_ptr->print_zones == NULL) malloc_error();
+      print_zones_ptr = &(print_zones_struct_ptr->print_zones[print_zones_struct_ptr->count_print_zones]);
+      /* initialize */
+      print_zones_ptr->print = NULL;
+      print_zones_ptr->mask = NULL;
+      print_zones_struct_ptr->count_print_zones++;
+      sprintf(tag,"in PRINT_LOCATIONS, definition %d.", count_zones);
+
+      prism_ptr = new Prism;
+      print_zones_ptr->polyh = prism_ptr;
+      opt = next_keyword_or_option(opt_list, count_opt_list);
+      break;
+      }
+
+    case 12:                         /* vector */
+    case 13:                         /* perimeter */
+    case 14:                         /* top */
+    case 15:                         /* bottom */
+      {
+	std::istringstream lines;
+	opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
+	if (print_zones_ptr == NULL || 
+	  print_zones_ptr->polyh == NULL || 
+	  prism_ptr == NULL ||
+	  !prism_ptr->read(lines))
+	{
+	  input_error++;
+	  sprintf(error_string,"Reading prism %s", tag);
+	  error_msg(error_string, CONTINUE);
+	  break;
+	}
+      }
+      break;
+    }
+    return_value = check_line_return;
+    if (return_value == EOF || return_value == KEYWORD) break;
+  }
+  return(return_value);
 }
 /* ---------------------------------------------------------------------- */
 int read_steady_flow(void)

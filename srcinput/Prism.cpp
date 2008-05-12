@@ -17,7 +17,45 @@ Prism::~Prism(void)
   }
   free_check_null(this->perimeter_poly);
 }
+bool Prism::read(std::istream &lines)
+{
+    // read information for top, or bottom
+  const char *opt_list[] = {
+    "perimeter",                     /* 0 */
+    "dip",                           /* 1 */
+    "top",                           /* 2 */
+    "bottom"                         /* 3 */
+  };
+  int count_opt_list = 4; 
+  std::vector<std::string> std_opt_list;
+  int i;
+  for (i = 0; i < count_opt_list; i++) std_opt_list.push_back(opt_list[i]);
 
+  // get option
+  std::string type;
+  lines >> type;
+  int j = case_picker(std_opt_list, type);
+  PRISM_OPTION p_opt;
+  switch (j)
+  {
+  case 0:
+    p_opt = Prism::PERIMETER;
+    break;
+  case 1:
+    p_opt = Prism::DIP;
+    break;
+  case 2:
+    p_opt = Prism::TOP;
+    break;
+  case 3:
+    p_opt = Prism::BOTTOM;
+    break;
+  default:
+    error_msg("Error reading prism data (perimeter, dip, top, bottom).", EA_CONTINUE);
+    return(false);
+  }
+  return(this->read(p_opt, lines));
+}
 bool Prism::read(PRISM_OPTION p_opt, std::istream &lines)
 {
   std::string token;

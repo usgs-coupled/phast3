@@ -24,7 +24,7 @@ public:
   // methods
   bool Point_in_polyhedron(Point &t);
   void Points_in_polyhedron(std::list<int> & list, std::vector<Point> &point_coord);
-  gpc_polygon *Face_polygon(Cell_Face face);
+  //gpc_polygon *Face_polygon(Cell_Face face);
   gpc_polygon * Slice(Cell_Face face, double coord);
   virtual Wedge* clone() const;
   virtual Wedge* create() const;
