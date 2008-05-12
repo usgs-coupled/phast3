@@ -2795,6 +2795,21 @@ int read_specified_value_bc(void)
 			}
 		      }
 		      break;
+		    case 12:                         /* perimeter */
+		      {
+			std::istringstream lines;
+			opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
+			if (bc_ptr == NULL || 
+			  bc_ptr->polyh == NULL || 
+			  !prism_ptr->read(Prism::PERIMETER, lines))
+			{
+			  input_error++;
+			  sprintf(error_string,"Reading prism %s", tag);
+			  error_msg(error_string, CONTINUE);
+			  break;
+			}
+		      }
+		      break;
 		    case 13:                         /* top */
 		      {
 			std::istringstream lines;
@@ -2802,6 +2817,21 @@ int read_specified_value_bc(void)
 			if (bc_ptr == NULL || 
 			  bc_ptr->polyh == NULL || 
 			  !prism_ptr->read(Prism::TOP, lines))
+			{
+			  input_error++;
+			  sprintf(error_string,"Reading prism %s", tag);
+			  error_msg(error_string, CONTINUE);
+			  break;
+			}
+		      }
+		      break;
+		    case 14:                         /* bottom */
+		      {
+			std::istringstream lines;
+			opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
+			if (bc_ptr == NULL || 
+			  bc_ptr->polyh == NULL || 
+			  !prism_ptr->read(Prism::BOTTOM, lines))
 			{
 			  input_error++;
 			  sprintf(error_string,"Reading prism %s", tag);

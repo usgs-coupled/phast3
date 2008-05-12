@@ -283,6 +283,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\Data_source.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\Shapefiles\dbfopen.c"
 				>
 				<FileConfiguration
@@ -876,6 +880,10 @@
 			</File>
 			<File
 				RelativePath="..\Cube.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Data_source.h"
 				>
 			</File>
 			<File
