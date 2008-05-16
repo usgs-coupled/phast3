@@ -41,18 +41,18 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="-Zm125"
-				Optimization="0"
+				Optimization="2"
 				AdditionalIncludeDirectories="..\include;&quot;$(CGALROOT)\include\CGAL\config\msvc&quot;;&quot;$(CGALROOT)\include&quot;;&quot;$(CGALROOT)\auxiliary\gmp\include&quot;;&quot;$(CGALROOT)\auxiliary\TAUCS\include&quot;;&quot;$(BOOSTROOT)&quot;;&quot;C:\3RDPARTY\qt-3.3.x-p8\include&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_MBCS;CGAL_USE_QT;_VC80_UPGRADE=0x0710;CGAL_USE_GMP"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_MBCS;CGAL_USE_GMP"
 				StringPooling="true"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="0"
-				RuntimeLibrary="3"
+				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
-				WarningLevel="3"
+				WarningLevel="2"
 				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="0"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -66,7 +66,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				UseLibraryDependencyInputs="false"
-				AdditionalDependencies="qt-mt.lib qtmain.lib Opengl32.lib Glu32.lib wsock32.lib winmm.lib imm32.lib"
+				AdditionalDependencies="qt-mt.lib qtmain.lib wsock32.lib winmm.lib imm32.lib Opengl32.lib Glu32.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(CGALROOT)\lib&quot;;&quot;$(CGALROOT)\auxiliary\gmp\lib&quot;;&quot;$(CGALROOT)\auxiliary\TAUCS\lib&quot;;&quot;C:\3RDPARTY\qt-3.3.x-p8\lib&quot;"
 				GenerateManifest="true"
@@ -126,6 +126,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="-Zm125"
+				Optimization="2"
 				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories="..\include;&quot;$(CGALROOT)\include\CGAL\config\msvc&quot;;&quot;$(CGALROOT)\include&quot;;&quot;$(CGALROOT)\auxiliary\gmp\include&quot;;&quot;$(CGALROOT)\auxiliary\TAUCS\include&quot;;&quot;$(BOOSTROOT)&quot;;&quot;C:\3RDPARTY\qt-3.3.x-p8\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;CGAL_USE_QT;CGAL_USE_GMP;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE"
@@ -135,7 +136,7 @@
 				UsePrecompiledHeader="2"
 				WarningLevel="2"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
+				DebugInformationFormat="0"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -151,7 +152,7 @@
 				AdditionalDependencies="qt-mt.lib qtmain.lib wsock32.lib winmm.lib imm32.lib Opengl32.lib Glu32.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(CGALROOT)\lib&quot;;&quot;$(CGALROOT)\auxiliary\gmp\lib&quot;;&quot;$(CGALROOT)\auxiliary\TAUCS\lib&quot;;&quot;C:\3RDPARTY\qt-3.3.x-p8\lib&quot;"
-				GenerateDebugInformation="false"
+				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"

@@ -13,6 +13,7 @@
 // TODO: reference additional headers your program requires here
 #include <CGAL/basic.h>
 #include <CGAL/Exact_predicates_exact_constructions_kernel.h>
+// Does not work #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Polyhedron_3.h>
 #include <CGAL/Nef_polyhedron_3.h>
 #include <CGAL/IO/Nef_polyhedron_iostream_3.h>
@@ -24,6 +25,7 @@
 
 // Kernal, suggested for doubles
 typedef CGAL::Exact_predicates_exact_constructions_kernel Kernel;
+//Does not work typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
 
 // Typedefs
 typedef CGAL::Polyhedron_3<Kernel>         Polyhedron;

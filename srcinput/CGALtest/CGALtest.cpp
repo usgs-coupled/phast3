@@ -28,6 +28,16 @@
 //**typedef std::list<point_range> polygon;
 //**typedef polygon::const_iterator polygon_iterator;
 //**typedef CGAL::Polygon_constructor<Nef_polyhedron, polygon_iterator> Polygon_constructor;
+#include <CGAL/Triangulation_euclidean_traits_xy_3.h>
+#include <CGAL/Delaunay_triangulation_2.h>
+#include <CGAL/Cartesian_converter.h>
+
+typedef CGAL::Simple_cartesian<double> Kdouble;
+typedef CGAL::Cartesian_converter<Kernel, Kdouble> K2D;
+typedef CGAL::Triangulation_euclidean_traits_xy_3<Kernel> Gt;
+typedef CGAL::Delaunay_triangulation_2<Gt> Delaunay;
+typedef Delaunay::Finite_faces_iterator Finite_faces_iterator;
+typedef Delaunay::Vertex_handle Vertex_handle;
 
 void parse_locate(Nef_polyhedron &N1, Point_3 &p);
 void triangle_2_to_nef_prism(Nef_polyhedron &N, Point_3 *P, double top, double bottom);
@@ -46,6 +56,52 @@ int main (int argc, char* argv[])
 
   Nef_polyhedron C;
 
+
+  // Grid of points
+  int npts = 3;
+  std::vector<Point_3> pts;
+
+  for (int i = 0; i < npts + 1; i++)
+  {
+    for (int j = 0; j < npts + 1; j++)
+    {
+      pts.push_back(Point_3(((double) i) * 1.0/(double) npts, ((double) j) * 1.0/(double) npts, 1.0));
+    }
+  }
+
+  Delaunay dt;
+  dt.insert(pts.begin(), pts.end());
+  Finite_faces_iterator fit;
+  int nf = 0;
+  Point_3 vx[3];
+  Nef_polyhedron all_prisms(Nef_polyhedron::EMPTY), prism_to_add;
+
+  for (fit = dt.finite_faces_begin(); fit != dt.finite_faces_end(); fit++)
+  {
+    std::cout << "Triangle " << nf++ << std::endl;
+    for (int i = 0; i < 3; i++)
+    {
+      //Vertex_handle v = fit->vertex(i);
+      //Point_3 v_pt = v->point();
+      //std::cout << "   " << v_pt.x() << "  " << v_pt.y() << "  " << v_pt.z() << "  " << std::endl;
+      vx[i] = fit->vertex(i)->point();
+    }
+    std::ostringstream str;
+
+    str << vx[0].x()*vx[0].y();
+    std::cout << str.str().c_str() << std::endl;
+    std::istringstream ostr(str.str().c_str());
+    double h;
+    ostr >> h;
+    //std::cout << "H is equal to " << h;
+    triangle_2_to_nef_prism(prism_to_add, vx, h + 1.0, 0);
+    //std::cout << prism_to_add;
+    //all_prisms.join(prism_to_add);
+    all_prisms = all_prisms + prism_to_add;
+
+    //std::cout <<std::endl << "Cumulative prism " << std::endl;
+    //std::cout << all_prisms;
+  }
 
   //std::cout << N;
 
@@ -71,7 +127,7 @@ int main (int argc, char* argv[])
 
   Nef_polyhedron Cut = U - R1;
   //Nef_polyhedron Final = (Cut.intersection(Rectangle)).closure();
-  Nef_polyhedron Final = Cut;
+  Nef_polyhedron Final = all_prisms;
   //std::cout << Final;
 
   //Nef_polyhedron Final;
