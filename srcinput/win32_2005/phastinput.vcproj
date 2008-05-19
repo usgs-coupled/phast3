@@ -401,10 +401,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\Helpers.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\NNInterpolator\istack.c"
 				>
 				<FileConfiguration
@@ -773,27 +769,6 @@
 			<File
 				RelativePath="..\utilities.c"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_MBCS"
-						CompileAs="2"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_MBCS"
-						BasicRuntimeChecks="3"
-						UsePrecompiledHeader="0"
-						BrowseInformation="1"
-						CompileAs="2"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\Wedge.cpp"
@@ -915,10 +890,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\Helpers.h"
-				>
-			</File>
-			<File
 				RelativePath="..\hstinpt.h"
 				>
 			</File>
@@ -1012,6 +983,10 @@
 			</File>
 			<File
 				RelativePath="..\NNInterpolator\triangle.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Utilities.h"
 				>
 			</File>
 			<File

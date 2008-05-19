@@ -167,29 +167,6 @@ struct time_series * time_series_read_property (char *ptr, const char **opt_list
 int time_series_sort (struct time_series *time_series_ptr);
 int time_series_init (struct time_series *ts_ptr);
 
-/* utilities.c */
-int backspace (FILE *file, int spaces);
-int convert_to_si (char *unit, double *conversion);
-int units_conversion(char *input, const char *target, double *conversion, int report_error);
-int copy_token (char *token_ptr, char **ptr, int *length);
-int dup_print(const char *ptr, int emphasis);
-//int equal (double a, double b, double eps);
-int error_msg (const char *err_str, const int stop);
-//int free_check_null(void *ptr);
-//int islegit(const char c);
-void malloc_error (void);
-int print_centered(const char *string);
-//int replace(const char *str1, const char *str2, char *str);
-//void squeeze_white(char *s_l);
-int status (int count);
-//void str_tolower(char *str);
-//void str_toupper(char *str);
-//int strcmp_nocase(const char *str1, const char *str2);
-//int strcmp_nocase_arg1(const char *str1, const char *str2);
-//char * string_duplicate (const char *token);
-int vector_print(double *d, double scalar, int n, FILE *file);
-int warning_msg (const char *err_str);
-
 /* wells.c */
 
 int build_wells(void);

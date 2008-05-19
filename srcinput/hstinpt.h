@@ -52,6 +52,7 @@ static char const svnid[] = "$Id$";
 #include "Cell_Face.h"
 #include "River.h"
 #include "Drain.h"
+#include "Utilities.h"
 
 /* ----------------------------------------------------------------------
  *   DEFINITIONS
