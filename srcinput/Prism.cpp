@@ -1,4 +1,5 @@
 #include "Prism.h"
+#include "Cube.h"
 #include "message.h"
 #include <sstream>
 #include <iostream>
@@ -7,6 +8,8 @@
 Prism::Prism(void)
 {
   this->perimeter_poly = NULL;
+  this->prism_dip = Point(0,0,0,0);
+
 }
 
 Prism::~Prism(void)
@@ -112,12 +115,37 @@ Polyhedron* Prism::create() const
 {
   return(NULL);
 }
-gpc_polygon *Prism::Face_polygon(Cell_Face face)
-{
-  return(NULL);
-}
+//gpc_polygon *Prism::Face_polygon(Cell_Face face)
+//{
+//  return(NULL);
+//}
 gpc_polygon * Prism::Slice(Cell_Face face, double coord)
 {
+  // Determine if dip is parallel to face
+  Cube::PLANE_INTERSECTION p_intersection;
+  Point p1;
+  double t;
+  double a = 0, b = 0, c = 0, d = -coord;
+
+
+  switch (face)
+  {
+  case CF_X:
+    p_intersection = Segment_intersect_plane(1.0, 0.0, 0.0, -coord, p1, this->prism_dip, t);
+    break;
+  case CF_Y:
+    p_intersection = Segment_intersect_plane(0.0, 1.0, 0.0, -coord, p1, this->prism_dip, t);
+    break;
+  case CF_Z:
+    p_intersection = Segment_intersect_plane(0.0, 0.0, 1.0, -coord, p1, this->prism_dip, t);
+    break;
+  }
+
+  //PI_NONE, PI_SEGMENT, PI_POINT  if (p_intersection == Cube::PI_POINT)
+  {
+  }
+
+
   return(NULL);
 }
 

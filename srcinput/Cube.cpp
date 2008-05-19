@@ -326,6 +326,8 @@ bool Cube::Segment_in_cube(Point &p1, Point &p2, Point &i1, Point &i2, double &l
 }
 Cube::PLANE_INTERSECTION Segment_intersect_plane(const double a, const double b, const double c, const double d, Point &p1, Point &diff, double &t)
 {
+  //    Plane is defined as:
+  //    a*x + b*y + c*z + d = 0
   double den = a*diff.x() + b*diff.y() + c*diff.z();
   double num = a*p1.x() + b*p1.y() + c*p1.z() + d;
   t = -1.0;
