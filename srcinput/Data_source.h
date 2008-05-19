@@ -2,7 +2,9 @@
 #define DATA_SOURCE_H_INCLUDED
 #include <sstream>
 #include <vector>
+#include "gpc.h"
 class Point;
+struct zone;
 class Data_source
 {
 public:
@@ -26,5 +28,6 @@ public:
   DATA_SOURCE_TYPE source_type;
   std::vector<Point> pts;
   int attribute;
+  struct zone box;
 };
 #endif // !defined(DATA_SOURCE_H_INCLUDED)

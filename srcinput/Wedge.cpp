@@ -3,7 +3,7 @@
 #include <cctype>
 #include "message.h"
 #include "gpc.h"
-#include "Helpers.h"
+#include "Utilities.h"
 // Constructors
 
 Wedge::Wedge(void)

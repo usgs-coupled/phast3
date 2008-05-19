@@ -522,6 +522,7 @@ void initialize(void)
 	snap[0] = .001;
 	snap[1] = .001;
 	snap[2] = .001;
+	zone_init(&domain);
 
 /*
  *   initialize grid_elt_zones to contain definition

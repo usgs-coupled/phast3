@@ -1,7 +1,7 @@
 #include "Shapefile.h"
 #include "../Point.h"
 #include "../message.h"
-#include "../Helpers.h"
+#include "../Utilities.h"
 Shapefile::Shapefile(void)
 {
 }

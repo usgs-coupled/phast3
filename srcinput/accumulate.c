@@ -306,6 +306,15 @@ int setup_grid(void)
 	  element_xyz->push_back(Point(cells[i].elt_x, cells[i].elt_y, cells[i].elt_z));
 	}
 
+/*
+*  Save zone of entire domain
+*/
+	domain.x1 = grid[0].coord[0];
+	domain.y1 = grid[1].coord[0];
+	domain.z1 = grid[2].coord[0];
+	domain.x2 = grid[0].coord[grid[0].count_coord - 1];
+	domain.y2 = grid[1].coord[grid[1].count_coord - 1];
+	domain.z2 = grid[2].coord[grid[2].count_coord - 1];
 
 	return(OK);
 }

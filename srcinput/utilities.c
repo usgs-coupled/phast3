@@ -299,7 +299,7 @@ int convert_to_si (char *unit, double *conversion)
 #include <ctype.h>
 #include <string>
 #include <algorithm>
-#include "Helpers.h"
+#include "Utilities.h"
 static bool isamong(char c, const char *s_l);
 
 /* ---------------------------------------------------------------------- */
@@ -540,4 +540,17 @@ int case_picker (std::vector<std::string> options, std::string query)
 
   free_check_null(c_query);
   return(j);
+}
+struct zone *grid_zone()
+{
+  return(&domain);
+}
+void zone_init(struct zone *zone_ptr)
+{
+  zone_ptr->x1 = 0; 
+  zone_ptr->y1 = 0;
+  zone_ptr->z1 = 0;
+  zone_ptr->x2 = 0;
+  zone_ptr->y2 = 0;
+  zone_ptr->z2 = 0;
 }

@@ -1,4 +1,7 @@
 /* utilities.c */
+#if !defined(UTILITIES_H_INCLUDED)
+#define UTILITIES_H_INCLUDED
+
 #include <vector>
 #include <string>
 int backspace (FILE *file, int spaces);
@@ -12,6 +15,10 @@ int print_centered(const char *string);
 int status (int count);
 int vector_print(double *d, double scalar, int n, FILE *file);
 int warning_msg (const char *err_str);
+struct zone *grid_zone();
+void zone_init(struct zone *zone_ptr);
+
+// The following do not require hstinput.h
 
 bool equal (double a, double b, double eps);
 void free_check_null(void *ptr);
@@ -25,3 +32,5 @@ int strcmp_nocase_arg1(const char *str1, const char *str2);
 char * string_duplicate (const char *token);
 int case_picker (std::vector<std::string> options, std::string query);
 
+
+#endif // UTILITIES_H_INCLUDED

@@ -36,6 +36,7 @@ public:
   // Methods
   bool read(PRISM_OPTION p_opt, std::istream &lines);
   bool read(std::istream &lines);
+  bool Project_point(Point &p, Cell_Face face, double coord);
 
   // data
 

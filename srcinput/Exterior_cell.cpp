@@ -1,6 +1,6 @@
 #include "Exterior_cell.h"
 #include "message.h"
-#include "Helpers.h"
+#include "Utilities.h"
 Exterior_cell::Exterior_cell(void)
 {
   xn = xp = yn = yp = zn = zp = false;

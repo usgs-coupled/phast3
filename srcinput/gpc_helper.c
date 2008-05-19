@@ -2,6 +2,7 @@
 #include "gpc.h"
 #include "gpc_helper.h"
 #include "Point.h"
+#include "Utilities.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -558,4 +559,67 @@ gpc_polygon *empty_polygon(void)
 	poly_ptr->num_contours = 0;
 
 	return(poly_ptr);
+}
+bool line_and_segment_intersection(Point p1, Point p2, Point q1, Point q2, std::vector<Point> &intersection)
+{
+  // p1 and p2 define line, q1 and q2 define segment
+  // ax + by = c
+  double a1 = p2.y() - p1.y();
+  double b1 = p2.x() - p2.y();
+  double c1 = a1*p1.x() + b1*p1.y();
+
+  double a2 = q2.y() - q1.y();
+  double b2 = q2.x() - q2.y();
+  double c2 = a2*q1.x() + b2*q1.y();
+
+  double det = a1*b2 - a2*b1;
+  if (det == 0)
+  {
+    //Lines are parallel; check for line segment on line
+    Point p;
+    if (equal(a1*q1.x() + b1*q1.y(), c1, 1e-8))
+    {
+      intersection.push_back(q1);
+      intersection.push_back(q2);
+      return(true);
+    }
+
+  } else
+  {
+    double x = (a2*c1 - b1*c2)/det;
+    double y = (a1*c2 - a2*c1)/det;
+    // intersection is in segment
+    {
+      std::vector<Point> pts;
+      pts.push_back(q1);
+      pts.push_back(q2);
+      Point pmin(pts.begin(), pts.end(), Point::MIN);
+      Point pmax(pts.begin(), pts.end(), Point::MAX);
+      if (pmin.x() > x || pmax.x() < x) return (false);
+      if (pmin.y() > y || pmax.y() < y) return (false);
+    }
+    std::vector<Point> pts;
+    intersection.push_back(Point(x, y, p1.z(), p1.get_v()));
+    return(true);
+  }
+  return(false);
+}
+bool line_intersect_polygon(Point lp1, Point lp2, std::vector<Point> pts, std::vector<Point> intersect_pts)
+{
+  // lp1 is assumed to be outside bounding box of the polygon
+  int i, j;
+  int npol = pts.size();
+  j = npol-1;
+  for (i = 0; i < npol; j = i++) {
+    line_and_segment_intersection(lp1, lp2, pts[i], pts[j], intersect_pts);
+  }
+
+  // Should be an even number of points
+  if(intersect_pts.size()%2 != 0) error_msg("Number of points of intersection of line with polygon should be even", EA_STOP);
+
+  if (intersect_pts.size()> 0)
+  {
+    return(true);
+  }
+  return(false);
 }

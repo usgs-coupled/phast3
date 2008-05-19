@@ -1,6 +1,7 @@
+#include "zone.h"
 #include "Data_source.h"
 #include "message.h"
-#include "Helpers.h"
+#include "Utilities.h"
 #include "Point.h"
 Data_source::Data_source(void)
 {
@@ -16,6 +17,7 @@ void Data_source::init()
   this->defined = false;
   this->source_type = Data_source::NONE;
   this->attribute = -1;
+  zone_init(&this->box);
 }
 bool Data_source::read(std::istream &lines)
 {

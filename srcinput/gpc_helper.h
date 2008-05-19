@@ -16,3 +16,5 @@ void line_seg_point_near_3d ( double x1, double y1, double z1,
 			      double *xn, double *yn, double *zn, double *dist, double *t );
 gpc_polygon *triangle(double x1, double y1, double x2, double y2, double x3, double y3);
 
+bool line_and_segment_intersection(Point p1, Point p2, Point q1, Point q2, std::vector<Point> &intersection);
+bool line_intersect_polygon(Point ray1, Point ray2, std::vector<Point> pts, std::vector<Point> intersect_pts);

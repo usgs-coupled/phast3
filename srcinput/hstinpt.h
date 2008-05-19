@@ -137,6 +137,7 @@ EXTERNAL struct grid grid[3];         /* x=0, y=1, z=2 */
 EXTERNAL struct grid *grid_overlay;
 EXTERNAL int count_grid_overlay;
 EXTERNAL double snap[3];
+EXTERNAL struct zone domain;
 
 /* ----------------------------------------------------------------------
  *   Grid Elements
@@ -671,6 +672,5 @@ EXTERNAL std::map <std::string, int> FileMap;
 
 
 #include "inputproto.h"
-#include "Helpers.h"
 
 #endif /* _INC_HSTINPT */
