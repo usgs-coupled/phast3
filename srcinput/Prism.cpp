@@ -5,11 +5,14 @@
 #include <iostream>
 #include <algorithm>
 #include "Utilities.h"
+std::vector<Prism * > Prism::prism_vector;
+
 Prism::Prism(void)
 {
   this->perimeter_poly = NULL;
   this->prism_dip = Point(0,0,0,0);
   zone_init(&this->box);
+  this->prism_vector.push_back(this);
 }
 
 Prism::~Prism(void)
@@ -113,7 +116,7 @@ bool Prism::read(PRISM_OPTION p_opt, std::istream &lines)
     if (!this->top.read(lines)) error_msg("Reading top of prism", EA_CONTINUE);
     break;
   case BOTTOM:
-    if (!this->top.read(lines)) error_msg("Reading top of prism", EA_CONTINUE);
+    if (!this->bottom.read(lines)) error_msg("Reading bottom of prism", EA_CONTINUE);
     break;
 
   }
@@ -121,19 +124,17 @@ bool Prism::read(PRISM_OPTION p_opt, std::istream &lines)
 }
 void Prism::Points_in_polyhedron(std::list<int> & list, std::vector<Point> &point_xyz)
 {
+  // TODO
 }
+
 Polyhedron* Prism::clone()const
 {
-  return(NULL);
+  return new Prism(*this);
 }
 Polyhedron* Prism::create() const
 {
-  return(NULL);
+  return new Prism();
 }
-//gpc_polygon *Prism::Face_polygon(Cell_Face face)
-//{
-//  return(NULL);
-//}
 gpc_polygon * Prism::Slice(Cell_Face face, double coord)
 {
 
@@ -219,10 +220,12 @@ gpc_polygon * Prism::Slice(Cell_Face face, double coord)
 
 struct zone *Prism::Bounding_box()
 {
+  // TODO
   return(NULL);
 }
 void Prism::printOn(std::ostream& o) const
 {
+  // TODO
 }
 
 bool Prism::Project_point(Point &p, Cell_Face face, double coord)
@@ -238,4 +241,24 @@ bool Prism::Project_point(Point &p, Cell_Face face, double coord)
   }
   p = p + t * this->prism_dip;
   return(success);
+}
+void tidy_prisms(void)
+{
+  std::vector<Prism *>::const_iterator it;
+
+  for (it = Prism::prism_vector.begin(); it != Prism::prism_vector.end(); it++)
+  {
+   (*it)->tidy();
+  }
+}
+
+void Prism::tidy()
+{
+  std::cerr << "Starting top" << std::endl;
+  top.tidy();
+  std::cerr << "Starting bottom" << std::endl;
+  bottom.tidy();
+  std::cerr << "Starting perimeter" << std::endl;
+  perimeter.tidy();
+  exit(4);
 }

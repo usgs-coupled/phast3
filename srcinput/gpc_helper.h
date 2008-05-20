@@ -1,5 +1,5 @@
-class Point;
 #include <vector>
+class Point;
 double PolygonArea(gpc_vertex *polygon, int N);
 double angle_between_segments(gpc_vertex p0, gpc_vertex p1, gpc_vertex p2);
 double angle_of_segment(gpc_vertex p0, gpc_vertex p1);

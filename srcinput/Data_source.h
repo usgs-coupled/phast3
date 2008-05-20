@@ -2,7 +2,10 @@
 #define DATA_SOURCE_H_INCLUDED
 #include <sstream>
 #include <vector>
+#include <map>
+
 #include "gpc.h"
+class Filedata;
 class Point;
 struct zone;
 class Data_source
@@ -21,13 +24,22 @@ public:
   bool read(std::istream &lines);
   void init();
   ~Data_source(void);
+  void tidy();
+  std::vector<Point> & Get_points(const int field);
+  gpc_polygon * Get_polygons();
+  Data_source::DATA_SOURCE_TYPE  Get_source_type(void) {return this->source_type;}
+  
 
   // Data
   bool defined;
   std::string file_name;
   DATA_SOURCE_TYPE source_type;
+  Filedata *filedata;
   std::vector<Point> pts;
+  gpc_polygon *polygons;
+
   int attribute;
   struct zone box;
+  static std::map<std::string,Data_source> data_source_map;
 };
 #endif // !defined(DATA_SOURCE_H_INCLUDED)

@@ -5,6 +5,7 @@
 #include "message.h"
 #include "stddef.h"
 #include "Polyhedron.h"
+#include "Prism.h"
 #include "Exterior_cell.h"
 static char const svnid[] = "$Id$";
 static int setup_grid(void);
@@ -17,43 +18,45 @@ void process_bc (struct cell *cell_ptr);
 int accumulate(void)
 /* ---------------------------------------------------------------------- */
 {
-	if (simulation == 0) {
-		setup_grid();
-		if (tidy_rivers() == OK) {
-			if (build_rivers() == OK) {
-				setup_rivers();
-			}
-		}
-		if (tidy_drains() == OK) {
-			if (build_drains() == OK) {
-				setup_drains();
-			}
-		}
-		if (tidy_wells() == OK) {
-			if (build_wells() == OK) {
-				setup_wells();
-			}
-		}
+  if (simulation == 0) {
+    tidy_prisms();
+
+    setup_grid();
+    if (tidy_rivers() == OK) {
+      if (build_rivers() == OK) {
+	setup_rivers();
+      }
+    }
+    if (tidy_drains() == OK) {
+      if (build_drains() == OK) {
+	setup_drains();
+      }
+    }
+    if (tidy_wells() == OK) {
+      if (build_wells() == OK) {
+	setup_wells();
+      }
+    }
 #ifdef DEBUG_RIVERS
-		write_rivers();
+    write_rivers();
 #endif
-	} else {
-		update_rivers();
-		update_wells();
-	}
-	if (simulation == 0)
-	{
-	  setup_head_ic();
-	  setup_chem_ic();
-	  setup_media();
-	}
-	setup_bc();
-	setup_print_locations(&print_zones_chem, offsetof(struct cell, print_chem), offsetof(struct cell, print_chem_defined));
-	setup_print_locations(&print_zones_xyz, offsetof(struct cell, print_xyz), offsetof(struct cell, print_xyz_defined));
-	if (input_error > 0) {
-		error_msg("Stopping because of input errors.", STOP);
-	}
-	return(OK);
+  } else {
+    update_rivers();
+    update_wells();
+  }
+  if (simulation == 0)
+  {
+    setup_head_ic();
+    setup_chem_ic();
+    setup_media();
+  }
+  setup_bc();
+  setup_print_locations(&print_zones_chem, offsetof(struct cell, print_chem), offsetof(struct cell, print_chem_defined));
+  setup_print_locations(&print_zones_xyz, offsetof(struct cell, print_xyz), offsetof(struct cell, print_xyz_defined));
+  if (input_error > 0) {
+    error_msg("Stopping because of input errors.", STOP);
+  }
+  return(OK);
 }
 /* ---------------------------------------------------------------------- */
 int setup_grid(void)

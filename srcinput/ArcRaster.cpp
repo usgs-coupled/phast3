@@ -72,12 +72,34 @@ ArcRaster::ArcRaster(std::string filename)
       xpos = this->xllcorner + (double (j) + 0.5) * this->cellsize;
       if (value != this->nodata_value)
       {
-	this->pts.push_back(Point(xpos, ypos, 0.0, value)); 
+	this->pts.push_back(Point(xpos, ypos, value, value)); 
       }
     }
   }
+  // Set bounding box
+  this->Set_bounding_box();
 }
 
 ArcRaster::~ArcRaster(void)
 {
+}
+void ArcRaster::Set_bounding_box(void)
+{
+  
+  Point min(this->pts.begin(), this->pts.end(), Point::MIN); 
+  Point max(this->pts.begin(), this->pts.end(), Point::MAX); 
+  this->box.x1 = min.x();
+  this->box.y1 = min.y();
+  this->box.z1 = min.z();
+  this->box.x2 = max.x();
+  this->box.y2 = max.y();
+  this->box.z2 = max.z();
+}
+struct zone *ArcRaster::Bounding_box(void)
+{
+  return(&this->box);
+}
+gpc_polygon * ArcRaster::Get_polygons(void)
+{
+  return NULL;
 }

@@ -2,6 +2,7 @@
 #define PRISM_H_INCLUDED
 #include "polyhedron.h"
 #include "Data_source.h"
+
 class Prism :
   public Polyhedron
 {
@@ -37,7 +38,8 @@ public:
   bool read(PRISM_OPTION p_opt, std::istream &lines);
   bool read(std::istream &lines);
   bool Project_point(Point &p, Cell_Face face, double coord);
-
+  friend void tidy_prisms(void);
+  void tidy();
   // data
 
   gpc_polygon *perimeter_poly;
@@ -48,6 +50,6 @@ public:
   Data_source top;
 
   Point prism_dip;
- 
+  static std::vector<Prism * > prism_vector;
 };
 #endif // !defined(PRISM_H_INCLUDED)

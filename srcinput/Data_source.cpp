@@ -3,9 +3,14 @@
 #include "message.h"
 #include "Utilities.h"
 #include "Point.h"
+#include "Shapefiles/Shapefile.h"
+#include "ArcRaster.h"
+#include "XYZfile.h"
+
 Data_source::Data_source(void)
 {
   this->init();
+  filedata = NULL;
 }
 Data_source::~Data_source(void)
 {
@@ -32,6 +37,7 @@ bool Data_source::read(std::istream &lines)
     "xyz",                              /* 3 */
     "arcraster"                         /* 4 */
   };
+
   int count_opt_list = 5; 
   std::vector<std::string> std_opt_list;
   int i;
@@ -89,23 +95,100 @@ bool Data_source::read(std::istream &lines)
     lines >> this->attribute;
     if (!success) error_msg("Error reading shape file name or attribute number.", EA_CONTINUE);
     break;
-
-    // Arc Raster file
+    // XYZ file
   case 3:
-    this->source_type = Data_source::ARCRASTER;
-    if (!(lines >> this->file_name)) success = false;
-    if (!success) error_msg("Error reading ArcRaster file name.", EA_CONTINUE);
-    break;
-    // Arc Raster file
-  case 4:
     this->source_type = Data_source::XYZ;
     if (!(lines >> this->file_name)) success = false;
     if (!success) error_msg("Error reading xyz file name.", EA_CONTINUE);
     break;
+    // Arc Raster file
+  case 4:
+    this->source_type = Data_source::ARCRASTER;
+    if (!(lines >> this->file_name)) success = false;
+    if (!success) error_msg("Error reading ArcRaster file name.", EA_CONTINUE);
+    break;
+
   default:
     success = false;
     break;
   }
   if (success) this->defined = true;
   return(success);
+}
+void Data_source::tidy(void)
+{
+  switch (this->source_type)
+  {
+  case Data_source::SHAPE:
+    if (Filedata::file_data_map.find(this->file_name) == Filedata::file_data_map.end())
+    {
+      Shapefile *sf = new Shapefile(this->file_name);
+      Filedata::file_data_map[this->file_name] = (Filedata *) sf;
+    }
+    break;
+  case Data_source::ARCRASTER:
+    if (Filedata::file_data_map.find(this->file_name) == Filedata::file_data_map.end())
+    {
+      ArcRaster *ar = new ArcRaster(this->file_name);
+      Filedata::file_data_map[this->file_name] = (Filedata *) ar;
+    }
+    break;
+  case Data_source::XYZ:
+    if (Filedata::file_data_map.find(this->file_name) == Filedata::file_data_map.end())
+    {
+      XYZfile *xyz = new XYZfile(this->file_name);
+      Filedata::file_data_map[this->file_name] = (Filedata *) xyz;
+    }
+    break;
+  case Data_source::CONSTANT:
+    break;
+  case Data_source::POINTS:
+    break;
+  case Data_source::NONE:
+    break;
+  }
+}
+std::vector<Point> & Data_source::Get_points(const int field)
+{
+  switch (this->source_type)
+  {
+  case Data_source::SHAPE:
+  case Data_source::ARCRASTER:
+  case Data_source::XYZ:
+    return (Filedata::file_data_map.find(this->file_name)->second->Get_points(field));
+    break;
+  default:
+    break;
+  }
+  /*
+  case Data_source::CONSTANT:
+  case Data_source::POINTS:
+  case Data_source::NONE:
+  */
+  return (this->pts);
+}
+gpc_polygon * Data_source::Get_polygons()
+{
+  switch (this->source_type)
+  {
+  case Data_source::SHAPE:
+  case Data_source::ARCRASTER:
+  case Data_source::XYZ:
+    return (Filedata::file_data_map.find(this->file_name)->second->Get_polygons());
+    break;
+  case Data_source::POINTS:
+    if (this->polygons == NULL)
+    {
+      this->polygons = points_to_poly(this->pts);
+    }
+    return (this->polygons);
+    break;
+  default:
+    break;
+  }
+  /*
+  case Data_source::CONSTANT:
+  case Data_source::NONE:
+  */
+  return (NULL);
 }

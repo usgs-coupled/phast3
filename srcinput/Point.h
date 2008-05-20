@@ -42,6 +42,7 @@ public:
       this->coord[0] = 0.0;
       this->coord[1] = 0.0;
       this->coord[2] = 0.0;
+      this->v = 0.0;
       return;
     }
 
@@ -50,6 +51,7 @@ public:
     this->coord[0] = it->coord[0];
     this->coord[1] = it->coord[1];
     this->coord[2] = it->coord[2];
+    this->v = it->v;
     it++;
 
     // find min or max
@@ -62,6 +64,7 @@ public:
 	{
 	  if (it->coord[i] > this->coord[i]) this->coord[i] = it->coord[i];
 	}
+	if (it->v > this->v) this->v = it->v;
       }
       break;
     case MIN:
@@ -71,6 +74,7 @@ public:
 	{
 	  if (it->coord[i] < this->coord[i]) this->coord[i] = it->coord[i];
 	}
+	if (it->v < this->v) this->v = it->v;
       }
       break;
     }

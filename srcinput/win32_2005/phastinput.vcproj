@@ -327,6 +327,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\Filedata.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\getopt.c"
 				>
 				<FileConfiguration
@@ -769,6 +773,14 @@
 			<File
 				RelativePath="..\utilities.c"
 				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\Wedge.cpp"
@@ -832,6 +844,10 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath="..\XYZfile.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -871,6 +887,10 @@
 			</File>
 			<File
 				RelativePath="..\Exterior_cell.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Filedata.h"
 				>
 			</File>
 			<File
@@ -995,6 +1015,10 @@
 			</File>
 			<File
 				RelativePath="..\Wedge.h"
+				>
+			</File>
+			<File
+				RelativePath="..\XYZfile.h"
 				>
 			</File>
 			<File

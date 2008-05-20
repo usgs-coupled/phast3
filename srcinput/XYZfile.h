@@ -1,27 +1,24 @@
-#if !defined(ARCRASTER_H_INCLUDED)
-#define ARCRASTER_H_INCLUDED
+#if !defined(XYZFILE_H_INCLUDED)
+#define XYZFILE_H_INCLUDED
 #include "Filedata.h"
 #include <string>
 #include <vector>
 class Point;
-class ArcRaster : Filedata
+class XYZfile : Filedata
 {
 public:
-  ArcRaster(void);
-  ArcRaster(std::string filename);
+  XYZfile(void);
+  XYZfile(std::string filename);
   std::vector<Point> &Get_points(const int field) {return this->pts;};
   gpc_polygon *Get_polygons();
   void Set_bounding_box(void);
   struct zone *Bounding_box(void);
 public:
-  ~ArcRaster(void);
+  ~XYZfile(void);
 
 protected:
   // data
   std::vector<Point> pts;
-  double cellsize;
-  double xllcorner, yllcorner;
-  int ncols, nrows;
-  double nodata_value;
+  gpc_polygon * polygons;
 };
-#endif // !defined(ARCRASTER_H_INCLUDED)
+#endif // !defined(XYZFILE_H_INCLUDED)
