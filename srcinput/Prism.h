@@ -48,6 +48,7 @@ public:
   bool read(std::istream &lines);
   bool Project_point(Point &p, Cell_Face face, double coord);
   bool Project_points(std::vector<Point> &pts, Cell_Face face, double coord);
+  bool Point_in_polyhedron(const Point p);
   friend void tidy_prisms(void);
   void tidy();
   // data
@@ -64,5 +65,7 @@ public:
 
   
   static std::vector<Prism * > prism_vector;
+private:
+  void Set_bounding_box(void);
 };
 #endif // !defined(PRISM_H_INCLUDED)

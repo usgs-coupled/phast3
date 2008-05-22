@@ -11,7 +11,7 @@ std::vector<Prism * > Prism::prism_vector;
 Prism::Prism(void)
 {
   this->perimeter_poly = NULL;
-  this->prism_dip = Point(0,0,0,0);
+  this->prism_dip = Point(0,0,1,0);
   this->perimeter_datum = 0.0;
   this->perimeter_option = DEFAULT;
   zone_init(&this->box);
@@ -151,9 +151,27 @@ bool Prism::read(PRISM_OPTION p_opt, std::istream &lines)
   }
   return (success);
 }
-void Prism::Points_in_polyhedron(std::list<int> & list, std::vector<Point> &point_xyz)
+void Prism::Points_in_polyhedron(std::list<int> & list_of_numbers, std::vector<Point> &point_xyz)
 {
-  // TODO
+  std::list<int>::iterator it = list_of_numbers.begin();
+  while (it != list_of_numbers.end())
+  {
+    int n = *it;
+    if (!(this->Point_in_polyhedron(point_xyz[n])))
+    {
+      it = list_of_numbers.erase(it);
+    }
+    else
+    {
+      it++;
+    }
+  }
+}
+bool Prism::Point_in_polyhedron(const Point p)
+{
+  Point p1 = p;
+  this->Project_point(p1, CF_Z, grid_zone()->z2);
+  return (this->perimeter.phst_polygons.Point_in_polygon(p1));
 }
 
 Polyhedron* Prism::clone()const
@@ -205,7 +223,7 @@ gpc_polygon * Prism::Slice(Cell_Face face, double coord)
       }
       project.push_back(p);
     }
-    gpc_polygon *slice = points_to_poly(project);
+    gpc_polygon *slice = points_to_poly(project, face);
     return slice;
   } else
   {
@@ -213,37 +231,37 @@ gpc_polygon * Prism::Slice(Cell_Face face, double coord)
     std::vector<Point> intersect_pts;
     gpc_polygon *slice = empty_polygon();
     {
-      line_intersect_polygon(lp1, lp2, this->perimeter.pts, intersect_pts);
+      //line_intersect_polygon(lp1, lp2, this->perimeter.pts, intersect_pts);
+      this->perimeter.phst_polygons.Line_intersect(lp1, lp2, intersect_pts);
       int i;
       for (i = 0; i < (int) intersect_pts.size(); i = i + 2)
       {
 	// add upper points
 	std::vector<Point> pts;
-	pts.push_back(Point(pts[i].x(), pts[i].y(), grid_zone()->z2));
-	pts.push_back(Point(pts[i+1].x(), pts[i+1].y(), grid_zone()->z2));
+	//pts.push_back(Point(pts[i].x(), pts[i].y(), grid_zone()->z2));
+	//pts.push_back(Point(pts[i+1].x(), pts[i+1].y(), grid_zone()->z2));
+	pts.push_back(intersect_pts[i]);
+	pts.push_back(intersect_pts[i+1]);
 	// add lower points
 	Point p2;
-	p2 = pts[i+1];
-	p2.set_z(grid_zone()->z2);
+	p2 = intersect_pts[i+1];
+	//p2.set_z(grid_zone()->z2);
 	this->Project_point(p2, face, grid_zone()->z1);
 	pts.push_back(p2);
 
-
-	p2 = pts[i];
+	p2 = intersect_pts[i];
 	this->Project_point(p2, face, grid_zone()->z1);
 	pts.push_back(p2);
 
 	// generate polygon
-	gpc_polygon * contour = points_to_poly(pts);
+	gpc_polygon * contour = points_to_poly(pts, face);
 
 	// add to slice
 	gpc_polygon_clip(GPC_UNION, slice, contour, slice);
-
       }
     }
+    return slice;
   }
-
-
   return(NULL);
 }
 
@@ -326,4 +344,36 @@ void Prism::tidy()
   // Project points to top of grid
   this->Project_points(this->perimeter.pts, CF_Z, grid_zone()->z2); 
   this->perimeter_datum = grid_zone()->z2;
+  // set bounding box
+  this->Set_bounding_box();
+
+}
+void Prism::Set_bounding_box(void)
+{
+
+
+  std::vector<Point> m;
+  m.push_back(Point(this->perimeter.phst_polygons.pts.begin(), 
+    this->perimeter.phst_polygons.pts.end(), 
+    Point::MIN));
+  m.push_back(Point(this->perimeter.phst_polygons.pts.begin(), 
+    this->perimeter.phst_polygons.pts.end(), 
+    Point::MAX));
+
+  std::vector<Point> b = this->perimeter.phst_polygons.pts; 
+  this->Project_points(b, CF_Z, grid_zone()->z1);
+  m.push_back(Point(b.begin(), b.end(), Point::MIN));
+  m.push_back(Point(b.begin(), b.end(), Point::MAX));
+
+  Point min(Point(m.begin(), m.end(), Point::MIN));
+  Point max(Point(m.begin(), m.end(), Point::MAX));
+
+  this->box.x1 = min.x();
+  this->box.y1 = min.y();
+  this->box.z1 = min.z();
+  this->box.x2 = max.x();
+  this->box.y2 = max.y();
+  this->box.z2 = max.z();
+
+  
 }

@@ -19,9 +19,8 @@ int accumulate(void)
 /* ---------------------------------------------------------------------- */
 {
   if (simulation == 0) {
-    tidy_prisms();
-
     setup_grid();
+    tidy_prisms();
     if (tidy_rivers() == OK) {
       if (build_rivers() == OK) {
 	setup_rivers();

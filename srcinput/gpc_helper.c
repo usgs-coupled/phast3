@@ -245,6 +245,56 @@ gpc_polygon *vertex_to_poly(gpc_vertex *v, int n)
 	return(poly_ptr);
 }
 /* ---------------------------------------------------------------------- */
+gpc_polygon *points_to_poly(std::vector<Point> &pts, Cell_Face face)
+/* ---------------------------------------------------------------------- */
+{
+  gpc_polygon *poly_ptr;
+  int i;
+  gpc_vertex *p;
+
+  int n = pts.size();
+  poly_ptr =  (gpc_polygon*) malloc((size_t) sizeof(gpc_polygon));
+  if (poly_ptr == NULL) malloc_error();
+  /*
+  *   gpc_polygon for river polygon
+  */
+  poly_ptr->contour = (gpc_vertex_list*) malloc((size_t) sizeof(gpc_vertex_list));
+  if (poly_ptr->contour == NULL) malloc_error();
+  p = (gpc_vertex*) malloc((size_t) n * sizeof (gpc_vertex));
+  if (p == NULL) malloc_error();
+  poly_ptr->contour[0].vertex = p;
+  poly_ptr->contour[0].num_vertices = n;
+  poly_ptr->num_contours = 1;
+  /*
+  *   gpc_vertex list for cell boundary
+  */
+  switch (face)
+  {
+  case CF_X:
+    for (i = 0; i < n; i++) 
+    {
+      p[i].x = pts[i].y();
+      p[i].y = pts[i].z();
+    }
+    break;
+  case CF_Y:
+    for (i = 0; i < n; i++) 
+    {
+      p[i].x = pts[i].x();
+      p[i].y = pts[i].z();
+    }
+    break;
+  case CF_Z:
+    for (i = 0; i < n; i++) 
+    {
+      p[i].x = pts[i].x();
+      p[i].y = pts[i].y();
+    }
+    break;
+  }
+  return(poly_ptr);
+}
+/* ---------------------------------------------------------------------- */
 gpc_polygon *points_to_poly(std::vector<Point> &pts)
 /* ---------------------------------------------------------------------- */
 {
@@ -573,14 +623,23 @@ bool line_and_segment_intersection(Point p1, Point p2, Point q1, Point q2, std::
   double c2 = a2*q1.x() + b2*q1.y();
 
   double det = a1*b2 - a2*b1;
+  std::vector<Point>::iterator last_it = intersection.end();
+  if (intersection.size() > 0)
+  {
+    last_it = last_it - 1;
+  }
+
   if (det == 0)
   {
     //Lines are parallel; check for line segment on line
     Point p;
     if (equal(a1*q1.x() + b1*q1.y(), c1, 1e-8))
     {
+      if (last_it == intersection.end() || !(*last_it == q2))
+      {
+	intersection.push_back(q2);
+      }
       intersection.push_back(q1);
-      intersection.push_back(q2);
       return(true);
     }
 
@@ -598,8 +657,11 @@ bool line_and_segment_intersection(Point p1, Point p2, Point q1, Point q2, std::
       if (pmin.x() > x || pmax.x() < x) return (false);
       if (pmin.y() > y || pmax.y() < y) return (false);
     }
-    std::vector<Point> pts;
-    intersection.push_back(Point(x, y, p1.z(), p1.get_v()));
+    Point p(x, y, p1.z(), p1.get_v());
+    if (last_it == intersection.end() || !(*last_it == p))
+    {
+	intersection.push_back(p);
+    }
     return(true);
   }
   return(false);
