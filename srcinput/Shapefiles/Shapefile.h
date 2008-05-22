@@ -14,8 +14,9 @@ public:
   Shapefile(void);
   Shapefile(std::string &fname);
   void Dump(std::ostream &oss);
-  std::vector<Point> & Get_points(const int field);
-  gpc_polygon *Get_polygons();
+  //bool Set_points(const int field);
+  bool Make_points(const int field, std::vector<Point> &pts);
+  bool Shapefile::Make_polygons( int field, PHST_polygon &polygons);
   bool Point_in_polygon(const Point p);
   struct zone *Bounding_box(void);
   void Set_bounding_box();
@@ -26,8 +27,6 @@ public:
   SHPInfo *shpinfo;
   DBFInfo *dbfinfo;
   std::vector<SHPObject *> objects;
-  std::vector<Point> pts;
-  int current_field;
   
 };
 #endif // !defined(SHAPEFILE_H_INCLUDED)

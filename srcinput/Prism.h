@@ -18,7 +18,16 @@ public:
     PERIMETER    = 0,
     DIP          = 1,
     TOP          = 2,
-    BOTTOM       = 3
+    BOTTOM       = 3,
+    PERIMETER_Z  = 4
+  };
+
+  enum PERIMETER_OPTION
+  {
+    CONSTANT       = 0,
+    ATTRIBUTE      = 1,
+    USE_Z          = 2,
+    DEFAULT        = 3
   };
 
 public:
@@ -38,18 +47,22 @@ public:
   bool read(PRISM_OPTION p_opt, std::istream &lines);
   bool read(std::istream &lines);
   bool Project_point(Point &p, Cell_Face face, double coord);
+  bool Project_points(std::vector<Point> &pts, Cell_Face face, double coord);
   friend void tidy_prisms(void);
   void tidy();
   // data
 
-  gpc_polygon *perimeter_poly;
+  gpc_polygon *perimeter_poly; // Not currently used
   Data_source perimeter;
+  Point prism_dip;
+  double perimeter_datum;
+  PERIMETER_OPTION perimeter_option;
 
   Data_source bottom;
 
   Data_source top;
 
-  Point prism_dip;
+  
   static std::vector<Prism * > prism_vector;
 };
 #endif // !defined(PRISM_H_INCLUDED)

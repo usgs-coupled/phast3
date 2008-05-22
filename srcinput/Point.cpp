@@ -220,7 +220,7 @@ bool Point::point_in_gpc_polygon(gpc_polygon *poly_ptr)
   return(false);
 
 }
-bool Point::point_in_polygon(std::vector<Point> &pts) 
+bool Point::Point_in_polygon(std::vector<Point> &pts) 
 {
 //int pnpoly(int npol, float *xp, float *yp, float x, float y)
   

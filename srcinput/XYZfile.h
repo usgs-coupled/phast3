@@ -9,8 +9,10 @@ class XYZfile : Filedata
 public:
   XYZfile(void);
   XYZfile(std::string filename);
-  std::vector<Point> &Get_points(const int field) {return this->pts;};
-  gpc_polygon *Get_polygons();
+  //bool Set_points(const int field) {return true;}
+  bool Make_points(const int field, std::vector<Point> &pts);
+  std::vector<Point> &Get_points() {return this->pts;};
+  bool Make_polygons( int field, PHST_polygon &polygons);
   void Set_bounding_box(void);
   struct zone *Bounding_box(void);
 public:
@@ -18,7 +20,5 @@ public:
 
 protected:
   // data
-  std::vector<Point> pts;
-  gpc_polygon * polygons;
 };
 #endif // !defined(XYZFILE_H_INCLUDED)

@@ -4,6 +4,7 @@
 #include <istream>
 #include <fstream>
 #include "Point.h"
+#include "PHST_polygon.h"
 XYZfile::XYZfile(void)
 {
 }
@@ -50,6 +51,7 @@ struct zone *XYZfile::Bounding_box(void)
 {
   return(&this->box);
 }
+#ifdef SKIP
 gpc_polygon * XYZfile::Get_polygons(void)
 {
   if (this->polygons == NULL)
@@ -57,4 +59,21 @@ gpc_polygon * XYZfile::Get_polygons(void)
     this->polygons = points_to_poly(this->pts);
   }
   return (this->polygons);
+}
+#endif
+bool XYZfile::Make_polygons( int field, PHST_polygon &polygons)
+{
+  this->Make_points(-1, polygons.pts);
+  polygons.begin.push_back(this->pts.begin());
+  polygons.end.push_back(this->pts.end());
+  return true;
+}
+bool XYZfile::Make_points(int field, std::vector<Point> &pts)
+{
+  std::vector<Point>::iterator it;
+  for (it = this->pts.begin(); it != this->pts.end(); it++)
+  {
+    pts.push_back(*it);
+  }
+  return true; 
 }

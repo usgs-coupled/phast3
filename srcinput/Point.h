@@ -110,14 +110,16 @@ public:
   friend bool operator < (Point &a, Point &b);
   friend bool operator == (Point &a, Point &b);
   bool point_in_gpc_polygon(gpc_polygon *poly_ptr);
-  bool point_in_polygon(std::vector<Point> &pts);
+  bool Point_in_polygon(std::vector<Point> &pts);
 
+#ifdef SKIP
   // Required to be in header?
   // 3D point in polygon routine
+  // Accuracy problem?
 #define TWOPI 6.283185307179586476925287
 #define EPSILON 1e-8
   template<class InputIterator>
-  bool point_in_polygon(InputIterator First, InputIterator Last) 
+  bool Point_in_polygon(InputIterator First, InputIterator Last) 
   {
     InputIterator it = First;
     Point p1, p2;
@@ -147,7 +149,7 @@ public:
     if (fabs(anglesum - TWOPI) < EPSILON) return(true);
     return false;
   }
-
+#endif
 protected:
   double coord[3];
   double v;

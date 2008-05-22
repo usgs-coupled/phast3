@@ -9,8 +9,10 @@ class ArcRaster : Filedata
 public:
   ArcRaster(void);
   ArcRaster(std::string filename);
-  std::vector<Point> &Get_points(const int field) {return this->pts;};
-  gpc_polygon *Get_polygons();
+  //bool Set_points(const int field) {return true;};
+  std::vector<Point> &Get_points() {return this->pts;};
+  bool Make_points(const int field, std::vector<Point> &pts); 
+  bool Make_polygons( int field, PHST_polygon &polygons)  {return false;}
   void Set_bounding_box(void);
   struct zone *Bounding_box(void);
 public:
@@ -18,7 +20,6 @@ public:
 
 protected:
   // data
-  std::vector<Point> pts;
   double cellsize;
   double xllcorner, yllcorner;
   int ncols, nrows;

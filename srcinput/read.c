@@ -1248,10 +1248,12 @@ int read_media(void)
     "vector",                           /* 36 */
     "perimeter",                        /* 37 */
     "top",                              /* 38 */
-    "bottom"                            /* 39 */
+    "bottom",                           /* 39 */
+    "dip",                              /* 40 */
+    "perimeter_z"                       /* 41 */
 
   };
-  int count_opt_list = 40;
+  int count_opt_list = 42;
   /*
   *   Read grid data
   */
@@ -1617,6 +1619,8 @@ int read_media(void)
     case 37:                         /* perimeter */
     case 38:                         /* top */
     case 39:                         /* bottom */
+    case 40:                         /* dip */
+    case 41:                         /* perimeter_z */
       {
 	std::istringstream lines;
 	opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
@@ -1794,9 +1798,11 @@ int read_head_ic(void)
     "vector",                           /* 6 */
     "perimeter",                        /* 7 */
     "top",                              /* 8 */
-    "bottom"                            /* 9 */
+    "bottom",                           /* 9 */
+    "dip",                              /* 10 */
+    "perimeter_z"                       /* 11 */
   };
-  int count_opt_list = 10;
+  int count_opt_list = 12;
   /*
   *   Read grid data
   */
@@ -1965,6 +1971,8 @@ int read_head_ic(void)
     case 7:                         /* perimeter */
     case 8:                         /* top */
     case 9:                         /* bottom */
+    case 10:                        /* dip */
+    case 11:                        /* perimeter_z */
       {
 	std::istringstream lines;
 	opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
@@ -2031,9 +2039,11 @@ int read_chemistry_ic(void)
     "vector",                           /* 14 */
     "perimeter",                        /* 15 */
     "top",                              /* 16 */
-    "bottom"                            /* 17 */
+    "bottom",                           /* 17 */
+    "dip",                              /* 18 */
+    "perimeter_z"                       /* 19 */
   };
-  int count_opt_list = 18;
+  int count_opt_list = 20;
   /*
   *   Read chemical initial condition data
   */
@@ -2328,6 +2338,8 @@ int read_chemistry_ic(void)
     case 15:                         /* perimeter */
     case 16:                         /* top */
     case 17:                         /* bottom */
+    case 18:                         /* dip */
+    case 19:                         /* perimeter_z */
       {
 	std::istringstream lines;
 	opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
@@ -2715,9 +2727,11 @@ int read_specified_value_bc(void)
     "vector",                           /* 11 */
     "perimeter",                        /* 12 */
     "top",                              /* 13 */
-    "bottom"                            /* 14 */
+    "bottom",                           /* 14 */
+    "dip",                              /* 15 */
+    "perimeter_z"                       /* 16 */
   };
-  int count_opt_list = 15;
+  int count_opt_list = 17;
   /*
   *   Read chemical initial condition data
   */
@@ -2932,6 +2946,8 @@ int read_specified_value_bc(void)
     case 12:                         /* perimeter */
     case 13:                         /* top */
     case 14:                         /* bottom */
+    case 15:                         /* dip */
+    case 16:                         /* perimeter_z */
       {
 	std::istringstream lines;
 	opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
@@ -2987,9 +3003,11 @@ int read_flux_bc(void)
     "vector",                           /* 8 */
     "perimeter",                        /* 9 */
     "top",                              /* 10 */
-    "bottom"                            /* 11 */
+    "bottom",                           /* 11 */
+    "dip",                              /* 12 */
+    "perimeter_z"                       /* 13 */
   };
-  int count_opt_list = 12;
+  int count_opt_list = 14;
   /*
   *   Read flux boundary condition
   */
@@ -3239,6 +3257,8 @@ int read_flux_bc(void)
     case 9:                         /* perimeter */
     case 10:                         /* top */
     case 11:                         /* bottom */
+    case 12:                         /* dip */
+    case 13:                         /* perimeter_z */
       {
 	std::istringstream lines;
 	opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
@@ -3297,10 +3317,12 @@ int read_leaky_bc(void)
     "vector",                           /* 11 */
     "perimeter",                        /* 12 */
     "top",                              /* 13 */
-    "bottom"                            /* 14 */
+    "bottom",                           /* 14 */
+    "dip",                              /* 15 */
+    "perimeter_z"                       /* 16 */
 
   };
-  int count_opt_list = 15;
+  int count_opt_list = 17;
   /*
   *   Read chemical initial condition data
   */
@@ -3577,6 +3599,8 @@ int read_leaky_bc(void)
     case 12:                         /* perimeter */
     case 13:                         /* top */
     case 14:                         /* bottom */
+    case 15:                         /* dip */
+    case 16:                         /* perimeter_z */
       {
 	std::istringstream lines;
 	opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
@@ -6421,9 +6445,11 @@ int read_print_locations(void)
     "vector",                           /* 12 */
     "perimeter",                        /* 13 */
     "top",                              /* 14 */
-    "bottom"                            /* 15 */
+    "bottom",                           /* 15 */
+    "dip",                              /* 16 */
+    "perimeter_z"                       /* 17 */
   };
-  int count_opt_list = 16;
+  int count_opt_list = 18;
   int count_zones = 0;
 
   /*
@@ -6658,6 +6684,8 @@ int read_print_locations(void)
     case 13:                         /* perimeter */
     case 14:                         /* top */
     case 15:                         /* bottom */
+    case 16:                         /* dip */
+    case 17:                         /* perimeter_z */
       {
 	std::istringstream lines;
 	opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);

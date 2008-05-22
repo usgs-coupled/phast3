@@ -99,7 +99,18 @@ struct zone *ArcRaster::Bounding_box(void)
 {
   return(&this->box);
 }
+#ifdef SKIP
 gpc_polygon * ArcRaster::Get_polygons(void)
 {
   return NULL;
+}
+#endif
+bool ArcRaster::Make_points(int field, std::vector<Point> &new_pts)
+{
+  std::vector<Point>::iterator it;
+  for (it = this->pts.begin(); it != this->pts.end(); it++)
+  {
+    //new_pts.push_back(*it);
+  }
+  return true; 
 }

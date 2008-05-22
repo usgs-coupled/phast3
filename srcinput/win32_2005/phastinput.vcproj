@@ -559,6 +559,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\PHST_polygon.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\Point.cpp"
 				>
 				<FileConfiguration
@@ -959,6 +963,10 @@
 			</File>
 			<File
 				RelativePath="..\NNInterpolator\NNInterpolator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\PHST_polygon.h"
 				>
 			</File>
 			<File

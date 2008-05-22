@@ -6,6 +6,7 @@
 #include "Shapefiles/Shapefile.h"
 #include "ArcRaster.h"
 #include "XYZfile.h"
+#include "PHST_polygon.h"
 
 Data_source::Data_source(void)
 {
@@ -124,7 +125,9 @@ void Data_source::tidy(void)
     {
       Shapefile *sf = new Shapefile(this->file_name);
       Filedata::file_data_map[this->file_name] = (Filedata *) sf;
+      sf->Make_points(this->attribute, this->pts);
     }
+    
     break;
   case Data_source::ARCRASTER:
     if (Filedata::file_data_map.find(this->file_name) == Filedata::file_data_map.end())
@@ -148,47 +151,51 @@ void Data_source::tidy(void)
     break;
   }
 }
-std::vector<Point> & Data_source::Get_points(const int field)
+std::vector<Point> & Data_source::Get_points()
 {
   switch (this->source_type)
   {
-  case Data_source::SHAPE:
   case Data_source::ARCRASTER:
   case Data_source::XYZ:
-    return (Filedata::file_data_map.find(this->file_name)->second->Get_points(field));
+    return (Filedata::file_data_map.find(this->file_name)->second->Get_points());
     break;
   default:
     break;
   }
   /*
+  case Data_source::SHAPE:
   case Data_source::CONSTANT:
   case Data_source::POINTS:
   case Data_source::NONE:
   */
   return (this->pts);
 }
-gpc_polygon * Data_source::Get_polygons()
+bool Data_source::Make_polygons()
 {
   switch (this->source_type)
   {
   case Data_source::SHAPE:
   case Data_source::ARCRASTER:
-  case Data_source::XYZ:
-    return (Filedata::file_data_map.find(this->file_name)->second->Get_polygons());
+    // go to file data and make polygon(s)
+    return(Filedata::file_data_map.find(this->file_name)->second->Make_polygons(this->attribute, this->phst_polygons));
     break;
+
   case Data_source::POINTS:
-    if (this->polygons == NULL)
+    if (this->phst_polygons.pts.size() == 0)
     {
-      this->polygons = points_to_poly(this->pts);
+      this->phst_polygons.pts = this->pts;
+      this->phst_polygons.begin.push_back(this->phst_polygons.pts.begin());
+      this->phst_polygons.end.push_back(this->phst_polygons.pts.end());
     }
-    return (this->polygons);
     break;
   default:
-    break;
-  }
   /*
+  case Data_source::XYZ:
   case Data_source::CONSTANT:
   case Data_source::NONE:
   */
-  return (NULL);
+    return false;
+    break;
+  }
+  return (true);
 }

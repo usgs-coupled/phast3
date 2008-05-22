@@ -5,9 +5,11 @@
 #include <map>
 
 #include "gpc.h"
+#include "PHST_polygon.h"
 class Filedata;
 class Point;
 struct zone;
+
 class Data_source
 {
 public:
@@ -25,9 +27,12 @@ public:
   void init();
   ~Data_source(void);
   void tidy();
-  std::vector<Point> & Get_points(const int field);
-  gpc_polygon * Get_polygons();
+  std::vector<Point> & Get_points(void);
+  bool Make_polygons();
+  //gpc_polygon * Get_polygons();
   Data_source::DATA_SOURCE_TYPE  Get_source_type(void) {return this->source_type;}
+  PHST_polygon & Get_polygons(void) {return this->phst_polygons;};
+  int Get_attribute(void) {return this->attribute;}
   
 
   // Data
@@ -36,7 +41,8 @@ public:
   DATA_SOURCE_TYPE source_type;
   Filedata *filedata;
   std::vector<Point> pts;
-  gpc_polygon *polygons;
+  //gpc_polygon *polygons;
+  PHST_polygon phst_polygons;
 
   int attribute;
   struct zone box;

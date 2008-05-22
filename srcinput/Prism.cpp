@@ -5,12 +5,15 @@
 #include <iostream>
 #include <algorithm>
 #include "Utilities.h"
+#include <assert.h>
 std::vector<Prism * > Prism::prism_vector;
 
 Prism::Prism(void)
 {
   this->perimeter_poly = NULL;
   this->prism_dip = Point(0,0,0,0);
+  this->perimeter_datum = 0.0;
+  this->perimeter_option = DEFAULT;
   zone_init(&this->box);
   this->prism_vector.push_back(this);
 }
@@ -31,9 +34,10 @@ bool Prism::read(std::istream &lines)
     "dip",                           /* 1 */
     "top",                           /* 2 */
     "bottom",                        /* 3 */
-    "vector"                         /* 4 */
+    "vector",                        /* 4 */
+    "perimeter_z"                    /* 5 */
   };
-  int count_opt_list = 5; 
+  int count_opt_list = 6; 
   std::vector<std::string> std_opt_list;
   int i;
   for (i = 0; i < count_opt_list; i++) std_opt_list.push_back(opt_list[i]);
@@ -57,6 +61,9 @@ bool Prism::read(std::istream &lines)
     break;
   case 3:
     p_opt = Prism::BOTTOM;
+    break;
+  case 5:
+    p_opt = Prism::PERIMETER_Z;
     break;
   default:
     error_msg("Error reading prism data (perimeter, dip, top, bottom).", EA_CONTINUE);
@@ -117,6 +124,28 @@ bool Prism::read(PRISM_OPTION p_opt, std::istream &lines)
     break;
   case BOTTOM:
     if (!this->bottom.read(lines)) error_msg("Reading bottom of prism", EA_CONTINUE);
+    break;
+  case PERIMETER_Z:
+    {
+      lines >> token;
+      char str[250];
+      strcpy(str,token.c_str());
+      if (isdigit(str[0]))
+      {
+	this->perimeter_option = CONSTANT;
+	sscanf(str,"%lf", &(this->perimeter_datum));
+      } else if (str[0] == 'a')
+      {
+	this->perimeter_option = ATTRIBUTE;
+      } else if (str[0] == 'u')
+      {
+	this->perimeter_option = USE_Z;
+      } else
+      {
+	error_msg("Reading perimeter_z option.", EA_CONTINUE);
+	success = false;
+      }
+    }
     break;
 
   }
@@ -242,6 +271,16 @@ bool Prism::Project_point(Point &p, Cell_Face face, double coord)
   p = p + t * this->prism_dip;
   return(success);
 }
+bool Prism::Project_points(std::vector<Point> &pts, Cell_Face face, double coord)
+{
+  bool success = true;
+  std::vector<Point>::iterator it;
+  for (it = pts.begin(); it != pts.end(); it++)
+  {
+    if (!this->Project_point(*it, face, coord)) success = false;
+  }
+  return(success);
+}
 void tidy_prisms(void)
 {
   std::vector<Prism *>::const_iterator it;
@@ -254,11 +293,37 @@ void tidy_prisms(void)
 
 void Prism::tidy()
 {
-  std::cerr << "Starting top" << std::endl;
   top.tidy();
-  std::cerr << "Starting bottom" << std::endl;
+
   bottom.tidy();
-  std::cerr << "Starting perimeter" << std::endl;
+
   perimeter.tidy();
-  exit(4);
+
+  // Make polygons and fix up z for perimeter
+  assert(this->perimeter.Make_polygons());
+  std::vector<Point>::iterator it;
+  switch (this->perimeter_option) 
+  {
+  case DEFAULT:
+    this->perimeter_datum = grid_zone()->z2;
+  case CONSTANT:
+    {
+      this->perimeter.phst_polygons.set_z(this->perimeter_datum);
+    }
+    break;
+  case ATTRIBUTE:
+    if (this->perimeter.Get_source_type() != Data_source::ARCRASTER)
+    {
+      error_msg("Perimeter_z attribute option can only be used with SHAPE files.", EA_CONTINUE);
+    } else
+    {
+      this->perimeter.phst_polygons.set_z_to_v();
+    }
+    break;
+  case USE_Z:
+    break;
+  }
+  // Project points to top of grid
+  this->Project_points(this->perimeter.pts, CF_Z, grid_zone()->z2); 
+  this->perimeter_datum = grid_zone()->z2;
 }

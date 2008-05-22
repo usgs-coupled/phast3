@@ -262,8 +262,10 @@ bool Wedge::Point_in_polyhedron(Point &t)
   }
 
   // Check if point is in triangle (first 3 point of vertices)
-  return (test_pt.point_in_polygon(this->vertices.begin(), this->vertices.begin() + 3));
-
+  //return (test_pt.Point_in_polygon(this->vertices.begin(), this->vertices.begin() + 3));
+  std::vector<Point> v = this->vertices;
+  v.erase(v.begin() + 3, v.end());
+  return test_pt.Point_in_polygon(v);
 }
 
 void Wedge::Points_in_polyhedron(std::list<int> & list_of_numbers, std::vector<Point> &node_xyz)
