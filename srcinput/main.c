@@ -464,6 +464,7 @@ int clean_up(void)
 	free_check_null(database_name);	
 
 	FileMap.clear();
+	Clear_file_data_map();
 
 /* files */
 	if (input != NULL) fclose (input);

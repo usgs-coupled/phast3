@@ -316,6 +316,14 @@ void Prism::tidy()
   bottom.tidy();
 
   perimeter.tidy();
+  if (perimeter.source_type == Data_source::NONE)
+  {
+    perimeter.source_type = Data_source::POINTS;
+    perimeter.pts.push_back(Point(grid_zone()->x1, grid_zone()->y1, grid_zone()->z2, grid_zone()->z2));
+    perimeter.pts.push_back(Point(grid_zone()->x2, grid_zone()->y1, grid_zone()->z2, grid_zone()->z2));
+    perimeter.pts.push_back(Point(grid_zone()->x2, grid_zone()->y2, grid_zone()->z2, grid_zone()->z2));
+    perimeter.pts.push_back(Point(grid_zone()->x1, grid_zone()->y2, grid_zone()->z2, grid_zone()->z2));
+  }
 
   // Make polygons and fix up z for perimeter
   assert(this->perimeter.Make_polygons());

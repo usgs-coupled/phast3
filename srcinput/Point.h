@@ -112,6 +112,7 @@ public:
   bool point_in_gpc_polygon(gpc_polygon *poly_ptr);
   bool Point_in_polygon(std::vector<Point> &pts);
 
+
 #ifdef SKIP
   // Required to be in header?
   // 3D point in polygon routine

@@ -265,7 +265,6 @@ bool Point::Point_in_polygon(std::vector<Point> &pts)
   return(false);
 }
 
-
 // constructor
 Segment::Segment(void)
 {

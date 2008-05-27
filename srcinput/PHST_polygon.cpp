@@ -115,11 +115,12 @@ bool PHST_polygon::Line_intersect(Point lp1, Point lp2, std::vector<Point> &inte
   return(false);
 }
 
-bool Line_intersect_simple_polygon(Point lp1, Point lp2, std::vector<Point>::iterator begin, std::vector<Point>::iterator end, std::vector<Point> &intersect_pts)
+bool Line_intersect_simple_polygon(Point lp1, Point lp2, std::vector<Point>::iterator begin, std::vector<Point>::iterator end, std::vector<Point> &intersect)
 {
   // lp1 is assumed to be outside bounding box of the polygon
   //int i, j;
   std::vector<Point>::iterator i_it, j_it, npol_it;
+  std::vector<Point> intersect_pts;
   //int npol = pts.size();
   npol_it = end;
   //j = npol-1;
@@ -129,6 +130,19 @@ bool Line_intersect_simple_polygon(Point lp1, Point lp2, std::vector<Point>::ite
   {
     //line_and_segment_intersection(lp1, lp2, pts[i], pts[j], intersect_pts);
     line_and_segment_intersection(lp1, lp2, *i_it, *j_it, intersect_pts);
+  }
+
+  // Need to check if midpoint of line segments is interior
+  std::vector<Point>::iterator k_it, l_it, n_it;
+  n_it = intersect_pts.end();
+  l_it = n_it - 1;
+  for (k_it = intersect_pts.begin(); k_it != intersect_pts.end(); l_it = k_it++)
+  {
+    Point p = *l_it + 0.5 * (*k_it - *l_it);
+    if (Point_in_simple_polygon(p, begin, end)) {
+      intersect.push_back(*l_it);
+      intersect.push_back(*k_it);
+    }
   }
 
   // Should be an even number of points

@@ -624,6 +624,7 @@ bool line_and_segment_intersection(Point p1, Point p2, Point q1, Point q2, std::
 
   double det = a1*b2 - a2*b1;
   std::vector<Point>::iterator last_it = intersection.end();
+
   if (intersection.size() > 0)
   {
     last_it = last_it - 1;
@@ -639,7 +640,10 @@ bool line_and_segment_intersection(Point p1, Point p2, Point q1, Point q2, std::
       {
 	intersection.push_back(q2);
       }
-      intersection.push_back(q1);
+      if (!(q1 == q2))
+      {
+	intersection.push_back(q1);
+      }
       return(true);
     }
 
@@ -664,6 +668,7 @@ bool line_and_segment_intersection(Point p1, Point p2, Point q1, Point q2, std::
     }
     return(true);
   }
+
   return(false);
 }
 bool line_intersect_polygon(Point lp1, Point lp2, std::vector<Point> pts, std::vector<Point> intersect_pts)
