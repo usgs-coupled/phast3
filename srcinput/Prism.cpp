@@ -35,9 +35,12 @@ bool Prism::Read(std::istream &lines)
     "top",                           /* 2 */
     "bottom",                        /* 3 */
     "vector",                        /* 4 */
-    "perimeter_z"                    /* 5 */
+    "perimeter_z",                   /* 5 */
+    "units_top",                     /* 6 */
+    "units_bottom",                  /* 7 */
+    "units_perimeter"                /* 8 */
   };
-  int count_opt_list = 6; 
+  int count_opt_list = 9; 
   std::vector<std::string> std_opt_list;
   int i;
   for (i = 0; i < count_opt_list; i++) std_opt_list.push_back(opt_list[i]);
@@ -64,6 +67,15 @@ bool Prism::Read(std::istream &lines)
     break;
   case 5:
     p_opt = Prism::PERIMETER_Z;
+    break;
+  case 6:
+    p_opt = Prism::UNITS_TOP;
+    break;
+  case 7:
+    p_opt = Prism::UNITS_BOTTOM;
+    break;
+  case 8:
+    p_opt = Prism::UNITS_PERIMETER;
     break;
   default:
     error_msg("Error reading prism data (perimeter, dip, top, bottom).", EA_CONTINUE);
@@ -147,10 +159,19 @@ bool Prism::Read(PRISM_OPTION p_opt, std::istream &lines)
       }
     }
     break;
-
+  case UNITS_TOP:
+    this->top.Read_units(lines);
+    break;
+  case UNITS_BOTTOM:
+    this->bottom.Read_units(lines);
+    break;
+  case UNITS_PERIMETER:
+    this->perimeter.Read_units(lines);
+    break;
   }
   return (success);
 }
+  
 void Prism::Points_in_polyhedron(std::list<int> & list_of_numbers, std::vector<Point> &point_xyz)
 {
   std::list<int>::iterator it = list_of_numbers.begin();
@@ -351,6 +372,7 @@ void Prism::Tidy()
 
   // Make polygons and fix up z for perimeter
   //assert(this->perimeter.Make_polygons());
+  this->perimeter_datum *= this->perimeter.Get_v_units()->input_to_si;
   if (!this->perimeter.Make_polygons())
   {
     error_msg("Failed to make polygons in Prism::tidy.", EA_STOP);

@@ -80,12 +80,13 @@ ArcRaster::ArcRaster(std::string filename)
   }
   this->pts_map[-1] = temp_pts;
   // Set bounding box
-  this->Set_bounding_box();
+  //this->Set_bounding_box();
 }
 
 ArcRaster::~ArcRaster(void)
 {
 }
+#ifdef SKIP
 void ArcRaster::Set_bounding_box(void)
 {
   
@@ -102,19 +103,21 @@ struct zone *ArcRaster::Get_bounding_box(void)
 {
   return(&this->box);
 }
+#endif
 #ifdef SKIP
 gpc_polygon * ArcRaster::Get_polygons(void)
 {
   return NULL;
 }
 #endif
-bool ArcRaster::Make_points(int field, std::vector<Point> &new_pts)
+bool ArcRaster::Make_points(int field, std::vector<Point> &new_pts, double h_scale, double v_scale)
 {
   std::vector<Point>::iterator it;
   std::vector<Point> &file_pts = this->Get_points(-1);
   for (it = file_pts.begin(); it != file_pts.end(); it++)
   {
-    new_pts.push_back(*it);
+    Point p(it->x()*h_scale, it->y()*h_scale, it->z()*v_scale, it->get_v()*v_scale);
+    new_pts.push_back(p);
   }
   return true; 
 }

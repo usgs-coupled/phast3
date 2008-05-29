@@ -1022,6 +1022,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\unit_impl.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Utilities.h"
 				>
 			</File>

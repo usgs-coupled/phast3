@@ -114,7 +114,7 @@ Value Shape Type
     printf( "There are no fields in this table!\n" );
     exit( 3 );
   }
-  this->Set_bounding_box();
+  //this->Set_bounding_box();
 }
 void Shapefile::Dump(std::ostream &oss)
 {
@@ -468,7 +468,7 @@ bool Shapefile::Get_points(std::vector<Point> &pts, const int field)
   return true;
 }
 #endif
-bool Shapefile::Make_points(const int field, std::vector<Point> &pts)
+bool Shapefile::Make_points(const int field, std::vector<Point> &pts, double h_scale, double v_scale)
 {
   // Point contains a x, y, z + value
 
@@ -553,10 +553,10 @@ bool Shapefile::Make_points(const int field, std::vector<Point> &pts)
       {
 	// add to list
 	Point pt;
-	pt.set_x(psShape->padfX[j]);
-	pt.set_y(psShape->padfY[j]);
-	pt.set_z(psShape->padfZ[j]);
-	pt.set_v(value);
+	pt.set_x(psShape->padfX[j]*h_scale);
+	pt.set_y(psShape->padfY[j]*h_scale);
+	pt.set_z(psShape->padfZ[j]*v_scale);
+	pt.set_v(value*v_scale);
 	//this->pts.push_back(pt);
 	pts.push_back(pt);
 
@@ -729,7 +729,7 @@ bool Shapefile::Get_polygons(std::vector<Point> &pts,
   return(true);
 }
 #endif
-bool Shapefile::Make_polygons( int field, PHST_polygon &polygons)
+bool Shapefile::Make_polygons( int field, PHST_polygon &polygons, double h_scale, double v_scale)
 {
   // Requires field number
   // Requires point vector
@@ -738,7 +738,7 @@ bool Shapefile::Make_polygons( int field, PHST_polygon &polygons)
   // Point contains  x, y, z + value
 
   // Set points
-  this->Make_points(field, polygons.Get_points() );
+  this->Make_points(field, polygons.Get_points(), h_scale, v_scale );
 
 
   std::vector<double> m;  // rough-in in case M values are given in .shp file
@@ -842,6 +842,7 @@ bool Shapefile::Point_in_polygon(const Point p)
   return(false);
 }
 #endif
+#ifdef SKIP
 struct zone *Shapefile::Get_bounding_box(void)
 {
   return (&this->box);
@@ -871,6 +872,7 @@ void Shapefile::Set_bounding_box()
     this->box.y2 = adfMaxBound[1];
     this->box.z2 = adfMaxBound[2];
 }
+#endif
 std::vector<Point> &Shapefile::Get_points(int attribute)
 {
   return this->pts_map.find(attribute)->second;

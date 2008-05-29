@@ -29,12 +29,13 @@ XYZfile::XYZfile(std::string filename)
     i++;
   }
   // Set bounding box
-  this->Set_bounding_box();
+  //this->Set_bounding_box();
 }
 
 XYZfile::~XYZfile(void)
 {
 }
+#ifdef SKIP
 void XYZfile::Set_bounding_box(void)
 {
   
@@ -51,6 +52,7 @@ struct zone *XYZfile::Get_bounding_box(void)
 {
   return(&this->box);
 }
+#endif
 #ifdef SKIP
 gpc_polygon * XYZfile::Get_polygons(void)
 {
@@ -61,19 +63,20 @@ gpc_polygon * XYZfile::Get_polygons(void)
   return (this->polygons);
 }
 #endif
-bool XYZfile::Make_polygons( int field, PHST_polygon &polygons)
+bool XYZfile::Make_polygons( int field, PHST_polygon &polygons, double h_scale, double v_scale)
 {
-  this->Make_points(-1, polygons.Get_points());
+  this->Make_points(-1, polygons.Get_points(), h_scale, v_scale);
   polygons.Get_begin().push_back(this->Get_points(-1).begin());
   polygons.Get_end().push_back(this->Get_points(-1).end());
   return true;
 }
-bool XYZfile::Make_points(int field, std::vector<Point> &pts)
+bool XYZfile::Make_points(int field, std::vector<Point> &pts, double h_scale, double v_scale)
 {
   std::vector<Point>::iterator it;
   for (it = this->Get_points(-1).begin(); it != this->Get_points(-1).end(); it++)
   {
-    pts.push_back(*it);
+    Point p(it->x()*h_scale, it->y()*h_scale, it->z()*v_scale, it->get_v()*v_scale);
+    pts.push_back(p);
   }
   return true; 
 }

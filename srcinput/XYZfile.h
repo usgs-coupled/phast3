@@ -9,13 +9,11 @@ class XYZfile : public Filedata
 public:
   XYZfile(void);
   XYZfile(std::string filename);
-  //bool Set_points(const int field) {return true;}
-  bool Make_points(const int field, std::vector<Point> &pts);
-  std::vector<Point> &Get_points(int attribute);
-  //std::vector<Point> &Get_points() {return this->pts;};
-  bool Make_polygons( int field, PHST_polygon &polygons);
-  void Set_bounding_box(void);
-  struct zone *Get_bounding_box(void);
+  bool                          Make_points(const int field, std::vector<Point> &pts, double h_scale, double v_scale);
+  std::vector<Point> &          Get_points(int attribute);
+  bool                          Make_polygons( int field, PHST_polygon &polygons, double h_scale, double v_scale);
+  //void                          Set_bounding_box(void);
+  //struct zone *                 Get_bounding_box(void);
 public:
   ~XYZfile(void);
 

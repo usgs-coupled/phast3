@@ -21,26 +21,29 @@ public:
   Filedata(void);
 public:
   ~Filedata(void);
-  virtual struct zone *Get_bounding_box() = 0;
-  virtual bool Make_points(const int field, std::vector<Point> &pts) = 0;
-  virtual bool Make_polygons( int field, PHST_polygon &polygons) = 0;
-  virtual std::vector<Point> &Get_points(int attribute) = 0; 
-  void set_file_type(FILE_TYPE ft) {this->file_type = ft;};
-  FILE_TYPE get_file_type(void) {return this->file_type;};
-  std::map<int, NNInterpolator *> &get_nni_map() {return this->nni_map;};
-  std::map<int, std::vector<Point> > &get_pts_map() {return this->pts_map;};
-  friend void Clear_file_data_map(void);
+  //virtual struct zone *                Get_bounding_box() = 0;
+  virtual bool                         Make_points(const int field, std::vector<Point> &pts, double h_scale, double v_scale) = 0;
+  virtual bool                         Make_polygons( int field, PHST_polygon &polygons, double h_scale, double v_scale) = 0;
+  virtual std::vector<Point> &         Get_points(int attribute) = 0; 
+  void                                 Set_file_type(FILE_TYPE ft) {this->file_type = ft;};
+  FILE_TYPE                            Get_file_type(void) {return this->file_type;};
+  std::map<int, NNInterpolator *> &    Get_nni_map() {return this->nni_map;};
+  std::map<int, std::vector<Point> > & Get_pts_map() {return this->pts_map;};
+  friend void                          Clear_file_data_map(void);
 
   // data
   static std::map<std::string,Filedata *> file_data_map;
 
 protected:
   // Data
-  struct zone box;
-  FILE_TYPE file_type;
-  //std::vector<Point> pts;
-  std::map<int, std::vector<Point> > pts_map;
-  std::map<int, NNInterpolator *> nni_map;
+  // Because units may be converted, the Filedata does not have a bounding box
+  // Data_source has the bounding box information 
+
+  FILE_TYPE                            file_type;
+
+  // Units have been converted in pts_map and nni_map
+  std::map<int, std::vector<Point> >   pts_map;
+  std::map<int, NNInterpolator *>      nni_map;
 
 };
 #endif // FILEDATA_H_INCLUDED

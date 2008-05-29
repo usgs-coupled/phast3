@@ -19,7 +19,10 @@ public:
     DIP          = 1,
     TOP          = 2,
     BOTTOM       = 3,
-    PERIMETER_Z  = 4
+    PERIMETER_Z  = 4,
+    UNITS_TOP    = 5,
+    UNITS_BOTTOM = 6,
+    UNITS_PERIMETER = 7
   };
 
   enum PERIMETER_OPTION

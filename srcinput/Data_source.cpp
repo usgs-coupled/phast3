@@ -12,7 +12,7 @@
 
 Data_source::Data_source(void)
 {
-  this->init();
+  this->Init();
   filedata = NULL;
 }
 Data_source::~Data_source(void)
@@ -20,7 +20,7 @@ Data_source::~Data_source(void)
   if (this->nni != NULL) delete this->nni;
   this->pts.clear();
 }
-void Data_source::init()
+void Data_source::Init()
 {
   this->pts.clear();
   this->file_name.clear();
@@ -29,11 +29,13 @@ void Data_source::init()
   this->attribute = -1;
   zone_init(&this->box);
   this->nni = NULL;
+  this->h_units = cunit("m");
+  this->v_units = cunit("m");
 }
 bool Data_source::Read(std::istream &lines)
 {
   bool success = true;
-  this->init();
+  this->Init();
  
   // read information for top, or bottom
   const char *opt_list[] = {
@@ -124,6 +126,25 @@ bool Data_source::Read(std::istream &lines)
   if (success) this->defined = true;
   return(success);
 }
+bool Data_source::Read_units(std::istream &lines)
+{
+  bool success = true;
+
+  std::string std_token;
+  lines >> std_token;
+  if (!this->h_units.set_input(std_token.c_str()))
+  {
+    error_msg("Reading horizontal units for prism top, bottom, or perimeter.", EA_CONTINUE);
+    success = false;
+  }
+  lines >> std_token;
+  if (!this->v_units.set_input(std_token.c_str()))
+  {
+    error_msg("Reading vertical units for prism top, bottom, or perimeter.", EA_CONTINUE);
+    success = false;
+  }
+  return success;
+}
 void Data_source::Tidy(const bool make_nni)
 {
 
@@ -133,12 +154,12 @@ void Data_source::Tidy(const bool make_nni)
     if (Filedata::file_data_map.find(this->file_name) == Filedata::file_data_map.end())
     {
       Shapefile *sf = new Shapefile(this->file_name);
-      sf->set_file_type (Filedata::SHAPE);
+      sf->Set_file_type (Filedata::SHAPE);
       Filedata::file_data_map[this->file_name] = (Filedata *) sf;
     }
     {
       Filedata *f =  Filedata::file_data_map.find(this->file_name)->second;
-      if (f->get_file_type() != Filedata::SHAPE) error_msg("File read as non-shape and shape file?", EA_STOP);
+      if (f->Get_file_type() != Filedata::SHAPE) error_msg("File read as non-shape and shape file?", EA_STOP);
       this->Add_to_file_map (f, make_nni);
     }
     
@@ -148,11 +169,11 @@ void Data_source::Tidy(const bool make_nni)
     {
       ArcRaster *ar = new ArcRaster(this->file_name);
       Filedata::file_data_map[this->file_name] = (Filedata *) ar;
-      ar->set_file_type(Filedata::ARCRASTER);
+      ar->Set_file_type(Filedata::ARCRASTER);
     }
     {
       Filedata *f =  Filedata::file_data_map.find(this->file_name)->second;
-      if (f->get_file_type() != Filedata::ARCRASTER) error_msg("File read as non arcraster and arcraster file?", EA_STOP);
+      if (f->Get_file_type() != Filedata::ARCRASTER) error_msg("File read as non arcraster and arcraster file?", EA_STOP);
       this->Add_to_file_map (f, make_nni);
     }
     break;
@@ -161,24 +182,45 @@ void Data_source::Tidy(const bool make_nni)
     {
       XYZfile *xyz = new XYZfile(this->file_name);
       Filedata::file_data_map[this->file_name] = (Filedata *) xyz;
-      xyz->set_file_type(Filedata::XYZ);
+      xyz->Set_file_type(Filedata::XYZ);
     }
     {
       Filedata *f =  Filedata::file_data_map.find(this->file_name)->second;
-      if (f->get_file_type() != Filedata::XYZ) error_msg("File read as non XYZ and XYZ file?", EA_STOP);
+      if (f->Get_file_type() != Filedata::XYZ) error_msg("File read as non XYZ and XYZ file?", EA_STOP);
       this->Add_to_file_map (f, make_nni);
     }
     break;
   case Data_source::CONSTANT:
+    // convert units
+    {
+      std::vector<Point>::iterator it;
+      for (it = this->pts.begin(); it != this->pts.end(); it++)
+      {
+	it->set_x(it->x()*this->h_units.input_to_si);
+	it->set_y(it->y()*this->h_units.input_to_si);
+	it->set_z(it->z()*this->v_units.input_to_si);
+	it->set_z(it->z()*this->v_units.input_to_si);
+      }
+    }
     break;
   case Data_source::POINTS:
-    this->Set_bounding_box();
+    // convert units
+    {
+      std::vector<Point>::iterator it;
+      for (it = this->pts.begin(); it != this->pts.end(); it++)
+      {
+	it->set_x(it->x()*this->h_units.input_to_si);
+	it->set_y(it->y()*this->h_units.input_to_si);
+	it->set_z(it->z()*this->v_units.input_to_si);
+	it->set_z(it->z()*this->v_units.input_to_si);
+      }
+    }
     if (make_nni) Add_nni_to_data_source();
-
     break;
   case Data_source::NONE:
     break;
   }
+  this->Set_bounding_box();
 }
 std::vector<Point> & Data_source::Get_points()
 {
@@ -207,7 +249,7 @@ bool Data_source::Make_polygons()
   case Data_source::SHAPE:
   case Data_source::XYZ:
     // go to file data and make polygon(s)
-    return(Filedata::file_data_map.find(this->file_name)->second->Make_polygons(this->attribute, this->phst_polygons));
+    return(Filedata::file_data_map.find(this->file_name)->second->Make_polygons(this->attribute, this->phst_polygons, this->h_units.input_to_si, this->v_units.input_to_si));
     break;
 
   case Data_source::POINTS:
@@ -240,23 +282,25 @@ void Data_source::Add_to_file_map (Filedata *f, const bool make_nni)
     corners.push_back(Point(grid_zone()->x2, grid_zone()->y2, grid_zone()->z2, grid_zone()->z2));
     corners.push_back(Point(grid_zone()->x1, grid_zone()->y2, grid_zone()->z2, grid_zone()->z2));
     // nni does not exist for attribute
-    if (f->get_pts_map().size() == 0 || (f->get_nni_map().find(this->attribute) == f->get_nni_map().end()))
+    if (f->Get_pts_map().size() == 0 || (f->Get_nni_map().find(this->attribute) == f->Get_nni_map().end()))
     {
       std::vector<Point> temp_pts;
-      f->Make_points(this->attribute, temp_pts);
+      f->Make_points(this->attribute, temp_pts, this->h_units.input_to_si, this->v_units.input_to_si);
+
       NNInterpolator *nni = new NNInterpolator();
       nni->preprocess(temp_pts, corners);
-      f->get_nni_map()[this->attribute] = nni;
+      f->Get_nni_map()[this->attribute] = nni;
     }
   } else 
   {
     // list of points does not exist for attribute
-    if (f->get_pts_map().size() == 0 || (f->get_pts_map().find(this->attribute) == f->get_pts_map().end()) )
+    if (f->Get_pts_map().size() == 0 || (f->Get_pts_map().find(this->attribute) == f->Get_pts_map().end()) )
     {
       std::vector<Point> temp_pts; 
-      f->Make_points(this->attribute, temp_pts);
+      f->Make_points(this->attribute, temp_pts, this->h_units.input_to_si, this->v_units.input_to_si);
+
       //std::vector<Point> pts = new std::vector<Point>(temp_pts);
-      f->get_pts_map()[this->attribute] = temp_pts;
+      f->Get_pts_map()[this->attribute] = temp_pts;
     }
   }
 }
@@ -269,30 +313,24 @@ void Data_source::Add_nni_to_data_source (void)
   corners.push_back(Point(grid_zone()->x1, grid_zone()->y2, grid_zone()->z2, grid_zone()->z2));
 
   // make nni
-  std::vector<Point> temp_pts;
   this->nni = new NNInterpolator();
   this->nni->preprocess(this->Get_points(), corners);
 }
 struct zone *Data_source::Get_bounding_box()
 {
-  switch (this->source_type)
-  {
-  case Data_source::SHAPE:
-  case Data_source::ARCRASTER:
-  case Data_source::XYZ:
-    // go to file data and make polygon(s)
-    return(Filedata::file_data_map.find(this->file_name)->second->Get_bounding_box());
-    break;
-
-  case Data_source::CONSTANT:
-  case Data_source::POINTS:
-  default:
-    break;
-  }
   return(&this->box);
 }
 void Data_source::Set_bounding_box(void)
 {
+  Point min(this->Get_points().begin(), this->Get_points().end(), Point::MIN); 
+  Point max(this->Get_points().begin(), this->Get_points().end(), Point::MAX); 
+  this->box.x1 = min.x();
+  this->box.y1 = min.y();
+  this->box.z1 = min.z();
+  this->box.x2 = max.x();
+  this->box.y2 = max.y();
+  this->box.z2 = max.z();
+#ifdef SKIP
   Point min(this->pts.begin(), this->pts.end(), Point::MIN); 
   Point max(this->pts.begin(), this->pts.end(), Point::MAX); 
   this->box.x1 = min.x();
@@ -301,6 +339,7 @@ void Data_source::Set_bounding_box(void)
   this->box.x2 = max.x();
   this->box.y2 = max.y();
   this->box.z2 = max.z();
+#endif
 }
 double Data_source::Interpolate(Point p)
 {
@@ -312,7 +351,7 @@ double Data_source::Interpolate(Point p)
     {
       // go to file data and make polygon(s)
       Filedata *f = Filedata::file_data_map.find(this->file_name)->second;
-      NNInterpolator *nni = f->get_nni_map().find(this->attribute)->second;
+      NNInterpolator *nni = f->Get_nni_map().find(this->attribute)->second;
       return (nni->interpolate(p));
     }
     break;
