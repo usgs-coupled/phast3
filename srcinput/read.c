@@ -1243,7 +1243,7 @@ int read_media(void)
     "vertical_dispersivity",       /* 31 */
     "dispersivity_vertical",       /* 32 */
     "alpha_vertical",              /* 33 */
-    "wedge"                        /* 34 */
+    "wedge",                       /* 34 */
     "prism",                            /* 35 */
     "vector",                           /* 36 */
     "perimeter",                        /* 37 */
@@ -1588,16 +1588,6 @@ int read_media(void)
       opt = next_keyword_or_option(opt_list, count_opt_list);
       break;
     case 35: 	      /* prism */
- 
-      {
-	Wedge *w_ptr = dynamic_cast<Wedge *> (grid_elt_ptr->polyh);
-	if (grid_elt_ptr->polyh == NULL || w_ptr->orientation == Wedge::WEDGE_ERROR) {
-	  input_error++;
-	  sprintf(error_string,"Reading wedge %s", tag);
-	  error_msg(error_string, CONTINUE);
-	}
-      }
-      opt = next_keyword_or_option(opt_list, count_opt_list);
       {
 	/*
 	*   Allocate space for grid_elt, read wedge data
@@ -1627,7 +1617,7 @@ int read_media(void)
 	if (grid_elt_ptr == NULL || 
 	  grid_elt_ptr->polyh == NULL || 
 	  prism_ptr == NULL ||
-	  !prism_ptr->read(lines))
+	  !prism_ptr->Read(lines))
 	{
 	  input_error++;
 	  sprintf(error_string,"Reading prism %s", tag);
@@ -1979,7 +1969,7 @@ int read_head_ic(void)
 	if (head_ic_ptr == NULL || 
 	  head_ic_ptr->polyh == NULL || 
 	  prism_ptr == NULL ||
-	  !prism_ptr->read(lines))
+	  !prism_ptr->Read(lines))
 	{
 	  input_error++;
 	  sprintf(error_string,"Reading prism %s", tag);
@@ -2346,7 +2336,7 @@ int read_chemistry_ic(void)
 	if (chem_ic_ptr == NULL || 
 	  chem_ic_ptr->polyh == NULL || 
 	  prism_ptr == NULL ||
-	  !prism_ptr->read(lines))
+	  !prism_ptr->Read(lines))
 	{
 	  input_error++;
 	  sprintf(error_string,"Reading prism %s", tag);
@@ -2954,7 +2944,7 @@ int read_specified_value_bc(void)
 	if (bc_ptr == NULL || 
 	  bc_ptr->polyh == NULL || 
 	  prism_ptr == NULL ||
-	  !prism_ptr->read(lines))
+	  !prism_ptr->Read(lines))
 	{
 	  input_error++;
 	  sprintf(error_string,"Reading prism %s", tag);
@@ -3265,7 +3255,7 @@ int read_flux_bc(void)
 	if (bc_ptr == NULL || 
 	  bc_ptr->polyh == NULL || 
 	  prism_ptr == NULL ||
-	  !prism_ptr->read(lines))
+	  !prism_ptr->Read(lines))
 	{
 	  input_error++;
 	  sprintf(error_string,"Reading prism %s", tag);
@@ -3607,7 +3597,7 @@ int read_leaky_bc(void)
 	if (bc_ptr == NULL || 
 	  bc_ptr->polyh == NULL || 
 	  prism_ptr == NULL ||
-	  !prism_ptr->read(lines))
+	  !prism_ptr->Read(lines))
 	{
 	  input_error++;
 	  sprintf(error_string,"Reading prism %s", tag);
@@ -6692,7 +6682,7 @@ int read_print_locations(void)
 	if (print_zones_ptr == NULL || 
 	  print_zones_ptr->polyh == NULL || 
 	  prism_ptr == NULL ||
-	  !prism_ptr->read(lines))
+	  !prism_ptr->Read(lines))
 	{
 	  input_error++;
 	  sprintf(error_string,"Reading prism %s", tag);

@@ -25,7 +25,7 @@ XYZfile::XYZfile(std::string filename)
   double *coord = p.get_coord();
   while (input >> coord[i%3])
   {
-    if (i%3 == 2) this->pts.push_back(p);
+    if (i%3 == 2) this->Get_points(-1).push_back(p);
     i++;
   }
   // Set bounding box
@@ -38,8 +38,8 @@ XYZfile::~XYZfile(void)
 void XYZfile::Set_bounding_box(void)
 {
   
-  Point min(this->pts.begin(), this->pts.end(), Point::MIN); 
-  Point max(this->pts.begin(), this->pts.end(), Point::MAX); 
+  Point min(this->Get_points(-1).begin(), this->Get_points(-1).end(), Point::MIN); 
+  Point max(this->Get_points(-1).begin(), this->Get_points(-1).end(), Point::MAX); 
   this->box.x1 = min.x();
   this->box.y1 = min.y();
   this->box.z1 = min.z();
@@ -47,7 +47,7 @@ void XYZfile::Set_bounding_box(void)
   this->box.y2 = max.y();
   this->box.z2 = max.z();
 }
-struct zone *XYZfile::Bounding_box(void)
+struct zone *XYZfile::Get_bounding_box(void)
 {
   return(&this->box);
 }
@@ -63,17 +63,21 @@ gpc_polygon * XYZfile::Get_polygons(void)
 #endif
 bool XYZfile::Make_polygons( int field, PHST_polygon &polygons)
 {
-  this->Make_points(-1, polygons.pts);
-  polygons.begin.push_back(this->pts.begin());
-  polygons.end.push_back(this->pts.end());
+  this->Make_points(-1, polygons.Get_points());
+  polygons.Get_begin().push_back(this->Get_points(-1).begin());
+  polygons.Get_end().push_back(this->Get_points(-1).end());
   return true;
 }
 bool XYZfile::Make_points(int field, std::vector<Point> &pts)
 {
   std::vector<Point>::iterator it;
-  for (it = this->pts.begin(); it != this->pts.end(); it++)
+  for (it = this->Get_points(-1).begin(); it != this->Get_points(-1).end(); it++)
   {
     pts.push_back(*it);
   }
   return true; 
+}
+std::vector<Point> &XYZfile::Get_points(int attribute)
+{
+    return this->pts_map.begin()->second;
 }

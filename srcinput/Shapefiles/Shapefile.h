@@ -8,7 +8,7 @@
 class Point;
 #include "../gpc.h"
 
-class Shapefile : Filedata
+class Shapefile : public Filedata
 {
 public:
   Shapefile(void);
@@ -16,9 +16,10 @@ public:
   void Dump(std::ostream &oss);
   //bool Set_points(const int field);
   bool Make_points(const int field, std::vector<Point> &pts);
+  std::vector<Point> &Shapefile::Get_points(int attribute);
   bool Shapefile::Make_polygons( int field, PHST_polygon &polygons);
   bool Point_in_polygon(const Point p);
-  struct zone *Bounding_box(void);
+  struct zone *Get_bounding_box(void);
   void Set_bounding_box();
   // destructor
   ~Shapefile(void);

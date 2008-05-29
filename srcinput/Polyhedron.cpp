@@ -10,7 +10,7 @@ Polyhedron::~Polyhedron(void)
 
 bool Polyhedron::Point_in_bounding_box(const Point &s)
 {
-  struct zone *zo = this->Get_box();
+  struct zone *zo = this->Get_bounding_box();
   Point t = s;
   if (
     t.x() >= zo->x1 && t.x() <= zo->x2 &&

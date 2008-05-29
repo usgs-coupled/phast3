@@ -31,7 +31,7 @@ public:
   //virtual gpc_polygon *Face_polygon(Cell_Face face) = 0;
   virtual gpc_polygon * Slice(Cell_Face face, double coord) = 0;
 
-  struct zone *Get_box() {return &(this->box);}
+  struct zone *Get_bounding_box() {return &(this->box);}
   bool Point_in_bounding_box(const Point &pt);
   enum POLYHEDRON_TYPE get_type(void)const;
 
@@ -39,7 +39,7 @@ public:
 
 protected:
   // Methods
-  virtual struct zone *Bounding_box() = 0;
+  virtual struct zone *Set_bounding_box() = 0;
 
   // Data
   std::vector<Point> p;

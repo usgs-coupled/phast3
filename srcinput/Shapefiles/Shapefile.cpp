@@ -738,7 +738,7 @@ bool Shapefile::Make_polygons( int field, PHST_polygon &polygons)
   // Point contains  x, y, z + value
 
   // Set points
-  this->Make_points(field, polygons.pts );
+  this->Make_points(field, polygons.Get_points() );
 
 
   std::vector<double> m;  // rough-in in case M values are given in .shp file
@@ -760,10 +760,10 @@ bool Shapefile::Make_polygons( int field, PHST_polygon &polygons)
     error_msg(estring.str().c_str(), EA_STOP);
   }
 
-  std::vector<Point>::iterator it = polygons.pts.begin();
+  std::vector<Point>::iterator it = polygons.Get_points().begin();
   for( i = 0; i < nEntities; i++ )
   {
-    polygons.begin.push_back(it);
+    polygons.Get_begin().push_back(it);
     
     SHPObject	*psShape;
     psShape = this->objects[i];
@@ -773,7 +773,7 @@ bool Shapefile::Make_polygons( int field, PHST_polygon &polygons)
     {
       it++;
     }
-    polygons.end.push_back(it);
+    polygons.Get_end().push_back(it);
   }
   return true;
 }
@@ -842,7 +842,7 @@ bool Shapefile::Point_in_polygon(const Point p)
   return(false);
 }
 #endif
-struct zone *Shapefile::Bounding_box(void)
+struct zone *Shapefile::Get_bounding_box(void)
 {
   return (&this->box);
 }
@@ -870,4 +870,8 @@ void Shapefile::Set_bounding_box()
     this->box.x2 = adfMaxBound[0];
     this->box.y2 = adfMaxBound[1];
     this->box.z2 = adfMaxBound[2];
+}
+std::vector<Point> &Shapefile::Get_points(int attribute)
+{
+  return this->pts_map.find(attribute)->second;
 }

@@ -57,6 +57,7 @@ ArcRaster::ArcRaster(std::string filename)
     error_msg(estring.str().c_str(), EA_STOP);
   }
 
+  std::vector<Point> temp_pts;
   double value, xpos, ypos;
   int i, j;
   for (i = 0; i < nrows; i++)
@@ -72,10 +73,12 @@ ArcRaster::ArcRaster(std::string filename)
       xpos = this->xllcorner + (double (j) + 0.5) * this->cellsize;
       if (value != this->nodata_value)
       {
-	this->pts.push_back(Point(xpos, ypos, value, value)); 
+	//this->Get_points(-1).push_back(Point(xpos, ypos, value, value)); 
+	temp_pts.push_back(Point(xpos, ypos, value, value));
       }
     }
   }
+  this->pts_map[-1] = temp_pts;
   // Set bounding box
   this->Set_bounding_box();
 }
@@ -86,8 +89,8 @@ ArcRaster::~ArcRaster(void)
 void ArcRaster::Set_bounding_box(void)
 {
   
-  Point min(this->pts.begin(), this->pts.end(), Point::MIN); 
-  Point max(this->pts.begin(), this->pts.end(), Point::MAX); 
+  Point min(this->Get_points(-1).begin(), this->Get_points(-1).end(), Point::MIN); 
+  Point max(this->Get_points(-1).begin(), this->Get_points(-1).end(), Point::MAX); 
   this->box.x1 = min.x();
   this->box.y1 = min.y();
   this->box.z1 = min.z();
@@ -95,7 +98,7 @@ void ArcRaster::Set_bounding_box(void)
   this->box.y2 = max.y();
   this->box.z2 = max.z();
 }
-struct zone *ArcRaster::Bounding_box(void)
+struct zone *ArcRaster::Get_bounding_box(void)
 {
   return(&this->box);
 }
@@ -108,9 +111,14 @@ gpc_polygon * ArcRaster::Get_polygons(void)
 bool ArcRaster::Make_points(int field, std::vector<Point> &new_pts)
 {
   std::vector<Point>::iterator it;
-  for (it = this->pts.begin(); it != this->pts.end(); it++)
+  std::vector<Point> &file_pts = this->Get_points(-1);
+  for (it = file_pts.begin(); it != file_pts.end(); it++)
   {
-    //new_pts.push_back(*it);
+    new_pts.push_back(*it);
   }
   return true; 
+}
+std::vector<Point> &ArcRaster::Get_points(int attribute)
+{
+  return this->pts_map.begin()->second;
 }

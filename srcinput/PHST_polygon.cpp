@@ -1,6 +1,6 @@
 #include "PHST_polygon.h"
 #include "message.h"
-
+#include <iostream>
 PHST_polygon::PHST_polygon(void)
 {
 }
@@ -73,9 +73,10 @@ bool Point_in_simple_polygon(Point p, std::vector<Point>::iterator begin, std::v
       (x < (xpj - xpi) * (y - ypi) / (ypj - ypi) + xpi))
       in = !in;
   }
-  if (in) return(true);
-
-
+  if (in) 
+  {
+    return(true);
+  }
   // Also check if point is on an edge
   double z = 0.0, z1 = 0.0, z2 = 0.0;
 

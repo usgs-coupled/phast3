@@ -25,7 +25,6 @@ public:
   virtual ~Cube(void);
 
   // methods
-  struct zone *Bounding_box();
   bool Point_in_polyhedron(Point &t);
   void Points_in_polyhedron(std::list<int> & list, std::vector<Point> &point_coord);
   //gpc_polygon *Face_polygon(Cell_Face face);
@@ -33,6 +32,7 @@ public:
   virtual Cube* clone() const;
   virtual Cube* create() const;
   bool Segment_in_cube(Point &p1, Point &p2, Point &i1, Point &i2, double &length, Cube::CUBE_INTERSECTION &c_intersection);
+  struct zone * Set_bounding_box();
 
 protected:
 	virtual void printOn(std::ostream& os) const;

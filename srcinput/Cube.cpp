@@ -20,7 +20,7 @@ Cube::Cube(void)
   this->p.push_back(Point(1.0, 1.0, 1.0));
 
   // Set bounding box
-  this->Bounding_box();
+  this->Set_bounding_box();
 
 }
 Cube::Cube(const struct zone *zone_ptr)
@@ -39,7 +39,7 @@ Cube::Cube(const struct zone *zone_ptr)
   this->p.push_back(mx);
 
   // Set bounding box
-  this->Bounding_box();
+  this->Set_bounding_box();
 }
 
 // Destructor
@@ -48,7 +48,7 @@ Cube::~Cube(void)
 }
 
 // Set bounding box
-struct zone * Cube::Bounding_box()
+struct zone * Cube::Set_bounding_box()
 {
   assert(this->p.size() == 2);
   this->box.x1 = this->p[0].x();
@@ -111,7 +111,7 @@ gpc_polygon * Cube::Slice(Cell_Face face, double coord)
 {
   // Generates a new gpc_polygon
   gpc_polygon *poly_ptr;
-  struct zone *zone_ptr = this->Get_box();
+  struct zone *zone_ptr = this->Get_bounding_box();
 
   switch (face)
   {
@@ -176,7 +176,7 @@ bool Cube::Segment_in_cube(Point &p1, Point &p2, Point &i1, Point &i2, double &l
   //         type is interior, surface, or edge
   length = 0;
 
-  struct zone *zo = this->Bounding_box();
+  struct zone *zo = this->Get_bounding_box();
 
   // Points in cube?
   bool in1 = this->Point_in_bounding_box(p1);

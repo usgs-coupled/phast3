@@ -20,7 +20,7 @@ int accumulate(void)
 {
   if (simulation == 0) {
     setup_grid();
-    tidy_prisms();
+    Tidy_prisms();
     if (tidy_rivers() == OK) {
       if (build_rivers() == OK) {
 	setup_rivers();
@@ -520,7 +520,7 @@ int setup_head_ic(void)
       } 
       else
       {
-	struct zone *zone_ptr = head_ic[i]->polyh->Get_box();
+	struct zone *zone_ptr = head_ic[i]->polyh->Get_bounding_box();
 	range_ptr = zone_to_range(zone_ptr);
 	std::list<int> list_of_cells;
 	range_to_list(range_ptr, list_of_cells);
@@ -670,7 +670,7 @@ int setup_print_locations(struct print_zones_struct *print_zones_struct_ptr, siz
     }
     else
     {
-      struct zone *zone_ptr = print_zones_struct_ptr->print_zones[i].polyh->Get_box();
+      struct zone *zone_ptr = print_zones_struct_ptr->print_zones[i].polyh->Get_bounding_box();
       range_ptr = zone_to_range(zone_ptr);
       if (range_ptr == NULL) {
 	input_error++;
@@ -1115,7 +1115,7 @@ int setup_chem_ic(void)
     }
     else
     {
-      struct zone *zone_ptr = chem_ic[i]->polyh->Get_box();
+      struct zone *zone_ptr = chem_ic[i]->polyh->Get_bounding_box();
       range_ptr = zone_to_range(zone_ptr);
       if (range_ptr == NULL) {
 	input_error++;
@@ -1303,7 +1303,7 @@ int setup_bc(void)
     else
     {
       std::list<int> list_of_cells;
-      struct zone *zone_ptr = bc[i]->polyh->Get_box();
+      struct zone *zone_ptr = bc[i]->polyh->Get_bounding_box();
 
       if (bc[i]->bc_type == BC_info::BC_SPECIFIED)
       {
@@ -1528,7 +1528,7 @@ int setup_media(void)
     }
     else
     {
-      struct zone *zone_ptr = grid_elt_zones[i]->polyh->Get_box();
+      struct zone *zone_ptr = grid_elt_zones[i]->polyh->Get_bounding_box();
       range_ptr = zone_to_elt_range(zone_ptr);
       if (range_ptr == NULL) {
 	input_error++;
@@ -1539,7 +1539,7 @@ int setup_media(void)
       std::list<int> list_of_cells;
       range_to_list(range_ptr, list_of_cells);
       free_check_null(range_ptr);
-	  range_ptr = NULL;
+      range_ptr = NULL;
       grid_elt_zones[i]->polyh->Points_in_polyhedron(list_of_cells, *element_xyz);
 
       if (list_of_cells.size() == 0) {

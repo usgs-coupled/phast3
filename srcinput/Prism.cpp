@@ -26,7 +26,7 @@ Prism::~Prism(void)
   }
   free_check_null(this->perimeter_poly);
 }
-bool Prism::read(std::istream &lines)
+bool Prism::Read(std::istream &lines)
 {
     // read information for top, or bottom
   const char *opt_list[] = {
@@ -69,9 +69,9 @@ bool Prism::read(std::istream &lines)
     error_msg("Error reading prism data (perimeter, dip, top, bottom).", EA_CONTINUE);
     return(false);
   }
-  return(this->read(p_opt, lines));
+  return(this->Read(p_opt, lines));
 }
-bool Prism::read(PRISM_OPTION p_opt, std::istream &lines)
+bool Prism::Read(PRISM_OPTION p_opt, std::istream &lines)
 {
   std::string token;
   // identifier
@@ -107,23 +107,23 @@ bool Prism::read(PRISM_OPTION p_opt, std::istream &lines)
     }
     break;
   case PERIMETER:
-    if (!this->perimeter.read(lines)) 
+    if (!this->perimeter.Read(lines)) 
     {
       error_msg("Reading perimeter of prism", EA_CONTINUE);
-    } else if (this->perimeter.source_type != Data_source::POINTS &&
-      this->perimeter.source_type != Data_source::SHAPE)
+    } else if (this->perimeter.Get_source_type() != Data_source::POINTS &&
+      this->perimeter.Get_source_type() != Data_source::SHAPE)
     {
       error_msg("Perimeter must be either points or a shape file", EA_CONTINUE);
-    } else if (this->perimeter.source_type == Data_source::POINTS && this->perimeter.pts.size() < 3)
+    } else if (this->perimeter.Get_source_type() == Data_source::POINTS && this->perimeter.Get_points().size() < 3)
     {
       error_msg("Perimeter must be defined by at least 3 points.", EA_CONTINUE);
     }
     break;
   case TOP:
-    if (!this->top.read(lines)) error_msg("Reading top of prism", EA_CONTINUE);
+    if (!this->top.Read(lines)) error_msg("Reading top of prism", EA_CONTINUE);
     break;
   case BOTTOM:
-    if (!this->bottom.read(lines)) error_msg("Reading bottom of prism", EA_CONTINUE);
+    if (!this->bottom.Read(lines)) error_msg("Reading bottom of prism", EA_CONTINUE);
     break;
   case PERIMETER_Z:
     {
@@ -170,8 +170,33 @@ void Prism::Points_in_polyhedron(std::list<int> & list_of_numbers, std::vector<P
 bool Prism::Point_in_polyhedron(const Point p)
 {
   Point p1 = p;
+
+  // Check bounding box of prism
+  if (!this->Point_in_bounding_box(p1)) return false;
+
+  // Check top
+  if (this->top.Get_defined())
+  {
+    double t = this->top.Interpolate(p1);
+    if (p1.z() > t)
+    {
+      return false;
+    }
+  }
+
+  // Check bottom
+  if (this->bottom.Get_defined())
+  {
+    double b = this->bottom.Interpolate(p1);
+    if (p1.z() < b) 
+    {
+      return false;
+    }
+  }
+
+  // check perimeter
   this->Project_point(p1, CF_Z, grid_zone()->z2);
-  return (this->perimeter.phst_polygons.Point_in_polygon(p1));
+  return (this->perimeter.Get_phst_polygons().Point_in_polygon(p1));
 }
 
 Polyhedron* Prism::clone()const
@@ -214,7 +239,7 @@ gpc_polygon * Prism::Slice(Cell_Face face, double coord)
     // Dip of prism is not parallel to face
     std::vector<Point> project;
     std::vector<Point>::iterator it;
-    for ( it = this->perimeter.pts.begin(); it != this->perimeter.pts.end(); it++)
+    for ( it = this->perimeter.Get_points().begin(); it != this->perimeter.Get_points().end(); it++)
     {
       Point p = *it;
       if (!(this->Project_point(p, face, coord)))
@@ -232,7 +257,7 @@ gpc_polygon * Prism::Slice(Cell_Face face, double coord)
     gpc_polygon *slice = empty_polygon();
     {
       //line_intersect_polygon(lp1, lp2, this->perimeter.pts, intersect_pts);
-      this->perimeter.phst_polygons.Line_intersect(lp1, lp2, intersect_pts);
+      this->perimeter.Get_phst_polygons().Line_intersect(lp1, lp2, intersect_pts);
       int i;
       for (i = 0; i < (int) intersect_pts.size(); i = i + 2)
       {
@@ -265,11 +290,6 @@ gpc_polygon * Prism::Slice(Cell_Face face, double coord)
   return(NULL);
 }
 
-struct zone *Prism::Bounding_box()
-{
-  // TODO
-  return(NULL);
-}
 void Prism::printOn(std::ostream& o) const
 {
   // TODO
@@ -299,34 +319,42 @@ bool Prism::Project_points(std::vector<Point> &pts, Cell_Face face, double coord
   }
   return(success);
 }
-void tidy_prisms(void)
+void Tidy_prisms(void)
 {
   std::vector<Prism *>::const_iterator it;
 
   for (it = Prism::prism_vector.begin(); it != Prism::prism_vector.end(); it++)
   {
-   (*it)->tidy();
+   (*it)->Tidy();
   }
 }
 
-void Prism::tidy()
+void Prism::Tidy()
 {
-  top.tidy();
+  this->top.Tidy(true);
 
-  bottom.tidy();
+  this->bottom.Tidy(true);
 
-  perimeter.tidy();
-  if (perimeter.source_type == Data_source::NONE)
+  this->perimeter.Tidy(false);
+
+  // set default perimeter
+  if (perimeter.Get_source_type() == Data_source::NONE)
   {
-    perimeter.source_type = Data_source::POINTS;
-    perimeter.pts.push_back(Point(grid_zone()->x1, grid_zone()->y1, grid_zone()->z2, grid_zone()->z2));
-    perimeter.pts.push_back(Point(grid_zone()->x2, grid_zone()->y1, grid_zone()->z2, grid_zone()->z2));
-    perimeter.pts.push_back(Point(grid_zone()->x2, grid_zone()->y2, grid_zone()->z2, grid_zone()->z2));
-    perimeter.pts.push_back(Point(grid_zone()->x1, grid_zone()->y2, grid_zone()->z2, grid_zone()->z2));
+    this->perimeter.Set_defined (true);
+    this->perimeter.Set_source_type( Data_source::POINTS );
+    this->perimeter.Get_points().push_back(Point(grid_zone()->x1, grid_zone()->y1, grid_zone()->z2, grid_zone()->z2));
+    this->perimeter.Get_points().push_back(Point(grid_zone()->x2, grid_zone()->y1, grid_zone()->z2, grid_zone()->z2));
+    this->perimeter.Get_points().push_back(Point(grid_zone()->x2, grid_zone()->y2, grid_zone()->z2, grid_zone()->z2));
+    this->perimeter.Get_points().push_back(Point(grid_zone()->x1, grid_zone()->y2, grid_zone()->z2, grid_zone()->z2));
+    this->perimeter.Set_bounding_box();
   }
 
   // Make polygons and fix up z for perimeter
-  assert(this->perimeter.Make_polygons());
+  //assert(this->perimeter.Make_polygons());
+  if (!this->perimeter.Make_polygons())
+  {
+    error_msg("Failed to make polygons in Prism::tidy.", EA_STOP);
+  };
   std::vector<Point>::iterator it;
   switch (this->perimeter_option) 
   {
@@ -334,7 +362,7 @@ void Prism::tidy()
     this->perimeter_datum = grid_zone()->z2;
   case CONSTANT:
     {
-      this->perimeter.phst_polygons.set_z(this->perimeter_datum);
+      this->perimeter.Get_phst_polygons().set_z(this->perimeter_datum);
     }
     break;
   case ATTRIBUTE:
@@ -343,45 +371,80 @@ void Prism::tidy()
       error_msg("Perimeter_z attribute option can only be used with SHAPE files.", EA_CONTINUE);
     } else
     {
-      this->perimeter.phst_polygons.set_z_to_v();
+      this->perimeter.Get_phst_polygons().set_z_to_v();
     }
     break;
   case USE_Z:
     break;
   }
   // Project points to top of grid
-  this->Project_points(this->perimeter.pts, CF_Z, grid_zone()->z2); 
+  this->Project_points(this->perimeter.Get_points(), CF_Z, grid_zone()->z2); 
   this->perimeter_datum = grid_zone()->z2;
   // set bounding box
   this->Set_bounding_box();
 
 }
-void Prism::Set_bounding_box(void)
+struct zone * Prism::Set_bounding_box(void)
 {
 
-
   std::vector<Point> m;
-  m.push_back(Point(this->perimeter.phst_polygons.pts.begin(), 
-    this->perimeter.phst_polygons.pts.end(), 
-    Point::MIN));
-  m.push_back(Point(this->perimeter.phst_polygons.pts.begin(), 
-    this->perimeter.phst_polygons.pts.end(), 
-    Point::MAX));
+  if (this->perimeter.Get_defined())
+  {
+    m.push_back(Point(this->perimeter.Get_bounding_box()->x1, 
+      this->perimeter.Get_bounding_box()->y1, 
+      grid_zone()->z1));
+    m.push_back(Point(this->perimeter.Get_bounding_box()->x2, 
+      this->perimeter.Get_bounding_box()->y2, 
+      grid_zone()->z2));
+  } else 
+  {
+    error_msg("Perimeter not defined in Prism::Set_bounding_box", EA_STOP);
+  }
+  
+  //m.push_back(Point(this->perimeter.Get_phst_polygons().Get_points().begin(), 
+  //  this->perimeter.Get_phst_polygons().Get_points().end(), 
+  //  Point::MIN));
+  //m.push_back(Point(this->perimeter.Get_phst_polygons().Get_points().begin(), 
+  //  this->perimeter.Get_phst_polygons().Get_points().end(), 
+  //  Point::MAX));
 
-  std::vector<Point> b = this->perimeter.phst_polygons.pts; 
-  this->Project_points(b, CF_Z, grid_zone()->z1);
-  m.push_back(Point(b.begin(), b.end(), Point::MIN));
-  m.push_back(Point(b.begin(), b.end(), Point::MAX));
+  //std::vector<Point> b = this->perimeter.Get_phst_polygons().Get_points(); 
+  //this->Project_points(b, CF_Z, grid_zone()->z1);
+  //m.push_back(Point(b.begin(), b.end(), Point::MIN));
+  //m.push_back(Point(b.begin(), b.end(), Point::MAX));
+
+  // project points to bottom
+  std::vector<Point> proj = m;
+  this->Project_points(proj, CF_Z, grid_zone()->z1);
+  m.push_back(Point(proj.begin(), proj.end(), Point::MIN));
+  m.push_back(Point(proj.begin(), proj.end(), Point::MAX));
+
 
   Point min(Point(m.begin(), m.end(), Point::MIN));
   Point max(Point(m.begin(), m.end(), Point::MAX));
 
+  // Check top
+  Point ptop, pbottom;
+  if (this->top.Get_defined())
+  {
+    std::vector<Point> &pts1 = this->top.Get_points();
+    ptop = Point(pts1.begin(), pts1.end(), Point::MAX);
+    if (ptop.z() < max.z()) max.set_z(ptop.z());
+  }
+  // Check bottom
+  if (this->bottom.Get_defined())
+  {
+    std::vector<Point> &pts1 = this->bottom.Get_points();
+    pbottom = Point(pts1.begin(), pts1.end(), Point::MIN);
+    if (pbottom.z() > min.z()) min.set_z(pbottom.z());
+  }
   this->box.x1 = min.x();
   this->box.y1 = min.y();
   this->box.z1 = min.z();
+  
   this->box.x2 = max.x();
   this->box.y2 = max.y();
   this->box.z2 = max.z();
-
-  
+  return (&this->box);
+ 
 }

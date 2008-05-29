@@ -57,7 +57,7 @@ Wedge::Wedge(const struct zone *zone_ptr, std::string &orientation)
   this->p.push_back(mx);
 
   // set bounding box
-  this->Bounding_box();
+  this->Set_bounding_box();
 
   // set 8 vertices of cube
   std::vector<Point> v;
@@ -242,7 +242,7 @@ bool Wedge::Point_in_polyhedron(Point &t)
 
   // Project point to front, left, or lower triangular face
   Point test_pt = t;
-  struct zone *zo = this->Get_box();
+  struct zone *zo = this->Get_bounding_box();
   switch (this->wedge_axis)
   {
   case CF_X:
@@ -343,7 +343,7 @@ gpc_polygon * Wedge::Slice(Cell_Face face, double coord)
   // Generates a new gpc_polygon
   gpc_polygon *tri, *rect, *result, *slice;
   tri = rect = result = slice = NULL;
-  struct zone *zone_ptr = this->Get_box();
+  struct zone *zone_ptr = this->Get_bounding_box();
   struct zone slice_zone;
 
   switch (this->wedge_axis)
