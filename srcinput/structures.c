@@ -217,6 +217,9 @@ int cell_init(struct cell *cell_ptr)
 	cell_ptr->alpha_horizontal_defined = FALSE;
 	cell_ptr->alpha_vertical_defined = FALSE;
 
+	/* Info on exterior faces */
+	cell_ptr->exterior = NULL;
+
 	return(OK);
 }
 /* ---------------------------------------------------------------------- */
