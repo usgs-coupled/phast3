@@ -1371,12 +1371,18 @@ int setup_bc(void)
     }
   }
 
+  // Should be able to set the active cells now
+  set_active_cells();
+
   // Tidy boundary conditions
   if (simulation == 0)
   {
     for (i = 0; i < nxyz; i++)
     {
-      process_bc(&cells[i]);
+      if (cells[i].cell_active == TRUE)
+      {
+	process_bc(&cells[i]);
+      }
     }
   }
   /*
@@ -1384,7 +1390,7 @@ int setup_bc(void)
   *  should be allowed
   */
   for (i = 0; i < nxyz; i++) {
-    if (cells[i].specified)
+    if (cells[i].cell_active == TRUE && cells[i].specified)
     {
       std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin();
 

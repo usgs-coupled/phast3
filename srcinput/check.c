@@ -9,7 +9,8 @@ int check_properties(void)
 {
 	char name[MAX_LENGTH];
 
-	set_active_cells();
+	// Set active cells earlier in setup_bc so can skip inactive cells
+	//set_active_cells();
 	check_elements();
 	check_cells();
 	check_dimensions();

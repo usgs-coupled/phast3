@@ -4,7 +4,7 @@
 #include "../message.h"
 #include "../Utilities.h"
 #include "../PHST_polygon.h"
-
+#include <iostream>
 Shapefile::Shapefile(void)
 {
 }
@@ -38,8 +38,11 @@ Shapefile::Shapefile(std::string &fname)
 
   if( hSHP == NULL )
   {
-    printf( "Unable to open:%s\n", shpname.c_str() );
-    exit( 1 );
+    //printf( "Unable to open:%s\n", shpname.c_str() );
+    //exit( 1 );
+    std::ostringstream estring;
+    estring << "Unable to open: " << shpname.c_str() << std::endl;
+    error_msg(estring.str().c_str(), EA_STOP);
   }
 
 /*
@@ -61,8 +64,11 @@ Value Shape Type
 */
     if( hSHP->nShapeType >  10)
   {
-    printf( "Shape type %s not implemented\n", SHPTypeName( hSHP->nShapeType ));
-    exit( 1 );
+    //printf( "Shape type %s not implemented\n", SHPTypeName( hSHP->nShapeType ));
+    //exit( 1 );
+    std::ostringstream estring;
+    estring << "Shape type  " << SHPTypeName( hSHP->nShapeType) << " not implemented." << std::endl;
+    error_msg(estring.str().c_str(), EA_STOP);
   }
 
 
@@ -101,8 +107,11 @@ Value Shape Type
 
   if( hDBF == NULL )
   {
-    printf( "DBFOpen(%s,\"r\") failed.\n", dbfname.c_str() );
-    exit( 2 );
+    //printf( "DBFOpen(%s,\"r\") failed.\n", dbfname.c_str() );
+    //exit( 2 );
+    std::ostringstream estring;
+    estring << "DBFOpen(" << dbfname.c_str() << " failed." << std::endl;
+    error_msg(estring.str().c_str(), EA_STOP);
   }
 
 
@@ -491,6 +500,7 @@ bool Shapefile::Make_points(const int field, std::vector<Point> &pts, double h_s
   int dbf_fields = DBFGetFieldCount(hDBF);
   int dbf_records = DBFGetRecordCount(hDBF);
 
+  //this->Dump(std::cerr);
   if (field >= dbf_fields)
   {
     std::ostringstream estring;
@@ -540,8 +550,7 @@ bool Shapefile::Make_points(const int field, std::vector<Point> &pts, double h_s
 	<< dbf_records << std::endl;
       error_msg(estring.str().c_str(), EA_STOP);
     }
-    double value = 0;
-    if (field >= 0) value = DBFReadDoubleAttribute( hDBF, i, field );
+
 
     // Apply value to all vertices
     for( j = 0; j < psShape->nVertices; j++ )
@@ -551,11 +560,14 @@ bool Shapefile::Make_points(const int field, std::vector<Point> &pts, double h_s
 	psShape->padfY[j] != ylast ||
 	psShape->padfZ[j] != zlast )
       {
+	double value = psShape->padfZ[j];
+	if (field >= 0) value = DBFReadDoubleAttribute( hDBF, i, field );
 	// add to list
 	Point pt;
 	pt.set_x(psShape->padfX[j]*h_scale);
 	pt.set_y(psShape->padfY[j]*h_scale);
-	pt.set_z(psShape->padfZ[j]*v_scale);
+	//pt.set_z(psShape->padfZ[j]*v_scale);
+	pt.set_z(value*v_scale);
 	pt.set_v(value*v_scale);
 	//this->pts.push_back(pt);
 	pts.push_back(pt);
@@ -757,9 +769,9 @@ bool Shapefile::Make_polygons( int field, PHST_polygon &polygons, double h_scale
   if (nShapeType != 5) {
     std::ostringstream estring;
     estring << "Shape file does not have shape type of polygon." <<  std::endl;
-    error_msg(estring.str().c_str(), EA_STOP);
+    //error_msg(estring.str().c_str(), EA_STOP);
+    warning_msg(estring.str().c_str());
   }
-
   std::vector<Point>::iterator it = polygons.Get_points().begin();
   for( i = 0; i < nEntities; i++ )
   {

@@ -165,17 +165,20 @@ void Data_source::Tidy(const bool make_nni)
     
     break;
   case Data_source::ARCRASTER:
+    //fprintf(stderr, "Starting to read raster file\n");
     if (Filedata::file_data_map.find(this->file_name) == Filedata::file_data_map.end())
     {
       ArcRaster *ar = new ArcRaster(this->file_name);
       Filedata::file_data_map[this->file_name] = (Filedata *) ar;
       ar->Set_file_type(Filedata::ARCRASTER);
     }
+    //fprintf(stderr, "Finished read raster file\n");
     {
       Filedata *f =  Filedata::file_data_map.find(this->file_name)->second;
       if (f->Get_file_type() != Filedata::ARCRASTER) error_msg("File read as non arcraster and arcraster file?", EA_STOP);
       this->Add_to_file_map (f, make_nni);
     }
+    //fprintf(stderr, "Build interpolator\n");
     break;
   case Data_source::XYZ:
     if (Filedata::file_data_map.find(this->file_name) == Filedata::file_data_map.end())
@@ -229,6 +232,11 @@ std::vector<Point> & Data_source::Get_points()
   case Data_source::ARCRASTER:
   case Data_source::XYZ:
   case Data_source::SHAPE:
+//    {
+//      std::map<std::string,Filedata *>::iterator it = Filedata::file_data_map.find(this->file_name);
+//      Filedata *f_ptr = it->second;
+//      std::vector<Point> pts = f_ptr->Get_points(this->attribute);
+//    }
     return (Filedata::file_data_map.find(this->file_name)->second->Get_points(this->attribute));
     break;
   default:
@@ -274,6 +282,15 @@ bool Data_source::Make_polygons()
 
 void Data_source::Add_to_file_map (Filedata *f, const bool make_nni)
 {
+  // Store list of points if necessary
+  if (f->Get_pts_map().size() == 0 || (f->Get_pts_map().find(this->attribute) == f->Get_pts_map().end()) )
+  {
+    std::vector<Point> temp_pts; 
+    f->Make_points(this->attribute, temp_pts, this->h_units.input_to_si, this->v_units.input_to_si);
+
+    //std::vector<Point> pts = new std::vector<Point>(temp_pts);
+    f->Get_pts_map()[this->attribute] = temp_pts;
+  }
   if (make_nni)
   {
     std::vector<Point> corners;
@@ -291,7 +308,9 @@ void Data_source::Add_to_file_map (Filedata *f, const bool make_nni)
       nni->preprocess(temp_pts, corners);
       f->Get_nni_map()[this->attribute] = nni;
     }
-  } else 
+  } 
+#ifdef SKIP 
+  else 
   {
     // list of points does not exist for attribute
     if (f->Get_pts_map().size() == 0 || (f->Get_pts_map().find(this->attribute) == f->Get_pts_map().end()) )
@@ -303,6 +322,7 @@ void Data_source::Add_to_file_map (Filedata *f, const bool make_nni)
       f->Get_pts_map()[this->attribute] = temp_pts;
     }
   }
+#endif
 }
 void Data_source::Add_nni_to_data_source (void)
 {
