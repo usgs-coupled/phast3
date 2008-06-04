@@ -16,7 +16,7 @@ public:
   Shapefile(std::string &fname);
 
   // destructor
-  ~Shapefile(void);
+  virtual ~Shapefile(void);
 
   void                               Dump             (std::ostream &oss);
   bool                               Make_points      (const int field, std::vector<Point> &pts, double h_scale, double v_scale);

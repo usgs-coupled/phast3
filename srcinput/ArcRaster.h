@@ -15,7 +15,7 @@ public:
   //void Set_bounding_box(void);
   //struct zone *Get_bounding_box(void);
 public:
-  ~ArcRaster(void);
+  virtual ~ArcRaster(void);
 
 protected:
   // data

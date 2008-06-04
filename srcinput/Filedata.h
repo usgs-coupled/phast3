@@ -20,7 +20,7 @@ public:
 
   Filedata(void);
 public:
-  ~Filedata(void);
+  virtual ~Filedata(void);
   //virtual struct zone *                Get_bounding_box() = 0;
   virtual bool                         Make_points(const int field, std::vector<Point> &pts, double h_scale, double v_scale) = 0;
   virtual bool                         Make_polygons( int field, PHST_polygon &polygons, double h_scale, double v_scale) = 0;

@@ -10,8 +10,8 @@
 			>
 			<DebugSettings
 				Command="$(TargetPath)"
-				WorkingDirectory=""
-				CommandArguments=""
+				WorkingDirectory="C:\Documents and Settings\charlton.GS\Desktop\prism"
+				CommandArguments="capecod"
 				Attach="false"
 				DebuggerType="3"
 				Remote="1"
@@ -22,7 +22,7 @@
 				SQLDebugging=""
 				Environment=""
 				EnvironmentMerge="true"
-				DebuggerFlavor=""
+				DebuggerFlavor="0"
 				MPIRunCommand=""
 				MPIRunArguments=""
 				MPIRunWorkingDirectory=""
@@ -38,8 +38,8 @@
 			>
 			<DebugSettings
 				Command="$(TargetPath)"
-				WorkingDirectory="$(TargetDir)"
-				CommandArguments="minimal"
+				WorkingDirectory="C:\Documents and Settings\charlton.GS\Desktop\prism"
+				CommandArguments="capecod"
 				Attach="false"
 				DebuggerType="3"
 				Remote="1"
