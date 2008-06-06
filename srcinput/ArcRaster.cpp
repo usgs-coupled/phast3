@@ -57,7 +57,9 @@ ArcRaster::ArcRaster(std::string filename)
     error_msg(estring.str().c_str(), EA_STOP);
   }
 
-  std::vector<Point> temp_pts;
+  std::vector<Point>& temp_pts = this->pts_map[-1];
+  temp_pts.reserve(this->nrows*this->ncols);
+  temp_pts.clear();
   double value, xpos, ypos;
   int i, j;
   for (i = 0; i < nrows; i++)
@@ -78,7 +80,7 @@ ArcRaster::ArcRaster(std::string filename)
       }
     }
   }
-  this->pts_map[-1] = temp_pts;
+  temp_pts.resize(temp_pts.size());
   // Set bounding box
   //this->Set_bounding_box();
 }
@@ -112,12 +114,13 @@ gpc_polygon * ArcRaster::Get_polygons(void)
 #endif
 bool ArcRaster::Make_points(int field, std::vector<Point> &new_pts, double h_scale, double v_scale)
 {
+  size_t i;
   std::vector<Point>::iterator it;
   std::vector<Point> &file_pts = this->Get_points(-1);
-  for (it = file_pts.begin(); it != file_pts.end(); it++)
+  new_pts.resize(file_pts.size());
+  for (i = 0, it = file_pts.begin(); it != file_pts.end(); ++i, ++it)
   {
-    Point p(it->x()*h_scale, it->y()*h_scale, it->z()*v_scale, it->get_v()*v_scale);
-    new_pts.push_back(p);
+    new_pts[i] = Point(it->x()*h_scale, it->y()*h_scale, it->z()*v_scale, it->get_v()*v_scale);
   }
   return true; 
 }
