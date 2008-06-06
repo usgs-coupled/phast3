@@ -9,6 +9,7 @@ class Prism :
   
 public:
   Prism(void);
+  Prism(const Prism& c);
 public:
   ~Prism(void);
 

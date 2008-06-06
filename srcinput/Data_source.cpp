@@ -202,7 +202,7 @@ void Data_source::Tidy(const bool make_nni)
 	it->set_x(it->x()*this->h_units.input_to_si);
 	it->set_y(it->y()*this->h_units.input_to_si);
 	it->set_z(it->z()*this->v_units.input_to_si);
-	it->set_z(it->z()*this->v_units.input_to_si);
+	it->set_v(it->get_v()*this->v_units.input_to_si);
       }
     }
     break;
@@ -215,7 +215,7 @@ void Data_source::Tidy(const bool make_nni)
 	it->set_x(it->x()*this->h_units.input_to_si);
 	it->set_y(it->y()*this->h_units.input_to_si);
 	it->set_z(it->z()*this->v_units.input_to_si);
-	it->set_z(it->z()*this->v_units.input_to_si);
+	it->set_v(it->get_v()*this->v_units.input_to_si);
       }
     }
     if (make_nni) Add_nni_to_data_source();

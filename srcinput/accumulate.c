@@ -8,7 +8,7 @@
 #include "Prism.h"
 #include "Exterior_cell.h"
 static char const svnid[] = "$Id$";
-static int setup_grid(void);
+int setup_grid(void);
 static void distribute_flux_bc (int i,std::list<int> &pts, char *tag); 
 static void distribute_leaky_bc (int i,std::list<int> &pts, char *tag); 
 static void distribute_specified_bc (int i,std::list<int> &pts, char *tag); 

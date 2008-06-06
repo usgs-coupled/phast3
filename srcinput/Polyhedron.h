@@ -21,7 +21,8 @@ public:
   enum POLYHEDRON_TYPE
   {
     CUBE         = 0,
-    WEDGE        = 1
+    WEDGE        = 1,
+    PRISM        = 2,
   };
 
   // Methods
@@ -40,12 +41,12 @@ public:
 protected:
   // Methods
   virtual struct zone *Set_bounding_box() = 0;
+  virtual void printOn(std::ostream& o) const = 0;
 
   // Data
   std::vector<Point> p;
   enum POLYHEDRON_TYPE type;
   struct zone box;
-  virtual void printOn(std::ostream& o) const = 0;
 };
 
 inline std::ostream& operator<< (std::ostream& o, const Polyhedron& p)

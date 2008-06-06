@@ -10,16 +10,45 @@ std::vector<Prism * > Prism::prism_vector;
 
 Prism::Prism(void)
 {
+  this->type = PRISM;
+
   this->perimeter_poly = NULL;
   this->prism_dip = Point(0,0,1,0);
   this->perimeter_datum = 0.0;
   this->perimeter_option = DEFAULT;
   zone_init(&this->box);
-  this->prism_vector.push_back(this);
+  Prism::prism_vector.push_back(this);
 }
-
+Prism::Prism(const Prism& c)
+:Polyhedron(c)
+,perimeter(c.perimeter)
+,prism_dip(c.prism_dip)
+,perimeter_datum(c.perimeter_datum)
+,perimeter_option(c.perimeter_option)
+,bottom(c.bottom)
+,top(c.top)
+{
+  if (c.perimeter_poly)
+  {
+    this->perimeter_poly = gpc_polygon_duplicate(c.perimeter_poly);
+  }
+  else
+  {
+    this->perimeter_poly = NULL;
+  }
+  Prism::prism_vector.push_back(this);
+}
 Prism::~Prism(void)
 {
+  // remove from prism_vector
+  std::vector<Prism*>::iterator it = Prism::prism_vector.begin();
+  for(; it != Prism::prism_vector.end(); ++it)
+  {
+    if (*it == this) break;
+  }
+  assert(it != Prism::prism_vector.end()); // should be found
+  if (it != Prism::prism_vector.end()) this->prism_vector.erase(it);
+
   if (this->perimeter_poly != NULL)
   {
     gpc_free_polygon(this->perimeter_poly);
