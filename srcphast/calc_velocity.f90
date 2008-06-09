@@ -111,7 +111,7 @@ SUBROUTINE calc_velocity
            DO ls=flux_seg_index(l)%seg_first,flux_seg_index(l)%seg_last
               ufrac = 1._kdp
               IF(ifacefbc(ls) < 3) ufrac = frac(mbc)
-              IF(fresur .AND. ifacefbc(ls) == 3 .AND. m >= mtp1) THEN
+              IF(fresur .AND. ifacefbc(ls) == 3 .AND. frac(mbc) <= 0._kdp) THEN
                  ! ... Redirect the flux to the free-surface cell
                  l1 = MOD(mbc,nxy)
                  IF(l1 == 0) l1 = nxy

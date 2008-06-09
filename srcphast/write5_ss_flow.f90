@@ -393,7 +393,7 @@ SUBROUTINE write5_ss_flow
            m = flux_seg_index(lc)%m
            IF(fresur) THEN
               ls = flux_seg_index(lc)%seg_first
-              IF(ifacefbc(ls) == 3 .AND. m >= mtp1) THEN
+              IF(ifacefbc(ls) == 3 .AND. frac(m) <= 0._kdp) THEN
                  l1 = MOD(m,nxy)
                  IF(l1 == 0) l1 = nxy
                  m = mfsbc(l1)

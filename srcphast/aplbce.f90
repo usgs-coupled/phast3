@@ -45,35 +45,35 @@ SUBROUTINE aplbce
      DO ls=flux_seg_index(lc)%seg_first,flux_seg_index(lc)%seg_last
         ufrac = 1._kdp
         IF(ifacefbc(ls) < 3) ufrac = frac(m)  
-        IF(fresur .AND. ifacefbc(ls) == 3 .AND. m >= mtp1) THEN
+        IF(fresur .AND. ifacefbc(ls) == 3 .AND. frac(m) <= 0._kdp) THEN
            ! ... Redirect the flux to the free-surface cell
            l1 = MOD(m,nxy)
            IF(l1 == 0) l1 = nxy
            m = mfsbc(l1)
-     ENDIF
+        ENDIF
         qn = qfflx(ls)*areafbc(ls)
         IF(qn <= 0.) THEN             ! ... Outflow
            qfbc = den(m)*qn*ufrac
 !$$           if (heat) qhbc = qfbc*eh(m)  
-        DO  iis = 1, ns  
+           DO  iis=1,ns
               qsbc(iis) = qfbc*c(m,iis)
-        END DO
+           END DO
         ELSE                          ! ... Inflow
            qfbc = denfbc(ls)*qn*ufrac
 !$$        IF( HEAT) QHBC = QFBC* EHOFTP( TFLX( L), P( M), ERFLG)  
-        DO  iis = 1, ns  
+           DO  iis=1,ns
               qsbc(iis) = qfbc*cfbc(ls,iis)
-        END DO
-     ENDIF
+           END DO
+        ENDIF
         rf(m) = rf(m) + ufdt2*qfbc
 !!$     IF( HEAT) THEN  
 !!$        QHBC2 = QHFBC( L) * UFRAC  
 !!$        RH( M) = RH( M) + UFDT2* ( QHBC2 + QHBC)  
 !!$     ENDIF
-     DO  iis = 1, ns  
+        DO  iis=1,ns
            qsbc2(iis) = qsflx(ls,iis)*areafbc(ls)*ufrac
            rs(m,iis) = rs(m,iis) + ufdt2*(qsbc2(iis) + qsbc(iis))
-     END DO
+        END DO
      END DO
   END DO
 !!$  IF( ERFLG) THEN  
@@ -92,9 +92,9 @@ SUBROUTINE aplbce
      DO ls=leak_seg_index(lc)%seg_first,leak_seg_index(lc)%seg_last
         albc(ls) = 0._kdp
         blbc(ls) = 0._kdp
-     ufrac = frac(m)  
-     ! ... No flow to or from empty cells, and attenuate flows
-     ! ...      at partially saturated cells.
+        ufrac = frac(m)  
+        ! ... No flow to or from empty cells, and attenuate flows
+        ! ...      at partially saturated cells.
         imod = MOD(m,nxy)
         k = (m - imod)/nxy + MIN(1,imod)  
         IF(ifacelbc(ls) == 3) THEN  
@@ -127,7 +127,7 @@ SUBROUTINE aplbce
 !!$           qslbc(l,is) = qflbc(l)*clbc(l,is)
 !!$        END DO
 !!$     END IF
-  END DO
+     END DO
   END DO
   ! ... Calculate river leakage b.c. coefficients
   ! ...      only for horizontal coordinates; No lateral river leakage
@@ -334,9 +334,9 @@ SUBROUTINE aplbce
 !!$  !     X           -ZHCBC(1))
 !!$  !  100    CONTINUE
 !!$  !      ENDIF
-  DEALLOCATE (qsbc, qsbc2, &
+  DEALLOCATE (qsbc, qsbc2,  &
        stat = da_err)
-  IF (da_err /=  0) THEN  
+  IF (da_err /= 0) THEN  
      PRINT *, "Array deallocation failed: aplbce"  
      STOP  
   ENDIF

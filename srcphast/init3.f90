@@ -65,7 +65,7 @@ SUBROUTINE init3
      ! ... The following loads the associated and specified concentrations
      IF(solute) THEN
 !$$        CALL load_indx_bc(1,indx1_sbc,indx2_sbc,mxf_sbc,msbc,nsbc)
-        CALL setup_boundary_conditions(nsbc,indx1_sbc,indx2_sbc, mxf_sbc,  &
+        CALL setup_boundary_conditions(nsbc, indx1_sbc, indx2_sbc, mxf_sbc,  &
              csbc, nsbc_seg)
      END IF
      IF(fresur) THEN
@@ -193,8 +193,8 @@ SUBROUTINE init3
 760  mfsbc(mt) = m1
      DO m=m1-nxy,1,-nxy
         frac(m) = 1._kdp
+     END DO
   END DO
-           END DO
   ! ... Specified flux b.c.
   IF(rdflxq) THEN
      DO  ls=1,nfbc_seg
@@ -233,7 +233,7 @@ SUBROUTINE init3
      END DO
      ! ... Load the associated concentrations
      IF(solute) THEN
-        CALL setup_boundary_conditions(nrbc_seg,indx1_rbc,indx2_rbc, mxf_rbc,  &
+        CALL setup_boundary_conditions(nrbc_seg, indx1_rbc, indx2_rbc, mxf_rbc,  &
              crbc, nrbc_seg)
      END IF
   END IF

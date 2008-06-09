@@ -25,11 +25,11 @@ SUBROUTINE aplbce_ss_flow
   ! ... Specified P,T,or C b.c. terms are applied in APLBCI
   ! ... Apply specified flux b.c. dispersive and advective terms
   ERFLG = .FALSE.  
-  ALLOCATE (qsbc(ns), qsbc2(ns), &
+  ALLOCATE (qsbc(ns), qsbc2(ns),  &
        stat = a_err)
   IF (a_err /= 0) THEN  
      PRINT *, "Array allocation failed: aplbce_ss_flow"  
-     STOP  
+     STOP
   ENDIF
   ! ... Specified flux b.c.
   DO lc=1,nfbc_cells
@@ -38,12 +38,12 @@ SUBROUTINE aplbce_ss_flow
      DO ls=flux_seg_index(lc)%seg_first,flux_seg_index(lc)%seg_last
         ufrac = 1._kdp
         IF(ifacefbc(ls) < 3) ufrac = frac(m)
-        IF(fresur .AND. ifacefbc(ls) == 3 .AND. m >= mtp1) THEN
+        IF(fresur .AND. ifacefbc(ls) == 3 .AND. frac(m) <= 0._kdp) THEN
            ! ... Redirect the flux to the free-surface cell
            l1 = MOD(m,nxy)
            IF(l1 == 0) l1 = nxy
            m = mfsbc(l1)
-     ENDIF
+        ENDIF
         qn = qfflx(ls)*areafbc(ls)
         IF(qn <= 0.) THEN             ! ... Outflow
            qfbc = den(m)*qn*ufrac
@@ -57,7 +57,7 @@ SUBROUTINE aplbce_ss_flow
            DO  iis=1,ns
               qsbc(iis) = qfbc*cfbc(ls,iis)
            END DO
-     ENDIF
+        ENDIF
         rf(m) = rf(m) + ufdt2*qfbc
 !!$     IF( HEAT) THEN  
 !!$        QHBC2 = QHFBC( L) * UFRAC  
@@ -66,7 +66,7 @@ SUBROUTINE aplbce_ss_flow
         DO  iis=1,ns
            qsbc2(iis) = qsflx(ls,iis)*areafbc(ls)*ufrac
            rs(m,iis) = rs(m,iis) + ufdt2*(qsbc2(iis) + qsbc(iis))
-  END DO
+        END DO
      END DO
   END DO
   ! ... Calculate leakage b.c. coefficients
@@ -78,8 +78,8 @@ SUBROUTINE aplbce_ss_flow
         albc(ls) = 0._kdp
         blbc(ls) = 0._kdp
         ufrac = frac(m)
-     ! ... No flow to or from empty cells, and attenuate flows
-     ! ...      at partially saturated cells.
+        ! ... No flow to or from empty cells, and attenuate flows
+        ! ...      at partially saturated cells.
         imod = MOD(m,nxy)
         k = (m - imod)/nxy + MIN(1,imod)
         IF(ifacelbc(ls) == 3) THEN
@@ -124,7 +124,7 @@ SUBROUTINE aplbce_ss_flow
         brbc(ls) = 0._kdp
         uzav = zerbc(ls) - .5_kdp*bbrbc(ls)     
         ms = mrbc(ls)        ! ... current river segment cell for aquifer head
-        ! ...   now ms = mc
+                             ! ... now ms = mc
         imod = MOD(ms,nxy)
         ks = (ms - imod)/nxy + MIN(1,imod)
         uphim = p(ms) + gz*(denrbc(ls) - den(ms))*uzav
@@ -256,10 +256,10 @@ SUBROUTINE aplbce_ss_flow
 !!$        ENDIF
 !!$30   END DO
 !!$  ENDIF
-  DEALLOCATE (qsbc, qsbc2, &
+  DEALLOCATE (qsbc, qsbc2,  &
        stat = da_err)
   IF (da_err /= 0) THEN  
      PRINT *, "Array deallocation failed: aplbce_ss_flow"  
-     STOP  
+     STOP
   ENDIF
 END SUBROUTINE aplbce_ss_flow

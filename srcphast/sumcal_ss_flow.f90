@@ -550,7 +550,7 @@ SUBROUTINE sumcal_ss_flow
      DO ls=flux_seg_index(lc)%seg_first,flux_seg_index(lc)%seg_last
         ufrac = 1._kdp
         IF(ifacefbc(ls) < 3) ufrac = frac(m)  
-        IF(fresur .AND. ifacefbc(ls) == 3 .AND. m >= mtp1) THEN
+        IF(fresur .AND. ifacefbc(ls) == 3 .AND. frac(m) <= 0._kdp) THEN
            ! ... Redirect the flux to the free-surface cell
            l1 = MOD(m,nxy)
            IF(l1 == 0) l1 = nxy

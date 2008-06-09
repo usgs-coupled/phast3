@@ -246,14 +246,14 @@ SUBROUTINE aplbci
   ! ... Apply specified flux b.c. implicit terms
   DO lc=1,nfbc_cells  
      m = flux_seg_index(lc)%m     ! ... current flux communication cell
-     ufrac = frac(m)
+     ufrac = 1._kdp
+     IF(ifacefbc(ls) < 3) ufrac = frac(m)
      DO ls=flux_seg_index(lc)%seg_first,flux_seg_index(lc)%seg_last
         ! ... Redirect the flux to the free-surface cell, if necessary
-        IF(fresur .AND. ifacefbc(ls) ==3 .AND. m >= mtp1) THEN
+        IF(fresur .AND. ifacefbc(ls) ==3 .AND. frac(m) <= 0._kdp) THEN
            l1 = MOD(m,nxy)
            IF(l1 == 0) l1 = nxy
            m = mfsbc(l1)
-           ufrac = 1._kdp
         ENDIF
         qn = qfflx(ls)*areafbc(ls)*ufrac
         ma = mrno(m)
