@@ -68,6 +68,7 @@ bool XYZfile::Make_polygons( int field, PHST_polygon &polygons, double h_scale, 
   this->Make_points(-1, polygons.Get_points(), h_scale, v_scale);
   polygons.Get_begin().push_back(this->Get_points(-1).begin());
   polygons.Get_end().push_back(this->Get_points(-1).end());
+  polygons.Set_bounding_box();
   return true;
 }
 bool XYZfile::Make_points(int field, std::vector<Point> &pts, double h_scale, double v_scale)

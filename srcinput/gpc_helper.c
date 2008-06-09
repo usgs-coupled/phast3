@@ -7,6 +7,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
+#include "PHST_polygon.h"
 #if defined(__WPHAST__)
 #include "../phqalloc.h"
 #else
@@ -689,4 +690,32 @@ bool line_intersect_polygon(Point lp1, Point lp2, std::vector<Point> pts, std::v
     return(true);
   }
   return(false);
+}
+gpc_polygon *PHST_polygon2gpc_polygon(PHST_polygon *polys)
+{
+  int poly;
+  gpc_polygon *cumulative = empty_polygon();
+  // For each polygon
+  for (poly = 0; poly < (int) polys->Get_begin().size(); poly++)
+  {
+    // accumulate points
+    std::vector<Point> pts;
+    std::vector<Point>::iterator it;
+    for (it = polys->Get_begin()[poly]; it != polys->Get_end()[poly]; it++)
+    {
+      pts.push_back(*it);
+    }
+    
+    // Make gpc polygon
+    gpc_polygon *contour = points_to_poly(pts);
+
+    // Append to gpc_polygon
+    gpc_polygon_clip (GPC_UNION, cumulative, contour, cumulative);
+
+    // Free contour
+    gpc_free_polygon(contour);
+    free_check_null(contour);
+  }
+  return (cumulative);
+
 }

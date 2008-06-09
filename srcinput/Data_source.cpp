@@ -13,11 +13,13 @@
 Data_source::Data_source(void)
 {
   this->Init();
-  filedata = NULL;
+  this->filedata = NULL;
+  this->tree = NULL;
 }
 Data_source::~Data_source(void)
 {
   if (this->nni != NULL) delete this->nni;
+  if (this->tree != NULL) delete this->tree;
   this->pts.clear();
 }
 void Data_source::Init()
@@ -266,6 +268,7 @@ bool Data_source::Make_polygons()
       this->phst_polygons.Get_points() = this->pts;
       this->phst_polygons.Get_begin().push_back(this->phst_polygons.Get_points().begin());
       this->phst_polygons.Get_end().push_back(this->phst_polygons.Get_points().end());
+      this->phst_polygons.Set_bounding_box();
     }
     break;
   default:

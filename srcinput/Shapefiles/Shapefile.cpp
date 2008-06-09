@@ -787,6 +787,7 @@ bool Shapefile::Make_polygons( int field, PHST_polygon &polygons, double h_scale
     }
     polygons.Get_end().push_back(it);
   }
+  polygons.Set_bounding_box();
   return true;
 }
 #ifdef SKIP

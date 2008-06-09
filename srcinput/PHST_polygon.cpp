@@ -4,7 +4,29 @@
 PHST_polygon::PHST_polygon(void)
 {
 }
+PHST_polygon::PHST_polygon(gpc_polygon *poly)
+{
+  int i, j;
+  for (i = 0; i < poly->num_contours; i++)
+  {
+    for (j = 0; j < poly->contour[i].num_vertices; j++)
+    {
+      Point p(poly->contour[i].vertex[j].x, poly->contour[i].vertex[j].y, 0.0);
+      this->pts.push_back(p);
+    }
+  }
 
+  std::vector<Point>::iterator it = this->pts.begin();
+  for (i = 0; i < poly->num_contours; i++)
+  {
+    this->begin.push_back(it);
+    for (j = 0; j < poly->contour[i].num_vertices; j++)
+    {
+      it++;
+    }
+    this->end.push_back(it);
+  }
+}
 PHST_polygon::~PHST_polygon(void)
 {
 }
@@ -154,4 +176,15 @@ bool Line_intersect_simple_polygon(Point lp1, Point lp2, std::vector<Point>::ite
     return(true);
   }
   return(false);
+}
+void PHST_polygon::Set_bounding_box(void)
+{
+  Point min(this->pts.begin(), this->pts.end(), Point::MIN);
+  Point max(this->pts.begin(), this->pts.end(), Point::MAX);
+  this->box.x1 = min.x();
+  this->box.y1 = min.y();
+  this->box.z1 = min.z();
+  this->box.x2 = max.x();
+  this->box.y2 = max.y();
+  this->box.z2 = max.z();
 }

@@ -2,10 +2,15 @@
 #define PHST_POLYGON_H_INCLUDED
 #include <vector>
 #include "Point.h"
+#include "gpc.h"
+#include "zone.h"
 class PHST_polygon
 {
 public:
   PHST_polygon(void);
+  PHST_polygon(gpc_polygon *poly);
+  //PHST_polygon(const PHST_polygon &poly);
+
 public:
   ~PHST_polygon(void);
   // methods
@@ -16,9 +21,13 @@ public:
   std::vector<Point> &Get_points() {return this->pts;};
   std::vector< std::vector<Point>::iterator > &Get_begin() {return this->begin;};
   std::vector< std::vector<Point>::iterator > &Get_end() {return this->end;};
+  void Set_bounding_box(void);
+  struct zone * Get_bounding_box(void){return &(this->box);};
+  //PHST_polygon& operator=(const PHST_polygon& poly);
 
 protected:
   // data
+  struct zone box;
   std::vector<Point> pts;
   std::vector< std::vector<Point>::iterator > begin;
   std::vector< std::vector<Point>::iterator > end;

@@ -246,7 +246,8 @@ bool Prism::Point_in_polyhedron(const Point p)
 
   // check perimeter
   this->Project_point(p1, CF_Z, grid_zone()->z2);
-  return (this->perimeter.Get_phst_polygons().Point_in_polygon(p1));
+  //return (this->perimeter.Get_phst_polygons().Point_in_polygon(p1));
+  return (this->perimeter.Get_tree()->Point_in_polygon(p1));
 }
 
 Polyhedron* Prism::clone()const
@@ -433,6 +434,8 @@ void Prism::Tidy()
   this->perimeter_datum = grid_zone()->z2;
   // set bounding box
   this->Set_bounding_box();
+  Polygon_tree *temp_tree = new Polygon_tree(this->perimeter.Get_phst_polygons());
+  this->perimeter.Set_tree(temp_tree);
 
 }
 struct zone * Prism::Set_bounding_box(void)

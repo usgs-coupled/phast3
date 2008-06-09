@@ -583,6 +583,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\Polygon_tree.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\Polyhedron.cpp"
 				>
 				<FileConfiguration
@@ -860,6 +864,10 @@
 				RelativePath="..\XYZfile.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\zone.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -979,6 +987,10 @@
 			</File>
 			<File
 				RelativePath="..\Point.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Polygon_tree.h"
 				>
 			</File>
 			<File

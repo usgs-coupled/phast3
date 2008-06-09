@@ -1,5 +1,6 @@
 #ifndef _INC_ZONE
 #define _INC_ZONE
+class Point;
 /* ---------------------------------------------------------------------- 
  *   Zone
  * ---------------------------------------------------------------------- */
@@ -11,6 +12,17 @@ struct zone {
 	double x2;
 	double y2;
 	double z2;
+
+	// constructors
+	zone(void);
+	zone(Point min, Point max);
+	zone(double x1, double y1, double z1, double x2, double y2, double z2);
+	zone(struct zone *zone_ptr);
+	~zone(void);
+
+	// methods
+	bool Point_in_zone(Point p);
+
 };
 
 #endif /* _INC_ZONE */

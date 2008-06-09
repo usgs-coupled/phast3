@@ -449,7 +449,7 @@ int write_media(void)
 		if (free_surface == FALSE) {
 			cells[i].compress = cells[i].storage * units.s.input_to_si / (fluid_density * GRAVITY) - cells[i].porosity * fluid_compressibility;
 		} else {
-			cells[i].compress = 0.0;
+			cells[i].compress = 1e-9;
 		}
 		if (cells[i].compress < 0.0) {
 			storage_warning = TRUE;

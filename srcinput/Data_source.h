@@ -7,6 +7,7 @@
 #include "gpc.h"
 #include "PHST_polygon.h"
 #include "unit_impl.h"
+#include "Polygon_tree.h"
 class Filedata;
 class Point;
 struct zone;
@@ -54,11 +55,13 @@ public:
   PHST_polygon &           Get_phst_polygons      (void) {return this->phst_polygons;};
   struct zone *            Get_bounding_box       (void);
   struct cunit *           Get_v_units            (void) {return &this->v_units;};
+  Polygon_tree *           Get_tree               (void) {return this->tree;};
 
   // Setter
   void                     Set_source_type        (DATA_SOURCE_TYPE dt) {this->source_type = dt;};
   void                     Set_bounding_box       (void);
   void                     Set_defined            (bool tf) {this->defined = tf;};
+  void                     Set_tree               (Polygon_tree *t) {this->tree = t;};
 
   // Data
 protected:
@@ -68,6 +71,7 @@ protected:
   Filedata *         filedata;
   std::vector<Point> pts;
   PHST_polygon       phst_polygons;
+  Polygon_tree       *tree;
   NNInterpolator *   nni;
   struct cunit       h_units;
   struct cunit       v_units;
