@@ -87,6 +87,13 @@ SUBROUTINE sumcal_ss_flow
         !$        WRITE(*,aformt) 'Maximum change in potentiometric head '//dots,  &
 !!$             cnvpi*dhmax,'('//unitl//')','at location (',  &
 !!$             cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax), ')(',unitl,')'
+
+        DEALLOCATE (zfsn, &
+             STAT = da_err)
+        IF (da_err /= 0) THEN  
+           PRINT *, "Array deallocation failed, sumcal_ss"  
+           STOP  
+        ENDIF
         RETURN
      END IF
   END IF

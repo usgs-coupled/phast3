@@ -443,7 +443,7 @@ SUBROUTINE write2_1
         ! ... Leakage b.c.
         lprnt1 = -1
         DO  lc=1,nlbc
-           m = flux_seg_index(lc)%m
+           m = leak_seg_index(lc)%m
            lprnt1(m)=1
            aprnt1(m)=lc
         END DO

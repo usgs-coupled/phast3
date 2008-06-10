@@ -22,7 +22,7 @@ SUBROUTINE hdf_write_invariant(mpi_myself)
   USE mcn, ONLY: x, y, z
   USE mcw, ONLY: nkswel, nwel, mwel
   USE mcb, ONLY: ibc, msbc, nsbc, mfbc, nfbc, mlbc, nlbc, mrbc, nrbc_seg,  &
-       mdbc, ndbc_seg   ! ... b.c. information
+       mdbc, ndbc_seg, flux_seg_index, leak_seg_index, nfbc_cells, nlbc_cells   ! ... b.c. information
   USE mcch, ONLY: utulbl
   IMPLICIT NONE
   INTEGER, INTENT(IN) :: mpi_myself
@@ -34,6 +34,8 @@ SUBROUTINE hdf_write_invariant(mpi_myself)
   ! ... Set string for use with RCS ident command
   INTEGER, DIMENSION(nrbc_seg) :: temp_rbc
   INTEGER, DIMENSION(ndbc_seg) :: temp_dbc
+  INTEGER, DIMENSION(nfbc_cells) :: temp_fbc
+  INTEGER, DIMENSION(nlbc_cells) :: temp_lbc
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
@@ -70,8 +72,20 @@ SUBROUTINE hdf_write_invariant(mpi_myself)
 50   END DO
      if(nwbc > 0) CALL HDF_WRITE_FEATURE('Wells'    , MWBC, nwbc)
      if(nsbc > 0) CALL HDF_WRITE_FEATURE('Specified', MSBC, nsbc)
-     if(nfbc > 0) CALL HDF_WRITE_FEATURE('Flux'     , MFBC, nfbc)
-     if(nlbc > 0) CALL HDF_WRITE_FEATURE('Leaky'    , MLBC, nlbc)
+     !if(nfbc > 0) CALL HDF_WRITE_FEATURE('Flux'     , MFBC, nfbc)
+     if(nfbc_cells > 0) then
+        do i = 1, nfbc_cells
+           temp_fbc(i) = flux_seg_index(i)%m
+        enddo
+        CALL HDF_WRITE_FEATURE('Flux'    , temp_fbc, nfbc_cells)
+     endif
+     !if(nlbc > 0) CALL HDF_WRITE_FEATURE('Leaky'    , MLBC, nlbc)
+     if(nlbc_cells > 0) then
+        do i = 1, nlbc_cells
+           temp_lbc(i) = leak_seg_index(i)%m
+        enddo
+        CALL HDF_WRITE_FEATURE('Leaky'    , temp_lbc, nlbc_cells)
+     endif
      if(nrbc_seg > 0) then
         do i = 1, nrbc_seg
            temp_rbc(i) = mrbc(i)
