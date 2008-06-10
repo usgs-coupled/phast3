@@ -194,7 +194,7 @@ bool NNInterpolator::preprocess(std::vector<Point> &pts_in, std::vector<Point> &
 
   return true;
 }
-double NNInterpolator::interpolate(const Point pt)
+double NNInterpolator::interpolate(const Point& pt)
 {
   point pout;
   pout.x = pt.x();

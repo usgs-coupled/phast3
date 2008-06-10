@@ -235,13 +235,13 @@ Wedge::~Wedge(void)
 }
 
 // Methods
-bool Wedge::Point_in_polyhedron(Point &t)
+bool Wedge::Point_in_polyhedron(const Point &t)
 {
   // compare to bounding box
   if (!this->Point_in_bounding_box(t)) return false;
 
   // Project point to front, left, or lower triangular face
-  Point test_pt = t;
+  Point test_pt(t);
   struct zone *zo = this->Get_bounding_box();
   switch (this->wedge_axis)
   {

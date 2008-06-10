@@ -22,6 +22,41 @@ Data_source::~Data_source(void)
   if (this->tree != NULL) delete this->tree;
   this->pts.clear();
 }
+Data_source::Data_source(const Data_source& r)
+:defined(r.defined)
+,file_name(r.file_name)
+,source_type(r.source_type)
+,filedata(r.filedata)
+,pts(r.pts)
+,phst_polygons(r.phst_polygons)
+,nni(r.nni)
+,h_units(r.h_units)
+,v_units(r.v_units)
+,attribute(r.attribute)
+,box(r.box)
+{
+  // lazy initialization
+  this->tree = NULL;
+}
+Data_source& Data_source::operator=(const Data_source& rhs)
+{
+  if (this != &rhs)
+  {
+    this->defined       = rhs.defined;
+    this->file_name     = rhs.file_name;
+    this->source_type   = rhs.source_type;
+    this->filedata      = rhs.filedata;
+    this->pts           = rhs.pts;
+    this->phst_polygons = rhs.phst_polygons;
+    this->tree          = NULL;       // lazy initialization
+    this->nni           = rhs.nni;
+    this->h_units       = rhs.h_units;
+    this->v_units       = rhs.v_units;
+    this->attribute     = rhs.attribute;
+    this->box           = rhs.box;
+  }
+  return *this;
+}
 void Data_source::Init()
 {
   this->pts.clear();
@@ -364,7 +399,7 @@ void Data_source::Set_bounding_box(void)
   this->box.z2 = max.z();
 #endif
 }
-double Data_source::Interpolate(Point p)
+double Data_source::Interpolate(const Point& p)
 {
   switch (this->source_type)
   {

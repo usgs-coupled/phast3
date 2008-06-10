@@ -217,9 +217,9 @@ void Prism::Points_in_polyhedron(std::list<int> & list_of_numbers, std::vector<P
     }
   }
 }
-bool Prism::Point_in_polyhedron(const Point p)
+bool Prism::Point_in_polyhedron(const Point& p)
 {
-  Point p1 = p;
+  Point p1(p);
 
   // Check bounding box of prism
   if (!this->Point_in_bounding_box(p1)) return false;
@@ -434,8 +434,8 @@ void Prism::Tidy()
   this->perimeter_datum = grid_zone()->z2;
   // set bounding box
   this->Set_bounding_box();
-  Polygon_tree *temp_tree = new Polygon_tree(this->perimeter.Get_phst_polygons());
-  this->perimeter.Set_tree(temp_tree);
+  //Polygon_tree *temp_tree = new Polygon_tree(this->perimeter.Get_phst_polygons());
+  //this->perimeter.Set_tree(temp_tree);
 
 }
 struct zone * Prism::Set_bounding_box(void)

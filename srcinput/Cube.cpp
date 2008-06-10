@@ -62,7 +62,7 @@ struct zone * Cube::Set_bounding_box()
 }
 
 // Methods
-bool Cube::Point_in_polyhedron(Point &t)
+bool Cube::Point_in_polyhedron(const Point &t)
 {
   return (this->Point_in_bounding_box(t));
 }

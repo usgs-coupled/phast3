@@ -52,7 +52,7 @@ public:
   bool Read(std::istream &lines);
   bool Project_point(Point &p, Cell_Face face, double coord);
   bool Project_points(std::vector<Point> &pts, Cell_Face face, double coord);
-  bool Point_in_polyhedron(const Point p);
+  bool Point_in_polyhedron(const Point& p);
   friend void Tidy_prisms(void);
   void Tidy();
   // data

@@ -26,7 +26,8 @@ public:
     NONE         = 5
   };
   Data_source(void);
-  
+
+  Data_source(const Data_source& r);
   
   ~Data_source(void);
 
@@ -44,7 +45,7 @@ public:
   void                     Add_to_file_map        (Filedata *f, const bool make_nni);
   void                     Add_nni_to_data_source (void);
   bool                     Make_polygons          (void);
-  double                   Interpolate            (Point p);
+  double                   Interpolate            (const Point& p);
   bool                     Read_units             (std::istream &lines);
 
   // Getter 
@@ -55,13 +56,14 @@ public:
   PHST_polygon &           Get_phst_polygons      (void) {return this->phst_polygons;};
   struct zone *            Get_bounding_box       (void);
   struct cunit *           Get_v_units            (void) {return &this->v_units;};
-  Polygon_tree *           Get_tree               (void) {return this->tree;};
+  Polygon_tree *           Get_tree               (void);
 
   // Setter
   void                     Set_source_type        (DATA_SOURCE_TYPE dt) {this->source_type = dt;};
   void                     Set_bounding_box       (void);
   void                     Set_defined            (bool tf) {this->defined = tf;};
-  void                     Set_tree               (Polygon_tree *t) {this->tree = t;};
+
+  Data_source &            operator=              (const Data_source& r);
 
   // Data
 protected:
@@ -82,4 +84,14 @@ protected:
   // Static
   static std::map<std::string,Data_source> data_source_map;
 };
+
+inline Polygon_tree * Data_source::Get_tree(void)
+{
+  if (!this->tree)
+  {
+    this->tree = new Polygon_tree(this->Get_phst_polygons());
+  }
+  return this->tree;
+}
+
 #endif // !defined(DATA_SOURCE_H_INCLUDED)
