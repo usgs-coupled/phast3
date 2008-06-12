@@ -135,7 +135,7 @@ MODULE mcc
   INTEGER :: rebalance_method_f
   REAL(KIND=kdp) :: dptas=0.0_kdp, dtimmn=0.0_kdp, dtimmx=0.0_kdp, dtimu=0.0_kdp, dttas=0.0_kdp, &
        eps = 1.e-5_kdp, epsfs, timprt, &
-       tolden, toldnc, toldnt
+       tolden, toldnc, toldnt, growth_factor_ss = 2.0
   REAL(KIND=kdp) :: eps_p=1.d2, eps_flow=1.d-4
 END MODULE mcc
 

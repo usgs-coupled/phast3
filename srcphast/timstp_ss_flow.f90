@@ -42,14 +42,15 @@ SUBROUTINE timstp_ss_flow
      adp=ABS(dpmax)
      adp=MAX(adp,1.d-10)
      IF(adp > dptas .OR. adp <= .9*dptas) uptc=deltim*dptas/adp
-     udtim=MIN(uptc,uttc,uctc,2.*deltim,dtimmx)
+     udtim=MIN(uptc,uttc,uctc,growth_factor_ss*deltim,dtimmx)
      udtim=MAX(udtim,dtimmn)
      deltim=udtim
      ! ... Put UDTIM into user time units
      udtim=cnvtmi*deltim
      IF(udtim > 1._kdp) THEN
         ! ... Use the nearest integer value of the time step (user units)
-        deltim=NINT(udtim)
+        !deltim=NINT(udtim)
+        deltim = udtim
      ELSE
         !...special mod
         deltim=udtim

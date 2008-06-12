@@ -238,9 +238,9 @@ SUBROUTINE read3
         !     &           '[3.8.3B]',DPTAS,DTTAS,DCTAS,DTIMMN,DTIMMX,DTIMU
         ! 830        FORMAT(TR5,2A/TR5,10(1PG12.5))
      ELSEIF(steady_flow) THEN
-        READ(fuins,*) dptas,dttas,dtimmn,dtimmx
-        IF (print_rde) WRITE(furde,8007) 'DPTAS,DTTAS,DTIMMN,DTIMMX,',  &
-             '[3.8.3B]',dptas,dttas,dtimmn,dtimmx
+        READ(fuins,*) dptas,dttas,dtimmn,dtimmx, growth_factor_ss
+        IF (print_rde) WRITE(furde,8007) 'DPTAS,DTTAS,DTIMMN,DTIMMX,GROWTH_FACTOR_SS,',  &
+             '[3.8.3B]',dptas,dttas,dtimmn,dtimmx, growth_factor_ss
      END IF
   END IF
   ! ... Time of next change in transient data
