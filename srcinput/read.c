@@ -6790,9 +6790,10 @@ int read_steady_flow(void)
 		"save_steady_state_heads",        /* 22 */
 		"head_change_target",             /* 23 */
 		"head_target",                    /* 24 */
-		"iterations"                      /* 25 */
+		"iterations",                     /* 25 */
+		"growth_factor"                   /* 26 */
 	};
-	int count_opt_list = 26;
+	int count_opt_list = 27;
 /*
  *  Set true false
  */
@@ -6903,6 +6904,17 @@ int read_steady_flow(void)
 				    sscanf(token, "%d", &max_ss_iterations);
 			    } else if (j != EMPTY) {
 				    sprintf(error_string,"Expected maximum number of iterations for attempting to find steady state flow condition: %s", line);
+				    error_msg(error_string, CONTINUE);
+				    input_error++;
+			    }
+			    break;
+		    case 26:                           /*growth_factor*/
+			    ptr = next_char;
+			    j = copy_token(token, &ptr, &l);
+			    if (j == DIGIT) {
+				    sscanf(token, "%lf", &growth_factor_ss);
+			    } else if (j != EMPTY) {
+				    sprintf(error_string,"Expected growth factor for automatic time stepping: %s", line);
 				    error_msg(error_string, CONTINUE);
 				    input_error++;
 			    }

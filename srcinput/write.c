@@ -1605,18 +1605,19 @@ int write_calculation_transient(void)
 	output_msg(OUTPUT_HST,"C.3.7.3.A .. DELTIM;(O) - RDCALC [3.7.1] and NOT AUTOTS [3.7.2]\n");
 	output_msg(OUTPUT_HST,"     %g\n", current_time_step.value * current_time_step.input_to_user);
 
-	output_msg(OUTPUT_HST,"C.3.7.3.B .. DPTAS{5E4},DCTAS{.25},DTIMMN{1.E4},DTIMMX{1.E7};\n");
+	output_msg(OUTPUT_HST,"C.3.7.3.B .. DPTAS{5E4},DCTAS{.25},DTIMMN{1.E4},DTIMMX{1.E7}, Growth_factor;\n");
 	if (steady_flow == TRUE) {
 		if (max_ss_head_change <=0) {
 			max = (grid[2].coord[grid[2].count_coord - 1] - grid[2].coord[0]) * 0.3 * units.vertical.input_to_si * fluid_density * GRAVITY;
 		} else {
 			max = max_ss_head_change *  units.head.input_to_si * fluid_density * GRAVITY;
 		}
-		output_msg(OUTPUT_HST,"     %g %g %g %g\n", 
+		output_msg(OUTPUT_HST,"     %g %g %g %g %g\n", 
 			max,
 			1.,
 			min_ss_time_step.value * min_ss_time_step.input_to_user,
-			max_ss_time_step.value * max_ss_time_step.input_to_user);
+			max_ss_time_step.value * max_ss_time_step.input_to_user,
+			growth_factor_ss);
 	}
 	output_msg(OUTPUT_HST,"C..           (O) - RDCALC [3.7.1] and AUTOTS [3.7.2]\n");
 

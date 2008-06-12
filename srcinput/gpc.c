@@ -946,7 +946,11 @@ static int set_gpc_epsilon(gpc_polygon *sp, gpc_polygon *cp)
     gpc_epsilon= xmax / pow(10.0, (double)(DBL_DIG - 2));
   else
     gpc_epsilon= ymax / pow(10.0, (double)(DBL_DIG - 2));
-
+  if (xmax > ymax)
+    gpc_epsilon= xmax / pow(10.0, (double)(DBL_DIG - 0));
+  else
+    gpc_epsilon= ymax / pow(10.0, (double)(DBL_DIG - 0));
+  //gpc_epsilon = 1e-14;
   return TRUE;
 }
 

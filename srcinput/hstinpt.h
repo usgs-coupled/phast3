@@ -642,6 +642,7 @@ EXTERNAL struct time min_ss_time_step;
 EXTERNAL struct time max_ss_time_step;
 EXTERNAL double max_ss_head_change;
 EXTERNAL int max_ss_iterations;
+EXTERNAL double growth_factor_ss;
 EXTERNAL int save_final_heads;
 EXTERNAL int adjust_water_rock_ratio;
 

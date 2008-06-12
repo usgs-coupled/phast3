@@ -588,6 +588,7 @@ void initialize(void)
 	max_ss_time_step.input = NULL;
 	max_ss_head_change = -1;
 	max_ss_iterations = 100;
+	growth_factor_ss = 2;
 
 	time_start.value_defined = FALSE;
 	time_start.input = NULL;
