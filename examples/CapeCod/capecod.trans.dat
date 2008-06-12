@@ -1,0 +1,279 @@
+# <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+# <WPhast>
+#   <!--Exported from C:\Programs\phast_bc\examples\flux_patches\flux_patches.wphast-->
+# </WPhast>
+# 
+SOLUTE_TRANSPORT false
+    -diffusivity  1e-009
+STEADY_FLOW false
+	-min		.001
+	-max		10
+	-growth_factor 	1.2
+	-head_change 	50
+	-head_tol    	1e-4
+	-flow_bal    	1e-4
+	-iterations  	400
+FREE_SURFACE_BC true
+
+SOLUTION_METHOD
+	-iterative_solver   true
+	-tolerance          1e-10
+	-save_directions    50
+	-maximum_iterations 500
+	-space_differencing 0
+	-time_differencing  1
+	-cross_dispersion   false
+	-rebalance_fraction 0.5
+	-rebalance_by_cell   false
+
+UNITS
+	-time                             yr
+	-horizontal_grid                  m
+	-vertical_grid                    m
+	-head                             m
+	-hydraulic_conductivity           m/s
+	-specific_storage                 1/m
+	-dispersivity                     m
+	-flux                             m/d
+	-leaky_hydraulic_conductivity     m/s
+	-leaky_thickness                  m
+	-well_diameter                    m
+	-well_flow_rate                   m^3/s
+	-river_bed_hydraulic_conductivity m/s
+	-river_bed_thickness              m
+	-drain_bed_hydraulic_conductivity m/s
+	-drain_bed_thickness              m
+	-drain_width                      m
+
+GRID
+	-uniform X 275000 285000 50
+	-uniform Y 810000 830000 50
+	-uniform Z -200 -20 19
+	-overlay_uniform Z -10 25 36
+	#-overlay_uniform Z -10 90 101
+	-snap X 0.001
+	-snap Y 0.001
+	-snap Z 0.001
+	-chemistry_dimensions XYZ
+	-print_orientation XY
+
+MEDIA
+	-zone 275000 810000 -500 285000 830000 100
+		-active                   0
+		#-Kx                       1.06e-3
+		#-Ky                       1.06e-3
+		#-Kz                       0.30e-3
+		#-Kx                       .5e-3
+		#-Ky                       .5e-3
+		#-Kz                       .15e-3
+		-Kx     Y    .75e-3 810000   .36e-3  830000
+		-Ky     Y    .75e-3 810000   .36e-3  830000
+		-Kz     Y    .25e-3 810000   .12e-3  830000		
+		-porosity                 0.39
+		-specific_storage         0.39
+		-long_dispersivity        1
+		-horizontal_dispersivity  1
+		-vertical_dispersivity    1
+	
+	-zone 275000 810000 -500 285000 830000 -5
+		-active                   0
+		-Kx                       .36e-3
+		-Ky                       .36e-3
+		-Kz                       .12e-3		
+		-porosity                 0.39
+		-specific_storage         0.39
+		-long_dispersivity        1
+		-horizontal_dispersivity  1
+		-vertical_dispersivity    1	
+
+
+	-prism
+	
+		-vector    0 0 1
+		
+		-top   arcraster   ArcData/rastert_ls_elev1.txt
+		-units_top m m	
+
+		-perimeter SHAPE ArcData/coast.shp 
+		-perimeter_z 0
+
+		-bottom arcraster ArcData/rastert_bedrock1.txt
+
+		-active 1
+
+	-prism
+		-perimeter SHAPE ArcData/ModelOutline.shp
+		-active 0
+
+	-prism
+		-vector    0 0 1
+		
+		-perimeter  SHAPE   ArcData/SimplePonds.shp 
+		-perimeter_z 0	
+		
+		-bottom SHAPE ArcData/SimpleBath.shp 9
+
+		-Kx                       100
+		-Ky                       100
+		-Kz                       100
+		-porosity                 1
+		-specific_storage         1
+		-long_dispersivity        100
+		-horizontal_dispersivity  100
+		-vertical_dispersivity    100
+
+
+LEAKY_BC
+	-zone 275000 810000 -0.5 285000 815000 0.5
+		-face Y
+		-head 0 0
+		-thickness 1
+		-hydraulic 1
+		-associated_solution 0 1
+		
+	-zone 275000 810000 -0.5 285000 815000 0.5
+		-face X
+		-head 0 0
+		-thickness 1
+		-hydraulic 1
+		-associated_solution 0 1		
+		
+FLUX_BC
+	-zone 275000 810000 0 285000 830000 100
+	-flux  0 -0.0018
+	-face Z
+	
+DRAIN 1 East Boundary
+	-point 		282787.368  821587.404
+		-z     		12.192
+		-width 		100
+		-thickness 	1
+		-bed_k     	1
+	-point 		282835.491  821234.501
+		-z     		10.668
+	-point 		282947.779  820785.350
+		-z     		9.144	
+	-point 		283236.519  819710.597
+		-z     		7.62
+	-point 		283300.683  818796.255
+		-z     		6.096	
+	-point 		283204.160  818082.720
+		-z     		4.572	
+	-point 		283236.240  817473.200
+		-z     		3.048
+	-point 		282915.440  816494.760
+		-z     		1.524
+	-point 		282209.680  814714.320
+		-z     		0
+		-width 		100
+		-thickness 	1
+		-bed_k     	1		
+		
+
+DRAIN 2 West Boundary
+	-point 		277702.440  818435.600
+		-z     		10.668
+		-width 		100
+		-thickness 	1
+		-bed_k     	1
+	-point 		277638.280  818243.120
+		-z     		9.144
+	-point 		277381.640  817842.120
+		-z     		7.62
+	-point 		277365.600  817312.800
+		-z     		6.096	
+	-point 		277461.840  816574.960
+		-z     		4.572	
+	-point 		277349.560  815885.240
+		-z     		3.048
+	-point 		277301.440  814730.360
+		-z     		1.524
+	-point 		277253.320  814489.760
+		-z     		0
+		-width 		100
+		-thickness 	1
+		-bed_k     	1		
+
+DRAIN 3 Johns Pond drain
+	-point 		281649.002  818803.563
+		-z     		10.668
+		-width 		20
+		-thickness 	1
+		-bed_k     	1
+	-point 		281625.460  818262.095
+		-z     		9.144
+	-point 		281507.750  817814.795
+		-z     		7.62
+	-point 		281342.955  817343.954
+		-z     		6.096	
+	-point 		281272.329  816543.523
+		-z     		4.572	
+	-point 		281319.413  816213.934
+		-z     		3.048
+	-point 		281178.160  815484.130
+		-z     		1.524
+	-point 		281178.160  814824.952
+		-z     		0
+		-width 		20
+		-thickness 	1
+		-bed_k 		1
+		
+HEAD_IC
+
+	-zone 275000 810000 -500 285000 830000 100
+		-head                    30
+		#-head                     100
+		#-head file capecod.heads
+
+#CHEMISTRY_IC
+#	-zone 0 0 0 1 1 1
+#		-solution            1
+
+PRINT_INITIAL
+	-boundary_conditions        false
+	-components                 false
+	-conductances               false
+	-echo_input                 true
+	-fluid_properties           true
+	-force_chemistry_print      false
+	-HDF_chemistry              true
+	-HDF_heads                  true
+	-HDF_steady_flow_velocities true
+	-heads                      true
+	-media_properties           false
+	-solution_method            true
+	-steady_flow_velocities     false
+	-wells                      true
+	-xyz_chemistry              false
+	-xyz_components             false
+	-xyz_heads                  false
+	-xyz_steady_flow_velocities false
+	-xyz_wells                  false
+PRINT_FREQUENCY
+	-save_final_heads true
+	0
+		-bc_flow_rates          0
+		-components             0
+		-conductances           0
+		-flow_balance                end 
+		-force_chemistry_print  0
+		-HDF_chemistry               end 
+		#-HDF_heads                   end 
+		-hdf_heads      1 step
+		-HDF_velocities              end 
+		-heads                       end 
+		-progress_statistics         1 step
+		-velocities             0
+		-wells                       end 
+		-xyz_chemistry          0
+		-xyz_components         0
+		-xyz_heads              0
+		-xyz_velocities         0
+		-xyz_wells              0
+		-boundary_conditions    false
+TIME_CONTROL
+	-time_step
+		0 .001
+	-time_change
+		.001
+	-start_time 0
