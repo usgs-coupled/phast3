@@ -7,6 +7,12 @@
 #include "../KDtree/KDtree.h"
 #include "NNInterpolator.h"
 
+
+// Note: No header files should follow the next three lines
+#if defined(_WIN32) && defined(_DEBUG)
+#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+#endif
+
 // Constructors
 NNInterpolator::NNInterpolator(void)
 {

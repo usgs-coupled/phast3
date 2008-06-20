@@ -1,6 +1,12 @@
 #include "Filedata.h"
 #include "Point.h"
 #include "NNInterpolator/NNInterpolator.h"
+
+// Note: No header files should follow the next three lines
+#if defined(_WIN32) && defined(_DEBUG)
+#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+#endif
+
 std::map<std::string,Filedata *> Filedata::file_data_map;
 Filedata::Filedata(void)
 {

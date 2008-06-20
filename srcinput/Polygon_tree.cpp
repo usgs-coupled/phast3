@@ -2,6 +2,14 @@
 #include "Point.h"
 #include "PHST_polygon.h"
 #include <list>
+
+extern void free_check_null(void *ptr);
+
+// Note: No header files should follow the next three lines
+#if defined(_WIN32) && defined(_DEBUG)
+#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+#endif
+
 Polygon_leaf::Polygon_leaf()
 {
   this->left = NULL;
@@ -47,9 +55,9 @@ bool Polygon_leaf::split()
     gpc_polygon_clip (GPC_INT, whole, rect, gpc_poly);
     this->left->polygon = new PHST_polygon(gpc_poly);
     gpc_free_polygon(rect);
-    free(rect);
+    free_check_null(rect);
     gpc_free_polygon(gpc_poly);
-    free(gpc_poly);
+    free_check_null(gpc_poly);
   }
 
   // Make right leaf
@@ -59,12 +67,12 @@ bool Polygon_leaf::split()
     gpc_polygon_clip (GPC_INT, whole, rect, gpc_poly);
     this->right->polygon = new PHST_polygon(gpc_poly);
     gpc_free_polygon(rect);
-    free(rect);
+    free_check_null(rect);
     gpc_free_polygon(gpc_poly);
-    free(gpc_poly);
+    free_check_null(gpc_poly);
   }
   gpc_free_polygon(whole);
-  free(whole);
+  free_check_null(whole);
   return true;
 
 }

@@ -8,6 +8,12 @@
 #include <assert.h>
 std::vector<Prism * > Prism::prism_vector;
 
+
+// Note: No header files should follow the next three lines
+#if defined(_WIN32) && defined(_DEBUG)
+#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+#endif
+
 Prism::Prism(void)
 {
   this->type = PRISM;

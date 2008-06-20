@@ -5,6 +5,12 @@
 #include <fstream>
 #include "Point.h"
 #include "PHST_polygon.h"
+
+// Note: No header files should follow the next three lines
+#if defined(_WIN32) && defined(_DEBUG)
+#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+#endif
+
 XYZfile::XYZfile(void)
 {
 }

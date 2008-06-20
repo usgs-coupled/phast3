@@ -4,6 +4,12 @@
 #include "message.h"
 static int interpolate_drain(River_Polygon *drain_polygon_ptr);
 
+// Note: No header files should follow the next three lines
+#if defined(_WIN32) && defined(_DEBUG)
+#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+#endif
+
+
 Drain::Drain(void)
 {
   // Data

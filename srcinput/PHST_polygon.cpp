@@ -1,6 +1,12 @@
 #include "PHST_polygon.h"
 #include "message.h"
 #include <iostream>
+
+// Note: No header files should follow the next three lines
+#if defined(_WIN32) && defined(_DEBUG)
+#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+#endif
+
 PHST_polygon::PHST_polygon(void)
 {
 }

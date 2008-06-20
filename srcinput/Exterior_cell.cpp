@@ -1,6 +1,12 @@
 #include "Exterior_cell.h"
 #include "message.h"
 #include "Utilities.h"
+
+// Note: No header files should follow the next three lines
+#if defined(_WIN32) && defined(_DEBUG)
+#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+#endif
+
 Exterior_cell::Exterior_cell(void)
 {
   xn = xp = yn = yp = zn = zp = false;

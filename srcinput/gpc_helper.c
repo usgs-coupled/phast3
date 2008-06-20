@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "PHST_polygon.h"
-#if defined(__WPHAST__)
+#if defined(__WPHAST__) && !defined(_DEBUG)
 #include "../phqalloc.h"
 #else
 #ifdef _DEBUG

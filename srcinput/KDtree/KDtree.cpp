@@ -3,6 +3,11 @@
 #include "KDtree.h"
 using namespace boost; 
 
+// Note: No header files should follow the next three lines
+#if defined(_WIN32) && defined(_DEBUG)
+#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+#endif
+
 KDtree::KDtree(std::vector<Point> &pts)
 {
   //array2ddouble data(extents[10][3]);  // declare a 10000 x 3 array.
