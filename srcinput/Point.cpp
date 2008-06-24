@@ -198,7 +198,6 @@ bool Point::point_in_gpc_polygon(gpc_polygon *poly_ptr)
   double z = 0.0, z1 = 0.0, z2 = 0.0;
   for (l = 0; l < poly_ptr->num_contours; l++)
   {
-    bool in = false;
     int i, j;
     j = poly_ptr->contour[l].num_vertices - 1;
     for (i = 0; i < poly_ptr->contour[l].num_vertices; i++)

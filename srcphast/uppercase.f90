@@ -2,7 +2,7 @@ FUNCTION uppercase(string) RESULT(outstring)
   ! ... Change string to uppercase
   IMPLICIT NONE
   CHARACTER(LEN=*), INTENT(IN) :: string
-  CHARACTER(LEN=*) :: outstring
+  CHARACTER(LEN=1000) :: outstring
   CHARACTER(LEN=1) :: char
   INTEGER, PARAMETER :: lower_to_upper = IACHAR("A") - IACHAR("a")
   INTEGER :: i

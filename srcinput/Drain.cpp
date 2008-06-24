@@ -70,7 +70,7 @@ int tidy_drains(void)
     *   Check width data
     */
     if (drain_ptr->points[0].width_defined == FALSE || drain_ptr->points[drain_ptr->points.size() - 1].width_defined == FALSE) {
-      sprintf(error_string,"Width must be defined at first and last drain point (1 and %d) of drain %d.", drain_ptr->points.size(), j);
+      sprintf(error_string,"Width must be defined at first and last drain point (1 and %d) of drain %d.", (int) drain_ptr->points.size(), j);
       error_msg(error_string, CONTINUE);
       input_error++;
       return_value = FALSE;
@@ -108,7 +108,7 @@ int tidy_drains(void)
     *   Check k data
     */
     if (drain_ptr->points[0].k_defined == FALSE || drain_ptr->points[drain_ptr->points.size() - 1].k_defined == FALSE) {
-      sprintf(error_string,"Hydraulic conductivity must be defined at first and last drain point (1 and %d) of drain %d.", drain_ptr->points.size(), j);
+      sprintf(error_string,"Hydraulic conductivity must be defined at first and last drain point (1 and %d) of drain %d.", (int) drain_ptr->points.size(), j);
       error_msg(error_string, CONTINUE);
       input_error++;
       return_value = FALSE;
@@ -146,7 +146,7 @@ int tidy_drains(void)
     *   Check thickness data
     */
     if (drain_ptr->points[0].thickness_defined == FALSE || drain_ptr->points[drain_ptr->points.size() - 1].thickness_defined == FALSE) {
-      sprintf(error_string,"Thickness must be defined at first and last drain point (1 and %d) of drain %d.", drain_ptr->points.size(), j);
+      sprintf(error_string,"Thickness must be defined at first and last drain point (1 and %d) of drain %d.", (int) drain_ptr->points.size(), j);
       error_msg(error_string, CONTINUE);
       input_error++;
       return_value = FALSE;
@@ -185,7 +185,7 @@ int tidy_drains(void)
     *   Check z data
     */
     if (drain_ptr->points[0].z_defined == FALSE || drain_ptr->points[drain_ptr->points.size() - 1].z_defined == FALSE) {
-      sprintf(error_string,"Drain elevation must be defined at first and last drain point (1 and %d) of drain %d.", drain_ptr->points.size(), j);
+      sprintf(error_string,"Drain elevation must be defined at first and last drain point (1 and %d) of drain %d.", (int) drain_ptr->points.size(), j);
       error_msg(error_string, CONTINUE);
       input_error++;
       return_value = FALSE;
