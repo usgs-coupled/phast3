@@ -8,18 +8,18 @@ SOLUTE_TRANSPORT false
 STEADY_FLOW false
 	-min		.001
 	-max		10
-	-growth_factor 	1.2
-	-head_change 	50
-	-head_tol    	1e-4
-	-flow_bal    	1e-4
-	-iterations  	400
+	-growth_factor 	1.1
+	-head_change 	30
+	-head_tol    	1e-3
+	-flow_bal    	1e-3
+	-iterations  	500
 FREE_SURFACE_BC true
 
 SOLUTION_METHOD
 	-iterative_solver   true
-	-tolerance          1e-10
+	-tolerance          1e-12
 	-save_directions    50
-	-maximum_iterations 500
+	-maximum_iterations 2000
 	-space_differencing 0
 	-time_differencing  1
 	-cross_dispersion   false
@@ -46,8 +46,8 @@ UNITS
 	-drain_width                      m
 
 GRID
-	-uniform X 275000 285000 50
-	-uniform Y 810000 830000 50
+	-uniform X 275000 285000 100
+	-uniform Y 810000 830000 100
 	-uniform Z -200 -20 19
 	-overlay_uniform Z -10 25 36
 	#-overlay_uniform Z -10 90 101
@@ -258,7 +258,6 @@ PRINT_FREQUENCY
 		-flow_balance                end 
 		-force_chemistry_print  0
 		-HDF_chemistry               end 
-		#-HDF_heads                   end 
 		-hdf_heads      1 step
 		-HDF_velocities              end 
 		-heads                       end 
@@ -271,9 +270,10 @@ PRINT_FREQUENCY
 		-xyz_velocities         0
 		-xyz_wells              0
 		-boundary_conditions    false
+		-save_final_heads       true
 TIME_CONTROL
 	-time_step
-		0 .001
+		0 .0025
 	-time_change
-		.001
+		.05
 	-start_time 0
