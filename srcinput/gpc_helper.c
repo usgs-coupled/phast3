@@ -292,6 +292,9 @@ gpc_polygon *points_to_poly(std::vector<Point> &pts, Cell_Face face)
       p[i].y = pts[i].y();
     }
     break;
+  default:
+    error_msg("Unhandled case in points_to_poly.", EA_STOP);
+    break;
   }
   return(poly_ptr);
 }

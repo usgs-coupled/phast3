@@ -7,6 +7,7 @@ class NNInterpolator;
 #include "gpc.h"
 class PHST_polygon;
 #include <map>
+#include <string>
 class Filedata
 {
 public:
@@ -29,7 +30,7 @@ public:
   FILE_TYPE                            Get_file_type(void) {return this->file_type;};
   std::map<int, NNInterpolator *> &    Get_nni_map() {return this->nni_map;};
   std::map<int, std::vector<Point> > & Get_pts_map() {return this->pts_map;};
-  friend void                          Clear_file_data_map(void);
+  //friend void                          Clear_file_data_map(void);
 
   // data
   static std::map<std::string,Filedata *> file_data_map;
@@ -46,4 +47,5 @@ protected:
   std::map<int, NNInterpolator *>      nni_map;
 
 };
+void                          Clear_file_data_map(void);
 #endif // FILEDATA_H_INCLUDED

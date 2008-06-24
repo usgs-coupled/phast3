@@ -288,6 +288,8 @@ gpc_polygon * Prism::Slice(Cell_Face face, double coord)
   case CF_Z:
     p_intersection = Segment_intersect_plane(0.0, 0.0, 1.0, -coord, p1, this->prism_dip, t);
     break;
+  default:
+    error_msg("Unhandled case in Prism::Slice.", EA_STOP);
   }
 
 

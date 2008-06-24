@@ -45,7 +45,7 @@ void PHST_polygon::set_z(double z)
   {
     it->set_z(z);
   }
-};
+}
 void PHST_polygon::set_z_to_v()
 {
 
@@ -55,18 +55,13 @@ void PHST_polygon::set_z_to_v()
   {
     it->set_z(it->get_v());
   }
-};
+}
 
 bool PHST_polygon::Point_in_polygon(Point p) 
 
 {
 //int pnpoly(int npol, float *xp, float *yp, float x, float y)
   
-  double x = p.x();
-  double y = p.y();
-
-  bool in = false;
-
   int poly;
   for (poly = 0; poly < (int) this->begin.size(); poly++)
   {

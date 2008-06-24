@@ -1,6 +1,6 @@
 #if !defined(PRISM_H_INCLUDED)
 #define PRISM_H_INCLUDED
-#include "polyhedron.h"
+#include "Polyhedron.h"
 #include "Data_source.h"
 
 class Prism :
@@ -53,7 +53,7 @@ public:
   bool Project_point(Point &p, Cell_Face face, double coord);
   bool Project_points(std::vector<Point> &pts, Cell_Face face, double coord);
   bool Point_in_polyhedron(const Point& p);
-  friend void Tidy_prisms(void);
+  //friend void Tidy_prisms(void);
   void Tidy();
   // data
 
@@ -71,4 +71,5 @@ public:
   static std::vector<Prism * > prism_vector;
 
 };
+void Tidy_prisms(void);
 #endif // !defined(PRISM_H_INCLUDED)
