@@ -5,10 +5,10 @@
 # 
 SOLUTE_TRANSPORT false
     -diffusivity  1e-009
-STEADY_FLOW false
-	-min		.001
-	-max		10
-	-growth_factor 	1.1
+STEADY_FLOW true
+	-min		.1
+	-max		20
+	-growth_factor 	2
 	-head_change 	30
 	-head_tol    	1e-3
 	-flow_bal    	1e-3
@@ -17,7 +17,7 @@ FREE_SURFACE_BC true
 
 SOLUTION_METHOD
 	-iterative_solver   true
-	-tolerance          1e-12
+	-tolerance          1e-11
 	-save_directions    50
 	-maximum_iterations 2000
 	-space_differencing 0
@@ -46,8 +46,8 @@ UNITS
 	-drain_width                      m
 
 GRID
-	-uniform X 275000 285000 100
-	-uniform Y 810000 830000 100
+	-uniform X 275000 285000 101
+	-uniform Y 810000 830000 101
 	-uniform Z -200 -20 19
 	-overlay_uniform Z -10 25 36
 	#-overlay_uniform Z -10 90 101
@@ -66,9 +66,12 @@ MEDIA
 		#-Kx                       .5e-3
 		#-Ky                       .5e-3
 		#-Kz                       .15e-3
-		-Kx     Y    .75e-3 810000   .36e-3  830000
-		-Ky     Y    .75e-3 810000   .36e-3  830000
-		-Kz     Y    .25e-3 810000   .12e-3  830000		
+		#-Kx     Y    1.00e-3 810000   1.00e-3  830000
+		#-Ky     Y    1.00e-3 810000   1.00e-3  830000
+		#-Kz     Y    0.30e-3 810000   0.30e-3  830000
+		-Kx     Z    1.00e-3 10   0.30e-3  -40
+		-Ky     Z    1.00e-3 10   0.30e-3  -40
+		-Kz     Z    0.30e-3 10   0.10e-3  -40			
 		-porosity                 0.39
 		-specific_storage         0.39
 		-long_dispersivity        1
@@ -77,9 +80,9 @@ MEDIA
 	
 	-zone 275000 810000 -500 285000 830000 -5
 		-active                   0
-		-Kx                       .36e-3
-		-Ky                       .36e-3
-		-Kz                       .12e-3		
+		-Kx                       .3e-3
+		-Ky                       .3e-3
+		-Kz                       .1e-3		
 		-porosity                 0.39
 		-specific_storage         0.39
 		-long_dispersivity        1
@@ -113,9 +116,9 @@ MEDIA
 		
 		-bottom SHAPE ArcData/SimpleBath.shp 9
 
-		-Kx                       100
-		-Ky                       100
-		-Kz                       100
+		-Kx                       .100
+		-Ky                       .100
+		-Kz                       .100
 		-porosity                 1
 		-specific_storage         1
 		-long_dispersivity        100
@@ -221,8 +224,8 @@ DRAIN 3 Johns Pond drain
 HEAD_IC
 
 	-zone 275000 810000 -500 285000 830000 100
-		-head                    30
-		#-head                     100
+		#-head                    30
+		-head                     0
 		#-head file capecod.heads
 
 #CHEMISTRY_IC
@@ -273,7 +276,7 @@ PRINT_FREQUENCY
 		-save_final_heads       true
 TIME_CONTROL
 	-time_step
-		0 .0025
+		0 1
 	-time_change
-		.05
+		10
 	-start_time 0
