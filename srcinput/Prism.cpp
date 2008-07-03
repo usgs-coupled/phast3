@@ -21,6 +21,7 @@ Prism::Prism(void)
   this->perimeter_poly = NULL;
   this->prism_dip = Point(0,0,1,0);
   this->perimeter_datum = 0.0;
+  this->orig_perimeter_datum = 0.0;
   this->perimeter_option = DEFAULT;
   zone_init(&this->box);
   Prism::prism_vector.push_back(this);
@@ -30,6 +31,7 @@ Prism::Prism(const Prism& c)
 ,perimeter(c.perimeter)
 ,prism_dip(c.prism_dip)
 ,perimeter_datum(c.perimeter_datum)
+,orig_perimeter_datum(c.orig_perimeter_datum)
 ,perimeter_option(c.perimeter_option)
 ,bottom(c.bottom)
 ,top(c.top)
@@ -181,6 +183,7 @@ bool Prism::Read(PRISM_OPTION p_opt, std::istream &lines)
       {
 	this->perimeter_option = CONSTANT;
 	sscanf(str,"%lf", &(this->perimeter_datum));
+	this->orig_perimeter_datum = this->perimeter_datum;
       } else if (str[0] == 'a')
       {
 	this->perimeter_option = ATTRIBUTE;
@@ -349,9 +352,64 @@ gpc_polygon * Prism::Slice(Cell_Face face, double coord)
   return(NULL);
 }
 
-void Prism::printOn(std::ostream& o) const
+void Prism::printOn(std::ostream& os) const
 {
-  // TODO
+  os << "\t-prism" << std::endl;
+
+  os << "\t\t#-vector " << this->prism_dip.x() << " " << this->prism_dip.y() << " " << this->prism_dip.z() << std::endl;
+
+  os << "\t\t-top " << this->top;
+  {
+    Data_source top_copy(this->top);
+    if (top_copy.Get_h_units()->defined || top_copy.Get_v_units()->defined)
+    {
+      os << "\t\t-units_top ";
+      os << (top_copy.Get_h_units()->defined) ? top_copy.Get_h_units()->input : top_copy.Get_h_units()->si;
+      os << (top_copy.Get_v_units()->defined) ? top_copy.Get_v_units()->input : top_copy.Get_v_units()->si;
+      os << std::endl;
+    }
+  }
+
+  os << "\t\t-bottom " << this->bottom;
+  {
+    Data_source bottom_copy(this->bottom);
+    if (bottom_copy.Get_h_units()->defined || bottom_copy.Get_v_units()->defined)
+    {
+      os << "\t\t-units_bottom ";
+      os << (bottom_copy.Get_h_units()->defined) ? bottom_copy.Get_h_units()->input : bottom_copy.Get_h_units()->si;
+      os << (bottom_copy.Get_v_units()->defined) ? bottom_copy.Get_v_units()->input : bottom_copy.Get_v_units()->si;
+      os << std::endl;
+    }
+  }
+
+  os << "\t\t-perimeter " << this->perimeter;
+  {
+    Data_source perimeter_copy(this->perimeter);
+    if (perimeter_copy.Get_h_units()->defined || perimeter_copy.Get_v_units()->defined)
+    {
+      os << "\t\t-units_perimeter ";
+      os << (perimeter_copy.Get_h_units()->defined) ? perimeter_copy.Get_h_units()->input : perimeter_copy.Get_h_units()->si;
+      os << (perimeter_copy.Get_v_units()->defined) ? perimeter_copy.Get_v_units()->input : perimeter_copy.Get_v_units()->si;
+      os << std::endl;
+    }
+  }
+
+  switch (this->perimeter_option)
+  {
+  case CONSTANT:
+    os << "\t\t-perimeter_z " << this->orig_perimeter_datum << std::endl;
+    break;
+  case ATTRIBUTE:
+    os << "\t\t-perimeter_z attribute" << std::endl;
+    break;
+  case USE_Z:
+    os << "\t\t-perimeter_z use_z" << std::endl;
+    break;
+  case DEFAULT:
+    break;
+  default:
+    assert(false);
+  }
 }
 
 bool Prism::Project_point(Point &p, Cell_Face face, double coord)

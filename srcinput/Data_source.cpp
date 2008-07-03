@@ -429,3 +429,33 @@ double Data_source::Interpolate(const Point& p)
   }
   return(-999.);
 }
+
+std::ostream& operator<< (std::ostream &os, const Data_source &ds)
+{
+  switch (ds.source_type)
+  {
+  case Data_source::SHAPE:
+    os << "shape " << ds.Get_file_name() << std::endl;    
+    break;
+  case Data_source::ARCRASTER:
+    os << "arcraster " << ds.Get_file_name() << std::endl;    
+    break;
+  case Data_source::XYZ:
+    os << "xyz " << ds.Get_file_name() << std::endl;    
+    break;
+  case Data_source::CONSTANT:
+    os << "constant " << ds.pts.front().z() << std::endl;
+    break;
+  case Data_source::POINTS:
+    os << "points" << std::endl;
+    {
+      std::vector<Point>::const_iterator citer = ds.pts.begin();
+      for (; citer != ds.pts.end(); ++citer)
+      {
+        os << "\t\t\t" << citer->x() << " " << citer->y() << " " << citer->z() << std::endl;
+      }
+    }
+    break;
+  }
+  return os;
+}

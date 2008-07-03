@@ -44,7 +44,7 @@ public:
 protected:
   // Virtual methods
   struct zone *Set_bounding_box();
-  void printOn(std::ostream& o) const;
+  virtual void printOn(std::ostream& os) const;
 
 public:
   // Methods
@@ -61,6 +61,7 @@ public:
   Data_source perimeter;
   Point prism_dip;
   double perimeter_datum;
+  double orig_perimeter_datum;
   PERIMETER_OPTION perimeter_option;
 
   Data_source bottom;

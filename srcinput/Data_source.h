@@ -55,8 +55,10 @@ public:
   int                      Get_attribute          (void) {return this->attribute;}
   PHST_polygon &           Get_phst_polygons      (void) {return this->phst_polygons;};
   struct zone *            Get_bounding_box       (void);
+  struct cunit *           Get_h_units            (void) {return &this->h_units;};
   struct cunit *           Get_v_units            (void) {return &this->v_units;};
   Polygon_tree *           Get_tree               (void);
+  std::string              Get_file_name          (void)const {return this->file_name;};
 
   // Setter
   void                     Set_source_type        (DATA_SOURCE_TYPE dt) {this->source_type = dt;};
@@ -64,6 +66,8 @@ public:
   void                     Set_defined            (bool tf) {this->defined = tf;};
 
   Data_source &            operator=              (const Data_source& r);
+
+  friend std::ostream& operator<< (std::ostream &os, const Data_source &ds);
 
   // Data
 protected:
