@@ -166,7 +166,8 @@ bool NNInterpolator::preprocess(std::vector<Point> &pts_in, std::vector<Point> &
   this->nn = nnpi_create(this->delaunay_triangulation);
   int seed = 0;
 
-  double wmin = 0;  // no extrapolation
+// COMMENT: {7/7/2008 4:44:40 PM}  double wmin = 0;  // no extrapolation
+  double wmin = -1e+6;  // no extrapolation
   nnpi_setwmin(this->nn, wmin);
 
   // find corners not in convex hull 

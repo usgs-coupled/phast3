@@ -50,3 +50,9 @@ bool zone::Point_in_zone(Point p)
     p.z() >= this->z1 && p.z() <= this->z2 ) return true;
   return false;
 }
+bool zone::Point_in_xy_zone(Point p)
+{
+  if (p.x() >= this->x1 && p.x() <= this->x2 &&
+    p.y() >= this->y1 && p.y() <= this->y2) return true;
+  return false;
+}

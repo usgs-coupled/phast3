@@ -27,7 +27,8 @@ Polygon_leaf::~Polygon_leaf()
 bool Polygon_leaf::split()
 {
   // check number of points
-  if (this->polygon->Get_points().size() < 10) return false;
+  if (this->polygon->Get_points().size() < 5) return false;
+// COMMENT: {7/7/2008 5:27:11 PM}  if (this->polygon->Get_points().size() < 10) return false;
 
   gpc_polygon *whole = PHST_polygon2gpc_polygon(this->polygon);
 

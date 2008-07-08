@@ -22,6 +22,7 @@ struct zone {
 
 	// methods
 	bool Point_in_zone(Point p);
+	bool Point_in_xy_zone(Point p);
 
 };
 
