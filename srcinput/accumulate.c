@@ -2551,303 +2551,315 @@ void distribute_specified_bc (
 }
 /* ---------------------------------------------------------------------- */
 void distribute_flux_bc (
-  int i,                 // bc[i]
-  std::list<int> &pts,   // list of cell numbers in natural order
-  char *tag)   
-/* ---------------------------------------------------------------------- */
+						 int i,                 // bc[i]
+						 std::list<int> &pts,   // list of cell numbers in natural order
+						 char *tag)   
+						 /* ---------------------------------------------------------------------- */
 {
-  int ncells = pts.size();
-  int node_sequence = -1;
+	int ncells = pts.size();
+	int node_sequence = -1;
 
-  for(std::list<int>::iterator it = pts.begin(); it != pts.end(); it++)
-  {
-    int n = *it;
-    BC_info bc_info; 
-
-    int i_dummy;
-    double d_dummy;
-    struct mix mix_dummy;
-
-    node_sequence++;
-
-    // bc_flux
-    if (bc[i]->bc_flux != NULL ) {
-      bc_info.bc_flux_defined = false;
-      if (get_property_for_cell(ncells, n, node_sequence, bc[i]->mask, 
-	bc[i]->current_bc_flux, 
-	PT_DOUBLE, 
-	&i_dummy,
-	&bc_info.bc_flux,
-	&mix_dummy)) 
-      {
-	bc_info.bc_flux_defined = true;
-      } else 
-      {
-	bc_info.bc_flux_defined = false;
-  	sprintf(error_string,"Flux %s", tag);
-	error_msg(error_string, CONTINUE);
-	input_error++;
-      }
-      bc[i]->current_bc_flux->new_def = FALSE;
-    }
-    struct zone zo;
-    zo.x1 = 0;
-    zo.y1 = 0;
-    zo.z1 = 0;
-    zo.x2 = 1;
-    zo.y2 = 1;
-    zo.z2 = 1;
-
-    // solution mix
-    if (bc[i]->bc_solution != NULL && flow_only == FALSE)
-    {
-      bc_info.bc_solution_defined = false;
-      if (get_property_for_cell(ncells, n, node_sequence, bc[i]->mask, 
-	bc[i]->current_bc_solution, 
-	PT_MIX, 
-	&i_dummy,
-	&d_dummy,
-	&bc_info.bc_solution)) 
-      {
-	bc_info.bc_solution_defined = true;
-      } else {
-	bc_info.bc_solution_defined = false;
-  	sprintf(error_string,"Solution %s", tag);
-	error_msg(error_string, CONTINUE);
-	input_error++;
-      }
-      bc[i]->current_bc_solution->new_def = FALSE;
-    }
-
-    // solution type
-    bc_info.bc_solution_type = bc[i]->bc_solution_type;
-    bc_info.bc_definition = i;
-    bc_info.face = bc[i]->cell_face;
-    bc_info.bc_type = BC_info::BC_FLUX;
-
-    // only need areas for simulation == 0
-    if (simulation == 0) 
-    {
-      //gpc_polygon *bc_area = bc[i]->polyh->Face_polygon(bc[i]->cell_face);
-      double coord;
-  
-      switch (bc[i]->cell_face)
-      {
-      case CF_X:
-	coord = cells[n].x;
-	break;
-      case CF_Y:
-	coord = cells[n].y;
-	break;
-      case CF_Z:
-	coord = cells[n].z;
-	break;
-      default:
-	error_msg("Wrong face defined in distribute_flux_bc", EA_CONTINUE);
-	break;
-      }
-      //gpc_polygon *bc_area = bc[i]->polyh->Face_polygon(bc[i]->cell_face);
-      gpc_polygon *bc_area = bc[i]->polyh->Slice(bc[i]->cell_face, coord);
-      if (bc_area != NULL)
-      {
-
-	// get polygon for cell face
-	// This is a pointer to the cell face polygon in exterior, do not destroy.
-	gpc_polygon *polygon_ptr = cells[n].exterior->get_exterior_polygon(bc[i]->cell_face);
-	if (polygon_ptr == NULL)
+	for(std::list<int>::iterator it = pts.begin(); it != pts.end(); it++)
 	{
-	  sprintf(error_string,"Exterior cell face not found %s", tag);
-	  error_msg(error_string, CONTINUE);
-	  input_error++;
-	  continue;
+		int n = *it;
+		BC_info bc_info; 
+
+		int i_dummy;
+		double d_dummy;
+		struct mix mix_dummy;
+
+		node_sequence++;
+
+		// bc_flux
+		if (bc[i]->bc_flux != NULL ) {
+			bc_info.bc_flux_defined = false;
+			if (get_property_for_cell(ncells, n, node_sequence, bc[i]->mask, 
+				bc[i]->current_bc_flux, 
+				PT_DOUBLE, 
+				&i_dummy,
+				&bc_info.bc_flux,
+				&mix_dummy)) 
+			{
+				bc_info.bc_flux_defined = true;
+			} else 
+			{
+				bc_info.bc_flux_defined = false;
+				sprintf(error_string,"Flux %s", tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+			}
+			bc[i]->current_bc_flux->new_def = FALSE;
+		}
+		struct zone zo;
+		zo.x1 = 0;
+		zo.y1 = 0;
+		zo.z1 = 0;
+		zo.x2 = 1;
+		zo.y2 = 1;
+		zo.z2 = 1;
+
+		// solution mix
+		if (bc[i]->bc_solution != NULL && flow_only == FALSE)
+		{
+			bc_info.bc_solution_defined = false;
+			if (get_property_for_cell(ncells, n, node_sequence, bc[i]->mask, 
+				bc[i]->current_bc_solution, 
+				PT_MIX, 
+				&i_dummy,
+				&d_dummy,
+				&bc_info.bc_solution)) 
+			{
+				bc_info.bc_solution_defined = true;
+			} else {
+				bc_info.bc_solution_defined = false;
+				sprintf(error_string,"Solution %s", tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+			}
+			bc[i]->current_bc_solution->new_def = FALSE;
+		}
+
+		// solution type
+		bc_info.bc_solution_type = bc[i]->bc_solution_type;
+		bc_info.bc_definition = i;
+		bc_info.face = bc[i]->cell_face;
+		bc_info.bc_type = BC_info::BC_FLUX;
+
+		// only need areas for simulation == 0
+		if (simulation == 0) 
+		{
+			//gpc_polygon *bc_area = bc[i]->polyh->Face_polygon(bc[i]->cell_face);
+			double coord;
+
+			switch (bc[i]->cell_face)
+			{
+			case CF_X:
+				coord = cells[n].x;
+				break;
+			case CF_Y:
+				coord = cells[n].y;
+				break;
+			case CF_Z:
+				coord = cells[n].z;
+				break;
+			default:
+				error_msg("Wrong face defined in distribute_flux_bc", EA_CONTINUE);
+				break;
+			}
+			//gpc_polygon *bc_area = bc[i]->polyh->Face_polygon(bc[i]->cell_face);
+			gpc_polygon *bc_area = bc[i]->polyh->Slice(bc[i]->cell_face, coord);
+			if (bc_area != NULL)
+			{
+
+				// get polygon for cell face
+				// This is a pointer to the cell face polygon in exterior, do not destroy.
+				gpc_polygon *polygon_ptr = cells[n].exterior->get_exterior_polygon(bc[i]->cell_face);
+				if (polygon_ptr == NULL)
+				{
+					sprintf(error_string,"Exterior cell face not found %s", tag);
+					error_msg(error_string, CONTINUE);
+					input_error++;
+					continue;
+				}
+
+				// Intersect cell face with boundary condition polygon
+				gpc_polygon *cell_face_polygon = empty_polygon();
+				gpc_polygon_clip (GPC_INT, bc_area, polygon_ptr, cell_face_polygon);  
+
+				Prism *prism = dynamic_cast<Prism *> (bc[i]->polyh);
+				if (prism != NULL)
+				{
+					prism->remove_top_bottom(cell_face_polygon, bc[i]->cell_face, coord);
+				}
+				bc_info.poly = cell_face_polygon; 
+			}
+
+			// Free space
+			if (bc_area != NULL)
+			{
+				gpc_free_polygon(bc_area);
+				free_check_null(bc_area);
+			}
+		}
+
+		// Store info
+		cells[n].all_bc_info->push_back(bc_info);
+
 	}
 
-	// Intersect cell face with boundary condition polygon
-	gpc_polygon *cell_face_polygon = empty_polygon();
-	gpc_polygon_clip (GPC_INT, bc_area, polygon_ptr, cell_face_polygon);  
-	bc_info.poly = cell_face_polygon; 
-      }
-
-      // Free space
-      if (bc_area != NULL)
-      {
-	gpc_free_polygon(bc_area);
-	free_check_null(bc_area);
-      }
-    }
-
-    // Store info
-    cells[n].all_bc_info->push_back(bc_info);
-
-  }
-
-  return;
+	return;
 }
 
 
 /* ---------------------------------------------------------------------- */
 void distribute_leaky_bc (
-  int i,                 // bc[i]
-  std::list<int> &pts,   // list of cell numbers in natural order
-  char *tag)   
+						  int i,                 // bc[i]
+						  std::list<int> &pts,   // list of cell numbers in natural order
+						  char *tag)   
 /* ---------------------------------------------------------------------- */
 {
-  int ncells = pts.size();
-  int node_sequence = -1;
-  //gpc_polygon *bc_area = bc[i]->polyh->Face_polygon(bc[i]->cell_face);
+	int ncells = pts.size();
+	int node_sequence = -1;
+	//gpc_polygon *bc_area = bc[i]->polyh->Face_polygon(bc[i]->cell_face);
 
-  for(std::list<int>::iterator it = pts.begin(); it != pts.end(); it++)
-  {
-    int n = *it;
-    //BC_info *bc_info = new BC_info; 
-    BC_info bc_info;
-
-    int i_dummy;
-    double d_dummy;
-    struct mix mix_dummy;
-
-    node_sequence++;
-
-    // bc_head
-    if (bc[i]->bc_head != NULL ) {
-      if (get_property_for_cell(ncells, n, node_sequence, bc[i]->mask, 
-	bc[i]->current_bc_head, 
-	PT_DOUBLE, 
-	&i_dummy,
-	&bc_info.bc_head,
-	&mix_dummy)) 
-      {
-	bc_info.bc_head_defined = true;
-      } else 
-      {
-	bc_info.bc_head_defined = false;
-  	sprintf(error_string,"Head %s", tag);
-	error_msg(error_string, CONTINUE);
-	input_error++;
-      }
-      bc[i]->current_bc_head->new_def = FALSE;
-    }
-
-    // Hydraulic conductivity
-    if (bc[i]->bc_k != NULL ) {
-      if (get_property_for_cell(ncells, n, node_sequence, bc[i]->mask, 
-	bc[i]->bc_k, 
-	PT_DOUBLE, 
-	&i_dummy,
-	&bc_info.bc_k,
-	&mix_dummy)) 
-      {
-	bc_info.bc_k_defined = true;
-      } else 
-      {
-	bc_info.bc_k_defined = false;
-  	sprintf(error_string,"Hydraulic conductivity %s", tag);
-	error_msg(error_string, CONTINUE);
-	input_error++;
-      }
-    }
-    
-    // Thickness
-    if (bc[i]->bc_thick != NULL ) {
-      if (get_property_for_cell(ncells, n, node_sequence, bc[i]->mask, 
-	bc[i]->bc_thick, 
-	PT_DOUBLE, 
-	&i_dummy,
-	&bc_info.bc_thick,
-	&mix_dummy)) 
-      {
-	bc_info.bc_thick_defined = true;
-      } else 
-      {
-	bc_info.bc_thick_defined = false;
-  	sprintf(error_string,"Thick %s", tag);
-	error_msg(error_string, CONTINUE);
-	input_error++;
-      }
-    }
-
-    // Solution mix
-    if (bc[i]->bc_solution != NULL && flow_only == FALSE)
-    {
-      if (get_property_for_cell(ncells, n, node_sequence, bc[i]->mask, 
-	bc[i]->current_bc_solution, 
-	PT_MIX, 
-	&i_dummy,
-	&d_dummy,
-	&bc_info.bc_solution)) 
-      {
-	bc_info.bc_solution_defined = true;
-      } else 
-      {
-	bc_info.bc_solution_defined = false;
-  	sprintf(error_string,"Solution %s", tag);
-	error_msg(error_string, CONTINUE);
-	input_error++;
-      }
-      bc[i]->current_bc_solution->new_def = FALSE;
-    }
-
-    // solution type
-    bc_info.bc_solution_type = bc[i]->bc_solution_type;
-    bc_info.bc_definition = i;
-    bc_info.face = bc[i]->cell_face;
-    bc_info.bc_type = BC_info::BC_LEAKY;
-
-    // only need areas for simulation == 0
-    if (simulation == 0) 
-    {
-      double coord;
-  
-      switch (bc[i]->cell_face)
-      {
-      case CF_X:
-	coord = cells[n].x;
-	break;
-      case CF_Y:
-	coord = cells[n].y;
-	break;
-      case CF_Z:
-	coord = cells[n].z;
-	break;
-      default:
-	error_msg("Wrong face defined in distribute_flux_bc", EA_CONTINUE);
-	break;
-      }
-      //gpc_polygon *bc_area = bc[i]->polyh->Face_polygon(bc[i]->cell_face);
-      gpc_polygon *bc_area = bc[i]->polyh->Slice(bc[i]->cell_face, coord);
-      if (bc_area != NULL)
-      {
-	// get polygon for cell face
-	// This is a pointer to the cell face polygon in exterior, do not destroy.
-	gpc_polygon *polygon_ptr = cells[n].exterior->get_exterior_polygon(bc[i]->cell_face);
-	if (polygon_ptr == NULL)
+	for(std::list<int>::iterator it = pts.begin(); it != pts.end(); it++)
 	{
-	  sprintf(error_string,"Exterior cell face not found %s", tag);
-	  error_msg(error_string, CONTINUE);
-	  input_error++;
-	  continue;
+		int n = *it;
+		//BC_info *bc_info = new BC_info; 
+		BC_info bc_info;
+
+		int i_dummy;
+		double d_dummy;
+		struct mix mix_dummy;
+
+		node_sequence++;
+
+		// bc_head
+		if (bc[i]->bc_head != NULL ) {
+			if (get_property_for_cell(ncells, n, node_sequence, bc[i]->mask, 
+				bc[i]->current_bc_head, 
+				PT_DOUBLE, 
+				&i_dummy,
+				&bc_info.bc_head,
+				&mix_dummy)) 
+			{
+				bc_info.bc_head_defined = true;
+			} else 
+			{
+				bc_info.bc_head_defined = false;
+				sprintf(error_string,"Head %s", tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+			}
+			bc[i]->current_bc_head->new_def = FALSE;
+		}
+
+		// Hydraulic conductivity
+		if (bc[i]->bc_k != NULL ) {
+			if (get_property_for_cell(ncells, n, node_sequence, bc[i]->mask, 
+				bc[i]->bc_k, 
+				PT_DOUBLE, 
+				&i_dummy,
+				&bc_info.bc_k,
+				&mix_dummy)) 
+			{
+				bc_info.bc_k_defined = true;
+			} else 
+			{
+				bc_info.bc_k_defined = false;
+				sprintf(error_string,"Hydraulic conductivity %s", tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+			}
+		}
+
+		// Thickness
+		if (bc[i]->bc_thick != NULL ) {
+			if (get_property_for_cell(ncells, n, node_sequence, bc[i]->mask, 
+				bc[i]->bc_thick, 
+				PT_DOUBLE, 
+				&i_dummy,
+				&bc_info.bc_thick,
+				&mix_dummy)) 
+			{
+				bc_info.bc_thick_defined = true;
+			} else 
+			{
+				bc_info.bc_thick_defined = false;
+				sprintf(error_string,"Thick %s", tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+			}
+		}
+
+		// Solution mix
+		if (bc[i]->bc_solution != NULL && flow_only == FALSE)
+		{
+			if (get_property_for_cell(ncells, n, node_sequence, bc[i]->mask, 
+				bc[i]->current_bc_solution, 
+				PT_MIX, 
+				&i_dummy,
+				&d_dummy,
+				&bc_info.bc_solution)) 
+			{
+				bc_info.bc_solution_defined = true;
+			} else 
+			{
+				bc_info.bc_solution_defined = false;
+				sprintf(error_string,"Solution %s", tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+			}
+			bc[i]->current_bc_solution->new_def = FALSE;
+		}
+
+		// solution type
+		bc_info.bc_solution_type = bc[i]->bc_solution_type;
+		bc_info.bc_definition = i;
+		bc_info.face = bc[i]->cell_face;
+		bc_info.bc_type = BC_info::BC_LEAKY;
+
+		// only need areas for simulation == 0
+		if (simulation == 0) 
+		{
+			double coord;
+
+			switch (bc[i]->cell_face)
+			{
+			case CF_X:
+				coord = cells[n].x;
+				break;
+			case CF_Y:
+				coord = cells[n].y;
+				break;
+			case CF_Z:
+				coord = cells[n].z;
+				break;
+			default:
+				error_msg("Wrong face defined in distribute_flux_bc", EA_CONTINUE);
+				break;
+			}
+			//gpc_polygon *bc_area = bc[i]->polyh->Face_polygon(bc[i]->cell_face);
+			gpc_polygon *bc_area = bc[i]->polyh->Slice(bc[i]->cell_face, coord);
+			if (bc_area != NULL)
+			{
+				// get polygon for cell face
+				// This is a pointer to the cell face polygon in exterior, do not destroy.
+				gpc_polygon *polygon_ptr = cells[n].exterior->get_exterior_polygon(bc[i]->cell_face);
+				if (polygon_ptr == NULL)
+				{
+					sprintf(error_string,"Exterior cell face not found %s", tag);
+					error_msg(error_string, CONTINUE);
+					input_error++;
+					continue;
+				}
+
+				// Intersect cell face with boundary condition polygon
+				gpc_polygon *cell_face_polygon = empty_polygon();
+				gpc_polygon_clip (GPC_INT, bc_area, polygon_ptr, cell_face_polygon);
+				Prism *prism = dynamic_cast<Prism *> (bc[i]->polyh);
+				if (prism != NULL)
+				{
+					prism->remove_top_bottom(cell_face_polygon, bc[i]->cell_face, coord);
+				}
+				bc_info.poly = cell_face_polygon; 
+
+			}
+
+			// Free space
+			if (bc_area != NULL)
+			{
+				gpc_free_polygon(bc_area);
+				free_check_null(bc_area);
+			}
+		}
+
+		// Store info
+		cells[n].all_bc_info->push_back(bc_info);
+
 	}
 
-	// Intersect cell face with boundary condition polygon
-	gpc_polygon *cell_face_polygon = empty_polygon();
-	gpc_polygon_clip (GPC_INT, bc_area, polygon_ptr, cell_face_polygon); 
-	bc_info.poly = cell_face_polygon; 
-      }
-
-      // Free space
-      if (bc_area != NULL)
-      {
-	gpc_free_polygon(bc_area);
-	free_check_null(bc_area);
-      }
-    }
-     
-    // Store info
-    cells[n].all_bc_info->push_back(bc_info);
-
-  }
-
-  return;
+	return;
 }
 /* ---------------------------------------------------------------------- */
 void process_bc (struct cell *cell_ptr)

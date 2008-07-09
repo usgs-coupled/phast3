@@ -614,6 +614,73 @@ gpc_polygon *empty_polygon(void)
 
 	return(poly_ptr);
 }
+
+bool line_and_segment_intersection(Point p1, Point p2, Point q1, Point q2, std::vector<Point> &intersection)
+{
+	// http://www.ucancode.net/faq/C-Line-Intersection-2D-drawing.htm
+	// p1 and p2 define line, q1 and q2 define segment
+	// ax + by = c
+	double a1 = p2.y() - p1.y();
+	double b1 = p1.x() - p2.x();
+	double c1 = a1*p1.x() + b1*p1.y();
+
+	double a2 = q2.y() - q1.y();
+	double b2 = q1.x() - q2.x();
+	double c2 = a2*q1.x() + b2*q1.y();
+
+	double det = a1*b2 - a2*b1;
+	std::vector<Point>::iterator last_it = intersection.end();
+
+	if (intersection.size() > 0)
+	{
+		last_it = last_it - 1;
+	}
+
+	if (det == 0)
+	{
+		// Skip line segments
+#ifdef SKIP
+		//Lines are parallel; check for line segment on line
+		Point p;
+		if (equal(a1*q1.x() + b1*q1.y(), c1, 1e-8))
+		{
+			if (last_it == intersection.end() || !(*last_it == q2))
+			{
+				intersection.push_back(q2);
+			}
+			if (!(q1 == q2))
+			{
+				intersection.push_back(q1);
+			}
+			return(true);
+		}
+#endif
+
+	} 
+	else
+	{
+		double x = (b2*c1 - b1*c2)/det;
+		double y = (a1*c2 - a2*c1)/det;
+		// point intersection 
+		{
+			std::vector<Point> pts;
+			pts.push_back(q1);
+			pts.push_back(q2);
+			Point pmin(pts.begin(), pts.end(), Point::MIN);
+			Point pmax(pts.begin(), pts.end(), Point::MAX);
+			if (pmin.x() > x || pmax.x() < x) return (false);
+			if (pmin.y() > y || pmax.y() < y) return (false);
+		}
+		Point p(x, y, p1.z(), p1.get_v());
+		if (last_it == intersection.end() || !(*last_it == p))
+		{
+			intersection.push_back(p);
+		}
+		return(true);
+	}
+	return(false);
+}
+#ifdef SKIP
 bool line_and_segment_intersection(Point p1, Point p2, Point q1, Point q2, std::vector<Point> &intersection)
 {
   // p1 and p2 define line, q1 and q2 define segment
@@ -673,8 +740,10 @@ bool line_and_segment_intersection(Point p1, Point p2, Point q1, Point q2, std::
     return(true);
   }
 
+
   return(false);
 }
+#endif
 bool line_intersect_polygon(Point lp1, Point lp2, std::vector<Point> pts, std::vector<Point> intersect_pts)
 {
   // lp1 is assumed to be outside bounding box of the polygon

@@ -270,86 +270,92 @@ Polyhedron* Prism::create() const
 gpc_polygon * Prism::Slice(Cell_Face face, double coord)
 {
 
-  // Determine if dip is parallel to face
-  Cube::PLANE_INTERSECTION p_intersection;
-  Point p1;
-  double t;
+	// Determine if dip is parallel to face
+	Cube::PLANE_INTERSECTION p_intersection;
+	Point p1;
+	double t;
 
-  Point lp1, lp2;
-  switch (face)
-  {
-  case CF_X:
-    p_intersection = Segment_intersect_plane(1.0, 0.0, 0.0, -coord, p1, this->prism_dip, t);
-    lp1 = Point(coord, this->box.y1 - 1, grid_zone()->z2);
-    lp2 = Point(coord, this->box.y2 + 1, grid_zone()->z2);
-    break;
-  case CF_Y:
-    p_intersection = Segment_intersect_plane(0.0, 1.0, 0.0, -coord, p1, this->prism_dip, t);
-    lp1 = Point(this->box.x1 - 1, coord, grid_zone()->z2);
-    lp2 = Point(this->box.x2 + 1, coord, grid_zone()->z2);
-    break;
-  case CF_Z:
-    p_intersection = Segment_intersect_plane(0.0, 0.0, 1.0, -coord, p1, this->prism_dip, t);
-    break;
-  default:
-    error_msg("Unhandled case in Prism::Slice.", EA_STOP);
-  }
+	Point lp1, lp2;
+	switch (face)
+	{
+	case CF_X:
+		p_intersection = Segment_intersect_plane(1.0, 0.0, 0.0, -coord, p1, this->prism_dip, t);
+		lp1 = Point(coord, this->box.y1 - 1, grid_zone()->z2);
+		lp2 = Point(coord, this->box.y2 + 1, grid_zone()->z2);
+		break;
+	case CF_Y:
+		p_intersection = Segment_intersect_plane(0.0, 1.0, 0.0, -coord, p1, this->prism_dip, t);
+		lp1 = Point(this->box.x1 - 1, coord, grid_zone()->z2);
+		lp2 = Point(this->box.x2 + 1, coord, grid_zone()->z2);
+		break;
+	case CF_Z:
+		p_intersection = Segment_intersect_plane(0.0, 0.0, 1.0, -coord, p1, this->prism_dip, t);
+		break;
+	default:
+		error_msg("Unhandled case in Prism::Slice.", EA_STOP);
+	}
 
 
-  if (p_intersection == Cube::PI_POINT)
-  {
-    // Dip of prism is not parallel to face
-    std::vector<Point> project;
-    std::vector<Point>::iterator it;
-    for ( it = this->perimeter.Get_points().begin(); it != this->perimeter.Get_points().end(); it++)
-    {
-      Point p = *it;
-      if (!(this->Project_point(p, face, coord)))
-      {
-	error_msg("Could not project point?", EA_CONTINUE);
-      }
-      project.push_back(p);
-    }
-    gpc_polygon *slice = points_to_poly(project, face);
-    return slice;
-  } else
-  {
-    // Dip of prism is parallel to face
-    std::vector<Point> intersect_pts;
-    gpc_polygon *slice = empty_polygon();
-    {
-      //line_intersect_polygon(lp1, lp2, this->perimeter.pts, intersect_pts);
-      this->perimeter.Get_phst_polygons().Line_intersect(lp1, lp2, intersect_pts);
-      int i;
-      for (i = 0; i < (int) intersect_pts.size(); i = i + 2)
-      {
-	// add upper points
-	std::vector<Point> pts;
-	//pts.push_back(Point(pts[i].x(), pts[i].y(), grid_zone()->z2));
-	//pts.push_back(Point(pts[i+1].x(), pts[i+1].y(), grid_zone()->z2));
-	pts.push_back(intersect_pts[i]);
-	pts.push_back(intersect_pts[i+1]);
-	// add lower points
-	Point p2;
-	p2 = intersect_pts[i+1];
-	//p2.set_z(grid_zone()->z2);
-	this->Project_point(p2, face, grid_zone()->z1);
-	pts.push_back(p2);
+	if (p_intersection == Cube::PI_POINT)
+	{
+		// Dip of prism is not parallel to face
+		std::vector<Point> project;
+		std::vector<Point>::iterator it;
+		for ( it = this->perimeter.Get_points().begin(); it != this->perimeter.Get_points().end(); it++)
+		{
+			Point p = *it;
+			if (!(this->Project_point(p, face, coord)))
+			{
+				error_msg("Could not project point?", EA_CONTINUE);
+			}
+			project.push_back(p);
+		}
+		gpc_polygon *slice = points_to_poly(project, face);
+		return slice;
+	} else
+	{
+		// Dip of prism is parallel to face
+		std::vector<Point> intersect_pts;
+		gpc_polygon *slice = empty_polygon();
+		{
+			//line_intersect_polygon(lp1, lp2, this->perimeter.pts, intersect_pts);
+			this->perimeter.Get_phst_polygons().Line_intersect(lp1, lp2, intersect_pts);
+			int i;
+			for (i = 0; i < (int) intersect_pts.size(); i = i + 2)
+			{
+				// add upper points
+				std::vector<Point> pts;
+				//pts.push_back(Point(pts[i].x(), pts[i].y(), grid_zone()->z2));
+				//pts.push_back(Point(pts[i+1].x(), pts[i+1].y(), grid_zone()->z2));
+				pts.push_back(intersect_pts[i]);
+				pts.push_back(intersect_pts[i+1]);
+				// add lower points
+				Point p2;
+				p2 = intersect_pts[i+1];
 
-	p2 = intersect_pts[i];
-	this->Project_point(p2, face, grid_zone()->z1);
-	pts.push_back(p2);
+				// Need to change if prism slants
+				p2.set_z(grid_zone()->z1);
+				//this->Project_point(p2, face, grid_zone()->z1);
+				pts.push_back(p2);
 
-	// generate polygon
-	gpc_polygon * contour = points_to_poly(pts, face);
+				p2 = intersect_pts[i];
+				// Need to change if prism slants
+				p2.set_z(grid_zone()->z1);
+				//this->Project_point(p2, face, grid_zone()->z1);
+				pts.push_back(p2);
 
-	// add to slice
-	gpc_polygon_clip(GPC_UNION, slice, contour, slice);
-      }
-    }
-    return slice;
-  }
-  return(NULL);
+				// generate polygon
+				gpc_polygon * contour = points_to_poly(pts, face);
+
+				// add to slice
+				gpc_polygon_clip(GPC_UNION, slice, contour, slice);
+				gpc_free_polygon(contour);
+				free_check_null(contour);
+			}
+		}
+		return slice;
+	}
+	return(NULL);
 }
 
 void Prism::printOn(std::ostream& os) const
@@ -567,4 +573,185 @@ struct zone * Prism::Set_bounding_box(void)
   this->box.z2 = max.z();
   return (&this->box);
  
+}
+void Prism::remove_top_bottom(gpc_polygon *polygon, Cell_Face face, double coord)
+{
+	PHST_polygon phast_polygon(polygon);
+	phast_polygon.Set_bounding_box();
+	zone face_zone;
+	int ndiv = 10;
+	double divisions = (double) ndiv;
+	std::vector<Point> top_pts, bottom_pts;
+	switch (face)
+	{
+	case CF_X:
+
+		face_zone.x1 = coord;
+		face_zone.y1 = phast_polygon.Get_bounding_box()->x1;
+		face_zone.z1 = phast_polygon.Get_bounding_box()->y1;
+		face_zone.x2 = coord;
+		face_zone.y2 = phast_polygon.Get_bounding_box()->x2;
+		face_zone.z2 = phast_polygon.Get_bounding_box()->y2;
+
+		// Make polygon for top, intersect with polygon
+		if (this->top.Get_defined() && this->top.Get_bounding_box()->z1 < face_zone.z2)
+		{
+			top_pts.push_back(Point(face_zone.y1, grid_zone()->z1, 0.0));
+			double d;
+			//for (d = face_zone.y1; d <= face_zone.y2; d += (face_zone.y2 - face_zone.y1) / divisions)
+			int i;
+			for (i = 0; i < ndiv + 1; i++)
+			{
+				d = face_zone.y1 + (double) i / divisions * (face_zone.y2 - face_zone.y1);
+				Point p(coord, d, 0, 0);
+				double top;
+				top = this->top.Interpolate(p);
+				top_pts.push_back(Point(d, top, 0.0));
+			}
+			top_pts.push_back(Point(face_zone.y2, grid_zone()->z1, 0.0));
+			gpc_polygon *top_poly = points_to_poly(top_pts, CF_Z);
+			gpc_polygon_clip (GPC_INT, polygon, top_poly, polygon);
+			gpc_free_polygon(top_poly);
+			free_check_null(top_poly);
+		}
+		// Make polygon for bottom, intersect with polygon
+		if (this->bottom.Get_defined() && this->bottom.Get_bounding_box()->z2 > face_zone.z1)
+		{
+			bottom_pts.push_back(Point(face_zone.y1, grid_zone()->z2, 0.0));
+			double d;
+			//for (d = face_zone.y1; d <= face_zone.y2; d += (face_zone.y2 - face_zone.y1) / divisions)
+			int i;
+			for (i = 0; i < ndiv + 1; i++)
+			{
+				d = face_zone.y1 + (double) i / divisions * (face_zone.y2 - face_zone.y1);
+				Point p(coord, d, 0, 0);
+				double bottom;
+				bottom = this->bottom.Interpolate(p);
+				bottom_pts.push_back(Point(d, bottom, 0.0));
+			}
+			bottom_pts.push_back(Point(face_zone.y2, grid_zone()->z2, 0.0));
+			gpc_polygon *bottom_poly = points_to_poly(bottom_pts, CF_Z);
+			gpc_polygon_clip (GPC_INT, polygon, bottom_poly, polygon);
+			gpc_free_polygon(bottom_poly);
+			free_check_null(bottom_poly);
+		}
+		break;
+	case CF_Y:
+		face_zone.x1 = phast_polygon.Get_bounding_box()->x1;
+		face_zone.y1 = coord;
+		face_zone.z1 = phast_polygon.Get_bounding_box()->y1;
+		face_zone.x2 = phast_polygon.Get_bounding_box()->x2;
+		face_zone.y2 = coord;
+		face_zone.z2 = phast_polygon.Get_bounding_box()->y2;
+		
+
+		// Make polygon for top, intersect with polygon
+		if (this->top.Get_defined() && this->top.Get_bounding_box()->z1 < face_zone.z2)
+		{
+			top_pts.push_back(Point(face_zone.x1, grid_zone()->z1, 0.0));
+			double d;
+			//for (d = face_zone.x1; d <= face_zone.x2; d += (face_zone.x2 - face_zone.x1) / divisions)
+			int i;
+			for (i = 0; i < ndiv + 1; i++)
+			{
+				d = face_zone.x1 + (double) i / divisions * (face_zone.x2 - face_zone.x1);
+				Point p(d, coord, 0, 0);
+				double top;
+				top = this->top.Interpolate(p);
+				top_pts.push_back(Point(d, top, 0.0));
+			}
+			top_pts.push_back(Point(face_zone.x2, grid_zone()->z1, 0.0));
+			gpc_polygon *top_poly = points_to_poly(top_pts, CF_Z);
+			gpc_polygon_clip (GPC_INT, polygon, top_poly, polygon);
+			gpc_free_polygon(top_poly);
+			free_check_null(top_poly);
+		}
+		// Make polygon for bottom, intersect with polygon
+		if (this->bottom.Get_defined() && this->bottom.Get_bounding_box()->z2 > face_zone.z1)
+		{
+			bottom_pts.push_back(Point(face_zone.x1, grid_zone()->z2, 0.0));
+			double d;
+			//for (d = face_zone.x1; d <= face_zone.x2; d += (face_zone.x2 - face_zone.x1) / divisions)
+			int i;
+			for (i = 0; i < ndiv + 1; i++)
+			{
+				d = face_zone.x1 + (double) i / divisions * (face_zone.x2 - face_zone.x1);
+				Point p(d, coord, 0, 0);
+				double bottom;
+				bottom = this->bottom.Interpolate(p);
+				bottom_pts.push_back(Point(d, bottom, 0.0));
+			}
+			bottom_pts.push_back(Point(face_zone.x2, grid_zone()->z2, 0.0));
+			gpc_polygon *bottom_poly = points_to_poly(bottom_pts, CF_Z);
+			gpc_polygon_clip (GPC_INT, polygon, bottom_poly, polygon);
+			gpc_free_polygon(bottom_poly);
+			free_check_null(bottom_poly);
+		}
+		break;
+	case CF_Z:
+		{
+			face_zone.x1 = phast_polygon.Get_bounding_box()->x1;
+			face_zone.y1 = phast_polygon.Get_bounding_box()->y1;
+			face_zone.z1 = coord;
+			face_zone.x2 = phast_polygon.Get_bounding_box()->x2;
+			face_zone.y2 = phast_polygon.Get_bounding_box()->y2;
+			face_zone.z2 = coord;
+
+			// Check if polygon is below bounding box of top
+			bool do_top = false;
+			if (this->top.Get_defined() && this->top.Get_bounding_box()->z1 < face_zone.z2)
+			{
+				do_top = true;
+			}
+			// Check if polygon is below bounding box of top
+			bool do_bottom = false;
+			if (this->bottom.Get_defined() && this->bottom.Get_bounding_box()->z2 > face_zone.z1)
+			{
+				do_bottom = true;
+			}
+			// Do simple-minded integration if necessary
+			if (do_top || do_bottom) 
+			{
+				double dx = (face_zone.x2 - face_zone.x1) / divisions;
+				double dy = (face_zone.y2 - face_zone.y1) / divisions;
+				double x, y;
+				//for (x = face_zone.x1 + dx/2.0; x < face_zone.x2; x += dx)
+				int i;
+				for (i = 0; i < ndiv; i++)
+				{
+					x = face_zone.x1 + dx * (((double) i) + 0.5); 
+					//for (y = face_zone.y1 + dy/2.0; y < face_zone.y2; y += dy)
+					int j;
+					for (j = 0; j < ndiv; j++)
+					{
+						y = face_zone.y1 + dy * (((double) j) + 0.5);
+						bool point_in_prism = true;
+						Point p(x, y, coord, coord);
+						if (do_top && (coord > this->top.Interpolate(p)) ) 
+						{
+							point_in_prism = false;
+						}
+						if (do_bottom && (coord < this->bottom.Interpolate(p)) ) 
+						{
+							point_in_prism = false;
+						}
+						if (!point_in_prism)
+						{
+							// Subtract area from polygon
+							gpc_polygon *rect = rectangle(x - dx/2.0, y - dy/2.0, x + dx/2.0, y + dy/2.0);
+							gpc_polygon_clip(GPC_DIFF, polygon, rect, polygon);
+							gpc_free_polygon(rect);
+							free_check_null(rect);
+						}
+					}
+
+				}
+			}
+		}
+		break;
+
+	default:
+		error_msg("Error illegal cell face in Prism::remove_top_bottom.", EA_STOP);
+		break;
+	}
 }

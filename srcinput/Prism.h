@@ -53,6 +53,7 @@ public:
   bool Project_point(Point &p, Cell_Face face, double coord);
   bool Project_points(std::vector<Point> &pts, Cell_Face face, double coord);
   bool Point_in_polyhedron(const Point& p);
+  void remove_top_bottom(gpc_polygon *polygon, Cell_Face face, double coord);
   //friend void Tidy_prisms(void);
   void Tidy();
   // data
