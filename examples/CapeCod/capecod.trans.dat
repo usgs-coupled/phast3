@@ -7,7 +7,7 @@ SOLUTE_TRANSPORT false
     -diffusivity  1e-009
 STEADY_FLOW true
 	-min		.1
-	-max		20
+	-max		200
 	-growth_factor 	2
 	-head_change 	30
 	-head_tol    	1e-3
@@ -17,7 +17,7 @@ FREE_SURFACE_BC true
 
 SOLUTION_METHOD
 	-iterative_solver   true
-	-tolerance          1e-11
+	-tolerance          1e-12
 	-save_directions    50
 	-maximum_iterations 2000
 	-space_differencing 0
@@ -50,7 +50,7 @@ GRID
 	-uniform Y 810000 830000 101
 	-uniform Z -200 -20 19
 	-overlay_uniform Z -10 25 36
-	#-overlay_uniform Z -10 90 101
+	#-uniform Z -200 40 13
 	-snap X 0.001
 	-snap Y 0.001
 	-snap Z 0.001
@@ -69,9 +69,9 @@ MEDIA
 		#-Kx     Y    1.00e-3 810000   1.00e-3  830000
 		#-Ky     Y    1.00e-3 810000   1.00e-3  830000
 		#-Kz     Y    0.30e-3 810000   0.30e-3  830000
-		-Kx     Z    1.00e-3 10   0.30e-3  -40
-		-Ky     Z    1.00e-3 10   0.30e-3  -40
-		-Kz     Z    0.30e-3 10   0.10e-3  -40			
+		-Kx     Z    1.00e-3 10   0.30e-3  -5
+		-Ky     Z    1.00e-3 10   0.30e-3  -5
+		-Kz     Z    0.30e-3 10   0.10e-3  -5			
 		-porosity                 0.39
 		-specific_storage         0.39
 		-long_dispersivity        1
@@ -92,13 +92,10 @@ MEDIA
 
 	-prism
 	
-		-vector    0 0 1
-		
 		-top   arcraster   ArcData/rastert_ls_elev1.txt
-		-units_top m m	
+		#-units_top m m	
 
 		-perimeter SHAPE ArcData/coast.shp 
-		-perimeter_z 0
 
 		-bottom arcraster ArcData/rastert_bedrock1.txt
 
@@ -109,10 +106,7 @@ MEDIA
 		-active 0
 
 	-prism
-		-vector    0 0 1
-		
 		-perimeter  SHAPE   ArcData/SimplePonds.shp 
-		-perimeter_z 0	
 		
 		-bottom SHAPE ArcData/SimpleBath.shp 9
 
@@ -124,22 +118,76 @@ MEDIA
 		-long_dispersivity        100
 		-horizontal_dispersivity  100
 		-vertical_dispersivity    100
+		
+#SPECIFIED_HEAD_BC		
+#
+#	-prism
+#		-perimeter  SHAPE   ArcData/SimplePonds.shp 
+#		-bottom SHAPE ArcData/SimpleBath.shp 9
+#		-head 0 22
+
 
 
 LEAKY_BC
-	-zone 275000 810000 -0.5 285000 815000 0.5
-		-face Y
-		-head 0 0
-		-thickness 1
-		-hydraulic 1
-		-associated_solution 0 1
+#	-zone 275000 810000 -0.5 285000 815000 0.5
+#		-face Y
+#		-head 0 0
+#		-thickness 1
+#		-hydraulic 1
+#		-associated_solution 0 1
 		
-	-zone 275000 810000 -0.5 285000 815000 0.5
-		-face X
-		-head 0 0
-		-thickness 1
-		-hydraulic 1
-		-associated_solution 0 1		
+#	-zone 275000 810000 -0.5 285000 815000 0.5
+#		-face X
+#		-head 0 0
+#		-thickness 1
+#		-hydraulic 1
+#		-associated_solution 0 1
+	#-prism	
+	#	-perimeter points
+	#		285000 815000 0
+	#		285000 810000 0
+	#		275000 810000 0
+	#		275000 815000 0
+	#	-top constant 0.5
+	#	-bottom constant -0.5
+	#	-face X
+	#	-head 0 0
+	#	-thickness 1
+	#	-hydraulic 1
+	#	-associated_solution 0 1
+		
+		
+	-prism	
+		-perimeter points
+			277189 814489 0
+			282362 815267 0
+			285000 815267 0
+			285000 810000 0
+			275000 810000 0
+			275000 814489 0
+		-top constant 0.5
+		-bottom constant -0.5
+			-face X
+			-head 0 0
+			-thickness 1
+			-hydraulic 1
+			-associated_solution 0 1
+	-prism	
+		-perimeter points
+			277189 814489 0
+			282362 815267 0
+			285000 815267 0
+			285000 810000 0
+			275000 810000 0
+			275000 814489 0
+		-top constant 0.5
+		-bottom constant -0.5
+			-face Y
+			-head 0 0
+			-thickness 1
+			-hydraulic 1
+			-associated_solution 0 1			
+		
 		
 FLUX_BC
 	-zone 275000 810000 0 285000 830000 100
@@ -224,8 +272,8 @@ DRAIN 3 Johns Pond drain
 HEAD_IC
 
 	-zone 275000 810000 -500 285000 830000 100
-		#-head                    30
-		-head                     0
+		-head                    20
+		#-head                     0
 		#-head file capecod.heads
 
 #CHEMISTRY_IC
@@ -276,7 +324,7 @@ PRINT_FREQUENCY
 		-save_final_heads       true
 TIME_CONTROL
 	-time_step
-		0 1
+		0 .001
 	-time_change
-		10
+		.001
 	-start_time 0
