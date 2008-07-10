@@ -33,6 +33,12 @@ PHST_polygon::PHST_polygon(gpc_polygon *poly)
     this->end.push_back(it);
   }
 }
+PHST_polygon::PHST_polygon(const std::vector<Point> &points)
+: pts(points)
+{
+	this->begin.push_back(this->pts.begin());
+	this->end.push_back(this->pts.end());
+}
 PHST_polygon::~PHST_polygon(void)
 {
 }

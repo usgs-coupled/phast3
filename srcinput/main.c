@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 	* inadvertent use of freed memory
 	*/
 	tmpDbgFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
-	tmpDbgFlag |= _CRTDBG_DELAY_FREE_MEM_DF;
+	//tmpDbgFlag |= _CRTDBG_DELAY_FREE_MEM_DF;
 	tmpDbgFlag |= _CRTDBG_LEAK_CHECK_DF;
 	//tmpDbgFlag |= _CRTDBG_CHECK_ALWAYS_DF;
 	_CrtSetDbgFlag(tmpDbgFlag);
@@ -389,6 +389,7 @@ int clean_up(void)
 	for (std::vector<Drain *>::iterator it = drains.begin(); it != drains.end(); it++) {
 	  delete *it;
 	}
+	drains.clear();
 
 	/* Wells */
 	for (i = 0; i < count_wells; i++) {
@@ -469,7 +470,7 @@ int clean_up(void)
 /* files */
 	if (input != NULL) fclose (input);
 	if (echo_file != NULL) fclose (echo_file);
-	if (std_error != NULL) fclose (std_error);
+	if (std_error != NULL && std_error != stderr) fclose (std_error);
 	if (hst_file != NULL) fclose (hst_file);
 
 	return(OK);

@@ -38,8 +38,8 @@
 			>
 			<DebugSettings
 				Command="$(TargetPath)"
-				WorkingDirectory="C:\Documents and Settings\charlton.GS\Desktop\prism"
-				CommandArguments="capecod"
+				WorkingDirectory="C:\cygwin\home\charlton\programs\phreeqc\wphast-prism\setup\phast\examples\CapeCod"
+				CommandArguments="capecod-90"
 				Attach="false"
 				DebuggerType="3"
 				Remote="1"
