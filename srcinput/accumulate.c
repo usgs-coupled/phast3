@@ -944,6 +944,7 @@ int get_double_property_value(struct cell *cell_ptr, struct property *property_p
 	} else if (property_ptr->type == FIXED) {
 		*value = property_ptr->v[0];
 	} else if (property_ptr->type == LINEAR) {
+		/*
 		if ((property_ptr->dist2 - property_ptr->dist1) != 0) {
 			slope = (property_ptr->v[1] - property_ptr->v[0])/(property_ptr->dist2 - property_ptr->dist1);
 		} else {
@@ -958,6 +959,38 @@ int get_double_property_value(struct cell *cell_ptr, struct property *property_p
 		}
 		if (property_ptr->coord == 'z') {
 			*value = cell_ptr->z * slope + b;
+		}
+		*/
+		double dist;
+
+		if (property_ptr->coord == 'x')
+		{
+			dist = cell_ptr->elt_x;
+		}
+		if (property_ptr->coord == 'y') {
+			dist = cell_ptr->elt_y;
+		}
+		if (property_ptr->coord == 'z') {
+			dist = cell_ptr->elt_z;
+		}
+		if (dist <= property_ptr->dist1)
+		{
+			*value = property_ptr->v[0];
+		}
+		else if (dist >= property_ptr->dist2)
+		{
+			*value = property_ptr->v[1];
+		}
+		else
+		{
+			if ((property_ptr->dist2 - property_ptr->dist1) != 0) 
+			{
+				slope = (property_ptr->v[1] - property_ptr->v[0])/(property_ptr->dist2 - property_ptr->dist1);
+			} else {
+				slope = 0;
+			}
+			b = property_ptr->v[0] - slope * property_ptr->dist1;
+			*value = dist * slope + b;
 		}
 	} else if (property_ptr->type == ZONE) {
 		
@@ -1070,17 +1103,38 @@ int get_property_value_element(struct cell *cell_ptr, struct property *property_
 		return(ERROR);
 	} else if (property_ptr->type == FIXED) {
 		*value = property_ptr->v[0];
-	} else if (property_ptr->type == LINEAR) {
-		slope = (property_ptr->v[1] - property_ptr->v[0])/(property_ptr->dist2 - property_ptr->dist1);
-		b = property_ptr->v[0] - slope * property_ptr->dist1;
-		if (property_ptr->coord == 'x') {
-			*value = cell_ptr->elt_x * slope + b;
+	} else if (property_ptr->type == LINEAR) 
+	{
+		double dist;
+
+		if (property_ptr->coord == 'x')
+		{
+			dist = cell_ptr->elt_x;
 		}
 		if (property_ptr->coord == 'y') {
-			*value = cell_ptr->elt_y * slope + b;
+			dist = cell_ptr->elt_y;
 		}
 		if (property_ptr->coord == 'z') {
-			*value = cell_ptr->elt_z * slope + b;
+			dist = cell_ptr->elt_z;
+		}
+		if (dist <= property_ptr->dist1)
+		{
+			*value = property_ptr->v[0];
+		}
+		else if (dist >= property_ptr->dist2)
+		{
+			*value = property_ptr->v[1];
+		}
+		else
+		{
+			if ((property_ptr->dist2 - property_ptr->dist1) != 0) 
+			{
+				slope = (property_ptr->v[1] - property_ptr->v[0])/(property_ptr->dist2 - property_ptr->dist1);
+			} else {
+				slope = 0;
+			}
+			b = property_ptr->v[0] - slope * property_ptr->dist1;
+			*value = dist * slope + b;
 		}
 	} else if (property_ptr->type == ZONE) {
 		
@@ -1517,215 +1571,215 @@ Cell_Face guess_face(std::list<int> & list_of_numbers, struct zone *zone_ptr)
 int setup_media(void)
 /* ---------------------------------------------------------------------- */
 {
-  int i;
-  struct index_range *range_ptr;
+	int i;
+	struct index_range *range_ptr;
 
-  for (i = 0; i < count_grid_elt_zones; i++) {
-    sprintf(tag,"in MEDIA, definition %d.\n", i+1);
-    /*
-    *   process zone information
-    */
+	for (i = 0; i < count_grid_elt_zones; i++) {
+		sprintf(tag,"in MEDIA, definition %d.\n", i+1);
+		/*
+		*   process zone information
+		*/
 
-    if (grid_elt_zones[i]->polyh == NULL) {
-      input_error++;
-      sprintf(error_string, "No zone or wedge definition %s", tag);
-      error_msg(error_string, CONTINUE);
-      break;
-    }
-    else
-    {
-      struct zone *zone_ptr = grid_elt_zones[i]->polyh->Get_bounding_box();
-      range_ptr = zone_to_elt_range(zone_ptr);
-      if (range_ptr == NULL) {
-	input_error++;
-	sprintf(error_string, "Bad zone or wedge definition %s", tag);
-	error_msg(error_string, CONTINUE);
-	break;
-      }
-      std::list<int> list_of_cells;
-      range_to_list(range_ptr, list_of_cells);
-      free_check_null(range_ptr);
-      range_ptr = NULL;
-      grid_elt_zones[i]->polyh->Points_in_polyhedron(list_of_cells, *element_xyz);
+		if (grid_elt_zones[i]->polyh == NULL) {
+			input_error++;
+			sprintf(error_string, "No zone or wedge definition %s", tag);
+			error_msg(error_string, CONTINUE);
+			break;
+		}
+		else
+		{
+			struct zone *zone_ptr = grid_elt_zones[i]->polyh->Get_bounding_box();
+			range_ptr = zone_to_elt_range(zone_ptr);
+			if (range_ptr == NULL) {
+				input_error++;
+				sprintf(error_string, "Bad zone or wedge definition %s", tag);
+				error_msg(error_string, CONTINUE);
+				break;
+			}
+			std::list<int> list_of_cells;
+			range_to_list(range_ptr, list_of_cells);
+			free_check_null(range_ptr);
+			range_ptr = NULL;
+			grid_elt_zones[i]->polyh->Points_in_polyhedron(list_of_cells, *element_xyz);
 
-      if (list_of_cells.size() == 0) {
-	input_error++;
-	sprintf(error_string, "Bad zone or wedge definition %s", tag);
-	error_msg(error_string, CONTINUE);
-	break;
-      }
-      /*
-      *   process active 
-      */
-      if (grid_elt_zones[i]->active != NULL) {
-	if (distribute_property_to_list_of_elements(list_of_cells, 
-	  grid_elt_zones[i]->mask, 
-	  grid_elt_zones[i]->active, 
-	  offsetof(struct cell, elt_active),
-	  offsetof(struct cell, elt_active_defined),
-	  TRUE) == ERROR) {
-	    input_error++;
-	    sprintf(error_string, "Bad definition of active cells %s", tag);
-	    error_msg(error_string, CONTINUE);
-	}
-      }
-      /*
-      *   process porosity 
-      */
-      if (grid_elt_zones[i]->porosity != NULL) {
-	if (distribute_property_to_list_of_elements(list_of_cells,
-	  grid_elt_zones[i]->mask, 
-	  grid_elt_zones[i]->porosity, 
-	  offsetof(struct cell, porosity),
-	  offsetof(struct cell, porosity_defined),
-	  FALSE) == ERROR) {
-	    input_error++;
-	    sprintf(error_string, "Bad definition of porosity %s", tag);
-	    error_msg(error_string, CONTINUE);
-	}
-      }
+			if (list_of_cells.size() == 0) {
+				input_error++;
+				sprintf(error_string, "Bad zone or wedge definition %s", tag);
+				error_msg(error_string, CONTINUE);
+				break;
+			}
+			/*
+			*   process active 
+			*/
+			if (grid_elt_zones[i]->active != NULL) {
+				if (distribute_property_to_list_of_elements(list_of_cells, 
+					grid_elt_zones[i]->mask, 
+					grid_elt_zones[i]->active, 
+					offsetof(struct cell, elt_active),
+					offsetof(struct cell, elt_active_defined),
+					TRUE) == ERROR) {
+						input_error++;
+						sprintf(error_string, "Bad definition of active cells %s", tag);
+						error_msg(error_string, CONTINUE);
+				}
+			}
+			/*
+			*   process porosity 
+			*/
+			if (grid_elt_zones[i]->porosity != NULL) {
+				if (distribute_property_to_list_of_elements(list_of_cells,
+					grid_elt_zones[i]->mask, 
+					grid_elt_zones[i]->porosity, 
+					offsetof(struct cell, porosity),
+					offsetof(struct cell, porosity_defined),
+					FALSE) == ERROR) {
+						input_error++;
+						sprintf(error_string, "Bad definition of porosity %s", tag);
+						error_msg(error_string, CONTINUE);
+				}
+			}
 
-      /*
-      *   process kx 
-      */
-      if (grid_elt_zones[i]->kx != NULL) {
-	if (distribute_property_to_list_of_elements(list_of_cells,
-	  grid_elt_zones[i]->mask, 
-	  grid_elt_zones[i]->kx, 
-	  offsetof(struct cell, kx),
-	  offsetof(struct cell, kx_defined),
-	  FALSE) == ERROR) {
-	    input_error++;
-	    sprintf(error_string, "Bad definition of X hydraulic conductivity %s", tag);
-	    error_msg(error_string, CONTINUE);
-	}
-      }
+			/*
+			*   process kx 
+			*/
+			if (grid_elt_zones[i]->kx != NULL) {
+				if (distribute_property_to_list_of_elements(list_of_cells,
+					grid_elt_zones[i]->mask, 
+					grid_elt_zones[i]->kx, 
+					offsetof(struct cell, kx),
+					offsetof(struct cell, kx_defined),
+					FALSE) == ERROR) {
+						input_error++;
+						sprintf(error_string, "Bad definition of X hydraulic conductivity %s", tag);
+						error_msg(error_string, CONTINUE);
+				}
+			}
 
-      /*
-      *   process ky 
-      */
-      if (grid_elt_zones[i]->ky != NULL) {
-	if (distribute_property_to_list_of_elements(list_of_cells,
-	  grid_elt_zones[i]->mask, 
-	  grid_elt_zones[i]->ky, 
-	  offsetof(struct cell, ky),
-	  offsetof(struct cell, ky_defined),
-	  FALSE) == ERROR) {
-	    input_error++;
-	    sprintf(error_string, "Bad definition of Y hydraulic conductivity %s", tag);
-	    error_msg(error_string, CONTINUE);
+			/*
+			*   process ky 
+			*/
+			if (grid_elt_zones[i]->ky != NULL) {
+				if (distribute_property_to_list_of_elements(list_of_cells,
+					grid_elt_zones[i]->mask, 
+					grid_elt_zones[i]->ky, 
+					offsetof(struct cell, ky),
+					offsetof(struct cell, ky_defined),
+					FALSE) == ERROR) {
+						input_error++;
+						sprintf(error_string, "Bad definition of Y hydraulic conductivity %s", tag);
+						error_msg(error_string, CONTINUE);
+				}
+			}
+			/*
+			*   process kz 
+			*/
+			if (grid_elt_zones[i]->kz != NULL) {
+				if (distribute_property_to_list_of_elements(list_of_cells,
+					grid_elt_zones[i]->mask, 
+					grid_elt_zones[i]->kz, 
+					offsetof(struct cell, kz),
+					offsetof(struct cell, kz_defined),
+					FALSE) == ERROR) {
+						input_error++;
+						sprintf(error_string, "Bad definition of Z hydraulic conductivity %s", tag);
+						error_msg(error_string, CONTINUE);
+				}
+			}
+			/*
+			*   process storage 
+			*/
+			if (grid_elt_zones[i]->storage != NULL) {
+				if (distribute_property_to_list_of_elements(list_of_cells,
+					grid_elt_zones[i]->mask, 
+					grid_elt_zones[i]->storage, 
+					offsetof(struct cell, storage),
+					offsetof(struct cell, storage_defined),
+					FALSE) == ERROR) {
+						input_error++;
+						sprintf(error_string, "Bad definition of specific storage %s", tag);
+						error_msg(error_string, CONTINUE);
+				}
+			}
+			/*
+			*   process alpha_long 
+			*/
+			if (grid_elt_zones[i]->alpha_long != NULL) {
+				if (distribute_property_to_list_of_elements(list_of_cells,
+					grid_elt_zones[i]->mask, 
+					grid_elt_zones[i]->alpha_long, 
+					offsetof(struct cell, alpha_long),
+					offsetof(struct cell, alpha_long_defined),
+					FALSE) == ERROR) {
+						input_error++;
+						sprintf(error_string, "Bad definition of longitudinal dispersivity %s", tag);
+						error_msg(error_string, CONTINUE);
+				}
+			}
+			/*
+			*   process alpha_trans
+			*   Should use alpha_horizontal and alpha vertical instead
+			*/
+			if (grid_elt_zones[i]->alpha_trans != NULL) {
+				if (distribute_property_to_list_of_elements(list_of_cells,
+					grid_elt_zones[i]->mask, 
+					grid_elt_zones[i]->alpha_trans, 
+					offsetof(struct cell, alpha_horizontal),
+					offsetof(struct cell, alpha_horizontal_defined),
+					FALSE) == ERROR) {
+						input_error++;
+						sprintf(error_string, "Bad definition of transverse dispersivity %s", tag);
+						error_msg(error_string, CONTINUE);
+				}
+			}
+			if (grid_elt_zones[i]->alpha_trans != NULL) {
+				if (distribute_property_to_list_of_elements(list_of_cells,
+					grid_elt_zones[i]->mask, 
+					grid_elt_zones[i]->alpha_trans, 
+					offsetof(struct cell, alpha_vertical),
+					offsetof(struct cell, alpha_vertical_defined),
+					FALSE) == ERROR) {
+						input_error++;
+						sprintf(error_string, "Bad definition of transverse dispersivity %s", tag);
+						error_msg(error_string, CONTINUE);
+				}
+			}
+			/*
+			*   process alpha_horizontal
+			*/
+			if (grid_elt_zones[i]->alpha_horizontal != NULL) {
+				if (distribute_property_to_list_of_elements(list_of_cells,
+					grid_elt_zones[i]->mask, 
+					grid_elt_zones[i]->alpha_horizontal, 
+					offsetof(struct cell, alpha_horizontal),
+					offsetof(struct cell, alpha_horizontal_defined),
+					FALSE) == ERROR) {
+						input_error++;
+						sprintf(error_string, "Bad definition of horizontal_dispersivity %s", tag);
+						error_msg(error_string, CONTINUE);
+				}
+			}
+			/*
+			*   process alpha_vertical
+			*/
+			if (grid_elt_zones[i]->alpha_vertical != NULL) {
+				if (distribute_property_to_list_of_elements(list_of_cells,
+					grid_elt_zones[i]->mask, 
+					grid_elt_zones[i]->alpha_vertical, 
+					offsetof(struct cell, alpha_vertical),
+					offsetof(struct cell, alpha_vertical_defined),
+					FALSE) == ERROR) {
+						input_error++;
+						sprintf(error_string, "Bad definition of vertical_dispersivity %s", tag);
+						error_msg(error_string, CONTINUE);
+				}
+			}
+		}
 	}
-      }
-      /*
-      *   process kz 
-      */
-      if (grid_elt_zones[i]->kz != NULL) {
-	if (distribute_property_to_list_of_elements(list_of_cells,
-	  grid_elt_zones[i]->mask, 
-	  grid_elt_zones[i]->kz, 
-	  offsetof(struct cell, kz),
-	  offsetof(struct cell, kz_defined),
-	  FALSE) == ERROR) {
-	    input_error++;
-	    sprintf(error_string, "Bad definition of Z hydraulic conductivity %s", tag);
-	    error_msg(error_string, CONTINUE);
-	}
-      }
-      /*
-      *   process storage 
-      */
-      if (grid_elt_zones[i]->storage != NULL) {
-	if (distribute_property_to_list_of_elements(list_of_cells,
-	  grid_elt_zones[i]->mask, 
-	  grid_elt_zones[i]->storage, 
-	  offsetof(struct cell, storage),
-	  offsetof(struct cell, storage_defined),
-	  FALSE) == ERROR) {
-	    input_error++;
-	    sprintf(error_string, "Bad definition of specific storage %s", tag);
-	    error_msg(error_string, CONTINUE);
-	}
-      }
-      /*
-      *   process alpha_long 
-      */
-      if (grid_elt_zones[i]->alpha_long != NULL) {
-	if (distribute_property_to_list_of_elements(list_of_cells,
-	  grid_elt_zones[i]->mask, 
-	  grid_elt_zones[i]->alpha_long, 
-	  offsetof(struct cell, alpha_long),
-	  offsetof(struct cell, alpha_long_defined),
-	  FALSE) == ERROR) {
-	    input_error++;
-	    sprintf(error_string, "Bad definition of longitudinal dispersivity %s", tag);
-	    error_msg(error_string, CONTINUE);
-	}
-      }
-      /*
-      *   process alpha_trans
-      *   Should use alpha_horizontal and alpha vertical instead
-      */
-      if (grid_elt_zones[i]->alpha_trans != NULL) {
-	if (distribute_property_to_list_of_elements(list_of_cells,
-	  grid_elt_zones[i]->mask, 
-	  grid_elt_zones[i]->alpha_trans, 
-	  offsetof(struct cell, alpha_horizontal),
-	  offsetof(struct cell, alpha_horizontal_defined),
-	  FALSE) == ERROR) {
-	    input_error++;
-	    sprintf(error_string, "Bad definition of transverse dispersivity %s", tag);
-	    error_msg(error_string, CONTINUE);
-	}
-      }
-      if (grid_elt_zones[i]->alpha_trans != NULL) {
-	if (distribute_property_to_list_of_elements(list_of_cells,
-	  grid_elt_zones[i]->mask, 
-	  grid_elt_zones[i]->alpha_trans, 
-	  offsetof(struct cell, alpha_vertical),
-	  offsetof(struct cell, alpha_vertical_defined),
-	  FALSE) == ERROR) {
-	    input_error++;
-	    sprintf(error_string, "Bad definition of transverse dispersivity %s", tag);
-	    error_msg(error_string, CONTINUE);
-	}
-      }
-      /*
-      *   process alpha_horizontal
-      */
-      if (grid_elt_zones[i]->alpha_horizontal != NULL) {
-	if (distribute_property_to_list_of_elements(list_of_cells,
-	  grid_elt_zones[i]->mask, 
-	  grid_elt_zones[i]->alpha_horizontal, 
-	  offsetof(struct cell, alpha_horizontal),
-	  offsetof(struct cell, alpha_horizontal_defined),
-	  FALSE) == ERROR) {
-	    input_error++;
-	    sprintf(error_string, "Bad definition of horizontal_dispersivity %s", tag);
-	    error_msg(error_string, CONTINUE);
-	}
-      }
-      /*
-      *   process alpha_vertical
-      */
-      if (grid_elt_zones[i]->alpha_vertical != NULL) {
-	if (distribute_property_to_list_of_elements(list_of_cells,
-	  grid_elt_zones[i]->mask, 
-	  grid_elt_zones[i]->alpha_vertical, 
-	  offsetof(struct cell, alpha_vertical),
-	  offsetof(struct cell, alpha_vertical_defined),
-	  FALSE) == ERROR) {
-	    input_error++;
-	    sprintf(error_string, "Bad definition of vertical_dispersivity %s", tag);
-	    error_msg(error_string, CONTINUE);
-	}
-      }
-    }
-  }
-  /*
-* Determine exterior cells
-*/
-  set_exterior_cells();
-  return(OK);
+	/*
+	* Determine exterior cells
+	*/
+	set_exterior_cells();
+	return(OK);
 }
 /* ---------------------------------------------------------------------- */
 struct index_range *vertex_to_range(gpc_vertex *poly, int count_points)

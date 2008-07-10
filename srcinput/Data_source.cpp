@@ -285,7 +285,6 @@ std::vector<Point> & Data_source::Get_points()
     break;
   }
   /*
-  case Data_source::SHAPE:
   case Data_source::CONSTANT:
   case Data_source::POINTS:
   case Data_source::NONE:

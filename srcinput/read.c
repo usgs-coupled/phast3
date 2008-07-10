@@ -3719,6 +3719,16 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 			input_error++;
 			error_msg("Expected: value, distance, value, distance in linear  property definition.", CONTINUE);
 		}
+		if (p->dist1 > p->dist2)
+		{
+			double save_d, save_v;
+			save_d = p->dist1;
+			save_v = p->v[0];
+			p->dist1 = p->dist2;
+			p->v[0] = p->v[1];
+			p->dist2 = save_d;
+			p->v[1] = save_v;
+		}
 		if (delimited == TRUE) {
 			*opt = get_option(opt_list, count_opt_list, &next_char);
 		} else {
@@ -3735,6 +3745,16 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 			input_error++;
 			error_msg("Expected: value, distance, value, distance in linear  property definition.", CONTINUE);
 		}
+		if (p->dist1 > p->dist2)
+		{
+			double save_d, save_v;
+			save_d = p->dist1;
+			save_v = p->v[0];
+			p->dist1 = p->dist2;
+			p->v[0] = p->v[1];
+			p->dist2 = save_d;
+			p->v[1] = save_v;
+		}
 		if (delimited == TRUE) {
 			*opt = get_option(opt_list, count_opt_list, &next_char);
 		} else {
@@ -3750,6 +3770,16 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 		if (sscanf(next_char,"%lf%lf%lf%lf", &p->v[0], &p->dist1, &p->v[1], &p->dist2) != 4) {
 			input_error++;
 			error_msg("Expected: value, distance, value, distance in linear  property definition.", CONTINUE);
+		}
+		if (p->dist1 > p->dist2)
+		{
+			double save_d, save_v;
+			save_d = p->dist1;
+			save_v = p->v[0];
+			p->dist1 = p->dist2;
+			p->v[0] = p->v[1];
+			p->dist2 = save_d;
+			p->v[1] = save_v;
 		}
 		if (delimited == TRUE) {
 			*opt = get_option(opt_list, count_opt_list, &next_char);
