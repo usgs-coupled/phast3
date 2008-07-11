@@ -1,6 +1,7 @@
 #include "Polygon_tree.h"
 #include "Point.h"
 #include "PHST_polygon.h"
+
 #include <list>
 
 extern void free_check_null(void *ptr);
@@ -115,7 +116,7 @@ bool Polygon_tree::Point_in_polygon(Point p1)
 {
   Point p = p1;
   p.set_z(0.0);
-  if (!(this->root->box.Point_in_zone(p))) return false;
+  if (!(this->root->box.Point_in_xy_zone(p))) return false;
   std::list<Polygon_leaf *> nodes_to_visit;
   nodes_to_visit.push_front(this->root);
   bool split_once = true;
@@ -130,11 +131,11 @@ bool Polygon_tree::Point_in_polygon(Point p1)
     {
       if (visit->split())
       {
-	if (visit->left->box.Point_in_zone(p))
+	if (visit->left->box.Point_in_xy_zone(p))
 	{
 	  nodes_to_visit.push_front(visit->left);
 	}
-	if (visit->right->box.Point_in_zone(p))
+	if (visit->right->box.Point_in_xy_zone(p))
 	{
 	  nodes_to_visit.push_front(visit->right);
 	}
@@ -159,11 +160,11 @@ bool Polygon_tree::Point_in_polygon(Point p1)
       }
     } else
     {
-      if (visit->left->box.Point_in_zone(p))
+      if (visit->left->box.Point_in_xy_zone(p))
       {
 	nodes_to_visit.push_front(visit->left);
       }
-      if (visit->right->box.Point_in_zone(p))
+      if (visit->right->box.Point_in_xy_zone(p))
       {
 	nodes_to_visit.push_front(visit->right);
       }
