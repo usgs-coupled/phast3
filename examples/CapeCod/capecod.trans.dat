@@ -3,9 +3,13 @@
 #   <!--Exported from C:\Programs\phast_bc\examples\flux_patches\flux_patches.wphast-->
 # </WPhast>
 # 
-SOLUTE_TRANSPORT false
+
+#SOLUTE_TRANSPORT false
+SOLUTE_TRANSPORT true
     -diffusivity  1e-009
-STEADY_FLOW true
+    
+#STEADY_FLOW true
+STEADY_FLOW false
 	-min		.1
 	-max		200
 	-growth_factor 	2
@@ -13,6 +17,7 @@ STEADY_FLOW true
 	-head_tol    	1e-3
 	-flow_bal    	1e-3
 	-iterations  	500
+	
 FREE_SURFACE_BC true
 
 SOLUTION_METHOD
@@ -24,7 +29,7 @@ SOLUTION_METHOD
 	-time_differencing  1
 	-cross_dispersion   false
 	-rebalance_fraction 0.5
-	-rebalance_by_cell   false
+	-rebalance_by_cell  false
 
 UNITS
 	-time                             yr
@@ -46,11 +51,25 @@ UNITS
 	-drain_width                      m
 
 GRID
-	-uniform X 275000 285000 101
-	-uniform Y 810000 830000 101
-	-uniform Z -200 -20 19
-	-overlay_uniform Z -10 25 36
-	#-uniform Z -200 40 13
+	#-uniform X 275000 285000 101
+	#-uniform Y 810000 830000 101
+	#-uniform Z -200 -20 19
+	#-overlay_uniform Z -10 25 36
+	
+	-uniform X 275000 285000 51
+	-uniform Y 810000 830000 51
+	-uniform Z -200 -20 10
+	-overlay_uniform Z -10 25 18
+	
+	-overlay X 279000 282000  61
+	-overlay Y 819000 822000  61
+
+	#-uniform X 275000 285000 26
+	#-uniform Y 810000 830000 26
+	#-uniform Z -200 -20 5
+	#-overlay_uniform Z -10 25 9	
+	#-overlay_uniform X 279200 280200 40
+	
 	-snap X 0.001
 	-snap Y 0.001
 	-snap Z 0.001
@@ -63,99 +82,102 @@ MEDIA
 		#-Kx                       1.06e-3
 		#-Ky                       1.06e-3
 		#-Kz                       0.30e-3
-		#-Kx                       .5e-3
-		#-Ky                       .5e-3
-		#-Kz                       .15e-3
-		#-Kx     Y    1.00e-3 810000   1.00e-3  830000
-		#-Ky     Y    1.00e-3 810000   1.00e-3  830000
-		#-Kz     Y    0.30e-3 810000   0.30e-3  830000
 		-Kx     Z    1.00e-3 10   0.30e-3  -5
 		-Ky     Z    1.00e-3 10   0.30e-3  -5
-		-Kz     Z    0.30e-3 10   0.10e-3  -5			
+		-Kz     Z    0.30e-3 10   0.10e-3  -5	
+		#-Kx     Z    1.00e-3 -5   0.10e-3   -6
+		#-Ky     Z    1.00e-3 -5   0.10e-3   -6
+		#-Kz     Z    0.30e-3 -5   0.030e-3  -6	
 		-porosity                 0.39
 		-specific_storage         0.39
 		-long_dispersivity        1
 		-horizontal_dispersivity  1
 		-vertical_dispersivity    1
 	
-	-zone 275000 810000 -500 285000 830000 -5
-		-active                   0
-		-Kx                       .3e-3
-		-Ky                       .3e-3
-		-Kz                       .1e-3		
-		-porosity                 0.39
-		-specific_storage         0.39
-		-long_dispersivity        1
-		-horizontal_dispersivity  1
-		-vertical_dispersivity    1	
-
 
 	-prism
-	
-		-top   arcraster   ArcData/rastert_ls_elev1.txt
-		#-units_top m m	
-
 		-perimeter SHAPE ArcData/coast.shp 
-
+		-top   arcraster   ArcData/rastert_ls_elev1.txt
 		-bottom arcraster ArcData/rastert_bedrock1.txt
-
+		
+		# Parameters
 		-active 1
 
 	-prism
 		-perimeter SHAPE ArcData/ModelOutline.shp
+		
+		# Parameters
 		-active 0
 
 	-prism
-		-perimeter  SHAPE   ArcData/SimplePonds.shp 
-		
+		#-perimeter  SHAPE   ArcData/SimplePonds.shp 
+		-perimeter POINTS
+			280029.582  820887.320 0
+			280578.479  821357.803 0
+			280852.928  820769.699 0
+			280726.594  820386.342 0
+			280513.134  820482.181 0
+			280373.732  820199.020 0
+			280186.410  820273.077 0
+			280260.467  820469.112 0 
+			
 		-bottom SHAPE ArcData/SimpleBath.shp 9
-
-		-Kx                       .100
-		-Ky                       .100
-		-Kz                       .100
+		
+		 # Parameters
+		-Kx                       .01
+		-Ky                       .01
+		-Kz                       .01
 		-porosity                 1
 		-specific_storage         1
-		-long_dispersivity        100
-		-horizontal_dispersivity  100
-		-vertical_dispersivity    100
+		-long_dispersivity        10
+		-horizontal_dispersivity  10
+		-vertical_dispersivity    10
 		
-#SPECIFIED_HEAD_BC		
-#
+	-prism  # Lower hydraulic conductivity lake bottom
+		-perimeter  SHAPE   ArcData/SimplePonds.shp 
+		-top SHAPE    ArcData/SimpleBath.shp 9   # Elev_meter
+		-bottom SHAPE ArcData/SimpleBath.shp 12  # Skin_bot_2
+		
+		# Parameters
+		-Kx                       .1e-3
+		-Ky                       .1e-3
+		-Kz                       .1e-3
+		-porosity                 .2
+		-specific_storage         .2
+		-long_dispersivity        1
+		-horizontal_dispersivity  1
+		-vertical_dispersivity    1
+		
+
+#MEDIA
 #	-prism
+#		#-perimeter  SHAPE   ArcData/SimplePonds.shp 
+#		-perimeter POINTS
+#			280029.582  820887.320 0
+#			280578.479  821357.803 0
+#			280852.928  820769.699 0
+#			280726.594  820386.342 0
+#			280513.134  820482.181 0
+#			280373.732  820199.020 0
+#			280186.410  820273.077 0
+#			280260.467  820469.112 0
+#			
+#		-bottom SHAPE ArcData/SimpleBath.shp 9 # Elev_meter
+#		-active 0
+#		
+#SPECIFIED_HEAD_BC
+#	-prism  # Lower hydraulic conductivity lake bottom
 #		-perimeter  SHAPE   ArcData/SimplePonds.shp 
-#		-bottom SHAPE ArcData/SimpleBath.shp 9
-#		-head 0 22
-
-
+#			
+#	
+#		#-top SHAPE    ArcData/SimpleBath.shp 9   # Elev_meter
+#		-bottom SHAPE ArcData/SimpleBath.shp 13  # Skin_bot_4
+#		
+#		# Parameters
+#		-head 
+#			0	10
 
 LEAKY_BC
-#	-zone 275000 810000 -0.5 285000 815000 0.5
-#		-face Y
-#		-head 0 0
-#		-thickness 1
-#		-hydraulic 1
-#		-associated_solution 0 1
-		
-#	-zone 275000 810000 -0.5 285000 815000 0.5
-#		-face X
-#		-head 0 0
-#		-thickness 1
-#		-hydraulic 1
-#		-associated_solution 0 1
-	#-prism	
-	#	-perimeter points
-	#		285000 815000 0
-	#		285000 810000 0
-	#		275000 810000 0
-	#		275000 815000 0
-	#	-top constant 0.5
-	#	-bottom constant -0.5
-	#	-face X
-	#	-head 0 0
-	#	-thickness 1
-	#	-hydraulic 1
-	#	-associated_solution 0 1
-		
 		
 	-prism	
 		-perimeter points
@@ -167,11 +189,14 @@ LEAKY_BC
 			275000 814489 0
 		-top constant 0.5
 		-bottom constant -0.5
-			-face X
-			-head 0 0
-			-thickness 1
-			-hydraulic 1
-			-associated_solution 0 1
+		
+		# Parameters
+		-face X
+		-head 0 0
+		-thickness 1
+		-hydraulic 1
+		-associated_solution 0 1
+		
 	-prism	
 		-perimeter points
 			277189 814489 0
@@ -182,17 +207,102 @@ LEAKY_BC
 			275000 814489 0
 		-top constant 0.5
 		-bottom constant -0.5
-			-face Y
-			-head 0 0
-			-thickness 1
-			-hydraulic 1
-			-associated_solution 0 1			
+		
+		# Parameters
+		-face Y
+		-head 0 0
+		-thickness 1
+		-hydraulic 1
+		-associated_solution 0 1			
 		
 		
 FLUX_BC
 	-zone 275000 810000 0 285000 830000 100
+	-face Z	
 	-flux  0 -0.0018
+	-associated_solution 
+		0	3
+	
+	# Beds 1-4
+	-zone 279700 821425 0 279800 821525 50
+	-face Z	
+	-flux 
+		0      0
+		1936  -0.037    
+		1941  -0.114
+		1946  -0.023
+		1956  -0.126
+		1971  -0.05
+		1978  -0.114
+		1984   0
+		1996   0
+	-associated_solution 
+		0      2	
+	
+	# Beds 5-8
+	-zone 279600 821350 0 279700 821450 50
 	-face Z
+	-flux 
+		0      0
+		1936   0    
+		1941  -0.114
+		1946  -0.023
+		1956  -0.126
+		1971  -0.05
+		1978   0
+		1984  -0.038
+		1996   0
+	-associated_solution 
+		0      2
+	
+	# Beds 9-12
+	-zone 279500 821425 0 279600 821525 50	
+	-face Z	
+	-flux 
+		0      0 
+		1936   0    
+		1941  -0.114
+		1946  -0.023
+		1956  -0.126
+		1971  -0.05
+		1978   0
+		1984  -0.038
+		1996   0
+	-associated_solution 
+		0      2	
+	
+	# Beds 13-16
+	-zone 279400 821500 0 279500 821600 50	
+	-face Z	
+	-flux 
+		0      0
+		1936   0    
+		1941  -0.114
+		1946  -0.023
+		1956   0
+		1971   0
+		1978   0
+		1984   0
+		1996   0
+	-associated_solution 
+		0      2	
+	
+	# Beds 19-25
+	-zone 279500 821650 0 279550 821750 50
+	-face Z	
+	-flux 
+		0      0 
+		1936   0    
+		1941  -0.114
+		1946  -0.023
+		1956   0
+		1971   0
+		1978   0
+		1984   0
+		1996   0
+	-associated_solution 
+		0      2
+
 	
 DRAIN 1 East Boundary
 	-point 		282787.368  821587.404
@@ -218,7 +328,23 @@ DRAIN 1 East Boundary
 		-z     		0
 		-width 		100
 		-thickness 	1
-		-bed_k     	1		
+		-bed_k     	1
+		
+
+	#-point 		282760.790  821571.698
+	#	-z     		12
+	#	-width 		100
+	#	-thickness 	1
+	#	-bed_k     	1	
+	#-point 		283237.248  819021.763
+	#	-z     		12
+	#-point 		282566.677  815889.489
+	#	-z     		4
+	#-point 		281887.283  814071.888
+	#	-z     		0
+	#	-width 		100
+	#	-thickness 	1
+	#	-bed_k     	1		
 		
 
 DRAIN 2 West Boundary
@@ -239,12 +365,25 @@ DRAIN 2 West Boundary
 		-z     		3.048
 	-point 		277301.440  814730.360
 		-z     		1.524
-	-point 		277253.320  814489.760
+	-point 		277263.960  814314.917
 		-z     		0
 		-width 		100
 		-thickness 	1
 		-bed_k     	1		
-
+	
+	#-point 		277537.393  818015.906
+	#	-z     		12
+	#	-width 		100
+	#	-thickness 	1
+	#	-bed_k     	1		
+	#-point 		277440.418  816802.970
+	#	-z     		4
+	#-point 		277263.960  814314.917
+	#	-z     		0
+	#	-width 		100
+	#	-thickness 	1
+	#	-bed_k     	1
+		
 DRAIN 3 Johns Pond drain
 	-point 		281649.002  818803.563
 		-z     		10.668
@@ -269,16 +408,62 @@ DRAIN 3 Johns Pond drain
 		-thickness 	1
 		-bed_k 		1
 		
+	
+	#-point 		281291.710  817248.278
+	#	-z     		12
+	#	-width 		20
+	#	-thickness 	1
+	#	-bed_k     	1	
+	#-point 		281221.123  815624.790
+	#	-z     		4
+	#-point 		280885.838  814883.633
+	#	-z     		0
+	#	-width 		20
+	#	-thickness 	1
+	#	-bed_k 		1	
+		
+DRAIN 4 Cranberry bogs
+	-point 		278718.295  817425.830
+		-z     		7.62
+		-width 		20
+		-thickness 	1
+		-bed_k     	1	
+	-point 		278404.615  816798.470
+		-z     		6.096	
+	-point 		278260.845  816171.110
+		-z     		4.572	
+	-point 		278104.005  815347.700
+		-z     		3.048
+	-point 		278117.075  814668.060
+		-z     		1.524
+	-point 		278077.865  814393.590
+		-z     		0
+		-width 		20
+		-thickness 	1
+		-bed_k 		1		
+	
+
+	#-point 		278759.530  817783.445
+	#	-z     		12
+	#	-width 		20
+	#	-thickness 	1
+	#	-bed_k     	1	
+	#-point 		277983.307  814184.593
+	#	-z     		0
+	#	-width 		20
+	#	-thickness 	1
+	#	-bed_k 		1	
 HEAD_IC
-
 	-zone 275000 810000 -500 285000 830000 100
-		-head                    20
-		#-head                     0
-		#-head file capecod.heads
+		#-head                    0
+		#-head                    20
+		#-head file capecod.head.26a.dat
+		-head file capecod.head.ponds.dat
 
-#CHEMISTRY_IC
-#	-zone 0 0 0 1 1 1
-#		-solution            1
+
+CHEMISTRY_IC
+	-zone 275000 810000 -500 285000 830000 100
+		-solution            1
 
 PRINT_INITIAL
 	-boundary_conditions        false
@@ -300,21 +485,22 @@ PRINT_INITIAL
 	-xyz_heads                  false
 	-xyz_steady_flow_velocities false
 	-xyz_wells                  false
+	
 PRINT_FREQUENCY
 	-save_final_heads true
 	0
 		-bc_flow_rates          0
 		-components             0
 		-conductances           0
-		-flow_balance                end 
+		-flow_balance           end 
 		-force_chemistry_print  0
-		-HDF_chemistry               end 
-		-hdf_heads      1 step
-		-HDF_velocities              end 
-		-heads                       end 
-		-progress_statistics         1 step
-		-velocities             0
-		-wells                       end 
+		-HDF_chemistry          1    year 
+		-hdf_heads              end
+		-HDF_velocities         end 
+		-heads                  end 
+		-progress_statistics    1    year
+		-velocities             end
+		-wells                  end 
 		-xyz_chemistry          0
 		-xyz_components         0
 		-xyz_heads              0
@@ -322,9 +508,10 @@ PRINT_FREQUENCY
 		-xyz_wells              0
 		-boundary_conditions    false
 		-save_final_heads       true
+		-restart                10 yr
 TIME_CONTROL
 	-time_step
-		0 .001
-	-time_change
-		.001
-	-start_time 0
+		0 	0.5
+	-time_change 	1966
+	-start_time	1935.9
+

@@ -1,5 +1,67 @@
 DATABASE C:\Program Files\USGS\Phreeqc Interactive 2.15.0\phreeqc.dat
-SOLUTION 1-100
-	Na	1
-	Cl	1
+
+SOLUTION_SPECIES
+NO3- + 2 H+ + 2 e- = NO2- + H2O
+        #log_k           28.570
+        log_k           -28.570
+
+2 NO3- + 12 H+ + 10 e- = N2 + 6 H2O
+        #log_k           207.080
+        log_k           0
+
+SOLUTION 1 Uncontaminated groundwater
+	pH	5.6
+	pe	7.0
+	temp	14.0
+	units	umol/L
+	Ca	29
+	Mg      31
+	Na	200
+#	K	10
+#	Fe	0.0
+#	Mn	0.64
+	Cl	140     charge
+	S(6)	86
+	C(4)    28
+	N(5)	0.0
+	O(0)	250
+#    Sewage effluent data from Table 1 in notes. Covers 1974-78, 1979,
+#    1980, 1983, 1988, 1994. Values are averaged.
+SOLUTION 2 Sewage effluent without oxygen
+	pH	6.00
+	pe	7.0
+	temp	14.0
+	units	umol/L
+	Ca	335
+	Mg	170
+	Na     	2100
+#	K	240
+#	Fe	4.5
+#	Mn	0.4
+	Cl	990    charge
+	S(6)	290
+	C(4)   	1200
+#	Amm	180
+#	Amm	 1.8000000000e+02
+#	N(-3)   180
+#	N(5)	1050     # based on 12 mg/L N (Smith)
+      N(-3) 1230     # Sum of Nitrate and Ammonium
+#	N(3)	73
+	P	190	# based on average analyses
+#	Toc	 1.6000000000e+03
+#	Toc	1667	# based on 20 mg/L average
+#	Soc	1000
+#	B	56
+SOLUTION 3 Rain
+	units umol/L
+	pH	5
+	N(5)	1	charge
+	O(0)	1	O2(g) -0.7
 END
+SELECTED_OUTPUT
+    -file                 selected.out
+    -reset                false
+    -ph                   true
+    -pe                   true
+    -totals               O(0)  C(4)  C(-4)  N(5)  N(-3)  Cl  P  S(6)
+                          S(-2)  Ca  Mg  Na
