@@ -24,6 +24,19 @@ KDtree::KDtree(std::vector<Point> &pts)
   }
   this->tree = new kdtree2(realdata,true);
 }
+KDtree::KDtree(point *pts, size_t count)
+{
+  size_t dim = 3;
+  multi_array<double,2>  realdata(extents[count][dim]);
+  size_t i;
+  for (i = 0; i < count; i++)
+  {
+    realdata[i][0] = pts[i].x;
+    realdata[i][1] = pts[i].y;
+    realdata[i][2] = pts[i].z;
+  }
+  this->tree = new kdtree2(realdata,true);
+}
 int KDtree::Nearest(Point pt)
 {
   int dim = this->tree->dim;
@@ -37,7 +50,18 @@ int KDtree::Nearest(Point pt)
   return(result[0].idx);
 
 }
+int KDtree::Nearest(point pt)
+{
+  int dim = this->tree->dim;
+  kdtree2_result_vector result;
+  vector<double> query(dim);
+  query[0] = pt.x;
+  query[1] = pt.y;
+  query[2] = pt.z;
 
+  this->tree->n_nearest(query, 1, result);
+  return(result[0].idx);
+}
 KDtree::~KDtree(void)
 {
   delete this->tree;

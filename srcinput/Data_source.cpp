@@ -335,11 +335,11 @@ void Data_source::Add_to_file_map (Filedata *f, const bool make_nni)
   }
   if (make_nni)
   {
-    std::vector<Point> corners;
-    corners.push_back(Point(grid_zone()->x1, grid_zone()->y1, grid_zone()->z2, grid_zone()->z2));
-    corners.push_back(Point(grid_zone()->x2, grid_zone()->y1, grid_zone()->z2, grid_zone()->z2));
-    corners.push_back(Point(grid_zone()->x2, grid_zone()->y2, grid_zone()->z2, grid_zone()->z2));
-    corners.push_back(Point(grid_zone()->x1, grid_zone()->y2, grid_zone()->z2, grid_zone()->z2));
+// COMMENT: {7/11/2008 9:29:47 PM}    std::vector<Point> corners;
+// COMMENT: {7/11/2008 9:29:47 PM}    corners.push_back(Point(grid_zone()->x1, grid_zone()->y1, grid_zone()->z2, grid_zone()->z2));
+// COMMENT: {7/11/2008 9:29:47 PM}    corners.push_back(Point(grid_zone()->x2, grid_zone()->y1, grid_zone()->z2, grid_zone()->z2));
+// COMMENT: {7/11/2008 9:29:47 PM}    corners.push_back(Point(grid_zone()->x2, grid_zone()->y2, grid_zone()->z2, grid_zone()->z2));
+// COMMENT: {7/11/2008 9:29:47 PM}    corners.push_back(Point(grid_zone()->x1, grid_zone()->y2, grid_zone()->z2, grid_zone()->z2));
     // nni does not exist for attribute
     if (f->Get_pts_map().size() == 0 || (f->Get_nni_map().find(this->attribute) == f->Get_nni_map().end()))
     {
@@ -347,7 +347,8 @@ void Data_source::Add_to_file_map (Filedata *f, const bool make_nni)
       f->Make_points(this->attribute, temp_pts, this->h_units.input_to_si, this->v_units.input_to_si);
 
       NNInterpolator *nni = new NNInterpolator();
-      nni->preprocess(temp_pts, corners);
+// COMMENT: {7/11/2008 9:29:56 PM}      nni->preprocess(temp_pts, corners);
+      nni->preprocess(temp_pts);
       f->Get_nni_map()[this->attribute] = nni;
     }
   } 
@@ -368,15 +369,16 @@ void Data_source::Add_to_file_map (Filedata *f, const bool make_nni)
 }
 void Data_source::Add_nni_to_data_source (void)
 {
-  std::vector<Point> corners;
-  corners.push_back(Point(grid_zone()->x1, grid_zone()->y1, grid_zone()->z2, grid_zone()->z2));
-  corners.push_back(Point(grid_zone()->x2, grid_zone()->y1, grid_zone()->z2, grid_zone()->z2));
-  corners.push_back(Point(grid_zone()->x2, grid_zone()->y2, grid_zone()->z2, grid_zone()->z2));
-  corners.push_back(Point(grid_zone()->x1, grid_zone()->y2, grid_zone()->z2, grid_zone()->z2));
+// COMMENT: {7/11/2008 9:30:20 PM}  std::vector<Point> corners;
+// COMMENT: {7/11/2008 9:30:20 PM}  corners.push_back(Point(grid_zone()->x1, grid_zone()->y1, grid_zone()->z2, grid_zone()->z2));
+// COMMENT: {7/11/2008 9:30:20 PM}  corners.push_back(Point(grid_zone()->x2, grid_zone()->y1, grid_zone()->z2, grid_zone()->z2));
+// COMMENT: {7/11/2008 9:30:20 PM}  corners.push_back(Point(grid_zone()->x2, grid_zone()->y2, grid_zone()->z2, grid_zone()->z2));
+// COMMENT: {7/11/2008 9:30:20 PM}  corners.push_back(Point(grid_zone()->x1, grid_zone()->y2, grid_zone()->z2, grid_zone()->z2));
 
   // make nni
   this->nni = new NNInterpolator();
-  this->nni->preprocess(this->Get_points(), corners);
+// COMMENT: {7/11/2008 9:30:13 PM}  this->nni->preprocess(this->Get_points(), corners);
+  this->nni->preprocess(this->Get_points());
 }
 struct zone *Data_source::Get_bounding_box()
 {
@@ -434,19 +436,24 @@ std::ostream& operator<< (std::ostream &os, const Data_source &ds)
   switch (ds.source_type)
   {
   case Data_source::SHAPE:
-    os << "shape " << ds.Get_file_name() << std::endl;    
+    os << "SHAPE     " << ds.Get_file_name();
+    if (ds.Get_attribute() != -1)
+    {
+        os << " " << ds.Get_attribute();
+    }
+    os << std::endl;
     break;
   case Data_source::ARCRASTER:
-    os << "arcraster " << ds.Get_file_name() << std::endl;    
+    os << "ARCRASTER " << ds.Get_file_name() << std::endl;
     break;
   case Data_source::XYZ:
-    os << "xyz " << ds.Get_file_name() << std::endl;    
+    os << "XYZ       " << ds.Get_file_name() << std::endl;
     break;
   case Data_source::CONSTANT:
-    os << "constant " << ds.pts.front().z() << std::endl;
+    os << "CONSTANT  " << ds.pts.front().z() << std::endl;
     break;
   case Data_source::POINTS:
-    os << "points" << std::endl;
+    os << "POINTS" << std::endl;
     {
       std::vector<Point>::const_iterator citer = ds.pts.begin();
       for (; citer != ds.pts.end(); ++citer)
@@ -454,6 +461,10 @@ std::ostream& operator<< (std::ostream &os, const Data_source &ds)
         os << "\t\t\t" << citer->x() << " " << citer->y() << " " << citer->z() << std::endl;
       }
     }
+    break;
+  case Data_source::NONE:
+    break;
+  default:
     break;
   }
   return os;

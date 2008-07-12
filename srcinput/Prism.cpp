@@ -361,45 +361,61 @@ gpc_polygon * Prism::Slice(Cell_Face face, double coord)
 void Prism::printOn(std::ostream& os) const
 {
   os << "\t-prism" << std::endl;
-
+  /*
   os << "\t\t#-vector " << this->prism_dip.x() << " " << this->prism_dip.y() << " " << this->prism_dip.z() << std::endl;
+  */
 
-  os << "\t\t-top " << this->top;
+  if (this->top.Get_source_type() != Data_source::NONE)
   {
-    Data_source top_copy(this->top);
-    if (top_copy.Get_h_units()->defined || top_copy.Get_v_units()->defined)
+    os << "\t\t-top       " << this->top;
     {
-      os << "\t\t-units_top ";
-      os << (top_copy.Get_h_units()->defined) ? top_copy.Get_h_units()->input : top_copy.Get_h_units()->si;
-      os << (top_copy.Get_v_units()->defined) ? top_copy.Get_v_units()->input : top_copy.Get_v_units()->si;
-      os << std::endl;
+      /*
+      Data_source top_copy(this->top);
+      if (top_copy.Get_h_units()->defined || top_copy.Get_v_units()->defined)
+      {
+        os << "\t\t-units_top ";
+        os << (top_copy.Get_h_units()->defined) ? top_copy.Get_h_units()->input : top_copy.Get_h_units()->si;
+        os << (top_copy.Get_v_units()->defined) ? top_copy.Get_v_units()->input : top_copy.Get_v_units()->si;
+        os << std::endl;
+      }
+      */
     }
   }
-
-  os << "\t\t-bottom " << this->bottom;
+  
+  if (this->bottom.Get_source_type() != Data_source::NONE)
   {
-    Data_source bottom_copy(this->bottom);
-    if (bottom_copy.Get_h_units()->defined || bottom_copy.Get_v_units()->defined)
+    os << "\t\t-bottom    " << this->bottom;
     {
-      os << "\t\t-units_bottom ";
-      os << (bottom_copy.Get_h_units()->defined) ? bottom_copy.Get_h_units()->input : bottom_copy.Get_h_units()->si;
-      os << (bottom_copy.Get_v_units()->defined) ? bottom_copy.Get_v_units()->input : bottom_copy.Get_v_units()->si;
-      os << std::endl;
+      /*
+      Data_source bottom_copy(this->bottom);
+      if (bottom_copy.Get_h_units()->defined || bottom_copy.Get_v_units()->defined)
+      {
+        os << "\t\t-units_bottom ";
+        os << (bottom_copy.Get_h_units()->defined) ? bottom_copy.Get_h_units()->input : bottom_copy.Get_h_units()->si;
+        os << (bottom_copy.Get_v_units()->defined) ? bottom_copy.Get_v_units()->input : bottom_copy.Get_v_units()->si;
+        os << std::endl;
+      }
+      */
     }
   }
-
-  os << "\t\t-perimeter " << this->perimeter;
+  
+  if (this->perimeter.Get_source_type() != Data_source::NONE)
   {
-    Data_source perimeter_copy(this->perimeter);
-    if (perimeter_copy.Get_h_units()->defined || perimeter_copy.Get_v_units()->defined)
+    os << "\t\t-perimeter " << this->perimeter;
     {
-      os << "\t\t-units_perimeter ";
-      os << (perimeter_copy.Get_h_units()->defined) ? perimeter_copy.Get_h_units()->input : perimeter_copy.Get_h_units()->si;
-      os << (perimeter_copy.Get_v_units()->defined) ? perimeter_copy.Get_v_units()->input : perimeter_copy.Get_v_units()->si;
-      os << std::endl;
+      /*
+      Data_source perimeter_copy(this->perimeter);
+      if (perimeter_copy.Get_h_units()->defined || perimeter_copy.Get_v_units()->defined)
+      {
+        os << "\t\t-units_perimeter ";
+        os << (perimeter_copy.Get_h_units()->defined) ? perimeter_copy.Get_h_units()->input : perimeter_copy.Get_h_units()->si;
+        os << (perimeter_copy.Get_v_units()->defined) ? perimeter_copy.Get_v_units()->input : perimeter_copy.Get_v_units()->si;
+        os << std::endl;
+      }
+      */
     }
   }
-
+  
   switch (this->perimeter_option)
   {
   case CONSTANT:

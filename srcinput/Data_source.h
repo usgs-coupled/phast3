@@ -51,8 +51,8 @@ public:
   // Getter 
   bool                     Get_defined            (void) {return this->defined;};
   std::vector<Point> &     Get_points             (void);
-  DATA_SOURCE_TYPE         Get_source_type        (void) {return this->source_type;}
-  int                      Get_attribute          (void) {return this->attribute;}
+  DATA_SOURCE_TYPE         Get_source_type        (void)const {return this->source_type;}
+  int                      Get_attribute          (void)const {return this->attribute;}
   PHST_polygon &           Get_phst_polygons      (void) {return this->phst_polygons;};
   struct zone *            Get_bounding_box       (void);
   struct cunit *           Get_h_units            (void) {return &this->h_units;};
@@ -65,6 +65,7 @@ public:
   void                     Set_bounding_box       (void);
   void                     Set_defined            (bool tf) {this->defined = tf;};
   void                     Set_file_name          (std::string fn) {this->file_name = fn;};
+  void                     Set_attribute          (int a) {this->attribute = a;};
 
   Data_source &            operator=              (const Data_source& r);
 

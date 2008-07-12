@@ -19,7 +19,8 @@ NNInterpolator::NNInterpolator(void)
   this->delaunay_triangulation = NULL;
   this->nn = NULL;
   this->pin = NULL;
-
+  this->tree = NULL;
+  this->point_count = 0;
 }
 // Destructor
 NNInterpolator::~NNInterpolator(void)
@@ -27,6 +28,7 @@ NNInterpolator::~NNInterpolator(void)
   if (this->nn != NULL) nnpi_destroy(this->nn);
   if (this->delaunay_triangulation != NULL) delaunay_destroy(this->delaunay_triangulation);
   if (this->pin != NULL) delete this->pin;
+  if (this->tree != NULL) delete this->tree;
 }
 bool nnpi_interpolate(std::vector<Point> &pts_in, std::vector<Point> &pts_out, double wmin)
 {
@@ -139,7 +141,8 @@ bool nnpi_interpolate(std::vector<Point> &pts_in, std::vector<Point> &pts_out, d
   delete [] pout;
   return true;
 }
-bool NNInterpolator::preprocess(std::vector<Point> &pts_in, std::vector<Point> &corners)
+// COMMENT: {7/11/2008 9:26:59 PM}bool NNInterpolator::preprocess(std::vector<Point> &pts_in, std::vector<Point> &corners)
+bool NNInterpolator::preprocess(std::vector<Point> &pts_in)
 {
 
   if (pts_in.size() == 0)
@@ -148,15 +151,25 @@ bool NNInterpolator::preprocess(std::vector<Point> &pts_in, std::vector<Point> &
   }
 
   // set up points in input array
+  this->point_count = pts_in.size();
   int nin = pts_in.size();
-  this->pin = new point[nin + corners.size()];
+// COMMENT: {7/11/2008 8:56:24 PM}  this->pin = new point[nin + corners.size()];
+  this->pin = new point[nin];
 
   int i;
+  this->bounds = zone();
+  this->bounds.zone_defined = 1;
   for (i = 0; i < nin; i++)
   {
     this->pin[i].x = pts_in[i].x();
     this->pin[i].y = pts_in[i].y();
     this->pin[i].z = pts_in[i].get_v();
+    if (this->pin[i].x < this->bounds.x1) this->bounds.x1 = this->pin[i].x;
+    if (this->pin[i].y < this->bounds.y1) this->bounds.y1 = this->pin[i].y;
+    if (this->pin[i].z < this->bounds.z1) this->bounds.z1 = this->pin[i].z;
+    if (this->pin[i].x > this->bounds.x2) this->bounds.x2 = this->pin[i].x;
+    if (this->pin[i].y > this->bounds.y2) this->bounds.y2 = this->pin[i].y;
+    if (this->pin[i].z > this->bounds.z2) this->bounds.z2 = this->pin[i].z;
   }
 
   assert(this->delaunay_triangulation == 0);
@@ -166,47 +179,80 @@ bool NNInterpolator::preprocess(std::vector<Point> &pts_in, std::vector<Point> &
   this->nn = nnpi_create(this->delaunay_triangulation);
   int seed = 0;
 
-// COMMENT: {7/7/2008 4:44:40 PM}  double wmin = 0;  // no extrapolation
-  double wmin = -1e+6;  // no extrapolation
+  double wmin = 0;  // no extrapolation
   nnpi_setwmin(this->nn, wmin);
 
-  // find corners not in convex hull 
-  int new_nin = nin;
-  if (corners.size() > 0) {
-    for (i = 0; i < (int) corners.size(); i++)
-    {
-      Point p = corners[i];
-   
-      if (isnan(this->interpolate(p)))
-      {
-	this->pin[new_nin].x = corners[i].x();
-	this->pin[new_nin].y = corners[i].y();
-
-	// find value of nearest point in pts_in
-	this->pin[new_nin].z = interpolate_nearest(pts_in, corners[i]);
-	new_nin++;
-      }
-    }
-  }
-  if (new_nin > nin)
-  {
-    if (this->nn != NULL) nnpi_destroy(this->nn);
-    if (this->delaunay_triangulation != NULL) delaunay_destroy(this->delaunay_triangulation);
-    this->nn = NULL;
-    this->delaunay_triangulation = NULL;
-    this->delaunay_triangulation = delaunay_build(new_nin, this->pin, 0, NULL, 0, NULL);
-    this->nn = nnpi_create(this->delaunay_triangulation);
-    nnpi_setwmin(this->nn, wmin);
-  }
+// COMMENT: {7/11/2008 8:56:07 PM}  // find corners not in convex hull 
+// COMMENT: {7/11/2008 8:56:07 PM}  int new_nin = nin;
+// COMMENT: {7/11/2008 8:56:07 PM}  if (corners.size() > 0) {
+// COMMENT: {7/11/2008 8:56:07 PM}    for (i = 0; i < (int) corners.size(); i++)
+// COMMENT: {7/11/2008 8:56:07 PM}    {
+// COMMENT: {7/11/2008 8:56:07 PM}      Point p = corners[i];
+// COMMENT: {7/11/2008 8:56:07 PM}   
+// COMMENT: {7/11/2008 8:56:07 PM}      if (isnan(this->interpolate(p)))
+// COMMENT: {7/11/2008 8:56:07 PM}      {
+// COMMENT: {7/11/2008 8:56:07 PM}	this->pin[new_nin].x = corners[i].x();
+// COMMENT: {7/11/2008 8:56:07 PM}	this->pin[new_nin].y = corners[i].y();
+// COMMENT: {7/11/2008 8:56:07 PM}
+// COMMENT: {7/11/2008 8:56:07 PM}	// find value of nearest point in pts_in
+// COMMENT: {7/11/2008 8:56:07 PM}	this->pin[new_nin].z = interpolate_nearest(pts_in, corners[i]);
+// COMMENT: {7/11/2008 8:56:07 PM}	new_nin++;
+// COMMENT: {7/11/2008 8:56:07 PM}      }
+// COMMENT: {7/11/2008 8:56:07 PM}    }
+// COMMENT: {7/11/2008 8:56:07 PM}  }
+// COMMENT: {7/11/2008 8:56:07 PM}  if (new_nin > nin)
+// COMMENT: {7/11/2008 8:56:07 PM}  {
+// COMMENT: {7/11/2008 8:56:07 PM}    if (this->nn != NULL) nnpi_destroy(this->nn);
+// COMMENT: {7/11/2008 8:56:07 PM}    if (this->delaunay_triangulation != NULL) delaunay_destroy(this->delaunay_triangulation);
+// COMMENT: {7/11/2008 8:56:07 PM}    this->nn = NULL;
+// COMMENT: {7/11/2008 8:56:07 PM}    this->delaunay_triangulation = NULL;
+// COMMENT: {7/11/2008 8:56:07 PM}    this->delaunay_triangulation = delaunay_build(new_nin, this->pin, 0, NULL, 0, NULL);
+// COMMENT: {7/11/2008 8:56:07 PM}    this->nn = nnpi_create(this->delaunay_triangulation);
+// COMMENT: {7/11/2008 8:56:07 PM}    nnpi_setwmin(this->nn, wmin);
+// COMMENT: {7/11/2008 8:56:07 PM}  }
 
   return true;
 }
 double NNInterpolator::interpolate(const Point& pt)
 {
   point pout;
-  pout.x = pt.x();
-  pout.y = pt.y();
-  pout.z = 0.0;
-  nnpi_interpolate_point(this->nn, &pout);
+  if (this->bounds.Point_in_xy_zone(pt))
+  {
+    pout.x = pt.x();
+    pout.y = pt.y();
+    pout.z = 0.0;
+    nnpi_interpolate_point(this->nn, &pout);
+    if (isnan(pout.z))
+    {
+      if (this->get_tree())
+      {
+        int n = this->get_tree()->Nearest(pt);
+        assert((0 <= n) && (n < (int)this->point_count));
+        pout.z = this->pin[n].z;
+      }
+    }
+  }
+  else
+  {
+    pout.z = NaN;
+    if (this->get_tree())
+    {
+      int n = this->get_tree()->Nearest(pt);
+      assert((0 <= n) && (n < (int)this->point_count));
+      pout.z = this->pin[n].z;
+    }
+  }
   return (pout.z);
+}
+KDtree* NNInterpolator::get_tree(void)
+{
+  if (this->tree == 0)
+  {
+    if (this->point_count > 0)
+    {
+      assert(this->pin != NULL);
+      this->tree = new KDtree(this->pin, this->point_count);
+    }
+  }
+  return this->tree;
 }
