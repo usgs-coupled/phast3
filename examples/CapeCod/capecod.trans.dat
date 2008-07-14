@@ -61,8 +61,8 @@ GRID
 	-uniform Z -200 -20 10
 	-overlay_uniform Z -10 25 18
 	
-	-overlay X 279000 282000  61
-	-overlay Y 819000 822000  61
+	#-overlay X 279000 282000  61
+	#-overlay Y 819000 822000  61
 
 	#-uniform X 275000 285000 26
 	#-uniform Y 810000 830000 26
@@ -110,43 +110,43 @@ MEDIA
 		-active 0
 
 	-prism
-		#-perimeter  SHAPE   ArcData/SimplePonds.shp 
-		-perimeter POINTS
-			280029.582  820887.320 0
-			280578.479  821357.803 0
-			280852.928  820769.699 0
-			280726.594  820386.342 0
-			280513.134  820482.181 0
-			280373.732  820199.020 0
-			280186.410  820273.077 0
-			280260.467  820469.112 0 
+		-perimeter  SHAPE   ArcData/SimplePonds.shp 
+		#-perimeter POINTS
+		#	280029.582  820887.320 0
+		#	280578.479  821357.803 0
+		#	280852.928  820769.699 0
+		#	280726.594  820386.342 0
+		#	280513.134  820482.181 0
+		#	280373.732  820199.020 0
+		#	280186.410  820273.077 0
+		#	280260.467  820469.112 0 
 			
 		-bottom SHAPE ArcData/SimpleBath.shp 9
 		
 		 # Parameters
-		-Kx                       .01
-		-Ky                       .01
-		-Kz                       .01
+		-Kx                       .1
+		-Ky                       .1
+		-Kz                       .1
 		-porosity                 1
 		-specific_storage         1
 		-long_dispersivity        10
 		-horizontal_dispersivity  10
 		-vertical_dispersivity    10
 		
-	-prism  # Lower hydraulic conductivity lake bottom
-		-perimeter  SHAPE   ArcData/SimplePonds.shp 
-		-top SHAPE    ArcData/SimpleBath.shp 9   # Elev_meter
-		-bottom SHAPE ArcData/SimpleBath.shp 12  # Skin_bot_2
-		
-		# Parameters
-		-Kx                       .1e-3
-		-Ky                       .1e-3
-		-Kz                       .1e-3
-		-porosity                 .2
-		-specific_storage         .2
-		-long_dispersivity        1
-		-horizontal_dispersivity  1
-		-vertical_dispersivity    1
+	#-prism  # Lower hydraulic conductivity lake bottom
+	#	-perimeter  SHAPE   ArcData/SimplePonds.shp 
+	#	-top SHAPE    ArcData/SimpleBath.shp 9   # Elev_meter
+	#	-bottom SHAPE ArcData/SimpleBath.shp 12  # Skin_bot_2
+	#	
+	#	# Parameters
+	#	-Kx                       .1e-3
+	#	-Ky                       .1e-3
+	#	-Kz                       .1e-3
+	#	-porosity                 .2
+	#	-specific_storage         .2
+	#	-long_dispersivity        1
+	#	-horizontal_dispersivity  1
+	#	-vertical_dispersivity    1
 		
 
 #MEDIA
@@ -305,16 +305,15 @@ FLUX_BC
 
 	
 DRAIN 1 East Boundary
-	-point 		282787.368  821587.404
-		-z     		12.192
+	-point 		282835.491  821234.501
+		-z     		10.668	
 		-width 		100
 		-thickness 	1
 		-bed_k     	1
-	-point 		282835.491  821234.501
-		-z     		10.668
+
 	-point 		282947.779  820785.350
 		-z     		9.144	
-	-point 		283236.519  819710.597
+	-point 		283205.171  819653.437
 		-z     		7.62
 	-point 		283300.683  818796.255
 		-z     		6.096	
@@ -338,23 +337,122 @@ DRAIN 1 East Boundary
 	#	-bed_k     	1	
 	#-point 		283237.248  819021.763
 	#	-z     		12
+	#-point 		280506.032  815737.039
+	#	-z     		8	
 	#-point 		282566.677  815889.489
 	#	-z     		4
 	#-point 		281887.283  814071.888
 	#	-z     		0
 	#	-width 		100
 	#	-thickness 	1
+	#	-bed_k     	1
+
+DRAIN 2 Johns Pond drain
+	-point 		281649.002  818803.563
+		-z     		10.668
+		-width 		20
+		-thickness 	1
+		-bed_k     	1e-3
+	-point 		281625.460  818262.095
+		-z     		9.144
+	-point 		281507.750  817814.795
+		-z     		7.62
+	-point 		281342.955  817343.954
+		-z     		6.096	
+	-point 		281272.329  816543.523
+		-z     		4.572	
+	-point 		281319.413  816213.934
+		-z     		3.048
+	-point 		280884.585  814893.052
+		-z     		1.524
+		-z     		0
+		-width 		20
+		-thickness 	1
+		-bed_k 		1e-3
+		
+	
+	#-point 		281291.710  817248.278
+	#	-z     		12
+	#	-width 		20
+	#	-thickness 	1
+	#	-bed_k     	1	
+	#-point 		281306.628  816610.963 
+	#	-z     		8
+	#-point 		281221.123  815624.790
+	#	-z     		4
+	#-point 		280885.838  814883.633
+	#	-z     		0
+	#	-width 		20
+	#	-thickness 	1
+	#	-bed_k 		1
+		
+#DRAIN 3 Ashumet Drain	
+
+	#-point 		279632.223  817600.446
+	#	-z     		12
+	#	-width 		100
+	#	-thickness 	1
+	#	-bed_k     	1
+	#-point 		279306.457  816487.410
+	#	-z     		8		
+	#-point 		279188.819  815709.191
+	#	-z     		4
+	#-point 		279080.230  814351.831
+	#	-z     		0
+	#	-width 		100
+	#	-thickness 	1
 	#	-bed_k     	1		
 		
-
-DRAIN 2 West Boundary
-	-point 		277702.440  818435.600
+		
+DRAIN 4 Cranberry bogs
+	-point 		279119.916  818624.067
 		-z     		10.668
+		-width 		20
+		-thickness 	1
+		-bed_k     	1e-3
+	-point 		278867.821  817807.277
+		-z     		9.144		
+	-point 		278718.295  817425.830
+		-z     		7.62
+	-point 		278404.615  816798.470
+		-z     		6.096	
+	-point 		278260.845  816171.110
+		-z     		4.572	
+	-point 		278104.005  815347.700
+		-z     		3.048
+	-point 		278117.075  814668.060
+		-z     		1.524
+	-point 		278077.865  814393.590
+		-z     		0
+		-width 		20
+		-thickness 	1
+		-bed_k 		1e-3		
+	
+
+	#-point 		278890.200  818143.390
+	#	-z     		12
+	#	-width 		20
+	#	-thickness 	1
+	#	-bed_k     	1
+	#-point 		278482.894  817179.631
+	#	-z     		8
+	#-point 		278283.912  816523.607
+	#	-z     		4		
+	#-point 		277983.307  814184.593
+	#	-z     		0
+	#	-width 		20
+	#	-thickness 	1
+	#	-bed_k 		1			
+		
+
+DRAIN 5 West Boundary
+	-point 		277638.280  818243.120
+		-z     		9.144
+		#-z     		8.144
 		-width 		100
 		-thickness 	1
 		-bed_k     	1
-	-point 		277638.280  818243.120
-		-z     		9.144
+
 	-point 		277381.640  817842.120
 		-z     		7.62
 	-point 		277365.600  817312.800
@@ -375,7 +473,9 @@ DRAIN 2 West Boundary
 	#	-z     		12
 	#	-width 		100
 	#	-thickness 	1
-	#	-bed_k     	1		
+	#	-bed_k     	1
+	#-point 		277384.776  817101.194 
+	#	-z     		8		
 	#-point 		277440.418  816802.970
 	#	-z     		4
 	#-point 		277263.960  814314.917
@@ -384,81 +484,14 @@ DRAIN 2 West Boundary
 	#	-thickness 	1
 	#	-bed_k     	1
 		
-DRAIN 3 Johns Pond drain
-	-point 		281649.002  818803.563
-		-z     		10.668
-		-width 		20
-		-thickness 	1
-		-bed_k     	1
-	-point 		281625.460  818262.095
-		-z     		9.144
-	-point 		281507.750  817814.795
-		-z     		7.62
-	-point 		281342.955  817343.954
-		-z     		6.096	
-	-point 		281272.329  816543.523
-		-z     		4.572	
-	-point 		281319.413  816213.934
-		-z     		3.048
-	-point 		281178.160  815484.130
-		-z     		1.524
-	-point 		281178.160  814824.952
-		-z     		0
-		-width 		20
-		-thickness 	1
-		-bed_k 		1
-		
-	
-	#-point 		281291.710  817248.278
-	#	-z     		12
-	#	-width 		20
-	#	-thickness 	1
-	#	-bed_k     	1	
-	#-point 		281221.123  815624.790
-	#	-z     		4
-	#-point 		280885.838  814883.633
-	#	-z     		0
-	#	-width 		20
-	#	-thickness 	1
-	#	-bed_k 		1	
-		
-DRAIN 4 Cranberry bogs
-	-point 		278718.295  817425.830
-		-z     		7.62
-		-width 		20
-		-thickness 	1
-		-bed_k     	1	
-	-point 		278404.615  816798.470
-		-z     		6.096	
-	-point 		278260.845  816171.110
-		-z     		4.572	
-	-point 		278104.005  815347.700
-		-z     		3.048
-	-point 		278117.075  814668.060
-		-z     		1.524
-	-point 		278077.865  814393.590
-		-z     		0
-		-width 		20
-		-thickness 	1
-		-bed_k 		1		
-	
 
-	#-point 		278759.530  817783.445
-	#	-z     		12
-	#	-width 		20
-	#	-thickness 	1
-	#	-bed_k     	1	
-	#-point 		277983.307  814184.593
-	#	-z     		0
-	#	-width 		20
-	#	-thickness 	1
-	#	-bed_k 		1	
 HEAD_IC
 	-zone 275000 810000 -500 285000 830000 100
 		#-head                    0
 		#-head                    20
+		-head file capecod.head.51.dat
 		#-head file capecod.head.26a.dat
-		-head file capecod.head.ponds.dat
+		#-head file capecod.head.ponds.dat
 
 
 CHEMISTRY_IC
@@ -512,6 +545,6 @@ PRINT_FREQUENCY
 TIME_CONTROL
 	-time_step
 		0 	0.5
-	-time_change 	1966
+	-time_change 	1996
 	-start_time	1935.9
 
