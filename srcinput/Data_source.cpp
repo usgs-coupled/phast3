@@ -74,7 +74,7 @@ void Data_source::Init()
   this->h_units = cunit("m");
   this->v_units = cunit("m");
 }
-bool Data_source::Read(std::istream &lines)
+bool Data_source::Read(std::istream &lines, bool read_num)
 {
   bool success = true;
   this->Init();
@@ -144,20 +144,23 @@ bool Data_source::Read(std::istream &lines)
     // Shape file
   case 2:
     this->source_type = Data_source::SHAPE;
-    if (!(lines >> this->file_name)) success = false;
-    lines >> this->attribute;
+    //if (!(lines >> this->file_name)) success = false;
+    //lines >> this->attribute;
+	success = Data_source::Read_filename(lines, read_num, this->file_name, this->attribute);
     if (!success) error_msg("Error reading shape file name or attribute number.", EA_CONTINUE);
     break;
     // XYZ file
   case 3:
     this->source_type = Data_source::XYZ;
-    if (!(lines >> this->file_name)) success = false;
+    //if (!(lines >> this->file_name)) success = false;
+	success = Data_source::Read_filename(lines, false, this->file_name, this->attribute);
     if (!success) error_msg("Error reading xyz file name.", EA_CONTINUE);
     break;
     // Arc Raster file
   case 4:
     this->source_type = Data_source::ARCRASTER;
-    if (!(lines >> this->file_name)) success = false;
+    //if (!(lines >> this->file_name)) success = false;
+	success = Data_source::Read_filename(lines, false, this->file_name, this->attribute);
     if (!success) error_msg("Error reading ArcRaster file name.", EA_CONTINUE);
     break;
 
@@ -167,6 +170,81 @@ bool Data_source::Read(std::istream &lines)
   }
   if (success) this->defined = true;
   return(success);
+}
+bool Data_source::Read_filename (std::istream &lines, bool read_num, std::string &filename, int &num)
+{
+  bool success = true;
+
+  std::string line;
+  std::getline(lines, line);
+
+  std::string std_token;
+
+  std::string::reverse_iterator rit;
+  int erase = 0;
+  for (rit = line.rbegin(); rit != line.rend(); rit++)
+  {
+	  if (isspace(*rit)) {
+		  erase++;
+		  continue;
+	  }
+	  break;
+  }
+  if (rit == line.rend()) 
+  {
+	  error_msg("Missing file name", EA_CONTINUE);
+	  return false;
+  }
+  line = line.substr(0, line.size() - erase);
+  if (read_num)
+  {
+	  int keep = 0;
+	  for (rit = line.rbegin(); rit != line.rend(); rit++)
+	  {
+		  if (!isspace(*rit)) {
+			  keep++;
+			  continue;
+		  }
+		  break;
+	  }
+	  if (rit == line.rend()) 
+	  {
+		  error_msg("Missing attribute number", EA_CONTINUE);
+		  return false;
+	  }
+	  std::string number = line.substr(line.size() - keep, line.size());
+	  if (sscanf(number.c_str(), "%d", &num) != 1)
+	  {
+		  error_msg("Expecting attribute number", EA_CONTINUE);
+		  return false;
+	  }
+	  line = line.substr(0, line.size() - keep);
+  }
+
+  // strip front and back
+  erase = 0;
+  for (rit = line.rbegin(); rit != line.rend(); rit++)
+  {
+	  if (isspace(*rit)) {
+		  erase++;
+		  continue;
+	  }
+	  break;
+  }
+  line = line.substr(0, line.size() - erase);
+  erase = 0;
+  std::string::iterator it;
+  for (it = line.begin(); it != line.end(); it++)
+  {
+	  if (isspace(*it)) {
+		  erase++;
+		  continue;
+	  }
+	  break;
+  }
+  filename = line.substr(erase, line.size());
+
+  return success;
 }
 bool Data_source::Read_units(std::istream &lines)
 {

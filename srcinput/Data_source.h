@@ -40,14 +40,14 @@ public:
 //   Units are converted in Data_source::Tidy so that this->pts has been converted.
 
   void                     Init();
-  bool                     Read                   (std::istream &lines);
+  bool                     Read                   (std::istream &lines, bool read_num);
   void                     Tidy                   (const bool make_nni);
   void                     Add_to_file_map        (Filedata *f, const bool make_nni);
   void                     Add_nni_to_data_source (void);
   bool                     Make_polygons          (void);
   double                   Interpolate            (const Point& p);
   bool                     Read_units             (std::istream &lines);
-
+  static bool              Read_filename          (std::istream &lines, bool read_num, std::string &filename, int &num);
   // Getter 
   bool                     Get_defined            (void) {return this->defined;};
   std::vector<Point> &     Get_points             (void);

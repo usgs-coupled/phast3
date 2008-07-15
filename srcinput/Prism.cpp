@@ -156,7 +156,7 @@ bool Prism::Read(PRISM_OPTION p_opt, std::istream &lines)
     }
     break;
   case PERIMETER:
-    if (!this->perimeter.Read(lines)) 
+    if (!this->perimeter.Read(lines, false)) 
     {
       error_msg("Reading perimeter of prism", EA_CONTINUE);
     } else if (this->perimeter.Get_source_type() != Data_source::POINTS &&
@@ -169,10 +169,10 @@ bool Prism::Read(PRISM_OPTION p_opt, std::istream &lines)
     }
     break;
   case TOP:
-    if (!this->top.Read(lines)) error_msg("Reading top of prism", EA_CONTINUE);
+    if (!this->top.Read(lines, true)) error_msg("Reading top of prism", EA_CONTINUE);
     break;
   case BOTTOM:
-    if (!this->bottom.Read(lines)) error_msg("Reading bottom of prism", EA_CONTINUE);
+    if (!this->bottom.Read(lines, true)) error_msg("Reading bottom of prism", EA_CONTINUE);
     break;
   case PERIMETER_Z:
     {
