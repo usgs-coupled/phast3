@@ -75,6 +75,16 @@ GRID
 	-snap Z 0.001
 	-chemistry_dimensions XYZ
 	-print_orientation XY
+	
+
+HEAD_IC
+	-zone 275000 810000 -500 285000 830000 100
+		#-head                    0
+		#-head                    20
+		-head file capecod.head.51.dat
+		#-head file capecod.head.26a.dat
+		#-head file capecod.head.ponds.dat
+	
 
 MEDIA
 	-zone 275000 810000 -500 285000 830000 100
@@ -85,9 +95,9 @@ MEDIA
 		-Kx     Z    1.00e-3 10   0.30e-3  -5
 		-Ky     Z    1.00e-3 10   0.30e-3  -5
 		-Kz     Z    0.30e-3 10   0.10e-3  -5	
-		#-Kx     Z    1.00e-3 -5   0.10e-3   -6
-		#-Ky     Z    1.00e-3 -5   0.10e-3   -6
-		#-Kz     Z    0.30e-3 -5   0.030e-3  -6	
+		#-Kx     Z    1.00e-3 10   0.30e-3  -20
+		#-Ky     Z    1.00e-3 10   0.30e-3  -20
+		#-Kz     Z    0.30e-3 10   0.10e-3  -20		
 		-porosity                 0.39
 		-specific_storage         0.39
 		-long_dispersivity        1
@@ -108,6 +118,7 @@ MEDIA
 		
 		# Parameters
 		-active 0
+		
 
 	-prism
 		-perimeter  SHAPE   ArcData/SimplePonds.shp 
@@ -136,17 +147,38 @@ MEDIA
 	#-prism  # Lower hydraulic conductivity lake bottom
 	#	-perimeter  SHAPE   ArcData/SimplePonds.shp 
 	#	-top SHAPE    ArcData/SimpleBath.shp 9   # Elev_meter
-	#	-bottom SHAPE ArcData/SimpleBath.shp 12  # Skin_bot_2
+	#	-bottom SHAPE ArcData/SimpleBath.shp 13  # Skin_bot_4
 	#	
 	#	# Parameters
-	#	-Kx                       .1e-3
-	#	-Ky                       .1e-3
-	#	-Kz                       .1e-3
+	#	-Kx                       0e-3
+	#	-Ky                       0e-3
+	#	-Kz                       .03e-3
 	#	-porosity                 .2
 	#	-specific_storage         .2
 	#	-long_dispersivity        1
 	#	-horizontal_dispersivity  1
 	#	-vertical_dispersivity    1
+	
+	# Higer hydraulic conductivity
+	#-zone  275000 810000 -5 280500 822500 20
+	-prism  
+	-perimeter POINTS
+		280153.203  822140.879  0
+		280611.880  822246.727 0
+		277753.968  811450.171 0 
+		277118.877  811361.964 0
+	-bottom CONSTANT  -5.0	
+	# Parameters	
+		-Kx     Z    6.00e-3 10   .3e-3  -5
+		-Ky     Z    6.00e-3 10   .3e-3  -5
+		-Kz     Z    0.20e-3 10   0.1e-3  -5	
+		
+	
+
+#SPECIFIED_HEAD_BC
+#	-zone   277747.267  818568.250 8.0 278025.137  819741.478 15
+#	-head   
+#		0 	9.738
 		
 
 #MEDIA
@@ -347,28 +379,28 @@ DRAIN 1 East Boundary
 	#	-thickness 	1
 	#	-bed_k     	1
 
-DRAIN 2 Johns Pond drain
-	-point 		281649.002  818803.563
-		-z     		10.668
-		-width 		20
-		-thickness 	1
-		-bed_k     	1e-3
-	-point 		281625.460  818262.095
-		-z     		9.144
-	-point 		281507.750  817814.795
-		-z     		7.62
-	-point 		281342.955  817343.954
-		-z     		6.096	
-	-point 		281272.329  816543.523
-		-z     		4.572	
-	-point 		281319.413  816213.934
-		-z     		3.048
-	-point 		280884.585  814893.052
-		-z     		1.524
-		-z     		0
-		-width 		20
-		-thickness 	1
-		-bed_k 		1e-3
+#DRAIN 2 Johns Pond drain
+#	-point 		281649.002  818803.563
+#		-z     		10.668
+#		-width 		20
+#		-thickness 	1
+#		-bed_k     	1e-3
+#	-point 		281625.460  818262.095
+#		-z     		9.144
+#	-point 		281507.750  817814.795
+#		-z     		7.62
+#	-point 		281342.955  817343.954
+#		-z     		6.096	
+#	-point 		281272.329  816543.523
+#		-z     		4.572	
+#	-point 		281319.413  816213.934
+#		-z     		3.048
+#	-point 		280884.585  814893.052
+#		-z     		1.524
+#		-z     		0
+#		-width 		20
+#		-thickness 	1
+#		-bed_k 		1e-3
 		
 	
 	#-point 		281291.710  817248.278
@@ -404,29 +436,29 @@ DRAIN 2 Johns Pond drain
 	#	-bed_k     	1		
 		
 		
-DRAIN 4 Cranberry bogs
-	-point 		279119.916  818624.067
-		-z     		10.668
-		-width 		20
-		-thickness 	1
-		-bed_k     	1e-3
-	-point 		278867.821  817807.277
-		-z     		9.144		
-	-point 		278718.295  817425.830
-		-z     		7.62
-	-point 		278404.615  816798.470
-		-z     		6.096	
-	-point 		278260.845  816171.110
-		-z     		4.572	
-	-point 		278104.005  815347.700
-		-z     		3.048
-	-point 		278117.075  814668.060
-		-z     		1.524
-	-point 		278077.865  814393.590
-		-z     		0
-		-width 		20
-		-thickness 	1
-		-bed_k 		1e-3		
+#DRAIN 4 Cranberry bogs
+#	-point 		279119.916  818624.067
+#		-z     		10.668
+#		-width 		20
+#		-thickness 	1
+#		-bed_k     	1e-3
+#	-point 		278867.821  817807.277
+#		-z     		9.144		
+#	-point 		278718.295  817425.830
+#		-z     		7.62
+#	-point 		278404.615  816798.470
+#		-z     		6.096	
+#	-point 		278260.845  816171.110
+#		-z     		4.572	
+#	-point 		278104.005  815347.700
+#		-z     		3.048
+#	-point 		278117.075  814668.060
+#		-z     		1.524
+#	-point 		278077.865  814393.590
+#		-z     		0
+#		-width 		20
+#		-thickness 	1
+#		-bed_k 		1e-3		
 	
 
 	#-point 		278890.200  818143.390
@@ -446,13 +478,17 @@ DRAIN 4 Cranberry bogs
 		
 
 DRAIN 5 West Boundary
+	#-point 		277919.281  820275.165
+	#	-z     		10.668
+	#	-width 		100
+	#	-thickness 	1
+	#	-bed_k     	1
 	-point 		277638.280  818243.120
 		-z     		9.144
-		#-z     		8.144
+		#-z     		5.144
 		-width 		100
 		-thickness 	1
-		-bed_k     	1
-
+		-bed_k     	1		
 	-point 		277381.640  817842.120
 		-z     		7.62
 	-point 		277365.600  817312.800
@@ -484,15 +520,6 @@ DRAIN 5 West Boundary
 	#	-thickness 	1
 	#	-bed_k     	1
 		
-
-HEAD_IC
-	-zone 275000 810000 -500 285000 830000 100
-		#-head                    0
-		#-head                    20
-		-head file capecod.head.51.dat
-		#-head file capecod.head.26a.dat
-		#-head file capecod.head.ponds.dat
-
 
 CHEMISTRY_IC
 	-zone 275000 810000 -500 285000 830000 100
