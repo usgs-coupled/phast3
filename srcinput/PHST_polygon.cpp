@@ -207,3 +207,11 @@ void PHST_polygon::Set_bounding_box(void)
   this->box.y2 = max.y();
   this->box.z2 = max.z();
 }
+void PHST_polygon::Clear(void)
+{
+  this->pts.clear();
+  this->begin.clear();
+  this->end.clear();
+  this->box = zone();
+}
+

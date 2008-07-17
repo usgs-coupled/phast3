@@ -896,3 +896,18 @@ std::vector<Point> &Shapefile::Get_points(int attribute)
 {
   return this->pts_map.find(attribute)->second;
 }
+std::vector< std::string > Shapefile::Get_headers(void)
+{
+	std::vector< std::string > headers;
+	if (this->dbfinfo)
+	{
+		char	szTitle[12];
+		for(int i = 0; i < DBFGetFieldCount(this->dbfinfo); ++i)
+		{
+			const char *pszTypeName;
+			DBFGetFieldInfo(this->dbfinfo, i, szTitle, NULL, NULL);
+			headers.push_back(szTitle);
+		}
+	}
+	return headers;
+}

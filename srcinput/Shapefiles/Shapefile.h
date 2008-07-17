@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <vector>   // std::vector
 #include <map>
+#include <string>
 class Point;
 #include "../gpc.h"
 
@@ -21,6 +22,7 @@ public:
   void                               Dump             (std::ostream &oss);
   bool                               Make_points      (const int field, std::vector<Point> &pts, double h_scale, double v_scale);
   std::vector<Point> &               Get_points       (int attribute);
+  std::vector< std::string >         Get_headers      (void);
   bool                               Make_polygons    ( int field, PHST_polygon &polygons, double h_scale, double v_scale);
   bool                               Point_in_polygon (const Point p);
   //struct zone *                      Get_bounding_box (void);

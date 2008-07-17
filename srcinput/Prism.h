@@ -70,7 +70,7 @@ public:
   Data_source top;
 
   
-  static std::vector<Prism * > prism_vector;
+  static std::list<Prism *> prism_list;
 
 };
 void Tidy_prisms(void);

@@ -87,6 +87,10 @@ protected:
   int                attribute;
   struct zone        box;
 
+public:
+  std::string        absolute_file_name;
+protected:
+
   // Static
   static std::map<std::string,Data_source> data_source_map;
 };

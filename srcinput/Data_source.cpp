@@ -39,6 +39,7 @@ Data_source::Data_source(const Data_source& r)
 ,v_units(r.v_units)
 ,attribute(r.attribute)
 ,box(r.box)
+,absolute_file_name(r.absolute_file_name)
 {
   // lazy initialization
   this->tree = NULL;
@@ -59,6 +60,7 @@ Data_source& Data_source::operator=(const Data_source& rhs)
     this->v_units       = rhs.v_units;
     this->attribute     = rhs.attribute;
     this->box           = rhs.box;
+    this->absolute_file_name = rhs.absolute_file_name;
   }
   return *this;
 }
@@ -371,6 +373,7 @@ std::vector<Point> & Data_source::Get_points()
 }
 bool Data_source::Make_polygons()
 {
+  this->phst_polygons.Clear();
   switch (this->source_type)
   {
   case Data_source::SHAPE:

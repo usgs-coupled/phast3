@@ -24,6 +24,7 @@ public:
   std::vector< std::vector<Point>::iterator > &Get_end() {return this->end;};
   void Set_bounding_box(void);
   struct zone * Get_bounding_box(void){return &(this->box);};
+  void Clear(void);
   //PHST_polygon& operator=(const PHST_polygon& poly);
 
 protected:

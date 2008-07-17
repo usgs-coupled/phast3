@@ -6,7 +6,7 @@
 #include <algorithm>
 #include "Utilities.h"
 #include <assert.h>
-std::vector<Prism * > Prism::prism_vector;
+std::list<Prism *> Prism::prism_list;
 
 
 // Note: No header files should follow the next three lines
@@ -24,7 +24,7 @@ Prism::Prism(void)
   this->orig_perimeter_datum = 0.0;
   this->perimeter_option = DEFAULT;
   zone_init(&this->box);
-  Prism::prism_vector.push_back(this);
+  Prism::prism_list.push_back(this);
 }
 Prism::Prism(const Prism& c)
 :Polyhedron(c)
@@ -44,18 +44,18 @@ Prism::Prism(const Prism& c)
   {
     this->perimeter_poly = NULL;
   }
-  Prism::prism_vector.push_back(this);
+  Prism::prism_list.push_back(this);
 }
 Prism::~Prism(void)
 {
   // remove from prism_vector
-  std::vector<Prism*>::iterator it = Prism::prism_vector.begin();
-  for(; it != Prism::prism_vector.end(); ++it)
+  std::list<Prism*>::iterator it = Prism::prism_list.begin();
+  for(; it != Prism::prism_list.end(); ++it)
   {
     if (*it == this) break;
   }
-  assert(it != Prism::prism_vector.end()); // should be found
-  if (it != Prism::prism_vector.end()) this->prism_vector.erase(it);
+  assert(it != Prism::prism_list.end()); // should be found
+  if (it != Prism::prism_list.end()) this->prism_list.erase(it);
 
   if (this->perimeter_poly != NULL)
   {
@@ -460,9 +460,9 @@ bool Prism::Project_points(std::vector<Point> &pts, Cell_Face face, double coord
 }
 void Tidy_prisms(void)
 {
-  std::vector<Prism *>::const_iterator it;
+  std::list<Prism *>::const_iterator it;
 
-  for (it = Prism::prism_vector.begin(); it != Prism::prism_vector.end(); it++)
+  for (it = Prism::prism_list.begin(); it != Prism::prism_list.end(); it++)
   {
    (*it)->Tidy();
   }
