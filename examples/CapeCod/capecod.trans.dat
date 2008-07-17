@@ -87,29 +87,44 @@ HEAD_IC
 	
 
 MEDIA
+
 	-zone 275000 810000 -500 285000 830000 100
 		-active                   0
-		#-Kx                       1.06e-3
-		#-Ky                       1.06e-3
-		#-Kz                       0.30e-3
-		-Kx     Z    1.00e-3 10   0.30e-3  -5
-		-Ky     Z    1.00e-3 10   0.30e-3  -5
-		-Kz     Z    0.30e-3 10   0.10e-3  -5	
-		#-Kx     Z    1.00e-3 10   0.30e-3  -20
-		#-Ky     Z    1.00e-3 10   0.30e-3  -20
-		#-Kz     Z    0.30e-3 10   0.10e-3  -20		
+		-Kx                       1.06e-3
+		-Ky                       1.06e-3
+		-Kz                       0.30e-3
+		#-Kx     Z    1.00e-3 10   0.30e-3  -5
+		#-Ky     Z    1.00e-3 10   0.30e-3  -5
+		#-Kz     Z    0.30e-3 10   0.10e-3  -5	
 		-porosity                 0.39
 		-specific_storage         0.39
 		-long_dispersivity        1
 		-horizontal_dispersivity  1
 		-vertical_dispersivity    1
-	
+		
+		
+	-zone 275000 810000 0 285000 825000 100
+		-Kx          X  1.23e-3 275000 0.85e-3 287500   # 350 to 240 ft/d
+		-Ky          X  1.23e-3 275000 0.85e-3 287500
+		-Kz          X  0.41e-3 275000 0.28e-3 287500
+		
+	-zone 275000 810000 -30 285000 830000 0
+		-Kx          X  1.02e-3 275000 0.53e-3 287500   # 290 to 150 ft/d
+		-Ky          X  1.02e-3 275000 0.53e-3 287500
+		-Kz          X  0.34e-3 275000 0.053e-3 287500
+		
+	-zone 275000 810000 -200 285000 830000 -30
+		-Kx                       1.e-4    # 30
+		-Ky                       1.e-4
+		-Kz                       1.e-6		
+
 
 	-prism
 		-perimeter SHAPE ArcData/coast.shp 
-		-top   arcraster   ArcData/rastert_ls_elev1.txt
-		-bottom arcraster ArcData/rastert_bedrock1.txt
-		
+		#-top   arcraster   ArcData/rastert_ls_elev1.txt
+		#-bottom arcraster ArcData/rastert_bedrock1.txt
+		-top   arcraster   ArcData/elevation-90.txt
+		-bottom arcraster ArcData/bedrock-90.txt
 		# Parameters
 		-active 1
 
@@ -132,7 +147,7 @@ MEDIA
 		#	280186.410  820273.077 0
 		#	280260.467  820469.112 0 
 			
-		-bottom SHAPE ArcData/SimpleBath.shp 9
+		-bottom SHAPE ArcData/SimpleBath.shp 10	 
 		
 		 # Parameters
 		-Kx                       .1
@@ -159,55 +174,22 @@ MEDIA
 	#	-horizontal_dispersivity  1
 	#	-vertical_dispersivity    1
 	
-	# Higer hydraulic conductivity
-	#-zone  275000 810000 -5 280500 822500 20
-	-prism  
-	-perimeter POINTS
-		280153.203  822140.879  0
-		280611.880  822246.727 0
-		277753.968  811450.171 0 
-		277118.877  811361.964 0
-	-bottom CONSTANT  -5.0	
-	# Parameters	
-		-Kx     Z    6.00e-3 10   .3e-3  -5
-		-Ky     Z    6.00e-3 10   .3e-3  -5
-		-Kz     Z    0.20e-3 10   0.1e-3  -5	
+#	# Higher hydraulic conductivity
+#	#-zone  275000 810000 -5 280500 822500 20
+#	-prism  
+#	-perimeter POINTS
+#		280153.203  822140.879  0
+#		280611.880  822246.727 0
+#		277753.968  811450.171 0 
+#		277118.877  811361.964 0
+#	-bottom CONSTANT  -5.0	
+#	# Parameters	
+#		-Kx     Z    6.00e-3 10   .3e-3  -5
+#		-Ky     Z    6.00e-3 10   .3e-3  -5
+#		-Kz     Z    0.20e-3 10   0.1e-3  -5	
 		
+	-zone  275000 810000 -5 285000 830000 20		
 	
-
-#SPECIFIED_HEAD_BC
-#	-zone   277747.267  818568.250 8.0 278025.137  819741.478 15
-#	-head   
-#		0 	9.738
-		
-
-#MEDIA
-#	-prism
-#		#-perimeter  SHAPE   ArcData/SimplePonds.shp 
-#		-perimeter POINTS
-#			280029.582  820887.320 0
-#			280578.479  821357.803 0
-#			280852.928  820769.699 0
-#			280726.594  820386.342 0
-#			280513.134  820482.181 0
-#			280373.732  820199.020 0
-#			280186.410  820273.077 0
-#			280260.467  820469.112 0
-#			
-#		-bottom SHAPE ArcData/SimpleBath.shp 9 # Elev_meter
-#		-active 0
-#		
-#SPECIFIED_HEAD_BC
-#	-prism  # Lower hydraulic conductivity lake bottom
-#		-perimeter  SHAPE   ArcData/SimplePonds.shp 
-#			
-#	
-#		#-top SHAPE    ArcData/SimpleBath.shp 9   # Elev_meter
-#		-bottom SHAPE ArcData/SimpleBath.shp 13  # Skin_bot_4
-#		
-#		# Parameters
-#		-head 
-#			0	10
 
 LEAKY_BC
 		
@@ -341,7 +323,7 @@ DRAIN 1 East Boundary
 		-z     		10.668	
 		-width 		100
 		-thickness 	1
-		-bed_k     	1
+		-bed_k     	1e-3
 
 	-point 		282947.779  820785.350
 		-z     		9.144	
@@ -359,7 +341,7 @@ DRAIN 1 East Boundary
 		-z     		0
 		-width 		100
 		-thickness 	1
-		-bed_k     	1
+		-bed_k     	1e-3
 		
 
 	#-point 		282760.790  821571.698
@@ -379,28 +361,28 @@ DRAIN 1 East Boundary
 	#	-thickness 	1
 	#	-bed_k     	1
 
-#DRAIN 2 Johns Pond drain
-#	-point 		281649.002  818803.563
-#		-z     		10.668
-#		-width 		20
-#		-thickness 	1
-#		-bed_k     	1e-3
-#	-point 		281625.460  818262.095
-#		-z     		9.144
-#	-point 		281507.750  817814.795
-#		-z     		7.62
-#	-point 		281342.955  817343.954
-#		-z     		6.096	
-#	-point 		281272.329  816543.523
-#		-z     		4.572	
-#	-point 		281319.413  816213.934
-#		-z     		3.048
-#	-point 		280884.585  814893.052
-#		-z     		1.524
-#		-z     		0
-#		-width 		20
-#		-thickness 	1
-#		-bed_k 		1e-3
+DRAIN 2 Childs River, Johns Pond drain
+	-point 		281649.002  818803.563
+		-z     		10.668
+		-width 		20
+		-thickness 	1
+		-bed_k     	1e-3
+	-point 		281625.460  818262.095
+		-z     		9.144
+	-point 		281507.750  817814.795
+		-z     		7.62
+	-point 		281342.955  817343.954
+		-z     		6.096	
+	-point 		281272.329  816543.523
+		-z     		4.572	
+	-point 		281319.413  816213.934
+		-z     		3.048
+	-point 		280884.585  814893.052
+		-z     		1.524
+		-z     		0
+		-width 		20
+		-thickness 	1
+		-bed_k 		1e-3
 		
 	
 	#-point 		281291.710  817248.278
@@ -436,29 +418,32 @@ DRAIN 1 East Boundary
 	#	-bed_k     	1		
 		
 		
-#DRAIN 4 Cranberry bogs
-#	-point 		279119.916  818624.067
-#		-z     		10.668
-#		-width 		20
-#		-thickness 	1
-#		-bed_k     	1e-3
-#	-point 		278867.821  817807.277
-#		-z     		9.144		
-#	-point 		278718.295  817425.830
-#		-z     		7.62
-#	-point 		278404.615  816798.470
-#		-z     		6.096	
-#	-point 		278260.845  816171.110
-#		-z     		4.572	
-#	-point 		278104.005  815347.700
-#		-z     		3.048
-#	-point 		278117.075  814668.060
-#		-z     		1.524
-#	-point 		278077.865  814393.590
-#		-z     		0
-#		-width 		20
-#		-thickness 	1
-#		-bed_k 		1e-3		
+DRAIN 4 Bacchus River (Cranberry bogs)
+	#-point 		279119.916  818624.067
+	#	-z     		10.668
+	#	-width 		20
+	#	-thickness 	1
+	#	-bed_k     	1e-3
+	#-point 		278867.821  817807.277
+	#	-z     		9.144		
+	-point 		278718.295  817425.830
+		-z     		7.62  # 25 ft
+		-width 		20
+		-thickness 	1
+		-bed_k     	1e-3		
+	-point 		278404.615  816798.470
+		-z     		6.096	
+	-point 		278260.845  816171.110
+		-z     		4.572	
+	-point 		278104.005  815347.700
+		-z     		3.048
+	-point 		278117.075  814668.060
+		-z     		1.524
+	-point 		278077.865  814393.590
+		-z     		0
+		-width 		20
+		-thickness 	1
+		-bed_k 		1e-3		
 	
 
 	#-point 		278890.200  818143.390
@@ -477,7 +462,7 @@ DRAIN 1 East Boundary
 	#	-bed_k 		1			
 		
 
-DRAIN 5 West Boundary
+DRAIN 5 West Boundary Coonamessett River
 	#-point 		277919.281  820275.165
 	#	-z     		10.668
 	#	-width 		100
@@ -488,7 +473,7 @@ DRAIN 5 West Boundary
 		#-z     		5.144
 		-width 		100
 		-thickness 	1
-		-bed_k     	1		
+		-bed_k     	1e-3		
 	-point 		277381.640  817842.120
 		-z     		7.62
 	-point 		277365.600  817312.800
@@ -503,7 +488,7 @@ DRAIN 5 West Boundary
 		-z     		0
 		-width 		100
 		-thickness 	1
-		-bed_k     	1		
+		-bed_k     	1e-3		
 	
 	#-point 		277537.393  818015.906
 	#	-z     		12
@@ -572,6 +557,6 @@ PRINT_FREQUENCY
 TIME_CONTROL
 	-time_step
 		0 	0.5
-	-time_change 	1996
+	-time_change 	1950
 	-start_time	1935.9
 
