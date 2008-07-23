@@ -65,9 +65,9 @@ GRID
 	-uniform Z -200 -20 10
 	-overlay_uniform Z -10 18 15
 	
-	-overlay X 279000 282000  61 # 50 m
-	-overlay Y 819000 822000  61 # 50 m
-	-overlay_uniform Z -10 18 29 # 1 m
+	#-overlay X 279000 282000  61 # 50 m
+	#-overlay Y 819000 822000  61 # 50 m
+	#-overlay_uniform Z -10 18 29 # 1 m
 
 	#-uniform X 275000 285000 26
 	#-uniform Y 810000 830000 26
@@ -85,10 +85,10 @@ GRID
 HEAD_IC
 	-zone 275000 810000 -500 285000 830000 100
 		#-head                    0
-		#-head                    15
+		#-head       Y 0 814000         16.764 823000
 		#-head file capecod.head.51.dat
 		#-head file capecod.head.26a.dat
-		-head file capecod.head.250a.dat
+		-head file capecod.head.250.dat
 	
 
 MEDIA
@@ -98,9 +98,9 @@ MEDIA
 		#-Kx                       1.06e-3
 		#-Ky                       1.06e-3
 		#-Kz                       0.30e-3
-		-Kx     Z    1.00e-3 10   0.30e-3  -5
-		-Ky     Z    1.00e-3 10   0.30e-3  -5
-		-Kz     Z    0.30e-3 10   0.10e-3  -5	
+		#-Kx     Z    1.00e-3 10   0.30e-3  -5
+		#-Ky     Z    1.00e-3 10   0.30e-3  -5
+		#-Kz     Z    0.30e-3 10   0.10e-3  -5	
 		-porosity                 0.39
 		-specific_storage         0.39
 		-long_dispersivity        1
@@ -122,21 +122,70 @@ MEDIA
 	#	-Ky          X  0.7e-3 275000 0.26e-3 287500
 	#	-Kz          X  0.2e-4 275000 0.26e-4 287500
 	
-	#!-zone 275000 810000 0 285000 825000 100
-	#!	-Kx          Y  1.23e-3 828000 0.85e-3 814000   # 350 to 240 ft/d
-	#!	-Ky          Y  1.23e-3 828000 0.85e-3 814000
-	#!	-Kz          Y  0.41e-3 828000 0.28e-3 814000
-		
-	#!-zone 275000 810000 -20 285000 830000 0
-	#!	-Kx          Y  1.02e-3 828000 0.25e-3 814000   # 290 to 70 ft/d
-	#!	-Ky          Y  1.02e-3 828000 0.25e-3 814000
-	#!	-Kz          Y  0.34e-3 828000 0.025e-3 814000
+	#-zone 275000 810000 0 285000 825000 100
+	#	-Kx          Y  1.23e-3 828000 0.85e-3 814000   # 350 to 240 ft/d
+	#	-Ky          Y  1.23e-3 828000 0.85e-3 814000
+	#	-Kz          Y  0.41e-3 828000 0.28e-3 814000
+	#	
+	#-zone 275000 810000 -20 285000 830000 0
+	#	-Kx          Y  1.02e-3 828000 0.25e-3 814000   # 290 to 70 ft/d
+	#	-Ky          Y  1.02e-3 828000 0.25e-3 814000
+	#	-Kz          Y  0.34e-3 828000 0.025e-3 814000
 	
-	-zone 275000 810000 -200 285000 830000 -10
-		-Kx                       1.e-4    # 30
-		-Ky                       1.e-4
-		-Kz                       1.e-6		
+	
+	#-zone 275000 810000 -200 285000 830000 -20
+	#	-Kx                       1.e-4    # 30
+	#	-Ky                       1.e-4
+	#	-Kz                       1.e-6		
+	
+	-zone 275000 810000 -200 285000 830000 100	
+		-Kx          Z  1.06e-3 0 0.1e-3  -20   # 300 to 30 ft/d
+		-Ky          Z  1.06e-3 0 0.1e-3  -20
+		-Kz          Z  0.35e-3 0 0.01e-3 -20	
+	
+	# Diagonal 1 media properties
+	-prism
+		-perimeter POINTS
+			275000	815000 0
+			285000  822500 0
+			285000  820000 0
+			275000  812500 0
+		-bottom CONSTANT 0	
+		-Kx                       0.85e-3    # 240 ft/d
+		-Ky                       0.85e-3
+		-Kz                       0.28e-3	
+	-prism
+		-perimeter POINTS
+			275000	815000 0
+			285000  822500 0
+			285000  820000 0
+			275000  812500 0
+		-top    CONSTANT 0	
+		-Kx          Z  0.7e-3 0 0.1e-3 -20   # 200 to 30 ft/d
+		-Ky          Z  0.7e-3 0 0.1e-3 -20
+		-Kz          Z  0.23e-3 0 0.01e-3 -20
 
+	# Diagonal 2 media properties
+	-prism
+		-perimeter POINTS
+			275000	812500 0
+			285000  817500 0
+			285000  810000 0
+			275000  810000 0
+		-bottom CONSTANT 0	
+		-Kx                       0.25e-3    #70 ft/d
+		-Ky                       0.25e-3
+		-Kz                       0.025e-3	
+	-prism
+		-perimeter POINTS
+			275000	815000 0
+			285000  822500 0
+			285000  820000 0
+			275000  812500 0
+		-top    CONSTANT 0	
+		-Kx          Z  0.25e-3 0 0.1e-3 -20   # 70 to 30 ft/d
+		-Ky          Z  0.25e-3 0 0.1e-3 -20
+		-Kz          Z  0.25e-3 0 0.01e-3 -20
 
 	-prism
 		#-perimeter SHAPE ArcData/coast.shp 
@@ -184,26 +233,35 @@ MEDIA
 		-bottom SHAPE ArcData/SimpleBath.shp 10	 
 		
 		 # Parameters
-		-Kx                       .1
-		-Ky                       .1
-		-Kz                       .1
+		-Kx                       .1e-0
+		-Ky                       .1e-0
+		-Kz                       .1e-0
 		-porosity                 1
 		-specific_storage         1
 		-long_dispersivity        10
 		-horizontal_dispersivity  10
 		-vertical_dispersivity    10
 		
-SPECIFIED_HEAD_BC		
-	-zone 275000 823000 -200 285000 823000 100
+#SPECIFIED_HEAD_BC		
+#	-zone 275000 823000 -200 285000 823000 100
+#	-head 
+#		0 16.764  # 55 ft
+#	-associated_solution 
+#		0	1	
+LEAKY_BC		
+	-zone 275000 822900 -200 285000 823000 100
+	-thickness 4000
+	-face Y
+	-hydraulic Z    1.00e-3 10   0.30e-3  -5
 	-head 
-		0 16.764  # 55 ft
+		0 19.82  # 65 ft
 	-associated_solution 
-		0	1	
+		0	1			
 	
 SPECIFIED_HEAD_BC		
 	-zone 275000 814000 -5 285000 814000 0
 	-head 
-		0 0  # 55 ft
+		0 0  # 
 	-associated_solution 
 		0	1	
 	
