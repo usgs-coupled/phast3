@@ -1,4 +1,12 @@
 DATABASE C:\Program Files\USGS\Phreeqc Interactive 2.15.0\phreeqc.dat
+EXCHANGE_MASTER_SPECIES
+Y  Y+
+
+EXCHANGE_SPECIES
+Y+ = Y+
+Y+ + NO3- = YNO3
+Y+ + Cl-  = YCl
+Y+ + H2PO4- = YH2PO4
 
 SOLUTION_SPECIES
 NO3- + 2 H+ + 2 e- = NO2- + H2O
@@ -23,7 +31,8 @@ SOLUTION 1 Uncontaminated groundwater
 #!	Cl	140     charge
 #!	S(6)	86
 #!	C(4)    28
-	N(5)	0.0
+#	N(5)	0.0
+
 	O(0)	250
 #    Sewage effluent data from Table 1 in notes. Covers 1974-78, 1979,
 #    1980, 1983, 1988, 1994. Values are averaged.
@@ -58,6 +67,17 @@ SOLUTION 3 Rain
 	N(5)	1	charge
 	O(0)	1	O2(g) -0.7
 END
+EXCHANGE 1
+   NaX     1e5
+   YCl     1e5
+END
+USE EXCHANGE 1
+USE SOLUTION 2
+
+KNOBS
+   -convergence  1e-6
+   -pe   2
+   -step 5
 SELECTED_OUTPUT
     -file                 selected.out
     -reset                false
@@ -65,4 +85,6 @@ SELECTED_OUTPUT
     -pe                   true
 #!    -totals               O(0)  C(4)  C(-4)  N(5)  N(-3)  Cl  P  S(6)
 #!                          S(-2)  Ca  Mg  Na
-    -totals               O(0)  N(5)  N(-3) P
+    -totals               O(0)  N(5)  N(-3) P Na Cl 
+    -mol                  NH4X YH2PO4
+

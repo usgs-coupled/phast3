@@ -22,7 +22,7 @@ FREE_SURFACE_BC true
 
 SOLUTION_METHOD
 	-iterative_solver   true
-	-tolerance          1e-12
+	-tolerance          1e-13
 	-save_directions    50
 	-maximum_iterations 2000
 	-space_differencing 0
@@ -98,9 +98,9 @@ MEDIA
 		#-Kx                       1.06e-3
 		#-Ky                       1.06e-3
 		#-Kz                       0.30e-3
-		#-Kx     Z    1.00e-3 10   0.30e-3  -5
-		#-Ky     Z    1.00e-3 10   0.30e-3  -5
-		#-Kz     Z    0.30e-3 10   0.10e-3  -5	
+		-Kx     Z    1.06e-3 10   0.30e-3  -5
+		-Ky     Z    1.06e-3 10   0.30e-3  -5
+		-Kz     Z    0.35e-3 10   0.10e-3  -5	
 		-porosity                 0.39
 		-specific_storage         0.39
 		-long_dispersivity        1
@@ -133,62 +133,62 @@ MEDIA
 	#	-Kz          Y  0.34e-3 828000 0.025e-3 814000
 	
 	
-	#-zone 275000 810000 -200 285000 830000 -20
-	#	-Kx                       1.e-4    # 30
-	#	-Ky                       1.e-4
-	#	-Kz                       1.e-6		
+	-zone 275000 810000 -200 285000 830000 -20
+		-Kx                       1.e-4    # 30
+		-Ky                       1.e-4
+		-Kz                       1.e-6		
 	
-	-zone 275000 810000 -200 285000 830000 100	
-		-Kx          Z  1.06e-3 0 0.1e-3  -20   # 300 to 30 ft/d
-		-Ky          Z  1.06e-3 0 0.1e-3  -20
-		-Kz          Z  0.35e-3 0 0.01e-3 -20	
-	
-	# Diagonal 1 media properties
+#!	-zone 275000 810000 -200 285000 830000 100	
+#!		-Kx          Z  1.06e-3 0 0.1e-3  -20   # 300 to 30 ft/d
+#!		-Ky          Z  1.06e-3 0 0.1e-3  -20
+#!		-Kz          Z  0.35e-3 0 0.01e-3 -20	
+#!	
+#!	# Diagonal 1 media properties
+#!	-prism
+#!		-perimeter POINTS
+#!			275000	815000 0
+#!			285000  822500 0
+#!			285000  820000 0
+#!			275000  812500 0
+#!		-bottom CONSTANT 0	
+#!		-Kx                       0.85e-3    # 240 ft/d
+#!		-Ky                       0.85e-3
+#!		-Kz                       0.28e-3	
+#!	-prism
+#!		-perimeter POINTS
+#!			275000	815000 0
+#!			285000  822500 0
+#!			285000  820000 0
+#!			275000  812500 0
+#!		-top    CONSTANT 0	
+#!		-Kx          Z  0.7e-3 0 0.1e-3 -20   # 200 to 30 ft/d
+#!		-Ky          Z  0.7e-3 0 0.1e-3 -20
+#!		-Kz          Z  0.23e-3 0 0.01e-3 -20
+#!
+#!	# Diagonal 2 media properties
+#!	-prism
+#!		-perimeter POINTS
+#!			275000	812500 0
+#!			285000  817500 0
+#!			285000  810000 0
+#!			275000  810000 0
+#!		-bottom CONSTANT 0	
+#!		-Kx                       0.25e-3    #70 ft/d
+#!		-Ky                       0.25e-3
+#!		-Kz                       0.025e-3	
+#!	-prism
+#!		-perimeter POINTS
+#!			275000	815000 0
+#!			285000  822500 0
+#!			285000  820000 0
+#!			275000  812500 0
+#!		-top    CONSTANT 0	
+#!		-Kx          Z  0.25e-3 0 0.1e-3 -20   # 70 to 30 ft/d
+#!		-Ky          Z  0.25e-3 0 0.1e-3 -20
+#!		-Kz          Z  0.25e-3 0 0.01e-3 -20
+#!
 	-prism
-		-perimeter POINTS
-			275000	815000 0
-			285000  822500 0
-			285000  820000 0
-			275000  812500 0
-		-bottom CONSTANT 0	
-		-Kx                       0.85e-3    # 240 ft/d
-		-Ky                       0.85e-3
-		-Kz                       0.28e-3	
-	-prism
-		-perimeter POINTS
-			275000	815000 0
-			285000  822500 0
-			285000  820000 0
-			275000  812500 0
-		-top    CONSTANT 0	
-		-Kx          Z  0.7e-3 0 0.1e-3 -20   # 200 to 30 ft/d
-		-Ky          Z  0.7e-3 0 0.1e-3 -20
-		-Kz          Z  0.23e-3 0 0.01e-3 -20
-
-	# Diagonal 2 media properties
-	-prism
-		-perimeter POINTS
-			275000	812500 0
-			285000  817500 0
-			285000  810000 0
-			275000  810000 0
-		-bottom CONSTANT 0	
-		-Kx                       0.25e-3    #70 ft/d
-		-Ky                       0.25e-3
-		-Kz                       0.025e-3	
-	-prism
-		-perimeter POINTS
-			275000	815000 0
-			285000  822500 0
-			285000  820000 0
-			275000  812500 0
-		-top    CONSTANT 0	
-		-Kx          Z  0.25e-3 0 0.1e-3 -20   # 70 to 30 ft/d
-		-Ky          Z  0.25e-3 0 0.1e-3 -20
-		-Kz          Z  0.25e-3 0 0.01e-3 -20
-
-	-prism
-		#-perimeter SHAPE ArcData/coast.shp 
+		-perimeter SHAPE ArcData/coast.shp 
 		#-top   arcraster   ArcData/rastert_ls_elev1.txt
 		#-bottom arcraster ArcData/rastert_bedrock1.txt
 		-top   arcraster   ArcData/elevation-90.txt
@@ -198,7 +198,6 @@ MEDIA
 
 	-prism
 		-perimeter SHAPE ArcData/ModelOutline.shp
-		
 		# Parameters
 		-active 0
 		
@@ -394,7 +393,7 @@ FLUX_BC
 		0      2
 
 	
-DRAIN 1 East Boundary
+DRAIN 1 East Boundary Quashnet R
 	-point 		282835.491  821234.501
 		-z     		10.668	
 		-width 		100
@@ -420,62 +419,82 @@ DRAIN 1 East Boundary
 		-bed_k     	1e-3
 		
 
-	#-point 		282760.790  821571.698
-	#	-z     		12
-	#	-width 		100
-	#	-thickness 	1
-	#	-bed_k     	1	
-	#-point 		283237.248  819021.763
-	#	-z     		12
-	#-point 		280506.032  815737.039
-	#	-z     		8	
-	#-point 		282566.677  815889.489
-	#	-z     		4
-	#-point 		281887.283  814071.888
-	#	-z     		0
-	#	-width 		100
-	#	-thickness 	1
-	#	-bed_k     	1
+#River 1 East Boundary Quashnet R
+#	-point 		282835.491  821234.501
+#		-head     	0	10.668	
+#		-depth          0.1
+#		-width 		100
+#		-thickness 	1
+#		-bed_k     	1e-3
+#
+#	-point 		282947.779  820785.350
+#		-head     	0     		9.144	
+#	-point 		283205.171  819653.437
+#		-head     	0     		7.62
+#	-point 		283300.683  818796.255
+#		-head     	0     		6.096	
+#	-point 		283204.160  818082.720
+#		-head     	0     		4.572	
+#	-point 		283236.240  817473.200
+#		-head     	0     		3.048
+#	-point 		282915.440  816494.760
+#		-head     	0     		1.524
+#	-point 		282209.680  814714.320
+#		-head  		0	0
+#		-depth          0.1		
+#		-width 		100
+#		-thickness 	1
+#		-bed_k     	1e-3
 
 DRAIN 2 Childs River, Johns Pond drain
-	-point 		281649.002  818803.563
-		-z     		10.668
+	#-point 		281649.002  818803.563
+	#	-z     		10.668
+	#	-width 		20
+	#	-thickness 	1
+	#	-bed_k     	1e-3
+	#-point 		281625.460  818262.095
+	#	-z     		9.144
+	-point 		281507.750  817814.795
+		-z  		7.62
 		-width 		20
 		-thickness 	1
 		-bed_k     	1e-3
-	-point 		281625.460  818262.095
-		-z     		9.144
-	-point 		281507.750  817814.795
-		-z     		7.62
 	-point 		281342.955  817343.954
 		-z     		6.096	
 	-point 		281272.329  816543.523
 		-z     		4.572	
 	-point 		281319.413  816213.934
 		-z     		3.048
-	-point 		280884.585  814893.052
+	-point 		281211.689  815490.059
 		-z     		1.524
+	-point 		280884.585  814893.052
 		-z     		0
 		-width 		20
 		-thickness 	1
 		-bed_k 		1e-3
 		
+#RIVER 2 Childs River, Johns Pond drain
+#	-point 		281507.750  817814.795
+#		-head 0  		7.62
+#		-depth 0.1
+#		-width 		20
+#		-thickness 	1
+#		-bed_k     	1e-3
+#	-point 		281342.955  817343.954
+#		-head 0     		6.096	
+#	-point 		281272.329  816543.523
+#		-head 0     		4.572	
+#	-point 		281319.413  816213.934
+#		-head 0     		3.048
+#	-point 		281211.689  815490.059
+#		-head 0    		1.524
+#	-point 		280884.585  814893.052
+#		-head 0    		0
+#		-depth 0.1		
+#		-width 		20
+#		-thickness 	1
+#		-bed_k 		1e-3
 	
-	#-point 		281291.710  817248.278
-	#	-z     		12
-	#	-width 		20
-	#	-thickness 	1
-	#	-bed_k     	1	
-	#-point 		281306.628  816610.963 
-	#	-z     		8
-	#-point 		281221.123  815624.790
-	#	-z     		4
-	#-point 		280885.838  814883.633
-	#	-z     		0
-	#	-width 		20
-	#	-thickness 	1
-	#	-bed_k 		1
-		
 #DRAIN 3 Ashumet Drain	
 
 	#-point 		279632.223  817600.446
@@ -521,21 +540,29 @@ DRAIN 4 Backus River (Cranberry bogs)
 		-thickness 	1
 		-bed_k 		1e-3		
 	
-
-	#-point 		278890.200  818143.390
-	#	-z     		12
-	#	-width 		20
-	#	-thickness 	1
-	#	-bed_k     	1
-	#-point 		278482.894  817179.631
-	#	-z     		8
-	#-point 		278283.912  816523.607
-	#	-z     		4		
-	#-point 		277983.307  814184.593
-	#	-z     		0
-	#	-width 		20
-	#	-thickness 	1
-	#	-bed_k 		1			
+#River 4 Backus River (Cranberry bogs)
+#	
+#	-point 		278718.295  817425.830
+#		-head 0     		7.62  # 25 ft
+#		-depth .1
+#		-width 		20
+#		-thickness 	1
+#		-bed_k     	1e-3		
+#	-point 		278404.615  816798.470
+#		-head     0		6.096	
+#	-point 		278260.845  816171.110
+#		-head     0		4.572	
+#	-point 		278104.005  815347.700
+#		-head     0		3.048
+#	-point 		278117.075  814668.060
+#		-head     0		1.524
+#	-point 		278077.865  814393.590
+#		-head 0     		0
+#		-depth .1
+#		-width 		20
+#		-thickness 	1
+#		-bed_k 		1e-3	
+			
 		
 
 DRAIN 5 West Boundary Coonamessett River
@@ -565,26 +592,46 @@ DRAIN 5 West Boundary Coonamessett River
 		-thickness 	1
 		-bed_k     	1e-3		
 	
-	#-point 		277537.393  818015.906
-	#	-z     		12
-	#	-width 		100
-	#	-thickness 	1
-	#	-bed_k     	1
-	#-point 		277384.776  817101.194 
-	#	-z     		8		
-	#-point 		277440.418  816802.970
-	#	-z     		4
-	#-point 		277263.960  814314.917
-	#	-z     		0
-	#	-width 		100
-	#	-thickness 	1
-	#	-bed_k     	1
-		
-
+#RIVER 5 West Boundary Coonamessett River
+#	-point 		277330.574  819053.628
+#		-head 0     		10.668
+#		-depth  0.1
+#		-width 		100
+#		-thickness 	1
+#		-bed_k     	1
+#	-point 		277224.725  818453.819
+#		-head 0     		9.144
+#		-width 		100
+#		-thickness 	1
+#		-bed_k     	1e-3		
+#	-point 		277381.640  817842.120
+#		-head 0     		7.62
+#	-point 		277365.600  817312.800
+#		-head 0     		6.096	
+#	-point 		277461.840  816574.960
+#		-head 0     		4.572	
+#	-point 		277349.560  815885.240
+#		-head 0     		3.048
+#	-point 		277301.440  814730.360
+#		-head 0     		1.524
+#	-point 		277260.008  814502.138
+#		-head 0     		0
+#		-depth 0.1
+#		-width 		100
+#		-thickness 	1
+#		-bed_k     	1e-3	
+	
 CHEMISTRY_IC
 	-zone 275000 810000 -500 285000 830000 100
 		-solution            1
-
+	-prism
+		-perimeter  SHAPE   ArcData/SimplePonds.shp 
+		
+		-bottom SHAPE ArcData/SimpleBath.shp 10	 
+		
+		 # Parameters
+		-exchange            1
+		
 PRINT_INITIAL
 	-boundary_conditions        false
 	-components                 false
