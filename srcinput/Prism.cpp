@@ -8,6 +8,8 @@
 #include <assert.h>
 std::list<Prism *> Prism::prism_list;
 
+#define TRUE 1
+#define FALSE 0
 
 // Note: No header files should follow the next three lines
 #if defined(_WIN32) && defined(_DEBUG)
@@ -85,6 +87,7 @@ bool Prism::Read(std::istream &lines)
   // get option
   std::string type;
   lines >> type;
+  if (type.size() == 0) return true;
   int j = case_picker(std_opt_list, type);
   PRISM_OPTION p_opt;
   switch (j)
@@ -480,7 +483,6 @@ void Prism::Tidy()
   if (perimeter.Get_source_type() == Data_source::NONE)
   {
     this->perimeter.Set_defined (true);
-    this->perimeter.Set_source_type( Data_source::POINTS );
     this->perimeter.Get_points().push_back(Point(grid_zone()->x1, grid_zone()->y1, grid_zone()->z2, grid_zone()->z2));
     this->perimeter.Get_points().push_back(Point(grid_zone()->x2, grid_zone()->y1, grid_zone()->z2, grid_zone()->z2));
     this->perimeter.Get_points().push_back(Point(grid_zone()->x2, grid_zone()->y2, grid_zone()->z2, grid_zone()->z2));
@@ -580,6 +582,7 @@ struct zone * Prism::Set_bounding_box(void)
     pbottom = Point(pts1.begin(), pts1.end(), Point::MIN);
     if (pbottom.z() > min.z()) min.set_z(pbottom.z());
   }
+  this->box.zone_defined = TRUE;
   this->box.x1 = min.x();
   this->box.y1 = min.y();
   this->box.z1 = min.z();

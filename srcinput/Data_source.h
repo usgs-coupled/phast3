@@ -59,6 +59,7 @@ public:
   struct cunit *           Get_v_units            (void) {return &this->v_units;};
   Polygon_tree *           Get_tree               (void);
   std::string              Get_file_name          (void)const {return this->file_name;};
+  Filedata *               Get_filedata           (void)const {return this->filedata;};
 
   // Setter
   void                     Set_source_type        (DATA_SOURCE_TYPE dt) {this->source_type = dt;};
@@ -86,13 +87,6 @@ protected:
 
   int                attribute;
   struct zone        box;
-
-public:
-  std::string        absolute_file_name;
-protected:
-
-  // Static
-  static std::map<std::string,Data_source> data_source_map;
 };
 
 inline Polygon_tree * Data_source::Get_tree(void)

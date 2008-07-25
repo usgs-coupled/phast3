@@ -1,6 +1,7 @@
 #if !defined(NNINTERPOLATOR_H_INCLUDED)
 #define NNINTERPOLATOR__H_INCLUDED
 #include <vector>
+#include <list>
 #include "../Point.h"
 #include "../zone.h"
 #include "nn.h"
@@ -29,11 +30,14 @@ public:
   size_t point_count;
   zone bounds;
 
+  static std::list<NNInterpolator*> NNInterpolatorList;
+
 protected:
   KDtree *tree;
 
 friend bool nnpi_interpolate(std::vector<Point> &pts_in, std::vector<Point> &pts_out, double wmin); 
 };
 
+void Clear_NNInterpolatorList(void);
 
 #endif // !defined(NNINTERPOLATOR_H_INCLUDED)

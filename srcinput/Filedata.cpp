@@ -15,11 +15,7 @@ Filedata::Filedata(void)
 
 Filedata::~Filedata(void)
 {
-  std::map<int, NNInterpolator *>::iterator it;
-  for (it = this->nni_map.begin(); it != this->nni_map.end(); it++)
-  {
-    delete it->second;
-  }
+  this->nni_map.clear();
   /*
   std::map<int, std::vector<Point> >::iterator it1;
   for (it1 = this->pts_map.begin(); it1 != this->pts_map.end(); it1++)

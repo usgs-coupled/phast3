@@ -6,6 +6,7 @@
 // testing ...
 #include "Shapefiles/Shapefile.h"
 #include "NNInterpolator/NNInterpolator.h"
+#include "KDtree/KDtree.h"
 #include "ArcRaster.h"
 //... testing
 #include <algorithm>
@@ -185,6 +186,9 @@ int main(int argc, char *argv[])
 	output_msg(OUTPUT_STDERR, "Clean up...\n");
 	output_msg(OUTPUT_ECHO, "\nPHASTINPUT done.\n\n");
 	clean_up();
+	Clear_NNInterpolatorList();
+	Clear_file_data_map();
+	Clear_KDtreeList();
 	clean_up_message();
 	return(input_error);
 }
@@ -463,9 +467,6 @@ int clean_up(void)
 	free_check_null(transport_name);
 	free_check_null(chemistry_name);
 	free_check_null(database_name);	
-
-	FileMap.clear();
-	Clear_file_data_map();
 
 /* files */
 	if (input != NULL) fclose (input);

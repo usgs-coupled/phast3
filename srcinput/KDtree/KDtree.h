@@ -3,6 +3,7 @@
 #include "kdtree2.hpp"
 #include "../Point.h"
 #include "../NNInterpolator/nn.h"
+#include <list>
 class KDtree
 {
 public:
@@ -16,6 +17,7 @@ public:
 
   // Data
   kdtree2 *tree;
+  static std::list<KDtree*> KDtreeList;
 };
-
+void Clear_KDtreeList(void);
 #endif // !defined(KDTREE_H_INCLUDED)

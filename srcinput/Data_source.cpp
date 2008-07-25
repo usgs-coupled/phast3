@@ -10,6 +10,9 @@
 #include "NNInterpolator/NNInterpolator.h"
 #include "Filedata.h"
 
+#define TRUE 1
+#define FALSE 0
+
 // Note: No header files should follow the next three lines
 #if defined(_WIN32) && defined(_DEBUG)
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
@@ -23,7 +26,7 @@ Data_source::Data_source(void)
 }
 Data_source::~Data_source(void)
 {
-  if (this->nni != NULL) delete this->nni;
+  // this->nni cleaned up in main Clear_NNInterpolatorList()
   if (this->tree != NULL) delete this->tree;
   this->pts.clear();
 }
@@ -39,7 +42,6 @@ Data_source::Data_source(const Data_source& r)
 ,v_units(r.v_units)
 ,attribute(r.attribute)
 ,box(r.box)
-,absolute_file_name(r.absolute_file_name)
 {
   // lazy initialization
   this->tree = NULL;
@@ -60,7 +62,6 @@ Data_source& Data_source::operator=(const Data_source& rhs)
     this->v_units       = rhs.v_units;
     this->attribute     = rhs.attribute;
     this->box           = rhs.box;
-    this->absolute_file_name = rhs.absolute_file_name;
   }
   return *this;
 }
@@ -283,6 +284,7 @@ void Data_source::Tidy(const bool make_nni)
       Filedata *f =  Filedata::file_data_map.find(this->file_name)->second;
       if (f->Get_file_type() != Filedata::SHAPE) error_msg("File read as non-shape and shape file?", EA_STOP);
       this->Add_to_file_map (f, make_nni);
+      this->filedata = f;
     }
     
     break;
@@ -299,6 +301,7 @@ void Data_source::Tidy(const bool make_nni)
       Filedata *f =  Filedata::file_data_map.find(this->file_name)->second;
       if (f->Get_file_type() != Filedata::ARCRASTER) error_msg("File read as non arcraster and arcraster file?", EA_STOP);
       this->Add_to_file_map (f, make_nni);
+      this->filedata = f;
     }
     //fprintf(stderr, "Build interpolator\n");
     break;
@@ -313,6 +316,7 @@ void Data_source::Tidy(const bool make_nni)
       Filedata *f =  Filedata::file_data_map.find(this->file_name)->second;
       if (f->Get_file_type() != Filedata::XYZ) error_msg("File read as non XYZ and XYZ file?", EA_STOP);
       this->Add_to_file_map (f, make_nni);
+      this->filedata = f;
     }
     break;
   case Data_source::CONSTANT:
@@ -383,6 +387,7 @@ bool Data_source::Make_polygons()
     break;
 
   case Data_source::POINTS:
+  case Data_source::NONE:
     if (this->phst_polygons.Get_points().size() == 0)
     {
       this->phst_polygons.Get_points() = this->pts;
@@ -431,6 +436,7 @@ void Data_source::Add_to_file_map (Filedata *f, const bool make_nni)
 // COMMENT: {7/11/2008 9:29:56 PM}      nni->preprocess(temp_pts, corners);
       nni->preprocess(temp_pts);
       f->Get_nni_map()[this->attribute] = nni;
+      NNInterpolator::NNInterpolatorList.push_back(nni);
     }
   } 
 #ifdef SKIP 
@@ -460,6 +466,7 @@ void Data_source::Add_nni_to_data_source (void)
   this->nni = new NNInterpolator();
 // COMMENT: {7/11/2008 9:30:13 PM}  this->nni->preprocess(this->Get_points(), corners);
   this->nni->preprocess(this->Get_points());
+  NNInterpolator::NNInterpolatorList.push_back(this->nni);
 }
 struct zone *Data_source::Get_bounding_box()
 {
@@ -469,6 +476,7 @@ void Data_source::Set_bounding_box(void)
 {
   Point min(this->Get_points().begin(), this->Get_points().end(), Point::MIN); 
   Point max(this->Get_points().begin(), this->Get_points().end(), Point::MAX); 
+  this->box.zone_defined = TRUE;
   this->box.x1 = min.x();
   this->box.y1 = min.y();
   this->box.z1 = min.z();

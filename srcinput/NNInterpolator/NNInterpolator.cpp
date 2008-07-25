@@ -13,6 +13,9 @@
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
 #endif
 
+// static
+std::list<NNInterpolator*> NNInterpolator::NNInterpolatorList;
+
 // Constructors
 NNInterpolator::NNInterpolator(void)
 {
@@ -28,7 +31,7 @@ NNInterpolator::~NNInterpolator(void)
   if (this->nn != NULL) nnpi_destroy(this->nn);
   if (this->delaunay_triangulation != NULL) delaunay_destroy(this->delaunay_triangulation);
   if (this->pin != NULL) delete this->pin;
-  if (this->tree != NULL) delete this->tree;
+  // this->tree cleaned up in main Clear_KDtreeList()
 }
 bool nnpi_interpolate(std::vector<Point> &pts_in, std::vector<Point> &pts_out, double wmin)
 {
@@ -252,7 +255,17 @@ KDtree* NNInterpolator::get_tree(void)
     {
       assert(this->pin != NULL);
       this->tree = new KDtree(this->pin, this->point_count);
+      KDtree::KDtreeList.push_back(this->tree);
     }
   }
   return this->tree;
+}
+void Clear_NNInterpolatorList(void)
+{
+	std::list<NNInterpolator*>::iterator it = NNInterpolator::NNInterpolatorList.begin();
+	for (; it != NNInterpolator::NNInterpolatorList.end(); ++it)
+	{
+		delete (*it);
+	}
+	NNInterpolator::NNInterpolatorList.clear();
 }

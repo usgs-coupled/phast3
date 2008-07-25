@@ -72,6 +72,7 @@ extern int get_line( FILE *fp);
 #else
 STATIC int get_line( FILE *fp);
 STATIC int get_logical_line(FILE *fp, int *l);
+STATIC int add_char_to_line (int *i, char c);
 #endif
 STATIC int get_true_false(char *string, int default_value);
 
@@ -602,37 +603,93 @@ int get_logical_line(FILE *fp, int *l)
  *           *l returns length of line
  */
 	int i, j;
+	int pos;
 	char c;
 	i = 0;
-	for (;;) {
-		j = getc(fp);
-		if (j == EOF) break;
+	while ((j = getc(fp)) != EOF)
+	{
 		c = (char) j;
-		if (c == '\\') {
-			j = getc(fp);
-			if (j == EOF) break;
-			j = getc(fp);
-			if (j == EOF) break;
-			c = (char) j;
+		if (c == '#')
+		{
+			/* ignore all chars after # until newline */
+			do
+			{
+				c = (char) j;
+				if (c == '\n')
+				{
+					break;
+				}
+				add_char_to_line (&i, c);
+			}
+			while ((j = getc(fp)) != EOF);
 		}
-		if (c == ';' || c == '\n') break;
-		if ( i + 20 >= max_line) {
-			max_line *= 2;
-			line_save = (char *) realloc (line_save, (size_t) max_line * sizeof(char));
-			if (line_save == NULL) malloc_error();
-			line = (char *) realloc (line, (size_t) max_line * sizeof(char));
-			if (line == NULL) malloc_error();
+		if (c == ';')
+			break;
+		if (c == '\n')
+		{
+			break;
 		}
-		line_save[i++] = c;
+		if (c == '\\')
+		{
+			pos = i;
+			add_char_to_line (&i, c);
+			while ((j = getc(fp)) != EOF)
+			{
+				c = (char) j;
+				if (c == '\\')
+				{
+					pos = i;
+					add_char_to_line (&i, c);
+					continue;
+				}
+				if (c == '\n')
+				{
+					/* remove '\\' */
+					for (; pos < i; pos++)
+					{
+						line_save[pos] = line_save[pos + 1];
+					}
+					i--;
+					break;
+				}
+				add_char_to_line (&i, c);
+				if (!isspace (j))
+					break;
+			}
+		}
+		else
+		{
+			add_char_to_line (&i, c);
+		}
 	}
- 	if (j == EOF && i == 0) {
+	if (j == EOF && i == 0)
+	{
 		*l = 0;
 		line_save[i] = '\0';
-		return(EOF);
-	} 
+		return (EOF);
+	}
 	line_save[i] = '\0';
 	*l = i;
-	return(OK);
+	return (OK);
+}
+/* ---------------------------------------------------------------------- */
+int add_char_to_line (int *i, char c)
+/* ---------------------------------------------------------------------- */
+{
+	if (*i + 20 >= max_line)
+	{
+		max_line *= 2;
+		line_save =
+			(char *) realloc (line_save, (size_t) max_line * sizeof (char));
+		if (line_save == NULL)
+			malloc_error ();
+		line = (char *) realloc (line, (size_t) max_line * sizeof (char));
+		if (line == NULL)
+			malloc_error ();
+	}
+	line_save[*i] = c;
+	*i += 1;
+	return (OK);
 }
 /* ---------------------------------------------------------------------- */
 int get_line( FILE *fp)

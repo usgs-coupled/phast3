@@ -8,6 +8,9 @@ using namespace boost;
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
 #endif
 
+// static
+std::list<KDtree*> KDtree::KDtreeList;
+
 KDtree::KDtree(std::vector<Point> &pts)
 {
   //array2ddouble data(extents[10][3]);  // declare a 10000 x 3 array.
@@ -65,4 +68,13 @@ int KDtree::Nearest(point pt)
 KDtree::~KDtree(void)
 {
   delete this->tree;
+}
+void Clear_KDtreeList(void)
+{
+	std::list<KDtree*>::iterator it = KDtree::KDtreeList.begin();
+	for (; it != KDtree::KDtreeList.end(); ++it)
+	{
+		delete (*it);
+	}
+	KDtree::KDtreeList.clear();
 }
