@@ -146,7 +146,7 @@ void Shapefile::Dump(std::ostream &oss)
     }
 
     // get info
-    int		nShapeType, nEntities, i, iPart, bValidate = 0,nInvalidCount=0;
+    int		nShapeType, nEntities, i, iPart; //, bValidate = 0,nInvalidCount=0;
     const char 	*pszPlus;
     double 	adfMinBound[4], adfMaxBound[4];
 
@@ -500,7 +500,7 @@ bool Shapefile::Make_points(const int field, std::vector<Point> &pts, double h_s
 
 
   // get info
-  int		nShapeType, nEntities, i, bValidate = 0,nInvalidCount=0;
+  int		nShapeType, nEntities, i; //, bValidate = 0,nInvalidCount=0;
   double 	adfMinBound[4], adfMaxBound[4];
 
   SHPGetInfo( hSHP, &nEntities, &nShapeType, adfMinBound, adfMaxBound );
@@ -765,11 +765,11 @@ bool Shapefile::Make_polygons( int field, PHST_polygon &polygons, double h_scale
   std::vector<double> m;  // rough-in in case M values are given in .shp file
 
   SHPInfo *hSHP = this->shpinfo;
-  DBFInfo *hDBF = this->dbfinfo;
+  //DBFInfo *hDBF = this->dbfinfo;
 
 
   // get info
-  int		nShapeType, nEntities, i, bValidate = 0,nInvalidCount=0;
+  int		nShapeType, nEntities, i; //, bValidate = 0,nInvalidCount=0;
   double 	adfMinBound[4], adfMaxBound[4];
 
   SHPGetInfo( hSHP, &nEntities, &nShapeType, adfMinBound, adfMaxBound );

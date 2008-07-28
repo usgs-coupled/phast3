@@ -65,33 +65,6 @@ int copy_token (char *token_ptr, char **ptr, int *length)
 	return(return_value);
 }
 /* ---------------------------------------------------------------------- */
-int dup_print(const char *ptr, int emphasis)
-/* ---------------------------------------------------------------------- */
-{
-/*
- *   print character string to output and logfile
- *   if emphasis == TRUE the print is set off by
- *   a row of dashes before and after the character string.
- *   
- */
-	size_t l, i;
-	char *dash;
-
-	l = strlen(ptr);
-	dash = (char *) malloc((size_t) (l+2) * sizeof(char));
-	if (emphasis == TRUE) {
-		for (i = 0; i < l; i++) dash[i] = '-';
-		dash[i] = '\0';
-		output_msg(OUTPUT_ECHO,"%s\n%s\n%s\n\n", dash, ptr, dash);
-	} else {
-		output_msg(OUTPUT_ECHO,"%s\n\n", ptr);
-	}
-	free_check_null(dash);
-
-	return(OK);
-}
-
-/* ---------------------------------------------------------------------- */
 void malloc_error (void)
 /* ---------------------------------------------------------------------- */
 {
@@ -99,37 +72,6 @@ void malloc_error (void)
 		  CONTINUE);
 	error_msg("Program terminating.", STOP);
 	return;
-}
-/* ---------------------------------------------------------------------- */
-int print_centered(const char *string)
-/* ---------------------------------------------------------------------- */
-{
-	size_t i, l, l1, l2;
-	char token[MAX_LENGTH];
-
-	l = strlen(string);
-	l1 = (79 - l)/2;
-	l2 = 79 -l -l1;
-	for (i=0; i < l1; i++) token[i]='-';
-	token[i]='\0';
-	strcat(token, string);
-	for (i=0; i < l2; i++) token[i + l1 + l]='-';
-	token[79] = '\0';
-	output_msg(OUTPUT_ECHO,"%s\n\n",token);
-	return(OK);
-}
-/* ---------------------------------------------------------------------- */
-int backspace (FILE *file, int spaces)
-/* ---------------------------------------------------------------------- */
-{
-	int i;
-	char token[MAX_LENGTH];
-	for (i = 0; i < spaces; i++) {
-		token[i] = '\b';
-	}
-	token[i] = '\0';
-	fprintf(file,"%s",token);
-	return(OK);
 }
 /* ---------------------------------------------------------------------- */
 int vector_print(double *d, double scalar, int n, FILE *file)
@@ -301,7 +243,6 @@ int convert_to_si (char *unit, double *conversion)
 #include <string>
 #include <algorithm>
 #include "Utilities.h"
-static bool isamong(char c, const char *s_l);
 
 /* ---------------------------------------------------------------------- */
 bool equal (double a, double b, double eps)
@@ -322,54 +263,10 @@ void free_check_null(void *ptr)
 	}
 	return;
 }
-/* ---------------------------------------------------------------------- */
-bool isamong(char c, const char *s_l)
-/* ---------------------------------------------------------------------- */
-/*
- *   Function checks if c is among the characters in the string s
- *
- *   Arguments:
- *      c     input, character to check
- *     *s     string of characters
- *
- *   Returns:
- *      TRUE  if c is in set,
- *      FALSE if c in not in set.
- */
-{
-	int i;
-
-	for (i=0; s_l[i] != '\0'; i++) {
-		if (c == s_l[i]) {
-			return(true);
-		}
-	}
-	return(false);
-}
-/* ---------------------------------------------------------------------- */
-bool islegit(const char c)
-/* ---------------------------------------------------------------------- */
-/*
- *   Function checks for legal characters for chemical equations
- *
- *   Argument:
- *      c     input, character to check
- *
- *   Returns:
- *      TRUE  if c is in set,
- *      FALSE if c in not in set.
- */
-{
-	if( isalpha((int)c) ||
-	    isdigit((int)c) ||
-	    isamong(c,"+-=().:_") ){
-		return(true);
-	}
-	return(false);
-}
 
 /* ---------------------------------------------------------------------- */
-bool replace(const char *to_remove, const char *replacement, char *string_to_search)
+bool
+replace (const char *str1, const char *str2, char *str)
 /* ---------------------------------------------------------------------- */
 {
 /*
@@ -384,51 +281,59 @@ bool replace(const char *to_remove, const char *replacement, char *string_to_sea
  *      TRUE     if string was replaced
  *      FALSE    if string was not replaced
  */
-  const char * str1, *str2; 
-  char *str;
+  int l, l1, l2;
+  char *ptr_start;
 
-  str1 = to_remove;
-  str2 = replacement;
-  str = string_to_search;
-  size_t l, l1, l2;
-  char *ptr_start, *ptr, *ptr1;
-
-  ptr_start=strstr(str, str1);
-  /*
-  *   Str1 not found, return
-  */
-  if (ptr_start == NULL) return(false);
-  /*
-  *   Str1 found, replace Str1 with Str2
-  */
-  l=strlen(str);
-  l1=strlen(str1);
-  l2=strlen(str2);
-  /*
-  *   Make gap in str long enough for str2
-  */
-  if (l2 < l1) {
-    for (ptr = (ptr_start + l1); ptr <= ptr_start + l; ptr++) {
-      ptr1= ptr + l2 - l1;
-      *ptr1=*ptr;
-    }
-  } else {
-    ptr=str+l+1;
-    ptr1=ptr+l2-l1;
-    for ( ptr = (str+l+1); ptr >= ptr_start + l1; ptr--) {
-      ptr1=ptr+l2-l1;
-      *ptr1=*ptr;
+  ptr_start = strstr (str, str1);
+/*
+ *   Str1 not found, return
+ */
+  if (ptr_start == NULL)
+    return (false);
+/*
+ *   Str1 found, replace Str1 with Str2
+ */
+  l = (int) strlen (str);
+  l1 = (int) strlen (str1);
+  l2 = (int) strlen (str2);
+/*
+ *   Make gap in str long enough for str2
+ */
+#ifdef SKIP
+  if (l2 < l1)
+  {
+    for (ptr = (ptr_start + l1); ptr < ptr_start + l; ptr++)
+    {
+      ptr1 = ptr + l2 - l1;
+      *ptr1 = *ptr;
+      if (*ptr == '\0')
+	break;
     }
   }
-  /*
-  *   Copy str2 into str
-  */
-  ptr1=ptr_start;
-  for (ptr = (char *) str2; *ptr != '\0'; ptr++) {
-    *ptr1=*ptr; 
+  else
+  {
+    for (ptr = (str + l); ptr >= ptr_start + l1; ptr--)
+    {
+      ptr1 = ptr + l2 - l1;
+      *ptr1 = *ptr;
+    }
+  }
+#endif
+  /* The plus one includes the terminating NULL */
+  memmove (ptr_start + l2, ptr_start + l1, l - (ptr_start - str + l1) + 1);
+/*
+ *   Copy str2 into str
+ */
+#ifdef SKIP
+  ptr1 = ptr_start;
+  for (ptr = (char *) str2; *ptr != '\0'; ptr++)
+  {
+    *ptr1 = *ptr;
     ptr1++;
   }
-  return(true);
+#endif
+  memcpy (ptr_start, str2, l2);
+  return (true);
 }
 /* ---------------------------------------------------------------------- */
 void squeeze_white(char *s_l)
@@ -465,20 +370,6 @@ void str_tolower(char *str)
 	}
 }
 /* ---------------------------------------------------------------------- */
-void str_toupper(char *str)
-/* ---------------------------------------------------------------------- */
-{
-/*
- *   Replaces string, str, with same string, lower case
- */
-	char *ptr;
-	ptr=str;
-	while (*ptr != '\0') {
-		*ptr=toupper(*ptr);
-		ptr++;
-	}
-}
-/* ---------------------------------------------------------------------- */
 int strcmp_nocase(const char *str1, const char *str2)
 /* ---------------------------------------------------------------------- */
 {
@@ -493,30 +384,18 @@ int strcmp_nocase(const char *str1, const char *str2)
 	return(1);
 }
 /* ---------------------------------------------------------------------- */
-int strcmp_nocase_arg1(const char *str1, const char *str2)
-/* ---------------------------------------------------------------------- */
-{
-/*
- *   Compare two strings disregarding case
- */
-	char c1, c2;
-	while ((c1 = tolower(*str1++)) == (c2 = *str2++)) {
-		if (c1 == '\0') return(0);
-	}
-	if (c1 < c2) return(-1);
-	return(1);
-}
-/* ---------------------------------------------------------------------- */
 char * string_duplicate (const char *token)
 /* ---------------------------------------------------------------------- */
 {
 	size_t l;
 	char *str;
 
-	l = strlen(token);
-	str = (char *) malloc ((size_t) (l +1) * sizeof(char) );
-	strcpy (str, token);
-	return(str);
+    if (token == NULL) return NULL;
+    l = strlen(token);
+    str = (char *) malloc ((size_t) (l +1) * sizeof(char) );
+    if (str == NULL) malloc_error ();
+    strcpy (str, token);
+    return(str);
 }
 
 /* ---------------------------------------------------------------------- */
