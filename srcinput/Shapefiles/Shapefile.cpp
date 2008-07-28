@@ -33,10 +33,13 @@ Shapefile::Shapefile(std::string &fname)
 /*      Open the passed shapefile.                                      */
 /* -------------------------------------------------------------------- */
 
-  char token[250];
-  strcpy(token, fname.c_str());
-  replace(".shp","",token);
-  std::string shpname(token);
+  std::string basename(fname);
+  std::string::size_type p = basename.find(".shp");
+  if (p != std::string::npos && p == (basename.size() - 4))
+  {
+    basename.erase(p, 4);
+  }
+  std::string shpname(basename);
   shpname.append(".shp");
   this->shpinfo = SHPOpen( shpname.c_str(), "rb" );
 
@@ -106,7 +109,7 @@ Value Shape Type
   }
 
   // Now read dbf information
-  std::string dbfname(token);
+  std::string dbfname(basename);
   dbfname.append(".dbf");
   this->dbfinfo = DBFOpen( dbfname.c_str(), "rb" );
   DBFInfo *hDBF = this->dbfinfo;

@@ -527,19 +527,19 @@ int case_picker (std::vector<std::string> options, std::string query)
   int j = -1;
   int i;
   std::transform(query.begin(), query.end(), query.begin(), ::tolower);
-  char *c_query = string_duplicate(query.c_str());
-  replace("-", "", c_query);
+  std::string c_query(query);
+  std::string::size_type p = c_query.find("-");
+  if (p != std::string::npos) c_query.erase(p, 1);
 
   for (i = 0; i < (int) options.size(); i++)
   {
-    if (strstr(options[i].c_str(), c_query) == options[i].c_str())
+    if (options[i].find(c_query) == 0)
     {
       j = i;
       break;
     }
   }
 
-  free_check_null(c_query);
   return(j);
 }
 struct zone *grid_zone()
