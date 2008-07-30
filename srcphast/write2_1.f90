@@ -464,7 +464,7 @@ SUBROUTINE write2_1
              a,tr11,a,tr10,a,tr5,a,tr3,a,tr4,a/tr41,a,tr21,a,tr10,a,tr12,a/  &
              tr10,a95)
         DO  ls=1,nlbc_seg
-           WRITE(fulp,2045) ls, mfbc(ls), cnvl2i*arealbc(ls), ifacelbc(ls),  &
+           WRITE(fulp,2045) ls, mlbc(ls), cnvl2i*arealbc(ls), ifacelbc(ls),  &
                 cnvl3i*klbc(ls), cnvli*bblbc(ls), cnvli*zelbc(ls)
 2045       FORMAT(tr15,i5,tr10,i5,1PG11.3,tr9,i2,tr5,1pg11.3,tr5,1pg11.3,tr5,1pg11.3)
         END DO
