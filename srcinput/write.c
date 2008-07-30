@@ -38,17 +38,17 @@ int write_hst(void)
 	count_drain_segments = 0;
 
 	for (i = 0; i < nxyz; i++) {
+		if (!cells[i].specified) count_river_segments += cells[i].count_river_polygons;
 		if (cells[i].cell_active == FALSE) continue;
 		if (cells[i].specified) count_specified++;
 		if (cells[i].flux) count_flux++;
 		if (cells[i].leaky) count_leaky++;
 		if (!cells[i].specified) 
 		{
-		  count_river_segments += cells[i].count_river_polygons;
-		  count_drain_segments += cells[i].drain_polygons->size();
+			//count_river_segments += cells[i].count_river_polygons;
+			count_drain_segments += cells[i].drain_polygons->size();
 		}
-		
-		}
+	}
 
 	if (simulation == 0) {
 		write_file_names();
@@ -740,19 +740,19 @@ int write_bc_static(void)
 		output_msg(OUTPUT_HST,"END\n");
 	}
 
-/*
- *   River leakage bc,
- */
+	/*
+	*   River leakage bc,
+	*/
 	output_msg(OUTPUT_HST,"C.....          River leakage b.c.\n");
-  output_msg(OUTPUT_HST,"C.2.16.3 .. X1,Y1,X2,Y2,KRBC,BBRBC,ZERBC;(O) - NLBC [1.6] > 0 ***obsolete\n"); 
-  output_msg(OUTPUT_HST,"C.2.16.3 .. seg number cell number, area, leakance, z\n");
+	output_msg(OUTPUT_HST,"C.2.16.3 .. X1,Y1,X2,Y2,KRBC,BBRBC,ZERBC;(O) - NLBC [1.6] > 0 ***obsolete\n"); 
+	output_msg(OUTPUT_HST,"C.2.16.3 .. seg number cell number, area, leakance, z\n");
 	output_msg(OUTPUT_HST,"C.2.16.4 .. End with END\n");
 
-        if (count_river_segments > 0) {
-    int segment = 1;
+	if (count_river_segments > 0) {
+		int segment = 1;
 		for (i = 0; i < count_cells; i++) {
-			if (cells[i].cell_active == FALSE) continue;
-      if (cells[i].specified) continue;
+			//if (cells[i].cell_active == FALSE) continue;
+			if (cells[i].specified) continue;
 
 			for (j = 0; j < cells[i].count_river_polygons; j++) {
 				area = cells[i].river_polygons[j].area * units.horizontal.input_to_si * units.horizontal.input_to_si;
@@ -783,9 +783,9 @@ int write_bc_static(void)
 #endif
 				z = (z0*w0 + z1*w1);
 
-	/* segment number, cell no., area, leakance, z */
-	output_msg(OUTPUT_HST,"%d %d %e %e %e\n", segment, i + 1, area, leakance, z);
-	segment++;
+				/* segment number, cell no., area, leakance, z */
+				output_msg(OUTPUT_HST,"%d %d %e %e %e\n", segment, i + 1, area, leakance, z);
+				segment++;
 			}
 		}
 		output_msg(OUTPUT_HST,"END\n");
@@ -1514,7 +1514,7 @@ int write_bc_transient(void)
 	if (count_river_segments > 0 && river_defined == TRUE) {
 		k = 1;
 		for (i = 0; i < count_cells; i++) {
-			if (cells[i].cell_active == FALSE) continue;
+			//if (cells[i].cell_active == FALSE) continue;
       if (cells[i].bc_type == BC_info::BC_SPECIFIED) continue;
       
 			for (j = 0; j < cells[i].count_river_polygons; j++) {

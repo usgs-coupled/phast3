@@ -121,7 +121,8 @@ int setup_rivers(void)
 		if (cells[i].count_river_polygons < 1) continue;
 		k = 0;
 		for (j = 0; j < cells[i].count_river_polygons; j++) {
-			if (cells[i].river_polygons[j].poly->num_contours == 0) {
+			if (cells[i].river_polygons[j].poly->num_contours == 0 ||
+				gpc_polygon_area(cells[i].river_polygons[j].poly) <= 0) {
 				gpc_free_polygon(cells[i].river_polygons[j].poly);
 			} else { 
 				if (j != k) {
