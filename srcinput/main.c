@@ -8,6 +8,7 @@
 #include "NNInterpolator/NNInterpolator.h"
 #include "KDtree/KDtree.h"
 #include "ArcRaster.h"
+#include "Prism.h"
 //... testing
 #include <algorithm>
 #if defined(__WPHAST__)
@@ -325,6 +326,7 @@ int clean_up(void)
  *   Free all allocated memory, except strings
  */
 	int i;
+
 
 	/* dup_print ("End of flow and transport file.", TRUE); */
 

@@ -57,7 +57,7 @@ Prism::~Prism(void)
     if (*it == this) break;
   }
   assert(it != Prism::prism_list.end()); // should be found
-  if (it != Prism::prism_list.end()) this->prism_list.erase(it);
+  if (it != Prism::prism_list.end()) Prism::prism_list.erase(it);
 
   if (this->perimeter_poly != NULL)
   {
