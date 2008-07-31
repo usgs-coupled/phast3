@@ -407,6 +407,7 @@ SUBROUTINE aplbci
      m = river_seg_index(lc)%m     ! ... current river communication cell
      ! ... calculate current net river leakage flow rate
      ! ...      possible attenuation included explicitly
+     if (m .le. 0) cycle
      qm_net = 0._kdp
      qfbc = 0._kdp
      dqfdp = 0._kdp
