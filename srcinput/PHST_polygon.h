@@ -10,7 +10,7 @@ public:
   PHST_polygon(void);
   PHST_polygon(gpc_polygon *poly);
   PHST_polygon(const std::vector<Point> &pts);
-  //PHST_polygon(const PHST_polygon &poly);
+  PHST_polygon(const PHST_polygon &poly);
 
 public:
   ~PHST_polygon(void);

@@ -1,6 +1,7 @@
 #include "PHST_polygon.h"
 #include "message.h"
 #include <iostream>
+#include <cassert>
 
 // Note: No header files should follow the next three lines
 #if defined(_WIN32) && defined(_DEBUG)
@@ -38,6 +39,25 @@ PHST_polygon::PHST_polygon(const std::vector<Point> &points)
 {
 	this->begin.push_back(this->pts.begin());
 	this->end.push_back(this->pts.end());
+}
+PHST_polygon::PHST_polygon(const PHST_polygon &poly)
+: pts(poly.pts)
+{
+	std::vector< std::vector<Point>::iterator >::const_iterator bi = poly.begin.begin();
+	for (; bi != poly.begin.end(); ++bi)
+	{
+		std::vector<Point>::difference_type diff = *bi - poly.pts.begin();
+		this->begin.push_back(this->pts.begin() + diff);
+	}
+	std::vector< std::vector<Point>::iterator >::const_iterator ei = poly.end.begin();
+	for (; ei != poly.end.end(); ++ei)
+	{
+		std::vector<Point>::difference_type diff = *ei - poly.pts.begin();
+		this->end.push_back(this->pts.begin() + diff);
+	}
+	assert(poly.pts.size()   == this->pts.size());
+	assert(poly.begin.size() == this->begin.size());
+	assert(poly.end.size()   == this->end.size());
 }
 PHST_polygon::~PHST_polygon(void)
 {
