@@ -42,6 +42,7 @@ PHST_polygon::PHST_polygon(const std::vector<Point> &points)
 }
 PHST_polygon::PHST_polygon(const PHST_polygon &poly)
 : pts(poly.pts)
+, box(poly.box)
 {
 	std::vector< std::vector<Point>::iterator >::const_iterator bi = poly.begin.begin();
 	for (; bi != poly.begin.end(); ++bi)
@@ -55,9 +56,36 @@ PHST_polygon::PHST_polygon(const PHST_polygon &poly)
 		std::vector<Point>::difference_type diff = *ei - poly.pts.begin();
 		this->end.push_back(this->pts.begin() + diff);
 	}
-	assert(poly.pts.size()   == this->pts.size());
-	assert(poly.begin.size() == this->begin.size());
-	assert(poly.end.size()   == this->end.size());
+	assert(this->pts.size()   == poly.pts.size());
+	assert(this->begin.size() == poly.begin.size());
+	assert(this->end.size()   == poly.end.size());
+}
+PHST_polygon& PHST_polygon::operator=(const PHST_polygon &rhs)
+{
+	if (this != &rhs)
+	{
+		this->pts = rhs.pts;
+		this->box = rhs.box;
+		this->begin.clear();
+		this->end.clear();
+
+		std::vector< std::vector<Point>::iterator >::const_iterator bi = rhs.begin.begin();
+		for (; bi != rhs.begin.end(); ++bi)
+		{
+			std::vector<Point>::difference_type diff = *bi - rhs.pts.begin();
+			this->begin.push_back(this->pts.begin() + diff);
+		}
+		std::vector< std::vector<Point>::iterator >::const_iterator ei = rhs.end.begin();
+		for (; ei != rhs.end.end(); ++ei)
+		{
+			std::vector<Point>::difference_type diff = *ei - rhs.pts.begin();
+			this->end.push_back(this->pts.begin() + diff);
+		}
+		assert(this->pts.size()   == rhs.pts.size());
+		assert(this->begin.size() == rhs.begin.size());
+		assert(this->end.size()   == rhs.end.size());
+	}
+	return *this;
 }
 PHST_polygon::~PHST_polygon(void)
 {

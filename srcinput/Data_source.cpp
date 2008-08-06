@@ -1,3 +1,4 @@
+#include <cassert>
 #include "zone.h"
 #include "Data_source.h"
 #include "message.h"
@@ -519,7 +520,6 @@ double Data_source::Interpolate(const Point& p)
   }
   return(-999.);
 }
-
 std::ostream& operator<< (std::ostream &os, const Data_source &ds)
 {
   switch (ds.source_type)
@@ -558,3 +558,22 @@ std::ostream& operator<< (std::ostream &os, const Data_source &ds)
   }
   return os;
 }
+void Data_source::Set_file_name(std::string fn)
+{
+	// check if in map
+	if (this->file_name.size())
+	{
+		std::map< std::string, Filedata*>::iterator fi = Filedata::file_data_map.find(this->file_name);
+		if (fi != Filedata::file_data_map.end())
+		{
+			// if found update map
+			assert(fi->second != NULL);
+			assert(this->filedata == fi->second);
+			this->filedata = fi->second;
+			Filedata::file_data_map.erase(fi);
+			Filedata::file_data_map[fn] = this->filedata;
+		}
+	}
+	assert(fn.size());
+	this->file_name = fn;
+};

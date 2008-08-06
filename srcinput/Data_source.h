@@ -65,7 +65,7 @@ public:
   void                     Set_source_type        (DATA_SOURCE_TYPE dt) {this->source_type = dt;};
   void                     Set_bounding_box       (void);
   void                     Set_defined            (bool tf) {this->defined = tf;};
-  void                     Set_file_name          (std::string fn) {this->file_name = fn;};
+  void                     Set_file_name          (std::string fn);
   void                     Set_attribute          (int a) {this->attribute = a;};
 
   Data_source &            operator=              (const Data_source& r);

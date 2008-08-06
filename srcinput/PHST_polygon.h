@@ -25,7 +25,7 @@ public:
   void Set_bounding_box(void);
   struct zone * Get_bounding_box(void){return &(this->box);};
   void Clear(void);
-  //PHST_polygon& operator=(const PHST_polygon& poly);
+  PHST_polygon& operator=(const PHST_polygon& poly);
 
 protected:
   // data
