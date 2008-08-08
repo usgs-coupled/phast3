@@ -33,6 +33,7 @@ public:
   virtual gpc_polygon * Slice(Cell_Face face, double coord) = 0;
 
   struct zone *Get_bounding_box() {return &(this->box);}
+  std::string *Get_description() {return &(this->description);}
   bool Point_in_bounding_box(const Point &pt);
   enum POLYHEDRON_TYPE get_type(void)const;
 
@@ -47,6 +48,7 @@ protected:
   std::vector<Point> p;
   enum POLYHEDRON_TYPE type;
   struct zone box;
+  std::string description;
 };
 
 inline std::ostream& operator<< (std::ostream& o, const Polyhedron& p)
