@@ -1,6 +1,6 @@
 #ifndef _INC_PROPERTY
 #define _INC_PROPERTY
-
+class Data_source;
 
 /* ----------------------------------------------------------------------
  *   Property structure

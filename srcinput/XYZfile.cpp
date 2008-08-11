@@ -3,6 +3,7 @@
 #include <iostream>
 #include <istream>
 #include <fstream>
+#include <strstream>
 #include "Point.h"
 #include "PHST_polygon.h"
 
@@ -16,24 +17,28 @@ XYZfile::XYZfile(void)
 }
 XYZfile::XYZfile(std::string filename)
 {
-  std::string token;
-  std::ifstream input (filename.c_str());
-  bool error = false;
-  if (!input.is_open())
-  {
-    error = true;
-    std::ostringstream estring;
-    estring << "Could not open file " << filename.c_str() << std::endl;
-    error_msg(estring.str().c_str(), EA_STOP);
-  }
-  int i = 0;
-  Point p;
-  double *coord = p.get_coord();
-  while (input >> coord[i%3])
-  {
-    if (i%3 == 2) this->Get_points(-1).push_back(p);
-    i++;
-  }
+	std::string token;
+	std::ifstream input (filename.c_str());
+	bool error = false;
+	if (!input.is_open())
+	{
+		error = true;
+		std::ostringstream estring;
+		estring << "Could not open file " << filename.c_str() << std::endl;
+		error_msg(estring.str().c_str(), EA_STOP);
+	}
+#ifdef SKIP
+	Point p;
+	double *coord = p.get_coord();
+	while (input >> coord[i%3])
+	{
+		if (i%3 == 2) this->Get_points(-1).push_back(p);
+		i++;
+	}
+#endif
+	this->columns = Read_points(input, this->Get_points(-1));
+
+
   // Set bounding box
   //this->Set_bounding_box();
 }

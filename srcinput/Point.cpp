@@ -264,6 +264,59 @@ bool Point::Point_in_polygon(std::vector<Point> &pts)
   return(false);
 }
 
+int Read_points(std::istream &input, std::vector<Point> &pts)
+{
+	// read points, one point per line, fills in Z and V if available
+	// returns minumum number of columns found on a single line
+	std::string line;
+	int columns = 4;
+	while (std::getline(input, line))
+	{
+		Point p;
+		int i = 0;
+		double d;
+		std::stringstream stream (line);
+
+		// X value
+		if (stream >> d)
+		{
+			p.set_x(d);
+			i++;
+		}
+		else
+		{
+			continue;  // no number on line
+		}
+
+
+		// Y value
+		if (stream >> d)
+		{
+			p.set_y(d);
+			i++;
+		}
+
+
+		// optional Z value
+		if (stream >> d)
+		{
+			p.set_z(d);
+			i++;
+
+		}
+
+		// optional V value
+		if (stream >> d)
+		{
+			p.set_v(d);
+			i++;
+		}
+		pts.push_back(p);
+		if (i < columns) columns = i;
+	}
+	if (pts.size() == 0) columns = 0;
+	return(columns);
+}
 // constructor
 Segment::Segment(void)
 {

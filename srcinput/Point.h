@@ -101,6 +101,7 @@ public:
   void set_v(double t) {this->v = t;}
   friend double interpolate_inverse_square(std::vector<Point> &pts, Point &grid_pt);
   friend double interpolate_nearest(std::vector<Point> &pts, Point &grid_pt);
+  friend int Read_points(std::istream &input, std::vector<Point> &pts);
 
   // operator overload
   friend Point operator+(Point a, Point b);

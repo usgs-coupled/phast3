@@ -3905,6 +3905,19 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 		} else {
 			*opt = next_keyword_or_option(opt_list, count_opt_list);
 		}
+	} 
+	else if ( strstr(token, "XYZ") == token) 
+	{
+/*
+ *   read from file for interpolation
+ */
+		std::string str("XYZ ");
+		str.append(next_char);
+		std::istringstream lines(str);
+		Data_source ds;
+		ds.Read(lines, false);
+
+		//p->type = INTERPOLATE_3D;
 	} else if ( token[0] == 'X' || token[0] == 'x') {
 /*
  *   linear in x
@@ -4076,6 +4089,7 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 
 		p->v = (double *) realloc(p->v, (size_t) p->count_v * sizeof(double));
 		p->count_alloc = p->count_v;
+
 	} else {
 		property_free(p);
 		p = NULL;

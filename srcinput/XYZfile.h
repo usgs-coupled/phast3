@@ -19,5 +19,6 @@ public:
 
 protected:
   // data
+	int columns;
 };
 #endif // !defined(XYZFILE_H_INCLUDED)
