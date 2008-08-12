@@ -12,6 +12,9 @@ public:
   bool                          Make_points(const int field, std::vector<Point> &pts, double h_scale, double v_scale);
   std::vector<Point> &          Get_points(int attribute);
   bool                          Make_polygons( int field, PHST_polygon &polygons, double h_scale, double v_scale);
+  int                           Get_columns(void) {return this->columns;};
+  void                          Set_columns(int i) {this->columns = i;};
+
   //void                          Set_bounding_box(void);
   //struct zone *                 Get_bounding_box(void);
 public:

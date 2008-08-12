@@ -760,7 +760,7 @@ struct property *property_ptr,
 		n = *it;
 		mask_value = 1;
 		if (mask != NULL) {
-			if (get_double_property_value(&(cells[n]), mask, node_sequence, &mask_value) == ERROR) {
+			if (get_double_property_for_cell(&(cells[n]), mask, node_sequence, &mask_value) == ERROR) {
 				error_msg("Error in mask.", CONTINUE);
 				return(ERROR);
 			}
@@ -769,7 +769,7 @@ struct property *property_ptr,
 			//if (match_bc_type == TRUE && cells[n].bc_face[face].bc_type != bc_type) continue;
 			if (p_type == PT_MIX) {
 				mix_ptr = (struct mix *) ((char *) &(cells[n]) + offset);
-				if (get_integer_property_value_mix(&(cells[n]), property_ptr, node_sequence, mix_ptr) == ERROR) {
+				if (get_mix_property_for_cell(&(cells[n]), property_ptr, node_sequence, mix_ptr) == ERROR) {
 					return(ERROR);
 				}
 			} else if (p_type == PT_INTEGER) {
@@ -778,7 +778,7 @@ struct property *property_ptr,
 				return(ERROR);
 				} 
 				*/
-				if (get_double_property_value(&(cells[n]), property_ptr, node_sequence, &value) == ERROR) {
+				if (get_double_property_for_cell(&(cells[n]), property_ptr, node_sequence, &value) == ERROR) {
 					return(ERROR);
 				}
 				i_ptr = (int *) ((char * ) &(cells[n]) + offset);
@@ -788,7 +788,7 @@ struct property *property_ptr,
 					*i_ptr = FALSE;
 				}
 			} else if (p_type == PT_DOUBLE) {
-				if (get_double_property_value(&(cells[n]), property_ptr, node_sequence, &value) == ERROR) {
+				if (get_double_property_for_cell(&(cells[n]), property_ptr, node_sequence, &value) == ERROR) {
 					return(ERROR);
 				}
 				d_ptr = (double *) ((char * ) &(cells[n]) + offset);
@@ -807,11 +807,11 @@ struct property *property_ptr,
 /* ---------------------------------------------------------------------- */
 int distribute_property_to_list_of_elements(
 	std::list<int> &pts,   // list of cell numbers in natural order
-struct property *mask,
-struct property *property_ptr,
+	struct property *mask,
+	struct property *property_ptr,
 	size_t offset, size_t offset_defined,
 	int integer)
-	/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
 {
 	int n, element_sequence;
 	int integer_value;
@@ -858,7 +858,7 @@ struct property *property_ptr,
 		n = *it;
 		mask_value = 1;
 		if (mask != NULL) {
-			if (get_property_value_element(&(cells[n]), mask, element_sequence, &mask_value, &integer_value) == ERROR) {
+			if (get_property_for_element(&(cells[n]), mask, element_sequence, &mask_value, &integer_value) == ERROR) {
 				error_msg("Error in mask.", CONTINUE);
 				return(ERROR);
 			}
@@ -867,7 +867,7 @@ struct property *property_ptr,
 			if (cells[n].is_element == FALSE) {
 				error_msg("Node is not an element node.", CONTINUE);
 			}
-			if (get_property_value_element(&(cells[n]), property_ptr, element_sequence, &value, &integer_value) == ERROR) {
+			if (get_property_for_element(&(cells[n]), property_ptr, element_sequence, &value, &integer_value) == ERROR) {
 				return(ERROR);
 			}
 			if (integer == TRUE) {
@@ -889,50 +889,6 @@ struct property *property_ptr,
 	return(OK);
 }
 #ifdef SKIP
-/* ---------------------------------------------------------------------- */
-int distribute_type_to_list_of_cells(std::list<int> &pts, 
-struct property *mask,
-	int integer_value,
-	size_t offset,
-	int match_bc_type, int face, 
-	BC_info::BC_TYPE bc_type)
-	/* ---------------------------------------------------------------------- */
-{
-	int n;
-	int node_sequence;
-	double mask_value;
-	int *i_ptr;
-	n = pts.size();
-	if (mask != NULL && mask->type == PROP_ZONE) {
-		if (n != mask->count_v) {
-			sprintf(error_string,"Zone has %d nodes,"
-				" mask has %d values.", n, mask->count_v);
-			error_msg(error_string, CONTINUE);
-			input_error++;
-			return(ERROR);
-		}
-	}
-	node_sequence = 0;
-	for (std::list<int>::iterator it = pts.begin(); it != pts.end(); it++)  
-	{
-		n = *it;
-		mask_value = 1;
-		if (mask != NULL) {
-			if (get_double_property_value(&(cells[n]), mask, node_sequence, &mask_value) == ERROR) {
-				error_msg("Error in mask.", CONTINUE);
-				return(ERROR);
-			}
-		}
-		if (mask_value > 0) {
-			//if (match_bc_type == TRUE && cells[n].bc_face[face].bc_type != bc_type) continue;
-			i_ptr = (int *) ((char * ) &(cells[n]) + offset);
-			*i_ptr = integer_value;
-		}
-		node_sequence++;
-	}
-	return(OK);
-}
-#endif
 /* ---------------------------------------------------------------------- */
 int get_double_property_value(struct cell *cell_ptr, struct property *property_ptr, 
 							  int node_sequence, double *value)
@@ -1011,8 +967,83 @@ int get_double_property_value(struct cell *cell_ptr, struct property *property_p
 
 	return(OK);
 }
+#endif
 /* ---------------------------------------------------------------------- */
-int get_integer_property_value_mix(struct cell *cell_ptr, struct property *property_ptr, 
+int get_double_property_for_cell(struct cell *cell_ptr, struct property *property_ptr, 
+							  int node_sequence, double *value)
+/* ---------------------------------------------------------------------- */
+{
+	double slope, b;
+	*value = 0;
+	switch (property_ptr->type)
+	{
+	case PROP_UNDEFINED:
+		input_error++;
+		error_msg("Property type is not defined", CONTINUE);
+		return(ERROR);
+		break;
+	case PROP_FIXED:
+		*value = property_ptr->v[0];
+		break;
+	case PROP_ZONE:
+		if( node_sequence >= property_ptr->count_v) {
+			error_msg("OOPS in get_property_value", CONTINUE);
+			return(ERROR);
+		}
+		*value = property_ptr->v[node_sequence];
+		break;
+	case PROP_MIXTURE:
+		input_error++;
+		error_msg("MIXTURE option not allowed for this property", CONTINUE);
+		return(ERROR);
+		break;
+	case PROP_LINEAR:
+		{
+			double dist;
+			if (property_ptr->coord == 'x')
+			{
+				dist = cell_ptr->x;
+			}
+			if (property_ptr->coord == 'y') {
+				dist = cell_ptr->y;
+			}
+			if (property_ptr->coord == 'z') {
+				dist = cell_ptr->z;
+			}
+			if (dist <= property_ptr->dist1)
+			{
+				*value = property_ptr->v[0];
+			}
+			else if (dist >= property_ptr->dist2)
+			{
+				*value = property_ptr->v[1];
+			}
+			else
+			{
+				if ((property_ptr->dist2 - property_ptr->dist1) != 0) 
+				{
+					slope = (property_ptr->v[1] - property_ptr->v[0])/(property_ptr->dist2 - property_ptr->dist1);
+				} else {
+					slope = 0;
+				}
+				b = property_ptr->v[0] - slope * property_ptr->dist1;
+				*value = dist * slope + b;
+			}
+		}
+		break;
+	case PROP_POINTS:
+	case PROP_XYZ:
+		Point pt(cell_ptr->x, cell_ptr->y, cell_ptr->z); 
+		*value = property_ptr->data_source->Get_tree3d()->Interpolate3d(pt);
+		break;
+	}
+
+
+	return(OK);
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+int get_mix_property_for_cell(struct cell *cell_ptr, struct property *property_ptr, 
 								   int node_sequence, struct mix *mix_ptr)
 /* ---------------------------------------------------------------------- */
 {
@@ -1056,9 +1087,74 @@ int get_integer_property_value_mix(struct cell *cell_ptr, struct property *prope
 	} 
 	return(OK);
 }
-
+#endif
 /* ---------------------------------------------------------------------- */
-int get_property_value_element(struct cell *cell_ptr, struct property *property_ptr, 
+int get_mix_property_for_cell(struct cell *cell_ptr, struct property *property_ptr, 
+								   int node_sequence, struct mix *mix_ptr)
+/* ---------------------------------------------------------------------- */
+{
+	switch (property_ptr->type)
+	{
+	case PROP_UNDEFINED:
+		input_error++;
+		error_msg("Property type is not defined", CONTINUE);
+		return(ERROR);
+		break;
+	case PROP_FIXED:
+		mix_ptr->i1 = (int) floor(property_ptr->v[0] + 1e-8);
+		mix_ptr->i2 = -1;
+		mix_ptr->f1 = 1.0;
+		break;
+	case PROP_ZONE:
+		if( node_sequence >= property_ptr->count_v) {
+			error_msg("OOPS in get_property_value", CONTINUE);
+			return(ERROR);
+		}
+		mix_ptr->i1 = (int) (floor(property_ptr->v[node_sequence] + 1e-8));
+		mix_ptr->i2 = -1;
+		mix_ptr->f1 = 1.0;
+		break;
+	case PROP_MIXTURE:
+		mix_ptr->i1 = (int) floor(property_ptr->v[0] + 1e-8);
+		mix_ptr->i2 = (int) floor(property_ptr->v[1] + 1e-8);
+		mix_ptr->f1 = property_ptr->v[node_sequence + 2];
+		break;
+	case PROP_LINEAR:
+		mix_ptr->i1 = (int) floor(property_ptr->v[0] + 1e-8);
+		mix_ptr->i2 = (int) floor(property_ptr->v[1] + 1e-8);
+		if ((property_ptr->dist2 - property_ptr->dist1) == 0) {
+			mix_ptr->f1 = 1;
+		} else {
+			if (property_ptr->coord == 'x') {
+				mix_ptr->f1 = (property_ptr->dist2 - cell_ptr->x) / (property_ptr->dist2 - property_ptr->dist1);
+			}
+			if (property_ptr->coord == 'y') {
+				mix_ptr->f1 = (property_ptr->dist2 - cell_ptr->y) / (property_ptr->dist2 - property_ptr->dist1);
+			}
+			if (property_ptr->coord == 'z') {
+				mix_ptr->f1 = (property_ptr->dist2 - cell_ptr->z) / (property_ptr->dist2 - property_ptr->dist1);
+			}
+			if (mix_ptr->f1 > 1) mix_ptr->f1 = 1;
+			if (mix_ptr->f1 < 0) mix_ptr->f1 = 0;
+		}
+		break;
+	case PROP_POINTS:
+	case PROP_XYZ:
+		{
+			double value;
+			Point pt(cell_ptr->x, cell_ptr->y, cell_ptr->z); 
+			value = property_ptr->data_source->Get_tree3d()->Interpolate3d(pt);
+			mix_ptr->i1 = (int) (value + 1e-8);
+			mix_ptr->i2 = -1;
+			mix_ptr->f1 = 1.0;			
+		}
+		break;
+	}
+	return(OK);
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+int get_property_for_element(struct cell *cell_ptr, struct property *property_ptr, 
 							   int node_sequence, double *value, int *integer_value)
 /* ---------------------------------------------------------------------- */
 {
@@ -1113,6 +1209,83 @@ int get_property_value_element(struct cell *cell_ptr, struct property *property_
 		input_error++;
 		error_msg("MIXTURE option not allowed for this property", CONTINUE);
 		return(ERROR);
+	}
+	*integer_value = (int) floor(*value + 1e-8);
+	return(OK);
+}
+#endif
+/* ---------------------------------------------------------------------- */
+int get_property_for_element(struct cell *cell_ptr, struct property *property_ptr, 
+							   int node_sequence, double *value, int *integer_value)
+/* ---------------------------------------------------------------------- */
+{
+	double slope, b;
+	*value = 0;
+	*integer_value = 0;
+
+	switch (property_ptr->type)
+	{
+	case PROP_UNDEFINED:
+		input_error++;
+		error_msg("Property type is not defined", CONTINUE);
+		return(ERROR);
+		break;
+	case PROP_FIXED:
+		*value = property_ptr->v[0];
+		break;
+	case PROP_ZONE:
+		if( node_sequence >= property_ptr->count_v) {
+			error_msg("OOPS in get_property_for_element", CONTINUE);
+			return(ERROR);
+		}
+		*value = property_ptr->v[node_sequence];
+		break;
+	case PROP_MIXTURE:
+		input_error++;
+		error_msg("MIXTURE option not allowed for this property", CONTINUE);
+		return(ERROR);
+		break;
+	case PROP_LINEAR:
+		{
+			double dist;
+			if (property_ptr->coord == 'x')
+			{
+				dist = cell_ptr->elt_x;
+			}
+			if (property_ptr->coord == 'y') {
+				dist = cell_ptr->elt_y;
+			}
+			if (property_ptr->coord == 'z') {
+				dist = cell_ptr->elt_z;
+			}
+			if (dist <= property_ptr->dist1)
+			{
+				*value = property_ptr->v[0];
+			}
+			else if (dist >= property_ptr->dist2)
+			{
+				*value = property_ptr->v[1];
+			}
+			else
+			{
+				if ((property_ptr->dist2 - property_ptr->dist1) != 0) 
+				{
+					slope = (property_ptr->v[1] - property_ptr->v[0])/(property_ptr->dist2 - property_ptr->dist1);
+				} else {
+					slope = 0;
+				}
+				b = property_ptr->v[0] - slope * property_ptr->dist1;
+				*value = dist * slope + b;
+			}
+		}
+		break;
+	case PROP_POINTS:
+	case PROP_XYZ:
+		{
+			Point pt(cell_ptr->elt_x, cell_ptr->elt_y, cell_ptr->elt_z); 
+			*value = property_ptr->data_source->Get_tree3d()->Interpolate3d(pt);
+		}
+		break;
 	}
 	*integer_value = (int) floor(*value + 1e-8);
 	return(OK);
@@ -2542,7 +2715,7 @@ bool get_property_for_cell(
 	//  n = *it;
 	mask_value = 1;
 	if (mask != NULL) {
-		if (get_double_property_value(&(cells[n]), mask, node_sequence, &mask_value) == ERROR) {
+		if (get_double_property_for_cell(&(cells[n]), mask, node_sequence, &mask_value) == ERROR) {
 			error_msg("Error in mask.", CONTINUE);
 			return(false);
 		}
@@ -2550,11 +2723,11 @@ bool get_property_for_cell(
 	if (mask_value > 0) {
 		//if (match_bc_type == TRUE && cells[n].bc_face[face].bc_type != bc_type) continue;
 		if (p_type == PT_MIX) {
-			if (get_integer_property_value_mix(&(cells[n]), property_ptr, node_sequence, mix_ptr) == ERROR) {
+			if (get_mix_property_for_cell(&(cells[n]), property_ptr, node_sequence, mix_ptr) == ERROR) {
 				return(false);
 			}
 		} else if (p_type == PT_INTEGER) {
-			if (get_double_property_value(&(cells[n]), property_ptr, node_sequence, &value) == ERROR) {
+			if (get_double_property_for_cell(&(cells[n]), property_ptr, node_sequence, &value) == ERROR) {
 				return(false);
 			}
 			if (value > 0) {
@@ -2563,7 +2736,7 @@ bool get_property_for_cell(
 				*i_ptr = FALSE;
 			}
 		} else if (p_type == PT_DOUBLE) {
-			if (get_double_property_value(&(cells[n]), property_ptr, node_sequence, &value) == ERROR) {
+			if (get_double_property_for_cell(&(cells[n]), property_ptr, node_sequence, &value) == ERROR) {
 				return(false);
 			}
 			*d_ptr = value;

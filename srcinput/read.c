@@ -6,6 +6,7 @@
 #include "Cube.h"
 #include "Wedge.h"
 #include "Prism.h"
+#include "XYZfile.h"
 #include <sstream>
 #include <iostream>
 
@@ -3879,6 +3880,7 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 	next_char = ptr;
 
 	j = copy_token(token, &next_char, &l);
+	str_tolower(token);
 /*
  *   empty, keep reading
  */
@@ -3906,7 +3908,7 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 			*opt = next_keyword_or_option(opt_list, count_opt_list);
 		}
 	} 
-	else if ( strstr(token, "POINTS") == token) 
+	else if ( strstr(token, "points") == token) 
 	{
 /*
  *   read points for interpolation
@@ -3919,10 +3921,18 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 		char str[1000];
 		lines.getline(str, 1000);
 
-		// read points
+		// read points into property Data_source
 		p->data_source->Set_columns( Read_points(lines, p->data_source->Get_points()) );
+		if ( p->data_source->Get_points().size() <= 0 || p->data_source->Get_columns() != 4)
+		{
+			input_error++;
+			char estring[MAX_LENGTH];
+			sprintf(estring, "Expected rows of x, y, z, value for property in input file.");
+			error_msg(estring, CONTINUE);
+		}
+
 	}
-	else if ( strstr(token, "XYZ") == token) 
+	else if ( strstr(token, "xyz") == token) 
 	{
 /*
  *   read from file for interpolation
@@ -3932,6 +3942,20 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 		str.append(next_char);
 		std::istringstream lines(str);
 		p->data_source->Read(lines, false);
+		XYZfile xyz(p->data_source->Get_file_name());
+
+		// Data source has list of points
+		p->data_source->Set_points(xyz.Get_points(-1));
+		p->data_source->Set_columns(xyz.Get_columns());
+		if (p->data_source->Get_points().size() <= 0 || p->data_source->Get_columns() != 4)
+		{
+			input_error++;
+			char estring[MAX_LENGTH];
+			sprintf(estring, "Expected rows of x, y, z, value for property in file %s.", p->data_source->Get_file_name().c_str());
+			error_msg(estring, CONTINUE);
+		}
+
+	    *opt = next_keyword_or_option(opt_list, count_opt_list);
 
 	} else if ( token[0] == 'X' || token[0] == 'x') {
 /*

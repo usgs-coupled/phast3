@@ -14,9 +14,12 @@ public:
   int Nearest(Point pt);
   int Nearest(point pt);
 
+  double Interpolate3d(Point pt);
+
 
   // Data
   kdtree2 *tree;
+  std::vector<double> v;
   static std::list<KDtree*> KDtreeList;
 };
 void Clear_KDtreeList(void);

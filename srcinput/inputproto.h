@@ -44,11 +44,11 @@ int distribute_property_to_elements(struct index_range *range_ptr,
 				 size_t offset, size_t offset_defined,
 				    int integer);
 int double_compare (const void *ptr1, const void *ptr2);
-int get_double_property_value(struct cell *cell_ptr, struct property *property_ptr, 
+int get_double_property_for_cell(struct cell *cell_ptr, struct property *property_ptr, 
 		       int node_sequence, double *value);
-int get_integer_property_value_mix(struct cell *cell_ptr, struct property *property_ptr, 
+int get_mix_property_for_cell(struct cell *cell_ptr, struct property *property_ptr, 
 				   int node_sequence, struct mix *mix_ptr);
-int get_property_value_element(struct cell *cell_ptr, struct property *property_ptr, 
+int get_property_for_element(struct cell *cell_ptr, struct property *property_ptr, 
 		       int node_sequence, double *value, int *integer_value);
 Cell_Face guess_face(std::list<int> & list_of_numbers, struct zone *zone_ptr);
 int ijk_to_n(int i, int j, int k);

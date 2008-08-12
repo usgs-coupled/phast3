@@ -24,6 +24,7 @@ Data_source::Data_source(void)
   this->Init();
   this->filedata = NULL;
   this->tree = NULL;
+  this->tree3d = NULL;
 }
 Data_source::~Data_source(void)
 {
@@ -46,6 +47,7 @@ Data_source::Data_source(const Data_source& r)
 {
   // lazy initialization
   this->tree = NULL;
+  this->tree3d = NULL;
 }
 Data_source& Data_source::operator=(const Data_source& rhs)
 {
@@ -494,16 +496,15 @@ void Data_source::Set_bounding_box(void)
   this->box.x2 = max.x();
   this->box.y2 = max.y();
   this->box.z2 = max.z();
-#ifdef SKIP
-  Point min(this->pts.begin(), this->pts.end(), Point::MIN); 
-  Point max(this->pts.begin(), this->pts.end(), Point::MAX); 
-  this->box.x1 = min.x();
-  this->box.y1 = min.y();
-  this->box.z1 = min.z();
-  this->box.x2 = max.x();
-  this->box.y2 = max.y();
-  this->box.z2 = max.z();
-#endif
+}
+void Data_source::Set_points(std::vector<Point> in_pts)
+{
+	this->pts.clear();
+	std::vector<Point>::iterator it;
+	for (it = in_pts.begin(); it != in_pts.end(); it++)
+	{
+		this->pts.push_back(*it);
+	}
 }
 double Data_source::Interpolate(const Point& p)
 {
@@ -530,6 +531,7 @@ double Data_source::Interpolate(const Point& p)
   }
   return(-999.);
 }
+
 std::ostream& operator<< (std::ostream &os, const Data_source &ds)
 {
   switch (ds.source_type)

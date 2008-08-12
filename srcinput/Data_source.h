@@ -8,6 +8,7 @@
 #include "PHST_polygon.h"
 #include "unit_impl.h"
 #include "Polygon_tree.h"
+#include "KDtree/KDtree.h"
 class Filedata;
 class Point;
 struct zone;
@@ -58,6 +59,7 @@ public:
   struct cunit *           Get_h_units            (void) {return &this->h_units;};
   struct cunit *           Get_v_units            (void) {return &this->v_units;};
   Polygon_tree *           Get_tree               (void);
+  KDtree *                 Get_tree3d             (void);
   std::string              Get_file_name          (void)const {return this->file_name;};
   Filedata *               Get_filedata           (void)const {return this->filedata;};
   int                      Get_columns            (void)const {return this->columns;};
@@ -68,6 +70,7 @@ public:
   void                     Set_file_name          (std::string fn);
   void                     Set_attribute          (int a) {this->attribute = a;};
   void                     Set_columns            (int i) {this->columns = i;};
+  void                     Set_points             (std::vector<Point> pts);
   Data_source &            operator=              (const Data_source& r);
 
   friend std::ostream& operator<< (std::ostream &os, const Data_source &ds);
@@ -85,11 +88,23 @@ protected:
   NNInterpolator *   nni;
   struct cunit       h_units;
   struct cunit       v_units;
-
+  KDtree *           tree3d;
   int                attribute;
   struct zone        box;
 };
 
+inline KDtree * Data_source::Get_tree3d(void)
+{
+	if (!this->tree3d)
+	{
+		// Use points to make 3D tree
+		this->tree3d = new KDtree(this->Get_points());
+
+		// No longer need points
+		this->pts.clear();
+	}
+	return this->tree3d;
+}
 inline Polygon_tree * Data_source::Get_tree(void)
 {
   if (!this->tree)
