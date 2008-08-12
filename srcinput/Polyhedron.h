@@ -3,6 +3,7 @@
 
 #include <vector>   // std::vector
 #include <list>     // std::list
+#include <string>
 #include "Point.h"
 #include "zone.h"
 #include "Cell_Face.h"

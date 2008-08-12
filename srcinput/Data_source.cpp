@@ -128,26 +128,16 @@ bool Data_source::Read(std::istream &lines, bool read_num)
 	case 1:
 		this->source_type = Data_source::POINTS;
 		{
-#ifdef SKIP
-			i = 0;
-			Point p;
-			double *coord = p.get_coord();
-			while (lines >> coord[i%3])
-			{
-				if (i%3 == 2) {
-					p.set_v(p.z());
-					this->pts.push_back(p);
-				}
-				i++;
-			}
-#endif
-			int columns = Read_points(lines, this->pts);
+			this->columns = Read_points(lines, this->pts);
 
 			// for prism set v = z
-			std::vector<Point>::iterator it;
-			for (it = this->pts.begin(); it != this->pts.end(); it++)
+			if (this->columns < 4)
 			{
-				it->set_v(it->z());
+			  std::vector<Point>::iterator it;
+			  for (it = this->pts.begin(); it != this->pts.end(); it++)
+			  {
+			    it->set_v(it->z());
+			  }
 			}
 		}
 		if (this->pts.size() < 3)
@@ -588,4 +578,4 @@ void Data_source::Set_file_name(std::string fn)
 	}
 	assert(fn.size());
 	this->file_name = fn;
-};
+}
