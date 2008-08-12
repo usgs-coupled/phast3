@@ -94,14 +94,14 @@ typedef enum { PT_MIX, PT_DOUBLE, PT_INTEGER } property_type;
 //#define SPECIFIED 8
 //#define FLUX 9
 //#define LEAKY 10
-#define LINEAR 11
+//#define LINEAR 11
 #define FIXED 12
 #define ASSOCIATED 13
 #define ITERATIVE 14
 #define DIRECT 15
 #define STEP 16
 #define UNITS 17
-#define MIXTURE 18
+//#define MIXTURE 18
 #define DONE 19
 /* ic_type: UNDEFINED, ZONE, WATER_TABLE */
 /* bc_type: UNDEFINED, SPECIFIED, FLUX, LEAKY */

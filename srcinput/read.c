@@ -3893,7 +3893,7 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
  */
 		sscanf(token,"%lf", &(p->v[0]));
 		j = copy_token(token, &next_char, &l);
-		p->type = FIXED;
+		p->type = PROP_FIXED;
 		p->count_v = 1;
 		if (j != EMPTY) {
 			input_error++;
@@ -3906,24 +3906,39 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 			*opt = next_keyword_or_option(opt_list, count_opt_list);
 		}
 	} 
+	else if ( strstr(token, "POINTS") == token) 
+	{
+/*
+ *   read points for interpolation
+ */
+		p->type = PROP_POINTS;
+		std::istringstream lines;
+		*opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
+
+		// remove initial line
+		char str[1000];
+		lines.getline(str, 1000);
+
+		// read points
+		p->data_source->Set_columns( Read_points(lines, p->data_source->Get_points()) );
+	}
 	else if ( strstr(token, "XYZ") == token) 
 	{
 /*
  *   read from file for interpolation
  */
+		p->type = PROP_XYZ;
 		std::string str("XYZ ");
 		str.append(next_char);
 		std::istringstream lines(str);
-		Data_source ds;
-		ds.Read(lines, false);
+		p->data_source->Read(lines, false);
 
-		//p->type = INTERPOLATE_3D;
 	} else if ( token[0] == 'X' || token[0] == 'x') {
 /*
  *   linear in x
  */
 		p->coord = 'x';
-		p->type = LINEAR;
+		p->type = PROP_LINEAR;
 		p->count_v = 2;
 		if (sscanf(next_char,"%lf%lf%lf%lf", &p->v[0], &p->dist1, &p->v[1], &p->dist2) != 4) {
 			input_error++;
@@ -3949,7 +3964,7 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
  *   linear in y
  */
 		p->coord = 'y';
-		p->type = LINEAR;
+		p->type = PROP_LINEAR;
 		p->count_v = 2;
 		if (sscanf(next_char,"%lf%lf%lf%lf", &p->v[0], &p->dist1, &p->v[1], &p->dist2) != 4) {
 			input_error++;
@@ -3975,7 +3990,7 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
  *   linear in z
  */
 		p->coord = 'z';
-		p->type = LINEAR;
+		p->type = PROP_LINEAR;
 		p->count_v = 2;
 		if (sscanf(next_char,"%lf%lf%lf%lf", &p->v[0], &p->dist1, &p->v[1], &p->dist2) != 4) {
 			input_error++;
@@ -4007,7 +4022,7 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 			j = read_lines_doubles_delimited(next_char, &(p->v), &(p->count_v), 
 				       &(p->count_alloc), opt_list, count_opt_list, opt);
 		}
-		p->type = ZONE;
+		p->type = PROP_ZONE;
 
 		if (j == ERROR) {
 			property_free(p);
@@ -4033,7 +4048,7 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 			p->v = (double *) malloc(sizeof(double));
 			p->v[0] = -100 - j;
 			p->count_v = 1;
-			p->type = FIXED;
+			p->type = PROP_FIXED;
 		} else {
 			property_free(p);
 			p = NULL;
@@ -4051,7 +4066,7 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
  */
 		j = read_file_doubles(next_char, &(p->v), &(p->count_v), 
 				       &(p->count_alloc));
-		p->type = ZONE;
+		p->type = PROP_ZONE;
 		if (j == ERROR) {
 			property_free(p);
 			*opt = next_keyword_or_option(opt_list, count_opt_list);
@@ -4066,7 +4081,7 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 /*
  *   Mixture
  */
-		p->type = MIXTURE;
+		p->type = PROP_MIXTURE;
 		if (sscanf(next_char,"%lf%lf", &p->v[0], &p->v[1]) != 2) {
 			input_error++;
 			error_msg("Expected: two values for mixture definition", CONTINUE);

@@ -60,14 +60,14 @@ public:
   Polygon_tree *           Get_tree               (void);
   std::string              Get_file_name          (void)const {return this->file_name;};
   Filedata *               Get_filedata           (void)const {return this->filedata;};
-
+  int                      Get_columns            (void)const {return this->columns;};
   // Setter
   void                     Set_source_type        (DATA_SOURCE_TYPE dt) {this->source_type = dt;};
   void                     Set_bounding_box       (void);
   void                     Set_defined            (bool tf) {this->defined = tf;};
   void                     Set_file_name          (std::string fn);
   void                     Set_attribute          (int a) {this->attribute = a;};
-
+  void                     Set_columns            (int i) {this->columns = i;};
   Data_source &            operator=              (const Data_source& r);
 
   friend std::ostream& operator<< (std::ostream &os, const Data_source &ds);
@@ -79,6 +79,7 @@ protected:
   DATA_SOURCE_TYPE   source_type;
   Filedata *         filedata;
   std::vector<Point> pts;
+  int                columns;
   PHST_polygon       phst_polygons;
   Polygon_tree       *tree;
   NNInterpolator *   nni;

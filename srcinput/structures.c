@@ -1,5 +1,6 @@
 #define EXTERNAL extern
 #include "hstinpt.h"
+#include "Data_source.h"
 #include <stddef.h>
 static char const svnid[] = "$Id$";
 
@@ -531,11 +532,12 @@ struct property *property_alloc(void)
 	if (property_ptr->v == NULL) malloc_error();
 	property_ptr->count_v = 0;
 	property_ptr->count_alloc = 2;
-	property_ptr->type = UNDEFINED;
+	property_ptr->type = PROP_UNDEFINED;
 	property_ptr->coord = '\000';
 	property_ptr->icoord = -1;
 	property_ptr->dist1 = -1;
 	property_ptr->dist2 = -1;
+	property_ptr->data_source = new Data_source;
 	return(property_ptr);
 }
 /* ---------------------------------------------------------------------- */
@@ -552,6 +554,7 @@ int property_free(struct property *property_ptr)
 {
 	if (property_ptr == NULL) return(OK);
 	free_check_null(property_ptr->v);
+	delete property_ptr->data_source;
 	free_check_null(property_ptr);
 
      return(OK);

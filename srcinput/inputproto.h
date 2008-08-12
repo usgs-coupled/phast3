@@ -48,8 +48,6 @@ int get_double_property_value(struct cell *cell_ptr, struct property *property_p
 		       int node_sequence, double *value);
 int get_integer_property_value_mix(struct cell *cell_ptr, struct property *property_ptr, 
 				   int node_sequence, struct mix *mix_ptr);
-int get_integer_property_value(struct cell *cell_ptr, struct property *property_ptr, 
-			       int node_sequence, double *value, int *integer_value);
 int get_property_value_element(struct cell *cell_ptr, struct property *property_ptr, 
 		       int node_sequence, double *value, int *integer_value);
 Cell_Face guess_face(std::list<int> & list_of_numbers, struct zone *zone_ptr);

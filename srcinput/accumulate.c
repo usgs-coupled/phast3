@@ -719,7 +719,7 @@ struct property *property_ptr,
 	int match_bc_type,
 	int face,
 	BC_info::BC_TYPE bc_type)
-	/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
 {
 	int n, node_sequence;
 	int *i_ptr;
@@ -727,7 +727,7 @@ struct property *property_ptr,
 	double *d_ptr;
 	struct mix *mix_ptr;
 	n = pts.size();
-	if (property_ptr->type == ZONE) {
+	if (property_ptr->type == PROP_ZONE) {
 		if (n != property_ptr->count_v) {
 			sprintf(error_string,"Zone has %d nodes,"
 				" property has %d values.", n, property_ptr->count_v);
@@ -736,7 +736,7 @@ struct property *property_ptr,
 			return(ERROR);
 		}
 	}
-	if (property_ptr->type == MIXTURE) {
+	if (property_ptr->type == PROP_MIXTURE) {
 		if (n != property_ptr->count_v - 2) {
 			sprintf(error_string,"Zone has %d nodes,"
 				" property has %d values.", n, property_ptr->count_v - 2);
@@ -745,7 +745,7 @@ struct property *property_ptr,
 			return(ERROR);
 		}
 	}
-	if (mask != NULL && mask->type == ZONE) {
+	if (mask != NULL && mask->type == PROP_ZONE) {
 		if (n != mask->count_v) {
 			sprintf(error_string,"Zone has %d nodes,"
 				" mask has %d values.", n, mask->count_v);
@@ -828,7 +828,7 @@ struct property *property_ptr,
 		input_error++;
 		return(ERROR);
 	}
-	if (property_ptr->type == ZONE) {
+	if (property_ptr->type == PROP_ZONE) {
 		if (n != property_ptr->count_v) {
 			sprintf(error_string,"Zone has %d elements,"
 				" property has %d values.", n, property_ptr->count_v);
@@ -837,13 +837,13 @@ struct property *property_ptr,
 			return(ERROR);
 		}
 	}
-	if (mask != NULL && mask->type == LINEAR) {
+	if (mask != NULL && mask->type == PROP_LINEAR) {
 		sprintf(error_string,"LINEAR property definition not allowed for mask.");
 		error_msg(error_string, CONTINUE);
 		input_error++;
 		return(ERROR);
 	}
-	if (mask != NULL && mask->type == ZONE) {
+	if (mask != NULL && mask->type == PROP_ZONE) {
 		if (n != mask->count_v) {
 			sprintf(error_string,"Zone has %d elements,"
 				" mask has %d values.", n, mask->count_v);
@@ -888,7 +888,7 @@ struct property *property_ptr,
 	}
 	return(OK);
 }
-
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 int distribute_type_to_list_of_cells(std::list<int> &pts, 
 struct property *mask,
@@ -903,7 +903,7 @@ struct property *mask,
 	double mask_value;
 	int *i_ptr;
 	n = pts.size();
-	if (mask != NULL && mask->type == ZONE) {
+	if (mask != NULL && mask->type == PROP_ZONE) {
 		if (n != mask->count_v) {
 			sprintf(error_string,"Zone has %d nodes,"
 				" mask has %d values.", n, mask->count_v);
@@ -932,19 +932,19 @@ struct property *mask,
 	}
 	return(OK);
 }
-
+#endif
 /* ---------------------------------------------------------------------- */
 int get_double_property_value(struct cell *cell_ptr, struct property *property_ptr, 
 							  int node_sequence, double *value)
-							  /* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
 {
 	double slope, b;
 	*value = 0;
-	if (property_ptr->type == UNDEFINED) {
+	if (property_ptr->type == PROP_UNDEFINED) {
 		return(ERROR);
-	} else if (property_ptr->type == FIXED) {
+	} else if (property_ptr->type == PROP_FIXED) {
 		*value = property_ptr->v[0];
-	} else if (property_ptr->type == LINEAR) {
+	} else if (property_ptr->type == PROP_LINEAR) {
 		/*
 		if ((property_ptr->dist2 - property_ptr->dist1) != 0) {
 		slope = (property_ptr->v[1] - property_ptr->v[0])/(property_ptr->dist2 - property_ptr->dist1);
@@ -966,13 +966,16 @@ int get_double_property_value(struct cell *cell_ptr, struct property *property_p
 
 		if (property_ptr->coord == 'x')
 		{
-			dist = cell_ptr->elt_x;
+			//dist = cell_ptr->elt_x;
+			dist = cell_ptr->x;
 		}
 		if (property_ptr->coord == 'y') {
-			dist = cell_ptr->elt_y;
+			//dist = cell_ptr->elt_y;
+			dist = cell_ptr->y;
 		}
 		if (property_ptr->coord == 'z') {
-			dist = cell_ptr->elt_z;
+			//dist = cell_ptr->elt_z;
+			dist = cell_ptr->z;
 		}
 		if (dist <= property_ptr->dist1)
 		{
@@ -993,14 +996,14 @@ int get_double_property_value(struct cell *cell_ptr, struct property *property_p
 			b = property_ptr->v[0] - slope * property_ptr->dist1;
 			*value = dist * slope + b;
 		}
-	} else if (property_ptr->type == ZONE) {
+	} else if (property_ptr->type == PROP_ZONE) {
 
 		if( node_sequence >= property_ptr->count_v) {
 			error_msg("OOPS in get_property_value", CONTINUE);
 			return(ERROR);
 		}
 		*value = property_ptr->v[node_sequence];
-	} else if (property_ptr->type == MIXTURE) {
+	} else if (property_ptr->type == PROP_MIXTURE) {
 		input_error++;
 		error_msg("MIXTURE option not allowed for this property", CONTINUE);
 		return(ERROR);
@@ -1011,15 +1014,15 @@ int get_double_property_value(struct cell *cell_ptr, struct property *property_p
 /* ---------------------------------------------------------------------- */
 int get_integer_property_value_mix(struct cell *cell_ptr, struct property *property_ptr, 
 								   int node_sequence, struct mix *mix_ptr)
-								   /* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
 {
-	if (property_ptr->type == UNDEFINED) {
+	if (property_ptr->type == PROP_UNDEFINED) {
 		return(ERROR);
-	} else if (property_ptr->type == FIXED) {
+	} else if (property_ptr->type == PROP_FIXED) {
 		mix_ptr->i1 = (int) floor(property_ptr->v[0] + 1e-8);
 		mix_ptr->i2 = -1;
 		mix_ptr->f1 = 1.0;
-	} else if (property_ptr->type == LINEAR) {
+	} else if (property_ptr->type == PROP_LINEAR) {
 		mix_ptr->i1 = (int) floor(property_ptr->v[0] + 1e-8);
 		mix_ptr->i2 = (int) floor(property_ptr->v[1] + 1e-8);
 		if ((property_ptr->dist2 - property_ptr->dist1) == 0) {
@@ -1037,7 +1040,7 @@ int get_integer_property_value_mix(struct cell *cell_ptr, struct property *prope
 			if (mix_ptr->f1 > 1) mix_ptr->f1 = 1;
 			if (mix_ptr->f1 < 0) mix_ptr->f1 = 0;
 		}
-	} else if (property_ptr->type == ZONE) {
+	} else if (property_ptr->type == PROP_ZONE) {
 
 		if( node_sequence >= property_ptr->count_v) {
 			error_msg("OOPS in get_property_value", CONTINUE);
@@ -1046,65 +1049,27 @@ int get_integer_property_value_mix(struct cell *cell_ptr, struct property *prope
 		mix_ptr->i1 = (int) (floor(property_ptr->v[node_sequence] + 1e-8));
 		mix_ptr->i2 = -1;
 		mix_ptr->f1 = 1.0;
-	} else if (property_ptr->type == MIXTURE) {
+	} else if (property_ptr->type == PROP_MIXTURE) {
 		mix_ptr->i1 = (int) floor(property_ptr->v[0] + 1e-8);
 		mix_ptr->i2 = (int) floor(property_ptr->v[1] + 1e-8);
 		mix_ptr->f1 = property_ptr->v[node_sequence + 2];
 	} 
 	return(OK);
 }
-/* ---------------------------------------------------------------------- */
-int get_integer_property_value(struct cell *cell_ptr, struct property *property_ptr, 
-							   int node_sequence, double *value, int *integer_value)
-							   /* ---------------------------------------------------------------------- */
-{
-	double slope, b;
-	*value = 0;
-	*integer_value = 0;
-	if (property_ptr->type == UNDEFINED) {
-		return(ERROR);
-	} else if (property_ptr->type == FIXED) {
-		*value = property_ptr->v[0];
-	} else if (property_ptr->type == LINEAR) {
-		slope = (property_ptr->v[1] - property_ptr->v[0])/(property_ptr->dist2 - property_ptr->dist1);
-		b = property_ptr->v[0] - slope * property_ptr->dist1;
-		if (property_ptr->coord == 'x') {
-			*value = cell_ptr->x * slope + b;
-		}
-		if (property_ptr->coord == 'y') {
-			*value = cell_ptr->y * slope + b;
-		}
-		if (property_ptr->coord == 'z') {
-			*value = cell_ptr->z * slope + b;
-		}
-	} else if (property_ptr->type == ZONE) {
 
-		if( node_sequence >= property_ptr->count_v) {
-			error_msg("OOPS in get_property_value", CONTINUE);
-			return(ERROR);
-		}
-		*value = property_ptr->v[node_sequence];
-	} else if (property_ptr->type == MIXTURE) {
-		input_error++;
-		error_msg("MIXTURE option not allowed for this property", CONTINUE);
-		return(ERROR);
-	}
-	*integer_value = (int) floor(*value + 1e-8);
-	return(OK);
-}
 /* ---------------------------------------------------------------------- */
 int get_property_value_element(struct cell *cell_ptr, struct property *property_ptr, 
 							   int node_sequence, double *value, int *integer_value)
-							   /* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
 {
 	double slope, b;
 	*value = 0;
 	*integer_value = 0;
-	if (property_ptr->type == UNDEFINED) {
+	if (property_ptr->type == PROP_UNDEFINED) {
 		return(ERROR);
-	} else if (property_ptr->type == FIXED) {
+	} else if (property_ptr->type == PROP_FIXED) {
 		*value = property_ptr->v[0];
-	} else if (property_ptr->type == LINEAR) 
+	} else if (property_ptr->type == PROP_LINEAR) 
 	{
 		double dist;
 
@@ -1137,14 +1102,14 @@ int get_property_value_element(struct cell *cell_ptr, struct property *property_
 			b = property_ptr->v[0] - slope * property_ptr->dist1;
 			*value = dist * slope + b;
 		}
-	} else if (property_ptr->type == ZONE) {
+	} else if (property_ptr->type == PROP_ZONE) {
 
 		if( node_sequence >= property_ptr->count_v) {
 			error_msg("OOPS in get_property_value", CONTINUE);
 			return(ERROR);
 		}
 		*value = property_ptr->v[node_sequence];
-	} else if (property_ptr->type == MIXTURE) {
+	} else if (property_ptr->type == PROP_MIXTURE) {
 		input_error++;
 		error_msg("MIXTURE option not allowed for this property", CONTINUE);
 		return(ERROR);
@@ -2527,6 +2492,7 @@ void faces_intersect_polyhedron(int i, std::list<int> & list_of_numbers, Cell_Fa
 	}
 	return;
 }
+/* ---------------------------------------------------------------------- */
 bool get_property_for_cell(
 						int ncells,                      // number of point in zone
 						int n,                           // cell_number
@@ -2543,7 +2509,7 @@ bool get_property_for_cell(
 	double value, mask_value;
 
 	// n = pts.size();
-	if (property_ptr->type == ZONE) {
+	if (property_ptr->type == PROP_ZONE) {
 		if (ncells != property_ptr->count_v) {
 			sprintf(error_string,"Zone has %d nodes,"
 				" property has %d values.", n, property_ptr->count_v);
@@ -2552,7 +2518,7 @@ bool get_property_for_cell(
 			return(false);
 		}
 	}
-	if (property_ptr->type == MIXTURE) {
+	if (property_ptr->type == PROP_MIXTURE) {
 		if (ncells != property_ptr->count_v - 2) {
 			sprintf(error_string,"Zone has %d nodes,"
 				" property has %d values.", n, property_ptr->count_v - 2);
@@ -2561,7 +2527,7 @@ bool get_property_for_cell(
 			return(false);
 		}
 	}
-	if (mask != NULL && mask->type == ZONE) {
+	if (mask != NULL && mask->type == PROP_ZONE) {
 		if (ncells != mask->count_v) {
 			sprintf(error_string,"Zone has %d nodes,"
 				" mask has %d values.", n, mask->count_v);
