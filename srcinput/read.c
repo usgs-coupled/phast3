@@ -3947,6 +3947,7 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 		// Data source has list of points
 		p->data_source->Set_points(xyz.Get_points(-1));
 		p->data_source->Set_columns(xyz.Get_columns());
+		p->data_source->Set_source_type(Data_source::POINTS);
 		if (p->data_source->Get_points().size() <= 0 || p->data_source->Get_columns() != 4)
 		{
 			input_error++;

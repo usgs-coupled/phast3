@@ -10,13 +10,16 @@ using namespace boost;
 
 // static
 std::list<KDtree*> KDtree::KDtreeList;
-
-KDtree::KDtree(std::vector<Point> &pts)
+KDtree::KDtree(const KDtree &t)
+:realdata(t.realdata)
+,v(t.v)
 {
-	//array2ddouble data(extents[10][3]);  // declare a 10000 x 3 array.
+	this->tree = new kdtree2(this->realdata, true);
+}
+KDtree::KDtree(std::vector<Point> &pts)
+:realdata(extents[pts.size()][3])
+{
 	int n = pts.size();
-	int dim = 3;
-	multi_array<double,2>  realdata(extents[n][dim]);
 	int i, j;
 	for (i = 0; i < n; i++)
 	{
@@ -26,12 +29,11 @@ KDtree::KDtree(std::vector<Point> &pts)
 			realdata[i][j] = pts[i].get_coord()[j];
 		}
 	}
-	this->tree = new kdtree2(realdata,true);
+	this->tree = new kdtree2(this->realdata,true);
 }
 KDtree::KDtree(point *pts, size_t count)
+:realdata(extents[count][3])
 {
-  size_t dim = 3;
-  multi_array<double,2>  realdata(extents[count][dim]);
   size_t i;
   for (i = 0; i < count; i++)
   {
@@ -39,7 +41,17 @@ KDtree::KDtree(point *pts, size_t count)
     realdata[i][1] = pts[i].y;
     realdata[i][2] = pts[i].z;
   }
-  this->tree = new kdtree2(realdata,true);
+  this->tree = new kdtree2(this->realdata,true);
+}
+KDtree& KDtree::operator=(const KDtree& rhs)
+{
+  if (this != &rhs)
+  {
+	  this->v = rhs.v;
+	  this->realdata = rhs.realdata;
+	  this->tree = new kdtree2(this->realdata,true);
+  }
+  return *this;
 }
 int KDtree::Nearest(Point pt)
 {

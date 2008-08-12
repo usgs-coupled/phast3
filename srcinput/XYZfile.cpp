@@ -27,6 +27,8 @@ XYZfile::XYZfile(std::string filename)
 		estring << "Could not open file " << filename.c_str() << std::endl;
 		error_msg(estring.str().c_str(), EA_STOP);
 	}
+	std::vector<Point> temp_pts;
+	this->Get_pts_map()[-1] = temp_pts;
 	this->columns = Read_points(input, this->Get_points(-1));
   // Set bounding box
   //this->Set_bounding_box();

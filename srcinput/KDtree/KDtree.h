@@ -8,8 +8,11 @@ class KDtree
 {
 public:
   ~KDtree();
+  KDtree(const KDtree &t);
   KDtree(std::vector<Point> &pts);
   KDtree(point *pts, size_t count);
+
+  KDtree& operator=(const KDtree& rhs);
 
   int Nearest(Point pt);
   int Nearest(point pt);
@@ -20,6 +23,8 @@ public:
   // Data
   kdtree2 *tree;
   std::vector<double> v;
+  multi_array<double,2>  realdata;
+
   static std::list<KDtree*> KDtreeList;
 };
 void Clear_KDtreeList(void);

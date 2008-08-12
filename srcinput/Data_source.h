@@ -82,13 +82,13 @@ protected:
   DATA_SOURCE_TYPE   source_type;
   Filedata *         filedata;
   std::vector<Point> pts;
-  int                columns;
   PHST_polygon       phst_polygons;
   Polygon_tree       *tree;
   NNInterpolator *   nni;
   struct cunit       h_units;
   struct cunit       v_units;
   KDtree *           tree3d;
+  int                columns;
   int                attribute;
   struct zone        box;
 };

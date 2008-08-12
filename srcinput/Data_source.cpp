@@ -30,6 +30,7 @@ Data_source::~Data_source(void)
 {
   // this->nni cleaned up in main Clear_NNInterpolatorList()
   if (this->tree != NULL) delete this->tree;
+  delete this->tree3d;
   this->pts.clear();
 }
 Data_source::Data_source(const Data_source& r)
@@ -42,6 +43,7 @@ Data_source::Data_source(const Data_source& r)
 ,nni(r.nni)
 ,h_units(r.h_units)
 ,v_units(r.v_units)
+,columns(r.columns)
 ,attribute(r.attribute)
 ,box(r.box)
 {
@@ -63,6 +65,8 @@ Data_source& Data_source::operator=(const Data_source& rhs)
     this->nni           = rhs.nni;
     this->h_units       = rhs.h_units;
     this->v_units       = rhs.v_units;
+	this->tree3d        = NULL;       // lazy initialization
+    this->columns       = rhs.columns;
     this->attribute     = rhs.attribute;
     this->box           = rhs.box;
   }
@@ -79,6 +83,9 @@ void Data_source::Init()
   this->nni = NULL;
   this->h_units = cunit("m");
   this->v_units = cunit("m");
+  this->columns = 0;
+  this->tree = NULL;
+  this->tree3d = NULL;
 }
 bool Data_source::Read(std::istream &lines, bool read_num)
 {
