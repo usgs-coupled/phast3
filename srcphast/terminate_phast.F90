@@ -4,7 +4,7 @@ SUBROUTINE terminate_phast(mpi_myself)
   USE f_units, ONLY: fuich
   USE machine_constants, ONLY: kdp
   USE mcb, ONLY: ibc
-  USE mcc, ONLY: iprint_chem, iprint_xyz, prslmi, prtichead
+  USE mcc, ONLY: iprint_chem, iprint_xyz, prslmi, prtichead, oldstyle_head_file
   USE mcch, ONLY: f3name
   USE mcg, ONLY: nxyz, nxy
   USE mcn, ONLY: x_node, y_node, z_node, z
@@ -45,19 +45,30 @@ SUBROUTINE terminate_phast(mpi_myself)
         IF (ios > 0) THEN
            WRITE(*,*) 'ERROR: Error opening file ', fname, '. File not written.'
         ELSE
-           DO m=1,nxyz
-              IF(ibc(m) == -1) THEN
-                 hdprnt(m) = 0._kdp
-              ELSE
-                 imod = MOD(m,nxy)
-                 k = (m-imod)/nxy + MIN(1,imod)
-                 hdprnt(m)=z(k)+p(m)/(den0*gz)
-              ENDIF
-           END DO
-           WRITE(fuich,5304) (cnvli*hdprnt(m),m=1,nxyz)
-5304       FORMAT(10(f10.3))
-        ENDIF
-     ENDIF
-  ENDIF
+            IF (oldstyle_head_file == .true.) THEN        
+                DO m=1,nxyz
+                    IF(ibc(m) == -1) THEN
+                        hdprnt(m) = 0._kdp
+                    ELSE
+                        imod = MOD(m,nxy)
+                        k = (m-imod)/nxy + MIN(1,imod)
+                        hdprnt(m)=z(k)+p(m)/(den0*gz)
+                    ENDIF
+                END DO
+                WRITE(fuich,5304) (cnvli*hdprnt(m),m=1,nxyz)
+5304            FORMAT(10(f10.3))
+            ELSE
+                ! x, y, z, head
+                DO m=1,nxyz
+                    IF(ibc(m) /= -1) THEN
+                        imod = MOD(m,nxy)
+                        k = (m-imod)/nxy + MIN(1,imod)
+                        write(fuich,"(4e20.12)") x_node(m), y_node(m), z_node(m), z_node(m)+p(m)/(den0*gz)
+                    ENDIF
+                END DO
+            ENDIF
+        ENDIF 
+    ENDIF
+  ENDIF  
   CALL closef(mpi_myself)
 END SUBROUTINE terminate_phast

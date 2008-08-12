@@ -122,6 +122,7 @@ MODULE mcc
   LOGICAL :: autots, chkptd, cntmaph, cntmapc, crosd, cylind, eeunit, gausel, heat, milu,  &
        savldo, &
        scalmf, solute, tsfail, vecmap
+  LOGICAL :: oldstyle_head_file=.false.
   LOGICAL :: prslm=.false., prkd=.false., prp=.false., prc=.false., prcphrq=.false., &
        prf_chem_phrq=.false., prvel=.false., prgfb=.false., prbcf=.false., prwel=.false.,  &
        prhdfh=.false., prhdfv=.false., prhdfc=.false., prmapc=.false., prmaph=.false., &
