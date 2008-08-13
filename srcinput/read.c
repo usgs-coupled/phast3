@@ -877,19 +877,19 @@ double *read_list_doubles(char **ptr, int *count_doubles )
 int read_grid(void)
 /* ---------------------------------------------------------------------- */
 {
-/*
- *      Reads grid data
- *
- *      Arguments:
- *         none
- *
- *      Returns:
- *         KEYWORD if keyword encountered, input_error may be incremented if
- *                    a keyword is encountered in an unexpected position
- *         EOF     if eof encountered while reading mass balance concentrations
- *         ERROR   if error occurred reading data
- *
- */
+	/*
+	*      Reads grid data
+	*
+	*      Arguments:
+	*         none
+	*
+	*      Returns:
+	*         KEYWORD if keyword encountered, input_error may be incremented if
+	*                    a keyword is encountered in an unexpected position
+	*         EOF     if eof encountered while reading mass balance concentrations
+	*         ERROR   if error occurred reading data
+	*
+	*/
 	int i, j = -1, l;
 	int count, count_doubles;
 	double *temp;
@@ -908,12 +908,14 @@ int read_grid(void)
 		"print_orientation",     /* 5 */
 		"overlay_uniform",       /* 6 */
 		"overlay_nonuniform",    /* 7 */
-		"snap"                   /* 8 */
+		"snap",                  /* 8 */
+		"grid_origin",           /* 9 */
+		"grid_angle"             /* 10 */
 	};
-	int count_opt_list = 9;
-/*
- *   Read grid data
- */
+	int count_opt_list = 11;
+	/*
+	*   Read grid data
+	*/
 	return_value = UNKNOWN;
 	opt_save = OPTION_ERROR;
 	for (;;) {
@@ -922,318 +924,334 @@ int read_grid(void)
 			opt = opt_save;
 		}
 		switch (opt) {
-		    case OPTION_EOF:                /* end of file */
-			return_value = EOF;
-			break;
-		    case OPTION_KEYWORD:           /* keyword */
-			return_value = KEYWORD;
-			break;
-		    case OPTION_ERROR:
-			error_msg("Expected an identifier for the GRID keyword", CONTINUE);
-			error_msg(line_save, CONTINUE);
-			input_error++;
-			break;
-		    case 0:                       /* uniform spacing */
-			/* read direction */
-			i = copy_token(token, &next_char, &l);
-			if (i == EMPTY) {
-				error_msg("Expected a coordinate direction, x, y, or z.", CONTINUE);
+			case OPTION_EOF:                /* end of file */
+				return_value = EOF;
+				break;
+			case OPTION_KEYWORD:           /* keyword */
+				return_value = KEYWORD;
+				break;
+			case OPTION_ERROR:
+				error_msg("Expected an identifier for the GRID keyword", CONTINUE);
 				error_msg(line_save, CONTINUE);
 				input_error++;
 				break;
-			}
-			str_tolower(token);
-			if (token[0] == 'x') {
-				j = 0;
-			} else if (token[0] == 'y') {
-				j = 1;
-			} else if (token[0] == 'z') {
-				j = 2;
-			} else {
-				error_msg("Expected a coordinate direction, x, y, or z.", CONTINUE);
-				error_msg(line_save, CONTINUE);
-				input_error++;
-				break;
-			}
-
-			/* set uniform */
-			grid[j].uniform = TRUE;
-
-			ptr = next_char;
-			if (copy_token(token, &ptr, &l) == EMPTY) {
-				grid_ptr = &grid[j];
-				opt_save = OPTION_DEFAULT2;
-				break;
-			} else {
-				if (sscanf(next_char, "%lf%lf%d", &(grid[j].coord[0]), 
-					   &(grid[j].coord[1]),
-					   &(grid[j].count_coord)) != 3) {
-					sprintf(error_string,"Expected two coordinate values and the number of nodes for %c grid information.", grid[j].c);
-					error_msg(error_string, CONTINUE);
+			case 0:                       /* uniform spacing */
+				/* read direction */
+				i = copy_token(token, &next_char, &l);
+				if (i == EMPTY) {
+					error_msg("Expected a coordinate direction, x, y, or z.", CONTINUE);
 					error_msg(line_save, CONTINUE);
 					input_error++;
+					break;
 				}
-			}
-			opt_save = OPTION_ERROR;
-			break;
-		    case 1:                       /* nonuniform */
-		    case 2:                       /* non_uniform */
-			/* read direction */
-			i = copy_token(token, &next_char, &l);
-			if (i == EMPTY) {
-				error_msg("Expected a coordinate direction, x, y, or z.", CONTINUE);
-				error_msg(line_save, CONTINUE);
-				input_error++;
-				break;
-			}
-			str_tolower(token);
-			if (token[0] == 'x') {
-				j = 0;
-			} else if (token[0] == 'y') {
-				j = 1;
-			} else if (token[0] == 'z') {
-				j = 2;
-			} else {
-				error_msg("Expected a coordinate direction, x, y, or z.", CONTINUE);
-				error_msg(line_save, CONTINUE);
-				input_error++;
-				break;
-			}
-
-			/* set nonuniform */
-			grid[j].uniform = FALSE;
-			ptr=next_char;
-			temp = read_list_doubles(&ptr, &count_doubles);
-			grid_ptr = &grid[j];
-			if (temp == NULL) {
-				break;
-			}
-			if (count_doubles > 0) {
-				count = grid[j].count_coord;
-				grid[j].coord = (double *) realloc ( grid[j].coord, (size_t) (count +count_doubles + 1) * sizeof(double));
-				if (grid[j].coord == NULL) malloc_error();
-				memcpy(&(grid[j].coord[count]),
-					 temp,
-					 (size_t) count_doubles * sizeof(double));
-				grid[j].count_coord += count_doubles;
-			}
-			free_check_null(temp);
-			opt_save = OPTION_DEFAULT;
-			break;
-		    case 3:                       /* chemistry_dimensions */
-		    case 4:                       /* transport_dimensions */
-			for (j = 0; j < 3; j++) {
-				axes[j] = FALSE;
-			}
-			while ((j = copy_token(token, &next_char, &l)) != EMPTY) {
 				str_tolower(token);
-				if (strstr(token, "x") != NULL) axes[0] = TRUE;
-				if (strstr(token, "y") != NULL) axes[1] = TRUE;
-				if (strstr(token, "z") != NULL) axes[2] = TRUE;
-			}
-			opt_save = OPTION_ERROR;
-			break;
-		    case 5:                       /* print_orientation */
-			/* read coordinate directions */
-			i = copy_token(token, &next_char, &l);
-			if (i == EMPTY) {
-				error_msg("Expected coordinate directions, xy or xz.", CONTINUE);
-				error_msg(line_save, CONTINUE);
-				input_error++;
-				break;
-			}
-			str_tolower(token);
-			if (strcmp(token,"xy") == 0) {
-				print_input_xy = TRUE;
-			} else if (strcmp(token,"xz") == 0) {
-				print_input_xy = FALSE;
-			} else {
-				error_msg("Expected coordinate directions, xy or xz.", CONTINUE);
-				error_msg(line_save, CONTINUE);
-				input_error++;
-				break;
-			}
-			opt_save = OPTION_ERROR;
-			break;
-		    case 6:                       /* overlay_uniform */
-			/* read direction */
-			i = copy_token(token, &next_char, &l);
-			if (i == EMPTY) {
-				error_msg("Expected a coordinate direction, x, y, or z.", CONTINUE);
-				error_msg(line_save, CONTINUE);
-				input_error++;
-				break;
-			}
-			str_tolower(token);
-			if (token[0] == 'x') {
-				j = 0;
-			} else if (token[0] == 'y') {
-				j = 1;
-			} else if (token[0] == 'z') {
-				j = 2;
-			} else {
-				error_msg("Expected a coordinate direction, x, y, or z.", CONTINUE);
-				error_msg(line_save, CONTINUE);
-				input_error++;
-				break;
-			}
-			/*
-			 * malloc_space
-			 */
-			i = count_grid_overlay++;
-			grid_overlay = (struct grid *) realloc (grid_overlay, (size_t) count_grid_overlay * sizeof(struct grid));
-			if (grid_overlay == NULL) malloc_error();
-			grid_overlay[i].coord = (double *) malloc ( (size_t) 2 * sizeof(double));
-			if(grid_overlay[i].coord == NULL) malloc_error();
-			grid_overlay[i].count_coord = 0;
-			grid_overlay[i].elt_centroid = NULL;
-			ptr = next_char;
-			/*
-			 * set values
-			 */
-			grid_overlay[i].direction = j;
-			grid_overlay[i].uniform = TRUE;
-			if (copy_token(token, &ptr, &l) == EMPTY) {
-				grid_ptr = &grid_overlay[i];
-				opt_save = OPTION_DEFAULT2;
-				break;
-			} else {
-				if (sscanf(next_char, "%lf%lf%d", &(grid_overlay[i].coord[0]), 
-					   &(grid_overlay[i].coord[1]),
-					   &(grid_overlay[i].count_coord)) != 3) {
-					sprintf(error_string,"Expected two coordinate values and the number of nodes for %c grid information.", grid[j].c);
-					error_msg(error_string, CONTINUE);
+				if (token[0] == 'x') {
+					j = 0;
+				} else if (token[0] == 'y') {
+					j = 1;
+				} else if (token[0] == 'z') {
+					j = 2;
+				} else {
+					error_msg("Expected a coordinate direction, x, y, or z.", CONTINUE);
 					error_msg(line_save, CONTINUE);
 					input_error++;
+					break;
 				}
-			}
-			opt_save = OPTION_ERROR;
-			break;
 
-		    case 7:                       /* overlay_nonuniform */
-			/* read direction */
-			i = copy_token(token, &next_char, &l);
-			if (i == EMPTY) {
-				error_msg("Expected a coordinate direction, x, y, or z.", CONTINUE);
-				error_msg(line_save, CONTINUE);
-				input_error++;
+				/* set uniform */
+				grid[j].uniform = TRUE;
+
+				ptr = next_char;
+				if (copy_token(token, &ptr, &l) == EMPTY) {
+					grid_ptr = &grid[j];
+					opt_save = OPTION_DEFAULT2;
+					break;
+				} else {
+					if (sscanf(next_char, "%lf%lf%d", &(grid[j].coord[0]), 
+						&(grid[j].coord[1]),
+						&(grid[j].count_coord)) != 3) {
+							sprintf(error_string,"Expected two coordinate values and the number of nodes for %c grid information.", grid[j].c);
+							error_msg(error_string, CONTINUE);
+							error_msg(line_save, CONTINUE);
+							input_error++;
+					}
+				}
+				opt_save = OPTION_ERROR;
 				break;
-			}
-			str_tolower(token);
-			if (token[0] == 'x') {
-				j = 0;
-			} else if (token[0] == 'y') {
-				j = 1;
-			} else if (token[0] == 'z') {
-				j = 2;
-			} else {
-				error_msg("Expected a coordinate direction, x, y, or z.", CONTINUE);
-				error_msg(line_save, CONTINUE);
-				input_error++;
+			case 1:                       /* nonuniform */
+			case 2:                       /* non_uniform */
+				/* read direction */
+				i = copy_token(token, &next_char, &l);
+				if (i == EMPTY) {
+					error_msg("Expected a coordinate direction, x, y, or z.", CONTINUE);
+					error_msg(line_save, CONTINUE);
+					input_error++;
+					break;
+				}
+				str_tolower(token);
+				if (token[0] == 'x') {
+					j = 0;
+				} else if (token[0] == 'y') {
+					j = 1;
+				} else if (token[0] == 'z') {
+					j = 2;
+				} else {
+					error_msg("Expected a coordinate direction, x, y, or z.", CONTINUE);
+					error_msg(line_save, CONTINUE);
+					input_error++;
+					break;
+				}
+
+				/* set nonuniform */
+				grid[j].uniform = FALSE;
+				ptr=next_char;
+				temp = read_list_doubles(&ptr, &count_doubles);
+				grid_ptr = &grid[j];
+				if (temp == NULL) {
+					break;
+				}
+				if (count_doubles > 0) {
+					count = grid[j].count_coord;
+					grid[j].coord = (double *) realloc ( grid[j].coord, (size_t) (count +count_doubles + 1) * sizeof(double));
+					if (grid[j].coord == NULL) malloc_error();
+					memcpy(&(grid[j].coord[count]),
+						temp,
+						(size_t) count_doubles * sizeof(double));
+					grid[j].count_coord += count_doubles;
+				}
+				free_check_null(temp);
+				opt_save = OPTION_DEFAULT;
 				break;
-			}
-			/*
-			 * malloc_space
+			case 3:                       /* chemistry_dimensions */
+			case 4:                       /* transport_dimensions */
+				for (j = 0; j < 3; j++) {
+					axes[j] = FALSE;
+				}
+				while ((j = copy_token(token, &next_char, &l)) != EMPTY) {
+					str_tolower(token);
+					if (strstr(token, "x") != NULL) axes[0] = TRUE;
+					if (strstr(token, "y") != NULL) axes[1] = TRUE;
+					if (strstr(token, "z") != NULL) axes[2] = TRUE;
+				}
+				opt_save = OPTION_ERROR;
+				break;
+			case 5:                       /* print_orientation */
+				/* read coordinate directions */
+				i = copy_token(token, &next_char, &l);
+				if (i == EMPTY) {
+					error_msg("Expected coordinate directions, xy or xz.", CONTINUE);
+					error_msg(line_save, CONTINUE);
+					input_error++;
+					break;
+				}
+				str_tolower(token);
+				if (strcmp(token,"xy") == 0) {
+					print_input_xy = TRUE;
+				} else if (strcmp(token,"xz") == 0) {
+					print_input_xy = FALSE;
+				} else {
+					error_msg("Expected coordinate directions, xy or xz.", CONTINUE);
+					error_msg(line_save, CONTINUE);
+					input_error++;
+					break;
+				}
+				opt_save = OPTION_ERROR;
+				break;
+			case 6:                       /* overlay_uniform */
+				/* read direction */
+				i = copy_token(token, &next_char, &l);
+				if (i == EMPTY) {
+					error_msg("Expected a coordinate direction, x, y, or z.", CONTINUE);
+					error_msg(line_save, CONTINUE);
+					input_error++;
+					break;
+				}
+				str_tolower(token);
+				if (token[0] == 'x') {
+					j = 0;
+				} else if (token[0] == 'y') {
+					j = 1;
+				} else if (token[0] == 'z') {
+					j = 2;
+				} else {
+					error_msg("Expected a coordinate direction, x, y, or z.", CONTINUE);
+					error_msg(line_save, CONTINUE);
+					input_error++;
+					break;
+				}
+				/*
+				* malloc_space
 			 */
-			i = count_grid_overlay++;
-			grid_overlay = (struct grid *) realloc (grid_overlay, (size_t) count_grid_overlay * sizeof(struct grid));
-			if (grid_overlay == NULL) malloc_error();
-			grid_overlay[i].coord = (double *) malloc ( (size_t) 2 * sizeof(double));
-			if(grid_overlay[i].coord == NULL) malloc_error();
-			grid_overlay[i].count_coord = 0;
-			grid_overlay[i].elt_centroid = NULL;
-			ptr = next_char;
-			/*
-			 * set values
+				i = count_grid_overlay++;
+				grid_overlay = (struct grid *) realloc (grid_overlay, (size_t) count_grid_overlay * sizeof(struct grid));
+				if (grid_overlay == NULL) malloc_error();
+				grid_overlay[i].coord = (double *) malloc ( (size_t) 2 * sizeof(double));
+				if(grid_overlay[i].coord == NULL) malloc_error();
+				grid_overlay[i].count_coord = 0;
+				grid_overlay[i].elt_centroid = NULL;
+				ptr = next_char;
+				/*
+				* set values
 			 */
-			grid_overlay[i].direction = j;
-			grid_overlay[i].uniform = FALSE;
+				grid_overlay[i].direction = j;
+				grid_overlay[i].uniform = TRUE;
+				if (copy_token(token, &ptr, &l) == EMPTY) {
+					grid_ptr = &grid_overlay[i];
+					opt_save = OPTION_DEFAULT2;
+					break;
+				} else {
+					if (sscanf(next_char, "%lf%lf%d", &(grid_overlay[i].coord[0]), 
+						&(grid_overlay[i].coord[1]),
+						&(grid_overlay[i].count_coord)) != 3) {
+							sprintf(error_string,"Expected two coordinate values and the number of nodes for %c grid information.", grid[j].c);
+							error_msg(error_string, CONTINUE);
+							error_msg(line_save, CONTINUE);
+							input_error++;
+					}
+				}
+				opt_save = OPTION_ERROR;
+				break;
 
-			ptr=next_char;
-			temp = read_list_doubles(&ptr, &count_doubles);
-			grid_ptr = &grid_overlay[i];
-			if (temp == NULL) {
-				break;
-			}
-			if (count_doubles > 0) {
-				count = grid_ptr->count_coord;
-				grid_ptr->coord = (double *) realloc ( grid_ptr->coord, (size_t) (count +count_doubles + 1) * sizeof(double));
-				if (grid_ptr->coord == NULL) malloc_error();
-				memcpy(&(grid_ptr->coord[count]),
-					 temp,
-					 (size_t) count_doubles * sizeof(double));
-				grid_ptr->count_coord += count_doubles;
-			}
-			free_check_null(temp);
-			opt_save = OPTION_DEFAULT;
-			break;
+			case 7:                       /* overlay_nonuniform */
+				/* read direction */
+				i = copy_token(token, &next_char, &l);
+				if (i == EMPTY) {
+					error_msg("Expected a coordinate direction, x, y, or z.", CONTINUE);
+					error_msg(line_save, CONTINUE);
+					input_error++;
+					break;
+				}
+				str_tolower(token);
+				if (token[0] == 'x') {
+					j = 0;
+				} else if (token[0] == 'y') {
+					j = 1;
+				} else if (token[0] == 'z') {
+					j = 2;
+				} else {
+					error_msg("Expected a coordinate direction, x, y, or z.", CONTINUE);
+					error_msg(line_save, CONTINUE);
+					input_error++;
+					break;
+				}
+				/*
+				* malloc_space
+			 */
+				i = count_grid_overlay++;
+				grid_overlay = (struct grid *) realloc (grid_overlay, (size_t) count_grid_overlay * sizeof(struct grid));
+				if (grid_overlay == NULL) malloc_error();
+				grid_overlay[i].coord = (double *) malloc ( (size_t) 2 * sizeof(double));
+				if(grid_overlay[i].coord == NULL) malloc_error();
+				grid_overlay[i].count_coord = 0;
+				grid_overlay[i].elt_centroid = NULL;
+				ptr = next_char;
+				/*
+				* set values
+			 */
+				grid_overlay[i].direction = j;
+				grid_overlay[i].uniform = FALSE;
 
-		    case 8:                       /* snap */
-			/* read direction */
-			i = copy_token(token, &next_char, &l);
-			if (i == EMPTY) {
-				error_msg("Expected a coordinate direction, x, y, or z.", CONTINUE);
-				error_msg(line_save, CONTINUE);
-				input_error++;
+				ptr=next_char;
+				temp = read_list_doubles(&ptr, &count_doubles);
+				grid_ptr = &grid_overlay[i];
+				if (temp == NULL) {
+					break;
+				}
+				if (count_doubles > 0) {
+					count = grid_ptr->count_coord;
+					grid_ptr->coord = (double *) realloc ( grid_ptr->coord, (size_t) (count +count_doubles + 1) * sizeof(double));
+					if (grid_ptr->coord == NULL) malloc_error();
+					memcpy(&(grid_ptr->coord[count]),
+						temp,
+						(size_t) count_doubles * sizeof(double));
+					grid_ptr->count_coord += count_doubles;
+				}
+				free_check_null(temp);
+				opt_save = OPTION_DEFAULT;
 				break;
-			}
-			str_tolower(token);
-			if (token[0] == 'x') {
-				j = 0;
-			} else if (token[0] == 'y') {
-				j = 1;
-			} else if (token[0] == 'z') {
-				j = 2;
-			} else {
-				error_msg("Expected a coordinate direction, x, y, or z.", CONTINUE);
-				error_msg(line_save, CONTINUE);
-				input_error++;
-				break;
-			}
-			if (sscanf(next_char, "%lf", &(snap[j])) != 1) {
+
+			case 8:                       /* snap */
+				/* read direction */
+				i = copy_token(token, &next_char, &l);
+				if (i == EMPTY) {
+					error_msg("Expected a coordinate direction, x, y, or z.", CONTINUE);
+					error_msg(line_save, CONTINUE);
+					input_error++;
+					break;
+				}
+				str_tolower(token);
+				if (token[0] == 'x') {
+					j = 0;
+				} else if (token[0] == 'y') {
+					j = 1;
+				} else if (token[0] == 'z') {
+					j = 2;
+				} else {
+					error_msg("Expected a coordinate direction, x, y, or z.", CONTINUE);
+					error_msg(line_save, CONTINUE);
+					input_error++;
+					break;
+				}
+				if (sscanf(next_char, "%lf", &(snap[j])) != 1) {
 					sprintf(error_string,"Expected snap tolerance for minimum distance between nodes in %c direction.", grid[j].c);
 					error_msg(error_string, CONTINUE);
 					error_msg(line_save, CONTINUE);
 					input_error++;
-			}
-			break;
-		    case OPTION_DEFAULT:
-/*
- *   Read nonuniform grid coordinates for coordinate j
- */
-			opt_save = OPTION_DEFAULT;
-			ptr=line;
-			temp = read_list_doubles(&ptr, &count_doubles);
-			if (temp == NULL) {
+				}
 				break;
-			}
-			if (count_doubles > 0) {
-				count = grid_ptr->count_coord;
-				grid_ptr->coord = (double *) realloc ( grid_ptr->coord, (size_t) (count +count_doubles + 1) * sizeof(double));
-				if (grid_ptr->coord == NULL) malloc_error();
-				memcpy(&(grid_ptr->coord[count]),
-					 temp,
-					 (size_t) count_doubles * sizeof(double));
-				grid_ptr->count_coord += count_doubles;
-			}
-			free_check_null(temp);
-			break;
+			case OPTION_DEFAULT:
+				/*
+				*   Read nonuniform grid coordinates for coordinate j
+				*/
+				opt_save = OPTION_DEFAULT;
+				ptr=line;
+				temp = read_list_doubles(&ptr, &count_doubles);
+				if (temp == NULL) {
+					break;
+				}
+				if (count_doubles > 0) {
+					count = grid_ptr->count_coord;
+					grid_ptr->coord = (double *) realloc ( grid_ptr->coord, (size_t) (count +count_doubles + 1) * sizeof(double));
+					if (grid_ptr->coord == NULL) malloc_error();
+					memcpy(&(grid_ptr->coord[count]),
+						temp,
+						(size_t) count_doubles * sizeof(double));
+					grid_ptr->count_coord += count_doubles;
+				}
+				free_check_null(temp);
+				break;
 
-		    case OPTION_DEFAULT2:
-/*
- *   Read uniform grid coordinates for grid_ptr
- */
-			/* read 2 coords and number of nodes */
-			if (sscanf(next_char, "%lf%lf%d", &(grid_ptr->coord[0]), 
-				   &(grid_ptr->coord[1]),
-				   &(grid_ptr->count_coord)) != 3) {
-				sprintf(error_string,"Expected two coordinate values and the number of nodes for %c grid information.", grid[j].c);
-				error_msg(error_string, CONTINUE);
-				error_msg(line_save, CONTINUE);
-				input_error++;
-			}
-			opt_save = OPTION_ERROR;
-			break;
+			case OPTION_DEFAULT2:
+				/*
+				*   Read uniform grid coordinates for grid_ptr
+				*/
+				/* read 2 coords and number of nodes */
+				if (sscanf(next_char, "%lf%lf%d", &(grid_ptr->coord[0]), 
+					&(grid_ptr->coord[1]),
+					&(grid_ptr->count_coord)) != 3) {
+						sprintf(error_string,"Expected two coordinate values and the number of nodes for %c grid information.", grid[j].c);
+						error_msg(error_string, CONTINUE);
+						error_msg(line_save, CONTINUE);
+						input_error++;
+				}
+				opt_save = OPTION_ERROR;
+				break;
+			case 9:                       /* grid origin in map units */
+
+				if (sscanf(next_char, "%lf%lf", &grid_origin[0], &grid_origin[1]) != 2) {
+					sprintf(error_string,"Expected x, y grid origin in map coordinates.");
+					error_msg(error_string, CONTINUE);
+					input_error++;
+				}
+				break;
+			case 10:                       /* grid angle counterclockwise */
+
+				if (sscanf(next_char, "%lf", &grid_angle) != 1) {
+					sprintf(error_string,"Expected grid angle (counterclockwise).");
+					error_msg(error_string, CONTINUE);
+					input_error++;
+				}
+				break;
 		}
 		if (return_value == EOF || return_value == KEYWORD) break;
 	}

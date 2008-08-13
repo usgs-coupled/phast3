@@ -25,6 +25,11 @@ public:
     WEDGE        = 1,
     PRISM        = 2
   };
+  enum COORDINATES
+  {
+    MAP          = 0,
+    GRID         = 1
+  };
 
   // Methods
   virtual void Points_in_polyhedron(std::list<int> & list, std::vector<Point> &point_xyz) = 0;
@@ -50,6 +55,8 @@ protected:
   enum POLYHEDRON_TYPE type;
   struct zone box;
   std::string description;
+  enum COORDINATE_SYSTEM coordinate_system;
+
 };
 
 inline std::ostream& operator<< (std::ostream& o, const Polyhedron& p)

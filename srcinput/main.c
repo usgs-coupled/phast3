@@ -3,14 +3,12 @@
 #include <sstream>      // basic_ostringstream
 #include "hstinpt.h"
 #include "message.h"
-// testing ...
-#include "Shapefiles/Shapefile.h"
 #include "NNInterpolator/NNInterpolator.h"
 #include "KDtree/KDtree.h"
 #include "ArcRaster.h"
-#include "Prism.h"
+// testing ...
+//#include "PHAST_Transform.h"
 //... testing
-#include <algorithm>
 #if defined(__WPHAST__)
 #define main not_used
 #define static
@@ -82,77 +80,24 @@ int main(int argc, char *argv[])
 	}
 	*/
 #ifdef SKIP
-	//std::string fname("UpperAquiferBottom");
-	//
-	std::string fname("ArcData/coast");
-	Shapefile sf(fname);
-	//std::ostringstream oss;
-	//sf.Dump(oss);
-	//std::cout << oss.str();
-	
-	std::vector<Point> pts;
-	sf.Extract_surface(pts, 1);
-	NNInterpolator nni;
-	std::vector<Point> corners;
 
-	
-	
-
-	Point p1(sf.shpinfo->adBoundsMin[0], sf.shpinfo->adBoundsMin[1], 0.0);
-	Point p2(sf.shpinfo->adBoundsMax[1], sf.shpinfo->adBoundsMin[1], 0.0);
-	Point p3(sf.shpinfo->adBoundsMax[0], sf.shpinfo->adBoundsMax[1], 0.0);
-	Point p4(sf.shpinfo->adBoundsMin[0], sf.shpinfo->adBoundsMax[1], 0.0);
-	corners.push_back(p1);
-	corners.push_back(p2);
-	corners.push_back(p3);
-	corners.push_back(p4);
-
-	nni.preprocess(pts, corners);
-
-	//std::vector<Point> pts_out;
+	// test transformation
+	PHAST_Transform map_to_grid(grid_origin[0], grid_origin[1], grid_origin[2], grid_angle);
 	Point p;
-	int i, j;
-	int ndiv = 50;
-	for (i = 1; i < ndiv; i++)
+	int k, l;
+	for (k = -1; k < 2; k++)
 	{
-	  for (j = 2; j < ndiv; j++)
-	  {
-	    p.set_x(sf.shpinfo->adBoundsMin[0] + 
-	      (((double) i) / ((double) ndiv)) * (sf.shpinfo->adBoundsMax[0] - sf.shpinfo->adBoundsMin[0]));
-	    p.set_y(sf.shpinfo->adBoundsMin[1] + 
-	      (((double) j) / ((double) ndiv)) * (sf.shpinfo->adBoundsMax[1] - sf.shpinfo->adBoundsMin[1]));
-	    double v = nni.interpolate(p);
-	    printf("%e\t%e\t%e\t\n", p.x(), p.y(), v);
-	    //pts_out.push_back(p);
-	  }
+		for (l = -1; l < 2; l++)
+		{
+			
+			p.set_x((double) k);
+			p.set_y((double) l);
+			std::cerr << "Point in:  " << p.x() << "   " << p.y() << "   " << p.z() << std::endl;
+			map_to_grid.transform(p);
+			std::cerr << "Point out: " << p.x() << "   " << p.y() << "   " << p.z() << std::endl;
+		}
 	}
-	//double wmin = 0.0;
-	//nnpi_interpolate(pts, pts_out, wmin);
-	//for (std::vector<Point>::iterator it = pts_out.begin(); it != pts_out.end(); it++)
-	//{
-	  //printf("%e\t%e\t%e\t\n", it->x(), it->y(), it->get_v());
-	//}
-
-	exit(0);
-#endif
-#ifdef SKIP
-	std::string raster_name("h:/capecod/revisit/ArcData/rastert_bedtest1.txt");
-	ArcRaster rd(raster_name);
-
-	NNInterpolator nnrd;
-	std::vector<Point> corners;
-	//nnrd.preprocess(rd.get_points(), corners);
-
-
-
-	std::string fname("ArcData/coast");
-	Shapefile sf(fname);
-	//gpc_polygon *poly = sf.Extract_polygon();
-	//Point p(267500., 820000, 0);
-	//Point p(280000, 820000, 0);
-	Point p(275553.15625, 810937.3125, 0);
-	//bool in = p.point_in_gpc_polygon(poly);
-	bool in = sf.Point_in_polygon(p);
+	exit(4);
 #endif
 	check_hst_units();
 	check_time_series_data();
@@ -528,6 +473,8 @@ void initialize(void)
 	snap[1] = .001;
 	snap[2] = .001;
 	zone_init(&domain);
+	grid_origin[0] = grid_origin[1] = grid_origin[3] = 0.0;
+	grid_angle = 0.0;
 
 /*
  *   initialize grid_elt_zones to contain definition

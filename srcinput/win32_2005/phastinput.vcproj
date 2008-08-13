@@ -133,7 +133,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(BOOSTROOT)&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;ANSI_DECLARATORS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;ANSI_DECLARATORS;BOOST_UBLAS_UNSUPPORTED_COMPILER=0"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				DisableLanguageExtensions="false"
@@ -559,6 +559,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\PHAST_Transform.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\PHST_polygon.cpp"
 				>
 				<FileConfiguration
@@ -979,6 +983,10 @@
 			</File>
 			<File
 				RelativePath="..\NNInterpolator\NNInterpolator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\PHAST_Transform.h"
 				>
 			</File>
 			<File
