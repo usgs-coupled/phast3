@@ -25,7 +25,8 @@ public:
     WEDGE        = 1,
     PRISM        = 2
   };
-  enum COORDINATES
+
+  enum COORDINATE_SYSTEM
   {
     MAP          = 0,
     GRID         = 1

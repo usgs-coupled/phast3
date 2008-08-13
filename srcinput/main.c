@@ -7,7 +7,7 @@
 #include "KDtree/KDtree.h"
 #include "ArcRaster.h"
 // testing ...
-//#include "PHAST_Transform.h"
+#include "PHAST_Transform.h"
 //... testing
 #if defined(__WPHAST__)
 #define main not_used
@@ -80,6 +80,7 @@ int main(int argc, char *argv[])
 	}
 	*/
 #ifdef SKIP
+#endif
 
 	// test transformation
 	PHAST_Transform map_to_grid(grid_origin[0], grid_origin[1], grid_origin[2], grid_angle);
@@ -98,7 +99,6 @@ int main(int argc, char *argv[])
 		}
 	}
 	exit(4);
-#endif
 	check_hst_units();
 	check_time_series_data();
 	if (input_error == 0) {
