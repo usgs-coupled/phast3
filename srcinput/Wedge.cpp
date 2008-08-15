@@ -785,6 +785,11 @@ void Wedge::printOn(std::ostream& os) const
 		<< " " << this->box.z2
 		<< " " << orient
 		<< "\n";
+
+	if (this->description.size())
+	{
+		os << "\t\t" << "-description " << this->description << "\n";
+	}
 }
 
 Wedge* Wedge::clone() const

@@ -368,6 +368,11 @@ void Prism::printOn(std::ostream& os) const
   os << "\t\t#-vector " << this->prism_dip.x() << " " << this->prism_dip.y() << " " << this->prism_dip.z() << std::endl;
   */
 
+  if (this->description.size())
+  {
+    os << "\t\t" << "-description " << this->description << "\n";
+  }
+
   if (this->top.Get_source_type() != Data_source::NONE)
   {
     os << "\t\t-top       " << this->top;

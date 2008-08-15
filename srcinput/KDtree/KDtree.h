@@ -1,6 +1,7 @@
 #if !defined(KDTREE_H_INCLUDED)
 #define KDTREE_H_INCLUDED
 #include "kdtree2.hpp"
+#undef BOOST_NO_STDC_NAMESPACE // defined by kdtree2.hpp
 #include "../Point.h"
 #include "../NNInterpolator/nn.h"
 #include <list>

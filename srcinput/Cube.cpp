@@ -159,6 +159,10 @@ void Cube::printOn(std::ostream& os) const
 		<< " " << this->box.y2
 		<< " " << this->box.z2
 		<< "\n";
+	if (this->description.size())
+	{
+		os << "\t\t" << "-description " << this->description << "\n";
+	}
 }
 
 Cube* Cube::clone() const
