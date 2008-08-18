@@ -7,6 +7,7 @@
 #include "Polyhedron.h"
 #include "Prism.h"
 #include "Exterior_cell.h"
+#include "PHAST_Transform.h"
 static char const svnid[] = "$Id$";
 int setup_grid(void);
 static void distribute_flux_bc (int i,std::list<int> &pts, char *tag); 
@@ -21,6 +22,10 @@ int accumulate(void)
 {
 	if (simulation == 0) {
 		setup_grid();
+		// Set up transform
+		map_to_grid = new PHAST_Transform(grid_origin[0], grid_origin[1], grid_origin[2], grid_angle);
+		coordinate_conversion = PHAST_Transform::GRID;
+
 		Tidy_prisms();
 		if (tidy_rivers() == OK) {
 			if (build_rivers() == OK) {
@@ -500,96 +505,96 @@ int setup_head_ic(void)
 	for (i = 0; i < count_head_ic; i++) {
 		sprintf(tag,"in HEAD_IC, definition %d.\n", i+1);
 		switch (head_ic[i]->ic_type) {
-case UNDEFINED:
-	input_error++;
-	sprintf(error_string, "Initial condition type undefined %s", tag);
-	error_msg(error_string, CONTINUE);
-	break;
-case ZONE:
-	if (head_ic_type != UNDEFINED && head_ic_type != ZONE) {
-		sprintf(error_string, "ZONE and WATER_TABLE are mutually exclusive initial conditions %s", tag);
-		error_msg(error_string, CONTINUE);
-		input_error++;
-		return_value = ERROR;
-	}
-
-	if (head_ic[i]->polyh == NULL) {
-		input_error++;
-		sprintf(error_string, "No zone definition %s", tag);
-		error_msg(error_string, CONTINUE);
-		break;
-	} 
-	else
-	{
-		struct zone *zone_ptr = head_ic[i]->polyh->Get_bounding_box();
-		range_ptr = zone_to_range(zone_ptr);
-		std::list<int> list_of_cells;
-		range_to_list(range_ptr, list_of_cells);
-		free_check_null(range_ptr);
-		range_ptr = NULL;
-		{
-			head_ic[i]->polyh->Points_in_polyhedron(list_of_cells, *cell_xyz);
-			if (list_of_cells.size() == 0) {
+		case UNDEFINED:
+			input_error++;
+			sprintf(error_string, "Initial condition type undefined %s", tag);
+			error_msg(error_string, CONTINUE);
+			break;
+		case ZONE:
+			if (head_ic_type != UNDEFINED && head_ic_type != ZONE) {
+				sprintf(error_string, "ZONE and WATER_TABLE are mutually exclusive initial conditions %s", tag);
+				error_msg(error_string, CONTINUE);
 				input_error++;
-				sprintf(error_string, "Bad zone or wedge definition %s", tag);
+				return_value = ERROR;
+			}
+
+			if (head_ic[i]->polyh == NULL) {
+				input_error++;
+				sprintf(error_string, "No zone definition %s", tag);
 				error_msg(error_string, CONTINUE);
 				break;
-			}
-			if (head_ic[i]->head != NULL) {
-				if (distribute_property_to_list_of_cells(list_of_cells, 
-					head_ic[i]->mask,
-					head_ic[i]->head, 
-					offsetof(struct cell, ic_head),
-					offsetof(struct cell, ic_head_defined),
-					PT_DOUBLE, FALSE, 0, BC_info::BC_UNDEFINED ) == ERROR) 
+			} 
+			else
+			{
+				struct zone *zone_ptr = head_ic[i]->polyh->Get_bounding_box();
+				range_ptr = zone_to_range(zone_ptr);
+				std::list<int> list_of_cells;
+				range_to_list(range_ptr, list_of_cells);
+				free_check_null(range_ptr);
+				range_ptr = NULL;
 				{
-					input_error++;
-					sprintf(error_string, "Bad head definition %s", tag);
-					error_msg(error_string, CONTINUE);
+					head_ic[i]->polyh->Points_in_polyhedron(list_of_cells, *cell_xyz);
+					if (list_of_cells.size() == 0) {
+						input_error++;
+						sprintf(error_string, "Bad zone or wedge definition %s", tag);
+						error_msg(error_string, CONTINUE);
+						break;
+					}
+					if (head_ic[i]->head != NULL) {
+						if (distribute_property_to_list_of_cells(list_of_cells, 
+							head_ic[i]->mask,
+							head_ic[i]->head, 
+							offsetof(struct cell, ic_head),
+							offsetof(struct cell, ic_head_defined),
+							PT_DOUBLE, FALSE, 0, BC_info::BC_UNDEFINED ) == ERROR) 
+						{
+							input_error++;
+							sprintf(error_string, "Bad head definition %s", tag);
+							error_msg(error_string, CONTINUE);
+						}
+					}
+					//free_check_null(range_ptr);
+					head_ic_type = ZONE;
 				}
 			}
-			//free_check_null(range_ptr);
-			head_ic_type = ZONE;
-		}
-	}
-	break;
-case WATER_TABLE:
-	if (head_ic_type != UNDEFINED && head_ic_type != WATER_TABLE) {
-		sprintf(error_string, "ZONE and WATER_TABLE are mutually exclusive initial conditions %s", tag);
-		error_msg(error_string, CONTINUE);
-		input_error++;
-		return_value = ERROR;
-	}
-	if (head_ic_type == WATER_TABLE) {
-		sprintf(error_string,"Water_table has been redefined %s", tag);
-		warning_msg(error_string);
-	}
-	if (head_ic[i]->head == NULL) {
-		sprintf(error_string,"Heads for water_table have not been defined %s", tag);
-		error_msg(error_string, CONTINUE);
-		input_error++;
-	}
-	if (head_ic[i]->head->count_v != nx * ny) {
-		sprintf(error_string, 
-			"Number of head values for water table, %d, not equal nx * ny, %d %s", head_ic[i]->head->count_v, nx * ny, tag);
-		error_msg(error_string, CONTINUE);
-		input_error++;
-		break;
-	}
-
-	/* copy data vertically from head_list to cells */
-	for (ii = 0; ii < nx; ii++) {
-		for (jj = 0; jj < ny; jj++) {
-			nn = jj * nx + ii;
-			for (kk = 0; kk < nz; kk++) {
-				n = ijk_to_n(ii, jj, kk);
-				cells[n].ic_head = head_ic[i]->head->v[nn];
-				cells[n].ic_head_defined = TRUE;
+			break;
+		case WATER_TABLE:
+			if (head_ic_type != UNDEFINED && head_ic_type != WATER_TABLE) {
+				sprintf(error_string, "ZONE and WATER_TABLE are mutually exclusive initial conditions %s", tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+				return_value = ERROR;
 			}
-		}
-	}
-	head_ic_type = WATER_TABLE;
-	break;
+			if (head_ic_type == WATER_TABLE) {
+				sprintf(error_string,"Water_table has been redefined %s", tag);
+				warning_msg(error_string);
+			}
+			if (head_ic[i]->head == NULL) {
+				sprintf(error_string,"Heads for water_table have not been defined %s", tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+			}
+			if (head_ic[i]->head->count_v != nx * ny) {
+				sprintf(error_string, 
+					"Number of head values for water table, %d, not equal nx * ny, %d %s", head_ic[i]->head->count_v, nx * ny, tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+				break;
+			}
+
+			/* copy data vertically from head_list to cells */
+			for (ii = 0; ii < nx; ii++) {
+				for (jj = 0; jj < ny; jj++) {
+					nn = jj * nx + ii;
+					for (kk = 0; kk < nz; kk++) {
+						n = ijk_to_n(ii, jj, kk);
+						cells[n].ic_head = head_ic[i]->head->v[nn];
+						cells[n].ic_head_defined = TRUE;
+					}
+				}
+			}
+			head_ic_type = WATER_TABLE;
+			break;
 		}
 	}
 	return(OK);

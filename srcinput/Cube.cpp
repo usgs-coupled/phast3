@@ -18,7 +18,8 @@
 Cube::Cube(void)
 {
   this->type = CUBE;
-
+  this->coordinate_system = PHAST_Transform::GRID;
+	
   // Default cube
   this->p.push_back(Point(0.0, 0.0, 0.0));
   this->p.push_back(Point(1.0, 1.0, 1.0));
@@ -30,6 +31,7 @@ Cube::Cube(void)
 Cube::Cube(const struct zone *zone_ptr)
 {
   this->type = CUBE;
+  this->coordinate_system = PHAST_Transform::GRID;
 
   // Define cube in standard order left, front, bottom point first
   this->p.push_back(Point(zone_ptr->x1, zone_ptr->y1, zone_ptr->z1));

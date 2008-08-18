@@ -139,7 +139,7 @@ EXTERNAL struct grid *grid_overlay;
 EXTERNAL int count_grid_overlay;
 EXTERNAL double snap[3];
 EXTERNAL double grid_origin[3];        /* grid origin in map coordinates */
-EXTERNAL double grid_angle;            /* grid angle counterclockwise from map axes */
+EXTERNAL double grid_angle;            /* grid angle counterclockwise from map axes in degrees */
 EXTERNAL struct zone domain;
 
 /* ----------------------------------------------------------------------

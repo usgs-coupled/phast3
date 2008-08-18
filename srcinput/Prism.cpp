@@ -1,5 +1,6 @@
 #include "Prism.h"
 #include "Cube.h"
+#include "PHAST_Transform.h"
 #include "message.h"
 #include <sstream>
 #include <iostream>
@@ -26,6 +27,47 @@ Prism::Prism(void)
   this->orig_perimeter_datum = 0.0;
   this->perimeter_option = DEFAULT;
   zone_init(&this->box);
+  Prism::prism_list.push_back(this);
+}
+Prism::Prism(Cube &c)
+{
+  this->type = PRISM;
+  this->coordinate_system = c.Get_coordinate_system();
+
+  this->perimeter_poly = NULL;
+  this->prism_dip = Point(0,0,1,0);
+  this->perimeter_datum = 0.0;
+  this->orig_perimeter_datum = 0.0;
+  this->perimeter_option = DEFAULT;
+  zone_init(&this->box);
+
+  std::vector<Point> pts;
+  zone c_zone(c.Get_bounding_box());
+
+  // define perimeter
+  this->perimeter.Set_defined(true);
+  this->perimeter.Set_source_type(Data_source::POINTS);
+  pts.push_back(Point(c_zone.x1, c_zone.y1, c_zone.z2));
+  pts.push_back(Point(c_zone.x2, c_zone.y1, c_zone.z2));
+  pts.push_back(Point(c_zone.x2, c_zone.y2, c_zone.z2));
+  pts.push_back(Point(c_zone.x1, c_zone.y2, c_zone.z2));
+  this->perimeter.Set_points(pts);
+
+  // define top
+  pts.clear();
+  this->top.Set_defined(true);
+  this->top.Set_source_type(Data_source::CONSTANT);
+  pts.push_back(Point(c_zone.x1, c_zone.y1, c_zone.z2));
+  this->top.Set_points(pts);
+
+  // define top
+  pts.clear();
+  this->bottom.Set_defined(true);
+  this->bottom.Set_source_type(Data_source::CONSTANT);
+  pts.push_back(Point(c_zone.x1, c_zone.y1, c_zone.z2));
+  this->bottom.Set_points(pts);
+
+  this->Set_bounding_box();
   Prism::prism_list.push_back(this);
 }
 Prism::Prism(const Prism& c)

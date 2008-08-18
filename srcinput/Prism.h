@@ -2,13 +2,14 @@
 #define PRISM_H_INCLUDED
 #include "Polyhedron.h"
 #include "Data_source.h"
-
+class Cube;
 class Prism :
   public Polyhedron
 {
   
 public:
   Prism(void);
+  Prism(Cube &c);
   Prism(const Prism& c);
 public:
   ~Prism(void);

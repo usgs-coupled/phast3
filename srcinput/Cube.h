@@ -33,6 +33,7 @@ public:
   virtual Cube* create() const;
   bool Segment_in_cube(Point &p1, Point &p2, Point &i1, Point &i2, double &length, Cube::CUBE_INTERSECTION &c_intersection);
   struct zone * Set_bounding_box();
+  
 
 protected:
 	virtual void printOn(std::ostream& os) const;

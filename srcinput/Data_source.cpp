@@ -296,7 +296,6 @@ void Data_source::Tidy(const bool make_nni)
 			this->Add_to_file_map (f, make_nni);
 			this->filedata = f;
 		}
-
 		break;
 	case Data_source::ARCRASTER:
 		//fprintf(stderr, "Starting to read raster file\n");
@@ -426,57 +425,53 @@ void Data_source::Add_to_file_map (Filedata *f, const bool make_nni)
     std::vector<Point> temp_pts; 
     f->Make_points(this->attribute, temp_pts, this->h_units.input_to_si, this->v_units.input_to_si);
 
+	// Transform coordinates if specified by global coordinate_conversion
+	switch (coordinate_conversion)
+	{
+	case PHAST_Transform::NONE:
+		break;
+	case PHAST_Transform::GRID:
+		if (this->coordinate_system == PHAST_Transform::MAP)
+		{
+			map_to_grid->Transform(temp_pts);
+		}
+		this->Set_coordinate_system(PHAST_Transform::GRID);
+		break;
+	case PHAST_Transform::MAP:
+		if (this->coordinate_system == PHAST_Transform::GRID)
+		{
+			map_to_grid->Inverse_transform(temp_pts);
+		}
+		this->Set_coordinate_system(PHAST_Transform::MAP);
+		break;
+	}
     //std::vector<Point> pts = new std::vector<Point>(temp_pts);
     f->Get_pts_map()[this->attribute] = temp_pts;
   }
   if (make_nni)
   {
-// COMMENT: {7/11/2008 9:29:47 PM}    std::vector<Point> corners;
-// COMMENT: {7/11/2008 9:29:47 PM}    corners.push_back(Point(grid_zone()->x1, grid_zone()->y1, grid_zone()->z2, grid_zone()->z2));
-// COMMENT: {7/11/2008 9:29:47 PM}    corners.push_back(Point(grid_zone()->x2, grid_zone()->y1, grid_zone()->z2, grid_zone()->z2));
-// COMMENT: {7/11/2008 9:29:47 PM}    corners.push_back(Point(grid_zone()->x2, grid_zone()->y2, grid_zone()->z2, grid_zone()->z2));
-// COMMENT: {7/11/2008 9:29:47 PM}    corners.push_back(Point(grid_zone()->x1, grid_zone()->y2, grid_zone()->z2, grid_zone()->z2));
-    // nni does not exist for attribute
-    if (f->Get_pts_map().size() == 0 || (f->Get_nni_map().find(this->attribute) == f->Get_nni_map().end()))
-    {
-      std::vector<Point> temp_pts;
-      f->Make_points(this->attribute, temp_pts, this->h_units.input_to_si, this->v_units.input_to_si);
+	  // nni does not exist for attribute
+	  if ( f->Get_nni_map().find(this->attribute) == f->Get_nni_map().end() )
+	  {
+		  //std::vector<Point> temp_pts;
+		  //f->Make_points(this->attribute, temp_pts, this->h_units.input_to_si, this->v_units.input_to_si);
 
-      NNInterpolator *nni = new NNInterpolator();
-// COMMENT: {7/11/2008 9:29:56 PM}      nni->preprocess(temp_pts, corners);
-      nni->preprocess(temp_pts);
-      f->Get_nni_map()[this->attribute] = nni;
-      NNInterpolator::NNInterpolatorList.push_back(nni);
-    }
+		  // list of points should exist
+		  std::vector<Point> &pts_ref = f->Get_points(this->attribute);
+		  NNInterpolator *nni = new NNInterpolator();
+		  nni->preprocess(pts_ref);
+		  f->Get_nni_map()[this->attribute] = nni;
+		  NNInterpolator::NNInterpolatorList.push_back(nni);
+	  }
   } 
-#ifdef SKIP 
-  else 
-  {
-    // list of points does not exist for attribute
-    if (f->Get_pts_map().size() == 0 || (f->Get_pts_map().find(this->attribute) == f->Get_pts_map().end()) )
-    {
-      std::vector<Point> temp_pts; 
-      f->Make_points(this->attribute, temp_pts, this->h_units.input_to_si, this->v_units.input_to_si);
-
-      //std::vector<Point> pts = new std::vector<Point>(temp_pts);
-      f->Get_pts_map()[this->attribute] = temp_pts;
-    }
-  }
-#endif
 }
+
 void Data_source::Add_nni_to_data_source (void)
 {
-// COMMENT: {7/11/2008 9:30:20 PM}  std::vector<Point> corners;
-// COMMENT: {7/11/2008 9:30:20 PM}  corners.push_back(Point(grid_zone()->x1, grid_zone()->y1, grid_zone()->z2, grid_zone()->z2));
-// COMMENT: {7/11/2008 9:30:20 PM}  corners.push_back(Point(grid_zone()->x2, grid_zone()->y1, grid_zone()->z2, grid_zone()->z2));
-// COMMENT: {7/11/2008 9:30:20 PM}  corners.push_back(Point(grid_zone()->x2, grid_zone()->y2, grid_zone()->z2, grid_zone()->z2));
-// COMMENT: {7/11/2008 9:30:20 PM}  corners.push_back(Point(grid_zone()->x1, grid_zone()->y2, grid_zone()->z2, grid_zone()->z2));
-
-  // make nni
-  this->nni = new NNInterpolator();
-// COMMENT: {7/11/2008 9:30:13 PM}  this->nni->preprocess(this->Get_points(), corners);
-  this->nni->preprocess(this->Get_points());
-  NNInterpolator::NNInterpolatorList.push_back(this->nni);
+	// make nni
+	this->nni = new NNInterpolator();
+	this->nni->preprocess(this->Get_points());
+	NNInterpolator::NNInterpolatorList.push_back(this->nni);
 }
 struct zone *Data_source::Get_bounding_box()
 {
@@ -586,3 +581,47 @@ void Data_source::Set_file_name(std::string fn)
 	assert(fn.size());
 	this->file_name = fn;
 }
+#ifdef SKIP
+void Data_source::Add_points_to_map (Filedata *f)
+{
+  // Store list of points if necessary
+  if (f->Get_pts_map().size() == 0 || (f->Get_pts_map().find(this->attribute) == f->Get_pts_map().end()) )
+  {
+    std::vector<Point> temp_pts; 
+    f->Make_points(this->attribute, temp_pts, this->h_units.input_to_si, this->v_units.input_to_si);
+
+    f->Get_pts_map()[this->attribute] = temp_pts;
+  }
+}
+void Data_source::Add_to_file_map (Filedata *f, const bool make_nni)
+{
+  // Store list of points if necessary
+  if (f->Get_pts_map().size() == 0 || (f->Get_pts_map().find(this->attribute) == f->Get_pts_map().end()) )
+  {
+    std::vector<Point> temp_pts; 
+    f->Make_points(this->attribute, temp_pts, this->h_units.input_to_si, this->v_units.input_to_si);
+
+	// Transform coordinates if specified by global coordinate_conversion
+	switch (coordinate_conversion)
+	{
+	case PHAST_Transform::NONE:
+		break;
+	case PHAST_Transform::GRID:
+		if (this->coordinate_system == PHAST_Transform::MAP)
+		{
+			map_to_grid->Transform(temp_pts);
+		}
+		this->Set_coordinate_system(PHAST_Transform::GRID);
+		break;
+	case PHAST_Transform::MAP:
+		if (this->coordinate_system == PHAST_Transform::GRID)
+		{
+			map_to_grid->Inverse_transform(temp_pts);
+		}
+		this->Set_coordinate_system(PHAST_Transform::MAP);
+		break;
+	}
+    //std::vector<Point> pts = new std::vector<Point>(temp_pts);
+    f->Get_pts_map()[this->attribute] = temp_pts;
+  }
+#endif

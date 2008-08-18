@@ -1,5 +1,6 @@
 #include "PHAST_Transform.h"
-
+PHAST_Transform *map_to_grid = NULL;
+PHAST_Transform::COORDINATE_SYSTEM coordinate_conversion = PHAST_Transform::NONE;
 PHAST_Transform::PHAST_Transform(void)
 {
 	this->trans.resize(4, 4, false);
@@ -7,33 +8,8 @@ PHAST_Transform::PHAST_Transform(void)
 	this->trans = ident;
 	this->inverse = ident;
 }
-#ifdef SKIP
-PHAST_Transform::PHAST_Transform(double x, double y, double z, double angle)
-{
-	this->trans.resize(4, 4, false);
-	this->trans.clear();
-	this->rot.resize(4, 4, false);
-	this->rot.clear();
 
-	// set rotation matrix
-	this->rot(0,0) = cos(angle);
-	this->rot(0,1) = sin(angle);
-	this->rot(1,0) = -sin(angle);
-	this->rot(1,1) = cos(angle);
-	this->rot(2,2) = 1.0;
-	this->rot(3,3) = 1.0;
-
-	// set translation
-	this->trans(0,3) = -x;
-	this->trans(1,3) = -y;
-	this->trans(2,3) = -z;
-	this->trans(0,0) = 1.0;
-	this->trans(1,1) = 1.0;
-	this->trans(2,2) = 1.0;
-	this->trans(3,3) = 1.0;
-}
-#endif
-PHAST_Transform::PHAST_Transform(double x, double y, double z, double angle)
+PHAST_Transform::PHAST_Transform(double x, double y, double z, double angle_degrees)
 {
 	this->trans.resize(4, 4, false);
 	this->trans.clear();
@@ -43,6 +19,8 @@ PHAST_Transform::PHAST_Transform(double x, double y, double z, double angle)
 
 	t.clear();
 	r.clear();
+
+	double angle = (angle_degrees / 180.) * acos(-1.0);
 
 	// set rotation matrix
 	r(0,0) = cos(angle);
@@ -79,7 +57,10 @@ PHAST_Transform::PHAST_Transform(double x, double y, double z, double angle)
 	this->inverse = boost::numeric::ublas::prod(t, r);
 
 }
-void PHAST_Transform::transform(Point &p)
+PHAST_Transform::~PHAST_Transform(void)
+{
+}
+void PHAST_Transform::Transform(Point &p)
 {
 	boost::numeric::ublas::vector<double> v(4);
 	v(0) = p.x();
@@ -100,7 +81,7 @@ void PHAST_Transform::transform(Point &p)
 	p.set_y(vt(1));
 	p.set_z(vt(2));
 }
-void PHAST_Transform::inverse_transform(Point &p)
+void PHAST_Transform::Inverse_transform(Point &p)
 {
 	boost::numeric::ublas::vector<double> v(4);
 	v(0) = p.x();
@@ -116,8 +97,22 @@ void PHAST_Transform::inverse_transform(Point &p)
 	p.set_y(vt(1));
 	p.set_z(vt(2));
 }
-PHAST_Transform::~PHAST_Transform(void)
+
+void PHAST_Transform::Transform(std::vector<Point> &pts)
 {
+	std::vector<Point>::iterator it;
+	for (it = pts.begin(); it != pts.end(); it++)
+	{
+		this->Transform(*it);
+	}
+}
+void PHAST_Transform::Inverse_transform(std::vector<Point> &pts)
+{
+	std::vector<Point>::iterator it;
+	for (it = pts.begin(); it != pts.end(); it++)
+	{
+		this->Inverse_transform(*it);
+	}
 }
 //http://na37.nada.kth.se/mediawiki/index.php/Using_uBLAS#Examples
 //http://en.wikipedia.org/wiki/Transformation_matrix

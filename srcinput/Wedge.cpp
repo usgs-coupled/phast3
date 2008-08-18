@@ -4,6 +4,7 @@
 #include "message.h"
 #include "gpc.h"
 #include "Utilities.h"
+#include "PHAST_Transform.h"
 // Constructors
 
 // Note: No header files should follow the next three lines
@@ -14,6 +15,7 @@
 Wedge::Wedge(void)
 {
   this->type = WEDGE;
+  this->coordinate_system = PHAST_Transform::GRID;
 
   // Default wedge
   this->p.push_back(Point(0.0, 0.0, 0.0));
@@ -48,6 +50,7 @@ Wedge::Wedge(void)
 Wedge::Wedge(const struct zone *zone_ptr, std::string &orientation)
 {
   this->type = WEDGE;
+  this->coordinate_system = PHAST_Transform::GRID;
 
   this->p.clear();
   // Put points in standard form

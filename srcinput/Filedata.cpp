@@ -34,3 +34,28 @@ void Clear_file_data_map(void)
   }
   Filedata::file_data_map.clear();
 }
+
+void Filedata::Add_to_pts_map (int attribute)
+{
+  // Store list of points if necessary
+  if (this->pts_map.size() == 0 || (this->pts_map.find(attribute) == this->pts_map.end()) )
+  {
+    std::vector<Point> temp_pts; 
+    this->Make_points(attribute, temp_pts, 1.0, 1.0);
+
+    this->pts_map[attribute] = temp_pts;
+  }
+}
+#ifdef SKIP
+void Filedata::Convert_coordinates (int attribute, PHAST_Transform &transform, PHAST_Transform::)
+{
+  // Store list of points if necessary
+  if (this->pts_map.size() == 0 || (this->pts_map.find(attribute) == this->pts_map.end()) )
+  {
+    std::vector<Point> temp_pts; 
+    this->Make_points(attribute, temp_pts, 1.0, 1.0);
+
+    this->pts_map[attribute] = temp_pts;
+  }
+}
+#endif

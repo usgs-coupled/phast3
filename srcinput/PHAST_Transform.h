@@ -7,16 +7,26 @@
 
 class PHAST_Transform
 {
-
+public:
+  enum COORDINATE_SYSTEM
+  {
+    MAP          = 0,
+    GRID         = 1,
+	NONE         = 2
+  };
 public:
 	PHAST_Transform(void);
 	PHAST_Transform(double x, double y, double z, double angle);
-	void transform(Point &p);
-	void inverse_transform(Point &p);
+	void Transform(Point &p);
+	void Inverse_transform(Point &p);
+	void Transform(std::vector<Point> &pts);
+	void Inverse_transform(std::vector<Point> &pts);
 public:
 	virtual ~PHAST_Transform(void);
 
 	boost::numeric::ublas::matrix<double> trans;
 	boost::numeric::ublas::matrix<double> inverse;
 };
+extern PHAST_Transform *map_to_grid;
+extern PHAST_Transform::COORDINATE_SYSTEM coordinate_conversion;
 #endif // !defined(PHAST_TRANSFORM_H_INCLUDED)

@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
 	}
 	*/
 #ifdef SKIP
-#endif
+
 
 	// test transformation
 	PHAST_Transform map_to_grid(grid_origin[0], grid_origin[1], grid_origin[2], grid_angle);
@@ -99,6 +99,7 @@ int main(int argc, char *argv[])
 		}
 	}
 	exit(4);
+#endif
 	check_hst_units();
 	check_time_series_data();
 	if (input_error == 0) {
@@ -308,6 +309,9 @@ int clean_up(void)
 		grid_elt_free(grid_elt_zones[i]);
 	}
 	free_check_null(grid_elt_zones);
+
+	/* transformation */
+	delete map_to_grid;
 
 	/* Chem_ic */
 	for (i = 0; i < count_chem_ic; i++) {

@@ -7,6 +7,7 @@
 #include "Point.h"
 #include "zone.h"
 #include "Cell_Face.h"
+#include "PHAST_Transform.h"
 
 class Polyhedron
 {
@@ -26,12 +27,6 @@ public:
     PRISM        = 2
   };
 
-  enum COORDINATE_SYSTEM
-  {
-    MAP          = 0,
-    GRID         = 1
-  };
-
   // Methods
   virtual void Points_in_polyhedron(std::list<int> & list, std::vector<Point> &point_xyz) = 0;
   virtual Polyhedron* clone() const = 0;
@@ -41,6 +36,7 @@ public:
 
   struct zone *Get_bounding_box() {return &(this->box);}
   std::string *Get_description() {return &(this->description);}
+  PHAST_Transform::COORDINATE_SYSTEM Get_coordinate_system() {return this->coordinate_system;}
   bool Point_in_bounding_box(const Point &pt);
   enum POLYHEDRON_TYPE get_type(void)const;
 
@@ -56,7 +52,7 @@ protected:
   enum POLYHEDRON_TYPE type;
   struct zone box;
   std::string description;
-  enum COORDINATE_SYSTEM coordinate_system;
+  PHAST_Transform::COORDINATE_SYSTEM coordinate_system;
 
 };
 

@@ -9,6 +9,7 @@
 #include "unit_impl.h"
 #include "Polygon_tree.h"
 #include "KDtree/KDtree.h"
+#include "PHAST_Transform.h"
 class Filedata;
 class Point;
 struct zone;
@@ -73,6 +74,9 @@ public:
   void                     Set_points             (std::vector<Point> pts);
   Data_source &            operator=              (const Data_source& r);
 
+  PHAST_Transform::COORDINATE_SYSTEM   Get_coordinate_system() {return this->coordinate_system;};
+  void                                 Set_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM c) {this->coordinate_system = c;};
+
   friend std::ostream& operator<< (std::ostream &os, const Data_source &ds);
 
   // Data
@@ -91,6 +95,7 @@ protected:
   int                columns;
   int                attribute;
   struct zone        box;
+  PHAST_Transform::COORDINATE_SYSTEM   coordinate_system;
 };
 
 inline KDtree * Data_source::Get_tree3d(void)
