@@ -312,6 +312,7 @@ int clean_up(void)
 
 	/* transformation */
 	delete map_to_grid;
+	map_to_grid = NULL;
 
 	/* Chem_ic */
 	for (i = 0; i < count_chem_ic; i++) {
