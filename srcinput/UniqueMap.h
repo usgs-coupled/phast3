@@ -19,10 +19,10 @@ public:
 	size_t push_back(const _Ty& val)
 	{
 		assert(this->data.size() == this->inverse_map.size());
-		std::map<_Ty, size_t>::iterator it = this->inverse_map.find(val);
+		typename std::map<_Ty, size_t>::iterator it = this->inverse_map.find(val);
 		if (it == this->inverse_map.end())
 		{
-			std::map<_Ty, size_t>::value_type v(val, this->data.size());
+			typename std::map<_Ty, size_t>::value_type v(val, this->data.size());
 			this->inverse_map.insert(v);
 			this->data.push_back(val);
 			assert(this->data.size() == this->inverse_map.size());
