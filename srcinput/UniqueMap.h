@@ -33,74 +33,88 @@ public:
 
 	size_t size(void)const
 	{
-		assert(inverse_map.size() == data.size());
-		return data.size();
+		assert(this->inverse_map.size() == this->data.size());
+		return this->data.size();
 	}
 
 	iterator begin(void)
 	{
-		return data.begin();
+		return this->data.begin();
 	}
 
 	const_iterator begin(void)const
 	{
-		return data.begin();
+		return this->data.begin();
 	}
 
 	iterator end(void)
 	{
-		return data.end();
+		return this->data.end();
 	}
 
 	const_iterator end(void)const
 	{
-		return data.end();
+		return this->data.end();
 	}
 
 	void replace(size_t i, const _Ty& val)
 	{
-		assert(i < data.size());
-		if (i < data.size())
+		assert(i < this->data.size());
+		if (i < this->data.size())
 		{
-			data[i] = val;
+			typename std::map<_Ty, size_t>::iterator it = this->inverse_map.find(this->data[i]);
+			assert(it != this->inverse_map.end());
+			if (it != this->inverse_map.end())
+			{
+				this->inverse_map.erase(it);
+				typename std::map<_Ty, size_t>::value_type v(val, i);
+				this->inverse_map.insert(v);
+			}
+			this->data[i] = val;
 		}
 	}
 
 	void erase(size_t i)
 	{
-		assert(i < data.size());
-		if (i < data.size())
+		assert(i < this->data.size());
+		if (i < this->data.size())
 		{
-			data.erase(data.begin() + i);
+			typename std::map<_Ty, size_t>::iterator it = this->inverse_map.find(this->data[i]);
+			assert(it != this->inverse_map.end());
+			if (it != this->inverse_map.end())
+			{
+				this->inverse_map.erase(it);
+			}
+			this->data.erase(data.begin() + i);
 		}
 	}
 
 	void clear(void)
 	{
-		data.clear();
-		inverse_map.clear();
+		this->data.clear();
+		this->inverse_map.clear();
 	}
 
 	iterator find(size_t i)
 	{
-		assert(i < data.size());
-		if (i < data.size())
+		assert(i < this->data.size());
+		if (i < this->data.size())
 		{
-			return data.begin() + i;
+			return this->data.begin() + i;
 		}
-		return data.end();
+		return this->data.end();
 	}
 
 	reference at(size_t i)
 	{
-		assert(i < data.size());
-		return data.at(i);
+		assert(i < this->data.size());
+		return this->data.at(i);
 	}
 
 	const_reference at(size_t i) const
 	{
-		assert(i < data.size());
-		return data.at(i);
+		assert(i < this->data.size());
+		return this->data.at(i);
 	}
 
 protected:
