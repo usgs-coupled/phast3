@@ -1,0 +1,118 @@
+Running PHASTINPUT.
+
+Processing flow and transport data file.
+
+	UNITS
+	        time                                 years
+	        horizontal_grid                      meters
+	        vertical_grid                        meters
+	        head                                 meters
+	        hydraulic_conductivity               m/s
+	        specific_storage                     1/m
+	        dispersivity                         m
+	        leaky_k                              m/sec
+	        leaky_thickness                      m
+	        flux                                 m/yr
+	        river_bed_thickness                  m
+	        river_bed_hydraulic_conductivity     m/s     
+	        well_diameter                        in
+	        well_flow_rate                       L/day
+	GRID
+	        uniform x    0    90000    16
+	        uniform y    0    48000    9
+	        uniform z    0    400      5
+	        print_orientation                    XY 
+	SOLUTE_TRANSPORT false
+	MEDIA
+	        zone   0. 0. 0. 90000.  48000. 400.
+	                porosity                     0.22
+	                long_dispersivity            2000.
+	                horizontal_dispersivity      50.
+	                vertical_dispersivity        50.
+	                kx                           1.5e-5
+	                ky                           1.5e-5
+	                kz                           1.5e-7
+	                storage                      0
+		zone 84000  42000  300   90000 48000 400  
+		        active 0
+		zone 0  0  0   6000 48000 100
+		        active 0
+	FLUX_BC
+	        zone   84000  0 0 90000 48000 400
+			face X
+	                flux  	   0  10    # m/yr
+	LEAKY_BC
+	        zone   0. 0. 0. 6000. 48000. 400.
+	                hydraulic_conductivity                    1.5e-5
+	                thickness                   30000.
+	                head                         0         305.0
+	                associated_solution                   0         1
+	FREE_SURFACE_BC false
+	HEAD_IC
+	        zone   0. 0. 0. 90000. 48000. 400.
+	                head  400.
+	SOLUTION_METHOD
+	        iterative_solver       false
+	        space_differencing     0.
+	        time_differencing      1.
+	TIME_CONTROL
+	        delta_time     0               2000    yr
+	        end_time                       10000   yr
+	PRINT_INITIAL
+	        velocities             true
+	        xyz_head               true
+	        xyz_ss_velocities      true
+	END
+WARNING: Guessing boundary condition face to be X
+Please specify X, Y, or Z face for LEAKY_BC and FLUX_BC.
+WARNING: Identifiers Steady_flow_velocities, HDF_steady_flow_velocities,
+         and XYZ_steady_flow_velocities only apply for steady-flow calculations.
+
+PHASTINPUT done.
+
+Running PHAST.
+
+.
+.
+Reading static data for flow and transport simulation
+Linear solver array dimension requirement (D4 direct solver).......... NSTSLV    33297 elements
+Primary storage requirement (D4 direct solver)........................ NPRIST    26456 elements
+Overhead storage requirement (D4 direct solver)....................... NOHST .    6841 elements
+                    *** Calculation Information ***
+          Row scaling only, using L-inf norm, will be done
+
+Beginning transient simulation.
+Reading transient data for simulation: Set  1
+     Time at which next set of transient parameters will be read .......... TIMCHG  1.000E+04  (yr)
+
+Beginning time step no.      1
+     Beginning flow calculation.
+     End of Time Step No.     1
+     Time ..................................................    2000.00     (yr)
+
+Beginning time step no.      2
+     Beginning flow calculation.
+     End of Time Step No.     2
+     Time ..................................................    4000.00     (yr)
+
+Beginning time step no.      3
+     Beginning flow calculation.
+     End of Time Step No.     3
+     Time ..................................................    6000.00     (yr)
+
+Beginning time step no.      4
+     Beginning flow calculation.
+     End of Time Step No.     4
+     Time ..................................................    8000.00     (yr)
+
+Beginning time step no.      5
+     Current time step length ...................................   2.000E+03 (yr)
+     Beginning flow calculation.
+     End of Time Step No.     5
+     Time ..................................................    10000.0     (yr)
+     Maximum change in potentiometric head  -1.7467E-13      (m ) at location ( 6.000E+04, 4.800E+04,  200.    )(m)
+Done with transient simulation.
+
+                             ***** Simulation Completed *****
+     Last time value calculated ...................................... 1.0000E+04 (yr)
+     Last time step index ............................................       5
