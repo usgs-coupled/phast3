@@ -308,7 +308,7 @@ Reading transient data for simulation: Set  1
 Beginning time step no.      1
      Current time step length ...................................    1.00     (s)
      Beginning flow calculation.
-          No. of solver iterations, Relative residual:    2      3.1325548E-13
+          No. of solver iterations, Relative residual:    2      3.2707458E-13
      Beginning solute-transport calculation.
           H
           O
@@ -325,18 +325,18 @@ Beginning time step no.      1
      End of Time Step No.     1
      Time ..................................................    1.00000     (s)
      Maximum change in potentiometric head   1.9983E+01      (m ) at location ( 0.500    , 0.500    ,  0.00    )(m)
-     Maximum change in H ..................  2.9093E-19 (mol/kgw) at location ( 0.500    ,  0.00    ,  1.00    )(m)
-     Maximum change in O ..................  1.4573E-19 (mol/kgw) at location ( 0.500    ,  0.00    ,  1.00    )(m)
-     Maximum change in Cl .................  1.4037E-15 (mol/kgw) at location ( 0.500    ,  0.00    ,  1.00    )(m)
-     Maximum change in Na .................  1.4038E-15 (mol/kgw) at location ( 0.500    ,  0.00    ,  1.00    )(m)
-     Maximum change in Charge ............. -5.1341E-22 (mol/kgw) at location ( 0.500    ,  0.00    ,  1.00    )(m)
+     Maximum change in H ..................  3.0694E-19 (mol/kgw) at location ( 0.500    ,  0.00    ,  1.00    )(m)
+     Maximum change in O ..................  1.5374E-19 (mol/kgw) at location ( 0.500    ,  0.00    ,  1.00    )(m)
+     Maximum change in Cl .................  1.4809E-15 (mol/kgw) at location ( 0.500    ,  0.00    ,  1.00    )(m)
+     Maximum change in Na .................  1.4810E-15 (mol/kgw) at location ( 0.500    ,  0.00    ,  1.00    )(m)
+     Maximum change in Charge ............. -5.4170E-22 (mol/kgw) at location ( 0.500    ,  0.00    ,  1.00    )(m)
 Reading transient data for simulation: Set  2
      Time at which next set of transient parameters will be read .......... TIMCHG   2.00      (s)
 
 Beginning time step no.      2
      Current time step length ...................................    1.00     (s)
      Beginning flow calculation.
-          No. of solver iterations, Relative residual:    2      9.2762775E-14
+          No. of solver iterations, Relative residual:    2      7.1516856E-14
      Beginning solute-transport calculation.
           H
           O
@@ -353,10 +353,10 @@ Beginning time step no.      2
      End of Time Step No.     2
      Time ..................................................    2.00000     (s)
      Maximum change in potentiometric head   5.8603E+00      (m ) at location (  0.00    , 0.500    ,  1.00    )(m)
-     Maximum change in H .................. -1.0844E-20 (mol/kgw) at location (  0.00    , 0.500    ,  1.00    )(m)
-     Maximum change in O .................. -5.4299E-21 (mol/kgw) at location (  0.00    , 0.500    ,  1.00    )(m)
-     Maximum change in Cl ................. -1.4039E-15 (mol/kgw) at location ( 0.500    ,  0.00    ,  1.00    )(m)
-     Maximum change in Na ................. -1.4013E-15 (mol/kgw) at location ( 0.500    ,  0.00    ,  1.00    )(m)
+     Maximum change in H .................. -1.0194E-20 (mol/kgw) at location (  0.00    , 0.500    ,  1.00    )(m)
+     Maximum change in O .................. -5.0933E-21 (mol/kgw) at location (  0.00    , 0.500    ,  1.00    )(m)
+     Maximum change in Cl ................. -1.4768E-15 (mol/kgw) at location ( 0.500    ,  0.00    ,  1.00    )(m)
+     Maximum change in Na ................. -1.4742E-15 (mol/kgw) at location ( 0.500    ,  0.00    ,  1.00    )(m)
      Maximum change in Charge .............  2.5921E-18 (mol/kgw) at location (  1.00    ,  1.00    , 0.500    )(m)
 Reading transient data for simulation: Set  3
      Time at which next set of transient parameters will be read .......... TIMCHG   3.00      (s)
@@ -364,7 +364,7 @@ Reading transient data for simulation: Set  3
 Beginning time step no.      3
      Current time step length ...................................    1.00     (s)
      Beginning flow calculation.
-          No. of solver iterations, Relative residual:    2      7.8718944E-15
+          No. of solver iterations, Relative residual:    2      1.5032198E-14
      Beginning solute-transport calculation.
           H
           O
@@ -381,18 +381,18 @@ Beginning time step no.      3
      End of Time Step No.     3
      Time ..................................................    3.00000     (s)
      Maximum change in potentiometric head   2.3265E+00      (m ) at location (  0.00    , 0.500    ,  1.00    )(m)
-     Maximum change in H ..................  1.1103E-22 (mol/kgw) at location (  1.00    ,  0.00    , 0.500    )(m)
-     Maximum change in O ..................  5.5836E-23 (mol/kgw) at location (  1.00    ,  0.00    , 0.500    )(m)
-     Maximum change in Cl ................. -4.1330E-16 (mol/kgw) at location (  1.00    ,  0.00    ,  1.00    )(m)
-     Maximum change in Na ................. -4.1188E-16 (mol/kgw) at location (  1.00    ,  0.00    ,  1.00    )(m)
-     Maximum change in Charge .............  2.2165E-18 (mol/kgw) at location (  0.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in H ..................  2.2616E-22 (mol/kgw) at location (  1.00    ,  0.00    , 0.500    )(m)
+     Maximum change in O ..................  1.1352E-22 (mol/kgw) at location (  1.00    ,  0.00    , 0.500    )(m)
+     Maximum change in Cl ................. -4.3434E-16 (mol/kgw) at location (  1.00    ,  0.00    ,  1.00    )(m)
+     Maximum change in Na ................. -4.3265E-16 (mol/kgw) at location (  1.00    ,  0.00    ,  1.00    )(m)
+     Maximum change in Charge .............  1.6807E-18 (mol/kgw) at location (  1.00    ,  0.00    ,  1.00    )(m)
 Reading transient data for simulation: Set  4
      Time at which next set of transient parameters will be read .......... TIMCHG   4.00      (s)
 
 Beginning time step no.      4
      Current time step length ...................................    1.00     (s)
      Beginning flow calculation.
-          No. of solver iterations, Relative residual:    2      2.0596411E-14
+          No. of solver iterations, Relative residual:    2      2.1837368E-14
      Beginning solute-transport calculation.
           H
           O
@@ -408,12 +408,12 @@ Beginning time step no.      4
 
      End of Time Step No.     4
      Time ..................................................    4.00000     (s)
-     Maximum change in potentiometric head   3.0031E-01      (m ) at location (  0.00    , 0.500    ,  1.00    )(m)
-     Maximum change in H ..................  5.1831E-23 (mol/kgw) at location (  0.00    ,  0.00    , 0.500    )(m)
-     Maximum change in O ..................  2.2371E-23 (mol/kgw) at location (  0.00    , 0.500    , 0.500    )(m)
-     Maximum change in Cl ................. -1.5995E-16 (mol/kgw) at location (  1.00    ,  0.00    ,  1.00    )(m)
-     Maximum change in Na ................. -1.5855E-16 (mol/kgw) at location (  1.00    ,  0.00    ,  1.00    )(m)
-     Maximum change in Charge .............  1.3218E-18 (mol/kgw) at location (  1.00    ,  0.00    ,  1.00    )(m)
+     Maximum change in potentiometric head   3.0030E-01      (m ) at location (  0.00    , 0.500    ,  1.00    )(m)
+     Maximum change in H .................. -3.9045E-23 (mol/kgw) at location ( 0.500    , 0.500    ,  0.00    )(m)
+     Maximum change in O .................. -1.5679E-23 (mol/kgw) at location (  0.00    ,  1.00    , 0.500    )(m)
+     Maximum change in Cl ................. -1.6872E-16 (mol/kgw) at location (  1.00    ,  0.00    ,  1.00    )(m)
+     Maximum change in Na ................. -1.6801E-16 (mol/kgw) at location (  1.00    ,  0.00    ,  1.00    )(m)
+     Maximum change in Charge .............  2.4966E-18 (mol/kgw) at location (  1.00    , 0.500    ,  1.00    )(m)
 Reading transient data for simulation: Set  5
      Time at which next set of transient parameters will be read .......... TIMCHG   8.00      (s)
 
@@ -456,7 +456,7 @@ Beginning time step no.      7
 Beginning time step no.      8
      Current time step length ...................................    1.00     (s)
      Beginning flow calculation.
-          No. of solver iterations, Relative residual:    2      7.8679661E-14
+          No. of solver iterations, Relative residual:    2      8.1960259E-14
      Beginning solute-transport calculation.
           H
           O
@@ -472,12 +472,12 @@ Beginning time step no.      8
 
      End of Time Step No.     8
      Time ..................................................    8.00000     (s)
-     Maximum change in potentiometric head   2.5038E-01      (m ) at location (  0.00    ,  1.00    ,  1.00    )(m)
-     Maximum change in H ..................  9.1876E-23 (mol/kgw) at location ( 0.500    ,  1.00    ,  1.00    )(m)
-     Maximum change in O ..................  4.6305E-23 (mol/kgw) at location ( 0.500    ,  1.00    ,  1.00    )(m)
-     Maximum change in Cl .................  1.6176E-17 (mol/kgw) at location (  0.00    ,  1.00    , 0.500    )(m)
-     Maximum change in Na .................  1.6367E-17 (mol/kgw) at location (  0.00    ,  1.00    , 0.500    )(m)
-     Maximum change in Charge .............  7.3852E-19 (mol/kgw) at location (  1.00    , 0.500    ,  0.00    )(m)
+     Maximum change in potentiometric head   2.5040E-01      (m ) at location (  0.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in H ..................  1.2250E-22 (mol/kgw) at location ( 0.500    ,  1.00    ,  1.00    )(m)
+     Maximum change in O ..................  4.6307E-23 (mol/kgw) at location ( 0.500    ,  1.00    ,  1.00    )(m)
+     Maximum change in Cl .................  1.6805E-17 (mol/kgw) at location (  0.00    ,  1.00    , 0.500    )(m)
+     Maximum change in Na .................  1.6826E-17 (mol/kgw) at location (  0.00    ,  1.00    , 0.500    )(m)
+     Maximum change in Charge ............. -3.7135E-19 (mol/kgw) at location (  1.00    ,  0.00    ,  1.00    )(m)
 Reading transient data for simulation: Set  6
      Time at which next set of transient parameters will be read .......... TIMCHG   10.0      (s)
 
@@ -496,7 +496,7 @@ Beginning time step no.      9
 Beginning time step no.     10
      Current time step length ...................................    1.00     (s)
      Beginning flow calculation.
-          No. of solver iterations, Relative residual:    2      7.8643421E-14
+          No. of solver iterations, Relative residual:    2      8.1923181E-14
      Beginning solute-transport calculation.
           H
           O
@@ -512,12 +512,12 @@ Beginning time step no.     10
 
      End of Time Step No.    10
      Time ..................................................    10.0000     (s)
-     Maximum change in potentiometric head   2.4303E-01      (m ) at location (  0.00    ,  1.00    ,  1.00    )(m)
-     Maximum change in H ..................  9.1872E-23 (mol/kgw) at location ( 0.500    ,  1.00    ,  1.00    )(m)
-     Maximum change in O ..................  3.0869E-23 (mol/kgw) at location ( 0.500    ,  1.00    ,  1.00    )(m)
-     Maximum change in Cl .................  1.0771E-17 (mol/kgw) at location (  0.00    ,  1.00    , 0.500    )(m)
-     Maximum change in Na .................  1.0811E-17 (mol/kgw) at location (  0.00    ,  1.00    , 0.500    )(m)
-     Maximum change in Charge .............  3.7858E-19 (mol/kgw) at location (  1.00    ,  0.00    ,  1.00    )(m)
+     Maximum change in potentiometric head   2.4305E-01      (m ) at location (  0.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in H .................. -7.4708E-23 (mol/kgw) at location (  0.00    ,  0.00    ,  1.00    )(m)
+     Maximum change in O .................. -3.7653E-23 (mol/kgw) at location (  0.00    ,  0.00    ,  1.00    )(m)
+     Maximum change in Cl .................  1.0974E-17 (mol/kgw) at location (  0.00    ,  1.00    , 0.500    )(m)
+     Maximum change in Na .................  1.1204E-17 (mol/kgw) at location (  0.00    ,  1.00    , 0.500    )(m)
+     Maximum change in Charge .............  5.2328E-19 (mol/kgw) at location ( 0.500    ,  0.00    ,  0.00    )(m)
 Done with transient simulation.
 
                              ***** Simulation Completed *****

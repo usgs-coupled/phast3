@@ -7,7 +7,7 @@
                               X-Direction Node Coordinates    (m)
 
            1           2           3
-           0.00        0.50        1.00
+              0        0.50        1.00
 
 
 
@@ -15,7 +15,7 @@
                               Y-Direction Node Coordinates   (m)
 
            1           2           3
-           0.00        0.50        1.00
+              0        0.50        1.00
 
 
 
@@ -23,7 +23,7 @@
                               Z-Direction Node Coordinates   (m)
 
            1           2           3
-           0.00        0.50        1.00
+              0        0.50        1.00
 
 
 
@@ -87,7 +87,7 @@
                               *** Output at End of Time Step No.     1 ***
 
      Time .......................................................    1.00      (s)
-     Maximum change in potentiometric head ...  1.9983E+01      (m )   at location ( 0.500    , 0.500    ,  0.00    )(m )
+     Maximum change in potentiometric head ...  1.9983E+01      (m )   at location ( 0.500    , 0.500    ,     0    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -96,16 +96,16 @@
                                                             K =  1
 
            1           2           3
-  3      13.788      11.001       1.000
-  2      17.459      20.983       1.000
-  1      15.580      14.337       1.000
+  3      13.957      11.001       1.000
+  2      17.653      20.983       1.000
+  1      15.822      14.473       1.000
 
                                                             K =  2
 
            1           2           3
-  3       6.510       1.007       1.000
-  2      11.993       6.223       1.006
-  1      11.000       9.995       5.262
+  3       6.547       1.007       1.000
+  2      11.993       6.253       1.006
+  1      11.000       9.996       5.287
 
                                                             K =  3
 
@@ -132,7 +132,7 @@
                               *** Output at End of Time Step No.     2 ***
 
      Time .......................................................    2.00      (s)
-     Maximum change in potentiometric head ...  5.8603E+00      (m )   at location (  0.00    , 0.500    ,  1.00    )(m )
+     Maximum change in potentiometric head ...  5.8603E+00      (m )   at location (     0    , 0.500    ,  1.00    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -141,16 +141,16 @@
                                                             K =  1
 
            1           2           3
-  3      14.625      11.501       1.000
-  2      18.517      21.982       1.000
-  1      16.612      15.180       1.000
+  3      14.636      11.501       1.000
+  2      18.530      21.982       1.000
+  1      16.628      15.188       1.000
 
                                                             K =  2
 
            1           2           3
-  3       7.037       1.008       1.000
-  2      12.992       6.752       1.007
-  1      12.000      10.995       5.763
+  3       7.040       1.008       1.000
+  2      12.992       6.755       1.007
+  1      12.000      10.995       5.766
 
                                                             K =  3
 
@@ -168,16 +168,16 @@
                                                             K =  3
 
            1           2           3
-  3      1.2648     11.9966     12.6540
+  3      1.2648     11.9967     12.6541
   2     33.8162      3.8120      3.3892
-  1     44.5115     39.6872      1.4839
+  1     44.5115     39.6873      1.4839
 
 
 
                               *** Output at End of Time Step No.     3 ***
 
      Time .......................................................    3.00      (s)
-     Maximum change in potentiometric head ...  2.3265E+00      (m )   at location (  0.00    , 0.500    ,  1.00    )(m )
+     Maximum change in potentiometric head ...  2.3265E+00      (m )   at location (     0    , 0.500    ,  1.00    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -213,7 +213,7 @@
                                                             K =  3
 
            1           2           3
-  3      2.0578     12.6834     12.9289
+  3      2.0579     12.6835     12.9289
   2     43.1223      3.8603      3.4020
   1     44.6880     40.3924      2.2732
 
@@ -222,7 +222,7 @@
                               *** Output at End of Time Step No.     4 ***
 
      Time .......................................................    4.00      (s)
-     Maximum change in potentiometric head ...  3.0031E-01      (m )   at location (  0.00    , 0.500    ,  1.00    )(m )
+     Maximum change in potentiometric head ...  3.0030E-01      (m )   at location (     0    , 0.500    ,  1.00    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -267,7 +267,7 @@
                               *** Output at End of Time Step No.     8 ***
 
      Time .......................................................    8.00      (s)
-     Maximum change in potentiometric head ...  2.5038E-01      (m )   at location (  0.00    ,  1.00    ,  1.00    )(m )
+     Maximum change in potentiometric head ...  2.5040E-01      (m )   at location (     0    ,  1.00    ,  1.00    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -303,16 +303,16 @@
                                                             K =  3
 
            1           2           3
-  3      7.1316     12.9570     12.9840
+  3      7.1318     12.9570     12.9840
   2     44.4593      3.8747      3.4037
-  1     44.6898     40.4097      6.2096
+  1     44.6898     40.4097      6.2097
 
 
 
                               *** Output at End of Time Step No.    10 ***
 
      Time .......................................................    10.0      (s)
-     Maximum change in potentiometric head ...  2.4303E-01      (m )   at location (  0.00    ,  1.00    ,  1.00    )(m )
+     Maximum change in potentiometric head ...  2.4305E-01      (m )   at location (     0    ,  1.00    ,  1.00    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -348,9 +348,9 @@
                                                             K =  3
 
            1           2           3
-  3      9.0914     12.9602     12.9840
+  3      9.0918     12.9602     12.9840
   2     44.4594      3.8747      3.4041
-  1     44.6898     40.4098      7.7262
+  1     44.6898     40.4098      7.7264
 
 
 

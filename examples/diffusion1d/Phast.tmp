@@ -42,7 +42,7 @@ C.1.5 .. TMUNIT[I]
 1
 C.1.6 .. NX,NY,NZ,NHCN, Number of elements
      501 2 2 0 500
-C.1.7 .. NSBC,NFBC,NLBC,NRBC,NAIFC,NHCBC,NWEL,NDRAINS
+C.1.7 .. NSBC,NFBC,NLBC,NRBC,NDBC, NAIFC,NHCBC,NWEL
      2 0 0 0 0 0 0 0
 C.1.8 .. SLMETH[I], NPA4
      5 0
@@ -663,12 +663,12 @@ C------------------------------------------------------------------------------
 C.....     Aquifer and river leakage b.c.
 C.2.16.1 modified: segment number, cell_number, face, area, permeability, thickness, elevation
 C.....          River leakage b.c.
-C.2.16.3 .. X1,Y1,X2,Y2,KRBC,BBRBC,ZERBC;(O) - NLBC [1.6] > 0
-C.2.16.3 .. cell number, area, leakance, z
+C.2.16.3 .. X1,Y1,X2,Y2,KRBC,BBRBC,ZERBC;(O) - NLBC [1.6] > 0 ***obsolete
+C.2.16.3 .. seg number cell number, area, leakance, z
 C.2.16.4 .. End with END
-C.....          drain leakage b.c.
-C.2.16.3 .. cell number, area, leakance, z
-C.2.16.4 .. End with END
+C.....          Drain leakage b.c.
+C.2.17.3 .. seg number, cell number, area, leakance, z
+C.2.17.4 .. End with END
 C------------------------------------------------------------------------------
 C.....     Aquifer influence functions
 C.2.18.1 .. IBC by x,y,z range {0.1-0.3} with no IMOD parameter;(O) -
@@ -856,8 +856,8 @@ C.3.7.2 .. AUTOTS[T/F];(O) - RDCALC [3.7.1]
      f
 C.3.7.3.A .. DELTIM;(O) - RDCALC [3.7.1] and NOT AUTOTS [3.7.2]
      0.01
-C.3.7.3.B .. DPTAS{5E4},DCTAS{.25},DTIMMN{1.E4},DTIMMX{1.E7};
-     2.94199 1 1e-05 10
+C.3.7.3.B .. DPTAS{5E4},DCTAS{.25},DTIMMN{1.E4},DTIMMX{1.E7}, Growth_factor;
+     2.94199 1 1e-05 10 2
 C..           (O) - RDCALC [3.7.1] and AUTOTS [3.7.2]
 C.3.7.4 .. TIMCHG
      1

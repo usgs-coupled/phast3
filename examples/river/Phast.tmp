@@ -42,7 +42,7 @@ C.1.5 .. TMUNIT[I]
 1
 C.1.6 .. NX,NY,NZ,NHCN, Number of elements
      17 17 12 0 2816
-C.1.7 .. NSBC,NFBC,NLBC,NRBC,NAIFC,NHCBC,NWEL,NDRAINS
+C.1.7 .. NSBC,NFBC,NLBC,NRBC,NDBC, NAIFC,NHCBC,NWEL
      408 0 0 21 0 0 0 0
 C.1.8 .. SLMETH[I], NPA4
      5 0
@@ -3377,8 +3377,8 @@ C------------------------------------------------------------------------------
 C.....     Aquifer and river leakage b.c.
 C.2.16.1 modified: segment number, cell_number, face, area, permeability, thickness, elevation
 C.....          River leakage b.c.
-C.2.16.3 .. X1,Y1,X2,Y2,KRBC,BBRBC,ZERBC;(O) - NLBC [1.6] > 0
-C.2.16.3 .. cell number, area, leakance, z
+C.2.16.3 .. X1,Y1,X2,Y2,KRBC,BBRBC,ZERBC;(O) - NLBC [1.6] > 0 ***obsolete
+C.2.16.3 .. seg number cell number, area, leakance, z
 C.2.16.4 .. End with END
 1 3205 5.000000e+02 1.019716e-09 1.974167e+02
 2 3222 5.000000e+02 1.019716e-09 1.998333e+02
@@ -3399,12 +3399,12 @@ C.2.16.4 .. End with END
 17 3389 5.000000e+02 1.019716e-09 2.281250e+02
 18 3390 5.000000e+02 1.019716e-09 2.267500e+02
 19 3391 5.000000e+02 1.019716e-09 2.253750e+02
-20 3392 3.000000e+02 1.019716e-09 2.242559e+02
-21 3392 1.500000e+02 1.019716e-09 2.233314e+02
+20 3392 3.000000e+02 1.019716e-09 2.241461e+02
+21 3392 1.500000e+02 1.019716e-09 2.233153e+02
 END
-C.....          drain leakage b.c.
-C.2.16.3 .. cell number, area, leakance, z
-C.2.16.4 .. End with END
+C.....          Drain leakage b.c.
+C.2.17.3 .. seg number, cell number, area, leakance, z
+C.2.17.4 .. End with END
 C------------------------------------------------------------------------------
 C.....     Aquifer influence functions
 C.2.18.1 .. IBC by x,y,z range {0.1-0.3} with no IMOD parameter;(O) -
@@ -3945,8 +3945,8 @@ C.3.5.6 .. End with END
 17 2.300000e+02 -99 -99 1.000000e+00
 18 2.280000e+02 -99 -99 1.000000e+00
 19 2.260000e+02 -99 -99 1.000000e+00
-20 2.243722e+02 -99 -99 1.000000e+00
-21 2.234467e+02 -99 -99 1.000000e+00
+20 2.242125e+02 -99 -99 1.000000e+00
+21 2.234333e+02 -99 -99 1.000000e+00
 END
 C------------------------------------------------------------------------------
 C.....     Aquifer influence function b.c.
@@ -3962,8 +3962,8 @@ C.3.7.2 .. AUTOTS[T/F];(O) - RDCALC [3.7.1]
      f
 C.3.7.3.A .. DELTIM;(O) - RDCALC [3.7.1] and NOT AUTOTS [3.7.2]
      1000
-C.3.7.3.B .. DPTAS{5E4},DCTAS{.25},DTIMMN{1.E4},DTIMMX{1.E7};
-     809049 1 1 1e+06
+C.3.7.3.B .. DPTAS{5E4},DCTAS{.25},DTIMMN{1.E4},DTIMMX{1.E7}, Growth_factor;
+     809049 1 1 1e+06 2
 C..           (O) - RDCALC [3.7.1] and AUTOTS [3.7.2]
 C.3.7.4 .. TIMCHG
      5000

@@ -42,8 +42,8 @@ C.1.5 .. TMUNIT[I]
 6
 C.1.6 .. NX,NY,NZ,NHCN, Number of elements
      16 9 5 0 480
-C.1.7 .. NSBC,NFBC,NLBC,NRBC,NAIFC,NHCBC,NWEL,NDRAINS
-     2 76 60 36 0 0 1 0
+C.1.7 .. NSBC,NFBC,NLBC,NRBC,NDBC, NAIFC,NHCBC,NWEL
+     2 76 60 36 0 0 0 1
 C.1.8 .. SLMETH[I], NPA4
      5 0
 C------------------------------------------------------------------------------
@@ -732,8 +732,8 @@ C.2.16.1 modified: segment number, cell_number, face, area, permeability, thickn
    60 709 2     3.0000000000e+05     1.5295743195e-12     3.0000000000e+04     4.0000000000e+02
 END
 C.....          River leakage b.c.
-C.2.16.3 .. X1,Y1,X2,Y2,KRBC,BBRBC,ZERBC;(O) - NLBC [1.6] > 0
-C.2.16.3 .. cell number, area, leakance, z
+C.2.16.3 .. X1,Y1,X2,Y2,KRBC,BBRBC,ZERBC;(O) - NLBC [1.6] > 0 ***obsolete
+C.2.16.3 .. seg number cell number, area, leakance, z
 C.2.16.4 .. End with END
 1 584 6.000000e+05 1.019716e-07 3.216213e+02
 2 584 9.000000e+04 1.019716e-07 3.196930e+02
@@ -772,9 +772,9 @@ C.2.16.4 .. End with END
 35 719 6.000000e+05 1.019716e-07 2.836833e+02
 36 720 3.000000e+05 1.019716e-07 2.801708e+02
 END
-C.....          drain leakage b.c.
-C.2.16.3 .. cell number, area, leakance, z
-C.2.16.4 .. End with END
+C.....          Drain leakage b.c.
+C.2.17.3 .. seg number, cell number, area, leakance, z
+C.2.17.4 .. End with END
 C------------------------------------------------------------------------------
 C.....     Aquifer influence functions
 C.2.18.1 .. IBC by x,y,z range {0.1-0.3} with no IMOD parameter;(O) -
@@ -1187,8 +1187,8 @@ C.3.7.2 .. AUTOTS[T/F];(O) - RDCALC [3.7.1]
      f
 C.3.7.3.A .. DELTIM;(O) - RDCALC [3.7.1] and NOT AUTOTS [3.7.2]
      2000
-C.3.7.3.B .. DPTAS{5E4},DCTAS{.25},DTIMMN{1.E4},DTIMMX{1.E7};
-     1.1768e+06 1 2 2e+06
+C.3.7.3.B .. DPTAS{5E4},DCTAS{.25},DTIMMN{1.E4},DTIMMX{1.E7}, Growth_factor;
+     1.1768e+06 1 2 2e+06 2
 C..           (O) - RDCALC [3.7.1] and AUTOTS [3.7.2]
 C.3.7.4 .. TIMCHG
      100000
