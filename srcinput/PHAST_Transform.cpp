@@ -1,6 +1,7 @@
 #include "PHAST_Transform.h"
+#include "message.h"
 PHAST_Transform *map_to_grid = NULL;
-PHAST_Transform::COORDINATE_SYSTEM coordinate_conversion = PHAST_Transform::NONE;
+PHAST_Transform::COORDINATE_SYSTEM target_coordinate_system = PHAST_Transform::NONE;
 PHAST_Transform::PHAST_Transform(void)
 {
 	this->trans.resize(4, 4, false);
@@ -55,6 +56,79 @@ PHAST_Transform::PHAST_Transform(double x, double y, double z, double angle_degr
 	t(2,3) = z;
 
 	this->inverse = boost::numeric::ublas::prod(t, r);
+
+}
+PHAST_Transform::PHAST_Transform(double x, double y, double z, double angle_degrees, double scale_x, double scale_y, double scale_z)
+{
+	// Scale factors are map unit / grid unit
+	// Calculate scale factor from unit structure input_to_si_map / input_to_si_grid
+
+	this->trans.resize(4, 4, false);
+	this->trans.clear();
+
+	boost::numeric::ublas::matrix<double> t(4,4);
+	boost::numeric::ublas::matrix<double> r(4,4);
+	boost::numeric::ublas::matrix<double> s(4,4);
+	boost::numeric::ublas::matrix<double> p(4,4);
+
+	t.clear();
+	r.clear();
+	s.clear();
+	p.clear();
+
+	double angle = (angle_degrees / 180.) * acos(-1.0);
+
+	// set rotation matrix
+	r(0,0) = cos(angle);
+	r(0,1) = sin(angle);
+	r(1,0) = -sin(angle);
+	r(1,1) = cos(angle);
+	r(2,2) = 1.0;
+	r(3,3) = 1.0;
+
+	// set translation
+	t(0,3) = -x;
+	t(1,3) = -y;
+	t(2,3) = -z;
+	t(0,0) = 1.0;
+	t(1,1) = 1.0;
+	t(2,2) = 1.0;
+	t(3,3) = 1.0;
+
+	// set scaling
+	s(0,0) = scale_x;
+	s(1,1) = scale_y;
+	s(2,2) = scale_z;
+	s(3,3) = 1.0;
+
+	p = boost::numeric::ublas::prod(r, t);
+	this->trans = boost::numeric::ublas::prod(s, p);
+
+    // Make inverse
+	// set rotation matrix
+	r(0,0) = cos(angle);
+	r(0,1) = -sin(angle);
+	r(1,0) = sin(angle);
+	r(1,1) = cos(angle);
+
+	// set translation
+	t(0,3) = x;
+	t(1,3) = y;
+	t(2,3) = z;
+
+	// set scaling
+	if (scale_x == 0.0 || scale_y == 0.0 || scale_z == 0)
+	{
+		error_msg("Scale factor was 0.0 in tranform.", EA_STOP);
+	}
+	s(0,0) = 1.0/scale_x;
+	s(1,1) = 1.0/scale_y;
+	s(2,2) = 1.0/scale_z;
+
+	p.clear();
+
+	p = boost::numeric::ublas::prod(r, s);
+	this->inverse = boost::numeric::ublas::prod(t, p);
 
 }
 PHAST_Transform::~PHAST_Transform(void)

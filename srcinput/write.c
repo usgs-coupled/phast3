@@ -2,6 +2,7 @@
 #include "hstinpt.h"
 #include "message.h"
 #include "stddef.h"
+#include "Zone_budget.h"
 static char const svnid[] = "$Id$";
 
 char *line_from_string(char **ptr);
@@ -22,7 +23,7 @@ int write_media(void);
 int write_output_static(void);
 int write_output_transient(void);
 int write_source_sink(void);
-
+int write_zone_budget(void);
 /* ---------------------------------------------------------------------- */
 int write_hst(void)
 /* ---------------------------------------------------------------------- */
@@ -61,6 +62,7 @@ int write_hst(void)
 		write_ic();
 		write_calculation_static();
 		write_output_static();
+		//write_zone_budget();
 	} 
 	write_bc_transient();
 	write_calculation_transient();
@@ -449,7 +451,7 @@ int write_media(void)
 		if (free_surface == FALSE) {
 			cells[i].compress = cells[i].storage * units.s.input_to_si / (fluid_density * GRAVITY) - cells[i].porosity * fluid_compressibility;
 		} else {
-			cells[i].compress = 1e-9;
+			cells[i].compress = 0.0;
 		}
 		if (cells[i].compress < 0.0) {
 			storage_warning = TRUE;
@@ -1923,6 +1925,96 @@ int write_thru(int thru)
 		output_msg(OUTPUT_HST,"     f\n");
 		output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
 	}
+	return(OK);
+}
+/* ---------------------------------------------------------------------- */
+int write_zone_budget(void)
+/* ---------------------------------------------------------------------- */
+{
+
+	// Number zone budgets
+	output_msg(OUTPUT_HST, "C  Number of zone budgets followed by sets of: ");
+	output_msg(OUTPUT_HST, "C  User number/n, zone/n, 0s and 1s to define zone/n END/n ");
+	output_msg(OUTPUT_HST, "%d\n", (int) Zone_budget::zone_budget_map.size());
+
+	std::map<int, Zone_budget *>::iterator it;	
+	for (it = Zone_budget::zone_budget_map.begin(); it != Zone_budget::zone_budget_map.end(); it++)
+	{
+
+		// vector of zeros
+		std::vector<int> cells_in_budget;
+		cells_in_budget.reserve(nxyz);
+		int i;
+		for (i = 0; i < nxyz; i++)
+		{
+			cells_in_budget.push_back(0);
+		}
+
+		zone z;
+
+		it->second->Add_cells(cells_in_budget, &z, nxyz, cell_xyz);
+
+		assert (z.zone_defined);
+
+		// Print zone identifying number and description
+		output_msg(OUTPUT_HST, "%d %s\n", it->second->Get_n_user(), it->second->Get_description().c_str());
+
+		// Zone for domain
+
+		output_msg(OUTPUT_HST,"%15.7e %15.7e %15.7e %15.7e %15.7e %15.7e\n",
+		z.x1 * units.horizontal.input_to_si, 
+		z.x2 * units.horizontal.input_to_si,
+		z.y1 * units.horizontal.input_to_si, 
+		z.y2 * units.horizontal.input_to_si,
+		z.z1 * units.vertical.input_to_si, 
+		z.z2 * units.vertical.input_to_si);
+
+		// zeros and ones
+		struct index_range * range_ptr = zone_to_range(&z);
+		int j, k, n;
+		n = ijk_to_n(range_ptr->i1, range_ptr->j1, range_ptr->k1);
+		int count_values = 0;
+		int print_return = 0;
+		int value = cells_in_budget[n];
+		int value_old = value;
+
+		output_msg(OUTPUT_HST,"     ");
+		for (i = range_ptr->i1; i <= range_ptr->i2; i++)
+		{
+			for (j = range_ptr->j1; j <= range_ptr->j2; j++)
+			{
+				for (k = range_ptr->k1; k <= range_ptr->k2; k++)
+				{
+					n = ijk_to_n(i, j, k);
+					value = cells_in_budget[n];
+					if (value == value_old) {
+						count_values++;
+					} else {
+						if (count_values == 1) {
+							output_msg(OUTPUT_HST,"%d ", value_old);
+							print_return++;
+						} else {
+							output_msg(OUTPUT_HST,"%d*%d ", count_values, value_old);
+							print_return++;
+						}
+						value_old = value;
+						count_values = 1;
+					}
+					if (print_return > 5 ) {
+						output_msg(OUTPUT_HST,"\n     ");
+						print_return = 0;
+					}
+				}
+			}
+		}
+		if (count_values == 1) {
+			output_msg(OUTPUT_HST,"%d\n", value_old);
+		} else {
+			output_msg(OUTPUT_HST,"%d*%d\n", count_values, value_old);
+		}
+		output_msg(OUTPUT_HST,"END\n");
+	}
+
 	return(OK);
 }
 

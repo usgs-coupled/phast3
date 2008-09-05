@@ -1,7 +1,3 @@
-#define EXTERNAL extern
-#include "hstinpt.h"
-#include "message.h"
-static char const svnid[] = "$Id$";
 /*
 ===========================================================================
 
@@ -11,21 +7,22 @@ Project:   Generic Polygon Clipper
            exclusive-or or union of arbitrary polygon sets.
 
 File:      gpc.c
-Author:    Alan Murta (amurta@cs.man.ac.uk)
-Version:   2.21
-Date:      19th August 1998
+Author:    Alan Murta (email: gpc@cs.man.ac.uk)
+Version:   2.32
+Date:      17th December 2004
 
-Copyright: (C) 1997, Advanced Interfaces Group, University of Manchester.
-           All rights reserved.
+Copyright: (C) Advanced Interfaces Group,
+           University of Manchester.
 
-           This software may be freely copied, modified, and redistributed
-           provided that this copyright notice is preserved on all copies.
-           The intellectual property rights of the algorithms used reside
-           with the University of Manchester Advanced Interfaces Group.
+           This software is free for non-commercial use. It may be copied,
+           modified, and redistributed provided that this copyright notice
+           is preserved on all copies. The intellectual property rights of
+           the algorithms used reside with the University of Manchester
+           Advanced Interfaces Group.
 
-           You may not distribute this software, in whole or in part, as
-           part of any commercial product without the express consent of
-           the author.
+           You may not use this software, in whole or in part, in support
+           of any commercial product without the express consent of the
+           author.
 
            There is no warranty or other guarantee of fitness of this
            software for any purpose. It is provided solely "as is".
@@ -40,11 +37,10 @@ Copyright: (C) 1997, Advanced Interfaces Group, University of Manchester.
 ===========================================================================
 */
 
-#include <stdio.h>
+#include "gpc.h"
 #include <stdlib.h>
 #include <float.h>
 #include <math.h>
-#include "gpc.h"
 
 
 /*
@@ -76,47 +72,41 @@ Copyright: (C) 1997, Advanced Interfaces Group, University of Manchester.
 ===========================================================================
 */
 
-#define EQ(a, b)           (fabs((a) - (b)) <= gpc_epsilon)
-#define NE(a, b)           (fabs((a) - (b)) >  gpc_epsilon)
-#define GT(a, b)           (((a) - (b))     >  gpc_epsilon)
-#define LT(a, b)           (((b) - (a))     >  gpc_epsilon)
-#define GE(a, b)           (!LT((a), (b)))
-#define LE(a, b)           (!GT((a), (b)))
+#define EQ(a, b)           (fabs((a) - (b)) <= GPC_EPSILON)
 
 #define PREV_INDEX(i, n)   ((i - 1 + n) % n)
 #define NEXT_INDEX(i, n)   ((i + 1    ) % n)
 
-#define OPTIMAL(v, i, n)   (NE(v[PREV_INDEX(i, n)].y, v[i].y) || \
-                            NE(v[NEXT_INDEX(i, n)].y, v[i].y))
+#define OPTIMAL(v, i, n)   ((v[PREV_INDEX(i, n)].y != v[i].y) || \
+                            (v[NEXT_INDEX(i, n)].y != v[i].y))
 
-#define FWD_MIN(v, i, n)   (GE(v[PREV_INDEX(i, n)].vertex.y, v[i].vertex.y) \
-                         && GT(v[NEXT_INDEX(i, n)].vertex.y, v[i].vertex.y))
+#define FWD_MIN(v, i, n)   ((v[PREV_INDEX(i, n)].vertex.y >= v[i].vertex.y) \
+                         && (v[NEXT_INDEX(i, n)].vertex.y > v[i].vertex.y))
 
-#define NOT_FMAX(v, i, n)   GT(v[NEXT_INDEX(i, n)].vertex.y, v[i].vertex.y)
+#define NOT_FMAX(v, i, n)   (v[NEXT_INDEX(i, n)].vertex.y > v[i].vertex.y)
 
-#define REV_MIN(v, i, n)   (GT(v[PREV_INDEX(i, n)].vertex.y, v[i].vertex.y) \
-                         && GE(v[NEXT_INDEX(i, n)].vertex.y, v[i].vertex.y))
+#define REV_MIN(v, i, n)   ((v[PREV_INDEX(i, n)].vertex.y > v[i].vertex.y) \
+                         && (v[NEXT_INDEX(i, n)].vertex.y >= v[i].vertex.y))
 
-#define NOT_RMAX(v, i, n)   GT(v[PREV_INDEX(i, n)].vertex.y, v[i].vertex.y)
+#define NOT_RMAX(v, i, n)   (v[PREV_INDEX(i, n)].vertex.y > v[i].vertex.y)
 
-#define VERTEX(e, s, x, y) {add_vertex(&((e)->outp->v[(s)]), x, y); \
-                            (e)->outp->active++;}
+#define VERTEX(e,p,s,x,y)  {add_vertex(&((e)->outp[(p)]->v[(s)]), x, y); \
+                            (e)->outp[(p)]->active++;}
 
-#define P_EDGE(d, e, i, y) {(d)= (e); \
-                            do {(d)= (d)->prev;} while (!(d)->outp); \
-                            (i)= (d)->bot.x + (d)->delx * (y);}
+#define P_EDGE(d,e,p,i,j)  {(d)= (e); \
+                            do {(d)= (d)->prev;} while (!(d)->outp[(p)]); \
+                            (i)= (d)->bot.x + (d)->dx * ((j)-(d)->bot.y);}
 
-#define N_EDGE(d, e, i, y) {(d)= (e); \
-                            do {(d)= (d)->next;} while (!(d)->outp); \
-                            (i)= (d)->bot.x + (d)->delx * (y);}
+#define N_EDGE(d,e,p,i,j)  {(d)= (e); \
+                            do {(d)= (d)->next;} while (!(d)->outp[(p)]); \
+                            (i)= (d)->bot.x + (d)->dx * ((j)-(d)->bot.y);}
 
-#define MALLOC(p, c, b, s)    {p= (c) malloc(b); if (!(p)) { \
-                            output_msg(OUTPUT_STDERR, "gpc malloc failure: %s\n", s); \
-                            exit(1);}}
+#define MALLOC(p, b, s, t) {if ((b) > 0) { \
+                            p= (t*)malloc(b); if (!(p)) { \
+                            fprintf(stderr, "gpc malloc failure: %s\n", s); \
+                            exit(0);}} else p= NULL;}
 
-#define FREE(p)            {free(p); (p)= NULL;}
-
-#define CFREE(p)           if(p) FREE(p)
+#define FREE(p)            {if (p) {free(p); (p)= NULL;}}
 
 
 /*
@@ -152,6 +142,13 @@ typedef enum                        /* Horizontal edge states            */
   TH                                /* Top horizontal edge               */
 } h_state;
 
+typedef enum                        /* Edge bundle state                 */
+{
+  UNBUNDLED,                        /* Isolated edge not within a bundle */
+  BUNDLE_HEAD,                      /* Bundle head node                  */
+  BUNDLE_TAIL                       /* Passive bundle tail node          */
+} bundle_state;
+
 typedef struct v_shape              /* Internal vertex list datatype     */
 {
   double              x;            /* X coordinate component            */
@@ -159,12 +156,13 @@ typedef struct v_shape              /* Internal vertex list datatype     */
   struct v_shape     *next;         /* Pointer to next vertex in list    */
 } vertex_node;
 
-typedef struct p_shape              /* Internal polygon / tristrip type  */
+typedef struct p_shape              /* Internal contour / tristrip type  */
 {
   int                 active;       /* Active flag / vertex count        */
-  vertex_node       **proxy;        /* Pointer to actual v[] list in use */
+  int                 hole;         /* Hole / external contour flag      */
   vertex_node        *v[2];         /* Left and right vertex list ptrs   */
   struct p_shape     *next;         /* Pointer to next polygon contour   */
+  struct p_shape     *proxy;        /* Pointer to actual structure used  */
 } polygon_node;
 
 typedef struct edge_shape
@@ -172,12 +170,14 @@ typedef struct edge_shape
   gpc_vertex          vertex;       /* Piggy-backed contour vertex data  */
   gpc_vertex          bot;          /* Edge lower (x, y) coordinate      */
   gpc_vertex          top;          /* Edge upper (x, y) coordinate      */
-  double              delx;         /* Change in x for a unit y increase */
+  double              xb;           /* Scanbeam bottom x coordinate      */
+  double              xt;           /* Scanbeam top x coordinate         */
+  double              dx;           /* Change in x for a unit y increase */
   int                 type;         /* Clip / subject edge flag          */
-  int                 head;         /* Head of bundle flag               */
   int                 bundle[2][2]; /* Bundle edge flags                 */
   int                 bside[2];     /* Bundle left / right indicators    */
-  polygon_node       *outp;         /* Output polygon / tristrip ptr     */
+  bundle_state        bstate[2];    /* Edge bundle state                 */
+  polygon_node       *outp[2];      /* Output polygon / tristrip pointer */
   struct edge_shape  *prev;         /* Previous edge in the AET          */
   struct edge_shape  *next;         /* Next edge in the AET              */
   struct edge_shape  *pred;         /* Edge connected at the lower end   */
@@ -208,10 +208,20 @@ typedef struct it_shape             /* Intersection table                */
 
 typedef struct st_shape             /* Sorted edge table                 */
 {
-  edge_node          *e;            /* Pointer to AET edge               */
-  double              xtop;         /* X coordinate at top of scanbeam   */
+  edge_node          *edge;         /* Pointer to AET edge               */
+  double              xb;           /* Scanbeam bottom x coordinate      */
+  double              xt;           /* Scanbeam top x coordinate         */
+  double              dx;           /* Change in x for a unit y increase */
   struct st_shape    *prev;         /* Previous edge in sorted list      */
 } st_node;
+
+typedef struct bbox_shape           /* Contour axis-aligned bounding box */
+{
+  double             xmin;          /* Minimum x coordinate              */
+  double             ymin;          /* Minimum y coordinate              */
+  double             xmax;          /* Maximum x coordinate              */
+  double             ymax;          /* Maximum y coordinate              */
+} bbox;
 
 
 /*
@@ -219,9 +229,6 @@ typedef struct st_shape             /* Sorted edge table                 */
                                Global Data
 ===========================================================================
 */
-
-/* Minimum difference for equality determination */
-static double gpc_epsilon;
 
 /* Horizontal edge state transitions within scanbeam boundary */
 const h_state next_h_state[3][6]=
@@ -277,8 +284,8 @@ static void insert_bound(edge_node **b, edge_node *e)
   }
   else
   {
-    /* Do primary sort on the bot.x field */
-    if (LT(e[0].bot.x, (*b)[0].bot.x))
+    /* Do primary sort on the x field */
+    if (e[0].bot.x < (*b)[0].bot.x)
     {
       /* Insert a new node mid-list */
       existing_bound= *b;
@@ -287,10 +294,10 @@ static void insert_bound(edge_node **b, edge_node *e)
     }
     else
     {
-      if (EQ(e[0].bot.x, (*b)[0].bot.x))
+      if (e[0].bot.x == (*b)[0].bot.x)
       {
-        /* Do secondary sort on the delx field */
-        if (LT(e[0].delx, (*b)[0].delx))
+        /* Do secondary sort on the dx field */
+        if (e[0].dx < (*b)[0].dx)
         {
           /* Insert a new node mid-list */
           existing_bound= *b;
@@ -320,54 +327,54 @@ static edge_node **bound_list(lmt_node **lmt, double y)
   if (!*lmt)
   {
     /* Add node onto the tail end of the LMT */
-    MALLOC(*lmt, lmt_node*, sizeof(lmt_node), "LMT insertion");
+    MALLOC(*lmt, sizeof(lmt_node), "LMT insertion", lmt_node);
     (*lmt)->y= y;
     (*lmt)->first_bound= NULL;
     (*lmt)->next= NULL;
     return &((*lmt)->first_bound);
   }
   else
-    if (LT(y, (*lmt)->y))
+    if (y < (*lmt)->y)
     {
       /* Insert a new LMT node before the current node */
       existing_node= *lmt;
-      MALLOC(*lmt, lmt_node*, sizeof(lmt_node), "LMT insertion");
+      MALLOC(*lmt, sizeof(lmt_node), "LMT insertion", lmt_node);
       (*lmt)->y= y;
       (*lmt)->first_bound= NULL;
       (*lmt)->next= existing_node;
       return &((*lmt)->first_bound);
     }
     else
-      if (EQ(y, (*lmt)->y))
-        /* Use this existing LMT node */
-        return &((*lmt)->first_bound);
-      else
+      if (y > (*lmt)->y)
         /* Head further up the LMT */
         return bound_list(&((*lmt)->next), y);
+      else
+        /* Use this existing LMT node */
+        return &((*lmt)->first_bound);
 }
 
 
-static void add_to_sbtree(int *entries, sb_tree **sbtree, double *y)
+static void add_to_sbtree(int *entries, sb_tree **sbtree, double y)
 {
   if (!*sbtree)
   {
     /* Add a new tree node here */
-    MALLOC(*sbtree, sb_tree*, sizeof(sb_tree), "scanbeam tree insertion");
-    (*sbtree)->y= *y;
+    MALLOC(*sbtree, sizeof(sb_tree), "scanbeam tree insertion", sb_tree);
+    (*sbtree)->y= y;
     (*sbtree)->less= NULL;
     (*sbtree)->more= NULL;
     (*entries)++;
   }
   else
   {
-    if (GT((*sbtree)->y, *y))
+    if ((*sbtree)->y > y)
     {
     /* Head into the 'less' sub-tree */
       add_to_sbtree(entries, &((*sbtree)->less), y);
     }
     else
     {
-      if (LT((*sbtree)->y, *y))
+      if ((*sbtree)->y < y)
       {
         /* Head into the 'more' sub-tree */
         add_to_sbtree(entries, &((*sbtree)->more), y);
@@ -403,10 +410,14 @@ static int count_optimal_vertices(gpc_vertex_list c)
 {
   int result= 0, i;
 
-  for (i= 0; i < c.num_vertices; i++)
-    /* Ignore superfluous vertices embedded in horizontal edges */
-    if (OPTIMAL(c.vertex, i, c.num_vertices))
-      result++;
+  /* Ignore non-contributing contours */
+  if (c.num_vertices > 0)
+  {
+    for (i= 0; i < c.num_vertices; i++)
+      /* Ignore superfluous vertices embedded in horizontal edges */
+      if (OPTIMAL(c.vertex, i, c.num_vertices))
+        result++;
+  }
   return result;
 }
 
@@ -423,112 +434,131 @@ static edge_node *build_lmt(lmt_node **lmt, sb_tree **sbtree,
     total_vertices+= count_optimal_vertices(p->contour[c]);
 
   /* Create the entire input polygon edge table in one go */
-  MALLOC(edge_table, edge_node*, total_vertices * sizeof(edge_node),
-         "edge table creation");
+  MALLOC(edge_table, total_vertices * sizeof(edge_node),
+         "edge table creation", edge_node);
 
   for (c= 0; c < p->num_contours; c++)
   {
-    /* Perform contour optimisation */
-    num_vertices= 0;
-    for (i= 0; i < p->contour[c].num_vertices; i++)
-      if (OPTIMAL(p->contour[c].vertex, i, p->contour[c].num_vertices))
-      {
-        edge_table[num_vertices].vertex.x= p->contour[c].vertex[i].x;
-        edge_table[num_vertices].vertex.y= p->contour[c].vertex[i].y;
-
-        /* Record vertex in the scanbeam table */
-        add_to_sbtree(sbt_entries, sbtree, &edge_table[num_vertices].vertex.y);
-
-        num_vertices++;
-      }
-
-    /* Do the contour forward pass */
-    for (min= 0; min < num_vertices; min++)
+    if (p->contour[c].num_vertices < 0)
     {
-      /* If a forward local minimum... */
-      if (FWD_MIN(edge_table, min, num_vertices))
-      {
-        /* Search for the next local maximum... */
-        num_edges= 1;
-        max= NEXT_INDEX(min, num_vertices);
-        while (NOT_FMAX(edge_table, max, num_vertices))
-        {
-          num_edges++;
-          max= NEXT_INDEX(max, num_vertices);
-        }
-
-        /* Build the next edge list */
-        e= &edge_table[e_index];
-        e_index+= num_edges;
-        v= min;
-        for (i= 0; i < num_edges; i++)
-        {
-          e[i].bot.x= edge_table[v].vertex.x;
-          e[i].bot.y= edge_table[v].vertex.y;
-
-          v= NEXT_INDEX(v, num_vertices);
-
-          e[i].top.x= edge_table[v].vertex.x;
-          e[i].top.y= edge_table[v].vertex.y;
-          e[i].delx= (edge_table[v].vertex.x - e[i].bot.x) /
-                     (e[i].top.y - e[i].bot.y);
-          e[i].type= type;
-          e[i].outp= NULL;
-          e[i].next= NULL;
-          e[i].prev= NULL;
-          e[i].succ= ((num_edges > 1) && (i < (num_edges - 1))) ?
-                     &(e[i + 1]) : NULL;
-          e[i].pred= ((num_edges > 1) && (i > 0)) ? &(e[i - 1]) : NULL;
-          e[i].next_bound= NULL;
-          e[i].bside[CLIP]= (op == GPC_DIFF) ? RIGHT : LEFT;
-          e[i].bside[SUBJ]= LEFT;
-        }
-        insert_bound(bound_list(lmt, edge_table[min].vertex.y), e);
-      }
+      /* Ignore the non-contributing contour and repair the vertex count */
+      p->contour[c].num_vertices= -p->contour[c].num_vertices;
     }
-
-    /* Do the contour reverse pass */
-    for (min= 0; min < num_vertices; min++)
+    else
     {
-      /* If a reverse local minimum... */
-      if (REV_MIN(edge_table, min, num_vertices))
+      /* Perform contour optimisation */
+      num_vertices= 0;
+      for (i= 0; i < p->contour[c].num_vertices; i++)
+        if (OPTIMAL(p->contour[c].vertex, i, p->contour[c].num_vertices))
+        {
+          edge_table[num_vertices].vertex.x= p->contour[c].vertex[i].x;
+          edge_table[num_vertices].vertex.y= p->contour[c].vertex[i].y;
+
+          /* Record vertex in the scanbeam table */
+          add_to_sbtree(sbt_entries, sbtree,
+                        edge_table[num_vertices].vertex.y);
+
+          num_vertices++;
+        }
+
+      /* Do the contour forward pass */
+      for (min= 0; min < num_vertices; min++)
       {
-        /* Search for the previous local maximum... */
-        num_edges= 1;
-        max= PREV_INDEX(min, num_vertices);
-        while (NOT_RMAX(edge_table, max, num_vertices))
+        /* If a forward local minimum... */
+        if (FWD_MIN(edge_table, min, num_vertices))
         {
-          num_edges++;
-          max= PREV_INDEX(max, num_vertices);
-        }
+          /* Search for the next local maximum... */
+          num_edges= 1;
+          max= NEXT_INDEX(min, num_vertices);
+          while (NOT_FMAX(edge_table, max, num_vertices))
+          {
+            num_edges++;
+            max= NEXT_INDEX(max, num_vertices);
+          }
 
-        /* Build the previous edge list */
-        e= &edge_table[e_index];
-        e_index+= num_edges;
-        v= min;
-        for (i= 0; i < num_edges; i++)
+          /* Build the next edge list */
+          e= &edge_table[e_index];
+          e_index+= num_edges;
+          v= min;
+          e[0].bstate[BELOW]= UNBUNDLED;
+          e[0].bundle[BELOW][CLIP]= FALSE;
+          e[0].bundle[BELOW][SUBJ]= FALSE;
+          for (i= 0; i < num_edges; i++)
+          {
+            e[i].xb= edge_table[v].vertex.x;
+            e[i].bot.x= edge_table[v].vertex.x;
+            e[i].bot.y= edge_table[v].vertex.y;
+
+            v= NEXT_INDEX(v, num_vertices);
+
+            e[i].top.x= edge_table[v].vertex.x;
+            e[i].top.y= edge_table[v].vertex.y;
+            e[i].dx= (edge_table[v].vertex.x - e[i].bot.x) /
+                       (e[i].top.y - e[i].bot.y);
+            e[i].type= type;
+            e[i].outp[ABOVE]= NULL;
+            e[i].outp[BELOW]= NULL;
+            e[i].next= NULL;
+            e[i].prev= NULL;
+            e[i].succ= ((num_edges > 1) && (i < (num_edges - 1))) ?
+                       &(e[i + 1]) : NULL;
+            e[i].pred= ((num_edges > 1) && (i > 0)) ? &(e[i - 1]) : NULL;
+            e[i].next_bound= NULL;
+            e[i].bside[CLIP]= (op == GPC_DIFF) ? RIGHT : LEFT;
+            e[i].bside[SUBJ]= LEFT;
+          }
+          insert_bound(bound_list(lmt, edge_table[min].vertex.y), e);
+        }
+      }
+
+      /* Do the contour reverse pass */
+      for (min= 0; min < num_vertices; min++)
+      {
+      /* If a reverse local minimum... */
+        if (REV_MIN(edge_table, min, num_vertices))
         {
-          e[i].bot.x= edge_table[v].vertex.x;
-          e[i].bot.y= edge_table[v].vertex.y;
+          /* Search for the previous local maximum... */
+          num_edges= 1;
+          max= PREV_INDEX(min, num_vertices);
+          while (NOT_RMAX(edge_table, max, num_vertices))
+          {
+            num_edges++;
+            max= PREV_INDEX(max, num_vertices);
+          }
 
-          v= PREV_INDEX(v, num_vertices);
+          /* Build the previous edge list */
+          e= &edge_table[e_index];
+          e_index+= num_edges;
+          v= min;
+          e[0].bstate[BELOW]= UNBUNDLED;
+          e[0].bundle[BELOW][CLIP]= FALSE;
+          e[0].bundle[BELOW][SUBJ]= FALSE;
+          for (i= 0; i < num_edges; i++)
+          {
+            e[i].xb= edge_table[v].vertex.x;
+            e[i].bot.x= edge_table[v].vertex.x;
+            e[i].bot.y= edge_table[v].vertex.y;
 
-          e[i].top.x= edge_table[v].vertex.x;
-          e[i].top.y= edge_table[v].vertex.y;
-          e[i].delx= (edge_table[v].vertex.x - e[i].bot.x) /
-                     (e[i].top.y - e[i].bot.y);
-          e[i].type= type;
-          e[i].outp= NULL;
-          e[i].next= NULL;
-          e[i].prev= NULL;
-          e[i].succ= ((num_edges > 1) && (i < (num_edges - 1))) ?
-                     &(e[i + 1]) : NULL;
-          e[i].pred= ((num_edges > 1) && (i > 0)) ? &(e[i - 1]) : NULL;
-          e[i].next_bound= NULL;
-          e[i].bside[CLIP]= (op == GPC_DIFF) ? RIGHT : LEFT;
-          e[i].bside[SUBJ]= LEFT;
+            v= PREV_INDEX(v, num_vertices);
+
+            e[i].top.x= edge_table[v].vertex.x;
+            e[i].top.y= edge_table[v].vertex.y;
+            e[i].dx= (edge_table[v].vertex.x - e[i].bot.x) /
+                       (e[i].top.y - e[i].bot.y);
+            e[i].type= type;
+            e[i].outp[ABOVE]= NULL;
+            e[i].outp[BELOW]= NULL;
+            e[i].next= NULL;
+            e[i].prev= NULL;
+            e[i].succ= ((num_edges > 1) && (i < (num_edges - 1))) ?
+                       &(e[i + 1]) : NULL;
+            e[i].pred= ((num_edges > 1) && (i > 0)) ? &(e[i - 1]) : NULL;
+            e[i].next_bound= NULL;
+            e[i].bside[CLIP]= (op == GPC_DIFF) ? RIGHT : LEFT;
+            e[i].bside[SUBJ]= LEFT;
+          }
+          insert_bound(bound_list(lmt, edge_table[min].vertex.y), e);
         }
-        insert_bound(bound_list(lmt, edge_table[min].vertex.y), e);
       }
     }
   }
@@ -547,8 +577,8 @@ static void add_edge_to_aet(edge_node **aet, edge_node *edge, edge_node *prev)
   }
   else
   {
-    /* Do primary sort on the bot.x field */
-    if (LT(edge->bot.x, (*aet)->bot.x))
+    /* Do primary sort on the xb field */
+    if (edge->xb < (*aet)->xb)
     {
       /* Insert edge here (before the AET edge) */
       edge->prev= prev;
@@ -558,10 +588,10 @@ static void add_edge_to_aet(edge_node **aet, edge_node *edge, edge_node *prev)
     }
     else
     {
-      if (EQ(edge->bot.x, (*aet)->bot.x))
+      if (edge->xb == (*aet)->xb)
       {
-        /* Do secondary sort on the delx field */
-        if (LT(edge->delx, (*aet)->delx))
+        /* Do secondary sort on the dx field */
+        if (edge->dx < (*aet)->dx)
         {
           /* Insert edge here (before the AET edge) */
           edge->prev= prev;
@@ -593,38 +623,22 @@ static void add_intersection(it_node **it, edge_node *edge0, edge_node *edge1,
   if (!*it)
   {
     /* Append a new node to the tail of the list */
-    MALLOC(*it, it_node*, sizeof(it_node), "IT insertion");
-    if (GT(edge0->delx, edge1->delx))
-    {
-      (*it)->ie[0]= edge0;
-      (*it)->ie[1]= edge1;
-    }
-    else
-    {
-      (*it)->ie[0]= edge1;
-      (*it)->ie[1]= edge0;
-    }
+    MALLOC(*it, sizeof(it_node), "IT insertion", it_node);
+    (*it)->ie[0]= edge0;
+    (*it)->ie[1]= edge1;
     (*it)->point.x= x;
     (*it)->point.y= y;
     (*it)->next= NULL;
   }
   else
   {
-    if (GT((*it)->point.y, y))
+    if ((*it)->point.y > y)
     {
       /* Insert a new node mid-list */
       existing_node= *it;
-      MALLOC(*it, it_node*, sizeof(it_node), "IT insertion");
-      if (GT(edge0->delx, edge1->delx))
-      {
-        (*it)->ie[0]= edge0;
-        (*it)->ie[1]= edge1;
-      }
-      else
-      {
-        (*it)->ie[0]= edge1;
-        (*it)->ie[1]= edge0;
-      }
+      MALLOC(*it, sizeof(it_node), "IT insertion", it_node);
+      (*it)->ie[0]= edge0;
+      (*it)->ie[1]= edge1;
       (*it)->point.x= x;
       (*it)->point.y= y;
       (*it)->next= existing_node;
@@ -637,53 +651,56 @@ static void add_intersection(it_node **it, edge_node *edge0, edge_node *edge1,
 
 
 static void add_st_edge(st_node **st, it_node **it, edge_node *edge,
-                        double xtop, double dy, double yt)
+                        double dy)
 {
   st_node *existing_node;
-  double   x, y;
+  double   den, r, x, y;
 
   if (!*st)
   {
     /* Append edge onto the tail end of the ST */
-    MALLOC(*st, st_node*, sizeof(st_node), "ST insertion");
-    (*st)->e= edge;
-    (*st)->xtop= xtop;
+    MALLOC(*st, sizeof(st_node), "ST insertion", st_node);
+    (*st)->edge= edge;
+    (*st)->xb= edge->xb;
+    (*st)->xt= edge->xt;
+    (*st)->dx= edge->dx;
     (*st)->prev= NULL;
   }
   else
   {
-    /* Do primary sort on the xtop field */
-    if (GE(xtop, (*st)->xtop) ||
-        EQ(edge->delx, (*st)->e->delx)) /* Parallel lines never cross! */
+    den= ((*st)->xt - (*st)->xb) - (edge->xt - edge->xb);
 
+    /* If new edge and ST edge don't cross */
+    if ((edge->xt >= (*st)->xt) || (edge->dx == (*st)->dx) || 
+        (fabs(den) <= DBL_EPSILON))
     {
-      /* Insert edge here (before the ST edge) */
+      /* No intersection - insert edge here (before the ST edge) */
       existing_node= *st;
-      MALLOC(*st, st_node*, sizeof(st_node), "ST insertion");
-      (*st)->e= edge;
-      (*st)->xtop= xtop;
+      MALLOC(*st, sizeof(st_node), "ST insertion", st_node);
+      (*st)->edge= edge;
+      (*st)->xb= edge->xb;
+      (*st)->xt= edge->xt;
+      (*st)->dx= edge->dx;
       (*st)->prev= existing_node;
-
     }
     else
     {
-      /* Compute intersection between ST edge and AET edge */
-      y= ((*st)->e->bot.x - edge->bot.x) /
-         (edge->delx - (*st)->e->delx);
-      x= (*st)->e->delx * y + (*st)->e->bot.x;
+      /* Compute intersection between new edge and ST edge */
+      r= (edge->xb - (*st)->xb) / den;
+      x= (*st)->xb + r * ((*st)->xt - (*st)->xb);
+      y= r * dy;
 
-      /* Insert the intersection and the edge pointers in the IT */
-      add_intersection(it, edge, (*st)->e, x, y);
+      /* Insert the edge pointers and the intersection point in the IT */
+      add_intersection(it, (*st)->edge, edge, x, y);
 
       /* Head further into the ST */
-      add_st_edge(&((*st)->prev), it, edge, xtop, dy, yt);
+      add_st_edge(&((*st)->prev), it, edge, dy);
     }
   }
 }
 
 
-static void build_intersection_table(it_node **it, edge_node *aet,
-                                     double dy, double yt)
+static void build_intersection_table(it_node **it, edge_node *aet, double dy)
 {
   st_node   *st, *stp;
   edge_node *edge;
@@ -695,14 +712,12 @@ static void build_intersection_table(it_node **it, edge_node *aet,
   /* Process each AET edge */
   for (edge= aet; edge; edge= edge->next)
   {
-    if (edge->bundle[ABOVE][CLIP] || edge->bundle[ABOVE][SUBJ] || edge->head)
-    {
-      if (EQ(edge->top.y, yt))
-        add_st_edge(&st, it, edge, edge->top.x, dy, yt);
-      else
-        add_st_edge(&st, it, edge, edge->bot.x + edge->delx * dy, dy, yt);
-    }
+    if ((edge->bstate[ABOVE] == BUNDLE_HEAD) ||
+         edge->bundle[ABOVE][CLIP] || edge->bundle[ABOVE][SUBJ])
+      add_st_edge(&st, it, edge, dy);
   }
+
+  /* Free the sorted edge table */
   while (st)
   {
     stp= st->prev;
@@ -711,143 +726,155 @@ static void build_intersection_table(it_node **it, edge_node *aet,
   }
 }
 
-
-static int count_vertices(vertex_node *vertex)
-{
-  int total;
-
-  for (total= 0; vertex; vertex= vertex->next)
-    total++;
-  return total;
-}
-
-
 static int count_contours(polygon_node *polygon)
 {
-  int total;
+  int          nc, nv;
+  vertex_node *v, *nextv;
 
-  for (total= 0; polygon; polygon= polygon->next)
+  for (nc= 0; polygon; polygon= polygon->next)
     if (polygon->active)
-      total++;
-  return total;
+    {
+      /* Count the vertices in the current contour */
+      nv= 0;
+      for (v= polygon->proxy->v[LEFT]; v; v= v->next)
+        nv++;
+
+      /* Record valid vertex counts in the active field */
+      if (nv > 2)
+      {
+        polygon->active= nv;
+        nc++;
+      }
+      else
+      {
+        /* Invalid contour: just free the heap */
+        for (v= polygon->proxy->v[LEFT]; v; v= nextv)
+        {
+          nextv= v->next;
+          FREE(v);
+        }
+        polygon->active= 0;
+      }
+    }
+  return nc;
 }
 
 
-static void add_left(polygon_node *P, double x, double y)
+static void add_left(polygon_node *p, double x, double y)
 {
   vertex_node *nv;
 
   /* Create a new vertex node and set its fields */
-  MALLOC(nv, vertex_node*, sizeof(vertex_node), "vertex node creation");
+  MALLOC(nv, sizeof(vertex_node), "vertex node creation", vertex_node);
   nv->x= x;
   nv->y= y;
 
   /* Add vertex nv to the left end of the polygon's vertex list */
-  nv->next= P->proxy[LEFT];
+  nv->next= p->proxy->v[LEFT];
 
-  /* Update proxy[LEFT] to point to nv */
-  P->proxy[LEFT]= nv;
+  /* Update proxy->[LEFT] to point to nv */
+  p->proxy->v[LEFT]= nv;
 }
 
 
-static void merge_left(polygon_node *P, polygon_node *Q, polygon_node *list)
+static void merge_left(polygon_node *p, polygon_node *q, polygon_node *list)
 {
-  vertex_node **target;
+  polygon_node *target;
 
-  if (P->proxy != Q->proxy)
+  /* Label contour as a hole */
+  q->proxy->hole= TRUE;
+
+  if (p->proxy != q->proxy)
   {
-    /* Assign P's vertex list to the left end of Q's list */
-    P->proxy[RIGHT]->next= Q->proxy[LEFT];
-    Q->proxy[LEFT]= P->proxy[LEFT];
+    /* Assign p's vertex list to the left end of q's list */
+    p->proxy->v[RIGHT]->next= q->proxy->v[LEFT];
+    q->proxy->v[LEFT]= p->proxy->v[LEFT];
 
-    /* Redirect both P->proxy references to Q->proxy */
-    target= P->proxy;
-    while(list)
+    /* Redirect any p->proxy references to q->proxy */
+    
+    for (target= p->proxy; list; list= list->next)
     {
       if (list->proxy == target)
       {
         list->active= FALSE;
-        list->proxy= Q->proxy;
+        list->proxy= q->proxy;
       }
-      list= list->next;
     }
   }
 }
 
 
-static void add_right(polygon_node *P, double x, double y)
+static void add_right(polygon_node *p, double x, double y)
 {
   vertex_node *nv;
 
   /* Create a new vertex node and set its fields */
-  MALLOC(nv, vertex_node*, sizeof(vertex_node), "vertex node creation");
+  MALLOC(nv, sizeof(vertex_node), "vertex node creation", vertex_node);
   nv->x= x;
   nv->y= y;
   nv->next= NULL;
 
   /* Add vertex nv to the right end of the polygon's vertex list */
-  P->proxy[RIGHT]->next= nv;
+  p->proxy->v[RIGHT]->next= nv;
 
-  /* Update proxy[RIGHT] to point to v */
-  P->proxy[RIGHT]= nv;
+  /* Update proxy->v[RIGHT] to point to nv */
+  p->proxy->v[RIGHT]= nv;
 }
 
 
-static void merge_right(polygon_node *P, polygon_node *Q, polygon_node *list)
+static void merge_right(polygon_node *p, polygon_node *q, polygon_node *list)
 {
-  vertex_node **target;
+  polygon_node *target;
 
-  if (P->proxy != Q->proxy)
+  /* Label contour as external */
+  q->proxy->hole= FALSE;
+
+  if (p->proxy != q->proxy)
   {
-    /* Assign P's vertex list to the right end of Q's list */
-    Q->proxy[RIGHT]->next= P->proxy[LEFT];
-    Q->proxy[RIGHT]= P->proxy[RIGHT];
+    /* Assign p's vertex list to the right end of q's list */
+    q->proxy->v[RIGHT]->next= p->proxy->v[LEFT];
+    q->proxy->v[RIGHT]= p->proxy->v[RIGHT];
 
-    /* Redirect both P->proxy references to Q->proxy */
-    target= P->proxy;
-    while(list)
+    /* Redirect any p->proxy references to q->proxy */
+    for (target= p->proxy; list; list= list->next)
     {
       if (list->proxy == target)
       {
         list->active= FALSE;
-        list->proxy= Q->proxy;
+        list->proxy= q->proxy;
       }
-      list= list->next;
     }
   }
 }
 
 
-static void add_local_min(polygon_node **P, edge_node *edge,
+static void add_local_min(polygon_node **p, edge_node *edge,
                           double x, double y)
 {
-  vertex_node *nv;
+  polygon_node *existing_min;
+  vertex_node  *nv;
 
-  if (!(*P))
-  {
-    MALLOC(*P, polygon_node*, sizeof(polygon_node), "polygon node creation");
+  existing_min= *p;
 
-    /* Create a new vertex node and set its fields */
-    MALLOC(nv, vertex_node*, sizeof(vertex_node), "vertex node creation");
-    nv->x= x;
-    nv->y= y;
-    nv->next= NULL;
+  MALLOC(*p, sizeof(polygon_node), "polygon node creation", polygon_node);
 
-    /* Initialise proxy to point to P's own v[] list */
-    (*P)->proxy= (*P)->v;
-    (*P)->active= TRUE;
-    (*P)->next= NULL;
+  /* Create a new vertex node and set its fields */
+  MALLOC(nv, sizeof(vertex_node), "vertex node creation", vertex_node);
+  nv->x= x;
+  nv->y= y;
+  nv->next= NULL;
 
-    /* Make v[LEFT] and v[RIGHT] point to new vertex nv */
-    (*P)->v[LEFT]= nv;
-    (*P)->v[RIGHT]= nv;
+  /* Initialise proxy to point to p itself */
+  (*p)->proxy= (*p);
+  (*p)->active= TRUE;
+  (*p)->next= existing_min;
 
-    /* Assign polygon P to the edge */
-    edge->outp= *P;
-  }
-  else
-    /* Head further down the list */
-    add_local_min(&((*P)->next), edge, x, y);
+  /* Make v[LEFT] and v[RIGHT] point to new vertex nv */
+  (*p)->v[LEFT]= nv;
+  (*p)->v[RIGHT]= nv;
+
+  /* Assign polygon p to the edge */
+  edge->outp[ABOVE]= *p;
 }
 
 
@@ -866,7 +893,7 @@ static void add_vertex(vertex_node **t, double x, double y)
 {
   if (!(*t))
   {
-    MALLOC(*t, vertex_node*, sizeof(vertex_node), "tristrip vertex creation");
+    MALLOC(*t, sizeof(vertex_node), "tristrip vertex creation", vertex_node);
     (*t)->x= x;
     (*t)->y= y;
     (*t)->next= NULL;
@@ -882,13 +909,13 @@ static void new_tristrip(polygon_node **tn, edge_node *edge,
 {
   if (!(*tn))
   {
-    MALLOC(*tn, polygon_node*, sizeof(polygon_node), "tristrip node creation");
+    MALLOC(*tn, sizeof(polygon_node), "tristrip node creation", polygon_node);
     (*tn)->next= NULL;
     (*tn)->v[LEFT]= NULL;
     (*tn)->v[RIGHT]= NULL;
     (*tn)->active= 1;
     add_vertex(&((*tn)->v[LEFT]), x, y); 
-    edge->outp= *tn;
+    edge->outp[ABOVE]= *tn;
   }
   else
     /* Head further down the list */
@@ -896,62 +923,89 @@ static void new_tristrip(polygon_node **tn, edge_node *edge,
 }
 
 
-static int set_gpc_epsilon(gpc_polygon *sp, gpc_polygon *cp)
+static bbox *create_contour_bboxes(gpc_polygon *p)
 {
-  double xmin, xmax, ymin, ymax;
-  int    c, v;
+  bbox *box;
+  int   c, v;
 
-  /* Calculate bounding box */
-  xmin= DBL_MAX;
-  xmax= -DBL_MAX;
-  ymin= DBL_MAX;
-  ymax= -DBL_MAX;
+  MALLOC(box, p->num_contours * sizeof(bbox), "Bounding box creation", bbox);
 
-  /* Inspect subject polygon */
-  for (c= 0; c < sp->num_contours; c++)
-    for (v= 0; v < sp->contour[c].num_vertices; v++)
+  /* Construct contour bounding boxes */
+  for (c= 0; c < p->num_contours; c++)
+  {
+    /* Initialise bounding box extent */
+    box[c].xmin= DBL_MAX;
+    box[c].ymin= DBL_MAX;
+    box[c].xmax= -DBL_MAX;
+    box[c].ymax= -DBL_MAX;
+
+    for (v= 0; v < p->contour[c].num_vertices; v++)
     {
-      if (sp->contour[c].vertex[v].x < xmin)
-        xmin= sp->contour[c].vertex[v].x;
-      if (sp->contour[c].vertex[v].x > xmax)
-        xmax= sp->contour[c].vertex[v].x;
-      if (sp->contour[c].vertex[v].y < ymin)
-        ymin= sp->contour[c].vertex[v].y;
-      if (sp->contour[c].vertex[v].y > ymax)
-        ymax= sp->contour[c].vertex[v].y;
+      /* Adjust bounding box */
+      if (p->contour[c].vertex[v].x < box[c].xmin)
+        box[c].xmin= p->contour[c].vertex[v].x;
+      if (p->contour[c].vertex[v].y < box[c].ymin)
+        box[c].ymin= p->contour[c].vertex[v].y;
+      if (p->contour[c].vertex[v].x > box[c].xmax)
+        box[c].xmax= p->contour[c].vertex[v].x;
+      if (p->contour[c].vertex[v].y > box[c].ymax)
+          box[c].ymax= p->contour[c].vertex[v].y;
     }
+  }
+  return box;  
+}
 
-  /* Inspect clip polygon */
-  for (c= 0; c < cp->num_contours; c++)
-    for (v= 0; v < cp->contour[c].num_vertices; v++)
+
+static void minimax_test(gpc_polygon *subj, gpc_polygon *clip, gpc_op op)
+{
+  bbox *s_bbox, *c_bbox;
+  int   s, c, *o_table, overlap;
+
+  s_bbox= create_contour_bboxes(subj);
+  c_bbox= create_contour_bboxes(clip);
+
+  MALLOC(o_table, subj->num_contours * clip->num_contours * sizeof(int),
+         "overlap table creation", int);
+
+  /* Check all subject contour bounding boxes against clip boxes */
+  for (s= 0; s < subj->num_contours; s++)
+    for (c= 0; c < clip->num_contours; c++)
+      o_table[c * subj->num_contours + s]=
+             (!((s_bbox[s].xmax < c_bbox[c].xmin) ||
+                (s_bbox[s].xmin > c_bbox[c].xmax))) &&
+             (!((s_bbox[s].ymax < c_bbox[c].ymin) ||
+                (s_bbox[s].ymin > c_bbox[c].ymax)));
+
+  /* For each clip contour, search for any subject contour overlaps */
+  for (c= 0; c < clip->num_contours; c++)
+  {
+    overlap= 0;
+    for (s= 0; (!overlap) && (s < subj->num_contours); s++)
+      overlap= o_table[c * subj->num_contours + s];
+
+    if (!overlap)
+      /* Flag non contributing status by negating vertex count */
+      clip->contour[c].num_vertices = -clip->contour[c].num_vertices;
+  }  
+
+  if (op == GPC_INT)
+  {  
+    /* For each subject contour, search for any clip contour overlaps */
+    for (s= 0; s < subj->num_contours; s++)
     {
-      if (cp->contour[c].vertex[v].x < xmin)
-        xmin= cp->contour[c].vertex[v].x;
-      if (cp->contour[c].vertex[v].x > xmax)
-        xmax= cp->contour[c].vertex[v].x;
-      if (cp->contour[c].vertex[v].y < ymin)
-        ymin= cp->contour[c].vertex[v].y;
-      if (cp->contour[c].vertex[v].y > ymax)
-        ymax= cp->contour[c].vertex[v].y;
-    }
+      overlap= 0;
+      for (c= 0; (!overlap) && (c < clip->num_contours); c++)
+        overlap= o_table[c * subj->num_contours + s];
 
-  /* Return if nothing to clip */
-  if (xmin >= xmax)
-    return FALSE;
+      if (!overlap)
+        /* Flag non contributing status by negating vertex count */
+        subj->contour[s].num_vertices = -subj->contour[s].num_vertices;
+    }  
+  }
 
-  xmax-= xmin;
-  ymax-= ymin;
-
-  if (xmax > ymax)
-    gpc_epsilon= xmax / pow(10.0, (double)(DBL_DIG - 2));
-  else
-    gpc_epsilon= ymax / pow(10.0, (double)(DBL_DIG - 2));
-  if (xmax > ymax)
-    gpc_epsilon= xmax / pow(10.0, (double)(DBL_DIG - 0));
-  else
-    gpc_epsilon= ymax / pow(10.0, (double)(DBL_DIG - 0));
-  //gpc_epsilon = 1e-14;
-  return TRUE;
+  FREE(s_bbox);
+  FREE(c_bbox);
+  FREE(o_table);
 }
 
 
@@ -966,32 +1020,41 @@ void gpc_free_polygon(gpc_polygon *p)
   int c;
 
   for (c= 0; c < p->num_contours; c++)
-    CFREE(p->contour[c].vertex);
-  CFREE(p->contour);
+    FREE(p->contour[c].vertex);
+  FREE(p->hole);
+  FREE(p->contour);
   p->num_contours= 0;
 }
 
 
-void gpc_read_polygon(FILE *fp, gpc_polygon *p)
+void gpc_read_polygon(FILE *fp, int read_hole_flags, gpc_polygon *p)
 {
   int c, v;
 
   fscanf(fp, "%d", &(p->num_contours));
-  MALLOC(p->contour, gpc_vertex_list*, p->num_contours
-         * sizeof(gpc_vertex_list), "contour creation");
+  MALLOC(p->hole, p->num_contours * sizeof(int),
+         "hole flag array creation", int);
+  MALLOC(p->contour, p->num_contours
+         * sizeof(gpc_vertex_list), "contour creation", gpc_vertex_list);
   for (c= 0; c < p->num_contours; c++)
   {
     fscanf(fp, "%d", &(p->contour[c].num_vertices));
-    MALLOC(p->contour[c].vertex, gpc_vertex*, p->contour[c].num_vertices
-           * sizeof(gpc_vertex), "vertex creation");
+
+    if (read_hole_flags)
+      fscanf(fp, "%d", &(p->hole[c]));
+    else
+      p->hole[c]= FALSE; /* Assume all contours to be external */
+
+    MALLOC(p->contour[c].vertex, p->contour[c].num_vertices
+           * sizeof(gpc_vertex), "vertex creation", gpc_vertex);
     for (v= 0; v < p->contour[c].num_vertices; v++)
       fscanf(fp, "%lf %lf", &(p->contour[c].vertex[v].x),
                             &(p->contour[c].vertex[v].y));
   }
 }
 
-#ifdef SKIP
-void gpc_write_polygon(FILE *fp, gpc_polygon *p)
+
+void gpc_write_polygon(FILE *fp, int write_hole_flags, gpc_polygon *p)
 {
   int c, v;
 
@@ -999,81 +1062,117 @@ void gpc_write_polygon(FILE *fp, gpc_polygon *p)
   for (c= 0; c < p->num_contours; c++)
   {
     fprintf(fp, "%d\n", p->contour[c].num_vertices);
+
+    if (write_hole_flags)
+      fprintf(fp, "%d\n", p->hole[c]);
+    
     for (v= 0; v < p->contour[c].num_vertices; v++)
       fprintf(fp, "% .*lf % .*lf\n",
               DBL_DIG, p->contour[c].vertex[v].x,
               DBL_DIG, p->contour[c].vertex[v].y);
   }
 }
-#endif
 
-void gpc_add_contour(gpc_polygon *p, gpc_vertex_list *new_contour)
+
+void gpc_add_contour(gpc_polygon *p, gpc_vertex_list *new_contour, int hole)
 {
-  int              c, v;
+  int             *extended_hole, c, v;
   gpc_vertex_list *extended_contour;
 
+  /* Create an extended hole array */
+  MALLOC(extended_hole, (p->num_contours + 1)
+         * sizeof(int), "contour hole addition", int);
+
   /* Create an extended contour array */
-  MALLOC(extended_contour, gpc_vertex_list*, (p->num_contours + 1)
-         * sizeof(gpc_vertex_list), "contour addition");
+  MALLOC(extended_contour, (p->num_contours + 1)
+         * sizeof(gpc_vertex_list), "contour addition", gpc_vertex_list);
 
-  /* Copy the old contour into the extended contour array */
+  /* Copy the old contour and hole data into the extended arrays */
   for (c= 0; c < p->num_contours; c++)
+  {
+    extended_hole[c]= p->hole[c];
     extended_contour[c]= p->contour[c];
+  }
 
-  /* Copy the new contour onto the end of the extended contour array */
+  /* Copy the new contour and hole onto the end of the extended arrays */
   c= p->num_contours;
+  extended_hole[c]= hole;
   extended_contour[c].num_vertices= new_contour->num_vertices;
-  MALLOC(extended_contour[c].vertex, gpc_vertex*, new_contour->num_vertices
-         * sizeof(gpc_vertex), "contour addition");
+  MALLOC(extended_contour[c].vertex, new_contour->num_vertices
+         * sizeof(gpc_vertex), "contour addition", gpc_vertex);
   for (v= 0; v < new_contour->num_vertices; v++)
     extended_contour[c].vertex[v]= new_contour->vertex[v];
 
   /* Dispose of the old contour */
-  CFREE(p->contour);
+  FREE(p->contour);
+  FREE(p->hole);
 
   /* Update the polygon information */
   p->num_contours++;
+  p->hole= extended_hole;
   p->contour= extended_contour;
 }
 
 
-void gpc_polygon_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
+void gpc_polygon_clip(gpc_op op, gpc_polygon *subj, gpc_polygon *clip,
                       gpc_polygon *result)
 {
   sb_tree       *sbtree= NULL;
   it_node       *it= NULL, *intersect;
   edge_node     *edge, *prev_edge, *next_edge, *succ_edge, *e0, *e1;
-  edge_node     *aet= NULL, *c_heap, *s_heap;
+  edge_node     *aet= NULL, *c_heap= NULL, *s_heap= NULL;
   lmt_node      *lmt= NULL, *local_min;
-  polygon_node  *out_poly= NULL, *P, *Q, *poly, *npoly, *cf= NULL;
+  polygon_node  *out_poly= NULL, *p, *q, *poly, *npoly, *cf= NULL;
   vertex_node   *vtx, *nv;
   h_state        horiz[2];
   int            in[2], exists[2], parity[2]= {LEFT, LEFT};
   int            c, v, contributing, search, scanbeam= 0, sbt_entries= 0;
-  int            myclass, bl, br, tl, tr;
-  double        *sbt= NULL, xb, px, yb, yt, dy, ix, iy, tedx, tndx;
+  int            vclass, bl, br, tl, tr;
+  double        *sbt= NULL, xb, px, yb, yt, dy, ix, iy;
 
-  if (!set_gpc_epsilon(subject, clip))
+  /* Test for trivial NULL result cases */
+  if (((subj->num_contours == 0) && (clip->num_contours == 0))
+   || ((subj->num_contours == 0) && ((op == GPC_INT) || (op == GPC_DIFF)))
+   || ((clip->num_contours == 0) &&  (op == GPC_INT)))
   {
-    /* Return a NULL result */
     result->num_contours= 0;
+    result->hole= NULL;
     result->contour= NULL;
     return;
   }
 
+  /* Identify potentialy contributing contours */
+  if (((op == GPC_INT) || (op == GPC_DIFF))
+   && (subj->num_contours > 0) && (clip->num_contours > 0))
+    minimax_test(subj, clip, op);
+
   /* Build LMT */
-  s_heap= build_lmt(&lmt, &sbtree, &sbt_entries, subject, SUBJ, op);
-  c_heap= build_lmt(&lmt, &sbtree, &sbt_entries, clip,    CLIP, op);
+  if (subj->num_contours > 0)
+    s_heap= build_lmt(&lmt, &sbtree, &sbt_entries, subj, SUBJ, op);
+  if (clip->num_contours > 0)
+    c_heap= build_lmt(&lmt, &sbtree, &sbt_entries, clip, CLIP, op);
+
+  /* Return a NULL result if no contours contribute */
+  if (lmt == NULL)
+  {
+    result->num_contours= 0;
+    result->hole= NULL;
+    result->contour= NULL;
+    reset_lmt(&lmt);
+    FREE(s_heap);
+    FREE(c_heap);
+    return;
+  }
 
   /* Build scanbeam table from scanbeam tree */
-  MALLOC(sbt, double*, sbt_entries * sizeof(double), "sbt creation");
+  MALLOC(sbt, sbt_entries * sizeof(double), "sbt creation", double);
   build_sbt(&scanbeam, sbt, sbtree);
   scanbeam= 0;
   free_sbtree(&sbtree);
 
   /* Allow pointer re-use without causing memory leak */
-  if (subject == result)
-    gpc_free_polygon(subject);
+  if (subj == result)
+    gpc_free_polygon(subj);
   if (clip == result)
     gpc_free_polygon(clip);
 
@@ -1086,23 +1185,25 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
   /* Process each scanbeam */
   while (scanbeam < sbt_entries)
   {
-    /* Set yb to the bottom of the scanbeam */
+    /* Set yb and yt to the bottom and top of the scanbeam */
     yb= sbt[scanbeam++];
+    if (scanbeam < sbt_entries)
+    {
+      yt= sbt[scanbeam];
+      dy= yt - yb;
+    }
 
     /* === SCANBEAM BOUNDARY PROCESSING ================================ */
 
     /* If LMT node corresponding to yb exists */
     if (local_min)
     {
-      if (EQ(local_min->y, yb))
+      if (local_min->y == yb)
       {
         /* Add edges starting at this local minimum to the AET */
-        edge= local_min->first_bound;
-        while(edge)
-        {
+        for (edge= local_min->first_bound; edge; edge= edge->next_bound)
           add_edge_to_aet(&aet, edge, NULL);
-          edge= edge->next_bound;
-        }
+
         local_min= local_min->next;
       }
     }
@@ -1115,64 +1216,36 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
     e1= aet;
 
     /* Set up bundle fields of first edge */
-    aet->bundle[ABOVE][ aet->type]= NE(aet->top.y, yb);
+    aet->bundle[ABOVE][ aet->type]= (aet->top.y != yb);
     aet->bundle[ABOVE][!aet->type]= FALSE;
-    aet->head= FALSE;
-    aet->bundle[BELOW][ aet->type]= NE(aet->bot.y, yb) || aet->pred;
-    aet->bundle[BELOW][!aet->type]= FALSE;
-    if (aet->bundle[BELOW][aet->type])
-      tedx= EQ(e1->bot.y, yb)? e1->pred->delx: e1->delx;
-    else
-      tedx= -DBL_MAX;
+    aet->bstate[ABOVE]= UNBUNDLED;
 
     for (next_edge= aet->next; next_edge; next_edge= next_edge->next)
     {
       /* Set up bundle fields of next edge */
-      next_edge->bundle[ABOVE][ next_edge->type]= NE(next_edge->top.y, yb);
+      next_edge->bundle[ABOVE][ next_edge->type]= (next_edge->top.y != yb);
       next_edge->bundle[ABOVE][!next_edge->type]= FALSE;
-      next_edge->bundle[BELOW][ next_edge->type]= NE(next_edge->bot.y, yb)
-        || next_edge->pred;
-      next_edge->bundle[BELOW][!next_edge->type]= FALSE;
-      next_edge->head= FALSE;
+      next_edge->bstate[ABOVE]= UNBUNDLED;
 
       /* Bundle edges above the scanbeam boundary if they coincide */
       if (next_edge->bundle[ABOVE][next_edge->type])
       {
-        if (EQ(e0->bot.x, next_edge->bot.x) && EQ(e0->delx, next_edge->delx)
-	 && NE(e0->top.y, yb))
+        if (EQ(e0->xb, next_edge->xb) && EQ(e0->dx, next_edge->dx)
+	 && (e0->top.y != yb))
         {
           next_edge->bundle[ABOVE][ next_edge->type]^= 
             e0->bundle[ABOVE][ next_edge->type];
           next_edge->bundle[ABOVE][!next_edge->type]= 
             e0->bundle[ABOVE][!next_edge->type];
-          next_edge->head= TRUE;
+          next_edge->bstate[ABOVE]= BUNDLE_HEAD;
           e0->bundle[ABOVE][CLIP]= FALSE;
           e0->bundle[ABOVE][SUBJ]= FALSE;
-          e0->head= FALSE;
+          e0->bstate[ABOVE]= BUNDLE_TAIL;
         }
         e0= next_edge;
       }
-
-      /* Bundle edges below the scanbeam boundary if they coincide */
-      if (next_edge->bundle[BELOW][next_edge->type])
-      {
-        tndx= EQ(next_edge->bot.y, yb) ?
-          next_edge->pred->delx : next_edge->delx;
-        if (EQ(e1->bot.x, next_edge->bot.x) && EQ(tedx, tndx)
-         && (NE(e1->bot.y, yb) || e1->pred))
-        { 
-          next_edge->bundle[BELOW][ next_edge->type]^= 
-            e1->bundle[BELOW][ next_edge->type];
-          next_edge->bundle[BELOW][!next_edge->type]= 
-            e1->bundle[BELOW][!next_edge->type];
-          e1->bundle[BELOW][CLIP]= FALSE;
-          e1->bundle[BELOW][SUBJ]= FALSE;
-        }
-        e1= next_edge;
-        tedx= tndx;
-      }
     }
-
+    
     horiz[CLIP]= NH;
     horiz[SUBJ]= NH;
 
@@ -1249,94 +1322,100 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
             next_h_state[horiz[SUBJ]]
                         [((exists[SUBJ] - 1) << 1) + parity[SUBJ]];
 
-        myclass= tr + (tl << 1) + (br << 2) + (bl << 3);
+        vclass= tr + (tl << 1) + (br << 2) + (bl << 3);
 
         if (contributing)
         {
-          xb= edge->bot.x;
+          xb= edge->xb;
 
-          switch (myclass)
+          switch (vclass)
           {
           case EMN:
           case IMN:
             add_local_min(&out_poly, edge, xb, yb);
             px= xb;
-            cf= edge->outp;
+            cf= edge->outp[ABOVE];
             break;
           case ERI:
-            if (NE(xb, px))
+            if (xb != px)
             {
               add_right(cf, xb, yb);
               px= xb;
             }
-            edge->outp= cf;
+            edge->outp[ABOVE]= cf;
             cf= NULL;
             break;
           case ELI:
-            add_left(edge->outp, xb, yb);
+            add_left(edge->outp[BELOW], xb, yb);
             px= xb;
-            cf= edge->outp;
-            edge->outp= NULL;
+            cf= edge->outp[BELOW];
             break;
           case EMX:
-            if (NE(xb, px))
+            if (xb != px)
             {
               add_left(cf, xb, yb);
               px= xb;
             }
-            merge_right(cf, edge->outp, out_poly);
+            merge_right(cf, edge->outp[BELOW], out_poly);
             cf= NULL;
-            edge->outp= NULL;
             break;
           case ILI:
-            if (NE(xb, px))
+            if (xb != px)
             {
               add_left(cf, xb, yb);
               px= xb;
             }
-            edge->outp= cf;
+            edge->outp[ABOVE]= cf;
             cf= NULL;
             break;
           case IRI:
-            add_right(edge->outp, xb, yb);
+            add_right(edge->outp[BELOW], xb, yb);
             px= xb;
-            cf= edge->outp;
-            edge->outp= NULL;
+            cf= edge->outp[BELOW];
+            edge->outp[BELOW]= NULL;
             break;
           case IMX:
-            if (NE(xb, px))
+            if (xb != px)
             {
               add_right(cf, xb, yb);
               px= xb;
             }
-            merge_left(cf, edge->outp, out_poly);
+            merge_left(cf, edge->outp[BELOW], out_poly);
             cf= NULL;
-            edge->outp= NULL;
+            edge->outp[BELOW]= NULL;
             break;
           case IMM:
-            if (NE(xb, px))
+            if (xb != px)
+	    {
               add_right(cf, xb, yb);
-            merge_left(cf, edge->outp, out_poly);
+              px= xb;
+	    }
+            merge_left(cf, edge->outp[BELOW], out_poly);
+            edge->outp[BELOW]= NULL;
             add_local_min(&out_poly, edge, xb, yb);
-            px= xb;
-            cf= edge->outp;
+            cf= edge->outp[ABOVE];
             break;
           case EMM:
-            if (NE(xb, px))
+            if (xb != px)
+	    {
               add_left(cf, xb, yb);
-            merge_right(cf, edge->outp, out_poly);
+              px= xb;
+	    }
+            merge_right(cf, edge->outp[BELOW], out_poly);
+            edge->outp[BELOW]= NULL;
             add_local_min(&out_poly, edge, xb, yb);
-            px= xb;
-            cf= edge->outp;
+            cf= edge->outp[ABOVE];
             break;
           case LED:
-            if (EQ(edge->bot.y, yb))
-              add_left(edge->outp, xb, yb);
+            if (edge->bot.y == yb)
+              add_left(edge->outp[BELOW], xb, yb);
+            edge->outp[ABOVE]= edge->outp[BELOW];
             px= xb;
             break;
           case RED:
-            if (EQ(edge->bot.y, yb))
-              add_right(edge->outp, xb, yb);
+            if (edge->bot.y == yb)
+              add_right(edge->outp[BELOW], xb, yb);
+            edge->outp[ABOVE]= edge->outp[BELOW];
             px= xb;
             break;
           default:
@@ -1346,10 +1425,10 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
       } /* End of edge exists conditional */
     } /* End of AET loop */
 
-    /* Delete terminating edges from the AET */
+    /* Delete terminating edges from the AET, otherwise compute xt */
     for (edge= aet; edge; edge= edge->next)
     {
-      if (EQ(edge->top.y, yb))
+      if (edge->top.y == yb)
       {
         prev_edge= edge->prev;
         next_edge= edge->next;
@@ -1360,14 +1439,25 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
         if (next_edge)
           next_edge->prev= prev_edge;
 
-        if (edge->head)
-        {
-          prev_edge->outp= edge->outp;
-          prev_edge->bside[CLIP]= edge->bside[CLIP];
-          prev_edge->bside[SUBJ]= edge->bside[SUBJ];
-          prev_edge->bundle[ABOVE][CLIP]= edge->bundle[ABOVE][CLIP];
-          prev_edge->bundle[ABOVE][SUBJ]= edge->bundle[ABOVE][SUBJ];
-        }
+        /* Copy bundle head state to the adjacent tail edge if required */
+        if ((edge->bstate[BELOW] == BUNDLE_HEAD) && prev_edge)
+	{
+          if (prev_edge->bstate[BELOW] == BUNDLE_TAIL)
+          {
+            prev_edge->outp[BELOW]= edge->outp[BELOW];
+            prev_edge->bstate[BELOW]= UNBUNDLED;
+            if (prev_edge->prev)
+              if (prev_edge->prev->bstate[BELOW] == BUNDLE_TAIL)
+                prev_edge->bstate[BELOW]= BUNDLE_HEAD;
+	  }
+	}
+      }
+      else
+      {
+        if (edge->top.y == yt)
+          edge->xt= edge->top.x;
+        else
+          edge->xt= edge->bot.x + edge->dx * (yt - edge->bot.y);
       }
     }
 
@@ -1375,13 +1465,7 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
     {
       /* === SCANBEAM INTERIOR PROCESSING ============================== */
 
-      /* Set yt to the top of the scanbeam */
-      yt= sbt[scanbeam];
-
-      /* Set dy to the height of the current scanbeam */
-      dy= yt - yb;
-
-      build_intersection_table(&it, aet, dy, yt);
+      build_intersection_table(&it, aet, dy);
 
       /* Process each node in the intersection table */
       for (intersect= it; intersect; intersect= intersect->next)
@@ -1393,8 +1477,8 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
         if ((e0->bundle[ABOVE][CLIP] || e0->bundle[ABOVE][SUBJ])
          && (e1->bundle[ABOVE][CLIP] || e1->bundle[ABOVE][SUBJ]))
 	{
-          P= e0->outp;
-          Q= e1->outp;
+          p= e0->outp[ABOVE];
+          q= e1->outp[ABOVE];
           ix= intersect->point.x;
           iy= intersect->point.y + yb;
  
@@ -1443,84 +1527,84 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
             break;
           }
 	  
-          myclass= tr + (tl << 1) + (br << 2) + (bl << 3);
-	  
-          switch (myclass)
+          vclass= tr + (tl << 1) + (br << 2) + (bl << 3);
+
+          switch (vclass)
           {
           case EMN:
             add_local_min(&out_poly, e0, ix, iy);
-            e1->outp= e0->outp;
+            e1->outp[ABOVE]= e0->outp[ABOVE];
             break;
           case ERI:
-            if (P)
+            if (p)
             {
-              add_right(P, ix, iy);
-              e1->outp= P;
-              e0->outp= NULL;
+              add_right(p, ix, iy);
+              e1->outp[ABOVE]= p;
+              e0->outp[ABOVE]= NULL;
             }
             break;
           case ELI:
-            if (Q)
+            if (q)
             {
-              add_left(Q, ix, iy);
-              e0->outp= Q;
-              e1->outp= NULL;
+              add_left(q, ix, iy);
+              e0->outp[ABOVE]= q;
+              e1->outp[ABOVE]= NULL;
             }
             break;
           case EMX:
-            if (P && Q)
+            if (p && q)
             {
-              add_left(P, ix, iy);
-              merge_right(P, Q, out_poly);
-              e0->outp= NULL;
-              e1->outp= NULL;
+              add_left(p, ix, iy);
+              merge_right(p, q, out_poly);
+              e0->outp[ABOVE]= NULL;
+              e1->outp[ABOVE]= NULL;
             }
             break;
           case IMN:
             add_local_min(&out_poly, e0, ix, iy);
-            e1->outp= e0->outp;
+            e1->outp[ABOVE]= e0->outp[ABOVE];
             break;
           case ILI:
-            if (P)
+            if (p)
             {
-              add_left(P, ix, iy);
-              e1->outp= P;
-              e0->outp= NULL;
+              add_left(p, ix, iy);
+              e1->outp[ABOVE]= p;
+              e0->outp[ABOVE]= NULL;
             }
             break;
           case IRI:
-            if (Q)
+            if (q)
             {
-              add_right(Q, ix, iy);
-              e0->outp= Q;
-              e1->outp= NULL;
+              add_right(q, ix, iy);
+              e0->outp[ABOVE]= q;
+              e1->outp[ABOVE]= NULL;
             }
             break;
           case IMX:
-            if (P && Q)
+            if (p && q)
             {
-              add_right(P, ix, iy);
-              merge_left(P, Q, out_poly);
-              e0->outp= NULL;
-              e1->outp= NULL;
+              add_right(p, ix, iy);
+              merge_left(p, q, out_poly);
+              e0->outp[ABOVE]= NULL;
+              e1->outp[ABOVE]= NULL;
             }
             break;
           case IMM:
-            if (P && Q)
+            if (p && q)
             {
-              add_right(P, ix, iy);
-              merge_left(P, Q, out_poly);
+              add_right(p, ix, iy);
+              merge_left(p, q, out_poly);
               add_local_min(&out_poly, e0, ix, iy);
-              e1->outp= e0->outp;
+              e1->outp[ABOVE]= e0->outp[ABOVE];
             }
             break;
           case EMM:
-            if (P && Q)
+            if (p && q)
             {
-              add_left(P, ix, iy);
-              merge_right(P, Q, out_poly);
+              add_left(p, ix, iy);
+              merge_right(p, q, out_poly);
               add_local_min(&out_poly, e0, ix, iy);
-              e1->outp= e0->outp;
+              e1->outp[ABOVE]= e0->outp[ABOVE];
             }
             break;
           default:
@@ -1537,14 +1621,14 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
 	  e1->bside[SUBJ]= !e1->bside[SUBJ];
         if (e1->bundle[ABOVE][SUBJ])
 	  e0->bside[SUBJ]= !e0->bside[SUBJ];
-        
+
         /* Swap e0 and e1 bundles in the AET */
         prev_edge= e0->prev;
         next_edge= e1->next;
-        if (e1->next)
-          e1->next->prev= e0;
+        if (next_edge)
+          next_edge->prev= e0;
 
-        if (e0->head)
+        if (e0->bstate[ABOVE] == BUNDLE_HEAD)
         {
           search= TRUE;
           while (search)
@@ -1552,9 +1636,7 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
             prev_edge= prev_edge->prev;
             if (prev_edge)
             {
-              if (prev_edge->bundle[ABOVE][CLIP]
-               || prev_edge->bundle[ABOVE][SUBJ]
-               || prev_edge->head)
+              if (prev_edge->bstate[ABOVE] != BUNDLE_TAIL)
                 search= FALSE;
             }
             else
@@ -1563,11 +1645,13 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
         }
         if (!prev_edge)
         {
+          aet->prev= e1;
           e1->next= aet;
           aet= e0->next;
         }
         else
         {
+          prev_edge->next->prev= e1;
           e1->next= prev_edge->next;
           prev_edge->next= e0->next;
         }
@@ -1582,10 +1666,13 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
         next_edge= edge->next;
         succ_edge= edge->succ;
 
-        if (EQ(edge->top.y, yt) && succ_edge)
+        if ((edge->top.y == yt) && succ_edge)
         {
           /* Replace AET edge by its successor */
-          succ_edge->outp= edge->outp;
+          succ_edge->outp[BELOW]= edge->outp[ABOVE];
+          succ_edge->bstate[BELOW]= edge->bstate[ABOVE];
+          succ_edge->bundle[BELOW][CLIP]= edge->bundle[ABOVE][CLIP];
+          succ_edge->bundle[BELOW][SUBJ]= edge->bundle[ABOVE][SUBJ];
           prev_edge= edge->prev;
           if (prev_edge)
             prev_edge->next= succ_edge;
@@ -1599,48 +1686,60 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
         else
         {
           /* Update this edge */
-          if (EQ(edge->top.y, yt))
-            edge->bot.x= edge->top.x;
-          else
-            edge->bot.x+= (edge->delx * dy);
-        }
+          edge->outp[BELOW]= edge->outp[ABOVE];
+          edge->bstate[BELOW]= edge->bstate[ABOVE];
+          edge->bundle[BELOW][CLIP]= edge->bundle[ABOVE][CLIP];
+          edge->bundle[BELOW][SUBJ]= edge->bundle[ABOVE][SUBJ];
+          edge->xb= edge->xt;
+	      }
+        edge->outp[ABOVE]= NULL;
       }
     }
   } /* === END OF SCANBEAM PROCESSING ================================== */
 
   /* Generate result polygon from out_poly */
   result->contour= NULL;
+  result->hole= NULL;
   result->num_contours= count_contours(out_poly);
   if (result->num_contours > 0)
   {
-    MALLOC(result->contour, gpc_vertex_list*, result->num_contours
-           * sizeof(gpc_vertex_list), "contour creation");
-    poly= out_poly;
-    c= 0;
+    MALLOC(result->hole, result->num_contours
+           * sizeof(int), "hole flag table creation", int);
+    MALLOC(result->contour, result->num_contours
+           * sizeof(gpc_vertex_list), "contour creation", gpc_vertex_list);
 
-    while (poly)
+    c= 0;
+    for (poly= out_poly; poly; poly= npoly)
     {
       npoly= poly->next;
       if (poly->active)
       {
-        result->contour[c].num_vertices=
-          count_vertices(poly->proxy[LEFT]);
-        MALLOC(result->contour[c].vertex, gpc_vertex*,
+        result->hole[c]= poly->proxy->hole;
+        result->contour[c].num_vertices= poly->active;
+        MALLOC(result->contour[c].vertex,
           result->contour[c].num_vertices * sizeof(gpc_vertex),
-          "vertex creation");
-        vtx= poly->proxy[LEFT];
-        for (v= 0; v < result->contour[c].num_vertices; v++)
+          "vertex creation", gpc_vertex);
+      
+        v= result->contour[c].num_vertices - 1;
+        for (vtx= poly->proxy->v[LEFT]; vtx; vtx= nv)
         {
           nv= vtx->next;
           result->contour[c].vertex[v].x= vtx->x;
           result->contour[c].vertex[v].y= vtx->y;
           FREE(vtx);
-          vtx= nv;
+          v--;
         }
         c++;
       }
       FREE(poly);
-      poly= npoly;
+    }
+  }
+  else
+  {
+    for (poly= out_poly; poly; poly= npoly)
+    {
+      npoly= poly->next;
+      FREE(poly);
     }
   }
 
@@ -1658,8 +1757,8 @@ void gpc_free_tristrip(gpc_tristrip *t)
   int s;
 
   for (s= 0; s < t->num_strips; s++)
-    CFREE(t->strip[s].vertex);
-  CFREE(t->strip);
+    FREE(t->strip[s].vertex);
+  FREE(t->strip);
   t->num_strips= 0;
 }
 
@@ -1669,42 +1768,63 @@ void gpc_polygon_to_tristrip(gpc_polygon *s, gpc_tristrip *t)
   gpc_polygon c;
 
   c.num_contours= 0;
+  c.hole= NULL;
   c.contour= NULL;
   gpc_tristrip_clip(GPC_DIFF, s, &c, t);
 }
 
 
-void gpc_tristrip_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
-                        gpc_tristrip *result)
+void gpc_tristrip_clip(gpc_op op, gpc_polygon *subj, gpc_polygon *clip,
+                       gpc_tristrip *result)
 {
   sb_tree       *sbtree= NULL;
   it_node       *it= NULL, *intersect;
   edge_node     *edge, *prev_edge, *next_edge, *succ_edge, *e0, *e1;
-  edge_node     *aet= NULL, *c_heap, *s_heap, *cf;
+  edge_node     *aet= NULL, *c_heap= NULL, *s_heap= NULL, *cf;
   lmt_node      *lmt= NULL, *local_min;
-  polygon_node  *tlist= NULL, *tn, *tnn, *P, *Q;
+  polygon_node  *tlist= NULL, *tn, *tnn, *p, *q;
   vertex_node   *lt, *ltn, *rt, *rtn;
   h_state        horiz[2];
+  vertex_type    cft;
   int            in[2], exists[2], parity[2]= {LEFT, LEFT};
   int            s, v, contributing, search, scanbeam= 0, sbt_entries= 0;
-  int            myclass, bl, br, tl, tr;
-  double        *sbt= NULL, xb, px, nx, yb, yt, dy, idy, ix, iy, tedx, tndx;
+  int            vclass, bl, br, tl, tr;
+  double        *sbt= NULL, xb, px, nx, yb, yt, dy, ix, iy;
 
-
-  if (!set_gpc_epsilon(subject, clip))
+  /* Test for trivial NULL result cases */
+  if (((subj->num_contours == 0) && (clip->num_contours == 0))
+   || ((subj->num_contours == 0) && ((op == GPC_INT) || (op == GPC_DIFF)))
+   || ((clip->num_contours == 0) &&  (op == GPC_INT)))
   {
-    /* Return a NULL result */
     result->num_strips= 0;
     result->strip= NULL;
     return;
   }
 
+  /* Identify potentialy contributing contours */
+  if (((op == GPC_INT) || (op == GPC_DIFF))
+   && (subj->num_contours > 0) && (clip->num_contours > 0))
+    minimax_test(subj, clip, op);
+
   /* Build LMT */
-  s_heap= build_lmt(&lmt, &sbtree, &sbt_entries, subject, SUBJ, op);
-  c_heap= build_lmt(&lmt, &sbtree, &sbt_entries, clip,    CLIP, op);
+  if (subj->num_contours > 0)
+    s_heap= build_lmt(&lmt, &sbtree, &sbt_entries, subj, SUBJ, op);
+  if (clip->num_contours > 0)
+    c_heap= build_lmt(&lmt, &sbtree, &sbt_entries, clip, CLIP, op);
+
+  /* Return a NULL result if no contours contribute */
+  if (lmt == NULL)
+  {
+    result->num_strips= 0;
+    result->strip= NULL;
+    reset_lmt(&lmt);
+    FREE(s_heap);
+    FREE(c_heap);
+    return;
+  }
 
   /* Build scanbeam table from scanbeam tree */
-  MALLOC(sbt, double*, sbt_entries * sizeof(double), "sbt creation");
+  MALLOC(sbt, sbt_entries * sizeof(double), "sbt creation", double);
   build_sbt(&scanbeam, sbt, sbtree);
   scanbeam= 0;
   free_sbtree(&sbtree);
@@ -1718,23 +1838,25 @@ void gpc_tristrip_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
   /* Process each scanbeam */
   while (scanbeam < sbt_entries)
   {
-    /* Set yb to the bottom of the scanbeam */
+    /* Set yb and yt to the bottom and top of the scanbeam */
     yb= sbt[scanbeam++];
+    if (scanbeam < sbt_entries)
+    {
+      yt= sbt[scanbeam];
+      dy= yt - yb;
+    }
 
     /* === SCANBEAM BOUNDARY PROCESSING ================================ */
 
     /* If LMT node corresponding to yb exists */
     if (local_min)
     {
-      if (EQ(local_min->y, yb))
+      if (local_min->y == yb)
       {
         /* Add edges starting at this local minimum to the AET */
-        edge= local_min->first_bound;
-        while(edge)
-        {
+        for (edge= local_min->first_bound; edge; edge= edge->next_bound)
           add_edge_to_aet(&aet, edge, NULL);
-          edge= edge->next_bound;
-        }
+
         local_min= local_min->next;
       }
     }
@@ -1747,60 +1869,33 @@ void gpc_tristrip_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
     e1= aet;
 
     /* Set up bundle fields of first edge */
-    aet->bundle[ABOVE][ aet->type]= NE(aet->top.y, yb);
+    aet->bundle[ABOVE][ aet->type]= (aet->top.y != yb);
     aet->bundle[ABOVE][!aet->type]= FALSE;
-    aet->head= FALSE;
-    aet->bundle[BELOW][ aet->type]= NE(aet->bot.y, yb) || aet->pred;
-    aet->bundle[BELOW][!aet->type]= FALSE;
-    if (aet->bundle[BELOW][aet->type])
-      tedx= EQ(e1->bot.y, yb)? e1->pred->delx: e1->delx;
-    else
-      tedx= -DBL_MAX;
+    aet->bstate[ABOVE]= UNBUNDLED;
 
     for (next_edge= aet->next; next_edge; next_edge= next_edge->next)
     {
       /* Set up bundle fields of next edge */
-      next_edge->bundle[ABOVE][ next_edge->type]= NE(next_edge->top.y, yb);
+      next_edge->bundle[ABOVE][ next_edge->type]= (next_edge->top.y != yb);
       next_edge->bundle[ABOVE][!next_edge->type]= FALSE;
-      next_edge->bundle[BELOW][ next_edge->type]= NE(next_edge->bot.y, yb)
-        || next_edge->pred;
-      next_edge->bundle[BELOW][!next_edge->type]= FALSE;
-      next_edge->head= FALSE;
+      next_edge->bstate[ABOVE]= UNBUNDLED;
 
       /* Bundle edges above the scanbeam boundary if they coincide */
       if (next_edge->bundle[ABOVE][next_edge->type])
       {
-        if (EQ(e0->bot.x, next_edge->bot.x) && EQ(e0->delx, next_edge->delx)
-	 && NE(e0->top.y, yb))
+        if (EQ(e0->xb, next_edge->xb) && EQ(e0->dx, next_edge->dx)
+	 && (e0->top.y != yb))
         {
           next_edge->bundle[ABOVE][ next_edge->type]^= 
             e0->bundle[ABOVE][ next_edge->type];
           next_edge->bundle[ABOVE][!next_edge->type]= 
             e0->bundle[ABOVE][!next_edge->type]; 
-          next_edge->head= TRUE;
+          next_edge->bstate[ABOVE]= BUNDLE_HEAD;
           e0->bundle[ABOVE][CLIP]= FALSE;
           e0->bundle[ABOVE][SUBJ]= FALSE;
-          e0->head= FALSE;
+          e0->bstate[ABOVE]= BUNDLE_TAIL;
         }
         e0= next_edge;
-      }
-
-      /* Bundle edges below the scanbeam boundary if they coincide */
-      if (next_edge->bundle[BELOW][next_edge->type])
-      {
-        tndx= EQ(next_edge->bot.y, yb)? next_edge->pred->delx: next_edge->delx;
-        if (EQ(e1->bot.x, next_edge->bot.x) && EQ(tedx, tndx)
-	 && (NE(e1->bot.y, yb) || e1->pred))
-        { 
-          next_edge->bundle[BELOW][ next_edge->type]^= 
-            e1->bundle[BELOW][ next_edge->type];
-          next_edge->bundle[BELOW][!next_edge->type]= 
-            e1->bundle[BELOW][!next_edge->type];
-          e1->bundle[BELOW][CLIP]= FALSE;
-          e1->bundle[BELOW][SUBJ]= FALSE;
-        }
-        e1= next_edge;
-        tedx= tndx;
       }
     }
 
@@ -1880,101 +1975,107 @@ void gpc_tristrip_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
             next_h_state[horiz[SUBJ]]
                         [((exists[SUBJ] - 1) << 1) + parity[SUBJ]];
         
-        myclass= tr + (tl << 1) + (br << 2) + (bl << 3);
+        vclass= tr + (tl << 1) + (br << 2) + (bl << 3);
 
         if (contributing)
         {
-          xb= edge->bot.x;
+          xb= edge->xb;
 
-          switch (myclass)
+          switch (vclass)
           {
           case EMN:
             new_tristrip(&tlist, edge, xb, yb);
-            px= xb;
             cf= edge;
             break;
           case ERI:
-            if (NE(xb, px))
-              VERTEX(cf, RIGHT, xb, yb);
-            edge->outp= cf->outp;
+            edge->outp[ABOVE]= cf->outp[ABOVE];
+            if (xb != cf->xb)
+              VERTEX(edge, ABOVE, RIGHT, xb, yb);
             cf= NULL;
             break;
           case ELI:
-            VERTEX(edge, LEFT, xb, yb);
-            edge->outp= NULL;
-            px= xb;
+            VERTEX(edge, BELOW, LEFT, xb, yb);
+            edge->outp[ABOVE]= NULL;
             cf= edge;
             break;
           case EMX:
-            VERTEX(edge, RIGHT, xb, yb);
-            edge->outp= NULL;
+            if (xb != cf->xb)
+              VERTEX(edge, BELOW, RIGHT, xb, yb);
+            edge->outp[ABOVE]= NULL;
             cf= NULL;
             break;
           case IMN:
-            if (NE(cf->bot.y, yb) && NE(cf->top.y, yb))
-              VERTEX(cf, LEFT, cf->bot.x, yb);
-            new_tristrip(&tlist, cf, cf->bot.x, yb);
-            edge->outp= cf->outp;
-            VERTEX(edge, RIGHT, xb, yb);
-            px= xb;
-            cf= edge;
+            if (cft == LED)
+	    {
+              if (cf->bot.y != yb)
+                VERTEX(cf, BELOW, LEFT, cf->xb, yb);
+              new_tristrip(&tlist, cf, cf->xb, yb);
+	    }
+            edge->outp[ABOVE]= cf->outp[ABOVE];
+            VERTEX(edge, ABOVE, RIGHT, xb, yb);
             break;
           case ILI:
             new_tristrip(&tlist, edge, xb, yb);
-            px= xb;
             cf= edge;
+            cft= ILI;
             break;
           case IRI:
-            if (NE(cf->bot.y, yb) && NE(cf->top.y, yb))
-              VERTEX(cf, LEFT, cf->bot.x, yb);
-            VERTEX(edge, RIGHT, xb, yb);
-            edge->outp= NULL;
-            new_tristrip(&tlist, cf, cf->bot.x, yb);
-            px= cf->bot.x;
+            if (cft == LED)
+	    {
+              if (cf->bot.y != yb)
+                VERTEX(cf, BELOW, LEFT, cf->xb, yb);
+              new_tristrip(&tlist, cf, cf->xb, yb);
+	    }
+            VERTEX(edge, BELOW, RIGHT, xb, yb);
+            edge->outp[ABOVE]= NULL;
             break;
           case IMX:
-            VERTEX(edge, LEFT, xb, yb);
-            edge->outp= NULL;
+            VERTEX(edge, BELOW, LEFT, xb, yb);
+            edge->outp[ABOVE]= NULL;
+            cft= IMX;
             break;
-          case IMM:
-            VERTEX(edge, LEFT, xb, yb);
-            if (NE(cf->bot.y, yb) && NE(cf->top.y, yb))
-              VERTEX(cf, LEFT, cf->bot.x, yb);
-            new_tristrip(&tlist, cf, cf->bot.x, yb);
-            edge->outp= cf->outp;
-            VERTEX(edge, RIGHT, xb, yb);
-            px= xb;
+	  case IMM:
+            VERTEX(edge, BELOW, LEFT, xb, yb);
+            edge->outp[ABOVE]= cf->outp[ABOVE];
+            if (xb != cf->xb)
+              VERTEX(cf, ABOVE, RIGHT, xb, yb);
             cf= edge;
             break;
           case EMM:
-            VERTEX(edge, RIGHT, xb, yb);
-            edge->outp= NULL;
+            VERTEX(edge, BELOW, RIGHT, xb, yb);
+            edge->outp[ABOVE]= NULL;
             new_tristrip(&tlist, edge, xb, yb);
-            px= xb;
             cf= edge;
             break;
           case LED:
-            if (EQ(edge->bot.y, yb))
-              VERTEX(edge, LEFT, xb, yb);
+            if (edge->bot.y == yb)
+              VERTEX(edge, BELOW, LEFT, xb, yb);
+            edge->outp[ABOVE]= edge->outp[BELOW];
             cf= edge;
-            px= xb;
+            cft= LED;
             break;
           case RED:
-            if (EQ(edge->bot.y, yb) || EQ(cf->bot.y, yb)
-               || (cf->outp != edge->outp))
-            {
-              if (cf->outp != edge->outp)
-              {
-                VERTEX(edge, RIGHT, xb, yb);
-                edge->outp= cf->outp;
-              }
+            edge->outp[ABOVE]= cf->outp[ABOVE];
+            if (cft == LED)
+	    {
+              if (cf->bot.y == yb)
+	      {
+                VERTEX(edge, BELOW, RIGHT, xb, yb);
+	      }
               else
-              {
-                if (NE(cf->bot.y, yb))
-                  VERTEX(cf, LEFT, cf->bot.x, yb);
-              }
-              VERTEX(edge, RIGHT, xb, yb);
-            }
+	      {
+                if (edge->bot.y == yb)
+		{
+                  VERTEX(cf, BELOW, LEFT, cf->xb, yb);
+                  VERTEX(edge, BELOW, RIGHT, xb, yb);
+		}
+	      }
+	    }
+            else
+	    {
+              VERTEX(edge, BELOW, RIGHT, xb, yb);
+              VERTEX(edge, ABOVE, RIGHT, xb, yb);
+	    }
             cf= NULL;
             break;
           default:
@@ -1984,10 +2085,10 @@ void gpc_tristrip_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
       } /* End of edge exists conditional */
     } /* End of AET loop */
 
-    /* Delete terminating edges from the AET */
+    /* Delete terminating edges from the AET, otherwise compute xt */
     for (edge= aet; edge; edge= edge->next)
     {
-      if (EQ(edge->top.y, yb))
+      if (edge->top.y == yb)
       {
         prev_edge= edge->prev;
         next_edge= edge->next;
@@ -1998,14 +2099,25 @@ void gpc_tristrip_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
         if (next_edge)
           next_edge->prev= prev_edge;
 
-        if (edge->head)
-        {
-          prev_edge->outp= edge->outp;
-          prev_edge->bside[CLIP]= edge->bside[CLIP];
-          prev_edge->bside[SUBJ]= edge->bside[SUBJ];
-          prev_edge->bundle[ABOVE][CLIP]= edge->bundle[ABOVE][CLIP];
-          prev_edge->bundle[ABOVE][SUBJ]= edge->bundle[ABOVE][SUBJ];
-        }
+        /* Copy bundle head state to the adjacent tail edge if required */
+        if ((edge->bstate[BELOW] == BUNDLE_HEAD) && prev_edge)
+	{
+          if (prev_edge->bstate[BELOW] == BUNDLE_TAIL)
+          {
+            prev_edge->outp[BELOW]= edge->outp[BELOW];
+            prev_edge->bstate[BELOW]= UNBUNDLED;
+            if (prev_edge->prev)
+              if (prev_edge->prev->bstate[BELOW] == BUNDLE_TAIL)
+                prev_edge->bstate[BELOW]= BUNDLE_HEAD;
+	  }
+	}
+      }
+      else
+      {
+        if (edge->top.y == yt)
+          edge->xt= edge->top.x;
+        else
+          edge->xt= edge->bot.x + edge->dx * (yt - edge->bot.y);
       }
     }
 
@@ -2013,13 +2125,7 @@ void gpc_tristrip_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
     {
       /* === SCANBEAM INTERIOR PROCESSING ============================== */
   
-      /* Set yt to the top of the scanbeam */
-      yt= sbt[scanbeam];
-
-      /* Set dy to the height of the current scanbeam */
-      dy= yt - yb;
-
-      build_intersection_table(&it, aet, dy, yt);
+      build_intersection_table(&it, aet, dy);
 
       /* Process each node in the intersection table */
       for (intersect= it; intersect; intersect= intersect->next)
@@ -2031,11 +2137,10 @@ void gpc_tristrip_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
         if ((e0->bundle[ABOVE][CLIP] || e0->bundle[ABOVE][SUBJ])
          && (e1->bundle[ABOVE][CLIP] || e1->bundle[ABOVE][SUBJ]))
 	{
-          P= e0->outp;
-          Q= e1->outp;
+          p= e0->outp[ABOVE];
+          q= e1->outp[ABOVE];
           ix= intersect->point.x;
-          idy= intersect->point.y;
-          iy= idy+ yb;
+          iy= intersect->point.y + yb;
 
           in[CLIP]= ( e0->bundle[ABOVE][CLIP] && !e0->bside[CLIP])
                  || ( e1->bundle[ABOVE][CLIP] &&  e1->bside[CLIP])
@@ -2082,113 +2187,113 @@ void gpc_tristrip_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
             break;
           }
 
-          myclass= tr + (tl << 1) + (br << 2) + (bl << 3);
+          vclass= tr + (tl << 1) + (br << 2) + (bl << 3);
 
-          switch (myclass)
+          switch (vclass)
           {
           case EMN:
             new_tristrip(&tlist, e1, ix, iy);
-            e0->outp= e1->outp;
+            e0->outp[ABOVE]= e1->outp[ABOVE];
             break;
           case ERI:
-            if (P)
+            if (p)
             {
-              P_EDGE(prev_edge, e0, px, idy);
-              VERTEX(prev_edge, LEFT, px, iy);
-              VERTEX(e0, RIGHT, ix, iy);
-              e1->outp= e0->outp;
-              e0->outp= NULL;
+              P_EDGE(prev_edge, e0, ABOVE, px, iy);
+              VERTEX(prev_edge, ABOVE, LEFT, px, iy);
+              VERTEX(e0, ABOVE, RIGHT, ix, iy);
+              e1->outp[ABOVE]= e0->outp[ABOVE];
+              e0->outp[ABOVE]= NULL;
             }
             break;
           case ELI:
-            if (Q)
+            if (q)
             {
-              N_EDGE(next_edge, e1, nx, idy);
-              VERTEX(e1, LEFT, ix, iy);
-              VERTEX(next_edge, RIGHT, nx, iy);
-              e0->outp= e1->outp;
-              e1->outp= NULL;
+              N_EDGE(next_edge, e1, ABOVE, nx, iy);
+              VERTEX(e1, ABOVE, LEFT, ix, iy);
+              VERTEX(next_edge, ABOVE, RIGHT, nx, iy);
+              e0->outp[ABOVE]= e1->outp[ABOVE];
+              e1->outp[ABOVE]= NULL;
             }
             break;
           case EMX:
-            if (P && Q)
+            if (p && q)
             {
-              VERTEX(e0, LEFT, ix, iy);
-              e0->outp= NULL;
-              e1->outp= NULL;
+              VERTEX(e0, ABOVE, LEFT, ix, iy);
+              e0->outp[ABOVE]= NULL;
+              e1->outp[ABOVE]= NULL;
             }
             break;
           case IMN:
-            P_EDGE(prev_edge, e0, px, idy);
-            VERTEX(prev_edge, LEFT, px, iy);
-            N_EDGE(next_edge, e1, nx, idy);
-            VERTEX(next_edge, RIGHT, nx, iy);
+            P_EDGE(prev_edge, e0, ABOVE, px, iy);
+            VERTEX(prev_edge, ABOVE, LEFT, px, iy);
+            N_EDGE(next_edge, e1, ABOVE, nx, iy);
+            VERTEX(next_edge, ABOVE, RIGHT, nx, iy);
             new_tristrip(&tlist, prev_edge, px, iy); 
-            e1->outp= prev_edge->outp;
-            VERTEX(e1, RIGHT, ix, iy);
+            e1->outp[ABOVE]= prev_edge->outp[ABOVE];
+            VERTEX(e1, ABOVE, RIGHT, ix, iy);
             new_tristrip(&tlist, e0, ix, iy);
-            next_edge->outp= e0->outp;
-            VERTEX(next_edge, RIGHT, nx, iy);
+            next_edge->outp[ABOVE]= e0->outp[ABOVE];
+            VERTEX(next_edge, ABOVE, RIGHT, nx, iy);
             break;
           case ILI:
-            if (P)
+            if (p)
             {
-              VERTEX(e0, LEFT, ix, iy);
-              N_EDGE(next_edge, e1, nx, idy);
-              VERTEX(next_edge, RIGHT, nx, iy);
-              e1->outp= e0->outp;
-              e0->outp= NULL;
+              VERTEX(e0, ABOVE, LEFT, ix, iy);
+              N_EDGE(next_edge, e1, ABOVE, nx, iy);
+              VERTEX(next_edge, ABOVE, RIGHT, nx, iy);
+              e1->outp[ABOVE]= e0->outp[ABOVE];
+              e0->outp[ABOVE]= NULL;
             }
             break;
           case IRI:
-            if (Q)
+            if (q)
             {
-              VERTEX(e1, RIGHT, ix, iy);
-              P_EDGE(prev_edge, e0, px, idy);
-              VERTEX(prev_edge, LEFT, px, iy);
-              e0->outp= e1->outp;
-              e1->outp= NULL;
+              VERTEX(e1, ABOVE, RIGHT, ix, iy);
+              P_EDGE(prev_edge, e0, ABOVE, px, iy);
+              VERTEX(prev_edge, ABOVE, LEFT, px, iy);
+              e0->outp[ABOVE]= e1->outp[ABOVE];
+              e1->outp[ABOVE]= NULL;
             }
             break;
           case IMX:
-            if (P && Q)
+            if (p && q)
             {
-              VERTEX(e0, RIGHT, ix, iy);
-              VERTEX(e1, LEFT, ix, iy);
-              e0->outp= NULL;
-              e1->outp= NULL;
-              P_EDGE(prev_edge, e0, px, idy);
-              VERTEX(prev_edge, LEFT, px, iy);
+              VERTEX(e0, ABOVE, RIGHT, ix, iy);
+              VERTEX(e1, ABOVE, LEFT, ix, iy);
+              e0->outp[ABOVE]= NULL;
+              e1->outp[ABOVE]= NULL;
+              P_EDGE(prev_edge, e0, ABOVE, px, iy);
+              VERTEX(prev_edge, ABOVE, LEFT, px, iy);
               new_tristrip(&tlist, prev_edge, px, iy);
-              N_EDGE(next_edge, e1, nx, idy);
-              VERTEX(next_edge, RIGHT, nx, iy);
-              next_edge->outp= prev_edge->outp;
-              VERTEX(next_edge, RIGHT, nx, iy);
+              N_EDGE(next_edge, e1, ABOVE, nx, iy);
+              VERTEX(next_edge, ABOVE, RIGHT, nx, iy);
+              next_edge->outp[ABOVE]= prev_edge->outp[ABOVE];
+              VERTEX(next_edge, ABOVE, RIGHT, nx, iy);
             }
             break;
           case IMM:
-            if (P && Q)
+            if (p && q)
             {
-              VERTEX(e0, RIGHT, ix, iy);
-              VERTEX(e1, LEFT, ix, iy);
-              P_EDGE(prev_edge, e0, px, idy);
-              VERTEX(prev_edge, LEFT, px, iy);
+              VERTEX(e0, ABOVE, RIGHT, ix, iy);
+              VERTEX(e1, ABOVE, LEFT, ix, iy);
+              P_EDGE(prev_edge, e0, ABOVE, px, iy);
+              VERTEX(prev_edge, ABOVE, LEFT, px, iy);
               new_tristrip(&tlist, prev_edge, px, iy);
-              N_EDGE(next_edge, e1, nx, idy);
-              VERTEX(next_edge, RIGHT, nx, iy);
-              e1->outp= prev_edge->outp;
-              VERTEX(e1, RIGHT, ix, iy);
+              N_EDGE(next_edge, e1, ABOVE, nx, iy);
+              VERTEX(next_edge, ABOVE, RIGHT, nx, iy);
+              e1->outp[ABOVE]= prev_edge->outp[ABOVE];
+              VERTEX(e1, ABOVE, RIGHT, ix, iy);
               new_tristrip(&tlist, e0, ix, iy);
-              next_edge->outp= e0->outp;
-              VERTEX(next_edge, RIGHT, nx, iy);
+              next_edge->outp[ABOVE]= e0->outp[ABOVE];
+              VERTEX(next_edge, ABOVE, RIGHT, nx, iy);
             }
             break;
           case EMM:
-            if (P && Q)
+            if (p && q)
             {
-              VERTEX(e0, LEFT, ix, iy);
+              VERTEX(e0, ABOVE, LEFT, ix, iy);
               new_tristrip(&tlist, e1, ix, iy);
-              e0->outp= e1->outp;
+              e0->outp[ABOVE]= e1->outp[ABOVE];
             }
             break;
           default:
@@ -2212,7 +2317,7 @@ void gpc_tristrip_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
         if (e1->next)
           e1->next->prev= e0;
 
-        if (e0->head)
+        if (e0->bstate[ABOVE] == BUNDLE_HEAD)
         {
           search= TRUE;
           while (search)
@@ -2222,7 +2327,7 @@ void gpc_tristrip_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
             {
               if (prev_edge->bundle[ABOVE][CLIP]
                || prev_edge->bundle[ABOVE][SUBJ]
-               || prev_edge->head)
+               || (prev_edge->bstate[ABOVE] == BUNDLE_HEAD))
                 search= FALSE;
             }
             else
@@ -2250,10 +2355,13 @@ void gpc_tristrip_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
         next_edge= edge->next;
         succ_edge= edge->succ;
 
-        if (EQ(edge->top.y, yt) && succ_edge)
+        if ((edge->top.y == yt) && succ_edge)
         {
           /* Replace AET edge by its successor */
-          succ_edge->outp= edge->outp;
+          succ_edge->outp[BELOW]= edge->outp[ABOVE];
+          succ_edge->bstate[BELOW]= edge->bstate[ABOVE];
+          succ_edge->bundle[BELOW][CLIP]= edge->bundle[ABOVE][CLIP];
+          succ_edge->bundle[BELOW][SUBJ]= edge->bundle[ABOVE][SUBJ];
           prev_edge= edge->prev;
           if (prev_edge)
             prev_edge->next= succ_edge;
@@ -2267,11 +2375,13 @@ void gpc_tristrip_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
         else
         {
           /* Update this edge */
-          if (EQ(edge->top.y, yt))
-            edge->bot.x= edge->top.x;
-          else
-            edge->bot.x+= (edge->delx * dy);
+          edge->outp[BELOW]= edge->outp[ABOVE];
+          edge->bstate[BELOW]= edge->bstate[ABOVE];
+          edge->bundle[BELOW][CLIP]= edge->bundle[ABOVE][CLIP];
+          edge->bundle[BELOW][SUBJ]= edge->bundle[ABOVE][SUBJ];
+          edge->xb= edge->xt;
         }
+        edge->outp[ABOVE]= NULL;
       }
     }
   } /* === END OF SCANBEAM PROCESSING ================================== */
@@ -2281,12 +2391,11 @@ void gpc_tristrip_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
   result->num_strips= count_tristrips(tlist);
   if (result->num_strips > 0)
   {
-    MALLOC(result->strip, gpc_vertex_list*, result->num_strips * sizeof(gpc_vertex_list),
-           "tristrip list creation");
-    tn= tlist;
-    s= 0;
+    MALLOC(result->strip, result->num_strips * sizeof(gpc_vertex_list),
+           "tristrip list creation", gpc_vertex_list);
 
-    while(tn)
+    s= 0;
+    for (tn= tlist; tn; tn= tnn)
     {
       tnn= tn->next;
 
@@ -2294,8 +2403,8 @@ void gpc_tristrip_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
       {
         /* Valid tristrip: copy the vertices and free the heap */
         result->strip[s].num_vertices= tn->active;
-        MALLOC(result->strip[s].vertex, gpc_vertex*, tn->active * sizeof(gpc_vertex),
-               "tristrip creation");
+        MALLOC(result->strip[s].vertex, tn->active * sizeof(gpc_vertex),
+               "tristrip creation", gpc_vertex);
         v= 0;
         if (INVERT_TRISTRIPS)
         {
@@ -2333,23 +2442,18 @@ void gpc_tristrip_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
       else
       {
         /* Invalid tristrip: just free the heap */
-        lt= tn->v[LEFT];
-        while (lt)
+        for (lt= tn->v[LEFT]; lt; lt= ltn)
         {
           ltn= lt->next;
           FREE(lt);
-          lt= ltn;
         }
-        rt= tn->v[RIGHT];
-        while (rt)
+        for (rt= tn->v[RIGHT]; rt; rt=rtn)
         {
           rtn= rt->next;
           FREE(rt);
-          rt= rtn;
         }
       }
       FREE(tn);
-      tn= tnn;
     }
   }
 
@@ -2360,7 +2464,6 @@ void gpc_tristrip_clip(gpc_op op, gpc_polygon *subject, gpc_polygon *clip,
   FREE(s_heap);
   FREE(sbt);
 }
-
 
 /*
 ===========================================================================

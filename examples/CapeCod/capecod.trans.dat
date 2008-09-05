@@ -4,12 +4,12 @@
 # </WPhast>
 # 
 
-#SOLUTE_TRANSPORT false
-SOLUTE_TRANSPORT true
+SOLUTE_TRANSPORT false
+#SOLUTE_TRANSPORT true
     -diffusivity  1e-009
     
-#STEADY_FLOW true
-STEADY_FLOW false
+STEADY_FLOW true
+#STEADY_FLOW false
 	-min		.1
 	-max		200
 	-growth_factor 	1.5
@@ -49,6 +49,8 @@ UNITS
 	-drain_bed_hydraulic_conductivity m/s
 	-drain_bed_thickness              m
 	-drain_width                      m
+	-map_horizontal                   m
+	-map_vertical                     m
 
 GRID
 	##-uniform X 275000 285000 101
@@ -58,8 +60,12 @@ GRID
 	#-uniform Z -200 -20 37
 	#-overlay_uniform Z -10 25 36
 	
-	-uniform X 275000 285000 41
-	-uniform Y 810000 830000 81
+	#-uniform X 275000 285000 41
+	#-uniform Y 810000 830000 81
+	
+	-uniform X 0 10000 41
+	-uniform Y 0 20000 81
+	
 	#-uniform X 277000  283500 27 # 250	6.5 km
 	#-uniform Y 814000  823000 37 # 250      9   km
 	-uniform Z -200 -20 10
@@ -80,21 +86,27 @@ GRID
 	-snap Z 0.001
 	-chemistry_dimensions XYZ
 	-print_orientation XY
+	-grid_origin   285000  830000 0
+	-grid_angle    180
 	
+	#-grid_origin   275000  810000 0
+	#-grid_angle    0
 
 HEAD_IC
 	-zone 275000 810000 -500 285000 830000 100
-		#-head                    0
+		-coordinate_system map
+		-head                    15
 		#-head       Y 0 814000         16.764 823000
 		#-head        y 0 810000         21.3  830000
 		#-head file capecod.head.51.dat
 		#-head file capecod.head.26a.dat
-		-head file capecod.head.250.dat
+		#-head file capecod.head.250.dat
 	
 
 MEDIA
 
 	-zone 275000 810000 -500 285000 830000 100
+		-coordinate_system map
 		-active                   0
 		-Kx                       1.06e-3
 		-Ky                       1.06e-3
@@ -139,7 +151,8 @@ MEDIA
 	#	-Ky                       1.e-4
 	#	-Kz                       1.e-6		
 	
-	-zone 275000 810000 -200 285000 830000 100	
+	-zone 275000 810000 -200 285000 830000 100
+		-coordinate_system map
 		-Kx          Z  1.06e-3 0 0.1e-3  -20   # 300 to 30 ft/d
 		-Ky          Z  1.06e-3 0 0.1e-3  -20
 		-Kz          Z  0.35e-3 0 0.01e-3 -20	
@@ -189,16 +202,16 @@ MEDIA
 #!		-Kz          Z  0.25e-3 0 0.01e-3 -20
 #!
 	-prism
-		-perimeter SHAPE ArcData/coast.shp 
-		#-top   arcraster   ArcData/rastert_ls_elev1.txt
-		#-bottom arcraster ArcData/rastert_bedrock1.txt
-		-top   arcraster   ArcData/elevation-90.txt
-		-bottom arcraster ArcData/bedrock-90.txt
+		-perimeter SHAPE     map  ArcData/coast.shp 
+		#-top      arcraster map  ArcData/rastert_ls_elev1.txt
+		#-bottom   arcraster map  ArcData/rastert_bedrock1.txt
+		-top       arcraster map  ArcData/elevation-90.txt
+		-bottom    arcraster map  ArcData/bedrock-90.txt
 		# Parameters
 		-active 1
 
 	-prism
-		-perimeter SHAPE ArcData/ModelOutline.shp
+		-perimeter SHAPE     map  ArcData/ModelOutline.shp
 		# Parameters
 		-active 0
 		
@@ -219,7 +232,7 @@ MEDIA
 	#	-vertical_dispersivity    1
 		
 	-prism
-		-perimeter  SHAPE   ArcData/SimplePonds.shp 
+		-perimeter  SHAPE   map  ArcData/SimplePonds.shp 
 		#-perimeter POINTS
 		#	280029.582  820887.320 0
 		#	280578.479  821357.803 0
@@ -230,7 +243,7 @@ MEDIA
 		#	280186.410  820273.077 0
 		#	280260.467  820469.112 0 
 			
-		-bottom SHAPE ArcData/SimpleBath.shp 10	 
+		-bottom SHAPE       map  ArcData/SimpleBath.shp 10	 
 		
 		 # Parameters
 		-Kx                       .1e-0
@@ -242,44 +255,18 @@ MEDIA
 		-horizontal_dispersivity  10
 		-vertical_dispersivity    10
 		
-#SPECIFIED_HEAD_BC		
-#	-zone 275000 823000 -200 285000 823000 100
-#	-head 
-#		0 16.764  # 55 ft
-#	-associated_solution 
-#		0	1	
-
-#LEAKY_BC		
-#	-zone 275000 822900 -200 285000 823000 100
-#	-thickness 4000
-#	-face Y
-#	-hydraulic Z    1.00e-3 10   0.30e-3  -5
-#	-head 
-#		0 19.82  # 65 ft
-#	-associated_solution 
-#		0	1			
-	
-#SPECIFIED_HEAD_BC		
-#	-zone 275000 814000 -5 285000 814000 0
-#	-head 
-#		0 0  # 
-#	-associated_solution 
-#		0	1	
-#	
-
-
 LEAKY_BC
 		
 	-prism	
-		-perimeter points
+		-perimeter points map
 			277189 814489 0
 			282362 815267 0
 			285000 815267 0
 			285000 810000 0
 			275000 810000 0
 			275000 814489 0
-		-top constant 0.5
-		-bottom constant -0.5
+		-top      constant map  0.5
+		-bottom   constant map -0.5
 		
 		# Parameters
 		-face X
@@ -289,15 +276,15 @@ LEAKY_BC
 		-associated_solution 0 1
 		
 	-prism	
-		-perimeter points
+		-perimeter points map
 			277189 814489 0
 			282362 815267 0
 			285000 815267 0
 			285000 810000 0
 			275000 810000 0
 			275000 814489 0
-		-top constant 0.5
-		-bottom constant -0.5
+		-top       constant map   0.5
+		-bottom    constant map  -0.5
 		
 		# Parameters
 		-face Y
@@ -309,13 +296,15 @@ LEAKY_BC
 		
 FLUX_BC
 	-zone 275000 810000 0 285000 830000 100
+	-coordinate_system map
 	-face Z	
 	-flux  0 -0.0018
 	-associated_solution 
 		0	3
 	
 	# Beds 1-4
-	-zone 279700 821425 0 279800 821525 50
+	-zone 279725 821500 0 279825 821600 50
+	-coordinate_system map
 	-face Z	
 	-flux 
 		0      0
@@ -331,7 +320,8 @@ FLUX_BC
 		0      2	
 	
 	# Beds 5-8
-	-zone 279600 821350 0 279700 821450 50
+	-zone 279625 821425 0 279725 821525 50
+	-coordinate_system map
 	-face Z
 	-flux 
 		0      0
@@ -347,7 +337,8 @@ FLUX_BC
 		0      2
 	
 	# Beds 9-12
-	-zone 279500 821425 0 279600 821525 50	
+	-zone 279525 821475 0 279625 821575 50
+	-coordinate_system map
 	-face Z	
 	-flux 
 		0      0 
@@ -363,7 +354,8 @@ FLUX_BC
 		0      2	
 	
 	# Beds 13-16
-	-zone 279400 821500 0 279500 821600 50	
+	-zone 279400 821575 0 279500 821675 50
+	-coordinate_system map
 	-face Z	
 	-flux 
 		0      0
@@ -379,7 +371,8 @@ FLUX_BC
 		0      2	
 	
 	# Beds 19-25
-	-zone 279500 821650 0 279550 821750 50
+	-zone 279500 821700 0 279600 821800 50
+	-coordinate_system map
 	-face Z	
 	-flux 
 		0      0 
@@ -396,6 +389,7 @@ FLUX_BC
 
 	
 DRAIN 1 East Boundary Quashnet R
+	-coordinate_system map
 	-point 		282835.491  821234.501
 		-z     		10.668	
 		-width 		100
@@ -449,6 +443,7 @@ DRAIN 1 East Boundary Quashnet R
 #		-bed_k     	1e-3
 
 DRAIN 2 Childs River, Johns Pond drain
+	-coordinate_system map
 	#-point 		281649.002  818803.563
 	#	-z     		10.668
 	#	-width 		20
@@ -516,6 +511,7 @@ DRAIN 2 Childs River, Johns Pond drain
 		
 		
 DRAIN 4 Backus River (Cranberry bogs)
+	-coordinate_system map
 	#-point 		279119.916  818624.067
 	#	-z     		10.668
 	#	-width 		20
@@ -568,6 +564,7 @@ DRAIN 4 Backus River (Cranberry bogs)
 		
 
 DRAIN 5 West Boundary Coonamessett River
+	-coordinate_system map
 	-point 		277330.574  819053.628
 		-z     		10.668
 		-width 		100
@@ -625,11 +622,12 @@ DRAIN 5 West Boundary Coonamessett River
 	
 CHEMISTRY_IC
 	-zone 275000 810000 -500 285000 830000 100
+		-coordinate_system map
 		-solution            1
 	-prism
-		-perimeter  SHAPE   ArcData/SimplePonds.shp 
+		-perimeter  SHAPE   map  ArcData/SimplePonds.shp 
 		
-		-bottom SHAPE ArcData/SimpleBath.shp 10	 
+		-bottom     SHAPE   map  ArcData/SimpleBath.shp 10	 
 		
 		 # Parameters
 		-exchange            1

@@ -1,16 +1,17 @@
 #include <vector>
 #include "Cell_Face.h"
 class Point;
-class PHST_polygon;
+class PHAST_polygon;
 double PolygonArea(gpc_vertex *polygon, int N);
 double angle_between_segments(gpc_vertex p0, gpc_vertex p1, gpc_vertex p2);
 double angle_of_segment(gpc_vertex p0, gpc_vertex p1);
 gpc_polygon *empty_polygon(void);
 double gpc_polygon_area(gpc_polygon *poly);
 gpc_polygon *gpc_polygon_duplicate(gpc_polygon *in_poly);
+void gpc_polygon_init(gpc_polygon *ptr);
 gpc_polygon *vertex_to_poly(gpc_vertex *v, int n);
 gpc_polygon *points_to_poly(std::vector<Point> &pts);
-gpc_polygon *PHST_polygon2gpc_polygon(PHST_polygon *polys);
+gpc_polygon *PHAST_polygon2gpc_polygon(PHAST_polygon *polys);
 gpc_polygon *points_to_poly(std::vector<Point> &pts, Cell_Face face);
 void gpc_polygon_write(gpc_polygon *p);
 gpc_polygon *rectangle(double x1, double y1, double x2, double y2);

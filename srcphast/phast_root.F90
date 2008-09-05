@@ -126,14 +126,17 @@ SUBROUTINE phast_root(mpi_tasks, mpi_myself)
         CALL coeff
         CALL rhsn
         ! ... Read the transient data, if necessary
-        IF (time*one_plus_eps >= timchg) THEN
+        do while(time*one_plus_eps >= timchg)
+        ! IF (time*one_plus_eps >= timchg) THEN
            CALL read3
            IF(thru) EXIT      ! ... Normal exit from time step loop
            CALL init3
            CALL error3
            CALL write3
            IF(errexi) EXIT
-        END IF
+        !END IF
+        end do
+        if (thru) exit
         IF(nwel > 0) THEN
            IF(cylind) THEN
               CALL wellsc

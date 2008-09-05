@@ -7,30 +7,28 @@ Project:   Generic Polygon Clipper
            exclusive-or or union of arbitrary polygon sets.
 
 File:      gpc.h
-Author:    Alan Murta (amurta@cs.man.ac.uk)
-Version:   2.21
-Date:      19th August 1998
+Author:    Alan Murta (email: gpc@cs.man.ac.uk)
+Version:   2.32
+Date:      17th December 2004
 
-Copyright: (C) 1997, Advanced Interfaces Group, University of Manchester.
-	   All rights reserved.
+Copyright: (C) Advanced Interfaces Group,
+           University of Manchester.
 
-           This software may be freely copied, modified, and redistributed
-           provided that this copyright notice is preserved on all copies.
-           The intellectual property rights of the algorithms used reside
-           with the University of Manchester Advanced Interfaces Group.
+           This software is free for non-commercial use. It may be copied,
+           modified, and redistributed provided that this copyright notice
+           is preserved on all copies. The intellectual property rights of
+           the algorithms used reside with the University of Manchester
+           Advanced Interfaces Group.
 
-           You may not distribute this software, in whole or in part, as
-           part of any commercial product without the express consent of
-           the author.
+           You may not use this software, in whole or in part, in support
+           of any commercial product without the express consent of the
+           author.
 
            There is no warranty or other guarantee of fitness of this
            software for any purpose. It is provided solely "as is".
 
 ===========================================================================
 */
-#ifdef PHREEQC_IDENT
-static char const svnid[] = "$Id$";
-#endif
 
 #ifndef __gpc_h
 #define __gpc_h
@@ -44,7 +42,11 @@ static char const svnid[] = "$Id$";
 ===========================================================================
 */
 
-#define GPC_VERSION "2.21"
+/* Increase GPC_EPSILON to encourage merging of near coincident edges    */
+
+#define GPC_EPSILON (DBL_EPSILON)
+
+#define GPC_VERSION "2.32"
 
 
 /*
@@ -76,7 +78,9 @@ typedef struct                      /* Vertex list structure             */
 typedef struct                      /* Polygon set structure             */
 {
   int                 num_contours; /* Number of contours in polygon     */
+  int                *hole;         /* Hole / external contour flags     */
   gpc_vertex_list    *contour;      /* Contour array pointer             */
+
 } gpc_polygon;
 
 typedef struct                      /* Tristrip set structure            */
@@ -93,13 +97,16 @@ typedef struct                      /* Tristrip set structure            */
 */
 
 void gpc_read_polygon        (FILE            *infile_ptr, 
+                              int              read_hole_flags,
                               gpc_polygon     *polygon);
 
 void gpc_write_polygon       (FILE            *outfile_ptr,
+                              int              write_hole_flags,
                               gpc_polygon     *polygon);
 
 void gpc_add_contour         (gpc_polygon     *polygon,
-                              gpc_vertex_list *contour);
+                              gpc_vertex_list *contour,
+                              int              hole);
 
 void gpc_polygon_clip        (gpc_op           set_operation,
                               gpc_polygon     *subject_polygon,
@@ -117,7 +124,6 @@ void gpc_polygon_to_tristrip (gpc_polygon     *polygon,
 void gpc_free_polygon        (gpc_polygon     *polygon);
 
 void gpc_free_tristrip       (gpc_tristrip    *tristrip);
-
 #include "gpc_helper.h"
 #endif
 

@@ -7,9 +7,10 @@
 #include "Shapefiles/Shapefile.h"
 #include "ArcRaster.h"
 #include "XYZfile.h"
-#include "PHST_polygon.h"
+#include "PHAST_polygon.h"
 #include "NNInterpolator/NNInterpolator.h"
 #include "Filedata.h"
+#include "UniqueMap.h"
 
 #define TRUE 1
 #define FALSE 0
@@ -26,6 +27,28 @@ Data_source::Data_source(void)
   this->tree = NULL;
   this->tree3d = NULL;
 }
+Data_source::Data_source(std::vector<Point> &in_pts, PHAST_Transform::COORDINATE_SYSTEM system)
+{
+	this->Init();
+	this->defined = true;
+	//file_name;
+	this->source_type = POINTS;
+	this->declared = POINTS;
+	this->filedata = NULL;
+	this->pts = in_pts;
+	//PHAST_polygon       PHAST_polygons;
+	//Polygon_tree       *tree;
+	this->tree = NULL;
+	//NNInterpolator *   nni;
+	//struct cunit       h_units;
+	//struct cunit       v_units;
+	this->tree3d = NULL;
+	//int                columns;
+	//int                attribute;
+	this->Set_bounding_box();
+	//struct zone        box;
+	this->coordinate_system = system;
+}
 Data_source::~Data_source(void)
 {
   // this->nni cleaned up in main Clear_NNInterpolatorList()
@@ -35,14 +58,13 @@ Data_source::~Data_source(void)
 }
 Data_source::Data_source(const Data_source& r)
 :defined(r.defined)
+,declared(r.declared)
 ,file_name(r.file_name)
 ,source_type(r.source_type)
 ,filedata(r.filedata)
 ,pts(r.pts)
-,phst_polygons(r.phst_polygons)
-,nni(r.nni)
-,h_units(r.h_units)
-,v_units(r.v_units)
+,phast_polygons(r.phast_polygons)
+,nni_unique(r.nni_unique)
 ,columns(r.columns)
 ,attribute(r.attribute)
 ,box(r.box)
@@ -56,15 +78,15 @@ Data_source& Data_source::operator=(const Data_source& rhs)
   if (this != &rhs)
   {
     this->defined       = rhs.defined;
+	this->declared      = rhs.declared;
     this->file_name     = rhs.file_name;
     this->source_type   = rhs.source_type;
     this->filedata      = rhs.filedata;
     this->pts           = rhs.pts;
-    this->phst_polygons = rhs.phst_polygons;
+    this->phast_polygons = rhs.phast_polygons;
     this->tree          = NULL;       // lazy initialization
-    this->nni           = rhs.nni;
-    this->h_units       = rhs.h_units;
-    this->v_units       = rhs.v_units;
+    //this->nni           = rhs.nni;
+	this->nni_unique    = rhs.nni_unique;
 	this->tree3d        = NULL;       // lazy initialization
     this->columns       = rhs.columns;
     this->attribute     = rhs.attribute;
@@ -78,11 +100,10 @@ void Data_source::Init()
   this->file_name.clear();
   this->defined = false;
   this->source_type = Data_source::NONE;
+  this->declared    = Data_source::NONE;
   this->attribute = -1;
   zone_init(&this->box);
-  this->nni = NULL;
-  this->h_units = cunit("m");
-  this->v_units = cunit("m");
+  this->nni_unique = -1;
   this->columns = 0;
   this->tree = NULL;
   this->tree3d = NULL;
@@ -108,10 +129,31 @@ bool Data_source::Read(std::istream &lines, bool read_num)
 
 	std::string type;
 	lines >> type;
+
 	int j = case_picker(std_opt_list, type);
 	if (j < 0)
 	{
 		error_msg("Error reading data type (CONSTANT, POINTS, SHAPE, XYZ, or ArcRaster).", EA_CONTINUE);
+		return(false);
+	}
+
+	// Read coordinate system
+	std::string cs;
+	lines >> cs;
+	std::transform(cs.begin(), cs.end(), cs.begin(), ::tolower);
+	std::string grid("grid"), map("map");
+	if (cs == grid)
+	{
+		this->coordinate_system = PHAST_Transform::GRID;
+	}
+	else if (cs == map)
+	{
+		this->coordinate_system = PHAST_Transform::MAP;
+	}
+	else
+	{
+		this->coordinate_system = PHAST_Transform::NONE;
+		error_msg("Error reading coordinate system (GRID or MAP) for CONSTANT, POINTS, SHAPE, XYZ, or ArcRaster.", EA_CONTINUE);
 		return(false);
 	}
 
@@ -120,6 +162,7 @@ bool Data_source::Read(std::istream &lines, bool read_num)
 		// constant
 	case 0:
 		this->source_type = Data_source::CONSTANT;
+		this->declared = this->source_type;
 		double elev;
 		if (!(lines >> elev))
 		{
@@ -134,29 +177,33 @@ bool Data_source::Read(std::istream &lines, bool read_num)
 		// points
 	case 1:
 		this->source_type = Data_source::POINTS;
+		this->declared = this->source_type;
 		{
 			this->columns = Read_points(lines, this->pts);
 
 			// for prism set v = z
 			if (this->columns < 4)
 			{
-			  std::vector<Point>::iterator it;
-			  for (it = this->pts.begin(); it != this->pts.end(); it++)
-			  {
-			    it->set_v(it->z());
-			  }
+				std::vector<Point>::iterator it;
+				for (it = this->pts.begin(); it != this->pts.end(); it++)
+				{
+					it->set_v(it->z());
+				}
 			}
 		}
-		if (this->pts.size() < 3)
-		{
-			error_msg("Error reading top of prism, expected at least 3 points.", EA_CONTINUE);
-			success = false;
-		} 
+
+		// Allow single point for 3d interpolator
+		//if (this->pts.size() < 3)
+		//{
+		//	error_msg("Error reading top of prism, expected at least 3 points.", EA_CONTINUE);
+		//	success = false;
+		//} 
 		break;
 
 		// Shape file
 	case 2:
 		this->source_type = Data_source::SHAPE;
+		this->declared = this->source_type;
 		//if (!(lines >> this->file_name)) success = false;
 		//lines >> this->attribute;
 		success = Data_source::Read_filename(lines, read_num, this->file_name, this->attribute);
@@ -165,6 +212,7 @@ bool Data_source::Read(std::istream &lines, bool read_num)
 		// XYZ file
 	case 3:
 		this->source_type = Data_source::XYZ;
+		this->declared = this->source_type;
 		//if (!(lines >> this->file_name)) success = false;
 		success = Data_source::Read_filename(lines, false, this->file_name, this->attribute);
 		if (!success) error_msg("Error reading xyz file name.", EA_CONTINUE);
@@ -172,6 +220,7 @@ bool Data_source::Read(std::istream &lines, bool read_num)
 		// Arc Raster file
 	case 4:
 		this->source_type = Data_source::ARCRASTER;
+		this->declared = this->source_type;
 		//if (!(lines >> this->file_name)) success = false;
 		success = Data_source::Read_filename(lines, false, this->file_name, this->attribute);
 		if (!success) error_msg("Error reading ArcRaster file name.", EA_CONTINUE);
@@ -259,105 +308,92 @@ bool Data_source::Read_filename (std::istream &lines, bool read_num, std::string
 
   return success;
 }
-bool Data_source::Read_units(std::istream &lines)
-{
-  bool success = true;
 
-  std::string std_token;
-  lines >> std_token;
-  if (!this->h_units.set_input(std_token.c_str()))
-  {
-    error_msg("Reading horizontal units for prism top, bottom, or perimeter.", EA_CONTINUE);
-    success = false;
-  }
-  lines >> std_token;
-  if (!this->v_units.set_input(std_token.c_str()))
-  {
-    error_msg("Reading vertical units for prism top, bottom, or perimeter.", EA_CONTINUE);
-    success = false;
-  }
-  return success;
-}
 void Data_source::Tidy(const bool make_nni)
 {
-
+	// First read data 
 	switch (this->source_type)
 	{
 	case Data_source::SHAPE:
+		// read data from shape file
 		if (Filedata::file_data_map.find(this->file_name) == Filedata::file_data_map.end())
 		{
-			Shapefile *sf = new Shapefile(this->file_name);
-			sf->Set_file_type (Filedata::SHAPE);
+			Shapefile *sf = new Shapefile(this->file_name, this->coordinate_system);
+			sf->Set_coordinate_system (this->coordinate_system);
 			Filedata::file_data_map[this->file_name] = (Filedata *) sf;
 		}
+		// Add Data_source for attribute
 		{
 			Filedata *f =  Filedata::file_data_map.find(this->file_name)->second;
 			if (f->Get_file_type() != Filedata::SHAPE) error_msg("File read as non-shape and shape file?", EA_STOP);
-			this->Add_to_file_map (f, make_nni);
 			this->filedata = f;
+			if (f->Get_data_source(this->attribute) == NULL)
+			{
+				Shapefile *sf = dynamic_cast<Shapefile *> (f);
+				std::vector<Point> temp_pts;
+				sf->Make_points(this->attribute, temp_pts);
+				int col = 3;
+				if (this->attribute < 0) col = 2;
+				sf->Add_data_source(this->attribute, temp_pts, col, this->coordinate_system);  
+			}
 		}
 		break;
 	case Data_source::ARCRASTER:
-		//fprintf(stderr, "Starting to read raster file\n");
 		if (Filedata::file_data_map.find(this->file_name) == Filedata::file_data_map.end())
 		{
-			ArcRaster *ar = new ArcRaster(this->file_name);
+			ArcRaster *ar = new ArcRaster(this->file_name, this->coordinate_system);
+			//ar->Set_coordinate_system (this->coordinate_system);
 			Filedata::file_data_map[this->file_name] = (Filedata *) ar;
-			ar->Set_file_type(Filedata::ARCRASTER);
 		}
-		//fprintf(stderr, "Finished read raster file\n");
 		{
 			Filedata *f =  Filedata::file_data_map.find(this->file_name)->second;
 			if (f->Get_file_type() != Filedata::ARCRASTER) error_msg("File read as non arcraster and arcraster file?", EA_STOP);
-			this->Add_to_file_map (f, make_nni);
 			this->filedata = f;
+			//Data_source added to data_source_map in ArcRaster constructor
 		}
-		//fprintf(stderr, "Build interpolator\n");
 		break;
 	case Data_source::XYZ:
 		if (Filedata::file_data_map.find(this->file_name) == Filedata::file_data_map.end())
 		{
-			XYZfile *xyz = new XYZfile(this->file_name);
+			XYZfile *xyz = new XYZfile(this->file_name, this->coordinate_system);
+			xyz->Set_coordinate_system (this->coordinate_system);
 			Filedata::file_data_map[this->file_name] = (Filedata *) xyz;
-			xyz->Set_file_type(Filedata::XYZ);
 		}
 		{
 			Filedata *f =  Filedata::file_data_map.find(this->file_name)->second;
 			if (f->Get_file_type() != Filedata::XYZ) error_msg("File read as non XYZ and XYZ file?", EA_STOP);
-			this->Add_to_file_map (f, make_nni);
 			this->filedata = f;
+			//Data_source added to data_source_map in XYZfile constructor
 		}
 		break;
 	case Data_source::CONSTANT:
-		// convert units
-		{
-			std::vector<Point>::iterator it;
-			for (it = this->pts.begin(); it != this->pts.end(); it++)
-			{
-				it->set_x(it->x()*this->h_units.input_to_si);
-				it->set_y(it->y()*this->h_units.input_to_si);
-				it->set_z(it->z()*this->v_units.input_to_si);
-				it->set_v(it->get_v()*this->v_units.input_to_si);
-			}
-		}
-		break;
 	case Data_source::POINTS:
-		// convert units
-		{
-			std::vector<Point>::iterator it;
-			for (it = this->pts.begin(); it != this->pts.end(); it++)
-			{
-				it->set_x(it->x()*this->h_units.input_to_si);
-				it->set_y(it->y()*this->h_units.input_to_si);
-				it->set_z(it->z()*this->v_units.input_to_si);
-				it->set_v(it->get_v()*this->v_units.input_to_si);
-			}
-		}
-		if (make_nni) Add_nni_to_data_source();
-		break;
 	case Data_source::NONE:
 		break;
 	}
+
+	// Convert coordinate system if necessary
+	this->Convert_coordinates(target_coordinate_system, map_to_grid);
+
+	// Make nni if necessary
+	// First read data 
+	switch (this->source_type)
+	{
+	case Data_source::SHAPE:
+	case Data_source::ARCRASTER:
+	case Data_source::XYZ:
+	case Data_source::POINTS:
+		if (make_nni)
+		{
+			bool success = this->Make_nni();
+			assert (success);
+		}
+		break;
+	case Data_source::CONSTANT:
+	case Data_source::NONE:
+		break;
+	}
+
 	this->Set_bounding_box();
 }
 std::vector<Point> & Data_source::Get_points()
@@ -384,95 +420,49 @@ std::vector<Point> & Data_source::Get_points()
   */
   return (this->pts);
 }
+
 bool Data_source::Make_polygons()
 {
-  this->phst_polygons.Clear();
-  switch (this->source_type)
-  {
-  case Data_source::SHAPE:
-  case Data_source::XYZ:
-    // go to file data and make polygon(s)
-    return(Filedata::file_data_map.find(this->file_name)->second->Make_polygons(this->attribute, this->phst_polygons, this->h_units.input_to_si, this->v_units.input_to_si));
-    break;
-
-  case Data_source::POINTS:
-  case Data_source::NONE:
-    if (this->phst_polygons.Get_points().size() == 0)
-    {
-      this->phst_polygons.Get_points() = this->pts;
-      this->phst_polygons.Get_begin().push_back(this->phst_polygons.Get_points().begin());
-      this->phst_polygons.Get_end().push_back(this->phst_polygons.Get_points().end());
-      this->phst_polygons.Set_bounding_box();
-    }
-    break;
-  default:
-  /*
-  case Data_source::ARCRASTER:
-  case Data_source::CONSTANT:
-  case Data_source::NONE:
-  */
-    return false;
-    break;
-  }
-  return (true);
-}
-
-void Data_source::Add_to_file_map (Filedata *f, const bool make_nni)
-{
-  // Store list of points if necessary
-  if (f->Get_pts_map().size() == 0 || (f->Get_pts_map().find(this->attribute) == f->Get_pts_map().end()) )
-  {
-    std::vector<Point> temp_pts; 
-    f->Make_points(this->attribute, temp_pts, this->h_units.input_to_si, this->v_units.input_to_si);
-
-	// Transform coordinates if specified by global coordinate_conversion
-	switch (coordinate_conversion)
+	Data_source *ds1 = this->Get_data_source_with_points();
+	//this->phst_polygons.Clear();
+	assert (ds1 != NULL);
+	ds1->phast_polygons.Clear();
+	switch (this->source_type)
 	{
-	case PHAST_Transform::NONE:
-		break;
-	case PHAST_Transform::GRID:
-		if (this->coordinate_system == PHAST_Transform::MAP)
+	case Data_source::SHAPE:
+	case Data_source::XYZ:
+		// go to file data and make polygon(s)
+		if (Filedata::file_data_map.find(this->file_name) != Filedata::file_data_map.end())
 		{
-			map_to_grid->Transform(temp_pts);
+			Filedata * f = Filedata::file_data_map.find(this->file_name)->second;
+			Data_source *ds = f->Get_data_source(this->attribute);
+			//return(f->Make_polygons(this->attribute, this->phst_polygons));
+			return(f->Make_polygons(this->attribute, ds->phast_polygons));
 		}
-		this->Set_coordinate_system(PHAST_Transform::GRID);
 		break;
-	case PHAST_Transform::MAP:
-		if (this->coordinate_system == PHAST_Transform::GRID)
+
+	case Data_source::POINTS:
+		if (this->phast_polygons.Get_points().size() == 0)
 		{
-			map_to_grid->Inverse_transform(temp_pts);
+			this->phast_polygons.Get_points() = this->pts;
+			this->phast_polygons.Get_begin().push_back(this->phast_polygons.Get_points().begin());
+			this->phast_polygons.Get_end().push_back(this->phast_polygons.Get_points().end());
+			this->phast_polygons.Set_coordinate_system(this->coordinate_system);
+			this->phast_polygons.Set_bounding_box();
+			return true;
 		}
-		this->Set_coordinate_system(PHAST_Transform::MAP);
+		break;
+	default:
+		/*
+		case Data_source::ARCRASTER:
+		case Data_source::CONSTANT:
+		case Data_source::NONE:
+		*/
 		break;
 	}
-    //std::vector<Point> pts = new std::vector<Point>(temp_pts);
-    f->Get_pts_map()[this->attribute] = temp_pts;
-  }
-  if (make_nni)
-  {
-	  // nni does not exist for attribute
-	  if ( f->Get_nni_map().find(this->attribute) == f->Get_nni_map().end() )
-	  {
-		  //std::vector<Point> temp_pts;
-		  //f->Make_points(this->attribute, temp_pts, this->h_units.input_to_si, this->v_units.input_to_si);
-
-		  // list of points should exist
-		  std::vector<Point> &pts_ref = f->Get_points(this->attribute);
-		  NNInterpolator *nni = new NNInterpolator();
-		  nni->preprocess(pts_ref);
-		  f->Get_nni_map()[this->attribute] = nni;
-		  NNInterpolator::NNInterpolatorList.push_back(nni);
-	  }
-  } 
+	return false;
 }
 
-void Data_source::Add_nni_to_data_source (void)
-{
-	// make nni
-	this->nni = new NNInterpolator();
-	this->nni->preprocess(this->Get_points());
-	NNInterpolator::NNInterpolatorList.push_back(this->nni);
-}
 struct zone *Data_source::Get_bounding_box()
 {
   return(&this->box);
@@ -489,7 +479,7 @@ void Data_source::Set_bounding_box(void)
   this->box.y2 = max.y();
   this->box.z2 = max.z();
 }
-void Data_source::Set_points(std::vector<Point> in_pts)
+void Data_source::Set_points(std::vector<Point> &in_pts)
 {
 	this->pts.clear();
 	std::vector<Point>::iterator it;
@@ -500,16 +490,26 @@ void Data_source::Set_points(std::vector<Point> in_pts)
 }
 double Data_source::Interpolate(const Point& p)
 {
+	// By default, point is in grid coordinate system
+	PHAST_Transform::COORDINATE_SYSTEM point_system = PHAST_Transform::GRID;
+	// map_to grid is default transform
+
   switch (this->source_type)
   {
   case Data_source::SHAPE:
   case Data_source::ARCRASTER:
   case Data_source::XYZ:
     {
-      // go to file data and make polygon(s)
-      Filedata *f = Filedata::file_data_map.find(this->file_name)->second;
-      NNInterpolator *nni = f->Get_nni_map().find(this->attribute)->second;
-      return (nni->interpolate(p));
+		// go to file data and make polygon(s)
+		
+		if (Filedata::file_data_map.find(this->file_name) != Filedata::file_data_map.end())
+		{
+			Filedata *f = Filedata::file_data_map.find(this->file_name)->second;
+			return (f->Interpolate(this->attribute, p, point_system, map_to_grid));
+			//Filedata *f = Filedata::file_data_map.find(this->file_name)->second;
+			//NNInterpolator *nni = f->Get_nni_map().find(this->attribute)->second;
+			//return (nni->interpolate(p));
+		}
     }
     break;
 
@@ -517,13 +517,111 @@ double Data_source::Interpolate(const Point& p)
     return this->pts.begin()->z();
     break;
   case Data_source::POINTS:
-    return (this->nni->interpolate(p));
+	  if (this->Get_nni() != NULL)
+	  {
+		  return (this->Get_nni()->interpolate(p, point_system, map_to_grid));
+	  }
+    
   default:
     break;
   }
   return(-999.);
 }
+double Data_source::Interpolate(const Point& p, PHAST_Transform::COORDINATE_SYSTEM point_system, PHAST_Transform *map2grid)
+{
+  switch (this->source_type)
+  {
+  case Data_source::SHAPE:
+  case Data_source::ARCRASTER:
+  case Data_source::XYZ:
+    {
+		// go to file data and make polygon(s)
+		
+		if (Filedata::file_data_map.find(this->file_name) != Filedata::file_data_map.end())
+		{
+			Filedata *f = Filedata::file_data_map.find(this->file_name)->second;
+			return (f->Interpolate(this->attribute, p, point_system, map2grid));
+			//Filedata *f = Filedata::file_data_map.find(this->file_name)->second;
+			//NNInterpolator *nni = f->Get_nni_map().find(this->attribute)->second;
+			//return (nni->interpolate(p));
+		}
+    }
+    break;
 
+  case Data_source::CONSTANT:
+    return this->pts.begin()->z();
+    break;
+  case Data_source::POINTS:
+	  if (this->Get_nni() != NULL)
+	  {
+		  return (this->Get_nni()->interpolate(p));
+	  }
+  default:
+    break;
+  }
+  return(-999.);
+}
+NNInterpolator * Data_source::Get_nni (void)
+{
+  switch (this->source_type)
+  {
+  case Data_source::SHAPE:
+  case Data_source::ARCRASTER:
+  case Data_source::XYZ:
+    {
+		return (this->filedata->Get_nni(this->attribute));
+    }
+    break;
+
+  case Data_source::CONSTANT:
+    return (NULL);
+    break;
+  case Data_source::POINTS:
+	  if (NNInterpolator::NNInterpolatorMap.find(this->nni_unique) != NNInterpolator::NNInterpolatorMap.end())
+	  {
+		return (NNInterpolator::NNInterpolatorMap.at(this->nni_unique));
+	  } 
+	  else
+	  {
+		  return(NULL);
+	  }
+	  break;
+  default:
+    break;
+  }
+  return NULL;
+}
+void Data_source::Replace_nni (NNInterpolator * nni_ptr)
+{
+	Data_source *ds;
+	switch (this->source_type)
+	{
+	case Data_source::SHAPE:
+	case Data_source::ARCRASTER:
+	case Data_source::XYZ:
+		ds = this->filedata->Get_data_source(this->attribute);
+		break;
+	case Data_source::CONSTANT:
+		return;
+		break;
+	case Data_source::POINTS:
+		ds = this;
+		break;
+	default:
+		return;
+		break;
+	}
+	assert (ds != NULL);
+	if (ds->nni_unique != -1)
+	{
+		NNInterpolator::NNInterpolatorMap.replace(ds->nni_unique, nni_ptr);
+	}
+	else
+	{
+		ds->Set_nni_unique(NNInterpolator::NNInterpolatorMap.push_back(nni_ptr));
+	}
+	return;
+}
 std::ostream& operator<< (std::ostream &os, const Data_source &ds)
 {
   switch (ds.source_type)
@@ -581,47 +679,130 @@ void Data_source::Set_file_name(std::string fn)
 	assert(fn.size());
 	this->file_name = fn;
 }
-#ifdef SKIP
-void Data_source::Add_points_to_map (Filedata *f)
-{
-  // Store list of points if necessary
-  if (f->Get_pts_map().size() == 0 || (f->Get_pts_map().find(this->attribute) == f->Get_pts_map().end()) )
-  {
-    std::vector<Point> temp_pts; 
-    f->Make_points(this->attribute, temp_pts, this->h_units.input_to_si, this->v_units.input_to_si);
 
-    f->Get_pts_map()[this->attribute] = temp_pts;
-  }
-}
-void Data_source::Add_to_file_map (Filedata *f, const bool make_nni)
+void Data_source::Convert_coordinates (PHAST_Transform::COORDINATE_SYSTEM target, PHAST_Transform *map2grid)
 {
-  // Store list of points if necessary
-  if (f->Get_pts_map().size() == 0 || (f->Get_pts_map().find(this->attribute) == f->Get_pts_map().end()) )
-  {
-    std::vector<Point> temp_pts; 
-    f->Make_points(this->attribute, temp_pts, this->h_units.input_to_si, this->v_units.input_to_si);
+	Data_source *ds = this->Get_data_source_with_points();
 
-	// Transform coordinates if specified by global coordinate_conversion
-	switch (coordinate_conversion)
+	switch (target)
 	{
 	case PHAST_Transform::NONE:
 		break;
 	case PHAST_Transform::GRID:
-		if (this->coordinate_system == PHAST_Transform::MAP)
+		if (ds->coordinate_system == PHAST_Transform::MAP) 
 		{
-			map_to_grid->Transform(temp_pts);
+			// Points
+			map2grid->Transform(ds->pts);
+			this->Set_bounding_box();
+			ds->Set_coordinate_system(PHAST_Transform::GRID);
+
+			// nni
+			if (ds->Get_nni() != NULL)
+			{
+				NNInterpolator *nni_ptr = new NNInterpolator;
+				nni_ptr->preprocess(ds->Get_points(), PHAST_Transform::GRID);
+				ds->Replace_nni(nni_ptr);
+			}
+
+			// Todo polygons
 		}
-		this->Set_coordinate_system(PHAST_Transform::GRID);
 		break;
 	case PHAST_Transform::MAP:
-		if (this->coordinate_system == PHAST_Transform::GRID)
+		if (this->coordinate_system == PHAST_Transform::GRID) 
 		{
-			map_to_grid->Inverse_transform(temp_pts);
+			// Points
+			map2grid->Transform(ds->pts);
+			ds->Set_bounding_box();
+			ds->Set_coordinate_system(PHAST_Transform::MAP);
+
+			// nni
+			if (ds->Get_nni() != NULL)
+			{
+				NNInterpolator *nni_ptr = new NNInterpolator;
+				nni_ptr->preprocess(ds->Get_points(), PHAST_Transform::MAP);
+				this->Replace_nni(nni_ptr);
+			}
+
+			// Todo polygons
 		}
-		this->Set_coordinate_system(PHAST_Transform::MAP);
 		break;
 	}
-    //std::vector<Point> pts = new std::vector<Point>(temp_pts);
-    f->Get_pts_map()[this->attribute] = temp_pts;
-  }
-#endif
+};
+Data_source *  Data_source::Get_data_source_with_points  (void)
+{
+	Data_source *ds;
+	switch (this->source_type)
+	{
+	case Data_source::SHAPE:
+	case Data_source::ARCRASTER:
+	case Data_source::XYZ:
+		ds = this->filedata->Get_data_source(this->attribute);
+		break;
+	case Data_source::CONSTANT:
+	case Data_source::POINTS:
+		ds = this;
+		break;
+	case NONE:
+		ds = NULL;
+	}
+	assert (ds != NULL);
+	return (ds);
+}
+bool  Data_source::Make_nni  (void)
+{
+	Data_source *ds = this->Get_data_source_with_points();
+	if (ds == NULL) return false;
+
+	if (this->nni_unique == -1)
+	{
+		NNInterpolator *nni = new NNInterpolator();
+		nni->preprocess(ds->Get_points(), ds->coordinate_system);
+		ds->Set_nni_unique(NNInterpolator::NNInterpolatorMap.push_back(nni));
+	}
+	return true;
+} 
+PHAST_Transform::COORDINATE_SYSTEM Data_source::Get_coordinate_system(void)
+{
+	switch (this->source_type)
+	{
+	case Data_source::SHAPE:
+	case Data_source::ARCRASTER:
+	case Data_source::XYZ:
+		{
+			Data_source *ds = this->Get_data_source_with_points();
+			return ds->Get_coordinate_system();
+		}
+		break;
+	default:
+		break;
+	}
+	return this->coordinate_system;
+}
+PHAST_polygon & Data_source::Get_phast_polygons (void)
+{
+	Data_source *ds = this->Get_data_source_with_points();
+	if (ds->phast_polygons.Get_points().size() > 2) return(ds->phast_polygons);
+
+	// Data source does not contain a good PHAST_polygon
+	switch (this->source_type)
+	{
+	case Data_source::SHAPE:
+	case Data_source::XYZ:
+	case POINTS:
+		this->Make_polygons();
+		return(ds->phast_polygons);
+		break;
+	case CONSTANT:
+		error_msg("Error in Get_phast_polygons, CONSTANT is not suitable for perimeter.", EA_CONTINUE);
+		return(this->phast_polygons);
+		break;
+	case Data_source::ARCRASTER:
+		error_msg("Error in Get_phast_polygons, ArcRaster file is not suitable for perimeter.", EA_CONTINUE);
+		return(this->phast_polygons);
+		break;
+	default:
+		break;
+	}
+	error_msg("Error in Get_phast_polygons, could not determine data source type.", EA_CONTINUE);
+	return(this->phast_polygons);
+}

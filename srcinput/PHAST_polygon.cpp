@@ -1,4 +1,4 @@
-#include "PHST_polygon.h"
+#include "PHAST_polygon.h"
 #include "message.h"
 #include <iostream>
 #include <cassert>
@@ -8,12 +8,13 @@
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
 #endif
 
-PHST_polygon::PHST_polygon(void)
+PHAST_polygon::PHAST_polygon(void)
 {
 }
-PHST_polygon::PHST_polygon(gpc_polygon *poly)
+PHAST_polygon::PHAST_polygon(gpc_polygon *poly, PHAST_Transform::COORDINATE_SYSTEM cs)
 {
   int i, j;
+  this->coordinate_system = cs;
   for (i = 0; i < poly->num_contours; i++)
   {
     for (j = 0; j < poly->contour[i].num_vertices; j++)
@@ -34,15 +35,17 @@ PHST_polygon::PHST_polygon(gpc_polygon *poly)
     this->end.push_back(it);
   }
 }
-PHST_polygon::PHST_polygon(const std::vector<Point> &points)
+PHAST_polygon::PHAST_polygon(const std::vector<Point> &points, PHAST_Transform::COORDINATE_SYSTEM cs)
 : pts(points)
 {
+	this->coordinate_system = cs;
 	this->begin.push_back(this->pts.begin());
 	this->end.push_back(this->pts.end());
 }
-PHST_polygon::PHST_polygon(const PHST_polygon &poly)
+PHAST_polygon::PHAST_polygon(const PHAST_polygon &poly)
 : pts(poly.pts)
 , box(poly.box)
+, coordinate_system(poly.coordinate_system)
 {
 	std::vector< std::vector<Point>::iterator >::const_iterator bi = poly.begin.begin();
 	for (; bi != poly.begin.end(); ++bi)
@@ -60,7 +63,7 @@ PHST_polygon::PHST_polygon(const PHST_polygon &poly)
 	assert(this->begin.size() == poly.begin.size());
 	assert(this->end.size()   == poly.end.size());
 }
-PHST_polygon& PHST_polygon::operator=(const PHST_polygon &rhs)
+PHAST_polygon& PHAST_polygon::operator=(const PHAST_polygon &rhs)
 {
 	if (this != &rhs)
 	{
@@ -87,10 +90,10 @@ PHST_polygon& PHST_polygon::operator=(const PHST_polygon &rhs)
 	}
 	return *this;
 }
-PHST_polygon::~PHST_polygon(void)
+PHAST_polygon::~PHAST_polygon(void)
 {
 }
-void PHST_polygon::set_z(double z)
+void PHAST_polygon::set_z(double z)
 {
 
   // for each point, set z value
@@ -100,7 +103,7 @@ void PHST_polygon::set_z(double z)
     it->set_z(z);
   }
 }
-void PHST_polygon::set_z_to_v()
+void PHAST_polygon::set_z_to_v()
 {
 
   // for each point, set z value
@@ -111,7 +114,7 @@ void PHST_polygon::set_z_to_v()
   }
 }
 
-bool PHST_polygon::Point_in_polygon(Point p) 
+bool PHAST_polygon::Point_in_polygon(Point p) 
 
 {
 //int pnpoly(int npol, float *xp, float *yp, float x, float y)
@@ -181,7 +184,7 @@ bool Point_in_simple_polygon(Point p, std::vector<Point>::iterator begin, std::v
   }
   return false;
 }
-bool PHST_polygon::Line_intersect(Point lp1, Point lp2, std::vector<Point> &intersect_pts)
+bool PHAST_polygon::Line_intersect(Point lp1, Point lp2, std::vector<Point> &intersect_pts)
 {
   // lp1 is assumed to be outside bounding box of the polygon
   //int i, j;
@@ -244,7 +247,7 @@ bool Line_intersect_simple_polygon(Point lp1, Point lp2, std::vector<Point>::ite
   }
   return(false);
 }
-void PHST_polygon::Set_bounding_box(void)
+void PHAST_polygon::Set_bounding_box(void)
 {
   Point min(this->pts.begin(), this->pts.end(), Point::MIN);
   Point max(this->pts.begin(), this->pts.end(), Point::MAX);
@@ -255,7 +258,7 @@ void PHST_polygon::Set_bounding_box(void)
   this->box.y2 = max.y();
   this->box.z2 = max.z();
 }
-void PHST_polygon::Clear(void)
+void PHAST_polygon::Clear(void)
 {
   this->pts.clear();
   this->begin.clear();

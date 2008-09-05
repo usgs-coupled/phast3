@@ -53,7 +53,7 @@ SUBROUTINE read1
 !!     ndbc = 0
 !!    READ(FUINS,*) nsbc, nfbc, nlbc, nrbc, naifc, nhcbc, nwel
      READ(FUINS,*) nsbc, nfbc, nlbc, nrbc, ndbc, naifc, nhcbc, nwel
-     IF (print_rde) WRITE(FURDE, 8103) 'NSBC,NFBC,NLBC,NRBC,NAIFC,NHCBC,NWEL,[1.7]',  &
+     IF (print_rde) WRITE(FURDE, 8103) 'NSBC,NFBC,NLBC,NRBC,NDBC,NAIFC,NHCBC,NWEL,[1.7]',  &
            nsbc, nfbc, nlbc, nrbc, ndbc, naifc, nhcbc, nwel
 8103 FORMAT(TR5,A/TR5,10I5)
      READ(FUINS,*) slmeth, nral  

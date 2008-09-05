@@ -36,7 +36,7 @@ public:
 
   struct zone *Get_bounding_box() {return &(this->box);}
   std::string *Get_description() {return &(this->description);}
-  PHAST_Transform::COORDINATE_SYSTEM Get_coordinate_system() {return this->coordinate_system;}
+  //PHAST_Transform::COORDINATE_SYSTEM Get_coordinate_system() {return this->coordinate_system;}
   bool Point_in_bounding_box(const Point &pt);
   enum POLYHEDRON_TYPE get_type(void)const;
 
@@ -52,7 +52,7 @@ protected:
   enum POLYHEDRON_TYPE type;
   struct zone box;
   std::string description;
-  PHAST_Transform::COORDINATE_SYSTEM coordinate_system;
+  //PHAST_Transform::COORDINATE_SYSTEM coordinate_system;
 
 };
 

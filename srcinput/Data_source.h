@@ -5,7 +5,7 @@
 #include <map>
 
 #include "gpc.h"
-#include "PHST_polygon.h"
+#include "PHAST_polygon.h"
 #include "unit_impl.h"
 #include "Polygon_tree.h"
 #include "KDtree/KDtree.h"
@@ -28,7 +28,7 @@ public:
     NONE         = 5
   };
   Data_source(void);
-
+  Data_source(std::vector<Point> &in_pts, PHAST_Transform::COORDINATE_SYSTEM system);
   Data_source(const Data_source& r);
   
   ~Data_source(void);
@@ -44,79 +44,99 @@ public:
   void                     Init();
   bool                     Read                   (std::istream &lines, bool read_num);
   void                     Tidy                   (const bool make_nni);
-  void                     Add_to_file_map        (Filedata *f, const bool make_nni);
-  void                     Add_nni_to_data_source (void);
+  void                     Convert_coordinates    (PHAST_Transform::COORDINATE_SYSTEM target, PHAST_Transform *map2grid);
+  //void                     Add_to_file_map        (Filedata *f, const bool make_nni);
+  //void                     Add_nni_to_data_source (void);
   bool                     Make_polygons          (void);
+  bool                     Make_nni               (void);
   double                   Interpolate            (const Point& p);
-  bool                     Read_units             (std::istream &lines);
+  double                   Interpolate            (const Point& p, PHAST_Transform::COORDINATE_SYSTEM point_system, PHAST_Transform *map2grid);
+  //bool                     Read_units             (std::istream &lines);
   static bool              Read_filename          (std::istream &lines, bool read_num, std::string &filename, int &num);
-  // Getter 
+  // Getter and setter
   bool                     Get_defined            (void) {return this->defined;};
-  std::vector<Point> &     Get_points             (void);
-  DATA_SOURCE_TYPE         Get_source_type        (void)const {return this->source_type;}
-  int                      Get_attribute          (void)const {return this->attribute;}
-  PHST_polygon &           Get_phst_polygons      (void) {return this->phst_polygons;};
-  struct zone *            Get_bounding_box       (void);
-  struct cunit *           Get_h_units            (void) {return &this->h_units;};
-  struct cunit *           Get_v_units            (void) {return &this->v_units;};
-  Polygon_tree *           Get_tree               (void);
-  KDtree *                 Get_tree3d             (void);
-  std::string              Get_file_name          (void)const {return this->file_name;};
-  Filedata *               Get_filedata           (void)const {return this->filedata;};
-  int                      Get_columns            (void)const {return this->columns;};
-  // Setter
-  void                     Set_source_type        (DATA_SOURCE_TYPE dt) {this->source_type = dt;};
-  void                     Set_bounding_box       (void);
   void                     Set_defined            (bool tf) {this->defined = tf;};
+  
+  std::string              Get_file_name          (void)const {return this->file_name;};
   void                     Set_file_name          (std::string fn);
-  void                     Set_attribute          (int a) {this->attribute = a;};
+
+  DATA_SOURCE_TYPE         Get_source_type        (void)const {return this->source_type;}
+  void                     Set_source_type        (DATA_SOURCE_TYPE dt) {this->source_type = dt;};
+
+  Filedata *               Get_filedata           (void)const {return this->filedata;};
+
+  std::vector<Point> &     Get_points             (void);
+  void                     Set_points             (std::vector<Point> &pts);
+
+  PHAST_polygon &           Get_phast_polygons     (void);
+
+  Polygon_tree *           Get_tree               (void);
+  
+  NNInterpolator *         Get_nni                (void);
+  void                     Replace_nni            (NNInterpolator *);
+
+  size_t                   Get_nni_unique         (void) {return this->nni_unique;};
+  void                     Set_nni_unique         (size_t i) {this->nni_unique = i;};
+
+  KDtree *                 Get_tree3d             (void);
+
+  int                      Get_columns            (void)const {return this->columns;};
   void                     Set_columns            (int i) {this->columns = i;};
-  void                     Set_points             (std::vector<Point> pts);
-  Data_source &            operator=              (const Data_source& r);
 
-  PHAST_Transform::COORDINATE_SYSTEM   Get_coordinate_system() {return this->coordinate_system;};
+  int                      Get_attribute          (void)const {return this->attribute;}
+  void                     Set_attribute          (int a) {this->attribute = a;};
+
+  struct zone *            Get_bounding_box       (void);
+  void                     Set_bounding_box       (void);
+
+  Data_source *            Get_data_source_with_points  (void);
+
   void                                 Set_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM c) {this->coordinate_system = c;};
+  PHAST_Transform::COORDINATE_SYSTEM   Get_coordinate_system();
 
+  Data_source &            operator=              (const Data_source& r);
   friend std::ostream& operator<< (std::ostream &os, const Data_source &ds);
 
   // Data
 protected:
   bool               defined;
+  DATA_SOURCE_TYPE   declared;
   std::string        file_name;
   DATA_SOURCE_TYPE   source_type;
   Filedata *         filedata;
   std::vector<Point> pts;
-  PHST_polygon       phst_polygons;
+  PHAST_polygon       phast_polygons;
   Polygon_tree       *tree;
-  NNInterpolator *   nni;
-  struct cunit       h_units;
-  struct cunit       v_units;
-  KDtree *           tree3d;
+  //NNInterpolator *   nni;
+  size_t             nni_unique;
+  KDtree *           tree3d;     /* used for 3D interpolation */
   int                columns;
   int                attribute;
   struct zone        box;
   PHAST_Transform::COORDINATE_SYSTEM   coordinate_system;
 };
-
 inline KDtree * Data_source::Get_tree3d(void)
 {
-	if (!this->tree3d)
+	Data_source *ds = this->Get_data_source_with_points();
+	if (!ds->tree3d)
 	{
 		// Use points to make 3D tree
-		this->tree3d = new KDtree(this->Get_points());
+		ds->tree3d = new KDtree(ds->Get_points());
 
 		// No longer need points
-		this->pts.clear();
+		//ds->pts.clear();
 	}
-	return this->tree3d;
+	return ds->tree3d;
 }
 inline Polygon_tree * Data_source::Get_tree(void)
 {
-  if (!this->tree)
-  {
-    this->tree = new Polygon_tree(this->Get_phst_polygons());
-  }
-  return this->tree;
+	Data_source *ds = this->Get_data_source_with_points();
+	if (!ds->tree)
+	{
+		assert(ds->phast_polygons.Get_points().size() != 0);
+		ds->tree = new Polygon_tree(ds->phast_polygons);
+	}
+	return ds->tree;
 }
 
 #endif // !defined(DATA_SOURCE_H_INCLUDED)

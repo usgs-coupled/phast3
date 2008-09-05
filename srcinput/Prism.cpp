@@ -1,5 +1,7 @@
 #include "Prism.h"
 #include "Cube.h"
+#include "Wedge.h"
+#include "Cell_Face.h"
 #include "PHAST_Transform.h"
 #include "message.h"
 #include <sstream>
@@ -21,73 +23,245 @@ Prism::Prism(void)
 {
   this->type = PRISM;
 
-  this->perimeter_poly = NULL;
+  //this->perimeter_poly = NULL;
   this->prism_dip = Point(0,0,1,0);
-  this->perimeter_datum = 0.0;
-  this->orig_perimeter_datum = 0.0;
-  this->perimeter_option = DEFAULT;
+  this->perimeter.Set_coordinate_system(PHAST_Transform::MAP);
+  this->top.Set_coordinate_system(PHAST_Transform::MAP);
+  this->bottom.Set_coordinate_system(PHAST_Transform::MAP);
   zone_init(&this->box);
   Prism::prism_list.push_back(this);
 }
 Prism::Prism(Cube &c)
 {
-  this->type = PRISM;
-  this->coordinate_system = c.Get_coordinate_system();
+	this->type = PRISM;
 
-  this->perimeter_poly = NULL;
-  this->prism_dip = Point(0,0,1,0);
-  this->perimeter_datum = 0.0;
-  this->orig_perimeter_datum = 0.0;
-  this->perimeter_option = DEFAULT;
-  zone_init(&this->box);
+	//this->coordinate_system = c.Get_coordinate_system();
+	this->perimeter.Set_coordinate_system(c.Get_coordinate_system());
+	this->top.Set_coordinate_system(c.Get_coordinate_system());
+	this->bottom.Set_coordinate_system(c.Get_coordinate_system());
 
-  std::vector<Point> pts;
-  zone c_zone(c.Get_bounding_box());
 
-  // define perimeter
-  this->perimeter.Set_defined(true);
-  this->perimeter.Set_source_type(Data_source::POINTS);
-  pts.push_back(Point(c_zone.x1, c_zone.y1, c_zone.z2));
-  pts.push_back(Point(c_zone.x2, c_zone.y1, c_zone.z2));
-  pts.push_back(Point(c_zone.x2, c_zone.y2, c_zone.z2));
-  pts.push_back(Point(c_zone.x1, c_zone.y2, c_zone.z2));
-  this->perimeter.Set_points(pts);
+	this->prism_dip = Point(0,0,1,0);
+	zone_init(&this->box);
 
-  // define top
-  pts.clear();
-  this->top.Set_defined(true);
-  this->top.Set_source_type(Data_source::CONSTANT);
-  pts.push_back(Point(c_zone.x1, c_zone.y1, c_zone.z2));
-  this->top.Set_points(pts);
+	std::vector<Point> pts;
+	zone c_zone(c.Get_bounding_box());
 
-  // define top
-  pts.clear();
-  this->bottom.Set_defined(true);
-  this->bottom.Set_source_type(Data_source::CONSTANT);
-  pts.push_back(Point(c_zone.x1, c_zone.y1, c_zone.z2));
-  this->bottom.Set_points(pts);
+	// define perimeter
+	this->perimeter.Set_defined(true);
+	this->perimeter.Set_source_type(Data_source::POINTS);
+	pts.push_back(Point(c_zone.x1, c_zone.y1, c_zone.z2));
+	pts.push_back(Point(c_zone.x2, c_zone.y1, c_zone.z2));
+	pts.push_back(Point(c_zone.x2, c_zone.y2, c_zone.z2));
+	pts.push_back(Point(c_zone.x1, c_zone.y2, c_zone.z2));
+	this->perimeter.Set_points(pts);
 
-  this->Set_bounding_box();
-  Prism::prism_list.push_back(this);
+	// define top
+	pts.clear();
+	this->top.Set_defined(true);
+	this->top.Set_source_type(Data_source::CONSTANT);
+	pts.push_back(Point(c_zone.x1, c_zone.y1, c_zone.z2));
+	this->top.Set_points(pts);
+
+	// define bottom
+	pts.clear();
+	this->bottom.Set_defined(true);
+	this->bottom.Set_source_type(Data_source::CONSTANT);
+	pts.push_back(Point(c_zone.x1, c_zone.y1, c_zone.z1));
+	this->bottom.Set_points(pts);
+
+	this->Set_bounding_box();
+	Prism::prism_list.push_back(this);
 }
+
+Prism::Prism(Wedge &w)
+{
+	this->type = PRISM;
+
+	//this->coordinate_system = c.Get_coordinate_system();
+	this->perimeter.Set_coordinate_system(w.Get_coordinate_system());
+	this->top.Set_coordinate_system(w.Get_coordinate_system());
+	this->bottom.Set_coordinate_system(w.Get_coordinate_system());
+
+	this->prism_dip = Point(0,0,1,0);
+	zone_init(&this->box);
+
+	std::vector<Point> pts;
+	zone w_zone(w.Get_bounding_box());
+
+	// define perimeter
+	this->perimeter.Set_defined(true);
+	this->perimeter.Set_source_type(Data_source::POINTS);
+	if (w.Get_wedge_axis() == CF_Z)
+	{
+		switch (w.Get_wedge_number())
+		{
+		case 1:
+			pts.push_back(Point(w_zone.x1, w_zone.y2, w_zone.z2));
+			pts.push_back(Point(w_zone.x1, w_zone.y1, w_zone.z2));
+			pts.push_back(Point(w_zone.x2, w_zone.y1, w_zone.z2));
+			this->perimeter.Set_points(pts);
+			break;
+		case 2:
+			pts.push_back(Point(w_zone.x2, w_zone.y2, w_zone.z2));
+			pts.push_back(Point(w_zone.x1, w_zone.y2, w_zone.z2));
+			pts.push_back(Point(w_zone.x1, w_zone.y1, w_zone.z2));
+			this->perimeter.Set_points(pts);
+			break;
+		case 3:
+			pts.push_back(Point(w_zone.x2, w_zone.y1, w_zone.z2));
+			pts.push_back(Point(w_zone.x2, w_zone.y2, w_zone.z2));
+			pts.push_back(Point(w_zone.x1, w_zone.y2, w_zone.z2));
+			this->perimeter.Set_points(pts);
+			break;
+		case 4:
+			pts.push_back(Point(w_zone.x1, w_zone.y1, w_zone.z2));
+			pts.push_back(Point(w_zone.x2, w_zone.y1, w_zone.z2));
+			pts.push_back(Point(w_zone.x2, w_zone.y2, w_zone.z2));
+
+			this->perimeter.Set_points(pts);
+			break;
+		}
+	}
+	else
+	{
+		pts.push_back(Point(w_zone.x1, w_zone.y1, w_zone.z2));
+		pts.push_back(Point(w_zone.x2, w_zone.y1, w_zone.z2));
+		pts.push_back(Point(w_zone.x2, w_zone.y2, w_zone.z2));
+		pts.push_back(Point(w_zone.x1, w_zone.y2, w_zone.z2));
+		this->perimeter.Set_points(pts);
+	}
+
+	// define top and bottom
+
+	// First define as constant
+	pts.clear();
+	this->top.Set_defined(true);
+	this->top.Set_source_type(Data_source::CONSTANT);
+	pts.push_back(Point(w_zone.x1, w_zone.y1, w_zone.z2));
+	this->top.Set_points(pts);
+
+	pts.clear();
+	this->bottom.Set_defined(true);
+	this->bottom.Set_source_type(Data_source::CONSTANT);
+	pts.push_back(Point(w_zone.x1, w_zone.y1, w_zone.z1));
+	this->bottom.Set_points(pts);
+
+	// for Z, we are done
+	pts.clear();
+	if (w.Get_wedge_axis() == CF_X)
+	{
+		switch (w.Get_wedge_number())
+		{
+		case 1:
+			// Top
+			this->top.Set_source_type(Data_source::POINTS);
+			pts.push_back(Point(w_zone.x1, w_zone.y1, w_zone.z2));
+			pts.push_back(Point(w_zone.x2, w_zone.y1, w_zone.z2));
+			pts.push_back(Point(w_zone.x2, w_zone.y2, w_zone.z1));
+			pts.push_back(Point(w_zone.x1, w_zone.y2, w_zone.z1));
+			this->top.Set_points(pts);
+
+			// Bottom is constant
+			break;
+		case 2:
+			// Top is constant
+
+			// Bottom
+			this->bottom.Set_source_type(Data_source::POINTS);
+			pts.push_back(Point(w_zone.x1, w_zone.y1, w_zone.z1));
+			pts.push_back(Point(w_zone.x2, w_zone.y1, w_zone.z1));
+			pts.push_back(Point(w_zone.x2, w_zone.y2, w_zone.z2));
+			pts.push_back(Point(w_zone.x1, w_zone.y2, w_zone.z2));
+			this->bottom.Set_points(pts);
+			break;
+		case 3:
+			// Top is constant
+
+			// Bottom
+			this->bottom.Set_source_type(Data_source::POINTS);
+			pts.push_back(Point(w_zone.x1, w_zone.y1, w_zone.z2));
+			pts.push_back(Point(w_zone.x2, w_zone.y1, w_zone.z2));
+			pts.push_back(Point(w_zone.x2, w_zone.y2, w_zone.z1));
+			pts.push_back(Point(w_zone.x1, w_zone.y2, w_zone.z1));
+			this->bottom.Set_points(pts);
+			break;
+
+		case 4:
+			// Top
+			this->top.Set_source_type(Data_source::POINTS);
+			pts.push_back(Point(w_zone.x1, w_zone.y1, w_zone.z1));
+			pts.push_back(Point(w_zone.x2, w_zone.y1, w_zone.z1));
+			pts.push_back(Point(w_zone.x2, w_zone.y2, w_zone.z2));
+			pts.push_back(Point(w_zone.x1, w_zone.y2, w_zone.z2));
+			this->top.Set_points(pts);
+
+			// Bottom is constant
+			break;
+		}
+	}
+
+	if (w.Get_wedge_axis() == CF_Y)
+	{
+		switch (w.Get_wedge_number())
+		{
+		case 1:
+			// Top
+			this->top.Set_source_type(Data_source::POINTS);
+			pts.push_back(Point(w_zone.x1, w_zone.y1, w_zone.z2));
+			pts.push_back(Point(w_zone.x2, w_zone.y1, w_zone.z1));
+			pts.push_back(Point(w_zone.x2, w_zone.y2, w_zone.z1));
+			pts.push_back(Point(w_zone.x1, w_zone.y2, w_zone.z2));
+			this->top.Set_points(pts);
+
+			// Bottom is constant
+			break;
+		case 2:
+			this->top.Set_source_type(Data_source::POINTS);
+			pts.push_back(Point(w_zone.x1, w_zone.y1, w_zone.z1));
+			pts.push_back(Point(w_zone.x2, w_zone.y1, w_zone.z2));
+			pts.push_back(Point(w_zone.x2, w_zone.y2, w_zone.z2));
+			pts.push_back(Point(w_zone.x1, w_zone.y2, w_zone.z1));
+			this->top.Set_points(pts);
+
+			// Bottom is constant
+			break;
+		case 3:
+			// Top is constant
+
+			// Bottom
+			this->bottom.Set_source_type(Data_source::POINTS);
+			pts.push_back(Point(w_zone.x1, w_zone.y1, w_zone.z2));
+			pts.push_back(Point(w_zone.x2, w_zone.y1, w_zone.z1));
+			pts.push_back(Point(w_zone.x2, w_zone.y2, w_zone.z1));
+			pts.push_back(Point(w_zone.x1, w_zone.y2, w_zone.z2));
+			this->bottom.Set_points(pts);
+			break;
+		case 4:
+			// Top is constant
+
+			// Bottom
+			this->bottom.Set_source_type(Data_source::POINTS);
+			pts.push_back(Point(w_zone.x1, w_zone.y1, w_zone.z1));
+			pts.push_back(Point(w_zone.x2, w_zone.y1, w_zone.z2));
+			pts.push_back(Point(w_zone.x2, w_zone.y2, w_zone.z2));
+			pts.push_back(Point(w_zone.x1, w_zone.y2, w_zone.z1));
+			this->bottom.Set_points(pts);
+			break;
+		}
+	}
+
+	this->Set_bounding_box();
+	Prism::prism_list.push_back(this);
+}
+
 Prism::Prism(const Prism& c)
 :Polyhedron(c)
 ,perimeter(c.perimeter)
 ,prism_dip(c.prism_dip)
-,perimeter_datum(c.perimeter_datum)
-,orig_perimeter_datum(c.orig_perimeter_datum)
-,perimeter_option(c.perimeter_option)
 ,bottom(c.bottom)
 ,top(c.top)
 {
-  if (c.perimeter_poly)
-  {
-    this->perimeter_poly = gpc_polygon_duplicate(c.perimeter_poly);
-  }
-  else
-  {
-    this->perimeter_poly = NULL;
-  }
   Prism::prism_list.push_back(this);
 }
 Prism::~Prism(void)
@@ -100,12 +274,6 @@ Prism::~Prism(void)
   }
   assert(it != Prism::prism_list.end()); // should be found
   if (it != Prism::prism_list.end()) Prism::prism_list.erase(it);
-
-  if (this->perimeter_poly != NULL)
-  {
-    gpc_free_polygon(this->perimeter_poly);
-  }
-  free_check_null(this->perimeter_poly);
 }
 bool Prism::Read(std::istream &lines)
 {
@@ -116,12 +284,15 @@ bool Prism::Read(std::istream &lines)
     "top",                           /* 2 */
     "bottom",                        /* 3 */
     "vector",                        /* 4 */
-    "perimeter_z",                   /* 5 */
-    "units_top",                     /* 6 */
-    "units_bottom",                  /* 7 */
-    "units_perimeter"                /* 8 */
+    //"perimeter_z",                   /* 5 */
+    //"units_top",                     /* 6 */
+    //"units_bottom",                  /* 7 */
+    //"units_perimeter"                /* 8 */
+	"perimeter_coordinate_system",     /* 5 */
+	"top_coordinate_system",           /* 6 */
+	"bottom_coordinate_system"         /* 7 */
   };
-  int count_opt_list = 9; 
+  int count_opt_list = 8; 
   std::vector<std::string> std_opt_list;
   int i;
   for (i = 0; i < count_opt_list; i++) std_opt_list.push_back(opt_list[i]);
@@ -137,10 +308,6 @@ bool Prism::Read(std::istream &lines)
   case 0:
     p_opt = Prism::PERIMETER;
     break;
-  case 1:
-  case 4:
-    p_opt = Prism::DIP;
-    break;
   case 2:
     p_opt = Prism::TOP;
     break;
@@ -148,17 +315,14 @@ bool Prism::Read(std::istream &lines)
     p_opt = Prism::BOTTOM;
     break;
   case 5:
-    p_opt = Prism::PERIMETER_Z;
-    break;
+	  p_opt = Prism::PERIMETER_COORD_SYS;
+	  break;
   case 6:
-    p_opt = Prism::UNITS_TOP;
-    break;
+	  p_opt = Prism::TOP_COORD_SYS;
+	  break;
   case 7:
-    p_opt = Prism::UNITS_BOTTOM;
-    break;
-  case 8:
-    p_opt = Prism::UNITS_PERIMETER;
-    break;
+	  p_opt = Prism::BOTTOM_COORD_SYS;
+	  break;
   default:
     error_msg("Error reading prism data (perimeter, dip, top, bottom).", EA_CONTINUE);
     return(false);
@@ -173,33 +337,6 @@ bool Prism::Read(PRISM_OPTION p_opt, std::istream &lines)
   bool success = true;
   switch (p_opt)
   {
-  case DIP:
-    {
-      double *coord = this->prism_dip.get_coord();
-      int i;
-      for (i = 0; i < 3; i++)
-      {
-	if (!(lines >> coord[i]))
-	{
-	  error_msg("Error reading dip of prism.", EA_CONTINUE);
-	  success = false;
-	}
-      }
-      if (success)
-      {
-	if (coord[2] != 0.0)
-	{
-	  // normalize
-	  coord[0] /= coord[2];
-	  coord[1] /= coord[2];
-	  coord[2] /= coord[2];
-	} else 
-	{
-	  error_msg("Z coordinate of vector for prism must not be zero.", EA_CONTINUE);
-	}
-      }
-    }
-    break;
   case PERIMETER:
     if (!this->perimeter.Read(lines, false)) 
     {
@@ -219,38 +356,62 @@ bool Prism::Read(PRISM_OPTION p_opt, std::istream &lines)
   case BOTTOM:
     if (!this->bottom.Read(lines, true)) error_msg("Reading bottom of prism", EA_CONTINUE);
     break;
-  case PERIMETER_Z:
-    {
-      lines >> token;
-      char str[250];
-      strcpy(str,token.c_str());
-      if (isdigit(str[0]))
-      {
-	this->perimeter_option = CONSTANT;
-	sscanf(str,"%lf", &(this->perimeter_datum));
-	this->orig_perimeter_datum = this->perimeter_datum;
-      } else if (str[0] == 'a')
-      {
-	this->perimeter_option = ATTRIBUTE;
-      } else if (str[0] == 'u')
-      {
-	this->perimeter_option = USE_Z;
-      } else
-      {
-	error_msg("Reading perimeter_z option.", EA_CONTINUE);
-	success = false;
-      }
-    }
-    break;
-  case UNITS_TOP:
-    this->top.Read_units(lines);
-    break;
-  case UNITS_BOTTOM:
-    this->bottom.Read_units(lines);
-    break;
-  case UNITS_PERIMETER:
-    this->perimeter.Read_units(lines);
-    break;
+  case PERIMETER_COORD_SYS:
+	  {
+		  lines >> token;
+		  char str[250];
+		  strcpy(str,token.c_str());
+		  str_tolower(str);
+		  if (strstr(str, "map") == str)
+		  {
+			  this->perimeter.Set_coordinate_system (PHAST_Transform::MAP );
+		  } else if (strstr(str, "grid") == str)
+		  {
+			  this->perimeter.Set_coordinate_system (PHAST_Transform::GRID);
+		  } else
+		  {
+			  error_msg("Reading perimeter coordinate system option.", EA_CONTINUE);
+			  success = false;
+		  }
+	  }
+	  break;
+   case TOP_COORD_SYS:
+	  {
+		  lines >> token;
+		  char str[250];
+		  strcpy(str,token.c_str());
+		  str_tolower(str);
+		  if (strstr(str, "map") == str)
+		  {
+			  this->top.Set_coordinate_system (PHAST_Transform::MAP );
+		  } else if (strstr(str, "grid") == str)
+		  {
+			  this->top.Set_coordinate_system (PHAST_Transform::GRID );
+		  } else
+		  {
+			  error_msg("Reading top coordinate system option.", EA_CONTINUE);
+			  success = false;
+		  }
+	  }
+   case BOTTOM_COORD_SYS:
+	  {
+		  lines >> token;
+		  char str[250];
+		  strcpy(str,token.c_str());
+		  str_tolower(str);
+		  if (strstr(str, "map") == str)
+		  {
+			  this->bottom.Set_coordinate_system (PHAST_Transform::MAP );
+		  } else if (strstr(str, "grid") == str)
+		  {
+			  this->bottom.Set_coordinate_system (PHAST_Transform::GRID );
+		  } else
+		  {
+			  error_msg("Reading bottom coordinate system option.", EA_CONTINUE);
+			  success = false;
+		  }
+	  }
+	  break;
   }
   return (success);
 }
@@ -364,7 +525,7 @@ gpc_polygon * Prism::Slice(Cell_Face face, double coord)
 		gpc_polygon *slice = empty_polygon();
 		{
 			//line_intersect_polygon(lp1, lp2, this->perimeter.pts, intersect_pts);
-			this->perimeter.Get_phst_polygons().Line_intersect(lp1, lp2, intersect_pts);
+			this->perimeter.Get_phast_polygons().Line_intersect(lp1, lp2, intersect_pts);
 			int i;
 			for (i = 0; i < (int) intersect_pts.size(); i = i + 2)
 			{
@@ -465,23 +626,6 @@ void Prism::printOn(std::ostream& os) const
       */
     }
   }
-  
-  switch (this->perimeter_option)
-  {
-  case CONSTANT:
-    os << "\t\t-perimeter_z " << this->orig_perimeter_datum << std::endl;
-    break;
-  case ATTRIBUTE:
-    os << "\t\t-perimeter_z attribute" << std::endl;
-    break;
-  case USE_Z:
-    os << "\t\t-perimeter_z use_z" << std::endl;
-    break;
-  case DEFAULT:
-    break;
-  default:
-    assert(false);
-  }
 }
 
 bool Prism::Project_point(Point &p, Cell_Face face, double coord)
@@ -520,59 +664,54 @@ void Tidy_prisms(void)
 
 void Prism::Tidy()
 {
-  this->top.Tidy(true);
+	//
+	// set defaults
+	if (this->perimeter.Get_source_type() == Data_source::NONE)
+	{
+		this->perimeter.Set_defined (true);
+		this->perimeter.Set_coordinate_system(PHAST_Transform::GRID);
+		this->perimeter.Set_source_type(Data_source::POINTS);
+		this->perimeter.Get_points().push_back(Point(grid_zone()->x1, grid_zone()->y1, grid_zone()->z2, grid_zone()->z2));
+		this->perimeter.Get_points().push_back(Point(grid_zone()->x2, grid_zone()->y1, grid_zone()->z2, grid_zone()->z2));
+		this->perimeter.Get_points().push_back(Point(grid_zone()->x2, grid_zone()->y2, grid_zone()->z2, grid_zone()->z2));
+		this->perimeter.Get_points().push_back(Point(grid_zone()->x1, grid_zone()->y2, grid_zone()->z2, grid_zone()->z2));
+	}
+	if (this->top.Get_source_type() == Data_source::NONE)
+	{
+		this->top.Set_defined (true);
+		this->top.Set_coordinate_system(PHAST_Transform::GRID);
+		this->top.Set_source_type(Data_source::CONSTANT);
+		this->top.Get_points().push_back(Point(grid_zone()->x1, grid_zone()->y1, grid_zone()->z2, grid_zone()->z2));
+	}
+	if (this->bottom.Get_source_type() == Data_source::NONE)
+	{
+		this->bottom.Set_defined (true);
+		this->bottom.Set_coordinate_system(PHAST_Transform::GRID);
+		this->bottom.Set_source_type(Data_source::CONSTANT);
+		this->bottom.Get_points().push_back(Point(grid_zone()->x1, grid_zone()->y1, grid_zone()->z1, grid_zone()->z1));
+	}
 
-  this->bottom.Tidy(true);
+	this->top.Tidy(true);
 
-  this->perimeter.Tidy(false);
+	this->bottom.Tidy(true);
 
-  // set default perimeter
-  if (perimeter.Get_source_type() == Data_source::NONE)
-  {
-    this->perimeter.Set_defined (true);
-    this->perimeter.Get_points().push_back(Point(grid_zone()->x1, grid_zone()->y1, grid_zone()->z2, grid_zone()->z2));
-    this->perimeter.Get_points().push_back(Point(grid_zone()->x2, grid_zone()->y1, grid_zone()->z2, grid_zone()->z2));
-    this->perimeter.Get_points().push_back(Point(grid_zone()->x2, grid_zone()->y2, grid_zone()->z2, grid_zone()->z2));
-    this->perimeter.Get_points().push_back(Point(grid_zone()->x1, grid_zone()->y2, grid_zone()->z2, grid_zone()->z2));
-    this->perimeter.Set_bounding_box();
-  }
+	this->perimeter.Tidy(false);
 
-  // Make polygons and fix up z for perimeter
-  //assert(this->perimeter.Make_polygons());
-  this->perimeter_datum *= this->perimeter.Get_v_units()->input_to_si;
-  if (!this->perimeter.Make_polygons())
-  {
-    error_msg("Failed to make polygons in Prism::tidy.", EA_STOP);
-  };
-  std::vector<Point>::iterator it;
-  switch (this->perimeter_option) 
-  {
-  case DEFAULT:
-    this->perimeter_datum = grid_zone()->z2;
-  case CONSTANT:
-    {
-      this->perimeter.Get_phst_polygons().set_z(this->perimeter_datum);
-    }
-    break;
-  case ATTRIBUTE:
-    if (this->perimeter.Get_source_type() != Data_source::ARCRASTER)
-    {
-      error_msg("Perimeter_z attribute option can only be used with SHAPE files.", EA_CONTINUE);
-    } else
-    {
-      this->perimeter.Get_phst_polygons().set_z_to_v();
-    }
-    break;
-  case USE_Z:
-    break;
-  }
-  // Project points to top of grid
-  this->Project_points(this->perimeter.Get_points(), CF_Z, grid_zone()->z2); 
-  this->perimeter_datum = grid_zone()->z2;
-  // set bounding box
-  this->Set_bounding_box();
-  //Polygon_tree *temp_tree = new Polygon_tree(this->perimeter.Get_phst_polygons());
-  //this->perimeter.Set_tree(temp_tree);
+	//if (!this->perimeter.Make_polygons())
+	//{
+	//	error_msg("Failed to make polygons in Prism::tidy.", EA_STOP);
+	//};
+	// Make polygons if needed
+	this->perimeter.Get_phast_polygons();
+
+	std::vector<Point>::iterator it;
+	// Project points to top of grid
+	this->Project_points(this->perimeter.Get_points(), CF_Z, grid_zone()->z2); 
+	//  this->perimeter_datum = grid_zone()->z2;
+	// set bounding box
+	this->Set_bounding_box();
+	//Polygon_tree *temp_tree = new Polygon_tree(this->perimeter.Get_phst_polygons());
+	//this->perimeter.Set_tree(temp_tree);
 
 }
 struct zone * Prism::Set_bounding_box(void)
@@ -640,9 +779,10 @@ struct zone * Prism::Set_bounding_box(void)
   return (&this->box);
  
 }
-void Prism::remove_top_bottom(gpc_polygon *polygon, Cell_Face face, double coord)
+void Prism::Remove_top_bottom(gpc_polygon *polygon, Cell_Face face, double coord)
 {
-	PHST_polygon phast_polygon(polygon);
+	// Assumes everything in grid coordinates (I think)
+	PHAST_polygon phast_polygon(polygon, PHAST_Transform::GRID);
 	phast_polygon.Set_bounding_box();
 	zone face_zone;
 	int ndiv = 10;
@@ -820,4 +960,29 @@ void Prism::remove_top_bottom(gpc_polygon *polygon, Cell_Face face, double coord
 		error_msg("Error illegal cell face in Prism::remove_top_bottom.", EA_STOP);
 		break;
 	}
+}
+void Prism::Convert_coordinates(PHAST_Transform::COORDINATE_SYSTEM cs, PHAST_Transform *map2grid)
+{
+	if (this->perimeter.Get_defined())
+	{
+		this->perimeter.Convert_coordinates(cs, map2grid);
+	}
+	if (this->top.Get_defined())
+	{
+		this->top.Convert_coordinates(cs, map2grid);
+	}
+	if (this->bottom.Get_defined())
+	{
+		this->bottom.Convert_coordinates(cs, map2grid);
+	}
+}
+PHAST_Transform::COORDINATE_SYSTEM Prism::What_coordinates(void)
+{
+	if (this->perimeter.Get_coordinate_system() ==
+		this->top.Get_coordinate_system() ==
+		this->bottom.Get_coordinate_system())
+	{
+		return this->perimeter.Get_coordinate_system();
+	}
+	return PHAST_Transform::NONE;
 }

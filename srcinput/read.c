@@ -9,7 +9,8 @@
 #include "XYZfile.h"
 #include <sstream>
 #include <iostream>
-
+#include "PHAST_Transform.h"
+#include "Zone_budget.h"
 #if defined(__WPHAST__)
 #define STATIC
 #else
@@ -30,6 +31,8 @@ STATIC int read_grid(void);
 STATIC int read_head_ic(void);
 STATIC int read_leaky_bc(void);
 STATIC int read_drain(void);
+STATIC int read_zone_budget(void);
+STATIC bool read_coordinate_system(Polyhedron *poly_ptr, char *next_char);
 #if defined(__WPHAST__)
 int read_line_doubles(char *next_char, double **d, int *count_d, int *count_alloc);
 extern int read_lines_doubles(char *next_char, double **d, int *count_d, int *count_alloc, const char **opt_list, int count_opt_list, int *opt);
@@ -143,6 +146,7 @@ int read_input(void)
 	  31      "solute_transport"
 	  32      "specified_head_bc"
 	  33      "drain"
+	  34      "zone_budget"
  */
 	for (;;) {
 		keyword[next_keyword].keycount++;
@@ -234,6 +238,9 @@ int read_input(void)
 			break;
 		    case 33:                         /* drain */
 			read_drain();
+			break;
+			case 34:                         /* zone_budget */
+			read_zone_budget();
 			break;
 		}
 	}
@@ -1238,11 +1245,12 @@ int read_grid(void)
 				break;
 			case 9:                       /* grid origin in map units */
 
-				if (sscanf(next_char, "%lf%lf", &grid_origin[0], &grid_origin[1]) != 2) {
-					sprintf(error_string,"Expected x, y grid origin in map coordinates.");
+				if (sscanf(next_char, "%lf%lf%lf", &grid_origin[0], &grid_origin[1], &grid_origin[2]) != 3) {
+					sprintf(error_string,"Expected x, y, and z grid origin in map coordinates.");
 					error_msg(error_string, CONTINUE);
 					input_error++;
 				}
+				opt_save = OPTION_ERROR;
 				break;
 			case 10:                       /* grid angle counterclockwise */
 
@@ -1251,6 +1259,7 @@ int read_grid(void)
 					error_msg(error_string, CONTINUE);
 					input_error++;
 				}
+				opt_save = OPTION_ERROR;
 				break;
 		}
 		if (return_value == EOF || return_value == KEYWORD) break;
@@ -1325,15 +1334,10 @@ int read_media(void)
 		"perimeter",                        /* 37 */
 		"top",                              /* 38 */
 		"bottom",                           /* 39 */
-		"dip",                              /* 40 */
-		"perimeter_z",                      /* 41 */
-		"units_top",                        /* 42 */
-		"units_bottom",                     /* 43 */
-		"units_perimeter",                  /* 44 */
-		"description"                       /* 45 */
-
+		"description",                      /* 40 */
+		"coordinate_system"                 /* 41 */
 	};
-	int count_opt_list = 46;
+	int count_opt_list = 42;
 	/*
 	*   Read grid data
 	*/
@@ -1691,11 +1695,6 @@ int read_media(void)
 		case 37:                         /* perimeter */
 		case 38:                         /* top */
 		case 39:                         /* bottom */
-		case 40:                         /* dip */
-		case 41:                         /* perimeter_z */
-		case 42:                         /* units_top */
-		case 43:                         /* units_bottom */
-		case 44:                         /* units_perimeter */
 			{
 				std::istringstream lines;
 				opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
@@ -1711,7 +1710,7 @@ int read_media(void)
 				}
 			}
 			break;
-		case 45:                       /* description */
+		case 40:                       /* description */
 			/* read description */
 			if (grid_elt_ptr == NULL) {
 				sprintf(error_string,"Zone, wedge, or prism has not been defined for description %s", tag);
@@ -1727,6 +1726,17 @@ int read_media(void)
 			}
 			//std::string str(next_char);
 			grid_elt_ptr->polyh->Get_description()->assign(next_char);
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;
+		case 41:                       /* coordinate_system */
+			if (grid_elt_ptr == NULL) {
+				sprintf(error_string,"Zone or wedge not defined for coordinate system %s", tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+				opt = next_keyword_or_option(opt_list, count_opt_list);
+				break;
+			}
+			read_coordinate_system(grid_elt_ptr->polyh, next_char);
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		}
@@ -1892,15 +1902,11 @@ int read_head_ic(void)
 		"perimeter",                        /* 7 */
 		"top",                              /* 8 */
 		"bottom",                           /* 9 */
-		"dip",                              /* 10 */
-		"perimeter_z",                      /* 11 */
-		"units_top",                        /* 12 */
-		"units_bottom",                     /* 13 */
-		"units_perimeter",                  /* 14 */
-		"description"                       /* 15 */
+		"description",                      /* 10 */
+		"coordinate_system"                 /* 11 */
 
 	};
-	int count_opt_list = 16;
+	int count_opt_list = 12;
 	/*
 	*   Read grid data
 	*/
@@ -1957,6 +1963,11 @@ int read_head_ic(void)
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		case 1:                       /* water_table */
+			input_error++;
+			sprintf(error_string,"Water_table option is no longer available, use -head. %s", tag);
+			error_msg(error_string, CONTINUE);
+			break;
+#ifdef SKIP
 			/*
 			*   Allocate space for head_ic  and head_list
 			*/
@@ -1977,6 +1988,7 @@ int read_head_ic(void)
 				error_msg(error_string, CONTINUE);
 			} 
 			break;
+#endif
 		case 2:                       /* head */
 			/*
 			*   Read head value for zone
@@ -2063,6 +2075,7 @@ int read_head_ic(void)
 				head_ic_init(head_ic_ptr);
 				prism_ptr = new Prism;
 				head_ic_ptr->polyh = prism_ptr;
+				head_ic_ptr->ic_type = ZONE;
 				opt = next_keyword_or_option(opt_list, count_opt_list);
 				break;
 			}
@@ -2071,11 +2084,6 @@ int read_head_ic(void)
 		case 7:                         /* perimeter */
 		case 8:                         /* top */
 		case 9:                         /* bottom */
-		case 10:                        /* dip */
-		case 11:                        /* perimeter_z */
-		case 12:                         /* units_top */
-		case 13:                         /* units_bottom */
-		case 14:                         /* units_perimeter */
 			{
 				std::istringstream lines;
 				opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
@@ -2091,7 +2099,7 @@ int read_head_ic(void)
 				}
 			}
 			break;
-		case 15:                       /* description */
+		case 10:                       /* description */
 			/* read description */
 			if (head_ic_ptr == NULL) {
 				sprintf(error_string,"Zone, wedge, or prism has not been defined for description %s", tag);
@@ -2107,6 +2115,17 @@ int read_head_ic(void)
 			}
 			//std::string str(next_char);
 			head_ic_ptr->polyh->Get_description()->assign(next_char);
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;
+		case 11:                       /* coordinate_system */
+			if (head_ic_ptr == NULL) {
+				sprintf(error_string,"Zone or wedge not defined for coordinate system %s", tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+				opt = next_keyword_or_option(opt_list, count_opt_list);
+				break;
+			}
+			read_coordinate_system(head_ic_ptr->polyh, next_char);
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		}
@@ -2161,15 +2180,10 @@ int read_chemistry_ic(void)
 		"perimeter",                        /* 15 */
 		"top",                              /* 16 */
 		"bottom",                           /* 17 */
-		"dip",                              /* 18 */
-		"perimeter_z",                      /* 19 */
-		"units_top",                        /* 20 */
-		"units_bottom",                     /* 21 */
-		"units_perimeter",                  /* 22 */
-		"description"                       /* 23 */
-
+		"description",                      /* 18 */
+		"coordinate_system"                 /* 19 */
 	};
-	int count_opt_list = 24;
+	int count_opt_list = 20;
 	/*
 	*   Read chemical initial condition data
 	*/
@@ -2467,11 +2481,6 @@ int read_chemistry_ic(void)
 		case 15:                         /* perimeter */
 		case 16:                         /* top */
 		case 17:                         /* bottom */
-		case 18:                         /* dip */
-		case 19:                         /* perimeter_z */
-		case 20:                         /* units_top */
-		case 21:                         /* units_bottom */
-		case 22:                         /* units_perimeter */
 			{
 				std::istringstream lines;
 				opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
@@ -2487,7 +2496,7 @@ int read_chemistry_ic(void)
 				}
 			}
 			break;
-		case 23:                       /* description */
+		case 18:                       /* description */
 			/* read description */
 			if (chem_ic_ptr == NULL) {
 				sprintf(error_string,"Zone, wedge, or prism has not been defined for description %s", tag);
@@ -2503,6 +2512,17 @@ int read_chemistry_ic(void)
 			}
 			//std::string str(next_char);
 			chem_ic_ptr->polyh->Get_description()->assign(next_char);
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;
+		case 19:                       /* coordinate_system */
+			if (chem_ic_ptr == NULL) {
+				sprintf(error_string,"Zone or wedge not defined for coordinate system %s", tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+				opt = next_keyword_or_option(opt_list, count_opt_list);
+				break;
+			}
+			read_coordinate_system(chem_ic_ptr->polyh, next_char);
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		}
@@ -2888,15 +2908,11 @@ int read_specified_value_bc(void)
 		"perimeter",                        /* 12 */
 		"top",                              /* 13 */
 		"bottom",                           /* 14 */
-		"dip",                              /* 15 */
-		"perimeter_z",                      /* 16 */
-		"units_top",                        /* 17 */
-		"units_bottom",                     /* 18 */
-		"units_perimeter",                  /* 19 */
-		"description"                       /* 20 */
+		"description",                      /* 15 */
+		"coordinate_system"                 /* 16 */
 
 	};
-	int count_opt_list = 21;
+	int count_opt_list = 17;
 	/*
 	*   Read chemical initial condition data
 	*/
@@ -3114,11 +3130,6 @@ int read_specified_value_bc(void)
 		case 12:                         /* perimeter */
 		case 13:                         /* top */
 		case 14:                         /* bottom */
-		case 15:                         /* dip */
-		case 16:                         /* perimeter_z */
-		case 17:                         /* units_top */
-		case 18:                         /* units_bottom */
-		case 19:                         /* units_perimeter */
 			{
 				std::istringstream lines;
 				opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
@@ -3134,7 +3145,7 @@ int read_specified_value_bc(void)
 				}
 			}
 			break;
-		case 20:                       /* description */
+		case 15:                       /* description */
 			/* read description */
 			if (bc_ptr == NULL) {
 				sprintf(error_string,"Zone, wedge, or prism has not been defined for description %s", tag);
@@ -3150,6 +3161,17 @@ int read_specified_value_bc(void)
 			}
 			//std::string str(next_char);
 			bc_ptr->polyh->Get_description()->assign(next_char);
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;
+		case 16:                       /* coordinate_system */
+			if (bc_ptr == NULL) {
+				sprintf(error_string,"Zone or wedge not defined for coordinate system %s", tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+				opt = next_keyword_or_option(opt_list, count_opt_list);
+				break;
+			}
+			read_coordinate_system(bc_ptr->polyh, next_char);
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		}
@@ -3193,15 +3215,11 @@ int read_flux_bc(void)
 		"perimeter",                        /* 9 */
 		"top",                              /* 10 */
 		"bottom",                           /* 11 */
-		"dip",                              /* 12 */
-		"perimeter_z",                      /* 13 */
-		"units_top",                        /* 14 */
-		"units_bottom",                     /* 15 */
-		"units_perimeter",                  /* 16 */
-		"description"                       /* 17 */
+		"description",                      /* 12 */
+		"coordinate_system"                 /* 13 */
 
 	};
-	int count_opt_list = 18;
+	int count_opt_list = 14;
 	/*
 	*   Read flux boundary condition
 	*/
@@ -3452,13 +3470,8 @@ int read_flux_bc(void)
 
 		case 8:                         /* vector */
 		case 9:                         /* perimeter */
-		case 10:                         /* top */
-		case 11:                         /* bottom */
-		case 12:                         /* dip */
-		case 13:                         /* perimeter_z */
-		case 14:                         /* units_top */
-		case 15:                         /* units_bottom */
-		case 16:                         /* units_perimeter */
+		case 10:                        /* top */
+		case 11:                        /* bottom */
 			{
 				std::istringstream lines;
 				opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
@@ -3474,7 +3487,7 @@ int read_flux_bc(void)
 				}
 			}
 			break;
-		case 17:                       /* description */
+		case 12:                       /* description */
 			/* read description */
 			if (bc_ptr == NULL) {
 				sprintf(error_string,"Zone, wedge, or prism has not been defined for description %s", tag);
@@ -3490,6 +3503,17 @@ int read_flux_bc(void)
 			}
 			//std::string str(next_char);
 			bc_ptr->polyh->Get_description()->assign(next_char);
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;
+		case 13:                       /* coordinate_system */
+			if (bc_ptr == NULL) {
+				sprintf(error_string,"Zone or wedge not defined for coordinate system %s", tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+				opt = next_keyword_or_option(opt_list, count_opt_list);
+				break;
+			}
+			read_coordinate_system(bc_ptr->polyh, next_char);
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		}
@@ -3536,14 +3560,10 @@ int read_leaky_bc(void)
 		"perimeter",                        /* 12 */
 		"top",                              /* 13 */
 		"bottom",                           /* 14 */
-		"dip",                              /* 15 */
-		"perimeter_z",                      /* 16 */
-		"units_top",                        /* 17 */
-		"units_bottom",                     /* 18 */
-		"units_perimeter",                  /* 19 */
-		"description"                       /* 20 */
+		"description",                      /* 15 */
+		"coordinate_system"                 /* 16 */
 	};
-	int count_opt_list = 21;
+	int count_opt_list = 17;
 	/*
 	*   Read chemical initial condition data
 	*/
@@ -3823,11 +3843,6 @@ int read_leaky_bc(void)
 		case 12:                         /* perimeter */
 		case 13:                         /* top */
 		case 14:                         /* bottom */
-		case 15:                         /* dip */
-		case 16:                         /* perimeter_z */
-		case 17:                         /* units_top */
-		case 18:                         /* units_bottom */
-		case 19:                         /* units_perimeter */
 			{
 				std::istringstream lines;
 				opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
@@ -3843,7 +3858,7 @@ int read_leaky_bc(void)
 				}
 			}
 			break;
-		case 20:                       /* description */
+		case 15:                       /* description */
 			/* read description */
 			if (bc_ptr == NULL) {
 				sprintf(error_string,"Zone, wedge, or prism has not been defined for description %s", tag);
@@ -3861,6 +3876,17 @@ int read_leaky_bc(void)
 			bc_ptr->polyh->Get_description()->assign(next_char);
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
+		case 16:                       /* coordinate_system */
+			if (bc_ptr == NULL) {
+				sprintf(error_string,"Zone or wedge not defined for coordinate system %s", tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+				opt = next_keyword_or_option(opt_list, count_opt_list);
+				break;
+			}
+			read_coordinate_system(bc_ptr->polyh, next_char);
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;
 		}
 		return_value = check_line_return;
 		if (return_value == EOF || return_value == KEYWORD) break;
@@ -3874,6 +3900,8 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 /*
  *      Reads property data in any of 4 forms:
  *         (1) a single double value
+ *         (A) xyz + value points in input file used for interpolation
+ *         (B) xyz + value points in external file used for interpolation
  *         (2) X,Y, or Z followed by value1, dist1, value2, dist2
  *         (3) b[y_element] or b[y_cell] followed by list of doubles
  *             on same and (or) succeeding lines
@@ -3935,12 +3963,17 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 		std::istringstream lines;
 		*opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
 
+		// remove identifier
+		std::string str;
+		lines >> str;
+
 		// remove initial line
-		char str[1000];
-		lines.getline(str, 1000);
+		//char str[1000];
+		//lines.getline(str, 1000);
 
 		// read points into property Data_source
-		p->data_source->Set_columns( Read_points(lines, p->data_source->Get_points()) );
+		p->data_source->Read(lines, false);		
+		//p->data_source->Set_columns( Read_points(lines, p->data_source->Get_points()) );
 		if ( p->data_source->Get_points().size() <= 0 || p->data_source->Get_columns() != 4)
 		{
 			input_error++;
@@ -3948,7 +3981,7 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 			sprintf(estring, "Expected rows of x, y, z, value for property in input file.");
 			error_msg(estring, CONTINUE);
 		}
-
+		properties_with_data_source.push_back(p);
 	}
 	else if ( strstr(token, "xyz") == token) 
 	{
@@ -3960,12 +3993,11 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 		str.append(next_char);
 		std::istringstream lines(str);
 		p->data_source->Read(lines, false);
-		XYZfile xyz(p->data_source->Get_file_name());
+		XYZfile xyz(p->data_source->Get_file_name(), p->data_source->Get_coordinate_system());
 
 		// Data source has list of points
 		p->data_source->Set_points(xyz.Get_points(-1));
 		p->data_source->Set_columns(xyz.Get_columns());
-		p->data_source->Set_source_type(Data_source::POINTS);
 		if (p->data_source->Get_points().size() <= 0 || p->data_source->Get_columns() != 4)
 		{
 			input_error++;
@@ -3973,7 +4005,7 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 			sprintf(estring, "Expected rows of x, y, z, value for property in file %s.", p->data_source->Get_file_name().c_str());
 			error_msg(estring, CONTINUE);
 		}
-
+		properties_with_data_source.push_back(p);
 	    *opt = next_keyword_or_option(opt_list, count_opt_list);
 
 	} else if ( token[0] == 'X' || token[0] == 'x') {
@@ -4621,9 +4653,11 @@ int read_units (void)
 		"drain_k",                 /* 27 */
 		"drain_bed_thickness",     /* 28 */
 		"drain_thickness",         /* 29 */
-		"drain_width"              /* 30 */
+		"drain_width",             /* 30 */
+		"map_horizontal",          /* 31 */
+		"map_vertical"             /* 32 */
 	};
-	int count_opt_list = 31;
+	int count_opt_list = 33;
 	/*
 	*   Read flags:
 	*/
@@ -4879,6 +4913,32 @@ int read_units (void)
 					units.drain_width.defined = FALSE;
 			} else {
 				units.drain_width.define(token);
+			}
+			break;
+		case 31:                       /* map_horizontal */
+			if (copy_token(token, &next_char, &l) == EMPTY ||
+				units_conversion(token,
+				units.map_horizontal.si, 
+				&units.map_horizontal.input_to_si, TRUE) == ERROR) {
+					input_error++;
+					sprintf(error_string, "Expected map horizontal units (L).");
+					error_msg(error_string, CONTINUE);
+					units.map_horizontal.defined = FALSE;
+			} else {
+				units.map_horizontal.define(token);
+			}
+			break;
+		case 32:                       /* map_vertical */
+			if (copy_token(token, &next_char, &l) == EMPTY ||
+				units_conversion(token,
+				units.map_vertical.si, 
+				&units.map_vertical.input_to_si, TRUE) == ERROR) {
+					input_error++;
+					sprintf(error_string, "Expected vertical units for map coordinate system (L).");
+					error_msg(error_string, CONTINUE);
+					units.map_vertical.defined = FALSE;
+			} else {
+				units.map_vertical.define(token);
 			}
 			break;
 		}
@@ -5997,9 +6057,10 @@ int read_river(void)
 		"default_bed_thickness",            /* 20 */
 		"default_thickness",                /* 21 */
 		"node",                             /* 22 */
-		"point"                             /* 23 */
+		"point",                            /* 23 */
+		"coordinate_system"                 /* 24 */
 	};
-	int count_opt_list = 24;
+	int count_opt_list = 25;
 /*
  *   Read river points
  */
@@ -6042,6 +6103,7 @@ int read_river(void)
 	point_number = -1;
 	rivers[river_number].n_user = n_user;
 	rivers[river_number].description = description;
+	rivers[river_number].coordinate_system = PHAST_Transform::MAP;
 /*
  *   get first line
  */
@@ -6294,8 +6356,8 @@ int read_river(void)
 			warning_msg(error_string);
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
-                case 22:                     /* node */			
-                case 23:                     /* point */			
+         case 22:                     /* node */			
+         case 23:                     /* point */			
 			/* case OPTION_DEFAULT:  */       /* Read x, y */
 			river_ptr->points = (River_Point *) realloc(river_ptr->points, (size_t) ((river_ptr->count_points + 1) * (sizeof (River_Point))));
 			if (river_ptr->points == NULL) malloc_error();
@@ -6351,7 +6413,25 @@ int read_river(void)
 			}
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
-
+		case 24:                       /* coordinate_system */
+			j = copy_token(token, &next_char , &l);
+			str_tolower(token);
+			if (strstr(token,"map") == token)
+			{
+				river_ptr->coordinate_system = PHAST_Transform::MAP;
+			} 
+			else if (strstr(token, "grid") == token)
+			{
+				river_ptr->coordinate_system = PHAST_Transform::GRID;
+			}
+			else
+			{
+				sprintf(error_string,"Expected coordinate system for river points. %s", tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+			}
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;
 		}
 		return_value = check_line_return;
 		if (return_value == EOF || return_value == KEYWORD) break;
@@ -6442,9 +6522,10 @@ int read_well(void)
 		"pressure_and_mobility",                /* 17 */
 		"allocate_by_head_and_mobility",        /* 18 */
 		"allocation_by_head_and_mobility",      /* 19 */
-		"head_and_mobility"                     /* 20 */
+		"head_and_mobility",                    /* 20 */
+		"coordinate_system"                     /* 21 */
 	};
-	int count_opt_list = 21;
+	int count_opt_list = 22;
 /*
  *   Read well information
  */
@@ -6517,6 +6598,7 @@ int read_well(void)
 	well_ptr->diameter_defined = FALSE;
 	well_ptr->radius = 0;
 	well_ptr->radius_defined = FALSE;
+	well_ptr->coordinate_system = PHAST_Transform::MAP;
 
 	well_number = n;
 /*
@@ -6730,6 +6812,25 @@ int read_well(void)
 			/* read to next */
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
+		case 24:                       /* coordinate_system */
+			j = copy_token(token, &next_char , &l);
+			str_tolower(token);
+			if (strstr(token,"map") == token)
+			{
+				well_ptr->coordinate_system = PHAST_Transform::MAP;
+			} 
+			else if (strstr(token, "grid") == token)
+			{
+				well_ptr->coordinate_system = PHAST_Transform::GRID;
+			}
+			else
+			{
+				sprintf(error_string,"Expected coordinate system for well location. %s", tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+			}
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;
 		}
 		return_value = check_line_return;
 		if (return_value == EOF || return_value == KEYWORD) break;
@@ -6776,15 +6877,11 @@ int read_print_locations(void)
 		"perimeter",                        /* 13 */
 		"top",                              /* 14 */
 		"bottom",                           /* 15 */
-		"dip",                              /* 16 */
-		"perimeter_z",                      /* 17 */
-		"units_top",                        /* 18 */
-		"units_bottom",                     /* 19 */
-		"units_perimeter",                  /* 20 */
-		"description"                       /* 21 */
+		"description",                      /* 16 */
+		"coordinate_system"                 /* 17 */
 
 	};
-	int count_opt_list = 22;
+	int count_opt_list = 18;
 	int count_zones = 0;
 
 	/*
@@ -7022,11 +7119,6 @@ int read_print_locations(void)
 		case 13:                         /* perimeter */
 		case 14:                         /* top */
 		case 15:                         /* bottom */
-		case 16:                         /* dip */
-		case 17:                         /* perimeter_z */
-		case 18:                         /* units_top */
-		case 19:                         /* units_bottom */
-		case 20:                         /* units_perimeter */
 			{
 				std::istringstream lines;
 				opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
@@ -7042,7 +7134,7 @@ int read_print_locations(void)
 				}
 			}
 			break;
-		case 21:                       /* description */
+		case 16:                       /* description */
 			/* read description */
 			if (print_zones_ptr == NULL) {
 				sprintf(error_string,"Zone, wedge, or prism has not been defined for description %s", tag);
@@ -7058,6 +7150,17 @@ int read_print_locations(void)
 			}
 			//std::string str(next_char);
 			print_zones_ptr->polyh->Get_description()->assign(next_char);
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;
+		case 17:                       /* coordinate_system */
+			if (print_zones_ptr == NULL) {
+				sprintf(error_string,"Zone or wedge not defined for coordinate system %s", tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+				opt = next_keyword_or_option(opt_list, count_opt_list);
+				break;
+			}
+			read_coordinate_system(print_zones_ptr->polyh, next_char);
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		}
@@ -7258,27 +7361,27 @@ int read_steady_flow(void)
 int read_drain(void)
 /* ---------------------------------------------------------------------- */
 {
-  /*
-  *      Reads information for drain-type leaky boundary condition
-  *
-  *      Arguments:
-  *         none
-  *
-  *      Returns:
-  *         KEYWORD if keyword encountered, input_error may be incremented if
-  *                    a keyword is encountered in an unexpected position
-  *         EOF     if eof encountered while reading mass balance concentrations
-  *         ERROR   if error occurred reading data
-  *
-  */
-  char *next_char, *ptr;
-  int return_value, opt;
-  int n_user, n_user_end;
-  int j, l;
+	/*
+	*      Reads information for drain-type leaky boundary condition
+	*
+	*      Arguments:
+	*         none
+	*
+	*      Returns:
+	*         KEYWORD if keyword encountered, input_error may be incremented if
+	*                    a keyword is encountered in an unexpected position
+	*         EOF     if eof encountered while reading mass balance concentrations
+	*         ERROR   if error occurred reading data
+	*
+	*/
+	char *next_char, *ptr;
+	int return_value, opt;
+	int n_user, n_user_end;
+	int j, l;
 
-  char *description;
-  char token[MAX_LENGTH];
-  const char *opt_list[] = {
+	char *description;
+	char token[MAX_LENGTH];
+	const char *opt_list[] = {
 		"z",                                /* 0 */
 		"bottom",                           /* 1 */
 		"drain_bottom",                     /* 2 */
@@ -7290,208 +7393,443 @@ int read_drain(void)
 		"thickness",                        /* 8 */
 		"bed_thickness",                    /* 9 */
 		"node",                             /* 10 */
-		"point"                             /* 11 */
-  };
-  int count_opt_list = 17;
-  /*
-  *   Read drain points
-  */
-  return_value = UNKNOWN;
+		"point",                            /* 11 */
+		"coordinate_system"                 /* 12 */
+	};
+	int count_opt_list = 13;
+	/*
+	*   Read drain points
+	*/
+	return_value = UNKNOWN;
 
-  ptr=line;
-  read_number_description (ptr, &n_user, &n_user_end, &description);
-  /*
-  *   Find space for drain data
-  */
-  Drain *drain = new Drain;
+	ptr=line;
+	read_number_description (ptr, &n_user, &n_user_end, &description);
+	/*
+	*   Find space for drain data
+	*/
+	Drain *drain = new Drain;
 
-  drain->n_user = n_user;
-  drain->description.append(description);
-  free_check_null(description);
-  River_Point rp;
+	drain->n_user = n_user;
+	drain->description.append(description);
+	free_check_null(description);
+	River_Point rp;
 
-  River_Point *rp_ptr = &rp;
-  river_point_init(rp_ptr);
-
-  /*
-  *   get first line
-  */
-  sprintf(tag,"in drain, definition %d.", n_user);
-  opt = get_option(opt_list, count_opt_list, &next_char);
-  for (;;) {
-    /*
-    opt = get_option(opt_list, count_opt_list, &next_char);
-    */
-    next_char = line;
-    if (opt >= 0) {
-      copy_token(token, &next_char , &l);
-    }
-    switch (opt) {
-      case OPTION_EOF:                /* end of file */
-	return_value = EOF;
-	break;
-      case OPTION_KEYWORD:            /* keyword */
-	return_value = KEYWORD;
-	break;
-      case OPTION_DEFAULT:
-      case OPTION_ERROR:
-	sprintf(error_string,"Expected an identifier %s", tag);
-	error_msg(error_string, CONTINUE);
-	error_msg(line_save, CONTINUE);
-	opt = next_keyword_or_option(opt_list, count_opt_list);
-	input_error++;
-	break;
-
-      case 0:                       /* z */
-      case 1:                       /* bottom */
-      case 2:                       /* drain_bottom */
-	if (simulation > 0) {
-	  sprintf(error_string,"Drain elevation can only be defined in first simulation period\n\t%s", tag);
-	  warning_msg(error_string);
-	  opt = next_keyword_or_option(opt_list, count_opt_list);
-	  break;
-	}
-	if (rp_ptr->x_defined == 0) {
-	  sprintf(error_string,"No drain point has been defined for "
-	    "top of drain bottom %s", tag);
-	  error_msg(error_string, CONTINUE);
-	  input_error++;
-	  opt = next_keyword_or_option(opt_list, count_opt_list);
-	  break;
-	}
-	j = copy_token(token, &next_char , &l);
-	if (j != DIGIT) {
-	  sprintf(error_string,"Expected elevation of drain point. %s", tag);
-	  error_msg(error_string, CONTINUE);
-	  input_error++;
-	} else {
-	  sscanf(token, "%lf", &rp_ptr->z);
-	  rp_ptr->z_defined = TRUE;
-	  rp_ptr->z_input_defined = TRUE;
-	}
-	opt = next_keyword_or_option(opt_list, count_opt_list);
-	break;
-      case 3:                       /* k */
-      case 4:                       /* hydraulic_conductivity */
-      case 5:                       /* bed_k */
-      case 6:                       /* bed_hydraulic_conductivity */
-	if (simulation > 0) {
-	  sprintf(error_string,"Bed hydraulic conductivity can only be defined in the first simulation period\n\t%s", tag);
-	  warning_msg(error_string);
-	  opt = next_keyword_or_option(opt_list, count_opt_list);
-	  break;
-	}
-	if (rp_ptr->x_defined == 0) {
-	  sprintf(error_string,"No drain point has been defined for "
-	    "bed hydraulic conductivity %s", tag);
-	  error_msg(error_string, CONTINUE);
-	  input_error++;
-	  opt = next_keyword_or_option(opt_list, count_opt_list);
-	  break;
-	}
-	j = copy_token(token, &next_char , &l);
-	if (j != DIGIT) {
-	  sprintf(error_string,"Expected bed hydraulic conductivity for drain point. %s", tag);
-	  error_msg(error_string, CONTINUE);
-	  input_error++;
-	} else {
-	  sscanf(token, "%lf", &rp_ptr->k);
-	  rp_ptr->k_defined = TRUE;
-	}
-	opt = next_keyword_or_option(opt_list, count_opt_list);
-	break;
-      case 7:                       /* width */
-	if (simulation > 0) {
-	  sprintf(error_string,"Width can only be defined in first simulation period\n\t%s", tag);
-	  warning_msg(error_string);
-	  opt = next_keyword_or_option(opt_list, count_opt_list);
-	  break;
-	}
-	if (rp_ptr->x_defined == 0) {
-	  sprintf(error_string,"No drain point has been defined for "
-	    "width %s", tag);
-	  error_msg(error_string, CONTINUE);
-	  input_error++;
-	  opt = next_keyword_or_option(opt_list, count_opt_list);
-	  break;
-	}
-	j = copy_token(token, &next_char , &l);
-	if (j != DIGIT) {
-	  sprintf(error_string,"Expected width at drain point. %s", tag);
-	  error_msg(error_string, CONTINUE);
-	  input_error++;
-	} else {
-	  sscanf(token, "%lf", &rp_ptr->width);
-	  rp_ptr->width_defined = TRUE;
-	}
-	opt = next_keyword_or_option(opt_list, count_opt_list);
-	break;
-
-      case 8:                       /* thickness */
-      case 9:                       /* bed_thickness */
-	if (simulation > 0) {
-	  sprintf(error_string,"Bed thickness can only be defined in the first simulation period\n\t%s", tag);
-	  warning_msg(error_string);
-	  opt = next_keyword_or_option(opt_list, count_opt_list);
-	  break;
-	}
-	if (rp_ptr->x_defined == 0) {
-	  sprintf(error_string,"No drain point has been defined for "
-	    "bed thickness %s", tag);
-	  error_msg(error_string, CONTINUE);
-	  input_error++;
-	  opt = next_keyword_or_option(opt_list, count_opt_list);
-	  break;
-	}
-	j = copy_token(token, &next_char , &l);
-	if (j != DIGIT) {
-	  sprintf(error_string,"Expected bed thickness for drain point. %s", tag);
-	  error_msg(error_string, CONTINUE);
-	  input_error++;
-	} else {
-	  sscanf(token, "%lf", &rp_ptr->thickness);
-	  rp_ptr->thickness_defined = TRUE;
-	}
-	opt = next_keyword_or_option(opt_list, count_opt_list);
-	break;
-
-      case 10:                     /* node */			
-      case 11:                     /* point */			
-	/* case OPTION_DEFAULT:  */       /* Read x, y */
-	if (rp_ptr->x_defined == TRUE) {
-	  drain->points.push_back(rp);
-	}
+	River_Point *rp_ptr = &rp;
 	river_point_init(rp_ptr);
-	j = copy_token(token, &next_char, &l);
-	if (j != DIGIT) {
-	  sprintf(error_string,"Expected an X value of drain point. %s", tag);
-	  error_msg(error_string, CONTINUE);
-	  input_error++;
-	} else {
-	  sscanf(token, "%lf", &rp_ptr->x);
-	  rp_ptr->x_defined = TRUE;
-	}
-	j = copy_token(token, &next_char, &l);
-	if (j != DIGIT) {
-	  sprintf(error_string,"Expected an Y value of drain point. %s", tag);
-	  error_msg(error_string, CONTINUE);
-	  input_error++;
-	} else {
-	  sscanf(token, "%lf", &rp_ptr->y);
-	  rp_ptr->y_defined = TRUE;
-	}
-	opt = next_keyword_or_option(opt_list, count_opt_list);
-	break;
 
-    }
-    return_value = check_line_return;
-    if (return_value == EOF || return_value == KEYWORD) break;
-  }
+	/*
+	*   get first line
+	*/
+	sprintf(tag,"in drain, definition %d.", n_user);
+	opt = get_option(opt_list, count_opt_list, &next_char);
+	for (;;) {
+		/*
+		opt = get_option(opt_list, count_opt_list, &next_char);
+		*/
+		next_char = line;
+		if (opt >= 0) {
+			copy_token(token, &next_char , &l);
+		}
+		switch (opt) {
+	  case OPTION_EOF:                /* end of file */
+		  return_value = EOF;
+		  break;
+	  case OPTION_KEYWORD:            /* keyword */
+		  return_value = KEYWORD;
+		  break;
+	  case OPTION_DEFAULT:
+	  case OPTION_ERROR:
+		  sprintf(error_string,"Expected an identifier %s", tag);
+		  error_msg(error_string, CONTINUE);
+		  error_msg(line_save, CONTINUE);
+		  opt = next_keyword_or_option(opt_list, count_opt_list);
+		  input_error++;
+		  break;
 
-  if (rp_ptr->x_defined == TRUE) {
-    drain->points.push_back(rp);
-  }
-  drains.push_back(drain);
-  drain_defined = true;
-  return(return_value);
+	  case 0:                       /* z */
+	  case 1:                       /* bottom */
+	  case 2:                       /* drain_bottom */
+		  if (simulation > 0) {
+			  sprintf(error_string,"Drain elevation can only be defined in first simulation period\n\t%s", tag);
+			  warning_msg(error_string);
+			  opt = next_keyword_or_option(opt_list, count_opt_list);
+			  break;
+		  }
+		  if (rp_ptr->x_defined == 0) {
+			  sprintf(error_string,"No drain point has been defined for "
+				  "top of drain bottom %s", tag);
+			  error_msg(error_string, CONTINUE);
+			  input_error++;
+			  opt = next_keyword_or_option(opt_list, count_opt_list);
+			  break;
+		  }
+		  j = copy_token(token, &next_char , &l);
+		  if (j != DIGIT) {
+			  sprintf(error_string,"Expected elevation of drain point. %s", tag);
+			  error_msg(error_string, CONTINUE);
+			  input_error++;
+		  } else {
+			  sscanf(token, "%lf", &rp_ptr->z);
+			  rp_ptr->z_defined = TRUE;
+			  rp_ptr->z_input_defined = TRUE;
+		  }
+		  opt = next_keyword_or_option(opt_list, count_opt_list);
+		  break;
+	  case 3:                       /* k */
+	  case 4:                       /* hydraulic_conductivity */
+	  case 5:                       /* bed_k */
+	  case 6:                       /* bed_hydraulic_conductivity */
+		  if (simulation > 0) {
+			  sprintf(error_string,"Bed hydraulic conductivity can only be defined in the first simulation period\n\t%s", tag);
+			  warning_msg(error_string);
+			  opt = next_keyword_or_option(opt_list, count_opt_list);
+			  break;
+		  }
+		  if (rp_ptr->x_defined == 0) {
+			  sprintf(error_string,"No drain point has been defined for "
+				  "bed hydraulic conductivity %s", tag);
+			  error_msg(error_string, CONTINUE);
+			  input_error++;
+			  opt = next_keyword_or_option(opt_list, count_opt_list);
+			  break;
+		  }
+		  j = copy_token(token, &next_char , &l);
+		  if (j != DIGIT) {
+			  sprintf(error_string,"Expected bed hydraulic conductivity for drain point. %s", tag);
+			  error_msg(error_string, CONTINUE);
+			  input_error++;
+		  } else {
+			  sscanf(token, "%lf", &rp_ptr->k);
+			  rp_ptr->k_defined = TRUE;
+		  }
+		  opt = next_keyword_or_option(opt_list, count_opt_list);
+		  break;
+	  case 7:                       /* width */
+		  if (simulation > 0) {
+			  sprintf(error_string,"Width can only be defined in first simulation period\n\t%s", tag);
+			  warning_msg(error_string);
+			  opt = next_keyword_or_option(opt_list, count_opt_list);
+			  break;
+		  }
+		  if (rp_ptr->x_defined == 0) {
+			  sprintf(error_string,"No drain point has been defined for "
+				  "width %s", tag);
+			  error_msg(error_string, CONTINUE);
+			  input_error++;
+			  opt = next_keyword_or_option(opt_list, count_opt_list);
+			  break;
+		  }
+		  j = copy_token(token, &next_char , &l);
+		  if (j != DIGIT) {
+			  sprintf(error_string,"Expected width at drain point. %s", tag);
+			  error_msg(error_string, CONTINUE);
+			  input_error++;
+		  } else {
+			  sscanf(token, "%lf", &rp_ptr->width);
+			  rp_ptr->width_defined = TRUE;
+		  }
+		  opt = next_keyword_or_option(opt_list, count_opt_list);
+		  break;
+
+	  case 8:                       /* thickness */
+	  case 9:                       /* bed_thickness */
+		  if (simulation > 0) {
+			  sprintf(error_string,"Bed thickness can only be defined in the first simulation period\n\t%s", tag);
+			  warning_msg(error_string);
+			  opt = next_keyword_or_option(opt_list, count_opt_list);
+			  break;
+		  }
+		  if (rp_ptr->x_defined == 0) {
+			  sprintf(error_string,"No drain point has been defined for "
+				  "bed thickness %s", tag);
+			  error_msg(error_string, CONTINUE);
+			  input_error++;
+			  opt = next_keyword_or_option(opt_list, count_opt_list);
+			  break;
+		  }
+		  j = copy_token(token, &next_char , &l);
+		  if (j != DIGIT) {
+			  sprintf(error_string,"Expected bed thickness for drain point. %s", tag);
+			  error_msg(error_string, CONTINUE);
+			  input_error++;
+		  } else {
+			  sscanf(token, "%lf", &rp_ptr->thickness);
+			  rp_ptr->thickness_defined = TRUE;
+		  }
+		  opt = next_keyword_or_option(opt_list, count_opt_list);
+		  break;
+
+	  case 10:                     /* node */			
+	  case 11:                     /* point */			
+		  /* case OPTION_DEFAULT:  */       /* Read x, y */
+		  if (rp_ptr->x_defined == TRUE) {
+			  drain->points.push_back(rp);
+		  }
+		  river_point_init(rp_ptr);
+		  j = copy_token(token, &next_char, &l);
+		  if (j != DIGIT) {
+			  sprintf(error_string,"Expected an X value of drain point. %s", tag);
+			  error_msg(error_string, CONTINUE);
+			  input_error++;
+		  } else {
+			  sscanf(token, "%lf", &rp_ptr->x);
+			  rp_ptr->x_defined = TRUE;
+		  }
+		  j = copy_token(token, &next_char, &l);
+		  if (j != DIGIT) {
+			  sprintf(error_string,"Expected an Y value of drain point. %s", tag);
+			  error_msg(error_string, CONTINUE);
+			  input_error++;
+		  } else {
+			  sscanf(token, "%lf", &rp_ptr->y);
+			  rp_ptr->y_defined = TRUE;
+		  }
+		  opt = next_keyword_or_option(opt_list, count_opt_list);
+		  break;
+		case 12:                       /* coordinate_system */
+			j = copy_token(token, &next_char , &l);
+			str_tolower(token);
+			if (strstr(token,"map") == token)
+			{
+				drain->coordinate_system = PHAST_Transform::MAP;
+			} 
+			else if (strstr(token, "grid") == token)
+			{
+				drain->coordinate_system = PHAST_Transform::GRID;
+			}
+			else
+			{
+				sprintf(error_string,"Expected coordinate system for drain points. %s", tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+			}
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;
+		}
+		return_value = check_line_return;
+		if (return_value == EOF || return_value == KEYWORD) break;
+	}
+
+	if (rp_ptr->x_defined == TRUE) {
+		drain->points.push_back(rp);
+	}
+	drains.push_back(drain);
+	drain_defined = true;
+	return(return_value);
+}
+bool read_coordinate_system(Polyhedron *poly_ptr, char *next_char)
+{
+
+	Cube * c = dynamic_cast<Cube *> ( poly_ptr );
+	if (c == NULL )
+	{
+		sprintf(error_string,"-coordinate_system only applies to zones and wedges. Use -perimeter_coord, -top_coord, and -bottom_coord for prisms. %s", tag);
+		error_msg(error_string, CONTINUE);
+		input_error++;
+		return false;
+	}
+	str_tolower(next_char);
+	if (strstr(next_char, "map"))
+	{
+		c->Set_coordinate_system(PHAST_Transform::MAP);
+		return true;
+	}
+	else if (strstr(next_char, "grid"))
+	{
+		c->Set_coordinate_system(PHAST_Transform::GRID);
+		return true;
+	}
+	sprintf(error_string,"Expected MAP or GRID for coordinate system");
+	error_msg(error_string, CONTINUE);
+	input_error++;
+	return false;
+
+}
+/* ---------------------------------------------------------------------- */
+int read_zone_budget(void)
+/* ---------------------------------------------------------------------- */
+{
+	/*
+	*      Reads polyhedron data for flow and solute budget
+	*
+	*      Arguments:
+	*         none
+	*
+	*      Returns:
+	*         KEYWORD if keyword encountered, input_error may be incremented if
+	*                    a keyword is encountered in an unexpected position
+	*         EOF     if eof encountered while reading mass balance concentrations
+	*         ERROR   if error occurred reading data
+	*
+	*/
+	int return_value, opt;
+	char *ptr, *next_char;
+	int n_user, n_user_end;
+	char *description;
+	int l;
+	char token[MAX_LENGTH];
+	const char *opt_list[] = {
+		"zone",               /* 0 */
+		"wedge",              /* 1 */
+		"prism",              /* 2 */ 
+		"perimeter",          /* 3 */
+		"top",                /* 4 */
+		"bottom",             /* 5 */
+		"description",        /* 6 */
+		"coordinate_system",  /* 7 */
+		"combination"         /* 8 */
+
+	};
+	int count_opt_list = 9;
+	/*
+	*   Read grid data
+	*/
+	return_value = UNKNOWN;
+	Prism *prism_ptr = NULL;
+
+	// read number and description
+	ptr=line;
+	read_number_description (ptr, &n_user, &n_user_end, &description);
+	Zone_budget * zb = new Zone_budget;
+	zb->Set_n_user(n_user);
+	zb->Set_description(description);
+	free_check_null(description);
+	/*
+	*   get first line
+	*/
+	sprintf(tag,"in ZONE_BUDGET, definition %d.", (int) Zone_budget::zone_budget_map.size() + 1);
+	opt = get_option(opt_list, count_opt_list, &next_char);
+	for (;;) 
+	{
+		next_char = line;
+		if (opt >= 0) {
+			copy_token(token, &next_char , &l);
+		}
+		switch (opt) 
+		{
+		case OPTION_EOF:                /* end of file */
+			return_value = EOF;
+			break;
+		case OPTION_KEYWORD:           /* keyword */
+			return_value = KEYWORD;
+			break;
+		case OPTION_DEFAULT:
+		case OPTION_ERROR:
+			sprintf(error_string,"Expected an identifier %s", tag);
+			error_msg(error_string, CONTINUE);
+			error_msg(line_save, CONTINUE);
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+			input_error++;
+			break;
+		case 0:                    /* zone */
+			/*
+			*   Allocate space for head_ic, read zone data
+			*/
+			zb->Set_polyh(read_cube( &next_char ) );
+			if (zb->Get_polyh() == NULL) {
+				sprintf(error_string,"Reading zone %s", tag);
+				error_msg(error_string, CONTINUE);
+			}
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;
+		case 1:                    /* wedge */
+			/*
+			*   Allocate space for head_ic, read zone data
+			*/
+			zb->Set_polyh(read_cube( &next_char ) );
+			{
+				Wedge *w_ptr = dynamic_cast<Wedge *> (zb->Get_polyh());
+				if (zb->Get_polyh() == NULL || w_ptr->orientation == Wedge::WEDGE_ERROR) {
+					input_error++;
+					sprintf(error_string,"Reading wedge %s", tag);
+					error_msg(error_string, CONTINUE);
+				}
+			}
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;
+
+		case 2: 	      /* prism */
+			{
+				/*
+				*   Allocate space for head_ic, read zone data
+				*/
+				prism_ptr = new Prism;
+				zb->Set_polyh(prism_ptr);
+				opt = next_keyword_or_option(opt_list, count_opt_list);
+				break;
+			}
+
+		case 3:                         /* perimeter */
+		case 4:                         /* top */
+		case 5:                         /* bottom */
+			{
+				std::istringstream lines;
+				opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
+				if (zb->Get_polyh() == NULL || 
+					!prism_ptr->Read(lines))
+				{
+					input_error++;
+					sprintf(error_string,"Reading prism %s", tag);
+					error_msg(error_string, CONTINUE);
+					break;
+				}
+			}
+			break;
+		case 6:                       /* description */
+			/* read description */
+			if (zb->Get_polyh() == NULL) {
+				sprintf(error_string,"Zone, wedge, or prism has not been defined for description %s", tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+				opt = next_keyword_or_option(opt_list, count_opt_list);
+				break;
+			}
+			if (zb->Get_polyh()->Get_description()->size() != 0) {
+				sprintf(error_string,"Description has been redefined %s", tag);
+				warning_msg(error_string);
+				zb->Get_polyh()->Get_description()->clear();
+			}
+			//std::string str(next_char);
+			zb->Get_polyh()->Get_description()->assign(next_char);
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;
+		case 7:                       /* coordinate_system */
+			if (zb->Get_polyh() == NULL) {
+				sprintf(error_string,"Zone or wedge not defined for coordinate system %s", tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+				opt = next_keyword_or_option(opt_list, count_opt_list);
+				break;
+			}
+			read_coordinate_system(zb->Get_polyh(), next_char);
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;
+
+		case 8:                         /* combo */
+			{
+				int i;
+				std::istringstream lines;
+				opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
+				std::string dummy;
+				lines >> dummy;
+				while(lines >> i)
+				{
+					zb->Get_combo().push_back(i);
+				}
+				if (zb->Get_combo().size() == 0)
+				{
+					sprintf(error_string,"Expected list of integers for Zone budget combination %s", tag);
+					error_msg(error_string, CONTINUE);
+					input_error++;
+				}
+
+			}
+			break;
+		}
+		return_value = check_line_return;
+		if (return_value == EOF || return_value == KEYWORD) break;
+	}
+	Zone_budget::zone_budget_map[n_user] = zb;
+
+	return(return_value);
 }

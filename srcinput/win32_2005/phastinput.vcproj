@@ -559,20 +559,12 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\PHAST_Transform.cpp"
+				RelativePath="..\PHAST_polygon.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\PHST_polygon.cpp"
+				RelativePath="..\PHAST_Transform.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\Point.cpp"
@@ -872,6 +864,10 @@
 				RelativePath="..\zone.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\Zone_budget.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -986,11 +982,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\PHAST_Transform.h"
+				RelativePath="..\PHAST_polygon.h"
 				>
 			</File>
 			<File
-				RelativePath="..\PHST_polygon.h"
+				RelativePath="..\PHAST_Transform.h"
 				>
 			</File>
 			<File
@@ -1042,6 +1038,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\UniqueMap.h"
+				>
+			</File>
+			<File
 				RelativePath="..\unit_impl.h"
 				>
 			</File>
@@ -1063,6 +1063,10 @@
 			</File>
 			<File
 				RelativePath="..\zone.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Zone_budget.h"
 				>
 			</File>
 		</Filter>

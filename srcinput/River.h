@@ -1,5 +1,6 @@
 #if !defined(RIVER_H_INCLUDED)
 #define RIVER_H_INCLUDED
+#include "PHAST_Transform.h"
 /* ----------------------------------------------------------------------
  *   Rivers
  * ---------------------------------------------------------------------- */
@@ -40,6 +41,7 @@ typedef struct {
 	int update;
 	int n_user;
 	char *description;
+	PHAST_Transform::COORDINATE_SYSTEM coordinate_system;
 } River;
 typedef struct {
 	gpc_polygon *poly;

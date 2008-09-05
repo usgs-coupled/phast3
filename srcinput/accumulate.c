@@ -6,8 +6,11 @@
 #include "stddef.h"
 #include "Polyhedron.h"
 #include "Prism.h"
+#include "Cube.h"
+#include "Wedge.h"
 #include "Exterior_cell.h"
 #include "PHAST_Transform.h"
+#include "Zone_budget.h"
 static char const svnid[] = "$Id$";
 int setup_grid(void);
 static void distribute_flux_bc (int i,std::list<int> &pts, char *tag); 
@@ -16,17 +19,44 @@ static void distribute_specified_bc (int i,std::list<int> &pts, char *tag);
 static void cells_with_exterior_faces_in_zone(std::list<int> &pts, struct zone *zone_ptr);
 static void faces_intersect_polyhedron(int i, std::list<int> & list_of_numbers, Cell_Face face);
 void process_bc (struct cell *cell_ptr);
+static void Tidy_cubes (PHAST_Transform::COORDINATE_SYSTEM target, PHAST_Transform *map2grid);
+static void Tidy_properties (PHAST_Transform::COORDINATE_SYSTEM target, PHAST_Transform *map2grid);
+
 /* ---------------------------------------------------------------------- */
 int accumulate(void)
 /* ---------------------------------------------------------------------- */
 {
 	if (simulation == 0) {
 		setup_grid();
-		// Set up transform
-		map_to_grid = new PHAST_Transform(grid_origin[0], grid_origin[1], grid_origin[2], grid_angle);
-		coordinate_conversion = PHAST_Transform::GRID;
 
+		// Set up transform
+		double scale_h = 1;
+		double scale_v = 1;
+		if (units.map_horizontal.defined == TRUE)
+		{
+			scale_h = units.map_horizontal.input_to_si/units.horizontal.input_to_si;
+		}
+		if (units.map_vertical.defined == TRUE)
+		{
+			scale_h = units.map_vertical.input_to_si/units.vertical.input_to_si;
+		}
+		map_to_grid = new PHAST_Transform(grid_origin[0]
+			, grid_origin[1]
+			, grid_origin[2]
+			, grid_angle
+			, scale_h
+			, scale_h
+			, scale_v
+			);
+	    Point p(275000., 810000, 0);
+		map_to_grid->Transform(p);
+
+		// Convert units to grid
+		target_coordinate_system = PHAST_Transform::GRID;
+		Tidy_cubes(target_coordinate_system, map_to_grid);
+		Tidy_properties(target_coordinate_system, map_to_grid);
 		Tidy_prisms();
+
 		if (tidy_rivers() == OK) {
 			if (build_rivers() == OK) {
 				setup_rivers();
@@ -717,8 +747,8 @@ int setup_print_locations(struct print_zones_struct *print_zones_struct_ptr, siz
 /* ---------------------------------------------------------------------- */
 int distribute_property_to_list_of_cells(
 	std::list<int> &pts,   // list of cell numbers in natural order
-struct property *mask,
-struct property *property_ptr,
+	struct property *mask,
+	struct property *property_ptr,
 	size_t offset, size_t offset_defined,
 	property_type p_type,
 	int match_bc_type,
@@ -1980,6 +2010,24 @@ struct index_range *vertex_to_range(gpc_vertex *poly, int count_points)
 	return(range_ptr);
 }
 /* ---------------------------------------------------------------------- */
+void range_plus_one(struct index_range *range_ptr)
+/* ---------------------------------------------------------------------- */
+
+{
+	if (range_ptr == NULL) return;
+
+	if (range_ptr->i1 > 0) range_ptr->i1--;
+	if (range_ptr->i2 < grid[0].count_coord - 1) range_ptr->i2++;
+
+	if (range_ptr->j1 > 0) range_ptr->j1--;
+	if (range_ptr->j2 < grid[1].count_coord - 1) range_ptr->j2++;
+
+	if (range_ptr->k1 > 0) range_ptr->k1--;
+	if (range_ptr->k2 < grid[2].count_coord - 1) range_ptr->k2++;
+
+	return;
+}
+/* ---------------------------------------------------------------------- */
 int snap_out_to_range(double x1, double x2, double *coord, int count_coord, int uniform,
 					  int *i1, int *i2)
 /* ---------------------------------------------------------------------- */
@@ -2614,6 +2662,7 @@ void faces_intersect_polyhedron(int i, std::list<int> & list_of_numbers, Cell_Fa
 			error_msg("Wrong face defined in distribute_flux_bc", EA_CONTINUE);
 			break;
 		}
+
 		//gpc_polygon *bc_area = bc[i]->polyh->Face_polygon(bc[i]->cell_face);
 		gpc_polygon *bc_area = bc[i]->polyh->Slice(bc[i]->cell_face, coord);
 
@@ -2637,7 +2686,7 @@ void faces_intersect_polyhedron(int i, std::list<int> & list_of_numbers, Cell_Fa
 			Prism *prism = dynamic_cast<Prism *> (bc[i]->polyh);
 			if (prism != NULL)
 			{
-				prism->remove_top_bottom(cell_face_polygon, bc[i]->cell_face, coord);
+				prism->Remove_top_bottom(cell_face_polygon, bc[i]->cell_face, coord);
 			}
 			if (cell_face_polygon->num_contours > 0)
 			{
@@ -2950,7 +2999,7 @@ void distribute_flux_bc (
 				Prism *prism = dynamic_cast<Prism *> (bc[i]->polyh);
 				if (prism != NULL)
 				{
-					prism->remove_top_bottom(cell_face_polygon, bc[i]->cell_face, coord);
+					prism->Remove_top_bottom(cell_face_polygon, bc[i]->cell_face, coord);
 				}
 				bc_info.poly = cell_face_polygon; 
 			}
@@ -3121,7 +3170,7 @@ void distribute_leaky_bc (
 				Prism *prism = dynamic_cast<Prism *> (bc[i]->polyh);
 				if (prism != NULL)
 				{
-					prism->remove_top_bottom(cell_face_polygon, bc[i]->cell_face, coord);
+					prism->Remove_top_bottom(cell_face_polygon, bc[i]->cell_face, coord);
 				}
 				bc_info.poly = cell_face_polygon;
 
@@ -3268,4 +3317,173 @@ void cells_with_exterior_faces_in_zone(std::list<int> &pts, struct zone *zone_pt
 
 		if (face_in_zone) pts.push_back(i);
 	}
+}
+
+/* ---------------------------------------------------------------------- */
+void Tidy_cubes (PHAST_Transform::COORDINATE_SYSTEM target, PHAST_Transform *map2grid)
+/* ---------------------------------------------------------------------- */
+{
+	int i;
+	// Grid_elt
+	for (i = 0; i < count_grid_elt_zones; i++) 
+	{
+		Wedge *w = dynamic_cast<Wedge *> (grid_elt_zones[i]->polyh);
+		Cube *c = dynamic_cast<Cube *> (grid_elt_zones[i]->polyh);
+		if (w == NULL && c == NULL) continue;
+		if (c->Get_coordinate_system() == target) continue;
+		assert (c->Get_coordinate_system() != PHAST_Transform::NONE);
+		Prism *p;
+		if (w != NULL) 
+		{
+			p = new Prism(*w);
+		}
+		else
+		{
+			p = new Prism(*c);
+		}
+		p->Convert_coordinates(target, map2grid);
+		delete grid_elt_zones[i]->polyh;
+		grid_elt_zones[i]->polyh = p;
+	}
+
+	//head_ic_ptr
+	for (i = 0; i < count_head_ic; i++) 
+	{
+		Wedge *w = dynamic_cast<Wedge *> (head_ic[i]->polyh);
+		Cube *c = dynamic_cast<Cube *> (head_ic[i]->polyh);
+		if (w == NULL && c == NULL) continue;
+		if (c->Get_coordinate_system() == target) continue;
+		assert (c->Get_coordinate_system() != PHAST_Transform::NONE);
+		Prism *p;
+		if (w != NULL) 
+		{
+			p = new Prism(*w);
+		}
+		else
+		{
+			p = new Prism(*c);
+		}
+		p->Convert_coordinates(target, map2grid);
+		delete head_ic[i]->polyh;
+		head_ic[i]->polyh = p;
+	}
+	//chem_ic_ptr
+	for (i = 0; i < count_chem_ic; i++) 
+	{
+		Wedge *w = dynamic_cast<Wedge *> (chem_ic[i]->polyh);
+		Cube *c = dynamic_cast<Cube *> (chem_ic[i]->polyh);
+		if (w == NULL && c == NULL) continue;
+		if (c->Get_coordinate_system() == target) continue;
+		assert (c->Get_coordinate_system() != PHAST_Transform::NONE);
+		Prism *p;
+		if (w != NULL) 
+		{
+			p = new Prism(*w);
+		}
+		else
+		{
+			p = new Prism(*c);
+		}
+		p->Convert_coordinates(target, map2grid);
+		delete chem_ic[i]->polyh;
+		chem_ic[i]->polyh = p;
+	}
+	//bc_ptr
+	for (i = 0; i < count_bc; i++) 
+	{
+		Wedge *w = dynamic_cast<Wedge *> (bc[i]->polyh);
+		Cube *c = dynamic_cast<Cube *> (bc[i]->polyh);
+		if (w == NULL && c == NULL) continue;
+		if (c->Get_coordinate_system() == target) continue;
+		assert (c->Get_coordinate_system() != PHAST_Transform::NONE);
+		Prism *p;
+		if (w != NULL) 
+		{
+			p = new Prism(*w);
+		}
+		else
+		{
+			p = new Prism(*c);
+		}
+		p->Convert_coordinates(target, map2grid);
+		delete bc[i]->polyh;
+		bc[i]->polyh = p;
+	}
+	//print_zones_chem
+	for (i = 0; i < print_zones_chem.count_print_zones; i++) 
+	{
+		Wedge *w = dynamic_cast<Wedge *> (print_zones_chem.print_zones[i].polyh);
+		Cube *c = dynamic_cast<Cube *> (print_zones_chem.print_zones[i].polyh);
+		if (w == NULL && c == NULL) continue;
+		if (c->Get_coordinate_system() == target) continue;
+		assert (c->Get_coordinate_system() != PHAST_Transform::NONE);
+		Prism *p;
+		if (w != NULL) 
+		{
+			p = new Prism(*w);
+		}
+		else
+		{
+			p = new Prism(*c);
+		}
+		p->Convert_coordinates(target, map2grid);
+		delete print_zones_chem.print_zones[i].polyh;
+		print_zones_chem.print_zones[i].polyh = p;
+	}
+	//print_zones_xyz
+	for (i = 0; i < print_zones_chem.count_print_zones; i++) 
+	{
+		Wedge *w = dynamic_cast<Wedge *> (print_zones_xyz.print_zones[i].polyh);
+		Cube *c = dynamic_cast<Cube *> (print_zones_xyz.print_zones[i].polyh);
+		if (w == NULL && c == NULL) continue;
+		if (c->Get_coordinate_system() == target) continue;
+		assert (c->Get_coordinate_system() != PHAST_Transform::NONE);
+		Prism *p;
+		if (w != NULL) 
+		{
+			p = new Prism(*w);
+		}
+		else
+		{
+			p = new Prism(*c);
+		}
+		p->Convert_coordinates(target, map2grid);
+		delete print_zones_xyz.print_zones[i].polyh;
+		print_zones_xyz.print_zones[i].polyh = p;
+	}
+
+	// zone_budget
+	std::map<int, Zone_budget *>::iterator it;
+	for (it = Zone_budget::zone_budget_map.begin(); it != Zone_budget::zone_budget_map.end(); it++)
+	{
+		Wedge *w = dynamic_cast<Wedge *> (it->second->Get_polyh());
+		Cube *c = dynamic_cast<Cube *> (it->second->Get_polyh());
+		if (w == NULL && c == NULL) continue;
+		if (c->Get_coordinate_system() == target) continue;
+		assert (c->Get_coordinate_system() != PHAST_Transform::NONE);
+		Prism *p;
+		if (w != NULL) 
+		{
+			p = new Prism(*w);
+		}
+		else
+		{
+			p = new Prism(*c);
+		}
+		p->Convert_coordinates(target, map2grid);
+		delete it->second->Get_polyh();
+		it->second->Set_polyh(p);
+	}
+}
+/* ---------------------------------------------------------------------- */
+void Tidy_properties (PHAST_Transform::COORDINATE_SYSTEM target, PHAST_Transform *map2grid)
+/* ---------------------------------------------------------------------- */
+{
+	std::vector<property *>::iterator it = properties_with_data_source.begin();
+	// Grid_elt
+	for (; it != properties_with_data_source.end(); it++) 
+	{
+		(*it)->data_source->Convert_coordinates(target, map2grid);
+	}
+	return;
 }

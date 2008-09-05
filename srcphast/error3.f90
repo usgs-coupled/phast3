@@ -80,7 +80,10 @@ SUBROUTINE error3
      IF(wqmeth(iwel) == 20.AND.pwkt(iwel) == 0._kdp) ierr(81)=.TRUE.
   END DO
   ! ... Calculation parameters
-  IF(timchg <= time) ierr(83)=.TRUE.
+  ! IF(timchg <= time) ierr(83)=.TRUE.
+  ! keep going until start_time   
+  IF(timchg <= time .and. time > timrst*cnvtm) ierr(83)=.TRUE.   
+
   IF(dtimmx < dtimmn) ierr(84)=.TRUE.
   ! ... Print control parameters
   udeltim = cnvtmi*deltim_transient

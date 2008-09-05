@@ -1,6 +1,6 @@
 #include "Polygon_tree.h"
 #include "Point.h"
-#include "PHST_polygon.h"
+#include "PHAST_polygon.h"
 
 #include <list>
 
@@ -29,9 +29,10 @@ bool Polygon_leaf::split()
 {
   // check number of points
   if (this->polygon->Get_points().size() < 5) return false;
+  PHAST_Transform::COORDINATE_SYSTEM cs = this->polygon->Get_coordinate_system();
 // COMMENT: {7/7/2008 5:27:11 PM}  if (this->polygon->Get_points().size() < 10) return false;
 
-  gpc_polygon *whole = PHST_polygon2gpc_polygon(this->polygon);
+  gpc_polygon *whole = PHAST_polygon2gpc_polygon(this->polygon);
 
   this->left = new Polygon_leaf;
   this->right = new Polygon_leaf;
@@ -55,7 +56,7 @@ bool Polygon_leaf::split()
     gpc_polygon *rect = rectangle(this->left->box.x1, this->left->box.y1, this->left->box.x2, this->left->box.y2);
     gpc_polygon *gpc_poly = empty_polygon();
     gpc_polygon_clip (GPC_INT, whole, rect, gpc_poly);
-    this->left->polygon = new PHST_polygon(gpc_poly);
+    this->left->polygon = new PHAST_polygon(gpc_poly, cs);
     gpc_free_polygon(rect);
     free_check_null(rect);
     gpc_free_polygon(gpc_poly);
@@ -67,7 +68,7 @@ bool Polygon_leaf::split()
     gpc_polygon *rect = rectangle(this->right->box.x1, this->right->box.y1, this->right->box.x2, this->right->box.y2);
     gpc_polygon *gpc_poly = empty_polygon();
     gpc_polygon_clip (GPC_INT, whole, rect, gpc_poly);
-    this->right->polygon = new PHST_polygon(gpc_poly);
+    this->right->polygon = new PHAST_polygon(gpc_poly, cs);
     gpc_free_polygon(rect);
     free_check_null(rect);
     gpc_free_polygon(gpc_poly);
@@ -87,10 +88,10 @@ Polygon_tree::Polygon_tree(void)
   this->root = NULL;
 }
 
-Polygon_tree::Polygon_tree(PHST_polygon &polys)
+Polygon_tree::Polygon_tree(PHAST_polygon &polys)
 {
   this->root = new Polygon_leaf;
-  this->root->polygon = new PHST_polygon (polys);
+  this->root->polygon = new PHAST_polygon (polys);
   zone *zone_ptr = polys.Get_bounding_box();
   this->root->box.x1 = zone_ptr->x1;
   this->root->box.y1 = zone_ptr->y1;

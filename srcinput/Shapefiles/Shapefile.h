@@ -14,20 +14,17 @@ class Shapefile : public Filedata
 public:
   // constructors
   Shapefile(void);
-  Shapefile(std::string &fname);
+  Shapefile(std::string &fname, PHAST_Transform::COORDINATE_SYSTEM cs);
 
   // destructor
   virtual ~Shapefile(void);
 
   void                               Dump             (std::ostream &oss);
-  bool                               Make_points      (const int field, std::vector<Point> &pts, double h_scale, double v_scale);
-  std::vector<Point> &               Get_points       (int attribute);
-  std::vector< std::string >         Get_headers      (void);
-  bool                               Make_polygons    ( int field, PHST_polygon &polygons, double h_scale, double v_scale);
-  bool                               Point_in_polygon (const Point p);
-  //struct zone *                      Get_bounding_box (void);
-  //void                               Set_bounding_box (void);
+  bool                               Make_points      (const int field, std::vector<Point> &pts);
 
+  std::vector< std::string >         Get_headers      (void);
+  bool                               Make_polygons    ( int field, PHAST_polygon &polygons);
+  bool                               Point_in_polygon (const Point p);
 
   // Data
   SHPInfo *                          shpinfo;

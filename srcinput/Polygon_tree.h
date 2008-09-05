@@ -3,7 +3,7 @@
 #include <vector>
 #include "gpc.h"
 #include "zone.h"
-#include "PHST_polygon.h"
+#include "PHAST_polygon.h"
 class Point;
 class Polygon_leaf
 {
@@ -19,7 +19,7 @@ public:
   zone box;
   Polygon_leaf *left;
   Polygon_leaf *right;
-  PHST_polygon *polygon;
+  PHAST_polygon *polygon;
   bool split_x;
   bool tip;
 };
@@ -27,7 +27,7 @@ class Polygon_tree
 {
 public:
   Polygon_tree(void);
-  Polygon_tree(PHST_polygon &polys);
+  Polygon_tree(PHAST_polygon &polys);
 
 public:
   virtual ~Polygon_tree(void);

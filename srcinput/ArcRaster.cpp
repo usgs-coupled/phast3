@@ -13,7 +13,7 @@
 ArcRaster::ArcRaster(void)
 {
 }
-ArcRaster::ArcRaster(std::string filename)
+ArcRaster::ArcRaster(std::string filename, PHAST_Transform::COORDINATE_SYSTEM cs)
 {
 	std::string token;
 	std::ifstream input (filename.c_str());
@@ -25,6 +25,9 @@ ArcRaster::ArcRaster(std::string filename)
 		estring << "Could not open file " << filename.c_str() << std::endl;
 		error_msg(estring.str().c_str(), EA_STOP);
 	}
+	this->filename = filename;  
+	this->file_type = Filedata::ARCRASTER;
+
 
 	// ncols
 	input >> token;
@@ -63,9 +66,10 @@ ArcRaster::ArcRaster(std::string filename)
 		error_msg(estring.str().c_str(), EA_STOP);
 	}
 
-	std::vector<Point>& pts_ref = this->pts_map[-1];
-	pts_ref.reserve(this->nrows*this->ncols);
-	pts_ref.clear();
+	//std::vector<Point>& pts_ref = this->pts_map[-1];
+	std::vector<Point> new_pts;
+	new_pts.reserve(this->nrows*this->ncols);
+	//pts_ref.clear();
 	double value, xpos, ypos;
 	int i, j;
 	for (i = 0; i < nrows; i++)
@@ -82,11 +86,13 @@ ArcRaster::ArcRaster(std::string filename)
 			if (value != this->nodata_value)
 			{
 				//this->Get_points(-1).push_back(Point(xpos, ypos, value, value)); 
-				pts_ref.push_back(Point(xpos, ypos, value, value));
+				new_pts.push_back(Point(xpos, ypos, value, value));
 			}
 		}
 	}
-	pts_ref.resize(pts_ref.size());
+	new_pts.resize(new_pts.size());
+	this->coordinate_system = cs;
+	this->Add_data_source(-1, new_pts, 3, this->coordinate_system);
 	// Set bounding box
 	//this->Set_bounding_box();
 }
@@ -95,20 +101,3 @@ ArcRaster::~ArcRaster(void)
 {
 }
 
-bool ArcRaster::Make_points(int field, std::vector<Point> &new_pts, double h_scale, double v_scale)
-{
-  size_t i;
-  std::vector<Point>::iterator it;
-  std::vector<Point> &file_pts = this->Get_points(-1);
-  new_pts.resize(file_pts.size());
-  for (i = 0, it = file_pts.begin(); it != file_pts.end(); ++i, ++it)
-  {
-    new_pts[i] = Point(it->x()*h_scale, it->y()*h_scale, it->z()*v_scale, it->get_v()*v_scale);
-  }
-  return true; 
-}
-
-std::vector<Point> &ArcRaster::Get_points(int attribute)
-{
-  return this->pts_map.begin()->second;
-}

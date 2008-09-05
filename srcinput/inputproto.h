@@ -56,6 +56,7 @@ struct index_range *zone_to_range(struct zone *zone_ptr);
 struct index_range *zone_to_elt_range(struct zone *zone_ptr);
 int int_compare (const void *ptr1, const void *ptr2);
 void range_to_list (struct index_range *range_ptr, std::list<int> &l);
+void range_plus_one(struct index_range *range_ptr);
 void set_exterior_cells (void);
 int setup_bc(void);
 int setup_chem_ic(void);

@@ -14,6 +14,7 @@ Drain::Drain(void)
 {
   // Data
   this->n_user = -99;
+  this->coordinate_system = PHAST_Transform::MAP;
 }
 
 Drain::~Drain(void)
@@ -32,208 +33,215 @@ Drain::~Drain(void)
 int tidy_drains(void)
 /* ---------------------------------------------------------------------- */
 {
-  /*
-  *   Check drain data 
-  */
-  int i, j, k, return_value;
-  double length, total_length;
-  Drain *drain_ptr;
-  int count_drains = drains.size();
-  double  x1, x2;
-  return_value = OK;
-  if (count_drains <= 0) return(OK);
-  if (simulation > 0) return(OK);
-  for (j = 0; j < count_drains; j++) {
-    drain_ptr = drains[j];
-    /*
-    *  Logical checks on drain
-    */
-    if (drain_ptr->points.size() < 2) {
-      sprintf(error_string,"Drain must have at least 2 points. Drain %d %s.", drain_ptr->n_user, drain_ptr->description.c_str());
-      error_msg(error_string, CONTINUE);
-      return_value = FALSE;
-      input_error++;
-    }
-    /*
-    *   Check drain data
-    */
-    for (i=0; i < (int) drain_ptr->points.size(); i++) {
-      if (drain_ptr->points[i].x_defined == FALSE || drain_ptr->points[i].y_defined == FALSE) {
-	sprintf(error_string,"X or Y not defined for drain point %d of drain %d.", i + 1, j);
-	error_msg(error_string, CONTINUE);
-	input_error++;
-	return_value = FALSE;
-      }
-    }
+	/*
+	*   Check drain data 
+	*/
+	int i, j, k, return_value;
+	double length, total_length;
+	Drain *drain_ptr;
+	int count_drains = drains.size();
+	double  x1, x2;
+	return_value = OK;
+	if (count_drains <= 0) return(OK);
+	if (simulation > 0) return(OK);
+	for (j = 0; j < count_drains; j++) {
+		drain_ptr = drains[j];
+		/*
+		*  Logical checks on drain
+		*/
+		if (drain_ptr->points.size() < 2) {
+			sprintf(error_string,"Drain must have at least 2 points. Drain %d %s.", drain_ptr->n_user, drain_ptr->description.c_str());
+			error_msg(error_string, CONTINUE);
+			return_value = FALSE;
+			input_error++;
+		}
+		/*
+		*   Check drain data
+		*/
+		for (i=0; i < (int) drain_ptr->points.size(); i++) {
+			if (drain_ptr->points[i].x_defined == FALSE || drain_ptr->points[i].y_defined == FALSE) {
+				sprintf(error_string,"X or Y not defined for drain point %d of drain %d.", i + 1, j);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+				return_value = FALSE;
+			}
+		}
 
-    /*
-    *   Check width data
-    */
-    if (drain_ptr->points[0].width_defined == FALSE || drain_ptr->points[drain_ptr->points.size() - 1].width_defined == FALSE) {
-      sprintf(error_string,"Width must be defined at first and last drain point (1 and %d) of drain %d.", (int) drain_ptr->points.size(), j);
-      error_msg(error_string, CONTINUE);
-      input_error++;
-      return_value = FALSE;
-    } else {
-      /*
-      *   Interpolate width data
-      */
-      i = 0;
-      length = 0;
-      x1 = 0;
-      while (i < (int) drain_ptr->points.size()) {
-	if (drain_ptr->points[i].width_defined == TRUE) {
-	  length = 0;
-	  x1 = drain_ptr->points[i].width;
-	} else {
-	  k = i;
-	  while (drain_ptr->points[k].width_defined == FALSE) {
-	    length += river_distance(&(drain_ptr->points[k]), &(drain_ptr->points[k-1]));
-	    k++;
-	  }
-	  length += river_distance(&(drain_ptr->points[k]), &(drain_ptr->points[k-1]));
-	  total_length = length;
-	  x2 = drain_ptr->points[k].width;
-	  if (total_length == 0) total_length = 1.0;
-	  length = 0;
-	  for ( ; i < k; i++) {
-	    length += river_distance(&(drain_ptr->points[i]), &(drain_ptr->points[i-1]));
-	    drain_ptr->points[i].width = x1 + length/total_length*(x2 - x1);
-	  }
-	}
-	i++;
-      }
-    }
-    /*
-    *   Check k data
-    */
-    if (drain_ptr->points[0].k_defined == FALSE || drain_ptr->points[drain_ptr->points.size() - 1].k_defined == FALSE) {
-      sprintf(error_string,"Hydraulic conductivity must be defined at first and last drain point (1 and %d) of drain %d.", (int) drain_ptr->points.size(), j);
-      error_msg(error_string, CONTINUE);
-      input_error++;
-      return_value = FALSE;
-    } else {
-      /*
-      *   Interpolate k data
-      */
-      i = 0;
-      length = 0;
-      x1 = 0;
-      while (i < (int) drain_ptr->points.size()) {
-	if (drain_ptr->points[i].k_defined == TRUE) {
-	  length = 0;
-	  x1 = drain_ptr->points[i].k;
-	} else {
-	  k = i;
-	  while (drain_ptr->points[k].k_defined == FALSE) {
-	    length += river_distance(&(drain_ptr->points[k]), &(drain_ptr->points[k-1]));
-	    k++;
-	  }
-	  length += river_distance(&(drain_ptr->points[k]), &(drain_ptr->points[k-1]));
-	  total_length = length;
-	  x2 = drain_ptr->points[k].k;
-	  if (total_length == 0) total_length = 1.0;
-	  length = 0;
-	  for ( ; i < k; i++) {
-	    length += river_distance(&(drain_ptr->points[i]), &(drain_ptr->points[i-1]));
-	    drain_ptr->points[i].k = x1 + length/total_length*(x2 - x1);
-	  }
-	}
-	i++;
-      }
-    }
-    /*
-    *   Check thickness data
-    */
-    if (drain_ptr->points[0].thickness_defined == FALSE || drain_ptr->points[drain_ptr->points.size() - 1].thickness_defined == FALSE) {
-      sprintf(error_string,"Thickness must be defined at first and last drain point (1 and %d) of drain %d.", (int) drain_ptr->points.size(), j);
-      error_msg(error_string, CONTINUE);
-      input_error++;
-      return_value = FALSE;
-    } else {
-      /*
-      *   Interpolate thickness data
-      */
-      i = 0;
-      length = 0;
-      x1 = 0;
-      while (i < (int) drain_ptr->points.size()) {
-	if (drain_ptr->points[i].thickness_defined == TRUE) {
-	  length = 0;
-	  x1 = drain_ptr->points[i].thickness;
-	} else {
-	  k = i;
-	  while (drain_ptr->points[k].thickness_defined == FALSE) {
-	    length += river_distance(&(drain_ptr->points[k]), &(drain_ptr->points[k-1]));
-	    k++;
-	  }
-	  length += river_distance(&(drain_ptr->points[k]), &(drain_ptr->points[k-1]));
-	  total_length = length;
-	  x2 = drain_ptr->points[k].thickness;
-	  if (total_length == 0) total_length = 1.0;
-	  length = 0;
-	  for ( ; i < k; i++) {
-	    length += river_distance(&(drain_ptr->points[i]), &(drain_ptr->points[i-1]));
-	    drain_ptr->points[i].thickness = x1 + length/total_length*(x2 - x1);
-	  }
-	}
-	i++;
-      }
-    }
+		/*
+		*   Check width data
+		*/
+		if (drain_ptr->points[0].width_defined == FALSE || drain_ptr->points[drain_ptr->points.size() - 1].width_defined == FALSE) {
+			sprintf(error_string,"Width must be defined at first and last drain point (1 and %d) of drain %d.", (int) drain_ptr->points.size(), j);
+			error_msg(error_string, CONTINUE);
+			input_error++;
+			return_value = FALSE;
+		} else {
+			/*
+			*   Interpolate width data
+			*/
+			i = 0;
+			length = 0;
+			x1 = 0;
+			while (i < (int) drain_ptr->points.size()) {
+				if (drain_ptr->points[i].width_defined == TRUE) {
+					length = 0;
+					x1 = drain_ptr->points[i].width;
+				} else {
+					k = i;
+					while (drain_ptr->points[k].width_defined == FALSE) {
+						length += river_distance(&(drain_ptr->points[k]), &(drain_ptr->points[k-1]));
+						k++;
+					}
+					length += river_distance(&(drain_ptr->points[k]), &(drain_ptr->points[k-1]));
+					total_length = length;
+					x2 = drain_ptr->points[k].width;
+					if (total_length == 0) total_length = 1.0;
+					length = 0;
+					for ( ; i < k; i++) {
+						length += river_distance(&(drain_ptr->points[i]), &(drain_ptr->points[i-1]));
+						drain_ptr->points[i].width = x1 + length/total_length*(x2 - x1);
+					}
+				}
+				i++;
+			}
+		}
+		/*
+		*   Check k data
+		*/
+		if (drain_ptr->points[0].k_defined == FALSE || drain_ptr->points[drain_ptr->points.size() - 1].k_defined == FALSE) {
+			sprintf(error_string,"Hydraulic conductivity must be defined at first and last drain point (1 and %d) of drain %d.", (int) drain_ptr->points.size(), j);
+			error_msg(error_string, CONTINUE);
+			input_error++;
+			return_value = FALSE;
+		} else {
+			/*
+			*   Interpolate k data
+			*/
+			i = 0;
+			length = 0;
+			x1 = 0;
+			while (i < (int) drain_ptr->points.size()) {
+				if (drain_ptr->points[i].k_defined == TRUE) {
+					length = 0;
+					x1 = drain_ptr->points[i].k;
+				} else {
+					k = i;
+					while (drain_ptr->points[k].k_defined == FALSE) {
+						length += river_distance(&(drain_ptr->points[k]), &(drain_ptr->points[k-1]));
+						k++;
+					}
+					length += river_distance(&(drain_ptr->points[k]), &(drain_ptr->points[k-1]));
+					total_length = length;
+					x2 = drain_ptr->points[k].k;
+					if (total_length == 0) total_length = 1.0;
+					length = 0;
+					for ( ; i < k; i++) {
+						length += river_distance(&(drain_ptr->points[i]), &(drain_ptr->points[i-1]));
+						drain_ptr->points[i].k = x1 + length/total_length*(x2 - x1);
+					}
+				}
+				i++;
+			}
+		}
+		/*
+		*   Check thickness data
+		*/
+		if (drain_ptr->points[0].thickness_defined == FALSE || drain_ptr->points[drain_ptr->points.size() - 1].thickness_defined == FALSE) {
+			sprintf(error_string,"Thickness must be defined at first and last drain point (1 and %d) of drain %d.", (int) drain_ptr->points.size(), j);
+			error_msg(error_string, CONTINUE);
+			input_error++;
+			return_value = FALSE;
+		} else {
+			/*
+			*   Interpolate thickness data
+			*/
+			i = 0;
+			length = 0;
+			x1 = 0;
+			while (i < (int) drain_ptr->points.size()) {
+				if (drain_ptr->points[i].thickness_defined == TRUE) {
+					length = 0;
+					x1 = drain_ptr->points[i].thickness;
+				} else {
+					k = i;
+					while (drain_ptr->points[k].thickness_defined == FALSE) {
+						length += river_distance(&(drain_ptr->points[k]), &(drain_ptr->points[k-1]));
+						k++;
+					}
+					length += river_distance(&(drain_ptr->points[k]), &(drain_ptr->points[k-1]));
+					total_length = length;
+					x2 = drain_ptr->points[k].thickness;
+					if (total_length == 0) total_length = 1.0;
+					length = 0;
+					for ( ; i < k; i++) {
+						length += river_distance(&(drain_ptr->points[i]), &(drain_ptr->points[i-1]));
+						drain_ptr->points[i].thickness = x1 + length/total_length*(x2 - x1);
+					}
+				}
+				i++;
+			}
+		}
 
-    /* 
-    *   Check z data
-    */
-    if (drain_ptr->points[0].z_defined == FALSE || drain_ptr->points[drain_ptr->points.size() - 1].z_defined == FALSE) {
-      sprintf(error_string,"Drain elevation must be defined at first and last drain point (1 and %d) of drain %d.", (int) drain_ptr->points.size(), j);
-      error_msg(error_string, CONTINUE);
-      input_error++;
-      return_value = FALSE;
-    } else {
-      /*
-      *   Interpolate z data
-      */
-      i = 0;
-      length = 0;
-      x1 = 0;
-      while (i < (int) drain_ptr->points.size()) {
-	if (drain_ptr->points[i].z_defined == TRUE) {
-	  length = 0;
-	  x1 = drain_ptr->points[i].z;
-	} else {
-	  k = i;
-	  while (drain_ptr->points[k].z_defined == FALSE) {
-	    length += river_distance(&(drain_ptr->points[k]), &(drain_ptr->points[k-1]));
-	    k++;
-	  }
-	  length += river_distance(&(drain_ptr->points[k]), &(drain_ptr->points[k-1]));
-	  total_length = length;
-	  x2 = drain_ptr->points[k].z;
-	  if (total_length == 0) total_length = 1.0;
-	  length = 0;
-	  for ( ; i < k; i++) {
-	    length += river_distance(&(drain_ptr->points[i]), &(drain_ptr->points[i-1]));
-	    drain_ptr->points[i].z = x1 + length/total_length*(x2 - x1);
-	  }
+		/* 
+		*   Check z data
+		*/
+		if (drain_ptr->points[0].z_defined == FALSE || drain_ptr->points[drain_ptr->points.size() - 1].z_defined == FALSE) {
+			sprintf(error_string,"Drain elevation must be defined at first and last drain point (1 and %d) of drain %d.", (int) drain_ptr->points.size(), j);
+			error_msg(error_string, CONTINUE);
+			input_error++;
+			return_value = FALSE;
+		} else {
+			/*
+			*   Interpolate z data
+			*/
+			i = 0;
+			length = 0;
+			x1 = 0;
+			while (i < (int) drain_ptr->points.size()) {
+				if (drain_ptr->points[i].z_defined == TRUE) {
+					length = 0;
+					x1 = drain_ptr->points[i].z;
+				} else {
+					k = i;
+					while (drain_ptr->points[k].z_defined == FALSE) {
+						length += river_distance(&(drain_ptr->points[k]), &(drain_ptr->points[k-1]));
+						k++;
+					}
+					length += river_distance(&(drain_ptr->points[k]), &(drain_ptr->points[k-1]));
+					total_length = length;
+					x2 = drain_ptr->points[k].z;
+					if (total_length == 0) total_length = 1.0;
+					length = 0;
+					for ( ; i < k; i++) {
+						length += river_distance(&(drain_ptr->points[i]), &(drain_ptr->points[i-1]));
+						drain_ptr->points[i].z = x1 + length/total_length*(x2 - x1);
+					}
+				}
+				i++;
+			}
+		}
 	}
-	i++;
-      }
-    }
-  }
-  /*
-  *   Check for duplicate numbers
-  */
-  for (j = 0; j < count_drains; j++) {
-    for(i = j + 1; i < (int) drains.size(); i++) {
-      if (drains[j]->n_user == drains[i]->n_user) {
-	sprintf(error_string,"Two drains have the same identifying number. Sequence number %d %s and sequence number %d %s.", j, drains[j]->description.c_str(), i, drains[i]->description.c_str());
-	error_msg(error_string, CONTINUE);
-	input_error++;
-	return_value = FALSE;
-      }
-    }
-  }
-  return(return_value);
+	/*
+	* Convert coordinates if necessary
+	*/
+	for (j = 0; j < count_drains; j++) {
+		drains[j]->Convert_coordinate_system(target_coordinate_system, map_to_grid);
+	}
+
+	/*
+	*   Check for duplicate numbers
+	*/
+	for (j = 0; j < count_drains; j++) {
+		for(i = j + 1; i < (int) drains.size(); i++) {
+			if (drains[j]->n_user == drains[i]->n_user) {
+				sprintf(error_string,"Two drains have the same identifying number. Sequence number %d %s and sequence number %d %s.", j, drains[j]->description.c_str(), i, drains[i]->description.c_str());
+				error_msg(error_string, CONTINUE);
+				input_error++;
+				return_value = FALSE;
+			}
+		}
+	}
+	return(return_value);
 }
 
 /* ---------------------------------------------------------------------- */
@@ -332,111 +340,114 @@ int build_drains(void)
 int setup_drains(void)
 /* ---------------------------------------------------------------------- */
 {
-  /*
-  *   Check drain data 
-  */
-  int i, j, k, l, m, n, count_points;
-  Drain *drain_ptr;
-  int count_drains = drains.size();
-  gpc_vertex *p;
-  gpc_polygon poly2;
-  gpc_polygon *poly_ptr;
-  gpc_polygon intersection;
-  struct index_range *range_ptr;
+	/*
+	*   Check drain data 
+	*/
+	int i, j, k, l, m, n, count_points;
+	Drain *drain_ptr;
+	int count_drains = drains.size();
+	gpc_vertex *p;
+	gpc_polygon poly2;
+	gpc_polygon *poly_ptr;
+	gpc_polygon intersection;
+	struct index_range *range_ptr;
+	gpc_polygon_init(&poly2);
+	gpc_polygon_init(&intersection);
+	if (count_drains <= 0) return(OK);
+	/*
+	*   gpc_vertex list for cell boundary
+	*/
+	p = (gpc_vertex *) malloc((size_t) 4 * sizeof (gpc_vertex));
+	if (p == NULL) malloc_error();
+	/*
+	*   gpc_polygon for cell boundary
+	*/
+	poly2.contour = (gpc_vertex_list*) malloc((size_t) sizeof(gpc_vertex_list));
+	if (poly2.contour == NULL) malloc_error();
+	poly2.contour[0].vertex = p;
+	poly2.contour[0].num_vertices = 4;
+	poly2.num_contours = 1;
+	poly2.hole = (int *) malloc(sizeof(int));
+	poly2.hole[0] = 0;  // hole is false
+	/*
+	*   Go through each drain polygon
+	*   Intersect with cells
+	*   Save intersection in Cell structure
+	*/
+	for (l = 0; l < count_drains; l++) {
+		drain_ptr = drains[l];
+		count_points = drain_ptr->points.size();
+		/*
+		*  Go through drain polygons
+		*/
+		for (m = 0; m < count_points - 1; m++) {
+			poly_ptr = drain_ptr->points[m].polygon;
+			range_ptr = vertex_to_range(poly_ptr->contour[0].vertex, poly_ptr->contour[0].num_vertices);
+			/*
+			*   Set gpc_polygon for cell boundary
+			*/
+			if (range_ptr == NULL) continue;
+			k = range_ptr->k1;
+			for (i = range_ptr->i1; i <= range_ptr->i2; i++) {
+				for (j = range_ptr->j1; j <= range_ptr->j2; j++) {
+					n = ijk_to_n(i, j, k);
+					p[0].x = cells[n].zone->x1;
+					p[0].y = cells[n].zone->y1;
+					p[1].x = cells[n].zone->x2;
+					p[1].y = cells[n].zone->y1;
+					p[2].x = cells[n].zone->x2;
+					p[2].y = cells[n].zone->y2;
+					p[3].x = cells[n].zone->x1;
+					p[3].y = cells[n].zone->y2;
+					gpc_polygon_clip(GPC_INT, poly_ptr, &poly2, &intersection);
+					/*
+					*   check if intersection empty
+					*/
+					if (intersection.num_contours == 0) {
+						gpc_free_polygon(&intersection);
+						continue;
+					}
+					/*
+					*   Add to list
+					*/
+					/*
+					count_drain_polygons = cells[n].count_drain_polygons++;
+					cells[n].drain_polygons = (drain_Polygon *) realloc ( cells[n].drain_polygons, (size_t) (count_drain_polygons + 1) * sizeof (drain_Polygon));
+					if (cells[n].drain_polygons == NULL) malloc_error();
+					*/
 
-  if (count_drains <= 0) return(OK);
-  /*
-  *   gpc_vertex list for cell boundary
-  */
-  p = (gpc_vertex *) malloc((size_t) 4 * sizeof (gpc_vertex));
-  if (p == NULL) malloc_error();
-  /*
-  *   gpc_polygon for cell boundary
-  */
-  poly2.contour = (gpc_vertex_list*) malloc((size_t) sizeof(gpc_vertex_list));
-  if (poly2.contour == NULL) malloc_error();
-  poly2.contour[0].vertex = p;
-  poly2.contour[0].num_vertices = 4;
-  poly2.num_contours = 1;
-  /*
-  *   Go through each drain polygon
-  *   Intersect with cells
-  *   Save intersection in Cell structure
-  */
-  for (l = 0; l < count_drains; l++) {
-    drain_ptr = drains[l];
-    count_points = drain_ptr->points.size();
-    /*
-    *  Go through drain polygons
-    */
-    for (m = 0; m < count_points - 1; m++) {
-      poly_ptr = drain_ptr->points[m].polygon;
-      range_ptr = vertex_to_range(poly_ptr->contour[0].vertex, poly_ptr->contour[0].num_vertices);
-      /*
-      *   Set gpc_polygon for cell boundary
-      */
-      if (range_ptr == NULL) continue;
-      k = range_ptr->k1;
-      for (i = range_ptr->i1; i <= range_ptr->i2; i++) {
-	for (j = range_ptr->j1; j <= range_ptr->j2; j++) {
-	  n = ijk_to_n(i, j, k);
-	  p[0].x = cells[n].zone->x1;
-	  p[0].y = cells[n].zone->y1;
-	  p[1].x = cells[n].zone->x2;
-	  p[1].y = cells[n].zone->y1;
-	  p[2].x = cells[n].zone->x2;
-	  p[2].y = cells[n].zone->y2;
-	  p[3].x = cells[n].zone->x1;
-	  p[3].y = cells[n].zone->y2;
-	  gpc_polygon_clip(GPC_INT, poly_ptr, &poly2, &intersection);
-	  /*
-	  *   check if intersection empty
-	  */
-	  if (intersection.num_contours == 0) {
-	    gpc_free_polygon(&intersection);
-	    continue;
-	  }
-	  /*
-	  *   Add to list
-	  */
-	  /*
-	  count_drain_polygons = cells[n].count_drain_polygons++;
-	  cells[n].drain_polygons = (drain_Polygon *) realloc ( cells[n].drain_polygons, (size_t) (count_drain_polygons + 1) * sizeof (drain_Polygon));
-	  if (cells[n].drain_polygons == NULL) malloc_error();
-	  */
+					/*
+					*   Save drain_Polygon for cell
+					*/
+					River_Polygon rpoly; 
+					rpoly.poly = gpc_polygon_duplicate(&intersection);
+					rpoly.river_number = l;
+					rpoly.point_number = m;
+					cells[n].drain_polygons->push_back(rpoly);
 
-	  /*
-	  *   Save drain_Polygon for cell
-	  */
-	  River_Polygon rpoly; 
-	  rpoly.poly = gpc_polygon_duplicate(&intersection);
-	  rpoly.river_number = l;
-	  rpoly.point_number = m;
-	  cells[n].drain_polygons->push_back(rpoly);
-
-	  /*
-	  cells[n].drain_polygons[count_drain_polygons].poly = gpc_polygon_duplicate(&intersection);
-	  cells[n].drain_polygons[count_drain_polygons].drain_number = l;
-	  cells[n].drain_polygons[count_drain_polygons].point_number = m;
-	  */
-	  gpc_free_polygon(&intersection);
+					/*
+					cells[n].drain_polygons[count_drain_polygons].poly = gpc_polygon_duplicate(&intersection);
+					cells[n].drain_polygons[count_drain_polygons].drain_number = l;
+					cells[n].drain_polygons[count_drain_polygons].point_number = m;
+					*/
+					gpc_free_polygon(&intersection);
+				}
+			}
+			free_check_null(range_ptr);
+		}
 	}
-      }
-      free_check_null(range_ptr);
-    }
-  }
-  /*
-  *    Remove duplicate areas from cell drain polygons
-  */
-/*
-  for (i = 0; i < count_cells; i++) {
-    if (cells[i].drain_polygons->size() <= 1) continue;
-    for (j = 0; j < (int) cells[i].drain_polygons->size() - 1; j++) {
-      for (k = j + 1; k < (int) cells[i].drain_polygons->size(); k++) {
+	/*
+	*    Remove duplicate areas from cell drain polygons
+	*/
+	/*
+	for (i = 0; i < count_cells; i++) {
+	if (cells[i].drain_polygons->size() <= 1) continue;
+	for (j = 0; j < (int) cells[i].drain_polygons->size() - 1; j++) {
+	for (k = j + 1; k < (int) cells[i].drain_polygons->size(); k++) {
 	gpc_polygon_clip(GPC_INT, cells[i].drain_polygons[k].poly, cells[i].drain_polygons[j]->poly, &intersection);
 	if (intersection.num_contours == 0) {
-	  gpc_free_polygon(&intersection);
-	  continue;
+	gpc_free_polygon(&intersection);
+	continue;
 	}
 	gpc_free_polygon(&intersection);
 	gpc_polygon_clip(GPC_DIFF, cells[i].drain_polygons[k].poly, cells[i].drain_polygons[j].poly, &intersection);				
@@ -444,138 +455,138 @@ int setup_drains(void)
 	free_check_null(cells[i].drain_polygons[k].poly);
 	cells[i].drain_polygons[k].poly = gpc_polygon_duplicate(&intersection);
 	gpc_free_polygon(&intersection);
-      }
-    }
-  }
-*/
-  for (i = 0; i < count_cells; i++) {
-    std::vector<River_Polygon>::iterator j_it = cells[i].drain_polygons->begin();
-    std::vector<River_Polygon>::iterator k_it = cells[i].drain_polygons->begin();
-    if (cells[i].drain_polygons->size() <= 1) continue;
-    for (; j_it != cells[i].drain_polygons->end() - 1; j_it++) {
-      for (k_it = j_it + 1; k_it !=  cells[i].drain_polygons->end(); k_it++) {
-	gpc_polygon_clip(GPC_INT, k_it->poly, j_it->poly, &intersection);
-	if (intersection.num_contours == 0) {
-	  gpc_free_polygon(&intersection);
-	  continue;
 	}
-	gpc_free_polygon(&intersection);
-	gpc_polygon_clip(GPC_DIFF, k_it->poly, j_it->poly, &intersection);				
-	gpc_free_polygon(k_it->poly);
-	free_check_null(k_it->poly);
-	k_it->poly = gpc_polygon_duplicate(&intersection);
-	gpc_free_polygon(&intersection);
-      }
-    }
-  }
-  /*
-  *    Remove empty polygons
-  */
-  
-  for (i = 0; i < count_cells; i++) {
-    if (cells[i].drain_polygons->size() < 1) continue;
+	}
+	}
+	*/
+	for (i = 0; i < count_cells; i++) {
+		std::vector<River_Polygon>::iterator j_it = cells[i].drain_polygons->begin();
+		std::vector<River_Polygon>::iterator k_it = cells[i].drain_polygons->begin();
+		if (cells[i].drain_polygons->size() <= 1) continue;
+		for (; j_it != cells[i].drain_polygons->end() - 1; j_it++) {
+			for (k_it = j_it + 1; k_it !=  cells[i].drain_polygons->end(); k_it++) {
+				gpc_polygon_clip(GPC_INT, k_it->poly, j_it->poly, &intersection);
+				if (intersection.num_contours == 0) {
+					gpc_free_polygon(&intersection);
+					continue;
+				}
+				gpc_free_polygon(&intersection);
+				gpc_polygon_clip(GPC_DIFF, k_it->poly, j_it->poly, &intersection);				
+				gpc_free_polygon(k_it->poly);
+				free_check_null(k_it->poly);
+				k_it->poly = gpc_polygon_duplicate(&intersection);
+				gpc_free_polygon(&intersection);
+			}
+		}
+	}
+	/*
+	*    Remove empty polygons
+	*/
 
-    /*
-    k = 0;
-    for (j = 0; j < (int) cells[i].drain_polygons.size(); j++) {
-      if (cells[i].drain_polygons[j]->poly->num_contours == 0) {
-	gpc_free_polygon(cells[i].drain_polygons[j]->poly);
-      } else { 
-	if (j != k) {
-	  cells[i].drain_polygons[k]->poly = gpc_polygon_duplicate(cells[i].drain_polygons[j]->poly);
+	for (i = 0; i < count_cells; i++) {
+		if (cells[i].drain_polygons->size() < 1) continue;
+
+		/*
+		k = 0;
+		for (j = 0; j < (int) cells[i].drain_polygons.size(); j++) {
+		if (cells[i].drain_polygons[j]->poly->num_contours == 0) {
+		gpc_free_polygon(cells[i].drain_polygons[j]->poly);
+		} else { 
+		if (j != k) {
+		cells[i].drain_polygons[k]->poly = gpc_polygon_duplicate(cells[i].drain_polygons[j]->poly);
+		}
+		k++;
+		}
+		}
+		cells[i].count_drain_polygons = k;
+		*/
+		std::vector<River_Polygon>::iterator k_it = cells[i].drain_polygons->begin();
+		std::vector<River_Polygon>::iterator j_it = cells[i].drain_polygons->begin();
+		for (   ; j_it != cells[i].drain_polygons->end(); j_it++) 
+		{
+			if ( j_it->poly->num_contours == 0) 
+			{
+				gpc_free_polygon(j_it->poly);
+			} else { 
+				if (j_it != k_it) {
+					gpc_free_polygon(k_it->poly);
+					free_check_null(k_it->poly);
+					k_it->poly = gpc_polygon_duplicate(j_it->poly);
+				}
+				k_it++;
+			}
+		}
+		for (std::vector<River_Polygon>::iterator it = k_it; it != cells[i].drain_polygons->end(); it++)
+		{
+			gpc_free_polygon(it->poly);
+			free_check_null(it->poly);
+		}
+		cells[i].drain_polygons->erase(k_it, cells[i].drain_polygons->end());
 	}
-	k++;
-      }
-    }
-    cells[i].count_drain_polygons = k;
-    */
-    std::vector<River_Polygon>::iterator k_it = cells[i].drain_polygons->begin();
-    std::vector<River_Polygon>::iterator j_it = cells[i].drain_polygons->begin();
-    for (   ; j_it != cells[i].drain_polygons->end(); j_it++) 
-    {
-      if ( j_it->poly->num_contours == 0) 
-      {
-	gpc_free_polygon(j_it->poly);
-      } else { 
-	if (j_it != k_it) {
-	  gpc_free_polygon(k_it->poly);
-	  free_check_null(k_it->poly);
-	  k_it->poly = gpc_polygon_duplicate(j_it->poly);
-	}
-	k_it++;
-      }
-    }
-    for (std::vector<River_Polygon>::iterator it = k_it; it != cells[i].drain_polygons->end(); it++)
-    {
-      gpc_free_polygon(it->poly);
-      free_check_null(it->poly);
-    }
-    cells[i].drain_polygons->erase(k_it, cells[i].drain_polygons->end());
-  }
-  /*
-  *   Find interpolation point and weighing factor
-  */
-  for (i = 0; i < count_cells; i++) {
-    
+	/*
+	*   Find interpolation point and weighing factor
+	*/
+	for (i = 0; i < count_cells; i++) {
+
 #ifdef SKIP
-    for (j = 0; j < (int) cells[i].drain_polygons->size(); j++) 
-    {
-      /*
-      *   Interpolate value for drain_polygon
-      */
-      cells[i].drain_polygons[j]->area = gpc_polygon_area(cells[i].drain_polygons[j]->poly);
+		for (j = 0; j < (int) cells[i].drain_polygons->size(); j++) 
+		{
+			/*
+			*   Interpolate value for drain_polygon
+			*/
+			cells[i].drain_polygons[j]->area = gpc_polygon_area(cells[i].drain_polygons[j]->poly);
 
 #ifdef DEBUG_drainS
-      output_msg(OUTPUT_STDERR,"#cell: %d\tarea: %e\n", i, cells[i].drain_polygons[j].area);
+			output_msg(OUTPUT_STDERR,"#cell: %d\tarea: %e\n", i, cells[i].drain_polygons[j].area);
 #endif
-      interpolate_drain(&cells[i].drain_polygons[j]);
+			interpolate_drain(&cells[i].drain_polygons[j]);
 #ifdef DEBUG_drainS
-      output_msg(OUTPUT_STDERR,"\t%g\t%g\n", cells[i].drain_polygons[j].x, cells[i].drain_polygons[j].y);
-      gpc_polygon_write(cells[i].drain_polygons[j].poly);
+			output_msg(OUTPUT_STDERR,"\t%g\t%g\n", cells[i].drain_polygons[j].x, cells[i].drain_polygons[j].y);
+			gpc_polygon_write(cells[i].drain_polygons[j].poly);
 #endif
 #endif
-    std::vector<River_Polygon>::iterator j_it = cells[i].drain_polygons->begin();
-    for (; j_it != cells[i].drain_polygons->end(); j_it++)
-    {
-	j_it->area = gpc_polygon_area(j_it->poly);
-	interpolate_drain(&(*j_it));
-    }
-   }
-  /*  frees contours and vertices p */
-  gpc_free_polygon(&poly2);
+			std::vector<River_Polygon>::iterator j_it = cells[i].drain_polygons->begin();
+			for (; j_it != cells[i].drain_polygons->end(); j_it++)
+			{
+				j_it->area = gpc_polygon_area(j_it->poly);
+				interpolate_drain(&(*j_it));
+			}
+		}
+		/*  frees contours and vertices p */
+		gpc_free_polygon(&poly2);
 
 
-// Make list of drain segments in correct vertical cell
-  
-  for (i = 0; i < count_cells; i++) {
-    if (cells[i].drain_polygons->size() == 0) continue;
-    std::vector<River_Polygon>::iterator j_it = cells[i].drain_polygons->begin();
-    for ( ; j_it != cells[i].drain_polygons->end(); j_it++)
-    {
-      int drain_number = j_it->river_number;
-      int point_number = j_it->point_number;
+		// Make list of drain segments in correct vertical cell
 
-      /*  get elevation I*/
-      double w0 = j_it->w;
-      double w1 = 1. - w0;
-      double z0 = drains[drain_number]->points[point_number].z ;
-      double z1 = drains[drain_number]->points[point_number + 1].z ;
-      double z = (z0*w0 + z1*w1);
+		for (i = 0; i < count_cells; i++) {
+			if (cells[i].drain_polygons->size() == 0) continue;
+			std::vector<River_Polygon>::iterator j_it = cells[i].drain_polygons->begin();
+			for ( ; j_it != cells[i].drain_polygons->end(); j_it++)
+			{
+				int drain_number = j_it->river_number;
+				int point_number = j_it->point_number;
 
-      // determine cell number from z
-      int i1, j1, k1;
-      if (which_cell(cells[i].x, cells[i].y, z, &i1, &j1, &k1) == 0)
-      {
+				/*  get elevation I*/
+				double w0 = j_it->w;
+				double w1 = 1. - w0;
+				double z0 = drains[drain_number]->points[point_number].z ;
+				double z1 = drains[drain_number]->points[point_number + 1].z ;
+				double z = (z0*w0 + z1*w1);
 
-      }
-      int n = ijk_to_n(i1, j1, k1);
+				// determine cell number from z
+				int i1, j1, k1;
+				if (which_cell(cells[i].x, cells[i].y, z, &i1, &j1, &k1) == 0)
+				{
 
-      // Note only pointer is saved, do not free
-      cells[n].drain_segments->push_back(*j_it);
-    }
-  }
-  return(OK);
-}
+				}
+				int n = ijk_to_n(i1, j1, k1);
+
+				// Note only pointer is saved, do not free
+				cells[n].drain_segments->push_back(*j_it);
+			}
+		}
+		return(OK);
+	}
 
 /* ---------------------------------------------------------------------- */
 int write_drains(void)
@@ -704,4 +715,72 @@ int interpolate_drain(River_Polygon *drain_polygon_ptr)
 	output_msg(OUTPUT_STDERR,"&\n");
 #endif
 	return(OK);
+}
+/* ---------------------------------------------------------------------- */
+void Drain::Convert_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM target,
+									  PHAST_Transform *map2grid)
+/* ---------------------------------------------------------------------- */
+{
+	if (this->coordinate_system == target) return;
+	if (this->coordinate_system == PHAST_Transform::NONE)
+	{
+		sprintf(error_string,"Error with coordinate system for river %d %s.", this->n_user, this->description);
+		error_msg(error_string, CONTINUE);
+		input_error++;
+		return;
+	}
+	switch (target)
+	{
+	case PHAST_Transform::GRID:
+#ifdef SKIP
+		for (i=0; i < this->count_points; i++) 
+		{
+			if (this->points[i].x_defined == FALSE || this->points[i].y_defined == FALSE) {
+				input_error++;
+				continue;
+			}
+			Point p(this->points[i].x, this->points[i].y, 0.0);
+			map2grid->Transform(p);
+			this->points[i].x = p.x();
+			this->points[i].y = p.y();
+		}
+#endif
+		for (std::vector<River_Point>::iterator it = this->points.begin(); it != this->points.end(); it++)
+		{
+			if (it->x_defined == FALSE || it->y_defined == FALSE || it->y_defined == FALSE) {
+				input_error++;
+				sprintf(error_string,"Missing x, y, or z coordinate %d, %s", this->n_user, this->description);
+				error_msg(error_string, CONTINUE);
+				return;
+			}
+			Point p(it->x, it->y, it->z);
+			map2grid->Transform(p);
+			it->x = p.x();
+			it->y = p.y();
+			it->z = p.z();
+		}
+		this->coordinate_system = PHAST_Transform::GRID;
+		break;
+	case PHAST_Transform::MAP:
+		for (std::vector<River_Point>::iterator it = this->points.begin(); it != this->points.end(); it++)
+		{
+			if (it->x_defined == FALSE || it->y_defined == FALSE || it->y_defined == FALSE) {
+				input_error++;
+				sprintf(error_string,"Missing x, y, or z coordinate %d, %s", this->n_user, this->description);
+				error_msg(error_string, CONTINUE);
+				return;
+			}
+			Point p(it->x, it->y, it->z);
+			map2grid->Inverse_transform(p);
+			it->x = p.x();
+			it->y = p.y();
+			it->z = p.z();
+		}
+		this->coordinate_system = PHAST_Transform::MAP;
+		break;
+	default:
+		sprintf(error_string,"Error converting river coordinate system %d, %s", this->n_user, this->description);
+		error_msg(error_string, CONTINUE);
+		input_error++;
+	}
 }

@@ -3,7 +3,7 @@
 #include "../Point.h"
 #include "../message.h"
 #include "../Utilities.h"
-#include "../PHST_polygon.h"
+#include "../PHAST_polygon.h"
 #include <iostream>
 
 // Note: No header files should follow the next three lines
@@ -27,7 +27,7 @@ Shapefile::~Shapefile(void)
   SHPClose(this->shpinfo);
   DBFClose(this->dbfinfo);
 }
-Shapefile::Shapefile(std::string &fname)
+Shapefile::Shapefile(std::string &fname, PHAST_Transform::COORDINATE_SYSTEM cs)
 {
 /* -------------------------------------------------------------------- */
 /*      Open the passed shapefile.                                      */
@@ -53,6 +53,8 @@ Shapefile::Shapefile(std::string &fname)
     estring << "Unable to open: " << shpname.c_str() << std::endl;
     error_msg(estring.str().c_str(), EA_STOP);
   }
+  this->filename = shpname;
+  this->file_type = Filedata::SHAPE;
 
 /*
 Value Shape Type
@@ -123,6 +125,8 @@ Value Shape Type
     error_msg(estring.str().c_str(), EA_STOP);
   }
 
+
+  this->coordinate_system = cs;
 
   /* -------------------------------------------------------------------- */
   /*	If there is no data in this file let the user know.		*/
@@ -388,517 +392,171 @@ void Shapefile::Dump(std::ostream &oss)
       oss << std::endl;
     }
 }
-#ifdef SKIP
-bool Shapefile::Get_points(std::vector<Point> &pts, const int field)
+
+bool Shapefile::Make_points(const int attribute, std::vector<Point> &pts)
 {
-  // Point contains a x, y, z + value
-
-  std::vector<double> m;  // rough-in in case M values are given in .shp file
-
-  SHPInfo *hSHP = this->shpinfo;
-  DBFInfo *hDBF = this->dbfinfo;
-
-
-  // get info
-  int		nShapeType, nEntities, i, bValidate = 0,nInvalidCount=0;
-  double 	adfMinBound[4], adfMaxBound[4];
-
-  SHPGetInfo( hSHP, &nEntities, &nShapeType, adfMinBound, adfMaxBound );
-
-  // Check field number
-  int dbf_fields = DBFGetFieldCount(hDBF);
-  int dbf_records = DBFGetRecordCount(hDBF);
-
-  if (field < 0 || field >= dbf_fields)
-  {
-    std::ostringstream estring;
-    estring << "Requested field number, " << field 
-      << " (starting from zero), is greater than maximum field number in dbf file " 
-      << dbf_fields - 1 << std::endl;
-    error_msg(estring.str().c_str(), EA_STOP);
-  }
-
-  char	szTitle[12];
-  int	nWidth, nDecimals;
-  DBFFieldType	eType;
-
-  eType = DBFGetFieldInfo( hDBF, field, szTitle, &nWidth, &nDecimals );
-  if (eType != FTDouble && eType != FTInteger)
-  {
-    std::ostringstream estring;
-    estring << "Requested field number, " << field 
-      << " is not a real or integer number in dbf file" 
-      << std::endl;
-    error_msg(estring.str().c_str(), EA_STOP);
-  } else
-  {
-    std::ostringstream ostring;
-    ostring << "Extracting field " << field << " "
-      << szTitle << std::endl;
-    output_msg(OUTPUT_SCREEN, "%s\n", ostring.str().c_str());
-  }
-
-  double xlast = -99, ylast = -99, zlast = -99;
-  for( i = 0; i < nEntities; i++ )
-  {
-    int		j;
-    SHPObject	*psShape;
-
-    psShape = this->objects[i];
-
-    // get corresponding value from dbf
-    if (i >= dbf_records)
-    {
-      std::ostringstream estring;
-      estring << "Requested record number, " << j 
-	<< " (starting from zero), is greater than number of records in dbf file " 
-	<< dbf_records << std::endl;
-      error_msg(estring.str().c_str(), EA_STOP);
-    }
-    double value = DBFReadDoubleAttribute( hDBF, i, field );
-
-    // Apply value to all vertices
-    for( j = 0; j < psShape->nVertices; j++ )
-    {
-      if ((i == 0 && j == 0) ||
-	psShape->padfX[j] != xlast ||
-	psShape->padfY[j] != ylast ||
-	psShape->padfZ[j] != zlast )
-      {
-	// add to list
-	Point pt;
-	pt.set_x(psShape->padfX[j]);
-	pt.set_y(psShape->padfY[j]);
-	pt.set_z(psShape->padfZ[j]);
-	pt.set_v(value);
-	pts.push_back(pt);
-
-	// Place holder for implementing m shape files
-	m.push_back(psShape->padfM[j]);
-
-	// save last point
-	xlast = psShape->padfX[j];
-	ylast = psShape->padfY[j];
-	zlast = psShape->padfZ[j];
-      }
-    }
-  }
-  return true;
-}
-#endif
-bool Shapefile::Make_points(const int field, std::vector<Point> &pts, double h_scale, double v_scale)
-{
-  // Point contains a x, y, z + value
-
-  //if (this->pts.size() > 0 && field == this->current_field) return (true);
-  //this->pts.clear();
-
-  std::vector<double> m;  // rough-in in case M values are given in .shp file
-
-  SHPInfo *hSHP = this->shpinfo;
-  DBFInfo *hDBF = this->dbfinfo;
-
-
-  // get info
-  int		nShapeType, nEntities, i; //, bValidate = 0,nInvalidCount=0;
-  double 	adfMinBound[4], adfMaxBound[4];
-
-  SHPGetInfo( hSHP, &nEntities, &nShapeType, adfMinBound, adfMaxBound );
-
-  // Check field number
-  int dbf_fields = DBFGetFieldCount(hDBF);
-  int dbf_records = DBFGetRecordCount(hDBF);
-
-  //this->Dump(std::cerr);
-  if (field >= dbf_fields)
-  {
-    std::ostringstream estring;
-    estring << "Requested field number, " << field 
-      << " (starting from zero), is greater than maximum field number in dbf file " 
-      << dbf_fields - 1 << std::endl;
-    error_msg(estring.str().c_str(), EA_STOP);
-  }
-
-  char	szTitle[12];
-  int	nWidth, nDecimals;
-  DBFFieldType	eType;
-
-  if (field >= 0 && field < dbf_fields)
-  {
-    eType = DBFGetFieldInfo( hDBF, field, szTitle, &nWidth, &nDecimals );
-    if (eType != FTDouble && eType != FTInteger)
-    {
-      std::ostringstream estring;
-      estring << "Requested field number, " << field 
-	<< " is not a real or integer number in dbf file" 
-	<< std::endl;
-      error_msg(estring.str().c_str(), EA_STOP);
-    } else
-    {
-      std::ostringstream ostring;
-      ostring << "Extracting field " << field << " "
-	<< szTitle << std::endl;
-      output_msg(OUTPUT_SCREEN, "%s\n", ostring.str().c_str());
-    }
-  }
-
-  double xlast = -99, ylast = -99, zlast = -99;
-  for( i = 0; i < nEntities; i++ )
-  {
-    int		j;
-    SHPObject	*psShape;
-
-    psShape = this->objects[i];
-
-    // get corresponding value from dbf
-    if (i >= dbf_records)
-    {
-      std::ostringstream estring;
-      estring << "Requested record number, " << j 
-	<< " (starting from zero), is greater than number of records in dbf file " 
-	<< dbf_records << std::endl;
-      error_msg(estring.str().c_str(), EA_STOP);
-    }
-
-
-    // Apply value to all vertices
-    for( j = 0; j < psShape->nVertices; j++ )
-    {
-      if ((i == 0 && j == 0) ||
-	psShape->padfX[j] != xlast ||
-	psShape->padfY[j] != ylast ||
-	psShape->padfZ[j] != zlast )
-      {
-	double value = psShape->padfZ[j];
-	if (field >= 0) value = DBFReadDoubleAttribute( hDBF, i, field );
-	// add to list
-	Point pt;
-	pt.set_x(psShape->padfX[j]*h_scale);
-	pt.set_y(psShape->padfY[j]*h_scale);
-	//pt.set_z(psShape->padfZ[j]*v_scale);
-	pt.set_z(value*v_scale);
-	pt.set_v(value*v_scale);
-	//this->pts.push_back(pt);
-	pts.push_back(pt);
-
-	// Place holder for implementing m shape files
-	m.push_back(psShape->padfM[j]);
-
-	// save last point
-	xlast = psShape->padfX[j];
-	ylast = psShape->padfY[j];
-	zlast = psShape->padfZ[j];
-      }
-    }
-  }
-  return true;
-}
-#ifdef SKIP
-gpc_polygon *Shapefile::Get_polygons(void)
-{
-  // Point contains a x, y, z + value
-
-  std::vector<double> m;  // rough-in in case M values are given in .shp file
-
-  SHPInfo *hSHP = this->shpinfo;
-  DBFInfo *hDBF = this->dbfinfo;
-
-
-  // get info
-  int		nShapeType, nEntities, i, bValidate = 0,nInvalidCount=0;
-  double 	adfMinBound[4], adfMaxBound[4];
-
-  SHPGetInfo( hSHP, &nEntities, &nShapeType, adfMinBound, adfMaxBound );
-
-  // Shape type should be polygon
-  if (nShapeType != 5) {
-    std::ostringstream estring;
-    estring << "Shape file does not have shape type of polygon." <<  std::endl;
-    error_msg(estring.str().c_str(), EA_STOP);
-  }
-
-  
-  gpc_polygon *cumulative_polygon = empty_polygon();
-  for( i = 0; i < nEntities; i++ )
-  {
-    int		j;
-    SHPObject	*psShape;
-
-    psShape = this->objects[i];
-    std::vector<Point> pts;
-    double xlast = -99, ylast = -99, zlast = -99;
-
-    // Make polygon from  vertices
-    for( j = 0; j < psShape->nVertices; j++ )
-    {
-      if ((i == 0 && j == 0) ||
-	psShape->padfX[j] != xlast ||
-	psShape->padfY[j] != ylast ||
-	psShape->padfZ[j] != zlast )
-      {
-	// add to list
-	Point pt;
-	pt.set_x(psShape->padfX[j]);
-	pt.set_y(psShape->padfY[j]);
-	pt.set_z(psShape->padfZ[j]);
-	pt.set_v(0.0);
-	pts.push_back(pt);
-
-	// Place holder for implementing m shape files
-	//m.push_back(psShape->padfM[j]);
-
-	// save last point
-	xlast = psShape->padfX[j];
-	ylast = psShape->padfY[j];
-	zlast = psShape->padfZ[j];
-      }
-    }
-    gpc_polygon *temp_polygon = points_to_poly(pts);
-    gpc_polygon_clip(GPC_UNION, cumulative_polygon, temp_polygon, cumulative_polygon);
-    gpc_free_polygon(temp_polygon);
-    free_check_null(temp_polygon);
-  }
-  return(cumulative_polygon);
-}
-#endif
-
-#ifdef SKIP
-bool Shapefile::Get_polygons(std::vector<Point> &pts, 
-			     std::vector< std::vector<Point>::iterator > &begin,
-			     std::vector< std::vector<Point>::iterator > &end)
-{
-  // Point contains a x, y, z + value
-
-  std::vector<double> m;  // rough-in in case M values are given in .shp file
-
-  SHPInfo *hSHP = this->shpinfo;
-  DBFInfo *hDBF = this->dbfinfo;
-
-
-  // get info
-  int		nShapeType, nEntities, i, bValidate = 0,nInvalidCount=0;
-  double 	adfMinBound[4], adfMaxBound[4];
-
-  SHPGetInfo( hSHP, &nEntities, &nShapeType, adfMinBound, adfMaxBound );
-
-  // Shape type should be polygon
-  if (nShapeType != 5) {
-    std::ostringstream estring;
-    estring << "Shape file does not have shape type of polygon." <<  std::endl;
-    error_msg(estring.str().c_str(), EA_STOP);
-  }
-
-  std::vector<int> start;
-  std::vector<int> stop;
-  int count = 0;
-  //gpc_polygon *cumulative_polygon = empty_polygon();
-  for( i = 0; i < nEntities; i++ )
-  {
-    start.push_back(count);
-    int		j;
-    SHPObject	*psShape;
-
-    psShape = this->objects[i];
-    //std::vector<Point> pts;
-    double xlast = -99, ylast = -99, zlast = -99;
-
-    // Make polygon from  vertices
-    for( j = 0; j < psShape->nVertices; j++ )
-    {
-      if ((i == 0 && j == 0) ||
-	psShape->padfX[j] != xlast ||
-	psShape->padfY[j] != ylast ||
-	psShape->padfZ[j] != zlast )
-      {
-	// add to list
-	Point pt;
-	pt.set_x(psShape->padfX[j]);
-	pt.set_y(psShape->padfY[j]);
-	pt.set_z(psShape->padfZ[j]);
-	pt.set_v(0.0);
-	pts.push_back(pt);
-
-	// Place holder for implementing m shape files
-	//m.push_back(psShape->padfM[j]);
-
-	// save last point
-	xlast = psShape->padfX[j];
-	ylast = psShape->padfY[j];
-	zlast = psShape->padfZ[j];
-	count++;
-      }
-    }
-    //gpc_polygon *temp_polygon = points_to_poly(pts);
-    //gpc_polygon_clip(GPC_UNION, cumulative_polygon, temp_polygon, cumulative_polygon);
-    //gpc_free_polygon(temp_polygon);
-    //free_check_null(temp_polygon);
-    stop.push_back(count);
-  }
-  std::vector<Point>::iterator it;
-  i = 0;
-  int ibegin = 0;
-  for (it = pts.begin(); it != pts.end(); it++)
-  {
-    if (i == start[ibegin]) begin.push_back(it);
-    if (i == stop[ibegin]) 
-    {
-      end.push_back(it);
-      ibegin++;
-    }
-  }
-  end.push_back(pts.end());
-  return(true);
-}
-#endif
-bool Shapefile::Make_polygons( int field, PHST_polygon &polygons, double h_scale, double v_scale)
-{
-  // Requires field number
-  // Requires point vector
-  // Requires 2 vectors of iterators for input
-
-  // Point contains  x, y, z + value
-
-  // Set points
-  this->Make_points(field, polygons.Get_points(), h_scale, v_scale );
-
-
-  std::vector<double> m;  // rough-in in case M values are given in .shp file
-
-  SHPInfo *hSHP = this->shpinfo;
-  //DBFInfo *hDBF = this->dbfinfo;
-
-
-  // get info
-  int		nShapeType, nEntities, i; //, bValidate = 0,nInvalidCount=0;
-  double 	adfMinBound[4], adfMaxBound[4];
-
-  SHPGetInfo( hSHP, &nEntities, &nShapeType, adfMinBound, adfMaxBound );
-
-  // Shape type should be polygon
-  if (nShapeType != 5) {
-    std::ostringstream estring;
-    estring << "Shape file does not have shape type of polygon." <<  std::endl;
-    //error_msg(estring.str().c_str(), EA_STOP);
-    warning_msg(estring.str().c_str());
-  }
-  std::vector<Point>::iterator it = polygons.Get_points().begin();
-  for( i = 0; i < nEntities; i++ )
-  {
-    polygons.Get_begin().push_back(it);
-    
-    SHPObject	*psShape;
-    psShape = this->objects[i];
-
-    int		j;
-    for( j = 0; j < psShape->nVertices; j++ )
-    {
-      it++;
-    }
-    polygons.Get_end().push_back(it);
-  }
-  polygons.Set_bounding_box();
-  return true;
-}
-#ifdef SKIP
-bool Shapefile::Point_in_polygon(const Point p)
-{
-  // Point contains a x, y, z + value
-
-  Point work = p;
-  std::vector<double> m;  // rough-in in case M values are given in .shp file
-
-  SHPInfo *hSHP = this->shpinfo;
-  DBFInfo *hDBF = this->dbfinfo;
-
-
-  // get info
-  int		nShapeType, nEntities, i, bValidate = 0,nInvalidCount=0;
-  double 	adfMinBound[4], adfMaxBound[4];
-
-  SHPGetInfo( hSHP, &nEntities, &nShapeType, adfMinBound, adfMaxBound );
-
-  // Shape type should be polygon
-  if (nShapeType != 5) {
-    std::ostringstream estring;
-    estring << "Shape file does not have shape type of polygon." <<  std::endl;
-    error_msg(estring.str().c_str(), EA_STOP);
-  }
-
-  for( i = 0; i < nEntities; i++ )
-  {
-    int		j;
-    SHPObject	*psShape;
-
-    psShape = this->objects[i];
-    std::vector<Point> pts;
-    double xlast = -99, ylast = -99, zlast = -99;
-
-    // Make polygon from  vertices
-    for( j = 0; j < psShape->nVertices; j++ )
-    {
-      if ((i == 0 && j == 0) ||
-	psShape->padfX[j] != xlast ||
-	psShape->padfY[j] != ylast ||
-	psShape->padfZ[j] != zlast )
-      {
-	// add to list
-	Point pt;
-	pt.set_x(psShape->padfX[j]);
-	pt.set_y(psShape->padfY[j]);
-	pt.set_z(psShape->padfZ[j]);
-	pt.set_v(0.0);
-	pts.push_back(pt);
-
-	// Place holder for implementing m shape files
-	//m.push_back(psShape->padfM[j]);
-
-	// save last point
-	xlast = psShape->padfX[j];
-	ylast = psShape->padfY[j];
-	zlast = psShape->padfZ[j];
-      }
-    }
-    bool in = work.Point_in_polygon(pts);
-    if (in) return(true);
-  }
-  return(false);
-}
-#endif
-#ifdef SKIP
-struct zone *Shapefile::Get_bounding_box(void)
-{
-  return (&this->box);
+	// Point contains a x, y, z + value
+
+	//if (this->pts.size() > 0 && field == this->current_field) return (true);
+	//this->pts.clear();
+
+	std::vector<double> m;  // rough-in in case M values are given in .shp file
+
+	SHPInfo *hSHP = this->shpinfo;
+	DBFInfo *hDBF = this->dbfinfo;
+
+
+	// get info
+	int		nShapeType, nEntities, i; //, bValidate = 0,nInvalidCount=0;
+	double 	adfMinBound[4], adfMaxBound[4];
+
+	SHPGetInfo( hSHP, &nEntities, &nShapeType, adfMinBound, adfMaxBound );
+
+	// Check field number
+	int dbf_fields = DBFGetFieldCount(hDBF);
+	int dbf_records = DBFGetRecordCount(hDBF);
+
+	//this->Dump(std::cerr);
+	if (attribute >= dbf_fields)
+	{
+		std::ostringstream estring;
+		estring << "Requested field number, " << attribute 
+			<< " (starting from zero), is greater than maximum field number in dbf file " 
+			<< dbf_fields - 1 << std::endl;
+		error_msg(estring.str().c_str(), EA_STOP);
+	}
+
+	char	szTitle[12];
+	int	nWidth, nDecimals;
+	DBFFieldType	eType;
+
+	if (attribute >= 0 && attribute < dbf_fields)
+	{
+		eType = DBFGetFieldInfo( hDBF, attribute, szTitle, &nWidth, &nDecimals );
+		if (eType != FTDouble && eType != FTInteger)
+		{
+			std::ostringstream estring;
+			estring << "Requested field number, " << attribute 
+				<< " is not a real or integer number in dbf file" 
+				<< std::endl;
+			error_msg(estring.str().c_str(), EA_STOP);
+		} else
+		{
+			std::ostringstream ostring;
+			ostring << "Extracting field " << attribute << " "
+				<< szTitle << std::endl;
+			output_msg(OUTPUT_SCREEN, "%s\n", ostring.str().c_str());
+		}
+	}
+
+	double xlast = -99, ylast = -99, zlast = -99;
+	for( i = 0; i < nEntities; i++ )
+	{
+		int		j;
+		SHPObject	*psShape;
+
+		psShape = this->objects[i];
+
+		// get corresponding value from dbf
+		if (i >= dbf_records)
+		{
+			std::ostringstream estring;
+			estring << "Requested record number, " << j 
+				<< " (starting from zero), is greater than number of records in dbf file " 
+				<< dbf_records << std::endl;
+			error_msg(estring.str().c_str(), EA_STOP);
+		}
+
+
+		// Apply value to all vertices
+		for( j = 0; j < psShape->nVertices; j++ )
+		{
+			if ((i == 0 && j == 0) ||
+				psShape->padfX[j] != xlast ||
+				psShape->padfY[j] != ylast ||
+				psShape->padfZ[j] != zlast )
+			{
+				double value = psShape->padfZ[j];
+				if (attribute >= 0) value = DBFReadDoubleAttribute( hDBF, i, attribute );
+				// add to list
+				Point pt;
+				pt.set_x(psShape->padfX[j]);
+				pt.set_y(psShape->padfY[j]);
+				//pt.set_z(psShape->padfZ[j]);
+				pt.set_z(value);
+				pt.set_v(value);
+				//this->pts.push_back(pt);
+				pts.push_back(pt);
+
+				// Place holder for implementing m shape files
+				m.push_back(psShape->padfM[j]);
+
+				// save last point
+				xlast = psShape->padfX[j];
+				ylast = psShape->padfY[j];
+				zlast = psShape->padfZ[j];
+			}
+		}
+	}
+	return true;
 }
 
-void Shapefile::Set_bounding_box()
+bool Shapefile::Make_polygons( int field, PHAST_polygon &polygons)
 {
+	// Requires field number
+	// Requires point vector
+	// Requires 2 vectors of iterators for input
 
-    SHPInfo *hSHP = this->shpinfo;
+	// Point contains  x, y, z + value
 
-    if( hSHP == NULL )
-    {
-	error_msg("No header data for Shapefile object", EA_CONTINUE);
-	return;
-    }
+	// Set points
+	//this->Make_points(field, polygons.Get_points());
+	Data_source * ds = this->Get_data_source(field);
+	assert (ds->Get_source_type() == Data_source::POINTS);
+	assert (ds->Get_points().size() > 3);
+	polygons.Get_points() = ds->Get_points();
+	
 
-    // get info
-    int		nShapeType, nEntities, bValidate = 0,nInvalidCount=0;
-    double 	adfMinBound[4], adfMaxBound[4];
 
-    SHPGetInfo( hSHP, &nEntities, &nShapeType, adfMinBound, adfMaxBound );
+	std::vector<double> m;  // rough-in in case M values are given in .shp file
 
-    this->box.x1 = adfMinBound[0];
-    this->box.y1 = adfMinBound[1];
-    this->box.z1 = adfMinBound[2];
-    this->box.x2 = adfMaxBound[0];
-    this->box.y2 = adfMaxBound[1];
-    this->box.z2 = adfMaxBound[2];
+	SHPInfo *hSHP = this->shpinfo;
+	//DBFInfo *hDBF = this->dbfinfo;
+
+
+	// get info
+	int		nShapeType, nEntities, i; //, bValidate = 0,nInvalidCount=0;
+	double 	adfMinBound[4], adfMaxBound[4];
+
+	SHPGetInfo( hSHP, &nEntities, &nShapeType, adfMinBound, adfMaxBound );
+
+	// Shape type should be polygon
+	if (nShapeType != 5) {
+		std::ostringstream estring;
+		estring << "Shape file does not have shape type of polygon." <<  std::endl;
+		//error_msg(estring.str().c_str(), EA_STOP);
+		warning_msg(estring.str().c_str());
+	}
+	std::vector<Point>::iterator it = polygons.Get_points().begin();
+	for( i = 0; i < nEntities; i++ )
+	{
+		polygons.Get_begin().push_back(it);
+
+		SHPObject	*psShape;
+		psShape = this->objects[i];
+
+		int		j;
+		for( j = 0; j < psShape->nVertices; j++ )
+		{
+			it++;
+		}
+		polygons.Get_end().push_back(it);
+	}
+	polygons.Set_coordinate_system(this->coordinate_system);
+	polygons.Set_bounding_box();
+	return true;
 }
-#endif
-std::vector<Point> &Shapefile::Get_points(int attribute)
-{
-  return this->pts_map.find(attribute)->second;
-}
+
 std::vector< std::string > Shapefile::Get_headers(void)
 {
 	std::vector< std::string > headers;
@@ -907,7 +565,7 @@ std::vector< std::string > Shapefile::Get_headers(void)
 		char	szTitle[12];
 		for(int i = 0; i < DBFGetFieldCount(this->dbfinfo); ++i)
 		{
-			const char *pszTypeName;
+			//const char *pszTypeName;
 			DBFGetFieldInfo(this->dbfinfo, i, szTitle, NULL, NULL);
 			headers.push_back(szTitle);
 		}

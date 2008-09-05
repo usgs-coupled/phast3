@@ -1,6 +1,8 @@
 #include "Point.h"
 #include "NNInterpolator/NNInterpolator.h"
 #include "Filedata.h"
+#include "message.h"
+#include "NNInterpolator/nan.h"
 
 // Note: No header files should follow the next three lines
 #if defined(_WIN32) && defined(_DEBUG)
@@ -15,7 +17,7 @@ Filedata::Filedata(void)
 
 Filedata::~Filedata(void)
 {
-  this->nni_map.clear();
+  //this->nni_map.clear();
   /*
   std::map<int, std::vector<Point> >::iterator it1;
   for (it1 = this->pts_map.begin(); it1 != this->pts_map.end(); it1++)
@@ -23,6 +25,11 @@ Filedata::~Filedata(void)
     delete it1->second;
   }
   */
+  std::map<int, Data_source *>::iterator it;
+  for (it = this->data_source_map.begin(); it != this->data_source_map.end(); it++)
+  {
+    delete it->second;
+  }
 
 }
 void Clear_file_data_map(void)
@@ -35,27 +42,98 @@ void Clear_file_data_map(void)
   Filedata::file_data_map.clear();
 }
 
-void Filedata::Add_to_pts_map (int attribute)
+void Filedata::Add_data_source (int attribute, std::vector<Point> in_pts, int columns, PHAST_Transform::COORDINATE_SYSTEM system)
 {
   // Store list of points if necessary
-  if (this->pts_map.size() == 0 || (this->pts_map.find(attribute) == this->pts_map.end()) )
+  if (this->data_source_map.size() == 0 || (this->data_source_map.find(attribute) == this->data_source_map.end()) )
   {
-    std::vector<Point> temp_pts; 
-    this->Make_points(attribute, temp_pts, 1.0, 1.0);
-
-    this->pts_map[attribute] = temp_pts;
+    //std::vector<Point> temp_pts; 
+    //this->Make_points(attribute, temp_pts);
+	Data_source *ds = new Data_source(in_pts, system);
+	ds->Set_columns(columns);
+	ds->Set_attribute(attribute);
+    this->data_source_map[attribute] = ds;
   }
 }
-#ifdef SKIP
-void Filedata::Convert_coordinates (int attribute, PHAST_Transform &transform, PHAST_Transform::)
+
+std::vector<Point> & Filedata::Get_points(int attribute)
 {
-  // Store list of points if necessary
-  if (this->pts_map.size() == 0 || (this->pts_map.find(attribute) == this->pts_map.end()) )
-  {
-    std::vector<Point> temp_pts; 
-    this->Make_points(attribute, temp_pts, 1.0, 1.0);
-
-    this->pts_map[attribute] = temp_pts;
-  }
+	if (this->data_source_map.find(attribute) != this->data_source_map.end())
+	{
+		return(this->data_source_map.find(attribute)->second->Get_points());
+	}
+	return(this->empty_pts);
 }
-#endif
+Data_source * Filedata::Get_data_source(int attribute)
+{
+	if (this->data_source_map.find(attribute) != this->data_source_map.end())
+	{
+		return(this->data_source_map.find(attribute)->second);
+	}
+	return(false);
+}
+double Filedata::Interpolate(int attribute, Point p, PHAST_Transform::COORDINATE_SYSTEM point_system, PHAST_Transform *map2grid)
+{
+	if (this->Get_data_source(attribute) == NULL)
+	{
+		std::ostringstream estring;
+		estring << "No data source defined for attribute " << attribute << std::endl;
+		error_msg(estring.str().c_str(), EA_CONTINUE);
+		return (NaN);
+	}
+	if (this->Get_nni(attribute) == NULL)
+	{
+		std::ostringstream estring;
+		estring << "No interpolator for file data source " << std::endl;
+		error_msg(estring.str().c_str(), EA_STOP);
+	}
+	Data_source *ds = this->Get_data_source(attribute);
+	switch (point_system)
+	{
+	case PHAST_Transform::GRID:
+		switch (ds->Get_coordinate_system())
+		{
+		case PHAST_Transform::GRID:
+			return (ds->Get_nni()->interpolate(p));
+			break;
+		case PHAST_Transform::MAP:
+			{
+				Point pt = p;
+				map2grid->Inverse_transform(pt);
+				return (ds->Get_nni()->interpolate(pt));
+			}
+		default:
+			break;
+		}
+	case PHAST_Transform::MAP:
+		switch (ds->Get_coordinate_system())
+		{
+		case PHAST_Transform::MAP:
+			return (ds->Get_nni()->interpolate(p));
+			break;
+		case PHAST_Transform::GRID:
+			{
+				Point pt = p;
+				map2grid->Transform(pt);
+				return (ds->Get_nni()->interpolate(pt));
+			}
+		default:
+			break;
+		}
+	}
+	std::ostringstream estring;
+	estring << "A coordinate system was not defined for Filedata::Interpolate " << std::endl;
+	error_msg(estring.str().c_str(), EA_STOP);
+	return(0.0);
+
+}
+NNInterpolator * Filedata::Get_nni(int attribute)
+{
+	std::map<int, Data_source *>::iterator it = this->data_source_map.find(attribute);
+	assert (it->second->Get_source_type() == Data_source::POINTS);
+	if (it != this->data_source_map.end())
+	{
+		return(it->second->Get_nni());
+	}
+	return(NULL);
+}

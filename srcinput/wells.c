@@ -1,6 +1,9 @@
 #define EXTERNAL extern
 #include "hstinpt.h"
+#include "PHAST_Transform.h"
 static char const svnid[] = "$Id$";
+static void well_convert_coordinate_system(Well *well_ptr, PHAST_Transform::COORDINATE_SYSTEM target, PHAST_Transform *map2grid);
+static void wells_convert_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM target, PHAST_Transform *map2grid);
 
 /* ---------------------------------------------------------------------- */
 int tidy_wells(void)
@@ -16,6 +19,9 @@ int tidy_wells(void)
 	return_value = OK;
 	if (count_wells <= 0) return(OK);
 	if (simulation > 0) return(OK);
+
+	// convert coordinate system if necessary
+	wells_convert_coordinate_system(target_coordinate_system, map_to_grid);
 /*
  *    Make sure all wells are numbered
  */
@@ -313,4 +319,71 @@ int update_wells(void)
 		wells[j].update = TRUE;
 	}
 	return(OK);
+}
+/* ---------------------------------------------------------------------- */
+void wells_convert_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM target,
+									  PHAST_Transform *map2grid)
+/* ---------------------------------------------------------------------- */
+{
+	Well *well_ptr;
+/*
+ *   Convert coordinates of all wells 
+ */
+	int j;
+	if (count_wells <= 0) return;
+	if (simulation > 0) return;
+
+	// Convert coordinate system for well points
+	for (j = 0; j < count_wells; j++) {
+		well_ptr = &(wells[j]);
+		well_convert_coordinate_system(well_ptr, target, map2grid);
+	}
+}
+/* ---------------------------------------------------------------------- */
+void well_convert_coordinate_system(Well *well_ptr,
+									PHAST_Transform::COORDINATE_SYSTEM target, 
+									PHAST_Transform *map2grid)
+/* ---------------------------------------------------------------------- */
+{
+	if (well_ptr->coordinate_system == target) return;
+	if (well_ptr->coordinate_system == PHAST_Transform::NONE)
+	{
+		sprintf(error_string,"Error with coordinate system for well %d %s.", well_ptr->n_user, well_ptr->description);
+		error_msg(error_string, CONTINUE);
+		input_error++;
+		return;
+	}
+	switch (target)
+	{
+	case PHAST_Transform::GRID:
+		if (well_ptr->x_defined == FALSE || well_ptr->y_defined == FALSE) {
+				input_error++;
+		}
+		else
+		{
+			Point p(well_ptr->x, well_ptr->y, 0.0);
+			map2grid->Transform(p);
+			well_ptr->x = p.x();
+			well_ptr->y = p.y();
+			well_ptr->coordinate_system = PHAST_Transform::GRID;
+		}
+		break;
+	case PHAST_Transform::MAP:
+		if (well_ptr->x_defined == FALSE || well_ptr->y_defined == FALSE) {
+			input_error++;
+		}
+		else
+		{
+			Point p(well_ptr->x, well_ptr->y, 0.0);
+			map2grid->Inverse_transform(p);
+			well_ptr->x = p.x();
+			well_ptr->y = p.y();
+			well_ptr->coordinate_system = PHAST_Transform::MAP;
+		}
+		break;
+	default:
+		sprintf(error_string,"Error converting well coordinate system %d, %s", well_ptr->n_user, well_ptr->description);
+		error_msg(error_string, CONTINUE);
+		input_error++;
+	}
 }

@@ -6,6 +6,7 @@
 #include "NNInterpolator/NNInterpolator.h"
 #include "KDtree/KDtree.h"
 #include "ArcRaster.h"
+#include "Zone_budget.h"
 // testing ...
 #include "PHAST_Transform.h"
 //... testing
@@ -80,12 +81,18 @@ int main(int argc, char *argv[])
 	}
 	*/
 #ifdef SKIP
-
-
 	// test transformation
-	PHAST_Transform map_to_grid(grid_origin[0], grid_origin[1], grid_origin[2], grid_angle);
+	//PHAST_Transform map_to_grid(grid_origin[0], grid_origin[1], grid_origin[2], grid_angle);
+	PHAST_Transform map_to_grid(
+		grid_origin[0], grid_origin[1], grid_origin[2], 
+		grid_angle,
+		units.map_horizontal.input_to_si/units.horizontal.input_to_si,
+		units.map_horizontal.input_to_si/units.horizontal.input_to_si,
+		units.map_vertical.input_to_si/units.vertical.input_to_si
+		);
 	Point p;
 	int k, l;
+
 	for (k = -1; k < 2; k++)
 	{
 		for (l = -1; l < 2; l++)
@@ -94,8 +101,10 @@ int main(int argc, char *argv[])
 			p.set_x((double) k);
 			p.set_y((double) l);
 			std::cerr << "Point in:  " << p.x() << "   " << p.y() << "   " << p.z() << std::endl;
-			map_to_grid.transform(p);
+			map_to_grid.Transform(p);
 			std::cerr << "Point out: " << p.x() << "   " << p.y() << "   " << p.z() << std::endl;
+			map_to_grid.Inverse_transform(p);
+			std::cerr << "Point inverse: " << p.x() << "   " << p.y() << "   " << p.z() << std::endl;
 		}
 	}
 	exit(4);
@@ -280,6 +289,7 @@ int clean_up(void)
 	free_check_null(min_ss_time_step.input);
 	free_check_null(max_ss_time_step.input);
 	free_check_null(time_start.input);
+	properties_with_data_source.clear();
 
 	free_check_null(title_x);
 	free_check_null(line);
@@ -419,6 +429,14 @@ int clean_up(void)
 	free_check_null(transport_name);
 	free_check_null(chemistry_name);
 	free_check_null(database_name);	
+
+	// zone budget
+	std::map<int, Zone_budget *>::iterator it;
+	for (it = Zone_budget::zone_budget_map.begin(); it != Zone_budget::zone_budget_map.end(); it++)
+	{
+		delete it->second;
+	}
+	Zone_budget::zone_budget_map.clear();
 
 /* files */
 	if (input != NULL) fclose (input);

@@ -2,7 +2,8 @@
 #include "hstinpt.h"
 #include "message.h"
 static char const svnid[] = "$Id$";
-
+static void river_convert_coordinate_system(River *river_ptr, PHAST_Transform::COORDINATE_SYSTEM target, PHAST_Transform *map2grid);
+static void rivers_convert_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM target, PHAST_Transform *map2grid);
 /* ---------------------------------------------------------------------- */
 int setup_rivers(void)
 /* ---------------------------------------------------------------------- */
@@ -19,6 +20,8 @@ int setup_rivers(void)
 	struct index_range *range_ptr;
 	int count_river_polygons;
 
+	gpc_polygon_init(&poly2);
+	gpc_polygon_init(&intersection);
 	if (count_rivers <= 0) return(OK);
 	/*
 	 *   gpc_vertex list for cell boundary
@@ -33,6 +36,8 @@ int setup_rivers(void)
 	poly2.contour[0].vertex = p;
 	poly2.contour[0].num_vertices = 4;
 	poly2.num_contours = 1;
+	poly2.hole = (int *) malloc(sizeof(int));
+	poly2.hole[0] = 0;  // hole is false
 	/*
 	 *   Go through each river polygon
 	 *   Intersect with cells
@@ -171,6 +176,10 @@ int tidy_rivers(void)
 	return_value = OK;
 	if (count_rivers <= 0) return(OK);
 	if (simulation > 0) return(OK);
+
+	// Convert coordinate system if necessary
+	rivers_convert_coordinate_system(target_coordinate_system, map_to_grid);
+
 	for (j = 0; j < count_rivers; j++) {
 		assert(rivers[j].new_def == TRUE);
 		if (rivers[j].new_def == FALSE) continue;
@@ -1017,4 +1026,74 @@ void river_polygon_init(River_Polygon *rp_ptr)
   rp_ptr->river_number = -1;
   rp_ptr->point_number = -1;
   rp_ptr->w = 0;
+}
+/* ---------------------------------------------------------------------- */
+void rivers_convert_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM target,
+									  PHAST_Transform *map2grid)
+/* ---------------------------------------------------------------------- */
+{
+	River *river_ptr;
+/*
+ *   Convert coordinates of all rivers 
+ */
+	int j;
+	if (count_rivers <= 0) return;
+	if (simulation > 0) return;
+
+	// Convert coordinate system for river points
+	for (j = 0; j < count_rivers; j++) {
+		assert(rivers[j].new_def == TRUE);
+		if (rivers[j].new_def == FALSE) continue;
+		river_ptr = &(rivers[j]);
+		river_convert_coordinate_system(river_ptr, target, map2grid);
+	}
+}
+/* ---------------------------------------------------------------------- */
+void river_convert_coordinate_system(River *river_ptr, 
+											PHAST_Transform::COORDINATE_SYSTEM target, 
+											PHAST_Transform *map2grid)
+/* ---------------------------------------------------------------------- */
+{
+	int i;
+	if (river_ptr->coordinate_system == target) return;
+	if (river_ptr->coordinate_system == PHAST_Transform::NONE)
+	{
+		sprintf(error_string,"Error with coordinate system for river %d %s.", river_ptr->n_user, river_ptr->description);
+		error_msg(error_string, CONTINUE);
+		input_error++;
+		return;
+	}
+	switch (target)
+	{
+	case PHAST_Transform::GRID:
+		for (i=0; i < river_ptr->count_points; i++) {
+			if (river_ptr->points[i].x_defined == FALSE || river_ptr->points[i].y_defined == FALSE) {
+				input_error++;
+				continue;
+			}
+			Point p(river_ptr->points[i].x, river_ptr->points[i].y, 0.0);
+			map2grid->Transform(p);
+			river_ptr->points[i].x = p.x();
+			river_ptr->points[i].y = p.y();
+		}
+		river_ptr->coordinate_system = PHAST_Transform::GRID;
+		break;
+	case PHAST_Transform::MAP:
+		for (i=0; i < river_ptr->count_points; i++) {
+			if (river_ptr->points[i].x_defined == FALSE || river_ptr->points[i].y_defined == FALSE) {
+				input_error++;
+				continue;
+			}
+			Point p(river_ptr->points[i].x, river_ptr->points[i].y, 0.0);
+			map2grid->Inverse_transform(p);
+			river_ptr->points[i].x = p.x();
+			river_ptr->points[i].y = p.y();
+		}
+		river_ptr->coordinate_system = PHAST_Transform::MAP;
+		break;
+	default:
+		sprintf(error_string,"Error converting river coordinate system %d, %s", river_ptr->n_user, river_ptr->description);
+		error_msg(error_string, CONTINUE);
+		input_error++;
+	}
 }

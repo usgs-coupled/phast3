@@ -6,7 +6,8 @@ class NNInterpolator;
 #include "zone.h"
 #include "gpc.h"
 #include "PHAST_Transform.h"
-class PHST_polygon;
+#include "Data_source.h"
+class PHAST_polygon;
 #include <map>
 #include <string>
 class Filedata
@@ -22,20 +23,26 @@ public:
 
   Filedata(void);
 public:
-  virtual ~Filedata(void);
-  //virtual struct zone *                Get_bounding_box() = 0;
-  virtual bool                         Make_points(const int field, std::vector<Point> &pts, double h_scale, double v_scale) = 0;
-  virtual bool                         Make_polygons( int field, PHST_polygon &polygons, double h_scale, double v_scale) = 0;
-  virtual std::vector<Point> &         Get_points(int attribute) = 0; 
+	virtual ~Filedata(void);
+	virtual bool                        Make_polygons( int field, PHAST_polygon &polygons) = 0;
+	std::vector<Point> &				Get_points(int attribute);
+	double                              Interpolate(int attribute, Point p, PHAST_Transform::COORDINATE_SYSTEM point_system, PHAST_Transform *map2grid);
+	void                                Add_data_source (int attribute, std::vector<Point> in_pts, int columns, PHAST_Transform::COORDINATE_SYSTEM system);
 
-  std::map<int, NNInterpolator *> &    Get_nni_map() {return this->nni_map;};
-  std::map<int, std::vector<Point> > & Get_pts_map() {return this->pts_map;};
+	Data_source *                       Get_data_source(int attribute);
+	NNInterpolator *                    Get_nni(int attribute);
+	FILE_TYPE                           Get_file_type(void) {return this->file_type;};
+	void                                Set_file_type(FILE_TYPE ft) {this->file_type = ft;};
 
-  FILE_TYPE                            Get_file_type(void) {return this->file_type;};
-  void                                 Set_file_type(FILE_TYPE ft) {this->file_type = ft;};
-  void                                 Add_to_pts_map (int attribute);
-  // data
-  static std::map<std::string,Filedata *> file_data_map;
+	std::string &                       Get_filename(void) {return this->filename;};
+	void                                Set_filename(std::string fn) {this->filename = fn;};
+
+	PHAST_Transform::COORDINATE_SYSTEM  Get_coordinate_system(void) {return this->coordinate_system;};
+	void                                Set_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM cs) {this->coordinate_system = cs;};
+
+	//void                               Add_to_pts_map (int attribute);
+	// data
+	static std::map<std::string,Filedata *> file_data_map;
 
 protected:
   // Data
@@ -44,9 +51,10 @@ protected:
 
   FILE_TYPE                            file_type;
 
-  // Units have been converted in pts_map and nni_map
-  std::map<int, std::vector<Point> >   pts_map;
-  std::map<int, NNInterpolator *>      nni_map;
+  std::string                          filename;
+  std::map<int, Data_source *>         data_source_map;
+  std::vector<Point>                   empty_pts;
+  PHAST_Transform::COORDINATE_SYSTEM   coordinate_system; // Coordinate system of file X, Y data
 };
 void                          Clear_file_data_map(void);
 #endif // FILEDATA_H_INCLUDED

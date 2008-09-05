@@ -7,7 +7,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
-#include "PHST_polygon.h"
+#include "PHAST_polygon.h"
 #if defined(__WPHAST__) && !defined(_DEBUG)
 #include "../phqalloc.h"
 #else
@@ -20,6 +20,12 @@ extern void malloc_error (void);
 #ifndef PI
 extern double PI;
 #endif
+void gpc_polygon_init(gpc_polygon *ptr)
+{
+	ptr->hole = NULL;
+	ptr->contour = NULL;
+	ptr->num_contours = 0;
+}
 /* ---------------------------------------------------------------------- */
 double angle_between_segments(gpc_vertex p0, gpc_vertex p1, gpc_vertex p2)
 /* ---------------------------------------------------------------------- */
@@ -193,6 +199,13 @@ gpc_polygon *gpc_polygon_duplicate(gpc_polygon *in_poly)
 
 		}
 	}
+
+	// malloc holes
+	out_poly->hole = (int *) malloc ((size_t) (in_poly->num_contours * sizeof(int)));
+	if (out_poly->hole == NULL) malloc_error();
+	memcpy(out_poly->hole, in_poly->hole, (size_t) (in_poly->num_contours * sizeof(int)));
+
+
 	return(out_poly);
 }
 /* ---------------------------------------------------------------------- */
@@ -226,6 +239,7 @@ gpc_polygon *vertex_to_poly(gpc_vertex *v, int n)
 
 	poly_ptr =  (gpc_polygon*) malloc((size_t) sizeof(gpc_polygon));
 	if (poly_ptr == NULL) malloc_error();
+
 	/*
 	 *   gpc_polygon for river polygon
 	 */
@@ -236,6 +250,8 @@ gpc_polygon *vertex_to_poly(gpc_vertex *v, int n)
 	poly_ptr->contour[0].vertex = p;
 	poly_ptr->contour[0].num_vertices = n;
 	poly_ptr->num_contours = 1;
+	poly_ptr->hole = (int *) malloc(sizeof(int));
+	poly_ptr->hole[0] = 0;  // hole is false
 	/*
 	 *   gpc_vertex list for cell boundary
 	 */
@@ -256,6 +272,7 @@ gpc_polygon *points_to_poly(std::vector<Point> &pts, Cell_Face face)
   int n = pts.size();
   poly_ptr =  (gpc_polygon*) malloc((size_t) sizeof(gpc_polygon));
   if (poly_ptr == NULL) malloc_error();
+  
   /*
   *   gpc_polygon for river polygon
   */
@@ -266,6 +283,8 @@ gpc_polygon *points_to_poly(std::vector<Point> &pts, Cell_Face face)
   poly_ptr->contour[0].vertex = p;
   poly_ptr->contour[0].num_vertices = n;
   poly_ptr->num_contours = 1;
+  poly_ptr->hole = (int *) malloc(sizeof(int));
+  poly_ptr->hole[0] = 0; // hole is false
   /*
   *   gpc_vertex list for cell boundary
   */
@@ -319,6 +338,8 @@ gpc_polygon *points_to_poly(std::vector<Point> &pts)
 	poly_ptr->contour[0].vertex = p;
 	poly_ptr->contour[0].num_vertices = n;
 	poly_ptr->num_contours = 1;
+	poly_ptr->hole = (int *) malloc(sizeof(int));
+	poly_ptr->hole[0] = 0;  // hole is false
 	/*
 	 *   gpc_vertex list for cell boundary
 	 */
@@ -539,6 +560,8 @@ gpc_polygon *rectangle(double x1, double y1, double x2, double y2)
 	poly_ptr->contour[0].vertex = p;
 	poly_ptr->contour[0].num_vertices = n;
 	poly_ptr->num_contours = 1;
+	poly_ptr->hole = (int *) malloc(sizeof(int));
+	poly_ptr->hole[0] = 0;  // hole is false
 	/*
 	 *   gpc_vertex list for rectangle
 	 */
@@ -577,6 +600,8 @@ gpc_polygon *triangle(double x1, double y1, double x2, double y2, double x3, dou
 	poly_ptr->contour[0].vertex = p;
 	poly_ptr->contour[0].num_vertices = n;
 	poly_ptr->num_contours = 1;
+	poly_ptr->hole = (int *) malloc(sizeof(int));
+	poly_ptr->hole[0] = 0;  // hole is false
 	/*
 	 *   gpc_vertex list for rectangle
 	 */
@@ -602,6 +627,7 @@ gpc_polygon *empty_polygon(void)
 	//poly_ptr->contour = (gpc_vertex_list*) malloc((size_t) sizeof(gpc_vertex_list));
 	//if (poly_ptr->contour == NULL) malloc_error();
 	poly_ptr->contour = NULL;
+	poly_ptr->hole = NULL;
 
 	// Malloc vertices
 	//p = (gpc_vertex*) malloc((size_t) n * sizeof (gpc_vertex));
@@ -763,7 +789,7 @@ bool line_intersect_polygon(Point lp1, Point lp2, std::vector<Point> pts, std::v
   }
   return(false);
 }
-gpc_polygon *PHST_polygon2gpc_polygon(PHST_polygon *polys)
+gpc_polygon *PHAST_polygon2gpc_polygon(PHAST_polygon *polys)
 {
   int poly;
   gpc_polygon *cumulative = empty_polygon();

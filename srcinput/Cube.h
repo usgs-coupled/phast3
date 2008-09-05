@@ -33,10 +33,11 @@ public:
   virtual Cube* create() const;
   bool Segment_in_cube(Point &p1, Point &p2, Point &i1, Point &i2, double &length, Cube::CUBE_INTERSECTION &c_intersection);
   struct zone * Set_bounding_box();
-  
-
+  PHAST_Transform::COORDINATE_SYSTEM Get_coordinate_system() {return this->coordinate_system;}
+  void Set_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM c) {this->coordinate_system = c;}
 protected:
 	virtual void printOn(std::ostream& os) const;
+	PHAST_Transform::COORDINATE_SYSTEM coordinate_system;
 };
 Cube::PLANE_INTERSECTION Segment_intersect_plane(const double a, const double b, const double c, const double d, Point &p1, Point &diff, double &t);
 

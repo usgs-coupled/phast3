@@ -288,6 +288,7 @@ typedef struct Well {
 	int count_cell_fraction;
 	int update;
 	double screen_bottom, screen_top, screen_depth_bottom, screen_depth_top;
+	PHAST_Transform::COORDINATE_SYSTEM coordinate_system;
 } Well;
 EXTERNAL Well *wells;
 EXTERNAL int count_wells;
@@ -403,6 +404,8 @@ struct cunits {
 	struct cunit drain_bed_k;
 	struct cunit drain_bed_thickness;
 	struct cunit drain_width;
+	struct cunit map_horizontal;
+	struct cunit map_vertical;
 
 // Constructors
 	cunits(void);
@@ -469,7 +472,8 @@ struct key keyword[] = {
 	{"print_initial"},
 	{"solute_transport"},
 	{"specified_head_bc"},
-	{"drain"}
+	{"drain"},
+	{"zone_budget"}
 };
 int NKEYS = (sizeof(keyword) / sizeof(struct key));  /* Number of valid keywords */
 #else

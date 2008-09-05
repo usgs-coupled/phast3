@@ -8,12 +8,9 @@ class ArcRaster : public Filedata
 {
 public:
   ArcRaster(void);
-  ArcRaster(std::string filename);
-  bool                     Make_points(const int field, std::vector<Point> &pts, double h_scale, double v_scale); 
-  bool                     Make_polygons( int field, PHST_polygon &polygons, double h_scale, double v_scale)  {return false;}
-  std::vector<Point> &     Get_points(int attribute);
-  //void Set_bounding_box(void);
-  //struct zone *Get_bounding_box(void);
+  ArcRaster(std::string filename, PHAST_Transform::COORDINATE_SYSTEM cs);
+  bool                     Make_polygons( int field, PHAST_polygon &polygons)  {return false;}
+
 public:
   virtual ~ArcRaster(void);
 
