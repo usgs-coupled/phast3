@@ -724,7 +724,7 @@ void Drain::Convert_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM target,
 	if (this->coordinate_system == target) return;
 	if (this->coordinate_system == PHAST_Transform::NONE)
 	{
-		sprintf(error_string,"Error with coordinate system for river %d %s.", this->n_user, this->description);
+	  sprintf(error_string,"Error with coordinate system for river %d %s.", this->n_user, this->description.c_str());
 		error_msg(error_string, CONTINUE);
 		input_error++;
 		return;
@@ -749,7 +749,7 @@ void Drain::Convert_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM target,
 		{
 			if (it->x_defined == FALSE || it->y_defined == FALSE || it->y_defined == FALSE) {
 				input_error++;
-				sprintf(error_string,"Missing x, y, or z coordinate %d, %s", this->n_user, this->description);
+				sprintf(error_string,"Missing x, y, or z coordinate %d, %s", this->n_user, this->description.c_str());
 				error_msg(error_string, CONTINUE);
 				return;
 			}
@@ -766,7 +766,7 @@ void Drain::Convert_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM target,
 		{
 			if (it->x_defined == FALSE || it->y_defined == FALSE || it->y_defined == FALSE) {
 				input_error++;
-				sprintf(error_string,"Missing x, y, or z coordinate %d, %s", this->n_user, this->description);
+				sprintf(error_string,"Missing x, y, or z coordinate %d, %s", this->n_user, this->description.c_str());
 				error_msg(error_string, CONTINUE);
 				return;
 			}
@@ -779,7 +779,7 @@ void Drain::Convert_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM target,
 		this->coordinate_system = PHAST_Transform::MAP;
 		break;
 	default:
-		sprintf(error_string,"Error converting river coordinate system %d, %s", this->n_user, this->description);
+	  sprintf(error_string,"Error converting river coordinate system %d, %s", this->n_user, this->description.c_str());
 		error_msg(error_string, CONTINUE);
 		input_error++;
 	}

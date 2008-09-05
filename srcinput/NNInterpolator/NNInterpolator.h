@@ -22,7 +22,7 @@ public:
 // COMMENT: {7/11/2008 9:27:18 PM}  bool preprocess(std::vector<Point> &pts_in, std::vector<Point> &corners);
   bool preprocess(std::vector<Point> &pts_in, PHAST_Transform::COORDINATE_SYSTEM cs);
   double interpolate(const Point& pt);
-  double NNInterpolator::interpolate(const Point& pt, PHAST_Transform::COORDINATE_SYSTEM point_system, PHAST_Transform *map2grid);
+  double interpolate(const Point& pt, PHAST_Transform::COORDINATE_SYSTEM point_system, PHAST_Transform *map2grid);
   KDtree* get_tree(void);
 
   void Set_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM cs) {this->coordinate_system = cs;};

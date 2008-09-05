@@ -3,7 +3,7 @@
 #include <iostream>
 #include <istream>
 #include <fstream>
-#include <strstream>
+//#include <strstream>
 #include "Point.h"
 #include "PHAST_polygon.h"
 

@@ -1,3 +1,160 @@
+    svn 2977: 
+
+    Major new feature. Added a "prism" primative, which defines a
+    volume defined by a polygonal right prism. By default, the top and
+    bottom of the prism are the top and bottom of the model
+    domain. Optionally, the prism may be truncated by a top and (or) a
+    bottom, which may be defined in several ways. Zone, wedge, and
+    prism can be used at any place in the input file that would accept
+    a "zone" definition in the original documentation.
+
+    Interpolation is performed by delauney trangulation and nearest
+    neighbor interpolation (weighted by areas) within the convex hull
+    of the scattered points. Outside the convex hull, the Z value of
+    the nearest point is used as the interpolated value.
+
+    The polygonal perimeter may be defined by the following:
+    (1) A shape file (SHAPE), logically a polygon type shape file,
+    (2) An XYZ file (XYZ), a file which contains a list of XYZ triples;
+        at least 3 triples must be defined,
+    (3) A list of points (POINTS), at least three triples of XYZ coordinates.
+
+    The top and bottom may be defined by the following, which are
+    interpreted to be scatterd data from which the Z value for
+    an X, Y point can be interpolated:
+    (1) A shape file (SHAPE) plus the column number of the dbx file containing
+        the Z information,
+    (2) An XYZ file (XYZ), a file that contains a list of XYZ triples,
+    (3) An ascii Arc raster file (ARCRASTER),
+    (4) A list of points (POINTS), triples of XYZ coordinates,
+    (5) A constant Z value (CONSTANT).
+
+    Examples:
+    (1)
+
+    MEDIA
+    -prism  
+    	    -perimeter SHAPE arcdata\coastline.shp
+	    -acive 1
+
+    That part of the grid volume that falls within the coastline will
+    be considered active.
+
+    (2)
+
+    MEDIA
+    -prism  
+    	    -top    SHAPE      arcdata\formation_top.shp 3
+            -bottom ARCRASTER  arcdata\formation_bottom.txt
+	    -kx   1e-3
+            -ky   1e-3
+            -kz   1e-3
+
+    That part of the grid volume that falls below the surface defined
+    by the scattered points (or contours) of the formation_top shape
+    file and above the surface defined by the scattered points of the
+    formation_bottom ascii Arc raster text file will have the
+    specified hydraulic conductivities.
+
+    (3)
+    LEAKY_BC
+    -prism  
+    	    -perimeter POINTS
+	    	       0   0   0
+                       0   100 0
+                       100 0   0
+            -bottom CONSTANT  10
+            -face      X
+	    -k         1e-3
+            -thickness 100
+            -head  
+			0    15
+
+    Those cells with exterior X faces that fall within the X, Y
+    coordinates of the triangle defined by the perimeter (Z
+    coordinates are ignored at this time, but must be entered) and
+    have Z values of 10 or greater will be treated as leaky boundary
+    cells with the specified properties.
+
+    svn 2977: 
+    Fixed interpolation for properties. Erroneously extrapolated past
+    the end points, now uses closest end point for points outside the
+    interval.
+
+    svn 2906:
+    A wedge volume primitive has been added for definition of spatial
+    data. A wedge can be used to define sloping features within the
+    model domain. Previously all definitions were zones (rectangular
+    parallelopipeds). The wedge is a right-triangular prism with two 
+    triangular and three rectangular facets. the rectangles are
+    perpendicular to the triangles. 
+
+    A wedge is defined as a rectangular parallelopiped with two
+    points, the minimum and maximum x, y, z locations. The additional
+    identifier designates the orientation of the wedge: an axis and a
+    digit. Wedges are classified by the orientation of the triangular
+    faces as X, Y, or Z. An X triangular face is perpendicular to the
+    X axis. An additional digit identifies the location of the right
+    triangle relative to the axis. X1 (right triangle is nearest the
+    axis), X2, X3, and X4 designate prisms where the right triangle is
+    rotated counter clockwise from the X axis.
+
+
+    svn 2891: Major revision in the handling of flux, leaky, and river
+    boundary conditions. Leaky and flux boundaries are now implemented
+    to be grid independent. The areas defined for these boundaries
+    apply exactly, whereas previously, the boundaries snapped to the
+    entire face of a cell for which the node was included in the zone
+    definition. Now these boundaries are applied to fractional cell
+    areas as defined by the extent of the defining zone or wedge.
+
+    Zones or wedges for flux and leaky boundary conditions are allowed
+    to be three dimensional (previously required to be two
+    dimensional). It is strongly recommended that the cell face
+    desired for the flux or leaky condition be specified explicitly
+    (-face X, Y, or Z). All exterior faces (full or partial) of the
+    proper orientation (as defined by -face), are used for the flux or
+    leaky boundary. No distinction is made between positive or
+    negative faces (top vs bottom, or front vs back) in the specified
+    direction; all exterior faces of the specified orientation that
+    are included in the zone will be included in the boundary
+    condition definition.
+
+    If a series of flux (or leaky) boundaries is defined. Areas are
+    calculated for each definition of the series. The areas are
+    applied from last to first. Thus if an earlier and a later
+    definition have areas that overlap, the overlapping area is
+    included with the later definition and excluded from the earlier
+    definition. Partial cell areas that do not include the node of a
+    cell are now included as part of the flux definition, whereas
+    previously these partial cell faces were excluded. These changes
+    imply that input files may produce different results with the
+    current version than with previous versions. To reproduce previous
+    results, all flux and leaky boundary definitions should include
+    entire cell faces. 
+
+    xxx Changed back above. Rivers inflows or outflows are now
+    aggregated differently than previous versions. River leakage is
+    accumulated in the same way as a series of leakage
+    boundaries. Flow is calculated for each area (all areas are non
+    overlapping) and the flux of solute is aggregated as the sum of
+    the solute concentrations times the flow rates for each
+    area. Previously, cells were categorized as river inflow or
+    outflow cells (based on the agregated flow from all river segments
+    in a cell) and only inflow or outflow concentrations were used in
+    the flux calculations. Now river, flux, and leaky boundaries are
+    handled in a similar manner.
+
+    svn 2890: Fixed error in river associated solution. If
+    segments were defined with the same solution at each end,
+    the concentrations in the river were not calculated correctly.
+    Only the downstream fraction of the solution was added. This
+    was an error when river water entered the aquifer.
+
+    svn 2880: Fixed error in leaky boundary condition combined
+    with free surface. The saturated fraction was used twice
+    in the calculation.
+
     svn 2785: Fixed bug with transient river boundary condition
     data. Worked correctly if changes were made to all rivers,
     but incorrectly if only one of multiple rivers changed
@@ -239,7 +396,7 @@ PHAST, Version 1.2 (September 28, 2005)
     many, many time steps. Occasionally an exponentiation would
     underflow stopping the simulation. Limited log activities of
     master species to be greater than the smallest machine precision
-    exponential number.  Avoids a matherr exception and allows trial
+    exponential number.  Avoids a "matherr" exception and allows trial
     of additional parameter sets to attempt to solve the system of
     equations.
 

@@ -49,7 +49,9 @@ STATIC int read_number_description (char *ptr, int *n_user,
 STATIC int read_print_frequency (void);
 STATIC int read_print_input (void);
 STATIC int read_print_locations(void);
+#ifdef SKIP
 STATIC struct property *read_property_file_or_doubles(char *ptr, const char **opt_list, int count_opt_list, int *opt);
+#endif
 STATIC int read_river(void);
 STATIC int read_solute_transport(void);
 STATIC int read_solution_method (void);
@@ -4189,6 +4191,7 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 	}
 	return(p);
 }
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 struct property *read_property_file_or_doubles(char *ptr, const char **opt_list, int count_opt_list, int *opt)
 /* ---------------------------------------------------------------------- */
@@ -4259,6 +4262,7 @@ struct property *read_property_file_or_doubles(char *ptr, const char **opt_list,
 	}
 	return(p);
 }
+#endif
 #if !defined(__WPHAST__)
 /* ---------------------------------------------------------------------- */
 int read_lines_doubles(char *next_char, double **d, int *count_d, int *count_alloc, const char **opt_list, int count_opt_list, int *opt)

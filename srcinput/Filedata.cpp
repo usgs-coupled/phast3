@@ -120,6 +120,8 @@ double Filedata::Interpolate(int attribute, Point p, PHAST_Transform::COORDINATE
 		default:
 			break;
 		}
+	case PHAST_Transform::NONE:
+	  break;
 	}
 	std::ostringstream estring;
 	estring << "A coordinate system was not defined for Filedata::Interpolate " << std::endl;

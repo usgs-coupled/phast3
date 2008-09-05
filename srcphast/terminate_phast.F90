@@ -45,7 +45,7 @@ SUBROUTINE terminate_phast(mpi_myself)
         IF (ios > 0) THEN
            WRITE(*,*) 'ERROR: Error opening file ', fname, '. File not written.'
         ELSE
-            IF (oldstyle_head_file == .true.) THEN        
+            IF (oldstyle_head_file) THEN        
                 DO m=1,nxyz
                     IF(ibc(m) == -1) THEN
                         hdprnt(m) = 0._kdp

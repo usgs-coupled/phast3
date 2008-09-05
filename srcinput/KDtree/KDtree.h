@@ -23,8 +23,8 @@ public:
 
   // Data
   kdtree2 *tree;
-  std::vector<double> v;
   multi_array<double,2>  realdata;
+  std::vector<double> v;
 
   static std::list<KDtree*> KDtreeList;
 };

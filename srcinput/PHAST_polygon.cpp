@@ -43,8 +43,8 @@ PHAST_polygon::PHAST_polygon(const std::vector<Point> &points, PHAST_Transform::
 	this->end.push_back(this->pts.end());
 }
 PHAST_polygon::PHAST_polygon(const PHAST_polygon &poly)
-: pts(poly.pts)
-, box(poly.box)
+: box(poly.box)
+, pts(poly.pts)
 , coordinate_system(poly.coordinate_system)
 {
 	std::vector< std::vector<Point>::iterator >::const_iterator bi = poly.begin.begin();

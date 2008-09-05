@@ -184,7 +184,7 @@ bool NNInterpolator::preprocess(std::vector<Point> &pts_in, PHAST_Transform::COO
 
 	this->delaunay_triangulation = delaunay_build(nin, this->pin, 0, NULL, 0, NULL);
 	this->nn = nnpi_create(this->delaunay_triangulation);
-	int seed = 0;
+	// int seed = 0;
 
 	double wmin = 0;  // no extrapolation
 	nnpi_setwmin(this->nn, wmin);
@@ -228,6 +228,8 @@ double NNInterpolator::interpolate(const Point& p, PHAST_Transform::COORDINATE_S
 		default:
 			break;
 		}
+       	case PHAST_Transform::NONE:
+	  break;
 	}
 	std::ostringstream estring;
 	estring << "A oordinate system was not defined for NNInterpolate::interpolate " << std::endl;

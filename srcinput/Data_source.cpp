@@ -727,7 +727,7 @@ void Data_source::Convert_coordinates (PHAST_Transform::COORDINATE_SYSTEM target
 		}
 		break;
 	}
-};
+}
 Data_source *  Data_source::Get_data_source_with_points  (void)
 {
 	Data_source *ds;
