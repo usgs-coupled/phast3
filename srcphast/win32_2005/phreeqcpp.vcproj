@@ -2090,6 +2090,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Pointers_to_fortran.h"
+				>
+			</File>
+			<File
 				RelativePath="..\phreeqcpp\PPassemblage.h"
 				>
 			</File>
