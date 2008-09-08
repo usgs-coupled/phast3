@@ -7,6 +7,7 @@
 #include "phastproto.h"
 #include "phreeqc/input.h"
 #include "phast_files.h"
+#include "Pointers_to_fortran.h"
 
 /* following line defines path for default data base file */
 const char *default_data_base = "phast.dat";

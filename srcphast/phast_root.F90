@@ -58,6 +58,7 @@ SUBROUTINE phast_root(mpi_tasks, mpi_myself)
         CALL slave_get_indexes(indx_sol1_ic, indx_sol2_ic, ic_mxfrac, naxes, nxyz, &
             x_node, y_node, z_node, cnvtmi, transient_fresur, steady_flow, pv0, rebalance_method_f)
 #endif
+        CALL store_c_pointers(indx_sol1_ic, x_node, y_node, z_node)
         CALL forward_and_back(indx_sol1_ic, naxes, nx, ny, nz)  
         CALL distribute_initial_conditions(indx_sol1_ic, indx_sol2_ic, ic_mxfrac)
         CALL uz_init(transient_fresur)

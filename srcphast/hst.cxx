@@ -16,6 +16,12 @@
 #include "phastproto.h"
 #include "Dictionary.h"
 #include "gzstream.h"
+#include "Pointers_to_fortran.h"
+#include <vector>
+#include "../srcinput/Point.h"
+#include "../srcinput/KDtree/KDtree.h"
+
+
 extern int xsurface_save (int n_user);
 static void BeginTimeStep(int print_sel, int print_out, int print_hdf);
 static void EndTimeStep(int print_sel, int print_out, int print_hdf);
@@ -87,6 +93,7 @@ cxxDictionary dictionary;
 #define PHREEQC_MAIN phreeqc_main
 #define SCREENPRT_C screenprt_c
 #define SEND_RESTART_NAME send_restart_name
+#define STORE_C_POINTERS store_c_pointers
 #define SETUP_BOUNDARY_CONDITIONS setup_boundary_conditions
 #define WARNPRT_C warnprt_c
 #define UZ_INIT uz_init
@@ -107,6 +114,7 @@ cxxDictionary dictionary;
 #define PHREEQC_MAIN phreeqc_main_
 #define SCREENPRT_C screenprt_c_
 #define SEND_RESTART_NAME send_restart_name_
+#define STORE_C_POINTERS store_c_pointers_
 #define SETUP_BOUNDARY_CONDITIONS setup_boundary_conditions_
 #define WARNPRT_C warnprt_c_
 #define UZ_INIT uz_init_
@@ -146,6 +154,7 @@ void SEND_RESTART_NAME(char *name, int nchar);
 void SETUP_BOUNDARY_CONDITIONS(const int *n_boundary, int *boundary_solution1,
 			       int *boundary_solution2, double *fraction1,
 			       double *boundary_fraction, int *dim);
+void STORE_C_POINTERS(int *indx_sol1_ic, double *x_node, double *y_node, double *z_node);
 int UZ_INIT(int * transient_fresur);
 void WARNPRT_C(char *err_str, long l);
 }
@@ -624,405 +633,1016 @@ void COUNT_ALL_COMPONENTS(int *n_comp, char *names, int length)
 	return;
 }
 #ifdef USE_MPI
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_conditions2, double *fraction1)
 /* ---------------------------------------------------------------------- */
 {
-  /*
-  *      ixyz - number of cells
-  *      initial_conditions1 - Fortran, 7 x n_cell integer array, containing
-  *           solution number
-  *           pure_phases number
-  *           exchange number
-  *           surface number
-  *           gas number
-  *           solid solution number
-  *           kinetics number
-  *      initial_conditions2 - Fortran, 7 x n_cell integer array, containing
-  *      fraction for 1 - Fortran, 7 x n_cell integer array, containing
-  *
-  *      Routine mixes solutions, pure_phase assemblages,
-  *      exchangers, surface complexers, gases, solid solution assemblages,
-  *      and kinetics for each cell.
-  */
-  int i;
-  int first_cell, last_cell;
-  int *sort_random_list;
-  int j, k;
-  /*
-  *  Set up random list for parallel processing
-  */
-  random_list = (int *) PHRQ_malloc((size_t) count_chem * sizeof(int));
-  if (random_list == NULL) malloc_error();
-  random_frac = (LDBLE *) PHRQ_malloc((size_t) count_chem * sizeof(LDBLE));
-  if (random_frac == NULL) malloc_error();
-  random_printzone_chem = (int *) PHRQ_malloc((size_t) count_chem * sizeof(int));
-  if (random_printzone_chem == NULL) malloc_error();
-  random_printzone_xyz = (int *) PHRQ_malloc((size_t) count_chem * sizeof(int));
-  if (random_printzone_xyz == NULL) malloc_error();
-  random_pv = (LDBLE *) PHRQ_malloc((size_t) count_chem * sizeof(LDBLE));
-  if (random_pv == NULL) malloc_error();
-  if (mpi_myself == 0) mpi_set_random();
-  MPI_Bcast(random_list, count_chem,                MPI_INT,    0, MPI_COMM_WORLD);
-  count_cells = count_chem;
-  mpi_set_subcolumn(NULL);
-  mpi_buffer = PHRQ_malloc(sizeof(char));
-  if (mpi_buffer == NULL) malloc_error();
-  //
-  // Make correspondence from count_chem number to processor number
-  int *count_chem2task_number;
-  count_chem2task_number = (int *) PHRQ_malloc((size_t) count_chem * sizeof(int));
+	/*
+	*      ixyz - number of cells
+	*      initial_conditions1 - Fortran, 7 x n_cell integer array, containing
+	*           solution number
+	*           pure_phases number
+	*           exchange number
+	*           surface number
+	*           gas number
+	*           solid solution number
+	*           kinetics number
+	*      initial_conditions2 - Fortran, 7 x n_cell integer array, containing
+	*      fraction for 1 - Fortran, 7 x n_cell integer array, containing
+	*
+	*      Routine mixes solutions, pure_phase assemblages,
+	*      exchangers, surface complexers, gases, solid solution assemblages,
+	*      and kinetics for each cell.
+	*/
+	int i;
+	int first_cell, last_cell;
+	int *sort_random_list;
+	int j, k;
+	/*
+	*  Set up random list for parallel processing
+	*/
+	random_list = (int *) PHRQ_malloc((size_t) count_chem * sizeof(int));
+	if (random_list == NULL) malloc_error();
+	random_frac = (LDBLE *) PHRQ_malloc((size_t) count_chem * sizeof(LDBLE));
+	if (random_frac == NULL) malloc_error();
+	random_printzone_chem = (int *) PHRQ_malloc((size_t) count_chem * sizeof(int));
+	if (random_printzone_chem == NULL) malloc_error();
+	random_printzone_xyz = (int *) PHRQ_malloc((size_t) count_chem * sizeof(int));
+	if (random_printzone_xyz == NULL) malloc_error();
+	random_pv = (LDBLE *) PHRQ_malloc((size_t) count_chem * sizeof(LDBLE));
+	if (random_pv == NULL) malloc_error();
+	if (mpi_myself == 0) mpi_set_random();
+	MPI_Bcast(random_list, count_chem,                MPI_INT,    0, MPI_COMM_WORLD);
+	count_cells = count_chem;
+	mpi_set_subcolumn(NULL);
+	mpi_buffer = PHRQ_malloc(sizeof(char));
+	if (mpi_buffer == NULL) malloc_error();
+	//
+	// Make correspondence from count_chem number to processor number
+	int *count_chem2task_number;
+	count_chem2task_number = (int *) PHRQ_malloc((size_t) count_chem * sizeof(int));
 
-  for (i = 0; i < mpi_tasks; i++) {
-    for (j = end_cells[i][0]; j <= end_cells[i][1]; j++) {
-      count_chem2task_number[random_list[j]] = i;
-    }
-  }
-  /* 
-  * sort_random_list is the list of cell numbers that need to be saved for this processor
-  */
-  first_cell = mpi_first_cell;
-  last_cell = mpi_last_cell;
-  sort_random_list = (int *) PHRQ_malloc((size_t) (last_cell - first_cell + 1) * sizeof(int));
-  if (sort_random_list == NULL) malloc_error();
-  memcpy(sort_random_list, &random_list[first_cell], (size_t) (last_cell - first_cell + 1) * sizeof(int));
-  qsort (sort_random_list, (size_t) (last_cell - first_cell + 1), (size_t) sizeof(int), int_compare);
-  /*
-  *  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
-  *  Does nothing if i < 0, i.e. values to be gotten from restart files
-  */
-  for (k = 0; k < last_cell - first_cell + 1; k++) {
-    j = sort_random_list[k];  /* j is count_chem number */
-    i = back[j].list[0];      /* i is ixyz number */
-    assert (forward[i] >= 0); 
-    system_cxxInitialize(i, j, initial_conditions1, initial_conditions2, fraction1); 
-  }
-  sort_random_list = (int *) free_check_null(sort_random_list);
-  /*
-  * Only root reads restart files, then sends to appropriate processes
-  */
-  if (mpi_myself == 0) {
-    for (std::map<std::string, int>::iterator it = FileMap.begin(); it != FileMap.end(); it++) 
-    {
-      int ifile = -100 - it->second;
-      // parser
-      // stream
-      // use gsztream 
-      igzstream myfile;
-      myfile.open(it->first.c_str());
-      if (!myfile.good()) 
-      {
-	input_error++;
-	sprintf(error_string, "File could not be opened: %s.", it->first.c_str());
-	error_msg(error_string, STOP);
-      }
-      sprintf(error_string,"Reading restart file %s", it->first.c_str());
-      output_msg(OUTPUT_SCREEN, "%s\n", error_string);
-      std::ostringstream oss;
-      CParser cparser(myfile, oss, std::cerr);
-      cparser.set_echo_file(CParser::EO_NONE);
-      cparser.set_echo_stream(CParser::EO_NONE);
+	for (i = 0; i < mpi_tasks; i++) {
+		for (j = end_cells[i][0]; j <= end_cells[i][1]; j++) {
+			count_chem2task_number[random_list[j]] = i;
+		}
+	}
+	/* 
+	* sort_random_list is the list of cell numbers that need to be saved for this processor
+	*/
+	first_cell = mpi_first_cell;
+	last_cell = mpi_last_cell;
+	sort_random_list = (int *) PHRQ_malloc((size_t) (last_cell - first_cell + 1) * sizeof(int));
+	if (sort_random_list == NULL) malloc_error();
+	memcpy(sort_random_list, &random_list[first_cell], (size_t) (last_cell - first_cell + 1) * sizeof(int));
+	qsort (sort_random_list, (size_t) (last_cell - first_cell + 1), (size_t) sizeof(int), int_compare);
+	/*
+	*  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
+	*  Does nothing if i < 0, i.e. values to be gotten from restart files
+	*/
+	for (k = 0; k < last_cell - first_cell + 1; k++) {
+		j = sort_random_list[k];  /* j is count_chem number */
+		i = back[j].list[0];      /* i is ixyz number */
+		assert (forward[i] >= 0); 
+		system_cxxInitialize(i, j, initial_conditions1, initial_conditions2, fraction1); 
+	}
+	sort_random_list = (int *) free_check_null(sort_random_list);
+	/*
+	* Only root reads restart files, then sends to appropriate processes
+	*/
+	if (mpi_myself == 0) {
+		for (std::map<std::string, int>::iterator it = FileMap.begin(); it != FileMap.end(); it++) 
+		{
+			int ifile = -100 - it->second;
+			// parser
+			// stream
+			// use gsztream 
+			igzstream myfile;
+			myfile.open(it->first.c_str());
+			if (!myfile.good()) 
+			{
+				input_error++;
+				sprintf(error_string, "File could not be opened: %s.", it->first.c_str());
+				error_msg(error_string, STOP);
+			}
+			sprintf(error_string,"Reading restart file %s", it->first.c_str());
+			output_msg(OUTPUT_SCREEN, "%s\n", error_string);
+			std::ostringstream oss;
+			CParser cparser(myfile, oss, std::cerr);
+			cparser.set_echo_file(CParser::EO_NONE);
+			cparser.set_echo_stream(CParser::EO_NONE);
 
-      // Process restart file by keyword
-      int count = 0;
-      while (cparser.next_keyword() != CParser::KT_EOF)
-      {
-	int n_old1;
-	bool send = FALSE;
-	// Storage bin
-	cxxStorageBin tempBin;
-	// read data
-	j = tempBin.read_raw_keyword(cparser);  /* j is count_chem number */
-	if (j < 0) continue;
-	i = back[j].list[0];                    /* i is ixyz number */
+			// Process restart file by keyword
+			int count = 0;
+			while (cparser.next_keyword() != CParser::KT_EOF)
+			{
+				int n_old1;
+				bool send = FALSE;
+				// Storage bin
+				cxxStorageBin tempBin;
+				// read data
+				j = tempBin.read_raw_keyword(cparser);  /* j is count_chem number */
+				if (j < 0) continue;
+				i = back[j].list[0];                    /* i is ixyz number */
 
-	count++;
-	if (count%50000 == 0) 
+				count++;
+				if (count%50000 == 0) 
+				{
+					sprintf(error_string,"\tKeywords read: %d\n", count);
+					output_msg(OUTPUT_SCREEN, "%s", error_string);
+				}
+
+				// Determine which task_number gets this entity
+				int task_number;
+				task_number = count_chem2task_number[j];
+
+				// solution
+				n_old1 = initial_conditions1[7*i];
+				if (n_old1 == ifile) {
+					if (tempBin.getSolution(j) != NULL) {
+						if (task_number == 0)
+						{
+							szBin.setSolution(j, tempBin.getSolution(j));
+						} else
+						{
+							send = TRUE;
+						}
+					} 
+					else
+					{
+						initial_conditions1[7*i] = -1;
+					}
+				}
+
+				// PPassemblage
+				n_old1 = initial_conditions1[ 7*i + 1 ];
+				if (n_old1 == ifile) {
+					if (tempBin.getPPassemblage(j) != NULL) {
+						if (task_number == 0)
+						{
+							szBin.setPPassemblage(j, tempBin.getPPassemblage(j));
+						} else
+						{
+							send = TRUE;
+						}
+					} 
+					else
+					{
+						initial_conditions1[7*i + 1] = -1;
+					}
+				}
+
+				// Exchange
+				n_old1 = initial_conditions1[ 7*i + 2 ];
+				if (n_old1 == ifile) {
+					if (tempBin.getExchange(j) != NULL) {
+						if (task_number == 0)
+						{
+							szBin.setExchange(j, tempBin.getExchange(j));
+						} else
+						{
+							send = TRUE;
+						}
+					}
+					else
+					{
+						initial_conditions[7*i + 2] = -1;
+					}
+				}
+
+				// Surface
+				n_old1 = initial_conditions1[ 7*i + 3 ];
+				if (n_old1 == ifile) {
+					if (tempBin.getSurface(j) != NULL) {
+						if (task_number == 0)
+						{
+							szBin.setSurface(j, tempBin.getSurface(j));
+						} else
+						{
+							send = TRUE;
+						}
+					}
+					else
+					{
+						initial_conditions[7*i + 3] = -1;
+					}
+				}
+
+				// Gas phase
+				n_old1 = initial_conditions1[ 7*i + 4 ];
+				if (n_old1 == ifile) {
+					if (tempBin.getGasPhase(j) != NULL) {
+						if (task_number == 0)
+						{
+							szBin.setGasPhase(j, tempBin.getGasPhase(j));
+						} else
+						{
+							send = TRUE;
+						}
+					}
+					else
+					{
+						initial_conditions[7*i + 4] = -1;
+					}
+				}
+
+				// Solid solution
+				n_old1 = initial_conditions1[ 7*i + 5 ];
+				if (n_old1 == ifile) {
+					if (tempBin.getSSassemblage(j) != NULL) {
+						if (task_number == 0)
+						{
+							szBin.setSSassemblage(j, tempBin.getSSassemblage(j));
+						} else
+						{
+							send = TRUE;
+						}
+					}
+					else
+					{
+						initial_conditions[7*i + 5] = -1;
+					}
+				}
+
+				// Kinetics
+				n_old1 = initial_conditions1[ 7*i + 6 ];
+				if (n_old1 == ifile) {
+					if (tempBin.getKinetics(j) != NULL) {
+						if (task_number == 0)
+						{
+							szBin.setKinetics(j, tempBin.getKinetics(j));
+						} else
+						{
+							send = TRUE;
+						}
+					}
+					else
+					{
+						initial_conditions[7*i + 6] = -1;
+					}
+				}
+				if (send)
+				{
+					MPI_Status mpi_status;
+					MPI_Send(&j, 1, MPI_INT, task_number, 0, MPI_COMM_WORLD);
+					/* openmpi on opteron seems to need this extra handshake */
+					MPI_Recv(&j, 1, MPI_INT, task_number, 0, MPI_COMM_WORLD, &mpi_status);
+					tempBin.mpi_send(j, task_number);
+				}
+			} // end of file
+			myfile.close();
+		} // end of files
+		// Send signal that initial condition transfers are done
+		j = -2;
+		for (i = 1; i < mpi_tasks; i++) {
+			MPI_Status mpi_status;
+			MPI_Send(&j, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
+			/* openmpi on opteron seems to need this extra handshake */
+			MPI_Recv(&j, 1, MPI_INT, i, 0, MPI_COMM_WORLD, &mpi_status);
+		}
+	} else
 	{
-	  sprintf(error_string,"\tKeywords read: %d\n", count);
-	  output_msg(OUTPUT_SCREEN, "%s", error_string);
+		j = 0;
+		while (j >= 0)
+		{
+			// Recieve message, either recv data or end of data transfers for initial conditions
+			MPI_Status mpi_status;
+			MPI_Recv(&j, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &mpi_status);
+			/* openmpi on opteron seems to need this extra handshake */
+			MPI_Send(&j, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+			if (j >= 0)
+			{
+				szBin.mpi_recv(0);
+			}
+		}
 	}
-
-	// Determine which task_number gets this entity
-	int task_number;
-	task_number = count_chem2task_number[j];
-
-	// solution
-	n_old1 = initial_conditions1[7*i];
-	if (n_old1 == ifile) {
-	  if (tempBin.getSolution(j) != NULL) {
-	    if (task_number == 0)
-	    {
-	      szBin.setSolution(j, tempBin.getSolution(j));
-	    } else
-	    {
-	      send = TRUE;
-	    }
-	  } 
+	MPI_Barrier(MPI_COMM_WORLD);
+	count_chem2task_number = (int *) free_check_null(count_chem2task_number);
+	if (input_error > 0) {
+		error_msg("Terminating in distribute_initial_conditions.\n", STOP);
 	}
+	return;
+}
+#endif
+/* ---------------------------------------------------------------------- */
+void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_conditions2, double *fraction1)
+/* ---------------------------------------------------------------------- */
+{
+	/*
+	*      ixyz - number of cells
+	*      initial_conditions1 - Fortran, 7 x n_cell integer array, containing
+	*           solution number
+	*           pure_phases number
+	*           exchange number
+	*           surface number
+	*           gas number
+	*           solid solution number
+	*           kinetics number
+	*      initial_conditions2 - Fortran, 7 x n_cell integer array, containing
+	*      fraction for 1 - Fortran, 7 x n_cell integer array, containing
+	*
+	*      Routine mixes solutions, pure_phase assemblages,
+	*      exchangers, surface complexers, gases, solid solution assemblages,
+	*      and kinetics for each cell.
+	*/
+	int i;
+	int first_cell, last_cell;
+	int *sort_random_list;
+	int j, k;
+	/*
+	*  Set up random list for parallel processing
+	*/
+	random_list = (int *) PHRQ_malloc((size_t) count_chem * sizeof(int));
+	if (random_list == NULL) malloc_error();
+	random_frac = (LDBLE *) PHRQ_malloc((size_t) count_chem * sizeof(LDBLE));
+	if (random_frac == NULL) malloc_error();
+	random_printzone_chem = (int *) PHRQ_malloc((size_t) count_chem * sizeof(int));
+	if (random_printzone_chem == NULL) malloc_error();
+	random_printzone_xyz = (int *) PHRQ_malloc((size_t) count_chem * sizeof(int));
+	if (random_printzone_xyz == NULL) malloc_error();
+	random_pv = (LDBLE *) PHRQ_malloc((size_t) count_chem * sizeof(LDBLE));
+	if (random_pv == NULL) malloc_error();
+	if (mpi_myself == 0) mpi_set_random();
+	MPI_Bcast(random_list, count_chem,                MPI_INT,    0, MPI_COMM_WORLD);
+	count_cells = count_chem;
+	mpi_set_subcolumn(NULL);
+	mpi_buffer = PHRQ_malloc(sizeof(char));
+	if (mpi_buffer == NULL) malloc_error();
+	//
+	// Make correspondence from count_chem number to processor number
+	int *count_chem2task_number;
+	count_chem2task_number = (int *) PHRQ_malloc((size_t) count_chem * sizeof(int));
 
-	// PPassemblage
-	n_old1 = initial_conditions1[ 7*i + 1 ];
-	if (n_old1 == ifile) {
-	  if (tempBin.getPPassemblage(j) != NULL) {
-	    if (task_number == 0)
-	    {
-	      szBin.setPPassemblage(j, tempBin.getPPassemblage(j));
-	    } else
-	    {
-	      send = TRUE;
-	    }
-	  } 
+	for (i = 0; i < mpi_tasks; i++) {
+		for (j = end_cells[i][0]; j <= end_cells[i][1]; j++) {
+			count_chem2task_number[random_list[j]] = i;
+		}
 	}
+	/* 
+	* sort_random_list is the list of cell numbers that need to be saved for this processor
+	*/
+	first_cell = mpi_first_cell;
+	last_cell = mpi_last_cell;
+	sort_random_list = (int *) PHRQ_malloc((size_t) (last_cell - first_cell + 1) * sizeof(int));
+	if (sort_random_list == NULL) malloc_error();
+	memcpy(sort_random_list, &random_list[first_cell], (size_t) (last_cell - first_cell + 1) * sizeof(int));
+	qsort (sort_random_list, (size_t) (last_cell - first_cell + 1), (size_t) sizeof(int), int_compare);
+	/*
+	*  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
+	*  Does nothing if i < 0, i.e. values to be gotten from restart files
+	*/
+	for (k = 0; k < last_cell - first_cell + 1; k++) {
+		j = sort_random_list[k];  /* j is count_chem number */
+		i = back[j].list[0];      /* i is ixyz number */
+		assert (forward[i] >= 0); 
+		system_cxxInitialize(i, j, initial_conditions1, initial_conditions2, fraction1); 
+	}
+	sort_random_list = (int *) free_check_null(sort_random_list);
+	/*
+	* Only root reads restart files, then sends to appropriate processes
+	*/
+	if (mpi_myself == 0) {
+		for (std::map<std::string, int>::iterator it = FileMap.begin(); it != FileMap.end(); it++) 
+		{
+			int ifile = -100 - it->second;
+			// parser
+			// stream
+			// use gsztream 
+			igzstream myfile;
+			myfile.open(it->first.c_str());
+			if (!myfile.good()) 
+			{
+				input_error++;
+				sprintf(error_string, "File could not be opened: %s.", it->first.c_str());
+				error_msg(error_string, STOP);
+			}
+			sprintf(error_string,"Reading restart file %s", it->first.c_str());
+			output_msg(OUTPUT_SCREEN, "%s\n", error_string);
+			std::ostringstream oss;
+			CParser cparser(myfile, oss, std::cerr);
+			cparser.set_echo_file(CParser::EO_NONE);
+			cparser.set_echo_stream(CParser::EO_NONE);
 
-	// Exchange
-	n_old1 = initial_conditions1[ 7*i + 2 ];
-	if (n_old1 == ifile) {
-	  if (tempBin.getExchange(j) != NULL) {
-	    if (task_number == 0)
-	    {
-	      szBin.setExchange(j, tempBin.getExchange(j));
-	    } else
-	    {
-	      send = TRUE;
-	    }
-	  }
-	}
+			// skip headers
+			while (cparser.check_line("mpi_restart", false, false, false, false) == CParser::LT_EMPTY);
 
-	// Surface
-	n_old1 = initial_conditions1[ 7*i + 3 ];
-	if (n_old1 == ifile) {
-	  if (tempBin.getSurface(j) != NULL) {
-	    if (task_number == 0)
-	    {
-	      szBin.setSurface(j, tempBin.getSurface(j));
-	    } else
-	    {
-	      send = TRUE;
-	    }
-	  }
-	}
+			// read number of lines of index
+			int n;
+			cparser.get_iss() >> n;
 
-	// Gas phase
-	n_old1 = initial_conditions1[ 7*i + 4 ];
-	if (n_old1 == ifile) {
-	  if (tempBin.getGasPhase(j) != NULL) {
-	    if (task_number == 0)
-	    {
-	      szBin.setGasPhase(j, tempBin.getGasPhase(j));
-	    } else
-	    {
-	      send = TRUE;
-	    }
-	  }
-	}
+			// points are x, y, z, cell_no
+			std::vector<Point> pts;
+			// index: 
+			// 0 solution 
+			// 1 ppassemblage
+			// 2 exchange 
+			// 3 surface
+			// 4 gas phase 
+			// 5 ss_assemblage
+			// 6 kinetics
+			int * index = (int *) malloc((size_t) (n * 7 * sizeof(int)));
 
-	// Solid solution
-	n_old1 = initial_conditions1[ 7*i + 5 ];
-	if (n_old1 == ifile) {
-	  if (tempBin.getSSassemblage(j) != NULL) {
-	    if (task_number == 0)
-	    {
-	      szBin.setSSassemblage(j, tempBin.getSSassemblage(j));
-	    } else
-	    {
-	      send = TRUE;
-	    }
-	  }
-	}
+			for (i = 0; i < n; i++)
+			{
+				cparser.check_line("mpi_restart", false, false, false, false);
+				double x, y, z, v;
+				cparser.get_iss() >> x;
+				cparser.get_iss() >> y;
+				cparser.get_iss() >> z;
+				cparser.get_iss() >> v;
+				pts.push_back(Point(x, y, z, v));
 
-	// Kinetics
-	n_old1 = initial_conditions1[ 7*i + 6 ];
-	if (n_old1 == ifile) {
-	  if (tempBin.getKinetics(j) != NULL) {
-	    if (task_number == 0)
-	    {
-	      szBin.setKinetics(j, tempBin.getKinetics(j));
-	    } else
-	    {
-	      send = TRUE;
-	    }
-	  }
-	}
-	if (send)
+				cparser.get_iss() >> index[i*7];
+				cparser.get_iss() >> index[i*7 + 1];
+				cparser.get_iss() >> index[i*7 + 2];
+				cparser.get_iss() >> index[i*7 + 3];
+				cparser.get_iss() >> index[i*7 + 4];
+				cparser.get_iss() >> index[i*7 + 5];
+				cparser.get_iss() >> index[i*7 + 6];
+			}
+			KDtree index_tree(pts);
+
+			cxxStorageBin tempBin;
+			tempBin.read_raw(cparser);
+
+			
+			for (j = 0; j < count_chem; j++)            /* j is count_chem number */
+			{
+				cxxStorageBin currentBin;
+				i = back[j].list[0];                    /* i is ixyz number */
+				bool send = FALSE;
+				Point p(x_node_c[i], y_node_c[i], z_node_c[i]);
+				int k = (int) index_tree.Interpolate3d(p);  // k is index number in tempBin
+	                
+				int task_number = count_chem2task_number[j];
+
+				// solution
+				if (initial_conditions1[i*7] == ifile)
+				{
+					if (index[k*7] != -1)        // entity k should be defined in tempBin
+					{
+						if (tempBin.getSolution(k) != NULL) {
+							if (task_number == 0)
+							{
+								szBin.setSolution(j, tempBin.getSolution(k));
+							} 
+							else
+							{
+								currentBin.setSolution(j, tempBin.getSolution(k));
+								send = TRUE;
+							}
+						}
+						else
+						{
+							initial_conditions1[7*i] = -1;
+						}
+					}
+				}
+
+				// PPassemblage
+				if (initial_conditions1[i*7 + 1] == ifile)
+				{
+					if (index[k*7 + 1] != -1)        // entity k should be defined in tempBin
+					{
+						if (tempBin.getPPassemblage(k) != NULL) {
+							if (task_number == 0)
+							{
+								szBin.setPPassemblage(j, tempBin.getPPassemblage(k));
+							} 
+							else
+							{
+								currentBin.setPPassemblage(j, tempBin.getPPassemblage(k));
+								send = TRUE;
+							}
+						}
+						else
+						{
+							initial_conditions1[7*i + 1] = -1;
+						}
+					}
+				}
+	
+				// Exchange
+				if (initial_conditions1[i*7 + 2] == ifile)
+				{
+					if (index[k*7 + 2] != -1)        // entity k should be defined in tempBin
+					{
+						if (tempBin.getExchange(k) != NULL) {
+							if (task_number == 0)
+							{
+								szBin.setExchange(j, tempBin.getExchange(k));
+							} 
+							else
+							{
+								currentBin.setExchange(j, tempBin.getExchange(k));
+								send = TRUE;
+							}
+						}
+						else
+						{
+							initial_conditions1[7*i + 2] = -1;
+						}
+					}
+				}
+
+				// Surface
+				if (initial_conditions1[i*7 + 3] == ifile)
+				{
+					if (index[k*7 + 3] != -1)        // entity k should be defined in tempBin
+					{
+						if (tempBin.getSurface(k) != NULL) {
+							if (task_number == 0)
+							{
+								szBin.setSurface(j, tempBin.getSurface(k));
+							} 
+							else
+							{
+								currentBin.setSurface(j, tempBin.getSurface(k));
+								send = TRUE;
+							}
+						}
+						else
+						{
+							initial_conditions1[7*i + 3] = -1;
+						}
+					}
+				}
+
+				// Gas phase
+				if (initial_conditions1[i*7 + 4] == ifile)
+				{
+					if (index[k*7 + 4] != -1)        // entity k should be defined in tempBin
+					{
+						if (tempBin.getGasPhase(k) != NULL) {
+							if (task_number == 0)
+							{
+								szBin.setGasPhase(j, tempBin.getGasPhase(k));
+							} 
+							else
+							{
+								currentBin.setGasPhase(j, tempBin.getGasPhase(k));
+								send = TRUE;
+							}
+						}
+						else
+						{
+							initial_conditions1[7*i + 4] = -1;
+						}
+					}
+				}
+
+				// Solid solution
+				if (initial_conditions1[i*7 + 5] == ifile)
+				{
+					if (index[k*7 + 5] != -1)        // entity k should be defined in tempBin
+					{
+						if (tempBin.getSSassemblage(k) != NULL) {
+							if (task_number == 0)
+							{
+								szBin.setSSassemblage(j, tempBin.getSSassemblage(k));
+							} 
+							else
+							{
+								currentBin.setSSassemblage(j, tempBin.getSSassemblage(k));
+								send = TRUE;
+							}
+						}
+						else
+						{
+							initial_conditions1[7*i + 5] = -1;
+						}
+					}
+				}
+
+				// Kinetics
+				if (initial_conditions1[i*7 + 6] == ifile)
+				{
+					if (index[k*7 + 6] != -1)        // entity k should be defined in tempBin
+					{
+						if (tempBin.getKinetics(k) != NULL) {
+							if (task_number == 0)
+							{
+								szBin.setKinetics(j, tempBin.getKinetics(k));
+							} 
+							else
+							{
+								currentBin.setKinetics(j, tempBin.getKinetics(k));
+								send = TRUE;
+							}
+						}
+						else
+						{
+							initial_conditions1[7*i + 6] = -1;
+						}
+					}
+				}
+				if (send)
+				{
+					MPI_Status mpi_status;
+					MPI_Send(&j, 1, MPI_INT, task_number, 0, MPI_COMM_WORLD);
+					/* openmpi on opteron seems to need this extra handshake */
+					MPI_Recv(&j, 1, MPI_INT, task_number, 0, MPI_COMM_WORLD, &mpi_status);
+					currentBin.mpi_send(j, task_number);
+				}
+			} // end of file
+			myfile.close();
+		} // end of files
+
+		// Send signal that initial condition transfers are done
+		j = -2;
+		for (i = 1; i < mpi_tasks; i++) {
+			MPI_Status mpi_status;
+			MPI_Send(&j, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
+			/* openmpi on opteron seems to need this extra handshake */
+			MPI_Recv(&j, 1, MPI_INT, i, 0, MPI_COMM_WORLD, &mpi_status);
+		}
+	} 
+	else
 	{
-	  MPI_Status mpi_status;
-	  MPI_Send(&j, 1, MPI_INT, task_number, 0, MPI_COMM_WORLD);
-	  /* openmpi on opteron seems to need this extra handshake */
-	  MPI_Recv(&j, 1, MPI_INT, task_number, 0, MPI_COMM_WORLD, &mpi_status);
-	  tempBin.mpi_send(j, task_number);
+		j = 0;
+		while (j >= 0)
+		{
+			// Recieve message, either recv data or end of data transfers for initial conditions
+			MPI_Status mpi_status;
+			MPI_Recv(&j, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &mpi_status);
+			/* openmpi on opteron seems to need this extra handshake */
+			MPI_Send(&j, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+			if (j >= 0)
+			{
+				szBin.mpi_recv(0);
+			}
+		}
 	}
-      } // end of file
-      myfile.close();
-    } // end of files
-    // Send signal that initial condition transfers are done
-    j = -2;
-    for (i = 1; i < mpi_tasks; i++) {
-      MPI_Status mpi_status;
-      MPI_Send(&j, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
-      /* openmpi on opteron seems to need this extra handshake */
-      MPI_Recv(&j, 1, MPI_INT, i, 0, MPI_COMM_WORLD, &mpi_status);
-    }
-  } else
-  {
-    j = 0;
-    while (j >= 0)
-    {
-      // Recieve message, either recv data or end of data transfers for initial conditions
-      MPI_Status mpi_status;
-      MPI_Recv(&j, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &mpi_status);
-      /* openmpi on opteron seems to need this extra handshake */
-      MPI_Send(&j, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
-      if (j >= 0)
-      {
-	szBin.mpi_recv(0);
-      }
-    }
-  }
-  MPI_Barrier(MPI_COMM_WORLD);
-  count_chem2task_number = (int *) free_check_null(count_chem2task_number);
-  if (input_error > 0) {
-    error_msg("Terminating in distribute_initial_conditions.\n", STOP);
-  }
-  return;
+	MPI_Barrier(MPI_COMM_WORLD);
+	count_chem2task_number = (int *) free_check_null(count_chem2task_number);
+	if (input_error > 0) {
+		error_msg("Terminating in distribute_initial_conditions.\n", STOP);
+	}
+	return;
 }
 #else
+#ifdef SKIP
 // New version processes restart file keyword by keyword
 // Requires less storage
 /* ---------------------------------------------------------------------- */
 void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_conditions2, double *fraction1)
 /* ---------------------------------------------------------------------- */
 {
-  /*
-  *      ixyz - number of cells
-  *      initial_conditions1 - Fortran, 7 x n_cell integer array, containing
-  *           solution number
-  *           pure_phases number
-  *           exchange number
-  *           surface number
-  *           gas number
-  *           solid solution number
-  *           kinetics number
-  *      initial_conditions2 - Fortran, 7 x n_cell integer array, containing
-  *      fraction for 1 - Fortran, 7 x n_cell integer array, containing
-  *
-  *      Routine mixes solutions, pure_phase assemblages,
-  *      exchangers, surface complexers, gases, solid solution assemblages,
-  *      and kinetics for each cell.
-  */
-  int i, j;
-  //struct system *system_ptr;
-  /*
-  *  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
-  *  Does nothing for indexes less than 0 (i.e. restart files)
-  */
-  for (i = 0; i < ixyz; i++) { 	  /* i is ixyz number */
-    j = forward[i];               /* j is count_chem number */
-    if (j < 0) continue;
-    assert (forward[i] >= 0); 
-    system_cxxInitialize(i, j, initial_conditions1, initial_conditions2, fraction1);
-  }
-  /*
-  * Read any restart files
-  */
-  for (std::map<std::string, int>::iterator it = FileMap.begin(); it != FileMap.end(); it++) {
-    int ifile = -100 - it->second;
-
-    // use gsztream 
-    igzstream myfile;
-    myfile.open(it->first.c_str());
-    if (!myfile.good())
-
-    {
-      sprintf(error_string, "File could not be opened: %s.", it->first.c_str());
-      input_error++;
-      error_msg(error_string, CONTINUE);
-      break;
-    }
-
-    std::ostringstream oss;
-    CParser cparser(myfile, oss, std::cerr);
-    cparser.set_echo_file(CParser::EO_NONE);
-    cparser.set_echo_stream(CParser::EO_NONE);
-
-    // Process restart file by keyword
-    while (cparser.next_keyword() != CParser::KT_EOF)
-    {
-      int n_old1;
-      // Storage bin
-      cxxStorageBin tempBin;
-      // read data
-      j = tempBin.read_raw_keyword(cparser);  /* j is count_chem number */
-      if (j < 0) continue;
-      if (j > count_chem)
-      {
-	error_msg("Terminating in distribute_initial_conditions.\n", CONTINUE);
-	error_msg("Cell number is greater than number of chemistry cells.\n", CONTINUE);
-	error_msg("Is .trans.dat file compatible with restart file?\n", STOP);
-      }
-      i = back[j].list[0];                    /* i is ixyz number */
-
-      // solution
-      n_old1 = initial_conditions1[7*i];
-      if (n_old1 == ifile) {
-	if (tempBin.getSolution(j) != NULL) {
-	  szBin.setSolution(j, tempBin.getSolution(j));
-	} 
-      }
-
-      // PPassemblage
-      n_old1 = initial_conditions1[ 7*i + 1 ];
-      if (n_old1 == ifile) {
-	if (tempBin.getPPassemblage(j) != NULL) {
-	  szBin.setPPassemblage(j, tempBin.getPPassemblage(j));
-	} 
-      }
-
-      // Exchange
-      n_old1 = initial_conditions1[ 7*i + 2 ];
-      if (n_old1 == ifile) {
-	if (tempBin.getExchange(j) != NULL) {
-	  szBin.setExchange(j, tempBin.getExchange(j));
+	/*
+	*      ixyz - number of cells
+	*      initial_conditions1 - Fortran, 7 x n_cell integer array, containing
+	*           solution number
+	*           pure_phases number
+	*           exchange number
+	*           surface number
+	*           gas number
+	*           solid solution number
+	*           kinetics number
+	*      initial_conditions2 - Fortran, 7 x n_cell integer array, containing
+	*      fraction for 1 - Fortran, 7 x n_cell integer array, containing
+	*
+	*      Routine mixes solutions, pure_phase assemblages,
+	*      exchangers, surface complexers, gases, solid solution assemblages,
+	*      and kinetics for each cell.
+	*/
+	int i, j;
+	//struct system *system_ptr;
+	/*
+	*  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
+	*  Does nothing for indexes less than 0 (i.e. restart files)
+	*/
+	for (i = 0; i < ixyz; i++) { 	  /* i is ixyz number */
+		j = forward[i];               /* j is count_chem number */
+		if (j < 0) continue;
+		assert (forward[i] >= 0); 
+		system_cxxInitialize(i, j, initial_conditions1, initial_conditions2, fraction1);
 	}
-      }
+	/*
+	* Read any restart files
+	*/
+	for (std::map<std::string, int>::iterator it = FileMap.begin(); it != FileMap.end(); it++) {
+		int ifile = -100 - it->second;
 
-      // Surface
-      n_old1 = initial_conditions1[ 7*i + 3 ];
-      if (n_old1 == ifile) {
-	if (tempBin.getSurface(j) != NULL) {
-	  szBin.setSurface(j, tempBin.getSurface(j));
-	}
-      }
+		// use gsztream 
+		igzstream myfile;
+		myfile.open(it->first.c_str());
+		if (!myfile.good())
 
-      // Gas phase
-      n_old1 = initial_conditions1[ 7*i + 4 ];
-      if (n_old1 == ifile) {
-	if (tempBin.getGasPhase(j) != NULL) {
-	  szBin.setGasPhase(j, tempBin.getGasPhase(j));
-	}
-      }
+		{
+			sprintf(error_string, "File could not be opened: %s.", it->first.c_str());
+			input_error++;
+			error_msg(error_string, CONTINUE);
+			break;
+		}
 
-      // Solid solution
-      n_old1 = initial_conditions1[ 7*i + 5 ];
-      if (n_old1 == ifile) {
-	if (tempBin.getSSassemblage(j) != NULL) {
-	  szBin.setSSassemblage(j, tempBin.getSSassemblage(j));
-	}
-      }
+		std::ostringstream oss;
+		CParser cparser(myfile, oss, std::cerr);
+		cparser.set_echo_file(CParser::EO_NONE);
+		cparser.set_echo_stream(CParser::EO_NONE);
 
-      // Kinetics
-      n_old1 = initial_conditions1[ 7*i + 6 ];
-      if (n_old1 == ifile) {
-	if (tempBin.getKinetics(j) != NULL) {
-	  szBin.setKinetics(j, tempBin.getKinetics(j));
+		// Process restart file by keyword
+		while (cparser.next_keyword() != CParser::KT_EOF)
+		{
+			int n_old1;
+			// Storage bin
+			cxxStorageBin tempBin;
+			// read data
+			j = tempBin.read_raw_keyword(cparser);  /* j is count_chem number */
+			if (j < 0) continue;
+			if (j > count_chem)
+			{
+				error_msg("Terminating in distribute_initial_conditions.\n", CONTINUE);
+				error_msg("Cell number is greater than number of chemistry cells.\n", CONTINUE);
+				error_msg("Is .trans.dat file compatible with restart file?\n", STOP);
+			}
+			i = back[j].list[0];                    /* i is ixyz number */
+
+			// solution
+			n_old1 = initial_conditions1[7*i];
+			if (n_old1 == ifile) {
+				if (tempBin.getSolution(j) != NULL) {
+					szBin.setSolution(j, tempBin.getSolution(j));
+				} 
+			}
+
+			// PPassemblage
+			n_old1 = initial_conditions1[ 7*i + 1 ];
+			if (n_old1 == ifile) {
+				if (tempBin.getPPassemblage(j) != NULL) {
+					szBin.setPPassemblage(j, tempBin.getPPassemblage(j));
+				} 
+			}
+
+			// Exchange
+			n_old1 = initial_conditions1[ 7*i + 2 ];
+			if (n_old1 == ifile) {
+				if (tempBin.getExchange(j) != NULL) {
+					szBin.setExchange(j, tempBin.getExchange(j));
+				}
+			}
+
+			// Surface
+			n_old1 = initial_conditions1[ 7*i + 3 ];
+			if (n_old1 == ifile) {
+				if (tempBin.getSurface(j) != NULL) {
+					szBin.setSurface(j, tempBin.getSurface(j));
+				}
+			}
+
+			// Gas phase
+			n_old1 = initial_conditions1[ 7*i + 4 ];
+			if (n_old1 == ifile) {
+				if (tempBin.getGasPhase(j) != NULL) {
+					szBin.setGasPhase(j, tempBin.getGasPhase(j));
+				}
+			}
+
+			// Solid solution
+			n_old1 = initial_conditions1[ 7*i + 5 ];
+			if (n_old1 == ifile) {
+				if (tempBin.getSSassemblage(j) != NULL) {
+					szBin.setSSassemblage(j, tempBin.getSSassemblage(j));
+				}
+			}
+
+			// Kinetics
+			n_old1 = initial_conditions1[ 7*i + 6 ];
+			if (n_old1 == ifile) {
+				if (tempBin.getKinetics(j) != NULL) {
+					szBin.setKinetics(j, tempBin.getKinetics(j));
+				}
+			}
+		}
+		myfile.close();
 	}
-      }
-    }
-    myfile.close();
-  }
-  if (input_error > 0) {
-    error_msg("Terminating in distribute_initial_conditions.\n", STOP);
-  }
+	if (input_error > 0) {
+		error_msg("Terminating in distribute_initial_conditions.\n", STOP);
+	}
+}
+#endif
+// New version processes restart file keyword by keyword
+// Requires less storage
+/* ---------------------------------------------------------------------- */
+void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_conditions2, double *fraction1)
+/* ---------------------------------------------------------------------- */
+{
+	/*
+	*      ixyz - number of cells
+	*      initial_conditions1 - Fortran, 7 x n_cell integer array, containing
+	*           solution number
+	*           pure_phases number
+	*           exchange number
+	*           surface number
+	*           gas number
+	*           solid solution number
+	*           kinetics number
+	*      initial_conditions2 - Fortran, 7 x n_cell integer array, containing
+	*      fraction for 1 - Fortran, 7 x n_cell integer array, containing
+	*
+	*      Routine mixes solutions, pure_phase assemblages,
+	*      exchangers, surface complexers, gases, solid solution assemblages,
+	*      and kinetics for each cell.
+	*/
+	int i, j;
+	//struct system *system_ptr;
+	/*
+	*  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
+	*  Does nothing for indexes less than 0 (i.e. restart files)
+	*/
+	for (i = 0; i < ixyz; i++) { 	  /* i is ixyz number */
+		j = forward[i];               /* j is count_chem number */
+		if (j < 0) continue;
+		assert (forward[i] >= 0); 
+		system_cxxInitialize(i, j, initial_conditions1, initial_conditions2, fraction1);
+	}
+	/*
+	* Read any restart files
+	*/
+	for (std::map<std::string, int>::iterator it = FileMap.begin(); it != FileMap.end(); it++) {
+		int ifile = -100 - it->second;
+
+		// use gsztream 
+		igzstream myfile;
+		myfile.open(it->first.c_str());
+		if (!myfile.good())
+
+		{
+			sprintf(error_string, "File could not be opened: %s.", it->first.c_str());
+			input_error++;
+			error_msg(error_string, CONTINUE);
+			break;
+		}
+
+		std::ostringstream oss;
+		CParser cparser(myfile, oss, std::cerr);
+		cparser.set_echo_file(CParser::EO_NONE);
+		cparser.set_echo_stream(CParser::EO_NONE);
+
+		// skip headers
+		while (cparser.check_line("restart", false, false, false, false) == CParser::LT_EMPTY);
+
+		// read number of lines of index
+		int n = -1;
+		cparser.get_iss() >> n;
+
+		// points are x, y, z, cell_no
+		std::vector<Point> pts;
+		// index: 
+		// 0 solution 
+		// 1 ppassemblage
+		// 2 exchange 
+		// 3 surface
+		// 4 gas phase 
+		// 5 ss_assemblage
+		// 6 kinetics
+		int * index = (int *) malloc((size_t) (n * 7 * sizeof(int)));
+
+		for (i = 0; i < n; i++)
+		{
+			cparser.check_line("restart", false, false, false, false);
+			double x, y, z, v;
+			cparser.get_iss() >> x;
+			cparser.get_iss() >> y;
+			cparser.get_iss() >> z;
+			cparser.get_iss() >> v;
+			pts.push_back(Point(x, y, z, v));
+
+			cparser.get_iss() >> index[i*7];
+			cparser.get_iss() >> index[i*7 + 1];
+			cparser.get_iss() >> index[i*7 + 2];
+			cparser.get_iss() >> index[i*7 + 3];
+			cparser.get_iss() >> index[i*7 + 4];
+			cparser.get_iss() >> index[i*7 + 5];
+			cparser.get_iss() >> index[i*7 + 6];
+		}
+		KDtree index_tree(pts);
+
+		cxxStorageBin tempBin;
+		tempBin.read_raw(cparser);
+
+		for (j = 0; j < count_chem; j++)            /* j is count_chem number */
+		{
+			i = back[j].list[0];                    /* i is ixyz number */
+			Point p(x_node_c[i], y_node_c[i], z_node_c[i]);
+			int k = (int) index_tree.Interpolate3d(p);  // k is index number in tempBin
+
+			// solution
+			if (initial_conditions1[i*7] == ifile)
+			{
+				if (index[k*7] != -1)        // entity k should be defined in tempBin
+				{
+					if (tempBin.getSolution(k) != NULL) 
+					{
+						szBin.setSolution(j, tempBin.getSolution(k));
+					}
+					else
+					{
+						initial_conditions1[7*i] = -1;
+					}
+				}
+			}
+
+			// PPassemblage
+			if (initial_conditions1[i*7 + 1] == ifile)
+			{
+				if (index[k*7 + 1] != -1)        // entity k should be defined in tempBin
+				{
+					if (tempBin.getPPassemblage(k) != NULL) 
+					{
+						szBin.setPPassemblage(j, tempBin.getPPassemblage(k));
+					}
+					else
+					{
+						initial_conditions1[7*i + 1] = -1;
+					}
+				}
+			}
+
+			// Exchange
+			if (initial_conditions1[i*7 + 2] == ifile)
+			{
+				if (index[k*7 + 2] != -1)        // entity k should be defined in tempBin
+				{
+					if (tempBin.getExchange(k) != NULL) 
+					{
+						szBin.setExchange(j, tempBin.getExchange(k));
+					}
+					else
+					{
+						initial_conditions1[7*i + 2] = -1;
+					}
+				}
+			}
+
+			// Surface
+			if (initial_conditions1[i*7 + 3] == ifile)
+			{
+				if (index[k*7 + 3] != -1)        // entity k should be defined in tempBin
+				{
+					if (tempBin.getSurface(k) != NULL) 
+					{
+						szBin.setSurface(j, tempBin.getSurface(k));
+					}
+					else
+					{
+						initial_conditions1[7*i + 3] = -1;
+					}
+				}
+			}
+
+			// Gas phase
+			if (initial_conditions1[i*7 + 4] == ifile)
+			{
+				if (index[k*7 + 4] != -1)        // entity k should be defined in tempBin
+				{
+					if (tempBin.getGasPhase(k) != NULL) 
+					{
+						szBin.setGasPhase(j, tempBin.getGasPhase(k));
+					}
+					else
+					{
+						initial_conditions1[7*i + 4] = -1;
+					}
+				}
+			}
+
+			// Solid solution
+			if (initial_conditions1[i*7 + 5] == ifile)
+			{
+				if (index[k*7 + 5] != -1)        // entity k should be defined in tempBin
+				{
+					if (tempBin.getSSassemblage(k) != NULL) 
+					{
+						szBin.setSSassemblage(j, tempBin.getSSassemblage(k));
+					}
+					else
+					{
+						initial_conditions1[7*i + 5] = -1;
+					}
+				}
+			}
+
+			// Kinetics
+			if (initial_conditions1[i*7 + 6] == ifile)
+			{
+				if (index[k*7 + 6] != -1)        // entity k should be defined in tempBin
+				{
+					if (tempBin.getKinetics(k) != NULL) {
+						szBin.setKinetics(j, tempBin.getKinetics(k));
+					}
+					else
+					{
+						initial_conditions1[7*i + 6] = -1;
+					}
+				}
+			}
+		}
+		myfile.close();
+	}
+	if (input_error > 0) {
+		error_msg("Terminating in distribute_initial_conditions.\n", STOP);
+	}
 }
 #endif
 #ifdef SKIP
@@ -1666,7 +2286,10 @@ void EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 /*
  *   Put values back for HST
  */
-	if (*print_restart == 1) mpi_write_restart((*time_hst) * (*cnvtmi));
+	if (*print_restart == 1) 
+	{
+		mpi_write_restart((*time_hst) * (*cnvtmi));
+	}
 	COLLECT_FROM_NONROOT(fraction, dim);
 #ifdef TIME
 	MPI_Barrier(MPI_COMM_WORLD);
@@ -3143,6 +3766,30 @@ int mpi_write_restart(double time_hst)
 		ofs_restart << "#Date: " << ctime(&now);
 		ofs_restart << "#Current model time: " << time_hst << std::endl;
 		ofs_restart << "#nx, ny, nz: " << ix << ", " << iy << ", " << iz << std::endl;
+
+		// write index
+		int i, j;
+		ofs_restart << count_chem << std::endl;
+		for (j = 0; j < count_chem; j++) /* j is count_chem number */
+		{
+			i = back[j].list[0];      /* i is ixyz number */
+			ofs_restart << x_node_c[i] << "  " << y_node_c[i] << "  " << z_node_c[i] << "  " << j << "  ";
+			// solution 
+			ofs_restart << initial_conditions1_c[ 7*i]      << "  ";
+			// pp_assemblage
+			ofs_restart << initial_conditions1_c[ 7*i + 1 ] << "  ";
+			// exchange
+			ofs_restart << initial_conditions1_c[ 7*i + 2 ] << "  ";
+			// surface
+			ofs_restart << initial_conditions1_c[ 7*i + 3 ] << "  ";
+			// gas_phase
+			ofs_restart << initial_conditions1_c[ 7*i + 4 ] << "  ";
+			// solid solution
+			ofs_restart << initial_conditions1_c[ 7*i + 5 ] << "  ";
+			// kinetics
+			ofs_restart << initial_conditions1_c[ 7*i + 6 ] << std::endl;
+		}
+
 		szBin.dump_raw(ofs_restart, 0);
 	}
 	//
@@ -3187,3 +3834,13 @@ int mpi_write_restart(double time_hst)
 	return(OK);
 }
 #endif
+void STORE_C_POINTERS(int *indx_sol1_ic, double *x_node, double *y_node, double *z_node)
+{
+	// Fills in slave Fortran arrays
+	initial_conditions1_c = indx_sol1_ic;
+	x_node_c = x_node;
+	y_node_c = y_node;
+	z_node_c = z_node;
+
+	return;
+}

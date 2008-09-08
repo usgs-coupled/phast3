@@ -9,6 +9,7 @@
 #include "phreeqc/phrqproto.h"
 #include "phastproto.h"
 #include "gzstream.h"
+#include "Pointers_to_fortran.h"
 /*
  * cxxhstsubs.cxx
  */
@@ -319,23 +320,47 @@ int write_restart(double time_hst)
 	backup_name.append(".restart.backup.gz");
 	// open file 
 	//std::ofstream ofs(temp_name.c_str());
-	ogzstream ofs;
-	ofs.open( temp_name.c_str() );
-	if ( ! ofs.good()) {
+	ogzstream ofs_restart;
+	ofs_restart.open( temp_name.c_str() );
+	if ( ! ofs_restart.good()) {
 	  sprintf(error_string, "File could not be opened: %s.", temp_name.c_str());
 	  error_msg(error_string, STOP);
 	}
 
 	// write header
-	ofs << "#PHAST restart file" << std::endl;
+	ofs_restart << "#PHAST restart file" << std::endl;
 	time_t now = time(NULL);
-	ofs << "#Prefix: " << file_prefix << std::endl;
-	ofs << "#Date: " << ctime(&now);
-	ofs << "#Current model time: " << time_hst << std::endl;
-	ofs << "#nx, ny, nz: " << ix << ", " << iy << ", " << iz << std::endl;
+	ofs_restart << "#Prefix: " << file_prefix << std::endl;
+	ofs_restart << "#Date: " << ctime(&now);
+	ofs_restart << "#Current model time: " << time_hst << std::endl;
+	ofs_restart << "#nx, ny, nz: " << ix << ", " << iy << ", " << iz << std::endl;
+
+	// write index
+	int i, j;
+	ofs_restart << count_chem << std::endl;
+	for (j = 0; j < count_chem; j++) /* j is count_chem number */
+	{
+		i = back[j].list[0];      /* i is ixyz number */
+		ofs_restart << x_node_c[i] << "  " << y_node_c[i] << "  " << z_node_c[i] << "  " << j << "  ";
+		// solution 
+		ofs_restart << initial_conditions1_c[ 7*i]      << "  ";
+		// pp_assemblage
+		ofs_restart << initial_conditions1_c[ 7*i + 1 ] << "  ";
+		// exchange
+		ofs_restart << initial_conditions1_c[ 7*i + 2 ] << "  ";
+		// surface
+		ofs_restart << initial_conditions1_c[ 7*i + 3 ] << "  ";
+		// gas_phase
+		ofs_restart << initial_conditions1_c[ 7*i + 4 ] << "  ";
+		// solid solution
+		ofs_restart << initial_conditions1_c[ 7*i + 5 ] << "  ";
+		// kinetics
+		ofs_restart << initial_conditions1_c[ 7*i + 6 ] << std::endl;
+	}
+
 	// write data
-	szBin.dump_raw(ofs, 0);
-	ofs.close();
+	szBin.dump_raw(ofs_restart, 0);
+	ofs_restart.close();
 	// rename files
 	file_rename(temp_name.c_str(), name.c_str(), backup_name.c_str());
 	return(OK);
