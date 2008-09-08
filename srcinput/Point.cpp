@@ -1,7 +1,9 @@
 #include "Point.h"
 #include <map>
-#include "gpc.h"
-#include "message.h"
+//#include "gpc.h"
+//#include "message.h"
+#include <stdio.h>
+#include <sstream>
 // constructor
 Point::Point(void)
 {
@@ -66,7 +68,7 @@ double interpolate_nearest(std::vector<Point> &pts, Point &grid_pt)
 {
 
   if(pts.size() == 0) {
-    warning_msg("Nearest neighbor search had no points.");
+    //warning_msg("Nearest neighbor search had no points.");
     return(0);
   }
 
@@ -96,7 +98,7 @@ double interpolate_inverse_square(std::vector<Point> &pts, Point &grid_pt)
 {
 
   if(pts.size() == 0) {
-    warning_msg("Inverse_square calculation had no points.");
+    //warning_msg("Inverse_square calculation had no points.");
     return(0);
   }
 
@@ -168,6 +170,7 @@ bool Point::point_in_polygon(gpc_polygon *poly_ptr)
   return false;
 }
 #endif
+#ifdef SKIP
 bool Point::point_in_gpc_polygon(gpc_polygon *poly_ptr) 
 {
 //int pnpoly(int npol, float *xp, float *yp, float x, float y)
@@ -219,6 +222,7 @@ bool Point::point_in_gpc_polygon(gpc_polygon *poly_ptr)
   return(false);
 
 }
+#endif
 bool Point::Point_in_polygon(std::vector<Point> &pts) 
 {
 //int pnpoly(int npol, float *xp, float *yp, float x, float y)
@@ -228,7 +232,7 @@ bool Point::Point_in_polygon(std::vector<Point> &pts)
 
   bool in = false;
   int i, j;
-  int npol = pts.size();
+  int npol = (int) pts.size();
   for (i = 0, j = npol-1; i < npol; j = i++) {
     double xpi = pts[i].x();
     double xpj = pts[j].x();
@@ -245,7 +249,7 @@ bool Point::Point_in_polygon(std::vector<Point> &pts)
   // Also check if point is on an edge
   double z = 0.0, z1 = 0.0, z2 = 0.0;
 
-  j = pts.size() - 1;
+  j = (int) pts.size() - 1;
   for (i = 0; i < (int) pts.size(); i++)
   {
     double x1, y1, x2, y2;
@@ -317,18 +321,110 @@ int Read_points(std::istream &input, std::vector<Point> &pts)
 	if (pts.size() == 0) columns = 0;
 	return(columns);
 }
+/**********************************************************************/
+
+void line_seg_point_near_3d ( double x1, double y1, double z1,
+  double x2, double y2, double z2, double x, double y, double z,
+  double *xn, double *yn, double *zn, double *dist, double *t )
+
+/**********************************************************************/
+
+/*
+  Purpose:
+
+    LINE_SEG_POINT_NEAR_3D finds the point on a line segment nearest a point in 3D.
+
+  Modified:
+
+    17 April 1999
+
+  Author:
+
+    John Burkardt
+
+  Parameters:
+
+    Input, double X1, Y1, Z1, X2, Y2, Z2, the two endpoints of the line segment.
+
+    (X1,Y1,Z1) should generally be different from (X2,Y2,Z2), but
+    if they are equal, the program will still compute a meaningful
+    result.
+
+    Input, double X, Y, Z, the point whose nearest neighbor
+    on the line segment is to be determined.
+
+    Output, double *XN, *YN, *ZN, the point on the line segment which is
+    nearest the point (X,Y,Z).
+
+    Output, double *DIST, the distance from the point to the nearest point
+    on the line segment.
+
+    Output, double *T, the relative position of the nearest point
+    (XN,YN,ZN) to the defining points (X1,Y1,Z1) and (X2,Y2,Z2).
+
+      (XN,YN,ZN) = (1-T)*(X1,Y1,Z1) + T*(X2,Y2,Z2).
+
+    T will always be between 0 and 1.
+
+*/
+{
+  double bot;
+
+  if ( x1 == x2 && y1 == y2 && z1 == z2 ) {
+    *t = 0.0;
+    *xn = x1;
+    *yn = y1;
+    *zn = z1;
+  }
+  else {
+
+    bot =
+        ( x1 - x2 ) * ( x1 - x2 )
+      + ( y1 - y2 ) * ( y1 - y2 )
+      + ( z1 - z2 ) * ( z1 - z2 );
+
+    *t = (
+      + ( x1 - x ) * ( x1 - x2 )
+      + ( y1 - y ) * ( y1 - y2 )
+      + ( z1 - z ) * ( z1 - z2 ) ) / bot;
+
+    if ( *t < 0.0 ) {
+      *t = 0.0;
+      *xn = x1;
+      *yn = y1;
+      *zn = z1;
+    }
+    else if ( *t > 1.0 ) {
+      *t = 1.0;
+      *xn = x2;
+      *yn = y2;
+      *zn = z2;
+    }
+    else {
+      *xn = x1 + *t * ( x2 - x1 );
+      *yn = y1 + *t * ( y2 - y1 );
+      *zn = z1 + *t * ( z2 - z1 );
+    }
+  }
+  *dist = sqrt (
+      ( *xn - x ) * ( *xn - x )
+    + ( *yn - y ) * ( *yn - y )
+    + ( *zn - z ) * ( *zn - z ) );
+
+  return;
+}
 // constructor
-Segment::Segment(void)
+PHAST_Segment::PHAST_Segment(void)
 {
   this->pts.push_back(Point(0,0,0,0));
   this->pts.push_back(Point(0,0,0,0));
 }
-Segment::Segment(Point p1, Point p2)
+PHAST_Segment::PHAST_Segment(Point p1, Point p2)
 {
   this->pts.push_back(p1);
   this->pts.push_back(p2);
 }
 // destructor
-Segment::~Segment(void)
+PHAST_Segment::~PHAST_Segment(void)
 {
 }

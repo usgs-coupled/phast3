@@ -443,7 +443,7 @@ void    Centroid3( tPointi p1, tPointi p2, tPointi p3, tPointi c )
         return;
 }
 #endif
-
+#ifdef SKIP
 /**********************************************************************/
 
 void line_seg_point_near_3d ( double x1, double y1, double z1,
@@ -536,6 +536,7 @@ void line_seg_point_near_3d ( double x1, double y1, double z1,
 
   return;
 }
+#endif
 /* ---------------------------------------------------------------------- */
 gpc_polygon *rectangle(double x1, double y1, double x2, double y2)
 /* ---------------------------------------------------------------------- */

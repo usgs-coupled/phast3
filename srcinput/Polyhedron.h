@@ -5,6 +5,7 @@
 #include <list>     // std::list
 #include <string>
 #include "Point.h"
+#include "gpc.h"
 #include "zone.h"
 #include "Cell_Face.h"
 #include "PHAST_Transform.h"

@@ -31,6 +31,7 @@ KDtree::KDtree(std::vector<Point> &pts)
 	}
 	this->tree = new kdtree2(this->realdata,true);
 }
+#ifdef SKIP
 KDtree::KDtree(point *pts, size_t count)
 :realdata(extents[count][3])
 {
@@ -43,6 +44,7 @@ KDtree::KDtree(point *pts, size_t count)
   }
   this->tree = new kdtree2(this->realdata,true);
 }
+#endif
 KDtree& KDtree::operator=(const KDtree& rhs)
 {
   if (this != &rhs)
@@ -66,6 +68,7 @@ int KDtree::Nearest(Point pt)
   return(result[0].idx);
 
 }
+#ifdef SKIP
 int KDtree::Nearest(point pt)
 {
   int dim = this->tree->dim;
@@ -78,6 +81,7 @@ int KDtree::Nearest(point pt)
   this->tree->n_nearest(query, 1, result);
   return(result[0].idx);
 }
+#endif
 double KDtree::Interpolate3d(Point pt)
 {
 	int i = this->Nearest(pt);

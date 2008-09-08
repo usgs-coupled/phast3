@@ -275,7 +275,15 @@ KDtree* NNInterpolator::get_tree(void)
     if (this->point_count > 0)
     {
       assert(this->pin != NULL);
-      this->tree = new KDtree(this->pin, this->point_count);
+	  std::vector<Point> pts;
+	  size_t i;
+	  for (i = 0; i < this->point_count; i++)
+	  {
+		  Point p(this->pin[i].x, this->pin[i].y, this->pin[i].z);
+		  pts.push_back(p);
+	  }
+      //this->tree = new KDtree(this->pin, this->point_count);
+	  this->tree = new KDtree(pts);
       KDtree::KDtreeList.push_back(this->tree);
     }
   }

@@ -2,7 +2,7 @@
 #define POINT_H_INCLUDED
 #include <vector>
 #include <math.h>
-#include "gpc.h"
+//#include "gpc.h"
 class Point
 {
 public:
@@ -110,9 +110,11 @@ public:
   friend Point operator*(double b, Point a);
   friend bool operator < (Point &a, Point &b);
   friend bool operator == (Point &a, Point &b);
-  bool point_in_gpc_polygon(gpc_polygon *poly_ptr);
+  //bool point_in_gpc_polygon(gpc_polygon *poly_ptr);
   bool Point_in_polygon(std::vector<Point> &pts);
-
+  friend void line_seg_point_near_3d( double x1, double y1, double z1,
+	  double x2, double y2, double z2, double x, double y, double z,
+	  double *xn, double *yn, double *zn, double *dist, double *t );
 
 #ifdef SKIP
   // Required to be in header?
@@ -157,14 +159,14 @@ protected:
   double v;
 
 };
-class Segment
+class PHAST_Segment
 {
   public:
   // constructors
-  Segment(void);
-  Segment(Point p1, Point p2);
+  PHAST_Segment(void);
+  PHAST_Segment(Point p1, Point p2);
   // destructor
-  ~Segment(void);
+  ~PHAST_Segment(void);
   std::vector<Point> pts;
 };
 #endif // !defined(POINT_H_INCLUDED)
