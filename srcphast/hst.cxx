@@ -1029,7 +1029,14 @@ void DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1, int *initial_condit
 
 			// read number of lines of index
 			int n;
-			cparser.get_iss() >> n;
+			if (!(cparser.get_iss() >> n) || n < 4)
+			{
+				sprintf(error_string, "File does not have node locations: %s.\nPerhaps it is an old format restart file.", it->first.c_str());
+				input_error++;
+				myfile.close();
+				error_msg(error_string, CONTINUE);
+				break;
+			}
 
 			// points are x, y, z, cell_no
 			std::vector<Point> pts;
