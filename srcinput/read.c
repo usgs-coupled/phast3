@@ -3995,11 +3995,14 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 		str.append(next_char);
 		std::istringstream lines(str);
 		p->data_source->Read(lines, false);
-		XYZfile xyz(p->data_source->Get_file_name(), p->data_source->Get_coordinate_system());
+		p->data_source->Tidy(false);
+		//XYZfile xyz(p->data_source->Get_file_name(), p->data_source->Get_coordinate_system());
 
 		// Data source has list of points
-		p->data_source->Set_points(xyz.Get_points(-1));
-		p->data_source->Set_columns(xyz.Get_columns());
+		//p->data_source->Set_points(xyz.Get_points(-1));
+		//p->data_source->Set_columns(xyz.Get_columns());
+		std::vector<Point> & these_pts = p->data_source->Get_points();
+		int these_columns = p->data_source->Get_columns();
 		if (p->data_source->Get_points().size() <= 0 || p->data_source->Get_columns() != 4)
 		{
 			input_error++;

@@ -80,7 +80,7 @@ public:
 
   KDtree *                 Get_tree3d             (void);
 
-  int                      Get_columns            (void)const {return this->columns;};
+  int                      Get_columns            (void);
   void                     Set_columns            (int i) {this->columns = i;};
 
   int                      Get_attribute          (void)const {return this->attribute;}

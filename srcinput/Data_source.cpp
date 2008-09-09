@@ -778,6 +778,23 @@ PHAST_Transform::COORDINATE_SYSTEM Data_source::Get_coordinate_system(void)
 	}
 	return this->coordinate_system;
 }
+int Data_source::Get_columns(void)
+{
+	switch (this->source_type)
+	{
+	case Data_source::SHAPE:
+	case Data_source::ARCRASTER:
+	case Data_source::XYZ:
+		{
+			Data_source *ds = this->Get_data_source_with_points();
+			return ds->Get_columns();
+		}
+		break;
+	default:
+		break;
+	}
+	return this->columns;
+}
 PHAST_polygon & Data_source::Get_phast_polygons (void)
 {
 	Data_source *ds = this->Get_data_source_with_points();
