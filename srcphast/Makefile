@@ -235,6 +235,8 @@ LIBGFORTRAN= -lgfortranbegin -lgfortran
 	${CXX} ${CFLAGS} -c -o $@ $<
 .cxx.o :
 	${CXX} ${CFLAGS} -c -o $@ $<
+.cpp.o :
+	${CXX} ${CFLAGS} -c -o $@ $<
 
 # -----------------------------------------------------------------------------
 #hdf options
@@ -669,13 +671,21 @@ COMMON_CXXOBJS = \
 	       SurfaceComp.o \
 	       System.o \
 	       Temperature.o \
-	       Utils.o 
+	       Utils.o \
+               ../../srcinput/KDtree/KDtree.o \
+	       ../../srcinput/KDtree/kdtree2.o \
+	       ../../srcinput/Point.o
 
 HDF_OBJS     =  hdf.o hdf_f.o
 
 MERGE_OBJS   =	merge.o
 
 MPI_OBJS     =	mpimod.o phast_slave.o slavesubs.o
+
+
+PHASTINPUT_FILES = ../../srcinput/KDtree/KDtree.cpp \
+	../../srcinput/KDtree/kdtree2.cpp \
+	../../srcinput/Point.cpp
 
 # -----------------------------------------------------------------------------
 #  Assign dependents to target on dependency line & link options on command 
@@ -818,7 +828,7 @@ clean:
 
 depends:
 	mkdir -p temp_dependency_dir
-	cd temp_dependency_dir; gcc -MM $(DEFINE_HDF) -I../phreeqcpp -I../phreeqcpp/phreeqc ../*.cxx ../*.c ../phreeqcpp/*.cxx ../phreeqcpp/phreeqc/*.c > ../dependencies
+	cd temp_dependency_dir; gcc -MM $(DEFINE_HDF) -I../phreeqcpp -I../phreeqcpp/phreeqc ../*.cxx ../*.c ../phreeqcpp/*.cxx ../phreeqcpp/phreeqc/*.c $(PHASTINPUT_FILES) > ../dependencies
 	rm -rf temp_dependency_dir
 
 depends_parallel:

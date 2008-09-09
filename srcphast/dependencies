@@ -21,7 +21,7 @@ cxxHstSubs.o: ../cxxHstSubs.cxx ../phreeqcpp/StorageBin.h \
   ../phreeqcpp/Temperature.h ../phreeqcpp/Solution.h \
   ../phreeqcpp/phreeqc/output.h ../hst.h ../phreeqcpp/phreeqc/phqalloc.h \
   ../phreeqcpp/phreeqc/phrqproto.h ../phastproto.h \
-  ../phreeqcpp/Solution.h ../gzstream.h
+  ../phreeqcpp/Solution.h ../gzstream.h ../Pointers_to_fortran.h
 gzstream.o: ../gzstream.cxx ../gzstream.h
 hst.o: ../hst.cxx ../phreeqcpp/StorageBin.h ../phreeqcpp/Utils.h \
   ../phreeqcpp/char_star.h ../phreeqcpp/Parser.h ../phreeqcpp/Solution.h \
@@ -40,7 +40,9 @@ hst.o: ../hst.cxx ../phreeqcpp/StorageBin.h ../phreeqcpp/Utils.h \
   ../phreeqcpp/phreeqc/output.h ../hst.h ../phreeqcpp/phreeqc/phqalloc.h \
   ../phreeqcpp/phreeqc/phrqproto.h ../phreeqcpp/phreeqc/input.h \
   ../phast_files.h ../phastproto.h ../phreeqcpp/Solution.h \
-  ../phreeqcpp/Dictionary.h ../gzstream.h
+  ../phreeqcpp/Dictionary.h ../gzstream.h ../Pointers_to_fortran.h \
+  ../../srcinput/Point.h ../../srcinput/KDtree/KDtree.h \
+  ../../srcinput/KDtree/kdtree2.hpp ../../srcinput/KDtree/../Point.h
 hdf.o: ../hdf.c ../phreeqcpp/phreeqc/global.h \
   ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/phreeqc/output.h ../hst.h \
   ../phreeqcpp/phreeqc/phqalloc.h ../phreeqcpp/phreeqc/phrqproto.h \
@@ -70,7 +72,7 @@ phast_files.o: ../phast_files.c ../phreeqcpp/phreeqc/global.h \
   ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h \
   ../phreeqcpp/SolutionIsotopeList.h ../phreeqcpp/SolutionIsotope.h \
   ../phreeqcpp/NameDouble.h ../phreeqcpp/cxxMix.h \
-  ../phreeqcpp/phreeqc/input.h ../phast_files.h
+  ../phreeqcpp/phreeqc/input.h ../phast_files.h ../Pointers_to_fortran.h
 slavesubs.o: ../slavesubs.c ../phreeqcpp/phreeqc/global.h \
   ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/phreeqc/output.h ../hst.h \
   ../phreeqcpp/phreeqc/phqalloc.h ../phreeqcpp/phreeqc/phrqproto.h \
@@ -445,3 +447,8 @@ utilities.o: ../phreeqcpp/phreeqc/utilities.c \
   ../phreeqcpp/phreeqc/global.h ../phreeqcpp/phreeqc/phrqtype.h \
   ../phreeqcpp/phreeqc/phqalloc.h ../phreeqcpp/phreeqc/output.h \
   ../phreeqcpp/phreeqc/phrqproto.h
+KDtree.o: ../../srcinput/KDtree/KDtree.cpp ../../srcinput/KDtree/KDtree.h \
+  ../../srcinput/KDtree/kdtree2.hpp ../../srcinput/KDtree/../Point.h
+kdtree2.o: ../../srcinput/KDtree/kdtree2.cpp \
+  ../../srcinput/KDtree/kdtree2.hpp
+Point.o: ../../srcinput/Point.cpp ../../srcinput/Point.h
