@@ -323,7 +323,7 @@ int Read_points(std::istream &input, std::vector<Point> &pts)
 }
 /**********************************************************************/
 
-void line_seg_point_near_3d ( double x1, double y1, double z1,
+void Point::line_seg_point_near_3d ( double x1, double y1, double z1,
   double x2, double y2, double z2, double x, double y, double z,
   double *xn, double *yn, double *zn, double *dist, double *t )
 

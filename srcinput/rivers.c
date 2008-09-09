@@ -847,7 +847,7 @@ int interpolate(River_Polygon *river_polygon_ptr)
 	x2 = p1_ptr->x;
 	y2 = p1_ptr->y;
 	/* distance from centroid to line is */
-	line_seg_point_near_3d ( x1, y1, 0, 
+	Point::line_seg_point_near_3d ( x1, y1, 0, 
 				 x2, y2, 0, 
 				 x0, y0, 0,
 				 &xn, &yn, &zn, &dist, &w1 );

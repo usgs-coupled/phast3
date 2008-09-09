@@ -112,7 +112,7 @@ public:
   friend bool operator == (Point &a, Point &b);
   //bool point_in_gpc_polygon(gpc_polygon *poly_ptr);
   bool Point_in_polygon(std::vector<Point> &pts);
-  friend void line_seg_point_near_3d( double x1, double y1, double z1,
+  static void line_seg_point_near_3d( double x1, double y1, double z1,
 	  double x2, double y2, double z2, double x, double y, double z,
 	  double *xn, double *yn, double *zn, double *dist, double *t );
 

@@ -175,7 +175,7 @@ bool Point_in_simple_polygon(Point p, std::vector<Point>::iterator begin, std::v
     //y2 = pts[j].y();
     y2 = j_it->y();
     double xn, yn, zn, dist, t;
-    line_seg_point_near_3d(x1, y1, z1, x2, y2, z2, x, y, z, &xn, &yn, &zn, &dist, &t);
+    Point::line_seg_point_near_3d(x1, y1, z1, x2, y2, z2, x, y, z, &xn, &yn, &zn, &dist, &t);
     if (dist < 1e-6) {
       return(true);
     }
