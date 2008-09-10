@@ -33,7 +33,7 @@ if [ $NAME = 'ex4restart' ]; then
 if [ $NAME = "print_check_transient" ]; then 
     cp print_check_ss.head.dat 0
     fi
-if [ $NAME == "ex4_transient" ]; then 
+if [ $NAME = "ex4_transient" ]; then 
     cp ex4.head.dat 0
     fi
 if [ -f phast.dat ]; then 

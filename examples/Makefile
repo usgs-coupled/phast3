@@ -16,8 +16,8 @@ endif
 ifeq ($(CFG), CYGWIN)
   TOPDIR=/cygdrive/c/programs/phastpp
   TEST=$(TOPDIR)/examples
-#  PHAST_INPUT=/cygdrive/c/Programs/phastpp/srcinput/win32_2005/Debug/phastinput.exe
-  PHAST_INPUT=/cygdrive/c/Programs/phastpp/srcinput-wedge/win32_2005/Debug/phastinput.exe
+  PHAST_INPUT=/cygdrive/c/Programs/phastpp/srcinput/win32_2005/Debug/phastinput.exe
+#  PHAST_INPUT=/cygdrive/c/Programs/phastpp/srcinput-wedge/win32_2005/Debug/phastinput.exe
   PHAST=/cygdrive/c/Programs/phastpp/srcphast/win32_2005/ser/phast.exe
   PHAST_MPICH=c:/Programs/phastpp/srcphast/win32_2005/merge_debug/phast.exe
   PHAST_MPICH=c:/Programs/phastpp/srcphast/win32_2005/merge/phast.exe
