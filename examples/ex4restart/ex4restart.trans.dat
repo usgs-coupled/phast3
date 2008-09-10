@@ -114,7 +114,7 @@ WELL 1 Observation well 1 in arsenic zone
                 -elevation      90 110                          # m
 HEAD_IC
         -zone   0. 0. 0. 90000. 48000. 400.
-                -head   file ex4.head.dat
+                -head   XYZ grid ex4.head.dat
 CHEMISTRY_IC
         -zone   0. 0. 0. 90000. 48000. 400.
                 -solution               2

@@ -148,7 +148,7 @@ Processing flow and transport data file.
 	                                              12000     1                                              
 	HEAD_IC
 	        zone   0. 0. 0. 90000. 48000. 400.
-			head   file initial.head.dat
+			head   XYZ grid ex4.head.dat
 	CHEMISTRY_IC
 	        zone   0. 0. 0. 90000. 48000. 400.
 	                solution               2
@@ -265,37 +265,37 @@ WARNING:  9 print control intervals are less than defined time step length.
 Beginning time step no.      1
      Current time step length ...................................   1.000E+03 (yr)
      Beginning flow calculation.
-          No. of solver iterations, Relative residual:   11      6.7454218E-11
+          No. of solver iterations, Relative residual:   11      6.7454034E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    6      7.6028106E-11
+          No. of solver iterations, Relative residual:    6      7.6011191E-11
           O
-          No. of solver iterations, Relative residual:    6      7.6027908E-11
+          No. of solver iterations, Relative residual:    6      7.6011099E-11
           As
-          No. of solver iterations, Relative residual:    6      7.6028002E-11
+          No. of solver iterations, Relative residual:    6      7.6011143E-11
           C
-          No. of solver iterations, Relative residual:    6      7.6028090E-11
+          No. of solver iterations, Relative residual:    6      7.6011183E-11
           Ca
-          No. of solver iterations, Relative residual:    6      7.6028002E-11
+          No. of solver iterations, Relative residual:    6      7.6011142E-11
           Cl
-          No. of solver iterations, Relative residual:    6      7.6028002E-11
+          No. of solver iterations, Relative residual:    6      7.6011143E-11
           Mg
-          No. of solver iterations, Relative residual:    6      7.6028002E-11
+          No. of solver iterations, Relative residual:    6      7.6011142E-11
           Na
-          No. of solver iterations, Relative residual:    6      7.6028002E-11
+          No. of solver iterations, Relative residual:    6      7.6011143E-11
           S
-          No. of solver iterations, Relative residual:    6      7.6028000E-11
+          No. of solver iterations, Relative residual:    6      7.6011142E-11
           Charge
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 513
-          Total iterations all cells: 1840
+          Total iterations all cells: 1842
           Number of cells with zero iterations: 0
-          Maximum iterations for one cell: 7
+          Maximum iterations for one cell: 8
 
      End of Time Step No.     1
      Time ..................................................    1000.00     (yr)
-     Maximum change in potentiometric head  -3.1754E+01      (m ) at location ( 4.800E+04, 2.400E+04,  400.    )(m)
+     Maximum change in potentiometric head  -3.1755E+01      (m ) at location ( 4.800E+04, 2.400E+04,  400.    )(m)
      Maximum change in H ..................  1.3419E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
      Maximum change in O .................. -5.3134E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
      Maximum change in As ................. -5.9037E-09 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
@@ -313,32 +313,32 @@ WARNING:  9 print control intervals are less than defined time step length.
 Beginning time step no.      2
      Current time step length ...................................   1.000E+03 (yr)
      Beginning flow calculation.
-          No. of solver iterations, Relative residual:   11      4.1025065E-11
+          No. of solver iterations, Relative residual:   11      4.1024012E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    6      1.4308269E-11
+          No. of solver iterations, Relative residual:    6      1.4307974E-11
           O
-          No. of solver iterations, Relative residual:    6      2.0086207E-11
+          No. of solver iterations, Relative residual:    6      2.0086138E-11
           As
-          No. of solver iterations, Relative residual:    6      2.2260124E-11
+          No. of solver iterations, Relative residual:    6      2.2260128E-11
           C
-          No. of solver iterations, Relative residual:    6      1.4108871E-11
+          No. of solver iterations, Relative residual:    6      1.4108466E-11
           Ca
-          No. of solver iterations, Relative residual:    6      1.4418106E-11
+          No. of solver iterations, Relative residual:    6      1.4418129E-11
           Cl
-          No. of solver iterations, Relative residual:    6      1.5025443E-11
+          No. of solver iterations, Relative residual:    6      1.5025463E-11
           Mg
-          No. of solver iterations, Relative residual:    6      1.6518062E-11
+          No. of solver iterations, Relative residual:    6      1.6518084E-11
           Na
-          No. of solver iterations, Relative residual:    6      1.5061209E-11
+          No. of solver iterations, Relative residual:    6      1.5061229E-11
           S
-          No. of solver iterations, Relative residual:    6      1.5025648E-11
+          No. of solver iterations, Relative residual:    6      1.5025668E-11
           Charge
-          No. of solver iterations, Relative residual:    6      1.9684735E-11
+          No. of solver iterations, Relative residual:    6      1.9684413E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 512
-          Total iterations all cells: 1937
+          Total iterations all cells: 1936
           Number of cells with zero iterations: 0
           Maximum iterations for one cell: 6
 
@@ -362,28 +362,28 @@ WARNING:  2 print control intervals are less than defined time step length.
 Beginning time step no.      3
      Current time step length ...................................    200.     (yr)
      Beginning flow calculation.
-          No. of solver iterations, Relative residual:    9      7.3636821E-11
+          No. of solver iterations, Relative residual:    9      7.3637358E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    4      1.8528939E-11
+          No. of solver iterations, Relative residual:    4      1.8528931E-11
           O
-          No. of solver iterations, Relative residual:    4      2.0829379E-11
+          No. of solver iterations, Relative residual:    4      2.0829395E-11
           As
-          No. of solver iterations, Relative residual:    4      3.6515448E-11
+          No. of solver iterations, Relative residual:    4      3.6515450E-11
           C
-          No. of solver iterations, Relative residual:    4      2.0972195E-11
+          No. of solver iterations, Relative residual:    4      2.0972201E-11
           Ca
-          No. of solver iterations, Relative residual:    4      8.6608404E-12
+          No. of solver iterations, Relative residual:    4      8.6608754E-12
           Cl
-          No. of solver iterations, Relative residual:    4      1.2510855E-11
+          No. of solver iterations, Relative residual:    4      1.2510898E-11
           Mg
-          No. of solver iterations, Relative residual:    4      1.3664399E-11
+          No. of solver iterations, Relative residual:    4      1.3664304E-11
           Na
-          No. of solver iterations, Relative residual:    4      1.2435640E-11
+          No. of solver iterations, Relative residual:    4      1.2435680E-11
           S
-          No. of solver iterations, Relative residual:    4      1.2509732E-11
+          No. of solver iterations, Relative residual:    4      1.2509775E-11
           Charge
-          No. of solver iterations, Relative residual:    4      2.0501144E-11
+          No. of solver iterations, Relative residual:    4      2.0501145E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 512
@@ -403,7 +403,7 @@ Beginning time step no.      3
      Maximum change in Mg ................. -8.9010E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
      Maximum change in Na ................. -2.3599E-01 (mol/kgw) at location ( 3.000E+04, 1.200E+04,  0.00    )(m)
      Maximum change in S .................. -1.9699E-04 (mol/kgw) at location ( 3.000E+04, 1.200E+04,  0.00    )(m)
-     Maximum change in Charge ............. -7.9824E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
+     Maximum change in Charge ............. -7.9823E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
 Reading transient data for simulation: Set  4
 WARNING:  2 print control intervals are less than defined time step length.
      Time at which next set of transient parameters will be read .......... TIMCHG  2.300E+03  (yr)
@@ -411,28 +411,28 @@ WARNING:  2 print control intervals are less than defined time step length.
 Beginning time step no.      4
      Current time step length ...................................    100.     (yr)
      Beginning flow calculation.
-          No. of solver iterations, Relative residual:    9      1.1331842E-11
+          No. of solver iterations, Relative residual:    9      1.1331844E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    4      3.8712992E-13
+          No. of solver iterations, Relative residual:    4      3.8713026E-13
           O
-          No. of solver iterations, Relative residual:    4      4.1604415E-13
+          No. of solver iterations, Relative residual:    4      4.1604478E-13
           As
-          No. of solver iterations, Relative residual:    4      5.5431197E-13
+          No. of solver iterations, Relative residual:    4      5.5431084E-13
           C
-          No. of solver iterations, Relative residual:    4      3.8940114E-13
+          No. of solver iterations, Relative residual:    4      3.8940195E-13
           Ca
-          No. of solver iterations, Relative residual:    4      3.0131366E-13
+          No. of solver iterations, Relative residual:    4      3.0131342E-13
           Cl
-          No. of solver iterations, Relative residual:    4      3.0526300E-13
+          No. of solver iterations, Relative residual:    4      3.0526262E-13
           Mg
-          No. of solver iterations, Relative residual:    4      3.1056866E-13
+          No. of solver iterations, Relative residual:    4      3.1056775E-13
           Na
-          No. of solver iterations, Relative residual:    4      3.0437741E-13
+          No. of solver iterations, Relative residual:    4      3.0437700E-13
           S
-          No. of solver iterations, Relative residual:    4      3.0522796E-13
+          No. of solver iterations, Relative residual:    4      3.0522758E-13
           Charge
-          No. of solver iterations, Relative residual:    4      4.1984730E-13
+          No. of solver iterations, Relative residual:    4      4.1984778E-13
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 512
@@ -460,28 +460,28 @@ WARNING:  2 print control intervals are less than defined time step length.
 Beginning time step no.      5
      Current time step length ...................................    700.     (yr)
      Beginning flow calculation.
-          No. of solver iterations, Relative residual:   11      2.4558221E-11
+          No. of solver iterations, Relative residual:   11      2.4558226E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    6      2.1418234E-12
+          No. of solver iterations, Relative residual:    6      2.1418226E-12
           O
-          No. of solver iterations, Relative residual:    6      2.2407551E-12
+          No. of solver iterations, Relative residual:    6      2.2407530E-12
           As
-          No. of solver iterations, Relative residual:    5      9.6041909E-11
+          No. of solver iterations, Relative residual:    5      9.6041884E-11
           C
-          No. of solver iterations, Relative residual:    6      2.3479585E-12
+          No. of solver iterations, Relative residual:    6      2.3479570E-12
           Ca
-          No. of solver iterations, Relative residual:    5      4.8917617E-11
+          No. of solver iterations, Relative residual:    5      4.8917624E-11
           Cl
-          No. of solver iterations, Relative residual:    5      4.9604837E-11
+          No. of solver iterations, Relative residual:    5      4.9604844E-11
           Mg
-          No. of solver iterations, Relative residual:    5      5.3264494E-11
+          No. of solver iterations, Relative residual:    5      5.3264488E-11
           Na
-          No. of solver iterations, Relative residual:    5      4.9604647E-11
+          No. of solver iterations, Relative residual:    5      4.9604652E-11
           S
-          No. of solver iterations, Relative residual:    5      4.9603546E-11
+          No. of solver iterations, Relative residual:    5      4.9603553E-11
           Charge
-          No. of solver iterations, Relative residual:    6      2.2924846E-12
+          No. of solver iterations, Relative residual:    6      2.2924827E-12
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 512
@@ -509,28 +509,28 @@ WARNING:  2 print control intervals are less than defined time step length.
 Beginning time step no.      6
      Current time step length ...................................    100.     (yr)
      Beginning flow calculation.
-          No. of solver iterations, Relative residual:    9      1.5988990E-11
+          No. of solver iterations, Relative residual:    9      1.5988987E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    4      1.2015374E-13
+          No. of solver iterations, Relative residual:    4      1.2015410E-13
           O
-          No. of solver iterations, Relative residual:    4      1.7088502E-13
+          No. of solver iterations, Relative residual:    4      1.7088568E-13
           As
-          No. of solver iterations, Relative residual:    4      2.3657186E-13
+          No. of solver iterations, Relative residual:    4      2.3657221E-13
           C
-          No. of solver iterations, Relative residual:    4      1.2455663E-13
+          No. of solver iterations, Relative residual:    4      1.2455612E-13
           Ca
-          No. of solver iterations, Relative residual:    3      9.9899301E-11
+          No. of solver iterations, Relative residual:    3      9.9899279E-11
           Cl
-          No. of solver iterations, Relative residual:    3      9.6311910E-11
+          No. of solver iterations, Relative residual:    3      9.6311875E-11
           Mg
-          No. of solver iterations, Relative residual:    4      2.0114292E-13
+          No. of solver iterations, Relative residual:    4      2.0114284E-13
           Na
-          No. of solver iterations, Relative residual:    3      9.2907282E-11
+          No. of solver iterations, Relative residual:    3      9.2907247E-11
           S
-          No. of solver iterations, Relative residual:    3      9.6309260E-11
+          No. of solver iterations, Relative residual:    3      9.6309225E-11
           Charge
-          No. of solver iterations, Relative residual:    4      1.4713851E-13
+          No. of solver iterations, Relative residual:    4      1.4713903E-13
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 512
@@ -558,28 +558,28 @@ WARNING:  2 print control intervals are less than defined time step length.
 Beginning time step no.      7
      Current time step length ...................................    100.     (yr)
      Beginning flow calculation.
-          No. of solver iterations, Relative residual:    8      5.9062918E-11
+          No. of solver iterations, Relative residual:    8      5.9062922E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    4      3.7377762E-13
+          No. of solver iterations, Relative residual:    4      3.7377773E-13
           O
-          No. of solver iterations, Relative residual:    4      3.0488136E-13
+          No. of solver iterations, Relative residual:    4      3.0488206E-13
           As
-          No. of solver iterations, Relative residual:    4      2.6653933E-13
+          No. of solver iterations, Relative residual:    4      2.6653943E-13
           C
-          No. of solver iterations, Relative residual:    4      3.5925083E-13
+          No. of solver iterations, Relative residual:    4      3.5925129E-13
           Ca
-          No. of solver iterations, Relative residual:    3      8.2720947E-11
+          No. of solver iterations, Relative residual:    3      8.2721138E-11
           Cl
-          No. of solver iterations, Relative residual:    3      7.8868543E-11
+          No. of solver iterations, Relative residual:    3      7.8868745E-11
           Mg
-          No. of solver iterations, Relative residual:    3      7.4379454E-11
+          No. of solver iterations, Relative residual:    3      7.4379566E-11
           Na
-          No. of solver iterations, Relative residual:    3      7.8389957E-11
+          No. of solver iterations, Relative residual:    3      7.8390159E-11
           S
-          No. of solver iterations, Relative residual:    3      7.8875505E-11
+          No. of solver iterations, Relative residual:    3      7.8875707E-11
           Charge
-          No. of solver iterations, Relative residual:    4      3.7664720E-13
+          No. of solver iterations, Relative residual:    4      3.7664750E-13
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 512
@@ -607,32 +607,32 @@ WARNING:  2 print control intervals are less than defined time step length.
 Beginning time step no.      8
      Current time step length ...................................    800.     (yr)
      Beginning flow calculation.
-          No. of solver iterations, Relative residual:   10      9.6810669E-11
+          No. of solver iterations, Relative residual:   10      9.6810670E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    6      1.3014047E-11
+          No. of solver iterations, Relative residual:    6      1.3014041E-11
           O
-          No. of solver iterations, Relative residual:    6      9.4198901E-12
+          No. of solver iterations, Relative residual:    6      9.4198851E-12
           As
-          No. of solver iterations, Relative residual:    5      9.5853303E-11
+          No. of solver iterations, Relative residual:    5      9.5853326E-11
           C
-          No. of solver iterations, Relative residual:    6      1.0701005E-11
+          No. of solver iterations, Relative residual:    6      1.0701003E-11
           Ca
-          No. of solver iterations, Relative residual:    5      3.2929863E-11
+          No. of solver iterations, Relative residual:    5      3.2929870E-11
           Cl
-          No. of solver iterations, Relative residual:    5      4.2991201E-11
+          No. of solver iterations, Relative residual:    5      4.2991207E-11
           Mg
-          No. of solver iterations, Relative residual:    5      4.6988897E-11
+          No. of solver iterations, Relative residual:    5      4.6988902E-11
           Na
-          No. of solver iterations, Relative residual:    5      4.2803527E-11
+          No. of solver iterations, Relative residual:    5      4.2803533E-11
           S
-          No. of solver iterations, Relative residual:    5      4.2991574E-11
+          No. of solver iterations, Relative residual:    5      4.2991581E-11
           Charge
-          No. of solver iterations, Relative residual:    6      1.4499628E-11
+          No. of solver iterations, Relative residual:    6      1.4499621E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 512
-          Total iterations all cells: 2481
+          Total iterations all cells: 2476
           Number of cells with zero iterations: 0
           Maximum iterations for one cell: 8
 
@@ -648,7 +648,7 @@ Beginning time step no.      8
      Maximum change in Mg ................. -6.8368E-02 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  300.    )(m)
      Maximum change in Na ................. -2.3137E+00 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  300.    )(m)
      Maximum change in S .................. -1.9231E-03 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  300.    )(m)
-     Maximum change in Charge ............. -8.0178E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
+     Maximum change in Charge ............. -8.0179E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  0.00    )(m)
 Reading transient data for simulation: Set  9
 WARNING:  2 print control intervals are less than defined time step length.
      Time at which next set of transient parameters will be read .......... TIMCHG  5.000E+03  (yr)
@@ -656,34 +656,34 @@ WARNING:  2 print control intervals are less than defined time step length.
 Beginning time step no.      9
      Current time step length ...................................   1.000E+03 (yr)
      Beginning flow calculation.
-          No. of solver iterations, Relative residual:   11      3.2380638E-11
+          No. of solver iterations, Relative residual:   11      3.2380633E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    6      3.5573575E-11
+          No. of solver iterations, Relative residual:    6      3.5573571E-11
           O
-          No. of solver iterations, Relative residual:    6      2.2958444E-11
+          No. of solver iterations, Relative residual:    6      2.2958445E-11
           As
-          No. of solver iterations, Relative residual:    6      5.2145247E-12
+          No. of solver iterations, Relative residual:    6      5.2144112E-12
           C
-          No. of solver iterations, Relative residual:    6      3.2316113E-11
+          No. of solver iterations, Relative residual:    6      3.2316112E-11
           Ca
-          No. of solver iterations, Relative residual:    6      1.2155340E-11
+          No. of solver iterations, Relative residual:    6      1.2155339E-11
           Cl
-          No. of solver iterations, Relative residual:    6      1.1078947E-11
+          No. of solver iterations, Relative residual:    6      1.1078945E-11
           Mg
-          No. of solver iterations, Relative residual:    6      9.0608270E-12
+          No. of solver iterations, Relative residual:    6      9.0608257E-12
           Na
-          No. of solver iterations, Relative residual:    6      1.0966977E-11
+          No. of solver iterations, Relative residual:    6      1.0966976E-11
           S
-          No. of solver iterations, Relative residual:    6      1.1078985E-11
+          No. of solver iterations, Relative residual:    6      1.1078984E-11
           Charge
-          No. of solver iterations, Relative residual:    6      3.0800612E-11
+          No. of solver iterations, Relative residual:    6      3.0800608E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 514
-          Total iterations all cells: 2409
+          Total iterations all cells: 2410
           Number of cells with zero iterations: 0
-          Maximum iterations for one cell: 10
+          Maximum iterations for one cell: 11
 
      End of Time Step No.     9
      Time ..................................................    5000.00     (yr)
@@ -708,29 +708,29 @@ Beginning time step no.     10
           No. of solver iterations, Relative residual:   11      4.9191008E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    6      8.6229144E-12
+          No. of solver iterations, Relative residual:    6      8.6229131E-12
           O
-          No. of solver iterations, Relative residual:    6      8.0584721E-12
+          No. of solver iterations, Relative residual:    6      8.0584712E-12
           As
-          No. of solver iterations, Relative residual:    6      8.2437184E-12
+          No. of solver iterations, Relative residual:    6      8.2436968E-12
           C
-          No. of solver iterations, Relative residual:    6      9.3644872E-12
+          No. of solver iterations, Relative residual:    6      9.3644857E-12
           Ca
-          No. of solver iterations, Relative residual:    6      6.5465172E-12
+          No. of solver iterations, Relative residual:    6      6.5465185E-12
           Cl
-          No. of solver iterations, Relative residual:    6      5.8856456E-12
+          No. of solver iterations, Relative residual:    6      5.8856467E-12
           Mg
-          No. of solver iterations, Relative residual:    6      4.9648367E-12
+          No. of solver iterations, Relative residual:    6      4.9648379E-12
           Na
-          No. of solver iterations, Relative residual:    6      5.7986998E-12
+          No. of solver iterations, Relative residual:    6      5.7987009E-12
           S
-          No. of solver iterations, Relative residual:    6      5.8856663E-12
+          No. of solver iterations, Relative residual:    6      5.8856674E-12
           Charge
-          No. of solver iterations, Relative residual:    6      8.1383528E-12
+          No. of solver iterations, Relative residual:    6      8.1383517E-12
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 514
-          Total iterations all cells: 2334
+          Total iterations all cells: 2335
           Number of cells with zero iterations: 0
           Maximum iterations for one cell: 7
 
@@ -754,28 +754,28 @@ WARNING:  2 print control intervals are less than defined time step length.
 Beginning time step no.     11
      Current time step length ...................................    100.     (yr)
      Beginning flow calculation.
-          No. of solver iterations, Relative residual:    9      1.3296678E-11
+          No. of solver iterations, Relative residual:    9      1.3296677E-11
      Beginning solute-transport calculation.
           H
           No. of solver iterations, Relative residual:    3      5.7984589E-11
           O
-          No. of solver iterations, Relative residual:    3      5.6516376E-11
+          No. of solver iterations, Relative residual:    3      5.6516379E-11
           As
-          No. of solver iterations, Relative residual:    3      5.4049465E-11
+          No. of solver iterations, Relative residual:    3      5.4049454E-11
           C
-          No. of solver iterations, Relative residual:    3      6.2156335E-11
+          No. of solver iterations, Relative residual:    3      6.2156340E-11
           Ca
-          No. of solver iterations, Relative residual:    3      7.3446744E-11
+          No. of solver iterations, Relative residual:    3      7.3446740E-11
           Cl
-          No. of solver iterations, Relative residual:    3      6.0843704E-11
+          No. of solver iterations, Relative residual:    3      6.0843701E-11
           Mg
-          No. of solver iterations, Relative residual:    3      4.2306208E-11
+          No. of solver iterations, Relative residual:    3      4.2306206E-11
           Na
-          No. of solver iterations, Relative residual:    3      5.9314796E-11
+          No. of solver iterations, Relative residual:    3      5.9314792E-11
           S
-          No. of solver iterations, Relative residual:    3      6.0844653E-11
+          No. of solver iterations, Relative residual:    3      6.0844650E-11
           Charge
-          No. of solver iterations, Relative residual:    3      5.5800967E-11
+          No. of solver iterations, Relative residual:    3      5.5800971E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 514
@@ -806,25 +806,25 @@ Beginning time step no.     12
           No. of solver iterations, Relative residual:    8      9.4185226E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    3      4.2361777E-11
+          No. of solver iterations, Relative residual:    3      4.2361779E-11
           O
-          No. of solver iterations, Relative residual:    3      4.2289889E-11
+          No. of solver iterations, Relative residual:    3      4.2289892E-11
           As
-          No. of solver iterations, Relative residual:    3      5.8404739E-11
+          No. of solver iterations, Relative residual:    3      5.8404706E-11
           C
-          No. of solver iterations, Relative residual:    3      4.6751827E-11
+          No. of solver iterations, Relative residual:    3      4.6751832E-11
           Ca
-          No. of solver iterations, Relative residual:    3      7.4425008E-11
+          No. of solver iterations, Relative residual:    3      7.4425006E-11
           Cl
-          No. of solver iterations, Relative residual:    3      6.1440080E-11
+          No. of solver iterations, Relative residual:    3      6.1440078E-11
           Mg
-          No. of solver iterations, Relative residual:    3      4.4367132E-11
+          No. of solver iterations, Relative residual:    3      4.4367130E-11
           Na
-          No. of solver iterations, Relative residual:    3      5.9700834E-11
+          No. of solver iterations, Relative residual:    3      5.9700831E-11
           S
-          No. of solver iterations, Relative residual:    3      6.1441200E-11
+          No. of solver iterations, Relative residual:    3      6.1441197E-11
           Charge
-          No. of solver iterations, Relative residual:    3      4.0093090E-11
+          No. of solver iterations, Relative residual:    3      4.0093092E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 514
@@ -855,25 +855,25 @@ Beginning time step no.     13
           No. of solver iterations, Relative residual:   11      2.8959780E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    5      3.1183442E-11
+          No. of solver iterations, Relative residual:    5      3.1183405E-11
           O
-          No. of solver iterations, Relative residual:    5      4.2958834E-11
+          No. of solver iterations, Relative residual:    5      4.2958810E-11
           As
-          No. of solver iterations, Relative residual:    6      3.9021373E-12
+          No. of solver iterations, Relative residual:    6      3.9021364E-12
           C
-          No. of solver iterations, Relative residual:    5      4.0156724E-11
+          No. of solver iterations, Relative residual:    5      4.0156683E-11
           Ca
-          No. of solver iterations, Relative residual:    5      9.3999539E-11
+          No. of solver iterations, Relative residual:    5      9.3999563E-11
           Cl
-          No. of solver iterations, Relative residual:    5      8.1136120E-11
+          No. of solver iterations, Relative residual:    5      8.1136142E-11
           Mg
-          No. of solver iterations, Relative residual:    5      3.3913327E-11
+          No. of solver iterations, Relative residual:    5      3.3913338E-11
           Na
-          No. of solver iterations, Relative residual:    5      8.0881760E-11
+          No. of solver iterations, Relative residual:    5      8.0881780E-11
           S
-          No. of solver iterations, Relative residual:    5      8.1136312E-11
+          No. of solver iterations, Relative residual:    5      8.1136335E-11
           Charge
-          No. of solver iterations, Relative residual:    5      3.6877840E-11
+          No. of solver iterations, Relative residual:    5      3.6877820E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 514
@@ -904,25 +904,25 @@ Beginning time step no.     14
           No. of solver iterations, Relative residual:   11      4.9301614E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    5      8.9582758E-11
+          No. of solver iterations, Relative residual:    5      8.9582716E-11
           O
-          No. of solver iterations, Relative residual:    6      2.3411842E-12
+          No. of solver iterations, Relative residual:    6      2.3411841E-12
           As
           No. of solver iterations, Relative residual:    6      1.2523137E-11
           C
-          No. of solver iterations, Relative residual:    6      2.6062930E-12
+          No. of solver iterations, Relative residual:    6      2.6062929E-12
           Ca
           No. of solver iterations, Relative residual:    6      4.6324784E-12
           Cl
-          No. of solver iterations, Relative residual:    6      4.2086451E-12
+          No. of solver iterations, Relative residual:    6      4.2086448E-12
           Mg
-          No. of solver iterations, Relative residual:    6      4.7082477E-12
+          No. of solver iterations, Relative residual:    6      4.7082478E-12
           Na
-          No. of solver iterations, Relative residual:    6      4.0500794E-12
+          No. of solver iterations, Relative residual:    6      4.0500796E-12
           S
-          No. of solver iterations, Relative residual:    6      4.2086464E-12
+          No. of solver iterations, Relative residual:    6      4.2086461E-12
           Charge
-          No. of solver iterations, Relative residual:    6      2.2438299E-12
+          No. of solver iterations, Relative residual:    6      2.2438301E-12
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 514
@@ -953,25 +953,25 @@ Beginning time step no.     15
           No. of solver iterations, Relative residual:    9      1.2658418E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    3      1.7897500E-11
+          No. of solver iterations, Relative residual:    3      1.7897491E-11
           O
-          No. of solver iterations, Relative residual:    3      2.5767152E-11
+          No. of solver iterations, Relative residual:    3      2.5767140E-11
           As
-          No. of solver iterations, Relative residual:    4      2.1022268E-13
+          No. of solver iterations, Relative residual:    4      2.1022250E-13
           C
-          No. of solver iterations, Relative residual:    3      2.5520469E-11
+          No. of solver iterations, Relative residual:    3      2.5520456E-11
           Ca
-          No. of solver iterations, Relative residual:    3      5.1155121E-11
+          No. of solver iterations, Relative residual:    3      5.1155130E-11
           Cl
-          No. of solver iterations, Relative residual:    3      5.1607700E-11
+          No. of solver iterations, Relative residual:    3      5.1607707E-11
           Mg
-          No. of solver iterations, Relative residual:    3      5.7646133E-11
+          No. of solver iterations, Relative residual:    3      5.7646141E-11
           Na
-          No. of solver iterations, Relative residual:    3      4.9014377E-11
+          No. of solver iterations, Relative residual:    3      4.9014384E-11
           S
-          No. of solver iterations, Relative residual:    3      5.1609562E-11
+          No. of solver iterations, Relative residual:    3      5.1609569E-11
           Charge
-          No. of solver iterations, Relative residual:    3      1.9654897E-11
+          No. of solver iterations, Relative residual:    3      1.9654887E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 514
@@ -1002,25 +1002,25 @@ Beginning time step no.     16
           No. of solver iterations, Relative residual:    9      2.0056615E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    3      1.4624015E-11
+          No. of solver iterations, Relative residual:    3      1.4624007E-11
           O
-          No. of solver iterations, Relative residual:    3      2.0052524E-11
+          No. of solver iterations, Relative residual:    3      2.0052514E-11
           As
-          No. of solver iterations, Relative residual:    4      2.1900222E-13
+          No. of solver iterations, Relative residual:    4      2.1900206E-13
           C
-          No. of solver iterations, Relative residual:    3      1.9778150E-11
+          No. of solver iterations, Relative residual:    3      1.9778139E-11
           Ca
-          No. of solver iterations, Relative residual:    3      4.9204301E-11
+          No. of solver iterations, Relative residual:    3      4.9204310E-11
           Cl
-          No. of solver iterations, Relative residual:    3      5.0958017E-11
+          No. of solver iterations, Relative residual:    3      5.0958024E-11
           Mg
-          No. of solver iterations, Relative residual:    3      5.8603171E-11
+          No. of solver iterations, Relative residual:    3      5.8603180E-11
           Na
-          No. of solver iterations, Relative residual:    3      4.8764268E-11
+          No. of solver iterations, Relative residual:    3      4.8764274E-11
           S
-          No. of solver iterations, Relative residual:    3      5.0959935E-11
+          No. of solver iterations, Relative residual:    3      5.0959943E-11
           Charge
-          No. of solver iterations, Relative residual:    3      1.6493700E-11
+          No. of solver iterations, Relative residual:    3      1.6493693E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 514
@@ -1051,31 +1051,31 @@ Beginning time step no.     17
           No. of solver iterations, Relative residual:   10      8.3442102E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    5      3.1171142E-11
+          No. of solver iterations, Relative residual:    5      3.1171132E-11
           O
-          No. of solver iterations, Relative residual:    5      3.6657058E-11
+          No. of solver iterations, Relative residual:    5      3.6657051E-11
           As
-          No. of solver iterations, Relative residual:    6      4.2434864E-12
+          No. of solver iterations, Relative residual:    6      4.2434866E-12
           C
-          No. of solver iterations, Relative residual:    5      3.8262105E-11
+          No. of solver iterations, Relative residual:    5      3.8262096E-11
           Ca
-          No. of solver iterations, Relative residual:    5      6.5447952E-11
+          No. of solver iterations, Relative residual:    5      6.5447983E-11
           Cl
-          No. of solver iterations, Relative residual:    5      6.5522748E-11
+          No. of solver iterations, Relative residual:    5      6.5522776E-11
           Mg
-          No. of solver iterations, Relative residual:    5      7.5174094E-11
+          No. of solver iterations, Relative residual:    5      7.5174049E-11
           Na
-          No. of solver iterations, Relative residual:    5      6.6468889E-11
+          No. of solver iterations, Relative residual:    5      6.6468907E-11
           S
-          No. of solver iterations, Relative residual:    5      6.5524910E-11
+          No. of solver iterations, Relative residual:    5      6.5524939E-11
           Charge
-          No. of solver iterations, Relative residual:    5      3.5520648E-11
+          No. of solver iterations, Relative residual:    5      3.5520640E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 514
-          Total iterations all cells: 2162
+          Total iterations all cells: 2164
           Number of cells with zero iterations: 0
-          Maximum iterations for one cell: 13
+          Maximum iterations for one cell: 15
 
      End of Time Step No.    17
      Time ..................................................    9000.00     (yr)
@@ -1117,31 +1117,31 @@ Beginning time step no.     19
           No. of solver iterations, Relative residual:   11      2.4737930E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    5      7.1037935E-11
+          No. of solver iterations, Relative residual:    5      7.1037921E-11
           O
-          No. of solver iterations, Relative residual:    5      7.5733181E-11
+          No. of solver iterations, Relative residual:    5      7.5733167E-11
           As
-          No. of solver iterations, Relative residual:    6      1.0859594E-11
+          No. of solver iterations, Relative residual:    6      1.0859596E-11
           C
-          No. of solver iterations, Relative residual:    5      8.4203117E-11
+          No. of solver iterations, Relative residual:    5      8.4203104E-11
           Ca
-          No. of solver iterations, Relative residual:    6      7.4341552E-12
+          No. of solver iterations, Relative residual:    6      7.4341557E-12
           Cl
-          No. of solver iterations, Relative residual:    6      7.5784543E-12
+          No. of solver iterations, Relative residual:    6      7.5784548E-12
           Mg
-          No. of solver iterations, Relative residual:    6      7.9114676E-12
+          No. of solver iterations, Relative residual:    6      7.9114685E-12
           Na
-          No. of solver iterations, Relative residual:    6      7.3895036E-12
+          No. of solver iterations, Relative residual:    6      7.3895041E-12
           S
-          No. of solver iterations, Relative residual:    6      7.5784599E-12
+          No. of solver iterations, Relative residual:    6      7.5784604E-12
           Charge
-          No. of solver iterations, Relative residual:    5      7.9879381E-11
+          No. of solver iterations, Relative residual:    5      7.9879368E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 514
-          Total iterations all cells: 2239
+          Total iterations all cells: 2236
           Number of cells with zero iterations: 0
-          Maximum iterations for one cell: 15
+          Maximum iterations for one cell: 13
 
      End of Time Step No.    19
      Time ..................................................    11000.0     (yr)
@@ -1166,29 +1166,29 @@ Beginning time step no.     20
           No. of solver iterations, Relative residual:   11      2.9884044E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    5      7.1806966E-11
+          No. of solver iterations, Relative residual:    5      7.1806953E-11
           O
-          No. of solver iterations, Relative residual:    5      7.2162359E-11
+          No. of solver iterations, Relative residual:    5      7.2162346E-11
           As
-          No. of solver iterations, Relative residual:    6      9.1008441E-12
+          No. of solver iterations, Relative residual:    6      9.1008458E-12
           C
-          No. of solver iterations, Relative residual:    5      8.2180443E-11
+          No. of solver iterations, Relative residual:    5      8.2180430E-11
           Ca
-          No. of solver iterations, Relative residual:    6      7.6264301E-12
+          No. of solver iterations, Relative residual:    6      7.6264308E-12
           Cl
-          No. of solver iterations, Relative residual:    6      7.9306573E-12
+          No. of solver iterations, Relative residual:    6      7.9306579E-12
           Mg
-          No. of solver iterations, Relative residual:    6      7.6941905E-12
+          No. of solver iterations, Relative residual:    6      7.6941918E-12
           Na
-          No. of solver iterations, Relative residual:    6      7.8257867E-12
+          No. of solver iterations, Relative residual:    6      7.8257873E-12
           S
-          No. of solver iterations, Relative residual:    6      7.9306527E-12
+          No. of solver iterations, Relative residual:    6      7.9306534E-12
           Charge
-          No. of solver iterations, Relative residual:    5      8.0236659E-11
+          No. of solver iterations, Relative residual:    5      8.0236646E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 514
-          Total iterations all cells: 2220
+          Total iterations all cells: 2219
           Number of cells with zero iterations: 0
           Maximum iterations for one cell: 13
 
@@ -1232,25 +1232,25 @@ Beginning time step no.     22
           No. of solver iterations, Relative residual:   11      2.9476635E-11
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    5      8.5297382E-11
+          No. of solver iterations, Relative residual:    5      8.5297368E-11
           O
-          No. of solver iterations, Relative residual:    5      7.5362788E-11
+          No. of solver iterations, Relative residual:    5      7.5362773E-11
           As
-          No. of solver iterations, Relative residual:    6      2.7201863E-12
+          No. of solver iterations, Relative residual:    6      2.7201866E-12
           C
-          No. of solver iterations, Relative residual:    5      8.7462220E-11
+          No. of solver iterations, Relative residual:    5      8.7462206E-11
           Ca
-          No. of solver iterations, Relative residual:    6      7.7803012E-12
+          No. of solver iterations, Relative residual:    6      7.7803024E-12
           Cl
-          No. of solver iterations, Relative residual:    6      8.0669301E-12
+          No. of solver iterations, Relative residual:    6      8.0669313E-12
           Mg
-          No. of solver iterations, Relative residual:    6      6.3221725E-12
+          No. of solver iterations, Relative residual:    6      6.3221741E-12
           Na
-          No. of solver iterations, Relative residual:    6      8.0077371E-12
+          No. of solver iterations, Relative residual:    6      8.0077383E-12
           S
-          No. of solver iterations, Relative residual:    6      8.0669144E-12
+          No. of solver iterations, Relative residual:    6      8.0669156E-12
           Charge
-          No. of solver iterations, Relative residual:    5      9.4019845E-11
+          No. of solver iterations, Relative residual:    5      9.4019829E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 514

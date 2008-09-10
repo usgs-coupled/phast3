@@ -114,7 +114,7 @@ WELL 1 Observation well 1 in arsenic zone
 HEAD_IC
         -zone   0. 0. 0. 90000. 48000. 400.
 #                -head   380.
-		 -head   file print_check_ss.head.dat
+		 -head   XYZ  grid  print_check_ss.head.dat
 CHEMISTRY_IC
         -zone   0. 0. 0. 90000. 48000. 400.
                 -solution               2
