@@ -299,39 +299,11 @@ replace (const char *str1, const char *str2, char *str)
 /*
  *   Make gap in str long enough for str2
  */
-#ifdef SKIP
-  if (l2 < l1)
-  {
-    for (ptr = (ptr_start + l1); ptr < ptr_start + l; ptr++)
-    {
-      ptr1 = ptr + l2 - l1;
-      *ptr1 = *ptr;
-      if (*ptr == '\0')
-	break;
-    }
-  }
-  else
-  {
-    for (ptr = (str + l); ptr >= ptr_start + l1; ptr--)
-    {
-      ptr1 = ptr + l2 - l1;
-      *ptr1 = *ptr;
-    }
-  }
-#endif
   /* The plus one includes the terminating NULL */
   memmove (ptr_start + l2, ptr_start + l1, l - (ptr_start - str + l1) + 1);
 /*
  *   Copy str2 into str
  */
-#ifdef SKIP
-  ptr1 = ptr_start;
-  for (ptr = (char *) str2; *ptr != '\0'; ptr++)
-  {
-    *ptr1 = *ptr;
-    ptr1++;
-  }
-#endif
   memcpy (ptr_start, str2, l2);
   return (true);
 }

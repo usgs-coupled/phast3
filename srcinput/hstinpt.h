@@ -354,6 +354,10 @@ struct cell {
 	std::vector<River_Polygon> *drain_polygons;  // all segments attached to uppermost cell
 	std::vector<River_Polygon> *drain_segments;  // segments attached to correct vertical cell
 	int count_river_polygons;
+	int river_starting_segment_fortran;
+	int drain_starting_segment_fortran;
+	int leaky_starting_segment_fortran;
+	int flux_starting_segment_fortran;
 
 	/* associated grid element (node is left, forward, lower corner) */
 	int is_element;

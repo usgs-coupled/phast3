@@ -370,7 +370,85 @@ int ijk_to_n(int i, int j, int k)
 	}
 	return(return_value);
 }
+/* ---------------------------------------------------------------------- */
+void n_to_ijk(int n, int &i, int &j, int &k)
+/* ---------------------------------------------------------------------- */
+{
+	assert (n >= 0 && n < count_cells);
 
+	i = cells[n].ix;
+	j = cells[n].iy;
+	k = cells[n].iz;
+	return;
+}
+
+/* ---------------------------------------------------------------------- */
+void neighbors(int n, std::vector<int> &stencil)
+/* ---------------------------------------------------------------------- */
+{
+	assert (n >= 0 && n < count_cells);
+	stencil.clear();
+
+	// stencil has 7 elements, index numbers for x-, x+, y-, y+, z-, z+, top of column
+	int i, j, k, m;
+	for (i = 0; i < 7; i++)
+	{
+		stencil.push_back(-1);
+	}
+	n_to_ijk(n, i, j, k);
+	if (i > 0)
+	{
+		m = ijk_to_n(i - 1, j, k);
+		if (cells[m].cell_active)
+		{
+			stencil[0] = m;
+		}
+	}
+	if (i < nx - 1)
+	{
+		m = ijk_to_n(i + 1, j, k);
+		if (cells[m].cell_active)
+		{
+			stencil[1] = m;
+		}
+	}
+	if (j > 0)
+	{
+		m = ijk_to_n(i, j - 1, k);
+		if (cells[m].cell_active)
+		{
+			stencil[2] = m;
+		}
+	}
+	if (j < ny - 1)
+	{
+		m = ijk_to_n(i, j + 1, k);
+		if (cells[m].cell_active)
+		{
+			stencil[3] = m;
+		}
+	}
+	if (k > 0)
+	{
+		m = ijk_to_n(i, j, k - 1);
+		if (cells[m].cell_active)
+		{
+			stencil[4] = m;
+		}
+	}
+	if (k < nz - 1)
+	{
+		m = ijk_to_n(i, j, k + 1);
+		if (cells[m].cell_active)
+		{
+			stencil[5] = m;
+		}
+	}
+	stencil[6] = ijk_to_n(i, j, nz - 1);
+
+
+	return;
+}
 /* ---------------------------------------------------------------------- */
 struct index_range *zone_to_range(struct zone *zone_ptr)
 	/* ---------------------------------------------------------------------- */
@@ -923,86 +1001,6 @@ int distribute_property_to_list_of_elements(
 	}
 	return(OK);
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-int get_double_property_value(struct cell *cell_ptr, struct property *property_ptr, 
-							  int node_sequence, double *value)
-/* ---------------------------------------------------------------------- */
-{
-	double slope, b;
-	*value = 0;
-	if (property_ptr->type == PROP_UNDEFINED) {
-		return(ERROR);
-	} else if (property_ptr->type == PROP_FIXED) {
-		*value = property_ptr->v[0];
-	} else if (property_ptr->type == PROP_LINEAR) {
-		/*
-		if ((property_ptr->dist2 - property_ptr->dist1) != 0) {
-		slope = (property_ptr->v[1] - property_ptr->v[0])/(property_ptr->dist2 - property_ptr->dist1);
-		} else {
-		slope = 0;
-		}
-		b = property_ptr->v[0] - slope * property_ptr->dist1;
-		if (property_ptr->coord == 'x') {
-		*value = cell_ptr->x * slope + b;
-		}
-		if (property_ptr->coord == 'y') {
-		*value = cell_ptr->y * slope + b;
-		}
-		if (property_ptr->coord == 'z') {
-		*value = cell_ptr->z * slope + b;
-		}
-		*/
-		double dist;
-
-		if (property_ptr->coord == 'x')
-		{
-			//dist = cell_ptr->elt_x;
-			dist = cell_ptr->x;
-		}
-		if (property_ptr->coord == 'y') {
-			//dist = cell_ptr->elt_y;
-			dist = cell_ptr->y;
-		}
-		if (property_ptr->coord == 'z') {
-			//dist = cell_ptr->elt_z;
-			dist = cell_ptr->z;
-		}
-		if (dist <= property_ptr->dist1)
-		{
-			*value = property_ptr->v[0];
-		}
-		else if (dist >= property_ptr->dist2)
-		{
-			*value = property_ptr->v[1];
-		}
-		else
-		{
-			if ((property_ptr->dist2 - property_ptr->dist1) != 0) 
-			{
-				slope = (property_ptr->v[1] - property_ptr->v[0])/(property_ptr->dist2 - property_ptr->dist1);
-			} else {
-				slope = 0;
-			}
-			b = property_ptr->v[0] - slope * property_ptr->dist1;
-			*value = dist * slope + b;
-		}
-	} else if (property_ptr->type == PROP_ZONE) {
-
-		if( node_sequence >= property_ptr->count_v) {
-			error_msg("OOPS in get_property_value", CONTINUE);
-			return(ERROR);
-		}
-		*value = property_ptr->v[node_sequence];
-	} else if (property_ptr->type == PROP_MIXTURE) {
-		input_error++;
-		error_msg("MIXTURE option not allowed for this property", CONTINUE);
-		return(ERROR);
-	}
-
-	return(OK);
-}
-#endif
 /* ---------------------------------------------------------------------- */
 int get_double_property_for_cell(struct cell *cell_ptr, struct property *property_ptr, 
 							  int node_sequence, double *value)
@@ -1076,53 +1074,6 @@ int get_double_property_for_cell(struct cell *cell_ptr, struct property *propert
 
 	return(OK);
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-int get_mix_property_for_cell(struct cell *cell_ptr, struct property *property_ptr, 
-								   int node_sequence, struct mix *mix_ptr)
-/* ---------------------------------------------------------------------- */
-{
-	if (property_ptr->type == PROP_UNDEFINED) {
-		return(ERROR);
-	} else if (property_ptr->type == PROP_FIXED) {
-		mix_ptr->i1 = (int) floor(property_ptr->v[0] + 1e-8);
-		mix_ptr->i2 = -1;
-		mix_ptr->f1 = 1.0;
-	} else if (property_ptr->type == PROP_LINEAR) {
-		mix_ptr->i1 = (int) floor(property_ptr->v[0] + 1e-8);
-		mix_ptr->i2 = (int) floor(property_ptr->v[1] + 1e-8);
-		if ((property_ptr->dist2 - property_ptr->dist1) == 0) {
-			mix_ptr->f1 = 1;
-		} else {
-			if (property_ptr->coord == 'x') {
-				mix_ptr->f1 = (property_ptr->dist2 - cell_ptr->x) / (property_ptr->dist2 - property_ptr->dist1);
-			}
-			if (property_ptr->coord == 'y') {
-				mix_ptr->f1 = (property_ptr->dist2 - cell_ptr->y) / (property_ptr->dist2 - property_ptr->dist1);
-			}
-			if (property_ptr->coord == 'z') {
-				mix_ptr->f1 = (property_ptr->dist2 - cell_ptr->z) / (property_ptr->dist2 - property_ptr->dist1);
-			}
-			if (mix_ptr->f1 > 1) mix_ptr->f1 = 1;
-			if (mix_ptr->f1 < 0) mix_ptr->f1 = 0;
-		}
-	} else if (property_ptr->type == PROP_ZONE) {
-
-		if( node_sequence >= property_ptr->count_v) {
-			error_msg("OOPS in get_property_value", CONTINUE);
-			return(ERROR);
-		}
-		mix_ptr->i1 = (int) (floor(property_ptr->v[node_sequence] + 1e-8));
-		mix_ptr->i2 = -1;
-		mix_ptr->f1 = 1.0;
-	} else if (property_ptr->type == PROP_MIXTURE) {
-		mix_ptr->i1 = (int) floor(property_ptr->v[0] + 1e-8);
-		mix_ptr->i2 = (int) floor(property_ptr->v[1] + 1e-8);
-		mix_ptr->f1 = property_ptr->v[node_sequence + 2];
-	} 
-	return(OK);
-}
-#endif
 /* ---------------------------------------------------------------------- */
 int get_mix_property_for_cell(struct cell *cell_ptr, struct property *property_ptr, 
 								   int node_sequence, struct mix *mix_ptr)
@@ -1187,68 +1138,6 @@ int get_mix_property_for_cell(struct cell *cell_ptr, struct property *property_p
 	}
 	return(OK);
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-int get_property_for_element(struct cell *cell_ptr, struct property *property_ptr, 
-							   int node_sequence, double *value, int *integer_value)
-/* ---------------------------------------------------------------------- */
-{
-	double slope, b;
-	*value = 0;
-	*integer_value = 0;
-	if (property_ptr->type == PROP_UNDEFINED) {
-		return(ERROR);
-	} else if (property_ptr->type == PROP_FIXED) {
-		*value = property_ptr->v[0];
-	} else if (property_ptr->type == PROP_LINEAR) 
-	{
-		double dist;
-
-		if (property_ptr->coord == 'x')
-		{
-			dist = cell_ptr->elt_x;
-		}
-		if (property_ptr->coord == 'y') {
-			dist = cell_ptr->elt_y;
-		}
-		if (property_ptr->coord == 'z') {
-			dist = cell_ptr->elt_z;
-		}
-		if (dist <= property_ptr->dist1)
-		{
-			*value = property_ptr->v[0];
-		}
-		else if (dist >= property_ptr->dist2)
-		{
-			*value = property_ptr->v[1];
-		}
-		else
-		{
-			if ((property_ptr->dist2 - property_ptr->dist1) != 0) 
-			{
-				slope = (property_ptr->v[1] - property_ptr->v[0])/(property_ptr->dist2 - property_ptr->dist1);
-			} else {
-				slope = 0;
-			}
-			b = property_ptr->v[0] - slope * property_ptr->dist1;
-			*value = dist * slope + b;
-		}
-	} else if (property_ptr->type == PROP_ZONE) {
-
-		if( node_sequence >= property_ptr->count_v) {
-			error_msg("OOPS in get_property_value", CONTINUE);
-			return(ERROR);
-		}
-		*value = property_ptr->v[node_sequence];
-	} else if (property_ptr->type == PROP_MIXTURE) {
-		input_error++;
-		error_msg("MIXTURE option not allowed for this property", CONTINUE);
-		return(ERROR);
-	}
-	*integer_value = (int) floor(*value + 1e-8);
-	return(OK);
-}
-#endif
 /* ---------------------------------------------------------------------- */
 int get_property_for_element(struct cell *cell_ptr, struct property *property_ptr, 
 							   int node_sequence, double *value, int *integer_value)

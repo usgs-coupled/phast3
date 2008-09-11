@@ -772,12 +772,7 @@ int trapezoid_points(gpc_vertex p0, gpc_vertex p1, River_Point *r_ptr, double wi
 	/*
 	 *   position of points
 	 */
-#ifdef SKIP
-	r_ptr->right.x = p0.x + b * width / 2;
-	r_ptr->right.y = p0.y - a * width / 2;
-	r_ptr->left.x  = p0.x - b * width / 2;
-	r_ptr->left.y  = p0.y + a * width / 2;
-#endif
+
 	/* right point 0 */
 	r_ptr->vertex[0].x = p0.x + b * width0 / 2;
 	r_ptr->vertex[0].y = p0.y - a * width0 / 2;
@@ -813,12 +808,6 @@ int interpolate(River_Polygon *river_polygon_ptr)
 	 */
 	Areasum2 = 0.0;
 	for (i = 0; i < poly->num_contours; i++) {
-#ifdef SKIP
-		if (i > 0) {
-			error_msg("Two contours in polygon", CONTINUE);
-			continue;
-		}
-#endif
 		vertex[0].x = poly->contour[i].vertex[0].x;
 		vertex[0].y = poly->contour[i].vertex[0].y;
 		centroid.x = 0;
@@ -860,122 +849,10 @@ int interpolate(River_Polygon *river_polygon_ptr)
 	 *   Put weighted values in River_Polygon
 	 */
 	river_polygon_ptr->w = w0;
-	/*
-	 *  Debug print
-	 */
-#ifdef DEBUG_RIVERS
-	output_msg(OUTPUT_STDERR,"@type xy\n");
-	for (i = 0; i < poly->num_contours; i++) {
-		if (i > 0) {
-			output_msg(OUTPUT_STDERR,"#   Contour %d\n", i);
-#ifdef SKIP
-			continue;
-#endif
-		}
-		for (j = 0; j < poly->contour[0].num_vertices; j++) {
-			output_msg(OUTPUT_STDERR,"\t%g\t%g\t%d\n", poly->contour[i].vertex[j].x, poly->contour[i].vertex[j].y, j);
-		}
-		output_msg(OUTPUT_STDERR,"\t%g\t%g\t%d\n", poly->contour[i].vertex[0].x, poly->contour[i].vertex[0].y, j);
-	}
-	output_msg(OUTPUT_STDERR,"\t%g\t%g\n", centroid.x, centroid.y);
-	output_msg(OUTPUT_STDERR,"&\n");
-#endif
+
 	return(OK);
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-int interpolate(River_Polygon *river_polygon_ptr)
-/* ---------------------------------------------------------------------- */
-{
-	River_Point *p0_ptr, *p1_ptr;
-	gpc_polygon *poly;
-	double x1, x2, x3, x4, x7;
-	double y1, y2, y3, y4, y7;
-	double a, b, c;
-	double f, f1, q;
-	double w0, w1;
-	double sign;
-	int n, i, j;
-	f = -99.;
-	f1 = -99.;
 
-	p0_ptr = &(rivers[river_polygon_ptr->river_number].points[river_polygon_ptr->point_number]);
-	p1_ptr = &(rivers[river_polygon_ptr->river_number].points[river_polygon_ptr->point_number + 1]);
-	poly = river_polygon_ptr->poly;
-	/*
-	 *   find average xy in polygon
-	 */
-	x7 = 0;
-	y7=0;
-	n = 0;
-	for (i = 0; i < poly->num_contours; i++) {
-		n += poly->contour[i].num_vertices;
-	}
-	for (i = 0; i < poly->num_contours; i++) {
-		for (j = 0; j < poly->contour[i].num_vertices; j ++) {
-			x7 += poly->contour[i].vertex[j].x / n;
-			y7 += poly->contour[i].vertex[j].y / n;
-		}
-	}
-	/*
-	 * solve quadratic for fraction of quadrilateral
-	 * such that the line passes through the target point
-	 */
-	x1 = p0_ptr->vertex[0].x;
-	x2 = p0_ptr->vertex[1].x;
-	x3 = p0_ptr->vertex[2].x;
-	x4 = p0_ptr->vertex[3].x;
-	y1 = p0_ptr->vertex[0].y;
-	y2 = p0_ptr->vertex[1].y;
-	y3 = p0_ptr->vertex[2].y;
-	y4 = p0_ptr->vertex[3].y;
-	river_polygon_ptr->x = x7;
-	river_polygon_ptr->y = y7;
-
-	/*  f-square factor */
-	a = -x2*y3 + x1*y3 + x2*y4 - x1*y4 + x3*y2 - x3*y1 - x4*y2 + x4*y1;
-	/*  f factor */
-	b = (-x3 + x4 + x2 - x1)*y7 + (-y4 - y2 + y1 + y3)*x7 - x2*y4 - x1*y3 + 2*x1*y4 + x4*y2 + x3*y1 - 2*x4*y1;
-	/*  constant */
-	c = (-x4 + x1)*y7 + (y4 - y1)*x7 - x1*y4 + x4*y1;
-	/*  solve for f */
-	if (fabs(a) > 1e-10) {
-		sign = 1;
-		if (b < 0) sign = -1;
-		q = -0.5*(b + sign*sqrt(b*b - 4*a*c));
-		f = q / a;
-		if (q != 0) {
-			f1 = c / q;
-		}
-	} else if (b != 0) {
-		f = -c/b;
-	} else {
-		error_msg("Failed in quadratic formula", STOP);
-	}
-#ifdef DEBUG_RIVERS
-	output_msg(OUTPUT_STDERR, "# f value: %7.3f\tf1 value: %7.3f\n", f, f1);
-#endif
-	/*
-	 *   Calculate weighting factors for River_Point 0 and 1
-	 */
-	if (f >= 0 && f <= 1.) {
-		w0 = 1 - f;
-		w1 = f;
-	} else if (f1 >= 0 && f1 <= 1.) {
-		w0 = 1 - f1;
-		w1 = f1;
-	} else {
-		output_msg(OUTPUT_STDERR, "What happened in interpolate?\n");
-		w0 = .5;
-		w1 = .5;
-	}
-	/*
-	 *   Put weighted values in River_Polygon
-	 */
-	river_polygon_ptr->w = w0;
-	return(OK);
-}
-#endif
 /* ---------------------------------------------------------------------- */
 void river_point_init(River_Point *rp_ptr)
 /* ---------------------------------------------------------------------- */

@@ -218,16 +218,7 @@ bool Line_intersect_simple_polygon(Point lp1, Point lp2, std::vector<Point>::ite
   std::vector<Point>::iterator k_it, l_it, n_it;
   n_it = intersect_pts.end();
   l_it = n_it - 1;
-#ifdef SKIP
-  for (k_it = intersect_pts.begin(); k_it != intersect_pts.end(); l_it = k_it++)
-  {
-    Point p = *l_it + 0.5 * (*k_it - *l_it);
-    if (Point_in_simple_polygon(p, begin, end)) {
-      intersect.push_back(*l_it);
-      intersect.push_back(*k_it);
-    }
-  }
-#endif
+
   for (k_it = intersect_pts.begin(); k_it != intersect_pts.end() - 1; k_it++)
   {
 	l_it = k_it + 1;

@@ -52,6 +52,8 @@ int get_property_for_element(struct cell *cell_ptr, struct property *property_pt
 		       int node_sequence, double *value, int *integer_value);
 Cell_Face guess_face(std::list<int> & list_of_numbers, struct zone *zone_ptr);
 int ijk_to_n(int i, int j, int k);
+void n_to_ijk(int n, int &i, int &j, int &k);
+void neighbors(int n, std::vector<int> &stencil);
 struct index_range *zone_to_range(struct zone *zone_ptr);
 struct index_range *zone_to_elt_range(struct zone *zone_ptr);
 int int_compare (const void *ptr1, const void *ptr2);

@@ -24,25 +24,11 @@ public:
 //    DIP          = 1,
     TOP          = 2,
     BOTTOM       = 3,
-#ifdef SKIP
-    PERIMETER_Z  = 4,
-    UNITS_TOP    = 5,
-    UNITS_BOTTOM = 6,
-    UNITS_PERIMETER = 7
-#endif
 	PERIMETER_COORD_SYS  = 8,
 	TOP_COORD_SYS        = 9,
 	BOTTOM_COORD_SYS     = 10
   };
-#ifdef SKIP
-  enum PERIMETER_OPTION
-  {
-    CONSTANT       = 0,
-    ATTRIBUTE      = 1,
-    USE_Z          = 2,
-    DEFAULT        = 3
-  };
-#endif
+
 public:
   // Virtual methods
   void Points_in_polyhedron(std::list<int> & list, std::vector<Point> &point_xyz);

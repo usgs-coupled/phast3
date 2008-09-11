@@ -60,9 +60,9 @@ int write_hst(void)
 		write_source_sink();
 		write_bc_static();
 		write_ic();
+		write_zone_budget();
 		write_calculation_static();
-		write_output_static();
-		//write_zone_budget();
+		write_output_static();	
 	} 
 	write_bc_transient();
 	write_calculation_transient();
@@ -587,39 +587,39 @@ int write_source_sink(void)
 int write_bc_static(void)
 /* ---------------------------------------------------------------------- */
 {
-/*
- *      Writes bc zones
- *
- *      Arguments:
- *         none
- *
- */
+	/*
+	*      Writes bc zones
+	*
+	*      Arguments:
+	*         none
+	*
+	*/
 
-  int i, j;
-  double elevation;
+	int i, j;
+	double elevation;
 	double river_k, thickness;
 	double area, w0, w1, leakance, z, z0, z1;
 	int river_number, point_number;
-/*
- *  Write zones
- */ 
+	/*
+	*  Write zones
+	*/ 
 	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
 	output_msg(OUTPUT_HST,"C.....Boundary condition information\n");
 	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
-/*
- *   Specified value
- */
+	/*
+	*   Specified value
+	*/
 	output_msg(OUTPUT_HST,"C.....     Specified value b.c.\n");
-  //output_msg(OUTPUT_HST,"C.2.15 .. IBC by x,y,z range {0.1-0.3} with no IMOD parameter;(O) -\n");
-  //output_msg(OUTPUT_HST,"C..          NSBC [1.6] > 0\n");
-  output_msg(OUTPUT_HST,"C.2.15 .. segment, cell number, ibc code\n");
+	//output_msg(OUTPUT_HST,"C.2.15 .. IBC by x,y,z range {0.1-0.3} with no IMOD parameter;(O) -\n");
+	//output_msg(OUTPUT_HST,"C..          NSBC [1.6] > 0\n");
+	output_msg(OUTPUT_HST,"C.2.15 .. segment, cell number, ibc code\n");
 
 	if (count_specified > 0) {
-    int segment = 1;
+		int segment = 1;
 		for (i = 0; i < nxyz; i++) {
 			if (cells[i].cell_active == FALSE) continue;
 #ifdef OLD
-      if (cells[i].bc_type == BC_info::BC_SPECIFIED) {
+			if (cells[i].bc_type == BC_info::BC_SPECIFIED) {
 				output_msg(OUTPUT_HST,"     %15.7e %15.7e %15.7e %15.7e %15.7e %15.7e\n",
 					cells[i].x * units.horizontal.input_to_si,
 					cells[i].x * units.horizontal.input_to_si,
@@ -630,11 +630,11 @@ int write_bc_static(void)
 				if (flow_only == TRUE) {
 					j = 0;
 				} else {
-				/* 1 specified pressure */
-				/* 2 temperature = 0 */
-				/* 3 solution  0 = associated, 1 = specified */
-	  std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin();
-	  if (rit->bc_solution_type == ASSOCIATED) {
+					/* 1 specified pressure */
+					/* 2 temperature = 0 */
+					/* 3 solution  0 = associated, 1 = specified */
+					std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin();
+					if (rit->bc_solution_type == ASSOCIATED) {
 						j = 0;
 					} else {
 						j = 1;
@@ -643,102 +643,104 @@ int write_bc_static(void)
 				output_msg(OUTPUT_HST,"10%d\n", j);
 			}
 #endif
-      if (cells[i].bc_type == BC_info::BC_SPECIFIED) {
-	if (flow_only == TRUE) {
-	  j = 0;
-	} else {
-	  /* 1 specified pressure */
-	  /* 2 temperature = 0 */
-	  /* 3 solution  0 = associated, 1 = specified */
-	  std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin();
-	  if (rit->bc_solution_type == ASSOCIATED) {
-	    j = 0;
-	  } else {
-	    j = 1;
-		}
-	}
-	output_msg(OUTPUT_HST,"%d %d 10%d\n", segment, i + 1, j);
-	segment++;
-      }
-    }
-		output_msg(OUTPUT_HST,"END\n");
-	}
-/*
- *   Flux
- */
-	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
-	output_msg(OUTPUT_HST,"C.....     Specified flux b.c.\n");
-  output_msg(OUTPUT_HST,"C.2.16 modified: segment number, cell_number, face, area\n");
-	if (count_flux > 0 ) {
-    int segment = 1;
-
-		for (i = 0; i < nxyz; i++) {
-			if (cells[i].cell_active == FALSE) continue;
-      if (!cells[i].flux) continue;
-      // Reverse iterator on list of BC_info
-      for (std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin() ; rit != cells[i].all_bc_info->rend(); rit++)
-      {
-	if (rit->bc_type != BC_info::BC_FLUX) continue;
-				
-	// area
-	area = rit->area;
-	if (rit->face == CF_Z) {
-	  area *= units.horizontal.input_to_si * units.horizontal.input_to_si;
-	} else {
-	  area *= units.horizontal.input_to_si * units.vertical.input_to_si;
+			if (cells[i].bc_type == BC_info::BC_SPECIFIED) {
+				if (flow_only == TRUE) {
+					j = 0;
+				} else {
+					/* 1 specified pressure */
+					/* 2 temperature = 0 */
+					/* 3 solution  0 = associated, 1 = specified */
+					std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin();
+					if (rit->bc_solution_type == ASSOCIATED) {
+						j = 0;
+					} else {
+						j = 1;
+					}
 				}
-
-	// segment number, cell number, face, area
-	output_msg(OUTPUT_HST,"   %d %d %d %20.10e\n", segment, i + 1, ((int) rit->face + 1), area);
-	segment++;
+				output_msg(OUTPUT_HST,"%d %d 10%d\n", segment, i + 1, j);
+				segment++;
 			}
 		}
 		output_msg(OUTPUT_HST,"END\n");
 	}
-/*
- *   LEAKY
- */
+	/*
+	*   Flux
+	*/
+	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
+	output_msg(OUTPUT_HST,"C.....     Specified flux b.c.\n");
+	output_msg(OUTPUT_HST,"C.2.16 modified: segment number, cell_number, face, area\n");
+	if (count_flux > 0 ) {
+		int segment = 1;
+
+		for (i = 0; i < nxyz; i++) {
+			if (cells[i].cell_active == FALSE) continue;
+			if (!cells[i].flux) continue;
+			cells[i].flux_starting_segment_fortran = segment;
+			// Reverse iterator on list of BC_info
+			for (std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin() ; rit != cells[i].all_bc_info->rend(); rit++)
+			{
+				if (rit->bc_type != BC_info::BC_FLUX) continue;
+
+				// area
+				area = rit->area;
+				if (rit->face == CF_Z) {
+					area *= units.horizontal.input_to_si * units.horizontal.input_to_si;
+				} else {
+					area *= units.horizontal.input_to_si * units.vertical.input_to_si;
+				}
+
+				// segment number, cell number, face, area
+				output_msg(OUTPUT_HST,"   %d %d %d %20.10e\n", segment, i + 1, ((int) rit->face + 1), area);
+				segment++;
+			}
+		}
+		output_msg(OUTPUT_HST,"END\n");
+	}
+	/*
+	*   LEAKY
+	*/
 	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
 	output_msg(OUTPUT_HST,"C.....     Aquifer and river leakage b.c.\n");
-  output_msg(OUTPUT_HST,"C.2.16.1 modified: segment number, cell_number, face, area, permeability, thickness, elevation\n");
+	output_msg(OUTPUT_HST,"C.2.16.1 modified: segment number, cell_number, face, area, permeability, thickness, elevation\n");
 
 	/* zone, index codes */
 	if (count_leaky > 0) {
-    int segment = 1;
+		int segment = 1;
 		for (i = 0; i < nxyz; i++) {
 			if (cells[i].cell_active == FALSE) continue;
-      if (!cells[i].leaky) continue;
-      // Reverse terator on list of BC_info
-      for (std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin() ; rit != cells[i].all_bc_info->rend(); rit++)
-      {
-	if (rit->bc_type != BC_info::BC_LEAKY) continue;
-	// area
-	area = rit->area;
-	if (rit->face == CF_Z) {
-	  area *= units.horizontal.input_to_si * units.horizontal.input_to_si;
-						} else {
-	  area *= units.horizontal.input_to_si * units.vertical.input_to_si;
-							}
-	// permeability
-	double permeability = rit->bc_k * units.leaky_k.input_to_si * fluid_viscosity / (fluid_density * GRAVITY);
-
-	// segment number, cell number, face, area, permeability, thickness, elevation
-
-	// thickness
-	thickness = rit->bc_thick * units.leaky_thick.input_to_si;
-	// elevation
-						elevation = cells[i].z * units.vertical.input_to_si;
-	if (rit->face == CF_Z)
-	{
-	  if (cells[i].exterior->zn) elevation -= thickness;
-	  if (cells[i].exterior->zp) elevation += thickness;
-					}
-
-	// write segment info
-	output_msg(OUTPUT_HST,"   %d %d %d %20.10e %20.10e %20.10e %20.10e\n", segment, i + 1, ((int) rit->face + 1), area, permeability, thickness, elevation);
-	segment++;
+			if (!cells[i].leaky) continue;
+			cells[i].leaky_starting_segment_fortran = segment;
+			// Reverse terator on list of BC_info
+			for (std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin() ; rit != cells[i].all_bc_info->rend(); rit++)
+			{
+				if (rit->bc_type != BC_info::BC_LEAKY) continue;
+				// area
+				area = rit->area;
+				if (rit->face == CF_Z) {
+					area *= units.horizontal.input_to_si * units.horizontal.input_to_si;
+				} else {
+					area *= units.horizontal.input_to_si * units.vertical.input_to_si;
 				}
+				// permeability
+				double permeability = rit->bc_k * units.leaky_k.input_to_si * fluid_viscosity / (fluid_density * GRAVITY);
+
+				// segment number, cell number, face, area, permeability, thickness, elevation
+
+				// thickness
+				thickness = rit->bc_thick * units.leaky_thick.input_to_si;
+				// elevation
+				elevation = cells[i].z * units.vertical.input_to_si;
+				if (rit->face == CF_Z)
+				{
+					if (cells[i].exterior->zn) elevation -= thickness;
+					if (cells[i].exterior->zp) elevation += thickness;
+				}
+
+				// write segment info
+				output_msg(OUTPUT_HST,"   %d %d %d %20.10e %20.10e %20.10e %20.10e\n", segment, i + 1, ((int) rit->face + 1), area, permeability, thickness, elevation);
+				segment++;
 			}
+		}
 		output_msg(OUTPUT_HST,"END\n");
 	}
 
@@ -755,7 +757,10 @@ int write_bc_static(void)
 		for (i = 0; i < count_cells; i++) {
 			//if (cells[i].cell_active == FALSE) continue;
 			if (cells[i].specified) continue;
-
+			if (cells[i].count_river_polygons > 0)
+			{
+				cells[i].river_starting_segment_fortran = segment;
+			}
 			for (j = 0; j < cells[i].count_river_polygons; j++) {
 				area = cells[i].river_polygons[j].area * units.horizontal.input_to_si * units.horizontal.input_to_si;
 				river_number = cells[i].river_polygons[j].river_number;
@@ -780,9 +785,6 @@ int write_bc_static(void)
 					z1 = rivers[river_number].points[point_number + 1].z * units.vertical.input_to_si;
 				}
 
-#ifdef SKIP
-				z = (rivers[river_number].points[point_number].z*w0 + rivers[river_number].points[point_number + 1].z*w1) * units.vertical.input_to_si;
-#endif
 				z = (z0*w0 + z1*w1);
 
 				/* segment number, cell no., area, leakance, z */
@@ -792,48 +794,49 @@ int write_bc_static(void)
 		}
 		output_msg(OUTPUT_HST,"END\n");
 	}
-/*
-  *   drain bc,
-  */
-  output_msg(OUTPUT_HST,"C.....          Drain leakage b.c.\n");
-  output_msg(OUTPUT_HST,"C.2.17.3 .. seg number, cell number, area, leakance, z\n");
-  output_msg(OUTPUT_HST,"C.2.17.4 .. End with END\n");
+	/*
+	*   drain bc,
+	*/
+	output_msg(OUTPUT_HST,"C.....          Drain leakage b.c.\n");
+	output_msg(OUTPUT_HST,"C.2.17.3 .. seg number, cell number, area, leakance, z\n");
+	output_msg(OUTPUT_HST,"C.2.17.4 .. End with END\n");
 
-  if (count_drain_segments > 0) 
-  {
-    int segment = 1;
-    for (i = 0; i < count_cells; i++) {
-      if (cells[i].cell_active == FALSE) continue;
-      if (cells[i].specified) continue;
-      if (cells[i].drain_segments->size() == 0) continue;
-      std::vector<River_Polygon>::iterator j_it = cells[i].drain_segments->begin();
-      for ( ; j_it != cells[i].drain_segments->end(); j_it++)
-      {
-	area = j_it->area * units.horizontal.input_to_si * units.horizontal.input_to_si;
-	int drain_number = j_it->river_number;
-	point_number = j_it->point_number;
-	w0 = j_it->w;
-	w1 = 1. - w0;
-	double drain_k = (drains[drain_number]->points[point_number].k*w0 + drains[drain_number]->points[point_number + 1].k*w1) * units.drain_bed_k.input_to_si;
-	thickness = (drains[drain_number]->points[point_number].thickness*w0 + drains[drain_number]->points[point_number + 1].thickness*w1) * units.drain_bed_thickness.input_to_si;
+	if (count_drain_segments > 0) 
+	{
+		int segment = 1;
+		for (i = 0; i < count_cells; i++) {
+			if (cells[i].cell_active == FALSE) continue;
+			if (cells[i].specified) continue;
+			if (cells[i].drain_segments->size() == 0) continue;
+			cells[i].drain_starting_segment_fortran = segment;
+			std::vector<River_Polygon>::iterator j_it = cells[i].drain_segments->begin();
+			for ( ; j_it != cells[i].drain_segments->end(); j_it++)
+			{
+				area = j_it->area * units.horizontal.input_to_si * units.horizontal.input_to_si;
+				int drain_number = j_it->river_number;
+				point_number = j_it->point_number;
+				w0 = j_it->w;
+				w1 = 1. - w0;
+				double drain_k = (drains[drain_number]->points[point_number].k*w0 + drains[drain_number]->points[point_number + 1].k*w1) * units.drain_bed_k.input_to_si;
+				thickness = (drains[drain_number]->points[point_number].thickness*w0 + drains[drain_number]->points[point_number + 1].thickness*w1) * units.drain_bed_thickness.input_to_si;
 
-	leakance =  drain_k / thickness * fluid_viscosity / (fluid_density * GRAVITY);
+				leakance =  drain_k / thickness * fluid_viscosity / (fluid_density * GRAVITY);
 
-	/*  get elevations, convert to SI*/
-	z0 = drains[drain_number]->points[point_number].z * units.vertical.input_to_si;
-	z1 = drains[drain_number]->points[point_number + 1].z * units.vertical.input_to_si;
-	z = (z0*w0 + z1*w1);
+				/*  get elevations, convert to SI*/
+				z0 = drains[drain_number]->points[point_number].z * units.vertical.input_to_si;
+				z1 = drains[drain_number]->points[point_number + 1].z * units.vertical.input_to_si;
+				z = (z0*w0 + z1*w1);
 
-	/* segment number, cell no., area, leakance, z */
-	output_msg(OUTPUT_HST,"%d %d %e %e %e\n", segment, i + 1, area, leakance, z);
-	segment++;
-      }
-    }
-    output_msg(OUTPUT_HST,"END\n");
-  }
-  /*
- *   Aquifer influence functions NOT USED
- */
+				/* segment number, cell no., area, leakance, z */
+				output_msg(OUTPUT_HST,"%d %d %e %e %e\n", segment, i + 1, area, leakance, z);
+				segment++;
+			}
+		}
+		output_msg(OUTPUT_HST,"END\n");
+	}
+	/*
+	*   Aquifer influence functions NOT USED
+	*/
 	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
 	output_msg(OUTPUT_HST,"C.....     Aquifer influence functions\n");
 	output_msg(OUTPUT_HST,"C.2.18.1 .. IBC by x,y,z range {0.1-0.3} with no IMOD parameter;(O) -\n");
@@ -845,9 +848,9 @@ int write_bc_static(void)
 	output_msg(OUTPUT_HST,"C.....          Transient, Carter-Tracy a.i.f.\n");
 	output_msg(OUTPUT_HST,"C.2.18.4B .. KOAR,ABOAR,VISOAR,POROAR,BOAR,RIOAR,ANGOAR;(O) -\n");
 	output_msg(OUTPUT_HST,"C..          IAIF [2.18.3] = 2\n");
-/*
- *   Heat bc NOT USED
- */
+	/*
+	*   Heat bc NOT USED
+	*/
 	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
 	output_msg(OUTPUT_HST,"C.....     Heat conduction b.c.\n");
 	output_msg(OUTPUT_HST,"C.2.19.1 .. ZHCBC(K);(O) - HEAT [1.4] and NHCBC [1.6] > 0\n");
@@ -857,9 +860,9 @@ int write_bc_static(void)
 	output_msg(OUTPUT_HST,"C..          HEAT [1.4] and NHCBC [1.6] > 0\n");
 	output_msg(OUTPUT_HST,"C.2.19.4 .. UKHCBC by x,y,z range {0.1-0.3} FOR HCBC NODES;(O) -\n");
 	output_msg(OUTPUT_HST,"C..          HEAT [1.4] and NHCBC [1.6] > 0\n");
-/*
- *   Free surface
- */
+	/*
+	*   Free surface
+	*/
 	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
 	output_msg(OUTPUT_HST,"C.....Free surface b.c.\n");
 	output_msg(OUTPUT_HST,"C.2.20 .. FRESUR[T/F] ADJ_WR_RATIO[T/N]\n");
@@ -1306,63 +1309,6 @@ int write_bc_transient(void)
 		output_msg(OUTPUT_HST,"     f f f\n");
 	}
 	if (count_specified > 0 && bc_specified_defined == TRUE) {
-#ifdef SKIP
-		output_msg(OUTPUT_HST,"C.3.3.2 .. PNP B.C. by x,y,z range {0.1-0.3};(O) - RDSPBC [3.3.1]\n");
-		/* write head data for every node */
-		output_msg(OUTPUT_HST,"     %15.7e %15.7e %15.7e %15.7e %15.7e %15.7e\n",
-			cells[0].x * units.horizontal.input_to_si, 
-			cells[nxyz-1].x * units.horizontal.input_to_si,
-			cells[0].y * units.horizontal.input_to_si, 
-			cells[nxyz-1].y * units.horizontal.input_to_si,
-			cells[0].z * units.vertical.input_to_si, 
-			cells[nxyz-1].z * units.vertical.input_to_si);
-		output_msg(OUTPUT_HST,"     0.0  4\n");
-
-		/* Convert bc_head to bc_pressure */
-		for (i = 0; i < nxyz; i++) {
-			cells[i].value = 0;
-      mix_init(&cells[i].temp_mix);
-			if (cells[i].cell_active == FALSE) continue;
-      if (cells[i].specified) {
-	std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin();
-				cells[i].value = fluid_density * GRAVITY * 
-	  (rit->bc_head * units.head.input_to_si -
-					 cells[i].z * units.vertical.input_to_si);
-	cells[i].temp_mix.i1 = rit->bc_solution.i1;
-	cells[i].temp_mix.i2 = rit->bc_solution.i2;
-	cells[i].temp_mix.f1 = rit->bc_solution.f1;
-			}
-		}
-		write_double_cell_property(offsetof(struct cell, value), 1.0);
-		output_msg(OUTPUT_HST,"END\n");
-
-		/* heat NOT USED */
-		output_msg(OUTPUT_HST,"C.3.3.3 .. TSBC by x,y,z range {0.1-0.3};(O) - RDSPBC [3.3.1] and\n");
-		output_msg(OUTPUT_HST,"C..          HEAT [1.4]\n");
-
-		/* write solution data for every node */
-		output_msg(OUTPUT_HST,"C.3.3.4 .. CSBC by x,y,z range {0.1-0.3}; (O) - RDSPBC [3.3.1] and\n");
-		output_msg(OUTPUT_HST,"C..          SOLUTE [1.4]\n");
-		if (flow_only == FALSE) {
-			output_msg(OUTPUT_HST,"     %15.7e %15.7e %15.7e %15.7e %15.7e %15.7e\n",
-				cells[0].x * units.horizontal.input_to_si, 
-				cells[nxyz-1].x * units.horizontal.input_to_si,
-				cells[0].y * units.horizontal.input_to_si, 
-				cells[nxyz-1].y * units.horizontal.input_to_si,
-				cells[0].z * units.vertical.input_to_si, 
-				cells[nxyz-1].z * units.vertical.input_to_si);
-			output_msg(OUTPUT_HST,"     0 4 0 4 0 4\n");
-      /*
-			write_integer_cell_property(offsetof(struct cell, bc_face[0].bc_solution.i1));
-			write_integer_cell_property(offsetof(struct cell, bc_face[0].bc_solution.i2));
-			write_double_cell_property(offsetof(struct cell, bc_face[0].bc_solution.f1), 1.0);
-      */
-      write_integer_cell_property(offsetof(struct cell, temp_mix.i1));
-      write_integer_cell_property(offsetof(struct cell, temp_mix.i2));
-      write_double_cell_property(offsetof(struct cell, temp_mix.f1), 1.0);
-			output_msg(OUTPUT_HST,"END\n");
-		}
-#endif
     output_msg(OUTPUT_HST,"C.3.3.2 .. segment, psbc, solution 1, solution 2, mix factor\n");
 
     int segment = 1;
@@ -1927,58 +1873,47 @@ int write_thru(int thru)
 	}
 	return(OK);
 }
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 int write_zone_budget(void)
 /* ---------------------------------------------------------------------- */
 {
 
-	// Number zone budgets
-	output_msg(OUTPUT_HST, "C  Number of zone budgets followed by sets of: ");
-	output_msg(OUTPUT_HST, "C  User number/n, zone/n, 0s and 1s to define zone/n END/n ");
+	// Zone budget information
+	output_msg(OUTPUT_HST, "C  Number of zone budgets \n");
 	output_msg(OUTPUT_HST, "%d\n", (int) Zone_budget::zone_budget_map.size());
 
+	int zone_budget_number = 1;
 	std::map<int, Zone_budget *>::iterator it;	
 	for (it = Zone_budget::zone_budget_map.begin(); it != Zone_budget::zone_budget_map.end(); it++)
 	{
 
-		// vector of zeros
-		std::vector<int> cells_in_budget;
+		// vector of bools
+		std::vector<bool> cells_in_budget;
 		cells_in_budget.reserve(nxyz);
 		int i;
 		for (i = 0; i < nxyz; i++)
 		{
-			cells_in_budget.push_back(0);
+			cells_in_budget.push_back(false);
 		}
 
 		zone z;
-
 		it->second->Add_cells(cells_in_budget, &z, nxyz, cell_xyz);
+		// cells_in_budget is nxyz list of 0 and 1
 
 		assert (z.zone_defined);
 
-		// Print zone identifying number and description
-		output_msg(OUTPUT_HST, "%d %s\n", it->second->Get_n_user(), it->second->Get_description().c_str());
-
-		// Zone for domain
-
-		output_msg(OUTPUT_HST,"%15.7e %15.7e %15.7e %15.7e %15.7e %15.7e\n",
-		z.x1 * units.horizontal.input_to_si, 
-		z.x2 * units.horizontal.input_to_si,
-		z.y1 * units.horizontal.input_to_si, 
-		z.y2 * units.horizontal.input_to_si,
-		z.z1 * units.vertical.input_to_si, 
-		z.z2 * units.vertical.input_to_si);
-
-		// zeros and ones
 		struct index_range * range_ptr = zone_to_range(&z);
-		int j, k, n;
-		n = ijk_to_n(range_ptr->i1, range_ptr->j1, range_ptr->k1);
-		int count_values = 0;
-		int print_return = 0;
-		int value = cells_in_budget[n];
-		int value_old = value;
+		std::vector< std::pair<int, int> > faces;
+		std::vector< int > specified_vector;             // list of cells
+		std::vector< int > leaky_vector;                 // list of segment numbers
+		std::vector< int > flux_vector;                  // list of segment numbers
+		std::vector< int > flux_conditional_vector;      // list of segment numbers
+		std::vector< int > river_vector;                 // list of segment numbers
+		std::vector< int > drain_vector;                 // list of segment numbers
+		std::vector< std::pair< int, int > > well_vector;   // list well, cell_fraction number
 
-		output_msg(OUTPUT_HST,"     ");
+		int j, k, l, n;
 		for (i = range_ptr->i1; i <= range_ptr->i2; i++)
 		{
 			for (j = range_ptr->j1; j <= range_ptr->j2; j++)
@@ -1986,35 +1921,522 @@ int write_zone_budget(void)
 				for (k = range_ptr->k1; k <= range_ptr->k2; k++)
 				{
 					n = ijk_to_n(i, j, k);
-					value = cells_in_budget[n];
-					if (value == value_old) {
-						count_values++;
-					} else {
-						if (count_values == 1) {
-							output_msg(OUTPUT_HST,"%d ", value_old);
-							print_return++;
-						} else {
-							output_msg(OUTPUT_HST,"%d*%d ", count_values, value_old);
-							print_return++;
-						}
-						value_old = value;
-						count_values = 1;
+					if (!cells_in_budget[n]) continue;
+					if (!cells[n].cell_active) continue;
+					std::vector<int> stencil;
+					neighbors(n, stencil);
+
+					// Cell face flows
+					// x-
+					if ((stencil[0] >= 0) && !cells_in_budget[stencil[0]])
+					{
+						faces.push_back(std::pair<int, int>(n, 3));
 					}
-					if (print_return > 5 ) {
-						output_msg(OUTPUT_HST,"\n     ");
-						print_return = 0;
+					// x+
+					if ((stencil[1] >= 0) && !cells_in_budget[stencil[1]])
+					{
+						faces.push_back(std::pair<int, int>(n, 4));
+					}
+					// y-
+					if ((stencil[2] >= 0) && !cells_in_budget[stencil[2]])
+					{
+						faces.push_back(std::pair<int, int>(n, 2));
+					}
+					// y+
+					if ((stencil[3] >= 0) && !cells_in_budget[stencil[3]])
+					{
+						faces.push_back(std::pair<int, int>(n, 5));
+					}
+					// z-
+					if ((stencil[4] >= 0) && !cells_in_budget[stencil[4]])
+					{
+						faces.push_back(std::pair<int, int>(n, 1));
+					}
+					// z+
+					if ((stencil[5] >= 0) && !cells_in_budget[stencil[5]])
+					{
+						faces.push_back(std::pair<int, int>(n, 6));
+					}
+
+					// Boundary condition flows
+					// specified value
+					if (cells[n].specified)
+					{
+						specified_vector.push_back(n);
+						break;
+					}
+
+					// leaky
+					if (cells[n].leaky)
+					{
+						int seg = cells[n].leaky_starting_segment_fortran;
+						// Reverse terator on list of BC_info
+						for (std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin() ; rit != cells[i].all_bc_info->rend(); rit++)
+						{
+							if (rit->bc_type != BC_info::BC_LEAKY) continue;
+							leaky_vector.push_back(seg++);
+						}
+					}
+
+					// drain
+					if (cells[n].drain_polygons->size() > 0)
+					{
+						int seg = cells[n].drain_starting_segment_fortran;
+						for (std::vector<River_Polygon>::iterator j_it = cells[i].drain_segments->begin(); j_it != cells[i].drain_segments->end(); j_it++)
+						{
+							drain_vector.push_back(seg++);
+						}
+					}
+
+					// flux to cell, all but Z flux
+					if (cells[n].flux) 
+					{
+						int seg = cells[n].flux_starting_segment_fortran;
+						// Reverse iterator on list of BC_info
+						for (std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin() ; rit != cells[i].all_bc_info->rend(); rit++)
+						{
+							if (rit->bc_type != BC_info::BC_FLUX) continue;
+							if (rit->face != CF_Z)
+							{
+								flux_vector.push_back(seg);
+							}
+							seg++;
+							// may want to skip z flux here and put in a conditional list
+						}
+					}
+
+					//  Make conditional list for z fluxes
+					for (l = stencil[6]; l >= n; l -= nx*ny)
+					{
+						if (cells[l].flux)
+						{
+							int seg = cells[l].flux_starting_segment_fortran;
+							for (std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin() ; rit != cells[i].all_bc_info->rend(); rit++)
+							{
+								if (rit->bc_type != BC_info::BC_FLUX) continue;
+								if (rit->face == CF_Z)
+								{
+									flux_conditional_vector.push_back(seg);
+								}
+								seg++;
+							}
+						}
+					}
+
+					// Make conditional list of river segments at top of column
+					if (cells[stencil[6]].count_river_polygons > 0)
+					{
+
+						int seg = cells[stencil[6]].river_starting_segment_fortran;
+						for (l = 0; l < cells[stencil[6]].count_river_polygons; l++)
+						{
+							river_vector.push_back(seg++);
+						}
 					}
 				}
 			}
 		}
-		if (count_values == 1) {
-			output_msg(OUTPUT_HST,"%d\n", value_old);
-		} else {
-			output_msg(OUTPUT_HST,"%d*%d\n", count_values, value_old);
+		for (i = 0; i < count_wells; i++)
+		{
+			for (j = 0; j < wells[i].count_cell_fraction; j++)
+			{
+				n = wells[i].cell_fraction[j].cell;
+				if (cells_in_budget[n])
+				{
+					well_vector.push_back(std::pair<int, int> (i + 1, j + 1));
+				}
+			}
 		}
-		output_msg(OUTPUT_HST,"END\n");
+
+		// Write one zone budget 
+		output_msg(OUTPUT_HST, "C Data for zone budget number %d \n", zone_budget_number);
+
+		// Inter cell flows
+		output_msg(OUTPUT_HST, "C Inter cell flows: list of <cell number, face> pairs followed by END\n");
+		for (std::vector<std::pair<int, int> >::iterator it = faces.begin(); it != faces.end(); it++)
+		{
+			output_msg(OUTPUT_HST, "     %d  %d\n", it->first, it->second );
+		}
+		output_msg(OUTPUT_HST, "END");
+
+		// Specified value cells
+		output_msg(OUTPUT_HST, "C Specified value cells: list of cell numbers followed by END\n");
+		for (std::vector<int>::iterator it = specified_vector.begin(); it != specified_vector.end(); it++)
+		{
+			output_msg(OUTPUT_HST, "     %d  \n", *it );
+		}
+		output_msg(OUTPUT_HST, "END");
+
+		// Leaky segments
+		output_msg(OUTPUT_HST, "C Leaky: list of segment numbers followed by END\n");
+		for (std::vector<int>::iterator it = leaky_vector.begin(); it != leaky_vector.end(); it++)
+		{
+			output_msg(OUTPUT_HST, "     %d  \n", *it );
+		}
+		output_msg(OUTPUT_HST, "END");
+
+		// Flux segments
+		output_msg(OUTPUT_HST, "C Flux: list of segment numbers followed by END\n");
+		for (std::vector<int>::iterator it = leaky_vector.begin(); it != leaky_vector.end(); it++)
+		{
+			output_msg(OUTPUT_HST, "     %d  \n", *it );
+		}
+		output_msg(OUTPUT_HST, "END");
 	}
 
+	return(OK);
+}
+#endif
+/* ---------------------------------------------------------------------- */
+int write_zone_budget(void)
+/* ---------------------------------------------------------------------- */
+{
+
+	// Zone budget information
+	output_msg(OUTPUT_HST, "C  Number of zone budgets \n");
+	output_msg(OUTPUT_HST, "%d\n", (int) Zone_budget::zone_budget_map.size());
+
+	int zone_budget_number = 1;
+	std::map<int, Zone_budget *>::iterator it;	
+	for (it = Zone_budget::zone_budget_map.begin(); it != Zone_budget::zone_budget_map.end(); it++)
+	{
+
+		// vector of bools
+		std::vector<bool> cells_in_budget;
+		cells_in_budget.reserve(nxyz);
+		int i;
+		for (i = 0; i < nxyz; i++)
+		{
+			cells_in_budget.push_back(false);
+		}
+
+		zone z;
+		it->second->Add_cells(cells_in_budget, &z, nxyz, cell_xyz);
+		// cells_in_budget is nxyz list of 0 and 1
+
+		assert (z.zone_defined);
+
+		struct index_range * range_ptr = zone_to_range(&z);
+
+		std::map< int, bool > budget_map;                            // list of cells
+		std::vector< std::pair<int, int> > faces;                    // <cell number, face> pair 
+		std::vector< int > specified_vector;                         // list of cells
+		std::vector< int > leaky_vector;                             // list of cells
+		std::vector< int > flux_vector;                              // list of cells
+		std::vector< std::pair<int, int> > flux_conditional_vector;  // <target cell, flux cell> pair
+		std::map< int, bool > flux_conditional_map;                  // flux cells that might apear in budget
+		std::vector< std::pair<int, int> > river_vector;             // <target cell, river cell> pair 
+		std::map< int, bool > river_map;                             // river cells that might appear in budget
+		std::vector< int > drain_vector;                             // list of cells
+		std::vector< int > well_vector;                              // list cells
+
+		int j, k, l, n;
+		for (k = range_ptr->k1; k <= range_ptr->k2; k++)
+		{
+			for (j = range_ptr->j1; j <= range_ptr->j2; j++)
+			{
+				for (i = range_ptr->i1; i <= range_ptr->i2; i++)
+				{
+					n = ijk_to_n(i, j, k);
+					if (!cells_in_budget[n]) continue;
+					if (!cells[n].cell_active) continue;
+					budget_map[n] = true;
+					std::vector<int> stencil;
+					neighbors(n, stencil);
+
+					// Cell face flows
+					// x-
+					if ((stencil[0] >= 0) && !cells_in_budget[stencil[0]])
+					{
+						faces.push_back(std::pair<int, int>(n, 3));
+					}
+					// x+
+					if ((stencil[1] >= 0) && !cells_in_budget[stencil[1]])
+					{
+						faces.push_back(std::pair<int, int>(n, 4));
+					}
+					// y-
+					if ((stencil[2] >= 0) && !cells_in_budget[stencil[2]])
+					{
+						faces.push_back(std::pair<int, int>(n, 2));
+					}
+					// y+
+					if ((stencil[3] >= 0) && !cells_in_budget[stencil[3]])
+					{
+						faces.push_back(std::pair<int, int>(n, 5));
+					}
+					// z-
+					if ((stencil[4] >= 0) && !cells_in_budget[stencil[4]])
+					{
+						faces.push_back(std::pair<int, int>(n, 1));
+					}
+					// z+
+					if ((stencil[5] >= 0) && !cells_in_budget[stencil[5]])
+					{
+						faces.push_back(std::pair<int, int>(n, 6));
+					}
+
+					// Boundary condition flows
+					// specified value
+					if (cells[n].specified)
+					{
+						specified_vector.push_back(n);
+						break;
+					}
+
+					// leaky
+					if (cells[n].leaky)
+					{
+						leaky_vector.push_back(n);
+					}
+
+					// flux to cell, all but Z flux
+					if (cells[n].flux) 
+					{
+						for (std::list<BC_info>::reverse_iterator rit = cells[n].all_bc_info->rbegin() ; rit != cells[n].all_bc_info->rend(); rit++)
+						{
+							if (rit->bc_type != BC_info::BC_FLUX) continue;
+							// skipping z flux here and put in a conditional list
+							if (rit->face != CF_Z || !free_surface)
+							{
+								flux_vector.push_back(n);
+								break;
+							}
+						}
+					}
+
+					//  Make conditional list for z fluxes
+					if (free_surface)
+					{
+						for (l = stencil[6]; l >= n; l -= nx*ny)
+						{
+							if (cells[l].flux)
+							{
+								for (std::list<BC_info>::reverse_iterator rit = cells[l].all_bc_info->rbegin() ; rit != cells[l].all_bc_info->rend(); rit++)
+								{
+									if (rit->bc_type != BC_info::BC_FLUX) continue;
+									if (rit->face == CF_Z)
+									{
+										flux_conditional_vector.push_back(std::pair<int, int> (n, l));
+										flux_conditional_map[l] = true;
+										break;
+									}
+								}
+							}
+						}
+					}
+
+					// Make conditional list of river segments at top of column
+					if (cells[stencil[6]].count_river_polygons > 0)
+					{
+						river_vector.push_back(std::pair<int, int> (n, stencil[6]));
+						river_map[stencil[6]] = true;
+					}
+
+					// drain
+					if (cells[n].drain_polygons->size() > 0)
+					{
+						drain_vector.push_back(n);
+	
+					}
+				}
+			}
+		}
+		std::map<int, bool> well_map;
+		for (i = 0; i < count_wells; i++)
+		{
+			for (j = 0; j < wells[i].count_cell_fraction; j++)
+			{
+				n = wells[i].cell_fraction[j].cell;
+				if (cells_in_budget[n])
+				{
+					well_map[n] = true;
+				}
+			}
+		}
+
+		// Write one zone budget 
+		output_msg(OUTPUT_HST, "C Data for zone budget number %d \n", zone_budget_number);
+		int return_max = 10;
+		int return_counter = 0;
+
+
+		// active cells in zone
+		output_msg(OUTPUT_HST, "C Cells in budget: count, followed by list of cells followed by END\n");
+		output_msg(OUTPUT_HST, " %d\n", budget_map.size());
+		for (std::map< int, bool >::iterator it = budget_map.begin(); it != budget_map.end(); it++)
+		{
+			output_msg(OUTPUT_HST, "     %d", it->first );
+			if (++return_counter == return_max)
+			{
+				output_msg(OUTPUT_HST, "\n");
+				return_counter = 0;
+			}
+		}
+		if (return_counter != 0) output_msg(OUTPUT_HST, "\n");
+		output_msg(OUTPUT_HST, "END\n");
+
+		// Inter cell flows
+		output_msg(OUTPUT_HST, "C Intercell flows: count, followed by list of <cell number, face> pairs followed by END\n");
+		output_msg(OUTPUT_HST, " %d\n", faces.size());
+		return_counter = 0;
+		return_max = 5;
+		for (std::vector<std::pair<int, int> >::iterator it = faces.begin(); it != faces.end(); it++)
+		{
+			output_msg(OUTPUT_HST, "     %d  %d", it->first, it->second );
+			if (++return_counter == return_max)
+			{
+				output_msg(OUTPUT_HST, "\n");
+				return_counter = 0;
+			}
+
+		}
+		if (return_counter != 0) output_msg(OUTPUT_HST, "\n");
+		output_msg(OUTPUT_HST, "END\n");
+
+		// Specified value cells
+		output_msg(OUTPUT_HST, "C Specified value cells: count, followed by list of cell numbers followed by END\n");
+		output_msg(OUTPUT_HST, " %d\n", specified_vector.size());
+		return_max = 10;
+		return_counter = 0;
+		for (std::vector<int>::iterator it = specified_vector.begin(); it != specified_vector.end(); it++)
+		{
+			output_msg(OUTPUT_HST, "     %d", *it );
+			if (++return_counter == return_max)
+			{
+				output_msg(OUTPUT_HST, "\n");
+				return_counter = 0;
+			}
+		}
+		if (return_counter != 0) output_msg(OUTPUT_HST, "\n");
+		output_msg(OUTPUT_HST, "END\n");
+
+		// Leaky cells
+		output_msg(OUTPUT_HST, "C Leaky cells: count, followed by list of cell numbers followed by END\n");
+		output_msg(OUTPUT_HST, " %d\n", leaky_vector.size());
+		return_counter = 0;
+		for (std::vector<int>::iterator it = leaky_vector.begin(); it != leaky_vector.end(); it++)
+		{
+			output_msg(OUTPUT_HST, "     %d", *it );
+			if (++return_counter == return_max)
+			{
+				output_msg(OUTPUT_HST, "\n");
+				return_counter = 0;
+			}
+		}
+		if (return_counter != 0) output_msg(OUTPUT_HST, "\n");
+		output_msg(OUTPUT_HST, "END\n");
+
+		// Flux cells
+		output_msg(OUTPUT_HST, "C Known flux cells: count, followed by list of cell numbers followed by END\n");
+		output_msg(OUTPUT_HST, " %d\n", flux_vector.size());
+		return_counter = 0;
+		for (std::vector<int>::iterator it = flux_vector.begin(); it != flux_vector.end(); it++)
+		{
+			output_msg(OUTPUT_HST, "     %d", *it );
+			if (++return_counter == return_max)
+			{
+				output_msg(OUTPUT_HST, "\n");
+				return_counter = 0;
+			}
+		}
+		if (return_counter != 0) output_msg(OUTPUT_HST, "\n");
+		output_msg(OUTPUT_HST, "END\n");
+
+		// Conditional flux cells
+#ifdef SKIP
+		output_msg(OUTPUT_HST, "C Conditional Z flux cells: count, followed by list of <target cell, flux cell> pairs followed by END\n");
+		output_msg(OUTPUT_HST, " %d\n", flux_conditional_vector.size());
+		return_counter = 0;
+		return_max = 5;
+		for (std::vector<std::pair< int,int> >::iterator it = flux_conditional_vector.begin(); it != flux_conditional_vector.end(); it++)
+		{
+			output_msg(OUTPUT_HST, "     %d  %d\n", it->first, it->second );
+			if (++return_counter == return_max)
+			{
+				output_msg(OUTPUT_HST, "\n");
+				return_counter = 0;
+			}
+		}
+#endif
+		output_msg(OUTPUT_HST, "C Conditional Z flux cells: count, followed by list of cells followed by END\n");
+		output_msg(OUTPUT_HST, " %d\n", flux_conditional_map.size());
+		return_counter = 0;
+		for (std::map< int, bool >::iterator it = flux_conditional_map.begin(); it != flux_conditional_map.end(); it++)
+		{
+			output_msg(OUTPUT_HST, "     %d", it->first );
+			if (++return_counter == return_max)
+			{
+				output_msg(OUTPUT_HST, "\n");
+				return_counter = 0;
+			}
+		}
+		if (return_counter != 0) output_msg(OUTPUT_HST, "\n");
+		output_msg(OUTPUT_HST, "END\n");
+
+		// Conditional river segments
+#ifdef SKIP
+		output_msg(OUTPUT_HST, "C River cells: count, followed by list of <target cell, river cell> pairs followed by END\n");
+		output_msg(OUTPUT_HST, " %d\n", river_vector.size());
+		return_counter = 0;
+			for (std::vector<std::pair< int,int> >::iterator it = river_vector.begin(); it != river_vector.end(); it++)
+			{
+				output_msg(OUTPUT_HST, "     %d  %d\n", it->first, it->second );
+				if (++return_counter == return_max)
+				{
+					output_msg(OUTPUT_HST, "\n");
+					return_counter = 0;
+				}
+			}
+#endif
+		output_msg(OUTPUT_HST, "C Conditional river cells: count, followed by list of cells followed by END\n");
+		output_msg(OUTPUT_HST, " %d\n", river_map.size());
+		return_counter = 0;
+		for (std::map< int, bool >::iterator it = river_map.begin(); it != river_map.end(); it++)
+		{
+			output_msg(OUTPUT_HST, "     %d", it->first );
+			if (++return_counter == return_max)
+			{
+				output_msg(OUTPUT_HST, "\n");
+				return_counter = 0;
+			}
+		}
+		if (return_counter != 0) output_msg(OUTPUT_HST, "\n");
+		output_msg(OUTPUT_HST, "END\n");
+
+		// Drain cells
+		output_msg(OUTPUT_HST, "C Drain cells: count, followed by list of cell numbers followed by END\n");
+		output_msg(OUTPUT_HST, " %d\n", drain_vector.size());
+		return_counter = 0;
+		for (std::vector<int>::iterator it = drain_vector.begin(); it != drain_vector.end(); it++)
+		{
+			output_msg(OUTPUT_HST, "     %d", *it );
+			if (++return_counter == return_max)
+			{
+				output_msg(OUTPUT_HST, "\n");
+				return_counter = 0;
+			}
+		}
+		if (return_counter != 0) output_msg(OUTPUT_HST, "\n");
+		output_msg(OUTPUT_HST, "END\n");
+
+		// Well cells
+		output_msg(OUTPUT_HST, "C Well cells: count, followed by list of cell numbers followed by END\n");
+		output_msg(OUTPUT_HST, " %d\n", well_map.size());
+		return_counter = 0;
+		for (std::map<int, bool>::iterator it = well_map.begin(); it != well_map.end(); it++)
+		{
+			output_msg(OUTPUT_HST, "     %d", it->first);
+			if (++return_counter == return_max)
+			{
+				output_msg(OUTPUT_HST, "\n");
+				return_counter = 0;
+			}
+		}
+		if (return_counter != 0) output_msg(OUTPUT_HST, "\n");
+		output_msg(OUTPUT_HST, "END\n");
+
+	}
 	return(OK);
 }
 

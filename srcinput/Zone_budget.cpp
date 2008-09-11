@@ -12,69 +12,7 @@ Zone_budget::~Zone_budget(void)
 {
 	delete this->polyh;
 }
-#ifdef SKIP
-bool Zone_budget::Add_cells(std::vector<int> &cells_in_budget, int nxyz, std::vector<Point> *cell_xyz)
-{
-
-	if (this->polyh != NULL) 
-	{
-#ifdef SKIP
-		struct index_range *range_ptr;
-		struct zone *zone_ptr = this->polyh->Get_bounding_box();
-		range_ptr = zone_to_range(zone_ptr);
-		std::list<int> list_of_cells;
-		range_to_list(range_ptr, list_of_cells);
-		free_check_null(range_ptr);
-		range_ptr = NULL;
-#endif
-		// Put all cells in list, avoids having to include range definitions from hstinpt.h
-		// Some cells should be eliminated easily by zone check in Points_in_polyhedron
-		std::list<int> list_of_cells;
-		int i;
-		for (i = 0; i < nxyz; i++)
-		{
-			list_of_cells.push_back(i);
-		}
-
-		// Find cells in polyhedron
-		this->polyh->Points_in_polyhedron(list_of_cells, *cell_xyz);
-		if (list_of_cells.size() == 0) 
-		{
-			error_msg("Bad zone or wedge definition for Zone_budget", EA_CONTINUE);
-			return(false);
-		}
-
-		// Put cells in master list
-		std::list<int>::iterator lit;
-		for (lit = list_of_cells.begin(); lit != list_of_cells.end(); lit++)
-		{
-			cells_in_budget[*lit] = 1;
-		}
-	}
-	if (this->combo.size() > 0)
-	{
-		std::vector<int>::iterator it;
-		for (it = this->combo.begin(); it != this->combo.end(); it++)
-		{
-			std::map<int, Zone_budget *>::iterator zbit;
-			zbit = Zone_budget::zone_budget_map.find(*it);
-			if (zbit != Zone_budget::zone_budget_map.end())
-			{
-				zbit->second->Add_cells(cells_in_budget, nxyz, cell_xyz);
-			} 
-			else
-			{
-				std::ostringstream estring;
-				estring << "Could not find budget zone " << *it << " included in budget zone " << this->n_user  << std::endl;
-				error_msg(estring.str().c_str(), EA_CONTINUE);
-				return false;
-			}
-		}
-	}
-	return true;
-}
-#endif
-bool Zone_budget::Add_cells(std::vector<int> &cells_in_budget, zone *z, int nxyz, std::vector<Point> *cell_xyz)
+bool Zone_budget::Add_cells(std::vector<bool> &cells_in_budget, zone *z, int nxyz, std::vector<Point> *cell_xyz)
 {
 
 	if (this->polyh != NULL) 
@@ -104,15 +42,6 @@ bool Zone_budget::Add_cells(std::vector<int> &cells_in_budget, zone *z, int nxyz
 		z->y2 = max.y();
 		z->z2 = max.z();
 
-#ifdef SKIP
-		struct index_range *range_ptr;
-		struct zone *zone_ptr = this->polyh->Get_bounding_box();
-		range_ptr = zone_to_range(zone_ptr);
-		std::list<int> list_of_cells;
-		range_to_list(range_ptr, list_of_cells);
-		free_check_null(range_ptr);
-		range_ptr = NULL;
-#endif
 		// Put all cells in list, avoids having to include range definitions from hstinpt.h
 		// Some cells should be eliminated easily by zone check in Points_in_polyhedron
 		std::list<int> list_of_cells;

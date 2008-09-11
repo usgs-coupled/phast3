@@ -22,7 +22,7 @@ public:
 	std::vector<int> & Get_combo(void)            {return this->combo;};
 
 	//bool               Add_cells(std::vector<int> &cells_in_budget, int nxyz, std::vector<Point> *cell_xyz);
-	bool               Add_cells(std::vector<int> &cells_in_budget, zone *z, int nxyz, std::vector<Point> *cell_xyz);
+	bool               Add_cells(std::vector<bool> &cells_in_budget, zone *z, int nxyz, std::vector<Point> *cell_xyz);
 
 protected:
 	int               n_user;

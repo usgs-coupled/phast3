@@ -528,23 +528,6 @@ int setup_drains(void)
 	*/
 	for (i = 0; i < count_cells; i++) {
 
-#ifdef SKIP
-		for (j = 0; j < (int) cells[i].drain_polygons->size(); j++) 
-		{
-			/*
-			*   Interpolate value for drain_polygon
-			*/
-			cells[i].drain_polygons[j]->area = gpc_polygon_area(cells[i].drain_polygons[j]->poly);
-
-#ifdef DEBUG_drainS
-			output_msg(OUTPUT_STDERR,"#cell: %d\tarea: %e\n", i, cells[i].drain_polygons[j].area);
-#endif
-			interpolate_drain(&cells[i].drain_polygons[j]);
-#ifdef DEBUG_drainS
-			output_msg(OUTPUT_STDERR,"\t%g\t%g\n", cells[i].drain_polygons[j].x, cells[i].drain_polygons[j].y);
-			gpc_polygon_write(cells[i].drain_polygons[j].poly);
-#endif
-#endif
 			std::vector<River_Polygon>::iterator j_it = cells[i].drain_polygons->begin();
 			for (; j_it != cells[i].drain_polygons->end(); j_it++)
 			{
@@ -647,12 +630,6 @@ int interpolate_drain(River_Polygon *drain_polygon_ptr)
 	 */
 	Areasum2 = 0.0;
 	for (i = 0; i < poly->num_contours; i++) {
-#ifdef SKIP
-		if (i > 0) {
-			error_msg("Two contours in polygon", CONTINUE);
-			continue;
-		}
-#endif
 		vertex[0].x = poly->contour[i].vertex[0].x;
 		vertex[0].y = poly->contour[i].vertex[0].y;
 		centroid.x = 0;
@@ -694,26 +671,7 @@ int interpolate_drain(River_Polygon *drain_polygon_ptr)
 	 *   Put weighted values in drain_Polygon
 	 */
 	drain_polygon_ptr->w = w0;
-	/*
-	 *  Debug print
-	 */
-#ifdef DEBUG_drainS
-	output_msg(OUTPUT_STDERR,"@type xy\n");
-	for (i = 0; i < poly->num_contours; i++) {
-		if (i > 0) {
-			output_msg(OUTPUT_STDERR,"#   Contour %d\n", i);
-#ifdef SKIP
-			continue;
-#endif
-		}
-		for (j = 0; j < poly->contour[0].num_vertices; j++) {
-			output_msg(OUTPUT_STDERR,"\t%g\t%g\t%d\n", poly->contour[i].vertex[j].x, poly->contour[i].vertex[j].y, j);
-		}
-		output_msg(OUTPUT_STDERR,"\t%g\t%g\t%d\n", poly->contour[i].vertex[0].x, poly->contour[i].vertex[0].y, j);
-	}
-	output_msg(OUTPUT_STDERR,"\t%g\t%g\n", centroid.x, centroid.y);
-	output_msg(OUTPUT_STDERR,"&\n");
-#endif
+
 	return(OK);
 }
 /* ---------------------------------------------------------------------- */
@@ -732,19 +690,6 @@ void Drain::Convert_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM target,
 	switch (target)
 	{
 	case PHAST_Transform::GRID:
-#ifdef SKIP
-		for (i=0; i < this->count_points; i++) 
-		{
-			if (this->points[i].x_defined == FALSE || this->points[i].y_defined == FALSE) {
-				input_error++;
-				continue;
-			}
-			Point p(this->points[i].x, this->points[i].y, 0.0);
-			map2grid->Transform(p);
-			this->points[i].x = p.x();
-			this->points[i].y = p.y();
-		}
-#endif
 		for (std::vector<River_Point>::iterator it = this->points.begin(); it != this->points.end(); it++)
 		{
 			if (it->x_defined == FALSE || it->y_defined == FALSE || it->y_defined == FALSE) {

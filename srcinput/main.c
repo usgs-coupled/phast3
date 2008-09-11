@@ -8,7 +8,7 @@
 #include "ArcRaster.h"
 #include "Zone_budget.h"
 // testing ...
-#include "PHAST_Transform.h"
+
 //... testing
 #if defined(__WPHAST__)
 #define main not_used
@@ -80,35 +80,7 @@ int main(int argc, char *argv[])
 		process_chem_names();
 	}
 	*/
-#ifdef SKIP
-	// test transformation
-	//PHAST_Transform map_to_grid(grid_origin[0], grid_origin[1], grid_origin[2], grid_angle);
-	PHAST_Transform map_to_grid(
-		grid_origin[0], grid_origin[1], grid_origin[2], 
-		grid_angle,
-		units.map_horizontal.input_to_si/units.horizontal.input_to_si,
-		units.map_horizontal.input_to_si/units.horizontal.input_to_si,
-		units.map_vertical.input_to_si/units.vertical.input_to_si
-		);
-	Point p;
-	int k, l;
 
-	for (k = -1; k < 2; k++)
-	{
-		for (l = -1; l < 2; l++)
-		{
-			
-			p.set_x((double) k);
-			p.set_y((double) l);
-			std::cerr << "Point in:  " << p.x() << "   " << p.y() << "   " << p.z() << std::endl;
-			map_to_grid.Transform(p);
-			std::cerr << "Point out: " << p.x() << "   " << p.y() << "   " << p.z() << std::endl;
-			map_to_grid.Inverse_transform(p);
-			std::cerr << "Point inverse: " << p.x() << "   " << p.y() << "   " << p.z() << std::endl;
-		}
-	}
-	exit(4);
-#endif
 	check_hst_units();
 	check_time_series_data();
 	if (input_error == 0) {

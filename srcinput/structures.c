@@ -180,18 +180,6 @@ int cell_init(struct cell *cell_ptr)
 	/* boundary conditions */
 
 	cell_ptr->bc_type = BC_info::BC_UNDEFINED;
-#ifdef SKIP
-	int i;
-	for (i = 0; i < 3; i++) {
-		cell_ptr->bc_face[i].bc_type = BC_info::BC_UNDEFINED;
-		cell_ptr->bc_face[i].bc_head_defined = FALSE;
-		cell_ptr->bc_face[i].bc_flux_defined = FALSE;
-		cell_ptr->bc_face[i].bc_k_defined = FALSE;
-		cell_ptr->bc_face[i].bc_thick_defined = FALSE;
-		cell_ptr->bc_face[i].bc_solution_type = UNDEFINED;
-		mix_init(&cell_ptr->bc_face[i].bc_solution);
-	}
-#endif
 	cell_ptr->all_bc_info = new std::list<BC_info>;
 	cell_ptr->specified = cell_ptr->flux = cell_ptr->leaky = false;
 
@@ -199,6 +187,10 @@ int cell_init(struct cell *cell_ptr)
 	cell_ptr->river_polygons = (River_Polygon *) malloc((size_t) sizeof(River_Polygon));
 	if (cell_ptr->river_polygons == NULL) malloc_error();
 	cell_ptr->count_river_polygons = 0;
+	cell_ptr->river_starting_segment_fortran = 0;
+	cell_ptr->drain_starting_segment_fortran = 0;
+	cell_ptr->flux_starting_segment_fortran = 0;
+	cell_ptr->leaky_starting_segment_fortran = 0;
 
 	/* Drains */
 	cell_ptr->drain_polygons = new std::vector<River_Polygon>;

@@ -3369,35 +3369,6 @@ int read_flux_bc(void)
 				sprintf(error_string,"Expected coordinate direction (X, Y, or Z) for flux face %s", tag);
 				error_msg(error_string, CONTINUE);
 			} 
-#ifdef SKIP
-			replace("p", "+", token);
-			replace("m", "-", token);
-			replace("n", "-", token);
-			if (strcmp(token, "x+") == 0) {
-				bc_ptr->cell_face = CF_XP;
-			} else if (strcmp(token, "y+") == 0) {
-				bc_ptr->cell_face = CF_YP;
-			} else if (strcmp(token, "z+") == 0) {
-				bc_ptr->cell_face = CF_ZP;
-			} else if (strcmp(token, "x-") == 0) {
-				bc_ptr->cell_face = CF_XN;
-			} else if (strcmp(token, "y-") == 0) {
-				bc_ptr->cell_face = CF_YN;
-			} else if (strcmp(token, "z-") == 0) {
-				bc_ptr->cell_face = CF_ZN;
-			} else if (strcmp(token, "x") == 0) {
-				bc_ptr->cell_face = CF_X;
-			} else if (strcmp(token, "y") == 0) {
-				bc_ptr->cell_face = CF_Y;
-			} else if (strcmp(token, "z") == 0) {
-				bc_ptr->cell_face = CF_Z;
-			} else 
-			{
-				input_error++;
-				sprintf(error_string,"Expected signed coordinate direction (X+, X-, Y+, Y-, Z+, or Z-) for flux face %s", tag);
-				error_msg(error_string, CONTINUE);
-			}
-#endif
 			bc_ptr->face_defined = TRUE;
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
