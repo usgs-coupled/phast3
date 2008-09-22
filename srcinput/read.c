@@ -7714,7 +7714,7 @@ int read_zone_budget(void)
 			/*
 			*   Allocate space for head_ic, read zone data
 			*/
-			zb->Set_polyh(read_cube( &next_char ) );
+			zb->Set_polyh(read_wedge( &next_char ) );
 			{
 				Wedge *w_ptr = dynamic_cast<Wedge *> (zb->Get_polyh());
 				if (zb->Get_polyh() == NULL || w_ptr->orientation == Wedge::WEDGE_ERROR) {

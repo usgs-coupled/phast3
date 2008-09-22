@@ -3106,7 +3106,7 @@ void process_bc (struct cell *cell_ptr)
 		BC_info::BC_TYPE bctype;
 		if (type == 0) bctype = BC_info::BC_FLUX;
 		if (type == 1) bctype = BC_info::BC_LEAKY;
-		for (int face = 0; face < 4; face++)
+		for (int face = 0; face < 3; face++)
 		{
 			Cell_Face cf = (Cell_Face) face;
 			// Intersect areas for all other boundary types
