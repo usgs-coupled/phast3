@@ -18,6 +18,7 @@ static void distribute_leaky_bc (int i,std::list<int> &pts, char *tag);
 static void distribute_specified_bc (int i,std::list<int> &pts, char *tag); 
 static void cells_with_exterior_faces_in_zone(std::list<int> &pts, struct zone *zone_ptr);
 static void faces_intersect_polyhedron(int i, std::list<int> & list_of_numbers, Cell_Face face);
+static void any_faces_intersect_polyhedron(int i, std::list<int> & list_of_numbers, Cell_Face face);
 void process_bc (struct cell *cell_ptr);
 static void Tidy_cubes (PHAST_Transform::COORDINATE_SYSTEM target, PHAST_Transform *map2grid);
 static void Tidy_properties (PHAST_Transform::COORDINATE_SYSTEM target, PHAST_Transform *map2grid);
@@ -1425,17 +1426,24 @@ int setup_bc(void)
 			if (bc[i]->bc_type == BC_info::BC_SPECIFIED)
 			{
 				range_ptr = zone_to_range(zone_ptr);
-				range_to_list(range_ptr, list_of_cells);
 				if (range_ptr == NULL) {
 					input_error++;
 					sprintf(error_string, "Bad zone or wedge definition %s", tag);
 					error_msg(error_string, CONTINUE);
 					break;
 				}
+				if (bc[i]->cell_face == CF_UNKNOWN || bc[i]->cell_face == CF_NONE)
+				{
+					range_to_list(range_ptr, list_of_cells);
+					bc[i]->polyh->Points_in_polyhedron(list_of_cells, *cell_xyz);
+				} else
+				{
+					cells_with_exterior_faces_in_zone(list_of_cells, zone_ptr);
+					any_faces_intersect_polyhedron(i, list_of_cells, bc[i]->cell_face);
+				}
 				free_check_null(range_ptr);
-				bc[i]->polyh->Points_in_polyhedron(list_of_cells, *cell_xyz);
-				bc[i]->cell_face = CF_NONE;
-				bc[i]->face = 0;
+				//bc[i]->cell_face = CF_NONE;
+				//bc[i]->face = 0;
 			} else
 			{
 				cells_with_exterior_faces_in_zone(list_of_cells, zone_ptr);
@@ -1446,7 +1454,7 @@ int setup_bc(void)
 					if (bc[i]->cell_face == CF_UNKNOWN) continue;
 				}
 				bc[i]->face = bc[i]->cell_face;
-				cells_with_faces(list_of_cells, bc[i]->cell_face);
+				//cells_with_faces(list_of_cells, bc[i]->cell_face); // moved to faces_intersect_polyhedron
 				faces_intersect_polyhedron(i, list_of_cells, bc[i]->cell_face);
 			}
 
@@ -1511,7 +1519,7 @@ int setup_bc(void)
 		if (cells[i].cell_active == TRUE && cells[i].specified)
 		{
 			std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin();
-
+			assert(rit != cells[i].all_bc_info->rend());
 			if (rit->bc_solution_type == FIXED) {
 				mix_init(&cells[i].ic_equilibrium_phases);
 				mix_init(&cells[i].ic_exchange);
@@ -2526,8 +2534,44 @@ void cells_with_faces(std::list<int> & list_of_numbers, Cell_Face face)
 	}
 	return;
 }
+void any_faces_intersect_polyhedron(int i, std::list<int> & list_of_numbers, Cell_Face face)
+{
+	if (face == CF_NONE) return;
+	std::map<int, bool> accumulator;
+	Cell_Face cf_save = bc[i]->cell_face;
+	std::list<int>::iterator it = list_of_numbers.begin();
+	int f;
+	for (f = (int) CF_X; f <= (int) CF_Z; f++)
+	{
+		std::list<int> temp_list(list_of_numbers);
+		Cell_Face cf;
+		cf = (Cell_Face) f;
+		if (cf_save == CF_ALL)
+		{
+			bc[i]->cell_face = cf;
+		}
+		if (cf == face || face == CF_ALL)
+		{
+			faces_intersect_polyhedron(i, temp_list, cf);
+		}
+		std::list<int>::iterator it = temp_list.begin();
+		for ( ; it != temp_list.end(); it++)
+		{
+			accumulator[*it] = true;
+		}
+	}
+	bc[i]->cell_face = cf_save;
+	list_of_numbers.clear();
+	std::map<int, bool>::iterator jt = accumulator.begin();
+	for ( ; jt != accumulator.end(); jt++)
+	{
+		list_of_numbers.push_back(jt->first);
+	}
+	list_of_numbers.sort();
+}
 void faces_intersect_polyhedron(int i, std::list<int> & list_of_numbers, Cell_Face face)
 {
+	cells_with_faces(list_of_numbers, bc[i]->cell_face);
 	std::list<int>::iterator it = list_of_numbers.begin();
 	while (it != list_of_numbers.end())
 	{
@@ -2549,7 +2593,7 @@ void faces_intersect_polyhedron(int i, std::list<int> & list_of_numbers, Cell_Fa
 			break;
 		default:
 			error_msg("Wrong face defined in distribute_flux_bc", EA_CONTINUE);
-			break;
+			return;
 		}
 
 		//gpc_polygon *bc_area = bc[i]->polyh->Face_polygon(bc[i]->cell_face);

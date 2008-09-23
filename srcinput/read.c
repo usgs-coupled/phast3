@@ -32,7 +32,9 @@ STATIC int read_head_ic(void);
 STATIC int read_leaky_bc(void);
 STATIC int read_drain(void);
 STATIC int read_zone_budget(void);
+#ifdef SKIP
 STATIC bool read_coordinate_system(Polyhedron *poly_ptr, char *next_char);
+#endif
 #if defined(__WPHAST__)
 int read_line_doubles(char *next_char, double **d, int *count_d, int *count_alloc);
 extern int read_lines_doubles(char *next_char, double **d, int *count_d, int *count_alloc, const char **opt_list, int count_opt_list, int *opt);
@@ -1337,9 +1339,8 @@ int read_media(void)
 		"top",                              /* 38 */
 		"bottom",                           /* 39 */
 		"description",                      /* 40 */
-		"coordinate_system"                 /* 41 */
 	};
-	int count_opt_list = 42;
+	int count_opt_list = 41;
 	/*
 	*   Read grid data
 	*/
@@ -1730,17 +1731,6 @@ int read_media(void)
 			grid_elt_ptr->polyh->Get_description()->assign(next_char);
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
-		case 41:                       /* coordinate_system */
-			if (grid_elt_ptr == NULL) {
-				sprintf(error_string,"Zone or wedge not defined for coordinate system %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			read_coordinate_system(grid_elt_ptr->polyh, next_char);
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			break;
 		}
 		return_value = check_line_return;
 		if (return_value == EOF || return_value == KEYWORD) break;
@@ -1818,8 +1808,33 @@ Cube *read_cube(char **next_char)
 	z.y2 = xyz[4];
 	z.z2 = xyz[5];
 	z.zone_defined = TRUE;
+
+	PHAST_Transform::COORDINATE_SYSTEM coord(PHAST_Transform::GRID);
+	if (j = copy_token(token, &ptr, &l) != EMPTY)
+	{
+		// Read coordinate system
+		std::string cs(token);
+		std::transform(cs.begin(), cs.end(), cs.begin(), ::tolower);
+		std::string grid("grid"), map("map");
+		if (cs == grid)
+		{
+			coord = PHAST_Transform::GRID;
+		}
+		else if (cs == map)
+		{
+			coord = PHAST_Transform::MAP;
+		}
+		else
+		{
+			error_msg("Expected GRID or MAP for coordinate system.", CONTINUE);
+			error_msg(line_save, CONTINUE);
+			input_error++;
+			return(NULL);
+		}
+	}
 	Cube * c_ptr = new Cube(&z);
-	
+	c_ptr->Set_coordinate_system(coord);
+
 	return(c_ptr);
 }
 //template<class InputIterator>
@@ -1863,10 +1878,34 @@ Wedge *read_wedge(char **next_char)
 	  input_error++;
 	  return(NULL);
 	} 
+	char token1[MAX_LENGTH];
+	PHAST_Transform::COORDINATE_SYSTEM coord(PHAST_Transform::GRID);
+	if (j = copy_token(token1, &ptr, &l) != EMPTY)
+	{
+		// Read coordinate system
+		std::string cs(token1);
+		std::transform(cs.begin(), cs.end(), cs.begin(), ::tolower);
+		std::string grid("grid"), map("map");
+		if (cs == grid)
+		{
+			coord = PHAST_Transform::GRID;
+		}
+		else if (cs == map)
+		{
+			coord = PHAST_Transform::MAP;
+		}
+		else
+		{
+			error_msg("Expected GRID or MAP for coordinate system.", CONTINUE);
+			error_msg(line_save, CONTINUE);
+			input_error++;
+			return(NULL);
+		}
+	}
 
 	std::string s(token);
 	Wedge *w_ptr = new Wedge(&z, s);
-
+	w_ptr->Set_coordinate_system(coord);
 		
 	return(w_ptr);
 }
@@ -1905,10 +1944,8 @@ int read_head_ic(void)
 		"top",                              /* 8 */
 		"bottom",                           /* 9 */
 		"description",                      /* 10 */
-		"coordinate_system"                 /* 11 */
-
 	};
-	int count_opt_list = 12;
+	int count_opt_list = 11;
 	/*
 	*   Read grid data
 	*/
@@ -2119,17 +2156,6 @@ int read_head_ic(void)
 			head_ic_ptr->polyh->Get_description()->assign(next_char);
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
-		case 11:                       /* coordinate_system */
-			if (head_ic_ptr == NULL) {
-				sprintf(error_string,"Zone or wedge not defined for coordinate system %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			read_coordinate_system(head_ic_ptr->polyh, next_char);
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			break;
 		}
 		return_value = check_line_return;
 		if (return_value == EOF || return_value == KEYWORD) break;
@@ -2183,9 +2209,8 @@ int read_chemistry_ic(void)
 		"top",                              /* 16 */
 		"bottom",                           /* 17 */
 		"description",                      /* 18 */
-		"coordinate_system"                 /* 19 */
 	};
-	int count_opt_list = 20;
+	int count_opt_list = 19;
 	/*
 	*   Read chemical initial condition data
 	*/
@@ -2514,17 +2539,6 @@ int read_chemistry_ic(void)
 			}
 			//std::string str(next_char);
 			chem_ic_ptr->polyh->Get_description()->assign(next_char);
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			break;
-		case 19:                       /* coordinate_system */
-			if (chem_ic_ptr == NULL) {
-				sprintf(error_string,"Zone or wedge not defined for coordinate system %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			read_coordinate_system(chem_ic_ptr->polyh, next_char);
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		}
@@ -2892,7 +2906,7 @@ int read_specified_value_bc(void)
 	char *next_char;
 	struct BC *bc_ptr;
 	int return_value, opt;
-	int l;
+	int j, l;
 	char token[MAX_LENGTH];
 	const char *opt_list[] = {
 		"zone",                             /* 0 */
@@ -2911,8 +2925,7 @@ int read_specified_value_bc(void)
 		"top",                              /* 13 */
 		"bottom",                           /* 14 */
 		"description",                      /* 15 */
-		"coordinate_system"                 /* 16 */
-
+		"exterior_cells_only"               /* 16 */
 	};
 	int count_opt_list = 17;
 	/*
@@ -3165,15 +3178,39 @@ int read_specified_value_bc(void)
 			bc_ptr->polyh->Get_description()->assign(next_char);
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
-		case 16:                       /* coordinate_system */
+		case 16:                       /* exterior_cells_only */
+			/*
+			*   Read face for flux
+			*/
 			if (bc_ptr == NULL) {
-				sprintf(error_string,"Zone or wedge not defined for coordinate system %s", tag);
+				sprintf(error_string,"Zone has not been defined for "
+					"exterior cell definition %s", tag);
 				error_msg(error_string, CONTINUE);
 				input_error++;
 				opt = next_keyword_or_option(opt_list, count_opt_list);
 				break;
 			}
-			read_coordinate_system(bc_ptr->polyh, next_char);
+			j = copy_token(token, &next_char, &l);
+			str_tolower(token);
+			if (strcmp(token, "x") == 0) {
+				bc_ptr->face = 0;
+				bc_ptr->cell_face = CF_X;
+			} else if (strcmp(token, "y") == 0) {
+				bc_ptr->face = 1;
+				bc_ptr->cell_face = CF_Y;
+			} else if (strcmp(token, "z") == 0) {
+				bc_ptr->face = 2;
+				bc_ptr->cell_face = CF_Z;
+			} else if (strstr(token, "a") == token) {
+				bc_ptr->face = 11;
+				bc_ptr->cell_face = CF_ALL;
+			} else 
+			{
+				input_error++;
+				sprintf(error_string,"Expected coordinate direction (X, Y, Z, or all) for exterior cell selection %s", tag);
+				error_msg(error_string, CONTINUE);
+			} 
+			bc_ptr->face_defined = TRUE;
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		}
@@ -3218,10 +3255,8 @@ int read_flux_bc(void)
 		"top",                              /* 10 */
 		"bottom",                           /* 11 */
 		"description",                      /* 12 */
-		"coordinate_system"                 /* 13 */
-
 	};
-	int count_opt_list = 14;
+	int count_opt_list = 13;
 	/*
 	*   Read flux boundary condition
 	*/
@@ -3478,17 +3513,6 @@ int read_flux_bc(void)
 			bc_ptr->polyh->Get_description()->assign(next_char);
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
-		case 13:                       /* coordinate_system */
-			if (bc_ptr == NULL) {
-				sprintf(error_string,"Zone or wedge not defined for coordinate system %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			read_coordinate_system(bc_ptr->polyh, next_char);
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			break;
 		}
 		return_value = check_line_return;
 		if (return_value == EOF || return_value == KEYWORD) break;
@@ -3534,9 +3558,8 @@ int read_leaky_bc(void)
 		"top",                              /* 13 */
 		"bottom",                           /* 14 */
 		"description",                      /* 15 */
-		"coordinate_system"                 /* 16 */
 	};
-	int count_opt_list = 17;
+	int count_opt_list = 16;
 	/*
 	*   Read chemical initial condition data
 	*/
@@ -3847,17 +3870,6 @@ int read_leaky_bc(void)
 			}
 			//std::string str(next_char);
 			bc_ptr->polyh->Get_description()->assign(next_char);
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			break;
-		case 16:                       /* coordinate_system */
-			if (bc_ptr == NULL) {
-				sprintf(error_string,"Zone or wedge not defined for coordinate system %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			read_coordinate_system(bc_ptr->polyh, next_char);
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		}
@@ -6856,10 +6868,8 @@ int read_print_locations(void)
 		"top",                              /* 14 */
 		"bottom",                           /* 15 */
 		"description",                      /* 16 */
-		"coordinate_system"                 /* 17 */
-
 	};
-	int count_opt_list = 18;
+	int count_opt_list = 17;
 	int count_zones = 0;
 
 	/*
@@ -7128,17 +7138,6 @@ int read_print_locations(void)
 			}
 			//std::string str(next_char);
 			print_zones_ptr->polyh->Get_description()->assign(next_char);
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			break;
-		case 17:                       /* coordinate_system */
-			if (print_zones_ptr == NULL) {
-				sprintf(error_string,"Zone or wedge not defined for coordinate system %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			read_coordinate_system(print_zones_ptr->polyh, next_char);
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		}
@@ -7595,6 +7594,7 @@ int read_drain(void)
 	drain_defined = true;
 	return(return_value);
 }
+#ifdef SKIP
 bool read_coordinate_system(Polyhedron *poly_ptr, char *next_char)
 {
 
@@ -7623,6 +7623,7 @@ bool read_coordinate_system(Polyhedron *poly_ptr, char *next_char)
 	return false;
 
 }
+#endif
 /* ---------------------------------------------------------------------- */
 int read_zone_budget(void)
 /* ---------------------------------------------------------------------- */
@@ -7654,11 +7655,10 @@ int read_zone_budget(void)
 		"top",                /* 4 */
 		"bottom",             /* 5 */
 		"description",        /* 6 */
-		"coordinate_system",  /* 7 */
-		"combination"         /* 8 */
+		"combination"         /* 7 */
 
 	};
-	int count_opt_list = 9;
+	int count_opt_list = 8;
 	/*
 	*   Read grid data
 	*/
@@ -7771,19 +7771,7 @@ int read_zone_budget(void)
 			zb->Get_polyh()->Get_description()->assign(next_char);
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
-		case 7:                       /* coordinate_system */
-			if (zb->Get_polyh() == NULL) {
-				sprintf(error_string,"Zone or wedge not defined for coordinate system %s", tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
-				opt = next_keyword_or_option(opt_list, count_opt_list);
-				break;
-			}
-			read_coordinate_system(zb->Get_polyh(), next_char);
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			break;
-
-		case 8:                         /* combo */
+		case 7:                         /* combo */
 			{
 				int i;
 				std::istringstream lines;
