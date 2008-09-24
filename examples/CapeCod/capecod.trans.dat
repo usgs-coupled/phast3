@@ -65,6 +65,8 @@ GRID
 	
 	-uniform X 0 10000 41
 	-uniform Y 0 20000 81
+	#-uniform X 0 10000 21
+	#-uniform Y 0 20000 41	
 	
 	#-uniform X 277000  283500 27 # 250	6.5 km
 	#-uniform Y 814000  823000 37 # 250      9   km
@@ -93,8 +95,7 @@ GRID
 	#-grid_angle    0
 
 HEAD_IC
-	-zone 275000 810000 -500 285000 830000 100
-		-coordinate_system map
+	-zone 275000 810000 -500 285000 830000 100 map
 		-head                    15
 		#-head       Y 0 814000         16.764 823000
 		#-head        y 0 810000         21.3  830000
@@ -105,8 +106,7 @@ HEAD_IC
 
 MEDIA
 
-	-zone 275000 810000 -500 285000 830000 100
-		-coordinate_system map
+	-zone 275000 810000 -500 285000 830000 100 map
 		-active                   0
 		-Kx                       1.06e-3
 		-Ky                       1.06e-3
@@ -151,8 +151,7 @@ MEDIA
 	#	-Ky                       1.e-4
 	#	-Kz                       1.e-6		
 	
-	-zone 275000 810000 -200 285000 830000 100
-		-coordinate_system map
+	-zone 275000 810000 -200 285000 830000 100 map
 		-Kx          Z  1.06e-3 0 0.1e-3  -20   # 300 to 30 ft/d
 		-Ky          Z  1.06e-3 0 0.1e-3  -20
 		-Kz          Z  0.35e-3 0 0.01e-3 -20	
@@ -233,15 +232,6 @@ MEDIA
 		
 	-prism
 		-perimeter  SHAPE   map  ArcData/SimplePonds.shp 
-		#-perimeter POINTS
-		#	280029.582  820887.320 0
-		#	280578.479  821357.803 0
-		#	280852.928  820769.699 0
-		#	280726.594  820386.342 0
-		#	280513.134  820482.181 0
-		#	280373.732  820199.020 0
-		#	280186.410  820273.077 0
-		#	280260.467  820469.112 0 
 			
 		-bottom SHAPE       map  ArcData/SimpleBath.shp 10	 
 		
@@ -255,56 +245,54 @@ MEDIA
 		-horizontal_dispersivity  10
 		-vertical_dispersivity    10
 		
-LEAKY_BC
-		
-	-prism	
-		-perimeter points map
-			277189 814489 0
-			282362 815267 0
-			285000 815267 0
-			285000 810000 0
-			275000 810000 0
-			275000 814489 0
-		-top      constant map  0.5
-		-bottom   constant map -0.5
-		
-		# Parameters
-		-face X
-		-head 0 0
-		-thickness 1
-		-hydraulic 1
-		-associated_solution 0 1
-		
-	-prism	
-		-perimeter points map
-			277189 814489 0
-			282362 815267 0
-			285000 815267 0
-			285000 810000 0
-			275000 810000 0
-			275000 814489 0
-		-top       constant map   0.5
-		-bottom    constant map  -0.5
-		
-		# Parameters
-		-face Y
-		-head 0 0
-		-thickness 1
-		-hydraulic 1
-		-associated_solution 0 1			
-		
+#LEAKY_BC
+#		
+#	-prism	
+#		-perimeter points map
+#			277189 814489 0
+#			282362 815267 0
+#			285000 815267 0
+#			285000 810000 0
+#			275000 810000 0
+#			275000 814489 0
+#		-top      constant map  0.5
+#		-bottom   constant map -0.5
+#		
+#		# Parameters
+#		-face X
+#		-head 0 0
+#		-thickness 1
+#		-hydraulic 1
+#		-associated_solution 0 1
+#		
+#	-prism	
+#		-perimeter points map
+#			277189 814489 0
+#			282362 815267 0
+#			285000 815267 0
+#			285000 810000 0
+#			275000 810000 0
+#			275000 814489 0
+#		-top       constant map   0.5
+#		-bottom    constant map  -0.5
+#		
+#		# Parameters
+#		-face Y
+#		-head 0 0
+#		-thickness 1
+#		-hydraulic 1
+#		-associated_solution 0 1			
+
 		
 FLUX_BC
-	-zone 275000 810000 0 285000 830000 100
-	-coordinate_system map
+	-zone 275000 810000 0 285000 830000 100 map
 	-face Z	
 	-flux  0 -0.0018
 	-associated_solution 
 		0	3
 	
 	# Beds 1-4
-	-zone 279725 821500 0 279825 821600 50
-	-coordinate_system map
+	-zone 279725 821500 0 279825 821600 50 map
 	-face Z	
 	-flux 
 		0      0
@@ -320,8 +308,7 @@ FLUX_BC
 		0      2	
 	
 	# Beds 5-8
-	-zone 279625 821425 0 279725 821525 50
-	-coordinate_system map
+	-zone 279625 821425 0 279725 821525 50  map
 	-face Z
 	-flux 
 		0      0
@@ -337,8 +324,7 @@ FLUX_BC
 		0      2
 	
 	# Beds 9-12
-	-zone 279525 821475 0 279625 821575 50
-	-coordinate_system map
+	-zone 279525 821475 0 279625 821575 50  map
 	-face Z	
 	-flux 
 		0      0 
@@ -354,8 +340,7 @@ FLUX_BC
 		0      2	
 	
 	# Beds 13-16
-	-zone 279400 821575 0 279500 821675 50
-	-coordinate_system map
+	-zone 279400 821575 0 279500 821675 50 map
 	-face Z	
 	-flux 
 		0      0
@@ -371,8 +356,7 @@ FLUX_BC
 		0      2	
 	
 	# Beds 19-25
-	-zone 279500 821700 0 279600 821800 50
-	-coordinate_system map
+	-zone 279500 821700 0 279600 821800 50  map
 	-face Z	
 	-flux 
 		0      0 
@@ -387,6 +371,23 @@ FLUX_BC
 	-associated_solution 
 		0      2
 
+SPECIFIED_HEAD_BC
+		
+	-prism	
+		-perimeter points map
+			277189 814489 0
+			282362 815267 0
+			285000 815267 0
+			285000 810000 0
+			275000 810000 0
+			275000 814489 0
+		-top      constant map  0.5
+		-bottom   constant map -0.5
+		
+		# Parameters
+		-exterior   all
+		-head 0 0
+		-associated_solution 0 1
 	
 DRAIN 1 East Boundary Quashnet R
 	-coordinate_system map
@@ -621,8 +622,7 @@ DRAIN 5 West Boundary Coonamessett River
 #		-bed_k     	1e-3	
 	
 CHEMISTRY_IC
-	-zone 275000 810000 -500 285000 830000 100
-		-coordinate_system map
+	-zone 275000 810000 -500 285000 830000 100 map
 		-solution            1
 	-prism
 		-perimeter  SHAPE   map  ArcData/SimplePonds.shp 
