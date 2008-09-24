@@ -1,6 +1,6 @@
 #define EXTERNAL extern
 #include <iostream>
-
+#include <set>
 #include "hstinpt.h"
 #include "message.h"
 #include "stddef.h"
@@ -2537,7 +2537,7 @@ void cells_with_faces(std::list<int> & list_of_numbers, Cell_Face face)
 void any_faces_intersect_polyhedron(int i, std::list<int> & list_of_numbers, Cell_Face face)
 {
 	if (face == CF_NONE) return;
-	std::map<int, bool> accumulator;
+	std::set<int> accumulator;
 	Cell_Face cf_save = bc[i]->cell_face;
 	std::list<int>::iterator it = list_of_numbers.begin();
 	int f;
@@ -2557,17 +2557,16 @@ void any_faces_intersect_polyhedron(int i, std::list<int> & list_of_numbers, Cel
 		std::list<int>::iterator it = temp_list.begin();
 		for ( ; it != temp_list.end(); it++)
 		{
-			accumulator[*it] = true;
+			accumulator.insert(*it);
 		}
 	}
 	bc[i]->cell_face = cf_save;
 	list_of_numbers.clear();
-	std::map<int, bool>::iterator jt = accumulator.begin();
+	std::set<int>::iterator jt = accumulator.begin();
 	for ( ; jt != accumulator.end(); jt++)
 	{
-		list_of_numbers.push_back(jt->first);
+		list_of_numbers.push_back(*jt);
 	}
-	list_of_numbers.sort();
 }
 void faces_intersect_polyhedron(int i, std::list<int> & list_of_numbers, Cell_Face face)
 {
