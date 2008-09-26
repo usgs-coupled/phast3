@@ -1811,7 +1811,7 @@ Cube *read_cube(char **next_char)
 	z.zone_defined = TRUE;
 
 	PHAST_Transform::COORDINATE_SYSTEM coord(PHAST_Transform::GRID);
-	if (j = copy_token(token, &ptr, &l) != EMPTY)
+	if ((j = copy_token(token, &ptr, &l)) != EMPTY)
 	{
 		// Read coordinate system
 		std::string cs(token);
@@ -1881,7 +1881,7 @@ Wedge *read_wedge(char **next_char)
 	} 
 	char token1[MAX_LENGTH];
 	PHAST_Transform::COORDINATE_SYSTEM coord(PHAST_Transform::GRID);
-	if (j = copy_token(token1, &ptr, &l) != EMPTY)
+	if ((j = copy_token(token1, &ptr, &l)) != EMPTY)
 	{
 		// Read coordinate system
 		std::string cs(token1);
@@ -3996,8 +3996,8 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 		// Data source has list of points
 		//p->data_source->Set_points(xyz.Get_points(-1));
 		//p->data_source->Set_columns(xyz.Get_columns());
-		std::vector<Point> & these_pts = p->data_source->Get_points();
-		int these_columns = p->data_source->Get_columns();
+		//std::vector<Point> & these_pts = p->data_source->Get_points();
+		//int these_columns = p->data_source->Get_columns();
 		if (p->data_source->Get_points().size() <= 0 || p->data_source->Get_columns() != 4)
 		{
 			input_error++;
@@ -4157,7 +4157,7 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
  *   Mixture
  */
 		p->type = PROP_MIXTURE;
-		if (j = sscanf(next_char,"%lf%lf", &p->v[0], &p->v[1]) != 2) {
+		if ((j = sscanf(next_char,"%lf%lf", &p->v[0], &p->v[1])) != 2) {
 			input_error++;
 			error_msg("Expected: two values for mixture definition", CONTINUE);
 		}
@@ -4216,8 +4216,8 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 				std::istringstream lines(start_of_data_source);
 				p->data_source->Read(lines, false);
 				p->data_source->Tidy(false);
-				std::vector<Point> & these_pts = p->data_source->Get_points();
-				int these_columns = p->data_source->Get_columns();
+				//std::vector<Point> & these_pts = p->data_source->Get_points();
+				//int these_columns = p->data_source->Get_columns();
 				if (p->data_source->Get_points().size() <= 0 || p->data_source->Get_columns() != 4)
 				{
 					input_error++;

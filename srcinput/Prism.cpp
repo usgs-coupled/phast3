@@ -358,6 +358,10 @@ bool Prism::Read(PRISM_OPTION p_opt, std::istream &lines)
   case BOTTOM:
     if (!this->bottom.Read(lines, true)) error_msg("Reading bottom of prism", EA_CONTINUE);
     break;
+  default:
+      error_msg("Unknown option in prism::read.", EA_CONTINUE);
+      break;
+
 #ifdef SKIP
   case PERIMETER_COORD_SYS:
 	  {
