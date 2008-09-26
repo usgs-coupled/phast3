@@ -279,20 +279,20 @@ bool Prism::Read(std::istream &lines)
 {
     // read information for top, or bottom
   const char *opt_list[] = {
-    "perimeter",                     /* 0 */
-    "dip",                           /* 1 */
-    "top",                           /* 2 */
-    "bottom",                        /* 3 */
-    "vector",                        /* 4 */
+    "perimeter"                      /* 0 */
+    ,"dip"                           /* 1 */
+    ,"top"                           /* 2 */
+    ,"bottom"                        /* 3 */
+    //,"vector"                        /* 4 */
     //"perimeter_z",                   /* 5 */
     //"units_top",                     /* 6 */
     //"units_bottom",                  /* 7 */
     //"units_perimeter"                /* 8 */
-	"perimeter_coordinate_system",     /* 5 */
-	"top_coordinate_system",           /* 6 */
-	"bottom_coordinate_system"         /* 7 */
+	//"perimeter_coordinate_system",     /* 5 */
+	//"top_coordinate_system",           /* 6 */
+	//"bottom_coordinate_system"         /* 7 */
   };
-  int count_opt_list = 8; 
+  int count_opt_list = 4; 
   std::vector<std::string> std_opt_list;
   int i;
   for (i = 0; i < count_opt_list; i++) std_opt_list.push_back(opt_list[i]);
@@ -314,6 +314,7 @@ bool Prism::Read(std::istream &lines)
   case 3:
     p_opt = Prism::BOTTOM;
     break;
+#ifdef SKIP
   case 5:
 	  p_opt = Prism::PERIMETER_COORD_SYS;
 	  break;
@@ -323,8 +324,9 @@ bool Prism::Read(std::istream &lines)
   case 7:
 	  p_opt = Prism::BOTTOM_COORD_SYS;
 	  break;
+#endif
   default:
-    error_msg("Error reading prism data (perimeter, dip, top, bottom).", EA_CONTINUE);
+    error_msg("Error reading prism data (perimeter, top, bottom).", EA_CONTINUE);
     return(false);
   }
   return(this->Read(p_opt, lines));
@@ -356,6 +358,7 @@ bool Prism::Read(PRISM_OPTION p_opt, std::istream &lines)
   case BOTTOM:
     if (!this->bottom.Read(lines, true)) error_msg("Reading bottom of prism", EA_CONTINUE);
     break;
+#ifdef SKIP
   case PERIMETER_COORD_SYS:
 	  {
 		  lines >> token;
@@ -412,6 +415,7 @@ bool Prism::Read(PRISM_OPTION p_opt, std::istream &lines)
 		  }
 	  }
 	  break;
+#endif
   }
   return (success);
 }

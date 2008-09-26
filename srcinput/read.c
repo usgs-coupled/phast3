@@ -19,6 +19,7 @@
 static char const svnid[] = "$Id$";
 STATIC int next_keyword_or_option(const char **opt_list, int count_opt_list);
 STATIC int streamify_to_next_keyword_or_option(const char **opt_list, int count_opt_list, std::istringstream &lines);
+STATIC int streamify_to_next_keyword_or_option(const char **opt_list, int count_opt_list, std::istringstream &lines, char * start_string);
 STATIC int read_chemistry_ic(void);
 STATIC Cube *read_cube(char **next_char);
 STATIC Wedge *read_wedge(char **next_char);
@@ -3903,12 +3904,22 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 
 	int j;
 	char token[MAX_LENGTH];
+	char *ptr1, *start_of_property, *start_of_data_source;
+	enum MIX_STYLE
+	{
+		MIX_OLDSTYLE   = 0
+		, MIX_XYZ      = 1
+		, MIX_POINTS   = 2
+	};
+	MIX_STYLE style;
+
 	int l;
 	struct property *p;
 	char *next_char;
 
 	p = property_alloc();
 	next_char = ptr;
+	start_of_property = ptr;
 
 	j = copy_token(token, &next_char, &l);
 	str_tolower(token);
@@ -3946,11 +3957,11 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
  */
 		p->type = PROP_POINTS;
 		std::istringstream lines;
-		*opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines);
+		*opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines, start_of_property);
 
 		// remove identifier
-		std::string str;
-		lines >> str;
+		// std::string str;
+		// lines >> str;
 
 		// remove initial line
 		//char str[1000];
@@ -3974,9 +3985,10 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
  *   read from file for interpolation
  */
 		p->type = PROP_XYZ;
-		std::string str("XYZ ");
-		str.append(next_char);
-		std::istringstream lines(str);
+		//std::string str("XYZ ");
+		//str.append(next_char);
+		//std::istringstream lines(str);
+		std::istringstream lines(start_of_property);
 		p->data_source->Read(lines, false);
 		p->data_source->Tidy(false);
 		//XYZfile xyz(p->data_source->Get_file_name(), p->data_source->Get_coordinate_system());
@@ -4145,28 +4157,98 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
  *   Mixture
  */
 		p->type = PROP_MIXTURE;
-		if (sscanf(next_char,"%lf%lf", &p->v[0], &p->v[1]) != 2) {
+		if (j = sscanf(next_char,"%lf%lf", &p->v[0], &p->v[1]) != 2) {
 			input_error++;
 			error_msg("Expected: two values for mixture definition", CONTINUE);
 		}
-		/* reread first two items and keep going */
-		if (delimited == FALSE) {
-			j = read_lines_doubles(next_char, &(p->v), &(p->count_v), 
-					       &(p->count_alloc), opt_list, count_opt_list, opt);
-		} else {
-			j = copy_token(token, &next_char, &l);
-			j = copy_token(token, &next_char, &l);
-			p->count_v = 2;
-			j = read_lines_doubles_delimited(next_char, &(p->v), &(p->count_v), 
-					       &(p->count_alloc), opt_list, count_opt_list, opt);
+
+		/* Determine data source type */
+		ptr1 = next_char;
+
+		/* first mix */
+		copy_token(token, &ptr1, &l);
+		/* second mix */
+		copy_token(token, &ptr1, &l);
+		start_of_data_source = ptr1; /* start_of_data_source is start of points | xyz */
+
+		/* read nothing | points | xyz */
+		j = copy_token(token, &ptr1, &l);
+		str_tolower(token);
+		if (j == EMPTY)
+		{
+			style = MIX_OLDSTYLE;
 		}
-		if (j == ERROR) {
-			property_free(p);
-			return(NULL);
+		else if (strstr(token, "points") == token)
+		{
+			style = MIX_POINTS;
+		}
+		else if (strstr(token, "xyz") == token)
+		{
+			style = MIX_XYZ;
 		}
 
-		p->v = (double *) realloc(p->v, (size_t) p->count_v * sizeof(double));
-		p->count_alloc = p->count_v;
+		switch (style)
+		{
+		case MIX_OLDSTYLE:
+
+			/* reread first two items and keep going */
+			if (delimited == FALSE) {
+				j = read_lines_doubles(next_char, &(p->v), &(p->count_v), 
+					&(p->count_alloc), opt_list, count_opt_list, opt);
+			} else {
+				j = copy_token(token, &next_char, &l);
+				j = copy_token(token, &next_char, &l);
+				p->count_v = 2;
+				j = read_lines_doubles_delimited(next_char, &(p->v), &(p->count_v), 
+					&(p->count_alloc), opt_list, count_opt_list, opt);
+			}
+			if (j == ERROR) {
+				property_free(p);
+				return(NULL);
+			}
+
+			p->v = (double *) realloc(p->v, (size_t) p->count_v * sizeof(double));
+			p->count_alloc = p->count_v;
+			break;
+		case MIX_XYZ:
+			{
+				p->type = PROP_MIX_XYZ;
+				std::istringstream lines(start_of_data_source);
+				p->data_source->Read(lines, false);
+				p->data_source->Tidy(false);
+				std::vector<Point> & these_pts = p->data_source->Get_points();
+				int these_columns = p->data_source->Get_columns();
+				if (p->data_source->Get_points().size() <= 0 || p->data_source->Get_columns() != 4)
+				{
+					input_error++;
+					char estring[MAX_LENGTH];
+					sprintf(estring, "Expected rows of x, y, z, value for property in file %s.", p->data_source->Get_file_name().c_str());
+					error_msg(estring, CONTINUE);
+				}
+				properties_with_data_source.push_back(p);
+				*opt = next_keyword_or_option(opt_list, count_opt_list);
+			}
+			break;
+		case MIX_POINTS:
+			{
+				p->type = PROP_MIX_POINTS;
+				std::istringstream lines;
+				*opt = streamify_to_next_keyword_or_option(opt_list, count_opt_list, lines, start_of_data_source);
+
+				// read points into property Data_source
+				p->data_source->Read(lines, false);		
+				//p->data_source->Set_columns( Read_points(lines, p->data_source->Get_points()) );
+				if ( p->data_source->Get_points().size() <= 0 || p->data_source->Get_columns() != 4)
+				{
+					input_error++;
+					char estring[MAX_LENGTH];
+					sprintf(estring, "Expected rows of x, y, z, value for property in input file.");
+					error_msg(estring, CONTINUE);
+				}
+				properties_with_data_source.push_back(p);
+			}
+			break;
+		}
 
 	} else {
 		property_free(p);
@@ -4574,6 +4656,38 @@ int streamify_to_next_keyword_or_option(const char **opt_list, int count_opt_lis
 	int opt;
 	char *next_char;
 	std::string accumulate(line);
+	accumulate.append("\n");
+	for(;;) {
+		opt = get_option(opt_list, count_opt_list, &next_char);
+		if (opt == OPTION_EOF) {               /* end of file */
+			break;
+		} else if (opt == OPTION_KEYWORD) {           /* keyword */
+			break;
+		} else if (opt >= 0 && opt < count_opt_list) {
+			break;
+		} else  {
+		  accumulate.append(line);
+		  accumulate.append("\n");
+		}
+	}
+	lines.str(accumulate);
+	return(opt);
+}
+/* ---------------------------------------------------------------------- */
+int streamify_to_next_keyword_or_option(const char **opt_list, int count_opt_list, std::istringstream &lines, char * start_string)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *   Reads to next keyword or option or eof
+ *
+ *   Returns:
+ *       KEYWORD
+ *       OPTION
+ *       EOF
+ */
+	int opt;
+	char *next_char;
+	std::string accumulate(start_string);
 	accumulate.append("\n");
 	for(;;) {
 		opt = get_option(opt_list, count_opt_list, &next_char);
