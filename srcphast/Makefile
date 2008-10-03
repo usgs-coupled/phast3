@@ -204,7 +204,7 @@ PHREEQC_INCLUDES = -I../phreeqcpp -I../phreeqcpp/phreeqc
 LAM_INCLUDES     =  
 LAM_LIB          =  -L/usr/lib/ -llam
 
-.SUFFIXES : .o .f .F90 .f90 .c .cxx 
+.SUFFIXES : .o .f .F90 .f90 .c .cxx .cpp
 
 # compilers
 FLAHEY=/z/niwot/usr/local/lf95/bin/lf95
@@ -351,7 +351,7 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_LAHEY_DEBUG)
   DEFINES      = $(DEFINE_HDF) -DLAHEY_F95 -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:..
   FC           = $(FLAHEY)
   FFLAGS       = -g --f95 --chkglobal --warn --info $(DEFINES)
   CC           = g++
@@ -672,9 +672,9 @@ COMMON_CXXOBJS = \
 	       System.o \
 	       Temperature.o \
 	       Utils.o \
-               ../../srcinput/KDtree/KDtree.o \
-	       ../../srcinput/KDtree/kdtree2.o \
-	       ../../srcinput/Point.o
+	       KDtree.o \
+	       kdtree2.o \
+	       Point.o
 
 HDF_OBJS     =  hdf.o hdf_f.o
 
@@ -686,6 +686,10 @@ MPI_OBJS     =	mpimod.o phast_slave.o slavesubs.o
 PHASTINPUT_FILES = ../../srcinput/KDtree/KDtree.cpp \
 	../../srcinput/KDtree/kdtree2.cpp \
 	../../srcinput/Point.cpp
+# Look for phastinput .cpp files in these directories
+# VPATH also looks for .o files, which causes problems
+vpath %.cpp ../../srcinput
+vpath %.cpp ../../srcinput/KDtree
 
 # -----------------------------------------------------------------------------
 #  Assign dependents to target on dependency line & link options on command 
@@ -828,7 +832,7 @@ clean:
 
 depends:
 	mkdir -p temp_dependency_dir
-	cd temp_dependency_dir; gcc -MM $(DEFINE_HDF) -I../phreeqcpp -I../phreeqcpp/phreeqc ../*.cxx ../*.c ../phreeqcpp/*.cxx ../phreeqcpp/phreeqc/*.c $(PHASTINPUT_FILES) > ../dependencies
+	cd temp_dependency_dir; gcc -MM $(DEFINE_HDF) -I../phreeqcpp -I../phreeqcpp/phreeqc -I../../srcinput -I../../srcinput/KDtree ../*.cxx ../*.c ../phreeqcpp/*.cxx ../phreeqcpp/phreeqc/*.c $(PHASTINPUT_FILES) > ../dependencies
 	rm -rf temp_dependency_dir
 
 depends_parallel:
