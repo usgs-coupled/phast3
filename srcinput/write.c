@@ -60,9 +60,18 @@ int write_hst(void)
 		write_source_sink();
 		write_bc_static();
 		write_ic();
-		write_zone_budget();
+
 		write_calculation_static();
-		write_output_static();	
+		write_output_static();
+		write_zone_budget();
+		/*
+		*   Thru is false here
+		*/
+		output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
+		output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
+		output_msg(OUTPUT_HST,"C..... TRANSIENT DATA - READ3\n");
+		output_msg(OUTPUT_HST,"C.3.1 .. THRU[T/F]\n");
+		output_msg(OUTPUT_HST,"     f\n");
 	} 
 	write_bc_transient();
 	write_calculation_transient();
@@ -162,13 +171,13 @@ int write_initial(void)
 	} else {
 		output_msg(OUTPUT_HST,"     f t f f f\n");
 	}
-	output_msg(OUTPUT_HST,"C.1.4.1 STEADY_FLOW[T/F], EPS_HEAD (head), EPS_FLOW (fraction)\n");
+	output_msg(OUTPUT_HST,"C.1.4.1 .. STEADY_FLOW[T/F], EPS_HEAD (head), EPS_FLOW (fraction)\n");
 	if (steady_flow == TRUE) {
 		output_msg(OUTPUT_HST,"     t  %g %g \n", fluid_density * GRAVITY * eps_head * units.head.input_to_si, eps_mass_balance);
 	} else {
 		output_msg(OUTPUT_HST,"     f  0  0 \n");
 	}
-	output_msg(OUTPUT_HST,"C   axes t/f t/f t/f (x y z)\n");
+	output_msg(OUTPUT_HST,"C.1.4.2 .. coordinate axes included (x y z) [I]\n");
 	output_msg(OUTPUT_HST,"     %d %d %d\n", axes[0], axes[1], axes[2]);
 /*
  *   time unit
@@ -395,6 +404,7 @@ int write_media(void)
  *  Write zones
  */ 
 	element_number = 1;
+	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
 	output_msg(OUTPUT_HST,"C.....Porous media zone information\n");
 	output_msg(OUTPUT_HST,"C.2.9.1 .. IPMZ,X1Z(IPMZ),X2Z(IPMZ),Y1Z(IPMZ),Y2Z(IPMZ),Z1Z(IPMZ),Z2Z(IPMZ)\n");
 	for (i = 0; i < nxyz; i++) {
@@ -411,15 +421,15 @@ int write_media(void)
 			cells[n].z * units.vertical.input_to_si);
 		element_number++;
 	}
-	output_msg(OUTPUT_HST,"C.....Use as many 2.9.1 lines as necessary\n");
-	output_msg(OUTPUT_HST,"C.2.9.2 .. End with END\n");
+	//output_msg(OUTPUT_HST,"C.....Use as many 2.9.1 lines as necessary\n");
+	//output_msg(OUTPUT_HST,"C.2.9.2 .. End with END\n");
+	output_msg(OUTPUT_HST,"C .. End 2.9.1\n");
 	output_msg(OUTPUT_HST,"END\n");
 /*
  *   Hydraulic conductivity
  */
 	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
 	output_msg(OUTPUT_HST,"C.....Porous media property information\n");
-	output_msg(OUTPUT_HST,"C.2.10.1 .. KXX(IPMZ),KYY(IPMZ),KZZ(IPMZ),IPMZ=1 to NPMZ [1.7]\n");
 	for (i = 0; i < nxyz; i++) {
 		if (cells[i].is_element == FALSE) continue;
 		if (cells[i].elt_active == FALSE) continue;
@@ -430,11 +440,11 @@ int write_media(void)
 /*
  *   kx, ky, kz
  */
-	output_msg(OUTPUT_HST,"C... X permeability\n");
+	output_msg(OUTPUT_HST,"C.2.10.1.1 .. X permeability\n");
 	write_double_element_property(offsetof(struct cell, x_perm), units.k.input_to_si);
-	output_msg(OUTPUT_HST,"C... Y permeability\n");
+	output_msg(OUTPUT_HST,"C.2.10.1.2 .. Y permeability\n");
 	write_double_element_property(offsetof(struct cell, y_perm), units.k.input_to_si);
-	output_msg(OUTPUT_HST,"C... Z permeability\n");
+	output_msg(OUTPUT_HST,"C.2.10.1.3 .. Z permeability\n");
 	write_double_element_property(offsetof(struct cell, z_perm), units.k.input_to_si);
 /*
  *   Porosity
@@ -484,23 +494,20 @@ int write_media(void)
  */
 	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
 	output_msg(OUTPUT_HST,"C.....Porous media solute and thermal dispersion information\n");
-	output_msg(OUTPUT_HST,"C.2.12 .. ALPHL(IPMZ),ALPHT(IPMZ),IPMZ=1 to NPMZ [1.7];(O) - SOLUTE [1.4] \n");
-	output_msg(OUTPUT_HST,"C..          and/or HEAT [1.4]\n");
-	output_msg(OUTPUT_HST,"C.2.10.3 .. ABPM(IPMZ),IPMZ=1 to NPMZ [1.7]\n");
 /*
  *   longitudinal dispersivity
  */
 	if (flow_only == FALSE) {
-		output_msg(OUTPUT_HST,"C...longitudinal dispersivity\n");
+		output_msg(OUTPUT_HST,"C.2.12.1 .. longitudinal dispersivity: alphl\n");
 		write_double_element_property(offsetof(struct cell, alpha_long), units.alpha.input_to_si);
 	}
 /*
  *   transverse dispersivity
  */
 	if (flow_only == FALSE) {
-		output_msg(OUTPUT_HST,"C...horizontal dispersivity\n");
+		output_msg(OUTPUT_HST,"C.2.12.2 .. horizontal transverse dispersivity: alphth\n");
 		write_double_element_property(offsetof(struct cell, alpha_horizontal), units.alpha.input_to_si);
-		output_msg(OUTPUT_HST,"C...vertical dispersivity\n");
+		output_msg(OUTPUT_HST,"C.2.12.3 .. vertical transverse dispersivity: alphtv\n");
 		write_double_element_property(offsetof(struct cell, alpha_vertical), units.alpha.input_to_si);
 	}
 	return(OK);
@@ -530,9 +537,7 @@ int write_source_sink(void)
  */
 	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
 	output_msg(OUTPUT_HST,"C.....Source-sink well information\n");
-	output_msg(OUTPUT_HST,"C.2.14.1 .. IWEL,XW,YW,ZBW,ZTW,WBOD,WQMETH[I];(O) - NWEL [1.6] >0\n");
 	output_msg(OUTPUT_HST,"C.2.14.1 .. well id number,x,y, diameter, wqmeth\n");
-	output_msg(OUTPUT_HST,"C.2.14.2 .. WCF(L);L = 1 to NZ (EXCLUSIVE) by ELEMENT\n");
 	output_msg(OUTPUT_HST,"C.2.14.2 .. cell number, fraction of cell that is screened\n");
 	output_msg(OUTPUT_HST,"C.2.14.3 .. WSF(L);L = 1 to NZ (EXCLUSIVE) by ELEMENT\n");
 	output_msg(OUTPUT_HST,"C.2.14.4 .. WRISL,WRID,WRRUF,WRANGL;(O) - NWEL [1.6] >0 and\n");
@@ -545,9 +550,8 @@ int write_source_sink(void)
 	output_msg(OUTPUT_HST,"C..          DZMIN{.01},EPSWR{.001};(O) - NWEL [1.6] >0\n");
 	output_msg(OUTPUT_HST,"C..          and WRCALC(WQMETH[2.14.3] >30)\n");
 	if (well_defined == TRUE) {
-		output_msg(OUTPUT_HST,"C..  well number, x, y, diameter, wqmeth\n");
-		output_msg(OUTPUT_HST,"C..  well number, x, y, zb, zt, db, dt, diameter, wqmeth\n");
 		for (i = 0; i < count_wells; i++) {
+			output_msg(OUTPUT_HST,"C.2.14.8 .. well number, x, y, zb, zt, db, dt, diameter, wqmeth\n");
 			if (wells[i].diameter_defined == TRUE) {
 				diameter = wells[i].diameter;
 			} else {
@@ -568,15 +572,15 @@ int write_source_sink(void)
 				wells[i].screen_depth_top * units.vertical.input_to_si, 
 				diameter * units.well_diameter.input_to_si, 
 				code);
-			/* output_msg(OUTPUT_HST,"C..  cell number, cell fraction\n"); */
-			output_msg(OUTPUT_HST,"C..  cell number, screened interval below node (m), screened interval above node (m)\n"); 
+			output_msg(OUTPUT_HST,"C.2.14.9 .. cell number, screened interval below node (m), screened interval above node (m)\n"); 
 			for (j = 0; j < wells[i].count_cell_fraction; j++) {
 				/* output_msg(OUTPUT_HST,"\t%d %e\n", wells[i].cell_fraction[j].cell + 1, wells[i].cell_fraction[j].f); */
 				output_msg(OUTPUT_HST,"    %d %e %e\n", wells[i].cell_fraction[j].cell + 1, wells[i].cell_fraction[j].lower * units.vertical.input_to_si, wells[i].cell_fraction[j].upper * units.vertical.input_to_si); 
 			}
-				
+			output_msg(OUTPUT_HST,"C ..  end 2.14.9\n"); 
 			output_msg(OUTPUT_HST,"END\n");
 		}
+		output_msg(OUTPUT_HST,"C .. end 2.14.8"); 
 		output_msg(OUTPUT_HST,"END\n");
 	}
 	
@@ -610,8 +614,6 @@ int write_bc_static(void)
 	*   Specified value
 	*/
 	output_msg(OUTPUT_HST,"C.....     Specified value b.c.\n");
-	//output_msg(OUTPUT_HST,"C.2.15 .. IBC by x,y,z range {0.1-0.3} with no IMOD parameter;(O) -\n");
-	//output_msg(OUTPUT_HST,"C..          NSBC [1.6] > 0\n");
 	output_msg(OUTPUT_HST,"C.2.15 .. segment, cell number, ibc code\n");
 
 	if (count_specified > 0) {
@@ -661,6 +663,7 @@ int write_bc_static(void)
 				segment++;
 			}
 		}
+		output_msg(OUTPUT_HST,"C .. End 2.15\n");
 		output_msg(OUTPUT_HST,"END\n");
 	}
 	/*
@@ -668,7 +671,7 @@ int write_bc_static(void)
 	*/
 	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
 	output_msg(OUTPUT_HST,"C.....     Specified flux b.c.\n");
-	output_msg(OUTPUT_HST,"C.2.16 modified: segment number, cell_number, face, area\n");
+	output_msg(OUTPUT_HST,"C.2.16 .. modified: segment number, cell_number, face_index, area\n");
 	if (count_flux > 0 ) {
 		int segment = 1;
 
@@ -694,14 +697,15 @@ int write_bc_static(void)
 				segment++;
 			}
 		}
+		output_msg(OUTPUT_HST,"C .. End 2.16\n");
 		output_msg(OUTPUT_HST,"END\n");
 	}
 	/*
 	*   LEAKY
 	*/
 	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
-	output_msg(OUTPUT_HST,"C.....     Aquifer and river leakage b.c.\n");
-	output_msg(OUTPUT_HST,"C.2.16.1 modified: segment number, cell_number, face, area, permeability, thickness, elevation\n");
+	output_msg(OUTPUT_HST,"C.....    Aquifer leakage b.c.\n");
+	output_msg(OUTPUT_HST,"C.2.17 .. segment number, cell_number, face_index, area, permeability, thickness, elevation\n");
 
 	/* zone, index codes */
 	if (count_leaky > 0) {
@@ -741,6 +745,7 @@ int write_bc_static(void)
 				segment++;
 			}
 		}
+		output_msg(OUTPUT_HST,"C .. End 2.17\n");
 		output_msg(OUTPUT_HST,"END\n");
 	}
 
@@ -748,9 +753,7 @@ int write_bc_static(void)
 	*   River leakage bc,
 	*/
 	output_msg(OUTPUT_HST,"C.....          River leakage b.c.\n");
-	output_msg(OUTPUT_HST,"C.2.16.3 .. X1,Y1,X2,Y2,KRBC,BBRBC,ZERBC;(O) - NLBC [1.6] > 0 ***obsolete\n"); 
-	output_msg(OUTPUT_HST,"C.2.16.3 .. seg number cell number, area, leakance, z\n");
-	output_msg(OUTPUT_HST,"C.2.16.4 .. End with END\n");
+	output_msg(OUTPUT_HST,"C.2.17.1 .. segment number cell number, area, leakance, z\n");
 
 	if (count_river_segments > 0) {
 		int segment = 1;
@@ -792,14 +795,14 @@ int write_bc_static(void)
 				segment++;
 			}
 		}
+		output_msg(OUTPUT_HST,"C .. End 2.17.1\n");
 		output_msg(OUTPUT_HST,"END\n");
 	}
 	/*
 	*   drain bc,
 	*/
 	output_msg(OUTPUT_HST,"C.....          Drain leakage b.c.\n");
-	output_msg(OUTPUT_HST,"C.2.17.3 .. seg number, cell number, area, leakance, z\n");
-	output_msg(OUTPUT_HST,"C.2.17.4 .. End with END\n");
+	output_msg(OUTPUT_HST,"C.2.18.1 .. segment number, cell number, area, leakance, elevation\n");
 
 	if (count_drain_segments > 0) 
 	{
@@ -832,11 +835,13 @@ int write_bc_static(void)
 				segment++;
 			}
 		}
+		output_msg(OUTPUT_HST,"C .. End 2.18.1\n");
 		output_msg(OUTPUT_HST,"END\n");
 	}
 	/*
 	*   Aquifer influence functions NOT USED
 	*/
+#ifdef SKIP
 	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
 	output_msg(OUTPUT_HST,"C.....     Aquifer influence functions\n");
 	output_msg(OUTPUT_HST,"C.2.18.1 .. IBC by x,y,z range {0.1-0.3} with no IMOD parameter;(O) -\n");
@@ -848,9 +853,12 @@ int write_bc_static(void)
 	output_msg(OUTPUT_HST,"C.....          Transient, Carter-Tracy a.i.f.\n");
 	output_msg(OUTPUT_HST,"C.2.18.4B .. KOAR,ABOAR,VISOAR,POROAR,BOAR,RIOAR,ANGOAR;(O) -\n");
 	output_msg(OUTPUT_HST,"C..          IAIF [2.18.3] = 2\n");
+#endif
+	output_msg(OUTPUT_HST,"C.....       Aquifer influence functions not available\n");
 	/*
 	*   Heat bc NOT USED
 	*/
+#ifdef SKIP
 	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
 	output_msg(OUTPUT_HST,"C.....     Heat conduction b.c.\n");
 	output_msg(OUTPUT_HST,"C.2.19.1 .. ZHCBC(K);(O) - HEAT [1.4] and NHCBC [1.6] > 0\n");
@@ -860,6 +868,8 @@ int write_bc_static(void)
 	output_msg(OUTPUT_HST,"C..          HEAT [1.4] and NHCBC [1.6] > 0\n");
 	output_msg(OUTPUT_HST,"C.2.19.4 .. UKHCBC by x,y,z range {0.1-0.3} FOR HCBC NODES;(O) -\n");
 	output_msg(OUTPUT_HST,"C..          HEAT [1.4] and NHCBC [1.6] > 0\n");
+#endif
+	output_msg(OUTPUT_HST,"C.....       Heat conduction not available\n");
 	/*
 	*   Free surface
 	*/
@@ -928,6 +938,7 @@ int write_ic(void)
 			 cells[i].z * units.vertical.input_to_si);
 	}
 	write_double_cell_property(offsetof(struct cell, ic_pressure), 1.0);
+	output_msg(OUTPUT_HST,"C .. End 2.21.3\n");
 	output_msg(OUTPUT_HST,"END\n");
 /* 
  *   NOT USED
@@ -944,7 +955,7 @@ int write_ic(void)
 /*
  *   Initial solution by node
  */	
-	output_msg(OUTPUT_HST,"C...Initial solution \n");
+	output_msg(OUTPUT_HST,"C.2.21.7 .. Initial solution \n");
 	if (flow_only == FALSE) {
 		output_msg(OUTPUT_HST,"%15.7e %15.7e %15.7e %15.7e %15.7e %15.7e\n",
 			cells[0].x * units.horizontal.input_to_si, 
@@ -957,13 +968,14 @@ int write_ic(void)
 		write_integer_cell_property(offsetof(struct cell, ic_solution.i1));
 		write_integer_cell_property(offsetof(struct cell, ic_solution.i2));
 		write_double_cell_property(offsetof(struct cell, ic_solution.f1), 1.0);
+		output_msg(OUTPUT_HST,"C .. End 2.21.7\n");
 		output_msg(OUTPUT_HST,"END\n");
 	}
 /*
  *   Initial equilibrium_phases by node
  */	
 	if (flow_only == FALSE) {
-		output_msg(OUTPUT_HST,"C...Initial equilibrium_phases \n");
+		output_msg(OUTPUT_HST,"C.2.21.8 .. Initial equilibrium_phases \n");
 		output_msg(OUTPUT_HST,"%15.7e %15.7e %15.7e %15.7e %15.7e %15.7e\n",
 			cells[0].x * units.horizontal.input_to_si, 
 			cells[nxyz-1].x * units.horizontal.input_to_si,
@@ -975,13 +987,14 @@ int write_ic(void)
 		write_integer_cell_property(offsetof(struct cell, ic_equilibrium_phases.i1));
 		write_integer_cell_property(offsetof(struct cell, ic_equilibrium_phases.i2));
 		write_double_cell_property(offsetof(struct cell, ic_equilibrium_phases.f1), 1.0);
+		output_msg(OUTPUT_HST,"C .. End 2.21.8\n");
 		output_msg(OUTPUT_HST,"END\n");
 	}
 /*
  *   Initial exchange by node
  */	
 	if (flow_only == FALSE) {
-		output_msg(OUTPUT_HST,"C...Initial exchange\n");
+		output_msg(OUTPUT_HST,"C.2.21.9 .. Initial exchange\n");
 		output_msg(OUTPUT_HST,"%15.7e %15.7e %15.7e %15.7e %15.7e %15.7e\n",
 			cells[0].x * units.horizontal.input_to_si, 
 			cells[nxyz-1].x * units.horizontal.input_to_si,
@@ -993,13 +1006,14 @@ int write_ic(void)
 		write_integer_cell_property(offsetof(struct cell, ic_exchange.i1));
 		write_integer_cell_property(offsetof(struct cell, ic_exchange.i2));
 		write_double_cell_property(offsetof(struct cell, ic_exchange.f1), 1.0);
+		output_msg(OUTPUT_HST,"C .. End 2.21.9\n");
 		output_msg(OUTPUT_HST,"END\n");
 	}
 /*
  *   Initial surface by node
  */	
 	if (flow_only == FALSE) {
-		output_msg(OUTPUT_HST,"C...Initial surface\n");
+		output_msg(OUTPUT_HST,"C.2.21.10 .. Initial surface\n");
 		output_msg(OUTPUT_HST,"%15.7e %15.7e %15.7e %15.7e %15.7e %15.7e\n",
 			cells[0].x * units.horizontal.input_to_si, 
 			cells[nxyz-1].x * units.horizontal.input_to_si,
@@ -1011,13 +1025,14 @@ int write_ic(void)
 		write_integer_cell_property(offsetof(struct cell, ic_surface.i1));
 		write_integer_cell_property(offsetof(struct cell, ic_surface.i2));
 		write_double_cell_property(offsetof(struct cell, ic_surface.f1), 1.0);
+		output_msg(OUTPUT_HST,"C .. End 2.21.10\n");
 		output_msg(OUTPUT_HST,"END\n");
 	}
 /*
  *   Initial gas_phase by node
  */	
 	if (flow_only == FALSE) {
-		output_msg(OUTPUT_HST,"C...Initial gas_phase\n");
+		output_msg(OUTPUT_HST,"C.2.21.11 .. Initial gas_phase\n");
 		output_msg(OUTPUT_HST,"%15.7e %15.7e %15.7e %15.7e %15.7e %15.7e\n",
 			cells[0].x * units.horizontal.input_to_si, 
 			cells[nxyz-1].x * units.horizontal.input_to_si,
@@ -1029,13 +1044,14 @@ int write_ic(void)
 		write_integer_cell_property(offsetof(struct cell, ic_gas_phase.i1));
 		write_integer_cell_property(offsetof(struct cell, ic_gas_phase.i2));
 		write_double_cell_property(offsetof(struct cell, ic_gas_phase.f1), 1.0);
+		output_msg(OUTPUT_HST,"C .. End 2.21.11\n");
 		output_msg(OUTPUT_HST,"END\n");
 	}
 /*
  *   Initial solid_solutions by node
  */	
 	if (flow_only == FALSE) {
-		output_msg(OUTPUT_HST,"C...Initial solid_solutions\n");
+		output_msg(OUTPUT_HST,"C.2.21.12 .. Initial solid_solutions\n");
 		output_msg(OUTPUT_HST,"%15.7e %15.7e %15.7e %15.7e %15.7e %15.7e\n",
 			cells[0].x * units.horizontal.input_to_si, 
 			cells[nxyz-1].x * units.horizontal.input_to_si,
@@ -1047,13 +1063,14 @@ int write_ic(void)
 		write_integer_cell_property(offsetof(struct cell, ic_solid_solutions.i1));
 		write_integer_cell_property(offsetof(struct cell, ic_solid_solutions.i2));
 		write_double_cell_property(offsetof(struct cell, ic_solid_solutions.f1), 1.0);
+		output_msg(OUTPUT_HST,"C .. End 2.21.12\n");
 		output_msg(OUTPUT_HST,"END\n");
 	}
 /*
  *   Initial kinetics by node
  */	
 	if (flow_only == FALSE) {
-		output_msg(OUTPUT_HST,"C...Initial kinetics\n");
+		output_msg(OUTPUT_HST,"C.2.21.13 .. Initial kinetics\n");
 		output_msg(OUTPUT_HST,"%15.7e %15.7e %15.7e %15.7e %15.7e %15.7e\n",
 			cells[0].x * units.horizontal.input_to_si, 
 			cells[nxyz-1].x * units.horizontal.input_to_si,
@@ -1065,6 +1082,7 @@ int write_ic(void)
 		write_integer_cell_property(offsetof(struct cell, ic_kinetics.i1));
 		write_integer_cell_property(offsetof(struct cell, ic_kinetics.i2));
 		write_double_cell_property(offsetof(struct cell, ic_kinetics.f1), 1.0);
+		output_msg(OUTPUT_HST,"C .. End 2.21.13\n");
 		output_msg(OUTPUT_HST,"END\n");
 	}
 /*
@@ -1088,17 +1106,17 @@ int write_calculation_static(void)
 	output_msg(OUTPUT_HST,"C.....Calculation information\n");
 	output_msg(OUTPUT_HST,"C.2.22.1 .. FDSMTH,FDTMTH\n");
 	output_msg(OUTPUT_HST,"     %g  %g\n", solver_space, solver_time);
-	output_msg(OUTPUT_HST,"C.2.22.1a .. CROSD [T/F]\n");
+	output_msg(OUTPUT_HST,"C.2.22.2 .. CROSD [T/F]\n");
 	if (flow_only != TRUE) {
 		if (cross_dispersion == TRUE) {
 			output_msg(OUTPUT_HST,"     T\n");
 		} else {
 			output_msg(OUTPUT_HST,"     F\n");
 		}
-		output_msg(OUTPUT_HST,"C..          rebalance fraction for parallel processing, rebalance_by_cell 0/1\n");
+		output_msg(OUTPUT_HST,"C.2.22.3 .. rebalance fraction for parallel processing, rebalance_by_cell 0/1\n");
 		output_msg(OUTPUT_HST,"     %g %d\n", rebalance_fraction, rebalance_by_cell);
 	}
-	output_msg(OUTPUT_HST,"C.2.22.2 .. TOLDEN{.001},MAXITN{5}\n");
+	output_msg(OUTPUT_HST,"C.2.22.4 .. TOLDEN{.001},MAXITN{5}\n");
 	output_msg(OUTPUT_HST,"     .001  %d\n", max_ss_iterations);
 
 #ifdef SKIP	
@@ -1108,9 +1126,8 @@ int write_calculation_static(void)
 	}
 #endif
 
-	output_msg(OUTPUT_HST,"C.....     Red-black restarted conjugate gradient solver\n");
-	output_msg(OUTPUT_HST,"C.2.22.5 .. IDIR,MILU,NSDR,EPSSLV{1.e-8},MAXIT2{500};\n");
-	output_msg(OUTPUT_HST,"C..          (O) - SLMETH [1.8] = 3\n");
+	output_msg(OUTPUT_HST,"C.....     restarted conjugate gradient solver\n");
+	output_msg(OUTPUT_HST,"C.2.22.5 .. IDIR,MILU,NSDR,EPSSLV{1.e-8},MAXIT2{500}; (O) - SLMETH [1.8] = 3\n");
 	if (solver_method == ITERATIVE) {
 		output_msg(OUTPUT_HST,"     1 t %d %g %d\n", solver_save_directions,
 		       solver_tolerance, solver_maximum);
@@ -1201,6 +1218,7 @@ int write_output_static(void)
 			cells[nxyz-1].z * units.vertical.input_to_si);
 		output_msg(OUTPUT_HST,"     0 4\n");
 		write_integer_cell_property(offsetof(struct cell, print_chem));
+		output_msg(OUTPUT_HST,"C .. End 2.23.6\n");
 		output_msg(OUTPUT_HST,"END\n");
 		/* xyz.chem file */
 		output_msg(OUTPUT_HST,"C.2.23.7 .. Cell print information for xyz.chem, initial conditions; (O) - solute\n");
@@ -1213,6 +1231,7 @@ int write_output_static(void)
 			cells[nxyz-1].z * units.vertical.input_to_si);
 		output_msg(OUTPUT_HST,"     0 4\n");
 		write_integer_cell_property(offsetof(struct cell, print_xyz));
+		output_msg(OUTPUT_HST,"C .. End 2.23.7\n");
 		output_msg(OUTPUT_HST,"END\n");
 #ifdef SKIP		
 		/* h5 file */
@@ -1229,16 +1248,9 @@ int write_output_static(void)
 		output_msg(OUTPUT_HST,"END\n");
 #endif
 	}
-/*
- *   Thru is false here
- */
-	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
-	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
-	output_msg(OUTPUT_HST,"C..... TRANSIENT DATA - READ3\n");
-	output_msg(OUTPUT_HST,"C.3.1 .. THRU[T/F]\n");
-	output_msg(OUTPUT_HST,"     f\n");
-	output_msg(OUTPUT_HST,"C.....If THRU is true, proceed to record 3.99\n");
+#ifdef SKIP
 
+#endif
 	return(OK);
 }
 
@@ -1246,21 +1258,21 @@ int write_output_static(void)
 int write_bc_transient(void)
 /* ---------------------------------------------------------------------- */
 {
-/*
- *      Writes transient bc data
- *
- *      Arguments:
- *         none
- *
- */
+	/*
+	*      Writes transient bc data
+	*
+	*      Arguments:
+	*         none
+	*
+	*/
 	int i, j, k;
 	int river_number, point_number, solution1, solution2;
 	double w0, w1, head;
 	int solution;
 	int def1, def2;
-/*
-  *  Write Wells
- */ 
+	/*
+	*  Write Wells
+	*/ 
 	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
 	output_msg(OUTPUT_HST,"C.....The following is for NOT THRU\n");
 	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
@@ -1277,30 +1289,31 @@ int write_bc_transient(void)
 	output_msg(OUTPUT_HST,"C.....Use as many 3.2.2 lines as necessay\n");
 	output_msg(OUTPUT_HST,"C.3.2.3 .. End with END\n");
 	if (count_wells > 0 && well_defined == TRUE) {
-		output_msg(OUTPUT_HST,"C..  well sequence number, q, solution number\n");
+		output_msg(OUTPUT_HST,"C.3.2.4 .. well sequence number, q, solution number\n");
 		for (i = 0; i < count_wells; i++) {
-      //if (wells[i].update == TRUE) {
-      //write all well information
-				if (wells[i].solution_defined == TRUE) {
-					solution = wells[i].current_solution; 
-				} else {
-					solution = -1;
-				}
-				output_msg(OUTPUT_HST,"%d %e %d\n", 
-					i + 1,
-					wells[i].current_q * units.well_pumpage.input_to_user, 
-					solution);
-      //}				
-    }
+			//if (wells[i].update == TRUE) {
+			//write all well information
+			if (wells[i].solution_defined == TRUE) {
+				solution = wells[i].current_solution; 
+			} else {
+				solution = -1;
+			}
+			output_msg(OUTPUT_HST,"%d %e %d\n", 
+				i + 1,
+				wells[i].current_q * units.well_pumpage.input_to_user, 
+				solution);
+			//}				
+		}
+		output_msg(OUTPUT_HST,"C .. End 3.2.4\n");
 		output_msg(OUTPUT_HST,"END\n");
 	}
 
 	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
 	output_msg(OUTPUT_HST,"C.....Boundary condition information\n");
 	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
-/*
- *   Specified value
- */
+	/*
+	*   Specified value
+	*/
 	output_msg(OUTPUT_HST,"C.....     Specified value b.c.\n");
 	output_msg(OUTPUT_HST,"C.3.3.1 .. RDSPBC,RDSTBC,RDSCBC; all [T/F];(O) - NSBC [1.6] > 0\n");
 	if (count_specified > 0 && bc_specified_defined == TRUE) {
@@ -1309,22 +1322,23 @@ int write_bc_transient(void)
 		output_msg(OUTPUT_HST,"     f f f\n");
 	}
 	if (count_specified > 0 && bc_specified_defined == TRUE) {
-    output_msg(OUTPUT_HST,"C.3.3.2 .. segment, psbc, solution 1, solution 2, mix factor\n");
+		output_msg(OUTPUT_HST,"C.3.3.2 .. segment, psbc, solution 1, solution 2, mix factor\n");
 
-    int segment = 1;
-    for (i = 0; i < nxyz; i++) {
-      if (cells[i].cell_active == FALSE) continue;
-      if (cells[i].specified) {
-	std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin();
-	double pressure = fluid_density * GRAVITY * 
-	  (rit->bc_head * units.head.input_to_si -
-	  cells[i].z * units.vertical.input_to_si);
-	output_msg(OUTPUT_HST, "%d %20.10e %d %d %e\n", segment, pressure, 
-	  rit->bc_solution.i1, rit->bc_solution.i2, rit->bc_solution.f1);
-	segment++;
-      }
-    }
-    output_msg(OUTPUT_HST,"END\n");
+		int segment = 1;
+		for (i = 0; i < nxyz; i++) {
+			if (cells[i].cell_active == FALSE) continue;
+			if (cells[i].specified) {
+				std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin();
+				double pressure = fluid_density * GRAVITY * 
+					(rit->bc_head * units.head.input_to_si -
+					cells[i].z * units.vertical.input_to_si);
+				output_msg(OUTPUT_HST, "%d %20.10e %d %d %e\n", segment, pressure, 
+					rit->bc_solution.i1, rit->bc_solution.i2, rit->bc_solution.f1);
+				segment++;
+			}
+		}
+		output_msg(OUTPUT_HST,"C .. End 3.3.2\n");
+		output_msg(OUTPUT_HST,"END\n");
 	} else {
 		output_msg(OUTPUT_HST,"C.3.3.2 .. PNP B.C. by x,y,z range {0.1-0.3};(O) - RDSPBC [3.3.1]\n");
 		output_msg(OUTPUT_HST,"C.3.3.3 .. TSBC by x,y,z range {0.1-0.3};(O) - RDSPBC [3.3.1] and\n");
@@ -1335,14 +1349,14 @@ int write_bc_transient(void)
 
 
 	/* NOT USED, Both specified and associated solutions are defined with 3.3.1 */
-	output_msg(OUTPUT_HST,"C.3.3.5 .. TNP B.C. by x,y,z range {0.1-0.3};(O) - RDSTBC [3.3.1] and\n");
-	output_msg(OUTPUT_HST,"C..          HEAT [1.4]\n");
-	output_msg(OUTPUT_HST,"C.3.3.6 .. CNP B.C. by x,y,z range {0.1-0.3};(O) - RDSCBC [3.3.1] and\n");
+	//output_msg(OUTPUT_HST,"C.3.3.5 .. TNP B.C. by x,y,z range {0.1-0.3};(O) - RDSTBC [3.3.1] and\n");
+	//output_msg(OUTPUT_HST,"C..          HEAT [1.4]\n");
+	output_msg(OUTPUT_HST,"C.3.3.3 .. CNP B.C. by x,y,z range {0.1-0.3};(O) - RDSCBC [3.3.1] and\n");
 	output_msg(OUTPUT_HST,"C..          SOLUTE [1.4]\n");
 	/* rdscbc always false */
-/*
- *   Flux
- */
+	/*
+	*   Flux
+	*/
 	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
 	output_msg(OUTPUT_HST,"C.....     Specified flux b.c.\n");
 	output_msg(OUTPUT_HST,"C.3.4.1 .. RDFLXQ,RDFLXH,RDFLXS; all [T/F];(O) - NFBC [1.6] > 0\n");
@@ -1352,60 +1366,61 @@ int write_bc_transient(void)
 		output_msg(OUTPUT_HST,"     f f f\n");
 	}
 	if (count_flux > 0 && bc_flux_defined == TRUE) {
-    output_msg(OUTPUT_HST,"C.3.4.2 Modified Segment number, flux (relative to cell), solution 1, solution 2, mix factor\n");
-    int segment = 1;
-    for (i = 0; i < nxyz; i++)
-    {
+		output_msg(OUTPUT_HST,"C.3.4.2 .. Segment number, flux (relative to cell), solution 1, solution 2, mix factor, cell number\n");
+		int segment = 1;
+		for (i = 0; i < nxyz; i++)
+		{
 			if (cells[i].cell_active == FALSE) continue;
-      if (!cells[i].flux) continue;
-      // Reverse iterator on list of BC_info
-      for (std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin() ; rit != cells[i].all_bc_info->rend(); rit++)
-      {
-	if (rit->bc_type != BC_info::BC_FLUX) continue;
-	double sign = 1.0;
-	switch (rit->face)
-	{
-	case CF_X:
-	  if (cells[i].exterior->xp)
-	  {
-	    sign = -1;
+			if (!cells[i].flux) continue;
+			// Reverse iterator on list of BC_info
+			for (std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin() ; rit != cells[i].all_bc_info->rend(); rit++)
+			{
+				if (rit->bc_type != BC_info::BC_FLUX) continue;
+				double sign = 1.0;
+				switch (rit->face)
+				{
+				case CF_X:
+					if (cells[i].exterior->xp)
+					{
+						sign = -1;
 					}
-	  break;
-	case CF_Y:
-	  if (cells[i].exterior->yp)
-	  {
-	    sign = -1;
+					break;
+				case CF_Y:
+					if (cells[i].exterior->yp)
+					{
+						sign = -1;
+					}
+					break;
+				case CF_Z:
+					if (cells[i].exterior->zp)
+					{
+						sign = -1;
+					}
+					break;
+				default:
+					error_msg("Wrong face for flux definition.", STOP);
 				}
-	  break;
-	case CF_Z:
-	  if (cells[i].exterior->zp)
-	  {
-	    sign = -1;
+				// segment number, flux, solution 1, solution 2, factor
+				// Note: convention is positive flux is into the cell
+				output_msg(OUTPUT_HST,"   %d %20.10e %d %d %e %d\n", segment, sign * rit->bc_flux * units.flux.input_to_user, 
+					rit->bc_solution.i1, rit->bc_solution.i2, rit->bc_solution.f1, i + 1);
+				segment++;
 			}
-	  break;
-	default:
-	  error_msg("Wrong face for flux definition.", STOP);
 		}
-	// segment number, flux, solution 1, solution 2, factor
-	// Note: convention is positive flux is into the cell
-	output_msg(OUTPUT_HST,"   %d %20.10e %d %d %e %d\n", segment, sign * rit->bc_flux * units.flux.input_to_user, 
-	  rit->bc_solution.i1, rit->bc_solution.i2, rit->bc_solution.f1, i + 1);
-	segment++;
-      }
-    }
+		output_msg(OUTPUT_HST,"C .. End 3.4.2\n");
 		output_msg(OUTPUT_HST,"END\n");
 
 		/* NOT USED */
-		output_msg(OUTPUT_HST,"C.3.4.4 .. TFLX B.C. by x,y,z range {0.1-0.3};(O) - RDFLXQ [3.4.1] and\n");
-		output_msg(OUTPUT_HST,"C..          HEAT [1.4]\n");
-						}
+		//output_msg(OUTPUT_HST,"C.3.4.4 .. TFLX B.C. by x,y,z range {0.1-0.3};(O) - RDFLXQ [3.4.1] and\n");
+		//output_msg(OUTPUT_HST,"C..          HEAT [1.4]\n");
+	}
 
 	/* NOT USED */
-	output_msg(OUTPUT_HST,"C.3.4.6 .. QHFX,QHFY,QHFZ B.C. by x,y,z range {0.1-0.3};(O) - RDFLXH [3.4.5]\n");
-	output_msg(OUTPUT_HST,"C.3.4.7 .. QSFX,QSFY,QSFZ B.C. by x,y,z range {0.1-0.3};(O) - RDFLXS [3.4.1]\n");
-/*
- *   Leaky
- */
+	//output_msg(OUTPUT_HST,"C.3.4.6 .. QHFX,QHFY,QHFZ B.C. by x,y,z range {0.1-0.3};(O) - RDFLXH [3.4.5]\n");
+	//output_msg(OUTPUT_HST,"C.3.4.7 .. QSFX,QSFY,QSFZ B.C. by x,y,z range {0.1-0.3};(O) - RDFLXS [3.4.1]\n");
+	/*
+	*   Leaky
+	*/
 	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
 	output_msg(OUTPUT_HST,"C.....     Leakage b.c.\n");
 	output_msg(OUTPUT_HST,"C.3.5.1 .. RDLBC[T/F];(O) - NLBC [1.6] > 0\n");
@@ -1417,37 +1432,38 @@ int write_bc_transient(void)
 		}
 	}
 	if (count_leaky > 0 && bc_leaky_defined == TRUE) {
-    output_msg(OUTPUT_HST,"C.3.4.2 Modified Segment number, head, solution 1, solution 2, mix factor\n");
-    int segment = 1;
-    for (i = 0; i < nxyz; i++)
-    {
+		output_msg(OUTPUT_HST,"C.3.5.2 .. Segment number, head, solution 1, solution 2, mix factor, cell number\n");
+		int segment = 1;
+		for (i = 0; i < nxyz; i++)
+		{
 			if (cells[i].cell_active == FALSE) continue;
-      if (!cells[i].leaky) continue;
-      // Reverse iterator on list of BC_info
-      for (std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin() ; rit != cells[i].all_bc_info->rend(); rit++)
-      {
-	if (rit->bc_type != BC_info::BC_LEAKY) continue;
+			if (!cells[i].leaky) continue;
+			// Reverse iterator on list of BC_info
+			for (std::list<BC_info>::reverse_iterator rit = cells[i].all_bc_info->rbegin() ; rit != cells[i].all_bc_info->rend(); rit++)
+			{
+				if (rit->bc_type != BC_info::BC_LEAKY) continue;
 
-	// energy per unit mass
-	double head = rit->bc_head * units.head.input_to_si;
+				// energy per unit mass
+				double head = rit->bc_head * units.head.input_to_si;
 
-	// segment number, head, solution 1, solution 2, factor
-	output_msg(OUTPUT_HST,"   %d %20.10e %d %d %e %d\n", segment, head, 
-	  rit->bc_solution.i1, rit->bc_solution.i2, rit->bc_solution.f1, i + 1);
-	segment++;
-					}
-				}
+				// segment number, head, solution 1, solution 2, factor
+				output_msg(OUTPUT_HST,"   %d %20.10e %d %d %e %d\n", segment, head, 
+					rit->bc_solution.i1, rit->bc_solution.i2, rit->bc_solution.f1, i + 1);
+				segment++;
+			}
+		}
+		output_msg(OUTPUT_HST," .. End 3.5.2\n");
 		output_msg(OUTPUT_HST,"END\n");
 
 		/* NOT USED */
-    output_msg(OUTPUT_HST,"C.3.4.4 .. TFLX B.C. by x,y,z range {0.1-0.3};(O) - RDFLXQ [3.4.1] and\n");
-    output_msg(OUTPUT_HST,"C..          HEAT [1.4]\n");
-						}
-/*
- * River leakage
- */
+		//output_msg(OUTPUT_HST,"C.3.4.4 .. TFLX B.C. by x,y,z range {0.1-0.3};(O) - RDFLXQ [3.4.1] and\n");
+		//output_msg(OUTPUT_HST,"C..          HEAT [1.4]\n");
+	}
+	/*
+	* River leakage
+	*/
 	output_msg(OUTPUT_HST,"C.....River Leakage\n");
-	output_msg(OUTPUT_HST,"C.3.5.5 .. RDRBC t/f\n");
+	output_msg(OUTPUT_HST,"C.3.6.1 .. RDRBC t/f\n");
 	if (count_river_segments > 0) {
 		if (river_defined == TRUE) {
 			output_msg(OUTPUT_HST,"     t\n");
@@ -1455,16 +1471,13 @@ int write_bc_transient(void)
 			output_msg(OUTPUT_HST,"     f\n");
 		}
 	}
-	output_msg(OUTPUT_HST,"C.3.5.5 .. X1,Y1,X2,Y2,HRBC,DENRBC,VISRBC,TRBC,CRBC;(O) - RDRBC [3.5.1]\n");
-	output_msg(OUTPUT_HST,"C.....Use as many 3.5.5 lines as necessary\n");
-	output_msg(OUTPUT_HST,"C.3.5.5 .. river segment number, head, solution 1, solution 2, weight solution 1\n");
-	output_msg(OUTPUT_HST,"C.3.5.6 .. End with END\n");
+	output_msg(OUTPUT_HST,"C.3.6.2 .. river segment number, head, solution 1, solution 2, weight solution 1\n");
 	if (count_river_segments > 0 && river_defined == TRUE) {
 		k = 1;
 		for (i = 0; i < count_cells; i++) {
 			//if (cells[i].cell_active == FALSE) continue;
-      if (cells[i].bc_type == BC_info::BC_SPECIFIED) continue;
-      
+			if (cells[i].bc_type == BC_info::BC_SPECIFIED) continue;
+
 			for (j = 0; j < cells[i].count_river_polygons; j++) {
 				river_number = cells[i].river_polygons[j].river_number;
 				point_number = cells[i].river_polygons[j].point_number;
@@ -1475,7 +1488,7 @@ int write_bc_transient(void)
 				solution1 = rivers[river_number].points[point_number].solution;
 				solution2 = rivers[river_number].points[point_number + 1].solution;
 				*/
-			        def1 = rivers[river_number].points[point_number].solution_defined;
+				def1 = rivers[river_number].points[point_number].solution_defined;
 				def2 = rivers[river_number].points[point_number + 1].solution_defined;
 				if (def1 == TRUE && def2 == TRUE) {
 					solution1 = rivers[river_number].points[point_number].current_solution;
@@ -1499,34 +1512,42 @@ int write_bc_transient(void)
 					w0 = w0*rivers[river_number].points[point_number].f1 + (1. - w0) * rivers[river_number].points[point_number + 1].f1;
 				} else {
 					assert(FALSE);
-					
+
 				}
 				assert (solution2 != -999999);
 				/* entry number, head, solution1, w, solution2 */
-	//if (rivers[river_number].update == TRUE) {
-	// Write all rivers if anything changes
-					assert(0.0 <= w0 && w0 <= 1.0);
-					output_msg(OUTPUT_HST,"%d %e %d %d %e\n", k, head, solution1, solution2, w0);
-					/* Debug
-					fprintf(stderr,"%d %d %e %d %d %e\n", point_number, k, head, solution1, solution2, w0);
-					fprintf(stderr,"\t%e\t%e\t%e\n", rivers[river_number].points[point_number].f1, rivers[river_number].points[point_number + 1].f1, 1.-w1);
-					*/
-	//}
+				//if (rivers[river_number].update == TRUE) {
+				// Write all rivers if anything changes
+				assert(0.0 <= w0 && w0 <= 1.0);
+				output_msg(OUTPUT_HST,"%d %e %d %d %e\n", k, head, solution1, solution2, w0);
+				/* Debug
+				fprintf(stderr,"%d %d %e %d %d %e\n", point_number, k, head, solution1, solution2, w0);
+				fprintf(stderr,"\t%e\t%e\t%e\n", rivers[river_number].points[point_number].f1, rivers[river_number].points[point_number + 1].f1, 1.-w1);
+				*/
+				//}
 				k++;
 			}
 		}
+		output_msg(OUTPUT_HST,"C .. End 3.6.2\n");
 		output_msg(OUTPUT_HST,"END\n");
 	}
-/*
- *   Aquifer influence function NOT USED
- */
+	/*
+	*   Drains
+	*/
+	output_msg(OUTPUT_HST,"C.....    Drain leakage b.c.\n");
+	output_msg(OUTPUT_HST,"C.....    No transient parameters\n");
+	/*
+	*   Aquifer influence function NOT USED
+	*/
+#ifdef SKIP
 	output_msg(OUTPUT_HST,"C------------------------------------------------------------------------------\n");
 	output_msg(OUTPUT_HST,"C.....     Aquifer influence function b.c.\n");
 	output_msg(OUTPUT_HST,"C.3.6.1 .. RDAIF[T/F];(O) - NAIFC [1.6] > 0\n");
 	output_msg(OUTPUT_HST,"C.3.6.2 .. DENOAR by x,y,z range {0.1-0.3};(O) - RDAIF [3.6.1]\n");
 	output_msg(OUTPUT_HST,"C.3.6.3 .. TAIF by x,y,z range {0.1-0.3};(O) - RDAIF [3.6.1] and HEAT [1.4]\n");
 	output_msg(OUTPUT_HST,"C.3.6.4 .. CAIF by x,y,z range {0.1-0.3};(O) - RDAIF [3.6.1] and SOLUTE [1.4]\n");
-
+#endif
+	output_msg(OUTPUT_HST,"C.....    Aquifer influence function b.c. not available\n");
 	return(OK);
 }
 
@@ -1610,7 +1631,7 @@ int write_output_transient(void)
 		print_value(&current_print_hdf_chem),
 		print_value(&current_print_hdf_head),
 		print_value(&current_print_hdf_velocity));
-	output_msg(OUTPUT_HST,"C.3.8.2a .. PRI_ICHEAD; [T/F]\n");
+	output_msg(OUTPUT_HST,"C.3.8.2.1 .. PRI_ICHEAD; [T/F]\n");
 	if (save_final_heads == TRUE) output_msg(OUTPUT_HST, "     t \n");
 	if (save_final_heads == FALSE) output_msg(OUTPUT_HST, "     f \n");
 /*
@@ -1644,7 +1665,7 @@ int write_output_transient(void)
 		output_msg(OUTPUT_HST,"     f %f\n", velmap);
 	}
 
-	output_msg(OUTPUT_HST,"C.3.10.2 .. PRIXYZ_WELL, PRINT_RESTART, PRINT_END_OF_PERIOD [t/t]\n");
+	output_msg(OUTPUT_HST,"C.3.9.2 .. PRIXYZ_WELL, PRINT_RESTART, PRINT_END_OF_PERIOD [t/t]\n");
 	output_msg(OUTPUT_HST,"     %f %f", print_value(&current_print_xyz_wells), print_value(&current_print_restart));
 	if (current_print_end_of_period == TRUE) output_msg(OUTPUT_HST,"     T\n");
 	if (current_print_end_of_period == FALSE) output_msg(OUTPUT_HST,"     F\n");
@@ -1653,7 +1674,7 @@ int write_output_transient(void)
  */	
 	if (flow_only == FALSE) {
 		/* .O.chem file */
-		output_msg(OUTPUT_HST,"C...Cell print information for .O.chem file, transient chemistry\n");
+		output_msg(OUTPUT_HST,"C.3.9.3 .. Cell print information for .O.chem file, transient chemistry\n");
 		output_msg(OUTPUT_HST,"%15.7e %15.7e %15.7e %15.7e %15.7e %15.7e\n",
 			cells[0].x * units.horizontal.input_to_si, 
 			cells[nxyz-1].x * units.horizontal.input_to_si,
@@ -1663,9 +1684,10 @@ int write_output_transient(void)
 			cells[nxyz-1].z * units.vertical.input_to_si);
 		output_msg(OUTPUT_HST,"     0 4\n");
 		write_integer_cell_property(offsetof(struct cell, print_chem));
+		output_msg(OUTPUT_HST,"C .. End 3.9.3\n");
 		output_msg(OUTPUT_HST,"END\n");
 		/* .xyz.chem file */
-		output_msg(OUTPUT_HST,"C...Cell print information for .xyz.chem file, transient chemistry\n");
+		output_msg(OUTPUT_HST,"C.3.9.4 .. Cell print information for .xyz.chem file, transient chemistry\n");
 		output_msg(OUTPUT_HST,"%15.7e %15.7e %15.7e %15.7e %15.7e %15.7e\n",
 			cells[0].x * units.horizontal.input_to_si, 
 			cells[nxyz-1].x * units.horizontal.input_to_si,
@@ -1675,6 +1697,7 @@ int write_output_transient(void)
 			cells[nxyz-1].z * units.vertical.input_to_si);
 		output_msg(OUTPUT_HST,"     0 4\n");
 		write_integer_cell_property(offsetof(struct cell, print_xyz));
+		output_msg(OUTPUT_HST,"C .. End 3.9.4\n");
 		output_msg(OUTPUT_HST,"END\n");
 #ifdef SKIP
 		/* .h5 file */
@@ -2182,7 +2205,6 @@ int write_zone_budget(void)
 					if (cells[n].specified)
 					{
 						specified_vector.push_back(n);
-						break;
 					}
 
 					// leaky
@@ -2238,7 +2260,7 @@ int write_zone_budget(void)
 					if (cells[n].drain_polygons->size() > 0)
 					{
 						drain_vector.push_back(n);
-	
+
 					}
 				}
 			}
@@ -2287,7 +2309,7 @@ int write_zone_budget(void)
 		return_max = 5;
 		for (std::vector<std::pair<int, int> >::iterator it = faces.begin(); it != faces.end(); it++)
 		{
-			output_msg(OUTPUT_HST, "     %d  %d", it->first, it->second );
+			output_msg(OUTPUT_HST, "     %d  %d", it->first + 1, it->second );
 			if (++return_counter == return_max)
 			{
 				output_msg(OUTPUT_HST, "\n");
@@ -2309,7 +2331,7 @@ int write_zone_budget(void)
 				return_counter = 0;
 				for (std::vector<int>::iterator it = specified_vector.begin(); it != specified_vector.end(); it++)
 				{
-					output_msg(OUTPUT_HST, "     %d", *it );
+					output_msg(OUTPUT_HST, "     %d", *it + 1 );
 					if (++return_counter == return_max)
 					{
 						output_msg(OUTPUT_HST, "\n");
@@ -2331,7 +2353,7 @@ int write_zone_budget(void)
 				return_counter = 0;
 				for (std::vector<int>::iterator it = flux_vector.begin(); it != flux_vector.end(); it++)
 				{
-					output_msg(OUTPUT_HST, "     %d", *it );
+					output_msg(OUTPUT_HST, "     %d", *it + 1 );
 					if (++return_counter == return_max)
 					{
 						output_msg(OUTPUT_HST, "\n");
@@ -2353,7 +2375,7 @@ int write_zone_budget(void)
 				return_counter = 0;
 				for (std::vector<int>::iterator it = leaky_vector.begin(); it != leaky_vector.end(); it++)
 				{
-					output_msg(OUTPUT_HST, "     %d", *it );
+					output_msg(OUTPUT_HST, "     %d", *it + 1 );
 					if (++return_counter == return_max)
 					{
 						output_msg(OUTPUT_HST, "\n");
@@ -2422,7 +2444,7 @@ int write_zone_budget(void)
 				return_counter = 0;
 				for (std::map< int, bool >::iterator it = river_map.begin(); it != river_map.end(); it++)
 				{
-					output_msg(OUTPUT_HST, "     %d", it->first );
+					output_msg(OUTPUT_HST, "     %d", it->first + 1 );
 					if (++return_counter == return_max)
 					{
 						output_msg(OUTPUT_HST, "\n");
@@ -2444,7 +2466,7 @@ int write_zone_budget(void)
 				return_counter = 0;
 				for (std::vector<int>::iterator it = drain_vector.begin(); it != drain_vector.end(); it++)
 				{
-					output_msg(OUTPUT_HST, "     %d", *it );
+					output_msg(OUTPUT_HST, "     %d", *it + 1 );
 					if (++return_counter == return_max)
 					{
 						output_msg(OUTPUT_HST, "\n");
@@ -2466,7 +2488,7 @@ int write_zone_budget(void)
 				return_counter = 0;
 				for (std::map<int, bool>::iterator it = well_map.begin(); it != well_map.end(); it++)
 				{
-					output_msg(OUTPUT_HST, "     %d", it->first);
+					output_msg(OUTPUT_HST, "     %d", it->first + 1);
 					if (++return_counter == return_max)
 					{
 						output_msg(OUTPUT_HST, "\n");
@@ -2479,7 +2501,8 @@ int write_zone_budget(void)
 		output_msg(OUTPUT_HST, "C.... Use as many 2.23.9-2.23.15.1 lines as necessary\n");
 
 	}
-	output_msg(OUTPUT_HST, "C.2.23.16 .. End with END; (O) - num_flow_zones > 0\n");
+	//output_msg(OUTPUT_HST, "C.2.23.16 .. End with END; (O) - num_flow_zones > 0\n");
+	output_msg(OUTPUT_HST,"C .. End 2.23.8 Zone flow accounting\n");
 	output_msg(OUTPUT_HST, "END\n");
 	return(OK);
 }

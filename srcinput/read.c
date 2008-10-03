@@ -3950,7 +3950,7 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 		} else {
 			*opt = next_keyword_or_option(opt_list, count_opt_list);
 		}
-	} else if ( strstr(token, "constant") == token )
+	} else if ( strstr(token, "constant") == token || strstr(token, "uniform") == token)
 	{
 /*
  *   digit, read one value, check rest of line is empty
