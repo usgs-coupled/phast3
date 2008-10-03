@@ -1,5 +1,11 @@
 #include "Zone_budget.h"
 #include "message.h"
+
+// Note: No header files should follow the next three lines
+#if defined(_WIN32) && defined(_DEBUG)
+#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+#endif
+
 std::map<int, Zone_budget *> Zone_budget::zone_budget_map;
 Zone_budget::Zone_budget(void)
 {

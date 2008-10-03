@@ -3931,7 +3931,8 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 		p = NULL;
 		*opt = next_keyword_or_option(opt_list, count_opt_list);
 		return(NULL);
-	} else if ( j == DIGIT) {
+	} else if ( j == DIGIT ) 
+	{
 /*
  *   digit, read one value, check rest of line is empty
  */
@@ -3940,6 +3941,25 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 		p->type = PROP_FIXED;
 		p->count_v = 1;
 		if (j != EMPTY) {
+			input_error++;
+			error_msg("Expected single property value after identifier", CONTINUE);
+			error_msg(line, CONTINUE);
+		}
+		if (delimited == TRUE) {
+			*opt = get_option(opt_list, count_opt_list, &next_char);
+		} else {
+			*opt = next_keyword_or_option(opt_list, count_opt_list);
+		}
+	} else if ( strstr(token, "constant") == token )
+	{
+/*
+ *   digit, read one value, check rest of line is empty
+ */
+		j = copy_token(token, &next_char, &l);
+		sscanf(token,"%lf", &(p->v[0]));
+		p->type = PROP_FIXED;
+		p->count_v = 1;
+		if (j != DIGIT) {
 			input_error++;
 			error_msg("Expected single property value after identifier", CONTINUE);
 			error_msg(line, CONTINUE);

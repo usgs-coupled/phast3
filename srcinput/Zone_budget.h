@@ -16,7 +16,8 @@ public:
 	void              Set_description(char *desc) {this->description.clear(); this->description.append(desc);};
 	std::string &     Get_description(void)       {return this->description;}
 
-	void              Set_polyh(Polyhedron *p)    {this->polyh = p;};
+	void              Set_polyh(Polyhedron *p)    {assert (this->polyh == NULL);
+		this->polyh = p;};
 	Polyhedron *      Get_polyh(void)             {return this->polyh;};
 
 	std::vector<int> & Get_combo(void)            {return this->combo;};

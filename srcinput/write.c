@@ -1191,7 +1191,7 @@ int write_output_static(void)
  */	
 	if (flow_only == FALSE) {
 		/* O.chem file */
-		output_msg(OUTPUT_HST,"C...Cell print information for O.chem, initial conditions\n");
+		output_msg(OUTPUT_HST,"C.2.23.6 .. Cell print information for O.chem, initial conditions; (O) - solute\n");
 		output_msg(OUTPUT_HST,"%15.7e %15.7e %15.7e %15.7e %15.7e %15.7e\n",
 			cells[0].x * units.horizontal.input_to_si, 
 			cells[nxyz-1].x * units.horizontal.input_to_si,
@@ -1203,7 +1203,7 @@ int write_output_static(void)
 		write_integer_cell_property(offsetof(struct cell, print_chem));
 		output_msg(OUTPUT_HST,"END\n");
 		/* xyz.chem file */
-		output_msg(OUTPUT_HST,"C...Cell print information for xyz.chem, initial conditions\n");
+		output_msg(OUTPUT_HST,"C.2.23.7 .. Cell print information for xyz.chem, initial conditions; (O) - solute\n");
 		output_msg(OUTPUT_HST,"%15.7e %15.7e %15.7e %15.7e %15.7e %15.7e\n",
 			cells[0].x * units.horizontal.input_to_si, 
 			cells[nxyz-1].x * units.horizontal.input_to_si,
@@ -2093,8 +2093,9 @@ int write_zone_budget(void)
 {
 
 	// Zone budget information
-	output_msg(OUTPUT_HST, "C  Number of zone budgets \n");
+	output_msg(OUTPUT_HST, "C.2.23.8 .. Number of zones for flow rates: num_flo_zones \n");
 	output_msg(OUTPUT_HST, "%d\n", (int) Zone_budget::zone_budget_map.size());
+	if (Zone_budget::zone_budget_map.size() == 0) return(OK);
 
 	int zone_budget_number = 1;
 	std::map<int, Zone_budget *>::iterator it;	
@@ -2242,6 +2243,7 @@ int write_zone_budget(void)
 				}
 			}
 		}
+		free_check_null(range_ptr);
 		std::map<int, bool> well_map;
 		for (i = 0; i < count_wells; i++)
 		{
@@ -2256,11 +2258,12 @@ int write_zone_budget(void)
 		}
 
 		// Write one zone budget 
-		output_msg(OUTPUT_HST, "C Data for zone budget number %d \n", zone_budget_number);
+
+		output_msg(OUTPUT_HST, "C .. Data for zone budget number %d \n", zone_budget_number);
 		int return_max = 10;
 		int return_counter = 0;
 
-
+#ifdef SKIP
 		// active cells in zone
 		output_msg(OUTPUT_HST, "C Cells in budget: count, followed by list of cells followed by END\n");
 		output_msg(OUTPUT_HST, " %d\n", budget_map.size());
@@ -2274,11 +2277,12 @@ int write_zone_budget(void)
 			}
 		}
 		if (return_counter != 0) output_msg(OUTPUT_HST, "\n");
-		output_msg(OUTPUT_HST, "END\n");
+#endif		
 
 		// Inter cell flows
-		output_msg(OUTPUT_HST, "C Intercell flows: count, followed by list of <cell number, face> pairs followed by END\n");
+		output_msg(OUTPUT_HST, "C.2.23.9 .. Internal boundaries: count; (O) - num_flo_zones > 0\n");
 		output_msg(OUTPUT_HST, " %d\n", faces.size());
+		output_msg(OUTPUT_HST, "C.2.23.9.1 .. Internal boundaries: list of [cell number, face index] pairs; (O) - num_flo_zones > 0\n");
 		return_counter = 0;
 		return_max = 5;
 		for (std::vector<std::pair<int, int> >::iterator it = faces.begin(); it != faces.end(); it++)
@@ -2292,56 +2296,73 @@ int write_zone_budget(void)
 
 		}
 		if (return_counter != 0) output_msg(OUTPUT_HST, "\n");
-		output_msg(OUTPUT_HST, "END\n");
 
 		// Specified value cells
-		output_msg(OUTPUT_HST, "C Specified value cells: count, followed by list of cell numbers followed by END\n");
-		output_msg(OUTPUT_HST, " %d\n", specified_vector.size());
-		return_max = 10;
-		return_counter = 0;
-		for (std::vector<int>::iterator it = specified_vector.begin(); it != specified_vector.end(); it++)
+		if (count_specified > 0)
 		{
-			output_msg(OUTPUT_HST, "     %d", *it );
-			if (++return_counter == return_max)
+			output_msg(OUTPUT_HST, "C.2.23.10 .. Specified head cells: count; (O) nsbc > 0\n");
+			output_msg(OUTPUT_HST, " %d\n", specified_vector.size());
+			if (specified_vector.size() > 0)
 			{
-				output_msg(OUTPUT_HST, "\n");
+				output_msg(OUTPUT_HST, "C.2.23.10.1 .. Specified head cells: list of cell numbers; (O) nsbc > 0\n");
+				return_max = 10;
 				return_counter = 0;
+				for (std::vector<int>::iterator it = specified_vector.begin(); it != specified_vector.end(); it++)
+				{
+					output_msg(OUTPUT_HST, "     %d", *it );
+					if (++return_counter == return_max)
+					{
+						output_msg(OUTPUT_HST, "\n");
+						return_counter = 0;
+					}
+				}
+				if (return_counter != 0) output_msg(OUTPUT_HST, "\n");
 			}
 		}
-		if (return_counter != 0) output_msg(OUTPUT_HST, "\n");
-		output_msg(OUTPUT_HST, "END\n");
-
-		// Leaky cells
-		output_msg(OUTPUT_HST, "C Leaky cells: count, followed by list of cell numbers followed by END\n");
-		output_msg(OUTPUT_HST, " %d\n", leaky_vector.size());
-		return_counter = 0;
-		for (std::vector<int>::iterator it = leaky_vector.begin(); it != leaky_vector.end(); it++)
-		{
-			output_msg(OUTPUT_HST, "     %d", *it );
-			if (++return_counter == return_max)
-			{
-				output_msg(OUTPUT_HST, "\n");
-				return_counter = 0;
-			}
-		}
-		if (return_counter != 0) output_msg(OUTPUT_HST, "\n");
-		output_msg(OUTPUT_HST, "END\n");
 
 		// Flux cells
-		output_msg(OUTPUT_HST, "C Known flux cells: count, followed by list of cell numbers followed by END\n");
-		output_msg(OUTPUT_HST, " %d\n", flux_vector.size());
-		return_counter = 0;
-		for (std::vector<int>::iterator it = flux_vector.begin(); it != flux_vector.end(); it++)
+		if (count_flux > 0)
 		{
-			output_msg(OUTPUT_HST, "     %d", *it );
-			if (++return_counter == return_max)
+			output_msg(OUTPUT_HST, "C.2.23.11 .. Flux cells: count; (O) nfbc > 0\n");
+			output_msg(OUTPUT_HST, " %d\n", flux_vector.size());
+			if (flux_vector.size() > 0)
 			{
-				output_msg(OUTPUT_HST, "\n");
+				output_msg(OUTPUT_HST, "C.2.23.11.1 .. Flux cells: list of cell numbers; (O) nfbc > 0\n");
 				return_counter = 0;
+				for (std::vector<int>::iterator it = flux_vector.begin(); it != flux_vector.end(); it++)
+				{
+					output_msg(OUTPUT_HST, "     %d", *it );
+					if (++return_counter == return_max)
+					{
+						output_msg(OUTPUT_HST, "\n");
+						return_counter = 0;
+					}
+				}
+				if (return_counter != 0) output_msg(OUTPUT_HST, "\n");
 			}
 		}
-		if (return_counter != 0) output_msg(OUTPUT_HST, "\n");
-		output_msg(OUTPUT_HST, "END\n");
+
+		// Leaky cells
+		if (count_leaky > 0)
+		{
+			output_msg(OUTPUT_HST, "C.2.23.12 .. Leakage cells: count; (O) nlbc > 0\n");
+			output_msg(OUTPUT_HST, " %d\n", leaky_vector.size());
+			if (leaky_vector.size() > 0)
+			{
+				output_msg(OUTPUT_HST, "C.2.23.12.1 .. Leakage cells: list of cell numbers; (O) nlbc > 0\n");
+				return_counter = 0;
+				for (std::vector<int>::iterator it = leaky_vector.begin(); it != leaky_vector.end(); it++)
+				{
+					output_msg(OUTPUT_HST, "     %d", *it );
+					if (++return_counter == return_max)
+					{
+						output_msg(OUTPUT_HST, "\n");
+						return_counter = 0;
+					}
+				}
+				if (return_counter != 0) output_msg(OUTPUT_HST, "\n");
+			}
+		}
 
 		// Conditional flux cells
 #ifdef SKIP
@@ -2359,6 +2380,7 @@ int write_zone_budget(void)
 			}
 		}
 #endif
+#ifdef SKIP
 		output_msg(OUTPUT_HST, "C Conditional Z flux cells: count, followed by list of cells followed by END\n");
 		output_msg(OUTPUT_HST, " %d\n", flux_conditional_map.size());
 		return_counter = 0;
@@ -2372,71 +2394,93 @@ int write_zone_budget(void)
 			}
 		}
 		if (return_counter != 0) output_msg(OUTPUT_HST, "\n");
-		output_msg(OUTPUT_HST, "END\n");
+#endif
+#ifdef SKIP
 
 		// Conditional river segments
-#ifdef SKIP
+
 		output_msg(OUTPUT_HST, "C River cells: count, followed by list of <target cell, river cell> pairs followed by END\n");
 		output_msg(OUTPUT_HST, " %d\n", river_vector.size());
 		return_counter = 0;
-			for (std::vector<std::pair< int,int> >::iterator it = river_vector.begin(); it != river_vector.end(); it++)
-			{
-				output_msg(OUTPUT_HST, "     %d  %d\n", it->first, it->second );
-				if (++return_counter == return_max)
-				{
-					output_msg(OUTPUT_HST, "\n");
-					return_counter = 0;
-				}
-			}
-#endif
-		output_msg(OUTPUT_HST, "C Conditional river cells: count, followed by list of cells followed by END\n");
-		output_msg(OUTPUT_HST, " %d\n", river_map.size());
-		return_counter = 0;
-		for (std::map< int, bool >::iterator it = river_map.begin(); it != river_map.end(); it++)
+		for (std::vector<std::pair< int,int> >::iterator it = river_vector.begin(); it != river_vector.end(); it++)
 		{
-			output_msg(OUTPUT_HST, "     %d", it->first );
+			output_msg(OUTPUT_HST, "     %d  %d\n", it->first, it->second );
 			if (++return_counter == return_max)
 			{
 				output_msg(OUTPUT_HST, "\n");
 				return_counter = 0;
 			}
 		}
-		if (return_counter != 0) output_msg(OUTPUT_HST, "\n");
-		output_msg(OUTPUT_HST, "END\n");
+#endif
+		if (count_river_segments > 0)
+		{
+			output_msg(OUTPUT_HST, "C.2.23.13 .. River leakage cells: count; (O) nrbc > 0\n");
+			output_msg(OUTPUT_HST, " %d\n", river_map.size());
+			if (river_map.size() > 0)
+			{
+				output_msg(OUTPUT_HST, "C.2.23.13.1 .. River leakage cells: list of cell numbers; (O) nrbc > 0\n");
+				return_counter = 0;
+				for (std::map< int, bool >::iterator it = river_map.begin(); it != river_map.end(); it++)
+				{
+					output_msg(OUTPUT_HST, "     %d", it->first );
+					if (++return_counter == return_max)
+					{
+						output_msg(OUTPUT_HST, "\n");
+						return_counter = 0;
+					}
+				}
+				if (return_counter != 0) output_msg(OUTPUT_HST, "\n");
+			}
+		}
 
 		// Drain cells
-		output_msg(OUTPUT_HST, "C Drain cells: count, followed by list of cell numbers followed by END\n");
-		output_msg(OUTPUT_HST, " %d\n", drain_vector.size());
-		return_counter = 0;
-		for (std::vector<int>::iterator it = drain_vector.begin(); it != drain_vector.end(); it++)
+		if (count_drain_segments > 0)
 		{
-			output_msg(OUTPUT_HST, "     %d", *it );
-			if (++return_counter == return_max)
+			output_msg(OUTPUT_HST, "C.2.23.14 .. Drain cells: count; (O) ndbc > 0\n");
+			output_msg(OUTPUT_HST, " %d\n", drain_vector.size());
+			if (drain_vector.size() > 0)
 			{
-				output_msg(OUTPUT_HST, "\n");
+				output_msg(OUTPUT_HST, "C.2.23.14.1 .. Drain cells: list of cell numbers; (O) ndbc > 0\n");
 				return_counter = 0;
+				for (std::vector<int>::iterator it = drain_vector.begin(); it != drain_vector.end(); it++)
+				{
+					output_msg(OUTPUT_HST, "     %d", *it );
+					if (++return_counter == return_max)
+					{
+						output_msg(OUTPUT_HST, "\n");
+						return_counter = 0;
+					}
+				}
+				if (return_counter != 0) output_msg(OUTPUT_HST, "\n");
 			}
 		}
-		if (return_counter != 0) output_msg(OUTPUT_HST, "\n");
-		output_msg(OUTPUT_HST, "END\n");
 
 		// Well cells
-		output_msg(OUTPUT_HST, "C Well cells: count, followed by list of cell numbers followed by END\n");
-		output_msg(OUTPUT_HST, " %d\n", well_map.size());
-		return_counter = 0;
-		for (std::map<int, bool>::iterator it = well_map.begin(); it != well_map.end(); it++)
+		if (count_wells > 0)
 		{
-			output_msg(OUTPUT_HST, "     %d", it->first);
-			if (++return_counter == return_max)
+			output_msg(OUTPUT_HST, "C.2.23.15 .. Well cells: count; (O) nwel > 0\n");
+			output_msg(OUTPUT_HST, " %d\n", well_map.size());
+			if (well_map.size() > 0)
 			{
-				output_msg(OUTPUT_HST, "\n");
+				output_msg(OUTPUT_HST, "C.2.23.15.1 .. Well cells: list of cell numbers; (O) nwel > 0\n");
 				return_counter = 0;
+				for (std::map<int, bool>::iterator it = well_map.begin(); it != well_map.end(); it++)
+				{
+					output_msg(OUTPUT_HST, "     %d", it->first);
+					if (++return_counter == return_max)
+					{
+						output_msg(OUTPUT_HST, "\n");
+						return_counter = 0;
+					}
+				}
+				if (return_counter != 0) output_msg(OUTPUT_HST, "\n");
 			}
 		}
-		if (return_counter != 0) output_msg(OUTPUT_HST, "\n");
-		output_msg(OUTPUT_HST, "END\n");
+		output_msg(OUTPUT_HST, "C.... Use as many 2.23.9-2.23.15.1 lines as necessary\n");
 
 	}
+	output_msg(OUTPUT_HST, "C.2.23.16 .. End with END; (O) - num_flow_zones > 0\n");
+	output_msg(OUTPUT_HST, "END\n");
 	return(OK);
 }
 
