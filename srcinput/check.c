@@ -827,6 +827,7 @@ int check_time_series_data(void)
 	if (print_bc.properties != NULL) check_time_series(&print_bc, FALSE, "print boundary conditions");
 	if (print_end_of_period.properties != NULL) check_time_series(&print_end_of_period, FALSE, "print end of period default");
 	if (print_restart.properties != NULL) check_time_series(&print_restart, FALSE, "print restart");
+	if (print_zone_budget.properties != NULL) check_time_series(&print_zone_budget, FALSE, "print zone budget");
 	/* 
 	 * check defaults
 	 */

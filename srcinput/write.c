@@ -1452,7 +1452,7 @@ int write_bc_transient(void)
 				segment++;
 			}
 		}
-		output_msg(OUTPUT_HST," .. End 3.5.2\n");
+		output_msg(OUTPUT_HST,"C .. End 3.5.2\n");
 		output_msg(OUTPUT_HST,"END\n");
 
 		/* NOT USED */
@@ -1634,6 +1634,9 @@ int write_output_transient(void)
 	output_msg(OUTPUT_HST,"C.3.8.2.1 .. PRI_ICHEAD; [T/F]\n");
 	if (save_final_heads == TRUE) output_msg(OUTPUT_HST, "     t \n");
 	if (save_final_heads == FALSE) output_msg(OUTPUT_HST, "     f \n");
+	output_msg(OUTPUT_HST,"C.3.8.2.2 .. pri_zon_flo\n");
+	output_msg(OUTPUT_HST,"     %f\n",
+		print_value(&current_print_zone_budget));
 /*
  *   new line to control phreeqc prints
  */

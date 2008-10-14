@@ -5638,9 +5638,10 @@ int read_print_frequency (void)
 		"restart",             /* 54*/
 		"restart_file",        /* 55*/
 		"print_default_end_of_period",  /* 56*/
-		"end_of_period_default"/* 57*/
+		"end_of_period_default"         /* 57*/
+		,"zone_budget"                  /* 58*/      
 	};
-	int count_opt_list = 58;
+	int count_opt_list = 59;
 /*
  *   Read flags:
  */
@@ -5898,13 +5899,21 @@ int read_print_frequency (void)
 				error_msg("No start time for print frequency data", CONTINUE);
 			}				
 			break;
-			break;
-			break;
 		case 56:                          /* print_default_end_of_period */
 		case 57:                          /* end_of_period_default */
 			if (current_time.value_defined == TRUE) {
 				property_time_ptr = time_series_alloc_property_time(&print_end_of_period);
 				property_time_ptr->int_value = get_true_false(next_char, TRUE);
+				time_copy(&current_time, &(property_time_ptr->time));
+			} else {
+				input_error++;
+				error_msg("No start time for print frequency data", CONTINUE);
+			}				
+			break;
+		case 58:                          /* zone_budget */
+			if (current_time.value_defined == TRUE) {
+				property_time_ptr = time_series_alloc_property_time(&print_zone_budget);
+				read_frequency_data(&next_char, &(property_time_ptr->time_value), "Print frequency for zone_budget, in PRINT_FREQUENCY.");
 				time_copy(&current_time, &(property_time_ptr->time));
 			} else {
 				input_error++;

@@ -2209,6 +2209,10 @@ int reset_transient_data(void)
 	if (get_current_property_position(&print_restart, current_start_time, &pt_ptr) >= 0) {
 		time_copy(&(pt_ptr->time_value), &current_print_restart);
 	}
+	if (get_current_property_position(&print_zone_budget, current_start_time, &pt_ptr) >= 0) {
+		time_copy(&(pt_ptr->time_value), &current_print_zone_budget);
+	}
+
 
 	return(OK);
 }

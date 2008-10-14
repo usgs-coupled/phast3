@@ -389,6 +389,7 @@ int collate_simulation_periods(void)
 	accumulate_time_series(&print_conductances);
 	accumulate_time_series(&print_bc);
 	accumulate_time_series(&print_restart);
+	accumulate_time_series(&print_zone_budget);
 
 	/*
 	 *  Add in all but last time_end

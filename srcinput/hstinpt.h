@@ -604,6 +604,7 @@ EXTERNAL struct time current_print_conductances;
 EXTERNAL int current_print_bc;
 EXTERNAL int current_print_end_of_period;
 EXTERNAL struct time current_print_restart;
+EXTERNAL struct time current_print_zone_budget;
 
 /* print input data */
 EXTERNAL int print_input_media;
