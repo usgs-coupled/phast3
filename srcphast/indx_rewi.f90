@@ -26,9 +26,14 @@ SUBROUTINE indx_rewi(ipar1,ipar2,par3,ip,icall,ier)
        INTEGER, INTENT(OUT) :: i1, i2
        LOGICAL, INTENT(INOUT) :: erflg
      END SUBROUTINE incidx
+     FUNCTION uppercase(string) RESULT(outstring)
+       IMPLICIT NONE
+       CHARACTER(LEN=*), INTENT(IN) :: string
+       CHARACTER(LEN=LEN(string)) :: outstring
+     END FUNCTION uppercase
   END INTERFACE
   !
-  CHARACTER(LEN=130), EXTERNAL :: uppercase
+!$$  CHARACTER(LEN=130), EXTERNAL :: uppercase
   CHARACTER(LEN=130) :: line
   REAL(kind=kdp) :: x1, x2, y1, y2, z1, z2
   REAL(kind=kdp) ::  var3

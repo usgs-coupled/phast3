@@ -4,6 +4,7 @@ SUBROUTINE closef(mpi_myself)
   ! ... Also deallocates the arrays
   USE f_units
   USE mcb
+  USE mcb2
   USE mcc
   USE mcch
   USE mcg
@@ -50,7 +51,7 @@ SUBROUTINE closef(mpi_myself)
   ENDIF
   logline1 = '                             ***** Simulation Completed ***** '
   WRITE(logline2,5004) '     Last time value calculated '//dots, cnvtmi* &
-          time,' ('//TRIM(unittm)//')'
+       time,' ('//TRIM(unittm)//')'
 5004 FORMAT(a70,1pg11.4,a)  
   WRITE(logline3,5014) '     Last time step index '//dots,itime
 5014 FORMAT(a70,i8)  
@@ -61,6 +62,9 @@ SUBROUTINE closef(mpi_myself)
      WRITE(ifu,2004) TRIM(logline3)
 2004 FORMAT(tr10,a)  
   END DO
+  WRITE(fuzf,2003) TRIM(logline1)
+  WRITE(fuzf,2004) TRIM(logline2)
+  WRITE(fuzf,2004) TRIM(logline3)
   CALL logprt_c(' ')
   CALL logprt_c(logline1)
   CALL logprt_c(logline2)
@@ -75,35 +79,35 @@ SUBROUTINE closef(mpi_myself)
      CALL logprt_c(logline1)
   ENDIF
   IF (mpi_myself == 0) THEN
-    IF(CHKPTD) THEN  
-      IF(ABS(pricpd) > 0._kdp) THEN
-        logline1 = '     Check point dump made at the following times ('//TRIM(unittm)//')'
-        WRITE(FULP,2004) TRIM(logline1)
-        CALL logprt_c(logline1)
-        i1p = - 9  
-20      i1p = i1p + 10  
-        i2p = MIN(i1p+9,nrsttp)  
-        WRITE(fulp,2007) (idmptm(ip), ip=i1p,i2p)  
-2007    FORMAT(tr5,10i10)  
-        WRITE(fulp,2008) (cnvtmi*dmptm(ip), ip = i1p, i2p)  
-2008    FORMAT(tr5,10(1pg12.5)/)  
-        IF(i2p.LT.nrsttp) GOTO 20  
-      ENDIF
-      IF(ABS(pricpd) >= timchg) THEN  
-        logline1 = '     Check point dump made at last time step'
-        WRITE(fulp,2009) TRIM(logline1)
-2009    FORMAT(tr10,2a)  
-        CALL logprt_c(logline1)
-      ENDIF
-      WRITE(logline1,5005) '     Number of restart time planes written '//dots,nrsttp
-      WRITE(fulp,2009) TRIM(logline1)
-      CALL logprt_c(logline1)
-      IF(savldo) THEN  
-        logline1 = '     Only the most recent dump has been saved'
+     IF(CHKPTD) THEN  
+        IF(ABS(pricpd) > 0._kdp) THEN
+           logline1 = '     Check point dump made at the following times ('//TRIM(unittm)//')'
+           WRITE(FULP,2004) TRIM(logline1)
+           CALL logprt_c(logline1)
+           i1p = - 9  
+20         i1p = i1p + 10  
+           i2p = MIN(i1p+9,nrsttp)  
+           WRITE(fulp,2007) (idmptm(ip), ip=i1p,i2p)  
+2007       FORMAT(tr5,10i10)  
+           WRITE(fulp,2008) (cnvtmi*dmptm(ip), ip = i1p, i2p)  
+2008       FORMAT(tr5,10(1pg12.5)/)  
+           IF(i2p.LT.nrsttp) GOTO 20  
+        ENDIF
+        IF(ABS(pricpd) >= timchg) THEN  
+           logline1 = '     Check point dump made at last time step'
+           WRITE(fulp,2009) TRIM(logline1)
+2009       FORMAT(tr10,2a)  
+           CALL logprt_c(logline1)
+        ENDIF
+        WRITE(logline1,5005) '     Number of restart time planes written '//dots,nrsttp
         WRITE(fulp,2009) TRIM(logline1)
         CALL logprt_c(logline1)
-      ENDIF
-    ENDIF
+        IF(savldo) THEN  
+           logline1 = '     Only the most recent dump has been saved'
+           WRITE(fulp,2009) TRIM(logline1)
+           CALL logprt_c(logline1)
+        ENDIF
+     ENDIF
   ENDIF
   ! ... delete the read echo 'furde' file upon successful completion
 !!$  st(furde) = 'delete'
@@ -121,10 +125,10 @@ SUBROUTINE closef(mpi_myself)
   st(fuvmap) = 'delete'  
   st(fuich) = 'delete'
   IF (mpi_myself == 0) THEN
-    IF(cntmapc) st(fupmap) = 'keep '  
-    IF(prtic_maphead .OR. ABS(primaphead) > 0._kdp) st(fupmp2) = 'keep '  
-    IF(ntprmapv > 0) st(fuvmap) = 'keep  '  
-    IF(prtichead) st(fuich) = 'keep '
+     IF(cntmapc) st(fupmap) = 'keep '  
+     IF(prtic_maphead .OR. ABS(primaphead) > 0._kdp) st(fupmp2) = 'keep '  
+     IF(ntprmapv > 0) st(fuvmap) = 'keep  '  
+     IF(prtichead) st(fuich) = 'keep '
   ENDIF
 !!$  ! ... delete file 'fuich' if no initial condition head map data written
 !!$  st(fuich) = 'keep  '  
@@ -147,6 +151,8 @@ SUBROUTINE closef(mpi_myself)
   IF(ntprkd > 0 .OR. prt_kd) st(fukd) = 'keep  '  
   st(fubcf) = 'delete'  
   IF(ntprbcf > 0) st(fubcf) = 'keep  '  
+  st(fuzf) = 'delete'  
+  IF(ntprzf > 0) st(fuzf) = 'keep  '  
 !!$  st(fut) = 'delete'  
 !!$#if defined(MERGE_FILES)
 !!$  CALL update_status(st)
@@ -162,6 +168,7 @@ SUBROUTINE closef(mpi_myself)
   CLOSE(fubal, status = st(fubal))  
   CLOSE(fukd, status = st(fukd))  
   CLOSE(fubcf, status = st(fubcf))  
+  CLOSE(fuzf, status = st(fuzf))
   CLOSE(fuplt, status = st(fuplt))  
   CLOSE(fupmap, status = st(fupmap))  
   CLOSE(fupmp2, status = st(fupmp2))  
@@ -173,19 +180,19 @@ SUBROUTINE closef(mpi_myself)
   CALL phreeqc_free(solute)  
   ! ... Deallocate the arrays
   IF (mpi_myself == 0) THEN
-  ! ...      Deallocate mesh arrays
-  DEALLOCATE (caprnt, lprnt1, lprnt2,  &
-       aprnt1, aprnt2, aprnt3, aprnt4,  &
-       rm, x, y, z,  &
-       x_face, y_face, z_face,  &
-       ibc,  &
-       c_mol,  &
-       xd_mask, vmask,  &
-       stat = da_err)
-  IF (da_err /= 0) THEN  
-     PRINT *, "Array allocation failed: closef: number 0"
+     ! ...      Deallocate mesh arrays
+     DEALLOCATE (caprnt, lprnt1, lprnt2,  &
+          aprnt1, aprnt2, aprnt3, aprnt4,  &
+          rm, x, y, z,  &
+          x_face, y_face, z_face,  &
+          ibc,  &
+          c_mol,  &
+          xd_mask, vmask,  &
+          stat = da_err)
+     IF (da_err /= 0) THEN  
+        PRINT *, "Array allocation failed: closef: number 0"
+     ENDIF
   ENDIF
-  endif
   ! ... Allocate mesh arrays for chem slaves
   DEALLOCATE (x_node, y_node, z_node, iprint_chem, iprint_xyz,  &
        STAT = da_err)
@@ -194,27 +201,49 @@ SUBROUTINE closef(mpi_myself)
      STOP
   ENDIF
   IF (mpi_myself == 0) THEN
-  ! ...      Deallocate dependent variable arrays
-  DEALLOCATE (comp_name, icmax, jcmax, kcmax, &
-       dc, dzfsdt, dp, dt, &
-       sxx, syy, szz, vxx, vyy, vzz, dcmax, dsir, &
-       qsfx, qsfy, qsfz, &
-       stsaif, stsetb, stsfbc, stslbc, &
-       stsrbc, stssbc, stswel, ssresf, ssres, stotsi, stotsp, &
-       tsres, tsresf, &
-       dctas,  &
-       rf, rs,  &
-       den, eh, frac, p, t, vis, &
-       sir, sir0, sirn, totsi, totsp, tcsaif, tcsetb, &
-       tcsfbc, &
-       tcslbc, tcsrbc, tcssbc, &
-       totwsi, totwsp, &
-       tqwsi, tqwsp, u10, zfs, &
-       stat = da_err)
-  IF (da_err /= 0) THEN  
-     PRINT *, "Array allocation failed: closef: number 2"  
+     ! ...      Deallocate dependent variable arrays
+     DEALLOCATE (comp_name, icmax, jcmax, kcmax, &
+          dc, dzfsdt, dp, dt, &
+          sxx, syy, szz, vxx, vyy, vzz, dcmax, dsir, &
+          qsfx, qsfy, qsfz, &
+          stsaif, stsetb, stsfbc, stslbc, &
+          stsrbc, stssbc, stswel, ssresf, ssres, stotsi, stotsp, &
+          tsres, tsresf, &
+          dctas,  &
+          rf, rs,  &
+          den, eh, frac, p, t, vis, &
+          sir, sir0, sirn, totsi, totsp, tcsaif, tcsetb, &
+          tcsfbc, &
+          tcslbc, tcsrbc, tcssbc, &
+          totwsi, totwsp, &
+          tqwsi, tqwsp, u10, zfs, &
+          stat = da_err)
+     IF (da_err /= 0) THEN  
+        PRINT *, "Array allocation failed: closef: number 2"  
+     ENDIF
+     IF(num_flo_zones > 0) THEN
+        ! ...      Deallocate zonal flow rate arrays
+        DEALLOCATE (qfzoni, qfzonp, qszoni, qszonp,  &
+             zone_ib, lcell_bc,  &
+             qfzoni_sbc, qfzonp_sbc,  &
+             qszoni_sbc, qszonp_sbc,  &
+             qfzoni_fbc, qfzonp_fbc,  &
+             qszoni_fbc, qszonp_fbc,  &
+             qfzoni_lbc, qfzonp_lbc,  &
+             qszoni_lbc, qszonp_lbc,  &
+             qfzoni_rbc, qfzonp_rbc,  &
+             qszoni_rbc, qszonp_rbc,  &
+             qfzoni_dbc, qfzonp_dbc,  &
+             qszoni_dbc, qszonp_dbc,  &
+             qfzoni_wel, qfzonp_wel,  &
+             qszoni_wel, qszonp_wel, seg_well,  &
+             stat = da_err)
+        IF (da_err /= 0) THEN
+           PRINT *, "array deallocation failed: closef, number 2.0"
+           STOP
+        ENDIF
+     END IF
   ENDIF
-  endif
   ! ... Deallocate dependent variable arrays for chem slaves
   DEALLOCATE (indx_sol1_ic, indx_sol2_ic,  &
        ic_mxfrac,  &
@@ -237,7 +266,7 @@ SUBROUTINE closef(mpi_myself)
   IF(nwel > 0) THEN
      DEALLOCATE (welidno, xw, yw, wbod, wqmeth, &
           mwel, &
-          ! wcf, &                   ! wcf deallocated in write2
+                                ! wcf, &                   ! wcf deallocated in write2
           zwb, zwt, wfrac, nkswel, &
           mxf_wel, &
           stat = da_err)

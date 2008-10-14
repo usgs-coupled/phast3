@@ -1064,4 +1064,7 @@ SUBROUTINE sumcal1
         hdprnt(m) = z(k)+p(m)/(den(m)*gz)
      END IF
   END DO
+  ! ... Calculate the internal zone flow rates if requested
+  IF(ABS(pri_zon_flo) > 0.) CALL zone_flow
+
 END SUBROUTINE sumcal1

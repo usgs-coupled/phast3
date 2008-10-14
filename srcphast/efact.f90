@@ -8,8 +8,8 @@ SUBROUTINE efact(neqn,ipenv,envl,envut,diag)
   IMPLICIT NONE
   INTEGER, INTENT(IN) :: neqn
   INTEGER, DIMENSION(:), INTENT(IN), TARGET :: ipenv
-  REAL(kind=kdp), DIMENSION(:), INTENT(IN), TARGET :: envl, envut
-  REAL(kind=kdp), DIMENSION(:), INTENT(INOUT), TARGET :: diag
+  REAL(KIND=kdp), DIMENSION(:), INTENT(IN), TARGET :: envl, envut
+  REAL(KIND=kdp), DIMENSION(:), INTENT(INOUT), TARGET :: diag
   INTERFACE
      SUBROUTINE el1slv(neqn,ipenv,env,rhs)  
        USE machine_constants, ONLY: kdp

@@ -32,4 +32,9 @@
 !$$       INTEGER, INTENT(IN) :: icall
 !$$       INTEGER, INTENT(IN) :: ier
 !$$     END SUBROUTINE rewi3
+!$$     FUNCTION uppercase(string) RESULT(outstring)
+!$$       IMPLICIT NONE
+!$$       CHARACTER(LEN=*), INTENT(IN) :: string
+!$$       CHARACTER(LEN=LEN(string)) :: outstring
+!$$     END FUNCTION uppercase
   END INTERFACE

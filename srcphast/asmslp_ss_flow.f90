@@ -39,13 +39,13 @@ SUBROUTINE asmslp_ss_flow
 
      SUBROUTINE gcgris(ap,bp,ra,rr,ss,xx,w,z,sumfil)
        USE machine_constants, ONLY: kdp
-       REAL(KIND=kdp), DIMENSION(:,0:), INTENT(INOUT) :: ap
-       REAL(KIND=kdp), DIMENSION(:,0:), INTENT(INOUT) :: bp
-       REAL(KIND=kdp), DIMENSION(:,:), INTENT(INOUT) :: ra
-       REAL(kind=kdp), DIMENSION(:), INTENT(INOUT) :: rr
-       REAL(kind=kdp), DIMENSION(:), INTENT(INOUT) :: ss, w, z
-       REAL(kind=kdp), DIMENSION(:), INTENT(INOUT) :: sumfil
-       REAL(kind=kdp), DIMENSION(:), INTENT(OUT) :: xx
+       REAL(KIND=kdp), DIMENSION(:,0:), INTENT(IN OUT), TARGET :: ap
+       REAL(KIND=kdp), DIMENSION(:,0:), INTENT(IN OUT), TARGET :: bp
+       REAL(KIND=kdp), DIMENSION(:,:), INTENT(IN OUT) :: ra
+       REAL(KIND=kdp), DIMENSION(:), INTENT(IN OUT) :: rr
+       REAL(KIND=kdp), DIMENSION(:), INTENT(IN OUT) :: ss, w, z
+       REAL(KIND=kdp), DIMENSION(:), INTENT(OUT), TARGET :: xx
+       REAL(KIND=kdp), DIMENSION(:), INTENT(INOUT) :: sumfil
      END SUBROUTINE gcgris
 
      SUBROUTINE sbcflo(iequ,ddv,ufracnp,qdvsbc,rhssbc,vasbc)

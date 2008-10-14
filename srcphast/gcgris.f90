@@ -17,10 +17,10 @@ SUBROUTINE gcgris(ap,bp,ra,rr,ss,xx,w,z,sumfil)
   REAL(KIND=kdp), DIMENSION(:,0:), INTENT(IN OUT), TARGET :: ap
   REAL(KIND=kdp), DIMENSION(:,0:), INTENT(IN OUT), TARGET :: bp
   REAL(KIND=kdp), DIMENSION(:,:), INTENT(INOUT) :: ra
-  REAL(kind=kdp), DIMENSION(:), INTENT(IN OUT) :: rr
-  REAL(kind=kdp), DIMENSION(:), INTENT(IN OUT) :: ss, w, z
-  REAL(kind=kdp), DIMENSION(:), INTENT(OUT), TARGET :: xx
-  REAL(kind=kdp), DIMENSION(:), INTENT(INOUT) :: sumfil
+  REAL(KIND=kdp), DIMENSION(:), INTENT(IN OUT) :: rr
+  REAL(KIND=kdp), DIMENSION(:), INTENT(IN OUT) :: ss, w, z
+  REAL(KIND=kdp), DIMENSION(:), INTENT(OUT), TARGET :: xx
+  REAL(KIND=kdp), DIMENSION(:), INTENT(INOUT) :: sumfil
   INTERFACE
      SUBROUTINE abmult(x,y)  
        USE machine_constants, ONLY: kdp

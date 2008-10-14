@@ -640,7 +640,8 @@ COMMON_FOBJS =	interpolate_mod.o print_control_mod.o rewi_mod.o \
 		update_print_flags.o uppercase.o \
 		usolv.o viscos.o vpsv.o wbbal.o wbcflo.o wellsc.o wellsc_ss_flow.o\
 		wellsr.o wellsr_ss_flow.o welris.o wfdydz.o write1.o write2_1.o write2_2.o write3.o\
-		write3_ss_flow.o write4.o write5.o write5_ss_flow.o write6.o 
+		write3_ss_flow.o write4.o write5.o write5_ss_flow.o write6.o \
+		zone_flow.o zone_flow_ss.o
 
 COMMON_CXXOBJS = \
 	       Dictionary.o \
@@ -822,6 +823,9 @@ write4.o:		../write4.f90		modules.o	ifwr.inc	print_control_mod.o
 write5.o:		../write5.f90		modules.o	ifwr.inc	print_control_mod.o
 write5_ss_flow.o:	../write5_ss_flow.f90	modules.o	ifwr.inc	print_control_mod.o
 write6.o:		../write6.f90		modules.o	ifwr.inc	print_control_mod.o
+zone_flow.o:		../zone_flow.f90	modules.o
+zone_flow_ss.o:		../zone_flow_ss.f90	modules.o
+
 #
 #  Dependencies
 #

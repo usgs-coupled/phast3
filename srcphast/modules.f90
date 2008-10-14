@@ -6,8 +6,9 @@ MODULE f_units
   SAVE
   INTEGER, PARAMETER :: fuins=15, fulp=16, fuplt=7, fuorst=8, fuirst=9, fuinc=10, furde=11, &
        fupmap=13, fuvmap=14, fup=21, fut=29, fuc=22, fuvel=23, fud=30, fuvs=31, fuwel=24, &
-       fubal=25, fukd=26, fubcf=27, fuclog=28, fubnfr=32, fupmp2=33, fupzon=34, fuich=35
-  LOGICAL :: print_rde=.false.
+       fubal=25, fukd=26, fubcf=27, fuclog=28, fubnfr=32, fupmp2=33, fupzon=34, fuich=35,  &
+       fuzf=36
+  LOGICAL :: print_rde=.FALSE.
 END MODULE f_units
 
 MODULE machine_constants
@@ -80,11 +81,41 @@ MODULE mcb
   REAL(KIND=kdp) :: visdbc
 !!$  REAL(KIND=kdp) :: ABOAR, ANGOAR, BOAR, F1AIF, F2AIF, FTDAIF, KOAR, POROAR, RIOAR, &
 !!$       VISOAR, VOAR
-  REAL(KIND=kdp), DIMENSION(:), pointer :: qssbcv
+  REAL(KIND=kdp), DIMENSION(:), POINTER :: qssbcv
   TYPE (bndry_cell), DIMENSION(:), ALLOCATABLE :: b_cell
   TYPE (rbc_indices), DIMENSION(:), ALLOCATABLE :: flux_seg_index, leak_seg_index,  &
        river_seg_index, drain_seg_index
 END MODULE mcb
+
+MODULE mcb2
+  ! ... boundary condition information; set 2
+  USE machine_constants, ONLY: kdp
+  IMPLICIT NONE
+  SAVE
+  TYPE :: internal_bndry_zone
+     INTEGER :: num_int_faces
+     INTEGER, DIMENSION(:), POINTER :: mcell_no, face_indx
+  END TYPE internal_bndry_zone
+  TYPE :: zone_bc_cells
+     INTEGER :: num_bc
+     INTEGER, DIMENSION(:), POINTER :: lcell_no
+  END TYPE zone_bc_cells
+  TYPE :: well_segments
+     INTEGER :: num_wellseg
+     INTEGER, DIMENSION(:), POINTER :: iwel_no, ks_no
+  END TYPE well_segments
+!!$  TYPE :: zone_contents
+!!$     INTEGER :: num_int_faces, num_svbc, num_fbc, num_lbc, num_rbc, num_dbc,  &
+!!$          num_wellseg
+!!$  END TYPE zone_contents
+  !
+  TYPE(internal_bndry_zone), DIMENSION(:), ALLOCATABLE :: zone_ib
+  TYPE(zone_bc_cells), DIMENSION(:,:), ALLOCATABLE :: lcell_bc
+  TYPE(well_segments), DIMENSION(:), ALLOCATABLE :: seg_well
+  CHARACTER(LEN=80), DIMENSION(:), ALLOCATABLE :: zone_title
+  INTEGER :: num_flo_zones
+  INTEGER, DIMENSION(:,:), ALLOCATABLE :: uzmwel
+END MODULE mcb2
 
 MODULE mcc
   ! ... program control information
@@ -94,7 +125,7 @@ MODULE mcc
   INTEGER, DIMENSION(:), ALLOCATABLE :: iprint_chem, iprint_xyz
   INTEGER, DIMENSION(:), ALLOCATABLE :: lprnt1, lprnt2, lprnt3, lprnt4, vmask
   INTEGER, DIMENSION(100) :: idmptm
-  LOGICAL, DIMENSION(200) :: ierr = .false.
+  LOGICAL, DIMENSION(200) :: ierr = .FALSE.
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: dctas
   REAL(KIND=kdp), DIMENSION(100) :: dmptm
   INTEGER :: ieq, itnoc, itnop, itnot, itrn, jtime
@@ -104,32 +135,33 @@ MODULE mcc
        prihdf_head, prihdf_vel, prihdf_conc,  &
        prigfb, prikd, primapcomp, primaphead, primapv, primin, prip, prit, pric,  &
        pricphrq, priforce_chem_phrq, prislm, pri_well_timser, &
-       privel, priwel
+       privel, priwel, pri_zon_flo
   REAL(KIND=kdp) :: timprbcf, timprcpd, timprdv,  &
        timprhdfh, timprhdfv, timprhdfcph,  &
        timprgfb, timprkd, timprmapc, timprmaph, timprmapv, timprp, timprc, timprcphrq,  &
        timprfchem, timprslm, timprtem, &
-       timprvel, timprwel, timprtnxt
+       timprvel, timprwel, timprzf, timprtnxt
   LOGICAL :: argrid, comopt, errexe, errexi, ichwt, ichydp, pltzon, prtbc, prtdv, prtfp,  &
-       prtic, prtichead=.false., prtpmp, prtslm, prtwel, prt_kd, prt_bc,  &
+       prtic, prtichead=.FALSE., prtpmp, prtslm, prtwel, prt_kd, prt_bc, prt_zon_flo,  &
        prtic_c, prtic_mapc, prtic_p, prtic_maphead, prtic_conc, prtic_force_chem,  &
        prtss_vel, prtss_mapvel, prtic_well_timser,  &
        prtichdf_conc, prtichdf_head, prtsshdf_vel,  &
-       rdaif=.false., rdcalc, rdetbc=.false., rdflxh=.false., rdflxq=.false.,  &
-       rdflxs=.false., rdlbc=.false., &
-       rdrbc=.false., rdscbc=.false., rdspbc=.false., rdstbc=.false., rdvaif=.false.,  &
-       rdwtd=.false., restrt, svbc, solve, thru=.FALSE.
+       rdaif=.FALSE., rdcalc, rdetbc=.FALSE., rdflxh=.FALSE., rdflxq=.FALSE.,  &
+       rdflxs=.FALSE., rdlbc=.FALSE., &
+       rdrbc=.FALSE., rdscbc=.FALSE., rdspbc=.FALSE., rdstbc=.FALSE., rdvaif=.FALSE.,  &
+       rdwtd=.FALSE., restrt, svbc, solve, thru=.FALSE.
   LOGICAL :: autots, chkptd, cntmaph, cntmapc, crosd, cylind, eeunit, gausel, heat, milu,  &
        savldo, &
        scalmf, solute, tsfail, vecmap
-  LOGICAL :: oldstyle_head_file=.false.
-  LOGICAL :: prslm=.false., prkd=.false., prp=.false., prc=.false., prcphrq=.false., &
-       prf_chem_phrq=.false., prvel=.false., prgfb=.false., prbcf=.false., prwel=.false.,  &
-       prhdfh=.false., prhdfv=.false., prhdfc=.false., prmapc=.false., prmaph=.false., &
-       prmapv=.false., prtem=.false., prcpd=.false.
+  LOGICAL :: oldstyle_head_file=.FALSE.
+  LOGICAL :: prslm=.FALSE., prkd=.FALSE., prp=.FALSE., prc=.FALSE., prcphrq=.FALSE., &
+       prf_chem_phrq=.FALSE., prvel=.FALSE., prgfb=.FALSE., prbcf=.FALSE., przf=.FALSE.,  &
+       prwel=.FALSE.,  &
+       prhdfh=.FALSE., prhdfv=.FALSE., prhdfc=.FALSE., prmapc=.FALSE., prmaph=.FALSE., &
+       prmapv=.FALSE., prtem=.FALSE., prcpd=.FALSE.
   INTEGER :: prcphrqi, prf_chem_phrqi, prslmi, prhdfci, prhdfhi, prhdfvi
   INTEGER :: ntprbcf, ntprcpd, ntprhdfv, ntprhdfh, ntprgfb, ntprkd, ntprmapcomp,   &
-       ntprmaphead, ntprmapv, ntprp,  &
+       ntprmaphead, ntprmapv, ntprp, ntprzf,  &
        ntprc, ntprvel, ntprwel, ntprtem
   LOGICAL :: steady_flow, converge_ss
   REAL(KIND=kdp) :: timchg, timrst, rebalance_fraction_f = 0.5_kdp
@@ -180,7 +212,7 @@ MODULE mcg
   LOGICAL :: tilt,unigrx,unigry,unigrz
   REAL(KIND=kdp) :: thetxz, thetyz, thetzz
   TYPE :: CellIndices
-     integer ix, iy, iz
+     INTEGER ix, iy, iz
   END TYPE CellIndices
   TYPE (CellIndices), DIMENSION(:), ALLOCATABLE :: cellijk
   !
@@ -226,10 +258,10 @@ MODULE mcp
   USE machine_constants
   IMPLICIT NONE
   SAVE
-  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: KTHX, KTHY, KTHZ,  &
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: kthx, kthy, kthz,  &
        kx, ky, kz,  &
-       KXX, KYY, KZZ, RCPPM, TFX, TFY, TFZ, THX, THXY, THXZ, THY, THYX, THYZ, THZ, THZX, THZY, &
-       TSX, TSXY, TSXZ, TSY, TSYX, TSYZ, TSZ, TSZX, TSZY
+       kxx, kyy, kzz, rcppm, tfx, tfy, tfz, thx, thxy, thxz, thy, thyx, thyz, thz, thzx, thzy, &
+       tsx, tsxy, tsxz, tsy, tsyx, tsyz, tsz, tszx, tszy
 !!$  ! ... Coefficients for the Fanchi approximating equation to the Van Everdingen and Hurst A.I.F.
 !!$  REAL(KIND=kdp), DIMENSION(0:3) :: BBAIF = (/-0.82092D0,3.68D-4,-0.28908D0,-0.02882D0/)
 !!$! ... Set up the tables of fluid properties
@@ -264,7 +296,7 @@ MODULE mcs
   ! ... MAR for RCG solver
   ! ... The M array relates the local 19-point stencil indices of the
   ! ...      reduced matrix to the VA matrix. 
-  INTEGER, DIMENSION(6,6) :: mar = reshape((/10,5,4,3,2,1, 15,10,8,7,6,2, 16,12,10,9,7,3,  &
+  INTEGER, DIMENSION(6,6) :: mar = RESHAPE((/10,5,4,3,2,1, 15,10,8,7,6,2, 16,12,10,9,7,3,  &
        17,13,11,10,8,4, 18,14,13,12,10,5, 19,18,17,16,15,10/), (/6,6/))
   INTEGER, DIMENSION(19,19) :: mar1
   INTEGER ::  idir, maxit1, maxit2, nbn, nrn, nohst, nd4n, nprist, &
@@ -274,7 +306,7 @@ MODULE mcs
   ! ... LRCGD1=37 and LRCGD2=18 if LU fill-in is desired,
   ! ...      otherwise LRCGD1=19 and LRCGD2=10 for no fill-in
   INTEGER, PARAMETER :: lsdr=5, lrcgd1=19, lrcgd2=10
-  LOGICAL :: col_scale=.false., row_scale=.true.
+  LOGICAL :: col_scale=.FALSE., row_scale=.TRUE.
   LOGICAL :: ident_diagc
 END MODULE mcs
 
@@ -329,6 +361,12 @@ MODULE mcv
        tcfaif, tcfetb, tcffbc, tcflbc, tcfrbc, tcfdbc, tcfsbc, tchaif, tchetb, &
        tchfbc, tchhcb, tchlbc, tchrbc, tchsbc
   REAL(KIND=kdp), DIMENSION(:), POINTER :: dcv, qsfxis, qsfyis, qsfzis
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: qfzoni, qfzonp, qfzoni_sbc, qfzonp_sbc,  &
+       qfzoni_fbc, qfzonp_fbc,  qfzoni_lbc, qfzonp_lbc,  qfzoni_rbc, qfzonp_rbc,   &
+       qfzoni_dbc, qfzonp_dbc,  qfzoni_wel, qfzonp_wel
+  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE ::  qszoni, qszonp, qszoni_sbc, qszonp_sbc,  &
+       qszoni_fbc, qszonp_fbc,  qszoni_lbc, qszonp_lbc,  qszoni_rbc, qszonp_rbc,   &
+       qszoni_dbc, qszonp_dbc,  qszoni_wel, qszonp_wel
 END MODULE mcv
 
 MODULE mcw

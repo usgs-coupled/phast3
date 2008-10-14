@@ -15,10 +15,10 @@ MODULE rewi_mod
   INTERFACE rewi
      MODULE PROCEDURE irewi, rewi1, rewi3
   END INTERFACE
-  CHARACTER(LEN=130), EXTERNAL, PRIVATE :: uppercase
+!$$  CHARACTER(LEN=130), EXTERNAL, PRIVATE :: uppercase
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80), PRIVATE :: ident_string=  &
-       '$RCSfile: rewi_mod.f90,v $//$Revision: 1.2 $//$Date: 2008/04/16 23:42:25 $'
+       '$RCSfile: rewi_mod.f90,v $//$Revision: 1.3 $//$Date: 2008/10/03 23:07:56 $'
   PRIVATE :: irewi, rewi1, rewi3
 CONTAINS
 
@@ -39,6 +39,11 @@ CONTAINS
          INTEGER, INTENT(OUT) :: i1, i2
          LOGICAL, INTENT(INOUT) :: erflg
        END SUBROUTINE incidx
+       FUNCTION uppercase(string) RESULT(outstring)
+         IMPLICIT NONE
+         CHARACTER(LEN=*), INTENT(IN) :: string
+         CHARACTER(LEN=LEN(string)) :: outstring
+       END FUNCTION uppercase
     END INTERFACE
     !
     CHARACTER(LEN=16), DIMENSION(0:9) :: label = (/ 'Potential Energy', &
@@ -256,6 +261,11 @@ CONTAINS
          INTEGER, INTENT(OUT) :: i1, i2
          LOGICAL, INTENT(INOUT) :: erflg
        END SUBROUTINE incidx
+       FUNCTION uppercase(string) RESULT(outstring)
+         IMPLICIT NONE
+         CHARACTER(LEN=*), INTENT(IN) :: string
+         CHARACTER(LEN=LEN(string)) :: outstring
+       END FUNCTION uppercase
     END INTERFACE
     !
     CHARACTER(LEN=2) :: cicall
@@ -459,6 +469,11 @@ CONTAINS
          INTEGER, INTENT(OUT) :: i1, i2
          LOGICAL, INTENT(INOUT) :: erflg
        END SUBROUTINE incidx
+       FUNCTION uppercase(string) RESULT(outstring)
+         IMPLICIT NONE
+         CHARACTER(LEN=*), INTENT(IN) :: string
+         CHARACTER(LEN=LEN(string)) :: outstring
+       END FUNCTION uppercase
     END INTERFACE
     !
     INTRINSIC INDEX

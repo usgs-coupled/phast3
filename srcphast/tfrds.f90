@@ -15,9 +15,9 @@ SUBROUTINE tfrds(diagra,envlra,envura)
      SUBROUTINE efact(neqn,ipenv,envl,envut,diag)
        USE machine_constants, ONLY: kdp
        INTEGER, INTENT(IN) :: neqn
-       INTEGER, DIMENSION(:), INTENT(IN) :: ipenv
-       REAL(kind=kdp), DIMENSION(:), INTENT(IN) :: envl, envut
-       REAL(kind=kdp), DIMENSION(:), INTENT(INOUT) :: diag
+       INTEGER, DIMENSION(:), INTENT(IN), TARGET :: ipenv
+       REAL(KIND=kdp), DIMENSION(:), INTENT(IN), TARGET :: envl, envut
+       REAL(KIND=kdp), DIMENSION(:), INTENT(INOUT), TARGET :: diag
      END SUBROUTINE efact
      SUBROUTINE el1slv(neqn,ipenv,env,rhs)  
        USE machine_constants, ONLY: kdp

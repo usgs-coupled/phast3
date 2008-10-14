@@ -2,6 +2,7 @@ SUBROUTINE read2
   ! ... read all the data that are constant during the simulation
   USE f_units
   USE mcb
+  USE mcb2
   USE mcc
   USE mcg
   USE mcn
@@ -22,16 +23,21 @@ SUBROUTINE read2
        INTEGER, INTENT(out) :: i1, i2
        LOGICAL, INTENT(inout) :: erflg
      END SUBROUTINE incidx
+     FUNCTION uppercase(string) RESULT(outstring)
+       IMPLICIT NONE
+       CHARACTER(LEN=*), INTENT(IN) :: string
+       CHARACTER(LEN=LEN(string)) :: outstring
+     END FUNCTION uppercase
   END INTERFACE
   INTRINSIC index  
   CHARACTER(LEN=9) :: cibc  
   CHARACTER(LEN=130) :: line  
-  CHARACTER(LEN=130), EXTERNAL :: uppercase
+  !$$  CHARACTER(LEN=130), EXTERNAL :: uppercase
   REAL(KIND=kdp) :: delx, dely, udelz, u1,  uwb, uxw, uyw, uzwb, uzwt, &
        udwb, udwt, &
        uwcfl, uwcfu, x1z, x2z, y1z, y2z, z1z, z2z
   INTEGER :: a_err, da_err
-  INTEGER :: i, ic, icall, ifc, ipmz, iwel, j, k, ks, lc, ls, lsmax, m, nsa, umwel, &
+  INTEGER :: i, ic, icall, ifc, ipmz, iwel, izn, j, k, ks, lc, ls, lsmax, m, nsa, umwel, &
        uwelidno, uwq
   LOGICAL :: erflg
   LOGICAL :: temp_logical
@@ -42,6 +48,8 @@ SUBROUTINE read2
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: uuxw, uuyw, uuzwb, uuzwt, uudwb, uudwt, uwbod
   REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: uuwcfl, uuwcfu
   INTEGER, DIMENSION(:), ALLOCATABLE :: umbc, uiface
+  INTEGER, DIMENSION(:), ALLOCATABLE :: uzmic, uziface
+  INTEGER, DIMENSION(:), ALLOCATABLE :: uzmbc
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: uabc, ubbbc, ukbc, uzebc
   CHARACTER(LEN=130) :: logline1, logline2
   ! ... set string for use with rcs ident command
@@ -401,7 +409,7 @@ SUBROUTINE read2
      lsmax = 0
      IF (print_rde) WRITE(furde, 8005) '** Specified Value B.C. Parameters **',  &
           '  (read echo[2.16.3])',  &
-          ' seg_no   mfbc  svbc_type'
+          ' seg_no   msbc  svbc_type'
      DO
         READ(fuins,'(A)') line
         line = uppercase(line)
@@ -811,7 +819,7 @@ SUBROUTINE read2
           idir, milu, nsdr, epsslv, maxit2
   ENDIF
   ! ...  print requests for tables
-  READ(fuins,*) prtpmp, prtfp, prtbc, prtslm, prtwel, prt_kd  
+  READ(fuins,*) prtpmp, prtfp, prtbc, prtslm, prtwel, prt_kd
   IF (print_rde) WRITE(furde,8019) 'prtpmp,prtfp,prtbc,prtslm,prtwel,prt_kd,[2.23.1]',  &
        prtpmp, prtfp, prtbc, prtslm, prtwel, prt_kd
 8019 FORMAT(tr5,2a/tr5,8l5)
@@ -860,4 +868,202 @@ SUBROUTINE read2
      icall = 9
      CALL rewi(iprint_xyz, icall, 125)
   ENDIF
+  ! ... Internal zones for flow rate tabulation
+  READ(fuins,*) num_flo_zones
+  IF (print_rde) WRITE(furde, 8011) 'num_flow_zones,[2.23.8]', num_flo_zones
+  IF(num_flo_zones > 0) THEN
+     ! ... Allocate space for internal boundary zone data
+     ALLOCATE (zone_title(num_flo_zones),  &
+          zone_ib(num_flo_zones), lcell_bc(num_flo_zones,5),  &
+          seg_well(num_flo_zones),  &
+          stat = a_err)
+     IF (a_err /= 0) THEN  
+        PRINT *, "array allocation failed: read2, flow zones.1"  
+        STOP
+     ENDIF
+     izn = 0
+     DO
+        READ(fuins,'(A)') line
+        line = uppercase(line)
+        ic=INDEX(line(1:20),'END')
+        IF(ic > 0) EXIT
+        izn = izn+1
+        IF (print_rde) WRITE(furde,8015) '** Flow Zone No.',izn,' **'
+8015    FORMAT(tr25,a,i3,a)
+        READ(line,*) zone_title(izn)
+        IF (print_rde) WRITE(furde,'(tr5,a)') zone_title(izn)
+        IF (print_rde) WRITE(furde,8005) '** Flow Zone Face Parameters **',  &
+             '  (read echo[2.23.9.1])',' cell_no    face index'
+        READ(fuins,*) zone_ib(izn)%num_int_faces
+        IF(zone_ib(izn)%num_int_faces > 0) THEN
+           ALLOCATE (zone_ib(izn)%mcell_no(zone_ib(izn)%num_int_faces),  &
+                zone_ib(izn)%face_indx(zone_ib(izn)%num_int_faces),  &
+                uzmic(zone_ib(izn)%num_int_faces), uziface(zone_ib(izn)%num_int_faces),  &
+                stat = a_err)
+           IF (a_err /= 0) THEN
+              PRINT *, "array allocation failed: read2, flow zones.2"
+              STOP
+           ENDIF
+           READ(fuins,*) (uzmic(ifc), uziface(ifc), ifc=1,zone_ib(izn)%num_int_faces)
+           IF (print_rde) WRITE(furde,8213) (uzmic(ifc), uziface(ifc),  &
+                ifc=1,zone_ib(izn)%num_int_faces)
+8213       FORMAT(tr1,10i6)
+           zone_ib(izn)%mcell_no(:) = uzmic(:)
+           zone_ib(izn)%face_indx(:) = uziface(:)
+           DEALLOCATE(uzmic, uziface,  &
+                stat = da_err)
+           IF (da_err /= 0) THEN  
+              PRINT *, "array deallocation failed: read2, flow zones.2"
+              STOP
+           ENDIF
+        END IF
+        IF(nsbc_cells > 0) THEN
+           IF (print_rde) WRITE(furde, 8005) '** Flow Zone Specified Head B.C. Cells **',  &
+                '  (read echo[2.23.10.1])',' cell_no'
+           READ(fuins,*) lcell_bc(izn,1)%num_bc
+           IF(lcell_bc(izn,1)%num_bc > 0) THEN
+              ! ... Allocate scratch space for specified head cells
+              ALLOCATE (lcell_bc(izn,1)%lcell_no(lcell_bc(izn,1)%num_bc),  &
+                   uzmbc(lcell_bc(izn,1)%num_bc),  &
+                   stat = a_err)
+              IF (a_err /= 0) THEN
+                 PRINT *, "array allocation failed: read2, flow zones.3"
+                 STOP
+              ENDIF
+              READ(fuins,*) (uzmbc(ic), ic=1,lcell_bc(izn,1)%num_bc)
+              IF (print_rde) WRITE(furde,8213) (uzmbc(ic), ic=1,lcell_bc(izn,1)%num_bc)
+              lcell_bc(izn,1)%lcell_no(:) = uzmbc(:)          ! ... store the m cell numbers
+              DEALLOCATE (uzmbc,  &
+                   stat = da_err)
+              IF (da_err /= 0) THEN  
+                 PRINT *, "array deallocation failed: read2, flow zones.3"
+                 STOP
+              ENDIF
+           END IF
+        END IF
+        IF(nfbc_cells > 0) THEN
+           IF (print_rde) WRITE(furde, 8005) '** Flow Zone Flux B.C. Cells **',  &
+                '  (read echo[2.23.11.1])',' cell_no'
+           READ(fuins,*) lcell_bc(izn,2)%num_bc
+           IF(lcell_bc(izn,2)%num_bc > 0) THEN
+              ! ... Allocate scratch space for flux cells
+              ALLOCATE (lcell_bc(izn,2)%lcell_no(lcell_bc(izn,2)%num_bc),  &
+                   uzmbc(lcell_bc(izn,2)%num_bc),  &
+                   stat = a_err)
+              IF (a_err /= 0) THEN
+                 PRINT *, "array allocation failed: read2, flow zones.4"
+                 STOP
+              ENDIF
+              READ(fuins,*) (uzmbc(ic), ic=1,lcell_bc(izn,2)%num_bc)
+              IF (print_rde) WRITE(furde,8213) (uzmbc(ic), ic=1,lcell_bc(izn,2)%num_bc)
+              lcell_bc(izn,2)%lcell_no = uzmbc          ! ... store the m cell numbers
+              DEALLOCATE (uzmbc,  &
+                   stat = da_err)
+              IF (da_err /= 0) THEN  
+                 PRINT *, "array deallocation failed: read2, flow zones.4"
+                 STOP
+              ENDIF
+           END IF
+        END IF
+        IF(nlbc_cells > 0) THEN
+           IF (print_rde) WRITE(furde, 8005) '** Flow Zone Leakage B.C. Cells **',  &
+                '  (read echo[2.23.12.1])',' cell_no'
+           READ(fuins,*) lcell_bc(izn,3)%num_bc
+           IF(lcell_bc(izn,3)%num_bc > 0) THEN
+              ! ... Allocate scratch space for leakage cells
+              ALLOCATE (lcell_bc(izn,3)%lcell_no(lcell_bc(izn,3)%num_bc),  &
+                   uzmbc(lcell_bc(izn,3)%num_bc),  &
+                   stat = a_err)
+              IF (a_err /= 0) THEN
+                 PRINT *, "array allocation failed: read2, flow zones.5"
+                 STOP
+              ENDIF
+              READ(fuins,*) (uzmbc(ic), ic=1,lcell_bc(izn,3)%num_bc)
+              IF (print_rde) WRITE(furde,8213) (uzmbc(ic), ic=1,lcell_bc(izn,3)%num_bc)
+              lcell_bc(izn,3)%lcell_no = uzmbc          ! ... store the m cell numbers
+              DEALLOCATE (uzmbc,  &
+                   stat = da_err)
+              IF (da_err /= 0) THEN  
+                 PRINT *, "array deallocation failed: read2, flow zones.5"
+                 STOP
+              ENDIF
+           END IF
+        END IF
+        IF(nrbc_cells > 0) THEN
+           IF (print_rde) WRITE(furde, 8005) '** Flow Zone River Leakage B.C. Cells **',  &
+                '  (read echo[2.23.13.1])',' cell_no'
+           READ(fuins,*) lcell_bc(izn,4)%num_bc
+           IF(lcell_bc(izn,4)%num_bc > 0) THEN
+              ! ... Allocate scratch space for river leakage cells
+              ALLOCATE (lcell_bc(izn,4)%lcell_no(lcell_bc(izn,4)%num_bc),  &
+                   uzmbc(lcell_bc(izn,4)%num_bc),  &
+                   stat = a_err)
+              IF (a_err /= 0) THEN
+                 PRINT *, "array allocation failed: read2, flow zones.6"
+                 STOP
+              ENDIF
+              READ(fuins,*) (uzmbc(ic), ic=1,lcell_bc(izn,4)%num_bc)
+              IF (print_rde) WRITE(furde,8213) (uzmbc(ic), ic=1,lcell_bc(izn,4)%num_bc)
+              lcell_bc(izn,4)%lcell_no = uzmbc          ! ... store the m cell numbers
+              DEALLOCATE (uzmbc,  &
+                   stat = da_err)
+              IF (da_err /= 0) THEN  
+                 PRINT *, "array deallocation failed: read2, flow zones.6"
+                 STOP
+              ENDIF
+           END IF
+        END IF
+        IF(ndbc_cells > 0) THEN
+           IF (print_rde) WRITE(furde, 8005) '** Flow Zone Drain B.C. Cells **',  &
+                '  (read echo[2.23.14.1])',' cell_no'
+           READ(fuins,*) lcell_bc(izn,5)%num_bc
+           IF(lcell_bc(izn,5)%num_bc > 0) THEN
+              ! ... Allocate scratch space for drain cells
+              ALLOCATE (lcell_bc(izn,5)%lcell_no(lcell_bc(izn,5)%num_bc),  &
+                   uzmbc(lcell_bc(izn,5)%num_bc),  &
+                   stat = a_err)
+              IF (a_err /= 0) THEN
+                 PRINT *, "array allocation failed: read2, flow zones.7"
+                 STOP
+              ENDIF
+              READ(fuins,*) (uzmbc(ic), ic=1,lcell_bc(izn,5)%num_bc)
+              IF (print_rde) WRITE(furde,8213) (uzmbc(ic), ic=1,lcell_bc(izn,5)%num_bc)
+              lcell_bc(izn,5)%lcell_no = uzmbc          ! ... store the m cell numbers
+              DEALLOCATE (uzmbc,  &
+                   stat = da_err)
+              IF (da_err /= 0) THEN  
+                 PRINT *, "array deallocation failed: read2, flow zones.7"
+                 STOP
+              ENDIF
+           END IF
+        END IF
+        IF(nwel > 0) THEN
+           IF(.NOT. ALLOCATED(uzmwel)) THEN
+              ! ... Allocate scratch space for well segments
+              ALLOCATE (uzmwel(nwel*nz,num_flo_zones),  &
+                   stat = a_err)
+              IF (a_err /= 0) THEN  
+                 PRINT *, "array allocation failed: read2, flow zones.8"
+                 STOP
+              ENDIF
+           END IF
+           IF (print_rde) WRITE(furde, 8005) '** Flow Zone Well Segment Cells **',  &
+                '  (read echo[2.xx.x])',' cell_no'
+           READ(fuins,*) seg_well(izn)%num_wellseg
+           IF(seg_well(izn)%num_wellseg > 0 ) THEN
+              ALLOCATE (seg_well(izn)%iwel_no(seg_well(izn)%num_wellseg),  &
+                   seg_well(izn)%ks_no(seg_well(izn)%num_wellseg),  &
+                   uzmwel(nwel*nz,num_flo_zones),  &
+                   stat = a_err)
+              IF (a_err /= 0) THEN
+                 PRINT *, "array allocation failed: read2, flow zones.8"
+                 STOP
+              ENDIF
+              READ(fuins,*) (uzmwel(ic,izn), ic=1,seg_well(izn)%num_wellseg)
+              IF (print_rde) WRITE(furde,8213) (uzmwel(ic,izn), ic=1,seg_well(izn)%num_wellseg)
+           END IF
+        END IF
+     END DO               ! ... finished with zone definitions
+  END IF
+
 END SUBROUTINE read2

@@ -27,11 +27,16 @@ SUBROUTINE indx_rewi_bc(ipar1,ipar2,par3,ip,icall,ier)
        INTEGER, INTENT(OUT) :: i1, i2
        LOGICAL, INTENT(INOUT) :: erflg
      END SUBROUTINE incidx
+     FUNCTION uppercase(string) RESULT(outstring)
+       IMPLICIT NONE
+       CHARACTER(LEN=*), INTENT(IN) :: string
+       CHARACTER(LEN=LEN(string)) :: outstring
+     END FUNCTION uppercase
   END INTERFACE
   !
   INTEGER :: a_err, da_err, i, i1, i2, ic, imod, j, j1, j2, k, k1, k2, m, m1, m2, ms, nxyzs
 !!$  CHARACTER(LEN=2) :: cicall
-  CHARACTER(LEN=130), EXTERNAL :: uppercase
+!$$  CHARACTER(LEN=130), EXTERNAL :: uppercase
   CHARACTER(LEN=130) :: line
   REAL(kind=kdp) :: x1, x2, y1, y2, z1, z2
   LOGICAL :: erflg

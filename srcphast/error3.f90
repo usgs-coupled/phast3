@@ -104,6 +104,7 @@ SUBROUTINE error3
   IF(privel > 0._kdp .AND. privel < udeltim) warnflag = warnflag + 1
   IF(priwel > 0._kdp .AND. priwel < udeltim) warnflag = warnflag + 1
   IF(pri_well_timser > 0._kdp .AND. pri_well_timser < udeltim) warnflag = warnflag + 1
+  IF(pri_zon_flo > 0._kdp .AND. pri_zon_flo < udeltim) warnflag = warnflag + 1
   IF(prihdf_head > 0._kdp .AND. prihdf_head < udeltim) warnflag = warnflag + 1
   IF(prihdf_vel > 0._kdp .AND. prihdf_vel < udeltim) warnflag = warnflag + 1
   IF(prihdf_conc > 0._kdp .AND. prihdf_conc < udeltim) warnflag = warnflag + 1

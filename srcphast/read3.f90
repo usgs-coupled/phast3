@@ -4,6 +4,7 @@ SUBROUTINE read3
   USE machine_constants, ONLY: kdp
   USE f_units
   USE mcb
+  USE mcb2, ONLY: num_flo_zones
   USE mcc
   USE mcg
   USE mcp
@@ -14,18 +15,15 @@ SUBROUTINE read3
   USE rewi_mod
   IMPLICIT NONE
   INCLUDE 'ifrd.inc'
-!!$  INTERFACE
-!!$     SUBROUTINE indx_rewi_bc(ipar1,ipar2,par3,ip,icall,ier)
-!!$       USE machine_constants, ONLY: kdp
-!!$       IMPLICIT NONE
-!!$       INTEGER, DIMENSION(:,:), INTENT(INOUT) :: ipar1, ipar2
-!!$       REAL(KIND=kdp), DIMENSION(:,:), INTENT(INOUT) :: par3
-!!$       INTEGER, INTENT(IN) :: ip
-!!$       INTEGER, INTENT(IN) :: icall, ier
-!!$     END SUBROUTINE indx_rewi_bc
-!!$  END INTERFACE
+  INTERFACE
+     FUNCTION uppercase(string) RESULT(outstring)
+       IMPLICIT NONE
+       CHARACTER(LEN=*), INTENT(IN) :: string
+       CHARACTER(LEN=LEN(string)) :: outstring
+     END FUNCTION uppercase
+  END INTERFACE
   CHARACTER(LEN=130) :: line
-  CHARACTER(LEN=130), EXTERNAL :: uppercase
+  !$$  CHARACTER(LEN=130), EXTERNAL :: uppercase
   REAL(KIND=kdp) :: uhbc, umxfrac, upsbc, uq, uqfflx, uqsflx
   INTEGER :: a_err, ic, icall, isegbc, iis, iwel, uwelseqno, uisolw,  &
        uisolbc1, uisolbc2
@@ -33,7 +31,7 @@ SUBROUTINE read3
   CHARACTER(LEN=130) :: logline1
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
-  !     ------------------------------------------------------------------
+  !-----------------------------------------------------------------------
   !...
   ! ... Check for end of simulation
   READ(fuins,*) thru
@@ -138,7 +136,7 @@ SUBROUTINE read3
      IF(rdflxs) THEN
         ! ... Specified solute flux b.c.
         IF (print_rde) WRITE(furde,8004)  '** Solute Flux B.C. Parameters **',  &
-             '  (read echo[3.5.5])',' ',  &
+             '  (read echo[3.4.7])',' ',  &
              '  isegfbc, qsflx'
         DO  iis=1,ns
            DO
@@ -159,7 +157,7 @@ SUBROUTINE read3
      IF (print_rde) WRITE(furde,8001) 'RDLBC,[3.5.1]',rdlbc
      IF(rdlbc) THEN
         IF (print_rde) WRITE(furde,8004)  '** Aquifer Leakage Parameters **',  &
-             '  (read echo[3.5.5])',' ',  &
+             '  (read echo[3.5.2])',' ',  &
              '  iseglbc, hlbc, isollbc1, isollbc2, mxfraclbc'
         DO
            READ(fuins,'(A)') line
@@ -178,10 +176,10 @@ SUBROUTINE read3
   ! ... River leakage b.c. transient parameters
   IF(nrbc > 0) THEN
      READ(fuins,*) rdrbc
-     IF (print_rde) WRITE(furde,8001) 'RDRBC,[3.5.1]',rdrbc
+     IF (print_rde) WRITE(furde,8001) 'RDRBC,[3.6.1]',rdrbc
      IF(rdrbc) THEN
         IF (print_rde) WRITE(furde,8004)  '** River Leakage Parameters **',  &
-             '  (read echo[3.5.5])',' ',  &
+             '  (read echo[3.6.2])',' ',  &
              '  isegrbc, hrbc, isolrbc1, isolrbc2, mxfracrbc'
         DO
            READ(fuins,'(A)') line
@@ -212,25 +210,25 @@ SUBROUTINE read3
 !!$     END IF
 !!$  END IF
   READ(fuins,*) rdcalc
-  IF (print_rde) WRITE(furde,8001) 'RDCALC,[3.8.1]',rdcalc
+  IF (print_rde) WRITE(furde,8001) 'RDCALC,[3.7.1]',rdcalc
   IF(rdcalc) THEN
      prtslm=.TRUE.
      ! ... Calculation information
      READ(fuins,*) autots
-     IF (print_rde) WRITE(furde,8001) 'AUTOTS,[3.8.2]',autots
+     IF (print_rde) WRITE(furde,8001) 'AUTOTS,[3.7.2]',autots
      IF(.NOT.autots) THEN
         READ(fuins,*) deltim
-        IF (print_rde) WRITE(furde,8006) 'DELTIM,[3.8.3A]',deltim
+        IF (print_rde) WRITE(furde,8006) 'DELTIM,[3.7.3A]',deltim
 8006    FORMAT(tr5,a/tr5,10(1PG12.5))
      END IF
      IF(autots) THEN
         READ(fuins,*) dptas,dttas,dtimmn,dtimmx
         IF (print_rde) WRITE(furde,8007) 'DPTAS,DTTAS,DTIMMN,DTIMMX,',  &
-             '[3.8.3B]',dptas,dttas,dtimmn,dtimmx
+             '[3.7.3B]',dptas,dttas,dtimmn,dtimmx
 8007    FORMAT(tr5,2A/tr5,10(1PG12.5))
         IF(solute) THEN
            READ(fuins,*) (dctas(iis),iis=1,ns)
-           IF (print_rde) WRITE(furde,8007) 'DCTAS(iis),iis=1,ns', '[3.8.3B]',(dctas(iis),iis=1,ns)
+           IF (print_rde) WRITE(furde,8007) 'DCTAS(iis),iis=1,ns', '[3.7.3B]',(dctas(iis),iis=1,ns)
         END IF
         !...   *** well control not documented yet  ***
         !            READ(FUINS,*) DPTAS,DTTAS,DCTAS,DTIMMN,DTIMMX,DTIMU
@@ -240,22 +238,23 @@ SUBROUTINE read3
      ELSEIF(steady_flow) THEN
         READ(fuins,*) dptas,dttas,dtimmn,dtimmx, growth_factor_ss
         IF (print_rde) WRITE(furde,8007) 'DPTAS,DTTAS,DTIMMN,DTIMMX,GROWTH_FACTOR_SS,',  &
-             '[3.8.3B]',dptas,dttas,dtimmn,dtimmx, growth_factor_ss
+             '[3.7.3B]',dptas,dttas,dtimmn,dtimmx, growth_factor_ss
      END IF
   END IF
   ! ... Time of next change in transient data
   READ(fuins,*) timchg
-  IF (print_rde) WRITE(furde,8006) 'TIMCHG,[3.8.4]',timchg
+  IF (print_rde) WRITE(furde,8006) 'TIMCHG,[3.7.4]',timchg
   ! ... Output information
   ! ... Print interval for output tables at end of time step
   READ(fuins,*) prislm, prikd, prip, pric, pricphrq, priforce_chem_phrq, privel, prigfb,  &
        pribcf, priwel
   IF (print_rde) WRITE(furde,8008) 'PRISLM,PRIKD,PRIP,PRIC,PRICPHRQ,PRIFORCE_CHEM_PRHQ,PRIVEL,PRIGFB,',  &
-       'PRIBCF,PRIWEL,[3.9.1]', prislm,prikd,prip,pric,pricphrq,priforce_chem_phrq,  &
+       'PRIBCF,PRIWEL,[3.8.1]', prislm,prikd,prip,pric,pricphrq,priforce_chem_phrq,  &
        privel,prigfb,pribcf,priwel
 8008 FORMAT(tr5,2A/tr5,11F10.2)
+  ! ... Print boundary condition transient parameters
   READ(fuins,*) prt_bc
-  IF (print_rde) WRITE(furde,8308) 'PRT_BC,[3.9.1.1]', prt_bc
+  IF (print_rde) WRITE(furde,8308) 'PRT_BC,[3.8.1.1]', prt_bc
 8308 FORMAT(tr5,A/tr5,l5)
   ! ... ***special patch pnambc
   prislm = -prislm
@@ -268,30 +267,31 @@ SUBROUTINE read3
   prigfb = -prigfb
   pribcf = -pribcf
   priwel = -priwel
-  !      IF(PRIP.NE.0.OR.PRIC.NE.0) THEN
-  !         READ(FUINS,*) IPRPTC
-  !         if (print_rde) WRITE(FURDE,8009) 'IPRPTC,[3.9.2]',IPRPTC
-  ! 8009    FORMAT(TR5,A/TR5,8I5)
-  !      ENDIF
   READ(fuins,*) prihdf_conc, prihdf_head, prihdf_vel
-  IF (print_rde) WRITE(furde,8108) 'prihdf_conc, prihdf_head, prihdf_vel, [3.9.2]',  &
+  IF (print_rde) WRITE(furde,8108) 'prihdf_conc, prihdf_head, prihdf_vel, [3.8.2]',  &
        prihdf_conc, prihdf_head, prihdf_vel
 8108 FORMAT(tr5,A/tr5,11F10.2)
   prihdf_conc = -prihdf_conc
   prihdf_head = -prihdf_head
   prihdf_vel = -prihdf_vel
   READ(fuins,*) prtichead
-  IF (print_rde) WRITE(furde,8208) 'prtichead, [3.9.2.1]', prtichead
+  IF (print_rde) WRITE(furde,8208) 'prtichead, [3.8.2.1]', prtichead
 8208 FORMAT(tr5,A/tr5,l5)
+  if(num_flo_zones > 0) then
+     READ(fuins,*) pri_zon_flo
+     IF (print_rde) WRITE(furde,8111) 'pri_zon_flo,[3.8.2.2]', pri_zon_flo
+     ! ... ***special patch
+     pri_zon_flo = -pri_zon_flo
+  end if
   READ(fuins,*) chkptd,pricpd,savldo
-  IF (print_rde) WRITE(furde,8010) 'CHKPTD,PRICPD,SAVLDO [3.9.3]',  &
+  IF (print_rde) WRITE(furde,8010) 'CHKPTD,PRICPD,SAVLDO [3.8.3]',  &
        chkptd,pricpd,savldo
 8010 FORMAT(tr5,a/tr5,l5,f5.2,l5)
   ! ... ***special patch
   pricpd = -pricpd
   ! ... Contour plots, vector plots
   READ(fuins,*) cntmaph,primaphead,cntmapc,primapcomp,vecmap,primapv
-  IF (print_rde) WRITE(furde,8011) 'cntmaph,primaphead,cntmapc,primapcomp,vecmap,primapv,[3.10.1]',  &
+  IF (print_rde) WRITE(furde,8011) 'cntmaph,primaphead,cntmapc,primapcomp,vecmap,primapv,[3.9.1]',  &
        cntmaph,primaphead,cntmapc,primapcomp,vecmap,primapv
 8011 FORMAT(tr5,a/tr5,3(l5,f8.2))
   ! ... ***special patch
@@ -300,7 +300,7 @@ SUBROUTINE read3
   primapv = -primapv
   ! ... Well data time series
   READ(fuins,*) pri_well_timser, print_restart%print_interval, print_end_of_period
-  IF (print_rde) WRITE(furde,8111) 'pri_well_timser,[3.10.2]',  &
+  IF (print_rde) WRITE(furde,8111) 'pri_well_timser,[3.9.2]',  &
        pri_well_timser, &
        print_restart%print_interval, &
        print_end_of_period
@@ -316,4 +316,5 @@ SUBROUTINE read3
      icall = 9
      CALL rewi(iprint_xyz, icall, 125)
   ENDIF
+
 END SUBROUTINE read3

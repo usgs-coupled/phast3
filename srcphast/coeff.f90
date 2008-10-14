@@ -1,7 +1,6 @@
 SUBROUTINE coeff
-  ! ... Calculates conductances, velocities, and auto
-  ! ...      time step and convection and dispersion terms
-  ! ...      for the right hand side
+  ! ... Calculates conductances, mass flow rates, velocities,
+  ! ...      and advection and dispersion coefficients
   USE machine_constants, ONLY: kdp
   USE mcb
   USE mcc

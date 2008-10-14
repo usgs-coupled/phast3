@@ -19,7 +19,7 @@ SUBROUTINE phast_slave(mpi_tasks, mpi_myself)
   INTEGER :: print_restart_flag
 !!$  CHARACTER(LEN=130) :: logline1
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: phast_slave.F90,v 1.2 2008/04/18 17:18:08 klkipp Exp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: phast_slave.F90,v 1.3 2008/10/02 21:31:22 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ! ... Extract the version name for the header
@@ -89,7 +89,7 @@ SUBROUTINE slave_init1
   INTEGER :: a_err, da_err, iis, nsa
   CHARACTER(LEN=10), DIMENSION(:), ALLOCATABLE :: ucomp_name
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: phast_slave.F90,v 1.2 2008/04/18 17:18:08 klkipp Exp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: phast_slave.F90,v 1.3 2008/10/02 21:31:22 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ! ... Allocate scratch space for component names
@@ -140,6 +140,7 @@ SUBROUTINE slave_init1
   ntprbcf = 0
   ntprcpd = 0
   ntprgfb = 0
+  ntprzf = 0
   ntprkd = 0
   ntprmapcomp = 0
   ntprmaphead = 0
@@ -187,7 +188,7 @@ SUBROUTINE slave_closef
   INTEGER :: da_err
 !!$  CHARACTER(LEN=130) :: logline1, logline2, logline3
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: phast_slave.F90,v 1.2 2008/04/18 17:18:08 klkipp Exp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: phast_slave.F90,v 1.3 2008/10/02 21:31:22 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ! ... Close and delete the stripped input file
@@ -228,6 +229,8 @@ SUBROUTINE slave_closef
   IF(ntprkd > 0 .OR. prt_kd) st(fukd) = 'keep  '  
   st(fubcf) = 'delete'  
   IF(ntprbcf > 0) st(fubcf) = 'keep  '  
+  st(fuzf) = 'delete'  
+  IF(ntprzf > 0) st(fuzf) = 'keep  '  
 !!$  st(fut) = 'delete'  
 #if defined(MERGE_FILES)
   CALL update_status(st)
@@ -243,6 +246,7 @@ SUBROUTINE slave_closef
   CLOSE(fubal, status = st(fubal))  
   CLOSE(fukd, status = st(fukd))  
   CLOSE(fubcf, status = st(fubcf))  
+  CLOSE(fuzf, status = st(fuzf))  
   CLOSE(fuplt, status = st(fuplt))  
   CLOSE(fupmap, status = st(fupmap))  
   CLOSE(fupmp2, status = st(fupmp2))  

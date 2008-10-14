@@ -3,6 +3,7 @@ SUBROUTINE init2_1
   ! ... initialization block 1 before chemical reactions
   USE machine_constants, ONLY: kdp
   USE mcb
+  USE mcb2
   USE mcc
   USE mcg
   USE mcm
@@ -41,7 +42,7 @@ SUBROUTINE init2_1
   INTEGER :: a_err, da_err, i, ic, imm, imod, ipmz, iis, iwel, j, jc, k, k1, k2, kf, &
        kinc, kl, kr, ks, kw, l, l1, lc, ls, m, mb, mc, m1, m2, &
        mk, mr, ms, msv, mt, nele, nks, nr, nsa
-  INTEGER :: ibf, isd, lbc, msd, nbc, nbf, t_bctype, t_findx, t_lindx
+  INTEGER :: ibf, isd, izn, lbc, msd, nbc, nbf, t_bctype, t_findx, t_lindx
   INTEGER, DIMENSION(8) :: iisd=(/7,8,5,6,3,4,1,2/)
   INTEGER, DIMENSION(6) :: num_indx
   INTEGER, DIMENSION(8) :: face_x, face_y, face_z, i_ele, j_ele, k_ele, mm
@@ -466,7 +467,7 @@ SUBROUTINE init2_1
         END IF
      END DO
   END DO
-! *** todo--make ar_bc part of b_cell structure 
+  ! *** todo--make ar_bc part of b_cell structure 
 !!$  if(heat) then  
 !!$     do 240 i = 1, npmz  
 !!$        ! ... calculate equivalent thermal conductivity for fluid and medium
@@ -584,7 +585,7 @@ SUBROUTINE init2_1
      ENDIF
      ccfsb = 0._kdp  
      ccfvsb = 0._kdp  
-!$$     cchsb = 0._kdp  
+     !$$     cchsb = 0._kdp  
      ccssb = 0._kdp  
   ENDIF
   ! ... Specified flux b.c.
@@ -937,14 +938,109 @@ SUBROUTINE init2_1
   DEALLOCATE (arxbc, arybc, arzbc, delz, &
        stat = da_err)
   IF (da_err /= 0) THEN  
-     PRINT *, "array deallocation failed, number 5"  
+     PRINT *, "array deallocation failed, init2_1,number 5"  
      STOP  
   ENDIF
+  IF(num_flo_zones > 0) THEN
+     ! ... Locate and load the lcell numbers for each internal zone for each b.c. type
+     ! ...      for flowrate totalization 
+     DO izn=1,num_flo_zones
+        IF(nsbc_cells > 0) THEN
+           DO ic=1,lcell_bc(izn,1)%num_bc
+              DO lc=1,nsbc
+                 IF(msbc(lc) == lcell_bc(izn,1)%lcell_no(ic)) THEN
+                    lcell_bc(izn,1)%lcell_no(ic) = lc
+                    EXIT
+                 END IF
+              END DO
+           END DO
+        END IF
+        IF(nfbc_cells > 0) THEN
+           DO ic=1,lcell_bc(izn,2)%num_bc
+              DO lc=1,nfbc
+                 IF(flux_seg_index(lc)%m == lcell_bc(izn,2)%lcell_no(ic)) THEN
+                    lcell_bc(izn,2)%lcell_no(ic) = lc
+                    EXIT
+                 END IF
+              END DO
+           END DO
+        END IF
+        IF(nlbc_cells > 0) THEN
+           DO ic=1,lcell_bc(izn,3)%num_bc
+              DO lc=1,nlbc
+                 IF(leak_seg_index(lc)%m == lcell_bc(izn,3)%lcell_no(ic)) THEN
+                    lcell_bc(izn,3)%lcell_no(ic) = lc
+                    EXIT
+                 END IF
+              END DO
+           END DO
+        END IF
+        IF(nrbc_cells > 0) THEN
+           DO ic=1,lcell_bc(izn,4)%num_bc
+              DO lc=1,nrbc
+                 IF(river_seg_index(lc)%m == lcell_bc(izn,4)%lcell_no(ic)) THEN
+                    lcell_bc(izn,4)%lcell_no(ic) = lc
+                    EXIT
+                 END IF
+              END DO
+           END DO
+        END IF
+        IF(ndbc_cells > 0) THEN
+           DO ic=1,lcell_bc(izn,5)%num_bc
+              DO lc=1,ndbc
+                 IF(drain_seg_index(lc)%m == lcell_bc(izn,5)%lcell_no(ic)) THEN
+                    lcell_bc(izn,5)%lcell_no(ic) = lc
+                    EXIT
+                 END IF
+              END DO
+           END DO
+        END IF
+        IF(nwel > 0) THEN
+           DO ic=1,seg_well(izn)%num_wellseg
+              DO iwel=1,nwel
+                 DO ks=1,nz
+                    IF(mwel(iwel,ks) == uzmwel(ic,izn)) THEN
+                       seg_well(izn)%iwel_no(ic) = iwel
+                       seg_well(izn)%ks_no(ic) = ks
+                       EXIT
+                    END IF
+                 END DO
+              END DO
+           END DO
+        END IF
+     END DO
+     IF(ALLOCATED(uzmwel)) DEALLOCATE (uzmwel,  &
+          stat = da_err)
+     IF (da_err /= 0) THEN  
+        PRINT *, "array deallocation failed: init2_1.2"  
+        STOP  
+     ENDIF
+     ! ... Allocate the arrays for accumulation of zonal flow rates
+     ALLOCATE(qfzoni(num_flo_zones), qfzonp(num_flo_zones),  &
+          qszoni(nsa,num_flo_zones), qszonp(nsa,num_flo_zones),  &
+          qfzoni_sbc(num_flo_zones), qfzonp_sbc(num_flo_zones),  &
+          qszoni_sbc(nsa,num_flo_zones), qszonp_sbc(nsa,num_flo_zones),  &
+          qfzoni_fbc(num_flo_zones), qfzonp_fbc(num_flo_zones),  &
+          qszoni_fbc(nsa,num_flo_zones), qszonp_fbc(nsa,num_flo_zones),  &
+          qfzoni_lbc(num_flo_zones), qfzonp_lbc(num_flo_zones),  &
+          qszoni_lbc(nsa,num_flo_zones), qszonp_lbc(nsa,num_flo_zones),  &
+          qfzoni_rbc(num_flo_zones), qfzonp_rbc(num_flo_zones),  &
+          qszoni_rbc(nsa,num_flo_zones), qszonp_rbc(nsa,num_flo_zones),  &
+          qfzoni_dbc(num_flo_zones), qfzonp_dbc(num_flo_zones),  &
+          qszoni_dbc(nsa,num_flo_zones), qszonp_dbc(nsa,num_flo_zones),  &
+          qfzoni_wel(num_flo_zones), qfzonp_wel(num_flo_zones),  &
+          qszoni_wel(nsa,num_flo_zones), qszonp_wel(nsa,num_flo_zones),  &
+          stat = a_err)
+     IF (a_err /= 0) THEN
+        PRINT *, "array allocation failed: init2, number 9.5"
+        STOP
+     ENDIF
+  END IF
   ! ... create cell connection list for natural numbering
   ! ... allocate solver space
   ALLOCATE (cin(6,nxyz), &
        stat = a_err)
-  IF (a_err /= 0) THEN  
+  IF (a_err /= 0) THEN
      PRINT *, "array allocation failed: init2, number 10"  
      STOP  
   ENDIF
@@ -1300,8 +1396,8 @@ SUBROUTINE init2_1
   ! ... set the pointer to the cell containing the free surface
   ! ...      at each node location over the horizontal area
   ! ... also set all frac to one for cells below the f.s. cell
-  all_dry = .true.
-  some_dry = .false.
+  all_dry = .TRUE.
+  some_dry = .FALSE.
   DO mt=1,nxy
      m1 = nxyz-nxy+mt
 750  IF(frac(m1) > 0._kdp) go to 760  
@@ -1312,13 +1408,13 @@ SUBROUTINE init2_1
      DO m=m1-nxy,1,-nxy
         frac(m) = 1._kdp
      END DO
-     if(mfsbc(mt) /= 0) all_dry = .false.
-     if(mfsbc(mt) == 0) some_dry = .true.
+     IF(mfsbc(mt) /= 0) all_dry = .FALSE.
+     IF(mfsbc(mt) == 0) some_dry = .TRUE.
   END DO
-  if (all_dry) ierr(40) = .true.
-  if (some_dry) then
+  IF (all_dry) ierr(40) = .TRUE.
+  IF (some_dry) THEN
      CALL warnprt_c('One or more columns are dry.')
-  endif
+  ENDIF
   ! ... calculate initial density, viscosity, and enthalpy distributions
   ut = t0  
   uc = w0  

@@ -3,6 +3,7 @@ SUBROUTINE write2_1
   USE machine_constants, ONLY: kdp
   USE f_units
   USE mcb
+  USE mcb2
   USE mcc
   USE mcch
   USE mcg
@@ -14,7 +15,7 @@ SUBROUTINE write2_1
   USE mcw
   USE mg2
   USE phys_const
-  use ld_seg_mod
+  USE ld_seg_mod
   IMPLICIT NONE
   INCLUDE 'ifwr.inc'
   CHARACTER(LEN=4) :: uword
@@ -37,7 +38,7 @@ SUBROUTINE write2_1
        'Explicit Layer Rates                    ', &
        'Semi-Implicit Layer Rates               '/)
   REAL(kind=kdp) :: ucnvi
-  INTEGER :: i, ifu, iwel, iwq1, iwq2, iwq3, j,  &
+  INTEGER :: i, ic, ifc, ifu, iwel, iwq1, iwq2, iwq3, izn, j,  &
        jprptc, k, ks, kwb, kwt, l, lc, ls, m, mb, mt, nks
   ! ... Set the unit numbers for node point output
   INTEGER, DIMENSION(12), PARAMETER :: fu =(/16,21,22,23,26,27,0,0,0,0,0,0/)
@@ -46,7 +47,7 @@ SUBROUTINE write2_1
   REAL(KIND=kdp) :: ph
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: aprnt5
   INTEGER :: a_err, da_err
-!!  type(rbc_indices), dimension(:), pointer :: ptr
+  !!  type(rbc_indices), dimension(:), pointer :: ptr
   CHARACTER(LEN=130) :: logline1, logline2, logline3, logline4
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
@@ -69,14 +70,14 @@ SUBROUTINE write2_1
        'Number of leakage cells '//dots,' NLBC . ',nlbc,  &
        'Number of river leakage cells '//dots,' NRBC . ',nrbc,  &
        'Number of drain leakage cells '//dots,' NDBC . ',ndbc,  &
-       !     &     'Number of aquifer influence function cells '//DOTS,
-       !     &     ' NAIFC  ',NAIFC,
-       !     &     'Number of heat conduction b.c. cells '//DOTS,
-       !     &     ' NHCBC  ',NHCBC,
-       !     &     'Nodes outside region for each heat conduction b.c. cell '//
-       !     &     DOTS,
-       !     &     ' NHCN . ',NHCN,  &
-  'Number of wells '//dots,' NWEL . ',nwel
+                                !     &     'Number of aquifer influence function cells '//DOTS,
+                                !     &     ' NAIFC  ',NAIFC,
+                                !     &     'Number of heat conduction b.c. cells '//DOTS,
+                                !     &     ' NHCBC  ',NHCBC,
+                                !     &     'Nodes outside region for each heat conduction b.c. cell '//
+                                !     &     DOTS,
+                                !     &     ' NHCN . ',NHCN,  &
+       'Number of wells '//dots,' NWEL . ',nwel
 2001 FORMAT(/(tr10,a65,a,i6))
 !!$  WRITE(logline1,5009) 'Number of porous media zones '//dots,' NPMZ . ',npmz
 !!$  WRITE(logline2,5009)        'Number of specified pressure or '//  &
@@ -103,9 +104,9 @@ SUBROUTINE write2_1
              dots,' NPRIST ',nprist,' elements'
         WRITE(logline3,5001) 'Overhead storage requirement (D4 direct solver)'//  &
              dots,' NOHST .',nohst,' elements'
-        call logprt_c(logline1)
-        call logprt_c(logline2)
-        call logprt_c(logline3)
+        CALL logprt_c(logline1)
+        CALL logprt_c(logline2)
+        CALL logprt_c(logline3)
      ELSE IF(slmeth == 3) THEN
         WRITE(fulp,2002) 'Linear solver array dimension requirement (RBGCG iterative solver)'//  &
              dots,' NSTSLV ',nstslv,' elements'
@@ -115,9 +116,9 @@ SUBROUTINE write2_1
              dots,' NPRIST ',nprist,' elements'
         WRITE(logline3,5001) 'Overhead storage requirement (RBGCG iterative solver)'//  &
              dots,' NOHST .',nohst,' elements'
-        call logprt_c(logline1)
-        call logprt_c(logline2)
-        call logprt_c(logline3)
+        CALL logprt_c(logline1)
+        CALL logprt_c(logline2)
+        CALL logprt_c(logline3)
      ELSE IF(slmeth >= 5) THEN
         WRITE(fulp,2002) 'Linear solver array dimension requirement (D4ZGCG iterative '//  &
              'solver)'//dots,' NSTSLV ',nstslv,' elements'
@@ -127,9 +128,9 @@ SUBROUTINE write2_1
              dots,' NPRIST ',nprist,' elements'
         WRITE(logline3,5001) 'Overhead storage requirement (D4ZGCG iterative solver)'//  &
              dots,' NOHST .',nohst,' elements'
-        call logprt_c(logline1)
-        call logprt_c(logline2)
-        call logprt_c(logline3)
+        CALL logprt_c(logline1)
+        CALL logprt_c(logline2)
+        CALL logprt_c(logline3)
      END IF
   END IF
 2002 FORMAT(/(tr10,a70,a,i8,a))
@@ -150,7 +151,7 @@ SUBROUTINE write2_1
         WRITE(fu(ifu),2005) rxlbl//'-Direction Node Coordinates    (',TRIM(unitl),')'
 2005    FORMAT(//tr30,4A)
         CALL prntar(1,x,ibc,fu(ifu),cnvli,12,nx)
-        WRITE(fu(ifu),2005) 'Y-Direction Node Coordinates   (' ,TRIM(unitl),')'
+        WRITE(fu(ifu),2005) 'Y-Direction Node Coordinates   (',TRIM(unitl),')'
         CALL prntar(1,y,ibc,fu(ifu),cnvli,12,ny)
      ELSE IF(cylind) THEN
         ! ... Cylindrical aquifer geometry
@@ -188,9 +189,9 @@ SUBROUTINE write2_1
 2010 FORMAT(//tr30,'*** Porous Media Properties ***'/)
      WRITE(fulp,2013) '*** Properties by Porous Medium Zone ***'
 2013 FORMAT(/tr30,a)
-     kx = kxx*denf0*grav*86400./abs(visfac)
-     ky = kyy*denf0*grav*86400./abs(visfac)
-     kz = kzz*denf0*grav*86400./abs(visfac)
+     kx = kxx*denf0*grav*86400./ABS(visfac)
+     ky = kyy*denf0*grav*86400./ABS(visfac)
+     kz = kzz*denf0*grav*86400./ABS(visfac)
      WRITE(fulp,2005) rxlbl//'-Direction Hydraulic Conductivities   (',TRIM(unitl),'/d)'
      CALL prntar(1,kx,ibc,fulp,cnvli,24,npmz)
      IF(.NOT.cylind) THEN
@@ -253,7 +254,7 @@ SUBROUTINE write2_1
      cw0='0.0   '
      WRITE(cw0,3001) w0
      cw1='1.0   '
-     if (solute) WRITE(cw1,3001) w1
+     IF (solute) WRITE(cw1,3001) w1
 3001 FORMAT(f7.4)
      ! ... Print basic fluid properties
      WRITE(fulp,2018) '*** Fluid Properties ***','Physical',  &
@@ -316,7 +317,7 @@ SUBROUTINE write2_1
         DO  iwel=1,nwel
            chu2 = '           '
            chu3 = '           '
-           IF(dwt(iwel) >= 0._kdp .and. dwb(iwel) > 0._kdp) then
+           IF(dwt(iwel) >= 0._kdp .AND. dwb(iwel) > 0._kdp) THEN
               WRITE(chu2,3002) cnvli*dwt(iwel)
               WRITE(chu3,3002) cnvli*dwb(iwel)
 3002          FORMAT(1PG11.3)
@@ -383,7 +384,7 @@ SUBROUTINE write2_1
         END DO
         ntprwel = ntprwel+1
      END IF
-     deallocate (wcfl, wcfu, dwb, dwt, &
+     DEALLOCATE (wcfl, wcfu, dwb, dwt, &
           stat = da_err)
      IF (da_err /= 0) THEN  
         PRINT *, "Array deallocation failed, write2_1: "  
@@ -404,9 +405,9 @@ SUBROUTINE write2_1
         WRITE(fulp,2036) 'Index Numbers For Specified P or C Nodes'
 2036    FORMAT(/tr35,a)
         CALL prntar(2,aprnt1,lprnt1,fulp,cnv,10,000)
-!$$        WRITE(fulp,2036) 'Segment Numbers For Specified P or C Nodes'
-!$$        CALL ldchar_seg(sv_seg_indx, 1, caprnt, lprnt1)
-!$$        CALL prchar(2,caprnt,lprnt1,fulp,000)
+        !$$        WRITE(fulp,2036) 'Segment Numbers For Specified P or C Nodes'
+        !$$        CALL ldchar_seg(sv_seg_indx, 1, caprnt, lprnt1)
+        !$$        CALL prchar(2,caprnt,lprnt1,fulp,000)
      END IF
      IF(nfbc > 0) THEN
         ! ... Specified flux b.c.
@@ -420,9 +421,9 @@ SUBROUTINE write2_1
         CALL prntar(2,aprnt1,lprnt1,fulp,cnv,10,000)
         WRITE(fulp,2036) 'Segment Numbers For Specified Flux Nodes'
         CALL ldchar_seg(flux_seg_index, 2, caprnt, lprnt1)
-!!        ptr => flux_seg_index
-!!        CALL ldchar_seg( 2, caprnt, lprnt1)
-!!        nullify (ptr)
+        !!        ptr => flux_seg_index
+        !!        CALL ldchar_seg( 2, caprnt, lprnt1)
+        !!        nullify (ptr)
         CALL prchar(2,caprnt,lprnt1,fulp,000)
         WRITE(fulp,2034)'*** Flux B.C. Data by Segment ***',  &
              dash,  &
@@ -583,13 +584,13 @@ SUBROUTINE write2_1
   END IF
 !!$300 CONTINUE
   IF(fresur) WRITE(fulp,2036) 'A free-surface water table is specified for this simulation'
-  IF(prtslm) then
+  IF(prtslm) THEN
      ! ... Calculation information
      WRITE(fulp,2063) '*** Calculation Information ***'
 2063 FORMAT(/tr40,a)
      WRITE(logline1,5053) '                    *** Calculation Information ***'
-5053 format(a)
-     call logprt_c(logline1)
+5053 FORMAT(a)
+     CALL logprt_c(logline1)
      ! ...    Iteration parameters
      !      IF(HEAT.OR.SOLUTE) THEN
      !         WRITE(FULP,2054)
@@ -629,36 +630,36 @@ SUBROUTINE write2_1
 !!$        WRITE(logline1,5053) 'Centered-in-space differencing for advective terms'
         END IF
 !!$     call logprt_c(logline1)
-        IF(crosd) then
+        IF(crosd) THEN
            WRITE(fulp,2064) 'The cross-derivative solute flux terms '//  &
                 'will be calculated explicitly'
 !!$        WRITE(logline1,5053) 'The cross-derivative solute flux terms '//  &
 !!$             'will be calculated explicitly'
-        else
+        ELSE
            WRITE(fulp,2064) 'The cross-derivative solute flux terms '//  &
                 'will NOT BE calculated'
 !!$        WRITE(logline1,5053) 'The cross-derivative solute flux terms '//  &
 !!$             'will NOT BE calculated'
-        endif
+        ENDIF
 !!$     call logprt_c(logline1)
      END IF
-     IF(row_scale .and. col_scale) THEN
+     IF(row_scale .AND. col_scale) THEN
         WRITE(fulp,2159) 'Row and column scaling, using L-inf norm, will be done'
 2159    FORMAT(/tr10,a65)
         WRITE(logline1,5201)  &
              '          Row and column scaling, using L-inf norm, will be done'
 5201    FORMAT(a)
-        call logprt_c(logline1)
-     ELSEIF(row_scale .and. .not.col_scale) THEN
+        CALL logprt_c(logline1)
+     ELSEIF(row_scale .AND. .NOT.col_scale) THEN
         WRITE(fulp,2159) 'Row scaling only, using L-inf norm, will be done'
         WRITE(logline1,5201)  &
              '          Row scaling only, using L-inf norm, will be done'
-        call logprt_c(logline1)
-     ELSEIF(.not.row_scale .and. col_scale) THEN
+        CALL logprt_c(logline1)
+     ELSEIF(.NOT.row_scale .AND. col_scale) THEN
         WRITE(fulp,2159) 'Column scaling only, using L-inf norm, will be done'
         WRITE(logline1,5201)  &
              '          Column scaling only, using L-inf norm, will be done'
-        call logprt_c(logline1)
+        CALL logprt_c(logline1)
      END IF
      IF(slmeth == 3) THEN
         WRITE(fulp,2059) 'Direction index for red-black renumbering '//dots,' IDIR..',idir,  &
@@ -677,10 +678,10 @@ SUBROUTINE write2_1
         WRITE(logline4,5060)  &
              '          Tolerance on iterative solution '//dots,' EPSSLV',epsslv
 5060    FORMAT(a65,a,1pe8.1)
-        call logprt_c(logline1)
-        call logprt_c(logline2)
-        call logprt_c(logline3)
-        call logprt_c(logline4)
+        CALL logprt_c(logline1)
+        CALL logprt_c(logline2)
+        CALL logprt_c(logline3)
+        CALL logprt_c(logline4)
      ELSE IF(slmeth == 5) THEN
         WRITE(fulp,2059) 'Direction index for d4 zig-zag renumbering '//dots,' IDIR..',idir,  &
              'Incomplete LU [f] or modified ILU [t] factorization '//dots,' MILU.. ',milu,  &
@@ -694,13 +695,79 @@ SUBROUTINE write2_1
              '          Number of search directions before restart '//dots,' NSDR..',nsdr
         WRITE(logline4,5060)  &
              '          Tolerance on iterative solution '//dots,' EPSSLV',epsslv
-        call logprt_c(logline1)
-        call logprt_c(logline2)
-        call logprt_c(logline3)
-        call logprt_c(logline4)
+        CALL logprt_c(logline1)
+        CALL logprt_c(logline2)
+        CALL logprt_c(logline3)
+        CALL logprt_c(logline4)
      END IF
-  endif
+  ENDIF
   WRITE(fulp,'(/tr1,a120)') dash
+  ! ... Write zone definition data to file 'FUZF'
+  ! ... Spatial mesh information
+  IF(.NOT.cylind) THEN
+     WRITE(fuzf,2005) rxlbl//'-Direction Node Coordinates    ('//TRIM(unitl)//')'
+     CALL prntar(1,x,ibc,fuzf,cnvli,12,nx)
+     WRITE(fuzf,2005) 'Y-Direction Node Coordinates   ('//TRIM(unitl)//')'
+     CALL prntar(1,y,ibc,fuzf,cnvli,12,ny)
+  ELSE IF(cylind) THEN
+     ! ... Cylindrical aquifer geometry
+     WRITE(fuzf,2006) cnvli*x(1),TRIM(unitl),cnvli*x(nr),TRIM(unitl)
+     rxlbl='R'
+     WRITE(fuzf,2005) rxlbl//'-Direction Node Coordinates  ('//TRIM(unitl)//')'
+     CALL prntar(1,x,ibc,fuzf,cnvli,12,nr)
+     WRITE(fuzf,2005) rxlbl// '-Coordinate Cell Boundary Locations ',  &
+          '(between node(I) and node(I+1))   ('//TRIM(unitl)//')'
+     CALL prntar(1,rm,ibc,fuzf,cnvli,112,nr-1)
+  END IF
+  WRITE(fuzf,2005) 'Z-Direction Node Coordinates   ('//TRIM(unitl)//')'
+  CALL prntar(1,z,ibc,fuzf,cnvli,12,nz)
+  IF(num_flo_zones > 0) THEN
+     lprnt1 = -1
+     DO  izn=1,num_flo_zones
+        DO ifc=1,zone_ib(izn)%num_int_faces
+           m = zone_ib(izn)%mcell_no(ifc)
+           lprnt1(m) = 1
+           aprnt1(m) = izn
+        END DO
+        DO ic=1,lcell_bc(izn,1)%num_bc
+           m = msbc(lcell_bc(izn,1)%lcell_no(ic))
+           lprnt1(m) = 1
+           aprnt1(m) = izn
+        END DO
+        DO ic=1,lcell_bc(izn,2)%num_bc
+           m = mfbc(lcell_bc(izn,2)%lcell_no(ic))
+           lprnt1(m) = 1
+           aprnt1(m) = izn
+        END DO
+        DO ic=1,lcell_bc(izn,3)%num_bc
+           m = mlbc(lcell_bc(izn,3)%lcell_no(ic))
+           lprnt1(m) = 1
+           aprnt1(m) = izn
+        END DO
+        DO ic=1,lcell_bc(izn,4)%num_bc
+           m = mrbc(lcell_bc(izn,4)%lcell_no(ic))
+           lprnt1(m) = 1
+           aprnt1(m) = izn
+        END DO
+        DO ic=1,lcell_bc(izn,5)%num_bc
+           m = mdbc(lcell_bc(izn,5)%lcell_no(ic))
+           lprnt1(m) = 1
+           aprnt1(m) = izn
+        END DO
+        IF(nwel > 0) THEN
+           DO ic=1,seg_well(izn)%num_wellseg
+              iwel = seg_well(izn)%iwel_no(ic)
+              ks = seg_well(izn)%ks_no(ic)
+              m = mwel(iwel,ks)
+              lprnt1(m) = 1
+              aprnt1(m) = izn
+           END DO
+        END IF
+     END DO
+     WRITE(fuzf,2036) 'Index Numbers for Flow Zones'
+     CALL prntar(2,aprnt1,lprnt1,fuzf,cnv,10,000)
+  END IF
+
   ! ... Write zone definition data to file 'FUPZON' for plotting
 !!$  IF(pltzon) THEN
 !!$     WRITE(fupzon,5003) npmz

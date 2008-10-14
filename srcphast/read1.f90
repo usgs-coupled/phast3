@@ -8,46 +8,52 @@ SUBROUTINE read1
   USE mcs
   USE mcw
   IMPLICIT NONE
-  CHARACTER (LEN=250) :: LIMAGE  
-  INTEGER :: ILAST  
+  INTERFACE
+     FUNCTION uppercase(string) RESULT(outstring)
+       IMPLICIT NONE
+       CHARACTER(LEN=*), INTENT(IN) :: string
+       CHARACTER(LEN=LEN(string)) :: outstring
+     END FUNCTION uppercase
+  END INTERFACE
+  CHARACTER(LEN=255) :: limage  
+  CHARACTER(LEN=1) :: uchar
+  INTEGER :: ios
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
-  !     ------------------------------------------------------------------
+  ! ------------------------------------------------------------------------
   !...
   ! ... Pre-read of data file to strip out comments
-10 READ(FUINC, 1001, END=20) LIMAGE  
-1001 FORMAT(A250)  
-  ILAST = 250  
-  CALL STONB(LIMAGE, ILAST, -1)  
-  IF(LIMAGE(1:1) .NE.'C'.AND.LIMAGE(1:1) .NE.'c') &
-       WRITE(FUINS,1101) LIMAGE(1:ILAST)
-1101 FORMAT(A)  
-  GOTO 10  
-20 CLOSE(FUINC)  
-  REWIND FUINS  
+  DO
+     READ(fuinc,'(a255)',IOSTAT=ios) limage
+     IF(ios < 0) EXIT
+     uchar = uppercase(limage(1:1))
+     IF(uchar /= 'C') WRITE(fuins,'(a)') TRIM(limage)
+  END DO
+  CLOSE(fuinc)
+  REWIND fuins
   ! ... Start of data readin
-  READ(FUINS, 1002) TITLE(1:80), TITLE(81:160)  
+  READ(fuins, 1002) title(1:80), title(81:160)  
 1002 FORMAT(A80/A80)  
-  IF (print_rde) WRITE(FURDE, 1002) TITLE(1:80), TITLE(81:160)  
-  READ(FUINS, * ) RESTRT, TIMRST  
-  IF (print_rde) WRITE(FURDE, 8001) 'RESTRT,TIMRST,[1.3]', RESTRT, TIMRST  
-8001 FORMAT(TR5,A/TR5,L5,1PG12.1)  
-  IF(.NOT.RESTRT) THEN  
-     READ(FUINS, * ) HEAT, SOLUTE, EEUNIT, CYLIND, SCALMF  
+  IF (print_rde) WRITE(FURDE, 1002) title(1:80), title(81:160)  
+  READ(fuins,*) restrt, timrst  
+  IF (print_rde) WRITE(FURDE, 8001) 'RESTRT,TIMRST,[1.3]', restrt, timrst  
+8001 FORMAT(TR5,A/TR5,L5,1PG12.1)
+  IF(.NOT.restrt) THEN
+     READ(FUINS,*) heat, solute, eeunit, cylind, scalmf  
      IF (print_rde) WRITE(FURDE, 8002) 'HEAT,SOLUTE,EEUNIT,CYLIND,SCALMF,[1.4]', &
-          HEAT, SOLUTE, EEUNIT, CYLIND, SCALMF
+          heat, solute, eeunit, cylind, scalmf
 8002 FORMAT(TR5,A/TR5,5L5)  
      READ(fuins,*) steady_flow, eps_p, eps_flow
      IF (print_rde) WRITE(furde,8013) 'steady_flow, eps_p, eps_flow', &
           steady_flow, eps_p, eps_flow
 8013 FORMAT(tr5,a/tr5,l5,2(1pe15.6))
      READ(FUINS,*) naxes  
-     IF (print_rde) WRITE(FURDE, 8003) 'NAXES', NAXES  
-     READ(FUINS,*) tmunit  
-     IF (print_rde) WRITE(FURDE, 8003) 'TMUNIT,[1.5]', TMUNIT  
+     IF (print_rde) WRITE(FURDE, 8003) 'NAXES', naxes
+     READ(FUINS,*) tmunit
+     IF (print_rde) WRITE(FURDE, 8003) 'TMUNIT,[1.5]', tmunit
      READ(FUINS,*) nx, ny, nz, nhcn, npmz  
-     IF (print_rde) WRITE(FURDE, 8003) 'NX,NY,NZ,NHCN,NPMZ,[1.6]', NX, NY, NZ,  &
-          NHCN, NPMZ
+     IF (print_rde) WRITE(FURDE, 8003) 'NX,NY,NZ,NHCN,NPMZ,[1.6]', nx, ny, nz,  &
+          nhcn, npmz
 8003 FORMAT(TR5,A/TR5,4I5,I8)  
 !!$ for later     READ(FUINS,*) nsbc, nfbc, nlbc, nrbc, ndbc, naifc, nhcbc, nwel
 !!     ndbc = 0

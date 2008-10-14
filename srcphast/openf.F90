@@ -9,8 +9,8 @@ SUBROUTINE openf
   CHARACTER(LEN=255) :: fname
   INTEGER :: ios, length
   LOGICAL :: lerror 
-  integer num_files, i
-  character(len=255) :: restart_name
+  INTEGER :: num_files, i
+  CHARACTER(LEN=255) :: restart_name
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
@@ -33,6 +33,7 @@ SUBROUTINE openf
      CALL SEND_RESTART_NAME(restart_name)
   ENDDO
   OPEN(fuins,STATUS='scratch')
+!$$  OPEN(fuins,FILE='stripped.in')
   REWIND fuins
   f3name = TRIM(f3name)
   length = LEN_TRIM(f3name)
@@ -121,6 +122,15 @@ SUBROUTINE openf
   CALL get_mpi_filename(fname)
 #endif
   OPEN(fubcf,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  IF (ios > 0) THEN
+    lerror = .TRUE.
+    WRITE(*,*) 'ERROR: Error opening file ', fname
+  ENDIF
+  fname=f3name(1:length)//'.O.zf'
+#if defined(USE_MPI)
+  CALL get_mpi_filename(fname)
+#endif
+  OPEN(fuzf,FILE=fname,IOSTAT=ios,ACTION='WRITE')
   IF (ios > 0) THEN
     lerror = .TRUE.
     WRITE(*,*) 'ERROR: Error opening file ', fname

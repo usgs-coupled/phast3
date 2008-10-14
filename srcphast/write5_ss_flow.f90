@@ -4,6 +4,7 @@ SUBROUTINE write5_ss_flow
   USE machine_constants, ONLY: kdp, one_plus_eps
   USE f_units
   USE mcb
+  USE mcb2
   USE mcc
   use mcch
   USE mcg
@@ -27,7 +28,8 @@ SUBROUTINE write5_ss_flow
   CHARACTER(LEN=1), DIMENSION(3) :: lbldir = (/'X','Y','Z'/)
   CHARACTER(LEN=12), DIMENSION(:), allocatable :: chu10a, chu11a
   REAL(KIND=kdp) :: hwcell, pwcell, tdehir, tdfir, tdsir, utime
-  INTEGER :: a_err, da_err, i, ic, ifmt, indx, ip, iw1p, iw2p, iwel, iwfss, iwpp, j, jprptc,  &
+  INTEGER :: a_err, da_err, i, ic, ifmt, indx, ip, iw1p, iw2p, iwel, iwfss, iwpp, izn,  &
+       j, jprptc,  &
        k, k1, ks, l, l1, lc, ll, lll, ls, lwk, lwks, m, mfs, mkt, mm, mt, mwk, nsa
   LOGICAL :: erflg, prthd, prthd2, prthd3
   REAL(KIND=kdp), PARAMETER :: cnv=1._kdp
@@ -47,6 +49,7 @@ SUBROUTINE write5_ss_flow
   prc=.FALSE.
   prp=.FALSE.
   prgfb=.FALSE.
+  przf = .false.
   prbcf=.FALSE.
   prwel=.FALSE.
   prslm=.FALSE.
@@ -73,6 +76,10 @@ SUBROUTINE write5_ss_flow
      IF(ABS(prigfb) > 0._kdp) THEN
         prgfb = .TRUE.
      END IF
+     ! ... Zone flow rates
+     IF(ABS(pri_zon_flo) > 0._kdp) THEN
+        IF(converge_ss) przf=.TRUE.
+     END IF
      ! ... B.C. flow rates
      IF(ABS(pribcf) > 0._kdp) THEN
         IF(converge_ss) prbcf=.TRUE.
@@ -88,10 +95,10 @@ SUBROUTINE write5_ss_flow
         END IF
      END IF
   END IF
-!!  WRITE(*,3001) 'Iteration Step No. ', itime,'; for Steady State Flow'
+  !!  WRITE(*,3001) 'Iteration Step No. ', itime,'; for Steady State Flow'
 !!$  3001 FORMAT(tr5,a,I6,a)
   IF(prslm) THEN
-!       Already printed in sumcal_ss_flow
+     !       Already printed in sumcal_ss_flow
 !!$     WRITE(logline1,5001) '*** Output at End of Steady State Iteration No. ', itime,' ***'
 !!$5001 FORMAT(a,i5,a)
 !!$     WRITE(logline2,5002) 'Time '//dots,cnvtmi*time,'  ('//TRIM(unittm)//')'
@@ -100,10 +107,10 @@ SUBROUTINE write5_ss_flow
 !!$     call logprt_c(logline2)
      IF(ntsfal > 0) then 
         WRITE(logline1,5007) 'Number of repeats of time step to achieve ','truncation error'//dots,ntsfal
-5007 FORMAT(a42,a23,i4)
+5007    FORMAT(a42,a23,i4)
         call logprt_c(logline1)
      endif
-!       Already printed in sumcal_ss_flow
+     !       Already printed in sumcal_ss_flow
 !!$     WRITE(logline1,5027) 'Maximum change in potentiometric head '//dots,  &
 !!$          cnvpi*dhmax,' ('//TRIM(unitl)//')',' at location (',  &
 !!$          cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax),')(',TRIM(unitl)//')'
@@ -129,7 +136,7 @@ SUBROUTINE write5_ss_flow
              cnvpi*dhmax,'('//unitl//')','at location (',  &
              cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax),')(',TRIM(unitl),')'
         ! WRITE(fup,2008) 'Pressure   (',unitp,')'
-       2008    FORMAT(/tr30,10A)
+2008    FORMAT(/tr30,10A)
         ! CALL prntar(2,p,lprnt1,fup,cnvpi,24,000)
         ifmt=13
         IF(eeunit) ifmt=12
@@ -186,7 +193,7 @@ SUBROUTINE write5_ss_flow
      WRITE(fubal,2001)  '*** Output at End of Steady State Iteration No. ', itime,' ***'
      WRITE(fubal,2002) 'Time '//dots,cnvtmi*time,'('//TRIM(unittm)//')'
      WRITE(fubal,2010)
-     2010 FORMAT(/tr40,'*** Global Flow Balance Summary ***'/tr25,  &
+2010 FORMAT(/tr40,'*** Global Flow Balance Summary ***'/tr25,  &
           'Current Time Step',tr25,'Rates',tr18,'Amounts')
      WRITE(fubal,2011) 'Fluid inflow '//dots,cnvmfi*stotfi/deltim,  &
           '('//unitm//'/'//TRIM(unittm)//')',cnvmi*stotfi,'('//unitm//')',  &
@@ -197,7 +204,7 @@ SUBROUTINE write5_ss_flow
           'Residual imbalance '//dots,cnvmfi*sfres/deltim,  &
           '('//unitm//'/'//TRIM(unittm)//')',cnvmi*sfres,'('//unitm//')',  &
           'Fractional imbalance '//dots,sfresf
-     2011 FORMAT(/4(tr1,a60,1PE14.6,tr2,a,tr3,e14.6,tr2,a/),tr1,a60,tr28,0PF8.4)
+2011 FORMAT(/4(tr1,a60,1PE14.6,tr2,a,tr3,e14.6,tr2,a/),tr1,a60,tr28,0PF8.4)
      WRITE(fubal,2017) 'Current Time Step by Boundary Condition Type','Amounts'
 2017 FORMAT(/tr15,a/tr65,a)
      WRITE(fubal,2023) 'Step total specified p cell fluid net inflow '//  &
@@ -207,8 +214,51 @@ SUBROUTINE write5_ss_flow
           'Step total river leakage b.c. fluid net inflow '//dots,cnvmi*stfrbc,'(',unitm,')',  &
           'Step total drain leakage b.c. fluid net inflow '//dots,cnvmi*stfdbc,'(',unitm,')',  &
           'Step total well fluid net inflow '//dots,cnvmi*stfwel, '(',unitm,')'
-     2023 FORMAT(/6(tr1,a60,1PE14.6,tr2,3A/))
+2023 FORMAT(/6(tr1,a60,1PE14.6,tr2,3A/))
      ntprgfb = ntprgfb+1
+  END IF
+  IF(przf) THEN
+     ! ... Zonal flow rates
+     WRITE(fuzf,2001)  '*** Output at End of Steady State Iteration No. ', itime,' ***'
+     WRITE(fuzf,2002) 'Time '//dots,cnvtmi*time,'('//TRIM(unittm)//')'
+     do izn=1,num_flo_zones
+        WRITE(fuzf,2310) izn, zone_title(izn)
+2310    FORMAT(/tr40,'*** Zonal Flow Summary, zone:',i4,' ***',  &
+             /tr10,a/tr25,  &
+             'Current Time Step',tr25,'Rates')
+        WRITE(fuzf,2311) 'Fluid inflow '//dots,cnvmfi*qfzoni(izn),  &
+             '('//unitm//'/'//TRIM(unittm)//')',  &
+             'Fluid outflow '//dots,cnvmfi*qfzonp(izn),  &
+             '('//unitm//'/'//TRIM(unittm)//')'
+2311    FORMAT(/2(tr1,a60,1PE14.6,tr2,a/))
+        WRITE(fuzf,2017) 'Current Iteration Step by Boundary Condition Type','Rates'
+        WRITE(fuzf,2323) 'Specified head b.c. fluid inflow '//  &
+             dots,cnvmfi*qfzoni_sbc(izn),'('//unitm//'/'//TRIM(unittm)//')',  &
+             'Specified head b.c. fluid outflow '//dots,cnvmfi*qfzonp_sbc(izn),  &
+             '('//unitm//'/'//TRIM(unittm)//')',  &
+             'Flux b.c. fluid inflow '//dots,cnvmfi*qfzoni_fbc(izn),  &
+             '('//unitm//'/'//TRIM(unittm)//')',  &
+             'Flux b.c. fluid outflow '//dots,cnvmfi*qfzonp_fbc(izn),  &
+             '('//unitm//'/'//TRIM(unittm)//')',  &
+             'Leakage b.c. fluid inflow '//dots,cnvmfi*qfzoni_lbc(izn),  &
+             '('//unitm//'/'//TRIM(unittm)//')',  &
+             'Leakage b.c. fluid outflow '//dots,cnvmfi*qfzonp_lbc(izn),  &
+             '('//unitm//'/'//TRIM(unittm)//')',  &
+             'River leakage b.c. fluid inflow '//dots,cnvmfi*qfzoni_rbc(izn),  &
+             '('//unitm//'/'//TRIM(unittm)//')',  &
+             'River leakage b.c. fluid outflow '//dots,cnvmfi*qfzonp_rbc(izn),  &
+             '('//unitm//'/'//TRIM(unittm)//')',  &
+             'Drain leakage b.c. fluid inflow '//dots,cnvmfi*qfzoni_dbc(izn),  &
+             '('//unitm//'/'//TRIM(unittm)//')',  &
+             'Drain leakage b.c. fluid outflow '//dots,cnvmfi*qfzonp_dbc(izn),  &
+             '('//unitm//'/'//TRIM(unittm)//')',  &
+             'Well fluid inflow '//dots,cnvmfi*qfzoni_wel(izn),  &
+             '('//unitm//'/'//TRIM(unittm)//')',  &
+             'Well fluid outflow '//dots,cnvmfi*qfzonp_wel(izn),  &
+             '('//unitm//'/'//TRIM(unittm)//')'
+2323    FORMAT(/12(tr1,a60,1PE14.6,tr2,A/))
+     enddo
+     ntprzf = ntprzf+1
   END IF
   IF(prwel) THEN
      nsa = max(ns,1)
@@ -222,10 +272,10 @@ SUBROUTINE write5_ss_flow
      WRITE(fuwel,2001)  '*** Output at End of Steady State Iteration No. ', itime,' ***'
      WRITE(fuwel,2002) 'Time '//dots,cnvtmi*time,'('//TRIM(unittm)//')'
      WRITE(fuwel,2025)
-     2025 FORMAT(/tr40,'*** Well Summary ***')
+2025 FORMAT(/tr40,'*** Well Summary ***')
      WRITE(fuwel,2026) 'Flow Rates (positive is injection)',  &
           'Well','Fluid', 'No.','('//unitm//'/'//TRIM(unittm)//')',dash
-     2026 FORMAT(/tr27,a/tr2,a,tr20,a/ tr2,a,tr20,a/tr1,a70)
+2026 FORMAT(/tr27,a/tr2,a,tr20,a/ tr2,a,tr20,a/tr1,a70)
      chu1a='           '
      chu2a='           '
      chu3a='          '
@@ -236,13 +286,13 @@ SUBROUTINE write5_ss_flow
      chu8a='           '
      DO  iwel=1,nwel
         IF(heat) WRITE(chu1a,2027) cnvhfi*qhw(iwel)
-        2027    FORMAT(1PG12.4)
+2027    FORMAT(1PG12.4)
         WRITE(fuwel,2028) welidno(iwel),cnvmfi*qwm(iwel)
-        2028    FORMAT(' ',i3,tr20,1PG12.4,tr3,a,tr3,a)
+2028    FORMAT(' ',i3,tr20,1PG12.4,tr3,a,tr3,a)
      END DO
      WRITE(fuwel,2029) dash,'Total - Production',  &
           cnvmfi*tqwfp,chu1a,chu2a,'- Injection', cnvmfi*tqwfi,chu7a,chu8a
-     2029 FORMAT(tr1,a70/tr1,a,tr5,1PG12.4,tr3,a,tr3,a/tr7,  &
+2029 FORMAT(tr1,a70/tr1,a,tr5,1PG12.4,tr3,a,tr3,a/tr7,  &
           a,tr6,1PG12.4,2(tr3,a))
 !!$     2030 FORMAT(/tr20,a,tr10,a/tr2,a,tr15,a,tr22,a/tr2,a,tr17,a,tr22,a/tr1,a90)
 !!$     2033 FORMAT(tr1,a90/tr1,a,1PG12.4/tr7, a,tr26,1PG12.4)
@@ -307,19 +357,19 @@ SUBROUTINE write5_ss_flow
      END DO
      WRITE(fuwel,2036) 'Current Fluid Production(-)/Injection(+) Rates ',  &
           'per layer ('//unitm//'/'//TRIM(unittm)//')'
-     2036 FORMAT(//tr10,6A)
+2036 FORMAT(//tr10,6A)
      iw1p=-9
 110  iw1p=iw1p+10
      iw2p=MIN(iw1p+9,nwel)
      WRITE(fuwel,2037) 'Layer','Well Sequence Number','No.',  &
           (welidno(ip),ip=iw1p,iw2p)
-     2037 FORMAT(/tr1,a,tr25,a/tr1,a,i9,9I12)
+2037 FORMAT(/tr1,a,tr25,a/tr1,a,i9,9I12)
      WRITE(fuwel,2038) dash
-     2038 FORMAT(tr1,a120)
+2038 FORMAT(tr1,a120)
      DO  k=1,nz
         k1=nz+1-k
         WRITE(chk1,3005) k1
-        3005    FORMAT(i2)
+3005    FORMAT(i2)
         l=0
         DO  iwpp=iw1p,iw2p
            l=l+1
@@ -329,11 +379,11 @@ SUBROUTINE write5_ss_flow
 3006       FORMAT(1PG12.3)
         END DO
         WRITE(fuwel,2039) chk1,(chaprt(i),i=1,l)
-        2039    FORMAT(tr2,a2,tr2,10(a12))
+2039    FORMAT(tr2,a2,tr2,10(a12))
      END DO
      IF(iw2p < nwel) GO TO 110
      WRITE(fuwel,2040)
-     2040 FORMAT(/tr1,120('-')/)
+2040 FORMAT(/tr1,120('-')/)
      deallocate (chu10a, chu11a, &
           stat = da_err)
      if (da_err.ne.0) then  
@@ -379,7 +429,7 @@ SUBROUTINE write5_ss_flow
         END DO
         IF(prthd) THEN
            WRITE(fubcf,2042) 'Fluid   (',unitm,'/',TRIM(unittm),')'
-           2042       FORMAT(tr20,10A)
+2042       FORMAT(tr20,10A)
            CALL prntar(2,aprnt1,lprnt1,fubcf,cnvmfi,24,000)
         END IF
      END IF
@@ -388,7 +438,7 @@ SUBROUTINE write5_ss_flow
              '(positive is into the region)'
 2043    FORMAT(//tr25,a/tr25,a)
         lprnt1 = -1
-!$$        prthd=.FALSE.
+        !$$        prthd=.FALSE.
         DO  lc=1,nfbc_cells
            m = flux_seg_index(lc)%m
            IF(fresur) THEN
@@ -416,8 +466,8 @@ SUBROUTINE write5_ss_flow
            m = leak_seg_index(lc)%m
            lprnt1(m) = 1
            aprnt1(m) = qflbc(lc)
-!$$                 APRNT2(M)=QHLBC(L)
-!$$                 APRNT3(M)=QSLBC(L)
+           !$$                 APRNT2(M)=QHLBC(L)
+           !$$                 APRNT3(M)=QSLBC(L)
         END DO
         CALL prntar(2,aprnt1,lprnt1,fubcf,cnvmfi,24,000)
      END IF

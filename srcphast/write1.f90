@@ -23,7 +23,7 @@ SUBROUTINE write1
   WRITE(fulp,2002)
 2002 FORMAT(tr36,'*',tr50,'*'/tr36,52('*')////)
   WRITE(fulp,2003) title(1:80),title(81:160)
-  2003 FORMAT(//tr26,a80/tr26,a80)
+2003 FORMAT(//tr26,a80/tr26,a80)
   IF(restrt) WRITE(fulp,2003) titleo(1:80),titleo(81:160)
 !!$  WRITE(fuplt,5001) title(1:80),title(81:160)
 !!$  IF(restrt) WRITE(fuplt,5001) titleo(1:80),titleo(81:160)
@@ -31,17 +31,18 @@ SUBROUTINE write1
      WRITE(i,2003) title(1:80),title(81:160)
      IF(restrt) WRITE(i,2003) titleo(1:80),titleo(81:160)
   END DO
-     WRITE(logline1,5013) title(1:80)
-     WRITE(logline2,5013) title(81:160)
-5013 format(a80)
-     call logprt_c(logline1)
-     call logprt_c(logline2)
+  WRITE(fuzf,2003) title(1:80),title(81:160)
+  WRITE(logline1,5013) title(1:80)
+  WRITE(logline2,5013) title(81:160)
+5013 FORMAT(a80)
+  CALL logprt_c(logline1)
+  CALL logprt_c(logline2)
   WRITE(fulp,2004)
 2004 FORMAT(/tr25,'*** Fundamental Information ***')
 !!$  IF(heat) THEN
 !!$     WRITE(fulp,2005) 'Heat transport simulation'
 !!$  ELSE
-     WRITE(fulp,2005) 'Isothermal simulation'
+  WRITE(fulp,2005) 'Isothermal simulation'
 2005 FORMAT(tr20,a)
 !!$  END IF
   IF(solute) THEN
@@ -50,7 +51,7 @@ SUBROUTINE write1
      WRITE(fulp,2005) 'No solute transport simulaton'
   END IF
   IF(restrt) WRITE(fulp,2006) cnvtmi*timrst,unittm
-  2006 FORMAT(tr20,'A restart to continue a previous simulation ',  &
+2006 FORMAT(tr20,'A restart to continue a previous simulation ',  &
        'from time ',1PG10.4,tr2,'(',a,')')
   IF(cylind) THEN
      WRITE(fulp,2005) 'Cylindrical coordinates'
@@ -63,25 +64,25 @@ SUBROUTINE write1
      WRITE(fulp,2005) 'Data is in metric units'
   END IF
   WRITE(fulp,2007) 'Time unit selected is ',utulbl
-  2007 FORMAT(tr20,2A)
+2007 FORMAT(tr20,2A)
   IF(solute.AND.scalmf) WRITE(fulp,2007) 'Solute concentration is ',  &
        'expressed as scaled mass fraction with range (0-1)'
   IF(solute.AND..NOT.scalmf) WRITE(fulp,2007) 'Solute ',  &
        'concentration is expressed as mass fraction'
   IF(slmeth == 1) THEN
      WRITE(fulp,2011)
-     2011 FORMAT(/tr10,'Direct D4 solver is selected')
+2011 FORMAT(/tr10,'Direct D4 solver is selected')
   ELSE IF(slmeth == 2) THEN
      WRITE(fulp,2012)
-     2012 FORMAT(/tr10,'Iterative two-line-successive-over-relaxation ',  &
+2012 FORMAT(/tr10,'Iterative two-line-successive-over-relaxation ',  &
           'solver is selected')
   ELSE IF(slmeth == 3) THEN
      WRITE(fulp,2013)
-     2013 FORMAT(/tr10,'Iterative generalized conjugate gradient ',  &
+2013 FORMAT(/tr10,'Iterative generalized conjugate gradient ',  &
           'solver with red-black reduction is selected')
   ELSE IF(slmeth == 5) THEN
      WRITE(fulp,2014)
-     2014 FORMAT(/tr10,'Iterative generalized conjugate gradient ',  &
+2014 FORMAT(/tr10,'Iterative generalized conjugate gradient ',  &
           'solver with d4 zig-zag reduction is selected')
   END IF
   WRITE(fulp,2008) '*** Problem Dimension Information ***',  &
@@ -106,8 +107,8 @@ SUBROUTINE write1
      ! ... Write static data to file 'FUPMAP' for screen or plotter maps
      ! ... Write header to file 'Fupmap' for component xyz field plots
      WRITE(fmt1,"(a,i2,a)") '(tr1,a,',ns,'a)'
-     WRITE(fupmap,fmt1) 'x'//achar(9)//'y'//achar(9)//'z'//achar(9)//'time'//  &
-          achar(9)//'in'//achar(9),(comp_name(is)//achar(9),is=1,ns)
+     WRITE(fupmap,fmt1) 'x'//ACHAR(9)//'y'//ACHAR(9)//'z'//ACHAR(9)//'time'//  &
+          ACHAR(9)//'in'//ACHAR(9),(comp_name(is)//ACHAR(9),is=1,ns)
   END IF
 !!$  WRITE(fupmap,5001) title(1:80),title(81:160)
 !!$  5001 FORMAT(a80)
@@ -117,18 +118,18 @@ SUBROUTINE write1
 !!$  5003 FORMAT(5I8)
 !!$  WRITE(fupmap,5003) ns
   ! ... Write header to file 'Fupmap2' for head xyz field plots
-  WRITE(fupmp2,5011) 'x'//achar(9)//'y'//achar(9)//'z'//achar(9)//'time'//  &
-       achar(9)//'in'//achar(9)//'head'//achar(9) 
+  WRITE(fupmp2,5011) 'x'//ACHAR(9)//'y'//ACHAR(9)//'z'//ACHAR(9)//'time'//  &
+       ACHAR(9)//'in'//ACHAR(9)//'head'//ACHAR(9) 
   ! ... Write header to file 'Fuvmap' for velocity xyz plots
-  WRITE(fuvmap,5011) 'x'//achar(9)//'y'//achar(9)//'z'//achar(9)//'time'//  &
-       achar(9)//'in'//achar(9)//'vx-node'//achar(9)//'vy-node'//achar(9)//  &
-       'vz-node'//achar(9) 
-5011 format(tr5,a)
+  WRITE(fuvmap,5011) 'x'//ACHAR(9)//'y'//ACHAR(9)//'z'//ACHAR(9)//'time'//  &
+       ACHAR(9)//'in'//ACHAR(9)//'vx-node'//ACHAR(9)//'vy-node'//ACHAR(9)//  &
+       'vz-node'//ACHAR(9) 
+5011 FORMAT(tr5,a)
   ! ... Write static data to file 'FUPLT' for temporal plots
   WRITE(fmt1,"(a,i2,a)") '(tr1,a,',ns+2,'a)'
-  WRITE(fuplt,fmt1) 'x'//achar(9)//'y'//achar(9)//'z_datum'//  &
-       achar(9)//'Time'//achar(9)//'Well_no'//achar(9),  &
-       (comp_name(is)//achar(9),is=1,ns),'pH'//achar(9)//'Alkalinity'//achar(9)
+  WRITE(fuplt,fmt1) 'x'//ACHAR(9)//'y'//ACHAR(9)//'z_datum'//  &
+       ACHAR(9)//'Time'//ACHAR(9)//'Well_no'//ACHAR(9),  &
+       (comp_name(is)//ACHAR(9),is=1,ns),'pH'//ACHAR(9)//'Alkalinity'//ACHAR(9)
 !!$  ! ... Write static data to file 'FUBNFR' for b.c. flow summation
 !!$  WRITE(fubnfr,5001) title(1:80),title(81:160)
 !!$  WRITE(fubnfr,5002) heat,solute,eeunit,cylind
