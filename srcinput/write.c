@@ -2285,6 +2285,7 @@ int write_zone_budget(void)
 		// Write one zone budget 
 
 		output_msg(OUTPUT_HST, "C .. Data for zone budget number %d \n", zone_budget_number);
+		output_msg(OUTPUT_HST, "%d %s", it->first, it->second->Get_description().c_str());
 		int return_max = 10;
 		int return_counter = 0;
 
