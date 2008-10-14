@@ -679,8 +679,7 @@ void initialize(void)
 	current_print_restart.value_defined = FALSE;
 	current_print_restart.input = NULL;
 
-	current_print_zone_budget.type = UNITS;
-	current_print_zone_budget.value = 0;
+	current_print_zone_budget.type = UNDEFINED;
 	current_print_zone_budget.value_defined = FALSE;
 	current_print_zone_budget.input = NULL;
 
