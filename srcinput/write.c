@@ -580,7 +580,7 @@ int write_source_sink(void)
 			output_msg(OUTPUT_HST,"C ..  end 2.14.9\n"); 
 			output_msg(OUTPUT_HST,"END\n");
 		}
-		output_msg(OUTPUT_HST,"C .. end 2.14.8"); 
+		output_msg(OUTPUT_HST,"C .. end 2.14.8\n"); 
 		output_msg(OUTPUT_HST,"END\n");
 	}
 	
