@@ -2343,7 +2343,7 @@ int write_zone_budget(void)
 				std::vector<int>::iterator jt = it->begin();
 				for ( ; jt != it->end(); jt++)
 				{
-					output_msg(OUTPUT_HST, "     %d", *jt);
+					output_msg(OUTPUT_HST, "     %d", *jt + 1);
 				}
 				output_msg(OUTPUT_HST, "\n");
 			}
