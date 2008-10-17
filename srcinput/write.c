@@ -2296,9 +2296,10 @@ int write_zone_budget(void)
 					// Make conditional list of river segments at top of column
 					if (cells[stencil[6]].count_river_polygons > 0)
 					{
-						//river_vector.push_back(std::pair<int, int> (n, stencil[6]));
-						//river_map[stencil[6]] = true;
-						river_set.insert(stencil[6]);
+						if (!cells[stencil[6]].specified)
+						{
+							river_set.insert(stencil[6]);
+						}
 					}
 
 					// drain
