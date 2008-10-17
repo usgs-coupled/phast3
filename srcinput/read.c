@@ -4773,15 +4773,16 @@ int read_units (void)
 		"river_bed_thickness",     /* 23 */
 		"river_thickness",         /* 24 */
 		"drain_bed_k",             /* 25 */
-		"drain_bed_hydraulic_conductivity",  /* 26 */
+		"drain_hydraulic_conductivity",  /* 26 */
 		"drain_k",                 /* 27 */
 		"drain_bed_thickness",     /* 28 */
 		"drain_thickness",         /* 29 */
 		"drain_width",             /* 30 */
 		"map_horizontal",          /* 31 */
 		"map_vertical"             /* 32 */
+		"river_width",             /* 33 */
 	};
-	int count_opt_list = 33;
+	int count_opt_list = 34;
 	/*
 	*   Read flags:
 	*/
@@ -4998,7 +4999,7 @@ int read_units (void)
 			}
 			break;
 		case 25:                       /* drain_bed_k */
-		case 26:                       /* drain_bed_hydraulic_conductivity */
+		case 26:                       /* drain_hydraulic_conductivity */
 		case 27:                       /* drain_k */
 			if (copy_token(token, &next_char, &l) == EMPTY ||
 				units_conversion(token,
@@ -5063,6 +5064,19 @@ int read_units (void)
 					units.map_vertical.defined = FALSE;
 			} else {
 				units.map_vertical.define(token);
+			}
+			break;
+		case 33:                       /* river_width */
+			if (copy_token(token, &next_char, &l) == EMPTY ||
+				units_conversion(token,
+				units.river_width.si, 
+				&units.river_width.input_to_si, TRUE) == ERROR) {
+					input_error++;
+					sprintf(error_string, "Expected units for river width (L).");
+					error_msg(error_string, CONTINUE);
+					units.drain_width.defined = FALSE;
+			} else {
+				units.river_width.define(token);
 			}
 			break;
 		}

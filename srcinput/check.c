@@ -163,6 +163,13 @@ int check_hst_units(void)
 	} else {
 		units.river_bed_thickness.input_to_user = units.river_bed_thickness.input_to_si;
 	}
+	if (count_rivers > 0 && units.river_width.defined == FALSE) {
+		input_error++;
+		sprintf(error_string, "River width units not defined in UNITS data block.");
+		error_msg(error_string, CONTINUE);
+	} else {
+		units.river_width.input_to_user = units.river_width.input_to_si;
+	}
 	if (drains.size() > 0 && units.drain_bed_k.defined == FALSE) {
 		input_error++;
 		sprintf(error_string, "Drain bed hydraulic conductivity units not defined in UNITS data block.");
@@ -179,11 +186,12 @@ int check_hst_units(void)
 	}
 	if (drains.size() > 0 && units.drain_width.defined == FALSE) {
 		input_error++;
-		sprintf(error_string, "Drain bed width units not defined in UNITS data block.");
+		sprintf(error_string, "Drain width units not defined in UNITS data block.");
 		error_msg(error_string, CONTINUE);
 	} else {
-		units.drain_width.input_to_user = units.drain_bed_thickness.input_to_si;
+		units.drain_width.input_to_user = units.drain_width.input_to_si;
 	}
+
 
 /*
  *   These units do not involve time

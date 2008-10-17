@@ -33,6 +33,7 @@ cunits::cunits(void)
 , drain_width("m")
 , map_horizontal("m")
 , map_vertical("m")
+, river_width("m")
 {
 }
 
@@ -60,6 +61,7 @@ struct cunits& cunits::operator=(const struct cunits& rhs)
 	assert(::strcmp(this->drain_width.si,          rhs.drain_width.si)         == 0);
 	assert(::strcmp(this->map_horizontal.si,       rhs.map_horizontal.si)      == 0);
 	assert(::strcmp(this->map_vertical.si,         rhs.map_vertical.si)        == 0);
+	assert(::strcmp(this->river_width.si,          rhs.river_width.si)         == 0);
 	if (this != &rhs) {
 		this->time                = rhs.time;
 		this->horizontal          = rhs.horizontal;
@@ -80,6 +82,7 @@ struct cunits& cunits::operator=(const struct cunits& rhs)
 		this->drain_width         = rhs.drain_width;
 		this->map_horizontal      = rhs.map_horizontal;
 		this->map_vertical        = rhs.map_vertical;
+		this->river_width         = rhs.river_width;
 	}
 	return *this;
 }
@@ -105,5 +108,5 @@ void cunits::undefine(void)
 	this->drain_width.undefine();
 	this->map_horizontal.undefine();
 	this->map_vertical.undefine();
-
+	this->river_width.undefine();
 }
