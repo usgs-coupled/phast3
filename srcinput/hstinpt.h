@@ -408,9 +408,9 @@ struct cunits {
 	struct cunit drain_bed_k;
 	struct cunit drain_bed_thickness;
 	struct cunit drain_width; 
-	struct cunit river_width; 
 	struct cunit map_horizontal;
 	struct cunit map_vertical;
+	struct cunit river_width; 
 
 // Constructors
 	cunits(void);

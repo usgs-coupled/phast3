@@ -4779,8 +4779,8 @@ int read_units (void)
 		"drain_thickness",         /* 29 */
 		"drain_width",             /* 30 */
 		"map_horizontal",          /* 31 */
-		"map_vertical"             /* 32 */
-		"river_width",             /* 33 */
+		"map_vertical"            /* 32 */
+		,"river_width"             /* 33 */
 	};
 	int count_opt_list = 34;
 	/*
