@@ -8,7 +8,7 @@ FUNCTION uppercase(string) RESULT(outstring)
   INTEGER, PARAMETER :: lower_to_upper = IACHAR("A") - IACHAR("a")
   INTEGER :: i
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: uppercase.f90,v 1.3 2008/10/03 23:07:56 klkipp Exp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: uppercase.f90,v 1.3 2008/10/03 23:07:56 klkipp Exp klkipp $'
   ! ----------------------------------------------------------------------------
   DO i=1,LEN(string)
      char = string(i:i)

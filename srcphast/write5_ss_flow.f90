@@ -222,10 +222,9 @@ SUBROUTINE write5_ss_flow
      WRITE(fuzf,2001)  '*** Output at End of Steady State Iteration No. ', itime,' ***'
      WRITE(fuzf,2002) 'Time '//dots,cnvtmi*time,'('//TRIM(unittm)//')'
      do izn=1,num_flo_zones
-        WRITE(fuzf,2310) izn, zone_title(izn)
-2310    FORMAT(/tr40,'*** Zonal Flow Summary, zone:',i4,' ***',  &
-             /tr10,a/tr25,  &
-             'Current Time Step',tr25,'Rates')
+        WRITE(fuzf,2310) '*** Zonal Flow Summary, zone:',izn,' ***',  &
+             zone_title(izn), 'Current Time Step','Rates'
+2310    FORMAT(/tr40,a,i4,a,/tr10,a/tr25,a,tr25,a)
         WRITE(fuzf,2311) 'Fluid inflow '//dots,cnvmfi*qfzoni(izn),  &
              '('//unitm//'/'//TRIM(unittm)//')',  &
              'Fluid outflow '//dots,cnvmfi*qfzonp(izn),  &

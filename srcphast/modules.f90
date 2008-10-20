@@ -41,7 +41,7 @@ MODULE mcb
   INTEGER, DIMENSION(:), ALLOCATABLE :: ibc,  &
        maifc, mdbc, metbc, mfbc, mfsbc, mhcbc, mlbc, mrbc, msbc,  &
        mdbc_bot, mdseg_bot,  &
-       mrbc_bot, mrseg_bot,  &
+       mrbc_bot, mrbc_top, mrseg_bot,  &
        ifacefbc, ifacelbc
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: fracnp,  &
        qfsbc, qhsbc, qffbc, qfbcv, qhfbc, qflbc, qhlbc, qfrbc, qhrbc,  &
@@ -96,6 +96,14 @@ MODULE mcb2
      INTEGER :: num_int_faces
      INTEGER, DIMENSION(:), POINTER :: mcell_no, face_indx
   END TYPE internal_bndry_zone
+  TYPE :: zone_volume
+     INTEGER :: num_xycol
+     INTEGER, DIMENSION(:), POINTER :: i_no, j_no, kmin_no, kmax_no
+  END TYPE zone_volume
+  TYPE :: zone_cbc_cells
+     INTEGER :: num_bc
+     INTEGER, DIMENSION(:), POINTER :: lcell_no, mxy_no, icz_no
+  END TYPE zone_cbc_cells
   TYPE :: zone_bc_cells
      INTEGER :: num_bc
      INTEGER, DIMENSION(:), POINTER :: lcell_no
@@ -110,7 +118,9 @@ MODULE mcb2
 !!$  END TYPE zone_contents
   !
   TYPE(internal_bndry_zone), DIMENSION(:), ALLOCATABLE :: zone_ib
-  TYPE(zone_bc_cells), DIMENSION(:,:), ALLOCATABLE :: lcell_bc
+  TYPE(zone_volume), DIMENSION(:), ALLOCATABLE :: zone_col
+  TYPE(zone_cbc_cells), DIMENSION(:), ALLOCATABLE :: lnk_cfbc2zon, lnk_crbc2zon
+  TYPE(zone_bc_cells), DIMENSION(:,:), ALLOCATABLE :: lnk_bc2zon
   TYPE(well_segments), DIMENSION(:), ALLOCATABLE :: seg_well
   CHARACTER(LEN=80), DIMENSION(:), ALLOCATABLE :: zone_title
   INTEGER :: num_flo_zones

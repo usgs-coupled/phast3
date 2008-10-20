@@ -42,7 +42,7 @@ SUBROUTINE init2_1
   INTEGER :: a_err, da_err, i, ic, imm, imod, ipmz, iis, iwel, j, jc, k, k1, k2, kf, &
        kinc, kl, kr, ks, kw, l, l1, lc, ls, m, mb, mc, m1, m2, &
        mk, mr, ms, msv, mt, nele, nks, nr, nsa
-  INTEGER :: ibf, isd, izn, lbc, msd, nbc, nbf, t_bctype, t_findx, t_lindx
+  INTEGER :: ibf, icz, isd, izn, lbc, msd, nbc, nbf, t_bctype, t_findx, t_lindx
   INTEGER, DIMENSION(8) :: iisd=(/7,8,5,6,3,4,1,2/)
   INTEGER, DIMENSION(6) :: num_indx
   INTEGER, DIMENSION(8) :: face_x, face_y, face_z, i_ele, j_ele, k_ele, mm
@@ -668,7 +668,7 @@ SUBROUTINE init2_1
   ! ... River leakage
   IF(nrbc > 0) THEN  
      nsa = MAX(ns,1)
-     ALLOCATE (mrbc_bot(nrbc),  &
+     ALLOCATE (mrbc_bot(nrbc), mrbc_top(nrbc),  &
           qfrbc(nrbc), ccfrb(nrbc), ccfvrb(nrbc), qsrbc(nrbc,nsa), ccsrb(nrbc,nsa),  &
           sfrb(nrbc), sfvrb(nrbc), ssrb(nrbc,nsa),  &
           river_seg_index(nrbc),  &
@@ -680,6 +680,7 @@ SUBROUTINE init2_1
      ! ... Load the river index structure; first and last segments per river cell
      lc = 1
      ms = mrbc(1)
+     mrbc_top(lc) = ms
      river_seg_index(lc)%m = ms
      river_seg_index(lc)%seg_first = 1
      DO ls=2,nrbc_seg
@@ -690,6 +691,7 @@ SUBROUTINE init2_1
         river_seg_index(lc+1)%seg_first = ls
         lc = lc + 1
         ms = mrbc(ls)
+        mrbc_top(lc) = ms
      END DO
      river_seg_index(lc)%seg_last = nrbc_seg
      ! ... Load the river cell and segment connections
@@ -946,50 +948,78 @@ SUBROUTINE init2_1
      ! ...      for flowrate totalization 
      DO izn=1,num_flo_zones
         IF(nsbc_cells > 0) THEN
-           DO ic=1,lcell_bc(izn,1)%num_bc
+           DO ic=1,lnk_bc2zon(izn,1)%num_bc
               DO lc=1,nsbc
-                 IF(msbc(lc) == lcell_bc(izn,1)%lcell_no(ic)) THEN
-                    lcell_bc(izn,1)%lcell_no(ic) = lc
+                 IF(msbc(lc) == lnk_bc2zon(izn,1)%lcell_no(ic)) THEN
+                    lnk_bc2zon(izn,1)%lcell_no(ic) = lc
                     EXIT
                  END IF
               END DO
            END DO
         END IF
         IF(nfbc_cells > 0) THEN
-           DO ic=1,lcell_bc(izn,2)%num_bc
+           DO ic=1,lnk_bc2zon(izn,2)%num_bc
               DO lc=1,nfbc
-                 IF(flux_seg_index(lc)%m == lcell_bc(izn,2)%lcell_no(ic)) THEN
-                    lcell_bc(izn,2)%lcell_no(ic) = lc
+                 IF(flux_seg_index(lc)%m == lnk_bc2zon(izn,2)%lcell_no(ic)) THEN
+                    lnk_bc2zon(izn,2)%lcell_no(ic) = lc
                     EXIT
                  END IF
               END DO
            END DO
+           IF(fresur) THEN
+              DO ic=1,lnk_cfbc2zon(izn)%num_bc
+                 DO lc=1,nfbc
+                    IF(flux_seg_index(lc)%m == lnk_cfbc2zon(izn)%lcell_no(ic)) THEN
+                       lnk_cfbc2zon(izn)%lcell_no(ic) = lc
+                       CALL mtoijk(flux_seg_index(lc)%m,i,j,k,nx,ny)
+                       lnk_cfbc2zon(izn)%mxy_no(ic) = (j-1)*nx+i
+                       DO icz=1,zone_col(izn)%num_xycol
+                          IF(zone_col(izn)%i_no(icz) == i .AND. zone_col(izn)%j_no(icz) == j) THEN
+                             lnk_cfbc2zon(izn)%icz_no(ic) = icz
+                             EXIT
+                          END IF
+                       END DO
+                       EXIT
+                    END IF
+                 END DO
+              END DO
+           END IF
         END IF
         IF(nlbc_cells > 0) THEN
-           DO ic=1,lcell_bc(izn,3)%num_bc
+           DO ic=1,lnk_bc2zon(izn,3)%num_bc
               DO lc=1,nlbc
-                 IF(leak_seg_index(lc)%m == lcell_bc(izn,3)%lcell_no(ic)) THEN
-                    lcell_bc(izn,3)%lcell_no(ic) = lc
+                 IF(leak_seg_index(lc)%m == lnk_bc2zon(izn,3)%lcell_no(ic)) THEN
+                    lnk_bc2zon(izn,3)%lcell_no(ic) = lc
                     EXIT
                  END IF
               END DO
            END DO
         END IF
-        IF(nrbc_cells > 0) THEN
-           DO ic=1,lcell_bc(izn,4)%num_bc
+        IF(nrbc_cells > 0 .AND. fresur) THEN
+           DO ic=1,lnk_crbc2zon(izn)%num_bc
               DO lc=1,nrbc
-                 IF(river_seg_index(lc)%m == lcell_bc(izn,4)%lcell_no(ic)) THEN
-                    lcell_bc(izn,4)%lcell_no(ic) = lc
+                 IF(mrbc_top(lc) == lnk_crbc2zon(izn)%lcell_no(ic)) THEN
+                    lnk_crbc2zon(izn)%lcell_no(ic) = lc
+                    CALL mtoijk(mrbc_top(lc),i,j,k,nx,ny)
+                    lnk_crbc2zon(izn)%mxy_no(ic) = (j-1)*nx+i
+                    DO icz=1,zone_col(izn)%num_xycol
+                       IF(zone_col(izn)%i_no(icz) == i .AND. zone_col(izn)%j_no(icz) == j) THEN
+                          lnk_crbc2zon(izn)%icz_no(ic) = icz
+                          EXIT
+                          print *,"Fail to link river to zone"
+                          stop
+                       END IF
+                    END DO
                     EXIT
                  END IF
               END DO
            END DO
         END IF
         IF(ndbc_cells > 0) THEN
-           DO ic=1,lcell_bc(izn,5)%num_bc
+           DO ic=1,lnk_bc2zon(izn,4)%num_bc
               DO lc=1,ndbc
-                 IF(drain_seg_index(lc)%m == lcell_bc(izn,5)%lcell_no(ic)) THEN
-                    lcell_bc(izn,5)%lcell_no(ic) = lc
+                 IF(drain_seg_index(lc)%m == lnk_bc2zon(izn,4)%lcell_no(ic)) THEN
+                    lnk_bc2zon(izn,4)%lcell_no(ic) = lc
                     EXIT
                  END IF
               END DO

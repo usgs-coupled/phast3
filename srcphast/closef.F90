@@ -224,7 +224,7 @@ SUBROUTINE closef(mpi_myself)
      IF(num_flo_zones > 0) THEN
         ! ...      Deallocate zonal flow rate arrays
         DEALLOCATE (qfzoni, qfzonp, qszoni, qszonp,  &
-             zone_ib, lcell_bc,  &
+             zone_ib, lnk_bc2zon, zone_title,  &
              qfzoni_sbc, qfzonp_sbc,  &
              qszoni_sbc, qszonp_sbc,  &
              qfzoni_fbc, qfzonp_fbc,  &
@@ -242,6 +242,14 @@ SUBROUTINE closef(mpi_myself)
            PRINT *, "array deallocation failed: closef, number 2.0"
            STOP
         ENDIF
+        IF(fresur) THEN
+           DEALLOCATE (zone_col, lnk_cfbc2zon, lnk_crbc2zon,  &
+                stat = da_err)
+           IF (da_err /= 0) THEN
+              PRINT *, "array deallocation failed: closef, number 2.05"
+              STOP
+           ENDIF
+        END IF
      END IF
   ENDIF
   ! ... Deallocate dependent variable arrays for chem slaves
@@ -253,7 +261,7 @@ SUBROUTINE closef(mpi_myself)
      PRINT *, "Array deallocation failed: closef 2.1"  
      STOP
   ENDIF
-  ! ...      Deallocate the zone arrays
+  ! ...      Deallocate the zoned property arrays
   DEALLOCATE (abpm, alphl, alphth, alphtv, poros, &
        kthx, kthy, kthz,  &
        kxx,kyy,kzz,rcppm, &

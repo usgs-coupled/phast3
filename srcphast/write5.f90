@@ -393,79 +393,79 @@ SUBROUTINE write5
      WRITE(fuzf,2001)  '*** Output at End of Time Step No. ', itime,' ***'
      WRITE(fuzf,2002) 'Time '//dots,cnvtmi*time,'('//TRIM(unittm)//')'
      do izn=1,num_flo_zones
-     WRITE(fuzf,2310) izn, zone_title(izn)
-2310 FORMAT(/tr40,'*** Zonal Flow Summary, zone:',i4,' ***',  &
-          /tr10,a/tr25,  &
-          'Current Time Step',tr25,'Rates')
-     WRITE(fuzf,2311) 'Fluid inflow '//dots,cnvmfi*qfzoni(izn),  &
-          '('//unitm//'/'//TRIM(unittm)//')',  &
-          'Fluid outflow '//dots,cnvmfi*qfzonp(izn),  &
-          '('//unitm//'/'//TRIM(unittm)//')'
-2311 FORMAT(/2(tr1,a60,1PE14.6,tr2,a/))
-     IF (solute) THEN
-        DO  is=1,ns
+        WRITE(fuzf,2310) '*** Zonal Flow Summary, zone:',izn,' ***',  &
+             zone_title(izn), 'Current Time Step','Rates'
+2310    FORMAT(/tr40,a,i4,a,/tr10,a/tr25,a,tr25,a)
+        WRITE(fuzf,2311) 'Fluid inflow '//dots,cnvmfi*qfzoni(izn),  &
+             '('//unitm//'/'//TRIM(unittm)//')',  &
+             'Fluid outflow '//dots,cnvmfi*qfzonp(izn),  &
+             '('//unitm//'/'//TRIM(unittm)//')'
+2311    FORMAT(/2(tr1,a60,1PE14.6,tr2,a/))
+        IF (solute) THEN
+           DO  is=1,ns-1                             ! ... No printout of charge flows
+              WRITE(fuzf,2036) 'Component: ', comp_name(is)
+              WRITE(fuzf,2312) 'Solute inflow '//dots,cnvmfi*qszoni(is,izn),  &
+                   '('//unitm//'/'//TRIM(unittm)//')',  &
+                   'Solute outflow '//dots,cnvmfi*qszonp(is,izn),  &
+                   '('//unitm//'/'//TRIM(unittm)//')'
+2312          FORMAT(/2(tr1,a60,1PE14.6,tr2,A/))
+           END DO
+        ENDIF
+        WRITE(fuzf,2017) 'Current Time Step by Boundary Condition Type','Rates'
+        WRITE(fuzf,2323) 'Specified head b.c. fluid inflow '//  &
+             dots,cnvmfi*qfzoni_sbc(izn),'('//unitm//'/'//TRIM(unittm)//')',  &
+             'Specified head b.c. fluid outflow '//dots,cnvmfi*qfzonp_sbc(izn),  &
+             '('//unitm//'/'//TRIM(unittm)//')',  &
+             'Flux b.c. fluid inflow '//dots,cnvmfi*qfzoni_fbc(izn),  &
+             '('//unitm//'/'//TRIM(unittm)//')',  &
+             'Flux b.c. fluid outflow '//dots,cnvmfi*qfzonp_fbc(izn),  &
+             '('//unitm//'/'//TRIM(unittm)//')',  &
+             'Leakage b.c. fluid inflow '//dots,cnvmfi*qfzoni_lbc(izn),  &
+             '('//unitm//'/'//TRIM(unittm)//')',  &
+             'Leakage b.c. fluid outflow '//dots,cnvmfi*qfzonp_lbc(izn),  &
+             '('//unitm//'/'//TRIM(unittm)//')',  &
+             'River leakage b.c. fluid inflow '//dots,cnvmfi*qfzoni_rbc(izn),  &
+             '('//unitm//'/'//TRIM(unittm)//')',  &
+             'River leakage b.c. fluid outflow '//dots,cnvmfi*qfzonp_rbc(izn),  &
+             '('//unitm//'/'//TRIM(unittm)//')',  &
+             'Drain leakage b.c. fluid inflow '//dots,cnvmfi*qfzoni_dbc(izn),  &
+             '('//unitm//'/'//TRIM(unittm)//')',  &
+             'Drain leakage b.c. fluid outflow '//dots,cnvmfi*qfzonp_dbc(izn),  &
+             '('//unitm//'/'//TRIM(unittm)//')',  &
+             'Well fluid inflow '//dots,cnvmfi*qfzoni_wel(izn),  &
+             '('//unitm//'/'//TRIM(unittm)//')',  &
+             'Well fluid outflow '//dots,cnvmfi*qfzonp_wel(izn),  &
+             '('//unitm//'/'//TRIM(unittm)//')'
+2323    FORMAT(/12(tr1,a60,1PE14.6,tr2,A/))
+        DO  is=1,ns-1
            WRITE(fuzf,2036) 'Component: ', comp_name(is)
-           WRITE(fuzf,2312) 'Solute inflow '//dots,cnvmfi*qszoni(is,izn),  &
+           WRITE(fuzf,2323) 'Specified head b.c. solute inflow '//  &
+                dots,cnvmfi*qszoni_sbc(is,izn),  &
                 '('//unitm//'/'//TRIM(unittm)//')',  &
-                'Solute outflow '//dots,cnvmfi*qszonp(is,izn),  &
+                'Specified head b.c. solute outflow '//dots,cnvmfi*qszonp_sbc(is,izn),  &
+                '('//unitm//'/'//TRIM(unittm)//')',  &
+                'Flux b.c. solute inflow '//dots,cnvmfi*qszoni_fbc(is,izn),  &
+                '('//unitm//'/'//TRIM(unittm)//')',  &
+                'Flux b.c. solute outflow '//dots,cnvmfi*qszonp_fbc(is,izn),  &
+                '('//unitm//'/'//TRIM(unittm)//')',  &
+                'Leakage b.c. solute inflow '//dots,cnvmfi*qszoni_lbc(is,izn),  &
+                '('//unitm//'/'//TRIM(unittm)//')',  &
+                'Leakage b.c. solute outflow '//dots,cnvmfi*qszonp_lbc(is,izn),  &
+                '('//unitm//'/'//TRIM(unittm)//')',  &
+                'River leakage b.c. solute inflow '//dots,cnvmfi*qszoni_rbc(is,izn),  &
+                '('//unitm//'/'//TRIM(unittm)//')',  &
+                'River leakage b.c. solute outflow '//dots,cnvmfi*qszonp_rbc(is,izn),  &
+                '('//unitm//'/'//TRIM(unittm)//')',  &
+                'Drain leakage b.c. solute inflow '//dots,cnvmfi*qszoni_dbc(is,izn),  &
+                '('//unitm//'/'//TRIM(unittm)//')',  &
+                'Drain leakage b.c. solute outflow '//dots,cnvmfi*qszonp_dbc(is,izn),  &
+                '('//unitm//'/'//TRIM(unittm)//')',  &
+                'Well solute inflow '//dots,cnvmfi*qszoni_wel(is,izn),  &
+                '('//unitm//'/'//TRIM(unittm)//')',  &
+                'Well solute outflow '//dots,cnvmfi*qszonp_wel(is,izn),  &
                 '('//unitm//'/'//TRIM(unittm)//')'
-2312       FORMAT(/2(tr1,a60,1PE14.6,tr2,A/))
         END DO
-     ENDIF
-     WRITE(fuzf,2017) 'Current Time Step by Boundary Condition Type','Rates'
-     WRITE(fuzf,2323) 'Specified head b.c. fluid inflow '//  &
-          dots,cnvmfi*qfzoni_sbc(izn),'('//unitm//'/'//TRIM(unittm)//')',  &
-          'Specified head b.c. fluid outflow '//dots,cnvmfi*qfzonp_sbc(izn),  &
-          '('//unitm//'/'//TRIM(unittm)//')',  &
-          'Flux b.c. fluid inflow '//dots,cnvmfi*qfzoni_fbc(izn),  &
-          '('//unitm//'/'//TRIM(unittm)//')',  &
-          'Flux b.c. fluid outflow '//dots,cnvmfi*qfzonp_fbc(izn),  &
-          '('//unitm//'/'//TRIM(unittm)//')',  &
-          'Leakage b.c. fluid inflow '//dots,cnvmfi*qfzoni_lbc(izn),  &
-          '('//unitm//'/'//TRIM(unittm)//')',  &
-          'Leakage b.c. fluid outflow '//dots,cnvmfi*qfzonp_lbc(izn),  &
-          '('//unitm//'/'//TRIM(unittm)//')',  &
-          'River leakage b.c. fluid inflow '//dots,cnvmfi*qfzoni_rbc(izn),  &
-          '('//unitm//'/'//TRIM(unittm)//')',  &
-          'River leakage b.c. fluid outflow '//dots,cnvmfi*qfzonp_rbc(izn),  &
-          '('//unitm//'/'//TRIM(unittm)//')',  &
-          'Drain leakage b.c. fluid inflow '//dots,cnvmfi*qfzoni_dbc(izn),  &
-          '('//unitm//'/'//TRIM(unittm)//')',  &
-          'Drain leakage b.c. fluid outflow '//dots,cnvmfi*qfzonp_dbc(izn),  &
-          '('//unitm//'/'//TRIM(unittm)//')',  &
-          'Well fluid inflow '//dots,cnvmfi*qfzoni_wel(izn),  &
-          '('//unitm//'/'//TRIM(unittm)//')',  &
-          'Well fluid outflow '//dots,cnvmfi*qfzonp_wel(izn),  &
-          '('//unitm//'/'//TRIM(unittm)//')'
-2323 FORMAT(/12(tr1,a60,1PE14.6,tr2,A/))
-     DO  is=1,ns
-        WRITE(fuzf,2036) 'Component: ', comp_name(is)
-        WRITE(fuzf,2323) 'Specified head b.c. solute inflow '//  &
-          dots,cnvmfi*qszoni_sbc(is,izn),'('//unitm//'/'//TRIM(unittm)//')',  &
-          'Specified head b.c. solute outflow '//dots,cnvmfi*qszonp_sbc(is,izn),  &
-          '('//unitm//'/'//TRIM(unittm)//')',  &
-          'Flux b.c. solute inflow '//dots,cnvmfi*qszoni_fbc(is,izn),  &
-          '('//unitm//'/'//TRIM(unittm)//')',  &
-          'Flux b.c. solute outflow '//dots,cnvmfi*qszonp_fbc(is,izn),  &
-          '('//unitm//'/'//TRIM(unittm)//')',  &
-          'Leakage b.c. solute inflow '//dots,cnvmfi*qszoni_lbc(is,izn),  &
-          '('//unitm//'/'//TRIM(unittm)//')',  &
-          'Leakage b.c. solute outflow '//dots,cnvmfi*qszonp_lbc(is,izn),  &
-          '('//unitm//'/'//TRIM(unittm)//')',  &
-          'River leakage b.c. solute inflow '//dots,cnvmfi*qszoni_rbc(is,izn),  &
-          '('//unitm//'/'//TRIM(unittm)//')',  &
-          'River leakage b.c. solute outflow '//dots,cnvmfi*qszonp_rbc(is,izn),  &
-          '('//unitm//'/'//TRIM(unittm)//')',  &
-          'Drain leakage b.c. solute inflow '//dots,cnvmfi*qszoni_dbc(is,izn),  &
-          '('//unitm//'/'//TRIM(unittm)//')',  &
-          'Drain leakage b.c. solute outflow '//dots,cnvmfi*qszonp_dbc(is,izn),  &
-          '('//unitm//'/'//TRIM(unittm)//')',  &
-          'Well solute inflow '//dots,cnvmfi*qszoni_wel(is,izn),  &
-          '('//unitm//'/'//TRIM(unittm)//')',  &
-          'Well solute outflow '//dots,cnvmfi*qszonp_wel(is,izn),  &
-          '('//unitm//'/'//TRIM(unittm)//')'
-     END DO
-  enddo
+     enddo
      ntprzf = ntprzf+1
   END IF
 

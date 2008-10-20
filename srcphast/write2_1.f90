@@ -729,31 +729,48 @@ SUBROUTINE write2_1
            lprnt1(m) = 1
            aprnt1(m) = izn
         END DO
-        DO ic=1,lcell_bc(izn,1)%num_bc
-           m = msbc(lcell_bc(izn,1)%lcell_no(ic))
-           lprnt1(m) = 1
-           aprnt1(m) = izn
-        END DO
-        DO ic=1,lcell_bc(izn,2)%num_bc
-           m = mfbc(lcell_bc(izn,2)%lcell_no(ic))
-           lprnt1(m) = 1
-           aprnt1(m) = izn
-        END DO
-        DO ic=1,lcell_bc(izn,3)%num_bc
-           m = mlbc(lcell_bc(izn,3)%lcell_no(ic))
-           lprnt1(m) = 1
-           aprnt1(m) = izn
-        END DO
-        DO ic=1,lcell_bc(izn,4)%num_bc
-           m = mrbc(lcell_bc(izn,4)%lcell_no(ic))
-           lprnt1(m) = 1
-           aprnt1(m) = izn
-        END DO
-        DO ic=1,lcell_bc(izn,5)%num_bc
-           m = mdbc(lcell_bc(izn,5)%lcell_no(ic))
-           lprnt1(m) = 1
-           aprnt1(m) = izn
-        END DO
+        IF(nsbc_cells > 0) THEN
+           DO ic=1,lnk_bc2zon(izn,1)%num_bc
+              m = msbc(lnk_bc2zon(izn,1)%lcell_no(ic))
+              lprnt1(m) = 1
+              aprnt1(m) = izn
+           END DO
+        END IF
+        IF(nfbc_cells > 0) THEN
+           DO ic=1,lnk_bc2zon(izn,2)%num_bc
+              m = mfbc(lnk_bc2zon(izn,2)%lcell_no(ic))
+              lprnt1(m) = 1
+              aprnt1(m) = izn
+           END DO
+           IF(fresur) THEN
+              DO ic=1,lnk_cfbc2zon(izn)%num_bc
+                 m = mfbc(lnk_cfbc2zon(izn)%lcell_no(ic))
+                 lprnt1(m) = 1
+                 aprnt1(m) = izn
+              END DO
+           end IF
+        END IF
+        IF(nlbc_cells > 0) THEN
+           DO ic=1,lnk_bc2zon(izn,3)%num_bc
+              m = mlbc(lnk_bc2zon(izn,3)%lcell_no(ic))
+              lprnt1(m) = 1
+              aprnt1(m) = izn
+           END DO
+        END IF
+        IF(nrbc_cells > 0 .and. fresur) THEN
+           DO ic=1,lnk_crbc2zon(izn)%num_bc
+              m = mrbc(lnk_crbc2zon(izn)%lcell_no(ic))
+              lprnt1(m) = 1
+              aprnt1(m) = izn
+           END DO
+        END IF
+        IF(ndbc_cells > 0) THEN
+           DO ic=1,lnk_bc2zon(izn,4)%num_bc
+              m = mdbc(lnk_bc2zon(izn,4)%lcell_no(ic))
+              lprnt1(m) = 1
+              aprnt1(m) = izn
+           END DO
+        END IF
         IF(nwel > 0) THEN
            DO ic=1,seg_well(izn)%num_wellseg
               iwel = seg_well(izn)%iwel_no(ic)
