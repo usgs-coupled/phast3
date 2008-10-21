@@ -46,8 +46,8 @@ UNITS
 	-well_flow_rate                   m^3/s
 	-river_bed_hydraulic_conductivity m/s
 	-river_bed_thickness              m
-	-drain_bed_hydraulic_conductivity m/s
-	-drain_bed_thickness              m
+	-drain_hydraulic_conductivity     m/s
+	-drain_thickness                  m
 	-drain_width                      m
 	-map_horizontal                   m
 	-map_vertical                     m
