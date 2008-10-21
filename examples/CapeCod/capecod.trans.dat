@@ -88,9 +88,11 @@ GRID
 	-snap Z 0.001
 	-chemistry_dimensions XYZ
 	-print_orientation XY
-	-grid_origin   285000  830000 0
+	#-grid_origin   285000  830000 0
 	#-grid_angle    180
-
+	
+	-grid_origin   275000  810000 0
+	-grid_angle    0
 
 HEAD_IC
 	-zone 275000 810000 -500 285000 830000 100 map
