@@ -1636,8 +1636,10 @@ int write_output_transient(void)
 	if (save_final_heads == TRUE) output_msg(OUTPUT_HST, "     t \n");
 	if (save_final_heads == FALSE) output_msg(OUTPUT_HST, "     f \n");
 	output_msg(OUTPUT_HST,"C.3.8.2.2 .. pri_zon_flo\n");
-	output_msg(OUTPUT_HST,"     %f\n",
-		print_value(&current_print_zone_budget));
+	if (Zone_budget::zone_budget_map.size() > 0)
+	{
+		output_msg(OUTPUT_HST,"     %f\n", print_value(&current_print_zone_budget));
+	}
 /*
  *   new line to control phreeqc prints
  */
