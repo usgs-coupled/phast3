@@ -6,7 +6,7 @@ SUBROUTINE write5_ss_flow
   USE mcb
   USE mcb2
   USE mcc
-  use mcch
+  USE mcch
   USE mcg
   USE mcn
   USE mcp
@@ -26,7 +26,7 @@ SUBROUTINE write5_ss_flow
   CHARACTER(LEN=8) :: chu4, chu5, chu6
   CHARACTER(LEN=9) :: cibc
   CHARACTER(LEN=1), DIMENSION(3) :: lbldir = (/'X','Y','Z'/)
-  CHARACTER(LEN=12), DIMENSION(:), allocatable :: chu10a, chu11a
+  CHARACTER(LEN=12), DIMENSION(:), ALLOCATABLE :: chu10a, chu11a
   REAL(KIND=kdp) :: hwcell, pwcell, tdehir, tdfir, tdsir, utime
   INTEGER :: a_err, da_err, i, ic, ifmt, indx, ip, iw1p, iw2p, iwel, iwfss, iwpp, izn,  &
        j, jprptc,  &
@@ -49,7 +49,7 @@ SUBROUTINE write5_ss_flow
   prc=.FALSE.
   prp=.FALSE.
   prgfb=.FALSE.
-  przf = .false.
+  przf = .FALSE.
   prbcf=.FALSE.
   prwel=.FALSE.
   prslm=.FALSE.
@@ -105,11 +105,11 @@ SUBROUTINE write5_ss_flow
 !!$5002 FORMAT(a60,1PG12.3,a)
 !!$     call logprt_c(logline1)
 !!$     call logprt_c(logline2)
-     IF(ntsfal > 0) then 
+     IF(ntsfal > 0) THEN 
         WRITE(logline1,5007) 'Number of repeats of time step to achieve ','truncation error'//dots,ntsfal
 5007    FORMAT(a42,a23,i4)
-        call logprt_c(logline1)
-     endif
+        CALL logprt_c(logline1)
+     ENDIF
      !       Already printed in sumcal_ss_flow
 !!$     WRITE(logline1,5027) 'Maximum change in potentiometric head '//dots,  &
 !!$          cnvpi*dhmax,' ('//TRIM(unitl)//')',' at location (',  &
@@ -129,7 +129,7 @@ SUBROUTINE write5_ss_flow
         END IF
      END DO
      ! ... Grid cell values pressure, head
-     IF(prp) then
+     IF(prp) THEN
         WRITE(fup,2001)  '*** Output at End of Steady State Iteration No. ', itime,' ***'
         WRITE(fup,2002) 'Time '//dots,cnvtmi*time,'('//TRIM(unittm)//')'
         WRITE(fup,aform) 'Maximum change in potentiometric head '//dots,  &
@@ -164,12 +164,12 @@ SUBROUTINE write5_ss_flow
            CALL mtoijk(m,i,j,k,nx,ny)
            IF(frac(m) < 0.0001_kdp) THEN
               indx = 0
-              WRITE(fupmp2,8003) cnvli*x(i),achar(9),cnvli*y(j),achar(9),cnvli*z(k),  &
-                   achar(9),cnvtmi*time,achar(9),indx,achar(9)
+              WRITE(fupmp2,8003) cnvli*x(i),ACHAR(9),cnvli*y(j),ACHAR(9),cnvli*z(k),  &
+                   ACHAR(9),cnvtmi*time,ACHAR(9),indx,ACHAR(9)
            ELSE
               indx = 1
-              WRITE(fupmp2,8003) cnvli*x(i),achar(9),cnvli*y(j),achar(9),cnvli*z(k),  &
-                   achar(9),cnvtmi*time,achar(9),indx,achar(9),cnvli*hdprnt(m),achar(9)
+              WRITE(fupmp2,8003) cnvli*x(i),ACHAR(9),cnvli*y(j),ACHAR(9),cnvli*z(k),  &
+                   ACHAR(9),cnvtmi*time,ACHAR(9),indx,ACHAR(9),cnvli*hdprnt(m),ACHAR(9)
 8003          FORMAT(4(1pg15.6,a),i5,a,1pg15.6,a)
            ENDIF
         END IF
@@ -205,23 +205,29 @@ SUBROUTINE write5_ss_flow
           '('//unitm//'/'//TRIM(unittm)//')',cnvmi*sfres,'('//unitm//')',  &
           'Fractional imbalance '//dots,sfresf
 2011 FORMAT(/4(tr1,a60,1PE14.6,tr2,a,tr3,e14.6,tr2,a/),tr1,a60,tr28,0PF8.4)
-     WRITE(fubal,2017) 'Current Time Step by Boundary Condition Type','Amounts'
-2017 FORMAT(/tr15,a/tr65,a)
-     WRITE(fubal,2023) 'Step total specified p cell fluid net inflow '//  &
-          dots,cnvmi*stfsbc,'(',unitm,')',  &
-          'Step total flux b.c. fluid net inflow '//dots,cnvmi*stffbc,'(',unitm,')',  &
-          'Step total leakage b.c. fluid net inflow '//dots,cnvmi*stflbc,'(',unitm,')',  &
-          'Step total river leakage b.c. fluid net inflow '//dots,cnvmi*stfrbc,'(',unitm,')',  &
-          'Step total drain leakage b.c. fluid net inflow '//dots,cnvmi*stfdbc,'(',unitm,')',  &
-          'Step total well fluid net inflow '//dots,cnvmi*stfwel, '(',unitm,')'
-2023 FORMAT(/6(tr1,a60,1PE14.6,tr2,3A/))
+     WRITE(fubal,2317) 'Current Time Step by Boundary Condition Type',  &
+          'Rates','Amounts'
+2317 FORMAT(/tr15,a/tr65,a,tr21,a)
+     WRITE(fubal,2423) 'Step total specified p cell fluid net inflow '//dots,  &
+          cnvmfi*stfsbc/deltim,'('//unitm//'/'//TRIM(unittm)//')',cnvmi*stfsbc,'('//unitm//')',  &
+          'Step total flux b.c. fluid net inflow '//dots,  &
+          cnvmfi*stffbc/deltim,'('//unitm//'/'//TRIM(unittm)//')',cnvmi*stffbc,'('//unitm//')',  &
+          'Step total leakage b.c. fluid net inflow '//dots,  &
+          cnvmfi*stflbc/deltim,'('//unitm//'/'//TRIM(unittm)//')',cnvmi*stflbc,'('//unitm//')',  &
+          'Step total river leakage b.c. fluid net inflow '//dots,  &
+          cnvmfi*stfrbc/deltim,'('//unitm//'/'//TRIM(unittm)//')',cnvmi*stfrbc,'('//unitm//')',  &
+          'Step total drain leakage b.c. fluid net inflow '//dots,  &
+          cnvmfi*stfdbc/deltim,'('//unitm//'/'//TRIM(unittm)//')',cnvmi*stfdbc,'('//unitm//')',  &
+          'Step total well fluid net inflow '//dots,  &
+          cnvmfi*stfwel/deltim,'('//unitm//'/'//TRIM(unittm)//')',cnvmi*stfwel,'('//unitm//')'
+2423 FORMAT(/6(tr1,a60,1PE14.6,tr2,A,tr3,1PE14.6,tr2,A/))
      ntprgfb = ntprgfb+1
   END IF
   IF(przf) THEN
      ! ... Zonal flow rates
      WRITE(fuzf,2001)  '*** Output at End of Steady State Iteration No. ', itime,' ***'
      WRITE(fuzf,2002) 'Time '//dots,cnvtmi*time,'('//TRIM(unittm)//')'
-     do izn=1,num_flo_zones
+     DO izn=1,num_flo_zones
         WRITE(fuzf,2310) '*** Zonal Flow Summary, zone:',izn,' ***',  &
              zone_title(izn), 'Current Time Step','Rates'
 2310    FORMAT(/tr40,a,i4,a,/tr10,a/tr25,a,tr25,a)
@@ -230,7 +236,13 @@ SUBROUTINE write5_ss_flow
              'Fluid outflow '//dots,cnvmfi*qfzonp(izn),  &
              '('//unitm//'/'//TRIM(unittm)//')'
 2311    FORMAT(/2(tr1,a60,1PE14.6,tr2,a/))
+        WRITE(fuzf,2017) 'Current Iteration Step Internal Faces','Rates'
+        WRITE(fuzf,2323) 'Internal face fluid inflow '//  &
+             dots,cnvmfi*qfzoni_int(izn),'('//unitm//'/'//TRIM(unittm)//')',  &
+             'Internal face fluid outflow '//dots,cnvmfi*qfzonp_int(izn),  &
+             '('//unitm//'/'//TRIM(unittm)//')'
         WRITE(fuzf,2017) 'Current Iteration Step by Boundary Condition Type','Rates'
+2017 FORMAT(/tr15,a/tr65,a)
         WRITE(fuzf,2323) 'Specified head b.c. fluid inflow '//  &
              dots,cnvmfi*qfzoni_sbc(izn),'('//unitm//'/'//TRIM(unittm)//')',  &
              'Specified head b.c. fluid outflow '//dots,cnvmfi*qfzonp_sbc(izn),  &
@@ -256,17 +268,30 @@ SUBROUTINE write5_ss_flow
              'Well fluid outflow '//dots,cnvmfi*qfzonp_wel(izn),  &
              '('//unitm//'/'//TRIM(unittm)//')'
 2323    FORMAT(/12(tr1,a60,1PE14.6,tr2,A/))
-     enddo
+     ENDDO
+     ! ... Zonal flow rates to tab separated file, fuzf2
+     DO izn=1,num_flo_zones
+        WRITE(fuzf2,2502) cnvtmi*time,achar(9),izn,achar(9),'Water',achar(9),  &
+             cnvmfi*qfzoni(izn),achar(9),cnvmfi*qfzonp(izn),achar(9),  &
+             cnvmfi*qfzoni_int(izn),achar(9),cnvmfi*qfzonp_int(izn),achar(9),  &
+             cnvmfi*qfzoni_sbc(izn),achar(9),cnvmfi*qfzonp_sbc(izn),achar(9),  &
+             cnvmfi*qfzoni_fbc(izn),achar(9),cnvmfi*qfzonp_fbc(izn),achar(9),  &
+             cnvmfi*qfzoni_lbc(izn),achar(9),cnvmfi*qfzonp_lbc(izn),achar(9),  &
+             cnvmfi*qfzoni_rbc(izn),achar(9),cnvmfi*qfzonp_rbc(izn),achar(9),  &
+             cnvmfi*qfzoni_dbc(izn),achar(9),cnvmfi*qfzonp_dbc(izn),achar(9),  &
+             cnvmfi*qfzoni_wel(izn),achar(9),cnvmfi*qfzonp_wel(izn),achar(9)
+2502    FORMAT(tr1,1pg13.6,a,i3,a,a,a,16(1pg14.7,a))
+     ENDDO
      ntprzf = ntprzf+1
   END IF
   IF(prwel) THEN
-     nsa = max(ns,1)
-     allocate (chu10a(nsa), chu11a(nsa), &
+     nsa = MAX(ns,1)
+     ALLOCATE (chu10a(nsa), chu11a(nsa), &
           stat = a_err)
-     if (a_err /= 0) then  
-        print *, "Array allocation failed: write5_ss 2"  
-        stop  
-     endif
+     IF (a_err /= 0) THEN  
+        PRINT *, "Array allocation failed: write5_ss 2"  
+        STOP  
+     ENDIF
      ! ... Well summary tables
      WRITE(fuwel,2001)  '*** Output at End of Steady State Iteration No. ', itime,' ***'
      WRITE(fuwel,2002) 'Time '//dots,cnvtmi*time,'('//TRIM(unittm)//')'
@@ -383,14 +408,16 @@ SUBROUTINE write5_ss_flow
      IF(iw2p < nwel) GO TO 110
      WRITE(fuwel,2040)
 2040 FORMAT(/tr1,120('-')/)
-     deallocate (chu10a, chu11a, &
+     DEALLOCATE (chu10a, chu11a, &
           stat = da_err)
-     if (da_err.ne.0) then  
-        print *, "Array deallocation failed"  
-        stop  
-     endif
+     IF (da_err.NE.0) THEN  
+        PRINT *, "Array deallocation failed"  
+        STOP  
+     ENDIF
      ntprwel = ntprwel+1
   END IF
+!$$$ force bcf print
+  prbcf = .TRUE.
   IF(prbcf) THEN
      WRITE(fubcf,2001) '*** Output at End of Steady State Iteration No. ', itime,' ***'
 2001 FORMAT(/tr30,a,i5,a)

@@ -392,7 +392,7 @@ SUBROUTINE write5
      ! ... Zonal flow rates
      WRITE(fuzf,2001)  '*** Output at End of Time Step No. ', itime,' ***'
      WRITE(fuzf,2002) 'Time '//dots,cnvtmi*time,'('//TRIM(unittm)//')'
-     do izn=1,num_flo_zones
+     DO izn=1,num_flo_zones
         WRITE(fuzf,2310) '*** Zonal Flow Summary, zone:',izn,' ***',  &
              zone_title(izn), 'Current Time Step','Rates'
 2310    FORMAT(/tr40,a,i4,a,/tr10,a/tr25,a,tr25,a)
@@ -411,6 +411,19 @@ SUBROUTINE write5
 2312          FORMAT(/2(tr1,a60,1PE14.6,tr2,A/))
            END DO
         ENDIF
+        WRITE(fuzf,2017) 'Current Time Step Internal Faces','Rates'
+        WRITE(fuzf,2323) 'Internal face fluid inflow '//  &
+             dots,cnvmfi*qfzoni_int(izn),'('//unitm//'/'//TRIM(unittm)//')',  &
+             'Internal face fluid outflow '//dots,cnvmfi*qfzonp_int(izn),  &
+             '('//unitm//'/'//TRIM(unittm)//')'
+        DO  is=1,ns-1
+           WRITE(fuzf,2036) 'Component: ', comp_name(is)
+           WRITE(fuzf,2323) 'Internal face solute inflow '//  &
+                dots,cnvmfi*qszoni_int(is,izn),  &
+                '('//unitm//'/'//TRIM(unittm)//')',  &
+                'Internal face solute outflow '//dots,cnvmfi*qszonp_int(is,izn),  &
+                '('//unitm//'/'//TRIM(unittm)//')'
+        END DO
         WRITE(fuzf,2017) 'Current Time Step by Boundary Condition Type','Rates'
         WRITE(fuzf,2323) 'Specified head b.c. fluid inflow '//  &
              dots,cnvmfi*qfzoni_sbc(izn),'('//unitm//'/'//TRIM(unittm)//')',  &
@@ -465,7 +478,33 @@ SUBROUTINE write5
                 'Well solute outflow '//dots,cnvmfi*qszonp_wel(is,izn),  &
                 '('//unitm//'/'//TRIM(unittm)//')'
         END DO
-     enddo
+     ENDDO
+     ! ... Zonal flow rates to tab separated file, fuzf2
+     DO izn=1,num_flo_zones
+        WRITE(fuzf2,2502) cnvtmi*time,achar(9),izn,achar(9),'Water',achar(9),  &
+             cnvmfi*qfzoni(izn),achar(9),cnvmfi*qfzonp(izn),achar(9),  &
+             cnvmfi*qfzoni_int(izn),achar(9),cnvmfi*qfzonp_int(izn),achar(9),  &
+             cnvmfi*qfzoni_sbc(izn),achar(9),cnvmfi*qfzonp_sbc(izn),achar(9),  &
+             cnvmfi*qfzoni_fbc(izn),achar(9),cnvmfi*qfzonp_fbc(izn),achar(9),  &
+             cnvmfi*qfzoni_lbc(izn),achar(9),cnvmfi*qfzonp_lbc(izn),achar(9),  &
+             cnvmfi*qfzoni_rbc(izn),achar(9),cnvmfi*qfzonp_rbc(izn),achar(9),  &
+             cnvmfi*qfzoni_dbc(izn),achar(9),cnvmfi*qfzonp_dbc(izn),achar(9),  &
+             cnvmfi*qfzoni_wel(izn),achar(9),cnvmfi*qfzonp_wel(izn),achar(9)
+2502    FORMAT(tr1,1pg13.6,a,i3,a,a,a,16(1pg14.7,a))
+        IF (solute) THEN
+           DO  is=1,ns-1                             ! ... No printout of charge flows
+              WRITE(fuzf2,2502) cnvtmi*time,achar(9),izn,achar(9),comp_name(is),achar(9),  &
+             cnvmfi*qszoni(is,izn),achar(9),cnvmfi*qszonp(is,izn),achar(9),  &
+             cnvmfi*qszoni_int(is,izn),achar(9),cnvmfi*qszonp_int(is,izn),achar(9),  &
+             cnvmfi*qszoni_sbc(is,izn),achar(9),cnvmfi*qszonp_sbc(is,izn),achar(9),  &
+             cnvmfi*qszoni_fbc(is,izn),achar(9),cnvmfi*qszonp_fbc(is,izn),achar(9),  &
+             cnvmfi*qszoni_lbc(is,izn),achar(9),cnvmfi*qszonp_lbc(is,izn),achar(9),  &
+             cnvmfi*qszoni_rbc(is,izn),achar(9),cnvmfi*qszonp_rbc(is,izn),achar(9),  &
+             cnvmfi*qszoni_dbc(is,izn),achar(9),cnvmfi*qszonp_dbc(is,izn),achar(9),  &
+             cnvmfi*qszoni_wel(is,izn),achar(9),cnvmfi*qszonp_wel(is,izn),achar(9)
+           END DO
+        END IF
+     ENDDO
      ntprzf = ntprzf+1
   END IF
 

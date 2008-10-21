@@ -22,7 +22,7 @@ SUBROUTINE zone_flow
        sxxs, syys, szzs
   REAL(KIND=kdp) :: dxm, dxp, dym, dyp, dzm, dzp, wtx, wty, wtz
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: zone_flow.f90,v 1.5 2008/10/20 17:03:38 klkipp Exp klkipp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: zone_flow.f90,v 1.6 2008/10/21 17:52:28 klkipp Exp klkipp $'
   !     ------------------------------------------------------------------
   ufdt1 = fdtmth
   ! ... Update conductance coefficients, mass flow rates, velocities
@@ -32,6 +32,10 @@ SUBROUTINE zone_flow
   qfzonp = 0._kdp
   qszoni = 0._kdp
   qszonp = 0._kdp
+  qfzoni_int = 0._kdp
+  qfzonp_int = 0._kdp
+  qszoni_int = 0._kdp
+  qszonp_int = 0._kdp
   qfzoni_sbc = 0._kdp
   qfzonp_sbc = 0._kdp
   qszoni_sbc = 0._kdp
@@ -56,7 +60,7 @@ SUBROUTINE zone_flow
   qfzonp_wel = 0._kdp
   qszoni_wel = 0._kdp
   qszonp_wel = 0._kdp
-
+  ! ... Sum flow rates over internal faces for each zone
   DO  izn=1,num_flo_zones
      DO  ifc=1,zone_ib(izn)%num_int_faces
         m = zone_ib(izn)%mcell_no(ifc)
@@ -110,24 +114,32 @@ SUBROUTINE zone_flow
               END IF
            END DO
            IF (sxx(m) > 0.) THEN
+              qfzonp_int(izn) = qfzonp_int(izn) + sxx(m)
               qfzonp(izn) = qfzonp(izn) + sxx(m)
            ELSEIF (sxx(m) < 0.) THEN
+              qfzoni_int(izn) = qfzoni_int(izn) - sxx(m)
               qfzoni(izn) = qfzoni(izn) - sxx(m)
            END IF
            DO  iis=1,ns-1
               IF (sxxs(iis) > 0.) THEN
+                 qszonp_int(iis,izn) = qszonp_int(iis,izn) + sxxs(iis)
                  qszonp(iis,izn) = qszonp(iis,izn) + sxxs(iis)
               ELSEIF (sxxs(iis) < 0.) THEN
+                 qszoni_int(iis,izn) = qszoni_int(iis,izn) - sxxs(iis)
                  qszoni(iis,izn) = qszoni(iis,izn) - sxxs(iis)
               END IF
               IF (ftxydp(iis) > 0.) THEN
+                 qszonp_int(iis,izn) = qszonp_int(iis,izn) + ftxydp(iis)
                  qszonp(iis,izn) = qszonp(iis,izn) + ftxydp(iis)
               ELSEIF (ftxydp(iis) < 0.) THEN
+                 qszoni_int(iis,izn) = qszoni_int(iis,izn) - ftxydp(iis)
                  qszoni(iis,izn) = qszoni(iis,izn) - ftxydp(iis)
               END IF
               IF (ftxzdp(iis) > 0.) THEN
+                 qszonp_int(iis,izn) = qszonp_int(iis,izn) + ftxzdp(iis)
                  qszonp(iis,izn) = qszonp(iis,izn) + ftxzdp(iis)
               ELSEIF (ftxzdp(iis) < 0.) THEN
+                 qszoni_int(iis,izn) = qszoni_int(iis,izn) - ftxzdp(iis)
                  qszoni(iis,izn) = qszoni(iis,izn) - ftxzdp(iis)
               END IF
            END DO
@@ -160,24 +172,32 @@ SUBROUTINE zone_flow
               END IF
            END DO
            IF (sxx(m-1) < 0.) THEN
+              qfzonp_int(izn) = qfzonp_int(izn) - sxx(m-1)
               qfzonp(izn) = qfzonp(izn) - sxx(m-1)
            ELSEIF (sxx(m-1) > 0.) THEN
+              qfzoni_int(izn) = qfzoni_int(izn) + sxx(m-1)
               qfzoni(izn) = qfzoni(izn) + sxx(m-1)
            END IF
            DO  iis=1,ns-1
               IF (sxxs(iis) < 0.) THEN
+                 qszonp_int(iis,izn) = qszonp_int(iis,izn) - sxxs(iis)
                  qszonp(iis,izn) = qszonp(iis,izn) - sxxs(iis)
               ELSEIF (sxxs(iis) > 0.) THEN
+                 qszoni_int(iis,izn) = qszoni_int(iis,izn) + sxxs(iis)
                  qszoni(iis,izn) = qszoni(iis,izn) + sxxs(iis)
               END IF
               IF (ftxydm(iis) < 0.) THEN
+                 qszonp_int(iis,izn) = qszonp_int(iis,izn) - ftxydm(iis)
                  qszonp(iis,izn) = qszonp(iis,izn) - ftxydm(iis)
               ELSEIF (ftxydm(iis) > 0.) THEN
+                 qszoni_int(iis,izn) = qszoni_int(iis,izn) + ftxydm(iis)
                  qszoni(iis,izn) = qszoni(iis,izn) + ftxydm(iis)
               END IF
               IF (ftxzdm(iis) < 0.) THEN
+                 qszonp_int(iis,izn) = qszonp_int(iis,izn) - ftxzdm(iis)
                  qszonp(iis,izn) = qszonp(iis,izn) - ftxzdm(iis)
               ELSEIF (ftxzdm(iis) > 0.) THEN
+                 qszoni_int(iis,izn) = qszoni_int(iis,izn) + ftxzdm(iis)
                  qszoni(iis,izn) = qszoni(iis,izn) + ftxzdm(iis)
               END IF
            END DO
@@ -210,24 +230,32 @@ SUBROUTINE zone_flow
               END IF
            END DO
            IF (syy(m) > 0.) THEN
+              qfzonp_int(izn) = qfzonp_int(izn) + syy(m)
               qfzonp(izn) = qfzonp(izn) + syy(m)
            ELSEIF (syy(m) < 0.) THEN
+              qfzoni_int(izn) = qfzoni_int(izn) - syy(m)
               qfzoni(izn) = qfzoni(izn) - syy(m)
            END IF
            DO  iis=1,ns-1
               IF (syys(iis) > 0.) THEN
+                 qszonp_int(iis,izn) = qszonp_int(iis,izn) + syys(iis)
                  qszonp(iis,izn) = qszonp(iis,izn) + syys(iis)
               ELSEIF (sxxs(iis) < 0.) THEN
+                 qszoni_int(iis,izn) = qszoni_int(iis,izn) - syys(iis)
                  qszoni(iis,izn) = qszoni(iis,izn) - syys(iis)
               END IF
               IF (ftyxdp(iis) > 0.) THEN
+                 qszonp_int(iis,izn) = qszonp_int(iis,izn) + ftyxdp(iis)
                  qszonp(iis,izn) = qszonp(iis,izn) + ftyxdp(iis)
               ELSEIF (ftyxdp(iis) < 0.) THEN
+                 qszoni_int(iis,izn) = qszoni_int(iis,izn) - ftyxdp(iis)
                  qszoni(iis,izn) = qszoni(iis,izn) - ftyxdp(iis)
               END IF
               IF (ftyzdp(iis) > 0.) THEN
+                 qszonp_int(iis,izn) = qszonp_int(iis,izn) + ftyzdp(iis)
                  qszonp(iis,izn) = qszonp(iis,izn) + ftyzdp(iis)
               ELSEIF (ftyzdp(iis) < 0.) THEN
+                 qszoni_int(iis,izn) = qszoni_int(iis,izn) - ftyzdp(iis)
                  qszoni(iis,izn) = qszoni(iis,izn) - ftyzdp(iis)
               END IF
            END DO
@@ -261,24 +289,32 @@ SUBROUTINE zone_flow
               END IF
            END DO
            IF (syy(mijmk) < 0.) THEN
+              qfzonp_int(izn) = qfzonp_int(izn) - syy(mijmk)
               qfzonp(izn) = qfzonp(izn) - syy(mijmk)
            ELSEIF (syy(mijmk) > 0.) THEN
+              qfzoni_int(izn) = qfzoni_int(izn) + syy(mijmk)
               qfzoni(izn) = qfzoni(izn) + syy(mijmk)
            END IF
            DO  iis=1,ns-1
               IF (syys(iis) < 0.) THEN
+                 qszonp_int(iis,izn) = qszonp_int(iis,izn) - syys(iis)
                  qszonp(iis,izn) = qszonp(iis,izn) - syys(iis)
               ELSEIF (syys(iis) > 0.) THEN
+                 qszoni_int(iis,izn) = qszoni_int(iis,izn) + syys(iis)
                  qszoni(iis,izn) = qszoni(iis,izn) + syys(iis)
               END IF
               IF (ftyxdm(iis) < 0.) THEN
+                 qszonp_int(iis,izn) = qszonp_int(iis,izn) - ftyxdm(iis)
                  qszonp(iis,izn) = qszonp(iis,izn) - ftyxdm(iis)
               ELSEIF (ftyxdm(iis) > 0.) THEN
+                 qszoni_int(iis,izn) = qszoni_int(iis,izn) + ftyxdm(iis)
                  qszoni(iis,izn) = qszoni(iis,izn) + ftyxdm(iis)
               END IF
               IF (ftyzdm(iis) < 0.) THEN
+                 qszonp_int(iis,izn) = qszonp_int(iis,izn) - ftyzdm(iis)
                  qszonp(iis,izn) = qszonp(iis,izn) - ftyzdm(iis)
               ELSEIF (ftyzdm(iis) > 0.) THEN
+                 qszoni_int(iis,izn) = qszoni_int(iis,izn) + ftyzdm(iis)
                  qszoni(iis,izn) = qszoni(iis,izn) + ftyzdm(iis)
               END IF
            END DO
@@ -315,24 +351,32 @@ SUBROUTINE zone_flow
               szzs(:) = 0._kdp
            END IF
            IF (szz(m) > 0.) THEN
+              qfzonp_int(izn) = qfzonp_int(izn) + szz(m)
               qfzonp(izn) = qfzonp(izn) + szz(m)
            ELSEIF (szz(m) < 0.) THEN
+              qfzoni_int(izn) = qfzoni_int(izn) - szz(m)
               qfzoni(izn) = qfzoni(izn) - szz(m)
            END IF
            DO  iis=1,ns-1
               IF (szzs(iis) > 0.) THEN
+                 qszonp_int(iis,izn) = qszonp_int(iis,izn) + szzs(iis)
                  qszonp(iis,izn) = qszonp(iis,izn) + szzs(iis)
               ELSEIF (szzs(iis) < 0.) THEN
+                 qszoni_int(iis,izn) = qszoni_int(iis,izn) - szzs(iis)
                  qszoni(iis,izn) = qszoni(iis,izn) - szzs(iis)
               END IF
               IF (ftzxdp(iis) > 0.) THEN
+                 qszonp_int(iis,izn) = qszonp_int(iis,izn) + ftzxdp(iis)
                  qszonp(iis,izn) = qszonp(iis,izn) + ftzxdp(iis)
               ELSEIF (ftzxdp(iis) < 0.) THEN
+                 qszoni_int(iis,izn) = qszoni_int(iis,izn) - ftzxdp(iis)
                  qszoni(iis,izn) = qszoni(iis,izn) - ftzxdp(iis)
               END IF
               IF (ftzydp(iis) > 0.) THEN
+                 qszonp_int(iis,izn) = qszonp_int(iis,izn) + ftzydp(iis)
                  qszonp(iis,izn) = qszonp(iis,izn) + ftzydp(iis)
               ELSEIF (ftzydp(iis) < 0.) THEN
+                 qszoni_int(iis,izn) = qszoni_int(iis,izn) - ftzydp(iis)
                  qszoni(iis,izn) = qszoni(iis,izn) - ftzydp(iis)
               END IF
            END DO
@@ -369,24 +413,32 @@ SUBROUTINE zone_flow
               szzs(:) = 0._kdp
            END IF
            IF (szz(mijkm) < 0.) THEN
+              qfzonp_int(izn) = qfzonp_int(izn) - szz(mijkm)
               qfzonp(izn) = qfzonp(izn) - szz(mijkm)
            ELSEIF (szz(mijkm) > 0.) THEN
+              qfzoni_int(izn) = qfzoni_int(izn) + szz(mijkm)
               qfzoni(izn) = qfzoni(izn) + szz(mijkm)
            END IF
            DO  iis=1,ns-1
               IF (szzs(iis) < 0.) THEN
+                 qszonp_int(iis,izn) = qszonp_int(iis,izn) - szzs(iis)
                  qszonp(iis,izn) = qszonp(iis,izn) - szzs(iis)
               ELSEIF (szzs(iis) > 0.) THEN
+                 qszoni_int(iis,izn) = qszoni_int(iis,izn) + szzs(iis)
                  qszoni(iis,izn) = qszoni(iis,izn) + szzs(iis)
               END IF
               IF (ftzxdm(iis) < 0.) THEN
+                 qszonp_int(iis,izn) = qszonp_int(iis,izn) - ftzxdm(iis)
                  qszonp(iis,izn) = qszonp(iis,izn) - ftzxdm(iis)
               ELSEIF (ftzxdm(iis) > 0.) THEN
+                 qszoni_int(iis,izn) = qszoni_int(iis,izn) + ftzxdm(iis)
                  qszoni(iis,izn) = qszoni(iis,izn) + ftzxdm(iis)
               END IF
               IF (ftzydm(iis) < 0.) THEN
+                 qszonp_int(iis,izn) = qszonp_int(iis,izn) - ftzydm(iis)
                  qszonp(iis,izn) = qszonp(iis,izn) - ftzydm(iis)
               ELSEIF (ftzydm(iis) > 0.) THEN
+                 qszoni_int(iis,izn) = qszoni_int(iis,izn) + ftzydm(iis)
                  qszoni(iis,izn) = qszoni(iis,izn) + ftzydm(iis)
               END IF
            END DO

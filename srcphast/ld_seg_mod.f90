@@ -16,7 +16,7 @@ CONTAINS
     CHARACTER(LEN=3), DIMENSION(2) :: cindx
     INTEGER :: ib, id, isf, isl, jc, lc, ls, m, ncell
     ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id: ld_seg_mod.f90,v 1.1 2008/04/18 17:18:08 klkipp Exp klkipp $'
+    CHARACTER(LEN=80) :: ident_string='$Id: ld_seg_mod.f90,v 1.1 2008/04/18 17:18:08 klkipp Exp $'
     !     ------------------------------------------------------------------
     !...
     ncell = SIZE(seg_indx)

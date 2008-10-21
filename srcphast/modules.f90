@@ -7,7 +7,7 @@ MODULE f_units
   INTEGER, PARAMETER :: fuins=15, fulp=16, fuplt=7, fuorst=8, fuirst=9, fuinc=10, furde=11, &
        fupmap=13, fuvmap=14, fup=21, fut=29, fuc=22, fuvel=23, fud=30, fuvs=31, fuwel=24, &
        fubal=25, fukd=26, fubcf=27, fuclog=28, fubnfr=32, fupmp2=33, fupzon=34, fuich=35,  &
-       fuzf=36
+       fuzf=36, fuzf2=37
   LOGICAL :: print_rde=.FALSE.
 END MODULE f_units
 
@@ -371,10 +371,12 @@ MODULE mcv
        tcfaif, tcfetb, tcffbc, tcflbc, tcfrbc, tcfdbc, tcfsbc, tchaif, tchetb, &
        tchfbc, tchhcb, tchlbc, tchrbc, tchsbc
   REAL(KIND=kdp), DIMENSION(:), POINTER :: dcv, qsfxis, qsfyis, qsfzis
-  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: qfzoni, qfzonp, qfzoni_sbc, qfzonp_sbc,  &
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: qfzoni, qfzonp, qfzoni_int, qfzonp_int,  &
+       qfzoni_sbc, qfzonp_sbc,  &
        qfzoni_fbc, qfzonp_fbc,  qfzoni_lbc, qfzonp_lbc,  qfzoni_rbc, qfzonp_rbc,   &
        qfzoni_dbc, qfzonp_dbc,  qfzoni_wel, qfzonp_wel
-  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE ::  qszoni, qszonp, qszoni_sbc, qszonp_sbc,  &
+  REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE ::  qszoni, qszonp, qszoni_int, qszonp_int,  &
+       qszoni_sbc, qszonp_sbc,  &
        qszoni_fbc, qszonp_fbc,  qszoni_lbc, qszonp_lbc,  qszoni_rbc, qszonp_rbc,   &
        qszoni_dbc, qszonp_dbc,  qszoni_wel, qszonp_wel
 END MODULE mcv

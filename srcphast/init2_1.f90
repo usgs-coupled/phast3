@@ -1048,6 +1048,8 @@ SUBROUTINE init2_1
      ! ... Allocate the arrays for accumulation of zonal flow rates
      ALLOCATE(qfzoni(num_flo_zones), qfzonp(num_flo_zones),  &
           qszoni(nsa,num_flo_zones), qszonp(nsa,num_flo_zones),  &
+          qfzoni_int(num_flo_zones), qfzonp_int(num_flo_zones),  &
+          qszoni_int(nsa,num_flo_zones), qszonp_int(nsa,num_flo_zones),  &
           qfzoni_sbc(num_flo_zones), qfzonp_sbc(num_flo_zones),  &
           qszoni_sbc(nsa,num_flo_zones), qszonp_sbc(nsa,num_flo_zones),  &
           qfzoni_fbc(num_flo_zones), qfzonp_fbc(num_flo_zones),  &

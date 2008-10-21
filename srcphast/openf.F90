@@ -135,6 +135,15 @@ SUBROUTINE openf
     lerror = .TRUE.
     WRITE(*,*) 'ERROR: Error opening file ', fname
   ENDIF
+  fname=f3name(1:length)//'.tsc.zf'
+#if defined(USE_MPI)
+  CALL get_mpi_filename(fname)
+#endif
+  OPEN(fuzf2,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  IF (ios > 0) THEN
+    lerror = .TRUE.
+    WRITE(*,*) 'ERROR: Error opening file ', fname
+  ENDIF
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif

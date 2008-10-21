@@ -16,7 +16,7 @@ SUBROUTINE zone_flow_ss
   INTEGER :: i, icz, ifc, ilc, iwel, izn, j, k, ks, kfs, lc, m, mfs
   REAL(KIND=kdp) :: ufdt1
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: zone_flow_ss.f90,v 1.4 2008/10/20 17:03:38 klkipp Exp klkipp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: zone_flow_ss.f90,v 1.5 2008/10/21 17:52:28 klkipp Exp klkipp $'
   !     ------------------------------------------------------------------
   ufdt1 = fdtmth
   ! ... Update conductance coefficients, mass flow rates, velocities
@@ -24,6 +24,8 @@ SUBROUTINE zone_flow_ss
   ! ... Zero the flow rate accumulators
   qfzoni = 0._kdp
   qfzonp = 0._kdp
+  qfzoni_int = 0._kdp
+  qfzonp_int = 0._kdp
   qfzoni_sbc = 0._kdp
   qfzonp_sbc = 0._kdp
   qfzoni_fbc = 0._kdp
@@ -36,7 +38,7 @@ SUBROUTINE zone_flow_ss
   qfzonp_dbc = 0._kdp
   qfzoni_wel = 0._kdp
   qfzonp_wel = 0._kdp
-
+  ! ... Sum flow rates over internal faces for each zone
   DO  izn=1,num_flo_zones
      DO  ifc=1,zone_ib(izn)%num_int_faces
         m = zone_ib(izn)%mcell_no(ifc)
@@ -44,31 +46,39 @@ SUBROUTINE zone_flow_ss
         IF(zone_ib(izn)%face_indx(ifc) == 4) THEN
            ! ... X-direction mass flow rates
            IF (sxx(m) > 0.) THEN
+              qfzonp_int(izn) = qfzonp_int(izn) + sxx(m)
               qfzonp(izn) = qfzonp(izn) + sxx(m)
            ELSEIF (sxx(m) < 0.) THEN
+              qfzoni_int(izn) = qfzoni_int(izn) - sxx(m)
               qfzoni(izn) = qfzoni(izn) - sxx(m)
            END IF
         ELSEIF(zone_ib(izn)%face_indx(ifc) == 3) THEN
            ! ... X-direction mass flow rates
            IF (sxx(m-1) < 0.) THEN
+              qfzonp_int(izn) = qfzonp_int(izn) - sxx(m-1)
               qfzonp(izn) = qfzonp(izn) - sxx(m-1)
            ELSEIF (sxx(m-1) > 0.) THEN
+              qfzoni_int(izn) = qfzoni_int(izn) + sxx(m-1)
               qfzoni(izn) = qfzoni(izn) + sxx(m-1)
            END IF
         ELSEIF(zone_ib(izn)%face_indx(ifc) == 5 .AND. .NOT.cylind) THEN
            ! ... Y-direction mass flow rates
            mijpk=m+nx
            IF (syy(m) > 0.) THEN
+              qfzonp_int(izn) = qfzonp_int(izn) + syy(m)
               qfzonp(izn) = qfzonp(izn) + syy(m)
            ELSEIF (syy(m) < 0.) THEN
+              qfzoni_int(izn) = qfzoni_int(izn) - syy(m)
               qfzoni(izn) = qfzoni(izn) - syy(m)
            END IF
         ELSEIF(zone_ib(izn)%face_indx(ifc) == 2 .AND. .NOT.cylind) THEN
            ! ... Y-direction mass flow rates
            mijmk = m-nx
            IF (syy(mijmk) < 0.) THEN
+              qfzonp_int(izn) = qfzonp_int(izn) - syy(mijmk)
               qfzonp(izn) = qfzonp(izn) - syy(mijmk)
            ELSEIF (syy(mijmk) > 0.) THEN
+              qfzoni_int(izn) = qfzoni_int(izn) + syy(mijmk)
               qfzoni(izn) = qfzoni(izn) + syy(mijmk)
            END IF
         ELSEIF(zone_ib(izn)%face_indx(ifc) == 6) THEN
@@ -78,13 +88,17 @@ SUBROUTINE zone_flow_ss
               szz(m) = 0._kdp
            END IF
            IF (szz(m) > 0.) THEN
+              qfzonp_int(izn) = qfzonp_int(izn) + szz(m)
               qfzonp(izn) = qfzonp(izn) + szz(m)
            ELSEIF (szz(m) < 0.) THEN
+              qfzoni_int(izn) = qfzoni_int(izn) - szz(m)
               qfzoni(izn) = qfzoni(izn) - szz(m)
            END IF
            IF (szz(mijkm) < 0.) THEN
+              qfzonp_int(izn) = qfzonp_int(izn) - szz(mijkm)
               qfzonp(izn) = qfzonp(izn) - szz(mijkm)
            ELSEIF (szz(mijkm) > 0.) THEN
+              qfzoni_int(izn) = qfzoni_int(izn) + szz(mijkm)
               qfzoni(izn) = qfzoni(izn) + szz(mijkm)
            END IF
         ELSEIF(zone_ib(izn)%face_indx(ifc) == 1) THEN
@@ -94,8 +108,10 @@ SUBROUTINE zone_flow_ss
               szz(mijkm) = 0._kdp
            END IF
            IF (szz(mijkm) < 0.) THEN
+              qfzonp_int(izn) = qfzonp_int(izn) - szz(mijkm)
               qfzonp(izn) = qfzonp(izn) - szz(mijkm)
            ELSEIF (szz(mijkm) > 0.) THEN
+              qfzoni_int(izn) = qfzoni_int(izn) + szz(mijkm)
               qfzoni(izn) = qfzoni(izn) + szz(mijkm)
            END IF
         END IF

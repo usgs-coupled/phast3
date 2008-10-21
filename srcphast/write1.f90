@@ -32,6 +32,17 @@ SUBROUTINE write1
      IF(restrt) WRITE(i,2003) titleo(1:80),titleo(81:160)
   END DO
   WRITE(fuzf,2003) title(1:80),title(81:160)
+  ! ... Write header to file 'Fuzf2' for flow zone tab separated file
+  WRITE(fuzf2,5001) title(1:80),title(81:160)
+5001 FORMAT(a80)
+  WRITE(fuzf2,5011) 'Flow Rates'//ACHAR(9)//'('//unitm//'/'//TRIM(unittm)//')'
+  WRITE(fuzf2,5011) 'Time'//ACHAR(9)//'Zone'//ACHAR(9)//'Component'//ACHAR(9)//  &
+       'Total in'//ACHAR(9)//'Total out'//ACHAR(9)//'Internal face in'//  &
+       ACHAR(9)//'Internal face out'//ACHAR(9)//'Specified head in'//ACHAR(9)//  &
+       'Specified head out'//ACHAR(9)//'Flux in'//ACHAR(9)//'Flux out'//ACHAR(9)//  &
+       'Leaky in'//ACHAR(9)//'Leaky out'//ACHAR(9)//'River in'//ACHAR(9)//  &
+       'River out'//ACHAR(9)//'Drain in'//ACHAR(9)//'Drain out'//ACHAR(9)//  &
+       'Well in'//ACHAR(9)//'Well out'
   WRITE(logline1,5013) title(1:80)
   WRITE(logline2,5013) title(81:160)
 5013 FORMAT(a80)
