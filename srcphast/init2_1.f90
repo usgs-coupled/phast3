@@ -759,22 +759,24 @@ SUBROUTINE init2_1
         DO ls=drain_seg_index(lc)%seg_first,drain_seg_index(lc)%seg_last
            kdbc(ls) = kdbc(ls)*areadbc(ls)    ! ... include area into leakance 
            ! ... connect the drain segment to the cell containing drain bottom
-           erflg = .FALSE.  
-           ks = nintrp(zedbc(ls) - bbdbc(ls), nz, z, erflg)
-           IF (erflg) THEN     ! ... out of range of mesh, use top or bottom cell
-              IF ((zedbc(ls) - bbdbc(ls)) > z(nz)) THEN
-                 ks = nz
-              ELSE
-                 ks = 1
-              ENDIF
-           ENDIF
+           !erflg = .FALSE.  
+           !ks = nintrp(zedbc(ls) - bbdbc(ls), nz, z, erflg)
+           !IF (erflg) THEN     ! ... out of range of mesh, use top or bottom cell
+           !   IF ((zedbc(ls) - bbdbc(ls)) > z(nz)) THEN
+           !      ks = nz
+           !   ELSE
+           !      ks = 1
+           !   ENDIF
+           !ENDIF
            m = mdbc(ls)
-           mr = m - (nz - ks)*nxy
-           mdbc(ls) = mr
-           mdseg_bot(ls) = mr            ! ... static index for drain segment bottom
+           !mr = m - (nz - ks)*nxy
+           !mdbc(ls) = mr
+           !mdseg_bot(ls) = mr            ! ... static index for drain segment bottom
            ! ... ibc for drain is always at the top of the mesh region
-           mdbc_bot(lc) = MIN(mdbc_bot(lc),mr)     ! ... set to lowest drain seg bottom
+           !mdbc_bot(lc) = MIN(mdbc_bot(lc),mr)     ! ... set to lowest drain seg bottom
+           mdbc_bot(lc) = m
         END DO
+        !drain_seg_index(lc)%m = mdbc_bot(lc)
         drain_seg_index(lc)%m = mdbc_bot(lc)
      END DO
      ! ... Zero the arrays for drain leakage

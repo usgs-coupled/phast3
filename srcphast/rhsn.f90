@@ -441,16 +441,17 @@ SUBROUTINE rhsn
   ! ... Calculate drain leakage b.c. terms
   DO lc=1,ndbc
      ! ... Update the indices locating the cells communicating with the drain
-     mc0 = drain_seg_index(lc)%m
-     lc0 = MOD(mc0,nxy)
-     IF(lc0 == 0) lc0 = nxy
-     mfs = mfsbc(lc0)    ! ... currrent f.s. cell
+     !mc0 = drain_seg_index(lc)%m
+     !lc0 = MOD(mc0,nxy)
+     !IF(lc0 == 0) lc0 = nxy
+     !mfs = mfsbc(lc0)    ! ... currrent f.s. cell
 !     drain_seg_index(lc)%m = MIN(mfs,mdbc_bot(lc))
-     drain_seg_index(lc)%m = mfs            ! ... communicate with f.s. cell always
+     !drain_seg_index(lc)%m = mfs            ! ... communicate with f.s. cell always
      DO ls=drain_seg_index(lc)%seg_first,drain_seg_index(lc)%seg_last
 !        mdbc(ls) = MIN(mfs,mrseg_bot(ls))     ! ... currrent drain segment cell for aquifer head
-        mdbc(ls) = drain_seg_index(lc)%m     ! ... currrent drain segment cell for aquifer head
+        !mdbc(ls) = drain_seg_index(lc)%m     ! ... currrent drain segment cell for aquifer head
                                              ! ... now the same as communication cell
+        drain_seg_index(lc)%m = mdbc(ls)                                    
      END DO
   END DO
   ! ...      Calculate step total flow rates and cell step flow rates.
@@ -472,6 +473,7 @@ SUBROUTINE rhsn
               stotsp(iis) = stotsp(iis) - ufdt0*qsbc3(iis)
            END DO
         ELSE                        ! ... Inflow
+           qn = 0._kdp
            qfbc = 0._kdp
            stotfi = stotfi + ufdt0*qfbc
 !!$        STOTHI=STOTHI+0.5*QHDBC(LC)
