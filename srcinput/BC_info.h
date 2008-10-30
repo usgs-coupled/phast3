@@ -12,7 +12,7 @@ public:
     BC_SPECIFIED = 8,
     BC_FLUX      = 9,
     BC_LEAKY     = 10,
-    BC_UNDEFINED
+    BC_UNDEFINED,
   };
   BC_info(void);
   BC_info(const BC_info &bcinfo);

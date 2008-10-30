@@ -25,7 +25,7 @@ public:
   {
     CUBE         = 0,
     WEDGE        = 1,
-    PRISM        = 2
+    PRISM        = 2,
   };
 
   // Methods

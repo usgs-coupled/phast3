@@ -20,13 +20,13 @@ public:
   // type enum
   enum PRISM_OPTION
   {
-    PERIMETER    = 0,
+    PERIMETER            = 0,
 //    DIP          = 1,
-    TOP          = 2,
-    BOTTOM       = 3,
+    TOP                  = 2,
+    BOTTOM               = 3,
 	PERIMETER_COORD_SYS  = 8,
 	TOP_COORD_SYS        = 9,
-	BOTTOM_COORD_SYS     = 10
+	BOTTOM_COORD_SYS     = 10,
   };
 
 public:

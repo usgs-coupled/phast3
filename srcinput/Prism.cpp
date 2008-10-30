@@ -469,7 +469,7 @@ bool Prism::Point_in_polyhedron(const Point& p)
 
   // check perimeter
   this->Project_point(p1, CF_Z, grid_zone()->z2);
-  //return (this->perimeter.Get_phst_polygons().Point_in_polygon(p1));
+  //return (this->perimeter.Get_phast_polygons().Point_in_polygon(p1));
   return (this->perimeter.Get_tree()->Point_in_polygon(p1));
 }
 
@@ -718,7 +718,7 @@ void Prism::Tidy()
 	//  this->perimeter_datum = grid_zone()->z2;
 	// set bounding box
 	this->Set_bounding_box();
-	//Polygon_tree *temp_tree = new Polygon_tree(this->perimeter.Get_phst_polygons());
+	//Polygon_tree *temp_tree = new Polygon_tree(this->perimeter.Get_phast_polygons());
 	//this->perimeter.Set_tree(temp_tree);
 
 }
@@ -739,14 +739,14 @@ struct zone * Prism::Set_bounding_box(void)
     error_msg("Perimeter not defined in Prism::Set_bounding_box", EA_STOP);
   }
   
-  //m.push_back(Point(this->perimeter.Get_phst_polygons().Get_points().begin(), 
-  //  this->perimeter.Get_phst_polygons().Get_points().end(), 
+  //m.push_back(Point(this->perimeter.Get_phast_polygons().Get_points().begin(), 
+  //  this->perimeter.Get_phast_polygons().Get_points().end(), 
   //  Point::MIN));
-  //m.push_back(Point(this->perimeter.Get_phst_polygons().Get_points().begin(), 
-  //  this->perimeter.Get_phst_polygons().Get_points().end(), 
+  //m.push_back(Point(this->perimeter.Get_phast_polygons().Get_points().begin(), 
+  //  this->perimeter.Get_phast_polygons().Get_points().end(), 
   //  Point::MAX));
 
-  //std::vector<Point> b = this->perimeter.Get_phst_polygons().Get_points(); 
+  //std::vector<Point> b = this->perimeter.Get_phast_polygons().Get_points(); 
   //this->Project_points(b, CF_Z, grid_zone()->z1);
   //m.push_back(Point(b.begin(), b.end(), Point::MIN));
   //m.push_back(Point(b.begin(), b.end(), Point::MAX));

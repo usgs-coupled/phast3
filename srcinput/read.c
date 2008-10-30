@@ -3907,9 +3907,9 @@ struct property *read_property(char *ptr, const char **opt_list, int count_opt_l
 	char *ptr1, *start_of_property, *start_of_data_source;
 	enum MIX_STYLE
 	{
-		MIX_OLDSTYLE   = 0
-		, MIX_XYZ      = 1
-		, MIX_POINTS   = 2
+		MIX_OLDSTYLE   = 0,
+		MIX_XYZ        = 1,
+		MIX_POINTS     = 2,
 	};
 	MIX_STYLE style;
 

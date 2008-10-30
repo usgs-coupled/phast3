@@ -12,7 +12,7 @@ public:
   {
     MAP          = 0,
     GRID         = 1,
-	NONE         = 2
+	NONE         = 2,
   };
 public:
 	PHAST_Transform(void);

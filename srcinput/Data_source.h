@@ -25,7 +25,7 @@ public:
     XYZ          = 2,
     CONSTANT     = 3,
     POINTS       = 4,
-    NONE         = 5
+    NONE         = 5,
   };
   Data_source(void);
   Data_source(std::vector<Point> &in_pts, PHAST_Transform::COORDINATE_SYSTEM system);
@@ -68,7 +68,7 @@ public:
   std::vector<Point> &     Get_points             (void);
   void                     Set_points             (std::vector<Point> &pts);
 
-  PHAST_polygon &           Get_phast_polygons     (void);
+  PHAST_polygon &          Get_phast_polygons     (void);
 
   Polygon_tree *           Get_tree               (void);
   
@@ -92,7 +92,7 @@ public:
   Data_source *            Get_data_source_with_points  (void);
 
   void                                 Set_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM c) {this->coordinate_system = c;};
-  PHAST_Transform::COORDINATE_SYSTEM   Get_coordinate_system();
+  PHAST_Transform::COORDINATE_SYSTEM   Get_coordinate_system()const;
 
   Data_source &            operator=              (const Data_source& r);
   friend std::ostream& operator<< (std::ostream &os, const Data_source &ds);
@@ -100,12 +100,13 @@ public:
   // Data
 protected:
   bool               defined;
-  DATA_SOURCE_TYPE   declared;
   std::string        file_name;
   DATA_SOURCE_TYPE   source_type;
+  DATA_SOURCE_TYPE   source_type_orig;
   Filedata *         filedata;
   std::vector<Point> pts;
-  PHAST_polygon       phast_polygons;
+  std::vector<Point> pts_orig;
+  PHAST_polygon      phast_polygons;
   Polygon_tree       *tree;
   //NNInterpolator *   nni;
   size_t             nni_unique;
@@ -113,7 +114,8 @@ protected:
   int                columns;
   int                attribute;
   struct zone        box;
-  PHAST_Transform::COORDINATE_SYSTEM   coordinate_system;
+  PHAST_Transform::COORDINATE_SYSTEM coordinate_system;
+  PHAST_Transform::COORDINATE_SYSTEM coordinate_system_orig;
 };
 inline KDtree * Data_source::Get_tree3d(void)
 {

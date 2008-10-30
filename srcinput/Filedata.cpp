@@ -70,7 +70,7 @@ Data_source * Filedata::Get_data_source(int attribute)
 	{
 		return(this->data_source_map.find(attribute)->second);
 	}
-	return(false);
+	return(NULL);
 }
 double Filedata::Interpolate(int attribute, Point p, PHAST_Transform::COORDINATE_SYSTEM point_system, PHAST_Transform *map2grid)
 {

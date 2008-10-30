@@ -11,7 +11,7 @@ public:
   enum POINT_STAT 
   {
     MAX,
-    MIN
+    MIN,
   };
 
   // constructors

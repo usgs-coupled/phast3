@@ -3281,6 +3281,7 @@ void cells_with_exterior_faces_in_zone(std::list<int> &pts, struct zone *zone_pt
 void Tidy_cubes (PHAST_Transform::COORDINATE_SYSTEM target, PHAST_Transform *map2grid)
 /* ---------------------------------------------------------------------- */
 {
+	if (target == PHAST_Transform::NONE) return;
 	int i;
 	// Grid_elt
 	for (i = 0; i < count_grid_elt_zones; i++) 

@@ -33,9 +33,10 @@ Data_source::Data_source(std::vector<Point> &in_pts, PHAST_Transform::COORDINATE
 	this->defined = true;
 	//file_name;
 	this->source_type = POINTS;
-	this->declared = POINTS;
+	this->source_type_orig = POINTS;
 	this->filedata = NULL;
 	this->pts = in_pts;
+	this->pts_orig = in_pts;
 	//PHAST_polygon       PHAST_polygons;
 	//Polygon_tree       *tree;
 	this->tree = NULL;
@@ -48,6 +49,7 @@ Data_source::Data_source(std::vector<Point> &in_pts, PHAST_Transform::COORDINATE
 	this->Set_bounding_box();
 	//struct zone        box;
 	this->coordinate_system = system;
+	this->coordinate_system_orig = system;
 }
 Data_source::~Data_source(void)
 {
@@ -58,39 +60,44 @@ Data_source::~Data_source(void)
 }
 Data_source::Data_source(const Data_source& r)
 :defined(r.defined)
-,declared(r.declared)
 ,file_name(r.file_name)
 ,source_type(r.source_type)
+,source_type_orig(r.source_type_orig)
 ,filedata(r.filedata)
 ,pts(r.pts)
+,pts_orig(r.pts_orig)
 ,phast_polygons(r.phast_polygons)
+,tree(NULL)
 ,nni_unique(r.nni_unique)
+,tree3d(NULL)
 ,columns(r.columns)
 ,attribute(r.attribute)
 ,box(r.box)
+,coordinate_system(r.coordinate_system)
+,coordinate_system_orig(r.coordinate_system_orig)
 {
-  // lazy initialization
-  this->tree = NULL;
-  this->tree3d = NULL;
 }
 Data_source& Data_source::operator=(const Data_source& rhs)
 {
   if (this != &rhs)
   {
-    this->defined       = rhs.defined;
-	this->declared      = rhs.declared;
-    this->file_name     = rhs.file_name;
-    this->source_type   = rhs.source_type;
-    this->filedata      = rhs.filedata;
-    this->pts           = rhs.pts;
-    this->phast_polygons = rhs.phast_polygons;
-    this->tree          = NULL;       // lazy initialization
-    //this->nni           = rhs.nni;
-	this->nni_unique    = rhs.nni_unique;
-	this->tree3d        = NULL;       // lazy initialization
-    this->columns       = rhs.columns;
-    this->attribute     = rhs.attribute;
-    this->box           = rhs.box;
+    this->defined                = rhs.defined;
+    this->file_name              = rhs.file_name;
+    this->source_type            = rhs.source_type;
+	this->source_type_orig       = rhs.source_type_orig;
+    this->filedata               = rhs.filedata;
+    this->pts                    = rhs.pts;
+    this->pts_orig               = rhs.pts_orig;
+    this->phast_polygons         = rhs.phast_polygons;
+    this->tree                   = NULL;       // lazy initialization
+    //this->nni                    = rhs.nni;
+	this->nni_unique             = rhs.nni_unique;
+	this->tree3d                 = NULL;       // lazy initialization
+    this->columns                = rhs.columns;
+    this->attribute              = rhs.attribute;
+    this->box                    = rhs.box;
+	this->coordinate_system      = rhs.coordinate_system;
+	this->coordinate_system_orig = rhs.coordinate_system_orig;
   }
   return *this;
 }
@@ -98,15 +105,17 @@ void Data_source::Init()
 {
   this->pts.clear();
   this->file_name.clear();
-  this->defined = false;
-  this->source_type = Data_source::NONE;
-  this->declared    = Data_source::NONE;
-  this->attribute = -1;
+  this->defined                = false;
+  this->source_type            = Data_source::NONE;
+  this->source_type_orig       = Data_source::NONE;
+  this->attribute              = -1;
   zone_init(&this->box);
-  this->nni_unique = -1;
-  this->columns = 0;
-  this->tree = NULL;
-  this->tree3d = NULL;
+  this->nni_unique             = -1;
+  this->columns                = 0;
+  this->tree                   = NULL;
+  this->tree3d                 = NULL;
+  this->coordinate_system      = PHAST_Transform::NONE;
+  this->coordinate_system_orig = PHAST_Transform::NONE;
 }
 bool Data_source::Read(std::istream &lines, bool read_num)
 {
@@ -144,15 +153,18 @@ bool Data_source::Read(std::istream &lines, bool read_num)
 	std::string grid("grid"), map("map");
 	if (cs == grid)
 	{
-		this->coordinate_system = PHAST_Transform::GRID;
+		this->coordinate_system      = PHAST_Transform::GRID;
+		this->coordinate_system_orig = PHAST_Transform::GRID;
 	}
 	else if (cs == map)
 	{
-		this->coordinate_system = PHAST_Transform::MAP;
+		this->coordinate_system      = PHAST_Transform::MAP;
+		this->coordinate_system_orig = PHAST_Transform::MAP;
 	}
 	else
 	{
-		this->coordinate_system = PHAST_Transform::NONE;
+		this->coordinate_system      = PHAST_Transform::NONE;
+		this->coordinate_system_orig = PHAST_Transform::NONE;
 		error_msg("Error reading coordinate system (GRID or MAP) for CONSTANT, POINTS, SHAPE, XYZ, or ArcRaster.", EA_CONTINUE);
 		return(false);
 	}
@@ -161,8 +173,8 @@ bool Data_source::Read(std::istream &lines, bool read_num)
 	{
 		// constant
 	case 0:
-		this->source_type = Data_source::CONSTANT;
-		this->declared = this->source_type;
+		this->source_type      = Data_source::CONSTANT;
+		this->source_type_orig = Data_source::CONSTANT;
 		double elev;
 		if (!(lines >> elev))
 		{
@@ -176,8 +188,8 @@ bool Data_source::Read(std::istream &lines, bool read_num)
 
 		// points
 	case 1:
-		this->source_type = Data_source::POINTS;
-		this->declared = this->source_type;
+		this->source_type      = Data_source::POINTS;
+		this->source_type_orig = Data_source::POINTS;
 		{
 			this->columns = Read_points(lines, this->pts);
 
@@ -202,8 +214,8 @@ bool Data_source::Read(std::istream &lines, bool read_num)
 
 		// Shape file
 	case 2:
-		this->source_type = Data_source::SHAPE;
-		this->declared = this->source_type;
+		this->source_type      = Data_source::SHAPE;
+		this->source_type_orig = Data_source::SHAPE;
 		//if (!(lines >> this->file_name)) success = false;
 		//lines >> this->attribute;
 		success = Data_source::Read_filename(lines, read_num, this->file_name, this->attribute);
@@ -211,16 +223,16 @@ bool Data_source::Read(std::istream &lines, bool read_num)
 		break;
 		// XYZ file
 	case 3:
-		this->source_type = Data_source::XYZ;
-		this->declared = this->source_type;
+		this->source_type      = Data_source::XYZ;
+		this->source_type_orig = Data_source::XYZ;
 		//if (!(lines >> this->file_name)) success = false;
 		success = Data_source::Read_filename(lines, false, this->file_name, this->attribute);
 		if (!success) error_msg("Error reading xyz file name.", EA_CONTINUE);
 		break;
 		// Arc Raster file
 	case 4:
-		this->source_type = Data_source::ARCRASTER;
-		this->declared = this->source_type;
+		this->source_type      = Data_source::ARCRASTER;
+		this->source_type_orig = Data_source::ARCRASTER;
 		//if (!(lines >> this->file_name)) success = false;
 		success = Data_source::Read_filename(lines, false, this->file_name, this->attribute);
 		if (!success) error_msg("Error reading ArcRaster file name.", EA_CONTINUE);
@@ -624,10 +636,16 @@ void Data_source::Replace_nni (NNInterpolator * nni_ptr)
 }
 std::ostream& operator<< (std::ostream &os, const Data_source &ds)
 {
+  const char* coor_name[] = {" MAP ", " GRID ", " NONE "};
+
+// COMMENT: {10/29/2008 9:53:56 PM}  assert(ds.Get_coordinate_system() >= PHAST_Transform::MAP && ds.Get_coordinate_system() <= PHAST_Transform::NONE);
+  size_t cs = ds.coordinate_system_orig;
+  assert(cs >= PHAST_Transform::MAP && cs <= PHAST_Transform::NONE);
+
   switch (ds.source_type)
   {
   case Data_source::SHAPE:
-    os << "SHAPE     " << ds.Get_file_name();
+    os << "SHAPE     " << coor_name[cs] << ds.Get_file_name();
     if (ds.Get_attribute() != -1)
     {
         os << " " << ds.Get_attribute();
@@ -635,16 +653,16 @@ std::ostream& operator<< (std::ostream &os, const Data_source &ds)
     os << std::endl;
     break;
   case Data_source::ARCRASTER:
-    os << "ARCRASTER " << ds.Get_file_name() << std::endl;
+    os << "ARCRASTER " << coor_name[cs] << ds.Get_file_name() << std::endl;
     break;
   case Data_source::XYZ:
-    os << "XYZ       " << ds.Get_file_name() << std::endl;
+    os << "XYZ       " << coor_name[cs] << ds.Get_file_name() << std::endl;
     break;
   case Data_source::CONSTANT:
-    os << "CONSTANT  " << ds.pts.front().z() << std::endl;
+    os << "CONSTANT  " << coor_name[cs] << ds.pts.front().z() << std::endl;
     break;
   case Data_source::POINTS:
-    os << "POINTS" << std::endl;
+    os << "POINTS" << coor_name[cs] << std::endl;
     {
       std::vector<Point>::const_iterator citer = ds.pts.begin();
       for (; citer != ds.pts.end(); ++citer)
@@ -736,6 +754,7 @@ Data_source *  Data_source::Get_data_source_with_points  (void)
 	case Data_source::SHAPE:
 	case Data_source::ARCRASTER:
 	case Data_source::XYZ:
+		assert(this->filedata != NULL);
 		ds = this->filedata->Get_data_source(this->attribute);
 		break;
 	case Data_source::CONSTANT:
@@ -761,7 +780,7 @@ bool  Data_source::Make_nni  (void)
 	}
 	return true;
 } 
-PHAST_Transform::COORDINATE_SYSTEM Data_source::Get_coordinate_system(void)
+PHAST_Transform::COORDINATE_SYSTEM Data_source::Get_coordinate_system(void)const
 {
 	switch (this->source_type)
 	{
@@ -769,7 +788,7 @@ PHAST_Transform::COORDINATE_SYSTEM Data_source::Get_coordinate_system(void)
 	case Data_source::ARCRASTER:
 	case Data_source::XYZ:
 		{
-			Data_source *ds = this->Get_data_source_with_points();
+			const Data_source *ds = const_cast<Data_source*>(this)->Get_data_source_with_points();
 			return ds->Get_coordinate_system();
 		}
 		break;
