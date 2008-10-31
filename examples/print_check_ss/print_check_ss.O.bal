@@ -17,14 +17,14 @@
  Fractional imbalance .......................................                              0.0161
 
                Current Time Step by Boundary Condition Type
-                                                                 Amounts
+                                                                 Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -2.820303E+11  (kg)
- Step total flux b.c. fluid net inflow ......................  2.871000E+11  (kg)
- Step total leakage b.c. fluid net inflow ................... -6.076856E+10  (kg)
- Step total river leakage b.c. fluid net inflow ............. -1.167854E+13  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ........................... -7.305000E+02  (kg)
+ Step total specified p cell fluid net inflow ............... -1.410152E+11  (kg/yr)    -2.820303E+11  (kg)
+ Step total flux b.c. fluid net inflow ......................  1.435500E+11  (kg/yr)     2.871000E+11  (kg)
+ Step total leakage b.c. fluid net inflow ................... -3.038428E+10  (kg/yr)    -6.076856E+10  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -5.839271E+12  (kg/yr)    -1.167854E+13  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg/yr)     0.000000E+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -7.305000E+02  (kg)
 
 
                               *** Output at End of Steady State Iteration No.     2 ***
@@ -41,14 +41,14 @@
  Fractional imbalance .......................................                              0.1426
 
                Current Time Step by Boundary Condition Type
-                                                                 Amounts
+                                                                 Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -2.637922E+10  (kg)
- Step total flux b.c. fluid net inflow ......................  2.871000E+11  (kg)
- Step total leakage b.c. fluid net inflow ................... -5.950970E+10  (kg)
- Step total river leakage b.c. fluid net inflow ............. -7.250487E+11  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ........................... -7.305000E+02  (kg)
+ Step total specified p cell fluid net inflow ............... -1.318961E+10  (kg/yr)    -2.637922E+10  (kg)
+ Step total flux b.c. fluid net inflow ......................  1.435500E+11  (kg/yr)     2.871000E+11  (kg)
+ Step total leakage b.c. fluid net inflow ................... -2.975485E+10  (kg/yr)    -5.950970E+10  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -3.625243E+11  (kg/yr)    -7.250487E+11  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg/yr)     0.000000E+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -7.305000E+02  (kg)
 
 
                               *** Output at End of Steady State Iteration No.     3 ***
@@ -65,14 +65,14 @@
  Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
-                                                                 Amounts
+                                                                 Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -5.171596E+10  (kg)
- Step total flux b.c. fluid net inflow ......................  5.742000E+11  (kg)
- Step total leakage b.c. fluid net inflow ................... -1.149987E+11  (kg)
- Step total river leakage b.c. fluid net inflow ............. -8.141534E+11  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ........................... -1.461000E+03  (kg)
+ Step total specified p cell fluid net inflow ............... -1.292899E+10  (kg/yr)    -5.171596E+10  (kg)
+ Step total flux b.c. fluid net inflow ......................  1.435500E+11  (kg/yr)     5.742000E+11  (kg)
+ Step total leakage b.c. fluid net inflow ................... -2.874967E+10  (kg/yr)    -1.149987E+11  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -2.035383E+11  (kg/yr)    -8.141534E+11  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg/yr)     0.000000E+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -1.461000E+03  (kg)
 
 
                               *** Output at End of Steady State Iteration No.     4 ***
@@ -89,14 +89,14 @@
  Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
-                                                                 Amounts
+                                                                 Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -9.979951E+10  (kg)
- Step total flux b.c. fluid net inflow ......................  1.148400E+12  (kg)
- Step total leakage b.c. fluid net inflow ................... -2.170055E+11  (kg)
- Step total river leakage b.c. fluid net inflow ............. -1.566015E+12  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ........................... -2.922000E+03  (kg)
+ Step total specified p cell fluid net inflow ............... -1.247494E+10  (kg/yr)    -9.979951E+10  (kg)
+ Step total flux b.c. fluid net inflow ......................  1.435500E+11  (kg/yr)     1.148400E+12  (kg)
+ Step total leakage b.c. fluid net inflow ................... -2.712569E+10  (kg/yr)    -2.170055E+11  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -1.957518E+11  (kg/yr)    -1.566015E+12  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg/yr)     0.000000E+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -2.922000E+03  (kg)
 
 
                               *** Output at End of Steady State Iteration No.     5 ***
@@ -113,14 +113,14 @@
  Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
-                                                                 Amounts
+                                                                 Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -1.877440E+11  (kg)
- Step total flux b.c. fluid net inflow ......................  2.296800E+12  (kg)
- Step total leakage b.c. fluid net inflow ................... -3.968560E+11  (kg)
- Step total river leakage b.c. fluid net inflow ............. -2.956640E+12  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ........................... -5.844000E+03  (kg)
+ Step total specified p cell fluid net inflow ............... -1.173400E+10  (kg/yr)    -1.877440E+11  (kg)
+ Step total flux b.c. fluid net inflow ......................  1.435500E+11  (kg/yr)     2.296800E+12  (kg)
+ Step total leakage b.c. fluid net inflow ................... -2.480350E+10  (kg/yr)    -3.968560E+11  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -1.847900E+11  (kg/yr)    -2.956640E+12  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg/yr)     0.000000E+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -5.844000E+03  (kg)
 
 
                               *** Output at End of Steady State Iteration No.     6 ***
@@ -137,14 +137,14 @@
  Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
-                                                                 Amounts
+                                                                 Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -3.397559E+11  (kg)
- Step total flux b.c. fluid net inflow ......................  4.593600E+12  (kg)
- Step total leakage b.c. fluid net inflow ................... -7.006393E+11  (kg)
- Step total river leakage b.c. fluid net inflow ............. -5.500414E+12  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ........................... -1.168800E+04  (kg)
+ Step total specified p cell fluid net inflow ............... -1.061737E+10  (kg/yr)    -3.397559E+11  (kg)
+ Step total flux b.c. fluid net inflow ......................  1.435500E+11  (kg/yr)     4.593600E+12  (kg)
+ Step total leakage b.c. fluid net inflow ................... -2.189498E+10  (kg/yr)    -7.006393E+11  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -1.718879E+11  (kg/yr)    -5.500414E+12  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg/yr)     0.000000E+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -1.168800E+04  (kg)
 
 
                               *** Output at End of Steady State Iteration No.     7 ***
@@ -161,14 +161,14 @@
  Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
-                                                                 Amounts
+                                                                 Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -5.830071E+11  (kg)
- Step total flux b.c. fluid net inflow ......................  9.187200E+12  (kg)
- Step total leakage b.c. fluid net inflow ................... -1.192765E+12  (kg)
- Step total river leakage b.c. fluid net inflow ............. -1.018646E+13  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ........................... -2.337600E+04  (kg)
+ Step total specified p cell fluid net inflow ............... -9.109486E+09  (kg/yr)    -5.830071E+11  (kg)
+ Step total flux b.c. fluid net inflow ......................  1.435500E+11  (kg/yr)     9.187200E+12  (kg)
+ Step total leakage b.c. fluid net inflow ................... -1.863696E+10  (kg/yr)    -1.192765E+12  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -1.591635E+11  (kg/yr)    -1.018646E+13  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg/yr)     0.000000E+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -2.337600E+04  (kg)
 
 
                               *** Output at End of Steady State Iteration No.     8 ***
@@ -185,14 +185,14 @@
  Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
-                                                                 Amounts
+                                                                 Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -9.403826E+11  (kg)
- Step total flux b.c. fluid net inflow ......................  1.837440E+13  (kg)
- Step total leakage b.c. fluid net inflow ................... -1.954199E+12  (kg)
- Step total river leakage b.c. fluid net inflow ............. -1.896953E+13  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ........................... -4.675200E+04  (kg)
+ Step total specified p cell fluid net inflow ............... -7.346739E+09  (kg/yr)    -9.403826E+11  (kg)
+ Step total flux b.c. fluid net inflow ......................  1.435500E+11  (kg/yr)     1.837440E+13  (kg)
+ Step total leakage b.c. fluid net inflow ................... -1.526718E+10  (kg/yr)    -1.954199E+12  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -1.481995E+11  (kg/yr)    -1.896953E+13  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg/yr)     0.000000E+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -4.675200E+04  (kg)
 
 
                               *** Output at End of Steady State Iteration No.     9 ***
@@ -209,14 +209,14 @@
  Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
-                                                                 Amounts
+                                                                 Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -1.438966E+12  (kg)
- Step total flux b.c. fluid net inflow ......................  3.674880E+13  (kg)
- Step total leakage b.c. fluid net inflow ................... -3.094360E+12  (kg)
- Step total river leakage b.c. fluid net inflow ............. -3.582427E+13  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ........................... -9.350400E+04  (kg)
+ Step total specified p cell fluid net inflow ............... -5.620961E+09  (kg/yr)    -1.438966E+12  (kg)
+ Step total flux b.c. fluid net inflow ......................  1.435500E+11  (kg/yr)     3.674880E+13  (kg)
+ Step total leakage b.c. fluid net inflow ................... -1.208734E+10  (kg/yr)    -3.094360E+12  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -1.399386E+11  (kg/yr)    -3.582427E+13  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg/yr)     0.000000E+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -9.350400E+04  (kg)
 
 
                               *** Output at End of Steady State Iteration No.    10 ***
@@ -233,14 +233,14 @@
  Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
-                                                                 Amounts
+                                                                 Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -2.210462E+12  (kg)
- Step total flux b.c. fluid net inflow ......................  7.349760E+13  (kg)
- Step total leakage b.c. fluid net inflow ................... -4.933945E+12  (kg)
- Step total river leakage b.c. fluid net inflow ............. -6.912118E+13  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ........................... -1.870080E+05  (kg)
+ Step total specified p cell fluid net inflow ............... -4.317309E+09  (kg/yr)    -2.210462E+12  (kg)
+ Step total flux b.c. fluid net inflow ......................  1.435500E+11  (kg/yr)     7.349760E+13  (kg)
+ Step total leakage b.c. fluid net inflow ................... -9.636611E+09  (kg/yr)    -4.933945E+12  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -1.350023E+11  (kg/yr)    -6.912118E+13  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg/yr)     0.000000E+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -1.870080E+05  (kg)
 
 
                               *** Output at End of Steady State Iteration No.    11 ***
@@ -257,14 +257,14 @@
  Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
-                                                                 Amounts
+                                                                 Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -3.742334E+12  (kg)
- Step total flux b.c. fluid net inflow ......................  1.469952E+14  (kg)
- Step total leakage b.c. fluid net inflow ................... -8.519680E+12  (kg)
- Step total river leakage b.c. fluid net inflow ............. -1.361407E+14  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ........................... -3.740160E+05  (kg)
+ Step total specified p cell fluid net inflow ............... -3.654623E+09  (kg/yr)    -3.742334E+12  (kg)
+ Step total flux b.c. fluid net inflow ......................  1.435500E+11  (kg/yr)     1.469952E+14  (kg)
+ Step total leakage b.c. fluid net inflow ................... -8.320000E+09  (kg/yr)    -8.519680E+12  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -1.329499E+11  (kg/yr)    -1.361407E+14  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg/yr)     0.000000E+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -3.740160E+05  (kg)
 
 
                               *** Output at End of Steady State Iteration No.    12 ***
@@ -281,14 +281,14 @@
  Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
-                                                                 Amounts
+                                                                 Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -7.079184E+12  (kg)
- Step total flux b.c. fluid net inflow ......................  2.939904E+14  (kg)
- Step total leakage b.c. fluid net inflow ................... -1.614528E+13  (kg)
- Step total river leakage b.c. fluid net inflow ............. -2.711924E+14  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ........................... -7.480320E+05  (kg)
+ Step total specified p cell fluid net inflow ............... -3.456633E+09  (kg/yr)    -7.079184E+12  (kg)
+ Step total flux b.c. fluid net inflow ......................  1.435500E+11  (kg/yr)     2.939904E+14  (kg)
+ Step total leakage b.c. fluid net inflow ................... -7.883437E+09  (kg/yr)    -1.614528E+13  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -1.324182E+11  (kg/yr)    -2.711924E+14  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg/yr)     0.000000E+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -7.480320E+05  (kg)
 
 
                               *** Output at End of Steady State Iteration No.    13 ***
@@ -305,14 +305,14 @@
  Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
-                                                                 Amounts
+                                                                 Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -1.403217E+13  (kg)
- Step total flux b.c. fluid net inflow ......................  5.879808E+14  (kg)
- Step total leakage b.c. fluid net inflow ................... -3.195044E+13  (kg)
- Step total river leakage b.c. fluid net inflow ............. -5.420680E+14  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ........................... -1.496064E+06  (kg)
+ Step total specified p cell fluid net inflow ............... -3.425824E+09  (kg/yr)    -1.403217E+13  (kg)
+ Step total flux b.c. fluid net inflow ......................  1.435500E+11  (kg/yr)     5.879808E+14  (kg)
+ Step total leakage b.c. fluid net inflow ................... -7.800401E+09  (kg/yr)    -3.195044E+13  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -1.323408E+11  (kg/yr)    -5.420680E+14  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg/yr)     0.000000E+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -1.496064E+06  (kg)
 
 
                               *** Output at End of Steady State Iteration No.    14 ***
@@ -329,14 +329,14 @@
  Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
-                                                                 Amounts
+                                                                 Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -2.804681E+13  (kg)
- Step total flux b.c. fluid net inflow ......................  1.175962E+15  (kg)
- Step total leakage b.c. fluid net inflow ................... -6.382984E+13  (kg)
- Step total river leakage b.c. fluid net inflow ............. -1.084091E+15  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ........................... -2.992128E+06  (kg)
+ Step total specified p cell fluid net inflow ............... -3.423683E+09  (kg/yr)    -2.804681E+13  (kg)
+ Step total flux b.c. fluid net inflow ......................  1.435500E+11  (kg/yr)     1.175962E+15  (kg)
+ Step total leakage b.c. fluid net inflow ................... -7.791729E+09  (kg/yr)    -6.382984E+13  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -1.323353E+11  (kg/yr)    -1.084091E+15  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg/yr)     0.000000E+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -2.992128E+06  (kg)
 
 
                               *** Output at End of Steady State Iteration No.    15 ***
@@ -353,14 +353,14 @@
  Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
-                                                                 Amounts
+                                                                 Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -5.609293E+13  (kg)
- Step total flux b.c. fluid net inflow ......................  2.351923E+15  (kg)
- Step total leakage b.c. fluid net inflow ................... -1.276518E+14  (kg)
- Step total river leakage b.c. fluid net inflow ............. -2.168179E+15  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ........................... -5.984256E+06  (kg)
+ Step total specified p cell fluid net inflow ............... -3.423640E+09  (kg/yr)    -5.609293E+13  (kg)
+ Step total flux b.c. fluid net inflow ......................  1.435500E+11  (kg/yr)     2.351923E+15  (kg)
+ Step total leakage b.c. fluid net inflow ................... -7.791250E+09  (kg/yr)    -1.276518E+14  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -1.323351E+11  (kg/yr)    -2.168179E+15  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg/yr)     0.000000E+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -5.984256E+06  (kg)
 
 
                               *** Output at End of Steady State Iteration No.    16 ***
@@ -377,14 +377,14 @@
  Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
-                                                                 Amounts
+                                                                 Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -1.121859E+14  (kg)
- Step total flux b.c. fluid net inflow ......................  4.703846E+15  (kg)
- Step total leakage b.c. fluid net inflow ................... -2.553033E+14  (kg)
- Step total river leakage b.c. fluid net inflow ............. -4.336357E+15  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ........................... -1.196851E+07  (kg)
+ Step total specified p cell fluid net inflow ............... -3.423641E+09  (kg/yr)    -1.121859E+14  (kg)
+ Step total flux b.c. fluid net inflow ......................  1.435500E+11  (kg/yr)     4.703846E+15  (kg)
+ Step total leakage b.c. fluid net inflow ................... -7.791238E+09  (kg/yr)    -2.553033E+14  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -1.323351E+11  (kg/yr)    -4.336357E+15  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg/yr)     0.000000E+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -1.196851E+07  (kg)
 
 
                               *** Output at End of Steady State Iteration No.    17 ***
@@ -401,14 +401,14 @@
  Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
-                                                                 Amounts
+                                                                 Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -2.243718E+14  (kg)
- Step total flux b.c. fluid net inflow ......................  9.407693E+15  (kg)
- Step total leakage b.c. fluid net inflow ................... -5.106065E+14  (kg)
- Step total river leakage b.c. fluid net inflow ............. -8.672714E+15  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ........................... -2.393702E+07  (kg)
+ Step total specified p cell fluid net inflow ............... -3.423641E+09  (kg/yr)    -2.243718E+14  (kg)
+ Step total flux b.c. fluid net inflow ......................  1.435500E+11  (kg/yr)     9.407693E+15  (kg)
+ Step total leakage b.c. fluid net inflow ................... -7.791237E+09  (kg/yr)    -5.106065E+14  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -1.323351E+11  (kg/yr)    -8.672714E+15  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg/yr)     0.000000E+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -2.393702E+07  (kg)
 
 
                               *** Output at End of Time Step No.     4 ***

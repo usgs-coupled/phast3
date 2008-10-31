@@ -63,4 +63,8 @@ PRINT_FREQUENCY
         -progress       1 step
         -xyz_head       5 step
         -xyz_velocity   5 step
+
+ZONE_BUDGET 10 Global zone flow terms
+        -zone   0 0 0 400 400 275
+
 END

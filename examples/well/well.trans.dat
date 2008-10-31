@@ -60,4 +60,8 @@ PRINT_FREQUENCY
         -hdf_velocity           600 sec
         -xyz_velocity           600 sec
         -well                   600 sec
+
+ZONE_BUDGET 1  Surround well
+	-zone 1500 1500 -100    2500 2500 0
+
 END

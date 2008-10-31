@@ -17,14 +17,14 @@
  Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
-                                                                 Amounts
+                                                                 Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -1.016440E-24  (kg)
- Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
- Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
- Step total river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ...........................  0.000000E+00  (kg)
+ Step total specified p cell fluid net inflow ............... -2.541099E-21  (kg/s)    -1.016440E-24  (kg)
+ Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg/s)     0.000000E+00  (kg)
+ Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg/s)     0.000000E+00  (kg)
+ Step total river leakage b.c. fluid net inflow .............  0.000000E+00  (kg/s)     0.000000E+00  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg/s)     0.000000E+00  (kg)
+ Step total well fluid net inflow ...........................  0.000000E+00  (kg/s)     0.000000E+00  (kg)
 
 
                               *** Output at End of Time Step No.   150 ***

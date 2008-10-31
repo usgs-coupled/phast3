@@ -34,9 +34,9 @@ C.1.3 .. RESTRT[T/F],TIMRST
 C.....If RESTART, skip to READ3 group
 C.1.4 .. HEAT[T/F],SOLUTE[T/F],EEUNIT[T/F],CYLIND[T/F],SCALMF[T/F]
      f f f f f
-C.1.4.1 STEADY_FLOW[T/F], EPS_HEAD (head), EPS_FLOW (fraction)
+C.1.4.1 .. STEADY_FLOW[T/F], EPS_HEAD (head), EPS_FLOW (fraction)
      f  0  0 
-C   axes t/f t/f t/f (x y z)
+C.1.4.2 .. coordinate axes included (x y z) [I]
      1 1 1
 C.1.5 .. TMUNIT[I]
 2
@@ -92,6 +92,7 @@ C.2.7 .. CPF,KTHF,BT;(O) - HEAT [1.4]
 C------------------------------------------------------------------------------
 C.....Solute information
 C.2.8 .. DM; (O) - SOLUTE [1.4]
+C------------------------------------------------------------------------------
 C.....Porous media zone information
 C.2.9.1 .. IPMZ,X1Z(IPMZ),X2Z(IPMZ),Y1Z(IPMZ),Y2Z(IPMZ),Z1Z(IPMZ),Z2Z(IPMZ)
       1   0.0000000e+00   3.0480000e+01   0.0000000e+00   3.0480000e+01  -3.0480000e+01   0.0000000e+00
@@ -1694,17 +1695,15 @@ C.2.9.1 .. IPMZ,X1Z(IPMZ),X2Z(IPMZ),Y1Z(IPMZ),Y2Z(IPMZ),Z1Z(IPMZ),Z2Z(IPMZ)
    1598   1.1277600e+03   1.1582400e+03   1.1887200e+03   1.2192000e+03  -3.0480000e+01   0.0000000e+00
    1599   1.1582400e+03   1.1887200e+03   1.1887200e+03   1.2192000e+03  -3.0480000e+01   0.0000000e+00
    1600   1.1887200e+03   1.2192000e+03   1.1887200e+03   1.2192000e+03  -3.0480000e+01   0.0000000e+00
-C.....Use as many 2.9.1 lines as necessary
-C.2.9.2 .. End with END
+C .. End 2.9.1
 END
 C------------------------------------------------------------------------------
 C.....Porous media property information
-C.2.10.1 .. KXX(IPMZ),KYY(IPMZ),KZZ(IPMZ),IPMZ=1 to NPMZ [1.7]
-C... X permeability
+C.2.10.1.1 .. X permeability
      1600*4.928345108223e-11  
-C... Y permeability
+C.2.10.1.2 .. Y permeability
      1600*4.928345108223e-11  
-C... Z permeability
+C.2.10.1.3 .. Z permeability
      1600*4.928345108223e-11  
 C.2.10.2 .. POROS(IPMZ),IPMZ=1 to NPMZ [1.7]
      1600*2.000000000000e-01  
@@ -1717,18 +1716,13 @@ C.2.11.2 .. KTXPM(IPMZ),KTYPM(IPMZ),KTZPM(IPMZ),IPMZ=1 to NPMZ [1.7];(O) -
 C..          HEAT [1.4]
 C------------------------------------------------------------------------------
 C.....Porous media solute and thermal dispersion information
-C.2.12 .. ALPHL(IPMZ),ALPHT(IPMZ),IPMZ=1 to NPMZ [1.7];(O) - SOLUTE [1.4] 
-C..          and/or HEAT [1.4]
-C.2.10.3 .. ABPM(IPMZ),IPMZ=1 to NPMZ [1.7]
 C------------------------------------------------------------------------------
 C.....Porous media solute property information
 C.2.13 .. DBKD(IPMZ),IPMZ=1 to NPMZ [1.7];(O) - SOLUTE [1.4]
 C...REMOVED...
 C------------------------------------------------------------------------------
 C.....Source-sink well information
-C.2.14.1 .. IWEL,XW,YW,ZBW,ZTW,WBOD,WQMETH[I];(O) - NWEL [1.6] >0
 C.2.14.1 .. well id number,x,y, diameter, wqmeth
-C.2.14.2 .. WCF(L);L = 1 to NZ (EXCLUSIVE) by ELEMENT
 C.2.14.2 .. cell number, fraction of cell that is screened
 C.2.14.3 .. WSF(L);L = 1 to NZ (EXCLUSIVE) by ELEMENT
 C.2.14.4 .. WRISL,WRID,WRRUF,WRANGL;(O) - NWEL [1.6] >0 and
@@ -1740,21 +1734,26 @@ C.2.14.6 .. End with END
 C.2.14.7 .. MXITQW{14},TOLDPW{6.E-3},TOLFPW{.001},TOLQW{.001},DAMWRC{2.},
 C..          DZMIN{.01},EPSWR{.001};(O) - NWEL [1.6] >0
 C..          and WRCALC(WQMETH[2.14.3] >30)
-C..  well number, x, y, diameter, wqmeth
-C..  well number, x, y, zb, zt, db, dt, diameter, wqmeth
+C.2.14.8 .. well number, x, y, zb, zt, db, dt, diameter, wqmeth
 1    6.0960000e+02    6.0960000e+02   -3.0480000e+01    0.0000000e+00     0.0000000e+00    0.0000000e+00 3.048000e-01 11
-C..  cell number, screened interval below node (m), screened interval above node (m)
+C.2.14.9 .. cell number, screened interval below node (m), screened interval above node (m)
     841 0.000000e+00 1.524000e+01
     2522 1.524000e+01 0.000000e+00
+C ..  end 2.14.9
 END
+C.2.14.8 .. well number, x, y, zb, zt, db, dt, diameter, wqmeth
 2    6.7056000e+02    6.0960000e+02   -3.0480000e+00    0.0000000e+00     0.0000000e+00    0.0000000e+00 3.048000e-01 11
-C..  cell number, screened interval below node (m), screened interval above node (m)
+C.2.14.9 .. cell number, screened interval below node (m), screened interval above node (m)
     2524 3.048000e+00 0.000000e+00
+C ..  end 2.14.9
 END
+C.2.14.8 .. well number, x, y, zb, zt, db, dt, diameter, wqmeth
 3    7.3152000e+02    6.0960000e+02   -3.0480000e+00    0.0000000e+00     0.0000000e+00    0.0000000e+00 3.048000e-01 11
-C..  cell number, screened interval below node (m), screened interval above node (m)
+C.2.14.9 .. cell number, screened interval below node (m), screened interval above node (m)
     2526 3.048000e+00 0.000000e+00
+C ..  end 2.14.9
 END
+C .. end 2.14.8
 END
 C------------------------------------------------------------------------------
 C.....Boundary condition information
@@ -1763,37 +1762,16 @@ C.....     Specified value b.c.
 C.2.15 .. segment, cell number, ibc code
 C------------------------------------------------------------------------------
 C.....     Specified flux b.c.
-C.2.16 modified: segment number, cell_number, face, area
+C.2.16 .. modified: segment number, cell_number, face_index, area
 C------------------------------------------------------------------------------
-C.....     Aquifer and river leakage b.c.
-C.2.16.1 modified: segment number, cell_number, face, area, permeability, thickness, elevation
+C.....    Aquifer leakage b.c.
+C.2.17 .. segment number, cell_number, face_index, area, permeability, thickness, elevation
 C.....          River leakage b.c.
-C.2.16.3 .. X1,Y1,X2,Y2,KRBC,BBRBC,ZERBC;(O) - NLBC [1.6] > 0 ***obsolete
-C.2.16.3 .. seg number cell number, area, leakance, z
-C.2.16.4 .. End with END
+C.2.17.1 .. segment number cell number, area, leakance, z
 C.....          Drain leakage b.c.
-C.2.17.3 .. seg number, cell number, area, leakance, z
-C.2.17.4 .. End with END
-C------------------------------------------------------------------------------
-C.....     Aquifer influence functions
-C.2.18.1 .. IBC by x,y,z range {0.1-0.3} with no IMOD parameter;(O) -
-C..          NAIFC [1.6] > 0
-C.2.18.2 .. UVAIFC by x,y,z range {0.1-0.3};(O) - NAIFC [1.6] > 0
-C.2.18.3 .. IAIF;(O) - NAIFC [1.6] > 0
-C.....          Pot  a.i.f.
-C.2.18.4A .. ABOAR,POROAR,VOAR;(O) - IAIF [2.18.3] = 1
-C.....          Transient, Carter-Tracy a.i.f.
-C.2.18.4B .. KOAR,ABOAR,VISOAR,POROAR,BOAR,RIOAR,ANGOAR;(O) -
-C..          IAIF [2.18.3] = 2
-C------------------------------------------------------------------------------
-C.....     Heat conduction b.c.
-C.2.19.1 .. ZHCBC(K);(O) - HEAT [1.4] and NHCBC [1.6] > 0
-C.2.19.2 .. IBC by x,y,z range {0.1-0.3} with no IMOD parameter;(O) - 
-c..          HEAT [1.4] and NHCBC [1.6] > 0
-C.2.19.3 .. UDTHHC by x,y,z range {0.1-0.3} FOR HCBC NODES;(O) -
-C..          HEAT [1.4] and NHCBC [1.6] > 0
-C.2.19.4 .. UKHCBC by x,y,z range {0.1-0.3} FOR HCBC NODES;(O) -
-C..          HEAT [1.4] and NHCBC [1.6] > 0
+C.2.18.1 .. segment number, cell number, area, leakance, elevation
+C.....       Aquifer influence functions not available
+C.....       Heat conduction not available
 C------------------------------------------------------------------------------
 C.....Free surface b.c.
 C.2.20 .. FRESUR[T/F] ADJ_WR_RATIO[T/N]
@@ -1810,6 +1788,7 @@ C..          NOT ICHWT [2.21.2]
   0.0000000e+00   1.2192000e+03   0.0000000e+00   1.2192000e+03  -3.0480000e+01   0.0000000e+00
      0. 4
      1681*2.989066920000e+05   1681*0.000000000000e+00  
+C .. End 2.21.3
 END
 C.2.21.3C .. HWT by x,y,z range {0.1-0.3};(O) - FRESUR [2.20] and
 C..          ICHWT [2.21.2]
@@ -1819,17 +1798,16 @@ C.2.21.5 .. NZTPHC, ZTHC(I),TVZHC(I);(O) - HEAT [1.4] and NHCBC [1.6] >0,
 C..          limit of 5
 C.2.21.6B .. C by x,y,z range {0.1-0.3};(O) - SOLUTE [1.4] and NOT ICCPRO
 C..           [2.21.1]
-C...Initial solution 
+C.2.21.7 .. Initial solution 
 C------------------------------------------------------------------------------
 C.....Calculation information
 C.2.22.1 .. FDSMTH,FDTMTH
      0  1
-C.2.22.1a .. CROSD [T/F]
-C.2.22.2 .. TOLDEN{.001},MAXITN{5}
+C.2.22.2 .. CROSD [T/F]
+C.2.22.4 .. TOLDEN{.001},MAXITN{5}
      .001  100
-C.....     Red-black restarted conjugate gradient solver
-C.2.22.5 .. IDIR,MILU,NSDR,EPSSLV{1.e-8},MAXIT2{500};
-C..          (O) - SLMETH [1.8] = 3
+C.....     restarted conjugate gradient solver
+C.2.22.5 .. IDIR,MILU,NSDR,EPSSLV{1.e-8},MAXIT2{500}; (O) - SLMETH [1.8] = 3
      1 t 10 1e-10 500
 C------------------------------------------------------------------------------
 C.....Output information
@@ -1844,12 +1822,43 @@ C.2.23.3 .. ORENPR[I];(O) - NOT CYLIND [1.4]
 C.2.23.4 .. PLTZON[T/F];(O) - PRTPMP [2.23.1]
 C.2.23.5 .. PRTIC_XYZ_WELL[T/F]
 f 
+C.2.23.8 .. Number of zones for flow rates: num_flo_zones 
+1
+C.2.23.9 .. Title data for zone number 1 
+ 1 Surround well
+C.2.23.12 .. Internal boundaries: count; (O) - num_flo_zones > 0
+ 88
+C.2.23.13 .. Internal boundaries: list of [cell number, face index] pairs; (O) - num_flo_zones > 0
+     631  3     631  2     632  2     633  2     634  2
+     635  2     636  2     637  2     638  2     639  2
+     640  2     641  4     641  2     672  3     682  4
+     713  3     723  4     754  3     764  4     795  3
+     805  4     836  3     846  4     877  3     887  4
+     918  3     928  4     959  3     969  4     1000  3
+     1010  4     1041  3     1041  5     1042  5     1043  5
+     1044  5     1045  5     1046  5     1047  5     1048  5
+     1049  5     1050  5     1051  4     1051  5     2312  3
+     2312  2     2313  2     2314  2     2315  2     2316  2
+     2317  2     2318  2     2319  2     2320  2     2321  2
+     2322  4     2322  2     2353  3     2363  4     2394  3
+     2404  4     2435  3     2445  4     2476  3     2486  4
+     2517  3     2527  4     2558  3     2568  4     2599  3
+     2609  4     2640  3     2650  4     2681  3     2691  4
+     2722  3     2722  5     2723  5     2724  5     2725  5
+     2726  5     2727  5     2728  5     2729  5     2730  5
+     2731  5     2732  4     2732  5
+C.2.23.26 .. Well cells: count; (O) nwel > 0
+ 4
+C.2.23.27 .. Well cells: list of cell numbers; (O) nwel > 0
+     841     2522     2524     2526
+C.... Use as many 2.23.9-2.23.27 lines as necessary
+C .. End 2.23.8 Zone flow accounting
+END
 C------------------------------------------------------------------------------
 C------------------------------------------------------------------------------
 C..... TRANSIENT DATA - READ3
 C.3.1 .. THRU[T/F]
      f
-C.....If THRU is true, proceed to record 3.99
 C------------------------------------------------------------------------------
 C.....The following is for NOT THRU
 C------------------------------------------------------------------------------
@@ -1859,10 +1868,11 @@ C.3.2.1 .. RDWTD[T/F];(O) - NWEL [1.6] > 0
 C.3.2.2 .. IWEL,QWV,PWSUR,PWKT,TWSRKT,CWKT;(O) - RDWTD [3.2.1] 
 C.....Use as many 3.2.2 lines as necessay
 C.3.2.3 .. End with END
-C..  well sequence number, q, solution number
+C.3.2.4 .. well sequence number, q, solution number
 1 -1.888000e+00 -1
 2 -0.000000e+00 -1
 3 -0.000000e+00 -1
+C .. End 3.2.4
 END
 C------------------------------------------------------------------------------
 C.....Boundary condition information
@@ -1874,30 +1884,20 @@ C.3.3.3 .. TSBC by x,y,z range {0.1-0.3};(O) - RDSPBC [3.3.1] and
 C..          HEAT [1.4]
 C.3.3.4 .. CSBC by x,y,z range {0.1-0.3}; (O) - RDSPBC [3.3.1] and
 C..          SOLUTE [1.4]
-C.3.3.5 .. TNP B.C. by x,y,z range {0.1-0.3};(O) - RDSTBC [3.3.1] and
-C..          HEAT [1.4]
-C.3.3.6 .. CNP B.C. by x,y,z range {0.1-0.3};(O) - RDSCBC [3.3.1] and
+C.3.3.3 .. CNP B.C. by x,y,z range {0.1-0.3};(O) - RDSCBC [3.3.1] and
 C..          SOLUTE [1.4]
 C------------------------------------------------------------------------------
 C.....     Specified flux b.c.
 C.3.4.1 .. RDFLXQ,RDFLXH,RDFLXS; all [T/F];(O) - NFBC [1.6] > 0
-C.3.4.6 .. QHFX,QHFY,QHFZ B.C. by x,y,z range {0.1-0.3};(O) - RDFLXH [3.4.5]
-C.3.4.7 .. QSFX,QSFY,QSFZ B.C. by x,y,z range {0.1-0.3};(O) - RDFLXS [3.4.1]
 C------------------------------------------------------------------------------
 C.....     Leakage b.c.
 C.3.5.1 .. RDLBC[T/F];(O) - NLBC [1.6] > 0
 C.....River Leakage
-C.3.5.5 .. RDRBC t/f
-C.3.5.5 .. X1,Y1,X2,Y2,HRBC,DENRBC,VISRBC,TRBC,CRBC;(O) - RDRBC [3.5.1]
-C.....Use as many 3.5.5 lines as necessary
-C.3.5.5 .. river segment number, head, solution 1, solution 2, weight solution 1
-C.3.5.6 .. End with END
-C------------------------------------------------------------------------------
-C.....     Aquifer influence function b.c.
-C.3.6.1 .. RDAIF[T/F];(O) - NAIFC [1.6] > 0
-C.3.6.2 .. DENOAR by x,y,z range {0.1-0.3};(O) - RDAIF [3.6.1]
-C.3.6.3 .. TAIF by x,y,z range {0.1-0.3};(O) - RDAIF [3.6.1] and HEAT [1.4]
-C.3.6.4 .. CAIF by x,y,z range {0.1-0.3};(O) - RDAIF [3.6.1] and SOLUTE [1.4]
+C.3.6.1 .. RDRBC t/f
+C.3.6.2 .. river segment number, head, solution 1, solution 2, weight solution 1
+C.....    Drain leakage b.c.
+C.....    No transient parameters
+C.....    Aquifer influence function b.c. not available
 C------------------------------------------------------------------------------
 C.....Calculation information
 C.3.7.1 .. RDCALC[T/F]
@@ -1918,15 +1918,17 @@ C.3.8.1.1 .. PRT_BC; [T/F]
      F
 C.3.8.2 .. PRIHDF_CONC, PRIHDF_HEAD, PRIHDF_VEL
      -10.000000 -10.000000 -10.000000
-C.3.8.2a .. PRI_ICHEAD; [T/F]
+C.3.8.2.1 .. PRI_ICHEAD; [T/F]
      f 
+C.3.8.2.2 .. pri_zon_flo
+     -10.000000
 C.3.8.3 .. CHKPTD[T/F],PRICPD,SAVLDO[T/F]
 f 0 f
 C------------------------------------------------------------------------------
 C.....Contour and vector map information
 C.3.9.1 .. CNTMAP[T/F], PRIMAPHEAD, COMPMAP[T/F], PRINT_XYZ_COMP, VECMAP[T/F], PRIMAPV
      t -10.000000     f  0.000000     t -10.000000
-C.3.10.2 .. PRIXYZ_WELL, PRINT_RESTART, PRINT_END_OF_PERIOD [t/t]
+C.3.9.2 .. PRIXYZ_WELL, PRINT_RESTART, PRINT_END_OF_PERIOD [t/t]
       0.000000  0.000000     T
 C------------------------------------------------------------------------------
 C.....End of transient information

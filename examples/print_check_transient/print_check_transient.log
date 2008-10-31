@@ -130,6 +130,7 @@ Processing flow and transport data file.
 	        end_time                       31000   yr
 	PRINT_INITIAL
 		echo_input             false
+WARNING: River width units not defined in UNITS data block, meters assumed.
 WARNING: Guessing boundary condition face to be Z
 Please specify X, Y, or Z face for LEAKY_BC and FLUX_BC.
 WARNING: Guessing boundary condition face to be Y

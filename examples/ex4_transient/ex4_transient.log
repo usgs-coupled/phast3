@@ -184,6 +184,7 @@ Processing flow and transport data file.
 			sample_grid Y 3
 			sample_grid Z 3
 	END
+WARNING: River width units not defined in UNITS data block, meters assumed.
 WARNING: Guessing boundary condition face to be Z
 Please specify X, Y, or Z face for LEAKY_BC and FLUX_BC.
 WARNING: Guessing boundary condition face to be Z
