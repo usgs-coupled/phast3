@@ -653,16 +653,20 @@ struct key
 	{"river", 0},
 	{"wells", 0},
 	{"well", 0},
-	{"flow"},
-	{"print_locations"},
-	{"print_location"},
-	{"steady_flow"},
-	{"steady_state_flow"},
-	{"print_initial"},
-	{"solute_transport"},
-	{"specified_head_bc"},
-	{"drain"},
-	{"zone_budget"}
+	{"flow", 0},
+	{"print_locations", 0},
+	{"print_location", 0},
+	{"steady_flow", 0},
+	{"steady_state_flow", 0},
+	{"print_initial", 0},
+	{"solute_transport", 0},
+	{"specified_head_bc", 0},
+	{"drain", 0},
+	{"zone_budget", 0}
+	,{"zone_flow_rate", 0}
+	,{"zone_flow_rates", 0}
+	,{"zone_flowrate", 0}
+	,{"zone_flowrates", 0}
 };
 int
 	NKEYS = (sizeof(keyword) / sizeof(struct key));	/* Number of valid keywords */

@@ -178,6 +178,10 @@ read_input(void)
 	  32      "specified_head_bc"
 	  33      "drain"
 	  34      "zone_budget"
+	  35	  "zone_flow_rate"
+	  36	"zone_flow_rates"
+	  37	"zone_flowrate"
+	  38	"zone_flowrates"
  */
 	for (;;)
 	{
@@ -273,6 +277,10 @@ read_input(void)
 			read_drain();
 			break;
 		case 34:				/* zone_budget */
+		case 35:				/* zone_flow_rate */
+		case 36:				/* zone_flow_rates */
+		case 37:				/* zone_flowrate */
+		case 38:				/* zone_flowrates */
 			read_zone_budget();
 			break;
 		}
@@ -1608,9 +1616,10 @@ read_media(void)
 		"perimeter",			/* 37 */
 		"top",					/* 38 */
 		"bottom",				/* 39 */
-		"description",			/* 40 */
+		"description"			/* 40 */
+		,"box"                  /* 41 */
 	};
-	int count_opt_list = 41;
+	int count_opt_list = 42;
 	/*
 	 *   Read grid data
 	 */
@@ -1880,6 +1889,7 @@ read_media(void)
 			}
 			break;
 		case 17:				/* zone */
+		case 41:				/* box */
 			/*
 			 *   Allocate space for grid_elt, read zone data
 			 */
@@ -2355,9 +2365,10 @@ read_head_ic(void)
 		"perimeter",			/* 7 */
 		"top",					/* 8 */
 		"bottom",				/* 9 */
-		"description",			/* 10 */
+		"description"			/* 10 */
+		,"box"                  /* 11 */
 	};
-	int count_opt_list = 11;
+	int count_opt_list = 12;
 	/*
 	 *   Read grid data
 	 */
@@ -2394,6 +2405,7 @@ read_head_ic(void)
 			input_error++;
 			break;
 		case 0:				/* zone */
+		case 11:			/* box */
 			/*
 			 *   Allocate space for head_ic, read zone data
 			 */
@@ -2673,9 +2685,10 @@ read_chemistry_ic(void)
 		"perimeter",			/* 15 */
 		"top",					/* 16 */
 		"bottom",				/* 17 */
-		"description",			/* 18 */
+		"description"			/* 18 */
+		,"box"                  /* 19 */
 	};
-	int count_opt_list = 19;
+	int count_opt_list = 20;
 	/*
 	 *   Read chemical initial condition data
 	 */
@@ -2711,6 +2724,7 @@ read_chemistry_ic(void)
 			input_error++;
 			break;
 		case 0:				/* zone */
+		case 19:			/* box */
 			/*
 			 *   Allocate space for chem_ic, read zone data
 			 */
@@ -3525,9 +3539,10 @@ read_specified_value_bc(void)
 		"top",					/* 13 */
 		"bottom",				/* 14 */
 		"description",			/* 15 */
-		"exterior_cells_only"	/* 16 */
+		"exterior_cells_only"   /* 16 */
+		,"box"                  /* 17 */
 	};
-	int count_opt_list = 17;
+	int count_opt_list = 18;
 	/*
 	 *   Read chemical initial condition data
 	 */
@@ -3564,6 +3579,7 @@ read_specified_value_bc(void)
 			input_error++;
 			break;
 		case 0:				/* zone */
+		case 17:			/* box */
 			/*
 			 *   Allocate space for bc, read zone data
 			 */
@@ -3919,9 +3935,10 @@ read_flux_bc(void)
 		"perimeter",			/* 9 */
 		"top",					/* 10 */
 		"bottom",				/* 11 */
-		"description",			/* 12 */
+		"description"			/* 12 */
+		,"box"                  /* 13 */
 	};
-	int count_opt_list = 13;
+	int count_opt_list = 14;
 	/*
 	 *   Read flux boundary condition
 	 */
@@ -3957,8 +3974,8 @@ read_flux_bc(void)
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			input_error++;
 			break;
-		case 0:
-			/* zone */
+		case 0:			/* zone */
+		case 13:		/* box */
 			/*
 			 *   Allocate space for bc, read zone data
 			 */
@@ -4272,9 +4289,10 @@ read_leaky_bc(void)
 		"perimeter",			/* 12 */
 		"top",					/* 13 */
 		"bottom",				/* 14 */
-		"description",			/* 15 */
+		"description"			/* 15 */
+		,"box"                  /* 16 */
 	};
-	int count_opt_list = 16;
+	int count_opt_list = 17;
 	/*
 	 *   Read chemical initial condition data
 	 */
@@ -4311,6 +4329,7 @@ read_leaky_bc(void)
 			input_error++;
 			break;
 		case 0:				/* zone */
+		case 16:			/* box */
 			/*
 			 *   Allocate space for bc, read zone data
 			 */
@@ -8582,9 +8601,10 @@ read_print_locations(void)
 		"perimeter",			/* 13 */
 		"top",					/* 14 */
 		"bottom",				/* 15 */
-		"description",			/* 16 */
+		"description"			/* 16 */
+		,"box"                  /* 17 */
 	};
-	int count_opt_list = 17;
+	int count_opt_list = 18;
 	int count_zones = 0;
 
 	/*
@@ -8625,6 +8645,7 @@ read_print_locations(void)
 			input_error++;
 			break;
 		case 0:				/* zone */
+		case 17:			/* box */
 			count_zones++;
 			/*
 			 *   Allocate space for print_zone, read zone data
@@ -9529,8 +9550,9 @@ read_zone_budget(void)
 		"bottom",				/* 5 */
 		"description",			/* 6 */
 		"combination"			/* 7 */
+		,"box"                  /* 8 */
 	};
-	int count_opt_list = 8;
+	int count_opt_list = 9;
 	/*
 	 *   Read grid data
 	 */
@@ -9574,6 +9596,7 @@ read_zone_budget(void)
 			input_error++;
 			break;
 		case 0:				/* zone */
+		case 8:				/* box */
 			/*
 			 *   Allocate space for head_ic, read zone data
 			 */
