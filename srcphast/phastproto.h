@@ -1,19 +1,20 @@
 /* 
  * hdf.c
  */
-#include <iostream>     // std::cout std::cerr
+#include <iostream>				// std::cout std::cerr
 #ifdef HDF5_CREATE
 #ifdef PHREEQC_IDENT
-static char const svnid[] = "$Id$";
+static char const svnid[] =
+	"$Id$";
 #endif
 /*
  *   Functions called from C
  */
 /*extern "C" {*/
-	void HDF_Init(char* prefix, int prefix_l);
-	void HDFBeginCTimeStep(void);
-	void HDFSetCell(const int n);
-	void HDFEndCTimeStep(void);
+void HDF_Init(char *prefix, int prefix_l);
+void HDFBeginCTimeStep(void);
+void HDFSetCell(const int n);
+void HDFEndCTimeStep(void);
 /*}*/
 
 /*
@@ -39,16 +40,22 @@ static char const svnid[] = "$Id$";
 #define PRNTAR_HDF             prntar_hdf_
 #define HDF_VEL                hdf_vel_
 #endif
-extern "C" {
-void HDF_INIT_INVARIANT(void);
-void HDF_Finalize(void);
-void HDF_FINALIZE_INVARIANT(void);
-void HDF_OPEN_TIME_STEP(double* time, double* cnvtmi, int* print_chem, int* print_vel, int* f_scalar_count);
-void HDF_CLOSE_TIME_STEP(void);
-void HDF_VEL(double vx_node[], double vy_node[], double vz_node[], int vmask[]);
-void HDF_WRITE_FEATURE(char* feature_name, int* nodes1, int* node_count, int feature_name_l);
-void HDF_WRITE_GRID(double x[], double y[], double z[], int *nx, int *ny, int *nz, int ibc[], char* UTULBL, int UTULBL_l);
-void PRNTAR_HDF(double array[], double frac[], double* cnv, char* name, int name_l);
+extern "C"
+{
+	void HDF_INIT_INVARIANT(void);
+	void HDF_Finalize(void);
+	void HDF_FINALIZE_INVARIANT(void);
+	void HDF_OPEN_TIME_STEP(double *time, double *cnvtmi, int *print_chem,
+							int *print_vel, int *f_scalar_count);
+	void HDF_CLOSE_TIME_STEP(void);
+	void HDF_VEL(double vx_node[], double vy_node[], double vz_node[],
+				 int vmask[]);
+	void HDF_WRITE_FEATURE(char *feature_name, int *nodes1, int *node_count,
+						   int feature_name_l);
+	void HDF_WRITE_GRID(double x[], double y[], double z[], int *nx, int *ny,
+						int *nz, int ibc[], char *UTULBL, int UTULBL_l);
+	void PRNTAR_HDF(double array[], double frac[], double *cnv, char *name,
+					int name_l);
 }
 #endif
 
@@ -57,17 +64,18 @@ void PRNTAR_HDF(double array[], double frac[], double* cnv, char* name, int name
  */
 
 #ifdef USE_MPI
- FILE *mpi_fopen(const char *filename, const char *mode);
- int mpi_set_subcolumn(double *frac);
- int mpi_rebalance_load(double time_per_cell, double *frac, int transfer);
- int mpi_set_random(void);
- int distribute_from_root(double *fraction, int *dim, int *print_sel,
-			  double *time_hst, double *time_step_hst, int *prslm,
-			  double *frac, int *printzone_chem, int *printzone_xyz, 
-			  int *print_out, int *print_hdf, int *print_restart, double *pv, double *pv0);
- FILE *mpi_fopen(const char *filename, const char *mode);
+FILE *mpi_fopen(const char *filename, const char *mode);
+int mpi_set_subcolumn(double *frac);
+int mpi_rebalance_load(double time_per_cell, double *frac, int transfer);
+int mpi_set_random(void);
+int distribute_from_root(double *fraction, int *dim, int *print_sel,
+						 double *time_hst, double *time_step_hst, int *prslm,
+						 double *frac, int *printzone_chem,
+						 int *printzone_xyz, int *print_out, int *print_hdf,
+						 int *print_restart, double *pv, double *pv0);
+FILE *mpi_fopen(const char *filename, const char *mode);
 #endif
-int int_compare (const void *ptr1, const void *ptr2);
+int int_compare(const void *ptr1, const void *ptr2);
 
 /*
  *  hstsubs.c
@@ -91,32 +99,36 @@ int xsurface_save_hst(int n);
 int xs_s_assemblage_save_hst(int n);
 int calc_dummy_kinetic_reaction(struct kinetics *kinetics_ptr);
 int print_using_hst(int cell_number);
-int file_exists(const char* name);
-int file_rename(const char *temp_name, const char* name, const char* backup_name);
+int file_exists(const char *name);
+int file_rename(const char *temp_name, const char *name,
+				const char *backup_name);
 /*
  * merge.c
  */
 #if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
-void MergeInit(char* prefix, int prefix_l, int solute);
+void MergeInit(char *prefix, int prefix_l, int solute);
 void MergeFinalize(void);
 void MergeFinalizeEcho(void);
 void MergeBeginTimeStep(int print_sel, int print_out);
 void MergeEndTimeStep(int print_sel, int print_out);
 void MergeBeginCell(void);
 void MergeEndCell(int print_sel, int print_out, int print_hdf, int n_proc);
-int merge_handler(const int action, const int type, const char *name, const int stop, void *cookie, const char *format, va_list args);
-int Merge_vfprintf(FILE *stream, const char *format, va_list args);
+int merge_handler(const int action, const int type, const char *name,
+				  const int stop, void *cookie, const char *format,
+				  va_list args);
+int Merge_vfprintf(FILE * stream, const char *format, va_list args);
 #endif
 /*
  * cxxHstSubs.cxx
  */
 #include "Solution.h"
 void buffer_to_cxxsolution(int n);
-void cxxsolution_to_buffer(cxxSolution *solution_ptr);
+void cxxsolution_to_buffer(cxxSolution * solution_ptr);
 void unpackcxx_from_hst(double *fraction, int *dim);
-void unpackcxx_from_hst_confined(double *fraction, int *dim, double *pv0, double *pv);
-void system_cxxInitialize(int i, int n_user_new, int *initial_conditions1, int *initial_conditions2, double *fraction1);
+void unpackcxx_from_hst_confined(double *fraction, int *dim, double *pv0,
+								 double *pv);
+void system_cxxInitialize(int i, int n_user_new, int *initial_conditions1,
+						  int *initial_conditions2, double *fraction1);
 int write_restart(double hst_time);
 int scale_cxxsystem(int iphrq, LDBLE frac);
 int partition_uz(int iphrq, int ihst, LDBLE new_frac);
-
