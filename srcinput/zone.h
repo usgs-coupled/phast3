@@ -4,7 +4,8 @@ class Point;
 /* ---------------------------------------------------------------------- 
  *   Zone
  * ---------------------------------------------------------------------- */
-struct zone {
+struct zone
+{
 	int zone_defined;
 	double x1;
 	double y1;
@@ -14,11 +15,11 @@ struct zone {
 	double z2;
 
 	// constructors
-	zone(void);
-	zone(Point min, Point max);
-	zone(double x1, double y1, double z1, double x2, double y2, double z2);
-	zone(struct zone *zone_ptr);
-	~zone(void);
+	  zone(void);
+	  zone(Point min, Point max);
+	  zone(double x1, double y1, double z1, double x2, double y2, double z2);
+	  zone(struct zone *zone_ptr);
+	 ~zone(void);
 
 	// methods
 	bool Point_in_zone(Point p);

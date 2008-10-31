@@ -47,24 +47,26 @@ NN_RULE nn_rule = SIBSON;
 
 #include "version.h"
 
-void nn_quit(const char* format, ...)
+void
+nn_quit(const char *format, ...)
 {
-    va_list args;
+	va_list args;
 
-    fflush(stdout);             /* just in case, to have the exit message
-                                 * last */
+	fflush(stdout);				/* just in case, to have the exit message
+								 * last */
 
-    fprintf(stderr, "  error: libnn: ");
-    va_start(args, format);
-    vfprintf(stderr, format, args);
-    va_end(args);
+	fprintf(stderr, "  error: libnn: ");
+	va_start(args, format);
+	vfprintf(stderr, format, args);
+	va_end(args);
 
-    exit(1);
+	exit(1);
 }
 
-int circle_contains(circle* c, point* p)
+int
+circle_contains(circle * c, point * p)
 {
-    return _hypot(c->x - p->x, c->y - p->y) <= c->r;
+	return _hypot(c->x - p->x, c->y - p->y) <= c->r;
 }
 
 /* Smoothes the input point array by averaging the input x, y and z values
@@ -78,126 +80,137 @@ int circle_contains(circle* c, point* p)
  * @param nx Number of x nodes in decimation
  * @param ny Number of y nodes in decimation
  */
-void points_thingrid(int* pn, point** ppoints, int nx, int ny)
+void
+points_thingrid(int *pn, point ** ppoints, int nx, int ny)
 {
-    int n = *pn;
-    point* points = *ppoints;
-    double xmin = DBL_MAX;
-    double xmax = -DBL_MAX;
-    double ymin = DBL_MAX;
-    double ymax = -DBL_MAX;
-    int nxy = nx * ny;
-    double* sumx = (double *) calloc(nxy, sizeof(double));
-    double* sumy = (double *) calloc(nxy, sizeof(double));
-    double* sumz = (double *) calloc(nxy, sizeof(double));
-    int* count = (int *) calloc(nxy, sizeof(int));
-    double stepx = 0.0;
-    double stepy = 0.0;
-    int nnew = 0;
-    point* pointsnew = NULL;
-    int i, j, ii, index;
+	int n = *pn;
+	point *points = *ppoints;
+	double xmin = DBL_MAX;
+	double xmax = -DBL_MAX;
+	double ymin = DBL_MAX;
+	double ymax = -DBL_MAX;
+	int nxy = nx * ny;
+	double *sumx = (double *) calloc(nxy, sizeof(double));
+	double *sumy = (double *) calloc(nxy, sizeof(double));
+	double *sumz = (double *) calloc(nxy, sizeof(double));
+	int *count = (int *) calloc(nxy, sizeof(int));
+	double stepx = 0.0;
+	double stepy = 0.0;
+	int nnew = 0;
+	point *pointsnew = NULL;
+	int i, j, ii, index;
 
-    if (nn_verbose)
-        fprintf(stderr, "thinned: %d points -> ", *pn);
+	if (nn_verbose)
+		fprintf(stderr, "thinned: %d points -> ", *pn);
 
-    if (nx < 1 || ny < 1) {
-        free(points);
-        *ppoints = NULL;
-        *pn = 0;
-        if (nn_verbose)
-            fprintf(stderr, "0 points");
-        return;
-    }
+	if (nx < 1 || ny < 1)
+	{
+		free(points);
+		*ppoints = NULL;
+		*pn = 0;
+		if (nn_verbose)
+			fprintf(stderr, "0 points");
+		return;
+	}
 
-    for (ii = 0; ii < n; ++ii) {
-        point* p = &points[ii];
+	for (ii = 0; ii < n; ++ii)
+	{
+		point *p = &points[ii];
 
-        if (p->x < xmin)
-            xmin = p->x;
-        if (p->x > xmax)
-            xmax = p->x;
-        if (p->y < ymin)
-            ymin = p->y;
-        if (p->y > ymax)
-            ymax = p->y;
-    }
+		if (p->x < xmin)
+			xmin = p->x;
+		if (p->x > xmax)
+			xmax = p->x;
+		if (p->y < ymin)
+			ymin = p->y;
+		if (p->y > ymax)
+			ymax = p->y;
+	}
 
-    stepx = (nx > 1) ? (xmax - xmin) / nx : 0.0;
-    stepy = (ny > 1) ? (ymax - ymin) / ny : 0.0;
+	stepx = (nx > 1) ? (xmax - xmin) / nx : 0.0;
+	stepy = (ny > 1) ? (ymax - ymin) / ny : 0.0;
 
-    for (ii = 0; ii < n; ++ii) {
-        point* p = &points[ii];
-        int index;
+	for (ii = 0; ii < n; ++ii)
+	{
+		point *p = &points[ii];
+		int index;
 
-        if (nx == 1)
-            i = 0;
-        else {
-            double fi = (p->x - xmin) / stepx;
+		if (nx == 1)
+			i = 0;
+		else
+		{
+			double fi = (p->x - xmin) / stepx;
 
-            if (fabs(rint(fi) - fi) < EPS)
-                i = rint(fi);
-            else
-                i = (int) floor(fi);
-        }
-        if (ny == 1)
-            j = 0;
-        else {
-            double fj = (p->y - ymin) / stepy;
+			if (fabs(rint(fi) - fi) < EPS)
+				i = rint(fi);
+			else
+				i = (int) floor(fi);
+		}
+		if (ny == 1)
+			j = 0;
+		else
+		{
+			double fj = (p->y - ymin) / stepy;
 
-            if (fabs(rint(fj) - fj) < EPS)
-                j = rint(fj);
-            else
-                j = (int) floor(fj);
-        }
+			if (fabs(rint(fj) - fj) < EPS)
+				j = rint(fj);
+			else
+				j = (int) floor(fj);
+		}
 
-        if (i == nx)
-            i--;
-        if (j == ny)
-            j--;
-        index = i + j * nx;
-        sumx[index] += p->x;
-        sumy[index] += p->y;
-        sumz[index] += p->z;
-        count[index]++;
-    }
+		if (i == nx)
+			i--;
+		if (j == ny)
+			j--;
+		index = i + j * nx;
+		sumx[index] += p->x;
+		sumy[index] += p->y;
+		sumz[index] += p->z;
+		count[index]++;
+	}
 
-    for (j = 0; j < ny; ++j) {
-        for (i = 0; i < nx; ++i) {
-            int index = i + j * nx;
+	for (j = 0; j < ny; ++j)
+	{
+		for (i = 0; i < nx; ++i)
+		{
+			int index = i + j * nx;
 
-            if (count[index] > 0)
-                nnew++;
-        }
-    }
+			if (count[index] > 0)
+				nnew++;
+		}
+	}
 
-    pointsnew = (point *) malloc(nnew * sizeof(point));
+	pointsnew = (point *) malloc(nnew * sizeof(point));
 
-    for (j = 0, index = 0, ii = 0; j < ny; ++j) {
-        for (i = 0; i < nx; ++i, ++index) {
-            int nn = count[index];
+	for (j = 0, index = 0, ii = 0; j < ny; ++j)
+	{
+		for (i = 0; i < nx; ++i, ++index)
+		{
+			int nn = count[index];
 
-            if (nn > 0) {
-                point* p = &pointsnew[ii];
+			if (nn > 0)
+			{
+				point *p = &pointsnew[ii];
 
-                p->x = sumx[index] / nn;
-                p->y = sumy[index] / nn;
-                p->z = sumz[index] / nn;
-                ii++;
-            }
-        }
-    }
+				p->x = sumx[index] / nn;
+				p->y = sumy[index] / nn;
+				p->z = sumz[index] / nn;
+				ii++;
+			}
+		}
+	}
 
-    if (nn_verbose)
-        fprintf(stderr, "%d points\n", nnew);
+	if (nn_verbose)
+		fprintf(stderr, "%d points\n", nnew);
 
-    free(sumx);
-    free(sumy);
-    free(sumz);
-    free(count);
+	free(sumx);
+	free(sumy);
+	free(sumz);
+	free(count);
 
-    free(points);
-    *ppoints = pointsnew;
-    *pn = nnew;
+	free(points);
+	*ppoints = pointsnew;
+	*pn = nnew;
 }
 
 /* Smoothes the input point array by averaging the input data (X,Y and Z
@@ -209,90 +222,101 @@ void points_thingrid(int* pn, point** ppoints, int nx, int ny)
  * @param ppoints Pointer to array of points (input/output) [*pn]
  * @param rmax Maximum allowed accumulated distance
  */
-void points_thinlin(int* nin, point** pin, double rmax)
+void
+points_thinlin(int *nin, point ** pin, double rmax)
 {
-    int nout = 0;
-    int nallocated = NALLOCATED_START;
-    point* pout = (point *) malloc(nallocated * sizeof(point));
-    double n = 0;
-    double sum_x = 0.0;
-    double sum_y = 0.0;
-    double sum_z = 0.0;
-    double sum_r = 0.0;
-    point* pprev = NULL;
-    int i;
+	int nout = 0;
+	int nallocated = NALLOCATED_START;
+	point *pout = (point *) malloc(nallocated * sizeof(point));
+	double n = 0;
+	double sum_x = 0.0;
+	double sum_y = 0.0;
+	double sum_z = 0.0;
+	double sum_r = 0.0;
+	point *pprev = NULL;
+	int i;
 
-    for (i = 0; i < *nin; ++i) {
-        point* p = &(*pin)[i];
-        double dist;
+	for (i = 0; i < *nin; ++i)
+	{
+		point *p = &(*pin)[i];
+		double dist;
 
-        if (isnan(p->x) || isnan(p->y) || isnan(p->z)) {
-            if (pprev != NULL) {
-                /*
-                 * write point 
-                 */
-                if (nout == nallocated) {
-                    nallocated = nallocated * 2;
-                    pout = (point *) realloc(pout, nallocated * sizeof(point));
-                }
-                pout[nout].x = sum_x / (double) n;
-                pout[nout].y = sum_y / (double) n;
-                pout[nout].z = sum_z / (double) n;
-                nout++;
-                /*
-                 * reset cluster 
-                 */
-                pprev = NULL;
-            }
-            continue;
-        }
+		if (isnan(p->x) || isnan(p->y) || isnan(p->z))
+		{
+			if (pprev != NULL)
+			{
+				/*
+				 * write point 
+				 */
+				if (nout == nallocated)
+				{
+					nallocated = nallocated * 2;
+					pout =
+						(point *) realloc(pout, nallocated * sizeof(point));
+				}
+				pout[nout].x = sum_x / (double) n;
+				pout[nout].y = sum_y / (double) n;
+				pout[nout].z = sum_z / (double) n;
+				nout++;
+				/*
+				 * reset cluster 
+				 */
+				pprev = NULL;
+			}
+			continue;
+		}
 
-        /*
-         * init cluster 
-         */
-        if (pprev == NULL) {
-            sum_x = p->x;
-            sum_y = p->y;
-            sum_z = p->z;
-            sum_r = 0.0;
-            n = 1;
-            pprev = p;
-            continue;
-        }
+		/*
+		 * init cluster 
+		 */
+		if (pprev == NULL)
+		{
+			sum_x = p->x;
+			sum_y = p->y;
+			sum_z = p->z;
+			sum_r = 0.0;
+			n = 1;
+			pprev = p;
+			continue;
+		}
 
-        dist = _hypot(p->x - pprev->x, p->y - pprev->y);
-        if (sum_r + dist > rmax) {
-            /*
-             * write point 
-             */
-            if (nout == nallocated) {
-                nallocated = nallocated * 2;
-                pout = (point *) realloc(pout, nallocated * sizeof(point));
-            }
-            pout[nout].x = sum_x / (double) n;
-            pout[nout].y = sum_y / (double) n;
-            pout[nout].z = sum_z / (double) n;
-            nout++;
-            /*
-             * reset cluster 
-             */
-            pprev = NULL;
-        } else {
-            /*
-             * add to cluster 
-             */
-            sum_x += p->x;
-            sum_y += p->y;
-            sum_z += p->z;
-            sum_r += dist;
-            n++;
-            pprev = p;
-        }
-    }
+		dist = _hypot(p->x - pprev->x, p->y - pprev->y);
+		if (sum_r + dist > rmax)
+		{
+			/*
+			 * write point 
+			 */
+			if (nout == nallocated)
+			{
+				nallocated = nallocated * 2;
+				pout = (point *) realloc(pout, nallocated * sizeof(point));
+			}
+			pout[nout].x = sum_x / (double) n;
+			pout[nout].y = sum_y / (double) n;
+			pout[nout].z = sum_z / (double) n;
+			nout++;
+			/*
+			 * reset cluster 
+			 */
+			pprev = NULL;
+		}
+		else
+		{
+			/*
+			 * add to cluster 
+			 */
+			sum_x += p->x;
+			sum_y += p->y;
+			sum_z += p->z;
+			sum_r += dist;
+			n++;
+			pprev = p;
+		}
+	}
 
-    free(*pin);
-    *pin = (point *) realloc(pout, nout * sizeof(point));
-    *nin = nout;
+	free(*pin);
+	*pin = (point *) realloc(pout, nout * sizeof(point));
+	*nin = nout;
 }
 
 /* Calculates X and/or Y ranges of the input array of points. If necessary,
@@ -305,65 +329,74 @@ void points_thinlin(int* nin, point** pin, double rmax)
  * @param ymin Min Y value if *ymin = NaN on input, not changed otherwise
  * @param ymax Max Y value if *ymax = NaN on input, not changed otherwise
  */
-void points_getrange(int n, point points[], double zoom, double* xmin, double* xmax, double* ymin, double* ymax)
+void
+points_getrange(int n, point points[], double zoom, double *xmin,
+				double *xmax, double *ymin, double *ymax)
 {
-    int i;
+	int i;
 
-    if (xmin != NULL) {
-        if (isnan(*xmin))
-            *xmin = DBL_MAX;
-        else
-            xmin = NULL;
-    }
-    if (xmax != NULL) {
-        if (isnan(*xmax))
-            *xmax = -DBL_MAX;
-        else
-            xmax = NULL;
-    }
-    if (ymin != NULL) {
-        if (isnan(*ymin))
-            *ymin = DBL_MAX;
-        else
-            ymin = NULL;
-    }
-    if (ymax != NULL) {
-        if (isnan(*ymax))
-            *ymax = -DBL_MAX;
-        else
-            ymax = NULL;
-    }
+	if (xmin != NULL)
+	{
+		if (isnan(*xmin))
+			*xmin = DBL_MAX;
+		else
+			xmin = NULL;
+	}
+	if (xmax != NULL)
+	{
+		if (isnan(*xmax))
+			*xmax = -DBL_MAX;
+		else
+			xmax = NULL;
+	}
+	if (ymin != NULL)
+	{
+		if (isnan(*ymin))
+			*ymin = DBL_MAX;
+		else
+			ymin = NULL;
+	}
+	if (ymax != NULL)
+	{
+		if (isnan(*ymax))
+			*ymax = -DBL_MAX;
+		else
+			ymax = NULL;
+	}
 
-    for (i = 0; i < n; ++i) {
-        point* p = &points[i];
+	for (i = 0; i < n; ++i)
+	{
+		point *p = &points[i];
 
-        if (xmin != NULL && p->x < *xmin)
-            *xmin = p->x;
-        if (xmax != NULL && p->x > *xmax)
-            *xmax = p->x;
-        if (ymin != NULL && p->y < *ymin)
-            *ymin = p->y;
-        if (ymax != NULL && p->y > *ymax)
-            *ymax = p->y;
-    }
+		if (xmin != NULL && p->x < *xmin)
+			*xmin = p->x;
+		if (xmax != NULL && p->x > *xmax)
+			*xmax = p->x;
+		if (ymin != NULL && p->y < *ymin)
+			*ymin = p->y;
+		if (ymax != NULL && p->y > *ymax)
+			*ymax = p->y;
+	}
 
-    if (isnan(zoom) || zoom <= 0.0 || zoom == 1.0)
-        return;
+	if (isnan(zoom) || zoom <= 0.0 || zoom == 1.0)
+		return;
 
-    if (xmin != NULL && xmax != NULL) {
-        double xdiff2 = (*xmax - *xmin) / 2.0;
-        double xav = (*xmax + *xmin) / 2.0;
+	if (xmin != NULL && xmax != NULL)
+	{
+		double xdiff2 = (*xmax - *xmin) / 2.0;
+		double xav = (*xmax + *xmin) / 2.0;
 
-        *xmin = xav - xdiff2 * zoom;
-        *xmax = xav + xdiff2 * zoom;
-    }
-    if (ymin != NULL && ymax != NULL) {
-        double ydiff2 = (*ymax - *ymin) / 2.0;
-        double yav = (*ymax + *ymin) / 2.0;
+		*xmin = xav - xdiff2 * zoom;
+		*xmax = xav + xdiff2 * zoom;
+	}
+	if (ymin != NULL && ymax != NULL)
+	{
+		double ydiff2 = (*ymax - *ymin) / 2.0;
+		double yav = (*ymax + *ymin) / 2.0;
 
-        *ymin = yav - ydiff2 * zoom;
-        *ymax = yav + ydiff2 * zoom;
-    }
+		*ymin = yav - ydiff2 * zoom;
+		*ymax = yav + ydiff2 * zoom;
+	}
 }
 
 /* Generates rectangular grid nx by ny using specified min and max x and y 
@@ -379,58 +412,66 @@ void points_getrange(int n, point points[], double zoom, double* xmin, double* x
  * @param nout Pointer to number of output points
  * @param pout Pointer to array of output points [*nout]
  */
-void points_generate(double xmin, double xmax, double ymin, double ymax, int nx, int ny, int* nout, point** pout)
+void
+points_generate(double xmin, double xmax, double ymin, double ymax, int nx,
+				int ny, int *nout, point ** pout)
 {
-    double stepx, stepy;
-    double x0, xx, yy;
-    int i, j, ii;
+	double stepx, stepy;
+	double x0, xx, yy;
+	int i, j, ii;
 
-    if (nx < 1 || ny < 1) {
-        *pout = NULL;
-        *nout = 0;
-        return;
-    }
+	if (nx < 1 || ny < 1)
+	{
+		*pout = NULL;
+		*nout = 0;
+		return;
+	}
 
-    *nout = nx * ny;
-    *pout = (point *) malloc(*nout * sizeof(point));
+	*nout = nx * ny;
+	*pout = (point *) malloc(*nout * sizeof(point));
 
-    stepx = (nx > 1) ? (xmax - xmin) / (nx - 1) : 0.0;
-    stepy = (ny > 1) ? (ymax - ymin) / (ny - 1) : 0.0;
-    x0 = (nx > 1) ? xmin : (xmin + xmax) / 2.0;
-    yy = (ny > 1) ? ymin : (ymin + ymax) / 2.0;
+	stepx = (nx > 1) ? (xmax - xmin) / (nx - 1) : 0.0;
+	stepy = (ny > 1) ? (ymax - ymin) / (ny - 1) : 0.0;
+	x0 = (nx > 1) ? xmin : (xmin + xmax) / 2.0;
+	yy = (ny > 1) ? ymin : (ymin + ymax) / 2.0;
 
-    ii = 0;
-    for (j = 0; j < ny; ++j) {
-        xx = x0;
-        for (i = 0; i < nx; ++i) {
-            point* p = &(*pout)[ii];
+	ii = 0;
+	for (j = 0; j < ny; ++j)
+	{
+		xx = x0;
+		for (i = 0; i < nx; ++i)
+		{
+			point *p = &(*pout)[ii];
 
-            p->x = xx;
-            p->y = yy;
-            xx += stepx;
-            ii++;
-        }
-        yy += stepy;
-    }
+			p->x = xx;
+			p->y = yy;
+			xx += stepx;
+			ii++;
+		}
+		yy += stepy;
+	}
 }
 
-int str2double(char* token, double* value)
+int
+str2double(char *token, double *value)
 {
-    char* end = NULL;
+	char *end = NULL;
 
-    if (token == NULL) {
-        *value = NaN;
-        return 0;
-    }
+	if (token == NULL)
+	{
+		*value = NaN;
+		return 0;
+	}
 
-    *value = strtod(token, &end);
+	*value = strtod(token, &end);
 
-    if (end == token) {
-        *value = NaN;
-        return 0;
-    }
+	if (end == token)
+	{
+		*value = NaN;
+		return 0;
+	}
 
-    return 1;
+	return 1;
 }
 
 /* Reads array of points from a columnar file.
@@ -440,74 +481,83 @@ int str2double(char* token, double* value)
  * @param n Pointer to number of points (output)
  * @param points Pointer to array of points [*n] (output) (to be freed)
  */
-void points_read(char* fname, int dim, int* n, point** points)
+void
+points_read(char *fname, int dim, int *n, point ** points)
 {
-    FILE* f = NULL;
-    int nallocated = NALLOCATED_START;
-    char buf[BUFSIZE];
-    char seps[] = " ,;\t";
-    char* token;
+	FILE *f = NULL;
+	int nallocated = NALLOCATED_START;
+	char buf[BUFSIZE];
+	char seps[] = " ,;\t";
+	char *token;
 
-    if (dim < 2 || dim > 3) {
-        *n = 0;
-        *points = NULL;
-        return;
-    }
+	if (dim < 2 || dim > 3)
+	{
+		*n = 0;
+		*points = NULL;
+		return;
+	}
 
-    if (fname == NULL)
-        f = stdin;
-    else {
-        if (strcmp(fname, "stdin") == 0 || strcmp(fname, "-") == 0)
-            f = stdin;
-        else {
-            f = fopen(fname, "r");
-            if (f == NULL)
-                nn_quit("%s: %s\n", fname, strerror(errno));
-        }
-    }
+	if (fname == NULL)
+		f = stdin;
+	else
+	{
+		if (strcmp(fname, "stdin") == 0 || strcmp(fname, "-") == 0)
+			f = stdin;
+		else
+		{
+			f = fopen(fname, "r");
+			if (f == NULL)
+				nn_quit("%s: %s\n", fname, strerror(errno));
+		}
+	}
 
-    *points = (point *) malloc(nallocated * sizeof(point));
-    *n = 0;
-    while (fgets(buf, BUFSIZE, f) != NULL) {
-        point* p;
+	*points = (point *) malloc(nallocated * sizeof(point));
+	*n = 0;
+	while (fgets(buf, BUFSIZE, f) != NULL)
+	{
+		point *p;
 
-        if (*n == nallocated) {
-            nallocated *= 2;
-            *points = (point *)realloc(*points, nallocated * sizeof(point));
-        }
+		if (*n == nallocated)
+		{
+			nallocated *= 2;
+			*points = (point *) realloc(*points, nallocated * sizeof(point));
+		}
 
-        p = &(*points)[*n];
+		p = &(*points)[*n];
 
-        if (buf[0] == '#')
-            continue;
-        if ((token = strtok(buf, seps)) == NULL)
-            continue;
-        if (!str2double(token, &p->x))
-            continue;
-        if ((token = strtok(NULL, seps)) == NULL)
-            continue;
-        if (!str2double(token, &p->y))
-            continue;
-        if (dim == 2)
-            p->z = NaN;
-        else {
-            if ((token = strtok(NULL, seps)) == NULL)
-                continue;
-            if (!str2double(token, &p->z))
-                continue;
-        }
-        (*n)++;
-    }
+		if (buf[0] == '#')
+			continue;
+		if ((token = strtok(buf, seps)) == NULL)
+			continue;
+		if (!str2double(token, &p->x))
+			continue;
+		if ((token = strtok(NULL, seps)) == NULL)
+			continue;
+		if (!str2double(token, &p->y))
+			continue;
+		if (dim == 2)
+			p->z = NaN;
+		else
+		{
+			if ((token = strtok(NULL, seps)) == NULL)
+				continue;
+			if (!str2double(token, &p->z))
+				continue;
+		}
+		(*n)++;
+	}
 
-    if (*n == 0) {
-        free(*points);
-        *points = NULL;
-    } else
-        *points = (point *) realloc(*points, *n * sizeof(point));
+	if (*n == 0)
+	{
+		free(*points);
+		*points = NULL;
+	}
+	else
+		*points = (point *) realloc(*points, *n * sizeof(point));
 
-    if (f != stdin)
-        if (fclose(f) != 0)
-            nn_quit("%s: %s\n", fname, strerror(errno));
+	if (f != stdin)
+		if (fclose(f) != 0)
+			nn_quit("%s: %s\n", fname, strerror(errno));
 }
 
 /** Scales Y coordinate so that the resulting set fits into square:
@@ -517,40 +567,42 @@ void points_read(char* fname, int dim, int* n, point** points)
  * @param points The points to scale
  * @return Y axis compression coefficient
  */
-double points_scaletosquare(int n, point* points)
+double
+points_scaletosquare(int n, point * points)
 {
-    double xmin, ymin, xmax, ymax;
-    double k;
-    int i;
+	double xmin, ymin, xmax, ymax;
+	double k;
+	int i;
 
-    if (n <= 0)
-        return NaN;
+	if (n <= 0)
+		return NaN;
 
-    xmin = xmax = points[0].x;
-    ymin = ymax = points[0].y;
+	xmin = xmax = points[0].x;
+	ymin = ymax = points[0].y;
 
-    for (i = 1; i < n; ++i) {
-        point* p = &points[i];
+	for (i = 1; i < n; ++i)
+	{
+		point *p = &points[i];
 
-        if (p->x < xmin)
-            xmin = p->x;
-        else if (p->x > xmax)
-            xmax = p->x;
-        if (p->y < ymin)
-            ymin = p->y;
-        else if (p->y > ymax)
-            ymax = p->y;
-    }
+		if (p->x < xmin)
+			xmin = p->x;
+		else if (p->x > xmax)
+			xmax = p->x;
+		if (p->y < ymin)
+			ymin = p->y;
+		else if (p->y > ymax)
+			ymax = p->y;
+	}
 
-    if (xmin == xmax || ymin == ymax)
-        return NaN;
-    else
-        k = (ymax - ymin) / (xmax - xmin);
+	if (xmin == xmax || ymin == ymax)
+		return NaN;
+	else
+		k = (ymax - ymin) / (xmax - xmin);
 
-    for (i = 0; i < n; ++i)
-        points[i].y /= k;
+	for (i = 0; i < n; ++i)
+		points[i].y /= k;
 
-    return k;
+	return k;
 }
 
 /** Compresses Y domain by a given multiple.
@@ -559,10 +611,11 @@ double points_scaletosquare(int n, point* points)
  * @param points The points to scale
  * @param Y axis compression coefficient as returned by points_scaletosquare()
  */
-void points_scale(int n, point* points, double k)
+void
+points_scale(int n, point * points, double k)
 {
-    int i;
+	int i;
 
-    for (i = 0; i < n; ++i)
-        points[i].y /= k;
+	for (i = 0; i < n; ++i)
+		points[i].y /= k;
 }

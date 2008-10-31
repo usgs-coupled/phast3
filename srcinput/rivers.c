@@ -1,11 +1,18 @@
 #define EXTERNAL extern
 #include "hstinpt.h"
 #include "message.h"
-static char const svnid[] = "$Id$";
-static void river_convert_coordinate_system(River *river_ptr, PHAST_Transform::COORDINATE_SYSTEM target, PHAST_Transform *map2grid);
-static void rivers_convert_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM target, PHAST_Transform *map2grid);
+static char const svnid[] =
+	"$Id$";
+static void river_convert_coordinate_system(River * river_ptr,
+											PHAST_Transform::
+											COORDINATE_SYSTEM target,
+											PHAST_Transform * map2grid);
+static void rivers_convert_coordinate_system(PHAST_Transform::
+											 COORDINATE_SYSTEM target,
+											 PHAST_Transform * map2grid);
 /* ---------------------------------------------------------------------- */
-int setup_rivers(void)
+int
+setup_rivers(void)
 /* ---------------------------------------------------------------------- */
 {
 /*
@@ -22,44 +29,56 @@ int setup_rivers(void)
 
 	gpc_polygon_init(&poly2);
 	gpc_polygon_init(&intersection);
-	if (count_rivers <= 0) return(OK);
+	if (count_rivers <= 0)
+		return (OK);
 	/*
 	 *   gpc_vertex list for cell boundary
 	 */
-	p = (gpc_vertex *) malloc((size_t) 4 * sizeof (gpc_vertex));
-	if (p == NULL) malloc_error();
+	p = (gpc_vertex *) malloc((size_t) 4 * sizeof(gpc_vertex));
+	if (p == NULL)
+		malloc_error();
 	/*
 	 *   gpc_polygon for cell boundary
 	 */
-	poly2.contour = (gpc_vertex_list*) malloc((size_t) sizeof(gpc_vertex_list));
-	if (poly2.contour == NULL) malloc_error();
+	poly2.contour =
+		(gpc_vertex_list *) malloc((size_t) sizeof(gpc_vertex_list));
+	if (poly2.contour == NULL)
+		malloc_error();
 	poly2.contour[0].vertex = p;
 	poly2.contour[0].num_vertices = 4;
 	poly2.num_contours = 1;
 	poly2.hole = (int *) malloc(sizeof(int));
-	poly2.hole[0] = 0;  // hole is false
+	poly2.hole[0] = 0;			// hole is false
 	/*
 	 *   Go through each river polygon
 	 *   Intersect with cells
 	 *   Save intersection in Cell structure
 	 */
-	for (l = 0; l < count_rivers; l++) {
-		if (rivers[l].new_def != FALSE) continue;
+	for (l = 0; l < count_rivers; l++)
+	{
+		if (rivers[l].new_def != FALSE)
+			continue;
 		river_ptr = &(rivers[l]);
 		count_points = river_ptr->count_points;
 		/*
 		 *  Go through river polygons
 		 */
-		for (m = 0; m < count_points - 1; m++) {
+		for (m = 0; m < count_points - 1; m++)
+		{
 			poly_ptr = river_ptr->points[m].polygon;
-			range_ptr = vertex_to_range(poly_ptr->contour[0].vertex, poly_ptr->contour[0].num_vertices);
+			range_ptr =
+				vertex_to_range(poly_ptr->contour[0].vertex,
+								poly_ptr->contour[0].num_vertices);
 			/*
 			 *   Set gpc_polygon for cell boundary
 			 */
-			if (range_ptr == NULL) continue;
+			if (range_ptr == NULL)
+				continue;
 			k = range_ptr->k1;
-			for (i = range_ptr->i1; i <= range_ptr->i2; i++) {
-				for (j = range_ptr->j1; j <= range_ptr->j2; j++) {
+			for (i = range_ptr->i1; i <= range_ptr->i2; i++)
+			{
+				for (j = range_ptr->j1; j <= range_ptr->j2; j++)
+				{
 					n = ijk_to_n(i, j, k);
 					p[0].x = cells[n].zone->x1;
 					p[0].y = cells[n].zone->y1;
@@ -69,11 +88,13 @@ int setup_rivers(void)
 					p[2].y = cells[n].zone->y2;
 					p[3].x = cells[n].zone->x1;
 					p[3].y = cells[n].zone->y2;
-					gpc_polygon_clip(GPC_INT, poly_ptr, &poly2, &intersection);
+					gpc_polygon_clip(GPC_INT, poly_ptr, &poly2,
+									 &intersection);
 					/*
 					 *   check if intersection empty
 					 */
-					if (intersection.num_contours == 0) {
+					if (intersection.num_contours == 0)
+					{
 						gpc_free_polygon(&intersection);
 						continue;
 					}
@@ -81,17 +102,28 @@ int setup_rivers(void)
 					 *   Allocate space
 					 */
 					count_river_polygons = cells[n].count_river_polygons++;
-					cells[n].river_polygons = (River_Polygon *) realloc ( cells[n].river_polygons, (size_t) (count_river_polygons + 1) * sizeof (River_Polygon));
-					if (cells[n].river_polygons == NULL) malloc_error();
+					cells[n].river_polygons =
+						(River_Polygon *) realloc(cells[n].river_polygons,
+												  (size_t)
+												  (count_river_polygons +
+												   1) *
+												  sizeof(River_Polygon));
+					if (cells[n].river_polygons == NULL)
+						malloc_error();
 					/*
 					 *   Save River_Polygon for cell
 					 */
-					cells[n].river_polygons[count_river_polygons].poly = gpc_polygon_duplicate(&intersection);
-					if (cells[n].river_polygons[count_river_polygons].poly->contour[0].num_vertices > 10) {
-						output_msg(OUTPUT_STDERR,"Huhnn?\n");
+					cells[n].river_polygons[count_river_polygons].poly =
+						gpc_polygon_duplicate(&intersection);
+					if (cells[n].river_polygons[count_river_polygons].poly->
+						contour[0].num_vertices > 10)
+					{
+						output_msg(OUTPUT_STDERR, "Huhnn?\n");
 					}
-					cells[n].river_polygons[count_river_polygons].river_number = l;
-					cells[n].river_polygons[count_river_polygons].point_number = m;
+					cells[n].river_polygons[count_river_polygons].
+						river_number = l;
+					cells[n].river_polygons[count_river_polygons].
+						point_number = m;
 					gpc_free_polygon(&intersection);
 				}
 			}
@@ -101,20 +133,30 @@ int setup_rivers(void)
 	/*
 	 *    Remove duplicate areas from cell river polygons
 	 */
-	for (i = 0; i < count_cells; i++) {
-		if (cells[i].count_river_polygons <= 1) continue;
-		for (j = 0; j < cells[i].count_river_polygons - 1; j++) {
-			for (k = j + 1; k < cells[i].count_river_polygons; k++) {
-				gpc_polygon_clip(GPC_INT, cells[i].river_polygons[k].poly, cells[i].river_polygons[j].poly, &intersection);
-				if (intersection.num_contours == 0) {
+	for (i = 0; i < count_cells; i++)
+	{
+		if (cells[i].count_river_polygons <= 1)
+			continue;
+		for (j = 0; j < cells[i].count_river_polygons - 1; j++)
+		{
+			for (k = j + 1; k < cells[i].count_river_polygons; k++)
+			{
+				gpc_polygon_clip(GPC_INT, cells[i].river_polygons[k].poly,
+								 cells[i].river_polygons[j].poly,
+								 &intersection);
+				if (intersection.num_contours == 0)
+				{
 					gpc_free_polygon(&intersection);
 					continue;
 				}
 				gpc_free_polygon(&intersection);
-				gpc_polygon_clip(GPC_DIFF, cells[i].river_polygons[k].poly, cells[i].river_polygons[j].poly, &intersection);				
+				gpc_polygon_clip(GPC_DIFF, cells[i].river_polygons[k].poly,
+								 cells[i].river_polygons[j].poly,
+								 &intersection);
 				gpc_free_polygon(cells[i].river_polygons[k].poly);
 				free_check_null(cells[i].river_polygons[k].poly);
-				cells[i].river_polygons[k].poly = gpc_polygon_duplicate(&intersection);
+				cells[i].river_polygons[k].poly =
+					gpc_polygon_duplicate(&intersection);
 				gpc_free_polygon(&intersection);
 			}
 		}
@@ -122,16 +164,25 @@ int setup_rivers(void)
 	/*
 	 *    Remove empty polygons
 	 */
-	for (i = 0; i < count_cells; i++) {
-		if (cells[i].count_river_polygons < 1) continue;
+	for (i = 0; i < count_cells; i++)
+	{
+		if (cells[i].count_river_polygons < 1)
+			continue;
 		k = 0;
-		for (j = 0; j < cells[i].count_river_polygons; j++) {
+		for (j = 0; j < cells[i].count_river_polygons; j++)
+		{
 			if (cells[i].river_polygons[j].poly->num_contours == 0 ||
-				gpc_polygon_area(cells[i].river_polygons[j].poly) <= 0) {
+				gpc_polygon_area(cells[i].river_polygons[j].poly) <= 0)
+			{
 				gpc_free_polygon(cells[i].river_polygons[j].poly);
-			} else { 
-				if (j != k) {
-					cells[i].river_polygons[k].poly = gpc_polygon_duplicate(cells[i].river_polygons[j].poly);
+			}
+			else
+			{
+				if (j != k)
+				{
+					cells[i].river_polygons[k].poly =
+						gpc_polygon_duplicate(cells[i].river_polygons[j].
+											  poly);
 				}
 				k++;
 			}
@@ -141,28 +192,36 @@ int setup_rivers(void)
 	/*
 	 *   Find interpolation point and weighing factor
 	 */
-	for (i = 0; i < count_cells; i++) {
-		for (j = 0; j < cells[i].count_river_polygons; j++) {
+	for (i = 0; i < count_cells; i++)
+	{
+		for (j = 0; j < cells[i].count_river_polygons; j++)
+		{
 			/*
 			 *   Interpolate value for river_polygon
 			 */
-			cells[i].river_polygons[j].area = gpc_polygon_area(cells[i].river_polygons[j].poly);
+			cells[i].river_polygons[j].area =
+				gpc_polygon_area(cells[i].river_polygons[j].poly);
 #ifdef DEBUG_RIVERS
-			output_msg(OUTPUT_STDERR,"#cell: %d\tarea: %e\n", i, cells[i].river_polygons[j].area);
+			output_msg(OUTPUT_STDERR, "#cell: %d\tarea: %e\n", i,
+					   cells[i].river_polygons[j].area);
 #endif
 			interpolate(&cells[i].river_polygons[j]);
 #ifdef DEBUG_RIVERS
-			output_msg(OUTPUT_STDERR,"\t%g\t%g\n", cells[i].river_polygons[j].x, cells[i].river_polygons[j].y);
+			output_msg(OUTPUT_STDERR, "\t%g\t%g\n",
+					   cells[i].river_polygons[j].x,
+					   cells[i].river_polygons[j].y);
 			gpc_polygon_write(cells[i].river_polygons[j].poly);
 #endif
 		}
 	}
 	/*  frees contours and vertices p */
 	gpc_free_polygon(&poly2);
-	return(OK);
+	return (OK);
 }
+
 /* ---------------------------------------------------------------------- */
-int tidy_rivers(void)
+int
+tidy_rivers(void)
 /* ---------------------------------------------------------------------- */
 {
 /*
@@ -174,22 +233,29 @@ int tidy_rivers(void)
 	double x1, x2;
 	int i1, i2;
 	return_value = OK;
-	if (count_rivers <= 0) return(OK);
-	if (simulation > 0) return(OK);
+	if (count_rivers <= 0)
+		return (OK);
+	if (simulation > 0)
+		return (OK);
 
 	// Convert coordinate system if necessary
 	rivers_convert_coordinate_system(target_coordinate_system, map_to_grid);
 
-	for (j = 0; j < count_rivers; j++) {
+	for (j = 0; j < count_rivers; j++)
+	{
 		assert(rivers[j].new_def == TRUE);
-		if (rivers[j].new_def == FALSE) continue;
+		if (rivers[j].new_def == FALSE)
+			continue;
 		rivers[j].update = TRUE;
 		river_ptr = &(rivers[j]);
 		/*
 		 *  Logical checks on river
 		 */
-		if (river_ptr->count_points < 2) {
-			sprintf(error_string,"River must have at least 2 points. River %d %s.", river_ptr->n_user, river_ptr->description);
+		if (river_ptr->count_points < 2)
+		{
+			sprintf(error_string,
+					"River must have at least 2 points. River %d %s.",
+					river_ptr->n_user, river_ptr->description);
 			error_msg(error_string, CONTINUE);
 			return_value = FALSE;
 			input_error++;
@@ -197,11 +263,16 @@ int tidy_rivers(void)
 		/*
 		 *   Check river data
 		 */
-		for (i=0; i < river_ptr->count_points; i++) {
+		for (i = 0; i < river_ptr->count_points; i++)
+		{
 			river_ptr->points[i].update = TRUE;
 			rivers_update = TRUE;
-			if (river_ptr->points[i].x_defined == FALSE || river_ptr->points[i].y_defined == FALSE) {
-				sprintf(error_string,"X or Y not defined for river point %d of river %d.", i + 1, j);
+			if (river_ptr->points[i].x_defined == FALSE
+				|| river_ptr->points[i].y_defined == FALSE)
+			{
+				sprintf(error_string,
+						"X or Y not defined for river point %d of river %d.",
+						i + 1, j);
 				error_msg(error_string, CONTINUE);
 				input_error++;
 				return_value = FALSE;
@@ -210,36 +281,57 @@ int tidy_rivers(void)
 		/*
 		 *   Check head data
 		 */
-		if (river_ptr->points[0].head_defined == FALSE || river_ptr->points[river_ptr->count_points - 1].head_defined == FALSE) {
-			sprintf(error_string,"Head must be defined at first and last river point (1 and %d) of river %d.", river_ptr->count_points, j);
+		if (river_ptr->points[0].head_defined == FALSE
+			|| river_ptr->points[river_ptr->count_points - 1].head_defined ==
+			FALSE)
+		{
+			sprintf(error_string,
+					"Head must be defined at first and last river point (1 and %d) of river %d.",
+					river_ptr->count_points, j);
 			error_msg(error_string, CONTINUE);
 			input_error++;
 			return_value = FALSE;
-		} else {
+		}
+		else
+		{
 			/*
 			 *   Interpolate head data
 			 */
 			i = 0;
 			length = 0;
 			head1 = 0;
-			while (i < river_ptr->count_points) {
-				if (river_ptr->points[i].head_defined == TRUE) {
+			while (i < river_ptr->count_points)
+			{
+				if (river_ptr->points[i].head_defined == TRUE)
+				{
 					length = 0;
 					head1 = river_ptr->points[i].current_head;
-				} else {
+				}
+				else
+				{
 					k = i;
-					while (river_ptr->points[k].head_defined == FALSE) {
-						length += river_distance(&(river_ptr->points[k]), &(river_ptr->points[k-1]));
+					while (river_ptr->points[k].head_defined == FALSE)
+					{
+						length +=
+							river_distance(&(river_ptr->points[k]),
+										   &(river_ptr->points[k - 1]));
 						k++;
 					}
-					length += river_distance(&(river_ptr->points[k]), &(river_ptr->points[k-1]));
+					length +=
+						river_distance(&(river_ptr->points[k]),
+									   &(river_ptr->points[k - 1]));
 					total_length = length;
 					head2 = river_ptr->points[k].current_head;
-					if (total_length == 0) total_length = 1.0;
+					if (total_length == 0)
+						total_length = 1.0;
 					length = 0;
-					for ( ; i < k; i++) {
-						length += river_distance(&(river_ptr->points[i]), &(river_ptr->points[i-1]));
-						river_ptr->points[i].current_head = head1 + length/total_length*(head2 - head1);
+					for (; i < k; i++)
+					{
+						length +=
+							river_distance(&(river_ptr->points[i]),
+										   &(river_ptr->points[i - 1]));
+						river_ptr->points[i].current_head =
+							head1 + length / total_length * (head2 - head1);
 					}
 				}
 				i++;
@@ -248,36 +340,57 @@ int tidy_rivers(void)
 		/*
 		 *   Check width data
 		 */
-		if (river_ptr->points[0].width_defined == FALSE || river_ptr->points[river_ptr->count_points - 1].width_defined == FALSE) {
-			sprintf(error_string,"Width must be defined at first and last river point (1 and %d) of river %d.", river_ptr->count_points, j);
+		if (river_ptr->points[0].width_defined == FALSE
+			|| river_ptr->points[river_ptr->count_points - 1].width_defined ==
+			FALSE)
+		{
+			sprintf(error_string,
+					"Width must be defined at first and last river point (1 and %d) of river %d.",
+					river_ptr->count_points, j);
 			error_msg(error_string, CONTINUE);
 			input_error++;
 			return_value = FALSE;
-		} else {
+		}
+		else
+		{
 			/*
 			 *   Interpolate width data
 			 */
 			i = 0;
 			length = 0;
 			x1 = 0;
-			while (i < river_ptr->count_points) {
-				if (river_ptr->points[i].width_defined == TRUE) {
+			while (i < river_ptr->count_points)
+			{
+				if (river_ptr->points[i].width_defined == TRUE)
+				{
 					length = 0;
 					x1 = river_ptr->points[i].width;
-				} else {
+				}
+				else
+				{
 					k = i;
-					while (river_ptr->points[k].width_defined == FALSE) {
-						length += river_distance(&(river_ptr->points[k]), &(river_ptr->points[k-1]));
+					while (river_ptr->points[k].width_defined == FALSE)
+					{
+						length +=
+							river_distance(&(river_ptr->points[k]),
+										   &(river_ptr->points[k - 1]));
 						k++;
 					}
-					length += river_distance(&(river_ptr->points[k]), &(river_ptr->points[k-1]));
+					length +=
+						river_distance(&(river_ptr->points[k]),
+									   &(river_ptr->points[k - 1]));
 					total_length = length;
 					x2 = river_ptr->points[k].width;
-					if (total_length == 0) total_length = 1.0;
+					if (total_length == 0)
+						total_length = 1.0;
 					length = 0;
-					for ( ; i < k; i++) {
-						length += river_distance(&(river_ptr->points[i]), &(river_ptr->points[i-1]));
-						river_ptr->points[i].width = x1 + length/total_length*(x2 - x1);
+					for (; i < k; i++)
+					{
+						length +=
+							river_distance(&(river_ptr->points[i]),
+										   &(river_ptr->points[i - 1]));
+						river_ptr->points[i].width =
+							x1 + length / total_length * (x2 - x1);
 					}
 				}
 				i++;
@@ -286,36 +399,57 @@ int tidy_rivers(void)
 		/*
 		 *   Check k data
 		 */
-		if (river_ptr->points[0].k_defined == FALSE || river_ptr->points[river_ptr->count_points - 1].k_defined == FALSE) {
-			sprintf(error_string,"Hydraulic conductivity must be defined at first and last river point (1 and %d) of river %d.", river_ptr->count_points, j);
+		if (river_ptr->points[0].k_defined == FALSE
+			|| river_ptr->points[river_ptr->count_points - 1].k_defined ==
+			FALSE)
+		{
+			sprintf(error_string,
+					"Hydraulic conductivity must be defined at first and last river point (1 and %d) of river %d.",
+					river_ptr->count_points, j);
 			error_msg(error_string, CONTINUE);
 			input_error++;
 			return_value = FALSE;
-		} else {
+		}
+		else
+		{
 			/*
 			 *   Interpolate k data
 			 */
 			i = 0;
 			length = 0;
 			x1 = 0;
-			while (i < river_ptr->count_points) {
-				if (river_ptr->points[i].k_defined == TRUE) {
+			while (i < river_ptr->count_points)
+			{
+				if (river_ptr->points[i].k_defined == TRUE)
+				{
 					length = 0;
 					x1 = river_ptr->points[i].k;
-				} else {
+				}
+				else
+				{
 					k = i;
-					while (river_ptr->points[k].k_defined == FALSE) {
-						length += river_distance(&(river_ptr->points[k]), &(river_ptr->points[k-1]));
+					while (river_ptr->points[k].k_defined == FALSE)
+					{
+						length +=
+							river_distance(&(river_ptr->points[k]),
+										   &(river_ptr->points[k - 1]));
 						k++;
 					}
-					length += river_distance(&(river_ptr->points[k]), &(river_ptr->points[k-1]));
+					length +=
+						river_distance(&(river_ptr->points[k]),
+									   &(river_ptr->points[k - 1]));
 					total_length = length;
 					x2 = river_ptr->points[k].k;
-					if (total_length == 0) total_length = 1.0;
+					if (total_length == 0)
+						total_length = 1.0;
 					length = 0;
-					for ( ; i < k; i++) {
-						length += river_distance(&(river_ptr->points[i]), &(river_ptr->points[i-1]));
-						river_ptr->points[i].k = x1 + length/total_length*(x2 - x1);
+					for (; i < k; i++)
+					{
+						length +=
+							river_distance(&(river_ptr->points[i]),
+										   &(river_ptr->points[i - 1]));
+						river_ptr->points[i].k =
+							x1 + length / total_length * (x2 - x1);
 					}
 				}
 				i++;
@@ -324,36 +458,57 @@ int tidy_rivers(void)
 		/*
 		 *   Check thickness data
 		 */
-		if (river_ptr->points[0].thickness_defined == FALSE || river_ptr->points[river_ptr->count_points - 1].thickness_defined == FALSE) {
-			sprintf(error_string,"Thickness must be defined at first and last river point (1 and %d) of river %d.", river_ptr->count_points, j);
+		if (river_ptr->points[0].thickness_defined == FALSE
+			|| river_ptr->points[river_ptr->count_points -
+								 1].thickness_defined == FALSE)
+		{
+			sprintf(error_string,
+					"Thickness must be defined at first and last river point (1 and %d) of river %d.",
+					river_ptr->count_points, j);
 			error_msg(error_string, CONTINUE);
 			input_error++;
 			return_value = FALSE;
-		} else {
+		}
+		else
+		{
 			/*
 			 *   Interpolate thickness data
 			 */
 			i = 0;
 			length = 0;
 			x1 = 0;
-			while (i < river_ptr->count_points) {
-				if (river_ptr->points[i].thickness_defined == TRUE) {
+			while (i < river_ptr->count_points)
+			{
+				if (river_ptr->points[i].thickness_defined == TRUE)
+				{
 					length = 0;
 					x1 = river_ptr->points[i].thickness;
-				} else {
+				}
+				else
+				{
 					k = i;
-					while (river_ptr->points[k].thickness_defined == FALSE) {
-						length += river_distance(&(river_ptr->points[k]), &(river_ptr->points[k-1]));
+					while (river_ptr->points[k].thickness_defined == FALSE)
+					{
+						length +=
+							river_distance(&(river_ptr->points[k]),
+										   &(river_ptr->points[k - 1]));
 						k++;
 					}
-					length += river_distance(&(river_ptr->points[k]), &(river_ptr->points[k-1]));
+					length +=
+						river_distance(&(river_ptr->points[k]),
+									   &(river_ptr->points[k - 1]));
 					total_length = length;
 					x2 = river_ptr->points[k].thickness;
-					if (total_length == 0) total_length = 1.0;
+					if (total_length == 0)
+						total_length = 1.0;
 					length = 0;
-					for ( ; i < k; i++) {
-						length += river_distance(&(river_ptr->points[i]), &(river_ptr->points[i-1]));
-						river_ptr->points[i].thickness = x1 + length/total_length*(x2 - x1);
+					for (; i < k; i++)
+					{
+						length +=
+							river_distance(&(river_ptr->points[i]),
+										   &(river_ptr->points[i - 1]));
+						river_ptr->points[i].thickness =
+							x1 + length / total_length * (x2 - x1);
 					}
 				}
 				i++;
@@ -362,44 +517,67 @@ int tidy_rivers(void)
 		/*
 		 *   Check solution data
 		 */
-		if (flow_only == FALSE) {
-			if (river_ptr->points[0].solution_defined == FALSE || river_ptr->points[river_ptr->count_points - 1].solution_defined == FALSE) {
-				sprintf(error_string,"Solution must be defined at first and last river point (1 and %d) of river %d.", river_ptr->count_points, j);
+		if (flow_only == FALSE)
+		{
+			if (river_ptr->points[0].solution_defined == FALSE
+				|| river_ptr->points[river_ptr->count_points -
+									 1].solution_defined == FALSE)
+			{
+				sprintf(error_string,
+						"Solution must be defined at first and last river point (1 and %d) of river %d.",
+						river_ptr->count_points, j);
 				error_msg(error_string, CONTINUE);
 				input_error++;
 				return_value = FALSE;
-			} else {
+			}
+			else
+			{
 				/*
 				 *   Interpolate solution data
 				 */
 				i = 0;
 				length = 0;
 				i1 = -999;
-				while (i < river_ptr->count_points) {
-					if (river_ptr->points[i].solution_defined == TRUE) {
+				while (i < river_ptr->count_points)
+				{
+					if (river_ptr->points[i].solution_defined == TRUE)
+					{
 						length = 0;
 						i1 = river_ptr->points[i].current_solution;
-						river_ptr->points[i].solution1 = river_ptr->points[i].current_solution;
+						river_ptr->points[i].solution1 =
+							river_ptr->points[i].current_solution;
 						river_ptr->points[i].solution2 = -1;
 						river_ptr->points[i].f1 = 1.0;
 						i++;
-					} else {
+					}
+					else
+					{
 						k = i;
-						while (river_ptr->points[k].solution_defined == FALSE) {
-							length += river_distance(&(river_ptr->points[k]), &(river_ptr->points[k-1]));
+						while (river_ptr->points[k].solution_defined == FALSE)
+						{
+							length +=
+								river_distance(&(river_ptr->points[k]),
+											   &(river_ptr->points[k - 1]));
 							k++;
 						}
 						i2 = k;
-						length += river_distance(&(river_ptr->points[k]), &(river_ptr->points[k-1]));
+						length +=
+							river_distance(&(river_ptr->points[k]),
+										   &(river_ptr->points[k - 1]));
 						total_length = length;
 						i2 = river_ptr->points[k].current_solution;
-						if (total_length == 0) total_length = 1.0;
+						if (total_length == 0)
+							total_length = 1.0;
 						length = 0;
-						for ( ; i < k; i++) {
-							length += river_distance(&(river_ptr->points[i]), &(river_ptr->points[i-1]));
+						for (; i < k; i++)
+						{
+							length +=
+								river_distance(&(river_ptr->points[i]),
+											   &(river_ptr->points[i - 1]));
 							river_ptr->points[i].solution1 = i1;
 							river_ptr->points[i].solution2 = i2;
-							river_ptr->points[i].f1 = 1 - length/total_length;
+							river_ptr->points[i].f1 =
+								1 - length / total_length;
 						}
 					}
 				}
@@ -408,45 +586,72 @@ int tidy_rivers(void)
 		/*
 		 *   Calculate z from depth for points without z data
 		 */
-		for (i = 0; i < river_ptr->count_points; i++) {
-			if (river_ptr->points[i].head_defined == TRUE && river_ptr->points[i].depth_defined == TRUE && river_ptr->points[i].z_defined == FALSE) {
-				river_ptr->points[i].z = river_ptr->points[i].current_head - river_ptr->points[i].depth;
+		for (i = 0; i < river_ptr->count_points; i++)
+		{
+			if (river_ptr->points[i].head_defined == TRUE
+				&& river_ptr->points[i].depth_defined == TRUE
+				&& river_ptr->points[i].z_defined == FALSE)
+			{
+				river_ptr->points[i].z =
+					river_ptr->points[i].current_head -
+					river_ptr->points[i].depth;
 				river_ptr->points[i].z_defined = TRUE;
 			}
 		}
 		/* 
 		 *   Check z data
 		 */
-		if (river_ptr->points[0].z_defined == FALSE || river_ptr->points[river_ptr->count_points - 1].z_defined == FALSE) {
-			sprintf(error_string,"River bottom or depth must be defined at first and last river point (1 and %d) of river %d.", river_ptr->count_points, j);
+		if (river_ptr->points[0].z_defined == FALSE
+			|| river_ptr->points[river_ptr->count_points - 1].z_defined ==
+			FALSE)
+		{
+			sprintf(error_string,
+					"River bottom or depth must be defined at first and last river point (1 and %d) of river %d.",
+					river_ptr->count_points, j);
 			error_msg(error_string, CONTINUE);
 			input_error++;
 			return_value = FALSE;
-		} else {
+		}
+		else
+		{
 			/*
 			 *   Interpolate z data
 			 */
 			i = 0;
 			length = 0;
 			x1 = 0;
-			while (i < river_ptr->count_points) {
-				if (river_ptr->points[i].z_defined == TRUE) {
+			while (i < river_ptr->count_points)
+			{
+				if (river_ptr->points[i].z_defined == TRUE)
+				{
 					length = 0;
 					x1 = river_ptr->points[i].z;
-				} else {
+				}
+				else
+				{
 					k = i;
-					while (river_ptr->points[k].z_defined == FALSE) {
-						length += river_distance(&(river_ptr->points[k]), &(river_ptr->points[k-1]));
+					while (river_ptr->points[k].z_defined == FALSE)
+					{
+						length +=
+							river_distance(&(river_ptr->points[k]),
+										   &(river_ptr->points[k - 1]));
 						k++;
 					}
-					length += river_distance(&(river_ptr->points[k]), &(river_ptr->points[k-1]));
+					length +=
+						river_distance(&(river_ptr->points[k]),
+									   &(river_ptr->points[k - 1]));
 					total_length = length;
 					x2 = river_ptr->points[k].z;
-					if (total_length == 0) total_length = 1.0;
+					if (total_length == 0)
+						total_length = 1.0;
 					length = 0;
-					for ( ; i < k; i++) {
-						length += river_distance(&(river_ptr->points[i]), &(river_ptr->points[i-1]));
-						river_ptr->points[i].z = x1 + length/total_length*(x2 - x1);
+					for (; i < k; i++)
+					{
+						length +=
+							river_distance(&(river_ptr->points[i]),
+										   &(river_ptr->points[i - 1]));
+						river_ptr->points[i].z =
+							x1 + length / total_length * (x2 - x1);
 					}
 				}
 				i++;
@@ -456,20 +661,27 @@ int tidy_rivers(void)
 	/*
 	 *   Check for duplicate numbers
 	 */
-	for (j = 0; j < count_rivers; j++) {
-		for(i = j + 1; i < count_rivers; i++) {
-			if (rivers[j].n_user == rivers[i].n_user) {
-				sprintf(error_string,"Two rivers have the same identifying number. Sequence number %d %s and sequence number %d %s.", j, rivers[j].description, i, rivers[i].description);
+	for (j = 0; j < count_rivers; j++)
+	{
+		for (i = j + 1; i < count_rivers; i++)
+		{
+			if (rivers[j].n_user == rivers[i].n_user)
+			{
+				sprintf(error_string,
+						"Two rivers have the same identifying number. Sequence number %d %s and sequence number %d %s.",
+						j, rivers[j].description, i, rivers[i].description);
 				error_msg(error_string, CONTINUE);
 				input_error++;
 				return_value = FALSE;
 			}
 		}
 	}
-	return(return_value);
+	return (return_value);
 }
+
 /* ---------------------------------------------------------------------- */
-int build_rivers(void)
+int
+build_rivers(void)
 /* ---------------------------------------------------------------------- */
 {
 /*
@@ -481,19 +693,26 @@ int build_rivers(void)
 	gpc_polygon *trapezoid, *gap_polygon;
 
 	return_code = OK;
-	p = (gpc_vertex*) malloc((size_t) sizeof (gpc_vertex));
-	if (p == NULL) malloc_error();
+	p = (gpc_vertex *) malloc((size_t) sizeof(gpc_vertex));
+	if (p == NULL)
+		malloc_error();
 
-	if (count_rivers <= 0) { 
+	if (count_rivers <= 0)
+	{
 		free_check_null(p);
-		return(OK);
+		return (OK);
 	}
-	for (j = 0; j < count_rivers; j++) {
-		if (rivers[j].new_def == FALSE) continue;
+	for (j = 0; j < count_rivers; j++)
+	{
+		if (rivers[j].new_def == FALSE)
+			continue;
 		rivers[j].new_def = FALSE;
 		river_ptr = &(rivers[j]);
-		if (river_ptr->count_points < 2) {
-			sprintf(error_string,"River must have at least 2 points. River %d %s.", river_ptr->n_user, river_ptr->description);
+		if (river_ptr->count_points < 2)
+		{
+			sprintf(error_string,
+					"River must have at least 2 points. River %d %s.",
+					river_ptr->n_user, river_ptr->description);
 			error_msg(error_string, CONTINUE);
 			input_error++;
 			continue;
@@ -502,9 +721,13 @@ int build_rivers(void)
 		/*
 		 *  Build river topology
 		 */
-		p = (gpc_vertex*) realloc(p, (size_t) river_ptr->count_points * sizeof (gpc_vertex));
-		if (p == NULL) malloc_error();
-		for (i=0; i < river_ptr->count_points; i++) {
+		p = (gpc_vertex *) realloc(p,
+								   (size_t) river_ptr->count_points *
+								   sizeof(gpc_vertex));
+		if (p == NULL)
+			malloc_error();
+		for (i = 0; i < river_ptr->count_points; i++)
+		{
 			p[i].x = river_ptr->points[i].x;
 			p[i].y = river_ptr->points[i].y;
 		}
@@ -514,7 +737,8 @@ int build_rivers(void)
 		n = count_points - 1;
 		phantom.x = p[n].x + (p[n].x - p[n - 1].x);
 		phantom.y = p[n].y + (p[n].y - p[n - 1].y);
-		trapezoid_points(p[n], phantom, &(river_ptr->points[n]), river_ptr->points[n].width);
+		trapezoid_points(p[n], phantom, &(river_ptr->points[n]),
+						 river_ptr->points[n].width);
 		river_ptr->points[n].vertex[2].x = river_ptr->points[n].vertex[1].x;
 		river_ptr->points[n].vertex[2].y = river_ptr->points[n].vertex[1].y;
 		river_ptr->points[n].vertex[3].x = river_ptr->points[n].vertex[0].x;
@@ -522,28 +746,33 @@ int build_rivers(void)
 		/*
 		 *  Trapezoid points for River Points
 		 */
-		for (i = 0; i < count_points - 1; i++) {
-			trapezoid_points(p[i], p[i+1], &(river_ptr->points[i]), river_ptr->points[i+1].width);
+		for (i = 0; i < count_points - 1; i++)
+		{
+			trapezoid_points(p[i], p[i + 1], &(river_ptr->points[i]),
+							 river_ptr->points[i + 1].width);
 		}
 		/*
 		 *  Union of polygon and gap with next polygon
 		 */
-		for (i = 0; i < count_points - 2; i++) {
-			river_ptr->points[i].polygon = vertex_to_poly(river_ptr->points[i].vertex, 4);
+		for (i = 0; i < count_points - 2; i++)
+		{
+			river_ptr->points[i].polygon =
+				vertex_to_poly(river_ptr->points[i].vertex, 4);
 			trapezoid = vertex_to_poly(river_ptr->points[i].vertex, 4);
 
 			vertex[0].x = river_ptr->points[i].vertex[2].x;
 			vertex[0].y = river_ptr->points[i].vertex[2].y;
 			vertex[1].x = river_ptr->points[i].vertex[3].x;
 			vertex[1].y = river_ptr->points[i].vertex[3].y;
-			vertex[2].x = river_ptr->points[i+1].vertex[0].x;
-			vertex[2].y = river_ptr->points[i+1].vertex[0].y;
-			vertex[3].x = river_ptr->points[i+1].vertex[1].x;
-			vertex[3].y = river_ptr->points[i+1].vertex[1].y;
+			vertex[2].x = river_ptr->points[i + 1].vertex[0].x;
+			vertex[2].y = river_ptr->points[i + 1].vertex[0].y;
+			vertex[3].x = river_ptr->points[i + 1].vertex[1].x;
+			vertex[3].y = river_ptr->points[i + 1].vertex[1].y;
 			gap_polygon = vertex_to_poly(vertex, 4);
 
 			gpc_free_polygon(river_ptr->points[i].polygon);
-			gpc_polygon_clip(GPC_UNION, trapezoid, gap_polygon, river_ptr->points[i].polygon);
+			gpc_polygon_clip(GPC_UNION, trapezoid, gap_polygon,
+							 river_ptr->points[i].polygon);
 
 			gpc_free_polygon(trapezoid);
 			free(trapezoid);
@@ -555,16 +784,19 @@ int build_rivers(void)
 		/*
 		 *  Last polygon
 		 */
-		river_ptr->points[i].polygon = vertex_to_poly(river_ptr->points[i].vertex, 4);
+		river_ptr->points[i].polygon =
+			vertex_to_poly(river_ptr->points[i].vertex, 4);
 	}
 	/*
 	 *   Free work space
 	 */
 	free_check_null(p);
-	return(return_code);
+	return (return_code);
 }
+
 /* ---------------------------------------------------------------------- */
-int update_rivers(void)
+int
+update_rivers(void)
 /* ---------------------------------------------------------------------- */
 {
 /*
@@ -576,9 +808,12 @@ int update_rivers(void)
 	int i1, i2;
 
 	rivers_update = FALSE;
-	if (count_rivers <= 0) return(OK);
-	for (j = 0; j < count_rivers; j++) {
-		if (rivers[j].update == FALSE) continue;
+	if (count_rivers <= 0)
+		return (OK);
+	for (j = 0; j < count_rivers; j++)
+	{
+		if (rivers[j].update == FALSE)
+			continue;
 		river_ptr = &(rivers[j]);
 		rivers[j].new_def = UPDATE;
 		rivers_update = TRUE;
@@ -589,24 +824,38 @@ int update_rivers(void)
 		i = 0;
 		length = 0;
 		head1 = 0;
-		while (i < river_ptr->count_points) {
-			if (river_ptr->points[i].head_defined == TRUE) {
+		while (i < river_ptr->count_points)
+		{
+			if (river_ptr->points[i].head_defined == TRUE)
+			{
 				length = 0;
 				head1 = river_ptr->points[i].current_head;
-			} else {
+			}
+			else
+			{
 				k = i;
-				while (river_ptr->points[k].head_defined == FALSE) {
-					length += river_distance(&(river_ptr->points[k]), &(river_ptr->points[k-1]));
+				while (river_ptr->points[k].head_defined == FALSE)
+				{
+					length +=
+						river_distance(&(river_ptr->points[k]),
+									   &(river_ptr->points[k - 1]));
 					k++;
 				}
-				length += river_distance(&(river_ptr->points[k]), &(river_ptr->points[k-1]));
+				length +=
+					river_distance(&(river_ptr->points[k]),
+								   &(river_ptr->points[k - 1]));
 				total_length = length;
 				head2 = river_ptr->points[k].current_head;
-				if (total_length == 0) total_length = 1.0;
+				if (total_length == 0)
+					total_length = 1.0;
 				length = 0;
-				for ( ; i < k; i++) {
-					length += river_distance(&(river_ptr->points[i]), &(river_ptr->points[i-1]));
-					river_ptr->points[i].current_head = head1 + length/total_length*(head2 - head1);
+				for (; i < k; i++)
+				{
+					length +=
+						river_distance(&(river_ptr->points[i]),
+									   &(river_ptr->points[i - 1]));
+					river_ptr->points[i].current_head =
+						head1 + length / total_length * (head2 - head1);
 					/* river_ptr->points[i].head_defined = TRUE; */
 				}
 			}
@@ -618,39 +867,55 @@ int update_rivers(void)
 		i = 0;
 		length = 0;
 		i1 = -999;
-		while (i < river_ptr->count_points) {
-			if (river_ptr->points[i].solution_defined == TRUE) {
+		while (i < river_ptr->count_points)
+		{
+			if (river_ptr->points[i].solution_defined == TRUE)
+			{
 				length = 0;
 				i1 = river_ptr->points[i].current_solution;
-				river_ptr->points[i].solution1 = river_ptr->points[i].current_solution;
+				river_ptr->points[i].solution1 =
+					river_ptr->points[i].current_solution;
 				river_ptr->points[i].solution2 = -1;
 				river_ptr->points[i].f1 = 1.0;
 				i++;
-			} else {
+			}
+			else
+			{
 				k = i;
-				while (river_ptr->points[k].solution_defined == FALSE) {
-					length += river_distance(&(river_ptr->points[k]), &(river_ptr->points[k-1]));
+				while (river_ptr->points[k].solution_defined == FALSE)
+				{
+					length +=
+						river_distance(&(river_ptr->points[k]),
+									   &(river_ptr->points[k - 1]));
 					k++;
 				}
 				i2 = k;
-				length += river_distance(&(river_ptr->points[k]), &(river_ptr->points[k-1]));
+				length +=
+					river_distance(&(river_ptr->points[k]),
+								   &(river_ptr->points[k - 1]));
 				total_length = length;
 				i2 = river_ptr->points[k].current_solution;
-				if (total_length == 0) total_length = 1.0;
+				if (total_length == 0)
+					total_length = 1.0;
 				length = 0;
-				for ( ; i < k; i++) {
-					length += river_distance(&(river_ptr->points[i]), &(river_ptr->points[i-1]));
+				for (; i < k; i++)
+				{
+					length +=
+						river_distance(&(river_ptr->points[i]),
+									   &(river_ptr->points[i - 1]));
 					river_ptr->points[i].solution1 = i1;
 					river_ptr->points[i].solution2 = i2;
-					river_ptr->points[i].f1 = 1 - length/total_length;
+					river_ptr->points[i].f1 = 1 - length / total_length;
 				}
 			}
 		}
 	}
-	return(OK);
+	return (OK);
 }
+
 /* ---------------------------------------------------------------------- */
-int write_rivers(void)
+int
+write_rivers(void)
 /* ---------------------------------------------------------------------- */
 {
 /*
@@ -659,37 +924,52 @@ int write_rivers(void)
 	int i, j, k, count_points;
 	River *river_ptr;
 
-	if (count_rivers <= 0) return(OK);
-	for (j = 0; j < count_rivers; j++) {
-		if (rivers[j].new_def != FALSE) continue;
+	if (count_rivers <= 0)
+		return (OK);
+	for (j = 0; j < count_rivers; j++)
+	{
+		if (rivers[j].new_def != FALSE)
+			continue;
 		river_ptr = &(rivers[j]);
 		count_points = river_ptr->count_points;
 		/*
 		 *   Write points for river
 		 */
 		output_msg(OUTPUT_ECHO, "@type xy\n");
-		output_msg(OUTPUT_ECHO, "#river segments %d %s\n", river_ptr->n_user, river_ptr->description);
-		for (i = 0; i < river_ptr->count_points; i++) {
-			output_msg(OUTPUT_ECHO,"\t%15e\t%15e\n", river_ptr->points[i].x, river_ptr->points[i].y);
+		output_msg(OUTPUT_ECHO, "#river segments %d %s\n", river_ptr->n_user,
+				   river_ptr->description);
+		for (i = 0; i < river_ptr->count_points; i++)
+		{
+			output_msg(OUTPUT_ECHO, "\t%15e\t%15e\n", river_ptr->points[i].x,
+					   river_ptr->points[i].y);
 		}
 		output_msg(OUTPUT_ECHO, "&\n");
 		/*
 		 *   Write polygons for river
 		 */
 		output_msg(OUTPUT_ECHO, "@type xy\n");
-		output_msg(OUTPUT_ECHO, "#river polygons %d %s\n", river_ptr->n_user, river_ptr->description);
-		for (i = 0; i < river_ptr->count_points - 1; i++) {
-			for (k = 0; k < 4; k++) {
-				output_msg(OUTPUT_ECHO,"\t%15e\t%15e\n", river_ptr->points[i].vertex[k].x, river_ptr->points[i].vertex[k].y);
+		output_msg(OUTPUT_ECHO, "#river polygons %d %s\n", river_ptr->n_user,
+				   river_ptr->description);
+		for (i = 0; i < river_ptr->count_points - 1; i++)
+		{
+			for (k = 0; k < 4; k++)
+			{
+				output_msg(OUTPUT_ECHO, "\t%15e\t%15e\n",
+						   river_ptr->points[i].vertex[k].x,
+						   river_ptr->points[i].vertex[k].y);
 			}
-			output_msg(OUTPUT_ECHO,"\t%15e\t%15e\n", river_ptr->points[i].vertex[0].x, river_ptr->points[i].vertex[0].y);
+			output_msg(OUTPUT_ECHO, "\t%15e\t%15e\n",
+					   river_ptr->points[i].vertex[0].x,
+					   river_ptr->points[i].vertex[0].y);
 		}
 		output_msg(OUTPUT_ECHO, "&\n");
 	}
-	return(OK);
+	return (OK);
 }
+
 /* ---------------------------------------------------------------------- */
-double river_distance(River_Point *river_ptr1, River_Point *river_ptr2)
+double
+river_distance(River_Point * river_ptr1, River_Point * river_ptr2)
 /* ---------------------------------------------------------------------- */
 {
 /*
@@ -699,11 +979,12 @@ double river_distance(River_Point *river_ptr1, River_Point *river_ptr2)
 
 	x = river_ptr2->x - river_ptr1->x;
 	y = river_ptr2->y - river_ptr1->y;
-	return(sqrt(x*x + y*y));
+	return (sqrt(x * x + y * y));
 }
 
 /* ---------------------------------------------------------------------- */
-int check_quad(gpc_vertex *v)
+int
+check_quad(gpc_vertex * v)
 /* ---------------------------------------------------------------------- */
 {
 	double angle, angle1;
@@ -716,37 +997,44 @@ int check_quad(gpc_vertex *v)
 #ifdef DEBUG_RIVERS
 	output_msg(OUTPUT_STDERR, "Angle1 %g\n", angle1);
 #endif
-	if (angle1 > PI) angle1 = 2*PI - angle1;
+	if (angle1 > PI)
+		angle1 = 2 * PI - angle1;
 	angle += angle1;
 	angle1 = angle_between_segments(v[1], v[2], v[3]);
 #ifdef DEBUG_RIVERS
 	output_msg(OUTPUT_STDERR, "Angle2 %g\n", angle1);
 #endif
-	if (angle1 > PI) angle1 = 2*PI - angle1;
+	if (angle1 > PI)
+		angle1 = 2 * PI - angle1;
 	angle += angle1;
 	angle1 = angle_between_segments(v[2], v[3], v[0]);
 #ifdef DEBUG_RIVERS
 	output_msg(OUTPUT_STDERR, "Angle3 %g\n", angle1);
 #endif
-	if (angle1 > PI) angle1 = 2*PI - angle1;
+	if (angle1 > PI)
+		angle1 = 2 * PI - angle1;
 	angle += angle1;
 	angle1 = angle_between_segments(v[3], v[0], v[1]);
 #ifdef DEBUG_RIVERS
 	output_msg(OUTPUT_STDERR, "Angle4 %g\n", angle1);
 #endif
-	if (angle1 > PI) angle1 = 2*PI - angle1;
+	if (angle1 > PI)
+		angle1 = 2 * PI - angle1;
 	angle += angle1;
 #ifdef DEBUG_RIVERS
 	output_msg(OUTPUT_STDERR, "Angle %g\n", angle);
 #endif
-	if (angle + 1e-8 < 2*PI) return(ERROR);
+	if (angle + 1e-8 < 2 * PI)
+		return (ERROR);
 
-	return(OK);
+	return (OK);
 }
 
 
 /* ---------------------------------------------------------------------- */
-int trapezoid_points(gpc_vertex p0, gpc_vertex p1, River_Point *r_ptr, double width1)
+int
+trapezoid_points(gpc_vertex p0, gpc_vertex p1, River_Point * r_ptr,
+				 double width1)
 /* ---------------------------------------------------------------------- */
 {
 	double width0;
@@ -762,10 +1050,13 @@ int trapezoid_points(gpc_vertex p0, gpc_vertex p1, River_Point *r_ptr, double wi
 	/*
 	 *    
 	 */
-	if (x != 0 || y != 0) {
-		a = x/sqrt(x*x + y*y);
-		b = y/sqrt(x*x + y*y);
-	} else {
+	if (x != 0 || y != 0)
+	{
+		a = x / sqrt(x * x + y * y);
+		b = y / sqrt(x * x + y * y);
+	}
+	else
+	{
 		a = 0;
 		b = 0;
 	}
@@ -786,10 +1077,12 @@ int trapezoid_points(gpc_vertex p0, gpc_vertex p1, River_Point *r_ptr, double wi
 	r_ptr->vertex[3].x = p1.x + b * width1 / 2;
 	r_ptr->vertex[3].y = p1.y - a * width1 / 2;
 
-	return(OK);
+	return (OK);
 }
+
 /* ---------------------------------------------------------------------- */
-int interpolate(River_Polygon *river_polygon_ptr)
+int
+interpolate(River_Polygon * river_polygon_ptr)
 /* ---------------------------------------------------------------------- */
 {
 	River_Point *p0_ptr, *p1_ptr;
@@ -800,35 +1093,42 @@ int interpolate(River_Polygon *river_polygon_ptr)
 	int i, j;
 	double x0, y0, x1, y1, x2, y2, xn, yn, zn, dist;
 
-	p0_ptr = &(rivers[river_polygon_ptr->river_number].points[river_polygon_ptr->point_number]);
-	p1_ptr = &(rivers[river_polygon_ptr->river_number].points[river_polygon_ptr->point_number + 1]);
+	p0_ptr =
+		&(rivers[river_polygon_ptr->river_number].
+		  points[river_polygon_ptr->point_number]);
+	p1_ptr =
+		&(rivers[river_polygon_ptr->river_number].
+		  points[river_polygon_ptr->point_number + 1]);
 	poly = river_polygon_ptr->poly;
 	/*
 	 *   find centroid of polygon
 	 */
 	Areasum2 = 0.0;
-	for (i = 0; i < poly->num_contours; i++) {
+	for (i = 0; i < poly->num_contours; i++)
+	{
 		vertex[0].x = poly->contour[i].vertex[0].x;
 		vertex[0].y = poly->contour[i].vertex[0].y;
 		centroid.x = 0;
 		centroid.y = 0;
-		for (j = 1; j < poly->contour[i].num_vertices-1; j++) {
-			Centroid3(poly->contour[i].vertex[0], poly->contour[i].vertex[j], poly->contour[i].vertex[j + 1], &c3);
+		for (j = 1; j < poly->contour[i].num_vertices - 1; j++)
+		{
+			Centroid3(poly->contour[i].vertex[0], poly->contour[i].vertex[j],
+					  poly->contour[i].vertex[j + 1], &c3);
 			vertex[1].x = poly->contour[i].vertex[j].x;
 			vertex[1].y = poly->contour[i].vertex[j].y;
-			vertex[2].x = poly->contour[i].vertex[j+1].x;
-			vertex[2].y = poly->contour[i].vertex[j+1].y;
+			vertex[2].x = poly->contour[i].vertex[j + 1].x;
+			vertex[2].y = poly->contour[i].vertex[j + 1].y;
 			slice = vertex_to_poly(vertex, 3);
-			a2 = 2*gpc_polygon_area(slice);
+			a2 = 2 * gpc_polygon_area(slice);
 			centroid.x += a2 * c3.x;
 			centroid.y += a2 * c3.y;
 			Areasum2 += a2;
 			gpc_free_polygon(slice);
 			free(slice);
-		}		
+		}
 	}
-        centroid.x /= 3 * Areasum2;
-        centroid.y /= 3 * Areasum2;
+	centroid.x /= 3 * Areasum2;
+	centroid.y /= 3 * Areasum2;
 	x0 = centroid.x;
 	y0 = centroid.y;
 	x1 = p0_ptr->x;
@@ -836,10 +1136,9 @@ int interpolate(River_Polygon *river_polygon_ptr)
 	x2 = p1_ptr->x;
 	y2 = p1_ptr->y;
 	/* distance from centroid to line is */
-	Point::line_seg_point_near_3d ( x1, y1, 0, 
-				 x2, y2, 0, 
-				 x0, y0, 0,
-				 &xn, &yn, &zn, &dist, &w1 );
+	Point::line_seg_point_near_3d(x1, y1, 0,
+								  x2, y2, 0,
+								  x0, y0, 0, &xn, &yn, &zn, &dist, &w1);
 
 	/*
 	 *   Calculate weighting factors for River_Point 0 and 1
@@ -850,63 +1149,68 @@ int interpolate(River_Polygon *river_polygon_ptr)
 	 */
 	river_polygon_ptr->w = w0;
 
-	return(OK);
+	return (OK);
 }
 
 /* ---------------------------------------------------------------------- */
-void river_point_init(River_Point *rp_ptr)
+void
+river_point_init(River_Point * rp_ptr)
 /* ---------------------------------------------------------------------- */
 {
-  rp_ptr->x = 0.0;
-  rp_ptr->x_defined = FALSE;
-  rp_ptr->y = 0.0;
-  rp_ptr->y_defined = FALSE;
-  rp_ptr->width = 0.0;
-  rp_ptr->width_defined = FALSE;
-  rp_ptr->k = 0.0;
-  rp_ptr->k_defined = FALSE;
-  rp_ptr->thickness = 0.0;
-  rp_ptr->thickness_defined = FALSE;
-  rp_ptr->head = NULL;
-  rp_ptr->head_defined = FALSE;
-  rp_ptr->current_head = 0.0;
-  rp_ptr->depth = 0.0;
-  rp_ptr->depth_defined = FALSE;
-  rp_ptr->z = 0.0;
-  rp_ptr->z_defined = FALSE;
-  rp_ptr->z_input_defined = FALSE;
-  rp_ptr->solution = NULL;
-  rp_ptr->solution_defined = FALSE;
-  rp_ptr->current_solution = -999999;
-  rp_ptr->solution1 = -99;
-  rp_ptr->solution2 = -99;
-  rp_ptr->f1 = 1.0;
-  // Initialize vertices
-  int i;
-  for (i = 0; i < 4; i++)
-  {
-    rp_ptr->vertex[i].x = 0.0;
-    rp_ptr->vertex[i].y = 0.0;
-  }
-  rp_ptr->polygon = NULL;
-  rp_ptr->update = 0; 
+	rp_ptr->x = 0.0;
+	rp_ptr->x_defined = FALSE;
+	rp_ptr->y = 0.0;
+	rp_ptr->y_defined = FALSE;
+	rp_ptr->width = 0.0;
+	rp_ptr->width_defined = FALSE;
+	rp_ptr->k = 0.0;
+	rp_ptr->k_defined = FALSE;
+	rp_ptr->thickness = 0.0;
+	rp_ptr->thickness_defined = FALSE;
+	rp_ptr->head = NULL;
+	rp_ptr->head_defined = FALSE;
+	rp_ptr->current_head = 0.0;
+	rp_ptr->depth = 0.0;
+	rp_ptr->depth_defined = FALSE;
+	rp_ptr->z = 0.0;
+	rp_ptr->z_defined = FALSE;
+	rp_ptr->z_input_defined = FALSE;
+	rp_ptr->solution = NULL;
+	rp_ptr->solution_defined = FALSE;
+	rp_ptr->current_solution = -999999;
+	rp_ptr->solution1 = -99;
+	rp_ptr->solution2 = -99;
+	rp_ptr->f1 = 1.0;
+	// Initialize vertices
+	int i;
+	for (i = 0; i < 4; i++)
+	{
+		rp_ptr->vertex[i].x = 0.0;
+		rp_ptr->vertex[i].y = 0.0;
+	}
+	rp_ptr->polygon = NULL;
+	rp_ptr->update = 0;
 
 }
+
 /* ---------------------------------------------------------------------- */
-void river_polygon_init(River_Polygon *rp_ptr)
+void
+river_polygon_init(River_Polygon * rp_ptr)
 /* ---------------------------------------------------------------------- */
 {
-  rp_ptr->poly = NULL;
-  rp_ptr->x = 0;
-  rp_ptr->y = 0;
-  rp_ptr->area = 0;
-  rp_ptr->river_number = -1;
-  rp_ptr->point_number = -1;
-  rp_ptr->w = 0;
+	rp_ptr->poly = NULL;
+	rp_ptr->x = 0;
+	rp_ptr->y = 0;
+	rp_ptr->area = 0;
+	rp_ptr->river_number = -1;
+	rp_ptr->point_number = -1;
+	rp_ptr->w = 0;
 }
+
 /* ---------------------------------------------------------------------- */
-void rivers_convert_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM target,
-									  PHAST_Transform *map2grid)
+void
+rivers_convert_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM target,
+								 PHAST_Transform * map2grid)
 /* ---------------------------------------------------------------------- */
 {
 	River *river_ptr;
@@ -914,28 +1218,36 @@ void rivers_convert_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM target,
  *   Convert coordinates of all rivers 
  */
 	int j;
-	if (count_rivers <= 0) return;
-	if (simulation > 0) return;
+	if (count_rivers <= 0)
+		return;
+	if (simulation > 0)
+		return;
 
 	// Convert coordinate system for river points
-	for (j = 0; j < count_rivers; j++) {
+	for (j = 0; j < count_rivers; j++)
+	{
 		assert(rivers[j].new_def == TRUE);
-		if (rivers[j].new_def == FALSE) continue;
+		if (rivers[j].new_def == FALSE)
+			continue;
 		river_ptr = &(rivers[j]);
 		river_convert_coordinate_system(river_ptr, target, map2grid);
 	}
 }
+
 /* ---------------------------------------------------------------------- */
-void river_convert_coordinate_system(River *river_ptr, 
-											PHAST_Transform::COORDINATE_SYSTEM target, 
-											PHAST_Transform *map2grid)
+void
+river_convert_coordinate_system(River * river_ptr,
+								PHAST_Transform::COORDINATE_SYSTEM target,
+								PHAST_Transform * map2grid)
 /* ---------------------------------------------------------------------- */
 {
 	int i;
-	if (river_ptr->coordinate_system == target) return;
+	if (river_ptr->coordinate_system == target)
+		return;
 	if (river_ptr->coordinate_system == PHAST_Transform::NONE)
 	{
-		sprintf(error_string,"Error with coordinate system for river %d %s.", river_ptr->n_user, river_ptr->description);
+		sprintf(error_string, "Error with coordinate system for river %d %s.",
+				river_ptr->n_user, river_ptr->description);
 		error_msg(error_string, CONTINUE);
 		input_error++;
 		return;
@@ -943,8 +1255,11 @@ void river_convert_coordinate_system(River *river_ptr,
 	switch (target)
 	{
 	case PHAST_Transform::GRID:
-		for (i=0; i < river_ptr->count_points; i++) {
-			if (river_ptr->points[i].x_defined == FALSE || river_ptr->points[i].y_defined == FALSE) {
+		for (i = 0; i < river_ptr->count_points; i++)
+		{
+			if (river_ptr->points[i].x_defined == FALSE
+				|| river_ptr->points[i].y_defined == FALSE)
+			{
 				input_error++;
 				continue;
 			}
@@ -956,8 +1271,11 @@ void river_convert_coordinate_system(River *river_ptr,
 		river_ptr->coordinate_system = PHAST_Transform::GRID;
 		break;
 	case PHAST_Transform::MAP:
-		for (i=0; i < river_ptr->count_points; i++) {
-			if (river_ptr->points[i].x_defined == FALSE || river_ptr->points[i].y_defined == FALSE) {
+		for (i = 0; i < river_ptr->count_points; i++)
+		{
+			if (river_ptr->points[i].x_defined == FALSE
+				|| river_ptr->points[i].y_defined == FALSE)
+			{
 				input_error++;
 				continue;
 			}
@@ -969,7 +1287,9 @@ void river_convert_coordinate_system(River *river_ptr,
 		river_ptr->coordinate_system = PHAST_Transform::MAP;
 		break;
 	default:
-		sprintf(error_string,"Error converting river coordinate system %d, %s", river_ptr->n_user, river_ptr->description);
+		sprintf(error_string,
+				"Error converting river coordinate system %d, %s",
+				river_ptr->n_user, river_ptr->description);
 		error_msg(error_string, CONTINUE);
 		input_error++;
 	}

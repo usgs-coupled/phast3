@@ -13,10 +13,12 @@
 ArcRaster::ArcRaster(void)
 {
 }
-ArcRaster::ArcRaster(std::string filename, PHAST_Transform::COORDINATE_SYSTEM cs)
+
+ArcRaster::ArcRaster(std::string filename,
+					 PHAST_Transform::COORDINATE_SYSTEM cs)
 {
 	std::string token;
-	std::ifstream input (filename.c_str());
+	std::ifstream input(filename.c_str());
 	bool error = false;
 	if (!input.is_open())
 	{
@@ -25,64 +27,73 @@ ArcRaster::ArcRaster(std::string filename, PHAST_Transform::COORDINATE_SYSTEM cs
 		estring << "Could not open file " << filename.c_str() << std::endl;
 		error_msg(estring.str().c_str(), EA_STOP);
 	}
-	this->filename = filename;  
+	this->filename = filename;
 	this->file_type = Filedata::ARCRASTER;
 
 
 	// ncols
 	input >> token;
-	if (strcmp(token.c_str(), "ncols") != 0)  error = true;
+	if (strcmp(token.c_str(), "ncols") != 0)
+		error = true;
 	input >> this->ncols;
 
 	// nrows
 	input >> token;
-	if (strcmp(token.c_str(), "nrows") != 0) error = true;
+	if (strcmp(token.c_str(), "nrows") != 0)
+		error = true;
 	input >> this->nrows;
 
 	// xllcorner
 	input >> token;
-	if (strcmp(token.c_str(), "xllcorner") != 0) error = true;
+	if (strcmp(token.c_str(), "xllcorner") != 0)
+		error = true;
 	input >> this->xllcorner;
 
 	// yllcorner
 	input >> token;
-	if (strcmp(token.c_str(), "yllcorner") != 0) error = true;
+	if (strcmp(token.c_str(), "yllcorner") != 0)
+		error = true;
 	input >> this->yllcorner;
 
 	// cellsize
 	input >> token;
-	if (strcmp(token.c_str(), "cellsize") != 0) error = true;
+	if (strcmp(token.c_str(), "cellsize") != 0)
+		error = true;
 	input >> this->cellsize;
 
 	// NODATA_value
 	input >> token;
-	if (strcmp(token.c_str(), "NODATA_value") != 0) error = true;
+	if (strcmp(token.c_str(), "NODATA_value") != 0)
+		error = true;
 	input >> this->nodata_value;
 
 	if (error)
 	{
 		std::ostringstream estring;
-		estring << "Does not appear to be an Arc raster file, " << filename.c_str() << std::endl;
+		estring << "Does not appear to be an Arc raster file, " << filename.
+			c_str() << std::endl;
 		error_msg(estring.str().c_str(), EA_STOP);
 	}
 
 	//std::vector<Point>& pts_ref = this->pts_map[-1];
-	std::vector<Point> new_pts;
-	new_pts.reserve(this->nrows*this->ncols);
+	std::vector < Point > new_pts;
+	new_pts.reserve(this->nrows * this->ncols);
 	//pts_ref.clear();
 	double value, xpos, ypos;
 	int i, j;
 	for (i = 0; i < nrows; i++)
 	{
-		ypos = this->yllcorner + (double (this->nrows - i) + 0.5) * this->cellsize;
+		ypos =
+			this->yllcorner + (double (this->nrows - i) +
+							   0.5) *this->cellsize;
 		//char line[10000];
 		//input.getline(line, 10000);
 		//std::istringstream iss(line);
 
-		for (j = 0; j  < this->ncols; j++)
-		{    
+		for (j = 0; j < this->ncols; j++)
+		{
 			input >> value;
-			xpos = this->xllcorner + (double (j) + 0.5) * this->cellsize;
+			xpos = this->xllcorner + (double (j) + 0.5) *this->cellsize;
 			if (value != this->nodata_value)
 			{
 				//this->Get_points(-1).push_back(Point(xpos, ypos, value, value)); 
@@ -100,4 +111,3 @@ ArcRaster::ArcRaster(std::string filename, PHAST_Transform::COORDINATE_SYSTEM cs
 ArcRaster::~ArcRaster(void)
 {
 }
-

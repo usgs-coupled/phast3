@@ -14,6 +14,6 @@
 #if !defined(_VERSION_H)
 #define _VERSION_H
 
-const char* nn_version = "1.78";
+const char *nn_version = "1.78";
 
 #endif

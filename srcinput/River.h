@@ -4,7 +4,8 @@
 /* ----------------------------------------------------------------------
  *   Rivers
  * ---------------------------------------------------------------------- */
-typedef struct {
+typedef struct
+{
 	double x;
 	int x_defined;
 	double y;
@@ -29,21 +30,23 @@ typedef struct {
 	int solution1;
 	int solution2;
 	double f1;
-  /*	gpc_vertex right, left; */
+	/*    gpc_vertex right, left; */
 	gpc_vertex vertex[4];
 	gpc_polygon *polygon;
 	int update;
 } River_Point;
-typedef struct {
+typedef struct
+{
 	River_Point *points;
 	int count_points;
 	int new_def;
 	int update;
 	int n_user;
 	char *description;
-	PHAST_Transform::COORDINATE_SYSTEM coordinate_system;
+	  PHAST_Transform::COORDINATE_SYSTEM coordinate_system;
 } River;
-typedef struct {
+typedef struct
+{
 	gpc_polygon *poly;
 	double x;
 	double y;

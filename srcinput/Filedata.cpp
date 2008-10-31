@@ -9,75 +9,90 @@
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
 #endif
 
-std::map<std::string, Filedata *> Filedata::file_data_map;
+std::map < std::string, Filedata * >Filedata::file_data_map;
 Filedata::Filedata(void)
 {
-  this->file_type = Filedata::NONE;
+	this->file_type = Filedata::NONE;
 }
 
 Filedata::~Filedata(void)
 {
-  //this->nni_map.clear();
-  /*
-  std::map<int, std::vector<Point> >::iterator it1;
-  for (it1 = this->pts_map.begin(); it1 != this->pts_map.end(); it1++)
-  {
-    delete it1->second;
-  }
-  */
-  std::map<int, Data_source *>::iterator it;
-  for (it = this->data_source_map.begin(); it != this->data_source_map.end(); it++)
-  {
-    delete it->second;
-  }
+	//this->nni_map.clear();
+	/*
+	   std::map<int, std::vector<Point> >::iterator it1;
+	   for (it1 = this->pts_map.begin(); it1 != this->pts_map.end(); it1++)
+	   {
+	   delete it1->second;
+	   }
+	 */
+	std::map < int, Data_source * >::iterator it;
+	for (it = this->data_source_map.begin();
+		 it != this->data_source_map.end(); it++)
+	{
+		delete it->second;
+	}
 
 }
-void Clear_file_data_map(void)
+void
+Clear_file_data_map(void)
 {
-  std::map<std::string, Filedata * >::iterator it;
-  for (it = Filedata::file_data_map.begin(); it != Filedata::file_data_map.end(); it++)
-  {
-    delete it->second;
-  }
-  Filedata::file_data_map.clear();
+	std::map < std::string, Filedata * >::iterator it;
+	for (it = Filedata::file_data_map.begin();
+		 it != Filedata::file_data_map.end(); it++)
+	{
+		delete it->second;
+	}
+	Filedata::file_data_map.clear();
 }
 
-void Filedata::Add_data_source (int attribute, std::vector<Point> in_pts, int columns, PHAST_Transform::COORDINATE_SYSTEM system)
+void
+Filedata::Add_data_source(int attribute, std::vector < Point > in_pts,
+						  int columns,
+						  PHAST_Transform::COORDINATE_SYSTEM system)
 {
-  // Store list of points if necessary
-  if (this->data_source_map.size() == 0 || (this->data_source_map.find(attribute) == this->data_source_map.end()) )
-  {
-    //std::vector<Point> temp_pts; 
-    //this->Make_points(attribute, temp_pts);
-	Data_source *ds = new Data_source(in_pts, system);
-	ds->Set_columns(columns);
-	ds->Set_attribute(attribute);
-    this->data_source_map[attribute] = ds;
-  }
+	// Store list of points if necessary
+	if (this->data_source_map.size() == 0
+		|| (this->data_source_map.find(attribute) ==
+			this->data_source_map.end()))
+	{
+		//std::vector<Point> temp_pts; 
+		//this->Make_points(attribute, temp_pts);
+		Data_source *ds = new Data_source(in_pts, system);
+		ds->Set_columns(columns);
+		ds->Set_attribute(attribute);
+		this->data_source_map[attribute] = ds;
+	}
 }
 
-std::vector<Point> & Filedata::Get_points(int attribute)
+std::vector < Point > &Filedata::Get_points(int attribute)
 {
 	if (this->data_source_map.find(attribute) != this->data_source_map.end())
 	{
-		return(this->data_source_map.find(attribute)->second->Get_points());
+		return (this->data_source_map.find(attribute)->second->Get_points());
 	}
-	return(this->empty_pts);
+	return (this->empty_pts);
 }
-Data_source * Filedata::Get_data_source(int attribute)
+
+Data_source *
+Filedata::Get_data_source(int attribute)
 {
 	if (this->data_source_map.find(attribute) != this->data_source_map.end())
 	{
-		return(this->data_source_map.find(attribute)->second);
+		return (this->data_source_map.find(attribute)->second);
 	}
-	return(NULL);
+	return (NULL);
 }
-double Filedata::Interpolate(int attribute, Point p, PHAST_Transform::COORDINATE_SYSTEM point_system, PHAST_Transform *map2grid)
+
+double
+Filedata::Interpolate(int attribute, Point p,
+					  PHAST_Transform::COORDINATE_SYSTEM point_system,
+					  PHAST_Transform * map2grid)
 {
 	if (this->Get_data_source(attribute) == NULL)
 	{
 		std::ostringstream estring;
-		estring << "No data source defined for attribute " << attribute << std::endl;
+		estring << "No data source defined for attribute " << attribute <<
+			std::endl;
 		error_msg(estring.str().c_str(), EA_CONTINUE);
 		return (NaN);
 	}
@@ -121,21 +136,26 @@ double Filedata::Interpolate(int attribute, Point p, PHAST_Transform::COORDINATE
 			break;
 		}
 	case PHAST_Transform::NONE:
-	  break;
+		break;
 	}
 	std::ostringstream estring;
-	estring << "A coordinate system was not defined for Filedata::Interpolate " << std::endl;
+	estring <<
+		"A coordinate system was not defined for Filedata::Interpolate " <<
+		std::endl;
 	error_msg(estring.str().c_str(), EA_STOP);
-	return(0.0);
+	return (0.0);
 
 }
-NNInterpolator * Filedata::Get_nni(int attribute)
+
+NNInterpolator *
+Filedata::Get_nni(int attribute)
 {
-	std::map<int, Data_source *>::iterator it = this->data_source_map.find(attribute);
-	assert (it->second->Get_source_type() == Data_source::POINTS);
+	std::map < int, Data_source * >::iterator it =
+		this->data_source_map.find(attribute);
+	assert(it->second->Get_source_type() == Data_source::POINTS);
 	if (it != this->data_source_map.end())
 	{
-		return(it->second->Get_nni());
+		return (it->second->Get_nni());
 	}
-	return(NULL);
+	return (NULL);
 }

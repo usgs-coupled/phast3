@@ -20,18 +20,18 @@ static char const svnid[] = "$Id$";
 #  define OS2
 #endif
 
-#if defined(OS2) && defined(MSDOS) /* MS C under OS/2 */
+#if defined(OS2) && defined(MSDOS)	/* MS C under OS/2 */
 #  undef MSDOS
 #endif
 
 #ifdef MSDOS
 #  ifdef __GNUC__
-     /* DJGPP version 1.09+ on MS-DOS.
-      * The DJGPP 1.09 stat() function must be upgraded before gzip will
-      * fully work.
-      * No need for DIRENT, since <unistd.h> defines POSIX_SOURCE which
-      * implies DIRENT.
-      */
+	 /* DJGPP version 1.09+ on MS-DOS.
+	  * The DJGPP 1.09 stat() function must be upgraded before gzip will
+	  * fully work.
+	  * No need for DIRENT, since <unistd.h> defines POSIX_SOURCE which
+	  * implies DIRENT.
+	  */
 #    define near
 #  else
 #    define MAXSEG_64K
@@ -57,7 +57,7 @@ static char const svnid[] = "$Id$";
 #  define PROTO
 #  define STDC_HEADERS
 #  define NO_SIZE_CHECK
-#  define casemap(c) tolow(c) /* Force file names to lower case */
+#  define casemap(c) tolow(c)	/* Force file names to lower case */
 #  include <io.h>
 #  define OS_CODE  0x00
 #  define SET_BINARY_MODE(fd) setmode(fd, O_BINARY)
@@ -110,7 +110,7 @@ static char const svnid[] = "$Id$";
 #  endif
 #endif
 
-#ifdef WIN32 /* Windows NT */
+#ifdef WIN32					/* Windows NT */
 #  define HAVE_SYS_UTIME_H
 #  define NO_UTIME_H
 #  define PATH_SEP2 '\\'
@@ -126,7 +126,7 @@ static char const svnid[] = "$Id$";
 #    define NO_MULTIPLE_DOTS
 #    define MAX_EXT_CHARS 3
 #    define Z_SUFFIX "z"
-#    define casemap(c) tolow(c) /* Force file names to lower case */
+#    define casemap(c) tolow(c)	/* Force file names to lower case */
 #  endif
 #  define OS_CODE  0x0b
 #endif
@@ -135,10 +135,10 @@ static char const svnid[] = "$Id$";
 #  ifdef __TURBOC__
 #    include <alloc.h>
 #    define DYN_ALLOC
-     /* Turbo C 2.0 does not accept static allocations of large arrays */
-     void * fcalloc (unsigned items, unsigned size);
-     void fcfree (void *ptr);
-#  else /* MSC */
+	 /* Turbo C 2.0 does not accept static allocations of large arrays */
+void *fcalloc(unsigned items, unsigned size);
+void fcfree(void *ptr);
+#  else	/* MSC */
 #    include <malloc.h>
 #    define fcalloc(nitems,itemsize) halloc((long)(nitems),(itemsize))
 #    define fcfree(ptr) hfree(ptr)
@@ -181,17 +181,17 @@ static char const svnid[] = "$Id$";
 #  ifdef __GNUC__
 #    define DIRENT
 #    define HAVE_UNISTD_H
-#  else /* SASC */
+#  else	/* SASC */
 #    define NO_STDIN_FSTAT
 #    define SYSDIR
 #    define NO_SYMLINK
 #    define NO_CHOWN
 #    define NO_FCNTL_H
-#    include <fcntl.h> /* for read() and write() */
+#    include <fcntl.h>			/* for read() and write() */
 #    define direct dirent
-     extern void _expand_args(int *argc, char ***argv);
+extern void _expand_args(int *argc, char ***argv);
 #    define EXPAND(argc,argv) _expand_args(&argc,&argv);
-#    undef  O_BINARY /* disable useless --ascii option */
+#    undef  O_BINARY			/* disable useless --ascii option */
 #  endif
 #endif
 
@@ -211,7 +211,7 @@ static char const svnid[] = "$Id$";
 #    define MAX_EXT_CHARS 3
 #    define Z_SUFFIX "z"
 #    define NO_CHOWN
-#    define casemap(c) tolow(c) /* Force file names to lower case */
+#    define casemap(c) tolow(c)	/* Force file names to lower case */
 #    define NO_SYMLINK
 #  endif
 #endif
@@ -231,28 +231,28 @@ static char const svnid[] = "$Id$";
 #  endif
 #endif
 
-#ifdef __50SERIES /* Prime/PRIMOS */
+#ifdef __50SERIES				/* Prime/PRIMOS */
 #  define PATH_SEP '>'
 #  define STDC_HEADERS
 #  define NO_MEMORY_H
 #  define NO_UTIME_H
 #  define NO_UTIME
-#  define NO_CHOWN 
-#  define NO_STDIN_FSTAT 
-#  define NO_SIZE_CHECK 
+#  define NO_CHOWN
+#  define NO_STDIN_FSTAT
+#  define NO_SIZE_CHECK
 #  define NO_SYMLINK
 #  define RECORD_IO  1
-#  define casemap(c)  tolow(c) /* Force file names to lower case */
+#  define casemap(c)  tolow(c)	/* Force file names to lower case */
 #  define put_char(c) put_byte((c) & 0x7F)
 #  define get_char(c) ascii2pascii(get_byte())
-#  define OS_CODE  0x0F    /* temporary, subject to change */
+#  define OS_CODE  0x0F			/* temporary, subject to change */
 #  ifdef SIGTERM
-#    undef SIGTERM         /* We don't want a signal handler for SIGTERM */
+#    undef SIGTERM				/* We don't want a signal handler for SIGTERM */
 #  endif
 #endif
 
-#if defined(pyr) && !defined(NOMEMCPY) /* Pyramid */
-#  define NOMEMCPY /* problem with overlapping copies */
+#if defined(pyr) && !defined(NOMEMCPY)	/* Pyramid */
+#  define NOMEMCPY				/* problem with overlapping copies */
 #endif
 
 #ifdef TOPS20
@@ -260,14 +260,14 @@ static char const svnid[] = "$Id$";
 #endif
 
 #ifndef unix
-#  define NO_ST_INO /* don't rely on inode numbers */
+#  define NO_ST_INO				/* don't rely on inode numbers */
 #endif
 
 
 	/* Common defaults */
 
 #ifndef OS_CODE
-#  define OS_CODE  0x03  /* assume Unix */
+#  define OS_CODE  0x03			/* assume Unix */
 #endif
 
 #ifndef PATH_SEP

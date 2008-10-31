@@ -22,62 +22,72 @@
 #include <string.h>
 #include "istack.h"
 
-istack* istack_create(void)
+istack *
+istack_create(void)
 {
-    istack* s = (istack *) malloc(sizeof(istack));
+	istack *s = (istack *) malloc(sizeof(istack));
 
-    s->n = 0;
-    s->nallocated = STACK_NSTART;
-    s->v = (int *) malloc(STACK_NSTART * sizeof(int));
-    return s;
+	s->n = 0;
+	s->nallocated = STACK_NSTART;
+	s->v = (int *) malloc(STACK_NSTART * sizeof(int));
+	return s;
 }
 
-void istack_destroy(istack* s)
+void
+istack_destroy(istack * s)
 {
-    if (s != NULL) {
-        free(s->v);
-        free(s);
-    }
+	if (s != NULL)
+	{
+		free(s->v);
+		free(s);
+	}
 }
 
-void istack_reset(istack* s)
+void
+istack_reset(istack * s)
 {
-    s->n = 0;
+	s->n = 0;
 }
 
-int istack_contains(istack* s, int v)
+int
+istack_contains(istack * s, int v)
 {
-    int i;
+	int i;
 
-    for (i = 0; i < s->n; ++i)
-        if (s->v[i] == v)
-            return 1;
-    return 0;
+	for (i = 0; i < s->n; ++i)
+		if (s->v[i] == v)
+			return 1;
+	return 0;
 }
 
-void istack_push(istack* s, int v)
+void
+istack_push(istack * s, int v)
 {
-    if (s->n == s->nallocated) {
-        s->nallocated *= 2;
-        s->v = (int *) realloc(s->v, s->nallocated * sizeof(int));
-    }
+	if (s->n == s->nallocated)
+	{
+		s->nallocated *= 2;
+		s->v = (int *) realloc(s->v, s->nallocated * sizeof(int));
+	}
 
-    s->v[s->n] = v;
-    s->n++;
+	s->v[s->n] = v;
+	s->n++;
 }
 
-int istack_pop(istack* s)
+int
+istack_pop(istack * s)
 {
-    s->n--;
-    return s->v[s->n];
+	s->n--;
+	return s->v[s->n];
 }
 
-int istack_getnentries(istack* s)
+int
+istack_getnentries(istack * s)
 {
-    return s->n;
+	return s->n;
 }
 
-int* istack_getentries(istack* s)
+int *
+istack_getentries(istack * s)
 {
-    return s->v;
+	return s->v;
 }

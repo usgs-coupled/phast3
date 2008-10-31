@@ -15,10 +15,11 @@
 XYZfile::XYZfile(void)
 {
 }
+
 XYZfile::XYZfile(std::string filename, PHAST_Transform::COORDINATE_SYSTEM cs)
 {
 	std::string token;
-	std::ifstream input (filename.c_str());
+	std::ifstream input(filename.c_str());
 	bool error = false;
 	if (!input.is_open())
 	{
@@ -30,22 +31,24 @@ XYZfile::XYZfile(std::string filename, PHAST_Transform::COORDINATE_SYSTEM cs)
 	this->filename = filename;
 	this->file_type = Filedata::XYZ;
 
-	std::vector<Point> temp_pts;
+	std::vector < Point > temp_pts;
 	//this->Get_pts_map()[-1] = temp_pts;
 	//this->columns = Read_points(input, this->Get_points(-1));
 	this->columns = Read_points(input, temp_pts);
 	this->coordinate_system = cs;
-	this->Add_data_source(-1, temp_pts, this->columns, this->coordinate_system);
+	this->Add_data_source(-1, temp_pts, this->columns,
+						  this->coordinate_system);
 
-  // Set bounding box
-  //this->Set_bounding_box();
+	// Set bounding box
+	//this->Set_bounding_box();
 }
 
 XYZfile::~XYZfile(void)
 {
 }
 
-bool XYZfile::Make_polygons( int field, PHAST_polygon &polygons)
+bool
+XYZfile::Make_polygons(int field, PHAST_polygon & polygons)
 {
 	//this->Make_points(-1, polygons.Get_points());
 	polygons.Get_points() = this->Get_points(-1);
@@ -55,5 +58,3 @@ bool XYZfile::Make_polygons( int field, PHAST_polygon &polygons)
 	polygons.Set_bounding_box();
 	return true;
 }
-
-

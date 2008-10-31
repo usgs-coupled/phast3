@@ -16,86 +16,97 @@
 
 // static
 //std::list<NNInterpolator*> NNInterpolator::NNInterpolatorList;
-UniqueMap<NNInterpolator*> NNInterpolator::NNInterpolatorMap;
+UniqueMap < NNInterpolator * >NNInterpolator::NNInterpolatorMap;
 
 // Constructors
 NNInterpolator::NNInterpolator(void)
 {
-  this->delaunay_triangulation = NULL;
-  this->nn = NULL;
-  this->pin = NULL;
-  this->tree = NULL;
-  this->point_count = 0;
-  this->coordinate_system = PHAST_Transform::NONE;
+	this->delaunay_triangulation = NULL;
+	this->nn = NULL;
+	this->pin = NULL;
+	this->tree = NULL;
+	this->point_count = 0;
+	this->coordinate_system = PHAST_Transform::NONE;
 }
+
 // Destructor
 NNInterpolator::~NNInterpolator(void)
 {
-  if (this->nn != NULL) nnpi_destroy(this->nn);
-  if (this->delaunay_triangulation != NULL) delaunay_destroy(this->delaunay_triangulation);
-  if (this->pin != NULL) delete this->pin;
-  // this->tree cleaned up in main Clear_KDtreeList()
+	if (this->nn != NULL)
+		nnpi_destroy(this->nn);
+	if (this->delaunay_triangulation != NULL)
+		delaunay_destroy(this->delaunay_triangulation);
+	if (this->pin != NULL)
+		delete this->pin;
+	// this->tree cleaned up in main Clear_KDtreeList()
 }
-bool nnpi_interpolate(std::vector<Point> &pts_in, std::vector<Point> &pts_out, double wmin)
+
+bool
+nnpi_interpolate(std::vector < Point > &pts_in,
+				 std::vector < Point > &pts_out, double wmin)
 {
-  if (pts_in.size() == 0 || pts_out.size() == 0)
-  {
-    return false;
-  }
-  // set up points in input array
-  int nin = pts_in.size();
-  point * pin = new point[nin];
+	if (pts_in.size() == 0 || pts_out.size() == 0)
+	{
+		return false;
+	}
+	// set up points in input array
+	int nin = pts_in.size();
+	point *pin = new point[nin];
 
-  int i;
-  for (i = 0; i < nin; i++)
-  {
-    pin[i].x = pts_in[i].x();
-    pin[i].y = pts_in[i].y();
-    pin[i].z = pts_in[i].get_v();
-  }
+	int i;
+	for (i = 0; i < nin; i++)
+	{
+		pin[i].x = pts_in[i].x();
+		pin[i].y = pts_in[i].y();
+		pin[i].z = pts_in[i].get_v();
+	}
 
-  // set up points in output array
-  int nout = pts_out.size();
-  point * pout = new point[nout];
-  for (i = 0; i < nout; i++)
-  {
-    pout[i].x = pts_out[i].x();
-    pout[i].y = pts_out[i].y();
-    pout[i].z = 0.0;
-  }
+	// set up points in output array
+	int nout = pts_out.size();
+	point *pout = new point[nout];
+	for (i = 0; i < nout; i++)
+	{
+		pout[i].x = pts_out[i].x();
+		pout[i].y = pts_out[i].y();
+		pout[i].z = 0.0;
+	}
 
-  nnpi_interpolate_points(nin, pin, wmin, nout, pout);
+	nnpi_interpolate_points(nin, pin, wmin, nout, pout);
 
-  KDtree kdt(pts_in);
+	KDtree kdt(pts_in);
 
-  // set up points for return
-  for (i = 0; i < nout; i++)
-  {
-    if (isnan(pout[i].z))
-    {
-      int n = kdt.Nearest(pts_out[i]);
-      pts_out[i].set_v(pts_in[n].get_v());
-      //Point p;
-      //p.set_x(pout[i].x);
-      //p.set_y(pout[i].y);
-      //pts_out[i].set_v(pts_in[n].get_v());
-      //pts_out[i].set_v(-300);
-    } else
-    {
-      pts_out[i].set_v(pout[i].z);
-    }
-  }
+	// set up points for return
+	for (i = 0; i < nout; i++)
+	{
+		if (isnan(pout[i].z))
+		{
+			int n = kdt.Nearest(pts_out[i]);
+			pts_out[i].set_v(pts_in[n].get_v());
+			//Point p;
+			//p.set_x(pout[i].x);
+			//p.set_y(pout[i].y);
+			//pts_out[i].set_v(pts_in[n].get_v());
+			//pts_out[i].set_v(-300);
+		}
+		else
+		{
+			pts_out[i].set_v(pout[i].z);
+		}
+	}
 
-  // remove added Points
-  //pts_in.erase(original_end + 1, pts_in.end());
-  
-  // delete points
-  delete [] pin;
-  delete [] pout;
-  return true;
+	// remove added Points
+	//pts_in.erase(original_end + 1, pts_in.end());
+
+	// delete points
+	delete[]pin;
+	delete[]pout;
+	return true;
 }
+
 // COMMENT: {7/11/2008 9:26:59 PM}bool NNInterpolator::preprocess(std::vector<Point> &pts_in, std::vector<Point> &corners)
-bool NNInterpolator::preprocess(std::vector<Point> &pts_in, PHAST_Transform::COORDINATE_SYSTEM cs)
+bool
+NNInterpolator::preprocess(std::vector < Point > &pts_in,
+						   PHAST_Transform::COORDINATE_SYSTEM cs)
 {
 	this->coordinate_system = cs;
 
@@ -118,26 +129,37 @@ bool NNInterpolator::preprocess(std::vector<Point> &pts_in, PHAST_Transform::COO
 		this->pin[i].y = pts_in[i].y();
 		//this->pin[i].z = pts_in[i].get_v();
 		this->pin[i].z = pts_in[i].z();
-		if (this->pin[i].x < this->bounds.x1) this->bounds.x1 = this->pin[i].x;
-		if (this->pin[i].y < this->bounds.y1) this->bounds.y1 = this->pin[i].y;
-		if (this->pin[i].z < this->bounds.z1) this->bounds.z1 = this->pin[i].z;
-		if (this->pin[i].x > this->bounds.x2) this->bounds.x2 = this->pin[i].x;
-		if (this->pin[i].y > this->bounds.y2) this->bounds.y2 = this->pin[i].y;
-		if (this->pin[i].z > this->bounds.z2) this->bounds.z2 = this->pin[i].z;
+		if (this->pin[i].x < this->bounds.x1)
+			this->bounds.x1 = this->pin[i].x;
+		if (this->pin[i].y < this->bounds.y1)
+			this->bounds.y1 = this->pin[i].y;
+		if (this->pin[i].z < this->bounds.z1)
+			this->bounds.z1 = this->pin[i].z;
+		if (this->pin[i].x > this->bounds.x2)
+			this->bounds.x2 = this->pin[i].x;
+		if (this->pin[i].y > this->bounds.y2)
+			this->bounds.y2 = this->pin[i].y;
+		if (this->pin[i].z > this->bounds.z2)
+			this->bounds.z2 = this->pin[i].z;
 	}
 
 	assert(this->delaunay_triangulation == 0);
 	assert(this->nn == 0);
 
-	this->delaunay_triangulation = delaunay_build(nin, this->pin, 0, NULL, 0, NULL);
+	this->delaunay_triangulation =
+		delaunay_build(nin, this->pin, 0, NULL, 0, NULL);
 	this->nn = nnpi_create(this->delaunay_triangulation);
 	// int seed = 0;
 
-	double wmin = 0;  // no extrapolation
+	double wmin = 0;			// no extrapolation
 	nnpi_setwmin(this->nn, wmin);
 	return true;
 }
-double NNInterpolator::interpolate(const Point& p, PHAST_Transform::COORDINATE_SYSTEM point_system, PHAST_Transform *map2grid)
+
+double
+NNInterpolator::interpolate(const Point & p,
+							PHAST_Transform::COORDINATE_SYSTEM point_system,
+							PHAST_Transform * map2grid)
 {
 	switch (point_system)
 	{
@@ -153,7 +175,7 @@ double NNInterpolator::interpolate(const Point& p, PHAST_Transform::COORDINATE_S
 				map2grid->Inverse_transform(pt);
 				pt.set_z(this->interpolate(pt));
 				map2grid->Transform(pt);
-				return(pt.z());
+				return (pt.z());
 			}
 		default:
 			break;
@@ -175,15 +197,19 @@ double NNInterpolator::interpolate(const Point& p, PHAST_Transform::COORDINATE_S
 		default:
 			break;
 		}
-       	case PHAST_Transform::NONE:
-	  break;
+	case PHAST_Transform::NONE:
+		break;
 	}
 	std::ostringstream estring;
-	estring << "A oordinate system was not defined for NNInterpolate::interpolate " << std::endl;
+	estring <<
+		"A oordinate system was not defined for NNInterpolate::interpolate "
+		<< std::endl;
 	error_msg(estring.str().c_str(), EA_STOP);
-	return(0.0);
+	return (0.0);
 }
-double NNInterpolator::interpolate(const Point& pt)
+
+double
+NNInterpolator::interpolate(const Point & pt)
 {
 	// Point is in same coordinate units as nni interpolator
 	point pout;
@@ -198,7 +224,7 @@ double NNInterpolator::interpolate(const Point& pt)
 			if (this->get_tree())
 			{
 				int n = this->get_tree()->Nearest(pt);
-				assert((0 <= n) && (n < (int)this->point_count));
+				assert((0 <= n) && (n < (int) this->point_count));
 				pout.z = this->pin[n].z;
 			}
 		}
@@ -209,41 +235,46 @@ double NNInterpolator::interpolate(const Point& pt)
 		if (this->get_tree())
 		{
 			int n = this->get_tree()->Nearest(pt);
-			assert((0 <= n) && (n < (int)this->point_count));
+			assert((0 <= n) && (n < (int) this->point_count));
 			pout.z = this->pin[n].z;
 		}
 	}
 	return (pout.z);
 }
-KDtree* NNInterpolator::get_tree(void)
+
+KDtree *
+NNInterpolator::get_tree(void)
 {
-  if (this->tree == 0)
-  {
-    if (this->point_count > 0)
-    {
-      assert(this->pin != NULL);
-	  std::vector<Point> pts;
-	  size_t i;
-	  for (i = 0; i < this->point_count; i++)
-	  {
-		  Point p(this->pin[i].x, this->pin[i].y, this->pin[i].z);
-		  pts.push_back(p);
-	  }
-      //this->tree = new KDtree(this->pin, this->point_count);
-	  this->tree = new KDtree(pts);
-      KDtree::KDtreeList.push_back(this->tree);
-    }
-  }
-  return this->tree;
+	if (this->tree == 0)
+	{
+		if (this->point_count > 0)
+		{
+			assert(this->pin != NULL);
+			std::vector < Point > pts;
+			size_t i;
+			for (i = 0; i < this->point_count; i++)
+			{
+				Point p(this->pin[i].x, this->pin[i].y, this->pin[i].z);
+				pts.push_back(p);
+			}
+			//this->tree = new KDtree(this->pin, this->point_count);
+			this->tree = new KDtree(pts);
+			KDtree::KDtreeList.push_back(this->tree);
+		}
+	}
+	return this->tree;
 }
-void Clear_NNInterpolatorList(void)
+
+void
+Clear_NNInterpolatorList(void)
 {
 	//std::list<NNInterpolator*>::iterator it = NNInterpolator::NNInterpolatorList.begin();
-	UniqueMap<NNInterpolator *>::iterator it = NNInterpolator::NNInterpolatorMap.begin();
+	UniqueMap < NNInterpolator * >::iterator it =
+		NNInterpolator::NNInterpolatorMap.begin();
 	//for (; it != NNInterpolator::NNInterpolatorList.end(); ++it)
 	for (; it != NNInterpolator::NNInterpolatorMap.end(); ++it)
 	{
-		delete (*it);
+		delete(*it);
 	}
 	//NNInterpolator::NNInterpolatorList.clear();
 	NNInterpolator::NNInterpolatorMap.clear();

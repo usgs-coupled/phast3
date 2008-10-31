@@ -18,10 +18,11 @@
 
 #if !defined(_POINT_STRUCT)
 #define _POINT_STRUCT
-typedef struct {
-    double x;
-    double y;
-    double z;
+typedef struct
+{
+	double x;
+	double y;
+	double z;
 } point;
 #endif
 
@@ -32,9 +33,9 @@ typedef struct minell minell;
 #endif
 
 /* Note that minell_build() shuffles the input point array */
-minell* minell_build(int n, point p[]);
-void minell_destroy(minell* me);
-void minell_scalepoints(minell* me, int n, point p[]);
-void minell_rescalepoints(minell* me, int n, point p[]);
+minell *minell_build(int n, point p[]);
+void minell_destroy(minell * me);
+void minell_scalepoints(minell * me, int n, point p[]);
+void minell_rescalepoints(minell * me, int n, point p[]);
 
 #endif

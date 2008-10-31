@@ -7,36 +7,36 @@
 class Point;
 class Polygon_leaf
 {
-public:
-  Polygon_leaf();
-  virtual ~Polygon_leaf();
+  public:
+	Polygon_leaf();
+	virtual ~ Polygon_leaf();
 
-  // methods
-  bool split(void);
-  bool Point_in_polygon(Point p);
+	// methods
+	bool split(void);
+	bool Point_in_polygon(Point p);
 
-  // Data
-  zone box;
-  Polygon_leaf *left;
-  Polygon_leaf *right;
-  PHAST_polygon *polygon;
-  bool split_x;
-  bool tip;
+	// Data
+	zone box;
+	Polygon_leaf *left;
+	Polygon_leaf *right;
+	PHAST_polygon *polygon;
+	bool split_x;
+	bool tip;
 };
 class Polygon_tree
 {
-public:
-  Polygon_tree(void);
-  Polygon_tree(PHAST_polygon &polys);
+  public:
+	Polygon_tree(void);
+	  Polygon_tree(PHAST_polygon & polys);
 
-public:
-  virtual ~Polygon_tree(void);
+  public:
+	  virtual ~ Polygon_tree(void);
 
-  bool Point_in_polygon(Point p);
+	bool Point_in_polygon(Point p);
 
-public:
-  // Data
-  Polygon_leaf *root;
-  std::vector<Polygon_leaf *> all_leaves;
+  public:
+	// Data
+	  Polygon_leaf * root;
+	  std::vector < Polygon_leaf * >all_leaves;
 };
 #endif // !defined(POLYGON_TREE_H_INCLUDED)

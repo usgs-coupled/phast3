@@ -24,17 +24,18 @@ struct istack;
 typedef struct istack istack;
 #endif
 
-struct istack {
-    int n;
-    int nallocated;
-    int* v;
+struct istack
+{
+	int n;
+	int nallocated;
+	int *v;
 };
 
-istack* istack_create(void);
-void istack_destroy(istack* s);
-void istack_push(istack* s, int v);
-int istack_pop(istack* s);
-int istack_contains(istack* s, int v);
-void istack_reset(istack* s);
+istack *istack_create(void);
+void istack_destroy(istack * s);
+void istack_push(istack * s, int v);
+int istack_pop(istack * s);
+int istack_contains(istack * s, int v);
+void istack_reset(istack * s);
 
 #endif

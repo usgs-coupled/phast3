@@ -1,6 +1,7 @@
 #if !defined(CUNIT_H_INCLUDED)
 #define CUNIT_H_INCLUDED
-struct cunit {
+struct cunit
+{
 	char *input;
 	char *si;
 	double input_to_si;
@@ -9,16 +10,16 @@ struct cunit {
 	int defined;
 
 // Constructors
-	cunit(void);
-	cunit(const char* si);
-	~cunit(void);
-	cunit(const cunit& src);
+	  cunit(void);
+	  cunit(const char *si);
+	 ~cunit(void);
+	  cunit(const cunit & src);
 // Assignment Operators
-	cunit& operator=(const cunit& src);
+	  cunit & operator=(const cunit & src);
 // Utilities
-	int set_input(const char* input);
-	void define(const char* input);
+	int set_input(const char *input);
+	void define(const char *input);
 	void undefine(void);
-	const char* c_str(void)const;
+	const char *c_str(void) const;
 };
 #endif // !defined(CUNIT_H_INCLUDED)

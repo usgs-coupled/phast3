@@ -17,21 +17,22 @@ class NNInterpolator;
 
 class Data_source
 {
-public:
-  enum DATA_SOURCE_TYPE
-  {
-    SHAPE        = 0,
-    ARCRASTER    = 1,
-    XYZ          = 2,
-    CONSTANT     = 3,
-    POINTS       = 4,
-    NONE         = 5,
-  };
-  Data_source(void);
-  Data_source(std::vector<Point> &in_pts, PHAST_Transform::COORDINATE_SYSTEM system);
-  Data_source(const Data_source& r);
-  
-  ~Data_source(void);
+  public:
+	enum DATA_SOURCE_TYPE
+	{
+		SHAPE = 0,
+		ARCRASTER = 1,
+		XYZ = 2,
+		CONSTANT = 3,
+		POINTS = 4,
+		NONE = 5,
+	};
+	  Data_source(void);
+	  Data_source(std::vector < Point > &in_pts,
+				  PHAST_Transform::COORDINATE_SYSTEM system);
+	  Data_source(const Data_source & r);
+
+	 ~Data_source(void);
 
 // Data read from a file are stored in Filedata
 // Data read for CONSTANT and POINTS are stored here in Data_source
@@ -41,83 +42,125 @@ public:
 // CONSTANT and POINTS
 //   Units are converted in Data_source::Tidy so that this->pts has been converted.
 
-  void                     Init();
-  bool                     Read                   (std::istream &lines, bool read_num);
-  void                     Tidy                   (const bool make_nni);
-  void                     Convert_coordinates    (PHAST_Transform::COORDINATE_SYSTEM target, PHAST_Transform *map2grid);
-  //void                     Add_to_file_map        (Filedata *f, const bool make_nni);
-  //void                     Add_nni_to_data_source (void);
-  bool                     Make_polygons          (void);
-  bool                     Make_nni               (void);
-  double                   Interpolate            (const Point& p);
-  double                   Interpolate            (const Point& p, PHAST_Transform::COORDINATE_SYSTEM point_system, PHAST_Transform *map2grid);
-  //bool                     Read_units             (std::istream &lines);
-  static bool              Read_filename          (std::istream &lines, bool read_num, std::string &filename, int &num);
-  // Getter and setter
-  bool                     Get_defined            (void) {return this->defined;};
-  void                     Set_defined            (bool tf) {this->defined = tf;};
-  
-  std::string              Get_file_name          (void)const {return this->file_name;};
-  void                     Set_file_name          (std::string fn);
+	void Init();
+	bool Read(std::istream & lines, bool read_num);
+	void Tidy(const bool make_nni);
+	void Convert_coordinates(PHAST_Transform::COORDINATE_SYSTEM target,
+							 PHAST_Transform * map2grid);
+	//void                     Add_to_file_map        (Filedata *f, const bool make_nni);
+	//void                     Add_nni_to_data_source (void);
+	bool Make_polygons(void);
+	bool Make_nni(void);
+	double Interpolate(const Point & p);
+	double Interpolate(const Point & p,
+					   PHAST_Transform::COORDINATE_SYSTEM point_system,
+					   PHAST_Transform * map2grid);
+	//bool                     Read_units             (std::istream &lines);
+	static bool Read_filename(std::istream & lines, bool read_num,
+							  std::string & filename, int &num);
+	// Getter and setter
+	bool Get_defined(void)
+	{
+		return this->defined;
+	};
+	void Set_defined(bool tf)
+	{
+		this->defined = tf;
+	};
 
-  DATA_SOURCE_TYPE         Get_source_type        (void)const {return this->source_type;}
-  void                     Set_source_type        (DATA_SOURCE_TYPE dt) {this->source_type = dt;};
+	std::string Get_file_name(void) const
+	{
+		return this->file_name;
+	};
+	void Set_file_name(std::string fn);
 
-  Filedata *               Get_filedata           (void)const {return this->filedata;};
+	DATA_SOURCE_TYPE Get_source_type(void) const
+	{
+		return this->source_type;
+	}
+	void Set_source_type(DATA_SOURCE_TYPE dt)
+	{
+		this->source_type = dt;
+	};
 
-  std::vector<Point> &     Get_points             (void);
-  void                     Set_points             (std::vector<Point> &pts);
+	Filedata *Get_filedata(void) const
+	{
+		return this->filedata;
+	};
 
-  PHAST_polygon &          Get_phast_polygons     (void);
+	std::vector < Point > &Get_points(void);
+	void Set_points(std::vector < Point > &pts);
 
-  Polygon_tree *           Get_tree               (void);
-  
-  NNInterpolator *         Get_nni                (void);
-  void                     Replace_nni            (NNInterpolator *);
+	PHAST_polygon & Get_phast_polygons(void);
 
-  size_t                   Get_nni_unique         (void) {return this->nni_unique;};
-  void                     Set_nni_unique         (size_t i) {this->nni_unique = i;};
+	Polygon_tree *Get_tree(void);
 
-  KDtree *                 Get_tree3d             (void);
+	NNInterpolator *Get_nni(void);
+	void Replace_nni(NNInterpolator *);
 
-  int                      Get_columns            (void);
-  void                     Set_columns            (int i) {this->columns = i;};
+	size_t Get_nni_unique(void)
+	{
+		return this->nni_unique;
+	};
+	void Set_nni_unique(size_t i)
+	{
+		this->nni_unique = i;
+	};
 
-  int                      Get_attribute          (void)const {return this->attribute;}
-  void                     Set_attribute          (int a) {this->attribute = a;};
+	KDtree *Get_tree3d(void);
 
-  struct zone *            Get_bounding_box       (void);
-  void                     Set_bounding_box       (void);
+	int Get_columns(void);
+	void Set_columns(int i)
+	{
+		this->columns = i;
+	};
 
-  Data_source *            Get_data_source_with_points  (void);
+	int Get_attribute(void) const
+	{
+		return this->attribute;
+	}
+	void Set_attribute(int a)
+	{
+		this->attribute = a;
+	};
 
-  void                                 Set_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM c) {this->coordinate_system = c;};
-  PHAST_Transform::COORDINATE_SYSTEM   Get_coordinate_system()const;
+	struct zone *Get_bounding_box(void);
+	void Set_bounding_box(void);
 
-  Data_source &            operator=              (const Data_source& r);
-  friend std::ostream& operator<< (std::ostream &os, const Data_source &ds);
+	Data_source *Get_data_source_with_points(void);
 
-  // Data
-protected:
-  bool               defined;
-  std::string        file_name;
-  DATA_SOURCE_TYPE   source_type;
-  DATA_SOURCE_TYPE   source_type_orig;
-  Filedata *         filedata;
-  std::vector<Point> pts;
-  std::vector<Point> pts_orig;
-  PHAST_polygon      phast_polygons;
-  Polygon_tree       *tree;
-  //NNInterpolator *   nni;
-  size_t             nni_unique;
-  KDtree *           tree3d;     /* used for 3D interpolation */
-  int                columns;
-  int                attribute;
-  struct zone        box;
-  PHAST_Transform::COORDINATE_SYSTEM coordinate_system;
-  PHAST_Transform::COORDINATE_SYSTEM coordinate_system_orig;
+	void Set_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM c)
+	{
+		this->coordinate_system = c;
+	};
+	PHAST_Transform::COORDINATE_SYSTEM Get_coordinate_system()const;
+
+	Data_source & operator=(const Data_source & r);
+	friend std::ostream & operator<<(std::ostream & os,
+									 const Data_source & ds);
+
+	// Data
+  protected:
+	bool defined;
+	std::string file_name;
+	DATA_SOURCE_TYPE source_type;
+	DATA_SOURCE_TYPE source_type_orig;
+	Filedata *filedata;
+	std::vector < Point > pts;
+	std::vector < Point > pts_orig;
+	PHAST_polygon phast_polygons;
+	Polygon_tree *tree;
+	//NNInterpolator *   nni;
+	size_t nni_unique;
+	KDtree *tree3d;				/* used for 3D interpolation */
+	int columns;
+	int attribute;
+	struct zone box;
+	PHAST_Transform::COORDINATE_SYSTEM coordinate_system;
+	PHAST_Transform::COORDINATE_SYSTEM coordinate_system_orig;
 };
-inline KDtree * Data_source::Get_tree3d(void)
+inline KDtree *
+Data_source::Get_tree3d(void)
 {
 	Data_source *ds = this->Get_data_source_with_points();
 	if (!ds->tree3d)
@@ -130,7 +173,8 @@ inline KDtree * Data_source::Get_tree3d(void)
 	}
 	return ds->tree3d;
 }
-inline Polygon_tree * Data_source::Get_tree(void)
+inline Polygon_tree *
+Data_source::Get_tree(void)
 {
 	Data_source *ds = this->Get_data_source_with_points();
 	if (!ds->tree)

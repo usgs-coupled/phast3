@@ -2,16 +2,15 @@
 #define WEDGE_H_INCLUDED
 #include "Cube.h"
 
-class Wedge :
-	public Cube
+class Wedge:public Cube
 {
-public:
+  public:
 	Wedge(void);
 
 	//template<class InputIterator>
-	Wedge(const struct zone *zone_ptr, std::string &orient);
+	  Wedge(const struct zone *zone_ptr, std::string & orient);
 
-	virtual ~Wedge(void);
+	  virtual ~ Wedge(void);
 
 	enum WEDGE_ORIENTATION
 	{
@@ -22,24 +21,34 @@ public:
 	};
 
 	// methods
-	bool Point_in_polyhedron(const Point &t);
-	void Points_in_polyhedron(std::list<int> & list, std::vector<Point> &point_coord);
+	bool Point_in_polyhedron(const Point & t);
+	void Points_in_polyhedron(std::list < int >&list,
+							  std::vector < Point > &point_coord);
 	//gpc_polygon *Face_polygon(Cell_Face face);
-	gpc_polygon * Slice(Cell_Face face, double coord);
-	virtual Wedge* clone() const;
-	virtual Wedge* create() const;
+	gpc_polygon *Slice(Cell_Face face, double coord);
+	virtual Wedge *clone() const;
+	virtual Wedge *create() const;
 
-	WEDGE_ORIENTATION Get_orientation(void) {return this->orientation;};
-	Cell_Face         Get_wedge_axis() {return this->wedge_axis;};
-	int               Get_wedge_number() {return this->wedge_number;};
+	WEDGE_ORIENTATION Get_orientation(void)
+	{
+		return this->orientation;
+	};
+	Cell_Face Get_wedge_axis()
+	{
+		return this->wedge_axis;
+	};
+	int Get_wedge_number()
+	{
+		return this->wedge_number;
+	};
 	// Data
 	enum WEDGE_ORIENTATION orientation;
 	enum Cell_Face wedge_axis;
 	int wedge_number;
-	std::vector<Point> vertices; // lower triangle first, right angle is second vertex, then upper triangle
+	std::vector < Point > vertices;	// lower triangle first, right angle is second vertex, then upper triangle
 
-protected:
-	virtual void printOn(std::ostream& os) const;
+  protected:
+	virtual void printOn(std::ostream & os) const;
 };
 
 #endif // !defined(WEDGE_H_INCLUDED)

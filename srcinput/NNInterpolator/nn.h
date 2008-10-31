@@ -18,16 +18,18 @@
 #if !defined(_NN_H)
 #define _NN_H
 
-typedef enum { SIBSON, NON_SIBSONIAN } NN_RULE;
+typedef enum
+{ SIBSON, NON_SIBSONIAN } NN_RULE;
 
 /* "point" is a basic data structure in this package.
  */
 #if !defined(_POINT_STRUCT)
 #define _POINT_STRUCT
-typedef struct {
-    double x;
-    double y;
-    double z;
+typedef struct
+{
+	double x;
+	double y;
+	double z;
 } point;
 #endif
 
@@ -50,13 +52,14 @@ typedef struct delaunay delaunay;
  * @param holes Array of hole (x,y) coordinates [2*nh]
  * @return Delaunay triangulation structure with triangulation results
  */
-delaunay* delaunay_build(int np, point points[], int ns, int segments[], int nh, double holes[]);
+delaunay *delaunay_build(int np, point points[], int ns, int segments[],
+						 int nh, double holes[]);
 
 /** Destroys Delaunay triangulation.
  *
  * @param d Structure to be destroyed
  */
-void delaunay_destroy(delaunay* d);
+void delaunay_destroy(delaunay * d);
 
 /** Smoothes the input point array by averaging the input x,y and z values
  ** for each cell within virtual rectangular nx by ny grid. The corners of the
@@ -69,7 +72,7 @@ void delaunay_destroy(delaunay* d);
  * @param nx Number of x nodes in decimation
  * @param ny Number of y nodes in decimation
  */
-void points_thingrid(int* n, point** p, int nx, int ny);
+void points_thingrid(int *n, point ** p, int nx, int ny);
 
 /** Smoothes the input point array by averaging the input data (X,Y and Z
  ** values) until the sum of the distances between points does not exceed the
@@ -80,7 +83,7 @@ void points_thingrid(int* n, point** p, int nx, int ny);
  * @param p Pointer to array of points (input/output) [*n]
  * @param rmax Maximum allowed accumulated distance
  */
-void points_thinlin(int* n, point** p, double rmax);
+void points_thinlin(int *n, point ** p, double rmax);
 
 /* Calculates X and/or Y ranges of the input array of points. If necessary,
  * adjusts the range according to the zoom value.
@@ -92,7 +95,8 @@ void points_thinlin(int* n, point** p, double rmax);
  * @param ymin Min Y value if *ymin = NaN on input, not changed otherwise
  * @param ymax Max Y value if *ymax = NaN on input, not changed otherwise
  */
-void points_getrange(int n, point points[], double zoom, double* xmin, double* xmax, double* ymin, double* ymax);
+void points_getrange(int n, point points[], double zoom, double *xmin,
+					 double *xmax, double *ymin, double *ymax);
 
 /** Generates rectangular grid nx by ny using specified min and max x and y 
  ** values. Allocates space for the output point array, be sure to free it
@@ -108,7 +112,8 @@ void points_getrange(int n, point points[], double zoom, double* xmin, double* x
  * @param nout Pointer to number of output points
  * @param pout Pointer to array of output points [*nout]
  */
-void points_generate(double xmin, double xmax, double ymin, double ymax, int nx, int ny, int* nout, point** pout);
+void points_generate(double xmin, double xmax, double ymin, double ymax,
+					 int nx, int ny, int *nout, point ** pout);
 
 /** Reads array of points from a columnar file.
  *
@@ -117,7 +122,7 @@ void points_generate(double xmin, double xmax, double ymin, double ymax, int nx,
  * @param n Pointer to number of points (output)
  * @param points Pointer to array of points [*n] (output)
  */
-void points_read(char* fname, int dim, int* n, point** points);
+void points_read(char *fname, int dim, int *n, point ** points);
 
 /** Scales Y coordinate so that the resulting set fits into square:
  ** xmax - xmin = ymax - ymin
@@ -126,7 +131,7 @@ void points_read(char* fname, int dim, int* n, point** points);
  * @param points The points to scale
  * @return Y axis compression coefficient
  */
-double points_scaletosquare(int n, point* points);
+double points_scaletosquare(int n, point * points);
 
 /** Compresses Y domain by a given multiple.
  *
@@ -134,7 +139,7 @@ double points_scaletosquare(int n, point* points);
  * @param points The points to scale
  * @param Y axis compression coefficient as returned by points_scaletosquare()
  */
-void points_scale(int n, point* points, double k);
+void points_scale(int n, point * points, double k);
 
 /** `lpi' -- "Linear Point Interpolator" is a structure for linear
  ** interpolation of data on a "point-to-point" basis.
@@ -151,20 +156,20 @@ typedef struct lpi lpi;
  * @param d Delaunay triangulation
  * @return Linear interpolator
  */
-lpi* lpi_build(delaunay* d);
+lpi *lpi_build(delaunay * d);
 
 /** Destroys linear interpolator.
  *
  * @param l Structure to be destroyed
  */
-void lpi_destroy(lpi* l);
+void lpi_destroy(lpi * l);
 
 /** Finds linearly interpolated value in a point.
  *
  * @param l Linear point interpolator
  * @param p Point to be interpolated (p->x, p->y -- input; p->z -- output)
  */
-void lpi_interpolate_point(lpi* l, point* p);
+void lpi_interpolate_point(lpi * l, point * p);
 
 /** Linearly interpolates data in an array of points.
  *
@@ -190,20 +195,20 @@ struct nnpi;
  * @param d Delaunay triangulation
  * @return Natural Neighbours interpolation
  */
-nnpi* nnpi_create(delaunay* d);
+nnpi *nnpi_create(delaunay * d);
 
 /** Destroys Natural Neighbours point interpolation.
  *
  * @param nn Structure to be destroyed
  */
-void nnpi_destroy(nnpi* nn);
+void nnpi_destroy(nnpi * nn);
 
 /** Performs Natural Neighbours interpolation in a point.
  *
  * @param nn NN point interpolator
  * @param p Point to be interpolated (p->x, p->y -- input; p->z -- output)
  */
-void nnpi_interpolate_point(nnpi* nn, point* p);
+void nnpi_interpolate_point(nnpi * nn, point * p);
 
 /** Performs Natural Neighbours interpolation in an array of points.
  *
@@ -213,7 +218,8 @@ void nnpi_interpolate_point(nnpi* nn, point* p);
  * @param nout Number of output points
  * @param pout Array of output points [nout]
  */
-void nnpi_interpolate_points(int nin, point pin[], double wmin, int nout, point pout[]);
+void nnpi_interpolate_points(int nin, point pin[], double wmin, int nout,
+							 point pout[]);
 
 /** Sets minimal allowed weight for Natural Neighbours interpolation.
  *
@@ -223,7 +229,7 @@ void nnpi_interpolate_points(int nin, point pin[], double wmin, int nout, point 
  * @param nn Natural Neighbours point interpolator
  * @param wmin Minimal allowed weight
  */
-void nnpi_setwmin(nnpi* nn, double wmin);
+void nnpi_setwmin(nnpi * nn, double wmin);
 
 /** `nnhpi' -- "Natural Neighbours Hashing Point Interpolator" -- is a
  ** structure for conducting consequitive Natural Neighbours interpolations
@@ -241,20 +247,20 @@ typedef struct nnhpi nnhpi;
  * @param size Hash table size (should be of order of number of output points)
  * @return Natural Neighbours interpolation
  */
-nnhpi* nnhpi_create(delaunay* d, int size);
+nnhpi *nnhpi_create(delaunay * d, int size);
 
 /** Destroys Natural Neighbours hashing point interpolation.
  *
  * @param nn Structure to be destroyed
  */
-void nnhpi_destroy(nnhpi* nn);
+void nnhpi_destroy(nnhpi * nn);
 
 /** Performs Natural Neighbours interpolation in a point.
  *
  * @param nnhpi NN hashing point interpolator
  * @param p Point to be interpolated (p->x, p->y -- input; p->z -- output)
  */
-void nnhpi_interpolate(nnhpi* nn, point* p);
+void nnhpi_interpolate(nnhpi * nn, point * p);
 
 /** Modifies interpolated data.
  *
@@ -265,7 +271,7 @@ void nnhpi_interpolate(nnhpi* nn, point* p);
  * @param nn Natural Neighbours hashing point interpolator
  * @param p New data
  */
-void nnhpi_modify_data(nnhpi* nn, point* p);
+void nnhpi_modify_data(nnhpi * nn, point * p);
 
 /** Sets minimal allowed weight for Natural Neighbours interpolation.
  *
@@ -275,7 +281,7 @@ void nnhpi_modify_data(nnhpi* nn, point* p);
  * @param nn Natural Neighbours point hashing interpolator
  * @param wmin Minimal allowed weight
  */
-void nnhpi_setwmin(nnhpi* nn, double wmin);
+void nnhpi_setwmin(nnhpi * nn, double wmin);
 
 /** `nnai' -- "Natural Neighbours Array Interpolator" is a structure for
  ** conducting consequitive Natural Neighbours interpolations from the same
@@ -296,13 +302,13 @@ typedef struct nnai nnai;
  * @param d Delaunay triangulation
  * @return Natural Neighbours interpolation
  */
-nnai* nnai_build(delaunay* d, int n, double* x, double* y);
+nnai *nnai_build(delaunay * d, int n, double *x, double *y);
 
 /** Destroys Natural Neighbours array interpolator.
  *
  * @param nn Structure to be destroyed
  */
-void nnai_destroy(nnai* nn);
+void nnai_destroy(nnai * nn);
 
 /** Conducts NN interpolation in a fixed array of output points using 
  ** data specified in a fixed array of input points. Uses pre-calculated
@@ -312,7 +318,7 @@ void nnai_destroy(nnai* nn);
  * @param zin input data [nn->d->npoints]
  * @param zout output data [nn->n]. Must be pre-allocated!
  */
-void nnai_interpolate(nnai* nn, double* zin, double* zout);
+void nnai_interpolate(nnai * nn, double *zin, double *zout);
 
 /** Sets minimal allowed weight for Natural Neighbours interpolation.
  *
@@ -322,7 +328,7 @@ void nnai_interpolate(nnai* nn, double* zin, double* zout);
  * @param nn Natural Neighbours array interpolator
  * @param wmin Minimal allowed weight
  */
-void nnai_setwmin(nnai* nn, double wmin);
+void nnai_setwmin(nnai * nn, double wmin);
 
 /* Sets the verbosity level within nn package.
  * 0 (default) - silent
@@ -340,11 +346,11 @@ extern NN_RULE nn_rule;
 
 /* Contains version string for the nn package.
  */
-extern const char* nn_version;
+extern const char *nn_version;
 
 /* Limits verbose information to a particular vertex (used mainly for
  * debugging purposes).
  */
 extern int nn_test_vertice;
 
-#endif                          /* _NN_H */
+#endif /* _NN_H */
