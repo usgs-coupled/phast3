@@ -4693,7 +4693,7 @@ read_property(char *ptr, const char **opt_list, int count_opt_list, int *opt,
 	{
 		MIX_OLDSTYLE = 0,
 		MIX_XYZ = 1,
-		MIX_POINTS = 2,
+		MIX_POINTS = 2
 	};
 	MIX_STYLE style;
 

@@ -504,13 +504,13 @@ Prism::Point_in_polyhedron(const Point & p)
 }
 
 Polyhedron *
-Prism::clone() const const
+Prism::clone() const
 {
 	return new Prism(*this);
 }
 
 Polyhedron *
-Prism::create() const const
+Prism::create() const
 {
 	return new Prism();
 }
@@ -617,7 +617,7 @@ Prism::Slice(Cell_Face face, double coord)
 }
 
 void
-Prism::printOn(std::ostream & os) const const
+Prism::printOn(std::ostream & os) const
 {
 	os << "\t-prism" << std::endl;
 	/*

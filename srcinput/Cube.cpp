@@ -174,7 +174,7 @@ Cube::Slice(Cell_Face face, double coord)
 }
 
 void
-	 Cube::printOn(std::ostream & os) const const const const
+	 Cube::printOn(std::ostream & os) const
 	 {
 		 os << "\t" << "-zone"
 			 << " " << this->box.x1
@@ -189,12 +189,12 @@ void
 	 }
 
 Cube *
-	 Cube::clone() const const const const
+	 Cube::clone() const
 	 {
 		 return new Cube(*this);
 	 }
 
-	 Cube *Cube::create() const const const const
+	 Cube *Cube::create() const
 	 {
 		 return new Cube();
 	 }

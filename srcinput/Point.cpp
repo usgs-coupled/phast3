@@ -128,7 +128,7 @@ interpolate_inverse_square(std::vector < Point > &pts, Point & grid_pt)
 
 
 	double d2, dx, dy, dz;
-	std::vector < std::pair < double, double >>d_v;
+	std::vector < std::pair < double, double > >d_v;
 
 	// calculate distance
 	double sum = 0;
@@ -152,7 +152,7 @@ interpolate_inverse_square(std::vector < Point > &pts, Point & grid_pt)
 
 	// Calculate weighted value
 	double v = 0;
-	for (std::vector < std::pair < double, double >>::iterator it =
+	for (std::vector < std::pair < double, double > >::iterator it =
 		 d_v.begin(); it != d_v.end(); it++)
 	{
 		v += it->first / sum * it->second;

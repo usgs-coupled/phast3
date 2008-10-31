@@ -832,7 +832,7 @@ Wedge::Slice(Cell_Face face, double coord)
 }
 
 void
-Wedge::printOn(std::ostream & os) const const
+Wedge::printOn(std::ostream & os) const
 {
 	static const char *a[] = { "X1", "X2", "X3", "X4",
 		"Y1", "Y2", "Y3", "Y4",
@@ -864,13 +864,13 @@ Wedge::printOn(std::ostream & os) const const
 }
 
 Wedge *
-Wedge::clone() const const
+Wedge::clone() const
 {
 	return new Wedge(*this);
 }
 
 Wedge *
-Wedge::create() const const
+Wedge::create() const
 {
 	return new Wedge();
 }

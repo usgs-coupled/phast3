@@ -25,7 +25,7 @@ class Prism:public Polyhedron
 		BOTTOM = 3,
 		PERIMETER_COORD_SYS = 8,
 		TOP_COORD_SYS = 9,
-		BOTTOM_COORD_SYS = 10,
+		BOTTOM_COORD_SYS = 10
 	};
 
   public:

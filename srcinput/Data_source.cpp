@@ -878,7 +878,7 @@ Data_source::Make_nni(void)
 	return true;
 }
 
-PHAST_Transform::COORDINATE_SYSTEM Data_source::Get_coordinate_system(void) const const
+PHAST_Transform::COORDINATE_SYSTEM Data_source::Get_coordinate_system(void) const
 {
 	switch (this->source_type)
 	{

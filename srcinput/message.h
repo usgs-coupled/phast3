@@ -47,5 +47,5 @@ typedef enum
 enum ERROR_ACTION
 {
 	EA_CONTINUE = 0,
-	EA_STOP = 1,
+	EA_STOP = 1
 };

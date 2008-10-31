@@ -2840,7 +2840,7 @@ write_zone_budget(void)
 		struct index_range *range_ptr = zone_to_range(&z);
 
 		std::map < int, bool > budget_map;	// list of cells
-		std::vector < std::pair < int, int >>faces;	// <cell number, face> pair 
+		std::vector < std::pair < int, int > >faces;	// <cell number, face> pair 
 		std::vector < int >specified_vector;	// list of cells
 		std::vector < int >leaky_vector;	// list of cells
 		std::vector < int >flux_vector;	// list of cells
@@ -2857,7 +2857,7 @@ write_zone_budget(void)
 		int j, k, l, n;
 
 		// Need definition of zone for zp flux and river flux
-		std::list < std::vector < int >>zone_def;
+		std::list < std::vector < int > >zone_def;
 		//if (free_surface && (count_rivers > 0 || count_flux > 0))
 		{
 			for (i = range_ptr->i1; i <= range_ptr->i2; i++)
@@ -3053,7 +3053,7 @@ write_zone_budget(void)
 			output_msg(OUTPUT_HST, " %d\n", (int) zone_def.size());
 			output_msg(OUTPUT_HST,
 					   "C.2.23.11 .. Cell volume indices: i, j, kmin, kmax for num_cell_columns in zone\n");
-			std::list < std::vector < int >>::iterator it = zone_def.begin();
+			std::list < std::vector < int > >::iterator it = zone_def.begin();
 			for (; it != zone_def.end(); it++)
 			{
 				std::vector < int >::iterator jt = it->begin();
@@ -3074,7 +3074,7 @@ write_zone_budget(void)
 				   "C.2.23.13 .. Internal boundaries: list of [cell number, face index] pairs; (O) - num_flo_zones > 0\n");
 		return_counter = 0;
 		return_max = 5;
-		for (std::vector < std::pair < int, int >>::iterator it =
+		for (std::vector < std::pair < int, int > >::iterator it =
 			 faces.begin(); it != faces.end(); it++)
 		{
 			output_msg(OUTPUT_HST, "     %d  %d", it->first + 1, it->second);

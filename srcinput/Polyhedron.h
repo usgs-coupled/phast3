@@ -25,7 +25,7 @@ class Polyhedron
 	{
 		CUBE = 0,
 		WEDGE = 1,
-		PRISM = 2,
+		PRISM = 2
 	};
 
 	// Methods
@@ -73,7 +73,7 @@ operator<<(std::ostream & o, const Polyhedron & p)
 }
 
 inline enum Polyhedron::POLYHEDRON_TYPE
-Polyhedron::get_type(void) const const
+Polyhedron::get_type(void) const 
 {
 	return type;
 }

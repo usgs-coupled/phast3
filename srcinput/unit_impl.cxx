@@ -127,7 +127,7 @@ cunit::set_input(const char *input)
 }
 
 const char *
-cunit::c_str(void) const const
+cunit::c_str(void) const
 {
 	if (this->defined == TRUE)
 	{

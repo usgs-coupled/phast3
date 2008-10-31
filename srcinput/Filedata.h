@@ -18,7 +18,7 @@ class Filedata
 		SHAPE = 0,
 		ARCRASTER = 1,
 		XYZ = 2,
-		NONE = 3,
+		NONE = 3
 	};
 
 	  Filedata(void);
