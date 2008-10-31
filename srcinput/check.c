@@ -164,9 +164,12 @@ int check_hst_units(void)
 		units.river_bed_thickness.input_to_user = units.river_bed_thickness.input_to_si;
 	}
 	if (count_rivers > 0 && units.river_width.defined == FALSE) {
-		input_error++;
-		sprintf(error_string, "River width units not defined in UNITS data block.");
-		error_msg(error_string, CONTINUE);
+	  //input_error++;
+	  //sprintf(error_string, "River width units not defined in UNITS data block.");
+	  //error_msg(error_string, CONTINUE);
+	  units.river_width.define("m");
+	  sprintf(error_string, "River width units not defined in UNITS data block, meters assumed.");
+	  warning_msg(error_string);
 	} else {
 		units.river_width.input_to_user = units.river_width.input_to_si;
 	}
