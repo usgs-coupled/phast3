@@ -47,8 +47,7 @@ XYZfile::~XYZfile(void)
 {
 }
 
-bool
-XYZfile::Make_polygons(int field, PHAST_polygon & polygons)
+bool XYZfile::Make_polygons(int field, PHAST_polygon & polygons)
 {
 	//this->Make_points(-1, polygons.Get_points());
 	polygons.Get_points() = this->Get_points(-1);

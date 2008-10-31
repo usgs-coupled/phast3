@@ -16,8 +16,7 @@
 #else
 #define STATIC static
 #endif
-static char const svnid[] =
-	"$Id$";
+static char const svnid[] = "$Id$";
 STATIC int next_keyword_or_option(const char **opt_list, int count_opt_list);
 STATIC int streamify_to_next_keyword_or_option(const char **opt_list,
 											   int count_opt_list,

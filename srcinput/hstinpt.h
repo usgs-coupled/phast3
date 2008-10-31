@@ -251,10 +251,7 @@ EXTERNAL int count_rivers;
 /* ----------------------------------------------------------------------
  *   Drains
  * ---------------------------------------------------------------------- */
-EXTERNAL
-	std::vector <
-Drain * >
-	drains;
+EXTERNAL std::vector < Drain * >drains;
 /*
  *    Well data
  */
@@ -533,14 +530,8 @@ struct cell
 	Exterior_cell *
 		exterior;
 };
-EXTERNAL
-	std::vector <
-Point > *
-	cell_xyz;
-EXTERNAL
-	std::vector <
-Point > *
-	element_xyz;
+EXTERNAL std::vector < Point > *cell_xyz;
+EXTERNAL std::vector < Point > *element_xyz;
 /* ----------------------------------------------------------------------
  *   units conversion
  * ---------------------------------------------------------------------- */
@@ -953,7 +944,8 @@ EXTERNAL int
 	river_defined;
 EXTERNAL int
 	rivers_update;
-EXTERNAL bool
+EXTERNAL
+	bool
 	drain_defined;
 EXTERNAL int
 	well_defined;
@@ -992,9 +984,7 @@ EXTERNAL int
 #include <map>					// std::map
 #include <string>				// std::string
 
-EXTERNAL
-	std::map <
-std::string, int >
+EXTERNAL std::map < std::string, int >
 	FileMap;
 
 

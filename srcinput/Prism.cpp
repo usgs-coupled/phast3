@@ -279,11 +279,11 @@ Prism::~Prism(void)
 		Prism::prism_list.erase(it);
 }
 
-bool
-Prism::Read(std::istream & lines)
+bool Prism::Read(std::istream & lines)
 {
 	// read information for top, or bottom
-	const char *opt_list[] = {
+	const char *
+		opt_list[] = {
 		"perimeter"				/* 0 */
 			, "dip"				/* 1 */
 			, "top"				/* 2 */
@@ -297,9 +297,11 @@ Prism::Read(std::istream & lines)
 			//"top_coordinate_system",           /* 6 */
 			//"bottom_coordinate_system"         /* 7 */
 	};
-	int count_opt_list = 4;
+	int
+		count_opt_list = 4;
 	std::vector < std::string > std_opt_list;
-	int i;
+	int
+		i;
 	for (i = 0; i < count_opt_list; i++)
 		std_opt_list.push_back(opt_list[i]);
 
@@ -308,8 +310,10 @@ Prism::Read(std::istream & lines)
 	lines >> type;
 	if (type.size() == 0)
 		return true;
-	int j = case_picker(std_opt_list, type);
-	PRISM_OPTION p_opt;
+	int
+		j = case_picker(std_opt_list, type);
+	PRISM_OPTION
+		p_opt;
 	switch (j)
 	{
 	case 0:
@@ -340,13 +344,13 @@ Prism::Read(std::istream & lines)
 	return (this->Read(p_opt, lines));
 }
 
-bool
-Prism::Read(PRISM_OPTION p_opt, std::istream & lines)
+bool Prism::Read(PRISM_OPTION p_opt, std::istream & lines)
 {
 	std::string token;
 	// identifier
 	//lines >> token;
-	bool success = true;
+	bool
+		success = true;
 	switch (p_opt)
 	{
 	case PERIMETER:
@@ -383,7 +387,8 @@ Prism::Read(PRISM_OPTION p_opt, std::istream & lines)
 	case PERIMETER_COORD_SYS:
 		{
 			lines >> token;
-			char str[250];
+			char
+				str[250];
 			strcpy(str, token.c_str());
 			str_tolower(str);
 			if (strstr(str, "map") == str)
@@ -405,7 +410,8 @@ Prism::Read(PRISM_OPTION p_opt, std::istream & lines)
 	case TOP_COORD_SYS:
 		{
 			lines >> token;
-			char str[250];
+			char
+				str[250];
 			strcpy(str, token.c_str());
 			str_tolower(str);
 			if (strstr(str, "map") == str)
@@ -426,7 +432,8 @@ Prism::Read(PRISM_OPTION p_opt, std::istream & lines)
 	case BOTTOM_COORD_SYS:
 		{
 			lines >> token;
-			char str[250];
+			char
+				str[250];
 			strcpy(str, token.c_str());
 			str_tolower(str);
 			if (strstr(str, "map") == str)
@@ -468,10 +475,10 @@ Prism::Points_in_polyhedron(std::list < int >&list_of_numbers,
 		}
 	}
 }
-bool
-Prism::Point_in_polyhedron(const Point & p)
+bool Prism::Point_in_polyhedron(const Point & p)
 {
-	Point p1(p);
+	Point
+	p1(p);
 
 	// Check bounding box of prism
 	if (!this->Point_in_bounding_box(p1))
@@ -480,7 +487,8 @@ Prism::Point_in_polyhedron(const Point & p)
 	// Check top
 	if (this->top.Get_defined())
 	{
-		double t = this->top.Interpolate(p1);
+		double
+			t = this->top.Interpolate(p1);
 		if (p1.z() > t)
 		{
 			return false;
@@ -490,7 +498,8 @@ Prism::Point_in_polyhedron(const Point & p)
 	// Check bottom
 	if (this->bottom.Get_defined())
 	{
-		double b = this->bottom.Interpolate(p1);
+		double
+			b = this->bottom.Interpolate(p1);
 		if (p1.z() < b)
 		{
 			return false;
@@ -681,13 +690,15 @@ Prism::printOn(std::ostream & os) const
 	}
 }
 
-bool
-Prism::Project_point(Point & p, Cell_Face face, double coord)
+bool Prism::Project_point(Point & p, Cell_Face face, double coord)
 {
-	bool success = true;
+	bool
+		success = true;
 	// Project point to a z plane
-	double t;
-	Point a;
+	double
+		t;
+	Point
+		a;
 	a.get_coord()[(int) face] = 1.0;
 	if (Segment_intersect_plane
 		(a.x(), a.y(), a.z(), -coord, p, this->prism_dip, t) == Cube::PI_NONE)
@@ -698,11 +709,11 @@ Prism::Project_point(Point & p, Cell_Face face, double coord)
 	return (success);
 }
 
-bool
-Prism::Project_points(std::vector < Point > &pts, Cell_Face face,
-					  double coord)
+bool Prism::Project_points(std::vector < Point > &pts, Cell_Face face,
+						   double coord)
 {
-	bool success = true;
+	bool
+		success = true;
 	std::vector < Point >::iterator it;
 	for (it = pts.begin(); it != pts.end(); it++)
 	{

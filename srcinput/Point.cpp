@@ -162,13 +162,18 @@ interpolate_inverse_square(std::vector < Point > &pts, Point & grid_pt)
 }
 
 #ifdef SKIP
-bool
-Point::point_in_polygon(gpc_polygon * poly_ptr)
+bool Point::point_in_polygon(gpc_polygon * poly_ptr)
 {
-	int i, j;
-	Point p1, p2;
-	double anglesum = 0;
-	double costheta;
+	int
+		i,
+		j;
+	Point
+		p1,
+		p2;
+	double
+		anglesum = 0;
+	double
+		costheta;
 	for (i = 0; i < poly_ptr->num_contours; i++)
 	{
 		for (j = 0; j < poly_ptr->contour[i].num_vertices; j++)
@@ -187,8 +192,10 @@ Point::point_in_polygon(gpc_polygon * poly_ptr)
 						   poly_ptr->contour[i].vertex[0].y - this->y(), 0.0);
 			}
 
-			double m1 = p1.modulus();
-			double m2 = p2.modulus();
+			double
+				m1 = p1.modulus();
+			double
+				m2 = p2.modulus();
 			if (m1 * m2 <= EPSILON)
 			{
 				return (true);	/* We are on a node, consider this inside */
@@ -208,26 +215,36 @@ Point::point_in_polygon(gpc_polygon * poly_ptr)
 }
 #endif
 #ifdef SKIP
-bool
-Point::point_in_gpc_polygon(gpc_polygon * poly_ptr)
+bool Point::point_in_gpc_polygon(gpc_polygon * poly_ptr)
 {
 //int pnpoly(int npol, float *xp, float *yp, float x, float y)
 
-	double x = this->x();
-	double y = this->y();
+	double
+		x = this->x();
+	double
+		y = this->y();
 
-	int l;
+	int
+		l;
 	for (l = 0; l < poly_ptr->num_contours; l++)
 	{
-		bool in = false;
-		int i, j;
-		int npol = poly_ptr->contour[l].num_vertices;
+		bool
+			in = false;
+		int
+			i,
+			j;
+		int
+			npol = poly_ptr->contour[l].num_vertices;
 		for (i = 0, j = npol - 1; i < npol; j = i++)
 		{
-			double xpi = poly_ptr->contour[l].vertex[i].x;
-			double xpj = poly_ptr->contour[l].vertex[j].x;
-			double ypi = poly_ptr->contour[l].vertex[i].y;
-			double ypj = poly_ptr->contour[l].vertex[j].y;
+			double
+				xpi = poly_ptr->contour[l].vertex[i].x;
+			double
+				xpj = poly_ptr->contour[l].vertex[j].x;
+			double
+				ypi = poly_ptr->contour[l].vertex[i].y;
+			double
+				ypj = poly_ptr->contour[l].vertex[j].y;
 			if ((((ypi <= y) && (y < ypj)) ||
 				 ((ypj <= y) && (y < ypi))) &&
 				(x < (xpj - xpi) * (y - ypi) / (ypj - ypi) + xpi))
@@ -238,19 +255,31 @@ Point::point_in_gpc_polygon(gpc_polygon * poly_ptr)
 	}
 
 	// Also check if point is on an edge
-	double z = 0.0, z1 = 0.0, z2 = 0.0;
+	double
+		z = 0.0, z1 = 0.0, z2 = 0.0;
 	for (l = 0; l < poly_ptr->num_contours; l++)
 	{
-		int i, j;
+		int
+			i,
+			j;
 		j = poly_ptr->contour[l].num_vertices - 1;
 		for (i = 0; i < poly_ptr->contour[l].num_vertices; i++)
 		{
-			double x1, y1, x2, y2;
+			double
+				x1,
+				y1,
+				x2,
+				y2;
 			x1 = poly_ptr->contour[l].vertex[i].x;
 			y1 = poly_ptr->contour[l].vertex[i].y;
 			x2 = poly_ptr->contour[l].vertex[j].x;
 			y2 = poly_ptr->contour[l].vertex[j].y;
-			double xn, yn, zn, dist, t;
+			double
+				xn,
+				yn,
+				zn,
+				dist,
+				t;
 			line_seg_point_near_3d(x1, y1, z1, x2, y2, z2, x, y, z, &xn, &yn,
 								   &zn, &dist, &t);
 			if (dist < 1e-6)
@@ -265,23 +294,32 @@ Point::point_in_gpc_polygon(gpc_polygon * poly_ptr)
 
 }
 #endif
-bool
-Point::Point_in_polygon(std::vector < Point > &pts)
+bool Point::Point_in_polygon(std::vector < Point > &pts)
 {
 //int pnpoly(int npol, float *xp, float *yp, float x, float y)
 
-	double x = this->x();
-	double y = this->y();
+	double
+		x = this->x();
+	double
+		y = this->y();
 
-	bool in = false;
-	int i, j;
-	int npol = (int) pts.size();
+	bool
+		in = false;
+	int
+		i,
+		j;
+	int
+		npol = (int) pts.size();
 	for (i = 0, j = npol - 1; i < npol; j = i++)
 	{
-		double xpi = pts[i].x();
-		double xpj = pts[j].x();
-		double ypi = pts[i].y();
-		double ypj = pts[j].y();
+		double
+			xpi = pts[i].x();
+		double
+			xpj = pts[j].x();
+		double
+			ypi = pts[i].y();
+		double
+			ypj = pts[j].y();
 		if ((((ypi <= y) && (y < ypj)) ||
 			 ((ypj <= y) && (y < ypi))) &&
 			(x < (xpj - xpi) * (y - ypi) / (ypj - ypi) + xpi))
@@ -292,17 +330,27 @@ Point::Point_in_polygon(std::vector < Point > &pts)
 
 
 	// Also check if point is on an edge
-	double z = 0.0, z1 = 0.0, z2 = 0.0;
+	double
+		z = 0.0, z1 = 0.0, z2 = 0.0;
 
 	j = (int) pts.size() - 1;
 	for (i = 0; i < (int) pts.size(); i++)
 	{
-		double x1, y1, x2, y2;
+		double
+			x1,
+			y1,
+			x2,
+			y2;
 		x1 = pts[i].x();
 		y1 = pts[i].y();
 		x2 = pts[j].x();
 		y2 = pts[j].y();
-		double xn, yn, zn, dist, t;
+		double
+			xn,
+			yn,
+			zn,
+			dist,
+			t;
 		line_seg_point_near_3d(x1, y1, z1, x2, y2, z2, x, y, z, &xn, &yn, &zn,
 							   &dist, &t);
 		if (dist < 1e-6)
@@ -321,12 +369,16 @@ Read_points(std::istream & input, std::vector < Point > &pts)
 	// read points, one point per line, fills in Z and V if available
 	// returns minumum number of columns found on a single line
 	std::string line;
-	int columns = 4;
+	int
+		columns = 4;
 	while (std::getline(input, line))
 	{
-		Point p;
-		int i = 0;
-		double d;
+		Point
+			p;
+		int
+			i = 0;
+		double
+			d;
 		std::stringstream stream(line);
 
 		// X value

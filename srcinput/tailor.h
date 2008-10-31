@@ -9,7 +9,8 @@
  */
 
 #ifdef PHREEQC_IDENT
-static char const svnid[] = "$Id$";
+static char const svnid[] =
+	"$Id$";
 #endif
 
 #if defined(__MSDOS__) && !defined(MSDOS)

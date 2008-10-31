@@ -30,8 +30,5 @@ struct property
 	int new_def;
 	Data_source *data_source;
 };
-EXTERNAL
-	std::vector <
-property * >
-	properties_with_data_source;
+EXTERNAL std::vector < property * >properties_with_data_source;
 #endif /* _INC_PROPERTY */

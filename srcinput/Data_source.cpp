@@ -123,14 +123,15 @@ Data_source::Init()
 	this->coordinate_system_orig = PHAST_Transform::NONE;
 }
 
-bool
-Data_source::Read(std::istream & lines, bool read_num)
+bool Data_source::Read(std::istream & lines, bool read_num)
 {
-	bool success = true;
+	bool
+		success = true;
 	this->Init();
 
 	// read information for top, or bottom
-	const char *opt_list[] = {
+	const char *
+		opt_list[] = {
 		"constant",				/* 0 */
 		"points",				/* 1 */
 		"shape",				/* 2 */
@@ -138,16 +139,19 @@ Data_source::Read(std::istream & lines, bool read_num)
 		"arcraster"				/* 4 */
 	};
 
-	int count_opt_list = 5;
+	int
+		count_opt_list = 5;
 	std::vector < std::string > std_opt_list;
-	int i;
+	int
+		i;
 	for (i = 0; i < count_opt_list; i++)
 		std_opt_list.push_back(opt_list[i]);
 
 	std::string type;
 	lines >> type;
 
-	int j = case_picker(std_opt_list, type);
+	int
+		j = case_picker(std_opt_list, type);
 	if (j < 0)
 	{
 		error_msg
@@ -187,7 +191,8 @@ Data_source::Read(std::istream & lines, bool read_num)
 	case 0:
 		this->source_type = Data_source::CONSTANT;
 		this->source_type_orig = Data_source::CONSTANT;
-		double elev;
+		double
+			elev;
 		if (!(lines >> elev))
 		{
 			error_msg("Error reading constant elevation of prism top.",
@@ -271,11 +276,11 @@ Data_source::Read(std::istream & lines, bool read_num)
 	return (success);
 }
 
-bool
-Data_source::Read_filename(std::istream & lines, bool read_num,
-						   std::string & filename, int &num)
+bool Data_source::Read_filename(std::istream & lines, bool read_num,
+								std::string & filename, int &num)
 {
-	bool success = true;
+	bool
+		success = true;
 
 	std::string line;
 	std::getline(lines, line);
@@ -283,7 +288,8 @@ Data_source::Read_filename(std::istream & lines, bool read_num,
 	std::string std_token;
 
 	std::string::reverse_iterator rit;
-	int erase = 0;
+	int
+		erase = 0;
 	for (rit = line.rbegin(); rit != line.rend(); rit++)
 	{
 		if (isspace(*rit))
@@ -301,7 +307,8 @@ Data_source::Read_filename(std::istream & lines, bool read_num,
 	line = line.substr(0, line.size() - erase);
 	if (read_num)
 	{
-		int keep = 0;
+		int
+			keep = 0;
 		for (rit = line.rbegin(); rit != line.rend(); rit++)
 		{
 			if (!isspace(*rit))
@@ -483,10 +490,10 @@ std::vector < Point > &Data_source::Get_points()
 	return (this->pts);
 }
 
-bool
-Data_source::Make_polygons()
+bool Data_source::Make_polygons()
 {
-	Data_source *ds1 = this->Get_data_source_with_points();
+	Data_source *
+		ds1 = this->Get_data_source_with_points();
 	//this->phst_polygons.Clear();
 	assert(ds1 != NULL);
 	ds1->phast_polygons.Clear();
@@ -498,9 +505,10 @@ Data_source::Make_polygons()
 		if (Filedata::file_data_map.find(this->file_name) !=
 			Filedata::file_data_map.end())
 		{
-			Filedata *f =
-				Filedata::file_data_map.find(this->file_name)->second;
-			Data_source *ds = f->Get_data_source(this->attribute);
+			Filedata *
+				f = Filedata::file_data_map.find(this->file_name)->second;
+			Data_source *
+				ds = f->Get_data_source(this->attribute);
 			//return(f->Make_polygons(this->attribute, this->phst_polygons));
 			return (f->Make_polygons(this->attribute, ds->phast_polygons));
 		}
@@ -862,16 +870,17 @@ Data_source::Get_data_source_with_points(void)
 	return (ds);
 }
 
-bool
-Data_source::Make_nni(void)
+bool Data_source::Make_nni(void)
 {
-	Data_source *ds = this->Get_data_source_with_points();
+	Data_source *
+		ds = this->Get_data_source_with_points();
 	if (ds == NULL)
 		return false;
 
 	if (this->nni_unique == -1)
 	{
-		NNInterpolator *nni = new NNInterpolator();
+		NNInterpolator *
+			nni = new NNInterpolator();
 		nni->preprocess(ds->Get_points(), ds->coordinate_system);
 		ds->Set_nni_unique(NNInterpolator::NNInterpolatorMap.push_back(nni));
 	}

@@ -127,12 +127,12 @@ PHAST_polygon::set_z_to_v()
 	}
 }
 
-bool
-PHAST_polygon::Point_in_polygon(Point p)
+bool PHAST_polygon::Point_in_polygon(Point p)
 {
 //int pnpoly(int npol, float *xp, float *yp, float x, float y)
 
-	int poly;
+	int
+		poly;
 	for (poly = 0; poly < (int) this->begin.size(); poly++)
 	{
 		if (Point_in_simple_polygon(p, this->begin[poly], this->end[poly]))
@@ -146,9 +146,12 @@ bool
 Point_in_simple_polygon(Point p, std::vector < Point >::iterator begin,
 						std::vector < Point >::iterator end)
 {
-	bool in = false;
-	double x = p.x();
-	double y = p.y();
+	bool
+		in = false;
+	double
+		x = p.x();
+	double
+		y = p.y();
 	std::vector < Point >::iterator i_it, j_it, npol_it;
 	//int i, j;
 	//int npol = pts.size();
@@ -158,13 +161,17 @@ Point_in_simple_polygon(Point p, std::vector < Point >::iterator begin,
 	for (i_it = begin; i_it != npol_it; j_it = i_it++)
 	{
 		//double xpi = pts[i].x();
-		double xpi = i_it->x();
+		double
+			xpi = i_it->x();
 		//double xpj = pts[j].x();
-		double xpj = j_it->x();
+		double
+			xpj = j_it->x();
 		//double ypi = pts[i].y();
-		double ypi = i_it->y();
+		double
+			ypi = i_it->y();
 		//double ypj = pts[j].y();
-		double ypj = j_it->y();
+		double
+			ypj = j_it->y();
 		if ((((ypi <= y) && (y < ypj)) ||
 			 ((ypj <= y) && (y < ypi))) &&
 			(x < (xpj - xpi) * (y - ypi) / (ypj - ypi) + xpi))
@@ -175,14 +182,19 @@ Point_in_simple_polygon(Point p, std::vector < Point >::iterator begin,
 		return (true);
 	}
 	// Also check if point is on an edge
-	double z = 0.0, z1 = 0.0, z2 = 0.0;
+	double
+		z = 0.0, z1 = 0.0, z2 = 0.0;
 
 	//j = pts.size() - 1;
 	j_it = end - 1;
 	//for (i = 0; i < (int) pts.size(); i++)
 	for (i_it = begin; i_it != npol_it; i_it++)
 	{
-		double x1, y1, x2, y2;
+		double
+			x1,
+			y1,
+			x2,
+			y2;
 		//x1 = pts[i].x();
 		x1 = i_it->x();
 		//y1 = pts[i].y();
@@ -191,7 +203,12 @@ Point_in_simple_polygon(Point p, std::vector < Point >::iterator begin,
 		x2 = j_it->x();
 		//y2 = pts[j].y();
 		y2 = j_it->y();
-		double xn, yn, zn, dist, t;
+		double
+			xn,
+			yn,
+			zn,
+			dist,
+			t;
 		Point::line_seg_point_near_3d(x1, y1, z1, x2, y2, z2, x, y, z, &xn,
 									  &yn, &zn, &dist, &t);
 		if (dist < 1e-6)
@@ -204,13 +221,13 @@ Point_in_simple_polygon(Point p, std::vector < Point >::iterator begin,
 	return false;
 }
 
-bool
-PHAST_polygon::Line_intersect(Point lp1, Point lp2,
-							  std::vector < Point > &intersect_pts)
+bool PHAST_polygon::Line_intersect(Point lp1, Point lp2,
+								   std::vector < Point > &intersect_pts)
 {
 	// lp1 is assumed to be outside bounding box of the polygon
 	//int i, j;
-	int poly;
+	int
+		poly;
 	for (poly = 0; poly < (int) this->begin.size(); poly++)
 	{
 		if (Line_intersect_simple_polygon
@@ -252,7 +269,8 @@ Line_intersect_simple_polygon(Point lp1, Point lp2,
 		 k_it++)
 	{
 		l_it = k_it + 1;
-		Point p = *l_it + 0.5 * (*k_it - *l_it);
+		Point
+			p = *l_it + 0.5 * (*k_it - *l_it);
 		if (Point_in_simple_polygon(p, begin, end))
 		{
 			intersect.push_back(*l_it);

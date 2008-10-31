@@ -15,11 +15,7 @@
 
 
 cunit::cunit(void):
-input(0),
-si(0),
-input_to_si(1.0),
-input_to_user(1.0),
-defined(FALSE)
+input(0), si(0), input_to_si(1.0), input_to_user(1.0), defined(FALSE)
 {
 }
 
@@ -63,9 +59,7 @@ cunit & cunit::operator=(const cunit & rhs)
 {
 	if (this != &rhs)
 	{
-		delete
-			this->
-			input;
+		delete this->input;
 		this->input = 0;
 		if (rhs.input)
 		{
@@ -73,9 +67,7 @@ cunit & cunit::operator=(const cunit & rhs)
 			::strcpy(this->input, rhs.input);
 		}
 
-		delete
-			this->
-			si;
+		delete this->si;
 		this->si = 0;
 		if (rhs.si)
 		{

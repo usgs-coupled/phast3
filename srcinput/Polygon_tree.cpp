@@ -26,8 +26,8 @@ Polygon_leaf::~Polygon_leaf()
 		delete this->polygon;
 	}
 }
-bool
-Polygon_leaf::split()
+
+bool Polygon_leaf::split()
 {
 	// check number of points
 	if (this->polygon->Get_points().size() < 5)
@@ -36,7 +36,8 @@ Polygon_leaf::split()
 		this->polygon->Get_coordinate_system();
 // COMMENT: {7/7/2008 5:27:11 PM}  if (this->polygon->Get_points().size() < 10) return false;
 
-	gpc_polygon *whole = PHAST_polygon2gpc_polygon(this->polygon);
+	gpc_polygon *
+		whole = PHAST_polygon2gpc_polygon(this->polygon);
 
 	this->left = new Polygon_leaf;
 	this->right = new Polygon_leaf;
@@ -60,10 +61,11 @@ Polygon_leaf::split()
 
 	// Make left leaf
 	{
-		gpc_polygon *rect =
-			rectangle(this->left->box.x1, this->left->box.y1,
-					  this->left->box.x2, this->left->box.y2);
-		gpc_polygon *gpc_poly = empty_polygon();
+		gpc_polygon *
+			rect = rectangle(this->left->box.x1, this->left->box.y1,
+							 this->left->box.x2, this->left->box.y2);
+		gpc_polygon *
+			gpc_poly = empty_polygon();
 		gpc_polygon_clip(GPC_INT, whole, rect, gpc_poly);
 		this->left->polygon = new PHAST_polygon(gpc_poly, cs);
 		gpc_free_polygon(rect);
@@ -74,10 +76,11 @@ Polygon_leaf::split()
 
 	// Make right leaf
 	{
-		gpc_polygon *rect =
-			rectangle(this->right->box.x1, this->right->box.y1,
-					  this->right->box.x2, this->right->box.y2);
-		gpc_polygon *gpc_poly = empty_polygon();
+		gpc_polygon *
+			rect = rectangle(this->right->box.x1, this->right->box.y1,
+							 this->right->box.x2, this->right->box.y2);
+		gpc_polygon *
+			gpc_poly = empty_polygon();
 		gpc_polygon_clip(GPC_INT, whole, rect, gpc_poly);
 		this->right->polygon = new PHAST_polygon(gpc_poly, cs);
 		gpc_free_polygon(rect);
@@ -91,8 +94,7 @@ Polygon_leaf::split()
 
 }
 
-bool
-Polygon_leaf::Point_in_polygon(Point p)
+bool Polygon_leaf::Point_in_polygon(Point p)
 {
 	return (this->polygon->Point_in_polygon(p));
 }
@@ -127,19 +129,21 @@ Polygon_tree::~Polygon_tree(void)
 	}
 }
 
-bool
-Polygon_tree::Point_in_polygon(Point p1)
+bool Polygon_tree::Point_in_polygon(Point p1)
 {
-	Point p = p1;
+	Point
+		p = p1;
 	p.set_z(0.0);
 	if (!(this->root->box.Point_in_xy_zone(p)))
 		return false;
 	std::list < Polygon_leaf * >nodes_to_visit;
 	nodes_to_visit.push_front(this->root);
-	bool split_once = true;
+	bool
+		split_once = true;
 	while (nodes_to_visit.size() > 0)
 	{
-		Polygon_leaf *visit;
+		Polygon_leaf *
+			visit;
 		visit = *(nodes_to_visit.begin());
 		nodes_to_visit.erase(nodes_to_visit.begin());
 
@@ -156,7 +160,9 @@ Polygon_tree::Point_in_polygon(Point p1)
 				{
 					nodes_to_visit.push_front(visit->right);
 				}
-				delete visit->polygon;
+				delete
+					visit->
+					polygon;
 				visit->polygon = NULL;
 				visit->tip = false;
 				this->all_leaves.push_back(visit->left);

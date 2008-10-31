@@ -104,9 +104,8 @@ nnpi_interpolate(std::vector < Point > &pts_in,
 }
 
 // COMMENT: {7/11/2008 9:26:59 PM}bool NNInterpolator::preprocess(std::vector<Point> &pts_in, std::vector<Point> &corners)
-bool
-NNInterpolator::preprocess(std::vector < Point > &pts_in,
-						   PHAST_Transform::COORDINATE_SYSTEM cs)
+bool NNInterpolator::preprocess(std::vector < Point > &pts_in,
+								PHAST_Transform::COORDINATE_SYSTEM cs)
 {
 	this->coordinate_system = cs;
 
@@ -117,10 +116,12 @@ NNInterpolator::preprocess(std::vector < Point > &pts_in,
 
 	// set up points in input array
 	this->point_count = pts_in.size();
-	int nin = pts_in.size();
+	int
+		nin = pts_in.size();
 	this->pin = new point[nin];
 
-	int i;
+	int
+		i;
 	this->bounds = zone();
 	this->bounds.zone_defined = 1;
 	for (i = 0; i < nin; i++)
@@ -151,7 +152,8 @@ NNInterpolator::preprocess(std::vector < Point > &pts_in,
 	this->nn = nnpi_create(this->delaunay_triangulation);
 	// int seed = 0;
 
-	double wmin = 0;			// no extrapolation
+	double
+		wmin = 0;				// no extrapolation
 	nnpi_setwmin(this->nn, wmin);
 	return true;
 }

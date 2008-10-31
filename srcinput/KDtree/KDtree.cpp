@@ -38,8 +38,7 @@ KDtree::KDtree(std::vector < Point > &pts):realdata(extents[pts.size()][3])
 #ifdef SKIP
 KDtree::KDtree(point * pts, size_t count):realdata(extents[count][3])
 {
-	size_t
-		i;
+	size_t i;
 	for (i = 0; i < count; i++)
 	{
 		realdata[i][0] = pts[i].x;

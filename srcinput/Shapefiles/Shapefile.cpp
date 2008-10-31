@@ -396,29 +396,38 @@ Shapefile::Dump(std::ostream & oss)
 	}
 }
 
-bool
-Shapefile::Make_points(const int attribute, std::vector < Point > &pts)
+bool Shapefile::Make_points(const int attribute, std::vector < Point > &pts)
 {
 	// Point contains a x, y, z + value
 
 	//if (this->pts.size() > 0 && field == this->current_field) return (true);
 	//this->pts.clear();
 
-	std::vector < double >m;	// rough-in in case M values are given in .shp file
+	std::vector < double >
+		m;						// rough-in in case M values are given in .shp file
 
-	SHPInfo *hSHP = this->shpinfo;
-	DBFInfo *hDBF = this->dbfinfo;
+	SHPInfo *
+		hSHP = this->shpinfo;
+	DBFInfo *
+		hDBF = this->dbfinfo;
 
 
 	// get info
-	int nShapeType, nEntities, i;	//, bValidate = 0,nInvalidCount=0;
-	double adfMinBound[4], adfMaxBound[4];
+	int
+		nShapeType,
+		nEntities,
+		i;						//, bValidate = 0,nInvalidCount=0;
+	double
+		adfMinBound[4],
+		adfMaxBound[4];
 
 	SHPGetInfo(hSHP, &nEntities, &nShapeType, adfMinBound, adfMaxBound);
 
 	// Check field number
-	int dbf_fields = DBFGetFieldCount(hDBF);
-	int dbf_records = DBFGetRecordCount(hDBF);
+	int
+		dbf_fields = DBFGetFieldCount(hDBF);
+	int
+		dbf_records = DBFGetRecordCount(hDBF);
 
 	//this->Dump(std::cerr);
 	if (attribute >= dbf_fields)
@@ -431,9 +440,13 @@ Shapefile::Make_points(const int attribute, std::vector < Point > &pts)
 		error_msg(estring.str().c_str(), EA_STOP);
 	}
 
-	char szTitle[12];
-	int nWidth, nDecimals;
-	DBFFieldType eType;
+	char
+		szTitle[12];
+	int
+		nWidth,
+		nDecimals;
+	DBFFieldType
+		eType;
 
 	if (attribute >= 0 && attribute < dbf_fields)
 	{
@@ -456,11 +469,14 @@ Shapefile::Make_points(const int attribute, std::vector < Point > &pts)
 		}
 	}
 
-	double xlast = -99, ylast = -99, zlast = -99;
+	double
+		xlast = -99, ylast = -99, zlast = -99;
 	for (i = 0; i < nEntities; i++)
 	{
-		int j;
-		SHPObject *psShape;
+		int
+			j;
+		SHPObject *
+			psShape;
 
 		psShape = this->objects[i];
 
@@ -483,11 +499,13 @@ Shapefile::Make_points(const int attribute, std::vector < Point > &pts)
 				psShape->padfX[j] != xlast ||
 				psShape->padfY[j] != ylast || psShape->padfZ[j] != zlast)
 			{
-				double value = psShape->padfZ[j];
+				double
+					value = psShape->padfZ[j];
 				if (attribute >= 0)
 					value = DBFReadDoubleAttribute(hDBF, i, attribute);
 				// add to list
-				Point pt;
+				Point
+					pt;
 				pt.set_x(psShape->padfX[j]);
 				pt.set_y(psShape->padfY[j]);
 				//pt.set_z(psShape->padfZ[j]);
@@ -509,8 +527,7 @@ Shapefile::Make_points(const int attribute, std::vector < Point > &pts)
 	return true;
 }
 
-bool
-Shapefile::Make_polygons(int field, PHAST_polygon & polygons)
+bool Shapefile::Make_polygons(int field, PHAST_polygon & polygons)
 {
 	// Requires field number
 	// Requires point vector
@@ -520,22 +537,30 @@ Shapefile::Make_polygons(int field, PHAST_polygon & polygons)
 
 	// Set points
 	//this->Make_points(field, polygons.Get_points());
-	Data_source *ds = this->Get_data_source(field);
+	Data_source *
+		ds = this->Get_data_source(field);
 	assert(ds->Get_source_type() == Data_source::POINTS);
 	assert(ds->Get_points().size() > 3);
 	polygons.Get_points() = ds->Get_points();
 
 
 
-	std::vector < double >m;	// rough-in in case M values are given in .shp file
+	std::vector < double >
+		m;						// rough-in in case M values are given in .shp file
 
-	SHPInfo *hSHP = this->shpinfo;
+	SHPInfo *
+		hSHP = this->shpinfo;
 	//DBFInfo *hDBF = this->dbfinfo;
 
 
 	// get info
-	int nShapeType, nEntities, i;	//, bValidate = 0,nInvalidCount=0;
-	double adfMinBound[4], adfMaxBound[4];
+	int
+		nShapeType,
+		nEntities,
+		i;						//, bValidate = 0,nInvalidCount=0;
+	double
+		adfMinBound[4],
+		adfMaxBound[4];
 
 	SHPGetInfo(hSHP, &nEntities, &nShapeType, adfMinBound, adfMaxBound);
 
@@ -553,10 +578,12 @@ Shapefile::Make_polygons(int field, PHAST_polygon & polygons)
 	{
 		polygons.Get_begin().push_back(it);
 
-		SHPObject *psShape;
+		SHPObject *
+			psShape;
 		psShape = this->objects[i];
 
-		int j;
+		int
+			j;
 		for (j = 0; j < psShape->nVertices; j++)
 		{
 			it++;

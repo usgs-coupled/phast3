@@ -64,16 +64,14 @@ class Polyhedron
 
 };
 
-inline
-	std::ostream &
-operator<<(std::ostream & o, const Polyhedron & p)
+inline std::ostream & operator<<(std::ostream & o, const Polyhedron & p)
 {
 	p.printOn(o);
 	return o;
 }
 
 inline enum Polyhedron::POLYHEDRON_TYPE
-Polyhedron::get_type(void) const 
+Polyhedron::get_type(void) const
 {
 	return type;
 }

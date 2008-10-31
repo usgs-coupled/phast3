@@ -8,7 +8,7 @@ class ArcRaster:public Filedata
 {
   public:
 	ArcRaster(void);
-	  ArcRaster(std::string filename, PHAST_Transform::COORDINATE_SYSTEM cs);
+	ArcRaster(std::string filename, PHAST_Transform::COORDINATE_SYSTEM cs);
 	bool Make_polygons(int field, PHAST_polygon & polygons)
 	{
 		return false;

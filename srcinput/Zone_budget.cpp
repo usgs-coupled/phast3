@@ -21,9 +21,8 @@ Zone_budget::~Zone_budget(void)
 	delete this->polyh;
 }
 
-bool
-Zone_budget::Add_cells(std::vector < bool > &cells_in_budget, zone * z,
-					   int nxyz, std::vector < Point > *cell_xyz)
+bool Zone_budget::Add_cells(std::vector < bool > &cells_in_budget, zone * z,
+							int nxyz, std::vector < Point > *cell_xyz)
 {
 
 	if (this->polyh != NULL)
@@ -41,11 +40,14 @@ Zone_budget::Add_cells(std::vector < bool > &cells_in_budget, zone * z,
 			z->zone_defined = 1;
 		}
 
-		zone z1(this->polyh->Get_bounding_box());
+		zone
+		z1(this->polyh->Get_bounding_box());
 		p.push_back(Point(z1.x1, z1.y1, z1.z1));
 		p.push_back(Point(z1.x2, z1.y2, z1.z2));
-		Point min(p.begin(), p.end(), Point::MIN);
-		Point max(p.begin(), p.end(), Point::MAX);
+		Point
+		min(p.begin(), p.end(), Point::MIN);
+		Point
+		max(p.begin(), p.end(), Point::MAX);
 		z->x1 = min.x();
 		z->y1 = min.y();
 		z->z1 = min.z();
@@ -55,8 +57,10 @@ Zone_budget::Add_cells(std::vector < bool > &cells_in_budget, zone * z,
 
 		// Put all cells in list, avoids having to include range definitions from hstinpt.h
 		// Some cells should be eliminated easily by zone check in Points_in_polyhedron
-		std::list < int >list_of_cells;
-		int i;
+		std::list < int >
+			list_of_cells;
+		int
+			i;
 		for (i = 0; i < nxyz; i++)
 		{
 			list_of_cells.push_back(i);
@@ -72,7 +76,8 @@ Zone_budget::Add_cells(std::vector < bool > &cells_in_budget, zone * z,
 		}
 
 		// Put cells in master list
-		std::list < int >::iterator lit;
+		std::list < int >::iterator
+			lit;
 		for (lit = list_of_cells.begin(); lit != list_of_cells.end(); lit++)
 		{
 			cells_in_budget[*lit] = 1;
@@ -80,10 +85,13 @@ Zone_budget::Add_cells(std::vector < bool > &cells_in_budget, zone * z,
 	}
 	if (this->combo.size() > 0)
 	{
-		std::vector < int >::iterator it;
+		std::vector < int >::iterator
+			it;
 		for (it = this->combo.begin(); it != this->combo.end(); it++)
 		{
-			std::map < int, Zone_budget * >::iterator zbit;
+			std::map < int,
+			Zone_budget * >::iterator
+				zbit;
 			zbit = Zone_budget::zone_budget_map.find(*it);
 			if (zbit != Zone_budget::zone_budget_map.end())
 			{

@@ -69,8 +69,7 @@ Cube::Set_bounding_box()
 }
 
 // Methods
-bool
-Cube::Point_in_polyhedron(const Point & t)
+bool Cube::Point_in_polyhedron(const Point & t)
 {
 	return (this->Point_in_bounding_box(t));
 }
@@ -174,36 +173,36 @@ Cube::Slice(Cell_Face face, double coord)
 }
 
 void
-	 Cube::printOn(std::ostream & os) const
-	 {
-		 os << "\t" << "-zone"
-			 << " " << this->box.x1
-			 << " " << this->box.y1
-			 << " " << this->box.z1
-			 << " " << this->box.x2
-			 << " " << this->box.y2 << " " << this->box.z2 << "\n";
-		 if (this->description.size())
-		 {
-			 os << "\t\t" << "-description " << this->description << "\n";
-		 }
-	 }
+Cube::printOn(std::ostream & os) const
+{
+	os << "\t" << "-zone"
+		<< " " << this->box.x1
+		<< " " << this->box.y1
+		<< " " << this->box.z1
+		<< " " << this->box.x2
+		<< " " << this->box.y2 << " " << this->box.z2 << "\n";
+	if (this->description.size())
+	{
+		os << "\t\t" << "-description " << this->description << "\n";
+	}
+}
 
 Cube *
-	 Cube::clone() const
-	 {
-		 return new Cube(*this);
-	 }
+Cube::clone() const
+{
+	return new Cube(*this);
+}
 
-	 Cube *Cube::create() const
-	 {
-		 return new Cube();
-	 }
+Cube *
+Cube::create() const
+{
+	return new Cube();
+}
 
 
-bool
-Cube::Segment_in_cube(Point & p1, Point & p2, Point & i1, Point & i2,
-					  double &length,
-					  Cube::CUBE_INTERSECTION & c_intersection)
+bool Cube::Segment_in_cube(Point & p1, Point & p2, Point & i1, Point & i2,
+						   double &length,
+						   Cube::CUBE_INTERSECTION & c_intersection)
 {
 	// Input: Segment defined by p1 and p2
 	// Output: Segment defined by i1 and i2 is in the cube
@@ -211,17 +210,23 @@ Cube::Segment_in_cube(Point & p1, Point & p2, Point & i1, Point & i2,
 	//         type is interior, surface, or edge
 	length = 0;
 
-	struct zone *zo = this->Get_bounding_box();
+	struct zone *
+		zo = this->Get_bounding_box();
 
 	// Points in cube?
-	bool in1 = this->Point_in_bounding_box(p1);
-	bool in2 = this->Point_in_bounding_box(p2);
+	bool
+		in1 = this->Point_in_bounding_box(p1);
+	bool
+		in2 = this->Point_in_bounding_box(p2);
 
 	// find intersection with 6 planes
-	Point diff = p2 - p1;
-	double t[6];
+	Point
+		diff = p2 - p1;
+	double
+		t[6];
 	Cube::PLANE_INTERSECTION pi[6];
-	bool in_cube[6];
+	bool
+		in_cube[6];
 
 	// X minus 
 	pi[0] = Segment_intersect_plane(1.0, 0.0, 0.0, -zo->x1, p1, diff, t[0]);
@@ -237,14 +242,16 @@ Cube::Segment_in_cube(Point & p1, Point & p2, Point & i1, Point & i2,
 	pi[5] = Segment_intersect_plane(0.0, 0.0, 1.0, -zo->z2, p1, diff, t[5]);
 
 	// determine if intersection points with planes are in cube
-	int i;
+	int
+		i;
 	for (i = 0; i < 6; i++)
 	{
 		switch (pi[i])
 		{
 		case Cube::PI_POINT:
 			{
-				Point p = p1 + diff * t[i];
+				Point
+					p = p1 + diff * t[i];
 				in_cube[i] = this->Point_in_bounding_box(p);
 				break;
 			}
@@ -269,9 +276,12 @@ Cube::Segment_in_cube(Point & p1, Point & p2, Point & i1, Point & i2,
 
 
 	// determine segment length
-	double min_t = 1;
-	double max_t = 0;
-	bool in = false;
+	double
+		min_t = 1;
+	double
+		max_t = 0;
+	bool
+		in = false;
 	// both points in cube
 	if (in1 && in2)
 	{
@@ -304,21 +314,24 @@ Cube::Segment_in_cube(Point & p1, Point & p2, Point & i1, Point & i2,
 			if (in1)
 			{
 				i1 = p1;
-				Point p = max_t * diff;
+				Point
+					p = max_t * diff;
 				i2 = p1 + p;
 				length = p.modulus();
 			}
 			else if (in2)
 			{
 				i2 = p2;
-				Point p = min_t * diff;
+				Point
+					p = min_t * diff;
 				i1 = p1 + p;
 				length = p.modulus();
 			}
 			else
 			{
 				i1 = p1 + min_t * diff;
-				Point p = (max_t - min_t) * diff;
+				Point
+					p = (max_t - min_t) * diff;
 				i2 = i1 + p;
 				length = p.modulus();
 			}
@@ -334,7 +347,8 @@ Cube::Segment_in_cube(Point & p1, Point & p2, Point & i1, Point & i2,
 	}
 	else
 	{
-		int count_faces = 0;
+		int
+			count_faces = 0;
 		for (i = 0; i < 6; i++)
 		{
 			if (pi[i] == Cube::PI_SEGMENT)
