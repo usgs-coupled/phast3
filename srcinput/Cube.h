@@ -35,7 +35,7 @@ class Cube:public Polyhedron
 						 double &length,
 						 Cube::CUBE_INTERSECTION & c_intersection);
 	struct zone *Set_bounding_box();
-	  PHAST_Transform::COORDINATE_SYSTEM Get_coordinate_system()
+	  PHAST_Transform::COORDINATE_SYSTEM Get_coordinate_system() const
 	{
 		return this->coordinate_system;
 	}
@@ -43,9 +43,18 @@ class Cube:public Polyhedron
 	{
 		this->coordinate_system = c;
 	}
+	  PHAST_Transform::COORDINATE_SYSTEM Get_coordinate_system_orig() const
+	{
+		return this->coordinate_system_orig;
+	}
+	void Set_coordinate_system_orig(PHAST_Transform::COORDINATE_SYSTEM c)
+	{
+		this->coordinate_system_orig = c;
+	}
   protected:
 	virtual void printOn(std::ostream & os) const;
 	PHAST_Transform::COORDINATE_SYSTEM coordinate_system;
+	PHAST_Transform::COORDINATE_SYSTEM coordinate_system_orig;
 };
 Cube::PLANE_INTERSECTION Segment_intersect_plane(const double a,
 												 const double b,

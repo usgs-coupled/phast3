@@ -2248,6 +2248,7 @@ read_cube(char **next_char)
 	}
 	Cube *c_ptr = new Cube(&z);
 	c_ptr->Set_coordinate_system(coord);
+	c_ptr->Set_coordinate_system_orig(coord);
 
 	return (c_ptr);
 }
@@ -8531,7 +8532,7 @@ read_well(void)
 			/* read to next */
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
-		case 24:				/* coordinate_system */
+		case 21:				/* coordinate_system */
 			j = copy_token(token, &next_char, &l);
 			str_tolower(token);
 			if (strstr(token, "map") == token)
