@@ -543,7 +543,7 @@ initialize(void)
 	snap[1] = .001;
 	snap[2] = .001;
 	zone_init(&domain);
-	grid_origin[0] = grid_origin[1] = grid_origin[3] = 0.0;
+	grid_origin[0] = grid_origin[1] = grid_origin[2] = 0.0;
 	grid_angle = 0.0;
 
 /*
