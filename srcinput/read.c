@@ -21,10 +21,9 @@ STATIC int next_keyword_or_option(const char **opt_list, int count_opt_list);
 STATIC int streamify_to_next_keyword_or_option(const char **opt_list,
 											   int count_opt_list,
 											   std::istringstream & lines);
-STATIC int streamify_to_next_keyword_or_option(const char **opt_list,
-											   int count_opt_list,
+STATIC int streamify_to_next_keyword_or_option(const char **opt_list, int count_opt_list,
 											   std::istringstream & lines,
-											   char *start_string);
+											   char *start_string, const char *delimiting_string);
 STATIC int read_chemistry_ic(void);
 STATIC Cube *read_cube(char **next_char);
 STATIC Wedge *read_wedge(char **next_char);
@@ -4712,7 +4711,10 @@ read_property(char *ptr, const char **opt_list, int count_opt_list, int *opt,
 	{
 		MIX_OLDSTYLE = 0,
 		MIX_XYZ = 1,
-		MIX_POINTS = 2
+		MIX_POINTS = 2,
+		MIX_CONSTANT = 3,
+		MIX_NUMERIC = 4,
+		MIX_UNKNOWN = 5
 	};
 	MIX_STYLE style;
 
@@ -4796,7 +4798,7 @@ read_property(char *ptr, const char **opt_list, int count_opt_list, int *opt,
 		std::istringstream lines;
 		*opt =
 			streamify_to_next_keyword_or_option(opt_list, count_opt_list,
-												lines, start_of_property);
+												lines, start_of_property, "end_p");
 
 		// remove identifier
 		// std::string str;
@@ -4850,7 +4852,7 @@ read_property(char *ptr, const char **opt_list, int count_opt_list, int *opt,
 			error_msg(estring, CONTINUE);
 		}
 		properties_with_data_source.push_back(p);
-		*opt = next_keyword_or_option(opt_list, count_opt_list);
+		*opt = get_option(opt_list, count_opt_list, &next_char);
 
 	}
 	else if (token[0] == 'X' || token[0] == 'x')
@@ -5075,7 +5077,7 @@ read_property(char *ptr, const char **opt_list, int count_opt_list, int *opt,
 		copy_token(token, &ptr1, &l);
 		/* second mix */
 		copy_token(token, &ptr1, &l);
-		start_of_data_source = ptr1;	/* start_of_data_source is start of points | xyz */
+		start_of_data_source = ptr1;	/* start_of_data_source is start of constant | points | xyz */
 
 		/* read nothing | points | xyz */
 		j = copy_token(token, &ptr1, &l);
@@ -5091,6 +5093,23 @@ read_property(char *ptr, const char **opt_list, int count_opt_list, int *opt,
 		else if (strstr(token, "xyz") == token)
 		{
 			style = MIX_XYZ;
+		}
+		else if (strstr(token, "constant") == token || strstr(token, "uniform") == token)
+		{
+			style = MIX_CONSTANT;
+		}
+		else if (j == DIGIT)
+		{
+			style = MIX_CONSTANT;
+			sprintf(token,"%s %s", "constant", next_char);
+			start_of_data_source = token;
+		}
+		else
+		{
+			style = MIX_UNKNOWN;
+			input_error++;
+			error_msg("Cannot interpret mixture input",
+					  CONTINUE);
 		}
 
 		switch (style)
@@ -5129,10 +5148,8 @@ read_property(char *ptr, const char **opt_list, int count_opt_list, int *opt,
 			{
 				p->type = PROP_MIX_XYZ;
 				std::istringstream lines(start_of_data_source);
-				p->data_source->Read(lines, false);
+				p->data_source->Read_mixture(lines);
 				p->data_source->Tidy(false);
-				//std::vector<Point> & these_pts = p->data_source->Get_points();
-				//int these_columns = p->data_source->Get_columns();
 				if (p->data_source->Get_points().size() <= 0
 					|| p->data_source->Get_columns() != 4)
 				{
@@ -5144,20 +5161,20 @@ read_property(char *ptr, const char **opt_list, int count_opt_list, int *opt,
 					error_msg(estring, CONTINUE);
 				}
 				properties_with_data_source.push_back(p);
-				*opt = next_keyword_or_option(opt_list, count_opt_list);
+				//*opt = next_keyword_or_option(opt_list, count_opt_list);
+				*opt = get_option(opt_list, count_opt_list, &next_char);
 			}
 			break;
 		case MIX_POINTS:
 			{
 				p->type = PROP_MIX_POINTS;
 				std::istringstream lines;
-				*opt =
-					streamify_to_next_keyword_or_option(opt_list,
-														count_opt_list, lines,
-														start_of_data_source);
+				*opt = streamify_to_next_keyword_or_option(opt_list,
+					count_opt_list, lines,
+					start_of_data_source, "end_p");
 
 				// read points into property Data_source
-				p->data_source->Read(lines, false);
+				p->data_source->Read_mixture(lines);
 				//p->data_source->Set_columns( Read_points(lines, p->data_source->Get_points()) );
 				if (p->data_source->Get_points().size() <= 0
 					|| p->data_source->Get_columns() != 4)
@@ -5171,6 +5188,25 @@ read_property(char *ptr, const char **opt_list, int count_opt_list, int *opt,
 				properties_with_data_source.push_back(p);
 			}
 			break;
+		case MIX_CONSTANT:
+			{
+				p->type = PROP_MIX_CONSTANT;
+				std::istringstream lines(start_of_data_source);
+				p->data_source->Read_mixture(lines);
+				p->data_source->Tidy(false);
+
+				if (p->data_source->Get_points().size() <= 0)
+				{
+					input_error++;
+					char estring[MAX_LENGTH];
+					sprintf(estring,
+							"Expected rows single value for property in input file.");
+					error_msg(estring, CONTINUE);
+				}
+				properties_with_data_source.push_back(p);
+				*opt = get_option(opt_list, count_opt_list, &next_char);
+			}
+			break;		
 		}
 
 	}
@@ -5713,7 +5749,7 @@ streamify_to_next_keyword_or_option(const char **opt_list, int count_opt_list,
 int
 streamify_to_next_keyword_or_option(const char **opt_list, int count_opt_list,
 									std::istringstream & lines,
-									char *start_string)
+									char *start_string, const char *delimiting_string)
 /* ---------------------------------------------------------------------- */
 {
 /*
@@ -5724,15 +5760,25 @@ streamify_to_next_keyword_or_option(const char **opt_list, int count_opt_list,
  *       OPTION
  *       EOF
  */
-	int opt;
-	char *next_char;
+	int opt, l;
+	char *next_char, *ptr;
+	char token[MAX_LENGTH];
 	std::string accumulate(start_string);
 	accumulate.append("\n");
 	for (;;)
 	{
 		opt = get_option(opt_list, count_opt_list, &next_char);
+		ptr = line;
+		copy_token(token, &ptr, &l);
+		str_tolower(token);
+
 		if (opt == OPTION_EOF)
 		{						/* end of file */
+			break;
+		}
+		else if (delimiting_string != NULL && strstr(token, delimiting_string) != NULL)
+		{
+			opt = get_option(opt_list, count_opt_list, &next_char);
 			break;
 		}
 		else if (opt == OPTION_KEYWORD)

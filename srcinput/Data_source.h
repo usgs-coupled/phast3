@@ -44,6 +44,7 @@ class Data_source
 
 	void Init();
 	bool Read(std::istream & lines, bool read_num);
+	bool Read_mixture(std::istream & lines);
 	void Tidy(const bool make_nni);
 	void Convert_coordinates(PHAST_Transform::COORDINATE_SYSTEM target,
 							 PHAST_Transform * map2grid);

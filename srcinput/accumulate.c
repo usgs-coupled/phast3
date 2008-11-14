@@ -1238,8 +1238,10 @@ distribute_property_to_list_of_elements(std::list < int >&pts,	// list of cell n
 		}
 	}
 	if (property_ptr->type == PROP_MIXTURE ||
+		property_ptr->type == PROP_MIX_CONSTANT ||
 		property_ptr->type == PROP_MIX_POINTS ||
-		property_ptr->type == PROP_MIX_XYZ)
+		property_ptr->type == PROP_MIX_XYZ
+		)
 	{
 		input_error++;
 		error_msg("MIXTURE option not allowed for this property", CONTINUE);
@@ -1327,6 +1329,7 @@ get_double_property_for_cell(struct cell *cell_ptr,
 	case PROP_MIXTURE:
 	case PROP_MIX_POINTS:
 	case PROP_MIX_XYZ:
+	case PROP_MIX_CONSTANT:
 		input_error++;
 		error_msg("MIXTURE option not allowed for this property", CONTINUE);
 		return (ERROR);
@@ -1422,7 +1425,13 @@ get_mix_property_for_cell(struct cell *cell_ptr,
 				property_ptr->data_source->Get_tree3d()->Interpolate3d(pt);
 		}
 		break;
-
+	case PROP_MIX_CONSTANT:
+		{
+			mix_ptr->i1 = (int) floor(property_ptr->v[0] + 1e-8);
+			mix_ptr->i2 = (int) floor(property_ptr->v[1] + 1e-8);
+			mix_ptr->f1 = property_ptr->data_source->Interpolate(Point(0,0,0));
+		}
+		break;
 	case PROP_MIXTURE:
 		mix_ptr->i1 = (int) floor(property_ptr->v[0] + 1e-8);
 		mix_ptr->i2 = (int) floor(property_ptr->v[1] + 1e-8);
@@ -1511,6 +1520,7 @@ get_property_for_element(struct cell *cell_ptr, struct property *property_ptr,
 	case PROP_MIXTURE:
 	case PROP_MIX_POINTS:
 	case PROP_MIX_XYZ:
+	case PROP_MIX_CONSTANT:
 		input_error++;
 		error_msg("MIXTURE option not allowed for this property", CONTINUE);
 		return (ERROR);

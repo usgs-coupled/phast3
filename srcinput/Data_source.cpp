@@ -275,7 +275,139 @@ bool Data_source::Read(std::istream & lines, bool read_num)
 		this->defined = true;
 	return (success);
 }
+bool Data_source::Read_mixture(std::istream & lines)
+{
+	bool
+		success = true;
+	this->Init();
 
+	// read information for property
+	const char *
+		opt_list[] = {
+		"constant",				/* 0 */
+		"points",				/* 1 */
+		"xyz"					/* 2 */
+	};
+
+	int	count_opt_list = 3;
+	std::vector < std::string > std_opt_list;
+	int	i;
+	for (i = 0; i < count_opt_list; i++)
+		std_opt_list.push_back(opt_list[i]);
+
+	std::string type;
+	lines >> type;
+
+	int
+		j = case_picker(std_opt_list, type);
+	if (j < 0)
+	{
+		error_msg
+			("Error reading data type (CONSTANT, POINTS, or XYZ).",
+			 EA_CONTINUE);
+		return (false);
+	}
+	bool no_coordinate_system = false;
+	// Read coordinate system
+	std::string cs;
+	lines >> cs;
+	std::transform(cs.begin(), cs.end(), cs.begin(),::tolower);
+	std::string grid("grid"), map("map");
+	if (cs == grid)
+	{
+		this->coordinate_system = PHAST_Transform::GRID;
+		this->coordinate_system_orig = PHAST_Transform::GRID;
+	}
+	else if (cs == map)
+	{
+		this->coordinate_system = PHAST_Transform::MAP;
+		this->coordinate_system_orig = PHAST_Transform::MAP;
+	}
+	else if (j == 0)
+	{
+		this->coordinate_system = PHAST_Transform::GRID;
+		this->coordinate_system_orig = PHAST_Transform::GRID;
+		no_coordinate_system = true;
+	}
+	else 
+	{
+		
+		this->coordinate_system = PHAST_Transform::NONE;
+		this->coordinate_system_orig = PHAST_Transform::NONE;
+		error_msg ("Error reading coordinate system (GRID or MAP) for CONSTANT, POINTS, SHAPE, XYZ, or ArcRaster.",
+				EA_CONTINUE);
+			return (false);
+	} 
+
+	switch (j)
+	{
+		// constant
+	case 0:
+		{
+			bool err_flag = false;
+			this->source_type = Data_source::CONSTANT;
+			this->source_type_orig = Data_source::CONSTANT;
+			double elev;
+			if (no_coordinate_system)
+			{
+				if (sscanf(cs.c_str(),"%lf", &elev) != 1) err_flag = true;
+			}
+			else
+			{
+				if (!(lines >> elev)) err_flag = true;
+			}
+			if (err_flag)
+			{
+				error_msg("Error reading constant property.",
+					EA_CONTINUE);
+				success = false;
+			}
+			else
+			{
+				this->pts.push_back(Point(0.0, 0.0, elev, elev));
+			}
+			break;
+		}
+
+		// points
+	case 1:
+		this->source_type = Data_source::POINTS;
+		this->source_type_orig = Data_source::POINTS;
+		{
+			this->columns = Read_points(lines, this->pts);
+
+			// for prism set v = z
+			if (this->columns < 4)
+			{
+				std::vector < Point >::iterator it;
+				for (it = this->pts.begin(); it != this->pts.end(); it++)
+				{
+					it->set_v(it->z());
+				}
+			}
+		}
+		break;
+
+		// XYZ file
+	case 2:
+		this->source_type = Data_source::XYZ;
+		this->source_type_orig = Data_source::XYZ;
+		//if (!(lines >> this->file_name)) success = false;
+		success =
+			Data_source::Read_filename(lines, false, this->file_name,
+									   this->attribute);
+		if (!success)
+			error_msg("Error reading xyz file name.", EA_CONTINUE);
+		break;
+
+	default:
+		success = false;
+		break;
+	}
+	if (success)
+		this->defined = true;
+	return (success);
+}
 bool Data_source::Read_filename(std::istream & lines, bool read_num,
 								std::string & filename, int &num)
 {
