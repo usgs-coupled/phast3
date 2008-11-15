@@ -66,6 +66,7 @@ accumulate(void)
 		Tidy_cubes(target_coordinate_system, map_to_grid);
 		Tidy_properties(target_coordinate_system, map_to_grid);
 		Tidy_prisms();
+		Convert_coordinates_prisms(target_coordinate_system, map_to_grid);
 
 		if (tidy_rivers() == OK)
 		{

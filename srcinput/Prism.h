@@ -67,4 +67,6 @@ class Prism:public Polyhedron
 
 };
 void Tidy_prisms(void);
+void Convert_coordinates_prisms(PHAST_Transform::COORDINATE_SYSTEM cs,
+						   PHAST_Transform * map2grid);
 #endif // !defined(PRISM_H_INCLUDED)

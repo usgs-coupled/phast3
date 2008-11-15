@@ -733,7 +733,17 @@ Tidy_prisms(void)
 		(*it)->Tidy();
 	}
 }
+void
+Convert_coordinates_prisms(PHAST_Transform::COORDINATE_SYSTEM cs,
+						   PHAST_Transform * map2grid)
+{
+	std::list < Prism * >::const_iterator it;
 
+	for (it = Prism::prism_list.begin(); it != Prism::prism_list.end(); it++)
+	{
+		(*it)->Convert_coordinates(cs, map2grid);
+	}
+}
 void
 Prism::Tidy()
 {
@@ -793,11 +803,11 @@ Prism::Tidy()
 	//  error_msg("Failed to make polygons in Prism::tidy.", EA_STOP);
 	//};
 	// Make polygons if needed
-	this->perimeter.Get_phast_polygons();
+	//this->perimeter.Get_phast_polygons();
 
-	std::vector < Point >::iterator it;
+	//std::vector < Point >::iterator it;
 	// Project points to top of grid
-	this->Project_points(this->perimeter.Get_points(), CF_Z, grid_zone()->z2);
+	//this->Project_points(this->perimeter.Get_points(), CF_Z, grid_zone()->z2);
 	//  this->perimeter_datum = grid_zone()->z2;
 	// set bounding box
 	this->Set_bounding_box();
@@ -1090,6 +1100,7 @@ Prism::Convert_coordinates(PHAST_Transform::COORDINATE_SYSTEM cs,
 	{
 		this->bottom.Convert_coordinates(cs, map2grid);
 	}
+	this->Set_bounding_box();
 }
 PHAST_Transform::COORDINATE_SYSTEM Prism::What_coordinates(void)
 {

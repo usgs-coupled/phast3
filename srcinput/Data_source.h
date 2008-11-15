@@ -180,6 +180,7 @@ Data_source::Get_tree(void)
 	Data_source *ds = this->Get_data_source_with_points();
 	if (!ds->tree)
 	{
+		ds->Get_phast_polygons();
 		assert(ds->phast_polygons.Get_points().size() != 0);
 		ds->tree = new Polygon_tree(ds->phast_polygons);
 	}

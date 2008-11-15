@@ -491,7 +491,7 @@ bool Data_source::Read_filename(std::istream & lines, bool read_num,
 
 	return success;
 }
-
+#ifdef SKIP
 void
 Data_source::Tidy(const bool make_nni)
 {
@@ -595,7 +595,111 @@ Data_source::Tidy(const bool make_nni)
 
 	this->Set_bounding_box();
 }
+#endif
+void
+Data_source::Tidy(const bool make_nni)
+{
+	// First read data 
+	switch (this->source_type)
+	{
+	case Data_source::SHAPE:
+		// read data from shape file
+		if (Filedata::file_data_map.find(this->file_name) ==
+			Filedata::file_data_map.end())
+		{
+			Shapefile *sf =
+				new Shapefile(this->file_name, this->coordinate_system);
+			sf->Set_coordinate_system(this->coordinate_system);
+			Filedata::file_data_map[this->file_name] = (Filedata *) sf;
+		}
+		// Add Data_source for attribute
+		{
+			Filedata *f =
+				Filedata::file_data_map.find(this->file_name)->second;
+			if (f->Get_file_type() != Filedata::SHAPE)
+				error_msg("File read as non-shape and shape file?", EA_STOP);
+			this->filedata = f;
+			if (f->Get_data_source(this->attribute) == NULL)
+			{
+				Shapefile *sf = dynamic_cast < Shapefile * >(f);
+				std::vector < Point > temp_pts;
+				sf->Make_points(this->attribute, temp_pts);
+				int col = 3;
+				if (this->attribute < 0)
+					col = 2;
+				sf->Add_data_source(this->attribute, temp_pts, col,
+									this->coordinate_system);
+			}
+		}
+		break;
+	case Data_source::ARCRASTER:
+		if (Filedata::file_data_map.find(this->file_name) ==
+			Filedata::file_data_map.end())
+		{
+			ArcRaster *ar =
+				new ArcRaster(this->file_name, this->coordinate_system);
+			//ar->Set_coordinate_system (this->coordinate_system);
+			Filedata::file_data_map[this->file_name] = (Filedata *) ar;
+		}
+		{
+			Filedata *f =
+				Filedata::file_data_map.find(this->file_name)->second;
+			if (f->Get_file_type() != Filedata::ARCRASTER)
+				error_msg("File read as non arcraster and arcraster file?",
+						  EA_STOP);
+			this->filedata = f;
+			//Data_source added to data_source_map in ArcRaster constructor
+		}
+		break;
+	case Data_source::XYZ:
+		if (Filedata::file_data_map.find(this->file_name) ==
+			Filedata::file_data_map.end())
+		{
+			XYZfile *xyz =
+				new XYZfile(this->file_name, this->coordinate_system);
+			xyz->Set_coordinate_system(this->coordinate_system);
+			Filedata::file_data_map[this->file_name] = (Filedata *) xyz;
+		}
+		{
+			Filedata *f =
+				Filedata::file_data_map.find(this->file_name)->second;
+			if (f->Get_file_type() != Filedata::XYZ)
+				error_msg("File read as non XYZ and XYZ file?", EA_STOP);
+			this->filedata = f;
+			//Data_source added to data_source_map in XYZfile constructor
+		}
+		break;
+	case Data_source::CONSTANT:
+	case Data_source::POINTS:
+	case Data_source::NONE:
+		break;
+	}
 
+	// Convert coordinate system if necessary
+	// !!!! Not converting coordinate system here
+	// this->Convert_coordinates(target_coordinate_system, map_to_grid);
+#ifdef SKIP
+	// Make nni if necessary
+	// First read data 
+	switch (this->source_type)
+	{
+	case Data_source::SHAPE:
+	case Data_source::ARCRASTER:
+	case Data_source::XYZ:
+	case Data_source::POINTS:
+		if (make_nni)
+		{
+			bool success = this->Make_nni();
+			assert(success);
+		}
+		break;
+	case Data_source::CONSTANT:
+	case Data_source::NONE:
+		break;
+	}
+#endif
+	this->Set_bounding_box();
+}
 std::vector < Point > &Data_source::Get_points()
 {
 	switch (this->source_type)
@@ -790,7 +894,7 @@ Data_source::Interpolate(const Point & p,
 	}
 	return (-999.);
 }
-
+#ifdef SKIP
 NNInterpolator *
 Data_source::Get_nni(void)
 {
@@ -823,7 +927,66 @@ Data_source::Get_nni(void)
 	}
 	return NULL;
 }
+#endif
+NNInterpolator *
+Data_source::Get_nni(void)
+{
+	/*	switch (this->source_type)
+	{
+	case Data_source::SHAPE:
+	case Data_source::ARCRASTER:
+	case Data_source::XYZ:
+	case Data_source::POINTS:
+		if (make_nni)
+		{
+			bool success = this->Make_nni();
+			assert(success);
+		}
+		break;
+	case Data_source::CONSTANT:
+	case Data_source::NONE:
+		break;
+	}*/
+//bool Data_source::Make_nni(void)
+//{
+//	Data_source *
+//		ds = this->Get_data_source_with_points();
+//	if (ds == NULL)
+//		return false;
+//
+//	if (ds->nni_unique == -1)
+//	{
+//		NNInterpolator *
+//			nni = new NNInterpolator();
+//		nni->preprocess(ds->Get_points(), ds->coordinate_system);
+//		ds->Set_nni_unique(NNInterpolator::NNInterpolatorMap.push_back(nni));
+//	}
+//	return true;
+//}
 
+	switch (this->source_type)
+	{
+	case Data_source::SHAPE:
+	case Data_source::ARCRASTER:
+	case Data_source::XYZ:
+	case Data_source::POINTS:
+		{
+			Data_source * ds = this->Get_data_source_with_points();
+			if (ds == NULL) return (NULL);
+			if (ds->nni_unique == -1)
+			{
+				NNInterpolator * nni = new NNInterpolator();
+				nni->preprocess(ds->Get_points(), ds->coordinate_system);
+				ds->Set_nni_unique(NNInterpolator::NNInterpolatorMap.push_back(nni));
+			}
+			return (NNInterpolator::NNInterpolatorMap.at(ds->nni_unique));			
+		}
+		break;
+	default:
+		break;
+	}
+	return NULL;
+}
 void
 Data_source::Replace_nni(NNInterpolator * nni_ptr)
 {
@@ -945,15 +1108,18 @@ Data_source::Convert_coordinates(PHAST_Transform::COORDINATE_SYSTEM target,
 			// Points
 			map2grid->Transform(ds->pts);
 			this->Set_bounding_box();
+			ds->Set_bounding_box();
 			ds->Set_coordinate_system(PHAST_Transform::GRID);
+			ds->nni_unique = -1;
+			ds->phast_polygons.Clear();
 
 			// nni
-			if (ds->Get_nni() != NULL)
-			{
-				NNInterpolator *nni_ptr = new NNInterpolator;
-				nni_ptr->preprocess(ds->Get_points(), PHAST_Transform::GRID);
-				ds->Replace_nni(nni_ptr);
-			}
+			//if (ds->Get_nni() != NULL)
+			//{
+			//	NNInterpolator *nni_ptr = new NNInterpolator;
+			//	nni_ptr->preprocess(ds->Get_points(), PHAST_Transform::GRID);
+			//	ds->Replace_nni(nni_ptr);
+			//}
 
 			// Todo polygons
 		}
@@ -963,16 +1129,19 @@ Data_source::Convert_coordinates(PHAST_Transform::COORDINATE_SYSTEM target,
 		{
 			// Points
 			map2grid->Transform(ds->pts);
+			this->Set_bounding_box();
 			ds->Set_bounding_box();
 			ds->Set_coordinate_system(PHAST_Transform::MAP);
+			ds->nni_unique = -1;
+			ds->phast_polygons.Clear();
 
 			// nni
-			if (ds->Get_nni() != NULL)
+			/*if (ds->Get_nni() != NULL)
 			{
 				NNInterpolator *nni_ptr = new NNInterpolator;
 				nni_ptr->preprocess(ds->Get_points(), PHAST_Transform::MAP);
 				this->Replace_nni(nni_ptr);
-			}
+			}*/
 
 			// Todo polygons
 		}
@@ -1009,7 +1178,7 @@ bool Data_source::Make_nni(void)
 	if (ds == NULL)
 		return false;
 
-	if (this->nni_unique == -1)
+	if (ds->nni_unique == -1)
 	{
 		NNInterpolator *
 			nni = new NNInterpolator();
