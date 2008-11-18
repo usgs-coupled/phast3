@@ -1107,7 +1107,7 @@ Data_source::Convert_coordinates(PHAST_Transform::COORDINATE_SYSTEM target,
 		{
 			// Points
 			map2grid->Transform(ds->pts);
-			this->Set_bounding_box();
+			//this->Set_bounding_box();
 			ds->Set_bounding_box();
 			ds->Set_coordinate_system(PHAST_Transform::GRID);
 			ds->nni_unique = -1;
@@ -1129,7 +1129,7 @@ Data_source::Convert_coordinates(PHAST_Transform::COORDINATE_SYSTEM target,
 		{
 			// Points
 			map2grid->Transform(ds->pts);
-			this->Set_bounding_box();
+			//this->Set_bounding_box();
 			ds->Set_bounding_box();
 			ds->Set_coordinate_system(PHAST_Transform::MAP);
 			ds->nni_unique = -1;
@@ -1146,6 +1146,11 @@ Data_source::Convert_coordinates(PHAST_Transform::COORDINATE_SYSTEM target,
 			// Todo polygons
 		}
 		break;
+	}
+	if (ds != this) 
+	{
+		this->coordinate_system = ds->Get_coordinate_system();
+		this->Set_bounding_box();
 	}
 }
 Data_source *
