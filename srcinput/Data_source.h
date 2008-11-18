@@ -92,9 +92,10 @@ class Data_source
 	std::vector < Point > &Get_points(void);
 	void Set_points(std::vector < Point > &pts);
 
+	bool            Test_phast_polygons(void);
 	PHAST_polygon & Get_phast_polygons(void);
-
-	Polygon_tree *Get_tree(void);
+	bool            Test_tree(void);
+	Polygon_tree *  Get_tree(void);
 
 	NNInterpolator *Get_nni(void);
 	void Replace_nni(NNInterpolator *);
@@ -177,14 +178,36 @@ Data_source::Get_tree3d(void)
 inline Polygon_tree *
 Data_source::Get_tree(void)
 {
+	if (!this->Test_tree())
+	{
+		if (!this->Test_phast_polygons())
+		{
+			this->Make_polygons();
+		}
+	}
+
 	Data_source *ds = this->Get_data_source_with_points();
+
 	if (!ds->tree)
 	{
-		ds->Get_phast_polygons();
+		//ds->Get_phast_polygons();
 		assert(ds->phast_polygons.Get_points().size() != 0);
 		ds->tree = new Polygon_tree(ds->phast_polygons);
 	}
 	return ds->tree;
 }
-
+inline bool
+Data_source::Test_tree(void)
+{
+	Data_source *ds = this->Get_data_source_with_points();
+	if (ds->tree == NULL) return false;
+	return true;
+}
+inline bool
+Data_source::Test_phast_polygons(void)
+{
+	Data_source *ds = this->Get_data_source_with_points();
+	if (ds->phast_polygons.Get_points().size() < 3) return false;
+	return true;
+}
 #endif // !defined(DATA_SOURCE_H_INCLUDED)

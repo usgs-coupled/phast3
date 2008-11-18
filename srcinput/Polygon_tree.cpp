@@ -30,7 +30,7 @@ Polygon_leaf::~Polygon_leaf()
 bool Polygon_leaf::split()
 {
 	// check number of points
-	if (this->polygon->Get_points().size() < 5)
+	if (this->polygon->Get_points().size() < 10)
 		return false;
 	PHAST_Transform::COORDINATE_SYSTEM cs =
 		this->polygon->Get_coordinate_system();
@@ -196,4 +196,31 @@ bool Polygon_tree::Point_in_polygon(Point p1)
 		}
 	}
 	return (false);
+}
+void Polygon_tree::Dump_tree(void)
+{
+	int i = 0;
+	std::vector < Polygon_leaf * >::iterator it = this->all_leaves.begin();
+	for ( ; it != this->all_leaves.end(); it++)
+	{
+		std::cerr << "Leaf number: " << i++ << std::endl;
+		(*it)->Dump_leaf();
+	}
+}
+void Polygon_leaf::Dump_leaf(void)
+{
+	std::cerr << "   Low pt:  " << this->box.x1 << "  " << this->box.y1 << "  " << this->box.z1 << std::endl;
+	std::cerr << "   High pt: " << this->box.x2 << "  " << this->box.y2 << "  " << this->box.z2 << std::endl;
+	if (this->polygon != NULL) std::cerr << "   No. Pts: " <<  this->polygon->Get_points().size() << std::endl;
+	std::cerr << "   Tip?:    " << this->tip << std::endl;
+	std::cerr << "   Split_x: " << this->split_x << std::endl;
+
+	/*
+	zone box;
+	Polygon_leaf *left;
+	Polygon_leaf *right;
+	PHAST_polygon *polygon;
+	bool split_x;
+	bool tip;	
+	*/
 }

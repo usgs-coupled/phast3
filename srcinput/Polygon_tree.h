@@ -14,6 +14,7 @@ class Polygon_leaf
 	// methods
 	bool split(void);
 	bool Point_in_polygon(Point p);
+	void Dump_leaf(void);
 
 	// Data
 	zone box;
@@ -33,6 +34,7 @@ class Polygon_tree
 	  virtual ~ Polygon_tree(void);
 
 	bool Point_in_polygon(Point p);
+	void Dump_tree(void);
 
   public:
 	// Data
