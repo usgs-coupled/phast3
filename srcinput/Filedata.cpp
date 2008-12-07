@@ -159,3 +159,35 @@ Filedata::Get_nni(int attribute)
 	}
 	return (NULL);
 }
+
+bool
+Filedata::operator==(const Filedata &other) const
+{
+	if (this->file_type != other.file_type)
+	{
+		return false;
+	}
+	if (this->filename != other.filename)
+	{
+		return false;
+	}
+	if (this->data_source_map != other.data_source_map)
+	{
+		return false;
+	}
+	if (this->empty_pts != other.empty_pts)
+	{
+		return false;
+	}
+	if (this->coordinate_system != other.coordinate_system)
+	{
+		return false;
+	}
+	return true;
+}
+
+bool
+Filedata::operator!=(const Filedata &other) const
+{
+	return !(*this == other);
+}

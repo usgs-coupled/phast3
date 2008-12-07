@@ -2247,7 +2247,7 @@ read_cube(char **next_char)
 	}
 	Cube *c_ptr = new Cube(&z);
 	c_ptr->Set_coordinate_system(coord);
-	c_ptr->Set_coordinate_system_orig(coord);
+	c_ptr->Set_user_coordinate_system(coord);
 
 	return (c_ptr);
 }
@@ -2327,6 +2327,7 @@ read_wedge(char **next_char)
 	std::string s(token);
 	Wedge *w_ptr = new Wedge(&z, s);
 	w_ptr->Set_coordinate_system(coord);
+	w_ptr->Set_user_coordinate_system(coord);
 
 	return (w_ptr);
 }

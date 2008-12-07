@@ -157,6 +157,8 @@ class Point
 									   double x, double y, double z,
 									   double *xn, double *yn, double *zn,
 									   double *dist, double *t);
+	bool operator==(const Point &other) const;
+	bool operator!=(const Point &other) const;
 
 #ifdef SKIP
 	// Required to be in header?

@@ -92,6 +92,9 @@ class Data_source
 	std::vector < Point > &Get_points(void);
 	void Set_points(std::vector < Point > &pts);
 
+	std::vector < Point > &Get_user_points(void);
+	void Set_user_points(std::vector < Point > &pts);
+
 	bool            Test_phast_polygons(void);
 	PHAST_polygon & Get_phast_polygons(void);
 	bool            Test_tree(void);
@@ -137,19 +140,29 @@ class Data_source
 	};
 	PHAST_Transform::COORDINATE_SYSTEM Get_coordinate_system()const;
 
+	void Set_user_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM c)
+	{
+		this->coordinate_system_user = c;
+	};
+	PHAST_Transform::COORDINATE_SYSTEM Get_user_coordinate_system()const;
+
+
 	Data_source & operator=(const Data_source & r);
 	friend std::ostream & operator<<(std::ostream & os,
 									 const Data_source & ds);
+
+	bool operator==(const Data_source &other) const;
+	bool operator!=(const Data_source &other) const;
 
 	// Data
   protected:
 	bool defined;
 	std::string file_name;
 	DATA_SOURCE_TYPE source_type;
-	DATA_SOURCE_TYPE source_type_orig;
+	DATA_SOURCE_TYPE source_type_user;
 	Filedata *filedata;
 	std::vector < Point > pts;
-	std::vector < Point > pts_orig;
+	std::vector < Point > pts_user;
 	PHAST_polygon phast_polygons;
 	Polygon_tree *tree;
 	//NNInterpolator *   nni;
@@ -159,7 +172,12 @@ class Data_source
 	int attribute;
 	struct zone box;
 	PHAST_Transform::COORDINATE_SYSTEM coordinate_system;
-	PHAST_Transform::COORDINATE_SYSTEM coordinate_system_orig;
+	PHAST_Transform::COORDINATE_SYSTEM coordinate_system_user;
+	
+#if defined(__WPHAST__) && defined(_DEBUG)
+  public:
+	virtual void Dump(class CDumpContext& dc) const;
+#endif
 };
 inline KDtree *
 Data_source::Get_tree3d(void)

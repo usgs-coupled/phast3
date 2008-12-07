@@ -15,11 +15,11 @@
 #endif
 
 // Constructors
-Cube::Cube(void)
+Cube::Cube(PHAST_Transform::COORDINATE_SYSTEM cs)
 {
 	this->type = CUBE;
-	this->coordinate_system = PHAST_Transform::GRID;
-	this->coordinate_system_orig = PHAST_Transform::GRID;
+	this->coordinate_system = cs;
+	this->coordinate_system_user = cs;
 
 	// Default cube
 	this->p.push_back(Point(0.0, 0.0, 0.0));
@@ -29,11 +29,11 @@ Cube::Cube(void)
 	this->Set_bounding_box();
 
 }
-Cube::Cube(const struct zone *zone_ptr)
+Cube::Cube(const struct zone *zone_ptr, PHAST_Transform::COORDINATE_SYSTEM cs)
 {
 	this->type = CUBE;
-	this->coordinate_system = PHAST_Transform::GRID;
-	this->coordinate_system_orig = PHAST_Transform::GRID;
+	this->coordinate_system = cs;
+	this->coordinate_system_user = cs;
 
 	// Define cube in standard order left, front, bottom point first
 	this->p.push_back(Point(zone_ptr->x1, zone_ptr->y1, zone_ptr->z1));
@@ -177,7 +177,7 @@ Cube::Slice(Cell_Face face, double coord)
 void
 Cube::printOn(std::ostream & os) const
 {
-	const char* coor_name[] = {" MAP ", " GRID ", " NONE "};
+	const char* coor_name[] = {"MAP", "GRID", "NONE"};
 	os << "\t" << "-zone"
 		<< " " << this->box.x1
 		<< " " << this->box.y1
@@ -185,7 +185,7 @@ Cube::printOn(std::ostream & os) const
 		<< " " << this->box.x2
 		<< " " << this->box.y2
 		<< " " << this->box.z2
-		<< coor_name[this->coordinate_system_orig]
+		<< " " << coor_name[this->coordinate_system_user]
 		<< "\n";
 
 	if (this->description.size())

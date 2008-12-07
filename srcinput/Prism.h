@@ -40,6 +40,10 @@ class Prism:public Polyhedron
 	void Convert_coordinates(PHAST_Transform::COORDINATE_SYSTEM cs,
 							 PHAST_Transform * map2grid);
 
+#if defined(__WPHAST__) && defined(_DEBUG)
+	virtual void Dump(class CDumpContext& dc) const;
+#endif
+
   protected:
 	// Virtual methods
 	struct zone *Set_bounding_box();
@@ -64,6 +68,9 @@ class Prism:public Polyhedron
 	Data_source top;
 
 	static std::list < Prism * >prism_list;
+
+	bool operator==(const Prism &other) const;
+	bool operator!=(const Prism &other) const;
 
 };
 void Tidy_prisms(void);

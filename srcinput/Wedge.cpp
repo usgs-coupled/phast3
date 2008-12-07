@@ -12,10 +12,11 @@
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
 #endif
 
-Wedge::Wedge(void)
+Wedge::Wedge(PHAST_Transform::COORDINATE_SYSTEM cs)
 {
 	this->type = WEDGE;
-	this->coordinate_system = PHAST_Transform::GRID;
+	this->coordinate_system = cs;
+	this->coordinate_system_user = cs;
 
 	// Default wedge
 	this->p.push_back(Point(0.0, 0.0, 0.0));
@@ -47,10 +48,11 @@ Wedge::Wedge(void)
 	this->vertices.push_back(v[2]);
 }
 
-Wedge::Wedge(const struct zone *zone_ptr, std::string & orientation)
+Wedge::Wedge(const struct zone *zone_ptr, std::string & orientation, PHAST_Transform::COORDINATE_SYSTEM cs)
 {
 	this->type = WEDGE;
-	this->coordinate_system = PHAST_Transform::GRID;
+	this->coordinate_system = cs;
+	this->coordinate_system_user = cs;
 
 	this->p.clear();
 	// Put points in standard form
@@ -840,6 +842,8 @@ Wedge::printOn(std::ostream & os) const
 		"Z1", "Z2", "Z3", "Z4",
 		"WEDGE_ERROR"
 	};
+	static const char *coor_name[] = {"MAP", "GRID", "NONE"};
+
 	const char *orient;
 	if (this->orientation < Wedge::X1 || Wedge::Z4 < this->orientation)
 	{
@@ -850,13 +854,26 @@ Wedge::printOn(std::ostream & os) const
 		orient = a[this->orientation];
 	}
 
+	const char *coord;
+	if (this->coordinate_system_user < PHAST_Transform::MAP || PHAST_Transform::GRID < this->coordinate_system_user)
+	{
+		coord = coor_name[PHAST_Transform::NONE];
+	}
+	else
+	{
+		coord = coor_name[this->coordinate_system_user];
+	}
+
 	os << "\t" << "-wedge"
 		<< " " << this->box.x1
 		<< " " << this->box.y1
 		<< " " << this->box.z1
 		<< " " << this->box.x2
 		<< " " << this->box.y2
-		<< " " << this->box.z2 << " " << orient << "\n";
+		<< " " << this->box.z2
+		<< " " << orient
+		<< " " << coord
+		<< "\n";
 
 	if (this->description.size())
 	{

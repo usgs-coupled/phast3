@@ -12,6 +12,12 @@
 #include "Filedata.h"
 #include "UniqueMap.h"
 
+#if defined(__WPHAST__) && defined(_DEBUG)
+#include <afx.h> // CDumpContext
+#undef min
+#undef max
+#endif
+
 #define TRUE 1
 #define FALSE 0
 
@@ -35,10 +41,10 @@ Data_source::Data_source(std::vector < Point > &in_pts,
 	this->defined = true;
 	//file_name;
 	this->source_type = POINTS;
-	this->source_type_orig = POINTS;
+	this->source_type_user = POINTS;
 	this->filedata = NULL;
 	this->pts = in_pts;
-	this->pts_orig = in_pts;
+	this->pts_user = in_pts;
 	//PHAST_polygon       PHAST_polygons;
 	//Polygon_tree       *tree;
 	this->tree = NULL;
@@ -51,7 +57,7 @@ Data_source::Data_source(std::vector < Point > &in_pts,
 	this->Set_bounding_box();
 	//struct zone        box;
 	this->coordinate_system = system;
-	this->coordinate_system_orig = system;
+	this->coordinate_system_user = system;
 }
 Data_source::~Data_source(void)
 {
@@ -65,10 +71,10 @@ Data_source::Data_source(const Data_source & r):
 defined(r.defined),
 file_name(r.file_name),
 source_type(r.source_type),
-source_type_orig(r.source_type_orig),
+source_type_user(r.source_type_user),
 filedata(r.filedata),
 pts(r.pts),
-pts_orig(r.pts_orig),
+pts_user(r.pts_user),
 phast_polygons(r.phast_polygons),
 tree(NULL),
 nni_unique(r.nni_unique),
@@ -77,7 +83,7 @@ columns(r.columns),
 attribute(r.attribute),
 box(r.box),
 coordinate_system(r.coordinate_system),
-coordinate_system_orig(r.coordinate_system_orig)
+coordinate_system_user(r.coordinate_system_user)
 {
 }
 Data_source & Data_source::operator=(const Data_source & rhs)
@@ -87,10 +93,10 @@ Data_source & Data_source::operator=(const Data_source & rhs)
 		this->defined = rhs.defined;
 		this->file_name = rhs.file_name;
 		this->source_type = rhs.source_type;
-		this->source_type_orig = rhs.source_type_orig;
+		this->source_type_user = rhs.source_type_user;
 		this->filedata = rhs.filedata;
 		this->pts = rhs.pts;
-		this->pts_orig = rhs.pts_orig;
+		this->pts_user = rhs.pts_user;
 		this->phast_polygons = rhs.phast_polygons;
 		this->tree = NULL;		// lazy initialization
 		//this->nni                    = rhs.nni;
@@ -100,7 +106,7 @@ Data_source & Data_source::operator=(const Data_source & rhs)
 		this->attribute = rhs.attribute;
 		this->box = rhs.box;
 		this->coordinate_system = rhs.coordinate_system;
-		this->coordinate_system_orig = rhs.coordinate_system_orig;
+		this->coordinate_system_user = rhs.coordinate_system_user;
 	}
 	return *this;
 }
@@ -112,7 +118,7 @@ Data_source::Init()
 	this->file_name.clear();
 	this->defined = false;
 	this->source_type = Data_source::NONE;
-	this->source_type_orig = Data_source::NONE;
+	this->source_type_user = Data_source::NONE;
 	this->attribute = -1;
 	zone_init(&this->box);
 	this->nni_unique = -1;
@@ -120,7 +126,7 @@ Data_source::Init()
 	this->tree = NULL;
 	this->tree3d = NULL;
 	this->coordinate_system = PHAST_Transform::NONE;
-	this->coordinate_system_orig = PHAST_Transform::NONE;
+	this->coordinate_system_user = PHAST_Transform::NONE;
 }
 
 bool Data_source::Read(std::istream & lines, bool read_num)
@@ -168,17 +174,17 @@ bool Data_source::Read(std::istream & lines, bool read_num)
 	if (cs == grid)
 	{
 		this->coordinate_system = PHAST_Transform::GRID;
-		this->coordinate_system_orig = PHAST_Transform::GRID;
+		this->coordinate_system_user = PHAST_Transform::GRID;
 	}
 	else if (cs == map)
 	{
 		this->coordinate_system = PHAST_Transform::MAP;
-		this->coordinate_system_orig = PHAST_Transform::MAP;
+		this->coordinate_system_user = PHAST_Transform::MAP;
 	}
 	else
 	{
 		this->coordinate_system = PHAST_Transform::NONE;
-		this->coordinate_system_orig = PHAST_Transform::NONE;
+		this->coordinate_system_user = PHAST_Transform::NONE;
 		error_msg
 			("Error reading coordinate system (GRID or MAP) for CONSTANT, POINTS, SHAPE, XYZ, or ArcRaster.",
 			 EA_CONTINUE);
@@ -190,7 +196,7 @@ bool Data_source::Read(std::istream & lines, bool read_num)
 		// constant
 	case 0:
 		this->source_type = Data_source::CONSTANT;
-		this->source_type_orig = Data_source::CONSTANT;
+		this->source_type_user = Data_source::CONSTANT;
 		double
 			elev;
 		if (!(lines >> elev))
@@ -208,7 +214,7 @@ bool Data_source::Read(std::istream & lines, bool read_num)
 		// points
 	case 1:
 		this->source_type = Data_source::POINTS;
-		this->source_type_orig = Data_source::POINTS;
+		this->source_type_user = Data_source::POINTS;
 		{
 			this->columns = Read_points(lines, this->pts);
 
@@ -234,7 +240,7 @@ bool Data_source::Read(std::istream & lines, bool read_num)
 		// Shape file
 	case 2:
 		this->source_type = Data_source::SHAPE;
-		this->source_type_orig = Data_source::SHAPE;
+		this->source_type_user = Data_source::SHAPE;
 		//if (!(lines >> this->file_name)) success = false;
 		//lines >> this->attribute;
 		success =
@@ -247,7 +253,7 @@ bool Data_source::Read(std::istream & lines, bool read_num)
 		// XYZ file
 	case 3:
 		this->source_type = Data_source::XYZ;
-		this->source_type_orig = Data_source::XYZ;
+		this->source_type_user = Data_source::XYZ;
 		//if (!(lines >> this->file_name)) success = false;
 		success =
 			Data_source::Read_filename(lines, false, this->file_name,
@@ -258,7 +264,7 @@ bool Data_source::Read(std::istream & lines, bool read_num)
 		// Arc Raster file
 	case 4:
 		this->source_type = Data_source::ARCRASTER;
-		this->source_type_orig = Data_source::ARCRASTER;
+		this->source_type_user = Data_source::ARCRASTER;
 		//if (!(lines >> this->file_name)) success = false;
 		success =
 			Data_source::Read_filename(lines, false, this->file_name,
@@ -316,24 +322,24 @@ bool Data_source::Read_mixture(std::istream & lines)
 	if (cs == grid)
 	{
 		this->coordinate_system = PHAST_Transform::GRID;
-		this->coordinate_system_orig = PHAST_Transform::GRID;
+		this->coordinate_system_user = PHAST_Transform::GRID;
 	}
 	else if (cs == map)
 	{
 		this->coordinate_system = PHAST_Transform::MAP;
-		this->coordinate_system_orig = PHAST_Transform::MAP;
+		this->coordinate_system_user = PHAST_Transform::MAP;
 	}
 	else if (j == 0)
 	{
 		this->coordinate_system = PHAST_Transform::GRID;
-		this->coordinate_system_orig = PHAST_Transform::GRID;
+		this->coordinate_system_user = PHAST_Transform::GRID;
 		no_coordinate_system = true;
 	}
 	else 
 	{
 		
 		this->coordinate_system = PHAST_Transform::NONE;
-		this->coordinate_system_orig = PHAST_Transform::NONE;
+		this->coordinate_system_user = PHAST_Transform::NONE;
 		error_msg ("Error reading coordinate system (GRID or MAP) for CONSTANT, POINTS, SHAPE, XYZ, or ArcRaster.",
 				EA_CONTINUE);
 			return (false);
@@ -346,7 +352,7 @@ bool Data_source::Read_mixture(std::istream & lines)
 		{
 			bool err_flag = false;
 			this->source_type = Data_source::CONSTANT;
-			this->source_type_orig = Data_source::CONSTANT;
+			this->source_type_user = Data_source::CONSTANT;
 			double elev;
 			if (no_coordinate_system)
 			{
@@ -372,7 +378,7 @@ bool Data_source::Read_mixture(std::istream & lines)
 		// points
 	case 1:
 		this->source_type = Data_source::POINTS;
-		this->source_type_orig = Data_source::POINTS;
+		this->source_type_user = Data_source::POINTS;
 		{
 			this->columns = Read_points(lines, this->pts);
 
@@ -391,7 +397,7 @@ bool Data_source::Read_mixture(std::istream & lines)
 		// XYZ file
 	case 2:
 		this->source_type = Data_source::XYZ;
-		this->source_type_orig = Data_source::XYZ;
+		this->source_type_user = Data_source::XYZ;
 		//if (!(lines >> this->file_name)) success = false;
 		success =
 			Data_source::Read_filename(lines, false, this->file_name,
@@ -671,6 +677,8 @@ Data_source::Tidy(const bool make_nni)
 		break;
 	case Data_source::CONSTANT:
 	case Data_source::POINTS:
+		this->pts_user = this->pts;
+		break;
 	case Data_source::NONE:
 		break;
 	}
@@ -724,6 +732,16 @@ std::vector < Point > &Data_source::Get_points()
 	   case Data_source::NONE:
 	 */
 	return (this->pts);
+}
+
+std::vector < Point > &Data_source::Get_user_points()
+{
+	return (this->pts_user);
+}
+
+void Data_source::Set_user_points(std::vector<Point> &pts)
+{
+	this->pts_user = pts;
 }
 
 bool Data_source::Make_polygons()
@@ -1025,8 +1043,7 @@ std::ostream & operator<<(std::ostream & os, const Data_source & ds)
 {
 	const char *coor_name[] = { " MAP ", " GRID ", " NONE " };
 
-// COMMENT: {10/29/2008 9:53:56 PM}  assert(ds.Get_coordinate_system() >= PHAST_Transform::MAP && ds.Get_coordinate_system() <= PHAST_Transform::NONE);
-	size_t cs = ds.coordinate_system_orig;
+	size_t cs = ds.coordinate_system_user;
 	assert(cs >= PHAST_Transform::MAP && cs <= PHAST_Transform::NONE);
 
 	switch (ds.source_type)
@@ -1054,8 +1071,8 @@ std::ostream & operator<<(std::ostream & os, const Data_source & ds)
 	case Data_source::POINTS:
 		os << "POINTS" << coor_name[cs] << std::endl;
 		{
-			std::vector < Point >::const_iterator citer = ds.pts.begin();
-			for (; citer != ds.pts.end(); ++citer)
+			std::vector < Point >::const_iterator citer = ds.pts_user.begin();
+			for (; citer != ds.pts_user.end(); ++citer)
 			{
 				os << "\t\t\t" << citer->x() << " " << citer->
 					y() << " " << citer->z() << std::endl;
@@ -1214,6 +1231,28 @@ PHAST_Transform::COORDINATE_SYSTEM Data_source::Get_coordinate_system(void) cons
 	return this->coordinate_system;
 }
 
+PHAST_Transform::COORDINATE_SYSTEM Data_source::Get_user_coordinate_system(void) const
+{
+	switch (this->source_type)
+	{
+	case Data_source::SHAPE:
+	case Data_source::ARCRASTER:
+	case Data_source::XYZ:
+		{
+			const Data_source *
+				ds =
+				const_cast <
+				Data_source * >(this)->Get_data_source_with_points();
+			return ds->Get_user_coordinate_system();
+		}
+		break;
+	default:
+		break;
+	}
+	return this->coordinate_system_user;
+}
+
+
 int
 Data_source::Get_columns(void)
 {
@@ -1269,3 +1308,151 @@ PHAST_polygon & Data_source::Get_phast_polygons(void)
 		 EA_CONTINUE);
 	return (this->phast_polygons);
 }
+
+bool Data_source::operator==(const Data_source &other) const
+{
+	if (this->defined != other.defined)
+	{
+		return false;
+	}
+	if (this->file_name != other.file_name)
+	{
+		return false;
+	}
+	if (this->source_type != other.source_type)
+	{
+		return false;
+	}
+// COMMENT: {12/6/2008 9:06:03 PM}	if (this->source_type_user != other.source_type_user)
+// COMMENT: {12/6/2008 9:06:03 PM}	{
+// COMMENT: {12/6/2008 9:06:03 PM}		return false;
+// COMMENT: {12/6/2008 9:06:03 PM}	}
+	if (this->filedata == 0 && other.filedata != 0)
+	{
+		return false;
+	}
+	if (this->filedata != 0 && other.filedata == 0)
+	{
+		return false;
+	}
+	if (*this->filedata != *other.filedata)
+	{
+		return false;
+	}
+	if (this->pts != other.pts)
+	{
+		return false;
+	}
+	if (this->pts_user != other.pts_user)
+	{
+		return false;
+	}
+	// TODO PHAST_polygon phast_polygons;
+	// TODO Polygon_tree *tree;
+	// TODO KDtree *tree3d;
+	if (this->columns != other.columns)
+	{
+		return false;
+	}
+	if (this->attribute != other.attribute)
+	{
+		return false;
+	}
+	if (this->box != other.box)
+	{
+		return false;
+	}
+	if (this->coordinate_system != other.coordinate_system)
+	{
+		return false;
+	}
+	if (this->coordinate_system_user != other.coordinate_system_user)
+	{
+		return false;
+	}
+	return true;
+}
+
+bool Data_source::operator!=(const Data_source &other) const
+{
+	return !(*this == other);
+}
+
+#if defined(__WPHAST__) && defined(_DEBUG)
+CDumpContext& operator<<(CDumpContext& dc, Data_source::DATA_SOURCE_TYPE st)
+{
+	switch (st)
+	{
+	case Data_source::SHAPE:
+		dc << "SHAPE";
+		break;
+	case Data_source::ARCRASTER:
+		dc << "ARCRASTER";
+		break;
+	case Data_source::XYZ:
+		dc << "XYZ";
+		break;
+	case Data_source::CONSTANT:
+		dc << "CONSTANT";
+		break;
+	case Data_source::POINTS:
+		dc << "POINTS";
+		break;
+	case Data_source::NONE:
+		dc << "NONE";
+		break;
+	default:
+		dc << "<ERROR/>";
+		break;
+	}
+	return dc;
+}
+CDumpContext& operator<<(CDumpContext& dc, PHAST_Transform::COORDINATE_SYSTEM cs)
+{
+	switch (cs)
+	{
+	case PHAST_Transform::MAP:
+		dc << "MAP";
+		break;
+	case PHAST_Transform::GRID:
+		dc << "GRID";
+		break;
+	case PHAST_Transform::NONE:
+		dc << "NONE";
+		break;
+	default:
+		dc << "COORDINATE_SYSTEM_ERROR";
+		break;
+	}
+	return dc;
+}
+
+CDumpContext& operator<<(CDumpContext& dc, const std::vector<Point>& pts)
+{
+	std::vector<Point>::const_iterator it = pts.begin();
+	for (; it != pts.end(); ++it)
+	{
+		Point pt(*it);
+		double *c = pt.get_coord();
+		dc << c[0] << ", " << c[1] << ", " << c[2] << "\n";
+	}
+	return dc;
+}
+
+void Data_source::Dump(CDumpContext& dc) const
+{
+	dc << "<Data_source>\n";
+	dc << "<defined>" << (this->defined ? "true" : "false") << "</defined>\n";
+	dc << "<source_type>" << this->source_type << "</source_type>\n";
+	dc << "<source_type_user>" << this->source_type_user << "</source_type_user>\n";
+	dc << "<pts coordinate_system=" << "\"" << this->coordinate_system << "\"" << ">\n";
+	dc << this->pts;
+	dc << "</pts>\n";
+	dc << "<pts_user coordinate_system=" << "\"" << this->coordinate_system_user << "\"" << ">\n";
+	dc << this->pts_user;
+	dc << "</pts_user>\n";
+	dc << "</Data_source>\n";
+	//this->source_type
+}
+
+#endif

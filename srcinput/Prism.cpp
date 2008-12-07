@@ -11,6 +11,12 @@
 #include <assert.h>
 std::list < Prism * >Prism::prism_list;
 
+#if defined(__WPHAST__) && defined(_DEBUG)
+#include <afx.h>
+#undef min
+#undef max
+#endif
+
 #define TRUE 1
 #define FALSE 0
 
@@ -753,6 +759,7 @@ Prism::Tidy()
 	{
 		this->perimeter.Set_defined(true);
 		this->perimeter.Set_coordinate_system(PHAST_Transform::GRID);
+		this->perimeter.Set_user_coordinate_system(PHAST_Transform::GRID);
 		this->perimeter.Set_source_type(Data_source::POINTS);
 		this->perimeter.Get_points().
 			push_back(Point
@@ -775,6 +782,7 @@ Prism::Tidy()
 	{
 		this->top.Set_defined(true);
 		this->top.Set_coordinate_system(PHAST_Transform::GRID);
+		this->top.Set_user_coordinate_system(PHAST_Transform::GRID);
 		this->top.Set_source_type(Data_source::CONSTANT);
 		this->top.Get_points().
 			push_back(Point
@@ -785,6 +793,7 @@ Prism::Tidy()
 	{
 		this->bottom.Set_defined(true);
 		this->bottom.Set_coordinate_system(PHAST_Transform::GRID);
+		this->bottom.Set_user_coordinate_system(PHAST_Transform::GRID);
 		this->bottom.Set_source_type(Data_source::CONSTANT);
 		this->bottom.Get_points().
 			push_back(Point
@@ -818,7 +827,6 @@ Prism::Tidy()
 struct zone *
 Prism::Set_bounding_box(void)
 {
-
 	std::vector < Point > m;
 	if (this->perimeter.Get_defined())
 	{
@@ -1112,3 +1120,54 @@ PHAST_Transform::COORDINATE_SYSTEM Prism::What_coordinates(void)
 	}
 	return PHAST_Transform::NONE;
 }
+
+bool Prism::operator==(const Prism &other) const
+{
+	if (this->type != other.type)
+	{
+		return false;
+	}
+	if (this->box != other.box)
+	{
+		return false;
+	}
+	if (this->perimeter != other.perimeter)
+	{
+		return false;
+	}
+	if (this->prism_dip != other.prism_dip)
+	{
+		return false;
+	}
+	if (this->bottom != other.bottom)
+	{
+		return false;
+	}
+	if (this->top != other.top)
+	{
+		return false;
+	}
+	return true;
+}
+
+bool Prism::operator!=(const Prism &other) const
+{
+	return !(*this == other);
+}
+
+#if defined(__WPHAST__) && defined(_DEBUG)
+void Prism::Dump(CDumpContext& dc) const
+{
+	dc << "<Prism>\n";
+	dc << "<top>\n";
+	this->top.Dump(dc);
+	dc << "</top>\n";
+	dc << "<perimeter>\n";
+	this->perimeter.Dump(dc);
+	dc << "</perimeter>\n";
+	dc << "<bottom>\n";
+	this->bottom.Dump(dc);
+	dc << "</bottom>\n";
+	dc << "</Prism>\n";
+}
+#endif

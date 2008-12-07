@@ -66,6 +66,9 @@ class Filedata
 	// data
 	static std::map < std::string, Filedata * >file_data_map;
 
+	bool operator==(const Filedata &other) const;
+	bool operator!=(const Filedata &other) const;
+
   protected:
 	// Data
 	// Because units may be converted, the Filedata does not have a bounding box

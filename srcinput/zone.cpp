@@ -62,3 +62,21 @@ bool zone::Point_in_xy_zone(Point p)
 		return true;
 	return false;
 }
+
+bool zone::operator==(const zone &other) const
+{
+	return ( 
+		this->zone_defined == other.zone_defined &&
+		this->x1           == other.x1 &&
+		this->x2           == other.x2 &&
+		this->y1           == other.y1 &&
+		this->y2           == other.y2 &&
+		this->z1           == other.z1 &&
+		this->z2           == other.z2
+		);
+}
+
+bool zone::operator!=(const zone &other) const
+{
+	return !(*this == other);
+}

@@ -17,8 +17,8 @@ class Cube:public Polyhedron
 	};
 
 	// constructors
-	  Cube(void);
-	  Cube(const struct zone *zone_ptr);
+	  Cube(PHAST_Transform::COORDINATE_SYSTEM cs = PHAST_Transform::GRID);
+	  Cube(const struct zone *zone_ptr, PHAST_Transform::COORDINATE_SYSTEM cs = PHAST_Transform::GRID);
 
 	// destructor
 	  virtual ~ Cube(void);
@@ -43,18 +43,18 @@ class Cube:public Polyhedron
 	{
 		this->coordinate_system = c;
 	}
-	  PHAST_Transform::COORDINATE_SYSTEM Get_coordinate_system_orig() const
+	  PHAST_Transform::COORDINATE_SYSTEM Get_user_coordinate_system() const
 	{
-		return this->coordinate_system_orig;
+		return this->coordinate_system_user;
 	}
-	void Set_coordinate_system_orig(PHAST_Transform::COORDINATE_SYSTEM c)
+	void Set_user_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM c)
 	{
-		this->coordinate_system_orig = c;
+		this->coordinate_system_user = c;
 	}
   protected:
 	virtual void printOn(std::ostream & os) const;
 	PHAST_Transform::COORDINATE_SYSTEM coordinate_system;
-	PHAST_Transform::COORDINATE_SYSTEM coordinate_system_orig;
+	PHAST_Transform::COORDINATE_SYSTEM coordinate_system_user;
 };
 Cube::PLANE_INTERSECTION Segment_intersect_plane(const double a,
 												 const double b,

@@ -41,6 +41,7 @@ Copyright: (C) Advanced Interfaces Group,
 #include <stdlib.h>
 #include <float.h>
 #include <math.h>
+#include "wphast.h"  /* must be last */
 
 
 /*

@@ -29,14 +29,6 @@ static char const svnid[] =
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#if defined(__WPHAST__) && !defined(_DEBUG)
-#include "../phqalloc.h"
-#else
-#ifdef _DEBUG
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-#endif
-#endif
 #include <ctype.h>
 #include <math.h>
 #include <errno.h>
@@ -583,10 +575,6 @@ struct cunits
 	cunits(void);
 	 ~
 	cunits(void);
-//  units(const units& src);
-// Assignment Operators
-	cunits &
-	operator=(const cunits & rhs);
 // Utilities
 	void
 	undefine(void);
@@ -993,5 +981,6 @@ EXTERNAL std::map < std::string, int >
 
 
 #include "inputproto.h"
+#include "wphast.h"  /* must be last */
 
 #endif /* _INC_HSTINPT */

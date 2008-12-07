@@ -5,10 +5,10 @@
 class Wedge:public Cube
 {
   public:
-	Wedge(void);
+	Wedge(PHAST_Transform::COORDINATE_SYSTEM cs = PHAST_Transform::GRID);
 
 	//template<class InputIterator>
-	  Wedge(const struct zone *zone_ptr, std::string & orient);
+	  Wedge(const struct zone *zone_ptr, std::string & orient, PHAST_Transform::COORDINATE_SYSTEM cs = PHAST_Transform::GRID);
 
 	  virtual ~ Wedge(void);
 

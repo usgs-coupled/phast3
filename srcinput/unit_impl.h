@@ -10,7 +10,7 @@ struct cunit
 	int defined;
 
 // Constructors
-	  cunit(void);
+// COMMENT: {12/2/2008 5:00:07 PM}	  cunit(void);
 	  cunit(const char *si);
 	 ~cunit(void);
 	  cunit(const cunit & src);

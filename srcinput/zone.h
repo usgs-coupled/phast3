@@ -24,7 +24,8 @@ struct zone
 	// methods
 	bool Point_in_zone(Point p);
 	bool Point_in_xy_zone(Point p);
-
+	bool operator==(const zone &other) const;
+	bool operator!=(const zone &other) const;
 };
 
 #endif /* _INC_ZONE */

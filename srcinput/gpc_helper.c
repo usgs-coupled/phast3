@@ -8,14 +8,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "PHAST_polygon.h"
-#if defined(__WPHAST__) && !defined(_DEBUG)
-#include "../phqalloc.h"
-#else
-#ifdef _DEBUG
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-#endif
-#endif
+#include "wphast.h"  /* must be last */
 extern void malloc_error(void);
 #ifndef PI
 extern double PI;

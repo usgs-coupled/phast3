@@ -534,3 +534,26 @@ PHAST_Segment::PHAST_Segment(Point p1, Point p2)
 PHAST_Segment::~PHAST_Segment(void)
 {
 }
+
+bool
+Point::operator==(const Point &other) const
+{
+	if (this->v != other.v)
+	{
+		return false;
+	}
+	for (size_t i = 0; i < 3; ++i)
+	{
+		if (this->coord[i] != other.coord[i])
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+bool
+Point::operator!=(const Point &other) const
+{
+	return !(*this == other);
+}
