@@ -233,7 +233,7 @@ process_file_names(int argc, char *argv[])
  *   Open file for echo output
  */
 	strcpy(name, prefix);
-	strcat(name, ".log");
+	strcat(name, ".log.txt");
 	echo_file = fopen(name, "w");
 	if (echo_file == NULL)
 	{
