@@ -356,7 +356,7 @@ PHREEQC_MAIN(int *solute, char *chemistry_name, char *database_name,
 #endif
 	/*
 	 *  open echo file, searches for end of phastinput data
-	 *  Must precede MergeInit, output_open could delete .log file
+	 *  Must precede MergeInit, output_open could delete .log.txt file
 	 *  on mpi version.
 	 */
 	open_echo(prefix, mpi_myself);
@@ -365,7 +365,7 @@ PHREEQC_MAIN(int *solute, char *chemistry_name, char *database_name,
 	 */
 #if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
 	output_close(OUTPUT_ECHO);
-	MergeInit(prefix, prefix_l, *solute);	/* opens .O.chem,  .xyz.chem, .log */
+	MergeInit(prefix, prefix_l, *solute);	/* opens .chem.txt,  .chem.xyz.tsv, .log.txt */
 # else
 	open_output_file(prefix, *solute);
 #endif

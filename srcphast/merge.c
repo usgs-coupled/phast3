@@ -452,14 +452,14 @@ MergeInit(char *prefix, int prefix_l, int solute)
 		error_string[prefix_l] = '\0';
 		string_trim(error_string);
 
-		sprintf(default_name, "%s.O.chem", error_string);
+		sprintf(default_name, "%s.chem.txt", error_string);
 		FileInfo_open(&s_fiOutput, default_name, "w");
 		strcpy(output_file_name, default_name);
 
-		sprintf(default_name, "%s.xyz.chem", error_string);
+		sprintf(default_name, "%s.chem.xyz.tsv", error_string);
 		FileInfo_open(&s_fiPunch, default_name, "w");
 
-		sprintf(default_name, "%s.log", error_string);
+		sprintf(default_name, "%s.log.txt", error_string);
 		FileInfo_open(&s_fiEcho, default_name, "a");
 	}
 

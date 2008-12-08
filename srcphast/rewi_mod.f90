@@ -314,12 +314,12 @@ CONTAINS
                'X1         X2         Y1         Y2         ', 'Z1         Z2'/tr1,95('-'))
        ELSE IF(icall == 8) THEN
           WRITE(furde,2008)
-2008      FORMAT(/tr5,'** Mesh sub zones for .O.chem file ** ',  &
+2008      FORMAT(/tr5,'** Mesh sub zones for .chem.txt file ** ',  &
                '(read echo,[3.xxxx])'/ tr35,'Region',tr30,'Print Code'/tr6,  &
                'X1         X2         Y1         Y2         ', 'Z1         Z2'/tr1,95('-'))
        ELSE IF(icall == 9) THEN
           WRITE(furde,2009)
-2009      FORMAT(/tr5,'** Mesh sub zones for .xyz.chem file ** ',  &
+2009      FORMAT(/tr5,'** Mesh sub zones for .chem.xyz.tsv file ** ',  &
                '(read echo,[3.xxxx])'/ tr35,'Region',tr30,'Print Code'/tr6,  &
                'X1         X2         Y1         Y2         ', 'Z1         Z2'/tr1,95('-'))
        END IF

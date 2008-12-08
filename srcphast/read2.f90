@@ -865,7 +865,7 @@ SUBROUTINE read2
      icall = 8
      ! ... print conrol index for concentrations on a sub-grid
      CALL rewi(iprint_chem, icall, 125)
-     ! ... Print control index for .xyz.chem concentrations on a sub-grid
+     ! ... Print control index for .chem.xyz.tsv concentrations on a sub-grid
      icall = 9
      CALL rewi(iprint_xyz, icall, 125)
   ENDIF

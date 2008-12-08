@@ -309,10 +309,10 @@ SUBROUTINE read3
   pri_well_timser = -pri_well_timser
   print_restart%print_interval = -print_restart%print_interval
   IF (solute) THEN
-     ! ... Print control index for .O.chem concentrations on a sub-grid
+     ! ... Print control index for .chem.txt concentrations on a sub-grid
      icall = 8
      CALL rewi(iprint_chem, icall, 125)
-     ! ... Print control index for .xyz.chem concentrations on a sub-grid
+     ! ... Print control index for .chem.xyz.tsv concentrations on a sub-grid
      icall = 9
      CALL rewi(iprint_xyz, icall, 125)
   ENDIF

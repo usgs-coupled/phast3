@@ -861,7 +861,7 @@ open_echo(const char *prefix, int local_mpi_myself)
 	strcpy(token1, prefix);
 	ptr = token1;
 	copy_token(default_name, &ptr, &l);
-	strcat(default_name, ".log");
+	strcat(default_name, ".log.txt");
 	if (local_mpi_myself == 0)
 	{
 		if ((file_ptr = fopen(default_name, "r")) != NULL)
@@ -901,7 +901,7 @@ open_output_file(char *prefix, int solute)
 	/* ouput file */
 	ptr = prefix;
 	copy_token(output_file_name, &ptr, &l);
-	strcat(output_file_name, ".O.chem");
+	strcat(output_file_name, ".chem.txt");
 	if ((output = fopen(output_file_name, "w")) == NULL)
 	{
 		sprintf(error_string, "Could not open output file, %s",
@@ -925,7 +925,7 @@ open_punch_file(char *prefix, int solute)
 	/* ouput file */
 	ptr = prefix;
 	copy_token(token, &ptr, &l);
-	strcat(token, ".xyz.chem");
+	strcat(token, ".chem.xyz.tsv");
 	if ((punch_file = fopen(token, "w")) == NULL)
 	{
 		sprintf(error_string, "Could not open punch file, %s", token);

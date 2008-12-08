@@ -37,12 +37,12 @@ SUBROUTINE openf
   REWIND fuins
   f3name = TRIM(f3name)
   length = LEN_TRIM(f3name)
-  IF (LEN_TRIM(f3name(1:length)//'.xyz.comps') .GT. LEN(fname)) THEN
-    ! assuming .xyz.comps is the longest suffix
+  IF (LEN_TRIM(f3name(1:length)//'.comps.xyz.tsv') .GT. LEN(fname)) THEN
+    ! assuming .comps.xyz.tsv is the longest suffix
     WRITE(*,*) 'Prefix too long:' , f3name(1:length)
     STOP "Stopping."
   ENDIF
-  fname=f3name(1:length)//'.O.probdef'
+  fname=f3name(1:length)//'.probdef.txt'
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
@@ -53,7 +53,7 @@ SUBROUTINE openf
   ENDIF
 !  REWIND fulp
   IF(print_rde) THEN
-     fname=f3name(1:length)//'.O.rde'
+     fname=f3name(1:length)//'.rde.txt'
 #if defined(USE_MPI)
      CALL get_mpi_filename(fname)
 #endif
@@ -63,7 +63,7 @@ SUBROUTINE openf
         WRITE(*,*) 'ERROR: Error opening file ', fname
      ENDIF
   ENDIF
-  fname=f3name(1:length)//'.O.head'
+  fname=f3name(1:length)//'.head.txt'
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
@@ -72,7 +72,7 @@ SUBROUTINE openf
     lerror = .TRUE.
     WRITE(*,*) 'ERROR: Error opening file ', fname
   ENDIF
-  fname=f3name(1:length)//'.O.comps'
+  fname=f3name(1:length)//'.comps.txt'
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
@@ -81,7 +81,7 @@ SUBROUTINE openf
     lerror = .TRUE.
     WRITE(*,*) 'ERROR: Error opening file ', fname
   ENDIF
-  fname=f3name(1:length)//'.O.vel'
+  fname=f3name(1:length)//'.vel.txt'
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
@@ -90,7 +90,7 @@ SUBROUTINE openf
     lerror = .TRUE.
     WRITE(*,*) 'ERROR: Error opening file ', fname
   ENDIF
-  fname=f3name(1:length)//'.O.wel'
+  fname=f3name(1:length)//'.wel.txt'
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
@@ -99,7 +99,7 @@ SUBROUTINE openf
     lerror = .TRUE.
     WRITE(*,*) 'ERROR: Error opening file ', fname
   ENDIF
-  fname=f3name(1:length)//'.O.bal'
+  fname=f3name(1:length)//'.bal.txt'
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
@@ -108,7 +108,7 @@ SUBROUTINE openf
     lerror = .TRUE.
     WRITE(*,*) 'ERROR: Error opening file ', fname
   ENDIF
-  fname=f3name(1:length)//'.O.kd'
+  fname=f3name(1:length)//'.kd.txt'
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
@@ -117,7 +117,7 @@ SUBROUTINE openf
     lerror = .TRUE.
     WRITE(*,*) 'ERROR: Error opening file ', fname
   ENDIF
-  fname=f3name(1:length)//'.O.bcf'
+  fname=f3name(1:length)//'.bcf.txt'
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
@@ -126,7 +126,7 @@ SUBROUTINE openf
     lerror = .TRUE.
     WRITE(*,*) 'ERROR: Error opening file ', fname
   ENDIF
-  fname=f3name(1:length)//'.O.zf'
+  fname=f3name(1:length)//'.zf.txt'
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
@@ -135,7 +135,7 @@ SUBROUTINE openf
     lerror = .TRUE.
     WRITE(*,*) 'ERROR: Error opening file ', fname
   ENDIF
-  fname=f3name(1:length)//'.tsc.zf'
+  fname=f3name(1:length)//'.zf.tsv'
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
@@ -147,7 +147,7 @@ SUBROUTINE openf
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
-  fname=f3name(1:length)//'.xyz.comps'
+  fname=f3name(1:length)//'.comps.xyz.tsv'
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
@@ -156,7 +156,7 @@ SUBROUTINE openf
     lerror = .TRUE.
     WRITE(*,*) 'ERROR: Error opening file ', fname
   ENDIF
-  fname=f3name(1:length)//'.xyz.head'
+  fname=f3name(1:length)//'.head.xyz.tsv'
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
@@ -165,7 +165,7 @@ SUBROUTINE openf
     lerror = .TRUE.
     WRITE(*,*) 'ERROR: Error opening file ', fname
   ENDIF
-  fname=f3name(1:length)//'.xyz.vel'
+  fname=f3name(1:length)//'.vel.xyz'
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
@@ -174,7 +174,7 @@ SUBROUTINE openf
     lerror = .TRUE.
     WRITE(*,*) 'ERROR: Error opening file ', fname
   ENDIF
-  fname=f3name(1:length)//'.xyz.wel'
+  fname=f3name(1:length)//'.wel.xyz.tsv'
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
