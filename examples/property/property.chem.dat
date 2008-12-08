@@ -17,7 +17,7 @@ PRINT
         -reset false
 	-warnings 2
 SELECTED_OUTPUT
-	-file simple.sel
+	-file property.sel
 	-reset                false
 USER_PUNCH
         -headings Distance Time Na Cl Br

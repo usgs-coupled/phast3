@@ -24,9 +24,9 @@ ifeq ($(CFG), CYGWIN)
   RUN=$(TEST)/runmpich
 endif
 
-SERIAL = decay diffusion1d diffusion2d disp2d ex3 kindred4.4 leaky leakyx leakyz linear_bc linear_ic ex4 notch phrqex11 ex1 radial river unconf well ex2 free ex4restart print_check_ss print_check_transient ex4_start_time mass_balance simple ex4_noedl ex4_ddl ex4_transient leakysurface flux_patches patches_lf zb
+SERIAL = decay diffusion1d diffusion2d disp2d ex3 kindred4.4 leaky leakyx leakyz linear_bc linear_ic ex4 notch phrqex11 ex1 radial river unconf well ex2 free ex4restart print_check_ss print_check_transient ex4_start_time mass_balance simple ex4_noedl ex4_ddl ex4_transient leakysurface flux_patches patches_lf zf property
 
-PARALLEL =  decay_parallel diffusion1d_parallel diffusion2d_parallel disp2d_parallel ex3_parallel kindred4.4_parallel leaky_parallel leakyx_parallel leakyz_parallel linear_bc_parallel linear_ic_parallel ex4_parallel notch_parallel phrqex11_parallel ex1_parallel radial_parallel river_parallel unconf_parallel well_parallel ex2_parallel free_parallel ex4restart_parallel print_check_ss_parallel print_check_transient_parallel  ex4_start_time_parallel mass_balance_parallel simple_parallel ex4_noedl_parallel ex4_ddl_parallel ex4_transient_parallel leakysurface_parallel flux_patches_parallel patches_lf_parallel zb_parallel
+PARALLEL =  decay_parallel diffusion1d_parallel diffusion2d_parallel disp2d_parallel ex3_parallel kindred4.4_parallel leaky_parallel leakyx_parallel leakyz_parallel linear_bc_parallel linear_ic_parallel ex4_parallel notch_parallel phrqex11_parallel ex1_parallel radial_parallel river_parallel unconf_parallel well_parallel ex2_parallel free_parallel ex4restart_parallel print_check_ss_parallel print_check_transient_parallel  ex4_start_time_parallel mass_balance_parallel simple_parallel ex4_noedl_parallel ex4_ddl_parallel ex4_transient_parallel leakysurface_parallel flux_patches_parallel patches_lf_parallel zf_parallel property_parallel
 
 CLEAN_SERIAL = decay_clean diffusion1d_clean diffusion2d_clean disp2d_clean ex3_clean \
 	kindred4.4_clean leaky_clean leakyx_clean leakyz_clean \
@@ -946,28 +946,55 @@ well_clean_parallel:
 #
 # zone budget
 #
-zb: zb_clean
+zf: zf_clean
 	echo ; 
-	echo ============= zb
+	echo ============= zf
 	echo ; 
-	cd $(TEST)/zb;
-	cd $(TEST)/zb; $(PHAST_INPUT) zb; time $(PHAST)
-	echo ============= Done zb
+	cd $(TEST)/zf;
+	cd $(TEST)/zf; $(PHAST_INPUT) zf; time $(PHAST)
+	echo ============= Done zf
 
-zb_parallel: zb_clean_parallel
+zf_parallel: zf_clean_parallel
 	echo ; 
-	echo ============= zb Parallel
+	echo ============= zf Parallel
 	echo ; 
-	$(RUN) zb
-	echo ============= Done zb Parallel
+	$(RUN) zf
+	echo ============= Done zf Parallel
 
-zb_clean:
-	cd $(TEST)/zb; $(CLEAN_CMD)
+zf_clean:
+	cd $(TEST)/zf; $(CLEAN_CMD)
 
-zb_clean_parallel:
-	@if [ -d $(TEST)/zb/0 ]; \
+zf_clean_parallel:
+	@if [ -d $(TEST)/zf/0 ]; \
 	  then \
-	  find $(TEST)/zb/0  -maxdepth 1 -type f  | xargs rm -f; \
+	  find $(TEST)/zf/0  -maxdepth 1 -type f  | xargs rm -f; \
+	fi
+
+#
+# Property definitions
+#
+property: property_clean
+	echo ; 
+	echo ============= property
+	echo ; 
+	cd $(TEST)/property;
+	cd $(TEST)/property; $(PHAST_INPUT) property; time $(PHAST)
+	echo ============= Done property
+
+property_parallel: property_clean_parallel
+	echo ; 
+	echo ============= property Parallel
+	echo ; 
+	$(RUN) property
+	echo ============= Done property Parallel
+
+property_clean:
+	cd $(TEST)/property; $(CLEAN_CMD)
+
+property_clean_parallel:
+	@if [ -d $(TEST)/property/0 ]; \
+	  then \
+	  find $(TEST)/property/0  -maxdepth 1 -type f  | xargs rm -f; \
 	fi
 
 clean: clean_serial clean_parallel

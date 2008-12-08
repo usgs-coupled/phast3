@@ -1,0 +1,207 @@
+Running PHASTINPUT.
+
+Processing flow and transport data file.
+
+	TITLE
+	.       3D analytic, continuous injection, 4 species chain decay
+	.       Sun, Peterson, Clement (1999) J. Cont. Hyd., Example 6.3
+	.       Documentation compares PHAST with chain decay from 
+	.       Sun and others combined with Wexler (TWRI, 1992) solution 
+	.       to patch source 
+	SOLUTE_TRANSPORT                            true
+	STEADY_FLOW true
+	UNITS
+	        time                               day
+	        horizontal                         m
+	        vertical                           m
+	        head                               m
+	        hydraulic_conductivity             m/d     
+	        specific_storage                   1/m
+	        dispersivity                       m
+	GRID
+	        uniform X  0.0    100    26        # 4.0  m spacing
+	        uniform Y  0.0    20.5   2
+	        overlay_uniform Y                  
+	                    0.5    19.5   20        # 1.0  m spacing
+	        uniform Z  0.0    12.5   2
+	        overlay_uniform Z
+	                    0.5    11.5   12        # 1.0  m spacing
+	        print_orientation XY
+	MEDIA
+	        zone   0 0 0 100 41 25
+	                kx                         2
+	                ky                         2
+	                kz                         2
+	                porosity                   0.1
+	                storage                    0
+	                longitudinal_dispersivity  1.5
+	                horizontal_dispersivity    0.45
+	                vertical_dispersivity      0.15
+	FREE_SURFACE_BC false
+	SPECIFIED_HEAD_BC
+	        zone   0 0 0 0 41 25
+	                head                       0   1
+	                fixed_solution_composition             0   1
+	        zone   0 15 10 0 26 15
+	                fixed_solution_composition             0   2
+	        zone   100 0 0 100 41 25
+	                head                       0   0
+	                associated_solution_composition        0   1
+	HEAD_IC
+	        zone   0 0 0 100 41 25
+	                head   X 1.0 0.0 0.0 100.0
+	CHEMISTRY_IC
+	        zone   0 0 0 100 41 25
+	                solution                   1
+	SOLUTION_METHOD
+	        iterative_solver                          true
+	        tolerance                          1e-14
+	        space_differencing                              0.5
+	        time_differencing                               0.5
+	        cross_dispersion                   false
+	PRINT_FREQUENCY
+	        0
+	        hdf_chemistry                      40 day
+	        velocity                                40 day
+	        xyz_chemistry                      40 day
+	        xyz_head                           40 day
+	        xyz_velocity                       40 day
+		zone_budget                        40 day
+	TIME_CONTROL
+	        time_step                          0   10  day 
+	        time_end                           40 day
+	ZONE_BUDGET 11  X = 50 to 100
+		    zone   50 0 0 100 20.5 12.5
+	END             
+WARNING: Horizontal, vertical, and longitudinal dispersivities are not equal for at least one element.
+	However, cross-dispersion calculation is disabled (-cross_dispersion in SOLUTION_METHOD).
+
+PHASTINPUT done.
+
+Running PHAST.
+
+Output file:    zf.chem.txt
+Chemistry file: zf.chem.dat
+Database file:  phast.dat
+
+Running PHREEQC for initial conditions.
+
+Processing database file.
+	SOLUTION_MASTER_SPECIES
+	SOLUTION_SPECIES
+	PHASES
+	EXCHANGE_MASTER_SPECIES
+	EXCHANGE_SPECIES
+	SURFACE_MASTER_SPECIES
+	SURFACE_SPECIES
+	RATES
+	END
+
+Processing chemical data file.
+	SOLUTION_MASTER_SPECIES
+	        [A]   [A]   1       1       1
+	        [B]   [B]   1       1       1
+	        [C]   [C]   1       1       1
+	        [D]   [D]   1       1       1
+	SOLUTION_SPECIES
+	SOLUTION 1
+	END
+	SOLUTION 2
+	END
+	RATES
+	END
+	END
+	SELECTED_OUTPUT
+	USER_PUNCH
+	END
+PHREEQC done.
+..       3D analytic, continuous injection, 4 species chain decay
+..       Sun, Peterson, Clement (1999) J. Cont. Hyd., Example 6.3
+Reading static data for flow and transport simulation
+Linear solver array dimension requirement (D4ZGCG iterative solver)... NSTSLV   573356 elements
+Primary storage requirement (D4ZGCG iterative solver)................. NPRIST    76076 elements
+Overhead storage requirement (D4ZGCG iterative solver)................ NOHST .  497280 elements
+                    *** Calculation Information ***
+          Row scaling only, using L-inf norm, will be done
+          Direction index for d4 zig-zag renumbering ............ IDIR..    1
+          Incomplete LU [f] or modified ILU [t] factorization ... MILU..     T
+          Number of search directions before restart ............ NSDR..   20
+          Tolerance on iterative solution ....................... EPSSLV 1.0E-14
+
+Beginning flow calculation for steady-state i.c.
+Reading transient data for simulation: Set  1
+Automatic Time Step Control Parameters for Steady Flow
+Maximum pressure change allowed per time step.................... DPTAS    3.68E+04  (Pa )
+Minimum time step required ...................................... DTIMMN   1.00E-02  (d  )
+Maximum time step allowed ....................................... DTIMMX   1.00E+04(d  )
+
+Beginning steady state time step no.      1
+     Maximum change in potentiometric head ..    9.3649E-16     (m) at location (  48.0    ,  20.5    ,  11.5    )(m)
+     Fractional flow residual ...............   -1.5207E-15
+
+Done with steady-state flow.
+Equilibration of cells for initial conditions.
+     Time at which next set of transient parameters will be read .......... TIMCHG   40.0      (d)
+
+Beginning transient simulation.
+
+Beginning time step no.      1
+     Beginning solute-transport calculation.
+          H
+          O
+          [A]
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     1
+     Time ..................................................    10.0000     (d)
+
+Beginning time step no.      2
+     Beginning solute-transport calculation.
+          H
+          O
+          [A]
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     2
+     Time ..................................................    20.0000     (d)
+
+Beginning time step no.      3
+     Beginning solute-transport calculation.
+          H
+          O
+          [A]
+          Charge
+     Beginning chemistry calculation.
+     End of Time Step No.     3
+     Time ..................................................    30.0000     (d)
+
+Beginning time step no.      4
+     Current time step length ...................................    10.0     (d)
+     Beginning solute-transport calculation.
+          H
+          No. of solver iterations, Relative residual:    6      3.3677442E-16
+          O
+          No. of solver iterations, Relative residual:    6      1.7407626E-16
+          [A]
+          No. of solver iterations, Relative residual:    6      1.7145559E-16
+          Charge
+          No. of solver iterations, Relative residual:    6      1.7335658E-16
+     Beginning chemistry calculation.
+          Total cells: 8008
+          Number of cells with same aqueous model: 7416
+          Total iterations all cells: 5074
+          Number of cells with zero iterations: 6558
+          Maximum iterations for one cell: 11
+
+     End of Time Step No.     4
+     Time ..................................................    40.0000     (d)
+     Maximum change in potentiometric head   9.3649E-16      (m ) at location (  48.0    ,  20.5    ,  11.5    )(m)
+     Maximum change in H .................. -5.1935E-12 (mol/kgw) at location (  8.00    ,  20.5    ,  12.5    )(m)
+     Maximum change in O ..................  7.4204E-05 (mol/kgw) at location (  8.00    ,  20.5    ,  12.5    )(m)
+     Maximum change in [A] ................  1.5827E-04 (mol/kgw) at location (  8.00    ,  20.5    ,  12.5    )(m)
+     Maximum change in Charge .............  3.3863E-13 (mol/kgw) at location (  8.00    ,  20.5    ,  12.5    )(m)
+Done with transient simulation.
+
+                             ***** Simulation Completed *****
+     Last time value calculated ......................................  40.00     (d)
+     Last time step index ............................................       4
