@@ -5212,6 +5212,9 @@ read_property(char *ptr, const char **opt_list, int count_opt_list, int *opt,
 				*opt = get_option(opt_list, count_opt_list, &next_char);
 			}
 			break;		
+		default:
+			error_msg("Unknown option for PROP_MIXTURE", STOP);
+			break;		
 		}
 
 	}
