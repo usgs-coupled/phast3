@@ -66,11 +66,11 @@ Processing flow and transport data file.
 	        xyz_chemistry                      40 day
 	        xyz_head                           40 day
 	        xyz_velocity                       40 day
-		zone_budget                        40 day
+		zone_flows                         40 day
 	TIME_CONTROL
 	        time_step                          0   10  day 
 	        time_end                           40 day
-	ZONE_BUDGET 11  X = 50 to 100
+	ZONE_FLOWS 11  X = 50 to 100
 		    zone   50 0 0 100 20.5 12.5
 	END             
 WARNING: Horizontal, vertical, and longitudinal dispersivities are not equal for at least one element.

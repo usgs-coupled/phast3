@@ -5,7 +5,7 @@ TITLE
 .       Sun and others combined with Wexler (TWRI, 1992) solution 
 .       to patch source 
 SOLUTE_TRANSPORT                            true
-#STEADY_FLOW true
+STEADY_FLOW true
 UNITS
         -time                               day
         -horizontal                         m
