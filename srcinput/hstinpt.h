@@ -655,6 +655,8 @@ struct key
 	,{"zone_flow_rates", 0}
 	,{"zone_flowrate", 0}
 	,{"zone_flowrates", 0}
+	,{"zone_flow", 0}
+	,{"zone_flows", 0}
 };
 int
 	NKEYS = (sizeof(keyword) / sizeof(struct key));	/* Number of valid keywords */

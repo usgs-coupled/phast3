@@ -181,6 +181,8 @@ read_input(void)
 	  36	"zone_flow_rates"
 	  37	"zone_flowrate"
 	  38	"zone_flowrates"
+	  39    "zone_flow"
+	  40    "zone_flows"
  */
 	for (;;)
 	{
@@ -280,6 +282,8 @@ read_input(void)
 		case 36:				/* zone_flow_rates */
 		case 37:				/* zone_flowrate */
 		case 38:				/* zone_flowrates */
+		case 39:				/* zone_flow */
+		case 40:				/* zone_flows */
 			read_zone_budget();
 			break;
 		}
@@ -6920,9 +6924,12 @@ read_print_frequency(void)
 		"restart_file",			/* 55 */
 		"print_default_end_of_period",	/* 56 */
 		"end_of_period_default"	/* 57 */
-			, "zone_budget"		/* 58 */
+		, "zone_budget"		/* 58 */
+		, "zone_flow"		/* 59 */
+		, "zone_flow_rates"	/* 60 */
+		, "zone_flows"		/* 61 */
 	};
-	int count_opt_list = 59;
+	int count_opt_list = 62;
 /*
  *   Read flags:
  */
@@ -7312,7 +7319,11 @@ read_print_frequency(void)
 				error_msg("No start time for print frequency data", CONTINUE);
 			}
 			break;
+
 		case 58:				/* zone_budget */
+		case 59:				/* zone_flow */
+		case 60:				/* zone_flow_rates */
+		case 61:				/* zone_flows */
 			if (current_time.value_defined == TRUE)
 			{
 				property_time_ptr =
