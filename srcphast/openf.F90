@@ -165,7 +165,7 @@ SUBROUTINE openf
     lerror = .TRUE.
     WRITE(*,*) 'ERROR: Error opening file ', fname
   ENDIF
-  fname=f3name(1:length)//'.vel.xyz'
+  fname=f3name(1:length)//'.vel.xyz.tsv'
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
