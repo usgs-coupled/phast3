@@ -1,4 +1,4 @@
-Output file:    phrqex11.O.chem
+Output file:    phrqex11.chem.txt
 Chemistry file: phrqex11.chem.dat
 Database file:  phast.dat
 

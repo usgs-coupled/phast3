@@ -1,4 +1,4 @@
-Output file:    print_check_transient.O.chem
+Output file:    print_check_transient.chem.txt
 Chemistry file: print_check_transient.chem.dat
 Database file:  phast.dat
 

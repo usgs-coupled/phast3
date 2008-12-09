@@ -1,4 +1,4 @@
-Output file:    disp2d.O.chem
+Output file:    disp2d.chem.txt
 Chemistry file: disp2d.chem.dat
 Database file:  phast.dat
 

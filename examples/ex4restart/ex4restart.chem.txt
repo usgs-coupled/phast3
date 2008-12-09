@@ -1,4 +1,4 @@
-Output file:    ex4restart.O.chem
+Output file:    ex4restart.chem.txt
 Chemistry file: ex4restart.chem.dat
 Database file:  phast.dat
 

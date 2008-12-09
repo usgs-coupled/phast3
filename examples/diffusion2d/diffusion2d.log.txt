@@ -72,7 +72,7 @@ PHASTINPUT done.
 
 Running PHAST.
 
-Output file:    diffusion2d.O.chem
+Output file:    diffusion2d.chem.txt
 Chemistry file: diffusion2d.chem.dat
 Database file:  phast.dat
 

@@ -3,12 +3,12 @@ Running PHASTINPUT.
 Processing flow and transport data file.
 
 	SOLUTE_TRANSPORT true
-	    diffusivity  1e-009
+	    diffusivity  1e-09
 	STEADY_FLOW false
 	FREE_SURFACE_BC true
 	SOLUTION_METHOD
 		iterative_solver   true
-		tolerance          1e-010
+		tolerance          1e-10
 		save_directions    20
 		maximum_iterations 500
 		space_differencing 0
@@ -45,7 +45,7 @@ Processing flow and transport data file.
 			active                   1
 			kx                       0.0001
 			ky                       0.0001
-			kz                       1e-005
+			kz                       1e-05
 			porosity                 0.2
 			specific_storage         0.0001
 			long_dispersivity        1
@@ -267,7 +267,7 @@ PHASTINPUT done.
 
 Running PHAST.
 
-Output file:    flux_patches.O.chem
+Output file:    flux_patches.chem.txt
 Chemistry file: flux_patches.chem.dat
 Database file:  phast.dat
 
@@ -325,12 +325,12 @@ Beginning time step no.      1
 
      End of Time Step No.     1
      Time ..................................................    1.00000     (s)
-     Maximum change in potentiometric head   1.9983E+01      (m ) at location ( 0.500    , 0.500    ,  0.00    )(m)
-     Maximum change in H ..................  3.0694E-19 (mol/kgw) at location ( 0.500    ,  0.00    ,  1.00    )(m)
-     Maximum change in O ..................  1.5374E-19 (mol/kgw) at location ( 0.500    ,  0.00    ,  1.00    )(m)
-     Maximum change in Cl .................  1.4809E-15 (mol/kgw) at location ( 0.500    ,  0.00    ,  1.00    )(m)
-     Maximum change in Na .................  1.4810E-15 (mol/kgw) at location ( 0.500    ,  0.00    ,  1.00    )(m)
-     Maximum change in Charge ............. -5.4170E-22 (mol/kgw) at location ( 0.500    ,  0.00    ,  1.00    )(m)
+     Maximum change in potentiometric head   1.9983E+01      (m ) at location ( 0.500    , 0.500    ,     0    )(m)
+     Maximum change in H ..................  3.0694E-19 (mol/kgw) at location ( 0.500    ,     0    ,  1.00    )(m)
+     Maximum change in O ..................  1.5374E-19 (mol/kgw) at location ( 0.500    ,     0    ,  1.00    )(m)
+     Maximum change in Cl .................  1.4809E-15 (mol/kgw) at location ( 0.500    ,     0    ,  1.00    )(m)
+     Maximum change in Na .................  1.4810E-15 (mol/kgw) at location ( 0.500    ,     0    ,  1.00    )(m)
+     Maximum change in Charge ............. -5.4170E-22 (mol/kgw) at location ( 0.500    ,     0    ,  1.00    )(m)
 Reading transient data for simulation: Set  2
      Time at which next set of transient parameters will be read .......... TIMCHG   2.00      (s)
 
@@ -353,11 +353,11 @@ Beginning time step no.      2
 
      End of Time Step No.     2
      Time ..................................................    2.00000     (s)
-     Maximum change in potentiometric head   5.8603E+00      (m ) at location (  0.00    , 0.500    ,  1.00    )(m)
-     Maximum change in H .................. -1.0194E-20 (mol/kgw) at location (  0.00    , 0.500    ,  1.00    )(m)
-     Maximum change in O .................. -5.0933E-21 (mol/kgw) at location (  0.00    , 0.500    ,  1.00    )(m)
-     Maximum change in Cl ................. -1.4768E-15 (mol/kgw) at location ( 0.500    ,  0.00    ,  1.00    )(m)
-     Maximum change in Na ................. -1.4742E-15 (mol/kgw) at location ( 0.500    ,  0.00    ,  1.00    )(m)
+     Maximum change in potentiometric head   5.8603E+00      (m ) at location (     0    , 0.500    ,  1.00    )(m)
+     Maximum change in H .................. -1.0194E-20 (mol/kgw) at location (     0    , 0.500    ,  1.00    )(m)
+     Maximum change in O .................. -5.0933E-21 (mol/kgw) at location (     0    , 0.500    ,  1.00    )(m)
+     Maximum change in Cl ................. -1.4768E-15 (mol/kgw) at location ( 0.500    ,     0    ,  1.00    )(m)
+     Maximum change in Na ................. -1.4742E-15 (mol/kgw) at location ( 0.500    ,     0    ,  1.00    )(m)
      Maximum change in Charge .............  2.5921E-18 (mol/kgw) at location (  1.00    ,  1.00    , 0.500    )(m)
 Reading transient data for simulation: Set  3
      Time at which next set of transient parameters will be read .......... TIMCHG   3.00      (s)
@@ -381,12 +381,12 @@ Beginning time step no.      3
 
      End of Time Step No.     3
      Time ..................................................    3.00000     (s)
-     Maximum change in potentiometric head   2.3265E+00      (m ) at location (  0.00    , 0.500    ,  1.00    )(m)
-     Maximum change in H ..................  2.2616E-22 (mol/kgw) at location (  1.00    ,  0.00    , 0.500    )(m)
-     Maximum change in O ..................  1.1352E-22 (mol/kgw) at location (  1.00    ,  0.00    , 0.500    )(m)
-     Maximum change in Cl ................. -4.3434E-16 (mol/kgw) at location (  1.00    ,  0.00    ,  1.00    )(m)
-     Maximum change in Na ................. -4.3265E-16 (mol/kgw) at location (  1.00    ,  0.00    ,  1.00    )(m)
-     Maximum change in Charge .............  1.6807E-18 (mol/kgw) at location (  1.00    ,  0.00    ,  1.00    )(m)
+     Maximum change in potentiometric head   2.3265E+00      (m ) at location (     0    , 0.500    ,  1.00    )(m)
+     Maximum change in H ..................  2.2616E-22 (mol/kgw) at location (  1.00    ,     0    , 0.500    )(m)
+     Maximum change in O ..................  1.1352E-22 (mol/kgw) at location (  1.00    ,     0    , 0.500    )(m)
+     Maximum change in Cl ................. -4.3434E-16 (mol/kgw) at location (  1.00    ,     0    ,  1.00    )(m)
+     Maximum change in Na ................. -4.3265E-16 (mol/kgw) at location (  1.00    ,     0    ,  1.00    )(m)
+     Maximum change in Charge .............  1.6807E-18 (mol/kgw) at location (  1.00    ,     0    ,  1.00    )(m)
 Reading transient data for simulation: Set  4
      Time at which next set of transient parameters will be read .......... TIMCHG   4.00      (s)
 
@@ -409,11 +409,11 @@ Beginning time step no.      4
 
      End of Time Step No.     4
      Time ..................................................    4.00000     (s)
-     Maximum change in potentiometric head   3.0030E-01      (m ) at location (  0.00    , 0.500    ,  1.00    )(m)
-     Maximum change in H .................. -3.9045E-23 (mol/kgw) at location ( 0.500    , 0.500    ,  0.00    )(m)
-     Maximum change in O .................. -1.5679E-23 (mol/kgw) at location (  0.00    ,  1.00    , 0.500    )(m)
-     Maximum change in Cl ................. -1.6872E-16 (mol/kgw) at location (  1.00    ,  0.00    ,  1.00    )(m)
-     Maximum change in Na ................. -1.6801E-16 (mol/kgw) at location (  1.00    ,  0.00    ,  1.00    )(m)
+     Maximum change in potentiometric head   3.0030E-01      (m ) at location (     0    , 0.500    ,  1.00    )(m)
+     Maximum change in H .................. -3.9045E-23 (mol/kgw) at location ( 0.500    , 0.500    ,     0    )(m)
+     Maximum change in O .................. -1.5679E-23 (mol/kgw) at location (     0    ,  1.00    , 0.500    )(m)
+     Maximum change in Cl ................. -1.6872E-16 (mol/kgw) at location (  1.00    ,     0    ,  1.00    )(m)
+     Maximum change in Na ................. -1.6801E-16 (mol/kgw) at location (  1.00    ,     0    ,  1.00    )(m)
      Maximum change in Charge .............  2.4966E-18 (mol/kgw) at location (  1.00    , 0.500    ,  1.00    )(m)
 Reading transient data for simulation: Set  5
      Time at which next set of transient parameters will be read .......... TIMCHG   8.00      (s)
@@ -473,12 +473,12 @@ Beginning time step no.      8
 
      End of Time Step No.     8
      Time ..................................................    8.00000     (s)
-     Maximum change in potentiometric head   2.5040E-01      (m ) at location (  0.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in potentiometric head   2.5040E-01      (m ) at location (     0    ,  1.00    ,  1.00    )(m)
      Maximum change in H ..................  1.2250E-22 (mol/kgw) at location ( 0.500    ,  1.00    ,  1.00    )(m)
      Maximum change in O ..................  4.6307E-23 (mol/kgw) at location ( 0.500    ,  1.00    ,  1.00    )(m)
-     Maximum change in Cl .................  1.6805E-17 (mol/kgw) at location (  0.00    ,  1.00    , 0.500    )(m)
-     Maximum change in Na .................  1.6826E-17 (mol/kgw) at location (  0.00    ,  1.00    , 0.500    )(m)
-     Maximum change in Charge ............. -3.7135E-19 (mol/kgw) at location (  1.00    ,  0.00    ,  1.00    )(m)
+     Maximum change in Cl .................  1.6805E-17 (mol/kgw) at location (     0    ,  1.00    , 0.500    )(m)
+     Maximum change in Na .................  1.6826E-17 (mol/kgw) at location (     0    ,  1.00    , 0.500    )(m)
+     Maximum change in Charge ............. -3.7135E-19 (mol/kgw) at location (  1.00    ,     0    ,  1.00    )(m)
 Reading transient data for simulation: Set  6
      Time at which next set of transient parameters will be read .......... TIMCHG   10.0      (s)
 
@@ -513,12 +513,12 @@ Beginning time step no.     10
 
      End of Time Step No.    10
      Time ..................................................    10.0000     (s)
-     Maximum change in potentiometric head   2.4305E-01      (m ) at location (  0.00    ,  1.00    ,  1.00    )(m)
-     Maximum change in H .................. -7.4708E-23 (mol/kgw) at location (  0.00    ,  0.00    ,  1.00    )(m)
-     Maximum change in O .................. -3.7653E-23 (mol/kgw) at location (  0.00    ,  0.00    ,  1.00    )(m)
-     Maximum change in Cl .................  1.0974E-17 (mol/kgw) at location (  0.00    ,  1.00    , 0.500    )(m)
-     Maximum change in Na .................  1.1204E-17 (mol/kgw) at location (  0.00    ,  1.00    , 0.500    )(m)
-     Maximum change in Charge .............  5.2328E-19 (mol/kgw) at location ( 0.500    ,  0.00    ,  0.00    )(m)
+     Maximum change in potentiometric head   2.4305E-01      (m ) at location (     0    ,  1.00    ,  1.00    )(m)
+     Maximum change in H .................. -7.4708E-23 (mol/kgw) at location (     0    ,     0    ,  1.00    )(m)
+     Maximum change in O .................. -3.7653E-23 (mol/kgw) at location (     0    ,     0    ,  1.00    )(m)
+     Maximum change in Cl .................  1.0974E-17 (mol/kgw) at location (     0    ,  1.00    , 0.500    )(m)
+     Maximum change in Na .................  1.1204E-17 (mol/kgw) at location (     0    ,  1.00    , 0.500    )(m)
+     Maximum change in Charge .............  5.2328E-19 (mol/kgw) at location ( 0.500    ,     0    ,     0    )(m)
 Done with transient simulation.
 
                              ***** Simulation Completed *****

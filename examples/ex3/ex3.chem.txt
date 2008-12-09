@@ -1,4 +1,4 @@
-Output file:    ex3.O.chem
+Output file:    ex3.chem.txt
 Chemistry file: ex3.chem.dat
 Database file:  phast.dat
 

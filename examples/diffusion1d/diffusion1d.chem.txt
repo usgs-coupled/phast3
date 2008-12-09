@@ -1,4 +1,4 @@
-Output file:    diffusion1d.O.chem
+Output file:    diffusion1d.chem.txt
 Chemistry file: diffusion1d.chem.dat
 Database file:  phast.dat
 

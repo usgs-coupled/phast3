@@ -1,4 +1,4 @@
-Output file:    decay.O.chem
+Output file:    decay.chem.txt
 Chemistry file: decay.chem.dat
 Database file:  phast.dat
 

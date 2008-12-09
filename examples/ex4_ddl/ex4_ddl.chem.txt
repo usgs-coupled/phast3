@@ -1,4 +1,4 @@
-Output file:    ex4_ddl.O.chem
+Output file:    ex4_ddl.chem.txt
 Chemistry file: ex4_ddl.chem.dat
 Database file:  phast.dat
 

@@ -1024,7 +1024,7 @@ diff:
 zero:
 	for DIR in $(SERIAL); \
 		do echo $$DIR; cd $$DIR; \
-			for FILE in *.O.* *.sel *.xyz.* Phast.tmp; \
+			for FILE in *.txt *.tsv Phast.tmp; \
 				do \
 					if [ -f $$FILE ]; then \
 						echo "   " $$FILE; \
@@ -1037,7 +1037,7 @@ zero:
 zero_parallel:
 	for DIR in $(SERIAL); \
 		do echo $$DIR; cd $$DIR/0; \
-			for FILE in *.O.* *.sel *.xyz.* Phast.tmp; \
+			for FILE in *.txt *.tsv Phast.tmp; \
 				do \
 					if [ -f $$FILE ]; then \
 						echo "   " $$FILE; \
@@ -1050,7 +1050,7 @@ zero_parallel:
 zero1:
 	for DIR in $(SERIAL); \
 		do echo $$DIR; cd $$DIR; \
-			for FILE in *.O.* *.xyz.*; \
+			for FILE in *.txt *.tsv; \
 				do \
 					if [ -f $$FILE ]; then \
 						echo "   " $$FILE; \
@@ -1063,7 +1063,7 @@ zero1:
 zero1_parallel:
 	for DIR in $(SERIAL); \
 		do echo $$DIR; cd $$DIR/0; \
-			for FILE in *.O.* *.xyz.*; \
+			for FILE in *.txt *.tsv; \
 				do \
 					if [ -f $$FILE ]; then \
 						echo "   " $$FILE; \

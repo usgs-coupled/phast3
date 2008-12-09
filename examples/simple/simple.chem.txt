@@ -1,4 +1,4 @@
-Output file:    simple.O.chem
+Output file:    simple.chem.txt
 Chemistry file: simple.chem.dat
 Database file:  phast.dat
 

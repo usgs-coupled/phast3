@@ -1,4 +1,4 @@
-Output file:    flux_patches.O.chem
+Output file:    flux_patches.chem.txt
 Chemistry file: flux_patches.chem.dat
 Database file:  phast.dat
 

@@ -1,4 +1,4 @@
-Output file:    kindred4.4.O.chem
+Output file:    kindred4.4.chem.txt
 Chemistry file: kindred4.4.chem.dat
 Database file:  phast.dat
 

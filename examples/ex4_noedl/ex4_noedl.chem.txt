@@ -1,4 +1,4 @@
-Output file:    ex4_noedl.O.chem
+Output file:    ex4_noedl.chem.txt
 Chemistry file: ex4_noedl.chem.dat
 Database file:  phast.dat
 

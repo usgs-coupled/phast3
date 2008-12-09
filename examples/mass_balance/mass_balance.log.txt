@@ -21,11 +21,11 @@ Processing flow and transport data file.
 	        diffusivity            0.0             #m^2/s
 	GRID
 	        uniform x
-	                0.00000      1.0    2
+	                      0      1.0    2
 	        uniform y
-	                0.00000      1.0    2
+	                      0      1.0    2
 	        uniform z
-	                0.00000      .08    41
+	                      0      .08    41
 	        print_orientation XZ 
 	        chemistry_dimensions XYZ
 	MEDIA
@@ -71,7 +71,7 @@ PHASTINPUT done.
 
 Running PHAST.
 
-Output file:    mass_balance.O.chem
+Output file:    mass_balance.chem.txt
 Chemistry file: mass_balance.chem.dat
 Database file:  phast.dat
 
@@ -1826,17 +1826,17 @@ Beginning time step no.    100
 
      End of Time Step No.   100
      Time ..................................................   0.500000     (d)
-     Maximum change in potentiometric head   5.5623E-18      (m ) at location (  0.00    ,  1.00    , 1.000E-02)(m)
-     Maximum change in H ..................  1.1364E-11 (mol/kgw) at location (  0.00    ,  0.00    , 8.000E-02)(m)
-     Maximum change in O .................. -1.6782E-05 (mol/kgw) at location (  0.00    ,  1.00    , 8.000E-02)(m)
+     Maximum change in potentiometric head   5.5623E-18      (m ) at location (     0    ,  1.00    , 1.000E-02)(m)
+     Maximum change in H ..................  1.1364E-11 (mol/kgw) at location (     0    ,     0    , 8.000E-02)(m)
+     Maximum change in O .................. -1.6782E-05 (mol/kgw) at location (     0    ,  1.00    , 8.000E-02)(m)
      Maximum change in Br .................  0.0000E+00 (mol/kgw) at location (  1.00    ,  1.00    , 8.000E-02)(m)
-     Maximum change in Ca .................  7.3782E-05 (mol/kgw) at location (  0.00    ,  0.00    , 6.400E-02)(m)
-     Maximum change in Cl .................  5.5940E-06 (mol/kgw) at location (  0.00    ,  1.00    , 8.000E-02)(m)
-     Maximum change in K .................. -1.2509E-04 (mol/kgw) at location (  0.00    ,  0.00    , 6.400E-02)(m)
+     Maximum change in Ca .................  7.3782E-05 (mol/kgw) at location (     0    ,     0    , 6.400E-02)(m)
+     Maximum change in Cl .................  5.5940E-06 (mol/kgw) at location (     0    ,  1.00    , 8.000E-02)(m)
+     Maximum change in K .................. -1.2509E-04 (mol/kgw) at location (     0    ,     0    , 6.400E-02)(m)
      Maximum change in Li .................  0.0000E+00 (mol/kgw) at location (  1.00    ,  1.00    , 8.000E-02)(m)
      Maximum change in N .................. -5.5940E-06 (mol/kgw) at location (  1.00    ,  1.00    , 8.000E-02)(m)
-     Maximum change in Na ................. -4.0662E-05 (mol/kgw) at location (  0.00    ,  1.00    , 8.000E-02)(m)
-     Maximum change in Charge ............. -7.3586E-12 (mol/kgw) at location (  0.00    ,  0.00    , 4.200E-02)(m)
+     Maximum change in Na ................. -4.0662E-05 (mol/kgw) at location (     0    ,  1.00    , 8.000E-02)(m)
+     Maximum change in Charge ............. -7.3586E-12 (mol/kgw) at location (     0    ,     0    , 4.200E-02)(m)
 Reading transient data for simulation: Set  2
      Time at which next set of transient parameters will be read .......... TIMCHG   1.00      (d)
 
@@ -3547,16 +3547,16 @@ Beginning time step no.    200
      End of Time Step No.   200
      Time ..................................................    1.00000     (d)
      Maximum change in potentiometric head   4.3729E-17      (m ) at location (  1.00    ,  1.00    , 1.600E-02)(m)
-     Maximum change in H .................. -1.0044E-12 (mol/kgw) at location (  0.00    ,  0.00    , 3.600E-02)(m)
-     Maximum change in O .................. -5.0238E-13 (mol/kgw) at location (  0.00    ,  0.00    , 3.600E-02)(m)
+     Maximum change in H .................. -1.0044E-12 (mol/kgw) at location (     0    ,     0    , 3.600E-02)(m)
+     Maximum change in O .................. -5.0238E-13 (mol/kgw) at location (     0    ,     0    , 3.600E-02)(m)
      Maximum change in Br .................  0.0000E+00 (mol/kgw) at location (  1.00    ,  1.00    , 8.000E-02)(m)
-     Maximum change in Ca ................. -1.1679E-18 (mol/kgw) at location (  1.00    ,  0.00    , 1.000E-02)(m)
-     Maximum change in Cl .................  1.8178E-18 (mol/kgw) at location (  1.00    ,  0.00    , 6.000E-02)(m)
+     Maximum change in Ca ................. -1.1679E-18 (mol/kgw) at location (  1.00    ,     0    , 1.000E-02)(m)
+     Maximum change in Cl .................  1.8178E-18 (mol/kgw) at location (  1.00    ,     0    , 6.000E-02)(m)
      Maximum change in K ..................  0.0000E+00 (mol/kgw) at location (  1.00    ,  1.00    , 8.000E-02)(m)
      Maximum change in Li .................  0.0000E+00 (mol/kgw) at location (  1.00    ,  1.00    , 8.000E-02)(m)
      Maximum change in N ..................  0.0000E+00 (mol/kgw) at location (  1.00    ,  1.00    , 8.000E-02)(m)
      Maximum change in Na .................  0.0000E+00 (mol/kgw) at location (  1.00    ,  1.00    , 8.000E-02)(m)
-     Maximum change in Charge ............. -1.4388E-15 (mol/kgw) at location (  1.00    ,  1.00    ,  0.00    )(m)
+     Maximum change in Charge ............. -1.4388E-15 (mol/kgw) at location (  1.00    ,  1.00    ,     0    )(m)
 Done with transient simulation.
 
                              ***** Simulation Completed *****

@@ -1,4 +1,4 @@
-Output file:    free.O.chem
+Output file:    free.chem.txt
 Chemistry file: free.chem.dat
 Database file:  phast.dat
 

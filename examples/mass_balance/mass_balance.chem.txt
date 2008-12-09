@@ -1,4 +1,4 @@
-Output file:    mass_balance.O.chem
+Output file:    mass_balance.chem.txt
 Chemistry file: mass_balance.chem.dat
 Database file:  phast.dat
 

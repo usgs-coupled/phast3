@@ -1,4 +1,4 @@
-Output file:    radial.O.chem
+Output file:    radial.chem.txt
 Chemistry file: radial.chem.dat
 Database file:  phast.dat
 

@@ -1,4 +1,4 @@
-Output file:    linear_ic.O.chem
+Output file:    linear_ic.chem.txt
 Chemistry file: linear_ic.chem.dat
 Database file:  phast.dat
 
