@@ -841,7 +841,7 @@ depends:
 
 depends_parallel:
 	mkdir -p temp_dependency_dir
-	cd temp_dependency_dir; gcc -MM $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -I../phreeqcpp -I../phreeqcpp/phreeqc ../*.cxx ../*.c ../phreeqcpp/*.cxx ../phreeqcpp/phreeqc/*.c > ../dependencies_parallel
+	cd temp_dependency_dir; gcc -MM $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -I../phreeqcpp -I../phreeqcpp/phreeqc -I../../srcinput -I../../srcinput/KDtree ../*.cxx ../*.c ../phreeqcpp/*.cxx ../phreeqcpp/phreeqc/*.c $(PHASTINPUT_FILES) > ../dependencies_parallel
 	rm -rf temp_dependency_dir
 
 #ld-option

@@ -247,6 +247,7 @@ SUBROUTINE slave_closef
   CLOSE(fukd, status = st(fukd))  
   CLOSE(fubcf, status = st(fubcf))  
   CLOSE(fuzf, status = st(fuzf))  
+  CLOSE(fuzf2, status = st(fuzf2))
   CLOSE(fuplt, status = st(fuplt))  
   CLOSE(fupmap, status = st(fupmap))  
   CLOSE(fupmp2, status = st(fupmp2))  

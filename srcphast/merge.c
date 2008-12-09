@@ -576,19 +576,19 @@ MergeBeginTimeStep(int print_sel, int print_out)
 	/* Always open file for output in case of a warning message */
 	{
 		/* create the O.chem dataset */
-		FileInfo_dataset_create(&s_fiOutput, "O.chem", (int) dims[0]);
+		FileInfo_dataset_create(&s_fiOutput, "chem.txt", (int) dims[0]);
 	}
 
 	if (print_sel == TRUE)
 	{
 		/* create the xyz.chem dataset */
-		FileInfo_dataset_create(&s_fiPunch, "xyz.chem", (int) dims[0]);
+		FileInfo_dataset_create(&s_fiPunch, "chem.xyz.tsv", (int) dims[0]);
 	}
 
 	/* Always open file for echo in case of a warning message */
 	{
 		/* create the O.chem dataset */
-		FileInfo_dataset_create(&s_fiEcho, "log", (int) dims[0]);
+		FileInfo_dataset_create(&s_fiEcho, "log.txt", (int) dims[0]);
 	}
 	/* init dspace coordinates */
 	s_ci.coord[0][0] = 0;

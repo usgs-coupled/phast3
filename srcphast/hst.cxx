@@ -2275,11 +2275,11 @@ EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 		 */
 		if (transient_free_surface == TRUE)
 			partition_uz(i, j, frac[j]);
-		if (frac[j] < 1e-10)
+		if (frac[j] <= 1e-10)
 			frac[j] = 0.0;
 		// set flags
 		active = FALSE;
-		if (frac[j] > 1.0e-6)
+		if (frac[j] > 0.0)
 			active = TRUE;
 		pr.all = FALSE;
 		if (*print_out == TRUE && printzone_chem[j] == TRUE)
@@ -2663,7 +2663,7 @@ EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 		j = back[i].list[0];	/* 1 to nijk */
 		if (transient_free_surface == TRUE)
 			partition_uz(i, j, frac[j]);
-		if (frac[j] <= 1e-8)
+		if (frac[j] <= 1e-10)   // consistent with parallel version
 			frac[j] = 0.0;
 		if (frac[j] > 0.0)
 		{
