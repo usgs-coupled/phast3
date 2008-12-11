@@ -6580,8 +6580,9 @@ read_time_control(void)
 		"time_initial",			/* 10 */
 		"start_time",			/* 11 */
 		"time_start"			/* 12 */
+		,"start"                /* 13 */
 	};
-	int count_opt_list = 13;
+	int count_opt_list = 14;
 /*
  *   Read flags:
  */
@@ -6663,6 +6664,7 @@ read_time_control(void)
 		case 10:				/* time_initial */
 		case 11:				/* start_time */
 		case 12:				/* time_start */
+		case 13:				/* start */
 			read_time_data(&next_char, &time_start,
 						   "Starting time in PRINT_CONTROL");
 			opt = get_option(opt_list, count_opt_list, &next_char);
