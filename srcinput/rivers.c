@@ -738,7 +738,8 @@ build_rivers(void)
 		phantom.x = p[n].x + (p[n].x - p[n - 1].x);
 		phantom.y = p[n].y + (p[n].y - p[n - 1].y);
 		trapezoid_points(p[n], phantom, &(river_ptr->points[n]),
-						 river_ptr->points[n].width);
+						 river_ptr->points[n].width,
+						 units.river_width.input_to_si/units.horizontal.input_to_si);
 		river_ptr->points[n].vertex[2].x = river_ptr->points[n].vertex[1].x;
 		river_ptr->points[n].vertex[2].y = river_ptr->points[n].vertex[1].y;
 		river_ptr->points[n].vertex[3].x = river_ptr->points[n].vertex[0].x;
@@ -749,7 +750,8 @@ build_rivers(void)
 		for (i = 0; i < count_points - 1; i++)
 		{
 			trapezoid_points(p[i], p[i + 1], &(river_ptr->points[i]),
-							 river_ptr->points[i + 1].width);
+							 river_ptr->points[i + 1].width,
+							 units.river_width.input_to_si/units.horizontal.input_to_si);
 		}
 		/*
 		 *  Union of polygon and gap with next polygon
@@ -1034,14 +1036,15 @@ check_quad(gpc_vertex * v)
 /* ---------------------------------------------------------------------- */
 int
 trapezoid_points(gpc_vertex p0, gpc_vertex p1, River_Point * r_ptr,
-				 double width1)
+				 double width1, double width_conversion)
 /* ---------------------------------------------------------------------- */
 {
 	double width0;
 	double a, b;
 	double x, y;
 
-	width0 = r_ptr->width;
+	width0 = r_ptr->width * width_conversion;
+	width1 *= width_conversion;
 	/*
 	 *   Translate to origin
 	 */

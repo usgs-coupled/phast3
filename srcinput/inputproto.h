@@ -106,7 +106,7 @@ int get_option(const char **opt_list, int count_opt_list, char **next_char);
 int bisector_points(gpc_vertex p0, gpc_vertex p1, gpc_vertex p2,
 					River_Point * r_ptr);
 int trapezoid_points(gpc_vertex p0, gpc_vertex p1, River_Point * r_ptr0,
-					 double width1);
+					 double width1, double width_conversion);
 int build_rivers(void);
 int check_quad(gpc_vertex * v);
 int interpolate(River_Polygon * river_polygon_ptr);

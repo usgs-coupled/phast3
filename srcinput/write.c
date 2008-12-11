@@ -1025,7 +1025,8 @@ write_bc_static(void)
 				area =
 					cells[i].river_polygons[j].area *
 					units.horizontal.input_to_si *
-					units.river_width.input_to_si;
+					units.horizontal.input_to_si;
+					/*units.river_width.input_to_si;*/ /* Area now calculated in grid units */
 				river_number = cells[i].river_polygons[j].river_number;
 				point_number = cells[i].river_polygons[j].point_number;
 				w0 = cells[i].river_polygons[j].w;
@@ -1113,7 +1114,8 @@ write_bc_static(void)
 			{
 				area =
 					j_it->area * units.horizontal.input_to_si *
-					units.drain_width.input_to_si;
+					units.horizontal.input_to_si;
+					/*units.drain_width.input_to_si;*/ /* area now calculated in grid units */
 				int drain_number = j_it->river_number;
 				point_number = j_it->point_number;
 				w0 = j_it->w;

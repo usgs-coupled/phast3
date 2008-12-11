@@ -406,7 +406,8 @@ build_drains(void)
 		phantom.x = p[n].x + (p[n].x - p[n - 1].x);
 		phantom.y = p[n].y + (p[n].y - p[n - 1].y);
 		trapezoid_points(p[n], phantom, &(drain_ptr->points[n]),
-						 drain_ptr->points[n].width);
+						 drain_ptr->points[n].width, 
+						 units.drain_width.input_to_si/units.horizontal.input_to_si);
 		drain_ptr->points[n].vertex[2].x = drain_ptr->points[n].vertex[1].x;
 		drain_ptr->points[n].vertex[2].y = drain_ptr->points[n].vertex[1].y;
 		drain_ptr->points[n].vertex[3].x = drain_ptr->points[n].vertex[0].x;
@@ -417,7 +418,8 @@ build_drains(void)
 		for (i = 0; i < count_points - 1; i++)
 		{
 			trapezoid_points(p[i], p[i + 1], &(drain_ptr->points[i]),
-							 drain_ptr->points[i + 1].width);
+							 drain_ptr->points[i + 1].width,
+							 units.drain_width.input_to_si/units.horizontal.input_to_si);
 		}
 		/*
 		 *  Union of polygon and gap with next polygon
