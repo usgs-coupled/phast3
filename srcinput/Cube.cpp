@@ -411,6 +411,33 @@ Cube::PLANE_INTERSECTION Segment_intersect_plane(const double a,
 	return (intersect);
 }
 
+bool Cube::operator==(const Cube &other) const
+{
+	if (this->type != other.type)
+	{
+		return false;
+	}
+	if (this->box != other.box)
+	{
+		return false;
+	}
+	if (this->coordinate_system != other.coordinate_system)
+	{
+		return false;
+	}
+	if (this->coordinate_system_user != other.coordinate_system_user)
+	{
+		return false;
+	}
+	return true;
+}
+
+bool Cube::operator!=(const Cube &other) const
+{
+	return !(*this == other);
+}
+
+
 //#ifdef SKIP
 //
 //----------------------------------------------------------------------Subject 5.05:How

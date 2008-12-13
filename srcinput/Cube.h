@@ -51,6 +51,10 @@ class Cube:public Polyhedron
 	{
 		this->coordinate_system_user = c;
 	}
+
+	bool operator==(const Cube &other) const;
+	bool operator!=(const Cube &other) const;
+
   protected:
 	virtual void printOn(std::ostream & os) const;
 	PHAST_Transform::COORDINATE_SYSTEM coordinate_system;
