@@ -188,8 +188,7 @@ int time_series_sort(struct time_series *time_series_ptr);
 int time_series_init(struct time_series *ts_ptr);
 
 /* wells.c */
-
-int build_wells(void);
+int wells_convert_coordinate_systems(void);
 int setup_wells(void);
 int tidy_wells(void);
 int update_wells(void);

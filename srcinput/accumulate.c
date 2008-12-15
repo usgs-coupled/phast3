@@ -84,9 +84,9 @@ accumulate(void)
 		}
 		if (tidy_wells() == OK)
 		{
-			if (build_wells() == OK)
+			if (wells_convert_coordinate_systems())
 			{
-				setup_wells();
+					setup_wells();
 			}
 		}
 #ifdef DEBUG_RIVERS

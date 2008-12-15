@@ -8206,8 +8206,11 @@ read_well(void)
 		"allocation_by_head_and_mobility",	/* 19 */
 		"head_and_mobility",	/* 20 */
 		"coordinate_system"		/* 21 */
+		, "depth_units"         /* 22 */
+		, "z_coordinate_system"     /* 23 */
+		, "xy_coordinate_system"   /* 24 */
 	};
-	int count_opt_list = 22;
+	int count_opt_list = 25;
 /*
  *   Read well information
  */
@@ -8260,16 +8263,16 @@ read_well(void)
 	/*
 	 *   Initialize well
 	 */
-	well_ptr->depth =
+	well_ptr->depth_user =
 		(Well_Interval *) malloc((size_t) sizeof(Well_Interval));
-	if (well_ptr->depth == NULL)
+	if (well_ptr->depth_user == NULL)
 		malloc_error();
-	well_ptr->count_depth = 0;
-	well_ptr->elevation =
+	well_ptr->count_depth_user = 0;
+	well_ptr->elevation_user =
 		(Well_Interval *) malloc((size_t) sizeof(Well_Interval));
-	if (well_ptr->elevation == NULL)
+	if (well_ptr->elevation_user == NULL)
 		malloc_error();
-	well_ptr->count_elevation = 0;
+	well_ptr->count_elevation_user = 0;
 	well_ptr->cell_fraction =
 		(Cell_Fraction *) malloc((size_t) sizeof(Cell_Fraction));
 	if (well_ptr->cell_fraction == NULL)
@@ -8290,17 +8293,20 @@ read_well(void)
 	well_ptr->lsd = 0;
 	well_ptr->lsd_defined = FALSE;
 	well_ptr->mobility_and_pressure = FALSE;
-	well_ptr->depth_defined = FALSE;
-	well_ptr->count_depth = 0;
-	well_ptr->elevation_defined = FALSE;
-	well_ptr->count_elevation = 0;
+	well_ptr->depth_user_defined = FALSE;
+	well_ptr->count_depth_user = 0;
+	well_ptr->elevation_user_defined = FALSE;
+	well_ptr->count_elevation_user = 0;
 	well_ptr->q = NULL;
 	well_ptr->q_defined = FALSE;
 	well_ptr->diameter = 0;
 	well_ptr->diameter_defined = FALSE;
 	well_ptr->radius = 0;
 	well_ptr->radius_defined = FALSE;
-	well_ptr->coordinate_system = PHAST_Transform::MAP;
+	well_ptr->xy_coordinate_system = PHAST_Transform::MAP;
+	well_ptr->z_coordinate_system = PHAST_Transform::MAP;
+	well_ptr->depth_units = new cunit("m");
+	well_ptr->elevation_grid = NULL;
 
 	well_number = n;
 /*
@@ -8423,12 +8429,12 @@ read_well(void)
 			break;
 		case 7:				/* depth */
 		case 5:				/* depths */
-			well_ptr->depth =
-				(Well_Interval *) realloc(well_ptr->depth,
-										  (size_t) (well_ptr->count_depth +
+			well_ptr->depth_user =
+				(Well_Interval *) realloc(well_ptr->depth_user,
+										  (size_t) (well_ptr->count_depth_user +
 													1) *
 										  sizeof(Well_Interval));
-			if (well_ptr->depth == NULL)
+			if (well_ptr->depth_user == NULL)
 				malloc_error();
 			j = copy_token(token, &next_char, &l);
 			if (j != DIGIT)
@@ -8441,7 +8447,7 @@ read_well(void)
 			else
 			{
 				sscanf(token, "%lf",
-					   &well_ptr->depth[well_ptr->count_depth].top);
+					   &well_ptr->depth_user[well_ptr->count_depth_user].top);
 				j = copy_token(token, &next_char, &l);
 				if (j != DIGIT)
 				{
@@ -8454,9 +8460,9 @@ read_well(void)
 				else
 				{
 					sscanf(token, "%lf",
-						   &well_ptr->depth[well_ptr->count_depth].bottom);
-					well_ptr->depth_defined = TRUE;
-					well_ptr->count_depth++;
+						   &well_ptr->depth_user[well_ptr->count_depth_user].bottom);
+					well_ptr->depth_user_defined = TRUE;
+					well_ptr->count_depth_user++;
 				}
 			}
 			/* read to next */
@@ -8464,13 +8470,13 @@ read_well(void)
 			break;
 		case 9:				/* elevation */
 		case 10:				/* elevations */
-			well_ptr->elevation =
-				(Well_Interval *) realloc(well_ptr->elevation,
+			well_ptr->elevation_user =
+				(Well_Interval *) realloc(well_ptr->elevation_user,
 										  (size_t) (well_ptr->
-													count_elevation +
+													count_elevation_user +
 													1) *
 										  sizeof(Well_Interval));
-			if (well_ptr->elevation == NULL)
+			if (well_ptr->elevation_user == NULL)
 				malloc_error();
 			j = copy_token(token, &next_char, &l);
 			if (j != DIGIT)
@@ -8484,7 +8490,7 @@ read_well(void)
 			else
 			{
 				sscanf(token, "%lf",
-					   &well_ptr->elevation[well_ptr->count_elevation].top);
+					   &well_ptr->elevation_user[well_ptr->count_elevation_user].top);
 				j = copy_token(token, &next_char, &l);
 				if (j != DIGIT)
 				{
@@ -8497,10 +8503,9 @@ read_well(void)
 				else
 				{
 					sscanf(token, "%lf",
-						   &well_ptr->elevation[well_ptr->count_elevation].
-						   bottom);
-					well_ptr->elevation_defined = TRUE;
-					well_ptr->count_elevation++;
+						   &well_ptr->elevation_user[well_ptr->count_elevation_user].bottom);
+					well_ptr->elevation_user_defined = TRUE;
+					well_ptr->count_elevation_user++;
 				}
 			}
 			/* read to next */
@@ -8596,15 +8601,16 @@ read_well(void)
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		case 21:				/* coordinate_system */
+		case 24:				/* xy_coordinate_system */	
 			j = copy_token(token, &next_char, &l);
 			str_tolower(token);
 			if (strstr(token, "map") == token)
 			{
-				well_ptr->coordinate_system = PHAST_Transform::MAP;
+				well_ptr->xy_coordinate_system = PHAST_Transform::MAP;
 			}
 			else if (strstr(token, "grid") == token)
 			{
-				well_ptr->coordinate_system = PHAST_Transform::GRID;
+				well_ptr->xy_coordinate_system = PHAST_Transform::GRID;
 			}
 			else
 			{
@@ -8614,6 +8620,49 @@ read_well(void)
 				error_msg(error_string, CONTINUE);
 				input_error++;
 			}
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;
+
+		case 22:				/* elevation_coordinate_system */
+			j = copy_token(token, &next_char, &l);
+			str_tolower(token);
+			if (strstr(token, "map") == token)
+			{
+				well_ptr->z_coordinate_system = PHAST_Transform::MAP;
+			}
+			else if (strstr(token, "grid") == token)
+			{
+				well_ptr->z_coordinate_system = PHAST_Transform::GRID;
+			}
+			else
+			{
+				sprintf(error_string,
+						"Expected coordinate system for LSD and -elevation data. %s",
+						tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+			}
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;
+
+		case 23:				/* depth units */
+			if (copy_token(token, &next_char, &l) == EMPTY ||
+				units_conversion(token,
+								 units.vertical.si,
+								 &well_ptr->depth_units->input_to_si,
+								 TRUE) == ERROR)
+			{
+				input_error++;
+				sprintf(error_string,
+						"Expected units for well screen depths (L).");
+				error_msg(error_string, CONTINUE);
+				well_ptr->depth_units->undefine();
+			}
+			else
+			{
+				well_ptr->depth_units->define(token);
+			}
+			break;
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		}

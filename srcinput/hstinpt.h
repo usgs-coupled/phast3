@@ -302,18 +302,18 @@ typedef struct Well
 		lsd_defined;
 	int
 		mobility_and_pressure;
-	Well_Interval *
-		depth;
-	int
-		count_depth;
-	int
-		depth_defined;
-	Well_Interval *
-		elevation;
-	int
-		count_elevation;
-	int
-		elevation_defined;
+
+	Well_Interval * depth_user;
+	int	count_depth_user;
+	int	depth_user_defined;
+
+	Well_Interval * elevation_user;
+	int count_elevation_user;
+	int	elevation_user_defined;
+
+	Well_Interval * elevation_grid;
+	int count_elevation_grid;
+
 	struct time_series *
 		q;
 	int
@@ -331,8 +331,10 @@ typedef struct Well
 		screen_top,
 		screen_depth_bottom,
 		screen_depth_top;
-	PHAST_Transform::COORDINATE_SYSTEM
-		coordinate_system;
+	PHAST_Transform::COORDINATE_SYSTEM xy_coordinate_system;
+	PHAST_Transform::COORDINATE_SYSTEM z_coordinate_system;
+	cunit * depth_units;
+	
 } Well;
 EXTERNAL Well *
 	wells;

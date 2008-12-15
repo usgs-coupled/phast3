@@ -722,13 +722,15 @@ well_free(Well * well_ptr)
  *   Free space allocated for well structure
  */
 	free_check_null(well_ptr->description);
-	free_check_null(well_ptr->depth);
-	free_check_null(well_ptr->elevation);
+	free_check_null(well_ptr->depth_user);
+	free_check_null(well_ptr->elevation_user);
+	free_check_null(well_ptr->elevation_grid);
 	free_check_null(well_ptr->cell_fraction);
 	time_series_free(well_ptr->solution);
 	time_series_free(well_ptr->q);
 	free_check_null(well_ptr->solution);
 	free_check_null(well_ptr->q);
+	delete well_ptr->depth_units;
 	return (OK);
 }
 

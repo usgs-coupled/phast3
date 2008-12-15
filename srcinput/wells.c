@@ -2,14 +2,15 @@
 #include "hstinpt.h"
 #include "PHAST_Transform.h"
 static char const svnid[] = "$Id$";
-static void well_convert_coordinate_system(Well * well_ptr,
+static bool well_convert_xy_coordinate_system(Well * well_ptr,
 										   PHAST_Transform::
 										   COORDINATE_SYSTEM target,
 										   PHAST_Transform * map2grid);
-static void wells_convert_coordinate_system(PHAST_Transform::
+static void wells_convert_xy_coordinate_system(PHAST_Transform::
 											COORDINATE_SYSTEM target,
 											PHAST_Transform * map2grid);
-
+static bool well_elevations(Well * well_ptr,
+							PHAST_Transform * map2grid);
 /* ---------------------------------------------------------------------- */
 int
 tidy_wells(void)
@@ -28,8 +29,6 @@ tidy_wells(void)
 	if (simulation > 0)
 		return (OK);
 
-	// convert coordinate system if necessary
-	wells_convert_coordinate_system(target_coordinate_system, map_to_grid);
 /*
  *    Make sure all wells are numbered
  */
@@ -86,7 +85,7 @@ tidy_wells(void)
 				return_value = FALSE;
 			}
 		}
-		if (well_ptr->depth_defined == TRUE && well_ptr->lsd_defined == FALSE)
+		if (well_ptr->depth_user_defined == TRUE && well_ptr->lsd_defined == FALSE)
 		{
 			sprintf(error_string,
 					"Screened interval defined by depth below land surface, but no land surface elevation defined for well %d.",
@@ -95,9 +94,9 @@ tidy_wells(void)
 			input_error++;
 			return_value = FALSE;
 		}
-		if ((well_ptr->depth_defined == FALSE &&
-			 well_ptr->elevation_defined == FALSE) ||
-			(well_ptr->count_depth <= 0 && well_ptr->count_elevation <= 0))
+		if ((well_ptr->depth_user_defined == FALSE &&
+			 well_ptr->elevation_user_defined == FALSE) ||
+			(well_ptr->count_depth_user <= 0 && well_ptr->count_elevation_user <= 0))
 		{
 			sprintf(error_string, "No screened interval defined for well %d.",
 					well_ptr->n_user);
@@ -116,7 +115,7 @@ tidy_wells(void)
 	}
 	return (return_value);
 }
-
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 int
 build_wells(void)
@@ -225,6 +224,34 @@ build_wells(void)
 	}
 	return (return_code);
 }
+#endif
+/* ---------------------------------------------------------------------- */
+int
+wells_convert_coordinate_systems(void)
+/* ---------------------------------------------------------------------- */
+{
+	int j, return_code;
+	Well *well_ptr;
+
+	if (count_wells <= 0)
+		return (OK);
+	if (simulation > 0)
+		return (OK);
+
+	return_code = OK;
+
+	for (j = 0; j < count_wells; j++)
+	{
+		well_ptr = &(wells[j]);
+		if (!well_convert_xy_coordinate_system(well_ptr, PHAST_Transform::GRID, map_to_grid) ||
+			!well_elevations(well_ptr, map_to_grid))
+		{
+			return_code = ERROR;
+		}
+
+	}
+	return (return_code);
+}
 
 /* ---------------------------------------------------------------------- */
 int
@@ -283,11 +310,11 @@ setup_wells(void)
 		/*
 		 *  Find cells for well intervals
 		 */
-		screen_bottom = well_ptr->elevation[0].bottom;
-		screen_top = well_ptr->elevation[0].top;
-		for (i = 0; i < well_ptr->count_elevation; i++)
+		screen_bottom = well_ptr->elevation_grid[0].bottom;
+		screen_top = well_ptr->elevation_grid[0].top;
+		for (i = 0; i < well_ptr->count_elevation_grid; i++)
 		{
-			interval_ptr = &well_ptr->elevation[i];
+			interval_ptr = &well_ptr->elevation_grid[i];
 			if (interval_ptr->top > screen_top)
 				screen_top = interval_ptr->top;
 			if (interval_ptr->bottom < screen_bottom)
@@ -465,51 +492,30 @@ update_wells(void)
 }
 
 /* ---------------------------------------------------------------------- */
-void
-wells_convert_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM target,
-								PHAST_Transform * map2grid)
-/* ---------------------------------------------------------------------- */
-{
-	Well *well_ptr;
-/*
- *   Convert coordinates of all wells 
- */
-	int j;
-	if (count_wells <= 0)
-		return;
-	if (simulation > 0)
-		return;
-
-	// Convert coordinate system for well points
-	for (j = 0; j < count_wells; j++)
-	{
-		well_ptr = &(wells[j]);
-		well_convert_coordinate_system(well_ptr, target, map2grid);
-	}
-}
-
-/* ---------------------------------------------------------------------- */
-void
-well_convert_coordinate_system(Well * well_ptr,
+bool
+well_convert_xy_coordinate_system(Well * well_ptr,
 							   PHAST_Transform::COORDINATE_SYSTEM target,
 							   PHAST_Transform * map2grid)
 /* ---------------------------------------------------------------------- */
 {
-	if (well_ptr->coordinate_system == target)
-		return;
-	if (well_ptr->coordinate_system == PHAST_Transform::NONE)
+	bool return_code = true;
+
+	if (well_ptr->xy_coordinate_system == target)
+		return true;
+	if (well_ptr->xy_coordinate_system == PHAST_Transform::NONE)
 	{
 		sprintf(error_string, "Error with coordinate system for well %d %s.",
 				well_ptr->n_user, well_ptr->description);
 		error_msg(error_string, CONTINUE);
 		input_error++;
-		return;
+		return false;
 	}
 	switch (target)
 	{
 	case PHAST_Transform::GRID:
 		if (well_ptr->x_defined == FALSE || well_ptr->y_defined == FALSE)
 		{
+			return_code = false;
 			input_error++;
 		}
 		else
@@ -518,12 +524,13 @@ well_convert_coordinate_system(Well * well_ptr,
 			map2grid->Transform(p);
 			well_ptr->x = p.x();
 			well_ptr->y = p.y();
-			well_ptr->coordinate_system = PHAST_Transform::GRID;
+			well_ptr->xy_coordinate_system = PHAST_Transform::GRID;
 		}
 		break;
 	case PHAST_Transform::MAP:
 		if (well_ptr->x_defined == FALSE || well_ptr->y_defined == FALSE)
 		{
+			return_code = false;
 			input_error++;
 		}
 		else
@@ -532,7 +539,7 @@ well_convert_coordinate_system(Well * well_ptr,
 			map2grid->Inverse_transform(p);
 			well_ptr->x = p.x();
 			well_ptr->y = p.y();
-			well_ptr->coordinate_system = PHAST_Transform::MAP;
+			well_ptr->xy_coordinate_system = PHAST_Transform::MAP;
 		}
 		break;
 	default:
@@ -541,5 +548,122 @@ well_convert_coordinate_system(Well * well_ptr,
 				well_ptr->n_user, well_ptr->description);
 		error_msg(error_string, CONTINUE);
 		input_error++;
+		return_code = false;
 	}
+	return return_code;
+}
+/* ---------------------------------------------------------------------- */
+bool
+well_elevations(Well * well_ptr,
+				PHAST_Transform * map2grid)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *   Make list of z elevations in grid units for well
+ *
+ *   lsd and elevation units are given by well_ptr->z_coordinate_system
+ *   depth units are given by well_ptr->depth_units
+ */
+	int i, k;
+	bool return_code = true;
+
+	/* Copy from user to working */
+	free_check_null (well_ptr->elevation_grid);
+	well_ptr->elevation_grid = NULL;
+	well_ptr->elevation_grid = (Well_Interval *) malloc((size_t) ((well_ptr->count_elevation_user + 1) * sizeof(Well_Interval)));
+	if (well_ptr->elevation_grid == NULL) malloc_error();
+	memcpy(well_ptr->elevation_grid, well_ptr->elevation_user, (size_t) (well_ptr->count_elevation_user * sizeof(Well_Interval)));
+	well_ptr->count_elevation_grid = well_ptr->count_elevation_user;
+
+	/* convert elevations to grid units */
+	/* set lsd to grid units */
+
+	double lsd_grid = well_ptr->lsd;
+	switch (well_ptr->z_coordinate_system)
+	{
+	case PHAST_Transform::GRID:
+		break;
+	case PHAST_Transform::NONE:
+		sprintf(error_string,
+			"Z coordinate system undefined for well: %d, %s",
+			well_ptr->n_user, well_ptr->description);
+		error_msg(error_string, CONTINUE);
+		input_error++;
+		return_code = false;
+		break;
+	case PHAST_Transform::MAP:
+		{
+			Point p(0, 0, well_ptr->lsd);
+			map2grid->Transform(p);
+			lsd_grid = p.z();
+			double conversion_factor;
+			conversion_factor = units.map_vertical.input_to_si / units.vertical.input_to_si;
+
+			for (i = 0; i < well_ptr->count_elevation_grid; i++)
+			{
+				well_ptr->elevation_grid[i].top *= conversion_factor;
+				well_ptr->elevation_grid[i].bottom *= conversion_factor;
+			}
+		}
+		break;
+	}
+
+	/* convert depths to elevations */
+	if (well_ptr->depth_user_defined == TRUE)
+	{
+		double conversion_factor = 1.0;
+		if (well_ptr->depth_units->defined == TRUE)
+		{
+			conversion_factor = well_ptr->depth_units->input_to_si / units.vertical.input_to_si;
+		}
+		for (i = 0; i < well_ptr->count_depth_user; i++)
+		{
+			well_ptr->elevation_grid =	(Well_Interval *) realloc(well_ptr->elevation_grid,
+				(size_t) (well_ptr->count_elevation_grid + 1) * sizeof(Well_Interval));
+			if (well_ptr->elevation_grid == NULL) malloc_error();
+			well_ptr->elevation_grid[well_ptr->count_elevation_grid].top =
+				lsd_grid - well_ptr->depth_user[i].top * conversion_factor;
+			well_ptr->elevation_grid[well_ptr->count_elevation_grid].bottom =
+				lsd_grid - well_ptr->depth_user[i].bottom  * conversion_factor;
+			well_ptr->count_elevation_grid++;
+		}
+	}
+
+	/* make sure top is greater than bottom */
+	for (i = 0; i < well_ptr->count_elevation_grid; i++)
+	{
+		if (well_ptr->elevation_grid[i].top < well_ptr->elevation_grid[i].bottom)
+		{
+			double t = well_ptr->elevation_grid[i].top;
+			well_ptr->elevation_grid[i].top = well_ptr->elevation_grid[i].bottom;
+			well_ptr->elevation_grid[i].bottom = t;
+		}
+	}
+
+	/* sort by tops from bottom of well to top of well */
+	qsort(well_ptr->elevation_grid, (size_t) well_ptr->count_elevation_grid,
+		(size_t) sizeof(Well_Interval), well_interval_compare);
+
+	/* check for overlaps */
+	for (i = 0; i < well_ptr->count_elevation_grid - 1; i++)
+	{
+		for (k = i + 1; k < well_ptr->count_elevation_grid; k++)
+		{
+			if (well_ptr->elevation_grid[i].top >
+				well_ptr->elevation_grid[k].bottom)
+			{
+				return_code = false;
+				input_error++;
+				sprintf(error_string,
+					"Well screen elevation intervals overlap (grid units).\n\tScreen 1:\n\t\tElevation:\t%g\t%g\n\tScreen 2:\n\t\tElevation:\t%g\t%g\n",
+					well_ptr->elevation_grid[i].top,
+					well_ptr->elevation_grid[i].bottom,
+					well_ptr->elevation_grid[k].top,
+					well_ptr->elevation_grid[k].bottom);
+				error_msg(error_string, CONTINUE);
+			}
+		}
+	}
+	return (return_code);
+	
 }
