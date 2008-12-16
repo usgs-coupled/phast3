@@ -568,6 +568,8 @@ well_convert_xy_to_grid(Well * well_ptr,
 	switch (well_ptr->xy_coordinate_system_user)
 	{
 	case PHAST_Transform::GRID:
+		well_ptr->x_grid = well_ptr->x_user;
+		well_ptr->y_grid = well_ptr->y_user;
 		break;
 	case PHAST_Transform::MAP:
 		{
@@ -582,6 +584,8 @@ well_convert_xy_to_grid(Well * well_ptr,
 				well_ptr->n_user, well_ptr->description);
 		error_msg(error_string, CONTINUE);
 		input_error++;
+		well_ptr->x_grid = well_ptr->x_user;
+		well_ptr->y_grid = well_ptr->y_user;
 		return false;
 		break;
 	}

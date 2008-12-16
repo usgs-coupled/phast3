@@ -8303,8 +8303,8 @@ read_well(void)
 	well_ptr->diameter_defined = FALSE;
 	well_ptr->radius = 0;
 	well_ptr->radius_defined = FALSE;
-	well_ptr->xy_coordinate_system_user = PHAST_Transform::MAP;
-	well_ptr->z_coordinate_system_user = PHAST_Transform::MAP;
+	well_ptr->xy_coordinate_system_user = PHAST_Transform::GRID;
+	well_ptr->z_coordinate_system_user = PHAST_Transform::GRID;
 	well_ptr->depth_units_user = new cunit("m");
 	well_ptr->elevation_grid = NULL;
 
