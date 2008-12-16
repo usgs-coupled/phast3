@@ -2,13 +2,12 @@
 #include "hstinpt.h"
 #include "PHAST_Transform.h"
 static char const svnid[] = "$Id$";
-static bool well_convert_xy_coordinate_system(Well * well_ptr,
-										   PHAST_Transform::
-										   COORDINATE_SYSTEM target,
-										   PHAST_Transform * map2grid);
-static void wells_convert_xy_coordinate_system(PHAST_Transform::
-											COORDINATE_SYSTEM target,
-											PHAST_Transform * map2grid);
+//static bool well_convert_xy_coordinate_system(Well * well_ptr,
+//										   PHAST_Transform::
+//										   COORDINATE_SYSTEM target,
+//										   PHAST_Transform * map2grid);
+static bool well_convert_xy_to_grid(Well * well_ptr,
+									PHAST_Transform * map2grid);
 static bool well_elevations(Well * well_ptr,
 							PHAST_Transform * map2grid);
 /* ---------------------------------------------------------------------- */
@@ -54,7 +53,7 @@ tidy_wells(void)
 	for (i = 0; i < count_wells; i++)
 	{
 		well_ptr = &wells[i];
-		if (well_ptr->x_defined == FALSE || well_ptr->y_defined == FALSE)
+		if (well_ptr->x_user_defined == FALSE || well_ptr->y_user_defined == FALSE)
 		{
 			sprintf(error_string,
 					"X or Y not defined for well location, well %d.",
@@ -85,7 +84,7 @@ tidy_wells(void)
 				return_value = FALSE;
 			}
 		}
-		if (well_ptr->depth_user_defined == TRUE && well_ptr->lsd_defined == FALSE)
+		if (well_ptr->depth_user_defined == TRUE && well_ptr->lsd_user_defined == FALSE)
 		{
 			sprintf(error_string,
 					"Screened interval defined by depth below land surface, but no land surface elevation defined for well %d.",
@@ -243,7 +242,7 @@ wells_convert_coordinate_systems(void)
 	for (j = 0; j < count_wells; j++)
 	{
 		well_ptr = &(wells[j]);
-		if (!well_convert_xy_coordinate_system(well_ptr, PHAST_Transform::GRID, map_to_grid) ||
+		if (!well_convert_xy_to_grid(well_ptr, map_to_grid) ||
 			!well_elevations(well_ptr, map_to_grid))
 		{
 			return_code = ERROR;
@@ -297,7 +296,7 @@ setup_wells(void)
 		}
 		/* find i, j, for well location */
 		if (which_cell
-			(well_ptr->x, well_ptr->y, grid[2].coord[grid[2].count_coord - 1],
+			(well_ptr->x_grid, well_ptr->y_grid, grid[2].coord[grid[2].count_coord - 1],
 			 &i_cell, &j_cell, &k_cell) == ERROR)
 		{
 			input_error++;
@@ -383,11 +382,10 @@ setup_wells(void)
 		}
 		well_ptr->screen_top = screen_top;
 		well_ptr->screen_bottom = screen_bottom;
-		if (well_ptr->lsd_defined)
+		if (well_ptr->lsd_user_defined)
 		{
-			well_ptr->screen_depth_top = well_ptr->lsd - well_ptr->screen_top;
-			well_ptr->screen_depth_bottom =
-				well_ptr->lsd - well_ptr->screen_bottom;
+			well_ptr->screen_depth_top = well_ptr->lsd_user - well_ptr->screen_top;
+			well_ptr->screen_depth_bottom =	well_ptr->lsd_user - well_ptr->screen_bottom;
 		}
 		else
 		{
@@ -490,7 +488,7 @@ update_wells(void)
 	}
 	return (OK);
 }
-
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 bool
 well_convert_xy_coordinate_system(Well * well_ptr,
@@ -500,9 +498,9 @@ well_convert_xy_coordinate_system(Well * well_ptr,
 {
 	bool return_code = true;
 
-	if (well_ptr->xy_coordinate_system == target)
+	if (well_ptr->xy_coordinate_system_user == target)
 		return true;
-	if (well_ptr->xy_coordinate_system == PHAST_Transform::NONE)
+	if (well_ptr->xy_coordinate_system_user == PHAST_Transform::NONE)
 	{
 		sprintf(error_string, "Error with coordinate system for well %d %s.",
 				well_ptr->n_user, well_ptr->description);
@@ -513,33 +511,33 @@ well_convert_xy_coordinate_system(Well * well_ptr,
 	switch (target)
 	{
 	case PHAST_Transform::GRID:
-		if (well_ptr->x_defined == FALSE || well_ptr->y_defined == FALSE)
+		if (well_ptr->x_user_defined == FALSE || well_ptr->y_user_defined == FALSE)
 		{
 			return_code = false;
 			input_error++;
 		}
 		else
 		{
-			Point p(well_ptr->x, well_ptr->y, 0.0);
+			Point p(well_ptr->x_user, well_ptr->y_user, 0.0);
 			map2grid->Transform(p);
-			well_ptr->x = p.x();
-			well_ptr->y = p.y();
-			well_ptr->xy_coordinate_system = PHAST_Transform::GRID;
+			well_ptr->x_grid = p.x();
+			well_ptr->y_grid = p.y();
+			well_ptr->xy_coordinate_system_user = PHAST_Transform::GRID;
 		}
 		break;
 	case PHAST_Transform::MAP:
-		if (well_ptr->x_defined == FALSE || well_ptr->y_defined == FALSE)
+		if (well_ptr->x_user_defined == FALSE || well_ptr->y_user_defined == FALSE)
 		{
 			return_code = false;
 			input_error++;
 		}
 		else
 		{
-			Point p(well_ptr->x, well_ptr->y, 0.0);
+			Point p(well_ptr->x_user, well_ptr->y_user, 0.0);
 			map2grid->Inverse_transform(p);
-			well_ptr->x = p.x();
-			well_ptr->y = p.y();
-			well_ptr->xy_coordinate_system = PHAST_Transform::MAP;
+			well_ptr->x_grid = p.x();
+			well_ptr->y_grid = p.y();
+			well_ptr->xy_coordinate_system_user = PHAST_Transform::MAP;
 		}
 		break;
 	default:
@@ -551,6 +549,43 @@ well_convert_xy_coordinate_system(Well * well_ptr,
 		return_code = false;
 	}
 	return return_code;
+}
+#endif
+/* ---------------------------------------------------------------------- */
+bool
+well_convert_xy_to_grid(Well * well_ptr,
+						PHAST_Transform * map2grid)
+/* ---------------------------------------------------------------------- */
+{
+	if (well_ptr->xy_coordinate_system_user == PHAST_Transform::NONE)
+	{
+		sprintf(error_string, "Error with coordinate system for well %d %s.",
+				well_ptr->n_user, well_ptr->description);
+		error_msg(error_string, CONTINUE);
+		input_error++;
+		return false;
+	}
+	switch (well_ptr->xy_coordinate_system_user)
+	{
+	case PHAST_Transform::GRID:
+		break;
+	case PHAST_Transform::MAP:
+		{
+			Point p(well_ptr->x_user, well_ptr->y_user, 0.0);
+			map2grid->Inverse_transform(p);
+			well_ptr->x_grid = p.x();
+			well_ptr->y_grid = p.y();
+		}
+		break;
+	default:
+		sprintf(error_string, "Error with coordinate system for well %d %s.",
+				well_ptr->n_user, well_ptr->description);
+		error_msg(error_string, CONTINUE);
+		input_error++;
+		return false;
+		break;
+	}
+	return true;
 }
 /* ---------------------------------------------------------------------- */
 bool
@@ -578,8 +613,8 @@ well_elevations(Well * well_ptr,
 	/* convert elevations to grid units */
 	/* set lsd to grid units */
 
-	double lsd_grid = well_ptr->lsd;
-	switch (well_ptr->z_coordinate_system)
+	double lsd_grid = well_ptr->lsd_user;
+	switch (well_ptr->z_coordinate_system_user)
 	{
 	case PHAST_Transform::GRID:
 		break;
@@ -593,7 +628,7 @@ well_elevations(Well * well_ptr,
 		break;
 	case PHAST_Transform::MAP:
 		{
-			Point p(0, 0, well_ptr->lsd);
+			Point p(0, 0, well_ptr->lsd_user);
 			map2grid->Transform(p);
 			lsd_grid = p.z();
 			double conversion_factor;

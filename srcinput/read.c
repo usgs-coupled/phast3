@@ -8281,17 +8281,17 @@ read_well(void)
 	well_ptr->new_def = TRUE;
 	well_ptr->n_user = n_user;
 	well_ptr->description = description;
-	well_ptr->x = 0;
-	well_ptr->x_defined = FALSE;
-	well_ptr->y = 0;
-	well_ptr->y_defined = FALSE;
+	well_ptr->x_user = 0;
+	well_ptr->x_user_defined = FALSE;
+	well_ptr->y_user = 0;
+	well_ptr->y_user_defined = FALSE;
 	well_ptr->radius = 0;
 	well_ptr->radius_defined = FALSE;
 	well_ptr->diameter = 0;
 	well_ptr->solution = NULL;
 	well_ptr->solution_defined = FALSE;
-	well_ptr->lsd = 0;
-	well_ptr->lsd_defined = FALSE;
+	well_ptr->lsd_user = 0;
+	well_ptr->lsd_user_defined = FALSE;
 	well_ptr->mobility_and_pressure = FALSE;
 	well_ptr->depth_user_defined = FALSE;
 	well_ptr->count_depth_user = 0;
@@ -8303,8 +8303,8 @@ read_well(void)
 	well_ptr->diameter_defined = FALSE;
 	well_ptr->radius = 0;
 	well_ptr->radius_defined = FALSE;
-	well_ptr->xy_coordinate_system = PHAST_Transform::MAP;
-	well_ptr->z_coordinate_system = PHAST_Transform::MAP;
+	well_ptr->xy_coordinate_system_user = PHAST_Transform::MAP;
+	well_ptr->z_coordinate_system_user = PHAST_Transform::MAP;
 	well_ptr->depth_units = new cunit("m");
 	well_ptr->elevation_grid = NULL;
 
@@ -8378,8 +8378,8 @@ read_well(void)
 			}
 			else
 			{
-				sscanf(token, "%lf", &well_ptr->lsd);
-				well_ptr->lsd_defined = TRUE;
+				sscanf(token, "%lf", &well_ptr->lsd_user);
+				well_ptr->lsd_user_defined = TRUE;
 			}
 			/* read to next */
 			opt = next_keyword_or_option(opt_list, count_opt_list);
@@ -8581,8 +8581,8 @@ read_well(void)
 			}
 			else
 			{
-				sscanf(token, "%lf", &well_ptr->x);
-				well_ptr->x_defined = TRUE;
+				sscanf(token, "%lf", &well_ptr->x_user);
+				well_ptr->x_user_defined = TRUE;
 			}
 			j = copy_token(token, &next_char, &l);
 			if (j != DIGIT)
@@ -8594,8 +8594,8 @@ read_well(void)
 			}
 			else
 			{
-				sscanf(token, "%lf", &well_ptr->y);
-				well_ptr->y_defined = TRUE;
+				sscanf(token, "%lf", &well_ptr->y_user);
+				well_ptr->y_user_defined = TRUE;
 			}
 			/* read to next */
 			opt = next_keyword_or_option(opt_list, count_opt_list);
@@ -8606,11 +8606,11 @@ read_well(void)
 			str_tolower(token);
 			if (strstr(token, "map") == token)
 			{
-				well_ptr->xy_coordinate_system = PHAST_Transform::MAP;
+				well_ptr->xy_coordinate_system_user = PHAST_Transform::MAP;
 			}
 			else if (strstr(token, "grid") == token)
 			{
-				well_ptr->xy_coordinate_system = PHAST_Transform::GRID;
+				well_ptr->xy_coordinate_system_user = PHAST_Transform::GRID;
 			}
 			else
 			{
@@ -8628,11 +8628,11 @@ read_well(void)
 			str_tolower(token);
 			if (strstr(token, "map") == token)
 			{
-				well_ptr->z_coordinate_system = PHAST_Transform::MAP;
+				well_ptr->z_coordinate_system_user = PHAST_Transform::MAP;
 			}
 			else if (strstr(token, "grid") == token)
 			{
-				well_ptr->z_coordinate_system = PHAST_Transform::GRID;
+				well_ptr->z_coordinate_system_user = PHAST_Transform::GRID;
 			}
 			else
 			{

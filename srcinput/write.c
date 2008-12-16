@@ -743,6 +743,7 @@ write_source_sink(void)
 			{
 				code = 11;
 			}
+			/*
 			output_msg(OUTPUT_HST,
 					   "%d %16.7e %16.7e %16.7e %16.7e  %16.7e %16.7e %e %d\n",
 					   wells[i].n_user,
@@ -754,6 +755,17 @@ write_source_sink(void)
 					   units.vertical.input_to_si,
 					   wells[i].screen_depth_top * units.vertical.input_to_si,
 					   diameter * units.well_diameter.input_to_si, code);
+			*/
+			output_msg(OUTPUT_HST,
+					   "%d %16.7e %16.7e %16.7e %16.7e  %16.7e %16.7e %e %d\n",
+					   wells[i].n_user,
+					   wells[i].x_grid * units.horizontal.input_to_si,
+					   wells[i].y_grid * units.horizontal.input_to_si,
+					   wells[i].screen_bottom * units.vertical.input_to_si,
+					   wells[i].screen_top * units.vertical.input_to_si,
+					   wells[i].screen_depth_bottom * units.vertical.input_to_si,
+					   wells[i].screen_depth_top * units.vertical.input_to_si,
+					   diameter * units.well_diameter.input_to_si, code);
 			output_msg(OUTPUT_HST,
 					   "C.2.14.9 .. cell number, screened interval below node (m), screened interval above node (m)\n");
 			for (j = 0; j < wells[i].count_cell_fraction; j++)
@@ -761,10 +773,8 @@ write_source_sink(void)
 				/* output_msg(OUTPUT_HST,"\t%d %e\n", wells[i].cell_fraction[j].cell + 1, wells[i].cell_fraction[j].f); */
 				output_msg(OUTPUT_HST, "    %d %e %e\n",
 						   wells[i].cell_fraction[j].cell + 1,
-						   wells[i].cell_fraction[j].lower *
-						   units.vertical.input_to_si,
-						   wells[i].cell_fraction[j].upper *
-						   units.vertical.input_to_si);
+						   wells[i].cell_fraction[j].lower * units.vertical.input_to_si,
+						   wells[i].cell_fraction[j].upper * units.vertical.input_to_si);
 			}
 			output_msg(OUTPUT_HST, "C ..  end 2.14.9\n");
 			output_msg(OUTPUT_HST, "END\n");

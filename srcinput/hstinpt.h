@@ -274,14 +274,15 @@ typedef struct Well
 		description;
 	int
 		new_def;
-	double
-		x;
-	int
-		x_defined;
-	double
-		y;
-	int
-		y_defined;
+
+	double x_user;
+	int x_user_defined;
+	double y_user;
+	int	y_user_defined;
+
+	double x_grid;
+	double y_grid;
+
 	double
 		radius;
 	int
@@ -297,9 +298,9 @@ typedef struct Well
 	int
 		current_solution;
 	double
-		lsd;
+		lsd_user;
 	int
-		lsd_defined;
+		lsd_user_defined;
 	int
 		mobility_and_pressure;
 
@@ -331,8 +332,8 @@ typedef struct Well
 		screen_top,
 		screen_depth_bottom,
 		screen_depth_top;
-	PHAST_Transform::COORDINATE_SYSTEM xy_coordinate_system;
-	PHAST_Transform::COORDINATE_SYSTEM z_coordinate_system;
+	PHAST_Transform::COORDINATE_SYSTEM xy_coordinate_system_user;
+	PHAST_Transform::COORDINATE_SYSTEM z_coordinate_system_user;
 	cunit * depth_units;
 	
 } Well;
