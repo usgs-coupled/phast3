@@ -730,7 +730,7 @@ well_free(Well * well_ptr)
 	time_series_free(well_ptr->q);
 	free_check_null(well_ptr->solution);
 	free_check_null(well_ptr->q);
-	delete well_ptr->depth_units;
+	delete well_ptr->depth_units_user;
 	return (OK);
 }
 

@@ -334,7 +334,7 @@ typedef struct Well
 		screen_depth_top;
 	PHAST_Transform::COORDINATE_SYSTEM xy_coordinate_system_user;
 	PHAST_Transform::COORDINATE_SYSTEM z_coordinate_system_user;
-	cunit * depth_units;
+	cunit * depth_units_user;
 	
 } Well;
 EXTERNAL Well *

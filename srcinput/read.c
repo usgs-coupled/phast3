@@ -8305,7 +8305,7 @@ read_well(void)
 	well_ptr->radius_defined = FALSE;
 	well_ptr->xy_coordinate_system_user = PHAST_Transform::MAP;
 	well_ptr->z_coordinate_system_user = PHAST_Transform::MAP;
-	well_ptr->depth_units = new cunit("m");
+	well_ptr->depth_units_user = new cunit("m");
 	well_ptr->elevation_grid = NULL;
 
 	well_number = n;
@@ -8649,18 +8649,18 @@ read_well(void)
 			if (copy_token(token, &next_char, &l) == EMPTY ||
 				units_conversion(token,
 								 units.vertical.si,
-								 &well_ptr->depth_units->input_to_si,
+								 &well_ptr->depth_units_user->input_to_si,
 								 TRUE) == ERROR)
 			{
 				input_error++;
 				sprintf(error_string,
 						"Expected units for well screen depths (L).");
 				error_msg(error_string, CONTINUE);
-				well_ptr->depth_units->undefine();
+				well_ptr->depth_units_user->undefine();
 			}
 			else
 			{
-				well_ptr->depth_units->define(token);
+				well_ptr->depth_units_user->define(token);
 			}
 			break;
 			opt = next_keyword_or_option(opt_list, count_opt_list);

@@ -643,13 +643,13 @@ well_elevations(Well * well_ptr,
 		break;
 	}
 
-	/* convert depths to elevations */
+	/* convert depths to elevations in grid units */
 	if (well_ptr->depth_user_defined == TRUE)
 	{
 		double conversion_factor = 1.0;
-		if (well_ptr->depth_units->defined == TRUE)
+		if (well_ptr->depth_units_user->defined == TRUE)
 		{
-			conversion_factor = well_ptr->depth_units->input_to_si / units.vertical.input_to_si;
+			conversion_factor = well_ptr->depth_units_user->input_to_si / units.vertical.input_to_si;
 		}
 		for (i = 0; i < well_ptr->count_depth_user; i++)
 		{
