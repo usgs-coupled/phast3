@@ -241,6 +241,7 @@ wells_convert_coordinate_systems(void)
 
 	for (j = 0; j < count_wells; j++)
 	{
+		wells[j].new_def = FALSE;
 		well_ptr = &(wells[j]);
 		if (!well_convert_xy_to_grid(well_ptr, map_to_grid) ||
 			!well_elevations(well_ptr, map_to_grid))

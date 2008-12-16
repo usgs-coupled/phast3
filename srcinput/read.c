@@ -7627,8 +7627,10 @@ read_river(void)
 		"node",					/* 22 */
 		"point",				/* 23 */
 		"coordinate_system"		/* 24 */
+		,"xy_coordinate_system"	/* 25 */
+		,"z_coordinate_system"	/* 26 */
 	};
-	int count_opt_list = 25;
+	int count_opt_list = 27;
 /*
  *   Read river points
  */
@@ -7685,7 +7687,8 @@ read_river(void)
 	point_number = -1;
 	rivers[river_number].n_user = n_user;
 	rivers[river_number].description = description;
-	rivers[river_number].coordinate_system = PHAST_Transform::MAP;
+	rivers[river_number].coordinate_system = PHAST_Transform::GRID;
+	rivers[river_number].z_coordinate_system_user = PHAST_Transform::GRID;
 /*
  *   get first line
  */
@@ -8083,6 +8086,7 @@ read_river(void)
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		case 24:				/* coordinate_system */
+		case 25:				/* xy_coordinate_system */
 			j = copy_token(token, &next_char, &l);
 			str_tolower(token);
 			if (strstr(token, "map") == token)
@@ -8103,7 +8107,27 @@ read_river(void)
 			}
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
-		}
+		case 26:				/* z_coordinate_system */
+			j = copy_token(token, &next_char, &l);
+			str_tolower(token);
+			if (strstr(token, "map") == token)
+			{
+				river_ptr->z_coordinate_system_user = PHAST_Transform::MAP;
+			}
+			else if (strstr(token, "grid") == token)
+			{
+				river_ptr->z_coordinate_system_user = PHAST_Transform::GRID;
+			}
+			else
+			{
+				sprintf(error_string,
+						"Expected coordinate system for river bottoms. %s",
+						tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+			}
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;		}
 		return_value = check_line_return;
 		if (return_value == EOF || return_value == KEYWORD)
 			break;

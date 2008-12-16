@@ -43,7 +43,8 @@ typedef struct
 	int update;
 	int n_user;
 	char *description;
-	  PHAST_Transform::COORDINATE_SYSTEM coordinate_system;
+	PHAST_Transform::COORDINATE_SYSTEM coordinate_system;
+	PHAST_Transform::COORDINATE_SYSTEM z_coordinate_system_user;
 } River;
 typedef struct
 {
