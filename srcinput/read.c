@@ -8248,7 +8248,7 @@ read_well(void)
 		, "z_coordinate_system"     /* 22 */
 		, "xy_coordinate_system"   /* 23 */
 	};
-	int count_opt_list = 25;
+	int count_opt_list = 24;
 /*
  *   Read well information
  */
