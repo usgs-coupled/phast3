@@ -34,6 +34,8 @@ drain_width("m"),
 map_horizontal("m"),
 map_vertical("m"),
 river_width("m")
+, river_depth("m")
+, well_depth("m")
 {
 }
 
@@ -64,4 +66,6 @@ cunits::undefine(void)
 	this->map_horizontal.undefine();
 	this->map_vertical.undefine();
 	this->river_width.undefine();
+	this->river_depth.undefine();
+	this->well_depth.undefine();
 }

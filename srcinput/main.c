@@ -585,6 +585,7 @@ initialize(void)
 	rivers->count_points = 0;
 	rivers->points = NULL;
 	count_rivers = 0;
+	river_depths_defined = false;
 #ifndef PI
 	PI = acos(-1.);
 #endif
@@ -593,6 +594,7 @@ initialize(void)
  */
 	wells = NULL;
 	count_wells = 0;
+	well_depths_defined = false;
 
 /*
  *   default free surface boundary condition 

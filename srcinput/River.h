@@ -6,12 +6,12 @@
  * ---------------------------------------------------------------------- */
 typedef struct
 {
-	double x;
-	int x_defined;
-	double y;
-	int y_defined;
-	double width;
-	int width_defined;
+	double x_user;
+	int x_user_defined;
+	double y_user;
+	int y_user_defined;
+	double width_user;
+	int width_user_defined;
 	double k;
 	int k_defined;
 	double thickness;
@@ -19,11 +19,17 @@ typedef struct
 	struct time_series *head;
 	int head_defined;
 	double current_head;
-	double depth;
-	int depth_defined;
-	double z;
-	int z_defined;
-	int z_input_defined;
+	double depth_user;
+	int depth_user_defined;
+	double z_user;
+	int z_user_defined;
+	//int z_input_defined;
+
+	double x_grid;
+	double y_grid;
+	double width_grid; 
+	double z_grid;
+
 	struct time_series *solution;
 	int solution_defined;
 	int current_solution;

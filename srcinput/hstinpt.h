@@ -239,6 +239,7 @@ struct BC
  * ---------------------------------------------------------------------- */
 EXTERNAL River *rivers;
 EXTERNAL int count_rivers;
+EXTERNAL bool river_depths_defined;
 
 /* ----------------------------------------------------------------------
  *   Drains
@@ -334,13 +335,13 @@ typedef struct Well
 		screen_depth_top;
 	PHAST_Transform::COORDINATE_SYSTEM xy_coordinate_system_user;
 	PHAST_Transform::COORDINATE_SYSTEM z_coordinate_system_user;
-	cunit * depth_units_user;
 	
 } Well;
 EXTERNAL Well *
 	wells;
 EXTERNAL int
 	count_wells;
+EXTERNAL bool well_depths_defined;
 /* ----------------------------------------------------------------------
  *   all cell and element properties
  * ---------------------------------------------------------------------- */
@@ -571,8 +572,9 @@ struct cunits
 		map_horizontal;
 	struct cunit
 		map_vertical;
-	struct cunit
-		river_width;
+	struct cunit river_width;
+	struct cunit river_depth;
+	struct cunit well_depth;
 
 // Constructors
 	cunits(void);

@@ -1057,8 +1057,8 @@ write_bc_static(void)
 															 GRAVITY);
 
 				/*  calculate bottom elevations, convert to SI */
-
-				if (rivers[river_number].points[point_number].z_defined ==
+#ifdef SKIP
+				if (rivers[river_number].points[point_number].z_user_defined ==
 					FALSE)
 				{
 					z0 = rivers[river_number].points[point_number].
@@ -1071,6 +1071,10 @@ write_bc_static(void)
 					z0 = rivers[river_number].points[point_number].z *
 						units.vertical.input_to_si;
 				}
+#endif
+				z0 = rivers[river_number].points[point_number].z_grid *
+						units.vertical.input_to_si;
+#ifdef SKIP
 				if (rivers[river_number].points[point_number + 1].z_defined ==
 					FALSE)
 				{
@@ -1087,7 +1091,9 @@ write_bc_static(void)
 													 1].z *
 						units.vertical.input_to_si;
 				}
-
+#endif
+				z1 = rivers[river_number].points[point_number + 1].z_grid *
+						units.vertical.input_to_si;
 				z = (z0 * w0 + z1 * w1);
 
 				/* segment number, cell no., area, leakance, z */
@@ -1146,10 +1152,9 @@ write_bc_static(void)
 															 GRAVITY);
 
 				/*  get elevations, convert to SI */
-				z0 = drains[drain_number]->points[point_number].z *
+				z0 = drains[drain_number]->points[point_number].z_grid *
 					units.vertical.input_to_si;
-				z1 = drains[drain_number]->points[point_number +
-												  1].z *
+				z1 = drains[drain_number]->points[point_number + 1].z_grid *
 					units.vertical.input_to_si;
 				z = (z0 * w0 + z1 * w1);
 

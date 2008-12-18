@@ -652,10 +652,17 @@ well_elevations(Well * well_ptr,
 	if (well_ptr->depth_user_defined == TRUE)
 	{
 		double conversion_factor = 1.0;
+		if (units.well_depth.defined == TRUE)
+		{
+			conversion_factor = units.well_depth.input_to_si / units.vertical.input_to_si;
+		}
+#ifdef SKIP
+		/* Not used, currently using well_depth in UNITS input */
 		if (well_ptr->depth_units_user->defined == TRUE)
 		{
 			conversion_factor = well_ptr->depth_units_user->input_to_si / units.vertical.input_to_si;
 		}
+#endif
 		for (i = 0; i < well_ptr->count_depth_user; i++)
 		{
 			well_ptr->elevation_grid =	(Well_Interval *) realloc(well_ptr->elevation_grid,

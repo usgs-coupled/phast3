@@ -29,7 +29,7 @@ Drain::~Drain(void)
 		}
 	}
 }
-
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 int
 tidy_drains(void)
@@ -348,6 +348,328 @@ tidy_drains(void)
 	}
 	return (return_value);
 }
+#endif
+/* ---------------------------------------------------------------------- */
+int
+tidy_drains(void)
+/* ---------------------------------------------------------------------- */
+{
+	/*
+	 *   Check drain data 
+	 */
+	int i, j, k, return_value;
+	double length, total_length;
+	Drain *drain_ptr;
+	int count_drains = drains.size();
+	double x1, x2;
+	return_value = OK;
+	if (count_drains <= 0)
+		return (OK);
+	if (simulation > 0)
+		return (OK);
+	for (j = 0; j < count_drains; j++)
+	{
+		drain_ptr = drains[j];
+		/*
+		 *  Logical checks on drain
+		 */
+		if (drain_ptr->points.size() < 2)
+		{
+			sprintf(error_string,
+					"Drain must have at least 2 points. Drain %d %s.",
+					drain_ptr->n_user, drain_ptr->description.c_str());
+			error_msg(error_string, CONTINUE);
+			return_value = FALSE;
+			input_error++;
+		}
+		/*
+		 *   Check drain data
+		 */
+		for (i = 0; i < (int) drain_ptr->points.size(); i++)
+		{
+			if (drain_ptr->points[i].x_user_defined == FALSE
+				|| drain_ptr->points[i].y_user_defined == FALSE)
+			{
+				sprintf(error_string,
+						"X or Y not defined for drain point %d of drain %d.",
+						i + 1, j);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+				return_value = FALSE;
+			}
+		}
+		/*
+		 *   Check width data
+		 */
+		if (drain_ptr->points[0].width_user_defined == FALSE
+			|| drain_ptr->points[drain_ptr->points.size() -
+								 1].width_user_defined == FALSE)
+		{
+			sprintf(error_string,
+					"Width must be defined at first and last drain point (1 and %d) of drain %d.",
+					(int) drain_ptr->points.size(), j);
+			error_msg(error_string, CONTINUE);
+			input_error++;
+			return_value = FALSE;
+		}
+		/*
+		 *   Check k data
+		 */
+		if (drain_ptr->points[0].k_defined == FALSE
+			|| drain_ptr->points[drain_ptr->points.size() - 1].k_defined ==
+			FALSE)
+		{
+			sprintf(error_string,
+					"Hydraulic conductivity must be defined at first and last drain point (1 and %d) of drain %d.",
+					(int) drain_ptr->points.size(), j);
+			error_msg(error_string, CONTINUE);
+			input_error++;
+			return_value = FALSE;
+		}
+		/*
+		 *   Check thickness data
+		 */
+		if (drain_ptr->points[0].thickness_defined == FALSE
+			|| drain_ptr->points[drain_ptr->points.size() -
+								 1].thickness_defined == FALSE)
+		{
+			sprintf(error_string,
+					"Thickness must be defined at first and last drain point (1 and %d) of drain %d.",
+					(int) drain_ptr->points.size(), j);
+			error_msg(error_string, CONTINUE);
+			input_error++;
+			return_value = FALSE;
+		}
+		/* 
+		 *   Check z data
+		 */
+		if (drain_ptr->points[0].z_user_defined == FALSE
+			|| drain_ptr->points[drain_ptr->points.size() - 1].z_user_defined ==
+			FALSE)
+		{
+			sprintf(error_string,
+					"Drain elevation must be defined at first and last drain point (1 and %d) of drain %d.",
+					(int) drain_ptr->points.size(), j);
+			error_msg(error_string, CONTINUE);
+			input_error++;
+			return_value = FALSE;
+		}
+	}
+
+	if (return_value == FALSE) return(FALSE);
+
+	/* continue processing drains */
+
+	for (j = 0; j < count_drains; j++)
+	{
+		drain_ptr = drains[j];
+
+
+
+		/* calculate grid x, y, z in grid units */
+
+		drains[j]->Convert_xy_to_grid(map_to_grid);
+		drains[j]->Convert_z_to_grid(map_to_grid);
+		drains[j]->Convert_width_to_grid();
+
+		/*
+		*   Interpolate width data
+		*/
+		i = 0;
+		length = 0;
+		x1 = 0;
+		while (i < (int) drain_ptr->points.size())
+		{
+			if (drain_ptr->points[i].width_user_defined == TRUE)
+			{
+				length = 0;
+				x1 = drain_ptr->points[i].width_grid;
+			}
+			else
+			{
+				k = i;
+				while (drain_ptr->points[k].width_user_defined == FALSE)
+				{
+					length +=
+						river_distance_grid(&(drain_ptr->points[k]),
+						&(drain_ptr->points[k - 1]));
+					k++;
+				}
+				length +=
+					river_distance_grid(&(drain_ptr->points[k]),
+					&(drain_ptr->points[k - 1]));
+				total_length = length;
+				x2 = drain_ptr->points[k].width_grid;
+				if (total_length == 0)
+					total_length = 1.0;
+				length = 0;
+				for (; i < k; i++)
+				{
+					length +=
+						river_distance_grid(&(drain_ptr->points[i]),
+						&(drain_ptr->points[i - 1]));
+					drain_ptr->points[i].width_grid =
+						x1 + length / total_length * (x2 - x1);
+				}
+			}
+			i++;
+		}
+
+
+		/*
+		*   Interpolate k data
+		*/
+		i = 0;
+		length = 0;
+		x1 = 0;
+		while (i < (int) drain_ptr->points.size())
+		{
+			if (drain_ptr->points[i].k_defined == TRUE)
+			{
+				length = 0;
+				x1 = drain_ptr->points[i].k;
+			}
+			else
+			{
+				k = i;
+				while (drain_ptr->points[k].k_defined == FALSE)
+				{
+					length +=
+						river_distance_grid(&(drain_ptr->points[k]),
+						&(drain_ptr->points[k - 1]));
+					k++;
+				}
+				length +=
+					river_distance_grid(&(drain_ptr->points[k]),
+					&(drain_ptr->points[k - 1]));
+				total_length = length;
+				x2 = drain_ptr->points[k].k;
+				if (total_length == 0)
+					total_length = 1.0;
+				length = 0;
+				for (; i < k; i++)
+				{
+					length +=
+						river_distance_grid(&(drain_ptr->points[i]),
+						&(drain_ptr->points[i - 1]));
+					drain_ptr->points[i].k =
+						x1 + length / total_length * (x2 - x1);
+				}
+			}
+			i++;
+		}
+
+
+		/*
+		*   Interpolate thickness data
+		*/
+		i = 0;
+		length = 0;
+		x1 = 0;
+		while (i < (int) drain_ptr->points.size())
+		{
+			if (drain_ptr->points[i].thickness_defined == TRUE)
+			{
+				length = 0;
+				x1 = drain_ptr->points[i].thickness;
+			}
+			else
+			{
+				k = i;
+				while (drain_ptr->points[k].thickness_defined == FALSE)
+				{
+					length +=
+						river_distance_grid(&(drain_ptr->points[k]),
+						&(drain_ptr->points[k - 1]));
+					k++;
+				}
+				length +=
+					river_distance_grid(&(drain_ptr->points[k]),
+					&(drain_ptr->points[k - 1]));
+				total_length = length;
+				x2 = drain_ptr->points[k].thickness;
+				if (total_length == 0)
+					total_length = 1.0;
+				length = 0;
+				for (; i < k; i++)
+				{
+					length +=
+						river_distance_grid(&(drain_ptr->points[i]),
+						&(drain_ptr->points[i - 1]));
+					drain_ptr->points[i].thickness =
+						x1 + length / total_length * (x2 - x1);
+				}
+			}
+			i++;
+		}
+
+
+
+		/*
+		*   Interpolate z data
+		*/
+		i = 0;
+		length = 0;
+		x1 = 0;
+		while (i < (int) drain_ptr->points.size())
+		{
+			if (drain_ptr->points[i].z_user_defined == TRUE)
+			{
+				length = 0;
+				x1 = drain_ptr->points[i].z_grid;
+			}
+			else
+			{
+				k = i;
+				while (drain_ptr->points[k].z_user_defined == FALSE)
+				{
+					length +=
+						river_distance_grid(&(drain_ptr->points[k]),
+						&(drain_ptr->points[k - 1]));
+					k++;
+				}
+				length +=
+					river_distance_grid(&(drain_ptr->points[k]),
+					&(drain_ptr->points[k - 1]));
+				total_length = length;
+				x2 = drain_ptr->points[k].z_grid;
+				if (total_length == 0)
+					total_length = 1.0;
+				length = 0;
+				for (; i < k; i++)
+				{
+					length +=
+						river_distance_grid(&(drain_ptr->points[i]),
+						&(drain_ptr->points[i - 1]));
+					drain_ptr->points[i].z_grid =
+						x1 + length / total_length * (x2 - x1);
+				}
+			}
+			i++;
+		}
+	}
+
+	/*
+	 *   Check for duplicate numbers
+	 */
+	for (j = 0; j < count_drains; j++)
+	{
+		for (i = j + 1; i < (int) drains.size(); i++)
+		{
+			if (drains[j]->n_user == drains[i]->n_user)
+			{
+				sprintf(error_string,
+						"Two drains have the same identifying number. Sequence number %d %s and sequence number %d %s.",
+						j, drains[j]->description.c_str(), i,
+						drains[i]->description.c_str());
+				error_msg(error_string, CONTINUE);
+				input_error++;
+				return_value = FALSE;
+			}
+		}
+	}
+	return (return_value);
+}
 
 /* ---------------------------------------------------------------------- */
 int
@@ -396,8 +718,8 @@ build_drains(void)
 			malloc_error();
 		for (i = 0; i < count_points; i++)
 		{
-			p[i].x = drain_ptr->points[i].x;
-			p[i].y = drain_ptr->points[i].y;
+			p[i].x = drain_ptr->points[i].x_grid;
+			p[i].y = drain_ptr->points[i].y_grid;
 		}
 		/*
 		 *  Trapezoid points for last drain Point
@@ -406,8 +728,7 @@ build_drains(void)
 		phantom.x = p[n].x + (p[n].x - p[n - 1].x);
 		phantom.y = p[n].y + (p[n].y - p[n - 1].y);
 		trapezoid_points(p[n], phantom, &(drain_ptr->points[n]),
-						 drain_ptr->points[n].width, 
-						 units.drain_width.input_to_si/units.horizontal.input_to_si);
+						 drain_ptr->points[n].width_grid);
 		drain_ptr->points[n].vertex[2].x = drain_ptr->points[n].vertex[1].x;
 		drain_ptr->points[n].vertex[2].y = drain_ptr->points[n].vertex[1].y;
 		drain_ptr->points[n].vertex[3].x = drain_ptr->points[n].vertex[0].x;
@@ -418,8 +739,7 @@ build_drains(void)
 		for (i = 0; i < count_points - 1; i++)
 		{
 			trapezoid_points(p[i], p[i + 1], &(drain_ptr->points[i]),
-							 drain_ptr->points[i + 1].width,
-							 units.drain_width.input_to_si/units.horizontal.input_to_si);
+							 drain_ptr->points[i + 1].width_grid);
 		}
 		/*
 		 *  Union of polygon and gap with next polygon
@@ -715,8 +1035,8 @@ setup_drains(void)
 			/*  get elevation I */
 			double w0 = j_it->w;
 			double w1 = 1. - w0;
-			double z0 = drains[drain_number]->points[point_number].z;
-			double z1 = drains[drain_number]->points[point_number + 1].z;
+			double z0 = drains[drain_number]->points[point_number].z_grid;
+			double z1 = drains[drain_number]->points[point_number + 1].z_grid;
 			double z = (z0 * w0 + z1 * w1);
 
 			// determine cell number from z
@@ -759,8 +1079,8 @@ write_drains(void)
 				   drain_ptr->description.c_str());
 		for (i = 0; i < count_points; i++)
 		{
-			output_msg(OUTPUT_ECHO, "\t%15e\t%15e\n", drain_ptr->points[i].x,
-					   drain_ptr->points[i].y);
+			output_msg(OUTPUT_ECHO, "\t%15e\t%15e\n", drain_ptr->points[i].x_grid,
+					   drain_ptr->points[i].y_grid);
 		}
 		output_msg(OUTPUT_ECHO, "&\n");
 		/*
@@ -837,10 +1157,10 @@ interpolate_drain(River_Polygon * drain_polygon_ptr)
 	centroid.y /= 3 * Areasum2;
 	x0 = centroid.x;
 	y0 = centroid.y;
-	x1 = p0_ptr->x;
-	y1 = p0_ptr->y;
-	x2 = p1_ptr->x;
-	y2 = p1_ptr->y;
+	x1 = p0_ptr->x_grid;
+	y1 = p0_ptr->y_grid;
+	x2 = p1_ptr->x_grid;
+	y2 = p1_ptr->y_grid;
 	/* distance from centroid to line is */
 	Point::line_seg_point_near_3d(x1, y1, 0,
 								  x2, y2, 0,
@@ -857,7 +1177,7 @@ interpolate_drain(River_Polygon * drain_polygon_ptr)
 
 	return (OK);
 }
-
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 Drain::Convert_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM target,
@@ -925,4 +1245,123 @@ Drain::Convert_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM target,
 		error_msg(error_string, CONTINUE);
 		input_error++;
 	}
+}
+#endif
+/* ---------------------------------------------------------------------- */
+void
+Drain::Convert_xy_to_grid(PHAST_Transform * map2grid)
+/* ---------------------------------------------------------------------- */
+{
+	if (this->coordinate_system == PHAST_Transform::NONE)
+	{
+		sprintf(error_string, "Error with XY coordinate system for drain %d %s.",
+				this->n_user, this->description.c_str());
+		error_msg(error_string, CONTINUE);
+		input_error++;
+		return;
+	}
+	switch (this->coordinate_system)
+	{
+	case PHAST_Transform::GRID:
+		for (std::vector < River_Point >::iterator it = this->points.begin();
+			 it != this->points.end(); it++)
+		{
+			if (it->x_user_defined == FALSE || it->y_user_defined == FALSE)
+			{
+				input_error++;
+				sprintf(error_string, "Missing X or Y coordinate %d, %s",
+						this->n_user, this->description.c_str());
+				error_msg(error_string, CONTINUE);
+				return;
+			}
+			it->x_grid = it->x_user;
+			it->y_grid = it->y_user;
+		}
+		break;
+	case PHAST_Transform::MAP:
+		for (std::vector < River_Point >::iterator it = this->points.begin();
+			 it != this->points.end(); it++)
+		{
+			if (it->x_user_defined == FALSE || it->y_user_defined == FALSE)
+			{
+				input_error++;
+				sprintf(error_string, "Missing X or Y coordinate %d, %s",
+						this->n_user, this->description.c_str());
+				error_msg(error_string, CONTINUE);
+				return;
+			}
+			Point p(it->x_user, it->y_user, 0.0);
+			map2grid->Transform(p);
+			it->x_grid = p.x();
+			it->y_grid = p.y();
+		}
+		break;
+	default:
+		sprintf(error_string,
+				"Error converting drain coordinate system %d, %s",
+				this->n_user, this->description.c_str());
+		error_msg(error_string, CONTINUE);
+		input_error++;
+	}
+}
+/* ---------------------------------------------------------------------- */
+void
+Drain::Convert_z_to_grid(PHAST_Transform * map2grid)
+/* ---------------------------------------------------------------------- */
+{
+	if (this->z_coordinate_system == PHAST_Transform::NONE)
+	{
+		sprintf(error_string, "Error with Z coordinate system for drain %d %s.",
+				this->n_user, this->description.c_str());
+		error_msg(error_string, CONTINUE);
+		input_error++;
+		return;
+	}
+	switch (this->z_coordinate_system)
+	{
+	case PHAST_Transform::GRID:
+		for (std::vector < River_Point >::iterator it = this->points.begin();
+			 it != this->points.end(); it++)
+		{
+			if (it->z_user_defined == TRUE)
+			{
+				it->z_grid = it->z_user;
+			}
+		}
+		break;
+	case PHAST_Transform::MAP:
+		for (std::vector < River_Point >::iterator it = this->points.begin();
+			 it != this->points.end(); it++)
+		{
+			if (it->z_user_defined == TRUE)
+			{
+				Point p(0.0, 0.0, it->z_user);
+				map2grid->Transform(p);
+				it->z_grid = p.z();
+			}
+		}
+		break;
+	default:
+		sprintf(error_string,
+				"Error converting drain coordinate system %d, %s",
+				this->n_user, this->description.c_str());
+		error_msg(error_string, CONTINUE);
+		input_error++;
+	}
+}
+/* ---------------------------------------------------------------------- */
+void
+Drain::Convert_width_to_grid(void)
+/* ---------------------------------------------------------------------- */
+{
+
+	for (std::vector < River_Point >::iterator it = this->points.begin();
+		it != this->points.end(); it++)
+	{
+		if (it->width_user_defined == TRUE)
+		{
+			it->width_grid = it->width_user * units.drain_width.input_to_si / units.horizontal.input_to_si;
+		}
+	}
+
 }

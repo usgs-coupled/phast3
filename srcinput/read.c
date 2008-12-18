@@ -5863,9 +5863,11 @@ read_units(void)
 		"drain_width",			/* 30 */
 		"map_horizontal",		/* 31 */
 		"map_vertical"			/* 32 */
-			, "river_width"		/* 33 */
+		, "river_width"	    	/* 33 */
+		, "river_depth"         /* 34 */
+		, "well_depth"          /* 35 */
 	};
-	int count_opt_list = 34;
+	int count_opt_list = 36;
 	/*
 	 *   Read flags:
 	 */
@@ -6239,13 +6241,47 @@ read_units(void)
 				input_error++;
 				sprintf(error_string, "Expected units for river width (L).");
 				error_msg(error_string, CONTINUE);
-				units.drain_width.defined = FALSE;
+				units.river_width.defined = FALSE;
 			}
 			else
 			{
 				units.river_width.define(token);
 			}
 			break;
+		case 34:				/* river_depth */
+			if (copy_token(token, &next_char, &l) == EMPTY ||
+				units_conversion(token,
+								 units.river_depth.si,
+								 &units.river_depth.input_to_si,
+								 TRUE) == ERROR)
+			{
+				input_error++;
+				sprintf(error_string, "Expected units for river depths (L).");
+				error_msg(error_string, CONTINUE);
+				units.river_depth.defined = FALSE;
+			}
+			else
+			{
+				units.river_depth.define(token);
+			}
+			break;		
+		case 35:				/* well_depth */
+			if (copy_token(token, &next_char, &l) == EMPTY ||
+				units_conversion(token,
+								 units.well_depth.si,
+								 &units.well_depth.input_to_si,
+								 TRUE) == ERROR)
+			{
+				input_error++;
+				sprintf(error_string, "Expected units for well depths (L).");
+				error_msg(error_string, CONTINUE);
+				units.well_depth.defined = FALSE;
+			}
+			else
+			{
+				units.well_depth.define(token);
+			}
+			break;		
 		}
 		if (return_value == EOF || return_value == KEYWORD)
 			break;
@@ -7829,9 +7865,9 @@ read_river(void)
 			}
 			else
 			{
-				sscanf(token, "%lf", &river_ptr->points[point_number].z);
-				river_ptr->points[point_number].z_defined = TRUE;
-				river_ptr->points[point_number].z_input_defined = TRUE;
+				sscanf(token, "%lf", &river_ptr->points[point_number].z_user);
+				river_ptr->points[point_number].z_user_defined = TRUE;
+				//river_ptr->points[point_number].z_input_defined = TRUE;
 			}
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
@@ -7902,12 +7938,13 @@ read_river(void)
 			}
 			else
 			{
-				sscanf(token, "%lf", &river_ptr->points[point_number].width);
-				river_ptr->points[point_number].width_defined = TRUE;
+				sscanf(token, "%lf", &river_ptr->points[point_number].width_user);
+				river_ptr->points[point_number].width_user_defined = TRUE;
 			}
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		case 11:				/* depth */
+			river_depths_defined = true;
 			if (simulation > 0)
 			{
 				sprintf(error_string,
@@ -7936,8 +7973,8 @@ read_river(void)
 			}
 			else
 			{
-				sscanf(token, "%lf", &river_ptr->points[point_number].depth);
-				river_ptr->points[point_number].depth_defined = TRUE;
+				sscanf(token, "%lf", &river_ptr->points[point_number].depth_user);
+				river_ptr->points[point_number].depth_user_defined = TRUE;
 			}
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
@@ -8026,30 +8063,8 @@ read_river(void)
 			if (river_ptr->points == NULL)
 				malloc_error();
 			point_number = river_ptr->count_points++;
-			river_ptr->points[point_number].x = 0.0;
-			river_ptr->points[point_number].x_defined = FALSE;
-			river_ptr->points[point_number].y = 0.0;
-			river_ptr->points[point_number].y_defined = FALSE;
-			river_ptr->points[point_number].width = 0.0;
-			river_ptr->points[point_number].width_defined = FALSE;
-			river_ptr->points[point_number].k = 0.0;
-			river_ptr->points[point_number].k_defined = FALSE;
-			river_ptr->points[point_number].thickness = 0.0;
-			river_ptr->points[point_number].thickness_defined = FALSE;
-			river_ptr->points[point_number].head = NULL;
-			river_ptr->points[point_number].head_defined = FALSE;
-			river_ptr->points[point_number].current_head = 0.0;
-			river_ptr->points[point_number].depth = 0.0;
-			river_ptr->points[point_number].depth_defined = FALSE;
-			river_ptr->points[point_number].z = 0.0;
-			river_ptr->points[point_number].z_defined = FALSE;
-			river_ptr->points[point_number].z_input_defined = FALSE;
-			river_ptr->points[point_number].solution = NULL;
-			river_ptr->points[point_number].solution_defined = FALSE;
-			river_ptr->points[point_number].current_solution = -999999;
-			river_ptr->points[point_number].solution1 = -99;
-			river_ptr->points[point_number].solution2 = -99;
-			river_ptr->points[point_number].f1 = 1.0;
+			river_point_init(&(river_ptr->points[point_number]));
+			river_ptr->points[point_number].width_grid = 0.0;
 			for (i = 0; i < 4; i++)
 			{
 				river_ptr->points[point_number].vertex[i].x = 0.0;
@@ -8067,8 +8082,8 @@ read_river(void)
 			}
 			else
 			{
-				sscanf(token, "%lf", &river_ptr->points[point_number].x);
-				river_ptr->points[point_number].x_defined = TRUE;
+				sscanf(token, "%lf", &river_ptr->points[point_number].x_user);
+				river_ptr->points[point_number].x_user_defined = TRUE;
 			}
 			j = copy_token(token, &next_char, &l);
 			if (j != DIGIT)
@@ -8080,8 +8095,8 @@ read_river(void)
 			}
 			else
 			{
-				sscanf(token, "%lf", &river_ptr->points[point_number].y);
-				river_ptr->points[point_number].y_defined = TRUE;
+				sscanf(token, "%lf", &river_ptr->points[point_number].y_user);
+				river_ptr->points[point_number].y_user_defined = TRUE;
 			}
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
@@ -8230,9 +8245,8 @@ read_well(void)
 		"allocation_by_head_and_mobility",	/* 19 */
 		"head_and_mobility",	/* 20 */
 		"coordinate_system"		/* 21 */
-		, "depth_units"         /* 22 */
-		, "z_coordinate_system"     /* 23 */
-		, "xy_coordinate_system"   /* 24 */
+		, "z_coordinate_system"     /* 22 */
+		, "xy_coordinate_system"   /* 23 */
 	};
 	int count_opt_list = 25;
 /*
@@ -8329,7 +8343,7 @@ read_well(void)
 	well_ptr->radius_defined = FALSE;
 	well_ptr->xy_coordinate_system_user = PHAST_Transform::GRID;
 	well_ptr->z_coordinate_system_user = PHAST_Transform::GRID;
-	well_ptr->depth_units_user = new cunit("m");
+	//well_ptr->depth_units_user = new cunit("m");
 	well_ptr->elevation_grid = NULL;
 
 	well_number = n;
@@ -8453,6 +8467,7 @@ read_well(void)
 			break;
 		case 7:				/* depth */
 		case 5:				/* depths */
+			well_depths_defined = true;
 			well_ptr->depth_user =
 				(Well_Interval *) realloc(well_ptr->depth_user,
 										  (size_t) (well_ptr->count_depth_user +
@@ -8625,7 +8640,7 @@ read_well(void)
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		case 21:				/* coordinate_system */
-		case 24:				/* xy_coordinate_system */	
+		case 23:				/* xy_coordinate_system */	
 			j = copy_token(token, &next_char, &l);
 			str_tolower(token);
 			if (strstr(token, "map") == token)
@@ -8666,27 +8681,6 @@ read_well(void)
 				error_msg(error_string, CONTINUE);
 				input_error++;
 			}
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			break;
-
-		case 23:				/* depth units */
-			if (copy_token(token, &next_char, &l) == EMPTY ||
-				units_conversion(token,
-								 units.vertical.si,
-								 &well_ptr->depth_units_user->input_to_si,
-								 TRUE) == ERROR)
-			{
-				input_error++;
-				sprintf(error_string,
-						"Expected units for well screen depths (L).");
-				error_msg(error_string, CONTINUE);
-				well_ptr->depth_units_user->undefine();
-			}
-			else
-			{
-				well_ptr->depth_units_user->define(token);
-			}
-			break;
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		}
@@ -9349,8 +9343,10 @@ read_drain(void)
 		"node",					/* 10 */
 		"point",				/* 11 */
 		"coordinate_system"		/* 12 */
+		, "xy_coordinate_system"		/* 13 */
+		, "z_coordinate_system"		/* 14 */
 	};
-	int count_opt_list = 13;
+	int count_opt_list = 15;
 	/*
 	 *   Read drain points
 	 */
@@ -9415,7 +9411,7 @@ read_drain(void)
 				opt = next_keyword_or_option(opt_list, count_opt_list);
 				break;
 			}
-			if (rp_ptr->x_defined == 0)
+			if (rp_ptr->x_user_defined == 0)
 			{
 				sprintf(error_string, "No drain point has been defined for "
 						"top of drain bottom %s", tag);
@@ -9434,9 +9430,9 @@ read_drain(void)
 			}
 			else
 			{
-				sscanf(token, "%lf", &rp_ptr->z);
-				rp_ptr->z_defined = TRUE;
-				rp_ptr->z_input_defined = TRUE;
+				sscanf(token, "%lf", &rp_ptr->z_user);
+				rp_ptr->z_user_defined = TRUE;
+				//rp_ptr->z_input_defined = TRUE;
 			}
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
@@ -9453,7 +9449,7 @@ read_drain(void)
 				opt = next_keyword_or_option(opt_list, count_opt_list);
 				break;
 			}
-			if (rp_ptr->x_defined == 0)
+			if (rp_ptr->x_user_defined == 0)
 			{
 				sprintf(error_string, "No drain point has been defined for "
 						"bed hydraulic conductivity %s", tag);
@@ -9488,7 +9484,7 @@ read_drain(void)
 				opt = next_keyword_or_option(opt_list, count_opt_list);
 				break;
 			}
-			if (rp_ptr->x_defined == 0)
+			if (rp_ptr->x_user_defined == 0)
 			{
 				sprintf(error_string, "No drain point has been defined for "
 						"width %s", tag);
@@ -9507,8 +9503,8 @@ read_drain(void)
 			}
 			else
 			{
-				sscanf(token, "%lf", &rp_ptr->width);
-				rp_ptr->width_defined = TRUE;
+				sscanf(token, "%lf", &rp_ptr->width_user);
+				rp_ptr->width_user_defined = TRUE;
 			}
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
@@ -9524,7 +9520,7 @@ read_drain(void)
 				opt = next_keyword_or_option(opt_list, count_opt_list);
 				break;
 			}
-			if (rp_ptr->x_defined == 0)
+			if (rp_ptr->x_user_defined == 0)
 			{
 				sprintf(error_string, "No drain point has been defined for "
 						"bed thickness %s", tag);
@@ -9552,7 +9548,7 @@ read_drain(void)
 		case 10:				/* node */
 		case 11:				/* point */
 			/* case OPTION_DEFAULT:  *//* Read x, y */
-			if (rp_ptr->x_defined == TRUE)
+			if (rp_ptr->x_user_defined == TRUE)
 			{
 				drain->points.push_back(rp);
 			}
@@ -9567,8 +9563,8 @@ read_drain(void)
 			}
 			else
 			{
-				sscanf(token, "%lf", &rp_ptr->x);
-				rp_ptr->x_defined = TRUE;
+				sscanf(token, "%lf", &rp_ptr->x_user);
+				rp_ptr->x_user_defined = TRUE;
 			}
 			j = copy_token(token, &next_char, &l);
 			if (j != DIGIT)
@@ -9580,12 +9576,13 @@ read_drain(void)
 			}
 			else
 			{
-				sscanf(token, "%lf", &rp_ptr->y);
-				rp_ptr->y_defined = TRUE;
+				sscanf(token, "%lf", &rp_ptr->y_user);
+				rp_ptr->y_user_defined = TRUE;
 			}
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		case 12:				/* coordinate_system */
+		case 13:				/* xy_coordinate_system */
 			j = copy_token(token, &next_char, &l);
 			str_tolower(token);
 			if (strstr(token, "map") == token)
@@ -9599,20 +9596,41 @@ read_drain(void)
 			else
 			{
 				sprintf(error_string,
-						"Expected coordinate system for drain points. %s",
+						"Expected XY coordinate system for drain points. %s",
 						tag);
 				error_msg(error_string, CONTINUE);
 				input_error++;
 			}
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
+		case 14:				/* z_coordinate_system */
+			j = copy_token(token, &next_char, &l);
+			str_tolower(token);
+			if (strstr(token, "map") == token)
+			{
+				drain->z_coordinate_system = PHAST_Transform::MAP;
+			}
+			else if (strstr(token, "grid") == token)
+			{
+				drain->z_coordinate_system = PHAST_Transform::GRID;
+			}
+			else
+			{
+				sprintf(error_string,
+						"Expected Z coordinate system for drain points. %s",
+						tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+			}
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;		
 		}
 		return_value = check_line_return;
 		if (return_value == EOF || return_value == KEYWORD)
 			break;
 	}
 
-	if (rp_ptr->x_defined == TRUE)
+	if (rp_ptr->x_user_defined == TRUE)
 	{
 		drain->points.push_back(rp);
 	}

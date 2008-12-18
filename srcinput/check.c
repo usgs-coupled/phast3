@@ -207,6 +207,17 @@ check_hst_units(void)
 	{
 		units.well_diameter.input_to_user = units.well_diameter.input_to_si;
 	}
+	if (count_wells > 0 && units.well_depth.defined == FALSE && well_depths_defined)
+	{
+		units.well_depth.define("m");
+		sprintf(error_string,
+				"Well depth units not defined in UNITS data block, meters assumed.");
+		warning_msg(error_string);
+	}
+	else
+	{
+		units.well_depth.input_to_user = units.well_depth.input_to_si;
+	}
 	if (count_rivers > 0 && units.river_bed_k.defined == FALSE)
 	{
 		input_error++;
@@ -233,9 +244,6 @@ check_hst_units(void)
 	}
 	if (count_rivers > 0 && units.river_width.defined == FALSE)
 	{
-		//input_error++;
-		//sprintf(error_string, "River width units not defined in UNITS data block.");
-		//error_msg(error_string, CONTINUE);
 		units.river_width.define("m");
 		sprintf(error_string,
 				"River width units not defined in UNITS data block, meters assumed.");
@@ -244,6 +252,17 @@ check_hst_units(void)
 	else
 	{
 		units.river_width.input_to_user = units.river_width.input_to_si;
+	}
+	if (count_rivers > 0 && units.river_depth.defined == FALSE && river_depths_defined)
+	{
+		units.river_depth.define("m");
+		sprintf(error_string,
+				"River depth units not defined in UNITS data block, meters assumed.");
+		warning_msg(error_string);
+	}
+	else
+	{
+		units.river_depth.input_to_user = units.river_depth.input_to_si;
 	}
 	if (drains.size() > 0 && units.drain_bed_k.defined == FALSE)
 	{
