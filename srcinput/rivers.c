@@ -889,7 +889,7 @@ tidy_rivers(void)
 			if (river_ptr->points[i].width_user_defined == TRUE)
 			{
 				length = 0;
-				x1 = river_ptr->points[i].width_user;
+				x1 = river_ptr->points[i].width_grid;
 			}
 			else
 			{
@@ -905,7 +905,7 @@ tidy_rivers(void)
 					river_distance_grid(&(river_ptr->points[k]),
 					&(river_ptr->points[k - 1]));
 				total_length = length;
-				x2 = river_ptr->points[k].width_user;
+				x2 = river_ptr->points[k].width_grid;
 				if (total_length == 0)
 					total_length = 1.0;
 				length = 0;
@@ -914,7 +914,7 @@ tidy_rivers(void)
 					length +=
 						river_distance_grid(&(river_ptr->points[i]),
 						&(river_ptr->points[i - 1]));
-					river_ptr->points[i].width_user =
+					river_ptr->points[i].width_grid =
 						x1 + length / total_length * (x2 - x1);
 				}
 			}
@@ -1056,71 +1056,72 @@ tidy_rivers(void)
 				}
 			}
 		}
-	}
 
 
-	/*
-	*   Calculate z from depth for points without z data
-	*/
-	for (i = 0; i < river_ptr->count_points; i++)
-	{
-		if (river_ptr->points[i].head_defined == TRUE
-			&& river_ptr->points[i].depth_user_defined == TRUE
-			&& river_ptr->points[i].z_user_defined == FALSE)
-		{
-			river_ptr->points[i].z_grid =
-				river_ptr->points[i].current_head -
-				river_ptr->points[i].depth_user * units.river_depth.input_to_si / units.vertical.input_to_si;
-			//river_ptr->points[i].z_user_defined = TRUE;
-		}
-	}
 
-	/*
-	*   Interpolate z data
-	*/
-	i = 0;
-	length = 0;
-	x1 = 0;
-	while (i < river_ptr->count_points)
-	{
-		if (river_ptr->points[i].z_user_defined == TRUE)
+		/*
+		*   Calculate z from depth for points without z data
+		*/
+		for (i = 0; i < river_ptr->count_points; i++)
 		{
-			length = 0;
-			x1 = river_ptr->points[i].z_grid;
-		}
-		else
-		{
-			k = i;
-			while (river_ptr->points[k].z_user_defined == FALSE)
+			if (/*river_ptr->points[i].head_defined == TRUE	&&*/ /* head has been interpolated */
+				river_ptr->points[i].depth_user_defined == TRUE
+				&& river_ptr->points[i].z_user_defined == FALSE)
 			{
+				river_ptr->points[i].z_grid =
+					river_ptr->points[i].current_head * units.head.input_to_si / units.vertical.input_to_si -
+					river_ptr->points[i].depth_user * units.river_depth.input_to_si / units.vertical.input_to_si;
+				//river_ptr->points[i].z_user_defined = TRUE;
+			}
+		}
+
+		/*
+		*   Interpolate z data
+		*/
+		i = 0;
+		length = 0;
+		x1 = 0;
+		while (i < river_ptr->count_points)
+		{
+			if (river_ptr->points[i].z_user_defined == TRUE || river_ptr->points[i].depth_user_defined == TRUE)
+			{
+				length = 0;
+				x1 = river_ptr->points[i].z_grid;
+			}
+			else
+			{
+				k = i;
+				while (river_ptr->points[k].z_user_defined == FALSE && river_ptr->points[k].depth_user_defined == FALSE)
+				{
+					length +=
+						river_distance_grid(&(river_ptr->points[k]),
+						&(river_ptr->points[k - 1]));
+					k++;
+				}
 				length +=
 					river_distance_grid(&(river_ptr->points[k]),
 					&(river_ptr->points[k - 1]));
-				k++;
+				total_length = length;
+				x2 = river_ptr->points[k].z_grid;
+				if (total_length == 0)
+					total_length = 1.0;
+				length = 0;
+				for (; i < k; i++)
+				{
+					length +=
+						river_distance_grid(&(river_ptr->points[i]),
+						&(river_ptr->points[i - 1]));
+					river_ptr->points[i].z_grid =
+						x1 + length / total_length * (x2 - x1);
+				}
 			}
-			length +=
-				river_distance_grid(&(river_ptr->points[k]),
-				&(river_ptr->points[k - 1]));
-			total_length = length;
-			x2 = river_ptr->points[k].z_grid;
-			if (total_length == 0)
-				total_length = 1.0;
-			length = 0;
-			for (; i < k; i++)
-			{
-				length +=
-					river_distance_grid(&(river_ptr->points[i]),
-					&(river_ptr->points[i - 1]));
-				river_ptr->points[i].z_grid =
-					x1 + length / total_length * (x2 - x1);
-			}
+			i++;
 		}
-		i++;
 	}
 
 	/*
-	 *   Check for duplicate numbers
-	 */
+	*   Check for duplicate numbers
+	*/
 	for (j = 0; j < count_rivers; j++)
 	{
 		for (i = j + 1; i < count_rivers; i++)
@@ -1128,8 +1129,8 @@ tidy_rivers(void)
 			if (rivers[j].n_user == rivers[i].n_user)
 			{
 				sprintf(error_string,
-						"Two rivers have the same identifying number. Sequence number %d %s and sequence number %d %s.",
-						j, rivers[j].description, i, rivers[i].description);
+					"Two rivers have the same identifying number. Sequence number %d %s and sequence number %d %s.",
+					j, rivers[j].description, i, rivers[i].description);
 				error_msg(error_string, CONTINUE);
 				input_error++;
 				return_value = FALSE;
