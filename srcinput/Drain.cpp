@@ -14,7 +14,8 @@ Drain::Drain(void)
 {
 	// Data
 	this->n_user = -99;
-	this->coordinate_system = PHAST_Transform::MAP;
+	this->coordinate_system = PHAST_Transform::GRID;
+	this->z_coordinate_system = PHAST_Transform::GRID;
 }
 
 Drain::~Drain(void)
