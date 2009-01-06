@@ -1013,46 +1013,49 @@ tidy_rivers(void)
 		i = 0;
 		length = 0;
 		i1 = -999;
-		while (i < river_ptr->count_points)
+		if (flow_only == FALSE)
 		{
-			if (river_ptr->points[i].solution_defined == TRUE)
+			while (i < river_ptr->count_points)
 			{
-				length = 0;
-				i1 = river_ptr->points[i].current_solution;
-				river_ptr->points[i].solution1 =
-					river_ptr->points[i].current_solution;
-				river_ptr->points[i].solution2 = -1;
-				river_ptr->points[i].f1 = 1.0;
-				i++;
-			}
-			else
-			{
-				k = i;
-				while (river_ptr->points[k].solution_defined == FALSE)
+				if (river_ptr->points[i].solution_defined == TRUE)
 				{
+					length = 0;
+					i1 = river_ptr->points[i].current_solution;
+					river_ptr->points[i].solution1 =
+						river_ptr->points[i].current_solution;
+					river_ptr->points[i].solution2 = -1;
+					river_ptr->points[i].f1 = 1.0;
+					i++;
+				}
+				else
+				{
+					k = i;
+					while (river_ptr->points[k].solution_defined == FALSE)
+					{
+						length +=
+							river_distance_grid(&(river_ptr->points[k]),
+							&(river_ptr->points[k - 1]));
+						k++;
+					}
+					i2 = k;
 					length +=
 						river_distance_grid(&(river_ptr->points[k]),
 						&(river_ptr->points[k - 1]));
-					k++;
-				}
-				i2 = k;
-				length +=
-					river_distance_grid(&(river_ptr->points[k]),
-					&(river_ptr->points[k - 1]));
-				total_length = length;
-				i2 = river_ptr->points[k].current_solution;
-				if (total_length == 0)
-					total_length = 1.0;
-				length = 0;
-				for (; i < k; i++)
-				{
-					length +=
-						river_distance_grid(&(river_ptr->points[i]),
-						&(river_ptr->points[i - 1]));
-					river_ptr->points[i].solution1 = i1;
-					river_ptr->points[i].solution2 = i2;
-					river_ptr->points[i].f1 =
-						1 - length / total_length;
+					total_length = length;
+					i2 = river_ptr->points[k].current_solution;
+					if (total_length == 0)
+						total_length = 1.0;
+					length = 0;
+					for (; i < k; i++)
+					{
+						length +=
+							river_distance_grid(&(river_ptr->points[i]),
+							&(river_ptr->points[i - 1]));
+						river_ptr->points[i].solution1 = i1;
+						river_ptr->points[i].solution2 = i2;
+						river_ptr->points[i].f1 =
+							1 - length / total_length;
+					}
 				}
 			}
 		}
