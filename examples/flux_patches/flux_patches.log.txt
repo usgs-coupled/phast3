@@ -260,6 +260,7 @@ Processing flow and transport data file.
 			10
 		start_time 0
 WARNING: River width units not defined in UNITS data block, meters assumed.
+WARNING: River depth units not defined in UNITS data block, meters assumed.
 WARNING: Identifiers Steady_flow_velocities, HDF_steady_flow_velocities,
          and XYZ_steady_flow_velocities only apply for steady-flow calculations.
 
