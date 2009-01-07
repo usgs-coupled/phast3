@@ -58,6 +58,7 @@ SUBROUTINE write5
      prgfb=.TRUE.
      prbcf=.TRUE.
      przf = .TRUE.
+     przf_tsv = .TRUE.
      IF(nwel > 0) prwel=.TRUE.
      prslm=.TRUE.
   END IF
@@ -479,9 +480,12 @@ SUBROUTINE write5
                 '('//unitm//'/'//TRIM(unittm)//')'
         END DO
      ENDDO
-     ! ... Zonal flow rates to tab separated file, fuzf2
+     ntprzf = ntprzf+1
+   ENDIF
+   IF(przf_tsv) THEN  
+     ! ... Zonal flow rates to tab separated file, fuzf_tsv
      DO izn=1,num_flo_zones
-        WRITE(fuzf2,2502) cnvtmi*time,achar(9),izn,achar(9),'Water',achar(9),  &
+        WRITE(fuzf_tsv,2502) cnvtmi*time,achar(9),izn,achar(9),'Water',achar(9),  &
              cnvmfi*qfzoni(izn),achar(9),cnvmfi*qfzonp(izn),achar(9),  &
              cnvmfi*qfzoni_int(izn),achar(9),cnvmfi*qfzonp_int(izn),achar(9),  &
              cnvmfi*qfzoni_sbc(izn),achar(9),cnvmfi*qfzonp_sbc(izn),achar(9),  &
@@ -493,7 +497,7 @@ SUBROUTINE write5
 2502    FORMAT(tr1,1pg13.6,a,i3,a,a,a,16(1pg14.7,a))
         IF (solute) THEN
            DO  is=1,ns-1                             ! ... No printout of charge flows
-              WRITE(fuzf2,2502) cnvtmi*time,achar(9),izn,achar(9),comp_name(is),achar(9),  &
+              WRITE(fuzf_tsv,2502) cnvtmi*time,achar(9),izn,achar(9),comp_name(is),achar(9),  &
              cnvmfi*qszoni(is,izn),achar(9),cnvmfi*qszonp(is,izn),achar(9),  &
              cnvmfi*qszoni_int(is,izn),achar(9),cnvmfi*qszonp_int(is,izn),achar(9),  &
              cnvmfi*qszoni_sbc(is,izn),achar(9),cnvmfi*qszonp_sbc(is,izn),achar(9),  &
@@ -505,7 +509,7 @@ SUBROUTINE write5
            END DO
         END IF
      ENDDO
-     ntprzf = ntprzf+1
+     ntprzf_tsv = ntprzf_tsv+1
   END IF
 
   IF(prwel .OR. prtem) THEN

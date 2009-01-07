@@ -141,6 +141,7 @@ SUBROUTINE slave_init1
   ntprcpd = 0
   ntprgfb = 0
   ntprzf = 0
+  ntprzf_tsv = 0
   ntprkd = 0
   ntprmapcomp = 0
   ntprmaphead = 0
@@ -231,6 +232,8 @@ SUBROUTINE slave_closef
   IF(ntprbcf > 0) st(fubcf) = 'keep  '  
   st(fuzf) = 'delete'  
   IF(ntprzf > 0) st(fuzf) = 'keep  '  
+  st(fuzf_tsv) = 'delete'  
+  IF(ntprzf_tsv > 0) st(fuzf) = 'keep  '  
 !!$  st(fut) = 'delete'  
 #if defined(MERGE_FILES)
   CALL update_status(st)
@@ -247,7 +250,7 @@ SUBROUTINE slave_closef
   CLOSE(fukd, status = st(fukd))  
   CLOSE(fubcf, status = st(fubcf))  
   CLOSE(fuzf, status = st(fuzf))  
-  CLOSE(fuzf2, status = st(fuzf2))
+  CLOSE(fuzf_tsv, status = st(fuzf_tsv))
   CLOSE(fuplt, status = st(fuplt))  
   CLOSE(fupmap, status = st(fupmap))  
   CLOSE(fupmp2, status = st(fupmp2))  

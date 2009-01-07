@@ -139,7 +139,7 @@ SUBROUTINE openf
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
-  OPEN(fuzf2,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  OPEN(fuzf_tsv,FILE=fname,IOSTAT=ios,ACTION='WRITE')
   IF (ios > 0) THEN
     lerror = .TRUE.
     WRITE(*,*) 'ERROR: Error opening file ', fname

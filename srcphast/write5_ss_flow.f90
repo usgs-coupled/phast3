@@ -50,6 +50,7 @@ SUBROUTINE write5_ss_flow
   prp=.FALSE.
   prgfb=.FALSE.
   przf = .FALSE.
+  przf_tsv = .FALSE.
   prbcf=.FALSE.
   prwel=.FALSE.
   prslm=.FALSE.
@@ -77,9 +78,12 @@ SUBROUTINE write5_ss_flow
         prgfb = .TRUE.
      END IF
      ! ... Zone flow rates
-     IF(ABS(pri_zon_flo) > 0._kdp) THEN
+     IF(ABS(pri_zf) > 0._kdp) THEN
         IF(converge_ss) przf=.TRUE.
      END IF
+     IF(ABS(pri_zf_tsv) > 0._kdp) THEN
+        IF(converge_ss) przf_tsv=.TRUE.
+     END IF     
      ! ... B.C. flow rates
      IF(ABS(pribcf) > 0._kdp) THEN
         IF(converge_ss) prbcf=.TRUE.
@@ -269,9 +273,12 @@ SUBROUTINE write5_ss_flow
              '('//unitm//'/'//TRIM(unittm)//')'
 2323    FORMAT(/12(tr1,a60,1PE14.6,tr2,A/))
      ENDDO
-     ! ... Zonal flow rates to tab separated file, fuzf2
+     ntprzf = ntprzf+1
+  ENDIF
+  IF(przf_tsv) THEN
+     ! ... Zonal flow rates to tab separated file, fuzf_tsv
      DO izn=1,num_flo_zones
-        WRITE(fuzf2,2502) cnvtmi*time,achar(9),izn,achar(9),'Water',achar(9),  &
+        WRITE(fuzf_tsv,2502) cnvtmi*time,achar(9),izn,achar(9),'Water',achar(9),  &
              cnvmfi*qfzoni(izn),achar(9),cnvmfi*qfzonp(izn),achar(9),  &
              cnvmfi*qfzoni_int(izn),achar(9),cnvmfi*qfzonp_int(izn),achar(9),  &
              cnvmfi*qfzoni_sbc(izn),achar(9),cnvmfi*qfzonp_sbc(izn),achar(9),  &
@@ -282,7 +289,7 @@ SUBROUTINE write5_ss_flow
              cnvmfi*qfzoni_wel(izn),achar(9),cnvmfi*qfzonp_wel(izn),achar(9)
 2502    FORMAT(tr1,1pg13.6,a,i3,a,a,a,16(1pg14.7,a))
      ENDDO
-     ntprzf = ntprzf+1
+     ntprzf_tsv = ntprzf_tsv+1
   END IF
   IF(prwel) THEN
      nsa = MAX(ns,1)

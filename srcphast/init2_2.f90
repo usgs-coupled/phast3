@@ -139,6 +139,7 @@ SUBROUTINE init2_2
   ntprcpd = 0
   ntprgfb = 0
   ntprzf = 0
+  ntprzf_tsv = 0
   ntprkd = 0
   ntprmapcomp = 0
   ntprmaphead = 0

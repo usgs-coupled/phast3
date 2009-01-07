@@ -278,10 +278,11 @@ SUBROUTINE read3
   IF (print_rde) WRITE(furde,8208) 'prtichead, [3.8.2.1]', prtichead
 8208 FORMAT(tr5,A/tr5,l5)
   if(num_flo_zones > 0) then
-     READ(fuins,*) pri_zon_flo
-     IF (print_rde) WRITE(furde,8111) 'pri_zon_flo,[3.8.2.2]', pri_zon_flo
+     READ(fuins,*) pri_zf, pri_zf_tsv
+     IF (print_rde) WRITE(furde,8111) 'pri_zf, pri_zf_tsv[3.8.2.2]', pri_zf, pri_zf_tsv
      ! ... ***special patch
-     pri_zon_flo = -pri_zon_flo
+     pri_zf = -pri_zf
+     pri_zf_tsv = -pri_zf_tsv
   end if
   READ(fuins,*) chkptd,pricpd,savldo
   IF (print_rde) WRITE(furde,8010) 'CHKPTD,PRICPD,SAVLDO [3.8.3]',  &

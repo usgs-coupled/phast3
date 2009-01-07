@@ -702,7 +702,7 @@ SUBROUTINE sumcal_ss_flow
 !!$  !...            STFAIF=STFAIF*DELTIM
 !!$!  tcfaif=tcfaif+stfaif
   ! ... Calculate the internal zone flow rates if requested
-  IF(ABS(pri_zon_flo) > 0.) CALL zone_flow_ss
+  IF(ABS(pri_zf) > 0. .or. ABS(pri_zf_tsv) > 0.) CALL zone_flow_ss
 
   ! ... Calculate total fluid mass, fluid volume in region
   fir=0._kdp

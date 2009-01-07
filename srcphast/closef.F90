@@ -153,8 +153,8 @@ SUBROUTINE closef(mpi_myself)
   IF(ntprbcf > 0) st(fubcf) = 'keep  '  
   st(fuzf) = 'delete'  
   IF(ntprzf > 0) st(fuzf) = 'keep  '  
-  st(fuzf2) = 'delete'  
-  IF(ntprzf > 0) st(fuzf2) = 'keep  '  
+  st(fuzf_tsv) = 'delete'  
+  IF(ntprzf_tsv > 0) st(fuzf_tsv) = 'keep  '  
 !!$  st(fut) = 'delete'  
 !!$#if defined(MERGE_FILES)
 !!$  CALL update_status(st)
@@ -171,7 +171,7 @@ SUBROUTINE closef(mpi_myself)
   CLOSE(fukd, status = st(fukd))  
   CLOSE(fubcf, status = st(fubcf))  
   CLOSE(fuzf, status = st(fuzf))
-  CLOSE(fuzf2, status = st(fuzf2))
+  CLOSE(fuzf_tsv, status = st(fuzf_tsv))
   CLOSE(fuplt, status = st(fuplt))  
   CLOSE(fupmap, status = st(fupmap))  
   CLOSE(fupmp2, status = st(fupmp2))  

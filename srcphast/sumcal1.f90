@@ -1065,6 +1065,6 @@ SUBROUTINE sumcal1
      END IF
   END DO
   ! ... Calculate the internal zone flow rates if requested
-  IF(ABS(pri_zon_flo) > 0.) CALL zone_flow
+  IF(ABS(pri_zf) > 0. .or. ABS(pri_zf_tsv) > 0.) CALL zone_flow
 
 END SUBROUTINE sumcal1

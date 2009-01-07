@@ -7,7 +7,7 @@ MODULE f_units
   INTEGER, PARAMETER :: fuins=15, fulp=16, fuplt=7, fuorst=8, fuirst=9, fuinc=10, furde=11, &
        fupmap=13, fuvmap=14, fup=21, fut=29, fuc=22, fuvel=23, fud=30, fuvs=31, fuwel=24, &
        fubal=25, fukd=26, fubcf=27, fuclog=28, fubnfr=32, fupmp2=33, fupzon=34, fuich=35,  &
-       fuzf=36, fuzf2=37
+       fuzf=36, fuzf_tsv=37
   LOGICAL :: print_rde=.FALSE.
 END MODULE f_units
 
@@ -145,12 +145,12 @@ MODULE mcc
        prihdf_head, prihdf_vel, prihdf_conc,  &
        prigfb, prikd, primapcomp, primaphead, primapv, primin, prip, prit, pric,  &
        pricphrq, priforce_chem_phrq, prislm, pri_well_timser, &
-       privel, priwel, pri_zon_flo
+       privel, priwel, pri_zf, pri_zf_tsv
   REAL(KIND=kdp) :: timprbcf, timprcpd, timprdv,  &
        timprhdfh, timprhdfv, timprhdfcph,  &
        timprgfb, timprkd, timprmapc, timprmaph, timprmapv, timprp, timprc, timprcphrq,  &
        timprfchem, timprslm, timprtem, &
-       timprvel, timprwel, timprzf, timprtnxt
+       timprvel, timprwel, timprzf, timprzf_tsv, timprtnxt
   LOGICAL :: argrid, comopt, errexe, errexi, ichwt, ichydp, pltzon, prtbc, prtdv, prtfp,  &
        prtic, prtichead=.FALSE., prtpmp, prtslm, prtwel, prt_kd, prt_bc, prt_zon_flo,  &
        prtic_c, prtic_mapc, prtic_p, prtic_maphead, prtic_conc, prtic_force_chem,  &
@@ -166,12 +166,12 @@ MODULE mcc
   LOGICAL :: oldstyle_head_file=.FALSE.
   LOGICAL :: prslm=.FALSE., prkd=.FALSE., prp=.FALSE., prc=.FALSE., prcphrq=.FALSE., &
        prf_chem_phrq=.FALSE., prvel=.FALSE., prgfb=.FALSE., prbcf=.FALSE., przf=.FALSE.,  &
-       prwel=.FALSE.,  &
+       przf_tsv=.FALSE., prwel=.FALSE.,  &
        prhdfh=.FALSE., prhdfv=.FALSE., prhdfc=.FALSE., prmapc=.FALSE., prmaph=.FALSE., &
        prmapv=.FALSE., prtem=.FALSE., prcpd=.FALSE.
   INTEGER :: prcphrqi, prf_chem_phrqi, prslmi, prhdfci, prhdfhi, prhdfvi
   INTEGER :: ntprbcf, ntprcpd, ntprhdfv, ntprhdfh, ntprgfb, ntprkd, ntprmapcomp,   &
-       ntprmaphead, ntprmapv, ntprp, ntprzf,  &
+       ntprmaphead, ntprmapv, ntprp, ntprzf, ntprzf_tsv, &
        ntprc, ntprvel, ntprwel, ntprtem
   LOGICAL :: steady_flow, converge_ss
   REAL(KIND=kdp) :: timchg, timrst, rebalance_fraction_f = 0.5_kdp
