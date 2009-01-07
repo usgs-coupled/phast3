@@ -884,6 +884,8 @@ EXTERNAL struct time
 	current_print_restart;
 EXTERNAL struct time
 	current_print_zone_budget;
+EXTERNAL struct time
+	current_print_zone_budget_tsv;
 
 /* print input data */
 EXTERNAL int

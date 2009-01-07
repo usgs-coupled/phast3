@@ -2909,7 +2909,11 @@ reset_transient_data(void)
 	{
 		time_copy(&(pt_ptr->time_value), &current_print_zone_budget);
 	}
-
+	if (get_current_property_position
+		(&print_zone_budget_tsv, current_start_time, &pt_ptr) >= 0)
+	{
+		time_copy(&(pt_ptr->time_value), &current_print_zone_budget_tsv);
+	}
 
 	return (OK);
 }

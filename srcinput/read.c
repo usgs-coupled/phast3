@@ -6969,8 +6969,11 @@ read_print_frequency(void)
 		, "zone_flow"		/* 59 */
 		, "zone_flow_rates"	/* 60 */
 		, "zone_flows"		/* 61 */
+		, "tsv_zone_flow"		/* 62 */
+		, "tsv_zone_flow_rates"	/* 63 */
+		, "tsv_zone_flows"		/* 64 */	
 	};
-	int count_opt_list = 62;
+	int count_opt_list = 65;
 /*
  *   Read flags:
  */
@@ -7380,7 +7383,24 @@ read_print_frequency(void)
 				error_msg("No start time for print frequency data", CONTINUE);
 			}
 			break;
-		}
+		case 62:				/* tsv_zone_flow */
+		case 63:				/* tsv_zone_flow_rates */
+		case 64:				/* tsv_zone_flows */
+			if (current_time.value_defined == TRUE)
+			{
+				property_time_ptr =
+					time_series_alloc_property_time(&print_zone_budget_tsv);
+				read_frequency_data(&next_char,
+									&(property_time_ptr->time_value),
+									"Print frequency for zone_budget tsv, in PRINT_FREQUENCY.");
+				time_copy(&current_time, &(property_time_ptr->time));
+			}
+			else
+			{
+				input_error++;
+				error_msg("No start time for print frequency data", CONTINUE);
+			}
+			break;		}
 		if (return_value == EOF || return_value == KEYWORD)
 			break;
 	}

@@ -2222,11 +2222,12 @@ write_output_transient(void)
 		output_msg(OUTPUT_HST, "     t \n");
 	if (save_final_heads == FALSE)
 		output_msg(OUTPUT_HST, "     f \n");
-	output_msg(OUTPUT_HST, "C.3.8.2.2 .. pri_zon_flo\n");
+	output_msg(OUTPUT_HST, "C.3.8.2.2 .. pri_zf, pri_zf_tsv\n");
 	if (Zone_budget::zone_budget_map.size() > 0)
 	{
-		output_msg(OUTPUT_HST, "     %f\n",
-				   print_value(&current_print_zone_budget));
+		output_msg(OUTPUT_HST, "     %f %f\n",
+				   print_value(&current_print_zone_budget),
+				   print_value(&current_print_zone_budget_tsv));
 	}
 /*
  *   new line to control phreeqc prints

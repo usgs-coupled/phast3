@@ -1137,6 +1137,8 @@ check_time_series_data(void)
 		check_time_series(&print_restart, FALSE, "print restart");
 	if (print_zone_budget.properties != NULL)
 		check_time_series(&print_zone_budget, FALSE, "print zone budget");
+	if (print_zone_budget_tsv.properties != NULL)
+		check_time_series(&print_zone_budget_tsv, FALSE, "print zone budget tsv");
 	/* 
 	 * check defaults
 	 */

@@ -41,5 +41,5 @@ EXTERNAL struct time_series print_conductances;
 EXTERNAL struct time_series print_bc;
 EXTERNAL struct time_series print_restart;
 EXTERNAL struct time_series print_zone_budget;
-
+EXTERNAL struct time_series print_zone_budget_tsv;
 #endif
