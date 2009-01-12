@@ -20,6 +20,11 @@ check_properties(void)
 		input_error++;
 		error_msg("Rivers may not be used with confined flow.", CONTINUE);
 	}
+	if ((free_surface == FALSE) && (count_drains > 0))
+	{
+		input_error++;
+		error_msg("Drains may not be used with confined flow.", CONTINUE);
+	}
 	/* eliminate .xyz.well file for flow_only */
 	if ((flow_only == TRUE) && (print_xyz_wells.properties != NULL)
 		&& (print_xyz_wells.count_properties > 0))
