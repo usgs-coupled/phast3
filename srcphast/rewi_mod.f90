@@ -18,7 +18,7 @@ MODULE rewi_mod
 !$$  CHARACTER(LEN=130), EXTERNAL, PRIVATE :: uppercase
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80), PRIVATE :: ident_string=  &
-       '$RCSfile: rewi_mod.f90,v $//$Revision: 1.3 $//$Date: 2008/10/03 23:07:56 $'
+       '$RCSfile: rewi_mod.f90,v $//$Revision: 1.5 $//$Date: 2009/01/15 21:45:00 $'
   PRIVATE :: irewi, rewi1, rewi3
 CONTAINS
 

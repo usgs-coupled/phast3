@@ -391,7 +391,7 @@ SUBROUTINE write2_1
         STOP  
      ENDIF
   END IF
-  ! ... Output to well file and xyz.well file with concentrations is in write2_2, 
+  ! ... Output to well file and tsv.well file with concentrations is in write2_2, 
   ! ...      which follows equilibration calculation
   IF(prtbc) THEN
      IF(nsbc > 0) THEN
