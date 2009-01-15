@@ -20,7 +20,7 @@ check_properties(void)
 		input_error++;
 		error_msg("Rivers may not be used with confined flow.", CONTINUE);
 	}
-	if ((free_surface == FALSE) && (count_drains > 0))
+	if ((free_surface == FALSE) && (drains.size() > 0))
 	{
 		input_error++;
 		error_msg("Drains may not be used with confined flow.", CONTINUE);

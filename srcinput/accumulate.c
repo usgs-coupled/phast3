@@ -51,7 +51,7 @@ accumulate(void)
 		}
 		if (units.map_vertical.defined == TRUE)
 		{
-			scale_h =
+			scale_v =
 				units.map_vertical.input_to_si / units.vertical.input_to_si;
 		}
 		map_to_grid =

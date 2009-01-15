@@ -575,7 +575,7 @@ well_convert_xy_to_grid(Well * well_ptr,
 	case PHAST_Transform::MAP:
 		{
 			Point p(well_ptr->x_user, well_ptr->y_user, 0.0);
-			map2grid->Inverse_transform(p);
+			map2grid->Transform(p);
 			well_ptr->x_grid = p.x();
 			well_ptr->y_grid = p.y();
 		}
