@@ -740,6 +740,14 @@ check_cells(void)
 							"Solution for LEAKY_BC not defined %s", tag);
 					error_msg(error_string, CONTINUE);
 				}
+				// No positive Z leaky face for free surface
+				if (free_surface == TRUE && rit->face == CF_Z && cells[i].exterior->zp)
+				{
+					input_error++;
+					sprintf(error_string,
+							"Can not have leaky positive Z face with free surface %s", tag);
+					error_msg(error_string, CONTINUE);
+				}
 			}
 		}
 	}
