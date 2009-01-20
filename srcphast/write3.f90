@@ -169,16 +169,18 @@ SUBROUTINE write3
            ! ... No spatial display of transient leakage data; by segment ****at present
            WRITE(fulp,2124) 'Specified Flux B.C.: Segment Data',  &
                 dash,  &
-                'Segment','Cell','Flux     ','Index 1','Index 2','Mix Fraction',  &
-                'No.','No.',  &
+                'Segment','Cell','Index','Flux     ','Index 1','Index 2','Mix Fraction',  &
+                'No.','No.', 'i       j       k',  &
                 '('//TRIM(unitl)//'^2/'//TRIM(unittm)//')',  &
                 dash
-2124       FORMAT(//tr30,a/tr10,a95/tr15,a,tr3,a,tr11,a,tr5,a,tr3,a,tr2,a/tr15,a,tr7,a/  &
-                tr39,a/tr10,a95)
+2124       FORMAT(//tr30,a/tr10,a95/tr15,a,tr3,a,tr11,a,tr20,a,tr3,a,tr3,a,tr2,a/tr15,  &
+                a,tr7,a,tr6,a/  &
+                tr64,a/tr10,a95)
            DO ls=1,nfbc_seg
-              WRITE(fulp,2125) ls, mfbc(ls), (cnvl2i/cnvtmi)*qfflx(ls), indx1_fbc(ls),  &
+              call mtoijk(mfbc(ls),i,j,k,nx,ny)
+              WRITE(fulp,2125) ls, mfbc(ls), i, j, k, (cnvl2i/cnvtmi)*qfflx(ls), indx1_fbc(ls),  &
                    indx2_fbc(ls), mxf_fbc(ls)
-2125          FORMAT(tr15,i5,tr5,i3,tr9,1PG12.4,I10,I10,tr2,0PF10.4)
+2125          FORMAT(tr15,i5,tr5,i3,3(tr4,i4),tr9,1PG12.4,I10,I10,tr2,0PF10.4)
            END DO
            IF(solute) THEN
               nsa = MAX(ns,1)
@@ -204,7 +206,8 @@ SUBROUTINE write3
                  WRITE(fulp,2104) 'Component: ',comp_name(iis)
 2104             FORMAT(/tr15,3A)
                  DO ls=1,nfbc_seg
-                    WRITE(fulp,2125) ls, mfbc(ls), c_mol_bc(ls,iis)
+                    WRITE(fulp,2325) ls, mfbc(ls), c_mol_bc(ls,iis)
+2325          FORMAT(tr15,i5,tr5,i3,tr9,1PG12.4,I10,I10,tr2,0PF10.4)
                  END DO
                  CALL ldchar_bc(indx1_fbc, indx2_fbc, mxf_fbc, 1, csolmask, solmask, mfbc)
               END DO
@@ -223,7 +226,7 @@ SUBROUTINE write3
            DO  iis=1,ns
               WRITE(fulp,2104) 'Component: ', comp_name(iis)           
               DO  ls=1,nfbc_seg
-                 WRITE(fulp,2125) ls, mfbc(ls), qsflx(ls,iis)
+                 WRITE(fulp,2325) ls, mfbc(ls), qsflx(ls,iis)
               END DO
            END DO
         END IF
@@ -235,15 +238,18 @@ SUBROUTINE write3
            ! ... No spatial display of transient leakage data; by segment
            WRITE(fulp,2224) 'Aquifer Leakage B.C.: Segment Data',  &
                 dash,  &
-                'Segment','Cell','Head','Index 1','Index 2','Mix Fraction',  &
-                'No.','No.','('//TRIM(unitl)//')',  &
+                'Segment','Cell','Index','Head','Index 1','Index 2','Mix Fraction',  &
+                'No.','No.', 'i       j       k',  &
+                '('//TRIM(unitl)//')',  &
                 dash
-2224       FORMAT(//tr30,a/tr10,a95/tr15,a,tr3,a,tr11,a,tr10,a,tr3,a,tr2,a/tr15,a,tr7,a/  &
-                tr41,a/tr10,a95)
+2224       FORMAT(//tr30,a/tr10,a95/tr15,a,tr3,a,tr12,a,tr18,a,tr10,a,tr3,a,tr2,a/tr15,  &
+                a,tr7,a,tr7,a/  &
+                tr65,a/tr10,a95)
            DO ls=1,nlbc_seg
-              WRITE(fulp,2225) ls, mlbc(ls), cnvli*philbc(ls)/gz, indx1_lbc(ls),  &
+              call mtoijk(mlbc(ls),i,j,k,nx,ny)
+              WRITE(fulp,2225) ls, mlbc(ls), i, j, k, cnvli*philbc(ls)/gz, indx1_lbc(ls),  &
                    indx2_lbc(ls), mxf_lbc(ls)
-2225          FORMAT(tr15,i5,tr5,i3,tr9,1PG12.4,I10,I10,tr3,0PF10.4)
+2225          FORMAT(tr15,i5,tr5,i3,3(tr4,i4),tr9,1PG12.4,I10,I10,tr3,0PF10.4)
            END DO
            IF(solute) THEN
               nsa = MAX(ns,1)
@@ -268,7 +274,7 @@ SUBROUTINE write3
               DO  iis=1,ns
                  WRITE(fulp,2104) 'Component: ',comp_name(iis)
                  DO ls=1,nlbc_seg
-                    WRITE(fulp,2125) ls, mlbc(ls), c_mol_bc(ls,iis)
+                    WRITE(fulp,2325) ls, mlbc(ls), c_mol_bc(ls,iis)
                  END DO
                  CALL ldchar_bc(indx1_lbc, indx2_lbc, mxf_lbc, 3, csolmask, solmask, mlbc)
               END DO
@@ -285,23 +291,25 @@ SUBROUTINE write3
      IF(nrbc > 0) THEN
         lprnt1 = -1
         IF (rdrbc) THEN 
-           DO  lc=1,nrbc 
-              m = mrbc_bot(lc)
-              lprnt1(m) = 1
-              aprnt1(m) = lc
-           END DO
-           !*** This should be a nodal printout with each segment number listed for each
-           !***     river cell
-           WRITE(fulp,2004) 'River Leakage B.C: River Cell Numbers (lowest river bottom)'
-           CALL prntar(2,aprnt1,lprnt1,fulp,cnv,10,000)
+!!$           DO  lc=1,nrbc 
+!!$              m = mrbc_bot(lc)
+!!$              lprnt1(m) = 1
+!!$              aprnt1(m) = lc
+!!$           END DO
+!!$           !*** This should be a nodal printout with each segment number listed for each
+!!$           !***     river cell
+!!$           WRITE(fulp,2004) 'River Leakage B.C: River Cell Numbers (lowest river bottom)'
+!!$           CALL prntar(2,aprnt1,lprnt1,fulp,cnv,10,000)
            ! ... No spatial display of transient leakage data; by segment
            WRITE(fulp,2224) 'River Leakage B.C.: Segment Data',  &
                 dash,  &
-                'Segment','Cell','Head','Index 1','Index 2','Mix Fraction',  &
-                'No.','No.','('//TRIM(unitl)//')', dash
+                'Segment','Cell','Index','Head','Index 1','Index 2','Mix Fraction',  &
+                'No.','No.','i       j       k',  &
+                '('//TRIM(unitl)//')', dash
            DO lc=1,nrbc
+              call mtoijk(mrbc_bot(lc),i,j,k,nx,ny)
               DO  ls=river_seg_index(lc)%seg_first,river_seg_index(lc)%seg_last
-                 WRITE(fulp,2225) ls, mrbc_bot(lc), cnvli*phirbc(ls)/gz, indx1_rbc(ls),  &
+                 WRITE(fulp,2225) ls, mrbc_bot(lc), i, j, k, cnvli*phirbc(ls)/gz, indx1_rbc(ls),  &
                       indx2_rbc(ls), mxf_rbc(ls)
               END DO
            END DO
@@ -333,7 +341,7 @@ SUBROUTINE write3
                  WRITE(fulp,2104) 'Component: ',comp_name(iis)
                  DO lc=1,nrbc
                     DO  ls=river_seg_index(lc)%seg_first,river_seg_index(lc)%seg_last
-                       WRITE(fulp,2125) ls, mrbc_bot(lc), c_mol_bc(ls,iis)
+                       WRITE(fulp,2325) ls, mrbc_bot(lc), c_mol_bc(ls,iis)
                     END DO
                  END DO
               END DO

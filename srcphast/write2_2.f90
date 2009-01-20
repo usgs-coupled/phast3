@@ -197,7 +197,7 @@ SUBROUTINE write2_2
      ! ... Print initial amounts
      WRITE(fulp,2052) 'Initial fluid in region '//dots,cnvmi*fir0,'(',unitm  &
           ,') ;',cnvl3i*firv0,'(',TRIM(unitl),'^3)'
-2052 FORMAT(/tr20,a55,1PE14.6,tr2,3A,e14.6,tr2,3A)
+2052 FORMAT(/tr15,a55,1PE14.6,tr2,3A,e14.6,tr2,3A)
 !!$  IF(heat) WRITE(fulp,2052)  &
 !!$       'Initial heat in region (fluid & porous medium)'//dots, cnvhei*ehir0,'(',unith,')'
      DO  iis=1,ns

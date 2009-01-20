@@ -36,6 +36,7 @@ MODULE mcb
   TYPE :: rbc_indices
      INTEGER :: m, seg_first, seg_last
   END TYPE rbc_indices
+  CHARACTER(LEN=9), DIMENSION(:), ALLOCATABLE :: ibc_string
   INTEGER, DIMENSION(:), ALLOCATABLE :: indx1_sbc, indx2_sbc, indx1_fbc, indx2_fbc, &
        indx1_lbc, indx2_lbc, indx1_rbc, indx2_rbc
   INTEGER, DIMENSION(:), ALLOCATABLE :: ibc,  &

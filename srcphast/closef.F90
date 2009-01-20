@@ -188,7 +188,7 @@ SUBROUTINE closef(mpi_myself)
           aprnt1, aprnt2, aprnt3, aprnt4,  &
           rm, x, y, z,  &
           x_face, y_face, z_face,  &
-          ibc,  &
+          ibc, ibc_string,  &
           c_mol,  &
           xd_mask, vmask,  &
           stat = da_err)

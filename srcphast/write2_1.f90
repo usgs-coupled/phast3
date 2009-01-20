@@ -260,17 +260,17 @@ SUBROUTINE write2_1
      WRITE(fulp,2018) '*** Fluid Properties ***','Physical',  &
           'Fluid compressibility .......'//dots,   ' BP ... ',  &
           bp/cnvpi,'(1/',unitp,')'
-2018 FORMAT(//tr40,a/tr45,a/tr25,a60,a,1PE10.2,tr2,3A)
+2018 FORMAT(//tr35,a/tr40,a/tr20,a60,a,1PE10.2,tr2,3A)
      WRITE(fulp,2019) 'Reference pressure for density '//dots,  &
           ' P0 ..  ',cnvpi*p0,'(',unitp,')',  &
           'Reference temperature for density '//dots,   ' T0 ..  ',  &
           cnvt1i*t0+cnvt2i,'(Deg.',unitt,')', 'Fluid density '//  &
           dots,' DENF0  ',cnvdi*denf0,'(',unitm,'/',TRIM(unitl),'^3)'
-2019 FORMAT(/tr25,a60,a,f10.1,tr2,3A/tr25,a60,a,f10.1,tr2,3A/tr25,  &
+2019 FORMAT(/tr20,a60,a,f10.1,tr2,3A/tr20,a60,a,f10.1,tr2,3A/tr20,  &
           a60,a,1PG10.5,tr2,5A)
      IF(solute) WRITE(fulp,2020) 'Fluid density at solute '//mflbl//  &
           'fraction of '//cw1//dots,' DENF1  ',cnvdi*denf1, '(',unitm,'/',TRIM(unitl),'^3)'
-2020 FORMAT(tr25,a60,a,1PG10.5,tr2,5A)
+2020 FORMAT(tr20,a60,a,1PG10.5,tr2,5A)
      IF(heat) THEN
         WRITE(fulp,2021) 'Thermal',  &
              'Fluid coefficient of thermal expansion '//dots,  &
@@ -288,21 +288,14 @@ SUBROUTINE write2_1
      ucnvi=cnvvsi
      IF(visfac > 0.) ucnvi=1.d0
      WRITE(fulp,2022) 'Viscosity factor '//dots,' VISFAC ', ucnvi*visfac
-2022 FORMAT(/tr25,a60,a,1PG10.3)
+2022 FORMAT(/tr20,a60,a,1PG10.3)
 60   IF(.NOT.heat.AND.visfac > 0.) WRITE(fulp,2023)
-2023 FORMAT(tr25,'Viscosity will be adjusted to isothermal',' aquifer temperature')
+2023 FORMAT(tr20,'Viscosity will be adjusted to isothermal',' aquifer temperature')
   END IF
   IF(nwel > 0) THEN
-     IF(prtwel) THEN
-        ! ... Well bore information
+     IF(prtbc) THEN
+        ! ... Well bore information to probdef file
         WRITE(fulp,2024)'*** Well Data ***',dash,  &
-             'Well', 'Location','Screen Interval','Screen Interval','Calculation',  &
-             'Well Diameter',  &
-             'No.','X','Y','Z1','Z2','Top Depth','Bottom Depth','Type','('//TRIM(unitl)//')',  &
-             '('//TRIM(unitl)//')','('//TRIM(unitl)//')','('//TRIM(unitl)//')',  &
-             '('//TRIM(unitl)//')',  &
-             '('//TRIM(unitl)//')','('//TRIM(unitl)//')', dash
-        WRITE(fuwel,2024)'*** Well Data ***',dash,  &
              'Well', 'Location','Screen Interval','Screen Interval','Calculation',  &
              'Well Diameter',  &
              'No.','X','Y','Z1','Z2','Top Depth','Bottom Depth','Type','('//TRIM(unitl)//')',  &
@@ -325,15 +318,12 @@ SUBROUTINE write2_1
            WRITE(fulp,2025) welidno(iwel),cnvli*xw(iwel),cnvli*yw(iwel),  &
                 cnvli*zwb(iwel),cnvli*zwt(iwel),chu2,chu3, &
                 wqmeth(iwel), cnvli*wbod(iwel)
-           WRITE(fuwel,2025) welidno(iwel),cnvli*xw(iwel),cnvli*yw(iwel),  &
-                cnvli*zwb(iwel),cnvli*zwt(iwel),chu2,chu3, &
-                wqmeth(iwel), cnvli*wbod(iwel)
-2025       FORMAT(tr5,i3,tr2,4(1PG11.3),2a11,tr180,i2,tr12,1PG12.3)
+2025       FORMAT(tr5,i3,tr2,4(1PG11.3),2a11,tr19,i2,tr12,1PG12.3)
         END DO
         DO  iwel=1,nwel
            iwq1=wqmeth(iwel)/10
            iwq3=2
-           IF(wqmeth(iwel) == 11.OR.wqmeth(iwel) == 13) THEN
+           IF(wqmeth(iwel) == 11 .OR. wqmeth(iwel) == 13) THEN
               iwq2=2
               iwq3=1
            END IF
@@ -343,16 +333,11 @@ SUBROUTINE write2_1
            END IF
            WRITE(fulp,2026) 'Well No.',welidno(iwel),wclbl1(iwq1),  &
                 wclbl2(iwq2),wclbl3(iwq3)
-           WRITE(fuwel,2026) 'Well No.',welidno(iwel),wclbl1(iwq1),  &
-                wclbl2(iwq2),wclbl3(iwq3)
 2026       FORMAT(/tr2,a,i4/tr4,a/tr4,a/tr4,a)
         END DO
 !!$        WRITE(fulp,2027) 'Node Layer','Effective Ambient Permeability','Well Flow Factor',  &
 !!$             'No.','Below the node  Above the node',  &
 !!$             '('//TRIM(unitl)//'^2)','('//TRIM(unitl)//'^2)','('//TRIM(unitl)//'^3)',dash
-        WRITE(fuwel,2027) 'Node Layer','Effective Ambient Permeability','Well Flow Factor',  &
-             'No.','Below the node  Above the node',  &
-             '('//TRIM(unitl)//'^2)','('//TRIM(unitl)//'^2)','('//TRIM(unitl)//'^3)',dash
 2027    FORMAT(/tr20,a,tr3,a,tr11,a/tr25,a,tr6,a/tr38,a,tr11,a,tr20,a/tr8,a90)
         DO  iwel=1,nwel
            IF(wqmeth(iwel) >= 40) wrcalc=.TRUE.
@@ -363,7 +348,6 @@ SUBROUTINE write2_1
               mb=mwel(iwel,1)
               CALL mtoijk(mb,i,j,kwb,nx,ny)
 !!$              WRITE(fulp,2028) 'Well No.',welidno(iwel)
-              WRITE(fuwel,2028) 'Well No.',welidno(iwel)
 2028          FORMAT(/tr8,a,i4)
               DO  l=1,nz
                  aprnt1(l) = 0._kdp
@@ -378,8 +362,87 @@ SUBROUTINE write2_1
                  aprnt3(l)=cnvl3i*wi(iwel,ks)
               END DO
 !!$              WRITE(fulp,2029) (l, aprnt1(l), aprnt2(l), aprnt3(l), l=kwt,kwb,-1)
-              WRITE(fuwel,2029) (l, aprnt1(l), aprnt2(l), aprnt3(l), l=kwt,kwb,-1)
 2029          FORMAT(tr20,i6,tr8,1pe12.3,tr7,1pe12.3,tr10,1pe12.3)
+           END IF
+        END DO
+        WRITE(fulp,2334)'*** Well Data by Segment ***',  &
+             dash,  &
+             'Segment', 'Cell', 'Index', 'Well No.',  &
+             'No.','No.','i       j       k',  &
+             dash
+2334    FORMAT(//tr40,a/tr10,a95/  &
+             tr15,a,tr7,a,tr10,a,tr16,a/tr15,  &
+             a,tr12,a,tr5,a/  &
+             tr10,a95)
+        ls = 0
+        DO iwel=1,nwel
+           DO ks=1,nkswel(iwel)
+              ls = ls + 1
+              call mtoijk(mwel(iwel,ks),i,j,k,nx,ny)
+              WRITE(fulp,2335) ls, mwel(iwel,ks), i, j, k, welidno(iwel)
+2335          FORMAT(tr15,i5,tr6,i5,3(tr4,i4),tr10,i4)
+           END DO
+        END DO
+     END IF
+     IF(prtwel) THEN
+        ! ... Well bore information to well file
+        WRITE(fuwel,2024)'*** Well Data ***',dash,  &
+             'Well', 'Location','Screen Interval','Screen Interval','Calculation',  &
+             'Well Diameter',  &
+             'No.','X','Y','Z1','Z2','Top Depth','Bottom Depth','Type','('//TRIM(unitl)//')',  &
+             '('//TRIM(unitl)//')','('//TRIM(unitl)//')','('//TRIM(unitl)//')',  &
+             '('//TRIM(unitl)//')',  &
+             '('//TRIM(unitl)//')','('//TRIM(unitl)//')', dash
+        DO  iwel=1,nwel
+           chu2 = '           '
+           chu3 = '           '
+           IF(dwt(iwel) >= 0._kdp .AND. dwb(iwel) > 0._kdp) THEN
+              WRITE(chu2,3002) cnvli*dwt(iwel)
+              WRITE(chu3,3002) cnvli*dwb(iwel)
+           END IF
+           WRITE(fuwel,2025) welidno(iwel),cnvli*xw(iwel),cnvli*yw(iwel),  &
+                cnvli*zwb(iwel),cnvli*zwt(iwel),chu2,chu3, &
+                wqmeth(iwel), cnvli*wbod(iwel)
+        END DO
+        DO  iwel=1,nwel
+           iwq1=wqmeth(iwel)/10
+           iwq3=2
+           IF(wqmeth(iwel) == 11 .OR. wqmeth(iwel) == 13) THEN
+              iwq2=2
+              iwq3=1
+           END IF
+           IF(iwq1 == 0) THEN
+              iwq2=0
+              iwq3=0
+           END IF
+           WRITE(fuwel,2026) 'Well No.',welidno(iwel),wclbl1(iwq1),  &
+                wclbl2(iwq2),wclbl3(iwq3)
+        END DO
+        WRITE(fuwel,2027) 'Node Layer','Effective Ambient Permeability','Well Flow Factor',  &
+             'No.','Below the node  Above the node',  &
+             '('//TRIM(unitl)//'^2)','('//TRIM(unitl)//'^2)','('//TRIM(unitl)//'^3)',dash
+        DO  iwel=1,nwel
+           IF(wqmeth(iwel) >= 40) wrcalc=.TRUE.
+           IF(wqmeth(iwel) > 0) THEN
+              nks=nkswel(iwel)
+              mt=mwel(iwel,nks)
+              CALL mtoijk(mt,i,j,kwt,nx,ny)
+              mb=mwel(iwel,1)
+              CALL mtoijk(mb,i,j,kwb,nx,ny)
+              WRITE(fuwel,2028) 'Well No.',welidno(iwel)
+              DO  l=1,nz
+                 aprnt1(l) = 0._kdp
+                 aprnt2(l) = 0._kdp
+                 aprnt2(l) = 0._kdp
+              END DO
+              DO  ks=1,nks
+                 m=mwel(iwel,ks)
+                 CALL mtoijk(m,i,j,l,nx,ny)
+                 aprnt1(l)=cnvl2i*wcfl(iwel,ks)
+                 aprnt2(l)=cnvl2i*wcfu(iwel,ks)
+                 aprnt3(l)=cnvl3i*wi(iwel,ks)
+              END DO
+              WRITE(fuwel,2029) (l, aprnt1(l), aprnt2(l), aprnt3(l), l=kwt,kwb,-1)
            END IF
         END DO
         ntprwel = ntprwel+1
@@ -394,139 +457,163 @@ SUBROUTINE write2_1
   ! ... Output to well file and tsv.well file with concentrations is in write2_2, 
   ! ...      which follows equilibration calculation
   IF(prtbc) THEN
-     IF(nsbc > 0) THEN
-        ! ... Specified P,T,or C nodes
-        lprnt1 = -1
-        DO  l=1,nsbc
-           m=msbc(l)
-           lprnt1(m)=1
-           aprnt1(m)=l
-        END DO
-        WRITE(fulp,2036) 'Index Numbers For Specified P or C Nodes'
+    IF(nsbc > 0) THEN
+       ! ... Specified P,T,or C nodes
+!!$        lprnt1 = -1
+!!$        DO  l=1,nsbc
+!!$           m=msbc(l)
+!!$           lprnt1(m)=1
+!!$           aprnt1(m)=l
+!!$        END DO
+!!$        WRITE(fulp,2036) 'Index Numbers For Specified P or C Nodes'
 2036    FORMAT(/tr35,a)
-        CALL prntar(2,aprnt1,lprnt1,fulp,cnv,10,000)
-        !$$        WRITE(fulp,2036) 'Segment Numbers For Specified P or C Nodes'
-        !$$        CALL ldchar_seg(sv_seg_indx, 1, caprnt, lprnt1)
-        !$$        CALL prchar(2,caprnt,lprnt1,fulp,000)
+!!$        CALL prntar(2,aprnt1,lprnt1,fulp,cnv,10,000)
+!$$        WRITE(fulp,2036) 'Segment Numbers For Specified P or C Nodes'
+!$$        CALL ldchar_seg(sv_seg_indx, 1, caprnt, lprnt1)
+!$$        CALL prchar(2,caprnt,lprnt1,fulp,000)
+        WRITE(fulp,2234)'*** Specified Head B.C. Data by Segment ***',  &
+             dash,  &
+             'Segment', 'Cell', 'Index',  &
+             'No.','No.','i       j       k',  &
+             dash
+2234    FORMAT(//tr40,a/tr10,a95/  &
+             tr15,a,tr7,a,tr10,a/tr15,  &
+             a,tr12,a,tr5,a/  &
+             tr10,a95)
+        DO ls=1,nsbc_seg
+           call mtoijk(msbc(ls),i,j,k,nx,ny)
+           WRITE(fulp,2235) ls, msbc(ls), i, j, k
+2235       FORMAT(tr15,i5,tr6,i5,3(tr4,i4))
+        END DO
      END IF
      IF(nfbc > 0) THEN
         ! ... Specified flux b.c.
-        lprnt1 = -1
-        DO  lc=1,nfbc
-           m = flux_seg_index(lc)%m
-           lprnt1(m) = 1
-           aprnt1(m) = lc
-        END DO
-        WRITE(fulp,2036) 'Index Numbers For Specified Flux Nodes'
-        CALL prntar(2,aprnt1,lprnt1,fulp,cnv,10,000)
-        WRITE(fulp,2036) 'Segment Numbers For Specified Flux Nodes'
-        CALL ldchar_seg(flux_seg_index, 2, caprnt, lprnt1)
-        !!        ptr => flux_seg_index
-        !!        CALL ldchar_seg( 2, caprnt, lprnt1)
-        !!        nullify (ptr)
-        CALL prchar(2,caprnt,lprnt1,fulp,000)
+!!$        lprnt1 = -1
+!!$        DO  lc=1,nfbc
+!!$           m = flux_seg_index(lc)%m
+!!$           lprnt1(m) = 1
+!!$           aprnt1(m) = lc
+!!$        END DO
+!!$        WRITE(fulp,2036) 'Index Numbers For Specified Flux Nodes'
+!!$        CALL prntar(2,aprnt1,lprnt1,fulp,cnv,10,000)
+!!$        WRITE(fulp,2036) 'Segment Numbers For Specified Flux Nodes'
+!!$        CALL ldchar_seg(flux_seg_index, 2, caprnt, lprnt1)
+!!$        !!        ptr => flux_seg_index
+!!$        !!        CALL ldchar_seg( 2, caprnt, lprnt1)
+!!$        !!        nullify (ptr)
+!!$        CALL prchar(2,caprnt,lprnt1,fulp,000)
         WRITE(fulp,2034)'*** Flux B.C. Data by Segment ***',  &
              dash,  &
-             'Segment', 'Cell', 'Face','Face',  &
-             'No.','No.','Area','Orientation',  &
+             'Segment', 'Cell', 'Index', 'Face','Face',  &
+             'No.','No.','i       j       k','Area','Orientation',  &
              '('//TRIM(unitl)//'^2)',  &
              dash
 2034    FORMAT(//tr40,a/tr10,a95/  &
-             tr15,a,tr7,a,tr11,a,tr7,a/tr15,  &
-             a,tr12,a,tr10,a,tr7,a/tr43,a/  &
+             tr15,a,tr7,a,tr10,a,tr21,a,tr11,a/tr15,  &
+             a,tr12,a,tr5,a,tr14,a,tr7,a/tr69,a/  &
              tr10,a95)
         DO  ls=1,nfbc_seg
-           WRITE(fulp,2035) ls, mfbc(ls), cnvl2i*areafbc(ls), ifacefbc(ls)
-2035       FORMAT(tr15,i5,tr6,i5,tr7,1PG11.3,tr9,i2)
+           call mtoijk(mfbc(ls),i,j,k,nx,ny)
+           WRITE(fulp,2035) ls, mfbc(ls), i, j, k, cnvl2i*areafbc(ls), ifacefbc(ls)
+2035       FORMAT(tr15,i5,tr6,i5,3(tr4,i4),tr10,1PG11.3,tr9,i2)
         END DO
      END IF
      IF(nlbc > 0) THEN
         ! ... Leakage b.c.
-        lprnt1 = -1
-        DO  lc=1,nlbc
-           m = leak_seg_index(lc)%m
-           lprnt1(m)=1
-           aprnt1(m)=lc
-        END DO
-        WRITE(fulp,2036) 'Index Numbers for Aquifer Leakage B.C. Cells'
-        CALL prntar(2,aprnt1,lprnt1,fulp,cnv,10,000)
-        WRITE(fulp,2036) 'Segment Numbers For Leakage B.C. Nodes'
-        CALL ldchar_seg(leak_seg_index, 3, caprnt, lprnt1)
-        CALL prchar(2,caprnt,lprnt1,fulp,000)
+!!$        lprnt1 = -1
+!!$        DO  lc=1,nlbc
+!!$           m = leak_seg_index(lc)%m
+!!$           lprnt1(m)=1
+!!$           aprnt1(m)=lc
+!!$        END DO
+!!$        WRITE(fulp,2036) 'Index Numbers for Aquifer Leakage B.C. Cells'
+!!$        CALL prntar(2,aprnt1,lprnt1,fulp,cnv,10,000)
+!!$        WRITE(fulp,2036) 'Segment Numbers For Leakage B.C. Nodes'
+!!$        CALL ldchar_seg(leak_seg_index, 3, caprnt, lprnt1)
+!!$        CALL prchar(2,caprnt,lprnt1,fulp,000)
         WRITE(fulp,2044)'*** Leakage B.C. Data by Segment ***',  &
              dash,  &
-             'Segment', 'Cell', 'Face', 'Face', 'Leakage Factor','Thickness','Elevation',  &
-             'No.','No.','Area','Orientation','of Aquitard','of Aquitard',  &
+             'Segment', 'Cell', 'Index', 'Face', 'Face', 'Leakage Factor','Thickness','Elevation',  &
+             'No.','No.','i     j     k','Area','Orientation','of Aquitard','of Aquitard',  &
              '('//TRIM(unitl)//'^2)','('//TRIM(unitl)//'^3)','('//TRIM(unitl)//')',  &
              '('//TRIM(unitl)//')',  &
              dash
 2044    FORMAT(//tr40,a/tr10,a95/  &
-             tr15,a,tr7,a,tr9,a,tr7,a,tr7,a,tr3,a,tr4,a/tr15,  &
-             a,tr11,a,tr10,a,tr5,a,tr3,a,tr4,a/tr41,a,tr21,a,tr10,a,tr12,a/  &
+             tr15,a,tr7,a,tr20,a,tr9,a,tr7,a,tr7,a,tr3,a,tr4,a/tr15,  &
+             a,tr11,a,tr5,a,tr10,a,tr5,a,tr3,a,tr4,a/tr41,  &
+             a,tr21,a,tr10,a,tr12,a/  &
              tr10,a95)
         DO  ls=1,nlbc_seg
-           WRITE(fulp,2045) ls, mlbc(ls), cnvl2i*arealbc(ls), ifacelbc(ls),  &
+           call mtoijk(mlbc(ls),i,j,k,nx,ny)
+           WRITE(fulp,2045) ls, mlbc(ls), i, j, k, cnvl2i*arealbc(ls), ifacelbc(ls),  &
                 cnvl3i*klbc(ls), cnvli*bblbc(ls), cnvli*zelbc(ls)
-2045       FORMAT(tr15,i5,tr10,i5,1PG11.3,tr9,i2,tr5,1pg11.3,tr5,1pg11.3,tr5,1pg11.3)
+2045       FORMAT(tr15,i5,tr10,i5,3(tr5,i4),1PG11.3,tr9,i2,tr5,1pg11.3,tr5,1pg11.3,tr5,1pg11.3)
         END DO
      END IF
      IF(nrbc > 0) THEN
         ! ... River leakage b.c.
-        lprnt1 = -1
-        DO  lc=1,nrbc_cells
-           m = river_seg_index(lc)%m
-           lprnt1(m) = 1
-           aprnt1(m) = lc
-        END DO
-        WRITE(fulp,2036) 'Cell Numbers for River Leakage B.C. Cells'
-        WRITE(fulp,2036) '(based on bottom elevation of lowest river segment)'
-        CALL prntar(2,aprnt1,lprnt1,fulp,cnv,10,000)
-        WRITE(fulp,2036) 'Segment Numbers For River Leakage Nodes'
-        CALL ldchar_seg(river_seg_index, 4, caprnt, lprnt1)
-        CALL prchar(2,caprnt,lprnt1,fulp,000)
-        WRITE(fulp,2054)'*** River Leakage Data by Segment ***',  &
+!!$        lprnt1 = -1
+!!$        DO  lc=1,nrbc_cells
+!!$           m = river_seg_index(lc)%m
+!!$           lprnt1(m) = 1
+!!$           aprnt1(m) = lc
+!!$        END DO
+!!$        WRITE(fulp,2036) 'Cell Numbers for River Leakage B.C. Cells'
+!!$        WRITE(fulp,2036) '(based on bottom elevation of lowest river segment)'
+!!$        CALL prntar(2,aprnt1,lprnt1,fulp,cnv,10,000)
+!!$        WRITE(fulp,2036) 'Segment Numbers For River Leakage Nodes'
+!!$        CALL ldchar_seg(river_seg_index, 4, caprnt, lprnt1)
+!!$        CALL prchar(2,caprnt,lprnt1,fulp,000)
+        WRITE(fulp,2054)'*** River B.C. Data by Segment ***',  &
              dash,  &
-             'Segment', 'Cell', 'Min. Cell', 'Face', 'Leakage Factor','Thickness','Elevation',  &
-             'No.','No.','Area','of River Bed','of River Bed',  &
+             'Segment', 'Cell', 'Index', 'Min. Cell', 'Face', 'Leakage Factor','Thickness','Elevation',  &
+             'No.','No.','i      j      k','Area','of River Bed','of River Bed',  &
              '('//TRIM(unitl)//'^2)','('//TRIM(unitl)//'^3)','('//TRIM(unitl)//')',  &
              '('//TRIM(unitl)//')',  &
              dash
-2054    FORMAT(//tr40,a/tr10,a95/  &
-             tr15,a,tr7,a,tr3,a,tr5,a,tr7,a,tr3,a,tr4,a/tr15,  &
-             a,tr11,a,tr18,a,tr8,a,tr3,a/tr49,a,tr9,a,tr10,a,tr12,a/  &
-             tr10,a95)
+2054    FORMAT(//tr35,a/tr5,a107/  &
+             tr10,a,tr7,a,tr8,a,tr8,a,tr5,a,tr5,a,tr3,a,tr4,a/tr10,  &
+             a,tr11,a,tr5,a,tr16,a,tr20,a,tr3,a/tr63,a,tr9,a,tr10,a,tr10,a/  &
+             tr5,a107)
         DO lc=1,nrbc
            DO  ls=river_seg_index(lc)%seg_first,river_seg_index(lc)%seg_last
-              WRITE(fulp,2055) ls, mrbc(ls), mrbc_bot(lc), cnvl2i*arearbc(ls), cnvl3i*krbc(ls),  &
+              call mtoijk(mrbc(ls),i,j,k,nx,ny)
+              WRITE(fulp,2055) ls, mrbc(ls), i, j, k, mrbc_bot(lc), cnvl2i*arearbc(ls), cnvl3i*krbc(ls),  &
                    cnvli*one, cnvli*zerbc(ls)
-2055          FORMAT(tr15,i5,tr6,i5,tr5,i5,tr3,1PG11.3,tr5,1pg11.3,tr5,1pg11.3,tr5,1pg11.3)
+2055          FORMAT(tr10,i5,tr6,i5,3(tr3,i4),tr3,i5,tr5,1PG11.3,tr3,1pg11.3,tr3,1pg11.3,tr3,1pg11.3)
            END DO
         END DO
      END IF
      IF(ndbc > 0) THEN
         ! ... Drain leakage b.c.
-        lprnt1 = -1
-        DO  lc=1,ndbc_cells
-           m = drain_seg_index(lc)%m
-           lprnt1(m) = 1
-           aprnt1(m) = lc
-        END DO
-        WRITE(fulp,2036) 'Cell Numbers for Drain Leakage B.C. Cells'
-        WRITE(fulp,2036) '(based on bottom elevation of lowest drain segment)'
-        CALL prntar(2,aprnt1,lprnt1,fulp,cnv,10,000)
-        WRITE(fulp,2036) 'Segment Numbers for Drain Leakage Nodes'
-        CALL ldchar_seg(drain_seg_index, 4, caprnt, lprnt1)
-        CALL prchar(2,caprnt,lprnt1,fulp,000)
-        WRITE(fulp,2054)'*** Drain Leakage Data by Segment ***',  &
+!!$        lprnt1 = -1
+!!$        DO  lc=1,ndbc_cells
+!!$           m = drain_seg_index(lc)%m
+!!$           lprnt1(m) = 1
+!!$           aprnt1(m) = lc
+!!$        END DO
+!!$        WRITE(fulp,2036) 'Cell Numbers for Drain Leakage B.C. Cells'
+!!$        WRITE(fulp,2036) '(based on bottom elevation of lowest drain segment)'
+!!$        CALL prntar(2,aprnt1,lprnt1,fulp,cnv,10,000)
+!!$        WRITE(fulp,2036) 'Segment Numbers for Drain Leakage Nodes'
+!!$        CALL ldchar_seg(drain_seg_index, 4, caprnt, lprnt1)
+!!$        CALL prchar(2,caprnt,lprnt1,fulp,000)
+        WRITE(fulp,2554)'*** Drain B.C. Data by Segment ***',  &
              dash,  &
-             'Segment', 'Cell', 'Min. Cell', 'Face', 'Leakage Factor','Thickness','Elevation',  &
-             'No.','No.','Area','of Drain Bed','of Drain Bed',  &
+             'Segment', 'Cell', 'Index', 'Min. Cell', 'Face', 'Leakage Factor','Thickness','Elevation',  &
+             'No.','No.','i      j      k','Area','of Drain Bed','of Drain Bed',  &
              '('//TRIM(unitl)//'^2)','('//TRIM(unitl)//'^3)','('//TRIM(unitl)//')',  &
              '('//TRIM(unitl)//')',  &
              dash
+2554    FORMAT(//tr35,a/tr5,a107/  &
+             tr10,a,tr7,a,tr8,a,tr8,a,tr5,a,tr5,a,tr3,a,tr4,a/tr10,  &
+             a,tr11,a,tr5,a,tr16,a,tr20,a,tr3,a/tr63,a,tr9,a,tr10,a,tr10,a/  &
+             tr5,a107)
+
         DO lc=1,ndbc
            DO  ls=drain_seg_index(lc)%seg_first,drain_seg_index(lc)%seg_last
-              WRITE(fulp,2055) ls, mdbc(ls), mdbc_bot(lc), cnvl2i*areadbc(ls), cnvl3i*kdbc(ls),  &
+              call mtoijk(mdbc(ls),i,j,k,nx,ny)
+              WRITE(fulp,2055) ls, mdbc(ls), i, j, k, mdbc_bot(lc), cnvl2i*areadbc(ls), cnvl3i*kdbc(ls),  &
                    cnvli*one, cnvli*zedbc(ls)
            END DO
         END DO
@@ -663,7 +750,7 @@ SUBROUTINE write2_1
      END IF
      IF(slmeth == 3) THEN
         WRITE(fulp,2059) 'Direction index for red-black renumbering '//dots,' IDIR..',idir,  &
-             'Incomplete LU [f] or modified ILU [t] factorization '//dots,' MILU.. ',milu,  &
+             'Incomplete LU [f] or modified ILU [t] factorization '//dots,' MILU..',milu,  &
              'Number of search directions before restart '//dots,' NSDR..',nsdr,  &
              'Tolerance on iterative solution '//dots, ' EPSSLV',epsslv
 2059    FORMAT(/tr10,a65,a,i5/tr10,a65,a,l5/tr10,a65,a,i5/tr10,a65,a,1PE8.1)
@@ -671,7 +758,7 @@ SUBROUTINE write2_1
              '          Direction index for red-black renumbering '//dots,' IDIR..',idir
 5059    FORMAT(a65,a,i5)
         WRITE(logline2,5159)  &
-             '          Incomplete LU [f] or modified ILU [t] factorization '//dots,' MILU.. ',milu
+             '          Incomplete LU [f] or modified ILU [t] factorization '//dots,' MILU..',milu
 5159    FORMAT(a65,a,l5)
         WRITE(logline3,5059)  &
              '          Number of search directions before restart '//dots,' NSDR..',nsdr
@@ -684,13 +771,13 @@ SUBROUTINE write2_1
         CALL logprt_c(logline4)
      ELSE IF(slmeth == 5) THEN
         WRITE(fulp,2059) 'Direction index for d4 zig-zag renumbering '//dots,' IDIR..',idir,  &
-             'Incomplete LU [f] or modified ILU [t] factorization '//dots,' MILU.. ',milu,  &
+             'Incomplete LU [f] or modified ILU [t] factorization '//dots,' MILU..',milu,  &
              'Number of search directions before restart '//dots,' NSDR..',nsdr,  &
              'Tolerance on iterative solution '//dots, ' EPSSLV',epsslv
         WRITE(logline1,5059)  &
              '          Direction index for d4 zig-zag renumbering '//dots,' IDIR..',idir
         WRITE(logline2,5159)  &
-             '          Incomplete LU [f] or modified ILU [t] factorization '//dots,' MILU.. ',milu
+             '          Incomplete LU [f] or modified ILU [t] factorization '//dots,' MILU..',milu
         WRITE(logline3,5059)  &
              '          Number of search directions before restart '//dots,' NSDR..',nsdr
         WRITE(logline4,5060)  &

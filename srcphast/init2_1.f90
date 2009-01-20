@@ -108,7 +108,13 @@ SUBROUTINE init2_1
   ! ... Identify excluded (inactive) cells from zone definitions
   DO  m=1,nxyz
      CALL mtoijk(m,i,j,k,nx,ny)
-     IF(.NOT.xd_mask(i,j,k)) ibc(m) = -1
+     IF(.NOT.xd_mask(i,j,k)) THEN
+        ibc(m) = -1
+        IF(ibc_string(m)(9:9) /= 'X') THEN
+           cibc = ibc_string(m)(2:9)//'X'
+           ibc_string(m) = cibc
+        END IF
+     END IF
   END DO
   IF(errexi) RETURN  
 !!$  ! ... load the element centroid arrays
@@ -1008,8 +1014,8 @@ SUBROUTINE init2_1
                        IF(zone_col(izn)%i_no(icz) == i .AND. zone_col(izn)%j_no(icz) == j) THEN
                           lnk_crbc2zon(izn)%icz_no(ic) = icz
                           EXIT
-                          print *,"Fail to link river to zone"
-                          stop
+                          PRINT *,"Fail to link river to zone"
+                          STOP
                        END IF
                     END DO
                     EXIT

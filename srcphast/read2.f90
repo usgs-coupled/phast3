@@ -344,10 +344,15 @@ SUBROUTINE read2
            GOTO 160
         ENDIF
         READ(line,*) umwel, uwcfl, uwcfu  
-        ks = ks + 1  
-        uumwel(iwel,ks) = umwel  
+        ks = ks + 1
+        m = umwel
+        uumwel(iwel,ks) = umwel
         uuwcfl(iwel,ks) = uwcfl
         uuwcfu(iwel,ks) = uwcfu
+        IF(ibc_string(m)(9:9) /= 'W') THEN
+           cibc = ibc_string(m)(2:9)//'W'
+           ibc_string(m) = cibc
+        END IF
         IF (print_rde) WRITE(furde, 8010) '(mwel(iwel,ks),wcfl(iwel,ks),wcfu(iwel,ks), '//  &
              'ks=1,nkswel(iwel)),[2.13.2]',   &
              (uumwel(iwel,ks), uuwcfl(iwel,ks), uuwcfu(iwel,ks), ks=1,unkswel(iwel))
@@ -427,6 +432,11 @@ SUBROUTINE read2
         cibc(8:8) = '0'
         cibc(9:9) = '0'
         READ(cibc,6001) ibc(m)
+        IF(ibc_string(m)(8:8) /= 'S') THEN
+           IF(cibc(7:7) == '1') cibc = ibc_string(m)(3:9)//'Ss'
+           IF(cibc(7:7) == '0') cibc = ibc_string(m)(3:9)//'Sa'
+           ibc_string(m) = cibc
+        END IF
      END DO
      lc = 1
      m = umbc(1)
@@ -486,6 +496,10 @@ SUBROUTINE read2
         IF(cibc(ifc:ifc) /= '2') THEN
            cibc(ifc:ifc) = '2'
            READ(cibc,6001) ibc(m)
+        END IF
+        IF(ibc_string(m)(9:9) /= 'F') THEN
+           cibc = ibc_string(m)(2:9)//'F'
+           ibc_string(m) = cibc
         END IF
      END DO
      lc = 1
@@ -548,6 +562,10 @@ SUBROUTINE read2
         IF(cibc(ifc:ifc) /= '3') THEN
            cibc(ifc:ifc) = '3'
            READ(cibc,6001) ibc(m)
+        END IF
+        IF(ibc_string(m)(9:9) /= 'L') THEN
+           cibc = ibc_string(m)(2:9)//'L'
+           ibc_string(m) = cibc
         END IF
      END DO
      lc = 1
@@ -614,6 +632,10 @@ SUBROUTINE read2
         IF(cibc(3:3) /= '6' .AND. cibc(3:3) /= '8') THEN
            ibc(m) = ibc(m) + 6000000
         END IF
+        IF(ibc_string(m)(9:9) /= 'R') THEN
+           cibc = ibc_string(m)(2:9)//'R'
+           ibc_string(m) = cibc
+        END IF
      END DO
      lc = 1
      m = umbc(1)
@@ -677,6 +699,10 @@ SUBROUTINE read2
         WRITE(cibc,6001) ibc(m)
         IF(cibc(3:3) /= '7' .AND. cibc(3:3) /= '9') THEN
            ibc(m) = ibc(m) + 7000000
+        END IF
+        IF(ibc_string(m)(9:9) /= 'D') THEN
+           cibc = ibc_string(m)(2:9)//'D'
+           ibc_string(m) = cibc
         END IF
      END DO
      lc = 1
