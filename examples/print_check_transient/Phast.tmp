@@ -988,7 +988,7 @@ C.3.8.2 .. PRIHDF_CONC, PRIHDF_HEAD, PRIHDF_VEL
      -5000.000000 -6000.000000 -7000.000000
 C.3.8.2.1 .. PRI_ICHEAD; [T/F]
      t 
-C.3.8.2.2 .. pri_zon_flo
+C.3.8.2.2 .. pri_zf, pri_zf_tsv
 C.3.8.3 .. CHKPTD[T/F],PRICPD,SAVLDO[T/F]
 f 0 f
 C------------------------------------------------------------------------------
@@ -1137,7 +1137,7 @@ C.3.8.2 .. PRIHDF_CONC, PRIHDF_HEAD, PRIHDF_VEL
      -11000.000000 -10000.000000 -8000.000000
 C.3.8.2.1 .. PRI_ICHEAD; [T/F]
      t 
-C.3.8.2.2 .. pri_zon_flo
+C.3.8.2.2 .. pri_zf, pri_zf_tsv
 C.3.8.3 .. CHKPTD[T/F],PRICPD,SAVLDO[T/F]
 f 0 f
 C------------------------------------------------------------------------------
@@ -1286,7 +1286,7 @@ C.3.8.2 .. PRIHDF_CONC, PRIHDF_HEAD, PRIHDF_VEL
      -11000.000000 -10000.000000 -8000.000000
 C.3.8.2.1 .. PRI_ICHEAD; [T/F]
      t 
-C.3.8.2.2 .. pri_zon_flo
+C.3.8.2.2 .. pri_zf, pri_zf_tsv
 C.3.8.3 .. CHKPTD[T/F],PRICPD,SAVLDO[T/F]
 f 0 f
 C------------------------------------------------------------------------------

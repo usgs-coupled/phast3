@@ -1163,7 +1163,7 @@ C.3.8.2 .. PRIHDF_CONC, PRIHDF_HEAD, PRIHDF_VEL
      -2000.000000 -150000.000000 -150000.000000
 C.3.8.2.1 .. PRI_ICHEAD; [T/F]
      t 
-C.3.8.2.2 .. pri_zon_flo
+C.3.8.2.2 .. pri_zf, pri_zf_tsv
 C.3.8.3 .. CHKPTD[T/F],PRICPD,SAVLDO[T/F]
 f 0 f
 C------------------------------------------------------------------------------

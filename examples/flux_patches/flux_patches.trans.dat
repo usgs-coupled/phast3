@@ -110,7 +110,7 @@ FLUX_BC
 			0	14
 			1	14.5
 LEAKY_BC
-	-zone 0 0 1 0.5 0.5 1
+	-zone 0 0 0 0.5 0.5 0
 		-face Z
 		-associated_solution
 			0	6
@@ -140,16 +140,16 @@ LEAKY_BC
 			1	8.5
 		-hydraulic_conductivity  8
 		-thickness               8
-LEAKY_BC
-	-zone 0.5 0.5 1 1 1 1
-		-face Z
-		-associated_solution
-			0	9
-		-head
-			0	9
-			1	9.5
-		-hydraulic_conductivity  9
-		-thickness               9
+#LEAKY_BC
+#	-zone 0.5 0.5 1 1 1 1
+#		-face Z
+#		-associated_solution
+#			0	9
+#		-head
+#			0	9
+#			1	9.5
+#		-hydraulic_conductivity  9
+#		-thickness               9
 LEAKY_BC
 	-zone 0.5 0.5 0 1 1 0
 		-face Z
