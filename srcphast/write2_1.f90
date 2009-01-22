@@ -40,6 +40,8 @@ SUBROUTINE write2_1
   REAL(kind=kdp) :: ucnvi
   INTEGER :: i, ic, ifc, ifu, iwel, iwq1, iwq2, iwq3, izn, j,  &
        jprptc, k, ks, kwb, kwt, l, lc, ls, m, mb, mt, nks
+  INTEGER :: mp, msp
+  INTEGER, DIMENSION(nwel*nz) :: indxprint
   ! ... Set the unit numbers for node point output
   INTEGER, DIMENSION(12), PARAMETER :: fu =(/16,21,22,23,26,27,0,0,0,0,0,0/)
   INTEGER :: nr
@@ -374,15 +376,18 @@ SUBROUTINE write2_1
              tr15,a,tr7,a,tr10,a,tr16,a/tr15,  &
              a,tr12,a,tr5,a/  &
              tr10,a95)
+        call merge_ref(mwel, indxprint)
         ls = 0
-        DO iwel=1,nwel
-           DO ks=1,nkswel(iwel)
+        do mp=1,nwel*nz
+           msp = indxprint(mp)
+           call mptoiwks(msp,iwel,ks,nwel)
+           if (mwel(iwel,ks) /= 0) then
               ls = ls + 1
               call mtoijk(mwel(iwel,ks),i,j,k,nx,ny)
               WRITE(fulp,2335) ls, mwel(iwel,ks), i, j, k, welidno(iwel)
 2335          FORMAT(tr15,i5,tr6,i5,3(tr4,i4),tr10,i4)
-           END DO
-        END DO
+           end if
+        end do
      END IF
      IF(prtwel) THEN
         ! ... Well bore information to well file
@@ -534,20 +539,20 @@ SUBROUTINE write2_1
         WRITE(fulp,2044)'*** Leakage B.C. Data by Segment ***',  &
              dash,  &
              'Segment', 'Cell', 'Index', 'Face', 'Face', 'Leakage Factor','Thickness','Elevation',  &
-             'No.','No.','i     j     k','Area','Orientation','of Aquitard','of Aquitard',  &
+             'No.','No.','i       j       k','Area','Orientation','of Aquitard','of Aquitard',  &
              '('//TRIM(unitl)//'^2)','('//TRIM(unitl)//'^3)','('//TRIM(unitl)//')',  &
              '('//TRIM(unitl)//')',  &
              dash
-2044    FORMAT(//tr40,a/tr10,a95/  &
-             tr15,a,tr7,a,tr20,a,tr9,a,tr7,a,tr7,a,tr3,a,tr4,a/tr15,  &
-             a,tr11,a,tr5,a,tr10,a,tr5,a,tr3,a,tr4,a/tr41,  &
-             a,tr21,a,tr10,a,tr12,a/  &
-             tr10,a95)
+2044    FORMAT(//tr40,a/tr10,a110/  &
+             tr15,a,tr7,a,tr10,a,tr11,a,tr8,a,tr5,a,tr3,a,tr4,a/tr15,  &
+             a,tr11,a,tr5,a,tr5,a,tr5,a,tr17,a,tr2,a/tr59,  &
+             a,tr20,a,tr11,a,tr11,a/  &
+             tr10,a110)
         DO  ls=1,nlbc_seg
            call mtoijk(mlbc(ls),i,j,k,nx,ny)
            WRITE(fulp,2045) ls, mlbc(ls), i, j, k, cnvl2i*arealbc(ls), ifacelbc(ls),  &
                 cnvl3i*klbc(ls), cnvli*bblbc(ls), cnvli*zelbc(ls)
-2045       FORMAT(tr15,i5,tr10,i5,3(tr5,i4),1PG11.3,tr9,i2,tr5,1pg11.3,tr5,1pg11.3,tr5,1pg11.3)
+2045       FORMAT(tr15,i5,tr5,i5,3(tr4,i4),tr3,1PG11.3,tr5,i2,tr5,1pg11.3,tr5,1pg11.3,tr3,1pg11.3)
         END DO
      END IF
      IF(nrbc > 0) THEN
@@ -928,4 +933,140 @@ SUBROUTINE write2_1
   IF (da_err /= 0) THEN  
      PRINT *, "Array allocation failed: write2_1"  
   ENDIF
+
+CONTAINS
+
+  SUBROUTINE merge_ref (xvalt, irngt)
+    ! ... Construct the index for a sort using a merge-sort algorithm
+    ! ... Adapted from code of Michel Olagnon
+    !   Ranks array XVALT into index array IRNGT, using merge-sort
+    ! __________________________________________________________
+    !   This version is not optimized for performance, and is thus
+    !   not as difficult to read as some other ones.
+    !   Michel Olagnon - April 2000
+    ! __________________________________________________________
+    USE machine_constants, ONLY: kdp
+    IMPLICIT NONE
+    INTEGER, DIMENSION (*), INTENT (IN)  :: xvalt
+    INTEGER, DIMENSION (:), INTENT (OUT) :: irngt
+    ! 
+    INTEGER, DIMENSION (:), ALLOCATABLE :: jwrkt
+    INTEGER :: lmtna, lmtnc
+    INTEGER :: nval, iind, iwrkd, iwrk, iwrkf, jinda, iinda, iindb
+    INTEGER :: a_err, da_err
+    !---------------------------------------------------------------------
+!$$    nval = MIN(SIZE(xvalt), SIZE(irngt))
+    nval = SIZE(irngt)
+    IF (nval <= 0) THEN     ! ... Nothing to sort
+       RETURN
+    END IF
+    ! ... Fill-in the index array, creating ordered couples
+    DO iind = 2, nval, 2
+       IF (xvalt(iind-1) < xvalt(iind)) THEN
+          irngt (iind-1) = iind - 1
+          irngt (iind) = iind
+       ELSE
+          irngt (iind-1) = iind
+          irngt (iind) = iind - 1
+       END IF
+    END DO
+    IF (MOD(nval,2) /= 0) THEN
+       irngt(nval) = nval
+    END IF
+    ! ... We will now have ordered subsets A - B - A - B - ...
+    ! ... and merge A and B couples into     C   -   C   - ...
+    ALLOCATE (jwrkt(1:nval),  &
+         stat = a_err)
+    IF (a_err /= 0) THEN  
+       PRINT *, "Array allocation failed: merge_sort, number 1"  
+       STOP
+    ENDIF
+    lmtnc = 2
+    lmtna = 2
+    ! ... Iteration. Each time, the length of the ordered subsets
+    ! ...      is doubled.
+    DO
+       IF (lmtna >= nval) EXIT
+       iwrkf = 0
+       lmtnc = 2 * lmtnc
+       iwrk = 0
+       ! ...  Loop on merges of A and B into C
+       DO
+          iinda = iwrkf
+          iwrkd = iwrkf + 1
+          iwrkf = iinda + lmtnc
+          jinda = iinda + lmtna
+          IF (iwrkf >= nval) THEN
+             IF (jinda >= nval) EXIT
+             iwrkf = nval
+          END IF
+          iindb = jinda
+          ! ...  Shortcut for the case when the max of A is smaller
+          ! ...       than the min of B (no need to do anything)
+          IF (xvalt(irngt(jinda)) <= xvalt(irngt(jinda+1))) THEN
+             iwrk = iwrkf
+             CYCLE
+          END IF
+          ! ... One steps in the C subset, that we create in the final rank array
+          DO
+             IF (iwrk >= iwrkf) THEN
+                ! ... Make a copy of the rank index array for next iteration
+                irngt(iwrkd:iwrkf) = jwrkt(iwrkd:iwrkf)
+                EXIT
+             END IF
+             iwrk = iwrk + 1
+             ! ... We still have unprocessed values in both A and B
+             IF (iinda < jinda) THEN
+                IF (iindb < iwrkf) THEN
+                   IF (xvalt(irngt(iinda+1)) > xvalt(irngt(iindb+1))) THEN
+                      iindb = iindb + 1
+                      jwrkt(iwrk) = irngt(iindb)
+                   ELSE
+                      iinda = iinda + 1
+                      jwrkt(iwrk) = irngt(iinda)
+                   END IF
+                ELSE
+                   ! ... Only A still with unprocessed values
+                   iinda = iinda + 1
+                   jwrkt(iwrk) = irngt(iinda)
+                END IF
+             ELSE
+                ! ... Only B still with unprocessed values
+                irngt(iwrkd:iindb) = jwrkt(iwrkd:iindb)
+                iwrk = iwrkf
+                EXIT
+             END IF
+          END DO
+       END DO
+       ! ... The Cs become As and Bs
+       lmtna = 2*lmtna
+    END DO
+    ! ... Clean up
+    DEALLOCATE (jwrkt,  &
+         stat = da_err)
+    IF (da_err /= 0) THEN  
+       PRINT *, "Array deallocation failed: merge_sort"
+       STOP
+    ENDIF
+  END SUBROUTINE merge_ref
+
+  SUBROUTINE mptoiwks(m,i,k,ni)
+    ! ... Returns the index (I,K) of the point with
+    ! ...       index M.
+    !
+    IMPLICIT NONE
+    INTEGER, INTENT(IN) :: m, ni
+    INTEGER, INTENT(OUT) :: i, k
+    !
+    INTEGER :: imod
+    ! ... Set string for use with RCS ident command
+    CHARACTER(LEN=80) :: ident_string='$Id$'
+    !     ------------------------------------------------------------------
+    !...
+    imod = MOD(m,ni)
+    k = (m-imod)/ni + MIN(1,imod)
+    i = imod
+    IF (i == 0) i = ni
+  END SUBROUTINE mptoiwks
+
 END SUBROUTINE write2_1
