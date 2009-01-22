@@ -77,36 +77,16 @@
                               Z-Axis is Positive Vertically Upward
 
 
-                                        *** Fluid Properties ***
-                                             Physical
-                         Fluid compressibility ...................................... BP ...   0.00E+00  (1/Pa )
+                                   *** Fluid Properties ***
+                                        Physical
+                    Fluid compressibility ...................................... BP ...   0.00E+00  (1/Pa )
 
-                         Reference pressure for density ............................. P0 ..         0.0  (Pa )
-                         Reference temperature for density .......................... T0 ..        15.0  (Deg.C)
-                         Fluid density .............................................. DENF0  1000.0      (kg/m^3)
-                         Fluid density at solute  mass fraction of  0.0500........... DENF1  1000.0      (kg/m^3)
+                    Reference pressure for density ............................. P0 ..         0.0  (Pa )
+                    Reference temperature for density .......................... T0 ..        15.0  (Deg.C)
+                    Fluid density .............................................. DENF0  1000.0      (kg/m^3)
+                    Fluid density at solute  mass fraction of  0.0500........... DENF1  1000.0      (kg/m^3)
 
-                         Viscosity factor ........................................... VISFAC -1.000E-03
-
-
-                                        *** Well Data ***
-     -------------------------------------------------------------------------------------------------------------------
-     Well       Location            Screen Interval          Screen Interval              Calculation     Well Diameter
-     No.      X          Y           Z1          Z2       Top Depth  Bottom Depth             Type             (m)
-             (m)        (m)         (m)        (m)        (m)         (m)
-     -------------------------------------------------------------------------------------------------------------------
-       1    1.200E+04  3.600E+04   90.0       110.                                                                                                                                                                                                              11               5.080E-02
-       2    2.400E+04  3.600E+04   90.0       110.                                                                                                                                                                                                              11               5.080E-02
-
-  Well No.   1
-    Specified Flow Rate                              
-    Allocation by Mobility                           
-    Explicit Layer Rates                    
-
-  Well No.   2
-    Specified Flow Rate                              
-    Allocation by Mobility                           
-    Explicit Layer Rates                    
+                    Viscosity factor ........................................... VISFAC -1.000E-03
 
                                    A free-surface water table is specified for this simulation
 
@@ -118,33 +98,33 @@
                            Row scaling only, using L-inf norm, will be done
 
           Direction index for d4 zig-zag renumbering ...................... IDIR..    1
-          Incomplete LU [f] or modified ILU [t] factorization ............. MILU..     T
+          Incomplete LU [f] or modified ILU [t] factorization ............. MILU..    T
           Number of search directions before restart ...................... NSDR..   20
           Tolerance on iterative solution ................................. EPSSLV 1.0E-10
 
  ------------------------------------------------------------------------------------------------------------------------
 
-                    Initial fluid in region ...............................  2.784841E+14  (kg) ;  2.784841E+11  (m^3)
+               Initial fluid in region ...............................  2.784841E+14  (kg) ;  2.784841E+11  (m^3)
 
-                    Initial solute in region:H         ....................  1.055554E+09  (kg)
+               Initial solute in region:H         ....................  1.055554E+09  (kg)
 
-                    Initial solute in region:O         ....................  1.366192E+11  (kg)
+               Initial solute in region:O         ....................  1.366192E+11  (kg)
 
-                    Initial solute in region:As        ....................  2.086448E+05  (kg)
+               Initial solute in region:As        ....................  2.086448E+05  (kg)
 
-                    Initial solute in region:C         ....................  1.324588E+10  (kg)
+               Initial solute in region:C         ....................  1.324588E+10  (kg)
 
-                    Initial solute in region:Ca        ....................  5.194526E+12  (kg)
+               Initial solute in region:Ca        ....................  5.194526E+12  (kg)
 
-                    Initial solute in region:Cl        ....................  6.557309E+13  (kg)
+               Initial solute in region:Cl        ....................  6.557309E+13  (kg)
 
-                    Initial solute in region:Mg        ....................  1.090114E+12  (kg)
+               Initial solute in region:Mg        ....................  1.090114E+12  (kg)
 
-                    Initial solute in region:Na        ....................  3.458519E+13  (kg)
+               Initial solute in region:Na        ....................  3.458519E+13  (kg)
 
-                    Initial solute in region:S         ....................  4.219101E+10  (kg)
+               Initial solute in region:S         ....................  4.219101E+10  (kg)
 
-                    Initial solute in region:Charge    ....................  2.863301E-01  (kg)
+               Initial solute in region:Charge    ....................  2.863301E-01  (kg)
 
  ------------------------------------------------------------------------------------------------------------------------
  ------------------------------------------------------------------------------------------------------------------------

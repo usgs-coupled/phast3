@@ -150,7 +150,7 @@ Overhead storage requirement (D4ZGCG iterative solver)................ NOHST .  
                     *** Calculation Information ***
           Row scaling only, using L-inf norm, will be done
           Direction index for d4 zig-zag renumbering ............ IDIR..    1
-          Incomplete LU [f] or modified ILU [t] factorization ... MILU..     T
+          Incomplete LU [f] or modified ILU [t] factorization ... MILU..    T
           Number of search directions before restart ............ NSDR..   20
           Tolerance on iterative solution ....................... EPSSLV 1.0E-18
 

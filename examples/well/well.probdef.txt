@@ -111,41 +111,15 @@
                               Z-Axis is Positive Vertically Upward
 
 
-                                        *** Fluid Properties ***
-                                             Physical
-                         Fluid compressibility ...................................... BP ...   0.00E+00  (1/Pa )
+                                   *** Fluid Properties ***
+                                        Physical
+                    Fluid compressibility ...................................... BP ...   0.00E+00  (1/Pa )
 
-                         Reference pressure for density ............................. P0 ..         0.0  (Pa )
-                         Reference temperature for density .......................... T0 ..        15.0  (Deg.C)
-                         Fluid density .............................................. DENF0  1000.0      (kg/m^3)
+                    Reference pressure for density ............................. P0 ..         0.0  (Pa )
+                    Reference temperature for density .......................... T0 ..        15.0  (Deg.C)
+                    Fluid density .............................................. DENF0  1000.0      (kg/m^3)
 
-                         Viscosity factor ........................................... VISFAC -1.000E-03
-
-
-                                        *** Well Data ***
-     -------------------------------------------------------------------------------------------------------------------
-     Well       Location            Screen Interval          Screen Interval              Calculation     Well Diameter
-     No.      X          Y           Z1          Z2       Top Depth  Bottom Depth             Type             (m)
-             (m)        (m)         (m)        (m)        (m)         (m)
-     -------------------------------------------------------------------------------------------------------------------
-       1     610.       610.      -30.5          0                                                                                                                                                                                                              11               0.305    
-       2     671.       610.      -3.05          0                                                                                                                                                                                                              11               0.305    
-       3     732.       610.      -3.05          0                                                                                                                                                                                                              11               0.305    
-
-  Well No.   1
-    Specified Flow Rate                              
-    Allocation by Mobility                           
-    Explicit Layer Rates                    
-
-  Well No.   2
-    Specified Flow Rate                              
-    Allocation by Mobility                           
-    Explicit Layer Rates                    
-
-  Well No.   3
-    Specified Flow Rate                              
-    Allocation by Mobility                           
-    Explicit Layer Rates                    
+                    Viscosity factor ........................................... VISFAC -1.000E-03
 
                                         *** Calculation Information ***
           Backwards-in-time (implicit) differencing for temporal derivative
@@ -153,13 +127,13 @@
                            Row scaling only, using L-inf norm, will be done
 
           Direction index for d4 zig-zag renumbering ...................... IDIR..    1
-          Incomplete LU [f] or modified ILU [t] factorization ............. MILU..     T
+          Incomplete LU [f] or modified ILU [t] factorization ............. MILU..    T
           Number of search directions before restart ...................... NSDR..   10
           Tolerance on iterative solution ................................. EPSSLV 1.0E-10
 
  ------------------------------------------------------------------------------------------------------------------------
 
-                    Initial fluid in region ...............................  9.065922E+09  (kg) ;  9.065922E+06  (m^3)
+               Initial fluid in region ...............................  9.065922E+09  (kg) ;  9.065922E+06  (m^3)
 
  ------------------------------------------------------------------------------------------------------------------------
  ------------------------------------------------------------------------------------------------------------------------
