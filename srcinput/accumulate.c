@@ -30,7 +30,7 @@ static void Tidy_cubes(PHAST_Transform::COORDINATE_SYSTEM target,
 					   PHAST_Transform * map2grid);
 static void Tidy_properties(PHAST_Transform::COORDINATE_SYSTEM target,
 							PHAST_Transform * map2grid);
-
+static bool find_shell(Polyhedron *poly, double *width, std::list<int> list_of_elements);
 /* ---------------------------------------------------------------------- */
 int
 accumulate(void)
@@ -2252,120 +2252,13 @@ setup_media(void)
 			}
 			else
 			{
-				//find_shell(grid_elt_zones[i], list_of_elements);
-
-				struct zone *zone_ptr =	grid_elt_zones[i]->polyh->Get_bounding_box();
-				range_ptr = zone_to_range(zone_ptr); // list of cells not elements in polyh
-				if (range_ptr == NULL)
+				if (!find_shell(grid_elt_zones[i]->polyh, grid_elt_zones[i]->shell_width, list_of_elements))
 				{
 					input_error++;
-					sprintf(error_string, "Bad zone or wedge definition %s", tag);
+					sprintf(error_string, "Bad zone or wedge definition for shell %s", tag);
 					error_msg(error_string, CONTINUE);
 					break;
 				}
-
-				/* put cells in list */
-				std::list < int > list_of_cells;
-				range_to_list(range_ptr, list_of_cells);
-
-				// Find cells in polyhedron
-				grid_elt_zones[i]->polyh->Points_in_polyhedron(list_of_cells, *cell_xyz);
-				if (list_of_cells.size() == 0)
-				{
-					error_msg("Bad zone or wedge definition for shell",	EA_CONTINUE);
-					return (false);
-				}
-
-				// Make set of cells 
-				std::set < int > set_of_cells;
-				std::list < int >::iterator lit = list_of_cells.begin();
-				for ( ; lit != list_of_cells.end(); lit++)
-				{
-					set_of_cells.insert(*lit);
-				}
-
-				// select cells with adjacent active cells outside of zone
-				std::set<int> set_of_exterior_cells;
-				std::set < int >::iterator sit = set_of_cells.begin();
-				
-				while (sit != set_of_cells.end())
-				{
-					int n = *sit;
-					std::vector < int >stencil;
-					neighbors(n, stencil);
-					int ii;
-					for (ii = 0; i < 6; ii++)
-					{
-						if (stencil[ii] >= 0)
-						{
-							// adjacent cell is not in set and active
-							if (set_of_cells.find(stencil[ii]) == set_of_cells.end() && cells[stencil[ii]].cell_active)
-							{
-								break;
-							}
-						}
-					}
-
-					// remove if all neighbors are inactive or within zone
-					if (ii < 6)
-					{
-						set_of_exterior_cells.insert(*sit);
-					}
-				}
-
-				// select all elements that adjoin selected cells
-				std::set<int> set_of_elements;
-				for (sit = set_of_exterior_cells.begin(); sit != set_of_exterior_cells.end(); sit++)
-				{
-					std::vector<int> stencil;
-					elt_neighbors(*sit, stencil);
-					int ii;
-
-					// include elements for cell
-					for(ii = 0; ii < 8; ii++)
-					{
-						if (stencil[ii] >= 0)
-						{
-							set_of_elements.insert(stencil[ii]);
-						}
-					}
-
-					// include other elements within witdth of shell in each direction
-					for(ii = 0; ii < 8; i++)
-					{
-						if (stencil[ii] > 0)
-						{
-							double x1, y1, z1, x2, y2, z2;
-							x1 = cells[stencil[ii]].elt_x - grid_elt_zones[i]->shell_width[0]/2.0;
-							y1 = cells[stencil[ii]].elt_y - grid_elt_zones[i]->shell_width[1]/2.0;
-							z1 = cells[stencil[ii]].elt_z - grid_elt_zones[i]->shell_width[2]/2.0;
-							x2 = cells[stencil[ii]].elt_x + grid_elt_zones[i]->shell_width[0]/2.0;
-							y2 = cells[stencil[ii]].elt_y + grid_elt_zones[i]->shell_width[1]/2.0;
-							z2 = cells[stencil[ii]].elt_z + grid_elt_zones[i]->shell_width[2]/2.0;
-							Point min(x1, y1, z1);
-							Point max(x2, y2, z2);
-							zone z(min, max);
-							struct index_range *r_ptr;
-							r_ptr = zone_to_elt_range(zone_ptr);
-							std::list<int> more_elements;
-							range_to_list(r_ptr, more_elements);
-							if (more_elements.size() > 0)
-							{
-								std::list<int>::iterator lit1 = more_elements.begin();
-								for (; lit1 != more_elements.end(); lit1++)
-								{
-									if (cells[*lit].is_element && cells[*lit].elt_active)
-									{
-										set_of_elements.insert(*lit);
-									}
-								}
-							}
-							free_check_null(r_ptr);
-							r_ptr = NULL;
-						}
-					}
-				}
-
 			}
 
 			if (list_of_elements.size() == 0)
@@ -4511,4 +4404,120 @@ Tidy_properties(PHAST_Transform::COORDINATE_SYSTEM target,
 		(*it)->data_source->Convert_coordinates(target, map2grid);
 	}
 	return;
+}
+/* ---------------------------------------------------------------------- */
+bool
+find_shell(Polyhedron *polyh, double *width, std::list<int> list_of_elements)
+/* ---------------------------------------------------------------------- */
+{
+	struct index_range *range_ptr;
+
+	struct zone *zone_ptr =	polyh->Get_bounding_box();
+	range_ptr = zone_to_range(zone_ptr); // list of cells not elements in polyh
+	if (range_ptr == NULL)
+	{
+		return false;
+	}
+
+	/* put cells in list */
+	std::list < int > list_of_cells;
+	range_to_list(range_ptr, list_of_cells);
+
+	// Find cells in polyhedron
+	polyh->Points_in_polyhedron(list_of_cells, *cell_xyz);
+	if (list_of_cells.size() == 0)
+	{
+		return false;
+	}
+
+	// Make set of cells 
+	std::set < int > set_of_cells;
+	std::list < int >::iterator lit = list_of_cells.begin();
+	for ( ; lit != list_of_cells.end(); lit++)
+	{
+		set_of_cells.insert(*lit);
+	}
+
+	// select cells with adjacent active cells outside of zone
+	std::set<int> set_of_exterior_cells;
+	std::set < int >::iterator sit = set_of_cells.begin();
+
+	while (sit != set_of_cells.end())
+	{
+		int n = *sit;
+		std::vector < int >stencil;
+		neighbors(n, stencil);
+		int ii;
+		for (ii = 0; ii < 6; ii++)
+		{
+			if (stencil[ii] >= 0)
+			{
+				// adjacent cell is not in set and active
+				if (set_of_cells.find(stencil[ii]) == set_of_cells.end() && cells[stencil[ii]].cell_active)
+				{
+					break;
+				}
+			}
+		}
+
+		// remove if all neighbors are inactive or within zone
+		if (ii < 6)
+		{
+			set_of_exterior_cells.insert(*sit);
+		}
+	}
+
+	// select all elements that adjoin selected cells
+	std::set<int> set_of_elements;
+	for (sit = set_of_exterior_cells.begin(); sit != set_of_exterior_cells.end(); sit++)
+	{
+		std::vector<int> stencil;
+		elt_neighbors(*sit, stencil);
+		int ii;
+
+		// include elements for cell
+		for(ii = 0; ii < 8; ii++)
+		{
+			if (stencil[ii] >= 0)
+			{
+				set_of_elements.insert(stencil[ii]);
+			}
+		}
+
+		// include other elements within witdth of shell in each direction
+		for(ii = 0; ii < 8; ii++)
+		{
+			if (stencil[ii] > 0)
+			{
+				double x1, y1, z1, x2, y2, z2;
+				x1 = cells[stencil[ii]].elt_x - width[0]/2.0;
+				y1 = cells[stencil[ii]].elt_y - width[1]/2.0;
+				z1 = cells[stencil[ii]].elt_z - width[2]/2.0;
+				x2 = cells[stencil[ii]].elt_x + width[0]/2.0;
+				y2 = cells[stencil[ii]].elt_y + width[1]/2.0;
+				z2 = cells[stencil[ii]].elt_z + width[2]/2.0;
+				Point min(x1, y1, z1);
+				Point max(x2, y2, z2);
+				zone z(min, max);
+				struct index_range *r_ptr;
+				r_ptr = zone_to_elt_range(zone_ptr);
+				std::list<int> more_elements;
+				range_to_list(r_ptr, more_elements);
+				if (more_elements.size() > 0)
+				{
+					std::list<int>::iterator lit1 = more_elements.begin();
+					for (; lit1 != more_elements.end(); lit1++)
+					{
+						if (cells[*lit].is_element && cells[*lit].elt_active)
+						{
+							set_of_elements.insert(*lit);
+						}
+					}
+				}
+				free_check_null(r_ptr);
+				r_ptr = NULL;
+			}
+		}
+	}
+	return true;
 }
