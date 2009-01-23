@@ -501,10 +501,8 @@ collate_simulation_periods(void)
 	/*
 	 *  Add in all but last time_end
 	 */
-	simulation_periods =
-		(double *) realloc(simulation_periods,
-						   (size_t) (count_simulation_periods +
-									 count_time_end - 1) * sizeof(double));
+	simulation_periods = (double *) realloc(simulation_periods, 
+						(size_t) (count_simulation_periods + count_time_end - 1) * sizeof(double));
 	if (simulation_periods == NULL)
 		malloc_error();
 	for (i = 0; i < count_time_end - 1; i++)
@@ -518,11 +516,11 @@ collate_simulation_periods(void)
 	 *  Keep unique time values
 	 */
 	k = 0;
+	double end_time_simulation = time_end[count_time_end - 1].value * time_end[count_time_end - 1].input_to_user;
 	for (i = 1; i < count_simulation_periods; i++)
 	{
-		if (simulation_periods[i] >=
-			time_end[count_time_end - 1].value * time_end[count_time_end -
-														  1].input_to_user)
+		if (equal(simulation_periods[k], end_time_simulation, TIME_EPS) == TRUE ||
+		    simulation_periods[i] >= end_time_simulation)
 		{
 			warning_msg
 				("Final end time is less than or equal to some time series data.");

@@ -5771,8 +5771,12 @@ streamify_to_next_keyword_or_option(const char **opt_list, int count_opt_list,
 	int opt, l;
 	char *next_char, *ptr;
 	char token[MAX_LENGTH];
-	std::string accumulate(start_string);
-	accumulate.append("\n");
+	std::string accumulate;
+	if (start_string != NULL)
+	{
+	  accumulate.append(start_string);
+	  accumulate.append("\n");
+	}
 	for (;;)
 	{
 		opt = get_option(opt_list, count_opt_list, &next_char);
@@ -8265,10 +8269,12 @@ read_well(void)
 		"allocation_by_head_and_mobility",	/* 19 */
 		"head_and_mobility",	/* 20 */
 		"coordinate_system"		/* 21 */
-		, "z_coordinate_system"     /* 22 */
-		, "xy_coordinate_system"   /* 23 */
+		, "z_coordinate_system"         /* 22 */
+		, "xy_coordinate_system"        /* 23 */
+		, "xy_location"                 /* 24 */
+		, "location"                    /* 25 */
 	};
-	int count_opt_list = 24;
+	int count_opt_list = 26;
 /*
  *   Read well information
  */
@@ -8394,7 +8400,8 @@ read_well(void)
 			sprintf(error_string, "Expected an identifier %s", tag);
 			error_msg(error_string, CONTINUE);
 			error_msg(line_save, CONTINUE);
-			opt = next_keyword_or_option(opt_list, count_opt_list);
+			opt = get_option(opt_list, count_opt_list, &next_char);
+			//opt = next_keyword_or_option(opt_list, count_opt_list);
 			input_error++;
 			break;
 		case 0:				/* associated solution */
@@ -8417,7 +8424,8 @@ read_well(void)
 				input_error++;
 				sprintf(error_string, "Reading associated solution %s", tag);
 				error_msg(error_string, CONTINUE);
-				opt = next_keyword_or_option(opt_list, count_opt_list);
+				opt = get_option(opt_list, count_opt_list, &next_char);
+				//opt = next_keyword_or_option(opt_list, count_opt_list);
 			}
 			else
 			{
@@ -8440,7 +8448,8 @@ read_well(void)
 				well_ptr->lsd_user_defined = TRUE;
 			}
 			/* read to next */
-			opt = next_keyword_or_option(opt_list, count_opt_list);
+			opt = get_option(opt_list, count_opt_list, &next_char);
+			//opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		case 4:				/* radius */
 			j = copy_token(token, &next_char, &l);
@@ -8456,7 +8465,8 @@ read_well(void)
 				well_ptr->radius_defined = TRUE;
 			}
 			/* read to next */
-			opt = next_keyword_or_option(opt_list, count_opt_list);
+			opt = get_option(opt_list, count_opt_list, &next_char);
+			//opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		case 8:				/* diameter */
 			j = copy_token(token, &next_char, &l);
@@ -8473,7 +8483,8 @@ read_well(void)
 				well_ptr->diameter_defined = TRUE;
 			}
 			/* read to next */
-			opt = next_keyword_or_option(opt_list, count_opt_list);
+			opt = get_option(opt_list, count_opt_list, &next_char);
+			//opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		case 6:				/* allocate_by_pressure_and_mobility */
 		case 16:				/* allocation_by_pressure_and_mobility */
@@ -8483,7 +8494,8 @@ read_well(void)
 		case 20:				/* head_and_mobility */
 			well_ptr->mobility_and_pressure = get_true_false(next_char, TRUE);
 			/* read to next */
-			opt = next_keyword_or_option(opt_list, count_opt_list);
+			opt = get_option(opt_list, count_opt_list, &next_char);
+			//opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		case 7:				/* depth */
 		case 5:				/* depths */
@@ -8525,7 +8537,8 @@ read_well(void)
 				}
 			}
 			/* read to next */
-			opt = next_keyword_or_option(opt_list, count_opt_list);
+			opt = get_option(opt_list, count_opt_list, &next_char);
+			//opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		case 9:				/* elevation */
 		case 10:				/* elevations */
@@ -8568,7 +8581,8 @@ read_well(void)
 				}
 			}
 			/* read to next */
-			opt = next_keyword_or_option(opt_list, count_opt_list);
+			opt = get_option(opt_list, count_opt_list, &next_char);
+			//opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		case 11:				/* pumpage */
 		case 12:				/* pumping */
@@ -8630,6 +8644,8 @@ read_well(void)
 			}
 			break;
 		case OPTION_DEFAULT:	/* Read x, y */
+		case 24:	/*xy_location */
+		case 25:	/*location */
 			j = copy_token(token, &next_char, &l);
 			if (j != DIGIT)
 			{
@@ -8657,7 +8673,8 @@ read_well(void)
 				well_ptr->y_user_defined = TRUE;
 			}
 			/* read to next */
-			opt = next_keyword_or_option(opt_list, count_opt_list);
+			opt = get_option(opt_list, count_opt_list, &next_char);
+			//opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		case 21:				/* coordinate_system */
 		case 23:				/* xy_coordinate_system */	
@@ -8679,7 +8696,8 @@ read_well(void)
 				error_msg(error_string, CONTINUE);
 				input_error++;
 			}
-			opt = next_keyword_or_option(opt_list, count_opt_list);
+			opt = get_option(opt_list, count_opt_list, &next_char);
+			//opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 
 		case 22:				/* elevation_coordinate_system */
@@ -8701,7 +8719,8 @@ read_well(void)
 				error_msg(error_string, CONTINUE);
 				input_error++;
 			}
-			opt = next_keyword_or_option(opt_list, count_opt_list);
+			opt = get_option(opt_list, count_opt_list, &next_char);
+			//opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		}
 		return_value = check_line_return;
