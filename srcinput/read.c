@@ -2153,6 +2153,10 @@ read_media(void)
 				break;
 			}
 			grid_elt_ptr->shell = true;
+			sscanf("%lf%lf%lf", next_char, 
+				&grid_elt_ptr->shell_width[0], 
+				&grid_elt_ptr->shell_width[1], 
+				&grid_elt_ptr->shell_width[2]);
 			break;
 		}
 		return_value = check_line_return;

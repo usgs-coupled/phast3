@@ -57,6 +57,7 @@ Cell_Face guess_face(std::list < int >&list_of_numbers,
 int ijk_to_n(int i, int j, int k);
 void n_to_ijk(int n, int &i, int &j, int &k);
 void neighbors(int n, std::vector < int >&stencil);
+void elt_neighbors(int n, std::vector < int >&stencil);
 struct index_range *zone_to_range(struct zone *zone_ptr);
 struct index_range *zone_to_elt_range(struct zone *zone_ptr);
 int int_compare(const void *ptr1, const void *ptr2);

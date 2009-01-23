@@ -74,6 +74,9 @@ grid_elt_alloc(void)
 	grid_elt_ptr->alpha_horizontal = NULL;
 	grid_elt_ptr->alpha_vertical = NULL;
 	grid_elt_ptr->shell = false;
+	grid_elt_ptr->shell_width[0] = 0;
+	grid_elt_ptr->shell_width[1] = 0;
+	grid_elt_ptr->shell_width[2] = 0;
 	return (grid_elt_ptr);
 }
 

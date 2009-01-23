@@ -158,6 +158,7 @@ struct grid_elt
 	struct property *alpha_horizontal;
 	struct property *alpha_vertical;
 	bool shell;
+	double shell_width[3];
 };
 EXTERNAL struct grid_elt **grid_elt_zones;	/* contains input media properties */
 EXTERNAL int count_grid_elt_zones;
