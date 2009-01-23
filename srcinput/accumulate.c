@@ -577,7 +577,92 @@ neighbors(int n, std::vector < int >&stencil)
 
 	return;
 }
+/* ---------------------------------------------------------------------- */
+void
+elt_neighbors(int n, std::vector < int >&stencil)
+/* ---------------------------------------------------------------------- */
+{
+	assert(n >= 0 && n < count_cells);
+	stencil.clear();
 
+	// stencil has 8 elements that contain a node
+	int i, j, k, m;
+	for (i = 0; i < 8; i++)
+	{
+		stencil.push_back(-1);
+	}
+	n_to_ijk(n, i, j, k);
+
+	// find elements in natural order, lower plane
+	if (i - 1 >= 0 && j - 1 >= 0 && k - 1 >= 0)
+	{
+		m = ijk_to_n(i - 1, j - 1, k - 1);
+		if (cells[m].is_element && cells[m].elt_active)
+		{
+			stencil[0] = m;
+		}
+	}
+	if (i >= 0 && j - 1 >= 0 && k - 1 >= 0)
+	{
+		m = ijk_to_n(i, j - 1, k - 1);
+		if (cells[m].is_element && cells[m].elt_active)
+		{
+			stencil[1] = m;
+		}
+	}
+	if (i - 1 >= 0 && j >= 0 && k - 1 >= 0)
+	{
+		m = ijk_to_n(i - 1, j, k - 1);
+		if (cells[m].is_element && cells[m].elt_active)
+		{
+			stencil[2] = m;
+		}
+	}
+	if (i >= 0 && j >= 0 && k - 1 >= 0)
+	{
+		m = ijk_to_n(i, j, k - 1);
+		if (cells[m].is_element && cells[m].elt_active)
+		{
+			stencil[3] = m;
+		}
+	}
+
+	// find elements in natural order, upper plane
+	if (i - 1 >= 0 && j - 1 >= 0 && k >= 0)
+	{
+		m = ijk_to_n(i - 1, j - 1, k);
+		if (cells[m].is_element && cells[m].elt_active)
+		{
+			stencil[4] = m;
+		}
+	}
+	if (i >= 0 && j - 1 >= 0 && k >= 0)
+	{
+		m = ijk_to_n(i, j - 1, k);
+		if (cells[m].is_element && cells[m].elt_active)
+		{
+			stencil[5] = m;
+		}
+	}
+	if (i - 1 >= 0 && j >= 0 && k >= 0)
+	{
+		m = ijk_to_n(i - 1, j, k);
+		if (cells[m].is_element && cells[m].elt_active)
+		{
+			stencil[6] = m;
+		}
+	}
+	if (i >= 0 && j >= 0 && k >= 0)
+	{
+		m = ijk_to_n(i, j, k);
+		if (cells[m].is_element && cells[m].elt_active)
+		{
+			stencil[7] = m;
+		}
+	}
+
+	return;
+}
 /* ---------------------------------------------------------------------- */
 struct index_range *
 zone_to_range(struct zone *zone_ptr)
@@ -2135,7 +2220,7 @@ setup_media(void)
 		/*
 		 *   process zone information
 		 */
-
+		std::list < int >list_of_elements;
 		if (grid_elt_zones[i]->polyh == NULL)
 		{
 			input_error++;
@@ -2145,24 +2230,95 @@ setup_media(void)
 		}
 		else
 		{
-			struct zone *zone_ptr =
-				grid_elt_zones[i]->polyh->Get_bounding_box();
-			range_ptr = zone_to_elt_range(zone_ptr);
-			if (range_ptr == NULL)
+			if (!grid_elt_zones[i]->shell)
 			{
-				input_error++;
-				sprintf(error_string, "Bad zone or wedge definition %s", tag);
-				error_msg(error_string, CONTINUE);
-				break;
+				struct zone *zone_ptr =	grid_elt_zones[i]->polyh->Get_bounding_box();
+				range_ptr = zone_to_elt_range(zone_ptr);
+				if (range_ptr == NULL)
+				{
+					input_error++;
+					sprintf(error_string, "Bad zone or wedge definition %s", tag);
+					error_msg(error_string, CONTINUE);
+					break;
+				}
+				range_to_list(range_ptr, list_of_elements);
+				free_check_null(range_ptr);
+				range_ptr = NULL;
+				grid_elt_zones[i]->polyh->Points_in_polyhedron(list_of_elements, *element_xyz);
 			}
-			std::list < int >list_of_cells;
-			range_to_list(range_ptr, list_of_cells);
-			free_check_null(range_ptr);
-			range_ptr = NULL;
-			grid_elt_zones[i]->polyh->Points_in_polyhedron(list_of_cells,
-														   *element_xyz);
+			else
+			{
+				struct zone *zone_ptr =	grid_elt_zones[i]->polyh->Get_bounding_box();
+				range_ptr = zone_to_range(zone_ptr); // list of cells not elements in polyh
+				if (range_ptr == NULL)
+				{
+					input_error++;
+					sprintf(error_string, "Bad zone or wedge definition %s", tag);
+					error_msg(error_string, CONTINUE);
+					break;
+				}
 
-			if (list_of_cells.size() == 0)
+				/* put cells in list */
+				std::list < int > list_of_cells;
+				range_to_list(range_ptr, list_of_cells);
+
+				// Find cells in polyhedron
+				grid_elt_zones[i]->polyh->Points_in_polyhedron(list_of_cells, *cell_xyz);
+				if (list_of_cells.size() == 0)
+				{
+					error_msg("Bad zone or wedge definition for shell",	EA_CONTINUE);
+					return (false);
+				}
+
+				// Make set of cells 
+				std::set < int > set_of_cells;
+				std::list < int >::iterator lit = list_of_cells.begin();
+				for ( ; lit != list_of_cells.end(); lit++)
+				{
+					set_of_cells.insert(*lit);
+				}
+
+				// select cells with adjacent active cells outside of zone
+				std::set < int >::iterator sit = set_of_cells.begin();
+				
+				while (sit != set_of_cells.end())
+				{
+					int n = *sit;
+					std::vector < int >stencil;
+					neighbors(n, stencil);
+					int i;
+					for (i = 0; i < 6; i++)
+					{
+						if (stencil[i] >= 0)
+						{
+							// adjacent cell is not in set and active
+							if (set_of_cells.find(stencil[i]) == set_of_cells.end() && cells[stencil[i]].cell_active)
+							{
+								break;
+							}
+						}
+					}
+
+					// remove if all neighbors are inactive or within zone
+					if (i == 6) 
+					{
+						sit = set_of_cells.erase(sit);
+					}
+					else
+					{
+						sit++;
+					}
+				}
+
+				// select all elements that adjoin selected cells
+				for (sit = set_of_cells.begin(); sit != set_of_cells.end(); sit++)
+				{
+
+				}
+
+			}
+
+			if (list_of_elements.size() == 0)
 			{
 				input_error++;
 				sprintf(error_string, "Bad zone or wedge definition %s", tag);
@@ -2174,7 +2330,7 @@ setup_media(void)
 			 */
 			if (grid_elt_zones[i]->active != NULL)
 			{
-				if (distribute_property_to_list_of_elements(list_of_cells,
+				if (distribute_property_to_list_of_elements(list_of_elements,
 															grid_elt_zones
 															[i]->mask,
 															grid_elt_zones
@@ -2198,7 +2354,7 @@ setup_media(void)
 			 */
 			if (grid_elt_zones[i]->porosity != NULL)
 			{
-				if (distribute_property_to_list_of_elements(list_of_cells,
+				if (distribute_property_to_list_of_elements(list_of_elements,
 															grid_elt_zones
 															[i]->mask,
 															grid_elt_zones
@@ -2223,7 +2379,7 @@ setup_media(void)
 			 */
 			if (grid_elt_zones[i]->kx != NULL)
 			{
-				if (distribute_property_to_list_of_elements(list_of_cells,
+				if (distribute_property_to_list_of_elements(list_of_elements,
 															grid_elt_zones
 															[i]->mask,
 															grid_elt_zones
@@ -2249,7 +2405,7 @@ setup_media(void)
 			 */
 			if (grid_elt_zones[i]->ky != NULL)
 			{
-				if (distribute_property_to_list_of_elements(list_of_cells,
+				if (distribute_property_to_list_of_elements(list_of_elements,
 															grid_elt_zones
 															[i]->mask,
 															grid_elt_zones
@@ -2274,7 +2430,7 @@ setup_media(void)
 			 */
 			if (grid_elt_zones[i]->kz != NULL)
 			{
-				if (distribute_property_to_list_of_elements(list_of_cells,
+				if (distribute_property_to_list_of_elements(list_of_elements,
 															grid_elt_zones
 															[i]->mask,
 															grid_elt_zones
@@ -2299,7 +2455,7 @@ setup_media(void)
 			 */
 			if (grid_elt_zones[i]->storage != NULL)
 			{
-				if (distribute_property_to_list_of_elements(list_of_cells,
+				if (distribute_property_to_list_of_elements(list_of_elements,
 															grid_elt_zones
 															[i]->mask,
 															grid_elt_zones
@@ -2323,7 +2479,7 @@ setup_media(void)
 			 */
 			if (grid_elt_zones[i]->alpha_long != NULL)
 			{
-				if (distribute_property_to_list_of_elements(list_of_cells,
+				if (distribute_property_to_list_of_elements(list_of_elements,
 															grid_elt_zones
 															[i]->mask,
 															grid_elt_zones
@@ -2349,7 +2505,7 @@ setup_media(void)
 			 */
 			if (grid_elt_zones[i]->alpha_trans != NULL)
 			{
-				if (distribute_property_to_list_of_elements(list_of_cells,
+				if (distribute_property_to_list_of_elements(list_of_elements,
 															grid_elt_zones
 															[i]->mask,
 															grid_elt_zones
@@ -2371,7 +2527,7 @@ setup_media(void)
 			}
 			if (grid_elt_zones[i]->alpha_trans != NULL)
 			{
-				if (distribute_property_to_list_of_elements(list_of_cells,
+				if (distribute_property_to_list_of_elements(list_of_elements,
 															grid_elt_zones
 															[i]->mask,
 															grid_elt_zones
@@ -2396,7 +2552,7 @@ setup_media(void)
 			 */
 			if (grid_elt_zones[i]->alpha_horizontal != NULL)
 			{
-				if (distribute_property_to_list_of_elements(list_of_cells,
+				if (distribute_property_to_list_of_elements(list_of_elements,
 															grid_elt_zones
 															[i]->mask,
 															grid_elt_zones
@@ -2422,7 +2578,7 @@ setup_media(void)
 			 */
 			if (grid_elt_zones[i]->alpha_vertical != NULL)
 			{
-				if (distribute_property_to_list_of_elements(list_of_cells,
+				if (distribute_property_to_list_of_elements(list_of_elements,
 															grid_elt_zones
 															[i]->mask,
 															grid_elt_zones

@@ -641,7 +641,7 @@ initialize(void)
  *   Solver parameters
  */
 	solver_method = ITERATIVE;
-	solver_tolerance = 1e-10;
+	solver_tolerance = 1e-12;
 	solver_save_directions = 20;
 	solver_maximum = 500;
 	solver_space = 0.0;

@@ -24,6 +24,8 @@ STATIC int streamify_to_next_keyword_or_option(const char **opt_list,
 STATIC int streamify_to_next_keyword_or_option(const char **opt_list, int count_opt_list,
 											   std::istringstream & lines,
 											   char *start_string, const char *delimiting_string);
+STATIC int streamify_prism_piece(const char **opt_list, int count_opt_list,
+				std::istringstream & lines);
 STATIC int read_chemistry_ic(void);
 STATIC Cube *read_cube(char **next_char);
 STATIC Wedge *read_wedge(char **next_char);
@@ -1621,8 +1623,9 @@ read_media(void)
 		"bottom",				/* 39 */
 		"description"			/* 40 */
 		,"box"                  /* 41 */
+		,"shell"                /* 42 */
 	};
-	int count_opt_list = 42;
+	int count_opt_list = 43;
 	/*
 	 *   Read grid data
 	 */
@@ -2098,10 +2101,13 @@ read_media(void)
 		case 39:				/* bottom */
 			{
 				std::istringstream lines;
-				opt =
-					streamify_to_next_keyword_or_option(opt_list,
-														count_opt_list,
-														lines);
+				// opt = streamify_to_next_keyword_or_option(opt_list,
+				//										count_opt_list,
+				//										lines);
+				streamify_prism_piece(opt_list,
+					count_opt_list,
+					lines);
+
 				if (grid_elt_ptr == NULL || grid_elt_ptr->polyh == NULL
 					|| prism_ptr == NULL || !prism_ptr->Read(lines))
 				{
@@ -2134,6 +2140,19 @@ read_media(void)
 			//std::string str(next_char);
 			grid_elt_ptr->polyh->Get_description()->assign(next_char);
 			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;
+		case 42:				/* shell */
+			if (grid_elt_ptr == NULL)
+			{
+				sprintf(error_string,
+						"Zone has not been defined for -shell option %s",
+						tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+				opt = next_keyword_or_option(opt_list, count_opt_list);
+				break;
+			}
+			grid_elt_ptr->shell = true;
 			break;
 		}
 		return_value = check_line_return;
@@ -2596,10 +2615,12 @@ read_head_ic(void)
 		case 9:				/* bottom */
 			{
 				std::istringstream lines;
-				opt =
-					streamify_to_next_keyword_or_option(opt_list,
-														count_opt_list,
-														lines);
+				// opt = streamify_to_next_keyword_or_option(opt_list,
+				//										count_opt_list,
+				//										lines);
+				streamify_prism_piece(opt_list,
+					count_opt_list,
+					lines);
 				if (head_ic_ptr == NULL || head_ic_ptr->polyh == NULL
 					|| prism_ptr == NULL || !prism_ptr->Read(lines))
 				{
@@ -3082,10 +3103,12 @@ read_chemistry_ic(void)
 		case 17:				/* bottom */
 			{
 				std::istringstream lines;
-				opt =
-					streamify_to_next_keyword_or_option(opt_list,
-														count_opt_list,
-														lines);
+				// opt = streamify_to_next_keyword_or_option(opt_list,
+				//										count_opt_list,
+				//										lines);
+				streamify_prism_piece(opt_list,
+					count_opt_list,
+					lines);
 				if (chem_ic_ptr == NULL || chem_ic_ptr->polyh == NULL
 					|| prism_ptr == NULL || !prism_ptr->Read(lines))
 				{
@@ -3813,10 +3836,12 @@ read_specified_value_bc(void)
 		case 14:				/* bottom */
 			{
 				std::istringstream lines;
-				opt =
-					streamify_to_next_keyword_or_option(opt_list,
-														count_opt_list,
-														lines);
+				// opt = streamify_to_next_keyword_or_option(opt_list,
+				//										count_opt_list,
+				//										lines);
+				streamify_prism_piece(opt_list,
+					count_opt_list,
+					lines);
 				if (bc_ptr == NULL || bc_ptr->polyh == NULL
 					|| prism_ptr == NULL || !prism_ptr->Read(lines))
 				{
@@ -4210,10 +4235,12 @@ read_flux_bc(void)
 		case 11:				/* bottom */
 			{
 				std::istringstream lines;
-				opt =
-					streamify_to_next_keyword_or_option(opt_list,
-														count_opt_list,
-														lines);
+				// opt = streamify_to_next_keyword_or_option(opt_list,
+				//										count_opt_list,
+				//										lines);
+				streamify_prism_piece(opt_list,
+					count_opt_list,
+					lines);
 				if (bc_ptr == NULL || bc_ptr->polyh == NULL
 					|| prism_ptr == NULL || !prism_ptr->Read(lines))
 				{
@@ -4639,10 +4666,12 @@ read_leaky_bc(void)
 		case 14:				/* bottom */
 			{
 				std::istringstream lines;
-				opt =
-					streamify_to_next_keyword_or_option(opt_list,
-														count_opt_list,
-														lines);
+				// opt = streamify_to_next_keyword_or_option(opt_list,
+				//										count_opt_list,
+				//										lines);
+				streamify_prism_piece(opt_list,
+					count_opt_list,
+					lines);
 				if (bc_ptr == NULL || bc_ptr->polyh == NULL
 					|| prism_ptr == NULL || !prism_ptr->Read(lines))
 				{
@@ -5752,7 +5781,58 @@ streamify_to_next_keyword_or_option(const char **opt_list, int count_opt_list,
 	lines.str(accumulate);
 	return (opt);
 }
-
+/* ---------------------------------------------------------------------- */
+int
+streamify_prism_piece(const char **opt_list, int count_opt_list,
+				std::istringstream & lines)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *   Reads to next keyword or option or eof
+ *
+ *   Returns:
+ *       KEYWORD
+ *       OPTION
+ *       EOF
+ */
+	int opt;
+	char *next_char;
+	std::string accumulate(line);
+	accumulate.append("\n");
+	for (;;)
+	{
+		opt = get_option(opt_list, count_opt_list, &next_char);
+		char *ptr = line;
+		char token[MAX_LENGTH];
+		int l;
+		copy_token(token, &ptr, &l);
+		str_tolower(token);
+		if (opt == OPTION_EOF)
+		{						/* end of file */
+			break;
+		}
+		else if (strstr(token, "end_p") != NULL)
+		{
+			opt = get_option(opt_list, count_opt_list, &next_char);
+			break;
+		}
+		else if (opt == OPTION_KEYWORD)
+		{						/* keyword */
+			break;
+		}
+		else if (opt >= 0 && opt < count_opt_list)
+		{
+			break;
+		}
+		else
+		{
+			accumulate.append(line);
+			accumulate.append("\n");
+		}
+	}
+	lines.str(accumulate);
+	return (opt);
+}
 /* ---------------------------------------------------------------------- */
 int
 streamify_to_next_keyword_or_option(const char **opt_list, int count_opt_list,
@@ -5768,6 +5848,15 @@ streamify_to_next_keyword_or_option(const char **opt_list, int count_opt_list,
  *       OPTION
  *       EOF
  */
+	int count_opt_list_plus = count_opt_list + 1;
+	char **opt_list_plus = (char **) malloc((size_t) (count_opt_list_plus  * sizeof(char *)));
+	int i;
+	for (i = 0; i < count_opt_list; i++)
+	{
+		opt_list_plus[i] = string_duplicate(opt_list[i]);
+	}
+	opt_list_plus[i] = string_duplicate("end_points");
+
 	int opt, l;
 	char *next_char, *ptr;
 	char token[MAX_LENGTH];
@@ -5779,7 +5868,7 @@ streamify_to_next_keyword_or_option(const char **opt_list, int count_opt_list,
 	}
 	for (;;)
 	{
-		opt = get_option(opt_list, count_opt_list, &next_char);
+		opt = get_option((const char **) opt_list_plus, count_opt_list_plus, &next_char);
 		ptr = line;
 		copy_token(token, &ptr, &l);
 		str_tolower(token);
@@ -5808,6 +5897,13 @@ streamify_to_next_keyword_or_option(const char **opt_list, int count_opt_list,
 		}
 	}
 	lines.str(accumulate);
+
+	// free space
+	for (i = 0; i < count_opt_list_plus; i++)
+	{
+		free_check_null(opt_list_plus[i]);
+	}
+	free_check_null(opt_list_plus);
 	return (opt);
 }
 
@@ -9073,10 +9169,12 @@ read_print_locations(void)
 		case 15:				/* bottom */
 			{
 				std::istringstream lines;
-				opt =
-					streamify_to_next_keyword_or_option(opt_list,
-														count_opt_list,
-														lines);
+				// opt = streamify_to_next_keyword_or_option(opt_list,
+				//										count_opt_list,
+				//										lines);
+				streamify_prism_piece(opt_list,
+					count_opt_list,
+					lines);
 				if (print_zones_ptr == NULL || print_zones_ptr->polyh == NULL
 					|| prism_ptr == NULL || !prism_ptr->Read(lines))
 				{
@@ -9836,10 +9934,12 @@ read_zone_budget(void)
 		case 5:				/* bottom */
 			{
 				std::istringstream lines;
-				opt =
-					streamify_to_next_keyword_or_option(opt_list,
-														count_opt_list,
-														lines);
+				// opt = streamify_to_next_keyword_or_option(opt_list,
+				//										count_opt_list,
+				//										lines);
+				streamify_prism_piece(opt_list,
+					count_opt_list,
+					lines);
 				if (zb->Get_polyh() == NULL || !prism_ptr->Read(lines))
 				{
 					input_error++;
@@ -9876,10 +9976,9 @@ read_zone_budget(void)
 			{
 				int i;
 				std::istringstream lines;
-				opt =
-					streamify_to_next_keyword_or_option(opt_list,
-														count_opt_list,
-														lines);
+				opt = streamify_to_next_keyword_or_option(opt_list,
+					count_opt_list,
+					lines);
 				std::string dummy;
 				lines >> dummy;
 				while (lines >> i)

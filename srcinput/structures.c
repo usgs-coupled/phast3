@@ -73,6 +73,7 @@ grid_elt_alloc(void)
 	grid_elt_ptr->alpha_trans = NULL;
 	grid_elt_ptr->alpha_horizontal = NULL;
 	grid_elt_ptr->alpha_vertical = NULL;
+	grid_elt_ptr->shell = false;
 	return (grid_elt_ptr);
 }
 
