@@ -602,6 +602,18 @@ property_free(struct property *property_ptr)
 {
 	if (property_ptr == NULL)
 		return (OK);
+
+
+	//properties_with_data_source.push_back(p);
+	std::list <property *>::iterator it = properties_with_data_source.begin();
+	for ( ; it != properties_with_data_source.end(); it++)
+	{
+		if (*it == property_ptr)
+		{
+			properties_with_data_source.erase(it);
+			break;
+		}
+	}
 	free_check_null(property_ptr->v);
 	delete property_ptr->data_source;
 	free_check_null(property_ptr);

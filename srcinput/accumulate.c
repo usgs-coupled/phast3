@@ -30,7 +30,7 @@ static void Tidy_cubes(PHAST_Transform::COORDINATE_SYSTEM target,
 					   PHAST_Transform * map2grid);
 static void Tidy_properties(PHAST_Transform::COORDINATE_SYSTEM target,
 							PHAST_Transform * map2grid);
-static bool find_shell(Polyhedron *poly, double *width, std::list<int> list_of_elements);
+static bool find_shell(Polyhedron *poly, double *width, std::list<int> &list_of_elements);
 /* ---------------------------------------------------------------------- */
 int
 accumulate(void)
@@ -527,7 +527,7 @@ neighbors(int n, std::vector < int >&stencil)
 	if (i > 0)
 	{
 		m = ijk_to_n(i - 1, j, k);
-		if (cells[m].cell_active)
+		//if (cells[m].cell_active)
 		{
 			stencil[0] = m;
 		}
@@ -535,7 +535,7 @@ neighbors(int n, std::vector < int >&stencil)
 	if (i < nx - 1)
 	{
 		m = ijk_to_n(i + 1, j, k);
-		if (cells[m].cell_active)
+		//if (cells[m].cell_active)
 		{
 			stencil[1] = m;
 		}
@@ -543,7 +543,7 @@ neighbors(int n, std::vector < int >&stencil)
 	if (j > 0)
 	{
 		m = ijk_to_n(i, j - 1, k);
-		if (cells[m].cell_active)
+		//if (cells[m].cell_active)
 		{
 			stencil[2] = m;
 		}
@@ -551,7 +551,7 @@ neighbors(int n, std::vector < int >&stencil)
 	if (j < ny - 1)
 	{
 		m = ijk_to_n(i, j + 1, k);
-		if (cells[m].cell_active)
+		//if (cells[m].cell_active)
 		{
 			stencil[3] = m;
 		}
@@ -559,7 +559,7 @@ neighbors(int n, std::vector < int >&stencil)
 	if (k > 0)
 	{
 		m = ijk_to_n(i, j, k - 1);
-		if (cells[m].cell_active)
+		//if (cells[m].cell_active)
 		{
 			stencil[4] = m;
 		}
@@ -567,7 +567,7 @@ neighbors(int n, std::vector < int >&stencil)
 	if (k < nz - 1)
 	{
 		m = ijk_to_n(i, j, k + 1);
-		if (cells[m].cell_active)
+		//if (cells[m].cell_active)
 		{
 			stencil[5] = m;
 		}
@@ -4396,7 +4396,7 @@ Tidy_properties(PHAST_Transform::COORDINATE_SYSTEM target,
 				PHAST_Transform * map2grid)
 /* ---------------------------------------------------------------------- */
 {
-	std::vector < property * >::iterator it =
+	std::list < property * >::iterator it =
 		properties_with_data_source.begin();
 	// Grid_elt
 	for (; it != properties_with_data_source.end(); it++)
@@ -4407,7 +4407,7 @@ Tidy_properties(PHAST_Transform::COORDINATE_SYSTEM target,
 }
 /* ---------------------------------------------------------------------- */
 bool
-find_shell(Polyhedron *polyh, double *width, std::list<int> list_of_elements)
+find_shell(Polyhedron *polyh, double *width, std::list<int> &list_of_elements)
 /* ---------------------------------------------------------------------- */
 {
 	struct index_range *range_ptr;
@@ -4442,7 +4442,7 @@ find_shell(Polyhedron *polyh, double *width, std::list<int> list_of_elements)
 	std::set<int> set_of_exterior_cells;
 	std::set < int >::iterator sit = set_of_cells.begin();
 
-	while (sit != set_of_cells.end())
+	for ( ; sit != set_of_cells.end(); sit++)
 	{
 		int n = *sit;
 		std::vector < int >stencil;
@@ -4452,8 +4452,8 @@ find_shell(Polyhedron *polyh, double *width, std::list<int> list_of_elements)
 		{
 			if (stencil[ii] >= 0)
 			{
-				// adjacent cell is not in set and active
-				if (set_of_cells.find(stencil[ii]) == set_of_cells.end() && cells[stencil[ii]].cell_active)
+				// adjacent cell is not in set 
+				if (set_of_cells.find(stencil[ii]) == set_of_cells.end() /*&& cells[stencil[ii]].cell_active*/)
 				{
 					break;
 				}
@@ -4483,41 +4483,82 @@ find_shell(Polyhedron *polyh, double *width, std::list<int> list_of_elements)
 				set_of_elements.insert(stencil[ii]);
 			}
 		}
-
+#ifdef SKIP
 		// include other elements within witdth of shell in each direction
-		for(ii = 0; ii < 8; ii++)
+		if (width[0] > 0 || width[1] > 0 || width[2] > 0)
 		{
-			if (stencil[ii] > 0)
+			for(ii = 0; ii < 8; ii++)
 			{
-				double x1, y1, z1, x2, y2, z2;
-				x1 = cells[stencil[ii]].elt_x - width[0]/2.0;
-				y1 = cells[stencil[ii]].elt_y - width[1]/2.0;
-				z1 = cells[stencil[ii]].elt_z - width[2]/2.0;
-				x2 = cells[stencil[ii]].elt_x + width[0]/2.0;
-				y2 = cells[stencil[ii]].elt_y + width[1]/2.0;
-				z2 = cells[stencil[ii]].elt_z + width[2]/2.0;
-				Point min(x1, y1, z1);
-				Point max(x2, y2, z2);
-				zone z(min, max);
-				struct index_range *r_ptr;
-				r_ptr = zone_to_elt_range(zone_ptr);
-				std::list<int> more_elements;
-				range_to_list(r_ptr, more_elements);
-				if (more_elements.size() > 0)
+				if (stencil[ii] > 0)
 				{
-					std::list<int>::iterator lit1 = more_elements.begin();
-					for (; lit1 != more_elements.end(); lit1++)
+					double x1, y1, z1, x2, y2, z2;
+					x1 = cells[stencil[ii]].elt_x - width[0]/2.0;
+					y1 = cells[stencil[ii]].elt_y - width[1]/2.0;
+					z1 = cells[stencil[ii]].elt_z - width[2]/2.0;
+					x2 = cells[stencil[ii]].elt_x + width[0]/2.0;
+					y2 = cells[stencil[ii]].elt_y + width[1]/2.0;
+					z2 = cells[stencil[ii]].elt_z + width[2]/2.0;
+					Point min(x1, y1, z1);
+					Point max(x2, y2, z2);
+					zone z(min, max);
+					struct index_range *r_ptr;
+					r_ptr = zone_to_elt_range(&z);
+					std::list<int> more_elements;
+					range_to_list(r_ptr, more_elements);
+					if (more_elements.size() > 0)
 					{
-						if (cells[*lit].is_element && cells[*lit].elt_active)
+						std::list<int>::iterator lit1 = more_elements.begin();
+						for (; lit1 != more_elements.end(); lit1++)
 						{
-							set_of_elements.insert(*lit);
+							//if (cells[*lit].is_element /*&& cells[*lit].elt_active*/)
+							{
+								set_of_elements.insert(*lit1);
+							}
 						}
 					}
+					free_check_null(r_ptr);
+					r_ptr = NULL;
 				}
-				free_check_null(r_ptr);
-				r_ptr = NULL;
 			}
 		}
+#endif
+		// include other elements within witdth of shell in each direction
+		if (width[0] > 0 || width[1] > 0 || width[2] > 0)
+		{
+
+			double x1, y1, z1, x2, y2, z2;
+			x1 = cells[*sit].x - width[0]/2.0;
+			y1 = cells[*sit].y - width[1]/2.0;
+			z1 = cells[*sit].z - width[2]/2.0;
+			x2 = cells[*sit].x + width[0]/2.0;
+			y2 = cells[*sit].y + width[1]/2.0;
+			z2 = cells[*sit].z + width[2]/2.0;
+			Point min(x1, y1, z1);
+			Point max(x2, y2, z2);
+			zone z(min, max);
+			struct index_range *r_ptr;
+			r_ptr = zone_to_elt_range(&z);
+			std::list<int> more_elements;
+			range_to_list(r_ptr, more_elements);
+			if (more_elements.size() > 0)
+			{
+				std::list<int>::iterator lit1 = more_elements.begin();
+				for (; lit1 != more_elements.end(); lit1++)
+				{
+					//if (cells[*lit].is_element /*&& cells[*lit].elt_active*/)
+					{
+						set_of_elements.insert(*lit1);
+					}
+				}
+			}
+			free_check_null(r_ptr);
+			r_ptr = NULL;
+		}
+	}
+	// copy  set_of_elements to list_of_elements  
+	for (sit = set_of_elements.begin(); sit != set_of_elements.end(); sit++)
+	{
+		list_of_elements.push_back(*sit);
 	}
 	return true;
 }

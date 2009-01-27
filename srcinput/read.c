@@ -2104,7 +2104,7 @@ read_media(void)
 				// opt = streamify_to_next_keyword_or_option(opt_list,
 				//										count_opt_list,
 				//										lines);
-				streamify_prism_piece(opt_list,
+				opt = streamify_prism_piece(opt_list,
 					count_opt_list,
 					lines);
 
@@ -2153,10 +2153,11 @@ read_media(void)
 				break;
 			}
 			grid_elt_ptr->shell = true;
-			sscanf("%lf%lf%lf", next_char, 
+			sscanf(next_char, "%lf%lf%lf",  
 				&grid_elt_ptr->shell_width[0], 
 				&grid_elt_ptr->shell_width[1], 
 				&grid_elt_ptr->shell_width[2]);
+			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		}
 		return_value = check_line_return;
@@ -2622,7 +2623,7 @@ read_head_ic(void)
 				// opt = streamify_to_next_keyword_or_option(opt_list,
 				//										count_opt_list,
 				//										lines);
-				streamify_prism_piece(opt_list,
+				opt = streamify_prism_piece(opt_list,
 					count_opt_list,
 					lines);
 				if (head_ic_ptr == NULL || head_ic_ptr->polyh == NULL
@@ -3110,7 +3111,7 @@ read_chemistry_ic(void)
 				// opt = streamify_to_next_keyword_or_option(opt_list,
 				//										count_opt_list,
 				//										lines);
-				streamify_prism_piece(opt_list,
+				opt = streamify_prism_piece(opt_list,
 					count_opt_list,
 					lines);
 				if (chem_ic_ptr == NULL || chem_ic_ptr->polyh == NULL
@@ -3843,7 +3844,7 @@ read_specified_value_bc(void)
 				// opt = streamify_to_next_keyword_or_option(opt_list,
 				//										count_opt_list,
 				//										lines);
-				streamify_prism_piece(opt_list,
+				opt = streamify_prism_piece(opt_list,
 					count_opt_list,
 					lines);
 				if (bc_ptr == NULL || bc_ptr->polyh == NULL
@@ -4242,7 +4243,7 @@ read_flux_bc(void)
 				// opt = streamify_to_next_keyword_or_option(opt_list,
 				//										count_opt_list,
 				//										lines);
-				streamify_prism_piece(opt_list,
+				opt = streamify_prism_piece(opt_list,
 					count_opt_list,
 					lines);
 				if (bc_ptr == NULL || bc_ptr->polyh == NULL
@@ -4673,7 +4674,7 @@ read_leaky_bc(void)
 				// opt = streamify_to_next_keyword_or_option(opt_list,
 				//										count_opt_list,
 				//										lines);
-				streamify_prism_piece(opt_list,
+				opt = streamify_prism_piece(opt_list,
 					count_opt_list,
 					lines);
 				if (bc_ptr == NULL || bc_ptr->polyh == NULL
@@ -5801,11 +5802,23 @@ streamify_prism_piece(const char **opt_list, int count_opt_list,
  */
 	int opt;
 	char *next_char;
+
+	// add option for end_points
+	int count_opt_list_plus = count_opt_list + 1;
+	char **opt_list_plus = (char **) malloc((size_t) (count_opt_list_plus  * sizeof(char *)));
+	int i;
+	for (i = 0; i < count_opt_list; i++)
+	{
+		opt_list_plus[i] = string_duplicate(opt_list[i]);
+	}
+	opt_list_plus[i] = string_duplicate("end_points");
+
+
 	std::string accumulate(line);
 	accumulate.append("\n");
 	for (;;)
 	{
-		opt = get_option(opt_list, count_opt_list, &next_char);
+		opt = get_option((const char **) opt_list_plus, count_opt_list_plus, &next_char);
 		char *ptr = line;
 		char token[MAX_LENGTH];
 		int l;
@@ -5835,6 +5848,14 @@ streamify_prism_piece(const char **opt_list, int count_opt_list,
 		}
 	}
 	lines.str(accumulate);
+
+	// free space
+	for (i = 0; i < count_opt_list_plus; i++)
+	{
+		free_check_null(opt_list_plus[i]);
+	}
+	free_check_null(opt_list_plus);
+
 	return (opt);
 }
 /* ---------------------------------------------------------------------- */
@@ -9176,7 +9197,7 @@ read_print_locations(void)
 				// opt = streamify_to_next_keyword_or_option(opt_list,
 				//										count_opt_list,
 				//										lines);
-				streamify_prism_piece(opt_list,
+				opt = streamify_prism_piece(opt_list,
 					count_opt_list,
 					lines);
 				if (print_zones_ptr == NULL || print_zones_ptr->polyh == NULL
@@ -9941,7 +9962,7 @@ read_zone_budget(void)
 				// opt = streamify_to_next_keyword_or_option(opt_list,
 				//										count_opt_list,
 				//										lines);
-				streamify_prism_piece(opt_list,
+				opt = streamify_prism_piece(opt_list,
 					count_opt_list,
 					lines);
 				if (zb->Get_polyh() == NULL || !prism_ptr->Read(lines))
