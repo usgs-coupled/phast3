@@ -291,6 +291,11 @@ SUBROUTINE write2_1
         WRITE(fulp,2017) 'Reference temperature for enthalpy '//dots,  &
              ' T0H ..',cnvt1i*t0h+cnvt2i,'(Deg.',unitt,')'
      END IF
+     DEALLOCATE (lprnt4,  &
+          stat = da_err)
+     IF (da_err /= 0) THEN  
+        PRINT *, "Array deallocation lprnt4 failed: write2_1"  
+     ENDIF
   END IF
   IF(prt_kd) THEN
      WRITE(fukd,2012) rxlbl//'-Direction Fluid Conductance Factor ',  &
@@ -987,10 +992,10 @@ SUBROUTINE write2_1
 !!$     WRITE(fubnfr,5005) nhcbc
 !!$     WRITE(fubnfr,5005) (mhcbc(l),l=1,nhcbc)
 !!$  END IF
-  DEALLOCATE (aprnt5, lprnt4,  &
+  DEALLOCATE (aprnt5,  &
        stat = da_err)
   IF (da_err /= 0) THEN  
-     PRINT *, "Array deallocation failed: write2_1"  
+     PRINT *, "Array deallocation aprnt5 failed: write2_1"  
   ENDIF
 
 CONTAINS
