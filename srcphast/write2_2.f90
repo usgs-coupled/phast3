@@ -168,9 +168,6 @@ SUBROUTINE write2_2
         IF(cylind) uword='Ring'
         WRITE(fulp,2014) 'Initial Pore Volume Per Cell '//uword//' (',TRIM(unitl),'^3)'
         CALL prntar(2,pv,lprnt1,fulp,cnvl3i,24,000)
-        WRITE(fulp,2031) 'Specific Storage Per Cell '//uword//' ('//TRIM(unitl) //'^-1)'
-2031    FORMAT(tr30,a)
-        CALL prntar(2,ss,lprnt1,fulp,1.d0/cnvli,24,000)
      END IF
      IF(fresur .AND. .NOT.steady_flow .AND. prtic_p) THEN
         DO  m=1,nxyz
@@ -277,7 +274,6 @@ SUBROUTINE write2_2
 !!$  WRITE(fuvmap,5006) (cnvli*x(i),i=1,nx)
 !!$  WRITE(fuvmap,5006) (cnvli*y(j),j=1,ny)
 !!$  WRITE(fuvmap,5006) (cnvli*z(k),k=1,nz)
-
   DEALLOCATE (ss,  &
        stat = da_err)
   IF (da_err /= 0) THEN  

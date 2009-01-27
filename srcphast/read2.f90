@@ -240,6 +240,7 @@ SUBROUTINE read2
 120 CONTINUE
   ! ... Allocate the zone arrays
   ALLOCATE (abpm(npmz), alphl(npmz), alphth(npmz), alphtv(npmz), poros(npmz), &
+       ss(npmz), &
        kthx(1), kthy(1), kthz(1),  &
        kx(npmz), ky(npmz), kz(npmz),  &
        kxx(npmz),kyy(npmz),kzz(npmz),rcppm(1), &

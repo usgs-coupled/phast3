@@ -31,7 +31,7 @@ SUBROUTINE prntar(ndim,array,lprnt,fu,cnv,ifmt,nnoppr)
   CHARACTER(LEN=12) :: sp12 = '            '
   REAL(kind=kdp), DIMENSION(10) :: aprnt
   INTEGER :: i, iifmt, iir2, ior, ir2, ir3, ir3p, m, n1, n2, n3, nnpr,  &
-       npr2, npr3, nxpr, nypr, nzpr
+       npr2, npr3, nxpr, nypr, nzpr, nxypr
   LOGICAL :: prwin
   ! ... ORENPR: 12 - Areal layers; 13 - Vertical slices
   ! ... Set string for use with RCS ident command
@@ -58,19 +58,18 @@ SUBROUTINE prntar(ndim,array,lprnt,fu,cnv,ifmt,nnoppr)
      IF(MOD(nnoppr,100)/10 == -1) nypr=ny-1
      IF(MOD(nnoppr,100)/10 == 1) nypr=1
      ! ... Print only one plane if one vertical slice
-     !         IF(NY.EQ.2) NYPR=1
+     !!$         IF(NY.EQ.2) NYPR=1
      nzpr=nz
      IF(MOD(nnoppr,10) == -1) nzpr=nz-1
      IF(MOD(nnoppr,10) == 1) nzpr=1
-     IF(ior == 2) THEN
-        ! ... Areal layers
+     nxypr = nxpr*nypr
+     IF(ior == 2) THEN        ! ... Areal layers
         ir3lbl='K'
         npr3=nzpr
         npr2=nypr
         WRITE(fu,2001)
         2001    FORMAT(/tr20,'Areal Layers')
-     ELSE IF(ior == 3) THEN
-        ! ... Vertical slices
+     ELSE IF(ior == 3) THEN        ! ... Vertical slices
         ir3lbl='J'
         npr3=nypr
         npr2=nzpr
@@ -80,22 +79,24 @@ SUBROUTINE prntar(ndim,array,lprnt,fu,cnv,ifmt,nnoppr)
   END IF
   DO  ir3=1,npr3
      IF(ndim == 1) GO TO 40
+     ! ... Scan for any entries in this plane to print
      nnpr=0
      DO  ir2=1,npr2
         DO  i=1,nxpr
-           IF(ior == 2) m=(ir3-1)*nxy+(ir2-1)*nx+i
-           IF(ior == 3) m=(ir2-1)*nxy+(ir3-1)*nx+i
+           IF(ior == 2) m=(ir3-1)*nxypr+(ir2-1)*nxpr+i
+           IF(ior == 3) m=(ir2-1)*nxypr+(ir3-1)*nxpr+i
            IF(lprnt(m) == 1) THEN
-              nnpr=1
+              nnpr = 1     ! ... entry found
               EXIT
            END IF
         END DO
      END DO
-     IF(nnpr == 0) CYCLE
+     IF(nnpr == 0) CYCLE     ! ... No entries in this plane
      ir3p=ir3
      IF(MOD(nnoppr,10) == 1) ir3p=nz
      WRITE(fu,2003) ir3lbl,' =',ir3p
      2003 FORMAT(/tr60,a1,a,i3)
+     ! ... Print planes in groups of 10 columns
 40   n1=1
      n2=10
 50   n2=MIN(n2,nxpr)
@@ -114,8 +115,8 @@ SUBROUTINE prntar(ndim,array,lprnt,fu,cnv,ifmt,nnoppr)
         DO  ir2=1,npr2
            iir2=npr2+1-ir2
            DO  i=1,n3
-              IF(ior == 2) m=(ir3-1)*nxy+(iir2-1)*nx+n1-1+i
-              IF(ior == 3) m=(iir2-1)*nxy+(ir3-1)*nx+n1-1+i
+              IF(ior == 2) m=(ir3-1)*nxypr+(iir2-1)*nxpr+n1-1+i
+              IF(ior == 3) m=(iir2-1)*nxypr+(ir3-1)*nxpr+n1-1+i
               IF(lprnt(m) == 1) THEN
                  prwin=.TRUE.
                  EXIT
@@ -126,8 +127,8 @@ SUBROUTINE prntar(ndim,array,lprnt,fu,cnv,ifmt,nnoppr)
            DO  ir2=1,npr2
               iir2=npr2+1-ir2
               DO  i=1,n3
-                 IF(ior == 2) m=(ir3-1)*nxy+(iir2-1)*nx+n1-1+i
-                 IF(ior == 3) m=(iir2-1)*nxy+(ir3-1)*nx+n1-1+i
+                 IF(ior == 2) m=(ir3-1)*nxypr+(iir2-1)*nxpr+n1-1+i
+                 IF(ior == 3) m=(iir2-1)*nxypr+(ir3-1)*nxpr+n1-1+i
                  IF(lprnt(m) == 1) THEN
                     aprnt(i)=cnv*array(m)
                     WRITE(caprnt(i),FORM) aprnt(i)

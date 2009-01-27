@@ -40,8 +40,8 @@ SUBROUTINE init2_1
        ugdely, ugdelz, upabd, upor, ut, uwi, x0, y0, z0, z1,  &
        zfsl, zm1, zp1
   INTEGER :: a_err, da_err, i, ic, imm, imod, ipmz, iis, iwel, j, jc, k, k1, k2, kf, &
-       kinc, kl, kr, ks, kw, l, l1, lc, ls, m, mb, mc, m1, m2, &
-       mk, mr, ms, msv, mt, nele, nks, nr, nsa
+       kinc, kl, kr, ks, kw, l, l1, lc, ls, m, mb, mc, mele, m1, m2, &
+       mk, mr, ms, msv, mt, nele, nks, nr, nsa, nxele, nxyele
   INTEGER :: ibf, icz, isd, izn, lbc, msd, nbc, nbf, t_bctype, t_findx, t_lindx
   INTEGER, DIMENSION(8) :: iisd=(/7,8,5,6,3,4,1,2/)
   INTEGER, DIMENSION(6) :: num_indx
@@ -95,6 +95,7 @@ SUBROUTINE init2_1
      PRINT *, "Array allocation failed: init2, number 1"  
      STOP  
   ENDIF
+  ! ... Flag the active cells for cross-dispersion calculations
   xd_mask = .FALSE.
   DO  ipmz=1,npmz
      DO  k=k1z(ipmz),k2z(ipmz)
@@ -133,7 +134,7 @@ SUBROUTINE init2_1
   ! ... allocate conductance, capacitance arrays
   ALLOCATE (tx(nxyz), ty(nxyz), tz(nxyz), arx(nxyz), ary(nxyz), arz(nxyz),  &
        arxbc(nxyz), arybc(nxyz), arzbc(nxyz),  &
-       pv(nxyz), pmcv(nxyz), pmhv(1), pmchv(1), pvk(1), delz(nz), ss(nxyz),  &
+       pv(nxyz), pmcv(nxyz), pmhv(1), pmchv(1), pvk(1), delz(nz),  &
        tfx(nxyz), tfy(nxyz), tfz(nxyz), thx(1), thy(1), thz(1), thxy(1), thxz(1), thyx(1),  &
        thyz(1), thzx(1), thzy(1),  &
        tsx(nxyz), tsy(nxyz), tsz(nxyz), tsxy(nxyz), tsxz(nxyz), tsyx(nxyz), tsyz(nxyz),  &
@@ -222,9 +223,6 @@ SUBROUTINE init2_1
                     pv(m) = pv(m) + poros(ipmz)*udxyz  
                     upabd = abpm(ipmz)*udxyz  
                     pmcv(m) = pmcv(m) + upabd  
-                    ! ... calculate specific storage distribution
-                    ss(m) = den0*gz*(abpm(ipmz) + poros(ipmz) &
-                         *bp)
                     !                        if(solute) pvk(m)=pvk(m)+dbkd(ipmz)*udxyz
                     IF(heat) THEN  
                        pmhv(m) = pmhv(m) + (1._kdp - poros(ipmz) )*  &

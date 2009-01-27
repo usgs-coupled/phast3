@@ -41,6 +41,7 @@ SUBROUTINE write2_1
   INTEGER :: i, ic, ifc, ifu, iwel, iwq1, iwq2, iwq3, izn, j,  &
        jprptc, k, ks, kwb, kwt, l, lc, ls, m, mb, mt, nks
   INTEGER :: mp, msp
+  INTEGER :: ipmz, mele, nxele, nxyele, nele
   INTEGER, DIMENSION(nwel*nz) :: indxprint
   ! ... Set the unit numbers for node point output
   INTEGER, DIMENSION(12), PARAMETER :: fu =(/16,21,22,23,26,27,0,0,0,0,0,0/)
@@ -178,14 +179,14 @@ SUBROUTINE write2_1
        'Angle between Z-axis and vertical ...........', f10.1,2X,'(Deg.)')
   IF(prtpmp) THEN
      ! ... Print porous media zones
-     WRITE(fulp,2008)
-2008 FORMAT(//tr40,'** Aquifer Properties  **  (read echo)'/ tr35,'Region',  &
-          tr45,'Porous Medium'/tr20,  &
-          'X1         Y1         Z1          X2         Y2         Z2',  &
-          tr8,'Zone Index'/tr8,90('-'))
-     WRITE(fulp,2009) (cnvli*x(i1z(i)),cnvli*y(j1z(i)),cnvli*z(k1z(i)),  &
-          cnvli*x(i2z(i)),cnvli*y(j2z(i)),cnvli*z(k2z(i)),i,i=1,npmz)
-2009 FORMAT((tr14,6(1PG11.3),tr5,i5))
+!!$     WRITE(fulp,2008)
+!!$2008 FORMAT(//tr40,'** Aquifer Properties  **  (read echo)'/ tr35,'Region',  &
+!!$          tr45,'Porous Medium'/tr20,  &
+!!$          'X1         Y1         Z1          X2         Y2         Z2',  &
+!!$          tr8,'Zone Index'/tr8,90('-'))
+!!$     WRITE(fulp,2009) (cnvli*x(i1z(i)),cnvli*y(j1z(i)),cnvli*z(k1z(i)),  &
+!!$          cnvli*x(i2z(i)),cnvli*y(j2z(i)),cnvli*z(k2z(i)),i,i=1,npmz)
+!!$2009 FORMAT((tr14,6(1PG11.3),tr5,i5))
      IF(errexi) GO TO 30
      WRITE(fulp,2010)
 2010 FORMAT(//tr30,'*** Porous Media Properties ***'/)
@@ -194,26 +195,84 @@ SUBROUTINE write2_1
      kx = kxx*denf0*grav*86400./ABS(visfac)
      ky = kyy*denf0*grav*86400./ABS(visfac)
      kz = kzz*denf0*grav*86400./ABS(visfac)
-     WRITE(fulp,2005) rxlbl//'-Direction Hydraulic Conductivities   (',TRIM(unitl),'/d)'
-     CALL prntar(1,kx,ibc,fulp,cnvli,24,npmz)
+     ! ... calculate specific storage distribution
+     ss = den0*gz*(abpm + poros*bp)
+     ! ... Load and flag the active elements for printouts
+     nxele = nx-1
+     nxyele = (nx-1)*(ny-1)
+     nele = nxyele*(nz-1)
+     ALLOCATE (lprnt4(nele),  &
+          stat = a_err)
+     IF (a_err /= 0) THEN  
+        PRINT *, "Array allocation failed: write2_1, number 1.1"  
+        STOP  
+     ENDIF
+     lprnt4 = 0
+     aprnt1 = 0.
+     aprnt2 = 0.
+     aprnt3 = 0.
+     aprnt4 = 0.
+     aprnt5 = 0.
+     DO  ipmz=1,npmz
+        mele = (k1z(ipmz)-1)*nxyele + (j1z(ipmz)-1)*nxele + i1z(ipmz)
+        lprnt4(mele) = 1
+        aprnt1(mele) = kx(ipmz)
+        aprnt2(mele) = ky(ipmz)
+        aprnt3(mele) = kz(ipmz)
+        aprnt4(mele) = poros(ipmz)
+        aprnt5(mele) = ss(ipmz)
+     END DO
+!!$     WRITE(fulp,2005) rxlbl//'-Direction Hydraulic Conductivities   (',TRIM(unitl),'/d)'
+!!$     CALL prntar(1,kx,lprnt4,fulp,cnvli,24,npmz)
+!!$     IF(.NOT.cylind) THEN
+!!$        WRITE(fulp,2005) 'Y-Direction Hydraulic Conductivities   (',TRIM(unitl),'/d)'
+!!$        CALL prntar(1,ky,lprnt4,fulp,cnvli,24,npmz)
+!!$     END IF
+!!$     WRITE(fulp,2005) 'Z-Direction Hydraulic Conductivities   (',TRIM(unitl),'/d)'
+!!$     CALL prntar(1,kz,lprnt4,fulp,cnvli,24,npmz)
+     WRITE(fulp,2005) rxlbl//'-Direction Hydraulic Conductivities by Element (',TRIM(unitl),'/d)'
+     CALL prntar(2,aprnt1,lprnt4,fulp,cnvli,24,-111)
      IF(.NOT.cylind) THEN
-        WRITE(fulp,2005) 'Y-Direction Hydraulic Conductivities   (',TRIM(unitl),'/d)'
-        CALL prntar(1,ky,ibc,fulp,cnvli,24,npmz)
+        WRITE(fulp,2005) 'Y-Direction Hydraulic Conductivities by Element (',TRIM(unitl),'/d)'
+        CALL prntar(2,aprnt2,lprnt4,fulp,cnvli,24,-111)
      END IF
-     WRITE(fulp,2005) 'Z-Direction Hydraulic Conductivities   (',TRIM(unitl),'/d)'
-     CALL prntar(1,kz,ibc,fulp,cnvli,24,npmz)
-     WRITE(fulp,2011)
-2011 FORMAT(/40X,'Porosity (-)')
-     CALL prntar(1,poros,ibc,fulp,cnv,24,npmz)
+     WRITE(fulp,2005) 'Z-Direction Hydraulic Conductivities by Element (',TRIM(unitl),'/d)'
+     CALL prntar(2,aprnt3,lprnt4,fulp,cnvli,24,-111)
+!$$     WRITE(fulp,2011) 'Porosity (-)'
+!$$     CALL prntar(1,poros,lprnt4,fulp,cnv,24,npmz)
+     WRITE(fulp,2011) 'Porosity by Element (-)'
+2011 FORMAT(/tr40,a)
+     CALL prntar(2,aprnt4,lprnt4,fulp,cnv,24,-111)
+!$$     WRITE(fulp,2031) 'Specific Storage ('//TRIM(unitl) //'^-1)'
+!$$     CALL prntar(1,ss,lprnt4,fulp,1.d0/cnvli,24,npmz)
+     WRITE(fulp,2031) 'Specific Storage by Element ('//TRIM(unitl) //'^-1)'
+2031 FORMAT(tr30,a)
+     CALL prntar(2,aprnt5,lprnt4,fulp,1.d0/cnvli,24,-111)
 30   CONTINUE
      IF(heat .OR. solute) THEN
-        WRITE(fulp,2014) 'Longitudinal Dispersivity   (',TRIM(unitl),')'
+        ! ... Load the active elements for printing
+        aprnt1 = 0.
+        aprnt2 = 0.
+        aprnt3 = 0.
+        DO  ipmz=1,npmz
+           mele = (k1z(ipmz)-1)*nxyele + (j1z(ipmz)-1)*nxele + i1z(ipmz)
+           aprnt1(mele) = alphl(ipmz)
+           aprnt2(mele) = alphth(ipmz)
+           aprnt3(mele) = alphtv(ipmz)
+        END DO
+!!$        WRITE(fulp,2014) 'Longitudinal Dispersivity   (',TRIM(unitl),')'
+!!$        CALL prntar(1,alphl,ibc,fulp,cnvli,24,npmz)
+!!$        WRITE(fulp,2014) 'Transverse Dispersivity; Horizontal   (',TRIM(unitl),')'
+!!$        CALL prntar(1,alphth,ibc,fulp,cnvli,24,npmz)
+!!$        WRITE(fulp,2014) 'Transverse Dispersivity; Vertical   (',TRIM(unitl),')'
+!!$        CALL prntar(1,alphtv,ibc,fulp,cnvli,24,npmz)
+        WRITE(fulp,2014) 'Longitudinal Dispersivity by Element (',TRIM(unitl),')'
 2014    FORMAT(/tr30,8A)
-        CALL prntar(1,alphl,ibc,fulp,cnvli,24,npmz)
-        WRITE(fulp,2014) 'Transverse Dispersivity; Horizontal   (',TRIM(unitl),')'
-        CALL prntar(1,alphth,ibc,fulp,cnvli,24,npmz)
-        WRITE(fulp,2014) 'Transverse Dispersivity; Vertical   (',TRIM(unitl),')'
-        CALL prntar(1,alphtv,ibc,fulp,cnvli,24,npmz)
+        CALL prntar(2,aprnt1,lprnt4,fulp,cnvli,24,-111)
+        WRITE(fulp,2014) 'Transverse Dispersivity; Horizontal by Element (',TRIM(unitl),')'
+        CALL prntar(2,aprnt2,lprnt4,fulp,cnvli,24,-111)
+        WRITE(fulp,2014) 'Transverse Dispersivity; Vertical by Element (',TRIM(unitl),')'
+        CALL prntar(2,aprnt3,lprnt4,fulp,cnvli,24,-111)
      END IF
      IF(solute) THEN
         WRITE(fulp,2015) 'Molecular diffusivity-tortuosity product '//  &
@@ -354,7 +413,7 @@ SUBROUTINE write2_1
               DO  l=1,nz
                  aprnt1(l) = 0._kdp
                  aprnt2(l) = 0._kdp
-                 aprnt2(l) = 0._kdp
+                 aprnt3(l) = 0._kdp
               END DO
               DO  ks=1,nks
                  m=mwel(iwel,ks)
@@ -928,10 +987,10 @@ SUBROUTINE write2_1
 !!$     WRITE(fubnfr,5005) nhcbc
 !!$     WRITE(fubnfr,5005) (mhcbc(l),l=1,nhcbc)
 !!$  END IF
-  DEALLOCATE (aprnt5,  &
+  DEALLOCATE (aprnt5, lprnt4,  &
        stat = da_err)
   IF (da_err /= 0) THEN  
-     PRINT *, "Array allocation failed: write2_1"  
+     PRINT *, "Array deallocation failed: write2_1"  
   ENDIF
 
 CONTAINS
