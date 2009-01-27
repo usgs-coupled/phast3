@@ -101,7 +101,7 @@ template < class _Ty > class UniqueMap
 
 	iterator find(size_t i)
 	{
-		if (i == -1)
+		if (i == std::string::npos)
 			return this->data.end();
 		assert(i < this->data.size());
 		if (i < this->data.size())

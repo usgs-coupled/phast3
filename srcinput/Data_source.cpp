@@ -991,7 +991,7 @@ Data_source::Get_nni(void)
 		{
 			Data_source * ds = this->Get_data_source_with_points();
 			if (ds == NULL) return (NULL);
-			if (ds->nni_unique == -1)
+			if (ds->nni_unique == std::string::npos)
 			{
 				NNInterpolator * nni = new NNInterpolator();
 				nni->preprocess(ds->Get_points(), ds->coordinate_system);
@@ -1027,7 +1027,7 @@ Data_source::Replace_nni(NNInterpolator * nni_ptr)
 		break;
 	}
 	assert(ds != NULL);
-	if (ds->nni_unique != -1)
+	if (ds->nni_unique != std::string::npos)
 	{
 		NNInterpolator::NNInterpolatorMap.replace(ds->nni_unique, nni_ptr);
 	}
@@ -1200,7 +1200,9 @@ bool Data_source::Make_nni(void)
 	if (ds == NULL)
 		return false;
 
-	if (ds->nni_unique == -1)
+	//if (ds->nni_unique == -1)
+	if (ds->nni_unique == std::string::npos)
+
 	{
 		NNInterpolator *
 			nni = new NNInterpolator();
