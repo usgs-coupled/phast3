@@ -27,15 +27,19 @@ MEDIA
                 -specific_storage       2e-6   # storage coef / aq thickness
 FREE_SURFACE_BC false
 WELL 1
+     -xy_coordinate_system  grid
+     -z_coordinate_system  grid
         2000    2000
                 -diameter       1
                 -elevation      0.      -100.
                 -pumping_rate   0	96000
 WELL 2
-        2200    2000
                 -diameter       1
                 -elevation      0.      -10.
+        2200    2000
                 -pumping_rate   0	0
+     -xy_coordinate_system  grid
+     -z_coordinate_system  grid
 WELL 3
         2400    2000
                 -diameter       1

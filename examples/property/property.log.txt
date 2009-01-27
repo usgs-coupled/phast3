@@ -44,12 +44,43 @@ Processing flow and transport data file.
 				0	0	0	1
 			kz                       points    grid
 				0 	0	0	1
-				end_p
+				end_points
+			kz                       points    grid
+WARNING: Z direction hydraulic conductivity has been redefined in MEDIA, definition 1.
+				0 	0	0	1
+				end_point
+			kz                       points    grid
+WARNING: Z direction hydraulic conductivity has been redefined in MEDIA, definition 1.
+				0 	0	0	1
+				end_points
 			porosity                 X	0.1	0	0.2	10
 			specific_storage         1e-6
 			long_dispersivity        xyz grid property.mix # 0.1
 			horizontal_dispersivity  0.1
 			vertical_dispersivity    .1
+		prism 
+			perimeter points grid
+				0 0
+				10 0
+				10 1
+				0 1
+				end_points
+			active                   1
+		prism 
+			perimeter points grid
+				0 0
+				10 0
+				10 1
+				0 1
+				end_points
+			active                   1
+		prism 
+			perimeter points grid
+				0 0
+				10 0
+				10 1
+				0 1
+			active                   1
 	FLUX_BC
 		zone 0 0 0 0 1 1
 		associated_solution

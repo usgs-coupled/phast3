@@ -24,9 +24,9 @@ ifeq ($(CFG), CYGWIN)
   RUN=$(TEST)/runmpich
 endif
 
-SERIAL = decay diffusion1d diffusion2d disp2d ex3 kindred4.4 leaky leakyx leakyz linear_bc linear_ic ex4 notch phrqex11 ex1 radial river unconf well ex2 free ex4restart print_check_ss print_check_transient ex4_start_time mass_balance simple ex4_noedl ex4_ddl ex4_transient leakysurface flux_patches patches_lf zf property
+SERIAL = decay diffusion1d diffusion2d disp2d ex3 kindred4.4 leaky leakyx leakyz linear_bc linear_ic ex4 notch phrqex11 ex1 radial river unconf well ex2 free ex4restart print_check_ss print_check_transient ex4_start_time mass_balance simple ex4_noedl ex4_ddl ex4_transient leakysurface flux_patches patches_lf zf property shell
 
-PARALLEL =  decay_parallel diffusion1d_parallel diffusion2d_parallel disp2d_parallel ex3_parallel kindred4.4_parallel leaky_parallel leakyx_parallel leakyz_parallel linear_bc_parallel linear_ic_parallel ex4_parallel notch_parallel phrqex11_parallel ex1_parallel radial_parallel river_parallel unconf_parallel well_parallel ex2_parallel free_parallel ex4restart_parallel print_check_ss_parallel print_check_transient_parallel  ex4_start_time_parallel mass_balance_parallel simple_parallel ex4_noedl_parallel ex4_ddl_parallel ex4_transient_parallel leakysurface_parallel flux_patches_parallel patches_lf_parallel zf_parallel property_parallel
+PARALLEL =  decay_parallel diffusion1d_parallel diffusion2d_parallel disp2d_parallel ex3_parallel kindred4.4_parallel leaky_parallel leakyx_parallel leakyz_parallel linear_bc_parallel linear_ic_parallel ex4_parallel notch_parallel phrqex11_parallel ex1_parallel radial_parallel river_parallel unconf_parallel well_parallel ex2_parallel free_parallel ex4restart_parallel print_check_ss_parallel print_check_transient_parallel  ex4_start_time_parallel mass_balance_parallel simple_parallel ex4_noedl_parallel ex4_ddl_parallel ex4_transient_parallel leakysurface_parallel flux_patches_parallel patches_lf_parallel zf_parallel property_parallel shell_parallel
 
 CLEAN_SERIAL = decay_clean diffusion1d_clean diffusion2d_clean disp2d_clean ex3_clean \
 	kindred4.4_clean leaky_clean leakyx_clean leakyz_clean \
@@ -34,7 +34,7 @@ CLEAN_SERIAL = decay_clean diffusion1d_clean diffusion2d_clean disp2d_clean ex3_
 	radial_clean river_clean unconf_clean well_clean ex2_clean free_clean \
 	ex4restart_clean print_check_ss_clean print_check_transient_clean ex4_start_time_clean \
 	mass_balance_clean simple_clean ex4_noedl_clean ex4_ddl_clean ex4_transient_clean leakysurface_clean \
-	flux_patches_clean patches_lf_clean zf_clean property_clean
+	flux_patches_clean patches_lf_clean zf_clean property_clean shell_clean
 
 CLEAN_PARALLEL = decay_clean_parallel diffusion1d_clean_parallel diffusion2d_clean_parallel \
 	disp2d_clean_parallel ex3_clean_parallel kindred4.4_clean_parallel \
@@ -46,7 +46,8 @@ CLEAN_PARALLEL = decay_clean_parallel diffusion1d_clean_parallel diffusion2d_cle
 	ex4restart_clean_parallel print_check_ss_clean_parallel print_check_transient_clean_parallel \
 	ex4_start_time_clean_parallel mass_balance_clean_parallel simple_clean_parallel \
 	ex4_noedl_clean_parallel ex4_ddl_clean_parallel ex4_transient_clean_parallel leakysurface_clean_parallel \
-	flux_patches_clean_parallel patches_lf_clean_parallel zf_clean_parallel property_clean_parallel
+	flux_patches_clean_parallel patches_lf_clean_parallel zf_clean_parallel property_clean_parallel \
+	shell_clean_parallel
 
 CLEAN_CMD =  rm -f *~ *.O.* *.log *.h5 *.h5~ abs* *.h5dump *.sel *.xyz* *backup* *.txt *.tsv Phast.tmp 
 
@@ -996,6 +997,32 @@ property_clean_parallel:
 	  then \
 	  find $(TEST)/property/0  -maxdepth 1 -type f  | xargs rm -f; \
 	fi
+#
+# Shell definitions
+#
+shell: shell_clean
+	echo ; 
+	echo ============= shell
+	echo ; 
+	cd $(TEST)/shell;
+	cd $(TEST)/shell; $(PHAST_INPUT) shell; time $(PHAST)
+	echo ============= Done shell
+
+shell_parallel: shell_clean_parallel
+	echo ; 
+	echo ============= shell Parallel
+	echo ; 
+	$(RUN) shell
+	echo ============= Done shell Parallel
+
+shell_clean:
+	cd $(TEST)/shell; $(CLEAN_CMD)
+
+shell_clean_parallel:
+	@if [ -d $(TEST)/shell/0 ]; \
+	  then \
+	  find $(TEST)/shell/0  -maxdepth 1 -type f  | xargs rm -f; \
+	fi
 
 clean: clean_serial clean_parallel
 	rm -f all.out
@@ -1005,6 +1032,8 @@ clean_serial: $(CLEAN_SERIAL)
 
 clean_parallel: $(CLEAN_PARALLEL)
 	rm -f make.out parallel.out diff.out diff
+
+
 
 #ci: $(CI_PROBLEMS)
 

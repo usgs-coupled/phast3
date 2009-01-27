@@ -3438,7 +3438,7 @@ C.2.22.4 .. TOLDEN{.001},MAXITN{5}
      .001  100
 C.....     restarted conjugate gradient solver
 C.2.22.5 .. IDIR,MILU,NSDR,EPSSLV{1.e-8},MAXIT2{500}; (O) - SLMETH [1.8] = 3
-     1 t 20 1e-10 500
+     1 t 20 1e-12 500
 C------------------------------------------------------------------------------
 C.....Output information
 C.2.23.1 .. PRTPMP,PRTFP,PRTBC,PRTSLM,PRTWEL,PRT_KD; all [T/F]

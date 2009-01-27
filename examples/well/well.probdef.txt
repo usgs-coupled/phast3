@@ -129,7 +129,7 @@
           Direction index for d4 zig-zag renumbering ...................... IDIR..    1
           Incomplete LU [f] or modified ILU [t] factorization ............. MILU..    T
           Number of search directions before restart ...................... NSDR..   10
-          Tolerance on iterative solution ................................. EPSSLV 1.0E-10
+          Tolerance on iterative solution ................................. EPSSLV 1.0E-12
 
  ------------------------------------------------------------------------------------------------------------------------
 

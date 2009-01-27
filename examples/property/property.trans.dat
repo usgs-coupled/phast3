@@ -48,7 +48,10 @@ MEDIA
 			0	0	0	1
 		-Kz                       points    grid
 			0 	0	0	1
-			end_p
+			-end_points
+		-Kz                       points    grid
+			0 	0	0	1
+			end_point
 		-Kz                       points    grid
 			0 	0	0	1
 			-end_p
@@ -96,7 +99,7 @@ FLUX_BC
 		0.4 yr points map
 			0  0  0   1
 			10 10 10  2
-			end_points
+			-end_points
 		0.5 yr xyz    map  property.solns
 		0.6 yr 2
 		0.7 yr Y 1 0 2 1
