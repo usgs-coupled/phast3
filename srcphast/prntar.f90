@@ -31,7 +31,7 @@ SUBROUTINE prntar(ndim,array,lprnt,fu,cnv,ifmt,nnoppr)
   CHARACTER(LEN=12) :: sp12 = '            '
   REAL(kind=kdp), DIMENSION(10) :: aprnt
   INTEGER :: i, iifmt, iir2, ior, ir2, ir3, ir3p, m, n1, n2, n3, nnpr,  &
-       npr2, npr3, nxpr, nypr, nzpr, nxypr
+       npr2, npr3, nxpr, nypr, nzpr, nxarr, nxyarr
   LOGICAL :: prwin
   ! ... ORENPR: 12 - Areal layers; 13 - Vertical slices
   ! ... Set string for use with RCS ident command
@@ -62,7 +62,12 @@ SUBROUTINE prntar(ndim,array,lprnt,fu,cnv,ifmt,nnoppr)
      nzpr=nz
      IF(MOD(nnoppr,10) == -1) nzpr=nz-1
      IF(MOD(nnoppr,10) == 1) nzpr=1
-     nxypr = nxpr*nypr
+     nxyarr = nxy
+     nxarr = nx
+     if(abs(nnoppr) == 111) then
+        nxyarr = nxpr*nypr
+        nxarr = nxpr
+     end if
      IF(ior == 2) THEN        ! ... Areal layers
         ir3lbl='K'
         npr3=nzpr
@@ -83,8 +88,8 @@ SUBROUTINE prntar(ndim,array,lprnt,fu,cnv,ifmt,nnoppr)
      nnpr=0
      DO  ir2=1,npr2
         DO  i=1,nxpr
-           IF(ior == 2) m=(ir3-1)*nxypr+(ir2-1)*nxpr+i
-           IF(ior == 3) m=(ir2-1)*nxypr+(ir3-1)*nxpr+i
+           IF(ior == 2) m=(ir3-1)*nxyarr+(ir2-1)*nxarr+i
+           IF(ior == 3) m=(ir2-1)*nxyarr+(ir3-1)*nxarr+i
            IF(lprnt(m) == 1) THEN
               nnpr = 1     ! ... entry found
               EXIT
@@ -115,8 +120,8 @@ SUBROUTINE prntar(ndim,array,lprnt,fu,cnv,ifmt,nnoppr)
         DO  ir2=1,npr2
            iir2=npr2+1-ir2
            DO  i=1,n3
-              IF(ior == 2) m=(ir3-1)*nxypr+(iir2-1)*nxpr+n1-1+i
-              IF(ior == 3) m=(iir2-1)*nxypr+(ir3-1)*nxpr+n1-1+i
+              IF(ior == 2) m=(ir3-1)*nxyarr+(iir2-1)*nxarr+n1-1+i
+              IF(ior == 3) m=(iir2-1)*nxyarr+(ir3-1)*nxarr+n1-1+i
               IF(lprnt(m) == 1) THEN
                  prwin=.TRUE.
                  EXIT
@@ -127,8 +132,8 @@ SUBROUTINE prntar(ndim,array,lprnt,fu,cnv,ifmt,nnoppr)
            DO  ir2=1,npr2
               iir2=npr2+1-ir2
               DO  i=1,n3
-                 IF(ior == 2) m=(ir3-1)*nxypr+(iir2-1)*nxpr+n1-1+i
-                 IF(ior == 3) m=(iir2-1)*nxypr+(ir3-1)*nxpr+n1-1+i
+                 IF(ior == 2) m=(ir3-1)*nxyarr+(iir2-1)*nxarr+n1-1+i
+                 IF(ior == 3) m=(iir2-1)*nxyarr+(ir3-1)*nxarr+n1-1+i
                  IF(lprnt(m) == 1) THEN
                     aprnt(i)=cnv*array(m)
                     WRITE(caprnt(i),FORM) aprnt(i)
