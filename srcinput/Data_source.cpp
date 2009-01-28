@@ -1077,6 +1077,7 @@ std::ostream & operator<<(std::ostream & os, const Data_source & ds)
 				os << "\t\t\t" << citer->x() << " " << citer->
 					y() << " " << citer->z() << std::endl;
 			}
+			os << "\t\t\tend_points" << std::endl;
 		}
 		break;
 	case Data_source::NONE:
