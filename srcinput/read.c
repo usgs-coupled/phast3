@@ -7614,8 +7614,10 @@ read_print_input(void)
 		"xyz_wells",			/* 57 */
 		"conductance",			/* 58 */
 		"conductances"			/* 59 */
+		, "hdf_media"           /* 60 */
+		, "hdf_media_properties" /* 61 */
 	};
-	int count_opt_list = 60;
+	int count_opt_list = 62;
 /*
  *   Read flags:
  */
@@ -7741,6 +7743,10 @@ read_print_input(void)
 		case 58:				/* conductance */
 		case 59:				/* conductances */
 			print_input_conductances = get_true_false(next_char, TRUE);
+			break;
+		case 60:				/* hdf_media */
+		case 61:				/* hdf_media_properties */
+			print_input_hdf_media = get_true_false(next_char, TRUE);
 			break;
 		}
 		if (return_value == EOF || return_value == KEYWORD)

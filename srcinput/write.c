@@ -1606,7 +1606,7 @@ write_output_static(void)
 		output_msg(OUTPUT_HST, "f \n");
 
 	output_msg(OUTPUT_HST,
-			   "C.2.23.2.1 .. PRTIC_HDF_CONC, PRTIC_HDF_HEAD, PRTIC_HDF_SS_VEL; all [T/F]\n");
+			   "C.2.23.2.1 .. PRTIC_HDF_CONC, PRTIC_HDF_HEAD, PRTIC_HDF_SS_VEL, PRTIC_HDF_MEDIA; all [T/F]\n");
 	output_msg(OUTPUT_HST, "     ");
 	if (print_input_hdf_chem == TRUE)
 		output_msg(OUTPUT_HST, "t ");
@@ -1617,9 +1617,28 @@ write_output_static(void)
 	if (print_input_hdf_head == FALSE)
 		output_msg(OUTPUT_HST, "f ");
 	if (print_input_hdf_ss_vel == TRUE)
-		output_msg(OUTPUT_HST, "t \n");
+		output_msg(OUTPUT_HST, "t ");
 	if (print_input_hdf_ss_vel == FALSE)
+		output_msg(OUTPUT_HST, "f ");
+	if (print_input_hdf_media == TRUE)
+		output_msg(OUTPUT_HST, "t \n");
+	if (print_input_hdf_media == FALSE)
 		output_msg(OUTPUT_HST, "f \n");
+
+	output_msg(OUTPUT_HST, "C.2.23.2.2 .. HDF_media: units, Conversions user_to_si k, ss\n");
+	if (print_input_hdf_media == TRUE)
+	{
+		output_msg(OUTPUT_HST, "C.2.23.2.2.1 .. K: units, input_to_si, fluid_density, fluid_viscosity\n");
+		output_msg(OUTPUT_HST, "\"%s\" %15.7e %15.7e %15.7e\n", units.k.input, units.k.input_to_si, fluid_density, fluid_viscosity);
+		output_msg(OUTPUT_HST, "C.2.23.2.2.2 .. Storage: units, input_to_si, fluid_compressibility\n");
+		output_msg(OUTPUT_HST, "\"%s\" %15.7e %15.7e\n", units.s.input, units.s.input_to_si, fluid_compressibility);
+	}
+	output_msg(OUTPUT_HST, "C.2.23.2.3 .. HDF_media: Conversions user_to_si alpha\n");
+	if (print_input_hdf_media == TRUE && flow_only != TRUE)
+	{
+		output_msg(OUTPUT_HST, "C.2.23.2.3.1 .. Alpha: units, input_to_si\n");
+		output_msg(OUTPUT_HST, "\"%s\" %15.7e\n", units.alpha.input, units.alpha.input_to_si);
+	}
 
 	output_msg(OUTPUT_HST, "C.2.23.3 .. ORENPR[I];(O) - NOT CYLIND [1.4]\n");
 	if (print_input_xy == TRUE)

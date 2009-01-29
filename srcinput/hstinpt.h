@@ -934,6 +934,8 @@ EXTERNAL int
 EXTERNAL int
 	print_input_hdf_ss_vel_defined;
 EXTERNAL int
+	print_input_hdf_media;
+EXTERNAL int
 	print_input_xyz_chem;
 
 /* keep track of transient information */
