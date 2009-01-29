@@ -3,9 +3,9 @@
 #   <!--Exported from C:\Programs\phastpp\examples\shell\shell.wphast-->
 # </WPhast>
 # 
-SOLUTE_TRANSPORT false
+SOLUTE_TRANSPORT true
     -diffusivity  1e-009
-STEADY_FLOW false
+STEADY_FLOW true
 FREE_SURFACE_BC false
 SOLUTION_METHOD
 	-iterative_solver   true
@@ -35,7 +35,7 @@ UNITS
 GRID
 	-uniform X 0 1 11
 	-uniform Y 0 1 11
-	-uniform Z 0 1 2
+	-uniform Z 0 1 11
 	-snap X 0.001
 	-snap Y 0.001
 	-snap Z 0.001
@@ -52,19 +52,26 @@ MEDIA
 		-long_dispersivity        1
 		-horizontal_dispersivity  1
 		-vertical_dispersivity    1
-	-zone .2 .2  0 .8  .8 1
-		-shell	 0.2 .2 1
+	-zone .2 .2  0 .8  .8 .5
+		-shell	 0.2 .2 .1
 		-Kx                       0.01
 		-Ky                       0.01
 		-Kz                       0.01
+		-porosity                 0.1	
 		-specific                 0.0002
+		-long_dispersivity        .3
+		-horizontal_dispersivity  .2
+		-vertical_dispersivity    .1		
+	-zone 0.5 0 0 1.0 1.0 0.2
+		-active                   0
+		
 FLUX_BC
 	-zone 0 0 0 0 1 1
 		-face X
 		-associated_solution
 			0	1
 		-flux
-			0	100
+			0	1e-5
 SPECIFIED_HEAD_BC
 	-zone 100 0 0 1 1 1
 		-head
@@ -86,6 +93,7 @@ PRINT_INITIAL
 	-force_chemistry_print      false
 	-HDF_chemistry              true
 	-HDF_heads                  true
+	-HDF_media                  true
 	-HDF_steady_flow_velocities true
 	-heads                      true
 	-media_properties           true
@@ -110,7 +118,7 @@ PRINT_FREQUENCY
 		-HDF_velocities              end 
 		-heads                       end 
 		-progress_statistics         end 
-		-velocities             0
+		-velocities                  end
 		-wells                       end 
 		-xyz_chemistry          0
 		-xyz_components         0
@@ -120,6 +128,6 @@ PRINT_FREQUENCY
 		-boundary_conditions    false
 TIME_CONTROL
 	-time_step
-		0 1
+		0 1e4
 	-time_change
-		1
+		1e4
