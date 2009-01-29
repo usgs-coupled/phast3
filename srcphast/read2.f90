@@ -12,6 +12,7 @@ SUBROUTINE read2
   USE mcw
   USE mg2
   USE rewi_mod
+  USE hdf_media
   IMPLICIT NONE
   INCLUDE 'ifrd.inc'
   INTERFACE
@@ -859,9 +860,9 @@ SUBROUTINE read2
        '[2.23.2]', prtic_c, prtic_mapc, prtic_p, prtic_maphead, prtss_vel, prtss_mapvel, &
        prtic_conc, prtic_force_chem
   ! ...  print requests for hdf files
-  READ(fuins,*) prtichdf_conc, prtichdf_head, prtsshdf_vel
-  IF (print_rde) WRITE(furde,8119) 'prtichdf_conc, prtichdf_head, prtsshdf_vel,[2.23.2.1]',  &
-       prtichdf_conc, prtichdf_head, prtsshdf_vel
+  READ(fuins,*) prtichdf_conc, prtichdf_head, prtsshdf_vel, pr_hdf_media
+  IF (print_rde) WRITE(furde,8119) 'prtichdf_conc, prtichdf_head, prtsshdf_vel, pr_hdf_media[2.23.2.1]',  &
+       prtichdf_conc, prtichdf_head, prtsshdf_vel, pr_hdf_media
 8119 FORMAT(tr5,a/tr5,3l5)
   ! set integer flags
   prhdfci = 0
@@ -875,6 +876,25 @@ SUBROUTINE read2
   prcphrqi = 0
   IF (prtic_conc) prcphrqi = 1
   prcpd = .FALSE.
+  
+  ! ...  more data for pr_hdf_media
+  if (pr_hdf_media) then
+    READ(fuins,*) k_units, k_input_to_si, fluid_density, fluid_viscosity
+    IF (print_rde) WRITE(furde, "(tr5, a/tr5,a,1pg12.4,1pg12.4,1pg12.4)") &
+        "C.2.23.2.2.1 .. K: units, input_to_si, fluid_density, fluid_viscosity ", &
+        k_units, k_input_to_si, fluid_density, fluid_viscosity
+    READ(fuins,*) s_units, s_input_to_si, fluid_compressibility
+    IF (print_rde) WRITE(furde, "(tr5, a/tr5,a,1pg12.4,1pg12.4)") &
+        "C.2.23.2.2.2 .. Storage: units, input_to_si, fluid_compressibility", &
+        s_units, s_input_to_si, fluid_compressibility
+    if (solute) then
+        READ(fuins,*) alpha_units, alpha_input_to_si
+        IF (print_rde) WRITE(furde, "(tr5, a/tr5,a,1pg12.4)") &
+            "C.2.23.2.3.1 .. Alpha: units, input_to_si", &
+            alpha_units, alpha_input_to_si 
+    endif  
+  endif
+  
   ! ... print-out orientation
   IF(.NOT.cylind) THEN  
      READ(fuins,*) orenpr  

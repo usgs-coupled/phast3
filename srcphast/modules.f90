@@ -153,7 +153,7 @@ MODULE mcc
        timprfchem, timprslm, timprtem, &
        timprvel, timprwel, timprzf, timprzf_tsv, timprtnxt
   LOGICAL :: argrid, comopt, errexe, errexi, ichwt, ichydp, pltzon, prtbc, prtdv, prtfp,  &
-       prtic, prtichead=.FALSE., prtpmp, prtslm, prtwel, prt_kd, prt_bc, prt_zon_flo,  &
+       prtic, prtichead=.FALSE., prtpmp, prtslm, prtwel, prt_kd, prt_bc, &
        prtic_c, prtic_mapc, prtic_p, prtic_maphead, prtic_conc, prtic_force_chem,  &
        prtss_vel, prtss_mapvel, prtic_well_timser,  &
        prtichdf_conc, prtichdf_head, prtsshdf_vel,  &
@@ -438,3 +438,12 @@ MODULE phys_const
   SAVE
   REAL(KIND=kdp), PARAMETER :: pi = 3.1415926535898_kdp, grav = 9.80665_kdp, twopi = 2._kdp*pi
 END MODULE phys_const
+
+MODULE hdf_media
+    USE machine_constants, ONLY: kdp
+    LOGICAL :: pr_hdf_media
+    REAL(KIND=kdp) :: k_input_to_si, s_input_to_si, alpha_input_to_si
+    REAL(KIND=kdp) :: fluid_density, fluid_compressibility, fluid_viscosity
+    CHARACTER(LEN=120) :: k_units, s_units, alpha_units
+
+END MODULE hdf_media

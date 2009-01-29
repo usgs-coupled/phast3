@@ -122,9 +122,10 @@ END SUBROUTINE hdf_write_invariant
 !   TODO
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 SUBROUTINE hdf_begin_time_step
-  USE mcc, ONLY: PRHDFHI, PRHDFCI, prhdfvi
+  USE mcc, ONLY: PRHDFHI, PRHDFCI, prhdfvi, solute
   USE mcv, ONLY: TIME
   USE mcp, ONLY: CNVTMI
+  USE hdf_media, ONLY: pr_hdf_media
   IMPLICIT NONE
   INTEGER time_step_fscalar_count
 !*****seems like this could be simplified with direct pass of integer flag***
@@ -133,6 +134,14 @@ SUBROUTINE hdf_begin_time_step
   if (prhdfhi == 1) then
      time_step_fscalar_count = time_step_fscalar_count + 1
   endif
+  if (pr_hdf_media) then
+    time_step_fscalar_count = time_step_fscalar_count + 5
+    if (solute) then
+        time_step_fscalar_count = time_step_fscalar_count + 3
+    endif
+  endif
+  
+        
 
   CALL HDF_OPEN_TIME_STEP(TIME, CNVTMI, prhdfci, prhdfvi, time_step_fscalar_count)
 END SUBROUTINE hdf_begin_time_step
@@ -152,12 +161,19 @@ SUBROUTINE hdf_end_time_step()
   USE mcc,               ONLY: prhdfhi, prhdfvi, vmask, ntprhdfv, ntprhdfh
   USE mcch,              ONLY: unitl
   USE mg2,               ONLY: hdprnt
+  USE hdf_media,         ONLY: pr_hdf_media
   IMPLICIT NONE
   IF (prhdfhi == 1) THEN
      !!NOTE: Don't need IBC array since hdf_write_invariant accounts for inactive cells
      CALL prntar_hdf(hdprnt, frac, cnvli, 'Fluid Head('//unitl//')')
      ntprhdfh = ntprhdfh+1
   END IF
+  
+  if (pr_hdf_media) then
+    CALL media_hdf
+    pr_hdf_media = .false.
+  endif
+
   IF (prhdfvi == 1) THEN
      ! convert velocity to user units, should be last use of these 
      ! velocities for time step
