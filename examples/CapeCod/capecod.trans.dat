@@ -11,7 +11,7 @@ SOLUTE_TRANSPORT false
 STEADY_FLOW true
 #STEADY_FLOW false
 	-min		.1
-	-max		200
+	-max		5
 	-growth_factor 	1.5
 	-head_change 	30
 	-head_tol    	1e-3
@@ -24,7 +24,7 @@ SOLUTION_METHOD
 	-iterative_solver   true
 	-tolerance          1e-12
 	-save_directions    50
-	-maximum_iterations 2000
+	-maximum_iterations 500
 	-space_differencing 0
 	-time_differencing  1
 	-cross_dispersion   false
@@ -60,22 +60,27 @@ GRID
 	#-uniform Z -200 -20 37
 	#-overlay_uniform Z -10 25 36
 	
-	#-uniform X 275000 285000 41
+	-uniform X 275000 285000 41
 	#-uniform Y 810000 830000 81
+	-uniform Y 815000 830000 81
 	
-	-uniform X 0 10000 41
-	-uniform Y 0 20000 81
+	#-uniform X 0 10000 41
+	#-uniform Y 0 20000 81
 	#-uniform X 0 10000 21
 	#-uniform Y 0 20000 41	
 	
 	#-uniform X 277000  283500 27 # 250	6.5 km
 	#-uniform Y 814000  823000 37 # 250      9   km
 	-uniform Z -200 -20 10
-	-overlay_uniform Z -10 18 15
+	-overlay_uniform Z -10 22 17
 	
-	#-overlay X 279000 282000  61 # 50 m
-	#-overlay Y 819000 822000  61 # 50 m
-	#-overlay_uniform Z -10 18 29 # 1 m
+#	-overlay X 279000 281000  41 # 50 m
+#	-overlay Y 820000 821750  36 # 50 m
+#	-overlay_uniform Z -10 18 29 # 1 m
+	
+#	-uniform X 275000 285000  201 # 50 m
+#	-uniform Y 818000 822500  91  # 50 m
+	-overlay_uniform Z -10 22 33 # 1 m	
 
 	#-uniform X 275000 285000 26
 	#-uniform Y 810000 830000 26
@@ -91,17 +96,13 @@ GRID
 	#-grid_origin   285000  830000 0
 	#-grid_angle    180
 	
-	-grid_origin   275000  810000 0
-	-grid_angle    0
+	#-grid_origin   275000  810000 0
+	#-grid_angle    0
 
 HEAD_IC
 	-zone 275000 810000 -500 285000 830000 100 map
-		-head                    15
-		#-head       Y 0 814000         16.764 823000
-		#-head        y 0 810000         21.3  830000
-		#-head file capecod.head.51.dat
-		#-head file capecod.head.26a.dat
-		#-head file capecod.head.250.dat
+		#-head                    15
+		-head       xyz grid capecod.head.dat.save
 	
 
 MEDIA
@@ -111,9 +112,6 @@ MEDIA
 		-Kx                       1.06e-3
 		-Ky                       1.06e-3
 		-Kz                       0.30e-3
-		#-Kx     Z    1.06.e-3 10   0.30e-3  -5  # 300 ft/d  to 85 ft/d 
-		#-Ky     Z    1.06e-3 10   0.30e-3  -5
-		#-Kz     Z    0.35e-3 10  0.10e-3  -5	
 		-porosity                 0.39
 		-specific_storage         0.39
 		-long_dispersivity        1
@@ -121,90 +119,15 @@ MEDIA
 		-vertical_dispersivity    1
 		
 		
-	#-zone 275000 810000 0 285000 825000 100
-	#	-Kx          X  1.23e-3 275000 0.85e-3 287500   # 350 to 240 ft/d
-	#	-Ky          X  1.23e-3 275000 0.85e-3 287500
-	#	-Kz          X  0.41e-3 275000 0.28e-3 287500
-	#	
-	##-zone 275000 810000 -30 285000 830000 0
-	##	-Kx          X  1.02e-3 275000 0.53e-3 287500   # 290 to 150 ft/d
-	##	-Ky          X  1.02e-3 275000 0.53e-3 287500
-	##	-Kz          X  0.34e-3 275000 0.053e-3 287500
-	#-zone 275000 810000 -20 285000 830000 0
-	#	-Kx          X  0.7e-3 275000 0.26e-3 287500   # 200 to 75 ft/d
-	#	-Ky          X  0.7e-3 275000 0.26e-3 287500
-	#	-Kz          X  0.2e-4 275000 0.26e-4 287500
-	
-	#-zone 275000 810000 0 285000 825000 100
-	#	-Kx          Y  1.23e-3 828000 0.85e-3 814000   # 350 to 240 ft/d
-	#	-Ky          Y  1.23e-3 828000 0.85e-3 814000
-	#	-Kz          Y  0.41e-3 828000 0.28e-3 814000
-	#	
-	#-zone 275000 810000 -20 285000 830000 0
-	#	-Kx          Y  1.02e-3 828000 0.25e-3 814000   # 290 to 70 ft/d
-	#	-Ky          Y  1.02e-3 828000 0.25e-3 814000
-	#	-Kz          Y  0.34e-3 828000 0.025e-3 814000
-	
-	
-	#-zone 275000 810000 -200 285000 830000 -20
-	#	-Kx                       1.e-4    # 30
-	#	-Ky                       1.e-4
-	#	-Kz                       1.e-6		
 	
 	-zone 275000 810000 -200 285000 830000 100 map
 		-Kx          Z  1.06e-3 0 0.1e-3  -20   # 300 to 30 ft/d
 		-Ky          Z  1.06e-3 0 0.1e-3  -20
 		-Kz          Z  0.35e-3 0 0.01e-3 -20	
-#!	
-#!	# Diagonal 1 media properties
-#!	-prism
-#!		-perimeter POINTS
-#!			275000	815000 0
-#!			285000  822500 0
-#!			285000  820000 0
-#!			275000  812500 0
-#!		-bottom CONSTANT 0	
-#!		-Kx                       0.85e-3    # 240 ft/d
-#!		-Ky                       0.85e-3
-#!		-Kz                       0.28e-3	
-#!	-prism
-#!		-perimeter POINTS
-#!			275000	815000 0
-#!			285000  822500 0
-#!			285000  820000 0
-#!			275000  812500 0
-#!		-top    CONSTANT 0	
-#!		-Kx          Z  0.7e-3 0 0.1e-3 -20   # 200 to 30 ft/d
-#!		-Ky          Z  0.7e-3 0 0.1e-3 -20
-#!		-Kz          Z  0.23e-3 0 0.01e-3 -20
-#!
-#!	# Diagonal 2 media properties
-#!	-prism
-#!		-perimeter POINTS
-#!			275000	812500 0
-#!			285000  817500 0
-#!			285000  810000 0
-#!			275000  810000 0
-#!		-bottom CONSTANT 0	
-#!		-Kx                       0.25e-3    #70 ft/d
-#!		-Ky                       0.25e-3
-#!		-Kz                       0.025e-3	
-#!	-prism
-#!		-perimeter POINTS
-#!			275000	815000 0
-#!			285000  822500 0
-#!			285000  820000 0
-#!			275000  812500 0
-#!		-top    CONSTANT 0	
-#!		-Kx          Z  0.25e-3 0 0.1e-3 -20   # 70 to 30 ft/d
-#!		-Ky          Z  0.25e-3 0 0.1e-3 -20
-#!		-Kz          Z  0.25e-3 0 0.01e-3 -20
-#!
+
 	-prism
 		-perimeter SHAPE     map  ArcData/coast.shp 
-		#-top      arcraster map  ArcData/rastert_ls_elev1.txt
-		#-bottom   arcraster map  ArcData/rastert_bedrock1.txt
-		-top       arcraster map  ArcData/elevation-90.txt
+#		-top       arcraster map  ArcData/elevation-90.txt
 		-bottom    arcraster map  ArcData/bedrock-90.txt
 		# Parameters
 		-active 1
@@ -214,27 +137,12 @@ MEDIA
 		# Parameters
 		-active 0
 		
-	#-prism  # Lower hydraulic conductivity lake bottom
-	#	-perimeter  SHAPE   ArcData/SimplePonds.shp 
-	#	-top SHAPE    ArcData/SimpleBath.shp 10   # Elev_meter
-	#	#-bottom SHAPE ArcData/SimpleBath.shp 13  # Skin_4
-	#	-bottom CONSTANT  -6
-	#	
-	#	# Parameters
-	#	-Kx                       0.01e-3
-	#	-Ky                       0.01e-3
-	#	-Kz                       0.01e-3
-	#	-porosity                 .2
-	#	-specific_storage         .2
-	#	-long_dispersivity        1
-	#	-horizontal_dispersivity  1
-	#	-vertical_dispersivity    1
-		
+
 	-prism
 		-perimeter  SHAPE   map  ArcData/SimplePonds.shp 
 			
 		-bottom SHAPE       map  ArcData/SimpleBath.shp 10	 
-		
+	
 		 # Parameters
 		-Kx                       .1e-0
 		-Ky                       .1e-0
@@ -244,6 +152,22 @@ MEDIA
 		-long_dispersivity        10
 		-horizontal_dispersivity  10
 		-vertical_dispersivity    10
+		-active                   1
+		
+#	-prism
+#		-shell          1 1 1
+#		-perimeter  SHAPE   map  ArcData/SimplePonds.shp 
+#			
+#		-bottom SHAPE       map  ArcData/SimpleBath.shp 10	 
+#		
+#		 # Parameters
+#		-Kx                       0.1e-3
+#		-Ky                       0.1e-3
+#		-Kz                       0.1e-3
+#		-porosity                 .39
+#		-long_dispersivity        0.1
+#		-horizontal_dispersivity  0.1
+#		-vertical_dispersivity    0.1		
 		
 #LEAKY_BC
 #		
@@ -342,7 +266,7 @@ FLUX_BC
 	# Beds 13-16
 	-zone 279400 821575 0 279500 821675 50 map
 	-face Z	
-	-flux 
+	-flux
 		0      0
 		1936   0    
 		1941  -0.114
@@ -371,23 +295,29 @@ FLUX_BC
 	-associated_solution 
 		0      2
 
+#SPECIFIED_HEAD_BC
+#		
+#	-prism	
+#		-perimeter points map
+#			277189 814489 0
+#			282362 815267 0
+#			285000 815267 0
+#			285000 810000 0
+#			275000 810000 0
+#			275000 814489 0
+#		-top      constant map  0.5
+#		-bottom   constant map -0.5
+#		
+#		# Parameters
+#		-exterior   all
+#		-head 0 0
+#		-associated_solution 0 1
+
 SPECIFIED_HEAD_BC
-		
-	-prism	
-		-perimeter points map
-			277189 814489 0
-			282362 815267 0
-			285000 815267 0
-			285000 810000 0
-			275000 810000 0
-			275000 814489 0
-		-top      constant map  0.5
-		-bottom   constant map -0.5
-		
-		# Parameters
-		-exterior   all
-		-head 0 0
+	-box  	275000 815000 -0.5 285000 81500 0.5	
+		-head 0 0.3
 		-associated_solution 0 1
+
 	
 DRAIN 1 East Boundary Quashnet R
 	-coordinate_system map
@@ -624,13 +554,13 @@ DRAIN 5 West Boundary Coonamessett River
 CHEMISTRY_IC
 	-zone 275000 810000 -500 285000 830000 100 map
 		-solution            1
-	-prism
-		-perimeter  SHAPE   map  ArcData/SimplePonds.shp 
-		
-		-bottom     SHAPE   map  ArcData/SimpleBath.shp 10	 
-		
-		 # Parameters
-		-exchange            1
+#	-prism
+#		-perimeter  SHAPE   map  ArcData/SimplePonds.shp 
+#		
+#		-bottom     SHAPE   map  ArcData/SimpleBath.shp 10	 
+#		
+#		 # Parameters
+#		-exchange            1
 		
 PRINT_INITIAL
 	-boundary_conditions        false
@@ -641,9 +571,10 @@ PRINT_INITIAL
 	-force_chemistry_print      false
 	-HDF_chemistry              true
 	-HDF_heads                  true
+	-HDF_media                  true
 	-HDF_steady_flow_velocities true
 	-heads                      true
-	-media_properties           false
+	-media_properties           true
 	-solution_method            true
 	-steady_flow_velocities     false
 	-wells                      true
@@ -665,7 +596,7 @@ PRINT_FREQUENCY
 		-hdf_heads              end
 		-HDF_velocities         end 
 		-heads                  end 
-		-progress_statistics    1    year
+		-progress_statistics    1    step
 		-velocities             end
 		-wells                  end 
 		-xyz_chemistry          0
@@ -678,7 +609,8 @@ PRINT_FREQUENCY
 		-restart                10 yr
 TIME_CONTROL
 	-time_step
-		0 	1
-	-time_change 	1996
+		0 	.1
+	#-time_change 	1996
+	-time_change 	1936
 	-start_time	1935.9
 
