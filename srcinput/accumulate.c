@@ -714,7 +714,7 @@ zone_to_range(struct zone *zone_ptr)
 
 /* ---------------------------------------------------------------------- */
 struct index_range *
-zone_to_elt_range(struct zone *zone_ptr)
+zone_to_elt_range(struct zone *zone_ptr, const bool silent)
 	/* ---------------------------------------------------------------------- */
 {
 	struct index_range *range_ptr;
@@ -729,19 +729,19 @@ zone_to_elt_range(struct zone *zone_ptr)
 	}
 	if (coords_to_elt_range(zone_ptr->x1, zone_ptr->x2,
 							grid[0].elt_centroid, grid[0].count_coord - 1,
-							grid[0].min, grid[0].uniform, &i1, &i2) == ERROR)
+							grid[0].min, grid[0].uniform, &i1, &i2, silent) == ERROR)
 	{
 		return (NULL);
 	}
 	if (coords_to_elt_range(zone_ptr->y1, zone_ptr->y2,
 							grid[1].elt_centroid, grid[1].count_coord - 1,
-							grid[1].min, grid[1].uniform, &j1, &j2) == ERROR)
+							grid[1].min, grid[1].uniform, &j1, &j2, silent) == ERROR)
 	{
 		return (NULL);
 	}
 	if (coords_to_elt_range(zone_ptr->z1, zone_ptr->z2,
 							grid[2].elt_centroid, grid[2].count_coord - 1,
-							grid[2].min, grid[2].uniform, &k1, &k2) == ERROR)
+							grid[2].min, grid[2].uniform, &k1, &k2, silent) == ERROR)
 	{
 		return (NULL);
 	}
@@ -807,8 +807,8 @@ coords_to_range(double x1, double x2, double *coord, int count_coord,
 /* ---------------------------------------------------------------------- */
 int
 coords_to_elt_range(double x1, double x2, double *coord, int count_coord,
-					double eps, int uniform, int *i1, int *i2)
-						/* ---------------------------------------------------------------------- */
+					double eps, int uniform, int *i1, int *i2, const bool silent)
+/* ---------------------------------------------------------------------- */
 {
 	int i;
 	if (uniform == UNDEFINED)
@@ -829,13 +829,19 @@ coords_to_elt_range(double x1, double x2, double *coord, int count_coord,
 	}
 	if (i >= count_coord)
 	{
-		warning_msg("Zone is outside all element centroids.");
-		return (ERROR);
+		if (!silent)
+		{
+			warning_msg("Zone is outside all element centroids.");
+			return (ERROR);
+		}
 	}
 	if (x2 + eps < coord[i])
 	{
-		warning_msg("Zone does not contain centroids of any elements.");
-		return (ERROR);
+		if (!silent)
+		{
+			warning_msg("Zone does not contain centroids of any elements.");
+			return (ERROR);
+		}
 	}
 	for (; i < count_coord; i++)
 	{
@@ -2237,7 +2243,7 @@ setup_media(void)
 			if (!grid_elt_zones[i]->shell)
 			{
 				struct zone *zone_ptr =	grid_elt_zones[i]->polyh->Get_bounding_box();
-				range_ptr = zone_to_elt_range(zone_ptr);
+				range_ptr = zone_to_elt_range(zone_ptr, true);
 				if (range_ptr == NULL)
 				{
 					input_error++;
@@ -4537,17 +4543,20 @@ find_shell(Polyhedron *polyh, double *width, std::list<int> &list_of_elements)
 			Point max(x2, y2, z2);
 			zone z(min, max);
 			struct index_range *r_ptr;
-			r_ptr = zone_to_elt_range(&z);
-			std::list<int> more_elements;
-			range_to_list(r_ptr, more_elements);
-			if (more_elements.size() > 0)
+			r_ptr = zone_to_elt_range(&z, true);
+			if (r_ptr != NULL)
 			{
-				std::list<int>::iterator lit1 = more_elements.begin();
-				for (; lit1 != more_elements.end(); lit1++)
+				std::list<int> more_elements;
+				range_to_list(r_ptr, more_elements);
+				if (more_elements.size() > 0)
 				{
-					//if (cells[*lit].is_element /*&& cells[*lit].elt_active*/)
+					std::list<int>::iterator lit1 = more_elements.begin();
+					for (; lit1 != more_elements.end(); lit1++)
 					{
-						set_of_elements.insert(*lit1);
+						//if (cells[*lit].is_element /*&& cells[*lit].elt_active*/)
+						{
+							set_of_elements.insert(*lit1);
+						}
 					}
 				}
 			}

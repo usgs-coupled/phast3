@@ -15,7 +15,7 @@ int coord_to_cell(double x1, double *coord, int count_coord, int *i1);
 int coords_to_range(double x1, double x2, double *coord, int count_coord,
 					double eps, int uniform, int *i1, int *i2);
 int coords_to_elt_range(double x1, double x2, double *coord, int count_coord,
-						double eps, int uniform, int *i1, int *i2);
+						double eps, int uniform, int *i1, int *i2, const bool silent);
 int coord_to_cell(double x1, double *coord, int count_coord, int *i1);
 int distribute_property_to_cells(struct index_range *range_ptr,
 								 struct property *mask,
@@ -59,7 +59,7 @@ void n_to_ijk(int n, int &i, int &j, int &k);
 void neighbors(int n, std::vector < int >&stencil);
 void elt_neighbors(int n, std::vector < int >&stencil);
 struct index_range *zone_to_range(struct zone *zone_ptr);
-struct index_range *zone_to_elt_range(struct zone *zone_ptr);
+struct index_range *zone_to_elt_range(struct zone *zone_ptr, const bool silent);
 int int_compare(const void *ptr1, const void *ptr2);
 void range_to_list(struct index_range *range_ptr, std::list < int >&l);
 void range_plus_one(struct index_range *range_ptr);
