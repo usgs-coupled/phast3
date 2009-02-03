@@ -1145,6 +1145,19 @@ read_grid(void)
 				break;
 			}
 
+			if (grid[j].uniform != UNDEFINED)
+			{
+				input_error++;
+				if (grid[j].uniform == TRUE)
+				{
+					error_msg("Coordinate direction is defined uniform twice.", CONTINUE);
+				}
+				else
+				{
+					error_msg("Coordinate direction is defined uniform and nonuniform.", CONTINUE);
+				}
+				error_msg(line_save, CONTINUE);		
+			}
 			/* set uniform */
 			grid[j].uniform = TRUE;
 
@@ -1202,6 +1215,19 @@ read_grid(void)
 				error_msg(line_save, CONTINUE);
 				input_error++;
 				break;
+			}
+			if (grid[j].uniform != UNDEFINED)
+			{
+				input_error++;
+				if (grid[j].uniform == TRUE)
+				{
+					error_msg("Coordinate direction is defined uniform and nonuniform", CONTINUE);
+				}
+				else
+				{
+					error_msg("Coordinate direction is defined nonuniform twice.", CONTINUE);
+				}
+				error_msg(line_save, CONTINUE);		
 			}
 
 			/* set nonuniform */
