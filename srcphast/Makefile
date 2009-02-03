@@ -631,7 +631,7 @@ COMMON_FOBJS =	interpolate_mod.o print_control_mod.o rewi_mod.o \
 		errprt.o etom1.o etom2.o euslv.o formr.o gcgris.o hunt.o incidx.o\
 		indx_rewi_bc.o indx_rewi.o init1.o init2_1.o init2_2.o init2_3.o\
 		init2_post_ss.o init3.o ldchar.o ldchar_bc.o  ldci.o ldcir.o\
-		ldind.o ldipen.o ldmar1.o lsolv.o modules.o mtoijk.o\
+		ldind.o ldipen.o ldmar1.o lsolv.o media_hdf.o modules.o mtoijk.o\
 		nintrp.o openf.o phast.o phast_root.o \
 		prchar.o  prntar.o rbord.o\
 		read1.o read2.o read3.o reordr.o rfact.o rfactm.o\
