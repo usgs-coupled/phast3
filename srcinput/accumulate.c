@@ -43,17 +43,17 @@ accumulate(void)
 		// Set up transform
 		double scale_h = 1;
 		double scale_v = 1;
-		if (units.map_horizontal.defined == TRUE)
-		{
+		//if (units.map_horizontal.defined == TRUE)
+		//{
 			scale_h =
 				units.map_horizontal.input_to_si /
 				units.horizontal.input_to_si;
-		}
-		if (units.map_vertical.defined == TRUE)
-		{
+		//}
+		//if (units.map_vertical.defined == TRUE)
+		//{
 			scale_v =
 				units.map_vertical.input_to_si / units.vertical.input_to_si;
-		}
+		//}
 		map_to_grid =
 			new PHAST_Transform(grid_origin[0], grid_origin[1],
 								grid_origin[2], grid_angle, scale_h, scale_h,

@@ -1239,6 +1239,7 @@ read_grid(void)
 			{
 				break;
 			}
+			grid[j].count_coord = 0;
 			if (count_doubles > 0)
 			{
 				count = grid[j].count_coord;
