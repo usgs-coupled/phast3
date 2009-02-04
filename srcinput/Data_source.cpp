@@ -818,12 +818,7 @@ Data_source::Set_bounding_box(void)
 void
 Data_source::Set_points(std::vector < Point > &in_pts)
 {
-	this->pts.clear();
-	std::vector < Point >::iterator it;
-	for (it = in_pts.begin(); it != in_pts.end(); it++)
-	{
-		this->pts.push_back(*it);
-	}
+	this->pts = this->pts_user = in_pts;
 }
 double
 Data_source::Interpolate(const Point & p)
@@ -1146,7 +1141,7 @@ Data_source::Convert_coordinates(PHAST_Transform::COORDINATE_SYSTEM target,
 		if (this->coordinate_system == PHAST_Transform::GRID)
 		{
 			// Points
-			map2grid->Transform(ds->pts);
+			map2grid->Inverse_transform(ds->pts);
 			//this->Set_bounding_box();
 			ds->Set_bounding_box();
 			ds->Set_coordinate_system(PHAST_Transform::MAP);

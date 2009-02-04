@@ -47,6 +47,9 @@ Prism::Prism(Cube & c)
 	this->top.Set_coordinate_system(c.Get_coordinate_system());
 	this->bottom.Set_coordinate_system(c.Get_coordinate_system());
 
+	this->perimeter.Set_user_coordinate_system(c.Get_coordinate_system());
+	this->top.Set_user_coordinate_system(c.Get_coordinate_system());
+	this->bottom.Set_user_coordinate_system(c.Get_coordinate_system());
 
 	this->prism_dip = Point(0, 0, 1, 0);
 	zone_init(&this->box);
