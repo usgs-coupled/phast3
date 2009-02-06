@@ -4,12 +4,12 @@
 # </WPhast>
 # 
 
-SOLUTE_TRANSPORT false
-#SOLUTE_TRANSPORT true
+#SOLUTE_TRANSPORT false
+SOLUTE_TRANSPORT true
     -diffusivity  1e-009
     
-STEADY_FLOW true
-#STEADY_FLOW false
+#STEADY_FLOW true
+STEADY_FLOW false
 	-min		.1
 	-max		5
 	-growth_factor 	1.5
@@ -27,6 +27,8 @@ SOLUTION_METHOD
 	-maximum_iterations 500
 	-space_differencing 0
 	-time_differencing  1
+	#-space_differencing 0.5
+	#-time_differencing  0.5	
 	-cross_dispersion   false
 	-rebalance_fraction 0.5
 	-rebalance_by_cell  false
@@ -36,68 +38,57 @@ UNITS
 	-horizontal_grid                  m
 	-vertical_grid                    m
 	-head                             m
-	-hydraulic_conductivity           m/s
+	-hydraulic_conductivity           m/d
 	-specific_storage                 1/m
 	-dispersivity                     m
 	-flux                             m/d
-	-leaky_hydraulic_conductivity     m/s
+	-leaky_hydraulic_conductivity     m/d
 	-leaky_thickness                  m
 	-well_diameter                    m
 	-well_flow_rate                   m^3/s
-	-river_bed_hydraulic_conductivity m/s
+	-river_bed_hydraulic_conductivity m/d
 	-river_bed_thickness              m
-	-drain_hydraulic_conductivity     m/s
+	-drain_hydraulic_conductivity     m/d
 	-drain_thickness                  m
 	-drain_width                      m
 	-map_horizontal                   m
 	-map_vertical                     m
 
 GRID
-	##-uniform X 275000 285000 101
-	##-uniform Y 810000 830000 101
-	#-uniform X 277000  283500 66 # 100	6.5 km
-	#-uniform Y 814000  823000 91 # 100      9   km	
-	#-uniform Z -200 -20 37
-	#-overlay_uniform Z -10 25 36
 	
-	-uniform X 275000 285000 41
-	#-uniform Y 810000 830000 81
-	-uniform Y 815000 830000 81
-	
-	#-uniform X 0 10000 41
-	#-uniform Y 0 20000 81
-	#-uniform X 0 10000 21
-	#-uniform Y 0 20000 41	
-	
-	#-uniform X 277000  283500 27 # 250	6.5 km
-	#-uniform Y 814000  823000 37 # 250      9   km
-	-uniform Z -200 -20 10
-	-overlay_uniform Z -10 22 17
-	
-#	-overlay X 279000 281000  41 # 50 m
-#	-overlay Y 820000 821750  36 # 50 m
-#	-overlay_uniform Z -10 18 29 # 1 m
-	
-#	-uniform X 275000 285000  201 # 50 m
-#	-uniform Y 818000 822500  91  # 50 m
-	-overlay_uniform Z -10 22 33 # 1 m	
-
-	#-uniform X 275000 285000 26
-	#-uniform Y 810000 830000 26
-	#-uniform Z -200 -20 5
-	#-overlay_uniform Z -10 25 9	
-	#-overlay_uniform X 279200 280200 40
+#	-uniform X 277000  283500 27 # 250	6.5 km
+#	-uniform Y 815000  823000 33 # 250      9   km
+#	-uniform Z -200 -20 10
+#	-overlay_uniform X 278750 280500 36
+#	-overlay_uniform Y 817000 822000 91
+#	-overlay_uniform Z -10 22 33 # 1 m	
 	
 	-snap X 0.001
 	-snap Y 0.001
 	-snap Z 0.001
 	-chemistry_dimensions XYZ
 	-print_orientation XY
-	#-grid_origin   285000  830000 0
-	#-grid_angle    180
-	
-	#-grid_origin   275000  810000 0
-	#-grid_angle    0
+
+
+	-uniform X	277000    283500 27
+	-uniform Y	815000	  823000 33
+	-nonuniform Z
+		-200    -194.696    -189.496    -184.398    -179.4
+		-174.5    -169.697    -164.987    -160.37    -155.843
+		-151.405    -147.054    -142.788    -138.606    -134.506
+		-130.486    -126.545    -122.682    -118.894    -115.18
+		-111.54    -107.97    -104.471    -101.04    -97.6767
+		-94.3792    -91.1463    -87.9768    -84.8695    -81.8231
+		-78.8364    -75.9083    -73.0376    -70.2232    -67.464
+		-64.7588    -62.1067    -59.5067    -56.9576    -54.4585
+		-52.0083    -49.6063    -47.2513    -44.9425    -42.679
+		-40.4598    -38.2842    -36.1512    -34.0601    -32.0099
+		-30    -28    -26    -24    -22
+		-20    -18    -16    -14    -12
+		-10    -8    -6    -4    -2
+		0    2    4    6    8
+		10    12    14    16    18
+		20    22	
 
 HEAD_IC
 	-zone 275000 810000 -500 285000 830000 100 map
@@ -109,9 +100,9 @@ MEDIA
 
 	-zone 275000 810000 -500 285000 830000 100 map
 		-active                   0
-		-Kx                       1.06e-3
-		-Ky                       1.06e-3
-		-Kz                       0.30e-3
+		-Kx                       100
+		-Ky                       100
+		-Kz                       30
 		-porosity                 0.39
 		-specific_storage         0.39
 		-long_dispersivity        1
@@ -121,9 +112,13 @@ MEDIA
 		
 	
 	-zone 275000 810000 -200 285000 830000 100 map
-		-Kx          Z  1.06e-3 0 0.1e-3  -20   # 300 to 30 ft/d
-		-Ky          Z  1.06e-3 0 0.1e-3  -20
-		-Kz          Z  0.35e-3 0 0.01e-3 -20	
+		#-Kx          Z  1.06e-3 0 0.1e-3  -20   # 300 to 30 ft/d
+		#-Ky          Z  1.06e-3 0 0.1e-3  -20
+		#-Kz          Z  0.35e-3 0 0.01e-3 -20	
+		-Kx 	xyz map capecod.horizontalK
+		-Ky 	xyz map capecod.horizontalK
+		-Kz	xyz map capecod.verticalK
+		
 
 	-prism
 		-perimeter SHAPE     map  ArcData/coast.shp 
@@ -144,15 +139,16 @@ MEDIA
 		-bottom SHAPE       map  ArcData/SimpleBath.shp 10	 
 	
 		 # Parameters
-		-Kx                       .1e-0
-		-Ky                       .1e-0
-		-Kz                       .1e-0
+		-Kx                       1e4
+		-Ky                       1e4
+		-Kz                       1e4
 		-porosity                 1
 		-specific_storage         1
-		-long_dispersivity        10
-		-horizontal_dispersivity  10
-		-vertical_dispersivity    10
+		-long_dispersivity        1
+		-horizontal_dispersivity  1
+		-vertical_dispersivity    1
 		-active                   1
+		
 		
 #	-prism
 #		-shell          1 1 1
@@ -312,12 +308,15 @@ FLUX_BC
 #		-exterior   all
 #		-head 0 0
 #		-associated_solution 0 1
-
 SPECIFIED_HEAD_BC
-	-box  	275000 815000 -0.5 285000 81500 0.5	
+	-box  	275000 815000 -0.5 285000 815000 0.5	
 		-head 0 0.3
 		-associated_solution 0 1
-
+		
+SPECIFIED_HEAD_BC
+	-box  	275000 823000 -200 285000 823000 50	
+		-head 0 16.764
+		-associated_solution 0 1
 	
 DRAIN 1 East Boundary Quashnet R
 	-coordinate_system map
@@ -325,7 +324,7 @@ DRAIN 1 East Boundary Quashnet R
 		-z     		10.668	
 		-width 		100
 		-thickness 	1
-		-bed_k     	1e-3
+		-bed_k     	100
 
 	-point 		282947.779  820785.350
 		-z     		9.144	
@@ -343,7 +342,7 @@ DRAIN 1 East Boundary Quashnet R
 		-z     		0
 		-width 		100
 		-thickness 	1
-		-bed_k     	1e-3
+		-bed_k     	100
 		
 
 #River 1 East Boundary Quashnet R
@@ -352,7 +351,7 @@ DRAIN 1 East Boundary Quashnet R
 #		-depth          0.1
 #		-width 		100
 #		-thickness 	1
-#		-bed_k     	1e-3
+#		-bed_k     	100
 #
 #	-point 		282947.779  820785.350
 #		-head     	0     		9.144	
@@ -371,7 +370,7 @@ DRAIN 1 East Boundary Quashnet R
 #		-depth          0.1		
 #		-width 		100
 #		-thickness 	1
-#		-bed_k     	1e-3
+#		-bed_k     	100
 
 DRAIN 2 Childs River, Johns Pond drain
 	-coordinate_system map
@@ -379,14 +378,14 @@ DRAIN 2 Childs River, Johns Pond drain
 	#	-z     		10.668
 	#	-width 		20
 	#	-thickness 	1
-	#	-bed_k     	1e-3
+	#	-bed_k     	100
 	#-point 		281625.460  818262.095
 	#	-z     		9.144
 	-point 		281507.750  817814.795
 		-z  		7.62
 		-width 		20
 		-thickness 	1
-		-bed_k     	1e-3
+		-bed_k     	100
 	-point 		281342.955  817343.954
 		-z     		6.096	
 	-point 		281272.329  816543.523
@@ -399,7 +398,7 @@ DRAIN 2 Childs River, Johns Pond drain
 		-z     		0
 		-width 		20
 		-thickness 	1
-		-bed_k 		1e-3
+		-bed_k 		100
 		
 #RIVER 2 Childs River, Johns Pond drain
 #	-point 		281507.750  817814.795
@@ -407,7 +406,7 @@ DRAIN 2 Childs River, Johns Pond drain
 #		-depth 0.1
 #		-width 		20
 #		-thickness 	1
-#		-bed_k     	1e-3
+#		-bed_k     	100
 #	-point 		281342.955  817343.954
 #		-head 0     		6.096	
 #	-point 		281272.329  816543.523
@@ -421,7 +420,7 @@ DRAIN 2 Childs River, Johns Pond drain
 #		-depth 0.1		
 #		-width 		20
 #		-thickness 	1
-#		-bed_k 		1e-3
+#		-bed_k 		100
 	
 #DRAIN 3 Ashumet Drain	
 
@@ -429,7 +428,7 @@ DRAIN 2 Childs River, Johns Pond drain
 	#	-z     		12
 	#	-width 		100
 	#	-thickness 	1
-	#	-bed_k     	1
+	#	-bed_k     	100
 	#-point 		279306.457  816487.410
 	#	-z     		8		
 	#-point 		279188.819  815709.191
@@ -438,7 +437,7 @@ DRAIN 2 Childs River, Johns Pond drain
 	#	-z     		0
 	#	-width 		100
 	#	-thickness 	1
-	#	-bed_k     	1		
+	#	-bed_k     	100		
 		
 		
 DRAIN 4 Backus River (Cranberry bogs)
@@ -447,14 +446,14 @@ DRAIN 4 Backus River (Cranberry bogs)
 	#	-z     		10.668
 	#	-width 		20
 	#	-thickness 	1
-	#	-bed_k     	1e-3
+	#	-bed_k     	100
 	#-point 		278867.821  817807.277
 	#	-z     		9.144		
 	-point 		278718.295  817425.830
 		-z     		7.62  # 25 ft
 		-width 		20
 		-thickness 	1
-		-bed_k     	1e-3		
+		-bed_k     	100		
 	-point 		278404.615  816798.470
 		-z     		6.096	
 	-point 		278260.845  816171.110
@@ -467,7 +466,7 @@ DRAIN 4 Backus River (Cranberry bogs)
 		-z     		0
 		-width 		20
 		-thickness 	1
-		-bed_k 		1e-3		
+		-bed_k 		100		
 	
 #River 4 Backus River (Cranberry bogs)
 #	
@@ -476,7 +475,7 @@ DRAIN 4 Backus River (Cranberry bogs)
 #		-depth .1
 #		-width 		20
 #		-thickness 	1
-#		-bed_k     	1e-3		
+#		-bed_k     	100		
 #	-point 		278404.615  816798.470
 #		-head     0		6.096	
 #	-point 		278260.845  816171.110
@@ -490,7 +489,7 @@ DRAIN 4 Backus River (Cranberry bogs)
 #		-depth .1
 #		-width 		20
 #		-thickness 	1
-#		-bed_k 		1e-3	
+#		-bed_k 		100	
 			
 		
 
@@ -500,12 +499,12 @@ DRAIN 5 West Boundary Coonamessett River
 		-z     		10.668
 		-width 		100
 		-thickness 	1
-		-bed_k     	1
+		-bed_k     	100
 	-point 		277224.725  818453.819
 		-z     		9.144
 		-width 		100
 		-thickness 	1
-		-bed_k     	1e-3		
+		-bed_k     	100		
 	-point 		277381.640  817842.120
 		-z     		7.62
 	-point 		277365.600  817312.800
@@ -520,7 +519,7 @@ DRAIN 5 West Boundary Coonamessett River
 		-z     		0
 		-width 		100
 		-thickness 	1
-		-bed_k     	1e-3		
+		-bed_k     	100		
 	
 #RIVER 5 West Boundary Coonamessett River
 #	-point 		277330.574  819053.628
@@ -528,12 +527,12 @@ DRAIN 5 West Boundary Coonamessett River
 #		-depth  0.1
 #		-width 		100
 #		-thickness 	1
-#		-bed_k     	1
+#		-bed_k     	100
 #	-point 		277224.725  818453.819
 #		-head 0     		9.144
 #		-width 		100
 #		-thickness 	1
-#		-bed_k     	1e-3		
+#		-bed_k     	100		
 #	-point 		277381.640  817842.120
 #		-head 0     		7.62
 #	-point 		277365.600  817312.800
@@ -549,18 +548,24 @@ DRAIN 5 West Boundary Coonamessett River
 #		-depth 0.1
 #		-width 		100
 #		-thickness 	1
-#		-bed_k     	1e-3	
+#		-bed_k     	100	
 	
 CHEMISTRY_IC
 	-zone 275000 810000 -500 285000 830000 100 map
 		-solution            1
+#		-solution restart h:/capecod.restart.gz
 #	-prism
 #		-perimeter  SHAPE   map  ArcData/SimplePonds.shp 
 #		
 #		-bottom     SHAPE   map  ArcData/SimpleBath.shp 10	 
 #		
 #		 # Parameters
-#		-exchange            1
+#		-exchange     1
+
+ZONE_FLOWS 1 Backus river
+	-box 277750 815000 -200 27900 818000 50
+	
+
 		
 PRINT_INITIAL
 	-boundary_conditions        false
@@ -593,7 +598,7 @@ PRINT_FREQUENCY
 		-flow_balance           end 
 		-force_chemistry_print  0
 		-HDF_chemistry          1    year 
-		-hdf_heads              end
+		-HDF_heads              end
 		-HDF_velocities         end 
 		-heads                  end 
 		-progress_statistics    1    step
@@ -609,8 +614,7 @@ PRINT_FREQUENCY
 		-restart                10 yr
 TIME_CONTROL
 	-time_step
-		0 	.1
-	#-time_change 	1996
-	-time_change 	1936
+		0 	1
+	-time_change 	1937
 	-start_time	1935.9
 
