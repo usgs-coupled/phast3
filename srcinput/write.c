@@ -2984,6 +2984,7 @@ write_zone_budget(void)
 					if (cells[n].specified)
 					{
 						specified_vector.push_back(n);
+						continue;
 					}
 
 					// leaky
@@ -3051,7 +3052,7 @@ write_zone_budget(void)
 					}
 
 					// drain
-					if (cells[n].drain_polygons->size() > 0)
+					if (cells[n].drain_segments->size() > 0)
 					{
 						drain_vector.push_back(n);
 
