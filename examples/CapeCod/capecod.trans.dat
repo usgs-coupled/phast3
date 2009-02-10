@@ -6,7 +6,9 @@
 # </WPhast>
 # 
 SOLUTE_TRANSPORT false
+#SOLUTE_TRANSPORT true
 STEADY_FLOW true
+#STEADY_FLOW false
 	-head_tolerance 0.001
 	-flow_balance_tolerance 0.001
 	-minimum_time_step 0.1
@@ -76,11 +78,41 @@ MEDIA
 		-long_dispersivity        1
 		-horizontal_dispersivity  1
 		-vertical_dispersivity    1
+		
+		
+		
+	box	275000	810000	10	285000	830000	25
+		Kx	Y	106.68	822500	36.576	815000
+		Ky	Y	106.68	822500	36.576	815000
+		Kz	Y	10.668	822500	3.6576	815000
+
+	box	275000	810000	-10	285000	830000	10
+		Kx	Y	88.392	822500	30.48	815000
+		Ky	Y	88.392	822500	30.48	815000
+		Kz	Y	8.8392	822500	3.048	815000
+
+	box	275000	810000	-30	285000	830000	-10
+		Kx	Y	73.152	822500	22.86	815000
+		Ky	Y	73.152	822500	22.86	815000
+		Kz	Y	7.3152	822500	2.286	815000
+
+	box	275000	810000	-60	285000	830000	-30
+		Kx	Y	9.144	822500	4.572	815000
+		Ky	Y	9.144	822500	4.572	815000
+		Kz	Y	0.9144	822500	0.4572	815000
+
+	box	275000	810000	-200	285000	830000	-60
+		Kx	Y	3.048	822500	1.524	815000
+		Ky	Y	3.048	822500	1.524	815000
+		Kz	Y	0.3048	822500	0.1524	815000
+		
 ##TODO add shell output
 	-zone 275000 810000 -200 285000 830000 100 MAP
 		-Kx                       xyz map capecod.horizontalK
 		-Ky                       xyz map capecod.horizontalK
 		-Kz                       xyz map capecod.verticalK
+
+
 
 
 
@@ -491,5 +523,5 @@ TIME_CONTROL
 	-time_step
 		0 1
 	-time_change
-		1937
+		1996
 	-start_time 1935.9
