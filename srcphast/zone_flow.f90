@@ -22,7 +22,7 @@ SUBROUTINE zone_flow
        sxxs, syys, szzs
   REAL(KIND=kdp) :: dxm, dxp, dym, dyp, dzm, dzp, wtx, wty, wtz
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: zone_flow.f90,v 1.6 2008/10/21 17:52:28 klkipp Exp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: zone_flow.f90,v 1.7 2009/02/10 20:33:38 klkipp Exp klkipp $'
   !     ------------------------------------------------------------------
   ufdt1 = fdtmth
   ! ... Update conductance coefficients, mass flow rates, velocities
@@ -240,7 +240,7 @@ SUBROUTINE zone_flow
               IF (syys(iis) > 0.) THEN
                  qszonp_int(iis,izn) = qszonp_int(iis,izn) + syys(iis)
                  qszonp(iis,izn) = qszonp(iis,izn) + syys(iis)
-              ELSEIF (sxxs(iis) < 0.) THEN
+              ELSEIF (syys(iis) < 0.) THEN
                  qszoni_int(iis,izn) = qszoni_int(iis,izn) - syys(iis)
                  qszoni(iis,izn) = qszoni(iis,izn) - syys(iis)
               END IF
@@ -259,7 +259,6 @@ SUBROUTINE zone_flow
                  qszoni(iis,izn) = qszoni(iis,izn) - ftyzdp(iis)
               END IF
            END DO
-
         ELSEIF(zone_ib(izn)%face_indx(ifc) == 2 .AND. .NOT.cylind) THEN
            ! ... Y-direction conductances, mass flow rates
            ! ...  dispersive flux terms and advective flux terms 
@@ -444,7 +443,6 @@ SUBROUTINE zone_flow
            END DO
         END IF
      END DO
-
      ! ... Add in the boundary condition flow rates
      IF(nsbc > 0) THEN
         ! ... Specified head b.c. cell boundary flow rates

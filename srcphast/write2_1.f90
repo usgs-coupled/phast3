@@ -940,7 +940,6 @@ SUBROUTINE write2_1
      WRITE(fuzf,2036) 'Index Numbers for Flow Zones'
      CALL prntar(2,aprnt1,lprnt1,fuzf,cnv,10,000)
   END IF
-
   ! ... Write zone definition data to file 'FUPZON' for plotting
 !!$  IF(pltzon) THEN
 !!$     WRITE(fupzon,5003) npmz
