@@ -2945,7 +2945,7 @@ write_zone_budget(void)
 						continue;
 					budget_map[n] = true;
 					std::vector < int >stencil;
-					neighbors(n, stencil);
+					neighbors_active(n, stencil);
 
 					// Cell face flows
 					// x-

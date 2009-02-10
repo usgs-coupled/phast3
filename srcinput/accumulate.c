@@ -579,6 +579,74 @@ neighbors(int n, std::vector < int >&stencil)
 }
 /* ---------------------------------------------------------------------- */
 void
+neighbors_active(int n, std::vector < int >&stencil)
+/* ---------------------------------------------------------------------- */
+{
+	assert(n >= 0 && n < count_cells);
+	stencil.clear();
+
+	// stencil has 7 elements, index numbers for x-, x+, y-, y+, z-, z+, top of column
+	int i, j, k, m;
+	for (i = 0; i < 7; i++)
+	{
+		stencil.push_back(-1);
+	}
+	n_to_ijk(n, i, j, k);
+	if (i > 0)
+	{
+		m = ijk_to_n(i - 1, j, k);
+		if (cells[m].cell_active)
+		{
+			stencil[0] = m;
+		}
+	}
+	if (i < nx - 1)
+	{
+		m = ijk_to_n(i + 1, j, k);
+		if (cells[m].cell_active)
+		{
+			stencil[1] = m;
+		}
+	}
+	if (j > 0)
+	{
+		m = ijk_to_n(i, j - 1, k);
+		if (cells[m].cell_active)
+		{
+			stencil[2] = m;
+		}
+	}
+	if (j < ny - 1)
+	{
+		m = ijk_to_n(i, j + 1, k);
+		if (cells[m].cell_active)
+		{
+			stencil[3] = m;
+		}
+	}
+	if (k > 0)
+	{
+		m = ijk_to_n(i, j, k - 1);
+		if (cells[m].cell_active)
+		{
+			stencil[4] = m;
+		}
+	}
+	if (k < nz - 1)
+	{
+		m = ijk_to_n(i, j, k + 1);
+		if (cells[m].cell_active)
+		{
+			stencil[5] = m;
+		}
+	}
+	stencil[6] = ijk_to_n(i, j, nz - 1);
+
+
+	return;
+}
+/* ---------------------------------------------------------------------- */
+void
 elt_neighbors(int n, std::vector < int >&stencil)
 /* ---------------------------------------------------------------------- */
 {
@@ -4470,7 +4538,7 @@ find_shell(Polyhedron *polyh, double *width, std::list<int> &list_of_elements)
 				}
 			}
 
-			// remove if all neighbors are inactive or within zone
+			// keep if a neighbor is out of zone
 			if (ii < 6)
 			{
 				set_of_exterior_cells.insert(*sit);
@@ -4478,6 +4546,7 @@ find_shell(Polyhedron *polyh, double *width, std::list<int> &list_of_elements)
 		}
 	}
 	else
+    // currently always chooses exterior shell
 	{
 		// generate exterior shell
 		for ( ; sit != set_of_cells.end(); sit++)
