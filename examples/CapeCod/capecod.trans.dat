@@ -6,9 +6,9 @@
 # </WPhast>
 # 
 SOLUTE_TRANSPORT false
-#SOLUTE_TRANSPORT true
+SOLUTE_TRANSPORT true
 STEADY_FLOW true
-#STEADY_FLOW false
+STEADY_FLOW false
 	-head_tolerance 0.001
 	-flow_balance_tolerance 0.001
 	-minimum_time_step 0.1
@@ -148,6 +148,16 @@ MEDIA
 		-long_dispersivity        1
 		-horizontal_dispersivity  1
 		-vertical_dispersivity    1
+		
+	#-prism
+	#	-shell
+	#	-top       CONSTANT   GRID 50
+	#	-bottom    SHAPE      MAP .\ArcData/SimpleBath.shp 10
+	#	-perimeter SHAPE      MAP .\ArcData/SimplePonds.shp
+	#	-Kx                       30
+	#	-Ky                       30
+	#	-Kz                       .3
+		
 ##TODO add shell output
 
 FLUX_BC
@@ -297,9 +307,7 @@ SPECIFIED_HEAD_BC
 			0	0
 		-associated_solution
 			0	1
-HEAD_IC
-	-zone 275000 810000 -200 285000 830000 20 GRID
-		-head                     0.837792915118
+
 HEAD_IC
 	-prism
 		-top       CONSTANT   MAP 100
@@ -311,13 +319,14 @@ HEAD_IC
 			275000 830000 100
 			end_points
 		-head                     xyz map capecod.head.dat.save
+		#-head 15
 CHEMISTRY_IC
 	-zone 275000 810000 -200 285000 830000 20 GRID
 		-solution            1
 DRAIN 1 East Boundary Quashnet R
 	-point 282835.491 821234.501
-		-width                       100
-		-bed_hydraulic_conductivity  100
+		-width                       20
+		-bed_hydraulic_conductivity  70
 		-bed_thickness               1
 		-z                           10.668
 	-point 282947.779 820785.35
@@ -333,14 +342,14 @@ DRAIN 1 East Boundary Quashnet R
 	-point 282915.44 816494.76
 		-z                           1.524
 	-point 282209.68 814714.32
-		-width                       100
-		-bed_hydraulic_conductivity  100
+		-width                       20
+		-bed_hydraulic_conductivity  70
 		-bed_thickness               1
 		-z                           0
 DRAIN 2 Childs River, Johns Pond drain
 	-point 281507.75 817814.795
 		-width                       20
-		-bed_hydraulic_conductivity  100
+		-bed_hydraulic_conductivity  70
 		-bed_thickness               1
 		-z                           7.62
 	-point 281342.955 817343.954
@@ -353,13 +362,13 @@ DRAIN 2 Childs River, Johns Pond drain
 		-z                           1.524
 	-point 280884.585 814893.052
 		-width                       20
-		-bed_hydraulic_conductivity  100
+		-bed_hydraulic_conductivity  70
 		-bed_thickness               1
 		-z                           0
 DRAIN 4 Backus River (Cranberry bogs)
 	-point 278718.295 817425.83
 		-width                       20
-		-bed_hydraulic_conductivity  100
+		-bed_hydraulic_conductivity  70
 		-bed_thickness               1
 		-z                           7.62
 	-point 278404.615 816798.47
@@ -372,18 +381,18 @@ DRAIN 4 Backus River (Cranberry bogs)
 		-z                           1.524
 	-point 278077.865 814393.59
 		-width                       20
-		-bed_hydraulic_conductivity  100
+		-bed_hydraulic_conductivity  70
 		-bed_thickness               1
 		-z                           0
 DRAIN 5 West Boundary Coonamessett River
 	-point 277330.574 819053.628
-		-width                       100
-		-bed_hydraulic_conductivity  100
+		-width                       20
+		-bed_hydraulic_conductivity  10
 		-bed_thickness               1
 		-z                           10.668
 	-point 277224.725 818453.819
-		-width                       100
-		-bed_hydraulic_conductivity  100
+		-width                       20
+		-bed_hydraulic_conductivity  70
 		-bed_thickness               1
 		-z                           9.144
 	-point 277381.64 817842.12
@@ -397,8 +406,8 @@ DRAIN 5 West Boundary Coonamessett River
 	-point 277301.44 814730.36
 		-z                           1.524
 	-point 277260.008 814502.138
-		-width                       100
-		-bed_hydraulic_conductivity  100
+		-width                       20
+		-bed_hydraulic_conductivity  70
 		-bed_thickness               1
 		-z                           0
 
@@ -521,7 +530,7 @@ PRINT_FREQUENCY
 		-boundary_conditions    false
 TIME_CONTROL
 	-time_step
-		0 1
+		0 .5
 	-time_change
 		1996
 	-start_time 1935.9
