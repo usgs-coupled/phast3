@@ -217,6 +217,7 @@ bool Data_source::Read(std::istream & lines, bool read_num)
 		this->source_type_user = Data_source::POINTS;
 		{
 			this->columns = Read_points(lines, this->pts);
+			this->pts_user = this->pts;
 
 			// for prism set v = z
 			if (this->columns < 4)
