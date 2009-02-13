@@ -661,7 +661,7 @@ initialize(void)
 	print_input_hdf_head = TRUE;
 	print_input_hdf_ss_vel = TRUE;
 	print_input_hdf_ss_vel_defined = FALSE;
-	print_input_hdf_media = FALSE;
+	print_input_hdf_media = TRUE;
 	print_input_head = TRUE;
 	print_input_media = FALSE;
 	print_input_method = TRUE;
