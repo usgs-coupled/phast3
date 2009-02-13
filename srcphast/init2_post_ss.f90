@@ -14,7 +14,7 @@ SUBROUTINE init2_post_ss
   IMPLICIT NONE
   REAL(KIND=kdp) :: viscos  
   REAL(KIND=kdp) :: time_phreeqc, u0, u1, uc, ut
-  INTEGER :: imod, iis, iwel, k, l, m, nr, nsa
+  INTEGER :: imod, iis, iwel, k, l, m, mt, nr, nsa
 !!$  LOGICAL :: erflg
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
@@ -76,7 +76,7 @@ SUBROUTINE init2_post_ss
   ! ... Calculate initial density, viscosity, and enthalpy distributions
   ut = t0
   uc = w0  
-  DO 780 m = 1, nxyz  
+  DO  m = 1, nxyz  
      IF(ibc(m) == - 1 .OR. frac(m) <= 0._kdp) THEN
         ! dry cell or excluded cell values
         den(m) = 0._kdp
@@ -107,7 +107,16 @@ SUBROUTINE init2_post_ss
         k = (m - imod)/nxy + MIN(1,imod)  
         hdprnt(m) = z(k) + p(m)/(den(m)*gz)  
      ENDIF
-780 END DO
+  END DO
+  IF(fresur) THEN
+     ! ... Calculate water-table elevation
+     DO mt=1,nxy
+        m = mfsbc(mt)
+        IF (m > 0) THEN
+           wt_elev(mt) = z_node(m) + p(m)/(den0*gz)
+        END IF
+     END DO
+  END IF
   ! ... Reinitialize accumulation arrays and time counting and summation
   ! ...      variables
   !  time = 0._kdp

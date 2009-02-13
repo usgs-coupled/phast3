@@ -61,8 +61,6 @@ SUBROUTINE terminate_phast(mpi_myself)
                 ! x, y, z, head
                 DO m=1,nxyz
                     IF(ibc(m) /= -1) THEN
-                        imod = MOD(m,nxy)
-                        k = (m-imod)/nxy + MIN(1,imod)
                         write(fuich,"(4e20.12)") x_node(m), y_node(m), z_node(m), z_node(m)+p(m)/(den0*gz)
                     ENDIF
                 END DO

@@ -44,7 +44,7 @@ SUBROUTINE write2_1
   INTEGER :: ipmz, mele, nxele, nxyele, nele
   INTEGER, DIMENSION(nwel*nz) :: indxprint
   ! ... Set the unit numbers for node point output
-  INTEGER, DIMENSION(12), PARAMETER :: fu =(/16,21,22,23,26,27,0,0,0,0,0,0/)
+  INTEGER, DIMENSION(12), PARAMETER :: fu =(/16,21,22,23,26,27,36,38,0,0,0,0/)
   INTEGER :: nr
   REAL(KIND=kdp), PARAMETER :: cnv=1._kdp, one=1._kdp
   REAL(KIND=kdp) :: ph
@@ -149,7 +149,7 @@ SUBROUTINE write2_1
   WRITE(fulp,2004) '***  Static Data ***'
 2004 FORMAT(//tr30,a)
   ! ... Spatial mesh information
-  DO  ifu=1,6
+  DO  ifu=1,8
      IF(.NOT.cylind) THEN
         WRITE(fu(ifu),2005) rxlbl//'-Direction Node Coordinates    (',TRIM(unitl),')'
 2005    FORMAT(//tr30,4A)

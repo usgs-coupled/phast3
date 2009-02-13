@@ -13,7 +13,7 @@ SUBROUTINE write5
   USE mct
   USE mcv
   USE mcw
-  USE mg2, ONLY: hdprnt
+  USE mg2, ONLY: hdprnt, wt_elev
   USE print_control_mod
   IMPLICIT NONE
   INCLUDE 'ifwr.inc'
@@ -150,15 +150,22 @@ SUBROUTINE write5
 2009    FORMAT(/tr30,3A/tr35,a,1PG10.2,tr2,5A)
         CALL prntar(2,hdprnt,lprnt1,fup,cnvli,ifmt,000)
         IF(fresur) THEN
-           DO  m=1,nxyz
-              lprnt2(m)=-1
-           END DO
+           lprnt2 = -1
+           lprnt3 = -1
            DO  mt=1,nxy
-              mfs=mfsbc(mt)
-              IF(mfs /= 0) lprnt2(mfs)=1
+              mfs = mfsbc(mt)
+              IF(mfs /= 0) THEN
+                 lprnt2(mfs) = 1
+                 lprnt3(mt) = 1
+                 aprnt1(mt) = wt_elev(mt)
+              END IF
            END DO
            WRITE(fup,2008) 'Fraction of cell that is saturated  (-)'
            CALL prntar(2,frac,lprnt2,fup,cnv,14,000)
+           WRITE(fuwt,2001)  '*** Output at End of Time Step No. ', itime,' ***'
+           WRITE(fuwt,2002) 'Time '//dots,cnvtmi*time,'('//TRIM(unittm)//')'
+           WRITE(fuwt,2008) 'Water-Table Elevation  ('//TRIM(unitl)//')'
+           CALL prntar(2,aprnt1,lprnt3,fuwt,cnvli,ifmt,000)
         END IF
         ntprp = ntprp+1
      ENDIF
@@ -485,27 +492,27 @@ SUBROUTINE write5
    IF(przf_tsv) THEN  
      ! ... Zonal flow rates to tab separated file, fuzf_tsv
      DO izn=1,num_flo_zones
-        WRITE(fuzf_tsv,2502) cnvtmi*time,achar(9),izn,achar(9),'Water',achar(9),  &
-             cnvmfi*qfzoni(izn),achar(9),cnvmfi*qfzonp(izn),achar(9),  &
-             cnvmfi*qfzoni_int(izn),achar(9),cnvmfi*qfzonp_int(izn),achar(9),  &
-             cnvmfi*qfzoni_sbc(izn),achar(9),cnvmfi*qfzonp_sbc(izn),achar(9),  &
-             cnvmfi*qfzoni_fbc(izn),achar(9),cnvmfi*qfzonp_fbc(izn),achar(9),  &
-             cnvmfi*qfzoni_lbc(izn),achar(9),cnvmfi*qfzonp_lbc(izn),achar(9),  &
-             cnvmfi*qfzoni_rbc(izn),achar(9),cnvmfi*qfzonp_rbc(izn),achar(9),  &
-             cnvmfi*qfzoni_dbc(izn),achar(9),cnvmfi*qfzonp_dbc(izn),achar(9),  &
-             cnvmfi*qfzoni_wel(izn),achar(9),cnvmfi*qfzonp_wel(izn),achar(9)
+        WRITE(fuzf_tsv,2502) cnvtmi*time,ACHAR(9),izn,ACHAR(9),'Water',ACHAR(9),  &
+             cnvmfi*qfzoni(izn),ACHAR(9),cnvmfi*qfzonp(izn),ACHAR(9),  &
+             cnvmfi*qfzoni_int(izn),ACHAR(9),cnvmfi*qfzonp_int(izn),ACHAR(9),  &
+             cnvmfi*qfzoni_sbc(izn),ACHAR(9),cnvmfi*qfzonp_sbc(izn),ACHAR(9),  &
+             cnvmfi*qfzoni_fbc(izn),ACHAR(9),cnvmfi*qfzonp_fbc(izn),ACHAR(9),  &
+             cnvmfi*qfzoni_lbc(izn),ACHAR(9),cnvmfi*qfzonp_lbc(izn),ACHAR(9),  &
+             cnvmfi*qfzoni_rbc(izn),ACHAR(9),cnvmfi*qfzonp_rbc(izn),ACHAR(9),  &
+             cnvmfi*qfzoni_dbc(izn),ACHAR(9),cnvmfi*qfzonp_dbc(izn),ACHAR(9),  &
+             cnvmfi*qfzoni_wel(izn),ACHAR(9),cnvmfi*qfzonp_wel(izn),ACHAR(9)
 2502    FORMAT(tr1,1pg13.6,a,i3,a,a,a,16(1pg14.7,a))
         IF (solute) THEN
            DO  is=1,ns-1                             ! ... No printout of charge flows
-              WRITE(fuzf_tsv,2502) cnvtmi*time,achar(9),izn,achar(9),comp_name(is),achar(9),  &
-             cnvmfi*qszoni(is,izn),achar(9),cnvmfi*qszonp(is,izn),achar(9),  &
-             cnvmfi*qszoni_int(is,izn),achar(9),cnvmfi*qszonp_int(is,izn),achar(9),  &
-             cnvmfi*qszoni_sbc(is,izn),achar(9),cnvmfi*qszonp_sbc(is,izn),achar(9),  &
-             cnvmfi*qszoni_fbc(is,izn),achar(9),cnvmfi*qszonp_fbc(is,izn),achar(9),  &
-             cnvmfi*qszoni_lbc(is,izn),achar(9),cnvmfi*qszonp_lbc(is,izn),achar(9),  &
-             cnvmfi*qszoni_rbc(is,izn),achar(9),cnvmfi*qszonp_rbc(is,izn),achar(9),  &
-             cnvmfi*qszoni_dbc(is,izn),achar(9),cnvmfi*qszonp_dbc(is,izn),achar(9),  &
-             cnvmfi*qszoni_wel(is,izn),achar(9),cnvmfi*qszonp_wel(is,izn),achar(9)
+              WRITE(fuzf_tsv,2502) cnvtmi*time,ACHAR(9),izn,ACHAR(9),comp_name(is),ACHAR(9),  &
+             cnvmfi*qszoni(is,izn),ACHAR(9),cnvmfi*qszonp(is,izn),ACHAR(9),  &
+             cnvmfi*qszoni_int(is,izn),ACHAR(9),cnvmfi*qszonp_int(is,izn),ACHAR(9),  &
+             cnvmfi*qszoni_sbc(is,izn),ACHAR(9),cnvmfi*qszonp_sbc(is,izn),ACHAR(9),  &
+             cnvmfi*qszoni_fbc(is,izn),ACHAR(9),cnvmfi*qszonp_fbc(is,izn),ACHAR(9),  &
+             cnvmfi*qszoni_lbc(is,izn),ACHAR(9),cnvmfi*qszonp_lbc(is,izn),ACHAR(9),  &
+             cnvmfi*qszoni_rbc(is,izn),ACHAR(9),cnvmfi*qszonp_rbc(is,izn),ACHAR(9),  &
+             cnvmfi*qszoni_dbc(is,izn),ACHAR(9),cnvmfi*qszonp_dbc(is,izn),ACHAR(9),  &
+             cnvmfi*qszoni_wel(is,izn),ACHAR(9),cnvmfi*qszonp_wel(is,izn),ACHAR(9)
            END DO
         END IF
      ENDDO
@@ -1341,6 +1348,16 @@ SUBROUTINE write5
               ENDIF
            END IF
         END DO
+        IF(fresur) THEN
+           DO mt=1,nxy
+              IF(mfsbc(mt) /= 0) THEN
+                 CALL mtoijk(mt,i,j,k,nx,ny)
+                 WRITE(fupmp3,8203) cnvli*x(i),ACHAR(9),cnvli*y(j),ACHAR(9),  &
+                      cnvtmi*time,ACHAR(9),cnvli*wt_elev(mt),ACHAR(9)
+8203             FORMAT(4(1pg15.6,a))
+              END IF
+           END DO
+        END IF
 !!$        ! ... Write head to file 'FUPMP2' for screen or plotter maps
 !!$        WRITE(fupmp2,5002) ' Time Step No. ',itime,' Time ',cnvtmi*time,' ('//TRIM(unittm)//')'
 !!$        if(fresur) then

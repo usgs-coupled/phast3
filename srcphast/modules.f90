@@ -7,7 +7,7 @@ MODULE f_units
   INTEGER, PARAMETER :: fuins=15, fulp=16, fuplt=7, fuorst=8, fuirst=9, fuinc=10, furde=11, &
        fupmap=13, fuvmap=14, fup=21, fut=29, fuc=22, fuvel=23, fud=30, fuvs=31, fuwel=24, &
        fubal=25, fukd=26, fubcf=27, fuclog=28, fubnfr=32, fupmp2=33, fupzon=34, fuich=35,  &
-       fuzf=36, fuzf_tsv=37
+       fuzf=36, fuzf_tsv=37, fuwt=38, fupmp3=39
   LOGICAL :: print_rde=.FALSE.
 END MODULE f_units
 
@@ -419,7 +419,7 @@ MODULE mg2
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: uxx, uklb, uzelb
   REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: wcfl, wcfu
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: hdprnt, delz, arxbc, arybc, arzbc, hwt, &
-       uvka
+       uvka, wt_elev
 END MODULE mg2
 
 MODULE mg3
@@ -445,5 +445,4 @@ MODULE hdf_media
     REAL(KIND=kdp) :: k_input_to_si, s_input_to_si, alpha_input_to_si
     REAL(KIND=kdp) :: fluid_density, fluid_compressibility, fluid_viscosity
     CHARACTER(LEN=120) :: k_units, s_units, alpha_units
-
 END MODULE hdf_media

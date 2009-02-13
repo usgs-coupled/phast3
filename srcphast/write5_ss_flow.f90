@@ -13,7 +13,7 @@ SUBROUTINE write5_ss_flow
   USE mct
   USE mcv
   USE mcw
-  USE mg2, ONLY: hdprnt
+  USE mg2, ONLY: hdprnt, wt_elev
   USE print_control_mod
   IMPLICIT NONE
   INCLUDE 'ifwr.inc'
@@ -148,15 +148,22 @@ SUBROUTINE write5_ss_flow
 2009    FORMAT(/tr30,3A/tr35,a,1PG10.2,tr2,5A)
         CALL prntar(2,hdprnt,lprnt1,fup,cnvli,ifmt,000)
         IF(fresur) THEN
-           DO  m=1,nxyz
-              lprnt2(m)=-1
-           END DO
+           lprnt2 = -1
+           lprnt3 = -1
            DO  mt=1,nxy
-              mfs=mfsbc(mt)
-              IF(mfs /= 0) lprnt2(mfs)=1
+              mfs = mfsbc(mt)
+              IF(mfs /= 0) THEN
+                 lprnt2(mfs) = 1
+                 lprnt3(mt) = 1
+                 aprnt1(mt) = wt_elev(mt)
+              END IF
            END DO
            WRITE(fup,2008) 'Fraction of cell that is saturated  (-)'
            CALL prntar(2,frac,lprnt2,fup,cnv,14,000)
+           WRITE(fuwt,2001)  '*** Output at End of Steady State Iteration No. ', itime,' ***'
+           WRITE(fuwt,2002) 'Time '//dots,cnvtmi*time,'('//TRIM(unittm)//')'
+           WRITE(fuwt,2008) 'Water-Table Elevation  ('//TRIM(unitl)//')'
+           CALL prntar(2,aprnt1,lprnt3,fuwt,cnvli,ifmt,000)
         END IF
         ntprp = ntprp+1
      ENDIF
@@ -178,6 +185,16 @@ SUBROUTINE write5_ss_flow
            ENDIF
         END IF
      END DO
+     IF(fresur) THEN
+        DO mt=1,nxy
+           IF(mfsbc(mt) /= 0) THEN
+              CALL mtoijk(mt,i,j,k,nx,ny)
+                 WRITE(fupmp3,8203) cnvli*x(i),ACHAR(9),cnvli*y(j),ACHAR(9),  &
+                      cnvtmi*time,ACHAR(9),cnvli*wt_elev(mt),ACHAR(9)
+8203             FORMAT(4(1pg15.6,a))
+           END IF
+        END DO
+     END IF
 !!$        WRITE(fupmp2,5002) ' Steady State Time Step No. ',itime,' Time ',cnvtmi*time,  &
 !!$             ' ('//TRIM(unittm)//')'
 !!$5002    FORMAT(a,i5,a,1PG12.3,3A)

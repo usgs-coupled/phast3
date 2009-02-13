@@ -18,7 +18,7 @@ SUBROUTINE write1
   WRITE (fulp,2001)  &
        '*    PHAST: A Three Dimensional Flow and Solute    *',  &
        '*         Reactive Transport Simulator             *',  &
-       '*                 Version:'//version_name//'                 *'
+       '*             Version:'//version_name//'           *'
 2001 FORMAT(tr36,52('*') /tr36,'*',tr50,'*'/tr36,a/tr36,a/tr36,a)
   WRITE(fulp,2002)
 2002 FORMAT(tr36,'*',tr50,'*'/tr36,52('*')////)
@@ -131,6 +131,9 @@ SUBROUTINE write1
   ! ... Write header to file 'Fupmap2' for head xyz field plots
   WRITE(fupmp2,5011) 'x'//ACHAR(9)//'y'//ACHAR(9)//'z'//ACHAR(9)//'time'//  &
        ACHAR(9)//'in'//ACHAR(9)//'head'//ACHAR(9) 
+  ! ... Write header to file 'Fupmap3' for water table xy field plots
+  WRITE(fupmp3,5011) 'x'//ACHAR(9)//'y'//ACHAR(9)//'time'//  &
+       ACHAR(9)//'wt_elevation'//ACHAR(9) 
   ! ... Write header to file 'Fuvmap' for velocity xyz plots
   WRITE(fuvmap,5011) 'x'//ACHAR(9)//'y'//ACHAR(9)//'z'//ACHAR(9)//'time'//  &
        ACHAR(9)//'in'//ACHAR(9)//'vx-node'//ACHAR(9)//'vy-node'//ACHAR(9)//  &

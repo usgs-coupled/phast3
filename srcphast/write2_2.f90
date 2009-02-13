@@ -36,7 +36,7 @@ SUBROUTINE write2_2
        'Semi-Implicit Layer Rates               '/)
   REAL(kind=kdp) :: u1, u2
   INTEGER :: i, ifmt, ifu, indx, ipmz, iis, iwel, j,  &
-       jprptc, k, ks, kwb, kwt, l, m, mb, mt, nks
+       jprptc, k, ks, kwb, kwt, l, m, mb, mt, mfs, nks
   ! ... Set the unit numbers for node point output
   INTEGER, DIMENSION(12), PARAMETER :: fu =(/16,21,22,23,26,27,0,0,0,0,0,0/)
   INTEGER :: nr
@@ -67,14 +67,14 @@ SUBROUTINE write2_2
            ! ... Well has ambient cell concentrations at initial conditions
            iis = 1
            CALL calculate_well_ph(c(m,iis), ph, alk)
-           WRITE(fuplt,fmt2) cnvli*xw(iwel),achar(9),cnvli*yw(iwel),achar(9),  &
-                cnvli*zwt(iwel),achar(9),cnvtmi*time,achar(9),iwel,achar(9),  &
-                (c(m,iis),achar(9),iis=1,ns),ph,achar(9), alk, achar(9)
+           WRITE(fuplt,fmt2) cnvli*xw(iwel),ACHAR(9),cnvli*yw(iwel),ACHAR(9),  &
+                cnvli*zwt(iwel),ACHAR(9),cnvtmi*time,ACHAR(9),iwel,ACHAR(9),  &
+                (c(m,iis),ACHAR(9),iis=1,ns),ph,ACHAR(9), alk, ACHAR(9)
         END DO
         ntprtem = ntprtem+1
      END IF
   END IF
-  IF(prtic_p .or. prtic_c) THEN
+  IF(prtic_p .OR. prtic_c) THEN
      IF(errexi) GO TO 390
      ! ... Print initial condition distributions and aquifer properties
      DO  m=1,nxyz
@@ -98,13 +98,25 @@ SUBROUTINE write2_2
 !!$     CALL prntar(2,p,lprnt1,fulp,cnvpi,24,000)
 !!$     CALL prntar(2,p,lprnt1,fup,cnvpi,24,000)
 !!$     IF(heat.OR.iprptc/100 /= 2) GO TO 330
-!!$     WRITE(fulp,2050) 'Initial Fluid Head  (',TRIM(unitl),') '
-        WRITE(fup,2050) 'Initial Fluid Head  (',TRIM(unitl),') '
-2050    FORMAT(/tr30,4A/)
+!!$     WRITE(fulp,2050) 'Initial Fluid Head  ('//TRIM(unitl)//') '
+        WRITE(fup,2050) 'Initial Fluid Head  ('//TRIM(unitl)//') '
+2050    FORMAT(/tr30,a/)
         ifmt=13
         IF(eeunit) ifmt=12
 !!$     CALL prntar(2,hdprnt,lprnt1,fulp,cnvli,ifmt,000)
         CALL prntar(2,hdprnt,lprnt1,fup,cnvli,ifmt,000)
+        IF(fresur) THEN
+           lprnt3 = -1
+           DO  mt=1,nxy
+              mfs = mfsbc(mt)
+              IF(mfs /= 0) THEN
+                 lprnt3(mt) = 1
+                 aprnt1(mt) = wt_elev(mt)
+              END IF
+           END DO
+           WRITE(fuwt,2050) 'Initial Water-Table Elevation  ('//TRIM(unitl)//') '
+           CALL prntar(2,aprnt1,lprnt3,fuwt,cnvli,ifmt,000)
+        END IF
         ntprp = ntprp+1
      END IF
 !!$330 IF(heat) THEN
@@ -201,7 +213,7 @@ SUBROUTINE write2_2
         WRITE(fulp,2052) 'Initial solute in region:'//comp_name(iis)//dots,  &
              cnvmi*sir0(iis), '(',unitm,')'
      END DO
-  endif
+  ENDIF
 390 WRITE(fulp,2060) dash
 2060 FORMAT(/tr1,a120)
 !!$  ! ... Write static data to file 'FUPMAP' for screen or plotter maps
@@ -219,12 +231,12 @@ SUBROUTINE write2_2
            CALL mtoijk(m,i,j,k,nx,ny)
            IF(frac(m) < 0.0001_kdp) THEN
               indx = 0
-              WRITE(fupmap,fmt4) cnvli*x(i),achar(9),cnvli*y(j),achar(9),cnvli*z(k),  &
-                   achar(9),cnvtmi*time,achar(9),indx,achar(9)
+              WRITE(fupmap,fmt4) cnvli*x(i),ACHAR(9),cnvli*y(j),ACHAR(9),cnvli*z(k),  &
+                   ACHAR(9),cnvtmi*time,ACHAR(9),indx,ACHAR(9)
            ELSE
               indx = 1
-              WRITE(fupmap,fmt4) cnvli*x(i),achar(9),cnvli*y(j),achar(9),cnvli*z(k),  &
-                   achar(9),cnvtmi*time,achar(9),indx,achar(9),(c_mol(m,is),achar(9),is=1,ns)
+              WRITE(fupmap,fmt4) cnvli*x(i),ACHAR(9),cnvli*y(j),ACHAR(9),cnvli*z(k),  &
+                   ACHAR(9),cnvtmi*time,ACHAR(9),indx,ACHAR(9),(c_mol(m,is),ACHAR(9),is=1,ns)
            END IF
         END IF
      END DO
@@ -251,16 +263,26 @@ SUBROUTINE write2_2
            CALL mtoijk(m,i,j,k,nx,ny)
            IF(frac(m) < 0.0001_kdp) THEN
               indx = 0
-              WRITE(fupmp2,8003) cnvli*x(i),achar(9),cnvli*y(j),achar(9),cnvli*z(k),  &
-                   achar(9),cnvtmi*time,achar(9),indx,achar(9)
+              WRITE(fupmp2,8003) cnvli*x(i),ACHAR(9),cnvli*y(j),ACHAR(9),cnvli*z(k),  &
+                   ACHAR(9),cnvtmi*time,ACHAR(9),indx,ACHAR(9)
            ELSE
               indx = 1
-              WRITE(fupmp2,8003) cnvli*x(i),achar(9),cnvli*y(j),achar(9),cnvli*z(k),  &
-                   achar(9),cnvtmi*time,achar(9),indx,achar(9),cnvli*hdprnt(m),achar(9)
+              WRITE(fupmp2,8003) cnvli*x(i),ACHAR(9),cnvli*y(j),ACHAR(9),cnvli*z(k),  &
+                   ACHAR(9),cnvtmi*time,ACHAR(9),indx,ACHAR(9),cnvli*hdprnt(m),ACHAR(9)
 8003          FORMAT(4(1pg15.6,a),i5,a,1pg15.6,a)
            ENDIF
         END IF
      END DO
+     IF(fresur) THEN
+        DO mt=1,nxy
+           IF(mfsbc(mt) /= 0) THEN
+              CALL mtoijk(mt,i,j,k,nx,ny)
+                 WRITE(fupmp3,8203) cnvli*x(i),ACHAR(9),cnvli*y(j),ACHAR(9),  &
+                      ACHAR(9),cnvtmi*time,ACHAR(9),cnvli*wt_elev(mt),ACHAR(9)
+8203             FORMAT(3(1pg15.6,a),1pg15.6,a)
+           END IF
+        END DO
+     END IF
 !!$     WRITE(fupmp2,5102) ' Time Step No. ',itime,' Time ',cnvtmi*time,' ('//unittm//')'
 !!$     WRITE(fupmp2,5103) 'Initial Fluid Head'
 !!$5103 FORMAT(a100)

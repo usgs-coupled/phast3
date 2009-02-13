@@ -33,14 +33,14 @@ SUBROUTINE openf
      CALL SEND_RESTART_NAME(restart_name)
   ENDDO
   OPEN(fuins,STATUS='scratch')
-!$$  OPEN(fuins,FILE='stripped.in')
+  !$$  OPEN(fuins,FILE='stripped.in')
   REWIND fuins
   f3name = TRIM(f3name)
   length = LEN_TRIM(f3name)
   IF (LEN_TRIM(f3name(1:length)//'.comps.xyz.tsv') .GT. LEN(fname)) THEN
-    ! assuming .comps.xyz.tsv is the longest suffix
-    WRITE(*,*) 'Prefix too long:' , f3name(1:length)
-    STOP "Stopping."
+     ! assuming .comps.xyz.tsv is the longest suffix
+     WRITE(*,*) 'Prefix too long:' , f3name(1:length)
+     STOP "Stopping."
   ENDIF
   fname=f3name(1:length)//'.probdef.txt'
 #if defined(USE_MPI)
@@ -48,10 +48,10 @@ SUBROUTINE openf
 #endif
   OPEN(fulp,FILE=fname,IOSTAT=ios,ACTION='WRITE')
   IF (ios > 0) THEN
-    lerror = .TRUE.
-    WRITE(*,*) 'ERROR: Error opening file ', fname
+     lerror = .TRUE.
+     WRITE(*,*) 'ERROR: Error opening file ', fname
   ENDIF
-!  REWIND fulp
+  !  REWIND fulp
   IF(print_rde) THEN
      fname=f3name(1:length)//'.rde.txt'
 #if defined(USE_MPI)
@@ -69,8 +69,17 @@ SUBROUTINE openf
 #endif
   OPEN(fup,FILE=fname,IOSTAT=ios, ACTION='WRITE')
   IF (ios > 0) THEN
-    lerror = .TRUE.
-    WRITE(*,*) 'ERROR: Error opening file ', fname
+     lerror = .TRUE.
+     WRITE(*,*) 'ERROR: Error opening file ', fname
+  ENDIF
+  fname=f3name(1:length)//'.wt.txt'
+#if defined(USE_MPI)
+  CALL get_mpi_filename(fname)
+#endif
+  OPEN(fuwt,FILE=fname,IOSTAT=ios, ACTION='WRITE')
+  IF (ios > 0) THEN
+     lerror = .TRUE.
+     WRITE(*,*) 'ERROR: Error opening file ', fname
   ENDIF
   fname=f3name(1:length)//'.comps.txt'
 #if defined(USE_MPI)
@@ -78,8 +87,8 @@ SUBROUTINE openf
 #endif
   OPEN(fuc,FILE=fname,IOSTAT=ios,ACTION='WRITE')
   IF (ios > 0) THEN
-    lerror = .TRUE.
-    WRITE(*,*) 'ERROR: Error opening file ', fname
+     lerror = .TRUE.
+     WRITE(*,*) 'ERROR: Error opening file ', fname
   ENDIF
   fname=f3name(1:length)//'.vel.txt'
 #if defined(USE_MPI)
@@ -87,8 +96,8 @@ SUBROUTINE openf
 #endif
   OPEN(fuvel,FILE=fname,IOSTAT=ios,ACTION='WRITE')
   IF (ios > 0) THEN
-    lerror = .TRUE.
-    WRITE(*,*) 'ERROR: Error opening file ', fname
+     lerror = .TRUE.
+     WRITE(*,*) 'ERROR: Error opening file ', fname
   ENDIF
   fname=f3name(1:length)//'.wel.txt'
 #if defined(USE_MPI)
@@ -96,8 +105,8 @@ SUBROUTINE openf
 #endif
   OPEN(fuwel,FILE=fname,IOSTAT=ios,ACTION='WRITE')
   IF (ios > 0) THEN
-    lerror = .TRUE.
-    WRITE(*,*) 'ERROR: Error opening file ', fname
+     lerror = .TRUE.
+     WRITE(*,*) 'ERROR: Error opening file ', fname
   ENDIF
   fname=f3name(1:length)//'.bal.txt'
 #if defined(USE_MPI)
@@ -105,8 +114,8 @@ SUBROUTINE openf
 #endif
   OPEN(fubal,FILE=fname,IOSTAT=ios,ACTION='WRITE')
   IF (ios > 0) THEN
-    lerror = .TRUE.
-    WRITE(*,*) 'ERROR: Error opening file ', fname
+     lerror = .TRUE.
+     WRITE(*,*) 'ERROR: Error opening file ', fname
   ENDIF
   fname=f3name(1:length)//'.kd.txt'
 #if defined(USE_MPI)
@@ -114,8 +123,8 @@ SUBROUTINE openf
 #endif
   OPEN(fukd,FILE=fname,IOSTAT=ios,ACTION='WRITE')
   IF (ios > 0) THEN
-    lerror = .TRUE.
-    WRITE(*,*) 'ERROR: Error opening file ', fname
+     lerror = .TRUE.
+     WRITE(*,*) 'ERROR: Error opening file ', fname
   ENDIF
   fname=f3name(1:length)//'.bcf.txt'
 #if defined(USE_MPI)
@@ -123,8 +132,8 @@ SUBROUTINE openf
 #endif
   OPEN(fubcf,FILE=fname,IOSTAT=ios,ACTION='WRITE')
   IF (ios > 0) THEN
-    lerror = .TRUE.
-    WRITE(*,*) 'ERROR: Error opening file ', fname
+     lerror = .TRUE.
+     WRITE(*,*) 'ERROR: Error opening file ', fname
   ENDIF
   fname=f3name(1:length)//'.zf.txt'
 #if defined(USE_MPI)
@@ -132,8 +141,8 @@ SUBROUTINE openf
 #endif
   OPEN(fuzf,FILE=fname,IOSTAT=ios,ACTION='WRITE')
   IF (ios > 0) THEN
-    lerror = .TRUE.
-    WRITE(*,*) 'ERROR: Error opening file ', fname
+     lerror = .TRUE.
+     WRITE(*,*) 'ERROR: Error opening file ', fname
   ENDIF
   fname=f3name(1:length)//'.zf.tsv'
 #if defined(USE_MPI)
@@ -141,8 +150,8 @@ SUBROUTINE openf
 #endif
   OPEN(fuzf_tsv,FILE=fname,IOSTAT=ios,ACTION='WRITE')
   IF (ios > 0) THEN
-    lerror = .TRUE.
-    WRITE(*,*) 'ERROR: Error opening file ', fname
+     lerror = .TRUE.
+     WRITE(*,*) 'ERROR: Error opening file ', fname
   ENDIF
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
@@ -153,8 +162,8 @@ SUBROUTINE openf
 #endif
   OPEN(fupmap,FILE=fname,IOSTAT=ios,ACTION='WRITE')
   IF (ios > 0) THEN
-    lerror = .TRUE.
-    WRITE(*,*) 'ERROR: Error opening file ', fname
+     lerror = .TRUE.
+     WRITE(*,*) 'ERROR: Error opening file ', fname
   ENDIF
   fname=f3name(1:length)//'.head.xyz.tsv'
 #if defined(USE_MPI)
@@ -162,8 +171,17 @@ SUBROUTINE openf
 #endif
   OPEN(fupmp2,FILE=fname,IOSTAT=ios,ACTION='WRITE')
   IF (ios > 0) THEN
-    lerror = .TRUE.
-    WRITE(*,*) 'ERROR: Error opening file ', fname
+     lerror = .TRUE.
+     WRITE(*,*) 'ERROR: Error opening file ', fname
+  ENDIF
+  fname=f3name(1:length)//'.wt.xyz.tsv'
+#if defined(USE_MPI)
+  CALL get_mpi_filename(fname)
+#endif
+  OPEN(fupmp3,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  IF (ios > 0) THEN
+     lerror = .TRUE.
+     WRITE(*,*) 'ERROR: Error opening file ', fname
   ENDIF
   fname=f3name(1:length)//'.vel.xyz.tsv'
 #if defined(USE_MPI)
@@ -171,8 +189,8 @@ SUBROUTINE openf
 #endif
   OPEN(fuvmap,FILE=fname,IOSTAT=ios,ACTION='WRITE')
   IF (ios > 0) THEN
-    lerror = .TRUE.
-    WRITE(*,*) 'ERROR: Error opening file ', fname
+     lerror = .TRUE.
+     WRITE(*,*) 'ERROR: Error opening file ', fname
   ENDIF
   fname=f3name(1:length)//'.wel.xyz.tsv'
 #if defined(USE_MPI)
@@ -180,8 +198,8 @@ SUBROUTINE openf
 #endif
   OPEN(fuplt,FILE=fname,IOSTAT=ios,ACTION='WRITE')
   IF (ios > 0) THEN
-    lerror = .TRUE.
-    WRITE(*,*) 'ERROR: Error opening file ', fname
+     lerror = .TRUE.
+     WRITE(*,*) 'ERROR: Error opening file ', fname
   ENDIF
 !!$  fname=f3name(1:length)//'.O.bcnfr'
 !!$  OPEN(fubnfr,FILE=fname)
@@ -191,6 +209,6 @@ SUBROUTINE openf
 !!$#endif
 !!$  OPEN(fupzon,FILE=fname)
   IF (lerror) THEN
-    STOP 'Stopping because of error(s) opening files.'
+     STOP 'Stopping because of error(s) opening files.'
   ENDIF
 END SUBROUTINE openf

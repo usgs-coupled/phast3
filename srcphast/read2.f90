@@ -863,7 +863,7 @@ SUBROUTINE read2
   READ(fuins,*) prtichdf_conc, prtichdf_head, prtsshdf_vel, pr_hdf_media
   IF (print_rde) WRITE(furde,8119) 'prtichdf_conc, prtichdf_head, prtsshdf_vel, pr_hdf_media[2.23.2.1]',  &
        prtichdf_conc, prtichdf_head, prtsshdf_vel, pr_hdf_media
-8119 FORMAT(tr5,a/tr5,3l5)
+8119 FORMAT(tr5,a/tr5,4l5)
   ! set integer flags
   prhdfci = 0
   IF (prtichdf_conc) prhdfci = 1
@@ -876,7 +876,6 @@ SUBROUTINE read2
   prcphrqi = 0
   IF (prtic_conc) prcphrqi = 1
   prcpd = .FALSE.
-  
   ! ...  more data for pr_hdf_media
   if (pr_hdf_media) then
     READ(fuins,*) k_units, k_input_to_si, fluid_density, fluid_viscosity

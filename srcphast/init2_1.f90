@@ -1287,13 +1287,14 @@ SUBROUTINE init2_1
 710     END DO
 720  END DO
   ENDIF
-  ALLOCATE (mfsbc(nxy), hdprnt(nxyz),  &
+  ALLOCATE (mfsbc(nxy), hdprnt(nxyz), wt_elev(nxy),  &
        stat = a_err)
   IF (a_err /= 0) THEN  
      PRINT *, "array allocation failed: init2, number 16"  
      STOP  
   ENDIF
-  hdprnt = 0
+  hdprnt = 0._kdp
+  wt_elev = 0._kdp
   ! ... initialize the fraction of cell that is saturated
   ! ...      all pressures are valid, dry cells initialized to
   ! ...           hydrostatic pressure, excluded cells set to frac of zero.
@@ -1496,6 +1497,15 @@ SUBROUTINE init2_1
 !!$        return  
 !!$     endif
   END DO
+  IF(fresur) THEN
+     ! ... Calculate water-table elevation
+     DO mt=1,nxy
+        m = mfsbc(mt)
+        IF (m > 0) THEN
+           wt_elev(mt) = z_node(m) + p(m)/(den0*gz)
+        END IF
+     END DO
+  END IF
 !!$  ! ... set initial condition pressure for aquifer influence functions
 !!$    do 790 l = 1, naifc  
 !!$       m = maifc(l)  

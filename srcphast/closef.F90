@@ -16,7 +16,7 @@ SUBROUTINE closef(mpi_myself)
   USE mct
   USE mcv
   USE mcw
-  USE mg2, ONLY: hdprnt
+  USE mg2, ONLY: hdprnt, wt_elev
 #if defined(USE_MPI)
   USE mpi_mod
 #endif
@@ -111,7 +111,7 @@ SUBROUTINE closef(mpi_myself)
   ENDIF
   ! ... delete the read echo 'furde' file upon successful completion
 !!$  st(furde) = 'delete'
-!!$  if(errexi .or. errexe) st(furde) = 'keep'
+!!$  if(errexi .or. errexe) st(furde) = 'keep  '
   ! ... delete file 'fuplt' if no plot data written
   st(fuplt) = 'delete'  
   IF(solute .AND. ntprtem > 0) st(fuplt) = 'keep  '  
@@ -122,23 +122,29 @@ SUBROUTINE closef(mpi_myself)
   ! ...      if no screen or plotter map data written
   st(fupmap) = 'delete'  
   st(fupmp2) = 'delete'  
+  st(fupmp3) = 'delete'  
   st(fuvmap) = 'delete'  
   st(fuich) = 'delete'
   IF (mpi_myself == 0) THEN
-     IF(cntmapc) st(fupmap) = 'keep '  
-     IF(prtic_maphead .OR. ABS(primaphead) > 0._kdp) st(fupmp2) = 'keep '  
+     IF(cntmapc) st(fupmap) = 'keep  '  
+     IF(prtic_maphead .OR. ABS(primaphead) > 0._kdp) THEN
+        st(fupmp2) = 'keep  '  
+        st(fupmp3) = 'keep  '  
+     END IF
      IF(ntprmapv > 0) st(fuvmap) = 'keep  '  
-     IF(prtichead) st(fuich) = 'keep '
+     IF(prtichead) st(fuich) = 'keep  '
   ENDIF
 !!$  ! ... delete file 'fuich' if no initial condition head map data written
 !!$  st(fuich) = 'keep  '  
 !!$  if(.not.prtichead) st(fuich) = 'delete'  
   ! ... close and delete file 'fupzon' if no zone map data written
   st(fupzon) = 'delete'  
-!!$  if(pltzon) st(fupzon) = 'keep '  
-  st(fulp) = 'keep '
+!!$  if(pltzon) st(fupzon) = 'keep  '  
+  st(fulp) = 'keep  '
   st(fup) = 'delete'  
   IF(ntprp > 0) st(fup) = 'keep  '  
+  st(fuwt) = 'delete'  
+  IF(ntprp > 0) st(fuwt) = 'keep  '  
   st(fuc) = 'delete'  
   IF(ntprc > 0 .AND. solute) st(fuc) = 'keep  '  
   st(fuvel) = 'delete'  
@@ -164,6 +170,7 @@ SUBROUTINE closef(mpi_myself)
   CLOSE(fuorst, status = st(fuorst))  
   CLOSE(fulp, status = st(fulp))  
   CLOSE(fup, status = st(fup))  
+  CLOSE(fuwt, status = st(fuwt))  
   CLOSE(fuc, status = st(fuc))  
   CLOSE(fuvel, status = st(fuvel))  
   CLOSE(fuwel, status = st(fuwel))  
@@ -175,6 +182,7 @@ SUBROUTINE closef(mpi_myself)
   CLOSE(fuplt, status = st(fuplt))  
   CLOSE(fupmap, status = st(fupmap))  
   CLOSE(fupmp2, status = st(fupmp2))  
+  CLOSE(fupmp3, status = st(fupmp3))  
   CLOSE(fuvmap, status = st(fuvmap))  
 !!$  close(fupzon, status = st(fupzon))  
 !!$  close(fubnfr, status = st(fubcf))  
@@ -433,7 +441,7 @@ SUBROUTINE closef(mpi_myself)
      PRINT *, "Array deallocation failed: closef: number 18"  
   ENDIF
   ! ...      Deallocate space for free surface and head print
-  DEALLOCATE (mfsbc, hdprnt, &
+  DEALLOCATE (mfsbc, hdprnt, wt_elev,  &
        stat = da_err)
   IF (da_err /= 0) THEN  
      PRINT *, "Array deallocation failed: closef: number 19"  

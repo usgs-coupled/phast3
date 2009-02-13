@@ -13,7 +13,7 @@ SUBROUTINE sumcal1
   USE mcp
   USE mcv
   USE mcw
-  USE mg2, ONLY: hdprnt
+  USE mg2, ONLY: hdprnt, wt_elev
   IMPLICIT NONE
   INTERFACE
      SUBROUTINE sbcflo(iequ,ddv,ufracnp,qdvsbc,rhssbc,vasbc)
@@ -1064,7 +1064,16 @@ SUBROUTINE sumcal1
         hdprnt(m) = z(k)+p(m)/(den(m)*gz)
      END IF
   END DO
+  IF(fresur .AND. (ABS(prip) > 0. .OR. ABS(primaphead) > 0.)) THEN
+     ! ... Calculate water-table elevation
+     DO mt=1,nxy
+        m = mfsbc(mt)
+        IF (m > 0) THEN
+           wt_elev(mt) = z_node(m) + p(m)/(den0*gz)
+        END IF
+     END DO
+  END IF
   ! ... Calculate the internal zone flow rates if requested
-  IF(ABS(pri_zf) > 0. .or. ABS(pri_zf_tsv) > 0.) CALL zone_flow
+  IF(ABS(pri_zf) > 0. .OR. ABS(pri_zf_tsv) > 0.) CALL zone_flow
 
 END SUBROUTINE sumcal1

@@ -10,7 +10,7 @@ SUBROUTINE sumcal_ss_flow
   USE mcp
   USE mcv
   USE mcw
-  USE mg2, ONLY: hdprnt
+  USE mg2, ONLY: hdprnt, wt_elev
   IMPLICIT NONE
 !!$  INTERFACE
 !!$     SUBROUTINE sbcflo(iequ,ddv,ufracnp,qdvsbc,rhssbc,vasbc)
@@ -703,8 +703,8 @@ SUBROUTINE sumcal_ss_flow
 !!$!  tcfaif=tcfaif+stfaif
   ! ... Calculate the internal zone flow rates if requested
   IF(ABS(pri_zf) > 0. .or. ABS(pri_zf_tsv) > 0.) CALL zone_flow_ss
-
   ! ... Calculate total fluid mass, fluid volume in region
+  ! ... Calculate head field and water-table elevation (if desired for printout)
   fir=0._kdp
   firv=0._kdp
   DO  m=1,nxyz
@@ -721,6 +721,15 @@ SUBROUTINE sumcal_ss_flow
         hdprnt(m)=z(k)+p(m)/(den(m)*gz)
      END IF
   END DO
+  IF(fresur .AND. (ABS(prip) > 0. .OR. ABS(primaphead) > 0.)) THEN
+     ! ... Calculate water-table elevation
+     DO mt=1,nxy
+        m = mfsbc(mt)
+        IF (m > 0) THEN
+           wt_elev(mt) = z_node(m) + p(m)/(den0*gz)
+        END IF
+     END DO
+  END IF
   ! ... Change in fluid over time step
   dfir=fir-firn
   ! ... Test for steady-state flow
