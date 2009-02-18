@@ -5,9 +5,9 @@
 #   <SiteMap angle="0" placement_x="0" placement_y="0" placement_z="-101.2" src="capecod.sitemap.jpg" worldfile="capecod.sitemap.jgw"/>
 # </WPhast>
 # 
-SOLUTE_TRANSPORT false
+#SOLUTE_TRANSPORT false
 SOLUTE_TRANSPORT true
-STEADY_FLOW true
+#STEADY_FLOW true
 STEADY_FLOW false
 	-head_tolerance 0.001
 	-flow_balance_tolerance 0.001
@@ -47,20 +47,96 @@ UNITS
 	-drain_hydraulic_conductivity     m/d
 	-drain_thickness                  m
 	-drain_width                      m
+#GRID
+#	-uniform X 275000 285000 41
+#	-uniform Y 810000 830000 81
+#	-uniform Z -200 20 23
+#	-overlay Z 0 20 21
+#	-snap X 0.001
+#	-snap Y 0.001
+#	-snap Z 0.001
+#	-chemistry_dimensions XYZ
+#	-print_orientation XY
+#	-grid_origin   0  0  0
+#	-grid_angle    0
 GRID
-	-uniform X 275000 285000 41
-	-uniform Y 810000 830000 81
-	-uniform Z -200 20 23
-	#-overlay Z 0 20 21
+	-nonuniform X
+		277000    277104    277206    277305    277403
+		277499    277593    277685    277776    277864
+		277951    278036    278120    278202    278282
+		278361    278438    278513    278588    278660
+		278732    278801    278870    278937    279003
+		279067    279131    279193    279254    279313
+		279372    279429    279485    279540    279594
+		279647    279699    279750    279800    279852
+		279904    279958    280013    280068    280125
+		280183    280242    280302    280364    280427
+		280491    280556    280622    280690    280760
+		280830    280902    280976    281051    281127
+		281205    281285    281366    281449    281533
+		281619    281707    281797    281888    281981
+		282076    282173    282272    282373    282476
+		282581    282688    282797    282909    283022
+		283138    283256    283377    283500
+	-nonuniform Y
+		815000    815172    815340    815506    815668
+		815827    815982    816135    816285    816431
+		816575    816716    816855    816990    817123
+		817253    817381    817506    817629    817749
+		817867    817983    818097    818208    818317
+		818424    818529    818631    818732    818831
+		818928    819022    819116    819207    819296
+		819384    819470    819554    819637    819718
+		819797    819875    819951    820026    820100
+		820172    820242    820311    820379    820445
+		820511    820574    820637    820699    820759
+		820818    820876    820932    820988    821042
+		821096    821148    821200    821250    821300
+		821350    821402    821454    821508    821562
+		821618    821675    821733    821792    821853
+		821914    821977    822041    822106    822173
+		822241    822310    822381    822453    822527
+		822602    822678    822756    822836    822917
+		823000
+
+	-nonuniform Z
+		-200    -194.696    -189.496    -184.398    -179.4
+		-174.5    -169.697    -164.987    -160.37    -155.843
+		-151.405    -147.054    -142.788    -138.606    -134.506
+		-130.486    -126.545    -122.682    -118.894    -115.18
+		-111.54    -107.97    -104.471    -101.04    -97.6767
+		-94.3792    -91.1463    -87.9768    -84.8695    -81.8231
+		-78.8364    -75.9083    -73.0376    -70.2232    -67.464
+		-64.7588    -62.1067    -59.5067    -56.9576    -54.4585
+		-52.0083    -49.6063    -47.2513    -44.9425    -42.679
+		-40.4598    -38.2842    -36.1512    -34.0601    -32.0099
+		-30    -28    -26    -24    -22
+		-20    -18    -16    -14    -12
+		-10    -8    -6    -4    -2
+		0    2    4    6    8
+		10    12    14    16    18
+		20    22
 	-snap X 0.001
 	-snap Y 0.001
 	-snap Z 0.001
 	-chemistry_dimensions XYZ
 	-print_orientation XY
-	-grid_origin   0  0  0
-	-grid_angle    0
+	
+SPECIFIED_HEAD_BC
+	-zone 275000 823000 -200 285000 823000 100
+		-head
+			0	16.764
+		-associated_solution
+			0	1
+SPECIFIED_HEAD_BC
+	-zone 275000 815000 -5 285000 815000 0
+		-head
+			0	0
+		-associated_solution
+			0	1
+			
 MEDIA
-	-zone 275000 810000 -200 285000 830000 20 GRID
+	-zone 275000 810000 -200 285000 830000 50 GRID
 		-active                   1
 		-Kx                       2.4384
 		-Ky                       2.4384
@@ -108,9 +184,9 @@ MEDIA
 		
 ##TODO add shell output
 	-zone 275000 810000 -200 285000 830000 100 MAP
-		-Kx                       xyz map capecod.horizontalK
-		-Ky                       xyz map capecod.horizontalK
-		-Kz                       xyz map capecod.verticalK
+		-Kx                       xyz map capecod.K.horizontal
+		-Ky                       xyz map capecod.K.horizontal
+		-Kz                       xyz map capecod.K.vertical
 
 
 
@@ -124,21 +200,21 @@ MEDIA
 
 ##TODO add shell output
 	-prism
-		-top       CONSTANT   GRID 20
-		-bottom    ARCRASTER  MAP .\ArcData/bedrock-90.txt
-		-perimeter SHAPE      MAP .\ArcData/coast.shp
+		-top       CONSTANT   GRID 50
+		-bottom    ARCRASTER  MAP ./ArcData/bedrock-90.txt
+		-perimeter SHAPE      MAP ./ArcData/coast.shp
 		-active                   1
 ##TODO add shell output
 	-prism
-		-top       CONSTANT   GRID 20
+		-top       CONSTANT   GRID 50
 		-bottom    CONSTANT   GRID -200
-		-perimeter SHAPE      MAP .\ArcData/ModelOutline.shp
+		-perimeter SHAPE      MAP ./ArcData/ModelOutline.shp
 		-active                   0
 ##TODO add shell output
 	-prism
-		-top       CONSTANT   GRID 20
-		-bottom    SHAPE      MAP .\ArcData/SimpleBath.shp 10
-		-perimeter SHAPE      MAP .\ArcData/SimplePonds.shp
+		-top       CONSTANT   GRID 50
+		-bottom    SHAPE      MAP ./ArcData/SimpleBath.shp 10
+		-perimeter SHAPE      MAP ./ArcData/SimplePonds.shp
 		-active                   1
 		-Kx                       10000
 		-Ky                       10000
@@ -152,8 +228,8 @@ MEDIA
 	#-prism
 	#	-shell
 	#	-top       CONSTANT   GRID 50
-	#	-bottom    SHAPE      MAP .\ArcData/SimpleBath.shp 10
-	#	-perimeter SHAPE      MAP .\ArcData/SimplePonds.shp
+	#	-bottom    SHAPE      MAP ./ArcData/SimpleBath.shp 10
+	#	-perimeter SHAPE      MAP ./ArcData/SimplePonds.shp
 	#	-Kx                       30
 	#	-Ky                       30
 	#	-Kz                       .3
@@ -290,22 +366,22 @@ FLUX_BC
 			1978	0
 			1984	0
 			1996	0
-SPECIFIED_HEAD_BC
-	-prism
-		-exterior all
-		-top       CONSTANT   MAP 0.5
-		-bottom    CONSTANT   MAP -0.5
-		-perimeter POINTS MAP 
-			277189 814489 0
-			282362 815267 0
-			285000 815267 0
-			285000 810000 0
-			275000 810000 0
-			275000 814489 0
-			end_points
-		-head
-			0	0
-		-associated_solution
+#SPECIFIED_HEAD_BC
+#	-prism
+#		-exterior all
+#		-top       CONSTANT   MAP 0.5
+#		-bottom    CONSTANT   MAP -0.5
+#		-perimeter POINTS MAP 
+#			277189 814489 0
+#			282362 815267 0
+#			285000 815267 0
+#			285000 810000 0
+#			275000 810000 0
+#			275000 814489 0
+#			end_points
+#		-head
+#			0	0
+#		-associated_solution
 			0	1
 
 HEAD_IC
@@ -321,7 +397,7 @@ HEAD_IC
 		-head                     xyz map capecod.head.dat.save
 		#-head 15
 CHEMISTRY_IC
-	-zone 275000 810000 -200 285000 830000 20 GRID
+	-zone 275000 810000 -200 285000 830000 50 GRID
 		-solution            1
 DRAIN 1 East Boundary Quashnet R
 	-point 282835.491 821234.501
@@ -414,7 +490,7 @@ DRAIN 5 West Boundary Coonamessett River
 ZONE_FLOW 1 Coonamessett River	
 	-prism
 		-description Coonamessett River
-		-top       CONSTANT   GRID 20
+		-top       CONSTANT   GRID 50
 		-bottom    CONSTANT   GRID -200
 		-perimeter POINTS GRID 
 			276944.6875 819339.1875 0
@@ -429,7 +505,7 @@ ZONE_FLOW 2 Backus River (Cranberry bogs)
 ##TODO add shell output
 	-prism
 		-description Backus River (Cranberry bogs)
-		-top       CONSTANT   GRID 20
+		-top       CONSTANT   GRID 50
 		-bottom    CONSTANT   GRID -200
 		-perimeter POINTS GRID 
 			277187.84375 810996.1875 0
@@ -450,7 +526,7 @@ ZONE_FLOW 3 Childs River
 ##TODO add shell output
 	-prism
 		-description Childs River
-		-top       CONSTANT   GRID 20
+		-top       CONSTANT   GRID 50
 		-bottom    CONSTANT   GRID -200
 		-perimeter POINTS GRID 
 			280330.5 812829.375 0
@@ -469,7 +545,7 @@ ZONE_FLOW 3 Childs River
 ZONE_FLOW 4 Quashnet River
 	-prism
 		-description Quashnet River
-		-top       CONSTANT   GRID 20
+		-top       CONSTANT   GRID 50
 		-bottom    CONSTANT   GRID -200
 		-perimeter POINTS GRID 
 			281583.8125 814288.5 0
@@ -515,11 +591,12 @@ PRINT_FREQUENCY
 		-conductances           0
 		-flow_balance                end 
 		-force_chemistry_print  0
-		-HDF_chemistry          1    years
+		-HDF_chemistry          5    years
 		-HDF_heads                   end 
 		-HDF_velocities              end 
 		-heads                       end 
 		-progress_statistics    1    step 
+		-restart               10    years
 		-velocities                  end 
 		-wells                       end 
 		-xyz_chemistry          0
@@ -530,7 +607,7 @@ PRINT_FREQUENCY
 		-boundary_conditions    false
 TIME_CONTROL
 	-time_step
-		0 .5
+		0 .1
 	-time_change
 		1996
 	-start_time 1935.9
