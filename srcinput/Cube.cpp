@@ -178,7 +178,7 @@ void
 Cube::printOn(std::ostream & os) const
 {
 	const char* coor_name[] = {"MAP", "GRID", "NONE"};
-	os << "\t" << "-zone"
+	os << "\t" << "-box"
 		<< " " << this->box.x1
 		<< " " << this->box.y1
 		<< " " << this->box.z1

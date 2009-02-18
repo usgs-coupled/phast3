@@ -4496,6 +4496,7 @@ find_shell(Polyhedron *polyh, double *width, std::list<int> &list_of_elements)
 	/* put cells in list */
 	std::list < int > list_of_cells;
 	range_to_list(range_ptr, list_of_cells);
+	free_check_null(range_ptr);
 
 	// Find cells in polyhedron
 	polyh->Points_in_polyhedron(list_of_cells, *cell_xyz);
