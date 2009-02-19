@@ -144,7 +144,7 @@ SUBROUTINE closef(mpi_myself)
   st(fup) = 'delete'  
   IF(ntprp > 0) st(fup) = 'keep  '  
   st(fuwt) = 'delete'  
-  IF(ntprp > 0) st(fuwt) = 'keep  '  
+  IF(ntprp > 0 .AND. fresur) st(fuwt) = 'keep  '  
   st(fuc) = 'delete'  
   IF(ntprc > 0 .AND. solute) st(fuc) = 'keep  '  
   st(fuvel) = 'delete'  
