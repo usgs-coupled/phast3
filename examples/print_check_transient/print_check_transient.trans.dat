@@ -171,7 +171,8 @@ PRINT_FREQUENCY
         -xyz_components         13000 yr
         -xyz_velocities         14000 yr
         -xyz_wells              15000 yr
-15000
+	-xyz_head               16000 yr
+16000
 #	-end_of_period          false
 	-end_of_period          true
 	-bc_flow_rates          15000 yr
@@ -192,8 +193,9 @@ PRINT_FREQUENCY
         -xyz_components         3000 yr
         -xyz_velocities         2000 yr
         -xyz_wells              1000 yr
+	-xyz_head               1000 yr
 	-restart		1000000 yr
-30000
+31000
 	-end_of_period          true
 	-force_chemistry_print  100000
 

@@ -1998,9 +1998,9 @@
 
  ------------------------------------------------------------------------------------------------------------------------
 
-                                        *** Start of Time Step No.   26 ***
+                                        *** Start of Time Step No.   16 ***
 
-                    Properties evaluated at time     2.500E+04  (yr )
+                    Properties evaluated at time     1.500E+04  (yr )
 
                          X-direction - Fluid Conductance between X(I) and X(I+1) (kg/yr -Pa )
 
@@ -2391,9 +2391,9 @@
 
  ------------------------------------------------------------------------------------------------------------------------
 
-                                        *** Start of Time Step No.   30 ***
+                                        *** Start of Time Step No.   26 ***
 
-                    Properties evaluated at time     2.900E+04  (yr )
+                    Properties evaluated at time     2.500E+04  (yr )
 
                          X-direction - Fluid Conductance between X(I) and X(I+1) (kg/yr -Pa )
 

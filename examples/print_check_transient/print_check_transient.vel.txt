@@ -379,9 +379,9 @@
 
 
 
-                              *** Output at End of Time Step No.    15 ***
+                              *** Output at End of Time Step No.    16 ***
 
-                         Time .......................................................   1.500E+04  (yr )
+                         Time .......................................................   1.600E+04  (yr )
 
                          X-direction - interstitial pore velocity between X(I) and X(I+1) (m /yr )
 
