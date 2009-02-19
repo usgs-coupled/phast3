@@ -270,8 +270,16 @@ C.2.23.1 .. PRTPMP,PRTFP,PRTBC,PRTSLM,PRTWEL,PRT_KD; all [T/F]
      f t f t t f 
 C.2.23.2 .. PRTIC_C, PRTIC_MAPC, PRTIC_P, PRTIC_MAPHEAD, PRTIC_SS_VEL, PRTIC_XYZ_SS_VEL, PRTIC_CONC, PRTIC_FORCE_CHEM; all [T/F]
      f f t f f f f f 
-C.2.23.2.1 .. PRTIC_HDF_CONC, PRTIC_HDF_HEAD, PRTIC_HDF_SS_VEL; all [T/F]
-     t t t 
+C.2.23.2.1 .. PRTIC_HDF_CONC, PRTIC_HDF_HEAD, PRTIC_HDF_SS_VEL, PRTIC_HDF_MEDIA; all [T/F]
+     t t t t 
+C.2.23.2.2 .. HDF_media: units, Conversions user_to_si k, ss
+C.2.23.2.2.1 .. K: units, input_to_si, fluid_density, fluid_viscosity
+"meters/seconds"   1.0000000e+00   1.0000000e+03   1.0000000e-03
+C.2.23.2.2.2 .. Storage: units, input_to_si, fluid_compressibility
+"1/meters"   1.0000000e+00   0.0000000e+00
+C.2.23.2.3 .. HDF_media: Conversions user_to_si alpha
+C.2.23.2.3.1 .. Alpha: units, input_to_si
+"meters"   1.0000000e+00
 C.2.23.3 .. ORENPR[I];(O) - NOT CYLIND [1.4]
      12
 C.2.23.4 .. PLTZON[T/F];(O) - PRTPMP [2.23.1]
