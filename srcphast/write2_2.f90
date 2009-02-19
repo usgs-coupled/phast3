@@ -43,10 +43,17 @@ SUBROUTINE write2_2
   REAL(kind=kdp), PARAMETER :: cnv = 1._kdp
   REAL(KIND=kdp) :: ph, alk
   INTEGER :: da_err
+  INTEGER :: a_err
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
+  ALLOCATE (lprnt3(nxyz),  &
+       STAT = a_err)  
+  IF (a_err /= 0) THEN  
+     PRINT *, "Array allocation failed: write2_2"  
+     STOP  
+  ENDIF
   mflbl=' mass '
   rxlbl='X'
   nr = nx
@@ -301,6 +308,11 @@ SUBROUTINE write2_2
   IF (da_err /= 0) THEN  
      PRINT *, "Array deallocation failed: write2_2"  
      STOP  
+  ENDIF
+  DEALLOCATE (lprnt3, &
+       stat = da_err)
+  IF (da_err /= 0) THEN  
+     PRINT *, "Array allocation failed: write2_2"  
   ENDIF
 
 END SUBROUTINE write2_2
