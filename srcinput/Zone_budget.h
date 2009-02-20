@@ -3,35 +3,42 @@
 #include "Polyhedron.h"
 #include <map>
 
+#if defined(__WPHAST__)
+class CArchive;
+#include <hdf5.h>
+#endif
+
 class Zone_budget
 {
   public:
 	Zone_budget(void);
+	Zone_budget(const Zone_budget& src);
   public:
 	  virtual ~ Zone_budget(void);
+
+	Zone_budget& operator=(const Zone_budget& rhs); 
 
 	void Set_n_user(int i)
 	{
 		this->n_user = i;
 	};
-	int Get_n_user(void)
+	int Get_n_user(void)const
 	{
 		return this->n_user;
 	};
 
-	void Set_description(char *desc)
+	void Set_description(const char *desc)
 	{
-		this->description.clear();
-		this->description.append(desc);
+		this->description = desc;
 	};
-	std::string & Get_description(void)
+	std::string Get_description(void)const
 	{
 		return this->description;
 	}
 
 	void Set_polyh(Polyhedron * p)
 	{
-		assert(this->polyh == NULL);
+		delete this->polyh;
 		this->polyh = p;
 	};
 	Polyhedron *Get_polyh(void)
@@ -48,6 +55,8 @@ class Zone_budget
 	bool Add_cells(std::vector < bool > &cells_in_budget, zone * z, int nxyz,
 				   std::vector < Point > *cell_xyz);
 
+	friend std::ostream& operator<< (std::ostream &os, const Zone_budget &a);
+
   protected:
 	int n_user;
 	std::string description;
@@ -56,5 +65,13 @@ class Zone_budget
 
   public:
 	static std::map < int, Zone_budget * >zone_budget_map;
+
+#if defined(__WPHAST__)
+	friend class CZoneFlowRateZoneActor;
+	friend class CPropertyTreeControlBar;
+	static unsigned short clipFormat;
+	void Serialize(CArchive& ar);
+	void Serialize(bool bStoring, hid_t loc_id);
+#endif
 };
 #endif // !defined(ZONE_BUDGET_H_INCLUDED)

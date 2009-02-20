@@ -4459,7 +4459,7 @@ Tidy_cubes(PHAST_Transform::COORDINATE_SYSTEM target,
 			p = new Prism(*c);
 		}
 		p->Convert_coordinates(target, map2grid);
-		delete it->second->Get_polyh();
+// COMMENT: {2/18/2009 5:45:20 PM}		delete it->second->Get_polyh();
 		it->second->Set_polyh(p);
 	}
 }

@@ -13,7 +13,35 @@ Zone_budget::Zone_budget(void)
 {
 	this->n_user = 0;
 	this->polyh = NULL;
-	this->combo.clear();
+}
+
+Zone_budget::Zone_budget(const Zone_budget& src)
+: n_user(src.n_user)
+, description(src.description)
+, polyh(0)
+, combo(src.combo)
+{
+	if (src.polyh)
+	{
+		this->polyh = src.polyh->clone();
+	}
+}
+
+Zone_budget& Zone_budget::operator=(const Zone_budget& rhs)
+{
+	if (this != &rhs)
+	{
+		this->n_user = rhs.n_user;
+		this->description = rhs.description;
+		delete this->polyh;
+		this->polyh = 0;
+		if (rhs.polyh)
+		{
+			this->polyh = rhs.polyh->clone();
+		}
+		this->combo = rhs.combo;
+	}
+	return *this;
 }
 
 Zone_budget::~Zone_budget(void)
@@ -108,4 +136,21 @@ bool Zone_budget::Add_cells(std::vector < bool > &cells_in_budget, zone * z,
 		}
 	}
 	return true;
+}
+
+std::ostream& operator<< (std::ostream &os, const Zone_budget &a)
+{
+	os << "ZONE_FLOW_RATES " << a.n_user << " " << a.description << "\n";
+	if (a.combo.size())
+	{
+		os << "\t-combination";
+		std::vector<int>::const_iterator cit = a.combo.begin();
+		for (; cit != a.combo.end(); ++cit)
+		{
+			os << "    " << (*cit);
+		}
+		os << "\n";
+	}
+	os << *a.polyh;
+	return os;
 }
