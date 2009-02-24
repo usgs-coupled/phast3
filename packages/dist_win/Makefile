@@ -92,8 +92,7 @@ $(TARBALL) : ../RPM/dist.sh $(DATE_STAMP).tstamp
 	
 $(MV_TARBALL) : $(BUILD_SCRIPT)
 	@echo "Creating $(MV_TARBALL)"
-	cvs rtag -F $(MV_CVS_TAG) mv_phast/Mv
-	time ./$(BUILD_SCRIPT) cvsexport 2>&1 | tee cvsexport-$(RELEASE).log	
+	time ./$(BUILD_SCRIPT) svnexport 2>&1 | tee svnexport-$(RELEASE).log	
 	
 script : check_version $(BUILD_SCRIPT)	
 	
