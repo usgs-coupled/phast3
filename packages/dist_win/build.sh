@@ -384,11 +384,13 @@ install() {
     ${instdir}${prefix}/mv/bin/. && \
   /usr/bin/install -m 644 ${objdir}/Redist/DFORRT.DLL \
     ${instdir}${prefix}/mv/bin/. && \
+  /usr/bin/install -m 755 ${objdir}/Redist/hdf5dll.dll \
+    ${instdir}${prefix}/mv/bin/. && \
   /usr/bin/install -m 644 ${objdir}/Redist/lf90.eer \
     ${instdir}${prefix}/mv/bin/. && \
-  /usr/bin/install -m 755 ${objdir}/Mv/ModelViewer/Release/*.dll \
+  /usr/bin/install -m 755 ${objdir}/Redist/lf90wiod.dll \
     ${instdir}${prefix}/mv/bin/. && \
-  /usr/bin/install -m 755 ${objdir}/Mv/Redist/lf90wiod.dll \
+  /usr/bin/install -m 755 ${objdir}/Mv/ModelViewer/Release/*.dll \
     ${instdir}${prefix}/mv/bin/. && \
   /usr/bin/install -m 755 ${objdir}/Mv/Modflow2000Reader1/mf2k_r1.dll \
     ${instdir}${prefix}/mv/bin/. && \
@@ -398,9 +400,15 @@ install() {
     ${instdir}${prefix}/mv/bin/. && \
   /usr/bin/install -m 755 ${objdir}/Mv/ModelViewer/Release/modview.exe \
     ${instdir}${prefix}/mv/bin/. && \
-  /usr/bin/install -m 755 ${objdir}/Redist/vtkdll.dll \
+  /usr/bin/install -m 755 ${objdir}/Redist/vtkCommon.dll \
     ${instdir}${prefix}/mv/bin/. && \
-  /usr/bin/install -m 755 ${objdir}/Redist/hdf5dll.dll \
+  /usr/bin/install -m 755 ${objdir}/Redist/vtkFiltering.dll \
+    ${instdir}${prefix}/mv/bin/. && \
+  /usr/bin/install -m 755 ${objdir}/Redist/vtkGraphics.dll \
+    ${instdir}${prefix}/mv/bin/. && \
+  /usr/bin/install -m 755 ${objdir}/Redist/vtkImaging.dll \
+    ${instdir}${prefix}/mv/bin/. && \
+  /usr/bin/install -m 755 ${objdir}/Redist/vtkRendering.dll \
     ${instdir}${prefix}/mv/bin/. && \
   /usr/bin/install -m 755 ${objdir}/Redist/zlib1.dll \
     ${instdir}${prefix}/mv/bin/. && \
