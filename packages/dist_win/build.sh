@@ -119,7 +119,7 @@ export PHASTTOPDIR="`cygpath -w "${instdir}${prefix}"`"
 
 # Modelviewer 
 export MODELVIEWER="/cygdrive/c/Program Files/USGS/Model Viewer 1.0/"
-export MODELVIEWER-1.3="/cygdrive/c/Program Files/USGS/Model Viewer 1.3/"
+export MODELVIEWER_1_3="/cygdrive/c/Program Files/USGS/Model Viewer 1.3/"
 
 mkdirs() {
   (cd ${topdir} && \
@@ -207,21 +207,21 @@ svnexport() {
   cd ${topdir} && \
 # external files
   mkdir -p Redist && \
-  cp "`cygpath "${MODELVIEWER-1.3}"`/notice.txt"            ${topdir}/Redist/. && \
-  cp "`cygpath "${MODELVIEWER-1.3}"`/readme.txt"            ${topdir}/Redist/. && \
-  cp "`cygpath "${MODELVIEWER-1.3}"`/doc/ofr02-106.pdf"     ${topdir}/Redist/. && \
-  cp "`cygpath "${MODELVIEWER-1.3}"`/bin/DFORRT.DLL"        ${topdir}/Redist/. && \
-  cp "`cygpath "${MODELVIEWER-1.3}"`/bin/hdf5dll.dll"       ${topdir}/Redist/. && \
-  cp "`cygpath "${MODELVIEWER-1.3}"`/bin/lf90.eer"          ${topdir}/Redist/. && \
-  cp "`cygpath "${MODELVIEWER-1.3}"`/bin/lf90wiod.dll"      ${topdir}/Redist/. && \
-  cp "`cygpath "${MODELVIEWER-1.3}"`/bin/modview.chm"       ${topdir}/Redist/. && \
-  cp "`cygpath "${MODELVIEWER-1.3}"`/bin/szlibdll.dll"      ${topdir}/Redist/. && \
-  cp "`cygpath "${MODELVIEWER-1.3}"`/bin/vtkCommon.dll"     ${topdir}/Redist/. && \
-  cp "`cygpath "${MODELVIEWER-1.3}"`/bin/vtkFiltering.dll"  ${topdir}/Redist/. && \
-  cp "`cygpath "${MODELVIEWER-1.3}"`/bin/vtkGraphics.dll"   ${topdir}/Redist/. && \
-  cp "`cygpath "${MODELVIEWER-1.3}"`/bin/vtkImaging.dll"    ${topdir}/Redist/. && \
-  cp "`cygpath "${MODELVIEWER-1.3}"`/bin/vtkRendering.dll"  ${topdir}/Redist/. && \
-  cp "`cygpath "${MODELVIEWER-1.3}"`/bin/zlib1.dll"         ${topdir}/Redist/. && \
+  cp "`cygpath "${MODELVIEWER_1_3}"`/notice.txt"            ${topdir}/Redist/. && \
+  cp "`cygpath "${MODELVIEWER_1_3}"`/readme.txt"            ${topdir}/Redist/. && \
+  cp "`cygpath "${MODELVIEWER_1_3}"`/doc/ofr02-106.pdf"     ${topdir}/Redist/. && \
+  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/DFORRT.DLL"        ${topdir}/Redist/. && \
+  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/hdf5dll.dll"       ${topdir}/Redist/. && \
+  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/lf90.eer"          ${topdir}/Redist/. && \
+  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/lf90wiod.dll"      ${topdir}/Redist/. && \
+  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/modview.chm"       ${topdir}/Redist/. && \
+  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/szlibdll.dll"      ${topdir}/Redist/. && \
+  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/vtkCommon.dll"     ${topdir}/Redist/. && \
+  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/vtkFiltering.dll"  ${topdir}/Redist/. && \
+  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/vtkGraphics.dll"   ${topdir}/Redist/. && \
+  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/vtkImaging.dll"    ${topdir}/Redist/. && \
+  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/vtkRendering.dll"  ${topdir}/Redist/. && \
+  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/zlib1.dll"         ${topdir}/Redist/. && \
   tar cvzf ${src_orig_pkg_mv} Mv Redist && \
   rm -rf Mv Redist )
 }
@@ -443,8 +443,6 @@ install() {
 
 run_examples() {
   (EXAMPLES="${instdir}${prefix}/examples/ex1 \
-  ${instdir}${prefix}/examples/ex2 \
-  ${instdir}${prefix}/examples/ex3 \
   ${instdir}${prefix}/examples/ex4"
   for arg in $EXAMPLES; do
     cd ${arg}
@@ -478,8 +476,8 @@ mkpatch() {
   diff -urN -x '.build' -x '.inst' -x '.sinst' \
     ${DIFF_IGNORE} \
     ${BASEPKG}-orig ${BASEPKG} > \
-    ${srcinstdir}/${src_patch_name} && \
-  rm -r ${BASEPKG}-orig )
+    ${srcinstdir}/${src_patch_name} ; \
+  rm -rf ${BASEPKG}-orig )
 }
 
 spkg() {
