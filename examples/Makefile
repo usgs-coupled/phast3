@@ -12,7 +12,7 @@ endif
 ifeq ($(CFG), CYGWIN)
   TOPDIR=/cygdrive/c/programs/phastpp
   TEST=$(TOPDIR)/examples
-  PHAST_INPUT=$(TOPDIR)/src/input/win32_2005/Debug/phastinput.exe
+  PHAST_INPUT=$(TOPDIR)/src/phastinput/win32_2005/Debug/phastinput.exe
   PHAST=$(TOPDIR)/src/phast/win32_2005/ser/phast.exe
   PHAST_MPICH=$(TOPDIR)/src/phast/win32_2005/merge/phast.exe
   RUN=$(TEST)/runmpich

@@ -20,7 +20,7 @@ v(t.v)
 KDtree::KDtree(std::vector < Point > &pts):realdata(extents[pts.size()][3])
 {
 	int
-		n = pts.size();
+		n = (int) pts.size();
 	int
 		i,
 		j;

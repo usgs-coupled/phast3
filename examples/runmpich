@@ -10,8 +10,8 @@ rm -f 0/*
 #  Set names
 #
 PHASTDIR=/cygdrive/c/Programs/phastpp
-PHAST_MPICH=c:/Programs/phastpp/srcphast/win32_2005/merge/phast.exe
-PHAST_INPUT=/cygdrive/c/Programs/phastpp/srcinput/win32_2005/Debug/phastinput.exe
+PHAST_MPICH=c:/Programs/phastpp/src/phast/win32_2005/merge/phast.exe
+PHAST_INPUT=/cygdrive/c/Programs/phastpp/src/phastinput/win32_2005/Debug/phastinput.exe
 EXDIR=$PHASTDIR/examples
 MPICHRUN=/cygdrive/c/Program\ Files/MPICH2/bin/mpiexec
 #

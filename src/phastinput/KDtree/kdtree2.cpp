@@ -577,7 +577,7 @@ kdtree2::r_count(vector < double >&qv, double r2)
 		sr.ballsize = r2;
 
 		root->search(sr);
-		return (result.size());
+		return ((int) result.size());
 	}
 
 
@@ -634,7 +634,7 @@ kdtree2::r_count_around_point(int idxin, int correltime, double r2)
 		sr.ballsize = r2;
 		sr.nn = 0;
 		root->search(sr);
-		return (result.size());
+		return ((int) result.size());
 	}
 
 
