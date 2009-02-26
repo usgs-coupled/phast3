@@ -297,6 +297,7 @@ bool Prism::Read(std::istream & lines)
 			, "dip"				/* 1 */
 			, "top"				/* 2 */
 			, "bottom"			/* 3 */
+			, "description"     /* 4 */
 			//,"vector"                        /* 4 */
 			//"perimeter_z",                   /* 5 */
 			//"units_top",                     /* 6 */
@@ -307,7 +308,7 @@ bool Prism::Read(std::istream & lines)
 			//"bottom_coordinate_system"         /* 7 */
 	};
 	int
-		count_opt_list = 4;
+		count_opt_list = 5;
 	std::vector < std::string > std_opt_list;
 	int
 		i;
@@ -334,17 +335,11 @@ bool Prism::Read(std::istream & lines)
 	case 3:
 		p_opt = Prism::BOTTOM;
 		break;
-#ifdef SKIP
-	case 5:
-		p_opt = Prism::PERIMETER_COORD_SYS;
+
+	case 4:
+		p_opt = Prism::DESCRIPTION;
 		break;
-	case 6:
-		p_opt = Prism::TOP_COORD_SYS;
-		break;
-	case 7:
-		p_opt = Prism::BOTTOM_COORD_SYS;
-		break;
-#endif
+
 	default:
 		error_msg("Error reading prism data (perimeter, top, bottom).",
 				  EA_CONTINUE);
@@ -387,6 +382,9 @@ bool Prism::Read(PRISM_OPTION p_opt, std::istream & lines)
 	case BOTTOM:
 		if (!this->bottom.Read(lines, true))
 			error_msg("Reading bottom of prism", EA_CONTINUE);
+		break;
+	case DESCRIPTION:
+		std::getline(lines, this->description);
 		break;
 	default:
 		error_msg("Unknown option in prism::read.", EA_CONTINUE);

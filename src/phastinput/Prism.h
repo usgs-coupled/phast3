@@ -23,9 +23,8 @@ class Prism:public Polyhedron
 //    DIP          = 1,
 		TOP = 2,
 		BOTTOM = 3,
-		PERIMETER_COORD_SYS = 8,
-		TOP_COORD_SYS = 9,
-		BOTTOM_COORD_SYS = 10
+		DESCRIPTION =4
+
 	};
 
   public:
