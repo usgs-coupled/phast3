@@ -182,9 +182,10 @@
  * Added header.
  */
 
+/*
 static char rcsid[] =
 	"$Id: dbfopen.c,v 1.48 2003/03/10 14:51:27 warmerda Exp $";
-
+*/
 #include "shapefil.h"
 
 #include <math.h>
@@ -1061,7 +1062,7 @@ DBFWriteAttribute(DBFHandle psDBF, int hEntity, int iField, void *pValue)
 		{
 			int nWidth = psDBF->panFieldSize[iField];
 
-			if (sizeof(szSField) - 2 < nWidth)
+			if (sizeof(szSField) - 2 < (unsigned int) nWidth)
 				nWidth = sizeof(szSField) - 2;
 
 			sprintf(szFormat, "%%%dd", nWidth);
@@ -1079,7 +1080,7 @@ DBFWriteAttribute(DBFHandle psDBF, int hEntity, int iField, void *pValue)
 		{
 			int nWidth = psDBF->panFieldSize[iField];
 
-			if (sizeof(szSField) - 2 < nWidth)
+			if (sizeof(szSField) - 2 < (unsigned int) nWidth)
 				nWidth = sizeof(szSField) - 2;
 
 			sprintf(szFormat, "%%%d.%df",

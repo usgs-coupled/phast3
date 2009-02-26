@@ -3759,7 +3759,7 @@ poolinit(pool, bytecount, itemcount, wtype, alignment)
 	{
 		pool->alignbytes = wordsize;
 	}
-	if (sizeof(VOID *) > pool->alignbytes)
+	if (sizeof(VOID *) > (unsigned int) pool->alignbytes)
 	{
 		pool->alignbytes = sizeof(VOID *);
 	}
@@ -4194,7 +4194,7 @@ initializetrisubpools(m, b)
 	/*   integer index can occupy the same space as the subsegment pointers  */
 	/*   or attributes or area constraint or extra nodes.                    */
 	if ((b->voronoi || b->neighbors) &&
-		(trisize < 6 * sizeof(triangle) + sizeof(int)))
+	    ((unsigned int) trisize < 6 * sizeof(triangle) + sizeof(int)))
 	{
 		trisize = 6 * sizeof(triangle) + sizeof(int);
 	}
