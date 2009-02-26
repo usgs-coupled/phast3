@@ -44,15 +44,13 @@ if [ -f phast.dat ]; then
 cp ../schema 0
 cd 0
 sed -e "s?WORKING_DIRECTORY?$EXDIR/$NAME/0?" \
-    -e "s^EXECUTABLE^$PHASTDIR/srcphast/mpi_lahey/phast^" schema > temp; mv temp schema
+    -e "s^EXECUTABLE^$PHASTDIR/src/phast/mpi_lahey/phast^" schema > temp; mv temp schema
 #
 #   run phastinput
 #
-$PHASTDIR/srcinput/phastinput $NAME
+$PHASTDIR/src/phastinput/phastinput $NAME
 echo Done phastinput.
+#
+#   run phast
+#
 lamboot ../../hosts;  time mpirun-lam -O -v schema; wipe ../../hosts
-#lamboot ../../hosts;  time mpirun -O -v schema; wipe ../../hosts
-
-#/home/dlpark/packages/mpich2-1.0.5p4/bin/mpdboot
-#~/packages/mpich2-1.0.5p4/bin/mpiexec -n 2 ~/programs/phastpp/srcphast/mpich_gfortran/phast
-#/home/dlpark/packages/mpich2-1.0.5p4/bin/mpdallexit

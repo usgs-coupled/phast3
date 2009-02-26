@@ -4,23 +4,17 @@ CFG :=$(shell echo $(CFG1) | sed "s/CYGWIN.*/CYGWIN/")
 ifeq ($(CFG), Linux)
   TOPDIR=$(HOME)/programs/phastpp
   TEST=$(TOPDIR)/examples
-  PHAST_INPUT=$(TOPDIR)/srcinput/phastinput
-#  PHAST_INPUT=$(TOPDIR)/../phast_bc/srcinput-wedge/phastinput
-#  PHAST=$(TOPDIR)/srcphast/serial_gfortran/phast
-#  PHAST=$(TOPDIR)/srcphast/serial_g95/phast
-  PHAST=$(TOPDIR)/srcphast/serial_lahey/phast
-#  PHAST=$(TOPDIR)/../phast_bc/srcphast/serial_lahey/phast
+  PHAST_INPUT=$(TOPDIR)/src/phastinput/phastinput
+  PHAST=$(TOPDIR)/src/phast/serial_lahey/phast
   RUN=$(TEST)/run
 endif
 
 ifeq ($(CFG), CYGWIN)
   TOPDIR=/cygdrive/c/programs/phastpp
   TEST=$(TOPDIR)/examples
-  PHAST_INPUT=/cygdrive/c/Programs/phastpp/srcinput/win32_2005/Debug/phastinput.exe
-#  PHAST_INPUT=/cygdrive/c/Programs/phastpp/srcinput-wedge/win32_2005/Debug/phastinput.exe
-  PHAST=/cygdrive/c/Programs/phastpp/srcphast/win32_2005/ser/phast.exe
-  PHAST_MPICH=c:/Programs/phastpp/srcphast/win32_2005/merge_debug/phast.exe
-  PHAST_MPICH=c:/Programs/phastpp/srcphast/win32_2005/merge/phast.exe
+  PHAST_INPUT=$(TOPDIR)/src/input/win32_2005/Debug/phastinput.exe
+  PHAST=$(TOPDIR)/src/phast/win32_2005/ser/phast.exe
+  PHAST_MPICH=$(TOPDIR)/src/phast/win32_2005/merge/phast.exe
   RUN=$(TEST)/runmpich
 endif
 
