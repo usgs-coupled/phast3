@@ -24,6 +24,8 @@ DIST_RPM := $(HOME)/$(RPMDIR)/rpms/i586/$(NAME)-$(VERSION)-$(RELEASE).i586.rpm
 
 DIST_TARBALL := $(HOME)/$(RPMDIR)/rpms/i586/$(NAME)-$(VERSION)-$(RELEASE).`uname`.tar.gz
 
+REPOS_PATH ?= trunk
+
 RPMDIRS := \
 	$(HOME)/$(RPMDIR) \
 	$(HOME)/$(RPMDIR)/build \
@@ -101,7 +103,7 @@ build_srpm_files : $(HOME)/.rpmmacros $(HOME)/$(RPMDIR) $(SPECFILE) $(TARBALL)
 $(TARBALL) : dist.sh
 	@echo "Creating $(TARBALL)"
 	rm -f $(TARBALL)
-	time ./dist.sh -v $(VERSION) -r $(RELEASE) -d $(DATE) -pr trunk 2>&1 | tee dist-$(RELEASE).log
+	time ./dist.sh -v $(VERSION) -r $(RELEASE) -d $(DATE) -pr $(REPOS_PATH) 2>&1 | tee dist-$(RELEASE).log
 
 $(HOME)/.rpmmacros : .rpmmacros
 	@if [ ! -f $(HOME)/.rpmmacros ]; \

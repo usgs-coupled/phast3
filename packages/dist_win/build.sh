@@ -477,9 +477,7 @@ mkpatch() {
     ${DIFF_IGNORE} \
     ${BASEPKG}-orig ${BASEPKG} > \
     ${srcinstdir}/${src_patch_name} ; \
-  rm -rf ${BASEPKG}-orig )
-}
-
+  rm -rf ${BASEPKG}-orig )}
 spkg() {
   (mkpatch && \
   cp -al ${src_orig_pkg} ${srcinstdir}/${src_orig_pkg_name} && \

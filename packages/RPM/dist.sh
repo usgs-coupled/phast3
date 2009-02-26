@@ -147,23 +147,23 @@ echo "Exporting revision $REVISION of PHAST into sandbox..."
 	     "http://internalbrr/svn_GW/phastpp/$REPOS_PATH" \
 	     "$DISTNAME")
 	     
-echo "Exporting revision $REVISION of external srcphast/phreeqcpp into sandbox..."
+echo "Exporting revision $REVISION of external database into sandbox..."
 (cd "$DIST_SANDBOX" && \
  	${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
 	     "http://internalbrr.cr.usgs.gov/svn_GW/phreeqc/trunk/database" \
 	     "$DISTNAME/database")
 	     
-echo "Exporting revision $REVISION of external srcphast/phreeqcpp into sandbox..."
+echo "Exporting revision $REVISION of external src/phast/phreeqcpp into sandbox..."
 (cd "$DIST_SANDBOX" && \
  	${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
 	     "http://internalbrr.cr.usgs.gov/svn_GW/phreeqcpp/trunk/src" \
-	     "$DISTNAME/srcphast/phreeqcpp")
+	     "$DISTNAME/src/phast/phreeqcpp")
 	     
-echo "Exporting revision $REVISION of external srcphast/phreeqcpp/phreeqc into sandbox..."
+echo "Exporting revision $REVISION of external src/phast/phreeqcpp/phreeqc into sandbox..."
 (cd "$DIST_SANDBOX" && \
  	${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
 	     "http://internalbrr.cr.usgs.gov/svn_GW/phreeqc/trunk/src" \
-	     "$DISTNAME/srcphast/phreeqcpp/phreeqc")
+	     "$DISTNAME/src/phast/phreeqcpp/phreeqc")
 	     
 echo "Making examples clean"
 (cd "$DISTPATH/examples" && [ -f Makefile ] && make TOPDIR=.. clean > /dev/null)
@@ -187,21 +187,22 @@ find "$DISTPATH/examples" -type f -name 'clean' -print | xargs rm -rf
 find "$DISTPATH/examples" -type f -name 'notes' -print | xargs rm -rf
 find "$DISTPATH/examples" -type f -name '*.wphast' -print | xargs rm -rf
 
-echo "Cleaning up srcinput directory"
-rm -rf "$DISTPATH/srcinput/test"
+echo "Cleaning up src/phastinput directory"
+rm -rf "$DISTPATH/src/phastinput/test"
 
-echo "Cleaning up srcphast directory"
-rm -rf "$DISTPATH/srcphast/phreeqc/Sun"
+echo "Cleaning up src/phast directory"
+rm -rf "$DISTPATH/src/phast/phreeqc/Sun"
 
 echo "Renaming phreeqc.dat to phast.dat"
 mv "$DISTPATH/database/phreeqc.dat" "$DISTPATH/database/phast.dat"
 
 echo "Rearranging source directories"
 mkdir -p "$DISTPATH/src"
-cp "$DISTPATH/srcphast/phreeqcpp/phreeqc/revisions" "$DISTPATH/srcphast/phreeqc.revisions"
-mv "$DISTPATH/srcinput" "$DISTPATH/src/phastinput"
-mv "$DISTPATH/srcphast" "$DISTPATH/src/phast"
-mv "$DISTPATH/phasthdf" "$DISTPATH/src/phasthdf"
+#cp "$DISTPATH/srcphast/phreeqcpp/phreeqc/revisions" "$DISTPATH/srcphast/phreeqc.revisions"
+cp "$DISTPATH/src/phast/phreeqcpp/phreeqc/revisions" "$DISTPATH/src/phast/phreeqc.revisions"
+#mv "$DISTPATH/srcinput" "$DISTPATH/src/phastinput"
+#mv "$DISTPATH/srcphast" "$DISTPATH/src/phast"
+#mv "$DISTPATH/phasthdf" "$DISTPATH/src/phasthdf"
 
 ver_major=`echo $VERSION | cut -d '.' -f 1`
 ver_minor=`echo $VERSION | cut -d '.' -f 2`

@@ -1924,27 +1924,15 @@
 				Name="PHASTINPUT_OBJS"
 				>
 				<File
-					RelativePath="..\..\srcinput\KDtree\KDtree.cpp"
+					RelativePath="..\..\phastinput\KDtree\KDtree.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\srcinput\KDtree\KDtree.h"
+					RelativePath="..\..\phastinput\KDtree\kdtree2.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\srcinput\KDtree\kdtree2.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\srcinput\KDtree\kdtree2.hpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\srcinput\Point.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\srcinput\Point.h"
+					RelativePath="..\..\phastinput\Point.cpp"
 					>
 				</File>
 			</Filter>

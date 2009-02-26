@@ -18,8 +18,8 @@
 #include "gzstream.h"
 #include "Pointers_to_fortran.h"
 #include <vector>
-#include "../srcinput/Point.h"
-#include "../srcinput/KDtree/KDtree.h"
+#include "../../src/phastinput/Point.h"
+#include "../../src/phastinput/KDtree/KDtree.h"
 
 
 extern int xsurface_save(int n_user);
@@ -863,7 +863,7 @@ DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
 			count_chem2task_number[random_list[j]] = i;
 		}
 	}
-	/* 
+	/*
 	 * sort_random_list is the list of cell numbers that need to be saved for this processor
 	 */
 	first_cell = mpi_first_cell;
@@ -902,7 +902,7 @@ DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
 				ifile = -100 - it->second;
 			// parser
 			// stream
-			// use gsztream 
+			// use gsztream
 			igzstream
 				myfile;
 			myfile.open(it->first.c_str());
@@ -1225,7 +1225,7 @@ DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
 			count_chem2task_number[random_list[j]] = i;
 		}
 	}
-	/* 
+	/*
 	 * sort_random_list is the list of cell numbers that need to be saved for this processor
 	 */
 	first_cell = mpi_first_cell;
@@ -1264,7 +1264,7 @@ DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
 				ifile = -100 - it->second;
 			// parser
 			// stream
-			// use gsztream 
+			// use gsztream
 			igzstream
 				myfile;
 			myfile.open(it->first.c_str());
@@ -1305,12 +1305,12 @@ DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
 
 			// points are x, y, z, cell_no
 			std::vector < Point > pts;
-			// index: 
-			// 0 solution 
+			// index:
+			// 0 solution
 			// 1 ppassemblage
-			// 2 exchange 
+			// 2 exchange
 			// 3 surface
-			// 4 gas phase 
+			// 4 gas phase
 			// 5 ss_assemblage
 			// 6 kinetics
 			int *
@@ -1650,7 +1650,7 @@ DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
 		int
 			ifile = -100 - it->second;
 
-		// use gsztream 
+		// use gsztream
 		igzstream
 			myfile;
 		myfile.open(it->first.c_str());
@@ -1824,7 +1824,7 @@ DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
 		int
 			ifile = -100 - it->second;
 
-		// use gsztream 
+		// use gsztream
 		igzstream
 			myfile;
 		myfile.open(it->first.c_str());
@@ -1864,12 +1864,12 @@ DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
 
 		// points are x, y, z, cell_no
 		std::vector < Point > pts;
-		// index: 
-		// 0 solution 
+		// index:
+		// 0 solution
 		// 1 ppassemblage
-		// 2 exchange 
+		// 2 exchange
 		// 3 surface
-		// 4 gas phase 
+		// 4 gas phase
 		// 5 ss_assemblage
 		// 6 kinetics
 		int *
@@ -3846,7 +3846,7 @@ mpi_rebalance_load_per_cell(double *times_per_cell, double *frac,
 		t0;
 #endif
 	/*
-	 * Put in root times 
+	 * Put in root times
 	 */
 	if (mpi_myself == 0)
 	{
@@ -3927,8 +3927,8 @@ mpi_rebalance_load_per_cell(double *times_per_cell, double *frac,
 		//}
 
 		// calculate work on fastest processor
-		//std::vector<double> normalized_times_vector; 
-		//double *normalized_times; 
+		//std::vector<double> normalized_times_vector;
+		//double *normalized_times;
 
 		double
 			total_normalized_time = 0;
@@ -4762,7 +4762,7 @@ mpi_write_restart(double time_hst)
 	std::string backup_name(file_prefix);
 	backup_name.append(".restart.backup.gz");
 
-	// open file 
+	// open file
 	if (mpi_myself == 0)
 	{
 		ofs_restart.open(temp_name.c_str());
@@ -4792,7 +4792,7 @@ mpi_write_restart(double time_hst)
 			i = back[j].list[0];	/* i is ixyz number */
 			ofs_restart << x_node_c[i] << "  " << y_node_c[i] << "  " <<
 				z_node_c[i] << "  " << j << "  ";
-			// solution 
+			// solution
 			ofs_restart << initial_conditions1_c[7 * i] << "  ";
 			// pp_assemblage
 			ofs_restart << initial_conditions1_c[7 * i + 1] << "  ";
