@@ -84,6 +84,15 @@ class Data_source
 		this->source_type = dt;
 	};
 
+	DATA_SOURCE_TYPE Get_user_source_type(void) const
+	{
+		return this->source_type_user;
+	}
+	void Set_user_source_type(DATA_SOURCE_TYPE dt)
+	{
+		this->source_type_user = dt;
+	};
+
 	Filedata *Get_filedata(void) const
 	{
 		return this->filedata;

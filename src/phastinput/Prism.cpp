@@ -645,7 +645,7 @@ Prism::printOn(std::ostream & os) const
 		os << "\t\t" << "-description " << this->description << "\n";
 	}
 
-	if (this->top.Get_source_type() != Data_source::NONE)
+	if (this->top.Get_source_type() != Data_source::NONE && this->top.Get_user_source_type() != Data_source::NONE)
 	{
 		os << "\t\t-top       " << this->top;
 		{
@@ -662,7 +662,7 @@ Prism::printOn(std::ostream & os) const
 		}
 	}
 
-	if (this->bottom.Get_source_type() != Data_source::NONE)
+	if (this->bottom.Get_source_type() != Data_source::NONE && this->bottom.Get_user_source_type() != Data_source::NONE)
 	{
 		os << "\t\t-bottom    " << this->bottom;
 		{

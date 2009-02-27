@@ -1061,8 +1061,11 @@ std::ostream & operator<<(std::ostream & os, const Data_source & ds)
 			Get_file_name() << std::endl;
 		break;
 	case Data_source::CONSTANT:
-		os << "CONSTANT  " << coor_name[cs] << ds.pts.front().
-			z() << std::endl;
+		if (ds.source_type_user != Data_source::NONE)
+		{
+			os << "CONSTANT  " << coor_name[cs] << ds.pts.front().
+				z() << std::endl;
+		}
 		break;
 	case Data_source::POINTS:
 		os << "POINTS" << coor_name[cs] << std::endl;
