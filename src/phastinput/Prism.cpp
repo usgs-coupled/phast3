@@ -350,6 +350,8 @@ bool Prism::Read(std::istream & lines)
 
 bool Prism::Read(PRISM_OPTION p_opt, std::istream & lines)
 {
+	size_t startpos;
+	size_t endpos;
 	std::string token;
 	// identifier
 	//lines >> token;
@@ -385,6 +387,19 @@ bool Prism::Read(PRISM_OPTION p_opt, std::istream & lines)
 		break;
 	case DESCRIPTION:
 		std::getline(lines, this->description);
+
+		// trim leading and trailing spaces   
+		startpos = this->description.find_first_not_of(" \t");
+		endpos = this->description.find_last_not_of(" \t");
+	  
+		if((startpos == string::npos) || (endpos == string::npos))
+		{   
+			this->description = "";
+		}
+		else
+		{
+			this->description = this->description.substr(startpos, endpos - startpos + 1);
+		}
 		break;
 	default:
 		error_msg("Unknown option in prism::read.", EA_CONTINUE);
