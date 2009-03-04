@@ -179,7 +179,6 @@ rm -rf "$DISTPATH/examples/runmpich"
 rm -rf "$DISTPATH/examples/ex4/ex4.restart"
 rm -rf "$DISTPATH/examples/print_check_ss/print_check_ss.head.dat"
 rm -rf "$DISTPATH/examples/print_check_ss/print_check_ss.dmp"
-rm -rf "$DISTPATH/examples/ex4_noedl"
 rm -rf "$DISTPATH/src/phast/win32_2005/*.user"
 find "$DISTPATH/examples" -type f -name '*.restart' ! -wholename '*/ex4restart/ex4.restart' -print | xargs rm -rf
 find "$DISTPATH/examples" -type d -name '0' -print | xargs rm -rf

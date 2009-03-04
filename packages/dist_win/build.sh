@@ -121,6 +121,37 @@ export PHASTTOPDIR="`cygpath -w "${instdir}${prefix}"`"
 export MODELVIEWER="/cygdrive/c/Program Files/USGS/Model Viewer 1.0/"
 export MODELVIEWER_1_3="/cygdrive/c/Program Files/USGS/Model Viewer 1.3/"
 
+# Examples
+EXAMPLES="
+ diffusion1d \
+ diffusion2d \
+ disp2d \
+ ex1 \
+ ex2 \
+ ex3 \
+ ex4 \
+ ex4_ddl \
+ ex4_noedl \
+ ex4restart \
+ ex4_start_time \
+ ex4_transient \
+ kindred4.4 \
+ leaky \
+ leakysurface \
+ leakyx \
+ leakyz \
+ linear_bc \
+ linear_ic \
+ phrqex11 \
+ property \
+ radial \
+ river \
+ shell \
+ simple \
+ unconf \
+ well \
+ zf"
+
 mkdirs() {
   (cd ${topdir} && \
   mkdir -p ${objdir} && \
@@ -308,6 +339,10 @@ install() {
   /usr/bin/mkdir -p ${instdir}${prefix}/doc && \
   /usr/bin/mkdir -p ${instdir}${prefix}/database && \
   /usr/bin/mkdir -p ${instdir}${prefix}/examples && \
+# create examples directories
+  for arg in $EXAMPLES; do
+    /usr/bin/mkdir -p ${instdir}${prefix}/examples/${arg}
+  done && \
   /usr/bin/mkdir -p ${instdir}${prefix}/mv && \
   /usr/bin/mkdir -p ${instdir}${prefix}/mv/doc && \
   /usr/bin/mkdir -p ${instdir}${prefix}/mv/bin && \
@@ -361,7 +396,9 @@ install() {
 # clean up .cvsignore files
   /usr/bin/find ${instdir}${prefix}/src -name .cvsignore -exec /usr/bin/rm -f {} \; && \
 # examples directory
-  /usr/bin/cp -r ${objdir}/examples/* ${instdir}${prefix}/examples/. && \
+  for arg in $EXAMPLES; do
+    /usr/bin/cp -r ${objdir}/examples/${arg}/* ${instdir}${prefix}/examples/${arg}/.
+  done && \
   /usr/bin/find ${instdir}${prefix}/examples/. -type f -exec /usr/bin/unix2dos {} \; && \
   /usr/bin/find ${instdir}${prefix}/examples/. -type f -exec /usr/bin/chmod 644 {} \; && \
 # phastexport
