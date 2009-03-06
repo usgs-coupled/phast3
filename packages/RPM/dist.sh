@@ -186,6 +186,43 @@ find "$DISTPATH/examples" -type f -name 'clean' -print | xargs rm -rf
 find "$DISTPATH/examples" -type f -name 'notes' -print | xargs rm -rf
 find "$DISTPATH/examples" -type f -name '*.wphast' -print | xargs rm -rf
 
+echo "Deleting examples that aren't distributed"
+mv "$DISTPATH/examples" "$DISTPATH/examples-delete"
+mkdir "$DISTPATH/examples"
+EXAMPLES="diffusion1d \
+          diffusion2d \
+          disp2d \
+          ex1 \
+          ex2 \
+          ex3 \
+          ex4 \
+          ex4_ddl \
+          ex4_noedl \
+          ex4restart \
+          ex4_start_time \
+          ex4_transient \
+          kindred4.4 \
+          leaky \
+          leakysurface \
+          leakyx \
+          leakyz \
+          linear_bc \
+          linear_ic \
+          phrqex11 \
+          property \
+          radial \
+          river \
+          shell \
+          simple \
+          unconf \
+          well \
+          zf"
+for ex in $EXAMPLES
+do
+  mv "$DISTPATH/examples-delete/$ex" "$DISTPATH/examples/."
+done
+rm -rf "$DISTPATH/examples-delete"
+
 echo "Cleaning up src/phastinput directory"
 rm -rf "$DISTPATH/src/phastinput/test"
 
