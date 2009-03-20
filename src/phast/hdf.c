@@ -285,7 +285,7 @@ HDF_Finalize(void)
 
 			/* create the /Scalars dataset */
 			dset =
-				H5Dcreate(root.hdf_file_id, szScalars, fls_type, dspace,
+				H5Dcreate1(root.hdf_file_id, szScalars, fls_type, dspace,
 						  H5P_DEFAULT);
 			if (dset <= 0)
 			{
@@ -1488,7 +1488,11 @@ write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
 		status =
 			H5Sselect_elements(file_dspace_id, H5S_SELECT_SET,
 							   cell_count * proc.scalar_count,
+#if (H5_VERS_MAJOR>1)||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR>=8))||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR==6)&&(H5_VERS_RELEASE>=7))
+							   (const hssize_t *) coor);
+#else
 							   (const hssize_t **) coor);
+#endif
 		assert(status >= 0);
 
 		status =
@@ -1534,7 +1538,11 @@ write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
 		status =
 			H5Sselect_elements(file_dspace_id, H5S_SELECT_SET,
 							   cell_count * proc.scalar_count,
+#if (H5_VERS_MAJOR>1)||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR>=8))||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR==6)&&(H5_VERS_RELEASE>=7))
+							   (const hssize_t *) coor);
+#else
 							   (const hssize_t **) coor);
+#endif
 		assert(status >= 0);
 
 		status =

@@ -249,8 +249,13 @@ FileInfo_merge(struct FileInfo *ptr_info, hid_t xfer_pid, hid_t mem_dspace,
 					assert((int) s_ci.coord[0][0] <= local_count_chem);
 					status =
 						H5Sselect_elements(s_ci.dspace_id, H5S_SELECT_SET, 1,
+#if (H5_VERS_MAJOR>1)||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR>=8))||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR==6)&&(H5_VERS_RELEASE>=7))
+										   (const hssize_t *) ((void *) s_ci.
+																coord));
+#else
 										   (const hssize_t **) ((void *) s_ci.
 																coord));
+#endif
 					assert(status >= 0);
 					/* just read cell */
 					assert((int) s_ci.coord[0][0] <= local_count_chem);
@@ -268,8 +273,13 @@ FileInfo_merge(struct FileInfo *ptr_info, hid_t xfer_pid, hid_t mem_dspace,
 					assert((int) s_ci.coord[0][0] <= local_count_chem);
 					status =
 						H5Sselect_elements(s_ci.dspace_id, H5S_SELECT_SET, 1,
+#if (H5_VERS_MAJOR>1)||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR>=8))||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR==6)&&(H5_VERS_RELEASE>=7))
+										   (const hssize_t *) ((void *) s_ci.
+																coord));
+#else
 										   (const hssize_t **) ((void *) s_ci.
 																coord));
+#endif
 					assert(status >= 0);
 					/* read cell */
 					assert((int) s_ci.coord[0][0] <= local_count_chem);
@@ -754,7 +764,11 @@ MergeEndCell(int print_sel, int print_out, int print_hdf, int n_proc)
 		/* make dataspace selection */
 		status =
 			H5Sselect_elements(s_ci.dspace_id, H5S_SELECT_SET, 1,
+#if (H5_VERS_MAJOR>1)||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR>=8))||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR==6)&&(H5_VERS_RELEASE>=7))
+							   (const hssize_t *) ((void *) s_ci.coord));
+#else
 							   (const hssize_t **) ((void *) s_ci.coord));
+#endif
 		if (status < 0)
 		{
 			sprintf(error_string, "HDF ERROR: Unable to write dataset.\n");
@@ -803,7 +817,11 @@ MergeEndCell(int print_sel, int print_out, int print_hdf, int n_proc)
 		/* make dataspace selection */
 		status =
 			H5Sselect_elements(s_ci.dspace_id, H5S_SELECT_SET, 1,
+#if (H5_VERS_MAJOR>1)||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR>=8))||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR==6)&&(H5_VERS_RELEASE>=7))
+							   (const hssize_t *) ((void *) s_ci.coord));
+#else
 							   (const hssize_t **) ((void *) s_ci.coord));
+#endif
 		if (status < 0)
 		{
 			sprintf(error_string, "HDF ERROR: Unable to write dataset.\n");
@@ -852,7 +870,11 @@ MergeEndCell(int print_sel, int print_out, int print_hdf, int n_proc)
 		/* make dataspace selection */
 		status =
 			H5Sselect_elements(s_ci.dspace_id, H5S_SELECT_SET, 1,
+#if (H5_VERS_MAJOR>1)||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR>=8))||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR==6)&&(H5_VERS_RELEASE>=7))
+							   (const hssize_t *) ((void *) s_ci.coord));
+#else
 							   (const hssize_t **) ((void *) s_ci.coord));
+#endif
 		if (status < 0)
 		{
 			sprintf(error_string, "HDF ERROR: Unable to write dataset.\n");
