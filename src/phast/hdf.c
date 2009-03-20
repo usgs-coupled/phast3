@@ -285,7 +285,7 @@ HDF_Finalize(void)
 
 			/* create the /Scalars dataset */
 			dset =
-				H5Dcreate1(root.hdf_file_id, szScalars, fls_type, dspace,
+				H5Dcreate(root.hdf_file_id, szScalars, fls_type, dspace,
 						  H5P_DEFAULT);
 			if (dset <= 0)
 			{
