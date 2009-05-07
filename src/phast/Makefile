@@ -614,7 +614,7 @@ endif
 
 COMMON_COBJS =  advection.o basic.o basicsubs.o cl1.o input.o integrate.o inverse.o \
 	        isotopes.o kinetics.o mainsubs.o output.o model.o p2clib.o parse.o \
-		phqalloc.o prep.o print.o read.o readtr.o spread.o step.o structures.o \
+		phqalloc.o prep.o print.o read.o readtr.o sit.o spread.o step.o structures.o \
 		tally.o tidy.o transport.o utilities.o \
 		cvdense.o cvode.o dense.o nvector.o nvector_serial.o smalldense.o sundialsmath.o \
 		pitzer.o pitzer_structures.o dw.o \
