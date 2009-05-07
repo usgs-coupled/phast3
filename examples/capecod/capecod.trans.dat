@@ -1,20 +1,19 @@
 # <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 # <WPhast>
-#   <!--Exported from C:\Programs\phastpp\examples\CapeCod\capecod.wphast-->
-#   <!--Exported to   C:\Programs\phastpp\examples\CapeCod\capecod.trans.dat-->
+#   <!--Exported from C:\Programs\phastpp\examples\capecod\capecod.wphast-->
+#   <!--Exported to   C:\Programs\phastpp\examples\capecod\capecod.trans.dat-->
 #   <SiteMap angle="0" placement_x="0" placement_y="0" placement_z="-101.2" src="capecod.sitemap.jpg" worldfile="capecod.sitemap.jgw"/>
 # </WPhast>
 # 
-#SOLUTE_TRANSPORT false
-SOLUTE_TRANSPORT true
-#STEADY_FLOW true
-STEADY_FLOW false
+SOLUTE_TRANSPORT false
+STEADY_FLOW true
 	-head_tolerance 0.001
 	-flow_balance_tolerance 0.001
 	-minimum_time_step 0.1
 	-maximum_time_step 50
 	-head_change_target 30
 	-iterations 500
+	-growth_factor 2
 FREE_SURFACE_BC true
 SOLUTION_METHOD
 	-iterative_solver   true
@@ -40,127 +39,29 @@ UNITS
 	-leaky_hydraulic_conductivity     m/d
 	-leaky_thickness                  m
 	-well_diameter                    m
-	-well_flow_rate                   m^3/s
+	-well_flow_rate                   m^3/d
+	-well_depth                       m
 	-river_bed_hydraulic_conductivity m/d
 	-river_bed_thickness              m
 	-river_width                      m
+	-river_depth                      m
 	-drain_hydraulic_conductivity     m/d
 	-drain_thickness                  m
 	-drain_width                      m
-#GRID
-#	-uniform X 275000 285000 41
-#	-uniform Y 810000 830000 81
-#	-uniform Z -200 20 23
-#	-overlay Z 0 20 21
-#	-snap X 0.001
-#	-snap Y 0.001
-#	-snap Z 0.001
-#	-chemistry_dimensions XYZ
-#	-print_orientation XY
-#	-grid_origin   0  0  0
-#	-grid_angle    0
 GRID
-	-nonuniform X
-		277000    277192    277366    277525    277669
-		277800    277919    278027    278126    278215
-		278296    278370    278438    278499    278554
-		278605    278651    278692    278730    278765
-		278796    278825    278851    278874    278896
-		278915    278933    278949    278964    278977
-		278989    279000    279013    279025    279038
-		279050    279063    279075    279088    279100
-		279113    279125    279138    279150    279163
-		279175    279188    279200    279213    279225
-		279238    279250    279263    279275    279288
-		279300    279313    279325    279338    279350
-		279363    279375    279388    279400    279413
-		279425    279438    279450    279463    279475
-		279488    279500    279513    279525    279538
-		279550    279563    279575    279588    279600
-		279613    279625    279638    279650    279663
-		279675    279688    279700    279713    279725
-		279738    279750    279763    279775    279788
-		279800    279813    279825    279838    279850
-		279863    279875    279888    279900    279913
-		279925    279938    279950    279963    279975
-		279988    280000    280013    280025    280038
-		280050    280063    280075    280088    280100
-		280113    280125    280138    280150    280163
-		280175    280188    280200    280213    280225
-		280238    280250    280260    280271    280283
-		280296    280310    280326    280343    280363
-		280384    280407    280432    280461    280491
-		280525    280563    280604    280649    280699
-		280754    280814    280880    280953    281033
-		281121    281218    281325    281443    281572
-		281714    281870    282042    282231    282439
-		282667    282919    283196    283500
-	-nonuniform Y
-		815000    815172    815340    815506    815668
-		815827    815982    816135    816285    816431
-		816575    816716    816855    816990    817123
-		817253    817381    817506    817629    817749
-		817867    817983    818097    818208    818317
-		818424    818529    818631    818732    818831
-		818928    819022    819116    819207    819296
-		819384    819470    819554    819637    819718
-		819797    819875    819951    820026    820100
-		820172    820242    820311    820379    820445
-		820511    820574    820637    820699    820759
-		820818    820876    820932    820988    821042
-		821096    821148    821200    821250    821300
-		821350    821402    821454    821508    821562
-		821618    821675    821733    821792    821853
-		821914    821977    822041    822106    822173
-		822241    822310    822381    822453    822527
-		822602    822678    822756    822836    822917
-		823000
-	-nonuniform Z
-		-200    -194.696    -189.496    -184.398    -179.4
-		-174.5    -169.697    -164.987    -160.37    -155.843
-		-151.405    -147.054    -142.788    -138.606    -134.506
-		-130.486    -126.545    -122.682    -118.894    -115.18
-		-111.54    -107.97    -104.471    -101.04    -97.6767
-		-94.3792    -91.1463    -87.9768    -84.8695    -81.8231
-		-78.8364    -75.9083    -73.0376    -70.2232    -67.464
-		-64.7588    -62.1067    -59.5067    -56.9576    -54.4585
-		-52.0083    -49.6063    -47.2513    -44.9425    -42.679
-		-40.4598    -38.2842    -36.1512    -34.0601    -32.0099
-		-30    -28    -26    -24    -22
-		-20    -18    -16    -14    -12
-		-10    -8    -6    -4    -2
-		0    2    4    6    8
-		10    12    14    16    18
-		20    22
+	-uniform X 275000 285000 11   #41
+	-uniform Y 810000 830000 21   #81
+	-uniform Z -200 20 11  #23
 	-snap X 0.001
 	-snap Y 0.001
 	-snap Z 0.001
 	-chemistry_dimensions XYZ
 	-print_orientation XY
-	
-SPECIFIED_HEAD_BC
-	-zone 275000 823000 -200 285000 823000 100
-		-head
-			0	16.764
-		-associated_solution
-			0	1
-SPECIFIED_HEAD_BC
-	-zone 275000 815000 -5 285000 815000 0
-		-head
-			0	0
-		-associated_solution
-			0	1
-			
+	-grid_origin   0  0  0
+	-grid_angle    0
 MEDIA
-	-zone 275000 810000 -200 285000 830000 50 GRID
-		-active                   1
-		-Kx                       2.4384
-		-Ky                       2.4384
-		-Kz                       0.73152
-		-porosity                 0.39
-		-specific_storage         0.39
-##TODO add shell output
-	-zone 275000 810000 -500 285000 830000 100 MAP
+# Default
+	-box 275000 810000 -500 285000 830000 100 MAP
 		-active                   0
 		-Kx                       100
 		-Ky                       100
@@ -170,67 +71,25 @@ MEDIA
 		-long_dispersivity        1
 		-horizontal_dispersivity  1
 		-vertical_dispersivity    1
-		
-		
-		
-	box	275000	810000	10	285000	830000	25
-		Kx	Y	106.68	822500	36.576	815000
-		Ky	Y	106.68	822500	36.576	815000
-		Kz	Y	10.668	822500	3.6576	815000
-
-	box	275000	810000	-10	285000	830000	10
-		Kx	Y	88.392	822500	30.48	815000
-		Ky	Y	88.392	822500	30.48	815000
-		Kz	Y	8.8392	822500	3.048	815000
-
-	box	275000	810000	-30	285000	830000	-10
-		Kx	Y	73.152	822500	22.86	815000
-		Ky	Y	73.152	822500	22.86	815000
-		Kz	Y	7.3152	822500	2.286	815000
-
-	box	275000	810000	-60	285000	830000	-30
-		Kx	Y	9.144	822500	4.572	815000
-		Ky	Y	9.144	822500	4.572	815000
-		Kz	Y	0.9144	822500	0.4572	815000
-
-	box	275000	810000	-200	285000	830000	-60
-		Kx	Y	3.048	822500	1.524	815000
-		Ky	Y	3.048	822500	1.524	815000
-		Kz	Y	0.3048	822500	0.1524	815000
-		
-##TODO add shell output
-	-zone 275000 810000 -200 285000 830000 100 MAP
-		-Kx                       xyz map capecod.K.horizontal
-		-Ky                       xyz map capecod.K.horizontal
-		-Kz                       xyz map capecod.K.vertical
-
-
-
-
-
-
-
-
-
-
-
-##TODO add shell output
+	
+	-box 275000 810000 -200 285000 830000 100 MAP
+		-Kx        XYZ MAP  ./WalterData/kh_meters 
+		-Ky        XYZ MAP  ./WalterData/kh_meters 
+		-Kz        XYZ MAP  ./WalterData/kz_meters 
 	-prism
-		-top       CONSTANT   GRID 50
-		-bottom    ARCRASTER  MAP ./ArcData/bedrock-90.txt
-		-perimeter SHAPE      MAP ./ArcData/coast.shp
+		-top       CONSTANT   GRID 20
+		-bottom    ARCRASTER  GRID ./ArcData/bedrock-90.txt
+		-perimeter SHAPE      GRID ./ArcData/coast.shp
 		-active                   1
-##TODO add shell output
 	-prism
-		-top       CONSTANT   GRID 50
+		-top       CONSTANT   GRID 20
 		-bottom    CONSTANT   GRID -200
-		-perimeter SHAPE      MAP ./ArcData/ModelOutline.shp
+		-perimeter SHAPE      GRID ./ArcData/ModelOutline.shp
 		-active                   0
-##TODO add shell output
 	-prism
-		-top       CONSTANT   GRID 50
-		-bottom    SHAPE      MAP ./ArcData/SimpleBath.shp 10
-		-perimeter SHAPE      MAP ./ArcData/SimplePonds.shp
+		-top       CONSTANT   GRID 20
+		-bottom    SHAPE      GRID ./ArcData/SimpleBath.shp 10
+		-perimeter SHAPE      GRID ./ArcData/SimplePonds.shp
 		-active                   1
 		-Kx                       10000
 		-Ky                       10000
@@ -240,35 +99,17 @@ MEDIA
 		-long_dispersivity        1
 		-horizontal_dispersivity  1
 		-vertical_dispersivity    1
-		
-	#-prism
-	#	-shell
-	#	-top       CONSTANT   GRID 50
-	#	-bottom    SHAPE      MAP ./ArcData/SimpleBath.shp 10
-	#	-perimeter SHAPE      MAP ./ArcData/SimplePonds.shp
-	#	-Kx                       30
-	#	-Ky                       30
-	#	-Kz                       .3
-		
-##TODO add shell output
-
 FLUX_BC
-	-prism
-		-top       CONSTANT   MAP 100
-		-bottom    CONSTANT   MAP 0
-		-perimeter POINTS MAP 
-			275000 810000 100
-			285000 810000 100
-			285000 830000 100
-			275000 830000 100
-			end_points
+	-box 275000 810000 0 285000 830000 100 MAP
 		-face Z
 		-associated_solution
 			0	3
 		-flux
-			0	-0.0018
+#			0	-0.00188
+			0	XYZ	MAP	./WalterData/recharge_meters
 FLUX_BC
 	-prism
+		-description Beds 1-4
 		-top       CONSTANT   MAP 50
 		-bottom    CONSTANT   MAP 0
 		-perimeter POINTS MAP 
@@ -292,6 +133,7 @@ FLUX_BC
 			1996	0
 FLUX_BC
 	-prism
+		-description Beds 5-8
 		-top       CONSTANT   MAP 50
 		-bottom    CONSTANT   MAP 0
 		-perimeter POINTS MAP 
@@ -315,6 +157,7 @@ FLUX_BC
 			1996	0
 FLUX_BC
 	-prism
+		-description Beds 9-12
 		-top       CONSTANT   MAP 50
 		-bottom    CONSTANT   MAP 0
 		-perimeter POINTS MAP 
@@ -338,6 +181,7 @@ FLUX_BC
 			1996	0
 FLUX_BC
 	-prism
+		-description Beds 13-16
 		-top       CONSTANT   MAP 50
 		-bottom    CONSTANT   MAP 0
 		-perimeter POINTS MAP 
@@ -361,6 +205,7 @@ FLUX_BC
 			1996	0
 FLUX_BC
 	-prism
+		-description Beds 19-25
 		-top       CONSTANT   MAP 50
 		-bottom    CONSTANT   MAP 0
 		-perimeter POINTS MAP 
@@ -382,203 +227,145 @@ FLUX_BC
 			1978	0
 			1984	0
 			1996	0
-#SPECIFIED_HEAD_BC
-#	-prism
-#		-exterior all
-#		-top       CONSTANT   MAP 0.5
-#		-bottom    CONSTANT   MAP -0.5
-#		-perimeter POINTS MAP 
-#			277189 814489 0
-#			282362 815267 0
-#			285000 815267 0
-#			285000 810000 0
-#			275000 810000 0
-#			275000 814489 0
-#			end_points
-#		-head
-#			0	0
-#		-associated_solution
-			0	1
-
-HEAD_IC
+LEAKY_BC
 	-prism
-		-top       CONSTANT   MAP 100
-		-bottom    CONSTANT   MAP -500
-		-perimeter POINTS MAP 
-			275000 810000 100
-			285000 810000 100
-			285000 830000 100
-			275000 830000 100
+		-description Leaky X coast
+		-top       CONSTANT   GRID 1
+		-bottom    CONSTANT   GRID -1
+		-perimeter POINTS GRID 
+			275895.6875 810366.0625 -200
+			283826.28125 810248.1875 -200
+			282193 814743.875 -200
+			281553.1875 815215.375 -200
+			280947.03125 814878.5625 -200
+			280475.5625 815114.3125 -200
+			279734.6875 815046.9375 -200
+			279195.90625 814491.3125 -200
+			278084.59375 814440.8125 -200
+			277310.0625 814508.1875 -200
+			275912.53125 814221.9375 -200
 			end_points
-		-head                     xyz map capecod.head.dat.save
-		#-head 15
+		-face X
+		-associated_solution
+			0	1
+		-head
+			0	0
+		-hydraulic_conductivity  1
+		-thickness               1
+LEAKY_BC
+	-prism
+		-description Leaky Y coast
+		-top       CONSTANT   GRID 1
+		-bottom    CONSTANT   GRID -1
+		-perimeter POINTS GRID 
+			277326.90625 814457.625 0
+			278135.125 814407.125 0
+			279128.53125 814457.625 0
+			279684.1875 815030.125 0
+			280441.875 815114.3125 0
+			280963.84375 814844.9375 0
+			281570 815232.1875 0
+			282395.0625 814642.875 0
+			284196.6875 809911.4375 0
+			275643.125 810096.6875 0
+			275744.15625 814306.125 0
+			end_points
+		-face Y
+		-associated_solution
+			0	1
+		-head
+			0	0
+		-hydraulic_conductivity  1
+		-thickness               1
+HEAD_IC
+	-box 275000 810000 -200 285000 830000 20 GRID
+		-head                     15
+
 CHEMISTRY_IC
-	-zone 275000 810000 -200 285000 830000 50 GRID
-		#-solution            1
-		-solution          restart capecod.restart.save.gz
+	-box 275000 810000 -200 285000 830000 20 GRID
+		-solution            1
 DRAIN 1 East Boundary Quashnet R
-	-point 282835.491 821234.501
+	-point 282107.6 820940
 		-width                       20
-		-bed_hydraulic_conductivity  70
+		-bed_hydraulic_conductivity  1
 		-bed_thickness               1
-		-z                           10.668
-	-point 282947.779 820785.35
-		-z                           9.144
+		-z                           11.83
+	-point 282487.826809043 821288.795009447
+	-point 282757.640700374 821288.795009447
+	-point 282919.522855286 820702.879868881
 	-point 283205.171 819653.437
-		-z                           7.62
 	-point 283300.683 818796.255
-		-z                           6.096
 	-point 283204.16 818082.72
-		-z                           4.572
-	-point 283236.24 817473.2
-		-z                           3.048
+	-point 283164.357456908 817427.980020387
 	-point 282915.44 816494.76
-		-z                           1.524
 	-point 282209.68 814714.32
 		-width                       20
-		-bed_hydraulic_conductivity  70
+		-bed_hydraulic_conductivity  1
 		-bed_thickness               1
 		-z                           0
 DRAIN 2 Childs River, Johns Pond drain
-	-point 281507.75 817814.795
+	-point 281619.9 818867.5
 		-width                       20
-		-bed_hydraulic_conductivity  70
+		-bed_hydraulic_conductivity  1
 		-bed_thickness               1
-		-z                           7.62
+		-z                           10.56
 	-point 281342.955 817343.954
-		-z                           6.096
 	-point 281272.329 816543.523
-		-z                           4.572
 	-point 281319.413 816213.934
-		-z                           3.048
 	-point 281211.689 815490.059
-		-z                           1.524
 	-point 280884.585 814893.052
 		-width                       20
-		-bed_hydraulic_conductivity  70
+		-bed_hydraulic_conductivity  1
 		-bed_thickness               1
 		-z                           0
 DRAIN 4 Backus River (Cranberry bogs)
-	-point 278718.295 817425.83
+	-point 278572 817160.5
 		-width                       20
-		-bed_hydraulic_conductivity  70
+		-bed_hydraulic_conductivity  1
 		-bed_thickness               1
-		-z                           7.62
+		-z                           7.16
 	-point 278404.615 816798.47
-		-z                           6.096
 	-point 278260.845 816171.11
-		-z                           4.572
 	-point 278104.005 815347.7
-		-z                           3.048
 	-point 278117.075 814668.06
-		-z                           1.524
 	-point 278077.865 814393.59
 		-width                       20
-		-bed_hydraulic_conductivity  70
+		-bed_hydraulic_conductivity  1
 		-bed_thickness               1
 		-z                           0
 DRAIN 5 West Boundary Coonamessett River
-	-point 277330.574 819053.628
+	-point 277365.652311656 819130.232539017
 		-width                       20
-		-bed_hydraulic_conductivity  10
+		-bed_hydraulic_conductivity  1
 		-bed_thickness               1
-		-z                           10.668
+		-z                           9.92
 	-point 277224.725 818453.819
 		-width                       20
-		-bed_hydraulic_conductivity  70
-		-bed_thickness               1
-		-z                           9.144
 	-point 277381.64 817842.12
-		-z                           7.62
 	-point 277365.6 817312.8
-		-z                           6.096
 	-point 277461.84 816574.96
-		-z                           4.572
 	-point 277349.56 815885.24
 		-z                           3.048
 	-point 277301.44 814730.36
-		-z                           1.524
 	-point 277260.008 814502.138
 		-width                       20
-		-bed_hydraulic_conductivity  70
+		-bed_hydraulic_conductivity  1
+		-bed_thickness               1
+		-z                           0
+DRAIN 6 Bourne River
+	-point 279187.955718371 815453.305047008
+		-width                       20
+		-bed_hydraulic_conductivity  1
+		-bed_thickness               1
+		-z                           2.97
+	-point 279108.773684095 814446.372998225
+		-width                       20
+		-bed_hydraulic_conductivity  1
 		-bed_thickness               1
 		-z                           0
 
-ZONE_FLOW 1 Coonamessett River	
-	-prism
-		-description Coonamessett River
-		-top       CONSTANT   GRID 50
-		-bottom    CONSTANT   GRID -200
-		-perimeter POINTS GRID 
-			276944.6875 819339.1875 0
-			277767.75 819357.875 0
-			277580.6875 815354.75 0
-			277169.15625 812455.25 0
-			276944.6875 810790.4375 0
-			276084.1875 810846.5625 0
-			end_points
-			
-ZONE_FLOW 2 Backus River (Cranberry bogs)			
-##TODO add shell output
-	-prism
-		-description Backus River (Cranberry bogs)
-		-top       CONSTANT   GRID 50
-		-bottom    CONSTANT   GRID -200
-		-perimeter POINTS GRID 
-			277187.84375 810996.1875 0
-			277505.875 813166.125 0
-			277730.34375 814288.5 0
-			277880 815186.375 0
-			277917.40625 816495.8125 0
-			278104.46875 817449.8125 0
-			278665.65625 818085.8125 0
-			279264.25 818048.4375 0
-			278703.0625 816177.8125 0
-			278291.53125 814026.5625 0
-			277954.8125 812268.1875 0
-			277954.8125 810846.5625 0
-			end_points
-			
-ZONE_FLOW 3 Childs River			
-##TODO add shell output
-	-prism
-		-description Childs River
-		-top       CONSTANT   GRID 50
-		-bottom    CONSTANT   GRID -200
-		-perimeter POINTS GRID 
-			280330.5 812829.375 0
-			280199.5625 813615.0625 0
-			280723.34375 815541.8125 0
-			280910.40625 817169.25 0
-			281116.15625 818235.5 0
-			281565.125 818628.3125 0
-			282294.65625 818478.6875 0
-			281808.28125 816720.3125 0
-			281471.59375 815317.3125 0
-			281191 814269.75 0
-			end_points
-##TODO add shell output
 
-ZONE_FLOW 4 Quashnet River
-	-prism
-		-description Quashnet River
-		-top       CONSTANT   GRID 50
-		-bottom    CONSTANT   GRID -200
-		-perimeter POINTS GRID 
-			281583.8125 814288.5 0
-			282612.65625 817244.0625 0
-			282818.4375 819414 0
-			282425.59375 820985.3125 0
-			282488.28125 821778.6875 0
-			283255.375 822042.375 0
-			283734.8125 820843.75 0
-			283878.65625 818902.0625 0
-			284046.46875 817128.125 0
-			283135.53125 815402.125 0
-			282248.5625 813915.875 0
-			end_points
-##TODO add shell output
-
+		
 PRINT_INITIAL
 	-boundary_conditions        false
 	-components                 false
@@ -588,8 +375,8 @@ PRINT_INITIAL
 	-force_chemistry_print      false
 	-HDF_chemistry              true
 	-HDF_heads                  true
-	-HDF_steady_flow_velocities true
 	-HDF_media                  true
+	-HDF_steady_flow_velocities true
 	-heads                      true
 	-media_properties           true
 	-solution_method            true
@@ -604,28 +391,30 @@ PRINT_FREQUENCY
 	-save_final_heads true
 	0
 		-bc_flow_rates          0
+		-boundary_conditions    false 
 		-components             0
 		-conductances           0
-		-flow_balance                end 
+		-end_of_period_default  true 
+		-flow_balance           end 
 		-force_chemistry_print  0
-		-HDF_chemistry          5    years
-		-HDF_heads                   end 
-		-HDF_velocities              end 
-		-heads                       end 
+		-HDF_chemistry          1    years
+		-HDF_heads              end 
+		-HDF_velocities         end 
+		-heads                  end 
 		-progress_statistics    1    step 
-		-restart               10    years
-		-velocities                  end 
-		-wells                       end 
+		-restart_file           0
+		-tsv_zone_flows         end 
+		-velocities             end 
+		-wells                  end 
 		-xyz_chemistry          0
 		-xyz_components         0
 		-xyz_heads              0
 		-xyz_velocities         0
 		-xyz_wells              0
-		-boundary_conditions    false
+		-zone_flows             end 
 TIME_CONTROL
 	-time_step
-		0 .1
+		0 1
 	-time_change
-#		1996
-		1936
+		1937
 	-start_time 1935.9
