@@ -42,7 +42,7 @@ SUBROUTINE init2_1
   INTEGER :: a_err, da_err, i, ic, imm, imod, ipmz, iis, iwel, j, jc, k, k1, k2, kf, &
        kinc, kl, kr, ks, kw, l, l1, lc, ls, m, mb, mc, mele, m1, m2, &
        mk, mr, ms, msv, mt, nele, nks, nr, nsa, nxele, nxyele
-  INTEGER :: ibf, icz, isd, izn, lbc, msd, nbc, nbf, t_bctype, t_findx, t_lindx
+  INTEGER :: ibf, icz, isd, izn, lbc, mks, msd, nbc, nbf, t_bctype, t_findx, t_lindx
   INTEGER, DIMENSION(8) :: iisd=(/7,8,5,6,3,4,1,2/)
   INTEGER, DIMENSION(6) :: num_indx
   INTEGER, DIMENSION(8) :: face_x, face_y, face_z, i_ele, j_ele, k_ele, mm
@@ -508,6 +508,17 @@ SUBROUTINE init2_1
      qsw = 0._kdp
      qwm = 0._kdp
      qwv = 0._kdp
+     ! ... Check for well completion in inactive cells
+     DO iwel=1,nwel
+        DO ks=1,nkswel(iwel)
+           mks = mwel(iwel,ks)
+           IF(ibc(mks) == -1) THEN
+              ierr(57) = .TRUE.
+              errexi = .TRUE.
+           END IF
+        END DO
+     END DO
+     IF(errexi) RETURN
      ! ... Calculate the well indices, and location indices
      DO iwel=1,nwel  
         iw(iwel) = 1  
@@ -518,15 +529,15 @@ SUBROUTINE init2_1
            jw(iwel) = nintrp(yw(iwel), ny, y, erflg)  
         ENDIF
         IF(wqmeth(iwel) > 0) THEN  
-           nks = nkswel(iwel)  
-           mb = mwel(iwel,1)  
-           mt = mwel(iwel,nks)  
+           nks = nkswel(iwel)
+           mb = mwel(iwel,1)
+           mt = mwel(iwel,nks)
            wfrac(iwel) = 1._kdp  
            IF(.NOT.cylind) THEN
               uarz = ABS(arzbc(mwel(iwel,1)))  
               ! ...      Geometric factor
               rorw2 = 4.*uarz/(pi*wbod(iwel)*wbod(iwel))  
-              IF(rorw2 <=1._kdp) ierr(57) = .TRUE.
+              IF(rorw2 <= 1._kdp) ierr(57) = .TRUE.
               uwi = twopi*wfrac(iwel)*(rorw2-1._kdp)/(0.5* &
                    (rorw2*LOG(rorw2) - (rorw2-1._kdp)))
            ELSE
@@ -1011,8 +1022,8 @@ SUBROUTINE init2_1
                     DO icz=1,zone_col(izn)%num_xycol
                        IF(zone_col(izn)%i_no(icz) == i .AND. zone_col(izn)%j_no(icz) == j) THEN
                           lnk_crbc2zon(izn)%icz_no(ic) = icz
-                          EXIT
                           PRINT *,"Fail to link river to zone"
+                          EXIT
                           STOP
                        END IF
                     END DO

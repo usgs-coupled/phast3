@@ -18,7 +18,7 @@ SUBROUTINE phast_root(mpi_tasks, mpi_myself)
   INTEGER :: print_restart_flag
   CHARACTER(LEN=130) :: logline1
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: phast_root.F90,v 1.3 2008/10/14 20:08:38 klkipp Exp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: phast_root.F90,v 1.1 2009/05/07 19:46:55 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   !...

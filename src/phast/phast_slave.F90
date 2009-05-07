@@ -19,7 +19,7 @@ SUBROUTINE phast_slave(mpi_tasks, mpi_myself)
   INTEGER :: print_restart_flag
 !!$  CHARACTER(LEN=130) :: logline1
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: phast_slave.F90,v 1.4 2009/01/15 21:45:00 klkipp Exp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: phast_slave.F90,v 1.1 2009/05/07 19:46:55 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ! ... Extract the version name for the header
@@ -89,7 +89,7 @@ SUBROUTINE slave_init1
   INTEGER :: a_err, da_err, iis, nsa
   CHARACTER(LEN=10), DIMENSION(:), ALLOCATABLE :: ucomp_name
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: phast_slave.F90,v 1.4 2009/01/15 21:45:00 klkipp Exp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: phast_slave.F90,v 1.1 2009/05/07 19:46:55 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ! ... Allocate scratch space for component names
@@ -189,7 +189,7 @@ SUBROUTINE slave_closef
   INTEGER :: da_err
 !!$  CHARACTER(LEN=130) :: logline1, logline2, logline3
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: phast_slave.F90,v 1.4 2009/01/15 21:45:00 klkipp Exp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: phast_slave.F90,v 1.1 2009/05/07 19:46:55 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ! ... Close and delete the stripped input file

@@ -171,6 +171,10 @@ SUBROUTINE errprt(ie1,ie2)
           'Well diameter too large'
      CALL errprt_c(erline)
   END IF
+  IF(ierr(58)) THEN
+     erline='58  - INIT2 - Well is completed in one or more cells that are inactive'
+     CALL errprt_c(erline)
+  END IF
   IF(ierr(61)) THEN
      erline='61  - READ2 - Negative well completion factor'
      CALL errprt_c(erline)
