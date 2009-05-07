@@ -231,6 +231,7 @@ gpc_polygon_duplicate(gpc_polygon * in_poly)
 	// malloc holes
 	out_poly->hole =
 		(int *) malloc((size_t) (in_poly->num_contours * sizeof(int)));
+	assert (in_poly->num_contours > 0);
 	if (out_poly->hole == NULL)
 		malloc_error();
 	memcpy(out_poly->hole, in_poly->hole,

@@ -259,7 +259,7 @@ write_initial(void)
 	//output_msg(OUTPUT_HST,"     %d %d %d %d 0 0 %d\n", count_specified, count_flux, count_leaky, count_river_segments, count_wells);
 	output_msg(OUTPUT_HST, "     %d %d %d %d %d 0 0 %d\n", count_specified,
 			   count_flux, count_leaky, count_river_segments,
-			   count_drain_segments, count_wells);
+			   count_drain_segments, count_wells_in_region);
 /*
  *   solution method
  */
@@ -725,6 +725,7 @@ write_source_sink(void)
 	{
 		for (i = 0; i < count_wells; i++)
 		{
+			if (!wells[i].in_region) continue;
 			output_msg(OUTPUT_HST,
 					   "C.2.14.8 .. well number, x, y, zb, zt, db, dt, diameter, wqmeth\n");
 			if (wells[i].diameter_defined == TRUE)
@@ -761,10 +762,13 @@ write_source_sink(void)
 					   wells[i].n_user,
 					   wells[i].x_grid * units.horizontal.input_to_si,
 					   wells[i].y_grid * units.horizontal.input_to_si,
+					   0.0, 0.0, 0.0, 0.0,
+					   /* No longer used
 					   wells[i].screen_bottom * units.vertical.input_to_si,
 					   wells[i].screen_top * units.vertical.input_to_si,
 					   wells[i].screen_depth_bottom * units.vertical.input_to_si,
 					   wells[i].screen_depth_top * units.vertical.input_to_si,
+					   */
 					   diameter * units.well_diameter.input_to_si, code);
 			output_msg(OUTPUT_HST,
 					   "C.2.14.9 .. cell number, screened interval below node (m), screened interval above node (m)\n");
@@ -1741,7 +1745,7 @@ write_bc_transient(void)
 			   "C------------------------------------------------------------------------------\n");
 	output_msg(OUTPUT_HST, "C.....Source-sink well information\n");
 	output_msg(OUTPUT_HST, "C.3.2.1 .. RDWTD[T/F];(O) - NWEL [1.6] > 0\n");
-	if (count_wells > 0)
+	if (count_wells_in_region > 0)
 	{
 		if (well_defined == TRUE)
 		{
@@ -1756,12 +1760,15 @@ write_bc_transient(void)
 			   "C.3.2.2 .. IWEL,QWV,PWSUR,PWKT,TWSRKT,CWKT;(O) - RDWTD [3.2.1] \n");
 	output_msg(OUTPUT_HST, "C.....Use as many 3.2.2 lines as necessay\n");
 	output_msg(OUTPUT_HST, "C.3.2.3 .. End with END\n");
-	if (count_wells > 0 && well_defined == TRUE)
+	if (count_wells_in_region > 0 && well_defined == TRUE)
 	{
 		output_msg(OUTPUT_HST,
 				   "C.3.2.4 .. well sequence number, q, solution number\n");
+		int j = 0;
 		for (i = 0; i < count_wells; i++)
 		{
+			if (!wells[i].in_region) continue;
+			j++;
 			//if (wells[i].update == TRUE) {
 			//write all well information
 			if (wells[i].solution_defined == TRUE)
@@ -1773,7 +1780,7 @@ write_bc_transient(void)
 				solution = -1;
 			}
 			output_msg(OUTPUT_HST, "%d %e %d\n",
-					   i + 1,
+					   j,
 					   wells[i].current_q * units.well_pumpage.input_to_user,
 					   solution);
 			//}             
@@ -3064,6 +3071,7 @@ write_zone_budget(void)
 		std::map < int, bool > well_map;
 		for (i = 0; i < count_wells; i++)
 		{
+			if (!wells[i].in_region) continue;
 			for (j = 0; j < wells[i].count_cell_fraction; j++)
 			{
 				n = wells[i].cell_fraction[j].cell;
@@ -3285,7 +3293,7 @@ write_zone_budget(void)
 		}
 
 		// Well cells
-		if (count_wells > 0)
+		if (count_wells_in_region > 0)
 		{
 			output_msg(OUTPUT_HST,
 					   "C.2.23.26 .. Well cells: count; (O) nwel > 0\n");

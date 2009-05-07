@@ -8499,6 +8499,7 @@ read_well(void)
 	well_ptr->new_def = TRUE;
 	well_ptr->n_user = n_user;
 	well_ptr->description = description;
+	well_ptr->in_region = true;
 	well_ptr->x_user = 0;
 	well_ptr->x_user_defined = FALSE;
 	well_ptr->y_user = 0;

@@ -277,7 +277,7 @@ typedef struct Well
 		description;
 	int
 		new_def;
-
+	bool in_region;
 	double x_user;
 	int x_user_defined;
 	double y_user;
@@ -342,7 +342,7 @@ typedef struct Well
 EXTERNAL Well *
 	wells;
 EXTERNAL int
-	count_wells;
+	count_wells, count_wells_in_region;
 EXTERNAL bool well_depths_defined;
 /* ----------------------------------------------------------------------
  *   all cell and element properties

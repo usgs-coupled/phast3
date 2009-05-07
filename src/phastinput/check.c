@@ -189,7 +189,7 @@ check_hst_units(void)
 	{
 		units.flux.input_to_user = units.flux.input_to_si * (1 / si_to_user);
 	}
-	if (count_wells > 0 && units.well_pumpage.defined == FALSE)
+	if (count_wells_in_region > 0 && units.well_pumpage.defined == FALSE)
 	{
 		input_error++;
 		sprintf(error_string,
@@ -201,7 +201,7 @@ check_hst_units(void)
 		units.well_pumpage.input_to_user =
 			units.well_pumpage.input_to_si * (1 / si_to_user);
 	}
-	if (count_wells > 0 && units.well_diameter.defined == FALSE)
+	if (count_wells_in_region > 0 && units.well_diameter.defined == FALSE)
 	{
 		input_error++;
 		sprintf(error_string,
@@ -212,7 +212,7 @@ check_hst_units(void)
 	{
 		units.well_diameter.input_to_user = units.well_diameter.input_to_si;
 	}
-	if (count_wells > 0 && units.well_depth.defined == FALSE && well_depths_defined)
+	if (count_wells_in_region > 0 && units.well_depth.defined == FALSE && well_depths_defined)
 	{
 		units.well_depth.define("m");
 		sprintf(error_string,
@@ -1061,6 +1061,7 @@ check_time_series_data(void)
 	 */
 	for (i = 0; i < count_wells; i++)
 	{
+		if (!wells[i].in_region) continue;
 		if (wells[i].solution != NULL && flow_only == FALSE)
 		{
 			check_time_series(wells[i].solution, TRUE, "well solution");

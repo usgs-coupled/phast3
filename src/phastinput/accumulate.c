@@ -82,6 +82,7 @@ accumulate(void)
 				setup_drains();
 			}
 		}
+		/*
 		if (tidy_wells() == OK)
 		{
 			if (wells_convert_coordinate_systems())
@@ -89,6 +90,7 @@ accumulate(void)
 					setup_wells();
 			}
 		}
+		*/
 #ifdef DEBUG_RIVERS
 		write_rivers();
 #endif
@@ -96,7 +98,9 @@ accumulate(void)
 	else
 	{
 		update_rivers();
+		/*
 		update_wells();
+		*/
 	}
 	if (simulation == 0)
 	{
@@ -105,6 +109,21 @@ accumulate(void)
 		setup_media();
 	}
 	setup_bc();
+	/* need cell.cell_active to process wells */
+	if (simulation == 0)
+	{
+		if (tidy_wells() == OK)
+		{
+			if (wells_convert_coordinate_systems())
+			{
+					setup_wells();
+			}
+		}
+	}
+	else
+	{
+		update_wells();
+	}
 	setup_print_locations(&print_zones_chem,
 						  offsetof(struct cell, print_chem),
 						  offsetof(struct cell, print_chem_defined));
@@ -2952,6 +2971,7 @@ reset_transient_data(void)
 	update = FALSE;
 	for (i = 0; i < count_wells; i++)
 	{
+		if (!wells[i].in_region) continue;
 		if (get_current_property_position
 			(wells[i].solution, current_start_time, &pt_ptr) >= 0)
 		{

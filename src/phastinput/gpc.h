@@ -29,7 +29,7 @@ Copyright: (C) Advanced Interfaces Group,
 
 ===========================================================================
 */
-
+#include <assert.h>
 #ifndef __gpc_h
 #define __gpc_h
 

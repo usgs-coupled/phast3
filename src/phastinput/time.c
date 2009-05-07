@@ -471,6 +471,7 @@ collate_simulation_periods(void)
 	}
 	for (i = 0; i < count_wells; i++)
 	{
+		if (!wells[i].in_region) continue;
 		accumulate_time_series(wells[i].solution);
 		accumulate_time_series(wells[i].q);
 	}

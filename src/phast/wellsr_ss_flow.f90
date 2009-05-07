@@ -122,8 +122,10 @@ SUBROUTINE wellsr_ss_flow
         DO  ks=nks,1,-1
            m=mwel(iwel,ks)
            CALL mtoijk(m,i,j,k,nx,ny)
-           IF(ks < nks) sumdnz=sumdnz+ (denwk(iwel,ks+1)+denwk(iwel,ks))*  &
+           IF(ks < nks) THEN
+             sumdnz=sumdnz+ (denwk(iwel,ks+1)+denwk(iwel,ks))*  &
                 (z(k+1)-z(k))
+           END IF
            sum1=sum1+mobw(ks)*(p(m)-.5*gz*sumdnz)
            summob=summob+mobw(ks)
         END DO
@@ -513,8 +515,8 @@ SUBROUTINE wellsr_ss_flow
   ENDIF
   RETURN
 200 CONTINUE
-  WRITE(fuwel,9005) 'Well no. ',iwel,' has all zero mobility ', 'factors; WELLSR, ITIME =',itime
-  WRITE(logline1,9015) 'Well no. ',iwel,' has all zero mobility ', 'factors; WELLSR, ITIME =',itime
+  WRITE(fuwel,9005) 'Well no. ',iwel,' has all zero mobility factors; WELLSR, ITIME =',itime
+  WRITE(logline1,9015) 'Well no. ',iwel,' has all zero mobility factors; WELLSR, ITIME =',itime
   call errprt_c(logline1)
   DEALLOCATE (jwell, mobw, ucwkt, uqsw, &
        stat = da_err)
