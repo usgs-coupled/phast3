@@ -1342,6 +1342,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\phreeqcpp\phreeqc\sit.c"
+					>
+				</File>
+				<File
 					RelativePath="..\phreeqcpp\phreeqc\smalldense.c"
 					>
 					<FileConfiguration
