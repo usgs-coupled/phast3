@@ -147,15 +147,14 @@ kdtree2::build_tree()
 kdtree2_node *
 kdtree2::build_tree_for_range(int l, int u, kdtree2_node * parent)
 {
-	// recursive function to build 
-	kdtree2_node *node = new kdtree2_node(dim);
-	// the newly created node. 
-
 	if (u < l)
 	{
 		return (NULL);			// no data in this node. 
 	}
 
+	// recursive function to build 
+	kdtree2_node *node = new kdtree2_node(dim);
+	// the newly created node. 
 
 	if ((u - l) <= bucketsize)
 	{
