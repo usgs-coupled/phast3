@@ -632,6 +632,7 @@ SUBROUTINE sumcal1
            IF(l1 == 0) l1 = nxy
            m = mfsbc(l1)
         ENDIF
+        if (m <= 0) CYCLE
         qn = qfflx(ls)*areafbc(ls)
         IF(qn <= 0.) THEN             ! ... Outflow
            qfbc = den(m)*qn*ufrac  

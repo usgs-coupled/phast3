@@ -255,6 +255,7 @@ SUBROUTINE aplbci
            IF(l1 == 0) l1 = nxy
            m = mfsbc(l1)
         ENDIF
+        if (m <= 0) CYCLE
         qn = qfflx(ls)*areafbc(ls)*ufrac
         ma = mrno(m)
         IF(ieq == 1) THEN
