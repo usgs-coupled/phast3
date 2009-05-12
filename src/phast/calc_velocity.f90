@@ -117,6 +117,7 @@ SUBROUTINE calc_velocity
                  IF(l1 == 0) l1 = nxy
                  mbc = mfsbc(l1)
               ENDIF
+              if (mbc <= 0) CYCLE
               qn = qfflx(ls)*areafbc(ls)
               IF(qn <= 0.) THEN        ! ... Outflow
                  qface = den(mbc)*qn*ufrac
