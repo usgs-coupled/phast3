@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <VisualStudioProject ProjectCreator="Intel Fortran" Keyword="Console Application" Version="9.10" ProjectIdGuid="{F64F3B2F-6F9B-48D1-98BC-A714F23B1533}">
 	<Platforms>
-		<Platform Name="Win32"/></Platforms>
+		<Platform Name="Win32"/>
+		<Platform Name="x64"/></Platforms>
 	<Configurations>
 		<Configuration Name="ser_debug|Win32" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)" WorkingDirectory="$(ProjectDir)\..\..\..\examples\capecod">
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true" HeaderFileName="$(InputName).h" TypeLibraryName="$(IntDir)/$(InputName).tlb"/>
@@ -9,7 +10,7 @@
 				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" PreprocessorDefinitions="HDF5_CREATE" CallingConvention="callConventionCRef" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" CompileOnly="true"/>
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFCustomBuildTool"/>
-				<Tool Name="VFLinkerTool" OutputFile="$(OUTDIR)/phast.exe" ShowProgress="linkProgressLibs" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(DEV_GMP_LIB_MT);$(OUTDIR)" IgnoreDefaultLibraryNames="LIBCMT" GenerateDebugInformation="true" ProgramDatabaseFile="$(OUTDIR)/phastpp.pdb" SubSystem="subSystemConsole" StackReserveSize="10000000" AdditionalDependencies="zdll.lib phreeqcpp.lib gmp.lib hdf5dll.lib zdll.lib"/>
+				<Tool Name="VFLinkerTool" OutputFile="$(OUTDIR)/phast.exe" ShowProgress="linkProgressLibs" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(DEV_GMP_LIB_MT);$(OUTDIR)" IgnoreDefaultLibraryNames="LIBCMT" GenerateDebugInformation="true" ProgramDatabaseFile="$(OUTDIR)/phastpp.pdb" SubSystem="subSystemConsole" StackReserveSize="10000000" LargeAddressAware="addrAwareLarge" AdditionalDependencies="zdll.lib phreeqcpp.lib gmp.lib hdf5dll.lib zdll.lib"/>
 				<Tool Name="VFResourceCompilerTool" ResourceOutputFileName="$(IntDir)/$(InputName).res"/>
 				<Tool Name="VFPreLinkEventTool"/></Configuration>
 		<Configuration Name="ser|Win32" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)" WorkingDirectory="$(ProjectDir)\..\..\..\examples\capecod">
@@ -38,7 +39,43 @@
 				<Tool Name="VFCustomBuildTool"/>
 				<Tool Name="VFLinkerTool" OutputFile="$(OUTDIR)/phast.exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(DEV_MPICH2_LIB);$(DEV_GMP_LIB_MT);$(OUTDIR)" IgnoreDefaultLibraryNames="LIBCMT" GenerateDebugInformation="true" SubSystem="subSystemConsole" AdditionalDependencies="zdll.lib phreeqcpp.lib hdf5dll.lib gmp.lib fmpich2.lib mpi.lib"/>
 				<Tool Name="VFResourceCompilerTool" ResourceOutputFileName="$(IntDir)/$(InputName).res"/>
-				<Tool Name="VFPreLinkEventTool"/></Configuration></Configurations>
+				<Tool Name="VFPreLinkEventTool"/></Configuration>
+		<Configuration Name="ser_debug|x64" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)" WorkingDirectory="$(ProjectDir)\..\..\..\examples\capecod">
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true" HeaderFileName="$(InputName).h" TypeLibraryName="$(IntDir)/$(InputName).tlb"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" PreprocessorDefinitions="HDF5_CREATE" CallingConvention="callConventionCRef" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" CompileOnly="true"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFLinkerTool" OutputFile="$(OUTDIR)/phast.exe" ShowProgress="linkProgressLibs" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="C:\3RDPARTY\zlib123_x64\zlib123\contrib\vstudio\vc8\x64\ZlibStatDebug;$(DEV_HDF5_X64_LIBDLL);$(DEV_GMP_LIB_MT);$(OUTDIR)" IgnoreDefaultLibraryNames="LIBCMT" GenerateDebugInformation="true" ProgramDatabaseFile="$(OUTDIR)/phastpp.pdb" SubSystem="subSystemConsole" StackReserveSize="10000000" AdditionalDependencies="phreeqcpp.lib  hdf5dll.lib zlibstat.lib"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFResourceCompilerTool" ResourceOutputFileName="$(IntDir)/$(InputName).res"/></Configuration>
+		<Configuration Name="ser|x64" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)" WorkingDirectory="$(ProjectDir)\..\..\..\examples\capecod">
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true" HeaderFileName="$(InputName).h" TypeLibraryName="$(IntDir)/$(InputName).tlb"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="HDF5_CREATE" CallingConvention="callConventionCRef" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" RuntimeLibrary="static /threads" CompileOnly="true"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFLinkerTool" OutputFile="$(OUTDIR)/phast.exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="C:\3RDPARTY\zlib123_x64\zlib123\contrib\vstudio\vc8\x64\ZlibStatReleaseWithoutAsm;$(DEV_HDF5_X64_LIBDLL);$(OUTDIR)" IgnoreDefaultLibraryNames="LIBC" SubSystem="subSystemConsole" StackReserveSize="10000000" AdditionalDependencies="zlibstat.lib phreeqcpp.lib hdf5dll.lib "/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFResourceCompilerTool" ResourceOutputFileName="$(IntDir)/$(InputName).res"/></Configuration>
+		<Configuration Name="merge|x64" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)" WorkingDirectory="$(ProjectDir)\..\..\..\examples\ex4">
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true" HeaderFileName="$(InputName).h" TypeLibraryName="$(IntDir)/$(InputName).tlb"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(DEV_MPICH2_INC)" PreprocessorDefinitions="MERGE_FILES;HDF5_CREATE;USE_MPI;MPICH_NAME;NO_UNDERSCORES" CallingConvention="callConventionCRef" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" RuntimeLibrary="static /threads" CompileOnly="true"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFLinkerTool" OutputFile="$(OUTDIR)/phast.exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(DEV_MPICH2_LIB);$(DEV_GMP_LIB_MT);$(OUTDIR)" IgnoreDefaultLibraryNames="LIBC" SubSystem="subSystemConsole" AdditionalDependencies="zdll.lib phreeqcpp.lib hdf5dll.lib gmp.lib fmpich2.lib mpi.lib"/>
+				<Tool Name="VFResourceCompilerTool" ResourceOutputFileName="$(IntDir)/$(InputName).res"/>
+				<Tool Name="VFPreLinkEventTool"/></Configuration>
+		<Configuration Name="merge_debug|x64" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)" WorkingDirectory="$(ProjectDir)\..\..\..\examples\ex4">
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true" HeaderFileName="$(InputName).h" TypeLibraryName="$(IntDir)/$(InputName).tlb"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(DEV_MPICH2_INC)" PreprocessorDefinitions="MERGE_FILES;HDF5_CREATE;USE_MPI;MPICH_NAME;NO_UNDERSCORES" CallingConvention="callConventionCRef" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" CompileOnly="true"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFLinkerTool" OutputFile="$(OUTDIR)/phast.exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(DEV_MPICH2_LIB);$(DEV_GMP_LIB_MT);$(OUTDIR)" IgnoreDefaultLibraryNames="LIBCMT" GenerateDebugInformation="true" SubSystem="subSystemConsole" AdditionalDependencies="zdll.lib phreeqcpp.lib hdf5dll.lib gmp.lib fmpich2.lib mpi.lib"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFResourceCompilerTool" ResourceOutputFileName="$(IntDir)/$(InputName).res"/></Configuration></Configurations>
 	<Files>
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
 		<Filter Name="COMMON_FOBJS">
@@ -47,7 +84,9 @@
 		<File RelativePath="..\aplbce_ss_flow.f90"/>
 		<File RelativePath="..\aplbci.f90"/>
 		<File RelativePath="..\armult.f90"/>
-		<File RelativePath="..\asembl.f90"/>
+		<File RelativePath="..\asembl.f90">
+			<FileConfiguration Name="ser_debug|x64">
+				<Tool Name="VFFortranCompilerTool" SwitchesHaveChanged="false"/></FileConfiguration></File>
 		<File RelativePath="..\asmslc.f90"/>
 		<File RelativePath="..\asmslp.f90"/>
 		<File RelativePath="..\asmslp_ss_flow.f90"/>
@@ -156,11 +195,15 @@
 		<File RelativePath="..\hdf_f.f90"/></Filter>
 		<Filter Name="MPI_OBJS">
 		<File RelativePath="..\mpimod.F90">
+			<FileConfiguration Name="ser|x64" ExcludedFromBuild="true"/>
 			<FileConfiguration Name="ser_debug|Win32" ExcludedFromBuild="true"/>
-			<FileConfiguration Name="ser|Win32" ExcludedFromBuild="true"/></File>
+			<FileConfiguration Name="ser|Win32" ExcludedFromBuild="true"/>
+			<FileConfiguration Name="ser_debug|x64" ExcludedFromBuild="true"/></File>
 		<File RelativePath="..\phast_slave.F90">
+			<FileConfiguration Name="ser|x64" ExcludedFromBuild="true"/>
 			<FileConfiguration Name="ser_debug|Win32" ExcludedFromBuild="true"/>
-			<FileConfiguration Name="ser|Win32" ExcludedFromBuild="true"/></File></Filter></Filter>
+			<FileConfiguration Name="ser|Win32" ExcludedFromBuild="true"/>
+			<FileConfiguration Name="ser_debug|x64" ExcludedFromBuild="true"/></File></Filter></Filter>
 		<Filter Name="Header Files" Filter="fi;fd"/>
 		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
 		<File RelativePath="phast.rc"/></Filter></Files>
