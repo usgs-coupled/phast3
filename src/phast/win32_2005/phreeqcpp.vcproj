@@ -11,6 +11,9 @@
 		<Platform
 			Name="Win32"
 		/>
+		<Platform
+			Name="x64"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
@@ -40,9 +43,80 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(DEV_ZLIB122_INC)&quot;;&quot;$(DEV_HDF5_INC)&quot;;&quot;$(DEV_GMP_INC_MT)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;;&quot;$(ProjectDir)..&quot;;&quot;$(BOOSTROOT)&quot;"
 				PreprocessorDefinitions="GZIP_RESTART;USE_PHRQ_ALLOC;PHREEQC_CPP;_DEBUG;HDF5_CREATE;WIN32;_CONSOLE;NO_UNDERSCORES;H5_HAVE_FUNCTION;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;H5Dcreate_vers=1;H5Gcreate_vers=1"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				UsePrecompiledHeader="0"
+				BrowseInformation="1"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+				ForcedIncludeFiles=""
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/phreeqcpp.lib"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+				ValidateIntelliSense="true"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="ser_debug|x64"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="4"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
+				Optimization="0"
+				AdditionalIncludeDirectories="&quot;$(DEV_ZLIB122_INC)&quot;;&quot;$(DEV_HDF5_X64_INC)&quot;;&quot;$(DEV_GMP_INC_MT)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;;&quot;$(ProjectDir)..&quot;;&quot;$(BOOSTROOT)&quot;"
+				PreprocessorDefinitions="GZIP_RESTART;USE_PHRQ_ALLOC;PHREEQC_CPP;_DEBUG;HDF5_CREATE;H5Dcreate_vers=1;H5Gcreate_vers=1;WIN32;_CONSOLE;NO_UNDERSCORES;H5_HAVE_FUNCTION;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;ZLIB_WINAPI"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -108,10 +182,80 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
 				AdditionalIncludeDirectories="&quot;$(DEV_ZLIB122_INC)&quot;;&quot;$(DEV_HDF5_INC)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;;&quot;$(BOOSTROOT)&quot;"
+				PreprocessorDefinitions="PHREEQC_CPP;NDEBUG;HDF5_CREATE;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;H5Dcreate_vers=1;H5Gcreate_vers=1"
+				StringPooling="true"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/phreeqcpp.lib"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="ser|x64"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="4"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				OmitFramePointers="true"
+				AdditionalIncludeDirectories="&quot;$(DEV_HDF5_X64_INC)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;;C:\3RDPARTY\zlib123_x64\zlib123;&quot;$(BOOSTROOT)&quot;"
 				PreprocessorDefinitions="PHREEQC_CPP;NDEBUG;HDF5_CREATE;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;H5Dcreate_vers=1;H5Gcreate_vers=1"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -172,6 +316,74 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				OmitFramePointers="true"
+				AdditionalIncludeDirectories="&quot;$(DEV_ZLIB122_INC)&quot;;&quot;$(DEV_HDF5_INC)&quot;;&quot;$(DEV_MPICH2_INC)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;;&quot;$(BOOSTROOT)&quot;"
+				PreprocessorDefinitions="PHREEQC_CPP;NDEBUG;MERGE_FILES;USE_MPI;HDF5_CREATE;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;H5Dcreate_vers=1;H5Gcreate_vers=1"
+				StringPooling="true"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/phreeqcpp.lib"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="merge|x64"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="4"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
@@ -286,6 +498,76 @@
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
+		<Configuration
+			Name="merge_debug|x64"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="4"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				InlineFunctionExpansion="0"
+				OmitFramePointers="false"
+				AdditionalIncludeDirectories="&quot;$(DEV_ZLIB122_INC)&quot;;&quot;$(DEV_HDF5_INC)&quot;;&quot;$(DEV_GMP_INC_MT)&quot;;&quot;$(DEV_MPICH2_INC)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;;&quot;$(BOOSTROOT)&quot;"
+				PreprocessorDefinitions="GZIP_RESTART;USE_PHRQ_ALLOC;PHREEQC_CPP;_DEBUG;MERGE_FILES;USE_MPI;HDF5_CREATE;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;H5Dcreate_vers=1;H5Gcreate_vers=1"
+				StringPooling="false"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				EnableFunctionLevelLinking="false"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/phreeqcpp.lib"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -309,7 +591,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -325,7 +623,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -345,7 +659,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -361,7 +691,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -381,7 +727,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -397,7 +759,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -417,7 +795,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -433,7 +827,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -453,7 +863,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -469,7 +895,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -489,7 +931,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -505,7 +963,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -525,7 +999,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -541,7 +1031,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -561,7 +1067,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -577,7 +1099,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -597,7 +1135,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -613,7 +1167,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -633,7 +1203,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -649,7 +1235,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -669,7 +1271,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -685,7 +1303,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -705,7 +1339,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -721,7 +1371,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -741,7 +1407,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -757,7 +1439,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -777,7 +1475,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -793,7 +1507,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -813,7 +1543,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -829,7 +1575,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -849,7 +1611,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -865,7 +1643,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -885,7 +1679,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -901,7 +1711,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -921,7 +1747,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -937,7 +1779,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -957,7 +1815,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -973,7 +1847,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -993,7 +1883,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1009,7 +1915,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1029,7 +1951,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1045,7 +1983,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1065,7 +2019,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1081,7 +2051,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1101,7 +2087,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1117,7 +2119,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1137,7 +2155,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1153,7 +2187,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1173,7 +2223,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1189,7 +2255,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1209,7 +2291,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1225,7 +2323,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1245,7 +2359,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1261,7 +2391,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1281,7 +2427,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1297,7 +2459,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1317,7 +2495,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1333,7 +2527,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1353,7 +2563,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1369,7 +2595,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1389,7 +2631,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1405,7 +2663,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1425,7 +2699,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1441,7 +2731,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1461,7 +2767,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1477,7 +2799,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1497,7 +2835,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1513,7 +2867,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1533,7 +2903,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1549,7 +2935,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1569,7 +2971,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1585,7 +3003,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1605,7 +3039,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1621,7 +3071,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1641,7 +3107,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1657,7 +3139,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1677,7 +3175,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1693,7 +3207,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1846,7 +3376,24 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						ExcludedFromBuild="true"
 						>
 						<Tool
@@ -1862,7 +3409,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1887,7 +3450,24 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						ExcludedFromBuild="true"
 						>
 						<Tool
@@ -1903,7 +3483,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1927,7 +3523,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="ser_debug|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="ser|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ser|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1943,7 +3555,23 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="merge|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="merge_debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							CompileAs="2"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="merge_debug|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1971,6 +3599,11 @@
 					RelativePath="..\..\phastinput\Point.cpp"
 					>
 				</File>
+			</Filter>
+			<Filter
+				Name="Resource Files"
+				Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
+				>
 			</Filter>
 		</Filter>
 		<Filter
@@ -2197,11 +3830,6 @@
 				RelativePath="..\phreeqcpp\Utils.h"
 				>
 			</File>
-		</Filter>
-		<Filter
-			Name="Resource Files"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
-			>
 		</Filter>
 	</Files>
 	<Globals>
