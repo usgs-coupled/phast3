@@ -319,6 +319,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
@@ -387,10 +388,11 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="&quot;$(DEV_ZLIB122_INC)&quot;;&quot;$(DEV_HDF5_INC)&quot;;&quot;$(DEV_MPICH2_INC)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;;&quot;$(BOOSTROOT)&quot;"
+				AdditionalIncludeDirectories="&quot;$(DEV_ZLIB123_X64_INC)&quot;;&quot;$(DEV_HDF5_X64_INC)&quot;;&quot;$(DEV_MPICH2_X64_INC)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;;&quot;$(BOOSTROOT)&quot;"
 				PreprocessorDefinitions="PHREEQC_CPP;NDEBUG;MERGE_FILES;USE_MPI;HDF5_CREATE;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;H5Dcreate_vers=1;H5Gcreate_vers=1"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -454,6 +456,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				InlineFunctionExpansion="0"
 				OmitFramePointers="false"
@@ -524,10 +527,11 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				InlineFunctionExpansion="0"
 				OmitFramePointers="false"
-				AdditionalIncludeDirectories="&quot;$(DEV_ZLIB122_INC)&quot;;&quot;$(DEV_HDF5_INC)&quot;;&quot;$(DEV_GMP_INC_MT)&quot;;&quot;$(DEV_MPICH2_INC)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;;&quot;$(BOOSTROOT)&quot;"
+				AdditionalIncludeDirectories="&quot;$(DEV_ZLIB123_X64_INC)&quot;;&quot;$(DEV_HDF5_X64_INC)&quot;;&quot;$(DEV_MPICH2_X64_INC)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;;&quot;$(BOOSTROOT)&quot;"
 				PreprocessorDefinitions="GZIP_RESTART;USE_PHRQ_ALLOC;PHREEQC_CPP;_DEBUG;MERGE_FILES;USE_MPI;HDF5_CREATE;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;H5Dcreate_vers=1;H5Gcreate_vers=1"
 				StringPooling="false"
 				MinimalRebuild="true"
