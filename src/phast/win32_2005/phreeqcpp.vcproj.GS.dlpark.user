@@ -94,8 +94,8 @@
 			>
 			<DebugSettings
 				Command=""
-				WorkingDirectory=""
-				CommandArguments=""
+				WorkingDirectory="C:\Programs\phastpp\examples\capecod"
+				CommandArguments="capecod"
 				Attach="false"
 				DebuggerType="3"
 				Remote="1"
@@ -106,7 +106,7 @@
 				SQLDebugging=""
 				Environment=""
 				EnvironmentMerge="true"
-				DebuggerFlavor=""
+				DebuggerFlavor="0"
 				MPIRunCommand=""
 				MPIRunArguments=""
 				MPIRunWorkingDirectory=""
