@@ -168,8 +168,8 @@ SUBROUTINE asembl
              pmcv(m),pmhv(1),pv(m),pvk(1),t(1),z(k),zkm,zkp,deltim)
         !.....C34 and C35 are zero for SVBC and always for unmodified flow
         !.....     equation (no Gauss elimination)
-        cc34(m)=c34
-        cc35(m)=c35
+!$$        cc34(m)=c34
+!$$        cc35(m)=c35
         va(7,ma)=c33
         urh=0._kdp
         urs=0._kdp

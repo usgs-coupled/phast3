@@ -49,10 +49,8 @@ SUBROUTINE media_hdf
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: aprnt, full
   REAL(KIND=kdp) :: conv
   CHARACTER (LEN=119) :: name
-
-  !     ------------------------------------------------------------------
   TYPE(cell_properties), DIMENSION(:), ALLOCATABLE :: cell_props
-
+  !     ------------------------------------------------------------------
   ALLOCATE (cell_props(nxyz), &
        stat = a_err)
   IF (a_err /= 0) THEN  
@@ -201,7 +199,7 @@ SUBROUTINE media_hdf
      CALL prntar_hdf(aprnt, full, conv, name)
   endif
 
-  DEALLOCATE (cell_props, &
+  DEALLOCATE (cell_props, aprnt, full,  &
        stat = da_err)
   IF (da_err /= 0) THEN  
      PRINT *, "Array deallocation failed: media_hdf, cell_props"  
