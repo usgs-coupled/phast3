@@ -54,12 +54,12 @@ SUBROUTINE init2_1
   ! ... set string for use with rcs ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
-  ALLOCATE (axsav(nxyz), aysav(nxyz), azsav(nxyz),  &
-       stat = a_err)
-  IF (a_err /= 0) THEN  
-     PRINT *, "Array allocation failed: init2_1, number 0"  
-     STOP  
-  ENDIF
+!!$  ALLOCATE (axsav(nxyz), aysav(nxyz), azsav(nxyz),  &
+!!$       stat = a_err)
+!!$  IF (a_err /= 0) THEN  
+!!$     PRINT *, "Array allocation failed: init2_1, number 0"  
+!!$     STOP  
+!!$  ENDIF
   nr=nx
   nsa = MAX(ns,1)
   ! ... convert the data to s.i. time units if necessary
@@ -954,7 +954,7 @@ SUBROUTINE init2_1
   ! ... locate the heat conduction b.c. nodes and store thermal
   ! ...      diffusivities and thermal conductivities*areas
   !...*** not available in phast
-  DEALLOCATE (arxbc, arybc, arzbc, delz, &
+  DEALLOCATE (arxbc, arybc, arzbc, delz, uarxbc, uarybc, uarzbc,  &
        stat = da_err)
   IF (da_err /= 0) THEN  
      PRINT *, "array deallocation failed, init2_1,number 5"  
@@ -1196,7 +1196,7 @@ SUBROUTINE init2_1
      nstslv = nprist + nohst  
   ENDIF
   ! ... allocate space for the assembly of difference equations
-  ALLOCATE(va(7,nxyz), rhs(nxyz), cc34(nxyz), cc35(nxyz),  &
+  ALLOCATE(va(7,nxyz), rhs(nxyz),  &
        diagc(nxyz), diagr(nxyz),  &
        stat = a_err)
   IF (a_err /= 0) THEN  
@@ -1533,7 +1533,13 @@ SUBROUTINE init2_1
         END DO
      ENDIF
   ENDIF
-  DEALLOCATE (axsav, aysav, azsav, hwt,  &
+!!$  DEALLOCATE (axsav, aysav, azsav, hwt,  &
+!!$       stat = da_err)
+!!$  IF (da_err /= 0) THEN  
+!!$     PRINT *, "Array deallocation failed: init2_1"  
+!!$     STOP  
+!!$  ENDIF
+  DEALLOCATE (hwt,  &
        stat = da_err)
   IF (da_err /= 0) THEN  
      PRINT *, "Array deallocation failed: init2_1"  
