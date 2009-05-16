@@ -4163,11 +4163,22 @@ mpi_set_random(void)
 		j = rand();
 		j = (int) (((double) n) * j / (RAND_MAX));
 		/* fprintf(stderr, "Random %d.\n",j); */
+		if (j >= n) 
+		{
+			j = n - 1;
+		}
+		if (j < 0) 
+		{
+			j = 0;
+		}
 		random_list[i] = temp_random[j];
+		temp_random[j] = temp_random[n - 1];
+		/*
 		if (j < n - 1)
 		{
 			temp_random[j] = temp_random[n - 1];
 		}
+		*/
 		/*
 		   fprintf(stderr, "Position %d.\tNatural cell number %d.\n",i, random_list[i]);
 		 */
