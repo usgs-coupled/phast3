@@ -60,6 +60,12 @@ class Filedata
 	void Set_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM cs)
 	{
 		this->coordinate_system = cs;
+		std::map<int, Data_source*>::iterator it = this->data_source_map.begin();
+		for (; it != this->data_source_map.end(); ++it)
+		{
+			it->second->Set_coordinate_system(cs);
+			it->second->Set_user_coordinate_system(cs);
+		}
 	};
 
 	//void                               Add_to_pts_map (int attribute);

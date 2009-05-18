@@ -97,6 +97,10 @@ class Data_source
 	{
 		return this->filedata;
 	};
+	void Set_filedata(Filedata *f)
+	{
+		this->filedata = f;
+	};
 
 	std::vector < Point > &Get_points(void);
 	void Set_points(std::vector < Point > &pts);
