@@ -387,7 +387,7 @@ tidy_drains(void)
 		/*
 		 *   Check drain data
 		 */
-		for (i = 0; i < (int) drain_ptr->points.size(); i++)
+		for (i = 0; i < drain_ptr->points.size(); i++)
 		{
 			if (drain_ptr->points[i].x_user_defined == FALSE
 				|| drain_ptr->points[i].y_user_defined == FALSE)
@@ -480,7 +480,7 @@ tidy_drains(void)
 		i = 0;
 		length = 0;
 		x1 = 0;
-		while (i < (int) drain_ptr->points.size())
+		while (i < drain_ptr->points.size())
 		{
 			if (drain_ptr->points[i].width_user_defined == TRUE)
 			{
@@ -524,7 +524,7 @@ tidy_drains(void)
 		i = 0;
 		length = 0;
 		x1 = 0;
-		while (i < (int) drain_ptr->points.size())
+		while (i < drain_ptr->points.size())
 		{
 			if (drain_ptr->points[i].k_defined == TRUE)
 			{
@@ -568,7 +568,7 @@ tidy_drains(void)
 		i = 0;
 		length = 0;
 		x1 = 0;
-		while (i < (int) drain_ptr->points.size())
+		while (i < drain_ptr->points.size())
 		{
 			if (drain_ptr->points[i].thickness_defined == TRUE)
 			{
@@ -613,7 +613,7 @@ tidy_drains(void)
 		i = 0;
 		length = 0;
 		x1 = 0;
-		while (i < (int) drain_ptr->points.size())
+		while (i < drain_ptr->points.size())
 		{
 			if (drain_ptr->points[i].z_user_defined == TRUE)
 			{
@@ -656,7 +656,7 @@ tidy_drains(void)
 	 */
 	for (j = 0; j < count_drains; j++)
 	{
-		for (i = j + 1; i < (int) drains.size(); i++)
+		for (i = j + 1; i < drains.size(); i++)
 		{
 			if (drains[j]->n_user == drains[i]->n_user)
 			{

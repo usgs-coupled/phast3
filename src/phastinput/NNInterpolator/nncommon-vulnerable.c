@@ -23,9 +23,9 @@
  *****************************************************************************/
 
 #include <math.h>
+#include "nn.h"
 #include "delaunay.h"
 #include "nan.h"
-#include "nn.h"
 #include "nn_internal.h"
 #include "config.h"
 

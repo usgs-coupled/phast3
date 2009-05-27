@@ -801,7 +801,7 @@ nnpi_interpolate_point(nnpi * nn, point * p)
  * @param pout Array of output points [nout]
  */
 void
-nnpi_interpolate_points(size_t nin, point pin[], double wmin, size_t nout,
+nnpi_interpolate_points(int nin, point pin[], double wmin, int nout,
 						point pout[])
 {
 	delaunay *d = delaunay_build((int) nin, pin, 0, NULL, 0, NULL);
@@ -814,7 +814,7 @@ nnpi_interpolate_points(size_t nin, point pin[], double wmin, size_t nout,
 	if (nn_verbose)
 	{
 		fprintf(stderr, "xytoi:\n");
-		for (i = 0; i < nout; ++i)
+		for (i = 0; i < (size_t) nout; ++i)
 		{
 			point *p = &pout[i];
 
@@ -823,13 +823,13 @@ nnpi_interpolate_points(size_t nin, point pin[], double wmin, size_t nout,
 		}
 	}
 
-	for (i = 0; i < nout; ++i)
+	for (i = 0; i < (size_t) nout; ++i)
 		nnpi_interpolate_point(nn, &pout[i]);
 
 	if (nn_verbose)
 	{
 		fprintf(stderr, "output:\n");
-		for (i = 0; i < nout; ++i)
+		for (i = 0; i < (size_t) nout; ++i)
 		{
 			point *p = &pout[i];
 

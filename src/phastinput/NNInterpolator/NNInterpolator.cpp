@@ -71,7 +71,7 @@ nnpi_interpolate(std::vector < Point > &pts_in,
 		pout[i].z = 0.0;
 	}
 
-	nnpi_interpolate_points(nin, pin, wmin, nout, pout);
+	nnpi_interpolate_points((int) nin, pin, wmin, (int) nout, pout);
 
 	KDtree kdt(pts_in);
 
