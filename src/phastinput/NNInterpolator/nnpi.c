@@ -807,7 +807,7 @@ nnpi_interpolate_points(size_t nin, point pin[], double wmin, size_t nout,
 	delaunay *d = delaunay_build((int) nin, pin, 0, NULL, 0, NULL);
 	nnpi *nn = nnpi_create(d);
 	int seed = 0;
-	int i;
+	size_t i;
 
 	nnpi_setwmin(nn, wmin);
 

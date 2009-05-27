@@ -877,7 +877,7 @@ get_line(FILE * fp)
 		}
 		strncpy(line, line_save, (unsigned) j);
 		line[j] = '\0';
-		for (i = 0; i < j; i++)
+		for (i = 0; i < (int) j; i++)
 		{
 			if (!isspace((int) line[i]))
 			{

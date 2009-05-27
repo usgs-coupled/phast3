@@ -358,7 +358,8 @@ tidy_drains(void)
 	/*
 	 *   Check drain data 
 	 */
-	int i, j, k, return_value;
+	int return_value;
+	size_t i, j, k;
 	double length, total_length;
 	Drain *drain_ptr;
 	size_t count_drains = drains.size();
@@ -680,8 +681,8 @@ build_drains(void)
 	/*
 	 *   Check drain data 
 	 */
-	int i, j, return_code;
-	size_t count_points, n;
+	int return_code;
+	size_t count_points, i, j, n;
 	Drain *drain_ptr;
 	gpc_vertex *p, phantom, vertex[4];
 	gpc_polygon *trapezoid, *gap_polygon;
@@ -828,14 +829,14 @@ setup_drains(void)
 	 *   Intersect with cells
 	 *   Save intersection in Cell structure
 	 */
-	for (l = 0; l < count_drains; l++)
+	for (l = 0; l < (int) count_drains; l++)
 	{
 		drain_ptr = drains[l];
 		count_points = drain_ptr->points.size();
 		/*
 		 *  Go through drain polygons
 		 */
-		for (m = 0; m < count_points - 1; m++)
+		for (m = 0; m < (int) count_points - 1; m++)
 		{
 			poly_ptr = drain_ptr->points[m].polygon;
 			range_ptr =
@@ -1071,7 +1072,7 @@ write_drains(void)
 	size_t count_drains = drains.size();
 	if (count_drains <= 0)
 		return (OK);
-	for (j = 0; j < count_drains; j++)
+	for (j = 0; j < (int) count_drains; j++)
 	{
 		drain_ptr = drains[j];
 		count_points = drain_ptr->points.size();
@@ -1081,7 +1082,7 @@ write_drains(void)
 		output_msg(OUTPUT_ECHO, "@type xy\n");
 		output_msg(OUTPUT_ECHO, "#drain segments %d %s\n", drain_ptr->n_user,
 				   drain_ptr->description.c_str());
-		for (i = 0; i < count_points; i++)
+		for (i = 0; i < (int) count_points; i++)
 		{
 			output_msg(OUTPUT_ECHO, "\t%15e\t%15e\n", drain_ptr->points[i].x_grid,
 					   drain_ptr->points[i].y_grid);
@@ -1093,7 +1094,7 @@ write_drains(void)
 		output_msg(OUTPUT_ECHO, "@type xy\n");
 		output_msg(OUTPUT_ECHO, "#drain polygons %d %s\n", drain_ptr->n_user,
 				   drain_ptr->description.c_str());
-		for (i = 0; i < count_points - 1; i++)
+		for (i = 0; i < (int) count_points - 1; i++)
 		{
 			for (k = 0; k < 4; k++)
 			{

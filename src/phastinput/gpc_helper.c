@@ -309,7 +309,7 @@ points_to_poly(std::vector < Point > &pts, Cell_Face face)
 /* ---------------------------------------------------------------------- */
 {
 	gpc_polygon *poly_ptr;
-	int i;
+	size_t i;
 	gpc_vertex *p;
 
 	size_t n = pts.size();
@@ -371,7 +371,7 @@ points_to_poly(std::vector < Point > &pts)
 /* ---------------------------------------------------------------------- */
 {
 	gpc_polygon *poly_ptr;
-	int i;
+	size_t i;
 	gpc_vertex *p;
 
 	size_t n = pts.size();
@@ -858,8 +858,10 @@ line_intersect_polygon(Point lp1, Point lp2, std::vector < Point > pts,
 					   std::vector < Point > intersect_pts)
 {
 	// lp1 is assumed to be outside bounding box of the polygon
-	int i, j;
+	size_t i, j;
 	size_t npol = pts.size();
+	if (npol == 0)
+		return (false);
 	j = (int) npol - 1;
 	for (i = 0; i < npol; j = i++)
 	{

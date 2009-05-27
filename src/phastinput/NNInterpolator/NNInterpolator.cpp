@@ -120,7 +120,7 @@ bool NNInterpolator::preprocess(std::vector < Point > &pts_in,
 		nin = pts_in.size();
 	this->pin = new point[nin];
 
-	int
+	size_t
 		i;
 	this->bounds = zone();
 	this->bounds.zone_defined = 1;
