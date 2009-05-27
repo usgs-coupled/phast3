@@ -4,11 +4,17 @@
 #endif /* TRILIBRARY */
 #define UNSIGNED_LONG size_t
 
+/* This definition does not print addresses correctly, but printing is not used */
+/* However, this definitions avoids warnings */
+/* Correct definitions are below */
+#define PRIdS "%d"
+/*
 #ifdef MSVC
 #define PRIdS "%Iu"
 #else
 #define PRIdS "%zu"
 #endif
+*/
 
 /*****************************************************************************/
 /*                                                                           */
