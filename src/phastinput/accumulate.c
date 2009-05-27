@@ -1256,7 +1256,7 @@ distribute_property_to_list_of_cells(std::list < int >&pts,	// list of cell numb
 	double value, mask_value;
 	double *d_ptr;
 	struct mix *mix_ptr;
-	n = pts.size();
+	n = (int) pts.size();
 	if (property_ptr->type == PROP_ZONE)
 	{
 		if (n != property_ptr->count_v)
@@ -1382,7 +1382,7 @@ distribute_property_to_list_of_elements(std::list < int >&pts,	// list of cell n
 	/*
 	 *  element_sequence tells which property value to retrieve from a list
 	 */
-	n = pts.size();
+	n = (int) pts.size();
 	if (n <= 0)
 	{
 		sprintf(error_string, "Zone contains no elements.");
@@ -3761,7 +3761,7 @@ distribute_specified_bc(int i,	// bc[i]
 						char *tag)
 /* ---------------------------------------------------------------------- */
 {
-	int ncells = pts.size();
+	int ncells = (int) pts.size();
 	int node_sequence = -1;
 
 	for (std::list < int >::iterator it = pts.begin(); it != pts.end(); it++)
@@ -3840,7 +3840,7 @@ distribute_flux_bc(int i,		// bc[i]
 				   char *tag)
 /* ---------------------------------------------------------------------- */
 {
-	int ncells = pts.size();
+	int ncells = (int) pts.size();
 	int node_sequence = -1;
 
 	for (std::list < int >::iterator it = pts.begin(); it != pts.end(); it++)
@@ -3989,7 +3989,7 @@ distribute_leaky_bc(int i,		// bc[i]
 					char *tag)
 /* ---------------------------------------------------------------------- */
 {
-	int ncells = pts.size();
+	int ncells = (int) pts.size();
 	int node_sequence = -1;
 	//gpc_polygon *bc_area = bc[i]->polyh->Face_polygon(bc[i]->cell_face);
 
