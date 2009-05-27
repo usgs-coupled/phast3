@@ -218,7 +218,7 @@ void nnpi_interpolate_point(nnpi * nn, point * p);
  * @param nout Number of output points
  * @param pout Array of output points [nout]
  */
-void nnpi_interpolate_points(size_t nin, point pin[], double wmin, size_t nout,
+void nnpi_interpolate_points(int nin, point pin[], double wmin, int nout,
 							 point pout[]);
 
 /** Sets minimal allowed weight for Natural Neighbours interpolation.
