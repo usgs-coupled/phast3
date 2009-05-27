@@ -801,10 +801,10 @@ nnpi_interpolate_point(nnpi * nn, point * p)
  * @param pout Array of output points [nout]
  */
 void
-nnpi_interpolate_points(int nin, point pin[], double wmin, int nout,
+nnpi_interpolate_points(size_t nin, point pin[], double wmin, size_t nout,
 						point pout[])
 {
-	delaunay *d = delaunay_build(nin, pin, 0, NULL, 0, NULL);
+	delaunay *d = delaunay_build((int) nin, pin, 0, NULL, 0, NULL);
 	nnpi *nn = nnpi_create(d);
 	int seed = 0;
 	int i;

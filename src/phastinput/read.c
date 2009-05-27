@@ -835,7 +835,8 @@ get_line(FILE * fp)
  *      OK,
  *      OPTION
  */
-	int i, j, return_value, empty, l;
+	int i, return_value, empty, l;
+	size_t j;
 	char *ptr;
 	char token[MAX_LENGTH];
 

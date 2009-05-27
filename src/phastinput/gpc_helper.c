@@ -312,7 +312,7 @@ points_to_poly(std::vector < Point > &pts, Cell_Face face)
 	int i;
 	gpc_vertex *p;
 
-	int n = pts.size();
+	size_t n = pts.size();
 	poly_ptr = (gpc_polygon *) malloc((size_t) sizeof(gpc_polygon));
 	if (poly_ptr == NULL)
 		malloc_error();
@@ -328,7 +328,7 @@ points_to_poly(std::vector < Point > &pts, Cell_Face face)
 	if (p == NULL)
 		malloc_error();
 	poly_ptr->contour[0].vertex = p;
-	poly_ptr->contour[0].num_vertices = n;
+	poly_ptr->contour[0].num_vertices = (int) n;
 	poly_ptr->num_contours = 1;
 	poly_ptr->hole = (int *) malloc(sizeof(int));
 	poly_ptr->hole[0] = 0;		// hole is false
@@ -374,7 +374,7 @@ points_to_poly(std::vector < Point > &pts)
 	int i;
 	gpc_vertex *p;
 
-	int n = pts.size();
+	size_t n = pts.size();
 	poly_ptr = (gpc_polygon *) malloc((size_t) sizeof(gpc_polygon));
 	if (poly_ptr == NULL)
 		malloc_error();
@@ -389,7 +389,7 @@ points_to_poly(std::vector < Point > &pts)
 	if (p == NULL)
 		malloc_error();
 	poly_ptr->contour[0].vertex = p;
-	poly_ptr->contour[0].num_vertices = n;
+	poly_ptr->contour[0].num_vertices = (int) n;
 	poly_ptr->num_contours = 1;
 	poly_ptr->hole = (int *) malloc(sizeof(int));
 	poly_ptr->hole[0] = 0;		// hole is false
@@ -859,8 +859,8 @@ line_intersect_polygon(Point lp1, Point lp2, std::vector < Point > pts,
 {
 	// lp1 is assumed to be outside bounding box of the polygon
 	int i, j;
-	int npol = pts.size();
-	j = npol - 1;
+	size_t npol = pts.size();
+	j = (int) npol - 1;
 	for (i = 0; i < npol; j = i++)
 	{
 		line_and_segment_intersection(lp1, lp2, pts[i], pts[j],

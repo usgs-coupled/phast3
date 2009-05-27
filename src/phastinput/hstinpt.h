@@ -776,7 +776,7 @@ EXTERNAL int
 	ny,
 	nz,
 	nxyz;
-EXTERNAL int
+EXTERNAL size_t
 	count_specified,
 	count_flux,
 	count_leaky,

@@ -361,7 +361,7 @@ tidy_drains(void)
 	int i, j, k, return_value;
 	double length, total_length;
 	Drain *drain_ptr;
-	int count_drains = drains.size();
+	size_t count_drains = drains.size();
 	double x1, x2;
 	return_value = OK;
 	if (count_drains <= 0)
@@ -680,7 +680,8 @@ build_drains(void)
 	/*
 	 *   Check drain data 
 	 */
-	int i, j, n, count_points, return_code;
+	int i, j, return_code;
+	size_t count_points, n;
 	Drain *drain_ptr;
 	gpc_vertex *p, phantom, vertex[4];
 	gpc_polygon *trapezoid, *gap_polygon;
@@ -690,7 +691,7 @@ build_drains(void)
 	if (p == NULL)
 		malloc_error();
 
-	int count_drains = drains.size();
+	size_t count_drains = drains.size();
 	if (count_drains <= 0)
 	{
 		free_check_null(p);
@@ -791,9 +792,10 @@ setup_drains(void)
 	/*
 	 *   Check drain data 
 	 */
-	int i, j, k, l, m, n, count_points;
+	int i, j, k, l, m, n;
+	size_t count_points;
 	Drain *drain_ptr;
-	int count_drains = drains.size();
+	size_t count_drains = drains.size();
 	gpc_vertex *p;
 	gpc_polygon poly2;
 	gpc_polygon *poly_ptr;
@@ -1063,9 +1065,10 @@ write_drains(void)
 /*
  *   Check drain data 
  */
-	int i, j, k, count_points;
+	int i, j, k;
+	size_t count_points;
 	Drain *drain_ptr;
-	int count_drains = drains.size();
+	size_t count_drains = drains.size();
 	if (count_drains <= 0)
 		return (OK);
 	for (j = 0; j < count_drains; j++)

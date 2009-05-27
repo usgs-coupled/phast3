@@ -50,10 +50,10 @@ nnpi_interpolate(std::vector < Point > &pts_in,
 		return false;
 	}
 	// set up points in input array
-	int nin = pts_in.size();
+	size_t nin = pts_in.size();
 	point *pin = new point[nin];
 
-	int i;
+	size_t i;
 	for (i = 0; i < nin; i++)
 	{
 		pin[i].x = pts_in[i].x();
@@ -62,7 +62,7 @@ nnpi_interpolate(std::vector < Point > &pts_in,
 	}
 
 	// set up points in output array
-	int nout = pts_out.size();
+	size_t nout = pts_out.size();
 	point *pout = new point[nout];
 	for (i = 0; i < nout; i++)
 	{
@@ -116,7 +116,7 @@ bool NNInterpolator::preprocess(std::vector < Point > &pts_in,
 
 	// set up points in input array
 	this->point_count = pts_in.size();
-	int
+	size_t
 		nin = pts_in.size();
 	this->pin = new point[nin];
 
@@ -148,7 +148,7 @@ bool NNInterpolator::preprocess(std::vector < Point > &pts_in,
 	assert(this->nn == 0);
 
 	this->delaunay_triangulation =
-		delaunay_build(nin, this->pin, 0, NULL, 0, NULL);
+		delaunay_build((int) nin, this->pin, 0, NULL, 0, NULL);
 	this->nn = nnpi_create(this->delaunay_triangulation);
 	// int seed = 0;
 
