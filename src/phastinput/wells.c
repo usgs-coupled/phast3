@@ -349,8 +349,6 @@ setup_wells(void)
 		}
 		for (k = 0; k < count_coord; k++)
 		{
-			bool bottom_defined = false;
-			bool top_defined = false;
 			if (f[k] > 0)
 			{
 				well_ptr->cell_fraction =
