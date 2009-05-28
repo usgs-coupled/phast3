@@ -1,3 +1,9 @@
+
+    svn 3514:
+    
+    Fixed bug with river polygons. Complete overlap caused an empty polygon,
+    which was not initialized properly.
+
     svn 2977: 
 
     Major new feature. Added a "prism" primative, which defines a

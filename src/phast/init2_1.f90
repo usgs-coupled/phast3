@@ -1022,9 +1022,9 @@ SUBROUTINE init2_1
                     DO icz=1,zone_col(izn)%num_xycol
                        IF(zone_col(izn)%i_no(icz) == i .AND. zone_col(izn)%j_no(icz) == j) THEN
                           lnk_crbc2zon(izn)%icz_no(ic) = icz
-                          PRINT *,"Fail to link river to zone"
+                          !PRINT *,"Fail to link river to zone"
                           EXIT
-                          STOP
+                          !STOP
                        END IF
                     END DO
                     EXIT

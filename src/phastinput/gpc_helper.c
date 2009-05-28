@@ -195,6 +195,7 @@ gpc_polygon_duplicate(gpc_polygon * in_poly)
 		malloc_error();
 
 	out_poly->num_contours = in_poly->num_contours;
+	out_poly->hole = NULL;
 	out_poly->contour = NULL;
 	if (out_poly->num_contours == 0)
 		return (out_poly);

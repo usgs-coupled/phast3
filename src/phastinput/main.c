@@ -32,17 +32,21 @@ main(int argc, char *argv[])
 {
 #if defined(_DEBUG) && !defined(__WPHAST__)
 	int tmpDbgFlag;
-
 	/*
 	 * Set the debug-heap flag to keep freed blocks in the
 	 * heap's linked list - This will allow us to catch any
 	 * inadvertent use of freed memory
 	 */
+	//_CrtDumpMemoryLeaks();
+
 	tmpDbgFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
 	//tmpDbgFlag |= _CRTDBG_DELAY_FREE_MEM_DF;
 	tmpDbgFlag |= _CRTDBG_LEAK_CHECK_DF;
 	//tmpDbgFlag |= _CRTDBG_CHECK_ALWAYS_DF;
+	tmpDbgFlag |= _CRTDBG_ALLOC_MEM_DF;
 	_CrtSetDbgFlag(tmpDbgFlag);
+	//_crtBreakAlloc = 23931;
+
 #endif
 	std_error = stderr;
 	/*
