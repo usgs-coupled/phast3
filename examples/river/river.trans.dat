@@ -3,11 +3,11 @@ TITLE
 SOLUTE_TRANSPORT   false
 STEADY_FLOW     true
 UNITS
-        -time           sec
+        -time           d
         -horizontal     m
         -vertical       m
         -head           m
-        -hydraulic      m/s
+        -hydraulic      m/d
         -specific       1/m
 #       -disp           m
         -flux           m/s
@@ -15,17 +15,18 @@ UNITS
         -river_thickness m
 GRID
         -uniform X 
-                0 400 17
+                0 400 33 #17
         -uniform Y
-                0 400 17
+                0 400 33 #17
         -uniform Z 
                 0 275 12
+        -overlay_uniform Z 200 240 9        
         -print_orientation XY
 MEDIA
         -zone   0 0 0 400 400 275
-                -Kx     .01
-                -Ky     .01
-                -Kz     .01
+                -Kx     .0001
+                -Ky     .0001
+                -Kz     .0001
                 -porosity       .15
                 -storage        10.E-10 
 SPECIFIED_HEAD_BC
@@ -42,7 +43,7 @@ RIVER 1 Platte River
                 -bed_k          .01
                 -bed_thickness  1.
                 -depth          5.0
-                -width          20.
+                -width          40.
                 -head           0	240.
         -point  200     300
         -point  200     0
@@ -64,7 +65,7 @@ PRINT_FREQUENCY
         -xyz_head       5 step
         -xyz_velocity   5 step
 
-ZONE_BUDGET 10 Global zone flow terms
+ZONE_FLOW 10 Global zone flow terms
         -zone   0 0 0 400 400 275
 
 END
