@@ -23,7 +23,7 @@ GRID
         -chemistry_dimensions                 X
         -print_orientation                   XY
 MEDIA
-        -zone   0 0 0 12 1 1
+        -box   0 0 0 12 1 1
                 -Kx                        0.12
                 -Ky                        0.12
                 -Kz                        0.12
@@ -34,18 +34,18 @@ MEDIA
                 -vertical_dispersivity      0.1
 FREE_SURFACE_BC false
 SPECIFIED_HEAD_BC
-        -zone   0 0 0 0 1 1
+        -box   0 0 0 0 1 1
                 -head                         0         1
                 -associated_solution          0         2
                                              60         1
-        -zone   12 0 0 12 1 1
+        -box   12 0 0 12 1 1
                 -head                         0       0.0
                 -associated                   0         1
 HEAD_IC
-        -zone   0 0 0 12 1 1
+        -box   0 0 0 12 1 1
                 -head   X 1.0 0.0 0.0 12.0
 CHEMISTRY_IC
-        -zone   0 0 0 12 1 1
+        -box   0 0 0 12 1 1
                 -solution                     1
                 -surface                      1
                 -kinetics                     1
