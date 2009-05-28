@@ -222,6 +222,8 @@ setup_wells(void)
 		 *  Find cells for well intervals
 		 */
 		int count_well_cells = 0;
+		bool screen_top(false), screen_bottom(false);
+		well_ptr->screen_bottom = well_ptr->screen_top = 0.0;
 		for (i = 0; i < well_ptr->count_elevation_grid; i++)
 		{
 
@@ -246,6 +248,30 @@ setup_wells(void)
 			if (interval_top > grid_top)
 			{
 				interval_top = grid_top;
+			}
+			if (screen_bottom)
+			{
+				if (interval_bottom < well_ptr->screen_bottom)
+				{
+					well_ptr->screen_bottom = interval_bottom;
+				}
+			}
+			else
+			{
+				well_ptr->screen_bottom = interval_bottom;
+				screen_bottom = true;
+			}
+			if (screen_top)
+			{
+				if (interval_top < well_ptr->screen_top)
+				{
+					well_ptr->screen_top = interval_top;
+				}
+			}
+			else
+			{
+				well_ptr->screen_top = interval_top;
+				screen_top = true;
 			}
 
 			if ((coord_to_cell(interval_bottom, grid[2].coord, grid[2].count_coord, &k1) == ERROR) ||
@@ -323,6 +349,8 @@ setup_wells(void)
 		}
 		for (k = 0; k < count_coord; k++)
 		{
+			bool bottom_defined = false;
+			bool top_defined = false;
 			if (f[k] > 0)
 			{
 				well_ptr->cell_fraction =
