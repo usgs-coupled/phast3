@@ -762,10 +762,12 @@ write_source_sink(void)
 					   wells[i].n_user,
 					   wells[i].x_grid * units.horizontal.input_to_si,
 					   wells[i].y_grid * units.horizontal.input_to_si,
-					   0.0, 0.0, 0.0, 0.0,
-					   /* No longer used
+					   //0.0, 0.0, 0.0, 0.0,
+					  
 					   wells[i].screen_bottom * units.vertical.input_to_si,
 					   wells[i].screen_top * units.vertical.input_to_si,
+					   0.0, 0.0,
+					   /* No longer used
 					   wells[i].screen_depth_bottom * units.vertical.input_to_si,
 					   wells[i].screen_depth_top * units.vertical.input_to_si,
 					   */
