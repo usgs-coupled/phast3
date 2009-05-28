@@ -178,6 +178,7 @@ setup_rivers(void)
 				gpc_polygon_area(cells[i].river_polygons[j].poly) <= 0)
 			{
 				gpc_free_polygon(cells[i].river_polygons[j].poly);
+				free_check_null(cells[i].river_polygons[j].poly);
 			}
 			else
 			{
