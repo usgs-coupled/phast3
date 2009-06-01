@@ -5,8 +5,12 @@
 #   <SiteMap angle="0" placement_x="0" placement_y="0" placement_z="-101.2" src="capecod.sitemap.jpg" worldfile="capecod.sitemap.jgw"/>
 # </WPhast>
 # 
-SOLUTE_TRANSPORT false
-STEADY_FLOW true
+SOLUTE_TRANSPORT true
+STEADY_FLOW false
+
+#SOLUTE_TRANSPORT false
+#STEADY_FLOW true
+
 	-head_tolerance 0.001
 	-flow_balance_tolerance 0.001
 	-minimum_time_step 0.1
@@ -49,9 +53,10 @@ UNITS
 	-drain_thickness                  m
 	-drain_width                      m
 GRID
-	-uniform X 275000 285000 11   #41
-	-uniform Y 810000 830000 21   #81
-	-uniform Z -200 20 11  #23
+	-uniform X 275000 285000 161 # 41
+	-uniform Y 810000 830000 321 # 81
+	#-uniform Z -200 20 23
+	-uniform Z -120 20 71
 	-snap X 0.001
 	-snap Y 0.001
 	-snap Z 0.001
@@ -59,6 +64,8 @@ GRID
 	-print_orientation XY
 	-grid_origin   0  0  0
 	-grid_angle    0
+	
+	#-overlay_uniform Z -10 20 46
 MEDIA
 # Default
 	-box 275000 810000 -500 285000 830000 100 MAP
@@ -90,10 +97,9 @@ MEDIA
 		-top       CONSTANT   GRID 20
 		-bottom    SHAPE      GRID ./ArcData/SimpleBath.shp 10
 		-perimeter SHAPE      GRID ./ArcData/SimplePonds.shp
-		-active                   1
-		-Kx                       10000
-		-Ky                       10000
-		-Kz                       10000
+		-Kx                       30000
+		-Ky                       30000
+		-Kz                       30000
 		-porosity                 1
 		-specific_storage         1
 		-long_dispersivity        1
@@ -105,7 +111,7 @@ FLUX_BC
 		-associated_solution
 			0	3
 		-flux
-#			0	-0.00188
+			#0	-0.00188
 			0	XYZ	MAP	./WalterData/recharge_meters
 FLUX_BC
 	-prism
@@ -250,7 +256,8 @@ LEAKY_BC
 			0	1
 		-head
 			0	0
-		-hydraulic_conductivity  1
+			#0	XYZ grid ./WalterData/drains_meters
+		-hydraulic_conductivity  100
 		-thickness               1
 LEAKY_BC
 	-prism
@@ -275,19 +282,28 @@ LEAKY_BC
 			0	1
 		-head
 			0	0
-		-hydraulic_conductivity  1
+			#0	XYZ grid ./WalterData/drains_meters
+		-hydraulic_conductivity  100
 		-thickness               1
 HEAD_IC
 	-box 275000 810000 -200 285000 830000 20 GRID
-		-head                     15
+#		-head                     20
+		-head	XYZ	grid	./WalterData/head_all_meters
 
 CHEMISTRY_IC
 	-box 275000 810000 -200 285000 830000 20 GRID
 		-solution            1
+	-prism
+		-top       CONSTANT   GRID 20
+		-bottom    SHAPE      GRID ./ArcData/SimpleBath.shp 10
+		-perimeter SHAPE      GRID ./ArcData/SimplePonds.shp
+			-exchange	1
+			-solution       11
+	
 DRAIN 1 East Boundary Quashnet R
 	-point 282107.6 820940
 		-width                       20
-		-bed_hydraulic_conductivity  1
+		-bed_hydraulic_conductivity  100
 		-bed_thickness               1
 		-z                           11.83
 	-point 282487.826809043 821288.795009447
@@ -300,13 +316,13 @@ DRAIN 1 East Boundary Quashnet R
 	-point 282915.44 816494.76
 	-point 282209.68 814714.32
 		-width                       20
-		-bed_hydraulic_conductivity  1
+		-bed_hydraulic_conductivity  100
 		-bed_thickness               1
 		-z                           0
 DRAIN 2 Childs River, Johns Pond drain
 	-point 281619.9 818867.5
 		-width                       20
-		-bed_hydraulic_conductivity  1
+		-bed_hydraulic_conductivity  10
 		-bed_thickness               1
 		-z                           10.56
 	-point 281342.955 817343.954
@@ -315,13 +331,13 @@ DRAIN 2 Childs River, Johns Pond drain
 	-point 281211.689 815490.059
 	-point 280884.585 814893.052
 		-width                       20
-		-bed_hydraulic_conductivity  1
+		-bed_hydraulic_conductivity  100
 		-bed_thickness               1
 		-z                           0
 DRAIN 4 Backus River (Cranberry bogs)
 	-point 278572 817160.5
 		-width                       20
-		-bed_hydraulic_conductivity  1
+		-bed_hydraulic_conductivity  100
 		-bed_thickness               1
 		-z                           7.16
 	-point 278404.615 816798.47
@@ -330,13 +346,13 @@ DRAIN 4 Backus River (Cranberry bogs)
 	-point 278117.075 814668.06
 	-point 278077.865 814393.59
 		-width                       20
-		-bed_hydraulic_conductivity  1
+		-bed_hydraulic_conductivity  100
 		-bed_thickness               1
 		-z                           0
 DRAIN 5 West Boundary Coonamessett River
 	-point 277365.652311656 819130.232539017
 		-width                       20
-		-bed_hydraulic_conductivity  1
+		-bed_hydraulic_conductivity  100
 		-bed_thickness               1
 		-z                           9.92
 	-point 277224.725 818453.819
@@ -349,18 +365,18 @@ DRAIN 5 West Boundary Coonamessett River
 	-point 277301.44 814730.36
 	-point 277260.008 814502.138
 		-width                       20
-		-bed_hydraulic_conductivity  1
+		-bed_hydraulic_conductivity  100
 		-bed_thickness               1
 		-z                           0
 DRAIN 6 Bourne River
 	-point 279187.955718371 815453.305047008
 		-width                       20
-		-bed_hydraulic_conductivity  1
+		-bed_hydraulic_conductivity  10
 		-bed_thickness               1
 		-z                           2.97
 	-point 279108.773684095 814446.372998225
 		-width                       20
-		-bed_hydraulic_conductivity  1
+		-bed_hydraulic_conductivity  100
 		-bed_thickness               1
 		-z                           0
 
@@ -373,15 +389,15 @@ PRINT_INITIAL
 	-echo_input                 true
 	-fluid_properties           true
 	-force_chemistry_print      false
-	-HDF_chemistry              true
-	-HDF_heads                  true
+	-HDF_chemistry              false
+	-HDF_heads                  false
 	-HDF_media                  true
-	-HDF_steady_flow_velocities true
-	-heads                      true
-	-media_properties           true
-	-solution_method            true
+	-HDF_steady_flow_velocities false
+	-heads                      false
+	-media_properties           false
+	-solution_method            false
 	-steady_flow_velocities     false
-	-wells                      true
+	-wells                      false
 	-xyz_chemistry              false
 	-xyz_components             false
 	-xyz_heads                  false
@@ -397,7 +413,7 @@ PRINT_FREQUENCY
 		-end_of_period_default  true 
 		-flow_balance           end 
 		-force_chemistry_print  0
-		-HDF_chemistry          1    years
+		-HDF_chemistry          2    years
 		-HDF_heads              end 
 		-HDF_velocities         end 
 		-heads                  end 
@@ -411,10 +427,33 @@ PRINT_FREQUENCY
 		-xyz_heads              0
 		-xyz_velocities         0
 		-xyz_wells              0
-		-zone_flows             end 
+		-zone_flows             end
+		
+#		-bc_flow_rates          0
+#		-boundary_conditions    false 
+#		-components             0
+#		-conductances           0
+#		-end_of_period_default  true 
+#		-flow_balance           0 
+#		-force_chemistry_print  0
+#		-HDF_chemistry          0    
+#		-HDF_heads              0 
+#		-HDF_velocities         0 
+#		-heads                  0 
+#		-progress_statistics    0    step 
+#		-restart_file           0
+#		-tsv_zone_flows         0 
+#		-velocities             0 
+#		-wells                  0 
+#		-xyz_chemistry          0
+#		-xyz_components         0
+#		-xyz_heads              0
+#		-xyz_velocities         0
+#		-xyz_wells              0
+#		-zone_flows             0 		
 TIME_CONTROL
 	-time_step
-		0 1
+		0 0.1
 	-time_change
-		1937
-	-start_time 1935.9
+		1996
+	-start_time 1935
