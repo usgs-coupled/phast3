@@ -101,6 +101,11 @@ int _tmain(int argc, _TCHAR* argv[])
 			istrm >> z;
 			istrm >> v;
 			if (x < xmin || x > xmax ||	y < ymin || y > ymax) continue;
+			// remove low K for pond bottoms
+			if (v > 10.0 && v < 10.1 && z > -20)
+			{
+				v = 100.1;
+			}
 			if (v != 0.00 && v < 1000.)
 			{
 				ostrm << x << "\t" << y << "\t" << z*0.3048 << "\t" << v*0.3048 << std::endl;
