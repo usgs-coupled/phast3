@@ -3529,7 +3529,8 @@ any_faces_intersect_polyhedron(int i, std::list < int >&list_of_numbers,
 	int f;
 	for (f = (int) CF_X; f <= (int) CF_Z; f++)
 	{
-		std::list < int >temp_list(list_of_numbers);
+		//std::list < int >temp_list(list_of_numbers);
+		std::list < int >temp_list;
 		Cell_Face cf;
 		cf = (Cell_Face) f;
 		if (cf_save == CF_ALL)
@@ -3538,6 +3539,7 @@ any_faces_intersect_polyhedron(int i, std::list < int >&list_of_numbers,
 		}
 		if (cf == face || face == CF_ALL)
 		{
+			temp_list = list_of_numbers;
 			faces_intersect_polyhedron(i, temp_list, cf);
 		}
 		std::list < int >::iterator it = temp_list.begin();
@@ -3553,6 +3555,7 @@ any_faces_intersect_polyhedron(int i, std::list < int >&list_of_numbers,
 	{
 		list_of_numbers.push_back(*jt);
 	}
+
 }
 void
 faces_intersect_polyhedron(int i, std::list < int >&list_of_numbers,
