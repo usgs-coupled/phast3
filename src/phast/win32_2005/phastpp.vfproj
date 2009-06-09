@@ -40,7 +40,7 @@
 				<Tool Name="VFLinkerTool" SwitchesHaveChanged="true" OutputFile="$(OUTDIR)/phast.exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(DEV_MPICH2_LIB);$(DEV_GMP_LIB_MT);$(OUTDIR)" IgnoreDefaultLibraryNames="LIBCMT" GenerateDebugInformation="true" SubSystem="subSystemConsole" StackReserveSize="10000000" LargeAddressAware="addrAwareLarge" AdditionalDependencies="zdll.lib phreeqcpp.lib hdf5dll.lib gmp.lib fmpich2.lib mpi.lib"/>
 				<Tool Name="VFPreLinkEventTool"/>
 				<Tool Name="VFResourceCompilerTool" ResourceOutputFileName="$(IntDir)/$(InputName).res"/></Configuration>
-		<Configuration Name="ser_debug|x64" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)" WorkingDirectory="$(ProjectDir)\..\..\..\examples\river">
+		<Configuration Name="ser_debug|x64" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)" WorkingDirectory="$(ProjectDir)\..\..\..\examples\capecod\0">
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true" HeaderFileName="$(InputName).h" TypeLibraryName="$(IntDir)/$(InputName).tlb"/>
 				<Tool Name="VFPreBuildEventTool"/>
 				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" PreprocessorDefinitions="HDF5_CREATE" CallingConvention="callConventionCRef" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" CompileOnly="true"/>
@@ -59,7 +59,7 @@ copy /Y &quot;$(DEV_SZIP21_X64)\dll\szlibdll.dll&quot;      &quot;$(TargetDir)sz
 copy /Y &quot;$(DEV_ZLIB123_X64_LIB)\zlib1.dll&quot;        &quot;$(TargetDir)zlib1.dll&quot;     &gt; NUL
 copy /Y &quot;$(DEV_SZIP21_X64)\dll\szlibdll.dll&quot;      &quot;$(TargetDir)szlibdll.dll&quot;  &gt; NUL"/>
 				<Tool Name="VFCustomBuildTool"/>
-				<Tool Name="VFLinkerTool" OutputFile="$(OUTDIR)/phast.exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(DEV_ZLIB123_X64_LIB);$(DEV_HDF5_X64_LIBDLL);$(OUTDIR)" IgnoreDefaultLibraryNames="LIBC" SubSystem="subSystemConsole" StackReserveSize="10000000" AdditionalDependencies="zlib1.lib phreeqcpp.lib hdf5dll.lib "/>
+				<Tool Name="VFLinkerTool" OutputFile="$(OUTDIR)/phast.exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(DEV_ZLIB123_X64_LIB);$(DEV_HDF5_X64_LIBDLL);$(OUTDIR)" IgnoreDefaultLibraryNames="LIBC" SubSystem="subSystemConsole" StackReserveSize="80000000" AdditionalDependencies="zlib1.lib phreeqcpp.lib hdf5dll.lib "/>
 				<Tool Name="VFResourceCompilerTool" ResourceOutputFileName="$(IntDir)/$(InputName).res"/>
 				<Tool Name="VFPreLinkEventTool"/></Configuration>
 		<Configuration Name="merge|x64" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)" WorkingDirectory="$(ProjectDir)\..\..\..\examples\ex4">
@@ -68,9 +68,9 @@ copy /Y &quot;$(DEV_SZIP21_X64)\dll\szlibdll.dll&quot;      &quot;$(TargetDir)sz
 				<Tool Name="VFPostBuildEventTool" CommandLine="copy /Y &quot;$(DEV_HDF5_X64_LIBDLL)\hdf5dll.dll&quot;      &quot;$(TargetDir)hdf5dll.dll&quot;   &gt; NUL
 copy /Y &quot;$(DEV_ZLIB123_X64_LIB)\zlib1.dll&quot;        &quot;$(TargetDir)zlib1.dll&quot;     &gt; NUL
 copy /Y &quot;$(DEV_SZIP21_X64)\dll\szlibdll.dll&quot;      &quot;$(TargetDir)szlibdll.dll&quot;  &gt; NUL"/>
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(DEV_MPICH2_X64_INC)" PreprocessorDefinitions="MERGE_FILES;HDF5_CREATE;USE_MPI;MPICH_NAME;NO_UNDERSCORES" CallingConvention="callConventionCRef" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" RuntimeLibrary="static /threads" CompileOnly="true"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Parallelization="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(DEV_MPICH2_X64_INC)" PreprocessorDefinitions="MERGE_FILES;HDF5_CREATE;USE_MPI;MPICH_NAME;NO_UNDERSCORES" CallingConvention="callConventionCRef" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" RuntimeLibrary="static /threads" CompileOnly="true"/>
 				<Tool Name="VFCustomBuildTool"/>
-				<Tool Name="VFLinkerTool" OutputFile="$(OUTDIR)/phast.exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(DEV_ZLIB123_X64_LIB);$(DEV_HDF5_X64_LIBDLL);$(DEV_MPICH2_X64_LIB);$(OUTDIR)" IgnoreDefaultLibraryNames="LIBC" SubSystem="subSystemConsole" StackReserveSize="20000000" AdditionalDependencies="zlib1.lib phreeqcpp.lib hdf5dll.lib fmpich2.lib mpi.lib"/>
+				<Tool Name="VFLinkerTool" OutputFile="$(OUTDIR)/phast.exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(DEV_ZLIB123_X64_LIB);$(DEV_HDF5_X64_LIBDLL);$(DEV_MPICH2_X64_LIB);$(OUTDIR)" IgnoreDefaultLibraryNames="LIBC" SubSystem="subSystemConsole" StackReserveSize="80000000" StackCommitSize="10000000" AdditionalDependencies="zlib1.lib phreeqcpp.lib hdf5dll.lib fmpich2.lib mpi.lib"/>
 				<Tool Name="VFPreLinkEventTool"/>
 				<Tool Name="VFResourceCompilerTool" ResourceOutputFileName="$(IntDir)/$(InputName).res"/></Configuration>
 		<Configuration Name="merge_debug|x64" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)" WorkingDirectory="$(ProjectDir)\..\..\..\examples\ex4">

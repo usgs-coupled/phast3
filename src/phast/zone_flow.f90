@@ -622,3 +622,66 @@ CONTAINS
   END FUNCTION xdcellno
 
 END SUBROUTINE zone_flow
+SUBROUTINE subgrid
+  ! ... Calculates flow rates for each internal zone
+  USE machine_constants, ONLY: kdp
+  USE mcb
+  USE mcb2
+  USE mcc, ONLY: cylind
+  USE mcg
+  USE mcn, ONLY: x, y, z
+  USE mcp
+  USE mcv
+  USE mcw
+  USE mg2, ONLY: hdprnt
+!!$  USE phys_const
+  IMPLICIT NONE
+  LOGICAL ex
+  INTEGER iunit, junit, ios
+  INTEGER i, j, k, ii, jj, kk, m
+  REAL(KIND=kdp), STATIC :: current_time = 0
+  INTEGER, STATIC :: counter = 1
+
+  CHARACTER(LEN=100) :: char_100, fname
+  if (num_flo_zones > 0) then
+
+    WRITE(char_100,*) counter
+    char_100 = ADJUSTL(char_100)
+    char_100 = TRIM(char_100)
+    fname = "0/subgrid/subgrid.head."//char_100
+
+    iunit = 101
+
+
+    if (counter == 1) then
+        OPEN(iunit,FILE='subgrid/subgrid.input',IOSTAT=ios,STATUS='REPLACE')
+        CLOSE(iunit)
+    endif
+    OPEN(iunit,FILE='subgrid/subgrid.input',IOSTAT=ios,ACTION='WRITE',ACCESS='APPEND')
+    WRITE(iunit,*) current_time," XYZ grid ", TRIM(fname) 
+    CLOSE(iunit, status='KEEP')
+    
+    fname = "subgrid/subgrid.head."//char_100
+    junit = 102
+    OPEN(junit,FILE=fname,IOSTAT=ios,ACTION='WRITE',STATUS='REPLACE')
+!  TYPE :: zone_volume
+!     INTEGER :: num_xycol
+!     INTEGER, DIMENSION(:), POINTER :: i_no, j_no, kmin_no, kmax_no
+!  END TYPE zone_volume
+    do i = 1, zone_col(1)%num_xycol
+        ii = zone_col(1)%i_no(i)
+        jj = zone_col(1)%j_no(i)
+        do kk = zone_col(1)%kmin_no(i), zone_col(1)%kmax_no(i)
+            m = ii + (jj-1)*nx + (kk-1)*nxy
+            if (frac(m) > 0.0)then
+                write(junit,"(4(G20.10,A1))") cnvli*x(ii),ACHAR(9),cnvli*y(jj),ACHAR(9),cnvli*z(kk),  &
+                      ACHAR(9),cnvli*hdprnt(m),ACHAR(9)
+            endif
+        end do
+     end do
+     CLOSE(junit, status='KEEP')
+     current_time = cnvtmi*time
+     counter = counter + 1
+  end if
+
+  END SUBROUTINE subgrid

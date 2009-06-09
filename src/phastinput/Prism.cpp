@@ -562,15 +562,15 @@ Prism::Slice(Cell_Face face, double coord)
 		p_intersection =
 			Segment_intersect_plane(1.0, 0.0, 0.0, -coord, p1,
 									this->prism_dip, t);
-		lp1 = Point(coord, this->box.y1 - 1, grid_zone()->z2);
-		lp2 = Point(coord, this->box.y2 + 1, grid_zone()->z2);
+		lp1 = Point(coord, this->box.y1 - (this->box.y2 - this->box.y1), grid_zone()->z2);
+		lp2 = Point(coord, this->box.y2 + (this->box.y2 - this->box.y1), grid_zone()->z2);
 		break;
 	case CF_Y:
 		p_intersection =
 			Segment_intersect_plane(0.0, 1.0, 0.0, -coord, p1,
 									this->prism_dip, t);
-		lp1 = Point(this->box.x1 - 1, coord, grid_zone()->z2);
-		lp2 = Point(this->box.x2 + 1, coord, grid_zone()->z2);
+		lp1 = Point(this->box.x1 - (this->box.x2 - this->box.x1), coord, grid_zone()->z2);
+		lp2 = Point(this->box.x2 + (this->box.x2 - this->box.x1), coord, grid_zone()->z2);
 		break;
 	case CF_Z:
 		p_intersection =
