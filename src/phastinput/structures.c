@@ -577,6 +577,7 @@ property_alloc(void)
 	if (property_ptr->v == NULL)
 		malloc_error();
 	property_ptr->count_v = 0;
+	property_ptr->v[0] = property_ptr->v[1] = 0.0;
 	property_ptr->count_alloc = 2;
 	property_ptr->type = PROP_UNDEFINED;
 	property_ptr->coord = '\000';
@@ -586,6 +587,54 @@ property_alloc(void)
 	property_ptr->data_source = new Data_source;
 	return (property_ptr);
 }
+struct property *
+property_copy(struct property *source)
+/* ---------------------------------------------------------------------- */
+/*
+ *  Allocates property structure 
+ *
+ *      arguments
+ *      input:  none
+ *      output: none
+ *      return: new property structure
+ */
+{
+	struct property *target;
+	/*
+	PROP_TYPE type;
+	double *v;
+	int count_v;
+	int count_alloc;
+	char coord;
+	int icoord;
+	double dist1;
+	double dist2;
+	int new_def;
+	Data_source *data_source;
+	*/
+
+	target = (struct property *) malloc(sizeof(struct property));
+	if (target == NULL)
+		malloc_error();
+	memcpy(target, source, sizeof(struct property));
+
+	// copy v
+	size_t count = 2;
+	if (source->count_v > 2) count = (size_t) source->count_v;
+	target->v = (double *) malloc((size_t) count * sizeof(double));
+	if (target->v == NULL)
+		malloc_error();
+	size_t i;
+	for (i = 0; i < count; i++)
+	{
+		target->v[i] = source->v[i];
+	}
+
+	// copy datasource
+	target->data_source = new Data_source(*source->data_source);
+	return (target);
+}
+
 
 /* ---------------------------------------------------------------------- */
 int

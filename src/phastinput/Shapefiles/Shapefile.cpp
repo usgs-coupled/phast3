@@ -276,7 +276,7 @@ Shapefile::Dump(std::ostream & oss)
 
 		eType = DBFGetFieldInfo(hDBF, i, szTitle, &nWidth, &nDecimals);
 		if (strlen(szTitle) > (unsigned int) nWidth)
-			panWidth[i] = strlen(szTitle);
+			panWidth[i] = (int) strlen(szTitle);
 		else
 			panWidth[i] = nWidth;
 

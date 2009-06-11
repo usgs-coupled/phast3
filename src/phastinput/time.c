@@ -1,5 +1,7 @@
 #define EXTERNAL extern
 #include "hstinpt.h"
+#include "Filedata.h"
+#include "XYZTfile.h"
 #include <stddef.h>
 #define OPTION_EOF -1
 #define OPTION_KEYWORD -2
@@ -52,6 +54,28 @@ time_series_read_property(char *ptr, const char **opt_list,
 			free_check_null(ts_ptr);
 			return NULL;
 		}
+		if (property_time_ptr->property->type == PROP_XYZT || property_time_ptr->property->type == PROP_XYZT)
+		{
+			// add time and property for all other time planes in file
+			std::vector<double>::iterator it;
+			Filedata *f = property_time_ptr->property->data_source->Get_filedata();
+			XYZTfile *xyzt = dynamic_cast < XYZTfile * > (f);
+			assert (xyzt != NULL);
+			if (xyzt != NULL)
+			{
+				for (it = xyzt->Get_times_vector().begin() + 1; it != xyzt->Get_times_vector().end(); it++)
+				{
+					struct property_time *property_time_ptr1 = property_time_copy(property_time_ptr);
+					property_time_ptr1->time.value = *it;
+					if (time_series_add(ts_ptr, property_time_ptr1) == ERROR)
+					{
+						time_series_free(ts_ptr);
+						free_check_null(ts_ptr);
+						return NULL;
+					}
+				}
+			}
+		}
 	}
 	else
 	{
@@ -82,6 +106,27 @@ time_series_read_property(char *ptr, const char **opt_list,
 			time_series_free(ts_ptr);
 			free_check_null(ts_ptr);
 			return NULL;
+		}
+		if (property_time_ptr->property->type == PROP_XYZT)
+		{
+			// add time and property for all other time planes in file
+			std::vector<double>::iterator it;
+			Filedata *f = property_time_ptr->property->data_source->Get_filedata();
+			XYZTfile *xyzt = dynamic_cast < XYZTfile * > (f);
+			if (xyzt != NULL)
+			{
+				for (it = xyzt->Get_times_vector().begin() + 1; it != xyzt->Get_times_vector().end(); it++)
+				{
+					struct property_time *property_time_ptr1 = property_time_copy(property_time_ptr);
+					property_time_ptr1->time.value = *it;
+					if (time_series_add(ts_ptr, property_time_ptr1) == ERROR)
+					{
+						time_series_free(ts_ptr);
+						free_check_null(ts_ptr);
+						return NULL;
+					}
+				}
+			}
 		}
 	}
 	return (ts_ptr);
@@ -132,6 +177,30 @@ property_time_alloc(void)
 	time_init(&property_time_ptr->time);
 	time_init(&property_time_ptr->time_value);
 	return (property_time_ptr);
+}
+/* ---------------------------------------------------------------------- */
+struct property_time *
+property_time_copy(struct property_time *source)
+/* ---------------------------------------------------------------------- */
+{
+	struct property_time *target;
+	/*
+	struct time time;
+	struct property *property;
+	struct time time_value;
+	int int_value;
+	*/
+	target =
+		(struct property_time *) malloc(sizeof(struct property_time));
+	if (target == NULL)
+		malloc_error();
+
+	memcpy(target, source, sizeof(property_time));
+	time_copy(&source->time, &target->time);
+	time_copy(&source->time_value, &target->time_value);
+
+	target->property = property_copy(source->property);
+	return (target);
 }
 
 /* ---------------------------------------------------------------------- */
@@ -338,13 +407,12 @@ property_time_read(char *next_char, struct property_time **property_time_ptr,
 	}
 	(*property_time_ptr)->property =
 		read_property(next_char, opt_list, count_opt_list, opt, TRUE, FALSE);
-	/*(*property_time_ptr)->property = read_property(next_char); */
+
 	if ((*property_time_ptr)->property == NULL)
 	{
 		input_error++;
 		error_msg("Reading property for time series", CONTINUE);
-	}
-
+	} 
 	return (OK);
 }
 

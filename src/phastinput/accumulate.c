@@ -11,6 +11,8 @@
 #include "Exterior_cell.h"
 #include "PHAST_Transform.h"
 #include "Zone_budget.h"
+#include "Filedata.h"
+#include "XYZTfile.h"
 static char const svnid[] =
 	"$Id$";
 int setup_grid(void);
@@ -1423,7 +1425,8 @@ distribute_property_to_list_of_elements(std::list < int >&pts,	// list of cell n
 	if (property_ptr->type == PROP_MIXTURE ||
 		property_ptr->type == PROP_MIX_CONSTANT ||
 		property_ptr->type == PROP_MIX_POINTS ||
-		property_ptr->type == PROP_MIX_XYZ
+		property_ptr->type == PROP_MIX_XYZ ||
+		property_ptr->type == PROP_MIX_XYZT
 		)
 	{
 		input_error++;
@@ -1512,6 +1515,7 @@ get_double_property_for_cell(struct cell *cell_ptr,
 	case PROP_MIXTURE:
 	case PROP_MIX_POINTS:
 	case PROP_MIX_XYZ:
+	case PROP_MIX_XYZT:
 	case PROP_MIX_CONSTANT:
 		input_error++;
 		error_msg("MIXTURE option not allowed for this property", CONTINUE);
@@ -1560,8 +1564,23 @@ get_double_property_for_cell(struct cell *cell_ptr,
 		break;
 	case PROP_POINTS:
 	case PROP_XYZ:
-		Point pt(cell_ptr->x, cell_ptr->y, cell_ptr->z);
-		*value = property_ptr->data_source->Get_tree3d()->Interpolate3d(pt);
+		{
+			Point pt(cell_ptr->x, cell_ptr->y, cell_ptr->z);
+			*value = property_ptr->data_source->Get_tree3d()->Interpolate3d(pt);
+		}
+		break;
+	case PROP_XYZT:
+		{
+			Filedata *f = property_ptr->data_source->Get_filedata();
+			XYZTfile *xyzt = dynamic_cast < XYZTfile * > (f);
+			assert (xyzt != NULL);
+			if (xyzt != NULL)
+			{
+				Point pt(cell_ptr->x, cell_ptr->y, cell_ptr->z);
+				xyzt->Read(current_start_time);
+				*value = property_ptr->data_source->Get_tree3d()->Interpolate3d(pt);
+			}
+		}
 		break;
 	}
 
@@ -1606,6 +1625,22 @@ get_mix_property_for_cell(struct cell *cell_ptr,
 			Point pt(cell_ptr->x, cell_ptr->y, cell_ptr->z);
 			mix_ptr->f1 =
 				property_ptr->data_source->Get_tree3d()->Interpolate3d(pt);
+		}
+		break;
+	case PROP_MIX_XYZT:
+		{
+			Filedata *f = property_ptr->data_source->Get_filedata();
+			XYZTfile *xyzt = dynamic_cast < XYZTfile * > (f);
+			assert (xyzt != NULL);
+			if (xyzt != NULL)
+			{
+				mix_ptr->i1 = (int) floor(property_ptr->v[0] + 1e-8);
+				mix_ptr->i2 = (int) floor(property_ptr->v[1] + 1e-8);
+				Point pt(cell_ptr->x, cell_ptr->y, cell_ptr->z);
+				xyzt->Read(current_start_time);
+				mix_ptr->f1 =
+					property_ptr->data_source->Get_tree3d()->Interpolate3d(pt);
+			}
 		}
 		break;
 	case PROP_MIX_CONSTANT:
@@ -1668,6 +1703,24 @@ get_mix_property_for_cell(struct cell *cell_ptr,
 			mix_ptr->f1 = 1.0;
 		}
 		break;
+	case PROP_XYZT:
+		{
+			double value;
+			Filedata *f = property_ptr->data_source->Get_filedata();
+			XYZTfile *xyzt = dynamic_cast < XYZTfile * > (f);
+			assert (xyzt != NULL);
+			if (xyzt != NULL)
+			{			
+				Point pt(cell_ptr->x, cell_ptr->y, cell_ptr->z);
+				xyzt->Read(current_start_time);
+				value =
+					property_ptr->data_source->Get_tree3d()->Interpolate3d(pt);
+				mix_ptr->i1 = (int) (value + 1e-8);
+				mix_ptr->i2 = -1;
+				mix_ptr->f1 = 1.0;
+			}
+		}
+		break;
 	}
 	return (OK);
 }
@@ -1703,6 +1756,7 @@ get_property_for_element(struct cell *cell_ptr, struct property *property_ptr,
 	case PROP_MIXTURE:
 	case PROP_MIX_POINTS:
 	case PROP_MIX_XYZ:
+	case PROP_MIX_XYZT:
 	case PROP_MIX_CONSTANT:
 		input_error++;
 		error_msg("MIXTURE option not allowed for this property", CONTINUE);
@@ -1756,6 +1810,11 @@ get_property_for_element(struct cell *cell_ptr, struct property *property_ptr,
 			*value =
 				property_ptr->data_source->Get_tree3d()->Interpolate3d(pt);
 		}
+		break;
+	case PROP_XYZT:
+		input_error++;
+		error_msg("XYZT time-dependent data does not apply to static element properties.", CONTINUE);
+		return (ERROR);
 		break;
 	}
 	*integer_value = (int) floor(*value + 1e-8);

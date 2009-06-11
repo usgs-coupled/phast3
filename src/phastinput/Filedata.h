@@ -18,14 +18,15 @@ class Filedata
 		SHAPE = 0,
 		ARCRASTER = 1,
 		XYZ = 2,
-		NONE = 3
+		NONE = 3,
+		XYZT = 4
 	};
 
 	  Filedata(void);
   public:
-	  virtual ~ Filedata(void);
+	virtual ~ Filedata(void);
 	virtual bool Make_polygons(int field, PHAST_polygon & polygons) = 0;
-	  std::vector < Point > &Get_points(int attribute);
+	std::vector < Point > &Get_points(int attribute);
 	double Interpolate(int attribute, Point p,
 					   PHAST_Transform::COORDINATE_SYSTEM point_system,
 					   PHAST_Transform * map2grid);
