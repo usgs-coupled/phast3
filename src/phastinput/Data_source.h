@@ -25,7 +25,8 @@ class Data_source
 		XYZ = 2,
 		CONSTANT = 3,
 		POINTS = 4,
-		NONE = 5
+		NONE = 5,
+		XYZT = 6
 	};
 	  Data_source(void);
 	  Data_source(std::vector < Point > &in_pts,

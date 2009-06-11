@@ -138,6 +138,7 @@ int grid_elt_free(struct grid_elt *grid_elt_ptr);
 int grid_elt_init(struct grid_elt *grid_elt_ptr);
 int mix_init(struct mix *mix_ptr);
 struct property *property_alloc(void);
+struct property *property_copy(struct property *source);
 int property_free(struct property *property_ptr);
 int river_free(River * river_ptr);
 River *river_search(int n_user, int *n);
@@ -158,6 +159,7 @@ struct print_frequency *print_frequency_alloc(void);
 int print_frequency_compare(const void *ptr1, const void *ptr2);
 int print_frequency_init(struct print_frequency *print_frequency_ptr);
 struct property_time *property_time_alloc(void);
+struct property_time *property_time_copy(struct property_time *source);
 int property_time_compare(const void *ptr1, const void *ptr2);
 int property_time_read(char *next_char,
 					   struct property_time **property_time_ptr,
@@ -181,6 +183,7 @@ int time_series_add(struct time_series *time_series_ptr,
 struct time_series *time_series_alloc(void);
 struct property_time *time_series_alloc_property_time(struct time_series
 													  *time_series_ptr);
+
 int time_series_realloc(struct time_series *time_series_ptr);
 struct time_series *time_series_free(struct time_series *ts_ptr);
 struct time_series *time_series_read_property(char *ptr,

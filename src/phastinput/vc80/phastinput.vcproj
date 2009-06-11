@@ -2106,6 +2106,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\XYZTfile.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\zone.cpp"
 				>
 				<FileConfiguration
@@ -2377,6 +2381,10 @@
 			</File>
 			<File
 				RelativePath="..\XYZfile.h"
+				>
+			</File>
+			<File
+				RelativePath="..\XYZTfile.h"
 				>
 			</File>
 			<File

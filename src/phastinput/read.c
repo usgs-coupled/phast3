@@ -4781,7 +4781,8 @@ read_property(char *ptr, const char **opt_list, int count_opt_list, int *opt,
 		MIX_POINTS = 2,
 		MIX_CONSTANT = 3,
 		MIX_NUMERIC = 4,
-		MIX_UNKNOWN = 5
+		MIX_UNKNOWN = 5,
+		MIX_XYZT = 6
 	};
 	MIX_STYLE style;
 
@@ -4889,7 +4890,7 @@ read_property(char *ptr, const char **opt_list, int count_opt_list, int *opt,
 		}
 		properties_with_data_source.push_back(p);
 	}
-	else if (strstr(token, "xyz") == token)
+	else if (strcmp(token, "xyz") == 0)
 	{
 /*
  *   read from file for interpolation
@@ -4921,6 +4922,17 @@ read_property(char *ptr, const char **opt_list, int count_opt_list, int *opt,
 		properties_with_data_source.push_back(p);
 		*opt = get_option(opt_list, count_opt_list, &next_char);
 
+	}
+	else if (strstr(token, "xyzt") == token)
+	{
+/*
+ *   read from file for interpolation in space and time
+ */
+		p->type = PROP_XYZT;
+		std::istringstream lines(start_of_property);
+		p->data_source->Read(lines, false);
+		p->data_source->Tidy(false);
+		*opt = get_option(opt_list, count_opt_list, &next_char);
 	}
 	else if (token[0] == 'X' || token[0] == 'x')
 	{
@@ -5157,9 +5169,13 @@ read_property(char *ptr, const char **opt_list, int count_opt_list, int *opt,
 		{
 			style = MIX_POINTS;
 		}
-		else if (strstr(token, "xyz") == token)
+		else if (strcmp(token, "xyz") == 0)
 		{
 			style = MIX_XYZ;
+		}
+		else if (strcmp(token, "xyzt") == 0)
+		{
+			style = MIX_XYZT;
 		}
 		else if (strstr(token, "constant") == token || strstr(token, "uniform") == token)
 		{
@@ -5229,6 +5245,15 @@ read_property(char *ptr, const char **opt_list, int count_opt_list, int *opt,
 				}
 				properties_with_data_source.push_back(p);
 				//*opt = next_keyword_or_option(opt_list, count_opt_list);
+				*opt = get_option(opt_list, count_opt_list, &next_char);
+			}
+			break;
+		case MIX_XYZT:
+			{
+				p->type = PROP_MIX_XYZT;
+				std::istringstream lines(start_of_data_source);
+				p->data_source->Read_mixture(lines);
+				p->data_source->Tidy(false);
 				*opt = get_option(opt_list, count_opt_list, &next_char);
 			}
 			break;

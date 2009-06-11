@@ -7,6 +7,7 @@
 #include "Shapefiles/Shapefile.h"
 #include "ArcRaster.h"
 #include "XYZfile.h"
+#include "XYZTfile.h"
 #include "PHAST_polygon.h"
 #include "NNInterpolator/NNInterpolator.h"
 #include "Filedata.h"
@@ -142,11 +143,12 @@ bool Data_source::Read(std::istream & lines, bool read_num)
 		"points",				/* 1 */
 		"shape",				/* 2 */
 		"xyz",					/* 3 */
-		"arcraster"				/* 4 */
+		"arcraster",			/* 4 */
+		"xyzt"                  /* 5 */         
 	};
 
 	int
-		count_opt_list = 5;
+		count_opt_list = 6;
 	std::vector < std::string > std_opt_list;
 	int
 		i;
@@ -273,7 +275,15 @@ bool Data_source::Read(std::istream & lines, bool read_num)
 		if (!success)
 			error_msg("Error reading ArcRaster file name.", EA_CONTINUE);
 		break;
-
+	case 5:
+		this->source_type = Data_source::XYZT;
+		this->source_type_user = Data_source::XYZT;
+		success =
+			Data_source::Read_filename(lines, false, this->file_name,
+									   this->attribute);
+		if (!success)
+			error_msg("Error reading xyzt file name.", EA_CONTINUE);
+		break;
 	default:
 		success = false;
 		break;
@@ -680,6 +690,22 @@ Data_source::Tidy(const bool make_nni)
 	case Data_source::POINTS:
 		this->pts_user = this->pts;
 		break;
+	case Data_source::XYZT:
+		if (Filedata::file_data_map.find(this->file_name) ==
+			Filedata::file_data_map.end())
+		{
+			XYZTfile *xyzt = new XYZTfile(this->file_name, this->coordinate_system);
+			xyzt->Set_coordinate_system(this->coordinate_system);
+			Filedata::file_data_map[this->file_name] = (Filedata *) xyzt;
+		}
+		{
+			Filedata *f = Filedata::file_data_map.find(this->file_name)->second;
+			if (f->Get_file_type() != Filedata::XYZT)
+				error_msg("File read as non XYZT and XYZT file?", EA_STOP);
+			this->filedata = f;
+			//Data_source added to data_source_map in XYZTfile constructor
+		}
+		break;
 	case Data_source::NONE:
 		break;
 	}
@@ -716,6 +742,7 @@ std::vector < Point > &Data_source::Get_points()
 	case Data_source::ARCRASTER:
 	case Data_source::XYZ:
 	case Data_source::SHAPE:
+	case Data_source::XYZT:
 //    {
 //      std::map<std::string,Filedata *>::iterator it = Filedata::file_data_map.find(this->file_name);
 //      Filedata *f_ptr = it->second;
@@ -1179,6 +1206,7 @@ Data_source::Get_data_source_with_points(void)
 	case Data_source::SHAPE:
 	case Data_source::ARCRASTER:
 	case Data_source::XYZ:
+	case Data_source::XYZT:
 		assert(this->filedata != NULL);
 		ds = this->filedata->Get_data_source(this->attribute);
 		break;
