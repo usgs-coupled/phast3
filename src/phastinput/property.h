@@ -12,9 +12,9 @@ enum PROP_TYPE
 	PROP_POINTS = 105,
 	PROP_XYZ = 106,
 	//PROP_MIX_POINTS = 107,
-	PROP_MIX_XYZ = 108,
+	//PROP_MIX_XYZ = 108,
 	//PROP_MIX_CONSTANT = 109,
-	PROP_XYZT = 110,
+	PROP_XYZT = 110
 	//PROP_MIX_XYZT = 111
 };
 /* ----------------------------------------------------------------------
