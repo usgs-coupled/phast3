@@ -34,6 +34,8 @@ UNITS
 	-specific_storage                 1/m
 	-dispersivity                     m
 	-flux                             meters/year
+	-leaky_hydraulic                   m/yr
+	-leaky_thickness                  m
 GRID
 	-uniform X 0 10 101
 	-uniform Y 0 1 2
@@ -118,9 +120,23 @@ FLUX_BC
 		1.5  xyz    grid  property.solns
 		1.6  2
 		1.7  Y 1 0 2 1
+		
 	-face X
 	-flux  
 		0  1
+		
+LEAKY_BC		
+	-zone 9 0 0 10 0 1
+	-assoc
+	        0  mixture 1 2 xyzt grid property.mix.xyzt
+		1.5   yr  mixture 1 2 X .5 9 1 10
+		
+		
+	-face Y
+	-head  
+		0  xyzt grid property.xyzt	
+	-K   1
+	-thick 1
 
 	
 	      
