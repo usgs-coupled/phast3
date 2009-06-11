@@ -65,6 +65,7 @@ FILES=\
 	wells.c \
 	write.c  \
 	XYZfile.cpp \
+	XYZTfile.cpp \
 	zone.cpp \
 	Zone_budget.cpp
 
@@ -101,6 +102,7 @@ OBJECTS=\
 	Prism.o \
 	Wedge.o \
 	XYZfile.o \
+	XYZTfile.o \
 	Zone_budget.o
 
 NNI_OBJECTS= \
@@ -139,7 +141,7 @@ accumulate.o: accumulate.c hstinpt.h gpc.h gpc_helper.h Cell_Face.h \
   Exterior_cell.h BC_info.h Mix.h River.h Drain.h Utilities.h unit_impl.h \
   time.h inputproto.h wphast.h message.h Prism.h Data_source.h \
   PHAST_polygon.h Polygon_tree.h KDtree/KDtree.h KDtree/kdtree2.hpp \
-  KDtree/../Point.h Cube.h Wedge.h Zone_budget.h
+  KDtree/../Point.h Cube.h Wedge.h Zone_budget.h Filedata.h XYZTfile.h
 check.o: check.c hstinpt.h gpc.h gpc_helper.h Cell_Face.h index_range.h \
   zone.h property.h Polyhedron.h Point.h PHAST_Transform.h \
   Exterior_cell.h BC_info.h Mix.h River.h Drain.h Utilities.h unit_impl.h \
@@ -179,7 +181,9 @@ structures.o: structures.c hstinpt.h gpc.h gpc_helper.h Cell_Face.h \
 time.o: time.c hstinpt.h gpc.h gpc_helper.h Cell_Face.h index_range.h \
   zone.h property.h Polyhedron.h Point.h PHAST_Transform.h \
   Exterior_cell.h BC_info.h Mix.h River.h Drain.h Utilities.h unit_impl.h \
-  time.h inputproto.h wphast.h
+  time.h inputproto.h wphast.h Filedata.h Data_source.h PHAST_polygon.h \
+  Polygon_tree.h KDtree/KDtree.h KDtree/kdtree2.hpp KDtree/../Point.h \
+  XYZTfile.h
 utilities.o: utilities.c message.h hstinpt.h gpc.h gpc_helper.h \
   Cell_Face.h index_range.h zone.h property.h Polyhedron.h Point.h \
   PHAST_Transform.h Exterior_cell.h BC_info.h Mix.h River.h Drain.h \
@@ -215,9 +219,10 @@ Data_source.o: Data_source.cpp zone.h Data_source.h gpc.h gpc_helper.h \
   Shapefiles/../zone.h Shapefiles/../gpc.h \
   Shapefiles/../PHAST_Transform.h Shapefiles/../Data_source.h \
   Shapefiles/shapefil.h Shapefiles/../gpc.h ArcRaster.h Filedata.h \
-  XYZfile.h NNInterpolator/NNInterpolator.h NNInterpolator/../Point.h \
-  NNInterpolator/../zone.h NNInterpolator/../PHAST_Transform.h \
-  NNInterpolator/../UniqueMap.h NNInterpolator/nn.h UniqueMap.h
+  XYZfile.h XYZTfile.h NNInterpolator/NNInterpolator.h \
+  NNInterpolator/../Point.h NNInterpolator/../zone.h \
+  NNInterpolator/../PHAST_Transform.h NNInterpolator/../UniqueMap.h \
+  NNInterpolator/nn.h UniqueMap.h
 Drain.o: Drain.cpp Drain.h gpc.h gpc_helper.h Cell_Face.h River.h \
   PHAST_Transform.h Point.h hstinpt.h index_range.h zone.h property.h \
   Polyhedron.h Exterior_cell.h BC_info.h Mix.h Utilities.h unit_impl.h \
@@ -250,6 +255,10 @@ XYZfile.o: XYZfile.cpp XYZfile.h Filedata.h zone.h gpc.h gpc_helper.h \
   Cell_Face.h PHAST_Transform.h Point.h Data_source.h PHAST_polygon.h \
   unit_impl.h Polygon_tree.h KDtree/KDtree.h KDtree/kdtree2.hpp \
   KDtree/../Point.h message.h
+XYZTfile.o: XYZTfile.cpp XYZTfile.h Filedata.h zone.h gpc.h gpc_helper.h \
+  Cell_Face.h PHAST_Transform.h Point.h Data_source.h PHAST_polygon.h \
+  unit_impl.h Polygon_tree.h KDtree/KDtree.h KDtree/kdtree2.hpp \
+  KDtree/../Point.h message.h
 Zone_budget.o: Zone_budget.cpp Zone_budget.h Polyhedron.h Point.h gpc.h \
   gpc_helper.h Cell_Face.h zone.h PHAST_Transform.h message.h
 zone.o: zone.cpp zone.h Point.h
@@ -272,7 +281,7 @@ nncommon.o: NNInterpolator/nncommon.c NNInterpolator/config.h \
   NNInterpolator/delaunay.h NNInterpolator/nn.h NNInterpolator/nan.h \
   NNInterpolator/nn_internal.h NNInterpolator/version.h
 nncommon-vulnerable.o: NNInterpolator/nncommon-vulnerable.c \
-  NNInterpolator/delaunay.h NNInterpolator/nn.h NNInterpolator/nan.h \
+  NNInterpolator/nn.h NNInterpolator/delaunay.h NNInterpolator/nan.h \
   NNInterpolator/nn_internal.h NNInterpolator/config.h
 nnpi.o: NNInterpolator/nnpi.c NNInterpolator/nan.h NNInterpolator/hash.h \
   NNInterpolator/istack.h NNInterpolator/delaunay.h NNInterpolator/nn.h \
