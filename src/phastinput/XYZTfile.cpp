@@ -182,10 +182,9 @@ bool XYZTfile::Read_set(void)
 	size_t i;
 
 	std::string line;
-	double x, y, z, t, v, tlast = -9999999.;
-	int lines = 0; 
+	double x, y, z, t, v;
 	std::vector<Point> pts; 
-	size_t j = this->count_lines[this->current_set];
+
 	for (i = 0; i <= this->count_lines[this->current_set]; i++)
 	{
 		std::getline(*this->file_stream, line);
