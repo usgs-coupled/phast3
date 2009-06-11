@@ -35,7 +35,7 @@ XYZTfile::XYZTfile(std::string filename, PHAST_Transform::COORDINATE_SYSTEM cs)
 	// Make vector of times and number of lines
 	std::string line;
 	double x, y, z, t, v, tlast = -9999999.;
-	int lines = 0;
+
 
 	// start 
 	{
@@ -49,6 +49,7 @@ XYZTfile::XYZTfile(std::string filename, PHAST_Transform::COORDINATE_SYSTEM cs)
 	}
 
 	// continue
+	int lines = 1;
 	while (std::getline(*this->file_stream, line))
 	{
 		std::stringstream stream(line);
@@ -128,16 +129,17 @@ bool XYZTfile::Read(double time)
 	i = this->current_set;
 
 	// check if already at the correct time plane
+	double fudge = (1.0 + 1e-6);
 	bool current = false;
 	if (i >= 0 && i < (int) this->times_vector.size())
 	{
-		if (time >= this->times_vector[i])
+		if (fudge*time >= this->times_vector[i])
 		{
 			if (i == ((int) this->times_vector.size() - 1) )
 			{
 				current = true;
 			} 
-			else if (i < ((int) this->times_vector.size() - 1) && time < this->times_vector[i + 1])
+			else if (i < ((int) this->times_vector.size() - 1) && time*fudge < this->times_vector[i + 1])
 			{
 				current = true;
 			}
@@ -147,8 +149,7 @@ bool XYZTfile::Read(double time)
 
 	for (i = 0; i < (int) (this->times_vector.size() - 1); i++)
 	{
-		if (time > this->times_vector[i]) continue;
-		break;
+		if (time*fudge >= this->times_vector[i] && time*fudge < this->times_vector[i + 1] ) break;
 	}
 	int target_set = i;
 	int number_of_sets_to_read;
@@ -185,7 +186,7 @@ bool XYZTfile::Read_set(void)
 	double x, y, z, t, v;
 	std::vector<Point> pts; 
 
-	for (i = 0; i <= this->count_lines[this->current_set]; i++)
+	for (i = 0; i < this->count_lines[this->current_set]; i++)
 	{
 		std::getline(*this->file_stream, line);
 		std::stringstream stream(line);

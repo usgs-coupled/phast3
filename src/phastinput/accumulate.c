@@ -1270,6 +1270,7 @@ distribute_property_to_list_of_cells(std::list < int >&pts,	// list of cell numb
 			return (ERROR);
 		}
 	}
+#ifdef SKIP
 	if (property_ptr->type == PROP_MIXTURE)
 	{
 		if (n != property_ptr->count_v - 2)
@@ -1281,6 +1282,7 @@ distribute_property_to_list_of_cells(std::list < int >&pts,	// list of cell numb
 			return (ERROR);
 		}
 	}
+#endif
 	if (mask != NULL && mask->type == PROP_ZONE)
 	{
 		if (n != mask->count_v)
@@ -1422,12 +1424,7 @@ distribute_property_to_list_of_elements(std::list < int >&pts,	// list of cell n
 			return (ERROR);
 		}
 	}
-	if (property_ptr->type == PROP_MIXTURE ||
-		property_ptr->type == PROP_MIX_CONSTANT ||
-		property_ptr->type == PROP_MIX_POINTS ||
-		property_ptr->type == PROP_MIX_XYZ ||
-		property_ptr->type == PROP_MIX_XYZT
-		)
+	if (property_ptr->mix)
 	{
 		input_error++;
 		error_msg("MIXTURE option not allowed for this property", CONTINUE);
@@ -1494,6 +1491,12 @@ get_double_property_for_cell(struct cell *cell_ptr,
 {
 	double slope, b;
 	*value = 0;
+	if (property_ptr->mix)
+	{
+		input_error++;
+		error_msg("MIXTURE option not allowed for this property", CONTINUE);
+		return (ERROR);
+	}
 	switch (property_ptr->type)
 	{
 	case PROP_UNDEFINED:
@@ -1512,6 +1515,7 @@ get_double_property_for_cell(struct cell *cell_ptr,
 		}
 		*value = property_ptr->v[node_sequence];
 		break;
+#ifdef SKIP
 	case PROP_MIXTURE:
 	case PROP_MIX_POINTS:
 	case PROP_MIX_XYZ:
@@ -1521,6 +1525,7 @@ get_double_property_for_cell(struct cell *cell_ptr,
 		error_msg("MIXTURE option not allowed for this property", CONTINUE);
 		return (ERROR);
 		break;
+#endif
 	case PROP_LINEAR:
 		{
 			double dist;
@@ -1595,132 +1600,190 @@ get_mix_property_for_cell(struct cell *cell_ptr,
 						  struct mix *mix_ptr)
 /* ---------------------------------------------------------------------- */
 {
-	switch (property_ptr->type)
+	/*
+	PROP_UNDEFINED = 100,
+	PROP_FIXED = 101,
+	PROP_LINEAR = 102,
+	PROP_ZONE = 103,
+	//PROP_MIXTURE = 104,
+	PROP_POINTS = 105,
+	PROP_XYZ = 106,
+	//PROP_MIX_POINTS = 107,
+	PROP_MIX_XYZ = 108,
+	//PROP_MIX_CONSTANT = 109,
+	PROP_XYZT = 110,
+	*/
+
+	if (!property_ptr->mix)
 	{
-	case PROP_UNDEFINED:
-		input_error++;
-		error_msg("Property type is not defined", CONTINUE);
-		return (ERROR);
-		break;
-	case PROP_FIXED:
-		mix_ptr->i1 = (int) floor(property_ptr->v[0] + 1e-8);
-		mix_ptr->i2 = -1;
-		mix_ptr->f1 = 1.0;
-		break;
-	case PROP_ZONE:
-		if (node_sequence >= property_ptr->count_v)
+		switch (property_ptr->type)
 		{
-			error_msg("OOPS in get_property_value", CONTINUE);
-			return (ERROR);
-		}
-		mix_ptr->i1 = (int) (floor(property_ptr->v[node_sequence] + 1e-8));
-		mix_ptr->i2 = -1;
-		mix_ptr->f1 = 1.0;
-		break;
-	case PROP_MIX_POINTS:
-	case PROP_MIX_XYZ:
-		{
+		case PROP_FIXED:
 			mix_ptr->i1 = (int) floor(property_ptr->v[0] + 1e-8);
-			mix_ptr->i2 = (int) floor(property_ptr->v[1] + 1e-8);
-			Point pt(cell_ptr->x, cell_ptr->y, cell_ptr->z);
-			mix_ptr->f1 =
-				property_ptr->data_source->Get_tree3d()->Interpolate3d(pt);
-		}
-		break;
-	case PROP_MIX_XYZT:
-		{
-			Filedata *f = property_ptr->data_source->Get_filedata();
-			XYZTfile *xyzt = dynamic_cast < XYZTfile * > (f);
-			assert (xyzt != NULL);
-			if (xyzt != NULL)
-			{
-				mix_ptr->i1 = (int) floor(property_ptr->v[0] + 1e-8);
-				mix_ptr->i2 = (int) floor(property_ptr->v[1] + 1e-8);
-				Point pt(cell_ptr->x, cell_ptr->y, cell_ptr->z);
-				xyzt->Read(current_start_time);
-				mix_ptr->f1 =
-					property_ptr->data_source->Get_tree3d()->Interpolate3d(pt);
-			}
-		}
-		break;
-	case PROP_MIX_CONSTANT:
-		{
-			mix_ptr->i1 = (int) floor(property_ptr->v[0] + 1e-8);
-			mix_ptr->i2 = (int) floor(property_ptr->v[1] + 1e-8);
-			mix_ptr->f1 = property_ptr->data_source->Interpolate(Point(0,0,0));
-		}
-		break;
-	case PROP_MIXTURE:
-		mix_ptr->i1 = (int) floor(property_ptr->v[0] + 1e-8);
-		mix_ptr->i2 = (int) floor(property_ptr->v[1] + 1e-8);
-		mix_ptr->f1 = property_ptr->v[node_sequence + 2];
-		break;
-	case PROP_LINEAR:
-		mix_ptr->i1 = (int) floor(property_ptr->v[0] + 1e-8);
-		mix_ptr->i2 = (int) floor(property_ptr->v[1] + 1e-8);
-		if ((property_ptr->dist2 - property_ptr->dist1) == 0)
-		{
-			mix_ptr->f1 = 1;
-		}
-		else
-		{
-			if (property_ptr->coord == 'x')
-			{
-				mix_ptr->f1 =
-					(property_ptr->dist2 -
-					 cell_ptr->x) / (property_ptr->dist2 -
-									 property_ptr->dist1);
-			}
-			if (property_ptr->coord == 'y')
-			{
-				mix_ptr->f1 =
-					(property_ptr->dist2 -
-					 cell_ptr->y) / (property_ptr->dist2 -
-									 property_ptr->dist1);
-			}
-			if (property_ptr->coord == 'z')
-			{
-				mix_ptr->f1 =
-					(property_ptr->dist2 -
-					 cell_ptr->z) / (property_ptr->dist2 -
-									 property_ptr->dist1);
-			}
-			if (mix_ptr->f1 > 1)
-				mix_ptr->f1 = 1;
-			if (mix_ptr->f1 < 0)
-				mix_ptr->f1 = 0;
-		}
-		break;
-	case PROP_POINTS:
-	case PROP_XYZ:
-		{
-			double value;
-			Point pt(cell_ptr->x, cell_ptr->y, cell_ptr->z);
-			value =
-				property_ptr->data_source->Get_tree3d()->Interpolate3d(pt);
-			mix_ptr->i1 = (int) (value + 1e-8);
 			mix_ptr->i2 = -1;
 			mix_ptr->f1 = 1.0;
-		}
-		break;
-	case PROP_XYZT:
-		{
-			double value;
-			Filedata *f = property_ptr->data_source->Get_filedata();
-			XYZTfile *xyzt = dynamic_cast < XYZTfile * > (f);
-			assert (xyzt != NULL);
-			if (xyzt != NULL)
-			{			
+			break;
+		case PROP_ZONE:
+			if (node_sequence >= property_ptr->count_v)
+			{
+				error_msg("OOPS in get_property_value", CONTINUE);
+				return (ERROR);
+			}
+			mix_ptr->i1 = (int) (floor(property_ptr->v[node_sequence] + 1e-8));
+			mix_ptr->i2 = -1;
+			mix_ptr->f1 = 1.0;
+			break;
+		case PROP_LINEAR:
+			mix_ptr->i1 = (int) floor(property_ptr->v[0] + 1e-8);
+			mix_ptr->i2 = (int) floor(property_ptr->v[1] + 1e-8);
+			if ((property_ptr->dist2 - property_ptr->dist1) == 0)
+			{
+				mix_ptr->f1 = 1;
+			}
+			else
+			{
+				if (property_ptr->coord == 'x')
+				{
+					mix_ptr->f1 =
+						(property_ptr->dist2 -
+						cell_ptr->x) / (property_ptr->dist2 -
+						property_ptr->dist1);
+				}
+				if (property_ptr->coord == 'y')
+				{
+					mix_ptr->f1 =
+						(property_ptr->dist2 -
+						cell_ptr->y) / (property_ptr->dist2 -
+						property_ptr->dist1);
+				}
+				if (property_ptr->coord == 'z')
+				{
+					mix_ptr->f1 =
+						(property_ptr->dist2 -
+						cell_ptr->z) / (property_ptr->dist2 -
+						property_ptr->dist1);
+				}
+				if (mix_ptr->f1 > 1)
+					mix_ptr->f1 = 1;
+				if (mix_ptr->f1 < 0)
+					mix_ptr->f1 = 0;
+			}
+			break;
+		case PROP_POINTS:
+		case PROP_XYZ:
+			{
+				double value;
 				Point pt(cell_ptr->x, cell_ptr->y, cell_ptr->z);
-				xyzt->Read(current_start_time);
 				value =
 					property_ptr->data_source->Get_tree3d()->Interpolate3d(pt);
 				mix_ptr->i1 = (int) (value + 1e-8);
 				mix_ptr->i2 = -1;
 				mix_ptr->f1 = 1.0;
 			}
+			break;
+		case PROP_XYZT:
+			{
+				double value;
+				Filedata *f = property_ptr->data_source->Get_filedata();
+				XYZTfile *xyzt = dynamic_cast < XYZTfile * > (f);
+				assert (xyzt != NULL);
+				if (xyzt != NULL)
+				{			
+					Point pt(cell_ptr->x, cell_ptr->y, cell_ptr->z);
+					xyzt->Read(current_start_time);
+					value =
+						property_ptr->data_source->Get_tree3d()->Interpolate3d(pt);
+					mix_ptr->i1 = (int) (value + 1e-8);
+					mix_ptr->i2 = -1;
+					mix_ptr->f1 = 1.0;
+				}
+			}
+			break;
+		default:
+			input_error++;
+			error_msg("Property type is not defined", CONTINUE);
+			return (ERROR);
+			break;
 		}
-		break;
+	}
+	else // mixture 
+	{
+		switch (property_ptr->type)
+		{
+		case PROP_FIXED:
+			mix_ptr->i1 = (int) floor(property_ptr->mix1 + 1e-8);
+			mix_ptr->i2 = (int) floor(property_ptr->mix2 + 1e-8);
+			mix_ptr->f1 = property_ptr->v[0];
+			break;
+		case PROP_LINEAR:
+			mix_ptr->i1 = (int) floor(property_ptr->mix1 + 1e-8);
+			mix_ptr->i2 = (int) floor(property_ptr->mix2 + 1e-8);
+			if ((property_ptr->dist2 - property_ptr->dist1) == 0)
+			{
+				mix_ptr->f1 = 1;
+			}
+			else
+			{
+				if (property_ptr->coord == 'x')
+				{
+					mix_ptr->f1 =
+						(property_ptr->dist2 -
+						cell_ptr->x) / (property_ptr->dist2 -
+						property_ptr->dist1);
+				}
+				if (property_ptr->coord == 'y')
+				{
+					mix_ptr->f1 =
+						(property_ptr->dist2 -
+						cell_ptr->y) / (property_ptr->dist2 -
+						property_ptr->dist1);
+				}
+				if (property_ptr->coord == 'z')
+				{
+					mix_ptr->f1 =
+						(property_ptr->dist2 -
+						cell_ptr->z) / (property_ptr->dist2 -
+						property_ptr->dist1);
+				}
+				mix_ptr->f1 = mix_ptr->f1*property_ptr->v[0] + (1 - mix_ptr->f1) * property_ptr->v[1];
+				if (mix_ptr->f1 > 1)
+					mix_ptr->f1 = 1;
+				if (mix_ptr->f1 < 0)
+					mix_ptr->f1 = 0;
+			}
+			break;
+		case PROP_POINTS:
+		case PROP_XYZ:
+			{
+				mix_ptr->i1 = (int) floor(property_ptr->mix1 + 1e-8);
+				mix_ptr->i2 = (int) floor(property_ptr->mix2 + 1e-8);
+
+				Point pt(cell_ptr->x, cell_ptr->y, cell_ptr->z);
+				mix_ptr->f1 = property_ptr->data_source->Get_tree3d()->Interpolate3d(pt);
+			}
+			break;
+		case PROP_XYZT:
+			{
+				mix_ptr->i1 = (int) floor(property_ptr->mix1 + 1e-8);
+				mix_ptr->i2 = (int) floor(property_ptr->mix2 + 1e-8);
+
+				Filedata *f = property_ptr->data_source->Get_filedata();
+				XYZTfile *xyzt = dynamic_cast < XYZTfile * > (f);
+				assert (xyzt != NULL);
+				if (xyzt != NULL)
+				{			
+					Point pt(cell_ptr->x, cell_ptr->y, cell_ptr->z);
+					xyzt->Read(current_start_time);
+					mix_ptr->f1 =property_ptr->data_source->Get_tree3d()->Interpolate3d(pt);
+				}
+			}
+			break;
+		default:
+			input_error++;
+			error_msg("Property type is not defined", CONTINUE);
+			return (ERROR);
+			break;
+		}
 	}
 	return (OK);
 }
@@ -1735,6 +1798,12 @@ get_property_for_element(struct cell *cell_ptr, struct property *property_ptr,
 	*value = 0;
 	*integer_value = 0;
 
+	if (property_ptr->mix)
+	{
+		input_error++;
+		error_msg("MIXTURE option not allowed for this property", CONTINUE);
+		return (ERROR);
+	}
 	switch (property_ptr->type)
 	{
 	case PROP_UNDEFINED:
@@ -1753,6 +1822,7 @@ get_property_for_element(struct cell *cell_ptr, struct property *property_ptr,
 		}
 		*value = property_ptr->v[node_sequence];
 		break;
+#ifdef SKIP
 	case PROP_MIXTURE:
 	case PROP_MIX_POINTS:
 	case PROP_MIX_XYZ:
@@ -1762,6 +1832,7 @@ get_property_for_element(struct cell *cell_ptr, struct property *property_ptr,
 		error_msg("MIXTURE option not allowed for this property", CONTINUE);
 		return (ERROR);
 		break;
+#endif
 	case PROP_LINEAR:
 		{
 			double dist;
@@ -3734,6 +3805,7 @@ get_property_for_cell(int ncells,	// number of point in zone
 			return (false);
 		}
 	}
+#ifdef SKIP
 	if (property_ptr->type == PROP_MIXTURE)
 	{
 		if (ncells != property_ptr->count_v - 2)
@@ -3745,6 +3817,7 @@ get_property_for_cell(int ncells,	// number of point in zone
 			return (false);
 		}
 	}
+#endif
 	if (mask != NULL && mask->type == PROP_ZONE)
 	{
 		if (ncells != mask->count_v)

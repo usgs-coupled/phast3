@@ -584,6 +584,8 @@ property_alloc(void)
 	property_ptr->icoord = -1;
 	property_ptr->dist1 = -1;
 	property_ptr->dist2 = -1;
+	property_ptr->mix = false;
+	property_ptr->mix1 = property_ptr->mix2 = -1;
 	property_ptr->data_source = new Data_source;
 	return (property_ptr);
 }
