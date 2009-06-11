@@ -4745,7 +4745,408 @@ read_leaky_bc(void)
 	}
 	return (return_value);
 }
+/* ---------------------------------------------------------------------- */
+struct property *
+read_property_only(char *ptr, const char **opt_list, int count_opt_list, int *opt,
+			  int delimited, int allow_restart)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *      Reads property data in any of 4 forms:
+ *         (1) a single double value
+ *         (A) xyz + value points in input file used for interpolation
+ *         (B) xyz + value points in external file used for interpolation
+ *         (2) X,Y, or Z followed by value1, dist1, value2, dist2
+ *         (3) b[y_element] or b[y_cell] followed by list of doubles
+ *             on same and (or) succeeding lines (Obsolete)
+ *         (4) f[ile] followed by file name (Obsolete)
+ *         (5) r[estart_file] followed by file name
+ *         (6) xyzt + value for time dependent boundary conditions
+ *
+ *      Arguments:
+ *         ptr    entry: points to line to read from
+ *	       delimited is always true
+ *            
+ *
+ *      Returns:
+ *         pointer to property structure
+ */
 
+	int j;
+	char token[MAX_LENGTH];
+	char *start_of_property;
+
+	int l;
+	struct property *p;
+	char *next_char;
+
+	p = property_alloc();
+	next_char = ptr;
+	start_of_property = ptr;
+
+	j = copy_token(token, &next_char, &l);
+	str_tolower(token);
+/*
+ *   empty, keep reading
+ */
+	if (j == EMPTY)
+	{
+		property_free(p);
+		p = NULL;
+		*opt = next_keyword_or_option(opt_list, count_opt_list);
+		return (NULL);
+	}
+	else if (j == DIGIT)
+	{
+/*
+ *   digit, read one value, check rest of line is empty
+ */
+		sscanf(token, "%lf", &(p->v[0]));
+		j = copy_token(token, &next_char, &l);
+		p->type = PROP_FIXED;
+		p->count_v = 1;
+		if (j != EMPTY)
+		{
+			input_error++;
+			error_msg("Expected single property value after identifier",
+					  CONTINUE);
+			error_msg(line, CONTINUE);
+		}
+		*opt = get_option(opt_list, count_opt_list, &next_char);
+	}
+	else if (strstr(token, "constant") == token
+			 || strstr(token, "uniform") == token)
+	{
+/*
+ *   digit, read one value, check rest of line is empty
+ */
+		j = copy_token(token, &next_char, &l);
+		sscanf(token, "%lf", &(p->v[0]));
+		p->type = PROP_FIXED;
+		p->count_v = 1;
+		if (j != DIGIT)
+		{
+			input_error++;
+			error_msg("Expected single property value after identifier",
+					  CONTINUE);
+			error_msg(line, CONTINUE);
+		}
+		*opt = get_option(opt_list, count_opt_list, &next_char);
+	}
+	else if (strstr(token, "points") == token)
+	{
+/*
+ *   read points for interpolation
+ */
+		p->type = PROP_POINTS;
+		std::istringstream lines;
+		*opt =
+			streamify_to_next_keyword_or_option(opt_list, count_opt_list,
+												lines, start_of_property, "end_p");
+
+		// read points into property Data_source
+		p->data_source->Read(lines, false);
+		if (p->data_source->Get_points().size() <= 0
+			|| p->data_source->Get_columns() != 4)
+		{
+			input_error++;
+			char estring[MAX_LENGTH];
+			sprintf(estring,
+					"Expected rows of x, y, z, value for property in input file.");
+			error_msg(estring, CONTINUE);
+		}
+		properties_with_data_source.push_back(p);
+	}
+	else if (strcmp(token, "xyz") == 0)
+	{
+/*
+ *   read from file for interpolation
+ */
+		p->type = PROP_XYZ;
+		std::istringstream lines(start_of_property);
+		p->data_source->Read(lines, false);
+		p->data_source->Tidy(false);
+
+		if (p->data_source->Get_points().size() <= 0
+			|| p->data_source->Get_columns() != 4)
+		{
+			input_error++;
+			char estring[MAX_LENGTH];
+			sprintf(estring,
+					"Expected rows of x, y, z, value for property in file %s.",
+					p->data_source->Get_file_name().c_str());
+			error_msg(estring, CONTINUE);
+		}
+		properties_with_data_source.push_back(p);
+		*opt = get_option(opt_list, count_opt_list, &next_char);
+	}
+	else if (strstr(token, "xyzt") == token)
+	{
+/*
+ *   read from file for interpolation in space and time
+ */
+		p->type = PROP_XYZT;
+		std::istringstream lines(start_of_property);
+		p->data_source->Read(lines, false);
+		p->data_source->Tidy(false);
+		*opt = get_option(opt_list, count_opt_list, &next_char);
+	}
+	else if (token[0] == 'X' || token[0] == 'x')
+	{
+/*
+ *   linear in x
+ */
+		p->coord = 'x';
+		p->type = PROP_LINEAR;
+		p->count_v = 2;
+		if (sscanf
+			(next_char, "%lf%lf%lf%lf", &p->v[0], &p->dist1, &p->v[1],
+			 &p->dist2) != 4)
+		{
+			input_error++;
+			error_msg
+				("Expected: value, distance, value, distance in linear  property definition.",
+				 CONTINUE);
+		}
+		if (p->dist1 > p->dist2)
+		{
+			double save_d, save_v;
+			save_d = p->dist1;
+			save_v = p->v[0];
+			p->dist1 = p->dist2;
+			p->v[0] = p->v[1];
+			p->dist2 = save_d;
+			p->v[1] = save_v;
+		}
+		*opt = get_option(opt_list, count_opt_list, &next_char);
+	}
+	else if (token[0] == 'Y' || token[0] == 'y')
+	{
+/*
+ *   linear in y
+ */
+		p->coord = 'y';
+		p->type = PROP_LINEAR;
+		p->count_v = 2;
+		if (sscanf
+			(next_char, "%lf%lf%lf%lf", &p->v[0], &p->dist1, &p->v[1],
+			 &p->dist2) != 4)
+		{
+			input_error++;
+			error_msg
+				("Expected: value, distance, value, distance in linear  property definition.",
+				 CONTINUE);
+		}
+		if (p->dist1 > p->dist2)
+		{
+			double save_d, save_v;
+			save_d = p->dist1;
+			save_v = p->v[0];
+			p->dist1 = p->dist2;
+			p->v[0] = p->v[1];
+			p->dist2 = save_d;
+			p->v[1] = save_v;
+		}
+		*opt = get_option(opt_list, count_opt_list, &next_char);
+	}
+	else if (token[0] == 'Z' || token[0] == 'z')
+	{
+/*
+ *   linear in z
+ */
+		p->coord = 'z';
+		p->type = PROP_LINEAR;
+		p->count_v = 2;
+		if (sscanf
+			(next_char, "%lf%lf%lf%lf", &p->v[0], &p->dist1, &p->v[1],
+			 &p->dist2) != 4)
+		{
+			input_error++;
+			error_msg
+				("Expected: value, distance, value, distance in linear  property definition.",
+				 CONTINUE);
+		}
+		if (p->dist1 > p->dist2)
+		{
+			double save_d, save_v;
+			save_d = p->dist1;
+			save_v = p->v[0];
+			p->dist1 = p->dist2;
+			p->v[0] = p->v[1];
+			p->dist2 = save_d;
+			p->v[1] = save_v;
+		}
+		*opt = get_option(opt_list, count_opt_list, &next_char);
+	}
+	else if (token[0] == 'B' || token[0] == 'b')
+	{
+/*
+ *   by_cell or by_element
+ */
+		if (delimited == FALSE)
+		{
+			j = read_lines_doubles(next_char, &(p->v), &(p->count_v),
+								   &(p->count_alloc), opt_list,
+								   count_opt_list, opt);
+		}
+		else
+		{
+			j = read_lines_doubles_delimited(next_char, &(p->v),
+											 &(p->count_v), &(p->count_alloc),
+											 opt_list, count_opt_list, opt);
+		}
+		p->type = PROP_ZONE;
+
+		if (j == ERROR)
+		{
+			property_free(p);
+			return (NULL);
+		}
+
+		p->v = (double *) realloc(p->v, (size_t) p->count_v * sizeof(double));
+		p->count_alloc = p->count_v;
+	}
+	else if (token[0] == 'R' || token[0] == 'r')
+	{
+/*
+ *   phast will read from restart file by_cell only
+ */
+		if (allow_restart == TRUE)
+		{
+			j = copy_token(token, &next_char, &l);
+			std::string stdtoken(token);
+			std::map < std::string, int >::iterator it =
+				FileMap.find(stdtoken);
+			if (it != FileMap.end())
+			{
+				j = it->second;
+			}
+			else
+			{
+				j = (int) FileMap.size();
+				FileMap[stdtoken] = j;
+			}
+			p->v = (double *) malloc(sizeof(double));
+			p->v[0] = -100 - j;
+			p->count_v = 1;
+			p->type = PROP_FIXED;
+		}
+		else
+		{
+			property_free(p);
+			p = NULL;
+			input_error++;
+			error_msg
+				("Restart file can only be used for CHEMISTRY_IC chemical properties.",
+				 CONTINUE);
+		}
+		*opt = get_option(opt_list, count_opt_list, &next_char);
+	}
+	else if (token[0] == 'F' || token[0] == 'f')
+	{
+/*
+ *   read from file by_cell or by_element
+ */
+		j = read_file_doubles(next_char, &(p->v), &(p->count_v),
+							  &(p->count_alloc));
+		p->type = PROP_ZONE;
+		if (j == ERROR)
+		{
+			property_free(p);
+			*opt = next_keyword_or_option(opt_list, count_opt_list);
+			return (NULL);
+		}
+		*opt = get_option(opt_list, count_opt_list, &next_char);
+	}
+	else
+	{
+		property_free(p);
+		p = NULL;
+		sprintf(error_string, "Unknown option reading property, %s.", token);
+		input_error++;
+		error_msg(error_string, STOP);
+	}
+	return (p);
+}
+/* ---------------------------------------------------------------------- */
+struct property *
+read_property(char *ptr, const char **opt_list, int count_opt_list, int *opt,
+			  int delimited, int allow_restart)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *      Checks for mix, then reads property
+ *
+ *      Arguments:
+ *         ptr    entry: points to line to read from
+ *            
+ *
+ *      Returns:
+ *         pointer to property structure
+ */
+
+	int j;
+	char token[MAX_LENGTH];
+	char *ptr1, *start_of_property, *start_of_data_source;
+
+	int l;
+	struct property *p;
+	char *next_char;
+
+	//p = property_alloc();
+	next_char = ptr;
+	start_of_property = ptr;
+
+	j = copy_token(token, &next_char, &l);
+	str_tolower(token);
+/*
+ *   empty, keep reading
+ */
+	if (j == EMPTY)
+	{
+		//property_free(p);
+		p = NULL;
+		*opt = next_keyword_or_option(opt_list, count_opt_list);
+		return (NULL);
+	}
+	else if (token[0] == 'M' || token[0] == 'm')
+	{
+/*
+ *   Mixture
+ */
+		double mix1, mix2;
+
+		if ((j = sscanf(next_char, "%lf%lf", &mix1, &mix2)) != 2)
+		{
+			input_error++;
+			error_msg("Expected: two values for mixture definition",
+					  CONTINUE);
+		}
+
+
+		/* Determine data source type */
+		ptr1 = next_char;
+
+		/* first mix */
+		copy_token(token, &ptr1, &l);
+		/* second mix */
+		copy_token(token, &ptr1, &l);
+		start_of_data_source = ptr1;	/* start_of_data_source is start of constant | points | xyz */
+		p = read_property_only(start_of_data_source, opt_list, count_opt_list, opt,
+			  delimited, allow_restart);
+		p->mix = true;
+		p->mix1 = mix1;
+		p->mix2 = mix2;
+	}
+	else
+	{
+		p = read_property_only(start_of_property, opt_list, count_opt_list, opt,
+			  delimited, allow_restart);
+		p->mix = false;
+	}
+	return (p);
+}
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 struct property *
 read_property(char *ptr, const char **opt_list, int count_opt_list, int *opt,
@@ -5315,7 +5716,7 @@ read_property(char *ptr, const char **opt_list, int count_opt_list, int *opt,
 	}
 	return (p);
 }
-
+#endif
 #ifdef SKIP
 /* ---------------------------------------------------------------------- */
 struct property *

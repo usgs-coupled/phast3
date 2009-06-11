@@ -101,6 +101,8 @@ int read_lines_times(char *next_char, struct time **times, int *count_times,
 struct property *read_property(char *ptr, const char **opt_list,
 							   int count_opt_list, int *opt, int delimited,
 							   int allow_restart);
+struct property *read_property_only(char *ptr, const char **opt_list, int count_opt_list, int *opt,
+			  int delimited, int allow_restart);
 int get_option(const char **opt_list, int count_opt_list, char **next_char);
 
 /* rivers */
