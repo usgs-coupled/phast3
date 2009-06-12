@@ -1153,6 +1153,8 @@ check_time_series_data(void)
 		check_time_series(&print_zone_budget, FALSE, "print zone budget");
 	if (print_zone_budget_tsv.properties != NULL)
 		check_time_series(&print_zone_budget_tsv, FALSE, "print zone budget tsv");
+	if (print_zone_budget_heads.properties != NULL)
+		check_time_series(&print_zone_budget_heads, FALSE, "print zone budget heads");
 	/* 
 	 * check defaults
 	 */

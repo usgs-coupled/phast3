@@ -13,6 +13,7 @@ Zone_budget::Zone_budget(void)
 {
 	this->n_user = 0;
 	this->polyh = NULL;
+	this->write_heads = false;
 }
 
 Zone_budget::Zone_budget(const Zone_budget& src)
@@ -20,6 +21,8 @@ Zone_budget::Zone_budget(const Zone_budget& src)
 , description(src.description)
 , polyh(0)
 , combo(src.combo)
+, write_heads(src.write_heads)
+, filename_heads(src.filename_heads)
 {
 	if (src.polyh)
 	{
@@ -40,6 +43,8 @@ Zone_budget& Zone_budget::operator=(const Zone_budget& rhs)
 			this->polyh = rhs.polyh->clone();
 		}
 		this->combo = rhs.combo;
+		this->write_heads = rhs.write_heads;
+		this->filename_heads = rhs.filename_heads;
 	}
 	return *this;
 }

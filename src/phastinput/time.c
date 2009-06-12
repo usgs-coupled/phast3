@@ -566,6 +566,7 @@ collate_simulation_periods(void)
 	accumulate_time_series(&print_restart);
 	accumulate_time_series(&print_zone_budget);
 	accumulate_time_series(&print_zone_budget_tsv);
+	accumulate_time_series(&print_zone_budget_heads);
 
 	/*
 	 *  Add in all but last time_end

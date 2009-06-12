@@ -441,6 +441,7 @@ clean_up(void)
 	time_series_free(&print_restart);
 	time_series_free(&print_zone_budget);
 	time_series_free(&print_zone_budget_tsv);
+	time_series_free(&print_zone_budget_heads);
 
 	time_free(&current_print_flow_balance);
 	time_free(&current_print_hdf_chem);
@@ -458,6 +459,7 @@ clean_up(void)
 	time_free(&current_print_restart);
 	time_free(&current_print_zone_budget);
 	time_free(&current_print_zone_budget_tsv);
+	time_free(&current_print_zone_budget_heads);
 
 	/* print zones */
 	print_zone_struct_free(&print_zones_xyz);
@@ -705,6 +707,8 @@ initialize(void)
 	time_series_init(&print_restart);
 	time_series_init(&print_zone_budget);
 	time_series_init(&print_zone_budget_tsv);
+	time_series_init(&print_zone_budget_heads);
+
 
 	/* print_zones */
 	print_zone_struct_init(&print_zones_xyz);
@@ -774,6 +778,10 @@ initialize(void)
 	current_print_zone_budget_tsv.type = UNDEFINED;
 	current_print_zone_budget_tsv.value_defined = FALSE;
 	current_print_zone_budget_tsv.input = NULL;
+
+	current_print_zone_budget_heads.type = UNDEFINED;
+	current_print_zone_budget_heads.value_defined = FALSE;
+	current_print_zone_budget_heads.input = NULL;
 
 	current_print_velocity.type = UNITS;
 	current_print_velocity.value = 0;
