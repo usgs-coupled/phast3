@@ -7550,9 +7550,16 @@ read_print_frequency(void)
 		, "zone_flows"		/* 61 */
 		, "tsv_zone_flow"		/* 62 */
 		, "tsv_zone_flow_rates"	/* 63 */
-		, "tsv_zone_flows"		/* 64 */	
+		, "tsv_zone_flows"		/* 64 */
+		, "zone_flow_tsv"		/* 65 */
+		, "heads_zone_flow"		/* 66 */
+		, "heads_zone_flow_rates"	/* 67 */
+		, "heads_zone_flows"		/* 68 */
+		, "zone_flow_heads"	    	/* 69 */
+
+
 	};
-	int count_opt_list = 65;
+	int count_opt_list = 70;
 /*
  *   Read flags:
  */
@@ -7965,6 +7972,7 @@ read_print_frequency(void)
 		case 62:				/* tsv_zone_flow */
 		case 63:				/* tsv_zone_flow_rates */
 		case 64:				/* tsv_zone_flows */
+		case 65:                /* zone_flow_tsv */
 			if (current_time.value_defined == TRUE)
 			{
 				property_time_ptr =
@@ -7979,7 +7987,27 @@ read_print_frequency(void)
 				input_error++;
 				error_msg("No start time for print frequency data", CONTINUE);
 			}
-			break;		}
+			break;	
+		case 66:				/* heads_zone_flow */
+		case 67:				/* heads_zone_flow_rates */
+		case 68:				/* heads_zone_flows */
+		case 69:                /* zone_flow_heads */
+			if (current_time.value_defined == TRUE)
+			{
+				property_time_ptr =
+					time_series_alloc_property_time(&print_zone_budget_heads);
+				read_frequency_data(&next_char,
+					&(property_time_ptr->time_value),
+					"Print frequency for zone_budget heads, in PRINT_FREQUENCY.");
+				time_copy(&current_time, &(property_time_ptr->time));
+			}
+			else
+			{
+				input_error++;
+				error_msg("No start time for print frequency data", CONTINUE);
+			}
+			break;	
+		}
 		if (return_value == EOF || return_value == KEYWORD)
 			break;
 	}
@@ -10329,8 +10357,9 @@ read_zone_budget(void)
 		"description",			/* 6 */
 		"combination"			/* 7 */
 		,"box"                  /* 8 */
+		,"write_heads_xyzt"     /* 9 */
 	};
-	int count_opt_list = 9;
+	int count_opt_list = 10;
 	/*
 	 *   Read grid data
 	 */
@@ -10347,7 +10376,7 @@ read_zone_budget(void)
 	/*
 	 *   get first line
 	 */
-	sprintf(tag, "in ZONE_BUDGET, definition %d.",
+	sprintf(tag, "in ZONE_FLOW, definition %d.",
 			(int) Zone_budget::zone_budget_map.size() + 1);
 	opt = get_option(opt_list, count_opt_list, &next_char);
 	for (;;)
@@ -10474,12 +10503,35 @@ read_zone_budget(void)
 				if (zb->Get_combo().size() == 0)
 				{
 					sprintf(error_string,
-							"Expected list of integers for Zone budget combination %s",
+							"Expected list of integers for Zone flow combination %s",
 							tag);
 					error_msg(error_string, CONTINUE);
 					input_error++;
 				}
 
+			}
+			break;
+		case 9:				/* write_heads_xyzt */
+			{
+				
+				zb->Get_filename_heads() = std::string(next_char);
+				size_t begin = zb->Get_filename_heads().find_first_not_of(" \t");
+				size_t end = zb->Get_filename_heads().find_last_not_of(" \t\n\0");
+				zb->Get_filename_heads() = zb->Get_filename_heads().substr(begin, end);
+				if (zb->Get_filename_heads().size() > 0)
+				{
+					zb->Set_write_heads(true);
+				}
+				else
+				{
+					sprintf(error_string,
+						"No file name for zone flow heads %s",
+						tag);
+					error_msg(error_string, CONTINUE);
+					input_error++;
+					zb->Set_write_heads(false);
+				}
+				opt = next_keyword_or_option(opt_list, count_opt_list);
 			}
 			break;
 		}

@@ -2253,9 +2253,10 @@ write_output_transient(void)
 	output_msg(OUTPUT_HST, "C.3.8.2.2 .. pri_zf, pri_zf_tsv\n");
 	if (Zone_budget::zone_budget_map.size() > 0)
 	{
-		output_msg(OUTPUT_HST, "     %f %f\n",
+		output_msg(OUTPUT_HST, "     %f %f %f\n",
 				   print_value(&current_print_zone_budget),
-				   print_value(&current_print_zone_budget_tsv));
+				   print_value(&current_print_zone_budget_tsv),
+				   print_value(&current_print_zone_budget_heads));
 	}
 /*
  *   new line to control phreeqc prints
@@ -3090,11 +3091,21 @@ write_zone_budget(void)
 				   zone_budget_number);
 		output_msg(OUTPUT_HST, " %d %s\n", it->first,
 				   it->second->Get_description().c_str());
+		output_msg(OUTPUT_HST,
+			"C.2.23.9.1 .. Write heads [t/f], file name\n");
+		if (it->second->Get_write_heads())
+		{
+			output_msg(OUTPUT_HST, " t %s\n", it->second->Get_filename_heads().c_str());
+		}
+		else
+		{
+			output_msg(OUTPUT_HST, " f %s\n", "none");
+		}
 		int return_max = 10;
 		int return_counter = 0;
 
 		// Write zone definition if necessary
-		if (free_surface && (count_rivers > 0 || count_flux > 0))
+		if ((free_surface && (count_rivers > 0 || count_flux > 0)) || it->second->Get_write_heads())
 		{
 			output_msg(OUTPUT_HST,
 					   "C.2.23.10 .. Cell volume indices: num_cell_columns; fresur && (nfbc > 0 || nrbc > 0)\n");

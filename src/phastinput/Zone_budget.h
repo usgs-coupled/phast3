@@ -50,6 +50,18 @@ class Zone_budget
 	{
 		return this->combo;
 	};
+	bool Get_write_heads(void)
+	{
+		return this->write_heads;
+	};
+	void Set_write_heads(const bool tf)
+	{
+		this->write_heads = tf;
+	};
+	std::string & Get_filename_heads(void)
+	{
+		return this->filename_heads;
+	};
 
 	//bool               Add_cells(std::vector<int> &cells_in_budget, int nxyz, std::vector<Point> *cell_xyz);
 	bool Add_cells(std::vector < bool > &cells_in_budget, zone * z, int nxyz,
@@ -62,6 +74,8 @@ class Zone_budget
 	std::string description;
 	Polyhedron *polyh;
 	std::vector < int >combo;
+	bool write_heads;
+	std::string filename_heads;
 
   public:
 	static std::map < int, Zone_budget * >zone_budget_map;
