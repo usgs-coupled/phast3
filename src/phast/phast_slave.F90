@@ -142,6 +142,7 @@ SUBROUTINE slave_init1
   ntprgfb = 0
   ntprzf = 0
   ntprzf_tsv = 0
+  ntprzf_heads = 0
   ntprkd = 0
   ntprmapcomp = 0
   ntprmaphead = 0
@@ -233,7 +234,8 @@ SUBROUTINE slave_closef
   st(fuzf) = 'delete'  
   IF(ntprzf > 0) st(fuzf) = 'keep  '  
   st(fuzf_tsv) = 'delete'  
-  IF(ntprzf_tsv > 0) st(fuzf) = 'keep  '  
+  IF(ntprzf_tsv > 0) st(fuzf_tsf) = 'keep  '  
+  ! fuzf_heads only used by root
 !!$  st(fut) = 'delete'  
 #if defined(MERGE_FILES)
   CALL update_status(st)

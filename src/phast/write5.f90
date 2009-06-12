@@ -59,6 +59,7 @@ SUBROUTINE write5
      prbcf=.TRUE.
      przf = .TRUE.
      przf_tsv = .TRUE.
+     przf_heads = .TRUE.
      IF(nwel > 0) prwel=.TRUE.
      prslm=.TRUE.
   END IF
@@ -518,7 +519,11 @@ SUBROUTINE write5
      ENDDO
      ntprzf_tsv = ntprzf_tsv+1
   END IF
-
+  IF(przf_heads) THEN  
+     ! ... Zonal heads to file, fuzf_heads
+     CALL zone_flow_write_heads
+     ntprzf_heads = ntprzf_heads+1
+  END IF
   IF(prwel .OR. prtem) THEN
      nsa = MAX(ns,1)
      ALLOCATE (chu10a(nsa), chu11a(nsa), cwkt_mol(nwel,nsa), &

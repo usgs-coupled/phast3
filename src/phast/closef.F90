@@ -22,7 +22,7 @@ SUBROUTINE closef(mpi_myself)
 #endif
   IMPLICIT NONE
   INTEGER, INTENT(IN) :: mpi_myself
-  CHARACTER(LEN=6), DIMENSION(40) :: st
+  CHARACTER(LEN=6), DIMENSION(50) :: st
   INTEGER :: da_err, i1p, i2p, ifu, ip  
   CHARACTER(LEN=130) :: logline1, logline2, logline3
   ! ... Set string for use with RCS ident command
@@ -160,7 +160,11 @@ SUBROUTINE closef(mpi_myself)
   st(fuzf) = 'delete'  
   IF(ntprzf > 0) st(fuzf) = 'keep  '  
   st(fuzf_tsv) = 'delete'  
-  IF(ntprzf_tsv > 0) st(fuzf_tsv) = 'keep  '  
+  IF(ntprzf_tsv > 0) st(fuzf_tsv) = 'keep  ' 
+  ! fuzf_heads opened and closed in zone_flow_write_heads 
+  ! for multiple files 
+  !st(fuzf_heads) = 'delete'    
+  !IF(ntprzf_heads > 0) st(fuzf_heads) = 'keep  '  
 !!$  st(fut) = 'delete'  
 !!$#if defined(MERGE_FILES)
 !!$  CALL update_status(st)
@@ -236,6 +240,7 @@ SUBROUTINE closef(mpi_myself)
         ! ...      Deallocate zonal flow rate arrays
         DEALLOCATE (qfzoni, qfzonp, qszoni, qszonp,  &
              zone_ib, lnk_bc2zon, zone_title,  &
+             zone_write_heads, zone_filename_heads, &
              qfzoni_sbc, qfzonp_sbc,  &
              qszoni_sbc, qszonp_sbc,  &
              qfzoni_fbc, qfzonp_fbc,  &
@@ -253,7 +258,7 @@ SUBROUTINE closef(mpi_myself)
            PRINT *, "array deallocation failed: closef, number 2.0"
            STOP
         ENDIF
-        IF(fresur) THEN
+        IF(ALLOCATED(zone_col)) THEN
            DEALLOCATE (zone_col, lnk_cfbc2zon, lnk_crbc2zon,  &
                 stat = da_err)
            IF (da_err /= 0) THEN

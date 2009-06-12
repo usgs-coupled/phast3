@@ -622,66 +622,121 @@ CONTAINS
   END FUNCTION xdcellno
 
 END SUBROUTINE zone_flow
-SUBROUTINE subgrid
-  ! ... Calculates flow rates for each internal zone
+SUBROUTINE zone_flow_write_heads
+  ! ... Writes heads for zones 
   USE machine_constants, ONLY: kdp
-  USE mcb
+  USE f_units
   USE mcb2
-  USE mcc, ONLY: cylind
+  USE mcch
   USE mcg
   USE mcn, ONLY: x, y, z
   USE mcp
   USE mcv
-  USE mcw
   USE mg2, ONLY: hdprnt
 !!$  USE phys_const
   IMPLICIT NONE
-  LOGICAL ex
-  INTEGER iunit, junit, ios
-  INTEGER i, j, k, ii, jj, kk, m
+  !LOGICAL ex
+  INTEGER ios
+  INTEGER i, ii, jj, kk, m, izn
   REAL(KIND=kdp), STATIC :: current_time = 0
   INTEGER, STATIC :: counter = 1
 
-  CHARACTER(LEN=100) :: char_100, fname
-  if (num_flo_zones > 0) then
+ 
+  current_time = cnvtmi*time
+  do izn = 1, num_flo_zones
+    if (zone_write_heads(izn)) then
+        if (counter == 1) then
+            ! delete file on first write
+            OPEN(fuzf_heads,FILE=zone_filename_heads(izn),IOSTAT=ios,ACTION='WRITE',STATUS='REPLACE')
+            write(fuzf_heads,"(a20,a20,a20,a13,a6,a1,a20)") "X","Y","Z","T(",TRIM(unittm),")","Head"
+        else
+            OPEN(fuzf_heads,FILE=zone_filename_heads(izn),IOSTAT=ios,ACTION='WRITE',ACCESS='APPEND')
+        endif 
+        do i = 1, zone_col(izn)%num_xycol
+            ii = zone_col(izn)%i_no(i)
+            jj = zone_col(izn)%j_no(i)
+            do kk = zone_col(izn)%kmin_no(i), zone_col(izn)%kmax_no(i)
+                m = ii + (jj-1)*nx + (kk-1)*nxy
+                if (frac(m) > 0.0)then
+                    write(fuzf_heads,"(5(G20.10,A1))") cnvli*x(ii),ACHAR(9),cnvli*y(jj),ACHAR(9),cnvli*z(kk),  &
+                          ACHAR(9),current_time,ACHAR(9),cnvli*hdprnt(m),ACHAR(9)      
+                endif
+            end do
+         end do
+         CLOSE(fuzf_heads, status='KEEP')
+     endif    
+  end do
+           
+  counter = counter + 1
 
-    WRITE(char_100,*) counter
-    char_100 = ADJUSTL(char_100)
-    char_100 = TRIM(char_100)
-    fname = "0/subgrid/subgrid.head."//char_100
-
-    iunit = 101
-
-
-    if (counter == 1) then
-        OPEN(iunit,FILE='subgrid/subgrid.input',IOSTAT=ios,STATUS='REPLACE')
-        CLOSE(iunit)
-    endif
-    OPEN(iunit,FILE='subgrid/subgrid.input',IOSTAT=ios,ACTION='WRITE',ACCESS='APPEND')
-    WRITE(iunit,*) current_time," XYZ grid ", TRIM(fname) 
-    CLOSE(iunit, status='KEEP')
-    
-    fname = "subgrid/subgrid.head."//char_100
-    junit = 102
-    OPEN(junit,FILE=fname,IOSTAT=ios,ACTION='WRITE',STATUS='REPLACE')
-!  TYPE :: zone_volume
-!     INTEGER :: num_xycol
-!     INTEGER, DIMENSION(:), POINTER :: i_no, j_no, kmin_no, kmax_no
-!  END TYPE zone_volume
-    do i = 1, zone_col(1)%num_xycol
-        ii = zone_col(1)%i_no(i)
-        jj = zone_col(1)%j_no(i)
-        do kk = zone_col(1)%kmin_no(i), zone_col(1)%kmax_no(i)
-            m = ii + (jj-1)*nx + (kk-1)*nxy
-            if (frac(m) > 0.0)then
-                write(junit,"(4(G20.10,A1))") cnvli*x(ii),ACHAR(9),cnvli*y(jj),ACHAR(9),cnvli*z(kk),  &
-                      ACHAR(9),cnvli*hdprnt(m),ACHAR(9)
-            endif
-        end do
-     end do
-     CLOSE(junit, status='KEEP')
-     current_time = cnvtmi*time
-     counter = counter + 1
-  end if
-
-  END SUBROUTINE subgrid
+END SUBROUTINE zone_flow_write_heads
+!SUBROUTINE subgrid
+!  ! ... Calculates flow rates for each internal zone
+!  USE machine_constants, ONLY: kdp
+!  USE mcb
+!  USE mcb2
+!  USE mcc, ONLY: cylind
+!  USE mcg
+!  USE mcn, ONLY: x, y, z
+!  USE mcp
+!  USE mcv
+!  USE mcw
+!  USE mg2, ONLY: hdprnt
+!!!$  USE phys_const
+!  IMPLICIT NONE
+!  LOGICAL ex
+!  INTEGER iunit, junit, ios
+!  INTEGER i, j, k, ii, jj, kk, m
+!  REAL(KIND=kdp), STATIC :: current_time = 0
+!  INTEGER, STATIC :: counter = 1
+!
+!  CHARACTER(LEN=100) :: char_100, fname, fname_xyzt
+!  if (num_flo_zones > 0) then
+!
+!    WRITE(char_100,*) counter
+!    char_100 = ADJUSTL(char_100)
+!    char_100 = TRIM(char_100)
+!    fname = "0/subgrid/subgrid.head."//char_100
+!    fname_xyzt = "subgrid/xyzt.heads.dat"
+!
+!    iunit = 101
+!
+!
+!    if (counter == 1) then
+!        OPEN(iunit,FILE='subgrid/subgrid.input',IOSTAT=ios,STATUS='REPLACE')
+!        CLOSE(iunit)
+!        OPEN(iunit,FILE=fname_xyzt,IOSTAT=ios,STATUS='REPLACE')
+!        CLOSE(iunit)
+!    endif
+!    OPEN(iunit,FILE='subgrild/subgrid.input',IOSTAT=ios,ACTION='WRITE',ACCESS='APPEND')
+!    WRITE(iunit,*) current_time," XYZ grid ", TRIM(fname) 
+!    CLOSE(iunit, status='KEEP')
+!    
+!    fname = "subgrid/subgrid.head."//char_100
+!    junit = 102
+!    OPEN(junit,FILE=fname,IOSTAT=ios,ACTION='WRITE',STATUS='REPLACE')
+!    OPEN(iunit,FILE=fname_xyzt,IOSTAT=ios,ACTION='WRITE',ACCESS='APPEND')
+!!  TYPE :: zone_volume
+!!     INTEGER :: num_xycol
+!!     INTEGER, DIMENSION(:), POINTER :: i_no, j_no, kmin_no, kmax_no
+!!  END TYPE zone_volume
+!    do i = 1, zone_col(1)%num_xycol
+!        ii = zone_col(1)%i_no(i)
+!        jj = zone_col(1)%j_no(i)
+!        do kk = zone_col(1)%kmin_no(i), zone_col(1)%kmax_no(i)
+!            m = ii + (jj-1)*nx + (kk-1)*nxy
+!            if (frac(m) > 0.0)then
+!                write(junit,"(4(G20.10,A1))") cnvli*x(ii),ACHAR(9),cnvli*y(jj),ACHAR(9),cnvli*z(kk),  &
+!                      ACHAR(9),cnvli*hdprnt(m),ACHAR(9)
+!                write(iunit,"(5(G20.10,A1))") cnvli*x(ii),ACHAR(9),cnvli*y(jj),ACHAR(9),cnvli*z(kk),  &
+!                      ACHAR(9),current_time,ACHAR(9),cnvli*hdprnt(m),ACHAR(9)      
+!            endif
+!        end do
+!     end do
+!     CLOSE(junit, status='KEEP')
+!     CLOSE(iunit, status='KEEP')
+!     current_time = cnvtmi*time
+!     counter = counter + 1
+!  end if
+!
+!  END SUBROUTINE subgrid
