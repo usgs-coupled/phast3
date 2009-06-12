@@ -7,7 +7,7 @@ MODULE f_units
   INTEGER, PARAMETER :: fuins=15, fulp=16, fuplt=7, fuorst=8, fuirst=9, fuinc=10, furde=11, &
        fupmap=13, fuvmap=14, fup=21, fut=29, fuc=22, fuvel=23, fud=30, fuvs=31, fuwel=24, &
        fubal=25, fukd=26, fubcf=27, fuclog=28, fubnfr=32, fupmp2=33, fupzon=34, fuich=35,  &
-       fuzf=36, fuzf_tsv=37, fuwt=38, fupmp3=39
+       fuzf=36, fuzf_tsv=37, fuwt=38, fupmp3=39, fuzf_heads=40
   LOGICAL :: print_rde=.FALSE.
 END MODULE f_units
 
@@ -124,6 +124,8 @@ MODULE mcb2
   TYPE(zone_bc_cells), DIMENSION(:,:), ALLOCATABLE :: lnk_bc2zon
   TYPE(well_segments), DIMENSION(:), ALLOCATABLE :: seg_well
   CHARACTER(LEN=80), DIMENSION(:), ALLOCATABLE :: zone_title
+  CHARACTER(LEN=140), DIMENSION(:), ALLOCATABLE :: zone_filename_heads
+  LOGICAL, DIMENSION(:), ALLOCATABLE :: zone_write_heads
   INTEGER :: num_flo_zones
   INTEGER, DIMENSION(:,:), ALLOCATABLE :: uzmwel
 END MODULE mcb2
@@ -152,6 +154,10 @@ MODULE mcc
        timprgfb, timprkd, timprmapc, timprmaph, timprmapv, timprp, timprc, timprcphrq,  &
        timprfchem, timprslm, timprtem, &
        timprvel, timprwel, timprzf, timprzf_tsv, timprtnxt
+  ! print control flags for zone_flow heads + print_zone_flows_heads    
+  REAL (KIND=kdp) :: pri_zf_heads, timprzf_heads
+  LOGICAL :: przf_heads=.false.
+  INTEGER :: ntprzf_heads
   LOGICAL :: argrid, comopt, errexe, errexi, ichwt, ichydp, pltzon, prtbc, prtdv, prtfp,  &
        prtic, prtichead=.FALSE., prtpmp, prtslm, prtwel, prt_kd, prt_bc, &
        prtic_c, prtic_mapc, prtic_p, prtic_maphead, prtic_conc, prtic_force_chem,  &

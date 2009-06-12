@@ -923,12 +923,14 @@ SUBROUTINE read2
      ALLOCATE (zone_title(num_flo_zones),  &
           zone_ib(num_flo_zones), lnk_bc2zon(num_flo_zones,4),  &
           seg_well(num_flo_zones),  &
+          zone_filename_heads(num_flo_zones),  &
+          zone_write_heads(num_flo_zones), &
           stat = a_err)
      IF (a_err /= 0) THEN  
         PRINT *, "array allocation failed: read2, flow zones.1"  
         STOP
      ENDIF
-     IF(fresur .AND. (nfbc > 0 .OR. nrbc > 0)) THEN
+     !IF(fresur .AND. (nfbc > 0 .OR. nrbc > 0)) THEN
         ! ... Allocate space for zone volume cell index data,
         ! ...     optional flux bc data, optional river bc data
         ALLOCATE (zone_col(num_flo_zones), lnk_cfbc2zon(num_flo_zones),  &
@@ -938,7 +940,7 @@ SUBROUTINE read2
            PRINT *, "array allocation failed: read2, flow zones.1.1"  
            STOP
         ENDIF
-     END IF
+     !END IF
      izn = 0
      DO
         READ(fuins,'(A)') line
@@ -950,7 +952,10 @@ SUBROUTINE read2
 8015    FORMAT(tr25,a,i3,a)
         READ(line,'(a)') zone_title(izn)
         IF (print_rde) WRITE(furde,'(tr5,a)') zone_title(izn)
-        IF(fresur .AND. (nfbc > 0 .OR. nrbc > 0)) THEN
+        READ(fuins,'(A)') line
+        READ(line,'(l,a)') zone_write_heads(izn), zone_filename_heads(izn)
+        IF (print_rde) WRITE(furde,'(tr5,l,a)') zone_write_heads(izn), zone_filename_heads(izn)
+        IF((fresur .AND. (nfbc > 0 .OR. nrbc > 0)) .or. zone_write_heads(izn)) THEN
            IF (print_rde) WRITE(furde,8005) '** Flow Zone Volume Parameters **',  &
                 '  (read echo[2.23.10])',' i_no   j_no   kmin_no   kmax_no'
            READ(fuins,*) zone_col(izn)%num_xycol

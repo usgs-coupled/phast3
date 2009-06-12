@@ -51,6 +51,7 @@ SUBROUTINE write5_ss_flow
   prgfb=.FALSE.
   przf = .FALSE.
   przf_tsv = .FALSE.
+  przf_heads = .FALSE.
   prbcf=.FALSE.
   prwel=.FALSE.
   prslm=.FALSE.
@@ -83,7 +84,10 @@ SUBROUTINE write5_ss_flow
      END IF
      IF(ABS(pri_zf_tsv) > 0._kdp) THEN
         IF(converge_ss) przf_tsv=.TRUE.
-     END IF     
+     END IF
+     IF(ABS(pri_zf_heads) > 0._kdp) THEN
+        IF(converge_ss) przf_heads=.TRUE.
+     END IF            
      ! ... B.C. flow rates
      IF(ABS(pribcf) > 0._kdp) THEN
         IF(converge_ss) prbcf=.TRUE.
@@ -308,6 +312,11 @@ SUBROUTINE write5_ss_flow
      ENDDO
      ntprzf_tsv = ntprzf_tsv+1
   END IF
+  IF(przf_heads) THEN  
+     ! ... Zonal heads to file, fuzf_heads
+     CALL zone_flow_write_heads
+     ntprzf_heads = ntprzf_heads+1
+  END IF  
   IF(prwel) THEN
      nsa = MAX(ns,1)
      ALLOCATE (chu10a(nsa), chu11a(nsa), &

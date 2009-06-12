@@ -23,7 +23,7 @@ MODULE print_control_mod
   TYPE (PrintControl) :: &
        print_progress_statistics,  &
        print_components, print_global_flow_balance, print_bc_flows, print_zone_flows, &
-       print_zone_flows_tsv, print_wells, &
+       print_zone_flows_tsv, print_zone_flows_heads, print_wells, &
        print_conductances, print_heads, print_velocities, print_force_chemistry, &
        print_hdf_chemistry, print_xyz_components, print_hdf_heads, print_hdf_velocities, &
        print_xyz_chemistry, print_xyz_heads, print_xyz_velocities, print_xyz_wells, &
@@ -61,6 +61,7 @@ CONTAINS
     CALL pc_init(print_bc_flows, .FALSE., "print_bc_flows")
     CALL pc_init(print_zone_flows, .FALSE., "print_zone_flows")
     CALL pc_init(print_zone_flows_tsv, .FALSE., "print_zone_flows_tsv")
+    CALL pc_init(print_zone_flows_heads, .FALSE., "print_zone_flows_heads")
     CALL pc_init(print_conductances, .FALSE., "print_conductances")
     CALL pc_init(print_heads, .TRUE., "print_heads")
     CALL pc_init(print_velocities, .TRUE., "print_velocities")
@@ -133,6 +134,7 @@ CONTAINS
     CALL pc_set_print_flag(print_bc_flows, utime, itime, utimchg)
     CALL pc_set_print_flag(print_zone_flows, utime, itime, utimchg)
     CALL pc_set_print_flag(print_zone_flows_tsv, utime, itime, utimchg)
+    CALL pc_set_print_flag(print_zone_flows_heads, utime, itime, utimchg)
     CALL pc_set_print_flag(print_wells, utime, itime, utimchg)
     CALL pc_set_print_flag(print_conductances, utime, itime, utimchg)
     IF(itime == 1 .AND. prt_kd) THEN
@@ -221,6 +223,11 @@ CONTAINS
     pri_zf_tsv = print_zone_flows_tsv%print_interval
     timprzf_tsv = print_zone_flows_tsv%print_time
     ntprzf_tsv = print_zone_flows_tsv%count_prints
+    
+    przf_heads = print_zone_flows_heads%print_flag
+    pri_zf_heads = print_zone_flows_heads%print_interval
+    timprzf_heads = print_zone_flows_heads%print_time
+    ntprzf_heads = print_zone_flows_heads%count_prints 
     
     przf = print_zone_flows%print_flag
     pri_zf = print_zone_flows%print_interval
@@ -336,6 +343,11 @@ CONTAINS
     print_zone_flows_tsv%print_interval = pri_zf_tsv
     print_zone_flows_tsv%print_time = timprzf_tsv
     print_zone_flows_tsv%count_prints = ntprzf_tsv
+    
+    print_zone_flows_heads%print_flag = przf_heads
+    print_zone_flows_heads%print_interval = pri_zf_heads
+    print_zone_flows_heads%print_time = timprzf_heads
+    print_zone_flows_heads%count_prints = ntprzf_heads    
 
     print_bc_flows%print_flag = prbcf
     print_bc_flows%print_interval = pribcf
@@ -435,6 +447,7 @@ CONTAINS
     CALL pc_set_print_time(print_global_flow_balance, utime)
     CALL pc_set_print_time(print_zone_flows, utime)
     CALL pc_set_print_time(print_zone_flows_tsv, utime)
+    CALL pc_set_print_time(print_zone_flows_heads, utime)
     CALL pc_set_print_time(print_bc_flows, utime)
     CALL pc_set_print_time(print_wells, utime)
     CALL pc_set_print_time(print_conductances, utime)
@@ -480,6 +493,7 @@ CONTAINS
     CALL pc_update_print_time(print_global_flow_balance, utime)
     CALL pc_update_print_time(print_zone_flows, utime)
     CALL pc_update_print_time(print_zone_flows_tsv, utime)
+    CALL pc_update_print_time(print_zone_flows_heads, utime)
     CALL pc_update_print_time(print_bc_flows, utime)
     CALL pc_update_print_time(print_wells, utime)
     CALL pc_update_print_time(print_conductances, utime)
@@ -526,6 +540,7 @@ CONTAINS
     CALL pc_dump(print_global_flow_balance)
     CALL pc_dump(print_zone_flows)
     CALL pc_dump(print_zone_flows_tsv)
+    CALL pc_dump(print_zone_flows_heads)
     CALL pc_dump(print_bc_flows)
     CALL pc_dump(print_wells)
     CALL pc_dump(print_conductances)
