@@ -234,7 +234,7 @@ SUBROUTINE slave_closef
   st(fuzf) = 'delete'  
   IF(ntprzf > 0) st(fuzf) = 'keep  '  
   st(fuzf_tsv) = 'delete'  
-  IF(ntprzf_tsv > 0) st(fuzf_tsf) = 'keep  '  
+  IF(ntprzf_tsv > 0) st(fuzf_tsv) = 'keep  '  
   ! fuzf_heads only used by root
 !!$  st(fut) = 'delete'  
 #if defined(MERGE_FILES)
