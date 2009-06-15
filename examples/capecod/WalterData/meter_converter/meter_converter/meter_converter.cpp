@@ -14,6 +14,60 @@ int _tmain(int argc, _TCHAR* argv[])
 	xmax = 285000;
 	ymin = 810000;
 	ymax = 830000;
+
+
+	// process heads
+	{
+		std::ifstream walter("../heads.walter");
+		std::ifstream phast("../heads.phast");
+		std::ofstream ostrm("../heads.diff");
+		std::cerr << "\nStart processing heads." << std::endl;
+		double x_walter, y_walter, z_walter, t_walter, v_walter;
+		double x_phast, y_phast, z_phast, t_phast, v_phast;
+		int flag_walter, flag_phast;
+		std::string(line);
+
+		std::getline(walter, line);
+		std::getline(phast, line);
+
+
+		while (walter >> x_walter && phast >> x_phast)
+		{
+			walter >> y_walter;
+			walter >> z_walter;
+			walter >> t_walter;
+			walter >> flag_walter;
+			if (flag_walter > 0) walter>> v_walter;
+
+			phast >> y_phast;
+			phast >> z_phast;
+			phast >> t_phast;
+			phast >> flag_phast;
+
+			if (flag_phast > 0) phast>> v_phast;
+
+			if (x_walter != x_phast || y_walter != y_phast || z_walter != z_phast)
+			{
+				std::cerr << "x, y, and z not equal." << std::endl;
+				std::cerr << "\twalter: " << x_walter << "\t" << y_walter << "\t"  << x_walter << std::endl;
+				std::cerr << "\tphast : " << x_phast << "\t" << y_phast << "\t"  << x_phast << std::endl;
+				exit(4);
+			}
+			if (flag_walter > 0 && flag_phast > 0)
+			{
+				double d;
+				d = v_walter - v_phast;
+				ostrm << x_walter << "\t" << y_walter << "\t" << z_walter << "\t"  << d << std::endl;
+			}
+		}
+		ostrm.close();
+		std::cerr << "Finished processing heads." << std::endl;
+	}
+	exit(0);
+
+
+
+
 	// process bedrock_pts 
 	{
 		std::ifstream istrm("bedrock_pts");
