@@ -15,7 +15,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	ymin = 810000;
 	ymax = 830000;
 
-
+#ifdef SKIP
 	// process heads
 	{
 		std::ifstream walter("../heads.walter");
@@ -65,7 +65,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 	exit(0);
 
-
+#endif
 
 
 	// process bedrock_pts 
@@ -158,7 +158,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			// remove low K for pond bottoms
 			if (v > 10.0 && v < 10.1 && z > -20)
 			{
-				v = 100.1;
+				continue;
 			}
 			if (v != 0.00 && v < 1000.)
 			{
@@ -182,6 +182,10 @@ int _tmain(int argc, _TCHAR* argv[])
 			if (x < xmin || x > xmax ||	y < ymin || y > ymax) continue;
 			if (v != 0.00 && v < 1000.)
 			{
+			if (v > 1.0 && v < 1.02 && z > -20)
+			{
+				continue;
+			}
 
 				ostrm << x << "\t" << y << "\t" << z*0.3048 << "\t" << v*0.3048 << std::endl;
 			}
