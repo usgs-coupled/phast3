@@ -53,13 +53,13 @@ MEDIA
 		-bottom    ARCRASTER  GRID ../ex5/ArcData/bedrock.txt
 		-perimeter POINTS GRID 
 			279531.443447593 816413.138123428 -200
-			280000 817387.0625 -200
-			280465.34375 819033.5625 -200
-			281288.59375 821073.875 -200
-			281109.65625 822076.0625 -200
-			279676.84375 822132.75 -200
-			278416.59375 821341.0625 -200
-			277689.53125 820371.625 -200
+			280000           817387.0625 -200
+			280465.34375     819033.5625 -200
+			281288.59375     821073.875 -200
+			281109.65625     822076.0625 -200
+			279676.84375     822132.75 -200
+			278416.59375     821341.0625 -200
+			277689.53125     820371.625 -200
 			277172.476732902 819660.697207948 -200
 			277027.070142876 816413.138123428 -200
 			end_points		
@@ -178,12 +178,12 @@ HEAD_IC
 CHEMISTRY_IC
 	-box 275000 810000 -200 285000 830000 20 GRID
 		-solution            1
+		-surface             1
 	-prism
 		-top       CONSTANT   GRID 20
 		-bottom    SHAPE      GRID ../ex5/ArcData/SimpleBath.shp 10
 		-perimeter SHAPE      GRID ../ex5/ArcData/SimplePonds.shp
-			-exchange	1
-			-solution       11
+			-kinetics	10
 DRAIN 1 East Boundary Quashnet R
 	-point 282107.6         820940
 		-width                       20
@@ -242,11 +242,11 @@ DRAIN 5 West Boundary Coonamessett River
 		-bed_thickness               1
 		-z                           9.92
 	-point 277224.725 818453.819
-	-point 277381.64 817842.12
-	-point 277365.6 817312.8
-	-point 277461.84 816574.96
-	-point 277349.56 815885.24
-	-point 277301.44 814730.36
+	-point 277381.64  817842.12
+	-point 277365.6   817312.8
+	-point 277461.84  816574.96
+	-point 277349.56  815885.24
+	-point 277301.44  814730.36
 	-point 277260.008 814502.138
 		-width                       20
 		-bed_hydraulic_conductivity  10.00
@@ -303,10 +303,29 @@ ZONE_FLOW 1 Ashumet Pond
 		-description Flux to Ashumet Pond
 		-top       CONSTANT   GRID 20
 		-bottom    SHAPE      GRID ../ex5/ArcData/AshumetBath.shp 10
-		-perimeter SHAPE      GRID ../ex5/ArcData/Ashumet.shp		
+		-perimeter SHAPE      GRID ../ex5/ArcData/Ashumet.shp	
+ZONE_FLOW 2 Coonamessett Pond
+	-prism
+		-description Flux to Coonamessett Pond
+		-top       CONSTANT   GRID 20
+		-bottom    SHAPE      GRID ../ex5/ArcData/CoonaBath.shp 10
+		-perimeter SHAPE      GRID ../ex5/ArcData/Coona.shp		
+ZONE_FLOW 3 Coonamessett River 
+	-prism
+		-description Flux to Coonamessett River and nearby specified bc
+		-box 277000 816000  -200 277500  822000 20
+
+ZONE_FLOW 4 Backus River and southern specified bc
+	-prism
+		-description Flux to Backus River and southern specified bc
+		-box 277500 816000  -200 282000  817000 20
+ZONE_FLOW 4 Other specified bc
+	-prism
+		-description Flux to other specified bc
+		-box 277500 817000  -200 282000  822000 20		
 TIME_CONTROL
 	-time_step
 		0 0.5
 	-time_change
-		1950
+		1996
 	-start_time 1935
