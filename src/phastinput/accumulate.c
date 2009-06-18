@@ -4790,3 +4790,141 @@ find_shell(Polyhedron *polyh, double *width, std::list<int> &list_of_elements)
 	}
 	return true;
 }
+/* ---------------------------------------------------------------------- */
+bool
+find_cell_shell(Polyhedron *polyh, double *width, std::list<int> &list_of_cells_return)
+/* ---------------------------------------------------------------------- */
+{
+	struct index_range *range_ptr;
+
+	struct zone *zone_ptr =	polyh->Get_bounding_box();
+	range_ptr = zone_to_range(zone_ptr); 
+	if (range_ptr == NULL)
+	{
+		return false;
+	}
+
+	/* put cells in list */
+	std::list < int > list_of_cells;
+	range_to_list(range_ptr, list_of_cells);
+	free_check_null(range_ptr);
+
+	// Find cells in polyhedron
+	polyh->Points_in_polyhedron(list_of_cells, *cell_xyz);
+	if (list_of_cells.size() == 0)
+	{
+		return false;
+	}
+
+	// Make set of cells 
+	std::set < int > set_of_cells;
+	std::list < int >::iterator lit = list_of_cells.begin();
+	for ( ; lit != list_of_cells.end(); lit++)
+	{
+		set_of_cells.insert(*lit);
+	}
+
+	// select cells with adjacent active cells outside of zone
+	std::set<int> set_of_exterior_cells;
+	std::set < int >::iterator sit = set_of_cells.begin();
+
+	bool exterior = true;
+	if (!exterior)
+	{
+		// generate interior shell
+		for ( ; sit != set_of_cells.end(); sit++)
+		{
+			int n = *sit;
+			std::vector < int >stencil;
+			neighbors(n, stencil);
+			int ii;
+			for (ii = 0; ii < 6; ii++)
+			{
+				if (stencil[ii] >= 0)
+				{
+					// adjacent cell is not in set 
+					if (set_of_cells.find(stencil[ii]) == set_of_cells.end() /*&& cells[stencil[ii]].cell_active*/)
+					{
+						break;
+					}
+				}
+			}
+
+			// keep if a neighbor is out of zone
+			if (ii < 6)
+			{
+				set_of_exterior_cells.insert(*sit);
+			}
+		}
+	}
+	else
+    // currently always chooses exterior shell
+	{
+		// generate exterior shell
+		for ( ; sit != set_of_cells.end(); sit++)
+		{
+			int n = *sit;
+			std::vector < int >stencil;
+			neighbors(n, stencil);
+			int ii;
+			for (ii = 0; ii < 6; ii++)
+			{
+				if (stencil[ii] >= 0)
+				{
+					// adjacent cell is not in set, inlcude in shell
+					if (set_of_cells.find(stencil[ii]) == set_of_cells.end())
+					{
+						set_of_exterior_cells.insert(stencil[ii]);
+					}
+				}
+			}
+		}
+	}
+	// select all cells within distance of selected cells
+	for (sit = set_of_exterior_cells.begin(); sit != set_of_exterior_cells.end(); sit++)
+	{
+		// include other elements within witdth of shell in each direction
+		if (width[0] > 0 || width[1] > 0 || width[2] > 0)
+		{
+
+			double x1, y1, z1, x2, y2, z2;
+			x1 = cells[*sit].x - width[0]/2.0;
+			y1 = cells[*sit].y - width[1]/2.0;
+			z1 = cells[*sit].z - width[2]/2.0;
+			x2 = cells[*sit].x + width[0]/2.0;
+			y2 = cells[*sit].y + width[1]/2.0;
+			z2 = cells[*sit].z + width[2]/2.0;
+			Point min(x1, y1, z1);
+			Point max(x2, y2, z2);
+			zone z(min, max);
+			struct index_range *r_ptr;
+			//r_ptr = zone_to_elt_range(&z, true);
+			r_ptr = zone_to_range(&z); // list of cells not elements in polyh
+			if (r_ptr != NULL)
+			{
+				/* put cells in list */
+				std::list < int > additional_cells;
+				range_to_list(range_ptr, additional_cells);
+				if (additional_cells.size() > 0)
+				{
+					std::list<int>::iterator lit1 = additional_cells.begin();
+					for (; lit1 != additional_cells.end(); lit1++)
+					{
+						//if (cells[*lit].is_element /*&& cells[*lit].elt_active*/)
+						{
+							set_of_exterior_cells.insert(*lit1);
+						}
+					}
+				}
+			}
+			free_check_null(r_ptr);
+			r_ptr = NULL;
+		}
+	}
+	// copy  set_of_elements to list_of_elements  
+	for (sit = set_of_exterior_cells.begin(); sit != set_of_exterior_cells.end(); sit++)
+	{
+		list_of_cells_return.push_back(*sit);
+	}
+	return true;
+}

@@ -147,9 +147,16 @@ bool XYZTfile::Read(double time)
 	}
 	if (current) return true;
 
-	for (i = 0; i < (int) (this->times_vector.size() - 1); i++)
+	if (time*fudge <= this->times_vector[0])
 	{
-		if (time*fudge >= this->times_vector[i] && time*fudge < this->times_vector[i + 1] ) break;
+		i = 0;
+	}
+	else
+	{
+		for (i = 0; i < (int) (this->times_vector.size() - 1); i++)
+		{
+			if (time*fudge >= this->times_vector[i] && time*fudge < this->times_vector[i + 1] ) break;
+		}
 	}
 	int target_set = i;
 	int number_of_sets_to_read;
