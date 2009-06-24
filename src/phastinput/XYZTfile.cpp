@@ -38,15 +38,16 @@ XYZTfile::XYZTfile(std::string filename, PHAST_Transform::COORDINATE_SYSTEM cs)
 
 
 	// start 
+	bool j = false;
+	while (!j)
 	{
 		std::getline(*this->file_stream, line);
 		std::stringstream stream(line);
-		if(stream >> x && stream >> y && stream >> z && stream >> t && stream >> v)
-		{
-			this->times_vector.push_back(t);
-			tlast = t;
-		}
+		j = (stream >> x && stream >> y && stream >> z && stream >> t && stream >> v);
 	}
+	this->times_vector.push_back(t);
+	tlast = t;
+
 
 	// continue
 	int lines = 1;

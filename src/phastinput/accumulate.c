@@ -1583,7 +1583,16 @@ get_double_property_for_cell(struct cell *cell_ptr,
 			{
 				Point pt(cell_ptr->x, cell_ptr->y, cell_ptr->z);
 				xyzt->Read(current_start_time);
-				*value = property_ptr->data_source->Get_tree3d()->Interpolate3d(pt);
+				if (property_ptr->data_source->Get_tree3d()->v.size() == 0)
+				{
+					sprintf(error_string, "No points to interpolate from xyzt file %s", xyzt->Get_filename().c_str());
+					error_msg(error_string, CONTINUE);
+					return (ERROR);
+				}
+				else
+				{
+					*value = property_ptr->data_source->Get_tree3d()->Interpolate3d(pt);
+				}
 			}
 		}
 		break;
