@@ -69,4 +69,6 @@ USER_PUNCH
 -heading Sorbed_N(-3), Removed_N
 10 PUNCH Surf("N", "Surf")
 20 PUNCH KIN("Remove_N")
+PRINT
+	-warnings	10
 END
