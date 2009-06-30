@@ -1,8 +1,5 @@
 TITLE Flow model for Cape Cod Massachusetts
 SOLUTE_TRANSPORT false
-STEADY_FLOW false
-#STEADY_FLOW true
-FREE_SURFACE_BC true
 SOLUTION_METHOD
 	-iterative_solver   true
 	-tolerance          1e-012
@@ -22,10 +19,15 @@ UNITS
 	-drain_hydraulic_conductivity     m/d
 	-drain_thickness                  m
 	-drain_width                      m
+# use the following line for steady state simulation	
+STEADY_FLOW false
+# use the following line for transient simulation
+#STEADY_FLOW true
+FREE_SURFACE_BC true	
 GRID
 	-uniform X 275000 285000 41 # 250 m grid
 	-uniform Y 810000 830000 81 # 250 m grid
-	-uniform Z -120 20 29       # 5 m grid
+	-uniform Z -120   20     29 # 5 m grid
 	-snap X 0.001
 	-snap Y 0.001
 	-snap Z 0.001
@@ -41,16 +43,13 @@ MEDIA
 		-Kz        XYZ MAP        ./Parameters/kz_meters 
 		-porosity                 0.39
 		-specific_storage         0.39
-		-long_dispersivity        1
-		-horizontal_dispersivity  1
-		-vertical_dispersivity    1
 	# Inside coast and above bedrock is active	
 	-prism
 		-top       CONSTANT  GRID 20
 		-bottom    ARCRASTER GRID ./ArcData/bedrock.txt
 		-perimeter SHAPE     GRID ./ArcData/coast.shp
 		-active                   1
-	# Set no flow boundaries	
+	# Remove inactive parts of the grid	
 	-prism
 		-top       CONSTANT   GRID 20
 		-bottom    CONSTANT   GRID -200
@@ -127,8 +126,8 @@ FLUX_BC
 LEAKY_BC
 	-prism
 		-description Leaky X coast
-		-top       CONSTANT   GRID 1
-		-bottom    CONSTANT   GRID -1
+		-top       CONSTANT   GRID 1.0
+		-bottom    CONSTANT   GRID -1.0
 		-perimeter POINTS GRID 
 			275895.6875  810366.0625 -200
 			283826.28125 810248.1875 -200
@@ -144,13 +143,13 @@ LEAKY_BC
 			end_points
 		-face X
 		-head
-			0	0
-		-hydraulic_conductivity  10.00
-		-thickness               1
+			0	0.0
+		-hydraulic_conductivity  10.0
+		-thickness               1.0
 	-prism
 		-description Leaky Y coast
-		-top       CONSTANT   GRID 1
-		-bottom    CONSTANT   GRID -1
+		-top       CONSTANT   GRID 1.0
+		-bottom    CONSTANT   GRID -1.0
 		-perimeter POINTS GRID 
 			275895.6875  810366.0625 -200
 			283826.28125 810248.1875 -200
@@ -166,13 +165,9 @@ LEAKY_BC
 			end_points
 		-face Y
 		-head
-			0	0
-		-hydraulic_conductivity  10.00
-		-thickness               1
-HEAD_IC
-	-box 275000 810000 -200 285000 830000 20 GRID
-		#-head                     20
-		-head	XYZ GRID           ex5.head.250.dat 
+			0	0.0
+		-hydraulic_conductivity  10.0
+		-thickness               1.0
 DRAIN 1 East Boundary Quashnet R
 	-point 282107.6         820940
 		-width                       20
@@ -209,6 +204,18 @@ DRAIN 2 Childs River, Johns Pond drain
 		-bed_hydraulic_conductivity  10.00
 		-bed_thickness               1
 		-z                           0
+DRAIN 3 Bourne River
+	-point 279187.955718371 815453.305047008
+		-width                       20
+		-bed_hydraulic_conductivity  1
+		-bed_thickness               1
+		-z                           2.97
+	-point 279141.986138182 814825.409319959
+	-point 279108.773684095 814446.372998225
+		-width                       20
+		-bed_hydraulic_conductivity  1
+		-bed_thickness               1
+		-z                           0		
 DRAIN 4 Backus River (Cranberry bogs)
 	-point 278572           817160.5
 		-width                       20
@@ -241,37 +248,30 @@ DRAIN 5 West Boundary Coonamessett River
 		-bed_hydraulic_conductivity  10.00
 		-bed_thickness               1
 		-z                           0
+ZONE_FLOW
+	-box 277000 814250 -200 281500 822500 20
+		-description Plume submodel
+		-write_heads_xyzt  plume.heads.xyzt
+HEAD_IC
+	-box 275000 810000 -200 285000 830000 20 GRID
+		# use the following line for steady state simulation
+		-head                     10	
+		# use the following line for transient simulation
+		#-head	XYZ GRID           ex5.head.250.dat 		
+TIME_CONTROL
+	-time_step
+		0               0.5
+	-time_change		1998
+	-start_time             1935
 PRINT_INITIAL
-	-echo_input                 true
-	-HDF_heads                  true
 	-HDF_media                  true
-	-HDF_steady_flow_velocities false
 	-heads                      false
-	-media_properties           false
-	-solution_method            false
-	-steady_flow_velocities     false
-	-xyz_components             false
 	-xyz_heads                  true
 PRINT_FREQUENCY
 	-save_final_heads true
 	0
-		-flow_balance           end 
 		-HDF_heads              2    years 
-		-HDF_velocities         end 
-		-heads                  end 
 		-progress_statistics    1    step 
-		-tsv_zone_flows         end 
 		-velocities             end 
-		-xyz_heads              0
-		-xyz_velocities         0
-		-zone_flows             end
 		-zone_flow_heads	1    step
-ZONE_FLOW
-	-box 277000 816000 -200 281500 822500 20
-		-description Plume submodel
-		-write_heads_xyzt  plume.heads.xyzt
-TIME_CONTROL
-	-time_step
-		0               0.5
-	-time_change		1996
-	-start_time             1935
+END	
