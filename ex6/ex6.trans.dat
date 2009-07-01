@@ -27,12 +27,12 @@ UNITS
 	-drain_thickness                  m
 	-drain_width                      m
 GRID
-#	-uniform X 277000 281500 46  # 100 m grid
-#	-uniform Y 814250 822250 81  # 100 m grid
-#	-uniform Z -120 20 29        # 5 m grid	
-	-uniform X 276400 281500 52  # 100 m grid
+	#-uniform X 276400 281500 52  # 100 m grid
+	#-uniform Y 811000 822250 113 # 50 m grid
+	#-uniform Z -120   20     29  # 5  m grid
+	-uniform X 276400 281500 103 # 50 m grid
 	-uniform Y 811000 822250 226 # 50 m grid
-	-uniform Z -120   20     57  # 5 m grid	
+	-uniform Z -120   20     71  # 2  m grid	
 	-snap X 0.001
 	-snap Y 0.001
 	-snap Z 0.001
@@ -65,37 +65,18 @@ MEDIA
 	-prism
 		-description Plume submodel outline
 		-perimeter POINTS GRID 
-			279727.71875     814098.375       -200
-			279839.31576689  811419.797139633 -200
-			279839.31576689  809448.064721415 -200
-			283001.574596215 809410.84810838  -200
-			283671.21875     823510.6875      -200
-			282034.3125      828979.625       -200
-			278462.84375     825110.4375      -200
-			277172.46875     822250.          -200
-#			277979.170848391 822250.          -200
-#			278797.655807921 822250.          -200
-#			279676.84375     822250.          -200
-			281109.65625     822250.          -200
-			281288.59375     821073.875       -200
-			280465.34375     819033.5625      -200
-			280000           817387.0625      -200
-			279876.53125     816256.1875      -200
+			281100.     822250.      -200
+			281100.     821100.      -200
+			280500.     819000.      -200
+			280000      817400.      -200
+			279900.     816300.      -200
+			279700.     814100.      -200
+			279500.     811400.      -200
+			279500.     809400.      -200	
+			285000.     809400.      -200
+			285000.     822250.      -200
 			end_points	
 		-active                   0
-#	-prism
-#		-top       CONSTANT   GRID 20
-#		-bottom    SHAPE      GRID ../ex5/ArcData/SimpleBath.shp 10
-#		-perimeter SHAPE      GRID ../ex5/ArcData/SimplePonds.shp
-#		-active                   0
-#		-Kx                       30000
-#		-Ky                       30000
-#		-Kz                       30000
-#		-porosity                 1
-#		-specific_storage         1
-#		-long_dispersivity        10
-#		-horizontal_dispersivity  10
-#		-vertical_dispersivity    10
 FLUX_BC
 	-box 275000 810000 0 285000 830000 100 MAP
 		-description Rainfall
@@ -172,7 +153,7 @@ SPECIFIED_HEAD_BC
 			0       XYZT GRID	plume.heads.xyzt
 		-associated_solution
 			0	1			
-	-box 279500 814500 -200 285000 822250 20 MAP			
+	-box 279500 814500 -50 285000 822250 20 MAP			
 		-exterior_cells_only    X
 		-head	
 			0       XYZT GRID	plume.heads.xyzt
@@ -186,15 +167,14 @@ SPECIFIED_HEAD_BC
 			0       XYZT GRID	plume.heads.xyzt
 		-fixed_solution
 			0	1
-	
-FLUX_BC			
-	-box 275000 810000 -500 285000 830000 -20 MAP	
-		-description No flow on bottom
-		-face    Z
-		-flux
-			0	0
-		-solution 
-			0	1	
+#FLUX_BC			
+#	-box 275000 810000 -500 285000 830000 -20 MAP	
+#		-description No flow on bottom
+#		-face    Z
+#		-flux
+#			0	0
+#		-solution 
+#			0	1	
 LEAKY_BC
 	-prism
 		-description Leaky X coast
@@ -326,7 +306,7 @@ PRINT_FREQUENCY
 		-end_of_period_default  false 
 		-flow_balance           1   years 
 		-force_chemistry_print  0
-		-HDF_chemistry          1    years
+		-HDF_chemistry          2    years
 		-HDF_heads              10   years 
 		-HDF_velocities         10   years
 		-heads                  10   years 
@@ -368,6 +348,7 @@ ZONE_FLOW 5 Other specified bc
 		-box 277500 817000  -200 282000  822000 20		
 TIME_CONTROL
 	-time_step
+		#0     0.0625
 		0     0.125
 	-time_change  2056
 	-start_time   1935
