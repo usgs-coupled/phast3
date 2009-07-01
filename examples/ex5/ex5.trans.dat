@@ -248,7 +248,7 @@ DRAIN 5 West Boundary Coonamessett River
 		-bed_hydraulic_conductivity  10.00
 		-bed_thickness               1
 		-z                           0
-ZONE_FLOW
+ZONE_FLOW 1
 	-box 277000 814250 -200 281500 822500 20
 		-description Plume submodel
 		-write_heads_xyzt  plume.heads.xyzt
@@ -266,7 +266,6 @@ TIME_CONTROL
 PRINT_INITIAL
 	-HDF_media                  true
 	-heads                      false
-	-xyz_heads                  true
 PRINT_FREQUENCY
 	-save_final_heads true
 	0
