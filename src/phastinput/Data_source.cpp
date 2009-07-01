@@ -1118,6 +1118,7 @@ void
 Data_source::Set_file_name(std::string fn)
 {
 	// check if in map
+#if SKIP
 	if (this->file_name.size())
 	{
 		std::map < std::string, Filedata * >::iterator fi =
@@ -1132,6 +1133,7 @@ Data_source::Set_file_name(std::string fn)
 			Filedata::file_data_map[fn] = this->filedata;
 		}
 	}
+#endif
 	assert(fn.size());
 	this->file_name = fn;
 }
