@@ -861,6 +861,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\XYZTfile.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\zone.cpp"
 				>
 			</File>
