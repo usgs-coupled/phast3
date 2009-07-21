@@ -638,9 +638,9 @@ SUBROUTINE zone_flow_write_heads
   !LOGICAL ex
   INTEGER ios
   INTEGER i, ii, jj, kk, m, izn
-  REAL(KIND=kdp), STATIC :: current_time = 0
-  INTEGER, STATIC :: counter = 1
-
+  REAL(KIND=kdp) :: current_time = 0
+  INTEGER :: counter = 1
+  SAVE current_time, counter
  
   current_time = cnvtmi*time
   do izn = 1, num_flo_zones
