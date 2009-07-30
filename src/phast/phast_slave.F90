@@ -196,55 +196,14 @@ SUBROUTINE slave_closef
   ! ... Close and delete the stripped input file
   CLOSE(fuins,STATUS='DELETE')  
   ! ... delete the read echo 'furde' file upon successful completion
-!!$  st(furde) = 'delete'
-!!$  if(errexi .or. errexe) st(furde) = 'keep'
-  ! ... delete file 'fuplt' if no plot data written
-  st(fuplt) = 'delete'  
-  IF(solute .AND. ntprtem > 0) st(fuplt) = 'keep  '
-  ! ... delete file 'fuorst' if no restart records written
-  st(fuorst) = 'delete'  
-  IF(nrsttp > 0) st(fuorst) = 'keep  '  
-  ! ... delete file 'fupmap', file 'fupmp2', and file 'fuvmap'
-  ! ...      if no screen or plotter map data written
-  st(fupmap) = 'delete'  
-  st(fupmp2) = 'delete'  
-  st(fuvmap) = 'delete'  
-  st(fuich) = 'delete'
-!!$  ! ... delete file 'fuich' if no initial condition head map data written
-!!$  st(fuich) = 'keep  '  
-!!$  if(.not.prtichead) st(fuich) = 'delete'  
-  ! ... close and delete file 'fupzon' if no zone map data written
-  st(fupzon) = 'delete'  
-!!$  if(pltzon) st(fupzon) = 'keep '  
-  st(fulp) = 'keep '
-  st(fup) = 'delete'  
-  IF(ntprp > 0) st(fup) = 'keep  '  
-  st(fuc) = 'delete'  
-  IF(ntprc > 0 .AND. solute) st(fuc) = 'keep  '  
-  st(fuvel) = 'delete'  
-  IF(ntprvel > 0) st(fuvel) = 'keep  '  
-  st(fuwel) = 'delete'  
-  IF(ntprwel > 0) st(fuwel) = 'keep  '  
-  st(fubal) = 'delete'  
-  IF(ntprgfb > 0) st(fubal) = 'keep  '  
-  st(fukd) = 'delete'  
-  IF(ntprkd > 0 .OR. prt_kd) st(fukd) = 'keep  '  
-  st(fubcf) = 'delete'  
-  IF(ntprbcf > 0) st(fubcf) = 'keep  '  
-  st(fuzf) = 'delete'  
-  IF(ntprzf > 0) st(fuzf) = 'keep  '  
-  st(fuzf_tsv) = 'delete'  
-  IF(ntprzf_tsv > 0) st(fuzf_tsv) = 'keep  '  
-  ! fuzf_heads only used by root
-!!$  st(fut) = 'delete'  
-#if defined(MERGE_FILES)
+
   CALL update_status(st)
-#endif
   ! ... Close the files
-  IF(print_rde) CLOSE(furde,status='keep')  
+  IF(print_rde) CLOSE(furde,status='delete')  
   CLOSE(fuorst, status = st(fuorst))  
   CLOSE(fulp, status = st(fulp))  
-  CLOSE(fup, status = st(fup))  
+  CLOSE(fup, status = st(fup)) 
+  CLOSE(fuwt, status = st(fuwt)) 
   CLOSE(fuc, status = st(fuc))  
   CLOSE(fuvel, status = st(fuvel))  
   CLOSE(fuwel, status = st(fuwel))  
