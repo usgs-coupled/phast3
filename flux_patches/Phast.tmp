@@ -471,7 +471,7 @@ C.3.8.2 .. PRIHDF_CONC, PRIHDF_HEAD, PRIHDF_VEL
      -1.000000 -1.000000 -1.000000
 C.3.8.2.1 .. PRI_ICHEAD; [T/F]
      f 
-C.3.8.2.2 .. pri_zf, pri_zf_tsv
+C.3.8.2.2 .. pri_zf, pri_zf_tsv, pri_zf_heads
 C.3.8.3 .. CHKPTD[T/F],PRICPD,SAVLDO[T/F]
 f 0 f
 C------------------------------------------------------------------------------
@@ -607,7 +607,7 @@ C.3.8.2 .. PRIHDF_CONC, PRIHDF_HEAD, PRIHDF_VEL
      -2.000000 -2.000000 -2.000000
 C.3.8.2.1 .. PRI_ICHEAD; [T/F]
      f 
-C.3.8.2.2 .. pri_zf, pri_zf_tsv
+C.3.8.2.2 .. pri_zf, pri_zf_tsv, pri_zf_heads
 C.3.8.3 .. CHKPTD[T/F],PRICPD,SAVLDO[T/F]
 f 0 f
 C------------------------------------------------------------------------------
@@ -717,7 +717,7 @@ C.3.8.2 .. PRIHDF_CONC, PRIHDF_HEAD, PRIHDF_VEL
      -3.000000 -3.000000 -3.000000
 C.3.8.2.1 .. PRI_ICHEAD; [T/F]
      f 
-C.3.8.2.2 .. pri_zf, pri_zf_tsv
+C.3.8.2.2 .. pri_zf, pri_zf_tsv, pri_zf_heads
 C.3.8.3 .. CHKPTD[T/F],PRICPD,SAVLDO[T/F]
 f 0 f
 C------------------------------------------------------------------------------
@@ -831,7 +831,7 @@ C.3.8.2 .. PRIHDF_CONC, PRIHDF_HEAD, PRIHDF_VEL
      -4.000000 -4.000000 -4.000000
 C.3.8.2.1 .. PRI_ICHEAD; [T/F]
      f 
-C.3.8.2.2 .. pri_zf, pri_zf_tsv
+C.3.8.2.2 .. pri_zf, pri_zf_tsv, pri_zf_heads
 C.3.8.3 .. CHKPTD[T/F],PRICPD,SAVLDO[T/F]
 f 0 f
 C------------------------------------------------------------------------------
@@ -920,7 +920,7 @@ C.3.8.2 .. PRIHDF_CONC, PRIHDF_HEAD, PRIHDF_VEL
      -8.000000 -8.000000 -8.000000
 C.3.8.2.1 .. PRI_ICHEAD; [T/F]
      f 
-C.3.8.2.2 .. pri_zf, pri_zf_tsv
+C.3.8.2.2 .. pri_zf, pri_zf_tsv, pri_zf_heads
 C.3.8.3 .. CHKPTD[T/F],PRICPD,SAVLDO[T/F]
 f 0 f
 C------------------------------------------------------------------------------
@@ -1013,7 +1013,7 @@ C.3.8.2 .. PRIHDF_CONC, PRIHDF_HEAD, PRIHDF_VEL
      -10.000000 -10.000000 -10.000000
 C.3.8.2.1 .. PRI_ICHEAD; [T/F]
      f 
-C.3.8.2.2 .. pri_zf, pri_zf_tsv
+C.3.8.2.2 .. pri_zf, pri_zf_tsv, pri_zf_heads
 C.3.8.3 .. CHKPTD[T/F],PRICPD,SAVLDO[T/F]
 f 0 f
 C------------------------------------------------------------------------------

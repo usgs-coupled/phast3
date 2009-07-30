@@ -6,6 +6,7 @@ ifeq ($(CFG), Linux)
   TEST=$(TOPDIR)/examples
   PHAST_INPUT=$(TOPDIR)/src/phastinput/phastinput
   PHAST=$(TOPDIR)/src/phast/serial_lahey/phast
+#  PHAST=$(TOPDIR)/src/phast/serial_gfortran/phast
   RUN=$(TEST)/run
 endif
 
@@ -984,7 +985,7 @@ property_parallel: property_clean_parallel
 	echo ============= Done property Parallel
 
 property_clean:
-	cd $(TEST)/property; $(CLEAN_CMD)
+	cd $(TEST)/property; rm -f *~ *.O.* *.log *.h5 *.h5~ abs* *.h5dump *.sel *backup* *.txt *.tsv Phast.tmp 
 
 property_clean_parallel:
 	@if [ -d $(TEST)/property/0 ]; \

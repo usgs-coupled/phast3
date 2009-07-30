@@ -1832,6 +1832,8 @@ C.2.23.8 .. Number of zones for flow rates: num_flo_zones
 1
 C.2.23.9 .. Title data for zone number 1 
  1 Surround well
+C.2.23.9.1 .. Write heads [t/f], file name
+ f none
 C.2.23.12 .. Internal boundaries: count; (O) - num_flo_zones > 0
  88
 C.2.23.13 .. Internal boundaries: list of [cell number, face index] pairs; (O) - num_flo_zones > 0
@@ -1926,8 +1928,8 @@ C.3.8.2 .. PRIHDF_CONC, PRIHDF_HEAD, PRIHDF_VEL
      -10.000000 -10.000000 -10.000000
 C.3.8.2.1 .. PRI_ICHEAD; [T/F]
      f 
-C.3.8.2.2 .. pri_zf, pri_zf_tsv
-     -10.000000 -10.000000
+C.3.8.2.2 .. pri_zf, pri_zf_tsv, pri_zf_heads
+     -10.000000 -10.000000 -10.000000
 C.3.8.3 .. CHKPTD[T/F],PRICPD,SAVLDO[T/F]
 f 0 f
 C------------------------------------------------------------------------------

@@ -33,7 +33,7 @@
           Number of porous media zones .................................... NPMZ .    100
           Number of specified pressure or mass fraction b.c. .............. NSBC .      4
           Number of specified flux b.c. cells ............................. NFBC .      4
-          Number of leakage cells ......................................... NLBC .      0
+          Number of leakage cells ......................................... NLBC .     20
           Number of river leakage cells ................................... NRBC .      0
           Number of drain leakage cells ................................... NDBC .      0
           Number of wells ................................................. NWEL .      0

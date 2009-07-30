@@ -61,17 +61,20 @@ Processing flow and transport data file.
 	        cross_dispersion                   false
 	PRINT_FREQUENCY
 	        0
+	        end_of_period_default		    false
 	        hdf_chemistry                      40 day
 	        velocity                                40 day
 	        xyz_chemistry                      40 day
 	        xyz_head                           40 day
 	        xyz_velocity                       40 day
 		zone_flows                         40 day
+		zone_flow_heads		    1 step
+	ZONE_FLOWS 11  X = 50 to 100
+		    zone   50 0 0 100 20.5 12.5
+		    write_heads_xyzt zf.subgrid.heads		 # works with spaces
 	TIME_CONTROL
 	        time_step                          0   10  day 
 	        time_end                           40 day
-	ZONE_FLOWS 11  X = 50 to 100
-		    zone   50 0 0 100 20.5 12.5
 	END             
 WARNING: Horizontal, vertical, and longitudinal dispersivities are not equal for at least one element.
 	However, cross-dispersion calculation is disabled (-cross_dispersion in SOLUTION_METHOD).
