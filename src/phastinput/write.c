@@ -2250,7 +2250,7 @@ write_output_transient(void)
 		output_msg(OUTPUT_HST, "     t \n");
 	if (save_final_heads == FALSE)
 		output_msg(OUTPUT_HST, "     f \n");
-	output_msg(OUTPUT_HST, "C.3.8.2.2 .. pri_zf, pri_zf_tsv\n");
+	output_msg(OUTPUT_HST, "C.3.8.2.2 .. pri_zf, pri_zf_tsv, pri_zf_heads\n");
 	if (Zone_budget::zone_budget_map.size() > 0)
 	{
 		output_msg(OUTPUT_HST, "     %f %f %f\n",
