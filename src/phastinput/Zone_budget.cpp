@@ -145,7 +145,7 @@ bool Zone_budget::Add_cells(std::vector < bool > &cells_in_budget, zone * z,
 
 std::ostream& operator<< (std::ostream &os, const Zone_budget &a)
 {
-	os << "ZONE_FLOW_RATES " << a.n_user << " " << a.description << "\n";
+	os << "ZONE_FLOW " << a.n_user << " " << a.description << "\n";
 	if (a.combo.size())
 	{
 		os << "\t-combination";
