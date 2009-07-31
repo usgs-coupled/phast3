@@ -1652,8 +1652,9 @@ read_media(void)
 		"description"			/* 40 */
 		,"box"                  /* 41 */
 		,"shell"                /* 42 */
+		,"domain"               /* 43 */
 	};
-	int count_opt_list = 43;
+	int count_opt_list = 44;
 	/*
 	 *   Read grid data
 	 */
@@ -2187,6 +2188,25 @@ read_media(void)
 				&grid_elt_ptr->shell_width[2]);
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
+		case 43:				/* domain */
+			/*
+			 *   Allocate space for grid_elt, read zone data
+			 */
+			grid_elt_zones =
+				(struct grid_elt **) realloc(grid_elt_zones,
+											 (size_t) (count_grid_elt_zones +
+													   1) *
+											 sizeof(struct grid_elt *));
+			if (grid_elt_zones == NULL)
+				malloc_error();
+
+			grid_elt_zones[count_grid_elt_zones] = grid_elt_alloc();
+			grid_elt_ptr = grid_elt_zones[count_grid_elt_zones];
+			count_grid_elt_zones++;
+			sprintf(tag, "in MEDIA, definition %d.", count_grid_elt_zones);
+
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;
 		}
 		return_value = check_line_return;
 		if (return_value == EOF || return_value == KEYWORD)
@@ -2424,8 +2444,9 @@ read_head_ic(void)
 		"bottom",				/* 9 */
 		"description"			/* 10 */
 		,"box"                  /* 11 */
+		,"domain"               /* 12 */
 	};
-	int count_opt_list = 12;
+	int count_opt_list = 13;
 	/*
 	 *   Read grid data
 	 */
@@ -2687,6 +2708,27 @@ read_head_ic(void)
 			head_ic_ptr->polyh->Get_description()->assign(next_char);
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
+		case 12:			/* domain */
+			/*
+			 *   Allocate space for head_ic, read zone data
+			 */
+			head_ic =
+				(struct Head_ic **) realloc(head_ic,
+											(size_t) (count_head_ic +
+													  1) *
+											sizeof(struct Head_ic *));
+			if (head_ic == NULL)
+				malloc_error();
+
+			head_ic[count_head_ic] = head_ic_alloc();
+			head_ic_ptr = head_ic[count_head_ic];
+			count_head_ic++;
+			sprintf(tag, "in HEAD_IC, definition %d.", count_head_ic);
+			head_ic_init(head_ic_ptr);
+
+			head_ic_ptr->ic_type = ZONE;
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;
 		}
 		return_value = check_line_return;
 		if (return_value == EOF || return_value == KEYWORD)
@@ -2746,8 +2788,9 @@ read_chemistry_ic(void)
 		"bottom",				/* 17 */
 		"description"			/* 18 */
 		,"box"                  /* 19 */
+		,"domain"               /* 20 */
 	};
-	int count_opt_list = 20;
+	int count_opt_list = 21;
 	/*
 	 *   Read chemical initial condition data
 	 */
@@ -3173,6 +3216,28 @@ read_chemistry_ic(void)
 			}
 			//std::string str(next_char);
 			chem_ic_ptr->polyh->Get_description()->assign(next_char);
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;
+		case 20:			/* domain */
+			/*
+			 *   Allocate space for chem_ic, read zone data
+			 */
+			chem_ic =
+				(struct chem_ic **) realloc(chem_ic,
+											(size_t) (count_chem_ic +
+													  1) *
+											sizeof(struct chem_ic *));
+			if (chem_ic == NULL)
+				malloc_error();
+
+			chem_ic[count_chem_ic] = chem_ic_alloc();
+			chem_ic_ptr = chem_ic[count_chem_ic];
+			count_chem_ic++;
+			sprintf(tag, "in CHEMISTRY_IC, definition %d.", count_chem_ic);
+			chem_ic_init(chem_ic_ptr);
+
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		}
@@ -3602,8 +3667,9 @@ read_specified_value_bc(void)
 		"description",			/* 15 */
 		"exterior_cells_only"   /* 16 */
 		,"box"                  /* 17 */
+		,"domain"               /* 18 */
 	};
-	int count_opt_list = 18;
+	int count_opt_list = 19;
 	/*
 	 *   Read chemical initial condition data
 	 */
@@ -3954,6 +4020,27 @@ read_specified_value_bc(void)
 			bc_ptr->face_defined = TRUE;
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
+		case 18:			/* domain */
+			/*
+			 *   Allocate space for bc, read zone data
+			 */
+			bc = (struct BC **) realloc(bc,
+										(size_t) (count_bc +
+												  1) * sizeof(struct BC *));
+			if (bc == NULL)
+				malloc_error();
+
+			bc[count_bc] = bc_alloc();
+			bc_ptr = bc[count_bc];
+			bc_init(bc_ptr);
+			bc_ptr->bc_type = BC_info::BC_SPECIFIED;
+			count_specified++;
+			sprintf(tag, "in SPECIFIED_HEAD_BC, definition %d.",
+					count_specified);
+			count_bc++;
+
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;
 		}
 		return_value = check_line_return;
 		if (return_value == EOF || return_value == KEYWORD)
@@ -4000,8 +4087,9 @@ read_flux_bc(void)
 		"bottom",				/* 11 */
 		"description"			/* 12 */
 		,"box"                  /* 13 */
+		,"domain"               /* 14 */
 	};
-	int count_opt_list = 14;
+	int count_opt_list = 15;
 	/*
 	 *   Read flux boundary condition
 	 */
@@ -4307,6 +4395,27 @@ read_flux_bc(void)
 			bc_ptr->polyh->Get_description()->assign(next_char);
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
+		case 14:		/* domain */
+			/*
+			 *   Allocate space for bc, read zone data
+			 */
+			bc = (struct BC **) realloc(bc,
+										(size_t) (count_bc +
+												  1) * sizeof(struct BC *));
+			if (bc == NULL)
+				malloc_error();
+
+			bc[count_bc] = bc_alloc();
+			bc_ptr = bc[count_bc];
+			bc_init(bc_ptr);
+			bc_ptr->bc_type = BC_info::BC_FLUX;
+			count_flux++;
+			sprintf(tag, "in FLUX_BC, definition %d.", count_flux);
+			count_bc++;
+
+			/* read to next */
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;
 		}
 		return_value = check_line_return;
 		if (return_value == EOF || return_value == KEYWORD)
@@ -4356,8 +4465,9 @@ read_leaky_bc(void)
 		"bottom",				/* 14 */
 		"description"			/* 15 */
 		,"box"                  /* 16 */
+		,"domain"               /* 17 */
 	};
-	int count_opt_list = 17;
+	int count_opt_list = 18;
 	/*
 	 *   Read chemical initial condition data
 	 */
@@ -4736,6 +4846,25 @@ read_leaky_bc(void)
 			}
 			//std::string str(next_char);
 			bc_ptr->polyh->Get_description()->assign(next_char);
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;
+		case 17:			/* domain */
+			/*
+			 *   Allocate space for bc, read zone data
+			 */
+			bc = (struct BC **) realloc(bc,
+										(size_t) (count_bc +
+												  1) * sizeof(struct BC *));
+			if (bc == NULL)
+				malloc_error();
+			bc[count_bc] = bc_alloc();
+			bc_ptr = bc[count_bc];
+			bc_init(bc_ptr);
+			bc_ptr->bc_type = BC_info::BC_LEAKY;
+			count_leaky++;
+			sprintf(tag, "in LEAKY_BC, definition %d.", count_leaky);
+			count_bc++;
+
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		}
@@ -9383,8 +9512,9 @@ read_print_locations(void)
 		"bottom",				/* 15 */
 		"description"			/* 16 */
 		,"box"                  /* 17 */
+		,"domain"               /* 18 */
 	};
-	int count_opt_list = 18;
+	int count_opt_list = 19;
 	int count_zones = 0;
 
 	/*
@@ -9720,6 +9850,39 @@ read_print_locations(void)
 			}
 			//std::string str(next_char);
 			print_zones_ptr->polyh->Get_description()->assign(next_char);
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;
+		case 18:			/* domain */
+			count_zones++;
+			/*
+			 *   Allocate space for print_zone, read zone data
+			 */
+			if (print_zones_struct_ptr == NULL)
+			{
+				sprintf(error_string,
+						"First identifier must be -xyz_chemistry or -chemistry %s",
+						tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+				opt = next_keyword_or_option(opt_list, count_opt_list);
+				break;
+			}
+
+			print_zones_struct_ptr->print_zones =
+				(struct print_zones *) realloc(print_zones_struct_ptr->
+											   print_zones,
+											   (size_t) ((print_zones_struct_ptr)->count_print_zones + 1) * sizeof(struct print_zones));
+			if (print_zones_struct_ptr->print_zones == NULL)
+				malloc_error();
+			print_zones_ptr =
+				&(print_zones_struct_ptr->
+				  print_zones[print_zones_struct_ptr->count_print_zones]);
+			/* initialize */
+			print_zones_ptr->print = NULL;
+			print_zones_ptr->mask = NULL;
+			print_zones_struct_ptr->count_print_zones++;
+			sprintf(tag, "in PRINT_LOCATIONS, definition %d.", count_zones);
+
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		}
@@ -10358,8 +10521,9 @@ read_zone_budget(void)
 		"combination"			/* 7 */
 		,"box"                  /* 8 */
 		,"write_heads_xyzt"     /* 9 */
+		,"domain"               /* 10 */
 	};
-	int count_opt_list = 10;
+	int count_opt_list = 11;
 	/*
 	 *   Read grid data
 	 */
@@ -10533,6 +10697,9 @@ read_zone_budget(void)
 				}
 				opt = next_keyword_or_option(opt_list, count_opt_list);
 			}
+			break;
+		case 10:				/* domain */
+			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		}
 		return_value = check_line_return;
