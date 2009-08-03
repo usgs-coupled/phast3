@@ -8,6 +8,7 @@
 #include "Prism.h"
 #include "Cube.h"
 #include "Wedge.h"
+#include "Domain.h"
 #include "Exterior_cell.h"
 #include "PHAST_Transform.h"
 #include "Zone_budget.h"
@@ -4467,7 +4468,7 @@ Tidy_cubes(PHAST_Transform::COORDINATE_SYSTEM target,
 	{
 		if (grid_elt_zones[i]->polyh == 0)
 		{
-			grid_elt_zones[i]->polyh = new Cube(&domain, PHAST_Transform::GRID);
+			grid_elt_zones[i]->polyh = new Domain(&domain, PHAST_Transform::GRID);
 		}
 		Wedge *w = dynamic_cast < Wedge * >(grid_elt_zones[i]->polyh);
 		Cube *c = dynamic_cast < Cube * >(grid_elt_zones[i]->polyh);
@@ -4495,7 +4496,7 @@ Tidy_cubes(PHAST_Transform::COORDINATE_SYSTEM target,
 	{
 		if (head_ic[i]->polyh == 0)
 		{
-			head_ic[i]->polyh = new Cube(&domain, PHAST_Transform::GRID);
+			head_ic[i]->polyh = new Domain(&domain, PHAST_Transform::GRID);
 		}
 		Wedge *w = dynamic_cast < Wedge * >(head_ic[i]->polyh);
 		Cube *c = dynamic_cast < Cube * >(head_ic[i]->polyh);
@@ -4522,7 +4523,7 @@ Tidy_cubes(PHAST_Transform::COORDINATE_SYSTEM target,
 	{
 		if (chem_ic[i]->polyh == 0)
 		{
-			chem_ic[i]->polyh = new Cube(&domain, PHAST_Transform::GRID);
+			chem_ic[i]->polyh = new Domain(&domain, PHAST_Transform::GRID);
 		}
 		Wedge *w = dynamic_cast < Wedge * >(chem_ic[i]->polyh);
 		Cube *c = dynamic_cast < Cube * >(chem_ic[i]->polyh);
@@ -4549,7 +4550,7 @@ Tidy_cubes(PHAST_Transform::COORDINATE_SYSTEM target,
 	{
 		if (bc[i]->polyh == 0)
 		{
-			bc[i]->polyh = new Cube(&domain, PHAST_Transform::GRID);
+			bc[i]->polyh = new Domain(&domain, PHAST_Transform::GRID);
 		}
 		Wedge *w = dynamic_cast < Wedge * >(bc[i]->polyh);
 		Cube *c = dynamic_cast < Cube * >(bc[i]->polyh);
@@ -4576,7 +4577,7 @@ Tidy_cubes(PHAST_Transform::COORDINATE_SYSTEM target,
 	{
 		if (print_zones_chem.print_zones[i].polyh == 0)
 		{
-			print_zones_chem.print_zones[i].polyh = new Cube(&domain, PHAST_Transform::GRID);
+			print_zones_chem.print_zones[i].polyh = new Domain(&domain, PHAST_Transform::GRID);
 		}
 		Wedge *w =
 			dynamic_cast < Wedge * >(print_zones_chem.print_zones[i].polyh);
@@ -4605,7 +4606,7 @@ Tidy_cubes(PHAST_Transform::COORDINATE_SYSTEM target,
 	{
 		if (print_zones_xyz.print_zones[i].polyh == 0)
 		{
-			print_zones_xyz.print_zones[i].polyh = new Cube(&domain, PHAST_Transform::GRID);
+			print_zones_xyz.print_zones[i].polyh = new Domain(&domain, PHAST_Transform::GRID);
 		}
 		Wedge *w =
 			dynamic_cast < Wedge * >(print_zones_xyz.print_zones[i].polyh);
@@ -4637,7 +4638,7 @@ Tidy_cubes(PHAST_Transform::COORDINATE_SYSTEM target,
 	{
 		if (it->second->Get_polyh() == 0)
 		{
-			it->second->Set_polyh(new Cube(&domain, PHAST_Transform::GRID));
+			it->second->Set_polyh(new Domain(&domain, PHAST_Transform::GRID));
 		}
 		Wedge *w = dynamic_cast < Wedge * >(it->second->Get_polyh());
 		Cube *c = dynamic_cast < Cube * >(it->second->Get_polyh());
