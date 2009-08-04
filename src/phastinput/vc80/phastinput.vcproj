@@ -626,6 +626,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\Domain.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\Drain.cpp"
 				>
 				<FileConfiguration
@@ -2213,6 +2217,10 @@
 			</File>
 			<File
 				RelativePath="..\NNInterpolator\delaunay.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Domain.h"
 				>
 			</File>
 			<File
