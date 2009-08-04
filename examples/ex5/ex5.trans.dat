@@ -20,9 +20,9 @@ UNITS
 	-drain_thickness                  m
 	-drain_width                      m
 # use the following line for steady state simulation	
-STEADY_FLOW false
+STEADY_FLOW true
 # use the following line for transient simulation
-#STEADY_FLOW true
+#STEADY_FLOW false
 FREE_SURFACE_BC true	
 GRID
 	-uniform X 275000 285000 41 # 250 m grid
@@ -36,7 +36,7 @@ GRID
 	-grid_angle    0
 MEDIA
 	# Default
-	-box 275000 810000 -500 285000 830000 100 MAP
+	-domain 275000 810000 -500 285000 830000 100 MAP
 		-active                   0   # all inactive
 		-Kx        XYZ MAP        ./Parameters/kh_meters 
 		-Ky        XYZ MAP        ./Parameters/kh_meters 
@@ -237,13 +237,13 @@ DRAIN 5 West Boundary Coonamessett River
 		-bed_hydraulic_conductivity  10.00
 		-bed_thickness               1
 		-z                           9.92
-	-point 277224.725 818453.819
-	-point 277381.64 817842.12
-	-point 277365.6 817312.8
-	-point 277461.84 816574.96
-	-point 277349.56 815885.24
-	-point 277301.44 814730.36
-	-point 277260.008 814502.138
+	-point 277224.725       818453.819
+	-point 277381.64        817842.12
+	-point 277365.6         817312.8
+	-point 277461.84        816574.96
+	-point 277349.56        815885.24
+	-point 277301.44        814730.36
+	-point 277260.008       814502.138
 		-width                       20
 		-bed_hydraulic_conductivity  10.00
 		-bed_thickness               1
@@ -253,7 +253,7 @@ ZONE_FLOW 1
 		-description Plume submodel
 		-write_heads_xyzt  plume.heads.xyzt
 HEAD_IC
-	-box 275000 810000 -200 285000 830000 20 GRID
+	-domain 275000 810000 -200 285000 830000 20 GRID
 		# use the following line for steady state simulation
 		-head                     10	
 		# use the following line for transient simulation
