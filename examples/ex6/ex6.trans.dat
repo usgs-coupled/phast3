@@ -5,10 +5,10 @@ FREE_SURFACE_BC true
 SOLUTION_METHOD
 	-iterative_solver   true
 	-tolerance          1e-012
-	-space_differencing 0
-	-time_differencing  1
+	#-space_differencing 0
+	#-time_differencing  1
 	-space_differencing 0.5
-	-time_differencing  0.75
+	-time_differencing  1
 	-cross_dispersion   false
 UNITS
 	-time                             yr
@@ -27,12 +27,16 @@ UNITS
 	-drain_thickness                  m
 	-drain_width                      m
 GRID
-	#-uniform X 276400 281500 52  # 100 m grid
-	#-uniform Y 811000 822250 113 # 50 m grid
-	#-uniform Z -120   20     29  # 5  m grid
-	-uniform X 276400 281500 103 # 50 m grid
-	-uniform Y 811000 822250 226 # 50 m grid
-	-uniform Z -120   20     71  # 2  m grid	
+	-uniform X 276400 281500 52  # 100 m grid
+	-uniform Y 811000 822250 113 # 100 m grid
+	-uniform Z -120   20     29  # 5  m grid
+	#-uniform X 276400 281500 103  # 50 m grid
+	#-uniform Y 811000 822250 226  # 50 m grid
+	#-uniform Z -120   20     57   # 2.5  m grid
+	#-uniform Z -120   20      71  # 2.0  m grid
+	#-uniform X 276400 281500 205  # 25 m grid
+	#-uniform Y 811000 822250 451  # 25 m grid
+	#-uniform Z -120   20     29   # 5  m grid
 	-snap X 0.001
 	-snap Y 0.001
 	-snap Z 0.001
@@ -42,16 +46,16 @@ GRID
 	-grid_angle    0
 MEDIA
         # Default
-	-box 275000 810000 -200 285000 830000 50 MAP
+	-domain 275000 810000 -200 285000 830000 50 MAP
 		-active                   0
 		-Kx        XYZ MAP  ../ex5/Parameters/kh_meters 
 		-Ky        XYZ MAP  ../ex5/Parameters/kh_meters 
 		-Kz        XYZ MAP  ../ex5/Parameters/kz_meters 
 		-porosity                 0.39
 		-specific_storage         0.39
-		-long_dispersivity        10
-		-horizontal_dispersivity  1
-		-vertical_dispersivity    0.1
+		-long_dispersivity        50
+		-horizontal_dispersivity  2
+		-vertical_dispersivity    2
 	-prism
 		-top       CONSTANT  GRID 20
 		-bottom    ARCRASTER GRID ../ex5/ArcData/bedrock.txt
@@ -153,7 +157,7 @@ SPECIFIED_HEAD_BC
 			0       XYZT GRID	plume.heads.xyzt
 		-associated_solution
 			0	1			
-	-box 279500 814500 -50 285000 822250 20 MAP			
+	-box 279500 815300 -50 285000 822250 20 MAP			
 		-exterior_cells_only    X
 		-head	
 			0       XYZT GRID	plume.heads.xyzt
@@ -167,14 +171,6 @@ SPECIFIED_HEAD_BC
 			0       XYZT GRID	plume.heads.xyzt
 		-fixed_solution
 			0	1
-#FLUX_BC			
-#	-box 275000 810000 -500 285000 830000 -20 MAP	
-#		-description No flow on bottom
-#		-face    Z
-#		-flux
-#			0	0
-#		-solution 
-#			0	1	
 LEAKY_BC
 	-prism
 		-description Leaky X coast
@@ -225,12 +221,14 @@ LEAKY_BC
 		-associated
 			0       1
 HEAD_IC
-	-box 275000 810000 -200 285000 830000 20 GRID
+	-domain 275000 810000 -200 285000 830000 20 GRID
 		-head	XYZ	GRID	../ex5/ex5.head.250.dat
 CHEMISTRY_IC
-	-box 275000 810000 -200 285000 830000 20 GRID
+	-domain 275000 810000 -200 285000 830000 20 GRID
 		-solution            1
-		-surface             1
+		-surface             1  
+		#-solution     restart ex6.restart.2000.gz 
+		#-surface      restart ex6.restart.2000.gz
 DRAIN 3 Bourne River
 	-point 279187.955718371 815453.305047008
 		-width                       20
@@ -242,7 +240,7 @@ DRAIN 3 Bourne River
 		-width                       20
 		-bed_hydraulic_conductivity  1
 		-bed_thickness               1
-		-z                           0	
+		-z                           0		
 DRAIN 4 Backus River (Cranberry bogs)
 	-point 278572           817160.5
 		-width                       20
@@ -264,13 +262,13 @@ DRAIN 5 West Boundary Coonamessett River
 		-bed_hydraulic_conductivity  10.00
 		-bed_thickness               1
 		-z                           9.92
-	-point 277224.725 818453.819
-	-point 277381.64  817842.12
-	-point 277365.6   817312.8
-	-point 277461.84  816574.96
-	-point 277349.56  815885.24
-	-point 277301.44  814730.36
-	-point 277260.008 814502.138
+	-point 277224.725       818453.819
+	-point 277381.64        817842.12
+	-point 277365.6         817312.8
+	-point 277461.84        816574.96
+	-point 277349.56        815885.24
+	-point 277301.44        814730.36
+	-point 277260.008       814502.138
 		-width                       20
 		-bed_hydraulic_conductivity  10.00
 		-bed_thickness               1
@@ -311,7 +309,7 @@ PRINT_FREQUENCY
 		-HDF_velocities         10   years
 		-heads                  10   years 
 		-progress_statistics    1    step 
-		-restart_file           5
+		-restart_file           10
 		-velocities             0 
 		-wells                  0 
 		-xyz_chemistry          0
@@ -348,7 +346,7 @@ ZONE_FLOW 5 Other specified bc
 		-box 277500 817000  -200 282000  822000 20		
 TIME_CONTROL
 	-time_step
-		#0     0.0625
-		0     0.125
-	-time_change  2056
-	-start_time   1935
+		#0     0.125
+		0     0.5
+	-time_change  1950
+	-start_time   1935.5
