@@ -1,74 +1,46 @@
-#DATABASE C:\Program Files\USGS\Phreeqc Interactive 2.15.0\phreeqc.dat
-#SOLUTION_MASTER_SPECIES
-#[N]     [N]2             0.0     [N]	14.0067
+
+TITLE Input file for example 6, ammonium/nitrate plume
 SOLUTION_SPECIES
-#[N]2 = [N]2
-#	log_k	0
-
-     
-
-NO3- + 2 H+ + 2 e- = NO2- + H2O
-        log_k           -50
-
-2 NO3- + 12 H+ + 10 e- = N2 + 6 H2O
-        log_k           0
+        NO3- + 2 H+ + 2 e- = NO2- + H2O
+                log_k           -50
+        2 NO3- + 12 H+ + 10 e- = N2 + 6 H2O
+                log_k           0
 SURFACE_MASTER_SPECIES
-    Surf Surf
+        Surf Surf
 SURFACE_SPECIES
-Surf = Surf 
-    log_k 0.0
-Surf + NH4+ = SurfNH4+ 
-    log_k -100
-Surf + NH3 = SurfNH3 
-    log_k -100    
-
+        Surf = Surf 
+                log_k 0.0
+        Surf + NH4+ = SurfNH4+ 
+                log_k -100
+        Surf + NH3 = SurfNH3 
+                log_k -100    
+END        
+SURFACE 1 linear ammonia adsoprtion
+        Surf    1e100   1.0     1e100
+END
 SOLUTION 1 Uncontaminated groundwater, O2 only
-	pH	5.6	
-	pe	7.0
-	temp	14.0
-	units	umol/L
-	O(0)	250   O2(g) -0.7
+        pH      5.6        
+        pe      7.0
+        temp    14.0
+        units   umol/L
+        O(0)    250     O2(g)   -0.7
 
 SOLUTION 2 Sewage effluent without oxygen
-	pH	6.00 
-	pe	7.0
-	temp	14.0
-	units	umol/L
-	Cl	990    
-	N(-3)   180
+        pH        6.00 
+        pe        7.0
+        temp      14.0
+        units     umol/L
+        Cl        990    
+        N(-3)     180
 SOLUTION 3 Rain, O2 only
-	pH	5.6	
-	pe	7.0
-	temp	14.0
-	units	umol/L
-	O(0)	250   O2(g) -0.7
+        pH        5.6        
+        pe        7.0
+        temp      14.0
+        units     umol/L
+        O(0)      250   O2(g)   -0.7
 END
-SURFACE 1 linear ammonia adsoprtion
-    Surf 1e100 1.0 1e100
-END    
-RATES
-Remove_N
--start
-10 n = TOT("N")
-20 k = 1            # per day
-30 k = k/(60*60*24) # per second
-40 rate = k*n
-50 moles = rate * TIME
-60 SAVE -moles      # negative number increases M
--end
-KINETICS 10 Pond
-Remove_N
-	-formula N 1
-	-M    0
 SELECTED_OUTPUT
-    -file                 selected.out
-    -reset                false
-    -ph                   true
-    -totals               O(0)  N(5)  N(-3) Cl 
-USER_PUNCH
--heading Sorbed_N(-3), Removed_N
-10 PUNCH Surf("N", "Surf")
-20 PUNCH KIN("Remove_N")
-PRINT
-	-warnings	10
+        -file     selected.out
+        -reset    false
+        -totals   O(0)  N(5)    N(-3) Cl 
 END
