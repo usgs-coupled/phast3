@@ -955,6 +955,8 @@ SUBROUTINE read2
         READ(fuins,'(A)') line
         READ(line,'(l,a)') zone_write_heads(izn), zone_filename_heads(izn)
         IF (print_rde) WRITE(furde,'(tr5,l,a)') zone_write_heads(izn), zone_filename_heads(izn)
+        zone_filename_heads(izn) = ADJUSTL(zone_filename_heads(izn))
+
         IF((fresur .AND. (nfbc > 0 .OR. nrbc > 0)) .or. zone_write_heads(izn)) THEN
            IF (print_rde) WRITE(furde,8005) '** Flow Zone Volume Parameters **',  &
                 '  (read echo[2.23.10])',' i_no   j_no   kmin_no   kmax_no'

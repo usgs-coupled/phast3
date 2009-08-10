@@ -497,11 +497,11 @@ ifeq ($(CFG), SERIAL_GFORTRAN)
   DEFINES      = $(DEFINE_HDF) -DNDEBUG -DPHREEQC_CPP
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   FC           = $(FGFORTRAN)
-  FFLAGS       = -O3 $(DEFINES) -fno-underscoring
+  FFLAGS       = -O3 -p $(DEFINES) -fno-underscoring
   CC           = g++
   CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN) -lm ${CL1MP_LIB} ${HDF5_LIBS} ${HASH_STYLE}
+  LD_FLAGS     = -p $(LIBGFORTRAN) -lm ${CL1MP_LIB} ${HDF5_LIBS} ${HASH_STYLE}
   LINKER       = $(CXX)
 endif
 

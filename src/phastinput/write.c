@@ -3095,11 +3095,11 @@ write_zone_budget(void)
 			"C.2.23.9.1 .. Write heads [t/f], file name\n");
 		if (it->second->Get_write_heads())
 		{
-			output_msg(OUTPUT_HST, " t %s\n", it->second->Get_filename_heads().c_str());
+			output_msg(OUTPUT_HST, "t %s\n", it->second->Get_filename_heads().c_str());
 		}
 		else
 		{
-			output_msg(OUTPUT_HST, " f %s\n", "none");
+			output_msg(OUTPUT_HST, "f %s\n", "none");
 		}
 		int return_max = 10;
 		int return_counter = 0;

@@ -41,6 +41,7 @@ FILES=\
 	check.c \
 	Cube.cpp \
 	Data_source.cpp \
+	Domain.cpp \
 	Drain.cpp \
 	Exterior_cell.cpp \
 	Filedata.cpp \
@@ -72,6 +73,7 @@ FILES=\
 OBJECTS=\
 	accumulate.o \
 	check.o \
+	Domain.o \
 	getopt.o \
 	gpc.o \
 	gpc_helper.o \
@@ -141,7 +143,8 @@ accumulate.o: accumulate.c hstinpt.h gpc.h gpc_helper.h Cell_Face.h \
   Exterior_cell.h BC_info.h Mix.h River.h Drain.h Utilities.h unit_impl.h \
   time.h inputproto.h wphast.h message.h Prism.h Data_source.h \
   PHAST_polygon.h Polygon_tree.h KDtree/KDtree.h KDtree/kdtree2.hpp \
-  KDtree/../Point.h Cube.h Wedge.h Zone_budget.h Filedata.h XYZTfile.h
+  KDtree/../Point.h Cube.h Wedge.h Domain.h Zone_budget.h Filedata.h \
+  XYZTfile.h
 check.o: check.c hstinpt.h gpc.h gpc_helper.h Cell_Face.h index_range.h \
   zone.h property.h Polyhedron.h Point.h PHAST_Transform.h \
   Exterior_cell.h BC_info.h Mix.h River.h Drain.h Utilities.h unit_impl.h \
@@ -223,6 +226,8 @@ Data_source.o: Data_source.cpp zone.h Data_source.h gpc.h gpc_helper.h \
   NNInterpolator/../Point.h NNInterpolator/../zone.h \
   NNInterpolator/../PHAST_Transform.h NNInterpolator/../UniqueMap.h \
   NNInterpolator/nn.h UniqueMap.h
+Domain.o: Domain.cpp Domain.h Cube.h Polyhedron.h Point.h gpc.h \
+  gpc_helper.h Cell_Face.h zone.h PHAST_Transform.h
 Drain.o: Drain.cpp Drain.h gpc.h gpc_helper.h Cell_Face.h River.h \
   PHAST_Transform.h Point.h hstinpt.h index_range.h zone.h property.h \
   Polyhedron.h Exterior_cell.h BC_info.h Mix.h Utilities.h unit_impl.h \
