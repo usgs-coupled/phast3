@@ -1,4 +1,14 @@
+    svn 3613:
+    
+    SOLUTION_RAW: c++ version used in PHAST misinterpreted the 
+    element Tc as the temperature identifier and crashed
+    when additional elements followed in -totals or 
+    -activity_coefficients.
+    
+    Removed "tc" as an identifier for temperature.    
 
+
+	
     svn 3514:
     
     Fixed bug with river polygons. Complete overlap caused an empty polygon,
