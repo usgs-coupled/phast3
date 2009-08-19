@@ -3791,7 +3791,127 @@ faces_intersect_polyhedron(int i, std::list < int >&list_of_numbers,
 	}
 	return;
 }
+#ifdef SKIP
+void
+faces_intersect_polyhedron(int i, std::list < int >&list_of_numbers,
+						   Cell_Face face)
+{
+	cells_with_faces(list_of_numbers, bc[i]->cell_face);
 
+	std::set<double> coord_set;
+	std::list < int >::iterator it = list_of_numbers.begin();
+	while (it != list_of_numbers.end())
+	{
+		int n = *it++;
+		//gpc_polygon *bc_area = bc[i]->polyh->Face_polygon(bc[i]->cell_face);
+		double coord;
+
+		switch (bc[i]->cell_face)
+		{
+		case CF_X:
+			coord = cells[n].x;
+			break;
+		case CF_Y:
+			coord = cells[n].y;
+			break;
+		case CF_Z:
+			coord = cells[n].z;
+			break;
+		default:
+			error_msg("Wrong face defined in distribute_flux_bc",
+					  EA_CONTINUE);
+			return;
+		}
+		coord_set.insert(coord);
+	}
+
+	std::set<double>::iterator coord_it = coord_set.begin();
+	std::list<int> revised_list;
+
+	for ( ; coord_it != coord_set.end(); coord_it++)
+	{
+		gpc_polygon *bc_area = bc[i]->polyh->Slice(bc[i]->cell_face, *coord_it);
+		it = list_of_numbers.begin();
+		while (it != list_of_numbers.end())
+		{
+			int n = *it;
+			bool keep = false;
+			//gpc_polygon *bc_area = bc[i]->polyh->Face_polygon(bc[i]->cell_face);
+			double coord;
+
+			switch (bc[i]->cell_face)
+			{
+			case CF_X:
+				coord = cells[n].x;
+				break;
+			case CF_Y:
+				coord = cells[n].y;
+				break;
+			case CF_Z:
+				coord = cells[n].z;
+				break;
+			default:
+				error_msg("Wrong face defined in distribute_flux_bc",
+					EA_CONTINUE);
+				return;
+			}
+			if (coord == *coord_it)
+			{
+				if (bc_area != NULL)
+				{
+					// get polygon for cell face
+					// This is a pointer to the cell face polygon in exterior, do not destroy.
+					gpc_polygon *polygon_ptr =
+						cells[n].exterior->get_exterior_polygon(bc[i]->cell_face);
+					if (polygon_ptr == NULL)
+					{
+						sprintf(error_string, "Exterior cell face not found %s", tag);
+						error_msg(error_string, CONTINUE);
+						input_error++;
+						continue;
+					}
+
+					// Intersect cell face with boundary condition polygon
+					gpc_polygon *cell_face_polygon = empty_polygon();
+					gpc_polygon_clip(GPC_INT, bc_area, polygon_ptr,
+						cell_face_polygon);
+
+					Prism *prism = dynamic_cast < Prism * >(bc[i]->polyh);
+					if (prism != NULL)
+					{
+						prism->Remove_top_bottom(cell_face_polygon, bc[i]->cell_face,
+							coord);
+					}
+					if (cell_face_polygon->num_contours > 0)
+					{
+						keep = true;
+					}
+
+					// Free space
+					if (cell_face_polygon != NULL)
+					{
+						gpc_free_polygon(cell_face_polygon);
+						free_check_null(cell_face_polygon);
+					}
+					if (keep)
+					{
+						revised_list.push_back(*it);
+					}
+					it = list_of_numbers.erase(it);
+				}
+			}
+		}
+		// Free space
+		if (bc_area != NULL)
+		{
+			gpc_free_polygon(bc_area);
+			free_check_null(bc_area);
+		}
+	}
+	list_of_numbers = revised_list;
+	return;
+}
+#endif
 /* ---------------------------------------------------------------------- */
 bool
 get_property_for_cell(int ncells,	// number of point in zone
