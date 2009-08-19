@@ -545,7 +545,7 @@ Prism::create() const
 {
 	return new Prism();
 }
-
+#ifdef SKIP
 gpc_polygon *
 Prism::Slice(Cell_Face face, double coord)
 {
@@ -598,6 +598,108 @@ Prism::Slice(Cell_Face face, double coord)
 			project.push_back(p);
 		}
 		gpc_polygon *slice = points_to_poly(project, face);
+		return slice;
+	}
+	else
+	{
+		// Dip of prism is parallel to face
+		std::vector < Point > intersect_pts;
+		gpc_polygon *slice = empty_polygon();
+		{
+			//line_intersect_polygon(lp1, lp2, this->perimeter.pts, intersect_pts);
+			this->perimeter.Get_phast_polygons().Line_intersect(lp1, lp2,
+																intersect_pts);
+			int i;
+			for (i = 0; i < (int) intersect_pts.size(); i = i + 2)
+			{
+				// add upper points
+				std::vector < Point > pts;
+				//pts.push_back(Point(pts[i].x(), pts[i].y(), grid_zone()->z2));
+				//pts.push_back(Point(pts[i+1].x(), pts[i+1].y(), grid_zone()->z2));
+				pts.push_back(intersect_pts[i]);
+				pts.push_back(intersect_pts[i + 1]);
+				// add lower points
+				Point p2;
+				p2 = intersect_pts[i + 1];
+
+				// Need to change if prism slants
+				p2.set_z(grid_zone()->z1);
+				//this->Project_point(p2, face, grid_zone()->z1);
+				pts.push_back(p2);
+
+				p2 = intersect_pts[i];
+				// Need to change if prism slants
+				p2.set_z(grid_zone()->z1);
+				//this->Project_point(p2, face, grid_zone()->z1);
+				pts.push_back(p2);
+
+				// generate polygon
+				gpc_polygon *contour = points_to_poly(pts, face);
+
+				// add to slice
+				gpc_polygon_clip(GPC_UNION, slice, contour, slice);
+				gpc_free_polygon(contour);
+				free_check_null(contour);
+			}
+		}
+		return slice;
+	}
+	return (NULL);
+}
+#endif
+gpc_polygon *
+Prism::Slice(Cell_Face face, double coord)
+{
+
+	// Determine if dip is parallel to face
+	Cube::PLANE_INTERSECTION p_intersection;
+	Point p1;
+	double t;
+
+	Point lp1, lp2;
+	switch (face)
+	{
+	case CF_X:
+		p_intersection =
+			Segment_intersect_plane(1.0, 0.0, 0.0, -coord, p1,
+									this->prism_dip, t);
+		lp1 = Point(coord, this->box.y1 - (this->box.y2 - this->box.y1), grid_zone()->z2);
+		lp2 = Point(coord, this->box.y2 + (this->box.y2 - this->box.y1), grid_zone()->z2);
+		break;
+	case CF_Y:
+		p_intersection =
+			Segment_intersect_plane(0.0, 1.0, 0.0, -coord, p1,
+									this->prism_dip, t);
+		lp1 = Point(this->box.x1 - (this->box.x2 - this->box.x1), coord, grid_zone()->z2);
+		lp2 = Point(this->box.x2 + (this->box.x2 - this->box.x1), coord, grid_zone()->z2);
+		break;
+	case CF_Z:
+		p_intersection =
+			Segment_intersect_plane(0.0, 0.0, 1.0, -coord, p1,
+									this->prism_dip, t);
+		break;
+	default:
+		error_msg("Unhandled case in Prism::Slice.", EA_STOP);
+	}
+
+
+	if (p_intersection == Cube::PI_POINT)
+	{
+		// Dip of prism is not parallel to face
+		std::vector < Point > project;
+		//std::vector < Point >::iterator it;
+		//for (it = this->perimeter.Get_points().begin();
+		//	 it != this->perimeter.Get_points().end(); it++)
+		//{
+		//	Point p = *it;
+		//	if (!(this->Project_point(p, face, coord)))
+		//	{
+		//		error_msg("Could not project point?", EA_CONTINUE);
+		//	}
+		//	project.push_back(p);
+		//}
+		//gpc_polygon *slice = points_to_poly(project, face);
+		gpc_polygon *slice = PHAST_polygon2gpc_polygon(&this->perimeter.Get_phast_polygons());
 		return slice;
 	}
 	else

@@ -50,10 +50,10 @@ Shapefile::Shapefile(std::string & fname,
 
 	if (hSHP == NULL)
 	{
-		//printf( "Unable to open:%s\n", shpname.c_str() );
+		//printf( "Unable to open:%s, .shx, or .dbf\n", shpname.c_str() );
 		//exit( 1 );
 		std::ostringstream estring;
-		estring << "Unable to open: " << shpname.c_str() << std::endl;
+		estring << "Unable to open: " << shpname.c_str() << ", .shx, or .dbf" << std::endl;
 		error_msg(estring.str().c_str(), EA_STOP);
 	}
 	this->filename = shpname;
@@ -89,7 +89,7 @@ Value Shape Type
 
 
 	// Get info
-	int nShapeType, nEntities, i, bValidate = 0, nInvalidCount = 0;
+	int nShapeType, nEntities, i, bValidate = 1, nInvalidCount = 0;
 	double adfMinBound[4], adfMaxBound[4];
 	SHPGetInfo(hSHP, &nEntities, &nShapeType, adfMinBound, adfMaxBound);
 
@@ -131,6 +131,8 @@ Value Shape Type
 	}
 
 
+	//this->Dump(std::cerr);
+	//exit(4);
 	this->coordinate_system = cs;
 
 	/* -------------------------------------------------------------------- */
@@ -221,7 +223,7 @@ Shapefile::Dump(std::ostream & oss)
 		}
 	}
 
-	// Dump dbf 
+	// Dump dbf
 	sprintf_s(str, "\nDBF Header\n\n");
 	oss << str;
 
@@ -395,7 +397,6 @@ Shapefile::Dump(std::ostream & oss)
 		oss << std::endl;
 	}
 }
-
 bool Shapefile::Make_points(const int attribute, std::vector < Point > &pts)
 {
 	// Point contains a x, y, z + value
@@ -526,7 +527,7 @@ bool Shapefile::Make_points(const int attribute, std::vector < Point > &pts)
 	}
 	return true;
 }
-
+#ifdef SKIP
 bool Shapefile::Make_polygons(int field, PHAST_polygon & polygons)
 {
 	// Requires field number
@@ -594,7 +595,124 @@ bool Shapefile::Make_polygons(int field, PHAST_polygon & polygons)
 	polygons.Set_bounding_box();
 	return true;
 }
+#endif
+bool Shapefile::Make_polygons(int field, PHAST_polygon & polygons)
+{
+	// Requires field number
+	// Requires point vector
+	// Requires 2 vectors of iterators for input
 
+	// Point contains  x, y, z + value
+
+	// Set points
+	//this->Make_points(field, polygons.Get_points());
+	Data_source *
+		ds = this->Get_data_source(field);
+	assert(ds->Get_source_type() == Data_source::POINTS);
+	assert(ds->Get_points().size() > 3);
+	polygons.Get_points() = ds->Get_points();
+
+
+
+	std::vector < double >
+		m;						// rough-in in case M values are given in .shp file
+
+	SHPInfo *
+		hSHP = this->shpinfo;
+	//DBFInfo *hDBF = this->dbfinfo;
+
+
+	// get info
+	int
+		nShapeType,
+		nEntities,
+		i;						//, bValidate = 0,nInvalidCount=0;
+	double
+		adfMinBound[4],
+		adfMaxBound[4];
+
+	SHPGetInfo(hSHP, &nEntities, &nShapeType, adfMinBound, adfMaxBound);
+
+	// Shape type should be polygon
+	if (nShapeType != 5)
+	{
+		std::ostringstream estring;
+		estring << "Shape file does not have shape type of polygon." << std::
+			endl;
+		//error_msg(estring.str().c_str(), EA_STOP);
+		warning_msg(estring.str().c_str());
+	}
+	std::vector < Point >::iterator it = polygons.Get_points().begin();
+	for (i = 0; i < nEntities; i++)
+	{
+		polygons.Get_begin().push_back(it);
+
+		SHPObject *
+			psShape;
+		psShape = this->objects[i];
+
+		int
+			j;
+		//for (j = 0; j < psShape->nVertices; j++)
+		//{
+		//	it++;
+		//}
+		//polygons.Get_end().push_back(it);
+		// Add multiple rings
+		int iPart;
+		//for (j = 0; j < psShape->nVertices; j++)
+		//{
+		//	it++;
+		//	if (iPart < psShape->nParts && psShape->panPartStart[iPart] == j)
+		//	{
+		//		iPart++;
+		//		polygons.Get_end().push_back(it);
+		//	}
+		//}
+
+		for (iPart = 0; iPart < psShape->nParts; iPart++)
+		{
+			int end = psShape->nVertices;
+			if (iPart + 1 < psShape->nParts) end = psShape->panPartStart[iPart + 1];
+			for (j = psShape->panPartStart[iPart]; j < end; j++)
+			{
+				it++;
+			}
+			polygons.Get_end().push_back(it);
+		}
+
+	}
+	polygons.Set_coordinate_system(this->coordinate_system);
+	polygons.Set_bounding_box();
+	return true;
+}
+		//int iPart;	
+		//const char *pszPlus;
+		//// account for multiple rings in a polygon
+		//for (j = 0, iPart = 1; j < psShape->nVertices; j++)
+		//{
+		//	const char *pszPartType = "";
+
+		//	if (j == 0 && psShape->nParts > 0)
+		//		pszPartType = SHPPartTypeName(psShape->panPartType[0]);
+
+		//	if (iPart < psShape->nParts && psShape->panPartStart[iPart] == j)
+		//	{
+		//		pszPartType = SHPPartTypeName(psShape->panPartType[iPart]);
+		//		iPart++;
+		//		pszPlus = "+";
+		//	}
+		//	else
+		//		pszPlus = " ";
+
+		//	//char str[200];
+		//	//sprintf_s(str, "   %s (%12.3f,%12.3f, %g, %g) %s \n",
+		//	//		  pszPlus,
+		//	//		  psShape->padfX[j],
+		//	//		  psShape->padfY[j],
+		//	//		  psShape->padfZ[j], psShape->padfM[j], pszPartType);
+		//	//oss << str;
+		//}
 std::vector < std::string > Shapefile::Get_headers(void)
 {
 	std::vector < std::string > headers;
