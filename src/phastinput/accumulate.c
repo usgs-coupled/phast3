@@ -3725,7 +3725,7 @@ faces_intersect_polyhedron(int i, std::list < int >&list_of_numbers,
 	while (it != list_of_numbers.end())
 	{
 		int n = *it;
-		bool keep = false;
+		//bool keep = false;
 		//gpc_polygon *bc_area = bc[i]->polyh->Face_polygon(bc[i]->cell_face);
 		double coord;
 
@@ -3997,7 +3997,7 @@ faces_intersect_polyhedron(int i, std::list < int >&list_of_numbers, std::map<in
 		while (it != list_of_numbers.end())
 		{
 			int n = *it;
-			bool keep = false;
+			//bool keep = false;
 			//gpc_polygon *bc_area = bc[i]->polyh->Face_polygon(bc[i]->cell_face);
 			double coord;
 
@@ -4132,7 +4132,7 @@ faces_intersect_polyhedron(int i, std::list < int >&list_of_numbers, std::map<in
 		while (it != list_of_numbers.end())
 		{
 			int n = *it;
-			bool keep = false;
+			//bool keep = false;
 			//gpc_polygon *bc_area = bc[i]->polyh->Face_polygon(bc[i]->cell_face);
 			double coord, x, y;
 
