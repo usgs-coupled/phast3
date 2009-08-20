@@ -28,12 +28,13 @@ class Polygon_tree
 {
   public:
 	Polygon_tree(void);
-	  Polygon_tree(PHAST_polygon & polys);
+	Polygon_tree(PHAST_polygon & polys);
 
   public:
 	  virtual ~ Polygon_tree(void);
 
 	bool Point_in_polygon(Point p);
+	gpc_polygon *Intersect(gpc_polygon *);
 	void Dump_tree(void);
 
   public:

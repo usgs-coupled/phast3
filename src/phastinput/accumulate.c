@@ -3951,6 +3951,7 @@ faces_intersect_polyhedron(int i, std::list < int >&list_of_numbers)
 		}
 	}
 }
+#ifdef SKIP
 void
 faces_intersect_polyhedron(int i, std::list < int >&list_of_numbers, std::map<int, gpc_polygon *> &face_areas)
 {
@@ -4036,6 +4037,151 @@ faces_intersect_polyhedron(int i, std::list < int >&list_of_numbers, std::map<in
 					gpc_polygon *cell_face_polygon = empty_polygon();
 					gpc_polygon_clip(GPC_INT, bc_area, polygon_ptr,	cell_face_polygon);
 
+					// remove top and bottom of prism if necessary
+					Prism *prism = dynamic_cast < Prism * >(bc[i]->polyh);
+					if (prism != NULL)
+					{
+						prism->Remove_top_bottom(cell_face_polygon, bc[i]->cell_face,
+							coord);
+					}
+
+					// save cell number and polygon
+					if (cell_face_polygon->num_contours > 0)
+					{
+						revised_list.push_back(*it);
+						face_areas[*it] = cell_face_polygon;
+					}
+					else
+					{
+						// Free space
+						if (cell_face_polygon != NULL)
+						{
+							gpc_free_polygon(cell_face_polygon);
+							free_check_null(cell_face_polygon);
+						}
+					}
+
+					// erase from list of numbers
+					it = list_of_numbers.erase(it);
+				}
+			}
+			else
+			{
+				it++;
+			}
+		}
+		// Free slice
+		if (bc_area != NULL)
+		{
+			gpc_free_polygon(bc_area);
+			free_check_null(bc_area);
+		}
+	}
+
+	// save list of cells and ensure natural order
+	list_of_numbers = revised_list;
+	list_of_numbers.sort();
+	return;
+}
+#endif
+void
+faces_intersect_polyhedron(int i, std::list < int >&list_of_numbers, std::map<int, gpc_polygon *> &face_areas)
+{
+	// get all cells with exterior face in the specified direction
+	cells_with_faces(list_of_numbers, bc[i]->cell_face);
+
+	// Make a list of all the coordinates in the set of cells
+	std::set<double> coord_set;
+	std::list < int >::iterator it = list_of_numbers.begin();
+	while (it != list_of_numbers.end())
+	{
+		int n = *it++;
+		//gpc_polygon *bc_area = bc[i]->polyh->Face_polygon(bc[i]->cell_face);
+		double coord;
+
+		switch (bc[i]->cell_face)
+		{
+		case CF_X:
+			coord = cells[n].x;
+			break;
+		case CF_Y:
+			coord = cells[n].y;
+			break;
+		case CF_Z:
+			coord = cells[n].z;
+			break;
+		default:
+			error_msg("Wrong face defined in faces_intersect_polyhedron",
+					  EA_CONTINUE);
+			return;
+		}
+		coord_set.insert(coord);
+	}
+
+	std::set<double>::iterator coord_it = coord_set.begin();
+	std::list<int> revised_list;
+
+	// Go through cells in coordinate order, cuts down on number of slices
+	for ( ; coord_it != coord_set.end(); coord_it++)
+	{
+		gpc_polygon *bc_area = bc[i]->polyh->Slice(bc[i]->cell_face, *coord_it);
+		PHAST_polygon bc_area1(bc_area, PHAST_Transform::GRID);
+		Polygon_tree bc_area2(bc_area1);
+
+		it = list_of_numbers.begin();
+		while (it != list_of_numbers.end())
+		{
+			int n = *it;
+			bool keep = false;
+			//gpc_polygon *bc_area = bc[i]->polyh->Face_polygon(bc[i]->cell_face);
+			double coord, x, y;
+
+			switch (bc[i]->cell_face)
+			{
+			case CF_X:
+				coord = cells[n].x;
+				x = cells[n].y;
+				y = cells[n].z;
+				break;
+			case CF_Y:
+				coord = cells[n].y;
+				x = cells[n].x;
+				y = cells[n].z;
+				break;
+			case CF_Z:
+				coord = cells[n].z;
+				x = cells[n].x;
+				y = cells[n].y;
+				break;
+			default:
+				error_msg("Wrong face defined in faces_intersect_polyhedron",
+					EA_CONTINUE);
+				return;
+			}
+			if (coord == *coord_it)
+			{
+				if (bc_area != NULL)
+				{
+					Point pt(x, y, coord); 
+					bc_area2.Point_in_polygon(pt);
+
+					// get polygon for cell face
+					// This is a pointer to the cell face polygon in exterior, do not destroy.
+					gpc_polygon *polygon_ptr =
+						cells[n].exterior->get_exterior_polygon(bc[i]->cell_face);
+					if (polygon_ptr == NULL)
+					{
+						sprintf(error_string, "Exterior cell face not found %s", tag);
+						error_msg(error_string, CONTINUE);
+						input_error++;
+						continue;
+					}
+
+					// Intersect cell face with boundary condition polygon
+					//gpc_polygon *cell_face_polygon = empty_polygon();
+					//gpc_polygon_clip(GPC_INT, bc_area, polygon_ptr,	cell_face_polygon);
+
+					gpc_polygon *cell_face_polygon = bc_area2.Intersect(polygon_ptr);
 					// remove top and bottom of prism if necessary
 					Prism *prism = dynamic_cast < Prism * >(bc[i]->polyh);
 					if (prism != NULL)
