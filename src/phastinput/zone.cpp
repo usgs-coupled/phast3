@@ -1,5 +1,6 @@
 #include "zone.h"
 #include "Point.h"
+#include <list>
 zone::zone()
 {
 	this->zone_defined = 0;		// false
@@ -41,6 +42,35 @@ zone::zone(struct zone *zone_ptr)
 	this->x2 = zone_ptr->x2;
 	this->y2 = zone_ptr->y2;
 	this->z2 = zone_ptr->z2;
+}
+zone::zone(gpc_polygon *poly)
+{
+	std::list<Point> pts;
+	int i, k, N;
+
+	for (k = 0; k < poly->num_contours; k++)
+	{
+		N = poly->contour[k].num_vertices;
+		for (i = 0; i < poly->contour[k].num_vertices; i++)
+		{
+			pts.push_back(Point(poly->contour[k].vertex[i].x, poly->contour[k].vertex[i].y, 0));
+		}
+	}
+	zone z;
+	if (pts.size() > 0)
+	{
+		zone z1(Point(pts.begin(), pts.end(),  Point::MIN), Point(pts.begin(), pts.end(),  Point::MAX));
+		z = z1;
+	}
+	this->zone_defined = 1;		// true
+	this->x1 = z.x1;
+	this->y1 = z.y1;
+	this->z1 = z.z1;
+	this->x2 = z.x2;
+	this->y2 = z.y2;
+	this->z2 = z.z2;
+
+	return;
 }
 zone::~zone(void)
 {

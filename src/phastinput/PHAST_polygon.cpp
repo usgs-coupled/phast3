@@ -37,6 +37,8 @@ PHAST_polygon::PHAST_polygon(gpc_polygon * poly,
 		}
 		this->end.push_back(it);
 	}
+	zone z(Point(this->pts.begin(), this->pts.end(), Point::MIN), Point(this->pts.begin(), this->pts.end(), Point::MAX));
+	this->box = z;
 }
 PHAST_polygon::PHAST_polygon(const std::vector < Point > &points,
 							 PHAST_Transform::COORDINATE_SYSTEM cs):

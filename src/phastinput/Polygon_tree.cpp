@@ -197,6 +197,33 @@ bool Polygon_tree::Point_in_polygon(Point p1)
 	}
 	return (false);
 }
+gpc_polygon *Polygon_tree::Intersect(gpc_polygon * cell_polygon)
+{
+	std::vector < Polygon_leaf * >::iterator it = this->all_leaves.begin();
+	gpc_polygon *cummulative_intersection = empty_polygon();
+	zone z(cell_polygon);
+	for ( ; it != all_leaves.end(); it++)
+	{
+		if ((*it)->tip)
+		{
+			zone *z_leaf = (*it)->polygon->Get_bounding_box();
+			if (z.x1 > z_leaf->x2 || z.x2 < z_leaf->x1 ||
+				z.y1 > z_leaf->y2 || z.y2 < z_leaf->y1) continue;
+			gpc_polygon *intersection = empty_polygon();
+			//gpc_polygon *sub_polygon = PHAST_polygon2gpc_polygon((*it)->polygon);
+			gpc_polygon *sub_poly = PHAST_polygon2gpc_polygon((*it)->polygon);
+			gpc_polygon_clip(GPC_INT, sub_poly, cell_polygon, intersection);
+			gpc_polygon_clip(GPC_UNION, cummulative_intersection, intersection, cummulative_intersection);
+			/* free space */
+			gpc_free_polygon(sub_poly);
+			free_check_null(sub_poly);
+			gpc_free_polygon(intersection);
+			free_check_null(intersection);
+		}
+	}
+
+	return cummulative_intersection;
+}
 void Polygon_tree::Dump_tree(void)
 {
 	int i = 0;
