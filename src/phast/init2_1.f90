@@ -1371,8 +1371,8 @@ SUBROUTINE init2_1
                  vmask(m) = 1
               ELSE
                  up0=p(m)
-                 z0=z(k-1)
-                 z1=z(k)
+                 zm1=z(k-1)
+                 z0=z(k)
                  zfsl = up0/(den(m)*gz) + z0     ! Hydrostatic
                  frac(m) = (2.*zfsl-(z0+zm1))/(z0-zm1)
                  frac(m) = MAX(0._kdp,frac(m))
