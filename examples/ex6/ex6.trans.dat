@@ -25,17 +25,17 @@ UNITS
         -drain_thickness              m
         -drain_width                  m
 GRID
-        #-uniform X 276400 281300 50   # 100 m grid
-        #-uniform Y 811000 822300 113  # 100 m grid
-        #-uniform Z -120   20     15   # 10  m grid
-        -uniform X 276400 281300 99   # 50 m grid
-        -uniform Y 811000 822300 225  # 50 m grid
-        #-uniform Z -120   20     57   # 5  m grid
+        -uniform X 276400 281300  50  # 100 m grid
+        -uniform Y 811000 822300 114  # 100 m grid
+        -uniform Z -120   20      15  # 10  m grid
+        #-uniform X 276400 281300  99  # 50 m grid
+        #-uniform Y 811000 822300 227  # 50 m grid
+        #-uniform Z -120   20      29  # 5  m grid
         #-overlay_uniform X 277800 280400 105 # 25 m
         #-overlay_uniform Y 818500 822000 141 # 25 m
         #-uniform X 276400 281300 197  # 25 m grid
-        #-uniform Y 811000 822300 449  # 25 m grid
-        -uniform Z -120   20     113  # 2.5  m grid
+        #-uniform Y 811000 822300 453  # 25 m grid
+        #-uniform Z -120   20     57   # 2.5  m grid
         -snap   X                     0.001
         -snap   Y                     0.001
         -snap   Z                     0.001
@@ -45,8 +45,8 @@ GRID
         -grid_angle                   0
 MEDIA
         # Default is inactive
-        #-domain
-        -box 275000 810000 -200 285000 830000 50 MAP
+        -domain
+        #-box 275000 810000 -200 285000 830000 50 MAP
                 -active               0
                 -porosity             0.39
                 -specific_storage     0.39 
@@ -67,42 +67,6 @@ MEDIA
                 -perimeter SHAPE      GRID   ../ex5/ArcData/OnShore.shp
                 -bottom    CONSTANT   GRID   0
                 -active                      1
-           
-#        # Add ponds as high K zones        
-#        -prism
-#                -top       CONSTANT   GRID   20
-#                -bottom    SHAPE      GRID   ../ex5/ArcData/SimpleBath.shp 10
-#                -perimeter SHAPE      GRID   ../ex5/ArcData/SimplePonds.shp
-#                -Kx                   30000
-#                -Ky                   30000
-#                -Kz                   30000
-#                -porosity             1
-#                -specific_storage     1
-#        # Default
-#        #-domain 
-#        -box 275000 810000 -200 285000 830000 50 MAP
-#                -active                   0
-#                -Kx        XYZ MAP  ../ex5/Parameters/kh_meters 
-#                -Ky        XYZ MAP  ../ex5/Parameters/kh_meters 
-#                -Kz        XYZ MAP  ../ex5/Parameters/kz_meters 
-#                -porosity                 0.39
-#                -specific_storage         0.39
-#                #-long_dispersivity        50
-#                #-horizontal_dispersivity  2
-#                #-vertical_dispersivity    2
-#                -long_dispersivity        0
-#                -horizontal_dispersivity  0
-#                -vertical_dispersivity    0                
-#        -prism
-#                -top       CONSTANT  GRID 20
-#                -bottom    ARCRASTER GRID ../ex5/ArcData/bedrock.txt
-#                -perimeter SHAPE     GRID ../ex5/ArcData/coast.shp
-#                -active                   1                
-#        -prism
-#                -top       CONSTANT   GRID 20
-#                -bottom    CONSTANT   GRID -200
-#                -perimeter SHAPE      GRID ../ex5/ArcData/ModelOutline.shp
-#                -active                   0
         -prism
                 -description Plume submodel outline
                 -perimeter POINTS GRID 
@@ -194,7 +158,7 @@ SPECIFIED_HEAD_BC
         -prism
                 -description Constant head ocean
                 -top       CONSTANT   GRID   0
-                -bottom    CONSTANT   GRID   0
+                -bottom    CONSTANT   GRID   -10
                 -perimeter SHAPE      GRID   ../ex5/ArcData/Offshore.shp
                 -exterior_cells_only  Z
                 -head
@@ -223,12 +187,12 @@ SPECIFIED_HEAD_BC
                 -associated_solution
                         0             1
 HEAD_IC
-        #-domain 
-        -box 275000 810000 -200 285000 830000 50 MAP
+        -domain 
+        #-box 275000 810000 -200 285000 830000 50 MAP
                 -head      XYZ        GRID   ../ex5/ex5.head.200.dat
 CHEMISTRY_IC
-        #-domain 
-        -box 275000 810000 -200 285000 830000 50 MAP
+        -domain 
+        #-box 275000 810000 -200 285000 830000 50 MAP
                 -solution             1
                 -surface              1  
 DRAIN 3 Bourne River
@@ -324,13 +288,11 @@ PRINT_FREQUENCY
 ZONE_FLOW 1 Ashumet Pond
         -prism
                 -description Flux to Ashumet Pond
-                -top       CONSTANT   GRID   20
                 -bottom    SHAPE      GRID   ../ex5/ArcData/AshumetBath.shp 10
                 -perimeter SHAPE      GRID   ../ex5/ArcData/Ashumet.shp        
 ZONE_FLOW 2 Coonamessett Pond
         -prism
                 -description Flux to Coonamessett Pond
-                -top       CONSTANT   GRID   20
                 -bottom    SHAPE      GRID   ../ex5/ArcData/CoonaBath.shp 10
                 -perimeter SHAPE      GRID   ../ex5/ArcData/Coona.shp                
 ZONE_FLOW 3 Coonamessett River 
@@ -338,17 +300,17 @@ ZONE_FLOW 3 Coonamessett River
                 -description Flux to Coonamessett River and nearby specified bc
                 
 ZONE_FLOW 4 Backus River and southern specified bc
-        -box 277500 814000  -200 282000  817000 20
+        -box 277500 814000  -200 282000  818000 20
                 -description Flux to Backus River and southern specified bc
                 
-ZONE_FLOW 5 Other specified bc
-        -box 277500 817000  -200 282000  822000 20
+ZONE_FLOW 5 All Ocean and drain 
+        -box 275000 811000  -200 285000  822000 20
                 -description Flux to other specified bc
 TIME_CONTROL
         -time_step
-                #0                     0.5   # num disp, v dt / 2 ~ 50
+                0                     0.5   # num disp, v dt / 2 ~ 50
                 #0                     0.25  # num disp, v dt / 2 ~ 25
                 #0                     0.125 # num disp, v dt / 2 ~ 12.5
-                0                     0.0625 # num disp, v dt / 2 ~ 6.25
-        -time_change                  2100
+                #0                     0.0625 # num disp, v dt / 2 ~ 6.25
+        -time_change                  1940
         -start_time                   1935
