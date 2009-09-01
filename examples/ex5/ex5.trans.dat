@@ -28,9 +28,12 @@ GRID
         #-uniform X 275000 285000 41         # 250 m grid
         #-uniform Y 810000 830000 81         # 250 m grid
         #-uniform Z -120   20     15         # 10 m grid
-        -uniform X 275000 285000 101         # 100 m grid
-        -uniform Y 810000 830000 201         # 100 m grid
-        -uniform Z -120   20      29         # 10  m grid
+        -uniform X 275000 285000  51         # 200 m grid
+        -uniform Y 810000 830000 101         # 200 m grid
+        -uniform Z -120   20      15         # 10  m grid        
+        #-uniform X 275000 285000 101         # 100 m grid
+        #-uniform Y 810000 830000 201         # 100 m grid
+        #-uniform Z -120   20      29         # 5   m grid
         -snap    X                    0.001
         -snap    Y                    0.001
         -snap    Z                    0.001
@@ -222,7 +225,7 @@ DRAIN 5 West Boundary Coonamessett River
                 -bed_thickness        1
                 -z                    0
 ZONE_FLOW 1
-        -box 277000 814250 -200 281500 822500 20
+        -box 276400 811000 -200 281300 822300 20
                 -description Plume submodel
                 -write_heads_xyzt     plume.heads.xyzt
 HEAD_IC
@@ -230,7 +233,7 @@ HEAD_IC
                 #----- Use the following line for EXAMPLE 6A, steady state simulation
                 -head                 10        
                 #----- Use the following line for EXAMPLE 6B, transient simulation 
-                #-head     XYZ        GRID   ex5.head.100.dat                 
+                #-head     XYZ        GRID   ex5.head.200.dat                 
 TIME_CONTROL
         -time_step
                 0                     0.5
