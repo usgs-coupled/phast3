@@ -5155,7 +5155,8 @@ read_property_only(char *ptr, const char **opt_list, int count_opt_list, int *op
 				j = (int) FileMap.size();
 				FileMap[stdtoken] = j;
 			}
-			p->v = (double *) malloc(sizeof(double));
+			//v is already allocated at 2*sizeof(double)
+			//p->v = (double *) malloc(sizeof(double));
 			p->v[0] = -100 - j;
 			p->count_v = 1;
 			p->type = PROP_FIXED;
