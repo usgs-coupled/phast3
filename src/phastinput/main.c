@@ -602,6 +602,7 @@ initialize(void)
  */
 	wells = NULL;
 	count_wells = 0;
+	count_wells_in_region = 0;
 	well_depths_defined = false;
 
 /*
