@@ -4095,17 +4095,8 @@ distribute_flux_bc(int i,		// bc[i]
 		bc_info.face = bc[i]->cell_face;
 		bc_info.bc_type = BC_info::BC_FLUX;
 
-		// only need areas for simulation == 0
-		if (simulation == 0)
-		{
-			bc_info.poly = face_areas[*it];
-		}
-		else
-		{
-			gpc_free_polygon(face_areas[*it]);
-			free_check_null(face_areas[*it]);
-			face_areas[*it] = NULL;
-		}
+		// save for all simulation periods to avoid leak
+		bc_info.poly = face_areas[*it];
 
 		// Store info
 		cells[n].all_bc_info->push_back(bc_info);
@@ -4225,17 +4216,8 @@ distribute_leaky_bc(int i,		// bc[i]
 		bc_info.face = bc[i]->cell_face;
 		bc_info.bc_type = BC_info::BC_LEAKY;
 
-		// only need areas for simulation == 0
-		if (simulation == 0)
-		{
-			bc_info.poly = face_areas[*it];
-		}
-		else
-		{
-			gpc_free_polygon(face_areas[*it]);
-			free_check_null(face_areas[*it]);
-			face_areas[*it] = NULL;
-		}
+		// save for all simulation periods to avoid leak
+		bc_info.poly = face_areas[*it];		
 
 		// Store info
 		cells[n].all_bc_info->push_back(bc_info);
