@@ -83,7 +83,7 @@ Value Shape Type
 		std::ostringstream estring;
 		estring << "Shape type  " << SHPTypeName(hSHP->
 												 nShapeType) <<
-			" not implemented." << std::endl;
+			" not implemented. " << shpname.c_str() << std::endl;
 		error_msg(estring.str().c_str(), EA_STOP);
 	}
 
@@ -126,7 +126,7 @@ Value Shape Type
 		//printf( "DBFOpen(%s,\"r\") failed.\n", dbfname.c_str() );
 		//exit( 2 );
 		std::ostringstream estring;
-		estring << "DBFOpen(" << dbfname.c_str() << " failed." << std::endl;
+		estring << "DBFOpen " << dbfname.c_str() << " failed." << std::endl;
 		error_msg(estring.str().c_str(), EA_STOP);
 	}
 
@@ -437,7 +437,7 @@ bool Shapefile::Make_points(const int attribute, std::vector < Point > &pts)
 		estring << "Requested field number, " << attribute
 			<<
 			" (starting from zero), is greater than maximum field number in dbf file "
-			<< dbf_fields - 1 << std::endl;
+			<< dbf_fields - 1 << " " << this->filename << std::endl;
 		error_msg(estring.str().c_str(), EA_STOP);
 	}
 
@@ -458,6 +458,7 @@ bool Shapefile::Make_points(const int attribute, std::vector < Point > &pts)
 			std::ostringstream estring;
 			estring << "Requested field number, " << attribute
 				<< " is not a real or integer number in dbf file"
+				<< " " << this->filename 
 				<< std::endl;
 			error_msg(estring.str().c_str(), EA_STOP);
 		}
@@ -465,7 +466,7 @@ bool Shapefile::Make_points(const int attribute, std::vector < Point > &pts)
 		{
 			std::ostringstream ostring;
 			ostring << "Extracting field " << attribute << " "
-				<< szTitle << std::endl;
+				<< szTitle << " " << this->filename << std::endl;
 			output_msg(OUTPUT_SCREEN, "%s\n", ostring.str().c_str());
 		}
 	}
@@ -637,10 +638,44 @@ bool Shapefile::Make_polygons(int field, PHAST_polygon & polygons)
 	if (nShapeType != 5)
 	{
 		std::ostringstream estring;
-		estring << "Shape file does not have shape type of polygon." << std::
+		estring << "Shape file does not have shape type of polygon." << " " << this->filename << std::
 			endl;
 		//error_msg(estring.str().c_str(), EA_STOP);
 		warning_msg(estring.str().c_str());
+	}
+	else
+	{
+		// check for holes in polygon shape file
+		for (i = 0; i < nEntities; i++)
+		{
+			SHPObject *	psShape;
+			psShape = this->objects[i];
+			int iPart;
+			for (iPart = 0; iPart < psShape->nParts; ++iPart)
+			{
+				size_t ii;
+				size_t jj;
+				size_t nn = psShape->nVertices;;
+				double area = 0.0;
+				if (iPart + 1 < psShape->nParts) nn = psShape->panPartStart[iPart + 1];
+				for (ii = psShape->panPartStart[iPart]; ii < nn; ++ii)
+				{
+					jj = ii + 1;
+					if (jj == nn) jj = psShape->panPartStart[iPart];
+					area += psShape->padfX[ii]*psShape->padfY[jj];
+					area -= psShape->padfY[ii]*psShape->padfX[jj];
+
+				}
+				if (area > 0.0) 
+				{
+					std::ostringstream estring;
+					estring << "Ignoring holes in polygon shape file. " << this->filename << std::endl;
+					warning_msg(estring.str().c_str());
+					this->Dump(std::cerr);
+					break;
+				}
+			}
+		}
 	}
 	std::vector < Point >::iterator it = polygons.Get_points().begin();
 	for (i = 0; i < nEntities; i++)
