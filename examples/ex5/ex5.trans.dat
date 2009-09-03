@@ -25,15 +25,9 @@ STEADY_FLOW true
 #STEADY_FLOW false
 FREE_SURFACE_BC true        
 GRID
-        #-uniform X 275000 285000 41         # 250 m grid
-        #-uniform Y 810000 830000 81         # 250 m grid
-        #-uniform Z -120   20     15         # 10 m grid
         -uniform X 275000 285000  51         # 200 m grid
         -uniform Y 810000 830000 101         # 200 m grid
         -uniform Z -120   20      15         # 10  m grid        
-        #-uniform X 275000 285000 101         # 100 m grid
-        #-uniform Y 810000 830000 201         # 100 m grid
-        #-uniform Z -120   20      29         # 5   m grid
         -snap    X                    0.001
         -snap    Y                    0.001
         -snap    Z                    0.001
@@ -41,30 +35,25 @@ GRID
         -grid_origin      0  0  0
         -grid_angle       0
 MEDIA
-        # Default is inactive
+        # Default values
         -domain
                 -active               0
+                -Kx        XYZ        MAP    ./Parameters/kh_meters 
+                -Ky        XYZ        MAP    ./Parameters/kh_meters 
+                -Kz        XYZ        MAP    ./Parameters/kz_meters 
+                -porosity             0.39
+                -specific_storage     0.39                
         # Activate inside model outline, above bedrock to sea level
         -prism
                 -perimeter SHAPE      GRID   ./ArcData/ModelExtent.shp
                 -bottom    ARCRASTER  GRID   ./ArcData/bedrock.txt
                 -top       CONSTANT   GRID   0
                 -active               1
-                -Kx        XYZ        MAP    ./Parameters/kh_meters 
-                -Ky        XYZ        MAP    ./Parameters/kh_meters 
-                -Kz        XYZ        MAP    ./Parameters/kz_meters 
-                -porosity             0.39
-                -specific_storage     0.39
-        # 0 m to top, inside coast        
+        # Activate inside coast, sea level to top of grid        
         -prism
                 -bottom    CONSTANT   GRID   0
                 -perimeter SHAPE      GRID   ./ArcData/OnShore.shp
                 -active               1
-                -Kx        XYZ        MAP    ./Parameters/kh_meters 
-                -Ky        XYZ        MAP    ./Parameters/kh_meters 
-                -Kz        XYZ        MAP    ./Parameters/kz_meters 
-                -porosity             0.39
-                -specific_storage     0.39
         # Add ponds as high K zones        
         -prism
                 -top       CONSTANT   GRID   20
@@ -139,7 +128,7 @@ SPECIFIED_HEAD_BC
         -prism
                 -description Constant head ocean
                 -top       CONSTANT   GRID   0
-                -bottom    CONSTANT   GRID   0
+                -bottom    CONSTANT   GRID   -10
                 -perimeter SHAPE      GRID   ./ArcData/Offshore.shp
                 -exterior_cells_only  Z
                 -head
