@@ -25,17 +25,24 @@ UNITS
         -drain_thickness              m
         -drain_width                  m
 GRID
+        # 100 m grid
         -uniform X 276400 281300  50  # 100 m grid
         -uniform Y 811000 822300 114  # 100 m grid
         -uniform Z -120   20      15  # 10  m grid
-        #-uniform X 276400 281300  99  # 50 m grid
-        #-uniform Y 811000 822300 227  # 50 m grid
-        #-uniform Z -120   20      29  # 5  m grid
-        #-overlay_uniform X 277800 280400 105 # 25 m
-        #-overlay_uniform Y 818500 822000 141 # 25 m
-        #-uniform X 276400 281300 197  # 25 m grid
-        #-uniform Y 811000 822300 453  # 25 m grid
-        #-uniform Z -120   20     57   # 2.5  m grid
+#        # 50 m grid
+#        -uniform X 276400 281300  99  # 50 m grid
+#        -uniform Y 811000 822300 227  # 50 m grid
+#        -uniform Z -120   20      29  # 5  m grid
+#        # modified 25 m grid
+#        -uniform X 276400 281300  99  # 50 m grid
+#        -uniform Y 811000 822300 227  # 50 m grid
+#        -overlay_uniform X 277100 280300 129 # 25 m
+#        -overlay_uniform Y 813000 822000 361 # 25 m
+#        -uniform Z -120   20     57   # 2.5  m grid
+#        # true 25 m grid
+#        -uniform X 276400 281300 197  # 25 m grid
+#        -uniform Y 811000 822300 453  # 25 m grid
+#        -uniform Z -120   20     57   # 2.5  m grid
         -snap   X                     0.001
         -snap   Y                     0.001
         -snap   Z                     0.001
@@ -240,49 +247,17 @@ DRAIN 5 West Boundary Coonamessett River
                 -bed_thickness        1
                 -z                    0
 PRINT_INITIAL
-        -boundary_conditions          false
-        -components                   false
-        -conductances                 false
-        -echo_input                   true
-        -fluid_properties             true
-        -force_chemistry_print        false
-        -HDF_chemistry                true
-        -HDF_heads                    true
-        -HDF_media                    true
-        -HDF_steady_flow_velocities   false
         -heads                        false
-        -media_properties             false
-        -solution_method              false
-        -steady_flow_velocities       false
-        -wells                        false
-        -xyz_chemistry                false
-        -xyz_components               false
-        -xyz_heads                    false
-        -xyz_steady_flow_velocities   false
-        -xyz_wells                    false
 PRINT_FREQUENCY
         -save_final_heads             true
         0
-                -bc_flow_rates        0
-                -boundary_conditions  false 
-                -components           0
-                -conductances         0
                 -end_of_period        false 
                 -flow_balance         1  years 
-                -force_chemistry      0
-                -HDF_chemistry        2  years
+                -HDF_chemistry        5  years
                 -HDF_heads            10 years 
-                -HDF_velocities       10 years
-                -heads                10 years 
+                -HDF_velocities       0  years
+                -heads                0  years 
                 -progress_statistics  1  step 
-                -restart_file         10
-                -velocities           0 
-                -wells                0 
-                -xyz_chemistry        0
-                -xyz_components       0
-                -xyz_heads            0
-                -xyz_velocities       0
-                -xyz_wells            0
                 -zone_flow            1  years
                 -zone_flow_tsv        1  years                 
 ZONE_FLOW 1 Ashumet Pond
@@ -305,12 +280,12 @@ ZONE_FLOW 4 Backus River and southern specified bc
                 
 ZONE_FLOW 5 All Ocean and drain 
         -box 275000 811000  -200 285000  822000 20
-                -description Flux to other specified bc
+                -description Flux to all Ocean and drain
 TIME_CONTROL
         -time_step
                 0                     0.5   # num disp, v dt / 2 ~ 50
                 #0                     0.25  # num disp, v dt / 2 ~ 25
                 #0                     0.125 # num disp, v dt / 2 ~ 12.5
                 #0                     0.0625 # num disp, v dt / 2 ~ 6.25
-        -time_change                  1940
+        -time_change                  2100
         -start_time                   1935
