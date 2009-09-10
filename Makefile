@@ -15,7 +15,8 @@ ifeq ($(CFG), CYGWIN)
   TEST=$(TOPDIR)/examples
   PHAST_INPUT=$(TOPDIR)/src/phastinput/win32_2005/Debug/phastinput.exe
   PHAST=$(TOPDIR)/src/phast/win32_2005/ser/phast.exe
-  PHAST_MPICH=$(TOPDIR)/src/phast/win32_2005/merge/phast.exe
+  # only for mpich target
+  PHAST_MPICH=$(TOPDIR)/src/phast/win32_2005/merge_debug/phast.exe
   RUN=$(TEST)/runmpich
 endif
 
