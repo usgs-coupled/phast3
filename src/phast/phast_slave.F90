@@ -175,7 +175,7 @@ SUBROUTINE slave_closef
 !!$  USE mcg
 !!$  USE mcm
   USE mcn
-!!$  USE mcp
+  USE mcp
 !!$  USE mcs
 !!$  USE mcs2
 !!$  USE mct
@@ -226,7 +226,7 @@ SUBROUTINE slave_closef
   ! ...      Deallocate mesh arrays
   DEALLOCATE (iprint_chem, iprint_xyz, &
      x, y, z, x_node, y_node, z_node,  &
-    ibc, &
+    ibc, pv0, pv, &
     STAT = a_err)
   IF (a_err /= 0) THEN  
      PRINT *, "Array deallocation failed slave_closef: 1"  
