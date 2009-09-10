@@ -200,9 +200,10 @@ SUBROUTINE closef(mpi_myself)
           aprnt1, aprnt2, aprnt3, aprnt4,  &
           rm, x, y, z,  &
           x_face, y_face, z_face,  &
-          ibc, ibc_string,  &
-          c_mol,  &
-          xd_mask, vmask,  &
+          ibc, pv0, &
+          cellijk, ibc_string, &
+          c_mol, &
+          xd_mask, &
           stat = da_err)
      IF (da_err /= 0) THEN  
         PRINT *, "Array allocation failed: closef: number 0"
@@ -219,19 +220,23 @@ SUBROUTINE closef(mpi_myself)
      ! ...      Deallocate dependent variable arrays
      DEALLOCATE (comp_name, icmax, jcmax, kcmax, &
           dc, dzfsdt, dp, dt, &
-          sxx, syy, szz, vxx, vyy, vzz, dcmax, dsir, &
+          sxx, syy, szz, vxx, vyy, vzz, &
+          vx_node, vy_node, vz_node, vmask, zfs, &
+          dcmax, dsir, dsir_chem, &
           qsfx, qsfy, qsfz, &
           stsaif, stsetb, stsfbc, stslbc, &
-          stsrbc, stssbc, stswel, ssresf, ssres, stotsi, stotsp, &
+          stsrbc, stsdbc, stssbc, &
+          stswel, ssresf, ssres, stotsi, stotsp, &
           tsres, tsresf, &
           dctas,  &
           rf, rs,  &
           den, eh, frac, p, t, vis, &
-          sir, sir0, sirn, totsi, totsp, tcsaif, tcsetb, &
+          sir, sir0, sirn, sir_prechem, &
+          totsi, totsp, tdsir_chem, tcsaif, tcsetb, &
           tcsfbc, &
-          tcslbc, tcsrbc, tcssbc, &
+          tcslbc, tcsrbc, tcsdbc, tcssbc, &
           totwsi, totwsp, &
-          tqwsi, tqwsp, u10, zfs, &
+          tqwsi, tqwsp, u10, &
           stat = da_err)
      IF (da_err /= 0) THEN  
         PRINT *, "Array allocation failed: closef: number 2"  
@@ -278,7 +283,7 @@ SUBROUTINE closef(mpi_myself)
      STOP
   ENDIF
   ! ...      Deallocate the zoned property arrays
-  DEALLOCATE (abpm, alphl, alphth, alphtv, poros,  &
+  DEALLOCATE (abpm, alphl, alphth, alphtv, poros, &
        kthx, kthy, kthz,  &
        kxx,kyy,kzz,rcppm, &
        i1z, i2z, j1z, j2z, k1z, k2z, &
@@ -286,6 +291,10 @@ SUBROUTINE closef(mpi_myself)
   IF (da_err /= 0) THEN  
      PRINT *, "Array allocation failed: closef: number 4"  
   ENDIF
+  DEALLOCATE (kx, ky, kz, stat = da_err)
+  IF (da_err /= 0) THEN  
+     PRINT *, "Array allocation failed: closef: number 4.1"  
+  ENDIF  
   ! ...      Deallocate the final well arrays
   IF(nwel > 0) THEN
      DEALLOCATE (welidno, xw, yw, wbod, wqmeth, &
@@ -304,7 +313,10 @@ SUBROUTINE closef(mpi_myself)
           wficum, wfpcum, &
           qwlyr, qflyr, dqwdpl, &
           denwk, pwk, twk, udenw, dpwkt, &
-          qwm, qwv, qhw, stfwp, sthwp, &
+          tfw, &
+          qwm, qwv, qhw, &
+          rhsw, vaw, &
+          stfwp, sthwp, &
           stfwi, sthwi, &
           indx1_wel, indx2_wel, &    
           pwsurs, pwkt, &
@@ -313,7 +325,8 @@ SUBROUTINE closef(mpi_myself)
         PRINT *, "Array deallocation failed: closef: number 6"  
      ENDIF
   ENDIF
-  IF (nsbc > 0 .AND. nwel > 0) THEN
+  !IF (nsbc > 0 .AND. nwel > 0) THEN
+  IF (nwel > 0) THEN
      DEALLOCATE (wsicum, wspcum, &
           qslyr, cwk, qsw, stswp, &
           cwkt, cwkts, &
@@ -328,7 +341,7 @@ SUBROUTINE closef(mpi_myself)
      DEALLOCATE (mrbc, arearbc,  &
           arbc, brbc,  &
           krbc, bbrbc, zerbc,  &
-          mrbc_bot, mrseg_bot,  &
+          mrbc_bot,  mrbc_top, mrseg_bot,  &
           phirbc, denrbc, visrbc,  &
           crbc, indx1_rbc, indx2_rbc, mxf_rbc,  &
           qfrbc, ccfrb, ccfvrb, qsrbc, ccsrb,  &
@@ -364,6 +377,10 @@ SUBROUTINE closef(mpi_myself)
   IF (da_err /= 0) THEN  
      PRINT *, "Array deallocation failed: closef: number 9"  
   ENDIF
+  DEALLOCATE (b_cell, stat = da_err)
+  IF (da_err /= 0) THEN  
+     PRINT *, "Array deallocation failed: closef: number 9.1" 
+  ENDIF 
   ! ...      Deallocate specified value b.c. arrays
   IF(nsbc > 0) THEN
      DEALLOCATE (msbc, indx1_sbc, indx2_sbc,  &

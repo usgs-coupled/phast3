@@ -59,7 +59,8 @@ SUBROUTINE read2
   !     ------------------------------------------------------------------
   !...
   ! ... allocate space for read group 2 arrays
-  ALLOCATE (uzelb(nxyz), uklb(nxyz), ubblb(nxyz),  &
+  !ALLOCATE (uzelb(nxyz), uklb(nxyz), ubblb(nxyz),  &
+  ALLOCATE ( &
        hwt(nxyz), &
        ui1z(nxyz), ui2z(nxyz), uj1z(nxyz), uj2z(nxyz), uk1z(nxyz), uk2z(nxyz), &
        stat = a_err)
