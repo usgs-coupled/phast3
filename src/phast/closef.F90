@@ -25,6 +25,7 @@ SUBROUTINE closef(mpi_myself)
   CHARACTER(LEN=6), DIMENSION(50) :: st
   INTEGER :: da_err, i1p, i2p, ifu, ip  
   CHARACTER(LEN=130) :: logline1, logline2, logline3
+  INTEGER izn
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
@@ -242,10 +243,142 @@ SUBROUTINE closef(mpi_myself)
         PRINT *, "Array allocation failed: closef: number 2"  
      ENDIF
      IF(num_flo_zones > 0) THEN
+
+     
+        do izn = 1, num_flo_zones
+        
+          ! deallocate list of cell top and bottom numbers if needed
+          IF((fresur .AND. (nfbc > 0 .OR. nrbc > 0)) .or. zone_write_heads(izn)) THEN
+            DEALLOCATE (zone_col(izn)%i_no,  &
+                zone_col(izn)%j_no,  &
+                zone_col(izn)%kmin_no,  &
+                zone_col(izn)%kmax_no,  &
+                stat = da_err)
+            IF (da_err /= 0) THEN
+              PRINT *, "Array allocation failed: closef: number 2.0"
+              STOP
+            ENDIF       
+          ENDIF 
+          
+          ! flow zone face parameters
+          IF(zone_ib(izn)%num_int_faces > 0) THEN
+            DEALLOCATE (zone_ib(izn)%mcell_no,  &
+              zone_ib(izn)%face_indx,  &
+              stat = da_err)
+            IF (da_err /= 0) THEN
+              PRINT *, "Array allocation failed: closef: number 2.1"
+              STOP
+            ENDIF 
+          ENDIF     
+          
+          ! Flow Zone Specified Head B.C. Cells
+          IF(nsbc_cells > 0) THEN  
+            DEALLOCATE (lnk_bc2zon(izn,1)%lcell_no,  &
+                 stat = da_err)
+            IF (da_err /= 0) THEN
+               PRINT *, "Array allocation failed: closef: number 2.2"
+               STOP
+            ENDIF          
+          ENDIF  ! nsbc cells  
+          
+          IF(nfbc_cells > 0) THEN
+            ! Flow Zone Flux B.C. Cells
+            IF(lnk_bc2zon(izn,2)%num_bc > 0) THEN
+              DEALLOCATE (lnk_bc2zon(izn,2)%lcell_no,  &
+                    stat = da_err)
+              IF (da_err /= 0) THEN
+                  PRINT *, "Array allocation failed: closef: number 2.3"
+                  STOP
+              ENDIF
+            END IF
+           
+            ! Flow Zone Conditional Flux B.C. Cells
+            IF(fresur) THEN
+              IF(lnk_cfbc2zon(izn)%num_bc > 0) THEN
+                ! ... Allocate scratch space for flux cells
+                DEALLOCATE (lnk_cfbc2zon(izn)%lcell_no,  &
+                      lnk_cfbc2zon(izn)%mxy_no,  &
+                      lnk_cfbc2zon(izn)%icz_no,  &
+                      stat = da_err)
+                IF (da_err /= 0) THEN
+                  PRINT *, "Array allocation failed: closef: number 2.4"
+                  STOP
+                ENDIF
+              END IF
+            END IF          
+          END IF  ! nfbc cells
+          
+          IF(nlbc_cells > 0) THEN
+            IF(lnk_bc2zon(izn,3)%num_bc > 0) THEN
+              ! ... Allocate scratch space for leakage cells
+              DEALLOCATE (lnk_bc2zon(izn,3)%lcell_no,  &
+                   stat = da_err)
+              IF (da_err /= 0) THEN
+                 PRINT *, "Array allocation failed: closef: number 2.5"
+                 STOP
+              ENDIF
+            END IF 
+          END IF ! nlbc cells
+          
+          ! Flow Zone River Leakage B.C. Cells
+          IF(fresur .AND. nrbc_cells > 0) THEN
+            IF(lnk_crbc2zon(izn)%num_bc > 0) THEN
+              DEALLOCATE (lnk_crbc2zon(izn)%lcell_no,  &
+                   lnk_crbc2zon(izn)%mxy_no,  &
+                   lnk_crbc2zon(izn)%icz_no,  &
+                   stat = da_err)
+              IF (da_err /= 0) THEN
+                 PRINT *, "Array allocation failed: closef: number 2.6"
+                 STOP
+              ENDIF
+            END IF  
+          END IF  ! nrbc cells    
+          
+          ! Flow Zone Drain B.C. Cells   
+          IF(ndbc_cells > 0) THEN
+            IF(lnk_bc2zon(izn,4)%num_bc > 0) THEN
+              DEALLOCATE (lnk_bc2zon(izn,4)%lcell_no,  &
+                   stat = da_err)
+              IF (da_err /= 0) THEN
+                 PRINT *, "Array allocation failed: closef: number 2.7"
+                 STOP
+              ENDIF
+            END IF
+          END IF  ! ndbc cells  
+ 
+         IF(nwel > 0) THEN
+           IF(seg_well(izn)%num_wellseg > 0 ) THEN
+              DEALLOCATE (seg_well(izn)%iwel_no,  &
+                   seg_well(izn)%ks_no,  &
+                   stat = da_err)
+              IF (da_err /= 0) THEN
+                 PRINT *, "Array allocation failed: closef: number 2.8"
+                 STOP
+              ENDIF
+            END IF
+          END IF  ! nwel       
+        enddo  ! num_flo_zones
+              
+        DEALLOCATE (zone_title, &
+          zone_ib, lnk_bc2zon, &
+          seg_well, &
+          zone_filename_heads, &
+          zone_write_heads, &               
+          stat = da_err)
+        IF (da_err /= 0) THEN
+          PRINT *, "Array allocation failed: closef: number 2.X"
+          STOP
+        ENDIF       
+     
+     
+     
+     
+     
         ! ...      Deallocate zonal flow rate arrays
-        DEALLOCATE (qfzoni, qfzonp, qszoni, qszonp,  &
-             zone_ib, lnk_bc2zon, zone_title,  &
-             zone_write_heads, zone_filename_heads, &
+        DEALLOCATE (qfzoni, qfzonp, &
+             qszoni, qszonp, &
+             qfzoni_int, qfzonp_int,  &
+             qszoni_int, qszonp_int,  &             
              qfzoni_sbc, qfzonp_sbc,  &
              qszoni_sbc, qszonp_sbc,  &
              qfzoni_fbc, qfzonp_fbc,  &
@@ -257,7 +390,7 @@ SUBROUTINE closef(mpi_myself)
              qfzoni_dbc, qfzonp_dbc,  &
              qszoni_dbc, qszonp_dbc,  &
              qfzoni_wel, qfzonp_wel,  &
-             qszoni_wel, qszonp_wel, seg_well,  &
+             qszoni_wel, qszonp_wel, &
              stat = da_err)
         IF (da_err /= 0) THEN
            PRINT *, "array deallocation failed: closef, number 2.0"
