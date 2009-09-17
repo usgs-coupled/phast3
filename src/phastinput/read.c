@@ -10636,8 +10636,7 @@ read_zone_budget(void)
 				sprintf(error_string,
 						"Zone, wedge, or prism has not been defined for description %s",
 						tag);
-				error_msg(error_string, CONTINUE);
-				input_error++;
+				warning_msg(error_string);
 				opt = next_keyword_or_option(opt_list, count_opt_list);
 				break;
 			}

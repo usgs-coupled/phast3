@@ -4552,7 +4552,7 @@ Tidy_cubes(PHAST_Transform::COORDINATE_SYSTEM target,
 	for (it = Zone_budget::zone_budget_map.begin();
 		 it != Zone_budget::zone_budget_map.end(); it++)
 	{
-		if (it->second->Get_polyh() == 0)
+		if (it->second->Get_polyh() == 0 && it->second->Get_combo().size() == 0)
 		{
 			it->second->Set_polyh(new Domain(&domain, PHAST_Transform::GRID));
 		}
