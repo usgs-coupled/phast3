@@ -580,6 +580,10 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm"
 			>
+			<File
+				RelativePath="..\phreeqcpp\dumper.cpp"
+				>
+			</File>
 			<Filter
 				Name="COMMON_COBJS"
 				>
@@ -3640,6 +3644,10 @@
 			</File>
 			<File
 				RelativePath="..\phreeqcpp\Dictionary.h"
+				>
+			</File>
+			<File
+				RelativePath="..\phreeqcpp\dumper.h"
 				>
 			</File>
 			<File
