@@ -3344,6 +3344,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\phreeqcpp\StorageBinList.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\phreeqcpp\Surface.cxx"
 					>
 				</File>
@@ -3808,6 +3812,10 @@
 			</File>
 			<File
 				RelativePath="..\phreeqcpp\StorageBin.h"
+				>
+			</File>
+			<File
+				RelativePath="..\phreeqcpp\StorageBinList.h"
 				>
 			</File>
 			<File
