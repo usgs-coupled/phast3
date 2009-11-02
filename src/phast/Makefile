@@ -760,6 +760,7 @@ COMMON_FOBJS =	interpolate_mod.o print_control_mod.o rewi_mod.o \
 
 COMMON_CXXOBJS = \
 	       Dictionary.o \
+	       dumper.o \
 	       Exchange.o \
 	       ExchComp.o \
 	       GasPhase.o \
@@ -776,12 +777,14 @@ COMMON_CXXOBJS = \
 	       PPassemblage.o \
 	       Reaction.o \
 	       ReadClass.o \
+	       runner.o \
 	       Solution.o \
 	       SolutionIsotope.o \
 	       SolutionIsotopeList.o \
 	       SSassemblage.o \
 	       SSassemblageSS.o \
                StorageBin.o \
+               StorageBinList.o \
 	       Surface.o \
 	       SurfaceCharge.o \
 	       SurfaceComp.o \
@@ -952,7 +955,7 @@ clean:
 
 depends:
 	mkdir -p temp_dependency_dir
-	cd temp_dependency_dir; gcc -MM $(DEFINE_HDF) -I../phreeqcpp -I../phreeqcpp/phreeqc -I../../../src/phastinput -I../../../src/phastinput/KDtree ../*.cxx ../*.c ../phreeqcpp/*.cxx ../phreeqcpp/phreeqc/*.c $(PHASTINPUT_FILES) > ../dependencies
+	cd temp_dependency_dir; gcc -MM $(DEFINE_HDF) -I../phreeqcpp -I../phreeqcpp/phreeqc -I../../../src/phastinput -I../../../src/phastinput/KDtree ../*.cxx ../*.c ../phreeqcpp/*.cxx ../phreeqcpp/*.cpp ../phreeqcpp/phreeqc/*.c $(PHASTINPUT_FILES) > ../dependencies
 	rm -rf temp_dependency_dir
 
 depends_parallel:

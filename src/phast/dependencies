@@ -191,7 +191,9 @@ ReadClass.o: ../phreeqcpp/ReadClass.cxx ../phreeqcpp/Parser.h \
   ../phreeqcpp/KineticsComp.h ../phreeqcpp/SSassemblage.h \
   ../phreeqcpp/SSassemblageSS.h ../phreeqcpp/GasPhase.h \
   ../phreeqcpp/Reaction.h ../phreeqcpp/Temperature.h \
-  ../phreeqcpp/phreeqc/phqalloc.h ../phreeqcpp/phreeqc/output.h
+  ../phreeqcpp/dumper.h ../phreeqcpp/StorageBinList.h \
+  ../phreeqcpp/runner.h ../phreeqcpp/phreeqc/phqalloc.h \
+  ../phreeqcpp/phreeqc/output.h
 SAXPhreeqc.o: ../phreeqcpp/SAXPhreeqc.cxx ../phreeqcpp/SAXPhreeqc.h \
   ../phreeqcpp/SaxPhreeqcHandlers.h ../phreeqcpp/phreeqc/global.h \
   ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/phreeqc/phrqproto.h \
@@ -300,6 +302,15 @@ Temperature.o: ../phreeqcpp/Temperature.cxx ../phreeqcpp/Utils.h \
 Utils.o: ../phreeqcpp/Utils.cxx ../phreeqcpp/Utils.h \
   ../phreeqcpp/char_star.h ../phreeqcpp/Parser.h \
   ../phreeqcpp/phreeqc/output.h
+dumper.o: ../phreeqcpp/dumper.cpp ../phreeqcpp/dumper.h \
+  ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/StorageBinList.h
+runner.o: ../phreeqcpp/runner.cpp ../phreeqcpp/runner.h \
+  ../phreeqcpp/Parser.h ../phreeqcpp/char_star.h \
+  ../phreeqcpp/StorageBinList.h
+StorageBinList.o: ../phreeqcpp/StorageBinList.cpp \
+  ../phreeqcpp/StorageBinList.h ../phreeqcpp/Parser.h \
+  ../phreeqcpp/char_star.h
 advection.o: ../phreeqcpp/phreeqc/advection.c \
   ../phreeqcpp/phreeqc/global.h ../phreeqcpp/phreeqc/phrqtype.h \
   ../phreeqcpp/phreeqc/phqalloc.h ../phreeqcpp/phreeqc/output.h \
@@ -409,6 +420,10 @@ read.o: ../phreeqcpp/phreeqc/read.c ../phreeqcpp/phreeqc/global.h \
 readtr.o: ../phreeqcpp/phreeqc/readtr.c ../phreeqcpp/phreeqc/global.h \
   ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/phreeqc/phqalloc.h \
   ../phreeqcpp/phreeqc/output.h ../phreeqcpp/phreeqc/phrqproto.h
+sit.o: ../phreeqcpp/phreeqc/sit.c ../phreeqcpp/phreeqc/global.h \
+  ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/phreeqc/phqalloc.h \
+  ../phreeqcpp/phreeqc/output.h ../phreeqcpp/phreeqc/phrqproto.h \
+  ../phreeqcpp/phreeqc/pitzer.h
 smalldense.o: ../phreeqcpp/phreeqc/smalldense.c \
   ../phreeqcpp/phreeqc/smalldense.h ../phreeqcpp/phreeqc/sundialstypes.h \
   ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/phreeqc/sundialsmath.h \
