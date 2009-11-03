@@ -98,7 +98,7 @@ FLUX_BC
                 -face Z
                 -flux
                         0             -0.00188
-		-associated_solution
+                -associated_solution
                         0             3  
         -box 279725 821500 0 279825 821600 50
                 -description Beds 1-4
@@ -112,7 +112,7 @@ FLUX_BC
                         1971          -0.05
                         1978          -0.114
                         1984          0
-		-associated_solution
+                -associated_solution
                         0             2                        
         -box 279625 821425 0 279725 821525 50
                 -description Beds 5-8
@@ -126,7 +126,7 @@ FLUX_BC
                         1978          0
                         1984          -0.038
                         1996          0
-		-associated_solution
+                -associated_solution
                         0             2
         -box 279525 821475 0 279625 821575 50
                 -description Beds 9-12
@@ -140,7 +140,7 @@ FLUX_BC
                         1978          0
                         1984          -0.038
                         1996          0
-		-associated_solution
+                -associated_solution
                         0             2                        
         -box 279400 821575 0 279500 821675 50
                 -description Beds 13-16
@@ -150,7 +150,7 @@ FLUX_BC
                         1941          -0.114
                         1946          -0.023
                         1956          0
-		-associated_solution
+                -associated_solution
                         0             2                        
         -box 279500 821700 0 279600 821800 50
                 -description Beds 19-25
@@ -160,7 +160,7 @@ FLUX_BC
                         1941          -0.114
                         1946          -0.023
                         1956          0
-		-associated_solution
+                -associated_solution
                         0             2                        
 SPECIFIED_HEAD_BC
         -prism
@@ -171,7 +171,7 @@ SPECIFIED_HEAD_BC
                 -exterior_cells_only  Z
                 -head
                         0             0.0
-		-associated_solution
+                -associated_solution
                         0             1                        
         -box 275000 822300 -200 285000 822300 20 MAP
                 -description Constant head at north end of sub region

@@ -6,7 +6,7 @@ ifeq ($(CFG), Linux)
   TEST=$(TOPDIR)/examples
   PHAST_INPUT=$(TOPDIR)/src/phastinput/phastinput
   PHAST=$(TOPDIR)/src/phast/serial_lahey/phast
-#  PHAST=$(TOPDIR)/src/phast/serial_gfortran/phast
+#  PHAST=$(TOPDIR)/src/phast/serial_intel/phast
   RUN=$(TEST)/run
 endif
 
@@ -960,11 +960,13 @@ zf_parallel: zf_clean_parallel
 
 zf_clean:
 	cd $(TEST)/zf; $(CLEAN_CMD)
-
+ 
 zf_clean_parallel:
 	@if [ -d $(TEST)/zf/0 ]; \
 	  then \
-	  find $(TEST)/zf/0  -maxdepth 1 -type f  | xargs rm -f; \
+	  cd $(TEST)/zf/0; rm -f *; \
+	fi
+#	  find $(TEST)/zf/0/  -maxdepth 1 -type f  | xargs rm -f; \
 	fi
 
 #
@@ -1122,3 +1124,10 @@ tester:
 	make -f Makefile zero zero1 zero_parallel zero1_parallel >> all.out
 	make -f Makefile diff >& diff.out
 	make -f Makefile diff_parallel >& diff_parallel.out
+
+tester_serial:
+	make -f Makefile clean_serial
+	make -f Makefile $(SERIAL) >& serial.out
+	make -f Makefile zero zero1 >> serial.out
+	make -f Makefile diff >& diff.out
+
