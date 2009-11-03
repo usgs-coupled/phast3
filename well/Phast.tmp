@@ -1833,7 +1833,7 @@ C.2.23.8 .. Number of zones for flow rates: num_flo_zones
 C.2.23.9 .. Title data for zone number 1 
  1 Surround well
 C.2.23.9.1 .. Write heads [t/f], file name
- f none
+f none
 C.2.23.12 .. Internal boundaries: count; (O) - num_flo_zones > 0
  88
 C.2.23.13 .. Internal boundaries: list of [cell number, face index] pairs; (O) - num_flo_zones > 0

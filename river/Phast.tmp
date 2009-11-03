@@ -20045,7 +20045,7 @@ C.2.23.8 .. Number of zones for flow rates: num_flo_zones
 C.2.23.9 .. Title data for zone number 1 
  10 Global zone flow terms
 C.2.23.9.1 .. Write heads [t/f], file name
- f none
+f none
 C.2.23.10 .. Cell volume indices: num_cell_columns; fresur && (nfbc > 0 || nrbc > 0)
  1089
 C.2.23.11 .. Cell volume indices: i, j, kmin, kmax for num_cell_columns in zone
