@@ -10,7 +10,7 @@
 			>
 			<DebugSettings
 				Command=""
-				WorkingDirectory="C:\Programs\phastpp\examples\ex1"
+				WorkingDirectory="C:\Programs\phastpp\examples\ex4restart"
 				CommandArguments=""
 				Attach="false"
 				DebuggerType="3"
@@ -94,8 +94,8 @@
 			>
 			<DebugSettings
 				Command=""
-				WorkingDirectory="C:\Programs\phastpp\examples\capecod"
-				CommandArguments="capecod"
+				WorkingDirectory="C:\Programs\phastpp\examples\Angels"
+				CommandArguments=""
 				Attach="false"
 				DebuggerType="3"
 				Remote="1"
@@ -150,7 +150,7 @@
 			>
 			<DebugSettings
 				Command=""
-				WorkingDirectory=""
+				WorkingDirectory="C:\Programs\phastpp\examples\Angels"
 				CommandArguments=""
 				Attach="false"
 				DebuggerType="3"
@@ -162,7 +162,7 @@
 				SQLDebugging=""
 				Environment=""
 				EnvironmentMerge="true"
-				DebuggerFlavor=""
+				DebuggerFlavor="0"
 				MPIRunCommand=""
 				MPIRunArguments=""
 				MPIRunWorkingDirectory=""

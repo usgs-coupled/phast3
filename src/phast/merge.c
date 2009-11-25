@@ -560,8 +560,25 @@ MergeBeginTimeStep(int print_sel, int print_out)
 
 	/* open temp hdf file to store timestep */
 	sprintf(error_string, "~%d.capture.h5~", mpi_myself);
-	s_ci.file_id =
-		H5Fcreate(error_string, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+	s_ci.file_id = H5Fcreate(error_string, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+	{
+		int count=1;
+		while (s_ci.file_id <= 0)
+		{
+			//Sleep(1000);
+#if !defined(NDEBUG)
+			sprintf(error_string, "\nFile open failed, retrying %d, ~%d.capture.h5~", count++, mpi_myself);
+			warning_msg(error_string);
+#endif
+			sprintf(error_string, "~%d.capture.h5~", mpi_myself);
+			s_ci.file_id =
+				H5Fcreate(error_string, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+			if (count > 20)
+			{
+				break;
+			}
+		}
+	}
 	if (s_ci.file_id <= 0)
 	{
 		sprintf(error_string, "Unable to open HDF file:~%d.capture.h5~\n",

@@ -46,7 +46,8 @@ SUBROUTINE openf
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
-  OPEN(fulp,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  !OPEN(fulp,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  CALL MYOPEN(fulp, fname, ios)
   IF (ios > 0) THEN
      lerror = .TRUE.
      WRITE(*,*) 'ERROR: Error opening file ', fname
@@ -57,7 +58,8 @@ SUBROUTINE openf
 #if defined(USE_MPI)
      CALL get_mpi_filename(fname)
 #endif
-     OPEN(furde,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+     !OPEN(furde,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+     CALL MYOPEN(furde, fname, ios)
      IF (ios > 0) THEN
         lerror = .TRUE.
         WRITE(*,*) 'ERROR: Error opening file ', fname
@@ -67,7 +69,8 @@ SUBROUTINE openf
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
-  OPEN(fup,FILE=fname,IOSTAT=ios, ACTION='WRITE')
+  !OPEN(fup,FILE=fname,IOSTAT=ios, ACTION='WRITE')
+  CALL MYOPEN(fup, fname, ios)
   IF (ios > 0) THEN
      lerror = .TRUE.
      WRITE(*,*) 'ERROR: Error opening file ', fname
@@ -76,7 +79,8 @@ SUBROUTINE openf
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
-  OPEN(fuwt,FILE=fname,IOSTAT=ios, ACTION='WRITE')
+  !OPEN(fuwt,FILE=fname,IOSTAT=ios, ACTION='WRITE')
+  CALL MYOPEN(fuwt, fname, ios)
   IF (ios > 0) THEN
      lerror = .TRUE.
      WRITE(*,*) 'ERROR: Error opening file ', fname
@@ -85,7 +89,8 @@ SUBROUTINE openf
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
-  OPEN(fuc,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  !OPEN(fuc,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  CALL MYOPEN(fuc, fname, ios)
   IF (ios > 0) THEN
      lerror = .TRUE.
      WRITE(*,*) 'ERROR: Error opening file ', fname
@@ -94,7 +99,8 @@ SUBROUTINE openf
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
-  OPEN(fuvel,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  !OPEN(fuvel,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  CALL MYOPEN(fuvel, fname, ios)
   IF (ios > 0) THEN
      lerror = .TRUE.
      WRITE(*,*) 'ERROR: Error opening file ', fname
@@ -103,7 +109,8 @@ SUBROUTINE openf
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
-  OPEN(fuwel,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  !OPEN(fuwel,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  CALL MYOPEN(fuwel, fname, ios)
   IF (ios > 0) THEN
      lerror = .TRUE.
      WRITE(*,*) 'ERROR: Error opening file ', fname
@@ -112,7 +119,8 @@ SUBROUTINE openf
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
-  OPEN(fubal,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  !OPEN(fubal,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  CALL MYOPEN(fubal, fname, ios)
   IF (ios > 0) THEN
      lerror = .TRUE.
      WRITE(*,*) 'ERROR: Error opening file ', fname
@@ -121,7 +129,8 @@ SUBROUTINE openf
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
-  OPEN(fukd,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  !OPEN(fukd,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  CALL MYOPEN(fukd, fname, ios)
   IF (ios > 0) THEN
      lerror = .TRUE.
      WRITE(*,*) 'ERROR: Error opening file ', fname
@@ -130,7 +139,8 @@ SUBROUTINE openf
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
-  OPEN(fubcf,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  !OPEN(fubcf,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  CALL MYOPEN(fubcf, fname, ios)
   IF (ios > 0) THEN
      lerror = .TRUE.
      WRITE(*,*) 'ERROR: Error opening file ', fname
@@ -139,7 +149,8 @@ SUBROUTINE openf
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
-  OPEN(fuzf,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  !OPEN(fuzf,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  CALL MYOPEN(fuzf, fname, ios)
   IF (ios > 0) THEN
      lerror = .TRUE.
      WRITE(*,*) 'ERROR: Error opening file ', fname
@@ -148,7 +159,8 @@ SUBROUTINE openf
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
-  OPEN(fuzf_tsv,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  !OPEN(fuzf_tsv,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  CALL MYOPEN(fuzf_tsv, fname, ios)
   IF (ios > 0) THEN
      lerror = .TRUE.
      WRITE(*,*) 'ERROR: Error opening file ', fname
@@ -160,7 +172,8 @@ SUBROUTINE openf
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
-  OPEN(fupmap,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  !OPEN(fupmap,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  CALL MYOPEN(fupmap, fname, ios)
   IF (ios > 0) THEN
      lerror = .TRUE.
      WRITE(*,*) 'ERROR: Error opening file ', fname
@@ -169,7 +182,8 @@ SUBROUTINE openf
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
-  OPEN(fupmp2,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  !OPEN(fupmp2,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  CALL MYOPEN(fupmp2, fname, ios)
   IF (ios > 0) THEN
      lerror = .TRUE.
      WRITE(*,*) 'ERROR: Error opening file ', fname
@@ -178,7 +192,8 @@ SUBROUTINE openf
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
-  OPEN(fupmp3,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  !OPEN(fupmp3,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  CALL MYOPEN(fupmp3, fname, ios)
   IF (ios > 0) THEN
      lerror = .TRUE.
      WRITE(*,*) 'ERROR: Error opening file ', fname
@@ -187,7 +202,8 @@ SUBROUTINE openf
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
-  OPEN(fuvmap,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  !OPEN(fuvmap,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  CALL MYOPEN(fuvmap, fname, ios)
   IF (ios > 0) THEN
      lerror = .TRUE.
      WRITE(*,*) 'ERROR: Error opening file ', fname
@@ -196,7 +212,8 @@ SUBROUTINE openf
 #if defined(USE_MPI)
   CALL get_mpi_filename(fname)
 #endif
-  OPEN(fuplt,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  !OPEN(fuplt,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+  CALL MYOPEN(fuplt, fname, ios)
   IF (ios > 0) THEN
      lerror = .TRUE.
      WRITE(*,*) 'ERROR: Error opening file ', fname
@@ -212,3 +229,18 @@ SUBROUTINE openf
      STOP 'Stopping because of error(s) opening files.'
   ENDIF
 END SUBROUTINE openf
+SUBROUTINE MYOPEN(funit, fname, ios)
+    CHARACTER(LEN=255), intent(in) :: fname
+    INTEGER, intent(in) :: funit
+    INTEGER, intent(out) :: ios
+    INTEGER :: count
+    
+    count =0
+    ios = 1
+    DO WHILE (ios > 0) 
+        OPEN(funit,FILE=fname,IOSTAT=ios,ACTION='WRITE')
+        count = count + 1
+        if (count > 20) exit
+    end do
+    return
+END SUBROUTINE MYOPEN

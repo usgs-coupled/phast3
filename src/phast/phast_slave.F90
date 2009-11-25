@@ -25,6 +25,7 @@ SUBROUTINE phast_slave(mpi_tasks, mpi_myself)
   ! ... Extract the version name for the header
   !...
   ! ... Start of execution
+  !call mysleep(mpi_myself*100)
   CALL openf
   ! ... Read memory allocation data
   !  CALL read1
@@ -194,32 +195,54 @@ SUBROUTINE slave_closef
   !     ------------------------------------------------------------------
   !...
   ! ... Close and delete the stripped input file
-  CLOSE(fuins,STATUS='DELETE')  
+  !CLOSE(fuins,STATUS='DELETE')  
+  CALL MYCLOSE(fuins,'DELETE')  
   ! ... delete the read echo 'furde' file upon successful completion
 
   CALL update_status(st)
   ! ... Close the files
-  IF(print_rde) CLOSE(furde,status='delete')  
-  CLOSE(fuorst, status = st(fuorst))  
-  CLOSE(fulp, status = st(fulp))  
-  CLOSE(fup, status = st(fup)) 
-  CLOSE(fuwt, status = st(fuwt)) 
-  CLOSE(fuc, status = st(fuc))  
-  CLOSE(fuvel, status = st(fuvel))  
-  CLOSE(fuwel, status = st(fuwel))  
-  CLOSE(fubal, status = st(fubal))  
-  CLOSE(fukd, status = st(fukd))  
-  CLOSE(fubcf, status = st(fubcf))  
-  CLOSE(fuzf, status = st(fuzf))  
-  CLOSE(fuzf_tsv, status = st(fuzf_tsv))
-  CLOSE(fuplt, status = st(fuplt))  
-  CLOSE(fupmap, status = st(fupmap))  
-  CLOSE(fupmp2, status = st(fupmp2))
-  CLOSE(fupmp3, status = st(fupmp2))  
-  CLOSE(fuvmap, status = st(fuvmap))  
-!!$  close(fupzon, status = st(fupzon))  
-!!$  close(fubnfr, status = st(fubcf))  
-  CLOSE(fuich, status = st(fuich))
+!  IF(print_rde) CLOSE(furde,status='delete')  
+!  CLOSE(fuorst, status = st(fuorst))  
+!  CLOSE(fulp, status = st(fulp))  
+!  CLOSE(fup, status = st(fup)) 
+!  CLOSE(fuwt, status = st(fuwt)) 
+!  CLOSE(fuc, status = st(fuc))  
+!  CLOSE(fuvel, status = st(fuvel))  
+!  CLOSE(fuwel, status = st(fuwel))  
+!  CLOSE(fubal, status = st(fubal))  
+!  CLOSE(fukd, status = st(fukd))  
+!  CLOSE(fubcf, status = st(fubcf))  
+!  CLOSE(fuzf, status = st(fuzf))  
+!  CLOSE(fuzf_tsv, status = st(fuzf_tsv))
+!  CLOSE(fuplt, status = st(fuplt))  
+!  CLOSE(fupmap, status = st(fupmap))  
+!  CLOSE(fupmp2, status = st(fupmp2))
+!  CLOSE(fupmp3, status = st(fupmp2))  
+!  CLOSE(fuvmap, status = st(fuvmap))  
+!!!$  close(fupzon, status = st(fupzon))  
+!!!$  close(fubnfr, status = st(fubcf))  
+!  CLOSE(fuich, status = st(fuich))
+
+  IF(print_rde) CALL MYCLOSE(furde, 'delete')  
+  CALL MYCLOSE(fuorst, st(fuorst))  
+  CALL MYCLOSE(fulp, st(fulp))  
+  CALL MYCLOSE(fup, st(fup)) 
+  CALL MYCLOSE(fuwt, st(fuwt)) 
+  CALL MYCLOSE(fuc, st(fuc))  
+  CALL MYCLOSE(fuvel, st(fuvel))  
+  CALL MYCLOSE(fuwel, st(fuwel))  
+  CALL MYCLOSE(fubal, st(fubal))  
+  CALL MYCLOSE(fukd, st(fukd))  
+  CALL MYCLOSE(fubcf, st(fubcf))  
+  CALL MYCLOSE(fuzf, st(fuzf))  
+  CALL MYCLOSE(fuzf_tsv, st(fuzf_tsv))
+  CALL MYCLOSE(fuplt, st(fuplt))  
+  CALL MYCLOSE(fupmap, st(fupmap))  
+  CALL MYCLOSE(fupmp2, st(fupmp2))
+  CALL MYCLOSE(fupmp3, st(fupmp2))  
+  CALL MYCLOSE(fuvmap, st(fuvmap))  
+  CALL MYCLOSE(fuich, st(fuich))
+
   ! ... Close files and free memory in phreeqc
   CALL phreeqc_free(solute)  
   ! ... Deallocate the arrays
