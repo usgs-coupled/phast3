@@ -31,7 +31,8 @@ SUBROUTINE closef(mpi_myself)
   !     ------------------------------------------------------------------
   !...
   ! ... Close and delete the stripped input file
-  CLOSE(fuins,STATUS='DELETE')  
+  !CLOSE(fuins,STATUS='DELETE') 
+  CALL MYCLOSE(fuins, 'DELETE')  
   IF(errexi) THEN
      logline1 = '          *** Simulation Aborted Due to Input Errors ***'
      logline2 = '               Please examine log file'
@@ -171,27 +172,48 @@ SUBROUTINE closef(mpi_myself)
 !!$  CALL update_status(st)
 !!$#endif
   ! ... Close the files
-  IF(print_rde) CLOSE(furde,status='keep')  
-  CLOSE(fuorst, status = st(fuorst))  
-  CLOSE(fulp, status = st(fulp))  
-  CLOSE(fup, status = st(fup))  
-  CLOSE(fuwt, status = st(fuwt))  
-  CLOSE(fuc, status = st(fuc))  
-  CLOSE(fuvel, status = st(fuvel))  
-  CLOSE(fuwel, status = st(fuwel))  
-  CLOSE(fubal, status = st(fubal))  
-  CLOSE(fukd, status = st(fukd))  
-  CLOSE(fubcf, status = st(fubcf))  
-  CLOSE(fuzf, status = st(fuzf))
-  CLOSE(fuzf_tsv, status = st(fuzf_tsv))
-  CLOSE(fuplt, status = st(fuplt))  
-  CLOSE(fupmap, status = st(fupmap))  
-  CLOSE(fupmp2, status = st(fupmp2))  
-  CLOSE(fupmp3, status = st(fupmp3))  
-  CLOSE(fuvmap, status = st(fuvmap))  
-!!$  close(fupzon, status = st(fupzon))  
-!!$  close(fubnfr, status = st(fubcf))  
-  CLOSE(fuich, status = st(fuich))
+!  IF(print_rde) CLOSE(furde,status='keep')  
+!  CLOSE(fuorst, status = st(fuorst))  
+!  CLOSE(fulp, status = st(fulp))  
+!  CLOSE(fup, status = st(fup))  
+!  CLOSE(fuwt, status = st(fuwt))  
+!  CLOSE(fuc, status = st(fuc))  
+!  CLOSE(fuvel, status = st(fuvel))  
+!  CLOSE(fuwel, status = st(fuwel))  
+!  CLOSE(fubal, status = st(fubal))  
+!  CLOSE(fukd, status = st(fukd))  
+!  CLOSE(fubcf, status = st(fubcf))  
+!  CLOSE(fuzf, status = st(fuzf))
+!  CLOSE(fuzf_tsv, status = st(fuzf_tsv))
+!  CLOSE(fuplt, status = st(fuplt))  
+!  CLOSE(fupmap, status = st(fupmap))  
+!  CLOSE(fupmp2, status = st(fupmp2))  
+!  CLOSE(fupmp3, status = st(fupmp3))  
+!  CLOSE(fuvmap, status = st(fuvmap))  
+!!!$  close(fupzon, status = st(fupzon))  
+!!!$  close(fubnfr, status = st(fubcf))  
+!  CLOSE(fuich, status = st(fuich))
+
+  IF(print_rde) CALL MYCLOSE(furde, 'keep')  
+  CALL MYCLOSE(fuorst, st(fuorst))  
+  CALL MYCLOSE(fulp, st(fulp))  
+  CALL MYCLOSE(fup, st(fup))  
+  CALL MYCLOSE(fuwt, st(fuwt))  
+  CALL MYCLOSE(fuc, st(fuc))  
+  CALL MYCLOSE(fuvel, st(fuvel))  
+  CALL MYCLOSE(fuwel, st(fuwel))  
+  CALL MYCLOSE(fubal, st(fubal))  
+  CALL MYCLOSE(fukd, st(fukd))  
+  CALL MYCLOSE(fubcf, st(fubcf))  
+  CALL MYCLOSE(fuzf, st(fuzf))
+  CALL MYCLOSE(fuzf_tsv, st(fuzf_tsv))
+  CALL MYCLOSE(fuplt, st(fuplt))  
+  CALL MYCLOSE(fupmap, st(fupmap))  
+  CALL MYCLOSE(fupmp2, st(fupmp2))  
+  CALL MYCLOSE(fupmp3, st(fupmp3))  
+  CALL MYCLOSE(fuvmap, st(fuvmap))  
+  CALL MYCLOSE(fuich, st(fuich))
+  
   ! ... Close files and free memory in phreeqc
   CALL phreeqc_free(solute)  
   ! ... Deallocate the arrays
@@ -602,3 +624,23 @@ SUBROUTINE closef(mpi_myself)
      PRINT *, "Array deallocation failed: closef: number 19"  
   ENDIF
 END SUBROUTINE closef
+SUBROUTINE MYCLOSE(funit, st)
+    IMPLICIT NONE
+    CHARACTER(LEN=6), intent(in) :: st
+    INTEGER, intent(in) :: funit
+    INTEGER :: ios
+    INTEGER :: count
+    
+    count =0
+    ios = 1
+    DO WHILE (ios > 0) 
+        CLOSE(funit, STATUS=st,IOSTAT=ios)
+!        if (ios > 0) print *, "Retry ", count, "closing unit ", funit
+        count = count + 1
+        if (count > 20) exit
+    end do
+    if (ios > 0) then
+        print *, "Could not close unit ", funit
+    endif
+    return
+END SUBROUTINE MYCLOSE
