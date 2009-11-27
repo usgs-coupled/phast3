@@ -158,7 +158,11 @@ HDF_Init(char *prefix, int prefix_l)
 	const int mpi_myself = 0;
 #endif
 #if defined(NDEBUG)
+#ifndef _WIN64
 	H5Eset_auto(NULL, NULL);
+#else
+	H5Eset_auto1(NULL, NULL);
+#endif
 #endif
 	if (svnid == NULL)
 		fprintf(stderr, " ");
