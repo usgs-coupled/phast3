@@ -1084,9 +1084,10 @@ read_grid(void)
 		"overlay_nonuniform",	/* 7 */
 		"snap",					/* 8 */
 		"grid_origin",			/* 9 */
-		"grid_angle"			/* 10 */
+		"grid_angle",			/* 10 */
+		"area_tolerance"	    /* 11 */
 	};
-	int count_opt_list = 11;
+	int count_opt_list = 12;
 	/*
 	 *   Read grid data
 	 */
@@ -1566,6 +1567,17 @@ read_grid(void)
 			{
 				sprintf(error_string,
 						"Expected grid angle (counterclockwise).");
+				error_msg(error_string, CONTINUE);
+				input_error++;
+			}
+			opt_save = OPTION_ERROR;
+			break;
+		case 11:				/* area_tolerance */
+
+			if (sscanf(next_char, "%lf", &area_tolerance) != 1)
+			{
+				sprintf(error_string,
+						"Expected fractional area tolerance for boundary conditions).");
 				error_msg(error_string, CONTINUE);
 				input_error++;
 			}

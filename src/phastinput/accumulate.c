@@ -3787,9 +3787,20 @@ faces_intersect_polyhedron(int i, std::list < int >&list_of_numbers, std::map<in
 						prism->Remove_top_bottom(cell_face_polygon, bc[i]->cell_face,
 							coord);
 					}
-
+#define CALCULATE_FRACTIONAL_AREA
+#ifndef CALCULATE_FRACTIONAL_AREA
 					// save cell number and polygon
 					if (cell_face_polygon->num_contours > 0)
+#else
+					double fractional_area = 0;
+					if (cell_face_polygon->num_contours > 0)
+					{
+						double bc_area = gpc_polygon_area(cell_face_polygon);
+						double cell_face_area = gpc_polygon_area(polygon_ptr);
+						fractional_area = bc_area/cell_face_area;
+					}
+					if (cell_face_polygon->num_contours > 0 && fractional_area > area_tolerance)
+#endif
 					{
 						revised_list.push_back(*it);
 						face_areas[*it] = cell_face_polygon;
