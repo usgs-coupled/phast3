@@ -135,6 +135,7 @@ EXTERNAL struct grid grid[3];	/* x=0, y=1, z=2 */
 EXTERNAL struct grid *grid_overlay;
 EXTERNAL int count_grid_overlay;
 EXTERNAL double snap[3];
+EXTERNAL double area_tolerance;
 EXTERNAL double grid_origin[3];	/* grid origin in map coordinates */
 EXTERNAL double grid_angle;		/* grid angle counterclockwise from map axes in degrees */
 EXTERNAL struct zone domain;

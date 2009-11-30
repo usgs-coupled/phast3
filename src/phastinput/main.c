@@ -550,6 +550,7 @@ initialize(void)
 	snap[0] = .001;
 	snap[1] = .001;
 	snap[2] = .001;
+	area_tolerance = 1e-7;
 	zone_init(&domain);
 	grid_origin[0] = grid_origin[1] = grid_origin[2] = 0.0;
 	grid_angle = 0.0;
