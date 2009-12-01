@@ -390,7 +390,9 @@ open_input_files_phast(char *chemistry_name, char *database_name,
 	 *   Open user-input file
 	 */
 	ptr = chemistry_name;
-	copy_token(input_file_name, &ptr, &l);
+	//copy_token(input_file_name, &ptr, &l);
+	strcpy(input_file_name, ptr);
+	string_trim(input_file_name);
 	if ((input_file = fopen(input_file_name, "r")) == NULL)
 	{
 		sprintf(error_string, "Can't open input file, %s", input_file_name);
@@ -849,7 +851,6 @@ open_echo(const char *prefix, int local_mpi_myself)
 /* ---------------------------------------------------------------------- */
 {
 	/*extern int mpi_myself; */
-	int l;
 	char *ptr;
 	char token[MAX_LENGTH], token1[MAX_LENGTH], default_name[MAX_LENGTH];
 	FILE *file_ptr;
@@ -860,7 +861,9 @@ open_echo(const char *prefix, int local_mpi_myself)
 
 	strcpy(token1, prefix);
 	ptr = token1;
-	copy_token(default_name, &ptr, &l);
+	//copy_token(default_name, &ptr, &l);
+	strcpy(default_name, ptr);
+	string_trim(default_name);
 	strcat(default_name, ".log.txt");
 	if (local_mpi_myself == 0)
 	{
@@ -894,13 +897,14 @@ open_output_file(char *prefix, int solute)
 /* ---------------------------------------------------------------------- */
 {
 	char *ptr;
-	int l;
 	if (solute == FALSE)
 		return (OK);
 
 	/* ouput file */
 	ptr = prefix;
-	copy_token(output_file_name, &ptr, &l);
+	//copy_token(output_file_name, &ptr, &l);
+	strcpy(output_file_name, ptr);
+	string_trim(output_file_name);
 	strcat(output_file_name, ".chem.txt");
 	if ((output = fopen(output_file_name, "w")) == NULL)
 	{
@@ -918,13 +922,14 @@ open_punch_file(char *prefix, int solute)
 {
 	char token[2 * MAX_LENGTH];
 	char *ptr;
-	int l;
 	if (solute == FALSE)
 		return (OK);
 
 	/* ouput file */
 	ptr = prefix;
-	copy_token(token, &ptr, &l);
+	//copy_token(token, &ptr, &l);
+	strcpy(token, ptr);
+	string_trim(token);
 	strcat(token, ".chem.xyz.tsv");
 	if ((punch_file = fopen(token, "w")) == NULL)
 	{
