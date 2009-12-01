@@ -15,7 +15,7 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="ser|Win32" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/Qprof-gen:srcpos /Qprof-dir:&quot;c:/programs/phastpp/src/phast&quot;" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="HDF5_CREATE" CallingConvention="callConventionCRef" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="HDF5_CREATE" CallingConvention="callConventionCRef" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/"/>
 				<Tool Name="VFLinkerTool" OutputFile="$(OUTDIR)/phast.exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(DEV_GMP_LIB_MT);$(OUTDIR)" IgnoreDefaultLibraryNames="LIBC" SubSystem="subSystemConsole" StackReserveSize="10000000" LargeAddressAware="addrAwareLarge" AdditionalDependencies="zdll.lib phreeqcpp.lib hdf5dll.lib gmp.lib"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true" HeaderFileName="$(InputName).h" TypeLibraryName="$(IntDir)/$(InputName).tlb"/>
@@ -54,7 +54,8 @@
 				<Tool Name="VFPreBuildEventTool"/>
 				<Tool Name="VFPostBuildEventTool" CommandLine="copy /Y &quot;$(DEV_HDF5_X64_LIBDLL)\hdf5dll.dll&quot;      &quot;$(TargetDir)hdf5dll.dll&quot;   &gt; NUL
 copy /Y &quot;$(DEV_ZLIB123_X64_LIB)\zlib1.dll&quot;        &quot;$(TargetDir)zlib1.dll&quot;     &gt; NUL
-copy /Y &quot;$(DEV_SZIP21_X64)\dll\szlibdll.dll&quot;      &quot;$(TargetDir)szlibdll.dll&quot;  &gt; NUL"/></Configuration>
+copy /Y &quot;$(DEV_SZIP21_X64)\dll\szlibdll.dll&quot;      &quot;$(TargetDir)szlibdll.dll&quot;  &gt; NUL"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="ser|x64" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)">
 				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="HDF5_CREATE" CallingConvention="callConventionCRef" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/"/>
 				<Tool Name="VFLinkerTool" OutputFile="$(OUTDIR)/phast.exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(DEV_ZLIB123_X64_LIB);$(DEV_HDF5_X64_LIBDLL);$(OUTDIR)" IgnoreDefaultLibraryNames="LIBC" SubSystem="subSystemConsole" StackReserveSize="80000000" AdditionalDependencies="zlib1.lib phreeqcpp.lib hdf5dll.lib "/>
@@ -214,12 +215,12 @@ copy /Y &quot;$(DEV_SZIP21_X64)\dll\szlibdll.dll&quot;      &quot;$(TargetDir)sz
 		<Filter Name="MPI_OBJS">
 		<File RelativePath="..\mpimod.F90">
 			<FileConfiguration Name="ser|x64" ExcludedFromBuild="true"/>
-			<FileConfiguration Name="ser_debug|Win32" ExcludedFromBuild="true"/>
 			<FileConfiguration Name="ser|Win32" ExcludedFromBuild="true"/>
+			<FileConfiguration Name="ser_debug|Win32" ExcludedFromBuild="true"/>
 			<FileConfiguration Name="ser_debug|x64" ExcludedFromBuild="true"/></File>
 		<File RelativePath="..\phast_slave.F90">
 			<FileConfiguration Name="ser|x64" ExcludedFromBuild="true"/>
-			<FileConfiguration Name="ser_debug|Win32" ExcludedFromBuild="true"/>
 			<FileConfiguration Name="ser|Win32" ExcludedFromBuild="true"/>
+			<FileConfiguration Name="ser_debug|Win32" ExcludedFromBuild="true"/>
 			<FileConfiguration Name="ser_debug|x64" ExcludedFromBuild="true"/></File></Filter></Filter></Files>
 	<Globals/></VisualStudioProject>
