@@ -167,7 +167,7 @@ SPECIFIED_HEAD_BC
                 -description Constant head ocean
                 -top       CONSTANT   GRID   0
                 -bottom    CONSTANT   GRID   -10
-                -perimeter SHAPE      GRID   ../ex5/ArcData/Offshore.shp
+                -perimeter SHAPE      GRID   ../ex5/ArcData/OffShore.shp
                 -exterior_cells_only  Z
                 -head
                         0             0.0
