@@ -626,7 +626,7 @@ SUBROUTINE closef(mpi_myself)
 END SUBROUTINE closef
 SUBROUTINE MYCLOSE(funit, st)
     IMPLICIT NONE
-    CHARACTER(LEN=6), intent(in) :: st
+    CHARACTER, intent(in) :: st
     INTEGER, intent(in) :: funit
     INTEGER :: ios
     INTEGER :: count
