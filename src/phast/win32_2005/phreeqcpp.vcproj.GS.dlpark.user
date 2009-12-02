@@ -10,7 +10,7 @@
 			>
 			<DebugSettings
 				Command=""
-				WorkingDirectory="C:\Programs\phastpp\examples\ex4restart"
+				WorkingDirectory="C:\Programs\phastpp\examples\ex4"
 				CommandArguments=""
 				Attach="false"
 				DebuggerType="3"
