@@ -626,7 +626,7 @@ SUBROUTINE closef(mpi_myself)
 END SUBROUTINE closef
 SUBROUTINE MYCLOSE(funit, st)
     IMPLICIT NONE
-    CHARACTER, intent(in) :: st
+    CHARACTER(*), intent(in) :: st
     INTEGER, intent(in) :: funit
     INTEGER :: ios
     INTEGER :: count
@@ -635,7 +635,7 @@ SUBROUTINE MYCLOSE(funit, st)
     ios = 1
     DO WHILE (ios > 0) 
         CLOSE(funit, STATUS=st,IOSTAT=ios)
-!        if (ios > 0) print *, "Retry ", count, "closing unit ", funit
+!        if (ios > 0) print *, "Retry ", count, "closing unit ", funit, " iostat ", ios, st
         count = count + 1
         if (count > 20) exit
     end do
