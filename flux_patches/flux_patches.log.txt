@@ -344,9 +344,9 @@ WARNING:   Number of iterations is too few (<2); check convergence tolerance
           H
           O
           Cl
-          No. of solver iterations, Relative residual:    2      2.3218370E-15
+          No. of solver iterations, Relative residual:    2      2.3221559E-15
           Na
-          No. of solver iterations, Relative residual:    2      2.3215566E-15
+          No. of solver iterations, Relative residual:    2      2.3214906E-15
           Charge
      Beginning chemistry calculation.
           Total cells: 27
@@ -362,7 +362,7 @@ WARNING:   Number of iterations is too few (<2); check convergence tolerance
      Maximum change in O .................. -2.1447E-17 (mol/kgw) at location ( 0.500    , 0.500    , 0.500    )(m)
      Maximum change in Cl ................. -2.0660E-13 (mol/kgw) at location ( 0.500    , 0.500    , 0.500    )(m)
      Maximum change in Na ................. -2.0660E-13 (mol/kgw) at location ( 0.500    , 0.500    , 0.500    )(m)
-     Maximum change in Charge .............  3.7912E-18 (mol/kgw) at location (     0    , 0.500    ,  1.00    )(m)
+     Maximum change in Charge .............  2.5214E-18 (mol/kgw) at location (     0    , 0.500    ,  1.00    )(m)
 Reading transient data for simulation: Set  3
      Time at which next set of transient parameters will be read .......... TIMCHG   3.00      (s)
 
@@ -374,9 +374,9 @@ Beginning time step no.      3
           H
           O
           Cl
-          No. of solver iterations, Relative residual:    2      1.3597742E-16
+          No. of solver iterations, Relative residual:    2      1.6548731E-16
           Na
-          No. of solver iterations, Relative residual:    2      1.3603201E-16
+          No. of solver iterations, Relative residual:    2      1.3650823E-16
           Charge
      Beginning chemistry calculation.
           Total cells: 27
@@ -392,7 +392,7 @@ Beginning time step no.      3
      Maximum change in O ..................  1.8748E-23 (mol/kgw) at location (     0    ,     0    ,  1.00    )(m)
      Maximum change in Cl .................  1.9513E-13 (mol/kgw) at location ( 0.500    , 0.500    , 0.500    )(m)
      Maximum change in Na .................  1.9513E-13 (mol/kgw) at location ( 0.500    , 0.500    , 0.500    )(m)
-     Maximum change in Charge ............. -4.4595E-17 (mol/kgw) at location (  1.00    ,     0    ,  1.00    )(m)
+     Maximum change in Charge ............. -4.3782E-17 (mol/kgw) at location (  1.00    ,     0    ,  1.00    )(m)
 Reading transient data for simulation: Set  4
      Time at which next set of transient parameters will be read .......... TIMCHG   4.00      (s)
 
@@ -405,9 +405,9 @@ WARNING:   Number of iterations is too few (<2); check convergence tolerance
           H
           O
           Cl
-          No. of solver iterations, Relative residual:    2      1.2492588E-15
+          No. of solver iterations, Relative residual:    2      1.2493563E-15
           Na
-          No. of solver iterations, Relative residual:    2      1.2494282E-15
+          No. of solver iterations, Relative residual:    2      1.2495543E-15
           Charge
      Beginning chemistry calculation.
           Total cells: 27
@@ -423,7 +423,7 @@ WARNING:   Number of iterations is too few (<2); check convergence tolerance
      Maximum change in O ..................  1.9322E-18 (mol/kgw) at location ( 0.500    ,  1.00    ,     0    )(m)
      Maximum change in Cl ................. -2.2685E-14 (mol/kgw) at location ( 0.500    ,     0    ,     0    )(m)
      Maximum change in Na ................. -2.2677E-14 (mol/kgw) at location ( 0.500    ,     0    ,     0    )(m)
-     Maximum change in Charge .............  1.6861E-17 (mol/kgw) at location (     0    , 0.500    ,  1.00    )(m)
+     Maximum change in Charge .............  1.8135E-17 (mol/kgw) at location (     0    , 0.500    ,  1.00    )(m)
 Reading transient data for simulation: Set  5
      Time at which next set of transient parameters will be read .......... TIMCHG   8.00      (s)
 
@@ -475,13 +475,13 @@ WARNING:   Number of iterations is too few (<2); check convergence tolerance
           H
           No. of solver iterations, Relative residual:    2      2.1490376E-15
           O
-          No. of solver iterations, Relative residual:    2      2.1414922E-15
+          No. of solver iterations, Relative residual:    2      2.1415049E-15
           Cl
-          No. of solver iterations, Relative residual:    2      2.1442520E-15
+          No. of solver iterations, Relative residual:    2      2.1441365E-15
           Na
           No. of solver iterations, Relative residual:    2      2.1441001E-15
           Charge
-          No. of solver iterations, Relative residual:    2      2.1352563E-15
+          No. of solver iterations, Relative residual:    2      2.1354951E-15
      Beginning chemistry calculation.
           Total cells: 27
           Number of cells with same aqueous model: 20
@@ -519,15 +519,15 @@ Beginning time step no.     10
 WARNING:   Number of iterations is too few (<2); check convergence tolerance
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    2      7.5588322E-16
+          No. of solver iterations, Relative residual:    2      7.5588262E-16
           O
-          No. of solver iterations, Relative residual:    2      7.6138943E-16
+          No. of solver iterations, Relative residual:    2      7.6179769E-16
           Cl
-          No. of solver iterations, Relative residual:    2      7.5557534E-16
+          No. of solver iterations, Relative residual:    2      7.5557531E-16
           Na
-          No. of solver iterations, Relative residual:    2      7.5562463E-16
+          No. of solver iterations, Relative residual:    2      7.5562433E-16
           Charge
-          No. of solver iterations, Relative residual:    2      7.5756829E-16
+          No. of solver iterations, Relative residual:    2      7.5733976E-16
      Beginning chemistry calculation.
           Total cells: 27
           Number of cells with same aqueous model: 20

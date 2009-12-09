@@ -405,7 +405,7 @@ Beginning time step no.      5
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 540
-          Total iterations all cells: 2874
+          Total iterations all cells: 2873
           Number of cells with zero iterations: 0
           Maximum iterations for one cell: 6
 

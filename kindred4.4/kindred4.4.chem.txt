@@ -82,7 +82,7 @@ Initial solution 1.	Initial condition
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   3.735e-15
+                  Electrical balance (eq)  =   3.736e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   7
                                   Total H  = 1.110124e+02

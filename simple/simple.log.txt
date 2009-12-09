@@ -763,17 +763,17 @@ Beginning time step no.     50
      Current time step length ...................................   1.000E-02 (yr)
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:   21      2.3251538E-20
+          No. of solver iterations, Relative residual:   21      1.4378179E-20
           O
-          No. of solver iterations, Relative residual:   21      3.9186476E-21
+          No. of solver iterations, Relative residual:   21      2.6140459E-20
           Br
-          No. of solver iterations, Relative residual:   21      7.3097638E-21
+          No. of solver iterations, Relative residual:   21      3.6107798E-21
           Cl
-          No. of solver iterations, Relative residual:   21      1.7822056E-20
+          No. of solver iterations, Relative residual:   21      2.0655877E-21
           Na
-          No. of solver iterations, Relative residual:   21      8.1233652E-21
+          No. of solver iterations, Relative residual:   21      7.6297287E-21
           Charge
-          No. of solver iterations, Relative residual:   21      1.7398365E-20
+          No. of solver iterations, Relative residual:   21      1.0980195E-20
      Beginning chemistry calculation.
           Total cells: 101
           Number of cells with same aqueous model: 101
@@ -785,10 +785,10 @@ Beginning time step no.     50
      Time ..................................................   0.500000     (yr)
      Maximum change in potentiometric head  -1.0773E-14      (m ) at location (  3.90    ,     0    ,     0    )(m)
      Maximum change in H .................. -4.0404E-09 (mol/kgw) at location (  5.00    ,  1.00    ,  1.00    )(m)
-     Maximum change in O ..................  3.2446E-09 (mol/kgw) at location (  5.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in O ..................  3.2331E-09 (mol/kgw) at location (  5.00    ,  1.00    ,  1.00    )(m)
      Maximum change in Br ................. -2.8861E-05 (mol/kgw) at location (  5.00    ,  1.00    ,  1.00    )(m)
      Maximum change in Cl .................  2.8860E-05 (mol/kgw) at location (  5.00    ,  1.00    ,  1.00    )(m)
-     Maximum change in Na ................. -1.2834E-09 (mol/kgw) at location (  5.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in Na ................. -1.2834E-09 (mol/kgw) at location (  5.00    ,     0    ,  1.00    )(m)
      Maximum change in Charge ............. -1.0613E-08 (mol/kgw) at location (  5.00    ,  1.00    ,  1.00    )(m)
 Done with transient simulation.
 
