@@ -102,7 +102,7 @@ Initial solution 1.	20 x precipitation
                  Total alkalinity (eq/kg)  =  -2.630e-05
                        Total CO2 (mol/kg)  =   1.096e-05
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   7.111e-16
+                  Electrical balance (eq)  =   7.112e-16
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   9
                                   Total H  = 1.110125e+02
@@ -234,7 +234,7 @@ Dolomite                0  -17.09  -17.09    1.600e+00   1.599e+00  -1.349e-03
                  Total alkalinity (eq/kg)  =   6.057e-03
                        Total CO2 (mol/kg)  =   7.119e-03
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.136e-15
+                  Electrical balance (eq)  =   2.133e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   9
                                   Total H  = 1.110125e+02
@@ -364,7 +364,7 @@ Initial solution 2.	Brine
                  Total alkalinity (eq/kg)  =   3.758e-03
                        Total CO2 (mol/kg)  =   3.960e-03
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   1.027e-12
+                  Electrical balance (eq)  =   1.395e-14
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =  11
                                   Total H  = 1.110162e+02
@@ -500,7 +500,7 @@ Dolomite                0  -17.09  -17.09    1.600e+00   1.600e+00  -1.093e-04
                  Total alkalinity (eq/kg)  =   3.758e-03
                        Total CO2 (mol/kg)  =   3.960e-03
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   1.033e-12
+                  Electrical balance (eq)  =   1.920e-14
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   2
                                   Total H  = 1.110162e+02
@@ -1082,7 +1082,7 @@ X                5.000e-01 mol
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.501e-04
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.90
-                               Iterations  =  13
+                               Iterations  =  16
                                   Total H  = 1.110183e+02
                                   Total O  = 5.553036e+01
 
@@ -4693,7 +4693,7 @@ X                5.000e-01 mol
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =   3.031e-05
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.16
-                               Iterations  =  14
+                               Iterations  =   8
                                   Total H  = 1.110185e+02
                                   Total O  = 5.553176e+01
 

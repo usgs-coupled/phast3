@@ -845,7 +845,7 @@
                               *** Output at End of Time Step No.     1 ***
 
      Time .......................................................   0.500      (s)
-     Maximum change in H         molality ....  2.6331E-10 (mol/kgw)   at location (     0    ,  10.0    ,  10.0    )(m )
+     Maximum change in H         molality ....  2.6331E-10 (mol/kgw)   at location (     0    ,  10.0    ,     0    )(m )
 
                               Molality (mol/kgw)
 
