@@ -3627,7 +3627,7 @@
 			Filter="h;hpp;hxx;hm;inl;inc"
 			>
 			<File
-				RelativePath="..\phreeqcpp\char_star.h"
+				RelativePath="..\phreeqcpp\phreeqc\basic.h"
 				>
 			</File>
 			<File
@@ -3672,6 +3672,10 @@
 			</File>
 			<File
 				RelativePath="..\phreeqcpp\phreeqc\global.h"
+				>
+			</File>
+			<File
+				RelativePath="..\phreeqcpp\phreeqc\global_structures.h"
 				>
 			</File>
 			<File
@@ -3764,6 +3768,10 @@
 			</File>
 			<File
 				RelativePath="..\phreeqcpp\phreeqc\pitzer.h"
+				>
+			</File>
+			<File
+				RelativePath="..\phreeqcpp\phreeqc\pitzer_structures.h"
 				>
 			</File>
 			<File
