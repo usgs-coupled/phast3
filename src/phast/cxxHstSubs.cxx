@@ -1,10 +1,19 @@
 #include <fstream>
 #include <iostream>				// std::cout std::cerr
 #include <ctime>
-#include "StorageBin.h"
-#include "phreeqcpp/Solution.h"
-#include "phreeqc/output.h"
+#define EXTERNAL extern
+#include "global.h"
 #include "hst.h"
+#include "StorageBin.h"
+#include "cxxMix.h"
+#include "Solution.h"
+#include "PPassemblage.h"
+#include "Exchange.h"
+#include "Surface.h"
+#include "GasPhase.h"
+#include "SSassemblage.h"
+#include "cxxKinetics.h"
+#include "phreeqc/output.h"
 #include "phreeqc/phqalloc.h"
 #include "phreeqc/phrqproto.h"
 #include "phastproto.h"
