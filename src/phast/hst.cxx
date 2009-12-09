@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iostream>				// std::cout std::cerr
 #include "StorageBin.h"
+#include "cxxMix.h"
 #include "phreeqc/global.h"
 #include "phreeqc/output.h"
 #include "hst.h"
