@@ -206,3 +206,115 @@ SUBROUTINE media_hdf
      STOP  
   ENDIF
 END SUBROUTINE media_hdf
+SUBROUTINE calc_volume
+! Logic for volume weighting copied from init2_1
+  USE machine_constants, ONLY: kdp
+  USE mcb
+  USE mcb2
+  USE mcc
+  USE mcg
+  USE mcm
+  USE mcn
+  USE mcp
+  USE mcs
+  USE mcs2
+  USE mcv
+  USE mcw
+  USE mg2
+  USE phys_const
+  USE hdf_media
+  IMPLICIT NONE
+  !
+
+  INTRINSIC index
+  INTERFACE
+     FUNCTION nintrp(xarg,nx,xs,erflg)
+       USE machine_constants, ONLY: kdp
+       REAL(KIND=kdp), INTENT(IN) :: xarg
+       INTEGER, INTENT(IN) :: nx
+       REAL(KIND=kdp), DIMENSION(:), INTENT(IN) :: xs
+       LOGICAL, INTENT(INOUT) :: erflg
+       INTEGER :: nintrp
+     END FUNCTION nintrp
+  END INTERFACE
+  TYPE :: cell_properties
+     LOGICAL        :: active
+     INTEGER        :: subdomains
+     REAL(KIND=kdp) :: volume
+     REAL(KIND=kdp) :: kxx         ! kxx
+     REAL(KIND=kdp) :: kyy         ! kyy
+     REAL(KIND=kdp) :: kzz         ! kzz
+     REAL(KIND=kdp) :: poros       ! poros
+     REAL(KIND=kdp) :: storage     ! abpm
+     REAL(KIND=kdp) :: alphl       ! alphl
+     REAL(KIND=kdp) :: alphth      ! alphth
+     REAL(KIND=kdp) :: alphtv      ! alphtv
+  END TYPE cell_properties
+
+  REAL(KIND=kdp) :: udz, udy, udydz, udx, udxdy, udxdz, udxyz
+  INTEGER :: a_err, da_err, i, j, k, m, imm, ipmz
+  INTEGER, DIMENSION(8) :: mm
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: aprnt, full
+  REAL(KIND=kdp) :: conv
+  CHARACTER (LEN=119) :: name
+  TYPE(cell_properties), DIMENSION(:), ALLOCATABLE :: cell_props
+  !     ------------------------------------------------------------------
+  
+  if (.not. solute) return
+  ALLOCATE (volume(nxyz), &
+       stat = a_err)
+  IF (a_err /= 0) THEN  
+     PRINT *, "Array allocation failed: calc_porsosity_volume, volume"  
+     STOP  
+  ENDIF 
+  volume = 0
+  ALLOCATE (cell_props(nxyz), &
+       stat = a_err)
+  IF (a_err /= 0) THEN  
+     PRINT *, "Array allocation failed: calc_porsosity_volume, cell_props"  
+     STOP  
+  ENDIF
+
+  cell_props = cell_properties(.FALSE., 0, 0._kdp, 0._kdp, 0._kdp, &
+       0._kdp, 0._kdp, 0._kdp,0._kdp, 0._kdp, 0._kdp)
+
+  DO ipmz = 1, npmz  
+     DO k = k1z(ipmz), k2z(ipmz) - 1  
+        DO j = j1z(ipmz), j2z(ipmz) - 1  
+           udy = y(j + 1) - y(j)  
+           DO i = i1z(ipmz), i2z(ipmz) - 1  
+              udx = x(i + 1) - x(i)  
+              udxdy = udx*udy*.25  
+              mm(1) = cellno(i, j, k)  
+              mm(2) = mm(1) + 1  
+              mm(3) = mm(2) + nx  
+              mm(4) = mm(1) + nx  
+              mm(5) = mm(1) + nxy  
+              mm(6) = mm(2) + nxy  
+              mm(7) = mm(3) + nxy  
+              mm(8) = mm(4) + nxy  
+              udxyz = .5*udxdy*(z(k + 1) - z(k) )  
+              DO imm = 1, 8  
+                 m = mm(imm)  
+                 cell_props(m)%active = .TRUE.
+                 cell_props(m)%volume     = cell_props(m)%volume     + udxyz
+              END DO
+           END DO
+        END DO
+    END DO
+  END DO
+  
+  ! Volume weight values
+  DO m = 1, nxyz
+     if (cell_props(m)%active) then
+        volume(m) = cell_props(m)%volume
+     endif
+  END DO
+
+  DEALLOCATE (cell_props, aprnt, full,  &
+       stat = da_err)
+  IF (da_err /= 0) THEN  
+     PRINT *, "Array deallocation failed: media_hdf, cell_props"  
+     STOP  
+  ENDIF
+END SUBROUTINE calc_volume

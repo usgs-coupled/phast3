@@ -21,6 +21,9 @@ SUBROUTINE terminate_phast(mpi_myself)
   INTEGER :: length
   INTEGER :: m, stop_msg, imod, k
   INTEGER :: ios
+  REAL(KIND=kdp) :: dummy
+  INTEGER :: idummy
+  
   !
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
@@ -28,8 +31,9 @@ SUBROUTINE terminate_phast(mpi_myself)
   !...
   IF (mpi_myself == 0) THEN
      stop_msg = 1
-     CALL equilibrate(c,nxyz,0,x_node,y_node,z_node,time,deltim,prslmi,cnvtmi,  &
-       frac, iprint_chem, iprint_xyz, 0, stop_msg, 0, 0)
+     CALL equilibrate(c,nxyz,idummy,x_node,y_node,z_node,time,deltim,prslmi,cnvtmi,  &
+       frac, iprint_chem, iprint_xyz, idummy, stop_msg, &
+       idummy, dummy, idummy, dummy, dummy, idummy)
      ! ... Print initial condition head distribution to file
      IF(prtichead) THEN
         ! ... Write to file 'FUICH' for initial condition steady-state head or
