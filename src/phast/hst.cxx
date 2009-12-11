@@ -74,7 +74,7 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 							   int *print_out, int *print_hdf,
 							   double *rebalance_fraction_hst,
 							   int *print_restart, double *pv, double *pv0,
-							   int *steady_flow);
+							   int *steady_flow, double *volume);
 #endif /* #ifdef USE_MPI */
 cxxStorageBin uzBin;
 cxxStorageBin szBin;
@@ -158,7 +158,7 @@ extern
 				int *printzone_xyz, int *print_out, int *stop_msg,
 				int *print_hdf, double *rebalance_fraction_hst,
 				int *print_restart, double *pv, double *pv0,
-				int *steady_flow);
+				int *steady_flow, double *volume);
 /*  #endif                                                                             */
 	void
 	ERRPRT_C(char *err_str, long l);
@@ -1601,7 +1601,7 @@ EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 				   double *cnvtmi, double *frac, int *printzone_chem,
 				   int *printzone_xyz, int *print_out, int *print_hdf,
 				   double *rebalance_fraction_hst, int *print_restart,
-				   double *pv, double *pv0, int *steady_flow)
+				   double *pv, double *pv0, int *steady_flow, double *volume)
 /* ---------------------------------------------------------------------- */
 {
 /*
@@ -1682,7 +1682,10 @@ EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 	for (i = 0; i < count_chem; i++)
 	{							/* i is count_chem number */
 		j = back[i].list[0];	/* j is nxyz number */
-		pore_volume = pv0[j] * 1000.0 * frac[j];
+		cell_pore_volume = pv0[j] * 1000.0 * frac[j];
+		cell_volume = volume[j] * 1000.;
+		cell_porosity = cell_pore_volume / cell_volume;
+		cell_saturation = frac[j];
 		/*
 		   if (*time_hst > 0) {
 		   std::ostringstream oss;
@@ -1877,7 +1880,7 @@ EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 			double *cnvtmi, double *frac, int *printzone_chem,
 			int *printzone_xyz, int *print_out, int *stop_msg, int *print_hdf,
 			double *rebalance_fraction_hst, int *print_restart, double *pv,
-			double *pv0, int *steady_flow)
+			double *pv0, int *steady_flow, double *volume)
 /* ---------------------------------------------------------------------- */
 {
 #ifndef USE_MPI
@@ -1888,7 +1891,7 @@ EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 						   time_hst, time_step_hst, prslm, cnvtmi,
 						   frac, printzone_chem, printzone_xyz, print_out,
 						   print_hdf, rebalance_fraction_hst, print_restart,
-						   pv, pv0, steady_flow);
+						   pv, pv0, steady_flow, volume);
 	}
 	return;
 #else /* #ifndef USE_MPI */
@@ -2125,7 +2128,10 @@ EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 		{
 			//copy_system_to_user(sz[i], first_user_number);
 			cell_no = i;
-			pore_volume = pv0[j] * 1000.0 * frac[j];
+			cell_pore_volume = pv0[j] * 1000.0 * frac[j];
+			cell_volume = volume[j] * 1000.;
+			cell_porosity = cell_pore_volume / cell_volume;
+			cell_saturation = frac[j];
 			//solution_bsearch(first_user_number, &first_solution, TRUE);
 			//n_solution = first_solution;
 			if (transient_free_surface == TRUE)

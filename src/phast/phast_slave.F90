@@ -4,7 +4,7 @@ SUBROUTINE phast_slave(mpi_tasks, mpi_myself)
   USE mcc
   USE mcch, ONLY: f1name, f2name, f3name
   USE mcg, ONLY: naxes, nx, ny, nz, nxyz
-  USE mcn, ONLY: x_node, y_node, z_node, pv0
+  USE mcn, ONLY: x_node, y_node, z_node, pv0, volume
   USE mcp
   USE mcv
   USE mcw
@@ -45,7 +45,8 @@ SUBROUTINE phast_slave(mpi_tasks, mpi_myself)
 
   IF(solute) THEN
      CALL slave_get_indexes(indx_sol1_ic, indx_sol2_ic, ic_mxfrac, naxes, nxyz, &
-          x_node, y_node, z_node, cnvtmi, transient_fresur, steady_flow, pv0, rebalance_method_f)
+          x_node, y_node, z_node, cnvtmi, transient_fresur, steady_flow, pv0, &
+          rebalance_method_f, volume)
      CALL forward_and_back(indx_sol1_ic, naxes, nx, ny, nz)  
      CALL distribute_initial_conditions(indx_sol1_ic, indx_sol2_ic, ic_mxfrac)
      CALL uz_init(transient_fresur)
@@ -58,14 +59,14 @@ SUBROUTINE phast_slave(mpi_tasks, mpi_myself)
      CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time_phreeqc,deltim_dummy,prslmi,  &
            cnvtmi,frac_icchem,iprint_chem,iprint_xyz, &
            prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f, &
-           print_restart_flag, pv, pv0, steady_flow)
+           print_restart_flag, pv, pv0, steady_flow, volume)
      stop_msg = 0
      deltim_dummy = 0._kdp
      ! ... The transient loop
      DO
            CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time,deltim,prslmi,cnvtmi,  &
                 frac,iprint_chem,iprint_xyz,prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f, &
-                print_restart%print_flag_integer, pv, pv0, steady_flow)
+                print_restart%print_flag_integer, pv, pv0, steady_flow, volume)
            IF (stop_msg == 1) EXIT
      ENDDO
   ENDIF
@@ -112,7 +113,7 @@ SUBROUTINE slave_init1
   
   ALLOCATE (iprint_chem(nxyz), iprint_xyz(nxyz), &
        x(nx), y(ny), z(nz), x_node(nxyz), y_node(nxyz), z_node(nxyz),  &
-       ibc(nxyz), pv0(nxyz), pv(nxyz), &
+       ibc(nxyz), pv0(nxyz), pv(nxyz), volume(nxyz), &
        STAT = a_err)
   IF (a_err /= 0) THEN  
      PRINT *, "Array allocation failed: slave_init1 2"  
@@ -249,7 +250,7 @@ SUBROUTINE slave_closef
   ! ...      Deallocate mesh arrays
   DEALLOCATE (iprint_chem, iprint_xyz, &
      x, y, z, x_node, y_node, z_node,  &
-    ibc, pv0, pv, &
+    ibc, pv0, pv, volume, &
     STAT = a_err)
   IF (a_err /= 0) THEN  
      PRINT *, "Array deallocation failed slave_closef: 1"  

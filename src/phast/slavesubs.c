@@ -26,7 +26,7 @@ extern "C"
 						   double *x_node, double *y_node, double *z_node,
 						   double *cnvtmi, int *transient_fresur,
 						   int *steady_flow, double *pv0,
-						   int *rebalance_method_f);
+						   int *rebalance_method_f, double *volume);
 }
 void
 SLAVE_GET_SOLUTE(int *solute, int *nx, int *ny, int *nz)
@@ -42,7 +42,8 @@ void
 SLAVE_GET_INDEXES(int *indx_sol1_ic, int *indx_sol2_ic, double *mxfrac,
 				  int *naxes, int *nxyz, double *x_node, double *y_node,
 				  double *z_node, double *cnvtmi, int *transient_fresur,
-				  int *steady_flow, double *pv0, int *rebalance_method_f)
+				  int *steady_flow, double *pv0, int *rebalance_method_f,
+				  double *volume)
 {
 	MPI_Bcast(indx_sol1_ic, 7 * (*nxyz), MPI_INT, 0, MPI_COMM_WORLD);
 	MPI_Bcast(indx_sol2_ic, 7 * (*nxyz), MPI_INT, 0, MPI_COMM_WORLD);
@@ -56,6 +57,7 @@ SLAVE_GET_INDEXES(int *indx_sol1_ic, int *indx_sol2_ic, double *mxfrac,
 	MPI_Bcast(steady_flow, 1, MPI_INT, 0, MPI_COMM_WORLD);
 	MPI_Bcast(pv0, *nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 	MPI_Bcast(rebalance_method_f, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(volume, *nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 	rebalance_method = *rebalance_method_f;
 	return;
 }

@@ -223,7 +223,7 @@ SUBROUTINE closef(mpi_myself)
           aprnt1, aprnt2, aprnt3, aprnt4,  &
           rm, x, y, z,  &
           x_face, y_face, z_face,  &
-          ibc, pv0, &
+          ibc, pv0, volume, &
           cellijk, ibc_string, &
           c_mol, &
           xd_mask, &

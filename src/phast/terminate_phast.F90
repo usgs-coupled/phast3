@@ -33,7 +33,7 @@ SUBROUTINE terminate_phast(mpi_myself)
      stop_msg = 1
      CALL equilibrate(c,nxyz,idummy,x_node,y_node,z_node,time,deltim,prslmi,cnvtmi,  &
        frac, iprint_chem, iprint_xyz, idummy, stop_msg, &
-       idummy, dummy, idummy, dummy, dummy, idummy)
+       idummy, dummy, idummy, dummy, dummy, idummy, dummy)
      ! ... Print initial condition head distribution to file
      IF(prtichead) THEN
         ! ... Write to file 'FUICH' for initial condition steady-state head or
