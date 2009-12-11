@@ -125,8 +125,8 @@ int Merge_vfprintf(FILE * stream, const char *format, va_list args);
 void buffer_to_cxxsolution(int n);
 void cxxsolution_to_buffer(cxxSolution * solution_ptr);
 void unpackcxx_from_hst(double *fraction, int *dim);
-void unpackcxx_from_hst_confined(double *fraction, int *dim, double *pv0,
-								 double *pv);
+//void unpackcxx_from_hst_confined(double *fraction, int *dim, double *pv0,
+//								 double *pv);
 void system_cxxInitialize(int i, int n_user_new, int *initial_conditions1,
 						  int *initial_conditions2, double *fraction1);
 int write_restart(double hst_time);
