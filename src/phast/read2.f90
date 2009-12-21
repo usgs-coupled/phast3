@@ -810,6 +810,11 @@ SUBROUTINE read2
 !!$  ENDIF
   ! ... mass fraction for the region for i.c.
   IF(solute) THEN  
+     READ(fuins, *) exchange_units, surface_units, ssassemblage_units, &
+			ppassemblage_units, gasphase_units, kinetics_units 
+     IF (print_rde) WRITE(furde, '(a, 6i5)') 'solid_units,[2.21.7a] ex, surf, ss, pp, gas, kin ', &
+            exchange_units, surface_units, ssassemblage_units, &
+			ppassemblage_units, gasphase_units, kinetics_units
      CALL indx_rewi(indx_sol1_ic, indx_sol2_ic, ic_mxfrac, 1, 03, 100)  
      CALL indx_rewi(indx_sol1_ic, indx_sol2_ic, ic_mxfrac, 2, 03, 100)  
      CALL indx_rewi(indx_sol1_ic, indx_sol2_ic, ic_mxfrac, 3, 03, 100)  

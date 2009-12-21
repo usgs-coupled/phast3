@@ -262,7 +262,10 @@ unpackcxx_from_hst(double *fraction, int *dim)
 /* ---------------------------------------------------------------------- */
 void
 system_cxxInitialize(int i, int n_user_new, int *initial_conditions1,
-					 int *initial_conditions2, double *fraction1)
+					 int *initial_conditions2, double *fraction1,
+					 int *exchange_units, int *surface_units, int *ssassemblage_units,
+					 int *ppassemblage_units, int *gasphase_units, int *kinetics_units,
+					 double porosity_factor)
 /* ---------------------------------------------------------------------- */
 {
 	int n_old1, n_old2;
@@ -296,6 +299,10 @@ system_cxxInitialize(int i, int n_user_new, int *initial_conditions1,
 		mx.add(n_old1, f1);
 		if (n_old2 >= 0)
 			mx.add(n_old2, 1 - f1);
+		if (*ppassemblage_units == 2)
+		{
+			mx.multiply(porosity_factor);
+		}
 		cxxPPassemblage cxxentity(phreeqcBin.getPPassemblages(), mx,
 								  n_user_new);
 		szBin.setPPassemblage(n_user_new, &cxxentity);
@@ -313,6 +320,10 @@ system_cxxInitialize(int i, int n_user_new, int *initial_conditions1,
 		mx.add(n_old1, f1);
 		if (n_old2 >= 0)
 			mx.add(n_old2, 1 - f1);
+		if (*exchange_units == 2)
+		{
+			mx.multiply(porosity_factor);
+		}
 		cxxExchange cxxexch(phreeqcBin.getExchangers(), mx, n_user_new);
 		szBin.setExchange(n_user_new, &cxxexch);
 	}
@@ -328,6 +339,10 @@ system_cxxInitialize(int i, int n_user_new, int *initial_conditions1,
 		mx.add(n_old1, f1);
 		if (n_old2 >= 0)
 			mx.add(n_old2, 1 - f1);
+		if (*surface_units == 2)
+		{
+			mx.multiply(porosity_factor);
+		}
 		cxxSurface cxxentity(phreeqcBin.getSurfaces(), mx, n_user_new);
 		szBin.setSurface(n_user_new, &cxxentity);
 	}
@@ -343,6 +358,10 @@ system_cxxInitialize(int i, int n_user_new, int *initial_conditions1,
 		mx.add(n_old1, f1);
 		if (n_old2 >= 0)
 			mx.add(n_old2, 1 - f1);
+		if (*gasphase_units == 2)
+		{
+			mx.multiply(porosity_factor);
+		}
 		cxxGasPhase cxxentity(phreeqcBin.getGasPhases(), mx, n_user_new);
 		szBin.setGasPhase(n_user_new, &cxxentity);
 	}
@@ -358,6 +377,10 @@ system_cxxInitialize(int i, int n_user_new, int *initial_conditions1,
 		mx.add(n_old1, f1);
 		if (n_old2 >= 0)
 			mx.add(n_old2, 1 - f1);
+		if (*ssassemblage_units == 2)
+		{
+			mx.multiply(porosity_factor);
+		}
 		cxxSSassemblage cxxentity(phreeqcBin.getSSassemblages(), mx,
 								  n_user_new);
 		szBin.setSSassemblage(n_user_new, &cxxentity);
@@ -374,6 +397,10 @@ system_cxxInitialize(int i, int n_user_new, int *initial_conditions1,
 		mx.add(n_old1, f1);
 		if (n_old2 >= 0)
 			mx.add(n_old2, 1 - f1);
+		if (*kinetics_units == 2)
+		{
+			mx.multiply(porosity_factor);
+		}
 		cxxKinetics cxxentity(phreeqcBin.getKinetics(), mx, n_user_new);
 		szBin.setKinetics(n_user_new, &cxxentity);
 	}

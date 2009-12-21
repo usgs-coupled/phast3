@@ -6587,8 +6587,14 @@ read_units(void)
 		, "river_width"	    	/* 33 */
 		, "river_depth"         /* 34 */
 		, "well_depth"          /* 35 */
+		, "exchange"            /* 36 */
+		, "surface"             /* 37 */
+		, "solid_solution"      /* 38 */
+		, "gas_phase"           /* 39 */
+		, "kinetics"            /* 40 */
+		, "equilibrium_phases"  /* 41 */
 	};
-	int count_opt_list = 36;
+	int count_opt_list = 42;
 	/*
 	 *   Read flags:
 	 */
@@ -7003,6 +7009,115 @@ read_units(void)
 				units.well_depth.define(token);
 			}
 			break;		
+		case 36:				/* exchange */
+			copy_token(token, &next_char, &l);
+			str_tolower(token);
+			if (token[0] == 'r')
+			{
+				exchange_units = ROCK;
+			}
+			else if (token[0] == 'w')
+			{
+				exchange_units = WATER;
+			}
+			else
+			{
+				input_error++;
+				sprintf(error_string, "Expected units for concentration of exchanger: water (mol/L) or rock (mol/L).");
+				error_msg(error_string, CONTINUE);
+			}
+			break;	
+
+		case 37:				/* surface */
+			copy_token(token, &next_char, &l);
+			str_tolower(token);
+			if (token[0] == 'r')
+			{
+				surface_units = ROCK;
+			}
+			else if (token[0] == 'w')
+			{
+				surface_units = WATER;
+			}
+			else
+			{
+				input_error++;
+				sprintf(error_string, "Expected units for concentration of surface: water (mol/L) or rock (mol/L).");
+				error_msg(error_string, CONTINUE);
+			}
+			break;
+		case 38:				/* solid_solution */
+			copy_token(token, &next_char, &l);
+			str_tolower(token);
+			if (token[0] == 'r')
+			{
+				ssassemblage_units = ROCK;
+			}
+			else if (token[0] == 'w')
+			{
+				ssassemblage_units = WATER;
+			}
+			else
+			{
+				input_error++;
+				sprintf(error_string, "Expected units for concentration of solid_solution: water (mol/L) or rock (mol/L).");
+				error_msg(error_string, CONTINUE);
+			}
+			break;
+		case 39:				/* gas_phase */
+			copy_token(token, &next_char, &l);
+			str_tolower(token);
+			if (token[0] == 'r')
+			{
+				gasphase_units = ROCK;
+			}
+			else if (token[0] == 'w')
+			{
+				gasphase_units = WATER;
+			}
+			else
+			{
+				input_error++;
+				sprintf(error_string, "Expected units for concentration of gas_phase: water (mol/L) or rock (mol/L).");
+				error_msg(error_string, CONTINUE);
+			}
+			break;
+		case 40:				/* kinetics */
+			copy_token(token, &next_char, &l);
+			str_tolower(token);
+			if (token[0] == 'r')
+			{
+				kinetics_units = ROCK;
+			}
+			else if (token[0] == 'w')
+			{
+				kinetics_units = WATER;
+			}
+			else
+			{
+				input_error++;
+				sprintf(error_string, "Expected units for concentration of kinetics: water (mol/L) or rock (mol/L).");
+				error_msg(error_string, CONTINUE);
+			}
+			break;
+		case 41:				/* equilibrium_phases */
+			copy_token(token, &next_char, &l);
+			str_tolower(token);
+			if (token[0] == 'r')
+			{
+				ppassemblage_units = ROCK;
+			}
+			else if (token[0] == 'w')
+			{
+				ppassemblage_units = WATER;
+			}
+			else
+			{
+				input_error++;
+				sprintf(error_string, "Expected units for concentration of equilibrium_phases: water (mol/L) or rock (mol/L).");
+				error_msg(error_string, CONTINUE);
+			}
+			break;
 		}
 		if (return_value == EOF || return_value == KEYWORD)
 			break;

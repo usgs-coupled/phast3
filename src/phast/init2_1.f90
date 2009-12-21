@@ -1545,4 +1545,5 @@ SUBROUTINE init2_1
      PRINT *, "Array deallocation failed: init2_1"  
      STOP  
   ENDIF
+  CALL calc_volume
 END SUBROUTINE init2_1

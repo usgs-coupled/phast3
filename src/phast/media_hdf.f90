@@ -261,12 +261,12 @@ SUBROUTINE calc_volume
   !     ------------------------------------------------------------------
   
   if (.not. solute) return
-  ALLOCATE (volume(nxyz), &
-       stat = a_err)
-  IF (a_err /= 0) THEN  
-     PRINT *, "Array allocation failed: calc_porsosity_volume, volume"  
-     STOP  
-  ENDIF 
+!  ALLOCATE (volume(nxyz), &
+!       stat = a_err)
+!  IF (a_err /= 0) THEN  
+!     PRINT *, "Array allocation failed: calc_porsosity_volume, volume"  
+!     STOP  
+!  ENDIF 
   volume = 0
   ALLOCATE (cell_props(nxyz), &
        stat = a_err)
@@ -311,10 +311,10 @@ SUBROUTINE calc_volume
      endif
   END DO
 
-  DEALLOCATE (cell_props, aprnt, full,  &
+  DEALLOCATE (cell_props, &
        stat = da_err)
   IF (da_err /= 0) THEN  
-     PRINT *, "Array deallocation failed: media_hdf, cell_props"  
+     PRINT *, "Array deallocation failed: calc_volume, cell_props"  
      STOP  
   ENDIF
 END SUBROUTINE calc_volume

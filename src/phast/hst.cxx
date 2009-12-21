@@ -142,8 +142,10 @@ extern
 	COUNT_ALL_COMPONENTS(int *n_comp, char *names, int length);
 	void
 	DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
-								  int *initial_conditions2,
-								  double *fraction1);
+							  int *initial_conditions2, double *fraction1,
+							  int *exchange_units, int *surface_units, int *ssassemblage_units,
+							  int *ppassemblage_units, int *gasphase_units, int *kinetics_units,
+							  double *pv0, double *volume);
 /*  #ifndef USE_MPI                                                                    */
 /*  void EQUILIBRATE(double *fraction, int *dim, int *hst_print,                       */
 /*  		 double *x_hst, double *y_hst, double *z_hst,                          */
@@ -805,7 +807,10 @@ COUNT_ALL_COMPONENTS(int *n_comp, char *names, int length)
 /* ---------------------------------------------------------------------- */
 void
 DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
-							  int *initial_conditions2, double *fraction1)
+							  int *initial_conditions2, double *fraction1,
+							  int *exchange_units, int *surface_units, int *ssassemblage_units,
+							  int *ppassemblage_units, int *gasphase_units, int *kinetics_units,
+							  double *pv0, double *volume)
 /* ---------------------------------------------------------------------- */
 {
 	/*
@@ -900,8 +905,15 @@ DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
 		j = sort_random_list[k];	/* j is count_chem number */
 		i = back[j].list[0];	/* i is ixyz number */
 		assert(forward[i] >= 0);
+		assert (volume[i] > 0.0);
+		double porosity = pv0[i] / volume[i];
+		assert (porosity > 0.0);
+		double porosity_factor = (1.0 - porosity) / porosity;
 		system_cxxInitialize(i, j, initial_conditions1, initial_conditions2,
-							 fraction1);
+			fraction1,
+			exchange_units, surface_units, ssassemblage_units,
+			ppassemblage_units, gasphase_units, kinetics_units,
+			porosity_factor);
 	}
 	sort_random_list = (int *) free_check_null(sort_random_list);
 	/*
@@ -1255,7 +1267,10 @@ DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
 /* ---------------------------------------------------------------------- */
 void
 DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
-							  int *initial_conditions2, double *fraction1)
+							  int *initial_conditions2, double *fraction1,
+							  int *exchange_units, int *surface_units, int *ssassemblage_units,
+							  int *ppassemblage_units, int *gasphase_units, int *kinetics_units,
+							  double *pv0, double *volume)
 /* ---------------------------------------------------------------------- */
 {
 	/*
@@ -1289,8 +1304,15 @@ DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
 		if (j < 0)
 			continue;
 		assert(forward[i] >= 0);
+		assert (volume[i] > 0.0);
+		double porosity = pv0[i] / volume[i];
+		assert (porosity > 0.0);
+		double porosity_factor = (1.0 - porosity) / porosity;
 		system_cxxInitialize(i, j, initial_conditions1, initial_conditions2,
-							 fraction1);
+			fraction1,
+			exchange_units, surface_units, ssassemblage_units,
+			ppassemblage_units, gasphase_units, kinetics_units,
+			porosity_factor);
 	}
 	/*
 	 * Read any restart files
