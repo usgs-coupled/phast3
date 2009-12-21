@@ -1321,6 +1321,16 @@ write_ic(void)
 /*
  *   Initial solution by node
  */
+	output_msg(OUTPUT_HST, "C.2.21.7a .. Units for solids, mol/L: water 1, rock 2 \n");	
+	if (flow_only == FALSE)
+	{
+		output_msg(OUTPUT_HST, "%d %d %d %d %d %d \n",
+			exchange_units, surface_units, ssassemblage_units,
+			ppassemblage_units, gasphase_units, kinetics_units);
+	}
+/*
+ *   Initial solution by node
+ */
 	output_msg(OUTPUT_HST, "C.2.21.7 .. Initial solution \n");
 	if (flow_only == FALSE)
 	{

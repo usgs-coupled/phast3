@@ -995,6 +995,16 @@ EXTERNAL int
 EXTERNAL std::map < std::string, int >
 	FileMap;
 
+enum SOLID_UNITS
+{
+		WATER = 1, ROCK = 2
+};
+EXTERNAL SOLID_UNITS exchange_units;
+EXTERNAL SOLID_UNITS surface_units;
+EXTERNAL SOLID_UNITS ssassemblage_units;
+EXTERNAL SOLID_UNITS ppassemblage_units;
+EXTERNAL SOLID_UNITS gasphase_units;
+EXTERNAL SOLID_UNITS kinetics_units;
 
 #include "inputproto.h"
 #include "wphast.h"  /* must be last */

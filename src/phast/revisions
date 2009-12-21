@@ -1,3 +1,80 @@
+ 	--------
+ 	svn 3902
+ 	--------
+ 	Added options to the UNITS keyword to allow moles of solid
+ 	reactants to be interpreted as moles per liter of WATER or
+ 	moles per liter of ROCK:
+	
+	UNITS
+		-equilibrium_phases   ROCK
+		-exchange             ROCK
+		-surface              WATER
+		-solid_solution       WATER
+		-kinetics             WATER
+		-gas_phase            WATER
+		
+	By default, the number of moles of solid reactants are
+	interpreted as per liter of water. Using the ROCK option,
+	PHAST interprets the number of moles of solid
+	reactants obtained from the initial PHREEQC calculation
+	as per liter of rock. 
+	
+	Note that an initial PHREEQC calculation is made at the
+	beginning of a PHAST run. During this calculation all 
+	reaction calculations interpret the concentration of solid
+	reactants as simply moles. (When a solution is reacted with
+	the solids, the solution contains a mass of water, which is
+	usually 1 kg, but not necessarily.) It is only when initial 
+	conditions are subsequently distributed in the PHAST calculation 
+	that solid reactants are scaled. If the units are WATER, t
+	here is no scaling and the number of moles of solids is the 
+	number of moles per liter of water. If the units are ROCK, 
+	the number of moles of a solid reactant	is multiplied by 
+	(1-phi)/phi, where phi is the porosity in the cell receiving 
+	the initial condition, to arrive at the	number of moles of 
+	solid reactant per liter of water. 
+	
+	The addition of the ROCK option is motivated by the possibility
+	of a domain with a distribution of porosities. In this case, 
+	the number of moles of solid reactants per liter of water--
+	the units used by PHAST--also vary spatially. By using the 
+	ROCK option, a constant rock composition can be defined and 
+	the factor (1-phi)/phi is used to scale the number of moles 
+	of solid reactant to obtain the number of moles per liter 
+	of water in each cell. 
+		
+	
+ 	Added four basic functions for use only with PHAST. The
+ 	functions are related to the volume, porosity, and 
+ 	water saturation of a PHAST finite-difference cell:
+ 	
+ 	CELL_VOLUME--The total volume of the cell in liters.
+ 	CELL_PORE_VOLUME--The void volume of the cell in liters.
+ 	CELL_SATURATION--The fraction of the void volume filled
+ 		with water, unitless.
+ 	CELL_POROSITY--The porosity of the cell, equal to 
+ 		CELL_PORE_VOLUME / CELL_VOLUME, unitless.
+ 		
+ 		
+ 	For example, in a USER_PUNCH program for a PHAST run,
+ 	the number of moles of dissolved chloride in a cell is
+ 	TOT("Cl")*CELL_PORE_VOLUME for confined flow simulations.
+ 	More generally, the number of moles of dissolved chloride
+ 	is TOT("Cl")*CELL_SATURATION*CELL_PORE_VOLUME, for confined
+ 	or unconfined flow.
+ 	
+ 	For solids, the number of moles of calcite in the 
+ 	saturated part of a cell is 
+ 	EQUI("Calcite")**CELL_SATURATION*CELL_PORE_VOLUME. For 
+ 	unconfined flow, the solid reactants are distributed 
+ 	between the saturated and unsaturated part of a water- 
+ 	table cell. It is a limitation of PHAST that it is not 
+ 	possible to determineIf the amounts of solid reactants 
+ 	in the unsaturated part of a cell. Note that for 
+ 	steady-state, unconfined flow, the unsaturated part of 
+ 	a water-table cell is never part of the active domain.
+ 	
+
     svn 3613:
     
     SOLUTION_RAW: c++ version used in PHAST misinterpreted the 

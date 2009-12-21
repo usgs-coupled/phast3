@@ -48,7 +48,10 @@ SUBROUTINE phast_slave(mpi_tasks, mpi_myself)
           x_node, y_node, z_node, cnvtmi, transient_fresur, steady_flow, pv0, &
           rebalance_method_f, volume)
      CALL forward_and_back(indx_sol1_ic, naxes, nx, ny, nz)  
-     CALL distribute_initial_conditions(indx_sol1_ic, indx_sol2_ic, ic_mxfrac)
+     CALL distribute_initial_conditions(indx_sol1_ic, indx_sol2_ic, ic_mxfrac,&
+                exchange_units, surface_units, ssassemblage_units,&
+                ppassemblage_units, gasphase_units, kinetics_units,&
+                pv0, volume)
      CALL uz_init(transient_fresur)
      CALL collect_from_nonroot(c, nxyz) ! stores data for transport
      ! ... Equilibrate the initial conditions for component concentrations

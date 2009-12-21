@@ -352,6 +352,9 @@ MODULE mcv
   SAVE
   INTEGER, DIMENSION(:), ALLOCATABLE :: icmax, jcmax, kcmax, icsbc, icfbc, iclbc, icrbc
   INTEGER, DIMENSION(:,:), ALLOCATABLE :: indx_sol1_ic, indx_sol2_ic
+  !INTEGER :: solid_units(6)
+  INTEGER :: exchange_units, surface_units, ssassemblage_units, &
+  		ppassemblage_units, gasphase_units, kinetics_units
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: axsav, aysav, azsav, dzfsdt, dp, dt, &
        sxx, syy, szz, vxx, vyy, vzz,  &
        vx_node, vy_node, vz_node,  &

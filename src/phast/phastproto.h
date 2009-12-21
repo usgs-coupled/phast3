@@ -128,7 +128,10 @@ void unpackcxx_from_hst(double *fraction, int *dim);
 //void unpackcxx_from_hst_confined(double *fraction, int *dim, double *pv0,
 //								 double *pv);
 void system_cxxInitialize(int i, int n_user_new, int *initial_conditions1,
-						  int *initial_conditions2, double *fraction1);
+					 int *initial_conditions2, double *fraction1,
+					 int *exchange_units, int *surface_units, int *ssassemblage_units,
+					 int *ppassemblage_units, int *gasphase_units, int *kinetics_units,
+					 double porosity_factor);
 int write_restart(double hst_time);
 int scale_cxxsystem(int iphrq, LDBLE frac);
 int partition_uz(int iphrq, int ihst, LDBLE new_frac);

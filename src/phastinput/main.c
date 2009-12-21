@@ -859,5 +859,12 @@ initialize(void)
 
 	FileMap.clear();
 
+	exchange_units = WATER;
+	surface_units = WATER;
+	ssassemblage_units = WATER;
+	ppassemblage_units = WATER;
+	gasphase_units = WATER;
+	kinetics_units = WATER; 
+
 	return;
 }
