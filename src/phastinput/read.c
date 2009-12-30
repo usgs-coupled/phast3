@@ -6589,7 +6589,7 @@ read_units(void)
 		, "well_depth"          /* 35 */
 		, "exchange"            /* 36 */
 		, "surface"             /* 37 */
-		, "solid_solution"      /* 38 */
+		, "solid_solutions"     /* 38 */
 		, "gas_phase"           /* 39 */
 		, "kinetics"            /* 40 */
 		, "equilibrium_phases"  /* 41 */
