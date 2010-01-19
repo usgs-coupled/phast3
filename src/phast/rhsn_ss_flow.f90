@@ -188,6 +188,10 @@ SUBROUTINE rhsn_ss_flow
      mfs = mfsbc(lc0)    ! ... currrent f.s. cell
 !     river_seg_index(lc)%m = MIN(mfs,mrbc_bot(lc))
      river_seg_index(lc)%m = mfs            ! ... communicate with f.s. cell always
+     if (mfs .eq. 0) then
+        write (*,*) "Column containing a river segment is dry. Cannot proceed. "
+        STOP
+     endif      
      DO ls=river_seg_index(lc)%seg_first,river_seg_index(lc)%seg_last
 !        mrbc(ls) = MIN(mfs,mrseg_bot(ls))    ! ... currrent river segment cell for aquifer head
         mrbc(ls) = river_seg_index(lc)%m     ! ... currrent river segment cell for aquifer head
