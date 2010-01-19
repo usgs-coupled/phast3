@@ -435,7 +435,10 @@ SUBROUTINE sumcal_ss_flow
         m1=nxyz-nxy+mt
 200     IF(frac(m1) > 0._kdp) GO TO 210
         m1=m1-nxy
-        IF(m1 > 0) GO TO 200
+        !IF(m1 > 0) GO TO 200
+        IF(m1 > 0) then
+            if (ibc(m1) .ge. 0) GO TO 200
+        endif
         m1=0
 210     IF(ABS(m1 - m0) > nxy) ierrw = .TRUE.
         mfsbc(mt)=m1

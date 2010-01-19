@@ -188,7 +188,10 @@ SUBROUTINE init3
      m1 = nxyz-nxy+mt
 750  IF(frac(m1) > 0._kdp) go to 760  
      m1 = m1-nxy
-     IF(m1 > 0) go to 750
+     !IF(m1 > 0) go to 750
+     IF(m1 > 0) then
+       if (ibc(m1) .ge. 0) GO TO 750
+     endif       
      m1 = 0
 760  mfsbc(mt) = m1
      DO m=m1-nxy,1,-nxy
