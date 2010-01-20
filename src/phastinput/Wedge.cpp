@@ -5,6 +5,7 @@
 #include "gpc.h"
 #include "Utilities.h"
 #include "PHAST_Transform.h"
+#include "PHAST_polygon.h"
 // Constructors
 
 // Note: No header files should follow the next three lines
@@ -258,43 +259,66 @@ Wedge::~Wedge(void)
 }
 
 // Methods
+//bool Wedge::Point_in_polyhedron(const Point & t)
+//{
+//	// compare to bounding box
+//	if (!this->Point_in_bounding_box(t))
+//		return false;
+//
+//	// Project point to front, left, or lower triangular face
+//	Point
+//	test_pt(t);
+//	struct zone *
+//		zo = this->Get_bounding_box();
+//	switch (this->wedge_axis)
+//	{
+//	case CF_X:
+//		test_pt.set_x(zo->x1);
+//		break;
+//	case CF_Y:
+//		test_pt.set_y(zo->y1);
+//		break;
+//	case CF_Z:
+//		test_pt.set_z(zo->z1);
+//		break;
+//	default:
+//		std::ostringstream estring;
+//		estring << "Wrong face defined in Wedge::Point_in_polyhedron" << std::
+//			endl;
+//		error_msg(estring.str().c_str(), EA_STOP);
+//		break;
+//	}
+//
+//	// Check if point is in triangle (first 3 point of vertices)
+//	//return (test_pt.Point_in_polygon(this->vertices.begin(), this->vertices.begin() + 3));
+//	std::vector < Point > v = this->vertices;
+//	v.erase(v.begin() + 3, v.end());
+//	return test_pt.Point_in_polygon(v);
+//}
 bool Wedge::Point_in_polyhedron(const Point & t)
 {
 	// compare to bounding box
 	if (!this->Point_in_bounding_box(t))
 		return false;
 
-	// Project point to front, left, or lower triangular face
-	Point
-	test_pt(t);
-	struct zone *
-		zo = this->Get_bounding_box();
-	switch (this->wedge_axis)
+	// Get slice perpendicular to Z axis
+	gpc_polygon * slc;
+	slc = this->Slice(CF_Z, t.z());
+
+	if (slc == NULL) 
 	{
-	case CF_X:
-		test_pt.set_x(zo->x1);
-		break;
-	case CF_Y:
-		test_pt.set_y(zo->y1);
-		break;
-	case CF_Z:
-		test_pt.set_z(zo->z1);
-		break;
-	default:
-		std::ostringstream estring;
-		estring << "Wrong face defined in Wedge::Point_in_polyhedron" << std::
-			endl;
-		error_msg(estring.str().c_str(), EA_STOP);
-		break;
+		return false;
 	}
+	// Make PHAST_polygon out of slice
+	PHAST_polygon poly(slc, PHAST_Transform::GRID);
+	gpc_free_polygon(slc);
+	free_check_null(slc);
 
-	// Check if point is in triangle (first 3 point of vertices)
-	//return (test_pt.Point_in_polygon(this->vertices.begin(), this->vertices.begin() + 3));
-	std::vector < Point > v = this->vertices;
-	v.erase(v.begin() + 3, v.end());
-	return test_pt.Point_in_polygon(v);
+
+	// Test whether x,y part of point is in slice
+	Point test_pt(t);
+	return test_pt.Point_in_polygon(poly.Get_points());
 }
-
 void
 Wedge::Points_in_polyhedron(std::list < int >&list_of_numbers,
 							std::vector < Point > &node_xyz)
