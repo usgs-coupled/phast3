@@ -133,7 +133,8 @@ SUBROUTINE rhsn_ss_flow
            IF(l1 == 0) l1 = nxy  
            m = mfsbc(l1)  
         ENDIF
-        IF(m == 0) CYCLE     ! ... dry column        
+        !IF(m == 0) CYCLE     ! ... dry column        
+        IF(m == 0) EXIT     ! ... dry column      
         ! ... Calculate step total flow rate contributions and
         ! ...      cell step flow rate contributions.
         qn = qfflx(ls)*areafbc(ls)
