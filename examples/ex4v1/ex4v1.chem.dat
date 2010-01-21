@@ -111,7 +111,7 @@ SURFACE 2
         SurfOH          0.14     600.    30.
 END
 SELECTED_OUTPUT
-        -file ex4.dummy.sel
+        -file ex4v1.dummy.sel
         -reset false
         -pH
 USER_PUNCH
