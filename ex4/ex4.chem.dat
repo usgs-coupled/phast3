@@ -17,39 +17,6 @@ SOLUTION_MASTER_SPECIES
         As       H3AsO4        -1.0     74.9216         74.9216
 SOLUTION_SPECIES
 #
-# Nordstrom and Archer
-#
-#H2AsO4- 		482	
-	H3AsO4 = H2AsO4- + H+
-	log_k	-2.3
-	delta_h	-7.066	kJ
-#HAsO4-2 		483	
-	H3AsO4 = HAsO4-2 + 2H+
-	log_k	-9.46
-	delta_h	-3.846	kJ
-
-#AsO43- 		484	
-	H3AsO4 = AsO4-3 + 3H+
-	log_k	-21.11
-	delta_h	14.354	kJ
-#
-# Old Wateq4f
-#
-#H2AsO4-             482
-        H3AsO4 = H2AsO4- + H+ 
-        log_k           -2.243
-        delta_h -1.69 kcal
-
-#HAsO4-2             483
-        H3AsO4 = HAsO4-2 + 2H+ 
-        log_k           -9.001
-        delta_h -0.92 kcal
-
-#AsO4-3              484
-        H3AsO4 = AsO4-3 + 3H+
-        log_k           -20.597
-        delta_h 3.43 kcal
-#
 #  Dzombak and Morel
 #
 #H3AsO4 primary master species
@@ -115,7 +82,7 @@ SELECTED_OUTPUT
         -reset false
         -pH
 USER_PUNCH
-# Prints concentrations in mg/kgw to ex4.xyz.chem
+# Prints concentrations in mg/kgw to ex4.xyz.chem and ex4.h5
 -heading        Ca      Mg      Na      Cl      C(4)    SO4     As
 10 PUNCH TOT("Ca")*1e3*40.08
 20 PUNCH TOT("Mg")*1e3*24.312
