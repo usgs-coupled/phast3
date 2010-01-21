@@ -2,6 +2,7 @@
 #define POINT_H_INCLUDED
 #include <vector>
 #include <math.h>
+#include "Cell_Face.h"
 //#include "gpc.h"
 class Point
 {
@@ -137,6 +138,8 @@ class Point
 	{
 		this->v = t;
 	}
+	void set_xy(Cell_Face f);
+
 	friend double interpolate_inverse_square(std::vector < Point > &pts,
 											 Point & grid_pt);
 	friend double interpolate_nearest(std::vector < Point > &pts,
