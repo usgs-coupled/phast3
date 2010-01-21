@@ -259,42 +259,8 @@ Wedge::~Wedge(void)
 }
 
 // Methods
-//bool Wedge::Point_in_polyhedron(const Point & t)
-//{
-//	// compare to bounding box
-//	if (!this->Point_in_bounding_box(t))
-//		return false;
-//
-//	// Project point to front, left, or lower triangular face
-//	Point
-//	test_pt(t);
-//	struct zone *
-//		zo = this->Get_bounding_box();
-//	switch (this->wedge_axis)
-//	{
-//	case CF_X:
-//		test_pt.set_x(zo->x1);
-//		break;
-//	case CF_Y:
-//		test_pt.set_y(zo->y1);
-//		break;
-//	case CF_Z:
-//		test_pt.set_z(zo->z1);
-//		break;
-//	default:
-//		std::ostringstream estring;
-//		estring << "Wrong face defined in Wedge::Point_in_polyhedron" << std::
-//			endl;
-//		error_msg(estring.str().c_str(), EA_STOP);
-//		break;
-//	}
-//
-//	// Check if point is in triangle (first 3 point of vertices)
-//	//return (test_pt.Point_in_polygon(this->vertices.begin(), this->vertices.begin() + 3));
-//	std::vector < Point > v = this->vertices;
-//	v.erase(v.begin() + 3, v.end());
-//	return test_pt.Point_in_polygon(v);
-//}
+/*
+// Works, but next method should be more efficient
 bool Wedge::Point_in_polyhedron(const Point & t)
 {
 	// compare to bounding box
@@ -318,6 +284,30 @@ bool Wedge::Point_in_polyhedron(const Point & t)
 	// Test whether x,y part of point is in slice
 	Point test_pt(t);
 	return test_pt.Point_in_polygon(poly.Get_points());
+}
+*/
+bool Wedge::Point_in_polyhedron(const Point & t)
+{
+	// compare to bounding box
+	if (!this->Point_in_bounding_box(t))
+		return false;
+
+	// Project point to front, left, or lower triangular face
+	Point test_pt(t);
+
+	// Check if point is in triangle (first 3 points of vertices)
+
+	std::vector < Point > v = this->vertices;
+	v.erase(v.begin() + 3, v.end());
+
+	// set X, Y for points depending on plane of triangle
+	test_pt.set_xy(this->wedge_axis);
+	std::vector < Point >::iterator it;
+	for (it = v.begin(); it != v.end(); it++)
+	{
+		(*it).set_xy(this->wedge_axis);
+	}
+	return test_pt.Point_in_polygon(v);
 }
 void
 Wedge::Points_in_polyhedron(std::list < int >&list_of_numbers,

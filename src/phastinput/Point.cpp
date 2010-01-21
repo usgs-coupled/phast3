@@ -557,3 +557,25 @@ Point::operator!=(const Point &other) const
 {
 	return !(*this == other);
 }
+void 
+Point::set_xy(Cell_Face f)
+{
+	Point p(*this);
+	switch (f)
+	{
+	case CF_X:
+		this->set_x( p.y() );
+		this->set_y( p.z() );
+		break;
+	case CF_Y:
+		this->set_x( p.x() );
+		this->set_y( p.z() );
+		break;
+	case CF_Z:
+		//this->set_x( p.x() );
+		//this->set_y( p.y() );
+		break;
+	default:
+		break;
+	}
+}

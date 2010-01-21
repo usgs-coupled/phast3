@@ -10,7 +10,7 @@
 			>
 			<DebugSettings
 				Command=""
-				WorkingDirectory="C:\Programs\phastpp\examples\ex4"
+				WorkingDirectory="C:\Programs\phastpp\examples\mpich64"
 				CommandArguments=""
 				Attach="false"
 				DebuggerType="3"
