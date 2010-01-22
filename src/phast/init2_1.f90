@@ -34,12 +34,13 @@ SUBROUTINE init2_1
      LOGICAL, DIMENSION(8) :: sd_active
   END TYPE cell_subdom
   CHARACTER(LEN=9) :: cibc
+  CHARACTER(LEN=130) :: logline1
   REAL(KIND=kdp) :: keffl, keffu, up0, p1, rmm, rorw2, sum, t_rswap,  &
        uarbc, uarx, uary, uarz, uc, uden, udx, udxdy, udxdyi,  &
        udxdyo, udxdz, udxyz, udxyzi, udxyzo, udy, udydz, udz, ugdelx,  &
        ugdely, ugdelz, upabd, upor, ut, uwi, x0, y0, z0, z1,  &
        zfsl, zm1, zp1
-  INTEGER :: a_err, da_err, i, ic, imm, imod, ipmz, iis, iwel, j, jc, k, k1, k2, kf, &
+  INTEGER :: a_err, da_err, i, ic, icol, imm, imod, ipmz, iis, iwel, j, jc, jcol, k, k1, k2, kf, &
        kinc, kl, kr, ks, kw, l, l1, lc, ls, m, mb, mc, mele, m1, m2, &
        mk, mr, ms, msv, mt, nele, nks, nr, nsa, nxele, nxyele
   INTEGER :: ibf, icz, isd, izn, lbc, mks, msd, nbc, nbf, t_bctype, t_findx, t_lindx
@@ -1298,7 +1299,7 @@ SUBROUTINE init2_1
 710     END DO
 720  END DO
   ENDIF
-  ALLOCATE (mfsbc(nxy), hdprnt(nxyz), wt_elev(nxy),  &
+  ALLOCATE (mfsbc(nxy), print_dry_col(nxy), hdprnt(nxyz), wt_elev(nxy),  &
        stat = a_err)
   IF (a_err /= 0) THEN  
      PRINT *, "array allocation failed: init2, number 16"  
@@ -1448,25 +1449,35 @@ SUBROUTINE init2_1
   ! ... also set all frac to one for cells below the f.s. cell
   all_dry = .TRUE.
   some_dry = .FALSE.
+  print_dry_col = .FALSE.
   DO mt=1,nxy
      m1 = nxyz-nxy+mt
 750  IF(frac(m1) > 0._kdp) go to 760  
      m1 = m1-nxy
-     !IF(m1 > 0) go to 750
-     IF(m1 > 0) then
-       if (ibc(m1) .ge. 0) GO TO 750
-     endif     
+     IF(m1 > 0) THEN
+       IF (ibc(m1) >= 0) GO TO 750
+     ENDIF
      m1 = 0
 760  mfsbc(mt) = m1
      DO m=m1-nxy,1,-nxy
         frac(m) = 1._kdp
      END DO
-     IF(mfsbc(mt) /= 0) all_dry = .FALSE.
-     IF(mfsbc(mt) == 0) some_dry = .TRUE.
+     IF(m1 == 0) THEN
+        some_dry = .TRUE.
+        CALL mtoijk(mt,icol,jcol,1,nx,ny)
+        WRITE(logline1,'(a/tr5,a,i6,a,i5,a,i5)')   &
+             'WARNING: A column of cells is dry in init2_1',  &
+             'Cell column:', mt,' (i,j):', icol, ',', jcol
+        CALL screenprt_c(logline1)
+        CALL logprt_c(logline1)
+        print_dry_col(mt) = .TRUE.
+     ELSE
+        all_dry = .FALSE.
+     END IF
   END DO
   IF (all_dry) ierr(40) = .TRUE.
   IF (some_dry) THEN
-     CALL warnprt_c('One or more columns are dry.')
+     CALL warnprt_c('One or more cell columns are dry.')
   ENDIF
   ! ... calculate initial density, viscosity, and enthalpy distributions
   ut = t0  

@@ -78,6 +78,7 @@ MODULE mcb
        netbc=0, naifc=0,  &
        nhcbc=0, nhcn=0, nztphc=0, num_bndy_cells=0
   LOGICAL :: fresur
+  LOGICAL, DIMENSION(:), ALLOCATABLE :: print_dry_col
   INTEGER :: adj_wr_ratio, transient_fresur
   REAL(KIND=kdp) :: visdbc
 !!$  REAL(KIND=kdp) :: ABOAR, ANGOAR, BOAR, F1AIF, F2AIF, FTDAIF, KOAR, POROAR, RIOAR, &

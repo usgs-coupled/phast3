@@ -44,26 +44,20 @@ SUBROUTINE aplbce_ss_flow
            IF(l1 == 0) l1 = nxy
            m = mfsbc(l1)
         ENDIF
-        if (m <= 0) CYCLE
+        IF (m == 0) EXIT          ! ... skip out of this flux b.c. cell
         qn = qfflx(ls)*areafbc(ls)
         IF(qn <= 0.) THEN             ! ... Outflow
            qfbc = den(m)*qn*ufrac
-!$$           if (heat) qhbc = qfbc*eh(m)
            DO  iis=1,ns
               qsbc(iis) = qfbc*c(m,iis)
            END DO
         ELSE                          ! ... Inflow
            qfbc = denfbc(ls)*qn*ufrac
-!$$        IF( HEAT) QHBC = QFBC* EHOFTP( TFLX( L), P( M), ERFLG)  
            DO  iis=1,ns
               qsbc(iis) = qfbc*cfbc(ls,iis)
            END DO
         ENDIF
         rf(m) = rf(m) + ufdt2*qfbc
-!!$     IF( HEAT) THEN  
-!!$        QHBC2 = QHFBC( L) * UFRAC  
-!!$        RH( M) = RH( M) + UFDT2* ( QHBC2 + QHBC)  
-!!$     ENDIF
         DO  iis=1,ns
            qsbc2(iis) = qsflx(ls,iis)*areafbc(ls)*ufrac
            rs(m,iis) = rs(m,iis) + ufdt2*(qsbc2(iis) + qsbc(iis))
@@ -119,7 +113,7 @@ SUBROUTINE aplbce_ss_flow
   ! ...      only for horizontal coordinates; No lateral river leakage
   DO lc=1,nrbc_cells
      mc = river_seg_index(lc)%m
-     IF(mc == 0) CYCLE     ! ... dry column
+     IF(mc == 0) CYCLE              ! ... dry column, skip to next river b.c. cell 
      DO ls=river_seg_index(lc)%seg_first,river_seg_index(lc)%seg_last
         arbc(ls) = 0._kdp
         brbc(ls) = 0._kdp

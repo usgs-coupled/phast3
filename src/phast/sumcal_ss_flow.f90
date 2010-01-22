@@ -33,7 +33,7 @@ SUBROUTINE sumcal_ss_flow
        qlim, qm_net, qn, qnp, u0, u1, u2, u6, uc,  &
        ufdt1, ufrac, up0, z0, z1, z2, zfsl, zm1, zmfs, zp1
 !!$  REAL(KIND=kdp), DIMENSION(nxy) :: fracn
-  INTEGER :: a_err, da_err, i, imod, iwel, j, k, kfs, l, l1, lc, ls, m, m0, m1, m1kp, mfs,  &
+  INTEGER :: a_err, da_err, i, icol, imod, iwel, j, jcol, k, kfs, l, l1, lc, ls, m, m0, m1, m1kp, mfs,  &
        mpmax, mt
   LOGICAL :: ierrw
   CHARACTER(LEN=130) :: logline1, logline2
@@ -436,21 +436,33 @@ SUBROUTINE sumcal_ss_flow
 200     IF(frac(m1) > 0._kdp) GO TO 210
         m1=m1-nxy
         !IF(m1 > 0) GO TO 200
-        IF(m1 > 0) then
-            if (ibc(m1) .ge. 0) GO TO 200
-        endif
-        m1=0
-210     IF(ABS(m1 - m0) > nxy) ierrw = .TRUE.
-        mfsbc(mt)=m1
+        IF(m1 > 0) THEN
+            IF (ibc(m1) >= 0) GO TO 200
+        ENDIF
+        m1 = 0
+210     CONTINUE
+        IF(ABS(m1 - m0) > nxy) THEN
+           CALL mtoijk(mt,icol,jcol,1,nx,ny)
+           WRITE(logline1,'(a/tr5,a,i6,a,i5,a,i5)')   &
+                'WARNING: Free surface has moved more than one layer of cells in sumcal_ss_flow',  &
+                'Cell column:', mt,' (i,j):', icol, ',', jcol
+           CALL screenprt_c(logline1)
+           CALL logprt_c(logline1)
+        END IF
+        mfsbc(mt) = m1
         DO m=m1-nxy,1,-nxy
            frac(m) = 1._kdp
         END DO
+        IF(m1 == 0 .AND. .NOT.print_dry_col(mt)) THEN
+           CALL mtoijk(mt,icol,jcol,1,nx,ny)
+           WRITE(logline1,'(a/tr5,a,i6,a,i5,a,i5)')   &
+                'WARNING: A column of cells has gone dry in sumcal_ss_flow',  &
+                'Cell column:', mt,' (i,j):', icol, ',', jcol
+           CALL screenprt_c(logline1)
+           CALL logprt_c(logline1)
+           print_dry_col(mt) = .TRUE.
+        END IF
      END DO
-     IF(ierrw) THEN
-        WRITE(logline1,*) 'WARNING: Free surface has moved more than one layer of cells'//  &
-             ' in one or more cell columns'
-        CALL screenprt_c(logline1)
-     ENDIF
      ! ... Calculate hydrostatic pressure for cells up to top of region
      ! ...      This gives a pressure field that may be used for an initial
      ! ...           condition for a future simulation
@@ -566,8 +578,7 @@ SUBROUTINE sumcal_ss_flow
            IF(l1 == 0) l1 = nxy
            m = mfsbc(l1)
         ENDIF
-        !if (m <= 0) CYCLE
-        if (m <= 0) EXIT
+        IF (m == 0) EXIT          ! ... dry column, skip to next flux b.c. cell
         qn = qfflx(ls)*areafbc(ls)
         IF(qn <= 0.) THEN              ! ... Outflow
            qfbc = den(m)*qn*ufrac
@@ -592,7 +603,7 @@ SUBROUTINE sumcal_ss_flow
      qflbc(lc) = 0._kdp
 !$$     sflb(lc) = 0._kdp
 !$$     sfvlb(lc) = 0._kdp
-     IF(m == 0) CYCLE
+     IF(m == 0) CYCLE          ! ... **not needed?
      ! ... Calculate current net aquifer leakage flow rate
      qm_net = 0._kdp
      DO ls=leak_seg_index(lc)%seg_first,leak_seg_index(lc)%seg_last
@@ -620,7 +631,7 @@ SUBROUTINE sumcal_ss_flow
      qfrbc(lc) = 0._kdp
 !$$     sfrb(lc) = 0._kdp
 !$$     sfvrb(lc) = 0._kdp
-     IF(m == 0) CYCLE
+     IF(m == 0) CYCLE          ! ... dry column, skip to next river b.c. cell
      ! ... Calculate current net aquifer leakage flow rate
      qm_net = 0._kdp
      DO ls=river_seg_index(lc)%seg_first,river_seg_index(lc)%seg_last

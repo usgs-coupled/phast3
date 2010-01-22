@@ -29,7 +29,7 @@ static void EndTimeStep(int print_sel, int print_out, int print_hdf);
 static void BeginCell(int print_sel, int print_out, int print_hdf, int index);
 static void EndCell(int print_sel, int print_out, int print_hdf, int index);
 static int n_to_ijk(int n_cell, int *i, int *j, int *k);
-static char const svnid[] = "$Id: hst.c 827 2006-03-06 20:19:41Z dlpark $";
+static char const svnid[] = "$Id: hst.cxx,v 1.1 2010/01/21 17:03:04 klkipp Exp $";
 #define RANDOM
 #define REBALANCE
 /* #define USE_MPI set in makefile */
