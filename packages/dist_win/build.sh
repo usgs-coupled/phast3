@@ -91,7 +91,7 @@ MY_LDFLAGS=
 # use Visual Studio 2005 to compile
 DEVENV="/cygdrive/c/Program Files/Microsoft Visual Studio 8/Common7/IDE/devenv.exe"
 PHAST_SLN=`cygpath -w ./src/phast/win32_2005/phastpp.sln`
-PHASTINPUT_SLN=`cygpath -w ./src/phastinput/win32_2005/phastinput.sln`
+PHASTINPUT_SLN=`cygpath -w ./src/phastinput/vc80/phastinput.sln`
 
 
 # InstallShield settings (based on exported build file
@@ -352,7 +352,7 @@ install() {
   /usr/bin/install -m 644 ${objdir}/doc/README \
     ${instdir}${prefix}/README.txt && \
 # (bin dir) phast-ser, phast-mpich2, hdf5dll.dll, zlib1.dll, szlibdll.dll phast.bat
-  /usr/bin/install -m 755 ${objdir}/src/phastinput/win32_2005/Release/phastinput.exe \
+  /usr/bin/install -m 755 ${objdir}/src/phastinput/vc80/Release/phastinput.exe \
     ${instdir}${prefix}/bin/phastinput.exe && \
   /usr/bin/install -m 755 ${objdir}/src/phast/win32_2005/merge/phast.exe \
     ${instdir}${prefix}/bin/phast-mpich2.exe && \
