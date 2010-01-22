@@ -224,7 +224,7 @@ SUBROUTINE rhsn
            IF(l1 == 0) l1 = nxy
            m = mfsbc(l1)
         ENDIF
-        IF(m == 0) CYCLE     ! ... dry column
+        IF(m == 0) EXIT     ! ... dry column, skip to next flux b.c. cell
         ! ... Calculate step total flow rate contributions and
         ! ...      cell step flow rate contributions.
         qn = qfflx(ls)*areafbc(ls)
@@ -365,10 +365,6 @@ SUBROUTINE rhsn
      mfs = mfsbc(lc0)    ! ... currrent f.s. cell
 !     river_seg_index(lc)%m = MIN(mfs,mrbc_bot(lc))
      river_seg_index(lc)%m = mfs            ! ... communicate with f.s. cell always
-     if (mfs .eq. 0) then
-        write (*,*) "Column containing a river segment is dry. Cannot proceed. "
-        STOP
-     endif     
      DO ls=river_seg_index(lc)%seg_first,river_seg_index(lc)%seg_last
 !        mrbc(ls) = MIN(mfs,mrseg_bot(ls))     ! ... currrent river segment cell for aquifer head
         mrbc(ls) = river_seg_index(lc)%m     ! ... currrent river segment cell for aquifer head
@@ -381,7 +377,7 @@ SUBROUTINE rhsn
      sfrb(lc) = 0._kdp
      sfvrb(lc) = 0._kdp
      ssrb(lc,:) = 0._kdp
-     IF(m == 0) CYCLE              ! ... empty column 
+     IF(m == 0) CYCLE              ! ... dry column, skip to next river b.c. cell 
      ! ... Calculate current net aquifer leakage flow rate
      qm_net = 0._kdp
      DO ls=river_seg_index(lc)%seg_first,river_seg_index(lc)%seg_last
@@ -470,17 +466,15 @@ SUBROUTINE rhsn
         IF(qn <= 0.) THEN      ! ... Outflow
            qfbc = den(m)*qn
            stotfp = stotfp - ufdt0*qfbc
-!!$        STOTHP=STOTHP-0.5*QHDBC(LC)
            sfvdb(lc) = sfvdb(lc) + qn
            DO  iis=1,ns
               qsbc3(iis) = qfbc*c(m,iis)
               stotsp(iis) = stotsp(iis) - ufdt0*qsbc3(iis)
            END DO
-        ELSE                        ! ... Inflow
+        ELSE                        ! ... Inflow, none allowed
            qn = 0._kdp
            qfbc = 0._kdp
            stotfi = stotfi + ufdt0*qfbc
-!!$        STOTHI=STOTHI+0.5*QHDBC(LC)
            sfvdb(lc) = sfvdb(lc) + qn
            DO  iis=1,ns
               qsbc3(iis) = 0._kdp
@@ -490,11 +484,6 @@ SUBROUTINE rhsn
         rf(m) = rf(m) + ufdt0*qfbc
         sfdb(lc) = sfdb(lc) + qfbc
         stfdbc = stfdbc + ufdt0*qfbc
-!!$     IF(HEAT) THEN
-!!$       RH(M)=RH(M)+UFDT0*QHDBC(LC)
-!!$       SHRB(LC)=QHDBC(LC)
-!!$       STHDBC=STHDBC+0.5*QHDBC(LC)
-!!$     ENDIF
         DO  iis=1,ns
            rs(m,iis) = rs(m,iis) + ufdt0*qsbc3(iis)
            ssdb(lc,iis) = ssdb(lc,iis) + qsbc3(iis)
@@ -505,50 +494,6 @@ SUBROUTINE rhsn
 !!$  ! ... Calculate aquifer influence function b.c. terms
 !!$  ! ...      Calculate step total flow rates and nodal step flow rates
 !!$  !... *** not implemented in PHAST
-!!$  DO  l=1,naifc
-!!$     m=maifc(l)
-!!$     IF(qfaif(l) <= 0.) THEN
-!!$        ! ... Outflow
-!!$        stotfp=stotfp-0.5*qfaif(l)
-!!$        stothp=stothp-0.5*qhaif(l)
-!!$        !...            STOTSP=STOTSP-0.5*QSAIF(L)
-!!$        sfvaif(l)=qfaif(l)/den(m)
-!!$        ! ... Inflow
-!!$     ELSE
-!!$        stotfi=stotfi+0.5*qfaif(l)
-!!$        stothi=stothi+0.5*qhaif(l)
-!!$        !...            STOTSI=STOTSI+0.5*QSAIF(L)
-!!$        sfvaif(l)=qfaif(l)/denoar(l)
-!!$     END IF
-!!$     rf(m)=rf(m)+ufdt0*qfaif(l)
-!!$     sfaif(l)=qfaif(l)
-!!$     stfaif=stfaif+0.5*qfaif(l)
-!!$     IF(heat) THEN
-!!$        rh(m)=rh(m)+ufdt0*qhaif(l)
-!!$        shaif(l)=qhaif(l)
-!!$        sthaif=sthaif+0.5*qhaif(l)
-!!$     END IF
-!!$     IF(solute) THEN
-!!$        !...            RS(M)=RS(M)+UFDT0*QSAIF(L)
-!!$        stsaif(l)=qsaif(l)
-!!$        !            STSAIF=STSAIF+0.5*QSAIF(L)
-!!$     END IF
-!!$  END DO
-!!$  IF(heat) THEN
-!!$     !... *** not implemented in PHAST
-!!$     ! ... Calculate heat conduction b.c. and apply to r.h.s.
-!!$     ! ...      Calculate step total flow rates
-!!$     DO  l=1,nhcbc
-!!$        m=mhcbc(l)
-!!$        rh(m)=rh(m)+ufdt0*qhcbc(l)
-!!$        IF(qhcbc(l) <= 0.) THEN
-!!$           stothp=stothp-0.5*qhcbc(l)
-!!$        ELSE
-!!$           stothi=stothi+0.5*qhcbc(l)
-!!$        END IF
-!!$        sthhcb=sthhcb+0.5*qhcbc(l)
-!!$     END DO
-!!$  END IF
   DEALLOCATE (qsbc3, qsbc4,  &
        stat = da_err)
   IF (da_err /= 0) THEN  

@@ -44,47 +44,33 @@ SUBROUTINE aplbce
      IF(m == 0) CYCLE     ! ... dry column
      DO ls=flux_seg_index(lc)%seg_first,flux_seg_index(lc)%seg_last
         ufrac = 1._kdp
-        IF(ifacefbc(ls) < 3) ufrac = frac(m)  
+        IF(ifacefbc(ls) < 3) ufrac = frac(m)
         IF(fresur .AND. ifacefbc(ls) == 3 .AND. frac(m) <= 0._kdp) THEN
            ! ... Redirect the flux to the free-surface cell
            l1 = MOD(m,nxy)
            IF(l1 == 0) l1 = nxy
            m = mfsbc(l1)
         ENDIF
-        if (m <= 0) CYCLE;
+        IF (m == 0) EXIT          ! ... skip out of this flux b.c. cell
         qn = qfflx(ls)*areafbc(ls)
         IF(qn <= 0.) THEN             ! ... Outflow
            qfbc = den(m)*qn*ufrac
-!$$           if (heat) qhbc = qfbc*eh(m)  
            DO  iis=1,ns
               qsbc(iis) = qfbc*c(m,iis)
            END DO
         ELSE                          ! ... Inflow
            qfbc = denfbc(ls)*qn*ufrac
-!$$        IF( HEAT) QHBC = QFBC* EHOFTP( TFLX( L), P( M), ERFLG)  
            DO  iis=1,ns
               qsbc(iis) = qfbc*cfbc(ls,iis)
            END DO
         ENDIF
         rf(m) = rf(m) + ufdt2*qfbc
-!!$     IF( HEAT) THEN  
-!!$        QHBC2 = QHFBC( L) * UFRAC  
-!!$        RH( M) = RH( M) + UFDT2* ( QHBC2 + QHBC)  
-!!$     ENDIF
         DO  iis=1,ns
            qsbc2(iis) = qsflx(ls,iis)*areafbc(ls)*ufrac
            rs(m,iis) = rs(m,iis) + ufdt2*(qsbc2(iis) + qsbc(iis))
         END DO
      END DO
   END DO
-!!$  IF( ERFLG) THEN  
-!!$     WRITE( FUCLOG, 9006) 'EHOFTP interpolation error in APLBCE ', &
-!!$          'Associated heat flux: Specified flux b.c.'
-!!$9006 FORMAT   (TR10,2A,I4)  
-!!$     IERR( 129) = .TRUE.  
-!!$     ERREXE = .TRUE.  
-!!$     RETURN  
-!!$  ENDIF
   ! ... Calculate leakage b.c. coefficients
   ! ...      only for horizontal coordinates
   DO lc=1,nlbc_cells
@@ -134,7 +120,7 @@ SUBROUTINE aplbce
   ! ...      only for horizontal coordinates; No lateral river leakage
   DO lc=1,nrbc_cells
      mc = river_seg_index(lc)%m
-     IF(mc == 0) CYCLE     ! ... dry column
+     IF(mc == 0) CYCLE     ! ... dry column, skip to next river b.c. cell
      DO ls=river_seg_index(lc)%seg_first,river_seg_index(lc)%seg_last
         arbc(ls) = 0._kdp
         brbc(ls) = 0._kdp

@@ -133,8 +133,7 @@ SUBROUTINE rhsn_ss_flow
            IF(l1 == 0) l1 = nxy  
            m = mfsbc(l1)  
         ENDIF
-        !IF(m == 0) CYCLE     ! ... dry column        
-        IF(m == 0) EXIT     ! ... dry column      
+        IF(m == 0) EXIT     ! ... dry column, skip to next flux b.c. cell      
         ! ... Calculate step total flow rate contributions and
         ! ...      cell step flow rate contributions.
         qn = qfflx(ls)*areafbc(ls)
@@ -189,10 +188,6 @@ SUBROUTINE rhsn_ss_flow
      mfs = mfsbc(lc0)    ! ... currrent f.s. cell
 !     river_seg_index(lc)%m = MIN(mfs,mrbc_bot(lc))
      river_seg_index(lc)%m = mfs            ! ... communicate with f.s. cell always
-     if (mfs .eq. 0) then
-        write (*,*) "Column containing a river segment is dry. Cannot proceed. "
-        STOP
-     endif      
      DO ls=river_seg_index(lc)%seg_first,river_seg_index(lc)%seg_last
 !        mrbc(ls) = MIN(mfs,mrseg_bot(ls))    ! ... currrent river segment cell for aquifer head
         mrbc(ls) = river_seg_index(lc)%m     ! ... currrent river segment cell for aquifer head
@@ -204,7 +199,7 @@ SUBROUTINE rhsn_ss_flow
      m = river_seg_index(lc)%m     ! ... current communicating cell 
      sfrb(lc) = 0._kdp
      sfvrb(lc) = 0._kdp
-     IF(m == 0) CYCLE              ! ... empty column 
+     IF(m == 0) CYCLE              ! ... dry column, skip to next river b.c. cell 
      ! ... Calculate current net aquifer leakage flow rate
      qm_net = 0._kdp
      DO ls=river_seg_index(lc)%seg_first,river_seg_index(lc)%seg_last
@@ -231,7 +226,6 @@ SUBROUTINE rhsn_ss_flow
      END IF
   END DO
   ! ... Calculate drain leakage b.c. terms
- 
   DO lc=1,ndbc
      ! ... Update the indices locating the cells communicating with the drain
      !mc0 = drain_seg_index(lc)%m
@@ -252,14 +246,14 @@ SUBROUTINE rhsn_ss_flow
      m = drain_seg_index(lc)%m     ! ... current communicating cell 
      sfdb(lc) = 0._kdp
      sfvdb(lc) = 0._kdp
-     IF(m == 0) CYCLE              ! ... empty column 
+     IF(m == 0) CYCLE          ! ... dry column
      DO ls=drain_seg_index(lc)%seg_first,drain_seg_index(lc)%seg_last
         qn = adbc(ls)
         IF(qn <= 0.) THEN         ! ... Outflow
            qfbc = den(m)*qn
            stotfp = stotfp - ufdt0*qfbc
            sfvdb(lc) = sfvdb(lc) + qn
-        ELSE                             ! ... Inflow
+        ELSE                             ! ... Inflow, none allowed
            qn = 0._kdp
            qfbc = 0._kdp
            stotfi = stotfi + ufdt0*qfbc
@@ -273,21 +267,4 @@ SUBROUTINE rhsn_ss_flow
 !!$  ! ... Calculate aquifer influence function b.c. terms
 !!$  ! ...      Calculate step total flow rates and nodal step flow rates
 !!$  !... *** not implemented in PHAST
-!!$  DO  l=1,naifc
-!!$     m=maifc(l)
-!!$     IF(qfaif(l) <= 0.) THEN
-!!$        ! ... Outflow
-!!$        stotfp=stotfp-0.5*qfaif(l)
-!!$        stothp=stothp-0.5*qhaif(l)
-!!$        sfvaif(l)=qfaif(l)/den(m)
-!!$     ELSE
-!!$        ! ... Inflow
-!!$        stotfi=stotfi+0.5*qfaif(l)
-!!$        stothi=stothi+0.5*qhaif(l)
-!!$        sfvaif(l)=qfaif(l)/denoar(l)
-!!$     END IF
-!!$     rf(m)=rf(m)+ufdt0*qfaif(l)
-!!$     sfaif(l)=qfaif(l)
-!!$     stfaif=stfaif+0.5*qfaif(l)
-!!$  END DO
 END SUBROUTINE rhsn_ss_flow

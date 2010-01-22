@@ -7,7 +7,7 @@ MODULE interpolate_mod
   END INTERFACE
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=85), PRIVATE :: ident_string=  &
-       '$RCSfile: interpolate_mod.f90,v $//$Revision: 1.1 $//$Date: 2009/05/07 19:46:55 $'
+       '$RCSfile: interpolate_mod.f90,v $//$Revision: 1.1 $//$Date: 2010/01/21 17:03:04 $'
 
 CONTAINS
 

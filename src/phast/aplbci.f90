@@ -245,17 +245,17 @@ SUBROUTINE aplbci
 !!$  endif
   ! ... Apply specified flux b.c. implicit terms
   DO lc=1,nfbc_cells
-     m = flux_seg_index(lc)%m     ! ... current flux communication cell
+     m = flux_seg_index(lc)%m
      DO ls=flux_seg_index(lc)%seg_first,flux_seg_index(lc)%seg_last
         ufrac = 1._kdp
         IF(ifacefbc(ls) < 3) ufrac = frac(m)     
         ! ... Redirect the flux to the free-surface cell, if necessary
-        IF(fresur .AND. ifacefbc(ls) ==3 .AND. frac(m) <= 0._kdp) THEN
+        IF(fresur .AND. ifacefbc(ls) == 3 .AND. frac(m) <= 0._kdp) THEN
            l1 = MOD(m,nxy)
            IF(l1 == 0) l1 = nxy
            m = mfsbc(l1)
         ENDIF
-        if (m <= 0) CYCLE
+        IF (m == 0) EXIT          ! ... skip to next flux b.c. cell
         qn = qfflx(ls)*areafbc(ls)*ufrac
         ma = mrno(m)
         IF(ieq == 1) THEN
@@ -271,20 +271,6 @@ SUBROUTINE aplbci
            dqsbc = 0._kdp
            ! ... nothing implicit to assemble for flux b.c.
            !$$              rhs(ma)=rhs(ma)+fdtmth*(cc34(m)*dqsbc+cc35(m)*dqhbc)
-        ELSEIF(ieq == 2) THEN
-!!$           !... ** not available for phast
-!!$           IF(qn.LE.0.) THEN  
-!!$              ! ... outflow
-!!$              !**               dqsbc=den(m)*qn*dc(m)
-!!$              dqhdt = den(m) * qn* cpf  
-!!$           ELSE  
-!!$              ! ... inflow
-!!$              dqsbc = 0.d0  
-!!$              dqhdt = 0.d0  
-!!$           ENDIF
-!!$           va(7, ma) = va(7, ma) - fdtmth* dqhdt  
-!!$           dqsbc = 0.d0  
-!!$           rhs(ma) = rhs(ma) + fdtmth* cc24(m) * dqsbc  
         ELSEIF(ieq == 3) THEN
            IF(qn <= 0.) THEN                ! ... outflow
               dqsdc = den(m)*qn
@@ -408,7 +394,7 @@ SUBROUTINE aplbci
      m = river_seg_index(lc)%m     ! ... current river communication cell
      ! ... calculate current net river leakage flow rate
      ! ...      possible attenuation included explicitly
-     IF (m <= 0) CYCLE
+     IF(m == 0) CYCLE              ! ... dry column, skip to next river b.c. cell 
      qm_net = 0._kdp
      qfbc = 0._kdp
      dqfdp = 0._kdp
@@ -443,21 +429,6 @@ SUBROUTINE aplbci
      IF(ieq == 1) THEN
         va(7,ma) = va(7,ma) - fdtmth*dqfdp
         rhs(ma) = rhs(ma) + fdtmth*qfbc
-!!$     elseif(ieq.eq.2) then
-!!$        !... ** not available for phast
-!!$        if(qnp.le.0.) then  
-!!$           ! ... outflow
-!!$           !**            qsbc=den(m)*qnp*(c(m)+dc(m))
-!!$           qhbc = den(m) * qnp* eh(m)  
-!!$           dqhdt = den(m) * qnp* cpf  
-!!$        else  
-!!$           ! ... inflow
-!!$           if(heat) qhbc = denlbc(l) * qnp* ehoftp(tlbc(l), &
-!!$                p(m), erflg)
-!!$           dqhdt = 0.d0  
-!!$        endif
-!!$        va(7, ma) = va(7, ma) - fdtmth* dqhdt  
-!!$        !            rhs(ma)=rhs(ma)+fdtmth*(qhbc+cc24(m)*qsbc)
      ELSEIF(ieq == 3) THEN
         IF(qm_net <= 0._kdp) THEN           ! ... net outflow
            qsbc4(is) = qm_net*c(m,is)  
@@ -539,7 +510,7 @@ SUBROUTINE aplbci
            IF(qnp <= 0._kdp) THEN           ! ... outflow
               qfbc = den(m)*qn
               dqfdp = -den(m)*bdbc(ls)
-           ELSE                             ! ... inflow
+           ELSE                             ! ... inflow, not allowed
               qfbc = 0._kdp
               dqfdp = 0._kdp
            END IF

@@ -16,11 +16,12 @@ SUBROUTINE sumcal2
   !  CHARACTER(LEN=50) :: aform = '(TR5,A45,T47,1PE12.4,TR1,A7,T66,A,3(1PG10.3,A),2A)'
   !  CHARACTER(LEN=46) :: aformt = '(TR5,A43,1PE12.4,TR1,A7,TR1,A,3(1PG10.3,A),2A)'
   CHARACTER(LEN=9) :: cibc
+  CHARACTER(LEN=130) :: logline1
   REAL(KIND=kdp) :: denmfs, p1, pmfs,  &
        qlim, qm_in, qm_net, qn, qnp,  &
        u0, u1, ufdt0, ufdt1,  &
        ufrac, up0, z0, z1, z2, zfsl, zm1, zmfs, zp1
-  INTEGER :: da_err, i, imod, iwel, j, k, kfs, l, lc, l1, ls, m, m0, m1,  &
+  INTEGER :: da_err, i, icol, imod, iwel, j, jcol, k, kfs, l, lc, l1, ls, m, m0, m1,  &
        m1kp, mfs, mt
   LOGICAL :: ierrw
   CHARACTER(LEN=130) :: logline
@@ -349,22 +350,33 @@ SUBROUTINE sumcal2
         m1=nxyz-nxy+mt
 200     IF(frac(m1) > 0._kdp) GO TO 210
         m1=m1-nxy
-        !IF(m1 > 0) GO TO 200
-        IF(m1 > 0) then
-          if (ibc(m1) .ge. 0) GO TO 200
-        endif  
-        m1=0
-210     IF(ABS(m1 - m0) > nxy) ierrw = .TRUE.
-        mfsbc(mt)=m1
+        IF(m1 > 0) THEN
+            IF (ibc(m1) >= 0) GO TO 200
+        ENDIF
+        m1 = 0
+210     CONTINUE
+        IF(ABS(m1 - m0) > nxy) THEN
+           CALL mtoijk(mt,icol,jcol,1,nx,ny)
+           WRITE(logline1,'(a/tr5,a,i6,a,i5,a,i5)')   &
+                'WARNING: Free surface has moved more than one layer of cells in sumcal2',  &
+                'Cell column:', mt,' (i,j):', icol, ',', jcol
+           CALL screenprt_c(logline1)
+           CALL logprt_c(logline1)
+        END IF
+        mfsbc(mt) = m1
         DO m=m1-nxy,1,-nxy
            frac(m) = 1._kdp
         END DO
+        IF(m1 == 0 .AND. .NOT.print_dry_col(mt)) THEN
+           CALL mtoijk(mt,icol,jcol,1,nx,ny)
+           WRITE(logline1,'(a/tr5,a,i6,a,i5,a,i5)')   &
+                'WARNING: A column of cells has gone dry in sumcal2',  &
+                'Cell column:', mt,' (i,j):', icol, ',', jcol
+           CALL screenprt_c(logline1)
+           CALL logprt_c(logline1)
+           print_dry_col(mt) = .TRUE.
+        END IF
      END DO
-     IF(ierrw) then
-        WRITE(logline,*) 'WARNING: Free surface has moved more than one layer of cells'//  &
-          ' in one or more cell columns'
-        call screenprt_c(logline)
-     endif
      ! ... Calculate hydrostatic pressure for cells up to top of region
      ! ...      This gives a pressure field that may be used for an initial
      ! ...           condition for a future simulation

@@ -2,6 +2,7 @@
 #define POINT_H_INCLUDED
 #include <vector>
 #include <math.h>
+#include <istream>
 #include "Cell_Face.h"
 //#include "gpc.h"
 class Point

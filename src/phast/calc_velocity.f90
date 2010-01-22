@@ -104,7 +104,7 @@ SUBROUTINE calc_velocity
   ! ... Specified flux b.c.
   DO l=1,nfbc_cells
      m = flux_seg_index(l)%m
-     IF(m == 0) CYCLE     ! ... dry cell
+     IF(m == 0) CYCLE          ! ... dry cell
      DO  lc=1,num_bndy_cells
         mbc = b_cell(lc)%m_cell
         IF(mbc == m) THEN               ! ... found the b.c. cell
@@ -117,7 +117,7 @@ SUBROUTINE calc_velocity
                  IF(l1 == 0) l1 = nxy
                  mbc = mfsbc(l1)
               ENDIF
-              if (mbc <= 0) CYCLE
+              IF (mbc == 0) EXIT          ! ... skip to next flux b.c. cell
               qn = qfflx(ls)*areafbc(ls)
               IF(qn <= 0.) THEN        ! ... Outflow
                  qface = den(mbc)*qn*ufrac
@@ -171,7 +171,7 @@ SUBROUTINE calc_velocity
   ! ... River leakage b.c. terms
   DO l=1,nrbc
      m = river_seg_index(l)%m     ! ... current communicating cell 
-     IF(m == 0) CYCLE              ! ... empty cell
+     IF(m == 0) CYCLE              ! ... dry column, skip to next river b.c. cell 
      DO  lc=1,num_bndy_cells
         mbc = b_cell(lc)%m_cell
         IF(mbc == m) THEN               ! ... found the b.c. cell
@@ -206,7 +206,7 @@ SUBROUTINE calc_velocity
               qn = adbc(ls) - bdbc(ls)*dp(mbc)
               IF(qn <= 0._kdp) THEN           ! ... Outflow
                  qface = den(mbc)*qn
-              ELSE                            ! ... Inflow
+              ELSE                            ! ... Inflow, not allowed
                  qface = 0._kdp
               ENDIF
               DO ibf=1,b_cell(lc)%num_faces

@@ -7,7 +7,7 @@
 
 
 #include "kdtree2.hpp"
-
+#include <stdio.h>
 #include <algorithm>
 #include <iostream>
 

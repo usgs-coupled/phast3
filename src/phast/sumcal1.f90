@@ -632,7 +632,7 @@ SUBROUTINE sumcal1
            IF(l1 == 0) l1 = nxy
            m = mfsbc(l1)
         ENDIF
-        if (m <= 0) CYCLE
+        IF (m == 0) EXIT          ! ... dry column, skip to next flux b.c. cell
         qn = qfflx(ls)*areafbc(ls)
         IF(qn <= 0.) THEN             ! ... Outflow
            qfbc = den(m)*qn*ufrac  
@@ -684,7 +684,6 @@ SUBROUTINE sumcal1
   DO  lc=1,nfbc
      ccffb(lc) = ccffb(lc)+0.5*sffb(lc)*deltim
      ccfvfb(lc) = ccfvfb(lc)+0.5*sfvfb(lc)*deltim
-!!$     CCHFB(L)=CCHFB(L)+0.5*SHFB(L)*DELTIM
      DO  iis=1,ns
         ccsfb(lc,iis) = ccsfb(lc,iis)+0.5*ssfb(lc,iis)*deltim
      END DO
@@ -806,7 +805,7 @@ SUBROUTINE sumcal1
      sfrb(lc) = 0._kdp
      sfvrb(lc) = 0._kdp
      ssrb(lc,:) = 0._kdp
-     IF(m == 0) CYCLE
+     IF(m == 0) CYCLE              ! ... dry column, skip to next river b.c. cell 
      ! ... Calculate current net aquifer leakage flow rate
      qm_net = 0._kdp
      DO ls=river_seg_index(lc)%seg_first,river_seg_index(lc)%seg_last

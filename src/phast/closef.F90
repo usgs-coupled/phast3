@@ -618,7 +618,7 @@ SUBROUTINE closef(mpi_myself)
      PRINT *, "Array deallocation failed: closef: number 18"  
   ENDIF
   ! ...      Deallocate space for free surface and head print
-  DEALLOCATE (mfsbc, hdprnt, wt_elev,  &
+  DEALLOCATE (mfsbc, print_dry_col, hdprnt, wt_elev,  &
        stat = da_err)
   IF (da_err /= 0) THEN  
      PRINT *, "Array deallocation failed: closef: number 19"  
