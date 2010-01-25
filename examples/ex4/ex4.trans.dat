@@ -21,6 +21,9 @@ UNITS
      -river_bed_thickness              m
      -river_width                      m
      -river_depth                      m
+     -equilibrium_phases               rock
+     -exchange                         rock
+     -surface                          rock
 GRID
      -uniform X 0 90000 31
      -uniform Y 0 48000 17
@@ -162,4 +165,5 @@ PRINT_FREQUENCY
           -HDF_chemistry               1         step 
           -XYZ_chemistry               500000    y
           -XYZ_well                    1         step
+          #-force_chem                  end
 END
