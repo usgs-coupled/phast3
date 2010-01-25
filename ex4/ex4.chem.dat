@@ -68,20 +68,13 @@ USE solution 2
 EQUILIBRIUM_PHASES 2
         Dolomite        0.0     0.44         # mol/Lrock
         Calcite         0.0     0.027        # mol/Lrock
-        #Dolomite        0.0     1.6
-        #Calcite         0.0     0.1
 SAVE solution 2
 END
 EXCHANGE 2
         -equil with solution 2
         X       0.14                         # eq/L rock
-        #X       0.5
 SURFACE 2
         -equil solution 2
-        #-sites_units    DENSITY
-        #SurfOH          2.4     300.    17.  # sites/nm^2, m^2/g, g/Lrock
-        #SurfOH          4.5     300.    17.  # sites/nm^2, m^2/g, g/Lrock
-        #SurfOH          0.14     600.    30
         SurfOH          0.04     300.    17.
 END
 SELECTED_OUTPUT

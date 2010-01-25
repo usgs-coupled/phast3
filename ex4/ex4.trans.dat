@@ -165,5 +165,4 @@ PRINT_FREQUENCY
           -HDF_chemistry               1         step 
           -XYZ_chemistry               500000    y
           -XYZ_well                    1         step
-          #-force_chem                  end
 END
