@@ -19,10 +19,10 @@ UNITS
         -drain_hydraulic_conductivity m/d
         -drain_thickness              m
         -drain_width                  m
-#----- Use the following line for EXAMPLE 6A, steady state simulation        
-STEADY_FLOW true
-#----- Use the following line for EXAMPLE 6B, transient simulation
-#STEADY_FLOW false
+#----- Use the following line for EXAMPLE 5A, steady state simulation        
+#STEADY_FLOW true
+#----- Use the following line for EXAMPLE 5B, transient simulation
+STEADY_FLOW false
 FREE_SURFACE_BC true        
 GRID
         -uniform X 275000 285000  51         # 200 m grid
@@ -219,10 +219,10 @@ ZONE_FLOW 1
                 -write_heads_xyzt     plume.heads.xyzt
 HEAD_IC
         -domain 
-                #----- Use the following line for EXAMPLE 6A, steady state simulation
-                -head                 10        
-                #----- Use the following line for EXAMPLE 6B, transient simulation 
-                #-head     XYZ        GRID   ex5.head.200.dat                 
+                #----- Use the following line for EXAMPLE 5A, steady state simulation
+                #-head                 10        
+                #----- Use the following line for EXAMPLE 5B, transient simulation 
+                -head     XYZ        GRID   ex5.head.200.dat                 
 TIME_CONTROL
         -time_step
                 0                     0.5
