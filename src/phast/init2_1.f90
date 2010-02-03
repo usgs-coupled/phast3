@@ -40,10 +40,10 @@ SUBROUTINE init2_1
        udxdyo, udxdz, udxyz, udxyzi, udxyzo, udy, udydz, udz, ugdelx,  &
        ugdely, ugdelz, upabd, upor, ut, uwi, x0, y0, z0, z1,  &
        zfsl, zm1, zp1
-  INTEGER :: a_err, da_err, i, ic, icol, imm, imod, ipmz, iis, iwel, j, jc, jcol, k, k1, k2, kf, &
+  INTEGER :: a_err, da_err, i, ic, icol, imm, imod, ipmz, iis, iwel, j, jc, jcol,  &
+       k, k1, k2, kcol, kf, &
        kinc, kl, kr, ks, kw, l, l1, lc, ls, m, mb, mc, mele, m1, m2, &
        mk, mr, ms, msv, mt, nele, nks, nr, nsa, nxele, nxyele
-  INTEGER :: kcol     
   INTEGER :: ibf, icz, isd, izn, lbc, mks, msd, nbc, nbf, t_bctype, t_findx, t_lindx
   INTEGER, DIMENSION(8) :: iisd=(/7,8,5,6,3,4,1,2/)
   INTEGER, DIMENSION(6) :: num_indx

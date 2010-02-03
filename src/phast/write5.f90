@@ -939,10 +939,6 @@ SUBROUTINE write5
 2042       FORMAT(tr20,10A)
            CALL prntar(2,aprnt1,lprnt1,fubcf,cnvmfi,24,000)
         END IF
-        IF(heat.AND.prthd2) THEN
-           WRITE(fubcf,2042) 'Associated Heat   ('//unithf//')'
-           CALL prntar(2,aprnt2,lprnt2,fubcf,cnvhfi,24,000)
-        END IF
         IF (solute) THEN
            DO  is=1,ns
               DO  l=1,nsbc
@@ -966,25 +962,6 @@ SUBROUTINE write5
               END IF
            END DO
         ENDIF
-!!$        IF(heat) THEN
-!!$           DO  m=1,nxyz
-!!$              lprnt1(m)=-1
-!!$           END DO
-!!$           prthd=.FALSE.
-!!$           DO  l=1,nsbc
-!!$              m=msbc(l)
-!!$              WRITE(cibc,3007) ibc(m)
-!!$              IF(cibc(4:4) == '1') THEN
-!!$                 !                     APRNT1(M)=QHSBC(L)
-!!$                 lprnt1(m)=1
-!!$                 prthd=.TRUE.
-!!$              END IF
-!!$           END DO
-!!$           IF(prthd) THEN
-!!$              WRITE(fubcf,2042) 'Heat   ('//unithf//')'
-!!$              CALL prntar(2,aprnt1,lprnt1,fubcf,cnvhfi,24,000)
-!!$           END IF
-!!$        END IF
         IF (solute) THEN
            DO  is=1,ns
               DO  m=1,nxyz
@@ -1030,19 +1007,8 @@ SUBROUTINE write5
               aprnt1(m) = qffbc(lc)
            END IF
         END DO
-!!$        IF(erflg) THEN
-!!$           WRITE(fuclog,9001) 'EHOFTP interpolation error in WRITE5 ','Specified flux b.c '
-!!$9001       FORMAT(tr10,2A,i4)
-!!$           ierr(134)=.TRUE.
-!!$           errexe=.TRUE.
-!!$           RETURN
-!!$        END IF
         WRITE(fubcf,2042) 'Fluid Mass   (',unitm,'/',TRIM(unittm),')'
         CALL prntar(2,aprnt1,lprnt1,fubcf,cnvmfi,24,000)
-!!$        IF(heat .AND. prthd) THEN
-!!$           WRITE(fubcf,2042) 'Associated Advective Heat   ('// unithf//')'
-!!$           CALL prntar(2,aprnt2,lprnt1,fubcf,cnvmfi,24,000)
-!!$        END IF
         IF (solute) THEN
            DO  iis=1,ns
               DO  lc=1,nfbc_cells
@@ -1071,26 +1037,6 @@ SUBROUTINE write5
               END IF
            END DO
         ENDIF
-!!$        IF(heat) THEN
-!!$           DO  m=1,nxyz
-!!$              lprnt1(m)=-1
-!!$           END DO
-!!$           prthd=.FALSE.
-!!$           DO  l=1,nfbc
-!!$              m=mfbc(l)
-!!$              WRITE(cibc,3007) ibc(m)
-!!$              ic=INDEX(cibc(4:6),'2')
-!!$              IF(ic > 0) THEN
-!!$                 lprnt1(m)=1
-!!$                 prthd=.TRUE.
-!!$                 !                     APRNT1(M)=QHFBC(L)
-!!$              END IF
-!!$           END DO
-!!$           IF(prthd) THEN
-!!$              WRITE(fubcf,2042) 'Heat   ('//unithf//')'
-!!$              CALL prntar(2,aprnt1,lprnt1,fubcf,cnvhfi,24,000)
-!!$           END IF
-!!$        END IF
         IF (solute) THEN
            lprnt1 = -1
            prthd = .FALSE.
@@ -1136,14 +1082,8 @@ SUBROUTINE write5
            m = leak_seg_index(lc)%m
            lprnt1(m) = 1
            aprnt1(m) = qflbc(lc)
-           !$$                 APRNT2(M)=QHLBC(L)
-           !$$                 APRNT3(M)=QSLBC(L)
         END DO
         CALL prntar(2,aprnt1,lprnt1,fubcf,cnvmfi,24,000)
-!!$        IF(heat) THEN
-!!$           WRITE(fubcf,2042) 'Leakage B.C.: Associated Advective Heat   ('// unithf//')'
-!!$           CALL prntar(2,aprnt2,lprnt1,fubcf,cnvhfi,24,000)
-!!$        END IF
         IF (solute) THEN
            DO  iis=1,ns
               DO  lc=1,nlbc
@@ -1165,19 +1105,19 @@ SUBROUTINE write5
         aprnt4 = 0._kdp
         DO  lc=1,nrbc
            m = river_seg_index(lc)%m
-           lprnt4(m) = 1
-           aprnt4(m) = qfrbc(lc)
+           IF (m > 0) THEN
+             lprnt4(m) = 1
+             aprnt4(m) = qfrbc(lc)
+           ENDIF
         END DO
         CALL prntar(2,aprnt4,lprnt4,fubcf,cnvmfi,24,000)
-!!$        IF(heat) THEN
-!!$           WRITE(fubcf,2042) 'Associated Advective Heat   ('// unithf//')'
-!!$           CALL prntar(2,aprnt2,lprnt1,fubcf,cnvhfi,24,000)
-!!$        END IF
         IF (solute) THEN
            DO  iis=1,ns
               DO  lc=1,nrbc
                  m = river_seg_index(lc)%m
-                 aprnt3(m) = qsrbc(lc,iis)
+                 IF (m > 0) THEN
+                    aprnt3(m) = qsrbc(lc,iis)
+                 END IF
               END DO
               WRITE(fubcf,2042) 'River Leakage B.C.: Associated Advective Solute   ('  &
                    //unitm//'/'//TRIM(unittm)//')'
@@ -1197,10 +1137,6 @@ SUBROUTINE write5
            aprnt4(m) = qfdbc(lc)
         END DO
         CALL prntar(2,aprnt4,lprnt4,fubcf,cnvmfi,24,000)
-!!$        IF(heat) THEN
-!!$           WRITE(fubcf,2042) 'Associated Advective Heat   ('// unithf//')'
-!!$           CALL prntar(2,aprnt2,lprnt1,fubcf,cnvhfi,24,000)
-!!$        END IF
         IF (solute) THEN
            DO  iis=1,ns
               DO  lc=1,ndbc
@@ -1269,36 +1205,6 @@ SUBROUTINE write5
 !!$           WRITE(fubcf,2042) 'Associated Advective Solute   (',unitm,'/',TRIM(unittm),')'
 !!$           CALL prntar(2,aprnt3,lprnt1,fubcf,cnvmfi,24,000)
 !!$        END IF
-!!$     END IF
-!!$     IF(nhcbc > 0) THEN
-!!$        !... **not available for PHAST
-!!$        WRITE(fubcf,2043) 'Heat Conduction B.C. Heat Flow Rates ',  &
-!!$             '(positive is into the region)'
-!!$        DO  m=1,nxyz
-!!$           lprnt1(m)=-1
-!!$        END DO
-!!$        DO  l=1,nhcbc
-!!$           m=mhcbc(l)
-!!$           aprnt1(m)=qhcbc(l)
-!!$           lprnt1(m)=1
-!!$        END DO
-!!$        WRITE(fubcf,2042) 'Heat   ('//unithf//')'
-!!$        CALL prntar(2,aprnt1,lprnt1,fubcf,cnvhfi,24,000)
-!!$        WRITE(fubcf,2043) 'Heat Conduction B.C. Temperature Profiles ', &
-!!$             'Rows are normal to the boundary '
-!!$        WRITE(fubcf,2042) 'Temperature  (Deg.'//unitt//')'
-!!$        WRITE(fubcf,2044) 'B.C. Node No.'
-!!$2044    FORMAT(tr1,a)
-!!$        DO  l=1,nhcbc
-!!$           WRITE(fubcf,2045) l
-!!$2045       FORMAT(i3)
-!!$           lll=(l-1)*nhcn
-!!$           DO  ll=1,nhcn
-!!$              aprnt1(ll)=cnvt1i*thcbc(lll+ll)+cnvt2i
-!!$              lprnt1(ll)=1
-!!$           END DO
-!!$           CALL prntar(1,aprnt1,lprnt1,fubcf,cnv,12,nhcn)
-!!$        END DO
 !!$     END IF
      ntprbcf = ntprbcf+1
   END IF
