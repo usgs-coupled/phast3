@@ -24,8 +24,6 @@ SUBROUTINE sumcal_ss_flow
 !!$     END SUBROUTINE sbcflo
 !!$  END INTERFACE
   !
-  !  EXTERNAL ehoftp, viscos
-  !  REAL(kind=kdp) :: ehoftp, viscos
 !!$  CHARACTER(LEN=50) :: aform = '(TR5,A45,T47,1PE12.4,TR1,A7,T66,A,3(1PG10.3,A),2A)'
 !!$  CHARACTER(LEN=46) :: aformt = '(TR5,A43,1PE12.4,TR1,A7,TR1,A,3(1PG10.3,A),2A)'
   CHARACTER(LEN=9) :: cibc
@@ -33,9 +31,8 @@ SUBROUTINE sumcal_ss_flow
        qlim, qm_net, qn, qnp, u0, u1, u2, u6, uc,  &
        ufdt1, ufrac, up0, z0, z1, z2, zfsl, zm1, zmfs, zp1
 !!$  REAL(KIND=kdp), DIMENSION(nxy) :: fracn
-  INTEGER :: a_err, da_err, i, icol, imod, iwel, j, jcol, k, kfs, l, l1, lc, ls, m, m0, m1, m1kp, mfs,  &
-       mpmax, mt
-  INTEGER :: kcol
+  INTEGER :: a_err, da_err, i, icol, imod, iwel, j, jcol, k, kfs, kcol,  &
+       l, l1, lc, ls, m, m0, m1, m1kp, mfs, mpmax, mt
   LOGICAL :: ierrw
   CHARACTER(LEN=130) :: logline1, logline2
   ! ... Set string for use with RCS ident command
@@ -444,11 +441,6 @@ SUBROUTINE sumcal_ss_flow
 210     CONTINUE
         IF(ABS(m1 - m0) > nxy) THEN
            CALL mtoijk(mt,icol,jcol,kcol,nx,ny)
-           !WRITE(logline1,'(a/tr5,a,i6,a,i5,a,i5)')   &
-           !     'WARNING: Free surface has moved more than one layer of cells in sumcal_ss_flow',  &
-           !     'Cell column:', mt,' (i,j):', icol, ',', jcol
-           !CALL screenprt_c(logline1)
-           !CALL logprt_c(logline1)
            WRITE(logline1,'(a)') &
                 'WARNING: Free surface has moved more than one layer of cells in sumcal_ss_flow'
            CALL screenprt_c(logline1)
@@ -464,11 +456,6 @@ SUBROUTINE sumcal_ss_flow
         END DO
         IF(m1 == 0 .AND. .NOT.print_dry_col(mt)) THEN
            CALL mtoijk(mt,icol,jcol,kcol,nx,ny)
-           !WRITE(logline1,'(a/tr5,a,i6,a,i5,a,i5)')   &
-           !     'WARNING: A column of cells has gone dry in sumcal_ss_flow',  &
-           !     'Cell column:', mt,' (i,j):', icol, ',', jcol
-           !CALL screenprt_c(logline1)
-           !CALL logprt_c(logline1)
            WRITE(logline1,'(a)') 'WARNING: A column of cells has gone dry in sumcal_ss_flow'
            CALL screenprt_c(logline1)
            CALL logprt_c(logline1)

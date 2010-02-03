@@ -17,7 +17,6 @@ SUBROUTINE media_hdf
   USE hdf_media
   IMPLICIT NONE
   !
-
   INTRINSIC index
   INTERFACE
      FUNCTION nintrp(xarg,nx,xs,erflg)
@@ -50,6 +49,8 @@ SUBROUTINE media_hdf
   REAL(KIND=kdp) :: conv
   CHARACTER (LEN=119) :: name
   TYPE(cell_properties), DIMENSION(:), ALLOCATABLE :: cell_props
+  ! ... set string for use with rcs ident command
+  CHARACTER(LEN=80) :: ident_string='$Id: media_hdf.f90,v 1.2 2010/02/03 20:02:09 klkipp Exp klkipp $'
   !     ------------------------------------------------------------------
   ALLOCATE (cell_props(nxyz), &
        stat = a_err)
