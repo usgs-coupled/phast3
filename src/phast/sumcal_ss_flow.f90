@@ -35,6 +35,7 @@ SUBROUTINE sumcal_ss_flow
 !!$  REAL(KIND=kdp), DIMENSION(nxy) :: fracn
   INTEGER :: a_err, da_err, i, icol, imod, iwel, j, jcol, k, kfs, l, l1, lc, ls, m, m0, m1, m1kp, mfs,  &
        mpmax, mt
+  INTEGER :: kcol
   LOGICAL :: ierrw
   CHARACTER(LEN=130) :: logline1, logline2
   ! ... Set string for use with RCS ident command
@@ -442,24 +443,39 @@ SUBROUTINE sumcal_ss_flow
         m1 = 0
 210     CONTINUE
         IF(ABS(m1 - m0) > nxy) THEN
-           CALL mtoijk(mt,icol,jcol,1,nx,ny)
-           WRITE(logline1,'(a/tr5,a,i6,a,i5,a,i5)')   &
-                'WARNING: Free surface has moved more than one layer of cells in sumcal_ss_flow',  &
-                'Cell column:', mt,' (i,j):', icol, ',', jcol
+           CALL mtoijk(mt,icol,jcol,kcol,nx,ny)
+           !WRITE(logline1,'(a/tr5,a,i6,a,i5,a,i5)')   &
+           !     'WARNING: Free surface has moved more than one layer of cells in sumcal_ss_flow',  &
+           !     'Cell column:', mt,' (i,j):', icol, ',', jcol
+           !CALL screenprt_c(logline1)
+           !CALL logprt_c(logline1)
+           WRITE(logline1,'(a)') &
+                'WARNING: Free surface has moved more than one layer of cells in sumcal_ss_flow'
            CALL screenprt_c(logline1)
            CALL logprt_c(logline1)
+           WRITE(logline1,'(tr5,a,i6,a,i5,a,i5)')   &
+                'Cell column:', mt,' (i,j):', icol, ',', jcol
+           CALL screenprt_c(logline1)
+           CALL logprt_c(logline1)                      
         END IF
         mfsbc(mt) = m1
         DO m=m1-nxy,1,-nxy
            frac(m) = 1._kdp
         END DO
         IF(m1 == 0 .AND. .NOT.print_dry_col(mt)) THEN
-           CALL mtoijk(mt,icol,jcol,1,nx,ny)
-           WRITE(logline1,'(a/tr5,a,i6,a,i5,a,i5)')   &
-                'WARNING: A column of cells has gone dry in sumcal_ss_flow',  &
-                'Cell column:', mt,' (i,j):', icol, ',', jcol
+           CALL mtoijk(mt,icol,jcol,kcol,nx,ny)
+           !WRITE(logline1,'(a/tr5,a,i6,a,i5,a,i5)')   &
+           !     'WARNING: A column of cells has gone dry in sumcal_ss_flow',  &
+           !     'Cell column:', mt,' (i,j):', icol, ',', jcol
+           !CALL screenprt_c(logline1)
+           !CALL logprt_c(logline1)
+           WRITE(logline1,'(a)') 'WARNING: A column of cells has gone dry in sumcal_ss_flow'
            CALL screenprt_c(logline1)
            CALL logprt_c(logline1)
+           WRITE(logline1,'(tr5,a,i6,a,i5,a,i5)')   &
+                'Cell column:', mt,' (i,j):', icol, ',', jcol
+           CALL screenprt_c(logline1)
+           CALL logprt_c(logline1)           
            print_dry_col(mt) = .TRUE.
         END IF
      END DO

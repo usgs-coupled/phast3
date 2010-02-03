@@ -536,8 +536,11 @@ SUBROUTINE write5_ss_flow
         lprnt4 = -1
         DO  lc=1,nrbc
            m = river_seg_index(lc)%m
-           lprnt4(m) = 1
-           aprnt4(m) = qfrbc(lc)
+           if (m > 0) then
+             lprnt4(m) = 1
+             aprnt4(m) = qfrbc(lc)
+           endif
+           
         END DO
         CALL prntar(2,aprnt4,lprnt4,fubcf,cnvmfi,24,000)
      END IF

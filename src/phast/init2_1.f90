@@ -34,7 +34,7 @@ SUBROUTINE init2_1
      LOGICAL, DIMENSION(8) :: sd_active
   END TYPE cell_subdom
   CHARACTER(LEN=9) :: cibc
-  CHARACTER(LEN=130) :: logline1
+  CHARACTER(LEN=130) :: logline1, logline2
   REAL(KIND=kdp) :: keffl, keffu, up0, p1, rmm, rorw2, sum, t_rswap,  &
        uarbc, uarx, uary, uarz, uc, uden, udx, udxdy, udxdyi,  &
        udxdyo, udxdz, udxyz, udxyzi, udxyzo, udy, udydz, udz, ugdelx,  &
@@ -43,6 +43,7 @@ SUBROUTINE init2_1
   INTEGER :: a_err, da_err, i, ic, icol, imm, imod, ipmz, iis, iwel, j, jc, jcol, k, k1, k2, kf, &
        kinc, kl, kr, ks, kw, l, l1, lc, ls, m, mb, mc, mele, m1, m2, &
        mk, mr, ms, msv, mt, nele, nks, nr, nsa, nxele, nxyele
+  INTEGER :: kcol     
   INTEGER :: ibf, icz, isd, izn, lbc, mks, msd, nbc, nbf, t_bctype, t_findx, t_lindx
   INTEGER, DIMENSION(8) :: iisd=(/7,8,5,6,3,4,1,2/)
   INTEGER, DIMENSION(6) :: num_indx
@@ -1464,9 +1465,11 @@ SUBROUTINE init2_1
      END DO
      IF(m1 == 0) THEN
         some_dry = .TRUE.
-        CALL mtoijk(mt,icol,jcol,1,nx,ny)
-        WRITE(logline1,'(a/tr5,a,i6,a,i5,a,i5)')   &
-             'WARNING: A column of cells is dry in init2_1',  &
+        CALL mtoijk(mt,icol,jcol,kcol,nx,ny)
+        WRITE(logline1,'(a)')  'WARNING: A column of cells is dry in init2_1'
+        CALL screenprt_c(logline1)
+        CALL logprt_c(logline1)
+        WRITE(logline1,'(tr5,a,i6,a,i5,a,i5,i5)')   &
              'Cell column:', mt,' (i,j):', icol, ',', jcol
         CALL screenprt_c(logline1)
         CALL logprt_c(logline1)
