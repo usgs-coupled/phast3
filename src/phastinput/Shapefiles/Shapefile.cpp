@@ -178,6 +178,7 @@ Shapefile::Dump(std::ostream & oss)
 			  adfMaxBound[0], adfMaxBound[1], adfMaxBound[2], adfMaxBound[3]);
 	oss << str;
 
+	int vertex = 0;	
 	for (i = 0; i < nEntities; i++)
 	{
 		int j;
@@ -199,6 +200,7 @@ Shapefile::Dump(std::ostream & oss)
 
 		for (j = 0, iPart = 1; j < psShape->nVertices; j++)
 		{
+			vertex++;
 			const char *pszPartType = "";
 
 			if (j == 0 && psShape->nParts > 0)
@@ -214,11 +216,11 @@ Shapefile::Dump(std::ostream & oss)
 				pszPlus = " ";
 
 			char str[200];
-			sprintf_s(str, "   %s (%12.3f,%12.3f, %g, %g) %s \n",
+			sprintf_s(str, "   %s (%12.3f,%12.3f, %g, %g) %d %s \n",
 					  pszPlus,
 					  psShape->padfX[j],
 					  psShape->padfY[j],
-					  psShape->padfZ[j], psShape->padfM[j], pszPartType);
+					  psShape->padfZ[j], psShape->padfM[j], vertex, pszPartType);
 			oss << str;
 		}
 	}
@@ -473,6 +475,7 @@ bool Shapefile::Make_points(const int attribute, std::vector < Point > &pts)
 
 	double
 		xlast = -99, ylast = -99, zlast = -99;
+	int vertex_number = 0;
 	for (i = 0; i < nEntities; i++)
 	{
 		int
@@ -497,7 +500,15 @@ bool Shapefile::Make_points(const int attribute, std::vector < Point > &pts)
 		// Apply value to all vertices
 		for (j = 0; j < psShape->nVertices; j++)
 		{
-			if ((i == 0 && j == 0) ||
+			vertex_number++;
+			if ( ( i != 0 || j != 0) &&
+				psShape->padfX[j] == xlast &&
+				psShape->padfY[j] == ylast && psShape->padfZ[j] == zlast)
+			{
+				psShape->padfX[j] += 1e-12*psShape->padfX[j];
+				psShape->padfY[j] += 1e-12*psShape->padfY[j];
+			}
+			if ( ( i == 0 && j == 0) ||
 				psShape->padfX[j] != xlast ||
 				psShape->padfY[j] != ylast || psShape->padfZ[j] != zlast)
 			{
@@ -523,6 +534,10 @@ bool Shapefile::Make_points(const int attribute, std::vector < Point > &pts)
 				xlast = psShape->padfX[j];
 				ylast = psShape->padfY[j];
 				zlast = psShape->padfZ[j];
+			}
+			else
+			{
+								//fprintf(stderr, "Skipped vertex\n");
 			}
 		}
 	}
@@ -612,6 +627,7 @@ bool Shapefile::Make_polygons(int field, PHAST_polygon & polygons)
 	assert(ds->Get_source_type() == Data_source::POINTS);
 	assert(ds->Get_points().size() > 3);
 	polygons.Get_points() = ds->Get_points();
+	bool dumped = false;
 
 
 
@@ -671,13 +687,18 @@ bool Shapefile::Make_polygons(int field, PHAST_polygon & polygons)
 					std::ostringstream estring;
 					estring << "Ignoring holes in polygon shape file. " << this->filename << std::endl;
 					warning_msg(estring.str().c_str());
-					//this->Dump(std::cerr);
+					if (!dumped)
+					{
+						//this->Dump(std::cerr);
+						dumped = true;
+					}
 					break;
 				}
 			}
 		}
 	}
 	std::vector < Point >::iterator it = polygons.Get_points().begin();
+	int vertex_number = 0;
 	for (i = 0; i < nEntities; i++)
 	{
 		polygons.Get_begin().push_back(it);
@@ -723,8 +744,10 @@ bool Shapefile::Make_polygons(int field, PHAST_polygon & polygons)
 			for (j = psShape->panPartStart[iPart]; j < end; j++)
 			{
 				it++;
+				vertex_number++;
 			}
 			polygons.Get_end().push_back(it);
+			//fprintf(stderr, "End Shape %d, Part %d, Within Part %d, Vertex %d\n", i, iPart, j, vertex_number);
 			if (iPart + 1 < psShape->nParts)
 			{
 				polygons.Get_begin().push_back(it + 1);
