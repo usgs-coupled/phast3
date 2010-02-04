@@ -671,7 +671,7 @@ bool Shapefile::Make_polygons(int field, PHAST_polygon & polygons)
 					std::ostringstream estring;
 					estring << "Ignoring holes in polygon shape file. " << this->filename << std::endl;
 					warning_msg(estring.str().c_str());
-					this->Dump(std::cerr);
+					//this->Dump(std::cerr);
 					break;
 				}
 			}
@@ -705,6 +705,17 @@ bool Shapefile::Make_polygons(int field, PHAST_polygon & polygons)
 		//	}
 		//}
 
+		////for (iPart = 0; iPart < psShape->nParts; iPart++)
+		////{
+		////	int end = psShape->nVertices;
+		////	if (iPart + 1 < psShape->nParts) end = psShape->panPartStart[iPart + 1];
+		////	for (j = psShape->panPartStart[iPart]; j < end; j++)
+		////	{
+		////		it++;
+		////	}
+		////	polygons.Get_end().push_back(it);
+		////}
+
 		for (iPart = 0; iPart < psShape->nParts; iPart++)
 		{
 			int end = psShape->nVertices;
@@ -714,8 +725,11 @@ bool Shapefile::Make_polygons(int field, PHAST_polygon & polygons)
 				it++;
 			}
 			polygons.Get_end().push_back(it);
+			if (iPart + 1 < psShape->nParts)
+			{
+				polygons.Get_begin().push_back(it + 1);
+			}
 		}
-
 	}
 	polygons.Set_coordinate_system(this->coordinate_system);
 	polygons.Set_bounding_box();
