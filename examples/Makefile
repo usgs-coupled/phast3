@@ -13,16 +13,18 @@ endif
 ifeq ($(CFG), CYGWIN)
   TOPDIR=/cygdrive/c/programs/phastpp
   TEST=$(TOPDIR)/examples
-  PHAST_INPUT=$(TOPDIR)/src/phastinput/win32_2005/Debug/phastinput.exe
+  PHAST_INPUT=$(TOPDIR)/src/phastinput/vc80/Release/phastinput.exe
   PHAST=$(TOPDIR)/src/phast/win32_2005/ser/phast.exe
   # only for mpich target
   PHAST_MPICH=$(TOPDIR)/src/phast/win32_2005/merge_debug/phast.exe
   RUN=$(TEST)/runmpich
 endif
 
-SERIAL = decay diffusion1d diffusion2d disp2d ex3 kindred4.4 leaky leakyx leakyz linear_bc linear_ic ex4 notch phrqex11 ex1 radial river unconf well ex2 free ex4restart print_check_ss print_check_transient ex4_start_time mass_balance simple ex4_noedl ex4_ddl ex4_transient leakysurface flux_patches patches_lf zf property shell
+SERIAL = decay diffusion1d diffusion2d disp2d ex3 kindred4.4 leaky leakyx leakyz linear_bc linear_ic ex4 notch phrqex11 ex1 radial river unconf well ex2 free ex4restart print_check_ss print_check_transient ex4_start_time mass_balance simple ex4_noedl ex4_ddl ex4_transient leakysurface flux_patches patches_lf zf property shell ex5 ex6
 
-PARALLEL =  decay_parallel diffusion1d_parallel diffusion2d_parallel disp2d_parallel ex3_parallel kindred4.4_parallel leaky_parallel leakyx_parallel leakyz_parallel linear_bc_parallel linear_ic_parallel ex4_parallel notch_parallel phrqex11_parallel ex1_parallel radial_parallel river_parallel unconf_parallel well_parallel ex2_parallel free_parallel ex4restart_parallel print_check_ss_parallel print_check_transient_parallel  ex4_start_time_parallel mass_balance_parallel simple_parallel ex4_noedl_parallel ex4_ddl_parallel ex4_transient_parallel leakysurface_parallel flux_patches_parallel patches_lf_parallel zf_parallel property_parallel shell_parallel
+PARALLEL =  decay_parallel diffusion1d_parallel diffusion2d_parallel disp2d_parallel ex3_parallel kindred4.4_parallel leaky_parallel leakyx_parallel leakyz_parallel linear_bc_parallel linear_ic_parallel ex4_parallel notch_parallel phrqex11_parallel ex1_parallel radial_parallel river_parallel unconf_parallel well_parallel ex2_parallel \
+	free_parallel ex4restart_parallel print_check_ss_parallel print_check_transient_parallel  ex4_start_time_parallel mass_balance_parallel simple_parallel ex4_noedl_parallel ex4_ddl_parallel ex4_transient_parallel leakysurface_parallel flux_patches_parallel patches_lf_parallel zf_parallel property_parallel shell_parallel \
+	ex5_parallel ex6_parallel
 
 CLEAN_SERIAL = decay_clean diffusion1d_clean diffusion2d_clean disp2d_clean ex3_clean \
 	kindred4.4_clean leaky_clean leakyx_clean leakyz_clean \
@@ -30,7 +32,7 @@ CLEAN_SERIAL = decay_clean diffusion1d_clean diffusion2d_clean disp2d_clean ex3_
 	radial_clean river_clean unconf_clean well_clean ex2_clean free_clean \
 	ex4restart_clean print_check_ss_clean print_check_transient_clean ex4_start_time_clean \
 	mass_balance_clean simple_clean ex4_noedl_clean ex4_ddl_clean ex4_transient_clean leakysurface_clean \
-	flux_patches_clean patches_lf_clean zf_clean property_clean shell_clean
+	flux_patches_clean patches_lf_clean zf_clean property_clean shell_clean ex5_clean ex6_clean
 
 CLEAN_PARALLEL = decay_clean_parallel diffusion1d_clean_parallel diffusion2d_clean_parallel \
 	disp2d_clean_parallel ex3_clean_parallel kindred4.4_clean_parallel \
@@ -43,7 +45,7 @@ CLEAN_PARALLEL = decay_clean_parallel diffusion1d_clean_parallel diffusion2d_cle
 	ex4_start_time_clean_parallel mass_balance_clean_parallel simple_clean_parallel \
 	ex4_noedl_clean_parallel ex4_ddl_clean_parallel ex4_transient_clean_parallel leakysurface_clean_parallel \
 	flux_patches_clean_parallel patches_lf_clean_parallel zf_clean_parallel property_clean_parallel \
-	shell_clean_parallel
+	shell_clean_parallel ex5_clean_parallel ex6_clean_parallel
 
 CLEAN_CMD =  rm -f *~ *.O.* *.log *.h5 *.h5~ abs* *.h5dump *.sel *.xyz* *backup* *.txt *.tsv Phast.tmp 
 
@@ -539,6 +541,32 @@ ex4_clean_parallel:
 	  find $(TEST)/ex4/0 -maxdepth 1 -type f | xargs rm -f; \
 	fi
 #
+# ok
+#
+ex4v1: ex4v1_clean
+	echo ; 
+	echo ============= ex4v1
+	echo ; 
+	cd $(TEST)/ex4v1;
+	cd $(TEST)/ex4v1; $(PHAST_INPUT) ex4v1; time $(PHAST)
+	echo ============= Done ex4v1
+
+ex4v1_parallel: ex4v1_clean_parallel
+	echo ; 
+	echo ============= ex4v1 Parallel
+	echo ; 
+	$(RUN) ex4v1
+	echo ============= Done ex4v1 Parallel
+
+ex4v1_clean:
+	cd $(TEST)/ex4v1; $(CLEAN_CMD) ex4v1.head.dat
+
+ex4v1_clean_parallel:
+	@if [ -d $(TEST)/ex4v1/0 ]; \
+	  then \
+	  find $(TEST)/ex4v1/0 -maxdepth 1 -type f | xargs rm -f; \
+	fi	
+#
 # ex4_noedl
 #
 ex4_noedl: ex4_noedl_clean
@@ -671,6 +699,58 @@ ex4restart_clean_parallel:
 	@if [ -d $(TEST)/ex4restart/0 ]; \
 	  then \
 	  find $(TEST)/ex4restart/0 -maxdepth 1 -type f | xargs rm -f; \
+	fi
+#
+# Cape Cod flow
+#
+ex5: ex5_clean
+	echo ; 
+	echo ============= ex5
+	echo ; 
+	cd $(TEST)/ex5;
+	cd $(TEST)/ex5; $(PHAST_INPUT) ex5; time $(PHAST)
+	echo ============= Done ex5
+
+ex5_parallel: ex5_clean_parallel
+	echo ; 
+	echo ============= ex5 Parallel
+	echo ; 
+	$(RUN) ex5
+	echo ============= Done ex5 Parallel
+
+ex5_clean:
+	cd $(TEST)/ex5; $(CLEAN_CMD) ex5.head.dat
+
+ex5_clean_parallel:
+	@if [ -d $(TEST)/ex5/0 ]; \
+	  then \
+	  find $(TEST)/ex5/0 -maxdepth 1 -type f | xargs rm -f; \
+	fi
+#
+# Cape Cod transport and reactions
+#
+ex6: ex6_clean
+	echo ; 
+	echo ============= ex6
+	echo ; 
+	cd $(TEST)/ex6;
+	cd $(TEST)/ex6; $(PHAST_INPUT) ex6; time $(PHAST)
+	echo ============= Done ex6
+
+ex6_parallel: ex6_clean_parallel
+	echo ; 
+	echo ============= ex6 Parallel
+	echo ; 
+	$(RUN) ex6
+	echo ============= Done ex6 Parallel
+
+ex6_clean:
+	cd $(TEST)/ex6; $(CLEAN_CMD) ex6.head.dat
+
+ex6_clean_parallel:
+	@if [ -d $(TEST)/ex6/0 ]; \
+	  then \
+	  find $(TEST)/ex6/0 -maxdepth 1 -type f | xargs rm -f; \
 	fi
 #
 # Notch
