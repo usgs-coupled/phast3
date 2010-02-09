@@ -52,6 +52,7 @@ class PHAST_polygon
 	void Clear(void);
 	PHAST_polygon & operator=(const PHAST_polygon & poly);
 
+	void Tidy(void);
   protected:
 	// data
 	struct zone box;

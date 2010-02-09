@@ -314,3 +314,129 @@ PHAST_polygon::Clear(void)
 	this->end.clear();
 	this->box = zone();
 }
+void PHAST_polygon::Tidy(void)
+{
+	PHAST_polygon pp;
+	pp.pts.reserve(this->pts.size()+1);
+	bool warning_identical = true;
+	bool warning_too_few = true;
+	bool warning_area = true;
+	int i = 0;
+
+	// check for three points in polygon and elimin
+	size_t poly;
+
+	for (poly = 0; poly < this->begin.size(); poly++)
+	{
+		std::vector < Point > simple_poly;
+		std::vector < Point >::iterator i_it;
+
+		i_it = this->begin[poly];
+
+		// save last point
+		double xlast, ylast;
+		xlast = i_it->x();
+		ylast = i_it->y();
+		simple_poly.push_back(*i_it);
+		i++;
+		for (i_it = this->begin[poly] + 1; i_it != this->end[poly]; i_it++)
+		{
+			i++;
+			if (i_it->x() != xlast ||
+				i_it->y() != ylast)
+			{
+				simple_poly.push_back(*i_it);
+			}
+			else
+			{
+				if (warning_identical)
+				{
+					warning_msg	("Identical point removed from polygon. ");
+					//warning_identical = false;
+				}
+			}
+			xlast = i_it->x();
+			ylast = i_it->y();
+		}
+		// check number of points
+		if (simple_poly.size() < 3) 
+		{
+			if (warning_too_few)
+			{
+				warning_msg	("Simple polygon removed. Number of points is less than 3. ");
+				//warning_too_few = false;
+			}
+			continue;
+		}
+		// check area
+		gpc_polygon * gpc_poly = points_to_poly(simple_poly);
+		double area = gpc_polygon_area(gpc_poly);
+		gpc_free_polygon(gpc_poly);
+		free(gpc_poly);
+		if ( area <= 0)
+		{
+			if (warning_area)
+			{
+				warning_msg	("Simple polygon removed. Area is zero. ");
+			}
+			//warning_area = false;
+
+			continue;
+		}
+		// add to pp
+
+		i_it = simple_poly.begin();
+		// save first point of simple polygon
+		pp.pts.push_back(*i_it);
+		// save start of simple polygon
+		pp.begin.push_back(pp.pts.begin() + pp.pts.size() - 1);
+		// save end of previous simple polygon
+		if (poly > 0) 
+		{
+			pp.end.push_back(pp.pts.begin() + pp.pts.size() - 1);
+		}
+		// store rest of points for simple polygon
+		for (i_it = simple_poly.begin() + 1; i_it != simple_poly.end(); i_it++)		
+		{
+			pp.pts.push_back(*i_it);
+		}
+	}
+	// save end of last polygon
+	pp.end.push_back(pp.pts.end());
+	// copy points
+	this->pts = pp.pts;
+
+	// put in pointers
+	std::vector < Point >::iterator jit;
+	size_t j, count(0);
+	std::vector < Point >::iterator kit = this->pts.begin();
+	this->begin.clear();
+	this->end.clear();
+
+	for (j = 0; j < pp.begin.size(); j++)
+	{
+		this->begin.push_back(kit);
+		for (jit = pp.begin[j]; jit != pp.end[j]; jit++)
+		{
+			count++;
+			kit++;
+		}
+		this->end.push_back(kit);
+	}
+
+
+	count = 0;
+	for (j = 0; j < this->begin.size(); j++)
+	{
+		for (jit = this->begin[j]; jit != this->end[j]; jit++)
+		{
+			count++;
+		}
+	}
+	if (pp.pts.size() == 0)
+	{
+		error_msg("After processing, polygon has no points. ", EA_CONTINUE);
+	}
+	
+	return;
+}
