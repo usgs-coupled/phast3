@@ -165,11 +165,11 @@ Shapefile::Dump(std::ostream & oss)
 	SHPGetInfo(hSHP, &nEntities, &nShapeType, adfMinBound, adfMaxBound);
 
 	char str[200];
-	sprintf_s(str, "Shapefile Type: %s   # of Shapes: %d\n\n",
+	sprintf(str, "Shapefile Type: %s   # of Shapes: %d\n\n",
 			  SHPTypeName(nShapeType), nEntities);
 	oss << str;
 
-	sprintf_s(str, "File Bounds: (%12.3f,%12.3f,%g,%g)\n"
+	sprintf(str, "File Bounds: (%12.3f,%12.3f,%g,%g)\n"
 			  "         to  (%12.3f,%12.3f,%g,%g)\n",
 			  adfMinBound[0],
 			  adfMinBound[1],
@@ -186,7 +186,7 @@ Shapefile::Dump(std::ostream & oss)
 
 		psShape = this->objects[i];
 
-		sprintf_s(str, "\nShape:%d (%s)  nVertices=%d, nParts=%d\n"
+		sprintf(str, "\nShape:%d (%s)  nVertices=%d, nParts=%d\n"
 				  "  Bounds:(%12.3f,%12.3f, %g, %g)\n"
 				  "      to (%12.3f,%12.3f, %g, %g)\n",
 				  i, SHPTypeName(psShape->nSHPType),
@@ -216,7 +216,7 @@ Shapefile::Dump(std::ostream & oss)
 				pszPlus = " ";
 
 			char str[200];
-			sprintf_s(str, "   %s (%12.3f,%12.3f, %g, %g) %d %s \n",
+			sprintf(str, "   %s (%12.3f,%12.3f, %g, %g) %d %s \n",
 					  pszPlus,
 					  psShape->padfX[j],
 					  psShape->padfY[j],
@@ -226,7 +226,7 @@ Shapefile::Dump(std::ostream & oss)
 	}
 
 	// Dump dbf
-	sprintf_s(str, "\nDBF Header\n\n");
+	sprintf(str, "\nDBF Header\n\n");
 	oss << str;
 
 	DBFInfo *hDBF = this->dbfinfo;
@@ -253,7 +253,7 @@ Shapefile::Dump(std::ostream & oss)
 			else if (eType == FTInvalid)
 				pszTypeName = "Invalid";
 
-			sprintf_s(str,
+			sprintf(str,
 					  "Field %d: Type=%s, Title=`%s', Width=%d, Decimals=%d\n",
 					  i, pszTypeName, szTitle, nWidth, nDecimals);
 			oss << str;
@@ -285,10 +285,10 @@ Shapefile::Dump(std::ostream & oss)
 			panWidth[i] = nWidth;
 
 		if (eType == FTString)
-			sprintf_s(szFormat, "%%-%ds ", panWidth[i]);
+			sprintf(szFormat, "%%-%ds ", panWidth[i]);
 		else
-			sprintf_s(szFormat, "%%%ds ", panWidth[i]);
-		sprintf_s(str, szFormat, szTitle);
+			sprintf(szFormat, "%%%ds ", panWidth[i]);
+		sprintf(str, szFormat, szTitle);
 		oss << str;
 
 	}
@@ -302,7 +302,7 @@ Shapefile::Dump(std::ostream & oss)
 	{
 		if (bMultiLine)
 		{
-			sprintf_s(str, "Record: %d\n", iRecord);
+			sprintf(str, "Record: %d\n", iRecord);
 			oss << str;
 		}
 
@@ -314,7 +314,7 @@ Shapefile::Dump(std::ostream & oss)
 
 			if (bMultiLine)
 			{
-				sprintf_s(str, "%s: ", szTitle);
+				sprintf(str, "%s: ", szTitle);
 				oss << str;
 			}
 
@@ -327,11 +327,11 @@ Shapefile::Dump(std::ostream & oss)
 				if (DBFIsAttributeNULL(hDBF, iRecord, i))
 				{
 					if (eType == FTString)
-						sprintf_s(szFormat, "%%-%ds", nWidth);
+						sprintf(szFormat, "%%-%ds", nWidth);
 					else
-						sprintf_s(szFormat, "%%%ds", nWidth);
+						sprintf(szFormat, "%%%ds", nWidth);
 
-					sprintf_s(str, szFormat, "(NULL)");
+					sprintf(str, szFormat, "(NULL)");
 					oss << str;
 				}
 				else
@@ -339,22 +339,22 @@ Shapefile::Dump(std::ostream & oss)
 					switch (eType)
 					{
 					case FTString:
-						sprintf_s(szFormat, "%%-%ds", nWidth);
-						sprintf_s(str, szFormat,
+						sprintf(szFormat, "%%-%ds", nWidth);
+						sprintf(str, szFormat,
 								  DBFReadStringAttribute(hDBF, iRecord, i));
 						oss << str;
 						break;
 
 					case FTInteger:
-						sprintf_s(szFormat, "%%%dd", nWidth);
-						sprintf_s(str, szFormat,
+						sprintf(szFormat, "%%%dd", nWidth);
+						sprintf(str, szFormat,
 								  DBFReadIntegerAttribute(hDBF, iRecord, i));
 						oss << str;
 						break;
 
 					case FTDouble:
-						sprintf_s(szFormat, "%%%d.%dlf", nWidth, nDecimals);
-						sprintf_s(str, szFormat,
+						sprintf(szFormat, "%%%d.%dlf", nWidth, nDecimals);
+						sprintf(str, szFormat,
 								  DBFReadDoubleAttribute(hDBF, iRecord, i));
 						oss << str;
 						break;
@@ -370,8 +370,8 @@ Shapefile::Dump(std::ostream & oss)
 			/* -------------------------------------------------------------------- */
 			else
 			{
-				sprintf_s(szFormat, "%%-%ds", nWidth);
-				sprintf_s(str, szFormat,
+				sprintf(szFormat, "%%-%ds", nWidth);
+				sprintf(str, szFormat,
 						  DBFReadStringAttribute(hDBF, iRecord, i));
 				oss << str;
 			}
@@ -382,8 +382,8 @@ Shapefile::Dump(std::ostream & oss)
 			/* -------------------------------------------------------------------- */
 			if (!bMultiLine)
 			{
-				sprintf_s(szFormat, "%%%ds", panWidth[i] - nWidth + 1);
-				sprintf_s(str, szFormat, "");
+				sprintf(szFormat, "%%%ds", panWidth[i] - nWidth + 1);
+				sprintf(str, szFormat, "");
 				oss << str;
 			}
 
@@ -399,6 +399,7 @@ Shapefile::Dump(std::ostream & oss)
 		oss << std::endl;
 	}
 }
+#ifdef SKIP
 bool Shapefile::Make_points(const int attribute, std::vector < Point > &pts)
 {
 	// Point contains a x, y, z + value
@@ -543,6 +544,122 @@ bool Shapefile::Make_points(const int attribute, std::vector < Point > &pts)
 	}
 	return true;
 }
+#endif
+bool Shapefile::Make_points(const int attribute, std::vector < Point > &pts)
+{
+	// Point contains a x, y, z + value
+
+	std::vector < double >
+		m;						// rough-in in case M values are given in .shp file
+
+	SHPInfo *
+		hSHP = this->shpinfo;
+	DBFInfo *
+		hDBF = this->dbfinfo;
+
+
+	// get info
+	int
+		nShapeType,
+		nEntities,
+		i;						//, bValidate = 0,nInvalidCount=0;
+	double
+		adfMinBound[4],
+		adfMaxBound[4];
+
+	SHPGetInfo(hSHP, &nEntities, &nShapeType, adfMinBound, adfMaxBound);
+
+	// Check field number
+	int
+		dbf_fields = DBFGetFieldCount(hDBF);
+	int
+		dbf_records = DBFGetRecordCount(hDBF);
+
+	//this->Dump(std::cerr);
+	if (attribute >= dbf_fields)
+	{
+		std::ostringstream estring;
+		estring << "Requested field number, " << attribute
+			<<
+			" (starting from zero), is greater than maximum field number in dbf file "
+			<< dbf_fields - 1 << " " << this->filename << std::endl;
+		error_msg(estring.str().c_str(), EA_STOP);
+	}
+
+	char
+		szTitle[12];
+	int
+		nWidth,
+		nDecimals;
+	DBFFieldType
+		eType;
+
+	if (attribute >= 0 && attribute < dbf_fields)
+	{
+		eType =
+			DBFGetFieldInfo(hDBF, attribute, szTitle, &nWidth, &nDecimals);
+		if (eType != FTDouble && eType != FTInteger)
+		{
+			std::ostringstream estring;
+			estring << "Requested field number, " << attribute
+				<< " is not a real or integer number in dbf file"
+				<< " " << this->filename 
+				<< std::endl;
+			error_msg(estring.str().c_str(), EA_STOP);
+		}
+		else
+		{
+			std::ostringstream ostring;
+			ostring << "Extracting field " << attribute << " "
+				<< szTitle << " " << this->filename << std::endl;
+			output_msg(OUTPUT_SCREEN, "%s\n", ostring.str().c_str());
+		}
+	}
+
+	int vertex_number = 0;
+	for (i = 0; i < nEntities; i++)
+	{
+		int
+			j;
+		SHPObject *
+			psShape;
+
+		psShape = this->objects[i];
+
+		// get corresponding value from dbf
+		if (i >= dbf_records)
+		{
+			std::ostringstream estring;
+			estring << "Requested record number, " << j
+				<< " (starting from zero), is greater than number of records in dbf file "
+				<< dbf_records << std::endl;
+			error_msg(estring.str().c_str(), EA_STOP);
+		}
+
+
+		// Apply value to all vertices
+		for (j = 0; j < psShape->nVertices; j++)
+		{
+			vertex_number++;
+
+			double value = psShape->padfZ[j];
+			if (attribute >= 0)
+				value = DBFReadDoubleAttribute(hDBF, i, attribute);
+			// add to list
+			Point pt;
+			pt.set_x(psShape->padfX[j]);
+			pt.set_y(psShape->padfY[j]);
+			pt.set_z(value);
+			pt.set_v(value);
+
+			pts.push_back(pt);
+
+			// Place holder for implementing m shape files
+			m.push_back(psShape->padfM[j]);
+		}
+	}
+	return true;
+}
 #ifdef SKIP
 bool Shapefile::Make_polygons(int field, PHAST_polygon & polygons)
 {
@@ -629,8 +746,6 @@ bool Shapefile::Make_polygons(int field, PHAST_polygon & polygons)
 	polygons.Get_points() = ds->Get_points();
 	bool dumped = false;
 
-
-
 	std::vector < double >
 		m;						// rough-in in case M values are given in .shp file
 
@@ -703,39 +818,25 @@ bool Shapefile::Make_polygons(int field, PHAST_polygon & polygons)
 	{
 		polygons.Get_begin().push_back(it);
 
-		SHPObject *
-			psShape;
+		SHPObject *	psShape;
 		psShape = this->objects[i];
 
-		int
-			j;
-		//for (j = 0; j < psShape->nVertices; j++)
-		//{
-		//	it++;
-		//}
-		//polygons.Get_end().push_back(it);
+		int	j;
+
 		// Add multiple rings
 		int iPart;
-		//for (j = 0; j < psShape->nVertices; j++)
+
+		//for (j = 0, iPart = 1; j < psShape->nVertices; j++)
 		//{
+		//	//vertex++;
 		//	it++;
+		//	const char *pszPartType = "";
+
 		//	if (iPart < psShape->nParts && psShape->panPartStart[iPart] == j)
 		//	{
-		//		iPart++;
 		//		polygons.Get_end().push_back(it);
 		//	}
 		//}
-
-		////for (iPart = 0; iPart < psShape->nParts; iPart++)
-		////{
-		////	int end = psShape->nVertices;
-		////	if (iPart + 1 < psShape->nParts) end = psShape->panPartStart[iPart + 1];
-		////	for (j = psShape->panPartStart[iPart]; j < end; j++)
-		////	{
-		////		it++;
-		////	}
-		////	polygons.Get_end().push_back(it);
-		////}
 
 		for (iPart = 0; iPart < psShape->nParts; iPart++)
 		{
@@ -750,10 +851,21 @@ bool Shapefile::Make_polygons(int field, PHAST_polygon & polygons)
 			//fprintf(stderr, "End Shape %d, Part %d, Within Part %d, Vertex %d\n", i, iPart, j, vertex_number);
 			if (iPart + 1 < psShape->nParts)
 			{
-				polygons.Get_begin().push_back(it + 1);
+				polygons.Get_begin().push_back(it);
 			}
 		}
+
 	}
+	//std::vector < Point >::iterator jit;
+	//size_t j, count(0);
+	//for (j = 0; j < polygons.Get_begin().size(); j++)
+	//{
+	//	for (jit = polygons.Get_begin()[j]; jit != polygons.Get_end()[j]; jit++)
+	//	{
+	//		count++;
+	//	}
+	//}
+	polygons.Tidy();
 	polygons.Set_coordinate_system(this->coordinate_system);
 	polygons.Set_bounding_box();
 	return true;
@@ -778,7 +890,7 @@ bool Shapefile::Make_polygons(int field, PHAST_polygon & polygons)
 		//		pszPlus = " ";
 
 		//	//char str[200];
-		//	//sprintf_s(str, "   %s (%12.3f,%12.3f, %g, %g) %s \n",
+		//	//sprintf(str, "   %s (%12.3f,%12.3f, %g, %g) %s \n",
 		//	//		  pszPlus,
 		//	//		  psShape->padfX[j],
 		//	//		  psShape->padfY[j],
