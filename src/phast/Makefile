@@ -258,10 +258,10 @@ LIBGFORTRAN= -lgfortranbegin -lgfortran
 
 # The following apply to OPENMPI_INTEL versions
 FINTEL=ifort
-LD_LIBRARY_OPENMPI=/z/srv2rcolkr/home/charlton/openmpi-1.3.2-grundvand-ifort/lib
+LD_LIBRARY_OPENMPI=/z/parkplace/home/charlton/openmpi-1.3.2-grundvand-ifort/lib
 LD_LIBRARY_INTEL=/z/grundvand/usr/opt/intel/Compiler/11.0/083/lib/ia32
-#setenv LD_LIBRARY_PATH /z/srv2rcolkr/home/charlton/openmpi-1.3.2-grundvand-ifort/lib:/z/grundvand/usr/opt/intel/Compiler/11.0/083/lib/ia32:$LD_LIBRARY_PATH
-#setenv PATH /z/srv2rcolkr/home/charlton/openmpi-1.3.2-grundvand-ifort/bin:/z/grundvand/usr/local/totalview/bin:$PATH
+#setenv LD_LIBRARY_PATH /z/parkplace/home/charlton/openmpi-1.3.2-grundvand-ifort/lib:/z/grundvand/usr/opt/intel/Compiler/11.0/083/lib/ia32:$LD_LIBRARY_PATH
+#setenv PATH /z/parkplace/home/charlton/openmpi-1.3.2-grundvand-ifort/bin:/z/grundvand/usr/local/totalview/bin:$PATH
 
 # -----------------------------------------------------------------------------
 .f90.o :
