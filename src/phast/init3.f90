@@ -244,8 +244,7 @@ SUBROUTINE init3
         denrbc(ls) = den0
         visrbc(ls) = -visfac
      END DO
-     ! ... Load the associated concentrations
-     IF(solute) THEN
+     IF(solute) THEN               ! ... Load the associated concentrations
         CALL setup_boundary_conditions(nrbc_seg, indx1_rbc, indx2_rbc, mxf_rbc,  &
              crbc, nrbc_seg)
      END IF

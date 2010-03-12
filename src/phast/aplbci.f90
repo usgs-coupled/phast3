@@ -287,7 +287,8 @@ SUBROUTINE aplbci
      m = leak_seg_index(lc)%m     ! ... current leakage communication cell
      ! ... calculate current net aquifer leakage flow rate
      ! ...      possible attenuation included explicitly
-     IF(frac(m) <= 0._kdp) CYCLE
+     IF(m == 0) CYCLE              ! ... dry column, skip to next river b.c. cell 
+!$$     IF(frac(m) <= 0._kdp) CYCLE
      qm_net = 0._kdp
      qfbc = 0._kdp
      dqfdp = 0._kdp
@@ -299,9 +300,26 @@ SUBROUTINE aplbci
            qfbc = qfbc + den(m)*qn
            dqfdp = dqfdp - den(m)*blbc(ls)
         ELSE                             ! ... inflow
-           qm_net = qm_net + denlbc(ls)*qnp
-           qfbc = qfbc + denlbc(ls)*qn  
-           dqfdp = dqfdp - denlbc(ls)*blbc(ls)
+           if(fresur .and. ifacelbc(ls) == 3) then
+              ! ... limit the flow rate for vertical leakage
+              qlim = blbc(ls)*(denlbc(ls)*philbc(ls) - gz*(denlbc(ls)*(zelbc(ls)-0.5_kdp*bblbc(ls))  &
+                   - 0.5_kdp*den(m)*bblbc(ls)))
+              IF(qnp <= qlim) THEN
+                 qm_net = qm_net + denlbc(ls)*qnp
+                 qfbc = qfbc + denlbc(ls)*qn
+                 dqfdp = dqfdp - denlbc(ls)*blbc(ls)
+              ELSEIF(qnp > qlim) THEN
+                 qm_net = qm_net + denlbc(ls)*qlim
+                 qfbc = qfbc + denlbc(ls)*qlim
+                 ! hack for instability from the kink in q vs h relation
+                 IF (steady_flow) dqfdp = dqfdp - denlbc(ls)*blbc(ls)
+                 ! ... add nothing to dqfdp
+              ENDIF
+           else          ! ... x or y face
+              qm_net = qm_net + denlbc(ls)*qnp
+              qfbc = qfbc + denlbc(ls)*qn  
+              dqfdp = dqfdp - denlbc(ls)*blbc(ls)
+           end if
         ENDIF
      END DO
      ma = mrno(m)
@@ -321,8 +339,17 @@ SUBROUTINE aplbci
            DO ls=leak_seg_index(lc)%seg_first,leak_seg_index(lc)%seg_last
               qnp = albc(ls) - blbc(ls)*dp(m)
               IF(qnp > 0._kdp) THEN                   ! ... inflow
-                 qm_in = qm_in + denlbc(ls)*qnp
-                 sum_cqm_in = sum_cqm_in + denlbc(ls)*qnp*clbc(ls,is)  
+                 if(fresur .and. ifacelbc(ls) == 3) then
+                    ! ... limit the flow rate for vertical leakage
+                    qlim = blbc(ls)*(denlbc(ls)*philbc(ls) - gz*(denlbc(ls)*  &
+                         (zelbc(ls)-0.5_kdp*bblbc(ls)) - 0.5_kdp*den(m)*bblbc(ls)))
+                    qnp = MIN(qnp,qlim)
+                    qm_in = qm_in + denlbc(ls)*qnp
+                    sum_cqm_in = sum_cqm_in + denlbc(ls)*qnp*clbc(ls,is)  
+                 else
+                    qm_in = qm_in + denlbc(ls)*qnp
+                    sum_cqm_in = sum_cqm_in + denlbc(ls)*qnp*clbc(ls,is)
+                 end if
               ENDIF
            END DO
            cavg = sum_cqm_in/qm_in
@@ -400,12 +427,11 @@ SUBROUTINE aplbci
      dqfdp = 0._kdp
      DO ls=river_seg_index(lc)%seg_first,river_seg_index(lc)%seg_last
         qn = arbc(ls)
-        qnp = qn - brbc(ls)*dp(m)      ! ... with only one flow equation solution qnp = qn always
+        qnp = qn - brbc(ls)*dp(m)      ! ... with steady state flow, qnp = qn always
         IF(qnp <= 0._kdp) THEN           ! ... outflow
            qm_net = qm_net + den(m)*qnp
            qfbc = qfbc + den(m)*qn
            dqfdp = dqfdp - den(m)*brbc(ls)
-           !$$          write(*,*) 1, qfbc, dqfdp, qnp, brbc(ls), p(m)/9807.0_kdp, m, arbc(ls)
         ELSE                             ! ... inflow
            ! ... limit the flow rate for a river leakage
            qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &
@@ -529,90 +555,10 @@ SUBROUTINE aplbci
         END IF
      END DO
   END DO
-!!$  if(erflg) then  
-!!$     write(fuclog, 9006) 'ehoftp interpolation error in aplbci ', &
-!!$          'associated heat flux: leakage b.c.'
-!!$     ierr(129) = .true.  
-!!$     errexe = .true.  
-!!$     return  
-!!$  endif
   ! ... apply a.i.f. b.c. terms
   !... ** not implemented for phast
-!!$  do 480 l = 1, naifc  
-!!$     ! ... calculate current aquifer influence function flow rate
-!!$     m = maifc(l)  
-!!$     qn = aaif(l)  
-!!$     qnp = qn + baif(l) * dp(m)  
-!!$     ma = mrno(m)  
-!!$     if(ieq.eq.1) then  
-!!$        if(qnp.le.0) then  
-!!$           ! ... outflow
-!!$           qfbc = den(m) * qn  
-!!$           dqfdp = den(m) * baif(l)  
-!!$           !**            qsbc=qfbc*(c(m)+dc(m))
-!!$           !**            dqsdp=dqfdp*(c(m)+dc(m))
-!!$           qhbc = qfbc* (eh(m) + cpf* dt(m) )  
-!!$           dqhdp = dqfdp* (eh(m) + cpf* dt(m) )  
-!!$        else  
-!!$           ! ... inflow
-!!$           qfbc = denoar(l) * qn  
-!!$           dqfdp = denoar(l) * baif(l)  
-!!$           !               qsbc=qfbc*caif(l)
-!!$           if(heat) ehaif = ehoftp(taif(l), p(m), erflg)  
-!!$           dqsdp = dqfdp* caif(l)  
-!!$           qhbc = qfbc* ehaif  
-!!$           dqhdp = dqfdp* ehaif  
-!!$        endif
-!!$        qsbc = 0.d0  
-!!$        va(7, ma) = va(7, ma) - fdtmth* (dqfdp + cc34(m) * &
-!!$             dqsdp + cc35(m) * dqhdp)
-!!$        rhs(ma) = rhs(ma) + fdtmth* (qfbc + cc34(m) * qsbc + &
-!!$             cc35(m) * qhbc)
-!!$        elseif(ieq.eq.2) then  
-!!$        if(qnp.le.0.) then  
-!!$           ! ... outflow
-!!$           !**            qsbc=den(m)*qnp*(c(m)+dc(m))
-!!$           qhbc = den(m) * qnp* eh(m)  
-!!$           dqhdt = den(m) * qnp* cpf  
-!!$        else  
-!!$           ! ... inflow
-!!$           !               qsbc=denoar(l)*qnp*caif(l)
-!!$           if(heat) qhbc = denoar(l) * qnp* ehoftp(taif(l), &
-!!$                p(m), erflg)
-!!$           dqhdt = 0.d0  
-!!$        endif
-!!$        va(7, ma) = va(7, ma) - fdtmth* dqhdt  
-!!$        !            rhs(ma)=rhs(ma)+fdtmth*(qhbc+cc24(m)*qsbc)
-!!$        elseif(ieq.eq.3) then  
-!!$        if(qnp.le.0.) then  
-!!$           ! ... outflow
-!!$           !**            qsbc=den(m)*qnp*c(m)
-!!$           dqsdc = den(m) * qnp  
-!!$           ! ... inflow
-!!$        else  
-!!$           !               qsbc=denoar(l)*qnp*caif(l)
-!!$           dqsdc = 0.d0  
-!!$        endif
-!!$        va(7, ma) = va(7, ma) - fdtmth* dqsdc  
-!!$        !            rhs(ma)=rhs(ma)+fdtmth*qsbc
-!!$     endif
-!!$480 end do
-!!$  if(erflg) then  
-!!$     write(fuclog, 9006) 'ehoftp interpolation error in aplbci ', &
-!!$          'associated heat flux: aquifer influence function b.c.'
-!!$     ierr(129) = .true.  
-!!$     errexe = .true.  
-!!$     return  
-!!$  endif
 !!$  ! ... heat conduction boundary condition
 !!$  !... **  not implemented for phast
-!!$  if(ieq.eq.2) then  
-!!$     do  l = 1, nhcbc  
-!!$        m = mhcbc(l)  
-!!$        ma = mrno(m)  
-!!$        va(7, ma) = va(7, ma) - fdtmth* dqhcdt(l)  
-!!$     end do
-!!$  endif
   IF(fresur) THEN  
      ! ... Free-surface boundary condition
      DO m=1,nxyz  

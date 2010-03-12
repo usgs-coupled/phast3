@@ -166,7 +166,7 @@ SUBROUTINE write3
         lprnt1 = -1
         prnt=.FALSE.
         IF(rdflxq) THEN
-           ! ... No spatial display of transient leakage data; by segment ****at present
+           ! ... No spatial display of transient flux data; by segment ****at present
            WRITE(fulp,2124) 'Specified Flux B.C.: Segment Data',  &
                 dash,  &
                 'Segment','Cell','Index','Flux     ','Index 1','Index 2','Mix Fraction',  &
@@ -300,7 +300,7 @@ SUBROUTINE write3
 !!$           !***     river cell
 !!$           WRITE(fulp,2004) 'River Leakage B.C: River Cell Numbers (lowest river bottom)'
 !!$           CALL prntar(2,aprnt1,lprnt1,fulp,cnv,10,000)
-           ! ... No spatial display of transient leakage data; by segment
+           ! ... No spatial display of transient river leakage data; by segment
            WRITE(fulp,2224) 'River Leakage B.C.: Segment Data',  &
                 dash,  &
                 'Segment','Cell','Index','Head','Index 1','Index 2','Mix Fraction',  &
@@ -356,53 +356,9 @@ SUBROUTINE write3
      END IF
      ! ... Drain leakage b.c. transient data: nothing to be done
 !!$  ! ... Evapotranspiration b.c. transient data
-!!$  IF(netbc > 0) THEN
 !!$     !...** not available for PHAST
-!!$     DO  m=1,nxyz
-!!$        lprnt1(m)=-1
-!!$     END DO
-!!$     DO  l=1,netbc
-!!$        m=metbc(l)
-!!$        lprnt1(m)=1
-!!$        aprnt1(m)=qetbc(l)
-!!$     END DO
-!!$     WRITE(fulp,2008) 'Maximum Evapotranspiration Volumetric Flow ','Rates (',unitl,'^3/',unittm,')'
-!!$     CALL prntar(2,aprnt1,lprnt1,fulp,cnvl3i/cnvtmi,24,000)
-!!$  END IF
-!!$  IF(naifc > 0) THEN
+!!$ ! ... A.I.F. b.c.
 !!$     !... ** not available for PHAST
-!!$     DO  m=1,nxyz
-!!$        lprnt1(m)=-1
-!!$     END DO
-!!$     IF(prtdv) THEN
-!!$        DO  l=1,naifc
-!!$           m=maifc(l)
-!!$           lprnt1(m)=1
-!!$           aprnt1(m)=denoar(l)
-!!$        END DO
-!!$        WRITE(fulp,2008) 'A.I.F. Exterior Aquifer Region Density ('//unitm//'/'//unitl//'^3)'
-!!$        ifmt=12
-!!$        IF(eeunit) ifmt=13
-!!$        CALL prntar(2,aprnt1,lprnt1,fulp,cnvdi,ifmt,000)
-!!$     END IF
-!!$     IF(heat) THEN
-!!$        DO  l=1,naifc
-!!$           m=maifc(l)
-!!$           aprnt1(m)=cnvt1i*taif(l)+cnvt2i
-!!$        END DO
-!!$        WRITE (fulp,2008) 'A.I.F. Boundary Temperatures for Inflow ','(Deg.',unitt,')'
-!!$        CALL prntar(2,aprnt1,lprnt1,fulp,cnv,12,000)
-!!$     END IF
-!!$     IF(solute) THEN
-!!$        DO  l=1,naifc
-!!$           m=maifc(l)
-!!$           aprnt1(m)=caif(l)
-!!$           IF(scalmf) aprnt1(m)=(aprnt1(m)-w0)/(w1-w0)
-!!$        END DO
-!!$        WRITE (fulp,2004) 'A.I.F. Boundary '//mflbl//'Fractions for ','Inflow ( - )'
-!!$        CALL prntar(2,aprnt1,lprnt1,fulp,cnv,15,000)
-!!$     END IF
-!!$  END IF
   END IF
   ! ... Well data
   IF(nwel > 0 .AND. prtwel .AND. .NOT.steady_flow) THEN

@@ -16,7 +16,7 @@ SUBROUTINE ldchar_bc(indx1, indx2, mfrac, ip, cmask, mask, mbc)
   CHARACTER(LEN=3), DIMENSION(2) :: cindx
   INTEGER :: ib, id, jc, ls, m, nseg
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: ldchar_bc.f90,v 1.1 2010/01/21 17:03:04 klkipp Exp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: ldchar_bc.f90,v 1.1 2009/05/07 19:46:55 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   nseg = SIZE(indx1)

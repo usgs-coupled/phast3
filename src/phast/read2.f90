@@ -811,10 +811,10 @@ SUBROUTINE read2
   ! ... mass fraction for the region for i.c.
   IF(solute) THEN  
      READ(fuins, *) exchange_units, surface_units, ssassemblage_units, &
-			ppassemblage_units, gasphase_units, kinetics_units 
+          ppassemblage_units, gasphase_units, kinetics_units 
      IF (print_rde) WRITE(furde, '(a, 6i5)') 'solid_units,[2.21.7a] ex, surf, ss, pp, gas, kin ', &
-            exchange_units, surface_units, ssassemblage_units, &
-			ppassemblage_units, gasphase_units, kinetics_units
+          exchange_units, surface_units, ssassemblage_units, &
+          ppassemblage_units, gasphase_units, kinetics_units
      CALL indx_rewi(indx_sol1_ic, indx_sol2_ic, ic_mxfrac, 1, 03, 100)  
      CALL indx_rewi(indx_sol1_ic, indx_sol2_ic, ic_mxfrac, 2, 03, 100)  
      CALL indx_rewi(indx_sol1_ic, indx_sol2_ic, ic_mxfrac, 3, 03, 100)  
@@ -884,22 +884,22 @@ SUBROUTINE read2
   prcpd = .FALSE.
   ! ...  more data for pr_hdf_media
   if (pr_hdf_media) then
-    READ(fuins,*) k_units, k_input_to_si, fluid_density, fluid_viscosity
-    IF (print_rde) WRITE(furde, "(tr5, a/tr5,a,1pg12.4,1pg12.4,1pg12.4)") &
-        "C.2.23.2.2.1 .. K: units, input_to_si, fluid_density, fluid_viscosity ", &
-        k_units, k_input_to_si, fluid_density, fluid_viscosity
-    READ(fuins,*) s_units, s_input_to_si, fluid_compressibility
-    IF (print_rde) WRITE(furde, "(tr5, a/tr5,a,1pg12.4,1pg12.4)") &
-        "C.2.23.2.2.2 .. Storage: units, input_to_si, fluid_compressibility", &
-        s_units, s_input_to_si, fluid_compressibility
-    if (solute) then
+     READ(fuins,*) k_units, k_input_to_si, fluid_density, fluid_viscosity
+     IF (print_rde) WRITE(furde, "(tr5, a/tr5,a,1pg12.4,1pg12.4,1pg12.4)") &
+          "C.2.23.2.2.1 .. K: units, input_to_si, fluid_density, fluid_viscosity ", &
+          k_units, k_input_to_si, fluid_density, fluid_viscosity
+     READ(fuins,*) s_units, s_input_to_si, fluid_compressibility
+     IF (print_rde) WRITE(furde, "(tr5, a/tr5,a,1pg12.4,1pg12.4)") &
+          "C.2.23.2.2.2 .. Storage: units, input_to_si, fluid_compressibility", &
+          s_units, s_input_to_si, fluid_compressibility
+     if (solute) then
         READ(fuins,*) alpha_units, alpha_input_to_si
         IF (print_rde) WRITE(furde, "(tr5, a/tr5,a,1pg12.4)") &
-            "C.2.23.2.3.1 .. Alpha: units, input_to_si", &
-            alpha_units, alpha_input_to_si 
-    endif  
+             "C.2.23.2.3.1 .. Alpha: units, input_to_si", &
+             alpha_units, alpha_input_to_si 
+     endif
   endif
-  
+
   ! ... print-out orientation
   IF(.NOT.cylind) THEN  
      READ(fuins,*) orenpr  
@@ -937,15 +937,15 @@ SUBROUTINE read2
         STOP
      ENDIF
      !IF(fresur .AND. (nfbc > 0 .OR. nrbc > 0)) THEN
-        ! ... Allocate space for zone volume cell index data,
-        ! ...     optional flux bc data, optional river bc data
-        ALLOCATE (zone_col(num_flo_zones), lnk_cfbc2zon(num_flo_zones),  &
-             lnk_crbc2zon(num_flo_zones),  &
-             stat = a_err)
-        IF (a_err /= 0) THEN  
-           PRINT *, "array allocation failed: read2, flow zones.1.1"  
-           STOP
-        ENDIF
+     ! ... Allocate space for zone volume cell index data,
+     ! ...     optional flux bc data, optional river bc data
+     ALLOCATE (zone_col(num_flo_zones), lnk_cfbc2zon(num_flo_zones),  &
+          lnk_crbc2zon(num_flo_zones),  &
+          stat = a_err)
+     IF (a_err /= 0) THEN  
+        PRINT *, "array allocation failed: read2, flow zones.1.1"  
+        STOP
+     ENDIF
      !END IF
      izn = 0
      DO

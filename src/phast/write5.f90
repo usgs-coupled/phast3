@@ -102,14 +102,6 @@ SUBROUTINE write5
           cnvpi*dhmax,'('//unitl//')','at (',  &
           cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax),')(',TRIM(unitl),')'
      CALL screenprt_c(logline1)
-!!$     IF(heat) THEN
-!!$        WRITE(fuclog,aform) 'Maximum change in temperature '//dots,  &
-!!$             cnvt1i*dtmax+cnvt2i,'(Deg.'//unitt//')',  &
-!!$             'at location (',cnvli*x(itmax),',',cnvli*y(jtmax),',',cnvli*z(ktmax),')(',unitl,')'
-!!$        WRITE(*,aformt) 'Maximum change in temperature '//dots,  &
-!!$             cnvt1i*dtmax+cnvt2i,'(Deg.'//unitt//')',  &
-!!$             'at location (',cnvli*x(itmax),',',cnvli*y(jtmax),',',cnvli*z(ktmax),')(',unitl,')'
-!!$     END IF
      IF (solute) THEN
         DO  is=1,ns
            u6=dcmax(is)
@@ -1001,7 +993,7 @@ SUBROUTINE write5
                  m = mfsbc(l1)
               END IF
            END IF
-           IF (m > 0) THEN
+           IF (m > 0) THEN          ! ... skip over dry columns of cells
               lprnt1(m) = 1
               !$$              prthd=.TRUE.
               aprnt1(m) = qffbc(lc)

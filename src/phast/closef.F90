@@ -31,8 +31,8 @@ SUBROUTINE closef(mpi_myself)
   !     ------------------------------------------------------------------
   !...
   ! ... Close and delete the stripped input file
-  !CLOSE(fuins,STATUS='DELETE') 
-  CALL MYCLOSE(fuins, 'DELETE')  
+  !$$CLOSE(fuins,STATUS='DELETE') 
+  CALL MYCLOSE(fuins, 'DELETE')
   IF(errexi) THEN
      logline1 = '          *** Simulation Aborted Due to Input Errors ***'
      logline2 = '               Please examine log file'
@@ -229,10 +229,10 @@ SUBROUTINE closef(mpi_myself)
           xd_mask, &
           stat = da_err)
      IF (da_err /= 0) THEN  
-        PRINT *, "Array allocation failed: closef: number 0"
+        PRINT *, "Array deallocation failed: closef: number 0"
      ENDIF
   ENDIF
-  ! ... Allocate mesh arrays for chem slaves
+  ! ... Deallocate mesh arrays for chem slaves
   DEALLOCATE (x_node, y_node, z_node, iprint_chem, iprint_xyz,  &
        STAT = da_err)
   IF (da_err /= 0) THEN  
@@ -262,7 +262,7 @@ SUBROUTINE closef(mpi_myself)
           tqwsi, tqwsp, u10, &
           stat = da_err)
      IF (da_err /= 0) THEN  
-        PRINT *, "Array allocation failed: closef: number 2"  
+        PRINT *, "Array deallocation failed: closef: number 2"  
      ENDIF
      IF(num_flo_zones > 0) THEN
 
@@ -277,7 +277,7 @@ SUBROUTINE closef(mpi_myself)
                 zone_col(izn)%kmax_no,  &
                 stat = da_err)
             IF (da_err /= 0) THEN
-              PRINT *, "Array allocation failed: closef: number 2.0"
+              PRINT *, "Array deallocation failed: closef: number 2.0"
               STOP
             ENDIF       
           ENDIF 
@@ -288,7 +288,7 @@ SUBROUTINE closef(mpi_myself)
               zone_ib(izn)%face_indx,  &
               stat = da_err)
             IF (da_err /= 0) THEN
-              PRINT *, "Array allocation failed: closef: number 2.1"
+              PRINT *, "Array deallocation failed: closef: number 2.1"
               STOP
             ENDIF 
           ENDIF     
@@ -298,7 +298,7 @@ SUBROUTINE closef(mpi_myself)
             DEALLOCATE (lnk_bc2zon(izn,1)%lcell_no,  &
                  stat = da_err)
             IF (da_err /= 0) THEN
-               PRINT *, "Array allocation failed: closef: number 2.2"
+               PRINT *, "Array deallocation failed: closef: number 2.2"
                STOP
             ENDIF          
           ENDIF  ! nsbc cells  
@@ -309,7 +309,7 @@ SUBROUTINE closef(mpi_myself)
               DEALLOCATE (lnk_bc2zon(izn,2)%lcell_no,  &
                     stat = da_err)
               IF (da_err /= 0) THEN
-                  PRINT *, "Array allocation failed: closef: number 2.3"
+                  PRINT *, "Array deallocation failed: closef: number 2.3"
                   STOP
               ENDIF
             END IF
@@ -317,13 +317,13 @@ SUBROUTINE closef(mpi_myself)
             ! Flow Zone Conditional Flux B.C. Cells
             IF(fresur) THEN
               IF(lnk_cfbc2zon(izn)%num_bc > 0) THEN
-                ! ... Allocate scratch space for flux cells
+                ! ... Deallocate scratch space for flux cells
                 DEALLOCATE (lnk_cfbc2zon(izn)%lcell_no,  &
                       lnk_cfbc2zon(izn)%mxy_no,  &
                       lnk_cfbc2zon(izn)%icz_no,  &
                       stat = da_err)
                 IF (da_err /= 0) THEN
-                  PRINT *, "Array allocation failed: closef: number 2.4"
+                  PRINT *, "Array deallocation failed: closef: number 2.4"
                   STOP
                 ENDIF
               END IF
@@ -332,11 +332,11 @@ SUBROUTINE closef(mpi_myself)
           
           IF(nlbc_cells > 0) THEN
             IF(lnk_bc2zon(izn,3)%num_bc > 0) THEN
-              ! ... Allocate scratch space for leakage cells
+              ! ... Deallocate scratch space for leakage cells
               DEALLOCATE (lnk_bc2zon(izn,3)%lcell_no,  &
                    stat = da_err)
               IF (da_err /= 0) THEN
-                 PRINT *, "Array allocation failed: closef: number 2.5"
+                 PRINT *, "Array deallocation failed: closef: number 2.5"
                  STOP
               ENDIF
             END IF 
@@ -350,7 +350,7 @@ SUBROUTINE closef(mpi_myself)
                    lnk_crbc2zon(izn)%icz_no,  &
                    stat = da_err)
               IF (da_err /= 0) THEN
-                 PRINT *, "Array allocation failed: closef: number 2.6"
+                 PRINT *, "Array deallocation failed: closef: number 2.6"
                  STOP
               ENDIF
             END IF  
@@ -362,7 +362,7 @@ SUBROUTINE closef(mpi_myself)
               DEALLOCATE (lnk_bc2zon(izn,4)%lcell_no,  &
                    stat = da_err)
               IF (da_err /= 0) THEN
-                 PRINT *, "Array allocation failed: closef: number 2.7"
+                 PRINT *, "Array deallocation failed: closef: number 2.7"
                  STOP
               ENDIF
             END IF
@@ -374,7 +374,7 @@ SUBROUTINE closef(mpi_myself)
                    seg_well(izn)%ks_no,  &
                    stat = da_err)
               IF (da_err /= 0) THEN
-                 PRINT *, "Array allocation failed: closef: number 2.8"
+                 PRINT *, "Array deallocation failed: closef: number 2.8"
                  STOP
               ENDIF
             END IF
@@ -388,7 +388,7 @@ SUBROUTINE closef(mpi_myself)
           zone_write_heads, &               
           stat = da_err)
         IF (da_err /= 0) THEN
-          PRINT *, "Array allocation failed: closef: number 2.X"
+          PRINT *, "Array deallocation failed: closef: number 2.X"
           STOP
         ENDIF       
      
@@ -444,7 +444,7 @@ SUBROUTINE closef(mpi_myself)
        i1z, i2z, j1z, j2z, k1z, k2z, &
        stat = da_err)
   IF (da_err /= 0) THEN  
-     PRINT *, "Array allocation failed: closef: number 4"  
+     PRINT *, "Array deallocation failed: closef: number 4"  
   ENDIF
   DEALLOCATE (kx, ky, kz, stat = da_err)
   IF (da_err /= 0) THEN  
@@ -459,7 +459,7 @@ SUBROUTINE closef(mpi_myself)
           mxf_wel, &
           stat = da_err)
      IF (da_err /= 0) THEN  
-        PRINT *, "Array allocation failed: closef: number 5"  
+        PRINT *, "Array deallocation failed: closef: number 5"  
      ENDIF
   ENDIF
   ! ...      Deallocate more well arrays
@@ -624,6 +624,7 @@ SUBROUTINE closef(mpi_myself)
      PRINT *, "Array deallocation failed: closef: number 19"  
   ENDIF
 END SUBROUTINE closef
+
 SUBROUTINE MYCLOSE(funit, st)
     IMPLICIT NONE
     CHARACTER(*), intent(in) :: st

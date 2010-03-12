@@ -212,4 +212,5 @@ SUBROUTINE init2_post_ss
   ! ... Zero the output record counters
   nrsttp = 0  
   nmapr = 0  
+  dp = 0._kdp           ! ... dp=0 for steady state flow to transport
 END SUBROUTINE init2_post_ss

@@ -606,14 +606,20 @@ SUBROUTINE sumcal_ss_flow
      qflbc(lc) = 0._kdp
 !$$     sflb(lc) = 0._kdp
 !$$     sfvlb(lc) = 0._kdp
-     IF(m == 0) CYCLE          ! ... **not needed?
+     IF(m == 0) CYCLE
      ! ... Calculate current net aquifer leakage flow rate
      qm_net = 0._kdp
      DO ls=leak_seg_index(lc)%seg_first,leak_seg_index(lc)%seg_last
         qnp = albc(ls) - blbc(ls)*dp(m)  
         IF(qnp <= 0._kdp) THEN           ! ... Outflow
            qm_net = qm_net + den(m)*qnp
-        ELSE                            ! ... Inflow
+        ELSE                             ! ... Inflow
+           if(fresur .and. ifacelbc(ls) == 3) then
+              ! ... Limit the flow rate for unconfined z-face leakage
+              qlim = blbc(ls)*(denlbc(ls)*philbc(ls) - gz*(denlbc(ls)*(zelbc(ls)-0.5_kdp*bblbc(ls))  &
+                   - 0.5_kdp*den(m)*bblbc(ls)))
+              qnp = MIN(qnp,qlim)
+           end if
            qm_net = qm_net + denlbc(ls)*qnp
         ENDIF
      END DO
@@ -635,7 +641,7 @@ SUBROUTINE sumcal_ss_flow
 !$$     sfrb(lc) = 0._kdp
 !$$     sfvrb(lc) = 0._kdp
      IF(m == 0) CYCLE          ! ... dry column, skip to next river b.c. cell
-     ! ... Calculate current net aquifer leakage flow rate
+     ! ... Calculate current net river leakage flow rate
      qm_net = 0._kdp
      DO ls=river_seg_index(lc)%seg_first,river_seg_index(lc)%seg_last
         qnp = arbc(ls) - brbc(ls)*dp(m)
@@ -652,7 +658,7 @@ SUBROUTINE sumcal_ss_flow
      qfrbc(lc) = qm_net
      stfrbc = stfrbc + ufdt1*qfrbc(lc)
      IF(qm_net <= 0._kdp) THEN           ! ... net outflow
-	stotfp = stotfp - ufdt1*qfrbc(lc)			
+	stotfp = stotfp - ufdt1*qfrbc(lc)
      ELSEIF(qm_net > 0._kdp) THEN        ! ... net inflow
         stotfi = stotfi + ufdt1*qfrbc(lc)
      END IF

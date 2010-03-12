@@ -305,6 +305,12 @@ SUBROUTINE rhsn
            qm_net = qm_net + den(m)*qn
            sfvlb(lc) = sfvlb(lc) + qn
         ELSE                          ! ... Inflow
+           if(fresur .and. ifacelbc(ls) == 3) then
+              ! ... Limit the flow rate for unconfined z-face leakage
+              qlim = blbc(ls)*(denlbc(ls)*philbc(ls) - gz*(denlbc(ls)*(zelbc(ls)-0.5_kdp*bblbc(ls))  &
+                   - 0.5_kdp*den(m)*bblbc(ls)))
+              qn = MIN(qn,qlim)
+           end if
            qm_net = qm_net + denlbc(ls)*qn
            sfvlb(lc) = sfvlb(lc) + qn
         END IF
@@ -327,6 +333,12 @@ SUBROUTINE rhsn
         DO ls=leak_seg_index(lc)%seg_first,leak_seg_index(lc)%seg_last
            qn = albc(ls)
            IF(qn > 0._kdp) THEN                   ! ... inflow
+              if(fresur .and. ifacelbc(ls) == 3) then
+                 ! ... limit the flow rate for unconfined z-face leakage
+                 qlim = blbc(ls)*(denlbc(ls)*philbc(ls) - gz*(denlbc(ls)*  &
+                      (zelbc(ls)-0.5_kdp*bblbc(ls)) - 0.5_kdp*den(m)*bblbc(ls)))
+                 qn = MIN(qn,qlim)
+              end if
               qm_in = qm_in + denlbc(ls)*qn
               DO  iis=1,ns
                  sum_cqm_in(iis) = sum_cqm_in(iis) + denlbc(ls)*qn*clbc(ls,iis)
@@ -378,7 +390,7 @@ SUBROUTINE rhsn
      sfvrb(lc) = 0._kdp
      ssrb(lc,:) = 0._kdp
      IF(m == 0) CYCLE              ! ... dry column, skip to next river b.c. cell 
-     ! ... Calculate current net aquifer leakage flow rate
+     ! ... Calculate current net river leakage flow rate
      qm_net = 0._kdp
      DO ls=river_seg_index(lc)%seg_first,river_seg_index(lc)%seg_last
         qn = arbc(ls)

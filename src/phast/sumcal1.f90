@@ -728,6 +728,12 @@ SUBROUTINE sumcal1
            qm_net = qm_net + den(m)*qnp
            sfvlb(lc) = sfvlb(lc) + qnp
         ELSE                            ! ... Inflow
+           if(fresur .and. ifacelbc(ls) == 3) then
+              ! ... Limit the flow rate for z-face unconfined leakage
+              qlim = blbc(ls)*(denlbc(ls)*philbc(ls) - gz*(denlbc(ls)*(zelbc(ls)-0.5_kdp*bblbc(ls))  &
+                   - 0.5_kdp*den(m)*bblbc(ls)))
+              qnp = MIN(qnp,qlim)
+           end if
            qm_net = qm_net + denlbc(ls)*qnp
            sfvlb(lc) = sfvlb(lc) + qnp
         ENDIF
@@ -749,6 +755,12 @@ SUBROUTINE sumcal1
         DO ls=leak_seg_index(lc)%seg_first,leak_seg_index(lc)%seg_last
            qnp = albc(ls) - blbc(ls)*dp(m)
            IF(qnp > 0._kdp) THEN                   ! ... inflow
+              if(fresur .and. ifacelbc(ls) == 3) then
+                 ! ... limit the flow rate for unconfined z-face leakage
+                 qlim = blbc(ls)*(denlbc(ls)*philbc(ls) - gz*(denlbc(ls)*  &
+                      (zelbc(ls)-0.5_kdp*bblbc(ls)) - 0.5_kdp*den(m)*bblbc(ls)))
+                 qnp = MIN(qnp,qlim)
+              end if
               qm_in = qm_in + denlbc(ls)*qnp
               DO  iis=1,ns
                  sum_cqm_in(iis) = sum_cqm_in(iis) + denlbc(ls)*qnp*clbc(ls,iis)
@@ -782,11 +794,11 @@ SUBROUTINE sumcal1
      stslbc(iis) = stslbc(iis)*deltim
      tcslbc(iis) = tcslbc(iis) + stslbc(iis)
   END DO
-  ! ... Do not update the indices connecting river to aquifer yet!
+  ! ... Do not update the indices connecting leakage to aquifer yet!
   DEALLOCATE (cavg, sum_cqm_in, &
        stat = da_err)
-  IF (da_err /= 0) THEN  
-     PRINT *, "Array deallocation failed, sumcal1"  
+  IF (da_err /= 0) THEN
+     PRINT *, "Array deallocation failed, sumcal1"
      STOP
   ENDIF
   ! ... River leakage b.c.

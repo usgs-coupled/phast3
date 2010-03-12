@@ -139,7 +139,7 @@ SUBROUTINE calc_velocity
         END IF
      END DO
   END DO
-  ! ... Calculate leakage b.c. terms
+  ! ... Leakage b.c. terms
   DO  l=1,nlbc
      m = leak_seg_index(l)%m
      IF(m == 0) CYCLE              ! ... empty cell
@@ -151,7 +151,15 @@ SUBROUTINE calc_velocity
               IF(qn <= 0._kdp) THEN           ! ... Outflow
                  qface = den(mbc)*qn
               ELSE                            ! ... Inflow
-                 qface = denlbc(ls)*qn
+                 if(fresur .and. ifacelbc(ls) == 3) then
+                    ! ... Limit the flow rate for vertical leakage
+                    qlim = blbc(ls)*(denlbc(ls)*philbc(ls) - gz*(denlbc(ls)*(zelbc(ls)-0.5_kdp*bblbc(ls))  &
+                         - 0.5_kdp*den(mbc)*bblbc(ls)))
+                    qn = MIN(qn,qlim)
+                    qface = denlbc(ls)*qn
+                 else
+                    qface = denlbc(ls)*qn
+                 end if
               ENDIF
               DO ibf=1,b_cell(lc)%num_faces
                  IF(ifacelbc(ls) == 1) THEN
