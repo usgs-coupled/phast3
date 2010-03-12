@@ -50,7 +50,7 @@ SUBROUTINE media_hdf
   CHARACTER (LEN=119) :: name
   TYPE(cell_properties), DIMENSION(:), ALLOCATABLE :: cell_props
   ! ... set string for use with rcs ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: media_hdf.f90,v 1.2 2010/02/03 20:02:09 klkipp Exp klkipp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: media_hdf.f90,v 1.3 2010/03/05 21:51:23 klkipp Exp $'
   !     ------------------------------------------------------------------
   ALLOCATE (cell_props(nxyz), &
        stat = a_err)
@@ -100,14 +100,14 @@ SUBROUTINE media_hdf
                         udxyz * (abpm(ipmz) + poros(ipmz) * fluid_compressibility) * fluid_density * grav / s_input_to_si
   
                  ! convert dispersivity to user units    
-                 if (solute) then
+                 IF (solute) THEN
                     cell_props(m)%alphl     = cell_props(m)%alphl     + &
                         udxyz * (alphl(ipmz) / alpha_input_to_si)
                     cell_props(m)%alphth    = cell_props(m)%alphth    + &
                         udxyz * (alphth(ipmz) / alpha_input_to_si)
                     cell_props(m)%alphtv    = cell_props(m)%alphtv    + &
                         udxyz * (alphtv(ipmz) / alpha_input_to_si)
-                 endif
+                 ENDIF
               END DO
            END DO
         END DO
@@ -116,18 +116,18 @@ SUBROUTINE media_hdf
   
   ! Volume weight values
   DO m = 1, nxyz
-     if (cell_props(m)%active) then
+     IF (cell_props(m)%active) THEN
         cell_props(m)%kxx        = cell_props(m)%kxx / cell_props(m)%volume
         cell_props(m)%kyy        = cell_props(m)%kyy / cell_props(m)%volume
         cell_props(m)%kzz        = cell_props(m)%kzz / cell_props(m)%volume
         cell_props(m)%poros      = cell_props(m)%poros / cell_props(m)%volume
         cell_props(m)%storage    = cell_props(m)%storage / cell_props(m)%volume
-        if (solute) then
+        IF (solute) THEN
            cell_props(m)%alphl     = cell_props(m)%alphl  / cell_props(m)%volume
            cell_props(m)%alphth    = cell_props(m)%alphth / cell_props(m)%volume
            cell_props(m)%alphtv    = cell_props(m)%alphtv / cell_props(m)%volume
-        endif
-     endif
+        ENDIF
+     ENDIF
   END DO
 
   ! Write data to HDF
@@ -177,7 +177,7 @@ SUBROUTINE media_hdf
   name = 'Specific Storage ' // TRIM(s_units) // ' (cell vol avg)'
   CALL prntar_hdf(aprnt, full, conv, name)
 
-  if (solute) then  
+  IF (solute) THEN  
      ! Alpha l
      DO m = 1, nxyz
         aprnt(m) = cell_props(m)%alphl
@@ -198,7 +198,7 @@ SUBROUTINE media_hdf
      END DO
      name = 'Trans vert disp ' // TRIM(alpha_units) // ' (cell vol avg)'
      CALL prntar_hdf(aprnt, full, conv, name)
-  endif
+  ENDIF
 
   DEALLOCATE (cell_props, aprnt, full,  &
        stat = da_err)
@@ -207,6 +207,7 @@ SUBROUTINE media_hdf
      STOP  
   ENDIF
 END SUBROUTINE media_hdf
+
 SUBROUTINE calc_volume
 ! Logic for volume weighting copied from init2_1
   USE machine_constants, ONLY: kdp
@@ -261,7 +262,7 @@ SUBROUTINE calc_volume
   TYPE(cell_properties), DIMENSION(:), ALLOCATABLE :: cell_props
   !     ------------------------------------------------------------------
   
-  if (.not. solute) return
+  IF (.NOT. solute) RETURN
 !  ALLOCATE (volume(nxyz), &
 !       stat = a_err)
 !  IF (a_err /= 0) THEN  
@@ -307,9 +308,9 @@ SUBROUTINE calc_volume
   
   ! Volume weight values
   DO m = 1, nxyz
-     if (cell_props(m)%active) then
+     IF (cell_props(m)%active) THEN
         volume(m) = cell_props(m)%volume
-     endif
+     ENDIF
   END DO
 
   DEALLOCATE (cell_props, &

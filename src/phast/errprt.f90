@@ -129,16 +129,6 @@ SUBROUTINE errprt(ie1,ie2)
           'top of the expanded full cells in the uppermost plane'
      CALL errprt_c(erline)
   END IF
-  IF(ierr(47)) THEN
-     erline='47  - READ2 -  LLBC is too small, '//  &
-          'too many leakage b. c. cells:param3.inc'
-     CALL errprt_c(erline)
-  END IF
-  IF(ierr(50)) THEN
-     erline='50  - READ2 - LWEL is too small, too many '//  &
-          'wells defined:param4.inc'
-     CALL errprt_c(erline)
-  END IF
   IF(ierr(51)) THEN
      erline='51  - READ2 - Well x or y location outside '//  &
           'the simulation region'

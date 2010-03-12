@@ -44,7 +44,7 @@ SUBROUTINE aplbce_ss_flow
            IF(l1 == 0) l1 = nxy
            m = mfsbc(l1)
         ENDIF
-        IF (m == 0) EXIT          ! ... skip out of this flux b.c. cell
+        IF (m == 0) EXIT          ! ... dry column; skip to next flux bc column
         qn = qfflx(ls)*areafbc(ls)
         IF(qn <= 0.) THEN             ! ... Outflow
            qfbc = den(m)*qn*ufrac

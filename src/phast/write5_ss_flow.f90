@@ -508,7 +508,7 @@ SUBROUTINE write5_ss_flow
                  m = mfsbc(l1)
               END IF
            END IF
-           IF (m > 0) THEN
+           IF (m > 0) THEN            ! ... skip dry columns of cells
               lprnt1(m) = 1
               !$$              prthd=.TRUE.
               aprnt1(m) = qffbc(lc)
@@ -525,8 +525,6 @@ SUBROUTINE write5_ss_flow
            m = leak_seg_index(lc)%m
            lprnt1(m) = 1
            aprnt1(m) = qflbc(lc)
-           !$$                 APRNT2(M)=QHLBC(L)
-           !$$                 APRNT3(M)=QSLBC(L)
         END DO
         CALL prntar(2,aprnt1,lprnt1,fubcf,cnvmfi,24,000)
      END IF
@@ -556,39 +554,8 @@ SUBROUTINE write5_ss_flow
      END IF
 !!$     IF(netbc > 0) THEN
 !!$        !...**not available for PHAST
-!!$        WRITE(fubcf,2043) 'Evapotranspiration Flow Rates ','(positive is into the region)'
-!!$        WRITE(fubcf,2042) 'Fluid   (',unitm,'/',TRIM(unittm),')'
-!!$        DO  m=1,nxyz
-!!$           lprnt1(m)=-1
-!!$        END DO
-!!$        DO  l=1,netbc
-!!$           m=metbc(l)
-!!$           ! ... Locate the flux at the cell containing the free-surface
-!!$           l1=MOD(m,nxy)
-!!$           IF(l1 == 0) l1=nxy
-!!$           m=mfsbc(l1)
-!!$           aprnt1(m)=qfetbc(l)
-!!$           lprnt1(m)=1
-!!$        END DO
-!!$        CALL prntar(2,aprnt1,lprnt1,fubcf,cnvmfi,24,000)
-!!$     END IF
 !!$     IF(naifc > 0) THEN
 !!$        !... ** not available for PHAST
-!!$        WRITE(fubcf,2043) 'Aquifer Influence Function Flow Rates','(positive is into the region)'
-!!$        WRITE(fubcf,2042) 'Fluid   (',unitm,'/',TRIM(unittm),')'
-!!$        DO  m=1,nxyz
-!!$           aprnt1(m)=0.d0
-!!$           aprnt2(m)=0.d0
-!!$           aprnt3(m)=0.d0
-!!$           lprnt1(m)=-1
-!!$        END DO
-!!$        DO  l=1,naifc
-!!$           m=maifc(l)
-!!$           aprnt1(m)=aprnt1(m)+qfaif(l)
-!!$           lprnt1(m)=1
-!!$        END DO
-!!$        CALL prntar(2,aprnt1,lprnt1,fubcf,cnvmfi,24,000)
-!!$     END IF
      ntprbcf = ntprbcf+1
   END IF
   ! ... Set the next time for printout if by user time units
