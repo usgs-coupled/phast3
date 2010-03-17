@@ -997,13 +997,17 @@ write_bc_static(void)
 				thickness = rit->bc_thick * units.leaky_thick.input_to_si;
 				// elevation
 				elevation = cells[i].z * units.vertical.input_to_si;
-				if (rit->face == CF_Z)
+				if (free_surface == TRUE && rit->face == CF_Z && cells[i].exterior->zp)
+				{
+					elevation = rit->bc_z_grid * units.vertical.input_to_si;
+				} 
+				else if (rit->face == CF_Z)
 				{
 					if (cells[i].exterior->zn)
 						elevation -= thickness;
 					if (cells[i].exterior->zp)
 						elevation += thickness;
-				}
+				} 
 
 				// write segment info
 				output_msg(OUTPUT_HST,

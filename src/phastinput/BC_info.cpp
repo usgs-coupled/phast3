@@ -18,6 +18,8 @@ BC_info::BC_info(void)
 	this->bc_k_defined = false;
 	this->bc_thick = 0;
 	this->bc_thick_defined = false;
+	this->bc_z_grid = 0;
+	this->bc_z_grid_defined = false;
 	this->bc_solution_type = 2;	/* UNDEFINED */
 	mix_init(&(this->bc_solution));
 	this->bc_solution_defined = false;
@@ -69,6 +71,8 @@ BC_info::Copy(const BC_info & bcinfo)
 	this->bc_k_defined = bcinfo.bc_k_defined;
 	this->bc_thick = bcinfo.bc_thick;
 	this->bc_thick_defined = bcinfo.bc_thick_defined;
+	this->bc_z_grid = bcinfo.bc_z_grid;
+	this->bc_z_grid_defined = bcinfo.bc_z_grid_defined;
 	this->bc_solution_type = bcinfo.bc_solution_type;
 
 	this->bc_solution.i1 = bcinfo.bc_solution.i1;

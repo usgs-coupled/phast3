@@ -4478,8 +4478,10 @@ read_leaky_bc(void)
 		"description"			/* 15 */
 		,"box"                  /* 16 */
 		,"domain"               /* 17 */
+		,"elevation"            /* 18 */
+		,"z_coordinate_system"  /* 19 */
 	};
-	int count_opt_list = 18;
+	int count_opt_list = 20;
 	/*
 	 *   Read chemical initial condition data
 	 */
@@ -4879,6 +4881,84 @@ read_leaky_bc(void)
 
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
+		case 18:				/* elevation */
+			/*
+			 *   Read elevation 
+			 */
+			if (simulation > 0)
+			{
+				input_error++;
+				sprintf(error_string,
+						"Leaky boundary elevation can only be defined in first simulation period\n\t%s",
+						tag);
+				error_msg(error_string, CONTINUE);
+			}
+			if (bc_ptr == NULL)
+			{
+				sprintf(error_string, "Zone has not been defined for "
+						"leaky boundary elevation %s", tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+				opt = next_keyword_or_option(opt_list, count_opt_list);
+				break;
+			}
+			if (bc_ptr->bc_z_user != NULL)
+			{
+				sprintf(error_string,
+						"Leaky boundary elevation has been redefined %s", tag);
+				warning_msg(error_string);
+				property_free(bc_ptr->bc_z_user);
+				bc_ptr->bc_z_user = NULL;
+			}
+			bc_ptr->bc_z_user =
+				read_property(next_char, opt_list, count_opt_list, &opt, TRUE,
+							  FALSE);
+			if (bc_ptr->bc_z_user == NULL)
+			{
+				input_error++;
+				sprintf(error_string, "Reading leaky boundary elevation %s",
+						tag);
+				error_msg(error_string, CONTINUE);
+			}
+			break;
+		case 19:				/* z_coordinate_system */
+			if (simulation > 0)
+			{
+				input_error++;
+				sprintf(error_string,
+						"Leaky boundary z_coordinate_system can only be defined in first simulation period\n\t%s",
+						tag);
+				error_msg(error_string, CONTINUE);
+			}
+			if (bc_ptr == NULL)
+			{
+				sprintf(error_string, "Zone has not been defined for "
+						"leaky boundary z_coordinate_system %s", tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+				opt = next_keyword_or_option(opt_list, count_opt_list);
+				break;
+			}
+			j = copy_token(token, &next_char, &l);
+			str_tolower(token);
+			if (strstr(token, "map") == token)
+			{
+				bc_ptr->bc_z_coordinate_system_user = PHAST_Transform::MAP;
+			}
+			else if (strstr(token, "grid") == token)
+			{
+				bc_ptr->bc_z_coordinate_system_user = PHAST_Transform::GRID;
+			}
+			else
+			{
+				sprintf(error_string,
+						"Expected coordinate system for leaky boundary z_coordinate_system. %s",
+						tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+			}
+			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;		
 		}
 		return_value = check_line_return;
 		if (return_value == EOF || return_value == KEYWORD)
@@ -9032,7 +9112,8 @@ read_river(void)
 				input_error++;
 			}
 			opt = next_keyword_or_option(opt_list, count_opt_list);
-			break;		}
+			break;		
+		}
 		return_value = check_line_return;
 		if (return_value == EOF || return_value == KEYWORD)
 			break;

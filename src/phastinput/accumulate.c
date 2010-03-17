@@ -4200,6 +4200,30 @@ distribute_leaky_bc(int i,		// bc[i]
 			}
 		}
 
+		// Bed elevation
+		if (bc[i]->bc_z_user != NULL)
+		{
+			if (get_property_for_cell(ncells, n, node_sequence, bc[i]->mask,
+									  bc[i]->bc_z_user,
+									  PT_DOUBLE,
+									  &i_dummy, &bc_info.bc_z_grid, &mix_dummy))
+			{
+				bc_info.bc_z_grid_defined = true;
+			}
+			else
+			{
+				bc_info.bc_z_grid_defined = false;
+				sprintf(error_string, "Leaky boundary elevation %s", tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+			}
+			if (bc[i]->bc_z_coordinate_system_user == PHAST_Transform::MAP)
+			{
+				Point p(0, 0, bc_info.bc_z_grid);
+				map_to_grid->Transform(p);
+				bc_info.bc_z_grid = p.z();
+			}
+		}
 		// Solution mix
 		if (bc[i]->bc_solution != NULL && flow_only == FALSE)
 		{
