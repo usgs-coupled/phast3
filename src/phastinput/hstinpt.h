@@ -212,7 +212,7 @@ struct BC
 	struct property *mask;
 
 	/* boundary condition information */
-	  BC_info::BC_TYPE bc_type;	/* UNDEFINED, SPECIFIED, FLUX, LEAKY */
+	BC_info::BC_TYPE bc_type;	/* UNDEFINED, SPECIFIED, FLUX, LEAKY */
 	int new_def;
 
 	/* head for SPECIFIED and LEAKY */
@@ -226,6 +226,8 @@ struct BC
 	/* other parameters for LEAKY */
 	struct property *bc_k;
 	struct property *bc_thick;
+	struct property *bc_z_user;
+	PHAST_Transform::COORDINATE_SYSTEM bc_z_coordinate_system_user;
 
 	/* flux face for FLUX and LEAKY, 0, 1, or 2 */
 	int face;
@@ -368,6 +370,10 @@ struct bc_face
 		bc_thick;
 	int
 		bc_thick_defined;
+	double
+		bc_z;
+	int
+		bc_z_defined;
 	int
 		bc_solution_type;
 	struct mix

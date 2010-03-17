@@ -344,6 +344,7 @@ bc_free(struct BC *bc_ptr)
 	time_series_free(bc_ptr->bc_flux);
 	property_free(bc_ptr->bc_k);
 	property_free(bc_ptr->bc_thick);
+	property_free(bc_ptr->bc_z_user);
 	time_series_free(bc_ptr->bc_solution);
 
 	free_check_null(bc_ptr->bc_head);
@@ -381,6 +382,8 @@ bc_init(struct BC *bc_ptr)
 	bc_ptr->current_bc_flux = NULL;
 	bc_ptr->bc_k = NULL;
 	bc_ptr->bc_thick = NULL;
+	bc_ptr->bc_z_user = NULL;
+	bc_ptr->bc_z_coordinate_system_user = PHAST_Transform::GRID;
 	bc_ptr->face = -1;
 	bc_ptr->cell_face = CF_UNKNOWN;
 	bc_ptr->face_defined = FALSE;
@@ -388,6 +391,8 @@ bc_init(struct BC *bc_ptr)
 	bc_ptr->bc_solution = NULL;
 	bc_ptr->current_bc_solution = NULL;
 	bc_ptr->current_bc_head = NULL;
+	
+	
 
 	return (OK);
 }

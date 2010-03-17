@@ -1832,7 +1832,7 @@ river_convert_z_to_grid(River * river_ptr, PHAST_Transform * map2grid)
 {
 	int i;
 
-	if (river_ptr->coordinate_system == PHAST_Transform::NONE)
+	if (river_ptr->z_coordinate_system_user == PHAST_Transform::NONE)
 	{
 		sprintf(error_string, "Error with Z coordinate system for river %d %s.",
 			river_ptr->n_user, river_ptr->description);
@@ -1840,7 +1840,7 @@ river_convert_z_to_grid(River * river_ptr, PHAST_Transform * map2grid)
 		input_error++;
 		return;
 	}
-	switch (river_ptr->coordinate_system)
+	switch (river_ptr->z_coordinate_system_user)
 	{
 	case PHAST_Transform::GRID:
 		for (i = 0; i < river_ptr->count_points; i++)

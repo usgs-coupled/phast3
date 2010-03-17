@@ -34,6 +34,8 @@ class BC_info
 	bool bc_k_defined;
 	double bc_thick;
 	bool bc_thick_defined;
+	double bc_z_grid;
+	bool bc_z_grid_defined;
 	int bc_solution_type;
 	struct mix bc_solution;
 	bool bc_solution_defined;
