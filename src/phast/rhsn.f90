@@ -291,8 +291,25 @@ SUBROUTINE rhsn
      PRINT *, "Array allocation failed: rhsn, point 2"  
      STOP
   ENDIF
+  if(fresur) then
+     DO lc=1,nlbc
+        ! ... Update the indices locating the cells communicating with leaky layer
+        mc0 = leak_seg_index(lc)%m
+        lc0 = MOD(mc0,nxy)
+        IF(lc0 == 0) lc0 = nxy
+        mfs = mfsbc(lc0)    ! ... currrent f.s. cell in column lc0
+        !$$     leak_seg_index(lc)%m = MIN(mfs,mrbc_bot(lc))
+        DO ls=leak_seg_index(lc)%seg_first,leak_seg_index(lc)%seg_last
+           if(ifacelbc(ls) == 3) then
+              leak_seg_index(lc)%m = mfs            ! ... communicate with f.s. cell always
+              !$$        mrbc(ls) = MIN(mfs,mrseg_bot(ls))    ! ... currrent leakage segment cell 
+              mlbc(ls) = leak_seg_index(lc)%m     ! ... currrent leakage segment cell for aquifer head
+           end if                            ! ... now the same as communication cell
+        END DO
+     END DO
+  end if
   DO  lc=1,nlbc
-     m = leak_seg_index(lc)%m
+     m = leak_seg_index(lc)%m          ! ... current communicating cell 
      sflb(lc) = 0._kdp
      sfvlb(lc) = 0._kdp
      sslb(lc,:) = 0._kdp

@@ -64,6 +64,14 @@ SUBROUTINE error3
         END DO
      END DO
   END IF
+  ! ... Leakage b.c.
+  IF(rdlbc .AND. fresur) THEN
+     DO  ls=1,nlbc_seg
+        if(ifacelbc(ls) == 3) then
+           IF(philbc(ls) < gz*zelbc(ls)) ierr(73)=.TRUE.
+        end if
+     END DO
+  END IF
   ! ... River leakage b.c.
   IF(rdrbc) THEN
      DO  ls=1,nrbc_seg

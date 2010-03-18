@@ -661,8 +661,7 @@ SUBROUTINE init2_1
      leak_seg_index(lc)%m = ms
      leak_seg_index(lc)%seg_first = 1
      DO ls=2,nlbc_seg
-        ! ... This loop expects all segments attached to a given cell to be 
-        ! ...      contiguous
+        ! ... This loop expects all segments attached to a given cell to be contiguous
         IF(mlbc(ls) == ms) CYCLE
         leak_seg_index(lc)%seg_last = ls - 1
         leak_seg_index(lc+1)%seg_first = ls
@@ -701,8 +700,7 @@ SUBROUTINE init2_1
      river_seg_index(lc)%m = ms
      river_seg_index(lc)%seg_first = 1
      DO ls=2,nrbc_seg
-        ! ... This loop expects all segments attached to a given cell to be 
-        ! ...      contiguous
+        ! ... This loop expects all segments attached to a given cell to be contiguous
         IF(mrbc(ls) == ms) CYCLE
         river_seg_index(lc)%seg_last = ls - 1
         river_seg_index(lc+1)%seg_first = ls
