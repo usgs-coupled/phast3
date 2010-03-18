@@ -287,7 +287,7 @@ SUBROUTINE aplbci
      m = leak_seg_index(lc)%m     ! ... current leakage communication cell
      ! ... calculate current net aquifer leakage flow rate
      ! ...      possible attenuation included explicitly
-     IF(m == 0) CYCLE              ! ... dry column, skip to next river b.c. cell 
+     IF(m == 0) CYCLE              ! ... dry column, skip to next leaky b.c. cell 
 !$$     IF(frac(m) <= 0._kdp) CYCLE
      qm_net = 0._kdp
      qfbc = 0._kdp
@@ -326,8 +326,6 @@ SUBROUTINE aplbci
      IF(ieq == 1) THEN
         va(7,ma) = va(7,ma) - fdtmth*dqfdp
         rhs(ma) = rhs(ma) + fdtmth*qfbc
-!!$     elseif(ieq.eq.2) then
-!!$        !... ** not available for phast
      ELSEIF(ieq == 3) THEN
         IF(qm_net <= 0._kdp) THEN           ! ... net outflow
            qsbc4(is) = qm_net*c(m,is)  
@@ -440,13 +438,11 @@ SUBROUTINE aplbci
               qm_net = qm_net + denrbc(ls)*qnp
               qfbc = qfbc + denrbc(ls)*qn  
               dqfdp = dqfdp - denrbc(ls)*brbc(ls)
-              !$$              write(*,*) 2, qfbc, dqfdp, qnp, brbc(ls), p(m)/9807.0_kdp, m, qlim
            ELSEIF(qnp > qlim) THEN
               qm_net = qm_net + denrbc(ls)*qlim
               qfbc = qfbc + denrbc(ls)*qlim
               ! hack for instability from the kink in q vs h relation
               IF (steady_flow) dqfdp = dqfdp - denrbc(ls)*brbc(ls)
-              !$$              write(*,*) 3, qfbc, dqfdp, qnp, brbc(ls), p(m)/9807.0_kdp, m, qlim
               ! ... add nothing to dqfdp
            ENDIF
         ENDIF

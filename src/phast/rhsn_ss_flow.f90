@@ -151,6 +151,23 @@ SUBROUTINE rhsn_ss_flow
      END DO
   END DO
   ! ... Calculate leakage b.c. terms
+  if(fresur) then
+     DO lc=1,nlbc
+        ! ... Update the indices locating the cells communicating with leaky layer
+        mc0 = leak_seg_index(lc)%m
+        lc0 = MOD(mc0,nxy)
+        IF(lc0 == 0) lc0 = nxy
+        mfs = mfsbc(lc0)    ! ... currrent f.s. cell in column lc0
+        !$$     leak_seg_index(lc)%m = MIN(mfs,mrbc_bot(lc))
+        DO ls=leak_seg_index(lc)%seg_first,leak_seg_index(lc)%seg_last
+           if(ifacelbc(ls) == 3) then
+              leak_seg_index(lc)%m = mfs            ! ... communicate with f.s. cell always
+              !$$        mrbc(ls) = MIN(mfs,mrseg_bot(ls))    ! ... currrent leakage segment cell 
+              mlbc(ls) = leak_seg_index(lc)%m     ! ... currrent leakage segment cell for aquifer head
+           end if                            ! ... now the same as communication cell
+        END DO
+     END DO
+  end if
   ! ...      Calculate step total flow rates and cell step flow rates.
   DO  lc=1,nlbc
      m = leak_seg_index(lc)%m
@@ -192,10 +209,10 @@ SUBROUTINE rhsn_ss_flow
      lc0 = MOD(mc0,nxy)
      IF(lc0 == 0) lc0 = nxy
      mfs = mfsbc(lc0)    ! ... currrent f.s. cell
-!     river_seg_index(lc)%m = MIN(mfs,mrbc_bot(lc))
+!$$     river_seg_index(lc)%m = MIN(mfs,mrbc_bot(lc))
      river_seg_index(lc)%m = mfs            ! ... communicate with f.s. cell always
      DO ls=river_seg_index(lc)%seg_first,river_seg_index(lc)%seg_last
-!        mrbc(ls) = MIN(mfs,mrseg_bot(ls))    ! ... currrent river segment cell for aquifer head
+!$$        mrbc(ls) = MIN(mfs,mrseg_bot(ls))    ! ... currrent river segment cell for aquifer head
         mrbc(ls) = river_seg_index(lc)%m     ! ... currrent river segment cell for aquifer head
                                              ! ... now the same as communication cell
      END DO

@@ -23,7 +23,7 @@ SUBROUTINE rowscale(nrow,norm,a,diag,ierr)
   INTEGER :: i, nd
   INTEGER :: a_err, da_err
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: scale_jds.f90,v 1.2 2010/03/05 21:51:23 klkipp Exp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: scale_jds.f90,v 1.2 2010/03/05 21:51:23 klkipp Exp klkipp $'
   !     ------------------------------------------------------------------
   !...
   nd = SIZE(a,1)          ! ... maximum number of diagonals (elements) per row

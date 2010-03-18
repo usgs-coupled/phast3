@@ -204,6 +204,11 @@ SUBROUTINE errprt(ie1,ie2)
           'flux at same node'
      CALL errprt_c(erline)
   END IF
+  IF(ierr(73)) THEN
+     erline='73  - READ3 - Leakage head set below external '//  &
+          'elevation of leaky boundary'
+     CALL errprt_c(erline)
+  END IF
   IF(ierr(74)) THEN
      erline='74  - READ3 - River head set below bottom '//  &
           'elevation of river'
