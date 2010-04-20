@@ -1,7 +1,6 @@
 #ifndef _INC_PHAST_FILES_H
 #define _INC_PHAST_FILES_H
 
-#define OUTPUT_ECHO (OUTPUT_SEND_MESSAGE + 1)
 #ifdef PHREEQC_IDENT
 static char const svnid[] =
 	"$Id$";
