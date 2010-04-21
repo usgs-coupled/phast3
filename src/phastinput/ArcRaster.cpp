@@ -3,6 +3,7 @@
 #include <iostream>
 #include <istream>
 #include <fstream>
+#include <string.h>
 #include "Point.h"
 
 // Note: No header files should follow the next three lines

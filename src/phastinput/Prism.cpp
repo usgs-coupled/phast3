@@ -1230,9 +1230,10 @@ Prism::Convert_coordinates(PHAST_Transform::COORDINATE_SYSTEM cs,
 }
 PHAST_Transform::COORDINATE_SYSTEM Prism::What_coordinates(void)
 {
-	if (this->perimeter.Get_coordinate_system() ==
-		this->top.Get_coordinate_system() ==
-		this->bottom.Get_coordinate_system())
+	if (
+	  (this->perimeter.Get_coordinate_system() == this->top.Get_coordinate_system() ) &&
+	  (this->perimeter.Get_coordinate_system() == this->bottom.Get_coordinate_system())
+	  )
 	{
 		return this->perimeter.Get_coordinate_system();
 	}
