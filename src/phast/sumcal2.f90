@@ -343,16 +343,21 @@ SUBROUTINE sumcal2
      ! ...      at each node location over the horizontal area
      ! ... also set all frac to one for cells below the f.s. cell
      DO  mt=1,nxy
-        m0 = mfsbc(mt)
         ierrw = .FALSE.
-        m1=nxyz-nxy+mt
-200     IF(frac(m1) > 0._kdp) GO TO 210
-        m1=m1-nxy
-        IF(m1 > 0) THEN
-            IF (ibc(m1) >= 0) GO TO 200
-        ENDIF
-        m1 = 0
-210     CONTINUE
+        m0 = mfsbc(mt)
+        mfsbc(mt) = 0
+        DO k=nz,1,-1
+           m1 = (k-1)*nxy + mt
+           IF (ibc(m1) >= 0) THEN
+              IF(frac(m1) > 0._kdp) THEN
+                 mfsbc(mt) = m1
+                 EXIT
+              END IF
+           END IF
+        END DO
+        DO m=m1-nxy,1,-nxy
+           frac(m) = 1._kdp
+        END DO
         IF(ABS(m1 - m0) > nxy) THEN
            CALL mtoijk(mt,icol,jcol,kcol,nx,ny)
            WRITE(logline1,'(a)')  &
@@ -364,10 +369,6 @@ SUBROUTINE sumcal2
            CALL screenprt_c(logline1)
            CALL logprt_c(logline1)
         END IF
-        mfsbc(mt) = m1
-        DO m=m1-nxy,1,-nxy
-           frac(m) = 1._kdp
-        END DO
         IF(m1 == 0 .AND. .NOT.print_dry_col(mt)) THEN
            CALL mtoijk(mt,icol,jcol,kcol,nx,ny)
            WRITE(logline1,'(a)')  &

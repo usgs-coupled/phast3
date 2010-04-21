@@ -187,14 +187,16 @@ SUBROUTINE init3
   ! ... also set frac to one for all cells below the f.s. cell
   ! ... Allows for resaturation of cell columns by specified head (pressure) b.c.
   DO mt=1,nxy
-     m1 = nxyz-nxy+mt
-750  IF(frac(m1) > 0._kdp) go to 760  
-     m1 = m1-nxy
-     IF(m1 > 0) THEN
-       IF (ibc(m1) >= 0) GO TO 750
-     ENDIF
-     m1 = 0
-760  mfsbc(mt) = m1
+     mfsbc(mt) = 0
+     DO k=nz,1,-1
+        m1 = (k-1)*nxy + mt
+        IF (ibc(m1) >= 0) THEN
+           IF(frac(m1) > 0._kdp) THEN
+              mfsbc(mt) = m1
+              EXIT
+           END IF
+        END IF
+     END DO
      DO m=m1-nxy,1,-nxy
         frac(m) = 1._kdp
      END DO
