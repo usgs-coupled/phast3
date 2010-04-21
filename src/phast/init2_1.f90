@@ -1450,14 +1450,16 @@ SUBROUTINE init2_1
   some_dry = .FALSE.
   print_dry_col = .FALSE.
   DO mt=1,nxy
-     m1 = nxyz-nxy+mt
-750  IF(frac(m1) > 0._kdp) go to 760  
-     m1 = m1-nxy
-     IF(m1 > 0) THEN
-       IF (ibc(m1) >= 0) GO TO 750
-     ENDIF
-     m1 = 0
-760  mfsbc(mt) = m1
+     mfsbc(mt) = 0
+     DO k=nz,1,-1
+        m1 = (k-1)*nxy + mt
+        IF (ibc(m1) >= 0) THEN
+           IF(frac(m1) > 0._kdp) THEN
+              mfsbc(mt) = m1
+              EXIT
+           END IF
+        END IF
+     END DO
      DO m=m1-nxy,1,-nxy
         frac(m) = 1._kdp
      END DO
@@ -1485,7 +1487,7 @@ SUBROUTINE init2_1
   uc = w0  
   DO m = 1, nxyz  
      IF(ibc(m) == - 1) THEN
-        ! excluded cell values
+        ! ... excluded cell values
         den(m) = 0._kdp
         vis(m) = 0._kdp
         IF(solute) THEN
@@ -1494,7 +1496,7 @@ SUBROUTINE init2_1
            END DO
         END IF
      ELSE IF (frac(m) <= 0._kdp) THEN
-        ! dry cell values
+        ! ... dry cell values
         den(m) = den0
         vis(m) = viscos(p(m), ut, uc)  
 !!$ the following is overwritten anyway after distribute_initial_conditions
