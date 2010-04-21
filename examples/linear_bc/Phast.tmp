@@ -371,6 +371,8 @@ C.2.21.5 .. NZTPHC, ZTHC(I),TVZHC(I);(O) - HEAT [1.4] and NHCBC [1.6] >0,
 C..          limit of 5
 C.2.21.6B .. C by x,y,z range {0.1-0.3};(O) - SOLUTE [1.4] and NOT ICCPRO
 C..           [2.21.1]
+C.2.21.7a .. Units for solids, mol/L: water 1, rock 2 
+1 1 1 1 1 1 
 C.2.21.7 .. Initial solution 
   0.0000000e+00   1.0000000e+01   0.0000000e+00   1.0000000e+01   0.0000000e+00   1.0000000e+01
      0 4 0 4 0 4
