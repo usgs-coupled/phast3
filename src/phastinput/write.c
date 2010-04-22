@@ -936,9 +936,11 @@ write_bc_static(void)
 						units.vertical.input_to_si;
 				}
 
+				int f = (int) rit->face + 1;
+				if (f == 3 && cells[i].exterior->zn) f = -3;
 				// segment number, cell number, face, area
 				output_msg(OUTPUT_HST, "   %d %d %d %20.10e\n", segment,
-						   i + 1, ((int) rit->face + 1), area);
+						   i + 1, f, area);
 				segment++;
 			}
 		}
@@ -1010,9 +1012,11 @@ write_bc_static(void)
 				} 
 
 				// write segment info
+				int f = (int) rit->face + 1;
+				if (f == 3 && cells[i].exterior->zn) f = -3;
 				output_msg(OUTPUT_HST,
 						   "   %d %d %d %20.10e %20.10e %20.10e %20.10e\n",
-						   segment, i + 1, ((int) rit->face + 1), area,
+						   segment, i + 1, f, area,
 						   permeability, thickness, elevation);
 				segment++;
 			}
