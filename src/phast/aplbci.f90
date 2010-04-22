@@ -248,9 +248,9 @@ SUBROUTINE aplbci
      m = flux_seg_index(lc)%m
      DO ls=flux_seg_index(lc)%seg_first,flux_seg_index(lc)%seg_last
         ufrac = 1._kdp
-        IF(ifacefbc(ls) < 3) ufrac = frac(m)     
-        ! ... Redirect the flux to the free-surface cell, if necessary
+        IF(ABS(ifacefbc(ls)) < 3) ufrac = frac(m)     
         IF(fresur .AND. ifacefbc(ls) == 3 .AND. frac(m) <= 0._kdp) THEN
+           ! ... Redirect the flux from above to the free-surface cell
            l1 = MOD(m,nxy)
            IF(l1 == 0) l1 = nxy
            m = mfsbc(l1)
@@ -288,7 +288,7 @@ SUBROUTINE aplbci
      ! ... calculate current net aquifer leakage flow rate
      ! ...      possible attenuation included explicitly
      IF(m == 0) CYCLE              ! ... dry column, skip to next leaky b.c. cell 
-!$$     IF(frac(m) <= 0._kdp) CYCLE
+     !$$     IF(frac(m) <= 0._kdp) CYCLE
      qm_net = 0._kdp
      qfbc = 0._kdp
      dqfdp = 0._kdp
@@ -300,8 +300,8 @@ SUBROUTINE aplbci
            qfbc = qfbc + den(m)*qn
            dqfdp = dqfdp - den(m)*blbc(ls)
         ELSE                             ! ... inflow
-           if(fresur .and. ifacelbc(ls) == 3) then
-              ! ... limit the flow rate for vertical leakage
+           IF(fresur .AND. ifacelbc(ls) == 3) THEN
+              ! ... limit the flow rate for vertical leakage from above
               qlim = blbc(ls)*(denlbc(ls)*philbc(ls) - gz*(denlbc(ls)*(zelbc(ls)-0.5_kdp*bblbc(ls))  &
                    - 0.5_kdp*den(m)*bblbc(ls)))
               IF(qnp <= qlim) THEN
@@ -315,11 +315,11 @@ SUBROUTINE aplbci
                  IF (steady_flow) dqfdp = dqfdp - denlbc(ls)*blbc(ls)
                  ! ... add nothing to dqfdp
               ENDIF
-           else          ! ... x or y face
+           ELSE          ! ... x or y face
               qm_net = qm_net + denlbc(ls)*qnp
               qfbc = qfbc + denlbc(ls)*qn  
               dqfdp = dqfdp - denlbc(ls)*blbc(ls)
-           end if
+           END IF
         ENDIF
      END DO
      ma = mrno(m)
@@ -337,17 +337,17 @@ SUBROUTINE aplbci
            DO ls=leak_seg_index(lc)%seg_first,leak_seg_index(lc)%seg_last
               qnp = albc(ls) - blbc(ls)*dp(m)
               IF(qnp > 0._kdp) THEN                   ! ... inflow
-                 if(fresur .and. ifacelbc(ls) == 3) then
-                    ! ... limit the flow rate for vertical leakage
+                 IF(fresur .AND. ifacelbc(ls) == 3) THEN
+                    ! ... limit the flow rate for vertical leakage from above
                     qlim = blbc(ls)*(denlbc(ls)*philbc(ls) - gz*(denlbc(ls)*  &
                          (zelbc(ls)-0.5_kdp*bblbc(ls)) - 0.5_kdp*den(m)*bblbc(ls)))
                     qnp = MIN(qnp,qlim)
                     qm_in = qm_in + denlbc(ls)*qnp
                     sum_cqm_in = sum_cqm_in + denlbc(ls)*qnp*clbc(ls,is)  
-                 else
+                 ELSE
                     qm_in = qm_in + denlbc(ls)*qnp
                     sum_cqm_in = sum_cqm_in + denlbc(ls)*qnp*clbc(ls,is)
-                 end if
+                 END IF
               ENDIF
            END DO
            cavg = sum_cqm_in/qm_in

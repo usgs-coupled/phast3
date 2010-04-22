@@ -495,7 +495,7 @@ SUBROUTINE read2
         lsmax = MAX(ls, lsmax)
         WRITE(cibc,6001) ibc(m)
 6001    FORMAT (i9.9)
-        ifc = uiface(ls)
+        ifc = ABS(uiface(ls))
         IF(cibc(ifc:ifc) /= '2') THEN
            cibc(ifc:ifc) = '2'
            READ(cibc,6001) ibc(m)
@@ -561,7 +561,7 @@ SUBROUTINE read2
         m = umbc(ls)
         lsmax = MAX(ls, lsmax)
         WRITE(cibc,6001) ibc(m)  
-        ifc = uiface(ls)
+        ifc = ABS(uiface(ls))
         IF(cibc(ifc:ifc) /= '3') THEN
            cibc(ifc:ifc) = '3'
            READ(cibc,6001) ibc(m)
@@ -883,7 +883,7 @@ SUBROUTINE read2
   IF (prtic_conc) prcphrqi = 1
   prcpd = .FALSE.
   ! ...  more data for pr_hdf_media
-  if (pr_hdf_media) then
+  IF (pr_hdf_media) THEN
      READ(fuins,*) k_units, k_input_to_si, fluid_density, fluid_viscosity
      IF (print_rde) WRITE(furde, "(tr5, a/tr5,a,1pg12.4,1pg12.4,1pg12.4)") &
           "C.2.23.2.2.1 .. K: units, input_to_si, fluid_density, fluid_viscosity ", &
@@ -892,13 +892,13 @@ SUBROUTINE read2
      IF (print_rde) WRITE(furde, "(tr5, a/tr5,a,1pg12.4,1pg12.4)") &
           "C.2.23.2.2.2 .. Storage: units, input_to_si, fluid_compressibility", &
           s_units, s_input_to_si, fluid_compressibility
-     if (solute) then
+     IF (solute) THEN
         READ(fuins,*) alpha_units, alpha_input_to_si
         IF (print_rde) WRITE(furde, "(tr5, a/tr5,a,1pg12.4)") &
              "C.2.23.2.3.1 .. Alpha: units, input_to_si", &
              alpha_units, alpha_input_to_si 
-     endif
-  endif
+     ENDIF
+  ENDIF
 
   ! ... print-out orientation
   IF(.NOT.cylind) THEN  
@@ -958,12 +958,12 @@ SUBROUTINE read2
 8015    FORMAT(tr25,a,i3,a)
         READ(line,'(a)') zone_title(izn)
         IF (print_rde) WRITE(furde,'(tr5,a)') zone_title(izn)
-        READ(fuins,'(A)') line
-        READ(line,'(l,a)') zone_write_heads(izn), zone_filename_heads(izn)
-        IF (print_rde) WRITE(furde,'(tr5,l,a)') zone_write_heads(izn), zone_filename_heads(izn)
+        READ(fuins,*) zone_write_heads(izn)
+        if(zone_write_heads(izn)) READ(fuins,'(a)') zone_filename_heads(izn)
+        IF (print_rde) WRITE(furde,'(tr5,l2,a)') zone_write_heads(izn), zone_filename_heads(izn)
         zone_filename_heads(izn) = ADJUSTL(zone_filename_heads(izn))
 
-        IF((fresur .AND. (nfbc > 0 .OR. nrbc > 0)) .or. zone_write_heads(izn)) THEN
+        IF((fresur .AND. (nfbc > 0 .OR. nrbc > 0)) .OR. zone_write_heads(izn)) THEN
            IF (print_rde) WRITE(furde,8005) '** Flow Zone Volume Parameters **',  &
                 '  (read echo[2.23.10])',' i_no   j_no   kmin_no   kmax_no'
            READ(fuins,*) zone_col(izn)%num_xycol

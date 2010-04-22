@@ -22,7 +22,7 @@ SUBROUTINE zone_flow
        sxxs, syys, szzs
   REAL(KIND=kdp) :: dxm, dxp, dym, dyp, dzm, dzp, wtx, wty, wtz
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: zone_flow.f90,v 1.2 2010/03/05 18:19:02 klkipp Exp klkipp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: zone_flow.f90,v 1.2 2010/03/05 18:19:02 klkipp Exp $'
   !     ------------------------------------------------------------------
   ufdt1 = fdtmth
   ! ... Update conductance coefficients, mass flow rates, velocities

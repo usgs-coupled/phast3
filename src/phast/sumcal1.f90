@@ -625,9 +625,9 @@ SUBROUTINE sumcal1
      IF(m == 0) CYCLE     ! ... dry column
      DO ls=flux_seg_index(lc)%seg_first,flux_seg_index(lc)%seg_last
         ufrac = 1._kdp
-        IF(ifacefbc(ls) < 3) ufrac = frac(m)  
+        IF(ABS(ifacefbc(ls)) < 3) ufrac = frac(m)  
         IF(fresur .AND. ifacefbc(ls) == 3 .AND. frac(m) <= 0._kdp) THEN
-           ! ... Redirect the flux to the free-surface cell
+           ! ... Redirect the flux from above to the free-surface cell
            l1 = MOD(m,nxy)
            IF(l1 == 0) l1 = nxy
            m = mfsbc(l1)
@@ -728,12 +728,12 @@ SUBROUTINE sumcal1
            qm_net = qm_net + den(m)*qnp
            sfvlb(lc) = sfvlb(lc) + qnp
         ELSE                            ! ... Inflow
-           if(fresur .and. ifacelbc(ls) == 3) then
-              ! ... Limit the flow rate for z-face unconfined leakage
+           IF(fresur .AND. ifacelbc(ls) == 3) THEN
+              ! ... Limit the flow rate for z-face unconfined leakage from above
               qlim = blbc(ls)*(denlbc(ls)*philbc(ls) - gz*(denlbc(ls)*(zelbc(ls)-0.5_kdp*bblbc(ls))  &
                    - 0.5_kdp*den(m)*bblbc(ls)))
               qnp = MIN(qnp,qlim)
-           end if
+           END IF
            qm_net = qm_net + denlbc(ls)*qnp
            sfvlb(lc) = sfvlb(lc) + qnp
         ENDIF
@@ -755,12 +755,12 @@ SUBROUTINE sumcal1
         DO ls=leak_seg_index(lc)%seg_first,leak_seg_index(lc)%seg_last
            qnp = albc(ls) - blbc(ls)*dp(m)
            IF(qnp > 0._kdp) THEN                   ! ... inflow
-              if(fresur .and. ifacelbc(ls) == 3) then
-                 ! ... limit the flow rate for unconfined z-face leakage
+              IF(fresur .AND. ifacelbc(ls) == 3) THEN
+                 ! ... limit the flow rate for unconfined z-face leakage from above
                  qlim = blbc(ls)*(denlbc(ls)*philbc(ls) - gz*(denlbc(ls)*  &
                       (zelbc(ls)-0.5_kdp*bblbc(ls)) - 0.5_kdp*den(m)*bblbc(ls)))
                  qnp = MIN(qnp,qlim)
-              end if
+              END IF
               qm_in = qm_in + denlbc(ls)*qnp
               DO  iis=1,ns
                  sum_cqm_in(iis) = sum_cqm_in(iis) + denlbc(ls)*qnp*clbc(ls,iis)

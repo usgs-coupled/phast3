@@ -50,7 +50,7 @@ SUBROUTINE media_hdf
   CHARACTER (LEN=119) :: name
   TYPE(cell_properties), DIMENSION(:), ALLOCATABLE :: cell_props
   ! ... set string for use with rcs ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: media_hdf.f90,v 1.3 2010/03/05 21:51:23 klkipp Exp klkipp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: media_hdf.f90,v 1.3 2010/03/05 21:51:23 klkipp Exp $'
   !     ------------------------------------------------------------------
   ALLOCATE (cell_props(nxyz), &
        stat = a_err)

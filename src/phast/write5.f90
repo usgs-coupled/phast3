@@ -481,8 +481,8 @@ SUBROUTINE write5
         END DO
      ENDDO
      ntprzf = ntprzf+1
-   ENDIF
-   IF(przf_tsv) THEN  
+  ENDIF
+  IF(przf_tsv) THEN  
      ! ... Zonal flow rates to tab separated file, fuzf_tsv
      DO izn=1,num_flo_zones
         WRITE(fuzf_tsv,2502) cnvtmi*time,ACHAR(9),izn,ACHAR(9),'Water',ACHAR(9),  &
@@ -498,14 +498,14 @@ SUBROUTINE write5
         IF (solute) THEN
            DO  is=1,ns-1                             ! ... No printout of charge flows
               WRITE(fuzf_tsv,2502) cnvtmi*time,ACHAR(9),izn,ACHAR(9),comp_name(is),ACHAR(9),  &
-             cnvmfi*qszoni(is,izn),ACHAR(9),cnvmfi*qszonp(is,izn),ACHAR(9),  &
-             cnvmfi*qszoni_int(is,izn),ACHAR(9),cnvmfi*qszonp_int(is,izn),ACHAR(9),  &
-             cnvmfi*qszoni_sbc(is,izn),ACHAR(9),cnvmfi*qszonp_sbc(is,izn),ACHAR(9),  &
-             cnvmfi*qszoni_fbc(is,izn),ACHAR(9),cnvmfi*qszonp_fbc(is,izn),ACHAR(9),  &
-             cnvmfi*qszoni_lbc(is,izn),ACHAR(9),cnvmfi*qszonp_lbc(is,izn),ACHAR(9),  &
-             cnvmfi*qszoni_rbc(is,izn),ACHAR(9),cnvmfi*qszonp_rbc(is,izn),ACHAR(9),  &
-             cnvmfi*qszoni_dbc(is,izn),ACHAR(9),cnvmfi*qszonp_dbc(is,izn),ACHAR(9),  &
-             cnvmfi*qszoni_wel(is,izn),ACHAR(9),cnvmfi*qszonp_wel(is,izn),ACHAR(9)
+                   cnvmfi*qszoni(is,izn),ACHAR(9),cnvmfi*qszonp(is,izn),ACHAR(9),  &
+                   cnvmfi*qszoni_int(is,izn),ACHAR(9),cnvmfi*qszonp_int(is,izn),ACHAR(9),  &
+                   cnvmfi*qszoni_sbc(is,izn),ACHAR(9),cnvmfi*qszonp_sbc(is,izn),ACHAR(9),  &
+                   cnvmfi*qszoni_fbc(is,izn),ACHAR(9),cnvmfi*qszonp_fbc(is,izn),ACHAR(9),  &
+                   cnvmfi*qszoni_lbc(is,izn),ACHAR(9),cnvmfi*qszonp_lbc(is,izn),ACHAR(9),  &
+                   cnvmfi*qszoni_rbc(is,izn),ACHAR(9),cnvmfi*qszonp_rbc(is,izn),ACHAR(9),  &
+                   cnvmfi*qszoni_dbc(is,izn),ACHAR(9),cnvmfi*qszonp_dbc(is,izn),ACHAR(9),  &
+                   cnvmfi*qszoni_wel(is,izn),ACHAR(9),cnvmfi*qszonp_wel(is,izn),ACHAR(9)
            END DO
         END IF
      ENDDO
@@ -1098,8 +1098,8 @@ SUBROUTINE write5
         DO  lc=1,nrbc
            m = river_seg_index(lc)%m
            IF (m > 0) THEN
-             lprnt4(m) = 1
-             aprnt4(m) = qfrbc(lc)
+              lprnt4(m) = 1
+              aprnt4(m) = qfrbc(lc)
            ENDIF
         END DO
         CALL prntar(2,aprnt4,lprnt4,fubcf,cnvmfi,24,000)

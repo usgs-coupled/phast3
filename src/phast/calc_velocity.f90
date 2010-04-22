@@ -100,7 +100,7 @@ SUBROUTINE calc_velocity
   ! ... Calculate velocity at nodes on boundaries
   DO  l=1,num_bndy_cells
      b_cell(l)%qfbc = 0._kdp         ! ... Zero the flow rate structure elements 
-  END DO  
+  END DO
   ! ... Specified flux b.c.
   DO l=1,nfbc_cells
      m = flux_seg_index(l)%m
@@ -110,9 +110,9 @@ SUBROUTINE calc_velocity
         IF(mbc == m) THEN               ! ... found the b.c. cell
            DO ls=flux_seg_index(l)%seg_first,flux_seg_index(l)%seg_last
               ufrac = 1._kdp
-              IF(ifacefbc(ls) < 3) ufrac = frac(mbc)
+              IF(ABS(ifacefbc(ls)) < 3) ufrac = frac(mbc)
               IF(fresur .AND. ifacefbc(ls) == 3 .AND. frac(mbc) <= 0._kdp) THEN
-                 ! ... Redirect the flux to the free-surface cell
+                 ! ... Redirect the flux from above to the free-surface cell
                  l1 = MOD(mbc,nxy)
                  IF(l1 == 0) l1 = nxy
                  mbc = mfsbc(l1)
@@ -129,7 +129,7 @@ SUBROUTINE calc_velocity
                     IF(b_cell(lc)%face_indx(ibf) == 3 .OR. b_cell(lc)%face_indx(ibf) == 4) EXIT
                  ELSEIF(ifacefbc(ls) == 2) THEN
                     IF(b_cell(lc)%face_indx(ibf) == 2 .OR. b_cell(lc)%face_indx(ibf) == 5) EXIT
-                 ELSEIF(ifacefbc(ls) == 3) THEN
+                 ELSEIF(ABS(ifacefbc(ls)) == 3) THEN
                     IF(b_cell(lc)%face_indx(ibf) == 1 .OR. b_cell(lc)%face_indx(ibf) == 6) EXIT
                  END IF
               END DO
@@ -151,22 +151,22 @@ SUBROUTINE calc_velocity
               IF(qn <= 0._kdp) THEN           ! ... Outflow
                  qface = den(mbc)*qn
               ELSE                            ! ... Inflow
-                 if(fresur .and. ifacelbc(ls) == 3) then
-                    ! ... Limit the flow rate for vertical leakage
+                 IF(fresur .AND. ifacelbc(ls) == 3) THEN
+                    ! ... Limit the flow rate for vertical leakage from above
                     qlim = blbc(ls)*(denlbc(ls)*philbc(ls) - gz*(denlbc(ls)*(zelbc(ls)-0.5_kdp*bblbc(ls))  &
                          - 0.5_kdp*den(mbc)*bblbc(ls)))
                     qn = MIN(qn,qlim)
                     qface = denlbc(ls)*qn
-                 else
+                 ELSE
                     qface = denlbc(ls)*qn
-                 end if
+                 END IF
               ENDIF
               DO ibf=1,b_cell(lc)%num_faces
                  IF(ifacelbc(ls) == 1) THEN
                     IF(b_cell(lc)%face_indx(ibf) == 3 .OR. b_cell(lc)%face_indx(ibf) == 4) EXIT
                  ELSEIF(ifacelbc(ls) == 2) THEN
                     IF(b_cell(lc)%face_indx(ibf) == 2 .OR. b_cell(lc)%face_indx(ibf) == 5) EXIT
-                 ELSEIF(ifacelbc(ls) == 3) THEN
+                 ELSEIF(ABS(ifacelbc(ls)) == 3) THEN
                     IF(b_cell(lc)%face_indx(ibf) == 1 .OR. b_cell(lc)%face_indx(ibf) == 6) EXIT
                  END IF
               END DO
@@ -248,7 +248,7 @@ SUBROUTINE calc_velocity
      m = msbc(l)
      IF(frac(m) <= 0._kdp) CYCLE
      WRITE(cibc,6001) ibc(m)
-6001    FORMAT(i9.9)
+6001 FORMAT(i9.9)
      ! ... Sum fluid fluxes
      ! ...      Flow rates calculated in SBCFLO
      IF(cibc(1:1) == '1') THEN

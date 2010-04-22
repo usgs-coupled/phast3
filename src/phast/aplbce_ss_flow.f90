@@ -15,7 +15,7 @@ SUBROUTINE aplbce_ss_flow
        timedn, ufdt2, ufrac, uphim, uzav, z0, z1, zfsa
   INTEGER :: a_err, da_err, imod, iis, k, ks, l, l1, lc, ll, ls, m, mc, ms 
   LOGICAL :: erflg  
-!$$  CHARACTER(LEN=9) :: cibc
+  !$$  CHARACTER(LEN=9) :: cibc
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: qsbc, qsbc2
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
@@ -37,9 +37,9 @@ SUBROUTINE aplbce_ss_flow
      IF(m == 0) CYCLE     ! ... dry column
      DO ls=flux_seg_index(lc)%seg_first,flux_seg_index(lc)%seg_last
         ufrac = 1._kdp
-        IF(ifacefbc(ls) < 3) ufrac = frac(m)
+        IF(ABS(ifacefbc(ls)) < 3) ufrac = frac(m)
         IF(fresur .AND. ifacefbc(ls) == 3 .AND. frac(m) <= 0._kdp) THEN
-           ! ... Redirect the flux to the free-surface cell
+           ! ... Redirect the flux from above to the free-surface cell
            l1 = MOD(m,nxy)
            IF(l1 == 0) l1 = nxy
            m = mfsbc(l1)
@@ -77,7 +77,7 @@ SUBROUTINE aplbce_ss_flow
         ! ...      at partially saturated cells.
         imod = MOD(m,nxy)
         k = (m - imod)/nxy + MIN(1,imod)
-        IF(ifacelbc(ls) == 3) THEN
+        IF(ABS(ifacelbc(ls)) == 3) THEN
            uzav = zelbc(ls) - .5_kdp*bblbc(ls)
         ELSE  
            uzav = zelbc(ls)
@@ -87,11 +87,11 @@ SUBROUTINE aplbce_ss_flow
         albc(ls) = blbc(ls)*((denlbc(ls)*philbc(ls) - den(m)*gz*z(k)) - uphim)
         ! ... Attenuate the flow rate for a partially saturated cell with
         ! ...      leakage through a lateral face
-        IF(ifacelbc(ls) < 3) THEN  
+        IF(ABS(ifacelbc(ls)) < 3) THEN  
            albc(ls) = ufrac*albc(ls)
            blbc(ls) = ufrac*blbc(ls)
         ENDIF
-     ! ... It is too late to do this. Read3 data is in for this time step.
+        ! ... It is too late to do this. Read3 data is in for this time step.
 !!$     ! ... Load flow rates for balance calculation
 !!$     qn = albc(l)
 !!$     IF(qn < 0._kdp) THEN
@@ -119,7 +119,7 @@ SUBROUTINE aplbce_ss_flow
         brbc(ls) = 0._kdp
         uzav = zerbc(ls) - .5_kdp*bbrbc(ls)     
         ms = mrbc(ls)        ! ... current river segment cell for aquifer head
-                             ! ... now ms = mc
+        ! ... now ms = mc
         imod = MOD(ms,nxy)
         ks = (ms - imod)/nxy + MIN(1,imod)
         uphim = p(ms) + gz*(denrbc(ls) - den(ms))*uzav
@@ -196,7 +196,7 @@ SUBROUTINE aplbce_ss_flow
         adbc(ls) = 0._kdp
         bdbc(ls) = 0._kdp
         ms = mdbc(ls)        ! ... current drain segment cell for aquifer head
-                             ! ... now ms = mc
+        ! ... now ms = mc
         imod = MOD(ms,nxy)
         ks = (ms - imod)/nxy + MIN(1,imod)
         bdbc(ls) = kdbc(ls)/visdbc

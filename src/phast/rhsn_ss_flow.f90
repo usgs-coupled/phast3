@@ -27,14 +27,14 @@ SUBROUTINE rhsn_ss_flow
   !...  ***This could be put into an init4 routine***
   stotfi = 0._kdp
   stotfp = 0._kdp
-!$$  stfaif = 0._kdp
+  !$$  stfaif = 0._kdp
   stffbc = 0._kdp
   stflbc = 0._kdp
   stfrbc = 0._kdp
   stfdbc = 0._kdp
   stfsbc = 0._kdp
   stfwel = 0._kdp
-  IF (nwel > 0) then
+  IF (nwel > 0) THEN
      stfwi = 0._kdp
      stfwp = 0._kdp
   END IF
@@ -126,9 +126,9 @@ SUBROUTINE rhsn_ss_flow
      IF(m == 0) CYCLE     ! ... dry column
      DO ls=flux_seg_index(lc)%seg_first,flux_seg_index(lc)%seg_last
         ufrac = 1._kdp
-        IF(ifacefbc(ls) < 3) ufrac = frac(m)  
+        IF(ABS(ifacefbc(ls)) < 3) ufrac = frac(m)  
         IF(fresur .AND. ifacefbc(ls) == 3 .AND. frac(m) <= 0._kdp) THEN
-           ! ... Redirect the flux to the free-surface cell
+           ! ... Redirect the flux from above to the free-surface cell
            l1 = MOD(m,nxy)
            IF(l1 == 0) l1 = nxy  
            m = mfsbc(l1)  
@@ -151,7 +151,7 @@ SUBROUTINE rhsn_ss_flow
      END DO
   END DO
   ! ... Calculate leakage b.c. terms
-  if(fresur) then
+  IF(fresur) THEN
      DO lc=1,nlbc
         ! ... Update the indices locating the cells communicating with leaky layer
         mc0 = leak_seg_index(lc)%m
@@ -160,14 +160,14 @@ SUBROUTINE rhsn_ss_flow
         mfs = mfsbc(lc0)    ! ... currrent f.s. cell in column lc0
         !$$     leak_seg_index(lc)%m = MIN(mfs,mrbc_bot(lc))
         DO ls=leak_seg_index(lc)%seg_first,leak_seg_index(lc)%seg_last
-           if(ifacelbc(ls) == 3) then
+           IF(ifacelbc(ls) == 3) THEN
               leak_seg_index(lc)%m = mfs            ! ... communicate with f.s. cell always
               !$$        mrbc(ls) = MIN(mfs,mrseg_bot(ls))    ! ... currrent leakage segment cell 
               mlbc(ls) = leak_seg_index(lc)%m     ! ... currrent leakage segment cell for aquifer head
-           end if                            ! ... now the same as communication cell
+           END IF                            ! ... now the same as communication cell
         END DO
      END DO
-  end if
+  END IF
   ! ...      Calculate step total flow rates and cell step flow rates.
   DO  lc=1,nlbc
      m = leak_seg_index(lc)%m
@@ -182,12 +182,12 @@ SUBROUTINE rhsn_ss_flow
            qm_net = qm_net + den(m)*qn
            sfvlb(lc) = sfvlb(lc) + qn
         ELSE                              ! ... Inflow
-           if(fresur .and. ifacelbc(ls) == 3) then
-              ! ... Limit the flow rate for unconfined z-face leakage
+           IF(fresur .AND. ifacelbc(ls) == 3) THEN
+              ! ... Limit the flow rate for unconfined z-face leakage from above
               qlim = blbc(ls)*(denlbc(ls)*philbc(ls) - gz*(denlbc(ls)*(zelbc(ls)-0.5_kdp*bblbc(ls))  &
                    - 0.5_kdp*den(m)*bblbc(ls)))
               qn = MIN(qn,qlim)
-           end if
+           END IF
            qm_net = qm_net + denlbc(ls)*qn
            sfvlb(lc) = sfvlb(lc) + qn
         END IF
@@ -209,12 +209,12 @@ SUBROUTINE rhsn_ss_flow
      lc0 = MOD(mc0,nxy)
      IF(lc0 == 0) lc0 = nxy
      mfs = mfsbc(lc0)    ! ... currrent f.s. cell
-!$$     river_seg_index(lc)%m = MIN(mfs,mrbc_bot(lc))
+     !$$     river_seg_index(lc)%m = MIN(mfs,mrbc_bot(lc))
      river_seg_index(lc)%m = mfs            ! ... communicate with f.s. cell always
      DO ls=river_seg_index(lc)%seg_first,river_seg_index(lc)%seg_last
-!$$        mrbc(ls) = MIN(mfs,mrseg_bot(ls))    ! ... currrent river segment cell for aquifer head
+        !$$        mrbc(ls) = MIN(mfs,mrseg_bot(ls))    ! ... currrent river segment cell for aquifer head
         mrbc(ls) = river_seg_index(lc)%m     ! ... currrent river segment cell for aquifer head
-                                             ! ... now the same as communication cell
+        ! ... now the same as communication cell
      END DO
   END DO
   ! ...      Calculate step total flow rates and nodal step flow rates.
@@ -255,12 +255,12 @@ SUBROUTINE rhsn_ss_flow
      !lc0 = MOD(mc0,nxy)
      !IF(lc0 == 0) lc0 = nxy
      !mfs = mfsbc(lc0)    ! ... currrent f.s. cell
-!     drain_seg_index(lc)%m = MIN(mfs,mdbc_bot(lc))
+     !     drain_seg_index(lc)%m = MIN(mfs,mdbc_bot(lc))
      !drain_seg_index(lc)%m = mfs            ! ... communicate with f.s. cell always
      DO ls=drain_seg_index(lc)%seg_first,drain_seg_index(lc)%seg_last
-!        mdbc(ls) = MIN(mfs,mrseg_bot(ls))    ! ... currrent drain segment cell for aquifer head
+        !        mdbc(ls) = MIN(mfs,mrseg_bot(ls))    ! ... currrent drain segment cell for aquifer head
         !mdbc(ls) = drain_seg_index(lc)%m     ! ... currrent drain segment cell for aquifer head
-                                             ! ... now the same as communication cell
+        ! ... now the same as communication cell
         drain_seg_index(lc)%m = mdbc(ls)                                               
      END DO
   END DO
