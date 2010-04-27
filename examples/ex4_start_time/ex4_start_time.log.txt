@@ -1088,35 +1088,35 @@ Beginning time step no.     50
      Current time step length ...................................   2.000E+03 (yr)
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    7      1.0215573E-11
+          No. of solver iterations, Relative residual:    7      1.0215574E-11
           O
-          No. of solver iterations, Relative residual:    7      3.1881011E-11
+          No. of solver iterations, Relative residual:    7      3.1880990E-11
           As
-          No. of solver iterations, Relative residual:    8      5.5494639E-12
+          No. of solver iterations, Relative residual:    8      5.5494725E-12
           C
-          No. of solver iterations, Relative residual:    7      3.1890889E-11
+          No. of solver iterations, Relative residual:    7      3.1890868E-11
           Ca
-          No. of solver iterations, Relative residual:    7      3.1473608E-11
+          No. of solver iterations, Relative residual:    7      3.1473616E-11
           Cl
-          No. of solver iterations, Relative residual:    6      1.2023303E-11
+          No. of solver iterations, Relative residual:    6      1.2023333E-11
           Mg
-          No. of solver iterations, Relative residual:    7      3.1524609E-11
+          No. of solver iterations, Relative residual:    7      3.1524618E-11
           Na
-          No. of solver iterations, Relative residual:    7      2.7011048E-11
+          No. of solver iterations, Relative residual:    7      2.7011035E-11
           S
-          No. of solver iterations, Relative residual:    6      1.2043287E-11
+          No. of solver iterations, Relative residual:    6      1.2023100E-11
           Charge
-          No. of solver iterations, Relative residual:    7      1.0046005E-11
+          No. of solver iterations, Relative residual:    7      1.0046010E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 540
-          Total iterations all cells: 4245
+          Total iterations all cells: 4271
           Number of cells with zero iterations: 0
           Maximum iterations for one cell: 16
 
      End of Time Step No.    50
      Time ..................................................    150000.     (yr)
-     Maximum change in potentiometric head   1.1627E-07      (m ) at location ( 1.800E+04, 2.400E+04,  300.    )(m)
+     Maximum change in potentiometric head   0.0000E+00      (m ) at location ( 6.000E+04, 3.600E+04,  400.    )(m)
      Maximum change in H .................. -2.8701E-03 (mol/kgw) at location (     0    , 4.800E+04,     0    )(m)
      Maximum change in O .................. -5.6719E-03 (mol/kgw) at location (     0    , 4.800E+04,     0    )(m)
      Maximum change in As ................. -5.9234E-07 (mol/kgw) at location ( 2.400E+04, 4.800E+04,  300.    )(m)

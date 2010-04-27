@@ -383,25 +383,25 @@ Beginning time step no.      5
      Current time step length ...................................   2.000E+03 (yr)
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    7      3.7306367E-11
+          No. of solver iterations, Relative residual:    7      3.7306368E-11
           O
-          No. of solver iterations, Relative residual:    7      3.1282662E-11
+          No. of solver iterations, Relative residual:    7      3.1282664E-11
           As
-          No. of solver iterations, Relative residual:    7      9.0719036E-11
+          No. of solver iterations, Relative residual:    7      9.0719040E-11
           C
-          No. of solver iterations, Relative residual:    7      3.3683451E-11
+          No. of solver iterations, Relative residual:    7      3.3683453E-11
           Ca
-          No. of solver iterations, Relative residual:    7      5.6628581E-11
+          No. of solver iterations, Relative residual:    7      5.6628580E-11
           Cl
-          No. of solver iterations, Relative residual:    7      4.8675905E-11
+          No. of solver iterations, Relative residual:    7      4.8675904E-11
           Mg
-          No. of solver iterations, Relative residual:    7      6.0228766E-11
+          No. of solver iterations, Relative residual:    7      6.0228765E-11
           Na
           No. of solver iterations, Relative residual:    7      4.6313407E-11
           S
-          No. of solver iterations, Relative residual:    7      4.7445906E-11
+          No. of solver iterations, Relative residual:    7      4.7445905E-11
           Charge
-          No. of solver iterations, Relative residual:    7      5.6176240E-11
+          No. of solver iterations, Relative residual:    7      5.6177188E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 540
@@ -411,7 +411,7 @@ Beginning time step no.      5
 
      End of Time Step No.     5
      Time ..................................................    10000.0     (yr)
-     Maximum change in potentiometric head   1.1627E-07      (m ) at location ( 1.800E+04, 2.400E+04,  300.    )(m)
+     Maximum change in potentiometric head   0.0000E+00      (m ) at location ( 6.000E+04, 3.600E+04,  400.    )(m)
      Maximum change in H .................. -1.4237E-02 (mol/kgw) at location ( 9.000E+04,     0    ,  100.    )(m)
      Maximum change in O .................. -3.1705E-02 (mol/kgw) at location ( 9.000E+04,     0    ,  100.    )(m)
      Maximum change in As ................. -3.7095E-09 (mol/kgw) at location ( 1.800E+04, 3.000E+04,     0    )(m)
