@@ -387,19 +387,19 @@ Beginning time step no.      5
           O
           No. of solver iterations, Relative residual:    7      2.3002765E-11
           As
-          No. of solver iterations, Relative residual:    7      7.2372792E-11
+          No. of solver iterations, Relative residual:    7      7.2372795E-11
           C
           No. of solver iterations, Relative residual:    7      2.5191642E-11
           Ca
           No. of solver iterations, Relative residual:    7      6.2258930E-11
           Cl
-          No. of solver iterations, Relative residual:    7      5.6177358E-11
+          No. of solver iterations, Relative residual:    7      5.6177357E-11
           Mg
-          No. of solver iterations, Relative residual:    7      7.2533222E-11
+          No. of solver iterations, Relative residual:    7      7.2533221E-11
           Na
-          No. of solver iterations, Relative residual:    7      5.2540307E-11
+          No. of solver iterations, Relative residual:    7      5.2540306E-11
           S
-          No. of solver iterations, Relative residual:    7      5.6177358E-11
+          No. of solver iterations, Relative residual:    7      5.6177357E-11
           Charge
           No. of solver iterations, Relative residual:    7      2.4473663E-11
      Beginning chemistry calculation.
@@ -411,7 +411,7 @@ Beginning time step no.      5
 
      End of Time Step No.     5
      Time ..................................................    10000.0     (yr)
-     Maximum change in potentiometric head   1.1627E-07      (m ) at location ( 1.800E+04, 2.400E+04,  300.    )(m)
+     Maximum change in potentiometric head   0.0000E+00      (m ) at location ( 6.000E+04, 3.600E+04,  400.    )(m)
      Maximum change in H .................. -1.3594E-02 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  300.    )(m)
      Maximum change in O .................. -3.5194E-02 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  300.    )(m)
      Maximum change in As ................. -2.0546E-08 (mol/kgw) at location ( 2.400E+04, 2.400E+04,  300.    )(m)
