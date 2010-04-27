@@ -1,3 +1,22 @@
+
+  	--------
+  	svn 4290
+ 	-------- 
+ 	Allow leaky boundary on positive Z face. No writes to
+ 	Phast.tmp so that PHAST delivers flux to water table.
+ 
+        --------
+ 	svn 4021
+ 	-------- 
+ 	Fixed bug with parts in shapefile. Removes identical,
+ 	consecutive points. Checks for zero area in simple polygons.
+        
+ 	--------
+ 	svn 4002
+ 	-------- 
+ 	Revised handling of dry column of cells with flux and river 
+ 	boundary conditions. 
+ 	
  	--------
  	svn 3902
  	--------
