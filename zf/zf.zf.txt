@@ -957,7 +957,7 @@
           Component: [A]       
 
  Solute inflow ..............................................  5.342259E-10  (kg/d)
- Solute outflow .............................................  3.972033E-19  (kg/d)
+ Solute outflow .............................................  3.971992E-19  (kg/d)
 
 
                Current Time Step Internal Faces
@@ -971,21 +971,21 @@
           Component: H         
 
  Internal face solute inflow ................................  1.034300E-06  (kg/d)
- Internal face solute outflow ...............................  1.803831E-28  (kg/d)
+ Internal face solute outflow ...............................  7.393480E-29  (kg/d)
 
 
 
           Component: O         
 
  Internal face solute inflow ................................  8.215813E-06  (kg/d)
- Internal face solute outflow ...............................  3.217954E-23  (kg/d)
+ Internal face solute outflow ...............................  7.636146E-24  (kg/d)
 
 
 
           Component: [A]       
 
  Internal face solute inflow ................................  5.342259E-10  (kg/d)
- Internal face solute outflow ...............................  5.586466E-24  (kg/d)
+ Internal face solute outflow ...............................  1.520334E-24  (kg/d)
 
 
                Current Time Step by Boundary Condition Type
