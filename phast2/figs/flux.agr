@@ -1,6 +1,6 @@
 # Grace project file
 #
-@version 50121
+@version 50122
 @page size 252, 288
 @page scroll 5%
 @page inout 5%
@@ -54,7 +54,7 @@
 @timestamp rot 0
 @timestamp font 0
 @timestamp char size 1.000000
-@timestamp def "Wed Sep 16 17:15:42 2009"
+@timestamp def "Tue Apr 27 10:56:58 2010"
 @r0 off
 @link r0 to g0
 @r0 type above
@@ -315,7 +315,7 @@
 @    s0 errorbar riser clip off
 @    s0 errorbar riser clip length 0.100000
 @    s0 comment "Cols 1:4"
-@    s0 legend  "DISPOSAL BEDS"
+@    s0 legend  "INFILTRATION BEDS"
 @    s1 hidden false
 @    s1 type xy
 @    s1 symbol 0
