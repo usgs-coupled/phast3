@@ -12,7 +12,7 @@ package gov.usgs.phast;
  * @author  charlton
  */
 public class JWizardFrame extends javax.swing.JFrame implements java.beans.VetoableChangeListener {
-    
+
     public JWizardFrame(String[] args) {
         super("Phast HDF Exporter");
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -23,7 +23,7 @@ public class JWizardFrame extends javax.swing.JFrame implements java.beans.Vetoa
         wizard = new JWizardPanel();
         wizard.addVetoableChangeListener(this);
         wizard.setEnabledFinish(false);
-        
+
         page1 = new JPage1();
         if (args.length > 0) {
             java.io.File file = new java.io.File(args[0]);
@@ -37,30 +37,30 @@ public class JWizardFrame extends javax.swing.JFrame implements java.beans.Vetoa
             }
         }
         wizard.addComponent(page1);
-        
+
         page2 = new JPage2();
         wizard.addComponent(page2);
-        
+
         page3 = new JPage3();
         wizard.addComponent(page3);
-        
+
         getContentPane().add(wizard);
         pack();
     }
-    
-    
+
+
     public static void main(String args[]) {
         // display splash ASAP
         gov.usgs.Splash splash = new gov.usgs.Splash();
-        
+
         if (Boolean.getBoolean("phast.debug")) {
             java.util.Properties props = System.getProperties();
             for (java.util.Enumeration e = props.propertyNames(); e.hasMoreElements(); ) {
                 String key = (String)e.nextElement();
                 System.out.println(key + "=" + props.getProperty(key));
-            }            
+            }
         }
-        
+
         try {
             if (System.getProperty("swing.defaultlaf") == null) {
                 javax.swing.UIManager.setLookAndFeel(
@@ -81,21 +81,21 @@ public class JWizardFrame extends javax.swing.JFrame implements java.beans.Vetoa
         frame.show();
         splash.dispose();
     }
-    
+
     public void vetoableChange(java.beans.PropertyChangeEvent propertyChangeEvent) throws java.beans.PropertyVetoException {
         if (propertyChangeEvent.getSource().equals(wizard)) {
-            
-            
+
+
             // page changing
             if (propertyChangeEvent.getPropertyName().equals(JWizardPanel.PAGE_CHANGING_PROPERTY)) {
                 Object oldObj = propertyChangeEvent.getOldValue();
                 Object newObj = propertyChangeEvent.getNewValue();
-                
+
                 // Page 1 ==> Page 2
                 if (oldObj.equals(page1)) {
                     String str = page1.getText();
                     String file_name = ((str == null) ? "" : str.trim());
-                    
+
                     if (file_name == null || file_name.length() == 0) {
                         javax.swing.JOptionPane.showMessageDialog(this,
                         "Please enter a complete path and filename",
@@ -104,7 +104,7 @@ public class JWizardFrame extends javax.swing.JFrame implements java.beans.Vetoa
                         throw new java.beans.PropertyVetoException("No file name",
                         propertyChangeEvent);
                     }
-                    
+
                     java.io.File file = new java.io.File(file_name);
                     if (!file.exists()) {
                         javax.swing.JOptionPane.showMessageDialog(this,
@@ -134,31 +134,35 @@ public class JWizardFrame extends javax.swing.JFrame implements java.beans.Vetoa
                     try {
                         hdf = new PhastH5File(file_name);
                         page2.setPhastH5File(hdf);
-                        page3.setText(hdf.getFilePath().concat(".sel"));
+                        java.lang.String default_name = hdf.getFilePath();
+                        if (default_name.endsWith(".h5")) {
+							default_name = default_name.substring(0, default_name.length() - 4);
+						}
+                        page3.setText(default_name.concat(".xyz.tsv"));
                         wizard.setEnabledFinish(true);
                     }
                     catch (java.lang.Exception e) {
                         System.err.println(e.getLocalizedMessage());
                     }
                 }
-                
+
                 // Page 2 ==> Page 1
                 if (oldObj.equals(page2) && newObj.equals(page1)) {
                     wizard.setEnabledFinish(false);
                 }
-                
+
                 // Page 2 ==> Page 3
                 if (oldObj.equals(page2) && newObj.equals(page3)) {
                     // for now any selection including none is acceptable
                 }
             }
-            
+
             // Finished pressed
             if (propertyChangeEvent.getPropertyName().equals(JWizardPanel.FINISH_PRESSED_PROPERTY)) {
-                
+
                 String str = page3.getText();
                 String file_name = ((str == null) ? "" : str.trim());
-                
+
                 if (file_name == null || file_name.length() == 0) {
                     javax.swing.JOptionPane.showMessageDialog(this,
                     "Please enter a complete path and filename",
@@ -166,7 +170,7 @@ public class JWizardFrame extends javax.swing.JFrame implements java.beans.Vetoa
                     javax.swing.JOptionPane.ERROR_MESSAGE);
                     throw new java.beans.PropertyVetoException("No file name",
                     propertyChangeEvent);
-                }              
+                }
                 java.io.File dest = new java.io.File(file_name);
                 if (dest.exists()) {
                     try {
@@ -193,7 +197,7 @@ public class JWizardFrame extends javax.swing.JFrame implements java.beans.Vetoa
                         return;
                     }
                 }
-                
+
                 wizard.setEnabledFinish(false);
                 hdf.setSelectedX(page2.getSelectedX());
                 hdf.setSelectedY(page2.getSelectedY());
@@ -201,7 +205,7 @@ public class JWizardFrame extends javax.swing.JFrame implements java.beans.Vetoa
                 hdf.setSelectedTimes(page2.getSelectedTimes());
                 hdf.setSelectedScalars(page2.getSelectedScalars());
                 hdf.setSelectedVectors(page2.getSelectedVectors());
-                
+
                 final sample.SwingWorker worker = new sample.SwingWorker() {
                     public Object construct() {
                         try {
@@ -229,12 +233,12 @@ public class JWizardFrame extends javax.swing.JFrame implements java.beans.Vetoa
                             finally {
                                 System.err.println("Phast HDF Exporter: Out of memory.");
                                 System.exit(-1);
-                            }                            
+                            }
                         } catch (java.lang.Throwable e) {
                             javax.swing.JOptionPane.showMessageDialog(JWizardFrame.this,
                             e.getLocalizedMessage(),
                             "Phast HDF Exporter",
-                            javax.swing.JOptionPane.ERROR_MESSAGE);                            
+                            javax.swing.JOptionPane.ERROR_MESSAGE);
                         } finally {
                             wizard.setEnabledFinish(true);
                         }
@@ -245,7 +249,7 @@ public class JWizardFrame extends javax.swing.JFrame implements java.beans.Vetoa
             }
         }
     }
-    
+
     private JWizardPanel wizard;
     private PhastH5File hdf;
     private JPage1 page1;
