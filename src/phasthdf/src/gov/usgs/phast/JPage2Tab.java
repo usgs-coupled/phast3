@@ -11,14 +11,14 @@ package gov.usgs.phast;
  * @author  charlton
  */
 public class JPage2Tab extends javax.swing.JPanel {
-    
+
     /** Creates new form JPage2Tab */
     public JPage2Tab() {
         initComponents();
-        
-        /* if jdk 1.4        
+
+        /* if jdk 1.4
         java.awt.GridBagConstraints gridBagConstraints;
-        
+
         // start spinner
         jstartSpinner = new javax.swing.JSpinner();
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -28,9 +28,9 @@ public class JPage2Tab extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         gridBagConstraints.weighty = 1.0;
         jHyperSlabPanel.add(jstartSpinner, gridBagConstraints);
-        
+
         // stride spinner
-        jstrideSpinner = new javax.swing.JSpinner();        
+        jstrideSpinner = new javax.swing.JSpinner();
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -40,7 +40,7 @@ public class JPage2Tab extends javax.swing.JPanel {
         jHyperSlabPanel.add(jstrideSpinner, gridBagConstraints);
 
         // count spinner
-        jcountSpinner = new javax.swing.JSpinner();        
+        jcountSpinner = new javax.swing.JSpinner();
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
@@ -48,7 +48,7 @@ public class JPage2Tab extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         gridBagConstraints.weighty = 1.0;
         jHyperSlabPanel.add(jcountSpinner, gridBagConstraints);
-        
+
         org.openide.awt.SpinButton test = new org.openide.awt.SpinButton();
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -56,22 +56,22 @@ public class JPage2Tab extends javax.swing.JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
         // gridBagConstraints.weighty = 1.0;
-        jHyperSlabPanel.add(test, gridBagConstraints);        
-        
+        jHyperSlabPanel.add(test, gridBagConstraints);
+
         jCheckBox1.setSelected(false);
-        
+
         jstartSpinner.setValue(new Integer(0));
-        jstartSpinner.setEnabled(jCheckBox1.isSelected());        
+        jstartSpinner.setEnabled(jCheckBox1.isSelected());
         jstartSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 int start = ((Integer)jstartSpinner.getValue()).intValue();
                 int stride = ((Integer)jstrideSpinner.getValue()).intValue();
                 setHyperSlab(start, stride, Integer.MAX_VALUE);
             }
-        });        
-        
+        });
+
         jstrideSpinner.setValue(new Integer(1));
-        jstrideSpinner.setEnabled(jCheckBox1.isSelected());      
+        jstrideSpinner.setEnabled(jCheckBox1.isSelected());
         jstrideSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 int start = ((Integer)jstartSpinner.getValue()).intValue();
@@ -79,8 +79,8 @@ public class JPage2Tab extends javax.swing.JPanel {
                 setHyperSlab(start, stride, Integer.MAX_VALUE);
             }
         });
-        
-        jcountSpinner.setEnabled(jCheckBox1.isSelected());      
+
+        jcountSpinner.setEnabled(jCheckBox1.isSelected());
         jcountSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 int start = ((Integer)jstartSpinner.getValue()).intValue();
@@ -88,28 +88,28 @@ public class JPage2Tab extends javax.swing.JPanel {
                 int count = ((Integer)jcountSpinner.getValue()).intValue();
                 setHyperSlab(start, stride, count);
             }
-        });        
+        });
         */
     }
-    
-    public void setHyperSlab(int start, int stride, int count) {        
-        final int size = jCheckList1.getModel().getSize();        
+
+    public void setHyperSlab(int start, int stride, int count) {
+        final int size = jCheckList1.getModel().getSize();
         int maxcount = 0;
         for (int i = start; i < size; i += stride) {
             ++maxcount;
         }
         int test = ((size - start) + ((size - start) % stride)) / stride;
         int length = Math.min(maxcount, count);
-        
-        /* if jdk 1.4     
-        jcountSpinner.setModel(new javax.swing.SpinnerNumberModel(length, 0, maxcount, 1));        
+
+        /* if jdk 1.4
+        jcountSpinner.setModel(new javax.swing.SpinnerNumberModel(length, 0, maxcount, 1));
         */
         ((javax.swing.DefaultComboBoxModel)jcountComboBox.getModel()).removeAllElements();
         for (int i = 0; i <= maxcount; ++i) {
             ((javax.swing.DefaultComboBoxModel)jcountComboBox.getModel()).addElement(new Integer(i));
         }
-        jcountComboBox.setSelectedIndex(length);        
-        
+        jcountComboBox.setSelectedIndex(length);
+
         jCheckList1.clearSelection();
         if (length > 0) {
             int[] selectedIndices = new int[length];
@@ -118,9 +118,9 @@ public class JPage2Tab extends javax.swing.JPanel {
                 selectedIndices[j] = i;
             }
             jCheckList1.setSelectedIndices(selectedIndices);
-        }  
+        }
     }
-    
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -258,7 +258,7 @@ public class JPage2Tab extends javax.swing.JPanel {
 
         jLabel1.setFont(new java.awt.Font("Dialog", 0, 11));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel1.setText("Start");
+        jLabel1.setText("Start (offset)");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -362,7 +362,7 @@ public class JPage2Tab extends javax.swing.JPanel {
         int start  = ((Integer) jstartComboBox.getModel().getSelectedItem()).intValue();
         int stride = ((Integer) jstrideComboBox.getModel().getSelectedItem()).intValue();
         int count  = ((Integer) jcountComboBox.getModel().getSelectedItem()).intValue();
-        setHyperSlab(start, stride, count);        
+        setHyperSlab(start, stride, count);
         for(int i = 0; i < jCheckList1.getModel().getSize(); i++) {
             if (jCheckList1.isSelectedIndex(i)) {
                 jCheckList1.setSelected(i, !jCheckList1.isSelected(i));
@@ -374,7 +374,7 @@ public class JPage2Tab extends javax.swing.JPanel {
         int start  = ((Integer) jstartComboBox.getModel().getSelectedItem()).intValue();
         int stride = ((Integer) jstrideComboBox.getModel().getSelectedItem()).intValue();
         int count  = ((Integer) jcountComboBox.getModel().getSelectedItem()).intValue();
-        setHyperSlab(start, stride, count);        
+        setHyperSlab(start, stride, count);
         for(int i = 0; i < jCheckList1.getModel().getSize(); i++) {
             if (jCheckList1.isSelectedIndex(i)) {
                 jCheckList1.setSelected(i, false);
@@ -386,7 +386,7 @@ public class JPage2Tab extends javax.swing.JPanel {
         int start  = ((Integer) jstartComboBox.getModel().getSelectedItem()).intValue();
         int stride = ((Integer) jstrideComboBox.getModel().getSelectedItem()).intValue();
         int count  = ((Integer) jcountComboBox.getModel().getSelectedItem()).intValue();
-        setHyperSlab(start, stride, count);        
+        setHyperSlab(start, stride, count);
         for(int i = 0; i < jCheckList1.getModel().getSize(); i++) {
             if (jCheckList1.isSelectedIndex(i)) {
                 jCheckList1.setSelected(i, true);
@@ -407,7 +407,7 @@ public class JPage2Tab extends javax.swing.JPanel {
         try {
             int start  = ((Integer) jstartComboBox.getModel().getSelectedItem()).intValue();
             int stride = ((Integer) jstrideComboBox.getModel().getSelectedItem()).intValue();
-            setHyperSlab(start, stride, Integer.MAX_VALUE);        
+            setHyperSlab(start, stride, Integer.MAX_VALUE);
         } catch (java.lang.NullPointerException e) {}
     }//GEN-LAST:event_jstrideComboBoxActionPerformed
 
@@ -415,32 +415,32 @@ public class JPage2Tab extends javax.swing.JPanel {
         try {
             int start  = ((Integer) jstartComboBox.getModel().getSelectedItem()).intValue();
             int stride = ((Integer) jstrideComboBox.getModel().getSelectedItem()).intValue();
-            setHyperSlab(start, stride, Integer.MAX_VALUE);        
+            setHyperSlab(start, stride, Integer.MAX_VALUE);
         } catch (java.lang.NullPointerException e) {}
     }//GEN-LAST:event_jstartComboBoxActionPerformed
 
     private void jSelectAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jSelectAllButtonActionPerformed
         for (int i = 0; i < jCheckList1.getModel().getSize(); ++i) {
             jCheckList1.setSelected(i, true);
-        }        
+        }
     }//GEN-LAST:event_jSelectAllButtonActionPerformed
 
     private void jSelectNoneButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jSelectNoneButtonActionPerformed
         for (int i = 0; i < jCheckList1.getModel().getSize(); ++i) {
             jCheckList1.setSelected(i, false);
-        }        
+        }
     }//GEN-LAST:event_jSelectNoneButtonActionPerformed
 
     public void setListData(Object[] objs) {
-        
-        /* if jdk 1.4        
+
+        /* if jdk 1.4
         try {
             jstartSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, objs.length - 1, 1));
             jstrideSpinner.setModel(new javax.swing.SpinnerNumberModel(1, 1, objs.length, 1));
             jcountSpinner.setModel(new javax.swing.SpinnerNumberModel(objs.length, 0, objs.length, 1));
         } catch (Exception e) { System.out.println("setListData: " + e); }
          */
-        
+
         if (objs == null) {
             jLabel3.setEnabled(false);
             jLabel2.setEnabled(false);
@@ -454,19 +454,19 @@ public class JPage2Tab extends javax.swing.JPanel {
             jHyperSlabPanel.setEnabled(false);
             return;
         }
-        
-        try {            
+
+        try {
             jCheckList1.setListData(objs);
-            
+
             Integer[] ints = new Integer[objs.length];
             for (int i = 0; i < objs.length; ++i) {
                 ints[i] = new Integer(i);
             }
-            
-            Integer[] start_ints = new Integer[objs.length];                
+
+            Integer[] start_ints = new Integer[objs.length];
             System.arraycopy(ints, 0, start_ints, 0, start_ints.length);
             jstartComboBox.setModel(new javax.swing.DefaultComboBoxModel(start_ints));
-            
+
             if (objs.length > 1) {
                 Integer[] stride_ints = new Integer[objs.length - 1];
                 System.arraycopy(ints, 1, stride_ints, 0, stride_ints.length);
@@ -477,25 +477,25 @@ public class JPage2Tab extends javax.swing.JPanel {
                 stride_ints[0] = new Integer(1);
                 jstrideComboBox.setModel(new javax.swing.DefaultComboBoxModel(stride_ints));
             }
-            
+
             jcountComboBox.setModel(new javax.swing.DefaultComboBoxModel(ints));
             jcountComboBox.setSelectedIndex(objs.length - 1);
-            
-            setHyperSlab(0, 1, objs.length);           
+
+            setHyperSlab(0, 1, objs.length);
         } catch (Exception e) {
             System.out.println("setListData: " + e);
             e.printStackTrace(System.out);
         } finally {
-            jCheckList1.clearSelection();            
+            jCheckList1.clearSelection();
         }
     }
-    
+
     public boolean[] getSelected() {
         return jCheckList1.getSelected();
     }
-    
-    
-    
+
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel1;
@@ -514,8 +514,8 @@ public class JPage2Tab extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JComboBox jstrideComboBox;
     // End of variables declaration//GEN-END:variables
- 
- 
+
+
     /* if jdk 1.4
     javax.swing.JSpinner jstartSpinner;
     javax.swing.JSpinner jstrideSpinner;
