@@ -253,6 +253,7 @@ VERSION_LONG="$ver_major.$ver_minor.$ver_patch.$REVISION_SVN"
 SED_FILES="$DISTPATH/src/phast/win32/phast_version.h \
            $DISTPATH/src/phasthdf/win32/phasthdf_version.h \
            $DISTPATH/src/phastinput/win32/phastinput_version.h \
+           $DISTPATH/src/phast/win32_2005/phast_version.h \
            $DISTPATH/doc/README \
            $DISTPATH/packages/win32-is/phast.ipr \
            $DISTPATH/packages/win32-is/String?Tables/0009-English/value.shl"

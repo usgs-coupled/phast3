@@ -92,6 +92,7 @@ MY_LDFLAGS=
 DEVENV="/cygdrive/c/Program Files/Microsoft Visual Studio 8/Common7/IDE/devenv.exe"
 PHAST_SLN=`cygpath -w ./src/phast/win32_2005/phastpp.sln`
 PHASTINPUT_SLN=`cygpath -w ./src/phastinput/vc80/phastinput.sln`
+PHASTHDF_SLN=`cygpath -w ./src/phasthdf/win32/phastexport.sln`
 
 
 # InstallShield settings (based on exported build file
@@ -118,7 +119,7 @@ IS_SWITCHES="-w50 -e50 -v3 -g"
 export PHASTTOPDIR="`cygpath -w "${instdir}${prefix}"`"
 
 # Modelviewer 
-export MODELVIEWER="/cygdrive/c/Program Files/USGS/Model Viewer 1.0/"
+###export MODELVIEWER="/cygdrive/c/Program Files/USGS/Model Viewer 1.0/"
 export MODELVIEWER_1_3="/cygdrive/c/Program Files/USGS/Model Viewer 1.3/"
 
 # Examples
@@ -165,10 +166,10 @@ precheck() {
     echo "Error: Can't find Microsoft Visual Studio 8 (2005): ${DEVENV}"; \
     exit 1; \
   fi && \
-  if [ "x$DEV_VTK_LIBDLL" = "x" ] ; then \
-    echo "Error: DEV_VTK_LIBDLL must be set"; \
-    exit 1; \
-  fi && \
+###  if [ "x$DEV_VTK_LIBDLL" = "x" ] ; then \
+###    echo "Error: DEV_VTK_LIBDLL must be set"; \
+###    exit 1; \
+###  fi && \
   if [ "x$DEV_HDF5_LIBDLL" = "x" ] ; then \
     echo "Error: DEV_HDF5_LIBDLL must be set"; \
     exit 1; \
@@ -177,18 +178,18 @@ precheck() {
     echo "Error: DEV_HDF5_INC must be set"; \
     exit 1; \
   fi && \
-  if [ "x$DEV_MPICH_INC" = "x" ] ; then \
-    echo "Error: DEV_MPICH_INC must be set"; \
-    exit 1; \
-  fi && \
-  if [ "x$DEV_MPICH_LIB" = "x" ] ; then \
-    echo "Error: DEV_MPICH_LIB must be set"; \
-    exit 1; \
-  fi && \
-  if [ "x$DEV_VTK_INC" = "x" ] ; then \
-    echo "Error: DEV_VTK_INC must be set"; \
-    exit 1; \
-  fi && \
+###  if [ "x$DEV_MPICH_INC" = "x" ] ; then \
+###    echo "Error: DEV_MPICH_INC must be set"; \
+###    exit 1; \
+###  fi && \
+###  if [ "x$DEV_MPICH_LIB" = "x" ] ; then \
+###    echo "Error: DEV_MPICH_LIB must be set"; \
+###    exit 1; \
+###  fi && \
+###  if [ "x$DEV_VTK_INC" = "x" ] ; then \
+###    echo "Error: DEV_VTK_INC must be set"; \
+###    exit 1; \
+###  fi && \
   if [ "x$DEV_ZLIB122_INC" = "x" ] ; then \
     echo "Error: DEV_ZLIB122_LIB must be set"; \
     exit 1; \
@@ -197,36 +198,36 @@ precheck() {
     echo "Error: DEV_ZLIB122_LIB must be set"; \
     exit 1; \
   fi && \
-  if [ ! -d "${MODELVIEWER}" ] ; then \
-    echo "Error: ${MODELVIEWER} not found"; \
+  if [ ! -d "${MODELVIEWER_1_3}" ] ; then \
+    echo "Error: ${MODELVIEWER_1_3} not found"; \
     echo "Error: ModelViewer must be installed"; \
     exit 1; \
   fi )
 }
 
-# Note: cp -al and ln aren't working if no ownership of source
-# after upgrading xp/cygwin 12/15/2004
-#
-cvsexport() {
-  (precheck && \
-  cd ${topdir} && \
-  cvs export -r ${cvstag} -d Mv mv_phast/Mv && \
-  cd ${topdir} && \
-# external files
-  mkdir -p Redist && \
-  cp "`cygpath ${DEV_VTK_LIBDLL}`/vtkdll.dll"           ${topdir}/Redist/. && \
-  cp "`cygpath ${DEV_HDF5_LIBDLL}`/hdf5dll.dll"         ${topdir}/Redist/. && \
-  cp "`cygpath ${DEV_HDF5_LIBDLL}`/../bin/zlib1.dll"    ${topdir}/Redist/. && \
-  cp "`cygpath ${DEV_HDF5_LIBDLL}`/../bin/szlibdll.dll" ${topdir}/Redist/. && \
-  cp "`cygpath "${MODELVIEWER}"`/notice.txt"            ${topdir}/Redist/. && \
-  cp "`cygpath "${MODELVIEWER}"`/readme.txt"            ${topdir}/Redist/. && \
-  cp "`cygpath "${MODELVIEWER}"`/doc/ofr02-106.pdf"     ${topdir}/Redist/. && \
-  cp "`cygpath "${MODELVIEWER}"`/bin/modview.chm"       ${topdir}/Redist/. && \
-  cp "`cygpath "${MODELVIEWER}"`/bin/DFORRT.DLL"        ${topdir}/Redist/. && \
-  cp "`cygpath "${MODELVIEWER}"`/bin/lf90.eer"          ${topdir}/Redist/. && \
-  tar cvzf ${src_orig_pkg_mv} Mv Redist && \
-  rm -rf Mv Redist )
-}
+#### Note: cp -al and ln aren't working if no ownership of source
+#### after upgrading xp/cygwin 12/15/2004
+####
+###cvsexport() {
+###  (precheck && \
+###  cd ${topdir} && \
+###  cvs export -r ${cvstag} -d Mv mv_phast/Mv && \
+###  cd ${topdir} && \
+#### external files
+###  mkdir -p Redist && \
+###  cp "`cygpath ${DEV_VTK_LIBDLL}`/vtkdll.dll"           ${topdir}/Redist/. && \
+###  cp "`cygpath ${DEV_HDF5_LIBDLL}`/hdf5dll.dll"         ${topdir}/Redist/. && \
+###  cp "`cygpath ${DEV_HDF5_LIBDLL}`/../bin/zlib1.dll"    ${topdir}/Redist/. && \
+###  cp "`cygpath ${DEV_HDF5_LIBDLL}`/../bin/szlibdll.dll" ${topdir}/Redist/. && \
+###  cp "`cygpath "${MODELVIEWER}"`/notice.txt"            ${topdir}/Redist/. && \
+###  cp "`cygpath "${MODELVIEWER}"`/readme.txt"            ${topdir}/Redist/. && \
+###  cp "`cygpath "${MODELVIEWER}"`/doc/ofr02-106.pdf"     ${topdir}/Redist/. && \
+###  cp "`cygpath "${MODELVIEWER}"`/bin/modview.chm"       ${topdir}/Redist/. && \
+###  cp "`cygpath "${MODELVIEWER}"`/bin/DFORRT.DLL"        ${topdir}/Redist/. && \
+###  cp "`cygpath "${MODELVIEWER}"`/bin/lf90.eer"          ${topdir}/Redist/. && \
+###  tar cvzf ${src_orig_pkg_mv} Mv Redist && \
+###  rm -rf Mv Redist )
+###}
 
 # Note: cp -al and ln aren't working if no ownership of source
 # after upgrading xp/cygwin 12/15/2004
@@ -299,7 +300,7 @@ conf() {
 build() {
   (cd ${objdir} && \
 # build phasthdf.exe
-  msdev `cygpath -w ./src/phasthdf/win32/phastexport.dsw` /MAKE "phastexport - Win32 Release" && \
+  "${DEVENV}" "${PHASTHDF_SLN}" /out phasthdf.log /build Release && \
 # build phastinput.exe
   "${DEVENV}" "${PHASTINPUT_SLN}" /out phastinput.log /build Release && \
 # build phast.jar
@@ -309,7 +310,8 @@ build() {
 # build ser/phast.exe (REBUILD forces the dependencies to be updated)
   "${DEVENV}" "${PHAST_SLN}" /out phast-ser.log /build ser && \
 # build modview.exe (REBUILD forces the dependencies to be updated)
-  msdev `cygpath -w ./Mv/MvProject.dsw` /MAKE "ModelViewer - Win32 Release" /REBUILD )
+###  msdev `cygpath -w ./Mv/MvProject.dsw` /MAKE "ModelViewer - Win32 Release" /REBUILD )
+  )
 }
 
 
@@ -321,14 +323,15 @@ check() {
 
 clean() {
   (cd ${objdir} && \
-  msdev `cygpath -w ./phastexport/phastexport.dsw` /MAKE "phastexport - Win32 Release" /CLEAN && \
-  msdev `cygpath -w ./srcinput/win32/phastinput.dsw` /MAKE "phastinput - Win32 Release" /CLEAN && \
+###  msdev `cygpath -w ./phastexport/phastexport.dsw` /MAKE "phastexport - Win32 Release" /CLEAN && \
+###  msdev `cygpath -w ./srcinput/win32/phastinput.dsw` /MAKE "phastinput - Win32 Release" /CLEAN && \
   ant -buildfile export/build.xml clean && \
 # clean phast
-  msdev `cygpath -w ./srcphast/win32/phast.dsw` /MAKE "phast - Win32 merge" /CLEAN && \
-  msdev `cygpath -w ./srcphast/win32/phast.dsw` /MAKE "phast - Win32 ser" /CLEAN && \
+###  msdev `cygpath -w ./srcphast/win32/phast.dsw` /MAKE "phast - Win32 merge" /CLEAN && \
+###  msdev `cygpath -w ./srcphast/win32/phast.dsw` /MAKE "phast - Win32 ser" /CLEAN && \
 # clean ModelViewer
-  msdev `cygpath -w ./Mv/MvProject.dsw` /MAKE "ModelViewer - Win32 Release" /CLEAN )
+###  msdev `cygpath -w ./Mv/MvProject.dsw` /MAKE "ModelViewer - Win32 Release" /CLEAN )
+  )
 }
 
 install() {
