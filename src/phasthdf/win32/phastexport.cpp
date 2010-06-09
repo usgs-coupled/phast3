@@ -120,8 +120,8 @@ BOOL GetAppPath(HINSTANCE hInstance, tstring& app_path)
 		return FALSE;
 
 	}	
-	_tsplitpath(szBuff, drive, dir, fname, ext);
-	_tmakepath(szOutput, drive, dir, NULL, NULL);
+	::_tsplitpath_s(szBuff, drive, _MAX_DRIVE, dir, _MAX_DIR, fname, _MAX_FNAME, ext, _MAX_EXT);
+	::_tmakepath_s(szOutput, _MAX_PATH, drive, dir, NULL, NULL);
 
 	app_path = szOutput;
 	return TRUE;
@@ -139,7 +139,7 @@ BOOL AddPath(tstring& extpath)
 		DWORD dwBuf = ::GetEnvironmentVariable(TEXT("Path"), NULL, 0);
 		path.reserve(dwBuf + 1);
 		path.resize(dwBuf);
-		dwBuf = ::GetEnvironmentVariable(TEXT("Path"), path.begin(), dwBuf);
+		dwBuf = ::GetEnvironmentVariable(TEXT("Path"), &path[0], dwBuf);
 
 		// modify Path
 		tstring newpath = extpath + tstring(TEXT(";")) + path;
@@ -170,7 +170,7 @@ BOOL RunCommandLine(tstring& cmdline)
 
 	BOOL bOk = ::CreateProcess(
 		NULL,                    // name of executable module
-		cmdline.begin(),         // command line string
+		&cmdline[0],             // command line string
 		NULL,                    // SD
 		NULL,                    // SD
 		FALSE,                   // handle inheritance option
@@ -184,7 +184,7 @@ BOOL RunCommandLine(tstring& cmdline)
 	if (!bOk)
 	{
 		::OutputDebugString(TEXT("CreateProcess failed:\n"));
-		::OutputDebugString(cmdline.begin());
+		::OutputDebugString(&cmdline[0]);
 		::OutputDebugString(TEXT("\n"));
 	}
 
@@ -195,10 +195,10 @@ int LoadString(HINSTANCE hInstance, UINT uID, tstring& strT)
 {
 	strT.reserve(_MAX_PATH + 1);
 	strT.resize(_MAX_PATH);
-	int nChars = ::LoadString(hInstance, uID, strT.begin(), _MAX_PATH);
+	int nChars = ::LoadString(hInstance, uID, &strT[0], _MAX_PATH);
 
 	strT.resize(nChars);
-	nChars = ::LoadString(hInstance, uID, strT.begin(), _MAX_PATH);
+	nChars = ::LoadString(hInstance, uID, &strT[0], _MAX_PATH);
 	return nChars;
 }
 
@@ -294,7 +294,7 @@ BOOL GetJavaExe(HINSTANCE hInstance, tstring& java_exe)
 	{
 		value.reserve(dwBufLen/sizeof(TCHAR));
 		value.resize(dwBufLen/sizeof(TCHAR) - 1);
-		lRet = ::RegQueryValueEx(hKey, sCUR_VER.c_str(), NULL, NULL, (LPBYTE)value.begin(), &dwBufLen);
+		lRet = ::RegQueryValueEx(hKey, sCUR_VER.c_str(), NULL, NULL, (LPBYTE)&value[0], &dwBufLen);
 	}
 	if (lRet != ERROR_SUCCESS)
 	{
@@ -321,11 +321,11 @@ BOOL GetJavaExe(HINSTANCE hInstance, tstring& java_exe)
 	key = sJRE_KEY.c_str();
 	key += TEXT("\\");
 	key += value.c_str();
-	lRet = ::RegOpenKeyEx(HKEY_LOCAL_MACHINE, key.begin(), 0, KEY_QUERY_VALUE, &hKey);
+	lRet = ::RegOpenKeyEx(HKEY_LOCAL_MACHINE, &key[0], 0, KEY_QUERY_VALUE, &hKey);
 	if (lRet != ERROR_SUCCESS)
 	{
 		::OutputDebugString(TEXT("RegOpenKeyEx failed for HKEY_LOCAL_MACHINE\\"));
-		::OutputDebugString(key.begin());
+		::OutputDebugString(&key[0]);
 		::OutputDebugString(TEXT("\n"));
 		return FALSE;
 	}
@@ -343,7 +343,7 @@ BOOL GetJavaExe(HINSTANCE hInstance, tstring& java_exe)
 	{
 		java_exe.reserve(dwBufLen/sizeof(TCHAR));
 		java_exe.resize(dwBufLen/sizeof(TCHAR) - 1);
-		lRet = ::RegQueryValueEx(hKey, sJAVAHOME.c_str(), NULL, NULL, (LPBYTE)java_exe.begin(), &dwBufLen);
+		lRet = ::RegQueryValueEx(hKey, sJAVAHOME.c_str(), NULL, NULL, (LPBYTE)&java_exe[0], &dwBufLen);
 	}
 	if (lRet != ERROR_SUCCESS)
 	{
@@ -362,7 +362,7 @@ BOOL GetJavaExe(HINSTANCE hInstance, tstring& java_exe)
 	if (::RegCloseKey(hKey) != ERROR_SUCCESS)
 	{
 		::OutputDebugString(TEXT("RegCloseKey failed for HKEY_LOCAL_MACHINE\\"));
-		::OutputDebugString(key.begin());
+		::OutputDebugString(key.c_str());
 	}
 
 	// append \bin\javaw.exe
