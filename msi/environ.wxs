@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <ComponentGroup Id="Environ">
+      <ComponentRef Id="Path" />
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <DirectoryRef Id="APPLICATIONFOLDER">
+      <Component Id="Path" Guid="{059B76CE-D417-49db-95B9-089A8091F941}">
+        <Environment Id="path_phast" Name="PATH_PHAST" Action="set" Part="all" System="yes" Value="[APPLICATIONFOLDER]\bin" />
+        <Environment Id="path" Name="Path" Action="set" Part="last" System="yes" Value="%PATH_PHAST%" />
+        <!--<Condition><![CDATA[Privileged]]></Condition>-->
+        <CreateFolder />
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+</Wix>
