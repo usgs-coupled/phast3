@@ -325,7 +325,6 @@
             <ComponentRef Id="phastexport.rc" />
             <ComponentRef Id="phastexport.sln" />
             <ComponentRef Id="phastexport.vcproj" />
-            <ComponentRef Id="phastexport.vcproj.GS.charlton.user" />
             <ComponentRef Id="phasthdf_version.h" />
             <ComponentRef Id="phasthdf_version.h.dist" />
             <ComponentRef Id="resource.fd_2" />
@@ -442,7 +441,6 @@
             <ComponentRef Id="phastinput.rc" />
             <ComponentRef Id="phastinput.sln" />
             <ComponentRef Id="phastinput.vcproj" />
-            <ComponentRef Id="phastinput.vcproj.GS.charlton.user" />
             <ComponentRef Id="resource.h_3" />
             <ComponentRef Id="phastinput.dsp" />
             <ComponentRef Id="phastinput.dsw" />
@@ -1467,9 +1465,6 @@
                         <Component Id="phastexport.vcproj" Guid="*">
                             <File Id="phastexport.vcproj" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\win32\phastexport.vcproj" />
                         </Component>
-                        <Component Id="phastexport.vcproj.GS.charlton.user" Guid="*">
-                            <File Id="phastexport.vcproj.GS.charlton.user" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\win32\phastexport.vcproj.GS.charlton.user" />
-                        </Component>
                         <Component Id="phasthdf_version.h" Guid="*">
                             <File Id="phasthdf_version.h" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\win32\phasthdf_version.h" />
                         </Component>
@@ -1827,9 +1822,6 @@
                         </Component>
                         <Component Id="phastinput.vcproj" Guid="*">
                             <File Id="phastinput.vcproj" KeyPath="yes" Source="$(var.SrcDir)\phastinput\vc80\phastinput.vcproj" />
-                        </Component>
-                        <Component Id="phastinput.vcproj.GS.charlton.user" Guid="*">
-                            <File Id="phastinput.vcproj.GS.charlton.user" KeyPath="yes" Source="$(var.SrcDir)\phastinput\vc80\phastinput.vcproj.GS.charlton.user" />
                         </Component>
                         <Component Id="resource.h_3" Guid="*">
                             <File Id="resource.h_3" KeyPath="yes" Source="$(var.SrcDir)\phastinput\vc80\resource.h" />
