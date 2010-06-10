@@ -17,40 +17,8 @@
     </Feature>
     -->
     
-    <ComponentGroup Id="ProgramFiles">
-      <!-- readme -->
-      <ComponentRef Id="README.txt" />
-      <!-- exe/dll -->
-      <ComponentRef Id="hdf5dll.dll" />
-      <ComponentRef Id="phast_mpich2.exe" />
-      <ComponentRef Id="phast_ser.exe" />
-      <ComponentRef Id="phast.bat" />
-      <ComponentRef Id="phasthdf.exe" />
-      <ComponentRef Id="phastinput.exe" />
-      <ComponentRef Id="szlibdll.dll" />
-      <ComponentRef Id="zlib1.dll" />
-      <!-- libs -->
-      <ComponentRef Id="jhdf.jar" />
-      <ComponentRef Id="jhdf5.jar" />
-      <ComponentRef Id="jhdf5obj.jar" />
-      <ComponentRef Id="jhdfobj.jar" />
-      <ComponentRef Id="phast.jar" />
-      <ComponentRef Id="jh5srb.dll" />
-      <ComponentRef Id="jhdf.dll" />
-      <ComponentRef Id="jhdf5.dll" />
-      <!-- database -->
-      <ComponentRef Id="iso.dat" />
-      <ComponentRef Id="llnl.dat" />
-      <ComponentRef Id="minteq.dat" />
-      <ComponentRef Id="minteq.v4.dat" />
-      <ComponentRef Id="phast.dat" />
-      <!-- 
-      <ComponentRef Id="phreeqd.dat" />
-      -->
-      <ComponentRef Id="pitzer.dat" />
-      <ComponentRef Id="wateq4f.dat" />
-    </ComponentGroup>
 
+    <!--
     <ComponentGroup Id="Documentation">
       <ComponentRef Id="phast.pdf" />
       <ComponentRef Id="phreeqc.pdf" />
@@ -58,7 +26,9 @@
       <ComponentRef Id="RELEASE.txt" />
       <ComponentRef Id="wrir02_4172.pdf" />
     </ComponentGroup>
+    -->
 
+    <!--
     <ComponentGroup Id="Source">
       <ComponentRef Id="abmult.f90" />
       <ComponentRef Id="aplbce.f90" />
@@ -332,7 +302,6 @@
       <ComponentRef Id="phastpp.vfproj_1" />
       <ComponentRef Id="phast_version.h_1" />
       <ComponentRef Id="phreeqcpp.vcproj_1" />
-      <!--<ComponentRef Id="phreeqcpp.vcproj.GS.charlton.user" />-->
       <ComponentRef Id="resource.fd_1" />
       <ComponentRef Id="resource.h_1" />
       <ComponentRef Id="build.xml" />
@@ -409,94 +378,23 @@
       <ComponentRef Id="resource.fd_4" />
       <ComponentRef Id="resource.h_4" />
     </ComponentGroup>
+    -->
 
-    <ComponentGroup Id="Examples">
-      <!--<ComponentRef Id="decay.chem.dat" />
-      <ComponentRef Id="decay.trans.dat" />
-      <ComponentRef Id="phast.dat_1" />-->
-      <ComponentRef Id="diffusion1d.chem.dat" />
-      <ComponentRef Id="diffusion1d.head.dat" />
-      <ComponentRef Id="diffusion1d.trans.dat" />
-      <ComponentRef Id="phast.dat_2" />
-      <ComponentRef Id="selected.out" />
-      <ComponentRef Id="diffusion2d.chem.dat" />
-      <ComponentRef Id="diffusion2d.head.dat" />
-      <ComponentRef Id="diffusion2d.trans.dat" />
-      <ComponentRef Id="phast.dat_3" />
-      <ComponentRef Id="selected.out_1" />
-      <ComponentRef Id="disp2d.chem.dat" />
-      <ComponentRef Id="disp2d.trans.dat" />
-      <ComponentRef Id="phast.dat_4" />
-      <ComponentRef Id="ex1.chem.dat" />
-      <ComponentRef Id="ex1.trans.dat" />
-      <ComponentRef Id="phast.dat_5" />
-      <ComponentRef Id="ex2.chem.dat" />
-      <ComponentRef Id="ex2.trans.dat" />
-      <ComponentRef Id="phast.dat_6" />
-      <ComponentRef Id="ex3.chem.dat" />
-      <ComponentRef Id="ex3.trans.dat" />
-      <ComponentRef Id="phast.dat_7" />
-      <ComponentRef Id="ex4.chem.dat" />
-      <ComponentRef Id="ex4.trans.dat" />
-      <ComponentRef Id="phast.dat_8" />
-      <ComponentRef Id="ex4.head.dat" />
-      <ComponentRef Id="ex4.restart.gz" />
-      <ComponentRef Id="ex4restart.chem.dat" />
-      <ComponentRef Id="ex4restart.head.dat" />
-      <ComponentRef Id="ex4restart.trans.dat" />
-      <ComponentRef Id="phast.dat_9" />
-      <ComponentRef Id="ex4_ddl.chem.dat" />
-      <ComponentRef Id="ex4_ddl.trans.dat" />
-      <ComponentRef Id="phast.dat_10" />
-      <ComponentRef Id="ex4_start_time.chem.dat" />
-      <ComponentRef Id="ex4_start_time.trans.dat" />
-      <ComponentRef Id="phast.dat_11" />
-      <!--<ComponentRef Id="free.chem.dat" />
-      <ComponentRef Id="free.head.dat" />
-      <ComponentRef Id="free.trans.dat" />
-      <ComponentRef Id="phast.dat_12" />-->
-      <ComponentRef Id="kindred4.4.chem.dat" />
-      <ComponentRef Id="kindred4.4.trans.dat" />
-      <ComponentRef Id="phast.dat_13" />
-      <ComponentRef Id="leaky.trans.dat" />
-      <ComponentRef Id="leakyx.trans.dat" />
-      <ComponentRef Id="leakyz.trans.dat" />
-      <ComponentRef Id="linear_bc.chem.dat" />
-      <ComponentRef Id="linear_bc.trans.dat" />
-      <ComponentRef Id="phast.dat_14" />
-      <ComponentRef Id="linear_ic.chem.dat" />
-      <ComponentRef Id="linear_ic.trans.dat" />
-      <ComponentRef Id="phast.dat_15" />
-      <!--<ComponentRef Id="mass_balance.chem.dat" />
-      <ComponentRef Id="mass_balance.trans.dat" />
-      <ComponentRef Id="phast.dat_16" />-->
-      <!--<ComponentRef Id="notch.trans.dat" />-->
-      <ComponentRef Id="phast.dat_17" />
-      <ComponentRef Id="phrqex11.chem.dat" />
-      <ComponentRef Id="phrqex11.trans.dat" />
-      <!--<ComponentRef Id="phast.dat_18" />
-      <ComponentRef Id="print_check_ss.chem.dat" />
-      <ComponentRef Id="print_check_ss.trans.dat" />-->
-      <!--<ComponentRef Id="compare" />
-      <ComponentRef Id="phast.dat_19" />
-      <ComponentRef Id="print_check_ss.head.dat" />
-      <ComponentRef Id="print_check_transient.chem.dat" />
-      <ComponentRef Id="print_check_transient.head.dat" />
-      <ComponentRef Id="print_check_transient.trans.dat" />-->
-      <ComponentRef Id="phast.dat_20" />
-      <ComponentRef Id="radial.chem.dat" />
-      <ComponentRef Id="radial.head.dat" />
-      <ComponentRef Id="radial.trans.dat" />
-      <ComponentRef Id="river.trans.dat" />
-      <ComponentRef Id="phast.dat_21" />
-      <ComponentRef Id="simple.chem.dat" />
-      <ComponentRef Id="simple.trans.dat" />
-      <ComponentRef Id="unconf.trans.dat" />
-      <ComponentRef Id="phast.dat_22" />
-      <ComponentRef Id="well.trans.dat" />
-    </ComponentGroup>
     
     <Feature Id="ProgramFiles" Title="Program Files" Description="This component contains the program executables, files required during execution, and minimal informal documentation." AllowAdvertise="system" Level="1" Display="expand">
+      <ComponentGroupRef Id="Readme" />
+      <ComponentGroupRef Id="Bin" />
+      <ComponentGroupRef Id="Lib" />
+      <Feature Id="Documentation" Title="Documentation" Description="This component contains brief, summary documentation as well as the full, formal program documentation." AllowAdvertise="system" Level="1">
+        <ComponentGroupRef Id="Doc" />
+      </Feature>
+      <Feature Id="Source" Title="Source Code" Description="This component contains the programs source code." AllowAdvertise="system" Level="1">
+        <ComponentGroupRef Id="Src" />
+      </Feature>
+      <Feature Id="Examples" Title="Examples" Description="This component contains sample input files." AllowAdvertise="system" Level="1">
+        <ComponentGroupRef Id="Examples" />
+      </Feature>
+      <!--
       <ComponentGroupRef Id="ProgramFiles" />
       <Feature Id="Documentation" Title="Documentation" Description="This component contains brief, summary documentation as well as the full, formal program documentation." AllowAdvertise="system" Level="1">
         <ComponentGroupRef Id="Documentation" />
@@ -507,6 +405,7 @@
       <Feature Id="Examples" Title="Examples" Description="This component contains sample input files." AllowAdvertise="system" Level="1">
         <ComponentGroupRef Id="Examples" />
       </Feature>
+      -->
     </Feature>
 
     <!-- gui -->
