@@ -44,7 +44,9 @@
       <ComponentRef Id="minteq.dat" />
       <ComponentRef Id="minteq.v4.dat" />
       <ComponentRef Id="phast.dat" />
+      <!-- 
       <ComponentRef Id="phreeqd.dat" />
+      -->
       <ComponentRef Id="pitzer.dat" />
       <ComponentRef Id="wateq4f.dat" />
     </ComponentGroup>
@@ -330,7 +332,7 @@
       <ComponentRef Id="phastpp.vfproj_1" />
       <ComponentRef Id="phast_version.h_1" />
       <ComponentRef Id="phreeqcpp.vcproj_1" />
-      <ComponentRef Id="phreeqcpp.vcproj.GS.charlton.user" />
+      <!--<ComponentRef Id="phreeqcpp.vcproj.GS.charlton.user" />-->
       <ComponentRef Id="resource.fd_1" />
       <ComponentRef Id="resource.h_1" />
       <ComponentRef Id="build.xml" />
@@ -409,9 +411,9 @@
     </ComponentGroup>
 
     <ComponentGroup Id="Examples">
-      <ComponentRef Id="decay.chem.dat" />
+      <!--<ComponentRef Id="decay.chem.dat" />
       <ComponentRef Id="decay.trans.dat" />
-      <ComponentRef Id="phast.dat_1" />
+      <ComponentRef Id="phast.dat_1" />-->
       <ComponentRef Id="diffusion1d.chem.dat" />
       <ComponentRef Id="diffusion1d.head.dat" />
       <ComponentRef Id="diffusion1d.trans.dat" />
@@ -449,10 +451,10 @@
       <ComponentRef Id="ex4_start_time.chem.dat" />
       <ComponentRef Id="ex4_start_time.trans.dat" />
       <ComponentRef Id="phast.dat_11" />
-      <ComponentRef Id="free.chem.dat" />
+      <!--<ComponentRef Id="free.chem.dat" />
       <ComponentRef Id="free.head.dat" />
       <ComponentRef Id="free.trans.dat" />
-      <ComponentRef Id="phast.dat_12" />
+      <ComponentRef Id="phast.dat_12" />-->
       <ComponentRef Id="kindred4.4.chem.dat" />
       <ComponentRef Id="kindred4.4.trans.dat" />
       <ComponentRef Id="phast.dat_13" />
@@ -465,22 +467,22 @@
       <ComponentRef Id="linear_ic.chem.dat" />
       <ComponentRef Id="linear_ic.trans.dat" />
       <ComponentRef Id="phast.dat_15" />
-      <ComponentRef Id="mass_balance.chem.dat" />
+      <!--<ComponentRef Id="mass_balance.chem.dat" />
       <ComponentRef Id="mass_balance.trans.dat" />
-      <ComponentRef Id="phast.dat_16" />
-      <ComponentRef Id="notch.trans.dat" />
+      <ComponentRef Id="phast.dat_16" />-->
+      <!--<ComponentRef Id="notch.trans.dat" />-->
       <ComponentRef Id="phast.dat_17" />
       <ComponentRef Id="phrqex11.chem.dat" />
       <ComponentRef Id="phrqex11.trans.dat" />
-      <ComponentRef Id="phast.dat_18" />
+      <!--<ComponentRef Id="phast.dat_18" />
       <ComponentRef Id="print_check_ss.chem.dat" />
-      <ComponentRef Id="print_check_ss.trans.dat" />
-      <ComponentRef Id="compare" />
+      <ComponentRef Id="print_check_ss.trans.dat" />-->
+      <!--<ComponentRef Id="compare" />
       <ComponentRef Id="phast.dat_19" />
       <ComponentRef Id="print_check_ss.head.dat" />
       <ComponentRef Id="print_check_transient.chem.dat" />
       <ComponentRef Id="print_check_transient.head.dat" />
-      <ComponentRef Id="print_check_transient.trans.dat" />
+      <ComponentRef Id="print_check_transient.trans.dat" />-->
       <ComponentRef Id="phast.dat_20" />
       <ComponentRef Id="radial.chem.dat" />
       <ComponentRef Id="radial.head.dat" />
