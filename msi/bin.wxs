@@ -19,10 +19,10 @@
                     <File Id="hdf5dll.dll" KeyPath="yes" Source="$(env.DEV_HDF5_LIBDLL)\hdf5dll.dll" />
                 </Component>
                 <Component Id="phast_mpich2.exe" Guid="*">
-                    <File Id="phast_mpich2.exe" KeyPath="yes" Source="..\src\phast\win32_2005\merge\phast.exe" Name="phast_mpich2.exe" />
+                    <File Id="phast_mpich2.exe" KeyPath="yes" Source="..\src\phast\win32_2005\merge\phast.exe" Name="phast-mpich2.exe" />
                 </Component>
                 <Component Id="phast_ser.exe" Guid="*">
-                    <File Id="phast_ser.exe" KeyPath="yes" Source="..\src\phast\win32_2005\ser\phast.exe" Name="phast_ser.exe" />
+                    <File Id="phast_ser.exe" KeyPath="yes" Source="..\src\phast\win32_2005\ser\phast.exe" Name="phast-ser.exe" />
                 </Component>
                 <Component Id="phast.bat" Guid="*">
                     <File Id="phast.bat" KeyPath="yes" Source="..\bin\phast2.bat" Name="phast.bat" />
