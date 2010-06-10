@@ -26,8 +26,6 @@
                 </Component>
                 <Component Id="phast.bat" Guid="*">
                     <File Id="phast.bat" KeyPath="yes" Source="..\bin\phast2.bat" Name="phast.bat" />
-                    <Environment Id="path_phast" Name="PATH_PHAST" Action="set" Part="all" System="yes" Value="[APPLICATIONFOLDER]\bin" />
-                    <Environment Id="path" Name="Path" Action="set" Part="last" System="yes" Value="%PATH_PHAST%" />
                 </Component>
                 <Component Id="phasthdf.exe" Guid="*">
                     <File Id="phasthdf.exe" KeyPath="yes" Source="..\src\phasthdf\win32\Release\phasthdf.exe" />
