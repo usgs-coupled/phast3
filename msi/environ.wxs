@@ -6,7 +6,7 @@
     </ComponentGroup>
   </Fragment>
   <Fragment>
-    <DirectoryRef Id="APPLICATIONFOLDER">
+    <DirectoryRef Id="bin">
       <Component Id="Path" Guid="{059B76CE-D417-49db-95B9-089A8091F941}">
         <Environment Id="path_phast" Name="PATH_PHAST" Action="set" Part="all" System="yes" Value="[APPLICATIONFOLDER]\bin" />
         <Environment Id="path" Name="Path" Action="set" Part="last" System="yes" Value="%PATH_PHAST%" />

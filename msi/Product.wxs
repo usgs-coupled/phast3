@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!-- Note Major Minor and Build are set on the command line -->
+<!-- ie MSBuild.exe msi.sln /p:Major=2 /p:Minor=0 /p:Build=4498 -->
+
+<!-- format must be major.minor.build -->
+<!-- major and minor have a maximum value of 255 -->
+<!-- build has a maximum value of 65535 -->
+
 <?define Version=$(var.Major).$(var.Minor).$(var.Build)?>
 <?define FolderName="phast-$(var.Major).$(var.Minor).$(var.Build)"?>
 <?define Manufacturer="U.S. Geological Survey"?>
@@ -14,7 +21,7 @@
            UpgradeCode="81ed6506-9db2-46a1-b0c7-e24de11013f0">
 		<Package InstallerVersion="200" Compressed="yes" />
 
-		<Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
+		<Media Id="1" Cabinet="media.cab" EmbedCab="yes" />
 
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
