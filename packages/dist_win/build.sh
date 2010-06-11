@@ -165,7 +165,7 @@ mkdirs() {
 
 precheck() {
   (
-  if [ ! -s "${DEVENV}" ] ; then \
+  if [ ! -s "`which ${DEVENV}`" ] ; then \
     echo "Error: Can't find Microsoft Visual Studio 8 (2005): ${DEVENV}"; \
     exit 1; \
   fi && \
@@ -265,7 +265,7 @@ prep() {
   (cd ${topdir} && \
   tar xvzf ${src_orig_pkg} && \
   cd ${topdir}/${FULLPKG} && \
-  tar xvzf ${src_orig_pkg_mv} && \
+##  tar xvzf ${src_orig_pkg_mv} && \
   cd ${topdir} && \
   if [ -f ${src_patch} ] ; then \
     patch -p0 --binary < ${src_patch} ;\
@@ -555,6 +555,15 @@ case $1 in
   cvsexport)    cvsexport; STATUS=$? ;;
   svnexport)    svnexport; STATUS=$? ;;
   run)          run_examples;  STATUS=$? ;;
+  upto-conf)    precheck && prep && conf; STATUS=$? ;;
+  upto-build)   precheck && prep && conf && build; STATUS=$? ;;
+  upto-install) precheck && prep && conf && build && install; STATUS=$? ;;
+  upto-pkg)     precheck && prep && conf && build && install && \
+			strip && pkg ; \
+			STATUS=$? ;;    
+  upto-spkg)    precheck && prep && conf && build && install && \
+			strip && pkg && spkg ; \
+			STATUS=$? ;;    
   all) precheck && prep && conf && build && install && \
        strip && pkg && spkg && finish ; \
        STATUS=$? ;;
