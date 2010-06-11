@@ -144,7 +144,7 @@ echo "Removed and recreated $DIST_SANDBOX"
 echo "Exporting revision $REVISION of PHAST into sandbox..."
 (cd "$DIST_SANDBOX" && \
  	${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
-	     "http://internalbrr/svn_GW/phastpp/$REPOS_PATH" \
+	     "http://internalbrr.cr.usgs.gov/svn_GW/phastpp/$REPOS_PATH" \
 	     "$DISTNAME")
 	     
 echo "Exporting revision $REVISION of external database into sandbox..."
@@ -164,6 +164,7 @@ echo "Exporting revision $REVISION of external src/phast/phreeqcpp/phreeqc into 
  	${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
 	     "http://internalbrr.cr.usgs.gov/svn_GW/phreeqc/trunk/src" \
 	     "$DISTNAME/src/phast/phreeqcpp/phreeqc")
+##exit 1
 	     
 echo "Making examples clean"
 (cd "$DISTPATH/examples" && [ -f Makefile ] && make TOPDIR=.. clean > /dev/null)
@@ -179,49 +180,49 @@ rm -rf "$DISTPATH/examples/runmpich"
 rm -rf "$DISTPATH/examples/ex4/ex4.restart"
 rm -rf "$DISTPATH/examples/print_check_ss/print_check_ss.head.dat"
 rm -rf "$DISTPATH/examples/print_check_ss/print_check_ss.dmp"
-rm -rf "$DISTPATH/src/phast/win32_2005/*.user"
+find "$DISTPATH/src" -type f -name '*.user' -print | xargs rm -rf
 find "$DISTPATH/examples" -type f -name '*.restart' ! -wholename '*/ex4restart/ex4.restart' -print | xargs rm -rf
 find "$DISTPATH/examples" -type d -name '0' -print | xargs rm -rf
 find "$DISTPATH/examples" -type f -name 'clean' -print | xargs rm -rf
 find "$DISTPATH/examples" -type f -name 'notes' -print | xargs rm -rf
 find "$DISTPATH/examples" -type f -name '*.wphast' -print | xargs rm -rf
 
-echo "Deleting examples that aren't distributed"
-mv "$DISTPATH/examples" "$DISTPATH/examples-delete"
-mkdir "$DISTPATH/examples"
-EXAMPLES="diffusion1d \
-          diffusion2d \
-          disp2d \
-          ex1 \
-          ex2 \
-          ex3 \
-          ex4 \
-          ex4_ddl \
-          ex4_noedl \
-          ex4restart \
-          ex4_start_time \
-          ex4_transient \
-          kindred4.4 \
-          leaky \
-          leakysurface \
-          leakyx \
-          leakyz \
-          linear_bc \
-          linear_ic \
-          phrqex11 \
-          property \
-          radial \
-          river \
-          shell \
-          simple \
-          unconf \
-          well \
-          zf"
-for ex in $EXAMPLES
-do
-  mv "$DISTPATH/examples-delete/$ex" "$DISTPATH/examples/."
-done
-rm -rf "$DISTPATH/examples-delete"
+###echo "Deleting examples that aren't distributed"
+###mv "$DISTPATH/examples" "$DISTPATH/examples-delete"
+###mkdir "$DISTPATH/examples"
+###EXAMPLES="diffusion1d \
+###          diffusion2d \
+###          disp2d \
+###          ex1 \
+###          ex2 \
+###          ex3 \
+###          ex4 \
+###          ex4_ddl \
+###          ex4_noedl \
+###          ex4restart \
+###          ex4_start_time \
+###          ex4_transient \
+###          kindred4.4 \
+###          leaky \
+###          leakysurface \
+###          leakyx \
+###          leakyz \
+###          linear_bc \
+###          linear_ic \
+###          phrqex11 \
+###          property \
+###          radial \
+###          river \
+###          shell \
+###          simple \
+###          unconf \
+###          well \
+###          zf"
+###for ex in $EXAMPLES
+###do
+###  mv "$DISTPATH/examples-delete/$ex" "$DISTPATH/examples/."
+###done
+###rm -rf "$DISTPATH/examples-delete"
 
 echo "Cleaning up src/phastinput directory"
 rm -rf "$DISTPATH/src/phastinput/test"
@@ -233,7 +234,7 @@ echo "Renaming phreeqc.dat to phast.dat"
 mv "$DISTPATH/database/phreeqc.dat" "$DISTPATH/database/phast.dat"
 
 echo "Rearranging source directories"
-mkdir -p "$DISTPATH/src"
+#mkdir -p "$DISTPATH/src"
 #cp "$DISTPATH/srcphast/phreeqcpp/phreeqc/revisions" "$DISTPATH/srcphast/phreeqc.revisions"
 cp "$DISTPATH/src/phast/phreeqcpp/phreeqc/revisions" "$DISTPATH/src/phast/phreeqc.revisions"
 #mv "$DISTPATH/srcinput" "$DISTPATH/src/phastinput"
@@ -251,9 +252,10 @@ fi
 VERSION_LONG="$ver_major.$ver_minor.$ver_patch.$REVISION_SVN"
 
 SED_FILES="$DISTPATH/src/phast/win32/phast_version.h \
+           $DISTPATH/src/phast/win32_2005/phast_version.h \
+           $DISTPATH/src/phast/phast.F90 \
            $DISTPATH/src/phasthdf/win32/phasthdf_version.h \
            $DISTPATH/src/phastinput/win32/phastinput_version.h \
-           $DISTPATH/src/phast/win32_2005/phast_version.h \
            $DISTPATH/doc/README \
            $DISTPATH/packages/win32-is/phast.ipr \
            $DISTPATH/packages/win32-is/String?Tables/0009-English/value.shl"
