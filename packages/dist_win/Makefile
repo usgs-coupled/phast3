@@ -84,7 +84,7 @@ $(BIN_PACKAGE) : $(TARBALL) $(MV_TARBALL) $(BUILD_SCRIPT)
 	@echo "Building package $(BIN_PACKAGE) / $(SRC_PACKAGE)"	
 	time ./$(BUILD_SCRIPT) all 2>&1 | tee all-$(RELEASE).log
 	
-source : check_version check_date $(TARBALL) $(MV_TARBALL)
+source : check_version check_date $(TARBALL) ## $(MV_TARBALL)
 
 $(TARBALL) : ../RPM/dist.sh $(DATE_STAMP).tstamp
 	@echo "Creating $(TARBALL)"

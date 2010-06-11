@@ -57,6 +57,8 @@ tscriptname=`basename $0 .sh`
 export PKG=`echo $tscriptname | sed -e 's/\-[^\-]*\-[^\-]*$//'`
 export VER=`echo $tscriptname | sed -e "s/${PKG}\-//" -e 's/\-[^\-]*$//'`
 export REL=`echo $tscriptname | sed -e "s/${PKG}\-${VER}\-//"`
+export MAJOR=`echo $VER | sed -e 's/\.[^.]*//g'`
+export MINOR=`echo $VER | sed -e 's/[^\.]*\.//' -e 's/\.[^\.]*//'`
 export BASEPKG=${PKG}-${VER}-${REL}
 export FULLPKG=${BASEPKG}
 LOWER='abcdefghijklmnopqrstuvwxyz'
@@ -89,10 +91,11 @@ MY_CFLAGS="-O2 -g"
 MY_LDFLAGS=
 
 # use Visual Studio 2005 to compile
-DEVENV="/cygdrive/c/Program Files/Microsoft Visual Studio 8/Common7/IDE/devenv.exe"
+DEVENV="devenv.exe"
 PHAST_SLN=`cygpath -w ./src/phast/win32_2005/phastpp.sln`
 PHASTINPUT_SLN=`cygpath -w ./src/phastinput/vc80/phastinput.sln`
 PHASTHDF_SLN=`cygpath -w ./src/phasthdf/win32/phastexport.sln`
+MSI_SLN=`cygpath -w ./msi/msi.sln`
 
 
 # InstallShield settings (based on exported build file
@@ -305,13 +308,13 @@ build() {
   "${DEVENV}" "${PHASTINPUT_SLN}" /out phastinput.log /build Release && \
 # build phast.jar
   ant -buildfile ./src/phasthdf/build.xml dist-Win32 && \
-# build merge/phast.exe (REBUILD forces the dependencies to be updated)
+# build merge/phast.exe
   "${DEVENV}" "${PHAST_SLN}" /out phast-merge.log /build merge && \
-# build ser/phast.exe (REBUILD forces the dependencies to be updated)
+# build ser/phast.exe
   "${DEVENV}" "${PHAST_SLN}" /out phast-ser.log /build ser && \
-# build modview.exe (REBUILD forces the dependencies to be updated)
-###  msdev `cygpath -w ./Mv/MvProject.dsw` /MAKE "ModelViewer - Win32 Release" /REBUILD )
-  )
+# build phast.msi
+#  "${DEVENV}" "${MSI_SLN}" /out msi.log /build Release )
+  MSBuild.exe "${MSI_SLN}" /p:Configuration=Release /p:TargetName=${FULLPKG} /p:Major=${MAJOR} /p:Minor=${MINOR} /p:Build=${REL} )
 }
 
 
@@ -325,13 +328,12 @@ clean() {
   (cd ${objdir} && \
 ###  msdev `cygpath -w ./phastexport/phastexport.dsw` /MAKE "phastexport - Win32 Release" /CLEAN && \
 ###  msdev `cygpath -w ./srcinput/win32/phastinput.dsw` /MAKE "phastinput - Win32 Release" /CLEAN && \
-  ant -buildfile export/build.xml clean && \
+  ant -buildfile export/build.xml clean )
 # clean phast
 ###  msdev `cygpath -w ./srcphast/win32/phast.dsw` /MAKE "phast - Win32 merge" /CLEAN && \
 ###  msdev `cygpath -w ./srcphast/win32/phast.dsw` /MAKE "phast - Win32 ser" /CLEAN && \
 # clean ModelViewer
 ###  msdev `cygpath -w ./Mv/MvProject.dsw` /MAKE "ModelViewer - Win32 Release" /CLEAN )
-  )
 }
 
 install() {
