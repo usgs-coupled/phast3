@@ -101,7 +101,6 @@
             <ComponentRef Id="SimplePonds.dbf" />
             <ComponentRef Id="SimplePonds.shp" />
             <ComponentRef Id="SimplePonds.shx" />
-            <ComponentRef Id="iniital_C.dat" />
             <ComponentRef Id="kh_meters" />
             <ComponentRef Id="kz_meters" />
             <ComponentRef Id="ex6.chem.dat" />
@@ -504,9 +503,6 @@
                         </Component>
                     </Directory>
                     <Directory Id="Parameters" Name="Parameters">
-                        <Component Id="iniital_C.dat" Guid="*">
-                            <File Id="iniital_C.dat" KeyPath="yes" Source="$(var.ExampleDir)\ex5\Parameters\iniital_C.dat" />
-                        </Component>
                         <Component Id="kh_meters" Guid="*">
                             <File Id="kh_meters" KeyPath="yes" Source="$(var.ExampleDir)\ex5\Parameters\kh_meters" />
                         </Component>
