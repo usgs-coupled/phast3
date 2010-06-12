@@ -164,6 +164,13 @@ echo "Exporting revision $REVISION of external src/phast/phreeqcpp/phreeqc into 
  	${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
 	     "http://internalbrr.cr.usgs.gov/svn_GW/phreeqc/trunk/src" \
 	     "$DISTNAME/src/phast/phreeqcpp/phreeqc")
+
+echo "Exporting revision $REVISION of ModelViewer into sandbox..."
+(cd "$DIST_SANDBOX" && \
+ 	${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
+	     "http://internalbrr.cr.usgs.gov/svn_GW/ModelViewer/trunk" \
+	     "$DISTNAME/ModelViewer")
+
 ##exit 1
 	     
 echo "Making examples clean"
@@ -229,6 +236,9 @@ rm -rf "$DISTPATH/src/phastinput/test"
 
 echo "Cleaning up src/phast directory"
 rm -rf "$DISTPATH/src/phast/phreeqc/Sun"
+
+echo "Cleaning up examples directory"
+rm -rf "$DISTPATH/examples/capecod"
 
 echo "Renaming phreeqc.dat to phast.dat"
 mv "$DISTPATH/database/phreeqc.dat" "$DISTPATH/database/phast.dat"
