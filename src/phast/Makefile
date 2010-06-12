@@ -283,7 +283,7 @@ HDF5_LIBS=${HDF5_ROOT}/lib/libhdf5.a  -lz -lpthread
 HDF5_LIBS_64=${HDF5_ROOT}/lib64/libhdf5.a -lpthread -lz
 
 # -----------------------------------------------------------------------------
-DEFINE_HDF=-DHDF5_CREATE -DH5Dcreate_vers=1 -DH5Gcreate_vers=1
+DEFINE_HDF=-DHDF5_CREATE -DH5Dcreate_vers=1 -DH5Gcreate_vers=1 -DH5Eset_auto_vers=1
 DEFINE_MPI=-DUSE_MPI
 DEFINE_MERGE=-DMERGE_FILES
 
