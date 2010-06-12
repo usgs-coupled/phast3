@@ -208,7 +208,7 @@ chmod 755 $RPM_BUILD_ROOT/%{_bindir}/phasthdf
 #
 # run and store examples
 #
-for arg in `find test -mindepth 1 -type d`; do
+for arg in `find test -mindepth 1 -maxdepth 1 -type d`; do
   cd $arg
   $RPM_BUILD_ROOT/%{_bindir}/phast `basename $arg`
   cd ../..
