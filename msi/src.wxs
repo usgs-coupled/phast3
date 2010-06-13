@@ -83,7 +83,6 @@
             <ComponentRef Id="phast_files.h" />
             <ComponentRef Id="phast_root.F90" />
             <ComponentRef Id="phast_slave.F90" />
-            <ComponentRef Id="phreeqc.revisions" />
             <ComponentRef Id="Pointers_to_fortran.h" />
             <ComponentRef Id="prchar.f90" />
             <ComponentRef Id="print_control_mod.f90" />
@@ -326,7 +325,6 @@
             <ComponentRef Id="phastexport.sln" />
             <ComponentRef Id="phastexport.vcproj" />
             <ComponentRef Id="phasthdf_version.h" />
-            <ComponentRef Id="phasthdf_version.h.dist" />
             <ComponentRef Id="resource.fd_2" />
             <ComponentRef Id="resource.h_2" />
             <ComponentRef Id="small.ico" />
@@ -448,7 +446,6 @@
             <ComponentRef Id="phastinput.sln_1" />
             <ComponentRef Id="phastinput.vcproj_1" />
             <ComponentRef Id="phastinput_version.h" />
-            <ComponentRef Id="phastinput_version.h.dist" />
             <ComponentRef Id="resource.fd_3" />
             <ComponentRef Id="resource.h_4" />
         </ComponentGroup>
@@ -699,9 +696,6 @@
                     </Component>
                     <Component Id="phast_slave.F90" Guid="*">
                         <File Id="phast_slave.F90" KeyPath="yes" Source="$(var.SrcDir)\phast\phast_slave.F90" />
-                    </Component>
-                    <Component Id="phreeqc.revisions" Guid="*">
-                        <File Id="phreeqc.revisions" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqc.revisions" />
                     </Component>
                     <Component Id="Pointers_to_fortran.h" Guid="*">
                         <File Id="Pointers_to_fortran.h" KeyPath="yes" Source="$(var.SrcDir)\phast\Pointers_to_fortran.h" />
@@ -1468,9 +1462,6 @@
                         <Component Id="phasthdf_version.h" Guid="*">
                             <File Id="phasthdf_version.h" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\win32\phasthdf_version.h" />
                         </Component>
-                        <Component Id="phasthdf_version.h.dist" Guid="*">
-                            <File Id="phasthdf_version.h.dist" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\win32\phasthdf_version.h.dist" />
-                        </Component>
                         <Component Id="resource.fd_2" Guid="*">
                             <File Id="resource.fd_2" KeyPath="yes" Source="$(var.SrcDir)\phasthdf\win32\resource.fd" />
                         </Component>
@@ -1845,9 +1836,6 @@
                         </Component>
                         <Component Id="phastinput_version.h" Guid="*">
                             <File Id="phastinput_version.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\win32\phastinput_version.h" />
-                        </Component>
-                        <Component Id="phastinput_version.h.dist" Guid="*">
-                            <File Id="phastinput_version.h.dist" KeyPath="yes" Source="$(var.SrcDir)\phastinput\win32\phastinput_version.h.dist" />
                         </Component>
                         <Component Id="resource.fd_3" Guid="*">
                             <File Id="resource.fd_3" KeyPath="yes" Source="$(var.SrcDir)\phastinput\win32\resource.fd" />
