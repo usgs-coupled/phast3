@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment>
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="Shortcuts" Guid="*">
+        <Shortcut Id="PHASTHDF.lnk"
+                  Name="PHASTHDF Export"
+                  Target="[bin]phasthdf.exe"/>
+        <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+        <RegistryValue Root="HKCU" Key="Software\USGS\Phast" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+        <Shortcut Id="phreeqc.revisions.lnk"
+                  Name="phreeqc.revisions"
+                  Target="[bin]fs-031-02.chm"/>
+        <Shortcut Id="README.lnk"
+                  Name="README"
+                  Target="[APPLICATIONFOLDER]README.txt"/>
+        <Shortcut Id="RELEASE.lnk"
+                  Name="RELEASE"
+                  Target="[doc]RELEASE.txt"/>
+        <Shortcut Id="phast.pdf.lnk"
+                  Name="User's Guide to PHAST (PDF)"
+                  Target="[doc]phast.pdf"/>
+        <Shortcut Id="phreeqc.pdf.lnk"
+                  Name="User's Guide to PHREEQC (Version 2 PDF)"
+                  Target="[doc]phreeqc.pdf"/>
+        <Shortcut Id="wrir02_4172.pdf.lnk"
+                  Name="WRIR 02-4172 (PDF)"
+                  Target="[doc]wrir02-4172.pdf"/>
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+</Wix>

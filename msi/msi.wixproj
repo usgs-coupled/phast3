@@ -33,6 +33,7 @@
     <Compile Include="lib.wxs" />
     <Compile Include="Product.wxs" />
     <Compile Include="Readme.wxs" />
+    <Compile Include="shortcuts.wxs" />
     <Compile Include="src.wxs" />
   </ItemGroup>
   <ItemGroup>
