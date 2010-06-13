@@ -23,7 +23,7 @@
 			OutputDirectory="ser_debug"
 			IntermediateDirectory="ser_debug\c"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			InheritedPropertySheets=".\HDF5.vsprops;$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -46,7 +46,7 @@
 				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(DEV_ZLIB122_INC)&quot;;&quot;$(DEV_HDF5_INC)&quot;;&quot;$(DEV_GMP_INC_MT)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;;&quot;$(ProjectDir)..&quot;;&quot;$(BOOSTROOT)&quot;"
-				PreprocessorDefinitions="GZIP_RESTART;USE_PHRQ_ALLOC;PHREEQC_CPP;_DEBUG;HDF5_CREATE;WIN32;_CONSOLE;NO_UNDERSCORES;H5_HAVE_FUNCTION;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;H5Dcreate_vers=1;H5Gcreate_vers=1"
+				PreprocessorDefinitions="GZIP_RESTART;USE_PHRQ_ALLOC;PHREEQC_CPP;_DEBUG;WIN32;_CONSOLE;NO_UNDERSCORES;H5_HAVE_FUNCTION;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -92,7 +92,7 @@
 			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			InheritedPropertySheets=".\HDF5.vsprops;$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -116,7 +116,7 @@
 				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(DEV_ZLIB123_X64_INC)&quot;;&quot;$(DEV_HDF5_X64_INC)&quot;;&quot;$(DEV_GMP_INC_MT)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;;&quot;$(ProjectDir)..&quot;;&quot;$(BOOSTROOT)&quot;"
-				PreprocessorDefinitions="GZIP_RESTART;USE_PHRQ_ALLOC;PHREEQC_CPP;_DEBUG;HDF5_CREATE;H5Dcreate_vers=1;H5Gcreate_vers=1;WIN32;_CONSOLE;NO_UNDERSCORES;H5_HAVE_FUNCTION;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;ZLIB_WINAPI"
+				PreprocessorDefinitions="GZIP_RESTART;USE_PHRQ_ALLOC;PHREEQC_CPP;_DEBUG;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;ZLIB_WINAPI"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -162,7 +162,7 @@
 			OutputDirectory="ser"
 			IntermediateDirectory="ser\c"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			InheritedPropertySheets=".\HDF5.vsprops;$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -187,7 +187,7 @@
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
 				AdditionalIncludeDirectories="&quot;$(DEV_ZLIB122_INC)&quot;;&quot;$(DEV_HDF5_INC)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;;&quot;$(BOOSTROOT)&quot;"
-				PreprocessorDefinitions="PHREEQC_CPP;NDEBUG;HDF5_CREATE;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;H5Dcreate_vers=1;H5Gcreate_vers=1"
+				PreprocessorDefinitions="PHREEQC_CPP;NDEBUG;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -230,7 +230,7 @@
 			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			InheritedPropertySheets=".\HDF5.vsprops;$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -256,7 +256,7 @@
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
 				AdditionalIncludeDirectories="&quot;$(DEV_ZLIB123_X64_INC)&quot;;&quot;$(DEV_HDF5_X64_INC)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;;&quot;$(BOOSTROOT)&quot;"
-				PreprocessorDefinitions="PHREEQC_CPP;NDEBUG;HDF5_CREATE;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;H5Dcreate_vers=1;H5Gcreate_vers=1"
+				PreprocessorDefinitions="PHREEQC_CPP;NDEBUG;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -299,7 +299,7 @@
 			OutputDirectory="merge"
 			IntermediateDirectory="merge\c"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			InheritedPropertySheets=".\HDF5.vsprops;$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -324,7 +324,7 @@
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
 				AdditionalIncludeDirectories="&quot;$(DEV_ZLIB122_INC)&quot;;&quot;$(DEV_HDF5_INC)&quot;;&quot;$(DEV_MPICH2_INC)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;;&quot;$(BOOSTROOT)&quot;"
-				PreprocessorDefinitions="PHREEQC_CPP;NDEBUG;MERGE_FILES;USE_MPI;HDF5_CREATE;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;H5Dcreate_vers=1;H5Gcreate_vers=1"
+				PreprocessorDefinitions="PHREEQC_CPP;NDEBUG;MERGE_FILES;USE_MPI;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -367,7 +367,7 @@
 			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			InheritedPropertySheets=".\HDF5.vsprops;$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -393,7 +393,7 @@
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
 				AdditionalIncludeDirectories="&quot;$(DEV_ZLIB123_X64_INC)&quot;;&quot;$(DEV_HDF5_X64_INC)&quot;;&quot;$(DEV_MPICH2_X64_INC)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;;&quot;$(BOOSTROOT)&quot;"
-				PreprocessorDefinitions="PHREEQC_CPP;NDEBUG;MERGE_FILES;USE_MPI;HDF5_CREATE;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;H5Dcreate_vers=1;H5Gcreate_vers=1"
+				PreprocessorDefinitions="PHREEQC_CPP;NDEBUG;MERGE_FILES;USE_MPI;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -436,7 +436,7 @@
 			OutputDirectory="$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)\c"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			InheritedPropertySheets=".\HDF5.vsprops;$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -461,7 +461,7 @@
 				InlineFunctionExpansion="0"
 				OmitFramePointers="false"
 				AdditionalIncludeDirectories="&quot;$(DEV_ZLIB122_INC)&quot;;&quot;$(DEV_HDF5_INC)&quot;;&quot;$(DEV_GMP_INC_MT)&quot;;&quot;$(DEV_MPICH2_INC)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;;&quot;$(BOOSTROOT)&quot;"
-				PreprocessorDefinitions="GZIP_RESTART;USE_PHRQ_ALLOC;PHREEQC_CPP;_DEBUG;MERGE_FILES;USE_MPI;HDF5_CREATE;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;H5Dcreate_vers=1;H5Gcreate_vers=1"
+				PreprocessorDefinitions="GZIP_RESTART;USE_PHRQ_ALLOC;PHREEQC_CPP;_DEBUG;MERGE_FILES;USE_MPI;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
 				StringPooling="false"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -506,7 +506,7 @@
 			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			InheritedPropertySheets=".\HDF5.vsprops;$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -532,7 +532,7 @@
 				InlineFunctionExpansion="0"
 				OmitFramePointers="false"
 				AdditionalIncludeDirectories="&quot;$(DEV_ZLIB123_X64_INC)&quot;;&quot;$(DEV_HDF5_X64_INC)&quot;;&quot;$(DEV_MPICH2_X64_INC)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;;&quot;$(BOOSTROOT)&quot;"
-				PreprocessorDefinitions="GZIP_RESTART;USE_PHRQ_ALLOC;PHREEQC_CPP;_DEBUG;MERGE_FILES;USE_MPI;HDF5_CREATE;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;H5Dcreate_vers=1;H5Gcreate_vers=1"
+				PreprocessorDefinitions="GZIP_RESTART;USE_PHRQ_ALLOC;PHREEQC_CPP;_DEBUG;MERGE_FILES;USE_MPI;WIN32;_CONSOLE;NO_UNDERSCORES;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
 				StringPooling="false"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
