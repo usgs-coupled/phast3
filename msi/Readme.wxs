@@ -8,7 +8,7 @@
     <Fragment>
         <DirectoryRef Id="APPLICATIONFOLDER">
             <Component Id="README.txt" Guid="*">
-                <File Id="README.txt" KeyPath="yes" Source="..\doc\README" Name="README.txt" />
+              <File Id="README.txt" KeyPath="yes" Source="..\doc\README" Name="README.txt" />
             </Component>
         </DirectoryRef>
     </Fragment>

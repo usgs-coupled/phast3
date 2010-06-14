@@ -24,23 +24,30 @@
 		<Media Id="1" Cabinet="media.cab" EmbedCab="yes" />
 
     <Directory Id="TARGETDIR" Name="SourceDir">
+      <!-- program files -->
       <Directory Id="ProgramFilesFolder">
         <Directory Id="APPLICATIONFOLDER" />
       </Directory>
+      <!-- start menu -->
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="Phast $(var.Major).$(var.Minor).$(var.Build)"/>
+      </Directory>
     </Directory>
 
-    <Feature Id="ProgramFiles" Title="Program Files" Description="This component contains the program executables, files required during execution, and minimal informal documentation." AllowAdvertise="system" Level="1" Display="expand">
+    <Feature Id="ProgramFiles" Title="Program Files" Description="This component contains the program executables, files required during execution, and minimal informal documentation." AllowAdvertise="no" Level="1" Display="expand">
       <ComponentGroupRef Id="Readme" />
       <ComponentGroupRef Id="Bin" />
       <ComponentGroupRef Id="Environ" />      
       <ComponentGroupRef Id="Lib" />
-      <Feature Id="Documentation" Title="Documentation" Description="This component contains brief, summary documentation as well as the full, formal program documentation." AllowAdvertise="system" Level="1">
+      <ComponentRef Id="ProgramShortcuts"/>
+      <Feature Id="Documentation" Title="Documentation" Description="This component contains brief, summary documentation as well as the full, formal program documentation." AllowAdvertise="no" Level="1">
         <ComponentGroupRef Id="Doc" />
+        <ComponentRef Id="DocShortcuts"/>
       </Feature>
-      <Feature Id="Source" Title="Source Code" Description="This component contains the programs source code." AllowAdvertise="system" Level="1">
+      <Feature Id="Source" Title="Source Code" Description="This component contains the programs source code." AllowAdvertise="no" Level="1">
         <ComponentGroupRef Id="Src" />
       </Feature>
-      <Feature Id="Examples" Title="Examples" Description="This component contains sample input files." AllowAdvertise="system" Level="1">
+      <Feature Id="Examples" Title="Examples" Description="This component contains sample input files." AllowAdvertise="no" Level="1">
         <ComponentGroupRef Id="Examples" />
       </Feature>
     </Feature>
@@ -64,6 +71,11 @@
     Disallow per-user installs
     -->
     <WixVariable Id="WixUISupportPerUser" Value="0" Overridable="no" />
+
+    <!--
+    This overrides the default License agreement
+    -->
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
 
   </Product>
 </Wix>
