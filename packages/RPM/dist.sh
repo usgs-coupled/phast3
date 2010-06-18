@@ -107,6 +107,12 @@ esac
   
 if [ -n "$WIN" ] ; then
   EXTRA_EXPORT_OPTIONS="--native-eol CRLF"
+  MODELVIEWER_1_3="/cygdrive/c/Program Files/USGS/Model Viewer 1.3/"
+  if [ ! -d "${MODELVIEWER_1_3}" ] ; then \
+    echo "Error: ${MODELVIEWER_1_3} not found"; \
+    echo "Error: ModelViewer must be installed"; \
+    exit 1; \
+  fi
 fi
 
 if [ -z "$VERSION" ] || [ -z "$REVISION" ] || [ -z "$RDATE" ]; then
@@ -170,7 +176,7 @@ echo "Exporting revision $REVISION of ModelViewer into sandbox..."
  	${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
 	     "http://internalbrr.cr.usgs.gov/svn_GW/ModelViewer/trunk" \
 	     "$DISTNAME/ModelViewer")
-
+	     
 ##exit 1
 	     
 echo "Making examples clean"
@@ -243,13 +249,30 @@ rm -rf "$DISTPATH/examples/capecod"
 echo "Renaming phreeqc.dat to phast.dat"
 mv "$DISTPATH/database/phreeqc.dat" "$DISTPATH/database/phast.dat"
 
-echo "Rearranging source directories"
-#mkdir -p "$DISTPATH/src"
-#cp "$DISTPATH/srcphast/phreeqcpp/phreeqc/revisions" "$DISTPATH/srcphast/phreeqc.revisions"
+echo "Copying src/phast/phreeqcpp/phreeqc/revisions to src/phast/phreeqc.revisions"
 cp "$DISTPATH/src/phast/phreeqcpp/phreeqc/revisions" "$DISTPATH/src/phast/phreeqc.revisions"
-#mv "$DISTPATH/srcinput" "$DISTPATH/src/phastinput"
-#mv "$DISTPATH/srcphast" "$DISTPATH/src/phast"
-#mv "$DISTPATH/phasthdf" "$DISTPATH/src/phasthdf"
+
+if [ -n "$WIN" ]; then
+  echo "Copying Model Viewer Reqs"
+  mkdir "$DISTPATH/ModelViewer/Redist"
+  mkdir "$DISTPATH/ModelViewer/Redist/doc"
+  mkdir "$DISTPATH/ModelViewer/Redist/bin"
+  cp "`cygpath "${MODELVIEWER_1_3}"`/notice.txt"            "$DISTPATH/ModelViewer/Redist/."
+  cp "`cygpath "${MODELVIEWER_1_3}"`/readme.txt"            "$DISTPATH/ModelViewer/Redist/."
+  cp "`cygpath "${MODELVIEWER_1_3}"`/doc/ofr02-106.pdf"     "$DISTPATH/ModelViewer/Redist/doc/."
+  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/DFORRT.DLL"        "$DISTPATH/ModelViewer/Redist/bin/."
+  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/hdf5dll.dll"       "$DISTPATH/ModelViewer/Redist/bin/."
+  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/lf90.eer"          "$DISTPATH/ModelViewer/Redist/bin/."
+  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/lf90wiod.dll"      "$DISTPATH/ModelViewer/Redist/bin/."
+  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/modview.chm"       "$DISTPATH/ModelViewer/Redist/bin/."
+  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/szlibdll.dll"      "$DISTPATH/ModelViewer/Redist/bin/."
+  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/vtkCommon.dll"     "$DISTPATH/ModelViewer/Redist/bin/."
+  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/vtkFiltering.dll"  "$DISTPATH/ModelViewer/Redist/bin/."
+  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/vtkGraphics.dll"   "$DISTPATH/ModelViewer/Redist/bin/."
+  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/vtkImaging.dll"    "$DISTPATH/ModelViewer/Redist/bin/."
+  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/vtkRendering.dll"  "$DISTPATH/ModelViewer/Redist/bin/."
+  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/zlib1.dll"         "$DISTPATH/ModelViewer/Redist/bin/."
+fi  
 
 ver_major=`echo $VERSION | cut -d '.' -f 1`
 ver_minor=`echo $VERSION | cut -d '.' -f 2`
