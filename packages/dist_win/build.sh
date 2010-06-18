@@ -90,6 +90,13 @@ sysconfdir=/etc
 MY_CFLAGS="-O2 -g"
 MY_LDFLAGS=
 
+
+# use Visual C++ 6.0 for Model Viewer
+MSDEV="msdev.exe"
+
+# use Ant to compile PHASTHDF export
+ANT="ant"
+
 # use Visual Studio 2005 to compile
 DEVENV="devenv.exe"
 PHAST_SLN=`cygpath -w ./src/phast/win32_2005/phastpp.sln`
@@ -122,7 +129,6 @@ IS_SWITCHES="-w50 -e50 -v3 -g"
 export PHASTTOPDIR="`cygpath -w "${instdir}${prefix}"`"
 
 # Modelviewer 
-###export MODELVIEWER="/cygdrive/c/Program Files/USGS/Model Viewer 1.0/"
 export MODELVIEWER_1_3="/cygdrive/c/Program Files/USGS/Model Viewer 1.3/"
 
 # Examples
@@ -169,36 +175,73 @@ precheck() {
     echo "Error: Can't find Microsoft Visual Studio 8 (2005): ${DEVENV}"; \
     exit 1; \
   fi && \
-###  if [ "x$DEV_VTK_LIBDLL" = "x" ] ; then \
-###    echo "Error: DEV_VTK_LIBDLL must be set"; \
-###    exit 1; \
-###  fi && \
-  if [ "x$DEV_HDF5_LIBDLL" = "x" ] ; then \
-    echo "Error: DEV_HDF5_LIBDLL must be set"; \
+  if [ ! -s "`which ${MSDEV}`" ] ; then \
+    echo "Error: Can't find Microsoft Visual C++ 6.0: ${MSDEV}"; \
+    exit 1; \
+  fi && \
+  if [ ! -s "`which ${ANT}`" ] ; then \
+    echo "Error: Can't find ANT: ${ANT}"; \
+    exit 1; \
+  fi && \
+#
+# PHASTPP PreReqs
+#
+  if [ "x$BOOSTROOT" = "x" ] ; then \
+    echo "Error: BOOSTROOT must be set"; \
+    exit 1; \
+  fi && \
+  if [ "x$DEV_GMP_LIB_MT" = "x" ] ; then \
+    echo "Error: DEV_GMP_LIB_MT must be set"; \
     exit 1; \
   fi && \
   if [ "x$DEV_HDF5_INC" = "x" ] ; then \
     echo "Error: DEV_HDF5_INC must be set"; \
     exit 1; \
   fi && \
-###  if [ "x$DEV_MPICH_INC" = "x" ] ; then \
-###    echo "Error: DEV_MPICH_INC must be set"; \
-###    exit 1; \
-###  fi && \
-###  if [ "x$DEV_MPICH_LIB" = "x" ] ; then \
-###    echo "Error: DEV_MPICH_LIB must be set"; \
-###    exit 1; \
-###  fi && \
-###  if [ "x$DEV_VTK_INC" = "x" ] ; then \
-###    echo "Error: DEV_VTK_INC must be set"; \
-###    exit 1; \
-###  fi && \
+  if [ "x$DEV_HDF5_LIBDLL" = "x" ] ; then \
+    echo "Error: DEV_HDF5_LIBDLL must be set"; \
+    exit 1; \
+  fi && \
+  if [ "x$DEV_MPICH2_INC" = "x" ] ; then \
+    echo "Error: DEV_MPICH2_INC must be set"; \
+    exit 1; \
+  fi && \
+  if [ "x$DEV_MPICH2_LIB" = "x" ] ; then \
+    echo "Error: DEV_MPICH2_LIB must be set"; \
+    exit 1; \
+  fi && \
   if [ "x$DEV_ZLIB122_INC" = "x" ] ; then \
-    echo "Error: DEV_ZLIB122_LIB must be set"; \
+    echo "Error: DEV_ZLIB122_INC must be set"; \
     exit 1; \
   fi && \
   if [ "x$DEV_ZLIB122_LIB" = "x" ] ; then \
     echo "Error: DEV_ZLIB122_LIB must be set"; \
+    exit 1; \
+  fi && \
+#
+# phasthdf PreReqs
+#
+  if [ "x$JAVA_HOME" = "x" ] ; then \
+    echo "Error: JAVA_HOME must be set for ant"; \
+    exit 1; \
+  fi && \
+#
+# Model Viewer PreReqs
+#
+  if [ "x$DEV_VTK_40_INC" = "x" ] ; then \
+    echo "Error: DEV_VTK_40_INC must be set"; \
+    exit 1; \
+  fi && \
+  if [ "x$DEV_VTK_40_LIB" = "x" ] ; then \
+    echo "Error: DEV_VTK_40_LIB must be set"; \
+    exit 1; \
+  fi && \
+  if [ "x$DEV_HTMLHELP_INC" = "x" ] ; then \
+    echo "Error: DEV_HTMLHELP_INC must be set"; \
+    exit 1; \
+  fi && \
+  if [ "x$DEV_HTMLHELP_LIB" = "x" ] ; then \
+    echo "Error: DEV_HTMLHELP_LIB must be set"; \
     exit 1; \
   fi && \
   if [ ! -d "${MODELVIEWER_1_3}" ] ; then \
@@ -208,37 +251,13 @@ precheck() {
   fi )
 }
 
-#### Note: cp -al and ln aren't working if no ownership of source
-#### after upgrading xp/cygwin 12/15/2004
-####
-###cvsexport() {
-###  (precheck && \
-###  cd ${topdir} && \
-###  cvs export -r ${cvstag} -d Mv mv_phast/Mv && \
-###  cd ${topdir} && \
-#### external files
-###  mkdir -p Redist && \
-###  cp "`cygpath ${DEV_VTK_LIBDLL}`/vtkdll.dll"           ${topdir}/Redist/. && \
-###  cp "`cygpath ${DEV_HDF5_LIBDLL}`/hdf5dll.dll"         ${topdir}/Redist/. && \
-###  cp "`cygpath ${DEV_HDF5_LIBDLL}`/../bin/zlib1.dll"    ${topdir}/Redist/. && \
-###  cp "`cygpath ${DEV_HDF5_LIBDLL}`/../bin/szlibdll.dll" ${topdir}/Redist/. && \
-###  cp "`cygpath "${MODELVIEWER}"`/notice.txt"            ${topdir}/Redist/. && \
-###  cp "`cygpath "${MODELVIEWER}"`/readme.txt"            ${topdir}/Redist/. && \
-###  cp "`cygpath "${MODELVIEWER}"`/doc/ofr02-106.pdf"     ${topdir}/Redist/. && \
-###  cp "`cygpath "${MODELVIEWER}"`/bin/modview.chm"       ${topdir}/Redist/. && \
-###  cp "`cygpath "${MODELVIEWER}"`/bin/DFORRT.DLL"        ${topdir}/Redist/. && \
-###  cp "`cygpath "${MODELVIEWER}"`/bin/lf90.eer"          ${topdir}/Redist/. && \
-###  tar cvzf ${src_orig_pkg_mv} Mv Redist && \
-###  rm -rf Mv Redist )
-###}
-
 # Note: cp -al and ln aren't working if no ownership of source
 # after upgrading xp/cygwin 12/15/2004
 #
 svnexport() {
   (precheck && \
   cd ${topdir} && \
-  svn export -r ${REL} http://internalbrr.cr.usgs.gov/svn_GW/ModelViewer/trunk Mv && \
+  svn export -r ${REL} http://internalbrr.cr.usgs.gov/svn_GW/ModelViewer/trunk ModelViewer && \
   cd ${topdir} && \
 # external files
   mkdir -p Redist && \
@@ -256,9 +275,7 @@ svnexport() {
   cp "`cygpath "${MODELVIEWER_1_3}"`/bin/vtkGraphics.dll"   ${topdir}/Redist/. && \
   cp "`cygpath "${MODELVIEWER_1_3}"`/bin/vtkImaging.dll"    ${topdir}/Redist/. && \
   cp "`cygpath "${MODELVIEWER_1_3}"`/bin/vtkRendering.dll"  ${topdir}/Redist/. && \
-  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/zlib1.dll"         ${topdir}/Redist/. && \
-  tar cvzf ${src_orig_pkg_mv} Mv Redist && \
-  rm -rf Mv Redist )
+  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/zlib1.dll"         ${topdir}/Redist/. )
 }
 
 prep() {
@@ -307,13 +324,13 @@ build() {
 # build phastinput.exe
   "${DEVENV}" "${PHASTINPUT_SLN}" /out phastinput.log /build Release && \
 # build phast.jar
-  ant -buildfile ./src/phasthdf/build.xml dist-Win32 && \
+  "${ANT}" -buildfile ./src/phasthdf/build.xml dist-Win32 && \
 # build merge/phast.exe
   "${DEVENV}" "${PHAST_SLN}" /out phast-merge.log /build merge && \
 # build ser/phast.exe
   "${DEVENV}" "${PHAST_SLN}" /out phast-ser.log /build ser && \
 # build model viewer
-  msdev `cygpath -w ./ModelViewer/MvProject.dsw` /MAKE "ModelViewer - Win32 Release" /REBUILD && \
+  "${MSDEV}" `cygpath -w ./ModelViewer/MvProject.dsw` /MAKE "ModelViewer - Win32 Release" /REBUILD && \
 # build phast.msi
 #  "${DEVENV}" "${MSI_SLN}" /out msi.log /build Release )
   MSBuild.exe "${MSI_SLN}" /p:Configuration=Release /p:TargetName=${FULLPKG} /p:Major=${MAJOR} /p:Minor=${MINOR} /p:Build=${REL} )

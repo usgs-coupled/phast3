@@ -16,7 +16,7 @@
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="ser|Win32" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)">
 				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="HDF5_CREATE" CallingConvention="callConventionCRef" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/"/>
-				<Tool Name="VFLinkerTool" OutputFile="$(OUTDIR)/phast.exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(DEV_GMP_LIB_MT);$(OUTDIR)" IgnoreDefaultLibraryNames="LIBC" SubSystem="subSystemConsole" StackReserveSize="10000000" LargeAddressAware="addrAwareLarge" AdditionalDependencies="zdll.lib phreeqcpp.lib hdf5dll.lib gmp.lib"/>
+				<Tool Name="VFLinkerTool" OutputFile="$(OUTDIR)/phast.exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="&quot;$(DEV_ZLIB122_LIB)&quot;;&quot;$(DEV_HDF5_LIBDLL)&quot;;&quot;$(DEV_GMP_LIB_MT)&quot;;&quot;$(OUTDIR)&quot;" IgnoreDefaultLibraryNames="LIBC" SubSystem="subSystemConsole" StackReserveSize="10000000" LargeAddressAware="addrAwareLarge" AdditionalDependencies="zdll.lib phreeqcpp.lib hdf5dll.lib gmp.lib"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true" HeaderFileName="$(InputName).h" TypeLibraryName="$(IntDir)/$(InputName).tlb"/>
 				<Tool Name="VFCustomBuildTool"/>
@@ -26,7 +26,7 @@
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="merge|Win32" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)">
 				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(DEV_MPICH2_INC)" PreprocessorDefinitions="MERGE_FILES;HDF5_CREATE;USE_MPI;MPICH_NAME;NO_UNDERSCORES" CallingConvention="callConventionCRef" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/"/>
-				<Tool Name="VFLinkerTool" OutputFile="$(OUTDIR)/phast.exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(DEV_MPICH2_LIB);$(DEV_GMP_LIB_MT);$(OUTDIR)" IgnoreDefaultLibraryNames="LIBC" SubSystem="subSystemConsole" StackReserveSize="10000000" LargeAddressAware="addrAwareLarge" AdditionalDependencies="zdll.lib phreeqcpp.lib hdf5dll.lib gmp.lib fmpich2.lib mpi.lib"/>
+				<Tool Name="VFLinkerTool" OutputFile="$(OUTDIR)/phast.exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" AdditionalLibraryDirectories="&quot;$(DEV_ZLIB122_LIB)&quot;;&quot;$(DEV_HDF5_LIBDLL)&quot;;&quot;$(DEV_MPICH2_LIB)&quot;;&quot;$(DEV_GMP_LIB_MT)&quot;;&quot;$(OUTDIR)&quot;" IgnoreDefaultLibraryNames="LIBC" SubSystem="subSystemConsole" StackReserveSize="10000000" LargeAddressAware="addrAwareLarge" AdditionalDependencies="zdll.lib phreeqcpp.lib hdf5dll.lib gmp.lib fmpich2.lib mpi.lib"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true" HeaderFileName="$(InputName).h" TypeLibraryName="$(IntDir)/$(InputName).tlb"/>
 				<Tool Name="VFCustomBuildTool"/>
@@ -215,12 +215,12 @@ copy /Y &quot;$(DEV_SZIP21_X64)\dll\szlibdll.dll&quot;      &quot;$(TargetDir)sz
 		<Filter Name="MPI_OBJS">
 		<File RelativePath="..\mpimod.F90">
 			<FileConfiguration Name="ser|x64" ExcludedFromBuild="true"/>
-			<FileConfiguration Name="ser|Win32" ExcludedFromBuild="true"/>
 			<FileConfiguration Name="ser_debug|Win32" ExcludedFromBuild="true"/>
+			<FileConfiguration Name="ser|Win32" ExcludedFromBuild="true"/>
 			<FileConfiguration Name="ser_debug|x64" ExcludedFromBuild="true"/></File>
 		<File RelativePath="..\phast_slave.F90">
 			<FileConfiguration Name="ser|x64" ExcludedFromBuild="true"/>
-			<FileConfiguration Name="ser|Win32" ExcludedFromBuild="true"/>
 			<FileConfiguration Name="ser_debug|Win32" ExcludedFromBuild="true"/>
+			<FileConfiguration Name="ser|Win32" ExcludedFromBuild="true"/>
 			<FileConfiguration Name="ser_debug|x64" ExcludedFromBuild="true"/></File></Filter></Filter></Files>
 	<Globals/></VisualStudioProject>
