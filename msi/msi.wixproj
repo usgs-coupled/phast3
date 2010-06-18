@@ -9,7 +9,7 @@
     <OutputType>Package</OutputType>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.0\Wix.targets</WixTargetsPath>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.0\Wix.targets</WixTargetsPath>
-    <Major Condition=" '$(Major)' == '' ">1</Major>
+    <Major Condition=" '$(Major)' == '' ">2</Major>
     <Minor Condition=" '$(Minor)' == '' ">0</Minor>
     <Build Condition=" '$(Build)' == '' ">0</Build>
   </PropertyGroup>
@@ -23,7 +23,7 @@
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <WixVariables>
     </WixVariables>
-    <DefineConstants>Major=$(Major);Minor=$(Minor);Build=$(Build);SrcDir=..\src;ExampleDir=..\examples</DefineConstants>
+    <DefineConstants>Major=$(Major);Minor=$(Minor);Build=$(Build);SrcDir=..\src;ExampleDir=..\examples;MVDir=..\ModelViewer\Redist</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="bin.wxs" />
@@ -31,6 +31,7 @@
     <Compile Include="environ.wxs" />
     <Compile Include="examples.wxs" />
     <Compile Include="lib.wxs" />
+    <Compile Include="MV.wxs" />
     <Compile Include="Product.wxs" />
     <Compile Include="Readme.wxs" />
     <Compile Include="shortcuts.wxs" />

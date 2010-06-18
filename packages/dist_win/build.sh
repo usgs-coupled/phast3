@@ -312,6 +312,8 @@ build() {
   "${DEVENV}" "${PHAST_SLN}" /out phast-merge.log /build merge && \
 # build ser/phast.exe
   "${DEVENV}" "${PHAST_SLN}" /out phast-ser.log /build ser && \
+# build model viewer
+  msdev `cygpath -w ./ModelViewer/MvProject.dsw` /MAKE "ModelViewer - Win32 Release" /REBUILD && \
 # build phast.msi
 #  "${DEVENV}" "${MSI_SLN}" /out msi.log /build Release )
   MSBuild.exe "${MSI_SLN}" /p:Configuration=Release /p:TargetName=${FULLPKG} /p:Major=${MAJOR} /p:Minor=${MINOR} /p:Build=${REL} )

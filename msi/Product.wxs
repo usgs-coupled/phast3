@@ -30,7 +30,9 @@
       </Directory>
       <!-- start menu -->
       <Directory Id="ProgramMenuFolder">
-        <Directory Id="ApplicationProgramsFolder" Name="Phast $(var.Major).$(var.Minor).$(var.Build)"/>
+        <Directory Id="ApplicationProgramsFolder" Name="Phast $(var.Major).$(var.Minor).$(var.Build)">
+          <Directory Id="MV.ApplicationProgramsFolder" Name="Model Viewer 1.3"/>
+        </Directory>
       </Directory>
     </Directory>
 
@@ -49,6 +51,10 @@
       </Feature>
       <Feature Id="Examples" Title="Examples" Description="This component contains sample input files." AllowAdvertise="no" Level="1">
         <ComponentGroupRef Id="Examples" />
+      </Feature>
+      <Feature Id="MV" Title="Model Viewer" Description="Model Viewer is a computer program that displays the results of three-dimensional ground-water models.  The included version contains support to view Hierarchical Data Format (HDF5) files created by PHAST." AllowAdvertise="no" Level="1">
+        <ComponentGroupRef Id="MV" />
+        <ComponentRef Id="MVShortcuts" />
       </Feature>
     </Feature>
 
