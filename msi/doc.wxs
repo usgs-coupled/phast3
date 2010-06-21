@@ -2,7 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Fragment>
         <ComponentGroup Id="Doc">
-            <ComponentRef Id="phast.pdf" />
+            <ComponentRef Id="phast2_TM6_A35.pdf" />
             <ComponentRef Id="phreeqc.pdf" />
             <ComponentRef Id="phreeqc.revisions.txt" />
             <ComponentRef Id="RELEASE.txt" />
@@ -12,8 +12,8 @@
     <Fragment>
         <DirectoryRef Id="APPLICATIONFOLDER">
             <Directory Id="doc" Name="doc">
-                <Component Id="phast.pdf" Guid="*">
-                    <File Id="phast.pdf" KeyPath="yes" Source="..\doc\phast.pdf" />
+                <Component Id="phast2_TM6_A35.pdf" Guid="*">
+                    <File Id="phast2_TM6_A35.pdf" KeyPath="yes" Source="..\doc\phast2-TM6-A35.pdf" />
                 </Component>
                 <Component Id="phreeqc.pdf" Guid="*">
                     <File Id="phreeqc.pdf" KeyPath="yes" Source="..\doc\phreeqc.pdf" />
