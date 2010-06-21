@@ -24,9 +24,9 @@
     <DirectoryRef Id="ApplicationProgramsFolder">
       <Component Id="DocShortcuts" Guid="*">
         <RegistryValue Root="HKCU" Key="Software\USGS\Phast" Name="docs" Type="integer" Value="1" KeyPath="yes"/>
-        <Shortcut Id="phast.pdf.lnk"
-                  Name="User's Guide to PHAST (PDF)"
-                  Target="[doc]phast.pdf"/>
+        <Shortcut Id="phast2_TM6_A35.pdf.lnk"
+                  Name="User's Guide to PHAST 2 (PDF)"
+                  Target="[doc]phast2-TM6-A35.pdf"/>
         <Shortcut Id="phreeqc.pdf.lnk"
                   Name="User's Guide to PHREEQC (Version 2 PDF)"
                   Target="[doc]phreeqc.pdf"/>
