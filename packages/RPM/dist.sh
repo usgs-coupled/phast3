@@ -272,6 +272,9 @@ if [ -n "$WIN" ]; then
   cp "`cygpath "${MODELVIEWER_1_3}"`/bin/vtkImaging.dll"    "$DISTPATH/ModelViewer/Redist/bin/."
   cp "`cygpath "${MODELVIEWER_1_3}"`/bin/vtkRendering.dll"  "$DISTPATH/ModelViewer/Redist/bin/."
   cp "`cygpath "${MODELVIEWER_1_3}"`/bin/zlib1.dll"         "$DISTPATH/ModelViewer/Redist/bin/."
+  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/mf2k_r1.dll"       "$DISTPATH/ModelViewer/Redist/bin/."
+  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/mf96_r1.dll"       "$DISTPATH/ModelViewer/Redist/bin/."
+  cp "`cygpath "${MODELVIEWER_1_3}"`/bin/mt_r1.dll"         "$DISTPATH/ModelViewer/Redist/bin/."
 fi  
 
 ver_major=`echo $VERSION | cut -d '.' -f 1`
