@@ -6,7 +6,7 @@
 #           Optimize/Debug
 #
 # Serial verisons:   serial_absoft serial_absoft_debug serial_lahey serial_lahey_debug 
-# Parallel versions: mpi_absoft mpi_absoft_debug mpi_lahey mpi_lahey_debug 
+# Parallel versions: lam_absoft lam_absoft_debug lam_lahey lam_lahey_debug 
 #
 # Makefile sets CFG variable, cd's to appropriate directory, runs Makefile recursively
 # Recursive make sets appropriate compiler, objects, options, libraries, and compiles PHAST
@@ -16,33 +16,33 @@ PROGRAM = phast
 
 all: gfortran lahey # g95 absoft
 
-# serial_lahey serial_lahey_debug mpi_lahey mpi_lahey_debug 
+# serial_lahey serial_lahey_debug lam_lahey lam_lahey_debug 
 
 SERIAL_ABSOFT_DIR       = serial_absoft
 SERIAL_ABSOFT_DEBUG_DIR = serial_absoft_debug
-MPI_ABSOFT_DIR          = mpi_absoft
-MPI_ABSOFT_DEBUG_DIR    = mpi_absoft_debug
-absoft: serial_absoft serial_absoft_debug mpi_absoft mpi_absoft_debug
+LAM_ABSOFT_DIR          = lam_absoft
+LAM_ABSOFT_DEBUG_DIR    = lam_absoft_debug
+absoft: serial_absoft serial_absoft_debug lam_absoft lam_absoft_debug
 
 SERIAL_LAHEY_DIR        = serial_lahey
 SERIAL_LAHEY_DEBUG_DIR  = serial_lahey_debug
-MPI_LAHEY_DIR           = mpi_lahey
-MPI_LAHEY_DEBUG_DIR     = mpi_lahey_debug
-lahey: serial_lahey serial_lahey_debug mpi_lahey mpi_lahey_debug
+LAM_LAHEY_DIR           = lam_lahey
+LAM_LAHEY_DEBUG_DIR     = lam_lahey_debug
+lahey: serial_lahey serial_lahey_debug lam_lahey lam_lahey_debug
 
 SERIAL_G95_DIR          = serial_g95
 SERIAL_G95_DEBUG_DIR    = serial_g95_debug
-MPI_G95_DIR             = mpi_g95
-MPI_G95_DEBUG_DIR       = mpi_g95_debug
-g95: serial_g95 serial_g95_debug mpi_g95 mpi_g95_debug
+LAM_G95_DIR             = lam_g95
+LAM_G95_DEBUG_DIR       = lam_g95_debug
+g95: serial_g95 serial_g95_debug lam_g95 lam_g95_debug
 
 SERIAL_GFORTRAN_DIR          = serial_gfortran
 SERIAL_GFORTRAN_DEBUG_DIR    = serial_gfortran_debug
-MPI_GFORTRAN_DIR             = mpi_gfortran
-MPI_GFORTRAN_DEBUG_DIR       = mpi_gfortran_debug
+LAM_GFORTRAN_DIR             = lam_gfortran
+LAM_GFORTRAN_DEBUG_DIR       = lam_gfortran_debug
 OPENMPI_GFORTRAN_DIR         = openmpi_gfortran
 OPENMPI_GFORTRAN_DEBUG_DIR   = openmpi_gfortran_debug
-gfortran: serial_gfortran serial_gfortran_debug mpi_gfortran mpi_gfortran_debug 
+gfortran: serial_gfortran serial_gfortran_debug lam_gfortran lam_gfortran_debug 
 openmpi: openmpi_gfortran openmpi_gfortran_debug
 
 SERIAL_GFORTRAN_64_DIR       = serial_gfortran_64
@@ -75,15 +75,15 @@ serial_absoft:
 serial_absoft_debug:
 	mkdir -p $(SERIAL_ABSOFT_DEBUG_DIR) 
 	cd $(SERIAL_ABSOFT_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_ABSOFT_DEBUG $(PROGRAM)
-.PHONY : mpi_absoft
-mpi_absoft:
-	mkdir -p $(MPI_ABSOFT_DIR)
-	cd $(MPI_ABSOFT_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_ABSOFT $(PROGRAM)
+.PHONY : lam_absoft
+lam_absoft:
+	mkdir -p $(LAM_ABSOFT_DIR)
+	cd $(LAM_ABSOFT_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=LAM_ABSOFT $(PROGRAM)
 
-.PHONY : mpi_absoft_debug
-mpi_absoft_debug:
-	mkdir -p $(MPI_ABSOFT_DEBUG_DIR);
-	cd $(MPI_ABSOFT_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_ABSOFT_DEBUG $(PROGRAM)
+.PHONY : lam_absoft_debug
+lam_absoft_debug:
+	mkdir -p $(LAM_ABSOFT_DEBUG_DIR);
+	cd $(LAM_ABSOFT_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=LAM_ABSOFT_DEBUG $(PROGRAM)
 
 #########################
 ####    Lahey        ####
@@ -99,15 +99,15 @@ serial_lahey_debug:
 	mkdir -p $(SERIAL_LAHEY_DEBUG_DIR);
 	cd $(SERIAL_LAHEY_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_LAHEY_DEBUG $(PROGRAM)
 
-.PHONY : mpi_lahey
-mpi_lahey:
-	mkdir -p $(MPI_LAHEY_DIR) 
-	cd $(MPI_LAHEY_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_LAHEY $(PROGRAM)
+.PHONY : lam_lahey
+lam_lahey:
+	mkdir -p $(LAM_LAHEY_DIR) 
+	cd $(LAM_LAHEY_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=LAM_LAHEY $(PROGRAM)
 
-.PHONY : mpi_lahey_debug
-mpi_lahey_debug:
-	mkdir -p $(MPI_LAHEY_DEBUG_DIR) 
-	cd $(MPI_LAHEY_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_LAHEY_DEBUG $(PROGRAM)
+.PHONY : lam_lahey_debug
+lam_lahey_debug:
+	mkdir -p $(LAM_LAHEY_DEBUG_DIR) 
+	cd $(LAM_LAHEY_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=LAM_LAHEY_DEBUG $(PROGRAM)
 
 #########################
 ####    g95          ####
@@ -123,15 +123,15 @@ serial_g95_debug:
 	mkdir -p $(SERIAL_G95_DEBUG_DIR);
 	cd $(SERIAL_G95_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_G95_DEBUG $(PROGRAM)
 
-.PHONY : mpi_g95
-mpi_g95:
-	mkdir -p $(MPI_G95_DIR)
-	cd $(MPI_G95_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_G95 $(PROGRAM)
+.PHONY : lam_g95
+lam_g95:
+	mkdir -p $(LAM_G95_DIR)
+	cd $(LAM_G95_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=LAM_G95 $(PROGRAM)
 
-.PHONY : mpi_g95_debug
-mpi_g95_debug:
-	mkdir -p $(MPI_G95_DEBUG_DIR);
-	cd $(MPI_G95_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_G95_DEBUG $(PROGRAM)
+.PHONY : lam_g95_debug
+lam_g95_debug:
+	mkdir -p $(LAM_G95_DEBUG_DIR);
+	cd $(LAM_G95_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=LAM_G95_DEBUG $(PROGRAM)
 
 #########################
 ####    gfortran     ####
@@ -147,15 +147,15 @@ serial_gfortran_debug:
 	mkdir -p $(SERIAL_GFORTRAN_DEBUG_DIR);
 	cd $(SERIAL_GFORTRAN_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_GFORTRAN_DEBUG $(PROGRAM)
 
-.PHONY : mpi_gfortran
-mpi_gfortran:
-	mkdir -p $(MPI_GFORTRAN_DIR)
-	cd $(MPI_GFORTRAN_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_GFORTRAN $(PROGRAM)
+.PHONY : lam_gfortran
+lam_gfortran:
+	mkdir -p $(LAM_GFORTRAN_DIR)
+	cd $(LAM_GFORTRAN_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=LAM_GFORTRAN $(PROGRAM)
 
-.PHONY : mpi_gfortran_debug
-mpi_gfortran_debug:
-	mkdir -p $(MPI_GFORTRAN_DEBUG_DIR);
-	cd $(MPI_GFORTRAN_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=MPI_GFORTRAN_DEBUG $(PROGRAM)
+.PHONY : lam_gfortran_debug
+lam_gfortran_debug:
+	mkdir -p $(LAM_GFORTRAN_DEBUG_DIR);
+	cd $(LAM_GFORTRAN_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=LAM_GFORTRAN_DEBUG $(PROGRAM)
 
 .PHONY : openmpi_gfortran_debug
 openmpi_gfortran_debug:
@@ -338,7 +338,7 @@ ifeq ($(CFG), SERIAL_ABSOFT_DEBUG)
 endif
 
 # -----------------------------------------------------------------------------
-ifeq ($(CFG), MPI_ABSOFT)
+ifeq ($(CFG), LAM_ABSOFT)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG  -DPHREEQC_CPP
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   LAMHF77      = $(FABSOFT)
@@ -357,7 +357,7 @@ ifeq ($(CFG), MPI_ABSOFT)
 endif
 
 # -----------------------------------------------------------------------------
-ifeq ($(CFG), MPI_ABSOFT_DEBUG)
+ifeq ($(CFG), LAM_ABSOFT_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   LAMHF77      = $(FABSOFT)
@@ -404,7 +404,7 @@ ifeq ($(CFG), SERIAL_LAHEY_DEBUG)
 endif
 
 # -----------------------------------------------------------------------------
-ifeq ($(CFG), MPI_LAHEY)
+ifeq ($(CFG), LAM_LAHEY)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DLAHEY_F95 -DNDEBUG -DPHREEQC_CPP
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   LAMHF77      = $(FLAHEY)
@@ -420,7 +420,7 @@ ifeq ($(CFG), MPI_LAHEY)
 endif
 
 # -----------------------------------------------------------------------------
-ifeq ($(CFG), MPI_LAHEY_DEBUG)
+ifeq ($(CFG), LAM_LAHEY_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DLAHEY_F95 -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   LAMHF77      = $(FLAHEY)
@@ -462,7 +462,7 @@ ifeq ($(CFG), SERIAL_G95_DEBUG)
 endif
 
 # -----------------------------------------------------------------------------
-ifeq ($(CFG), MPI_G95)
+ifeq ($(CFG), LAM_G95)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   LAMHF77      = $(FG95)
@@ -478,7 +478,7 @@ ifeq ($(CFG), MPI_G95)
 endif
 
 # -----------------------------------------------------------------------------
-ifeq ($(CFG), MPI_G95_DEBUG)
+ifeq ($(CFG), LAM_G95_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   LAMHF77      = $(FG95)
@@ -545,7 +545,7 @@ ifeq ($(CFG), SERIAL_GFORTRAN_64_DEBUG)
 endif
 
 # -----------------------------------------------------------------------------
-ifeq ($(CFG), MPI_GFORTRAN)
+ifeq ($(CFG), LAM_GFORTRAN)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   LAMHF77      = $(FGFORTRAN)
@@ -561,7 +561,7 @@ ifeq ($(CFG), MPI_GFORTRAN)
 endif
 
 # -----------------------------------------------------------------------------
-ifeq ($(CFG), MPI_GFORTRAN_DEBUG)
+ifeq ($(CFG), LAM_GFORTRAN_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   LAMHF77      = $(FGFORTRAN)
@@ -578,7 +578,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), OPENMPI_GFORTRAN)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP 
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
   DINVERSE_CL1MP=
   FC           = mpif90
@@ -587,7 +587,7 @@ ifeq ($(CFG), OPENMPI_GFORTRAN)
   CC           = mpicxx
   CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN) ${HDF5_LIBS}  -ldl ${HASH_STYLE} # -lm ${CL1MP_LIB}
+  LD_FLAGS     = $(LIBGFORTRAN) ${HDF5_LIBS} -lmpi_f77 -ldl ${HASH_STYLE} # -lm ${CL1MP_LIB}
   LINKER       = $(CXX)
 endif
 
@@ -602,7 +602,7 @@ ifeq ($(CFG), OPENMPI_GFORTRAN_DEBUG)
   CC           = mpicxx
   CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN) ${HDF5_LIBS}  -ldl ${HASH_STYLE} # -lm ${CL1MP_LIB}
+  LD_FLAGS     = $(LIBGFORTRAN) ${HDF5_LIBS}  -lmpi_f77 -ldl ${HASH_STYLE} # -lm ${CL1MP_LIB}
   LINKER       = $(CXX)
 endif
 
@@ -951,7 +951,7 @@ zone_flow_ss.o:		../zone_flow_ss.f90	modules.o
 -include ../dependencies
 
 clean:
-	rm -rf serial_absoft serial_absoft_debug mpi_absoft mpi_absoft_debug serial_lahey serial_lahey_debug mpi_lahey mpi_lahey_debug serial_g95 serial_g95_debug mpi_g95 mpi_g95_debug serial_gfortran serial_gfortran_debug mpi_gfortran mpi_gfortran_debug openmpi_gfortran openmpi_gfortran_debug serial_gfortran_64 serial_gfortran_64_debug openmpi_gfortran_64 openmpi_gfortran_64_debug serial_intel serial_intel_debug openmpi_intel openmpi_intel_debug
+	rm -rf serial_absoft serial_absoft_debug lam_absoft lam_absoft_debug serial_lahey serial_lahey_debug lam_lahey lam_lahey_debug serial_g95 serial_g95_debug lam_g95 lam_g95_debug serial_gfortran serial_gfortran_debug lam_gfortran lam_gfortran_debug openmpi_gfortran openmpi_gfortran_debug serial_gfortran_64 serial_gfortran_64_debug openmpi_gfortran_64 openmpi_gfortran_64_debug serial_intel serial_intel_debug openmpi_intel openmpi_intel_debug
 
 depends:
 	mkdir -p temp_dependency_dir
