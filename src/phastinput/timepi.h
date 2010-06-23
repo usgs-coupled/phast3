@@ -1,5 +1,5 @@
-#ifndef _INC_TIME_HEADER_
-#define _INC_TIME_HEADER_
+#ifndef _INC_TIMEPI_HEADER_
+#define _INC_TIMEPI_HEADER_
 
 #ifdef PHREEQC_IDENT
 static char const svnid[] = "$Id$";
