@@ -6,6 +6,7 @@ if [ $USER == charlton ]; then
     PHASTDIR=/z/srv2rcolkr/home/charlton/programs/phastpp
 fi
 EXDIR=$PHASTDIR/examples
+CONFIGURATION=OPENMPI
 #
 #   make directory
 #
@@ -41,16 +42,33 @@ if [ $NAME == "ex4_transient" ]; then
 if [ -f phast.dat ]; then 
     cp phast.dat 0
     fi
-cp ../schema 0
-cd 0
-sed -e "s?WORKING_DIRECTORY?$EXDIR/$NAME/0?" \
-    -e "s^EXECUTABLE^$PHASTDIR/src/phast/mpi_lahey/phast^" schema > temp; mv temp schema
+if [ $CONFIGURATION == "LAM" ]; then
+    cp ../schema 0
+    cd 0
+    sed -e "s?WORKING_DIRECTORY?$EXDIR/$NAME/0?" \
+	-e "s^EXECUTABLE^$PHASTDIR/src/phast/mpi_lahey/phast^" schema > temp; mv temp schema
 #
 #   run phastinput
 #
-$PHASTDIR/src/phastinput/phastinput $NAME
-echo Done phastinput.
+    $PHASTDIR/src/phastinput/phastinput $NAME
+    echo Done phastinput.
 #
 #   run phast
 #
-lamboot ../../hosts;  time mpirun-lam -O -v schema; wipe ../../hosts
+    lamboot ../../hosts;  time mpirun-lam -O -v schema; wipe ../../hosts
+else 
+    if [ $CONFIGURATION == "OPENMPI" ]; then
+	cd 0
+#
+#   run phastinput
+#
+	TMP=/z/parkplace/home/dlpark/tmp
+	TMPDIR=/z/parkplace/home/dlpark/tmp
+	$PHASTDIR/src/phastinput/phastinput $NAME
+	echo Done phastinput.
+#
+#   run phast
+#
+	mpirun -n 4 -hostfile ../../hosts_openmpi -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_gfortran/phast
+    fi
+fi
