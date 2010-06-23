@@ -116,7 +116,7 @@ struct time
 	double input_to_si;
 	double input_to_user;
 };
-#include "time.h"
+#include "timepi.h"
 /* ----------------------------------------------------------------------
  *   Grid definition
  * ---------------------------------------------------------------------- */
