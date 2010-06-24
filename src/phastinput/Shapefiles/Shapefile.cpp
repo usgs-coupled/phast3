@@ -1,6 +1,6 @@
 #include "../zone.h"
 #include "Shapefile.h"
-#include "../Point.h"
+#include "../KDtree/Point.h"
 #include "../message.h"
 #include "../Utilities.h"
 #include "../PHAST_polygon.h"
@@ -178,7 +178,7 @@ Shapefile::Dump(std::ostream & oss)
 			  adfMaxBound[0], adfMaxBound[1], adfMaxBound[2], adfMaxBound[3]);
 	oss << str;
 
-	int vertex = 0;	
+	int vertex = 0;
 	for (i = 0; i < nEntities; i++)
 	{
 		int j;
@@ -461,7 +461,7 @@ bool Shapefile::Make_points(const int attribute, std::vector < Point > &pts)
 			std::ostringstream estring;
 			estring << "Requested field number, " << attribute
 				<< " is not a real or integer number in dbf file"
-				<< " " << this->filename 
+				<< " " << this->filename
 				<< std::endl;
 			error_msg(estring.str().c_str(), EA_STOP);
 		}
@@ -603,7 +603,7 @@ bool Shapefile::Make_points(const int attribute, std::vector < Point > &pts)
 			std::ostringstream estring;
 			estring << "Requested field number, " << attribute
 				<< " is not a real or integer number in dbf file"
-				<< " " << this->filename 
+				<< " " << this->filename
 				<< std::endl;
 			error_msg(estring.str().c_str(), EA_STOP);
 		}
@@ -797,7 +797,7 @@ bool Shapefile::Make_polygons(int field, PHAST_polygon & polygons)
 					area -= psShape->padfY[ii]*psShape->padfX[jj];
 
 				}
-				if (area > 0.0) 
+				if (area > 0.0)
 				{
 					std::ostringstream estring;
 					estring << "Ignoring holes in polygon shape file. " << this->filename << std::endl;
@@ -870,7 +870,7 @@ bool Shapefile::Make_polygons(int field, PHAST_polygon & polygons)
 	polygons.Set_bounding_box();
 	return true;
 }
-		//int iPart;	
+		//int iPart;
 		//const char *pszPlus;
 		//// account for multiple rings in a polygon
 		//for (j = 0, iPart = 1; j < psShape->nVertices; j++)

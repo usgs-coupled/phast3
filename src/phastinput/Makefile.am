@@ -6,7 +6,6 @@ phastinput_SOURCES=\
 	ArcRaster.h\
 	BC_info.cpp\
 	BC_info.h\
-	Cell_Face.h\
 	check.c\
 	Cube.cpp\
 	Cube.h\
@@ -29,10 +28,13 @@ phastinput_SOURCES=\
 	hstinpt.h\
 	index_range.h\
 	inputproto.h\
+	KDtree/Cell_Face.h\
 	KDtree/KDtree.cpp\
 	KDtree/KDtree.h\
 	KDtree/kdtree2.cpp\
 	KDtree/kdtree2.hpp\
+	KDtree/Point.cpp\
+	KDtree/Point.h\
 	main.c\
 	message.c\
 	message.h\
@@ -65,8 +67,6 @@ phastinput_SOURCES=\
 	PHAST_polygon.h\
 	PHAST_Transform.cpp\
 	PHAST_Transform.h\
-	Point.cpp\
-	Point.h\
 	Polygon_tree.cpp\
 	Polygon_tree.h\
 	Polyhedron.cpp\

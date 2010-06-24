@@ -1,7 +1,7 @@
 #include "Prism.h"
 #include "Cube.h"
 #include "Wedge.h"
-#include "Cell_Face.h"
+#include "KDtree/Cell_Face.h"
 #include "PHAST_Transform.h"
 #include "message.h"
 #include <sstream>
@@ -388,12 +388,12 @@ bool Prism::Read(PRISM_OPTION p_opt, std::istream & lines)
 	case DESCRIPTION:
 		std::getline(lines, this->description);
 
-		// trim leading and trailing spaces   
+		// trim leading and trailing spaces
 		startpos = this->description.find_first_not_of(" \t");
 		endpos = this->description.find_last_not_of(" \t");
-	  
+
 		if((startpos == string::npos) || (endpos == string::npos))
-		{   
+		{
 			this->description = "";
 		}
 		else
@@ -961,14 +961,14 @@ Prism::Set_bounding_box(void)
 				  EA_STOP);
 	}
 
-	//m.push_back(Point(this->perimeter.Get_phast_polygons().Get_points().begin(), 
-	//  this->perimeter.Get_phast_polygons().Get_points().end(), 
+	//m.push_back(Point(this->perimeter.Get_phast_polygons().Get_points().begin(),
+	//  this->perimeter.Get_phast_polygons().Get_points().end(),
 	//  Point::MIN));
-	//m.push_back(Point(this->perimeter.Get_phast_polygons().Get_points().begin(), 
-	//  this->perimeter.Get_phast_polygons().Get_points().end(), 
+	//m.push_back(Point(this->perimeter.Get_phast_polygons().Get_points().begin(),
+	//  this->perimeter.Get_phast_polygons().Get_points().end(),
 	//  Point::MAX));
 
-	//std::vector<Point> b = this->perimeter.Get_phast_polygons().Get_points(); 
+	//std::vector<Point> b = this->perimeter.Get_phast_polygons().Get_points();
 	//this->Project_points(b, CF_Z, grid_zone()->z1);
 	//m.push_back(Point(b.begin(), b.end(), Point::MIN));
 	//m.push_back(Point(b.begin(), b.end(), Point::MAX));

@@ -1,6 +1,6 @@
 #if !defined(PHAST_TRANSFORM_H_INCLUDED)
 #define PHAST_TRANSFORM_H_INCLUDED
-#include "Point.h"
+#include "KDtree/Point.h"
 
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/matrix.hpp>

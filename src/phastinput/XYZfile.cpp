@@ -4,7 +4,7 @@
 #include <istream>
 #include <fstream>
 //#include <strstream>
-#include "Point.h"
+#include "KDtree/Point.h"
 #include "PHAST_polygon.h"
 
 // Note: No header files should follow the next three lines

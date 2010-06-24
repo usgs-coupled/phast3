@@ -2,7 +2,7 @@
 #define BC_INFO_H_INCLUDED
 #include "Mix.h"
 #include "gpc.h"
-#include "Cell_Face.h"
+#include "KDtree/Cell_Face.h"
 class BC_info
 {
   public:
