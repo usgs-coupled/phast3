@@ -78,12 +78,12 @@ FileInfo_alloc(struct FileInfo *pFileInfo, int size)
 	/* initialize storage */
 	pFileInfo->buffer_size = size;
 	space((void **) ((void *) &(pFileInfo->buffer)), INIT,
-		  &pFileInfo->buffer_size, sizeof(char));
+		&pFileInfo->buffer_size, sizeof(char));
 	assert(pFileInfo->buffer != NULL);
 
 	pFileInfo->max_buffer_size_array = size;
 	space((void **) ((void *) &(pFileInfo->buffer_size_array)), INIT,
-		  &pFileInfo->max_buffer_size_array, sizeof(int));
+		&pFileInfo->max_buffer_size_array, sizeof(int));
 	assert(pFileInfo->buffer_size_array != NULL);
 }
 
@@ -190,8 +190,8 @@ FileInfo_merge(struct FileInfo *ptr_info, hid_t xfer_pid, hid_t mem_dspace,
 		}
 	}
 	/*
-	 * send lists of record sizes to root from non-root processes 
-	 */
+	* send lists of record sizes to root from non-root processes 
+	*/
 	for (k = 1; k < mpi_tasks; k++)
 	{
 		if (k == mpi_myself)
@@ -204,7 +204,7 @@ FileInfo_merge(struct FileInfo *ptr_info, hid_t xfer_pid, hid_t mem_dspace,
 			assert(mpi_return == MPI_SUCCESS);
 			mpi_return =
 				MPI_Send(local_record_size_buffer, buffer_size, MPI_INT, 0, 0,
-						 MPI_COMM_WORLD);
+				MPI_COMM_WORLD);
 			assert(mpi_return == MPI_SUCCESS);
 		}
 		else if (mpi_myself == 0)
@@ -213,11 +213,11 @@ FileInfo_merge(struct FileInfo *ptr_info, hid_t xfer_pid, hid_t mem_dspace,
 			/* collect sizes to root */
 			mpi_return =
 				MPI_Recv(&buffer_size, 1, MPI_INT, k, 0, MPI_COMM_WORLD,
-						 &mpi_status);
+				&mpi_status);
 			assert(mpi_return == MPI_SUCCESS);
 			mpi_return =
 				MPI_Recv(root_record_size_buffer, buffer_size, MPI_INT, k, 0,
-						 MPI_COMM_WORLD, &mpi_status);
+				MPI_COMM_WORLD, &mpi_status);
 			assert(mpi_return == MPI_SUCCESS);
 			i = 0;
 			for (j = 0; j < buffer_size / 2; j++)
@@ -231,8 +231,8 @@ FileInfo_merge(struct FileInfo *ptr_info, hid_t xfer_pid, hid_t mem_dspace,
 		}
 	}
 	/*
-	 *   Now actually send the strings that are needed
-	 */
+	*   Now actually send the strings that are needed
+	*/
 
 	s_ci.coord[0][0] = 0;
 	i = 0;
@@ -250,18 +250,18 @@ FileInfo_merge(struct FileInfo *ptr_info, hid_t xfer_pid, hid_t mem_dspace,
 					status =
 						H5Sselect_elements(s_ci.dspace_id, H5S_SELECT_SET, 1,
 #if (H5_VERS_MAJOR>1)||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR>=8))||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR==6)&&(H5_VERS_RELEASE>=7))
-										   (const hssize_t *) ((void *) s_ci.
-																coord));
+						(const hssize_t *) ((void *) s_ci.
+						coord));
 #else
-										   (const hssize_t **) ((void *) s_ci.
-																coord));
+						(const hssize_t **) ((void *) s_ci.
+						coord));
 #endif
 					assert(status >= 0);
 					/* just read cell */
 					assert((int) s_ci.coord[0][0] <= local_count_chem);
 					status =
 						H5Dread(ptr_info->dset_id, s_ci.vls_id, mem_dspace,
-								s_ci.dspace_id, H5P_DEFAULT, rdata);
+						s_ci.dspace_id, H5P_DEFAULT, rdata);
 					assert(status >= 0);
 				}
 			}
@@ -274,30 +274,30 @@ FileInfo_merge(struct FileInfo *ptr_info, hid_t xfer_pid, hid_t mem_dspace,
 					status =
 						H5Sselect_elements(s_ci.dspace_id, H5S_SELECT_SET, 1,
 #if (H5_VERS_MAJOR>1)||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR>=8))||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR==6)&&(H5_VERS_RELEASE>=7))
-										   (const hssize_t *) ((void *) s_ci.
-																coord));
+						(const hssize_t *) ((void *) s_ci.
+						coord));
 #else
-										   (const hssize_t **) ((void *) s_ci.
-																coord));
+						(const hssize_t **) ((void *) s_ci.
+						coord));
 #endif
 					assert(status >= 0);
 					/* read cell */
 					assert((int) s_ci.coord[0][0] <= local_count_chem);
 					status =
 						H5Dread(ptr_info->dset_id, s_ci.vls_id, mem_dspace,
-								s_ci.dspace_id, H5P_DEFAULT, rdata);
+						s_ci.dspace_id, H5P_DEFAULT, rdata);
 					assert(status >= 0);
 					/* send cell */
 					mpi_return =
 						MPI_Send((void *) rdata[0],
-								 local_record_size_array[i], MPI_CHAR, 0,
-								 ptr_info->MSG_TAG, MPI_COMM_WORLD);
+						local_record_size_array[i], MPI_CHAR, 0,
+						ptr_info->MSG_TAG, MPI_COMM_WORLD);
 					assert(mpi_return == MPI_SUCCESS);
 					/* free space used by var length datatype */
 					assert((int) s_ci.coord[0][0] <= local_count_chem);
 					status =
 						H5Dvlen_reclaim(s_ci.vls_id, mem_dspace, xfer_pid,
-										rdata);
+						rdata);
 					assert(status >= 0);
 				}
 				++s_ci.coord[0][0];
@@ -318,7 +318,7 @@ FileInfo_merge(struct FileInfo *ptr_info, hid_t xfer_pid, hid_t mem_dspace,
 					assert((int) s_ci.coord[0][0] <= local_count_chem);
 					status =
 						H5Dvlen_reclaim(s_ci.vls_id, mem_dspace, xfer_pid,
-										rdata);
+						rdata);
 					assert(status >= 0);
 				}
 				++s_ci.coord[0][0];
@@ -332,12 +332,12 @@ FileInfo_merge(struct FileInfo *ptr_info, hid_t xfer_pid, hid_t mem_dspace,
 					/* recv size */
 					count_char = root_record_size_array[e];
 					space((void **) ((void *) &(ptr_info->buffer)),
-						  count_char, &ptr_info->buffer_size, sizeof(char));
+						count_char, &ptr_info->buffer_size, sizeof(char));
 					/* recv cell */
 					mpi_return =
 						MPI_Recv((void *) ptr_info->buffer, count_char,
-								 MPI_CHAR, cell_to_proc[e], ptr_info->MSG_TAG,
-								 MPI_COMM_WORLD, &mpi_status);
+						MPI_CHAR, cell_to_proc[e], ptr_info->MSG_TAG,
+						MPI_COMM_WORLD, &mpi_status);
 					assert(mpi_return == MPI_SUCCESS);
 
 					/* write cell */
@@ -379,8 +379,8 @@ FileInfo_capture(struct FileInfo *ptr_info, const int length,
 
 
 	space((void **) ((void *) &(ptr_info->buffer)),
-		  ptr_info->buffer_pos + length, &ptr_info->buffer_size,
-		  sizeof(char));
+		ptr_info->buffer_pos + length, &ptr_info->buffer_size,
+		sizeof(char));
 
 	retval =
 		vsprintf(ptr_info->buffer + ptr_info->buffer_pos, format, argptr);
@@ -411,29 +411,29 @@ FileInfo_dataset_create(struct FileInfo *ptr_info, const char *name,
 
 	/* reallocate buffer_size_array if necessary */
 	space((void **) ((void *) &(ptr_info->buffer_size_array)),
-		  count_buffer_size_array, &ptr_info->max_buffer_size_array,
-		  sizeof(int));
+		count_buffer_size_array, &ptr_info->max_buffer_size_array,
+		sizeof(int));
 
 	ptr_info->dset_id =
 		H5Dcreate(s_ci.file_id, name, s_ci.vls_id, s_ci.dspace_id,
-				  H5P_DEFAULT);
+		H5P_DEFAULT);
 	if (ptr_info->dset_id <= 0)
 	{
 		sprintf(error_string, "HDF ERROR: Unable to create \"%s\" dataset.\n",
-				name);
+			name);
 		error_msg(error_string, STOP);
 	}
 }
 
 /*-------------------------------------------------------------------------
- * Function          
- *
- * Preconditions:    
- *
- * Postconditions:   
- *                   
- *-------------------------------------------------------------------------
- */
+* Function          
+*
+* Preconditions:    
+*
+* Postconditions:   
+*                   
+*-------------------------------------------------------------------------
+*/
 void
 MergeInit(char *prefix, int prefix_l, int solute)
 {
@@ -487,7 +487,7 @@ MergeInit(char *prefix, int prefix_l, int solute)
 	if (H5Tset_size(s_ci.vls_id, H5T_VARIABLE) < 0)
 	{
 		sprintf(error_string,
-				"HDF ERROR: Unable to set size of variable length string type.\n");
+			"HDF ERROR: Unable to set size of variable length string type.\n");
 		error_msg(error_string, STOP);
 	}
 
@@ -501,14 +501,14 @@ MergeInit(char *prefix, int prefix_l, int solute)
 }
 
 /*-------------------------------------------------------------------------
- * Function          
- *
- * Preconditions:    
- *
- * Postconditions:   
- *                   
- *-------------------------------------------------------------------------
- */
+* Function          
+*
+* Preconditions:    
+*
+* Postconditions:   
+*                   
+*-------------------------------------------------------------------------
+*/
 void
 MergeFinalize(void)
 {
@@ -539,14 +539,14 @@ MergeFinalizeEcho(void)
 }
 
 /*-------------------------------------------------------------------------
- * Function          
- *
- * Preconditions:    
- *
- * Postconditions:   
- *                   
- *-------------------------------------------------------------------------
- */
+* Function          
+*
+* Preconditions:    
+*
+* Postconditions:   
+*                   
+*-------------------------------------------------------------------------
+*/
 void
 MergeBeginTimeStep(int print_sel, int print_out)
 {
@@ -585,7 +585,7 @@ MergeBeginTimeStep(int print_sel, int print_out)
 	if (s_ci.file_id <= 0)
 	{
 		sprintf(error_string, "Unable to open HDF file:~%d.capture.h5~\n",
-				mpi_myself);
+			mpi_myself);
 		error_msg(error_string, STOP);
 	}
 
@@ -625,14 +625,14 @@ MergeBeginTimeStep(int print_sel, int print_out)
 }
 
 /*-------------------------------------------------------------------------
- * Function          MergeEndTimeStep (Called by all procs)
- *
- * Preconditions:    completed timestep
- *
- * Postconditions:   strings stored in hdf files are merged and
- *                   printed to file
- *-------------------------------------------------------------------------
- */
+* Function          MergeEndTimeStep (Called by all procs)
+*
+* Preconditions:    completed timestep
+*
+* Postconditions:   strings stored in hdf files are merged and
+*                   printed to file
+*-------------------------------------------------------------------------
+*/
 void
 MergeEndTimeStep(int print_sel, int print_out)
 {
@@ -658,7 +658,7 @@ MergeEndTimeStep(int print_sel, int print_out)
 	for (task_number = 0; task_number < mpi_tasks; ++task_number)
 	{
 		for (k = end_cells[task_number][0]; k <= end_cells[task_number][1];
-			 ++k)
+			++k)
 		{
 			cell_to_proc[random_list[k]] = task_number;
 		}
@@ -725,14 +725,14 @@ MergeEndTimeStep(int print_sel, int print_out)
 }
 
 /*-------------------------------------------------------------------------
- * Function          MergeBeginCell
- *
- * Preconditions:    s_mi -- initialized (MergeInit)
- *
- * Postconditions:   s_fiOutput.buffer_pos   -- reset
- *                   s_ci.captured     -- reset
- *-------------------------------------------------------------------------
- */
+* Function          MergeBeginCell
+*
+* Preconditions:    s_mi -- initialized (MergeInit)
+*
+* Postconditions:   s_fiOutput.buffer_pos   -- reset
+*                   s_ci.captured     -- reset
+*-------------------------------------------------------------------------
+*/
 void
 MergeBeginCell(void)
 {
@@ -746,14 +746,14 @@ MergeBeginCell(void)
 }
 
 /*-------------------------------------------------------------------------
- * Function          MergeEndCell
- *
- * Preconditions:    MergeBeginCapture called => (s_ci.captured != 0)
- *
- * Postconditions:   print_all string stored to hdf
- *                   s_fiOutput.buffer_pos and s_ci.captured reset
- *-------------------------------------------------------------------------
- */
+* Function          MergeEndCell
+*
+* Preconditions:    MergeBeginCapture called => (s_ci.captured != 0)
+*
+* Postconditions:   print_all string stored to hdf
+*                   s_fiOutput.buffer_pos and s_ci.captured reset
+*-------------------------------------------------------------------------
+*/
 void
 MergeEndCell(int print_sel, int print_out, int print_hdf, int n_proc)
 {
@@ -777,7 +777,7 @@ MergeEndCell(int print_sel, int print_out, int print_hdf, int n_proc)
 		if (mem_dspace < 0)
 		{
 			sprintf(error_string,
-					"HDF ERROR: Unable to create_simple dataspace.\n");
+				"HDF ERROR: Unable to create_simple dataspace.\n");
 			error_msg(error_string, STOP);
 		}
 
@@ -785,9 +785,9 @@ MergeEndCell(int print_sel, int print_out, int print_hdf, int n_proc)
 		status =
 			H5Sselect_elements(s_ci.dspace_id, H5S_SELECT_SET, 1,
 #if (H5_VERS_MAJOR>1)||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR>=8))||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR==6)&&(H5_VERS_RELEASE>=7))
-							   (const hssize_t *) ((void *) s_ci.coord));
+			(const hssize_t *) ((void *) s_ci.coord));
 #else
-							   (const hssize_t **) ((void *) s_ci.coord));
+			(const hssize_t **) ((void *) s_ci.coord));
 #endif
 		if (status < 0)
 		{
@@ -803,7 +803,7 @@ MergeEndCell(int print_sel, int print_out, int print_hdf, int n_proc)
 		assert(s_fiOutput.dset_id > 0);
 		status =
 			H5Dwrite(s_fiOutput.dset_id, s_ci.vls_id, mem_dspace,
-					 s_ci.dspace_id, H5P_DEFAULT, &s_fiOutput.buffer);
+			s_ci.dspace_id, H5P_DEFAULT, &s_fiOutput.buffer);
 		if (status < 0)
 		{
 			sprintf(error_string, "HDF ERROR: Unable to write dataset.\n");
@@ -830,7 +830,7 @@ MergeEndCell(int print_sel, int print_out, int print_hdf, int n_proc)
 		if (mem_dspace < 0)
 		{
 			sprintf(error_string,
-					"HDF ERROR: Unable to create_simple dataspace.\n");
+				"HDF ERROR: Unable to create_simple dataspace.\n");
 			error_msg(error_string, STOP);
 		}
 
@@ -838,9 +838,9 @@ MergeEndCell(int print_sel, int print_out, int print_hdf, int n_proc)
 		status =
 			H5Sselect_elements(s_ci.dspace_id, H5S_SELECT_SET, 1,
 #if (H5_VERS_MAJOR>1)||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR>=8))||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR==6)&&(H5_VERS_RELEASE>=7))
-							   (const hssize_t *) ((void *) s_ci.coord));
+			(const hssize_t *) ((void *) s_ci.coord));
 #else
-							   (const hssize_t **) ((void *) s_ci.coord));
+			(const hssize_t **) ((void *) s_ci.coord));
 #endif
 		if (status < 0)
 		{
@@ -856,7 +856,7 @@ MergeEndCell(int print_sel, int print_out, int print_hdf, int n_proc)
 		assert(s_fiPunch.dset_id > 0);
 		status =
 			H5Dwrite(s_fiPunch.dset_id, s_ci.vls_id, mem_dspace,
-					 s_ci.dspace_id, H5P_DEFAULT, &s_fiPunch.buffer);
+			s_ci.dspace_id, H5P_DEFAULT, &s_fiPunch.buffer);
 		if (status < 0)
 		{
 			sprintf(error_string, "HDF ERROR: Unable to write dataset.\n");
@@ -883,7 +883,7 @@ MergeEndCell(int print_sel, int print_out, int print_hdf, int n_proc)
 		if (mem_dspace < 0)
 		{
 			sprintf(error_string,
-					"HDF ERROR: Unable to create_simple dataspace.\n");
+				"HDF ERROR: Unable to create_simple dataspace.\n");
 			error_msg(error_string, STOP);
 		}
 
@@ -891,9 +891,9 @@ MergeEndCell(int print_sel, int print_out, int print_hdf, int n_proc)
 		status =
 			H5Sselect_elements(s_ci.dspace_id, H5S_SELECT_SET, 1,
 #if (H5_VERS_MAJOR>1)||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR>=8))||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR==6)&&(H5_VERS_RELEASE>=7))
-							   (const hssize_t *) ((void *) s_ci.coord));
+			(const hssize_t *) ((void *) s_ci.coord));
 #else
-							   (const hssize_t **) ((void *) s_ci.coord));
+			(const hssize_t **) ((void *) s_ci.coord));
 #endif
 		if (status < 0)
 		{
@@ -909,7 +909,7 @@ MergeEndCell(int print_sel, int print_out, int print_hdf, int n_proc)
 		assert(s_fiEcho.dset_id > 0);
 		status =
 			H5Dwrite(s_fiEcho.dset_id, s_ci.vls_id, mem_dspace,
-					 s_ci.dspace_id, H5P_DEFAULT, &s_fiEcho.buffer);
+			s_ci.dspace_id, H5P_DEFAULT, &s_fiEcho.buffer);
 		if (status < 0)
 		{
 			sprintf(error_string, "HDF ERROR: Unable to write dataset.\n");
@@ -962,7 +962,7 @@ Merge_fpunchf(const int length, const char *format, va_list argptr)
 int
 merge_handler(const int action, const int type, const char *name,
 			  const int stop, void *cookie, const char *format, va_list args)
-/* ---------------------------------------------------------------------- */
+			  /* ---------------------------------------------------------------------- */
 {
 	switch (action)
 	{
@@ -978,7 +978,7 @@ merge_handler(const int action, const int type, const char *name,
 static int
 output_handler(const int type, const char *err_str, const int stop,
 			   void *cookie, const char *format, va_list args)
-/* ---------------------------------------------------------------------- */
+			   /* ---------------------------------------------------------------------- */
 {
 	extern int mpi_myself;
 
