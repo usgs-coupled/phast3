@@ -3,7 +3,7 @@
 #include "Data_source.h"
 #include "message.h"
 #include "Utilities.h"
-#include "Point.h"
+#include "KDtree/Point.h"
 #include "Shapefiles/Shapefile.h"
 #include "ArcRaster.h"
 #include "XYZfile.h"
@@ -144,7 +144,7 @@ bool Data_source::Read(std::istream & lines, bool read_num)
 		"shape",				/* 2 */
 		"xyz",					/* 3 */
 		"arcraster",			/* 4 */
-		"xyzt"                  /* 5 */         
+		"xyzt"                  /* 5 */
 	};
 
 	int
@@ -237,7 +237,7 @@ bool Data_source::Read(std::istream & lines, bool read_num)
 		//{
 		//  error_msg("Error reading top of prism, expected at least 3 points.", EA_CONTINUE);
 		//  success = false;
-		//} 
+		//}
 		break;
 
 		// Shape file
@@ -346,15 +346,15 @@ bool Data_source::Read_mixture(std::istream & lines)
 		this->coordinate_system_user = PHAST_Transform::GRID;
 		no_coordinate_system = true;
 	}
-	else 
+	else
 	{
-		
+
 		this->coordinate_system = PHAST_Transform::NONE;
 		this->coordinate_system_user = PHAST_Transform::NONE;
 		error_msg ("Error reading coordinate system (GRID or MAP) for CONSTANT, POINTS, SHAPE, XYZ, or ArcRaster.",
 				EA_CONTINUE);
 			return (false);
-	} 
+	}
 
 	switch (j)
 	{
@@ -512,7 +512,7 @@ bool Data_source::Read_filename(std::istream & lines, bool read_num,
 void
 Data_source::Tidy(const bool make_nni)
 {
-	// First read data 
+	// First read data
 	switch (this->source_type)
 	{
 	case Data_source::SHAPE:
@@ -592,7 +592,7 @@ Data_source::Tidy(const bool make_nni)
 	this->Convert_coordinates(target_coordinate_system, map_to_grid);
 
 	// Make nni if necessary
-	// First read data 
+	// First read data
 	switch (this->source_type)
 	{
 	case Data_source::SHAPE:
@@ -616,7 +616,7 @@ Data_source::Tidy(const bool make_nni)
 void
 Data_source::Tidy(const bool make_nni)
 {
-	// First read data 
+	// First read data
 	switch (this->source_type)
 	{
 	case Data_source::SHAPE:
@@ -715,7 +715,7 @@ Data_source::Tidy(const bool make_nni)
 	// this->Convert_coordinates(target_coordinate_system, map_to_grid);
 #ifdef SKIP
 	// Make nni if necessary
-	// First read data 
+	// First read data
 	switch (this->source_type)
 	{
 	case Data_source::SHAPE:
@@ -1020,7 +1020,7 @@ Data_source::Get_nni(void)
 				nni->preprocess(ds->Get_points(), ds->coordinate_system);
 				ds->Set_nni_unique(NNInterpolator::NNInterpolatorMap.push_back(nni));
 			}
-			return (NNInterpolator::NNInterpolatorMap.at(ds->nni_unique));			
+			return (NNInterpolator::NNInterpolatorMap.at(ds->nni_unique));
 		}
 		break;
 	default:
@@ -1193,7 +1193,7 @@ Data_source::Convert_coordinates(PHAST_Transform::COORDINATE_SYSTEM target,
 		}
 		break;
 	}
-	if (ds != this) 
+	if (ds != this)
 	{
 		this->coordinate_system = ds->Get_coordinate_system();
 		this->Set_bounding_box();

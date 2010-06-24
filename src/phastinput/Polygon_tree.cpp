@@ -1,5 +1,5 @@
 #include "Polygon_tree.h"
-#include "Point.h"
+#include "KDtree/Point.h"
 #include "PHAST_polygon.h"
 
 #include <list>
@@ -248,6 +248,6 @@ void Polygon_leaf::Dump_leaf(void)
 	Polygon_leaf *right;
 	PHAST_polygon *polygon;
 	bool split_x;
-	bool tip;	
+	bool tip;
 	*/
 }

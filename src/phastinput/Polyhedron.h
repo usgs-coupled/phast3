@@ -4,10 +4,10 @@
 #include <vector>				// std::vector
 #include <list>					// std::list
 #include <string>
-#include "Point.h"
+#include "KDtree/Point.h"
 #include "gpc.h"
 #include "zone.h"
-#include "Cell_Face.h"
+#include "KDtree/Cell_Face.h"
 #include "PHAST_Transform.h"
 
 class Polyhedron

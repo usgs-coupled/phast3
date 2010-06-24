@@ -19,8 +19,8 @@
 #include "gzstream.h"
 #include "Pointers_to_fortran.h"
 #include <vector>
-#include "../../src/phastinput/Point.h"
-#include "../../src/phastinput/KDtree/KDtree.h"
+#include "KDtree/Point.h"
+#include "KDtree/KDtree.h"
 
 
 extern int xsurface_save(int n_user);
@@ -84,6 +84,31 @@ std::map < std::string, int >
 cxxDictionary
 	dictionary;
 
+#if defined(FC_FUNC)
+
+#define CALCULATE_WELL_PH                FC_FUNC (calculate_well_ph,             CALCULATE_WELL_PH)
+#define COLLECT_FROM_NONROOT             FC_FUNC (collect_from_nonroot,          COLLECT_FROM_NONROOT)
+#define COUNT_ALL_COMPONENTS             FC_FUNC (count_all_components,          COUNT_ALL_COMPONENTS)
+#define CONVERT_TO_MOLAL                 FC_FUNC (convert_to_molal,              CONVERT_TO_MOLAL)
+#define CONVERT_TO_MASS_FRACTION         FC_FUNC (convert_to_mass_fraction,      CONVERT_TO_MASS_FRACTION)
+#define DISTRIBUTE_INITIAL_CONDITIONS    FC_FUNC (distribute_initial_conditions, DISTRIBUTE_INITIAL_CONDITIONS)
+#define EQUILIBRATE                      FC_FUNC (equilibrate,                   EQUILIBRATE)
+#define ERRPRT_C                         FC_FUNC (errprt_c,                      ERRPRT_C)
+#define FORWARD_AND_BACK                 FC_FUNC (forward_and_back,              FORWARD_AND_BACK)
+#define LOGPRT_C                         FC_FUNC (logprt_c,                      LOGPRT_C)
+#define ON_ERROR_CLEANUP_AND_EXIT        FC_FUNC (on_error_cleanup_and_exit,     ON_ERROR_CLEANUP_AND_EXIT)
+#define PACK_FOR_HST                     FC_FUNC (pack_for_hst,                  PACK_FOR_HST)
+#define PHREEQC_FREE                     FC_FUNC (phreeqc_free,                  PHREEQC_FREE)
+#define PHREEQC_MAIN                     FC_FUNC (phreeqc_main,                  PHREEQC_MAIN)
+#define SCREENPRT_C                      FC_FUNC (screenprt_c,                   SCREENPRT_C)
+#define SEND_RESTART_NAME                FC_FUNC (send_restart_name,             SEND_RESTART_NAME)
+#define STORE_C_POINTERS                 FC_FUNC (store_c_pointers,              STORE_C_POINTERS)
+#define SETUP_BOUNDARY_CONDITIONS        FC_FUNC (setup_boundary_conditions,     SETUP_BOUNDARY_CONDITIONS)
+#define WARNPRT_C                        FC_FUNC (warnprt_c,                     WARNPRT_C)
+#define UZ_INIT                          FC_FUNC (uz_init,                       UZ_INIT)
+
+#else /* defined(FC_FUNC) */
+
 #if !defined(LAHEY_F95) && !defined(_WIN32) || defined(NO_UNDERSCORES)
 #define CALCULATE_WELL_PH calculate_well_ph
 #define COLLECT_FROM_NONROOT collect_from_nonroot
@@ -127,6 +152,9 @@ cxxDictionary
 #define WARNPRT_C warnprt_c_
 #define UZ_INIT uz_init_
 #endif
+
+#endif /* defined(FC_FUNC) */
+
 extern
 	"C"
 {
@@ -294,7 +322,7 @@ PHREEQC_MAIN(int *solute, char *chemistry_name, char *database_name,
 	_CrtSetDbgFlag(tmpDbgFlag);
 	//_crtBreakAlloc = 26298;
 	setbuf(stderr, NULL);
-   
+
 #ifdef SKIP
 	// Send all reports to STDOUT, since this example is a console app
 	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
@@ -3609,11 +3637,11 @@ mpi_set_random(void)
 		j = rand();
 		j = (int) (((double) n) * j / (RAND_MAX));
 		/* fprintf(stderr, "Random %d.\n",j); */
-		if (j >= n) 
+		if (j >= n)
 		{
 			j = n - 1;
 		}
-		if (j < 0) 
+		if (j < 0)
 		{
 			j = 0;
 		}

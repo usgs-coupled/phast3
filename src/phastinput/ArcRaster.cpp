@@ -4,7 +4,7 @@
 #include <istream>
 #include <fstream>
 #include <string.h>
-#include "Point.h"
+#include "KDtree/Point.h"
 
 // Note: No header files should follow the next three lines
 #if defined(_WIN32) && defined(_DEBUG)
@@ -97,7 +97,7 @@ ArcRaster::ArcRaster(std::string filename,
 			xpos = this->xllcorner + (double (j) + 0.5) *this->cellsize;
 			if (value != this->nodata_value)
 			{
-				//this->Get_points(-1).push_back(Point(xpos, ypos, value, value)); 
+				//this->Get_points(-1).push_back(Point(xpos, ypos, value, value));
 				new_pts.push_back(Point(xpos, ypos, value, value));
 			}
 		}

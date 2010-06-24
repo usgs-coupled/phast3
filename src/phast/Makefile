@@ -783,8 +783,8 @@ COMMON_CXXOBJS = \
 	       SolutionIsotopeList.o \
 	       SSassemblage.o \
 	       SSassemblageSS.o \
-               StorageBin.o \
-               StorageBinList.o \
+	       StorageBin.o \
+	       StorageBinList.o \
 	       Surface.o \
 	       SurfaceCharge.o \
 	       SurfaceComp.o \
@@ -802,13 +802,9 @@ MERGE_OBJS   =	merge.o
 MPI_OBJS     =	mpimod.o phast_slave.o slavesubs.o
 
 
-PHASTINPUT_FILES = ../../../src/phastinput/KDtree/KDtree.cpp \
-	../../../src/phastinput/KDtree/kdtree2.cpp \
-	../../../src/phastinput/Point.cpp
-# Look for phastinput .cpp files in these directories
-# VPATH also looks for .o files, which causes problems
-vpath %.cpp ../../../src/phastinput
-vpath %.cpp ../../../src/phastinput/KDtree
+PHASTINPUT_FILES = ../../../src/phast/KDtree/KDtree.cpp \
+	../../../src/phast/KDtree/kdtree2.cpp \
+	../../../src/phast/KDtree/Point.cpp
 
 # -----------------------------------------------------------------------------
 #  Assign dependents to target on dependency line & link options on command 
@@ -955,12 +951,12 @@ clean:
 
 depends:
 	mkdir -p temp_dependency_dir
-	cd temp_dependency_dir; gcc -MM $(DEFINE_HDF) -I../phreeqcpp -I../phreeqcpp/phreeqc -I../../../src/phastinput -I../../../src/phastinput/KDtree ../*.cxx ../*.c ../phreeqcpp/*.cxx ../phreeqcpp/*.cpp ../phreeqcpp/phreeqc/*.c $(PHASTINPUT_FILES) > ../dependencies
+	cd temp_dependency_dir; gcc -MM $(DEFINE_HDF) -I../phreeqcpp -I../phreeqcpp/phreeqc -I../KDtree ../*.cxx ../*.c ../phreeqcpp/*.cxx ../phreeqcpp/*.cpp ../phreeqcpp/phreeqc/*.c $(PHASTINPUT_FILES) > ../dependencies
 	rm -rf temp_dependency_dir
 
 depends_parallel:
 	mkdir -p temp_dependency_dir
-	cd temp_dependency_dir; gcc -MM $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -I../phreeqcpp -I../phreeqcpp/phreeqc -I../../../src/phastinput -I../../../src/phastinput/KDtree ../*.cxx ../*.c ../phreeqcpp/*.cxx ../phreeqcpp/phreeqc/*.c $(PHASTINPUT_FILES) > ../dependencies_parallel
+	cd temp_dependency_dir; gcc -MM $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -I../phreeqcpp -I../phreeqcpp/phreeqc -I../KDtree ../*.cxx ../*.c ../phreeqcpp/*.cxx ../phreeqcpp/phreeqc/*.c $(PHASTINPUT_FILES) > ../dependencies_parallel
 	rm -rf temp_dependency_dir
 
 #ld-option

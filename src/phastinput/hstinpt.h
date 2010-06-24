@@ -42,7 +42,7 @@ static char const svnid[] =
 #include "Exterior_cell.h"
 #include "BC_info.h"
 #include "Mix.h"
-#include "Cell_Face.h"
+#include "KDtree/Cell_Face.h"
 #include "River.h"
 #include "Drain.h"
 #include "Utilities.h"
@@ -340,7 +340,7 @@ typedef struct Well
 		screen_depth_top;
 	PHAST_Transform::COORDINATE_SYSTEM xy_coordinate_system_user;
 	PHAST_Transform::COORDINATE_SYSTEM z_coordinate_system_user;
-	
+
 } Well;
 EXTERNAL Well *
 	wells;

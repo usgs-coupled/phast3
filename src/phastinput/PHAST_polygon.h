@@ -1,7 +1,7 @@
 #if !defined(PHAST_POLYGON_H_INCLUDED)
 #define PHAST_POLYGON_H_INCLUDED
 #include <vector>
-#include "Point.h"
+#include "KDtree/Point.h"
 #include "gpc.h"
 #include "zone.h"
 #include "PHAST_Transform.h"

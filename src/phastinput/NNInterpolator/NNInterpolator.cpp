@@ -1,7 +1,7 @@
 // This is the main DLL file.
 #include <float.h>
 
-#include "../Point.h"
+#include "../KDtree/Point.h"
 #include "config.h"
 #include "nan.h"
 #include "../message.h"

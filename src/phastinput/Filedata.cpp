@@ -1,4 +1,4 @@
-#include "Point.h"
+#include "KDtree/Point.h"
 #include "NNInterpolator/NNInterpolator.h"
 #include "Filedata.h"
 #include "message.h"
@@ -55,7 +55,7 @@ Filedata::Add_data_source(int attribute, std::vector < Point > in_pts,
 		|| (this->data_source_map.find(attribute) ==
 			this->data_source_map.end()))
 	{
-		//std::vector<Point> temp_pts; 
+		//std::vector<Point> temp_pts;
 		//this->Make_points(attribute, temp_pts);
 		Data_source *ds = new Data_source(in_pts, system);
 		ds->Set_columns(columns);

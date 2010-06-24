@@ -1,7 +1,7 @@
 #if !defined(EXTERIOR_CELL_H_INCLUDED)
 #define EXTERIOR_CELL_H_INCLUDED
 #include "gpc.h"
-#include "Cell_Face.h"
+#include "KDtree/Cell_Face.h"
 
 class Exterior_cell
 {

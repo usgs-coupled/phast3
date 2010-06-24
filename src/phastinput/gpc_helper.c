@@ -1,7 +1,7 @@
 #include "message.h"
 #include "gpc.h"
 #include "gpc_helper.h"
-#include "Point.h"
+#include "KDtree/Point.h"
 #include "Utilities.h"
 #include <stdio.h>
 #include <string.h>
@@ -763,7 +763,7 @@ line_and_segment_intersection(Point p1, Point p2, Point q1, Point q2,
 	{
 		double x = (b2 * c1 - b1 * c2) / det;
 		double y = (a1 * c2 - a2 * c1) / det;
-		// point intersection 
+		// point intersection
 		{
 			std::vector < Point > pts;
 			pts.push_back(q1);

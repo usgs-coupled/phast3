@@ -9,14 +9,27 @@ AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign subdir-objects])
 AC_CONFIG_SRCDIR([src/phastinput/accumulate.c])
 
+# phastinput defines
 AC_DEFINE(ANSI_DECLARATORS)
 AC_DEFINE(TRILIBRARY)
+
+# phast defines
+# DEFINE_HDF=-DHDF5_CREATE -DH5Dcreate_vers=1 -DH5Gcreate_vers=1 -DH5Eset_auto_vers=1
+AC_DEFINE(PHREEQC_CPP)
+AC_DEFINE(HDF5_CREATE)
+AC_DEFINE(H5Dcreate_vers)
+AC_DEFINE(H5Gcreate_vers)
+AC_DEFINE(H5Eset_auto_vers)
 
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_AWK
 AC_PROG_CC
 AC_PROG_CPP
+AC_PROG_FC
+AC_FC_LIBRARY_LDFLAGS
+AC_FC_WRAPPERS 
+AC_FC_MAIN
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
@@ -51,9 +64,17 @@ AC_CHECK_FUNCS([sqrt],    , AC_CHECK_LIB(m, sqrt,  , AC_ERROR([cannot find sqrt]
 # boost
 AX_BOOST_BASE([1.36])
 
+# HDF5
+AX_LIB_HDF5()
+
+# Build mpi version
+AM_CONDITIONAL([BUILD_MPI], [test "X$TODO" = "Xyes"])
+
+# src/phast/Makefile
 AC_CONFIG_FILES([
   Makefile
   src/Makefile
+  src/phast/Makefile
   src/phastinput/Makefile
 ])
 AC_OUTPUT

@@ -2,7 +2,7 @@
 #define NNINTERPOLATOR__H_INCLUDED
 #include <vector>
 #include <list>
-#include "../Point.h"
+#include "../KDtree/Point.h"
 #include "../zone.h"
 #include "../PHAST_Transform.h"
 #include "../UniqueMap.h"

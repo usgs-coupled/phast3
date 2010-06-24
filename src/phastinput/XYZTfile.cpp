@@ -2,7 +2,7 @@
 #include "message.h"
 
 //#include <strstream>
-#include "Point.h"
+#include "KDtree/Point.h"
 #include "PHAST_polygon.h"
 
 // Note: No header files should follow the next three lines
@@ -37,7 +37,7 @@ XYZTfile::XYZTfile(std::string filename, PHAST_Transform::COORDINATE_SYSTEM cs)
 	double x, y, z, t, v, tlast = -9999999.;
 
 
-	// start 
+	// start
 	bool j = false;
 	while (!j)
 	{
@@ -61,7 +61,7 @@ XYZTfile::XYZTfile(std::string filename, PHAST_Transform::COORDINATE_SYSTEM cs)
 				this->count_lines.push_back(lines);
 				this->times_vector.push_back(t);
 				tlast = t;
-				lines = 0; 
+				lines = 0;
 			}
 		}
 		else
@@ -71,7 +71,7 @@ XYZTfile::XYZTfile(std::string filename, PHAST_Transform::COORDINATE_SYSTEM cs)
 			warning_msg(estring.str().c_str());
 		}
 		lines++;
-	
+
 	}
 	this->count_lines.push_back(lines);
 	if (times_vector.size() == 0)
@@ -95,7 +95,7 @@ XYZTfile::~XYZTfile(void)
 }
 bool XYZTfile::Open(void)
 {
-	if (this->file_stream != NULL) 
+	if (this->file_stream != NULL)
 	{
 		delete this->file_stream;
 	}
@@ -139,7 +139,7 @@ bool XYZTfile::Read(double time)
 			if (i == ((int) this->times_vector.size() - 1) )
 			{
 				current = true;
-			} 
+			}
 			else if (i < ((int) this->times_vector.size() - 1) && time*fudge < this->times_vector[i + 1])
 			{
 				current = true;
@@ -187,12 +187,12 @@ bool XYZTfile::Read_set(void)
 {
 	if (this->current_set + 1 == (int) this->times_vector.size()) return false;
 	this->current_set++;
-	
+
 	size_t i;
 
 	std::string line;
 	double x, y, z, t, v;
-	std::vector<Point> pts; 
+	std::vector<Point> pts;
 
 	for (i = 0; i < this->count_lines[this->current_set]; i++)
 	{
