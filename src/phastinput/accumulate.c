@@ -1511,7 +1511,7 @@ get_double_property_for_cell(struct cell *cell_ptr,
 #endif
 	case PROP_LINEAR:
 		{
-			double dist;
+			double dist = 0;
 			if (property_ptr->coord == 'x')
 			{
 				dist = cell_ptr->x;
@@ -1827,7 +1827,7 @@ get_property_for_element(struct cell *cell_ptr, struct property *property_ptr,
 #endif
 	case PROP_LINEAR:
 		{
-			double dist;
+			double dist = 0;
 			if (property_ptr->coord == 'x')
 			{
 				dist = cell_ptr->elt_x;

@@ -240,7 +240,7 @@ Shapefile::Dump(std::ostream & oss)
 		for (i = 0; i < DBFGetFieldCount(hDBF); i++)
 		{
 			DBFFieldType eType;
-			const char *pszTypeName;
+			const char *pszTypeName = NULL;
 
 
 			eType = DBFGetFieldInfo(hDBF, i, szTitle, &nWidth, &nDecimals);
@@ -619,8 +619,7 @@ bool Shapefile::Make_points(const int attribute, std::vector < Point > &pts)
 	int vertex_number = 0;
 	for (i = 0; i < nEntities; i++)
 	{
-		int
-			j;
+		int j = 0;
 		SHPObject *
 			psShape;
 

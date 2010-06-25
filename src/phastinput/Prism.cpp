@@ -652,7 +652,7 @@ Prism::Slice(Cell_Face face, double coord)
 {
 
 	// Determine if dip is parallel to face
-	Cube::PLANE_INTERSECTION p_intersection;
+	Cube::PLANE_INTERSECTION p_intersection = Cube::PI_NONE;
 	Point p1;
 	double t;
 

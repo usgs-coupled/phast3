@@ -1558,6 +1558,13 @@ interpolate(River_Polygon * river_polygon_ptr)
 	int i, j;
 	double x0, y0, x1, y1, x2, y2, xn, yn, zn, dist;
 
+	centroid.x = 0.0;
+	centroid.y = 0.0;
+	for (i = 0; i < 3; i++)
+	{
+	  vertex[i].x = 0.0;
+	  vertex[i].y = 0.0;
+	}
 	p0_ptr =
 		&(rivers[river_polygon_ptr->river_number].
 		  points[river_polygon_ptr->point_number]);
