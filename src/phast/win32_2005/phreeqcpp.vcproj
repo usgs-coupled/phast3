@@ -3604,15 +3604,15 @@
 				Name="PHASTINPUT_OBJS"
 				>
 				<File
-					RelativePath="..\..\phastinput\KDtree\KDtree.cpp"
+					RelativePath="..\KDtree\KDtree.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\phastinput\KDtree\kdtree2.cpp"
+					RelativePath="..\KDtree\kdtree2.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\phastinput\Point.cpp"
+					RelativePath="..\KDtree\Point.cpp"
 					>
 				</File>
 			</Filter>

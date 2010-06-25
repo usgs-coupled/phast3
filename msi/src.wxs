@@ -382,7 +382,7 @@
             <ComponentRef Id="structures.c_1" />
             <ComponentRef Id="tailor.h" />
             <ComponentRef Id="time.c" />
-            <ComponentRef Id="time.h" />
+            <ComponentRef Id="timepi.h" />
             <ComponentRef Id="UniqueMap.h" />
             <ComponentRef Id="units_impl.cxx" />
             <ComponentRef Id="unit_impl.cxx" />
@@ -448,6 +448,13 @@
             <ComponentRef Id="phastinput_version.h" />
             <ComponentRef Id="resource.fd_3" />
             <ComponentRef Id="resource.h_4" />
+            <ComponentRef Id="PHAST_KDtree.cpp" />
+            <ComponentRef Id="PHAST_KDtree.h" />
+            <ComponentRef Id="PHAST_kdtree2.cpp" />
+            <ComponentRef Id="PHAST_kdtree2.hpp" />
+            <ComponentRef Id="PHAST_Point.cpp" />
+            <ComponentRef Id="PHAST_Point.h" />
+            <ComponentRef Id="PHAST_Cell_Face.h" />
         </ComponentGroup>
     </Fragment>
     <Fragment>
@@ -850,6 +857,29 @@
                     <Component Id="zone_flow_ss.f90" Guid="*">
                         <File Id="zone_flow_ss.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\zone_flow_ss.f90" />
                     </Component>
+                    <Directory Id="PHAST_KDtree" Name="KDtree">
+                        <Component Id="PHAST_KDtree.cpp" Guid="*">
+                            <File Id="PHAST_KDtree.cpp" KeyPath="yes" Source="$(var.SrcDir)\phast\KDtree\KDtree.cpp" />
+                        </Component>
+                        <Component Id="PHAST_KDtree.h" Guid="*">
+                            <File Id="PHAST_KDtree.h" KeyPath="yes" Source="$(var.SrcDir)\phast\KDtree\KDtree.h" />
+                        </Component>
+                        <Component Id="PHAST_kdtree2.cpp" Guid="*">
+                            <File Id="PHAST_kdtree2.cpp" KeyPath="yes" Source="$(var.SrcDir)\phast\KDtree\kdtree2.cpp" />
+                        </Component>
+                        <Component Id="PHAST_kdtree2.hpp" Guid="*">
+                            <File Id="PHAST_kdtree2.hpp" KeyPath="yes" Source="$(var.SrcDir)\phast\KDtree\kdtree2.hpp" />
+                        </Component>
+                        <Component Id="PHAST_Point.cpp" Guid="*">
+                            <File Id="PHAST_Point.cpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\KDtree\Point.cpp" />
+                        </Component>
+                        <Component Id="PHAST_Point.h" Guid="*">
+                            <File Id="PHAST_Point.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\KDtree\Point.h" />
+                        </Component>
+                        <Component Id="PHAST_Cell_Face.h" Guid="*">
+                            <File Id="PHAST_Cell_Face.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\KDtree\Cell_Face.h" />
+                        </Component>
+                    </Directory>
                     <Directory Id="phreeqcpp" Name="phreeqcpp">
                         <Component Id="char_star.h" Guid="*">
                             <File Id="char_star.h" KeyPath="yes" Source="$(var.SrcDir)\phast\phreeqcpp\char_star.h" />
@@ -1495,9 +1525,6 @@
                     <Component Id="BC_info.h" Guid="*">
                         <File Id="BC_info.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\BC_info.h" />
                     </Component>
-                    <Component Id="Cell_Face.h" Guid="*">
-                        <File Id="Cell_Face.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Cell_Face.h" />
-                    </Component>
                     <Component Id="check.c" Guid="*">
                         <File Id="check.c" KeyPath="yes" Source="$(var.SrcDir)\phastinput\check.c" />
                     </Component>
@@ -1591,12 +1618,6 @@
                     <Component Id="PHAST_Transform.h" Guid="*">
                         <File Id="PHAST_Transform.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\PHAST_Transform.h" />
                     </Component>
-                    <Component Id="Point.cpp" Guid="*">
-                        <File Id="Point.cpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Point.cpp" />
-                    </Component>
-                    <Component Id="Point.h" Guid="*">
-                        <File Id="Point.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Point.h" />
-                    </Component>
                     <Component Id="Polygon_tree.cpp" Guid="*">
                         <File Id="Polygon_tree.cpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\Polygon_tree.cpp" />
                     </Component>
@@ -1636,8 +1657,8 @@
                     <Component Id="time.c" Guid="*">
                         <File Id="time.c" KeyPath="yes" Source="$(var.SrcDir)\phastinput\time.c" />
                     </Component>
-                    <Component Id="time.h" Guid="*">
-                        <File Id="time.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\time.h" />
+                    <Component Id="timepi.h" Guid="*">
+                        <File Id="timepi.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\timepi.h" />
                     </Component>
                     <Component Id="UniqueMap.h" Guid="*">
                         <File Id="UniqueMap.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\UniqueMap.h" />
@@ -1708,6 +1729,15 @@
                         </Component>
                         <Component Id="kdtree2.hpp" Guid="*">
                             <File Id="kdtree2.hpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\KDtree\kdtree2.hpp" />
+                        </Component>
+                        <Component Id="Point.cpp" Guid="*">
+                            <File Id="Point.cpp" KeyPath="yes" Source="$(var.SrcDir)\phastinput\KDtree\Point.cpp" />
+                        </Component>
+                        <Component Id="Point.h" Guid="*">
+                            <File Id="Point.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\KDtree\Point.h" />
+                        </Component>
+                        <Component Id="Cell_Face.h" Guid="*">
+                            <File Id="Cell_Face.h" KeyPath="yes" Source="$(var.SrcDir)\phastinput\KDtree\Cell_Face.h" />
                         </Component>
                     </Directory>
                     <Directory Id="NNInterpolator" Name="NNInterpolator">
