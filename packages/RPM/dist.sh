@@ -165,6 +165,13 @@ echo "Exporting revision $REVISION of external src/phast/phreeqcpp into sandbox.
 	     "http://internalbrr.cr.usgs.gov/svn_GW/phreeqcpp/trunk/src" \
 	     "$DISTNAME/src/phast/phreeqcpp")
 	     
+echo "Exporting revision $REVISION of external src/phast/KDtree into sandbox..."
+(cd "$DIST_SANDBOX" && \
+ 	${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
+	     "http://internalbrr.cr.usgs.gov/svn_GW/phastpp/trunk/src/phastinput/KDtree" \
+	     "$DISTNAME/src/phast/KDtree")
+	     
+	     
 echo "Exporting revision $REVISION of external src/phast/phreeqcpp/phreeqc into sandbox..."
 (cd "$DIST_SANDBOX" && \
  	${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
