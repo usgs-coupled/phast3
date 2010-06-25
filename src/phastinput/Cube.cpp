@@ -127,7 +127,7 @@ gpc_polygon *
 Cube::Slice(Cell_Face face, double coord)
 {
 	// Generates a new gpc_polygon
-	gpc_polygon *poly_ptr;
+	gpc_polygon *poly_ptr = NULL;
 	struct zone *zone_ptr = this->Get_bounding_box();
 
 	switch (face)

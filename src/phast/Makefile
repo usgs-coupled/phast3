@@ -54,9 +54,12 @@ gfortran_64: serial_gfortran_64 serial_gfortran_64_debug openmpi_gfortran_64 ope
 
 SERIAL_INTEL_DIR        = serial_intel
 SERIAL_INTEL_DEBUG_DIR  = serial_intel_debug
+SERIAL_INTEL_64_DIR     = serial_intel_64
+SERIAL_INTEL_64_DEBUG_DIR   = serial_intel_64_debug
 OPENMPI_INTEL_DIR           = openmpi_intel
 OPENMPI_INTEL_DEBUG_DIR     = openmpi_intel_debug
 intel: serial_intel serial_intel_debug openmpi_intel openmpi_intel_debug
+intel_64: serial_intel_64 serial_intel_64_debug
 
 MPICH_GFORTRAN_DIR           = mpich_gfortran
 mpich: mpich_gfortran
@@ -217,6 +220,16 @@ serial_intel:
 serial_intel_debug:
 	mkdir -p $(SERIAL_INTEL_DEBUG_DIR);
 	cd $(SERIAL_INTEL_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_INTEL_DEBUG $(PROGRAM)
+
+.PHONY : serial_intel_64
+serial_intel_64:
+	mkdir -p $(SERIAL_INTEL_64_DIR)
+	cd $(SERIAL_INTEL_64_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_INTEL_64 $(PROGRAM)
+
+.PHONY : serial_intel_64_debug
+serial_intel_64_debug:
+	mkdir -p $(SERIAL_INTEL_64_DEBUG_DIR);
+	cd $(SERIAL_INTEL_64_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_INTEL_64_DEBUG $(PROGRAM)
 
 .PHONY : openmpi_intel
 openmpi_intel:
@@ -690,6 +703,32 @@ ifeq ($(CFG), SERIAL_INTEL_DEBUG)
 endif
 
 # -----------------------------------------------------------------------------
+ifeq ($(CFG), SERIAL_INTEL_64)
+  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DPHREEQC_CPP
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
+  FC           = $(FINTEL)
+  FFLAGS       = -O3 -nus $(DEFINES)
+  CXX          = g++
+  CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS)  $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS) 
+  LD_FLAGS     = -static-intel -cxxlib ${HDF5_LIBS_64} ${HASH_STYLE} 
+  LINKER       = $(FC)
+endif
+
+# -----------------------------------------------------------------------------
+ifeq ($(CFG), SERIAL_INTEL_64_DEBUG)
+  DEFINES      = $(DEFINE_HDF) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
+  FC           = $(FINTEL)
+  FFLAGS       = -g -nus $(DEFINES)
+  CXX          = g++
+  CFLAGS       = -Wall  -g $(DEFINES)  $(PHREEQC_INCLUDES) 
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS)  $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS) 
+  LD_FLAGS     = -static-intel -cxxlib ${HDF5_LIBS_64} ${HASH_STYLE} 
+  LINKER       = $(FC)
+endif
+
+# -----------------------------------------------------------------------------
 ifeq ($(CFG), OPENMPI_INTEL)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP -DNO_UNDERSCORES
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
@@ -969,7 +1008,7 @@ zone_flow_ss.o:		../zone_flow_ss.f90	modules.o
 -include ../dependencies
 
 clean:
-	rm -rf serial_absoft serial_absoft_debug lam_absoft lam_absoft_debug serial_lahey serial_lahey_debug lam_lahey lam_lahey_debug serial_g95 serial_g95_debug lam_g95 lam_g95_debug serial_gfortran serial_gfortran_debug lam_gfortran lam_gfortran_debug openmpi_gfortran openmpi_gfortran_debug serial_gfortran_64 serial_gfortran_64_debug openmpi_gfortran_64 openmpi_gfortran_64_debug serial_intel serial_intel_debug openmpi_intel openmpi_intel_debug
+	rm -rf serial_absoft serial_absoft_debug lam_absoft lam_absoft_debug serial_lahey serial_lahey_debug lam_lahey lam_lahey_debug serial_g95 serial_g95_debug lam_g95 lam_g95_debug serial_gfortran serial_gfortran_debug lam_gfortran lam_gfortran_debug openmpi_gfortran openmpi_gfortran_debug serial_gfortran_64 serial_gfortran_64_debug openmpi_gfortran_64 openmpi_gfortran_64_debug serial_intel serial_intel_debug serial_intel_64 serial_intel_64_debug openmpi_intel openmpi_intel_debug
 
 depends:
 	mkdir -p temp_dependency_dir
