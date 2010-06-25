@@ -45,10 +45,11 @@ OPENMPI_GFORTRAN_DEBUG_DIR   = openmpi_gfortran_debug
 gfortran: serial_gfortran serial_gfortran_debug lam_gfortran lam_gfortran_debug 
 openmpi: openmpi_gfortran openmpi_gfortran_debug
 
-SERIAL_GFORTRAN_64_DIR       = serial_gfortran_64
-SERIAL_GFORTRAN_64_DEBUG_DIR = serial_gfortran_64_debug
-OPENMPI_GFORTRAN_64_DIR      = openmpi_gfortran_64
-OPENMPI_GFORTRAN_64_DEBUG_DIR= openmpi_gfortran_64_debug
+SERIAL_GFORTRAN_64_DIR        = serial_gfortran_64
+SERIAL_GFORTRAN_64_DEBUG_DIR  = serial_gfortran_64_debug
+OPENMPI_GFORTRAN_64_DIR       = openmpi_gfortran_64
+OPENMPI_GFORTRAN_64_DEBUG_DIR = openmpi_gfortran_64_debug
+OPENMPI_1_4_2_GFORTRAN_64_DIR = openmpi_1_4_2_gfortran_64
 gfortran_64: serial_gfortran_64 serial_gfortran_64_debug openmpi_gfortran_64 openmpi_gfortran_64_debug
 
 SERIAL_INTEL_DIR        = serial_intel
@@ -193,6 +194,11 @@ openmpi_gfortran_64:
 	mkdir -p $(OPENMPI_GFORTRAN_64_DIR);
 	cd $(OPENMPI_GFORTRAN_64_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_GFORTRAN_64 $(PROGRAM)
 
+.PHONY : openmpi_1_4_2_gfortran_64
+openmpi_1_4_2_gfortran_64:
+	mkdir -p $(OPENMPI_1_4_2_GFORTRAN_64_DIR);
+	cd $(OPENMPI_1_4_2_GFORTRAN_64_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_1_4_2_GFORTRAN_64 $(PROGRAM)
+
 .PHONY : mpich_gfortran
 mpich_gfortran:
 	mkdir -p $(MPICH_GFORTRAN_DIR);
@@ -308,7 +314,7 @@ HASH_STYLE=$(call ld-option, -Wl$(comma)--hash-style=sysv)
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_ABSOFT)
   DEFINES      = $(DEFINE_HDF) -DNDEBUG -DPHREEQC_CPP
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   FC           = $(FABSOFT)
   NLSPATH      = $(NLSABSOFT)
   FDEBUG       = -O -en  # -C
@@ -324,7 +330,7 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_ABSOFT_DEBUG)
   DEFINES      = $(DEFINE_HDF) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   FC           = $(FABSOFT)
   NLSPATH      = $(NLSABSOFT)
   FDEBUG       = -g -en # -Rb -Rc -Rp -Rs # range checking
@@ -340,7 +346,7 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), LAM_ABSOFT)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG  -DPHREEQC_CPP
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   LAMHF77      = $(FABSOFT)
   export LAMHF77
   NLSPATH      = $(NLSABSOFT)
@@ -359,7 +365,7 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), LAM_ABSOFT_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   LAMHF77      = $(FABSOFT)
   export LAMHF77
 #  LAMHCC      = g++
@@ -380,7 +386,7 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_LAHEY)
   DEFINES      = $(DEFINE_HDF) -DLAHEY_F95 -DNDEBUG -DPHREEQC_CPP
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   FC           = $(FLAHEY)
   FFLAGS       = -O $(DEFINES)
   CC           = g++
@@ -393,7 +399,7 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_LAHEY_DEBUG)
   DEFINES      = $(DEFINE_HDF) -DLAHEY_F95 -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:..
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   FC           = $(FLAHEY)
   FFLAGS       = -g --f95 --chkglobal --warn --info $(DEFINES)
   CC           = g++
@@ -406,7 +412,7 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), LAM_LAHEY)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DLAHEY_F95 -DNDEBUG -DPHREEQC_CPP
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   LAMHF77      = $(FLAHEY)
   export LAMHF77
   FC           = mpif77
@@ -422,7 +428,7 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), LAM_LAHEY_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DLAHEY_F95 -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   LAMHF77      = $(FLAHEY)
   export LAMHF77
   FC           = mpif77
@@ -438,7 +444,7 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_G95)
   DEFINES      = $(DEFINE_HDF) -DNDEBUG -DPHREEQC_CPP
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   FC           = $(FG95)
   FFLAGS       = -O3 $(DEFINES) -fno-underscoring
   CC           = g++
@@ -451,7 +457,7 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_G95_DEBUG)
   DEFINES      = $(DEFINE_HDF) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   FC           = $(FG95)
   FFLAGS       = -g -fno-underscoring $(DEFINES)
   CC           = g++
@@ -464,7 +470,7 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), LAM_G95)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   LAMHF77      = $(FG95)
   export LAMHF77
   FC           = mpif77
@@ -480,7 +486,7 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), LAM_G95_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   LAMHF77      = $(FG95)
   export LAMHF77
   FC           = mpif77
@@ -495,7 +501,7 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_GFORTRAN)
   DEFINES      = $(DEFINE_HDF) -DNDEBUG -DPHREEQC_CPP
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   FC           = $(FGFORTRAN)
   FFLAGS       = -O3 -p $(DEFINES) -fno-underscoring
   CC           = g++
@@ -508,7 +514,7 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_GFORTRAN_DEBUG)
   DEFINES      = $(DEFINE_HDF) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   FC           = $(FGFORTRAN)
   FFLAGS       = -g -fno-underscoring $(DEFINES)
   CC           = g++
@@ -521,7 +527,7 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_GFORTRAN_64)
   DEFINES      = $(DEFINE_HDF) -DNDEBUG -DPHREEQC_CPP -DVACOPY
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   FC           = $(FGFORTRAN)
   FFLAGS       = -O3 $(DEFINES) -fno-underscoring
   CC           = g++
@@ -534,7 +540,7 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_GFORTRAN_64_DEBUG)
   DEFINES      = $(DEFINE_HDF) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC -DVACOPY
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   FC           = $(FGFORTRAN)
   FFLAGS       = -g -fno-underscoring $(DEFINES)
   CC           = g++
@@ -547,7 +553,7 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), LAM_GFORTRAN)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   LAMHF77      = $(FGFORTRAN)
   export LAMHF77
   FC           = mpif77
@@ -563,7 +569,7 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), LAM_GFORTRAN_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   LAMHF77      = $(FGFORTRAN)
   export LAMHF77
   FC           = mpif77
@@ -579,7 +585,7 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), OPENMPI_GFORTRAN)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP 
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   DINVERSE_CL1MP=
   FC           = mpif90
   FFLAGS       = -O3 -fno-underscoring -I/usr/include $(DEFINES)
@@ -594,7 +600,7 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), OPENMPI_GFORTRAN_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   DINVERSE_CL1MP=
   FC           = mpif90
   FFLAGS       = -g  -fno-underscoring -I/usr/include $(DEFINES)
@@ -610,7 +616,7 @@ endif
 
 ifeq ($(CFG), OPENMPI_GFORTRAN_64)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP -DVACOPY -DNO_UNDERSCORES
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
   DINVERSE_CL1MP=
   FC           = mpif90
@@ -625,9 +631,25 @@ endif
 
 # -----------------------------------------------------------------------------
 
+ifeq ($(CFG), OPENMPI_1_4_2_GFORTRAN_64)
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP -DVACOPY -DNO_UNDERSCORES
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
+  HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
+  DINVERSE_CL1MP=
+  FC           = /z/parkplace/home/charlton/openmpi-1.4.2/lobo-gfortran-x64/bin/mpif90
+  FFLAGS       = -O3 -fno-underscoring -I/usr/include $(DEFINES)
+  CXX          = /z/parkplace/home/charlton/openmpi-1.4.2/lobo-gfortran-x64/bin/mpiCC
+  CC           = /z/parkplace/home/charlton/openmpi-1.4.2/lobo-gfortran-x64/bin/mpiCC
+  CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
+  LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS_64} -lmpi_f77 -ldl ${HASH_STYLE} # -lm ${CL1MP_LIB}
+  LINKER       = $(CXX)
+endif
+# -----------------------------------------------------------------------------
+
 ifeq ($(CFG), OPENMPI_GFORTRAN_64_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC -DVACOPY -DNO_UNDERSCORES
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
   DINVERSE_CL1MP=
   FC           = mpif90
@@ -644,7 +666,7 @@ endif
 
 ifeq ($(CFG), SERIAL_INTEL)
   DEFINES      = $(DEFINE_HDF) -DNDEBUG -DPHREEQC_CPP
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   FC           = $(FINTEL)
   FFLAGS       = -O3 -nus $(DEFINES)
   CXX          = g++
@@ -657,7 +679,7 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_INTEL_DEBUG)
   DEFINES      = $(DEFINE_HDF) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   FC           = $(FINTEL)
   FFLAGS       = -g -nus $(DEFINES)
   CXX          = g++
@@ -670,7 +692,7 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), OPENMPI_INTEL)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP -DNO_UNDERSCORES
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   FC           = mpif90
   FFLAGS       = -O3 -nus $(DEFINES)
   CXX          = mpiCC
@@ -685,7 +707,7 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), OPENMPI_INTEL_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   FC           = mpif90
   FFLAGS       = -g -nus $(DEFINES)
   CXX          = mpiCC
@@ -701,7 +723,7 @@ endif
 
 ifeq ($(CFG), MPICH_GFORTRAN)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP 
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   DINVERSE_CL1MP=
   SZIP_ROOT=/home/dlpark/packages/szip2.0-linux-gcc3.2.3-enc
   SZIP_LIB=${SZIP_ROOT}/lib/libsz.a
@@ -802,9 +824,9 @@ MERGE_OBJS   =	merge.o
 MPI_OBJS     =	mpimod.o phast_slave.o slavesubs.o
 
 
-PHASTINPUT_FILES = ../../../src/phast/KDtree/KDtree.cpp \
-	../../../src/phast/KDtree/kdtree2.cpp \
-	../../../src/phast/KDtree/Point.cpp
+PHASTINPUT_FILES = ../KDtree/KDtree.cpp \
+	../KDtree/kdtree2.cpp \
+	../KDtree/Point.cpp
 
 # -----------------------------------------------------------------------------
 #  Assign dependents to target on dependency line & link options on command 
