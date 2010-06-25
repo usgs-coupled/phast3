@@ -503,10 +503,7 @@ utilities.o: ../phreeqcpp/phreeqc/utilities.c \
  ../phreeqcpp/phreeqc/global.h ../phreeqcpp/phreeqc/phrqtype.h \
  ../phreeqcpp/phreeqc/global_structures.h ../phreeqcpp/phreeqc/phqalloc.h \
  ../phreeqcpp/phreeqc/output.h ../phreeqcpp/phreeqc/phrqproto.h
-KDtree.o: ../../../src/phast/KDtree/KDtree.cpp \
- ../../../src/phast/KDtree/KDtree.h ../../../src/phast/KDtree/kdtree2.hpp \
- ../../../src/phast/KDtree/Point.h ../../../src/phast/KDtree/Cell_Face.h
-kdtree2.o: ../../../src/phast/KDtree/kdtree2.cpp \
- ../../../src/phast/KDtree/kdtree2.hpp
-Point.o: ../../../src/phast/KDtree/Point.cpp \
- ../../../src/phast/KDtree/Point.h ../../../src/phast/KDtree/Cell_Face.h
+KDtree.o: ../KDtree/KDtree.cpp ../KDtree/KDtree.h ../KDtree/kdtree2.hpp \
+ ../KDtree/Point.h ../KDtree/Cell_Face.h
+kdtree2.o: ../KDtree/kdtree2.cpp ../KDtree/kdtree2.hpp
+Point.o: ../KDtree/Point.cpp ../KDtree/Point.h ../KDtree/Cell_Face.h
