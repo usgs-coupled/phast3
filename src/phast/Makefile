@@ -50,6 +50,7 @@ SERIAL_GFORTRAN_64_DEBUG_DIR  = serial_gfortran_64_debug
 OPENMPI_GFORTRAN_64_DIR       = openmpi_gfortran_64
 OPENMPI_GFORTRAN_64_DEBUG_DIR = openmpi_gfortran_64_debug
 OPENMPI_1_4_2_GFORTRAN_64_DIR = openmpi_1_4_2_gfortran_64
+OPENMPI_1_4_2_INTEL_64_STATIC_DIR = openmpi_1_4_2_intel_64_static
 gfortran_64: serial_gfortran_64 serial_gfortran_64_debug openmpi_gfortran_64 openmpi_gfortran_64_debug
 
 SERIAL_INTEL_DIR        = serial_intel
@@ -203,6 +204,11 @@ openmpi_gfortran_64:
 openmpi_1_4_2_gfortran_64:
 	mkdir -p $(OPENMPI_1_4_2_GFORTRAN_64_DIR);
 	cd $(OPENMPI_1_4_2_GFORTRAN_64_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_1_4_2_GFORTRAN_64 $(PROGRAM)
+
+.PHONY : openmpi_1_4_2_intel_64_static
+openmpi_1_4_2_intel_64_static:
+	mkdir -p $(OPENMPI_1_4_2_INTEL_64_STATIC_DIR);
+	cd $(OPENMPI_1_4_2_INTEL_64_STATIC_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_1_4_2_INTEL_64_STATIC $(PROGRAM)
 
 .PHONY : mpich_gfortran
 mpich_gfortran:
@@ -675,6 +681,23 @@ ifeq ($(CFG), OPENMPI_1_4_2_GFORTRAN_64)
   LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS_64} -lmpi_f77 -ldl ${HASH_STYLE} # -lm ${CL1MP_LIB}
   LINKER       = $(CXX)
 endif
+
+# -----------------------------------------------------------------------------
+
+ifeq ($(CFG), OPENMPI_1_4_2_INTEL_64_STATIC)
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP -DVACOPY -DNO_UNDERSCORES
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
+  HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
+  FC           = /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64-static/bin/mpif90
+  FFLAGS       = -O3 -nus $(DEFINES)
+  CXX          = /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64-static/bin/mpiCC
+  CC           = /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64-static/bin/mpiCC
+  CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
+  LD_FLAGS     = -static-intel -cxxlib ${HDF5_LIBS_64} -lmpi_cxx  ${HASH_STYLE} 
+  LINKER       = $(FC)
+endif
+
 # -----------------------------------------------------------------------------
 
 ifeq ($(CFG), OPENMPI_GFORTRAN_64_DEBUG)
@@ -721,7 +744,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_INTEL_64)
-  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DPHREEQC_CPP
+  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DPHREEQC_CPP -DVACOPY
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   FC           = $(FINTEL)
   FFLAGS       = -O3 -nus $(DEFINES)
@@ -734,7 +757,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_INTEL_64_DEBUG)
-  DEFINES      = $(DEFINE_HDF) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
+  DEFINES      = $(DEFINE_HDF) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC -DVACOPY
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   FC           = $(FINTEL)
   FFLAGS       = -g -nus $(DEFINES)
@@ -777,7 +800,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), OPENMPI_INTEL_64)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP 
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP -DVACOPY
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   FC           = $(OPENMPI_IFORT_64)/bin/mpif90
   FFLAGS       = -O3 -nus $(DEFINES)
@@ -792,7 +815,7 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), OPENMPI_INTEL_64_DEBUG)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC -DVACOPY
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   FC           = $(OPENMPI_IFORT_64)/bin/mpif90
   FFLAGS       = -g -nus $(DEFINES)
