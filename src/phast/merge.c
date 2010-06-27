@@ -369,30 +369,6 @@ FileInfo_merge(struct FileInfo *ptr_info, hid_t xfer_pid, hid_t mem_dspace,
 }
 
 static int
-FileInfo_capture(struct FileInfo *ptr_info, const int length,
-				 const char *format, va_list argptr)
-{
-	int retval;
-
-	assert(ptr_info->buffer != NULL && ptr_info->buffer_size > 0);
-	assert(ptr_info->dset_id > 0);	/* should be open */
-
-
-	space((void **) ((void *) &(ptr_info->buffer)),
-		ptr_info->buffer_pos + length, &ptr_info->buffer_size,
-		sizeof(char));
-
-	retval =
-		vsprintf(ptr_info->buffer + ptr_info->buffer_pos, format, argptr);
-
-	assert(retval == length);
-
-	ptr_info->buffer_pos += retval;
-
-	return retval;
-}
-
-static int
 FileInfo_printf(struct FileInfo *ptr_info, const char *format, va_list argptr)
 {
 	assert(ptr_info->stream != NULL);
@@ -928,36 +904,6 @@ MergeEndCell(int print_sel, int print_out, int print_hdf, int n_proc)
 	++s_ci.coord[0][0];
 }
 
-
-/* ---------------------------------------------------------------------- */
-int
-Merge_fpunchf(const int length, const char *format, va_list argptr)
-/* ---------------------------------------------------------------------- */
-{
-	extern int mpi_myself;
-	int ret_val;
-
-
-	ret_val = 0;
-	if (s_ci.in_equilibrate == FALSE)
-		return length;			/* ignore punch until EQUILIBRATE is called */
-
-	if (s_ci.captured == TRUE)
-	{
-		static char big_buffer[200];
-		/* determine length of buffer reqd */
-		ret_val = vsprintf(big_buffer, format, argptr);
-
-		assert(ret_val < 200);
-		ret_val = FileInfo_capture(&s_fiPunch, ret_val, format, argptr);
-	}
-	else if (mpi_myself == 0)
-	{
-		ret_val = FileInfo_printf(&s_fiPunch, format, argptr);
-	}
-	return ret_val;
-}
-
 /* ---------------------------------------------------------------------- */
 int
 merge_handler(const int action, const int type, const char *name,
@@ -1007,19 +953,7 @@ output_handler(const int type, const char *err_str, const int stop,
 	case OUTPUT_CHECKLINE:
 		if (pr.echo_input == TRUE)
 		{
-#ifdef VACOPY
-			va_list args_copy;
-			va_copy(args_copy, args);
-			Merge_vfprintf2(&s_fiOutput, format, args_copy);
-			va_end(args_copy);
-#else
 			Merge_vfprintf2(&s_fiOutput, format, args);
-#endif
-			if (phreeqc_mpi_myself == 0)
-			{
-				Merge_vfprintf2(&s_fiEcho, format, args);
-			}
-
 		}
 		break;
 	case OUTPUT_MESSAGE:
@@ -1053,26 +987,28 @@ Merge_vfprintf2(struct FileInfo *pFileInfo, const char *format, va_list args)
 {
 	extern int mpi_myself;
 	int retval;
-	static char buffer[500];
+	const int EXTRA_BUFFER = 500;
 
 	retval = 0;
 
 	if (s_ci.captured == TRUE)
 	{
-#ifdef VACOPY
-		va_list args_copy;
-		va_copy(args_copy, args);
-		retval = vsprintf(buffer, format, args);
-		assert(retval < 500);
 		assert(pFileInfo->dset_id > 0);
-		FileInfo_capture(pFileInfo, retval, format, args_copy);
-		va_end(args_copy);
-#else
-		retval = vsprintf(buffer, format, args);
+		assert(pFileInfo->buffer != NULL && pFileInfo->buffer_size > 0);
+
+		space((void **) ((void *) &(pFileInfo->buffer)),
+			pFileInfo->buffer_pos + EXTRA_BUFFER, &pFileInfo->buffer_size,
+			sizeof(char));
+
+		retval =
+			vsprintf(pFileInfo->buffer + pFileInfo->buffer_pos, format, args);
+
 		assert(retval < 500);
-		assert(pFileInfo->dset_id > 0);
-		FileInfo_capture(pFileInfo, retval, format, args);
-#endif
+		if(retval >= EXTRA_BUFFER)
+		{
+			error_msg("Need to increase EXTRA_BUFFER in %s(%d).", STOP, __FILE__, __LINE__);
+		}
+		pFileInfo->buffer_pos += retval;
 	}
 	else if (mpi_myself == 0)
 	{
