@@ -67,6 +67,10 @@ intel_64: serial_intel_64 serial_intel_64_debug openmpi_intel_64 openmpi_intel_6
 MPICH_GFORTRAN_DIR           = mpich_gfortran
 mpich: mpich_gfortran
 
+parkplace: gfortran lahey
+grundvand: intel openmpi
+robocomp: gfortran_64 intel_64
+
 MAKEFILE                = Makefile
 
 #########################
@@ -289,12 +293,15 @@ LIBG95=-L/usr/local/g95/lib/gcc-lib/i686-pc-linux-gnu/4.0.1/ -lf95
 LIBGFORTRAN_64=-L/usr/lib64 -lgfortranbegin -lgfortran
 FGFORTRAN=gfortran
 LIBGFORTRAN= -lgfortranbegin -lgfortran
+#/usr/lib/gcc/i586-manbo-linux-gnu/4.4.1/libgfortran.a
 # for static linking of gfortran library
 #LIBGFORTRAN= -lgfortranbegin /usr/lib/gcc/i586-mandriva-linux-gnu/4.1.2/libgfortran.a
 
 # The following apply to OPENMPI_INTEL versions
 FINTEL=ifort
+OPENMPI_GFORTRAN_32=/z/parkplace/home/charlton/openmpi-1.4.2/grundvand-gfortran
 OPENMPI_IFORT_32=/z/parkplace/home/charlton/openmpi-1.4.2/grundvand-ifort
+OPENMPI_GFORTRAN_64=/z/parkplace/home/charlton/openmpi-1.4.2/lobo-gfortran-x64
 OPENMPI_IFORT_64=/z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64
 #LIBRARY_IFORT_64=/z/robocomp/usr/opt/intel/Compiler/11.0/083/lib/intel64/
 #LD_LIBRARY_INTEL=/z/grundvand/usr/opt/intel/Compiler/11.0/083/lib/ia32
@@ -623,10 +630,10 @@ ifeq ($(CFG), OPENMPI_GFORTRAN)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP 
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   DINVERSE_CL1MP=
-  FC           = mpif90
+  FC           = $(OPENMPI_GFORTRAN_32)/bin/mpif90
   FFLAGS       = -O3 -fno-underscoring -I/usr/include $(DEFINES)
-  CXX          = mpicxx
-  CC           = mpicxx
+  CXX          = $(OPENMPI_GFORTRAN_32)/bin/mpicxx
+  CC           = $(OPENMPI_GFORTRAN_32)/bin/mpicxx
   CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
   LD_FLAGS     = $(LIBGFORTRAN) ${HDF5_LIBS} -lmpi_f77 -ldl ${HASH_STYLE} # -lm ${CL1MP_LIB}
@@ -638,10 +645,10 @@ ifeq ($(CFG), OPENMPI_GFORTRAN_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   DINVERSE_CL1MP=
-  FC           = mpif90
+  FC           = $(OPENMPI_GFORTRAN_32)/bin/mpif90
   FFLAGS       = -g  -fno-underscoring -I/usr/include $(DEFINES)
-  CXX          = mpicxx
-  CC           = mpicxx
+  CXX          = $(OPENMPI_GFORTRAN_32)/bin/mpicxx
+  CC           = $(OPENMPI_GFORTRAN_32)/bin/mpicxx
   CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
   LD_FLAGS     = $(LIBGFORTRAN) ${HDF5_LIBS}  -lmpi_f77 -ldl ${HASH_STYLE} # -lm ${CL1MP_LIB}
@@ -655,10 +662,10 @@ ifeq ($(CFG), OPENMPI_GFORTRAN_64)
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
   DINVERSE_CL1MP=
-  FC           = mpif90
+  FC           = $(OPENMPI_GFORTRAN_64)/bin/mpif90
   FFLAGS       = -O3 -fno-underscoring -I/usr/include $(DEFINES)
-  CXX          = mpiCC
-  CC           = mpiCC
+  CXX          = $(OPENMPI_GFORTRAN_64)/bin/mpiCC
+  CC           = $(OPENMPI_GFORTRAN_64)/bin/mpiCC
   CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
   LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS_64} -lmpi_f77 -ldl ${HASH_STYLE} # -lm ${CL1MP_LIB}
@@ -705,10 +712,10 @@ ifeq ($(CFG), OPENMPI_GFORTRAN_64_DEBUG)
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
   DINVERSE_CL1MP=
-  FC           = mpif90
+  FC           = $(OPENMPI_GFORTRAN_64)/bin/mpif90
   FFLAGS       = -g  -fno-underscoring -I/usr/include $(DEFINES)
-  CXX          = mpiCC
-  CC           = mpiCC
+  CXX          = $(OPENMPI_GFORTRAN_64)/bin/mpiCC
+  CC           = $(OPENMPI_GFORTRAN_64)/bin/mpiCC
   CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
   LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS_64} -lmpi_f77 -ldl ${HASH_STYLE}
@@ -1078,7 +1085,7 @@ zone_flow_ss.o:		../zone_flow_ss.f90	modules.o
 -include ../dependencies
 
 clean:
-	rm -rf serial_absoft serial_absoft_debug lam_absoft lam_absoft_debug serial_lahey serial_lahey_debug lam_lahey lam_lahey_debug serial_g95 serial_g95_debug lam_g95 lam_g95_debug serial_gfortran serial_gfortran_debug lam_gfortran lam_gfortran_debug openmpi_gfortran openmpi_gfortran_debug serial_gfortran_64 serial_gfortran_64_debug openmpi_gfortran_64 openmpi_gfortran_64_debug serial_intel serial_intel_debug serial_intel_64 serial_intel_64_debug openmpi_intel openmpi_intel_debug openmpi_intel_64 openmpi_intel_debug_64
+	rm -rf serial_absoft serial_absoft_debug lam_absoft lam_absoft_debug serial_lahey serial_lahey_debug lam_lahey lam_lahey_debug serial_g95 serial_g95_debug lam_g95 lam_g95_debug serial_gfortran serial_gfortran_debug lam_gfortran lam_gfortran_debug openmpi_gfortran openmpi_gfortran_debug serial_gfortran_64 serial_gfortran_64_debug openmpi_gfortran_64 openmpi_gfortran_64_debug serial_intel serial_intel_debug serial_intel_64 serial_intel_64_debug openmpi_intel openmpi_intel_debug openmpi_intel_64 openmpi_intel_64_debug
 
 depends:
 	mkdir -p temp_dependency_dir
