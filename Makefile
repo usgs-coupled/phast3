@@ -5,9 +5,11 @@ ifeq ($(CFG), Linux)
   TOPDIR=$(HOME)/programs/phastpp
   TEST=$(TOPDIR)/examples
   PHAST_INPUT=$(TOPDIR)/src/phastinput/phastinput
-#  PHAST=$(TOPDIR)/src/phast/serial_gfortran/phast
   PHAST=$(TOPDIR)/src/phast/serial_lahey/phast
+#  PHAST=$(TOPDIR)/src/phast/serial_gfortran/phast
 #  PHAST=$(TOPDIR)/src/phast/serial_intel/phast
+#  PHAST=$(TOPDIR)/src/phast/serial_gfortran_64/phast
+#  PHAST=$(TOPDIR)/src/phast/serial_intel_64/phast
   RUN=$(TEST)/run
 endif
 

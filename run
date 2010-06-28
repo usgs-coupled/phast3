@@ -6,10 +6,14 @@ if [ $USER == charlton ]; then
     PHASTDIR=/z/srv2rcolkr/home/charlton/programs/phastpp
 fi
 EXDIR=$PHASTDIR/examples
-#CONFIGURATION=LAM
+# 32 Bit Parallel versions
+#CONFIGURATION=LAM_LAHEY
+#CONFIGURATION=LAM_GFORTRAN
+CONFIGURATION=OPENMPI_GFORTRAN
 #CONFIGURATION=OPENMPI_INTEL
-CONFIGURATION=OPENMPI_INTEL_64
+# 64-Bit Parallel versions
 #CONFIGURATION=OPENMPI_GFORTRAN_64
+#CONFIGURATION=OPENMPI_INTEL_64
 #
 #   make directory
 #
@@ -56,7 +60,7 @@ cd 0
 $PHASTDIR/src/phastinput/phastinput $NAME
 echo Done phastinput.
 
-if [ $CONFIGURATION == "LAM" ]; then
+if [ $CONFIGURATION == "LAM_LAHEY" ]; then
 # 
 #   32 bit lam_lahey
 #
@@ -69,13 +73,35 @@ if [ $CONFIGURATION == "LAM" ]; then
     lamboot ../../hosts;  time mpirun-lam -O -v schema; wipe ../../hosts
 fi
 
+if [ $CONFIGURATION == "LAM_GFORTRAN" ]; then
+# 
+#   32 bit lam_gfortran
+#
+    cp ../../schema .
+    sed -e "s?WORKING_DIRECTORY?$EXDIR/$NAME/0?" \
+	-e "s^EXECUTABLE^$PHASTDIR/src/phast/lam_gfortran/phast^" schema > temp; mv temp schema
+#
+#   run phast
+#
+    lamboot ../../hosts;  time mpirun-lam -O -v schema; wipe ../../hosts
+fi
+
+if [ $CONFIGURATION == "OPENMPI_GFORTRAN" ]; then
+# 
+#   32 bit openmpi_gfortran
+#
+    #LD_LIBRARY_PATH=/z/parkplace/home/charlton/openmpi-1.4.2/grundvand-ifort/lib
+    export LD_LIBRARY_PATH
+    /z/parkplace/home/charlton/openmpi-1.4.2/grundvand-ifort/bin/mpirun -x LD_LIBRARY_PATH -n 4 -H grundvand -H niwot -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_gfortran/phast
+fi
+
 if [ $CONFIGURATION == "OPENMPI_INTEL" ]; then
 # 
 #   32 bit openmpi_intel
 #
-    LD_LIBRARY_PATH=/z/parkplace/home/charlton/openmpi-1.4.2/grundvand-ifort/lib:/z/grundvand/usr/opt/intel/Compiler/11.0/083/lib/ia32
+    #LD_LIBRARY_PATH=/z/parkplace/home/charlton/openmpi-1.4.2/grundvand-ifort/lib:/z/grundvand/usr/opt/intel/Compiler/11.0/083/lib/ia32
     export LD_LIBRARY_PATH
-    /z/parkplace/home/charlton/openmpi-1.4.2/grundvand-ifort/bin/mpirun -x LD_LIBRARY_PATH -n 2 -H grundvand -H niwot -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_intel/phast
+    /z/parkplace/home/charlton/openmpi-1.4.2/grundvand-ifort/bin/mpirun -x LD_LIBRARY_PATH -n 4 -H grundvand -H niwot -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_intel/phast
 fi
 
 if [ $CONFIGURATION == "OPENMPI_INTEL_64" ]; then
@@ -84,7 +110,8 @@ if [ $CONFIGURATION == "OPENMPI_INTEL_64" ]; then
 #
     LD_LIBRARY_PATH=/z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/lib:/z/robocomp/usr/opt/intel/Compiler/11.0/083/lib/intel64/
     export LD_LIBRARY_PATH
-    /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/bin/mpirun  -n 2 -H robocomp -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_intel_64/phast
+#    /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/bin/mpirun  -n 4 -H robocomp -H lobo -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_1_4_2_intel_64_static/phast
+    /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/bin/mpirun  -n 4 -H robocomp -H lobo -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_intel_64/phast
 fi
 
 if [ $CONFIGURATION == "OPENMPI_GFORTRAN_64" ]; then
@@ -93,20 +120,6 @@ if [ $CONFIGURATION == "OPENMPI_GFORTRAN_64" ]; then
 #
     LD_LIBRARY_PATH=/z/parkplace/home/charlton/openmpi-1.4.2/lobo-gfortran-x64/lib
     export LD_LIBRARY_PATH
-    /z/parkplace/home/charlton/openmpi-1.4.2/lobo-gfortran-x64/bin/mpirun -n 4 -H robocomp -H lobo -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_1_4_2_gfortran_64/phast
+    /z/parkplace/home/charlton/openmpi-1.4.2/lobo-gfortran-x64/bin/mpirun -n 4 -H robocomp -H lobo -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_gfortran_64/phast
 fi
 
-#        LD_LIBRARY_PATH=/z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/lib:/z/robocomp/usr/opt/intel/Compiler/11.0/083/lib/intel64/
-#	set LD_LIBRARY_PATH=/z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/lib:/z/robocomp/usr/opt/intel/Compiler/11.0/083/lib/intel64/
-#	set LD_LIBRARY_PATH=/z/parkplace/home/charlton/openmpi-1.4.2/grundvand-ifort/lib:/z/grundvand/usr/opt/intel/Compiler/11.0/083/lib/ia32
-#	export LD_LIBRARY_PATH
-#        LD_LIBRARY_PATH=/z/parkplace/home/charlton/openmpi-1.4.2/grundvand-ifort/lib
-#	echo Done phastinput.
-#
-#   run phast
-#
-#	mpirun -n 13 -hostfile ../../hosts_openmpi -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_gfortran_64/phast
-#	ldd $PHASTDIR/src/phast/openmpi_intel/phast
-#	/z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/bin/mpirun -x LD_LIBRARY_PATH -n 2 -hostfile ../../hosts_openmpi -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_intel_64_debug/phast
-#	/z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/bin/mpirun  -n 2 -hostfile ../../hosts_openmpi -v -wdir $EXDIR/$NAME/0 ldd $PHASTDIR/src/phast/openmpi_intel_64/phast
-#	/z/parkplace/home/charlton/openmpi-1.4.2/grundvand-ifort/bin/mpirun -x LD_LIBRARY_PATH -n 2 -hostfile ../../hosts_openmpi -v -wdir $EXDIR/$NAME/0 ldd $PHASTDIR/src/phast/openmpi_intel/phast
