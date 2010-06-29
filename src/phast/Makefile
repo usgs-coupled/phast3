@@ -785,7 +785,7 @@ ifeq ($(CFG), OPENMPI_INTEL)
   CC           = $(OPENMPI_IFORT_32)/bin/mpiCC
   CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS) 
-  LD_FLAGS     = -static-intel ${HDF5_LIBS} -lmpi_cxx  ${HASH_STYLE} 
+  LD_FLAGS     = -static-intel -cxxlib ${HDF5_LIBS} -lmpi_cxx  ${HASH_STYLE} 
   LD_LIBRARY_PATH = $(OPENMPI_IFORT_32)/lib
   LINKER       = $(FC)
 endif
@@ -800,7 +800,7 @@ ifeq ($(CFG), OPENMPI_INTEL_DEBUG)
   CC           = $(OPENMPI_IFORT_32)/bin/mpiCC
   CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS) 
-  LD_FLAGS     = -static-intel ${HDF5_LIBS} ${HASH_STYLE} -lmpi_cxx
+  LD_FLAGS     = -static-intel -cxxlib ${HDF5_LIBS} ${HASH_STYLE} -lmpi_cxx
   LD_LIBRARY_PATH = $(OPENMPI_IFORT_32)/lib
   LINKER       = $(FC)
 endif
@@ -815,7 +815,7 @@ ifeq ($(CFG), OPENMPI_INTEL_64)
   CC           = $(OPENMPI_IFORT_64)/bin/mpiCC
   CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS) 
-  LD_FLAGS     = -static-intel ${HDF5_LIBS_64} -lmpi_cxx  ${HASH_STYLE} 
+  LD_FLAGS     = -static-intel -cxxlib ${HDF5_LIBS_64} -lmpi_cxx  ${HASH_STYLE} 
 #  LD_LIBRARY_PATH = $(OPENMPI_IFORT_64)/lib:$(LD_LIBRARY_OPENMPI_64)
   LINKER       = $(FC)
 endif
@@ -830,7 +830,7 @@ ifeq ($(CFG), OPENMPI_INTEL_64_DEBUG)
   CC           = $(OPENMPI_IFORT_64)/bin/mpiCC
   CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS) 
-  LD_FLAGS     = -static-intel ${HDF5_LIBS_64} ${HASH_STYLE} -lmpi_cxx
+  LD_FLAGS     = -static-intel -cxxlib ${HDF5_LIBS_64} ${HASH_STYLE} -lmpi_cxx
   LD_LIBRARY_PATH = $(OPENMPI_IFORT_64)/lib
   LINKER       = $(FC)
 endif
