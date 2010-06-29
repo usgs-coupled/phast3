@@ -650,7 +650,7 @@ SUBROUTINE zone_flow_write_heads
             OPEN(fuzf_heads,FILE=zone_filename_heads(izn),IOSTAT=ios,ACTION='WRITE',STATUS='REPLACE')
             write(fuzf_heads,"(a20,a20,a20,a13,a6,a1,a20)") "X","Y","Z","T(",TRIM(unittm),")","Head"
         else
-            OPEN(fuzf_heads,FILE=zone_filename_heads(izn),IOSTAT=ios,ACTION='WRITE',ACCESS='APPEND')
+            OPEN(fuzf_heads,FILE=zone_filename_heads(izn),IOSTAT=ios,ACTION='WRITE',POSITION='APPEND')
         endif 
         do i = 1, zone_col(izn)%num_xycol
             ii = zone_col(izn)%i_no(i)
@@ -708,14 +708,14 @@ END SUBROUTINE zone_flow_write_heads
 !        OPEN(iunit,FILE=fname_xyzt,IOSTAT=ios,STATUS='REPLACE')
 !        CLOSE(iunit)
 !    endif
-!    OPEN(iunit,FILE='subgrild/subgrid.input',IOSTAT=ios,ACTION='WRITE',ACCESS='APPEND')
+!    OPEN(iunit,FILE='subgrild/subgrid.input',IOSTAT=ios,ACTION='WRITE',POSITION='APPEND')
 !    WRITE(iunit,*) current_time," XYZ grid ", TRIM(fname) 
 !    CLOSE(iunit, status='KEEP')
 !    
 !    fname = "subgrid/subgrid.head."//char_100
 !    junit = 102
 !    OPEN(junit,FILE=fname,IOSTAT=ios,ACTION='WRITE',STATUS='REPLACE')
-!    OPEN(iunit,FILE=fname_xyzt,IOSTAT=ios,ACTION='WRITE',ACCESS='APPEND')
+!    OPEN(iunit,FILE=fname_xyzt,IOSTAT=ios,ACTION='WRITE',POSITION='APPEND')
 !!  TYPE :: zone_volume
 !!     INTEGER :: num_xycol
 !!     INTEGER, DIMENSION(:), POINTER :: i_no, j_no, kmin_no, kmax_no
