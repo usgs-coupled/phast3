@@ -27,7 +27,7 @@ SUBROUTINE init3
   CHARACTER(LEN=130) :: logline1
   REAL(KIND=kdp) :: uq, uqh, utime, utimchg
   REAL(KIND=kdp) :: up0, p1, z0, z1, zfsl, zm1, zp1
-  INTEGER :: da_err, ic, icol, imod, iis, iwel, jcol, k, l, ls, m, m1, mt
+  INTEGER :: da_err, ic, icol, imod, iis, iwel, jcol, k, l, ls, m, m1, mt, kcol
   REAL(KIND=kdp), PARAMETER :: nodat = bgreal*1.e-15_kdp
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
@@ -201,7 +201,7 @@ SUBROUTINE init3
         frac(m) = 1._kdp
      END DO
      IF(m1 == 0 .AND. .NOT.print_dry_col(mt)) THEN
-        CALL mtoijk(mt,icol,jcol,1,nx,ny)
+        CALL mtoijk(mt,icol,jcol,kcol,nx,ny)
         WRITE(logline1,'(a/tr5,a,i6,a,i5,a,i5)')   &
              'WARNING: A column of cells is dry in init3',  &
              'Cell column:', mt,' (i,j):', icol, ',', jcol
