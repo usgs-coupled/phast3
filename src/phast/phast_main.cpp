@@ -9,10 +9,10 @@
 #endif
 
 #if defined(FC_FUNC)
-#define PHAST FC_FUNC(phast, PHAST)
+#define PHAST_SUB FC_FUNC(phast_sub, PHAST_SUB)
 #endif
 
-extern "C" void PHAST(int *mpi_tasks, int *mpi_myself);
+extern "C" void PHAST_SUB(int *mpi_tasks, int *mpi_myself);
 
 int main(int argc, char* argv[])
 {
@@ -38,6 +38,6 @@ int main(int argc, char* argv[])
 	mpi_tasks = 1;
 	mpi_myself = 0;
 #endif
-	PHAST(&mpi_tasks, &mpi_myself);
+	PHAST_SUB(&mpi_tasks, &mpi_myself);
 	return EXIT_SUCCESS;
 }
