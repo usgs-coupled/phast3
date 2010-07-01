@@ -1,5 +1,4 @@
-SUBROUTINE phast(mpi_tasks, mpi_myself)
-!!PROGRAM phast
+SUBROUTINE phast_sub(mpi_tasks, mpi_myself)
   ! ... A three dimensional flow and solute transport code based
   ! ...      upon finite differences and fully coupled equation system
   ! ... Based upon HST3D Version 2.0
@@ -51,5 +50,4 @@ SUBROUTINE phast(mpi_tasks, mpi_myself)
 #else
    call phast_root(mpi_tasks, mpi_myself)
 #endif
-!!END PROGRAM phast
-END SUBROUTINE phast
+END SUBROUTINE phast_sub
