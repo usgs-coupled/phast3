@@ -1,11 +1,11 @@
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "phastpp", "phastpp.vfproj", "{F64F3B2F-6F9B-48D1-98BC-A714F23B1533}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "phreeqcpp", "phreeqcpp.vcproj", "{9B65F71A-2D27-4121-9724-6CD0ED7D975A}"
 	ProjectSection(ProjectDependencies) = postProject
-		{9B65F71A-2D27-4121-9724-6CD0ED7D975A} = {9B65F71A-2D27-4121-9724-6CD0ED7D975A}
+		{12E87AB4-B82A-4104-A74C-379229396B15} = {12E87AB4-B82A-4104-A74C-379229396B15}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "phreeqcpp", "phreeqcpp.vcproj", "{9B65F71A-2D27-4121-9724-6CD0ED7D975A}"
+Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "phastpp", "phastpp.vfproj", "{12E87AB4-B82A-4104-A74C-379229396B15}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,22 +19,6 @@ Global
 		ser|x64 = ser|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F64F3B2F-6F9B-48D1-98BC-A714F23B1533}.merge_debug|Win32.ActiveCfg = merge_debug|Win32
-		{F64F3B2F-6F9B-48D1-98BC-A714F23B1533}.merge_debug|Win32.Build.0 = merge_debug|Win32
-		{F64F3B2F-6F9B-48D1-98BC-A714F23B1533}.merge_debug|x64.ActiveCfg = merge_debug|x64
-		{F64F3B2F-6F9B-48D1-98BC-A714F23B1533}.merge_debug|x64.Build.0 = merge_debug|x64
-		{F64F3B2F-6F9B-48D1-98BC-A714F23B1533}.merge|Win32.ActiveCfg = merge|Win32
-		{F64F3B2F-6F9B-48D1-98BC-A714F23B1533}.merge|Win32.Build.0 = merge|Win32
-		{F64F3B2F-6F9B-48D1-98BC-A714F23B1533}.merge|x64.ActiveCfg = merge|x64
-		{F64F3B2F-6F9B-48D1-98BC-A714F23B1533}.merge|x64.Build.0 = merge|x64
-		{F64F3B2F-6F9B-48D1-98BC-A714F23B1533}.ser_debug|Win32.ActiveCfg = ser_debug|Win32
-		{F64F3B2F-6F9B-48D1-98BC-A714F23B1533}.ser_debug|Win32.Build.0 = ser_debug|Win32
-		{F64F3B2F-6F9B-48D1-98BC-A714F23B1533}.ser_debug|x64.ActiveCfg = ser_debug|x64
-		{F64F3B2F-6F9B-48D1-98BC-A714F23B1533}.ser_debug|x64.Build.0 = ser_debug|x64
-		{F64F3B2F-6F9B-48D1-98BC-A714F23B1533}.ser|Win32.ActiveCfg = ser|Win32
-		{F64F3B2F-6F9B-48D1-98BC-A714F23B1533}.ser|Win32.Build.0 = ser|Win32
-		{F64F3B2F-6F9B-48D1-98BC-A714F23B1533}.ser|x64.ActiveCfg = ser|x64
-		{F64F3B2F-6F9B-48D1-98BC-A714F23B1533}.ser|x64.Build.0 = ser|x64
 		{9B65F71A-2D27-4121-9724-6CD0ED7D975A}.merge_debug|Win32.ActiveCfg = merge_debug|Win32
 		{9B65F71A-2D27-4121-9724-6CD0ED7D975A}.merge_debug|Win32.Build.0 = merge_debug|Win32
 		{9B65F71A-2D27-4121-9724-6CD0ED7D975A}.merge_debug|x64.ActiveCfg = merge_debug|x64
@@ -51,6 +35,22 @@ Global
 		{9B65F71A-2D27-4121-9724-6CD0ED7D975A}.ser|Win32.Build.0 = ser|Win32
 		{9B65F71A-2D27-4121-9724-6CD0ED7D975A}.ser|x64.ActiveCfg = ser|x64
 		{9B65F71A-2D27-4121-9724-6CD0ED7D975A}.ser|x64.Build.0 = ser|x64
+		{12E87AB4-B82A-4104-A74C-379229396B15}.merge_debug|Win32.ActiveCfg = merge_debug|Win32
+		{12E87AB4-B82A-4104-A74C-379229396B15}.merge_debug|Win32.Build.0 = merge_debug|Win32
+		{12E87AB4-B82A-4104-A74C-379229396B15}.merge_debug|x64.ActiveCfg = merge_debug|x64
+		{12E87AB4-B82A-4104-A74C-379229396B15}.merge_debug|x64.Build.0 = merge_debug|x64
+		{12E87AB4-B82A-4104-A74C-379229396B15}.merge|Win32.ActiveCfg = merge|Win32
+		{12E87AB4-B82A-4104-A74C-379229396B15}.merge|Win32.Build.0 = merge|Win32
+		{12E87AB4-B82A-4104-A74C-379229396B15}.merge|x64.ActiveCfg = merge|x64
+		{12E87AB4-B82A-4104-A74C-379229396B15}.merge|x64.Build.0 = merge|x64
+		{12E87AB4-B82A-4104-A74C-379229396B15}.ser_debug|Win32.ActiveCfg = ser_debug|Win32
+		{12E87AB4-B82A-4104-A74C-379229396B15}.ser_debug|Win32.Build.0 = ser_debug|Win32
+		{12E87AB4-B82A-4104-A74C-379229396B15}.ser_debug|x64.ActiveCfg = ser_debug|x64
+		{12E87AB4-B82A-4104-A74C-379229396B15}.ser_debug|x64.Build.0 = ser_debug|x64
+		{12E87AB4-B82A-4104-A74C-379229396B15}.ser|Win32.ActiveCfg = ser|Win32
+		{12E87AB4-B82A-4104-A74C-379229396B15}.ser|Win32.Build.0 = ser|Win32
+		{12E87AB4-B82A-4104-A74C-379229396B15}.ser|x64.ActiveCfg = ser|x64
+		{12E87AB4-B82A-4104-A74C-379229396B15}.ser|x64.Build.0 = ser|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

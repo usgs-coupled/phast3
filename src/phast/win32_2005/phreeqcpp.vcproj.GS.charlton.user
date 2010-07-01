@@ -9,7 +9,7 @@
 			Name="ser_debug|Win32"
 			>
 			<DebugSettings
-				Command=""
+				Command="$(TargetPath)"
 				WorkingDirectory=""
 				CommandArguments=""
 				Attach="false"
@@ -37,7 +37,7 @@
 			Name="ser_debug|x64"
 			>
 			<DebugSettings
-				Command=""
+				Command="$(TargetPath)"
 				WorkingDirectory=""
 				CommandArguments=""
 				Attach="false"
@@ -65,7 +65,7 @@
 			Name="ser|Win32"
 			>
 			<DebugSettings
-				Command=""
+				Command="$(TargetPath)"
 				WorkingDirectory=""
 				CommandArguments=""
 				Attach="false"
@@ -93,7 +93,7 @@
 			Name="ser|x64"
 			>
 			<DebugSettings
-				Command=""
+				Command="$(TargetPath)"
 				WorkingDirectory=""
 				CommandArguments=""
 				Attach="false"
@@ -121,7 +121,7 @@
 			Name="merge|Win32"
 			>
 			<DebugSettings
-				Command=""
+				Command="$(TargetPath)"
 				WorkingDirectory=""
 				CommandArguments=""
 				Attach="false"
@@ -149,7 +149,7 @@
 			Name="merge|x64"
 			>
 			<DebugSettings
-				Command=""
+				Command="$(TargetPath)"
 				WorkingDirectory=""
 				CommandArguments=""
 				Attach="false"
@@ -177,7 +177,7 @@
 			Name="merge_debug|Win32"
 			>
 			<DebugSettings
-				Command=""
+				Command="$(TargetPath)"
 				WorkingDirectory=""
 				CommandArguments=""
 				Attach="false"
@@ -205,7 +205,7 @@
 			Name="merge_debug|x64"
 			>
 			<DebugSettings
-				Command=""
+				Command="$(TargetPath)"
 				WorkingDirectory=""
 				CommandArguments=""
 				Attach="false"

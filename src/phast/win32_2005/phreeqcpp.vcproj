@@ -22,7 +22,7 @@
 			Name="ser_debug|Win32"
 			OutputDirectory="ser_debug"
 			IntermediateDirectory="ser_debug\c"
-			ConfigurationType="4"
+			ConfigurationType="1"
 			InheritedPropertySheets=".\HDF5.vsprops;$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			CharacterSet="2"
 			>
@@ -67,11 +67,15 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/phreeqcpp.lib"
+				Name="VCLinkerTool"
+				AdditionalDependencies="zdll.lib phastpp.lib gmp.lib hdf5dll.lib zdll.lib"
+				AdditionalLibraryDirectories="&quot;$(DEV_IFC_LIB)&quot;;&quot;$(DEV_ZLIB122_LIB)&quot;;&quot;$(DEV_HDF5_LIBDLL)&quot;;&quot;$(DEV_GMP_LIB_MT)&quot;;&quot;$(OUTDIR)&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -84,6 +88,12 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -91,7 +101,7 @@
 			Name="ser_debug|x64"
 			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="4"
+			ConfigurationType="1"
 			InheritedPropertySheets=".\HDF5.vsprops;$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			CharacterSet="2"
 			>
@@ -137,11 +147,15 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/phreeqcpp.lib"
+				Name="VCLinkerTool"
+				AdditionalDependencies="phastpp.lib hdf5dll.lib zlib1.lib"
+				AdditionalLibraryDirectories="&quot;$(DEV_IFC_X64_LIB)&quot;;&quot;$(DEV_ZLIB123_X64_LIB)&quot;;&quot;$(DEV_HDF5_X64_LIBDLL)&quot;;&quot;$(DEV_GMP_LIB_MT)&quot;;&quot;$(OUTDIR)&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -154,6 +168,12 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -161,7 +181,7 @@
 			Name="ser|Win32"
 			OutputDirectory="ser"
 			IntermediateDirectory="ser\c"
-			ConfigurationType="4"
+			ConfigurationType="1"
 			InheritedPropertySheets=".\HDF5.vsprops;$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			CharacterSet="2"
 			>
@@ -206,11 +226,15 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/phreeqcpp.lib"
+				Name="VCLinkerTool"
+				AdditionalDependencies="zdll.lib phastpp.lib hdf5dll.lib gmp.lib"
+				AdditionalLibraryDirectories="&quot;$(DEV_IFC_LIB)&quot;;&quot;$(DEV_ZLIB122_LIB)&quot;;&quot;$(DEV_HDF5_LIBDLL)&quot;;&quot;$(DEV_GMP_LIB_MT)&quot;;&quot;$(OUTDIR)&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -222,6 +246,12 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -229,7 +259,7 @@
 			Name="ser|x64"
 			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="4"
+			ConfigurationType="1"
 			InheritedPropertySheets=".\HDF5.vsprops;$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			CharacterSet="2"
 			>
@@ -275,11 +305,15 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/phreeqcpp.lib"
+				Name="VCLinkerTool"
+				AdditionalDependencies="zlib1.lib phastpp.lib hdf5dll.lib"
+				AdditionalLibraryDirectories="&quot;$(DEV_IFC_X64_LIB)&quot;;&quot;$(DEV_ZLIB123_X64_LIB)&quot;;&quot;$(DEV_HDF5_X64_LIBDLL)&quot;;&quot;$(OUTDIR)&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -291,6 +325,12 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -298,7 +338,7 @@
 			Name="merge|Win32"
 			OutputDirectory="merge"
 			IntermediateDirectory="merge\c"
-			ConfigurationType="4"
+			ConfigurationType="1"
 			InheritedPropertySheets=".\HDF5.vsprops;$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			CharacterSet="2"
 			>
@@ -343,11 +383,16 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/phreeqcpp.lib"
+				Name="VCLinkerTool"
+				AdditionalDependencies="zdll.lib phastpp.lib hdf5dll.lib gmp.lib fmpich2.lib mpi.lib"
+				OutputFile="$(OutDir)\phast.exe"
+				AdditionalLibraryDirectories="&quot;$(DEV_IFC_LIB)&quot;;&quot;$(DEV_ZLIB122_LIB)&quot;;&quot;$(DEV_HDF5_LIBDLL)&quot;;&quot;$(DEV_MPICH2_LIB)&quot;;&quot;$(DEV_GMP_LIB_MT)&quot;;&quot;$(OUTDIR)&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -359,6 +404,12 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -366,7 +417,7 @@
 			Name="merge|x64"
 			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="4"
+			ConfigurationType="1"
 			InheritedPropertySheets=".\HDF5.vsprops;$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			CharacterSet="2"
 			>
@@ -412,11 +463,15 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/phreeqcpp.lib"
+				Name="VCLinkerTool"
+				AdditionalDependencies="zlib1.lib phastpp.lib hdf5dll.lib fmpich2.lib mpi.lib"
+				AdditionalLibraryDirectories="&quot;$(DEV_IFC_X64_LIB)&quot;;&quot;$(DEV_ZLIB123_X64_LIB)&quot;;&quot;$(DEV_HDF5_X64_LIBDLL)&quot;;&quot;$(DEV_MPICH2_X64_LIB)&quot;;&quot;$(OUTDIR)&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -428,6 +483,12 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -435,7 +496,7 @@
 			Name="merge_debug|Win32"
 			OutputDirectory="$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)\c"
-			ConfigurationType="4"
+			ConfigurationType="1"
 			InheritedPropertySheets=".\HDF5.vsprops;$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			CharacterSet="2"
 			>
@@ -482,11 +543,15 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/phreeqcpp.lib"
+				Name="VCLinkerTool"
+				AdditionalDependencies="zdll.lib phastpp.lib hdf5dll.lib gmp.lib fmpich2.lib mpi.lib"
+				AdditionalLibraryDirectories="&quot;$(DEV_IFC_LIB)&quot;;&quot;$(DEV_ZLIB122_LIB)&quot;;&quot;$(DEV_HDF5_LIBDLL)&quot;;&quot;$(DEV_MPICH2_LIB)&quot;;&quot;$(DEV_GMP_LIB_MT)&quot;;&quot;$(OUTDIR)&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -498,6 +563,12 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -505,7 +576,7 @@
 			Name="merge_debug|x64"
 			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="4"
+			ConfigurationType="1"
 			InheritedPropertySheets=".\HDF5.vsprops;$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			CharacterSet="2"
 			>
@@ -553,11 +624,15 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/phreeqcpp.lib"
+				Name="VCLinkerTool"
+				AdditionalDependencies="zlib1.lib phastpp.lib hdf5dll.lib fmpich2.lib mpi.lib"
+				AdditionalLibraryDirectories="&quot;$(DEV_IFC_X64_LIB)&quot;;&quot;$(DEV_ZLIB123_X64_LIB)&quot;;&quot;$(DEV_HDF5_X64_LIBDLL)&quot;;&quot;$(DEV_MPICH2_X64_LIB)&quot;;&quot;$(OUTDIR)&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -567,6 +642,12 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -2078,6 +2159,10 @@
 							CompileAs="2"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\phast_main.cpp"
+					>
 				</File>
 				<File
 					RelativePath="..\phreeqcpp\phreeqc\phqalloc.c"
@@ -3616,11 +3701,6 @@
 					>
 				</File>
 			</Filter>
-			<Filter
-				Name="Resource Files"
-				Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
-				>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -3864,6 +3944,15 @@
 			</File>
 			<File
 				RelativePath="..\phreeqcpp\Utils.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
+			>
+			<File
+				RelativePath=".\phast.rc"
 				>
 			</File>
 		</Filter>
