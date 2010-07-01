@@ -2,12 +2,23 @@ AM_CPPFLAGS=-I$(top_srcdir)/src/phast/phreeqcpp -I$(top_srcdir)/src/phast/phreeq
 
 bin_PROGRAMS = phast
 
-phast_SOURCES=\
+noinst_LTLIBRARIES = \
+	libmods.la
+        
+libmods_la_SOURCES = \
 	modules.f90\
 	interpolate_mod.f90\
 	ld_seg_mod.f90\
 	print_control_mod.f90\
-	rewi_mod.f90\
+	rewi_mod.f90
+	
+if BUILD_MPI
+libmods_la_SOURCES += \
+	mpimod.F90
+endif
+	
+       
+phast_SOURCES=\
 	abmult.f90\
 	aplbce.f90\
 	aplbce_ss_flow.f90\
@@ -78,6 +89,7 @@ phast_SOURCES=\
 	phast.F90\
 	phast_files.c\
 	phast_files.h\
+	phast_main.cpp\
 	phastproto.h\
 	phast_root.F90\
 	Pointers_to_fortran.h\
@@ -259,15 +271,49 @@ phast_SOURCES=\
 	KDtree/Point.h
 
 if BUILD_MPI
+AM_FCFLAGS=-DUSE_MPI -DMERGE_FILES -DHDF5_CREATE
+libmods_la_SOURCES += \
+	mpimod.F90
+
 phast_SOURCES+=\
 	merge.c\
-	mpimod.F90\
 	phast_slave.F90\
 	slavesubs.c	
 endif
 
+PPFCCOMPILE = $(FC) \
+	$(CPPFLAGS) $(AM_FCFLAGS) $(FCFLAGS)
+LTPPFCCOMPILE = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
+	--mode=compile $(FC) \
+	$(CPPFLAGS) $(AM_FCFLAGS) $(FCFLAGS)
+
 COMPILE = $(CXXCOMPILE)
 LTCOMPILE = $(LTCXXCOMPILE)
 
-phast_LDADD = $(FCLIBS) $(HDF5_LDFLAGS)
+phast_LDADD = libmods.la $(FCLIBS) $(HDF5_LDFLAGS)
 
+CLEANFILES=\
+	f_units.mod\
+	hdf_media.mod\
+	interpolate_mod.mod\
+	ld_seg_mod.mod\
+	machine_constants.mod\
+	mcb2.mod\
+	mcb.mod\
+	mcch.mod\
+	mcc.mod\
+	mcg.mod\
+	mcm.mod\
+	mcn.mod\
+	mcp.mod\
+	mcs2.mod\
+	mcs.mod\
+	mct.mod\
+	mcv.mod\
+	mcw.mod\
+	mg2.mod\
+	mg3.mod\
+	mpi_mod.mod\
+	phys_const.mod\
+	print_control_mod.mod\
+	rewi_mod.mod
