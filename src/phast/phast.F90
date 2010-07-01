@@ -39,11 +39,9 @@ SUBROUTINE phast(mpi_tasks, mpi_myself)
   ! ... Extract the version name for the header
   version_name = ' @VERSION@'
   !...
-!!  mpi_tasks = 1
-!!  mpi_myself = 0
+#if defined(USE_MPI)
     g_mpi_tasks = mpi_tasks
     g_mpi_myself = mpi_myself
-#if defined(USE_MPI)
 !!  CALL init_mpi(mpi_tasks, mpi_myself)
   if(mpi_myself == 0) then
      call phast_root(mpi_tasks, mpi_myself)

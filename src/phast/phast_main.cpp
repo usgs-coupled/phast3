@@ -1,5 +1,12 @@
 #include <stdlib.h>
+
+#if defined(USE_MPI)
 #include <mpi.h>
+#endif
+
+#if defined(_MSC_VER)
+#define FC_FUNC(name,NAME) name
+#endif
 
 #if defined(FC_FUNC)
 #define PHAST FC_FUNC(phast, PHAST)
