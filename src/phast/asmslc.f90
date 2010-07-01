@@ -19,7 +19,7 @@ SUBROUTINE asmslc
        INTEGER, INTENT(IN) :: nrow
        INTEGER, INTENT(IN) :: norm
        REAL(KIND=kdp), DIMENSION(:,:), INTENT(INOUT) :: a
-       REAL(KIND=kdp), DIMENSION(:), INTENT(OUT) :: diag
+       REAL(KIND=kdp), DIMENSION(:), INTENT(INOUT) :: diag
        INTEGER, INTENT(OUT) :: ierr
      END SUBROUTINE rowscale
 
@@ -30,7 +30,7 @@ SUBROUTINE asmslc
        INTEGER, INTENT(IN) :: norm  
        REAL(KIND=kdp), DIMENSION(:,:), INTENT(INOUT) :: a    
        INTEGER, DIMENSION(:,:), INTENT(IN) :: ci 
-       REAL(KIND=kdp), DIMENSION(:), INTENT(OUT) :: diag
+       REAL(KIND=kdp), DIMENSION(:), INTENT(INOUT) :: diag
        INTEGER, INTENT(OUT) :: ierr
      END SUBROUTINE colscale
 
