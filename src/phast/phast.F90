@@ -1,4 +1,5 @@
-PROGRAM phast
+SUBROUTINE phast(mpi_tasks, mpi_myself)
+!!PROGRAM phast
   ! ... A three dimensional flow and solute transport code based
   ! ...      upon finite differences and fully coupled equation system
   ! ... Based upon HST3D Version 2.0
@@ -38,10 +39,12 @@ PROGRAM phast
   ! ... Extract the version name for the header
   version_name = ' @VERSION@'
   !...
-  mpi_tasks = 1
-  mpi_myself = 0
+!!  mpi_tasks = 1
+!!  mpi_myself = 0
+    g_mpi_tasks = mpi_tasks
+    g_mpi_myself = mpi_myself
 #if defined(USE_MPI)
-  CALL init_mpi(mpi_tasks, mpi_myself)
+!!  CALL init_mpi(mpi_tasks, mpi_myself)
   if(mpi_myself == 0) then
      call phast_root(mpi_tasks, mpi_myself)
   else
@@ -50,4 +53,5 @@ PROGRAM phast
 #else
    call phast_root(mpi_tasks, mpi_myself)
 #endif
-END PROGRAM phast
+!!END PROGRAM phast
+END SUBROUTINE phast

@@ -1,0 +1,36 @@
+#include <stdlib.h>
+#include <mpi.h>
+
+#if defined(FC_FUNC)
+#define PHAST FC_FUNC(phast, PHAST)
+#endif
+
+extern "C" void PHAST(int *mpi_tasks, int *mpi_myself);
+
+int main(int argc, char* argv[])
+{
+	int mpi_tasks;
+	int mpi_myself;
+
+#if defined(USE_MPI)
+	if (MPI_Init(&argc, &argv) != MPI_SUCCESS)
+	{
+		return EXIT_FAILURE;
+	}
+
+	if (MPI_Comm_size(MPI_COMM_WORLD, &mpi_tasks) != MPI_SUCCESS)
+	{
+		return EXIT_FAILURE;
+	}
+
+	if (MPI_Comm_rank(MPI_COMM_WORLD, &mpi_myself) != MPI_SUCCESS)
+	{
+		return EXIT_FAILURE;
+	}
+#else
+	mpi_tasks = 1;
+	mpi_myself = 0;
+#endif
+	PHAST(&mpi_tasks, &mpi_myself);
+	return EXIT_SUCCESS;
+}

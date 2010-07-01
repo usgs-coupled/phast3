@@ -17,82 +17,82 @@ MODULE mpi_mod
 
 CONTAINS
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  ! init_mpi
-  !
-  ! Preconditions:
-  !   none
-  !
-  ! Postconditions:
-  !   g_mpi_tasks and g_mpi_myself are valid
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  SUBROUTINE init_mpi(mpi_tasks, mpi_myself)
-    IMPLICIT NONE
-!MS$ NOFREEFORM
-      INCLUDE 'mpif.h'
-!MS$ FREEFORM
-#if defined(_WIN32)
-    !MS$ ATTRIBUTES Default :: mpi_dup_fn    
-    !MS$ ATTRIBUTES Default :: mpi_null_delete_fn    
-    !MS$ ATTRIBUTES Default :: mpi_null_copy_fn    
-    !MS$ ATTRIBUTES Default :: mpi_comm_dup_fn    
-    !MS$ ATTRIBUTES Default :: mpi_comm_null_delete_fn
-    !MS$ ATTRIBUTES Default :: mpi_comm_null_copy_fn
-    !MS$ ATTRIBUTES Default :: mpi_win_dup_fn
-    !MS$ ATTRIBUTES Default :: mpi_win_null_delete_fn
-    !MS$ ATTRIBUTES Default :: mpi_win_null_copy_fn
-    !MS$ ATTRIBUTES Default :: mpi_type_dup_fn
-    !MS$ ATTRIBUTES Default :: mpi_type_null_delete_fn
-    !MS$ ATTRIBUTES Default :: mpi_type_null_copy_fn
-    !MS$ ATTRIBUTES Default :: mpi_conversion_fn_null
-#endif
-    INTERFACE
-       SUBROUTINE MPI_INIT_(ierror)
-#if defined(_WIN32)
-         !MS$ ATTRIBUTES Default :: MPI_INIT
-#endif
-         INTEGER ierror
-       END SUBROUTINE MPI_INIT_
-       SUBROUTINE MPI_COMM_SIZE_(comm, size, ierror)
-#if defined(_WIN32)
-         !MS$ ATTRIBUTES Default :: MPI_COMM_SIZE
-#endif
-         INTEGER :: comm
-         INTEGER :: size
-         INTEGER :: ierror
-       END SUBROUTINE MPI_COMM_SIZE_
-       SUBROUTINE MPI_COMM_RANK_(comm, rank, ierror)
-#if defined(_WIN32)
-         !MS$ ATTRIBUTES Default :: MPI_COMM_RANK
-#endif
-         INTEGER :: comm
-         INTEGER :: rank
-         INTEGER :: ierror
-       END SUBROUTINE MPI_COMM_RANK_
-    END INTERFACE
-
-    INTEGER, INTENT(OUT) :: mpi_tasks
-    INTEGER, INTENT(OUT) :: mpi_myself
-    INTEGER :: my_mpi_error
-
-    CALL MPI_INIT_(my_mpi_error)
-    IF (my_mpi_error /= 0) THEN
-       WRITE(*,*) "MPI_INIT failed."
-       STOP "Stopping."
-    ENDIF
-    CALL MPI_COMM_SIZE_(MPI_COMM_WORLD, mpi_tasks, my_mpi_error)
-    IF (my_mpi_error /= 0) THEN
-       WRITE(*,*) "MPI_COMM_SIZE failed."
-       STOP "Stopping."
-    ENDIF
-    CALL MPI_COMM_RANK_(MPI_COMM_WORLD, mpi_myself, my_mpi_error)
-    IF (my_mpi_error /= 0) THEN
-       WRITE(*,*) "MPI_COMM_RANK failed."
-       STOP "Stopping."
-    ENDIF
-    g_mpi_tasks = mpi_tasks
-    g_mpi_myself = mpi_myself
-  END SUBROUTINE init_mpi
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!  ! init_mpi
+!!!!  !
+!!!!  ! Preconditions:
+!!!!  !   none
+!!!!  !
+!!!!  ! Postconditions:
+!!!!  !   g_mpi_tasks and g_mpi_myself are valid
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!  SUBROUTINE init_mpi(mpi_tasks, mpi_myself)
+!!!!    IMPLICIT NONE
+!!!!!MS$ NOFREEFORM
+!!!!      INCLUDE 'mpif.h'
+!!!!!MS$ FREEFORM
+!!!!#if defined(_WIN32)
+!!!!    !MS$ ATTRIBUTES Default :: mpi_dup_fn    
+!!!!    !MS$ ATTRIBUTES Default :: mpi_null_delete_fn    
+!!!!    !MS$ ATTRIBUTES Default :: mpi_null_copy_fn    
+!!!!    !MS$ ATTRIBUTES Default :: mpi_comm_dup_fn    
+!!!!    !MS$ ATTRIBUTES Default :: mpi_comm_null_delete_fn
+!!!!    !MS$ ATTRIBUTES Default :: mpi_comm_null_copy_fn
+!!!!    !MS$ ATTRIBUTES Default :: mpi_win_dup_fn
+!!!!    !MS$ ATTRIBUTES Default :: mpi_win_null_delete_fn
+!!!!    !MS$ ATTRIBUTES Default :: mpi_win_null_copy_fn
+!!!!    !MS$ ATTRIBUTES Default :: mpi_type_dup_fn
+!!!!    !MS$ ATTRIBUTES Default :: mpi_type_null_delete_fn
+!!!!    !MS$ ATTRIBUTES Default :: mpi_type_null_copy_fn
+!!!!    !MS$ ATTRIBUTES Default :: mpi_conversion_fn_null
+!!!!#endif
+!!!!    INTERFACE
+!!!!       SUBROUTINE MPI_INIT_(ierror)
+!!!!#if defined(_WIN32)
+!!!!         !MS$ ATTRIBUTES Default :: MPI_INIT
+!!!!#endif
+!!!!         INTEGER ierror
+!!!!       END SUBROUTINE MPI_INIT_
+!!!!       SUBROUTINE MPI_COMM_SIZE_(comm, size, ierror)
+!!!!#if defined(_WIN32)
+!!!!         !MS$ ATTRIBUTES Default :: MPI_COMM_SIZE
+!!!!#endif
+!!!!         INTEGER :: comm
+!!!!         INTEGER :: size
+!!!!         INTEGER :: ierror
+!!!!       END SUBROUTINE MPI_COMM_SIZE_
+!!!!       SUBROUTINE MPI_COMM_RANK_(comm, rank, ierror)
+!!!!#if defined(_WIN32)
+!!!!         !MS$ ATTRIBUTES Default :: MPI_COMM_RANK
+!!!!#endif
+!!!!         INTEGER :: comm
+!!!!         INTEGER :: rank
+!!!!         INTEGER :: ierror
+!!!!       END SUBROUTINE MPI_COMM_RANK_
+!!!!    END INTERFACE
+!!!!
+!!!!    INTEGER, INTENT(OUT) :: mpi_tasks
+!!!!    INTEGER, INTENT(OUT) :: mpi_myself
+!!!!    INTEGER :: my_mpi_error
+!!!!
+!!!!    CALL MPI_INIT_(my_mpi_error)
+!!!!    IF (my_mpi_error /= 0) THEN
+!!!!       WRITE(*,*) "MPI_INIT failed."
+!!!!       STOP "Stopping."
+!!!!    ENDIF
+!!!!    CALL MPI_COMM_SIZE_(MPI_COMM_WORLD, mpi_tasks, my_mpi_error)
+!!!!    IF (my_mpi_error /= 0) THEN
+!!!!       WRITE(*,*) "MPI_COMM_SIZE failed."
+!!!!       STOP "Stopping."
+!!!!    ENDIF
+!!!!    CALL MPI_COMM_RANK_(MPI_COMM_WORLD, mpi_myself, my_mpi_error)
+!!!!    IF (my_mpi_error /= 0) THEN
+!!!!       WRITE(*,*) "MPI_COMM_RANK failed."
+!!!!       STOP "Stopping."
+!!!!    ENDIF
+!!!!    g_mpi_tasks = mpi_tasks
+!!!!    g_mpi_myself = mpi_myself
+!!!!  END SUBROUTINE init_mpi
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   ! get_mpi_filename
