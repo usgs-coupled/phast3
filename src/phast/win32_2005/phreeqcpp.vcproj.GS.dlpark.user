@@ -9,8 +9,8 @@
 			Name="ser_debug|Win32"
 			>
 			<DebugSettings
-				Command=""
-				WorkingDirectory="C:\Programs\phastpp\examples\mpich64"
+				Command="$(TargetPath)"
+				WorkingDirectory="C:\Programs\phastpp\examples\ex4"
 				CommandArguments=""
 				Attach="false"
 				DebuggerType="3"
@@ -37,7 +37,7 @@
 			Name="ser_debug|x64"
 			>
 			<DebugSettings
-				Command=""
+				Command="$(TargetPath)"
 				WorkingDirectory=""
 				CommandArguments=""
 				Attach="false"
@@ -65,8 +65,8 @@
 			Name="ser|Win32"
 			>
 			<DebugSettings
-				Command=""
-				WorkingDirectory="C:\Programs\phastpp\examples\capecod"
+				Command="$(TargetPath)"
+				WorkingDirectory="C:\Programs\phastpp\examples\ex4"
 				CommandArguments=""
 				Attach="false"
 				DebuggerType="3"
@@ -93,7 +93,7 @@
 			Name="ser|x64"
 			>
 			<DebugSettings
-				Command=""
+				Command="$(TargetPath)"
 				WorkingDirectory="C:\Programs\phastpp\examples\Angels"
 				CommandArguments=""
 				Attach="false"
@@ -121,7 +121,7 @@
 			Name="merge|Win32"
 			>
 			<DebugSettings
-				Command=""
+				Command="$(TargetPath)"
 				WorkingDirectory=""
 				CommandArguments=""
 				Attach="false"
@@ -149,7 +149,7 @@
 			Name="merge|x64"
 			>
 			<DebugSettings
-				Command=""
+				Command="$(TargetPath)"
 				WorkingDirectory="C:\Programs\phastpp\examples\Angels"
 				CommandArguments=""
 				Attach="false"
@@ -177,7 +177,7 @@
 			Name="merge_debug|Win32"
 			>
 			<DebugSettings
-				Command=""
+				Command="$(TargetPath)"
 				WorkingDirectory=""
 				CommandArguments=""
 				Attach="false"
@@ -205,7 +205,7 @@
 			Name="merge_debug|x64"
 			>
 			<DebugSettings
-				Command=""
+				Command="$(TargetPath)"
 				WorkingDirectory=""
 				CommandArguments=""
 				Attach="false"

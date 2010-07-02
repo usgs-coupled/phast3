@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="phreeqcpp"
+	Name="phast"
 	ProjectGUID="{9B65F71A-2D27-4121-9724-6CD0ED7D975A}"
 	RootNamespace="phreeqcpp"
 	Keyword="Win32Proj"
@@ -47,7 +47,7 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(DEV_ZLIB122_INC)&quot;;&quot;$(DEV_HDF5_INC)&quot;;&quot;$(DEV_GMP_INC_MT)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;;&quot;$(ProjectDir)..&quot;;&quot;$(BOOSTROOT)&quot;"
 				PreprocessorDefinitions="GZIP_RESTART;USE_PHRQ_ALLOC;PHREEQC_CPP;_DEBUG;WIN32;_CONSOLE;NO_UNDERSCORES;H5_HAVE_FUNCTION;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
-				MinimalRebuild="true"
+				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
@@ -70,6 +70,8 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="zdll.lib phastpp.lib gmp.lib hdf5dll.lib zdll.lib"
 				AdditionalLibraryDirectories="&quot;$(DEV_IFC_LIB)&quot;;&quot;$(DEV_ZLIB122_LIB)&quot;;&quot;$(DEV_HDF5_LIBDLL)&quot;;&quot;$(DEV_GMP_LIB_MT)&quot;;&quot;$(OUTDIR)&quot;"
+				GenerateDebugInformation="true"
+				AssemblyDebug="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -150,6 +152,8 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="phastpp.lib hdf5dll.lib zlib1.lib"
 				AdditionalLibraryDirectories="&quot;$(DEV_IFC_X64_LIB)&quot;;&quot;$(DEV_ZLIB123_X64_LIB)&quot;;&quot;$(DEV_HDF5_X64_LIBDLL)&quot;;&quot;$(DEV_GMP_LIB_MT)&quot;;&quot;$(OUTDIR)&quot;"
+				GenerateDebugInformation="true"
+				AssemblyDebug="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -385,7 +389,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="zdll.lib phastpp.lib hdf5dll.lib gmp.lib fmpich2.lib mpi.lib"
-				OutputFile="$(OutDir)\phast.exe"
+				OutputFile="$(OutDir)\$(ProjectName).exe"
 				AdditionalLibraryDirectories="&quot;$(DEV_IFC_LIB)&quot;;&quot;$(DEV_ZLIB122_LIB)&quot;;&quot;$(DEV_HDF5_LIBDLL)&quot;;&quot;$(DEV_MPICH2_LIB)&quot;;&quot;$(DEV_GMP_LIB_MT)&quot;;&quot;$(OUTDIR)&quot;"
 			/>
 			<Tool
@@ -529,6 +533,7 @@
 				RuntimeLibrary="1"
 				EnableFunctionLevelLinking="false"
 				UsePrecompiledHeader="0"
+				BrowseInformation="1"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -546,6 +551,8 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="zdll.lib phastpp.lib hdf5dll.lib gmp.lib fmpich2.lib mpi.lib"
 				AdditionalLibraryDirectories="&quot;$(DEV_IFC_LIB)&quot;;&quot;$(DEV_ZLIB122_LIB)&quot;;&quot;$(DEV_HDF5_LIBDLL)&quot;;&quot;$(DEV_MPICH2_LIB)&quot;;&quot;$(DEV_GMP_LIB_MT)&quot;;&quot;$(OUTDIR)&quot;"
+				GenerateDebugInformation="true"
+				AssemblyDebug="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -627,6 +634,8 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="zlib1.lib phastpp.lib hdf5dll.lib fmpich2.lib mpi.lib"
 				AdditionalLibraryDirectories="&quot;$(DEV_IFC_X64_LIB)&quot;;&quot;$(DEV_ZLIB123_X64_LIB)&quot;;&quot;$(DEV_HDF5_X64_LIBDLL)&quot;;&quot;$(DEV_MPICH2_X64_LIB)&quot;;&quot;$(OUTDIR)&quot;"
+				GenerateDebugInformation="true"
+				AssemblyDebug="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
