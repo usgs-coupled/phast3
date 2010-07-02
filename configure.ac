@@ -10,16 +10,15 @@ AM_INIT_AUTOMAKE([-Wall -Werror foreign subdir-objects])
 AC_CONFIG_SRCDIR([src/phastinput/accumulate.c])
 
 # phastinput defines
-AC_DEFINE(ANSI_DECLARATORS)
-AC_DEFINE(TRILIBRARY)
+AC_DEFINE([ANSI_DECLARATORS], , [Must be set for phastinput])
+AC_DEFINE([TRILIBRARY], , [Must be set for phastinput])
 
 # phast defines
-# DEFINE_HDF=-DHDF5_CREATE -DH5Dcreate_vers=1 -DH5Gcreate_vers=1 -DH5Eset_auto_vers=1
-AC_DEFINE(PHREEQC_CPP)
-AC_DEFINE(HDF5_CREATE)
-AC_DEFINE(H5Dcreate_vers)
-AC_DEFINE(H5Gcreate_vers)
-AC_DEFINE(H5Eset_auto_vers)
+AC_DEFINE([PHREEQC_CPP], , [Must be set for phastinput])
+AC_DEFINE([HDF5_CREATE], , [Must be set for phastinput])
+AC_DEFINE([H5Dcreate_vers], [1] , [Must be set to 1 for phast])
+AC_DEFINE([H5Gcreate_vers], [1] , [Must be set to 1 for phast])
+AC_DEFINE([H5Eset_auto_vers], [1] , [Must be set to 1 for phast])
 
 # Checks for programs.
 AC_PROG_CXX
@@ -65,12 +64,37 @@ AC_CHECK_FUNCS([sqrt],    , AC_CHECK_LIB(m, sqrt,  , AC_ERROR([cannot find sqrt]
 AX_BOOST_BASE([1.36])
 
 # HDF5
+##set -x -v
 AX_LIB_HDF5()
+##set +x +v
 
 # Build mpi version
-AM_CONDITIONAL([BUILD_MPI], [test "X$TODO" = "Xyes"])
+# Check if building mpi version
+AC_MSG_CHECKING([if building MPI version])
+AC_ARG_ENABLE([mpi],
+     [AC_HELP_STRING([--enable-mpi],
+                     [build the MPI version @<:@default=no@:>@])],
+     [PHAST_MPI=yes],)
 
-# src/phast/Makefile
+if test "X$PHAST_MPI" = "Xyes"; then
+  AC_MSG_RESULT(yes)
+  AC_LANG(C++)
+  AX_MPI()
+  AC_LANG(Fortran)
+  AX_MPI()
+  # extra MPI defines
+  AC_DEFINE([USE_MPI], , [Set to use MPI])
+  AC_DEFINE([MERGE_FILES], , [Set to use MPI])
+  # set compilers
+  CXX="$MPICXX"
+  FC="$MPIFC"
+else
+  AC_MSG_RESULT(no)
+fi
+AM_CONDITIONAL([BUILD_MPI], [test "X$PHAST_MPI" = "Xyes"])
+
+###AC_CONFIG_HEADERS([config.h])
+
 AC_CONFIG_FILES([
   Makefile
   src/Makefile
