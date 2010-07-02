@@ -278,7 +278,7 @@ LAM_LIB          =  -L/usr/lib/ -llam
 
 .SUFFIXES : .o .f .F90 .f90 .c .cxx .cpp
 
-# compilers
+# The following apply to Lahey versions
 FLAHEY=/z/niwot/usr/local/lf95/bin/lf95
 # include lam library first to avoid lahey mpi library
 LIBLAHEY=$(LAM_LIB) -L/z/niwot/usr/local/lf95/lib -Xlinker -Bstatic -Xlinker -lfj9i6 -Xlinker -lfj9f6 -Xlinker -lfj9e6 -Xlinker -lfccx86_6a -Xlinker -Bdynamic 
@@ -292,34 +292,22 @@ LIBABSOFT=-L/usr/absoft/lib  -lfio -lU77 -lf77math -lf90math
 FG95=/usr/local/bin/g95
 LIBG95=-L/usr/local/g95/lib/gcc-lib/i686-pc-linux-gnu/4.0.1/ -lf95
 
-LIBGFORTRAN_64=-L/usr/lib64 -lgfortranbegin -lgfortran
+# The following apply to GFortran versions
 FGFORTRAN=gfortran
-LIBGFORTRAN= -lgfortranbegin -lgfortran
-#/usr/lib/gcc/i586-manbo-linux-gnu/4.4.1/libgfortran.a
-# for static linking of gfortran library
-#LIBGFORTRAN= -lgfortranbegin /usr/lib/gcc/i586-mandriva-linux-gnu/4.1.2/libgfortran.a
+LIBGFORTRAN= -lgfortranbegin -Xlinker -Bstatic -lgfortran -Xlinker -Bdynamic
+LIBGFORTRAN_64=-L/usr/lib64 -lgfortranbegin -Xlinker -Bstatic -lgfortran -Xlinker -Bdynamic
 
-# The following apply to OPENMPI_INTEL versions
+# The following apply to INTEL versions
 FINTEL=ifort
 IF_HOME=/z/robocomp/usr/opt/intel/Compiler/11.0/083/lib
-
 IFORT_LIB=-Xlinker -Bstatic -L$(IF_HOME)/ia32/ -lifport -lifcore -limf -lsvml -lm -lipgo -lirc -lirc_s -Xlinker -Bdynamic -lpthread -ldl
-
 IFORT_LIB_64=-Xlinker -Bstatic -L$(IF_HOME)/intel64/ -lifport -lifcore -limf -lsvml -lm -lipgo -lirc -lirc_s -Xlinker -Bdynamic -lpthread -ldl 
 
+# The following apply to OpenMPI versions
 OPENMPI_GFORTRAN_32=/z/parkplace/home/charlton/openmpi-1.4.2/grundvand-gfortran
 OPENMPI_IFORT_32=/z/parkplace/home/charlton/openmpi-1.4.2/grundvand-ifort
 OPENMPI_GFORTRAN_64=/z/parkplace/home/charlton/openmpi-1.4.2/lobo-gfortran-x64
 OPENMPI_IFORT_64=/z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64
-
-#LIBRARY_IFORT_64=/z/robocomp/usr/opt/intel/Compiler/11.0/083/lib/intel64/
-#LD_LIBRARY_INTEL=/z/grundvand/usr/opt/intel/Compiler/11.0/083/lib/ia32
-#setenv LD_LIBRARY_PATH /z/parkplace/home/charlton/openmpi-1.3.2-grundvand-ifort/lib:/z/grundvand/usr/opt/intel/Compiler/11.0/083/lib/ia32:$LD_LIBRARY_PATH
-#setenv PATH /z/parkplace/home/charlton/openmpi-1.3.2-grundvand-ifort/bin:/z/grundvand/usr/local/totalview/bin:$PATH
-#/Compiler/11.0/083/lib/intel64/
-
-
-
 
 # -----------------------------------------------------------------------------
 .f90.o :
@@ -337,8 +325,8 @@ OPENMPI_IFORT_64=/z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64
 #hdf options
 HDF5_ROOT=/usr
 HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
-HDF5_LIBS=${HDF5_ROOT}/lib/libhdf5.a  -lz -lpthread
-HDF5_LIBS_64=${HDF5_ROOT}/lib64/libhdf5.a -lz # -lpthread 
+HDF5_LIBS=${HDF5_ROOT}/lib/libhdf5.a  -Xlinker -Bstatic -lz -Xlinker -Bdynamic -lpthread 
+HDF5_LIBS_64=${HDF5_ROOT}/lib64/libhdf5.a -Xlinker -Bstatic -lz -Xlinker -Bdynamic -lpthread 
 
 # -----------------------------------------------------------------------------
 DEFINE_HDF=-DHDF5_CREATE -DH5Dcreate_vers=1 -DH5Gcreate_vers=1 -DH5Eset_auto_vers=1
@@ -782,23 +770,22 @@ ifeq ($(CFG), SERIAL_INTEL_64)
   CXX          = g++
   CFLAGS       = -Wall  -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS)  $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS) 
-  LD_FLAGS     = ${IFORT_LIB_64} ${HDF5_LIBS_64} ${HASH_STYLE} -lpthread # -static-intel -cxxlib 
-  #LD_FLAGS     = ${HDF5_LIBS_64} ${HASH_STYLE} # -static-intel -cxxlib 
-  #LINKER       = $(CXX)
-  LINKER       = $(CXX) --verbose  # -static # -cxxlib 
+  LD_FLAGS     = ${IFORT_LIB_64} ${HDF5_LIBS_64} ${HASH_STYLE} 
+  LINKER       = $(CXX)
 endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_INTEL_64_DEBUG)
   DEFINES      = $(DEFINE_HDF) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
+  FC_FUNC      =  -DFC_FUNC\(name,NAME\)=name
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   FC           = $(FINTEL)
   FFLAGS       = -g -nus $(DEFINES)
   CXX          = g++
-  CFLAGS       = -Wall  -g $(DEFINES)  $(PHREEQC_INCLUDES) 
+  CFLAGS       = -Wall -g $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS)  $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS) 
-  LD_FLAGS     = -static-intel -cxxlib ${HDF5_LIBS_64} ${HASH_STYLE} 
-  LINKER       = $(FC)
+  LD_FLAGS     = ${IFORT_LIB_64} ${HDF5_LIBS_64} ${HASH_STYLE} 
+  LINKER       = $(CXX)
 endif
 
 # -----------------------------------------------------------------------------
@@ -827,9 +814,8 @@ ifeq ($(CFG), OPENMPI_INTEL_DEBUG)
   CC           = $(OPENMPI_IFORT_32)/bin/mpiCC
   CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS) 
-  LD_FLAGS     = -static-intel -cxxlib ${HDF5_LIBS} ${HASH_STYLE} -lmpi_cxx
-  LD_LIBRARY_PATH = $(OPENMPI_IFORT_32)/lib
-  LINKER       = $(FC)
+  LD_FLAGS     = ${HDF5_LIBS} ${HASH_STYLE} -lmpi_cxx
+  LINKER       = $(CXX)
 endif
 
 # -----------------------------------------------------------------------------
@@ -850,16 +836,16 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), OPENMPI_INTEL_64_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
+  FC_FUNC      =  -DFC_FUNC\(name,NAME\)=name
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   FC           = $(OPENMPI_IFORT_64)/bin/mpif90
   FFLAGS       = -g -nus $(DEFINES)
   CXX          = $(OPENMPI_IFORT_64)/bin/mpiCC
   CC           = $(OPENMPI_IFORT_64)/bin/mpiCC
-  CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
+  CFLAGS       = -Wall  -g $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS) 
-  LD_FLAGS     = -static-intel -cxxlib ${HDF5_LIBS_64} ${HASH_STYLE} -lmpi_cxx
-  LD_LIBRARY_PATH = $(OPENMPI_IFORT_64)/lib
-  LINKER       = $(FC)
+  LD_FLAGS     = ${IFORT_LIB_64} ${HDF5_LIBS_64} ${HASH_STYLE} -lmpi_cxx
+  LINKER       = $(CXX)
 endif
 
 # -----------------------------------------------------------------------------
