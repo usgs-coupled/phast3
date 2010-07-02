@@ -445,7 +445,7 @@ ifeq ($(CFG), SERIAL_LAHEY_DEBUG)
   FC           = $(FLAHEY)
   FFLAGS       = -g --f95 --chkglobal --warn --info $(DEFINES)
   CC           = g++
-  CFLAGS       = -Wall  -g $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
+  CFLAGS       = -Wall -g $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS)
   LD_FLAGS     = -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY) ${HASH_STYLE}
   LINKER       = $(CXX)
@@ -457,12 +457,12 @@ ifeq ($(CFG), LAM_LAHEY)
   FC_FUNC      =  -DFC_FUNC\(name,NAME\)=name\ \#\#\ _
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   LAMHF77      = $(FLAHEY)
-  export LAMHF77
+#  export LAMHF77
   FC           = mpif77
   FFLAGS       = -O $(DEFINES)
   CXX          = mpiCC
   CC           = mpiCC
-  CFLAGS       = -Wall  -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) $(LAM_INCLUDES) 
+  CFLAGS       = -Wall -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) $(LAM_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
   LD_FLAGS     = -lm -lgcc_s ${CL1MP_LIB} ${HDF5_LIBS} $(LIBLAHEY) -ldl ${HASH_STYLE}
   LINKER       = $(CXX)
@@ -474,7 +474,7 @@ ifeq ($(CFG), LAM_LAHEY_DEBUG)
   FC_FUNC      =  -DFC_FUNC\(name,NAME\)=name\ \#\#\ _
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   LAMHF77      = $(FLAHEY)
-  export LAMHF77
+#  export LAMHF77
   FC           = mpif77
   FFLAGS       = -g --chkglobal --warn --info $(DEFINES)
   CXX          = mpiCC
@@ -549,11 +549,11 @@ ifeq ($(CFG), SERIAL_GFORTRAN)
   FC_FUNC      =  -DFC_FUNC\(name,NAME\)=name
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   FC           = $(FGFORTRAN)
-  FFLAGS       = -O3 -p $(DEFINES) -fno-underscoring
+  FFLAGS       = -O3 $(DEFINES) -fno-underscoring
   CC           = g++
   CFLAGS       = -Wall  -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = -p $(LIBGFORTRAN) -lm ${CL1MP_LIB} ${HDF5_LIBS} ${HASH_STYLE}
+  LD_FLAGS     = $(LIBGFORTRAN) -lm ${CL1MP_LIB} ${HDF5_LIBS} ${HASH_STYLE}
   LINKER       = $(CXX)
 endif
 
@@ -565,7 +565,7 @@ ifeq ($(CFG), SERIAL_GFORTRAN_DEBUG)
   FC           = $(FGFORTRAN)
   FFLAGS       = -g -fno-underscoring $(DEFINES)
   CC           = g++
-  CFLAGS       = -Wall  -g $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
+  CFLAGS       = -Wall -g $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS)  $(HDF_OBJS) $(CL1MP_OBJS)
   LD_FLAGS     = $(LIBGFORTRAN) -lm ${CL1MP_LIB} ${HDF5_LIBS} ${HASH_STYLE}
   LINKER       = $(CXX)
@@ -579,7 +579,7 @@ ifeq ($(CFG), SERIAL_GFORTRAN_64)
   FC           = $(FGFORTRAN)
   FFLAGS       = -O3 $(DEFINES) -fno-underscoring
   CC           = g++
-  CFLAGS       = -Wall  -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
+  CFLAGS       = -Wall -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS)
   LD_FLAGS     = $(LIBGFORTRAN_64) -lm ${CL1MP_LIB} ${HDF5_LIBS_64} ${HASH_STYLE}
   LINKER       = $(CXX)
@@ -627,7 +627,7 @@ ifeq ($(CFG), LAM_GFORTRAN_DEBUG)
   FFLAGS       = -g  -fno-underscoring $(DEFINES)
   CXX          = mpiCC
   CC           = mpiCC
-  CFLAGS       = -Wall  -g $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) $(LAM_INCLUDES)
+  CFLAGS       = -Wall  -g $(DEFINES) $(FC_FUNC) $(FC_FUNC) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) $(LAM_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
   LD_FLAGS     = $(LIBGFORTRAN) -lm ${CL1MP_LIB} ${HDF5_LIBS}  -ldl ${HASH_STYLE}
   LINKER       = $(CXX)
@@ -636,6 +636,7 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), OPENMPI_GFORTRAN)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP 
+  FC_FUNC      =  -DFC_FUNC\(name,NAME\)=name
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   DINVERSE_CL1MP=
   FC           = $(OPENMPI_GFORTRAN_32)/bin/mpif90
@@ -651,13 +652,14 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), OPENMPI_GFORTRAN_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
+  FC_FUNC      =  -DFC_FUNC\(name,NAME\)=name
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   DINVERSE_CL1MP=
   FC           = $(OPENMPI_GFORTRAN_32)/bin/mpif90
   FFLAGS       = -g  -fno-underscoring -I/usr/include $(DEFINES)
   CXX          = $(OPENMPI_GFORTRAN_32)/bin/mpicxx
   CC           = $(OPENMPI_GFORTRAN_32)/bin/mpicxx
-  CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
+  CFLAGS       = -Wall -g $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
   LD_FLAGS     = $(LIBGFORTRAN) ${HDF5_LIBS}  -lmpi_f77 -ldl ${HASH_STYLE} # -lm ${CL1MP_LIB}
   LINKER       = $(CXX)
@@ -683,39 +685,6 @@ endif
 
 # -----------------------------------------------------------------------------
 
-ifeq ($(CFG), OPENMPI_1_4_2_GFORTRAN_64)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP -DNO_UNDERSCORES
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
-  HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
-  DINVERSE_CL1MP=
-  FC           = /z/parkplace/home/charlton/openmpi-1.4.2/lobo-gfortran-x64/bin/mpif90
-  FFLAGS       = -O3 -fno-underscoring -I/usr/include $(DEFINES)
-  CXX          = /z/parkplace/home/charlton/openmpi-1.4.2/lobo-gfortran-x64/bin/mpiCC
-  CC           = /z/parkplace/home/charlton/openmpi-1.4.2/lobo-gfortran-x64/bin/mpiCC
-  CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS_64} -lmpi_f77 -ldl ${HASH_STYLE} # -lm ${CL1MP_LIB}
-  LINKER       = $(CXX)
-endif
-
-# -----------------------------------------------------------------------------
-
-ifeq ($(CFG), OPENMPI_1_4_2_INTEL_64_STATIC)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP -DNO_UNDERSCORES
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
-  HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
-  FC           = /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64-static/bin/mpif90
-  FFLAGS       = -O3 -nus $(DEFINES)
-  CXX          = /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64-static/bin/mpiCC
-  CC           = /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64-static/bin/mpiCC
-  CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
-  LD_FLAGS     = -static-intel -cxxlib ${HDF5_LIBS_64} -lmpi_cxx  ${HASH_STYLE} 
-  LINKER       = $(FC)
-endif
-
-# -----------------------------------------------------------------------------
-
 ifeq ($(CFG), OPENMPI_GFORTRAN_64_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC -DNO_UNDERSCORES
   FC_FUNC      =  -DFC_FUNC\(name,NAME\)=name
@@ -727,7 +696,7 @@ ifeq ($(CFG), OPENMPI_GFORTRAN_64_DEBUG)
   CXX          = $(OPENMPI_GFORTRAN_64)/bin/mpiCC
   CC           = $(OPENMPI_GFORTRAN_64)/bin/mpiCC
   CFLAGS       = -Wall  -g $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) 
   LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS_64} -lmpi_f77 -ldl ${HASH_STYLE}
   LINKER       = $(CXX)
 endif
@@ -736,14 +705,15 @@ endif
 
 ifeq ($(CFG), SERIAL_INTEL)
   DEFINES      = $(DEFINE_HDF) -DNDEBUG -DPHREEQC_CPP
+  FC_FUNC      =  -DFC_FUNC\(name,NAME\)=name
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   FC           = $(FINTEL)
   FFLAGS       = -O3 -nus $(DEFINES) 
   CXX          = g++
-  CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
+  CFLAGS       = -Wall  -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS)  $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS) 
-  LD_FLAGS     = -static-intel -cxxlib ${HDF5_LIBS} ${HASH_STYLE} 
-  LINKER       = $(FC)
+  LD_FLAGS     = ${IFORT_LIB} ${HDF5_LIBS} ${HASH_STYLE} 
+  LINKER       = $(CXX)
 endif
 
 # -----------------------------------------------------------------------------
@@ -800,21 +770,21 @@ ifeq ($(CFG), OPENMPI_INTEL)
   CFLAGS       = -Wall  -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS) 
   LD_FLAGS     = ${IFORT_LIB} ${HDF5_LIBS} -lmpi_cxx  ${HASH_STYLE} 
-  LD_LIBRARY_PATH = $(OPENMPI_IFORT_32)/lib
   LINKER       = $(CXX)
 endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), OPENMPI_INTEL_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
+  FC_FUNC      =  -DFC_FUNC\(name,NAME\)=name
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   FC           = $(OPENMPI_IFORT_32)/bin/mpif90
   FFLAGS       = -g -nus $(DEFINES)
   CXX          = $(OPENMPI_IFORT_32)/bin/mpiCC
   CC           = $(OPENMPI_IFORT_32)/bin/mpiCC
-  CFLAGS       = -Wall  -g $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
+  CFLAGS       = -Wall  -g $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS) 
-  LD_FLAGS     = ${HDF5_LIBS} ${HASH_STYLE} -lmpi_cxx
+  LD_FLAGS     = ${IFORT_LIB} ${HDF5_LIBS} ${HASH_STYLE} -lmpi_cxx
   LINKER       = $(CXX)
 endif
 
