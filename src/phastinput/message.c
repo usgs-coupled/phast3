@@ -139,11 +139,6 @@ output_msg(const int type, const char *format, ...)
 	return (return_value);
 }
 
-#if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
-int Merge_vfprintf(FILE * stream, const char *format, va_list args);
-#define vfprintf Merge_vfprintf
-#endif
-
 /* ---------------------------------------------------------------------- */
 int
 default_handler(const int type, const char *err_str, const int stop,
