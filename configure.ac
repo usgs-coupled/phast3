@@ -61,7 +61,7 @@ AC_CHECK_FUNCS([pow],     , AC_CHECK_LIB(m, pow,   , AC_ERROR([cannot find pow])
 AC_CHECK_FUNCS([sqrt],    , AC_CHECK_LIB(m, sqrt,  , AC_ERROR([cannot find sqrt])) )
 
 # boost
-AX_BOOST_BASE([1.36])
+AX_BOOST_BASE([1.33])
 
 # HDF5
 ##set -x -v
@@ -81,7 +81,7 @@ if test "X$PHAST_MPI" = "Xyes"; then
   AC_LANG(C++)
   AX_MPI()
   AC_LANG(Fortran)
-  AX_MPI()
+  AX_MPI(, AC_ERROR([MPI not found]))
   # extra MPI defines
   AC_DEFINE([USE_MPI], , [Set to use MPI])
   AC_DEFINE([MERGE_FILES], , [Set to use MPI])
