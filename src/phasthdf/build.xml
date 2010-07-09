@@ -3,18 +3,19 @@
     <description>
         Builds phast.jar
     </description>
-
+    
     <property name="ver" value="1.2"/>
     <property name="depr" value="on"/>
 
+    <property location="." name="srcdir"/>
     <property location="src" name="src"/>
     <property location="build" name="build"/>
     <property location="dist" name="dist"/>
     <property location="apidoc" name="apidoc"/>
-    <property location="test" name="test"/>
+    <property location="build_test" name="build_test"/>
     <property location="lib" name="lib"/>
     <property location="lib/hdf-java/lib" name="hdf"/>
-    <property location="hdf-java" name="hdfjar"/>
+    <property location="${srcdir}/hdf-java" name="hdfjar"/>
   
     <target name="init">
         <!-- Create the time stamp -->
@@ -22,6 +23,7 @@
         <!-- Create the build directory structure used by compile -->
         <mkdir dir="${build}"/>
         <mkdir dir="${build}/images"/>
+        <mkdir dir="${build_test}"/>
         <mkdir dir="${dist}"/>
         <mkdir dir="${dist}/Linux"/>
         <mkdir dir="${dist}/Win32"/>
@@ -35,17 +37,15 @@
     </target>
     
     <target depends="init" description="compile the source" name="compile">
-        <javac source="${ver}" target="${ver}" deprecation="${depr}" classpath="${hdf}\jhdf.jar;${hdf}\jhdf5.jar;${hdf}\jhdfobj.jar;${hdf}\jhdf5obj.jar" destdir="${build}" srcdir="${src}">
+        <javac source="${ver}" target="${ver}" deprecation="${depr}" classpath="${hdf}/jhdf.jar;${hdf}/jhdf5.jar;${hdf}/jhdfobj.jar;${hdf}/jhdf5obj.jar" destdir="${build}" srcdir="${srcdir}/src">
         </javac>
-        <javac source="${ver}" target="${ver}" deprecation="${depr}" classpath="${hdf}\jhdf.jar;${hdf}\jhdf5.jar;${hdf}\jhdfobj.jar;${hdf}\jhdf5obj.jar" destdir="${src}" srcdir="${src}">
-        </javac>
-        <copy file="${src}/images/splash.jpeg" todir="${build}/images"/>
+        <copy file="${srcdir}/src/images/splash.jpeg" todir="${build}/images"/>
     </target>
     
     <target depends="init" description="Javadoc for Phast API." name="javadoc">
-        <javadoc destdir="apidoc" packagenames="gov.usgs.phast.*,corejava.*,sample.*" windowtitle="Phast HDF5 Exporter" classpath="${hdf}\jhdf.jar;${hdf}\jhdf5.jar;${hdf}\jhdfobj.jar;${hdf}\jhdf5obj.jar">
+        <javadoc destdir="apidoc" packagenames="gov.usgs.phast.*,corejava.*,sample.*" windowtitle="Phast HDF5 Exporter" classpath="${hdf}/jhdf.jar;${hdf}/jhdf5.jar;${hdf}/jhdfobj.jar;${hdf}/jhdf5obj.jar">
             <sourcepath>
-                <pathelement location="${src}"/>
+                <pathelement location="${srcdir}/src"/>
             </sourcepath>
         </javadoc>
     </target>    
@@ -57,27 +57,27 @@
             <attribute name="Class-Path" value="jhdf.jar jhdf5.jar jhdfobj.jar jhdf5obj.jar"/>
         </manifest>
         </jar>
-        <copy file="${hdf}\jhdf.jar" todir="${dist}"/>
-        <copy file="${hdf}\jhdf5.jar" todir="${dist}"/>
-        <copy file="${hdf}\jhdfobj.jar" todir="${dist}"/>
-        <copy file="${hdf}\jhdf5obj.jar" todir="${dist}"/>
+        <copy file="${hdf}/jhdf.jar" todir="${dist}"/>
+        <copy file="${hdf}/jhdf5.jar" todir="${dist}"/>
+        <copy file="${hdf}/jhdfobj.jar" todir="${dist}"/>
+        <copy file="${hdf}/jhdf5obj.jar" todir="${dist}"/>
     </target>
     
     <target depends="dist" description="generate the Windows distribution" name="dist-Win32">
         <copy todir="${dist}/Win32">
-            <fileset dir="${hdf}\win"/>
+            <fileset dir="${hdf}/win"/>
         </copy>
     </target>
     
     <target depends="dist" description="generate the Linux distribution" name="dist-Linux">
         <copy todir="${dist}/Linux">
-            <fileset dir="${hdf}\linux"/>
+            <fileset dir="${hdf}/linux"/>
         </copy>
     </target>
     
     <target depends="dist" description="generate the Solaris distribution" name="dist-SunOS">
         <copy todir="${dist}/SunOS">
-            <fileset dir="${hdf}\solaris"/>
+            <fileset dir="${hdf}/solaris"/>
         </copy>
     </target>
     
@@ -121,10 +121,10 @@
     </target>     
     
     <target depends="compile" description="Run unit tests" name="test">
-        <javac source="${ver}" target="${ver}" deprecation="${depr}" classpath="${build};${hdf}\jhdf.jar;${hdf}\jhdf5.jar;${hdf}\jhdfobj.jar;${hdf}\jhdf5obj.jar" destdir="${test}" srcdir="${test}">
+        <javac source="${ver}" target="${ver}" deprecation="${depr}" classpath="${build};${hdf}/jhdf.jar;${hdf}/jhdf5.jar;${hdf}/jhdfobj.jar;${hdf}/jhdf5obj.jar" destdir="${build_test}" srcdir="${srcdir}/test">
         </javac>
         <junit printsummary="withOutAndErr">
-            <classpath path="${build};${test}"/>
+            <classpath path="${build};${build_test}"/>
             <test name="corejava.FormatTest"/>
         </junit>
     </target>    
@@ -132,14 +132,9 @@
     
     <target description="clean up" name="clean">
         <delete dir="${build}"/>
+        <delete dir="${build_test}"/>
         <delete dir="${lib}"/>
         <delete dir="${dist}"/>
         <delete dir="${apidoc}"/>
-        <delete>
-            <fileset dir="${src}" includes="**/*.class"/>
-        </delete>        
-        <delete>
-            <fileset dir="${test}" includes="**/*.class"/>
-        </delete>        
     </target>
 </project>
