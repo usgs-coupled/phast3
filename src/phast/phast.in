@@ -1,0 +1,26 @@
+#!/bin/sh
+
+#
+# Script used to run phast.
+# This script assumes that the two phast binaries
+# (phastinput and phast-@PHAST_SUFFIX@) are located
+# in the same directory as this script.
+#
+
+# resolve symlinks (to determine BIN_DIR)
+prg=$0
+while [ -h "$prg" ] ; do
+    ls=`ls -ld "$prg"`
+    link=`expr "$ls" : '.*-> \(.*\)$'`
+    if expr "$link" : '[^/].*' > /dev/null; then
+        prg="`dirname $prg`/$link"
+    else
+        prg="$link"
+    fi
+done
+
+# directory where executables are located
+BIN_DIR=`dirname $prg`
+
+# run
+$BIN_DIR/phastinput $* && $BIN_DIR/phast-@PHAST_SUFFIX@

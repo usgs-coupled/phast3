@@ -1,24 +1,17 @@
-AM_CPPFLAGS=-I$(top_srcdir)/src/phast/phreeqcpp -I$(top_srcdir)/src/phast/phreeqcpp/phreeqc
+AM_CPPFLAGS=-I$(srcdir)/phreeqcpp -I$(srcdir)/phreeqcpp/phreeqc $(BOOST_CPPFLAGS)
 
-bin_PROGRAMS = phast
+FCDEFS=-DHDF5_CREATE
 
-noinst_LTLIBRARIES = \
-	libmods.la
-        
-libmods_la_SOURCES = \
-	modules.f90\
-	interpolate_mod.f90\
-	ld_seg_mod.f90\
-	print_control_mod.f90\
-	rewi_mod.f90
-	
+dist_bin_SCRIPTS = phast
+
 if BUILD_MPI
-libmods_la_SOURCES += \
-	mpimod.F90
+  bin_PROGRAMS = phast-mpi
+  FCDEFS+=-DUSE_MPI -DMERGE_FILES
+else
+  bin_PROGRAMS = phast-ser
 endif
-	
-       
-phast_SOURCES=\
+
+PHAST_SRC=\
 	abmult.f90\
 	aplbce.f90\
 	aplbce_ss_flow.f90\
@@ -29,8 +22,8 @@ phast_SOURCES=\
 	asmslp.f90\
 	asmslp_ss_flow.f90\
 	bsode.f90\
-	calcc.f90\
 	calc_velocity.f90\
+	calcc.f90\
 	clog.f90\
 	closef.F90\
 	coeff.f90\
@@ -66,16 +59,18 @@ phast_SOURCES=\
 	ifrd.inc\
 	ifwr.inc\
 	incidx.f90\
-	indx_rewi_bc.f90\
 	indx_rewi.f90\
+	indx_rewi_bc.f90\
 	init1.f90\
 	init2_1.f90\
 	init2_2.f90\
 	init2_3.f90\
 	init2_post_ss.f90\
 	init3.f90\
-	ldchar_bc.f90\
+	interpolate_mod.f90\
+	ld_seg_mod.f90\
 	ldchar.f90\
+	ldchar_bc.f90\
 	ldci.f90\
 	ldcir.f90\
 	ldind.f90\
@@ -83,6 +78,7 @@ phast_SOURCES=\
 	ldmar1.f90\
 	lsolv.f90\
 	media_hdf.f90\
+	modules.f90\
 	mtoijk.f90\
 	nintrp.f90\
 	openf.F90\
@@ -90,10 +86,11 @@ phast_SOURCES=\
 	phast_files.c\
 	phast_files.h\
 	phast_main.cpp\
-	phastproto.h\
 	phast_root.F90\
+	phastproto.h\
 	Pointers_to_fortran.h\
 	prchar.f90\
+	print_control_mod.f90\
 	prntar.f90\
 	rbord.f90\
 	read1.f90\
@@ -101,6 +98,7 @@ phast_SOURCES=\
 	read3.f90\
 	reordr.f90\
 	revisions\
+	rewi_mod.f90\
 	rfact.f90\
 	rfactm.f90\
 	rhsn.f90\
@@ -270,50 +268,161 @@ phast_SOURCES=\
 	KDtree/Point.cpp\
 	KDtree/Point.h
 
-if BUILD_MPI
-AM_FCFLAGS=-DUSE_MPI -DMERGE_FILES -DHDF5_CREATE
-libmods_la_SOURCES += \
-	mpimod.F90
-
-phast_SOURCES+=\
+PHAST_MPI_SRC=\
+	mpimod.F90\
 	merge.c\
 	phast_slave.F90\
-	slavesubs.c	
-endif
+	slavesubs.c
 
-PPFCCOMPILE = $(FC) \
-	$(CPPFLAGS) $(AM_FCFLAGS) $(FCFLAGS)
-LTPPFCCOMPILE = $(LIBTOOL) --tag=FC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=compile $(FC) \
-	$(CPPFLAGS) $(AM_FCFLAGS) $(FCFLAGS)
+phast_ser_SOURCES=$(PHAST_SRC)
 
+phast_mpi_SOURCES=$(PHAST_SRC) $(PHAST_MPI_SRC)
+
+phast_ser_LDADD = $(FCLIBS) $(HDF5_LDFLAGS)
+
+phast_mpi_LDADD = $(FCLIBS) $(HDF5_LDFLAGS)
+
+
+# We must override the default PPFCCOMPILE since ifort can't
+# handle the FC_FUNC define correctly so $(DEFS) is replaced
+# by $(FCDEFS)
+#
+PPFCCOMPILE = $(FC) $(FCDEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_FCFLAGS) $(FCFLAGS)
+
+# compile all C files as C++
+#
 COMPILE = $(CXXCOMPILE)
-LTCOMPILE = $(LTCXXCOMPILE)
 
-phast_LDADD = libmods.la $(FCLIBS) $(HDF5_LDFLAGS)
+abmult.$(OBJEXT):            modules.$(OBJEXT)
+aplbce.$(OBJEXT):            modules.$(OBJEXT)
+aplbce_ss_flow.$(OBJEXT):    modules.$(OBJEXT)
+aplbci.$(OBJEXT):            modules.$(OBJEXT)
+armult.$(OBJEXT):            modules.$(OBJEXT)
+asembl.$(OBJEXT):            modules.$(OBJEXT)
+asmslc.$(OBJEXT):            modules.$(OBJEXT)
+asmslp.$(OBJEXT):            modules.$(OBJEXT)
+asmslp_ss_flow.$(OBJEXT):    modules.$(OBJEXT)
+bsode.$(OBJEXT):             modules.$(OBJEXT)
+calc_velocity.$(OBJEXT):     modules.$(OBJEXT)
+calcc.$(OBJEXT):             modules.$(OBJEXT)
+clog.$(OBJEXT):              modules.$(OBJEXT)
+closef.$(OBJEXT):            modules.$(OBJEXT) mpimod.$(OBJEXT)
+coeff.$(OBJEXT):             modules.$(OBJEXT)
+coeff_ss_flow.$(OBJEXT):     modules.$(OBJEXT)
+crsdsp.$(OBJEXT):            modules.$(OBJEXT)
+d4ord.$(OBJEXT):             modules.$(OBJEXT)
+d4zord.$(OBJEXT):            modules.$(OBJEXT)
+dbmult.$(OBJEXT):            modules.$(OBJEXT)
+dump.$(OBJEXT):              modules.$(OBJEXT)
+efact.$(OBJEXT):             modules.$(OBJEXT)
+ehoftp.$(OBJEXT):            modules.$(OBJEXT)
+el1slv.$(OBJEXT):            modules.$(OBJEXT)
+elslv.$(OBJEXT):             modules.$(OBJEXT)
+error1.$(OBJEXT):            modules.$(OBJEXT)
+error2.$(OBJEXT):            modules.$(OBJEXT)
+error3.$(OBJEXT):            modules.$(OBJEXT) print_control_mod.$(OBJEXT)
+error4.$(OBJEXT):            modules.$(OBJEXT) ifwr.inc
+errprt.$(OBJEXT):            modules.$(OBJEXT)
+etom1.$(OBJEXT):             modules.$(OBJEXT)
+etom2.$(OBJEXT):             modules.$(OBJEXT)
+euslv.$(OBJEXT):             modules.$(OBJEXT)
+formr.$(OBJEXT):             modules.$(OBJEXT)
+gcgris.$(OBJEXT):            modules.$(OBJEXT) print_control_mod.$(OBJEXT)
+hdf_f.$(OBJEXT):             modules.$(OBJEXT)	
+hunt.$(OBJEXT):              modules.$(OBJEXT)
+incidx.$(OBJEXT):            modules.$(OBJEXT)
+indx_rewi.$(OBJEXT):         modules.$(OBJEXT)
+indx_rewi_bc.$(OBJEXT):      modules.$(OBJEXT)
+init1.$(OBJEXT):             modules.$(OBJEXT)
+init2_1.$(OBJEXT):           modules.$(OBJEXT)
+init2_2.$(OBJEXT):           modules.$(OBJEXT)
+init2_3.$(OBJEXT):           modules.$(OBJEXT)
+init2_post_ss.$(OBJEXT):     modules.$(OBJEXT) print_control_mod.$(OBJEXT)
+init3.$(OBJEXT):             modules.$(OBJEXT) print_control_mod.$(OBJEXT)
+interpolate_mod.$(OBJEXT):   modules.$(OBJEXT)
+ldchar.$(OBJEXT):            modules.$(OBJEXT)
+ldchar_bc.$(OBJEXT):         modules.$(OBJEXT)
+ldci.$(OBJEXT):              modules.$(OBJEXT)
+ldcir.$(OBJEXT):             modules.$(OBJEXT)
+ldind.$(OBJEXT):             modules.$(OBJEXT)
+ldipen.$(OBJEXT):            modules.$(OBJEXT)
+ldmar1.$(OBJEXT):            modules.$(OBJEXT)
+lsolv.$(OBJEXT):             modules.$(OBJEXT)
+mtoijk.$(OBJEXT):            modules.$(OBJEXT)
+nintrp.$(OBJEXT):            modules.$(OBJEXT)
+openf.$(OBJEXT):             modules.$(OBJEXT) mpimod.$(OBJEXT)
+phast.$(OBJEXT):             modules.$(OBJEXT) mpimod.$(OBJEXT)
+phast_root.$(OBJEXT):        modules.$(OBJEXT) print_control_mod.$(OBJEXT)
+phast_slave.$(OBJEXT):       modules.$(OBJEXT) mpimod.$(OBJEXT) print_control_mod.$(OBJEXT)
+prchar.$(OBJEXT):            modules.$(OBJEXT)
+prntar.$(OBJEXT):            modules.$(OBJEXT)
+rbord.$(OBJEXT):             modules.$(OBJEXT)
+read1.$(OBJEXT):             modules.$(OBJEXT)
+read2.$(OBJEXT):             modules.$(OBJEXT) rewi_mod.$(OBJEXT) ifrd.inc
+read3.$(OBJEXT):             modules.$(OBJEXT) print_control_mod.$(OBJEXT) rewi_mod.$(OBJEXT) ifrd.inc
+reordr.$(OBJEXT):            modules.$(OBJEXT)
+rewi_mod.$(OBJEXT):          modules.$(OBJEXT) interpolate_mod.$(OBJEXT)
+rfact.$(OBJEXT):             modules.$(OBJEXT)
+rfactm.$(OBJEXT):            modules.$(OBJEXT)
+rhsn.$(OBJEXT):              modules.$(OBJEXT)
+rhsn_ss_flow.$(OBJEXT):      modules.$(OBJEXT)
+sbcflo.$(OBJEXT):            modules.$(OBJEXT)
+scale_jds.$(OBJEXT):         modules.$(OBJEXT)
+simulate_ss_flow.$(OBJEXT):  modules.$(OBJEXT)
+sumcal1.$(OBJEXT):           modules.$(OBJEXT)
+sumcal2.$(OBJEXT):           modules.$(OBJEXT)
+sumcal_ss_flow.$(OBJEXT):    modules.$(OBJEXT)
+terminate_phast.$(OBJEXT):   modules.$(OBJEXT) mpimod.$(OBJEXT)
+tfrds.$(OBJEXT):             modules.$(OBJEXT)
+timstp.$(OBJEXT):            modules.$(OBJEXT) print_control_mod.$(OBJEXT)
+timstp_ss_flow.$(OBJEXT):    modules.$(OBJEXT) print_control_mod.$(OBJEXT)
+update_print_flags.$(OBJEXT):modules.$(OBJEXT) print_control_mod.$(OBJEXT)
+usolv.$(OBJEXT):             modules.$(OBJEXT)
+viscos.$(OBJEXT):            modules.$(OBJEXT)
+wbbal.$(OBJEXT):             modules.$(OBJEXT)
+wbcflo.$(OBJEXT):            modules.$(OBJEXT)
+wellsc.$(OBJEXT):            modules.$(OBJEXT)
+wellsc_ss_flow.$(OBJEXT):    modules.$(OBJEXT)
+wellsr.$(OBJEXT):            modules.$(OBJEXT)
+wellsr_ss_flow.$(OBJEXT):    modules.$(OBJEXT)
+welris.$(OBJEXT):            modules.$(OBJEXT)
+wfdydz.$(OBJEXT):            modules.$(OBJEXT)
+write1.$(OBJEXT):            modules.$(OBJEXT)
+write2_1.$(OBJEXT):          modules.$(OBJEXT) ld_seg_mod.$(OBJEXT) ifwr.inc
+write2_2.$(OBJEXT):          modules.$(OBJEXT) ifwr.inc
+write3.$(OBJEXT):            modules.$(OBJEXT) ifwr.inc
+write3_ss_flow.$(OBJEXT):    modules.$(OBJEXT) ifwr.inc
+write4.$(OBJEXT):            modules.$(OBJEXT) print_control_mod.$(OBJEXT) ifwr.inc
+write5.$(OBJEXT):            modules.$(OBJEXT) print_control_mod.$(OBJEXT) ifwr.inc
+write5_ss_flow.$(OBJEXT):    modules.$(OBJEXT) print_control_mod.$(OBJEXT) ifwr.inc
+write6.$(OBJEXT):            modules.$(OBJEXT) print_control_mod.$(OBJEXT) ifwr.inc
+zone_flow.$(OBJEXT):         modules.$(OBJEXT)
+zone_flow_ss.$(OBJEXT):      modules.$(OBJEXT)
 
 CLEANFILES=\
-	f_units.mod\
-	hdf_media.mod\
-	interpolate_mod.mod\
-	ld_seg_mod.mod\
-	machine_constants.mod\
-	mcb2.mod\
-	mcb.mod\
-	mcch.mod\
-	mcc.mod\
-	mcg.mod\
-	mcm.mod\
-	mcn.mod\
-	mcp.mod\
-	mcs2.mod\
-	mcs.mod\
-	mct.mod\
-	mcv.mod\
-	mcw.mod\
-	mg2.mod\
-	mg3.mod\
-	mpi_mod.mod\
-	phys_const.mod\
-	print_control_mod.mod\
-	rewi_mod.mod
+	$(SCRIPTS)\
+	f_units.$(F90_MODEXT)\
+	hdf_media.$(F90_MODEXT)\
+	interpolate_mod.$(F90_MODEXT)\
+	ld_seg_mod.$(F90_MODEXT)\
+	machine_constants.$(F90_MODEXT)\
+	mcb2.$(F90_MODEXT)\
+	mcb.$(F90_MODEXT)\
+	mcch.$(F90_MODEXT)\
+	mcc.$(F90_MODEXT)\
+	mcg.$(F90_MODEXT)\
+	mcm.$(F90_MODEXT)\
+	mcn.$(F90_MODEXT)\
+	mcp.$(F90_MODEXT)\
+	mcs2.$(F90_MODEXT)\
+	mcs.$(F90_MODEXT)\
+	mct.$(F90_MODEXT)\
+	mcv.$(F90_MODEXT)\
+	mcw.$(F90_MODEXT)\
+	mg2.$(F90_MODEXT)\
+	mg3.$(F90_MODEXT)\
+	mpi_mod.$(F90_MODEXT)\
+	phys_const.$(F90_MODEXT)\
+	print_control_mod.$(F90_MODEXT)\
+	rewi_mod.$(F90_MODEXT)
