@@ -278,6 +278,7 @@ AC_SUBST(PKGLIBDIR)
 
 AC_CONFIG_FILES([
   Makefile
+  doc/Makefile
   examples/Makefile
   src/Makefile
   src/phast/Makefile

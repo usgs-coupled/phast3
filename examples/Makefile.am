@@ -178,10 +178,18 @@ ex4v1= \
 # ex5
 #
 example_ex5dir = $(EXAMPLES_DIR)/ex5
+example_ex5_ArcDatadir = $(EXAMPLES_DIR)/ex5/ArcData
+example_ex5_Parametersdir = $(EXAMPLES_DIR)/ex5/Parameters
 
 dist_example_ex5_DATA = $(ex5)
+dist_example_ex5_ArcData_DATA = $(ArcData)
+dist_example_ex5_Parameters_DATA = $(Parameters)
 
 ex5= \
+     ex5/ex5.head.200.dat \
+     ex5/ex5.trans.dat
+
+ArcData= \
      ex5/ArcData/Ashumet.dbf \
      ex5/ArcData/Ashumet.shp \
      ex5/ArcData/Ashumet.shx \
@@ -209,9 +217,9 @@ ex5= \
      ex5/ArcData/SimpleBath.shx \
      ex5/ArcData/SimplePonds.dbf \
      ex5/ArcData/SimplePonds.shp \
-     ex5/ArcData/SimplePonds.shx \
-     ex5/ex5.head.200.dat \
-     ex5/ex5.trans.dat \
+     ex5/ArcData/SimplePonds.shx
+     
+Parameters= \
      ex5/Parameters/kh_meters \
      ex5/Parameters/kz_meters
 

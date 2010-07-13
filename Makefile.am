@@ -1,3 +1,3 @@
 ACLOCAL_AMFLAGS = -I m4
 dnl EXTRA_DIST = INSTALL README
-SUBDIRS = src examples
+SUBDIRS = src examples doc
