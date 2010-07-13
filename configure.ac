@@ -22,6 +22,7 @@ AC_DEFINE([H5Eset_auto_vers], [1] , [Must be set to 1 for phast])
 
 # Checks for programs.
 AC_PROG_CXX
+AC_PROG_AWK
 AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_FC
@@ -267,11 +268,17 @@ else
 fi
 
 AM_CONDITIONAL([BUILD_MPI], [test "X$PHAST_MPI" = "Xyes"])
+AM_CONDITIONAL([BUILD_PHASTHDF], [test -n "$ANT"])
 AC_SUBST(PHAST_SUFFIX)
+
+##
+PKGLIBDIR="$pkglibdir"
+AC_SUBST(PKGLIBDIR)
 
 
 AC_CONFIG_FILES([
   Makefile
+  examples/Makefile
   src/Makefile
   src/phast/Makefile
   src/phast/phast
