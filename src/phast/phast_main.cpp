@@ -5,11 +5,11 @@
 #endif
 
 #if defined(_MSC_VER)
-#define FC_FUNC(name,NAME) name
+#define FC_FUNC_(name,NAME) name
 #endif
 
-#if defined(FC_FUNC)
-#define PHAST_SUB FC_FUNC(phast_sub, PHAST_SUB)
+#if defined(FC_FUNC_)
+#define PHAST_SUB FC_FUNC_(phast_sub, PHAST_SUB)
 #endif
 
 extern "C" void PHAST_SUB(int *mpi_tasks, int *mpi_myself);

@@ -11,10 +11,10 @@
 #include "phastproto.h"
 #include <time.h>
 
-#if defined(FC_FUNC)
-#define SLAVE_GET_SOLUTE     FC_FUNC (slave_get_solute,      SLAVE_GET_SOLUTE)
-#define SLAVE_GET_INDEXES    FC_FUNC (slave_get_indexes,     SLAVE_GET_INDEXES)
-#else /*FC_FUNC*/
+#if defined(FC_FUNC_)
+#define SLAVE_GET_SOLUTE     FC_FUNC_ (slave_get_solute,      SLAVE_GET_SOLUTE)
+#define SLAVE_GET_INDEXES    FC_FUNC_ (slave_get_indexes,     SLAVE_GET_INDEXES)
+#else /*FC_FUNC_*/
 #if !defined(LAHEY_F95) && !defined(_WIN32) || defined(NO_UNDERSCORES)
 #define SLAVE_GET_SOLUTE slave_get_solute
 #define SLAVE_GET_INDEXES slave_get_indexes
@@ -22,7 +22,7 @@
 #define SLAVE_GET_SOLUTE slave_get_solute_
 #define SLAVE_GET_INDEXES slave_get_indexes_
 #endif
-#endif /*FC_FUNC*/
+#endif /*FC_FUNC_*/
 extern "C"
 {
 	void SLAVE_GET_SOLUTE(int *solute, int *nx, int *ny, int *nz);
