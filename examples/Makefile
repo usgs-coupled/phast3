@@ -3,6 +3,9 @@ CFG :=$(shell echo $(CFG1) | sed "s/CYGWIN.*/CYGWIN/")
 
 ifeq ($(CFG), Linux)
   TOPDIR=$(HOME)/programs/phastpp
+ifeq ($(USER), charlton)
+  TOPDIR=$(HOME)/programs/phreeqc/phastpp-trunk
+endif
   TEST=$(TOPDIR)/examples
   PHAST_INPUT=$(TOPDIR)/src/phastinput/phastinput
   PHAST=$(TOPDIR)/src/phast/serial_lahey/phast
