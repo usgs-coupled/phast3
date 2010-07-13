@@ -1,15 +1,31 @@
-all-local:
-	$(ANT) -Dsrcdir=@srcdir@ dist-Linux
+if BUILD_PHASTHDF
 
-install-exec-hook:
-	echo TODO $(ANT) install
+bin_SCRIPTS = phasthdf
+CLEANFILES = $(bin_SCRIPTS)
+
+do_subst = sed -e 's,[@]pkglibdir[@],$(pkglibdir),g'
+
+phasthdf: $(srcdir)/phasthdf.in Makefile
+	$(do_subst) < $(srcdir)/phasthdf.in > phasthdf
+	chmod +x phasthdf
+
+pkglib_DATA = \
+	dist/jhdf5.jar \
+	dist/jhdf5obj.jar \
+	dist/jhdf.jar \
+	dist/jhdfobj.jar \
+	dist/Linux/libjh5srb.so \
+	dist/Linux/libjhdf5.so \
+	dist/Linux/libjhdf.so \
+	dist/phast.jar
+
+$(pkglib_DATA):
+	$(ANT) -Dsrcdir=@srcdir@ dist-Linux
 
 clean-local:
 	$(ANT) -Dsrcdir=@srcdir@ clean
 
-check-local:
-	$(ANT) -Dsrcdir=@srcdir@ test
-
+endif
 
 EXTRA_DIST = \
 	hdf-java/linux/hdf-java-2.3.jar \

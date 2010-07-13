@@ -20,15 +20,15 @@ void HDFEndCTimeStep(void);
 /*
  *   Functions called from FORTRAN
  */
-#if defined(FC_FUNC)
-#define HDF_INIT_INVARIANT     FC_FUNC (hdf_init_invariant,      HDF_INIT_INVARIANT)
-#define HDF_FINALIZE_INVARIANT FC_FUNC (hdf_finalize_invariant,  HDF_FINALIZE_INVARIANT)
-#define HDF_WRITE_FEATURE      FC_FUNC (hdf_write_feature,       HDF_WRITE_FEATURE)
-#define HDF_WRITE_GRID         FC_FUNC (hdf_write_grid,          HDF_WRITE_GRID)
-#define HDF_OPEN_TIME_STEP     FC_FUNC (hdf_open_time_step,      HDF_OPEN_TIME_STEP)
-#define HDF_CLOSE_TIME_STEP    FC_FUNC (hdf_close_time_step,     HDF_CLOSE_TIME_STEP)
-#define PRNTAR_HDF             FC_FUNC (prntar_hdf,              PRNTAR_HDF)
-#define HDF_VEL                FC_FUNC (hdf_vel,                 HDF_VEL)
+#if defined(FC_FUNC_)
+#define HDF_INIT_INVARIANT     FC_FUNC_ (hdf_init_invariant,      HDF_INIT_INVARIANT)
+#define HDF_FINALIZE_INVARIANT FC_FUNC_ (hdf_finalize_invariant,  HDF_FINALIZE_INVARIANT)
+#define HDF_WRITE_FEATURE      FC_FUNC_ (hdf_write_feature,       HDF_WRITE_FEATURE)
+#define HDF_WRITE_GRID         FC_FUNC_ (hdf_write_grid,          HDF_WRITE_GRID)
+#define HDF_OPEN_TIME_STEP     FC_FUNC_ (hdf_open_time_step,      HDF_OPEN_TIME_STEP)
+#define HDF_CLOSE_TIME_STEP    FC_FUNC_ (hdf_close_time_step,     HDF_CLOSE_TIME_STEP)
+#define PRNTAR_HDF             FC_FUNC_ (prntar_hdf,              PRNTAR_HDF)
+#define HDF_VEL                FC_FUNC_ (hdf_vel,                 HDF_VEL)
 #else
 #if !defined(LAHEY_F95) && !defined(_WIN32) || defined(NO_UNDERSCORES)
 #define HDF_INIT_INVARIANT     hdf_init_invariant
