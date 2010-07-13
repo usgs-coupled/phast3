@@ -643,7 +643,7 @@ ifeq ($(CFG), OPENMPI_GFORTRAN)
   FFLAGS       = -O3 -fno-underscoring -I/usr/include $(DEFINES)
   CXX          = $(OPENMPI_GFORTRAN_32)/bin/mpicxx
   CC           = $(OPENMPI_GFORTRAN_32)/bin/mpicxx
-  CFLAGS       = -Wall  -O3 $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
+  CFLAGS       = -Wall  -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
   LD_FLAGS     = $(LIBGFORTRAN) ${HDF5_LIBS} -lmpi_f77 -ldl ${HASH_STYLE} # -lm ${CL1MP_LIB}
   LINKER       = $(CXX)
@@ -661,7 +661,7 @@ ifeq ($(CFG), OPENMPI_GFORTRAN_DEBUG)
   CC           = $(OPENMPI_GFORTRAN_32)/bin/mpicxx
   CFLAGS       = -Wall -g $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN) ${HDF5_LIBS}  -lmpi_f77 -ldl ${HASH_STYLE} # -lm ${CL1MP_LIB}
+  LD_FLAGS     = $(LIBGFORTRAN) ${HDF5_LIBS} -lmpi_f77 -ldl ${HASH_STYLE} # -lm ${CL1MP_LIB}
   LINKER       = $(CXX)
 endif
 
@@ -679,7 +679,7 @@ ifeq ($(CFG), OPENMPI_GFORTRAN_64)
   CC           = $(OPENMPI_GFORTRAN_64)/bin/mpiCC
   CFLAGS       = -Wall  -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS_64} -lmpi_f77 -ldl ${HASH_STYLE} # -lm ${CL1MP_LIB}
+  LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS_64} -L$(OPENMPI_GFORTRAN_64)/lib -Xlinker -Bstatic -lmpi_f77 -Xlinker -Bdynamic -ldl ${HASH_STYLE} # -lm ${CL1MP_LIB}
   LINKER       = $(CXX)
 endif
 
