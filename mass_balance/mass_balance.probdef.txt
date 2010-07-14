@@ -94,14 +94,14 @@
 
                                    *** Fluid Properties ***
                                         Physical
-                    Fluid compressibility ...................................... BP ...   0.00e+00  (1/Pa )
+                    Fluid compressibility ...................................... BP ...   0.00E+00  (1/Pa )
 
                     Reference pressure for density ............................. P0 ..         0.0  (Pa )
                     Reference temperature for density .......................... T0 ..        15.0  (Deg.C)
                     Fluid density .............................................. DENF0  1000.0      (kg/m^3)
                     Fluid density at solute  mass fraction of  0.0500........... DENF1  1000.0      (kg/m^3)
 
-                    Viscosity factor ........................................... VISFAC -1.000e-03
+                    Viscosity factor ........................................... VISFAC -1.000E-03
 
                                         *** Calculation Information ***
           Backwards-in-time (implicit) differencing for temporal derivative
@@ -112,27 +112,27 @@
 
  ------------------------------------------------------------------------------------------------------------------------
 
-               Initial fluid in region ...............................  8.000000e+00  (kg) ;  8.000000e-03  (m^3)
+               Initial fluid in region ...............................  8.000000E+00  (kg) ;  8.000000E-03  (m^3)
 
-               Initial solute in region:H         ....................  1.676635e-09  (kg)
+               Initial solute in region:H         ....................  1.676635E-09  (kg)
 
-               Initial solute in region:O         ....................  5.194433e-04  (kg)
+               Initial solute in region:O         ....................  5.194433E-04  (kg)
 
-               Initial solute in region:Br        ....................  0.000000e+00  (kg)
+               Initial solute in region:Br        ....................  0.000000E+00  (kg)
 
-               Initial solute in region:Ca        ....................  0.000000e+00  (kg)
+               Initial solute in region:Ca        ....................  0.000000E+00  (kg)
 
-               Initial solute in region:Cl        ....................  0.000000e+00  (kg)
+               Initial solute in region:Cl        ....................  0.000000E+00  (kg)
 
-               Initial solute in region:K         ....................  6.256320e-05  (kg)
+               Initial solute in region:K         ....................  6.256320E-05  (kg)
 
-               Initial solute in region:Li        ....................  0.000000e+00  (kg)
+               Initial solute in region:Li        ....................  0.000000E+00  (kg)
 
-               Initial solute in region:N         ....................  1.344643e-04  (kg)
+               Initial solute in region:N         ....................  1.344643E-04  (kg)
 
-               Initial solute in region:Na        ....................  1.839184e-04  (kg)
+               Initial solute in region:Na        ....................  1.839184E-04  (kg)
 
-               Initial solute in region:Charge    .................... -2.850301e-18  (kg)
+               Initial solute in region:Charge    .................... -2.850301E-18  (kg)
 
  ------------------------------------------------------------------------------------------------------------------------
  ------------------------------------------------------------------------------------------------------------------------
@@ -140,12 +140,12 @@
 
                                         *** Transient Data ***
 
-     Time ..............................   0.000e+00  (d)
+     Time ..............................       0      (d)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  5.000e-03  (d)
+          Fixed time step length .......................................... DELTIM  5.000E-03  (d)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  0.500      (d)
 
@@ -160,7 +160,7 @@
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  5.000e-03  (d)
+          Fixed time step length .......................................... DELTIM  5.000E-03  (d)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG   1.00      (d)
 

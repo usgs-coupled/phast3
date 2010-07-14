@@ -88,7 +88,7 @@
                               *** Output at End of Time Step No.     1 ***
 
      Time .......................................................    1.00      (s)
-     Maximum change in potentiometric head ... -2.4961e+01      (m )   at location (  1.00    ,  1.00    ,  1.00    )(m )
+     Maximum change in potentiometric head ... -2.4961E+01      (m )   at location (  1.00    ,  1.00    ,  1.00    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -140,7 +140,7 @@
                               *** Output at End of Time Step No.     2 ***
 
      Time .......................................................    2.00      (s)
-     Maximum change in potentiometric head ...  5.9668e+00      (m )   at location ( 0.000e+00, 0.500    ,  1.00    )(m )
+     Maximum change in potentiometric head ...  5.9668E+00      (m )   at location (     0    , 0.500    ,  1.00    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -199,7 +199,7 @@
                               *** Output at End of Time Step No.     3 ***
 
      Time .......................................................    3.00      (s)
-     Maximum change in potentiometric head ...  7.2031e+00      (m )   at location ( 0.000e+00,  1.00    , 0.500    )(m )
+     Maximum change in potentiometric head ...  7.2031E+00      (m )   at location (     0    ,  1.00    , 0.500    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -258,7 +258,7 @@
                               *** Output at End of Time Step No.     4 ***
 
      Time .......................................................    4.00      (s)
-     Maximum change in potentiometric head ... -1.0456e+01      (m )   at location ( 0.500    , 0.500    , 0.000e+00)(m )
+     Maximum change in potentiometric head ... -1.0456E+01      (m )   at location ( 0.500    , 0.500    ,     0    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -317,7 +317,7 @@
                               *** Output at End of Time Step No.     8 ***
 
      Time .......................................................    8.00      (s)
-     Maximum change in potentiometric head ... -1.0456e+01      (m )   at location ( 0.500    , 0.500    , 0.000e+00)(m )
+     Maximum change in potentiometric head ... -1.0456E+01      (m )   at location ( 0.500    , 0.500    ,     0    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -376,7 +376,7 @@
                               *** Output at End of Time Step No.    10 ***
 
      Time .......................................................    10.0      (s)
-     Maximum change in potentiometric head ... -1.0456e+01      (m )   at location ( 0.500    , 0.500    , 0.000e+00)(m )
+     Maximum change in potentiometric head ... -1.0456E+01      (m )   at location ( 0.500    , 0.500    ,     0    )(m )
 
                               Fluid Potentiometric Head (m)
 

@@ -135,7 +135,7 @@ Beginning time step no.      1
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     1
-     Time ..................................................   5.000000e-03 (d)
+     Time ..................................................   5.000000E-03 (d)
 
 Beginning time step no.      2
      Beginning flow calculation.
@@ -152,7 +152,7 @@ Beginning time step no.      2
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     2
-     Time ..................................................   1.000000e-02 (d)
+     Time ..................................................   1.000000E-02 (d)
 
 Beginning time step no.      3
      Beginning flow calculation.
@@ -169,7 +169,7 @@ Beginning time step no.      3
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     3
-     Time ..................................................   1.500000e-02 (d)
+     Time ..................................................   1.500000E-02 (d)
 
 Beginning time step no.      4
      Beginning flow calculation.
@@ -186,7 +186,7 @@ Beginning time step no.      4
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     4
-     Time ..................................................   2.000000e-02 (d)
+     Time ..................................................   2.000000E-02 (d)
 
 Beginning time step no.      5
      Beginning flow calculation.
@@ -203,7 +203,7 @@ Beginning time step no.      5
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     5
-     Time ..................................................   2.500000e-02 (d)
+     Time ..................................................   2.500000E-02 (d)
 
 Beginning time step no.      6
      Beginning flow calculation.
@@ -220,7 +220,7 @@ Beginning time step no.      6
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     6
-     Time ..................................................   3.000000e-02 (d)
+     Time ..................................................   3.000000E-02 (d)
 
 Beginning time step no.      7
      Beginning flow calculation.
@@ -237,7 +237,7 @@ Beginning time step no.      7
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     7
-     Time ..................................................   3.500000e-02 (d)
+     Time ..................................................   3.500000E-02 (d)
 
 Beginning time step no.      8
      Beginning flow calculation.
@@ -254,7 +254,7 @@ Beginning time step no.      8
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     8
-     Time ..................................................   4.000000e-02 (d)
+     Time ..................................................   4.000000E-02 (d)
 
 Beginning time step no.      9
      Beginning flow calculation.
@@ -271,7 +271,7 @@ Beginning time step no.      9
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     9
-     Time ..................................................   4.500000e-02 (d)
+     Time ..................................................   4.500000E-02 (d)
 
 Beginning time step no.     10
      Beginning flow calculation.
@@ -288,7 +288,7 @@ Beginning time step no.     10
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    10
-     Time ..................................................   5.000000e-02 (d)
+     Time ..................................................   5.000000E-02 (d)
 
 Beginning time step no.     11
      Beginning flow calculation.
@@ -305,7 +305,7 @@ Beginning time step no.     11
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    11
-     Time ..................................................   5.500000e-02 (d)
+     Time ..................................................   5.500000E-02 (d)
 
 Beginning time step no.     12
      Beginning flow calculation.
@@ -322,7 +322,7 @@ Beginning time step no.     12
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    12
-     Time ..................................................   6.000000e-02 (d)
+     Time ..................................................   6.000000E-02 (d)
 
 Beginning time step no.     13
      Beginning flow calculation.
@@ -339,7 +339,7 @@ Beginning time step no.     13
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    13
-     Time ..................................................   6.500000e-02 (d)
+     Time ..................................................   6.500000E-02 (d)
 
 Beginning time step no.     14
      Beginning flow calculation.
@@ -356,7 +356,7 @@ Beginning time step no.     14
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    14
-     Time ..................................................   7.000000e-02 (d)
+     Time ..................................................   7.000000E-02 (d)
 
 Beginning time step no.     15
      Beginning flow calculation.
@@ -373,7 +373,7 @@ Beginning time step no.     15
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    15
-     Time ..................................................   7.500000e-02 (d)
+     Time ..................................................   7.500000E-02 (d)
 
 Beginning time step no.     16
      Beginning flow calculation.
@@ -390,7 +390,7 @@ Beginning time step no.     16
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    16
-     Time ..................................................   8.000000e-02 (d)
+     Time ..................................................   8.000000E-02 (d)
 
 Beginning time step no.     17
      Beginning flow calculation.
@@ -407,7 +407,7 @@ Beginning time step no.     17
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    17
-     Time ..................................................   8.500000e-02 (d)
+     Time ..................................................   8.500000E-02 (d)
 
 Beginning time step no.     18
      Beginning flow calculation.
@@ -424,7 +424,7 @@ Beginning time step no.     18
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    18
-     Time ..................................................   9.000000e-02 (d)
+     Time ..................................................   9.000000E-02 (d)
 
 Beginning time step no.     19
      Beginning flow calculation.
@@ -441,7 +441,7 @@ Beginning time step no.     19
           Charge
      Beginning chemistry calculation.
      End of Time Step No.    19
-     Time ..................................................   9.500000e-02 (d)
+     Time ..................................................   9.500000E-02 (d)
 
 Beginning time step no.     20
      Beginning flow calculation.
@@ -1804,7 +1804,7 @@ Beginning time step no.     99
      Time ..................................................   0.495000     (d)
 
 Beginning time step no.    100
-     Current time step length ...................................   5.000e-03 (d)
+     Current time step length ...................................   5.000E-03 (d)
      Beginning flow calculation.
      Beginning solute-transport calculation.
           H
@@ -1826,17 +1826,17 @@ Beginning time step no.    100
 
      End of Time Step No.   100
      Time ..................................................   0.500000     (d)
-     Maximum change in potentiometric head  -5.7371e-18      (m ) at location (  1.00    ,  1.00    , 6.800e-02)(m)
-     Maximum change in H ..................  1.1361e-11 (mol/kgw) at location (  1.00    ,  1.00    , 8.000e-02)(m)
-     Maximum change in O .................. -1.6782e-05 (mol/kgw) at location (  1.00    ,  1.00    , 8.000e-02)(m)
-     Maximum change in Br .................  0.0000e+00 (mol/kgw) at location (  1.00    ,  1.00    , 8.000e-02)(m)
-     Maximum change in Ca .................  7.3782e-05 (mol/kgw) at location (  1.00    , 0.000e+00, 6.400e-02)(m)
-     Maximum change in Cl .................  5.5940e-06 (mol/kgw) at location (  1.00    ,  1.00    , 8.000e-02)(m)
-     Maximum change in K .................. -1.2509e-04 (mol/kgw) at location (  1.00    , 0.000e+00, 6.400e-02)(m)
-     Maximum change in Li .................  0.0000e+00 (mol/kgw) at location (  1.00    ,  1.00    , 8.000e-02)(m)
-     Maximum change in N .................. -5.5940e-06 (mol/kgw) at location ( 0.000e+00, 0.000e+00, 8.000e-02)(m)
-     Maximum change in Na ................. -4.0662e-05 (mol/kgw) at location (  1.00    ,  1.00    , 8.000e-02)(m)
-     Maximum change in Charge ............. -7.3586e-12 (mol/kgw) at location ( 0.000e+00, 0.000e+00, 4.200e-02)(m)
+     Maximum change in potentiometric head   5.5623E-18      (m ) at location (     0    ,  1.00    , 1.000E-02)(m)
+     Maximum change in H ..................  1.1361E-11 (mol/kgw) at location (  1.00    ,     0    , 8.000E-02)(m)
+     Maximum change in O .................. -1.6782E-05 (mol/kgw) at location (  1.00    ,  1.00    , 8.000E-02)(m)
+     Maximum change in Br .................  0.0000E+00 (mol/kgw) at location (  1.00    ,  1.00    , 8.000E-02)(m)
+     Maximum change in Ca .................  7.3782E-05 (mol/kgw) at location (     0    ,     0    , 6.400E-02)(m)
+     Maximum change in Cl .................  5.5940E-06 (mol/kgw) at location (  1.00    ,     0    , 8.000E-02)(m)
+     Maximum change in K .................. -1.2509E-04 (mol/kgw) at location (     0    ,     0    , 6.400E-02)(m)
+     Maximum change in Li .................  0.0000E+00 (mol/kgw) at location (  1.00    ,  1.00    , 8.000E-02)(m)
+     Maximum change in N .................. -5.5940E-06 (mol/kgw) at location (     0    ,  1.00    , 8.000E-02)(m)
+     Maximum change in Na ................. -4.0662E-05 (mol/kgw) at location (  1.00    ,     0    , 8.000E-02)(m)
+     Maximum change in Charge ............. -7.3586E-12 (mol/kgw) at location (  1.00    ,  1.00    , 4.200E-02)(m)
 Reading transient data for simulation: Set  2
      Time at which next set of transient parameters will be read .......... TIMCHG   1.00      (d)
 
@@ -3524,7 +3524,7 @@ Beginning time step no.    199
      Time ..................................................   0.995000     (d)
 
 Beginning time step no.    200
-     Current time step length ...................................   5.000e-03 (d)
+     Current time step length ...................................   5.000E-03 (d)
      Beginning flow calculation.
      Beginning solute-transport calculation.
           H
@@ -3546,17 +3546,17 @@ Beginning time step no.    200
 
      End of Time Step No.   200
      Time ..................................................    1.00000     (d)
-     Maximum change in potentiometric head  -4.0902e-17      (m ) at location (  1.00    , 0.000e+00, 4.000e-03)(m)
-     Maximum change in H ..................  1.2641e-12 (mol/kgw) at location ( 0.000e+00,  1.00    , 7.000e-02)(m)
-     Maximum change in O ..................  6.3295e-13 (mol/kgw) at location ( 0.000e+00,  1.00    , 7.000e-02)(m)
-     Maximum change in Br .................  0.0000e+00 (mol/kgw) at location (  1.00    ,  1.00    , 8.000e-02)(m)
-     Maximum change in Ca ................. -6.4673e-19 (mol/kgw) at location ( 0.000e+00,  1.00    , 8.000e-03)(m)
-     Maximum change in Cl .................  5.4503e-19 (mol/kgw) at location ( 0.000e+00, 0.000e+00, 3.800e-02)(m)
-     Maximum change in K ..................  0.0000e+00 (mol/kgw) at location (  1.00    ,  1.00    , 8.000e-02)(m)
-     Maximum change in Li .................  0.0000e+00 (mol/kgw) at location (  1.00    ,  1.00    , 8.000e-02)(m)
-     Maximum change in N ..................  0.0000e+00 (mol/kgw) at location (  1.00    ,  1.00    , 8.000e-02)(m)
-     Maximum change in Na .................  0.0000e+00 (mol/kgw) at location (  1.00    ,  1.00    , 8.000e-02)(m)
-     Maximum change in Charge ............. -1.4360e-15 (mol/kgw) at location ( 0.000e+00,  1.00    , 0.000e+00)(m)
+     Maximum change in potentiometric head   4.3729E-17      (m ) at location (  1.00    ,  1.00    , 1.600E-02)(m)
+     Maximum change in H ..................  1.2652E-12 (mol/kgw) at location (  1.00    ,  1.00    , 7.000E-02)(m)
+     Maximum change in O ..................  6.3365E-13 (mol/kgw) at location (  1.00    ,  1.00    , 7.000E-02)(m)
+     Maximum change in Br .................  0.0000E+00 (mol/kgw) at location (  1.00    ,  1.00    , 8.000E-02)(m)
+     Maximum change in Ca .................  4.3563E-19 (mol/kgw) at location (  1.00    ,     0    , 7.000E-02)(m)
+     Maximum change in Cl .................  5.2672E-19 (mol/kgw) at location (  1.00    ,  1.00    , 4.600E-02)(m)
+     Maximum change in K ..................  0.0000E+00 (mol/kgw) at location (  1.00    ,  1.00    , 8.000E-02)(m)
+     Maximum change in Li .................  0.0000E+00 (mol/kgw) at location (  1.00    ,  1.00    , 8.000E-02)(m)
+     Maximum change in N ..................  0.0000E+00 (mol/kgw) at location (  1.00    ,  1.00    , 8.000E-02)(m)
+     Maximum change in Na .................  0.0000E+00 (mol/kgw) at location (  1.00    ,  1.00    , 8.000E-02)(m)
+     Maximum change in Charge ............. -1.4365E-15 (mol/kgw) at location (     0    ,     0    ,     0    )(m)
 Done with transient simulation.
 
                              ***** Simulation Completed *****

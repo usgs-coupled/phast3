@@ -79,8 +79,8 @@
 
                               *** Output at End of Steady State Iteration No.     1 ***
 
-     Time .......................................................   0.000e+00  (yr)
-     Maximum change in potentiometric head ... -2.2807e-15    (m ) at location (  5.30    ,  1.00    ,  1.00    )(m)
+     Time .......................................................       0      (yr)
+     Maximum change in potentiometric head ... -1.0773E-14    (m ) at location (  3.90    ,     0    ,     0    )(m)
 
                               Fluid Potentiometric Head (m)
 

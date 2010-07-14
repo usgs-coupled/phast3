@@ -150,20 +150,20 @@ Overhead storage requirement (D4ZGCG iterative solver)................ NOHST .  
                     *** Calculation Information ***
           Row scaling only, using L-inf norm, will be done
           Direction index for d4 zig-zag renumbering ............ IDIR..    1
-          Incomplete LU [f] or modified ILU [t] factorization ... MILU..    t
+          Incomplete LU [f] or modified ILU [t] factorization ... MILU..    T
           Number of search directions before restart ............ NSDR..   20
-          Tolerance on iterative solution ....................... EPSSLV 1.0e-18
+          Tolerance on iterative solution ....................... EPSSLV 1.0E-18
 
 Beginning flow calculation for steady-state i.c.
 Reading transient data for simulation: Set  1
 Automatic Time Step Control Parameters for Steady Flow
-Maximum pressure change allowed per time step.................... DPTAS    9.81e+04  (Pa )
-Minimum time step required ...................................... DTIMMN   1.00e-04  (yr )
-Maximum time step allowed ....................................... DTIMMX   1.00e+04(yr )
+Maximum pressure change allowed per time step.................... DPTAS    9.81E+04  (Pa )
+Minimum time step required ...................................... DTIMMN   1.00E-04  (yr )
+Maximum time step allowed ....................................... DTIMMX   1.00E+04(yr )
 
 Beginning steady state time step no.      1
-     Maximum change in potentiometric head ..   -2.2807e-15     (m) at location (  5.30    ,  1.00    ,  1.00    )(m)
-     Fractional flow residual ...............    1.0692e-15
+     Maximum change in potentiometric head ..   -1.0773E-14     (m) at location (  3.90    ,     0    ,     0    )(m)
+     Fractional flow residual ...............    1.2831E-15
 
 Done with steady-state flow.
 Equilibration of cells for initial conditions.
@@ -181,7 +181,7 @@ Beginning time step no.      1
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     1
-     Time ..................................................   1.000000e-02 (yr)
+     Time ..................................................   1.000000E-02 (yr)
 
 Beginning time step no.      2
      Beginning solute-transport calculation.
@@ -193,7 +193,7 @@ Beginning time step no.      2
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     2
-     Time ..................................................   2.000000e-02 (yr)
+     Time ..................................................   2.000000E-02 (yr)
 
 Beginning time step no.      3
      Beginning solute-transport calculation.
@@ -205,7 +205,7 @@ Beginning time step no.      3
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     3
-     Time ..................................................   3.000000e-02 (yr)
+     Time ..................................................   3.000000E-02 (yr)
 
 Beginning time step no.      4
      Beginning solute-transport calculation.
@@ -217,7 +217,7 @@ Beginning time step no.      4
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     4
-     Time ..................................................   4.000000e-02 (yr)
+     Time ..................................................   4.000000E-02 (yr)
 
 Beginning time step no.      5
      Beginning solute-transport calculation.
@@ -229,7 +229,7 @@ Beginning time step no.      5
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     5
-     Time ..................................................   5.000000e-02 (yr)
+     Time ..................................................   5.000000E-02 (yr)
 
 Beginning time step no.      6
      Beginning solute-transport calculation.
@@ -241,7 +241,7 @@ Beginning time step no.      6
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     6
-     Time ..................................................   6.000000e-02 (yr)
+     Time ..................................................   6.000000E-02 (yr)
 
 Beginning time step no.      7
      Beginning solute-transport calculation.
@@ -253,7 +253,7 @@ Beginning time step no.      7
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     7
-     Time ..................................................   7.000000e-02 (yr)
+     Time ..................................................   7.000000E-02 (yr)
 
 Beginning time step no.      8
      Beginning solute-transport calculation.
@@ -265,7 +265,7 @@ Beginning time step no.      8
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     8
-     Time ..................................................   8.000000e-02 (yr)
+     Time ..................................................   8.000000E-02 (yr)
 
 Beginning time step no.      9
      Beginning solute-transport calculation.
@@ -277,7 +277,7 @@ Beginning time step no.      9
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     9
-     Time ..................................................   9.000000e-02 (yr)
+     Time ..................................................   9.000000E-02 (yr)
 
 Beginning time step no.     10
      Beginning solute-transport calculation.
@@ -760,20 +760,20 @@ Beginning time step no.     49
      Time ..................................................   0.490000     (yr)
 
 Beginning time step no.     50
-     Current time step length ...................................   1.000e-02 (yr)
+     Current time step length ...................................   1.000E-02 (yr)
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:   21      5.7316532e-22
+          No. of solver iterations, Relative residual:   21      3.0266600E-21
           O
-          No. of solver iterations, Relative residual:    6      3.6064417e-19
+          No. of solver iterations, Relative residual:   21      4.1307901E-21
           Br
-          No. of solver iterations, Relative residual:   21      1.0378064e-21
+          No. of solver iterations, Relative residual:   21      5.4199863E-21
           Cl
-          No. of solver iterations, Relative residual:    6      6.7964428e-19
+          No. of solver iterations, Relative residual:   21      1.1438544E-20
           Na
-          No. of solver iterations, Relative residual:   21      3.0250196e-21
+          No. of solver iterations, Relative residual:   21      7.9189679E-21
           Charge
-          No. of solver iterations, Relative residual:   21      1.2445295e-21
+          No. of solver iterations, Relative residual:   21      3.9919625E-21
      Beginning chemistry calculation.
           Total cells: 101
           Number of cells with same aqueous model: 101
@@ -783,13 +783,13 @@ Beginning time step no.     50
 
      End of Time Step No.    50
      Time ..................................................   0.500000     (yr)
-     Maximum change in potentiometric head   0.0000e+00      (m ) at location (  10.0    ,  1.00    ,  1.00    )(m)
-     Maximum change in H .................. -4.0404e-09 (mol/kgw) at location (  5.00    ,  1.00    ,  1.00    )(m)
-     Maximum change in O ..................  3.2061e-09 (mol/kgw) at location (  5.00    , 0.000e+00,  1.00    )(m)
-     Maximum change in Br ................. -2.8861e-05 (mol/kgw) at location (  5.00    ,  1.00    ,  1.00    )(m)
-     Maximum change in Cl .................  2.8860e-05 (mol/kgw) at location (  5.00    ,  1.00    ,  1.00    )(m)
-     Maximum change in Na ................. -1.2834e-09 (mol/kgw) at location (  5.00    ,  1.00    ,  1.00    )(m)
-     Maximum change in Charge ............. -1.0613e-08 (mol/kgw) at location (  5.00    , 0.000e+00,  1.00    )(m)
+     Maximum change in potentiometric head   0.0000E+00      (m ) at location (  10.0    ,  1.00    ,  1.00    )(m)
+     Maximum change in H .................. -4.0404E-09 (mol/kgw) at location (  5.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in O ..................  3.2173E-09 (mol/kgw) at location (  5.00    ,     0    ,  1.00    )(m)
+     Maximum change in Br ................. -2.8861E-05 (mol/kgw) at location (  5.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in Cl .................  2.8860E-05 (mol/kgw) at location (  5.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in Na ................. -1.2834E-09 (mol/kgw) at location (  5.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in Charge ............. -1.0613E-08 (mol/kgw) at location (  5.00    ,  1.00    ,  1.00    )(m)
 Done with transient simulation.
 
                              ***** Simulation Completed *****

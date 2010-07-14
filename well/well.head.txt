@@ -530,7 +530,7 @@
                               *** Output at End of Time Step No.    20 ***
 
      Time .......................................................    10.0      (min)
-     Maximum change in potentiometric head ... -8.9885e-03      (m )   at location (  610.    ,  610.    , -30.5    )(m )
+     Maximum change in potentiometric head ... -8.9885E-03      (m )   at location (  610.    ,  610.    , -30.5    )(m )
 
                               Fluid Potentiometric Head (m)
 

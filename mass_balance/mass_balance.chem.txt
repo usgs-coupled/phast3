@@ -307,7 +307,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -1.973e-19
+                 Total alkalinity (eq/kg)  =  -6.584e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -394,7 +394,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -5.242e-19
+                 Total alkalinity (eq/kg)  =  -3.840e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -481,7 +481,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -4.420e-19
+                 Total alkalinity (eq/kg)  =  -2.024e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -568,7 +568,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.299e-19
+                 Total alkalinity (eq/kg)  =  -4.300e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -655,7 +655,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -6.916e-19
+                 Total alkalinity (eq/kg)  =  -6.718e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -742,7 +742,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -1.215e-18
+                 Total alkalinity (eq/kg)  =  -9.832e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -829,11 +829,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -9.272e-20
+                 Total alkalinity (eq/kg)  =  -6.980e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   1.939e-14
+                  Electrical balance (eq)  =   1.940e-14
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   2
                                   Total H  = 1.110124e+02
@@ -916,7 +916,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -6.124e-19
+                 Total alkalinity (eq/kg)  =  -7.956e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -1003,7 +1003,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   7.092e-20
+                 Total alkalinity (eq/kg)  =   1.376e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -1090,7 +1090,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -5.718e-19
+                 Total alkalinity (eq/kg)  =   4.525e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -1177,7 +1177,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.351e-19
+                 Total alkalinity (eq/kg)  =  -5.757e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -1264,7 +1264,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.497e-19
+                 Total alkalinity (eq/kg)  =  -4.414e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -1351,7 +1351,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -2.121e-19
+                 Total alkalinity (eq/kg)  =  -9.850e-20
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -1438,7 +1438,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -6.672e-19
+                 Total alkalinity (eq/kg)  =  -1.996e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -1525,7 +1525,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -4.431e-19
+                 Total alkalinity (eq/kg)  =  -2.422e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -1612,7 +1612,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.439e-19
+                 Total alkalinity (eq/kg)  =  -5.136e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -1699,7 +1699,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -1.188e-18
+                 Total alkalinity (eq/kg)  =  -4.011e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -1786,7 +1786,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -8.769e-19
+                 Total alkalinity (eq/kg)  =  -3.400e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -1873,7 +1873,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -3.387e-19
+                 Total alkalinity (eq/kg)  =  -3.787e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -1960,7 +1960,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -6.426e-20
+                 Total alkalinity (eq/kg)  =  -4.699e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -2047,7 +2047,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -5.677e-19
+                 Total alkalinity (eq/kg)  =  -3.143e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -2134,7 +2134,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -9.428e-19
+                 Total alkalinity (eq/kg)  =  -2.019e-21
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -2221,7 +2221,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -1.057e-19
+                 Total alkalinity (eq/kg)  =  -2.636e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -2308,7 +2308,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   7.455e-20
+                 Total alkalinity (eq/kg)  =  -9.796e-20
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -2395,7 +2395,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -8.451e-19
+                 Total alkalinity (eq/kg)  =   8.789e-21
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -2482,7 +2482,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -1.214e-18
+                 Total alkalinity (eq/kg)  =  -2.558e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -2569,7 +2569,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -2.123e-19
+                 Total alkalinity (eq/kg)  =  -6.085e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -2656,7 +2656,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.940e-19
+                 Total alkalinity (eq/kg)  =  -6.176e-20
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -2743,7 +2743,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -5.071e-19
+                 Total alkalinity (eq/kg)  =  -1.995e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -2830,7 +2830,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -8.401e-19
+                 Total alkalinity (eq/kg)  =   5.503e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -2917,7 +2917,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -5.751e-19
+                 Total alkalinity (eq/kg)  =  -9.098e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -3004,7 +3004,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.792e-20
+                 Total alkalinity (eq/kg)  =  -1.230e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -3091,7 +3091,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -6.535e-19
+                 Total alkalinity (eq/kg)  =   6.151e-20
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -3178,7 +3178,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -6.010e-19
+                 Total alkalinity (eq/kg)  =  -8.562e-20
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -3265,7 +3265,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -4.131e-20
+                 Total alkalinity (eq/kg)  =  -9.701e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -3352,7 +3352,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.209e-19
+                 Total alkalinity (eq/kg)  =   4.483e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -3439,7 +3439,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -1.101e-19
+                 Total alkalinity (eq/kg)  =  -3.682e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -3526,7 +3526,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -2.749e-20
+                 Total alkalinity (eq/kg)  =   2.336e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -3613,7 +3613,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.734e-19
+                 Total alkalinity (eq/kg)  =  -2.602e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -3700,7 +3700,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.971e-19
+                 Total alkalinity (eq/kg)  =   3.253e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -3787,7 +3787,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   7.548e-19
+                 Total alkalinity (eq/kg)  =   4.739e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -3874,7 +3874,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.650e-19
+                 Total alkalinity (eq/kg)  =   3.854e-20
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -3961,7 +3961,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   8.830e-19
+                 Total alkalinity (eq/kg)  =   7.984e-20
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -4048,7 +4048,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   9.561e-19
+                 Total alkalinity (eq/kg)  =   4.064e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -4135,7 +4135,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.799e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   9.023e-19
+                 Total alkalinity (eq/kg)  =   7.478e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -4222,7 +4222,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.799e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.386e-18
+                 Total alkalinity (eq/kg)  =   1.295e-18
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -4309,7 +4309,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.799e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.269e-19
+                 Total alkalinity (eq/kg)  =   5.306e-19
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -4396,7 +4396,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.799e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.487e-18
+                 Total alkalinity (eq/kg)  =   1.086e-18
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -4483,7 +4483,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.799e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.868e-18
+                 Total alkalinity (eq/kg)  =   1.963e-18
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -4570,7 +4570,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.799e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.234e-18
+                 Total alkalinity (eq/kg)  =   1.610e-18
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -4657,7 +4657,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.799e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.790e-18
+                 Total alkalinity (eq/kg)  =   1.561e-18
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -4744,7 +4744,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.799e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.932e-18
+                 Total alkalinity (eq/kg)  =   1.471e-18
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -4831,7 +4831,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.799e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.085e-18
+                 Total alkalinity (eq/kg)  =   2.331e-18
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -4918,7 +4918,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.799e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.736e-18
+                 Total alkalinity (eq/kg)  =   3.016e-18
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -5005,7 +5005,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.799e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.299e-18
+                 Total alkalinity (eq/kg)  =   2.526e-18
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -5092,7 +5092,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.799e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.022e-18
+                 Total alkalinity (eq/kg)  =   2.986e-18
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -5179,7 +5179,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.798e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   4.294e-18
+                 Total alkalinity (eq/kg)  =   4.175e-18
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -5266,7 +5266,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.798e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.626e-18
+                 Total alkalinity (eq/kg)  =   4.072e-18
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -5353,7 +5353,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.798e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   4.829e-18
+                 Total alkalinity (eq/kg)  =   3.904e-18
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -5440,7 +5440,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.798e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.961e-18
+                 Total alkalinity (eq/kg)  =   4.651e-18
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -5527,7 +5527,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.797e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   6.189e-18
+                 Total alkalinity (eq/kg)  =   6.381e-18
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -5614,7 +5614,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.797e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   6.377e-18
+                 Total alkalinity (eq/kg)  =   6.166e-18
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -5701,7 +5701,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.797e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   6.854e-18
+                 Total alkalinity (eq/kg)  =   5.846e-18
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -5788,7 +5788,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.797e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   6.611e-18
+                 Total alkalinity (eq/kg)  =   5.923e-18
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -5875,7 +5875,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.796e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   9.492e-18
+                 Total alkalinity (eq/kg)  =   9.771e-18
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -5962,7 +5962,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.796e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   9.454e-18
+                 Total alkalinity (eq/kg)  =   8.784e-18
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -6049,7 +6049,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.796e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   9.804e-18
+                 Total alkalinity (eq/kg)  =   9.284e-18
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -6136,7 +6136,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.796e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   9.777e-18
+                 Total alkalinity (eq/kg)  =   9.556e-18
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -6223,7 +6223,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.795e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.318e-17
+                 Total alkalinity (eq/kg)  =   1.366e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -6310,7 +6310,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.795e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.318e-17
+                 Total alkalinity (eq/kg)  =   1.296e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -6397,7 +6397,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.795e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.367e-17
+                 Total alkalinity (eq/kg)  =   1.345e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -6484,7 +6484,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.795e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.368e-17
+                 Total alkalinity (eq/kg)  =   1.329e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -6571,7 +6571,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.793e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.755e-17
+                 Total alkalinity (eq/kg)  =   1.845e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -6658,7 +6658,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.793e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.751e-17
+                 Total alkalinity (eq/kg)  =   1.799e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -6745,7 +6745,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.793e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.776e-17
+                 Total alkalinity (eq/kg)  =   1.861e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -6832,7 +6832,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.793e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.833e-17
+                 Total alkalinity (eq/kg)  =   1.807e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -6919,7 +6919,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.790e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.367e-17
+                 Total alkalinity (eq/kg)  =   2.386e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -7006,7 +7006,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.790e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.379e-17
+                 Total alkalinity (eq/kg)  =   2.354e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -7093,7 +7093,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.790e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.413e-17
+                 Total alkalinity (eq/kg)  =   2.382e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -7180,7 +7180,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.790e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.438e-17
+                 Total alkalinity (eq/kg)  =   2.386e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -7354,7 +7354,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.786e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.002e-17
+                 Total alkalinity (eq/kg)  =   3.068e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -7441,7 +7441,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.786e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.066e-17
+                 Total alkalinity (eq/kg)  =   3.063e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -7528,7 +7528,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.786e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.052e-17
+                 Total alkalinity (eq/kg)  =   3.006e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -7615,7 +7615,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.781e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.677e-17
+                 Total alkalinity (eq/kg)  =   3.673e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -7702,7 +7702,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.781e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.693e-17
+                 Total alkalinity (eq/kg)  =   3.726e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -7789,7 +7789,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.781e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.711e-17
+                 Total alkalinity (eq/kg)  =   3.721e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -7876,7 +7876,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.781e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.736e-17
+                 Total alkalinity (eq/kg)  =   3.716e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -7963,7 +7963,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.774e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   4.011e-17
+                 Total alkalinity (eq/kg)  =   3.900e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -8050,7 +8050,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.774e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.994e-17
+                 Total alkalinity (eq/kg)  =   4.023e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -8137,7 +8137,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.774e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   4.029e-17
+                 Total alkalinity (eq/kg)  =   3.982e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -8311,7 +8311,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.765e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.274e-17
+                 Total alkalinity (eq/kg)  =   3.110e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -8398,7 +8398,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.765e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.209e-17
+                 Total alkalinity (eq/kg)  =   3.150e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -8485,7 +8485,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.765e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.276e-17
+                 Total alkalinity (eq/kg)  =   3.185e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -8572,7 +8572,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.765e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.249e-17
+                 Total alkalinity (eq/kg)  =   3.095e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -8659,7 +8659,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.753e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.209e-17
+                 Total alkalinity (eq/kg)  =   3.075e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -8746,7 +8746,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.753e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.088e-17
+                 Total alkalinity (eq/kg)  =   3.009e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -8833,7 +8833,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.753e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.137e-17
+                 Total alkalinity (eq/kg)  =   3.133e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -8920,7 +8920,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.753e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.134e-17
+                 Total alkalinity (eq/kg)  =   3.052e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -9007,7 +9007,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.736e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.152e-17
+                 Total alkalinity (eq/kg)  =   2.996e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -9094,7 +9094,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.736e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.003e-17
+                 Total alkalinity (eq/kg)  =   2.951e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -9181,7 +9181,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.736e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.042e-17
+                 Total alkalinity (eq/kg)  =   3.002e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -9268,7 +9268,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.736e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.035e-17
+                 Total alkalinity (eq/kg)  =   2.926e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -9355,7 +9355,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.715e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.928e-17
+                 Total alkalinity (eq/kg)  =   2.818e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -9442,7 +9442,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.715e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.901e-17
+                 Total alkalinity (eq/kg)  =   2.874e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -9529,7 +9529,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.715e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.944e-17
+                 Total alkalinity (eq/kg)  =   2.962e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -9616,7 +9616,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.715e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   3.001e-17
+                 Total alkalinity (eq/kg)  =   2.861e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -9703,7 +9703,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.686e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.885e-17
+                 Total alkalinity (eq/kg)  =   2.772e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -9790,7 +9790,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.686e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.822e-17
+                 Total alkalinity (eq/kg)  =   2.771e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -9877,7 +9877,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.686e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.877e-17
+                 Total alkalinity (eq/kg)  =   2.883e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -9964,7 +9964,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.686e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.830e-17
+                 Total alkalinity (eq/kg)  =   2.774e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -10051,7 +10051,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.648e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.767e-17
+                 Total alkalinity (eq/kg)  =   2.711e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -10138,7 +10138,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.648e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.701e-17
+                 Total alkalinity (eq/kg)  =   2.761e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -10225,7 +10225,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.648e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.815e-17
+                 Total alkalinity (eq/kg)  =   2.773e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -10312,7 +10312,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.648e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.766e-17
+                 Total alkalinity (eq/kg)  =   2.687e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -10399,7 +10399,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.599e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.707e-17
+                 Total alkalinity (eq/kg)  =   2.601e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -10486,7 +10486,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.599e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.630e-17
+                 Total alkalinity (eq/kg)  =   2.654e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -10573,7 +10573,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.599e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.729e-17
+                 Total alkalinity (eq/kg)  =   2.663e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -10660,7 +10660,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.599e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.644e-17
+                 Total alkalinity (eq/kg)  =   2.607e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -10747,7 +10747,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.534e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.552e-17
+                 Total alkalinity (eq/kg)  =   2.455e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -10834,7 +10834,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.534e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.522e-17
+                 Total alkalinity (eq/kg)  =   2.525e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -10921,7 +10921,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.534e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.594e-17
+                 Total alkalinity (eq/kg)  =   2.521e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -11008,7 +11008,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.534e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.453e-17
+                 Total alkalinity (eq/kg)  =   2.461e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -11095,7 +11095,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.449e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.523e-17
+                 Total alkalinity (eq/kg)  =   2.404e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -11182,7 +11182,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.449e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.401e-17
+                 Total alkalinity (eq/kg)  =   2.389e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -11269,7 +11269,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.449e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.531e-17
+                 Total alkalinity (eq/kg)  =   2.431e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -11356,7 +11356,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.449e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.386e-17
+                 Total alkalinity (eq/kg)  =   2.350e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -11443,7 +11443,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.330e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.394e-17
+                 Total alkalinity (eq/kg)  =   2.275e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -11530,7 +11530,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.330e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.276e-17
+                 Total alkalinity (eq/kg)  =   2.281e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -11617,7 +11617,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.330e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.401e-17
+                 Total alkalinity (eq/kg)  =   2.279e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -11704,7 +11704,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.330e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.260e-17
+                 Total alkalinity (eq/kg)  =   2.301e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -11791,7 +11791,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.216e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.223e-17
+                 Total alkalinity (eq/kg)  =   2.156e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -11878,7 +11878,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.216e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.200e-17
+                 Total alkalinity (eq/kg)  =   2.184e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -11965,7 +11965,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.216e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.333e-17
+                 Total alkalinity (eq/kg)  =   2.166e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -12052,7 +12052,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.216e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.125e-17
+                 Total alkalinity (eq/kg)  =   2.157e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -12139,7 +12139,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.203e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.109e-17
+                 Total alkalinity (eq/kg)  =   2.001e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -12226,7 +12226,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.203e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.030e-17
+                 Total alkalinity (eq/kg)  =   2.076e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -12313,7 +12313,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.203e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.164e-17
+                 Total alkalinity (eq/kg)  =   2.018e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -12400,7 +12400,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.203e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   2.054e-17
+                 Total alkalinity (eq/kg)  =   2.009e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -12487,7 +12487,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.201e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.972e-17
+                 Total alkalinity (eq/kg)  =   1.919e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -12574,7 +12574,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.201e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.880e-17
+                 Total alkalinity (eq/kg)  =   1.951e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -12661,7 +12661,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.201e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.941e-17
+                 Total alkalinity (eq/kg)  =   1.890e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -12748,7 +12748,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.201e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.916e-17
+                 Total alkalinity (eq/kg)  =   1.891e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -12835,7 +12835,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.200e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.868e-17
+                 Total alkalinity (eq/kg)  =   1.774e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -12922,7 +12922,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.200e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.779e-17
+                 Total alkalinity (eq/kg)  =   1.819e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -13009,7 +13009,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.200e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.819e-17
+                 Total alkalinity (eq/kg)  =   1.761e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -13096,7 +13096,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.200e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.727e-17
+                 Total alkalinity (eq/kg)  =   1.763e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -13183,7 +13183,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.200e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.722e-17
+                 Total alkalinity (eq/kg)  =   1.609e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -13270,7 +13270,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.200e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.624e-17
+                 Total alkalinity (eq/kg)  =   1.700e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -13357,7 +13357,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.200e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.688e-17
+                 Total alkalinity (eq/kg)  =   1.650e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -13444,7 +13444,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.200e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.605e-17
+                 Total alkalinity (eq/kg)  =   1.685e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -13531,7 +13531,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.200e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.620e-17
+                 Total alkalinity (eq/kg)  =   1.522e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -13618,7 +13618,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.200e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.546e-17
+                 Total alkalinity (eq/kg)  =   1.541e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -13705,7 +13705,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.200e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.531e-17
+                 Total alkalinity (eq/kg)  =   1.526e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -13792,7 +13792,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.200e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.430e-17
+                 Total alkalinity (eq/kg)  =   1.505e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -13879,7 +13879,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.200e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.527e-17
+                 Total alkalinity (eq/kg)  =   1.385e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -13966,7 +13966,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.200e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.386e-17
+                 Total alkalinity (eq/kg)  =   1.433e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -14053,7 +14053,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.200e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.448e-17
+                 Total alkalinity (eq/kg)  =   1.456e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -14140,7 +14140,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.200e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.382e-17
+                 Total alkalinity (eq/kg)  =   1.376e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -14227,7 +14227,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.200e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.520e-17
+                 Total alkalinity (eq/kg)  =   1.349e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -14314,7 +14314,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.200e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.360e-17
+                 Total alkalinity (eq/kg)  =   1.435e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -14401,7 +14401,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.200e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.394e-17
+                 Total alkalinity (eq/kg)  =   1.409e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -14488,7 +14488,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.200e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =   1.349e-17
+                 Total alkalinity (eq/kg)  =   1.398e-17
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -14569,11 +14569,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.007e+00
-                 Total alkalinity (eq/kg)  =  -1.717e-15
+                 Total alkalinity (eq/kg)  =  -1.718e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   1.733e-15
+                  Electrical balance (eq)  =   1.734e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.118111e+02
@@ -14695,11 +14695,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.007e+00
-                 Total alkalinity (eq/kg)  =  -1.717e-15
+                 Total alkalinity (eq/kg)  =  -1.718e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   1.733e-15
+                  Electrical balance (eq)  =   1.734e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.118111e+02
@@ -14758,11 +14758,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.007e+00
-                 Total alkalinity (eq/kg)  =  -1.717e-15
+                 Total alkalinity (eq/kg)  =  -1.718e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   1.733e-15
+                  Electrical balance (eq)  =   1.734e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.118111e+02
@@ -14821,7 +14821,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.007e+00
-                 Total alkalinity (eq/kg)  =  -1.609e-15
+                 Total alkalinity (eq/kg)  =  -1.610e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -14884,7 +14884,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.007e+00
-                 Total alkalinity (eq/kg)  =  -1.610e-15
+                 Total alkalinity (eq/kg)  =  -1.609e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -14947,7 +14947,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.007e+00
-                 Total alkalinity (eq/kg)  =  -1.610e-15
+                 Total alkalinity (eq/kg)  =  -1.609e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -15266,7 +15266,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   1.463e-15
+                  Electrical balance (eq)  =   1.461e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.117712e+02
@@ -15325,11 +15325,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.007e+00
-                 Total alkalinity (eq/kg)  =  -1.311e-15
+                 Total alkalinity (eq/kg)  =  -1.310e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   1.324e-15
+                  Electrical balance (eq)  =   1.323e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.117513e+02
@@ -15388,11 +15388,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.007e+00
-                 Total alkalinity (eq/kg)  =  -1.311e-15
+                 Total alkalinity (eq/kg)  =  -1.310e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   1.324e-15
+                  Electrical balance (eq)  =   1.323e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.117513e+02
@@ -15703,11 +15703,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.006e+00
-                 Total alkalinity (eq/kg)  =  -1.200e-15
+                 Total alkalinity (eq/kg)  =  -1.199e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   1.212e-15
+                  Electrical balance (eq)  =   1.210e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.117313e+02
@@ -15770,7 +15770,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   1.211e-15
+                  Electrical balance (eq)  =   1.210e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.117313e+02
@@ -15959,7 +15959,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   1.756e-15
+                  Electrical balance (eq)  =   1.754e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.117114e+02
@@ -16018,7 +16018,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.006e+00
-                 Total alkalinity (eq/kg)  =  -1.739e-15
+                 Total alkalinity (eq/kg)  =  -1.740e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -16081,7 +16081,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.006e+00
-                 Total alkalinity (eq/kg)  =  -1.511e-15
+                 Total alkalinity (eq/kg)  =  -1.510e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -16144,7 +16144,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.006e+00
-                 Total alkalinity (eq/kg)  =  -1.511e-15
+                 Total alkalinity (eq/kg)  =  -1.510e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -16270,11 +16270,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.006e+00
-                 Total alkalinity (eq/kg)  =  -1.511e-15
+                 Total alkalinity (eq/kg)  =  -1.510e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   1.524e-15
+                  Electrical balance (eq)  =   1.523e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.116914e+02
@@ -16463,7 +16463,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   1.404e-15
+                  Electrical balance (eq)  =   1.405e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.116715e+02
@@ -16711,11 +16711,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.006e+00
-                 Total alkalinity (eq/kg)  =  -1.826e-15
+                 Total alkalinity (eq/kg)  =  -1.827e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   1.840e-15
+                  Electrical balance (eq)  =   1.841e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.116516e+02
@@ -16778,7 +16778,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   1.840e-15
+                  Electrical balance (eq)  =   1.839e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.116516e+02
@@ -16837,11 +16837,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.006e+00
-                 Total alkalinity (eq/kg)  =  -1.618e-15
+                 Total alkalinity (eq/kg)  =  -1.617e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   1.630e-15
+                  Electrical balance (eq)  =   1.629e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.116316e+02
@@ -17152,11 +17152,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.005e+00
-                 Total alkalinity (eq/kg)  =  -2.084e-15
+                 Total alkalinity (eq/kg)  =  -2.083e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.098e-15
+                  Electrical balance (eq)  =   2.097e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.116117e+02
@@ -17278,11 +17278,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.005e+00
-                 Total alkalinity (eq/kg)  =  -2.084e-15
+                 Total alkalinity (eq/kg)  =  -2.083e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.098e-15
+                  Electrical balance (eq)  =   2.097e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.116117e+02
@@ -17341,7 +17341,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.005e+00
-                 Total alkalinity (eq/kg)  =  -1.836e-15
+                 Total alkalinity (eq/kg)  =  -1.835e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -17534,7 +17534,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   1.849e-15
+                  Electrical balance (eq)  =   1.848e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.115917e+02
@@ -17593,11 +17593,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.005e+00
-                 Total alkalinity (eq/kg)  =  -1.720e-15
+                 Total alkalinity (eq/kg)  =  -1.719e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   1.732e-15
+                  Electrical balance (eq)  =   1.731e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.115718e+02
@@ -17656,11 +17656,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.005e+00
-                 Total alkalinity (eq/kg)  =  -1.720e-15
+                 Total alkalinity (eq/kg)  =  -1.719e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   1.732e-15
+                  Electrical balance (eq)  =   1.731e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.115718e+02
@@ -17719,7 +17719,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.005e+00
-                 Total alkalinity (eq/kg)  =  -1.720e-15
+                 Total alkalinity (eq/kg)  =  -1.719e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -17782,11 +17782,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.005e+00
-                 Total alkalinity (eq/kg)  =  -1.719e-15
+                 Total alkalinity (eq/kg)  =  -1.720e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   1.732e-15
+                  Electrical balance (eq)  =   1.731e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.115718e+02
@@ -17908,7 +17908,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.005e+00
-                 Total alkalinity (eq/kg)  =  -2.047e-15
+                 Total alkalinity (eq/kg)  =  -2.046e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -17971,11 +17971,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.005e+00
-                 Total alkalinity (eq/kg)  =  -2.046e-15
+                 Total alkalinity (eq/kg)  =  -2.047e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.059e-15
+                  Electrical balance (eq)  =   2.060e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.115518e+02
@@ -18038,7 +18038,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.059e-15
+                  Electrical balance (eq)  =   2.060e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.115518e+02
@@ -18101,7 +18101,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   1.880e-15
+                  Electrical balance (eq)  =   1.881e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.115318e+02
@@ -18160,7 +18160,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.005e+00
-                 Total alkalinity (eq/kg)  =  -1.869e-15
+                 Total alkalinity (eq/kg)  =  -1.868e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -18290,7 +18290,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   1.880e-15
+                  Electrical balance (eq)  =   1.879e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.115318e+02
@@ -18664,11 +18664,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.004e+00
-                 Total alkalinity (eq/kg)  =  -2.007e-15
+                 Total alkalinity (eq/kg)  =  -2.006e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.019e-15
+                  Electrical balance (eq)  =   2.018e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.114919e+02
@@ -18727,11 +18727,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.004e+00
-                 Total alkalinity (eq/kg)  =  -2.007e-15
+                 Total alkalinity (eq/kg)  =  -2.006e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.019e-15
+                  Electrical balance (eq)  =   2.018e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.114919e+02
@@ -18794,7 +18794,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.018e-15
+                  Electrical balance (eq)  =   2.017e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.114919e+02
@@ -18979,11 +18979,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.004e+00
-                 Total alkalinity (eq/kg)  =  -2.336e-15
+                 Total alkalinity (eq/kg)  =  -2.335e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.349e-15
+                  Electrical balance (eq)  =   2.348e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.114720e+02
@@ -19042,7 +19042,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.004e+00
-                 Total alkalinity (eq/kg)  =  -2.335e-15
+                 Total alkalinity (eq/kg)  =  -2.336e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -19298,7 +19298,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.145e-15
+                  Electrical balance (eq)  =   2.144e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.114520e+02
@@ -19361,7 +19361,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.053e-15
+                  Electrical balance (eq)  =   2.054e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.114320e+02
@@ -19420,11 +19420,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.004e+00
-                 Total alkalinity (eq/kg)  =  -2.043e-15
+                 Total alkalinity (eq/kg)  =  -2.042e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.054e-15
+                  Electrical balance (eq)  =   2.053e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.114320e+02
@@ -19487,7 +19487,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.054e-15
+                  Electrical balance (eq)  =   2.053e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.114320e+02
@@ -19546,11 +19546,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.004e+00
-                 Total alkalinity (eq/kg)  =  -2.043e-15
+                 Total alkalinity (eq/kg)  =  -2.042e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.054e-15
+                  Electrical balance (eq)  =   2.052e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.114320e+02
@@ -19865,7 +19865,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.133e-15
+                  Electrical balance (eq)  =   2.132e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.113921e+02
@@ -19928,7 +19928,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.133e-15
+                  Electrical balance (eq)  =   2.132e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.113921e+02
@@ -20176,11 +20176,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.003e+00
-                 Total alkalinity (eq/kg)  =  -2.320e-15
+                 Total alkalinity (eq/kg)  =  -2.319e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.330e-15
+                  Electrical balance (eq)  =   2.329e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.113721e+02
@@ -20302,7 +20302,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.003e+00
-                 Total alkalinity (eq/kg)  =  -2.320e-15
+                 Total alkalinity (eq/kg)  =  -2.319e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -20369,7 +20369,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.199e-15
+                  Electrical balance (eq)  =   2.200e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.113522e+02
@@ -20428,7 +20428,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.003e+00
-                 Total alkalinity (eq/kg)  =  -2.190e-15
+                 Total alkalinity (eq/kg)  =  -2.189e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -20495,7 +20495,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.199e-15
+                  Electrical balance (eq)  =   2.200e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.113522e+02
@@ -20621,7 +20621,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.380e-15
+                  Electrical balance (eq)  =   2.381e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.113322e+02
@@ -20680,7 +20680,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.003e+00
-                 Total alkalinity (eq/kg)  =  -2.372e-15
+                 Total alkalinity (eq/kg)  =  -2.371e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -20747,7 +20747,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.380e-15
+                  Electrical balance (eq)  =   2.381e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.113322e+02
@@ -20806,11 +20806,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.003e+00
-                 Total alkalinity (eq/kg)  =  -2.372e-15
+                 Total alkalinity (eq/kg)  =  -2.371e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.381e-15
+                  Electrical balance (eq)  =   2.380e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.113322e+02
@@ -20936,7 +20936,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.256e-15
+                  Electrical balance (eq)  =   2.255e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.113122e+02
@@ -20999,7 +20999,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.256e-15
+                  Electrical balance (eq)  =   2.255e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.113122e+02
@@ -21058,11 +21058,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.003e+00
-                 Total alkalinity (eq/kg)  =  -2.247e-15
+                 Total alkalinity (eq/kg)  =  -2.246e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.256e-15
+                  Electrical balance (eq)  =   2.255e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.113122e+02
@@ -21188,7 +21188,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.418e-15
+                  Electrical balance (eq)  =   2.417e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.112923e+02
@@ -21310,7 +21310,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.003e+00
-                 Total alkalinity (eq/kg)  =  -2.410e-15
+                 Total alkalinity (eq/kg)  =  -2.409e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -21436,11 +21436,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.002e+00
-                 Total alkalinity (eq/kg)  =  -2.292e-15
+                 Total alkalinity (eq/kg)  =  -2.291e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.299e-15
+                  Electrical balance (eq)  =   2.298e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.112723e+02
@@ -21499,7 +21499,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.002e+00
-                 Total alkalinity (eq/kg)  =  -2.291e-15
+                 Total alkalinity (eq/kg)  =  -2.292e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -21688,7 +21688,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.002e+00
-                 Total alkalinity (eq/kg)  =  -2.433e-15
+                 Total alkalinity (eq/kg)  =  -2.432e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -21751,7 +21751,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.002e+00
-                 Total alkalinity (eq/kg)  =  -2.433e-15
+                 Total alkalinity (eq/kg)  =  -2.432e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -21814,11 +21814,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.002e+00
-                 Total alkalinity (eq/kg)  =  -2.432e-15
+                 Total alkalinity (eq/kg)  =  -2.433e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.440e-15
+                  Electrical balance (eq)  =   2.441e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.112523e+02
@@ -21877,7 +21877,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.002e+00
-                 Total alkalinity (eq/kg)  =  -2.324e-15
+                 Total alkalinity (eq/kg)  =  -2.325e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -21940,11 +21940,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.002e+00
-                 Total alkalinity (eq/kg)  =  -2.325e-15
+                 Total alkalinity (eq/kg)  =  -2.324e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.332e-15
+                  Electrical balance (eq)  =   2.331e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.112323e+02
@@ -22003,7 +22003,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.002e+00
-                 Total alkalinity (eq/kg)  =  -2.324e-15
+                 Total alkalinity (eq/kg)  =  -2.325e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -22066,7 +22066,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.002e+00
-                 Total alkalinity (eq/kg)  =  -2.324e-15
+                 Total alkalinity (eq/kg)  =  -2.325e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -22129,7 +22129,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.002e+00
-                 Total alkalinity (eq/kg)  =  -2.443e-15
+                 Total alkalinity (eq/kg)  =  -2.442e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -22192,11 +22192,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.002e+00
-                 Total alkalinity (eq/kg)  =  -2.442e-15
+                 Total alkalinity (eq/kg)  =  -2.441e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.449e-15
+                  Electrical balance (eq)  =   2.448e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.112123e+02
@@ -22385,7 +22385,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.352e-15
+                  Electrical balance (eq)  =   2.353e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.111924e+02
@@ -22448,7 +22448,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.352e-15
+                  Electrical balance (eq)  =   2.353e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.111924e+02
@@ -22511,7 +22511,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.352e-15
+                  Electrical balance (eq)  =   2.353e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.111924e+02
@@ -22696,11 +22696,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.001e+00
-                 Total alkalinity (eq/kg)  =  -2.440e-15
+                 Total alkalinity (eq/kg)  =  -2.439e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.446e-15
+                  Electrical balance (eq)  =   2.445e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.111724e+02
@@ -22759,7 +22759,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.001e+00
-                 Total alkalinity (eq/kg)  =  -2.440e-15
+                 Total alkalinity (eq/kg)  =  -2.439e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -22826,7 +22826,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.446e-15
+                  Electrical balance (eq)  =   2.445e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.111724e+02
@@ -22885,7 +22885,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.001e+00
-                 Total alkalinity (eq/kg)  =  -2.563e-15
+                 Total alkalinity (eq/kg)  =  -2.562e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -22948,7 +22948,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.001e+00
-                 Total alkalinity (eq/kg)  =  -2.563e-15
+                 Total alkalinity (eq/kg)  =  -2.562e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -23011,7 +23011,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.001e+00
-                 Total alkalinity (eq/kg)  =  -2.562e-15
+                 Total alkalinity (eq/kg)  =  -2.563e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -23200,11 +23200,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.001e+00
-                 Total alkalinity (eq/kg)  =  -2.425e-15
+                 Total alkalinity (eq/kg)  =  -2.424e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.430e-15
+                  Electrical balance (eq)  =   2.429e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.111324e+02
@@ -23393,7 +23393,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.514e-15
+                  Electrical balance (eq)  =   2.515e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.111124e+02
@@ -23452,7 +23452,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.001e+00
-                 Total alkalinity (eq/kg)  =  -2.510e-15
+                 Total alkalinity (eq/kg)  =  -2.509e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -23519,7 +23519,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.514e-15
+                  Electrical balance (eq)  =   2.515e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.111124e+02
@@ -23704,11 +23704,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.001e+00
-                 Total alkalinity (eq/kg)  =  -2.613e-15
+                 Total alkalinity (eq/kg)  =  -2.612e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.618e-15
+                  Electrical balance (eq)  =   2.616e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.110924e+02
@@ -23767,7 +23767,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.001e+00
-                 Total alkalinity (eq/kg)  =  -2.613e-15
+                 Total alkalinity (eq/kg)  =  -2.612e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -23897,7 +23897,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.466e-15
+                  Electrical balance (eq)  =   2.465e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.110724e+02
@@ -23956,11 +23956,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.001e+00
-                 Total alkalinity (eq/kg)  =  -2.463e-15
+                 Total alkalinity (eq/kg)  =  -2.462e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.467e-15
+                  Electrical balance (eq)  =   2.465e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.110724e+02
@@ -24023,7 +24023,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.466e-15
+                  Electrical balance (eq)  =   2.465e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.110724e+02
@@ -24145,11 +24145,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -2.511e-15
+                 Total alkalinity (eq/kg)  =  -2.510e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.514e-15
+                  Electrical balance (eq)  =   2.513e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.110524e+02
@@ -24208,11 +24208,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -2.511e-15
+                 Total alkalinity (eq/kg)  =  -2.510e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.514e-15
+                  Electrical balance (eq)  =   2.513e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.110524e+02
@@ -24460,7 +24460,7 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -2.553e-15
+                 Total alkalinity (eq/kg)  =  -2.552e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
@@ -24586,11 +24586,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -2.552e-15
+                 Total alkalinity (eq/kg)  =  -2.553e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.555e-15
+                  Electrical balance (eq)  =   2.556e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.110324e+02
@@ -24653,7 +24653,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.571e-15
+                  Electrical balance (eq)  =   2.573e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.110124e+02
@@ -24712,11 +24712,11 @@ X                1.100e-03 mol
                         Activity of water  =   1.000
                            Ionic strength  =   1.800e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -2.570e-15
+                 Total alkalinity (eq/kg)  =  -2.569e-15
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.571e-15
+                  Electrical balance (eq)  =   2.572e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.110124e+02
@@ -24779,7 +24779,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.571e-15
+                  Electrical balance (eq)  =   2.572e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.110124e+02
@@ -24842,7 +24842,7 @@ X                1.100e-03 mol
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.571e-15
+                  Electrical balance (eq)  =   2.573e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   0
                                   Total H  = 1.110124e+02
