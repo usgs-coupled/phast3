@@ -111,11 +111,11 @@ Initial solution 2.
                         Activity of water  =   1.000
                            Ionic strength  =   1.000e-03
                        Mass of water (kg)  =   1.000e+00
-                 Total alkalinity (eq/kg)  =  -8.312e-21
+                 Total alkalinity (eq/kg)  =  -6.956e-21
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =  -2.096e-17
+                  Electrical balance (eq)  =  -2.132e-17
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   3
                                   Total H  = 1.110124e+02

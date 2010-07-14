@@ -2,7 +2,7 @@
                                     *                                                  *
                                     *    PHAST: A Three Dimensional Flow and Solute    *
                                     *         Reactive Transport Simulator             *
-                                    *             Version: 2.0               *
+                                    *             Version: @VERSIO           *
                                     *                                                  *
                                     ****************************************************
 
@@ -124,14 +124,14 @@
 
                                    *** Fluid Properties ***
                                         Physical
-                    Fluid compressibility ...................................... BP ...   0.00E+00  (1/Pa )
+                    Fluid compressibility ...................................... BP ...   0.00e+00  (1/Pa )
 
                     Reference pressure for density ............................. P0 ..         0.0  (Pa )
                     Reference temperature for density .......................... T0 ..        15.0  (Deg.C)
                     Fluid density .............................................. DENF0  1000.0      (kg/m^3)
                     Fluid density at solute  mass fraction of  0.0500........... DENF1  1000.0      (kg/m^3)
 
-                    Viscosity factor ........................................... VISFAC -1.000E-03
+                    Viscosity factor ........................................... VISFAC -1.000e-03
 
                                         *** Calculation Information ***
           Backwards-in-time (implicit) differencing for temporal derivative
@@ -141,25 +141,25 @@
                            Row scaling only, using L-inf norm, will be done
 
           Direction index for d4 zig-zag renumbering ...................... IDIR..    1
-          Incomplete LU [f] or modified ILU [t] factorization ............. MILU..    T
+          Incomplete LU [f] or modified ILU [t] factorization ............. MILU..    t
           Number of search directions before restart ...................... NSDR..   20
-          Tolerance on iterative solution ................................. EPSSLV 1.0E-18
+          Tolerance on iterative solution ................................. EPSSLV 1.0e-18
 
  ------------------------------------------------------------------------------------------------------------------------
 
-               Initial fluid in region ...............................  1.500045E+03  (kg) ;  1.500045E+00  (m^3)
+               Initial fluid in region ...............................  1.500045e+03  (kg) ;  1.500045e+00  (m^3)
 
-               Initial solute in region:H         ....................  5.442874E-07  (kg)
+               Initial solute in region:H         ....................  5.442874e-07  (kg)
 
-               Initial solute in region:O         ....................  7.879317E-07  (kg)
+               Initial solute in region:O         ....................  7.879317e-07  (kg)
 
-               Initial solute in region:Br        ....................  1.198719E-01  (kg)
+               Initial solute in region:Br        ....................  1.198719e-01  (kg)
 
-               Initial solute in region:Cl        ....................  0.000000E+00  (kg)
+               Initial solute in region:Cl        ....................  0.000000e+00  (kg)
 
-               Initial solute in region:Na        ....................  3.448928E-02  (kg)
+               Initial solute in region:Na        ....................  3.448928e-02  (kg)
 
-               Initial solute in region:Charge    ....................  4.450080E-07  (kg)
+               Initial solute in region:Charge    ....................  4.450080e-07  (kg)
 
  ------------------------------------------------------------------------------------------------------------------------
  ------------------------------------------------------------------------------------------------------------------------
@@ -167,12 +167,12 @@
 
                                         *** Transient Data ***
 
-     Time ..............................       0      (yr)
+     Time ..............................   0.000e+00  (yr)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  5.000E-02  (yr)
+          Fixed time step length .......................................... DELTIM  5.000e-02  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  0.100      (yr)
 
@@ -187,7 +187,7 @@
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  5.000E-02  (yr)
+          Fixed time step length .......................................... DELTIM  5.000e-02  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  0.200      (yr)
 
@@ -202,7 +202,7 @@
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  5.000E-02  (yr)
+          Fixed time step length .......................................... DELTIM  5.000e-02  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  0.300      (yr)
 
@@ -217,7 +217,7 @@
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  5.000E-02  (yr)
+          Fixed time step length .......................................... DELTIM  5.000e-02  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  0.400      (yr)
 
@@ -232,7 +232,7 @@
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  5.000E-02  (yr)
+          Fixed time step length .......................................... DELTIM  5.000e-02  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  0.500      (yr)
 
@@ -247,7 +247,7 @@
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  5.000E-02  (yr)
+          Fixed time step length .......................................... DELTIM  5.000e-02  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  0.600      (yr)
 
@@ -262,7 +262,7 @@
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  5.000E-02  (yr)
+          Fixed time step length .......................................... DELTIM  5.000e-02  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG  0.700      (yr)
 
@@ -277,7 +277,7 @@
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  5.000E-02  (yr)
+          Fixed time step length .......................................... DELTIM  5.000e-02  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG   1.00      (yr)
 
@@ -292,7 +292,7 @@
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  5.000E-02  (yr)
+          Fixed time step length .......................................... DELTIM  5.000e-02  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG   1.10      (yr)
 
@@ -307,7 +307,7 @@
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  5.000E-02  (yr)
+          Fixed time step length .......................................... DELTIM  5.000e-02  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG   1.20      (yr)
 
@@ -322,7 +322,7 @@
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  5.000E-02  (yr)
+          Fixed time step length .......................................... DELTIM  5.000e-02  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG   1.30      (yr)
 
@@ -337,7 +337,7 @@
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  5.000E-02  (yr)
+          Fixed time step length .......................................... DELTIM  5.000e-02  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG   1.40      (yr)
 
@@ -352,7 +352,7 @@
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  5.000E-02  (yr)
+          Fixed time step length .......................................... DELTIM  5.000e-02  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG   1.50      (yr)
 
@@ -367,7 +367,7 @@
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  5.000E-02  (yr)
+          Fixed time step length .......................................... DELTIM  5.000e-02  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG   1.60      (yr)
 
@@ -382,7 +382,7 @@
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  5.000E-02  (yr)
+          Fixed time step length .......................................... DELTIM  5.000e-02  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG   1.70      (yr)
 
@@ -397,7 +397,7 @@
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  5.000E-02  (yr)
+          Fixed time step length .......................................... DELTIM  5.000e-02  (yr)
           Time at which next set of transient
                parameters will be read .................................... TIMCHG   2.00      (yr)
 

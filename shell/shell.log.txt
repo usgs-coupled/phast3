@@ -167,44 +167,44 @@ Overhead storage requirement (D4ZGCG iterative solver)................ NOHST .  
                     *** Calculation Information ***
           Row scaling only, using L-inf norm, will be done
           Direction index for d4 zig-zag renumbering ............ IDIR..    1
-          Incomplete LU [f] or modified ILU [t] factorization ... MILU..    T
+          Incomplete LU [f] or modified ILU [t] factorization ... MILU..    t
           Number of search directions before restart ............ NSDR..   20
-          Tolerance on iterative solution ....................... EPSSLV 1.0E-10
+          Tolerance on iterative solution ....................... EPSSLV 1.0e-10
 
 Beginning flow calculation for steady-state i.c.
 Reading transient data for simulation: Set  1
 Automatic Time Step Control Parameters for Steady Flow
-Maximum pressure change allowed per time step.................... DPTAS    2.94E+03  (Pa )
+Maximum pressure change allowed per time step.................... DPTAS    2.94e+03  (Pa )
 Minimum time step required ...................................... DTIMMN    10.      (s  )
-Maximum time step allowed ....................................... DTIMMX   1.00E+07(s  )
+Maximum time step allowed ....................................... DTIMMX   1.00e+07(s  )
 
 Beginning steady state time step no.      1
-     Maximum change in potentiometric head ..    1.0000E+01     (m) at location (  1.00    , 0.900    ,  1.00    )(m)
-     Fractional flow residual ...............    2.0000E+00
+     Maximum change in potentiometric head ..    1.0000e+01     (m) at location (  1.00    , 0.900    ,  1.00    )(m)
+     Fractional flow residual ...............    2.0000e+00
 
 Beginning steady state time step no.      2
-     Maximum change in potentiometric head ..    1.1882E-03     (m) at location (     0    , 0.500    ,     0    )(m)
-     Fractional flow residual ...............    6.6909E-04
+     Maximum change in potentiometric head ..    1.1882e-03     (m) at location ( 0.000e+00, 0.500    , 0.000e+00)(m)
+     Fractional flow residual ...............    6.6909e-04
 
 Beginning steady state time step no.      3
-     Maximum change in potentiometric head ..    1.0576E-07     (m) at location (     0    , 0.500    ,     0    )(m)
-     Fractional flow residual ...............    2.6143E-08
+     Maximum change in potentiometric head ..    1.0576e-07     (m) at location ( 0.000e+00, 0.500    , 0.000e+00)(m)
+     Fractional flow residual ...............    2.6143e-08
 
 Done with steady-state flow.
 Equilibration of cells for initial conditions.
-     Time at which next set of transient parameters will be read .......... TIMCHG  1.000E+04  (s)
+     Time at which next set of transient parameters will be read .......... TIMCHG  1.000e+04  (s)
 
 Beginning transient simulation.
 
 Beginning time step no.      1
-     Current time step length ...................................   1.000E+04 (s)
+     Current time step length ...................................   1.000e+04 (s)
      Beginning solute-transport calculation.
           H
           O
           Cl
-          No. of solver iterations, Relative residual:   16      6.0975770E-11
+          No. of solver iterations, Relative residual:   16      6.0959088e-11
           Na
-          No. of solver iterations, Relative residual:   16      6.0975770E-11
+          No. of solver iterations, Relative residual:   16      6.0959088e-11
           Charge
      Beginning chemistry calculation.
           Total cells: 1221
@@ -215,14 +215,14 @@ Beginning time step no.      1
 
      End of Time Step No.     1
      Time ..................................................    10000.0     (s)
-     Maximum change in potentiometric head   0.0000E+00      (m ) at location (  1.00    ,  1.00    ,  1.00    )(m)
-     Maximum change in H ..................  8.1396E-15 (mol/kgw) at location ( 0.500    ,  1.00    ,     0    )(m)
-     Maximum change in O ..................  4.0770E-15 (mol/kgw) at location ( 0.500    ,  1.00    ,     0    )(m)
-     Maximum change in Cl .................  7.8734E-11 (mol/kgw) at location ( 0.500    ,  1.00    ,     0    )(m)
-     Maximum change in Na .................  7.8734E-11 (mol/kgw) at location ( 0.500    ,  1.00    ,     0    )(m)
-     Maximum change in Charge ............. -1.4365E-17 (mol/kgw) at location ( 0.500    ,  1.00    ,     0    )(m)
+     Maximum change in potentiometric head   0.0000e+00      (m ) at location (  1.00    ,  1.00    ,  1.00    )(m)
+     Maximum change in H ..................  8.1397e-15 (mol/kgw) at location ( 0.500    ,  1.00    , 0.000e+00)(m)
+     Maximum change in O ..................  4.0770e-15 (mol/kgw) at location ( 0.500    ,  1.00    , 0.000e+00)(m)
+     Maximum change in Cl .................  7.8736e-11 (mol/kgw) at location ( 0.500    ,  1.00    , 0.000e+00)(m)
+     Maximum change in Na .................  7.8736e-11 (mol/kgw) at location ( 0.500    ,  1.00    , 0.000e+00)(m)
+     Maximum change in Charge ............. -1.4365e-17 (mol/kgw) at location ( 0.500    ,  1.00    , 0.000e+00)(m)
 Done with transient simulation.
 
                              ***** Simulation Completed *****
-     Last time value calculated ...................................... 1.0000E+04 (s)
+     Last time value calculated ...................................... 1.0000e+04 (s)
      Last time step index ............................................       1

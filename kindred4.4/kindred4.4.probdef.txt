@@ -2,7 +2,7 @@
                                     *                                                  *
                                     *    PHAST: A Three Dimensional Flow and Solute    *
                                     *         Reactive Transport Simulator             *
-                                    *             Version: 2.0               *
+                                    *             Version: @VERSIO           *
                                     *                                                  *
                                     ****************************************************
 
@@ -174,14 +174,14 @@
 
                                    *** Fluid Properties ***
                                         Physical
-                    Fluid compressibility ...................................... BP ...   0.00E+00  (1/Pa )
+                    Fluid compressibility ...................................... BP ...   0.00e+00  (1/Pa )
 
                     Reference pressure for density ............................. P0 ..         0.0  (Pa )
                     Reference temperature for density .......................... T0 ..        15.0  (Deg.C)
                     Fluid density .............................................. DENF0  1000.0      (kg/m^3)
                     Fluid density at solute  mass fraction of  0.0500........... DENF1  1000.0      (kg/m^3)
 
-                    Viscosity factor ........................................... VISFAC -1.000E-03
+                    Viscosity factor ........................................... VISFAC -1.000e-03
 
                                         *** Calculation Information ***
           Centered-in-time (Crank-Nicholson) differencing for temporal derivative
@@ -192,21 +192,21 @@
 
  ------------------------------------------------------------------------------------------------------------------------
 
-               Initial fluid in region ...............................  3.800000E+04  (kg) ;  3.800000E+01  (m^3)
+               Initial fluid in region ...............................  3.800000e+04  (kg) ;  3.800000e+01  (m^3)
 
-               Initial solute in region:H         ....................  7.770965E-06  (kg)
+               Initial solute in region:H         ....................  7.770965e-06  (kg)
 
-               Initial solute in region:O         ....................  3.745108E-01  (kg)
+               Initial solute in region:O         ....................  3.745108e-01  (kg)
 
-               Initial solute in region:N         ....................  7.600046E-02  (kg)
+               Initial solute in region:N         ....................  7.600046e-02  (kg)
 
-               Initial solute in region:Na        ....................  1.247430E-01  (kg)
+               Initial solute in region:Na        ....................  1.247430e-01  (kg)
 
-               Initial solute in region:Ndis      ....................  3.800023E-04  (kg)
+               Initial solute in region:Ndis      ....................  3.800023e-04  (kg)
 
-               Initial solute in region:Substrate ....................  0.000000E+00  (kg)
+               Initial solute in region:Substrate ....................  0.000000e+00  (kg)
 
-               Initial solute in region:Charge    ....................  8.250189E-14  (kg)
+               Initial solute in region:Charge    ....................  8.250489e-14  (kg)
 
  ------------------------------------------------------------------------------------------------------------------------
  ------------------------------------------------------------------------------------------------------------------------
@@ -214,7 +214,7 @@
 
                                         *** Transient Data ***
 
-     Time ..............................       0      (d)
+     Time ..............................   0.000e+00  (d)
 
 
                                         *** Calculation Information ***

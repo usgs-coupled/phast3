@@ -255,7 +255,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  -1.840      Adjusted to redox equilibrium
+                                       pe  =  10.745      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -279,18 +279,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                6.748e-13
    A                      6.748e-13   6.748e-13   -12.171   -12.171         0
-H(0)             6.792e-14
-   H2                     3.396e-14   3.396e-14   -13.469   -13.469         0
-O(0)             0.000e+00
-   O2                     0.000e+00   0.000e+00   -65.442   -65.442         0
+H(0)             4.589e-39
+   H2                     2.294e-39   2.294e-39   -38.639   -38.639         0
+O(0)             1.584e-15
+   O2                     7.918e-16   7.918e-16   -15.101   -15.101         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -10.32  -13.47   -3.15  H2
+	H2(g)           -35.49  -38.64   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)           -62.48  -65.44   -2.96  O2
+	O2(g)           -12.14  -15.10   -2.96  O2
 
 Time 120. Cell 2: x=          0.002	y=              0	z=              0
 Using solution 2.
@@ -327,7 +327,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  -2.017      Adjusted to redox equilibrium
+                                       pe  =  10.745      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -351,18 +351,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                6.790e-10
    A                      6.790e-10   6.790e-10    -9.168    -9.168         0
-H(0)             1.532e-13
-   H2                     7.658e-14   7.658e-14   -13.116   -13.116         0
-O(0)             0.000e+00
-   O2                     0.000e+00   0.000e+00   -66.148   -66.148         0
+H(0)             4.589e-39
+   H2                     2.294e-39   2.294e-39   -38.639   -38.639         0
+O(0)             1.584e-15
+   O2                     7.918e-16   7.918e-16   -15.101   -15.101         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)            -9.97  -13.12   -3.15  H2
+	H2(g)           -35.49  -38.64   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)           -63.19  -66.15   -2.96  O2
+	O2(g)           -12.14  -15.10   -2.96  O2
 
 Time 120. Cell 3: x=          0.004	y=              0	z=              0
 Using solution 3.
@@ -399,7 +399,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  -2.113      Adjusted to redox equilibrium
+                                       pe  =  10.929      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -423,18 +423,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                9.045e-09
    A                      9.045e-09   9.045e-09    -8.044    -8.044         0
-H(0)             2.384e-13
-   H2                     1.192e-13   1.192e-13   -12.924   -12.924         0
-O(0)             0.000e+00
-   O2                     0.000e+00   0.000e+00   -66.533   -66.533         0
+H(0)             1.959e-39
+   H2                     9.796e-40   9.796e-40   -39.009   -39.009         0
+O(0)             8.689e-15
+   O2                     4.345e-15   4.345e-15   -14.362   -14.362         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)            -9.77  -12.92   -3.15  H2
+	H2(g)           -35.86  -39.01   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)           -63.57  -66.53   -2.96  O2
+	O2(g)           -11.40  -14.36   -2.96  O2
 
 Time 120. Cell 4: x=          0.006	y=              0	z=              0
 Using solution 4.
@@ -471,7 +471,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  -2.189      Adjusted to redox equilibrium
+                                       pe  =  10.929      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -495,18 +495,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                6.199e-08
    A                      6.199e-08   6.199e-08    -7.208    -7.208         0
-H(0)             3.379e-13
-   H2                     1.689e-13   1.689e-13   -12.772   -12.772         0
-O(0)             0.000e+00
-   O2                     0.000e+00   0.000e+00   -66.835   -66.835         0
+H(0)             1.959e-39
+   H2                     9.796e-40   9.796e-40   -39.009   -39.009         0
+O(0)             8.689e-15
+   O2                     4.345e-15   4.345e-15   -14.362   -14.362         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)            -9.62  -12.77   -3.15  H2
+	H2(g)           -35.86  -39.01   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)           -63.88  -66.84   -2.96  O2
+	O2(g)           -11.40  -14.36   -2.96  O2
 
 Time 120. Cell 5: x=          0.008	y=              0	z=              0
 Using solution 5.
@@ -543,7 +543,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  -2.238      Adjusted to redox equilibrium
+                                       pe  =  10.929      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -567,18 +567,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.890e-07
    A                      2.890e-07   2.890e-07    -6.539    -6.539         0
-H(0)             4.232e-13
-   H2                     2.116e-13   2.116e-13   -12.675   -12.675         0
-O(0)             0.000e+00
-   O2                     0.000e+00   0.000e+00   -67.031   -67.031         0
+H(0)             1.959e-39
+   H2                     9.796e-40   9.796e-40   -39.009   -39.009         0
+O(0)             8.689e-15
+   O2                     4.345e-15   4.345e-15   -14.362   -14.362         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)            -9.52  -12.67   -3.15  H2
+	H2(g)           -35.86  -39.01   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)           -64.07  -67.03   -2.96  O2
+	O2(g)           -11.40  -14.36   -2.96  O2
 
 Time 120. Cell 6: x=           0.01	y=              0	z=              0
 Using solution 6.
@@ -615,7 +615,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  -2.278      Adjusted to redox equilibrium
+                                       pe  =  10.994      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -639,18 +639,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.028e-06
    A                      1.028e-06   1.028e-06    -5.988    -5.988         0
-H(0)             5.084e-13
-   H2                     2.542e-13   2.542e-13   -12.595   -12.595         0
-O(0)             0.000e+00
-   O2                     0.000e+00   0.000e+00   -67.190   -67.190         0
+H(0)             1.453e-39
+   H2                     7.265e-40   7.265e-40   -39.139   -39.139         0
+O(0)             1.579e-14
+   O2                     7.897e-15   7.897e-15   -14.103   -14.103         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)            -9.44  -12.59   -3.15  H2
+	H2(g)           -35.99  -39.14   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)           -64.23  -67.19   -2.96  O2
+	O2(g)           -11.14  -14.10   -2.96  O2
 
 Time 120. Cell 7: x=          0.012	y=              0	z=              0
 Using solution 7.
@@ -687,7 +687,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  -2.170      Adjusted to redox equilibrium
+                                       pe  =  10.994      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -711,18 +711,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.975e-06
    A                      2.975e-06   2.975e-06    -5.526    -5.526         0
-H(0)             3.095e-13
-   H2                     1.547e-13   1.547e-13   -12.810   -12.810         0
-O(0)             0.000e+00
-   O2                     0.000e+00   0.000e+00   -66.759   -66.759         0
+H(0)             1.453e-39
+   H2                     7.265e-40   7.265e-40   -39.139   -39.139         0
+O(0)             1.579e-14
+   O2                     7.897e-15   7.897e-15   -14.103   -14.103         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)            -9.66  -12.81   -3.15  H2
+	H2(g)           -35.99  -39.14   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)           -63.80  -66.76   -2.96  O2
+	O2(g)           -11.14  -14.10   -2.96  O2
 
 Time 120. Cell 8: x=          0.014	y=              0	z=              0
 Using solution 8.
@@ -759,7 +759,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  -2.160      Adjusted to redox equilibrium
+                                       pe  =  10.994      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -783,18 +783,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                7.292e-06
    A                      7.292e-06   7.292e-06    -5.137    -5.137         0
-H(0)             2.953e-13
-   H2                     1.476e-13   1.476e-13   -12.831   -12.831         0
-O(0)             0.000e+00
-   O2                     0.000e+00   0.000e+00   -66.718   -66.718         0
+H(0)             1.453e-39
+   H2                     7.265e-40   7.265e-40   -39.139   -39.139         0
+O(0)             1.579e-14
+   O2                     7.897e-15   7.897e-15   -14.103   -14.103         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)            -9.68  -12.83   -3.15  H2
+	H2(g)           -35.99  -39.14   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)           -63.76  -66.72   -2.96  O2
+	O2(g)           -11.14  -14.10   -2.96  O2
 
 Time 120. Cell 9: x=          0.016	y=              0	z=              0
 Using solution 9.
@@ -831,7 +831,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  -2.149      Adjusted to redox equilibrium
+                                       pe  =  10.994      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -855,18 +855,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.557e-05
    A                      1.557e-05   1.557e-05    -4.808    -4.808         0
-H(0)             2.810e-13
-   H2                     1.405e-13   1.405e-13   -12.852   -12.852         0
-O(0)             0.000e+00
-   O2                     0.000e+00   0.000e+00   -66.676   -66.676         0
+H(0)             1.453e-39
+   H2                     7.265e-40   7.265e-40   -39.139   -39.139         0
+O(0)             1.580e-14
+   O2                     7.898e-15   7.898e-15   -14.103   -14.103         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)            -9.70  -12.85   -3.15  H2
+	H2(g)           -35.99  -39.14   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)           -63.72  -66.68   -2.96  O2
+	O2(g)           -11.14  -14.10   -2.96  O2
 
 Time 120. Cell 10: x=          0.018	y=              0	z=              0
 Using solution 10.
@@ -903,7 +903,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  -2.086      Adjusted to redox equilibrium
+                                       pe  =  10.994      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -927,18 +927,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.957e-05
    A                      2.957e-05   2.957e-05    -4.529    -4.529         0
-H(0)             2.100e-13
-   H2                     1.050e-13   1.050e-13   -12.979   -12.979         0
-O(0)             0.000e+00
-   O2                     0.000e+00   0.000e+00   -66.422   -66.422         0
+H(0)             1.453e-39
+   H2                     7.265e-40   7.265e-40   -39.139   -39.139         0
+O(0)             1.580e-14
+   O2                     7.899e-15   7.899e-15   -14.102   -14.102         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)            -9.83  -12.98   -3.15  H2
+	H2(g)           -35.99  -39.14   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)           -63.46  -66.42   -2.96  O2
+	O2(g)           -11.14  -14.10   -2.96  O2
 
 Time 120. Cell 11: x=           0.02	y=              0	z=              0
 Using solution 11.
@@ -975,7 +975,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  -1.946      Adjusted to redox equilibrium
+                                       pe  =  10.994      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -999,18 +999,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                5.077e-05
    A                      5.077e-05   5.077e-05    -4.294    -4.294         0
-H(0)             1.105e-13
-   H2                     5.525e-14   5.525e-14   -13.258   -13.258         0
-O(0)             0.000e+00
-   O2                     0.000e+00   0.000e+00   -65.865   -65.865         0
+H(0)             1.453e-39
+   H2                     7.263e-40   7.263e-40   -39.139   -39.139         0
+O(0)             1.580e-14
+   O2                     7.902e-15   7.902e-15   -14.102   -14.102         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -10.11  -13.26   -3.15  H2
+	H2(g)           -35.99  -39.14   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)           -62.90  -65.86   -2.96  O2
+	O2(g)           -11.14  -14.10   -2.96  O2
 
 Time 120. Cell 12: x=          0.022	y=              0	z=              0
 Using solution 12.
@@ -1047,7 +1047,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  -1.916      Adjusted to redox equilibrium
+                                       pe  =  10.995      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -1071,18 +1071,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                7.984e-05
    A                      7.984e-05   7.984e-05    -4.098    -4.098         0
-H(0)             9.625e-14
-   H2                     4.813e-14   4.813e-14   -13.318   -13.318         0
-O(0)             0.000e+00
-   O2                     0.000e+00   0.000e+00   -65.745   -65.745         0
+H(0)             1.452e-39
+   H2                     7.259e-40   7.259e-40   -39.139   -39.139         0
+O(0)             1.582e-14
+   O2                     7.912e-15   7.912e-15   -14.102   -14.102         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -10.17  -13.32   -3.15  H2
+	H2(g)           -35.99  -39.14   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)           -62.78  -65.74   -2.96  O2
+	O2(g)           -11.14  -14.10   -2.96  O2
 
 Time 120. Cell 13: x=          0.024	y=              0	z=              0
 Using solution 13.
@@ -1119,7 +1119,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  11.064      Adjusted to redox equilibrium
+                                       pe  =  10.995      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -1143,18 +1143,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.163e-04
    A                      1.163e-04   1.163e-04    -3.935    -3.935         0
-H(0)             1.053e-39
-   H2                     5.264e-40   5.264e-40   -39.279   -39.279         0
-O(0)             3.009e-14
-   O2                     1.505e-14   1.505e-14   -13.823   -13.823         0
+H(0)             1.449e-39
+   H2                     7.247e-40   7.247e-40   -39.140   -39.140         0
+O(0)             1.588e-14
+   O2                     7.938e-15   7.938e-15   -14.100   -14.100         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -36.13  -39.28   -3.15  H2
+	H2(g)           -35.99  -39.14   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)           -10.86  -13.82   -2.96  O2
+	O2(g)           -11.14  -14.10   -2.96  O2
 
 Time 120. Cell 14: x=          0.026	y=              0	z=              0
 Using solution 14.
@@ -1191,7 +1191,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  11.312      Adjusted to redox equilibrium
+                                       pe  =  11.036      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -1215,18 +1215,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.583e-04
    A                      1.583e-04   1.583e-04    -3.801    -3.801         0
-H(0)             3.373e-40
-   H2                     1.687e-40   1.687e-40   -39.773   -39.773         0
-O(0)             2.931e-13
-   O2                     1.466e-13   1.466e-13   -12.834   -12.834         0
+H(0)             1.201e-39
+   H2                     6.007e-40   6.007e-40   -39.221   -39.221         0
+O(0)             2.311e-14
+   O2                     1.155e-14   1.155e-14   -13.937   -13.937         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -36.62  -39.77   -3.15  H2
+	H2(g)           -36.07  -39.22   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -9.87  -12.83   -2.96  O2
+	O2(g)           -10.98  -13.94   -2.96  O2
 
 Time 120. Cell 15: x=          0.028	y=              0	z=              0
 Using solution 15.
@@ -1263,7 +1263,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  11.445      Adjusted to redox equilibrium
+                                       pe  =  11.037      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -1287,18 +1287,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.030e-04
    A                      2.030e-04   2.030e-04    -3.693    -3.693         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -40.040   -40.040         0
-O(0)             1.004e-12
-   O2                     5.020e-13   5.020e-13   -12.299   -12.299         0
+H(0)             1.194e-39
+   H2                     5.970e-40   5.970e-40   -39.224   -39.224         0
+O(0)             2.339e-14
+   O2                     1.170e-14   1.170e-14   -13.932   -13.932         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -36.89  -40.04   -3.15  H2
+	H2(g)           -36.07  -39.22   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -9.34  -12.30   -2.96  O2
+	O2(g)           -10.97  -13.93   -2.96  O2
 
 Time 120. Cell 16: x=           0.03	y=              0	z=              0
 Using solution 16.
@@ -1335,7 +1335,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  11.552      Adjusted to redox equilibrium
+                                       pe  =  11.068      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -1359,18 +1359,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.472e-04
    A                      2.472e-04   2.472e-04    -3.607    -3.607         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -40.254   -40.254         0
-O(0)             2.681e-12
-   O2                     1.341e-12   1.341e-12   -11.873   -11.873         0
+H(0)             1.036e-39
+   H2                     5.178e-40   5.178e-40   -39.286   -39.286         0
+O(0)             3.110e-14
+   O2                     1.555e-14   1.555e-14   -13.808   -13.808         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -37.10  -40.25   -3.15  H2
+	H2(g)           -36.14  -39.29   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -8.91  -11.87   -2.96  O2
+	O2(g)           -10.85  -13.81   -2.96  O2
 
 Time 120. Cell 17: x=          0.032	y=              0	z=              0
 Using solution 17.
@@ -1407,7 +1407,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  11.644      Adjusted to redox equilibrium
+                                       pe  =  11.094      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -1431,18 +1431,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.875e-04
    A                      2.875e-04   2.875e-04    -3.541    -3.541         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -40.437   -40.437         0
-O(0)             6.250e-12
-   O2                     3.125e-12   3.125e-12   -11.505   -11.505         0
+H(0)             9.202e-40
+   H2                     4.601e-40   4.601e-40   -39.337   -39.337         0
+O(0)             3.938e-14
+   O2                     1.969e-14   1.969e-14   -13.706   -13.706         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -37.29  -40.44   -3.15  H2
+	H2(g)           -36.19  -39.34   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -8.55  -11.51   -2.96  O2
+	O2(g)           -10.75  -13.71   -2.96  O2
 
 Time 120. Cell 18: x=          0.034	y=              0	z=              0
 Using solution 18.
@@ -1479,7 +1479,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  11.724      Adjusted to redox equilibrium
+                                       pe  =  11.131      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -1503,18 +1503,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                3.213e-04
    A                      3.213e-04   3.213e-04    -3.493    -3.493         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -40.599   -40.599         0
-O(0)             1.314e-11
-   O2                     6.572e-12   6.572e-12   -11.182   -11.182         0
+H(0)             7.734e-40
+   H2                     3.867e-40   3.867e-40   -39.413   -39.413         0
+O(0)             5.576e-14
+   O2                     2.788e-14   2.788e-14   -13.555   -13.555         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -37.45  -40.60   -3.15  H2
+	H2(g)           -36.26  -39.41   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -8.22  -11.18   -2.96  O2
+	O2(g)           -10.59  -13.55   -2.96  O2
 
 Time 120. Cell 19: x=          0.036	y=              0	z=              0
 Using solution 19.
@@ -1551,7 +1551,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  11.798      Adjusted to redox equilibrium
+                                       pe  =  11.151      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -1575,18 +1575,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                3.470e-04
    A                      3.470e-04   3.470e-04    -3.460    -3.460         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -40.745   -40.745         0
-O(0)             2.577e-11
-   O2                     1.288e-11   1.288e-11   -10.890   -10.890         0
+H(0)             7.076e-40
+   H2                     3.538e-40   3.538e-40   -39.451   -39.451         0
+O(0)             6.660e-14
+   O2                     3.330e-14   3.330e-14   -13.478   -13.478         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -37.60  -40.75   -3.15  H2
+	H2(g)           -36.30  -39.45   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -7.93  -10.89   -2.96  O2
+	O2(g)           -10.52  -13.48   -2.96  O2
 
 Time 120. Cell 20: x=          0.038	y=              0	z=              0
 Using solution 20.
@@ -1623,7 +1623,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  11.864      Adjusted to redox equilibrium
+                                       pe  =  11.160      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -1647,18 +1647,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                3.637e-04
    A                      3.637e-04   3.637e-04    -3.439    -3.439         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -40.878   -40.878         0
-O(0)             4.749e-11
-   O2                     2.375e-11   2.375e-11   -10.624   -10.624         0
+H(0)             6.773e-40
+   H2                     3.386e-40   3.386e-40   -39.470   -39.470         0
+O(0)             7.271e-14
+   O2                     3.635e-14   3.635e-14   -13.439   -13.439         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -37.73  -40.88   -3.15  H2
+	H2(g)           -36.32  -39.47   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -7.66  -10.62   -2.96  O2
+	O2(g)           -10.48  -13.44   -2.96  O2
 
 Time 120. Cell 21: x=           0.04	y=              0	z=              0
 Using solution 21.
@@ -1695,7 +1695,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  11.924      Adjusted to redox equilibrium
+                                       pe  =  11.173      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -1719,18 +1719,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                3.716e-04
    A                      3.716e-04   3.716e-04    -3.430    -3.430         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -40.999   -40.999         0
-O(0)             8.280e-11
-   O2                     4.140e-11   4.140e-11   -10.383   -10.383         0
+H(0)             6.371e-40
+   H2                     3.186e-40   3.186e-40   -39.497   -39.497         0
+O(0)             8.215e-14
+   O2                     4.108e-14   4.108e-14   -13.386   -13.386         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -37.85  -41.00   -3.15  H2
+	H2(g)           -36.35  -39.50   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -7.42  -10.38   -2.96  O2
+	O2(g)           -10.43  -13.39   -2.96  O2
 
 Time 120. Cell 22: x=          0.042	y=              0	z=              0
 Using solution 22.
@@ -1767,7 +1767,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  11.979      Adjusted to redox equilibrium
+                                       pe  =  11.190      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -1791,18 +1791,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                3.712e-04
    A                      3.712e-04   3.712e-04    -3.430    -3.430         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.108   -41.108         0
-O(0)             1.371e-10
-   O2                     6.853e-11   6.853e-11   -10.164   -10.164         0
+H(0)             5.892e-40
+   H2                     2.946e-40   2.946e-40   -39.531   -39.531         0
+O(0)             9.605e-14
+   O2                     4.802e-14   4.802e-14   -13.319   -13.319         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -37.96  -41.11   -3.15  H2
+	H2(g)           -36.38  -39.53   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -7.20  -10.16   -2.96  O2
+	O2(g)           -10.36  -13.32   -2.96  O2
 
 Time 120. Cell 23: x=          0.044	y=              0	z=              0
 Using solution 23.
@@ -1839,7 +1839,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.028      Adjusted to redox equilibrium
+                                       pe  =  11.196      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -1863,18 +1863,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                3.637e-04
    A                      3.637e-04   3.637e-04    -3.439    -3.439         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.205   -41.205         0
-O(0)             2.144e-10
-   O2                     1.072e-10   1.072e-10    -9.970    -9.970         0
+H(0)             5.738e-40
+   H2                     2.869e-40   2.869e-40   -39.542   -39.542         0
+O(0)             1.013e-13
+   O2                     5.065e-14   5.065e-14   -13.295   -13.295         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.06  -41.21   -3.15  H2
+	H2(g)           -36.39  -39.54   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -7.01   -9.97   -2.96  O2
+	O2(g)           -10.34  -13.30   -2.96  O2
 
 Time 120. Cell 24: x=          0.046	y=              0	z=              0
 Using solution 24.
@@ -1911,7 +1911,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.071      Adjusted to redox equilibrium
+                                       pe  =  11.201      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -1935,18 +1935,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                3.501e-04
    A                      3.501e-04   3.501e-04    -3.456    -3.456         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.293   -41.293         0
-O(0)             3.212e-10
-   O2                     1.606e-10   1.606e-10    -9.794    -9.794         0
+H(0)             5.608e-40
+   H2                     2.804e-40   2.804e-40   -39.552   -39.552         0
+O(0)             1.060e-13
+   O2                     5.301e-14   5.301e-14   -13.276   -13.276         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.14  -41.29   -3.15  H2
+	H2(g)           -36.40  -39.55   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -6.83   -9.79   -2.96  O2
+	O2(g)           -10.32  -13.28   -2.96  O2
 
 Time 120. Cell 25: x=          0.048	y=              0	z=              0
 Using solution 25.
@@ -1983,7 +1983,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.111      Adjusted to redox equilibrium
+                                       pe  =  11.199      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -2007,18 +2007,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                3.316e-04
    A                      3.316e-04   3.316e-04    -3.479    -3.479         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.371   -41.371         0
-O(0)             4.607e-10
-   O2                     2.303e-10   2.303e-10    -9.638    -9.638         0
+H(0)             5.667e-40
+   H2                     2.834e-40   2.834e-40   -39.548   -39.548         0
+O(0)             1.038e-13
+   O2                     5.191e-14   5.191e-14   -13.285   -13.285         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.22  -41.37   -3.15  H2
+	H2(g)           -36.40  -39.55   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -6.68   -9.64   -2.96  O2
+	O2(g)           -10.32  -13.28   -2.96  O2
 
 Time 120. Cell 26: x=           0.05	y=              0	z=              0
 Using solution 26.
@@ -2055,7 +2055,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.145      Adjusted to redox equilibrium
+                                       pe  =  11.197      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -2079,18 +2079,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                3.093e-04
    A                      3.093e-04   3.093e-04    -3.510    -3.510         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.441   -41.441         0
-O(0)             6.346e-10
-   O2                     3.173e-10   3.173e-10    -9.498    -9.498         0
+H(0)             5.716e-40
+   H2                     2.858e-40   2.858e-40   -39.544   -39.544         0
+O(0)             1.021e-13
+   O2                     5.104e-14   5.104e-14   -13.292   -13.292         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.29  -41.44   -3.15  H2
+	H2(g)           -36.39  -39.54   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -6.54   -9.50   -2.96  O2
+	O2(g)           -10.33  -13.29   -2.96  O2
 
 Time 120. Cell 27: x=          0.052	y=              0	z=              0
 Using solution 27.
@@ -2127,7 +2127,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.176      Adjusted to redox equilibrium
+                                       pe  =  11.187      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -2151,18 +2151,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.841e-04
    A                      2.841e-04   2.841e-04    -3.547    -3.547         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.502   -41.502         0
-O(0)             8.419e-10
-   O2                     4.209e-10   4.209e-10    -9.376    -9.376         0
+H(0)             5.975e-40
+   H2                     2.988e-40   2.988e-40   -39.525   -39.525         0
+O(0)             9.340e-14
+   O2                     4.670e-14   4.670e-14   -13.331   -13.331         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.35  -41.50   -3.15  H2
+	H2(g)           -36.37  -39.52   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -6.42   -9.38   -2.96  O2
+	O2(g)           -10.37  -13.33   -2.96  O2
 
 Time 120. Cell 28: x=          0.054	y=              0	z=              0
 Using solution 28.
@@ -2199,7 +2199,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.203      Adjusted to redox equilibrium
+                                       pe  =  11.176      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -2223,18 +2223,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.570e-04
    A                      2.570e-04   2.570e-04    -3.590    -3.590         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.556   -41.556         0
-O(0)             1.078e-09
-   O2                     5.391e-10   5.391e-10    -9.268    -9.268         0
+H(0)             6.300e-40
+   H2                     3.150e-40   3.150e-40   -39.502   -39.502         0
+O(0)             8.402e-14
+   O2                     4.201e-14   4.201e-14   -13.377   -13.377         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.41  -41.56   -3.15  H2
+	H2(g)           -36.35  -39.50   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -6.31   -9.27   -2.96  O2
+	O2(g)           -10.42  -13.38   -2.96  O2
 
 Time 120. Cell 29: x=          0.056	y=              0	z=              0
 Using solution 29.
@@ -2271,7 +2271,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.226      Adjusted to redox equilibrium
+                                       pe  =  11.170      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -2295,18 +2295,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.290e-04
    A                      2.290e-04   2.290e-04    -3.640    -3.640         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.602   -41.602         0
-O(0)             1.336e-09
-   O2                     6.682e-10   6.682e-10    -9.175    -9.175         0
+H(0)             6.471e-40
+   H2                     3.236e-40   3.236e-40   -39.490   -39.490         0
+O(0)             7.963e-14
+   O2                     3.982e-14   3.982e-14   -13.400   -13.400         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.45  -41.60   -3.15  H2
+	H2(g)           -36.34  -39.49   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -6.22   -9.18   -2.96  O2
+	O2(g)           -10.44  -13.40   -2.96  O2
 
 Time 120. Cell 30: x=          0.058	y=              0	z=              0
 Using solution 30.
@@ -2343,7 +2343,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.246      Adjusted to redox equilibrium
+                                       pe  =  11.158      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -2367,18 +2367,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.008e-04
    A                      2.008e-04   2.008e-04    -3.697    -3.697         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.643   -41.643         0
-O(0)             1.607e-09
-   O2                     8.037e-10   8.037e-10    -9.095    -9.095         0
+H(0)             6.841e-40
+   H2                     3.420e-40   3.420e-40   -39.466   -39.466         0
+O(0)             7.127e-14
+   O2                     3.563e-14   3.563e-14   -13.448   -13.448         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.49  -41.64   -3.15  H2
+	H2(g)           -36.32  -39.47   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -6.13   -9.09   -2.96  O2
+	O2(g)           -10.49  -13.45   -2.96  O2
 
 Time 120. Cell 31: x=           0.06	y=              0	z=              0
 Using solution 31.
@@ -2415,7 +2415,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.263      Adjusted to redox equilibrium
+                                       pe  =  11.146      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -2439,18 +2439,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.732e-04
    A                      1.732e-04   1.732e-04    -3.761    -3.761         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.677   -41.677         0
-O(0)             1.881e-09
-   O2                     9.405e-10   9.405e-10    -9.027    -9.027         0
+H(0)             7.222e-40
+   H2                     3.611e-40   3.611e-40   -39.442   -39.442         0
+O(0)             6.394e-14
+   O2                     3.197e-14   3.197e-14   -13.495   -13.495         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.53  -41.68   -3.15  H2
+	H2(g)           -36.29  -39.44   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -6.07   -9.03   -2.96  O2
+	O2(g)           -10.54  -13.50   -2.96  O2
 
 Time 120. Cell 32: x=          0.062	y=              0	z=              0
 Using solution 32.
@@ -2487,7 +2487,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.278      Adjusted to redox equilibrium
+                                       pe  =  11.156      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -2511,18 +2511,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.469e-04
    A                      1.469e-04   1.469e-04    -3.833    -3.833         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.705   -41.705         0
-O(0)             2.147e-09
-   O2                     1.074e-09   1.074e-09    -8.969    -8.969         0
+H(0)             6.915e-40
+   H2                     3.457e-40   3.457e-40   -39.461   -39.461         0
+O(0)             6.975e-14
+   O2                     3.487e-14   3.487e-14   -13.458   -13.458         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.56  -41.71   -3.15  H2
+	H2(g)           -36.31  -39.46   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -6.01   -8.97   -2.96  O2
+	O2(g)           -10.50  -13.46   -2.96  O2
 
 Time 120. Cell 33: x=          0.064	y=              0	z=              0
 Using solution 33.
@@ -2559,7 +2559,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.290      Adjusted to redox equilibrium
+                                       pe  =  11.136      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -2583,18 +2583,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.225e-04
    A                      1.225e-04   1.225e-04    -3.912    -3.912         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.729   -41.729         0
-O(0)             2.397e-09
-   O2                     1.198e-09   1.198e-09    -8.921    -8.921         0
+H(0)             7.563e-40
+   H2                     3.782e-40   3.782e-40   -39.422   -39.422         0
+O(0)             5.830e-14
+   O2                     2.915e-14   2.915e-14   -13.535   -13.535         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.58  -41.73   -3.15  H2
+	H2(g)           -36.27  -39.42   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.96   -8.92   -2.96  O2
+	O2(g)           -10.58  -13.54   -2.96  O2
 
 Time 120. Cell 34: x=          0.066	y=              0	z=              0
 Using solution 34.
@@ -2631,7 +2631,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.299      Adjusted to redox equilibrium
+                                       pe  =  11.118      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -2655,18 +2655,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.004e-04
    A                      1.004e-04   1.004e-04    -3.998    -3.998         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.749   -41.749         0
-O(0)             2.622e-09
-   O2                     1.311e-09   1.311e-09    -8.882    -8.882         0
+H(0)             8.225e-40
+   H2                     4.112e-40   4.112e-40   -39.386   -39.386         0
+O(0)             4.930e-14
+   O2                     2.465e-14   2.465e-14   -13.608   -13.608         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.60  -41.75   -3.15  H2
+	H2(g)           -36.24  -39.39   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.92   -8.88   -2.96  O2
+	O2(g)           -10.65  -13.61   -2.96  O2
 
 Time 120. Cell 35: x=          0.068	y=              0	z=              0
 Using solution 35.
@@ -2703,7 +2703,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.307      Adjusted to redox equilibrium
+                                       pe  =  11.099      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -2727,18 +2727,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                8.079e-05
    A                      8.079e-05   8.079e-05    -4.093    -4.093         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.765   -41.765         0
-O(0)             2.820e-09
-   O2                     1.410e-09   1.410e-09    -8.851    -8.851         0
+H(0)             8.955e-40
+   H2                     4.477e-40   4.477e-40   -39.349   -39.349         0
+O(0)             4.159e-14
+   O2                     2.079e-14   2.079e-14   -13.682   -13.682         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.61  -41.76   -3.15  H2
+	H2(g)           -36.20  -39.35   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.89   -8.85   -2.96  O2
+	O2(g)           -10.72  -13.68   -2.96  O2
 
 Time 120. Cell 36: x=           0.07	y=              0	z=              0
 Using solution 36.
@@ -2775,7 +2775,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.313      Adjusted to redox equilibrium
+                                       pe  =  11.117      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -2799,18 +2799,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                6.388e-05
    A                      6.388e-05   6.388e-05    -4.195    -4.195         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.777   -41.777         0
-O(0)             2.985e-09
-   O2                     1.493e-09   1.493e-09    -8.826    -8.826         0
+H(0)             8.277e-40
+   H2                     4.138e-40   4.138e-40   -39.383   -39.383         0
+O(0)             4.868e-14
+   O2                     2.434e-14   2.434e-14   -13.614   -13.614         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.63  -41.78   -3.15  H2
+	H2(g)           -36.23  -39.38   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.87   -8.83   -2.96  O2
+	O2(g)           -10.65  -13.61   -2.96  O2
 
 Time 120. Cell 37: x=          0.072	y=              0	z=              0
 Using solution 37.
@@ -2847,7 +2847,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.318      Adjusted to redox equilibrium
+                                       pe  =  11.117      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -2871,18 +2871,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                4.960e-05
    A                      4.960e-05   4.960e-05    -4.304    -4.304         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.786   -41.786         0
-O(0)             3.118e-09
-   O2                     1.559e-09   1.559e-09    -8.807    -8.807         0
+H(0)             8.246e-40
+   H2                     4.123e-40   4.123e-40   -39.385   -39.385         0
+O(0)             4.904e-14
+   O2                     2.452e-14   2.452e-14   -13.610   -13.610         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.64  -41.79   -3.15  H2
+	H2(g)           -36.23  -39.38   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.85   -8.81   -2.96  O2
+	O2(g)           -10.65  -13.61   -2.96  O2
 
 Time 120. Cell 38: x=          0.074	y=              0	z=              0
 Using solution 38.
@@ -2919,7 +2919,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.322      Adjusted to redox equilibrium
+                                       pe  =  11.119      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -2943,18 +2943,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                3.783e-05
    A                      3.783e-05   3.783e-05    -4.422    -4.422         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.793   -41.793         0
-O(0)             3.217e-09
-   O2                     1.609e-09   1.609e-09    -8.794    -8.794         0
+H(0)             8.171e-40
+   H2                     4.086e-40   4.086e-40   -39.389   -39.389         0
+O(0)             4.995e-14
+   O2                     2.497e-14   2.497e-14   -13.603   -13.603         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.64  -41.79   -3.15  H2
+	H2(g)           -36.24  -39.39   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.83   -8.79   -2.96  O2
+	O2(g)           -10.64  -13.60   -2.96  O2
 
 Time 120. Cell 39: x=          0.076	y=              0	z=              0
 Using solution 39.
@@ -2991,7 +2991,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.324      Adjusted to redox equilibrium
+                                       pe  =  11.107      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -3015,18 +3015,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.834e-05
    A                      2.834e-05   2.834e-05    -4.548    -4.548         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.798   -41.798         0
-O(0)             3.284e-09
-   O2                     1.642e-09   1.642e-09    -8.785    -8.785         0
+H(0)             8.633e-40
+   H2                     4.317e-40   4.317e-40   -39.365   -39.365         0
+O(0)             4.475e-14
+   O2                     2.237e-14   2.237e-14   -13.650   -13.650         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.65  -41.80   -3.15  H2
+	H2(g)           -36.21  -39.36   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.82   -8.78   -2.96  O2
+	O2(g)           -10.69  -13.65   -2.96  O2
 
 Time 120. Cell 40: x=          0.078	y=              0	z=              0
 Using solution 40.
@@ -3063,7 +3063,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.325      Adjusted to redox equilibrium
+                                       pe  =  11.131      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -3087,18 +3087,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.085e-05
    A                      2.085e-05   2.085e-05    -4.681    -4.681         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.800   -41.800         0
-O(0)             3.319e-09
-   O2                     1.659e-09   1.659e-09    -8.780    -8.780         0
+H(0)             7.760e-40
+   H2                     3.880e-40   3.880e-40   -39.411   -39.411         0
+O(0)             5.538e-14
+   O2                     2.769e-14   2.769e-14   -13.558   -13.558         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.65  -41.80   -3.15  H2
+	H2(g)           -36.26  -39.41   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.82   -8.78   -2.96  O2
+	O2(g)           -10.60  -13.56   -2.96  O2
 
 Time 120. Cell 41: x=           0.08	y=              0	z=              0
 Using solution 41.
@@ -3135,7 +3135,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.325      Adjusted to redox equilibrium
+                                       pe  =  11.153      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -3159,18 +3159,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.507e-05
    A                      1.507e-05   1.507e-05    -4.822    -4.822         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.800   -41.800         0
-O(0)             3.322e-09
-   O2                     1.661e-09   1.661e-09    -8.780    -8.780         0
+H(0)             6.986e-40
+   H2                     3.493e-40   3.493e-40   -39.457   -39.457         0
+O(0)             6.833e-14
+   O2                     3.417e-14   3.417e-14   -13.466   -13.466         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.65  -41.80   -3.15  H2
+	H2(g)           -36.31  -39.46   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.82   -8.78   -2.96  O2
+	O2(g)           -10.51  -13.47   -2.96  O2
 
 Time 120. Cell 42: x=          0.082	y=              0	z=              0
 Using solution 42.
@@ -3207,7 +3207,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.324      Adjusted to redox equilibrium
+                                       pe  =  11.145      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -3231,18 +3231,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.070e-05
    A                      1.070e-05   1.070e-05    -4.971    -4.971         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.798   -41.798         0
-O(0)             3.295e-09
-   O2                     1.648e-09   1.648e-09    -8.783    -8.783         0
+H(0)             7.278e-40
+   H2                     3.639e-40   3.639e-40   -39.439   -39.439         0
+O(0)             6.296e-14
+   O2                     3.148e-14   3.148e-14   -13.502   -13.502         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.65  -41.80   -3.15  H2
+	H2(g)           -36.29  -39.44   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.82   -8.78   -2.96  O2
+	O2(g)           -10.54  -13.50   -2.96  O2
 
 Time 120. Cell 43: x=          0.084	y=              0	z=              0
 Using solution 43.
@@ -3279,7 +3279,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.322      Adjusted to redox equilibrium
+                                       pe  =  11.153      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -3303,18 +3303,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                7.465e-06
    A                      7.465e-06   7.465e-06    -5.127    -5.127         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.795   -41.795         0
-O(0)             3.240e-09
-   O2                     1.620e-09   1.620e-09    -8.791    -8.791         0
+H(0)             6.990e-40
+   H2                     3.495e-40   3.495e-40   -39.457   -39.457         0
+O(0)             6.825e-14
+   O2                     3.413e-14   3.413e-14   -13.467   -13.467         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.64  -41.79   -3.15  H2
+	H2(g)           -36.31  -39.46   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.83   -8.79   -2.96  O2
+	O2(g)           -10.51  -13.47   -2.96  O2
 
 Time 120. Cell 44: x=          0.086	y=              0	z=              0
 Using solution 44.
@@ -3351,7 +3351,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.320      Adjusted to redox equilibrium
+                                       pe  =  11.167      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -3375,18 +3375,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                5.120e-06
    A                      5.120e-06   5.120e-06    -5.291    -5.291         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.789   -41.789         0
-O(0)             3.159e-09
-   O2                     1.579e-09   1.579e-09    -8.802    -8.802         0
+H(0)             6.557e-40
+   H2                     3.279e-40   3.279e-40   -39.484   -39.484         0
+O(0)             7.756e-14
+   O2                     3.878e-14   3.878e-14   -13.411   -13.411         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.64  -41.79   -3.15  H2
+	H2(g)           -36.33  -39.48   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.84   -8.80   -2.96  O2
+	O2(g)           -10.45  -13.41   -2.96  O2
 
 Time 120. Cell 45: x=          0.088	y=              0	z=              0
 Using solution 45.
@@ -3423,7 +3423,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.316      Adjusted to redox equilibrium
+                                       pe  =  11.166      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -3447,18 +3447,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                3.452e-06
    A                      3.452e-06   3.452e-06    -5.462    -5.462         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.782   -41.782         0
-O(0)             3.056e-09
-   O2                     1.528e-09   1.528e-09    -8.816    -8.816         0
+H(0)             6.583e-40
+   H2                     3.291e-40   3.291e-40   -39.483   -39.483         0
+O(0)             7.696e-14
+   O2                     3.848e-14   3.848e-14   -13.415   -13.415         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.63  -41.78   -3.15  H2
+	H2(g)           -36.33  -39.48   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.86   -8.82   -2.96  O2
+	O2(g)           -10.45  -13.41   -2.96  O2
 
 Time 120. Cell 46: x=           0.09	y=              0	z=              0
 Using solution 46.
@@ -3495,7 +3495,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.312      Adjusted to redox equilibrium
+                                       pe  =  11.172      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -3519,18 +3519,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.289e-06
    A                      2.289e-06   2.289e-06    -5.640    -5.640         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.774   -41.774         0
-O(0)             2.939e-09
-   O2                     1.469e-09   1.469e-09    -8.833    -8.833         0
+H(0)             6.425e-40
+   H2                     3.212e-40   3.212e-40   -39.493   -39.493         0
+O(0)             8.080e-14
+   O2                     4.040e-14   4.040e-14   -13.394   -13.394         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.62  -41.77   -3.15  H2
+	H2(g)           -36.34  -39.49   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.87   -8.83   -2.96  O2
+	O2(g)           -10.43  -13.39   -2.96  O2
 
 Time 120. Cell 47: x=          0.092	y=              0	z=              0
 Using solution 47.
@@ -3567,7 +3567,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.307      Adjusted to redox equilibrium
+                                       pe  =  11.182      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -3591,18 +3591,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.493e-06
    A                      1.493e-06   1.493e-06    -5.826    -5.826         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.764   -41.764         0
-O(0)             2.813e-09
-   O2                     1.407e-09   1.407e-09    -8.852    -8.852         0
+H(0)             6.119e-40
+   H2                     3.059e-40   3.059e-40   -39.514   -39.514         0
+O(0)             8.908e-14
+   O2                     4.454e-14   4.454e-14   -13.351   -13.351         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.61  -41.76   -3.15  H2
+	H2(g)           -36.36  -39.51   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.89   -8.85   -2.96  O2
+	O2(g)           -10.39  -13.35   -2.96  O2
 
 Time 120. Cell 48: x=          0.094	y=              0	z=              0
 Using solution 48.
@@ -3639,7 +3639,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.302      Adjusted to redox equilibrium
+                                       pe  =  11.197      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -3663,18 +3663,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                9.575e-07
    A                      9.575e-07   9.575e-07    -6.019    -6.019         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.754   -41.754         0
-O(0)             2.688e-09
-   O2                     1.344e-09   1.344e-09    -8.872    -8.872         0
+H(0)             5.727e-40
+   H2                     2.863e-40   2.863e-40   -39.543   -39.543         0
+O(0)             1.017e-13
+   O2                     5.084e-14   5.084e-14   -13.294   -13.294         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.60  -41.75   -3.15  H2
+	H2(g)           -36.39  -39.54   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.91   -8.87   -2.96  O2
+	O2(g)           -10.33  -13.29   -2.96  O2
 
 Time 120. Cell 49: x=          0.096	y=              0	z=              0
 Using solution 49.
@@ -3711,7 +3711,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.297      Adjusted to redox equilibrium
+                                       pe  =  11.213      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -3735,18 +3735,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                6.045e-07
    A                      6.045e-07   6.045e-07    -6.219    -6.219         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.745   -41.745         0
-O(0)             2.574e-09
-   O2                     1.287e-09   1.287e-09    -8.890    -8.890         0
+H(0)             5.306e-40
+   H2                     2.653e-40   2.653e-40   -39.576   -39.576         0
+O(0)             1.184e-13
+   O2                     5.922e-14   5.922e-14   -13.228   -13.228         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.59  -41.74   -3.15  H2
+	H2(g)           -36.43  -39.58   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.93   -8.89   -2.96  O2
+	O2(g)           -10.27  -13.23   -2.96  O2
 
 Time 120. Cell 50: x=          0.098	y=              0	z=              0
 Using solution 50.
@@ -3783,7 +3783,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.293      Adjusted to redox equilibrium
+                                       pe  =  11.231      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -3807,18 +3807,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                3.756e-07
    A                      3.756e-07   3.756e-07    -6.425    -6.425         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.736   -41.736         0
-O(0)             2.477e-09
-   O2                     1.238e-09   1.238e-09    -8.907    -8.907         0
+H(0)             4.896e-40
+   H2                     2.448e-40   2.448e-40   -39.611   -39.611         0
+O(0)             1.391e-13
+   O2                     6.955e-14   6.955e-14   -13.158   -13.158         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.59  -41.74   -3.15  H2
+	H2(g)           -36.46  -39.61   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.95   -8.91   -2.96  O2
+	O2(g)           -10.20  -13.16   -2.96  O2
 
 Time 120. Cell 51: x=            0.1	y=              0	z=              0
 Using solution 51.
@@ -3855,7 +3855,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.290      Adjusted to redox equilibrium
+                                       pe  =  11.238      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -3879,18 +3879,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.298e-07
    A                      2.298e-07   2.298e-07    -6.639    -6.639         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.730   -41.730         0
-O(0)             2.406e-09
-   O2                     1.203e-09   1.203e-09    -8.920    -8.920         0
+H(0)             4.727e-40
+   H2                     2.363e-40   2.363e-40   -39.626   -39.626         0
+O(0)             1.493e-13
+   O2                     7.463e-14   7.463e-14   -13.127   -13.127         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.58  -41.73   -3.15  H2
+	H2(g)           -36.48  -39.63   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.96   -8.92   -2.96  O2
+	O2(g)           -10.17  -13.13   -2.96  O2
 
 Time 120. Cell 52: x=          0.102	y=              0	z=              0
 Using solution 52.
@@ -3927,7 +3927,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.288      Adjusted to redox equilibrium
+                                       pe  =  11.257      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -3951,18 +3951,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.385e-07
    A                      1.385e-07   1.385e-07    -6.859    -6.859         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.726   -41.726         0
-O(0)             2.364e-09
-   O2                     1.182e-09   1.182e-09    -8.927    -8.927         0
+H(0)             4.339e-40
+   H2                     2.170e-40   2.170e-40   -39.664   -39.664         0
+O(0)             1.771e-13
+   O2                     8.856e-14   8.856e-14   -13.053   -13.053         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.58  -41.73   -3.15  H2
+	H2(g)           -36.51  -39.66   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.97   -8.93   -2.96  O2
+	O2(g)           -10.09  -13.05   -2.96  O2
 
 Time 120. Cell 53: x=          0.104	y=              0	z=              0
 Using solution 53.
@@ -3999,7 +3999,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.288      Adjusted to redox equilibrium
+                                       pe  =  11.274      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -4023,18 +4023,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                8.219e-08
    A                      8.219e-08   8.219e-08    -7.085    -7.085         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.725   -41.725         0
-O(0)             2.355e-09
-   O2                     1.177e-09   1.177e-09    -8.929    -8.929         0
+H(0)             4.001e-40
+   H2                     2.000e-40   2.000e-40   -39.699   -39.699         0
+O(0)             2.084e-13
+   O2                     1.042e-13   1.042e-13   -12.982   -12.982         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.58  -41.73   -3.15  H2
+	H2(g)           -36.55  -39.70   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.97   -8.93   -2.96  O2
+	O2(g)           -10.02  -12.98   -2.96  O2
 
 Time 120. Cell 54: x=          0.106	y=              0	z=              0
 Using solution 54.
@@ -4071,7 +4071,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.289      Adjusted to redox equilibrium
+                                       pe  =  11.294      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -4095,18 +4095,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                4.807e-08
    A                      4.807e-08   4.807e-08    -7.318    -7.318         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.727   -41.727         0
-O(0)             2.376e-09
-   O2                     1.188e-09   1.188e-09    -8.925    -8.925         0
+H(0)             3.651e-40
+   H2                     1.826e-40   1.826e-40   -39.739   -39.739         0
+O(0)             2.501e-13
+   O2                     1.251e-13   1.251e-13   -12.903   -12.903         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.58  -41.73   -3.15  H2
+	H2(g)           -36.59  -39.74   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.97   -8.93   -2.96  O2
+	O2(g)            -9.94  -12.90   -2.96  O2
 
 Time 120. Cell 55: x=          0.108	y=              0	z=              0
 Using solution 55.
@@ -4143,7 +4143,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.291      Adjusted to redox equilibrium
+                                       pe  =  11.307      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -4167,18 +4167,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.770e-08
    A                      2.770e-08   2.770e-08    -7.557    -7.557         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.732   -41.732         0
-O(0)             2.425e-09
-   O2                     1.213e-09   1.213e-09    -8.916    -8.916         0
+H(0)             3.444e-40
+   H2                     1.722e-40   1.722e-40   -39.764   -39.764         0
+O(0)             2.812e-13
+   O2                     1.406e-13   1.406e-13   -12.852   -12.852         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.58  -41.73   -3.15  H2
+	H2(g)           -36.61  -39.76   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.96   -8.92   -2.96  O2
+	O2(g)            -9.89  -12.85   -2.96  O2
 
 Time 120. Cell 56: x=           0.11	y=              0	z=              0
 Using solution 56.
@@ -4215,7 +4215,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.294      Adjusted to redox equilibrium
+                                       pe  =  11.317      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -4239,18 +4239,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.574e-08
    A                      1.574e-08   1.574e-08    -7.803    -7.803         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.738   -41.738         0
-O(0)             2.496e-09
-   O2                     1.248e-09   1.248e-09    -8.904    -8.904         0
+H(0)             3.286e-40
+   H2                     1.643e-40   1.643e-40   -39.784   -39.784         0
+O(0)             3.089e-13
+   O2                     1.544e-13   1.544e-13   -12.811   -12.811         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.59  -41.74   -3.15  H2
+	H2(g)           -36.63  -39.78   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.94   -8.90   -2.96  O2
+	O2(g)            -9.85  -12.81   -2.96  O2
 
 Time 120. Cell 57: x=          0.112	y=              0	z=              0
 Using solution 57.
@@ -4287,7 +4287,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.298      Adjusted to redox equilibrium
+                                       pe  =  11.332      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -4311,18 +4311,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                8.819e-09
    A                      8.819e-09   8.819e-09    -8.055    -8.055         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.745   -41.745         0
-O(0)             2.581e-09
-   O2                     1.291e-09   1.291e-09    -8.889    -8.889         0
+H(0)             3.065e-40
+   H2                     1.533e-40   1.533e-40   -39.815   -39.815         0
+O(0)             3.549e-13
+   O2                     1.775e-13   1.775e-13   -12.751   -12.751         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.60  -41.75   -3.15  H2
+	H2(g)           -36.66  -39.81   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.93   -8.89   -2.96  O2
+	O2(g)            -9.79  -12.75   -2.96  O2
 
 Time 120. Cell 58: x=          0.114	y=              0	z=              0
 Using solution 58.
@@ -4359,7 +4359,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.302      Adjusted to redox equilibrium
+                                       pe  =  11.341      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -4383,18 +4383,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                4.873e-09
    A                      4.873e-09   4.873e-09    -8.312    -8.312         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.753   -41.753         0
-O(0)             2.676e-09
-   O2                     1.338e-09   1.338e-09    -8.874    -8.874         0
+H(0)             2.946e-40
+   H2                     1.473e-40   1.473e-40   -39.832   -39.832         0
+O(0)             3.843e-13
+   O2                     1.922e-13   1.922e-13   -12.716   -12.716         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.60  -41.75   -3.15  H2
+	H2(g)           -36.68  -39.83   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.91   -8.87   -2.96  O2
+	O2(g)            -9.76  -12.72   -2.96  O2
 
 Time 120. Cell 59: x=          0.116	y=              0	z=              0
 Using solution 59.
@@ -4431,7 +4431,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.306      Adjusted to redox equilibrium
+                                       pe  =  11.350      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -4455,18 +4455,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.656e-09
    A                      2.656e-09   2.656e-09    -8.576    -8.576         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.761   -41.761         0
-O(0)             2.774e-09
-   O2                     1.387e-09   1.387e-09    -8.858    -8.858         0
+H(0)             2.821e-40
+   H2                     1.411e-40   1.411e-40   -39.851   -39.851         0
+O(0)             4.190e-13
+   O2                     2.095e-13   2.095e-13   -12.679   -12.679         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.61  -41.76   -3.15  H2
+	H2(g)           -36.70  -39.85   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.90   -8.86   -2.96  O2
+	O2(g)            -9.72  -12.68   -2.96  O2
 
 Time 120. Cell 60: x=          0.118	y=              0	z=              0
 Using solution 60.
@@ -4503,7 +4503,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.309      Adjusted to redox equilibrium
+                                       pe  =  11.359      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -4527,18 +4527,18 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.429e-09
    A                      1.429e-09   1.429e-09    -8.845    -8.845         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.768   -41.768         0
-O(0)             2.870e-09
-   O2                     1.435e-09   1.435e-09    -8.843    -8.843         0
+H(0)             2.714e-40
+   H2                     1.357e-40   1.357e-40   -39.867   -39.867         0
+O(0)             4.526e-13
+   O2                     2.263e-13   2.263e-13   -12.645   -12.645         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.62  -41.77   -3.15  H2
+	H2(g)           -36.72  -39.87   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.88   -8.84   -2.96  O2
+	O2(g)            -9.69  -12.65   -2.96  O2
 
 Time 120. Cell 61: x=           0.12	y=              0	z=              0
 Using solution 61.
@@ -4575,7 +4575,7 @@ Surf
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000      Charge balance
-                                       pe  =  12.311      Adjusted to redox equilibrium
+                                       pe  =  11.365      Adjusted to redox equilibrium
                         Activity of water  =   1.000
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
@@ -4599,16 +4599,16 @@ Surf
    H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                9.938e-10
    A                      9.938e-10   9.938e-10    -9.003    -9.003         0
-H(0)             0.000e+00
-   H2                     0.000e+00   0.000e+00   -41.772   -41.772         0
-O(0)             2.917e-09
-   O2                     1.459e-09   1.459e-09    -8.836    -8.836         0
+H(0)             2.636e-40
+   H2                     1.318e-40   1.318e-40   -39.880   -39.880         0
+O(0)             4.799e-13
+   O2                     2.400e-13   2.400e-13   -12.620   -12.620         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
-	H2(g)           -38.62  -41.77   -3.15  H2
+	H2(g)           -36.73  -39.88   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	O2(g)            -5.88   -8.84   -2.96  O2
+	O2(g)            -9.66  -12.62   -2.96  O2
 
