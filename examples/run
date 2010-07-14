@@ -9,6 +9,7 @@ EXDIR=$PHASTDIR/examples
 # 32 Bit Parallel versions
 #CONFIGURATION=LAM_LAHEY
 #CONFIGURATION=LAM_GFORTRAN
+CONFIGURATION=LAM_INTEL
 #CONFIGURATION=OPENMPI_GFORTRAN
 #CONFIGURATION=OPENMPI_INTEL
 # 64-Bit Parallel versions
@@ -79,6 +80,19 @@ if [ $CONFIGURATION == "LAM_GFORTRAN" ]; then
     cp ../../schema .
     sed -e "s?WORKING_DIRECTORY?$EXDIR/$NAME/0?" \
 	-e "s^EXECUTABLE^$PHASTDIR/src/phast/lam_gfortran/phast^" schema > temp; mv temp schema
+#
+#   run phast
+#
+    lamboot ../../hosts;  time mpirun-lam -O -v schema; wipe ../../hosts
+fi
+
+if [ $CONFIGURATION == "LAM_INTEL" ]; then
+# 
+#   32 bit lam_gfortran
+#
+    cp ../../schema .
+    sed -e "s?WORKING_DIRECTORY?$EXDIR/$NAME/0?" \
+	-e "s^EXECUTABLE^$PHASTDIR/src/phast/lam_intel/phast^" schema > temp; mv temp schema
 #
 #   run phast
 #

@@ -78,13 +78,13 @@
 
                                    *** Fluid Properties ***
                                         Physical
-                    Fluid compressibility ...................................... BP ...   0.00e+00  (1/Pa )
+                    Fluid compressibility ...................................... BP ...   0.00E+00  (1/Pa )
 
                     Reference pressure for density ............................. P0 ..         0.0  (Pa )
                     Reference temperature for density .......................... T0 ..        15.0  (Deg.C)
                     Fluid density .............................................. DENF0  1000.0      (kg/m^3)
 
-                    Viscosity factor ........................................... VISFAC -1.000e-03
+                    Viscosity factor ........................................... VISFAC -1.000E-03
 
                                         *** Calculation Information ***
           Backwards-in-time (implicit) differencing for temporal derivative
@@ -92,19 +92,19 @@
                            Row scaling only, using L-inf norm, will be done
 
           Direction index for d4 zig-zag renumbering ...................... IDIR..    1
-          Incomplete LU [f] or modified ILU [t] factorization ............. MILU..    t
+          Incomplete LU [f] or modified ILU [t] factorization ............. MILU..    T
           Number of search directions before restart ...................... NSDR..   20
-          Tolerance on iterative solution ................................. EPSSLV 1.0e-10
+          Tolerance on iterative solution ................................. EPSSLV 1.0E-10
 
  ------------------------------------------------------------------------------------------------------------------------
 
                     Automatic Time Step Control Parameters for Steady Flow
-          Maximum pressure change allowed per time step.................... DPTAS    2.94e+03  (Pa )
+          Maximum pressure change allowed per time step.................... DPTAS    2.94E+03  (Pa )
           Minimum time step required ...................................... DTIMMN    1.0      (s  )
-          Maximum time step allowed ....................................... DTIMMX   1.00e+06  (s  )
+          Maximum time step allowed ....................................... DTIMMX   1.00E+06  (s  )
 
 
-               Initial fluid in region ...............................  6.300000e+02  (kg) ;  6.300000e-01  (m^3)
+               Initial fluid in region ...............................  6.300000E+02  (kg) ;  6.300000E-01  (m^3)
 
  ------------------------------------------------------------------------------------------------------------------------
  ------------------------------------------------------------------------------------------------------------------------
@@ -112,18 +112,18 @@
 
                                         *** Transient Data ***
 
-     Time ..............................   0.000e+00  (s)
+     Time ..............................       0      (s)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  1.000e+03  (s)
+          Fixed time step length .......................................... DELTIM  1.000E+03  (s)
           Time at which next set of transient
-               parameters will be read .................................... TIMCHG  6.000e+03  (s)
+               parameters will be read .................................... TIMCHG  6.000E+03  (s)
 
  ------------------------------------------------------------------------------------------------------------------------
 
 
                                        ***** Simulation Completed *****
-               Last time value calculated ...................................... 0.0000e+00 (s)
+               Last time value calculated ......................................      0     (s)
                Last time step index ............................................       0

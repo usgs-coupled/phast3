@@ -124,14 +124,14 @@
 
                                    *** Fluid Properties ***
                                         Physical
-                    Fluid compressibility ...................................... BP ...   0.00e+00  (1/Pa )
+                    Fluid compressibility ...................................... BP ...   0.00E+00  (1/Pa )
 
                     Reference pressure for density ............................. P0 ..         0.0  (Pa )
                     Reference temperature for density .......................... T0 ..        15.0  (Deg.C)
                     Fluid density .............................................. DENF0  1000.0      (kg/m^3)
                     Fluid density at solute  mass fraction of  0.0500........... DENF1  1000.0      (kg/m^3)
 
-                    Viscosity factor ........................................... VISFAC -1.000e-03
+                    Viscosity factor ........................................... VISFAC -1.000E-03
 
                                         *** Calculation Information ***
           Backwards-in-time (implicit) differencing for temporal derivative
@@ -143,22 +143,22 @@
  ------------------------------------------------------------------------------------------------------------------------
 
                     Automatic Time Step Control Parameters for Steady Flow
-          Maximum pressure change allowed per time step.................... DPTAS    2.94e+03  (Pa )
-          Minimum time step required ...................................... DTIMMN   1.00e-03  (d  )
-          Maximum time step allowed ....................................... DTIMMX   1.00e+03  (d  )
+          Maximum pressure change allowed per time step.................... DPTAS    2.94E+03  (Pa )
+          Minimum time step required ...................................... DTIMMN   1.00E-03  (d  )
+          Maximum time step allowed ....................................... DTIMMX   1.00E+03  (d  )
 
 
-               Initial fluid in region ...............................  2.500000e+05  (kg) ;  2.500000e+02  (m^3)
+               Initial fluid in region ...............................  2.500000E+05  (kg) ;  2.500000E+02  (m^3)
 
-               Initial solute in region:H         ....................  5.044915e-05  (kg)
+               Initial solute in region:H         ....................  5.044915E-05  (kg)
 
-               Initial solute in region:O         ....................  4.003901e-04  (kg)
+               Initial solute in region:O         ....................  4.003901E-04  (kg)
 
-               Initial solute in region:Cl        ....................  1.595385e-02  (kg)
+               Initial solute in region:Cl        ....................  1.595385E-02  (kg)
 
-               Initial solute in region:Na        ....................  1.034541e-02  (kg)
+               Initial solute in region:Na        ....................  1.034541E-02  (kg)
 
-               Initial solute in region:Charge    .................... -7.948033e-16  (kg)
+               Initial solute in region:Charge    .................... -7.948033E-16  (kg)
 
  ------------------------------------------------------------------------------------------------------------------------
  ------------------------------------------------------------------------------------------------------------------------
@@ -166,7 +166,7 @@
 
                                         *** Transient Data ***
 
-     Time ..............................   0.000e+00  (d)
+     Time ..............................       0      (d)
 
 
                                         *** Calculation Information ***
