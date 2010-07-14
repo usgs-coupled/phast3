@@ -390,7 +390,7 @@ ifeq ($(CFG), LAM_ABSOFT)
   LAMHF77      = $(FABSOFT)
   export LAMHF77
   NLSPATH      = $(NLSABSOFT)
-  FC           = mpif77
+  FC           = $(FABSOFT)
   FDEBUG       = -O -en  # -C
   FMISC        = -YEXT_NAMES=LCS -s -YCFRL=1 -trap=DIVBYZERO,OVERFLOW 
   FFLAGS       = $(FDEBUG) $(FMISC) $(DEFINES)
@@ -411,7 +411,7 @@ ifeq ($(CFG), LAM_ABSOFT_DEBUG)
 #  LAMHCC      = g++
 #  export LAMHCC
   NLSPATH      = $(NLSABSOFT)
-  FC           = mpif77
+  FC           = $(FABSOFT)
   FDEBUG       = -g -en # -Rb -Rc -Rp -Rs # range checking
   FMISC        = -YEXT_NAMES=LCS -s -YCFRL=1 -trap=DIVBYZERO,OVERFLOW
   FFLAGS       = $(FDEBUG) $(FMISC) $(DEFINES)
@@ -457,8 +457,8 @@ ifeq ($(CFG), LAM_LAHEY)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name\ \#\#\ _ -DFC_FUNC_\(name,NAME\)=name\ \#\#\ _
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   LAMHF77      = $(FLAHEY)
-#  export LAMHF77
-  FC           = mpif77
+  export LAMHF77
+  FC           = $(FLAHEY)
   FFLAGS       = -O $(DEFINES)
   CXX          = mpiCC
   CC           = mpiCC
@@ -474,8 +474,8 @@ ifeq ($(CFG), LAM_LAHEY_DEBUG)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name\ \#\#\ _ -DFC_FUNC_\(name,NAME\)=name\ \#\#\ _
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   LAMHF77      = $(FLAHEY)
-#  export LAMHF77
-  FC           = mpif77
+  export LAMHF77
+  FC           = $(FLAHEY)
   FFLAGS       = -g --chkglobal --warn --info $(DEFINES)
   CXX          = mpiCC
   CC           = mpiCC
@@ -517,7 +517,7 @@ ifeq ($(CFG), LAM_G95)
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   LAMHF77      = $(FG95)
   export LAMHF77
-  FC           = mpif77
+  FC           = $(FG95)
   FFLAGS       = -O3 $(DEFINES) -fno-underscoring
   CXX          = mpiCC
   CC           = mpiCC
@@ -534,7 +534,7 @@ ifeq ($(CFG), LAM_G95_DEBUG)
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   LAMHF77      = $(FG95)
   export LAMHF77
-  FC           = mpif77
+  FC           = $(FG95)
   FFLAGS       = -g  -fno-underscoring $(DEFINES)
   CXX          = mpiCC
   CC           = mpiCC
@@ -606,7 +606,7 @@ ifeq ($(CFG), LAM_GFORTRAN)
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   LAMHF77      = $(FGFORTRAN)
   export LAMHF77
-  FC           = mpif77
+  FC           = $(FGFORTRAN)
   FFLAGS       = -O3 $(DEFINES) -fno-underscoring
   CXX          = mpiCC
   CC           = mpiCC
@@ -623,7 +623,7 @@ ifeq ($(CFG), LAM_GFORTRAN_DEBUG)
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   LAMHF77      = $(FGFORTRAN)
   export LAMHF77
-  FC           = mpif77
+  FC           = $(FGFORTRAN)
   FFLAGS       = -g  -fno-underscoring $(DEFINES)
   CXX          = mpiCC
   CC           = mpiCC
@@ -639,7 +639,8 @@ ifeq ($(CFG), OPENMPI_GFORTRAN)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   DINVERSE_CL1MP=
-  FC           = $(OPENMPI_GFORTRAN_32)/bin/mpif90
+#  FC           = $(OPENMPI_GFORTRAN_32)/bin/mpif90
+  FC           = $(FGFORTRAN)
   FFLAGS       = -O3 -fno-underscoring -I/usr/include $(DEFINES)
   CXX          = $(OPENMPI_GFORTRAN_32)/bin/mpicxx
   CC           = $(OPENMPI_GFORTRAN_32)/bin/mpicxx
@@ -655,7 +656,8 @@ ifeq ($(CFG), OPENMPI_GFORTRAN_DEBUG)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   DINVERSE_CL1MP=
-  FC           = $(OPENMPI_GFORTRAN_32)/bin/mpif90
+#  FC           = $(OPENMPI_GFORTRAN_32)/bin/mpif90
+  FC           = $(FGFORTRAN)
   FFLAGS       = -g  -fno-underscoring -I/usr/include $(DEFINES)
   CXX          = $(OPENMPI_GFORTRAN_32)/bin/mpicxx
   CC           = $(OPENMPI_GFORTRAN_32)/bin/mpicxx
@@ -673,7 +675,8 @@ ifeq ($(CFG), OPENMPI_GFORTRAN_64)
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
   DINVERSE_CL1MP=
-  FC           = $(OPENMPI_GFORTRAN_64)/bin/mpif90
+#  FC           = $(OPENMPI_GFORTRAN_64)/bin/mpif90
+  FC           = $(FGFORTRAN)
   FFLAGS       = -O3 -fno-underscoring -I/usr/include $(DEFINES)
   CXX          = $(OPENMPI_GFORTRAN_64)/bin/mpiCC
   CC           = $(OPENMPI_GFORTRAN_64)/bin/mpiCC
@@ -691,7 +694,8 @@ ifeq ($(CFG), OPENMPI_GFORTRAN_64_DEBUG)
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
   DINVERSE_CL1MP=
-  FC           = $(OPENMPI_GFORTRAN_64)/bin/mpif90
+#  FC           = $(OPENMPI_GFORTRAN_64)/bin/mpif90
+  FC           = $(FGFORTRAN)
   FFLAGS       = -g  -fno-underscoring -I/usr/include $(DEFINES)
   CXX          = $(OPENMPI_GFORTRAN_64)/bin/mpiCC
   CC           = $(OPENMPI_GFORTRAN_64)/bin/mpiCC
@@ -763,7 +767,8 @@ ifeq ($(CFG), OPENMPI_INTEL)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP 
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
-  FC           = $(OPENMPI_IFORT_32)/bin/mpif90
+#  FC           = $(OPENMPI_IFORT_32)/bin/mpif90
+  FC           = $(FINTEL)
   FFLAGS       = -O3 -nus $(DEFINES)
   CXX          = $(OPENMPI_IFORT_32)/bin/mpiCC
   CC           = $(OPENMPI_IFORT_32)/bin/mpiCC
@@ -778,7 +783,8 @@ ifeq ($(CFG), OPENMPI_INTEL_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
-  FC           = $(OPENMPI_IFORT_32)/bin/mpif90
+#  FC           = $(OPENMPI_IFORT_32)/bin/mpif90
+  FC           = $(FINTEL)
   FFLAGS       = -g -nus $(DEFINES)
   CXX          = $(OPENMPI_IFORT_32)/bin/mpiCC
   CC           = $(OPENMPI_IFORT_32)/bin/mpiCC
@@ -793,7 +799,8 @@ ifeq ($(CFG), OPENMPI_INTEL_64)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
-  FC           = $(OPENMPI_IFORT_64)/bin/mpif90
+#  FC           = $(OPENMPI_IFORT_64)/bin/mpif90
+  FC           = $(FINTEL)
   FFLAGS       = -O3 -nus $(DEFINES)
   CXX          = $(OPENMPI_IFORT_64)/bin/mpiCC
   CC           = $(OPENMPI_IFORT_64)/bin/mpiCC
@@ -808,7 +815,8 @@ ifeq ($(CFG), OPENMPI_INTEL_64_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
-  FC           = $(OPENMPI_IFORT_64)/bin/mpif90
+#  FC           = $(OPENMPI_IFORT_64)/bin/mpif90
+  FC           = $(FINTEL)
   FFLAGS       = -g -nus $(DEFINES)
   CXX          = $(OPENMPI_IFORT_64)/bin/mpiCC
   CC           = $(OPENMPI_IFORT_64)/bin/mpiCC
@@ -835,7 +843,8 @@ ifeq ($(CFG), MPICH_GFORTRAN)
   MPICH_BIN=$(MPICH_ROOT)/bin
   MPICH_INCLUDES=-I$(MPICH_ROOT)/src/include
 #  MPICH_LIB=-L$(MPICH_ROOT)/lib -lfmpich -lmpich -lmpichcxx -lmpichf90
-  FC           = $(MPICH_BIN)/mpif90
+#  FC           = $(MPICH_BIN)/mpif90
+  FC           = $(FGFORTRAN)
   FFLAGS       = -O3 -fno-underscoring $(MPICH_INCLUDES) $(DEFINES) 
   CXX          = $(MPICH_BIN)/mpicxx
   CC           = $(MPICH_BIN)/mpicxx
