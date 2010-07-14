@@ -2,7 +2,7 @@
                                     *                                                  *
                                     *    PHAST: A Three Dimensional Flow and Solute    *
                                     *         Reactive Transport Simulator             *
-                                    *             Version: 2.0               *
+                                    *             Version: @VERSIO           *
                                     *                                                  *
                                     ****************************************************
 
@@ -79,14 +79,14 @@
 
                                    *** Fluid Properties ***
                                         Physical
-                    Fluid compressibility ...................................... BP ...   0.00E+00  (1/Pa )
+                    Fluid compressibility ...................................... BP ...   0.00e+00  (1/Pa )
 
                     Reference pressure for density ............................. P0 ..         0.0  (Pa )
                     Reference temperature for density .......................... T0 ..        15.0  (Deg.C)
                     Fluid density .............................................. DENF0  1000.0      (kg/m^3)
                     Fluid density at solute  mass fraction of  0.0500........... DENF1  1000.0      (kg/m^3)
 
-                    Viscosity factor ........................................... VISFAC -1.000E-03
+                    Viscosity factor ........................................... VISFAC -1.000e-03
 
                                    A free-surface water table is specified for this simulation
 
@@ -98,39 +98,39 @@
                            Row scaling only, using L-inf norm, will be done
 
           Direction index for d4 zig-zag renumbering ...................... IDIR..    1
-          Incomplete LU [f] or modified ILU [t] factorization ............. MILU..    T
+          Incomplete LU [f] or modified ILU [t] factorization ............. MILU..    t
           Number of search directions before restart ...................... NSDR..   20
-          Tolerance on iterative solution ................................. EPSSLV 1.0E-10
+          Tolerance on iterative solution ................................. EPSSLV 1.0e-10
 
  ------------------------------------------------------------------------------------------------------------------------
 
                     Automatic Time Step Control Parameters for Steady Flow
-          Maximum pressure change allowed per time step.................... DPTAS    1.18E+06  (Pa )
+          Maximum pressure change allowed per time step.................... DPTAS    1.18e+06  (Pa )
           Minimum time step required ...................................... DTIMMN    2.0      (yr )
-          Maximum time step allowed ....................................... DTIMMX   2.00E+06  (yr )
+          Maximum time step allowed ....................................... DTIMMX   2.00e+06  (yr )
 
 
-               Initial fluid in region ...............................  2.784841E+14  (kg) ;  2.784841E+11  (m^3)
+               Initial fluid in region ...............................  2.784841e+14  (kg) ;  2.784841e+11  (m^3)
 
-               Initial solute in region:H         ....................  2.060266E+09  (kg)
+               Initial solute in region:H         ....................  2.060266e+09  (kg)
 
-               Initial solute in region:O         ....................  1.217344E+11  (kg)
+               Initial solute in region:O         ....................  1.217344e+11  (kg)
 
-               Initial solute in region:As        ....................  3.355826E+06  (kg)
+               Initial solute in region:As        ....................  3.355826e+06  (kg)
 
-               Initial solute in region:C         ....................  3.011978E+10  (kg)
+               Initial solute in region:C         ....................  3.011978e+10  (kg)
 
-               Initial solute in region:Ca        ....................  6.190561E+09  (kg)
+               Initial solute in region:Ca        ....................  6.190561e+09  (kg)
 
-               Initial solute in region:Cl        ....................  4.937901E+10  (kg)
+               Initial solute in region:Cl        ....................  4.937901e+10  (kg)
 
-               Initial solute in region:Mg        ....................  2.732600E+09  (kg)
+               Initial solute in region:Mg        ....................  2.732600e+09  (kg)
 
-               Initial solute in region:Na        ....................  8.574352E+10  (kg)
+               Initial solute in region:Na        ....................  8.574352e+10  (kg)
 
-               Initial solute in region:S         ....................  2.128365E+09  (kg)
+               Initial solute in region:S         ....................  2.128365e+09  (kg)
 
-               Initial solute in region:Charge    ....................  3.732757E+08  (kg)
+               Initial solute in region:Charge    ....................  3.732757e+08  (kg)
 
  ------------------------------------------------------------------------------------------------------------------------
  ------------------------------------------------------------------------------------------------------------------------
@@ -138,18 +138,18 @@
 
                                         *** Transient Data ***
 
-     Time ..............................       0      (yr)
+     Time ..............................   0.000e+00  (yr)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  2.000E+03  (yr)
+          Fixed time step length .......................................... DELTIM  2.000e+03  (yr)
           Time at which next set of transient
-               parameters will be read .................................... TIMCHG  1.000E+04  (yr)
+               parameters will be read .................................... TIMCHG  1.000e+04  (yr)
 
  ------------------------------------------------------------------------------------------------------------------------
 
 
                                        ***** Simulation Completed *****
-               Last time value calculated ...................................... 1.0000E+04 (yr)
+               Last time value calculated ...................................... 1.0000e+04 (yr)
                Last time step index ............................................       5

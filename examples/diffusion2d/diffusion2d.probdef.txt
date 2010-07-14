@@ -2,7 +2,7 @@
                                     *                                                  *
                                     *    PHAST: A Three Dimensional Flow and Solute    *
                                     *         Reactive Transport Simulator             *
-                                    *             Version: 2.0               *
+                                    *             Version: @VERSIO           *
                                     *                                                  *
                                     ****************************************************
 
@@ -125,8 +125,8 @@
 
                     Automatic Time Step Control Parameters for Steady Flow
           Maximum pressure change allowed per time step.................... DPTAS     2.9      (Pa )
-          Minimum time step required ...................................... DTIMMN   1.00E-04  (s  )
-          Maximum time step allowed ....................................... DTIMMX   1.00E+02  (s  )
+          Minimum time step required ...................................... DTIMMN   1.00e-04  (s  )
+          Maximum time step allowed ....................................... DTIMMX   1.00e+02  (s  )
 
 
  ------------------------------------------------------------------------------------------------------------------------
@@ -135,7 +135,7 @@
 
                                         *** Transient Data ***
 
-     Time ..............................       0      (s)
+     Time ..............................   0.000e+00  (s)
 
 
                                         *** Calculation Information ***

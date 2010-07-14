@@ -174,8 +174,8 @@
 
                               *** Output at End of Time Step No.     5 ***
 
-     Time .......................................................   1.000E+04  (yr)
-     Maximum change in potentiometric head ... -1.7467E-13      (m )   at location ( 6.000E+04, 4.800E+04,  200.    )(m )
+     Time .......................................................   1.000e+04  (yr)
+     Maximum change in potentiometric head ...  1.5937e-13      (m )   at location ( 5.400e+04, 4.800e+04,  400.    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -315,5 +315,5 @@
 
 
                                        ***** Simulation Completed *****
-               Last time value calculated ...................................... 1.0000E+04 (yr)
+               Last time value calculated ...................................... 1.0000e+04 (yr)
                Last time step index ............................................       5

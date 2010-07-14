@@ -5,24 +5,18 @@
 #           Serial/MPI version
 #           Optimize/Debug
 #
-# Serial verisons:   serial_absoft serial_absoft_debug serial_lahey serial_lahey_debug 
-# Parallel versions: lam_absoft lam_absoft_debug lam_lahey lam_lahey_debug 
-#
 # Makefile sets CFG variable, cd's to appropriate directory, runs Makefile recursively
 # Recursive make sets appropriate compiler, objects, options, libraries, and compiles PHAST
 #
 
 PROGRAM = phast
 
-all: gfortran lahey # g95 absoft
+all: gfortran lahey # g95 
 
 # serial_lahey serial_lahey_debug lam_lahey lam_lahey_debug 
 
 SERIAL_ABSOFT_DIR       = serial_absoft
-SERIAL_ABSOFT_DEBUG_DIR = serial_absoft_debug
-LAM_ABSOFT_DIR          = lam_absoft
-LAM_ABSOFT_DEBUG_DIR    = lam_absoft_debug
-absoft: serial_absoft serial_absoft_debug lam_absoft lam_absoft_debug
+absoft: serial_absoft 
 
 SERIAL_LAHEY_DIR        = serial_lahey
 SERIAL_LAHEY_DEBUG_DIR  = serial_lahey_debug
@@ -57,6 +51,8 @@ OPENMPI_INTEL_DIR           = openmpi_intel
 OPENMPI_INTEL_DEBUG_DIR     = openmpi_intel_debug
 OPENMPI_INTEL_64_DIR           = openmpi_intel_64
 OPENMPI_INTEL_64_DEBUG_DIR     = openmpi_intel_64_debug
+LAM_INTEL_DIR                  = lam_intel
+LAM_INTEL_DEBUG_DIR            = lam_intel_debug
 
 MPICH_GFORTRAN_DIR           = mpich_gfortran
 mpich: mpich_gfortran
@@ -68,6 +64,9 @@ lahey: serial_lahey serial_lahey_debug lam_lahey lam_lahey_debug
 grundvand: intel openmpi
 intel: serial_intel serial_intel_debug openmpi_intel openmpi_intel_debug
 openmpi: openmpi_gfortran openmpi_gfortran_debug
+
+stoch: lam_intel lam_intel_debug
+
 
 robocomp: gfortran_64 intel_64
 gfortran_64: serial_gfortran_64 serial_gfortran_64_debug openmpi_gfortran_64 openmpi_gfortran_64_debug
@@ -83,20 +82,6 @@ MAKEFILE                = Makefile
 serial_absoft:
 	mkdir -p $(SERIAL_ABSOFT_DIR) 
 	cd $(SERIAL_ABSOFT_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_ABSOFT $(PROGRAM)
-
-.PHONY : serial_absoft_debug
-serial_absoft_debug:
-	mkdir -p $(SERIAL_ABSOFT_DEBUG_DIR) 
-	cd $(SERIAL_ABSOFT_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=SERIAL_ABSOFT_DEBUG $(PROGRAM)
-.PHONY : lam_absoft
-lam_absoft:
-	mkdir -p $(LAM_ABSOFT_DIR)
-	cd $(LAM_ABSOFT_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=LAM_ABSOFT $(PROGRAM)
-
-.PHONY : lam_absoft_debug
-lam_absoft_debug:
-	mkdir -p $(LAM_ABSOFT_DEBUG_DIR);
-	cd $(LAM_ABSOFT_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=LAM_ABSOFT_DEBUG $(PROGRAM)
 
 #########################
 ####    Lahey        ####
@@ -254,6 +239,7 @@ openmpi_intel:
 openmpi_intel_debug:
 	mkdir -p $(OPENMPI_INTEL_DEBUG_DIR) 
 	cd $(OPENMPI_INTEL_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_INTEL_DEBUG $(PROGRAM)
+
 .PHONY : openmpi_intel_64
 openmpi_intel_64:
 	mkdir -p $(OPENMPI_INTEL_64_DIR) 
@@ -263,6 +249,16 @@ openmpi_intel_64:
 openmpi_intel_64_debug:
 	mkdir -p $(OPENMPI_INTEL_64_DEBUG_DIR) 
 	cd $(OPENMPI_INTEL_64_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=OPENMPI_INTEL_64_DEBUG $(PROGRAM)
+
+.PHONY : lam_intel
+lam_intel:
+	mkdir -p $(LAM_INTEL_DIR) 
+	cd $(LAM_INTEL_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=LAM_INTEL $(PROGRAM)
+
+.PHONY : lam_intel_debug
+lam_intel_debug:
+	mkdir -p $(LAM_INTEL_DEBUG_DIR) 
+	cd $(LAM_INTEL_DEBUG_DIR); $(MAKE) -r -f ../$(MAKEFILE) CFG=LAM_INTEL_DEBUG $(PROGRAM)
 
 # Recursive make begins here
 #
@@ -368,62 +364,6 @@ ifeq ($(CFG), SERIAL_ABSOFT)
 endif
 
 # -----------------------------------------------------------------------------
-ifeq ($(CFG), SERIAL_ABSOFT_DEBUG)
-  DEFINES      = $(DEFINE_HDF) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
-  FC           = $(FABSOFT)
-  NLSPATH      = $(NLSABSOFT)
-  FDEBUG       = -g -en # -Rb -Rc -Rp -Rs # range checking
-  FMISC        = -YEXT_NAMES=LCS -s -YCFRL=1 -trap=DIVBYZERO,OVERFLOW
-  FFLAGS       = $(FDEBUG) $(FMISC) $(DEFINES)
-  CC           = g++
-  CFLAGS       = -Wall -g $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS)  $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = -lm ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT) ${HASH_STYLE} # ${EFENCE_LIB} -lefence
-  LINKER       = $(CXX)
-endif
-
-# -----------------------------------------------------------------------------
-ifeq ($(CFG), LAM_ABSOFT)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG  -DPHREEQC_CPP
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
-  LAMHF77      = $(FABSOFT)
-  export LAMHF77
-  NLSPATH      = $(NLSABSOFT)
-  FC           = $(FABSOFT)
-  FDEBUG       = -O -en  # -C
-  FMISC        = -YEXT_NAMES=LCS -s -YCFRL=1 -trap=DIVBYZERO,OVERFLOW 
-  FFLAGS       = $(FDEBUG) $(FMISC) $(DEFINES)
-  CXX          = mpiCC
-  CC           = mpiCC
-  CFLAGS       = -Wall -O3 $(DEFINES) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) $(LAM_INCLUDES)
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = -lm -lc ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT) -ldl ${HASH_STYLE}
-  LINKER       = $(CXX)
-endif
-
-# -----------------------------------------------------------------------------
-ifeq ($(CFG), LAM_ABSOFT_DEBUG)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
-  LAMHF77      = $(FABSOFT)
-  export LAMHF77
-#  LAMHCC      = g++
-#  export LAMHCC
-  NLSPATH      = $(NLSABSOFT)
-  FC           = $(FABSOFT)
-  FDEBUG       = -g -en # -Rb -Rc -Rp -Rs # range checking
-  FMISC        = -YEXT_NAMES=LCS -s -YCFRL=1 -trap=DIVBYZERO,OVERFLOW
-  FFLAGS       = $(FDEBUG) $(FMISC) $(DEFINES)
-  CXX          = mpiCC
-  CC           = mpiCC
-  CFLAGS       = -Wall  -ansi -g $(DEFINES) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) $(LAM_INCLUDES)# -Wconversion 
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = -lm -lc ${CL1MP_LIB} ${HDF5_LIBS} $(LIBABSOFT) -ldl ${HASH_STYLE} # ${EFENCE_LIB} -lefence
-  LINKER       = $(CXX)
-endif
-
-# -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_LAHEY)
   DEFINES      = $(DEFINE_HDF) -DLAHEY_F95 -DNDEBUG -DPHREEQC_CPP
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name\ \#\#\ _ -DFC_FUNC_\(name,NAME\)=name\ \#\#\ _
@@ -456,8 +396,6 @@ ifeq ($(CFG), LAM_LAHEY)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DLAHEY_F95 -DNDEBUG -DPHREEQC_CPP
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name\ \#\#\ _ -DFC_FUNC_\(name,NAME\)=name\ \#\#\ _
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
-  LAMHF77      = $(FLAHEY)
-  export LAMHF77
   FC           = $(FLAHEY)
   FFLAGS       = -O $(DEFINES)
   CXX          = mpiCC
@@ -473,8 +411,6 @@ ifeq ($(CFG), LAM_LAHEY_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DLAHEY_F95 -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name\ \#\#\ _ -DFC_FUNC_\(name,NAME\)=name\ \#\#\ _
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
-  LAMHF77      = $(FLAHEY)
-  export LAMHF77
   FC           = $(FLAHEY)
   FFLAGS       = -g --chkglobal --warn --info $(DEFINES)
   CXX          = mpiCC
@@ -515,8 +451,6 @@ endif
 ifeq ($(CFG), LAM_G95)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
-  LAMHF77      = $(FG95)
-  export LAMHF77
   FC           = $(FG95)
   FFLAGS       = -O3 $(DEFINES) -fno-underscoring
   CXX          = mpiCC
@@ -532,8 +466,6 @@ ifeq ($(CFG), LAM_G95_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
-  LAMHF77      = $(FG95)
-  export LAMHF77
   FC           = $(FG95)
   FFLAGS       = -g  -fno-underscoring $(DEFINES)
   CXX          = mpiCC
@@ -604,8 +536,6 @@ ifeq ($(CFG), LAM_GFORTRAN)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
-  LAMHF77      = $(FGFORTRAN)
-  export LAMHF77
   FC           = $(FGFORTRAN)
   FFLAGS       = -O3 $(DEFINES) -fno-underscoring
   CXX          = mpiCC
@@ -621,8 +551,6 @@ ifeq ($(CFG), LAM_GFORTRAN_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
-  LAMHF77      = $(FGFORTRAN)
-  export LAMHF77
   FC           = $(FGFORTRAN)
   FFLAGS       = -g  -fno-underscoring $(DEFINES)
   CXX          = mpiCC
@@ -767,7 +695,6 @@ ifeq ($(CFG), OPENMPI_INTEL)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP 
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
-#  FC           = $(OPENMPI_IFORT_32)/bin/mpif90
   FC           = $(FINTEL)
   FFLAGS       = -O3 -nus $(DEFINES)
   CXX          = $(OPENMPI_IFORT_32)/bin/mpiCC
@@ -823,6 +750,36 @@ ifeq ($(CFG), OPENMPI_INTEL_64_DEBUG)
   CFLAGS       = -Wall  -g $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS) 
   LD_FLAGS     = ${IFORT_LIB_64} ${HDF5_LIBS_64} ${HASH_STYLE} -lmpi_cxx
+  LINKER       = $(CXX)
+endif
+
+# -----------------------------------------------------------------------------
+ifeq ($(CFG), LAM_INTEL)
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP
+  FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
+  FC           = $(FINTEL)
+  FFLAGS       = -O3 -nus $(DEFINES)
+  CXX          = $(OPENMPI_IFORT_32)/bin/mpiCC
+  CC           = $(OPENMPI_IFORT_32)/bin/mpiCC
+  CFLAGS       = -Wall  -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) $(LAM_INCLUDES)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
+  LD_FLAGS     = ${IFORT_LIB} ${HDF5_LIBS} -lmpi_cxx  ${HASH_STYLE} 
+  LINKER       = $(CXX)
+endif
+
+# -----------------------------------------------------------------------------
+ifeq ($(CFG), LAM_INTEL_DEBUG)
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
+  FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
+  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
+  FC           = $(FINTEL)
+  FFLAGS       = -g -nus $(DEFINES)
+  CXX          = $(OPENMPI_IFORT_32)/bin/mpiCC
+  CC           = $(OPENMPI_IFORT_32)/bin/mpiCC
+  CFLAGS       = -Wall  -g $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) $(LAM_INCLUDES)
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) $(CL1MP_OBJS)
+  LD_FLAGS     = ${IFORT_LIB} ${HDF5_LIBS} ${HASH_STYLE} -lmpi_cxx
   LINKER       = $(CXX)
 endif
 
@@ -1078,7 +1035,7 @@ zone_flow_ss.o:		../zone_flow_ss.f90	modules.o
 -include ../dependencies
 
 clean:
-	rm -rf serial_absoft serial_absoft_debug lam_absoft lam_absoft_debug serial_lahey serial_lahey_debug lam_lahey lam_lahey_debug serial_g95 serial_g95_debug lam_g95 lam_g95_debug serial_gfortran serial_gfortran_debug lam_gfortran lam_gfortran_debug openmpi_gfortran openmpi_gfortran_debug serial_gfortran_64 serial_gfortran_64_debug openmpi_gfortran_64 openmpi_gfortran_64_debug serial_intel serial_intel_debug serial_intel_64 serial_intel_64_debug openmpi_intel openmpi_intel_debug openmpi_intel_64 openmpi_intel_64_debug
+	rm -rf serial_absoft serial_lahey serial_lahey_debug lam_lahey lam_lahey_debug serial_g95 serial_g95_debug lam_g95 lam_g95_debug serial_gfortran serial_gfortran_debug lam_gfortran lam_gfortran_debug openmpi_gfortran openmpi_gfortran_debug serial_gfortran_64 serial_gfortran_64_debug openmpi_gfortran_64 openmpi_gfortran_64_debug serial_intel serial_intel_debug serial_intel_64 serial_intel_64_debug openmpi_intel openmpi_intel_debug openmpi_intel_64 openmpi_intel_64_debug lam_intel lam_intel_debug
 
 depends:
 	mkdir -p temp_dependency_dir
