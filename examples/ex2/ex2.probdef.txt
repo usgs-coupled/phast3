@@ -2,7 +2,7 @@
                                     *                                                  *
                                     *    PHAST: A Three Dimensional Flow and Solute    *
                                     *         Reactive Transport Simulator             *
-                                    *             Version: 2.0               *
+                                    *             Version: @VERSIO           *
                                     *                                                  *
                                     ****************************************************
 
@@ -99,14 +99,14 @@
 
                                    *** Fluid Properties ***
                                         Physical
-                    Fluid compressibility ...................................... BP ...   0.00E+00  (1/Pa )
+                    Fluid compressibility ...................................... BP ...   0.00e+00  (1/Pa )
 
                     Reference pressure for density ............................. P0 ..         0.0  (Pa )
                     Reference temperature for density .......................... T0 ..        15.0  (Deg.C)
                     Fluid density .............................................. DENF0  1000.0      (kg/m^3)
                     Fluid density at solute  mass fraction of  0.0500........... DENF1  1000.0      (kg/m^3)
 
-                    Viscosity factor ........................................... VISFAC -1.000E-03
+                    Viscosity factor ........................................... VISFAC -1.000e-03
 
                                         *** Calculation Information ***
           Centered-in-time (Crank-Nicholson) differencing for temporal derivative
@@ -116,27 +116,27 @@
                            Row scaling only, using L-inf norm, will be done
 
           Direction index for d4 zig-zag renumbering ...................... IDIR..    1
-          Incomplete LU [f] or modified ILU [t] factorization ............. MILU..    T
+          Incomplete LU [f] or modified ILU [t] factorization ............. MILU..    t
           Number of search directions before restart ...................... NSDR..   20
-          Tolerance on iterative solution ................................. EPSSLV 1.0E-14
+          Tolerance on iterative solution ................................. EPSSLV 1.0e-14
 
  ------------------------------------------------------------------------------------------------------------------------
 
-               Initial fluid in region ...............................  2.562500E+06  (kg) ;  2.562500E+03  (m^3)
+               Initial fluid in region ...............................  2.562500e+06  (kg) ;  2.562500e+03  (m^3)
 
-               Initial solute in region:H         ....................  5.171502E-04  (kg)
+               Initial solute in region:H         ....................  5.171502e-04  (kg)
 
-               Initial solute in region:O         ....................  4.106619E-03  (kg)
+               Initial solute in region:O         ....................  4.106619e-03  (kg)
 
-               Initial solute in region:[A]       ....................  0.000000E+00  (kg)
+               Initial solute in region:[A]       ....................  0.000000e+00  (kg)
 
-               Initial solute in region:[B]       ....................  0.000000E+00  (kg)
+               Initial solute in region:[B]       ....................  0.000000e+00  (kg)
 
-               Initial solute in region:[C]       ....................  0.000000E+00  (kg)
+               Initial solute in region:[C]       ....................  0.000000e+00  (kg)
 
-               Initial solute in region:[D]       ....................  0.000000E+00  (kg)
+               Initial solute in region:[D]       ....................  0.000000e+00  (kg)
 
-               Initial solute in region:Charge    .................... -2.795129E-07  (kg)
+               Initial solute in region:Charge    .................... -2.795129e-07  (kg)
 
  ------------------------------------------------------------------------------------------------------------------------
  ------------------------------------------------------------------------------------------------------------------------
@@ -144,7 +144,7 @@
 
                                         *** Transient Data ***
 
-     Time ..............................       0      (d)
+     Time ..............................   0.000e+00  (d)
 
 
                                         *** Calculation Information ***

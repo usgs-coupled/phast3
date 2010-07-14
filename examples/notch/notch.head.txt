@@ -34,8 +34,8 @@
 
                               *** Output at End of Steady State Iteration No.     1 ***
 
-     Time .......................................................       0      (s)
-     Maximum change in potentiometric head ...  1.8276E-02    (m ) at location (     0    ,  1.00    ,     0    )(m)
+     Time .......................................................   0.000e+00  (s)
+     Maximum change in potentiometric head ...  1.8276e-02    (m ) at location ( 0.000e+00,  1.00    , 0.000e+00)(m)
 
                               Fluid Potentiometric Head (m)
 
@@ -81,8 +81,8 @@
 
                               *** Output at End of Steady State Iteration No.     2 ***
 
-     Time .......................................................       0      (s)
-     Maximum change in potentiometric head ... -6.8026E-11    (m ) at location ( 0.600    ,  1.00    , 0.250    )(m)
+     Time .......................................................   0.000e+00  (s)
+     Maximum change in potentiometric head ... -6.8026e-11    (m ) at location ( 0.600    ,  1.00    , 0.250    )(m)
 
                               Fluid Potentiometric Head (m)
 
@@ -128,5 +128,5 @@
 
 
                                        ***** Simulation Completed *****
-               Last time value calculated ......................................      0     (s)
+               Last time value calculated ...................................... 0.0000e+00 (s)
                Last time step index ............................................       0

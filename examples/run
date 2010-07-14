@@ -9,7 +9,7 @@ EXDIR=$PHASTDIR/examples
 # 32 Bit Parallel versions
 #CONFIGURATION=LAM_LAHEY
 #CONFIGURATION=LAM_GFORTRAN
-CONFIGURATION=OPENMPI_GFORTRAN
+#CONFIGURATION=OPENMPI_GFORTRAN
 #CONFIGURATION=OPENMPI_INTEL
 # 64-Bit Parallel versions
 #CONFIGURATION=OPENMPI_GFORTRAN_64
@@ -52,7 +52,6 @@ if [ -f phast.dat ]; then
 
 TMP=/z/parkplace/home/dlpark/tmp
 TMPDIR=/z/parkplace/home/dlpark/tmp
-$PHASTDIR/src/phastinput/phastinput $NAME
 #
 #   run phastinput
 #
@@ -90,36 +89,29 @@ if [ $CONFIGURATION == "OPENMPI_GFORTRAN" ]; then
 # 
 #   32 bit openmpi_gfortran
 #
-    #LD_LIBRARY_PATH=/z/parkplace/home/charlton/openmpi-1.4.2/grundvand-ifort/lib
-    export LD_LIBRARY_PATH
-    /z/parkplace/home/charlton/openmpi-1.4.2/grundvand-ifort/bin/mpirun -x LD_LIBRARY_PATH -n 4 -H grundvand -H niwot -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_gfortran/phast
+    /z/parkplace/home/charlton/openmpi-1.4.2/grundvand-gfortran/bin/mpirun -n 2 -H grundvand -H niwot -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_gfortran/phast
 fi
 
 if [ $CONFIGURATION == "OPENMPI_INTEL" ]; then
 # 
 #   32 bit openmpi_intel
 #
-    #LD_LIBRARY_PATH=/z/parkplace/home/charlton/openmpi-1.4.2/grundvand-ifort/lib:/z/grundvand/usr/opt/intel/Compiler/11.0/083/lib/ia32
-    export LD_LIBRARY_PATH
-    /z/parkplace/home/charlton/openmpi-1.4.2/grundvand-ifort/bin/mpirun -x LD_LIBRARY_PATH -n 4 -H grundvand -H niwot -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_intel/phast
+    #LD_LIBRARY_PATH=/z/parkplace/home/charlton/openmpi-1.4.2/grundvand-ifort/lib
+    #export LD_LIBRARY_PATH
+    /z/parkplace/home/charlton/openmpi-1.4.2/grundvand-ifort/bin/mpirun -n 2 -H grundvand -H niwot -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_intel/phast
 fi
 
 if [ $CONFIGURATION == "OPENMPI_INTEL_64" ]; then
 # 
 #   64 bit openmpi_intel_64
 #
-    LD_LIBRARY_PATH=/z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/lib:/z/robocomp/usr/opt/intel/Compiler/11.0/083/lib/intel64/
-    export LD_LIBRARY_PATH
-#    /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/bin/mpirun  -n 4 -H robocomp -H lobo -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_1_4_2_intel_64_static/phast
-    /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/bin/mpirun  -n 4 -H robocomp -H lobo -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_intel_64/phast
+    /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/bin/mpirun  -n 2 -H robocomp -H lobo -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_intel_64/phast
 fi
 
 if [ $CONFIGURATION == "OPENMPI_GFORTRAN_64" ]; then
 # 
 #   64 bit openmpi_gfortran_64
 #
-    LD_LIBRARY_PATH=/z/parkplace/home/charlton/openmpi-1.4.2/lobo-gfortran-x64/lib
-    export LD_LIBRARY_PATH
-    /z/parkplace/home/charlton/openmpi-1.4.2/lobo-gfortran-x64/bin/mpirun -n 4 -H robocomp -H lobo -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_gfortran_64/phast
+    /z/parkplace/home/charlton/openmpi-1.4.2/lobo-gfortran-x64/bin/mpirun -n 2 -H robocomp -H lobo -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_gfortran_64/phast
 fi
 

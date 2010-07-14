@@ -1134,7 +1134,7 @@ ci_parallel:
 diff:
 #	svn diff --diff-cmd diff -x -bw	
 	for DIR in $(SERIAL); \
-		do svn diff --diff-cmd diff -x -bw $$DIR; \
+		do svn diff --diff-cmd diff -x -ibw $$DIR; \
 		done;
 
 zero:

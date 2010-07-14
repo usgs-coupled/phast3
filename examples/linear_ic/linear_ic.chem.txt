@@ -75,7 +75,7 @@ Initial solution 1.
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   3.411e-17
+                  Electrical balance (eq)  =   3.484e-17
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   8
                                   Total H  = 1.110124e+02
@@ -130,7 +130,7 @@ Initial solution 2.
                     Total carbon (mol/kg)  =   0.000e+00
                        Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.882e-18
+                  Electrical balance (eq)  =  -2.894e-19
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   9
                                   Total H  = 1.110124e+02
@@ -477,7 +477,7 @@ Y                1.000e+00 mol
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -3.963e-05
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.01
-                               Iterations  =  36
+                               Iterations  =  35
                                   Total H  = 1.110292e+02
                                   Total O  = 5.630840e+01
 
@@ -800,7 +800,7 @@ Y                8.000e-01 mol
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -4.764e-05
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.01
-                               Iterations  =  30
+                               Iterations  =  28
                                   Total H  = 1.110324e+02
                                   Total O  = 5.631172e+01
 
@@ -1123,7 +1123,7 @@ Y                6.000e-01 mol
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -5.541e-05
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.01
-                               Iterations  =  28
+                               Iterations  =  27
                                   Total H  = 1.110356e+02
                                   Total O  = 5.631447e+01
 
@@ -1769,7 +1769,7 @@ Y                2.000e-01 mol
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -6.170e-05
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.01
-                               Iterations  =  48
+                               Iterations  =  34
                                   Total H  = 1.110417e+02
                                   Total O  = 5.631894e+01
 
@@ -2026,7 +2026,7 @@ X                2.000e+00 mol
 	CaX2              1.876e-01   3.752e-01   1.876e-01    -0.582
 	SrX2              1.633e-04   3.265e-04   1.633e-04    -0.586
 	BaX2              8.954e-09   1.791e-08   8.954e-09    -0.663
-	NH4X              2.071e-15   2.071e-15   1.036e-15    -0.226
+	NH4X              6.025e-43   6.025e-43   3.012e-43    -0.226
 
 -----------------------------Solution composition------------------------------
 
@@ -2044,7 +2044,7 @@ X                2.000e+00 mol
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.940      Charge balance
-                                       pe  =  -0.568      Adjusted to redox equilibrium
+                                       pe  =   8.611      Adjusted to redox equilibrium
                         Activity of water  =   0.991
                            Ionic strength  =   4.883e-01
                        Mass of water (kg)  =   1.000e+00
@@ -2053,7 +2053,7 @@ X                2.000e+00 mol
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =   4.763e-05
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.01
-                               Iterations  =  33
+                               Iterations  =  26
                                   Total H  = 1.110587e+02
                                   Total O  = 5.632779e+01
 
@@ -2071,8 +2071,8 @@ Ba               7.095e-10
    BaHCO3+                3.266e-13   2.394e-13   -12.486   -12.621    -0.135
    BaCO3                  4.707e-14   5.267e-14   -13.327   -13.278     0.049
    BaOH+                  1.570e-16   1.150e-16   -15.804   -15.939    -0.135
-C(-4)            3.934e-40
-   CH4                    3.934e-40   4.402e-40   -39.405   -39.356     0.049
+C(-4)            0.000e+00
+   CH4                    0.000e+00   0.000e+00  -112.835  -112.786     0.049
 C(4)             1.051e-03
    HCO3-                  9.149e-04   6.345e-04    -3.039    -3.198    -0.159
    NaHCO3                 7.453e-05   8.340e-05    -4.128    -4.079     0.049
@@ -2094,30 +2094,30 @@ Ca               1.174e-02
    CaHSO4+                7.016e-10   5.143e-10    -9.154    -9.289    -0.135
 Cl               1.999e-03
    Cl-                    1.999e-03   1.291e-03    -2.699    -2.889    -0.190
-H(0)             2.285e-18
-   H2                     1.143e-18   1.279e-18   -17.942   -17.893     0.049
-N(-3)            1.413e-16
-   NH4+                   1.055e-16   6.267e-17   -15.977   -16.203    -0.226
-   NH4SO4-                3.298e-17   2.418e-17   -16.482   -16.617    -0.135
-   NH3                    2.778e-18   3.109e-18   -17.556   -17.507     0.049
+H(0)             1.003e-36
+   H2                     5.016e-37   5.613e-37   -36.300   -36.251     0.049
+N(-3)            0.000e+00
+   NH4+                   0.000e+00   0.000e+00   -43.513   -43.739    -0.226
+   NH4SO4-                0.000e+00   0.000e+00   -44.018   -44.153    -0.135
+   NH3                    0.000e+00   0.000e+00   -45.092   -45.044     0.049
 N(0)             7.615e-04
    N2                     3.808e-04   4.261e-04    -3.419    -3.371     0.049
-N(3)             0.000e+00
-   NO2-                   0.000e+00   0.000e+00   -46.398   -46.609    -0.211
-N(5)             0.000e+00
-   NO3-                   0.000e+00   0.000e+00   -60.228   -60.439    -0.211
+N(3)             1.376e-19
+   NO2-                   1.376e-19   8.467e-20   -18.861   -19.072    -0.211
+N(5)             4.628e-15
+   NO3-                   4.628e-15   2.848e-15   -14.335   -14.545    -0.211
 Na               3.774e-01
    Na+                    3.294e-01   2.338e-01    -0.482    -0.631    -0.149
    NaSO4-                 4.786e-02   3.508e-02    -1.320    -1.455    -0.135
    NaHCO3                 7.453e-05   8.340e-05    -4.128    -4.079     0.049
    NaCO3-                 1.538e-05   1.127e-05    -4.813    -4.948    -0.135
    NaOH                   1.191e-07   1.332e-07    -6.924    -6.875     0.049
-O(0)             0.000e+00
-   O2                     0.000e+00   0.000e+00   -56.650   -56.601     0.049
-S(-2)            2.824e-35
-   HS-                    2.672e-35   1.696e-35   -34.573   -34.771    -0.197
-   H2S                    1.522e-36   1.703e-36   -35.818   -35.769     0.049
-   S-2                    8.207e-40   1.783e-40   -39.086   -39.749    -0.663
+O(0)             2.322e-20
+   O2                     1.161e-20   1.299e-20   -19.935   -19.886     0.049
+S(-2)            0.000e+00
+   HS-                    0.000e+00   0.000e+00  -108.003  -108.201    -0.197
+   H2S                    0.000e+00   0.000e+00  -109.248  -109.199     0.049
+   S-2                    0.000e+00   0.000e+00  -112.516  -113.179    -0.663
 S(6)             1.989e-01
    SO4-2                  1.442e-01   2.995e-02    -0.841    -1.524    -0.683
    NaSO4-                 4.786e-02   3.508e-02    -1.320    -1.455    -0.135
@@ -2126,7 +2126,7 @@ S(6)             1.989e-01
    HSO4-                  4.563e-08   3.345e-08    -7.341    -7.476    -0.135
    CaHSO4+                7.016e-10   5.143e-10    -9.154    -9.289    -0.135
    BaSO4                  5.280e-10   5.908e-10    -9.277    -9.229     0.049
-   NH4SO4-                3.298e-17   2.418e-17   -16.482   -16.617    -0.135
+   NH4SO4-                0.000e+00   0.000e+00   -44.018   -44.153    -0.135
 Sr               7.789e-06
    SrSO4                  4.472e-06   5.004e-06    -5.350    -5.301     0.049
    Sr+2                   3.304e-06   8.570e-07    -5.481    -6.067    -0.586
@@ -2143,18 +2143,18 @@ Sr               7.789e-06
 	Barite           -1.96  -11.93   -9.97  BaSO4
 	Calcite              0   -8.48   -8.48  CaCO3
 	Celestite        -0.96   -7.59   -6.63  SrSO4
-	CH4(g)          -36.50  -39.36   -2.86  CH4
+	CH4(g)         -109.93 -112.79   -2.86  CH4
 	CO2(g)           -3.31   -4.78   -1.47  CO2
 	Gypsum            0.16   -4.42   -4.58  CaSO4:2H2O
-	H2(g)           -14.74  -17.89   -3.15  H2
+	H2(g)           -33.10  -36.25   -3.15  H2
 	H2O(g)           -1.51       0    1.51  H2O
-	H2S(g)          -34.77  -35.77   -1.00  H2S
+	H2S(g)         -108.20 -109.20   -1.00  H2S
 	Halite           -5.10   -3.52    1.58  NaCl
 	N2(g)            -0.11   -3.37   -3.26  N2
-	NH3(g)          -19.28  -17.51    1.77  NH3
-	O2(g)           -53.64  -56.60   -2.96  O2
+	NH3(g)          -46.81  -45.04    1.77  NH3
+	O2(g)           -16.93  -19.89   -2.96  O2
 	Strontianite     -2.38  -11.65   -9.27  SrCO3
-	Sulfur          -25.91  -21.03    4.88  S
+	Sulfur          -80.98  -76.10    4.88  S
 	Witherite        -7.43  -15.99   -8.56  BaCO3
 
 Time 0.5. Cell 1: x=              0	y=              0	z=              0
@@ -2314,7 +2314,7 @@ Y                1.000e+00 mol
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -3.758e-05
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.01
-                               Iterations  =  54
+                               Iterations  =  49
                                   Total H  = 1.110277e+02
                                   Total O  = 5.628123e+01
 
@@ -2680,7 +2680,7 @@ Y                8.000e-01 mol
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -4.744e-05
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.01
-                               Iterations  =  59
+                               Iterations  =  61
                                   Total H  = 1.110323e+02
                                   Total O  = 5.631159e+01
 
@@ -3046,7 +3046,7 @@ Y                6.000e-01 mol
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -5.522e-05
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.01
-                               Iterations  =  55
+                               Iterations  =  80
                                   Total H  = 1.110355e+02
                                   Total O  = 5.631443e+01
 
@@ -3412,7 +3412,7 @@ Y                4.000e-01 mol
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -6.219e-05
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.01
-                               Iterations  =  53
+                               Iterations  =  91
                                   Total H  = 1.110386e+02
                                   Total O  = 5.631685e+01
 
@@ -3778,7 +3778,7 @@ Y                2.000e-01 mol
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -6.162e-05
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.01
-                               Iterations  =  60
+                               Iterations  =  58
                                   Total H  = 1.110416e+02
                                   Total O  = 5.631890e+01
 
@@ -4113,7 +4113,7 @@ X                2.000e+00 mol
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =   4.159e-05
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =   0.01
-                               Iterations  =  86
+                               Iterations  =  46
                                   Total H  = 1.110570e+02
                                   Total O  = 5.632694e+01
 

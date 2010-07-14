@@ -84,7 +84,7 @@ Initial solution 1.	20 x precipitation
                  Total alkalinity (eq/kg)  =  -2.630e-05
                        Total CO2 (mol/kg)  =   1.096e-05
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   7.112e-16
+                  Electrical balance (eq)  =   7.121e-16
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   9
                                   Total H  = 1.110125e+02
@@ -216,7 +216,7 @@ Dolomite                0  -17.09  -17.09    1.000e+00   9.987e-01  -1.349e-03
                  Total alkalinity (eq/kg)  =   6.057e-03
                        Total CO2 (mol/kg)  =   7.119e-03
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   2.133e-15
+                  Electrical balance (eq)  =   2.116e-15
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   9
                                   Total H  = 1.110125e+02
@@ -346,9 +346,9 @@ Initial solution 2.	Brine
                  Total alkalinity (eq/kg)  =   3.758e-03
                        Total CO2 (mol/kg)  =   3.960e-03
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   1.395e-14
+                  Electrical balance (eq)  =  -4.354e-11
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
-                               Iterations  =  11
+                               Iterations  =  10
                                   Total H  = 1.110162e+02
                                   Total O  = 5.553688e+01
 
@@ -482,7 +482,7 @@ Dolomite                0  -17.09  -17.09    4.400e-01   4.399e-01  -1.093e-04
                  Total alkalinity (eq/kg)  =   3.758e-03
                        Total CO2 (mol/kg)  =   3.960e-03
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  =   1.920e-14
+                  Electrical balance (eq)  =  -4.354e-11
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
                                Iterations  =   2
                                   Total H  = 1.110162e+02

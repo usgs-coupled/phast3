@@ -292,8 +292,8 @@
 
                               *** Output at End of Time Step No.     1 ***
 
-     Time .......................................................   1.000E+03  (yr)
-     Maximum change in potentiometric head ... -3.1755E+01      (m )   at location ( 4.800E+04, 2.400E+04,  400.    )(m )
+     Time .......................................................   1.000e+03  (yr)
+     Maximum change in potentiometric head ... -3.1755e+01      (m )   at location ( 4.800e+04, 2.400e+04,  400.    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -430,8 +430,8 @@
 
                               *** Output at End of Time Step No.     2 ***
 
-     Time .......................................................   2.000E+03  (yr)
-     Maximum change in potentiometric head ... -2.8654E+00      (m )   at location ( 4.800E+04, 3.000E+04,  300.    )(m )
+     Time .......................................................   2.000e+03  (yr)
+     Maximum change in potentiometric head ... -2.8654e+00      (m )   at location ( 4.800e+04, 3.000e+04,  300.    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -568,8 +568,8 @@
 
                               *** Output at End of Time Step No.     3 ***
 
-     Time .......................................................   2.200E+03  (yr)
-     Maximum change in potentiometric head ... -2.3330E-01      (m )   at location (     0    , 2.400E+04,  300.    )(m )
+     Time .......................................................   2.200e+03  (yr)
+     Maximum change in potentiometric head ... -2.3330e-01      (m )   at location ( 0.000e+00, 2.400e+04,  300.    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -706,8 +706,8 @@
 
                               *** Output at End of Time Step No.     4 ***
 
-     Time .......................................................   2.300E+03  (yr)
-     Maximum change in potentiometric head ...  3.9166E+00      (m )   at location ( 3.000E+04, 3.600E+04,  300.    )(m )
+     Time .......................................................   2.300e+03  (yr)
+     Maximum change in potentiometric head ...  3.9166e+00      (m )   at location ( 3.000e+04, 3.600e+04,  300.    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -844,8 +844,8 @@
 
                               *** Output at End of Time Step No.     5 ***
 
-     Time .......................................................   3.000E+03  (yr)
-     Maximum change in potentiometric head ...  8.2389E-01      (m )   at location ( 4.200E+04, 3.600E+04,  300.    )(m )
+     Time .......................................................   3.000e+03  (yr)
+     Maximum change in potentiometric head ...  8.2389e-01      (m )   at location ( 4.200e+04, 3.600e+04,  300.    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -982,8 +982,8 @@
 
                               *** Output at End of Time Step No.     6 ***
 
-     Time .......................................................   3.100E+03  (yr)
-     Maximum change in potentiometric head ...  2.9029E+00      (m )   at location ( 4.800E+04, 3.000E+04,  300.    )(m )
+     Time .......................................................   3.100e+03  (yr)
+     Maximum change in potentiometric head ...  2.9029e+00      (m )   at location ( 4.800e+04, 3.000e+04,  300.    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -1120,8 +1120,8 @@
 
                               *** Output at End of Time Step No.     7 ***
 
-     Time .......................................................   3.200E+03  (yr)
-     Maximum change in potentiometric head ...  2.9842E+00      (m )   at location ( 6.600E+04, 1.200E+04,  300.    )(m )
+     Time .......................................................   3.200e+03  (yr)
+     Maximum change in potentiometric head ...  2.9842e+00      (m )   at location ( 6.600e+04, 1.200e+04,  300.    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -1258,8 +1258,8 @@
 
                               *** Output at End of Time Step No.     8 ***
 
-     Time .......................................................   4.000E+03  (yr)
-     Maximum change in potentiometric head ...  3.1133E+00      (m )   at location ( 6.600E+04, 1.200E+04,  300.    )(m )
+     Time .......................................................   4.000e+03  (yr)
+     Maximum change in potentiometric head ...  3.1133e+00      (m )   at location ( 6.600e+04, 1.200e+04,  300.    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -1448,8 +1448,8 @@
 
                               *** Output at End of Time Step No.     9 ***
 
-     Time .......................................................   5.000E+03  (yr)
-     Maximum change in potentiometric head ...  1.0577E+00      (m )   at location ( 6.000E+04, 1.800E+04,  400.    )(m )
+     Time .......................................................   5.000e+03  (yr)
+     Maximum change in potentiometric head ...  1.0577e+00      (m )   at location ( 6.000e+04, 1.800e+04,  400.    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -1638,8 +1638,8 @@
 
                               *** Output at End of Time Step No.    10 ***
 
-     Time .......................................................   6.000E+03  (yr)
-     Maximum change in potentiometric head ... -8.0000E+00      (m )   at location ( 3.000E+04, 1.800E+04,  300.    )(m )
+     Time .......................................................   6.000e+03  (yr)
+     Maximum change in potentiometric head ... -8.0000e+00      (m )   at location ( 3.000e+04, 1.800e+04,  300.    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -1828,8 +1828,8 @@
 
                               *** Output at End of Time Step No.    11 ***
 
-     Time .......................................................   6.100E+03  (yr)
-     Maximum change in potentiometric head ... -1.4766E-01      (m )   at location ( 2.400E+04, 1.800E+04,  300.    )(m )
+     Time .......................................................   6.100e+03  (yr)
+     Maximum change in potentiometric head ... -1.4766e-01      (m )   at location ( 2.400e+04, 1.800e+04,  300.    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -2018,8 +2018,8 @@
 
                               *** Output at End of Time Step No.    12 ***
 
-     Time .......................................................   6.200E+03  (yr)
-     Maximum change in potentiometric head ...  4.0000E+00      (m )   at location ( 4.200E+04, 1.800E+04,  300.    )(m )
+     Time .......................................................   6.200e+03  (yr)
+     Maximum change in potentiometric head ...  4.0000e+00      (m )   at location ( 4.200e+04, 1.800e+04,  300.    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -2208,8 +2208,8 @@
 
                               *** Output at End of Time Step No.    13 ***
 
-     Time .......................................................   7.000E+03  (yr)
-     Maximum change in potentiometric head ...  4.5601E-01      (m )   at location ( 4.800E+04, 2.400E+04,  300.    )(m )
+     Time .......................................................   7.000e+03  (yr)
+     Maximum change in potentiometric head ...  4.5601e-01      (m )   at location ( 4.800e+04, 2.400e+04,  300.    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -2398,8 +2398,8 @@
 
                               *** Output at End of Time Step No.    14 ***
 
-     Time .......................................................   8.000E+03  (yr)
-     Maximum change in potentiometric head ...  3.3155E-01      (m )   at location (     0    , 4.800E+04,     0    )(m )
+     Time .......................................................   8.000e+03  (yr)
+     Maximum change in potentiometric head ...  3.3155e-01      (m )   at location ( 0.000e+00, 4.800e+04, 0.000e+00)(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -2588,8 +2588,8 @@
 
                               *** Output at End of Time Step No.    15 ***
 
-     Time .......................................................   8.100E+03  (yr)
-     Maximum change in potentiometric head ...  1.4653E-02      (m )   at location (     0    , 4.800E+04,  300.    )(m )
+     Time .......................................................   8.100e+03  (yr)
+     Maximum change in potentiometric head ...  1.4653e-02      (m )   at location ( 0.000e+00, 4.800e+04,  300.    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -2778,8 +2778,8 @@
 
                               *** Output at End of Time Step No.    16 ***
 
-     Time .......................................................   8.200E+03  (yr)
-     Maximum change in potentiometric head ...  2.9266E-01      (m )   at location (     0    ,     0    ,     0    )(m )
+     Time .......................................................   8.200e+03  (yr)
+     Maximum change in potentiometric head ...  2.9266e-01      (m )   at location ( 0.000e+00, 0.000e+00, 0.000e+00)(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -2968,8 +2968,8 @@
 
                               *** Output at End of Time Step No.    17 ***
 
-     Time .......................................................   9.000E+03  (yr)
-     Maximum change in potentiometric head ...  2.5814E-01      (m )   at location (     0    , 6.000E+03,  300.    )(m )
+     Time .......................................................   9.000e+03  (yr)
+     Maximum change in potentiometric head ...  2.5814e-01      (m )   at location ( 0.000e+00, 6.000e+03,  300.    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -3158,8 +3158,8 @@
 
                               *** Output at End of Time Step No.    19 ***
 
-     Time .......................................................   1.100E+04  (yr)
-     Maximum change in potentiometric head ...  1.8804E-02      (m )   at location (     0    , 1.800E+04,  300.    )(m )
+     Time .......................................................   1.100e+04  (yr)
+     Maximum change in potentiometric head ...  1.8804e-02      (m )   at location ( 0.000e+00, 1.800e+04,  300.    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -3348,8 +3348,8 @@
 
                               *** Output at End of Time Step No.    20 ***
 
-     Time .......................................................   1.200E+04  (yr)
-     Maximum change in potentiometric head ...  5.2243E-03      (m )   at location (     0    , 2.400E+04,  300.    )(m )
+     Time .......................................................   1.200e+04  (yr)
+     Maximum change in potentiometric head ...  5.2243e-03      (m )   at location ( 0.000e+00, 2.400e+04,  300.    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -3538,8 +3538,8 @@
 
                               *** Output at End of Time Step No.    22 ***
 
-     Time .......................................................   1.500E+04  (yr)
-     Maximum change in potentiometric head ...  2.4216E-04      (m )   at location (     0    , 2.400E+04,  300.    )(m )
+     Time .......................................................   1.500e+04  (yr)
+     Maximum change in potentiometric head ...  2.4216e-04      (m )   at location ( 0.000e+00, 2.400e+04,  300.    )(m )
 
                               Fluid Potentiometric Head (m)
 
@@ -3728,5 +3728,5 @@
 
 
                                        ***** Simulation Completed *****
-               Last time value calculated ...................................... 1.5000E+04 (yr)
+               Last time value calculated ...................................... 1.5000e+04 (yr)
                Last time step index ............................................      22

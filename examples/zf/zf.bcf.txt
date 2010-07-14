@@ -54,7 +54,7 @@
 
                               *** Output at End of Steady State Iteration No.     1 ***
 
-     Time .......................................................       0      (d)
+     Time .......................................................   0.000e+00  (d)
 
 
                          Specified Head B.C.: Flow Rates (average over time step)

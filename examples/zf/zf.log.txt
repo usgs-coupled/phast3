@@ -127,20 +127,20 @@ Overhead storage requirement (D4ZGCG iterative solver)................ NOHST .  
                     *** Calculation Information ***
           Row scaling only, using L-inf norm, will be done
           Direction index for d4 zig-zag renumbering ............ IDIR..    1
-          Incomplete LU [f] or modified ILU [t] factorization ... MILU..    T
+          Incomplete LU [f] or modified ILU [t] factorization ... MILU..    t
           Number of search directions before restart ............ NSDR..   20
-          Tolerance on iterative solution ....................... EPSSLV 1.0E-14
+          Tolerance on iterative solution ....................... EPSSLV 1.0e-14
 
 Beginning flow calculation for steady-state i.c.
 Reading transient data for simulation: Set  1
 Automatic Time Step Control Parameters for Steady Flow
-Maximum pressure change allowed per time step.................... DPTAS    3.68E+04  (Pa )
-Minimum time step required ...................................... DTIMMN   1.00E-02  (d  )
-Maximum time step allowed ....................................... DTIMMX   1.00E+04(d  )
+Maximum pressure change allowed per time step.................... DPTAS    3.68e+04  (Pa )
+Minimum time step required ...................................... DTIMMN   1.00e-02  (d  )
+Maximum time step allowed ....................................... DTIMMX   1.00e+04(d  )
 
 Beginning steady state time step no.      1
-     Maximum change in potentiometric head ..    9.3649E-16     (m) at location (  48.0    ,  20.5    ,  11.5    )(m)
-     Fractional flow residual ...............   -1.5207E-15
+     Maximum change in potentiometric head ..    1.0102e-15     (m) at location (  48.0    , 0.000e+00,  11.5    )(m)
+     Fractional flow residual ...............    5.8490e-16
 
 Done with steady-state flow.
 Equilibration of cells for initial conditions.
@@ -182,27 +182,27 @@ Beginning time step no.      4
      Current time step length ...................................    10.0     (d)
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    6      3.3727285E-16
+          No. of solver iterations, Relative residual:    6      3.4277381e-16
           O
-          No. of solver iterations, Relative residual:    6      1.7319592E-16
+          No. of solver iterations, Relative residual:    6      1.7138386e-16
           [A]
-          No. of solver iterations, Relative residual:    6      1.7196429E-16
+          No. of solver iterations, Relative residual:    6      1.7138046e-16
           Charge
-          No. of solver iterations, Relative residual:    6      1.7188732E-16
+          No. of solver iterations, Relative residual:    6      1.7138954e-16
      Beginning chemistry calculation.
           Total cells: 8008
           Number of cells with same aqueous model: 7416
-          Total iterations all cells: 5074
+          Total iterations all cells: 5075
           Number of cells with zero iterations: 6558
-          Maximum iterations for one cell: 11
+          Maximum iterations for one cell: 12
 
      End of Time Step No.     4
      Time ..................................................    40.0000     (d)
-     Maximum change in potentiometric head   0.0000E+00      (m ) at location (  100.    ,  20.5    ,  12.5    )(m)
-     Maximum change in H .................. -5.2065E-12 (mol/kgw) at location (  8.00    ,  20.5    ,  12.5    )(m)
-     Maximum change in O ..................  7.4204E-05 (mol/kgw) at location (  8.00    ,  20.5    ,  12.5    )(m)
-     Maximum change in [A] ................  1.5827E-04 (mol/kgw) at location (  8.00    ,  20.5    ,  12.5    )(m)
-     Maximum change in Charge .............  3.3863E-13 (mol/kgw) at location (  8.00    ,  20.5    ,  12.5    )(m)
+     Maximum change in potentiometric head   0.0000e+00      (m ) at location (  100.    ,  20.5    ,  12.5    )(m)
+     Maximum change in H .................. -5.1638e-12 (mol/kgw) at location (  8.00    ,  20.5    ,  12.5    )(m)
+     Maximum change in O ..................  7.4204e-05 (mol/kgw) at location (  8.00    ,  20.5    ,  12.5    )(m)
+     Maximum change in [A] ................  1.5827e-04 (mol/kgw) at location (  8.00    ,  20.5    ,  12.5    )(m)
+     Maximum change in Charge .............  3.3863e-13 (mol/kgw) at location (  8.00    ,  20.5    ,  12.5    )(m)
 Done with transient simulation.
 
                              ***** Simulation Completed *****
