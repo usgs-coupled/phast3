@@ -104,14 +104,14 @@
 
                                    *** Fluid Properties ***
                                         Physical
-                    Fluid compressibility ...................................... BP ...   0.00e+00  (1/Pa )
+                    Fluid compressibility ...................................... BP ...   0.00E+00  (1/Pa )
 
                     Reference pressure for density ............................. P0 ..         0.0  (Pa )
                     Reference temperature for density .......................... T0 ..        15.0  (Deg.C)
                     Fluid density .............................................. DENF0  1000.0      (kg/m^3)
                     Fluid density at solute  mass fraction of  0.0500........... DENF1  1000.0      (kg/m^3)
 
-                    Viscosity factor ........................................... VISFAC -1.000e-03
+                    Viscosity factor ........................................... VISFAC -1.000E-03
 
                                         *** Calculation Information ***
           Centered-in-time (Crank-Nicholson) differencing for temporal derivative
@@ -124,19 +124,19 @@
 
                     Automatic Time Step Control Parameters for Steady Flow
           Maximum pressure change allowed per time step.................... DPTAS     29.      (Pa )
-          Minimum time step required ...................................... DTIMMN   4.00e-04  (s  )
-          Maximum time step allowed ....................................... DTIMMX   4.00e+02  (s  )
+          Minimum time step required ...................................... DTIMMN   4.00E-04  (s  )
+          Maximum time step allowed ....................................... DTIMMX   4.00E+02  (s  )
 
 
-               Initial fluid in region ...............................  1.200000e-03  (kg) ;  1.200000e-06  (m^3)
+               Initial fluid in region ...............................  1.200000E-03  (kg) ;  1.200000E-06  (m^3)
 
-               Initial solute in region:H         ....................  2.421776e-13  (kg)
+               Initial solute in region:H         ....................  2.421776E-13  (kg)
 
-               Initial solute in region:O         ....................  1.923100e-12  (kg)
+               Initial solute in region:O         ....................  1.923100E-12  (kg)
 
-               Initial solute in region:A         ....................  0.000000e+00  (kg)
+               Initial solute in region:A         ....................  0.000000E+00  (kg)
 
-               Initial solute in region:Charge    .................... -1.308938e-16  (kg)
+               Initial solute in region:Charge    .................... -1.308938E-16  (kg)
 
  ------------------------------------------------------------------------------------------------------------------------
  ------------------------------------------------------------------------------------------------------------------------
@@ -144,7 +144,7 @@
 
                                         *** Transient Data ***
 
-     Time ..............................   0.000e+00  (s)
+     Time ..............................       0      (s)
 
 
                                         *** Calculation Information ***
