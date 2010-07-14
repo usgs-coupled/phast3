@@ -319,7 +319,7 @@ OPENMPI_IFORT_64=/z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64
 
 # -----------------------------------------------------------------------------
 #hdf options
-HDF5_ROOT=/z/parkplace/usr
+HDF5_ROOT=/usr
 HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
 HDF5_LIBS=${HDF5_ROOT}/lib/libhdf5.a  -Xlinker -Bstatic -lz -Xlinker -Bdynamic -lpthread 
 HDF5_LIBS_64=${HDF5_ROOT}/lib64/libhdf5.a -Xlinker -Bstatic -lz -Xlinker -Bdynamic -lpthread 
@@ -756,6 +756,7 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), LAM_INTEL)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP
+  HDF5_ROOT    = /z/parkplace/usr
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   FC           = $(FINTEL)
@@ -771,6 +772,7 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), LAM_INTEL_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP -DUSE_PHRQ_ALLOC
+  HDF5_ROOT    = /z/parkplace/usr
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   FC           = $(FINTEL)
