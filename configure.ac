@@ -95,82 +95,8 @@ AC_ARG_WITH([fnord],
                          include/ and lib/ subdirectories
   ])
 
-# HDF5
-#  ----------------------------------------------------------------------
-#  Is the hdf5 present? It has a header file `hdf5.h' and a library
-#  `-lhdf5' and their locations might be specified with the `--with-hdf5'
-#  command-line switch. The value is an include path and/or a library path.
-#  If the library path is specified then it must be preceded by a comma.
-#
-AC_ARG_WITH([hdf5],
-            [AC_HELP_STRING([--with-hdf5=DIR],
-                            [Use the HDF5 library [default=auto]])],,withval=yes)
 
-case $withval in
-  yes)
-    HAVE_HDF5="yes"
-    AC_CHECK_HEADERS(hdf5.h, , AC_MSG_ERROR([hdf5.h not found]))
-    AC_CHECK_LIB(hdf5, H5Fopen, , AC_MSG_ERROR([couldn't find hdf5 library]))
-    ;;
-  *)
-    HAVE_HDF5="yes"
-    case "$withval" in
-      *,*)
-        hdf5_inc="`echo $withval |cut -f1 -d,`"
-        hdf5_lib="`echo $withval |cut -f2 -d, -s`"
-        ;;
-      *)
-        if test -n "$withval"; then
-          hdf5_inc="$withval/include"
-          hdf5_lib="$withval/lib"
-        fi
-        ;;
-    esac
-
-#   Trying to include -I/usr/include and -L/usr/lib is redundant and
-#   can mess some compilers up.
-    if test "X$hdf5_inc" = "X/usr/include"; then
-      hdf5_inc=""
-    fi
-    if test "X$hdf5_lib" = "X/usr/lib"; then
-      hdf5_lib=""
-    fi
-
-#   Trying to include -I/usr/local/include and -L/usr/local/lib is redundant and
-#   can mess some compilers up.
-    if test "X$hdf5_inc" = "X/usr/local/include"; then
-      hdf5_inc=""
-    fi
-    if test "X$hdf5_lib" = "X/usr/local/lib"; then
-      hdf5_lib=""
-    fi
-
-    saved_CPPFLAGS="$CPPFLAGS"
-    saved_LDFLAGS="$LDFLAGS"
-
-    if test -n "$hdf5_inc"; then
-      CPPFLAGS="$CPPFLAGS -I$hdf5_inc"
-    fi
-
-    AC_CHECK_HEADERS(hdf5.h,, AC_MSG_ERROR([hdf5.h not found]))
-
-    if test -n "$hdf5_lib"; then
-      LDFLAGS="$LDFLAGS -L$hdf5_lib"
-    fi
-
-    AC_CHECK_LIB(hdf5, H5Fopen,, LDFLAGS="$saved_LDFLAGS"; unset HAVE_HDF5)
-
-    if test -z "$HAVE_HDF5"; then
-      AC_MSG_ERROR(couldn't find hdf5 library)
-    fi
-    ;;
-esac
-
-
-##AC_CHECK_HEADER(zlib.h)
-##AC_CHECK_LIB(z, gzwrite, , AC_ERROR([inflateEnd not found in libz]) )
-
-# zlib
+# zlib (Note: test for zlib before hdf5 since hdf5 normally depends on zlib)
 #  ----------------------------------------------------------------------
 #  Is the zlib present? It has a header file `zlib.h' and a library
 #  `-lz' and their locations might be specified with the `--with-zlib'
@@ -241,6 +167,76 @@ case $withval in
     ;;
 esac
 
+# HDF5
+#  ----------------------------------------------------------------------
+#  Is the hdf5 present? It has a header file `hdf5.h' and a library
+#  `-lhdf5' and their locations might be specified with the `--with-hdf5'
+#  command-line switch. The value is an include path and/or a library path.
+#  If the library path is specified then it must be preceded by a comma.
+#
+AC_ARG_WITH([hdf5],
+            [AC_HELP_STRING([--with-hdf5=DIR],
+                            [Use the HDF5 library [default=auto]])],,withval=yes)
+
+case $withval in
+  yes)
+    HAVE_HDF5="yes"
+    AC_CHECK_HEADERS(hdf5.h, , AC_MSG_ERROR([hdf5.h not found]))
+    AC_CHECK_LIB(hdf5, H5Fopen, , AC_MSG_ERROR([couldn't find hdf5 library]))
+    ;;
+  *)
+    HAVE_HDF5="yes"
+    case "$withval" in
+      *,*)
+        hdf5_inc="`echo $withval |cut -f1 -d,`"
+        hdf5_lib="`echo $withval |cut -f2 -d, -s`"
+        ;;
+      *)
+        if test -n "$withval"; then
+          hdf5_inc="$withval/include"
+          hdf5_lib="$withval/lib"
+        fi
+        ;;
+    esac
+
+#   Trying to include -I/usr/include and -L/usr/lib is redundant and
+#   can mess some compilers up.
+    if test "X$hdf5_inc" = "X/usr/include"; then
+      hdf5_inc=""
+    fi
+    if test "X$hdf5_lib" = "X/usr/lib"; then
+      hdf5_lib=""
+    fi
+
+#   Trying to include -I/usr/local/include and -L/usr/local/lib is redundant and
+#   can mess some compilers up.
+    if test "X$hdf5_inc" = "X/usr/local/include"; then
+      hdf5_inc=""
+    fi
+    if test "X$hdf5_lib" = "X/usr/local/lib"; then
+      hdf5_lib=""
+    fi
+
+    saved_CPPFLAGS="$CPPFLAGS"
+    saved_LDFLAGS="$LDFLAGS"
+
+    if test -n "$hdf5_inc"; then
+      CPPFLAGS="$CPPFLAGS -I$hdf5_inc"
+    fi
+
+    AC_CHECK_HEADERS(hdf5.h,, AC_MSG_ERROR([hdf5.h not found]))
+
+    if test -n "$hdf5_lib"; then
+      LDFLAGS="$LDFLAGS -L$hdf5_lib"
+    fi
+
+    AC_CHECK_LIB(hdf5, H5Fopen,, LDFLAGS="$saved_LDFLAGS"; unset HAVE_HDF5)
+
+    if test -z "$HAVE_HDF5"; then
+      AC_MSG_ERROR(couldn't find hdf5 library)
+    fi
+    ;;
+esac
 
 ##set +x +v
 
