@@ -27,11 +27,13 @@ extern "C"
 {
 	void SLAVE_GET_SOLUTE(int *solute, int *nx, int *ny, int *nz);
 	void SLAVE_GET_INDEXES(int *indx_sol1_ic, int *indx_sol2_ic,
-						   double *mxfrac, int *naxes, int *nxyz,
-						   double *x_node, double *y_node, double *z_node,
-						   double *cnvtmi, int *transient_fresur,
-						   int *steady_flow, double *pv0,
-						   int *rebalance_method_f, double *volume);
+		double *mxfrac, int *naxes, int *nxyz,
+		double *x_node, double *y_node, double *z_node,
+		double *cnvtmi, int *transient_fresur,
+		int *steady_flow, double *pv0,
+		int *rebalance_method_f, double *volume,
+		int *exchange_units, int *surface_units, int *ssassemblage_units, 
+		int *ppassemblage_units, int *gasphase_units, int *kinetics_units)
 }
 void
 SLAVE_GET_SOLUTE(int *solute, int *nx, int *ny, int *nz)
@@ -48,7 +50,9 @@ SLAVE_GET_INDEXES(int *indx_sol1_ic, int *indx_sol2_ic, double *mxfrac,
 				  int *naxes, int *nxyz, double *x_node, double *y_node,
 				  double *z_node, double *cnvtmi, int *transient_fresur,
 				  int *steady_flow, double *pv0, int *rebalance_method_f,
-				  double *volume)
+				  double *volume,
+				  int *exchange_units, int *surface_units, int *ssassemblage_units, 
+				  int *ppassemblage_units, int *gasphase_units, int *kinetics_units)
 {
 	MPI_Bcast(indx_sol1_ic, 7 * (*nxyz), MPI_INT, 0, MPI_COMM_WORLD);
 	MPI_Bcast(indx_sol2_ic, 7 * (*nxyz), MPI_INT, 0, MPI_COMM_WORLD);
@@ -64,5 +68,13 @@ SLAVE_GET_INDEXES(int *indx_sol1_ic, int *indx_sol2_ic, double *mxfrac,
 	MPI_Bcast(rebalance_method_f, 1, MPI_INT, 0, MPI_COMM_WORLD);
 	MPI_Bcast(volume, *nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 	rebalance_method = *rebalance_method_f;
+
+	MPI_Bcast(exchange_units, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(surface_units, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(ssassemblage_units, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(ppassemblage_units, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(gasphase_units, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(kinetics_units, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
 	return;
 }

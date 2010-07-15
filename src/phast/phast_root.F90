@@ -56,7 +56,9 @@ SUBROUTINE phast_root(mpi_tasks, mpi_myself)
      IF(solute) THEN  
 #ifdef USE_MPI
         CALL slave_get_indexes(indx_sol1_ic, indx_sol2_ic, ic_mxfrac, naxes, nxyz, &
-            x_node, y_node, z_node, cnvtmi, transient_fresur, steady_flow, pv0, rebalance_method_f, volume)
+            x_node, y_node, z_node, cnvtmi, transient_fresur, steady_flow, pv0, rebalance_method_f, volume, &
+            exchange_units, surface_units, ssassemblage_units, &
+			ppassemblage_units, gasphase_units, kinetics_units)
 #endif
         CALL store_c_pointers(indx_sol1_ic, x_node, y_node, z_node)
         CALL forward_and_back(indx_sol1_ic, naxes, nx, ny, nz)  
