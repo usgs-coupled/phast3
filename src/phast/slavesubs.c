@@ -33,7 +33,7 @@ extern "C"
 		int *steady_flow, double *pv0,
 		int *rebalance_method_f, double *volume,
 		int *exchange_units, int *surface_units, int *ssassemblage_units, 
-		int *ppassemblage_units, int *gasphase_units, int *kinetics_units)
+			       int *ppassemblage_units, int *gasphase_units, int *kinetics_units);
 }
 void
 SLAVE_GET_SOLUTE(int *solute, int *nx, int *ny, int *nz)
