@@ -22,8 +22,11 @@
 
 #if defined(__GNUC__)
 
-//static const double NaN = 0.0 / 0.0;
+#if defined(NAN)
 static const double NaN = NAN;
+#else
+static const double NaN = 0.0 / 0.0;
+#endif
 
 #elif defined(_WIN32)
 
