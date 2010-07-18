@@ -27,7 +27,7 @@ AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_FC
 AC_FC_LIBRARY_LDFLAGS
-AC_FC_WRAPPERS 
+AC_FC_WRAPPERS
 AC_FC_MAIN
 AC_PROG_INSTALL
 AC_PROG_LN_S
@@ -76,6 +76,35 @@ AX_BOOST_BASE([1.33], , AC_ERROR([Boost is required to build phast]))
 if test "X$want_boost" = "Xno"; then
   AC_MSG_ERROR([Boost is required to build phast])
 fi
+
+# isfinite
+AC_LANG_PUSH(C++)
+AC_CACHE_CHECK([for isfinite], ac_cv_isfinite,
+ [AC_TRY_LINK([#include <math.h>],
+ [double x; int y; y = isfinite(x);],
+ ac_cv_isfinite=yes,
+ ac_cv_isfinite=no
+)])
+if test x"$ac_cv_isfinite" = x"yes"; then
+  AC_DEFINE(HAVE_ISFINITE, [], [Has isfinite])
+fi
+AC_LANG_POP(C++)
+
+# finite
+AC_LANG_PUSH(C++)
+AC_CACHE_CHECK([for finite], ac_cv_finite,
+ [AC_TRY_LINK([#include <math.h>],
+ [double x; int y; y = finite(x);],
+ ac_cv_finite=yes,
+ ac_cv_finite=no
+)])
+if test x"$ac_cv_finite" = x"yes"; then
+  AC_DEFINE(HAVE_FINITE, [], [Has finite])
+fi
+AC_LANG_POP(C++)
+
+# isnan
+AC_CHECK_FUNCS([isnan],    , AC_CHECK_LIB(m, isnan))
 
 
 #  --with-xxx from HDF configure
@@ -238,8 +267,6 @@ case $withval in
     ;;
 esac
 
-##set +x +v
-
 # Build mpi version
 # Check if building mpi version
 AC_MSG_CHECKING([if building MPI version])
@@ -266,11 +293,6 @@ fi
 AM_CONDITIONAL([BUILD_MPI], [test "X$PHAST_MPI" = "Xyes"])
 AM_CONDITIONAL([BUILD_PHASTHDF], [test -n "$ANT"])
 AC_SUBST(PHAST_SUFFIX)
-
-##
-PKGLIBDIR="$pkglibdir"
-AC_SUBST(PKGLIBDIR)
-
 
 AC_CONFIG_FILES([
   Makefile
