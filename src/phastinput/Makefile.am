@@ -19,8 +19,6 @@ phastinput_SOURCES=\
 	Exterior_cell.h\
 	Filedata.cpp\
 	Filedata.h\
-	getopt.c\
-	getopt.h\
 	gpc.c\
 	gpc.h\
 	gpc_helper.c\
