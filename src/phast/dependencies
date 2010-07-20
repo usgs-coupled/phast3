@@ -29,19 +29,19 @@ hst.o: ../hst.cxx ../phreeqcpp/StorageBin.h ../phreeqcpp/System.h \
 hdf.o: ../hdf.c ../phreeqcpp/phreeqc/global.h \
  ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/phreeqc/global_structures.h \
  ../phreeqcpp/phreeqc/output.h ../hst.h ../phreeqcpp/phreeqc/phrqtype.h \
- ../phreeqcpp/phreeqc/phqalloc.h ../phreeqcpp/phreeqc/phrqproto.h \
- ../phastproto.h ../phreeqcpp/Solution.h ../phreeqcpp/Phreeqc_class.h \
- ../phreeqcpp/NumKeyword.h ../phreeqcpp/SolutionIsotopeList.h \
- ../phreeqcpp/SolutionIsotope.h ../phreeqcpp/Parser.h \
- ../phreeqcpp/NameDouble.h
+ ../phreeqcpp/phreeqc/phrqproto.h ../phastproto.h ../phreeqcpp/Solution.h \
+ ../phreeqcpp/Phreeqc_class.h ../phreeqcpp/NumKeyword.h \
+ ../phreeqcpp/SolutionIsotopeList.h ../phreeqcpp/SolutionIsotope.h \
+ ../phreeqcpp/Parser.h ../phreeqcpp/NameDouble.h \
+ ../phreeqcpp/phreeqc/phqalloc.h
 hstsubs.o: ../hstsubs.c ../phreeqcpp/phreeqc/global.h \
  ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/phreeqc/global_structures.h \
  ../phreeqcpp/phreeqc/output.h ../hst.h ../phreeqcpp/phreeqc/phrqtype.h \
- ../phreeqcpp/phreeqc/phqalloc.h ../phreeqcpp/phreeqc/phrqproto.h \
- ../phastproto.h ../phreeqcpp/Solution.h ../phreeqcpp/Phreeqc_class.h \
- ../phreeqcpp/NumKeyword.h ../phreeqcpp/SolutionIsotopeList.h \
- ../phreeqcpp/SolutionIsotope.h ../phreeqcpp/Parser.h \
- ../phreeqcpp/NameDouble.h
+ ../phreeqcpp/phreeqc/phrqproto.h ../phastproto.h ../phreeqcpp/Solution.h \
+ ../phreeqcpp/Phreeqc_class.h ../phreeqcpp/NumKeyword.h \
+ ../phreeqcpp/SolutionIsotopeList.h ../phreeqcpp/SolutionIsotope.h \
+ ../phreeqcpp/Parser.h ../phreeqcpp/NameDouble.h \
+ ../phreeqcpp/phreeqc/phqalloc.h
 merge.o: ../merge.c ../phreeqcpp/phreeqc/global.h \
  ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/phreeqc/global_structures.h \
  ../hst.h ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/phreeqc/phqalloc.h \
@@ -52,13 +52,13 @@ merge.o: ../merge.c ../phreeqcpp/phreeqc/global.h \
  ../phreeqcpp/NameDouble.h ../phast_files.h
 phast_files.o: ../phast_files.c ../phreeqcpp/phreeqc/global.h \
  ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/phreeqc/global_structures.h \
- ../phreeqcpp/phreeqc/phqalloc.h ../phreeqcpp/phreeqc/output.h \
- ../phreeqcpp/phreeqc/phrqproto.h ../hst.h \
+ ../phreeqcpp/phreeqc/output.h ../phreeqcpp/phreeqc/phrqproto.h ../hst.h \
  ../phreeqcpp/phreeqc/phrqtype.h ../phastproto.h ../phreeqcpp/Solution.h \
  ../phreeqcpp/Phreeqc_class.h ../phreeqcpp/NumKeyword.h \
  ../phreeqcpp/SolutionIsotopeList.h ../phreeqcpp/SolutionIsotope.h \
  ../phreeqcpp/Parser.h ../phreeqcpp/NameDouble.h \
- ../phreeqcpp/phreeqc/input.h ../phast_files.h ../Pointers_to_fortran.h
+ ../phreeqcpp/phreeqc/input.h ../phast_files.h ../Pointers_to_fortran.h \
+ ../phreeqcpp/phreeqc/phqalloc.h
 slavesubs.o: ../slavesubs.c ../phreeqcpp/phreeqc/global.h \
  ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/phreeqc/global_structures.h \
  ../phreeqcpp/phreeqc/output.h ../hst.h ../phreeqcpp/phreeqc/phrqtype.h \
@@ -284,6 +284,10 @@ Temperature.o: ../phreeqcpp/Temperature.cxx ../phreeqcpp/Utils.h \
 Utils.o: ../phreeqcpp/Utils.cxx ../phreeqcpp/Utils.h \
  ../phreeqcpp/Parser.h ../phreeqcpp/Phreeqc_class.h \
  ../phreeqcpp/phreeqc/output.h
+kdtree2.o: ../KDtree/kdtree2.cpp ../KDtree/kdtree2.hpp
+KDtree.o: ../KDtree/KDtree.cpp ../KDtree/KDtree.h ../KDtree/kdtree2.hpp \
+ ../KDtree/Point.h ../KDtree/Cell_Face.h
+Point.o: ../KDtree/Point.cpp ../KDtree/Point.h ../KDtree/Cell_Face.h
 class_main.o: ../phreeqcpp/class_main.cpp ../phreeqcpp/Phreeqc.h \
  ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/phreeqc/sundialstypes.h \
  ../phreeqcpp/phreeqc/phrqtype.h ../phreeqcpp/phreeqc/nvector.h \

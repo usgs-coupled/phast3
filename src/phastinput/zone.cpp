@@ -23,15 +23,15 @@ zone::zone(Point min, Point max)
 	this->z2 = max.z();
 }
 
-zone::zone(double x1, double y1, double z1, double x2, double y2, double z2)
+zone::zone(double m_x1, double m_y1, double m_z1, double m_x2, double m_y2, double m_z2)
 {
 	this->zone_defined = 1;		// true
-	this->x1 = x1;
-	this->y1 = y1;
-	this->z1 = z1;
-	this->x2 = x2;
-	this->y2 = y2;
-	this->z2 = z2;
+	this->x1 = m_x1;
+	this->y1 = m_y1;
+	this->z1 = m_z1;
+	this->x2 = m_x2;
+	this->y2 = m_y2;
+	this->z2 = m_z2;
 }
 zone::zone(struct zone *zone_ptr)
 {

@@ -316,12 +316,12 @@ bool Prism::Read(std::istream & lines)
 		std_opt_list.push_back(opt_list[i]);
 
 	// get option
-	std::string type;
-	lines >> type;
-	if (type.size() == 0)
+	std::string m_type;
+	lines >> m_type;
+	if (m_type.size() == 0)
 		return true;
 	int
-		j = case_picker(std_opt_list, type);
+		j = case_picker(std_opt_list, m_type);
 	PRISM_OPTION
 		p_opt;
 	switch (j)
@@ -497,10 +497,10 @@ Prism::Points_in_polyhedron(std::list < int >&list_of_numbers,
 		}
 	}
 }
-bool Prism::Point_in_polyhedron(const Point & p)
+bool Prism::Point_in_polyhedron(const Point & m_p)
 {
 	Point
-	p1(p);
+	p1(m_p);
 
 	// Check bounding box of prism
 	if (!this->Point_in_bounding_box(p1))
@@ -814,7 +814,7 @@ Prism::printOn(std::ostream & os) const
 	}
 }
 
-bool Prism::Project_point(Point & p, Cell_Face face, double coord)
+bool Prism::Project_point(Point & m_p, Cell_Face face, double coord)
 {
 	bool
 		success = true;
@@ -825,11 +825,11 @@ bool Prism::Project_point(Point & p, Cell_Face face, double coord)
 		a;
 	a.get_coord()[(int) face] = 1.0;
 	if (Segment_intersect_plane
-		(a.x(), a.y(), a.z(), -coord, p, this->prism_dip, t) == Cube::PI_NONE)
+		(a.x(), a.y(), a.z(), -coord, m_p, this->prism_dip, t) == Cube::PI_NONE)
 	{
 		success = false;
 	}
-	p = p + t * this->prism_dip;
+	m_p = m_p + t * this->prism_dip;
 	return (success);
 }
 
@@ -1045,10 +1045,10 @@ Prism::Remove_top_bottom(gpc_polygon * polygon, Cell_Face face, double coord)
 			{
 				d = face_zone.y1 + (double) i / divisions * (face_zone.y2 -
 															 face_zone.y1);
-				Point p(coord, d, 0, 0);
-				double top;
-				top = this->top.Interpolate(p);
-				top_pts.push_back(Point(d, top, 0.0));
+				Point m_p(coord, d, 0, 0);
+				double m_top;
+				m_top = this->top.Interpolate(m_p);
+				top_pts.push_back(Point(d, m_top, 0.0));
 			}
 			top_pts.push_back(Point(face_zone.y2, grid_zone()->z1, 0.0));
 			gpc_polygon *top_poly = points_to_poly(top_pts, CF_Z);
@@ -1068,10 +1068,10 @@ Prism::Remove_top_bottom(gpc_polygon * polygon, Cell_Face face, double coord)
 			{
 				d = face_zone.y1 + (double) i / divisions * (face_zone.y2 -
 															 face_zone.y1);
-				Point p(coord, d, 0, 0);
-				double bottom;
-				bottom = this->bottom.Interpolate(p);
-				bottom_pts.push_back(Point(d, bottom, 0.0));
+				Point m_p(coord, d, 0, 0);
+				double m_bottom;
+				m_bottom = this->bottom.Interpolate(m_p);
+				bottom_pts.push_back(Point(d, m_bottom, 0.0));
 			}
 			bottom_pts.push_back(Point(face_zone.y2, grid_zone()->z2, 0.0));
 			gpc_polygon *bottom_poly = points_to_poly(bottom_pts, CF_Z);
@@ -1101,10 +1101,10 @@ Prism::Remove_top_bottom(gpc_polygon * polygon, Cell_Face face, double coord)
 			{
 				d = face_zone.x1 + (double) i / divisions * (face_zone.x2 -
 															 face_zone.x1);
-				Point p(d, coord, 0, 0);
-				double top;
-				top = this->top.Interpolate(p);
-				top_pts.push_back(Point(d, top, 0.0));
+				Point m_p(d, coord, 0, 0);
+				double m_top;
+				m_top = this->top.Interpolate(m_p);
+				top_pts.push_back(Point(d, m_top, 0.0));
 			}
 			top_pts.push_back(Point(face_zone.x2, grid_zone()->z1, 0.0));
 			gpc_polygon *top_poly = points_to_poly(top_pts, CF_Z);
@@ -1124,10 +1124,10 @@ Prism::Remove_top_bottom(gpc_polygon * polygon, Cell_Face face, double coord)
 			{
 				d = face_zone.x1 + (double) i / divisions * (face_zone.x2 -
 															 face_zone.x1);
-				Point p(d, coord, 0, 0);
-				double bottom;
-				bottom = this->bottom.Interpolate(p);
-				bottom_pts.push_back(Point(d, bottom, 0.0));
+				Point m_p(d, coord, 0, 0);
+				double m_bottom;
+				m_bottom = this->bottom.Interpolate(m_p);
+				bottom_pts.push_back(Point(d, m_bottom, 0.0));
 			}
 			bottom_pts.push_back(Point(face_zone.x2, grid_zone()->z2, 0.0));
 			gpc_polygon *bottom_poly = points_to_poly(bottom_pts, CF_Z);
@@ -1176,13 +1176,13 @@ Prism::Remove_top_bottom(gpc_polygon * polygon, Cell_Face face, double coord)
 					{
 						y = face_zone.y1 + dy * (((double) j) + 0.5);
 						bool point_in_prism = true;
-						Point p(x, y, coord, coord);
-						if (do_top && (coord > this->top.Interpolate(p)))
+						Point m_p(x, y, coord, coord);
+						if (do_top && (coord > this->top.Interpolate(m_p)))
 						{
 							point_in_prism = false;
 						}
 						if (do_bottom
-							&& (coord < this->bottom.Interpolate(p)))
+							&& (coord < this->bottom.Interpolate(m_p)))
 						{
 							point_in_prism = false;
 						}

@@ -13,15 +13,15 @@
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
 #endif
 
-cunit::cunit(const char *si):
+cunit::cunit(const char *m_si):
 input(0),
 si(0),
 input_to_si(1.0),
 input_to_user(1.0),
 defined(FALSE)
 {
-	this->si = new char[::strlen(si) + 1];
-	::strcpy(this->si, si);
+	this->si = new char[::strlen(m_si) + 1];
+	::strcpy(this->si, m_si);
 }
 
 cunit::~cunit(void)
@@ -77,9 +77,9 @@ cunit & cunit::operator=(const cunit & rhs)
 }
 
 int
-cunit::set_input(const char *input)
+cunit::set_input(const char *m_input)
 {
-	if (!input)
+	if (!m_input)
 		return ERROR;
 
 	if (this->defined == TRUE)
@@ -88,8 +88,8 @@ cunit::set_input(const char *input)
 		delete[] this->input;
 	}
 	this->defined = TRUE;
-	this->input = new char[::strlen(input) + 1];
-	::strcpy(this->input, input);
+	this->input = new char[::strlen(m_input) + 1];
+	::strcpy(this->input, m_input);
 
 	assert(this->si);
 	int n =::units_conversion(this->input, this->si, &this->input_to_si,
@@ -128,10 +128,10 @@ cunit::c_str(void) const
 }
 
 void
-cunit::define(const char *input)
+cunit::define(const char *m_input)
 {
-	assert(input);
-	if (!input)
+	assert(m_input);
+	if (!m_input)
 		return;
 	if (this->defined == TRUE)
 	{
@@ -139,8 +139,8 @@ cunit::define(const char *input)
 		delete[] this->input;
 	}
 	this->defined = TRUE;
-	this->input = new char[::strlen(input) + 1];
-	::strcpy(this->input, input);
+	this->input = new char[::strlen(m_input) + 1];
+	::strcpy(this->input, m_input);
 }
 
 void

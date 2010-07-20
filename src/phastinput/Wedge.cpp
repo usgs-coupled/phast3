@@ -49,7 +49,7 @@ Wedge::Wedge(PHAST_Transform::COORDINATE_SYSTEM cs)
 	this->vertices.push_back(v[2]);
 }
 
-Wedge::Wedge(const struct zone *zone_ptr, std::string & orientation, PHAST_Transform::COORDINATE_SYSTEM cs)
+Wedge::Wedge(const struct zone *zone_ptr, std::string & m_orientation, PHAST_Transform::COORDINATE_SYSTEM cs)
 {
 	this->type = WEDGE;
 	this->coordinate_system = cs;
@@ -83,7 +83,7 @@ Wedge::Wedge(const struct zone *zone_ptr, std::string & orientation, PHAST_Trans
 	v.push_back(Point(p[1].x(), p[1].y(), p[1].z()));
 	v.push_back(Point(p[0].x(), p[1].y(), p[1].z()));
 
-	std::string orient(orientation);
+	std::string orient(m_orientation);
 	std::transform(orient.begin(), orient.end(), orient.begin(),
 				   (int (*)(int)) std::toupper);
 	if (orient.compare("X1") == 0)
@@ -247,7 +247,7 @@ Wedge::Wedge(const struct zone *zone_ptr, std::string & orientation, PHAST_Trans
 		this->orientation = WEDGE_ERROR;
 		this->wedge_number = CF_UNKNOWN;
 		std::ostringstream estring;
-		estring << "Unknown wedge orientation " << orientation.
+		estring << "Unknown wedge orientation " << m_orientation.
 			c_str() << std::endl;
 		error_msg(estring.str().c_str(), EA_STOP);
 	}

@@ -16,19 +16,19 @@ XYZfile::XYZfile(void)
 {
 }
 
-XYZfile::XYZfile(std::string filename, PHAST_Transform::COORDINATE_SYSTEM cs)
+XYZfile::XYZfile(std::string m_filename, PHAST_Transform::COORDINATE_SYSTEM cs)
 {
 	std::string token;
-	std::ifstream input(filename.c_str());
+	std::ifstream input(m_filename.c_str());
 	bool error = false;
 	if (!input.is_open())
 	{
 		error = true;
 		std::ostringstream estring;
-		estring << "Could not open file " << filename.c_str() << std::endl;
+		estring << "Could not open file " << m_filename.c_str() << std::endl;
 		error_msg(estring.str().c_str(), EA_STOP);
 	}
-	this->filename = filename;
+	this->filename = m_filename;
 	this->file_type = Filedata::XYZ;
 
 	std::vector < Point > temp_pts;
