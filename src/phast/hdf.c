@@ -28,10 +28,10 @@ static char const DEFINE_USE_MPI[] = "#define USE_MPI 0";
 #include "phreeqc/global.h"		/* error_string */
 #include "phreeqc/output.h"
 #include "hst.h"				/* struct back_list */
-#include "phreeqc/phqalloc.h"	/* PHRQ_malloc PHRQ_realloc PHRQ_free */
 #undef EXTERNAL
 #include "phreeqc/phrqproto.h"
 #include "phastproto.h"
+#include "phreeqc/phqalloc.h"	/* PHRQ_malloc PHRQ_realloc PHRQ_free */
 
 /*
  *   static functions

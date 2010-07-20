@@ -1,6 +1,5 @@
 #define EXTERNAL
 #include "phreeqc/global.h"
-#include "phreeqc/phqalloc.h"
 #include "phreeqc/output.h"
 #include "phreeqc/phrqproto.h"
 #include "hst.h"
@@ -8,6 +7,7 @@
 #include "phreeqc/input.h"
 #include "phast_files.h"
 #include "Pointers_to_fortran.h"
+#include "phreeqc/phqalloc.h"
 
 /* following line defines path for default data base file */
 const char *default_data_base = "phast.dat";

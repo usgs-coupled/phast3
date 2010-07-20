@@ -2,9 +2,9 @@
 #include "phreeqc/global.h"
 #include "phreeqc/output.h"
 #include "hst.h"
-#include "phreeqc/phqalloc.h"
 #include "phreeqc/phrqproto.h"
 #include "phastproto.h"
+#include "phreeqc/phqalloc.h"
 
 static char const svnid[] =
 	"$Id$";
