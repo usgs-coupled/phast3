@@ -8,7 +8,7 @@
 #define TRILIBRARY
 #define NO_TIMER
 #endif
-#if defined(__GNUC__)
+#if defined(__GNUC__) || defined(__SUNPRO_CC)
 #define _hypot hypot
 #endif
 //#define sscanf sscanf_s

@@ -1,5 +1,6 @@
 #include "PHAST_polygon.h"
 #include "message.h"
+#include <stdlib.h>
 #include <iostream>
 #include <cassert>
 
