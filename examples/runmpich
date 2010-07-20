@@ -12,7 +12,7 @@ rm -f 0/*
 PHASTDIR=/cygdrive/c/Programs/phastpp
 #PHAST_MPICH=c:/Programs/phastpp/src/phast/win32_2005/merge/phast.exe
 #mpiexec -n 4 -localonly C:/Programs/phastpp/src/phast/win32_2005/x64/merge/phast.exe
-PHAST_MPICH=c:/Programs/phastpp/src/phast/win32_2005/x64/merge_debug/phast.exe
+PHAST_MPICH=c:/Programs/phastpp/src/phast/win32_2005/x64/merge/phast.exe
 #PHAST_MPICH='c:\Program Files (x86)\Microsoft Visual Studio 8\Common7\IDE\devenv.exe'
 PHAST_INPUT=/cygdrive/c/Programs/phastpp/src/phastinput/vc80/Release/phastinput.exe
 EXDIR=$PHASTDIR/examples
@@ -36,9 +36,12 @@ if [ $NAME = 'ex4restart' ]; then
 if [ $NAME = "print_check_transient" ]; then 
     cp print_check_ss.head.dat 0
     fi
+if [ $NAME == "property" ]; then 
+    cp property.solns property.mix property.mix.xyzt property.xyzt 0
+    fi
 if [ $NAME = "ex4_transient" ]; then 
     cp ex4.head.dat 0
-    fi
+    fi    
 if [ -f phast.dat ]; then 
     cp phast.dat 0
     fi
