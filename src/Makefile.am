@@ -1,5 +1,4 @@
 ACLOCAL_AMFLAGS = -I m4
-dnl EXTRA_DIST = INSTALL README
 SUBDIRS = phast phasthdf phastinput
 
 
