@@ -7514,7 +7514,7 @@ read_time_control(void)
  */
 	int return_value, opt;
 	struct time *time_step_temp;
-	int count_time_step_temp;
+	int count_time_step_temp = 0;
 	char token[MAX_LENGTH];
 	int i, l, count;
 	char *next_char;

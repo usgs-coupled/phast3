@@ -1041,7 +1041,7 @@ clean:
 
 depends:
 	mkdir -p temp_dependency_dir
-	cd temp_dependency_dir; gcc -MM $(DEFINE_HDF) -I../phreeqcpp -I../phreeqcpp/phreeqc -I../KDtree ../*.cxx ../*.c ../phreeqcpp/*.cxx ../phreeqcpp/*.cpp ../phreeqcpp/phreeqc/*.c $(PHASTINPUT_FILES) > ../dependencies
+	cd temp_dependency_dir; gcc -MM $(DEFINE_HDF) -I../phreeqcpp -I../phreeqcpp/phreeqc -I../KDtree ../*.cxx ../*.c ../phreeqcpp/*.cxx ../KDtree/*.cpp ../phreeqcpp/*.cpp ../phreeqcpp/phreeqc/*.c $(PHASTINPUT_FILES) > ../dependencies
 	rm -rf temp_dependency_dir
 
 depends_parallel:
