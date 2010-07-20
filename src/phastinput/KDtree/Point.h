@@ -27,12 +27,12 @@ class Point
 		this->v = 0.0;
 	};
 
-	Point(double x, double y, double z, double v)
+	Point(double x, double y, double z, double m_v)
 	{
 		this->coord[0] = x;
 		this->coord[1] = y;
 		this->coord[2] = z;
-		this->v = v;
+		this->v = m_v;
 	};
 
 	// Apparently this use of templates requires the code to be in the header file
