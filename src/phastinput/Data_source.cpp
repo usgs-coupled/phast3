@@ -767,9 +767,9 @@ std::vector < Point > &Data_source::Get_user_points()
 	return (this->pts_user);
 }
 
-void Data_source::Set_user_points(std::vector<Point> &m_pts)
+void Data_source::Set_user_points(std::vector<Point> &l_pts)
 {
-	this->pts_user = m_pts;
+	this->pts_user = l_pts;
 }
 
 bool Data_source::Make_polygons()
