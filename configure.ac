@@ -9,6 +9,8 @@ AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign no-define subdir-objects])
 AC_CONFIG_SRCDIR([src/phastinput/accumulate.c])
 
+AC_CANONICAL_HOST
+
 # phastinput defines
 AC_DEFINE([ANSI_DECLARATORS], , [Must be set for phastinput])
 AC_DEFINE([TRILIBRARY], , [Must be set for phastinput])
@@ -70,6 +72,19 @@ AC_CHECK_FUNCS([strtol],  , AC_ERROR([strtol not found in libc]))
 AC_CHECK_FUNCS([floor],   , AC_CHECK_LIB(m, floor, , AC_ERROR([cannot find floor])) )
 AC_CHECK_FUNCS([pow],     , AC_CHECK_LIB(m, pow,   , AC_ERROR([cannot find pow])) )
 AC_CHECK_FUNCS([sqrt],    , AC_CHECK_LIB(m, sqrt,  , AC_ERROR([cannot find sqrt])) )
+
+##AC_CHECK_DECL([__SUNPRO_CC], [SUNCC=yes], [SUNCC=no])
+##if test x$SUNCC = xyes; then
+##   CXXFLAGS="CXXFLAGS -library=stlport4"
+##   LDFLAGS="$LDFLAGS -library=stlport4"
+##fi
+case $host_os in
+     solaris*)
+	CXXFLAGS="$CXXFLAGS -library=stlport4"
+	LDFLAGS="$LDFLAGS -library=stlport4"
+	;;
+esac
+
 
 # boost
 AX_BOOST_BASE([1.33], , AC_ERROR([Boost is required to build phast]))
@@ -159,21 +174,21 @@ case $withval in
 
 #   Trying to include -I/usr/include and -L/usr/lib is redundant and
 #   can mess some compilers up.
-    if test "X$zlib_inc" = "X/usr/include"; then
-      zlib_inc=""
-    fi
-    if test "X$zlib_lib" = "X/usr/lib"; then
-      zlib_lib=""
-    fi
+##    if test "X$zlib_inc" = "X/usr/include"; then
+##      zlib_inc=""
+##    fi
+##    if test "X$zlib_lib" = "X/usr/lib"; then
+##      zlib_lib=""
+##    fi
 
 #   Trying to include -I/usr/local/include and -L/usr/local/lib is redundant and
 #   can mess some compilers up.
-    if test "X$zlib_inc" = "X/usr/local/include"; then
-      zlib_inc=""
-    fi
-    if test "X$zlib_lib" = "X/usr/local/lib"; then
-      zlib_lib=""
-    fi
+##    if test "X$zlib_inc" = "X/usr/local/include"; then
+##      zlib_inc=""
+##    fi
+##    if test "X$zlib_lib" = "X/usr/local/lib"; then
+##      zlib_lib=""
+##    fi
 
     saved_CPPFLAGS="$CPPFLAGS"
     saved_LDFLAGS="$LDFLAGS"
@@ -203,6 +218,7 @@ esac
 #  command-line switch. The value is an include path and/or a library path.
 #  If the library path is specified then it must be preceded by a comma.
 #
+##set -x -v
 AC_ARG_WITH([hdf5],
             [AC_HELP_STRING([--with-hdf5=DIR],
                             [Use the HDF5 library [default=auto]])],,withval=yes)
@@ -230,21 +246,21 @@ case $withval in
 
 #   Trying to include -I/usr/include and -L/usr/lib is redundant and
 #   can mess some compilers up.
-    if test "X$hdf5_inc" = "X/usr/include"; then
-      hdf5_inc=""
-    fi
-    if test "X$hdf5_lib" = "X/usr/lib"; then
-      hdf5_lib=""
-    fi
+##    if test "X$hdf5_inc" = "X/usr/include"; then
+##      hdf5_inc=""
+##    fi
+##    if test "X$hdf5_lib" = "X/usr/lib"; then
+##      hdf5_lib=""
+##    fi
 
 #   Trying to include -I/usr/local/include and -L/usr/local/lib is redundant and
 #   can mess some compilers up.
-    if test "X$hdf5_inc" = "X/usr/local/include"; then
-      hdf5_inc=""
-    fi
-    if test "X$hdf5_lib" = "X/usr/local/lib"; then
-      hdf5_lib=""
-    fi
+##    if test "X$hdf5_inc" = "X/usr/local/include"; then
+##      hdf5_inc=""
+##    fi
+##    if test "X$hdf5_lib" = "X/usr/local/lib"; then
+##      hdf5_lib=""
+##    fi
 
     saved_CPPFLAGS="$CPPFLAGS"
     saved_LDFLAGS="$LDFLAGS"
@@ -266,6 +282,7 @@ case $withval in
     fi
     ;;
 esac
+##set +x +v
 
 # Build mpi version
 # Check if building mpi version
