@@ -257,8 +257,8 @@ bool Cube::Segment_in_cube(Point & p1, Point & p2, Point & i1, Point & i2,
 		{
 		case Cube::PI_POINT:
 			{
-				Point m_p = p1 + diff * t[i];
-				in_cube[i] = this->Point_in_bounding_box(m_p);
+				Point l_p = p1 + diff * t[i];
+				in_cube[i] = this->Point_in_bounding_box(l_p);
 				break;
 			}
 		case Cube::PI_SEGMENT:
@@ -320,23 +320,23 @@ bool Cube::Segment_in_cube(Point & p1, Point & p2, Point & i1, Point & i2,
 			if (in1)
 			{
 				i1 = p1;
-				Point m_p = max_t * diff;
-				i2 = p1 + m_p;
-				length = m_p.modulus();
+				Point l_p = max_t * diff;
+				i2 = p1 + l_p;
+				length = l_p.modulus();
 			}
 			else if (in2)
 			{
 				i2 = p2;
-				Point m_p = min_t * diff;
-				i1 = p1 + m_p;
-				length = m_p.modulus();
+				Point l_p = min_t * diff;
+				i1 = p1 + l_p;
+				length = l_p.modulus();
 			}
 			else
 			{
 				i1 = p1 + min_t * diff;
-				Point m_p = (max_t - min_t) * diff;
-				i2 = i1 + m_p;
-				length = m_p.modulus();
+				Point l_p = (max_t - min_t) * diff;
+				i2 = i1 + l_p;
+				length = l_p.modulus();
 			}
 		}
 	}

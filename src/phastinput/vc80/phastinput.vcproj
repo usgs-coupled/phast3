@@ -2280,7 +2280,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\Point.h"
+				RelativePath="..\KDtree\Point.h"
 				>
 			</File>
 			<File
