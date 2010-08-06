@@ -10,12 +10,27 @@ rm -f 0/*
 #  Set names
 #
 PHASTDIR=/cygdrive/c/Programs/phastpp
-#PHAST_MPICH=c:/Programs/phastpp/src/phast/win32_2005/merge/phast.exe
 #mpiexec -n 4 -localonly C:/Programs/phastpp/src/phast/win32_2005/x64/merge/phast.exe
-PHAST_MPICH=c:/Programs/phastpp/src/phast/win32_2005/x64/merge/phast.exe
 #PHAST_MPICH='c:\Program Files (x86)\Microsoft Visual Studio 8\Common7\IDE\devenv.exe'
-PHAST_INPUT=/cygdrive/c/Programs/phastpp/src/phastinput/vc80/Release/phastinput.exe
-EXDIR=$PHASTDIR/examples
+
+# 32 bit release
+#PHAST_INPUT=/cygdrive/c/Programs/phastpp/src/phastinput/vc80/Release/phastinput.exe
+#PHAST_MPICH=c:\\Programs\\phastpp\\src\\phast\\win32_2005\\merge\\phast.exe
+
+# 64 bit release
+#PHAST_INPUT=/cygdrive/c/Programs/phastpp/src/phastinput/vc80/x64/Release/phastinput.exe
+#PHAST_MPICH=c:/Programs/phastpp/src/phast/win32_2005/x64/merge/phast.exe
+
+# 32 bit debug
+#PHAST_INPUT=/cygdrive/c/Programs/phastpp/src/phastinput/vc80/Debug/phastinput.exe
+#PHAST_MPICH=c:/Programs/phastpp/src/phast/win32_2005/merge_debug/phast.exe
+
+# 64 bit debug
+PHAST_INPUT=/cygdrive/c/Programs/phastpp/src/phastinput/vc80/x64/Debug/phastinput.exe
+PHAST_MPICH=c:/Programs/phastpp/src/phast/win32_2005/x64/merge_debug/phast.exe
+
+#EXDIR=$PHASTDIR/examples
+EXDIR=c:\\Programs\\phastpp\\examples
 MPICHRUN=/cygdrive/c/Program\ Files/MPICH2/bin/mpiexec
 #
 #   distribute files
@@ -55,5 +70,5 @@ echo Done phastinput.
 #
 #   run phast_mpich
 #
-echo $MPICHRUN
-time "$MPICHRUN" -np 4 -localonly -wdir $EXDIR/$NAME/0 $PHAST_MPICH
+echo "$MPICHRUN" -np 4 -localonly -wdir $EXDIR\\$NAME\\0 $PHAST_MPICH
+time "$MPICHRUN" -np 4 -localonly -wdir $EXDIR\\$NAME\\0 $PHAST_MPICH
