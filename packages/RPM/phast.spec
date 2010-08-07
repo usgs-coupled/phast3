@@ -54,6 +54,7 @@ cd ../..
 # build phasthdf
 #
 cd src/phasthdf
+cp build.xml.in build.xml
 ant dist-Linux
 cd ../..
 
