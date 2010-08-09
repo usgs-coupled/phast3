@@ -130,7 +130,6 @@ dist_example_ex4_start_time_DATA = $(ex4_start_time)
 
 ex4_start_time= \
      ex4_start_time/ex4_start_time.chem.dat \
-     ex4_start_time/ex4_start_time.restart \
      ex4_start_time/ex4_start_time.trans.dat \
      ex4_start_time/phast.dat
      
