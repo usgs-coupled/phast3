@@ -184,8 +184,6 @@ echo "Exporting revision $REVISION of ModelViewer into sandbox..."
 	     "http://internalbrr.cr.usgs.gov/svn_GW/ModelViewer/trunk" \
 	     "$DISTNAME/ModelViewer")
 	     
-##exit 1
-	     
 echo "Making examples clean"
 (cd "$DISTPATH/examples" && [ -f Makefile ] && make TOPDIR=.. clean > /dev/null)
 
@@ -198,60 +196,69 @@ rm -rf "$DISTPATH/examples/zero.sed"
 rm -rf "$DISTPATH/examples/zero1.sed"
 rm -rf "$DISTPATH/examples/runmpich"
 rm -rf "$DISTPATH/examples/ex4/ex4.restart"
+rm -rf "$DISTPATH/examples/ex5/plume.heads.xyzt"
+rm -rf "$DISTPATH/examples/ex5/runmpich"
 rm -rf "$DISTPATH/examples/print_check_ss/print_check_ss.head.dat"
 rm -rf "$DISTPATH/examples/print_check_ss/print_check_ss.dmp"
-find "$DISTPATH/src" -type f -name '*.user' -print | xargs rm -rf
 find "$DISTPATH/examples" -type f -name '*.restart' ! -wholename '*/ex4restart/ex4.restart' -print | xargs rm -rf
 find "$DISTPATH/examples" -type d -name '0' -print | xargs rm -rf
 find "$DISTPATH/examples" -type f -name 'clean' -print | xargs rm -rf
 find "$DISTPATH/examples" -type f -name 'notes' -print | xargs rm -rf
 find "$DISTPATH/examples" -type f -name '*.wphast' -print | xargs rm -rf
+find "$DISTPATH/examples" -type f -name '*.mv' -print | xargs rm -rf
 
-###echo "Deleting examples that aren't distributed"
-###mv "$DISTPATH/examples" "$DISTPATH/examples-delete"
-###mkdir "$DISTPATH/examples"
-###EXAMPLES="diffusion1d \
-###          diffusion2d \
-###          disp2d \
-###          ex1 \
-###          ex2 \
-###          ex3 \
-###          ex4 \
-###          ex4_ddl \
-###          ex4_noedl \
-###          ex4restart \
-###          ex4_start_time \
-###          ex4_transient \
-###          kindred4.4 \
-###          leaky \
-###          leakysurface \
-###          leakyx \
-###          leakyz \
-###          linear_bc \
-###          linear_ic \
-###          phrqex11 \
-###          property \
-###          radial \
-###          river \
-###          shell \
-###          simple \
-###          unconf \
-###          well \
-###          zf"
-###for ex in $EXAMPLES
-###do
-###  mv "$DISTPATH/examples-delete/$ex" "$DISTPATH/examples/."
-###done
-###rm -rf "$DISTPATH/examples-delete"
+echo "Cleaning up misc files"
+rm -rf "$DISTPATH/bootstrap"
+find "$DISTPATH/src" -type f -name '*.user' -print | xargs rm -rf
+
+
+echo "Deleting examples that aren't distributed"
+mv "$DISTPATH/examples" "$DISTPATH/examples-delete"
+mkdir "$DISTPATH/examples"
+EXAMPLES="decay \
+          diffusion1d \
+          diffusion2d \
+          disp2d \
+          ex1 \
+          ex2 \
+          ex3 \
+          ex4 \
+          ex4_ddl \
+          ex4_noedl \
+          ex4_start_time \
+          ex4_transient \
+          ex4restart \
+          ex5 \
+          ex6 \
+          kindred4.4 \
+          leaky \
+          leakysurface \
+          leakyx \
+          leakyz \
+          linear_bc \
+          linear_ic \
+          mass_balance \
+          notch \
+          phrqex11 \
+          property \
+          radial \
+          river \
+          shell \
+          simple \
+          unconf \
+          well \
+          zf"
+for ex in $EXAMPLES
+do
+  mv "$DISTPATH/examples-delete/$ex" "$DISTPATH/examples/."
+done
+rm -rf "$DISTPATH/examples-delete"
 
 echo "Cleaning up src/phastinput directory"
 rm -rf "$DISTPATH/src/phastinput/test"
 
 echo "Cleaning up src/phast directory"
 rm -rf "$DISTPATH/src/phast/phreeqc/Sun"
-
-echo "Cleaning up examples directory"
-rm -rf "$DISTPATH/examples/capecod"
 
 echo "Renaming phreeqc.dat to phast.dat"
 mv "$DISTPATH/database/phreeqc.dat" "$DISTPATH/database/phast.dat"

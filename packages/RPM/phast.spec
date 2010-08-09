@@ -61,10 +61,9 @@ cd ../..
 #
 # build phast-ser and phast-lam
 #
-cd src/phast
-make serial_lahey
-make mpi_lahey
-cd ../..
+ssh grundvand "cd $RPM_BUILD_DIR/$RPM_PACKAGE_NAME-$RPM_PACKAGE_VERSION-$RPM_PACKAGE_RELEASE/src/phast && make serial_intel"
+ssh grundvand "cd $RPM_BUILD_DIR/$RPM_PACKAGE_NAME-$RPM_PACKAGE_VERSION-$RPM_PACKAGE_RELEASE/src/phast && make openmpi_intel"
+ssh stoch     "cd $RPM_BUILD_DIR/$RPM_PACKAGE_NAME-$RPM_PACKAGE_VERSION-$RPM_PACKAGE_RELEASE/src/phast && make lam_intel"
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -108,8 +107,9 @@ rm -f %{name}-%{version}-%{release}/src/phast/phreeqc/Makefile
 # Linux /usr/bin/phast-lam
 # SunOS None
 #
-cp src/phast/serial_lahey/phast $RPM_BUILD_ROOT/%{_bindir}/phast-ser
-cp src/phast/mpi_lahey/phast $RPM_BUILD_ROOT/%{_bindir}/phast-lam
+cp src/phast/serial_intel/phast $RPM_BUILD_ROOT/%{_bindir}/phast-ser
+cp src/phast/lam_intel/phast $RPM_BUILD_ROOT/%{_bindir}/phast-lam
+cp src/phast/openmpi_intel/phast $RPM_BUILD_ROOT/%{_bindir}/phast-openmpi
 
 #
 # Linux /usr/bin/phastinput
