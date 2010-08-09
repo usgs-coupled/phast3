@@ -163,18 +163,6 @@ ex4restart= \
      ex4restart/phast.dat
 
 
-# ex4v1
-#
-example_ex4v1dir = $(EXAMPLES_DIR)/ex4v1
-
-dist_example_ex4v1_DATA = $(ex4v1)
-
-ex4v1= \
-     ex4v1/ex4v1.chem.dat \
-     ex4v1/ex4v1.trans.dat \
-     ex4v1/phast.dat
-
-
 # ex5
 #
 example_ex5dir = $(EXAMPLES_DIR)/ex5
@@ -234,31 +222,6 @@ ex6= \
      ex6/ex6.chem.dat \
      ex6/ex6.trans.dat \
      ex6/phast.dat
-     
-     
-# flux_patches
-#
-example_flux_patchesdir = $(EXAMPLES_DIR)/flux_patches
-
-dist_example_flux_patches_DATA = $(flux_patches)
-
-flux_patches= \
-     flux_patches/flux_patches.chem.dat \
-     flux_patches/flux_patches.trans.dat \
-     flux_patches/phast.dat
-     
-     
-# free
-#
-example_freedir = $(EXAMPLES_DIR)/free
-
-dist_example_free_DATA = $(free)
-
-free= \
-     free/free.chem.dat \
-     free/free.head.dat \
-     free/free.trans.dat \
-     free/phast.dat
      
      
 # kindred4.4
@@ -350,17 +313,6 @@ notch= \
      notch/notch.trans.dat
      
      
-# patches_lf
-#
-example_patches_lfdir = $(EXAMPLES_DIR)/patches_lf
-
-dist_example_patches_lf_DATA = $(patches_lf)
-
-patches_lf= \
-     patches_lf/patches_lf.chem.dat \
-     patches_lf/patches_lf.trans.dat
-     
-     
 # phrqex11
 #
 example_phrqex11dir = $(EXAMPLES_DIR)/phrqex11
@@ -371,34 +323,6 @@ phrqex11= \
      phrqex11/phast.dat \
      phrqex11/phrqex11.chem.dat \
      phrqex11/phrqex11.trans.dat
-     
-     
-# print_check_ss
-#
-example_print_check_ssdir = $(EXAMPLES_DIR)/print_check_ss
-
-dist_example_print_check_ss_DATA = $(print_check_ss)
-
-print_check_ss= \
-     print_check_ss/phast.dat \
-     print_check_ss/print_check_ss.chem.dat \
-     print_check_ss/print_check_ss.dmp \
-     print_check_ss/print_check_ss.head.dat \
-     print_check_ss/print_check_ss.trans.dat
-
-
-# print_check_transient
-#
-example_print_check_transientdir = $(EXAMPLES_DIR)/print_check_transient
-
-dist_example_print_check_transient_DATA = $(print_check_transient)
-
-print_check_transient= \
-     print_check_transient/phast.dat \
-     print_check_transient/print_check_ss.head.dat \
-     print_check_transient/print_check_transient.chem.dat \
-     print_check_transient/print_check_transient.head.dat \
-     print_check_transient/print_check_transient.trans.dat
      
      
 # property
