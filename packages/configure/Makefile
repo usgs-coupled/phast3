@@ -15,6 +15,11 @@ TARBALL := $(NAME)-$(VER)-$(REL).tar.gz
 REPOS_PATH ?= trunk
 
 all : $(TARBALL)
+	@echo "DATE=$(DATE)"        >> history
+	@echo "VER=$(VER)"          >> history
+	@echo "REL=$(REL)"          >> history
+	@echo "===================" >> history
+	
 
 $(TARBALL) : $(EXPORT)
 	rm -rf $(NAME)-$(VER)-$(REL)
