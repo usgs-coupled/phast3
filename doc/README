@@ -78,6 +78,49 @@ PHAST can be uninstalled with the following command:
 rpm -e phast
 
 
+Building phast using configure:
+-------------------------------
+
+Building phast requires the following:
+	make
+	C++ compiler
+	Fortran 90 compiler
+	hdf5 libraries >= 1.6.5
+	boost C++ libraries >= 1.33
+	zlib libraries >= 1.2.2
+
+And, additionally for the MPI version:
+	mpi c++ wrapper: (ie mpic++ mpicxx mpiCC)
+	
+The serial version of PHAST can be built and installed using the following
+commands:
+
+tar -xzf phast-@VERSION@-@REVISION@.tar.gz
+cd phast-@VERSION@-@REVISION@
+mkdir _build
+cd _build
+../configure [--prefix=dirname]                   # serial version
+make
+make install
+
+The parallel version of PHAST can be built and installed using the following
+commands:
+
+tar -xzf phast-@VERSION@-@REVISION@.tar.gz
+cd phast-@VERSION@-@REVISION@
+mkdir _build
+cd _build
+../configure [--prefix=dirname] --enable-mpi
+make
+make install
+
+
+Additional configuration settings may be specified to configure. Use
+the following command to display help for each setting:
+../configure --help
+
+Building PHASTHDF is not currently supported.
+
 
 DOCUMENTATION
 
@@ -142,16 +185,18 @@ file (prefix.h5).
 
 
 
-SOURCE-CODE FILES
+EXECUTABLE FILES
 
-Executables are provided in the PHAST distribution, so it is not
-usually necessary to recompile the PHAST suite of programs. If you
-want to modify the programs or compile for a different operating
-system, source-code files for PHASTINPUT, PHAST, and PHASTHDF are
-included in subdirectories of the directory /src. Makefiles for
-PHASTINPUT and PHAST are included as templates; however, these
-Makefiles will require modification to work on your computer.
+Executables are provided in the /bin directory of the PHAST distribution.
+The Linux versions include executables phast-ser, phast-lam (LAM parallel
+version, 32 bit version only), phast-openmpi (openmpi parallel version),
+phastinput, and phasthdf (program to extract data from an HDF file). All
+phast executables were compiled with Intel Fortran and GCC.
 
+The Windows versions include executables phast-ser, phast-mpich (MPICH
+parallel version), phastinput, and phasthdf (program to extract data from
+an HDF file). All phast executables were compiled with Intel Fortran and
+Microsoft C++ 2005.
 
 
 INPUT FILES
