@@ -14,6 +14,7 @@ endif
 #  PHAST=$(TOPDIR)/src/phast/serial_intel_debug/phast
 #  PHAST=$(TOPDIR)/src/phast/serial_gfortran_64/phast
 #  PHAST=$(TOPDIR)/src/phast/serial_intel_64/phast
+#  PHAST=$(TOPDIR)/src/phast/serial_intel_64_debug/phast
   RUN=$(TEST)/run
 endif
 
