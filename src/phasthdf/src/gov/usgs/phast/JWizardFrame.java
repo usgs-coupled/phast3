@@ -136,7 +136,7 @@ public class JWizardFrame extends javax.swing.JFrame implements java.beans.Vetoa
                         page2.setPhastH5File(hdf);
                         java.lang.String default_name = hdf.getFilePath();
                         if (default_name.endsWith(".h5")) {
-							default_name = default_name.substring(0, default_name.length() - 4);
+							default_name = default_name.substring(0, default_name.length() - 3);
 						}
                         page3.setText(default_name.concat(".xyz.tsv"));
                         wizard.setEnabledFinish(true);
