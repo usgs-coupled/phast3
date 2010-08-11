@@ -47,8 +47,8 @@ cp src/phast/revisions ./RELEASE
 # build phastinput
 #
 cd src/phastinput
-make
-##ln -s `which echo` phastinput
+##make
+ln -s `which echo` phastinput
 cd ../..
 
 #
@@ -56,19 +56,19 @@ cd ../..
 #
 cd src/phasthdf
 cp build.xml.in build.xml
-ant dist-Linux
+ant dist-Linux64
 cd ../..
 
 #
 # build phast-ser and phast-lam
 #
 cd src/phast
-make serial_intel_64
-##mkdir -p serial_intel_64
-##ln -s `which echo` serial_intel_64/phast
-make openmpi_intel_64
-##mkdir -p openmpi_intel_64
-##ln -s `which echo` openmpi_intel_64/phast
+##make serial_intel_64
+mkdir -p serial_intel_64
+ln -s `which echo` serial_intel_64/phast
+##make openmpi_intel_64
+mkdir -p openmpi_intel_64
+ln -s `which echo` openmpi_intel_64/phast
 cd ../..
 
 %install
@@ -149,7 +149,7 @@ cp src/phasthdf/dist/*.jar $RPM_BUILD_ROOT/%{_libdir}/phast-%{version}/.
 # Linux /usr/lib/phast-%{version}Linux/*.so
 # SunOS /usr/local/lib/phast-%{version}/SunOS/*.so
 #
-cp src/phasthdf/dist/`uname`/* $RPM_BUILD_ROOT/%{_libdir}/phast-%{version}/`uname`/.
+cp src/phasthdf/dist64/`uname`/* $RPM_BUILD_ROOT/%{_libdir}/phast-%{version}/`uname`/.
 
 #
 # Create script to run phast
@@ -209,7 +209,7 @@ done
 
 # directory where jars located
 JARS=\`dirname \$prg\`
-JARS=\$JARS/../lib/phast-%{version}
+JARS=\$JARS/../lib64/phast-%{version}
 
 # define native shared objects
 if [ -z "\$LD_LIBRARY_PATH" ]; then
