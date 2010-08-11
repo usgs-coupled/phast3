@@ -387,7 +387,7 @@ BOOL GetArgs(LPSTR lpCmdLine, tstring& args)
 		// convert lpCmdLine from ansi to unicode
 		args.reserve(nChars + 1);
 		args.resize(nChars);
-		if (!::MultiByteToWideChar(CP_ACP, 0, lpCmdLine, -1, args.begin(), nChars + 1))
+		if (!::MultiByteToWideChar(CP_ACP, 0, lpCmdLine, -1, &args[0], nChars + 1))
 		{
 			::OutputDebugString(TEXT("MultiByteToWideChar failed\n"));
 			return FALSE;
