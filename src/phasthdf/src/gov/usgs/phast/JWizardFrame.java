@@ -78,7 +78,7 @@ public class JWizardFrame extends javax.swing.JFrame implements java.beans.Vetoa
         java.awt.Dimension d = frame.getSize();
         frame.getRootPane().setMinimumSize(d);
         frame.setLocation((screenSize.width - d.width) / 2,(screenSize.height - d.height) / 2);
-        frame.show();
+        frame.setVisible(true);
         splash.dispose();
     }
 
