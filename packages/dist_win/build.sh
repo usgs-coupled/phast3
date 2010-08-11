@@ -249,7 +249,7 @@ build() {
 # build phastinput.exe
   "${DEVENV}" "${PHASTINPUT_SLN}" /out phastinput.log /build Release && \
 # build phast.jar
-  cp -f ./src/phasthdf/build.xml.in ./src/phasthdf/build.xml/build.xml
+  cp -f ./src/phasthdf/build.xml.in ./src/phasthdf/build.xml
   "${ANT}" -buildfile ./src/phasthdf/build.xml dist-Win32 && \
 # build merge/phast.exe
   "${DEVENV}" "${PHAST_SLN}" /out phast-merge.log /build merge && \
