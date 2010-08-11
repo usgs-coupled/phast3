@@ -16,6 +16,7 @@ CONFIGURATION=LAM_INTEL
 # 64-Bit Parallel versions
 #CONFIGURATION=OPENMPI_GFORTRAN_64
 #CONFIGURATION=OPENMPI_INTEL_64
+#CONFIGURATION=OPENMPI_INTEL_64_DEBUG
 #
 #   make directory
 #
@@ -133,7 +134,16 @@ if [ $CONFIGURATION == "OPENMPI_INTEL_64" ]; then
 # 
 #   64 bit openmpi_intel_64
 #
-    /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/bin/mpirun  -n 2 -H robocomp -H lobo -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_intel_64/phast
+#    /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/bin/mpirun  -n 2 -H robocomp -H lobo -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_intel_64/phast
+    /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/bin/mpirun  -n 4 -H lobo -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_intel_64/phast
+fi
+
+if [ $CONFIGURATION == "OPENMPI_INTEL_64_DEBUG" ]; then
+# 
+#   64 bit openmpi_intel_64_debug
+#
+#    /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/bin/mpirun  -n 4 -H robocomp -H lobo -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_intel_64_debug/phast
+    /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/bin/mpirun  -n 4 -H lobo -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_intel_64_debug/phast
 fi
 
 if [ $CONFIGURATION == "OPENMPI_GFORTRAN_64" ]; then

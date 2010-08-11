@@ -971,7 +971,7 @@
           Component: H         
 
  Internal face solute inflow ................................  1.034300E-06  (kg/d)
- Internal face solute outflow ...............................  6.118670E-29  (kg/d)
+ Internal face solute outflow ...............................  6.118669E-29  (kg/d)
 
 
 
