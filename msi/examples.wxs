@@ -37,24 +37,6 @@
             <ComponentRef Id="ex4restart.head.dat" />
             <ComponentRef Id="ex4restart.trans.dat" />
             <ComponentRef Id="phast.dat_8" />
-            <ComponentRef Id="ex4v1.bal.txt" />
-            <ComponentRef Id="ex4v1.chem.dat" />
-            <ComponentRef Id="ex4v1.chem.txt" />
-            <ComponentRef Id="ex4v1.chem.xyz.tsv" />
-            <ComponentRef Id="ex4v1.dummy.sel" />
-            <ComponentRef Id="ex4v1.head.dat" />
-            <ComponentRef Id="ex4v1.head.txt" />
-            <ComponentRef Id="ex4v1.head.xyz.tsv" />
-            <ComponentRef Id="ex4v1.probdef.txt" />
-            <ComponentRef Id="ex4v1.trans.dat" />
-            <ComponentRef Id="ex4v1.vel.txt" />
-            <ComponentRef Id="ex4v1.vel.xyz.tsv" />
-            <ComponentRef Id="ex4v1.wel.txt" />
-            <ComponentRef Id="ex4v1.wel.xyz.tsv" />
-            <ComponentRef Id="ex4v1.wt.txt" />
-            <ComponentRef Id="ex4v1.wt.xyz.tsv" />
-            <ComponentRef Id="phast.dat_9" />
-            <ComponentRef Id="Phast.tmp" />
             <ComponentRef Id="ex4_ddl.chem.dat" />
             <ComponentRef Id="ex4_ddl.trans.dat" />
             <ComponentRef Id="phast.dat_10" />
@@ -70,9 +52,7 @@
             <ComponentRef Id="initial.head.dat" />
             <ComponentRef Id="phast.dat_13" />
             <ComponentRef Id="ex5.head.200.dat" />
-            <ComponentRef Id="ex5.mv" />
             <ComponentRef Id="ex5.trans.dat" />
-            <ComponentRef Id="runmpich" />
             <ComponentRef Id="Ashumet.dbf" />
             <ComponentRef Id="Ashumet.shp" />
             <ComponentRef Id="Ashumet.shx" />
@@ -106,13 +86,6 @@
             <ComponentRef Id="ex6.chem.dat" />
             <ComponentRef Id="ex6.trans.dat" />
             <ComponentRef Id="phast.dat_14" />
-            <ComponentRef Id="flux_patches.chem.dat" />
-            <ComponentRef Id="flux_patches.trans.dat" />
-            <ComponentRef Id="phast.dat_15" />
-            <ComponentRef Id="free.chem.dat" />
-            <ComponentRef Id="free.head.dat" />
-            <ComponentRef Id="free.trans.dat" />
-            <ComponentRef Id="phast.dat_16" />
             <ComponentRef Id="kindred4.4.chem.dat" />
             <ComponentRef Id="kindred4.4.trans.dat" />
             <ComponentRef Id="phast.dat_17" />
@@ -130,20 +103,9 @@
             <ComponentRef Id="mass_balance.trans.dat" />
             <ComponentRef Id="phast.dat_20" />
             <ComponentRef Id="notch.trans.dat" />
-            <ComponentRef Id="patches_lf.chem.dat" />
-            <ComponentRef Id="patches_lf.trans.dat" />
             <ComponentRef Id="phast.dat_21" />
             <ComponentRef Id="phrqex11.chem.dat" />
             <ComponentRef Id="phrqex11.trans.dat" />
-            <ComponentRef Id="phast.dat_22" />
-            <ComponentRef Id="print_check_ss.chem.dat" />
-            <ComponentRef Id="print_check_ss.trans.dat" />
-            <ComponentRef Id="compare" />
-            <ComponentRef Id="phast.dat_23" />
-            <ComponentRef Id="print_check_ss.head.dat" />
-            <ComponentRef Id="print_check_transient.chem.dat" />
-            <ComponentRef Id="print_check_transient.head.dat" />
-            <ComponentRef Id="print_check_transient.trans.dat" />
             <ComponentRef Id="phast.dat_24" />
             <ComponentRef Id="property.chem.dat" />
             <ComponentRef Id="property.mix" />
@@ -297,62 +259,6 @@
                         <File Id="phast.dat_8" KeyPath="yes" Source="$(var.ExampleDir)\ex4restart\phast.dat" />
                     </Component>
                 </Directory>
-                <Directory Id="ex4v1" Name="ex4v1">
-                    <Component Id="ex4v1.bal.txt" Guid="*">
-                        <File Id="ex4v1.bal.txt" KeyPath="yes" Source="$(var.ExampleDir)\ex4v1\ex4v1.bal.txt" />
-                    </Component>
-                    <Component Id="ex4v1.chem.dat" Guid="*">
-                        <File Id="ex4v1.chem.dat" KeyPath="yes" Source="$(var.ExampleDir)\ex4v1\ex4v1.chem.dat" />
-                    </Component>
-                    <Component Id="ex4v1.chem.txt" Guid="*">
-                        <File Id="ex4v1.chem.txt" KeyPath="yes" Source="$(var.ExampleDir)\ex4v1\ex4v1.chem.txt" />
-                    </Component>
-                    <Component Id="ex4v1.chem.xyz.tsv" Guid="*">
-                        <File Id="ex4v1.chem.xyz.tsv" KeyPath="yes" Source="$(var.ExampleDir)\ex4v1\ex4v1.chem.xyz.tsv" />
-                    </Component>
-                    <Component Id="ex4v1.dummy.sel" Guid="*">
-                        <File Id="ex4v1.dummy.sel" KeyPath="yes" Source="$(var.ExampleDir)\ex4v1\ex4v1.dummy.sel" />
-                    </Component>
-                    <Component Id="ex4v1.head.dat" Guid="*">
-                        <File Id="ex4v1.head.dat" KeyPath="yes" Source="$(var.ExampleDir)\ex4v1\ex4v1.head.dat" />
-                    </Component>
-                    <Component Id="ex4v1.head.txt" Guid="*">
-                        <File Id="ex4v1.head.txt" KeyPath="yes" Source="$(var.ExampleDir)\ex4v1\ex4v1.head.txt" />
-                    </Component>
-                    <Component Id="ex4v1.head.xyz.tsv" Guid="*">
-                        <File Id="ex4v1.head.xyz.tsv" KeyPath="yes" Source="$(var.ExampleDir)\ex4v1\ex4v1.head.xyz.tsv" />
-                    </Component>
-                    <Component Id="ex4v1.probdef.txt" Guid="*">
-                        <File Id="ex4v1.probdef.txt" KeyPath="yes" Source="$(var.ExampleDir)\ex4v1\ex4v1.probdef.txt" />
-                    </Component>
-                    <Component Id="ex4v1.trans.dat" Guid="*">
-                        <File Id="ex4v1.trans.dat" KeyPath="yes" Source="$(var.ExampleDir)\ex4v1\ex4v1.trans.dat" />
-                    </Component>
-                    <Component Id="ex4v1.vel.txt" Guid="*">
-                        <File Id="ex4v1.vel.txt" KeyPath="yes" Source="$(var.ExampleDir)\ex4v1\ex4v1.vel.txt" />
-                    </Component>
-                    <Component Id="ex4v1.vel.xyz.tsv" Guid="*">
-                        <File Id="ex4v1.vel.xyz.tsv" KeyPath="yes" Source="$(var.ExampleDir)\ex4v1\ex4v1.vel.xyz.tsv" />
-                    </Component>
-                    <Component Id="ex4v1.wel.txt" Guid="*">
-                        <File Id="ex4v1.wel.txt" KeyPath="yes" Source="$(var.ExampleDir)\ex4v1\ex4v1.wel.txt" />
-                    </Component>
-                    <Component Id="ex4v1.wel.xyz.tsv" Guid="*">
-                        <File Id="ex4v1.wel.xyz.tsv" KeyPath="yes" Source="$(var.ExampleDir)\ex4v1\ex4v1.wel.xyz.tsv" />
-                    </Component>
-                    <Component Id="ex4v1.wt.txt" Guid="*">
-                        <File Id="ex4v1.wt.txt" KeyPath="yes" Source="$(var.ExampleDir)\ex4v1\ex4v1.wt.txt" />
-                    </Component>
-                    <Component Id="ex4v1.wt.xyz.tsv" Guid="*">
-                        <File Id="ex4v1.wt.xyz.tsv" KeyPath="yes" Source="$(var.ExampleDir)\ex4v1\ex4v1.wt.xyz.tsv" />
-                    </Component>
-                    <Component Id="phast.dat_9" Guid="*">
-                        <File Id="phast.dat_9" KeyPath="yes" Source="$(var.ExampleDir)\ex4v1\phast.dat" />
-                    </Component>
-                    <Component Id="Phast.tmp" Guid="*">
-                        <File Id="Phast.tmp" KeyPath="yes" Source="$(var.ExampleDir)\ex4v1\Phast.tmp" />
-                    </Component>
-                </Directory>
                 <Directory Id="ex4_ddl" Name="ex4_ddl">
                     <Component Id="ex4_ddl.chem.dat" Guid="*">
                         <File Id="ex4_ddl.chem.dat" KeyPath="yes" Source="$(var.ExampleDir)\ex4_ddl\ex4_ddl.chem.dat" />
@@ -407,14 +313,8 @@
                     <Component Id="ex5.head.200.dat" Guid="*">
                         <File Id="ex5.head.200.dat" KeyPath="yes" Source="$(var.ExampleDir)\ex5\ex5.head.200.dat" />
                     </Component>
-                    <Component Id="ex5.mv" Guid="*">
-                        <File Id="ex5.mv" KeyPath="yes" Source="$(var.ExampleDir)\ex5\ex5.mv" />
-                    </Component>
                     <Component Id="ex5.trans.dat" Guid="*">
                         <File Id="ex5.trans.dat" KeyPath="yes" Source="$(var.ExampleDir)\ex5\ex5.trans.dat" />
-                    </Component>
-                    <Component Id="runmpich" Guid="*">
-                        <File Id="runmpich" KeyPath="yes" Source="$(var.ExampleDir)\ex5\runmpich" />
                     </Component>
                     <Directory Id="ArcData" Name="ArcData">
                         <Component Id="Ashumet.dbf" Guid="*">
@@ -522,31 +422,6 @@
                         <File Id="phast.dat_14" KeyPath="yes" Source="$(var.ExampleDir)\ex6\phast.dat" />
                     </Component>
                 </Directory>
-                <Directory Id="flux_patches" Name="flux_patches">
-                    <Component Id="flux_patches.chem.dat" Guid="*">
-                        <File Id="flux_patches.chem.dat" KeyPath="yes" Source="$(var.ExampleDir)\flux_patches\flux_patches.chem.dat" />
-                    </Component>
-                    <Component Id="flux_patches.trans.dat" Guid="*">
-                        <File Id="flux_patches.trans.dat" KeyPath="yes" Source="$(var.ExampleDir)\flux_patches\flux_patches.trans.dat" />
-                    </Component>
-                    <Component Id="phast.dat_15" Guid="*">
-                        <File Id="phast.dat_15" KeyPath="yes" Source="$(var.ExampleDir)\flux_patches\phast.dat" />
-                    </Component>
-                </Directory>
-                <Directory Id="free" Name="free">
-                    <Component Id="free.chem.dat" Guid="*">
-                        <File Id="free.chem.dat" KeyPath="yes" Source="$(var.ExampleDir)\free\free.chem.dat" />
-                    </Component>
-                    <Component Id="free.head.dat" Guid="*">
-                        <File Id="free.head.dat" KeyPath="yes" Source="$(var.ExampleDir)\free\free.head.dat" />
-                    </Component>
-                    <Component Id="free.trans.dat" Guid="*">
-                        <File Id="free.trans.dat" KeyPath="yes" Source="$(var.ExampleDir)\free\free.trans.dat" />
-                    </Component>
-                    <Component Id="phast.dat_16" Guid="*">
-                        <File Id="phast.dat_16" KeyPath="yes" Source="$(var.ExampleDir)\free\phast.dat" />
-                    </Component>
-                </Directory>
                 <Directory Id="kindred4.4" Name="kindred4.4">
                     <Component Id="kindred4.4.chem.dat" Guid="*">
                         <File Id="kindred4.4.chem.dat" KeyPath="yes" Source="$(var.ExampleDir)\kindred4.4\kindred4.4.chem.dat" />
@@ -616,14 +491,6 @@
                         <File Id="notch.trans.dat" KeyPath="yes" Source="$(var.ExampleDir)\notch\notch.trans.dat" />
                     </Component>
                 </Directory>
-                <Directory Id="patches_lf" Name="patches_lf">
-                    <Component Id="patches_lf.chem.dat" Guid="*">
-                        <File Id="patches_lf.chem.dat" KeyPath="yes" Source="$(var.ExampleDir)\patches_lf\patches_lf.chem.dat" />
-                    </Component>
-                    <Component Id="patches_lf.trans.dat" Guid="*">
-                        <File Id="patches_lf.trans.dat" KeyPath="yes" Source="$(var.ExampleDir)\patches_lf\patches_lf.trans.dat" />
-                    </Component>
-                </Directory>
                 <Directory Id="phrqex11" Name="phrqex11">
                     <Component Id="phast.dat_21" Guid="*">
                         <File Id="phast.dat_21" KeyPath="yes" Source="$(var.ExampleDir)\phrqex11\phast.dat" />
@@ -633,37 +500,6 @@
                     </Component>
                     <Component Id="phrqex11.trans.dat" Guid="*">
                         <File Id="phrqex11.trans.dat" KeyPath="yes" Source="$(var.ExampleDir)\phrqex11\phrqex11.trans.dat" />
-                    </Component>
-                </Directory>
-                <Directory Id="print_check_ss" Name="print_check_ss">
-                    <Component Id="phast.dat_22" Guid="*">
-                        <File Id="phast.dat_22" KeyPath="yes" Source="$(var.ExampleDir)\print_check_ss\phast.dat" />
-                    </Component>
-                    <Component Id="print_check_ss.chem.dat" Guid="*">
-                        <File Id="print_check_ss.chem.dat" KeyPath="yes" Source="$(var.ExampleDir)\print_check_ss\print_check_ss.chem.dat" />
-                    </Component>
-                    <Component Id="print_check_ss.trans.dat" Guid="*">
-                        <File Id="print_check_ss.trans.dat" KeyPath="yes" Source="$(var.ExampleDir)\print_check_ss\print_check_ss.trans.dat" />
-                    </Component>
-                </Directory>
-                <Directory Id="print_check_transient" Name="print_check_transient">
-                    <Component Id="compare" Guid="*">
-                        <File Id="compare" KeyPath="yes" Source="$(var.ExampleDir)\print_check_transient\compare" />
-                    </Component>
-                    <Component Id="phast.dat_23" Guid="*">
-                        <File Id="phast.dat_23" KeyPath="yes" Source="$(var.ExampleDir)\print_check_transient\phast.dat" />
-                    </Component>
-                    <Component Id="print_check_ss.head.dat" Guid="*">
-                        <File Id="print_check_ss.head.dat" KeyPath="yes" Source="$(var.ExampleDir)\print_check_transient\print_check_ss.head.dat" />
-                    </Component>
-                    <Component Id="print_check_transient.chem.dat" Guid="*">
-                        <File Id="print_check_transient.chem.dat" KeyPath="yes" Source="$(var.ExampleDir)\print_check_transient\print_check_transient.chem.dat" />
-                    </Component>
-                    <Component Id="print_check_transient.head.dat" Guid="*">
-                        <File Id="print_check_transient.head.dat" KeyPath="yes" Source="$(var.ExampleDir)\print_check_transient\print_check_transient.head.dat" />
-                    </Component>
-                    <Component Id="print_check_transient.trans.dat" Guid="*">
-                        <File Id="print_check_transient.trans.dat" KeyPath="yes" Source="$(var.ExampleDir)\print_check_transient\print_check_transient.trans.dat" />
                     </Component>
                 </Directory>
                 <Directory Id="property" Name="property">
