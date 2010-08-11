@@ -182,13 +182,13 @@ Beginning time step no.      4
      Current time step length ...................................    10.0     (d)
      Beginning solute-transport calculation.
           H
-          No. of solver iterations, Relative residual:    6      3.4300489E-16
+          No. of solver iterations, Relative residual:    6      3.4328256E-16
           O
-          No. of solver iterations, Relative residual:    6      1.7149397E-16
+          No. of solver iterations, Relative residual:    6      1.7141535E-16
           [A]
-          No. of solver iterations, Relative residual:    6      1.7150681E-16
+          No. of solver iterations, Relative residual:    6      1.7148808E-16
           Charge
-          No. of solver iterations, Relative residual:    6      1.7137837E-16
+          No. of solver iterations, Relative residual:    6      1.7143384E-16
      Beginning chemistry calculation.
           Total cells: 8008
           Number of cells with same aqueous model: 7416
@@ -199,7 +199,7 @@ Beginning time step no.      4
      End of Time Step No.     4
      Time ..................................................    40.0000     (d)
      Maximum change in potentiometric head   0.0000E+00      (m ) at location (  100.    ,  20.5    ,  12.5    )(m)
-     Maximum change in H .................. -5.1638E-12 (mol/kgw) at location (  8.00    ,  20.5    ,  12.5    )(m)
+     Maximum change in H .................. -5.1639E-12 (mol/kgw) at location (  8.00    ,  20.5    ,  12.5    )(m)
      Maximum change in O ..................  7.4204E-05 (mol/kgw) at location (  8.00    ,  20.5    ,  12.5    )(m)
      Maximum change in [A] ................  1.5827E-04 (mol/kgw) at location (  8.00    ,  20.5    ,  12.5    )(m)
      Maximum change in Charge .............  3.3863E-13 (mol/kgw) at location (  8.00    ,  20.5    ,  12.5    )(m)

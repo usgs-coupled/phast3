@@ -401,7 +401,7 @@ Beginning time step no.      5
           S
           No. of solver iterations, Relative residual:    7      4.7445904E-11
           Charge
-          No. of solver iterations, Relative residual:    7      5.6177325E-11
+          No. of solver iterations, Relative residual:    7      5.6176720E-11
      Beginning chemistry calculation.
           Total cells: 657
           Number of cells with same aqueous model: 540
@@ -421,7 +421,7 @@ Beginning time step no.      5
      Maximum change in Mg ................. -2.5161E-02 (mol/kgw) at location ( 1.800E+04, 2.400E+04,     0    )(m)
      Maximum change in Na ................. -7.2173E-01 (mol/kgw) at location ( 2.400E+04, 4.200E+04,  300.    )(m)
      Maximum change in S .................. -5.9288E-04 (mol/kgw) at location ( 2.400E+04, 4.200E+04,  300.    )(m)
-     Maximum change in Charge .............  3.5617E-10 (mol/kgw) at location ( 2.400E+04, 4.800E+04,  300.    )(m)
+     Maximum change in Charge .............  3.5198E-10 (mol/kgw) at location ( 2.400E+04, 4.800E+04,  300.    )(m)
 Done with transient simulation.
 
                              ***** Simulation Completed *****

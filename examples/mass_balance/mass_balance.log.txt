@@ -1827,16 +1827,16 @@ Beginning time step no.    100
      End of Time Step No.   100
      Time ..................................................   0.500000     (d)
      Maximum change in potentiometric head   5.5623E-18      (m ) at location (     0    ,  1.00    , 1.000E-02)(m)
-     Maximum change in H ..................  1.1361E-11 (mol/kgw) at location (  1.00    ,     0    , 8.000E-02)(m)
-     Maximum change in O .................. -1.6782E-05 (mol/kgw) at location (  1.00    ,  1.00    , 8.000E-02)(m)
+     Maximum change in H ..................  1.1361E-11 (mol/kgw) at location (  1.00    ,  1.00    , 8.000E-02)(m)
+     Maximum change in O .................. -1.6782E-05 (mol/kgw) at location (  1.00    ,     0    , 8.000E-02)(m)
      Maximum change in Br .................  0.0000E+00 (mol/kgw) at location (  1.00    ,  1.00    , 8.000E-02)(m)
-     Maximum change in Ca .................  7.3782E-05 (mol/kgw) at location (     0    ,     0    , 6.400E-02)(m)
-     Maximum change in Cl .................  5.5940E-06 (mol/kgw) at location (  1.00    ,     0    , 8.000E-02)(m)
-     Maximum change in K .................. -1.2509E-04 (mol/kgw) at location (     0    ,     0    , 6.400E-02)(m)
+     Maximum change in Ca .................  7.3782E-05 (mol/kgw) at location (  1.00    ,     0    , 6.400E-02)(m)
+     Maximum change in Cl .................  5.5940E-06 (mol/kgw) at location (     0    ,  1.00    , 8.000E-02)(m)
+     Maximum change in K .................. -1.2509E-04 (mol/kgw) at location (  1.00    ,     0    , 6.400E-02)(m)
      Maximum change in Li .................  0.0000E+00 (mol/kgw) at location (  1.00    ,  1.00    , 8.000E-02)(m)
-     Maximum change in N .................. -5.5940E-06 (mol/kgw) at location (     0    ,  1.00    , 8.000E-02)(m)
-     Maximum change in Na ................. -4.0662E-05 (mol/kgw) at location (  1.00    ,     0    , 8.000E-02)(m)
-     Maximum change in Charge ............. -7.3586E-12 (mol/kgw) at location (  1.00    ,  1.00    , 4.200E-02)(m)
+     Maximum change in N .................. -5.5940E-06 (mol/kgw) at location (  1.00    ,     0    , 8.000E-02)(m)
+     Maximum change in Na ................. -4.0662E-05 (mol/kgw) at location (     0    ,     0    , 8.000E-02)(m)
+     Maximum change in Charge ............. -7.3586E-12 (mol/kgw) at location (     0    ,  1.00    , 4.200E-02)(m)
 Reading transient data for simulation: Set  2
      Time at which next set of transient parameters will be read .......... TIMCHG   1.00      (d)
 
@@ -3550,13 +3550,13 @@ Beginning time step no.    200
      Maximum change in H ..................  1.2652E-12 (mol/kgw) at location (  1.00    ,  1.00    , 7.000E-02)(m)
      Maximum change in O ..................  6.3365E-13 (mol/kgw) at location (  1.00    ,  1.00    , 7.000E-02)(m)
      Maximum change in Br .................  0.0000E+00 (mol/kgw) at location (  1.00    ,  1.00    , 8.000E-02)(m)
-     Maximum change in Ca .................  4.3563E-19 (mol/kgw) at location (  1.00    ,     0    , 7.000E-02)(m)
+     Maximum change in Ca .................  4.3658E-19 (mol/kgw) at location (  1.00    ,     0    , 7.000E-02)(m)
      Maximum change in Cl .................  5.2672E-19 (mol/kgw) at location (  1.00    ,  1.00    , 4.600E-02)(m)
      Maximum change in K ..................  0.0000E+00 (mol/kgw) at location (  1.00    ,  1.00    , 8.000E-02)(m)
      Maximum change in Li .................  0.0000E+00 (mol/kgw) at location (  1.00    ,  1.00    , 8.000E-02)(m)
      Maximum change in N ..................  0.0000E+00 (mol/kgw) at location (  1.00    ,  1.00    , 8.000E-02)(m)
      Maximum change in Na .................  0.0000E+00 (mol/kgw) at location (  1.00    ,  1.00    , 8.000E-02)(m)
-     Maximum change in Charge ............. -1.4365E-15 (mol/kgw) at location (     0    ,     0    ,     0    )(m)
+     Maximum change in Charge ............. -1.4363E-15 (mol/kgw) at location (  1.00    ,     0    ,     0    )(m)
 Done with transient simulation.
 
                              ***** Simulation Completed *****
