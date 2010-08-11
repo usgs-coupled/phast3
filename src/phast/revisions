@@ -1,5 +1,40 @@
 
-  	--------
+---------------------------------------
+PHAST, Version 2.0.0 (August 12, 2010)
+---------------------------------------
+
+	Major revisions to PHAST. PHAST version 2 has extended
+	capabilities to handle spatial data. As much as possible
+	PHAST input is grid independent and does not use
+	node-by-node input. 
+	
+	* Spatial data can be defined by prisms that use
+	ARC-INFO coverages for definitions of perimeter, top surface, 
+	and bottom surface of a prism.
+	
+	* Three-dimensional scattered data points can be used
+	to define media, boundary-condition, and initial-condition
+	properties.
+	
+	* Flow of water and solutes can be aggregated for 
+	multiple irregularly shaped zones.
+	
+	* Heads can be saved as a function of time and space, which
+	can be used in specified-head boundary conditions in 
+	subsequent runs. Facility allows running submodels.
+	
+	* Grid independent .gz files can be written to save the 
+	chemical state of a simulation for use in subsequent models. 
+	
+	* Drain boundary conditions have been added. 
+	
+	* Windows installation by .msi file. 
+	
+	* .configure has been implemented for compiling on 
+	Linux
+	
+	
+	--------
   	svn 4290
  	-------- 
  	Allow leaky boundary on positive Z face. No writes to
