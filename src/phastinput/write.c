@@ -55,7 +55,7 @@ write_hst(void)
 		if (!cells[i].specified)
 		{
 			//count_river_segments += cells[i].count_river_polygons;
-			count_drain_segments += cells[i].drain_segments->size();
+			count_drain_segments += (int) cells[i].drain_segments->size();
 		}
 	}
 

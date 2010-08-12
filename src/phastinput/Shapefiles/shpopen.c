@@ -394,7 +394,7 @@ SHPOpen(const char *pszLayer, const char *pszAccess)
 /* -------------------------------------------------------------------- */
 	pszBasename = (char *) malloc(strlen(pszLayer) + 5);
 	strcpy(pszBasename, pszLayer);
-	for (i = strlen(pszBasename) - 1;
+	for (i = (int) strlen(pszBasename) - 1;
 		 i > 0 && pszBasename[i] != '.' && pszBasename[i] != '/'
 		 && pszBasename[i] != '\\'; i--)
 	{
@@ -658,7 +658,7 @@ SHPCreate(const char *pszLayer, int nShapeType)
 /* -------------------------------------------------------------------- */
 	pszBasename = (char *) malloc(strlen(pszLayer) + 5);
 	strcpy(pszBasename, pszLayer);
-	for (i = strlen(pszBasename) - 1;
+	for (i = (int) strlen(pszBasename) - 1;
 		 i > 0 && pszBasename[i] != '.' && pszBasename[i] != '/'
 		 && pszBasename[i] != '\\'; i--)
 	{

@@ -91,8 +91,8 @@ replace_maxpri_elt_return_new_maxpri(kdtree2_result & e)
 
 // constructor
 kdtree2::kdtree2(kdtree2_array & data_in, bool rearrange_in, int dim_in):the_data(data_in),
-N(data_in.shape()[0]),
-dim(data_in.shape()[1]),
+N((int) data_in.shape()[0]),
+dim((int) data_in.shape()[1]),
 sort_results(false), rearrange(rearrange_in), root(NULL), data(NULL), ind(N)
 {
 	//
