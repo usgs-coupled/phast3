@@ -2136,17 +2136,17 @@ setup_bc(void)
 		{
 			count_specified++;
 			sprintf(tag, "in SPECIFIED_HEAD_BC, definition %d.\n",
-					count_specified);
+				(int) count_specified);
 		}
 		else if (bc[i]->bc_type == BC_info::BC_FLUX)
 		{
 			count_flux++;
-			sprintf(tag, "in FLUX_BC, definition %d.\n", count_flux);
+			sprintf(tag, "in FLUX_BC, definition %d.\n", (int) count_flux);
 		}
 		else if (bc[i]->bc_type == BC_info::BC_LEAKY)
 		{
 			count_leaky++;
-			sprintf(tag, "in LEAKY_BC, definition %d.\n", count_leaky);
+			sprintf(tag, "in LEAKY_BC, definition %d.\n", (int) count_leaky);
 		}
 		else
 		{
