@@ -245,23 +245,31 @@ conf() {
 build() {
   (cd ${objdir} && \
 # build phasthdf.exe
-  "${DEVENV}" "${PHASTHDF_SLN}" /out phasthdf.log /build Release && \
-# build phasthdf.exe
-  "${DEVENV}" "${PHASTHDF_SLN}" /out phasthdf-x64.log /build Release && \
+  "${DEVENV}" "${PHASTHDF_SLN}"   /out phasthdf.log         /build "Release|Win32" && \
+# build phasthdf.exe x64
+  "${DEVENV}" "${PHASTHDF_SLN}"   /out phasthdf-x64.log     /build "Release|x64" && \
 # build phastinput.exe
-  "${DEVENV}" "${PHASTINPUT_SLN}" /out phastinput.log /build Release && \
+  "${DEVENV}" "${PHASTINPUT_SLN}" /out phastinput.log       /build "Release|Win32" && \
+# build phastinput.exe x64
+  "${DEVENV}" "${PHASTINPUT_SLN}" /out phastinput-x64.log   /build "Release|x64" && \
 # build phast.jar
   cp -f ./src/phasthdf/build.xml.in ./src/phasthdf/build.xml
   "${ANT}" -buildfile ./src/phasthdf/build.xml dist-Win32 && \
   "${ANT}" -buildfile ./src/phasthdf/build.xml dist-Win64 && \
 # build merge/phast.exe
-  "${DEVENV}" "${PHAST_SLN}" /out phast-merge.log /build merge && \
+  "${DEVENV}" "${PHAST_SLN}"      /out phast-merge.log      /build "merge|Win32" && \
+# build merge/phast.exe x64
+  "${DEVENV}" "${PHAST_SLN}"      /out phast-merge-x64.log  /build "merge|x64" && \
 # build ser/phast.exe
-  "${DEVENV}" "${PHAST_SLN}" /out phast-ser.log /build ser && \
+  "${DEVENV}" "${PHAST_SLN}"      /out phast-ser.log        /build "ser|Win32" && \
+# build ser/phast.exe x64
+  "${DEVENV}" "${PHAST_SLN}"      /out phast-ser-x64.log    /build "ser|x64" && \
 # build model viewer
   "${MSDEV}" `cygpath -w ./ModelViewer/MvProject.dsw` /MAKE "ModelViewer - Win32 Release" /REBUILD && \
 # build phast.msi
-  MSBuild.exe "${MSI_SLN}" /p:Configuration=Release /p:TargetName=${FULLPKG} /p:Major=${MAJOR} /p:Minor=${MINOR} /p:Build=${REL} )
+  MSBuild.exe "${MSI_SLN}" /t:msi /p:Configuration=Release /p:Platform=x86 /p:TargetName=${FULLPKG}     /p:Major=${MAJOR} /p:Minor=${MINOR} /p:Build=${REL} && \
+# build phast.msi x64
+  MsBuild.exe "${MSI_SLN}" /t:msi /p:Configuration=Release /p:Platform=x64 /p:TargetName=${FULLPKG}-x64 /p:Major=${MAJOR} /p:Minor=${MINOR} /p:Build=${REL} )
 }
 
 
@@ -296,16 +304,27 @@ install() {
 # logs
   /usr/bin/install -m 755 ${objdir}/phasthdf.log \
     ${instdir}/. && \
+  /usr/bin/install -m 755 ${objdir}/phasthdf-x64.log \
+    ${instdir}/. && \
   /usr/bin/install -m 644 ${objdir}/phastinput.log \
+    ${instdir}/. && \
+  /usr/bin/install -m 644 ${objdir}/phastinput-x64.log \
     ${instdir}/. && \
   /usr/bin/install -m 644 ${objdir}/phast-ser.log \
     ${instdir}/. && \
+  /usr/bin/install -m 644 ${objdir}/phast-ser-x64.log \
+    ${instdir}/. && \
   /usr/bin/install -m 644 ${objdir}/phast-merge.log \
+    ${instdir}/. && \
+  /usr/bin/install -m 644 ${objdir}/phast-merge-x64.log \
     ${instdir}/. && \
   /usr/bin/install -m 644 ${objdir}/ModelViewer/mv/mv.plg \
     ${instdir}/. && \
 # the MSI
   /usr/bin/install -m 755 "${objdir}/msi/bin/Release/${FULLPKG}.msi" \
+    ${instdir}/. && \
+# the x64 MSI
+  /usr/bin/install -m 755 "${objdir}/msi/bin/x64/Release/${FULLPKG}-x64.msi" \
     ${instdir}/. && \
 # md5sums    
   if [ -x /usr/bin/md5sum ]; then \
@@ -390,10 +409,10 @@ case $1 in
   upto-install) precheck && prep && conf && build && install; STATUS=$? ;;
   upto-pkg)     precheck && prep && conf && build && install && \
 			strip && pkg ; \
-			STATUS=$? ;;    
+			STATUS=$? ;;
   upto-spkg)    precheck && prep && conf && build && install && \
 			strip && pkg && spkg ; \
-			STATUS=$? ;;    
+			STATUS=$? ;;
   all) precheck && prep && conf && build && install && \
        strip && pkg && spkg && finish ; \
        STATUS=$? ;;
