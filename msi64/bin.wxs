@@ -14,30 +14,30 @@
     </Fragment>
     <Fragment>
         <DirectoryRef Id="APPLICATIONFOLDER">
-            <Directory Id="bin" Name="bin">
+            <Directory Id="bin" Name="bin" >
                 <Component Id="hdf5dll.dll" Guid="*">
-                    <File Id="hdf5dll.dll" KeyPath="yes" Source="$(env.DEV_HDF5_LIBDLL)\hdf5dll.dll" />
+                    <File Id="hdf5dll.dll" KeyPath="yes" Source="$(env.DEV_HDF5_X64_LIBDLL)\hdf5dll.dll" />
                 </Component>
                 <Component Id="phast_mpich2.exe" Guid="*">
-                    <File Id="phast_mpich2.exe" KeyPath="yes" Source="..\src\phast\win32_2005\merge\phast.exe" Name="phast-mpich2.exe" />
+                    <File Id="phast_mpich2.exe" KeyPath="yes" Source="..\src\phast\win32_2005\x64\merge\phast.exe" Name="phast-mpich2.exe" />
                 </Component>
                 <Component Id="phast_ser.exe" Guid="*">
-                    <File Id="phast_ser.exe" KeyPath="yes" Source="..\src\phast\win32_2005\ser\phast.exe" Name="phast-ser.exe" />
+                    <File Id="phast_ser.exe" KeyPath="yes" Source="..\src\phast\win32_2005\x64\ser\phast.exe" Name="phast-ser.exe" />
                 </Component>
                 <Component Id="phast.bat" Guid="*">
                     <File Id="phast.bat" KeyPath="yes" Source="..\bin\phast2.bat" Name="phast.bat" />
                 </Component>
                 <Component Id="phasthdf.exe" Guid="*">
-                    <File Id="phasthdf.exe" KeyPath="yes" Source="..\src\phasthdf\win32\Release\phasthdf.exe" />
+                    <File Id="phasthdf.exe" KeyPath="yes" Source="..\src\phasthdf\win32\x64\Release\phasthdf.exe" />
                 </Component>
                 <Component Id="phastinput.exe" Guid="*">
-                    <File Id="phastinput.exe" KeyPath="yes" Source="..\src\phastinput\vc80\Release\phastinput.exe" />
+                    <File Id="phastinput.exe" KeyPath="yes" Source="..\src\phastinput\vc80\x64\Release\phastinput.exe" />
                 </Component>
                 <Component Id="szlibdll.dll" Guid="*">
-                    <File Id="szlibdll.dll" KeyPath="yes" Source="$(env.DEV_HDF5_LIBDLL)\..\bin\szlibdll.dll" />
+                    <File Id="szlibdll.dll" KeyPath="yes" Source="$(env.DEV_SZIP21_X64)\dll\szlibdll.dll" />
                 </Component>
                 <Component Id="zlib1.dll" Guid="*">
-                    <File Id="zlib1.dll" KeyPath="yes" Source="$(env.DEV_HDF5_LIBDLL)\..\bin\zlib1.dll" />
+                    <File Id="zlib1.dll" KeyPath="yes" Source="$(env.DEV_ZLIB123_X64_LIB)\zlib1.dll" />
                 </Component>
             </Directory>
         </DirectoryRef>

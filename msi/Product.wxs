@@ -11,23 +11,43 @@
 <?define FolderName="phast-$(var.Major).$(var.Minor).$(var.Build)"?>
 <?define Manufacturer="U.S. Geological Survey"?>
 
+<?if $(sys.BUILDARCH)=x64 ?>
+  <?define FullName="phast x64 $(var.Version)"?>
+  <?define UpgradeGuid="{609C09FB-044A-4c0a-8D28-D427F7B8F0A3}"?>
+<?else?>
+  <?define FullName="phast $(var.Version)"?>
+  <?define UpgradeGuid="{CD205EE5-559D-4c25-8CB7-77E8879C2259}"?>
+<?endif?>
 
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="6c0cfcdc-04fa-44f0-89f5-59ee211337c7"
-           Name="phast $(var.Version)"
+	<Product Id="*"
+           Name="$(var.FullName)"
            Language="1033"
            Version="$(var.Version)"
            Manufacturer="$(var.Manufacturer)"
-           UpgradeCode="81ed6506-9db2-46a1-b0c7-e24de11013f0">
+           UpgradeCode="$(var.UpgradeGuid)">
 		<Package InstallerVersion="200" Compressed="yes" />
 
 		<Media Id="1" Cabinet="media.cab" EmbedCab="yes" />
 
     <Directory Id="TARGETDIR" Name="SourceDir">
       <!-- program files -->
+    <?if $(sys.BUILDARCH)=x64 ?>
+      <Directory Id="ProgramFiles64Folder">
+        <Directory Id="APPLICATIONFOLDER" />
+      </Directory>
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="USGS" Name="USGS">
+          <Directory Id="PHASTX86" Name="$(var.FolderName)">
+            <Directory Id="APPLICATIONFOLDERX86" />
+          </Directory>
+        </Directory>
+      </Directory>
+    <?else?>
       <Directory Id="ProgramFilesFolder">
         <Directory Id="APPLICATIONFOLDER" />
       </Directory>
+    <?endif?>
       <!-- start menu -->
       <Directory Id="ProgramMenuFolder">
         <Directory Id="ApplicationProgramsFolder" Name="Phast $(var.Major).$(var.Minor).$(var.Build)">
@@ -65,7 +85,11 @@
     <Property Id="ALLUSERS" Value="1" />
 
     <!-- override default install location -->
+  <?if $(sys.BUILDARCH)=x64 ?>
+    <CustomAction Id="WixSetDefaultPerMachineFolderOverride" Property="WixPerMachineFolder" Value="[ProgramFiles64Folder]USGS\[ApplicationFolderName]" Execute="immediate" />
+  <?else?>
     <CustomAction Id="WixSetDefaultPerMachineFolderOverride" Property="WixPerMachineFolder" Value="[ProgramFilesFolder]USGS\[ApplicationFolderName]" Execute="immediate" />
+  <?endif?>
     <InstallExecuteSequence>
       <Custom Action="WixSetDefaultPerMachineFolderOverride" After="WixSetDefaultPerMachineFolder" />
     </InstallExecuteSequence>

@@ -25,6 +25,18 @@
     </WixVariables>
     <DefineConstants>Major=$(Major);Minor=$(Minor);Build=$(Build);SrcDir=..\src;ExampleDir=..\examples</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DefineConstants>Debug;SrcDir=..\src;ExampleDir=..\examples</DefineConstants>
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <WixVariables>
+    </WixVariables>
+    <DefineConstants>Major=$(Major);Minor=$(Minor);Build=$(Build);SrcDir=..\src;ExampleDir=..\examples</DefineConstants>
+    <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="bin.wxs" />
     <Compile Include="doc.wxs" />

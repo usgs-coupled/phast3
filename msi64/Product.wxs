@@ -19,14 +19,21 @@
            Version="$(var.Version)"
            Manufacturer="$(var.Manufacturer)"
            UpgradeCode="81ed6506-9db2-46a1-b0c7-e24de11013f0">
-		<Package InstallerVersion="200" Compressed="yes" />
+		<Package InstallerVersion="200" Compressed="yes" Platform="x64"/>
 
 		<Media Id="1" Cabinet="media.cab" EmbedCab="yes" />
 
     <Directory Id="TARGETDIR" Name="SourceDir">
       <!-- program files -->
-      <Directory Id="ProgramFilesFolder">
+      <Directory Id="ProgramFiles64Folder">
         <Directory Id="APPLICATIONFOLDER" />
+      </Directory>
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="USGS" Name="USGS">
+          <Directory Id="PHASTX86" Name="$(var.FolderName)">
+            <Directory Id="APPLICATIONFOLDERX86" />
+          </Directory>
+        </Directory>
       </Directory>
       <!-- start menu -->
       <Directory Id="ProgramMenuFolder">
@@ -65,7 +72,7 @@
     <Property Id="ALLUSERS" Value="1" />
 
     <!-- override default install location -->
-    <CustomAction Id="WixSetDefaultPerMachineFolderOverride" Property="WixPerMachineFolder" Value="[ProgramFilesFolder]USGS\[ApplicationFolderName]" Execute="immediate" />
+    <CustomAction Id="WixSetDefaultPerMachineFolderOverride" Property="WixPerMachineFolder" Value="[ProgramFiles64Folder]USGS\[ApplicationFolderName]" Execute="immediate" />
     <InstallExecuteSequence>
       <Custom Action="WixSetDefaultPerMachineFolderOverride" After="WixSetDefaultPerMachineFolder" />
     </InstallExecuteSequence>

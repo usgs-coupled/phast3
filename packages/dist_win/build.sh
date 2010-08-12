@@ -246,11 +246,14 @@ build() {
   (cd ${objdir} && \
 # build phasthdf.exe
   "${DEVENV}" "${PHASTHDF_SLN}" /out phasthdf.log /build Release && \
+# build phasthdf.exe
+  "${DEVENV}" "${PHASTHDF_SLN}" /out phasthdf-x64.log /build Release && \
 # build phastinput.exe
   "${DEVENV}" "${PHASTINPUT_SLN}" /out phastinput.log /build Release && \
 # build phast.jar
   cp -f ./src/phasthdf/build.xml.in ./src/phasthdf/build.xml
   "${ANT}" -buildfile ./src/phasthdf/build.xml dist-Win32 && \
+  "${ANT}" -buildfile ./src/phasthdf/build.xml dist-Win64 && \
 # build merge/phast.exe
   "${DEVENV}" "${PHAST_SLN}" /out phast-merge.log /build merge && \
 # build ser/phast.exe

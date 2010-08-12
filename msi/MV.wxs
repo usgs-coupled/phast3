@@ -1,136 +1,143 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+
+<?if $(sys.BUILDARCH)=x64 ?>
+<?define APPFOLDER=APPLICATIONFOLDERX86?>
+<?else?>
+<?define APPFOLDER=APPLICATIONFOLDER?>
+<?endif?>
+
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Fragment>
-        <ComponentGroup Id="MV">
-            <ComponentRef Id="notice.txt" />
-            <ComponentRef Id="MV.readme.txt" />
-            <ComponentRef Id="DFORRT.DLL" />
-            <ComponentRef Id="MV.hdf5dll.dll" />
-            <ComponentRef Id="lf90.eer" />
-            <ComponentRef Id="lf90wiod.dll" />
-            <ComponentRef Id="mf2k_r.dll" />
-            <ComponentRef Id="mf2k_r1.dll" />
-            <ComponentRef Id="mf2k_r2.dll" />
-            <ComponentRef Id="mf96_r.dll" />
-            <ComponentRef Id="mf96_r1.dll" />
-            <ComponentRef Id="mf96_r2.dll" />
-            <ComponentRef Id="modview.chm" />
-            <ComponentRef Id="modview.exe" />
-            <ComponentRef Id="mt_r.dll" />
-            <ComponentRef Id="mt_r1.dll" />
-            <ComponentRef Id="mt_r2.dll" />
-            <ComponentRef Id="mv.dll" />
-            <ComponentRef Id="sutr_r21.dll" />
-            <ComponentRef Id="sutr_r22.dll" />
-            <ComponentRef Id="MV.szlibdll.dll" />
-            <ComponentRef Id="vtkCommon.dll" />
-            <ComponentRef Id="vtkFiltering.dll" />
-            <ComponentRef Id="vtkGraphics.dll" />
-            <ComponentRef Id="vtkImaging.dll" />
-            <ComponentRef Id="vtkRendering.dll" />
-            <ComponentRef Id="MV.zlib1.dll" />
-            <ComponentRef Id="ofr02_106.pdf" />
-        </ComponentGroup>
-    </Fragment>
-    <Fragment>
-        <DirectoryRef Id="APPLICATIONFOLDER">
-            <Directory Id="Model_Viewer_1.3" Name="Model Viewer 1.3">
-                <Component Id="notice.txt" Guid="*">
-                    <File Id="notice.txt" KeyPath="yes" Source="..\ModelViewer\Redist\notice.txt" />
-                </Component>
-                <Component Id="MV.readme.txt" Guid="*">
-                    <File Id="MV.readme.txt" KeyPath="yes" Source="..\ModelViewer\Redist\readme.txt" />
-                </Component>
-                <Directory Id="MV.bin" Name="bin">
-                    <Component Id="DFORRT.DLL" Guid="*">
-                        <File Id="DFORRT.DLL" KeyPath="yes" Source="..\ModelViewer\Redist\bin\DFORRT.DLL" />
-                    </Component>
-                    <Component Id="MV.hdf5dll.dll" Guid="*">
-                        <File Id="MV.hdf5dll.dll" KeyPath="yes" Source="..\ModelViewer\Redist\bin\hdf5dll.dll" />
-                    </Component>
-                    <Component Id="lf90.eer" Guid="*">
-                        <File Id="lf90.eer" KeyPath="yes" Source="..\ModelViewer\Redist\bin\lf90.eer" />
-                    </Component>
-                    <Component Id="lf90wiod.dll" Guid="*">
-                        <File Id="lf90wiod.dll" KeyPath="yes" Source="..\ModelViewer\Redist\bin\lf90wiod.dll" />
-                    </Component>
-                    <Component Id="mf2k_r.dll" Guid="*">
-                        <File Id="mf2k_r.dll" KeyPath="yes" Source="..\ModelViewer\ModelViewer\Release\mf2k_r.dll" />
-                    </Component>
-                    <Component Id="mf2k_r1.dll" Guid="*">
-                        <File Id="mf2k_r1.dll" KeyPath="yes" Source="..\ModelViewer\Redist\bin\mf2k_r1.dll" />
-                    </Component>
-                    <Component Id="mf2k_r2.dll" Guid="*">
-                        <File Id="mf2k_r2.dll" KeyPath="yes" Source="..\ModelViewer\ModelViewer\Release\mf2k_r2.dll" />
-                    </Component>
-                    <Component Id="mf96_r.dll" Guid="*">
-                        <File Id="mf96_r.dll" KeyPath="yes" Source="..\ModelViewer\ModelViewer\Release\mf96_r.dll" />
-                    </Component>
-                    <Component Id="mf96_r1.dll" Guid="*">
-                        <File Id="mf96_r1.dll" KeyPath="yes" Source="..\ModelViewer\Redist\bin\mf96_r1.dll" />
-                    </Component>
-                    <Component Id="mf96_r2.dll" Guid="*">
-                        <File Id="mf96_r2.dll" KeyPath="yes" Source="..\ModelViewer\ModelViewer\Release\mf96_r2.dll" />
-                    </Component>
-                    <Component Id="modview.chm" Guid="*">
-                        <File Id="modview.chm" KeyPath="yes" Source="..\ModelViewer\Redist\bin\modview.chm" />
-                    </Component>
-                    <Component Id="modview.exe" Guid="*">
-                        <File Id="modview.exe" KeyPath="yes" Source="..\ModelViewer\ModelViewer\Release\modview.exe" />
-                        <ProgId Id="ModelViewer.Document" Description="Model Viewer Document" Icon="modview.exe" IconIndex="1">
-                          <Extension Id="mv">
-                            <Verb Id="open" TargetFile="modview.exe" Argument="&quot;%1&quot;" />
-                            <Verb Id="print" TargetFile="modview.exe" Argument="/p &quot;%1&quot;" />
-                            <Verb Id="printto" TargetFile="modview.exe" Argument="/pt &quot;%1&quot; &quot;%2&quot; &quot;%3&quot; &quot;%4&quot;" />
-                          </Extension>                        
-                        </ProgId>
-                    </Component>
-                    <Component Id="mt_r.dll" Guid="*">
-                        <File Id="mt_r.dll" KeyPath="yes" Source="..\ModelViewer\ModelViewer\Release\mt_r.dll" />
-                    </Component>
-                    <Component Id="mt_r1.dll" Guid="*">
-                        <File Id="mt_r1.dll" KeyPath="yes" Source="..\ModelViewer\Redist\bin\mt_r1.dll" />
-                    </Component>
-                    <Component Id="mt_r2.dll" Guid="*">
-                        <File Id="mt_r2.dll" KeyPath="yes" Source="..\ModelViewer\ModelViewer\Release\mt_r2.dll" />
-                    </Component>
-                    <Component Id="mv.dll" Guid="*">
-                        <File Id="mv.dll" KeyPath="yes" Source="..\ModelViewer\ModelViewer\Release\mv.dll" />
-                    </Component>
-                    <Component Id="sutr_r21.dll" Guid="*">
-                        <File Id="sutr_r21.dll" KeyPath="yes" Source="..\ModelViewer\ModelViewer\Release\sutr_r21.dll" />
-                    </Component>
-                    <Component Id="sutr_r22.dll" Guid="*">
-                        <File Id="sutr_r22.dll" KeyPath="yes" Source="..\ModelViewer\ModelViewer\Release\sutr_r22.dll" />
-                    </Component>                  
-                    <Component Id="MV.szlibdll.dll" Guid="*">
-                        <File Id="MV.szlibdll.dll" KeyPath="yes" Source="..\ModelViewer\Redist\bin\szlibdll.dll" />
-                    </Component>
-                    <Component Id="vtkCommon.dll" Guid="*">
-                        <File Id="vtkCommon.dll" KeyPath="yes" Source="..\ModelViewer\Redist\bin\vtkCommon.dll" />
-                    </Component>
-                    <Component Id="vtkFiltering.dll" Guid="*">
-                        <File Id="vtkFiltering.dll" KeyPath="yes" Source="..\ModelViewer\Redist\bin\vtkFiltering.dll" />
-                    </Component>
-                    <Component Id="vtkGraphics.dll" Guid="*">
-                        <File Id="vtkGraphics.dll" KeyPath="yes" Source="..\ModelViewer\Redist\bin\vtkGraphics.dll" />
-                    </Component>
-                    <Component Id="vtkImaging.dll" Guid="*">
-                        <File Id="vtkImaging.dll" KeyPath="yes" Source="..\ModelViewer\Redist\bin\vtkImaging.dll" />
-                    </Component>
-                    <Component Id="vtkRendering.dll" Guid="*">
-                        <File Id="vtkRendering.dll" KeyPath="yes" Source="..\ModelViewer\Redist\bin\vtkRendering.dll" />
-                    </Component>
-                    <Component Id="MV.zlib1.dll" Guid="*">
-                        <File Id="MV.zlib1.dll" KeyPath="yes" Source="..\ModelViewer\Redist\bin\zlib1.dll" />
-                    </Component>
-                </Directory>
-                <Directory Id="MV.doc" Name="doc">
-                    <Component Id="ofr02_106.pdf" Guid="*">
-                        <File Id="ofr02_106.pdf" KeyPath="yes" Source="..\ModelViewer\Redist\doc\ofr02-106.pdf" />
-                    </Component>
-                </Directory>
-            </Directory>
-        </DirectoryRef>
-    </Fragment>
+  <Fragment>
+    <ComponentGroup Id="MV">
+      <ComponentRef Id="notice.txt" />
+      <ComponentRef Id="MV.readme.txt" />
+      <ComponentRef Id="DFORRT.DLL" />
+      <ComponentRef Id="MV.hdf5dll.dll" />
+      <ComponentRef Id="lf90.eer" />
+      <ComponentRef Id="lf90wiod.dll" />
+      <ComponentRef Id="mf2k_r.dll" />
+      <ComponentRef Id="mf2k_r1.dll" />
+      <ComponentRef Id="mf2k_r2.dll" />
+      <ComponentRef Id="mf96_r.dll" />
+      <ComponentRef Id="mf96_r1.dll" />
+      <ComponentRef Id="mf96_r2.dll" />
+      <ComponentRef Id="modview.chm" />
+      <ComponentRef Id="modview.exe" />
+      <ComponentRef Id="mt_r.dll" />
+      <ComponentRef Id="mt_r1.dll" />
+      <ComponentRef Id="mt_r2.dll" />
+      <ComponentRef Id="mv.dll" />
+      <ComponentRef Id="sutr_r21.dll" />
+      <ComponentRef Id="sutr_r22.dll" />
+      <ComponentRef Id="MV.szlibdll.dll" />
+      <ComponentRef Id="vtkCommon.dll" />
+      <ComponentRef Id="vtkFiltering.dll" />
+      <ComponentRef Id="vtkGraphics.dll" />
+      <ComponentRef Id="vtkImaging.dll" />
+      <ComponentRef Id="vtkRendering.dll" />
+      <ComponentRef Id="MV.zlib1.dll" />
+      <ComponentRef Id="ofr02_106.pdf" />
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <DirectoryRef Id="$(var.APPFOLDER)">
+      <Directory Id="Model_Viewer_1.3" Name="Model Viewer 1.3">
+        <Component Id="notice.txt" Guid="*" Win64="no">
+          <File Id="notice.txt" KeyPath="yes" Source="..\ModelViewer\Redist\notice.txt" />
+        </Component>
+        <Component Id="MV.readme.txt" Guid="*" Win64="no">
+          <File Id="MV.readme.txt" KeyPath="yes" Source="..\ModelViewer\Redist\readme.txt" />
+        </Component>
+        <Directory Id="MV.bin" Name="bin">
+          <Component Id="DFORRT.DLL" Guid="*" Win64="no">
+            <File Id="DFORRT.DLL" KeyPath="yes" Source="..\ModelViewer\Redist\bin\DFORRT.DLL" />
+          </Component>
+          <Component Id="MV.hdf5dll.dll" Guid="*" Win64="no">
+            <File Id="MV.hdf5dll.dll" KeyPath="yes" Source="..\ModelViewer\Redist\bin\hdf5dll.dll" />
+          </Component>
+          <Component Id="lf90.eer" Guid="*" Win64="no">
+            <File Id="lf90.eer" KeyPath="yes" Source="..\ModelViewer\Redist\bin\lf90.eer" />
+          </Component>
+          <Component Id="lf90wiod.dll" Guid="*" Win64="no">
+            <File Id="lf90wiod.dll" KeyPath="yes" Source="..\ModelViewer\Redist\bin\lf90wiod.dll" />
+          </Component>
+          <Component Id="mf2k_r.dll" Guid="*" Win64="no">
+            <File Id="mf2k_r.dll" KeyPath="yes" Source="..\ModelViewer\ModelViewer\Release\mf2k_r.dll" />
+          </Component>
+          <Component Id="mf2k_r1.dll" Guid="*" Win64="no">
+            <File Id="mf2k_r1.dll" KeyPath="yes" Source="..\ModelViewer\Redist\bin\mf2k_r1.dll" />
+          </Component>
+          <Component Id="mf2k_r2.dll" Guid="*" Win64="no">
+            <File Id="mf2k_r2.dll" KeyPath="yes" Source="..\ModelViewer\ModelViewer\Release\mf2k_r2.dll" />
+          </Component>
+          <Component Id="mf96_r.dll" Guid="*" Win64="no">
+            <File Id="mf96_r.dll" KeyPath="yes" Source="..\ModelViewer\ModelViewer\Release\mf96_r.dll" />
+          </Component>
+          <Component Id="mf96_r1.dll" Guid="*" Win64="no">
+            <File Id="mf96_r1.dll" KeyPath="yes" Source="..\ModelViewer\Redist\bin\mf96_r1.dll" />
+          </Component>
+          <Component Id="mf96_r2.dll" Guid="*" Win64="no">
+            <File Id="mf96_r2.dll" KeyPath="yes" Source="..\ModelViewer\ModelViewer\Release\mf96_r2.dll" />
+          </Component>
+          <Component Id="modview.chm" Guid="*" Win64="no">
+            <File Id="modview.chm" KeyPath="yes" Source="..\ModelViewer\Redist\bin\modview.chm" />
+          </Component>
+          <Component Id="modview.exe" Guid="*" Win64="no">
+            <File Id="modview.exe" KeyPath="yes" Source="..\ModelViewer\ModelViewer\Release\modview.exe" />
+            <ProgId Id="ModelViewer.Document" Description="Model Viewer Document" Icon="modview.exe" IconIndex="1">
+              <Extension Id="mv">
+                <Verb Id="open" TargetFile="modview.exe" Argument="&quot;%1&quot;" />
+                <Verb Id="print" TargetFile="modview.exe" Argument="/p &quot;%1&quot;" />
+                <Verb Id="printto" TargetFile="modview.exe" Argument="/pt &quot;%1&quot; &quot;%2&quot; &quot;%3&quot; &quot;%4&quot;" />
+              </Extension>
+            </ProgId>
+          </Component>
+          <Component Id="mt_r.dll" Guid="*" Win64="no">
+            <File Id="mt_r.dll" KeyPath="yes" Source="..\ModelViewer\ModelViewer\Release\mt_r.dll" />
+          </Component>
+          <Component Id="mt_r1.dll" Guid="*" Win64="no">
+            <File Id="mt_r1.dll" KeyPath="yes" Source="..\ModelViewer\Redist\bin\mt_r1.dll" />
+          </Component>
+          <Component Id="mt_r2.dll" Guid="*" Win64="no">
+            <File Id="mt_r2.dll" KeyPath="yes" Source="..\ModelViewer\ModelViewer\Release\mt_r2.dll" />
+          </Component>
+          <Component Id="mv.dll" Guid="*" Win64="no">
+            <File Id="mv.dll" KeyPath="yes" Source="..\ModelViewer\ModelViewer\Release\mv.dll" />
+          </Component>
+          <Component Id="sutr_r21.dll" Guid="*" Win64="no">
+            <File Id="sutr_r21.dll" KeyPath="yes" Source="..\ModelViewer\ModelViewer\Release\sutr_r21.dll" />
+          </Component>
+          <Component Id="sutr_r22.dll" Guid="*" Win64="no">
+            <File Id="sutr_r22.dll" KeyPath="yes" Source="..\ModelViewer\ModelViewer\Release\sutr_r22.dll" />
+          </Component>
+          <Component Id="MV.szlibdll.dll" Guid="*" Win64="no">
+            <File Id="MV.szlibdll.dll" KeyPath="yes" Source="..\ModelViewer\Redist\bin\szlibdll.dll" />
+          </Component>
+          <Component Id="vtkCommon.dll" Guid="*" Win64="no">
+            <File Id="vtkCommon.dll" KeyPath="yes" Source="..\ModelViewer\Redist\bin\vtkCommon.dll" />
+          </Component>
+          <Component Id="vtkFiltering.dll" Guid="*" Win64="no">
+            <File Id="vtkFiltering.dll" KeyPath="yes" Source="..\ModelViewer\Redist\bin\vtkFiltering.dll" />
+          </Component>
+          <Component Id="vtkGraphics.dll" Guid="*" Win64="no">
+            <File Id="vtkGraphics.dll" KeyPath="yes" Source="..\ModelViewer\Redist\bin\vtkGraphics.dll" />
+          </Component>
+          <Component Id="vtkImaging.dll" Guid="*" Win64="no">
+            <File Id="vtkImaging.dll" KeyPath="yes" Source="..\ModelViewer\Redist\bin\vtkImaging.dll" />
+          </Component>
+          <Component Id="vtkRendering.dll" Guid="*" Win64="no">
+            <File Id="vtkRendering.dll" KeyPath="yes" Source="..\ModelViewer\Redist\bin\vtkRendering.dll" />
+          </Component>
+          <Component Id="MV.zlib1.dll" Guid="*" Win64="no">
+            <File Id="MV.zlib1.dll" KeyPath="yes" Source="..\ModelViewer\Redist\bin\zlib1.dll" />
+          </Component>
+        </Directory>
+        <Directory Id="MV.doc" Name="doc">
+          <Component Id="ofr02_106.pdf" Guid="*" Win64="no">
+            <File Id="ofr02_106.pdf" KeyPath="yes" Source="..\ModelViewer\Redist\doc\ofr02-106.pdf" />
+          </Component>
+        </Directory>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
 </Wix>
