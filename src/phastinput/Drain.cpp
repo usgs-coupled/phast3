@@ -394,7 +394,7 @@ tidy_drains(void)
 			{
 				sprintf(error_string,
 						"X or Y not defined for drain point %d of drain %d.",
-						i + 1, j);
+						(int) i + 1, (int) j);
 				error_msg(error_string, CONTINUE);
 				input_error++;
 				return_value = FALSE;
@@ -409,7 +409,7 @@ tidy_drains(void)
 		{
 			sprintf(error_string,
 					"Width must be defined at first and last drain point (1 and %d) of drain %d.",
-					(int) drain_ptr->points.size(), j);
+				(int) drain_ptr->points.size(), (int) j);
 			error_msg(error_string, CONTINUE);
 			input_error++;
 			return_value = FALSE;
@@ -423,7 +423,7 @@ tidy_drains(void)
 		{
 			sprintf(error_string,
 					"Hydraulic conductivity must be defined at first and last drain point (1 and %d) of drain %d.",
-					(int) drain_ptr->points.size(), j);
+					(int) drain_ptr->points.size(), (int) j);
 			error_msg(error_string, CONTINUE);
 			input_error++;
 			return_value = FALSE;
@@ -437,7 +437,7 @@ tidy_drains(void)
 		{
 			sprintf(error_string,
 					"Thickness must be defined at first and last drain point (1 and %d) of drain %d.",
-					(int) drain_ptr->points.size(), j);
+					(int) drain_ptr->points.size(), (int) j);
 			error_msg(error_string, CONTINUE);
 			input_error++;
 			return_value = FALSE;
@@ -451,7 +451,7 @@ tidy_drains(void)
 		{
 			sprintf(error_string,
 					"Drain elevation must be defined at first and last drain point (1 and %d) of drain %d.",
-					(int) drain_ptr->points.size(), j);
+					(int) drain_ptr->points.size(), (int) j);
 			error_msg(error_string, CONTINUE);
 			input_error++;
 			return_value = FALSE;
@@ -662,7 +662,7 @@ tidy_drains(void)
 			{
 				sprintf(error_string,
 						"Two drains have the same identifying number. Sequence number %d %s and sequence number %d %s.",
-						j, drains[j]->description.c_str(), i,
+						(int) j, drains[j]->description.c_str(), (int) i,
 						drains[i]->description.c_str());
 				error_msg(error_string, CONTINUE);
 				input_error++;
