@@ -79,8 +79,8 @@ $(DIST_TARBALL) : $(DIST_RPM)
 	rm -f $(NAME).cpio; \
 	mv usr/* .; \
 	rmdir usr; \
-	mv share/doc/$(NAME)-$(VERSION)/* .; \
-	rmdir share/doc/$(NAME)-$(VERSION); \
+	mv share/doc/$(NAME)/* .; \
+	rmdir share/doc/$(NAME); \
 	rmdir share/doc; \
 	rmdir share; \
 	cd ..; \
