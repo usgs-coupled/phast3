@@ -22,7 +22,7 @@ SOURCE_RPM_DIR := $(HOME)/$(RPMDIR)/sources/$(NAME)-$(VERSION)-$(RELEASE)
 
 DIST_RPM := $(HOME)/$(RPMDIR)/rpms/i586/$(NAME)-$(VERSION)-$(RELEASE).i586.rpm
 
-DIST_TARBALL := $(HOME)/$(RPMDIR)/rpms/i586/$(NAME)-$(VERSION)-$(RELEASE).`uname`.tar.gz
+DIST_TARBALL := $(HOME)/$(RPMDIR)/rpms/i586/$(NAME)-$(VERSION)-$(RELEASE).i586.tar.gz
 
 REPOS_PATH ?= trunk
 

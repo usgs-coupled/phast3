@@ -47,8 +47,8 @@ cp src/phast/revisions ./RELEASE
 # build phastinput
 #
 cd src/phastinput
-##make
-ln -s `which echo` phastinput
+make
+##ln -s `which echo` phastinput
 cd ../..
 
 #
@@ -63,12 +63,12 @@ cd ../..
 # build phast-ser and phast-lam
 #
 cd src/phast
-##make serial_intel_64
-mkdir -p serial_intel_64
-ln -s `which echo` serial_intel_64/phast
-##make openmpi_intel_64
-mkdir -p openmpi_intel_64
-ln -s `which echo` openmpi_intel_64/phast
+make serial_intel_64
+##mkdir -p serial_intel_64
+##ln -s `which echo` serial_intel_64/phast
+make openmpi_intel_64
+##mkdir -p openmpi_intel_64
+##ln -s `which echo` openmpi_intel_64/phast
 cd ../..
 
 %install
@@ -141,7 +141,7 @@ cp src/phastinput/phastinput $RPM_BUILD_ROOT/%{_bindir}/phastinput
 # Linux /usr/lib/phast-%{version}/*.jar
 # SunOS /usr/local/lib/phast-%{version}/*.jar
 #
-cp src/phasthdf/dist/*.jar $RPM_BUILD_ROOT/%{_libdir}/phast-%{version}/.
+cp src/phasthdf/dist64/*.jar $RPM_BUILD_ROOT/%{_libdir}/phast-%{version}/.
 
 #
 # Phast/hdf so's
