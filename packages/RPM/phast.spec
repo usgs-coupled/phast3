@@ -36,11 +36,8 @@ Reactions
 # 
 # Rearrange files
 #
-mv doc/README .
-mv doc/NOTICE.TXT ./NOTICE
 rm -f doc/README.dist
 mv src/phast/phreeqc.revisions  ./doc/.
-cp src/phast/revisions ./RELEASE
 %build
 
 #
@@ -59,7 +56,7 @@ ant dist-Linux
 cd ../..
 
 #
-# build phast-ser and phast-lam
+# build phast-ser phast-lam and phast-openmpi
 #
 ssh grundvand "cd $RPM_BUILD_DIR/$RPM_PACKAGE_NAME-$RPM_PACKAGE_VERSION-$RPM_PACKAGE_RELEASE/src/phast && make serial_intel"
 ssh grundvand "cd $RPM_BUILD_DIR/$RPM_PACKAGE_NAME-$RPM_PACKAGE_VERSION-$RPM_PACKAGE_RELEASE/src/phast && make openmpi_intel"

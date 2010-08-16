@@ -92,7 +92,6 @@
             <ComponentRef Id="read2.f90" />
             <ComponentRef Id="read3.f90" />
             <ComponentRef Id="reordr.f90" />
-            <ComponentRef Id="revisions" />
             <ComponentRef Id="rewi_mod.f90" />
             <ComponentRef Id="rfact.f90" />
             <ComponentRef Id="rfactm.f90" />
@@ -730,9 +729,6 @@
                     </Component>
                     <Component Id="reordr.f90" Guid="*">
                         <File Id="reordr.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\reordr.f90" />
-                    </Component>
-                    <Component Id="revisions" Guid="*">
-                        <File Id="revisions" KeyPath="yes" Source="$(var.SrcDir)\phast\revisions" />
                     </Component>
                     <Component Id="rewi_mod.f90" Guid="*">
                         <File Id="rewi_mod.f90" KeyPath="yes" Source="$(var.SrcDir)\phast\rewi_mod.f90" />

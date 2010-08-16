@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Fragment>
         <ComponentGroup Id="Doc">
@@ -22,7 +22,7 @@
                     <File Id="phreeqc.revisions.txt" KeyPath="yes" Source="..\src\phast\phreeqc.revisions" Name="phreeqc.revisions.txt" />
                 </Component>
                 <Component Id="RELEASE.txt" Guid="*">
-                    <File Id="RELEASE.txt" KeyPath="yes" Source="..\src\phast\revisions" Name="RELEASE.txt" />
+                    <File Id="RELEASE.txt" KeyPath="yes" Source="..\RELEASE" Name="RELEASE.txt" />
                 </Component>
                 <Component Id="wrir02_4172.pdf" Guid="*">
                     <File Id="wrir02_4172.pdf" KeyPath="yes" Source="..\doc\wrir02-4172.pdf" />
