@@ -36,11 +36,8 @@ Reactions
 # 
 # Rearrange files
 #
-mv doc/README .
-mv doc/NOTICE.TXT ./NOTICE
-rm -f doc/README.dist
+rm -f README.dist
 mv src/phast/phreeqc.revisions  ./doc/.
-cp src/phast/revisions ./RELEASE
 %build
 
 #

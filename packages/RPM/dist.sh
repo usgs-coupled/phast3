@@ -149,41 +149,42 @@ echo "Removed and recreated $DIST_SANDBOX"
 
 echo "Exporting revision $REVISION of PHAST into sandbox..."
 (cd "$DIST_SANDBOX" && \
- 	${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
-	     "http://internalbrr.cr.usgs.gov/svn_GW/phastpp/$REPOS_PATH" \
-	     "$DISTNAME")
-	     
+        ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
+             "http://internalbrr.cr.usgs.gov/svn_GW/phastpp/$REPOS_PATH" \
+             "$DISTNAME")
+
 echo "Exporting revision $REVISION of external database into sandbox..."
 (cd "$DIST_SANDBOX" && \
- 	${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
-	     "http://internalbrr.cr.usgs.gov/svn_GW/phreeqc/trunk/database" \
-	     "$DISTNAME/database")
-	     
+        ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
+             "http://internalbrr.cr.usgs.gov/svn_GW/phreeqc/trunk/database" \
+             "$DISTNAME/database")
+
 echo "Exporting revision $REVISION of external src/phast/phreeqcpp into sandbox..."
 (cd "$DIST_SANDBOX" && \
- 	${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
-	     "http://internalbrr.cr.usgs.gov/svn_GW/phreeqcpp/trunk/src" \
-	     "$DISTNAME/src/phast/phreeqcpp")
-	     
+        ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
+             "http://internalbrr.cr.usgs.gov/svn_GW/phreeqcpp/trunk/src" \
+             "$DISTNAME/src/phast/phreeqcpp")
+
 echo "Exporting revision $REVISION of external src/phast/KDtree into sandbox..."
 (cd "$DIST_SANDBOX" && \
- 	${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
-	     "http://internalbrr.cr.usgs.gov/svn_GW/phastpp/trunk/src/phastinput/KDtree" \
-	     "$DISTNAME/src/phast/KDtree")
-	     
-	     
+        ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
+             "http://internalbrr.cr.usgs.gov/svn_GW/phastpp/trunk/src/phastinput/KDtree" \
+             "$DISTNAME/src/phast/KDtree")
+
 echo "Exporting revision $REVISION of external src/phast/phreeqcpp/phreeqc into sandbox..."
 (cd "$DIST_SANDBOX" && \
- 	${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
-	     "http://internalbrr.cr.usgs.gov/svn_GW/phreeqc/trunk/src" \
-	     "$DISTNAME/src/phast/phreeqcpp/phreeqc")
+        ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
+             "http://internalbrr.cr.usgs.gov/svn_GW/phreeqc/trunk/src" \
+             "$DISTNAME/src/phast/phreeqcpp/phreeqc")
 
-echo "Exporting revision $REVISION of ModelViewer into sandbox..."
-(cd "$DIST_SANDBOX" && \
- 	${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
-	     "http://internalbrr.cr.usgs.gov/svn_GW/ModelViewer/trunk" \
-	     "$DISTNAME/ModelViewer")
-	     
+if [ -n "$WIN" ]; then
+  echo "Exporting revision $REVISION of ModelViewer into sandbox..."
+  (cd "$DIST_SANDBOX" && \
+          ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
+                "http://internalbrr.cr.usgs.gov/svn_GW/ModelViewer/trunk" \
+                "$DISTNAME/ModelViewer")
+fi  
+
 echo "Making examples clean"
 (cd "$DISTPATH/examples" && [ -f Makefile ] && make TOPDIR=.. clean > /dev/null)
 
@@ -307,7 +308,7 @@ SED_FILES="$DISTPATH/src/phast/win32/phast_version.h \
            $DISTPATH/src/phast/phast.F90 \
            $DISTPATH/src/phasthdf/win32/phasthdf_version.h \
            $DISTPATH/src/phastinput/win32/phastinput_version.h \
-           $DISTPATH/doc/README \
+           $DISTPATH/README \
            $DISTPATH/packages/win32-is/phast.ipr \
            $DISTPATH/packages/win32-is/String?Tables/0009-English/value.shl"
 for vsn_file in $SED_FILES
@@ -329,7 +330,7 @@ do
   mv -f "$vsn_file.tmp" "$vsn_file"
   if [ -n "$WIN" ]; then
     unix2dos "$vsn_file"
-  fi  
+  fi
   cp "$vsn_file" "$vsn_file.dist"
 done
 

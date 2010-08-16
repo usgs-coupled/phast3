@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Fragment>
         <ComponentGroup Id="Readme">
@@ -8,7 +8,7 @@
     <Fragment>
         <DirectoryRef Id="APPLICATIONFOLDER">
             <Component Id="README.txt" Guid="*">
-              <File Id="README.txt" KeyPath="yes" Source="..\doc\README" Name="README.txt" />
+              <File Id="README.txt" KeyPath="yes" Source="..\README" Name="README.txt" />
             </Component>
         </DirectoryRef>
     </Fragment>
