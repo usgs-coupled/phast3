@@ -45,7 +45,6 @@ mv src/phast/phreeqc.revisions  ./doc/.
 #
 cd src/phastinput
 make
-##ln -s `which echo` phastinput
 cd ../..
 
 #
@@ -61,11 +60,7 @@ cd ../..
 #
 cd src/phast
 make serial_intel_64
-##mkdir -p serial_intel_64
-##ln -s `which echo` serial_intel_64/phast
 make openmpi_intel_64
-##mkdir -p openmpi_intel_64
-##ln -s `which echo` openmpi_intel_64/phast
 cd ../..
 
 %install
@@ -96,12 +91,12 @@ tar xvzf $RPM_SOURCE_DIR/%{name}-%{version}-%{release}.tar.gz %{name}-%{version}
 find %{name}-%{version}-%{release}/src -type d -name win32 -print | xargs rm -rf
 find %{name}-%{version}-%{release}/src -type d -name win32_2005 -print | xargs rm -rf
 find %{name}-%{version}-%{release}/src -type d -name Sun -print | xargs rm -rf
+find %{name}-%{version}-%{release}/src/phasthdf/. -type f -name ".nbattrs" -print | xargs rm -rf
 rm -f %{name}-%{version}-%{release}/src/Makefile.am
 rm -f %{name}-%{version}-%{release}/src/phast/Makefile.am
 rm -f %{name}-%{version}-%{release}/src/phasthdf/Makefile.am
 rm -f %{name}-%{version}-%{release}/src/phasthdf/phasthdf.in
 mv %{name}-%{version}-%{release}/src/phasthdf/build.xml.in %{name}-%{version}-%{release}/src/phasthdf/build.xml
-find %{name}-%{version}-%{release}/src/phasthdf/. -type f -name ".nbattrs" -print | xargs rm -rf
 rm -rf %{name}-%{version}-%{release}/src/phasthdf/hdf-java
 rm -rf %{name}-%{version}-%{release}/src/phasthdf/test
 rm -f %{name}-%{version}-%{release}/src/phastinput/Makefile.am
