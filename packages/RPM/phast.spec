@@ -216,15 +216,15 @@ java -jar \$JARS/phast.jar \$* &
 EOF
 chmod 755 $RPM_BUILD_ROOT/%{_bindir}/phasthdf
 
-#
-# run and store examples
-#
-for arg in `find test -mindepth 1 -maxdepth 1 -type d`; do
-  cd $arg
-  $RPM_BUILD_ROOT/%{_bindir}/phast `basename $arg`
-  cd ../..
-done
-tar cvzf $RPM_SOURCE_DIR/%{name}-%{version}-%{release}-`uname`-test.tar.gz test
+####
+#### run and store examples
+####
+###for arg in `find test -mindepth 1 -maxdepth 1 -type d`; do
+###  cd $arg
+###  $RPM_BUILD_ROOT/%{_bindir}/phast `basename $arg`
+###  cd ../..
+###done
+###tar cvzf $RPM_SOURCE_DIR/%{name}-%{version}-%{release}-`uname`-test.tar.gz test
 
 %clean
 rm -rf $RPM_BUILD_ROOT
