@@ -1,0 +1,267 @@
+	PHAST, Version @VERSION@, @VER_DATE@
+
+PHAST is a 3-dimensional, reactive-transport simulator that is
+available for Windows and Linux. PHAST simulates constant-density
+saturated flow, multicomponent transport, and a wide range of
+equilibrium and kinetic chemical reactions.
+
+
+
+INSTALLATION
+
+
+Windows Installation:
+---------------------
+
+The Windows version uses InstallShield to install the programs PHAST,
+PHASTHDF, and Model Viewer. You need administrator privileges to
+execute the installation file phast-@VERSION@-@REVISION@.exe.
+
+The installation directory is \Program Files\USGS\phast-@VERSION@, which
+contains the following subdirectories:
+	\bin
+	\database
+	\doc
+	\examples
+	\lib
+	\Model Viewer
+	\src
+
+Linux Installation with tar:
+----------------------------
+
+Extract the files from phast-@VERSION@-@REVISION@.Linux.tar.gz with the command:
+
+tar -xzf phast-@VERSION@-@REVISION@.Linux.tar.gz
+
+Files will be extracted into a directory named phast-@VERSION@. The 
+following subdirectories will be created within phast-@VERSION@:
+	/bin
+	/database
+	/doc
+	/examples
+	/lib
+	/src
+
+
+Linux Installation with RPM:
+----------------------------
+
+The programs PHAST and PHASTHDF can be installed with the RedHat
+Package Manager (rpm) on Linux operating systems.  (Model Viewer is
+only available in the Windows version).  You must have root authority
+to install with rpm. The --prefix option may be used to change the
+installation directory. The programs are installed with the following
+command, where square brackets indicate an optional field:
+
+rpm -i [--prefix=dirname] phast-@VERSION@-@REVISION@.i586.rpm
+
+The installation directory for the source, documentation, and examples
+is /usr/share/doc/phast-@VERSION@, where the directory /usr may be changed
+with the --prefix option. The subdirectories of this directory are
+
+	/database
+	/doc
+	/examples
+	/src
+
+The installation directory for the scripts and executables is
+/usr/bin, where the directory /usr may be changed with the --prefix
+option.
+
+Additional files required to run phasthdf are installed into the
+/usr/lib directory, where the directory /usr may also be changed
+using the --prefix option.
+
+PHAST can be uninstalled with the following command:
+
+rpm -e phast
+
+
+Building phast using configure:
+-------------------------------
+
+Building phast requires the following:
+	make
+	C++ compiler
+	Fortran 90 compiler
+	hdf5 libraries >= 1.6.5
+	boost C++ libraries >= 1.33
+	zlib libraries >= 1.2.2
+
+And, additionally for the MPI version:
+	mpi c++ wrapper: (ie mpic++ mpicxx mpiCC)
+	
+The serial version of PHAST can be built and installed using the following
+commands:
+
+tar -xzf phast-@VERSION@-@REVISION@.tar.gz
+cd phast-@VERSION@-@REVISION@
+mkdir _build
+cd _build
+../configure [--prefix=dirname]                   # serial version
+make
+make install
+
+The parallel version of PHAST can be built and installed using the following
+commands:
+
+tar -xzf phast-@VERSION@-@REVISION@.tar.gz
+cd phast-@VERSION@-@REVISION@
+mkdir _build
+cd _build
+../configure [--prefix=dirname] --enable-mpi
+make
+make install
+
+
+Additional configuration settings may be specified to configure. Use
+the following command to display help for each setting:
+../configure --help
+
+Building PHASTHDF is not currently supported.
+
+
+DOCUMENTATION
+
+The doc subdirectory of each installation contains phast.pdf,
+phreeqc.pdf, and wrir02-4172.pdf, which document all of the keyword
+data blocks for PHAST. The ModelViewer\doc subdirectory in the Windows
+version includes the documentation for ModelViewer, ofr02-106.pdf.
+
+
+
+RUNNING PHAST (Serial or single-processor version)
+
+For reactive-transport simulations, PHAST needs three data files for
+execution, (1) the flow and transport data file,(2) the chemistry data
+file, and (3) the thermodynamic database file. For flow-only
+calculations, only the flow and transport data file is needed. Running
+PHAST is a two-step process that is automated in scripts (Unix,
+bin/phast; Windows, bin\phast.bat). A prefix, from which input and
+output file names are derived, is defined as an argument to the
+script. Within the script,the program PHASTINPUT (bin/phastinput) is
+run to generate an intermediate input file named Phast.tmp. Following
+successful completion of the PHASTINPUT program, the script invokes
+the program PHAST (bin/phast-ser), which performs the
+reactive-transport simulations. The script (Unix or Windows) is
+invoked from a command-line window as follows:
+
+phast prefix [database] 
+
+The flow and transport data file must be named prefix.trans.dat; the
+chemistry data file must be named prefix.chem.dat. Optionally,
+[database] is the name of the thermodynamic database file; if this
+argument is not defined, the database file must be named phast.dat.
+
+
+
+PARALLEL (MULTIPROCESSOR) VERSIONS OF PHAST
+
+A parallel version for PHAST for Windows has been compiled with the
+MPICH2 version of MPI (bin\phast-mpich2). For Linux, the parallel
+version has been compiled with the LAM version of MPI
+(bin/phast-lam). The parallel versions use exactly the same input
+files as the serial versions. Limited help with installation and
+running the parallel versions is given in Appendix C of the PHAST
+documentation (doc/phast.pdf).
+
+
+
+PHASTHDF
+
+PHASTHDF (bin/phasthdf) is a Java program that allows you to extract
+data from the HDF output file (prefix.h5). The Java 2 Runtime
+Environment must be installed on your computer to be able to run
+PHASTHDF. 
+
+
+
+MODEL VIEWER
+
+Model Viewer (Model Viewer\bin\modview.exe) is a graphical user
+interface that allows visualization of data stored in the HDF output
+file (prefix.h5).
+
+
+
+EXECUTABLE FILES
+
+Executables are provided in the /bin directory of the PHAST distribution.
+The Linux versions include executables phast-ser, phast-lam (LAM parallel
+version, 32 bit version only), phast-openmpi (openmpi parallel version),
+phastinput, and phasthdf (program to extract data from an HDF file). All
+phast executables were compiled with Intel Fortran and GCC.
+
+The Windows versions include executables phast-ser, phast-mpich (MPICH
+parallel version), phastinput, and phasthdf (program to extract data from
+an HDF file). All phast executables were compiled with Intel Fortran and
+Microsoft C++ 2005.
+
+
+INPUT FILES
+
+The flow and transport data file, chemistry data file, and database
+file are all composed of keyword data blocks. The keyword data blocks
+for chemistry are identical to PHREEQC, and any PHREEQC calculation
+can be performed.  PHREEQC is run first when PHAST starts to define
+solutions, equilibrium-phase assemblages, exchange assemblages,
+surface assemblages, solid-solution assemblages, gas phases, and sets
+of kinetic reactions with associated identifying numbers.  The
+numbered entities are used to set initial conditions in the model
+domain and to define boundary solutions.
+
+The database file phast.dat is the same as phreeqc.dat distributed
+with PHREEQC. It contains the definitions of elements, aqueous
+species, mineral phase, exchange species, and surface species.
+
+The keywords for the flow and transport data file have been devised
+for PHAST, but are based on input for the model HST3D (stripping out
+anything related to heat or density and using head in place of
+pressure). Most of the data blocks are related to the flow and
+transport parameters needed to simulate ground-water flow and solute
+transport.
+
+The main interaction between the flow and transport data file and the
+chemistry data file occurs in CHEMISTRY_IC (of the flow and transport
+data file), where entity numbers (solutions, equilibrium-phase
+assemblages, etc, as defined in the chemistry data file) are assigned
+to spatial zones (rectangular parallelepipeds) to establish the
+initial conditions and reactions in the model domain. Note that it is
+possible to define initial conditions that change linearly in one of
+the coordinate directions for each zone (for example solution
+composition could vary linearly between two end members along the x
+coordinate direction for a zone).
+
+LEAKY_BC, FLUX_BC, SPECIFIED_BC, RIVER, and WELL all specify flow
+conditions that may result in a flux of water into the domain. In that
+case, the solution composition associated with that flux must be
+defined, again with index numbers referring to solutions defined in
+the chemistry data file. In the _BC boundary conditions, it is
+possible to define a fixed or linear distribution of solution
+composition.
+
+
+
+EXAMPLES
+
+Example problems are included in the examples directory of the
+installation.  Four of the examples are documented in the phast.pdf
+file. They include a pulse of a linearly decaying and sorbing
+component (ex1); chain decay resulting in production of three
+degradation products (ex2); microbial consumption of a substrate with
+microbial growth (ex3); and a field-scale model of for Central
+Oklahoma that uses most of the features of PHAST (ex4).  Another
+example is an ion exchange problem equivalent to example 11 in the
+PHREEQC manual. The other examples are test problems used to debug
+PHAST that often use only one feature of PHAST. Some of the examples
+contain no chemistry and are simply a test of the flow model.
+
+
+HISTORY--See RELEASE.TXT 
+
+
+Hopefully this is enough to get you started. Please report bugs
+(dlpark@usgs.gov or klkipp@usgs.gov) and we will try to fix any
+problems as soon as possible. Any other comments are appreciated.
+
