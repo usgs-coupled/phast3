@@ -97,7 +97,6 @@ PHAST_SRC=\
 	read2.f90\
 	read3.f90\
 	reordr.f90\
-	revisions\
 	rewi_mod.f90\
 	rfact.f90\
 	rfactm.f90\
