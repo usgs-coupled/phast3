@@ -91,11 +91,24 @@ find %{name}-%{version}-%{release}/src -type d -name win32 -print | xargs rm -rf
 find %{name}-%{version}-%{release}/src -type d -name win32_2005 -print | xargs rm -rf
 find %{name}-%{version}-%{release}/src -type d -name Sun -print | xargs rm -rf
 find %{name}-%{version}-%{release}/src/phasthdf/. -type f -name ".nbattrs" -print | xargs rm -rf
+rm -f %{name}-%{version}-%{release}/src/Makefile.am
+rm -f %{name}-%{version}-%{release}/src/phast/Makefile.am
+rm -f %{name}-%{version}-%{release}/src/phasthdf/Makefile.am
+rm -f %{name}-%{version}-%{release}/src/phasthdf/phasthdf.in
+mv %{name}-%{version}-%{release}/src/phasthdf/build.xml.in %{name}-%{version}-%{release}/src/phasthdf/build.xml
 rm -rf %{name}-%{version}-%{release}/src/phasthdf/hdf-java
 rm -rf %{name}-%{version}-%{release}/src/phasthdf/test
+rm -f %{name}-%{version}-%{release}/src/phastinput/Makefile.am
 rm -f %{name}-%{version}-%{release}/src/phast/phreeqc/distribution.checklist
 rm -f %{name}-%{version}-%{release}/src/phast/phreeqc/distribution.mk
 rm -f %{name}-%{version}-%{release}/src/phast/phreeqc/Makefile
+rm -f %{name}-%{version}-%{release}/doc/Makefile.am
+rm -f %{name}-%{version}-%{release}/doc/phast.pdf
+rm -rf %{name}-%{version}-%{release}/database/EPRI
+rm -rf %{name}-%{version}-%{release}/database/isotopes
+rm -rf %{name}-%{version}-%{release}/database/SIT
+rm -rf %{name}-%{version}-%{release}/database/redox
+
 
 #
 # Linux /usr/bin/phast-ser
