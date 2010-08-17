@@ -37,7 +37,6 @@ Reactions
 # Rearrange files
 #
 rm -f doc/README.dist
-mv src/phast/phreeqc.revisions  ./doc/.
 %build
 
 #
