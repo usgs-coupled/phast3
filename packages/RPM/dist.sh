@@ -212,9 +212,6 @@ echo "Cleaning up misc files"
 rm -rf "$DISTPATH/bootstrap"
 find "$DISTPATH/src" -type f -name '*.user' -print | xargs rm -rf
 
-echo "Moving phreeqc.revisions"
-mv "$DISTPATH/src/phast/phreeqc.revisions" "$DISTPATH/doc/phreeqc.revisions"
-
 echo "Deleting examples that aren't distributed"
 mv "$DISTPATH/examples" "$DISTPATH/examples-delete"
 mkdir "$DISTPATH/examples"
@@ -267,8 +264,9 @@ rm -rf "$DISTPATH/src/phast/phreeqc/Sun"
 echo "Renaming phreeqc.dat to phast.dat"
 mv "$DISTPATH/database/phreeqc.dat" "$DISTPATH/database/phast.dat"
 
-echo "Copying src/phast/phreeqcpp/phreeqc/revisions to src/phast/phreeqc.revisions"
+echo "Copying src/phast/phreeqcpp/phreeqc/revisions to src/phast/phreeqc.revisions and doc/phreeqc.revisions"
 cp "$DISTPATH/src/phast/phreeqcpp/phreeqc/revisions" "$DISTPATH/src/phast/phreeqc.revisions"
+cp "$DISTPATH/src/phast/phreeqcpp/phreeqc/revisions" "$DISTPATH/doc/phreeqc.revisions"
 
 if [ -n "$WIN" ]; then
   echo "Copying Model Viewer Reqs"
