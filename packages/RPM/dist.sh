@@ -212,6 +212,8 @@ echo "Cleaning up misc files"
 rm -rf "$DISTPATH/bootstrap"
 find "$DISTPATH/src" -type f -name '*.user' -print | xargs rm -rf
 
+echo "Moving phreeqc.revisions"
+mv "$DISTPATH/src/phast/phreeqc.revisions" "$DISTPATH/doc/phreeqc.revisions"
 
 echo "Deleting examples that aren't distributed"
 mv "$DISTPATH/examples" "$DISTPATH/examples-delete"
