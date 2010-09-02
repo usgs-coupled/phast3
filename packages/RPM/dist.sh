@@ -309,6 +309,7 @@ SED_FILES="$DISTPATH/src/phast/win32/phast_version.h \
            $DISTPATH/src/phasthdf/win32/phasthdf_version.h \
            $DISTPATH/src/phastinput/win32/phastinput_version.h \
            $DISTPATH/README \
+           $DISTPATH/RELEASE \
            $DISTPATH/packages/win32-is/phast.ipr \
            $DISTPATH/packages/win32-is/String?Tables/0009-English/value.shl"
 for vsn_file in $SED_FILES
