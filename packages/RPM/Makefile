@@ -53,6 +53,13 @@ check_release :
 	    else \
 		exit 0; \
 	fi
+	@if [ "$(PHREEQC_VER)"x = "x" ]; \
+	  then \
+		echo "Please specifiy PHREEQC_VER with 'make PHREEQC_VER=<number>'"; \
+		exit 1; \
+	    else \
+		exit 0; \
+	fi
 	@if [ "$(RELEASE)"x = "x" ]; \
 	   then \
 		echo "Please specifiy RELEASE with 'make RELEASE=<number>'"; \
@@ -103,7 +110,7 @@ build_srpm_files : $(HOME)/.rpmmacros $(HOME)/$(RPMDIR) $(SPECFILE) $(TARBALL)
 $(TARBALL) : dist.sh
 	@echo "Creating $(TARBALL)"
 	rm -f $(TARBALL)
-	time ./dist.sh -v $(VERSION) -r $(RELEASE) -d $(DATE) -pr $(REPOS_PATH) 2>&1 | tee dist-$(RELEASE).log
+	time ./dist.sh -v $(VERSION) -vp $(PHREEQC_VER) -r $(RELEASE) -d $(DATE) -pr $(REPOS_PATH) 2>&1 | tee dist-$(RELEASE).log
 
 $(HOME)/.rpmmacros : .rpmmacros
 	@if [ ! -f $(HOME)/.rpmmacros ]; \
