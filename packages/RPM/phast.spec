@@ -37,6 +37,7 @@ Reactions
 # Rearrange files
 #
 rm -f doc/README.dist
+rm -f RELEASE.dist
 %build
 
 #

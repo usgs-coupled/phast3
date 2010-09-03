@@ -15,11 +15,11 @@ TARBALL := $(NAME)-$(VER)-$(REL).tar.gz
 REPOS_PATH ?= trunk
 
 all : $(TARBALL)
-	@echo "DATE=$(DATE)"        >> history
-	@echo "VER=$(VER)"          >> history
-	@echo "REL=$(REL)"          >> history
-	@echo "===================" >> history
-	
+	@echo "DATE=$(DATE)"               >> history
+	@echo "VER=$(VER)"                 >> history
+	@echo "PHREEQC_VER=$(PHREEQC_VER)" >> history
+	@echo "REL=$(REL)"                 >> history
+	@echo "==================="        >> history
 
 $(TARBALL) : $(EXPORT)
 	rm -rf $(NAME)-$(VER)-$(REL)
@@ -32,23 +32,25 @@ $(TARBALL) : $(EXPORT)
 	cd $(NAME)-$(VER)-$(REL) && cd _build && make distcheck
 	cd $(NAME)-$(VER)-$(REL) && cd _build && cp $(NAME)-$(VER)-$(REL).tar.gz ../..
 	rm -rf $(NAME)-$(VER)-$(REL)
-	
 
 $(EXPORT) : ../RPM/dist.sh
 ifeq ($(DATE),)
-	$(error usage: make DATE=<m/d/yyyy> VER=<x.y.z> [REL=x])
+	$(error usage: make DATE=<m/d/yyyy> VER=<x.y.z> PHREEQC_VER=<x.y.z> [REL=x])
 endif
 ifeq ($(VER),)
-	$(error usage: make DATE=<m/d/yyyy> VER=<x.y.z> [REL=x])
+	$(error usage: make DATE=<m/d/yyyy> VER=<x.y.z> PHREEQC_VER=<x.y.z> [REL=x])
+endif
+ifeq ($(PHREEQC_VER),)
+	$(error usage: make DATE=<m/d/yyyy> VER=<x.y.z> PHREEQC_VER=<x.y.z> [REL=x])
 endif
 	@echo "Creating $(NAME)-export-$(VER)-$(REL).tar.gz"
 	rm -f $(NAME)-export-$(VER)-$(REL).tar.gz
-	time ../RPM/dist.sh -v $(VER) -r $(REL) -d $(DATE) -pr $(REPOS_PATH) 2>&1 | tee export-$(REL).log
+	time ../RPM/dist.sh -v $(VER) -vp $(PHREEQC_VER) -r $(REL) -d $(DATE) -pr $(REPOS_PATH) 2>&1 | tee export-$(REL).log
 	mv $(TARBALL) $(NAME)-export-$(VER)-$(REL).tar.gz
 
 usage:
 	@echo ""
-	@echo "usage: make DATE=<m/d/yyyy> VER=<x.y.z> [REL=x]"
-	@echo "    ie make DATE=8/9/2010 VER=2.0.0"
-	@echo "    ie make DATE=8/9/2010 VER=2.0.0 REL=4000"
+	@echo "usage: make DATE=<m/d/yyyy> VER=<x.y.z> PHREEQC_VER=<x.y.z>  [REL=x]"
+	@echo "    ie make DATE=8/9/2010 VER=2.0.0 PHREEQC_VER=2.17.4"
+	@echo "    ie make DATE=8/9/2010 VER=2.0.0 PHREEQC_VER=2.17.4 REL=4000"
 	@echo ""

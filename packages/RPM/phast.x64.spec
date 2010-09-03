@@ -37,6 +37,7 @@ Reactions
 # Rearrange files
 #
 rm -f README.dist
+rm -f RELEASE.dist
 %build
 
 #

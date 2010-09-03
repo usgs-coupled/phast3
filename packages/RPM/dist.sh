@@ -31,12 +31,12 @@
 # set -x
 
 # A quick and dirty usage message
-USAGE="USAGE: ./dist.sh -v VERSION -r REVISION -d RELEASE_DATE \
+USAGE="USAGE: ./dist.sh -v VERSION -vp PHREEQC_VER -r REVISION -d RELEASE_DATE \
 [-rs REVISION-SVN ] [-pr REPOS-PATH] \
 [-alpha ALPHA_NUM|-beta BETA_NUM|-rc RC_NUM] \
 [-win]
- EXAMPLES: ./dist.sh -v 1.1 -r 150 -d 2/7/05
-           ./dist.sh -v 1.1 -r 150 -d 2/7/05 -pr trunk"
+ EXAMPLES: ./dist.sh -v 1.1.1 -vp 2.17.0  -r 150 -d 2/7/05
+           ./dist.sh -v 1.1.1 -vp 2.17.1  -r 150 -d 2/7/05 -pr trunk"
 
 
 # Let's check and set all the arguments
@@ -48,6 +48,7 @@ do
 
     case $ARG_PREV in
          -v)  VERSION="$ARG" ;;
+        -vp)  PHREEQC_VER="$ARG" ;;
          -r)  REVISION="$ARG" ;;
         -rs)  REVISION_SVN="$ARG" ;;
         -pr)  REPOS_PATH="$ARG" ;;
@@ -63,7 +64,7 @@ do
   else
 
     case $ARG in
-      -v|-r|-rs|-pr|-beta|-rc|-alpha|-d)
+      -v|-vp|-r|-rs|-pr|-beta|-rc|-alpha|-d)
         ARG_PREV=$ARG
         ;;
       -win)
@@ -115,7 +116,7 @@ if [ -n "$WIN" ] ; then
   fi
 fi
 
-if [ -z "$VERSION" ] || [ -z "$REVISION" ] || [ -z "$RDATE" ]; then
+if [ -z "$VERSION" ] || [ -z "$PHREEQC_VER" ] || [ -z "$REVISION" ] || [ -z "$RDATE" ]; then
   echo " $USAGE"
   exit 1
 fi
@@ -264,10 +265,6 @@ rm -rf "$DISTPATH/src/phast/phreeqc/Sun"
 echo "Renaming phreeqc.dat to phast.dat"
 mv "$DISTPATH/database/phreeqc.dat" "$DISTPATH/database/phast.dat"
 
-echo "Copying src/phast/phreeqcpp/phreeqc/revisions to src/phast/phreeqc.revisions and doc/phreeqc.revisions"
-cp "$DISTPATH/src/phast/phreeqcpp/phreeqc/revisions" "$DISTPATH/src/phast/phreeqc.revisions"
-cp "$DISTPATH/src/phast/phreeqcpp/phreeqc/revisions" "$DISTPATH/doc/phreeqc.revisions"
-
 if [ -n "$WIN" ]; then
   echo "Copying Model Viewer Reqs"
   mkdir "$DISTPATH/ModelViewer/Redist"
@@ -306,6 +303,7 @@ VERSION_LONG="$ver_major.$ver_minor.$ver_patch.$REVISION_SVN"
 SED_FILES="$DISTPATH/src/phast/win32/phast_version.h \
            $DISTPATH/src/phast/win32_2005/phast_version.h \
            $DISTPATH/src/phast/phast.F90 \
+           $DISTPATH/src/phast/phreeqcpp/phreeqc/revisions \
            $DISTPATH/src/phasthdf/win32/phasthdf_version.h \
            $DISTPATH/src/phastinput/win32/phastinput_version.h \
            $DISTPATH/README \
@@ -327,6 +325,8 @@ do
    -e "s/@RELEASE_DATE@/${RELEASE_DATE}/g" \
    -e "s/@VERSION_LONG@/$VERSION_LONG/g" \
    -e "s/@VER_UC@/${VER_UC}/g" \
+   -e "s/@PHREEQC_VER@/${PHREEQC_VER}/g" \
+   -e "s/@PHREEQC_DATE@/${RELEASE_DATE}/g" \
     < "$vsn_file" > "$vsn_file.tmp"
   mv -f "$vsn_file.tmp" "$vsn_file"
   if [ -n "$WIN" ]; then
@@ -334,6 +334,10 @@ do
   fi
   cp "$vsn_file" "$vsn_file.dist"
 done
+
+echo "Copying src/phast/phreeqcpp/phreeqc/revisions to src/phast/phreeqc.revisions and doc/phreeqc.revisions"
+cp "$DISTPATH/src/phast/phreeqcpp/phreeqc/revisions" "$DISTPATH/src/phast/phreeqc.revisions"
+cp "$DISTPATH/src/phast/phreeqcpp/phreeqc/revisions" "$DISTPATH/doc/phreeqc.revisions"
 
 echo "Rolling $DISTNAME.tar ..."
 (cd "$DIST_SANDBOX" > /dev/null && tar c "$DISTNAME") > \
