@@ -158,6 +158,7 @@ struct grid_elt
 	struct property *alpha_trans;
 	struct property *alpha_horizontal;
 	struct property *alpha_vertical;
+	struct property *tortuosity;
 	bool shell;
 	double shell_width[3];
 };
@@ -531,6 +532,10 @@ struct cell
 		alpha_vertical;
 	int
 		alpha_vertical_defined;
+	double
+		tortuosity;
+	int
+		tortuosity_defined;
 	// Info on exterior faces
 	Exterior_cell *
 		exterior;

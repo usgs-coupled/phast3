@@ -290,8 +290,8 @@ MODULE mcp
 !!$  REAL(KIND=kdp), DIMENSION(32) :: TEHST = (/0.,10.,20.,30.,40.,50.,60.,70.,80.,90.,100., &
 !!$             120.,140.,160.,180.,200.,220.,240.,250.,260.,270.,280.,290.,300.,310., &
 !!$             320.,330.,340.,350.,0.,0.,0./)
-  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: abpm, alphl, alphth, alphtv, pmchv, pmcv, pmhv,  &
-       pv, pvk, &
+  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: abpm, alphl, alphth, alphtv, tort, pmchv, pmcv, &
+       pmhv, pv, pvk, &
        poros, ss, tx, ty, tz
   INTEGER :: npehdt = 10, nehst = 29, ntehdt = 14
   REAL(KIND=kdp) :: denf0, denf1, pinit, zpinit

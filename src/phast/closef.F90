@@ -438,7 +438,7 @@ SUBROUTINE closef(mpi_myself)
      STOP
   ENDIF
   ! ...      Deallocate the zoned property arrays
-  DEALLOCATE (abpm, alphl, alphth, alphtv, poros, &
+  DEALLOCATE (abpm, alphl, alphth, alphtv, tort, poros, &
        kthx, kthy, kthz,  &
        kxx,kyy,kzz,rcppm, &
        i1z, i2z, j1z, j2z, k1z, k2z, &

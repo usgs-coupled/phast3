@@ -137,7 +137,7 @@ SUBROUTINE hdf_begin_time_step
   if (pr_hdf_media) then
     time_step_fscalar_count = time_step_fscalar_count + 5
     if (solute) then
-        time_step_fscalar_count = time_step_fscalar_count + 3
+        time_step_fscalar_count = time_step_fscalar_count + 4
     endif
   endif
   

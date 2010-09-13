@@ -36,6 +36,7 @@ grid_elt_free(struct grid_elt *grid_elt_ptr)
 	property_free(grid_elt_ptr->alpha_trans);
 	property_free(grid_elt_ptr->alpha_horizontal);
 	property_free(grid_elt_ptr->alpha_vertical);
+	property_free(grid_elt_ptr->tortuosity);
 
 	free_check_null(grid_elt_ptr);
 	return (OK);
@@ -73,6 +74,7 @@ grid_elt_alloc(void)
 	grid_elt_ptr->alpha_trans = NULL;
 	grid_elt_ptr->alpha_horizontal = NULL;
 	grid_elt_ptr->alpha_vertical = NULL;
+	grid_elt_ptr->tortuosity = NULL;
 	grid_elt_ptr->shell = false;
 	grid_elt_ptr->shell_width[0] = 0;
 	grid_elt_ptr->shell_width[1] = 0;
@@ -228,6 +230,7 @@ cell_init(struct cell *cell_ptr)
 	cell_ptr->alpha_long_defined = FALSE;
 	cell_ptr->alpha_horizontal_defined = FALSE;
 	cell_ptr->alpha_vertical_defined = FALSE;
+	cell_ptr->tortuosity_defined = FALSE;
 
 	/* Info on exterior faces */
 	cell_ptr->exterior = NULL;

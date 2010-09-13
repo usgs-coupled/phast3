@@ -259,6 +259,7 @@ SUBROUTINE write2_1
            aprnt1(mele) = alphl(ipmz)
            aprnt2(mele) = alphth(ipmz)
            aprnt3(mele) = alphtv(ipmz)
+           aprnt4(mele) = tort(ipmz)
         END DO
 !!$        WRITE(fulp,2014) 'Longitudinal Dispersivity   (',TRIM(unitl),')'
 !!$        CALL prntar(1,alphl,ibc,fulp,cnvli,24,npmz)
@@ -273,9 +274,11 @@ SUBROUTINE write2_1
         CALL prntar(2,aprnt2,lprnt4,fulp,cnvli,24,-111)
         WRITE(fulp,2014) 'Transverse Dispersivity; Vertical by Element (',TRIM(unitl),')'
         CALL prntar(2,aprnt3,lprnt4,fulp,cnvli,24,-111)
+        WRITE(fulp,2014) 'Tortuosity; Vertical by Element (',TRIM(unitl),')'
+        CALL prntar(2,aprnt4,lprnt4,fulp,cnvli,24,-111)        
      END IF
      IF(solute) THEN
-        WRITE(fulp,2015) 'Molecular diffusivity-tortuosity product '//  &
+        WRITE(fulp,2015) 'Molecular diffusivity '//  &
              dots,' DM ...',cnvdfi*dm,'(',TRIM(unitl),'^2/',unittm,')'
 2015    FORMAT(/tr25,a60,a,1PG10.3,tr2,5A/tr25,a60,a,1PG10.3,tr2,3A)
      END IF

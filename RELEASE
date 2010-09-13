@@ -2,6 +2,42 @@
 PHAST, Version @VERSION@ (@VER_DATE@)
 ---------------------------------------
 
+--------
+Svn 4812
+--------
+	Added capability to define a spatially distributed tortuosity 
+	as a media property. Previously, a constant tortuosity-molecular 
+	diffusivity product applied to the entire model domain. Now, 
+	molecular diffusivity is constant, but tortuosity may vary over 
+	the model domain. Tortuosity affects only the molecular 
+	diffusivity terms in the dispersion tensor; it does not
+	multiply the dispersivity term. Usually, tortuosity is 
+	important only for diffusion-only calculations.
+	
+	
+	MEDIA
+	-zone 0 0 0 10 10 10 
+		-tortuosity               1
+		-long_dispersivity        0
+		-horizontal_dispersivity  0
+		-vertical_dispersivity    0	
+	-zone 5 5 5 10 10 10 
+		-tortuosity               0.5
+		
+	The above example defines a domain 10 by 10 by 10 meters. The
+	calculation is intended to be diffusion-only. Dispersivity is 
+	set to 0. Tortuosity is set to 1 for the whole domain, and 
+	redefined to 0.5 for one eighth of the region (the right, 
+	back, upper zone). 
+	
+	A tortuosity field is now printed in the .probdef.txt file if
+	"-media_properties true" is defined in the PRINT_INITIAL data block.
+	
+	
+---------------------------------------
+PHAST, Version 2.0.2 (September  7, 2010)
+---------------------------------------
+
 	Update with latest PHREEQC
 	
 ---------------------------------------

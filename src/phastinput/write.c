@@ -667,6 +667,16 @@ write_media(void)
 		write_double_element_property(offsetof(struct cell, alpha_vertical),
 									  units.alpha.input_to_si);
 	}
+/*
+ *   tortuosity 
+ */
+	if (flow_only == FALSE)
+	{
+		output_msg(OUTPUT_HST,
+				   "C.2.12.4 .. tortuosity: tort\n");
+		write_double_element_property(offsetof(struct cell, tortuosity),
+									  1.0);
+	}
 	return (OK);
 }
 
