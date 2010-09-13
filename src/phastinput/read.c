@@ -1665,8 +1665,9 @@ read_media(void)
 		,"box"                  /* 41 */
 		,"shell"                /* 42 */
 		,"domain"               /* 43 */
+		,"tortuosity"           /* 44 */
 	};
-	int count_opt_list = 44;
+	int count_opt_list = 45;
 	/*
 	 *   Read grid data
 	 */
@@ -2218,6 +2219,33 @@ read_media(void)
 			sprintf(tag, "in MEDIA, definition %d.", count_grid_elt_zones);
 
 			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;
+		case 44:				/* tortuosity */
+			if (grid_elt_ptr == NULL)
+			{
+				sprintf(error_string,
+						"Zone has not been defined for tortuosity %s", tag);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+				opt = next_keyword_or_option(opt_list, count_opt_list);
+				break;
+			}
+			if (grid_elt_ptr->tortuosity != NULL)
+			{
+				sprintf(error_string, "Tortuosity has been redefined %s", tag);
+				warning_msg(error_string);
+				property_free(grid_elt_ptr->tortuosity);
+				grid_elt_ptr->tortuosity = NULL;
+			}
+			grid_elt_ptr->tortuosity =
+				read_property(next_char, opt_list, count_opt_list, &opt, TRUE,
+							  FALSE);
+			if (grid_elt_ptr->tortuosity == NULL)
+			{
+				input_error++;
+				sprintf(error_string, "Reading tortuosity %s", tag);
+				error_msg(error_string, CONTINUE);
+			}
 			break;
 		}
 		return_value = check_line_return;

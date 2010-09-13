@@ -40,6 +40,7 @@ SUBROUTINE media_hdf
      REAL(KIND=kdp) :: alphl       ! alphl
      REAL(KIND=kdp) :: alphth      ! alphth
      REAL(KIND=kdp) :: alphtv      ! alphtv
+     REAL(KIND=kdp) :: tort        ! tort
   END TYPE cell_properties
 
   REAL(KIND=kdp) :: udz, udy, udydz, udx, udxdy, udxdz, udxyz
@@ -60,8 +61,11 @@ SUBROUTINE media_hdf
   ENDIF
 
   cell_props = cell_properties(.FALSE., 0, 0._kdp, 0._kdp, 0._kdp, &
-       0._kdp, 0._kdp, 0._kdp,0._kdp, 0._kdp, 0._kdp)
-
+       0._kdp, 0._kdp, 0._kdp,0._kdp, 0._kdp, 0._kdp, 0._kdp)
+!
+! Calculate volume-weighted properties for each cell
+! Even though some properties are weighted by facial area for conductances
+!
   DO ipmz = 1, npmz  
      DO k = k1z(ipmz), k2z(ipmz) - 1  
         DO j = j1z(ipmz), j2z(ipmz) - 1  
@@ -107,6 +111,8 @@ SUBROUTINE media_hdf
                         udxyz * (alphth(ipmz) / alpha_input_to_si)
                     cell_props(m)%alphtv    = cell_props(m)%alphtv    + &
                         udxyz * (alphtv(ipmz) / alpha_input_to_si)
+                    cell_props(m)%tort      = cell_props(m)%tort      + &
+                        udxyz * tort(ipmz)    
                  ENDIF
               END DO
            END DO
@@ -126,6 +132,7 @@ SUBROUTINE media_hdf
            cell_props(m)%alphl     = cell_props(m)%alphl  / cell_props(m)%volume
            cell_props(m)%alphth    = cell_props(m)%alphth / cell_props(m)%volume
            cell_props(m)%alphtv    = cell_props(m)%alphtv / cell_props(m)%volume
+           cell_props(m)%tort      = cell_props(m)%tort / cell_props(m)%volume
         ENDIF
      ENDIF
   END DO
@@ -198,6 +205,13 @@ SUBROUTINE media_hdf
      END DO
      name = 'Trans vert disp ' // TRIM(alpha_units) // ' (cell vol avg)'
      CALL prntar_hdf(aprnt, full, conv, name)
+
+     ! Tortuosity
+     DO m = 1, nxyz
+        aprnt(m) = cell_props(m)%tort
+     END DO
+     name = 'Tortuosity (cell vol avg)'
+     CALL prntar_hdf(aprnt, full, conv, name)     
   ENDIF
 
   DEALLOCATE (cell_props, aprnt, full,  &

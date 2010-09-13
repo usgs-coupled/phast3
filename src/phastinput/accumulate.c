@@ -2762,6 +2762,31 @@ setup_media(void)
 					error_msg(error_string, CONTINUE);
 				}
 			}
+			/*
+			 *   process tortuosity 
+			 */
+			if (grid_elt_zones[i]->tortuosity != NULL)
+			{
+				if (distribute_property_to_list_of_elements(list_of_elements,
+															grid_elt_zones
+															[i]->mask,
+															grid_elt_zones
+															[i]->tortuosity,
+															offsetof(struct
+																	 cell,
+																	 tortuosity),
+															offsetof(struct
+																	 cell,
+																	 tortuosity_defined),
+															FALSE) == ERROR)
+				{
+					input_error++;
+					sprintf(error_string,
+							"Bad definition of longitudinal dispersivity %s",
+							tag);
+					error_msg(error_string, CONTINUE);
+				}
+			}
 		}
 	}
 	/*

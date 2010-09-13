@@ -872,6 +872,18 @@ check_elements(void)
 				need_crossd = TRUE;
 			}
 		}
+/* 
+ *   Tortuosity
+ */
+		if (cells[i].tortuosity_defined == FALSE && flow_only == FALSE)
+		{
+			cells[i].tortuosity = 1.0;
+			cells[i].tortuosity_defined = TRUE;
+			//input_error++;
+			//sprintf(error_string, "Tortuosity not defined %s",
+			//		tag);
+			//error_msg(error_string, CONTINUE);
+		}
 	}
 	if (flow_only == FALSE && need_crossd == TRUE
 		&& cross_dispersion == FALSE)

@@ -241,7 +241,7 @@ SUBROUTINE read2
   GOTO 110
 120 CONTINUE
   ! ... Allocate the zone arrays
-  ALLOCATE (abpm(npmz), alphl(npmz), alphth(npmz), alphtv(npmz), poros(npmz), &
+  ALLOCATE (abpm(npmz), alphl(npmz), alphth(npmz), alphtv(npmz), tort(npmz), poros(npmz), &
        ss(npmz), &
        kthx(1), kthy(1), kthz(1),  &
        kx(npmz), ky(npmz), kz(npmz),  &
@@ -293,8 +293,9 @@ SUBROUTINE read2
      READ(fuins, *) (alphl(i), i = 1, npmz)  
      READ(fuins,*) (alphth(i),i=1,npmz)  
      READ(fuins,*) (alphtv(i),i=1,npmz)  
-     IF (print_rde) WRITE(furde, 8008) '(alphl(i),alphth(i),alphtv(npmz),i=1,npmz)', '[2.11]', &
-          (alphl(i),alphth(i),alphtv(npmz),i=1,npmz)
+     READ(fuins,*) (tort(i), i=1,npmz)
+     IF (print_rde) WRITE(furde, 8008) '(alphl(i),alphth(i),alphtv(i),tort(i),i=1,npmz)', '[2.11]', &
+          (alphl(i),alphth(i),alphtv(i),tort(i),i=1,npmz)
 8008 FORMAT(tr5,2a/(tr5,3(1pg12.4)))  
   ENDIF
   ! ... Well bore model information

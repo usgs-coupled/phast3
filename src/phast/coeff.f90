@@ -164,7 +164,7 @@ SUBROUTINE coeff
                           thxz(m)=thxz(m)+tdxz*uden*cpf*ufrac*updydz
                        END IF
                        IF(solute) THEN
-                          tsx(m)=tsx(m)+(tdx+dm)*uden*ufrac*updydz/udx
+                          tsx(m)=tsx(m)+(tdx+tort(ipmz)*dm)*uden*ufrac*updydz/udx
                           tsxy(m)=tsxy(m)+tdxy*uden*ufrac*updydz
                           tsxz(m)=tsxz(m)+tdxz*uden*ufrac*updydz
                        END IF
@@ -216,7 +216,7 @@ SUBROUTINE coeff
                           thyz(m)=thyz(m)+tdyz*uden*cpf*ufrac*updxdz
                        END IF
                        IF(solute) THEN
-                          tsy(m)=tsy(m)+(tdy+dm)*uden*ufrac*updxdz/udy
+                          tsy(m)=tsy(m)+(tdy+tort(ipmz)*dm)*uden*ufrac*updxdz/udy
                           tsyx(m)=tsyx(m)+tdyx*uden*ufrac*updxdz
                           tsyz(m)=tsyz(m)+tdyz*uden*ufrac*updxdz
                        END IF
@@ -266,7 +266,7 @@ SUBROUTINE coeff
                           thzy(m)=thzy(m)+tdzy*uden*cpf*updxdy
                        END IF
                        IF(solute) THEN
-                          tsz(m)=tsz(m)+(tdz+dm)*uden*updxdy/udz
+                          tsz(m)=tsz(m)+(tdz+tort(ipmz)*dm)*uden*updxdy/udz
                           tszx(m)=tszx(m)+tdzx*uden*updxdy
                           tszy(m)=tszy(m)+tdzy*uden*updxdy
                        END IF
@@ -318,7 +318,7 @@ SUBROUTINE coeff
                        thxz(m)=thxz(m)+tdxz*uden*cpf*ufrac*updydz
                     END IF
                     IF(solute) THEN
-                       tsx(m)=tsx(m)+(tdx+dm)*uden*ufrac*updydz/udx
+                       tsx(m)=tsx(m)+(tdx+tort(ipmz)*dm)*uden*ufrac*updydz/udx
                        tsxz(m)=tsxz(m)+tdxz*uden*ufrac*updydz
                     END IF
                  END DO
@@ -357,7 +357,7 @@ SUBROUTINE coeff
                        thzx(m)=thzx(m)+tdzx*uden*cpf*updxdy
                     END IF
                     IF(solute) THEN
-                       tsz(m)=tsz(m)+(tdz+dm)*uden*updxdy/udz
+                       tsz(m)=tsz(m)+(tdz+tort(ipmz)*dm)*uden*updxdy/udz
                        tszx(m)=tszx(m)+tdzx*uden*updxdy
                     END IF
                  END DO
