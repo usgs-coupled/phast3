@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <cassert>
+#include "wphast.h"  /* must be last */
 
 // Note: No header files should follow the next three lines
 #if defined(_WIN32) && defined(_DEBUG)
