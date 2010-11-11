@@ -2909,6 +2909,10 @@ write_zone_budget(void)
 		zone z;
 		it->second->Add_cells(cells_in_budget, &z, nxyz, cell_xyz);
 		// cells_in_budget is nxyz list of 0 and 1
+		if (input_error > 0) 
+		{
+			error_msg("Stopping on errors in write zone budget", STOP);
+		}
 
 		assert(z.zone_defined);
 
