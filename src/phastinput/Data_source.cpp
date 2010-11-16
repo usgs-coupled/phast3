@@ -1095,7 +1095,7 @@ std::ostream & operator<<(std::ostream & os, const Data_source & ds)
 		}
 		break;
 	case Data_source::POINTS:
-		os << "POINTS" << coor_name[cs] << std::endl;
+		os << "POINTS    " << coor_name[cs] << std::endl;
 		{
 			std::vector < Point >::const_iterator citer = ds.pts_user.begin();
 			for (; citer != ds.pts_user.end(); ++citer)
