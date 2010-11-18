@@ -61,7 +61,7 @@ class Data_source
 	static bool Read_filename(std::istream & lines, bool read_num,
 							  std::string & filename, int &num);
 	// Getter and setter
-	bool Get_defined(void)
+	bool Get_defined(void) const
 	{
 		return this->defined;
 	};
