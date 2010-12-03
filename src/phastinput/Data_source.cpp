@@ -1367,21 +1367,16 @@ bool Data_source::operator==(const Data_source &other) const
 	{
 		return false;
 	}
-// COMMENT: {12/6/2008 9:06:03 PM}	if (this->source_type_user != other.source_type_user)
-// COMMENT: {12/6/2008 9:06:03 PM}	{
-// COMMENT: {12/6/2008 9:06:03 PM}		return false;
-// COMMENT: {12/6/2008 9:06:03 PM}	}
-	if (this->filedata == 0 && other.filedata != 0)
+	if ((this->filedata == 0) ^ (other.filedata == 0))
 	{
 		return false;
 	}
-	if (this->filedata != 0 && other.filedata == 0)
+	if (this->filedata)
 	{
-		return false;
-	}
-	if (*this->filedata != *other.filedata)
-	{
-		return false;
+		if (*this->filedata != *other.filedata)
+		{
+			return false;
+		}
 	}
 	if (this->pts != other.pts)
 	{
