@@ -719,10 +719,22 @@ build_drains(void)
 											 sizeof(gpc_vertex)));
 		if (p == NULL)
 			malloc_error();
+
 		for (i = 0; i < count_points; i++)
 		{
 			p[i].x = drain_ptr->points[i].x_grid;
 			p[i].y = drain_ptr->points[i].y_grid;
+			/*
+			* Check for duplicate points
+			*/
+			if (i > 0 && p[i].x == p[i-1].x && p[i].y == p[i-1].y)
+			{
+				sprintf(error_string,
+					"Duplicate drain points %d %d, drain %d %s.",
+					i - 1, i, drain_ptr->n_user, drain_ptr->description.c_str());
+				warning_msg(error_string);
+
+			}
 		}
 		/*
 		 *  Trapezoid points for last drain Point
@@ -839,6 +851,8 @@ setup_drains(void)
 		for (m = 0; m < (int) count_points - 1; m++)
 		{
 			poly_ptr = drain_ptr->points[m].polygon;
+			if (poly_ptr->contour == NULL)
+				continue;
 			range_ptr =
 				vertex_to_range(poly_ptr->contour[0].vertex,
 								poly_ptr->contour[0].num_vertices);
