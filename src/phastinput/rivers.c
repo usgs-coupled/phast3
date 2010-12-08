@@ -69,6 +69,8 @@ setup_rivers(void)
 		for (m = 0; m < count_points - 1; m++)
 		{
 			poly_ptr = river_ptr->points[m].polygon;
+			if (poly_ptr->contour == NULL)
+				continue;
 			range_ptr =
 				vertex_to_range(poly_ptr->contour[0].vertex,
 								poly_ptr->contour[0].num_vertices);
@@ -1195,6 +1197,16 @@ build_rivers(void)
 		{
 			p[i].x = river_ptr->points[i].x_grid;
 			p[i].y = river_ptr->points[i].y_grid;
+			/*
+			* Check for duplicate points
+			*/
+			if (i > 0 && p[i].x == p[i-1].x && p[i].y == p[i-1].y)
+			{
+				sprintf(error_string,
+					"Duplicate river points %d %d, drain %d %s.",
+					i - 1, i, river_ptr->n_user, river_ptr->description);
+				warning_msg(error_string);
+			}
 		}
 		/*
 		 *  Trapezoid points for last River Point
