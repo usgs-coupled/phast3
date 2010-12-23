@@ -294,7 +294,7 @@ SUBROUTINE closef(mpi_myself)
           ENDIF     
           
           ! Flow Zone Specified Head B.C. Cells
-          IF(nsbc_cells > 0) THEN  
+          IF(nsbc_cells > 0 .and. lnk_bc2zon(izn,1)%num_bc > 0) THEN  
             DEALLOCATE (lnk_bc2zon(izn,1)%lcell_no,  &
                  stat = da_err)
             IF (da_err /= 0) THEN
