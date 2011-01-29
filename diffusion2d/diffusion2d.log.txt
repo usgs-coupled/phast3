@@ -33,7 +33,7 @@ Processing flow and transport data file.
 	      chemistry_dimensions XY
 	      print_orientation XY
 	MEDIA
-	      zone 0 0 0 10 10 1
+	      zone 0 0 10 10 1
 	            kx 1e-10
 	            ky 1e-10
 	            kz 1e-10
@@ -55,12 +55,12 @@ Processing flow and transport data file.
 	      time_differencing  0.5
 	      cross_dispersion	  false
 	HEAD_IC
-	      zone 0 0 0 10 10 1
+	      zone 0 0 10 10 1
 	            head 1
 	CHEMISTRY_IC
-	      zone 0 0 0 10 10 1
+	      zone 0 0 10 10 1
 	            solution 1
-	      zone 0 0 0 0 0 1
+	      zone 0 0 0 1
 	            solution 2
 	PRINT_INITIAL
 	      boundary_conditions false
@@ -109,8 +109,8 @@ Minimum time step required ...................................... DTIMMN   1.00E
 Maximum time step allowed ....................................... DTIMMX   1.00E+02(s  )
 
 Beginning steady state time step no.      1
-     Maximum change in potentiometric head ..    0.0000E+00     (m) at location ( 1.000E-03, 1.000E-03, 1.000E-03)(m)
-     Fractional flow residual ...............    0.0000E+00
+     Maximum change in potentiometric head ..    0    (m) at location ( 1.000E-03, 1.000E-03, 1.000E-03)(m)
+     Fractional flow residual ...............    0 
 
 Done with steady-state flow.
 Equilibration of cells for initial conditions.

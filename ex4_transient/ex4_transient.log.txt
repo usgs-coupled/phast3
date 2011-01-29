@@ -21,16 +21,16 @@ Processing flow and transport data file.
 	        well_diameter                        in
 	        well_flow_rate                       L/day
 	GRID
-	        uniform x    0    90000    16
-	        uniform y    0    48000    9
-	        uniform z    0    400      5
+	        uniform x    0   90000    16
+	        uniform y    0   48000    9
+	        uniform z    0   400      5
 	        print_orientation                    XY 
 	SOLUTE_TRANSPORT true
 	STEADY_FLOW false
 	        head_tolerance                       1e-6
 	        flow_balance_tolerance               1e-3
 	MEDIA
-	        zone   0. 0. 0. 90000.  48000. 400.
+	        zone   0 0. 0 90000.  48000. 400.
 	                porosity                     0.22
 	                long_dispersivity            2000.
 	                horizontal_dispersivity      50.
@@ -39,7 +39,7 @@ Processing flow and transport data file.
 	                ky                           1.5e-5
 	                kz                           1.5e-7
 	                storage                      0
-	        zone   48000. 0. 0. 90000. 48000. 100.
+	        zone   48000. 0 0. 90000. 48000. 100.
 	                active                       0
 	RIVER 1 Little River
 	        point  44000. 15000.
@@ -47,27 +47,27 @@ Processing flow and transport data file.
 	                depth                        1.
 	                bed_thickness                1.
 	                bed_hydraulic_conductivity   1.
-	                head                         0         335.
+	                head                         0        335.
 	                			      1000      338.
-	                solution                     0         1
+	                solution                     0        1
 						      2000      2
-	        point  44000. 0.
-	        point  90000. 0.
+	        point  44000. 0 
+	        point  90000. 0 
 	                width                        200.
 	                depth                        1.
 	                bed_thickness                1.
 	                bed_hydraulic_conductivity   1.
-	                head                         0         275.
-	                solution                     0         1
+	                head                         0        275.
+	                solution                     0        1
 	RIVER 2 North Fork River
 	        point  30000. 36000.
 	                width                        200.
 	                depth                        1.
 	                bed_thickness                1.
 	                bed_hydraulic_conductivity   1
-	                head                         0         335.
+	                head                         0        335.
 	                			      2200      339.
-	                solution                     0         1
+	                solution                     0        1
 	                                              2300      2
 	        point  30000. 48000.
 	        point  90000. 48000.
@@ -75,82 +75,82 @@ Processing flow and transport data file.
 	                depth                        1.
 	                bed_thickness                1.
 	                bed_hydraulic_conductivity   1
-	                head                         0         280.
-	                solution                     0         1
+	                head                         0        280.
+	                solution                     0        1
 	RIVER 3 North Canadian River
 	        point  60000. 30000.
 	                width                        200.
 	                depth                        1.
 	                bed_thickness                1.
 	                bed_hydraulic_conductivity   1
-	                head                         0         350.
-	                solution                     0         1
+	                head                         0        350.
+	                solution                     0        1
 	        point  90000. 20000.
 	                width                        200.
 	                depth                        1.
 	                bed_thickness                1.
 	                bed_hydraulic_conductivity   1
-	                head                         0         305.
-	                solution                     0         1
+	                head                         0        305.
+	                solution                     0        1
 	FLUX_BC
 	        zone   27000. 3000. 400.  90000. 45000. 400.
-	                flux                         0         -0.01
+	                flux                         0        -0.01
 						      3000      -0.02		
-	                associated_solution          0         1
+	                associated_solution          0        1
 						      4000      2
 		zone   57000. 3000. 400.  90000. 45000. 400.
-	                flux                         0         -0.03
+	                flux                         0        -0.03
 						      3100      -0.04		
-	                associated_solution          0         2
+	                associated_solution          0        2
 						      3200      1				      
 	SPECIFIED_HEAD_BC
 	        zone   30000. 14000 300. 32000.  20000.  400.
-	                head                         0         348.
+	                head                         0        348.
 						      5000      340.
-	                associated_solution_composition          0         1
+	                associated_solution_composition          0        1
 						      6000      2
 	        zone   40000. 14000 300. 44000.  20000.  400.
-	                head                         0         336.
+	                head                         0        336.
 						      6100      340.
-	                associated_solution_composition          0         1
+	                associated_solution_composition          0        1
 						      6200     2					      
 	LEAKY_BC
-	        zone   0. 48000. 0. 27000. 48000. 400.
+	        zone   0 48000. 0 27000. 48000. 400.
 	                hydraulic_conductivity                    1.5e-5
 	                thickness                   30000.
-	                head                         0         305.0
+	                head                         0        305.0
 						      7000      306.0
-	                associated_solution                   0         1
+	                associated_solution                   0        1
 						      8000      2
-	       zone 0 0 0 39000 0 400
+	       zone 0 0 39000 0 400
 	                hydraulic_conductivity       1.5E-5
 	                thickness                    20000
-	                head                         0         320
+	                head                         0        320
 	                                              8100      321
-	                associated_solution          0         2
+	                associated_solution          0        2
 	                                              8200      1
 	FREE_SURFACE_BC true
 	WELL 1 Observation well 1 in arsenic zone
 	        12000 36000
 	                diameter       2                               # inches
-	                pumping                      0         1       # L/day
+	                pumping                      0        1       # L/day
 	                			      8000      2      
 	                elevation      90 110                          # m
-	                associated_solution                   0         1
+	                associated_solution                   0        1
 	                                              9000      2
 	WELL 2 Observation well 1 in arsenic zone
 	        24000 36000
 	                diameter       2                               # inches
-	                injection                       0         2       # L/day
+	                injection                       0        2       # L/day
 	                			      11000     1      
 	                elevation      90 110                          # m
-	                associated_solution                   0         2
+	                associated_solution                   0        2
 	                                              12000     1                                              
 	HEAD_IC
-	        zone   0. 0. 0. 90000. 48000. 400.
+	        zone   0 0. 0 90000. 48000. 400.
 			head   XYZ grid ex4.head.dat
 	CHEMISTRY_IC
-	        zone   0. 0. 0. 90000. 48000. 400.
+	        zone   0 0. 0 90000. 48000. 400.
 	                solution               2
 	                equilibrium_phases     2
 	                exchange               2
@@ -158,10 +158,10 @@ Processing flow and transport data file.
 	SOLUTION_METHOD
 	        iterative_solver       true
 	        tolerance              1e-10
-	        space_differencing     0.
+	        space_differencing     0 
 	        time_differencing      1.
 	TIME_CONTROL
-	        delta_time     0               2000    yr
+	        delta_time     0              2000    yr
 	        end_time                       15000   yr
 	PRINT_INITIAL
 	        velocities             true
@@ -177,7 +177,7 @@ Processing flow and transport data file.
 		restart		0 yr
 	PRINT_LOCATIONS
 	        xyz_chemistry
-	               zone   0 0 0  90000 48000 0
+	               zone   0 0  90000 48000 0
 	               print 0
 		chemistry
 			sample_grid X 3
@@ -304,9 +304,9 @@ Beginning time step no.      1
      Maximum change in As ................. -5.9037E-09 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
      Maximum change in C ..................  1.8651E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
      Maximum change in Ca ................. -2.7364E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Cl ................. -3.9209E+00 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
+     Maximum change in Cl ................. -3.9209e+00 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
      Maximum change in Mg ................. -9.4238E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Na ................. -3.1891E+00 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
+     Maximum change in Na ................. -3.1891e+00 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
      Maximum change in S .................. -2.6507E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
      Maximum change in Charge .............  6.4720E-12 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
 Reading transient data for simulation: Set  2
@@ -347,16 +347,16 @@ Beginning time step no.      2
 
      End of Time Step No.     2
      Time ..................................................    2000.00     (yr)
-     Maximum change in potentiometric head  -2.8654E+00      (m ) at location ( 4.800E+04, 3.000E+04,  300.    )(m)
+     Maximum change in potentiometric head  -2.8654e+00      (m ) at location ( 4.800E+04, 3.000E+04,  300.    )(m)
      Maximum change in H .................. -7.9217E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
      Maximum change in O .................. -2.0673E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in As ................. -6.6035E-09 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
+     Maximum change in As ................. -6.6035E-09 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
      Maximum change in C .................. -5.9757E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Ca ................. -1.0521E-01 (mol/kgw) at location ( 3.000E+04, 1.200E+04,     0    )(m)
-     Maximum change in Cl ................. -1.6753E+00 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in Mg ................. -4.9343E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in Na ................. -1.3757E+00 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in S .................. -1.1326E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
+     Maximum change in Ca ................. -1.0521E-01 (mol/kgw) at location ( 3.000E+04, 1.200E+04,     0   )(m)
+     Maximum change in Cl ................. -1.6753e+00 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in Mg ................. -4.9343E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in Na ................. -1.3757e+00 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in S .................. -1.1326E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
      Maximum change in Charge ............. -1.0411E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
 Reading transient data for simulation: Set  3
 WARNING:  2 print control intervals are less than defined time step length.
@@ -396,16 +396,16 @@ Beginning time step no.      3
 
      End of Time Step No.     3
      Time ..................................................    2200.00     (yr)
-     Maximum change in potentiometric head  -2.3330E-01      (m ) at location (     0    , 2.400E+04,  300.    )(m)
+     Maximum change in potentiometric head  -2.3330E-01      (m ) at location (     0   , 2.400E+04,  300.    )(m)
      Maximum change in H .................. -7.3740E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
      Maximum change in O .................. -1.4936E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
      Maximum change in As ................. -2.0753E-09 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
      Maximum change in C .................. -4.9084E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Ca ................. -1.9514E-02 (mol/kgw) at location ( 3.000E+04, 1.200E+04,     0    )(m)
-     Maximum change in Cl ................. -2.9139E-01 (mol/kgw) at location ( 3.000E+04, 1.200E+04,     0    )(m)
-     Maximum change in Mg ................. -8.9010E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in Na ................. -2.3599E-01 (mol/kgw) at location ( 3.000E+04, 1.200E+04,     0    )(m)
-     Maximum change in S .................. -1.9699E-04 (mol/kgw) at location ( 3.000E+04, 1.200E+04,     0    )(m)
+     Maximum change in Ca ................. -1.9514E-02 (mol/kgw) at location ( 3.000E+04, 1.200E+04,     0   )(m)
+     Maximum change in Cl ................. -2.9139E-01 (mol/kgw) at location ( 3.000E+04, 1.200E+04,     0   )(m)
+     Maximum change in Mg ................. -8.9010E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in Na ................. -2.3599E-01 (mol/kgw) at location ( 3.000E+04, 1.200E+04,     0   )(m)
+     Maximum change in S .................. -1.9699E-04 (mol/kgw) at location ( 3.000E+04, 1.200E+04,     0   )(m)
      Maximum change in Charge ............. -7.9823E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
 Reading transient data for simulation: Set  4
 WARNING:  2 print control intervals are less than defined time step length.
@@ -445,7 +445,7 @@ Beginning time step no.      4
 
      End of Time Step No.     4
      Time ..................................................    2300.00     (yr)
-     Maximum change in potentiometric head   3.9166E+00      (m ) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
+     Maximum change in potentiometric head   3.9166e+00      (m ) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
      Maximum change in H .................. -3.2929E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
      Maximum change in O .................. -6.7035E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
      Maximum change in As ................. -1.6904E-09 (mol/kgw) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
@@ -495,16 +495,16 @@ Beginning time step no.      5
      End of Time Step No.     5
      Time ..................................................    3000.00     (yr)
      Maximum change in potentiometric head   8.2389E-01      (m ) at location ( 4.200E+04, 3.600E+04,  300.    )(m)
-     Maximum change in H .................. -9.3827E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in O .................. -1.9803E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
+     Maximum change in H .................. -9.3827E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in O .................. -1.9803E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
      Maximum change in As ................. -3.3923E-09 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  100.    )(m)
-     Maximum change in C .................. -6.3845E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in Ca ................. -4.7658E-02 (mol/kgw) at location ( 3.000E+04, 1.200E+04,     0    )(m)
-     Maximum change in Cl ................. -7.5624E-01 (mol/kgw) at location ( 3.000E+04, 1.200E+04,     0    )(m)
-     Maximum change in Mg ................. -2.1743E-02 (mol/kgw) at location ( 3.000E+04, 1.200E+04,     0    )(m)
-     Maximum change in Na ................. -6.1938E-01 (mol/kgw) at location ( 3.000E+04, 1.200E+04,     0    )(m)
-     Maximum change in S .................. -5.1126E-04 (mol/kgw) at location ( 3.000E+04, 1.200E+04,     0    )(m)
-     Maximum change in Charge ............. -1.0598E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
+     Maximum change in C .................. -6.3845E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in Ca ................. -4.7658E-02 (mol/kgw) at location ( 3.000E+04, 1.200E+04,     0   )(m)
+     Maximum change in Cl ................. -7.5624E-01 (mol/kgw) at location ( 3.000E+04, 1.200E+04,     0   )(m)
+     Maximum change in Mg ................. -2.1743E-02 (mol/kgw) at location ( 3.000E+04, 1.200E+04,     0   )(m)
+     Maximum change in Na ................. -6.1938E-01 (mol/kgw) at location ( 3.000E+04, 1.200E+04,     0   )(m)
+     Maximum change in S .................. -5.1126E-04 (mol/kgw) at location ( 3.000E+04, 1.200E+04,     0   )(m)
+     Maximum change in Charge ............. -1.0598E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
 Reading transient data for simulation: Set  6
 WARNING:  2 print control intervals are less than defined time step length.
      Time at which next set of transient parameters will be read .......... TIMCHG  3.100E+03  (yr)
@@ -543,7 +543,7 @@ Beginning time step no.      6
 
      End of Time Step No.     6
      Time ..................................................    3100.00     (yr)
-     Maximum change in potentiometric head   2.9029E+00      (m ) at location ( 4.800E+04, 3.000E+04,  300.    )(m)
+     Maximum change in potentiometric head   2.9029e+00      (m ) at location ( 4.800E+04, 3.000E+04,  300.    )(m)
      Maximum change in H .................. -1.9975E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  200.    )(m)
      Maximum change in O .................. -3.9987E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  200.    )(m)
      Maximum change in As ................. -7.9453E-10 (mol/kgw) at location ( 3.600E+04, 3.000E+04,  300.    )(m)
@@ -553,7 +553,7 @@ Beginning time step no.      6
      Maximum change in Mg ................. -7.0705E-03 (mol/kgw) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
      Maximum change in Na ................. -1.8964E-01 (mol/kgw) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
      Maximum change in S .................. -1.5863E-04 (mol/kgw) at location ( 3.000E+04, 3.600E+04,  300.    )(m)
-     Maximum change in Charge ............. -2.1554E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
+     Maximum change in Charge ............. -2.1554E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
 Reading transient data for simulation: Set  7
 WARNING:  2 print control intervals are less than defined time step length.
      Time at which next set of transient parameters will be read .......... TIMCHG  3.200E+03  (yr)
@@ -592,17 +592,17 @@ Beginning time step no.      7
 
      End of Time Step No.     7
      Time ..................................................    3200.00     (yr)
-     Maximum change in potentiometric head   2.9842E+00      (m ) at location ( 6.600E+04, 1.200E+04,  300.    )(m)
-     Maximum change in H .................. -1.8117E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in O .................. -3.6032E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
+     Maximum change in potentiometric head   2.9842e+00      (m ) at location ( 6.600E+04, 1.200E+04,  300.    )(m)
+     Maximum change in H .................. -1.8117E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in O .................. -3.6032E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
      Maximum change in As ................. -6.9885E-10 (mol/kgw) at location ( 5.400E+04, 2.400E+04,  300.    )(m)
-     Maximum change in C .................. -1.1845E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
+     Maximum change in C .................. -1.1845E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
      Maximum change in Ca .................  2.6761E-02 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
      Maximum change in Cl .................  3.5129E-01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
      Maximum change in Mg .................  6.1830E-03 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
      Maximum change in Na .................  2.8545E-01 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
      Maximum change in S ..................  2.3749E-04 (mol/kgw) at location ( 6.000E+04, 3.000E+04,  300.    )(m)
-     Maximum change in Charge ............. -1.9428E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
+     Maximum change in Charge ............. -1.9428E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
 Reading transient data for simulation: Set  8
 WARNING:  2 print control intervals are less than defined time step length.
      Time at which next set of transient parameters will be read .......... TIMCHG  4.000E+03  (yr)
@@ -641,17 +641,17 @@ Beginning time step no.      8
 
      End of Time Step No.     8
      Time ..................................................    4000.00     (yr)
-     Maximum change in potentiometric head   3.1133E+00      (m ) at location ( 6.600E+04, 1.200E+04,  300.    )(m)
-     Maximum change in H .................. -7.4997E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in O .................. -1.5218E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
+     Maximum change in potentiometric head   3.1133e+00      (m ) at location ( 6.600E+04, 1.200E+04,  300.    )(m)
+     Maximum change in H .................. -7.4997E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in O .................. -1.5218E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
      Maximum change in As ................. -5.1508E-09 (mol/kgw) at location ( 6.000E+04, 3.600E+04,  300.    )(m)
-     Maximum change in C .................. -4.9562E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
+     Maximum change in C .................. -4.9562E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
      Maximum change in Ca ................. -1.9853E-01 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  300.    )(m)
-     Maximum change in Cl ................. -2.8446E+00 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  300.    )(m)
+     Maximum change in Cl ................. -2.8446e+00 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  300.    )(m)
      Maximum change in Mg ................. -6.8368E-02 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  300.    )(m)
-     Maximum change in Na ................. -2.3137E+00 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  300.    )(m)
+     Maximum change in Na ................. -2.3137e+00 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  300.    )(m)
      Maximum change in S .................. -1.9231E-03 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  300.    )(m)
-     Maximum change in Charge ............. -8.0179E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
+     Maximum change in Charge ............. -8.0179E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
 Reading transient data for simulation: Set  9
 WARNING:  2 print control intervals are less than defined time step length.
      Time at which next set of transient parameters will be read .......... TIMCHG  5.000E+03  (yr)
@@ -690,17 +690,17 @@ Beginning time step no.      9
 
      End of Time Step No.     9
      Time ..................................................    5000.00     (yr)
-     Maximum change in potentiometric head   1.0577E+00      (m ) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
-     Maximum change in H .................. -6.9905E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in O .................. -1.4111E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
+     Maximum change in potentiometric head   1.0577e+00      (m ) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
+     Maximum change in H .................. -6.9905E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in O .................. -1.4111E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
      Maximum change in As ................. -8.1105E-09 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
-     Maximum change in C .................. -4.6618E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
+     Maximum change in C .................. -4.6618E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
      Maximum change in Ca .................  1.5646E-01 (mol/kgw) at location ( 5.400E+04, 2.400E+04,  400.    )(m)
-     Maximum change in Cl ................. -2.2776E+00 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
+     Maximum change in Cl ................. -2.2776e+00 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
      Maximum change in Mg ................. -6.5216E-02 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
-     Maximum change in Na ................. -1.8676E+00 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
+     Maximum change in Na ................. -1.8676e+00 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
      Maximum change in S .................. -1.5398E-03 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
-     Maximum change in Charge ............. -7.3462E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
+     Maximum change in Charge ............. -7.3462E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
 Reading transient data for simulation: Set 10
 WARNING:  2 print control intervals are less than defined time step length.
      Time at which next set of transient parameters will be read .......... TIMCHG  6.000E+03  (yr)
@@ -739,15 +739,15 @@ Beginning time step no.     10
 
      End of Time Step No.    10
      Time ..................................................    6000.00     (yr)
-     Maximum change in potentiometric head  -8.0000E+00      (m ) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
+     Maximum change in potentiometric head  -8.0000e+00      (m ) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
      Maximum change in H .................. -1.8157E-02 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
      Maximum change in O .................. -3.9040E-02 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
-     Maximum change in As ................. -4.4634E-09 (mol/kgw) at location ( 7.200E+04,     0    ,  100.    )(m)
+     Maximum change in As ................. -4.4634E-09 (mol/kgw) at location ( 7.200E+04,     0   ,  100.    )(m)
      Maximum change in C .................. -1.3173E-02 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
      Maximum change in Ca .................  8.7226E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Cl .................  1.3023E+00 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
+     Maximum change in Cl .................  1.3023e+00 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
      Maximum change in Mg .................  3.7491E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Na .................  1.0524E+00 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
+     Maximum change in Na .................  1.0524e+00 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
      Maximum change in S ..................  8.8042E-04 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
      Maximum change in Charge ............. -2.1495E-02 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
 Reading transient data for simulation: Set 11
@@ -795,7 +795,7 @@ Beginning time step no.     11
      Maximum change in C .................. -1.7678E-03 (mol/kgw) at location ( 5.400E+04, 2.400E+04,  400.    )(m)
      Maximum change in Ca .................  1.1933E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
      Maximum change in Cl .................  1.8431E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Mg ................. -3.3085E-03 (mol/kgw) at location ( 7.200E+04,     0    ,  100.    )(m)
+     Maximum change in Mg ................. -3.3085E-03 (mol/kgw) at location ( 7.200E+04,     0   ,  100.    )(m)
      Maximum change in Na .................  1.5512E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
      Maximum change in S ..................  1.2461E-04 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
      Maximum change in Charge ............. -2.4327E-03 (mol/kgw) at location ( 7.200E+04, 3.000E+04,  300.    )(m)
@@ -837,14 +837,14 @@ Beginning time step no.     12
 
      End of Time Step No.    12
      Time ..................................................    6200.00     (yr)
-     Maximum change in potentiometric head   4.0000E+00      (m ) at location ( 4.200E+04, 1.800E+04,  300.    )(m)
+     Maximum change in potentiometric head   4.0000e+00      (m ) at location ( 4.200E+04, 1.800E+04,  300.    )(m)
      Maximum change in H .................. -1.8758E-03 (mol/kgw) at location ( 6.600E+04, 3.000E+04,  300.    )(m)
      Maximum change in O .................. -3.9640E-03 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  300.    )(m)
      Maximum change in As ................. -2.5860E-09 (mol/kgw) at location ( 5.400E+04, 2.400E+04,  400.    )(m)
      Maximum change in C .................. -1.2847E-03 (mol/kgw) at location ( 6.600E+04, 3.000E+04,  300.    )(m)
      Maximum change in Ca .................  9.1852E-03 (mol/kgw) at location ( 3.600E+04, 1.800E+04,  300.    )(m)
      Maximum change in Cl .................  1.1633E-01 (mol/kgw) at location ( 3.600E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Mg ................. -3.0837E-03 (mol/kgw) at location ( 7.200E+04,     0    ,  100.    )(m)
+     Maximum change in Mg ................. -3.0837E-03 (mol/kgw) at location ( 7.200E+04,     0   ,  100.    )(m)
      Maximum change in Na .................  9.5084E-02 (mol/kgw) at location ( 3.600E+04, 1.800E+04,  300.    )(m)
      Maximum change in S ..................  7.8642E-05 (mol/kgw) at location ( 3.600E+04, 1.800E+04,  300.    )(m)
      Maximum change in Charge ............. -2.0452E-03 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  300.    )(m)
@@ -893,7 +893,7 @@ Beginning time step no.     13
      Maximum change in C .................. -6.1402E-03 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  100.    )(m)
      Maximum change in Ca .................  4.5447E-02 (mol/kgw) at location ( 3.600E+04, 1.800E+04,  300.    )(m)
      Maximum change in Cl .................  5.8887E-01 (mol/kgw) at location ( 3.600E+04, 1.800E+04,  200.    )(m)
-     Maximum change in Mg ................. -1.5800E-02 (mol/kgw) at location ( 7.200E+04,     0    ,  100.    )(m)
+     Maximum change in Mg ................. -1.5800E-02 (mol/kgw) at location ( 7.200E+04,     0   ,  100.    )(m)
      Maximum change in Na .................  4.8641E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  200.    )(m)
      Maximum change in S ..................  3.9810E-04 (mol/kgw) at location ( 3.600E+04, 1.800E+04,  200.    )(m)
      Maximum change in Charge ............. -1.0082E-02 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  100.    )(m)
@@ -935,16 +935,16 @@ Beginning time step no.     14
 
      End of Time Step No.    14
      Time ..................................................    8000.00     (yr)
-     Maximum change in potentiometric head   3.3155E-01      (m ) at location (     0    , 4.800E+04,     0    )(m)
+     Maximum change in potentiometric head   3.3155E-01      (m ) at location (     0   , 4.800E+04,     0   )(m)
      Maximum change in H .................. -1.2806E-02 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
      Maximum change in O .................. -2.7165E-02 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
      Maximum change in As .................  1.9978E-09 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
      Maximum change in C .................. -9.0163E-03 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
-     Maximum change in Ca .................  4.3582E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in Cl .................  6.4575E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in Mg .................  1.2364E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in Na .................  5.3653E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in S ..................  4.3656E-04 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
+     Maximum change in Ca .................  4.3582E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in Cl .................  6.4575E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in Mg .................  1.2364E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in Na .................  5.3653E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in S ..................  4.3656E-04 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
      Maximum change in Charge ............. -1.4039E-02 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
 Reading transient data for simulation: Set 15
 WARNING:  2 print control intervals are less than defined time step length.
@@ -984,16 +984,16 @@ Beginning time step no.     15
 
      End of Time Step No.    15
      Time ..................................................    8100.00     (yr)
-     Maximum change in potentiometric head   1.4653E-02      (m ) at location (     0    , 4.800E+04,  300.    )(m)
+     Maximum change in potentiometric head   1.4653E-02      (m ) at location (     0   , 4.800E+04,  300.    )(m)
      Maximum change in H .................. -3.3408E-03 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
      Maximum change in O .................. -7.5312E-03 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
      Maximum change in As ................. -1.3331E-09 (mol/kgw) at location ( 5.400E+04, 2.400E+04,  400.    )(m)
      Maximum change in C .................. -2.5119E-03 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
      Maximum change in Ca .................  4.2860E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in Cl .................  6.3756E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in Mg ................. -1.9135E-03 (mol/kgw) at location ( 6.000E+04,     0    ,  300.    )(m)
-     Maximum change in Na .................  5.3513E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in S ..................  4.3102E-05 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
+     Maximum change in Cl .................  6.3756E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in Mg ................. -1.9135E-03 (mol/kgw) at location ( 6.000E+04,     0   ,  300.    )(m)
+     Maximum change in Na .................  5.3513E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in S ..................  4.3102E-05 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
      Maximum change in Charge ............. -3.4861E-03 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
 Reading transient data for simulation: Set 16
 WARNING:  2 print control intervals are less than defined time step length.
@@ -1033,16 +1033,16 @@ Beginning time step no.     16
 
      End of Time Step No.    16
      Time ..................................................    8200.00     (yr)
-     Maximum change in potentiometric head   2.9266E-01      (m ) at location (     0    ,     0    ,     0    )(m)
+     Maximum change in potentiometric head   2.9266E-01      (m ) at location (     0   ,     0   ,     0   )(m)
      Maximum change in H .................. -1.7517E-03 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  100.    )(m)
      Maximum change in O .................. -4.2041E-03 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
      Maximum change in As ................. -1.0355E-09 (mol/kgw) at location ( 5.400E+04, 2.400E+04,  400.    )(m)
      Maximum change in C .................. -1.3922E-03 (mol/kgw) at location ( 6.000E+04, 1.800E+04,  400.    )(m)
-     Maximum change in Ca .................  4.0394E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in Cl .................  6.2611E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in Mg ................. -1.8405E-03 (mol/kgw) at location ( 6.000E+04,     0    ,  300.    )(m)
-     Maximum change in Na .................  5.2607E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in S ..................  4.2328E-05 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
+     Maximum change in Ca .................  4.0394E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in Cl .................  6.2611E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in Mg ................. -1.8405E-03 (mol/kgw) at location ( 6.000E+04,     0   ,  300.    )(m)
+     Maximum change in Na .................  5.2607E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in S ..................  4.2328E-05 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
      Maximum change in Charge ............. -1.8323E-03 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  100.    )(m)
 Reading transient data for simulation: Set 17
 WARNING:  2 print control intervals are less than defined time step length.
@@ -1082,17 +1082,17 @@ Beginning time step no.     17
 
      End of Time Step No.    17
      Time ..................................................    9000.00     (yr)
-     Maximum change in potentiometric head   2.5814E-01      (m ) at location (     0    , 6.000E+03,  300.    )(m)
-     Maximum change in H .................. -9.8132E-03 (mol/kgw) at location ( 9.000E+04,     0    ,  100.    )(m)
-     Maximum change in O .................. -2.0441E-02 (mol/kgw) at location ( 9.000E+04,     0    ,  100.    )(m)
+     Maximum change in potentiometric head   2.5814E-01      (m ) at location (     0   , 6.000E+03,  300.    )(m)
+     Maximum change in H .................. -9.8132E-03 (mol/kgw) at location ( 9.000E+04,     0   ,  100.    )(m)
+     Maximum change in O .................. -2.0441E-02 (mol/kgw) at location ( 9.000E+04,     0   ,  100.    )(m)
      Maximum change in As .................  1.6092E-09 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
-     Maximum change in C .................. -6.7496E-03 (mol/kgw) at location ( 9.000E+04,     0    ,  100.    )(m)
-     Maximum change in Ca .................  2.8574E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in Cl .................  4.2614E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in Mg .................  7.0273E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in Na .................  3.5705E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in S ..................  2.8809E-04 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in Charge ............. -1.0291E-02 (mol/kgw) at location ( 9.000E+04,     0    ,  100.    )(m)
+     Maximum change in C .................. -6.7496E-03 (mol/kgw) at location ( 9.000E+04,     0   ,  100.    )(m)
+     Maximum change in Ca .................  2.8574E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in Cl .................  4.2614E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in Mg .................  7.0273E-03 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in Na .................  3.5705E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in S ..................  2.8809E-04 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in Charge ............. -1.0291E-02 (mol/kgw) at location ( 9.000E+04,     0   ,  100.    )(m)
 Reading transient data for simulation: Set 18
 WARNING:  2 print control intervals are less than defined time step length.
      Time at which next set of transient parameters will be read .......... TIMCHG  1.100E+04  (yr)
@@ -1148,16 +1148,16 @@ Beginning time step no.     19
 
      End of Time Step No.    19
      Time ..................................................    11000.0     (yr)
-     Maximum change in potentiometric head   1.8804E-02      (m ) at location (     0    , 1.800E+04,  300.    )(m)
+     Maximum change in potentiometric head   1.8804E-02      (m ) at location (     0   , 1.800E+04,  300.    )(m)
      Maximum change in H .................. -8.8134E-03 (mol/kgw) at location ( 7.800E+04, 4.800E+04,  100.    )(m)
      Maximum change in O .................. -2.0104E-02 (mol/kgw) at location ( 7.800E+04, 4.800E+04,  100.    )(m)
      Maximum change in As .................  1.7818E-09 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
      Maximum change in C .................. -6.6785E-03 (mol/kgw) at location ( 7.800E+04, 4.800E+04,  100.    )(m)
-     Maximum change in Ca .................  2.6353E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in Cl .................  3.8100E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in Mg .................  6.6565E-03 (mol/kgw) at location ( 2.400E+04, 1.800E+04,     0    )(m)
-     Maximum change in Na .................  3.1955E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in S ..................  2.5757E-04 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
+     Maximum change in Ca .................  2.6353E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in Cl .................  3.8100E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in Mg .................  6.6565E-03 (mol/kgw) at location ( 2.400E+04, 1.800E+04,     0   )(m)
+     Maximum change in Na .................  3.1955E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in S ..................  2.5757E-04 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
      Maximum change in Charge ............. -9.0475E-03 (mol/kgw) at location ( 7.800E+04, 4.800E+04,  100.    )(m)
 Reading transient data for simulation: Set 19
 WARNING:  2 print control intervals are less than defined time step length.
@@ -1197,16 +1197,16 @@ Beginning time step no.     20
 
      End of Time Step No.    20
      Time ..................................................    12000.0     (yr)
-     Maximum change in potentiometric head   5.2243E-03      (m ) at location (     0    , 2.400E+04,  300.    )(m)
+     Maximum change in potentiometric head   5.2243E-03      (m ) at location (     0   , 2.400E+04,  300.    )(m)
      Maximum change in H .................. -7.2064E-03 (mol/kgw) at location ( 7.800E+04, 4.800E+04,  100.    )(m)
      Maximum change in O .................. -1.7728E-02 (mol/kgw) at location ( 7.800E+04, 4.800E+04,  100.    )(m)
      Maximum change in As .................  1.7547E-09 (mol/kgw) at location ( 3.000E+04, 1.800E+04,  300.    )(m)
      Maximum change in C .................. -5.8980E-03 (mol/kgw) at location ( 7.800E+04, 4.800E+04,  100.    )(m)
-     Maximum change in Ca .................  2.2715E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in Cl .................  3.2372E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in Mg .................  5.8727E-03 (mol/kgw) at location ( 2.400E+04, 1.800E+04,     0    )(m)
-     Maximum change in Na .................  2.7149E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
-     Maximum change in S ..................  2.1885E-04 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0    )(m)
+     Maximum change in Ca .................  2.2715E-02 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in Cl .................  3.2372E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in Mg .................  5.8727E-03 (mol/kgw) at location ( 2.400E+04, 1.800E+04,     0   )(m)
+     Maximum change in Na .................  2.7149E-01 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
+     Maximum change in S ..................  2.1885E-04 (mol/kgw) at location ( 3.000E+04, 1.800E+04,     0   )(m)
      Maximum change in Charge ............. -7.3474E-03 (mol/kgw) at location ( 7.800E+04, 4.800E+04,  100.    )(m)
 Reading transient data for simulation: Set 20
 WARNING:  2 print control intervals are less than defined time step length.
@@ -1263,16 +1263,16 @@ Beginning time step no.     22
 
      End of Time Step No.    22
      Time ..................................................    15000.0     (yr)
-     Maximum change in potentiometric head   2.4216E-04      (m ) at location (     0    , 2.400E+04,  300.    )(m)
+     Maximum change in potentiometric head   2.4216E-04      (m ) at location (     0   , 2.400E+04,  300.    )(m)
      Maximum change in H .................. -3.6388E-03 (mol/kgw) at location ( 7.800E+04, 4.800E+04,  100.    )(m)
      Maximum change in O .................. -1.0945E-02 (mol/kgw) at location ( 7.800E+04, 4.800E+04,  100.    )(m)
      Maximum change in As ................. -7.4674E-09 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  300.    )(m)
      Maximum change in C .................. -3.6470E-03 (mol/kgw) at location ( 7.800E+04, 4.800E+04,  100.    )(m)
-     Maximum change in Ca .................  1.7587E-02 (mol/kgw) at location ( 2.400E+04, 1.800E+04,     0    )(m)
-     Maximum change in Cl .................  2.4552E-01 (mol/kgw) at location ( 2.400E+04, 1.800E+04,     0    )(m)
-     Maximum change in Mg ................. -4.5250E-03 (mol/kgw) at location ( 6.000E+04,     0    ,  100.    )(m)
-     Maximum change in Na .................  2.0289E-01 (mol/kgw) at location ( 2.400E+04, 1.800E+04,     0    )(m)
-     Maximum change in S ..................  1.6598E-04 (mol/kgw) at location ( 2.400E+04, 1.800E+04,     0    )(m)
+     Maximum change in Ca .................  1.7587E-02 (mol/kgw) at location ( 2.400E+04, 1.800E+04,     0   )(m)
+     Maximum change in Cl .................  2.4552E-01 (mol/kgw) at location ( 2.400E+04, 1.800E+04,     0   )(m)
+     Maximum change in Mg ................. -4.5250E-03 (mol/kgw) at location ( 6.000E+04,     0   ,  100.    )(m)
+     Maximum change in Na .................  2.0289E-01 (mol/kgw) at location ( 2.400E+04, 1.800E+04,     0   )(m)
+     Maximum change in S ..................  1.6598E-04 (mol/kgw) at location ( 2.400E+04, 1.800E+04,     0   )(m)
      Maximum change in Charge ............. -3.6762E-03 (mol/kgw) at location ( 7.800E+04, 4.800E+04,  100.    )(m)
 Done with transient simulation.
 

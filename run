@@ -127,7 +127,7 @@ if [ $CONFIGURATION == "OPENMPI_INTEL" ]; then
 #
     #LD_LIBRARY_PATH=/z/parkplace/home/charlton/openmpi-1.4.2/grundvand-ifort/lib
     #export LD_LIBRARY_PATH
-    /z/parkplace/home/charlton/openmpi-1.4.2/grundvand-ifort/bin/mpirun -n 2 -H grundvand -H niwot -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_intel/phast
+    /z/parkplace/home/charlton/openmpi-1.4.2/grundvand-ifort/bin/mpirun -n 2 -H grundvand -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_intel/phast
 fi
 
 if [ $CONFIGURATION == "OPENMPI_INTEL_64" ]; then

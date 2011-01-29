@@ -21,16 +21,16 @@ Processing flow and transport data file.
 	        well_diameter                        in
 	        well_flow_rate                       L/day
 	GRID
-	        uniform x    0    90000    16
-	        uniform y    0    48000    9
-	        uniform z    0    400      3
+	        uniform x    0   90000    16
+	        uniform y    0   48000    9
+	        uniform z    0   400      3
 	        print_orientation                    XY 
 	SOLUTE_TRANSPORT true
 	STEADY_FLOW true
 	        head_tolerance                       1e-6
 	        flow_balance_tolerance               1e-3
 	MEDIA
-	        zone   0. 0. 0. 90000.  48000. 400.
+	        zone   0 0. 0 90000.  48000. 400.
 	                porosity                     0.22
 	                long_dispersivity            2000.
 	                horizontal_dispersivity      50.
@@ -39,7 +39,7 @@ Processing flow and transport data file.
 	                ky                           1.5e-5
 	                kz                           1.5e-7
 	                storage                      0
-	        zone   48000. 0. 0. 90000. 48000. 100.
+	        zone   48000. 0 0. 90000. 48000. 100.
 	                active                       0
 	RIVER 1 Little River
 	        point  44000. 15000.
@@ -47,77 +47,77 @@ Processing flow and transport data file.
 	                depth                        1.
 	                bed_thickness                1.
 	                bed_hydraulic_conductivity   1.
-	                head                         0         335.
-	                solution                     0         1
-	        point  44000. 0.
-	        point  90000. 0.
+	                head                         0        335.
+	                solution                     0        1
+	        point  44000. 0 
+	        point  90000. 0 
 	                width                        200.
 	                depth                        1.
 	                bed_thickness                1.
 	                bed_hydraulic_conductivity   1.
-	                head                         0         275.
-	                solution                     0         1
+	                head                         0        275.
+	                solution                     0        1
 	RIVER 2 North Fork River
 	        point  30000. 36000.
 	                width                        200.
 	                depth                        1.
 	                bed_thickness                1.
 	                bed_hydraulic_conductivity   1
-	                head                         0         335.
-	                solution                     0         1
+	                head                         0        335.
+	                solution                     0        1
 	        point  30000. 48000.
 	        point  90000. 48000.
 	                width                        200.
 	                depth                        1.
 	                bed_thickness                1.
 	                bed_hydraulic_conductivity   1
-	                head                         0         280.
-	                solution                     0         1
+	                head                         0        280.
+	                solution                     0        1
 	RIVER 3 North Canadian River
 	        point  60000. 30000.
 	                width                        200.
 	                depth                        1.
 	                bed_thickness                1.
 	                bed_hydraulic_conductivity   1
-	                head                         0         350.
-	                solution                     0         1
+	                head                         0        350.
+	                solution                     0        1
 	        point  90000. 20000.
 	                width                        200.
 	                depth                        1.
 	                bed_thickness                1.
 	                bed_hydraulic_conductivity   1
-	                head                         0         305.
-	                solution                     0         1
+	                head                         0        305.
+	                solution                     0        1
 	FLUX_BC
 	        zone   27000. 3000. 400.  90000. 45000. 400.
-	                flux                         0         -0.055
-	                associated_solution          0         1
+	                flux                         0        -0.055
+	                associated_solution          0        1
 	SPECIFIED_HEAD_BC
 	        zone   30000. 14000 300. 32000.  20000.  400.
-	                head                         0         348.
-	                associated_solution_composition          0         1
+	                head                         0        348.
+	                associated_solution_composition          0        1
 	LEAKY_BC
-	        zone   0. 48000. 0. 27000. 48000. 400.
+	        zone   0 48000. 0 27000. 48000. 400.
 	                hydraulic_conductivity                    1.5e-5
 	                thickness                   30000.
-	                head                         0         305.0
-	                associated_solution                   0         1
-	       zone 0 0 0 39000 0 400
+	                head                         0        305.0
+	                associated_solution                   0        1
+	       zone 0 0 39000 0 400
 	                hydraulic_conductivity       1.5E-5
 	                thickness                    20000
-	                head                         0         320
-	                associated_solution          0         2
+	                head                         0        320
+	                associated_solution          0        2
 	FREE_SURFACE_BC true
 	WELL 1 Observation well 1 in arsenic zone
 	        12000 36000
 	                diameter       2                               # inches
-	                pumping                      0         1       # L/day
+	                pumping                      0        1       # L/day
 	                elevation      90 110                          # m
 	HEAD_IC
-	        zone   0. 0. 0. 90000. 48000. 400.
+	        zone   0 0. 0 90000. 48000. 400.
 	                head   380.
 	CHEMISTRY_IC
-	        zone   0. 0. 0. 90000. 48000. 400.
+	        zone   0 0. 0 90000. 48000. 400.
 	                solution               2
 	                equilibrium_phases     2
 	                exchange               2
@@ -125,10 +125,10 @@ Processing flow and transport data file.
 	SOLUTION_METHOD
 	        iterative_solver       true
 	        tolerance              1e-10
-	        space_differencing     0.
+	        space_differencing     0 
 	        time_differencing      1.
 	TIME_CONTROL
-	        delta_time     0               2000    yr
+	        delta_time     0              2000    yr
 	        end_time                       31000   yr
 	PRINT_INITIAL
 		boundary_conditions    true
@@ -191,7 +191,7 @@ Processing flow and transport data file.
 	        chemistry
 		       sample_grid X 2
 	        xyz_chemistry
-	               zone   0 0 0  90000 48000 0
+	               zone   0 0  90000 48000 0
 	               print 0
 	END
 WARNING: River width units not defined in UNITS data block, meters assumed.
@@ -273,71 +273,71 @@ Minimum time step required ...................................... DTIMMN    2.0 
 Maximum time step allowed ....................................... DTIMMX   2.00E+06(yr )
 
 Beginning steady state time step no.      1
-     Maximum change in potentiometric head ..   -1.0352E+02     (m) at location ( 9.000E+04,     0    ,  400.    )(m)
-     Fractional flow residual ...............   -1.9067E+00
+     Maximum change in potentiometric head ..   -1.0352E+02     (m) at location ( 9.000E+04,     0   ,  400.    )(m)
+     Fractional flow residual ...............   -1.9067e+00
 
 Beginning steady state time step no.      2
-     Maximum change in potentiometric head ..   -1.0103E+01     (m) at location ( 9.000E+04,     0    ,  200.    )(m)
+     Maximum change in potentiometric head ..   -1.0103E+01     (m) at location ( 9.000E+04,     0   ,  200.    )(m)
      Fractional flow residual ...............   -9.5413E-01
 
 Beginning steady state time step no.      3
-     Maximum change in potentiometric head ..   -3.7815E+00     (m) at location ( 3.600E+04,     0    ,  400.    )(m)
+     Maximum change in potentiometric head ..   -3.7815e+00     (m) at location ( 3.600E+04,     0   ,  400.    )(m)
      Fractional flow residual ...............   -5.2302E-01
 
 Beginning steady state time step no.      4
-     Maximum change in potentiometric head ..   -5.6438E+00     (m) at location ( 3.600E+04,     0    ,  400.    )(m)
+     Maximum change in potentiometric head ..   -5.6438e+00     (m) at location ( 3.600E+04,     0   ,  400.    )(m)
      Fractional flow residual ...............   -4.8457E-01
 
 Beginning steady state time step no.      5
-     Maximum change in potentiometric head ..   -7.3791E+00     (m) at location ( 2.400E+04, 4.800E+04,  400.    )(m)
+     Maximum change in potentiometric head ..   -7.3791e+00     (m) at location ( 2.400E+04, 4.800E+04,  400.    )(m)
      Fractional flow residual ...............   -4.2632E-01
 
 Beginning steady state time step no.      6
-     Maximum change in potentiometric head ..   -8.0429E+00     (m) at location ( 2.400E+04, 4.800E+04,  400.    )(m)
+     Maximum change in potentiometric head ..   -8.0429e+00     (m) at location ( 2.400E+04, 4.800E+04,  400.    )(m)
      Fractional flow residual ...............   -3.4976E-01
 
 Beginning steady state time step no.      7
-     Maximum change in potentiometric head ..   -8.0160E+00     (m) at location ( 1.800E+04, 4.800E+04,  400.    )(m)
+     Maximum change in potentiometric head ..   -8.0160e+00     (m) at location ( 1.800E+04, 4.800E+04,  400.    )(m)
      Fractional flow residual ...............   -2.6242E-01
 
 Beginning steady state time step no.      8
-     Maximum change in potentiometric head ..   -9.2843E+00     (m) at location ( 6.000E+03, 4.200E+04,  400.    )(m)
+     Maximum change in potentiometric head ..   -9.2843e+00     (m) at location ( 6.000E+03, 4.200E+04,  400.    )(m)
      Fractional flow residual ...............   -1.7345E-01
 
 Beginning steady state time step no.      9
-     Maximum change in potentiometric head ..   -1.1500E+01     (m) at location (     0    , 3.000E+04,  400.    )(m)
+     Maximum change in potentiometric head ..   -1.1500E+01     (m) at location (     0   , 3.000E+04,  400.    )(m)
      Fractional flow residual ...............   -9.3606E-02
 
 Beginning steady state time step no.     10
-     Maximum change in potentiometric head ..   -1.0596E+01     (m) at location (     0    , 2.400E+04,  400.    )(m)
+     Maximum change in potentiometric head ..   -1.0596E+01     (m) at location (     0   , 2.400E+04,  400.    )(m)
      Fractional flow residual ...............   -3.6965E-02
 
 Beginning steady state time step no.     11
-     Maximum change in potentiometric head ..   -6.0572E+00     (m) at location (     0    , 2.400E+04,  400.    )(m)
+     Maximum change in potentiometric head ..   -6.0572e+00     (m) at location (     0   , 2.400E+04,  400.    )(m)
      Fractional flow residual ...............   -9.5297E-03
 
 Beginning steady state time step no.     12
-     Maximum change in potentiometric head ..   -1.9840E+00     (m) at location (     0    , 2.400E+04,  400.    )(m)
+     Maximum change in potentiometric head ..   -1.9840e+00     (m) at location (     0   , 2.400E+04,  400.    )(m)
      Fractional flow residual ...............   -1.4496E-03
 
 Beginning steady state time step no.     13
-     Maximum change in potentiometric head ..   -3.4542E-01     (m) at location (     0    , 2.400E+04,  400.    )(m)
+     Maximum change in potentiometric head ..   -3.4542E-01     (m) at location (     0   , 2.400E+04,  400.    )(m)
      Fractional flow residual ...............   -1.1869E-04
 
 Beginning steady state time step no.     14
-     Maximum change in potentiometric head ..   -2.9734E-02     (m) at location (     0    , 3.000E+04,  400.    )(m)
+     Maximum change in potentiometric head ..   -2.9734E-02     (m) at location (     0   , 3.000E+04,  400.    )(m)
      Fractional flow residual ...............   -4.7647E-06
 
 Beginning steady state time step no.     15
      Current time step length ...................................   1.638E+04 (yr)
           No. of solver iterations, Relative residual:   11      7.3300448E-11
-     Maximum change in potentiometric head ..   -1.1525E-03     (m) at location (     0    , 3.000E+04,  400.    )(m)
+     Maximum change in potentiometric head ..   -1.1525E-03     (m) at location (     0   , 3.000E+04,  400.    )(m)
      Fractional flow residual ...............   -8.2358E-08
 
 Beginning steady state time step no.     16
      Current time step length ...................................   3.277E+04 (yr)
           No. of solver iterations, Relative residual:   12      1.8065981E-11
-     Maximum change in potentiometric head ..   -1.5938E-05     (m) at location (     0    , 4.200E+04,  400.    )(m)
+     Maximum change in potentiometric head ..   -1.5938E-05     (m) at location (     0   , 4.200E+04,  400.    )(m)
      Fractional flow residual ...............   -3.9917E-10
 
 Beginning steady state time step no.     17
@@ -518,17 +518,17 @@ Beginning time step no.      9
 
      End of Time Step No.     9
      Time ..................................................    9000.00     (yr)
-     Maximum change in potentiometric head   0.0000E+00      (m ) at location ( 6.000E+04, 4.800E+04,  400.    )(m)
-     Maximum change in H .................. -9.7866E-03 (mol/kgw) at location ( 4.200E+04,     0    ,     0    )(m)
-     Maximum change in O .................. -1.9894E-02 (mol/kgw) at location ( 4.200E+04,     0    ,     0    )(m)
+     Maximum change in potentiometric head   0     (m ) at location ( 6.000E+04, 4.800E+04,  400.    )(m)
+     Maximum change in H .................. -9.7866E-03 (mol/kgw) at location ( 4.200E+04,     0   ,     0   )(m)
+     Maximum change in O .................. -1.9894E-02 (mol/kgw) at location ( 4.200E+04,     0   ,     0   )(m)
      Maximum change in As ................. -9.1363E-08 (mol/kgw) at location ( 9.000E+04, 1.800E+04,  400.    )(m)
-     Maximum change in C .................. -6.5986E-03 (mol/kgw) at location ( 4.200E+04,     0    ,     0    )(m)
+     Maximum change in C .................. -6.5986E-03 (mol/kgw) at location ( 4.200E+04,     0   ,     0   )(m)
      Maximum change in Ca ................. -3.3598E-02 (mol/kgw) at location ( 2.400E+04, 4.800E+04,  200.    )(m)
      Maximum change in Cl ................. -5.0042E-01 (mol/kgw) at location ( 2.400E+04, 4.800E+04,  200.    )(m)
-     Maximum change in Mg ................. -1.3296E-02 (mol/kgw) at location ( 2.400E+04, 4.200E+04,     0    )(m)
+     Maximum change in Mg ................. -1.3296E-02 (mol/kgw) at location ( 2.400E+04, 4.200E+04,     0   )(m)
      Maximum change in Na ................. -4.0371E-01 (mol/kgw) at location ( 2.400E+04, 4.800E+04,  200.    )(m)
      Maximum change in S .................. -3.3831E-04 (mol/kgw) at location ( 2.400E+04, 4.800E+04,  200.    )(m)
-     Maximum change in Charge ............. -1.0145E-02 (mol/kgw) at location ( 4.200E+04,     0    ,     0    )(m)
+     Maximum change in Charge ............. -1.0145E-02 (mol/kgw) at location ( 4.200E+04,     0   ,     0   )(m)
 
 Beginning time step no.     10
      Beginning solute-transport calculation.
@@ -642,16 +642,16 @@ Beginning time step no.     15
 
      End of Time Step No.    15
      Time ..................................................    15000.0     (yr)
-     Maximum change in potentiometric head   0.0000E+00      (m ) at location ( 6.000E+04, 4.800E+04,  400.    )(m)
+     Maximum change in potentiometric head   0     (m ) at location ( 6.000E+04, 4.800E+04,  400.    )(m)
      Maximum change in H .................. -5.6874E-03 (mol/kgw) at location ( 2.400E+04, 3.600E+04,  200.    )(m)
      Maximum change in O .................. -1.0840E-02 (mol/kgw) at location ( 2.400E+04, 3.600E+04,  200.    )(m)
-     Maximum change in As ................. -5.1763E-07 (mol/kgw) at location ( 9.000E+04,     0    ,  200.    )(m)
-     Maximum change in C .................. -3.6046E-03 (mol/kgw) at location ( 3.000E+04, 4.800E+04,     0    )(m)
-     Maximum change in Ca ................. -2.2781E-02 (mol/kgw) at location ( 1.200E+04, 4.800E+04,     0    )(m)
-     Maximum change in Cl ................. -3.2400E-01 (mol/kgw) at location ( 1.200E+04, 4.800E+04,     0    )(m)
-     Maximum change in Mg ................. -8.9990E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,     0    )(m)
-     Maximum change in Na ................. -2.5930E-01 (mol/kgw) at location ( 1.200E+04, 4.800E+04,     0    )(m)
-     Maximum change in S .................. -2.1904E-04 (mol/kgw) at location ( 1.200E+04, 4.800E+04,     0    )(m)
+     Maximum change in As ................. -5.1763E-07 (mol/kgw) at location ( 9.000E+04,     0   ,  200.    )(m)
+     Maximum change in C .................. -3.6046E-03 (mol/kgw) at location ( 3.000E+04, 4.800E+04,     0   )(m)
+     Maximum change in Ca ................. -2.2781E-02 (mol/kgw) at location ( 1.200E+04, 4.800E+04,     0   )(m)
+     Maximum change in Cl ................. -3.2400E-01 (mol/kgw) at location ( 1.200E+04, 4.800E+04,     0   )(m)
+     Maximum change in Mg ................. -8.9990E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,     0   )(m)
+     Maximum change in Na ................. -2.5930E-01 (mol/kgw) at location ( 1.200E+04, 4.800E+04,     0   )(m)
+     Maximum change in S .................. -2.1904E-04 (mol/kgw) at location ( 1.200E+04, 4.800E+04,     0   )(m)
      Maximum change in Charge ............. -5.9396E-03 (mol/kgw) at location ( 2.400E+04, 3.600E+04,  200.    )(m)
 Reading transient data for simulation: Set  2
 WARNING:  2 print control intervals are less than defined time step length.
@@ -769,16 +769,16 @@ Beginning time step no.     21
 
      End of Time Step No.    21
      Time ..................................................    21000.0     (yr)
-     Maximum change in potentiometric head   0.0000E+00      (m ) at location ( 6.000E+04, 4.800E+04,  400.    )(m)
+     Maximum change in potentiometric head   0     (m ) at location ( 6.000E+04, 4.800E+04,  400.    )(m)
      Maximum change in H .................. -5.5549E-03 (mol/kgw) at location ( 2.400E+04, 4.800E+04,  200.    )(m)
      Maximum change in O .................. -1.0299E-02 (mol/kgw) at location ( 2.400E+04, 4.800E+04,  200.    )(m)
-     Maximum change in As ................. -3.8616E-07 (mol/kgw) at location ( 4.800E+04, 2.400E+04,     0    )(m)
+     Maximum change in As ................. -3.8616E-07 (mol/kgw) at location ( 4.800E+04, 2.400E+04,     0   )(m)
      Maximum change in C .................. -3.4113E-03 (mol/kgw) at location ( 2.400E+04, 4.800E+04,  200.    )(m)
-     Maximum change in Ca ................. -1.6651E-02 (mol/kgw) at location ( 6.000E+03, 4.800E+04,     0    )(m)
-     Maximum change in Cl ................. -2.3475E-01 (mol/kgw) at location ( 6.000E+03, 4.800E+04,     0    )(m)
-     Maximum change in Mg ................. -6.6924E-03 (mol/kgw) at location ( 1.200E+04, 4.800E+04,     0    )(m)
-     Maximum change in Na ................. -1.9037E-01 (mol/kgw) at location ( 1.200E+04, 4.800E+04,     0    )(m)
-     Maximum change in S .................. -1.5870E-04 (mol/kgw) at location ( 6.000E+03, 4.800E+04,     0    )(m)
+     Maximum change in Ca ................. -1.6651E-02 (mol/kgw) at location ( 6.000E+03, 4.800E+04,     0   )(m)
+     Maximum change in Cl ................. -2.3475E-01 (mol/kgw) at location ( 6.000E+03, 4.800E+04,     0   )(m)
+     Maximum change in Mg ................. -6.6924E-03 (mol/kgw) at location ( 1.200E+04, 4.800E+04,     0   )(m)
+     Maximum change in Na ................. -1.9037E-01 (mol/kgw) at location ( 1.200E+04, 4.800E+04,     0   )(m)
+     Maximum change in S .................. -1.5870E-04 (mol/kgw) at location ( 6.000E+03, 4.800E+04,     0   )(m)
      Maximum change in Charge ............. -5.8250E-03 (mol/kgw) at location ( 2.400E+04, 4.800E+04,  200.    )(m)
 
 Beginning time step no.     22
@@ -909,17 +909,17 @@ Beginning time step no.     28
 
      End of Time Step No.    28
      Time ..................................................    28000.0     (yr)
-     Maximum change in potentiometric head   0.0000E+00      (m ) at location ( 6.000E+04, 4.800E+04,  400.    )(m)
-     Maximum change in H .................. -4.5899E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,     0    )(m)
+     Maximum change in potentiometric head   0     (m ) at location ( 6.000E+04, 4.800E+04,  400.    )(m)
+     Maximum change in H .................. -4.5899E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,     0   )(m)
      Maximum change in O .................. -8.3339E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,  200.    )(m)
-     Maximum change in As ................. -3.7048E-07 (mol/kgw) at location ( 4.200E+04, 4.800E+04,     0    )(m)
+     Maximum change in As ................. -3.7048E-07 (mol/kgw) at location ( 4.200E+04, 4.800E+04,     0   )(m)
      Maximum change in C .................. -2.7626E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,  200.    )(m)
-     Maximum change in Ca ................. -1.2229E-02 (mol/kgw) at location ( 6.000E+03, 4.800E+04,     0    )(m)
-     Maximum change in Cl ................. -1.8812E-01 (mol/kgw) at location ( 6.000E+03, 4.800E+04,     0    )(m)
+     Maximum change in Ca ................. -1.2229E-02 (mol/kgw) at location ( 6.000E+03, 4.800E+04,     0   )(m)
+     Maximum change in Cl ................. -1.8812E-01 (mol/kgw) at location ( 6.000E+03, 4.800E+04,     0   )(m)
      Maximum change in Mg ................. -5.1588E-03 (mol/kgw) at location ( 6.000E+03, 4.800E+04,  400.    )(m)
-     Maximum change in Na ................. -1.5244E-01 (mol/kgw) at location ( 6.000E+03, 4.800E+04,     0    )(m)
-     Maximum change in S .................. -1.2718E-04 (mol/kgw) at location ( 6.000E+03, 4.800E+04,     0    )(m)
-     Maximum change in Charge ............. -4.8117E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,     0    )(m)
+     Maximum change in Na ................. -1.5244E-01 (mol/kgw) at location ( 6.000E+03, 4.800E+04,     0   )(m)
+     Maximum change in S .................. -1.2718E-04 (mol/kgw) at location ( 6.000E+03, 4.800E+04,     0   )(m)
+     Maximum change in Charge ............. -4.8117E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,     0   )(m)
 
 Beginning time step no.     29
      Beginning solute-transport calculation.
@@ -969,17 +969,17 @@ Beginning time step no.     30
 
      End of Time Step No.    30
      Time ..................................................    30000.0     (yr)
-     Maximum change in potentiometric head   0.0000E+00      (m ) at location ( 6.000E+04, 4.800E+04,  400.    )(m)
-     Maximum change in H .................. -4.3266E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,     0    )(m)
-     Maximum change in O .................. -8.0560E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,     0    )(m)
-     Maximum change in As ................. -3.4319E-07 (mol/kgw) at location ( 4.200E+04, 4.800E+04,     0    )(m)
-     Maximum change in C .................. -2.6743E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,     0    )(m)
-     Maximum change in Ca ................. -1.1834E-02 (mol/kgw) at location (     0    , 4.800E+04,     0    )(m)
-     Maximum change in Cl ................. -1.6905E-01 (mol/kgw) at location ( 6.000E+03, 4.800E+04,     0    )(m)
-     Maximum change in Mg ................. -4.8176E-03 (mol/kgw) at location ( 6.000E+03, 4.800E+04,     0    )(m)
-     Maximum change in Na ................. -1.3792E-01 (mol/kgw) at location ( 6.000E+03, 4.800E+04,     0    )(m)
-     Maximum change in S .................. -1.1428E-04 (mol/kgw) at location ( 6.000E+03, 4.800E+04,     0    )(m)
-     Maximum change in Charge ............. -4.4912E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,     0    )(m)
+     Maximum change in potentiometric head   0     (m ) at location ( 6.000E+04, 4.800E+04,  400.    )(m)
+     Maximum change in H .................. -4.3266E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,     0   )(m)
+     Maximum change in O .................. -8.0560E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,     0   )(m)
+     Maximum change in As ................. -3.4319E-07 (mol/kgw) at location ( 4.200E+04, 4.800E+04,     0   )(m)
+     Maximum change in C .................. -2.6743E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,     0   )(m)
+     Maximum change in Ca ................. -1.1834E-02 (mol/kgw) at location (     0   , 4.800E+04,     0   )(m)
+     Maximum change in Cl ................. -1.6905E-01 (mol/kgw) at location ( 6.000E+03, 4.800E+04,     0   )(m)
+     Maximum change in Mg ................. -4.8176E-03 (mol/kgw) at location ( 6.000E+03, 4.800E+04,     0   )(m)
+     Maximum change in Na ................. -1.3792E-01 (mol/kgw) at location ( 6.000E+03, 4.800E+04,     0   )(m)
+     Maximum change in S .................. -1.1428E-04 (mol/kgw) at location ( 6.000E+03, 4.800E+04,     0   )(m)
+     Maximum change in Charge ............. -4.4912E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,     0   )(m)
 Reading transient data for simulation: Set  3
 WARNING:  2 print control intervals are less than defined time step length.
      Time at which next set of transient parameters will be read .......... TIMCHG  3.100E+04  (yr)
@@ -1016,17 +1016,17 @@ Beginning time step no.     31
 
      End of Time Step No.    31
      Time ..................................................    31000.0     (yr)
-     Maximum change in potentiometric head   0.0000E+00      (m ) at location ( 6.000E+04, 4.800E+04,  400.    )(m)
-     Maximum change in H .................. -4.1495E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,     0    )(m)
-     Maximum change in O .................. -7.8524E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,     0    )(m)
-     Maximum change in As ................. -3.2820E-07 (mol/kgw) at location ( 4.200E+04, 4.800E+04,     0    )(m)
-     Maximum change in C .................. -2.6081E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,     0    )(m)
-     Maximum change in Ca ................. -1.1667E-02 (mol/kgw) at location (     0    , 4.800E+04,     0    )(m)
-     Maximum change in Cl ................. -1.6501E-01 (mol/kgw) at location (     0    , 4.800E+04,     0    )(m)
-     Maximum change in Mg ................. -4.6190E-03 (mol/kgw) at location ( 6.000E+03, 4.800E+04,     0    )(m)
-     Maximum change in Na ................. -1.3163E-01 (mol/kgw) at location (     0    , 4.800E+04,     0    )(m)
-     Maximum change in S .................. -1.1156E-04 (mol/kgw) at location (     0    , 4.800E+04,     0    )(m)
-     Maximum change in Charge ............. -4.2911E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,     0    )(m)
+     Maximum change in potentiometric head   0     (m ) at location ( 6.000E+04, 4.800E+04,  400.    )(m)
+     Maximum change in H .................. -4.1495E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,     0   )(m)
+     Maximum change in O .................. -7.8524E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,     0   )(m)
+     Maximum change in As ................. -3.2820E-07 (mol/kgw) at location ( 4.200E+04, 4.800E+04,     0   )(m)
+     Maximum change in C .................. -2.6081E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,     0   )(m)
+     Maximum change in Ca ................. -1.1667E-02 (mol/kgw) at location (     0   , 4.800E+04,     0   )(m)
+     Maximum change in Cl ................. -1.6501E-01 (mol/kgw) at location (     0   , 4.800E+04,     0   )(m)
+     Maximum change in Mg ................. -4.6190E-03 (mol/kgw) at location ( 6.000E+03, 4.800E+04,     0   )(m)
+     Maximum change in Na ................. -1.3163E-01 (mol/kgw) at location (     0   , 4.800E+04,     0   )(m)
+     Maximum change in S .................. -1.1156E-04 (mol/kgw) at location (     0   , 4.800E+04,     0   )(m)
+     Maximum change in Charge ............. -4.2911E-03 (mol/kgw) at location ( 1.800E+04, 4.800E+04,     0   )(m)
 Done with transient simulation.
 
                              ***** Simulation Completed *****

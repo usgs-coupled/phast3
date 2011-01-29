@@ -7,7 +7,7 @@
                               X-Direction Node Coordinates    (m)
 
            1           2           3           4           5           6           7           8           9          10
-              0        4.00        8.00       12.00       16.00       20.00       24.00       28.00       32.00       36.00
+              0       4.00        8.00       12.00       16.00       20.00       24.00       28.00       32.00       36.00
 
 
 
@@ -25,7 +25,7 @@
                               Y-Direction Node Coordinates   (m)
 
            1           2           3           4           5           6           7           8           9          10
-              0        0.50        1.50        2.50        3.50        4.50        5.50        6.50        7.50        8.50
+              0       0.50        1.50        2.50        3.50        4.50        5.50        6.50        7.50        8.50
 
 
 
@@ -43,7 +43,7 @@
                               Z-Direction Node Coordinates   (m)
 
            1           2           3           4           5           6           7           8           9          10
-              0        0.50        1.50        2.50        3.50        4.50        5.50        6.50        7.50        8.50
+              0       0.50        1.50        2.50        3.50        4.50        5.50        6.50        7.50        8.50
 
 
 
@@ -56,7 +56,7 @@
                               X-Direction Node Coordinates    (m)
 
            1           2           3           4           5           6           7           8           9          10
-              0        4.00        8.00       12.00       16.00       20.00       24.00       28.00       32.00       36.00
+              0       4.00        8.00       12.00       16.00       20.00       24.00       28.00       32.00       36.00
 
 
 
@@ -74,7 +74,7 @@
                               Y-Direction Node Coordinates   (m)
 
            1           2           3           4           5           6           7           8           9          10
-              0        0.50        1.50        2.50        3.50        4.50        5.50        6.50        7.50        8.50
+              0       0.50        1.50        2.50        3.50        4.50        5.50        6.50        7.50        8.50
 
 
 
@@ -92,7 +92,7 @@
                               Z-Direction Node Coordinates   (m)
 
            1           2           3           4           5           6           7           8           9          10
-              0        0.50        1.50        2.50        3.50        4.50        5.50        6.50        7.50        8.50
+              0       0.50        1.50        2.50        3.50        4.50        5.50        6.50        7.50        8.50
 
 
 
@@ -893,7 +893,7 @@
 
                               *** Output at End of Steady State Iteration No.     1 ***
 
-     Time .......................................................       0      (d)
+     Time .......................................................       0     (d)
 
                                         *** Zonal Flow Summary, zone:   1 ***
            11 X = 50 to 100                                                               
@@ -907,24 +907,24 @@
                                                                  Rates
 
  Internal face fluid inflow .................................  5.125000E+03  (kg/d)
- Internal face fluid outflow ................................  0.000000E+00  (kg/d)
+ Internal face fluid outflow ................................  0 (kg/d)
 
 
                Current Iteration Step by Boundary Condition Type
                                                                  Rates
 
- Specified head b.c. fluid inflow ...........................  0.000000E+00  (kg/d)
+ Specified head b.c. fluid inflow ...........................  0 (kg/d)
  Specified head b.c. fluid outflow ..........................  5.125000E+03  (kg/d)
- Flux b.c. fluid inflow .....................................  0.000000E+00  (kg/d)
- Flux b.c. fluid outflow ....................................  0.000000E+00  (kg/d)
- Leakage b.c. fluid inflow ..................................  0.000000E+00  (kg/d)
- Leakage b.c. fluid outflow .................................  0.000000E+00  (kg/d)
- River leakage b.c. fluid inflow ............................  0.000000E+00  (kg/d)
- River leakage b.c. fluid outflow ...........................  0.000000E+00  (kg/d)
- Drain leakage b.c. fluid inflow ............................  0.000000E+00  (kg/d)
- Drain leakage b.c. fluid outflow ...........................  0.000000E+00  (kg/d)
- Well fluid inflow ..........................................  0.000000E+00  (kg/d)
- Well fluid outflow .........................................  0.000000E+00  (kg/d)
+ Flux b.c. fluid inflow .....................................  0 (kg/d)
+ Flux b.c. fluid outflow ....................................  0 (kg/d)
+ Leakage b.c. fluid inflow ..................................  0 (kg/d)
+ Leakage b.c. fluid outflow .................................  0 (kg/d)
+ River leakage b.c. fluid inflow ............................  0 (kg/d)
+ River leakage b.c. fluid outflow ...........................  0 (kg/d)
+ Drain leakage b.c. fluid inflow ............................  0 (kg/d)
+ Drain leakage b.c. fluid outflow ...........................  0 (kg/d)
+ Well fluid inflow ..........................................  0 (kg/d)
+ Well fluid outflow .........................................  0 (kg/d)
 
 
                               *** Output at End of Time Step No.     4 ***
@@ -964,7 +964,7 @@
                                                                  Rates
 
  Internal face fluid inflow .................................  5.125000E+03  (kg/d)
- Internal face fluid outflow ................................  0.000000E+00  (kg/d)
+ Internal face fluid outflow ................................  0 (kg/d)
 
 
 
@@ -991,69 +991,69 @@
                Current Time Step by Boundary Condition Type
                                                                  Rates
 
- Specified head b.c. fluid inflow ...........................  0.000000E+00  (kg/d)
+ Specified head b.c. fluid inflow ...........................  0 (kg/d)
  Specified head b.c. fluid outflow ..........................  5.125000E+03  (kg/d)
- Flux b.c. fluid inflow .....................................  0.000000E+00  (kg/d)
- Flux b.c. fluid outflow ....................................  0.000000E+00  (kg/d)
- Leakage b.c. fluid inflow ..................................  0.000000E+00  (kg/d)
- Leakage b.c. fluid outflow .................................  0.000000E+00  (kg/d)
- River leakage b.c. fluid inflow ............................  0.000000E+00  (kg/d)
- River leakage b.c. fluid outflow ...........................  0.000000E+00  (kg/d)
- Drain leakage b.c. fluid inflow ............................  0.000000E+00  (kg/d)
- Drain leakage b.c. fluid outflow ...........................  0.000000E+00  (kg/d)
- Well fluid inflow ..........................................  0.000000E+00  (kg/d)
- Well fluid outflow .........................................  0.000000E+00  (kg/d)
+ Flux b.c. fluid inflow .....................................  0 (kg/d)
+ Flux b.c. fluid outflow ....................................  0 (kg/d)
+ Leakage b.c. fluid inflow ..................................  0 (kg/d)
+ Leakage b.c. fluid outflow .................................  0 (kg/d)
+ River leakage b.c. fluid inflow ............................  0 (kg/d)
+ River leakage b.c. fluid outflow ...........................  0 (kg/d)
+ Drain leakage b.c. fluid inflow ............................  0 (kg/d)
+ Drain leakage b.c. fluid outflow ...........................  0 (kg/d)
+ Well fluid inflow ..........................................  0 (kg/d)
+ Well fluid outflow .........................................  0 (kg/d)
 
 
 
           Component: H         
 
- Specified head b.c. solute inflow ..........................  0.000000E+00  (kg/d)
+ Specified head b.c. solute inflow ..........................  0 (kg/d)
  Specified head b.c. solute outflow .........................  1.034300E-06  (kg/d)
- Flux b.c. solute inflow ....................................  0.000000E+00  (kg/d)
- Flux b.c. solute outflow ...................................  0.000000E+00  (kg/d)
- Leakage b.c. solute inflow .................................  0.000000E+00  (kg/d)
- Leakage b.c. solute outflow ................................  0.000000E+00  (kg/d)
- River leakage b.c. solute inflow ...........................  0.000000E+00  (kg/d)
- River leakage b.c. solute outflow ..........................  0.000000E+00  (kg/d)
- Drain leakage b.c. solute inflow ...........................  0.000000E+00  (kg/d)
- Drain leakage b.c. solute outflow ..........................  0.000000E+00  (kg/d)
- Well solute inflow .........................................  0.000000E+00  (kg/d)
- Well solute outflow ........................................  0.000000E+00  (kg/d)
+ Flux b.c. solute inflow ....................................  0 (kg/d)
+ Flux b.c. solute outflow ...................................  0 (kg/d)
+ Leakage b.c. solute inflow .................................  0 (kg/d)
+ Leakage b.c. solute outflow ................................  0 (kg/d)
+ River leakage b.c. solute inflow ...........................  0 (kg/d)
+ River leakage b.c. solute outflow ..........................  0 (kg/d)
+ Drain leakage b.c. solute inflow ...........................  0 (kg/d)
+ Drain leakage b.c. solute outflow ..........................  0 (kg/d)
+ Well solute inflow .........................................  0 (kg/d)
+ Well solute outflow ........................................  0 (kg/d)
 
 
 
           Component: O         
 
- Specified head b.c. solute inflow ..........................  0.000000E+00  (kg/d)
+ Specified head b.c. solute inflow ..........................  0 (kg/d)
  Specified head b.c. solute outflow .........................  8.213238E-06  (kg/d)
- Flux b.c. solute inflow ....................................  0.000000E+00  (kg/d)
- Flux b.c. solute outflow ...................................  0.000000E+00  (kg/d)
- Leakage b.c. solute inflow .................................  0.000000E+00  (kg/d)
- Leakage b.c. solute outflow ................................  0.000000E+00  (kg/d)
- River leakage b.c. solute inflow ...........................  0.000000E+00  (kg/d)
- River leakage b.c. solute outflow ..........................  0.000000E+00  (kg/d)
- Drain leakage b.c. solute inflow ...........................  0.000000E+00  (kg/d)
- Drain leakage b.c. solute outflow ..........................  0.000000E+00  (kg/d)
- Well solute inflow .........................................  0.000000E+00  (kg/d)
- Well solute outflow ........................................  0.000000E+00  (kg/d)
+ Flux b.c. solute inflow ....................................  0 (kg/d)
+ Flux b.c. solute outflow ...................................  0 (kg/d)
+ Leakage b.c. solute inflow .................................  0 (kg/d)
+ Leakage b.c. solute outflow ................................  0 (kg/d)
+ River leakage b.c. solute inflow ...........................  0 (kg/d)
+ River leakage b.c. solute outflow ..........................  0 (kg/d)
+ Drain leakage b.c. solute inflow ...........................  0 (kg/d)
+ Drain leakage b.c. solute outflow ..........................  0 (kg/d)
+ Well solute inflow .........................................  0 (kg/d)
+ Well solute outflow ........................................  0 (kg/d)
 
 
 
           Component: [A]       
 
- Specified head b.c. solute inflow ..........................  0.000000E+00  (kg/d)
+ Specified head b.c. solute inflow ..........................  0 (kg/d)
  Specified head b.c. solute outflow .........................  3.971977E-19  (kg/d)
- Flux b.c. solute inflow ....................................  0.000000E+00  (kg/d)
- Flux b.c. solute outflow ...................................  0.000000E+00  (kg/d)
- Leakage b.c. solute inflow .................................  0.000000E+00  (kg/d)
- Leakage b.c. solute outflow ................................  0.000000E+00  (kg/d)
- River leakage b.c. solute inflow ...........................  0.000000E+00  (kg/d)
- River leakage b.c. solute outflow ..........................  0.000000E+00  (kg/d)
- Drain leakage b.c. solute inflow ...........................  0.000000E+00  (kg/d)
- Drain leakage b.c. solute outflow ..........................  0.000000E+00  (kg/d)
- Well solute inflow .........................................  0.000000E+00  (kg/d)
- Well solute outflow ........................................  0.000000E+00  (kg/d)
+ Flux b.c. solute inflow ....................................  0 (kg/d)
+ Flux b.c. solute outflow ...................................  0 (kg/d)
+ Leakage b.c. solute inflow .................................  0 (kg/d)
+ Leakage b.c. solute outflow ................................  0 (kg/d)
+ River leakage b.c. solute inflow ...........................  0 (kg/d)
+ River leakage b.c. solute outflow ..........................  0 (kg/d)
+ Drain leakage b.c. solute inflow ...........................  0 (kg/d)
+ Drain leakage b.c. solute outflow ..........................  0 (kg/d)
+ Well solute inflow .........................................  0 (kg/d)
+ Well solute outflow ........................................  0 (kg/d)
 
 
 

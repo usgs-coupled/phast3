@@ -25,7 +25,7 @@ Reading input data for simulation 1.
 Beginning of initial solution calculations.
 -------------------------------------------
 
-Initial solution 0.	
+Initial solution 0 
 
 -----------------------------Solution composition------------------------------
 
@@ -41,8 +41,8 @@ Initial solution 0.
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.082e-10
-                    Total carbon (mol/kg)  =   0.000e+00
-                       Total CO2 (mol/kg)  =   0.000e+00
+                    Total carbon (mol/kg)  =   0 
+                       Total CO2 (mol/kg)  =   0 
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.082e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -57,18 +57,18 @@ Initial solution 0.
 
    OH-                    1.002e-07   1.001e-07    -6.999    -6.999         0
    H+                     1.001e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0         0
+   H2O                    5.551e+01   1.000e+00     1.744         0        0
 H(0)             1.416e-25
    H2                     7.079e-26   7.079e-26   -25.150   -25.150         0
-O(0)             0.000e+00
-   O2                     0.000e+00   0.000e+00   -42.080   -42.080         0
+O(0)             0 
+   O2                     0  0  -42.080   -42.080         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
 	H2(g)           -22.00  -25.15   -3.15  H2
-	H2O(g)           -1.51       0    1.51  H2O
+	H2O(g)           -1.51       0   1.51  H2O
 	O2(g)           -39.12  -42.08   -2.96  O2
 
 ------------------
@@ -106,8 +106,8 @@ Initial solution 1.
                            Ionic strength  =   1.000e-03
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   3.658e-10
-                    Total carbon (mol/kg)  =   0.000e+00
-                       Total CO2 (mol/kg)  =   0.000e+00
+                    Total carbon (mol/kg)  =   0 
+                       Total CO2 (mol/kg)  =   0 
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -3.658e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =      0
@@ -122,7 +122,7 @@ Initial solution 1.
 
    OH-                    1.038e-07   1.001e-07    -6.984    -7.000    -0.016
    H+                     1.034e-07   1.000e-07    -6.985    -7.000    -0.015
-   H2O                    5.551e+01   1.000e+00     1.744         0         0
+   H2O                    5.551e+01   1.000e+00     1.744         0        0
 Cl               1.000e-03
    Cl-                    1.000e-03   9.649e-04    -3.000    -3.016    -0.016
 H(0)             1.416e-25
@@ -130,15 +130,15 @@ H(0)             1.416e-25
 Na               1.000e-03
    Na+                    1.000e-03   9.652e-04    -3.000    -3.015    -0.015
    NaOH                   6.375e-11   6.377e-11   -10.196   -10.195         0
-O(0)             0.000e+00
-   O2                     0.000e+00   0.000e+00   -42.080   -42.080         0
+O(0)             0 
+   O2                     0  0  -42.080   -42.080         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
 	H2(g)           -22.00  -25.15   -3.15  H2
-	H2O(g)           -1.51       0    1.51  H2O
+	H2O(g)           -1.51       0   1.51  H2O
 	Halite           -7.61   -6.03    1.58  NaCl
 	O2(g)           -39.12  -42.08   -2.96  O2
 
