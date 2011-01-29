@@ -29,7 +29,7 @@ Processing flow and transport data file.
 	      chemistry_dimensions X
 	      print_orientation XY
 	MEDIA
-	      zone 0 0 10 10 1
+	      zone 0 0 0 10 10 1
 	            kx 1e-10
 	            ky 1e-10
 	            kz 1e-10
@@ -51,18 +51,18 @@ Processing flow and transport data file.
 	      time_differencing  0.5
 	      cross_dispersion	  false
 	SPECIFIED_HEAD_BC
-	      zone 0 0 0 1
+	      zone 0 0 0 0 0 1
 	            head 
 			0 1
 		     fixed_solution_composition 
-		          0    2
+		          0     2
 	HEAD_IC
-	      zone 0 0 10 10 1
+	      zone 0 0 0 10 10 1
 	            head 1
 	CHEMISTRY_IC
-	      zone 0 0 10 10 1
+	      zone 0 0 0 10 10 1
 	            solution 1
-	      zone 0 0 0 1
+	      zone 0 0 0 0 0 1
 	            solution 2
 	PRINT_INITIAL
 	      boundary_conditions false
@@ -107,12 +107,12 @@ Beginning flow calculation for steady-state i.c.
 Reading transient data for simulation: Set  1
 Automatic Time Step Control Parameters for Steady Flow
 Maximum pressure change allowed per time step.................... DPTAS     2.9      (Pa )
-Minimum time step required ...................................... DTIMMN   1.00E-05  (s  )
+Minimum time step required ...................................... DTIMMN   1.00e-05  (s  )
 Maximum time step allowed ....................................... DTIMMX    10.    (s  )
 
 Beginning steady state time step no.      1
-     Maximum change in potentiometric head ..    0    (m) at location ( 5.000E-04, 1.000E-03, 1.000E-03)(m)
-     Fractional flow residual ...............    0 
+     Maximum change in potentiometric head ..   -2.0785e-26     (m) at location ( 5.000e-04, 1.000e-03, 1.000e-03)(m)
+     Fractional flow residual ...............    0.0000e+00
 
 Done with steady-state flow.
 Equilibration of cells for initial conditions.
@@ -129,7 +129,7 @@ Beginning time step no.      1
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     1
-     Time ..................................................   1.000000E-02 (s)
+     Time ..................................................   1.000000e-02 (s)
 
 Beginning time step no.      2
      Beginning solute-transport calculation.
@@ -140,7 +140,7 @@ Beginning time step no.      2
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     2
-     Time ..................................................   2.000000E-02 (s)
+     Time ..................................................   2.000000e-02 (s)
 
 Beginning time step no.      3
      Beginning solute-transport calculation.
@@ -151,7 +151,7 @@ Beginning time step no.      3
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     3
-     Time ..................................................   3.000000E-02 (s)
+     Time ..................................................   3.000000e-02 (s)
 
 Beginning time step no.      4
      Beginning solute-transport calculation.
@@ -162,7 +162,7 @@ Beginning time step no.      4
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     4
-     Time ..................................................   4.000000E-02 (s)
+     Time ..................................................   4.000000e-02 (s)
 
 Beginning time step no.      5
      Beginning solute-transport calculation.
@@ -173,7 +173,7 @@ Beginning time step no.      5
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     5
-     Time ..................................................   5.000000E-02 (s)
+     Time ..................................................   5.000000e-02 (s)
 
 Beginning time step no.      6
      Beginning solute-transport calculation.
@@ -184,7 +184,7 @@ Beginning time step no.      6
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     6
-     Time ..................................................   6.000000E-02 (s)
+     Time ..................................................   6.000000e-02 (s)
 
 Beginning time step no.      7
      Beginning solute-transport calculation.
@@ -195,7 +195,7 @@ Beginning time step no.      7
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     7
-     Time ..................................................   7.000000E-02 (s)
+     Time ..................................................   7.000000e-02 (s)
 
 Beginning time step no.      8
      Beginning solute-transport calculation.
@@ -206,7 +206,7 @@ Beginning time step no.      8
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     8
-     Time ..................................................   8.000000E-02 (s)
+     Time ..................................................   8.000000e-02 (s)
 
 Beginning time step no.      9
      Beginning solute-transport calculation.
@@ -217,7 +217,7 @@ Beginning time step no.      9
           Charge
      Beginning chemistry calculation.
      End of Time Step No.     9
-     Time ..................................................   9.000000E-02 (s)
+     Time ..................................................   9.000000e-02 (s)
 
 Beginning time step no.     10
      Beginning solute-transport calculation.

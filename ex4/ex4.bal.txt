@@ -5,889 +5,889 @@
 
                               *** Output at End of Steady State Iteration No.     1 ***
 
-     Time .......................................................       0     (yr)
+     Time .......................................................   0.000e+00  (yr)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
 
- Fluid inflow ...............................................  2.140650E+10  (kg/yr)     4.281300E+11  (kg)
- Fluid outflow ..............................................  2.982909E+11  (kg/yr)     5.965819E+12  (kg)
- Change in fluid in region ..................................  8.218468E+11  (kg/yr)     1.643694E+13  (kg)
- Residual imbalance .........................................  1.098731E+12  (kg/yr)     2.197462E+13  (kg)
+ Fluid inflow ...............................................  2.140650e+10  (kg/yr)     4.281300e+11  (kg)
+ Fluid outflow ..............................................  2.982909e+11  (kg/yr)     5.965819e+12  (kg)
+ Change in fluid in region ..................................  8.218468e+11  (kg/yr)     1.643694e+13  (kg)
+ Residual imbalance .........................................  1.098731e+12  (kg/yr)     2.197462e+13  (kg)
  Fractional imbalance .......................................                              1.3369
 
                Current Time Step by Boundary Condition Type
                                                                  Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -1.566369E+09  (kg/yr)    -3.132739E+10  (kg)
- Step total flux b.c. fluid net inflow ......................  2.140650E+10  (kg/yr)     4.281300E+11  (kg)
- Step total leakage b.c. fluid net inflow ................... -6.871297E+09  (kg/yr)    -1.374259E+11  (kg)
- Step total river leakage b.c. fluid net inflow ............. -2.898533E+11  (kg/yr)    -5.797065E+12  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0 (kg/yr)     0 (kg)
- Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -7.305000E+03  (kg)
+ Step total specified p cell fluid net inflow ............... -1.566369e+09  (kg/yr)    -3.132739e+10  (kg)
+ Step total flux b.c. fluid net inflow ......................  2.140650e+10  (kg/yr)     4.281300e+11  (kg)
+ Step total leakage b.c. fluid net inflow ................... -6.871297e+09  (kg/yr)    -1.374259e+11  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -2.898533e+11  (kg/yr)    -5.797065e+12  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000e+00  (kg/yr)     0.000000e+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500e+02  (kg/yr)    -7.305000e+03  (kg)
 
 
                               *** Output at End of Steady State Iteration No.     2 ***
 
-     Time .......................................................       0     (yr)
+     Time .......................................................   0.000e+00  (yr)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
 
- Fluid inflow ...............................................  2.140650E+10  (kg/yr)     4.281300E+11  (kg)
- Fluid outflow ..............................................  2.253995E+11  (kg/yr)     4.507991E+12  (kg)
- Change in fluid in region .................................. -3.572811E+11  (kg/yr)    -7.145623E+12  (kg)
- Residual imbalance ......................................... -1.532881E+11  (kg/yr)    -3.065762E+12  (kg)
+ Fluid inflow ...............................................  2.140650e+10  (kg/yr)     4.281300e+11  (kg)
+ Fluid outflow ..............................................  2.253995e+11  (kg/yr)     4.507991e+12  (kg)
+ Change in fluid in region .................................. -3.572811e+11  (kg/yr)    -7.145623e+12  (kg)
+ Residual imbalance ......................................... -1.532881e+11  (kg/yr)    -3.065762e+12  (kg)
  Fractional imbalance .......................................                             -0.4290
 
                Current Time Step by Boundary Condition Type
                                                                  Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -9.816774E+08  (kg/yr)    -1.963355E+10  (kg)
- Step total flux b.c. fluid net inflow ......................  2.140650E+10  (kg/yr)     4.281300E+11  (kg)
- Step total leakage b.c. fluid net inflow ................... -4.588925E+09  (kg/yr)    -9.177850E+10  (kg)
- Step total river leakage b.c. fluid net inflow ............. -2.198289E+11  (kg/yr)    -4.396579E+12  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0 (kg/yr)     0 (kg)
- Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -7.305000E+03  (kg)
+ Step total specified p cell fluid net inflow ............... -9.816774e+08  (kg/yr)    -1.963355e+10  (kg)
+ Step total flux b.c. fluid net inflow ......................  2.140650e+10  (kg/yr)     4.281300e+11  (kg)
+ Step total leakage b.c. fluid net inflow ................... -4.588925e+09  (kg/yr)    -9.177850e+10  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -2.198289e+11  (kg/yr)    -4.396579e+12  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000e+00  (kg/yr)     0.000000e+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500e+02  (kg/yr)    -7.305000e+03  (kg)
 
 
                               *** Output at End of Steady State Iteration No.     3 ***
 
-     Time .......................................................       0     (yr)
+     Time .......................................................   0.000e+00  (yr)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
 
- Fluid inflow ...............................................  2.140650E+10  (kg/yr)     6.198069E+11  (kg)
- Fluid outflow ..............................................  3.521482E+10  (kg/yr)     1.019615E+12  (kg)
- Change in fluid in region .................................. -1.286169E+10  (kg/yr)    -3.723993E+11  (kg)
- Residual imbalance .........................................  9.466250E+08  (kg/yr)     2.740872E+10  (kg)
+ Fluid inflow ...............................................  2.140650e+10  (kg/yr)     6.198069e+11  (kg)
+ Fluid outflow ..............................................  3.521482e+10  (kg/yr)     1.019615e+12  (kg)
+ Change in fluid in region .................................. -1.286169e+10  (kg/yr)    -3.723993e+11  (kg)
+ Residual imbalance .........................................  9.466250e+08  (kg/yr)     2.740872e+10  (kg)
  Fractional imbalance .......................................                              0.0269
 
                Current Time Step by Boundary Condition Type
                                                                  Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -9.680248E+08  (kg/yr)    -2.802833E+10  (kg)
- Step total flux b.c. fluid net inflow ......................  2.140650E+10  (kg/yr)     6.198069E+11  (kg)
- Step total leakage b.c. fluid net inflow ................... -4.367267E+09  (kg/yr)    -1.264505E+11  (kg)
- Step total river leakage b.c. fluid net inflow ............. -2.987953E+10  (kg/yr)    -8.651361E+11  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0 (kg/yr)     0 (kg)
- Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -1.057550E+04  (kg)
+ Step total specified p cell fluid net inflow ............... -9.680248e+08  (kg/yr)    -2.802833e+10  (kg)
+ Step total flux b.c. fluid net inflow ......................  2.140650e+10  (kg/yr)     6.198069e+11  (kg)
+ Step total leakage b.c. fluid net inflow ................... -4.367267e+09  (kg/yr)    -1.264505e+11  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -2.987953e+10  (kg/yr)    -8.651361e+11  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000e+00  (kg/yr)     0.000000e+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500e+02  (kg/yr)    -1.057550e+04  (kg)
 
 
                               *** Output at End of Steady State Iteration No.     4 ***
 
-     Time .......................................................       0     (yr)
+     Time .......................................................   0.000e+00  (yr)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
 
- Fluid inflow ...............................................  2.140650E+10  (kg/yr)     1.239614E+12  (kg)
- Fluid outflow ..............................................  3.410507E+10  (kg/yr)     1.974966E+12  (kg)
- Change in fluid in region .................................. -1.774582E+10  (kg/yr)    -1.027630E+12  (kg)
- Residual imbalance ......................................... -5.047255E+09  (kg/yr)    -2.922779E+11  (kg)
+ Fluid inflow ...............................................  2.140650e+10  (kg/yr)     1.239614e+12  (kg)
+ Fluid outflow ..............................................  3.410507e+10  (kg/yr)     1.974966e+12  (kg)
+ Change in fluid in region .................................. -1.774582e+10  (kg/yr)    -1.027630e+12  (kg)
+ Residual imbalance ......................................... -5.047255e+09  (kg/yr)    -2.922779e+11  (kg)
  Fractional imbalance .......................................                             -0.1480
 
                Current Time Step by Boundary Condition Type
                                                                  Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -9.157122E+08  (kg/yr)    -5.302733E+10  (kg)
- Step total flux b.c. fluid net inflow ......................  2.140650E+10  (kg/yr)     1.239614E+12  (kg)
- Step total leakage b.c. fluid net inflow ................... -4.247496E+09  (kg/yr)    -2.459652E+11  (kg)
- Step total river leakage b.c. fluid net inflow ............. -2.894186E+10  (kg/yr)    -1.675974E+12  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0 (kg/yr)     0 (kg)
- Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -2.115100E+04  (kg)
+ Step total specified p cell fluid net inflow ............... -9.157122e+08  (kg/yr)    -5.302733e+10  (kg)
+ Step total flux b.c. fluid net inflow ......................  2.140650e+10  (kg/yr)     1.239614e+12  (kg)
+ Step total leakage b.c. fluid net inflow ................... -4.247496e+09  (kg/yr)    -2.459652e+11  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -2.894186e+10  (kg/yr)    -1.675974e+12  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000e+00  (kg/yr)     0.000000e+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500e+02  (kg/yr)    -2.115100e+04  (kg)
 
 
                               *** Output at End of Steady State Iteration No.     5 ***
 
-     Time .......................................................       0     (yr)
+     Time .......................................................   0.000e+00  (yr)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
 
- Fluid inflow ...............................................  2.140650E+10  (kg/yr)     2.479228E+12  (kg)
- Fluid outflow ..............................................  3.232168E+10  (kg/yr)     3.743387E+12  (kg)
- Change in fluid in region .................................. -2.464821E+10  (kg/yr)    -2.854672E+12  (kg)
- Residual imbalance ......................................... -1.373303E+10  (kg/yr)    -1.590513E+12  (kg)
+ Fluid inflow ...............................................  2.140650e+10  (kg/yr)     2.479228e+12  (kg)
+ Fluid outflow ..............................................  3.232168e+10  (kg/yr)     3.743387e+12  (kg)
+ Change in fluid in region .................................. -2.464821e+10  (kg/yr)    -2.854672e+12  (kg)
+ Residual imbalance ......................................... -1.373303e+10  (kg/yr)    -1.590513e+12  (kg)
  Fractional imbalance .......................................                             -0.4249
 
                Current Time Step by Boundary Condition Type
                                                                  Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -8.123139E+08  (kg/yr)    -9.407942E+10  (kg)
- Step total flux b.c. fluid net inflow ......................  2.140650E+10  (kg/yr)     2.479228E+12  (kg)
- Step total leakage b.c. fluid net inflow ................... -4.003621E+09  (kg/yr)    -4.636857E+11  (kg)
- Step total river leakage b.c. fluid net inflow ............. -2.750575E+10  (kg/yr)    -3.185622E+12  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0 (kg/yr)     0 (kg)
- Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -4.230201E+04  (kg)
+ Step total specified p cell fluid net inflow ............... -8.123139e+08  (kg/yr)    -9.407942e+10  (kg)
+ Step total flux b.c. fluid net inflow ......................  2.140650e+10  (kg/yr)     2.479228e+12  (kg)
+ Step total leakage b.c. fluid net inflow ................... -4.003621e+09  (kg/yr)    -4.636857e+11  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -2.750575e+10  (kg/yr)    -3.185622e+12  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000e+00  (kg/yr)     0.000000e+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500e+02  (kg/yr)    -4.230201e+04  (kg)
 
 
                               *** Output at End of Steady State Iteration No.     6 ***
 
-     Time .......................................................       0     (yr)
+     Time .......................................................   0.000e+00  (yr)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
 
- Fluid inflow ...............................................  2.140650E+10  (kg/yr)     4.958455E+12  (kg)
- Fluid outflow ..............................................  2.944465E+10  (kg/yr)     6.820357E+12  (kg)
- Change in fluid in region .................................. -1.798925E+10  (kg/yr)    -4.166908E+12  (kg)
- Residual imbalance ......................................... -9.951107E+09  (kg/yr)    -2.305006E+12  (kg)
+ Fluid inflow ...............................................  2.140650e+10  (kg/yr)     4.958455e+12  (kg)
+ Fluid outflow ..............................................  2.944465e+10  (kg/yr)     6.820357e+12  (kg)
+ Change in fluid in region .................................. -1.798925e+10  (kg/yr)    -4.166908e+12  (kg)
+ Residual imbalance ......................................... -9.951107e+09  (kg/yr)    -2.305006e+12  (kg)
  Fractional imbalance .......................................                             -0.3380
 
                Current Time Step by Boundary Condition Type
                                                                  Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -6.502125E+08  (kg/yr)    -1.506108E+11  (kg)
- Step total flux b.c. fluid net inflow ......................  2.140650E+10  (kg/yr)     4.958455E+12  (kg)
- Step total leakage b.c. fluid net inflow ................... -3.699759E+09  (kg/yr)    -8.569869E+11  (kg)
- Step total river leakage b.c. fluid net inflow ............. -2.509467E+10  (kg/yr)    -5.812759E+12  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0 (kg/yr)     0 (kg)
- Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -8.460401E+04  (kg)
+ Step total specified p cell fluid net inflow ............... -6.502125e+08  (kg/yr)    -1.506108e+11  (kg)
+ Step total flux b.c. fluid net inflow ......................  2.140650e+10  (kg/yr)     4.958455e+12  (kg)
+ Step total leakage b.c. fluid net inflow ................... -3.699759e+09  (kg/yr)    -8.569869e+11  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -2.509467e+10  (kg/yr)    -5.812759e+12  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000e+00  (kg/yr)     0.000000e+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500e+02  (kg/yr)    -8.460401e+04  (kg)
 
 
                               *** Output at End of Steady State Iteration No.     7 ***
 
-     Time .......................................................       0     (yr)
+     Time .......................................................   0.000e+00  (yr)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
 
- Fluid inflow ...............................................  2.140650E+10  (kg/yr)     9.916911E+12  (kg)
- Fluid outflow ..............................................  2.640727E+10  (kg/yr)     1.223360E+13  (kg)
- Change in fluid in region .................................. -9.497063E+09  (kg/yr)    -4.399669E+12  (kg)
- Residual imbalance ......................................... -4.496290E+09  (kg/yr)    -2.082980E+12  (kg)
+ Fluid inflow ...............................................  2.140650e+10  (kg/yr)     9.916911e+12  (kg)
+ Fluid outflow ..............................................  2.640727e+10  (kg/yr)     1.223360e+13  (kg)
+ Change in fluid in region .................................. -9.497063e+09  (kg/yr)    -4.399669e+12  (kg)
+ Residual imbalance ......................................... -4.496290e+09  (kg/yr)    -2.082980e+12  (kg)
  Fractional imbalance .......................................                             -0.1703
 
                Current Time Step by Boundary Condition Type
                                                                  Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -4.744816E+08  (kg/yr)    -2.198113E+11  (kg)
- Step total flux b.c. fluid net inflow ......................  2.140650E+10  (kg/yr)     9.916911E+12  (kg)
- Step total leakage b.c. fluid net inflow ................... -3.353852E+09  (kg/yr)    -1.553727E+12  (kg)
- Step total river leakage b.c. fluid net inflow ............. -2.257894E+10  (kg/yr)    -1.046006E+13  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0 (kg/yr)     0 (kg)
- Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -1.692080E+05  (kg)
+ Step total specified p cell fluid net inflow ............... -4.744816e+08  (kg/yr)    -2.198113e+11  (kg)
+ Step total flux b.c. fluid net inflow ......................  2.140650e+10  (kg/yr)     9.916911e+12  (kg)
+ Step total leakage b.c. fluid net inflow ................... -3.353852e+09  (kg/yr)    -1.553727e+12  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -2.257894e+10  (kg/yr)    -1.046006e+13  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000e+00  (kg/yr)     0.000000e+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500e+02  (kg/yr)    -1.692080e+05  (kg)
 
 
                               *** Output at End of Steady State Iteration No.     8 ***
 
-     Time .......................................................       0     (yr)
+     Time .......................................................   0.000e+00  (yr)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
 
- Fluid inflow ...............................................  2.140650E+10  (kg/yr)     1.983382E+13  (kg)
- Fluid outflow ..............................................  2.391906E+10  (kg/yr)     2.216179E+13  (kg)
- Change in fluid in region .................................. -3.462991E+09  (kg/yr)    -3.208574E+12  (kg)
- Residual imbalance ......................................... -9.504315E+08  (kg/yr)    -8.806058E+11  (kg)
+ Fluid inflow ...............................................  2.140650e+10  (kg/yr)     1.983382e+13  (kg)
+ Fluid outflow ..............................................  2.391906e+10  (kg/yr)     2.216179e+13  (kg)
+ Change in fluid in region .................................. -3.462991e+09  (kg/yr)    -3.208574e+12  (kg)
+ Residual imbalance ......................................... -9.504315e+08  (kg/yr)    -8.806058e+11  (kg)
  Fractional imbalance .......................................                             -0.0397
 
                Current Time Step by Boundary Condition Type
                                                                  Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -3.215298E+08  (kg/yr)    -2.979079E+11  (kg)
- Step total flux b.c. fluid net inflow ......................  2.140650E+10  (kg/yr)     1.983382E+13  (kg)
- Step total leakage b.c. fluid net inflow ................... -3.080035E+09  (kg/yr)    -2.853753E+12  (kg)
- Step total river leakage b.c. fluid net inflow ............. -2.051749E+10  (kg/yr)    -1.901013E+13  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0 (kg/yr)     0 (kg)
- Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -3.384161E+05  (kg)
+ Step total specified p cell fluid net inflow ............... -3.215298e+08  (kg/yr)    -2.979079e+11  (kg)
+ Step total flux b.c. fluid net inflow ......................  2.140650e+10  (kg/yr)     1.983382e+13  (kg)
+ Step total leakage b.c. fluid net inflow ................... -3.080035e+09  (kg/yr)    -2.853753e+12  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -2.051749e+10  (kg/yr)    -1.901013e+13  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000e+00  (kg/yr)     0.000000e+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500e+02  (kg/yr)    -3.384161e+05  (kg)
 
 
                               *** Output at End of Steady State Iteration No.     9 ***
 
-     Time .......................................................       0     (yr)
+     Time .......................................................   0.000e+00  (yr)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
 
- Fluid inflow ...............................................  2.140650E+10  (kg/yr)     3.966764E+13  (kg)
- Fluid outflow ..............................................  2.226392E+10  (kg/yr)     4.125651E+13  (kg)
- Change in fluid in region .................................. -1.221695E+09  (kg/yr)    -2.263881E+12  (kg)
- Residual imbalance ......................................... -3.642709E+08  (kg/yr)    -6.750178E+11  (kg)
+ Fluid inflow ...............................................  2.140650e+10  (kg/yr)     3.966764e+13  (kg)
+ Fluid outflow ..............................................  2.226392e+10  (kg/yr)     4.125651e+13  (kg)
+ Change in fluid in region .................................. -1.221695e+09  (kg/yr)    -2.263881e+12  (kg)
+ Residual imbalance ......................................... -3.642709e+08  (kg/yr)    -6.750178e+11  (kg)
  Fractional imbalance .......................................                             -0.0164
 
                Current Time Step by Boundary Condition Type
                                                                  Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -2.310436E+08  (kg/yr)    -4.281389E+11  (kg)
- Step total flux b.c. fluid net inflow ......................  2.140650E+10  (kg/yr)     3.966764E+13  (kg)
- Step total leakage b.c. fluid net inflow ................... -2.889567E+09  (kg/yr)    -5.354556E+12  (kg)
- Step total river leakage b.c. fluid net inflow ............. -1.914331E+10  (kg/yr)    -3.547381E+13  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0 (kg/yr)     0 (kg)
- Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -6.768321E+05  (kg)
+ Step total specified p cell fluid net inflow ............... -2.310436e+08  (kg/yr)    -4.281389e+11  (kg)
+ Step total flux b.c. fluid net inflow ......................  2.140650e+10  (kg/yr)     3.966764e+13  (kg)
+ Step total leakage b.c. fluid net inflow ................... -2.889567e+09  (kg/yr)    -5.354556e+12  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -1.914331e+10  (kg/yr)    -3.547381e+13  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000e+00  (kg/yr)     0.000000e+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500e+02  (kg/yr)    -6.768321e+05  (kg)
 
 
                               *** Output at End of Steady State Iteration No.    10 ***
 
-     Time .......................................................       0     (yr)
+     Time .......................................................   0.000e+00  (yr)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
 
- Fluid inflow ...............................................  2.140650E+10  (kg/yr)     7.933529E+13  (kg)
- Fluid outflow ..............................................  2.157729E+10  (kg/yr)     7.996824E+13  (kg)
- Change in fluid in region .................................. -2.435560E+08  (kg/yr)    -9.026505E+11  (kg)
- Residual imbalance ......................................... -7.276983E+07  (kg/yr)    -2.696945E+11  (kg)
+ Fluid inflow ...............................................  2.140650e+10  (kg/yr)     7.933529e+13  (kg)
+ Fluid outflow ..............................................  2.157729e+10  (kg/yr)     7.996824e+13  (kg)
+ Change in fluid in region .................................. -2.435560e+08  (kg/yr)    -9.026505e+11  (kg)
+ Residual imbalance ......................................... -7.276983e+07  (kg/yr)    -2.696945e+11  (kg)
  Fractional imbalance .......................................                             -0.0034
 
                Current Time Step by Boundary Condition Type
                                                                  Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -1.942348E+08  (kg/yr)    -7.198596E+11  (kg)
- Step total flux b.c. fluid net inflow ......................  2.140650E+10  (kg/yr)     7.933529E+13  (kg)
- Step total leakage b.c. fluid net inflow ................... -2.807512E+09  (kg/yr)    -1.040501E+13  (kg)
- Step total river leakage b.c. fluid net inflow ............. -1.857554E+10  (kg/yr)    -6.884337E+13  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0 (kg/yr)     0 (kg)
- Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -1.353664E+06  (kg)
+ Step total specified p cell fluid net inflow ............... -1.942348e+08  (kg/yr)    -7.198596e+11  (kg)
+ Step total flux b.c. fluid net inflow ......................  2.140650e+10  (kg/yr)     7.933529e+13  (kg)
+ Step total leakage b.c. fluid net inflow ................... -2.807512e+09  (kg/yr)    -1.040501e+13  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -1.857554e+10  (kg/yr)    -6.884337e+13  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000e+00  (kg/yr)     0.000000e+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500e+02  (kg/yr)    -1.353664e+06  (kg)
 
 
                               *** Output at End of Steady State Iteration No.    11 ***
 
-     Time .......................................................       0     (yr)
+     Time .......................................................   0.000e+00  (yr)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
 
- Fluid inflow ...............................................  2.140650E+10  (kg/yr)     1.586706E+14  (kg)
- Fluid outflow ..............................................  2.142306E+10  (kg/yr)     1.587933E+14  (kg)
- Change in fluid in region .................................. -1.863206E+07  (kg/yr)    -1.381057E+11  (kg)
- Residual imbalance ......................................... -2.075349E+06  (kg/yr)    -1.538303E+10  (kg)
+ Fluid inflow ...............................................  2.140650e+10  (kg/yr)     1.586706e+14  (kg)
+ Fluid outflow ..............................................  2.142306e+10  (kg/yr)     1.587933e+14  (kg)
+ Change in fluid in region .................................. -1.863206e+07  (kg/yr)    -1.381057e+11  (kg)
+ Residual imbalance ......................................... -2.075349e+06  (kg/yr)    -1.538303e+10  (kg)
  Fractional imbalance .......................................                             -0.0001
 
                Current Time Step by Boundary Condition Type
                                                                  Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -1.867943E+08  (kg/yr)    -1.384568E+12  (kg)
- Step total flux b.c. fluid net inflow ......................  2.140650E+10  (kg/yr)     1.586706E+14  (kg)
- Step total leakage b.c. fluid net inflow ................... -2.788404E+09  (kg/yr)    -2.066838E+13  (kg)
- Step total river leakage b.c. fluid net inflow ............. -1.844786E+10  (kg/yr)    -1.367403E+14  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0 (kg/yr)     0 (kg)
- Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -2.707328E+06  (kg)
+ Step total specified p cell fluid net inflow ............... -1.867943e+08  (kg/yr)    -1.384568e+12  (kg)
+ Step total flux b.c. fluid net inflow ......................  2.140650e+10  (kg/yr)     1.586706e+14  (kg)
+ Step total leakage b.c. fluid net inflow ................... -2.788404e+09  (kg/yr)    -2.066838e+13  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -1.844786e+10  (kg/yr)    -1.367403e+14  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000e+00  (kg/yr)     0.000000e+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500e+02  (kg/yr)    -2.707328e+06  (kg)
 
 
                               *** Output at End of Steady State Iteration No.    12 ***
 
-     Time .......................................................       0     (yr)
+     Time .......................................................   0.000e+00  (yr)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
 
- Fluid inflow ...............................................  2.140650E+10  (kg/yr)     3.173411E+14  (kg)
- Fluid outflow ..............................................  2.140708E+10  (kg/yr)     3.173498E+14  (kg)
- Change in fluid in region .................................. -6.848405E+05  (kg/yr)    -1.015243E+10  (kg)
- Residual imbalance ......................................... -9.993582E+04  (kg/yr)    -1.481501E+09  (kg)
+ Fluid inflow ...............................................  2.140650e+10  (kg/yr)     3.173411e+14  (kg)
+ Fluid outflow ..............................................  2.140708e+10  (kg/yr)     3.173498e+14  (kg)
+ Change in fluid in region .................................. -6.848405e+05  (kg/yr)    -1.015243e+10  (kg)
+ Residual imbalance ......................................... -9.993582e+04  (kg/yr)    -1.481501e+09  (kg)
  Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
                                                                  Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -1.862432E+08  (kg/yr)    -2.760966E+12  (kg)
- Step total flux b.c. fluid net inflow ......................  2.140650E+10  (kg/yr)     3.173411E+14  (kg)
- Step total leakage b.c. fluid net inflow ................... -2.786270E+09  (kg/yr)    -4.130512E+13  (kg)
- Step total river leakage b.c. fluid net inflow ............. -1.843457E+10  (kg/yr)    -2.732837E+14  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0 (kg/yr)     0 (kg)
- Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -5.414657E+06  (kg)
+ Step total specified p cell fluid net inflow ............... -1.862432e+08  (kg/yr)    -2.760966e+12  (kg)
+ Step total flux b.c. fluid net inflow ......................  2.140650e+10  (kg/yr)     3.173411e+14  (kg)
+ Step total leakage b.c. fluid net inflow ................... -2.786270e+09  (kg/yr)    -4.130512e+13  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -1.843457e+10  (kg/yr)    -2.732837e+14  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000e+00  (kg/yr)     0.000000e+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500e+02  (kg/yr)    -5.414657e+06  (kg)
 
 
                               *** Output at End of Steady State Iteration No.    13 ***
 
-     Time .......................................................       0     (yr)
+     Time .......................................................   0.000e+00  (yr)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
 
- Fluid inflow ...............................................  2.140650E+10  (kg/yr)     6.346823E+14  (kg)
- Fluid outflow ..............................................  2.140650E+10  (kg/yr)     6.346824E+14  (kg)
- Change in fluid in region .................................. -5.418238E+03  (kg/yr)    -1.606456E+08  (kg)
- Residual imbalance ......................................... -2.065285E+03  (kg/yr)    -6.123373E+07  (kg)
+ Fluid inflow ...............................................  2.140650e+10  (kg/yr)     6.346823e+14  (kg)
+ Fluid outflow ..............................................  2.140650e+10  (kg/yr)     6.346824e+14  (kg)
+ Change in fluid in region .................................. -5.418238e+03  (kg/yr)    -1.606456e+08  (kg)
+ Residual imbalance ......................................... -2.065285e+03  (kg/yr)    -6.123373e+07  (kg)
  Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
                                                                  Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -1.862408E+08  (kg/yr)    -5.521862E+12  (kg)
- Step total flux b.c. fluid net inflow ......................  2.140650E+10  (kg/yr)     6.346823E+14  (kg)
- Step total leakage b.c. fluid net inflow ................... -2.786159E+09  (kg/yr)    -8.260694E+13  (kg)
- Step total river leakage b.c. fluid net inflow ............. -1.843410E+10  (kg/yr)    -5.465536E+14  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0 (kg/yr)     0 (kg)
- Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -1.082931E+07  (kg)
+ Step total specified p cell fluid net inflow ............... -1.862408e+08  (kg/yr)    -5.521862e+12  (kg)
+ Step total flux b.c. fluid net inflow ......................  2.140650e+10  (kg/yr)     6.346823e+14  (kg)
+ Step total leakage b.c. fluid net inflow ................... -2.786159e+09  (kg/yr)    -8.260694e+13  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -1.843410e+10  (kg/yr)    -5.465536e+14  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000e+00  (kg/yr)     0.000000e+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500e+02  (kg/yr)    -1.082931e+07  (kg)
 
 
                               *** Output at End of Steady State Iteration No.    14 ***
 
-     Time .......................................................       0     (yr)
+     Time .......................................................   0.000e+00  (yr)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
 
- Fluid inflow ...............................................  2.140650E+10  (kg/yr)     1.269365E+15  (kg)
- Fluid outflow ..............................................  2.140650E+10  (kg/yr)     1.269365E+15  (kg)
- Change in fluid in region .................................. -7.510849E+01  (kg/yr)    -4.453790E+06  (kg)
- Residual imbalance ......................................... -2.557854E+01  (kg/yr)    -1.516759E+06  (kg)
+ Fluid inflow ...............................................  2.140650e+10  (kg/yr)     1.269365e+15  (kg)
+ Fluid outflow ..............................................  2.140650e+10  (kg/yr)     1.269365e+15  (kg)
+ Change in fluid in region .................................. -7.510849e+01  (kg/yr)    -4.453790e+06  (kg)
+ Residual imbalance ......................................... -2.557854e+01  (kg/yr)    -1.516758e+06  (kg)
  Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
                                                                  Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -1.862412E+08  (kg/yr)    -1.104375E+13  (kg)
- Step total flux b.c. fluid net inflow ......................  2.140650E+10  (kg/yr)     1.269365E+15  (kg)
- Step total leakage b.c. fluid net inflow ................... -2.786155E+09  (kg/yr)    -1.652137E+14  (kg)
- Step total river leakage b.c. fluid net inflow ............. -1.843410E+10  (kg/yr)    -1.093107E+15  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0 (kg/yr)     0 (kg)
- Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -2.165863E+07  (kg)
+ Step total specified p cell fluid net inflow ............... -1.862412e+08  (kg/yr)    -1.104375e+13  (kg)
+ Step total flux b.c. fluid net inflow ......................  2.140650e+10  (kg/yr)     1.269365e+15  (kg)
+ Step total leakage b.c. fluid net inflow ................... -2.786155e+09  (kg/yr)    -1.652137e+14  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -1.843410e+10  (kg/yr)    -1.093107e+15  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000e+00  (kg/yr)     0.000000e+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500e+02  (kg/yr)    -2.165863e+07  (kg)
 
 
                               *** Output at End of Steady State Iteration No.    15 ***
 
-     Time .......................................................       0     (yr)
+     Time .......................................................   0.000e+00  (yr)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
 
- Fluid inflow ...............................................  2.140650E+10  (kg/yr)     2.538729E+15  (kg)
- Fluid outflow ..............................................  2.140650E+10  (kg/yr)     2.538729E+15  (kg)
- Change in fluid in region ..................................  6.623053E-01  (kg/yr)     7.854688E+04  (kg)
- Residual imbalance .........................................  5.253205E-01  (kg/yr)     6.230100E+04  (kg)
+ Fluid inflow ...............................................  2.140650e+10  (kg/yr)     2.538729e+15  (kg)
+ Fluid outflow ..............................................  2.140650e+10  (kg/yr)     2.538729e+15  (kg)
+ Change in fluid in region ..................................  6.623026e-01  (kg/yr)     7.854656e+04  (kg)
+ Residual imbalance .........................................  5.253379e-01  (kg/yr)     6.230306e+04  (kg)
  Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
                                                                  Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -1.862412E+08  (kg/yr)    -2.208750E+13  (kg)
- Step total flux b.c. fluid net inflow ......................  2.140650E+10  (kg/yr)     2.538729E+15  (kg)
- Step total leakage b.c. fluid net inflow ................... -2.786155E+09  (kg/yr)    -3.304274E+14  (kg)
- Step total river leakage b.c. fluid net inflow ............. -1.843410E+10  (kg/yr)    -2.186214E+15  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0 (kg/yr)     0 (kg)
- Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -4.331725E+07  (kg)
+ Step total specified p cell fluid net inflow ............... -1.862412e+08  (kg/yr)    -2.208750e+13  (kg)
+ Step total flux b.c. fluid net inflow ......................  2.140650e+10  (kg/yr)     2.538729e+15  (kg)
+ Step total leakage b.c. fluid net inflow ................... -2.786155e+09  (kg/yr)    -3.304274e+14  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -1.843410e+10  (kg/yr)    -2.186214e+15  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000e+00  (kg/yr)     0.000000e+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500e+02  (kg/yr)    -4.331725e+07  (kg)
 
 
                               *** Output at End of Steady State Iteration No.    16 ***
 
-     Time .......................................................       0     (yr)
+     Time .......................................................   0.000e+00  (yr)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
 
- Fluid inflow ...............................................  2.140650E+10  (kg/yr)     5.077458E+15  (kg)
- Fluid outflow ..............................................  2.140650E+10  (kg/yr)     5.077458E+15  (kg)
- Change in fluid in region .................................. -2.684256E-01  (kg/yr)    -6.366850E+04  (kg)
- Residual imbalance ......................................... -1.053154E-02  (kg/yr)    -2.498000E+03  (kg)
+ Fluid inflow ...............................................  2.140650e+10  (kg/yr)     5.077458e+15  (kg)
+ Fluid outflow ..............................................  2.140650e+10  (kg/yr)     5.077458e+15  (kg)
+ Change in fluid in region .................................. -2.684256e-01  (kg/yr)    -6.366850e+04  (kg)
+ Residual imbalance ......................................... -1.049992e-02  (kg/yr)    -2.490500e+03  (kg)
  Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
                                                                  Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -1.862412E+08  (kg/yr)    -4.417500E+13  (kg)
- Step total flux b.c. fluid net inflow ......................  2.140650E+10  (kg/yr)     5.077458E+15  (kg)
- Step total leakage b.c. fluid net inflow ................... -2.786155E+09  (kg/yr)    -6.608547E+14  (kg)
- Step total river leakage b.c. fluid net inflow ............. -1.843410E+10  (kg/yr)    -4.372428E+15  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0 (kg/yr)     0 (kg)
- Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -8.663451E+07  (kg)
+ Step total specified p cell fluid net inflow ............... -1.862412e+08  (kg/yr)    -4.417500e+13  (kg)
+ Step total flux b.c. fluid net inflow ......................  2.140650e+10  (kg/yr)     5.077458e+15  (kg)
+ Step total leakage b.c. fluid net inflow ................... -2.786155e+09  (kg/yr)    -6.608547e+14  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -1.843410e+10  (kg/yr)    -4.372428e+15  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000e+00  (kg/yr)     0.000000e+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500e+02  (kg/yr)    -8.663451e+07  (kg)
 
 
                               *** Output at End of Steady State Iteration No.    17 ***
 
-     Time .......................................................       0     (yr)
+     Time .......................................................   0.000e+00  (yr)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
 
- Fluid inflow ...............................................  2.140650E+10  (kg/yr)     1.015492E+16  (kg)
- Fluid outflow ..............................................  2.140650E+10  (kg/yr)     1.015492E+16  (kg)
- Change in fluid in region ..................................  1.345150E-02  (kg/yr)     6.381188E+03  (kg)
- Residual imbalance .........................................  9.022213E-04  (kg/yr)     4.280000E+02  (kg)
+ Fluid inflow ...............................................  2.140650e+10  (kg/yr)     1.015492e+16  (kg)
+ Fluid outflow ..............................................  2.140650e+10  (kg/yr)     1.015492e+16  (kg)
+ Change in fluid in region ..................................  1.345190e-02  (kg/yr)     6.381375e+03  (kg)
+ Residual imbalance .........................................  8.966878e-04  (kg/yr)     4.253750e+02  (kg)
  Fractional imbalance .......................................                                   0
 
                Current Time Step by Boundary Condition Type
                                                                  Rates                     Amounts
 
- Step total specified p cell fluid net inflow ............... -1.862412E+08  (kg/yr)    -8.835000E+13  (kg)
- Step total flux b.c. fluid net inflow ......................  2.140650E+10  (kg/yr)     1.015492E+16  (kg)
- Step total leakage b.c. fluid net inflow ................... -2.786155E+09  (kg/yr)    -1.321709E+15  (kg)
- Step total river leakage b.c. fluid net inflow ............. -1.843410E+10  (kg/yr)    -8.744857E+15  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0 (kg/yr)     0 (kg)
- Step total well fluid net inflow ........................... -3.652500E+02  (kg/yr)    -1.732690E+08  (kg)
+ Step total specified p cell fluid net inflow ............... -1.862412e+08  (kg/yr)    -8.835000e+13  (kg)
+ Step total flux b.c. fluid net inflow ......................  2.140650e+10  (kg/yr)     1.015492e+16  (kg)
+ Step total leakage b.c. fluid net inflow ................... -2.786155e+09  (kg/yr)    -1.321709e+15  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -1.843410e+10  (kg/yr)    -8.744857e+15  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000e+00  (kg/yr)     0.000000e+00  (kg)
+ Step total well fluid net inflow ........................... -3.652500e+02  (kg/yr)    -1.732690e+08  (kg)
 
 
                               *** Output at End of Time Step No.    50 ***
 
-     Time .......................................................   1.000E+06  (yr)
+     Time .......................................................   1.000e+06  (yr)
 
                                         *** Global Flow Balance Summary ***
                          Current Time Step                         Rates                  Amounts
 
- Fluid inflow ...............................................  2.140650E+10  (kg/yr)     4.281300E+14  (kg)
- Fluid outflow ..............................................  2.140650E+10  (kg/yr)     4.281300E+14  (kg)
- Change in fluid in region ..................................  0 (kg/yr)     0 (kg)
- Residual imbalance .........................................  5.390937E-02  (kg/yr)     1.078188E+03  (kg)
+ Fluid inflow ...............................................  2.140650e+10  (kg/yr)     4.281300e+14  (kg)
+ Fluid outflow ..............................................  2.140650e+10  (kg/yr)     4.281300e+14  (kg)
+ Change in fluid in region ..................................  0.000000e+00  (kg/yr)     0.000000e+00  (kg)
+ Residual imbalance .........................................  4.705000e-02  (kg/yr)     9.410000e+02  (kg)
  Fractional imbalance .......................................                                   0
 
 
           Component: H         
 
- Solute inflow ..............................................  1.301826E+05  (kg/yr)     2.603652E+09  (kg)
- Solute outflow .............................................  1.290459E+05  (kg/yr)     2.580919E+09  (kg)
- Change in solute in region from reactions .................. -1.112596E+03  (kg/yr)    -2.225193E+07  (kg)
- Change in solute in region .................................  3.754084E+01  (kg/yr)     7.508168E+05  (kg)
- Residual imbalance .........................................  1.347362E+01  (kg/yr)     2.694724E+05  (kg)
+ Solute inflow ..............................................  1.301826e+05  (kg/yr)     2.603652e+09  (kg)
+ Solute outflow .............................................  1.290459e+05  (kg/yr)     2.580919e+09  (kg)
+ Change in solute in region from reactions .................. -1.112596e+03  (kg/yr)    -2.225193e+07  (kg)
+ Change in solute in region .................................  3.754084e+01  (kg/yr)     7.508168e+05  (kg)
+ Residual imbalance .........................................  1.347362e+01  (kg/yr)     2.694724e+05  (kg)
  Fractional imbalance .......................................                              0.0001
 
 
           Component: O         
 
- Solute inflow ..............................................  7.419042E+06  (kg/yr)     1.483808E+11  (kg)
- Solute outflow .............................................  7.619806E+06  (kg/yr)     1.523961E+11  (kg)
- Change in solute in region from reactions ..................  1.882056E+05  (kg/yr)     3.764112E+09  (kg)
- Change in solute in region ................................. -1.990677E+04  (kg/yr)    -3.981353E+08  (kg)
- Residual imbalance ......................................... -7.348301E+03  (kg/yr)    -1.469660E+08  (kg)
+ Solute inflow ..............................................  7.419042e+06  (kg/yr)     1.483808e+11  (kg)
+ Solute outflow .............................................  7.619806e+06  (kg/yr)     1.523961e+11  (kg)
+ Change in solute in region from reactions ..................  1.882056e+05  (kg/yr)     3.764112e+09  (kg)
+ Change in solute in region ................................. -1.990677e+04  (kg/yr)    -3.981353e+08  (kg)
+ Residual imbalance ......................................... -7.348301e+03  (kg/yr)    -1.469660e+08  (kg)
  Fractional imbalance .......................................                             -0.0010
 
 
           Component: As        
 
- Solute inflow ..............................................  0 (kg/yr)     0 (kg)
- Solute outflow .............................................  9.858401E+01  (kg/yr)     1.971680E+06  (kg)
- Change in solute in region from reactions ..................  1.257318E+02  (kg/yr)     2.514635E+06  (kg)
- Change in solute in region ................................. -8.547531e+00  (kg/yr)    -1.709506E+05  (kg)
- Residual imbalance ......................................... -3.569528E+01  (kg/yr)    -7.139057E+05  (kg)
+ Solute inflow ..............................................  0.000000e+00  (kg/yr)     0.000000e+00  (kg)
+ Solute outflow .............................................  9.858401e+01  (kg/yr)     1.971680e+06  (kg)
+ Change in solute in region from reactions ..................  1.257318e+02  (kg/yr)     2.514635e+06  (kg)
+ Change in solute in region ................................. -8.547531e+00  (kg/yr)    -1.709506e+05  (kg)
+ Residual imbalance ......................................... -3.569528e+01  (kg/yr)    -7.139057e+05  (kg)
  Fractional imbalance .......................................                             -0.2839
 
 
           Component: C         
 
- Solute inflow ..............................................  1.830450E+06  (kg/yr)     3.660900E+10  (kg)
- Solute outflow .............................................  1.880661E+06  (kg/yr)     3.761321E+10  (kg)
- Change in solute in region from reactions ..................  4.706254E+04  (kg/yr)     9.412509E+08  (kg)
- Change in solute in region ................................. -4.979322E+03  (kg/yr)    -9.958643E+07  (kg)
- Residual imbalance ......................................... -1.831095E+03  (kg/yr)    -3.662190E+07  (kg)
+ Solute inflow ..............................................  1.830450e+06  (kg/yr)     3.660900e+10  (kg)
+ Solute outflow .............................................  1.880661e+06  (kg/yr)     3.761321e+10  (kg)
+ Change in solute in region from reactions ..................  4.706254e+04  (kg/yr)     9.412509e+08  (kg)
+ Change in solute in region ................................. -4.979322e+03  (kg/yr)    -9.958643e+07  (kg)
+ Residual imbalance ......................................... -1.831095e+03  (kg/yr)    -3.662190e+07  (kg)
  Fractional imbalance .......................................                             -0.0010
 
 
           Component: Ca        
 
- Solute inflow ..............................................  1.616867E+06  (kg/yr)     3.233734E+10  (kg)
- Solute outflow .............................................  1.194463E+06  (kg/yr)     2.388925E+10  (kg)
- Change in solute in region from reactions .................. -3.995786E+05  (kg/yr)    -7.991572E+09  (kg)
- Change in solute in region .................................  2.825960E+04  (kg/yr)     5.651920E+08  (kg)
- Residual imbalance .........................................  5.433949E+03  (kg/yr)     1.086790E+08  (kg)
+ Solute inflow ..............................................  1.616867e+06  (kg/yr)     3.233734e+10  (kg)
+ Solute outflow .............................................  1.194463e+06  (kg/yr)     2.388925e+10  (kg)
+ Change in solute in region from reactions .................. -3.995786e+05  (kg/yr)    -7.991572e+09  (kg)
+ Change in solute in region .................................  2.825960e+04  (kg/yr)     5.651920e+08  (kg)
+ Residual imbalance .........................................  5.433949e+03  (kg/yr)     1.086790e+08  (kg)
  Fractional imbalance .......................................                              0.0034
 
 
           Component: Cl        
 
- Solute inflow ..............................................  1.014768E+05  (kg/yr)     2.029535E+09  (kg)
- Solute outflow .............................................  1.014768E+05  (kg/yr)     2.029535E+09  (kg)
- Change in solute in region from reactions ..................  5.960464E-11  (kg/yr)     1.192093E-06  (kg)
- Change in solute in region ................................. -3.363819E-03  (kg/yr)    -6.727638E+01  (kg)
- Residual imbalance ......................................... -1.380152E-03  (kg/yr)    -2.760304E+01  (kg)
+ Solute inflow ..............................................  1.014768e+05  (kg/yr)     2.029535e+09  (kg)
+ Solute outflow .............................................  1.014768e+05  (kg/yr)     2.029535e+09  (kg)
+ Change in solute in region from reactions .................. -6.675720e-10  (kg/yr)    -1.335144e-05  (kg)
+ Change in solute in region ................................. -3.363819e-03  (kg/yr)    -6.727639e+01  (kg)
+ Residual imbalance ......................................... -1.380152e-03  (kg/yr)    -2.760304e+01  (kg)
  Fractional imbalance .......................................                                   0
 
 
           Component: Mg        
 
- Solute inflow ..............................................  7.205821E+05  (kg/yr)     1.441164E+10  (kg)
- Solute outflow .............................................  5.321264E+05  (kg/yr)     1.064253E+10  (kg)
- Change in solute in region from reactions .................. -1.782655E+05  (kg/yr)    -3.565310E+09  (kg)
- Change in solute in region .................................  1.261504E+04  (kg/yr)     2.523007E+08  (kg)
- Residual imbalance .........................................  2.424897E+03  (kg/yr)     4.849793E+07  (kg)
+ Solute inflow ..............................................  7.205821e+05  (kg/yr)     1.441164e+10  (kg)
+ Solute outflow .............................................  5.321264e+05  (kg/yr)     1.064253e+10  (kg)
+ Change in solute in region from reactions .................. -1.782655e+05  (kg/yr)    -3.565310e+09  (kg)
+ Change in solute in region .................................  1.261504e+04  (kg/yr)     2.523007e+08  (kg)
+ Residual imbalance .........................................  2.424897e+03  (kg/yr)     4.849793e+07  (kg)
  Fractional imbalance .......................................                              0.0034
 
 
           Component: Na        
 
- Solute inflow ..............................................  6.037201E+04  (kg/yr)     1.207440E+09  (kg)
- Solute outflow .............................................  1.093577E+06  (kg/yr)     2.187154E+10  (kg)
- Change in solute in region from reactions ..................  9.756958E+05  (kg/yr)     1.951392E+10  (kg)
- Change in solute in region ................................. -7.533854E+04  (kg/yr)    -1.506771E+09  (kg)
- Residual imbalance ......................................... -1.782944E+04  (kg/yr)    -3.565889E+08  (kg)
+ Solute inflow ..............................................  6.037201e+04  (kg/yr)     1.207440e+09  (kg)
+ Solute outflow .............................................  1.093577e+06  (kg/yr)     2.187154e+10  (kg)
+ Change in solute in region from reactions ..................  9.756958e+05  (kg/yr)     1.951392e+10  (kg)
+ Change in solute in region ................................. -7.533854e+04  (kg/yr)    -1.506771e+09  (kg)
+ Residual imbalance ......................................... -1.782944e+04  (kg/yr)    -3.565889e+08  (kg)
  Fractional imbalance .......................................                             -0.0163
 
 
           Component: S         
 
- Solute inflow ..............................................  1.613444E+05  (kg/yr)     3.226887E+09  (kg)
- Solute outflow .............................................  1.613444E+05  (kg/yr)     3.226887E+09  (kg)
- Change in solute in region from reactions ..................  3.063583E-06  (kg/yr)     6.127167E-02  (kg)
- Change in solute in region ................................. -2.941990E-06  (kg/yr)    -5.883980E-02  (kg)
- Residual imbalance ......................................... -8.359909E-07  (kg/yr)    -1.671982E-02  (kg)
+ Solute inflow ..............................................  1.613444e+05  (kg/yr)     3.226887e+09  (kg)
+ Solute outflow .............................................  1.613444e+05  (kg/yr)     3.226887e+09  (kg)
+ Change in solute in region from reactions ..................  3.080487e-06  (kg/yr)     6.160975e-02  (kg)
+ Change in solute in region ................................. -2.821302e-06  (kg/yr)    -5.642605e-02  (kg)
+ Residual imbalance ......................................... -8.177280e-07  (kg/yr)    -1.635456e-02  (kg)
  Fractional imbalance .......................................                                   0
 
 
           Component: Charge    
 
- Solute inflow ..............................................  4.542339E-08  (kg/yr)     9.084678E-04  (kg)
- Solute outflow ............................................. -1.143464E+03  (kg/yr)    -2.286928E+07  (kg)
- Change in solute in region from reactions .................. -1.120444E+03  (kg/yr)    -2.240888E+07  (kg)
- Change in solute in region .................................  3.795950E+01  (kg/yr)     7.591900E+05  (kg)
- Residual imbalance .........................................  1.493921E+01  (kg/yr)     2.987842E+05  (kg)
+ Solute inflow ..............................................  4.542339e-08  (kg/yr)     9.084678e-04  (kg)
+ Solute outflow ............................................. -1.143464e+03  (kg/yr)    -2.286928e+07  (kg)
+ Change in solute in region from reactions .................. -1.120444e+03  (kg/yr)    -2.240888e+07  (kg)
+ Change in solute in region .................................  3.795950e+01  (kg/yr)     7.591900e+05  (kg)
+ Residual imbalance .........................................  1.493921e+01  (kg/yr)     2.987842e+05  (kg)
  Fractional imbalance .......................................                              0.3936
 
                Current Time Step by Boundary Condition Type
                                                                  Amounts
 
- Step total specified head b.c. fluid net inflow ............ -3.724825E+12  (kg)
- Step total flux b.c. fluid net inflow ......................  4.281300E+14  (kg)
- Step total leakage b.c. fluid net inflow ................... -5.572310E+13  (kg)
- Step total river leakage b.c. fluid net inflow ............. -3.686821E+14  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0 (kg)
- Step total well fluid net inflow ........................... -7.305000E+06  (kg)
+ Step total specified head b.c. fluid net inflow ............ -3.724825e+12  (kg)
+ Step total flux b.c. fluid net inflow ......................  4.281300e+14  (kg)
+ Step total leakage b.c. fluid net inflow ................... -5.572310e+13  (kg)
+ Step total river leakage b.c. fluid net inflow ............. -3.686821e+14  (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0.000000e+00  (kg)
+ Step total well fluid net inflow ........................... -7.305000e+06  (kg)
 
 
 
           Component: H         
 
- Step total specified head b.c. solute net inflow............ -2.244126E+07  (kg)
- Step total flux b.c. solute net inflow .....................  2.603652E+09  (kg)
- Step total leakage b.c. solute net inflow .................. -3.329230E+08  (kg)
- Step total river leakage b.c. solute net inflow ............ -2.225554E+09  (kg)
- Step total drain leakage b.c. solute net inflow ............  0 (kg)
- Step total well solute net inflow .......................... -4.340557E+01  (kg)
+ Step total specified head b.c. solute net inflow............ -2.244126e+07  (kg)
+ Step total flux b.c. solute net inflow .....................  2.603652e+09  (kg)
+ Step total leakage b.c. solute net inflow .................. -3.329230e+08  (kg)
+ Step total river leakage b.c. solute net inflow ............ -2.225554e+09  (kg)
+ Step total drain leakage b.c. solute net inflow ............  0.000000e+00  (kg)
+ Step total well solute net inflow .......................... -4.340557e+01  (kg)
 
 
 
           Component: O         
 
- Step total specified head b.c. solute net inflow............ -1.325936E+09  (kg)
- Step total flux b.c. solute net inflow .....................  1.483808E+11  (kg)
- Step total leakage b.c. solute net inflow .................. -2.090410E+10  (kg)
- Step total river leakage b.c. solute net inflow ............ -1.301661E+11  (kg)
- Step total drain leakage b.c. solute net inflow ............  0 (kg)
- Step total well solute net inflow .......................... -2.818501E+03  (kg)
+ Step total specified head b.c. solute net inflow............ -1.325936e+09  (kg)
+ Step total flux b.c. solute net inflow .....................  1.483808e+11  (kg)
+ Step total leakage b.c. solute net inflow .................. -2.090410e+10  (kg)
+ Step total river leakage b.c. solute net inflow ............ -1.301661e+11  (kg)
+ Step total drain leakage b.c. solute net inflow ............  0.000000e+00  (kg)
+ Step total well solute net inflow .......................... -2.818501e+03  (kg)
 
 
 
           Component: As        
 
- Step total specified head b.c. solute net inflow............ -1.085419E+03  (kg)
- Step total flux b.c. solute net inflow .....................  0 (kg)
- Step total leakage b.c. solute net inflow .................. -1.925985E+06  (kg)
- Step total river leakage b.c. solute net inflow ............ -4.460923E+04  (kg)
- Step total drain leakage b.c. solute net inflow ............  0 (kg)
- Step total well solute net inflow .......................... -2.400049E-01  (kg)
+ Step total specified head b.c. solute net inflow............ -1.085419e+03  (kg)
+ Step total flux b.c. solute net inflow .....................  0.000000e+00  (kg)
+ Step total leakage b.c. solute net inflow .................. -1.925985e+06  (kg)
+ Step total river leakage b.c. solute net inflow ............ -4.460923e+04  (kg)
+ Step total drain leakage b.c. solute net inflow ............  0.000000e+00  (kg)
+ Step total well solute net inflow .......................... -2.400049e-01  (kg)
 
 
 
           Component: C         
 
- Step total specified head b.c. solute net inflow............ -3.272606E+08  (kg)
- Step total flux b.c. solute net inflow .....................  3.660900E+10  (kg)
- Step total leakage b.c. solute net inflow .................. -5.162672E+09  (kg)
- Step total river leakage b.c. solute net inflow ............ -3.212328E+10  (kg)
- Step total drain leakage b.c. solute net inflow ............  0 (kg)
- Step total well solute net inflow .......................... -6.963396E+02  (kg)
+ Step total specified head b.c. solute net inflow............ -3.272606e+08  (kg)
+ Step total flux b.c. solute net inflow .....................  3.660900e+10  (kg)
+ Step total leakage b.c. solute net inflow .................. -5.162672e+09  (kg)
+ Step total river leakage b.c. solute net inflow ............ -3.212328e+10  (kg)
+ Step total drain leakage b.c. solute net inflow ............  0.000000e+00  (kg)
+ Step total well solute net inflow .......................... -6.963396e+02  (kg)
 
 
 
           Component: Ca        
 
- Step total specified head b.c. solute net inflow............ -2.019235E+08  (kg)
- Step total flux b.c. solute net inflow .....................  3.233734E+10  (kg)
- Step total leakage b.c. solute net inflow .................. -1.741710E+09  (kg)
- Step total river leakage b.c. solute net inflow ............ -2.194562E+10  (kg)
- Step total drain leakage b.c. solute net inflow ............  0 (kg)
- Step total well solute net inflow .......................... -1.168976E+02  (kg)
+ Step total specified head b.c. solute net inflow............ -2.019235e+08  (kg)
+ Step total flux b.c. solute net inflow .....................  3.233734e+10  (kg)
+ Step total leakage b.c. solute net inflow .................. -1.741710e+09  (kg)
+ Step total river leakage b.c. solute net inflow ............ -2.194562e+10  (kg)
+ Step total drain leakage b.c. solute net inflow ............  0.000000e+00  (kg)
+ Step total well solute net inflow .......................... -1.168976e+02  (kg)
 
 
 
           Component: Cl        
 
- Step total specified head b.c. solute net inflow............ -1.765740E+07  (kg)
- Step total flux b.c. solute net inflow .....................  2.029535E+09  (kg)
- Step total leakage b.c. solute net inflow .................. -2.641534E+08  (kg)
- Step total river leakage b.c. solute net inflow ............ -1.747724E+09  (kg)
- Step total drain leakage b.c. solute net inflow ............  0 (kg)
- Step total well solute net inflow .......................... -3.462909E+01  (kg)
+ Step total specified head b.c. solute net inflow............ -1.765740e+07  (kg)
+ Step total flux b.c. solute net inflow .....................  2.029535e+09  (kg)
+ Step total leakage b.c. solute net inflow .................. -2.641534e+08  (kg)
+ Step total river leakage b.c. solute net inflow ............ -1.747724e+09  (kg)
+ Step total drain leakage b.c. solute net inflow ............  0.000000e+00  (kg)
+ Step total well solute net inflow .......................... -3.462909e+01  (kg)
 
 
 
           Component: Mg        
 
- Step total specified head b.c. solute net inflow............ -8.995142E+07  (kg)
- Step total flux b.c. solute net inflow .....................  1.441164E+10  (kg)
- Step total leakage b.c. solute net inflow .................. -7.748909E+08  (kg)
- Step total river leakage b.c. solute net inflow ............ -9.777686E+09  (kg)
- Step total drain leakage b.c. solute net inflow ............  0 (kg)
- Step total well solute net inflow .......................... -5.185805E+01  (kg)
+ Step total specified head b.c. solute net inflow............ -8.995142e+07  (kg)
+ Step total flux b.c. solute net inflow .....................  1.441164e+10  (kg)
+ Step total leakage b.c. solute net inflow .................. -7.748909e+08  (kg)
+ Step total river leakage b.c. solute net inflow ............ -9.777686e+09  (kg)
+ Step total drain leakage b.c. solute net inflow ............  0.000000e+00  (kg)
+ Step total well solute net inflow .......................... -5.185805e+01  (kg)
 
 
 
           Component: Na        
 
- Step total specified head b.c. solute net inflow............ -2.021377E+08  (kg)
- Step total flux b.c. solute net inflow .....................  1.207440E+09  (kg)
- Step total leakage b.c. solute net inflow .................. -6.592387E+09  (kg)
- Step total river leakage b.c. solute net inflow ............ -1.507701E+10  (kg)
- Step total drain leakage b.c. solute net inflow ............  0 (kg)
- Step total well solute net inflow .......................... -1.160908E+03  (kg)
+ Step total specified head b.c. solute net inflow............ -2.021377e+08  (kg)
+ Step total flux b.c. solute net inflow .....................  1.207440e+09  (kg)
+ Step total leakage b.c. solute net inflow .................. -6.592387e+09  (kg)
+ Step total river leakage b.c. solute net inflow ............ -1.507701e+10  (kg)
+ Step total drain leakage b.c. solute net inflow ............  0.000000e+00  (kg)
+ Step total well solute net inflow .......................... -1.160908e+03  (kg)
 
 
 
           Component: S         
 
- Step total specified head b.c. solute net inflow............ -2.807462E+07  (kg)
- Step total flux b.c. solute net inflow .....................  3.226887E+09  (kg)
- Step total leakage b.c. solute net inflow .................. -4.199943E+08  (kg)
- Step total river leakage b.c. solute net inflow ............ -2.778818E+09  (kg)
- Step total drain leakage b.c. solute net inflow ............  0 (kg)
- Step total well solute net inflow .......................... -5.505900E+01  (kg)
+ Step total specified head b.c. solute net inflow............ -2.807462e+07  (kg)
+ Step total flux b.c. solute net inflow .....................  3.226887e+09  (kg)
+ Step total leakage b.c. solute net inflow .................. -4.199943e+08  (kg)
+ Step total river leakage b.c. solute net inflow ............ -2.778818e+09  (kg)
+ Step total drain leakage b.c. solute net inflow ............  0.000000e+00  (kg)
+ Step total well solute net inflow .......................... -5.505900e+01  (kg)
 
 
 
           Component: Charge    
 
- Step total specified head b.c. solute net inflow............  2.116560E+05  (kg)
- Step total flux b.c. solute net inflow .....................  9.084678E-04  (kg)
- Step total leakage b.c. solute net inflow ..................  6.046059E+06  (kg)
- Step total river leakage b.c. solute net inflow ............  1.661157E+07  (kg)
- Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total specified head b.c. solute net inflow............  2.116560e+05  (kg)
+ Step total flux b.c. solute net inflow .....................  9.084678e-04  (kg)
+ Step total leakage b.c. solute net inflow ..................  6.046059e+06  (kg)
+ Step total river leakage b.c. solute net inflow ............  1.661157e+07  (kg)
+ Step total drain leakage b.c. solute net inflow ............  0.000000e+00  (kg)
  Step total well solute net inflow ..........................  1.031483e+00  (kg)
 
 
                Cumulative Summary
                                                                  Amounts
 
- Cumulative Fluid inflow ....................................  2.140650E+16  (kg)
- Cumulative Fluid outflow ...................................  2.140650E+16  (kg)
- Cumulative Change in fluid in region .......................  0 (kg)
- Current Fluid in region ....................................  3.197353E+14  (kg)
- Current Fluid volume in region .............................  3.197353E+11  (m ^3)
- Residual imbalance .........................................  5.392969E+04  (kg)
+ Cumulative Fluid inflow ....................................  2.140650e+16  (kg)
+ Cumulative Fluid outflow ...................................  2.140650e+16  (kg)
+ Cumulative Change in fluid in region ....................... -3.125000e-01  (kg)
+ Current Fluid in region ....................................  3.197353e+14  (kg)
+ Current Fluid volume in region .............................  3.197353e+11  (m ^3)
+ Residual imbalance .........................................  4.705969e+04  (kg)
  Fractional imbalance .......................................           0
 
 
           Component: H         
 
- Cumulative solute inflow ...................................  1.301826E+11  (kg)
- Cumulative solute outflow ..................................  1.542199E+11  (kg)
- Cumulative change in solute in region from reactions .......  2.585656E+10  (kg)
- Cumulative change in solute in region ......................  6.876847E+08  (kg)
- Current solute in region ...................................  1.899595E+09  (kg)
- Residual imbalance.......................................... -1.131607E+09  (kg)
+ Cumulative solute inflow ...................................  1.301826e+11  (kg)
+ Cumulative solute outflow ..................................  1.542199e+11  (kg)
+ Cumulative change in solute in region from reactions .......  2.585656e+10  (kg)
+ Cumulative change in solute in region ......................  6.876847e+08  (kg)
+ Current solute in region ...................................  1.899595e+09  (kg)
+ Residual imbalance.......................................... -1.131607e+09  (kg)
  Fractional imbalance .......................................     -0.0073
 
 
           Component: O         
 
- Cumulative solute inflow ...................................  7.419042E+12  (kg)
- Cumulative solute outflow ..................................  8.722692E+12  (kg)
- Cumulative change in solute in region from reactions .......  1.312276E+12  (kg)
- Cumulative change in solute in region ...................... -3.740498E+10  (kg)
- Current solute in region ...................................  1.194513E+11  (kg)
- Residual imbalance.......................................... -4.603131E+10  (kg)
+ Cumulative solute inflow ...................................  7.419042e+12  (kg)
+ Cumulative solute outflow ..................................  8.722692e+12  (kg)
+ Cumulative change in solute in region from reactions .......  1.312276e+12  (kg)
+ Cumulative change in solute in region ...................... -3.740498e+10  (kg)
+ Current solute in region ...................................  1.194513e+11  (kg)
+ Residual imbalance.......................................... -4.603131e+10  (kg)
  Fractional imbalance .......................................     -0.0053
 
 
           Component: As        
 
- Cumulative solute inflow ...................................  0 (kg)
- Cumulative solute outflow ..................................  1.859845E+08  (kg)
- Cumulative change in solute in region from reactions .......  2.097532E+08  (kg)
- Cumulative change in solute in region ......................  6.421360E+06  (kg)
- Current solute in region ...................................  6.660911E+06  (kg)
- Residual imbalance.......................................... -1.734735E+07  (kg)
+ Cumulative solute inflow ...................................  0.000000e+00  (kg)
+ Cumulative solute outflow ..................................  1.859845e+08  (kg)
+ Cumulative change in solute in region from reactions .......  2.097532e+08  (kg)
+ Cumulative change in solute in region ......................  6.421360e+06  (kg)
+ Current solute in region ...................................  6.660911e+06  (kg)
+ Residual imbalance.......................................... -1.734735e+07  (kg)
  Fractional imbalance .......................................     -0.0827
 
 
           Component: C         
 
- Cumulative solute inflow ...................................  1.830450E+12  (kg)
- Cumulative solute outflow ..................................  2.137063E+12  (kg)
- Cumulative change in solute in region from reactions .......  3.315393E+11  (kg)
- Cumulative change in solute in region ......................  1.429210E+10  (kg)
- Current solute in region ...................................  2.950006E+10  (kg)
- Residual imbalance.......................................... -1.063362E+10  (kg)
+ Cumulative solute inflow ...................................  1.830450e+12  (kg)
+ Cumulative solute outflow ..................................  2.137063e+12  (kg)
+ Cumulative change in solute in region from reactions .......  3.315393e+11  (kg)
+ Cumulative change in solute in region ......................  1.429210e+10  (kg)
+ Current solute in region ...................................  2.950006e+10  (kg)
+ Residual imbalance.......................................... -1.063362e+10  (kg)
  Fractional imbalance .......................................     -0.0050
 
 
           Component: Ca        
 
- Cumulative solute inflow ...................................  1.616867E+12  (kg)
- Cumulative solute outflow ..................................  6.261522E+12  (kg)
- Cumulative change in solute in region from reactions ....... -1.080453E+12  (kg)
- Cumulative change in solute in region ...................... -5.956646E+12  (kg)
- Current solute in region ...................................  7.332333E+09  (kg)
- Residual imbalance.......................................... -2.315383E+11  (kg)
+ Cumulative solute inflow ...................................  1.616867e+12  (kg)
+ Cumulative solute outflow ..................................  6.261522e+12  (kg)
+ Cumulative change in solute in region from reactions ....... -1.080453e+12  (kg)
+ Cumulative change in solute in region ...................... -5.956646e+12  (kg)
+ Current solute in region ...................................  7.332333e+09  (kg)
+ Residual imbalance.......................................... -2.315383e+11  (kg)
  Fractional imbalance .......................................     -0.0370
 
 
           Component: Cl        
 
- Cumulative solute inflow ...................................  1.014768E+11  (kg)
- Cumulative solute outflow ..................................  7.214029E+13  (kg)
- Cumulative change in solute in region from reactions ....... -5.970810E+01  (kg)
- Cumulative change in solute in region ...................... -7.528475E+13  (kg)
- Current solute in region ...................................  1.515694E+09  (kg)
- Residual imbalance.......................................... -3.245942E+12  (kg)
+ Cumulative solute inflow ...................................  1.014768e+11  (kg)
+ Cumulative solute outflow ..................................  7.214029e+13  (kg)
+ Cumulative change in solute in region from reactions ....... -5.971912e+01  (kg)
+ Cumulative change in solute in region ...................... -7.528475e+13  (kg)
+ Current solute in region ...................................  1.515694e+09  (kg)
+ Residual imbalance.......................................... -3.245942e+12  (kg)
  Fractional imbalance .......................................     -0.0431
 
 
           Component: Mg        
 
- Cumulative solute inflow ...................................  7.205821E+11  (kg)
- Cumulative solute outflow ..................................  1.767844E+12  (kg)
- Cumulative change in solute in region from reactions ....... -1.448710E+11  (kg)
- Cumulative change in solute in region ...................... -1.248331E+12  (kg)
- Current solute in region ...................................  3.259528E+09  (kg)
- Residual imbalance.......................................... -5.619743E+10  (kg)
+ Cumulative solute inflow ...................................  7.205821e+11  (kg)
+ Cumulative solute outflow ..................................  1.767844e+12  (kg)
+ Cumulative change in solute in region from reactions ....... -1.448710e+11  (kg)
+ Cumulative change in solute in region ...................... -1.248331e+12  (kg)
+ Current solute in region ...................................  3.259528e+09  (kg)
+ Residual imbalance.......................................... -5.619743e+10  (kg)
  Fractional imbalance .......................................     -0.0318
 
 
           Component: Na        
 
- Cumulative solute inflow ...................................  6.037201E+10  (kg)
- Cumulative solute outflow ..................................  4.073079E+13  (kg)
- Cumulative change in solute in region from reactions .......  2.782638E+12  (kg)
- Cumulative change in solute in region ...................... -3.966556E+13  (kg)
- Current solute in region ...................................  4.265347E+10  (kg)
- Residual imbalance.......................................... -1.777783E+12  (kg)
+ Cumulative solute inflow ...................................  6.037201e+10  (kg)
+ Cumulative solute outflow ..................................  4.073079e+13  (kg)
+ Cumulative change in solute in region from reactions .......  2.782638e+12  (kg)
+ Cumulative change in solute in region ...................... -3.966556e+13  (kg)
+ Current solute in region ...................................  4.265347e+10  (kg)
+ Residual imbalance.......................................... -1.777783e+12  (kg)
  Fractional imbalance .......................................     -0.0436
 
 
           Component: S         
 
- Cumulative solute inflow ...................................  1.613444E+11  (kg)
- Cumulative solute outflow ..................................  2.053905E+11  (kg)
- Cumulative change in solute in region from reactions .......  1.317676e+00  (kg)
- Cumulative change in solute in region ...................... -4.603077E+10  (kg)
- Current solute in region ...................................  2.409898E+09  (kg)
- Residual imbalance.......................................... -1.984641E+09  (kg)
+ Cumulative solute inflow ...................................  1.613444e+11  (kg)
+ Cumulative solute outflow ..................................  2.053905e+11  (kg)
+ Cumulative change in solute in region from reactions .......  1.461775e+00  (kg)
+ Cumulative change in solute in region ...................... -4.603077e+10  (kg)
+ Current solute in region ...................................  2.409898e+09  (kg)
+ Residual imbalance.......................................... -1.984641e+09  (kg)
  Fractional imbalance .......................................     -0.0097
 
 
           Component: Charge    
 
- Cumulative solute inflow ...................................  4.542339E-02  (kg)
- Cumulative solute outflow ..................................  2.627821E+10  (kg)
- Cumulative change in solute in region from reactions .......  2.746530E+10  (kg)
- Cumulative change in solute in region ...................... -4.523857E+07  (kg)
- Current solute in region ................................... -4.523857E+07  (kg)
- Residual imbalance.......................................... -1.232328E+09  (kg)
+ Cumulative solute inflow ...................................  4.542339e-02  (kg)
+ Cumulative solute outflow ..................................  2.627821e+10  (kg)
+ Cumulative change in solute in region from reactions .......  2.746530e+10  (kg)
+ Cumulative change in solute in region ...................... -4.523857e+07  (kg)
+ Current solute in region ................................... -4.523857e+07  (kg)
+ Residual imbalance.......................................... -1.232328e+09  (kg)
  Fractional imbalance .......................................     -0.0449
 
                Cumulative Summary by Boundary Condition Type
                                                                  Amounts
 
- Cumulative specified head b.c. fluid net inflow ............ -1.862412E+14  (kg)
- Cumulative flux b.c. fluid net inflow ......................  2.140650E+16  (kg)
- Cumulative leakage b.c. fluid net inflow ................... -2.786155E+15  (kg)
- Cumulative river leakage b.c. fluid net inflow ............. -1.843410E+16  (kg)
- Cumulative drain leakage b.c. fluid net inflow .............  0 (kg)
- Cumulative well fluid net inflow ........................... -3.652500E+08  (kg)
+ Cumulative specified head b.c. fluid net inflow ............ -1.862412e+14  (kg)
+ Cumulative flux b.c. fluid net inflow ......................  2.140650e+16  (kg)
+ Cumulative leakage b.c. fluid net inflow ................... -2.786155e+15  (kg)
+ Cumulative river leakage b.c. fluid net inflow ............. -1.843410e+16  (kg)
+ Cumulative drain leakage b.c. fluid net inflow .............  0.000000e+00  (kg)
+ Cumulative well fluid net inflow ........................... -3.652500e+08  (kg)
 
 
 
           Component: H         
 
- Cumulative specified head b.c. solute net inflow............ -1.331185E+09  (kg)
- Cumulative flux b.c. solute net inflow .....................  1.301826E+11  (kg)
- Cumulative leakage b.c. solute net inflow .................. -2.537779E+10  (kg)
- Cumulative river leakage b.c. solute net inflow ............ -1.275109E+11  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
- Cumulative well solute net inflow .......................... -3.603817E+03  (kg)
+ Cumulative specified head b.c. solute net inflow............ -1.331185e+09  (kg)
+ Cumulative flux b.c. solute net inflow .....................  1.301826e+11  (kg)
+ Cumulative leakage b.c. solute net inflow .................. -2.537779e+10  (kg)
+ Cumulative river leakage b.c. solute net inflow ............ -1.275109e+11  (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0.000000e+00  (kg)
+ Cumulative well solute net inflow .......................... -3.603817e+03  (kg)
 
 
 
           Component: O         
 
- Cumulative specified head b.c. solute net inflow............ -7.568283E+10  (kg)
- Cumulative flux b.c. solute net inflow .....................  7.419042E+12  (kg)
- Cumulative leakage b.c. solute net inflow .................. -1.382044E+12  (kg)
- Cumulative river leakage b.c. solute net inflow ............ -7.264965E+12  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
- Cumulative well solute net inflow .......................... -1.956279E+05  (kg)
+ Cumulative specified head b.c. solute net inflow............ -7.568283e+10  (kg)
+ Cumulative flux b.c. solute net inflow .....................  7.419042e+12  (kg)
+ Cumulative leakage b.c. solute net inflow .................. -1.382044e+12  (kg)
+ Cumulative river leakage b.c. solute net inflow ............ -7.264965e+12  (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0.000000e+00  (kg)
+ Cumulative well solute net inflow .......................... -1.956279e+05  (kg)
 
 
 
           Component: As        
 
- Cumulative specified head b.c. solute net inflow............ -1.160034E+06  (kg)
- Cumulative flux b.c. solute net inflow .....................  0 (kg)
- Cumulative leakage b.c. solute net inflow .................. -9.412610E+07  (kg)
- Cumulative river leakage b.c. solute net inflow ............ -9.069835E+07  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
- Cumulative well solute net inflow .......................... -1.618391E+01  (kg)
+ Cumulative specified head b.c. solute net inflow............ -1.160034e+06  (kg)
+ Cumulative flux b.c. solute net inflow .....................  0.000000e+00  (kg)
+ Cumulative leakage b.c. solute net inflow .................. -9.412610e+07  (kg)
+ Cumulative river leakage b.c. solute net inflow ............ -9.069835e+07  (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0.000000e+00  (kg)
+ Cumulative well solute net inflow .......................... -1.618391e+01  (kg)
 
 
 
           Component: C         
 
- Cumulative specified head b.c. solute net inflow............ -1.854894E+10  (kg)
- Cumulative flux b.c. solute net inflow .....................  1.830450E+12  (kg)
- Cumulative leakage b.c. solute net inflow .................. -3.356759E+11  (kg)
- Cumulative river leakage b.c. solute net inflow ............ -1.782839E+12  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
- Cumulative well solute net inflow .......................... -4.739761E+04  (kg)
+ Cumulative specified head b.c. solute net inflow............ -1.854894e+10  (kg)
+ Cumulative flux b.c. solute net inflow .....................  1.830450e+12  (kg)
+ Cumulative leakage b.c. solute net inflow .................. -3.356759e+11  (kg)
+ Cumulative river leakage b.c. solute net inflow ............ -1.782839e+12  (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0.000000e+00  (kg)
+ Cumulative well solute net inflow .......................... -4.739761e+04  (kg)
 
 
 
           Component: Ca        
 
- Cumulative specified head b.c. solute net inflow............ -5.204140E+10  (kg)
- Cumulative flux b.c. solute net inflow .....................  1.616867E+12  (kg)
- Cumulative leakage b.c. solute net inflow .................. -1.869259E+12  (kg)
- Cumulative river leakage b.c. solute net inflow ............ -4.340222E+12  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
- Cumulative well solute net inflow .......................... -2.986281E+05  (kg)
+ Cumulative specified head b.c. solute net inflow............ -5.204140e+10  (kg)
+ Cumulative flux b.c. solute net inflow .....................  1.616867e+12  (kg)
+ Cumulative leakage b.c. solute net inflow .................. -1.869259e+12  (kg)
+ Cumulative river leakage b.c. solute net inflow ............ -4.340222e+12  (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0.000000e+00  (kg)
+ Cumulative well solute net inflow .......................... -2.986281e+05  (kg)
 
 
 
           Component: Cl        
 
- Cumulative specified head b.c. solute net inflow............ -5.996368E+11  (kg)
- Cumulative flux b.c. solute net inflow .....................  1.014768E+11  (kg)
- Cumulative leakage b.c. solute net inflow .................. -2.486407E+13  (kg)
- Cumulative river leakage b.c. solute net inflow ............ -4.667658E+13  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
- Cumulative well solute net inflow .......................... -4.079316E+06  (kg)
+ Cumulative specified head b.c. solute net inflow............ -5.996368e+11  (kg)
+ Cumulative flux b.c. solute net inflow .....................  1.014768e+11  (kg)
+ Cumulative leakage b.c. solute net inflow .................. -2.486407e+13  (kg)
+ Cumulative river leakage b.c. solute net inflow ............ -4.667658e+13  (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0.000000e+00  (kg)
+ Cumulative well solute net inflow .......................... -4.079316e+06  (kg)
 
 
 
           Component: Mg        
 
- Cumulative specified head b.c. solute net inflow............ -1.475019E+10  (kg)
- Cumulative flux b.c. solute net inflow .....................  7.205821E+11  (kg)
- Cumulative leakage b.c. solute net inflow .................. -4.863772E+11  (kg)
- Cumulative river leakage b.c. solute net inflow ............ -1.266717E+12  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
- Cumulative well solute net inflow .......................... -7.693796E+04  (kg)
+ Cumulative specified head b.c. solute net inflow............ -1.475019e+10  (kg)
+ Cumulative flux b.c. solute net inflow .....................  7.205821e+11  (kg)
+ Cumulative leakage b.c. solute net inflow .................. -4.863772e+11  (kg)
+ Cumulative river leakage b.c. solute net inflow ............ -1.266717e+12  (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0.000000e+00  (kg)
+ Cumulative well solute net inflow .......................... -7.693796e+04  (kg)
 
 
 
           Component: Na        
 
- Cumulative specified head b.c. solute net inflow............ -3.399923E+11  (kg)
- Cumulative flux b.c. solute net inflow .....................  6.037201E+10  (kg)
- Cumulative leakage b.c. solute net inflow .................. -1.388168E+13  (kg)
- Cumulative river leakage b.c. solute net inflow ............ -2.650912E+13  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
- Cumulative well solute net inflow .......................... -2.279042E+06  (kg)
+ Cumulative specified head b.c. solute net inflow............ -3.399923e+11  (kg)
+ Cumulative flux b.c. solute net inflow .....................  6.037201e+10  (kg)
+ Cumulative leakage b.c. solute net inflow .................. -1.388168e+13  (kg)
+ Cumulative river leakage b.c. solute net inflow ............ -2.650912e+13  (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0.000000e+00  (kg)
+ Cumulative well solute net inflow .......................... -2.279042e+06  (kg)
 
 
 
           Component: S         
 
- Cumulative specified head b.c. solute net inflow............ -1.769823E+09  (kg)
- Cumulative flux b.c. solute net inflow .....................  1.613444E+11  (kg)
- Cumulative leakage b.c. solute net inflow .................. -3.619408E+10  (kg)
- Cumulative river leakage b.c. solute net inflow ............ -1.674266E+11  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
- Cumulative well solute net inflow .......................... -5.246076E+03  (kg)
+ Cumulative specified head b.c. solute net inflow............ -1.769823e+09  (kg)
+ Cumulative flux b.c. solute net inflow .....................  1.613444e+11  (kg)
+ Cumulative leakage b.c. solute net inflow .................. -3.619408e+10  (kg)
+ Cumulative river leakage b.c. solute net inflow ............ -1.674266e+11  (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0.000000e+00  (kg)
+ Cumulative well solute net inflow .......................... -5.246076e+03  (kg)
 
 
 
           Component: Charge    
 
- Cumulative specified head b.c. solute net inflow............ -2.172066E+08  (kg)
- Cumulative flux b.c. solute net inflow .....................  4.542339E-02  (kg)
- Cumulative leakage b.c. solute net inflow .................. -9.206083E+09  (kg)
- Cumulative river leakage b.c. solute net inflow ............ -1.685491E+10  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
- Cumulative well solute net inflow .......................... -1.509233E+03  (kg)
+ Cumulative specified head b.c. solute net inflow............ -2.172066e+08  (kg)
+ Cumulative flux b.c. solute net inflow .....................  4.542339e-02  (kg)
+ Cumulative leakage b.c. solute net inflow .................. -9.206083e+09  (kg)
+ Cumulative river leakage b.c. solute net inflow ............ -1.685491e+10  (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0.000000e+00  (kg)
+ Cumulative well solute net inflow .......................... -1.509233e+03  (kg)
 
 
 
                                        ***** Simulation Completed *****
-               Last time value calculated ...................................... 1.0000E+06 (yr)
+               Last time value calculated ...................................... 1.0000e+06 (yr)
                Last time step index ............................................      50

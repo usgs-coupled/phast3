@@ -23,7 +23,7 @@ Reading input data for simulation 1.
 	.       Example 1.--Pulse of solute undergoing sorption and decay
 	.       Analytical solution from Quantitative Hydrogeology, de Marsily
 	SOLUTION_MASTER_SPECIES
-	        A       A       0      A       1
+	        A       A       0       A       1
 	SOLUTION_SPECIES
 	        A = A
 	        log_k   0
@@ -63,8 +63,8 @@ Initial solution 1.
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.082e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.082e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -79,18 +79,18 @@ Initial solution 1.
 
    OH-                    1.002e-07   1.001e-07    -6.999    -6.999         0
    H+                     1.001e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 H(0)             1.416e-25
    H2                     7.079e-26   7.079e-26   -25.150   -25.150         0
-O(0)             0 
-   O2                     0  0  -42.080   -42.080         0
+O(0)             0.000e+00
+   O2                     0.000e+00   0.000e+00   -42.080   -42.080         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
 	H2(g)           -22.00  -25.15   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -39.12  -42.08   -2.96  O2
 
 ------------------
@@ -124,8 +124,8 @@ Initial solution 2.
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.065e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.065e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -140,20 +140,20 @@ Initial solution 2.
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.000e-03
    A                      1.000e-03   1.000e-03    -3.000    -3.000         0
 H(0)             1.416e-25
    H2                     7.079e-26   7.079e-26   -25.150   -25.150         0
-O(0)             0 
-   O2                     0  0  -42.080   -42.080         0
+O(0)             0.000e+00
+   O2                     0.000e+00   0.000e+00   -42.080   -42.080         0
 
 ------------------------------Saturation indices-------------------------------
 
 	Phase               SI log IAP  log KT
 
 	H2(g)           -22.00  -25.15   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -39.12  -42.08   -2.96  O2
 
 ------------------
@@ -237,14 +237,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             6.748e-13           0  6.748e-13     -12.171
+	SurfA             6.748e-13           0   6.748e-13     -12.171
 
 -----------------------------Solution composition------------------------------
 
@@ -260,8 +260,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.082e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.082e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -276,7 +276,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                6.748e-13
    A                      6.748e-13   6.748e-13   -12.171   -12.171         0
 H(0)             4.589e-39
@@ -289,7 +289,7 @@ O(0)             1.584e-15
 	Phase               SI log IAP  log KT
 
 	H2(g)           -35.49  -38.64   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -12.14  -15.10   -2.96  O2
 
 Time 120. Cell 2: x=          0.002	y=              0	z=              0
@@ -309,14 +309,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             6.790e-10           0  6.790e-10      -9.168
+	SurfA             6.790e-10           0   6.790e-10      -9.168
 
 -----------------------------Solution composition------------------------------
 
@@ -332,8 +332,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.082e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.082e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -348,7 +348,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                6.790e-10
    A                      6.790e-10   6.790e-10    -9.168    -9.168         0
 H(0)             4.589e-39
@@ -361,7 +361,7 @@ O(0)             1.584e-15
 	Phase               SI log IAP  log KT
 
 	H2(g)           -35.49  -38.64   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -12.14  -15.10   -2.96  O2
 
 Time 120. Cell 3: x=          0.004	y=              0	z=              0
@@ -381,14 +381,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             9.045e-09           0  9.045e-09      -8.044
+	SurfA             9.045e-09           0   9.045e-09      -8.044
 
 -----------------------------Solution composition------------------------------
 
@@ -404,8 +404,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.082e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.082e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -420,7 +420,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                9.045e-09
    A                      9.045e-09   9.045e-09    -8.044    -8.044         0
 H(0)             1.959e-39
@@ -433,7 +433,7 @@ O(0)             8.689e-15
 	Phase               SI log IAP  log KT
 
 	H2(g)           -35.86  -39.01   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -11.40  -14.36   -2.96  O2
 
 Time 120. Cell 4: x=          0.006	y=              0	z=              0
@@ -453,14 +453,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             6.199e-08           0  6.199e-08      -7.208
+	SurfA             6.199e-08           0   6.199e-08      -7.208
 
 -----------------------------Solution composition------------------------------
 
@@ -476,8 +476,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.082e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.082e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -492,7 +492,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                6.199e-08
    A                      6.199e-08   6.199e-08    -7.208    -7.208         0
 H(0)             1.959e-39
@@ -505,7 +505,7 @@ O(0)             8.689e-15
 	Phase               SI log IAP  log KT
 
 	H2(g)           -35.86  -39.01   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -11.40  -14.36   -2.96  O2
 
 Time 120. Cell 5: x=          0.008	y=              0	z=              0
@@ -525,14 +525,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             2.890e-07           0  2.890e-07      -6.539
+	SurfA             2.890e-07           0   2.890e-07      -6.539
 
 -----------------------------Solution composition------------------------------
 
@@ -548,8 +548,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.082e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.082e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -564,7 +564,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.890e-07
    A                      2.890e-07   2.890e-07    -6.539    -6.539         0
 H(0)             1.959e-39
@@ -577,7 +577,7 @@ O(0)             8.689e-15
 	Phase               SI log IAP  log KT
 
 	H2(g)           -35.86  -39.01   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -11.40  -14.36   -2.96  O2
 
 Time 120. Cell 6: x=           0.01	y=              0	z=              0
@@ -597,14 +597,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             1.028e-06           0  1.028e-06      -5.988
+	SurfA             1.028e-06           0   1.028e-06      -5.988
 
 -----------------------------Solution composition------------------------------
 
@@ -620,8 +620,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.082e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.082e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -636,7 +636,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.028e-06
    A                      1.028e-06   1.028e-06    -5.988    -5.988         0
 H(0)             1.453e-39
@@ -649,7 +649,7 @@ O(0)             1.579e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -35.99  -39.14   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -11.14  -14.10   -2.96  O2
 
 Time 120. Cell 7: x=          0.012	y=              0	z=              0
@@ -669,14 +669,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             2.975e-06           0  2.975e-06      -5.526
+	SurfA             2.975e-06           0   2.975e-06      -5.526
 
 -----------------------------Solution composition------------------------------
 
@@ -692,8 +692,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.082e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.082e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -708,7 +708,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.975e-06
    A                      2.975e-06   2.975e-06    -5.526    -5.526         0
 H(0)             1.453e-39
@@ -721,7 +721,7 @@ O(0)             1.579e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -35.99  -39.14   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -11.14  -14.10   -2.96  O2
 
 Time 120. Cell 8: x=          0.014	y=              0	z=              0
@@ -741,14 +741,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             7.292e-06           0  7.292e-06      -5.137
+	SurfA             7.292e-06           0   7.292e-06      -5.137
 
 -----------------------------Solution composition------------------------------
 
@@ -764,8 +764,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.082e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.082e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -780,7 +780,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                7.292e-06
    A                      7.292e-06   7.292e-06    -5.137    -5.137         0
 H(0)             1.453e-39
@@ -793,7 +793,7 @@ O(0)             1.579e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -35.99  -39.14   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -11.14  -14.10   -2.96  O2
 
 Time 120. Cell 9: x=          0.016	y=              0	z=              0
@@ -813,14 +813,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             1.557e-05           0  1.557e-05      -4.808
+	SurfA             1.557e-05           0   1.557e-05      -4.808
 
 -----------------------------Solution composition------------------------------
 
@@ -836,8 +836,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.082e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.082e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -852,7 +852,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.557e-05
    A                      1.557e-05   1.557e-05    -4.808    -4.808         0
 H(0)             1.453e-39
@@ -865,7 +865,7 @@ O(0)             1.580e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -35.99  -39.14   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -11.14  -14.10   -2.96  O2
 
 Time 120. Cell 10: x=          0.018	y=              0	z=              0
@@ -885,14 +885,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             2.957e-05           0  2.957e-05      -4.529
+	SurfA             2.957e-05           0   2.957e-05      -4.529
 
 -----------------------------Solution composition------------------------------
 
@@ -908,8 +908,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.082e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.082e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -924,7 +924,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.957e-05
    A                      2.957e-05   2.957e-05    -4.529    -4.529         0
 H(0)             1.453e-39
@@ -937,7 +937,7 @@ O(0)             1.580e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -35.99  -39.14   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -11.14  -14.10   -2.96  O2
 
 Time 120. Cell 11: x=           0.02	y=              0	z=              0
@@ -957,14 +957,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             5.077e-05           0  5.077e-05      -4.294
+	SurfA             5.077e-05           0   5.077e-05      -4.294
 
 -----------------------------Solution composition------------------------------
 
@@ -980,8 +980,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.082e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.082e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -996,7 +996,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                5.077e-05
    A                      5.077e-05   5.077e-05    -4.294    -4.294         0
 H(0)             1.453e-39
@@ -1009,7 +1009,7 @@ O(0)             1.580e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -35.99  -39.14   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -11.14  -14.10   -2.96  O2
 
 Time 120. Cell 12: x=          0.022	y=              0	z=              0
@@ -1029,14 +1029,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             7.984e-05           0  7.984e-05      -4.098
+	SurfA             7.984e-05           0   7.984e-05      -4.098
 
 -----------------------------Solution composition------------------------------
 
@@ -1052,8 +1052,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.082e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.082e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -1068,7 +1068,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                7.984e-05
    A                      7.984e-05   7.984e-05    -4.098    -4.098         0
 H(0)             1.452e-39
@@ -1081,7 +1081,7 @@ O(0)             1.582e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -35.99  -39.14   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -11.14  -14.10   -2.96  O2
 
 Time 120. Cell 13: x=          0.024	y=              0	z=              0
@@ -1101,14 +1101,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             1.163e-04           0  1.163e-04      -3.935
+	SurfA             1.163e-04           0   1.163e-04      -3.935
 
 -----------------------------Solution composition------------------------------
 
@@ -1124,8 +1124,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.082e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.082e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -1140,7 +1140,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.163e-04
    A                      1.163e-04   1.163e-04    -3.935    -3.935         0
 H(0)             1.449e-39
@@ -1153,7 +1153,7 @@ O(0)             1.588e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -35.99  -39.14   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -11.14  -14.10   -2.96  O2
 
 Time 120. Cell 14: x=          0.026	y=              0	z=              0
@@ -1173,14 +1173,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             1.583e-04           0  1.583e-04      -3.801
+	SurfA             1.583e-04           0   1.583e-04      -3.801
 
 -----------------------------Solution composition------------------------------
 
@@ -1196,8 +1196,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.082e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.082e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -1212,7 +1212,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.583e-04
    A                      1.583e-04   1.583e-04    -3.801    -3.801         0
 H(0)             1.201e-39
@@ -1225,7 +1225,7 @@ O(0)             2.311e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.07  -39.22   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.98  -13.94   -2.96  O2
 
 Time 120. Cell 15: x=          0.028	y=              0	z=              0
@@ -1245,14 +1245,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             2.030e-04           0  2.030e-04      -3.693
+	SurfA             2.030e-04           0   2.030e-04      -3.693
 
 -----------------------------Solution composition------------------------------
 
@@ -1268,8 +1268,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.082e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.082e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -1284,7 +1284,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.030e-04
    A                      2.030e-04   2.030e-04    -3.693    -3.693         0
 H(0)             1.194e-39
@@ -1297,7 +1297,7 @@ O(0)             2.339e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.07  -39.22   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.97  -13.93   -2.96  O2
 
 Time 120. Cell 16: x=           0.03	y=              0	z=              0
@@ -1317,14 +1317,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             2.472e-04           0  2.472e-04      -3.607
+	SurfA             2.472e-04           0   2.472e-04      -3.607
 
 -----------------------------Solution composition------------------------------
 
@@ -1340,8 +1340,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.082e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.082e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -1356,7 +1356,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.472e-04
    A                      2.472e-04   2.472e-04    -3.607    -3.607         0
 H(0)             1.036e-39
@@ -1369,7 +1369,7 @@ O(0)             3.110e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.14  -39.29   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.85  -13.81   -2.96  O2
 
 Time 120. Cell 17: x=          0.032	y=              0	z=              0
@@ -1389,14 +1389,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             2.875e-04           0  2.875e-04      -3.541
+	SurfA             2.875e-04           0   2.875e-04      -3.541
 
 -----------------------------Solution composition------------------------------
 
@@ -1412,8 +1412,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.082e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.082e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -1428,7 +1428,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.875e-04
    A                      2.875e-04   2.875e-04    -3.541    -3.541         0
 H(0)             9.202e-40
@@ -1441,7 +1441,7 @@ O(0)             3.938e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.19  -39.34   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.75  -13.71   -2.96  O2
 
 Time 120. Cell 18: x=          0.034	y=              0	z=              0
@@ -1461,14 +1461,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             3.213e-04           0  3.213e-04      -3.493
+	SurfA             3.213e-04           0   3.213e-04      -3.493
 
 -----------------------------Solution composition------------------------------
 
@@ -1484,8 +1484,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.082e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.082e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -1500,7 +1500,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                3.213e-04
    A                      3.213e-04   3.213e-04    -3.493    -3.493         0
 H(0)             7.734e-40
@@ -1513,7 +1513,7 @@ O(0)             5.576e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.26  -39.41   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.59  -13.55   -2.96  O2
 
 Time 120. Cell 19: x=          0.036	y=              0	z=              0
@@ -1533,14 +1533,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             3.470e-04           0  3.470e-04      -3.460
+	SurfA             3.470e-04           0   3.470e-04      -3.460
 
 -----------------------------Solution composition------------------------------
 
@@ -1556,8 +1556,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.082e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.082e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -1572,7 +1572,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                3.470e-04
    A                      3.470e-04   3.470e-04    -3.460    -3.460         0
 H(0)             7.076e-40
@@ -1585,7 +1585,7 @@ O(0)             6.660e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.30  -39.45   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.52  -13.48   -2.96  O2
 
 Time 120. Cell 20: x=          0.038	y=              0	z=              0
@@ -1605,14 +1605,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             3.637e-04           0  3.637e-04      -3.439
+	SurfA             3.637e-04           0   3.637e-04      -3.439
 
 -----------------------------Solution composition------------------------------
 
@@ -1628,8 +1628,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.082e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.082e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -1644,7 +1644,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                3.637e-04
    A                      3.637e-04   3.637e-04    -3.439    -3.439         0
 H(0)             6.773e-40
@@ -1657,7 +1657,7 @@ O(0)             7.271e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.32  -39.47   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.48  -13.44   -2.96  O2
 
 Time 120. Cell 21: x=           0.04	y=              0	z=              0
@@ -1677,14 +1677,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             3.716e-04           0  3.716e-04      -3.430
+	SurfA             3.716e-04           0   3.716e-04      -3.430
 
 -----------------------------Solution composition------------------------------
 
@@ -1700,8 +1700,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.082e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.082e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -1716,7 +1716,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                3.716e-04
    A                      3.716e-04   3.716e-04    -3.430    -3.430         0
 H(0)             6.371e-40
@@ -1729,7 +1729,7 @@ O(0)             8.215e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.35  -39.50   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.43  -13.39   -2.96  O2
 
 Time 120. Cell 22: x=          0.042	y=              0	z=              0
@@ -1749,14 +1749,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             3.712e-04           0  3.712e-04      -3.430
+	SurfA             3.712e-04           0   3.712e-04      -3.430
 
 -----------------------------Solution composition------------------------------
 
@@ -1772,8 +1772,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.081e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.081e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -1788,7 +1788,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                3.712e-04
    A                      3.712e-04   3.712e-04    -3.430    -3.430         0
 H(0)             5.892e-40
@@ -1801,7 +1801,7 @@ O(0)             9.605e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.38  -39.53   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.36  -13.32   -2.96  O2
 
 Time 120. Cell 23: x=          0.044	y=              0	z=              0
@@ -1821,14 +1821,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             3.637e-04           0  3.637e-04      -3.439
+	SurfA             3.637e-04           0   3.637e-04      -3.439
 
 -----------------------------Solution composition------------------------------
 
@@ -1844,8 +1844,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.081e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.081e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -1860,7 +1860,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                3.637e-04
    A                      3.637e-04   3.637e-04    -3.439    -3.439         0
 H(0)             5.738e-40
@@ -1873,7 +1873,7 @@ O(0)             1.013e-13
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.39  -39.54   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.34  -13.30   -2.96  O2
 
 Time 120. Cell 24: x=          0.046	y=              0	z=              0
@@ -1893,14 +1893,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             3.501e-04           0  3.501e-04      -3.456
+	SurfA             3.501e-04           0   3.501e-04      -3.456
 
 -----------------------------Solution composition------------------------------
 
@@ -1916,8 +1916,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.080e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.080e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -1932,7 +1932,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                3.501e-04
    A                      3.501e-04   3.501e-04    -3.456    -3.456         0
 H(0)             5.608e-40
@@ -1945,7 +1945,7 @@ O(0)             1.060e-13
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.40  -39.55   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.32  -13.28   -2.96  O2
 
 Time 120. Cell 25: x=          0.048	y=              0	z=              0
@@ -1965,14 +1965,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             3.316e-04           0  3.316e-04      -3.479
+	SurfA             3.316e-04           0   3.316e-04      -3.479
 
 -----------------------------Solution composition------------------------------
 
@@ -1988,8 +1988,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.080e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.080e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -2004,7 +2004,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                3.316e-04
    A                      3.316e-04   3.316e-04    -3.479    -3.479         0
 H(0)             5.667e-40
@@ -2017,7 +2017,7 @@ O(0)             1.038e-13
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.40  -39.55   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.32  -13.28   -2.96  O2
 
 Time 120. Cell 26: x=           0.05	y=              0	z=              0
@@ -2037,14 +2037,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             3.093e-04           0  3.093e-04      -3.510
+	SurfA             3.093e-04           0   3.093e-04      -3.510
 
 -----------------------------Solution composition------------------------------
 
@@ -2060,8 +2060,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.079e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.079e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -2076,7 +2076,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                3.093e-04
    A                      3.093e-04   3.093e-04    -3.510    -3.510         0
 H(0)             5.716e-40
@@ -2089,7 +2089,7 @@ O(0)             1.021e-13
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.39  -39.54   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.33  -13.29   -2.96  O2
 
 Time 120. Cell 27: x=          0.052	y=              0	z=              0
@@ -2109,14 +2109,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             2.841e-04           0  2.841e-04      -3.547
+	SurfA             2.841e-04           0   2.841e-04      -3.547
 
 -----------------------------Solution composition------------------------------
 
@@ -2132,8 +2132,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.078e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.078e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -2148,7 +2148,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.841e-04
    A                      2.841e-04   2.841e-04    -3.547    -3.547         0
 H(0)             5.975e-40
@@ -2161,7 +2161,7 @@ O(0)             9.340e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.37  -39.52   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.37  -13.33   -2.96  O2
 
 Time 120. Cell 28: x=          0.054	y=              0	z=              0
@@ -2181,14 +2181,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             2.570e-04           0  2.570e-04      -3.590
+	SurfA             2.570e-04           0   2.570e-04      -3.590
 
 -----------------------------Solution composition------------------------------
 
@@ -2204,8 +2204,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.077e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.077e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -2220,7 +2220,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.570e-04
    A                      2.570e-04   2.570e-04    -3.590    -3.590         0
 H(0)             6.300e-40
@@ -2233,7 +2233,7 @@ O(0)             8.402e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.35  -39.50   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.42  -13.38   -2.96  O2
 
 Time 120. Cell 29: x=          0.056	y=              0	z=              0
@@ -2253,14 +2253,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             2.290e-04           0  2.290e-04      -3.640
+	SurfA             2.290e-04           0   2.290e-04      -3.640
 
 -----------------------------Solution composition------------------------------
 
@@ -2276,8 +2276,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.076e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.076e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -2292,7 +2292,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.290e-04
    A                      2.290e-04   2.290e-04    -3.640    -3.640         0
 H(0)             6.471e-40
@@ -2305,7 +2305,7 @@ O(0)             7.963e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.34  -39.49   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.44  -13.40   -2.96  O2
 
 Time 120. Cell 30: x=          0.058	y=              0	z=              0
@@ -2325,14 +2325,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             2.008e-04           0  2.008e-04      -3.697
+	SurfA             2.008e-04           0   2.008e-04      -3.697
 
 -----------------------------Solution composition------------------------------
 
@@ -2348,8 +2348,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.074e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.074e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -2364,7 +2364,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.008e-04
    A                      2.008e-04   2.008e-04    -3.697    -3.697         0
 H(0)             6.841e-40
@@ -2377,7 +2377,7 @@ O(0)             7.127e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.32  -39.47   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.49  -13.45   -2.96  O2
 
 Time 120. Cell 31: x=           0.06	y=              0	z=              0
@@ -2397,14 +2397,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             1.732e-04           0  1.732e-04      -3.761
+	SurfA             1.732e-04           0   1.732e-04      -3.761
 
 -----------------------------Solution composition------------------------------
 
@@ -2420,8 +2420,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.073e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.073e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -2436,7 +2436,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.732e-04
    A                      1.732e-04   1.732e-04    -3.761    -3.761         0
 H(0)             7.222e-40
@@ -2449,7 +2449,7 @@ O(0)             6.394e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.29  -39.44   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.54  -13.50   -2.96  O2
 
 Time 120. Cell 32: x=          0.062	y=              0	z=              0
@@ -2469,14 +2469,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             1.469e-04           0  1.469e-04      -3.833
+	SurfA             1.469e-04           0   1.469e-04      -3.833
 
 -----------------------------Solution composition------------------------------
 
@@ -2492,8 +2492,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.072e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.072e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -2508,7 +2508,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.469e-04
    A                      1.469e-04   1.469e-04    -3.833    -3.833         0
 H(0)             6.915e-40
@@ -2521,7 +2521,7 @@ O(0)             6.975e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.31  -39.46   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.50  -13.46   -2.96  O2
 
 Time 120. Cell 33: x=          0.064	y=              0	z=              0
@@ -2541,14 +2541,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             1.225e-04           0  1.225e-04      -3.912
+	SurfA             1.225e-04           0   1.225e-04      -3.912
 
 -----------------------------Solution composition------------------------------
 
@@ -2564,8 +2564,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.071e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.071e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -2580,7 +2580,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.225e-04
    A                      1.225e-04   1.225e-04    -3.912    -3.912         0
 H(0)             7.563e-40
@@ -2593,7 +2593,7 @@ O(0)             5.830e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.27  -39.42   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.58  -13.54   -2.96  O2
 
 Time 120. Cell 34: x=          0.066	y=              0	z=              0
@@ -2613,14 +2613,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             1.004e-04           0  1.004e-04      -3.998
+	SurfA             1.004e-04           0   1.004e-04      -3.998
 
 -----------------------------Solution composition------------------------------
 
@@ -2636,8 +2636,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.070e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.070e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -2652,7 +2652,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.004e-04
    A                      1.004e-04   1.004e-04    -3.998    -3.998         0
 H(0)             8.225e-40
@@ -2665,7 +2665,7 @@ O(0)             4.930e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.24  -39.39   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.65  -13.61   -2.96  O2
 
 Time 120. Cell 35: x=          0.068	y=              0	z=              0
@@ -2685,14 +2685,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             8.079e-05           0  8.079e-05      -4.093
+	SurfA             8.079e-05           0   8.079e-05      -4.093
 
 -----------------------------Solution composition------------------------------
 
@@ -2708,8 +2708,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.069e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.069e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -2724,7 +2724,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                8.079e-05
    A                      8.079e-05   8.079e-05    -4.093    -4.093         0
 H(0)             8.955e-40
@@ -2737,7 +2737,7 @@ O(0)             4.159e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.20  -39.35   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.72  -13.68   -2.96  O2
 
 Time 120. Cell 36: x=           0.07	y=              0	z=              0
@@ -2757,14 +2757,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             6.388e-05           0  6.388e-05      -4.195
+	SurfA             6.388e-05           0   6.388e-05      -4.195
 
 -----------------------------Solution composition------------------------------
 
@@ -2780,8 +2780,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.068e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.068e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -2796,7 +2796,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                6.388e-05
    A                      6.388e-05   6.388e-05    -4.195    -4.195         0
 H(0)             8.277e-40
@@ -2809,7 +2809,7 @@ O(0)             4.868e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.23  -39.38   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.65  -13.61   -2.96  O2
 
 Time 120. Cell 37: x=          0.072	y=              0	z=              0
@@ -2829,14 +2829,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             4.960e-05           0  4.960e-05      -4.304
+	SurfA             4.960e-05           0   4.960e-05      -4.304
 
 -----------------------------Solution composition------------------------------
 
@@ -2852,8 +2852,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.067e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.067e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -2868,7 +2868,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                4.960e-05
    A                      4.960e-05   4.960e-05    -4.304    -4.304         0
 H(0)             8.246e-40
@@ -2881,7 +2881,7 @@ O(0)             4.904e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.23  -39.38   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.65  -13.61   -2.96  O2
 
 Time 120. Cell 38: x=          0.074	y=              0	z=              0
@@ -2901,14 +2901,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             3.783e-05           0  3.783e-05      -4.422
+	SurfA             3.783e-05           0   3.783e-05      -4.422
 
 -----------------------------Solution composition------------------------------
 
@@ -2924,8 +2924,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.067e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.067e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -2940,7 +2940,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                3.783e-05
    A                      3.783e-05   3.783e-05    -4.422    -4.422         0
 H(0)             8.171e-40
@@ -2953,7 +2953,7 @@ O(0)             4.995e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.24  -39.39   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.64  -13.60   -2.96  O2
 
 Time 120. Cell 39: x=          0.076	y=              0	z=              0
@@ -2973,14 +2973,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             2.834e-05           0  2.834e-05      -4.548
+	SurfA             2.834e-05           0   2.834e-05      -4.548
 
 -----------------------------Solution composition------------------------------
 
@@ -2996,8 +2996,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.066e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.066e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -3012,7 +3012,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.834e-05
    A                      2.834e-05   2.834e-05    -4.548    -4.548         0
 H(0)             8.633e-40
@@ -3025,7 +3025,7 @@ O(0)             4.475e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.21  -39.36   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.69  -13.65   -2.96  O2
 
 Time 120. Cell 40: x=          0.078	y=              0	z=              0
@@ -3045,14 +3045,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             2.085e-05           0  2.085e-05      -4.681
+	SurfA             2.085e-05           0   2.085e-05      -4.681
 
 -----------------------------Solution composition------------------------------
 
@@ -3068,8 +3068,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.066e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.066e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -3084,7 +3084,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.085e-05
    A                      2.085e-05   2.085e-05    -4.681    -4.681         0
 H(0)             7.760e-40
@@ -3097,7 +3097,7 @@ O(0)             5.538e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.26  -39.41   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.60  -13.56   -2.96  O2
 
 Time 120. Cell 41: x=           0.08	y=              0	z=              0
@@ -3117,14 +3117,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             1.507e-05           0  1.507e-05      -4.822
+	SurfA             1.507e-05           0   1.507e-05      -4.822
 
 -----------------------------Solution composition------------------------------
 
@@ -3140,8 +3140,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.065e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.065e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -3156,7 +3156,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.507e-05
    A                      1.507e-05   1.507e-05    -4.822    -4.822         0
 H(0)             6.986e-40
@@ -3169,7 +3169,7 @@ O(0)             6.833e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.31  -39.46   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.51  -13.47   -2.96  O2
 
 Time 120. Cell 42: x=          0.082	y=              0	z=              0
@@ -3189,14 +3189,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             1.070e-05           0  1.070e-05      -4.971
+	SurfA             1.070e-05           0   1.070e-05      -4.971
 
 -----------------------------Solution composition------------------------------
 
@@ -3212,8 +3212,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.065e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.065e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -3228,7 +3228,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.070e-05
    A                      1.070e-05   1.070e-05    -4.971    -4.971         0
 H(0)             7.278e-40
@@ -3241,7 +3241,7 @@ O(0)             6.296e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.29  -39.44   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.54  -13.50   -2.96  O2
 
 Time 120. Cell 43: x=          0.084	y=              0	z=              0
@@ -3261,14 +3261,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             7.465e-06           0  7.465e-06      -5.127
+	SurfA             7.465e-06           0   7.465e-06      -5.127
 
 -----------------------------Solution composition------------------------------
 
@@ -3284,8 +3284,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.065e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.065e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -3300,7 +3300,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                7.465e-06
    A                      7.465e-06   7.465e-06    -5.127    -5.127         0
 H(0)             6.990e-40
@@ -3313,7 +3313,7 @@ O(0)             6.825e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.31  -39.46   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.51  -13.47   -2.96  O2
 
 Time 120. Cell 44: x=          0.086	y=              0	z=              0
@@ -3333,14 +3333,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             5.120e-06           0  5.120e-06      -5.291
+	SurfA             5.120e-06           0   5.120e-06      -5.291
 
 -----------------------------Solution composition------------------------------
 
@@ -3356,8 +3356,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.065e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.065e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -3372,7 +3372,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                5.120e-06
    A                      5.120e-06   5.120e-06    -5.291    -5.291         0
 H(0)             6.557e-40
@@ -3385,7 +3385,7 @@ O(0)             7.756e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.33  -39.48   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.45  -13.41   -2.96  O2
 
 Time 120. Cell 45: x=          0.088	y=              0	z=              0
@@ -3405,14 +3405,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             3.452e-06           0  3.452e-06      -5.462
+	SurfA             3.452e-06           0   3.452e-06      -5.462
 
 -----------------------------Solution composition------------------------------
 
@@ -3428,8 +3428,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.065e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.065e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -3444,7 +3444,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                3.452e-06
    A                      3.452e-06   3.452e-06    -5.462    -5.462         0
 H(0)             6.583e-40
@@ -3457,7 +3457,7 @@ O(0)             7.696e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.33  -39.48   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.45  -13.41   -2.96  O2
 
 Time 120. Cell 46: x=           0.09	y=              0	z=              0
@@ -3477,14 +3477,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             2.289e-06           0  2.289e-06      -5.640
+	SurfA             2.289e-06           0   2.289e-06      -5.640
 
 -----------------------------Solution composition------------------------------
 
@@ -3500,8 +3500,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.065e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.065e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -3516,7 +3516,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.289e-06
    A                      2.289e-06   2.289e-06    -5.640    -5.640         0
 H(0)             6.425e-40
@@ -3529,7 +3529,7 @@ O(0)             8.080e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.34  -39.49   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.43  -13.39   -2.96  O2
 
 Time 120. Cell 47: x=          0.092	y=              0	z=              0
@@ -3549,14 +3549,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             1.493e-06           0  1.493e-06      -5.826
+	SurfA             1.493e-06           0   1.493e-06      -5.826
 
 -----------------------------Solution composition------------------------------
 
@@ -3572,8 +3572,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.065e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.065e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -3588,7 +3588,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.493e-06
    A                      1.493e-06   1.493e-06    -5.826    -5.826         0
 H(0)             6.119e-40
@@ -3601,7 +3601,7 @@ O(0)             8.908e-14
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.36  -39.51   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.39  -13.35   -2.96  O2
 
 Time 120. Cell 48: x=          0.094	y=              0	z=              0
@@ -3621,14 +3621,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             9.575e-07           0  9.575e-07      -6.019
+	SurfA             9.575e-07           0   9.575e-07      -6.019
 
 -----------------------------Solution composition------------------------------
 
@@ -3644,8 +3644,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.065e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.065e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -3660,7 +3660,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                9.575e-07
    A                      9.575e-07   9.575e-07    -6.019    -6.019         0
 H(0)             5.727e-40
@@ -3673,7 +3673,7 @@ O(0)             1.017e-13
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.39  -39.54   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.33  -13.29   -2.96  O2
 
 Time 120. Cell 49: x=          0.096	y=              0	z=              0
@@ -3693,14 +3693,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             6.045e-07           0  6.045e-07      -6.219
+	SurfA             6.045e-07           0   6.045e-07      -6.219
 
 -----------------------------Solution composition------------------------------
 
@@ -3716,8 +3716,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.066e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.066e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -3732,7 +3732,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                6.045e-07
    A                      6.045e-07   6.045e-07    -6.219    -6.219         0
 H(0)             5.306e-40
@@ -3745,7 +3745,7 @@ O(0)             1.184e-13
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.43  -39.58   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.27  -13.23   -2.96  O2
 
 Time 120. Cell 50: x=          0.098	y=              0	z=              0
@@ -3765,14 +3765,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             3.756e-07           0  3.756e-07      -6.425
+	SurfA             3.756e-07           0   3.756e-07      -6.425
 
 -----------------------------Solution composition------------------------------
 
@@ -3788,8 +3788,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.066e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.066e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -3804,7 +3804,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                3.756e-07
    A                      3.756e-07   3.756e-07    -6.425    -6.425         0
 H(0)             4.896e-40
@@ -3817,7 +3817,7 @@ O(0)             1.391e-13
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.46  -39.61   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.20  -13.16   -2.96  O2
 
 Time 120. Cell 51: x=            0.1	y=              0	z=              0
@@ -3837,14 +3837,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             2.298e-07           0  2.298e-07      -6.639
+	SurfA             2.298e-07           0   2.298e-07      -6.639
 
 -----------------------------Solution composition------------------------------
 
@@ -3860,8 +3860,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.066e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.066e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -3876,7 +3876,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.298e-07
    A                      2.298e-07   2.298e-07    -6.639    -6.639         0
 H(0)             4.727e-40
@@ -3889,7 +3889,7 @@ O(0)             1.493e-13
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.48  -39.63   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.17  -13.13   -2.96  O2
 
 Time 120. Cell 52: x=          0.102	y=              0	z=              0
@@ -3909,14 +3909,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             1.385e-07           0  1.385e-07      -6.859
+	SurfA             1.385e-07           0   1.385e-07      -6.859
 
 -----------------------------Solution composition------------------------------
 
@@ -3932,8 +3932,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.067e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.067e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -3948,7 +3948,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.385e-07
    A                      1.385e-07   1.385e-07    -6.859    -6.859         0
 H(0)             4.339e-40
@@ -3961,7 +3961,7 @@ O(0)             1.771e-13
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.51  -39.66   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.09  -13.05   -2.96  O2
 
 Time 120. Cell 53: x=          0.104	y=              0	z=              0
@@ -3981,14 +3981,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             8.219e-08           0  8.219e-08      -7.085
+	SurfA             8.219e-08           0   8.219e-08      -7.085
 
 -----------------------------Solution composition------------------------------
 
@@ -4004,8 +4004,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.067e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.067e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -4020,7 +4020,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                8.219e-08
    A                      8.219e-08   8.219e-08    -7.085    -7.085         0
 H(0)             4.001e-40
@@ -4033,7 +4033,7 @@ O(0)             2.084e-13
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.55  -39.70   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)           -10.02  -12.98   -2.96  O2
 
 Time 120. Cell 54: x=          0.106	y=              0	z=              0
@@ -4053,14 +4053,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             4.807e-08           0  4.807e-08      -7.318
+	SurfA             4.807e-08           0   4.807e-08      -7.318
 
 -----------------------------Solution composition------------------------------
 
@@ -4076,8 +4076,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.068e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.068e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -4092,7 +4092,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                4.807e-08
    A                      4.807e-08   4.807e-08    -7.318    -7.318         0
 H(0)             3.651e-40
@@ -4105,7 +4105,7 @@ O(0)             2.501e-13
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.59  -39.74   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)            -9.94  -12.90   -2.96  O2
 
 Time 120. Cell 55: x=          0.108	y=              0	z=              0
@@ -4125,14 +4125,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             2.770e-08           0  2.770e-08      -7.557
+	SurfA             2.770e-08           0   2.770e-08      -7.557
 
 -----------------------------Solution composition------------------------------
 
@@ -4148,8 +4148,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.069e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.069e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -4164,7 +4164,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.770e-08
    A                      2.770e-08   2.770e-08    -7.557    -7.557         0
 H(0)             3.444e-40
@@ -4177,7 +4177,7 @@ O(0)             2.812e-13
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.61  -39.76   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)            -9.89  -12.85   -2.96  O2
 
 Time 120. Cell 56: x=           0.11	y=              0	z=              0
@@ -4197,14 +4197,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             1.574e-08           0  1.574e-08      -7.803
+	SurfA             1.574e-08           0   1.574e-08      -7.803
 
 -----------------------------Solution composition------------------------------
 
@@ -4220,8 +4220,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.069e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.069e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -4236,7 +4236,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.574e-08
    A                      1.574e-08   1.574e-08    -7.803    -7.803         0
 H(0)             3.286e-40
@@ -4249,7 +4249,7 @@ O(0)             3.089e-13
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.63  -39.78   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)            -9.85  -12.81   -2.96  O2
 
 Time 120. Cell 57: x=          0.112	y=              0	z=              0
@@ -4269,14 +4269,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             8.819e-09           0  8.819e-09      -8.055
+	SurfA             8.819e-09           0   8.819e-09      -8.055
 
 -----------------------------Solution composition------------------------------
 
@@ -4292,8 +4292,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.070e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.070e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -4308,7 +4308,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                8.819e-09
    A                      8.819e-09   8.819e-09    -8.055    -8.055         0
 H(0)             3.065e-40
@@ -4321,7 +4321,7 @@ O(0)             3.549e-13
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.66  -39.81   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)            -9.79  -12.75   -2.96  O2
 
 Time 120. Cell 58: x=          0.114	y=              0	z=              0
@@ -4341,14 +4341,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             4.873e-09           0  4.873e-09      -8.312
+	SurfA             4.873e-09           0   4.873e-09      -8.312
 
 -----------------------------Solution composition------------------------------
 
@@ -4364,8 +4364,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.071e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.071e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -4380,7 +4380,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                4.873e-09
    A                      4.873e-09   4.873e-09    -8.312    -8.312         0
 H(0)             2.946e-40
@@ -4393,7 +4393,7 @@ O(0)             3.843e-13
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.68  -39.83   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)            -9.76  -12.72   -2.96  O2
 
 Time 120. Cell 59: x=          0.116	y=              0	z=              0
@@ -4413,14 +4413,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             2.656e-09           0  2.656e-09      -8.576
+	SurfA             2.656e-09           0   2.656e-09      -8.576
 
 -----------------------------Solution composition------------------------------
 
@@ -4436,8 +4436,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.072e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.072e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -4452,7 +4452,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                2.656e-09
    A                      2.656e-09   2.656e-09    -8.576    -8.576         0
 H(0)             2.821e-40
@@ -4465,7 +4465,7 @@ O(0)             4.190e-13
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.70  -39.85   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)            -9.72  -12.68   -2.96  O2
 
 Time 120. Cell 60: x=          0.118	y=              0	z=              0
@@ -4485,14 +4485,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             1.429e-09           0  1.429e-09      -8.845
+	SurfA             1.429e-09           0   1.429e-09      -8.845
 
 -----------------------------Solution composition------------------------------
 
@@ -4508,8 +4508,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.073e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.073e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -4524,7 +4524,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                1.429e-09
    A                      1.429e-09   1.429e-09    -8.845    -8.845         0
 H(0)             2.714e-40
@@ -4537,7 +4537,7 @@ O(0)             4.526e-13
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.72  -39.87   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)            -9.69  -12.65   -2.96  O2
 
 Time 120. Cell 61: x=           0.12	y=              0	z=              0
@@ -4557,14 +4557,14 @@ Kinetics.
 ------------------------------Surface composition------------------------------
 
 Surf          
-	  0 Surface charge, eq
+	  0.000e+00  Surface charge, eq
 Surf          
 	  1.000e+10  moles
 	                                   Mole                     Log
 	Species               Moles    Fraction    Molality    Molality
 
 	Surf              1.000e+10       1.000   1.000e+10      10.000
-	SurfA             9.938e-10           0  9.938e-10      -9.003
+	SurfA             9.938e-10           0   9.938e-10      -9.003
 
 -----------------------------Solution composition------------------------------
 
@@ -4580,8 +4580,8 @@ Surf
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.073e-10
-                    Total carbon (mol/kg)  =   0 
-                       Total CO2 (mol/kg)  =   0 
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.073e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -4596,7 +4596,7 @@ Surf
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0        0
+   H2O                    5.551e+01   1.000e+00     1.744         0         0
 A                9.938e-10
    A                      9.938e-10   9.938e-10    -9.003    -9.003         0
 H(0)             2.636e-40
@@ -4609,6 +4609,6 @@ O(0)             4.799e-13
 	Phase               SI log IAP  log KT
 
 	H2(g)           -36.73  -39.88   -3.15  H2
-	H2O(g)           -1.51       0   1.51  H2O
+	H2O(g)           -1.51       0    1.51  H2O
 	O2(g)            -9.66  -12.62   -2.96  O2
 
