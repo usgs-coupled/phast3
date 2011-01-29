@@ -33,7 +33,7 @@ Processing flow and transport data file.
 	      chemistry_dimensions XY
 	      print_orientation XY
 	MEDIA
-	      zone 0 0 10 10 1
+	      zone 0 0 0 10 10 1
 	            kx 1e-10
 	            ky 1e-10
 	            kz 1e-10
@@ -55,12 +55,12 @@ Processing flow and transport data file.
 	      time_differencing  0.5
 	      cross_dispersion	  false
 	HEAD_IC
-	      zone 0 0 10 10 1
+	      zone 0 0 0 10 10 1
 	            head 1
 	CHEMISTRY_IC
-	      zone 0 0 10 10 1
+	      zone 0 0 0 10 10 1
 	            solution 1
-	      zone 0 0 0 1
+	      zone 0 0 0 0 0 1
 	            solution 2
 	PRINT_INITIAL
 	      boundary_conditions false
@@ -105,12 +105,12 @@ Beginning flow calculation for steady-state i.c.
 Reading transient data for simulation: Set  1
 Automatic Time Step Control Parameters for Steady Flow
 Maximum pressure change allowed per time step.................... DPTAS     2.9      (Pa )
-Minimum time step required ...................................... DTIMMN   1.00E-04  (s  )
-Maximum time step allowed ....................................... DTIMMX   1.00E+02(s  )
+Minimum time step required ...................................... DTIMMN   1.00e-04  (s  )
+Maximum time step allowed ....................................... DTIMMX   1.00e+02(s  )
 
 Beginning steady state time step no.      1
-     Maximum change in potentiometric head ..    0    (m) at location ( 1.000E-03, 1.000E-03, 1.000E-03)(m)
-     Fractional flow residual ...............    0 
+     Maximum change in potentiometric head ..   -4.1561e-24     (m) at location ( 1.000e-03, 1.000e-03, 1.000e-03)(m)
+     Fractional flow residual ...............    0.0000e+00
 
 Done with steady-state flow.
 Equilibration of cells for initial conditions.

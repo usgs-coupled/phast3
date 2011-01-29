@@ -16,10 +16,11 @@
 
                          *** Fundamental Information ***
                     Isothermal simulation
-                    No solute transport simulaton
+                    Solute transport simulation
                     Cartesian coordinates
                     Data is in metric units
                     Time unit selected is minutes 
+                    Solute concentration is expressed as mass fraction
 
           Iterative generalized conjugate gradient solver with d4 zig-zag reduction is selected
 
@@ -30,12 +31,12 @@
           Total number of nodes ........................................... NXYZ .   3362
 
           Number of porous media zones .................................... NPMZ .   1600
-          Number of specified pressure or mass fraction b.c. .............. NSBC .      0
+          Number of specified pressure or mass fraction b.c. .............. NSBC .     41
           Number of specified flux b.c. cells ............................. NFBC .      0
           Number of leakage cells ......................................... NLBC .      0
           Number of river leakage cells ................................... NRBC .      0
           Number of drain leakage cells ................................... NDBC .      0
-          Number of wells ................................................. NWEL .      3
+          Number of wells ................................................. NWEL .      1
 
           Linear solver array dimension requirement (D4ZGCG iterative solver)... NSTSLV   207257 elements
  ------------------------------------------------------------------------------------------------------------------------
@@ -47,7 +48,7 @@
                               X-Direction Node Coordinates    (m)
 
            1           2           3           4           5           6           7           8           9          10
-              0      30.48       60.96       91.44      121.92      152.40      182.88      213.36      243.84      274.32
+              0       30.48       60.96       91.44      121.92      152.40      182.88      213.36      243.84      274.32
 
 
 
@@ -75,7 +76,7 @@
                               Y-Direction Node Coordinates   (m)
 
            1           2           3           4           5           6           7           8           9          10
-              0      30.48       60.96       91.44      121.92      152.40      182.88      213.36      243.84      274.32
+              0       30.48       60.96       91.44      121.92      152.40      182.88      213.36      243.84      274.32
 
 
 
@@ -113,27 +114,46 @@
 
                                    *** Fluid Properties ***
                                         Physical
-                    Fluid compressibility ...................................... BP ...   0 (1/Pa )
+                    Fluid compressibility ...................................... BP ...   0.00e+00  (1/Pa )
 
-                    Reference pressure for density ............................. P0 ..         0  (Pa )
+                    Reference pressure for density ............................. P0 ..         0.0  (Pa )
                     Reference temperature for density .......................... T0 ..        15.0  (Deg.C)
                     Fluid density .............................................. DENF0  1000.0      (kg/m^3)
+                    Fluid density at solute  mass fraction of  0.0500........... DENF1  1000.0      (kg/m^3)
 
-                    Viscosity factor ........................................... VISFAC -1.000E-03
+                    Viscosity factor ........................................... VISFAC -1.000e-03
 
                                         *** Calculation Information ***
           Backwards-in-time (implicit) differencing for temporal derivative
+          Backwards-in-space (upstream) differencing for advective terms
+          The cross-derivative solute flux terms will NOT BE calculated
 
                            Row scaling only, using L-inf norm, will be done
 
           Direction index for d4 zig-zag renumbering ...................... IDIR..    1
-          Incomplete LU [f] or modified ILU [t] factorization ............. MILU..    T
+          Incomplete LU [f] or modified ILU [t] factorization ............. MILU..    t
           Number of search directions before restart ...................... NSDR..   10
-          Tolerance on iterative solution ................................. EPSSLV 1.0E-12
+          Tolerance on iterative solution ................................. EPSSLV 1.0e-12
 
  ------------------------------------------------------------------------------------------------------------------------
 
-               Initial fluid in region ...............................  9.065922E+09  (kg) ;  9.065922E+06  (m^3)
+                    Automatic Time Step Control Parameters for Steady Flow
+          Maximum pressure change allowed per time step.................... DPTAS    8.97e+04  (Pa )
+          Minimum time step required ...................................... DTIMMN    14.      (min)
+          Maximum time step allowed ....................................... DTIMMX   1.44e+07  (min)
+
+
+               Initial fluid in region ...............................  9.069965e+09  (kg) ;  9.069965e+06  (m^3)
+
+               Initial solute in region:H         ....................  1.894930e+00  (kg)
+
+               Initial solute in region:O         ....................  1.506567e+01  (kg)
+
+               Initial solute in region:Cl        ....................  3.215575e+05  (kg)
+
+               Initial solute in region:Na        ....................  2.085167e+05  (kg)
+
+               Initial solute in region:Charge    .................... -3.344270e-03  (kg)
 
  ------------------------------------------------------------------------------------------------------------------------
  ------------------------------------------------------------------------------------------------------------------------
@@ -141,18 +161,18 @@
 
                                         *** Transient Data ***
 
-     Time ..............................       0     (min)
+     Time ..............................   0.000e+00  (min)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  0.500      (min)
+          Fixed time step length .......................................... DELTIM  1.440e+04  (min)
           Time at which next set of transient
-               parameters will be read .................................... TIMCHG   10.0      (min)
+               parameters will be read .................................... TIMCHG  5.760e+04  (min)
 
  ------------------------------------------------------------------------------------------------------------------------
 
 
                                        ***** Simulation Completed *****
-               Last time value calculated ......................................  10.00     (min)
-               Last time step index ............................................      20
+               Last time value calculated ...................................... 5.7600e+04 (min)
+               Last time step index ............................................       4
