@@ -7,7 +7,7 @@
                               X-Direction Node Coordinates    (m)
 
            1           2           3           4           5
-              0      100.00      200.00      300.00      400.00
+              0     100.00      200.00      300.00      400.00
 
 
 
@@ -15,7 +15,7 @@
                               Y-Direction Node Coordinates   (m)
 
            1           2           3           4           5
-              0      100.00      200.00      300.00      400.00
+              0     100.00      200.00      300.00      400.00
 
 
 
@@ -23,7 +23,7 @@
                               Z-Direction Node Coordinates   (m)
 
            1           2
-              0      275.00
+              0     275.00
 
 
 
@@ -82,7 +82,7 @@
                               *** Output at End of Time Step No.     4 ***
 
      Time .......................................................   1.728E+05  (s)
-     Maximum change in potentiometric head ... -1.3877E-02      (m )   at location (     0    ,  200.    ,  275.    )(m )
+     Maximum change in potentiometric head ... -1.3877E-02      (m )   at location (     0   ,  200.    ,  275.    )(m )
 
                               Fluid Potentiometric Head (m)
 

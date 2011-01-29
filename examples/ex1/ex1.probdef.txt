@@ -48,7 +48,7 @@
                               X-Direction Node Coordinates    (m)
 
            1           2           3           4           5           6           7           8           9          10
-              0           0           0        0.01        0.01        0.01        0.01        0.01        0.02        0.02
+              0          0          0       0.01        0.01        0.01        0.01        0.01        0.02        0.02
 
 
 
@@ -86,7 +86,7 @@
                               Y-Direction Node Coordinates   (m)
 
            1           2
-              0        0.01
+              0       0.01
 
 
 
@@ -94,7 +94,7 @@
                               Z-Direction Node Coordinates   (m)
 
            1           2
-              0        0.01
+              0       0.01
 
 
 
@@ -104,9 +104,9 @@
 
                                    *** Fluid Properties ***
                                         Physical
-                    Fluid compressibility ...................................... BP ...   0.00E+00  (1/Pa )
+                    Fluid compressibility ...................................... BP ...   0 (1/Pa )
 
-                    Reference pressure for density ............................. P0 ..         0.0  (Pa )
+                    Reference pressure for density ............................. P0 ..         0  (Pa )
                     Reference temperature for density .......................... T0 ..        15.0  (Deg.C)
                     Fluid density .............................................. DENF0  1000.0      (kg/m^3)
                     Fluid density at solute  mass fraction of  0.0500........... DENF1  1000.0      (kg/m^3)
@@ -134,7 +134,7 @@
 
                Initial solute in region:O         ....................  1.923100E-12  (kg)
 
-               Initial solute in region:A         ....................  0.000000E+00  (kg)
+               Initial solute in region:A         ....................  0 (kg)
 
                Initial solute in region:Charge    .................... -1.308938E-16  (kg)
 
@@ -144,7 +144,7 @@
 
                                         *** Transient Data ***
 
-     Time ..............................       0      (s)
+     Time ..............................       0     (s)
 
 
                                         *** Calculation Information ***

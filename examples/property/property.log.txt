@@ -39,21 +39,21 @@ Processing flow and transport data file.
 		chemistry_dimensions X
 		print_orientation XY
 	MEDIA
-		zone 0 0 0 10 1 1
+		zone 0 0 10 1 1
 			active                   1
 			kx                       constant  1
 			ky                       points    grid
-				0	0	0	1
+			 0 0	1
 			kz                       points    grid
-				0 	0	0	1
+			 0 0	0	1
 				end_points
 			kz                       points    grid
 WARNING: Z direction hydraulic conductivity has been redefined in MEDIA, definition 1.
-				0 	0	0	1
+			 0 0	0	1
 				end_point
 			kz                       points    grid
 WARNING: Z direction hydraulic conductivity has been redefined in MEDIA, definition 1.
-				0 	0	0	1
+			 0 0	0	1
 				end_points
 			porosity                 X	0.1	0	0.2	10
 			specific_storage         1e-6
@@ -62,7 +62,7 @@ WARNING: Z direction hydraulic conductivity has been redefined in MEDIA, definit
 			vertical_dispersivity    .1
 		prism 
 			perimeter points grid
-				0 0
+			 0 
 				10 0
 				10 1
 				0 1
@@ -70,7 +70,7 @@ WARNING: Z direction hydraulic conductivity has been redefined in MEDIA, definit
 			active                   1
 		prism 
 			perimeter points grid
-				0 0
+			 0 
 				10 0
 				10 1
 				0 1
@@ -78,23 +78,23 @@ WARNING: Z direction hydraulic conductivity has been redefined in MEDIA, definit
 			active                   1
 		prism 
 			perimeter points grid
-				0 0
+			 0 
 				10 0
 				10 1
 				0 1
 			active                   1
 	FLUX_BC
-		zone 0 0 0 0 1 1
+		zone 0 0 0 1 1
 		associated_solution
-			0   sec  mixture 1 2 constant 0.5
+		 0  sec  mixture 1 2 constant 0.5
 			0.1 yr   mixture 1 2 points map
-				0  0  0  .1
-				0  1  1  .9
+			 0 0 0  .1
+			 0 1  1  .9
 				end_points
 			0.2 yr mixture 1 2 xyz grid property.mix	
 			0.3 yr constant 1
 			0.4 yr points map
-				0  0  0   1
+			 0 0 0   1
 				10 10 10  2
 				end_points
 			0.5 yr xyz    map  property.solns
@@ -102,13 +102,13 @@ WARNING: Z direction hydraulic conductivity has been redefined in MEDIA, definit
 			0.7 yr Y 1 0 2 1
 			1.0  mixture 1 2 constant 0.5
 			1.1  mixture 1 2 points grid
-				0  0  0  .1
+			 0 0 0  .1
 				10 10 10 .9
 				end_points
 			1.2  mixture 1 2 xyz grid property.mix	
 			1.3  constant 1
 			1.4  points map
-				0  0  0   1
+			 0 0 0   1
 				10 10 10  2
 				end_points
 			1.5  xyz    grid  property.solns
@@ -116,28 +116,28 @@ WARNING: Z direction hydraulic conductivity has been redefined in MEDIA, definit
 			1.7  Y 1 0 2 1
 		face X
 		flux  
-			0  1
+		 0 1
 	LEAKY_BC		
-		zone 9 0 0 10 0 1
+		zone 9 0 10 0 1
 		associated_solution
-		        0  mixture 1 2 xyzt grid property.mix.xyzt
+		        0 mixture 1 2 xyzt grid property.mix.xyzt
 			1.5   yr  mixture 1 2 X .5 9 1 10
 		face Y
 		head  
-			0  xyzt grid property.xyzt	
+		 0 xyzt grid property.xyzt	
 		k   1
 		thickness 1
 	SPECIFIED_HEAD_BC
-		zone 10 0 0 10 1 1
+		zone 10 0 10 1 1
 			head
-				0	0
+			 0 
 			associated_solution_composition
 				0	2
 	HEAD_IC
-		zone 0 0 0 10 1 1
-			head                     X 10 0 0 10
+		zone 0 0 10 1 1
+			head                     X 10 0 10
 	CHEMISTRY_IC
-		zone 0 0 0 10 1 1
+		zone 0 0 10 1 1
 			solution            1
 	PRINT_INITIAL
 		boundary_conditions        false
@@ -276,7 +276,7 @@ Beginning time step no.      2
 
      End of Time Step No.     2
      Time ..................................................   0.100000     (yr)
-     Maximum change in potentiometric head   1.8361E-04      (m ) at location (     0    ,  1.00    ,  1.00    )(m)
+     Maximum change in potentiometric head   1.8361E-04      (m ) at location (     0   ,  1.00    ,  1.00    )(m)
      Maximum change in H .................. -1.9269E-08 (mol/kgw) at location ( 0.500    ,  1.00    ,  1.00    )(m)
      Maximum change in O ..................  1.5655E-08 (mol/kgw) at location ( 0.500    ,  1.00    ,  1.00    )(m)
      Maximum change in Br ................. -1.3756E-04 (mol/kgw) at location ( 0.500    ,  1.00    ,  1.00    )(m)
@@ -325,13 +325,13 @@ Beginning time step no.      4
 
      End of Time Step No.     4
      Time ..................................................   0.200000     (yr)
-     Maximum change in potentiometric head   1.1357E-10      (m ) at location (     0    ,     0    ,     0    )(m)
-     Maximum change in H ..................  6.8572E-08 (mol/kgw) at location (     0    ,  1.00    ,  1.00    )(m)
-     Maximum change in O .................. -5.5712E-08 (mol/kgw) at location (     0    ,  1.00    ,  1.00    )(m)
-     Maximum change in Br .................  4.8955E-04 (mol/kgw) at location (     0    ,  1.00    ,  1.00    )(m)
-     Maximum change in Cl ................. -4.8953E-04 (mol/kgw) at location (     0    ,  1.00    ,  1.00    )(m)
-     Maximum change in Na .................  2.1762E-08 (mol/kgw) at location (     0    ,  1.00    ,  1.00    )(m)
-     Maximum change in Charge .............  1.8000E-07 (mol/kgw) at location (     0    ,  1.00    ,  1.00    )(m)
+     Maximum change in potentiometric head   1.1357E-10      (m ) at location (     0   ,     0   ,     0   )(m)
+     Maximum change in H ..................  6.8572E-08 (mol/kgw) at location (     0   ,  1.00    ,  1.00    )(m)
+     Maximum change in O .................. -5.5712E-08 (mol/kgw) at location (     0   ,  1.00    ,  1.00    )(m)
+     Maximum change in Br .................  4.8955E-04 (mol/kgw) at location (     0   ,  1.00    ,  1.00    )(m)
+     Maximum change in Cl ................. -4.8953E-04 (mol/kgw) at location (     0   ,  1.00    ,  1.00    )(m)
+     Maximum change in Na .................  2.1762E-08 (mol/kgw) at location (     0   ,  1.00    ,  1.00    )(m)
+     Maximum change in Charge .............  1.8000E-07 (mol/kgw) at location (     0   ,  1.00    ,  1.00    )(m)
 Reading transient data for simulation: Set  3
      Time at which next set of transient parameters will be read .......... TIMCHG  0.300      (yr)
 
@@ -374,7 +374,7 @@ Beginning time step no.      6
 
      End of Time Step No.     6
      Time ..................................................   0.300000     (yr)
-     Maximum change in potentiometric head  -1.2990E-15      (m ) at location (  2.50    ,     0    ,  1.00    )(m)
+     Maximum change in potentiometric head  -1.2990E-15      (m ) at location (  2.50    ,     0   ,  1.00    )(m)
      Maximum change in H .................. -1.4973E-08 (mol/kgw) at location (  1.80    ,  1.00    ,  1.00    )(m)
      Maximum change in O ..................  1.3720E-08 (mol/kgw) at location (  2.30    ,  1.00    ,  1.00    )(m)
      Maximum change in Br ................. -1.0690E-04 (mol/kgw) at location (  1.80    ,  1.00    ,  1.00    )(m)
@@ -423,7 +423,7 @@ Beginning time step no.      8
 
      End of Time Step No.     8
      Time ..................................................   0.400000     (yr)
-     Maximum change in potentiometric head  -2.3131E-15      (m ) at location (  1.10    ,     0    ,     0    )(m)
+     Maximum change in potentiometric head  -2.3131E-15      (m ) at location (  1.10    ,     0   ,     0   )(m)
      Maximum change in H ..................  2.9290E-08 (mol/kgw) at location ( 0.400    ,  1.00    ,  1.00    )(m)
      Maximum change in O .................. -2.4028E-08 (mol/kgw) at location ( 0.400    ,  1.00    ,  1.00    )(m)
      Maximum change in Br .................  2.0911E-04 (mol/kgw) at location ( 0.400    ,  1.00    ,  1.00    )(m)
@@ -521,7 +521,7 @@ Beginning time step no.     12
 
      End of Time Step No.    12
      Time ..................................................   0.600000     (yr)
-     Maximum change in potentiometric head   3.1122E-04      (m ) at location (     0    ,     0    ,  1.00    )(m)
+     Maximum change in potentiometric head   3.1122E-04      (m ) at location (     0   ,     0   ,  1.00    )(m)
      Maximum change in H ..................  1.7692E-08 (mol/kgw) at location (  9.80    ,  1.00    ,  1.00    )(m)
      Maximum change in O .................. -1.3850E-08 (mol/kgw) at location (  9.80    ,  1.00    ,  1.00    )(m)
      Maximum change in Br .................  1.2629E-04 (mol/kgw) at location (  9.80    ,  1.00    ,  1.00    )(m)
@@ -570,7 +570,7 @@ Beginning time step no.     14
 
      End of Time Step No.    14
      Time ..................................................   0.700000     (yr)
-     Maximum change in potentiometric head   1.9245E-10      (m ) at location (     0    ,  1.00    ,     0    )(m)
+     Maximum change in potentiometric head   1.9245E-10      (m ) at location (     0   ,  1.00    ,     0   )(m)
      Maximum change in H .................. -3.7499E-08 (mol/kgw) at location ( 0.500    ,  1.00    ,  1.00    )(m)
      Maximum change in O ..................  3.0456E-08 (mol/kgw) at location ( 0.500    ,  1.00    ,  1.00    )(m)
      Maximum change in Br ................. -2.6771E-04 (mol/kgw) at location ( 0.500    ,  1.00    ,  1.00    )(m)
@@ -672,12 +672,12 @@ Beginning time step no.     20
      End of Time Step No.    20
      Time ..................................................    1.00000     (yr)
      Maximum change in potentiometric head   1.9395E-15      (m ) at location ( 0.300    ,  1.00    ,  1.00    )(m)
-     Maximum change in H .................. -9.7072E-08 (mol/kgw) at location (     0    ,  1.00    ,  1.00    )(m)
-     Maximum change in O ..................  7.8866E-08 (mol/kgw) at location (     0    ,  1.00    ,  1.00    )(m)
-     Maximum change in Br ................. -6.9301E-04 (mol/kgw) at location (     0    ,  1.00    ,  1.00    )(m)
-     Maximum change in Cl .................  6.9298E-04 (mol/kgw) at location (     0    ,  1.00    ,  1.00    )(m)
-     Maximum change in Na ................. -3.0807E-08 (mol/kgw) at location (     0    ,  1.00    ,  1.00    )(m)
-     Maximum change in Charge ............. -2.5480E-07 (mol/kgw) at location (     0    ,  1.00    ,  1.00    )(m)
+     Maximum change in H .................. -9.7072E-08 (mol/kgw) at location (     0   ,  1.00    ,  1.00    )(m)
+     Maximum change in O ..................  7.8866E-08 (mol/kgw) at location (     0   ,  1.00    ,  1.00    )(m)
+     Maximum change in Br ................. -6.9301E-04 (mol/kgw) at location (     0   ,  1.00    ,  1.00    )(m)
+     Maximum change in Cl .................  6.9298E-04 (mol/kgw) at location (     0   ,  1.00    ,  1.00    )(m)
+     Maximum change in Na ................. -3.0807E-08 (mol/kgw) at location (     0   ,  1.00    ,  1.00    )(m)
+     Maximum change in Charge ............. -2.5480E-07 (mol/kgw) at location (     0   ,  1.00    ,  1.00    )(m)
 Reading transient data for simulation: Set  9
      Time at which next set of transient parameters will be read .......... TIMCHG   1.10      (yr)
 
@@ -720,7 +720,7 @@ Beginning time step no.     22
 
      End of Time Step No.    22
      Time ..................................................    1.10000     (yr)
-     Maximum change in potentiometric head   1.3945E-04      (m ) at location (     0    ,     0    ,  1.00    )(m)
+     Maximum change in potentiometric head   1.3945E-04      (m ) at location (     0   ,     0   ,  1.00    )(m)
      Maximum change in H .................. -1.6623E-08 (mol/kgw) at location ( 0.400    ,  1.00    ,  1.00    )(m)
      Maximum change in O ..................  1.3506E-08 (mol/kgw) at location ( 0.400    ,  1.00    ,  1.00    )(m)
      Maximum change in Br ................. -1.1868E-04 (mol/kgw) at location ( 0.400    ,  1.00    ,  1.00    )(m)
@@ -769,7 +769,7 @@ Beginning time step no.     24
 
      End of Time Step No.    24
      Time ..................................................    1.20000     (yr)
-     Maximum change in potentiometric head   8.6196E-11      (m ) at location (     0    ,     0    ,     0    )(m)
+     Maximum change in potentiometric head   8.6196E-11      (m ) at location (     0   ,     0   ,     0   )(m)
      Maximum change in H .................. -2.1644E-08 (mol/kgw) at location ( 0.700    ,  1.00    ,  1.00    )(m)
      Maximum change in O ..................  1.7583E-08 (mol/kgw) at location ( 0.700    ,  1.00    ,  1.00    )(m)
      Maximum change in Br ................. -1.5451E-04 (mol/kgw) at location ( 0.700    ,  1.00    ,  1.00    )(m)
@@ -867,7 +867,7 @@ Beginning time step no.     28
 
      End of Time Step No.    28
      Time ..................................................    1.40000     (yr)
-     Maximum change in potentiometric head   1.3836E-15      (m ) at location ( 0.700    ,  1.00    ,     0    )(m)
+     Maximum change in potentiometric head   1.3836E-15      (m ) at location ( 0.700    ,  1.00    ,     0   )(m)
      Maximum change in H ..................  2.9932E-08 (mol/kgw) at location ( 0.400    ,  1.00    ,  1.00    )(m)
      Maximum change in O .................. -2.4320E-08 (mol/kgw) at location ( 0.400    ,  1.00    ,  1.00    )(m)
      Maximum change in Br .................  2.1370E-04 (mol/kgw) at location ( 0.400    ,  1.00    ,  1.00    )(m)
@@ -966,12 +966,12 @@ Beginning time step no.     32
      End of Time Step No.    32
      Time ..................................................    1.60000     (yr)
      Maximum change in potentiometric head  -1.7514E-15      (m ) at location ( 0.600    ,  1.00    ,  1.00    )(m)
-     Maximum change in H ..................  1.4756E-08 (mol/kgw) at location (  10.0    ,     0    ,  1.00    )(m)
-     Maximum change in O .................. -1.2017E-08 (mol/kgw) at location (  10.0    ,     0    ,  1.00    )(m)
-     Maximum change in Br .................  1.0536E-04 (mol/kgw) at location (  10.0    ,     0    ,  1.00    )(m)
-     Maximum change in Cl ................. -1.0535E-04 (mol/kgw) at location (  10.0    ,     0    ,  1.00    )(m)
-     Maximum change in Na .................  4.6850E-09 (mol/kgw) at location (  10.0    ,     0    ,  1.00    )(m)
-     Maximum change in Charge .............  3.8738E-08 (mol/kgw) at location (  10.0    ,     0    ,  1.00    )(m)
+     Maximum change in H ..................  1.4756E-08 (mol/kgw) at location (  10.0    ,     0   ,  1.00    )(m)
+     Maximum change in O .................. -1.2017E-08 (mol/kgw) at location (  10.0    ,     0   ,  1.00    )(m)
+     Maximum change in Br .................  1.0536E-04 (mol/kgw) at location (  10.0    ,     0   ,  1.00    )(m)
+     Maximum change in Cl ................. -1.0535E-04 (mol/kgw) at location (  10.0    ,     0   ,  1.00    )(m)
+     Maximum change in Na .................  4.6850E-09 (mol/kgw) at location (  10.0    ,     0   ,  1.00    )(m)
+     Maximum change in Charge .............  3.8738E-08 (mol/kgw) at location (  10.0    ,     0   ,  1.00    )(m)
 Reading transient data for simulation: Set 15
      Time at which next set of transient parameters will be read .......... TIMCHG   1.70      (yr)
 
@@ -1014,7 +1014,7 @@ Beginning time step no.     34
 
      End of Time Step No.    34
      Time ..................................................    1.70000     (yr)
-     Maximum change in potentiometric head  -3.7882E-15      (m ) at location (     0    ,  1.00    ,  1.00    )(m)
+     Maximum change in potentiometric head  -3.7882E-15      (m ) at location (     0   ,  1.00    ,  1.00    )(m)
      Maximum change in H .................. -3.7467E-08 (mol/kgw) at location ( 0.500    ,  1.00    ,  1.00    )(m)
      Maximum change in O ..................  3.0441E-08 (mol/kgw) at location ( 0.500    ,  1.00    ,  1.00    )(m)
      Maximum change in Br ................. -2.6749E-04 (mol/kgw) at location ( 0.500    ,  1.00    ,  1.00    )(m)
@@ -1116,12 +1116,12 @@ Beginning time step no.     40
      End of Time Step No.    40
      Time ..................................................    2.00000     (yr)
      Maximum change in potentiometric head  -2.5381E-15      (m ) at location ( 0.300    ,  1.00    ,  1.00    )(m)
-     Maximum change in H .................. -9.7072E-08 (mol/kgw) at location (     0    ,  1.00    ,  1.00    )(m)
-     Maximum change in O ..................  7.5078E-08 (mol/kgw) at location (     0    ,  1.00    ,  1.00    )(m)
-     Maximum change in Br ................. -6.9301E-04 (mol/kgw) at location (     0    ,  1.00    ,  1.00    )(m)
-     Maximum change in Cl .................  6.9298E-04 (mol/kgw) at location (     0    ,  1.00    ,  1.00    )(m)
-     Maximum change in Na ................. -3.0807E-08 (mol/kgw) at location (     0    ,  1.00    ,  1.00    )(m)
-     Maximum change in Charge ............. -2.5480E-07 (mol/kgw) at location (     0    ,  1.00    ,  1.00    )(m)
+     Maximum change in H .................. -9.7072E-08 (mol/kgw) at location (     0   ,  1.00    ,  1.00    )(m)
+     Maximum change in O ..................  7.5078E-08 (mol/kgw) at location (     0   ,  1.00    ,  1.00    )(m)
+     Maximum change in Br ................. -6.9301E-04 (mol/kgw) at location (     0   ,  1.00    ,  1.00    )(m)
+     Maximum change in Cl .................  6.9298E-04 (mol/kgw) at location (     0   ,  1.00    ,  1.00    )(m)
+     Maximum change in Na ................. -3.0807E-08 (mol/kgw) at location (     0   ,  1.00    ,  1.00    )(m)
+     Maximum change in Charge ............. -2.5480E-07 (mol/kgw) at location (     0   ,  1.00    ,  1.00    )(m)
 Done with transient simulation.
 
                              ***** Simulation Completed *****

@@ -48,7 +48,7 @@
                               X-Direction Node Coordinates    (m)
 
            1           2           3           4           5           6           7           8           9          10
-              0        1.00        2.00        3.00        4.00        5.00        6.00        7.00        8.00        9.00
+              0       1.00        2.00        3.00        4.00        5.00        6.00        7.00        8.00        9.00
 
 
 
@@ -61,7 +61,7 @@
                               Y-Direction Node Coordinates   (m)
 
            1           2
-              0       10.00
+              0      10.00
 
 
 
@@ -69,7 +69,7 @@
                               Z-Direction Node Coordinates   (m)
 
            1           2
-              0       10.00
+              0      10.00
 
 
 
@@ -79,9 +79,9 @@
 
                                    *** Fluid Properties ***
                                         Physical
-                    Fluid compressibility ...................................... BP ...   0.00E+00  (1/Pa )
+                    Fluid compressibility ...................................... BP ...   0 (1/Pa )
 
-                    Reference pressure for density ............................. P0 ..         0.0  (Pa )
+                    Reference pressure for density ............................. P0 ..         0  (Pa )
                     Reference temperature for density .......................... T0 ..        15.0  (Deg.C)
                     Fluid density .............................................. DENF0  1000.0      (kg/m^3)
                     Fluid density at solute  mass fraction of  0.0500........... DENF1  1000.0      (kg/m^3)
@@ -99,29 +99,29 @@
 
                Initial fluid in region ...............................  1.000000E+05  (kg) ;  1.000000E+02  (m^3)
 
-               Initial solute in region:H         ....................  2.540030E+00  (kg)
+               Initial solute in region:H         ....................  2.540030e+00  (kg)
 
                Initial solute in region:O         ....................  1.295063E+03  (kg)
 
-               Initial solute in region:Al        ....................  0.000000E+00  (kg)
+               Initial solute in region:Al        ....................  0 (kg)
 
                Initial solute in region:Ba        ....................  1.068575E-05  (kg)
 
-               Initial solute in region:Br        ....................  3.995200E+00  (kg)
+               Initial solute in region:Br        ....................  3.995200e+00  (kg)
 
-               Initial solute in region:C         ....................  2.159249E+00  (kg)
+               Initial solute in region:C         ....................  2.159249e+00  (kg)
 
                Initial solute in region:Ca        ....................  4.654206E+01  (kg)
 
-               Initial solute in region:Cl        ....................  5.317950E+00  (kg)
+               Initial solute in region:Cl        ....................  5.317950e+00  (kg)
 
                Initial solute in region:Fe        ....................  3.225842E-01  (kg)
 
-               Initial solute in region:K         ....................  0.000000E+00  (kg)
+               Initial solute in region:K         ....................  0 (kg)
 
                Initial solute in region:Mn        ....................  1.895038E-02  (kg)
 
-               Initial solute in region:N         ....................  1.064804E+00  (kg)
+               Initial solute in region:N         ....................  1.064804e+00  (kg)
 
                Initial solute in region:Na        ....................  8.652290E+02  (kg)
 
@@ -139,7 +139,7 @@
 
                                         *** Transient Data ***
 
-     Time ..............................       0      (s)
+     Time ..............................       0     (s)
 
 
                                         *** Calculation Information ***

@@ -82,9 +82,9 @@
  Step total specified head b.c. fluid net inflow ............ -8.633966E+01  (kg)
  Step total flux b.c. fluid net inflow ......................  5.000000E+01  (kg)
  Step total leakage b.c. fluid net inflow ...................  3.633966E+01  (kg)
- Step total river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ...........................  0.000000E+00  (kg)
+ Step total river leakage b.c. fluid net inflow .............  0 (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0 (kg)
+ Step total well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -93,9 +93,9 @@
  Step total specified head b.c. solute net inflow............ -3.032132E-08  (kg)
  Step total flux b.c. solute net inflow .....................  1.461218E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  1.204726E-08  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -104,9 +104,9 @@
  Step total specified head b.c. solute net inflow............ -5.833561E-08  (kg)
  Step total flux b.c. solute net inflow .....................  7.178928E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  3.377025E-08  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -115,9 +115,9 @@
  Step total specified head b.c. solute net inflow............ -6.329825E-03  (kg)
  Step total flux b.c. solute net inflow .....................  1.997806E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  2.259690E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -126,9 +126,9 @@
  Step total specified head b.c. solute net inflow............ -2.527923E-04  (kg)
  Step total flux b.c. solute net inflow .....................  8.863768E-04  (kg)
  Step total leakage b.c. solute net inflow ..................  2.858568E-04  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -137,9 +137,9 @@
  Step total specified head b.c. solute net inflow............ -1.985128E-03  (kg)
  Step total flux b.c. solute net inflow .....................  1.149583E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  8.355192E-04  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -148,9 +148,9 @@
  Step total specified head b.c. solute net inflow............ -2.297102E-08  (kg)
  Step total flux b.c. solute net inflow .....................  5.566729E-09  (kg)
  Step total leakage b.c. solute net inflow ..................  7.792211E-09  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
                Cumulative Summary
@@ -160,7 +160,7 @@
  Cumulative Fluid outflow ...................................  1.754357E+02  (kg)
  Cumulative Change in fluid in region .......................  1.894832E-03  (kg)
  Current Fluid in region ....................................  1.500047E+03  (kg)
- Current Fluid volume in region .............................  1.500047E+00  (m ^3)
+ Current Fluid volume in region .............................  1.500047e+00  (m ^3)
  Residual imbalance .........................................  9.094947E-13  (kg)
  Fractional imbalance .......................................           0
 
@@ -236,9 +236,9 @@
  Cumulative specified head b.c. fluid net inflow ............ -1.726780E+02  (kg)
  Cumulative flux b.c. fluid net inflow ......................  1.000000E+02  (kg)
  Cumulative leakage b.c. fluid net inflow ...................  7.267992E+01  (kg)
- Cumulative river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative well fluid net inflow ...........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative drain leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -247,9 +247,9 @@
  Cumulative specified head b.c. solute net inflow............ -6.111269E-08  (kg)
  Cumulative flux b.c. solute net inflow .....................  2.922436E-08  (kg)
  Cumulative leakage b.c. solute net inflow ..................  2.409395E-08  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -258,9 +258,9 @@
  Cumulative specified head b.c. solute net inflow............ -1.106026E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  1.435786E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  6.755101E-08  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -269,9 +269,9 @@
  Cumulative specified head b.c. solute net inflow............ -1.292583E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  3.995611E-03  (kg)
  Cumulative leakage b.c. solute net inflow ..................  4.518981E-03  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -280,9 +280,9 @@
  Cumulative specified head b.c. solute net inflow............ -3.874435E-04  (kg)
  Cumulative flux b.c. solute net inflow .....................  1.772754E-03  (kg)
  Cumulative leakage b.c. solute net inflow ..................  5.719119E-04  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -291,9 +291,9 @@
  Cumulative specified head b.c. solute net inflow............ -3.970231E-03  (kg)
  Cumulative flux b.c. solute net inflow .....................  2.299165E-03  (kg)
  Cumulative leakage b.c. solute net inflow ..................  1.671052E-03  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -302,9 +302,9 @@
  Cumulative specified head b.c. solute net inflow............ -4.717675E-08  (kg)
  Cumulative flux b.c. solute net inflow .....................  1.113346E-08  (kg)
  Cumulative leakage b.c. solute net inflow ..................  1.558253E-08  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
                               *** Output at End of Time Step No.     4 ***
@@ -386,9 +386,9 @@
  Step total specified head b.c. fluid net inflow ............ -8.633966E+01  (kg)
  Step total flux b.c. fluid net inflow ......................  5.000000E+01  (kg)
  Step total leakage b.c. fluid net inflow ...................  3.633966E+01  (kg)
- Step total river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ...........................  0.000000E+00  (kg)
+ Step total river leakage b.c. fluid net inflow .............  0 (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0 (kg)
+ Step total well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -397,9 +397,9 @@
  Step total specified head b.c. solute net inflow............ -2.997947E-08  (kg)
  Step total flux b.c. solute net inflow .....................  1.602426E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  1.204835E-08  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -408,9 +408,9 @@
  Step total specified head b.c. solute net inflow............ -6.274562E-08  (kg)
  Step total flux b.c. solute net inflow .....................  5.357901E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  3.375620E-08  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -419,9 +419,9 @@
  Step total specified head b.c. solute net inflow............ -6.136309E-03  (kg)
  Step total flux b.c. solute net inflow .....................  2.796928E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  2.260306E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -430,9 +430,9 @@
  Step total specified head b.c. solute net inflow............ -3.386504E-04  (kg)
  Step total flux b.c. solute net inflow .....................  5.318261E-04  (kg)
  Step total leakage b.c. solute net inflow ..................  2.855833E-04  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -441,9 +441,9 @@
  Step total specified head b.c. solute net inflow............ -1.985126E-03  (kg)
  Step total flux b.c. solute net inflow .....................  1.149593E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  8.355192E-04  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -452,9 +452,9 @@
  Step total specified head b.c. solute net inflow............ -2.207354E-08  (kg)
  Step total flux b.c. solute net inflow .....................  9.273300E-09  (kg)
  Step total leakage b.c. solute net inflow ..................  7.795065E-09  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
                Cumulative Summary
@@ -464,7 +464,7 @@
  Cumulative Fluid outflow ...................................  3.508730E+02  (kg)
  Cumulative Change in fluid in region .......................  1.894833E-03  (kg)
  Current Fluid in region ....................................  1.500047E+03  (kg)
- Current Fluid volume in region .............................  1.500047E+00  (m ^3)
+ Current Fluid volume in region .............................  1.500047e+00  (m ^3)
  Residual imbalance .........................................  1.364242E-12  (kg)
  Fractional imbalance .......................................           0
 
@@ -540,9 +540,9 @@
  Cumulative specified head b.c. fluid net inflow ............ -3.453573E+02  (kg)
  Cumulative flux b.c. fluid net inflow ......................  2.000000E+02  (kg)
  Cumulative leakage b.c. fluid net inflow ...................  1.453592E+02  (kg)
- Cumulative river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative well fluid net inflow ...........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative drain leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -551,9 +551,9 @@
  Cumulative specified head b.c. solute net inflow............ -1.211867E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  6.127287E-08  (kg)
  Cumulative leakage b.c. solute net inflow ..................  4.819019E-08  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -562,9 +562,9 @@
  Cumulative specified head b.c. solute net inflow............ -2.346095E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  2.507366E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  1.350693E-07  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -573,9 +573,9 @@
  Cumulative specified head b.c. solute net inflow............ -2.526358E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  9.589467E-03  (kg)
  Cumulative leakage b.c. solute net inflow ..................  9.039334E-03  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -584,9 +584,9 @@
  Cumulative specified head b.c. solute net inflow............ -1.035847E-03  (kg)
  Cumulative flux b.c. solute net inflow .....................  2.836406E-03  (kg)
  Cumulative leakage b.c. solute net inflow ..................  1.143194E-03  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -595,9 +595,9 @@
  Cumulative specified head b.c. solute net inflow............ -7.940483E-03  (kg)
  Cumulative flux b.c. solute net inflow .....................  4.598351E-03  (kg)
  Cumulative leakage b.c. solute net inflow ..................  3.342091E-03  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -606,9 +606,9 @@
  Cumulative specified head b.c. solute net inflow............ -9.162587E-08  (kg)
  Cumulative flux b.c. solute net inflow .....................  2.968006E-08  (kg)
  Cumulative leakage b.c. solute net inflow ..................  3.117145E-08  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
                               *** Output at End of Time Step No.     6 ***
@@ -620,7 +620,7 @@
 
  Fluid inflow ...............................................  1.754373E+03  (kg/yr)     8.771864E+01  (kg)
  Fluid outflow ..............................................  1.754373E+03  (kg/yr)     8.771864E+01  (kg)
- Change in fluid in region ..................................  0.000000E+00  (kg/yr)     0.000000E+00  (kg)
+ Change in fluid in region ..................................  0 (kg/yr)     0 (kg)
  Residual imbalance ......................................... -8.526513E-13  (kg/yr)    -4.263256E-14  (kg)
  Fractional imbalance .......................................                                   0
 
@@ -690,9 +690,9 @@
  Step total specified head b.c. fluid net inflow ............ -8.633966E+01  (kg)
  Step total flux b.c. fluid net inflow ......................  5.000000E+01  (kg)
  Step total leakage b.c. fluid net inflow ...................  3.633966E+01  (kg)
- Step total river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ...........................  0.000000E+00  (kg)
+ Step total river leakage b.c. fluid net inflow .............  0 (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0 (kg)
+ Step total well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -701,9 +701,9 @@
  Step total specified head b.c. solute net inflow............ -2.988597E-08  (kg)
  Step total flux b.c. solute net inflow .....................  1.249406E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  1.204890E-08  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -712,9 +712,9 @@
  Step total specified head b.c. solute net inflow............ -6.493558E-08  (kg)
  Step total flux b.c. solute net inflow .....................  9.910469E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  3.371273E-08  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -723,9 +723,9 @@
  Step total specified head b.c. solute net inflow............ -6.083204E-03  (kg)
  Step total flux b.c. solute net inflow .....................  7.991222E-04  (kg)
  Step total leakage b.c. solute net inflow ..................  2.260617E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -734,9 +734,9 @@
  Step total specified head b.c. solute net inflow............ -3.622121E-04  (kg)
  Step total flux b.c. solute net inflow .....................  1.418203E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  2.854456E-04  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -745,9 +745,9 @@
  Step total specified head b.c. solute net inflow............ -1.985125E-03  (kg)
  Step total flux b.c. solute net inflow .....................  1.149567E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  8.355192E-04  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -756,9 +756,9 @@
  Step total specified head b.c. solute net inflow............ -2.182752E-08  (kg)
  Step total flux b.c. solute net inflow .....................  6.872093E-12  (kg)
  Step total leakage b.c. solute net inflow ..................  7.796504E-09  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
                Cumulative Summary
@@ -768,7 +768,7 @@
  Cumulative Fluid outflow ...................................  5.263103E+02  (kg)
  Cumulative Change in fluid in region .......................  1.894833E-03  (kg)
  Current Fluid in region ....................................  1.500047E+03  (kg)
- Current Fluid volume in region .............................  1.500047E+00  (m ^3)
+ Current Fluid volume in region .............................  1.500047e+00  (m ^3)
  Residual imbalance .........................................  1.364242E-12  (kg)
  Fractional imbalance .......................................           0
 
@@ -844,9 +844,9 @@
  Cumulative specified head b.c. fluid net inflow ............ -5.180367E+02  (kg)
  Cumulative flux b.c. fluid net inflow ......................  3.000000E+02  (kg)
  Cumulative leakage b.c. fluid net inflow ...................  2.180385E+02  (kg)
- Cumulative river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative well fluid net inflow ...........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative drain leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -855,9 +855,9 @@
  Cumulative specified head b.c. solute net inflow............ -1.809919E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  8.626099E-08  (kg)
  Cumulative leakage b.c. solute net inflow ..................  7.228776E-08  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -866,9 +866,9 @@
  Cumulative specified head b.c. solute net inflow............ -3.633645E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  4.489460E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  2.025265E-07  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -877,9 +877,9 @@
  Cumulative specified head b.c. solute net inflow............ -3.744882E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  1.118771E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  1.356044E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -888,9 +888,9 @@
  Cumulative specified head b.c. solute net inflow............ -1.751912E-03  (kg)
  Cumulative flux b.c. solute net inflow .....................  5.672812E-03  (kg)
  Cumulative leakage b.c. solute net inflow ..................  1.714142E-03  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -899,9 +899,9 @@
  Cumulative specified head b.c. solute net inflow............ -1.191073E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  6.897486E-03  (kg)
  Cumulative leakage b.c. solute net inflow ..................  5.013129E-03  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -910,9 +910,9 @@
  Cumulative specified head b.c. solute net inflow............ -1.353683E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  2.969380E-08  (kg)
  Cumulative leakage b.c. solute net inflow ..................  4.676387E-08  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
                               *** Output at End of Time Step No.     8 ***
@@ -924,7 +924,7 @@
 
  Fluid inflow ...............................................  1.754373E+03  (kg/yr)     8.771864E+01  (kg)
  Fluid outflow ..............................................  1.754373E+03  (kg/yr)     8.771864E+01  (kg)
- Change in fluid in region ..................................  0.000000E+00  (kg/yr)     0.000000E+00  (kg)
+ Change in fluid in region ..................................  0 (kg/yr)     0 (kg)
  Residual imbalance ......................................... -8.526513E-13  (kg/yr)    -4.263256E-14  (kg)
  Fractional imbalance .......................................                                   0
 
@@ -994,9 +994,9 @@
  Step total specified head b.c. fluid net inflow ............ -8.633966E+01  (kg)
  Step total flux b.c. fluid net inflow ......................  5.000000E+01  (kg)
  Step total leakage b.c. fluid net inflow ...................  3.633966E+01  (kg)
- Step total river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ...........................  0.000000E+00  (kg)
+ Step total river leakage b.c. fluid net inflow .............  0 (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0 (kg)
+ Step total well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -1005,9 +1005,9 @@
  Step total specified head b.c. solute net inflow............ -2.985471E-08  (kg)
  Step total flux b.c. solute net inflow .....................  1.814237E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  1.204921E-08  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1016,9 +1016,9 @@
  Step total specified head b.c. solute net inflow............ -6.723281E-08  (kg)
  Step total flux b.c. solute net inflow .....................  2.626360E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  3.368039E-08  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1027,20 +1027,20 @@
  Step total specified head b.c. solute net inflow............ -6.065638E-03  (kg)
  Step total flux b.c. solute net inflow .....................  3.995611E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  2.260793E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
           Component: Cl        
 
  Step total specified head b.c. solute net inflow............ -3.700053E-04  (kg)
- Step total flux b.c. solute net inflow .....................  0.000000E+00  (kg)
+ Step total flux b.c. solute net inflow .....................  0 (kg)
  Step total leakage b.c. solute net inflow ..................  2.853671E-04  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1049,9 +1049,9 @@
  Step total specified head b.c. solute net inflow............ -1.985125E-03  (kg)
  Step total flux b.c. solute net inflow .....................  1.149608E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  8.355192E-04  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1060,9 +1060,9 @@
  Step total specified head b.c. solute net inflow............ -2.174591E-08  (kg)
  Step total flux b.c. solute net inflow .....................  1.483316E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  7.797324E-09  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
                Cumulative Summary
@@ -1072,7 +1072,7 @@
  Cumulative Fluid outflow ...................................  7.017476E+02  (kg)
  Cumulative Change in fluid in region .......................  1.894833E-03  (kg)
  Current Fluid in region ....................................  1.500047E+03  (kg)
- Current Fluid volume in region .............................  1.500047E+00  (m ^3)
+ Current Fluid volume in region .............................  1.500047e+00  (m ^3)
  Residual imbalance .........................................  1.364242E-12  (kg)
  Fractional imbalance .......................................           0
 
@@ -1148,9 +1148,9 @@
  Cumulative specified head b.c. fluid net inflow ............ -6.907160E+02  (kg)
  Cumulative flux b.c. fluid net inflow ......................  4.000000E+02  (kg)
  Cumulative leakage b.c. fluid net inflow ...................  2.907179E+02  (kg)
- Cumulative river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative well fluid net inflow ...........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative drain leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -1159,9 +1159,9 @@
  Cumulative specified head b.c. solute net inflow............ -2.407132E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  1.225457E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  9.638603E-08  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1170,9 +1170,9 @@
  Cumulative specified head b.c. solute net inflow............ -4.980688E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  5.014732E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  2.698837E-07  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1181,9 +1181,9 @@
  Cumulative specified head b.c. solute net inflow............ -4.958679E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  1.917893E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  1.808194E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1192,9 +1192,9 @@
  Cumulative specified head b.c. solute net inflow............ -2.488955E-03  (kg)
  Cumulative flux b.c. solute net inflow .....................  5.672812E-03  (kg)
  Cumulative leakage b.c. solute net inflow ..................  2.284912E-03  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1203,9 +1203,9 @@
  Cumulative specified head b.c. solute net inflow............ -1.588098E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  9.196703E-03  (kg)
  Cumulative leakage b.c. solute net inflow ..................  6.684167E-03  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1214,9 +1214,9 @@
  Cumulative specified head b.c. solute net inflow............ -1.788912E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  5.936011E-08  (kg)
  Cumulative leakage b.c. solute net inflow ..................  6.235814E-08  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
                               *** Output at End of Time Step No.    10 ***
@@ -1228,7 +1228,7 @@
 
  Fluid inflow ...............................................  1.754373E+03  (kg/yr)     8.771864E+01  (kg)
  Fluid outflow ..............................................  1.754373E+03  (kg/yr)     8.771864E+01  (kg)
- Change in fluid in region ..................................  0.000000E+00  (kg/yr)     0.000000E+00  (kg)
+ Change in fluid in region ..................................  0 (kg/yr)     0 (kg)
  Residual imbalance ......................................... -8.526513E-13  (kg/yr)    -4.263256E-14  (kg)
  Fractional imbalance .......................................                                   0
 
@@ -1298,9 +1298,9 @@
  Step total specified head b.c. fluid net inflow ............ -8.633966E+01  (kg)
  Step total flux b.c. fluid net inflow ......................  5.000000E+01  (kg)
  Step total leakage b.c. fluid net inflow ...................  3.633966E+01  (kg)
- Step total river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ...........................  0.000000E+00  (kg)
+ Step total river leakage b.c. fluid net inflow .............  0 (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0 (kg)
+ Step total well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -1309,9 +1309,9 @@
  Step total specified head b.c. solute net inflow............ -2.983986E-08  (kg)
  Step total flux b.c. solute net inflow .....................  1.814237E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  1.204958E-08  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1320,9 +1320,9 @@
  Step total specified head b.c. solute net inflow............ -6.667733E-08  (kg)
  Step total flux b.c. solute net inflow .....................  2.626360E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  3.368127E-08  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1331,20 +1331,20 @@
  Step total specified head b.c. solute net inflow............ -6.057274E-03  (kg)
  Step total flux b.c. solute net inflow .....................  3.995611E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  2.261004E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
           Component: Cl        
 
  Step total specified head b.c. solute net inflow............ -3.737164E-04  (kg)
- Step total flux b.c. solute net inflow .....................  0.000000E+00  (kg)
+ Step total flux b.c. solute net inflow .....................  0 (kg)
  Step total leakage b.c. solute net inflow ..................  2.852738E-04  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1353,9 +1353,9 @@
  Step total specified head b.c. solute net inflow............ -1.985125E-03  (kg)
  Step total flux b.c. solute net inflow .....................  1.149608E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  8.355192E-04  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1364,9 +1364,9 @@
  Step total specified head b.c. solute net inflow............ -2.170706E-08  (kg)
  Step total flux b.c. solute net inflow .....................  1.483316E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  7.798298E-09  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
                Cumulative Summary
@@ -1376,7 +1376,7 @@
  Cumulative Fluid outflow ...................................  8.771849E+02  (kg)
  Cumulative Change in fluid in region .......................  1.894833E-03  (kg)
  Current Fluid in region ....................................  1.500047E+03  (kg)
- Current Fluid volume in region .............................  1.500047E+00  (m ^3)
+ Current Fluid volume in region .............................  1.500047e+00  (m ^3)
  Residual imbalance .........................................  1.364242E-12  (kg)
  Fractional imbalance .......................................           0
 
@@ -1452,9 +1452,9 @@
  Cumulative specified head b.c. fluid net inflow ............ -8.633953E+02  (kg)
  Cumulative flux b.c. fluid net inflow ......................  5.000000E+02  (kg)
  Cumulative leakage b.c. fluid net inflow ...................  3.633972E+02  (kg)
- Cumulative river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative well fluid net inflow ...........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative drain leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -1463,9 +1463,9 @@
  Cumulative specified head b.c. solute net inflow............ -3.003996E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  1.588305E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  1.204850E-07  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1474,9 +1474,9 @@
  Cumulative specified head b.c. solute net inflow............ -6.316435E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  5.540004E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  3.372474E-07  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1485,9 +1485,9 @@
  Cumulative specified head b.c. solute net inflow............ -6.170512E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  2.717016E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  2.260383E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1496,9 +1496,9 @@
  Cumulative specified head b.c. solute net inflow............ -3.234708E-03  (kg)
  Cumulative flux b.c. solute net inflow .....................  5.672812E-03  (kg)
  Cumulative leakage b.c. solute net inflow ..................  2.855514E-03  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1507,9 +1507,9 @@
  Cumulative specified head b.c. solute net inflow............ -1.985123E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  1.149592E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  8.355206E-03  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1518,9 +1518,9 @@
  Cumulative specified head b.c. solute net inflow............ -2.223229E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  8.902643E-08  (kg)
  Cumulative leakage b.c. solute net inflow ..................  7.795417E-08  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
                               *** Output at End of Time Step No.    12 ***
@@ -1602,9 +1602,9 @@
  Step total specified head b.c. fluid net inflow ............ -1.196211E+02  (kg)
  Step total flux b.c. fluid net inflow ......................  5.000000E+01  (kg)
  Step total leakage b.c. fluid net inflow ...................  6.962107E+01  (kg)
- Step total river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ...........................  0.000000E+00  (kg)
+ Step total river leakage b.c. fluid net inflow .............  0 (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0 (kg)
+ Step total well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -1613,9 +1613,9 @@
  Step total specified head b.c. solute net inflow............ -3.655634E-08  (kg)
  Step total flux b.c. solute net inflow .....................  1.814237E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  1.853401E-08  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1624,9 +1624,9 @@
  Step total specified head b.c. solute net inflow............ -1.532024E-07  (kg)
  Step total flux b.c. solute net inflow .....................  2.626360E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  1.233325E-07  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1635,20 +1635,20 @@
  Step total specified head b.c. solute net inflow............ -5.683702E-03  (kg)
  Step total flux b.c. solute net inflow .....................  3.995611E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  1.756170E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
           Component: Cl        
 
  Step total specified head b.c. solute net inflow............ -1.719456E-03  (kg)
- Step total flux b.c. solute net inflow .....................  0.000000E+00  (kg)
+ Step total flux b.c. solute net inflow .....................  0 (kg)
  Step total leakage b.c. solute net inflow ..................  1.689251E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1657,9 +1657,9 @@
  Step total specified head b.c. solute net inflow............ -2.750298E-03  (kg)
  Step total flux b.c. solute net inflow .....................  1.149608E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  1.600691E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1668,9 +1668,9 @@
  Step total specified head b.c. solute net inflow............ -1.751180E-08  (kg)
  Step total flux b.c. solute net inflow .....................  1.483316E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  2.994108E-09  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
                Cumulative Summary
@@ -1680,7 +1680,7 @@
  Cumulative Fluid outflow ...................................  1.116425E+03  (kg)
  Cumulative Change in fluid in region .......................  5.050934E-03  (kg)
  Current Fluid in region ....................................  1.500050E+03  (kg)
- Current Fluid volume in region .............................  1.500050E+00  (m ^3)
+ Current Fluid volume in region .............................  1.500050e+00  (m ^3)
  Residual imbalance .........................................  4.092726E-12  (kg)
  Fractional imbalance .......................................           0
 
@@ -1756,9 +1756,9 @@
  Cumulative specified head b.c. fluid net inflow ............ -1.102635E+03  (kg)
  Cumulative flux b.c. fluid net inflow ......................  6.000000E+02  (kg)
  Cumulative leakage b.c. fluid net inflow ...................  5.026403E+02  (kg)
- Cumulative river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative well fluid net inflow ...........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative drain leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -1767,9 +1767,9 @@
  Cumulative specified head b.c. solute net inflow............ -3.753984E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  1.951152E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  1.575533E-07  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1778,9 +1778,9 @@
  Cumulative specified head b.c. solute net inflow............ -9.140932E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  6.065276E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  5.839137E-07  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1789,9 +1789,9 @@
  Cumulative specified head b.c. solute net inflow............ -7.414019E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  3.516138E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  2.611622E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1800,9 +1800,9 @@
  Cumulative specified head b.c. solute net inflow............ -6.199849E-03  (kg)
  Cumulative flux b.c. solute net inflow .....................  5.672812E-03  (kg)
  Cumulative leakage b.c. solute net inflow ..................  6.234029E-03  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1811,9 +1811,9 @@
  Cumulative specified head b.c. solute net inflow............ -2.535179E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  1.379514E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  1.155661E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1822,9 +1822,9 @@
  Cumulative specified head b.c. solute net inflow............ -2.622987E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  1.186927E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  8.394255E-08  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
                               *** Output at End of Time Step No.    14 ***
@@ -1906,9 +1906,9 @@
  Step total specified head b.c. fluid net inflow ............ -1.196211E+02  (kg)
  Step total flux b.c. fluid net inflow ......................  5.000000E+01  (kg)
  Step total leakage b.c. fluid net inflow ...................  6.962107E+01  (kg)
- Step total river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ...........................  0.000000E+00  (kg)
+ Step total river leakage b.c. fluid net inflow .............  0 (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0 (kg)
+ Step total well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -1917,9 +1917,9 @@
  Step total specified head b.c. solute net inflow............ -3.543686E-08  (kg)
  Step total flux b.c. solute net inflow .....................  1.108199E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  1.853401E-08  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1928,20 +1928,20 @@
  Step total specified head b.c. solute net inflow............ -1.672799E-07  (kg)
  Step total flux b.c. solute net inflow .....................  1.173150E-07  (kg)
  Step total leakage b.c. solute net inflow ..................  1.233325E-07  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
           Component: Br        
 
  Step total specified head b.c. solute net inflow............ -5.050014E-03  (kg)
- Step total flux b.c. solute net inflow .....................  0.000000E+00  (kg)
+ Step total flux b.c. solute net inflow .....................  0 (kg)
  Step total leakage b.c. solute net inflow ..................  1.756170E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1950,9 +1950,9 @@
  Step total specified head b.c. solute net inflow............ -2.000608E-03  (kg)
  Step total flux b.c. solute net inflow .....................  1.772754E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  1.689251E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1961,9 +1961,9 @@
  Step total specified head b.c. solute net inflow............ -2.750290E-03  (kg)
  Step total flux b.c. solute net inflow .....................  1.149557E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  1.600691E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -1972,9 +1972,9 @@
  Step total specified head b.c. solute net inflow............ -1.457275E-08  (kg)
  Step total flux b.c. solute net inflow ..................... -3.699699E-09  (kg)
  Step total leakage b.c. solute net inflow ..................  2.994108E-09  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
                Cumulative Summary
@@ -1984,7 +1984,7 @@
  Cumulative Fluid outflow ...................................  1.355667E+03  (kg)
  Cumulative Change in fluid in region .......................  5.050936E-03  (kg)
  Current Fluid in region ....................................  1.500050E+03  (kg)
- Current Fluid volume in region .............................  1.500050E+00  (m ^3)
+ Current Fluid volume in region .............................  1.500050e+00  (m ^3)
  Residual imbalance .........................................  2.501110E-12  (kg)
  Fractional imbalance .......................................           0
 
@@ -2060,9 +2060,9 @@
  Cumulative specified head b.c. fluid net inflow ............ -1.341877E+03  (kg)
  Cumulative flux b.c. fluid net inflow ......................  7.000000E+02  (kg)
  Cumulative leakage b.c. fluid net inflow ...................  6.418825E+02  (kg)
- Cumulative river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative well fluid net inflow ...........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative drain leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -2071,9 +2071,9 @@
  Cumulative specified head b.c. solute net inflow............ -4.466272E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  2.172792E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  1.946213E-07  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2082,9 +2082,9 @@
  Cumulative specified head b.c. solute net inflow............ -1.244209E-06  (kg)
  Cumulative flux b.c. solute net inflow .....................  8.411575E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  8.305788E-07  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2093,9 +2093,9 @@
  Cumulative specified head b.c. solute net inflow............ -8.444122E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  3.516138E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  2.962856E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2104,9 +2104,9 @@
  Cumulative specified head b.c. solute net inflow............ -1.011188E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  9.218319E-03  (kg)
  Cumulative leakage b.c. solute net inflow ..................  9.612532E-03  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2115,9 +2115,9 @@
  Cumulative specified head b.c. solute net inflow............ -3.085238E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  1.609425E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  1.475799E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2126,9 +2126,9 @@
  Cumulative specified head b.c. solute net inflow............ -2.923765E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  1.112933E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  8.993077E-08  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
                               *** Output at End of Time Step No.    20 ***
@@ -2140,7 +2140,7 @@
 
  Fluid inflow ...............................................  2.392421E+03  (kg/yr)     1.196211E+02  (kg)
  Fluid outflow ..............................................  2.392421E+03  (kg/yr)     1.196211E+02  (kg)
- Change in fluid in region ..................................  0.000000E+00  (kg/yr)     0.000000E+00  (kg)
+ Change in fluid in region ..................................  0 (kg/yr)     0 (kg)
  Residual imbalance ......................................... -5.684342E-13  (kg/yr)    -2.842171E-14  (kg)
  Fractional imbalance .......................................                                   0
 
@@ -2210,9 +2210,9 @@
  Step total specified head b.c. fluid net inflow ............ -1.196211E+02  (kg)
  Step total flux b.c. fluid net inflow ......................  5.000000E+01  (kg)
  Step total leakage b.c. fluid net inflow ...................  6.962107E+01  (kg)
- Step total river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ...........................  0.000000E+00  (kg)
+ Step total river leakage b.c. fluid net inflow .............  0 (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0 (kg)
+ Step total well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -2221,9 +2221,9 @@
  Step total specified head b.c. solute net inflow............ -3.478745E-08  (kg)
  Step total flux b.c. solute net inflow .....................  1.461218E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  1.853401E-08  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2232,9 +2232,9 @@
  Step total specified head b.c. solute net inflow............ -1.753259E-07  (kg)
  Step total flux b.c. solute net inflow .....................  7.178928E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  1.233325E-07  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2243,9 +2243,9 @@
  Step total specified head b.c. solute net inflow............ -4.682098E-03  (kg)
  Step total flux b.c. solute net inflow .....................  1.997806E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  1.756170E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2254,9 +2254,9 @@
  Step total specified head b.c. solute net inflow............ -2.163843E-03  (kg)
  Step total flux b.c. solute net inflow .....................  8.863768E-04  (kg)
  Step total leakage b.c. solute net inflow ..................  1.689251E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2265,9 +2265,9 @@
  Step total specified head b.c. solute net inflow............ -2.750285E-03  (kg)
  Step total flux b.c. solute net inflow .....................  1.149583E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  1.600691E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2276,9 +2276,9 @@
  Step total specified head b.c. solute net inflow............ -1.286657E-08  (kg)
  Step total flux b.c. solute net inflow .....................  5.566729E-09  (kg)
  Step total leakage b.c. solute net inflow ..................  2.994108E-09  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
                Cumulative Summary
@@ -2288,7 +2288,7 @@
  Cumulative Fluid outflow ...................................  2.073393E+03  (kg)
  Cumulative Change in fluid in region .......................  5.050936E-03  (kg)
  Current Fluid in region ....................................  1.500050E+03  (kg)
- Current Fluid volume in region .............................  1.500050E+00  (m ^3)
+ Current Fluid volume in region .............................  1.500050e+00  (m ^3)
  Residual imbalance .........................................  2.728484E-12  (kg)
  Fractional imbalance .......................................           0
 
@@ -2364,9 +2364,9 @@
  Cumulative specified head b.c. fluid net inflow ............ -2.059604E+03  (kg)
  Cumulative flux b.c. fluid net inflow ......................  1.000000E+03  (kg)
  Cumulative leakage b.c. fluid net inflow ...................  1.059609E+03  (kg)
- Cumulative river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative well fluid net inflow ...........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative drain leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -2375,9 +2375,9 @@
  Cumulative specified head b.c. solute net inflow............ -6.566779E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  3.049523E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  3.058254E-07  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2386,9 +2386,9 @@
  Cumulative specified head b.c. solute net inflow............ -2.279751E-06  (kg)
  Cumulative flux b.c. solute net inflow .....................  1.271893E-06  (kg)
  Cumulative leakage b.c. solute net inflow ..................  1.570574E-06  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2397,9 +2397,9 @@
  Cumulative specified head b.c. solute net inflow............ -1.132849E-01  (kg)
  Cumulative flux b.c. solute net inflow .....................  4.714821E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  4.016558E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2408,9 +2408,9 @@
  Cumulative specified head b.c. solute net inflow............ -2.276172E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  1.453658E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  1.974804E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2419,9 +2419,9 @@
  Cumulative specified head b.c. solute net inflow............ -4.735410E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  2.299175E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  2.436213E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2430,9 +2430,9 @@
  Cumulative specified head b.c. solute net inflow............ -3.730591E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  1.446937E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  1.078954E-07  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
                               *** Output at End of Time Step No.    22 ***
@@ -2514,9 +2514,9 @@
  Step total specified head b.c. fluid net inflow ............ -1.141679E+02  (kg)
  Step total flux b.c. fluid net inflow ......................  5.000000E+01  (kg)
  Step total leakage b.c. fluid net inflow ...................  6.416790E+01  (kg)
- Step total river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ...........................  0.000000E+00  (kg)
+ Step total river leakage b.c. fluid net inflow .............  0 (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0 (kg)
+ Step total well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -2525,9 +2525,9 @@
  Step total specified head b.c. solute net inflow............ -3.296643E-08  (kg)
  Step total flux b.c. solute net inflow .....................  1.461218E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  1.602196E-08  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2536,9 +2536,9 @@
  Step total specified head b.c. solute net inflow............ -1.704507E-07  (kg)
  Step total flux b.c. solute net inflow .....................  7.178928E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  1.273466E-07  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2547,9 +2547,9 @@
  Step total specified head b.c. solute net inflow............ -4.335729E-03  (kg)
  Step total flux b.c. solute net inflow .....................  1.997806E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  1.018548E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2558,9 +2558,9 @@
  Step total specified head b.c. solute net inflow............ -2.124175E-03  (kg)
  Step total flux b.c. solute net inflow .....................  8.863768E-04  (kg)
  Step total leakage b.c. solute net inflow ..................  1.823173E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2569,9 +2569,9 @@
  Step total specified head b.c. solute net inflow............ -2.624906E-03  (kg)
  Step total flux b.c. solute net inflow .....................  1.149583E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  1.475306E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2580,9 +2580,9 @@
  Step total specified head b.c. solute net inflow............ -1.166331E-08  (kg)
  Step total flux b.c. solute net inflow .....................  5.566729E-09  (kg)
  Step total leakage b.c. solute net inflow .................. -2.370582E-11  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
                Cumulative Summary
@@ -2592,7 +2592,7 @@
  Cumulative Fluid outflow ...................................  2.301728E+03  (kg)
  Cumulative Change in fluid in region .......................  6.424825E-03  (kg)
  Current Fluid in region ....................................  1.500051E+03  (kg)
- Current Fluid volume in region .............................  1.500051E+00  (m ^3)
+ Current Fluid volume in region .............................  1.500051e+00  (m ^3)
  Residual imbalance .........................................  5.229595E-12  (kg)
  Fractional imbalance .......................................           0
 
@@ -2668,9 +2668,9 @@
  Cumulative specified head b.c. fluid net inflow ............ -2.287939E+03  (kg)
  Cumulative flux b.c. fluid net inflow ......................  1.100000E+03  (kg)
  Cumulative leakage b.c. fluid net inflow ...................  1.187945E+03  (kg)
- Cumulative river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative well fluid net inflow ...........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative drain leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -2679,9 +2679,9 @@
  Cumulative specified head b.c. solute net inflow............ -7.231222E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  3.341766E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  3.378694E-07  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2690,9 +2690,9 @@
  Cumulative specified head b.c. solute net inflow............ -2.614076E-06  (kg)
  Cumulative flux b.c. solute net inflow .....................  1.415472E-06  (kg)
  Cumulative leakage b.c. solute net inflow ..................  1.825268E-06  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2701,9 +2701,9 @@
  Cumulative specified head b.c. solute net inflow............ -1.222457E-01  (kg)
  Cumulative flux b.c. solute net inflow .....................  5.114382E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  4.220268E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2712,9 +2712,9 @@
  Cumulative specified head b.c. solute net inflow............ -2.688166E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  1.630933E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  2.339440E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2723,9 +2723,9 @@
  Cumulative specified head b.c. solute net inflow............ -5.260389E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  2.529091E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  2.731276E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2734,9 +2734,9 @@
  Cumulative specified head b.c. solute net inflow............ -3.977281E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  1.558272E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  1.078480E-07  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
                               *** Output at End of Time Step No.    24 ***
@@ -2818,9 +2818,9 @@
  Step total specified head b.c. fluid net inflow ............ -1.141679E+02  (kg)
  Step total flux b.c. fluid net inflow ......................  5.000000E+01  (kg)
  Step total leakage b.c. fluid net inflow ...................  6.416790E+01  (kg)
- Step total river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ...........................  0.000000E+00  (kg)
+ Step total river leakage b.c. fluid net inflow .............  0 (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0 (kg)
+ Step total well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -2829,9 +2829,9 @@
  Step total specified head b.c. solute net inflow............ -3.193118E-08  (kg)
  Step total flux b.c. solute net inflow .....................  1.178803E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  1.602196E-08  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2840,9 +2840,9 @@
  Step total specified head b.c. solute net inflow............ -1.836415E-07  (kg)
  Step total flux b.c. solute net inflow .....................  1.082098E-07  (kg)
  Step total leakage b.c. solute net inflow ..................  1.273466E-07  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2851,9 +2851,9 @@
  Step total specified head b.c. solute net inflow............ -3.750004E-03  (kg)
  Step total flux b.c. solute net inflow .....................  3.995611E-04  (kg)
  Step total leakage b.c. solute net inflow ..................  1.018548E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2862,9 +2862,9 @@
  Step total specified head b.c. solute net inflow............ -2.384047E-03  (kg)
  Step total flux b.c. solute net inflow .....................  1.595478E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  1.823173E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2873,9 +2873,9 @@
  Step total specified head b.c. solute net inflow............ -2.624898E-03  (kg)
  Step total flux b.c. solute net inflow .....................  1.149562E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  1.475306E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2884,9 +2884,9 @@
  Step total specified head b.c. solute net inflow............ -8.946374E-09  (kg)
  Step total flux b.c. solute net inflow ..................... -1.846413E-09  (kg)
  Step total leakage b.c. solute net inflow .................. -2.370581E-11  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
                Cumulative Summary
@@ -2896,7 +2896,7 @@
  Cumulative Fluid outflow ...................................  2.530064E+03  (kg)
  Cumulative Change in fluid in region .......................  6.424826E-03  (kg)
  Current Fluid in region ....................................  1.500051E+03  (kg)
- Current Fluid volume in region .............................  1.500051E+00  (m ^3)
+ Current Fluid volume in region .............................  1.500051e+00  (m ^3)
  Residual imbalance .........................................  5.684342E-12  (kg)
  Fractional imbalance .......................................           0
 
@@ -2972,9 +2972,9 @@
  Cumulative specified head b.c. fluid net inflow ............ -2.516275E+03  (kg)
  Cumulative flux b.c. fluid net inflow ......................  1.200000E+03  (kg)
  Cumulative leakage b.c. fluid net inflow ...................  1.316281E+03  (kg)
- Cumulative river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative well fluid net inflow ...........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative drain leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -2983,9 +2983,9 @@
  Cumulative specified head b.c. solute net inflow............ -7.874305E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  3.577527E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  3.699133E-07  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -2994,9 +2994,9 @@
  Cumulative specified head b.c. solute net inflow............ -2.975689E-06  (kg)
  Cumulative flux b.c. solute net inflow .....................  1.631891E-06  (kg)
  Cumulative leakage b.c. solute net inflow ..................  2.079961E-06  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3005,9 +3005,9 @@
  Cumulative specified head b.c. solute net inflow............ -1.299980E-01  (kg)
  Cumulative flux b.c. solute net inflow .....................  5.194294E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  4.423978E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3016,9 +3016,9 @@
  Cumulative specified head b.c. solute net inflow............ -3.153781E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  1.950029E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  2.704074E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3027,9 +3027,9 @@
  Cumulative specified head b.c. solute net inflow............ -5.785369E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  2.759004E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  3.026337E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3038,9 +3038,9 @@
  Cumulative specified head b.c. solute net inflow............ -4.167912E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  1.521343E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  1.078006E-07  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
                               *** Output at End of Time Step No.    26 ***
@@ -3052,7 +3052,7 @@
 
  Fluid inflow ...............................................  2.283358E+03  (kg/yr)     1.141679E+02  (kg)
  Fluid outflow ..............................................  2.283358E+03  (kg/yr)     1.141679E+02  (kg)
- Change in fluid in region ..................................  0.000000E+00  (kg/yr)     0.000000E+00  (kg)
+ Change in fluid in region ..................................  0 (kg/yr)     0 (kg)
  Residual imbalance ......................................... -8.526513E-13  (kg/yr)    -4.263256E-14  (kg)
  Fractional imbalance .......................................                                   0
 
@@ -3122,9 +3122,9 @@
  Step total specified head b.c. fluid net inflow ............ -1.141679E+02  (kg)
  Step total flux b.c. fluid net inflow ......................  5.000000E+01  (kg)
  Step total leakage b.c. fluid net inflow ...................  6.416790E+01  (kg)
- Step total river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ...........................  0.000000E+00  (kg)
+ Step total river leakage b.c. fluid net inflow .............  0 (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0 (kg)
+ Step total well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -3133,9 +3133,9 @@
  Step total specified head b.c. solute net inflow............ -3.141588E-08  (kg)
  Step total flux b.c. solute net inflow .....................  1.249406E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  1.602196E-08  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3144,9 +3144,9 @@
  Step total specified head b.c. solute net inflow............ -1.901561E-07  (kg)
  Step total flux b.c. solute net inflow .....................  9.910469E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  1.273466E-07  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3155,9 +3155,9 @@
  Step total specified head b.c. solute net inflow............ -3.458416E-03  (kg)
  Step total flux b.c. solute net inflow .....................  7.991222E-04  (kg)
  Step total leakage b.c. solute net inflow ..................  1.018548E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3166,9 +3166,9 @@
  Step total specified head b.c. solute net inflow............ -2.513418E-03  (kg)
  Step total flux b.c. solute net inflow .....................  1.418203E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  1.823173E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3177,9 +3177,9 @@
  Step total specified head b.c. solute net inflow............ -2.624895E-03  (kg)
  Step total flux b.c. solute net inflow .....................  1.149567E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  1.475306E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3188,9 +3188,9 @@
  Step total specified head b.c. solute net inflow............ -7.593852E-09  (kg)
  Step total flux b.c. solute net inflow .....................  6.872093E-12  (kg)
  Step total leakage b.c. solute net inflow .................. -2.370581E-11  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
                Cumulative Summary
@@ -3200,7 +3200,7 @@
  Cumulative Fluid outflow ...................................  2.758400E+03  (kg)
  Cumulative Change in fluid in region .......................  6.424826E-03  (kg)
  Current Fluid in region ....................................  1.500051E+03  (kg)
- Current Fluid volume in region .............................  1.500051E+00  (m ^3)
+ Current Fluid volume in region .............................  1.500051e+00  (m ^3)
  Residual imbalance .........................................  5.684342E-12  (kg)
  Fractional imbalance .......................................           0
 
@@ -3276,9 +3276,9 @@
  Cumulative specified head b.c. fluid net inflow ............ -2.744610E+03  (kg)
  Cumulative flux b.c. fluid net inflow ......................  1.300000E+03  (kg)
  Cumulative leakage b.c. fluid net inflow ...................  1.444617E+03  (kg)
- Cumulative river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative well fluid net inflow ...........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative drain leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -3287,9 +3287,9 @@
  Cumulative specified head b.c. solute net inflow............ -8.504719E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  3.827408E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  4.019573E-07  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3298,9 +3298,9 @@
  Cumulative specified head b.c. solute net inflow............ -3.353359E-06  (kg)
  Cumulative flux b.c. solute net inflow .....................  1.830101E-06  (kg)
  Cumulative leakage b.c. solute net inflow ..................  2.334655E-06  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3309,9 +3309,9 @@
  Cumulative specified head b.c. solute net inflow............ -1.370335E-01  (kg)
  Cumulative flux b.c. solute net inflow .....................  5.354119E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  4.627687E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3320,9 +3320,9 @@
  Cumulative specified head b.c. solute net inflow............ -3.651201E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  2.233670E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  3.068709E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3331,9 +3331,9 @@
  Cumulative specified head b.c. solute net inflow............ -6.310348E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  2.988917E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  3.321398E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3342,9 +3342,9 @@
  Cumulative specified head b.c. solute net inflow............ -4.325292E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  1.521481E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  1.077532E-07  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
                               *** Output at End of Time Step No.    28 ***
@@ -3356,7 +3356,7 @@
 
  Fluid inflow ...............................................  2.283358E+03  (kg/yr)     1.141679E+02  (kg)
  Fluid outflow ..............................................  2.283358E+03  (kg/yr)     1.141679E+02  (kg)
- Change in fluid in region ..................................  0.000000E+00  (kg/yr)     0.000000E+00  (kg)
+ Change in fluid in region ..................................  0 (kg/yr)     0 (kg)
  Residual imbalance ......................................... -2.842171E-13  (kg/yr)    -1.421085E-14  (kg)
  Fractional imbalance .......................................                                   0
 
@@ -3426,9 +3426,9 @@
  Step total specified head b.c. fluid net inflow ............ -1.141679E+02  (kg)
  Step total flux b.c. fluid net inflow ......................  5.000000E+01  (kg)
  Step total leakage b.c. fluid net inflow ...................  6.416790E+01  (kg)
- Step total river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ...........................  0.000000E+00  (kg)
+ Step total river leakage b.c. fluid net inflow .............  0 (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0 (kg)
+ Step total well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -3437,9 +3437,9 @@
  Step total specified head b.c. solute net inflow............ -3.115845E-08  (kg)
  Step total flux b.c. solute net inflow .....................  1.814237E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  1.602196E-08  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3448,9 +3448,9 @@
  Step total specified head b.c. solute net inflow............ -1.933919E-07  (kg)
  Step total flux b.c. solute net inflow .....................  2.626360E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  1.273466E-07  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3459,20 +3459,20 @@
  Step total specified head b.c. solute net inflow............ -3.311870E-03  (kg)
  Step total flux b.c. solute net inflow .....................  3.995611E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  1.018548E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
           Component: Cl        
 
  Step total specified head b.c. solute net inflow............ -2.578436E-03  (kg)
- Step total flux b.c. solute net inflow .....................  0.000000E+00  (kg)
+ Step total flux b.c. solute net inflow .....................  0 (kg)
  Step total leakage b.c. solute net inflow ..................  1.823173E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3481,9 +3481,9 @@
  Step total specified head b.c. solute net inflow............ -2.624893E-03  (kg)
  Step total flux b.c. solute net inflow .....................  1.149608E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  1.475306E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3492,9 +3492,9 @@
  Step total specified head b.c. solute net inflow............ -6.914577E-09  (kg)
  Step total flux b.c. solute net inflow .....................  1.483316E-08  (kg)
  Step total leakage b.c. solute net inflow .................. -2.370581E-11  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
                Cumulative Summary
@@ -3504,7 +3504,7 @@
  Cumulative Fluid outflow ...................................  2.986736E+03  (kg)
  Cumulative Change in fluid in region .......................  6.424826E-03  (kg)
  Current Fluid in region ....................................  1.500051E+03  (kg)
- Current Fluid volume in region .............................  1.500051E+00  (m ^3)
+ Current Fluid volume in region .............................  1.500051e+00  (m ^3)
  Residual imbalance .........................................  5.684342E-12  (kg)
  Fractional imbalance .......................................           0
 
@@ -3580,9 +3580,9 @@
  Cumulative specified head b.c. fluid net inflow ............ -2.972946E+03  (kg)
  Cumulative flux b.c. fluid net inflow ......................  1.400000E+03  (kg)
  Cumulative leakage b.c. fluid net inflow ...................  1.572953E+03  (kg)
- Cumulative river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative well fluid net inflow ...........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative drain leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -3591,9 +3591,9 @@
  Cumulative specified head b.c. solute net inflow............ -9.128973E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  4.190255E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  4.340012E-07  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3602,9 +3602,9 @@
  Cumulative specified head b.c. solute net inflow............ -3.738770E-06  (kg)
  Cumulative flux b.c. solute net inflow .....................  1.882628E-06  (kg)
  Cumulative leakage b.c. solute net inflow ..................  2.589348E-06  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3613,9 +3613,9 @@
  Cumulative specified head b.c. solute net inflow............ -1.437195E-01  (kg)
  Cumulative flux b.c. solute net inflow .....................  6.153241E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  4.831397E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3624,9 +3624,9 @@
  Cumulative specified head b.c. solute net inflow............ -4.164125E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  2.233670E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  3.433344E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3635,9 +3635,9 @@
  Cumulative specified head b.c. solute net inflow............ -6.835327E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  3.218839E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  3.616460E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3646,9 +3646,9 @@
  Cumulative specified head b.c. solute net inflow............ -4.466467E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  1.818144E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  1.077058E-07  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
                               *** Output at End of Time Step No.    30 ***
@@ -3660,7 +3660,7 @@
 
  Fluid inflow ...............................................  2.283358E+03  (kg/yr)     1.141679E+02  (kg)
  Fluid outflow ..............................................  2.283358E+03  (kg/yr)     1.141679E+02  (kg)
- Change in fluid in region ..................................  0.000000E+00  (kg/yr)     0.000000E+00  (kg)
+ Change in fluid in region ..................................  0 (kg/yr)     0 (kg)
  Residual imbalance ......................................... -8.526513E-13  (kg/yr)    -4.263256E-14  (kg)
  Fractional imbalance .......................................                                   0
 
@@ -3730,9 +3730,9 @@
  Step total specified head b.c. fluid net inflow ............ -1.141679E+02  (kg)
  Step total flux b.c. fluid net inflow ......................  5.000000E+01  (kg)
  Step total leakage b.c. fluid net inflow ...................  6.416790E+01  (kg)
- Step total river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ...........................  0.000000E+00  (kg)
+ Step total river leakage b.c. fluid net inflow .............  0 (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0 (kg)
+ Step total well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -3741,9 +3741,9 @@
  Step total specified head b.c. solute net inflow............ -3.100997E-08  (kg)
  Step total flux b.c. solute net inflow .....................  1.814237E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  1.602196E-08  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3752,9 +3752,9 @@
  Step total specified head b.c. solute net inflow............ -1.951993E-07  (kg)
  Step total flux b.c. solute net inflow .....................  2.626360E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  1.273466E-07  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3763,20 +3763,20 @@
  Step total specified head b.c. solute net inflow............ -3.227665E-03  (kg)
  Step total flux b.c. solute net inflow .....................  3.995611E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  1.018548E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
           Component: Cl        
 
  Step total specified head b.c. solute net inflow............ -2.615796E-03  (kg)
- Step total flux b.c. solute net inflow .....................  0.000000E+00  (kg)
+ Step total flux b.c. solute net inflow .....................  0 (kg)
  Step total leakage b.c. solute net inflow ..................  1.823173E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3785,9 +3785,9 @@
  Step total specified head b.c. solute net inflow............ -2.624892E-03  (kg)
  Step total flux b.c. solute net inflow .....................  1.149608E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  1.475306E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3796,9 +3796,9 @@
  Step total specified head b.c. solute net inflow............ -6.524213E-09  (kg)
  Step total flux b.c. solute net inflow .....................  1.483316E-08  (kg)
  Step total leakage b.c. solute net inflow .................. -2.370581E-11  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
                Cumulative Summary
@@ -3808,7 +3808,7 @@
  Cumulative Fluid outflow ...................................  3.215071E+03  (kg)
  Cumulative Change in fluid in region .......................  6.424826E-03  (kg)
  Current Fluid in region ....................................  1.500051E+03  (kg)
- Current Fluid volume in region .............................  1.500051E+00  (m ^3)
+ Current Fluid volume in region .............................  1.500051e+00  (m ^3)
  Residual imbalance .........................................  5.684342E-12  (kg)
  Fractional imbalance .......................................           0
 
@@ -3884,9 +3884,9 @@
  Cumulative specified head b.c. fluid net inflow ............ -3.201282E+03  (kg)
  Cumulative flux b.c. fluid net inflow ......................  1.500000E+03  (kg)
  Cumulative leakage b.c. fluid net inflow ...................  1.701288E+03  (kg)
- Cumulative river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative well fluid net inflow ...........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative drain leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -3895,9 +3895,9 @@
  Cumulative specified head b.c. solute net inflow............ -9.749823E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  4.553103E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  4.660451E-07  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3906,9 +3906,9 @@
  Cumulative specified head b.c. solute net inflow............ -4.128388E-06  (kg)
  Cumulative flux b.c. solute net inflow .....................  1.935155E-06  (kg)
  Cumulative leakage b.c. solute net inflow ..................  2.844041E-06  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3917,9 +3917,9 @@
  Cumulative specified head b.c. solute net inflow............ -1.502116E-01  (kg)
  Cumulative flux b.c. solute net inflow .....................  6.952363E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  5.035106E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3928,9 +3928,9 @@
  Cumulative specified head b.c. solute net inflow............ -4.685653E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  2.233670E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  3.797978E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3939,9 +3939,9 @@
  Cumulative specified head b.c. solute net inflow............ -7.360305E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  3.448760E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  3.911521E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -3950,9 +3950,9 @@
  Cumulative specified head b.c. solute net inflow............ -4.598657E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  2.114807E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  1.076584E-07  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
                               *** Output at End of Time Step No.    32 ***
@@ -3964,7 +3964,7 @@
 
  Fluid inflow ...............................................  2.283358E+03  (kg/yr)     1.141679E+02  (kg)
  Fluid outflow ..............................................  2.283358E+03  (kg/yr)     1.141679E+02  (kg)
- Change in fluid in region ..................................  0.000000E+00  (kg/yr)     0.000000E+00  (kg)
+ Change in fluid in region ..................................  0 (kg/yr)     0 (kg)
  Residual imbalance ......................................... -8.526513E-13  (kg/yr)    -4.263256E-14  (kg)
  Fractional imbalance .......................................                                   0
 
@@ -4034,9 +4034,9 @@
  Step total specified head b.c. fluid net inflow ............ -1.141679E+02  (kg)
  Step total flux b.c. fluid net inflow ......................  5.000000E+01  (kg)
  Step total leakage b.c. fluid net inflow ...................  6.416790E+01  (kg)
- Step total river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ...........................  0.000000E+00  (kg)
+ Step total river leakage b.c. fluid net inflow .............  0 (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0 (kg)
+ Step total well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -4045,9 +4045,9 @@
  Step total specified head b.c. solute net inflow............ -3.503543E-08  (kg)
  Step total flux b.c. solute net inflow .....................  1.814237E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  2.093580E-08  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -4056,9 +4056,9 @@
  Step total specified head b.c. solute net inflow............ -1.431647E-07  (kg)
  Step total flux b.c. solute net inflow .....................  2.626360E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  6.397723E-08  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -4067,20 +4067,20 @@
  Step total specified head b.c. solute net inflow............ -5.505889E-03  (kg)
  Step total flux b.c. solute net inflow .....................  3.995611E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  3.799388E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
           Component: Cl        
 
  Step total specified head b.c. solute net inflow............ -1.605004E-03  (kg)
- Step total flux b.c. solute net inflow .....................  0.000000E+00  (kg)
+ Step total flux b.c. solute net inflow .....................  0 (kg)
  Step total leakage b.c. solute net inflow ..................  5.893832E-04  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -4089,9 +4089,9 @@
  Step total specified head b.c. solute net inflow............ -2.624921E-03  (kg)
  Step total flux b.c. solute net inflow .....................  1.149608E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  1.475342E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -4100,9 +4100,9 @@
  Step total specified head b.c. solute net inflow............ -1.709143E-08  (kg)
  Step total flux b.c. solute net inflow .....................  1.483316E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  1.287467E-08  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
                Cumulative Summary
@@ -4112,7 +4112,7 @@
  Cumulative Fluid outflow ...................................  3.443407E+03  (kg)
  Cumulative Change in fluid in region .......................  6.424826E-03  (kg)
  Current Fluid in region ....................................  1.500051E+03  (kg)
- Current Fluid volume in region .............................  1.500051E+00  (m ^3)
+ Current Fluid volume in region .............................  1.500051e+00  (m ^3)
  Residual imbalance .........................................  5.684342E-12  (kg)
  Fractional imbalance .......................................           0
 
@@ -4188,9 +4188,9 @@
  Cumulative specified head b.c. fluid net inflow ............ -3.429618E+03  (kg)
  Cumulative flux b.c. fluid net inflow ......................  1.600000E+03  (kg)
  Cumulative leakage b.c. fluid net inflow ...................  1.829624E+03  (kg)
- Cumulative river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative well fluid net inflow ...........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative drain leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -4199,9 +4199,9 @@
  Cumulative specified head b.c. solute net inflow............ -1.043104E-06  (kg)
  Cumulative flux b.c. solute net inflow .....................  4.915950E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  5.079167E-07  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -4210,9 +4210,9 @@
  Cumulative specified head b.c. solute net inflow............ -4.439918E-06  (kg)
  Cumulative flux b.c. solute net inflow .....................  1.987682E-06  (kg)
  Cumulative leakage b.c. solute net inflow ..................  2.971995E-06  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -4221,9 +4221,9 @@
  Cumulative specified head b.c. solute net inflow............ -1.601202E-01  (kg)
  Cumulative flux b.c. solute net inflow .....................  7.751486E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  5.794984E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -4232,9 +4232,9 @@
  Cumulative specified head b.c. solute net inflow............ -5.055600E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  2.233670E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  3.915855E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -4243,9 +4243,9 @@
  Cumulative specified head b.c. solute net inflow............ -7.885288E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  3.678682E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  4.206589E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -4254,9 +4254,9 @@
  Cumulative specified head b.c. solute net inflow............ -4.889315E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  2.411470E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  1.334077E-07  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
                               *** Output at End of Time Step No.    34 ***
@@ -4268,7 +4268,7 @@
 
  Fluid inflow ...............................................  2.283358E+03  (kg/yr)     1.141679E+02  (kg)
  Fluid outflow ..............................................  2.283358E+03  (kg/yr)     1.141679E+02  (kg)
- Change in fluid in region ..................................  0.000000E+00  (kg/yr)     0.000000E+00  (kg)
+ Change in fluid in region ..................................  0 (kg/yr)     0 (kg)
  Residual imbalance ......................................... -8.526513E-13  (kg/yr)    -4.263256E-14  (kg)
  Fractional imbalance .......................................                                   0
 
@@ -4338,9 +4338,9 @@
  Step total specified head b.c. fluid net inflow ............ -1.141679E+02  (kg)
  Step total flux b.c. fluid net inflow ......................  5.000000E+01  (kg)
  Step total leakage b.c. fluid net inflow ...................  6.416790E+01  (kg)
- Step total river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ...........................  0.000000E+00  (kg)
+ Step total river leakage b.c. fluid net inflow .............  0 (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0 (kg)
+ Step total well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -4349,9 +4349,9 @@
  Step total specified head b.c. solute net inflow............ -3.652250E-08  (kg)
  Step total flux b.c. solute net inflow .....................  1.108199E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  2.093580E-08  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -4360,20 +4360,20 @@
  Step total specified head b.c. solute net inflow............ -1.238644E-07  (kg)
  Step total flux b.c. solute net inflow .....................  1.173150E-07  (kg)
  Step total leakage b.c. solute net inflow ..................  6.397723E-08  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
           Component: Br        
 
  Step total specified head b.c. solute net inflow............ -6.347619E-03  (kg)
- Step total flux b.c. solute net inflow .....................  0.000000E+00  (kg)
+ Step total flux b.c. solute net inflow .....................  0 (kg)
  Step total leakage b.c. solute net inflow ..................  3.799388E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -4382,9 +4382,9 @@
  Step total specified head b.c. solute net inflow............ -1.231550E-03  (kg)
  Step total flux b.c. solute net inflow .....................  1.772754E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  5.893832E-04  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -4393,9 +4393,9 @@
  Step total specified head b.c. solute net inflow............ -2.624932E-03  (kg)
  Step total flux b.c. solute net inflow .....................  1.149557E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  1.475342E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -4404,9 +4404,9 @@
  Step total specified head b.c. solute net inflow............ -2.099559E-08  (kg)
  Step total flux b.c. solute net inflow ..................... -3.699699E-09  (kg)
  Step total leakage b.c. solute net inflow ..................  1.287467E-08  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
                Cumulative Summary
@@ -4416,7 +4416,7 @@
  Cumulative Fluid outflow ...................................  3.671743E+03  (kg)
  Cumulative Change in fluid in region .......................  6.424826E-03  (kg)
  Current Fluid in region ....................................  1.500051E+03  (kg)
- Current Fluid volume in region .............................  1.500051E+00  (m ^3)
+ Current Fluid volume in region .............................  1.500051e+00  (m ^3)
  Residual imbalance .........................................  5.911716E-12  (kg)
  Fractional imbalance .......................................           0
 
@@ -4492,9 +4492,9 @@
  Cumulative specified head b.c. fluid net inflow ............ -3.657953E+03  (kg)
  Cumulative flux b.c. fluid net inflow ......................  1.700000E+03  (kg)
  Cumulative leakage b.c. fluid net inflow ...................  1.957960E+03  (kg)
- Cumulative river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative well fluid net inflow ...........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative drain leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -4503,9 +4503,9 @@
  Cumulative specified head b.c. solute net inflow............ -1.115654E-06  (kg)
  Cumulative flux b.c. solute net inflow .....................  5.137590E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  5.497883E-07  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -4514,9 +4514,9 @@
  Cumulative specified head b.c. solute net inflow............ -4.694092E-06  (kg)
  Cumulative flux b.c. solute net inflow .....................  2.222312E-06  (kg)
  Cumulative leakage b.c. solute net inflow ..................  3.099950E-06  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -4525,9 +4525,9 @@
  Cumulative specified head b.c. solute net inflow............ -1.725352E-01  (kg)
  Cumulative flux b.c. solute net inflow .....................  7.751486E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  6.554861E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -4536,9 +4536,9 @@
  Cumulative specified head b.c. solute net inflow............ -5.314342E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  2.588220E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  4.033731E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -4547,9 +4547,9 @@
  Cumulative specified head b.c. solute net inflow............ -8.410274E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  3.908594E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  4.501658E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -4558,9 +4558,9 @@
  Cumulative specified head b.c. solute net inflow............ -5.296231E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  2.337476E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  1.591570E-07  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
                               *** Output at End of Time Step No.    40 ***
@@ -4572,7 +4572,7 @@
 
  Fluid inflow ...............................................  2.283358E+03  (kg/yr)     1.141679E+02  (kg)
  Fluid outflow ..............................................  2.283358E+03  (kg/yr)     1.141679E+02  (kg)
- Change in fluid in region ..................................  0.000000E+00  (kg/yr)     0.000000E+00  (kg)
+ Change in fluid in region ..................................  0 (kg/yr)     0 (kg)
  Residual imbalance ......................................... -8.526513E-13  (kg/yr)    -4.263256E-14  (kg)
  Fractional imbalance .......................................                                   0
 
@@ -4642,9 +4642,9 @@
  Step total specified head b.c. fluid net inflow ............ -1.141679E+02  (kg)
  Step total flux b.c. fluid net inflow ......................  5.000000E+01  (kg)
  Step total leakage b.c. fluid net inflow ...................  6.416790E+01  (kg)
- Step total river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ...........................  0.000000E+00  (kg)
+ Step total river leakage b.c. fluid net inflow .............  0 (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0 (kg)
+ Step total well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -4653,9 +4653,9 @@
  Step total specified head b.c. solute net inflow............ -3.693545E-08  (kg)
  Step total flux b.c. solute net inflow .....................  1.461218E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  2.093580E-08  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -4664,9 +4664,9 @@
  Step total specified head b.c. solute net inflow............ -1.182374E-07  (kg)
  Step total flux b.c. solute net inflow .....................  7.178928E-08  (kg)
  Step total leakage b.c. solute net inflow ..................  6.397723E-08  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -4675,9 +4675,9 @@
  Step total specified head b.c. solute net inflow............ -6.581282E-03  (kg)
  Step total flux b.c. solute net inflow .....................  1.997806E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  3.799388E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -4686,9 +4686,9 @@
  Step total specified head b.c. solute net inflow............ -1.127879E-03  (kg)
  Step total flux b.c. solute net inflow .....................  8.863768E-04  (kg)
  Step total leakage b.c. solute net inflow ..................  5.893832E-04  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -4697,9 +4697,9 @@
  Step total specified head b.c. solute net inflow............ -2.624935E-03  (kg)
  Step total flux b.c. solute net inflow .....................  1.149583E-03  (kg)
  Step total leakage b.c. solute net inflow ..................  1.475342E-03  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
 
@@ -4708,9 +4708,9 @@
  Step total specified head b.c. solute net inflow............ -2.207948E-08  (kg)
  Step total flux b.c. solute net inflow .....................  5.566729E-09  (kg)
  Step total leakage b.c. solute net inflow ..................  1.287467E-08  (kg)
- Step total river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Step total well solute net inflow ..........................  0.000000E+00  (kg)
+ Step total river leakage b.c. solute net inflow ............  0 (kg)
+ Step total drain leakage b.c. solute net inflow ............  0 (kg)
+ Step total well solute net inflow ..........................  0 (kg)
 
 
                Cumulative Summary
@@ -4720,7 +4720,7 @@
  Cumulative Fluid outflow ...................................  4.356750E+03  (kg)
  Cumulative Change in fluid in region .......................  6.424826E-03  (kg)
  Current Fluid in region ....................................  1.500051E+03  (kg)
- Current Fluid volume in region .............................  1.500051E+00  (m ^3)
+ Current Fluid volume in region .............................  1.500051e+00  (m ^3)
  Residual imbalance .........................................  3.637979E-12  (kg)
  Fractional imbalance .......................................           0
 
@@ -4796,9 +4796,9 @@
  Cumulative specified head b.c. fluid net inflow ............ -4.342961E+03  (kg)
  Cumulative flux b.c. fluid net inflow ......................  2.000000E+03  (kg)
  Cumulative leakage b.c. fluid net inflow ...................  2.342967E+03  (kg)
- Cumulative river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative well fluid net inflow ...........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative drain leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative well fluid net inflow ...........................  0 (kg)
 
 
 
@@ -4807,9 +4807,9 @@
  Cumulative specified head b.c. solute net inflow............ -1.337082E-06  (kg)
  Cumulative flux b.c. solute net inflow .....................  6.014320E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  6.754032E-07  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -4818,9 +4818,9 @@
  Cumulative specified head b.c. solute net inflow............ -5.406607E-06  (kg)
  Cumulative flux b.c. solute net inflow .....................  2.653048E-06  (kg)
  Cumulative leakage b.c. solute net inflow ..................  3.483813E-06  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -4829,9 +4829,9 @@
  Cumulative specified head b.c. solute net inflow............ -2.119183E-01  (kg)
  Cumulative flux b.c. solute net inflow .....................  8.950169E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  8.834494E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -4840,9 +4840,9 @@
  Cumulative specified head b.c. solute net inflow............ -5.995709E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  3.120046E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  4.387361E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -4851,9 +4851,9 @@
  Cumulative specified head b.c. solute net inflow............ -9.985235E-02  (kg)
  Cumulative flux b.c. solute net inflow .....................  4.598343E-02  (kg)
  Cumulative leakage b.c. solute net inflow ..................  5.386863E-02  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 
@@ -4862,9 +4862,9 @@
  Cumulative specified head b.c. solute net inflow............ -6.616148E-07  (kg)
  Cumulative flux b.c. solute net inflow .....................  2.671480E-07  (kg)
  Cumulative leakage b.c. solute net inflow ..................  2.364051E-07  (kg)
- Cumulative river leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. solute net inflow ............  0.000000E+00  (kg)
- Cumulative well solute net inflow ..........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative drain leakage b.c. solute net inflow ............  0 (kg)
+ Cumulative well solute net inflow ..........................  0 (kg)
 
 
 

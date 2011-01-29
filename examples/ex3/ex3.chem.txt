@@ -23,15 +23,15 @@ Reading input data for simulation 1.
 	        Kindred and Celia, WRR, 1989, v. 25, p. 1154
 	        Problem 4.1. Aerobic Biodegradation
 	SOLUTION_MASTER_SPECIES
-	        Substrate       Substrate       0       1.0     1.0
+	        Substrate       Substrate       0      1.0     1.0
 	SOLUTION_SPECIES
 	        Substrate = Substrate
-	        log_k   0.0
+	        log_k   0 
 	SOLUTION 1  Initial condition
 	        units   mg/L
 	        pH      7.0     
 	        pe      8
-	        Substrate       0.0
+	        Substrate       0 
 	        O(0)            3
 	SOLUTION 2  Infilling
 	        units   mg/L
@@ -67,8 +67,8 @@ Initial solution 1.	Initial condition
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   1.080e-10
-                    Total carbon (mol/kg)  =   0.000e+00
-                       Total CO2 (mol/kg)  =   0.000e+00
+                    Total carbon (mol/kg)  =   0 
+                       Total CO2 (mol/kg)  =   0 
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -1.080e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -89,7 +89,7 @@ Initial solution 1.	Initial condition
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   1.000e+00     1.744         0         0
+   H2O                    5.551e+01   1.000e+00     1.744         0        0
 H(0)             1.416e-33
    H2                     7.079e-34   7.079e-34   -33.150   -33.150         0
 O(0)             1.875e-04
@@ -100,7 +100,7 @@ O(0)             1.875e-04
 	Phase               SI log IAP  log KT
 
 	H2(g)           -30.00  -33.15   -3.15  H2
-	H2O(g)           -1.51       0    1.51  H2O
+	H2O(g)           -1.51       0   1.51  H2O
 	O2(g)            -1.07   -4.03   -2.96  O2
 
 Initial solution 2.	Infilling
@@ -120,8 +120,8 @@ Initial solution 2.	Infilling
                            Ionic strength  =   1.001e-07
                        Mass of water (kg)  =   1.000e+00
                  Total alkalinity (eq/kg)  =   9.099e-11
-                    Total carbon (mol/kg)  =   0.000e+00
-                       Total CO2 (mol/kg)  =   0.000e+00
+                    Total carbon (mol/kg)  =   0 
+                       Total CO2 (mol/kg)  =   0 
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -9.099e-11
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
@@ -142,7 +142,7 @@ Initial solution 2.	Infilling
 
    OH-                    1.001e-07   1.001e-07    -6.999    -7.000         0
    H+                     1.000e-07   1.000e-07    -7.000    -7.000         0
-   H2O                    5.551e+01   9.998e-01     1.744         0         0
+   H2O                    5.551e+01   9.998e-01     1.744         0        0
 H(0)             1.416e-33
    H2                     7.079e-34   7.079e-34   -33.150   -33.150         0
 O(0)             1.875e-04
@@ -155,7 +155,7 @@ Substrate        1.000e-02
 	Phase               SI log IAP  log KT
 
 	H2(g)           -30.00  -33.15   -3.15  H2
-	H2O(g)           -1.51       0    1.51  H2O
+	H2O(g)           -1.51       0   1.51  H2O
 	O2(g)            -1.07   -4.03   -2.96  O2
 
 ------------------

@@ -21,16 +21,16 @@ Processing flow and transport data file.
 	        well_diameter                        in
 	        well_flow_rate                       L/day
 	GRID
-	        uniform x    0    90000    16
-	        uniform y    0    48000    9
-	        uniform z    0    400      5
+	        uniform x    0   90000    16
+	        uniform y    0   48000    9
+	        uniform z    0   400      5
 	        print_orientation                    XY 
 	SOLUTE_TRANSPORT true
 	STEADY_FLOW true
 	        head_tolerance                       1e-6
 	        flow_balance_tolerance               1e-3
 	MEDIA
-	        zone   0. 0. 0. 90000.  48000. 400.
+	        zone   0 0. 0 90000.  48000. 400.
 	                porosity                     0.22
 	                long_dispersivity            2000.
 	                horizontal_dispersivity      50.
@@ -39,7 +39,7 @@ Processing flow and transport data file.
 	                ky                           1.5e-5
 	                kz                           1.5e-7
 	                storage                      0
-	        zone   48000. 0. 0. 90000. 48000. 100.
+	        zone   48000. 0 0. 90000. 48000. 100.
 	                active                       0
 	RIVER 1 Little River
 	        point  44000. 15000.
@@ -47,77 +47,77 @@ Processing flow and transport data file.
 	                depth                        1.
 	                bed_thickness                1.
 	                bed_hydraulic_conductivity   1.
-	                head                         0         335.
-	                solution                     0         1
-	        point  44000. 0.
-	        point  90000. 0.
+	                head                         0        335.
+	                solution                     0        1
+	        point  44000. 0 
+	        point  90000. 0 
 	                width                        200.
 	                depth                        1.
 	                bed_thickness                1.
 	                bed_hydraulic_conductivity   1.
-	                head                         0         275.
-	                solution                     0         1
+	                head                         0        275.
+	                solution                     0        1
 	RIVER 2 North Fork River
 	        point  30000. 36000.
 	                width                        200.
 	                depth                        1.
 	                bed_thickness                1.
 	                bed_hydraulic_conductivity   1
-	                head                         0         335.
-	                solution                     0         1
+	                head                         0        335.
+	                solution                     0        1
 	        point  30000. 48000.
 	        point  90000. 48000.
 	                width                        200.
 	                depth                        1.
 	                bed_thickness                1.
 	                bed_hydraulic_conductivity   1
-	                head                         0         280.
-	                solution                     0         1
+	                head                         0        280.
+	                solution                     0        1
 	RIVER 3 North Canadian River
 	        point  60000. 30000.
 	                width                        200.
 	                depth                        1.
 	                bed_thickness                1.
 	                bed_hydraulic_conductivity   1
-	                head                         0         350.
-	                solution                     0         1
+	                head                         0        350.
+	                solution                     0        1
 	        point  90000. 20000.
 	                width                        200.
 	                depth                        1.
 	                bed_thickness                1.
 	                bed_hydraulic_conductivity   1
-	                head                         0         305.
-	                solution                     0         1
+	                head                         0        305.
+	                solution                     0        1
 	FLUX_BC
 	        zone   27000. 3000. 400.  90000. 45000. 400.
-	                flux                         0         -0.055
-	                associated_solution          0         1
+	                flux                         0        -0.055
+	                associated_solution          0        1
 	SPECIFIED_HEAD_BC
 	        zone   30000. 14000 300. 32000.  20000.  400.
-	                head                         0         348.
-	                associated_solution_composition          0         1
+	                head                         0        348.
+	                associated_solution_composition          0        1
 	LEAKY_BC
-	        zone   0. 48000. 0. 27000. 48000. 400.
+	        zone   0 48000. 0 27000. 48000. 400.
 	                hydraulic_conductivity                    1.5e-5
 	                thickness                   30000.
-	                head                         0         305.0
-	                associated_solution                   0         1
-	       zone 0 0 0 39000 0 400
+	                head                         0        305.0
+	                associated_solution                   0        1
+	       zone 0 0 39000 0 400
 	                hydraulic_conductivity       1.5E-5
 	                thickness                    20000
-	                head                         0         320
-	                associated_solution          0         2
+	                head                         0        320
+	                associated_solution          0        2
 	FREE_SURFACE_BC true
 	WELL 1 Observation well 1 in arsenic zone
 	        12000 36000
 	                diameter       2                               # inches
-	                pumping                      0         1       # L/day
+	                pumping                      0        1       # L/day
 	                elevation      90 110                          # m
 	HEAD_IC
-	        zone   0. 0. 0. 90000. 48000. 400.
+	        zone   0 0. 0 90000. 48000. 400.
 	                head   380.
 	CHEMISTRY_IC
-	        zone   0. 0. 0. 90000. 48000. 400.
+	        zone   0 0. 0 90000. 48000. 400.
 	                solution               2
 	                equilibrium_phases     2
 	                exchange               2
@@ -125,10 +125,10 @@ Processing flow and transport data file.
 	SOLUTION_METHOD
 	        iterative_solver       true
 	        tolerance              1e-10
-	        space_differencing     0.
+	        space_differencing     0 
 	        time_differencing      1.
 	TIME_CONTROL
-	        delta_time     0               2000    yr
+	        delta_time     0              2000    yr
 	        end_time                       10000   yr
 	PRINT_INITIAL
 	        velocities             true
@@ -144,7 +144,7 @@ Processing flow and transport data file.
 		force_chemistry_print			end
 	PRINT_LOCATIONS
 	        xyz_chemistry
-	               zone   0 0 0  90000 48000 0
+	               zone   0 0  90000 48000 0
 	               print 0
 		chemistry
 		       sample_grid X 3
@@ -230,23 +230,23 @@ Minimum time step required ...................................... DTIMMN    2.0 
 Maximum time step allowed ....................................... DTIMMX   2.00E+06(yr )
 
 Beginning steady state time step no.      1
-     Maximum change in potentiometric head ..   -1.0352E+02     (m) at location ( 9.000E+04,     0    ,  400.    )(m)
-     Fractional flow residual ...............   -1.9055E+00
+     Maximum change in potentiometric head ..   -1.0352E+02     (m) at location ( 9.000E+04,     0   ,  400.    )(m)
+     Fractional flow residual ...............   -1.9055e+00
 
 Beginning steady state time step no.      2
-     Maximum change in potentiometric head ..   -1.1374E+01     (m) at location ( 9.000E+04,     0    ,  300.    )(m)
-     Fractional flow residual ...............   -1.4562E+00
+     Maximum change in potentiometric head ..   -1.1374E+01     (m) at location ( 9.000E+04,     0   ,  300.    )(m)
+     Fractional flow residual ...............   -1.4562e+00
 
 Beginning steady state time step no.      3
-     Maximum change in potentiometric head ..   -3.8408E+00     (m) at location ( 3.600E+04,     0    ,  400.    )(m)
+     Maximum change in potentiometric head ..   -3.8408e+00     (m) at location ( 3.600E+04,     0   ,  400.    )(m)
      Fractional flow residual ...............   -7.5937E-01
 
 Beginning steady state time step no.      4
-     Maximum change in potentiometric head ..   -5.8177E+00     (m) at location ( 3.600E+04,     0    ,  400.    )(m)
+     Maximum change in potentiometric head ..   -5.8177e+00     (m) at location ( 3.600E+04,     0   ,  400.    )(m)
      Fractional flow residual ...............   -7.1431E-01
 
 Beginning steady state time step no.      5
-     Maximum change in potentiometric head ..   -8.7264E+00     (m) at location ( 9.000E+04, 6.000E+03,  400.    )(m)
+     Maximum change in potentiometric head ..   -8.7264e+00     (m) at location ( 9.000E+04, 6.000E+03,  400.    )(m)
      Fractional flow residual ...............   -6.4041E-01
 
 Beginning steady state time step no.      6
@@ -262,39 +262,39 @@ Beginning steady state time step no.      8
      Fractional flow residual ...............   -2.3298E-01
 
 Beginning steady state time step no.      9
-     Maximum change in potentiometric head ..   -1.1976E+01     (m) at location (     0    , 3.000E+04,  400.    )(m)
+     Maximum change in potentiometric head ..   -1.1976E+01     (m) at location (     0   , 3.000E+04,  400.    )(m)
      Fractional flow residual ...............   -1.0871E-01
 
 Beginning steady state time step no.     10
-     Maximum change in potentiometric head ..   -1.0996E+01     (m) at location (     0    , 2.400E+04,  400.    )(m)
+     Maximum change in potentiometric head ..   -1.0996E+01     (m) at location (     0   , 2.400E+04,  400.    )(m)
      Fractional flow residual ...............   -3.8084E-02
 
 Beginning steady state time step no.     11
-     Maximum change in potentiometric head ..   -6.1673E+00     (m) at location (     0    , 2.400E+04,  300.    )(m)
+     Maximum change in potentiometric head ..   -6.1673e+00     (m) at location (     0   , 2.400E+04,  300.    )(m)
      Fractional flow residual ...............   -9.2793E-03
 
 Beginning steady state time step no.     12
-     Maximum change in potentiometric head ..   -1.9826E+00     (m) at location (     0    , 2.400E+04,  300.    )(m)
+     Maximum change in potentiometric head ..   -1.9826e+00     (m) at location (     0   , 2.400E+04,  300.    )(m)
      Fractional flow residual ...............   -1.4007E-03
 
 Beginning steady state time step no.     13
-     Maximum change in potentiometric head ..   -3.3812E-01     (m) at location (     0    , 2.400E+04,  300.    )(m)
+     Maximum change in potentiometric head ..   -3.3812E-01     (m) at location (     0   , 2.400E+04,  300.    )(m)
      Fractional flow residual ...............   -1.1539E-04
 
 Beginning steady state time step no.     14
-     Maximum change in potentiometric head ..   -2.8700E-02     (m) at location (     0    , 3.000E+04,  300.    )(m)
+     Maximum change in potentiometric head ..   -2.8700E-02     (m) at location (     0   , 3.000E+04,  300.    )(m)
      Fractional flow residual ...............   -4.6880E-06
 
 Beginning steady state time step no.     15
      Current time step length ...................................   1.638E+04 (yr)
           No. of solver iterations, Relative residual:   12      4.0774386E-11
-     Maximum change in potentiometric head ..   -1.1224E-03     (m) at location (     0    , 3.000E+04,  300.    )(m)
+     Maximum change in potentiometric head ..   -1.1224E-03     (m) at location (     0   , 3.000E+04,  300.    )(m)
      Fractional flow residual ...............   -8.3184E-08
 
 Beginning steady state time step no.     16
      Current time step length ...................................   3.277E+04 (yr)
           No. of solver iterations, Relative residual:   12      5.0931325E-11
-     Maximum change in potentiometric head ..   -1.6560E-05     (m) at location (     0    , 4.200E+04,  300.    )(m)
+     Maximum change in potentiometric head ..   -1.6560E-05     (m) at location (     0   , 4.200E+04,  300.    )(m)
      Fractional flow residual ...............   -4.3654E-10
 
 Beginning steady state time step no.     17
@@ -411,7 +411,7 @@ Beginning time step no.      5
 
      End of Time Step No.     5
      Time ..................................................    10000.0     (yr)
-     Maximum change in potentiometric head   0.0000E+00      (m ) at location ( 6.000E+04, 3.600E+04,  400.    )(m)
+     Maximum change in potentiometric head   0     (m ) at location ( 6.000E+04, 3.600E+04,  400.    )(m)
      Maximum change in H .................. -1.3594E-02 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  300.    )(m)
      Maximum change in O .................. -3.5194E-02 (mol/kgw) at location ( 9.000E+04, 1.200E+04,  300.    )(m)
      Maximum change in As ................. -2.0546E-08 (mol/kgw) at location ( 2.400E+04, 2.400E+04,  300.    )(m)

@@ -7,7 +7,7 @@
                               X-Direction Node Coordinates    (m)
 
            1           2           3           4           5           6           7           8           9          10
-              0     6000.00    12000.00    18000.00    24000.00    30000.00    36000.00    42000.00    48000.00    54000.00
+              0    6000.00    12000.00    18000.00    24000.00    30000.00    36000.00    42000.00    48000.00    54000.00
 
 
 
@@ -20,7 +20,7 @@
                               Y-Direction Node Coordinates   (m)
 
            1           2           3           4           5           6           7           8           9
-              0     6000.00    12000.00    18000.00    24000.00    30000.00    36000.00    42000.00    48000.00
+              0    6000.00    12000.00    18000.00    24000.00    30000.00    36000.00    42000.00    48000.00
 
 
 
@@ -28,14 +28,14 @@
                               Z-Direction Node Coordinates   (m)
 
            1           2           3
-              0      200.00      400.00
+              0     200.00      400.00
 
 
 
                               *** Output at End of Steady State Iteration No.     1 ***
 
-     Time .......................................................       0      (yr)
-     Maximum change in potentiometric head ... -1.0352E+02    (m ) at location ( 9.000E+04,     0    ,  400.    )(m)
+     Time .......................................................       0     (yr)
+     Maximum change in potentiometric head ... -1.0352E+02    (m ) at location ( 9.000E+04,     0   ,  400.    )(m)
 
                               Fluid Potentiometric Head (m)
 
@@ -163,8 +163,8 @@
 
                               *** Output at End of Steady State Iteration No.     2 ***
 
-     Time .......................................................       0      (yr)
-     Maximum change in potentiometric head ... -1.0103E+01    (m ) at location ( 9.000E+04,     0    ,  200.    )(m)
+     Time .......................................................       0     (yr)
+     Maximum change in potentiometric head ... -1.0103E+01    (m ) at location ( 9.000E+04,     0   ,  200.    )(m)
 
                               Fluid Potentiometric Head (m)
 
@@ -292,8 +292,8 @@
 
                               *** Output at End of Steady State Iteration No.     3 ***
 
-     Time .......................................................       0      (yr)
-     Maximum change in potentiometric head ... -3.7815E+00    (m ) at location ( 3.600E+04,     0    ,  400.    )(m)
+     Time .......................................................       0     (yr)
+     Maximum change in potentiometric head ... -3.7815e+00    (m ) at location ( 3.600E+04,     0   ,  400.    )(m)
 
                               Fluid Potentiometric Head (m)
 
@@ -421,8 +421,8 @@
 
                               *** Output at End of Steady State Iteration No.     4 ***
 
-     Time .......................................................       0      (yr)
-     Maximum change in potentiometric head ... -5.6438E+00    (m ) at location ( 3.600E+04,     0    ,  400.    )(m)
+     Time .......................................................       0     (yr)
+     Maximum change in potentiometric head ... -5.6438e+00    (m ) at location ( 3.600E+04,     0   ,  400.    )(m)
 
                               Fluid Potentiometric Head (m)
 
@@ -550,8 +550,8 @@
 
                               *** Output at End of Steady State Iteration No.     5 ***
 
-     Time .......................................................       0      (yr)
-     Maximum change in potentiometric head ... -7.3791E+00    (m ) at location ( 2.400E+04, 4.800E+04,  400.    )(m)
+     Time .......................................................       0     (yr)
+     Maximum change in potentiometric head ... -7.3791e+00    (m ) at location ( 2.400E+04, 4.800E+04,  400.    )(m)
 
                               Fluid Potentiometric Head (m)
 
@@ -679,8 +679,8 @@
 
                               *** Output at End of Steady State Iteration No.     6 ***
 
-     Time .......................................................       0      (yr)
-     Maximum change in potentiometric head ... -8.0429E+00    (m ) at location ( 2.400E+04, 4.800E+04,  400.    )(m)
+     Time .......................................................       0     (yr)
+     Maximum change in potentiometric head ... -8.0429e+00    (m ) at location ( 2.400E+04, 4.800E+04,  400.    )(m)
 
                               Fluid Potentiometric Head (m)
 
@@ -808,8 +808,8 @@
 
                               *** Output at End of Steady State Iteration No.     7 ***
 
-     Time .......................................................       0      (yr)
-     Maximum change in potentiometric head ... -8.0160E+00    (m ) at location ( 1.800E+04, 4.800E+04,  400.    )(m)
+     Time .......................................................       0     (yr)
+     Maximum change in potentiometric head ... -8.0160e+00    (m ) at location ( 1.800E+04, 4.800E+04,  400.    )(m)
 
                               Fluid Potentiometric Head (m)
 
@@ -937,8 +937,8 @@
 
                               *** Output at End of Steady State Iteration No.     8 ***
 
-     Time .......................................................       0      (yr)
-     Maximum change in potentiometric head ... -9.2843E+00    (m ) at location ( 6.000E+03, 4.200E+04,  400.    )(m)
+     Time .......................................................       0     (yr)
+     Maximum change in potentiometric head ... -9.2843e+00    (m ) at location ( 6.000E+03, 4.200E+04,  400.    )(m)
 
                               Fluid Potentiometric Head (m)
 
@@ -1066,8 +1066,8 @@
 
                               *** Output at End of Steady State Iteration No.     9 ***
 
-     Time .......................................................       0      (yr)
-     Maximum change in potentiometric head ... -1.1500E+01    (m ) at location (     0    , 3.000E+04,  400.    )(m)
+     Time .......................................................       0     (yr)
+     Maximum change in potentiometric head ... -1.1500E+01    (m ) at location (     0   , 3.000E+04,  400.    )(m)
 
                               Fluid Potentiometric Head (m)
 
@@ -1195,8 +1195,8 @@
 
                               *** Output at End of Steady State Iteration No.    10 ***
 
-     Time .......................................................       0      (yr)
-     Maximum change in potentiometric head ... -1.0596E+01    (m ) at location (     0    , 2.400E+04,  400.    )(m)
+     Time .......................................................       0     (yr)
+     Maximum change in potentiometric head ... -1.0596E+01    (m ) at location (     0   , 2.400E+04,  400.    )(m)
 
                               Fluid Potentiometric Head (m)
 
@@ -1324,8 +1324,8 @@
 
                               *** Output at End of Steady State Iteration No.    11 ***
 
-     Time .......................................................       0      (yr)
-     Maximum change in potentiometric head ... -6.0572E+00    (m ) at location (     0    , 2.400E+04,  400.    )(m)
+     Time .......................................................       0     (yr)
+     Maximum change in potentiometric head ... -6.0572e+00    (m ) at location (     0   , 2.400E+04,  400.    )(m)
 
                               Fluid Potentiometric Head (m)
 
@@ -1453,8 +1453,8 @@
 
                               *** Output at End of Steady State Iteration No.    12 ***
 
-     Time .......................................................       0      (yr)
-     Maximum change in potentiometric head ... -1.9840E+00    (m ) at location (     0    , 2.400E+04,  400.    )(m)
+     Time .......................................................       0     (yr)
+     Maximum change in potentiometric head ... -1.9840e+00    (m ) at location (     0   , 2.400E+04,  400.    )(m)
 
                               Fluid Potentiometric Head (m)
 
@@ -1582,8 +1582,8 @@
 
                               *** Output at End of Steady State Iteration No.    13 ***
 
-     Time .......................................................       0      (yr)
-     Maximum change in potentiometric head ... -3.4542E-01    (m ) at location (     0    , 2.400E+04,  400.    )(m)
+     Time .......................................................       0     (yr)
+     Maximum change in potentiometric head ... -3.4542E-01    (m ) at location (     0   , 2.400E+04,  400.    )(m)
 
                               Fluid Potentiometric Head (m)
 
@@ -1711,8 +1711,8 @@
 
                               *** Output at End of Steady State Iteration No.    14 ***
 
-     Time .......................................................       0      (yr)
-     Maximum change in potentiometric head ... -2.9734E-02    (m ) at location (     0    , 3.000E+04,  400.    )(m)
+     Time .......................................................       0     (yr)
+     Maximum change in potentiometric head ... -2.9734E-02    (m ) at location (     0   , 3.000E+04,  400.    )(m)
 
                               Fluid Potentiometric Head (m)
 
@@ -1840,8 +1840,8 @@
 
                               *** Output at End of Steady State Iteration No.    15 ***
 
-     Time .......................................................       0      (yr)
-     Maximum change in potentiometric head ... -1.1525E-03    (m ) at location (     0    , 3.000E+04,  400.    )(m)
+     Time .......................................................       0     (yr)
+     Maximum change in potentiometric head ... -1.1525E-03    (m ) at location (     0   , 3.000E+04,  400.    )(m)
 
                               Fluid Potentiometric Head (m)
 
@@ -1969,8 +1969,8 @@
 
                               *** Output at End of Steady State Iteration No.    16 ***
 
-     Time .......................................................       0      (yr)
-     Maximum change in potentiometric head ... -1.5938E-05    (m ) at location (     0    , 4.200E+04,  400.    )(m)
+     Time .......................................................       0     (yr)
+     Maximum change in potentiometric head ... -1.5938E-05    (m ) at location (     0   , 4.200E+04,  400.    )(m)
 
                               Fluid Potentiometric Head (m)
 
@@ -2098,7 +2098,7 @@
 
                               *** Output at End of Steady State Iteration No.    17 ***
 
-     Time .......................................................       0      (yr)
+     Time .......................................................       0     (yr)
      Maximum change in potentiometric head ...  1.4897E-07    (m ) at location ( 1.800E+04, 3.000E+04,  400.    )(m)
 
                               Fluid Potentiometric Head (m)

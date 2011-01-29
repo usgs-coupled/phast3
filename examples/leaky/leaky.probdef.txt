@@ -47,7 +47,7 @@
                               X-Direction Node Coordinates    (m)
 
            1           2           3           4           5
-              0      100.00      200.00      300.00      400.00
+              0     100.00      200.00      300.00      400.00
 
 
 
@@ -55,7 +55,7 @@
                               Y-Direction Node Coordinates   (m)
 
            1           2           3           4           5
-              0      100.00      200.00      300.00      400.00
+              0     100.00      200.00      300.00      400.00
 
 
 
@@ -63,7 +63,7 @@
                               Z-Direction Node Coordinates   (m)
 
            1           2
-              0      100.00
+              0     100.00
 
 
 
@@ -73,9 +73,9 @@
 
                                    *** Fluid Properties ***
                                         Physical
-                    Fluid compressibility ...................................... BP ...   0.00E+00  (1/Pa )
+                    Fluid compressibility ...................................... BP ...   0 (1/Pa )
 
-                    Reference pressure for density ............................. P0 ..         0.0  (Pa )
+                    Reference pressure for density ............................. P0 ..         0  (Pa )
                     Reference temperature for density .......................... T0 ..        15.0  (Deg.C)
                     Fluid density .............................................. DENF0  1000.0      (kg/m^3)
 
@@ -96,7 +96,7 @@
 
                                         *** Transient Data ***
 
-     Time ..............................       0      (s)
+     Time ..............................       0     (s)
 
 
                                         *** Calculation Information ***
