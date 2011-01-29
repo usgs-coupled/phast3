@@ -18,13 +18,13 @@ Processing flow and transport data file.
 	        well_diameter                        in
 	        well_flow_rate                       L/day
 	GRID
-	        uniform x    0    90000    16
-	        uniform y    0    48000    9
-	        uniform z    0    400      5
+	        uniform x    0   90000    16
+	        uniform y    0   48000    9
+	        uniform z    0   400      5
 	        print_orientation                    XY 
 	SOLUTE_TRANSPORT false
 	MEDIA
-	        zone   0. 0. 0. 90000.  48000. 400.
+	        zone   0 0. 0 90000.  48000. 400.
 	                porosity                     0.22
 	                long_dispersivity            2000.
 	                horizontal_dispersivity      50.
@@ -35,28 +35,28 @@ Processing flow and transport data file.
 	                storage                      0
 		zone 84000  42000  300   90000 48000 400  
 		        active 0
-		zone 0  0  0   6000 48000 100
+		zone 0 0  0  6000 48000 100
 		        active 0
 	FLUX_BC
-	        zone   84000  0 0 90000 48000 400
+	        zone   84000  0 90000 48000 400
 			face X
-	                flux  	   0  10    # m/yr
+	                flux  	   0 10    # m/yr
 	LEAKY_BC
-	        zone   0. 0. 0. 6000. 48000. 400.
+	        zone   0 0. 0 6000. 48000. 400.
 	                hydraulic_conductivity                    1.5e-5
 	                thickness                   30000.
-	                head                         0         305.0
-	                associated_solution                   0         1
+	                head                         0        305.0
+	                associated_solution                   0        1
 	FREE_SURFACE_BC false
 	HEAD_IC
-	        zone   0. 0. 0. 90000. 48000. 400.
+	        zone   0 0. 0 90000. 48000. 400.
 	                head  400.
 	SOLUTION_METHOD
 	        iterative_solver       false
-	        space_differencing     0.
+	        space_differencing     0 
 	        time_differencing      1.
 	TIME_CONTROL
-	        delta_time     0               2000    yr
+	        delta_time     0              2000    yr
 	        end_time                       10000   yr
 	PRINT_INITIAL
 	        velocities             true

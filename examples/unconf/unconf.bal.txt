@@ -12,7 +12,7 @@
 
  Fluid inflow ...............................................  1.388400E+05  (kg/s)     5.997888E+09  (kg)
  Fluid outflow ..............................................  1.388440E+05  (kg/s)     5.998059E+09  (kg)
- Change in fluid in region .................................. -3.959480E+00  (kg/s)    -1.710495E+05  (kg)
+ Change in fluid in region .................................. -3.959480e+00  (kg/s)    -1.710495E+05  (kg)
  Residual imbalance ......................................... -2.207579E-11  (kg/s)    -9.536743E-07  (kg)
  Fractional imbalance .......................................                                   0
 
@@ -21,10 +21,10 @@
 
  Step total specified head b.c. fluid net inflow ............ -5.998059E+09  (kg)
  Step total flux b.c. fluid net inflow ......................  5.997888E+09  (kg)
- Step total leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
- Step total river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ...........................  0.000000E+00  (kg)
+ Step total leakage b.c. fluid net inflow ...................  0 (kg)
+ Step total river leakage b.c. fluid net inflow .............  0 (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0 (kg)
+ Step total well fluid net inflow ...........................  0 (kg)
 
 
                Cumulative Summary
@@ -43,10 +43,10 @@
 
  Cumulative specified head b.c. fluid net inflow ............ -2.317221E+10  (kg)
  Cumulative flux b.c. fluid net inflow ......................  2.399155E+10  (kg)
- Cumulative leakage b.c. fluid net inflow ...................  0.000000E+00  (kg)
- Cumulative river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative well fluid net inflow ...........................  0.000000E+00  (kg)
+ Cumulative leakage b.c. fluid net inflow ...................  0 (kg)
+ Cumulative river leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative drain leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative well fluid net inflow ...........................  0 (kg)
 
 
 

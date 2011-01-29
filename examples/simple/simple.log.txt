@@ -37,7 +37,7 @@ Processing flow and transport data file.
 		chemistry_dimensions X
 		print_orientation XY
 	MEDIA
-		zone 0 0 0 10 1 1
+		zone 0 0 10 1 1
 			active                   1
 			kx                       1
 			ky                       1
@@ -48,22 +48,22 @@ Processing flow and transport data file.
 			horizontal_dispersivity  0.1
 			vertical_dispersivity    0.1
 	SPECIFIED_HEAD_BC
-		zone 0 0 0 0 1 1
+		zone 0 0 0 1 1
 			head
 				0	10
 			associated_solution_composition
 				0	2
 	SPECIFIED_HEAD_BC
-		zone 10 0 0 10 1 1
+		zone 10 0 10 1 1
 			head
-				0	0
+			 0 
 			associated_solution_composition
 				0	2
 	HEAD_IC
-		zone 0 0 0 10 1 1
-			head                     X 10 0 0 10
+		zone 0 0 10 1 1
+			head                     X 10 0 10
 	CHEMISTRY_IC
-		zone 0 0 0 10 1 1
+		zone 0 0 10 1 1
 			solution            1
 	PRINT_INITIAL
 		boundary_conditions        false
@@ -162,7 +162,7 @@ Minimum time step required ...................................... DTIMMN   1.00E
 Maximum time step allowed ....................................... DTIMMX   1.00E+04(yr )
 
 Beginning steady state time step no.      1
-     Maximum change in potentiometric head ..   -1.0773E-14     (m) at location (  3.90    ,     0    ,     0    )(m)
+     Maximum change in potentiometric head ..   -1.0773E-14     (m) at location (  3.90    ,     0   ,     0   )(m)
      Fractional flow residual ...............    1.2831E-15
 
 Done with steady-state flow.
@@ -783,13 +783,13 @@ Beginning time step no.     50
 
      End of Time Step No.    50
      Time ..................................................   0.500000     (yr)
-     Maximum change in potentiometric head   0.0000E+00      (m ) at location (  10.0    ,  1.00    ,  1.00    )(m)
+     Maximum change in potentiometric head   0     (m ) at location (  10.0    ,  1.00    ,  1.00    )(m)
      Maximum change in H .................. -4.0404E-09 (mol/kgw) at location (  5.00    ,  1.00    ,  1.00    )(m)
-     Maximum change in O ..................  3.2068E-09 (mol/kgw) at location (  5.00    ,     0    ,  1.00    )(m)
+     Maximum change in O ..................  3.2068E-09 (mol/kgw) at location (  5.00    ,     0   ,  1.00    )(m)
      Maximum change in Br ................. -2.8861E-05 (mol/kgw) at location (  5.00    ,  1.00    ,  1.00    )(m)
      Maximum change in Cl .................  2.8860E-05 (mol/kgw) at location (  5.00    ,  1.00    ,  1.00    )(m)
      Maximum change in Na ................. -1.2834E-09 (mol/kgw) at location (  5.00    ,  1.00    ,  1.00    )(m)
-     Maximum change in Charge ............. -1.0613E-08 (mol/kgw) at location (  5.00    ,     0    ,  1.00    )(m)
+     Maximum change in Charge ............. -1.0613E-08 (mol/kgw) at location (  5.00    ,     0   ,  1.00    )(m)
 Done with transient simulation.
 
                              ***** Simulation Completed *****

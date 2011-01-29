@@ -8,13 +8,14 @@ ifeq ($(USER), charlton)
 endif
   TEST=$(TOPDIR)/examples
   PHAST_INPUT=$(TOPDIR)/src/phastinput/phastinput
-#  PHAST=$(TOPDIR)/src/phast/serial_lahey/phast
+  PHAST=$(TOPDIR)/src/phast/serial_lahey/phast
 #  PHAST=$(TOPDIR)/src/phast/serial_gfortran/phast
-  PHAST=$(TOPDIR)/src/phast/serial_intel/phast
+#  PHAST=$(TOPDIR)/src/phast/serial_intel/phast
 #  PHAST=$(TOPDIR)/src/phast/serial_intel_debug/phast
 #  PHAST=$(TOPDIR)/src/phast/serial_gfortran_64/phast
 #  PHAST=$(TOPDIR)/src/phast/serial_intel_64/phast
 #  PHAST=$(TOPDIR)/src/phast/serial_intel_64_debug/phast
+#  PHAST=$(TOPDIR)/para_trans_chem/src/phast/serial_lahey/phast
   RUN=$(TEST)/run
 endif
 

@@ -48,7 +48,7 @@
                               X-Direction Node Coordinates    (m)
 
            1           2           3           4           5           6           7           8           9          10
-              0        0.10        0.20        0.30        0.40        0.50        0.60        0.70        0.80        0.90
+              0       0.10        0.20        0.30        0.40        0.50        0.60        0.70        0.80        0.90
 
 
 
@@ -106,7 +106,7 @@
                               Y-Direction Node Coordinates   (m)
 
            1           2
-              0        1.00
+              0       1.00
 
 
 
@@ -114,7 +114,7 @@
                               Z-Direction Node Coordinates   (m)
 
            1           2
-              0        1.00
+              0       1.00
 
 
 
@@ -124,9 +124,9 @@
 
                                    *** Fluid Properties ***
                                         Physical
-                    Fluid compressibility ...................................... BP ...   0.00E+00  (1/Pa )
+                    Fluid compressibility ...................................... BP ...   0 (1/Pa )
 
-                    Reference pressure for density ............................. P0 ..         0.0  (Pa )
+                    Reference pressure for density ............................. P0 ..         0  (Pa )
                     Reference temperature for density .......................... T0 ..        15.0  (Deg.C)
                     Fluid density .............................................. DENF0  1000.0      (kg/m^3)
                     Fluid density at solute  mass fraction of  0.0500........... DENF1  1000.0      (kg/m^3)
@@ -153,7 +153,7 @@
           Maximum time step allowed ....................................... DTIMMX   1.00E+04  (yr )
 
 
-               Initial fluid in region ...............................  1.000090E+03  (kg) ;  1.000090E+00  (m^3)
+               Initial fluid in region ...............................  1.000090E+03  (kg) ;  1.000090e+00  (m^3)
 
                Initial solute in region:H         ....................  3.628800E-07  (kg)
 
@@ -161,7 +161,7 @@
 
                Initial solute in region:Br        ....................  7.991941E-02  (kg)
 
-               Initial solute in region:Cl        ....................  0.000000E+00  (kg)
+               Initial solute in region:Cl        ....................  0 (kg)
 
                Initial solute in region:Na        ....................  2.299424E-02  (kg)
 
@@ -173,7 +173,7 @@
 
                                         *** Transient Data ***
 
-     Time ..............................       0      (yr)
+     Time ..............................       0     (yr)
 
 
                                         *** Calculation Information ***

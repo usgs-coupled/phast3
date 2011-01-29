@@ -19,16 +19,16 @@ Processing flow and transport data file.
 	        specific_storage                   1/m
 	        dispersivity                       m
 	GRID
-	        uniform X  0.0    100    26        # 4.0  m spacing
-	        uniform Y  0.0    20.5   2
+	        uniform X  0    100    26        # 4.0  m spacing
+	        uniform Y  0    20.5   2
 	        overlay_uniform Y                  
 	                    0.5    19.5   20        # 1.0  m spacing
-	        uniform Z  0.0    12.5   2
+	        uniform Z  0    12.5   2
 	        overlay_uniform Z
 	                    0.5    11.5   12        # 1.0  m spacing
 	        print_orientation XY
 	MEDIA
-	        zone   0 0 0 100 41 25
+	        zone   0 0 100 41 25
 	                kx                         2
 	                ky                         2
 	                kz                         2
@@ -39,19 +39,19 @@ Processing flow and transport data file.
 	                vertical_dispersivity      0.15
 	FREE_SURFACE_BC false
 	SPECIFIED_HEAD_BC
-	        zone   0 0 0 0 41 25
-	                head                       0   1
-	                fixed_solution_composition             0   1
+	        zone   0 0 0 41 25
+	                head                       0  1
+	                fixed_solution_composition             0  1
 	        zone   0 15 10 0 26 15
-	                fixed_solution_composition             0   2
-	        zone   100 0 0 100 41 25
-	                head                       0   0
-	                associated_solution_composition        0   1
+	                fixed_solution_composition             0  2
+	        zone   100 0 100 41 25
+	                head                       0  0
+	                associated_solution_composition        0  1
 	HEAD_IC
-	        zone   0 0 0 100 41 25
-	                head   X 1.0 0.0 0.0 100.0
+	        zone   0 0 100 41 25
+	                head   X 1.0 0 0.0 100.0
 	CHEMISTRY_IC
-	        zone   0 0 0 100 41 25
+	        zone   0 0 100 41 25
 	                solution                   1
 	SOLUTION_METHOD
 	        iterative_solver                          true
@@ -70,10 +70,10 @@ Processing flow and transport data file.
 		zone_flows                         40 day
 		zone_flow_heads		    1 step
 	ZONE_FLOWS 11  X = 50 to 100
-		    zone   50 0 0 100 20.5 12.5
+		    zone   50 0 100 20.5 12.5
 		    write_heads_xyzt zf.subgrid.heads		 # works with spaces
 	TIME_CONTROL
-	        time_step                          0   10  day 
+	        time_step                          0  10  day 
 	        time_end                           40 day
 	END             
 WARNING: Horizontal, vertical, and longitudinal dispersivities are not equal for at least one element.
@@ -198,7 +198,7 @@ Beginning time step no.      4
 
      End of Time Step No.     4
      Time ..................................................    40.0000     (d)
-     Maximum change in potentiometric head   0.0000E+00      (m ) at location (  100.    ,  20.5    ,  12.5    )(m)
+     Maximum change in potentiometric head   0     (m ) at location (  100.    ,  20.5    ,  12.5    )(m)
      Maximum change in H .................. -5.1639E-12 (mol/kgw) at location (  8.00    ,  20.5    ,  12.5    )(m)
      Maximum change in O ..................  7.4204E-05 (mol/kgw) at location (  8.00    ,  20.5    ,  12.5    )(m)
      Maximum change in [A] ................  1.5827E-04 (mol/kgw) at location (  8.00    ,  20.5    ,  12.5    )(m)

@@ -20,11 +20,11 @@
                                                                  Amounts
 
  Step total specified head b.c. fluid net inflow ............ -3.999283E+07  (kg)
- Step total flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
+ Step total flux b.c. fluid net inflow ......................  0 (kg)
  Step total leakage b.c. fluid net inflow ...................  3.999283E+07  (kg)
- Step total river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Step total well fluid net inflow ...........................  0.000000E+00  (kg)
+ Step total river leakage b.c. fluid net inflow .............  0 (kg)
+ Step total drain leakage b.c. fluid net inflow .............  0 (kg)
+ Step total well fluid net inflow ...........................  0 (kg)
 
 
                Cumulative Summary
@@ -42,11 +42,11 @@
                                                                  Amounts
 
  Cumulative specified head b.c. fluid net inflow ............ -7.998541E+07  (kg)
- Cumulative flux b.c. fluid net inflow ......................  0.000000E+00  (kg)
+ Cumulative flux b.c. fluid net inflow ......................  0 (kg)
  Cumulative leakage b.c. fluid net inflow ...................  7.998597E+07  (kg)
- Cumulative river leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative drain leakage b.c. fluid net inflow .............  0.000000E+00  (kg)
- Cumulative well fluid net inflow ...........................  0.000000E+00  (kg)
+ Cumulative river leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative drain leakage b.c. fluid net inflow .............  0 (kg)
+ Cumulative well fluid net inflow ...........................  0 (kg)
 
 
 

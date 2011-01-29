@@ -35,7 +35,7 @@
 
                               *** Output at End of Steady State Iteration No.    17 ***
 
-     Time .......................................................       0      (yr)
+     Time .......................................................       0     (yr)
 
                                         *** Well Summary ***
 
@@ -46,7 +46,7 @@
    1                      -365.2    
  ----------------------------------------------------------------------
  Total - Production        365.2                                  
-       - Injection             0                                  
+       - Injection             0                                 
 
 
           Current Fluid Production(-)/Injection(+) Rates per layer (kg/yr)
@@ -80,7 +80,7 @@
    1                      -365.2    
  ----------------------------------------------------------------------
  Total - Production        365.2                                  
-       - Injection             0                                  
+       - Injection             0                                 
 
                            Solute Flow Rates (positive is injection)
   Well                                       Solute Component: 
@@ -92,7 +92,7 @@
  Total - Production
           2.1703E-03  0.1409      1.2000E-05  3.4817E-02  5.8449E-03  1.7315E-03  2.5929E-03  5.8045E-02  2.7530E-03
        - Injection
-               0           0           0           0           0           0           0           0           0    
+               0          0          0          0          0          0          0          0          0   
 
                            Solute Flow Rates (positive is injection)
   Well                                       Solute Component: 
@@ -104,16 +104,16 @@
  Total - Production
          -5.1574E-05
        - Injection
-               0    
+               0   
 
                 Cumulative Production   Cumulative Injection
   Well                 Fluid                    Fluid
   No.                  (kg)                     (kg)
  ------------------------------------------------------------------------------------------
-    1                3.6525E+08                    0    
+    1                3.6525E+08                    0   
  ------------------------------------------------------------------------------------------
  Total - Production  3.6525E+08
-       - Injection                                 0    
+       - Injection                                 0   
 
                            Cumulative Production
   Well                                       Solute Component: 
@@ -140,20 +140,20 @@
   No.                                           (kg)
              H           O           As          C           Ca          Cl          Mg          Na          S         
  -------------------------------------------------------------------------------------------------------------------
-   1           0           0           0           0           0           0           0           0           0    
+   1           0          0          0          0          0          0          0          0          0   
  -------------------------------------------------------------------------------------------------------------------
  Total - Injection
-               0           0           0           0           0           0           0           0           0    
+               0          0          0          0          0          0          0          0          0   
 
                            Cumulative Injection
   Well                                       Solute Component: 
   No.                                           (kg)
              Charge    
  -------------------------------------------------------------------------------------------------------------------
-   1           0    
+   1           0   
  -------------------------------------------------------------------------------------------------------------------
  Total - Injection
-               0    
+               0   
 
                            The following parameters are averages over the time step just completed
   Well                                       Well Datum Solute Component Molality
