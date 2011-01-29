@@ -47,7 +47,7 @@
                               X-Direction Node Coordinates    (m)
 
            1           2           3           4           5           6           7           8           9          10
-              0      12.50       25.00       37.50       50.00       62.50       75.00       87.50      100.00      112.50
+              0       12.50       25.00       37.50       50.00       62.50       75.00       87.50      100.00      112.50
 
 
 
@@ -70,7 +70,7 @@
                               Y-Direction Node Coordinates   (m)
 
            1           2           3           4           5           6           7           8           9          10
-              0      12.50       25.00       37.50       50.00       62.50       75.00       87.50      100.00      112.50
+              0       12.50       25.00       37.50       50.00       62.50       75.00       87.50      100.00      112.50
 
 
 
@@ -93,7 +93,7 @@
                               Z-Direction Node Coordinates   (m)
 
            1           2           3           4           5           6           7           8           9          10
-              0      25.00       50.00       75.00      100.00      125.00      150.00      175.00      200.00      205.00
+              0       25.00       50.00       75.00      100.00      125.00      150.00      175.00      200.00      205.00
 
 
 
@@ -108,13 +108,13 @@
 
                                    *** Fluid Properties ***
                                         Physical
-                    Fluid compressibility ...................................... BP ...   0 (1/Pa )
+                    Fluid compressibility ...................................... BP ...   0.00e+00  (1/Pa )
 
-                    Reference pressure for density ............................. P0 ..         0  (Pa )
+                    Reference pressure for density ............................. P0 ..         0.0  (Pa )
                     Reference temperature for density .......................... T0 ..        15.0  (Deg.C)
                     Fluid density .............................................. DENF0  1000.0      (kg/m^3)
 
-                    Viscosity factor ........................................... VISFAC -1.000E-03
+                    Viscosity factor ........................................... VISFAC -1.000e-03
 
                                    A free-surface water table is specified for this simulation
 
@@ -124,19 +124,19 @@
                            Row scaling only, using L-inf norm, will be done
 
           Direction index for d4 zig-zag renumbering ...................... IDIR..    1
-          Incomplete LU [f] or modified ILU [t] factorization ............. MILU..    T
+          Incomplete LU [f] or modified ILU [t] factorization ............. MILU..    t
           Number of search directions before restart ...................... NSDR..   20
-          Tolerance on iterative solution ................................. EPSSLV 1.0E-12
+          Tolerance on iterative solution ................................. EPSSLV 1.0e-12
 
  ------------------------------------------------------------------------------------------------------------------------
 
                     Automatic Time Step Control Parameters for Steady Flow
-          Maximum pressure change allowed per time step.................... DPTAS    8.09E+05  (Pa )
+          Maximum pressure change allowed per time step.................... DPTAS    8.09e+05  (Pa )
           Minimum time step required ...................................... DTIMMN    1.0      (d  )
-          Maximum time step allowed ....................................... DTIMMX   1.00E+06  (d  )
+          Maximum time step allowed ....................................... DTIMMX   1.00e+06  (d  )
 
 
-               Initial fluid in region ...............................  4.977992E+09  (kg) ;  4.977992E+06  (m^3)
+               Initial fluid in region ...............................  4.977992e+09  (kg) ;  4.977992e+06  (m^3)
 
  ------------------------------------------------------------------------------------------------------------------------
  ------------------------------------------------------------------------------------------------------------------------
@@ -144,18 +144,18 @@
 
                                         *** Transient Data ***
 
-     Time ..............................       0     (d)
+     Time ..............................   0.000e+00  (d)
 
 
                                         *** Calculation Information ***
 
-          Fixed time step length .......................................... DELTIM  1.000E+03  (d)
+          Fixed time step length .......................................... DELTIM  1.000e+03  (d)
           Time at which next set of transient
-               parameters will be read .................................... TIMCHG  5.000E+03  (d)
+               parameters will be read .................................... TIMCHG  5.000e+03  (d)
 
  ------------------------------------------------------------------------------------------------------------------------
 
 
                                        ***** Simulation Completed *****
-               Last time value calculated ......................................      0    (d)
+               Last time value calculated ...................................... 0.0000e+00 (d)
                Last time step index ............................................       0

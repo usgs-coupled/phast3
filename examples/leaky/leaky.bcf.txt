@@ -7,7 +7,7 @@
                               X-Direction Node Coordinates    (m)
 
            1           2           3           4           5
-              0     100.00      200.00      300.00      400.00
+              0      100.00      200.00      300.00      400.00
 
 
 
@@ -15,7 +15,7 @@
                               Y-Direction Node Coordinates   (m)
 
            1           2           3           4           5
-              0     100.00      200.00      300.00      400.00
+              0      100.00      200.00      300.00      400.00
 
 
 
@@ -23,13 +23,13 @@
                               Z-Direction Node Coordinates   (m)
 
            1           2
-              0     100.00
+              0      100.00
 
 
 
                               *** Output at End of Time Step No.     1 ***
 
-     Time .......................................................   4.320E+04  (s)
+     Time .......................................................   4.320e+04  (s)
 
 
                          Specified Head B.C.: Flow Rates (average over time step)
@@ -87,7 +87,7 @@
 
                               *** Output at End of Time Step No.     2 ***
 
-     Time .......................................................   8.640E+04  (s)
+     Time .......................................................   8.640e+04  (s)
 
 
                          Specified Head B.C.: Flow Rates (average over time step)
@@ -145,5 +145,5 @@
 
 
                                        ***** Simulation Completed *****
-               Last time value calculated ...................................... 8.6400E+04 (s)
+               Last time value calculated ...................................... 8.6400e+04 (s)
                Last time step index ............................................       2
