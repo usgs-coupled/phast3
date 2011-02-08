@@ -55,8 +55,8 @@ accumulate(void)
 			new PHAST_Transform(grid_origin[0], grid_origin[1],
 								grid_origin[2], grid_angle, scale_h, scale_h,
 								scale_v);
-		Point p(275000., 810000, 0);
-		map_to_grid->Transform(p);
+		//Point p(275000., 810000, 0);
+		//map_to_grid->Transform(p);
 
 		// Convert units to grid
 		target_coordinate_system = PHAST_Transform::GRID;
@@ -4941,4 +4941,455 @@ find_cell_shell(Polyhedron *polyh, double *width, std::list<int> &list_of_cells_
 		list_of_cells_return.push_back(*sit);
 	}
 	return true;
+}
+
+/* ---------------------------------------------------------------------- */
+int
+setup_grid_defaults(void)
+/* ---------------------------------------------------------------------- */
+{
+	int i, j, k, n, count, start;
+	double x1, x2, increment;
+	double d1, d2;
+	double diff;
+	struct grid *grid_ptr;
+	double *nodes;
+	int count_nodes;
+	char c[3] = { 'X', 'Y', 'Z' };
+	/*
+	 *   process grid information
+	 */
+	strcpy(dimension, "   ");
+	for (i = 0; i < 3; i++)
+	{
+		if (grid[i].uniform == UNDEFINED)
+		{
+			sprintf(error_string, "Grid not defined for %c coordinate", c[i]);
+			error_msg(error_string, CONTINUE);
+			input_error++;
+			grid[i].coord =
+				(double *) realloc(grid[i].coord,
+								   (size_t) 2 * sizeof(double));
+			if (grid[i].coord == NULL)
+				malloc_error();
+			grid[i].count_coord = 2;
+			grid[i].coord[0] = 0.0;
+			grid[i].coord[1] = 1.0;
+			grid[i].uniform = TRUE;
+		}
+		else if (grid[i].uniform == TRUE)
+		{
+			x1 = grid[i].coord[0];
+			x2 = grid[i].coord[1];
+			if (x2 <= x1)
+			{
+				sprintf(error_string,
+						"Coordinate values must be in ascending order for %c grid definition",
+						grid[i].c);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+			}
+			increment = (x2 - x1) / (grid[i].count_coord - 1);
+			grid[i].coord =
+				(double *) realloc(grid[i].coord,
+								   (size_t) grid[i].count_coord *
+								   sizeof(double));
+			if (grid[i].coord == NULL)
+			{
+				sprintf(error_string, "Allocating grid %d, %d.", i,
+						grid[i].count_coord);
+				error_msg(error_string, CONTINUE);
+				malloc_error();
+			}
+			for (j = 1; j < grid[i].count_coord; j++)
+			{
+				grid[i].coord[j] = x1 + ((double) j) * increment;
+			}
+			grid[i].uniform_expanded = TRUE;
+			dimension[i] = grid[i].c;
+		}
+		else
+		{
+			for (j = 1; j < grid[i].count_coord; j++)
+			{
+				if (grid[i].coord[j] <= grid[i].coord[j - 1])
+				{
+					sprintf(error_string,
+							"Coordinate values must be in ascending order for %c grid definition\n%g\t%g",
+							grid[i].c, grid[i].coord[j - 1],
+							grid[i].coord[j]);
+					error_msg(error_string, CONTINUE);
+					input_error++;
+				}
+			}
+			dimension[i] = grid[i].c;
+		}
+	}
+	/*
+	 *  Overlays
+	 */
+	for (i = 0; i < count_grid_overlay; i++)
+	{
+		j = grid_overlay[i].direction;
+		/*
+		 *  convert to nonuniform
+		 */
+		grid[j].uniform = FALSE;
+		grid_ptr = &grid_overlay[i];
+		if (grid_ptr->uniform == TRUE)
+		{
+			d1 = grid_ptr->coord[0];
+			d2 = grid_ptr->coord[1];
+			grid_ptr->coord =
+				(double *) realloc(grid_ptr->coord,
+								   (size_t) grid_ptr->count_coord *
+								   sizeof(double));
+			if (grid_ptr->coord == NULL)
+				malloc_error();
+			for (k = 0; k < grid_ptr->count_coord; k++)
+			{
+				grid_ptr->coord[k] =
+					d1 + (double) k *(d2 -
+									  d1) / ((double) (grid_ptr->count_coord -
+													   1));
+			}
+			grid_ptr->uniform = FALSE;
+		}
+		for (k = 1; k < grid_ptr->count_coord; k++)
+		{
+			if (grid_ptr->coord[k] <= grid_ptr->coord[k - 1])
+			{
+				sprintf(error_string,
+						"Coordinate values must be in ascending order for %c grid overlay definition\n%g\t%g",
+						grid[i].c, grid_ptr->coord[k - 1],
+						grid_ptr->coord[k]);
+				error_msg(error_string, CONTINUE);
+				input_error++;
+			}
+		}
+		/* 
+		 *  Merge nodes 
+		 */
+		count_nodes = grid[j].count_coord + grid_ptr->count_coord;
+		nodes = (double *) malloc((size_t) count_nodes * sizeof(double));
+		if (nodes == NULL)
+			malloc_error();
+		for (k = 0; k < grid[j].count_coord; k++)
+		{
+			nodes[k] = grid[j].coord[k];
+		}
+		start = k;
+		for (k = 0; k < grid_ptr->count_coord; k++)
+		{
+			nodes[start + k] = grid_ptr->coord[k];
+		}
+		/*
+		 *  Sort nodes
+		 */
+		qsort(nodes, (size_t) count_nodes, sizeof(double), double_compare);
+		/*
+		 * remove nodes too close
+		 */
+		n = 1;
+		for (k = 1; k < count_nodes; k++)
+		{
+			if (nodes[k] - nodes[n - 1] > snap[j])
+			{
+				nodes[n++] = nodes[k];
+			}
+		}
+		if (n < count_nodes)
+		{
+			if (nodes[n - 1] < grid[j].coord[grid[j].count_coord - 1])
+			{
+				nodes[n++] = grid[j].coord[grid[j].count_coord - 1];
+			}
+		}
+		count_nodes = n;
+		free_check_null(grid[j].coord);
+		grid[j].coord = nodes;
+		grid[j].count_coord = count_nodes;
+	}
+	if (input_error > 0)
+	{
+		error_msg("Stopping due to input errors.", STOP);
+	}
+
+	// Make uniform 4x4x4 grid for defaults
+	for (i = 0; i < 3; i++)
+	{
+		for (j = 0; j < 3; j++)
+		{
+			nodes = (double *) malloc((size_t) 4 * sizeof(double));
+			nodes[0] = grid[j].coord[0];
+			nodes[3] = grid[j].coord[grid[j].count_coord - 1];
+			double d = (nodes[3] - nodes[0]) / 3.0;
+			nodes[1] = nodes[0] + d;
+			nodes[2] = nodes[1] + d;
+			free_check_null(grid[j].coord);
+			grid[j].coord = nodes;
+			grid[j].count_coord = 4;
+		}
+	}
+
+	for (i = 0; i < 3; i++)
+	{
+		/*
+		 *   Store element centroids
+		 */
+		grid[i].elt_centroid =
+			(double *) malloc((size_t) (grid[i].count_coord - 1) *
+							  sizeof(double));
+		if (grid[i].elt_centroid == NULL)
+			malloc_error();
+		for (j = 0; j < grid[i].count_coord - 1; j++)
+		{
+			grid[i].elt_centroid[j] =
+				(grid[i].coord[j] + grid[i].coord[j + 1]) * 0.5;
+		}
+	}
+	if (input_error > 0)
+	{
+		error_msg("Stopping due to input errors.", STOP);
+	}
+	nx = grid[0].count_coord;
+	ny = grid[1].count_coord;
+	nz = grid[2].count_coord;
+	nxyz = nx * ny * nz;
+	/*
+	 *   Allocate space for array of nodes that fills the domain
+	 */
+	cells = (struct cell *) malloc((size_t) nxyz * sizeof(struct cell));
+	if (cells == NULL)
+	{
+		sprintf(error_string, "Not enough memory to allocate work space for"
+				" entire domain.");
+		error_msg(error_string, CONTINUE);
+		malloc_error();
+	}
+	/*
+	 *   assign number and coordinates
+	 */
+	count_cells = 0;
+	for (k = 0; k < nz; k++)
+	{
+		for (j = 0; j < ny; j++)
+		{
+			for (i = 0; i < nx; i++)
+			{
+				cell_init(&(cells[count_cells]));
+				cells[count_cells].number = count_cells;
+				cells[count_cells].ix = i;
+				cells[count_cells].iy = j;
+				cells[count_cells].iz = k;
+
+				cells[count_cells].x = grid[0].coord[i];
+				cells[count_cells].y = grid[1].coord[j];
+				cells[count_cells].z = grid[2].coord[k];
+				count_cells++;
+			}
+		}
+	}
+	/*
+	 *  define  zone for cells
+	 */
+	count = 0;
+	for (k = 0; k < nz; k++)
+	{
+		for (j = 0; j < ny; j++)
+		{
+			for (i = 0; i < nx; i++)
+			{
+				if (i == 0)
+				{
+					cells[count].zone->x1 = grid[0].coord[i];
+				}
+				else
+				{
+					cells[count].zone->x1 =
+						(grid[0].coord[i - 1] + grid[0].coord[i]) / 2;
+				}
+
+				if (j == 0)
+				{
+					cells[count].zone->y1 = grid[1].coord[j];
+				}
+				else
+				{
+					cells[count].zone->y1 =
+						(grid[1].coord[j - 1] + grid[1].coord[j]) / 2;
+				}
+
+				if (k == 0)
+				{
+					cells[count].zone->z1 = grid[2].coord[k];
+				}
+				else
+				{
+					cells[count].zone->z1 =
+						(grid[2].coord[k - 1] + grid[2].coord[k]) / 2;
+				}
+
+				if (i == nx - 1)
+				{
+					cells[count].zone->x2 = grid[0].coord[i];
+				}
+				else
+				{
+					cells[count].zone->x2 =
+						(grid[0].coord[i] + grid[0].coord[i + 1]) / 2;
+				}
+
+				if (j == ny - 1)
+				{
+					cells[count].zone->y2 = grid[1].coord[j];
+				}
+				else
+				{
+					cells[count].zone->y2 =
+						(grid[1].coord[j] + grid[1].coord[j + 1]) / 2;
+				}
+
+				if (k == nz - 1)
+				{
+					cells[count].zone->z2 = grid[2].coord[k];
+				}
+				else
+				{
+					cells[count].zone->z2 =
+						(grid[2].coord[k] + grid[2].coord[k + 1]) / 2;
+				}
+				count++;
+			}
+		}
+	}
+	/*
+	 *   Mark cells that represent elements
+	 */
+	for (k = 0; k < nz - 1; k++)
+	{
+		for (j = 0; j < ny - 1; j++)
+		{
+			for (i = 0; i < nx - 1; i++)
+			{
+				n = ijk_to_n(i, j, k);
+				cells[n].is_element = TRUE;
+				cells[n].elt_x =
+					(grid[0].coord[i] + grid[0].coord[i + 1]) * 0.5;
+				cells[n].elt_y =
+					(grid[1].coord[j] + grid[1].coord[j + 1]) * 0.5;
+				cells[n].elt_z =
+					(grid[2].coord[k] + grid[2].coord[k + 1]) * 0.5;
+			}
+		}
+	}
+	/*
+	 *  Calculate minimum distance between nodes in each direction
+	 */
+	for (k = 0; k < 3; k++)
+	{
+		grid[k].min =
+			grid[k].coord[grid[k].count_coord - 1] - grid[k].coord[0];
+		for (i = 1; i < grid[k].count_coord; i++)
+		{
+			diff = grid[k].coord[i] - grid[k].coord[i - 1];
+			if (diff < grid[k].min)
+				grid[k].min = diff;
+		}
+		grid[k].min *= 1e-6;
+	}
+	/*
+	 *  Save locations of cells and elements
+	 */
+	for (i = 0; i < nxyz; i++)
+	{
+		cell_xyz->push_back(Point(cells[i].x, cells[i].y, cells[i].z));
+		element_xyz->
+			push_back(Point(cells[i].elt_x, cells[i].elt_y, cells[i].elt_z));
+	}
+
+	/*
+	 *  Save zone of entire domain
+	 */
+	domain.x1 = grid[0].coord[0];
+	domain.y1 = grid[1].coord[0];
+	domain.z1 = grid[2].coord[0];
+	domain.x2 = grid[0].coord[grid[0].count_coord - 1];
+	domain.y2 = grid[1].coord[grid[1].count_coord - 1];
+	domain.z2 = grid[2].coord[grid[2].count_coord - 1];
+
+	return (OK);
+}
+/* ---------------------------------------------------------------------- */
+int
+accumulate_defaults(void)
+/* ---------------------------------------------------------------------- */
+{
+	int i;
+	if (simulation == 0)
+	{
+		setup_grid_defaults();
+
+		// Set up transform
+		double scale_h = 1;
+		double scale_v = 1;
+		scale_h =
+				units.map_horizontal.input_to_si /
+				units.horizontal.input_to_si;
+		scale_v =
+				units.map_vertical.input_to_si / units.vertical.input_to_si;
+		map_to_grid =
+			new PHAST_Transform(grid_origin[0], grid_origin[1],
+								grid_origin[2], grid_angle, scale_h, scale_h,
+								scale_v);
+
+		for (i = 0; i < count_head_ic; i++)
+		{
+			if (head_ic[i]->polyh != NULL && head_ic[i]->polyh->get_type() == Polyhedron::PRISM)
+			{
+				delete head_ic[i]->polyh;
+				//free_check_null(head_ic[i]->polyh);
+				//head_ic[i]->polyh = new Domain();
+				head_ic[i]->polyh = NULL;
+			}
+		}
+		for (i = 0; i < count_chem_ic; i++)
+		{
+			if (chem_ic[i]->polyh != NULL && chem_ic[i]->polyh->get_type() == Polyhedron::PRISM)
+			{
+				delete chem_ic[i]->polyh;
+				//free_check_null(chem_ic[i]->polyh);
+				//chem_ic[i]->polyh = new Domain();
+				chem_ic[i]->polyh = NULL;
+			}
+		}
+		for (i = 0; i < count_grid_elt_zones; i++)
+		{
+			if (grid_elt_zones[i]->polyh != NULL && grid_elt_zones[i]->polyh->get_type() == Polyhedron::PRISM)
+			{
+				delete grid_elt_zones[i]->polyh;
+				//free_check_null(grid_elt_zones[i]->polyh);
+				//grid_elt_zones[i]->polyh = new Domain();
+				grid_elt_zones[i]->polyh = NULL;
+			}
+		}
+		// Convert units to grid
+		target_coordinate_system = PHAST_Transform::GRID;
+		Tidy_cubes(target_coordinate_system, map_to_grid);
+		Tidy_properties(target_coordinate_system, map_to_grid);
+		Tidy_prisms();
+		Convert_coordinates_prisms(target_coordinate_system, map_to_grid);
+
+		setup_head_ic();
+
+		setup_chem_ic();
+
+		setup_media();
+	}
+
+	if (input_error > 0)
+	{
+		error_msg("Stopping because of input errors.", STOP);
+	}
+	return (OK);
 }

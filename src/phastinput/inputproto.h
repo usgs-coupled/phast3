@@ -8,6 +8,7 @@ int reset_transient_data(void);
 
 /* accumulate.c */
 int accumulate(void);
+int accumulate_defaults(void);
 void cells_with_faces(std::list < int >&list_of_numbers, Cell_Face face);
 
 //int check_face(struct BC *bc_ptr, struct index_range *range_ptr);
