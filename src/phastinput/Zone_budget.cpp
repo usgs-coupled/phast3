@@ -103,8 +103,7 @@ bool Zone_budget::Add_cells(std::vector < bool > &cells_in_budget, zone * z,
 		this->polyh->Points_in_polyhedron(list_of_cells, *cell_xyz);
 		if (list_of_cells.size() == 0)
 		{
-			error_msg("Bad zone or wedge definition for Zone_budget",
-					  EA_CONTINUE);
+			warning_msg("Bad zone or wedge definition for Zone_budget");
 			return (false);
 		}
 

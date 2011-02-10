@@ -982,10 +982,9 @@ setup_head_ic(void)
 															*cell_xyz);
 					if (list_of_cells.size() == 0)
 					{
-						input_error++;
 						sprintf(error_string,
 								"Bad zone or wedge definition %s", tag);
-						error_msg(error_string, CONTINUE);
+						warning_msg(error_string);
 						break;
 					}
 					if (head_ic[i]->head != NULL)
@@ -1183,9 +1182,8 @@ setup_print_locations(struct print_zones_struct *print_zones_struct_ptr,
 			range_ptr = zone_to_range(zone_ptr);
 			if (range_ptr == NULL)
 			{
-				input_error++;
 				sprintf(error_string, "Bad zone or wedge definition %s", tag);
-				error_msg(error_string, CONTINUE);
+				warning_msg(error_string);
 				break;
 			}
 			std::list < int >list_of_cells;
@@ -1197,9 +1195,8 @@ setup_print_locations(struct print_zones_struct *print_zones_struct_ptr,
 
 			if (list_of_cells.size() == 0)
 			{
-				input_error++;
 				sprintf(error_string, "Bad zone or wedge definition %s", tag);
-				error_msg(error_string, CONTINUE);
+				warning_msg(error_string);
 				break;
 			}
 			if (print_zones_struct_ptr->print_zones[i].print != NULL)
@@ -1909,9 +1906,8 @@ setup_chem_ic(void)
 			range_ptr = zone_to_range(zone_ptr);
 			if (range_ptr == NULL)
 			{
-				input_error++;
 				sprintf(error_string, "Bad zone or wedge definition %s", tag);
-				error_msg(error_string, CONTINUE);
+				warning_msg(error_string);
 				break;
 			}
 			std::list < int >list_of_cells;
@@ -1922,9 +1918,8 @@ setup_chem_ic(void)
 
 			if (list_of_cells.size() == 0)
 			{
-				input_error++;
 				sprintf(error_string, "Bad zone or wedge definition %s", tag);
-				error_msg(error_string, CONTINUE);
+				warning_msg(error_string);
 				break;
 			}
 
@@ -2172,10 +2167,9 @@ setup_bc(void)
 				range_ptr = zone_to_range(zone_ptr);
 				if (range_ptr == NULL)
 				{
-					input_error++;
 					sprintf(error_string, "Bad zone or wedge definition %s",
 							tag);
-					error_msg(error_string, CONTINUE);
+					warning_msg(error_string);
 					break;
 				}
 				if (bc[i]->cell_face == CF_UNKNOWN
@@ -2217,9 +2211,8 @@ setup_bc(void)
 
 			if (list_of_cells.size() == 0)
 			{
-				input_error++;
 				sprintf(error_string, "Bad zone or wedge definition %s", tag);
-				error_msg(error_string, CONTINUE);
+				warning_msg(error_string);
 				break;
 			}
 
@@ -2460,9 +2453,8 @@ setup_media(void)
 				range_ptr = zone_to_elt_range(zone_ptr, true);
 				if (range_ptr == NULL)
 				{
-					input_error++;
 					sprintf(error_string, "Bad zone or wedge definition %s", tag);
-					error_msg(error_string, CONTINUE);
+					warning_msg(error_string);
 					break;
 				}
 				range_to_list(range_ptr, list_of_elements);
@@ -2474,18 +2466,16 @@ setup_media(void)
 			{
 				if (!find_shell(grid_elt_zones[i]->polyh, grid_elt_zones[i]->shell_width, list_of_elements))
 				{
-					input_error++;
 					sprintf(error_string, "Bad zone or wedge definition for shell %s", tag);
-					error_msg(error_string, CONTINUE);
+					warning_msg(error_string);
 					break;
 				}
 			}
 
 			if (list_of_elements.size() == 0)
 			{
-				input_error++;
 				sprintf(error_string, "Bad zone or wedge definition %s", tag);
-				error_msg(error_string, CONTINUE);
+				warning_msg(error_string);
 				break;
 			}
 			/*
