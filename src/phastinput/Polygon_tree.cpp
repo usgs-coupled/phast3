@@ -19,6 +19,39 @@ Polygon_leaf::Polygon_leaf()
 	this->split_x = true;
 }
 
+Polygon_leaf::Polygon_leaf(const Polygon_leaf & leaf)
+: box(leaf.box)
+, split_x(leaf.split_x)
+, tip(leaf.tip)
+{
+	if (leaf.left)
+	{
+		this->left = new Polygon_leaf(*leaf.left);
+	}
+	else
+	{
+		this->left = NULL;
+	}
+	
+	if (leaf.right)
+	{
+		this->right = new Polygon_leaf(*leaf.right);
+	}
+	else
+	{
+		this->right = NULL;
+	}
+
+	if (leaf.polygon)
+	{
+		this->polygon = new PHAST_polygon(*leaf.polygon);
+	}
+	else
+	{
+		this->polygon = NULL;
+	}
+}
+
 Polygon_leaf::~Polygon_leaf()
 {
 	if (this->polygon != NULL)
@@ -119,6 +152,11 @@ Polygon_tree::Polygon_tree(PHAST_polygon & polys)
 
 }
 
+Polygon_tree::Polygon_tree(const Polygon_tree &tree)
+{
+	this->root = new Polygon_leaf(*tree.root);
+	// TODO this->all_leaves;
+}
 
 Polygon_tree::~Polygon_tree(void)
 {

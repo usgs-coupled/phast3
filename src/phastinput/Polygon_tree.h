@@ -9,6 +9,7 @@ class Polygon_leaf
 {
   public:
 	Polygon_leaf();
+	Polygon_leaf(const Polygon_leaf & leaf);
 	virtual ~ Polygon_leaf();
 
 	// methods
@@ -29,6 +30,7 @@ class Polygon_tree
   public:
 	Polygon_tree(void);
 	Polygon_tree(PHAST_polygon & polys);
+	Polygon_tree(const Polygon_tree & tree);
 
   public:
 	  virtual ~ Polygon_tree(void);
