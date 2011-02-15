@@ -5363,12 +5363,30 @@ accumulate_defaults(void)
 				grid_elt_zones[i]->polyh = NULL;
 			}
 		}
+		std::map<int, Zone_budget*>::iterator zit = Zone_budget::zone_budget_map.begin();
+		for (; zit != Zone_budget::zone_budget_map.end(); ++zit)
+		{
+			if ((*zit).second->Get_polyh() != NULL && (*zit).second->Get_polyh()->get_type() == Polyhedron::PRISM)
+			{
+				(*zit).second->Set_polyh(NULL);
+			}
+		}
+		for (i = 0; i < ::count_bc; ++i)
+		{
+			struct BC* bc_ptr = ::bc[i];
+			if (bc_ptr->polyh != NULL && bc_ptr->polyh->get_type() == Polyhedron::PRISM)
+			{
+				delete bc_ptr->polyh;
+				bc_ptr->polyh = NULL;
+			}
+		}
+
 		// Convert units to grid
 		target_coordinate_system = PHAST_Transform::GRID;
 		Tidy_cubes(target_coordinate_system, map_to_grid);
 		Tidy_properties(target_coordinate_system, map_to_grid);
 		Tidy_prisms();
-		Convert_coordinates_prisms(target_coordinate_system, map_to_grid);
+		// no need to convert prisms
 
 		setup_head_ic();
 
