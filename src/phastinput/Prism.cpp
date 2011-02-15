@@ -60,6 +60,7 @@ Prism::Prism(Cube & c)
 	// define perimeter
 	this->perimeter.Set_defined(true);
 	this->perimeter.Set_source_type(Data_source::POINTS);
+	this->perimeter.Set_user_source_type(Data_source::POINTS);
 	pts.push_back(Point(c_zone.x1, c_zone.y1, c_zone.z2));
 	pts.push_back(Point(c_zone.x2, c_zone.y1, c_zone.z2));
 	pts.push_back(Point(c_zone.x2, c_zone.y2, c_zone.z2));
@@ -70,6 +71,7 @@ Prism::Prism(Cube & c)
 	pts.clear();
 	this->top.Set_defined(true);
 	this->top.Set_source_type(Data_source::CONSTANT);
+	this->top.Set_user_source_type(Data_source::CONSTANT);
 	pts.push_back(Point(c_zone.x1, c_zone.y1, c_zone.z2));
 	this->top.Set_points(pts);
 
@@ -77,6 +79,7 @@ Prism::Prism(Cube & c)
 	pts.clear();
 	this->bottom.Set_defined(true);
 	this->bottom.Set_source_type(Data_source::CONSTANT);
+	this->bottom.Set_user_source_type(Data_source::CONSTANT);
 	pts.push_back(Point(c_zone.x1, c_zone.y1, c_zone.z1));
 	this->bottom.Set_points(pts);
 
@@ -102,6 +105,7 @@ Prism::Prism(Wedge & w)
 	// define perimeter
 	this->perimeter.Set_defined(true);
 	this->perimeter.Set_source_type(Data_source::POINTS);
+	this->perimeter.Set_user_source_type(Data_source::POINTS);
 	if (w.Get_wedge_axis() == CF_Z)
 	{
 		switch (w.Get_wedge_number())
@@ -148,12 +152,14 @@ Prism::Prism(Wedge & w)
 	pts.clear();
 	this->top.Set_defined(true);
 	this->top.Set_source_type(Data_source::CONSTANT);
+	this->top.Set_user_source_type(Data_source::CONSTANT);
 	pts.push_back(Point(w_zone.x1, w_zone.y1, w_zone.z2));
 	this->top.Set_points(pts);
 
 	pts.clear();
 	this->bottom.Set_defined(true);
 	this->bottom.Set_source_type(Data_source::CONSTANT);
+	this->bottom.Set_user_source_type(Data_source::CONSTANT);
 	pts.push_back(Point(w_zone.x1, w_zone.y1, w_zone.z1));
 	this->bottom.Set_points(pts);
 
@@ -166,6 +172,7 @@ Prism::Prism(Wedge & w)
 		case 1:
 			// Top
 			this->top.Set_source_type(Data_source::POINTS);
+			this->top.Set_user_source_type(Data_source::POINTS);
 			pts.push_back(Point(w_zone.x1, w_zone.y1, w_zone.z2));
 			pts.push_back(Point(w_zone.x2, w_zone.y1, w_zone.z2));
 			pts.push_back(Point(w_zone.x2, w_zone.y2, w_zone.z1));
@@ -179,6 +186,7 @@ Prism::Prism(Wedge & w)
 
 			// Bottom
 			this->bottom.Set_source_type(Data_source::POINTS);
+			this->bottom.Set_user_source_type(Data_source::POINTS);
 			pts.push_back(Point(w_zone.x1, w_zone.y1, w_zone.z1));
 			pts.push_back(Point(w_zone.x2, w_zone.y1, w_zone.z1));
 			pts.push_back(Point(w_zone.x2, w_zone.y2, w_zone.z2));
@@ -190,6 +198,7 @@ Prism::Prism(Wedge & w)
 
 			// Bottom
 			this->bottom.Set_source_type(Data_source::POINTS);
+			this->bottom.Set_user_source_type(Data_source::POINTS);
 			pts.push_back(Point(w_zone.x1, w_zone.y1, w_zone.z2));
 			pts.push_back(Point(w_zone.x2, w_zone.y1, w_zone.z2));
 			pts.push_back(Point(w_zone.x2, w_zone.y2, w_zone.z1));
@@ -200,6 +209,7 @@ Prism::Prism(Wedge & w)
 		case 4:
 			// Top
 			this->top.Set_source_type(Data_source::POINTS);
+			this->top.Set_user_source_type(Data_source::POINTS);
 			pts.push_back(Point(w_zone.x1, w_zone.y1, w_zone.z1));
 			pts.push_back(Point(w_zone.x2, w_zone.y1, w_zone.z1));
 			pts.push_back(Point(w_zone.x2, w_zone.y2, w_zone.z2));
@@ -218,6 +228,7 @@ Prism::Prism(Wedge & w)
 		case 1:
 			// Top
 			this->top.Set_source_type(Data_source::POINTS);
+			this->top.Set_user_source_type(Data_source::POINTS);
 			pts.push_back(Point(w_zone.x1, w_zone.y1, w_zone.z2));
 			pts.push_back(Point(w_zone.x2, w_zone.y1, w_zone.z1));
 			pts.push_back(Point(w_zone.x2, w_zone.y2, w_zone.z1));
@@ -228,6 +239,7 @@ Prism::Prism(Wedge & w)
 			break;
 		case 2:
 			this->top.Set_source_type(Data_source::POINTS);
+			this->top.Set_user_source_type(Data_source::POINTS);
 			pts.push_back(Point(w_zone.x1, w_zone.y1, w_zone.z1));
 			pts.push_back(Point(w_zone.x2, w_zone.y1, w_zone.z2));
 			pts.push_back(Point(w_zone.x2, w_zone.y2, w_zone.z2));
@@ -241,6 +253,7 @@ Prism::Prism(Wedge & w)
 
 			// Bottom
 			this->bottom.Set_source_type(Data_source::POINTS);
+			this->bottom.Set_user_source_type(Data_source::POINTS);
 			pts.push_back(Point(w_zone.x1, w_zone.y1, w_zone.z2));
 			pts.push_back(Point(w_zone.x2, w_zone.y1, w_zone.z1));
 			pts.push_back(Point(w_zone.x2, w_zone.y2, w_zone.z1));
@@ -252,6 +265,7 @@ Prism::Prism(Wedge & w)
 
 			// Bottom
 			this->bottom.Set_source_type(Data_source::POINTS);
+			this->bottom.Set_user_source_type(Data_source::POINTS);
 			pts.push_back(Point(w_zone.x1, w_zone.y1, w_zone.z1));
 			pts.push_back(Point(w_zone.x2, w_zone.y1, w_zone.z2));
 			pts.push_back(Point(w_zone.x2, w_zone.y2, w_zone.z2));
@@ -879,6 +893,7 @@ Prism::Tidy()
 		this->perimeter.Set_coordinate_system(PHAST_Transform::GRID);
 		this->perimeter.Set_user_coordinate_system(PHAST_Transform::GRID);
 		this->perimeter.Set_source_type(Data_source::POINTS);
+		assert(this->perimeter.Get_user_source_type() == Data_source::NONE);
 		this->perimeter.Get_points().
 			push_back(Point
 					  (grid_zone()->x1, grid_zone()->y1, grid_zone()->z2,
@@ -902,6 +917,7 @@ Prism::Tidy()
 		this->top.Set_coordinate_system(PHAST_Transform::GRID);
 		this->top.Set_user_coordinate_system(PHAST_Transform::GRID);
 		this->top.Set_source_type(Data_source::CONSTANT);
+		assert(this->top.Get_user_source_type() == Data_source::NONE);
 		this->top.Get_points().
 			push_back(Point
 					  (grid_zone()->x1, grid_zone()->y1, grid_zone()->z2,
@@ -913,6 +929,7 @@ Prism::Tidy()
 		this->bottom.Set_coordinate_system(PHAST_Transform::GRID);
 		this->bottom.Set_user_coordinate_system(PHAST_Transform::GRID);
 		this->bottom.Set_source_type(Data_source::CONSTANT);
+		assert(this->bottom.Get_user_source_type() == Data_source::NONE);
 		this->bottom.Get_points().
 			push_back(Point
 					  (grid_zone()->x1, grid_zone()->y1, grid_zone()->z1,
