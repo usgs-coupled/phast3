@@ -5335,7 +5335,7 @@ accumulate_defaults(void)
 
 		for (i = 0; i < count_head_ic; i++)
 		{
-			if (head_ic[i]->polyh != NULL && head_ic[i]->polyh->get_type() == Polyhedron::PRISM)
+			if (head_ic[i]->polyh != NULL /*&& head_ic[i]->polyh->get_type() == Polyhedron::PRISM*/)
 			{
 				delete head_ic[i]->polyh;
 				//free_check_null(head_ic[i]->polyh);
@@ -5345,7 +5345,7 @@ accumulate_defaults(void)
 		}
 		for (i = 0; i < count_chem_ic; i++)
 		{
-			if (chem_ic[i]->polyh != NULL && chem_ic[i]->polyh->get_type() == Polyhedron::PRISM)
+			if (chem_ic[i]->polyh != NULL /*&& chem_ic[i]->polyh->get_type() == Polyhedron::PRISM*/)
 			{
 				delete chem_ic[i]->polyh;
 				//free_check_null(chem_ic[i]->polyh);
@@ -5355,12 +5355,17 @@ accumulate_defaults(void)
 		}
 		for (i = 0; i < count_grid_elt_zones; i++)
 		{
-			if (grid_elt_zones[i]->polyh != NULL && grid_elt_zones[i]->polyh->get_type() == Polyhedron::PRISM)
+			if (grid_elt_zones[i]->polyh != NULL /*&& grid_elt_zones[i]->polyh->get_type() == Polyhedron::PRISM*/)
 			{
 				delete grid_elt_zones[i]->polyh;
 				//free_check_null(grid_elt_zones[i]->polyh);
 				//grid_elt_zones[i]->polyh = new Domain();
 				grid_elt_zones[i]->polyh = NULL;
+				property_free(grid_elt_zones[i]->active);
+				grid_elt_zones[i]->active = property_alloc();
+				grid_elt_zones[i]->active->type = PROP_FIXED;
+				grid_elt_zones[i]->active->v[0] = 1;
+				grid_elt_zones[i]->active->count_v = 1;
 			}
 		}
 		std::map<int, Zone_budget*>::iterator zit = Zone_budget::zone_budget_map.begin();
