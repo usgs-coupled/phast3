@@ -175,7 +175,7 @@ SUBROUTINE write5
            DO  m=1,nxyz
               aprnt1(m)=c_mol(m,is)
            END DO
-           CALL prntar(2,aprnt1,lprnt1,fuc,cnv,25,000)
+           CALL prntar(2,aprnt1,lprnt1,fuc,cnv,24,000)
         END DO
         ntprc = ntprc+1
      END IF
