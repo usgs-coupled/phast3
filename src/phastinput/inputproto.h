@@ -67,9 +67,9 @@ void range_to_list(struct index_range *range_ptr, std::list < int >&l);
 void range_plus_one(struct index_range *range_ptr);
 void set_exterior_cells(void);
 int setup_bc(void);
-int setup_chem_ic(void);
-int setup_head_ic(void);
-int setup_media(void);
+int setup_chem_ic(bool forward);
+int setup_head_ic(bool forward);
+int setup_media(bool forward);
 int setup_print_locations(struct print_zones_struct *print_zones_struct_ptr,
 						  size_t offset1, size_t offset2);
 int snap_out_to_range(double x1, double x2, double *coord, int count_coord,
@@ -78,10 +78,10 @@ struct index_range *vertex_to_range(gpc_vertex * v, int count_points);
 int which_cell(double x1, double y1, double z1, int *i1, int *j1, int *k1);
 
 /* check.c */
-int check_properties(void);
+int check_properties(bool defaults);
 int check_cells(void);
 int check_dimensions(void);
-int check_elements(void);
+int check_elements(bool defaults);
 int check_hst_units(void);
 int check_leaky_for_face(int i, int j);
 int check_time_data(void);
