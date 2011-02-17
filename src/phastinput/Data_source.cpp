@@ -1257,9 +1257,6 @@ PHAST_Transform::COORDINATE_SYSTEM Data_source::Get_coordinate_system(void) cons
 			return ds->Get_coordinate_system();
 		}
 		break;
-	case Data_source::XYZT:
-		assert(false);
-		break;
 	default:
 		break;
 	}
@@ -1281,9 +1278,6 @@ PHAST_Transform::COORDINATE_SYSTEM Data_source::Get_user_coordinate_system(void)
 			return ds->Get_user_coordinate_system();
 		}
 		break;
-	case Data_source::XYZT:
-		assert(false);
-		break;
 	default:
 		break;
 	}
@@ -1303,9 +1297,6 @@ Data_source::Get_columns(void)
 			Data_source *ds = this->Get_data_source_with_points();
 			return ds->Get_columns();
 		}
-		break;
-	case Data_source::XYZT:
-		assert(false);
 		break;
 	default:
 		break;
@@ -1340,9 +1331,6 @@ PHAST_polygon & Data_source::Get_phast_polygons(void)
 			("Error in Get_phast_polygons, ArcRaster file is not suitable for perimeter.",
 			 EA_CONTINUE);
 		return (this->phast_polygons);
-		break;
-	case Data_source::XYZT:
-		assert(false);
 		break;
 	default:
 		break;
