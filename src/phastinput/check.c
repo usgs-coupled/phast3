@@ -5,14 +5,14 @@ static char const svnid[] = "$Id$";
 
 /* ---------------------------------------------------------------------- */
 int
-check_properties(void)
+check_properties(bool defaults)
 /* ---------------------------------------------------------------------- */
 {
 	char name[MAX_LENGTH];
 
 	// Set active cells earlier in setup_bc so can skip inactive cells
 	//set_active_cells();
-	check_elements();
+	check_elements(defaults);
 	check_cells();
 	check_dimensions();
 	if ((free_surface == FALSE) && (count_rivers > 0))
@@ -765,7 +765,7 @@ check_cells(void)
 
 /* ---------------------------------------------------------------------- */
 int
-check_elements(void)
+check_elements(bool defaults)
 /* ---------------------------------------------------------------------- */
 {
 	int i, need_crossd;
@@ -777,7 +777,7 @@ check_elements(void)
 	{
 		if (cells[i].is_element == FALSE)
 			continue;
-		if (cells[i].elt_active == FALSE)
+		if (!defaults && cells[i].elt_active == FALSE)
 			continue;
 		sprintf(tag, "for element %d (%d,%d,%d) (%g,%g,%g).",
 				cells[i].number,

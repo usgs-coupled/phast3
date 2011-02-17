@@ -120,7 +120,7 @@ main(int argc, char *argv[])
 			if (simulation == 0)
 			{
 				output_msg(OUTPUT_STDERR, "Check properties...\n");
-				check_properties();
+				check_properties(false);
 			}
 			output_msg(OUTPUT_STDERR, "Write hst...\n");
 			write_hst();

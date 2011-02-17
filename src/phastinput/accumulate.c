@@ -89,9 +89,9 @@ accumulate(void)
 	}
 	if (simulation == 0)
 	{
-		setup_head_ic();
-		setup_chem_ic();
-		setup_media();
+		setup_head_ic(true);
+		setup_chem_ic(true);
+		setup_media(true);
 	}
 	setup_bc();
 	/* need cell.cell_active to process wells */
@@ -931,7 +931,7 @@ coords_to_elt_range(double x1, double x2, double *coord, int count_coord,
 
 /* ---------------------------------------------------------------------- */
 int
-setup_head_ic(void)
+setup_head_ic(bool forward)
 /* ---------------------------------------------------------------------- */
 {
 	int i, n;
@@ -940,8 +940,19 @@ setup_head_ic(void)
 	struct index_range *range_ptr;
 	int head_ic_type;
 
+	int start = 0;
+	int end = count_head_ic;
+	int incr = 1;
+
+	if (!forward)
+	{
+		start = count_head_ic - 1;
+		end = -1;
+		incr = -1;
+	}
+
 	head_ic_type = UNDEFINED;
-	for (i = 0; i < count_head_ic; i++)
+	for (i = start; i != end; i += incr)
 	{
 		sprintf(tag, "in HEAD_IC, definition %d.\n", i + 1);
 		switch (head_ic[i]->ic_type)
@@ -1883,13 +1894,24 @@ get_property_for_element(struct cell *cell_ptr, struct property *property_ptr,
 
 /* ---------------------------------------------------------------------- */
 int
-setup_chem_ic(void)
+setup_chem_ic(bool forward)
 /* ---------------------------------------------------------------------- */
 {
 	int i;
 	struct index_range *range_ptr;
 
-	for (i = 0; i < count_chem_ic; i++)
+	int start = 0;
+	int end = count_chem_ic;
+	int incr = 1;
+
+	if (!forward)
+	{
+		start = count_chem_ic - 1;
+		end = -1;
+		incr = -1;
+	}
+
+	for (i = start; i != end; i += incr)
 	{
 		sprintf(tag, "in CHEMISTRY_IC, definition %d.\n", i + 1);
 
@@ -2425,13 +2447,24 @@ guess_face(std::list < int >&list_of_numbers, struct zone * zone_ptr)
 
 /* ---------------------------------------------------------------------- */
 int
-setup_media(void)
+setup_media(bool forward)
 /* ---------------------------------------------------------------------- */
 {
 	int i;
 	struct index_range *range_ptr;
 
-	for (i = 0; i < count_grid_elt_zones; i++)
+	int start = 0;
+	int end = count_grid_elt_zones;
+	int incr = 1;
+
+	if (!forward)
+	{
+		start = count_grid_elt_zones - 1;
+		end = -1;
+		incr = -1;
+	}
+
+	for (i = start; i != end; i += incr)
 	{
 		sprintf(tag, "in MEDIA, definition %d.\n", i + 1);
 		/*
@@ -5105,20 +5138,17 @@ setup_grid_defaults(void)
 		error_msg("Stopping due to input errors.", STOP);
 	}
 
-	// Make uniform 4x4x4 grid for defaults
-	for (i = 0; i < 3; i++)
+	// Make uniform 2x2x2 grid for defaults
+	for (i = 0; i < 2; i++)
 	{
-		for (j = 0; j < 3; j++)
+		for (j = 0; j < 2; j++)
 		{
-			nodes = (double *) malloc((size_t) 4 * sizeof(double));
+			nodes = (double *) malloc((size_t) 2 * sizeof(double));
 			nodes[0] = grid[j].coord[0];
-			nodes[3] = grid[j].coord[grid[j].count_coord - 1];
-			double d = (nodes[3] - nodes[0]) / 3.0;
-			nodes[1] = nodes[0] + d;
-			nodes[2] = nodes[1] + d;
+			nodes[1] = grid[j].coord[grid[j].count_coord - 1];
 			free_check_null(grid[j].coord);
 			grid[j].coord = nodes;
-			grid[j].count_coord = 4;
+			grid[j].count_coord = 2;
 		}
 	}
 
@@ -5335,7 +5365,7 @@ accumulate_defaults(void)
 
 		for (i = 0; i < count_head_ic; i++)
 		{
-			if (head_ic[i]->polyh != NULL /*&& head_ic[i]->polyh->get_type() == Polyhedron::PRISM*/)
+			//if (head_ic[i]->polyh != NULL /*&& head_ic[i]->polyh->get_type() == Polyhedron::PRISM*/)
 			{
 				delete head_ic[i]->polyh;
 				//free_check_null(head_ic[i]->polyh);
@@ -5345,7 +5375,7 @@ accumulate_defaults(void)
 		}
 		for (i = 0; i < count_chem_ic; i++)
 		{
-			if (chem_ic[i]->polyh != NULL /*&& chem_ic[i]->polyh->get_type() == Polyhedron::PRISM*/)
+			//if (chem_ic[i]->polyh != NULL /*&& chem_ic[i]->polyh->get_type() == Polyhedron::PRISM*/)
 			{
 				delete chem_ic[i]->polyh;
 				//free_check_null(chem_ic[i]->polyh);
@@ -5355,17 +5385,12 @@ accumulate_defaults(void)
 		}
 		for (i = 0; i < count_grid_elt_zones; i++)
 		{
-			if (grid_elt_zones[i]->polyh != NULL /*&& grid_elt_zones[i]->polyh->get_type() == Polyhedron::PRISM*/)
+			//if (grid_elt_zones[i]->polyh != NULL /*&& grid_elt_zones[i]->polyh->get_type() == Polyhedron::PRISM*/)
 			{
 				delete grid_elt_zones[i]->polyh;
 				//free_check_null(grid_elt_zones[i]->polyh);
 				//grid_elt_zones[i]->polyh = new Domain();
 				grid_elt_zones[i]->polyh = NULL;
-				property_free(grid_elt_zones[i]->active);
-				grid_elt_zones[i]->active = property_alloc();
-				grid_elt_zones[i]->active->type = PROP_FIXED;
-				grid_elt_zones[i]->active->v[0] = 1;
-				grid_elt_zones[i]->active->count_v = 1;
 			}
 		}
 		std::map<int, Zone_budget*>::iterator zit = Zone_budget::zone_budget_map.begin();
@@ -5393,11 +5418,11 @@ accumulate_defaults(void)
 		Tidy_prisms();
 		// no need to convert prisms
 
-		setup_head_ic();
+		setup_head_ic(false);
 
-		setup_chem_ic();
+		setup_chem_ic(false);
 
-		setup_media();
+		setup_media(false);
 	}
 
 	if (input_error > 0)
