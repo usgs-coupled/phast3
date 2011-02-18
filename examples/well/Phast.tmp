@@ -43,7 +43,7 @@ C.1.5 .. TMUNIT[I]
 C.1.6 .. NX,NY,NZ,NHCN, Number of elements
      41 41 2 0 1600
 C.1.7 .. NSBC,NFBC,NLBC,NRBC,NDBC, NAIFC,NHCBC,NWEL
-     41 0 0 0 0 0 0 1
+     41 0 0 0 0 0 0 3
 C.1.8 .. SLMETH[I], NPA4
      5 0
 C------------------------------------------------------------------------------
@@ -1751,6 +1751,18 @@ C.2.14.9 .. cell number, screened interval below node (m), screened interval abo
     2522 1.524000e+01 0.000000e+00
 C ..  end 2.14.9
 END
+C.2.14.8 .. well number, x, y, zb, zt, db, dt, diameter, wqmeth
+2    6.7056000e+02    6.0960000e+02   -3.0480000e+00    0.0000000e+00     0.0000000e+00    0.0000000e+00 3.048000e-01 11
+C.2.14.9 .. cell number, screened interval below node (m), screened interval above node (m)
+    2524 3.048000e+00 0.000000e+00
+C ..  end 2.14.9
+END
+C.2.14.8 .. well number, x, y, zb, zt, db, dt, diameter, wqmeth
+3    7.3152000e+02    6.0960000e+02   -3.0480000e+00    0.0000000e+00     0.0000000e+00    0.0000000e+00 3.048000e-01 11
+C.2.14.9 .. cell number, screened interval below node (m), screened interval above node (m)
+    2526 3.048000e+00 0.000000e+00
+C ..  end 2.14.9
+END
 C .. end 2.14.8
 END
 C------------------------------------------------------------------------------
@@ -1973,9 +1985,9 @@ C.2.23.13 .. Internal boundaries: list of [cell number, face index] pairs; (O) -
 C.2.23.14 .. Specified head cells: count; (O) nsbc > 0
  0
 C.2.23.26 .. Well cells: count; (O) nwel > 0
- 2
+ 4
 C.2.23.27 .. Well cells: list of cell numbers; (O) nwel > 0
-     841     2522
+     841     2522     2524     2526
 C.... Use as many 2.23.9-2.23.27 lines as necessary
 C .. End 2.23.8 Zone flow accounting
 END
@@ -1995,6 +2007,8 @@ C.....Use as many 3.2.2 lines as necessay
 C.3.2.3 .. End with END
 C.3.2.4 .. well sequence number, q, solution number
 1 -1.888000e+00 2
+2 -0.000000e+00 2
+3 -0.000000e+00 2
 C .. End 3.2.4
 END
 C------------------------------------------------------------------------------
@@ -2077,7 +2091,7 @@ C.3.7.4 .. TIMCHG
 C------------------------------------------------------------------------------
 C.....Output information
 C.3.8.1 .. PRISLM,PRIKD,PRIP,PRIC,PRICPHRQ,PRIFORCE_CHEM_PHRQ,PRIVEL,PRIGFB,PRIBCF,PRIWEL; all [I]
-     -57600.000000  0.000000 -57600.000000  0.000000 -57600.000000  0.000000  0.000000 -57600.000000  0.000000 -57600.000000
+     -57600.000000 -0.000000 -57600.000000 -0.000000 -57600.000000 -0.000000 -0.000000 -57600.000000 -0.000000 -57600.000000
 C.3.8.1.1 .. PRT_BC; [T/F]
      F
 C.3.8.2 .. PRIHDF_CONC, PRIHDF_HEAD, PRIHDF_VEL
@@ -2091,9 +2105,9 @@ f 0 f
 C------------------------------------------------------------------------------
 C.....Contour and vector map information
 C.3.9.1 .. CNTMAP[T/F], PRIMAPHEAD, COMPMAP[T/F], PRINT_XYZ_COMP, VECMAP[T/F], PRIMAPV
-     f  0.000000     f  0.000000     f  0.000000
+     t -57600.000000     f -0.000000     t -57600.000000
 C.3.9.2 .. PRIXYZ_WELL, PRINT_RESTART, PRINT_END_OF_PERIOD [t/t]
-      0.000000  0.000000     T
+     -0.000000 -0.000000     T
 C.3.9.3 .. Cell print information for .O.chem file, transient chemistry
   0.0000000e+00   1.2192000e+03   0.0000000e+00   1.2192000e+03  -3.0480000e+01   0.0000000e+00
      0 4

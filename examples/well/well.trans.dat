@@ -40,20 +40,20 @@ WELL 1
                 -elevation      0.      -100.
                 -pumping_rate   0	96000
 		-solution 	0	2
-#WELL 2
-#                -diameter       1
-#                -elevation      0.      -10.
-#        2200    2000
-#                -pumping_rate   0	0
-#		-xy_coordinate_system  grid
-#		-z_coordinate_system  grid
-#		-solution 	0	2
-#WELL 3
-#        2400    2000
-#                -diameter       1
-#                -elevation      0.      -10.
-#                -pumping_rate   0	0
-#		-solution 	0	2
+WELL 2
+                -diameter       1
+                -elevation      0.      -10.
+        2200    2000
+                -pumping_rate   0	0
+		-xy_coordinate_system  grid
+		-z_coordinate_system  grid
+		-solution 	0	2
+WELL 3
+        2400    2000
+                -diameter       1
+                -elevation      0.      -10.
+                -pumping_rate   0	0
+		-solution 	0	2
 SPECIFIED_HEAD_BC
         -zone   0 0 0 -100 4000 0
 	-head   0  0
@@ -76,13 +76,13 @@ TIME_CONTROL
         -time_change		40  day
 PRINT_FREQUENCY
 	0
-#        -head                   600 sec
-#        -hdf_head               600 sec
-#        -xyz_head               600 sec
-#        -hdf_velocity           600 sec
-#        -xyz_velocity           600 sec
-#        -well                   600 sec
-	 -head			 end
+        -head                   end
+        -hdf_head               end
+        -xyz_head               end
+        -hdf_velocity           end
+        -xyz_velocity           end
+        -well                   end
+	-head			end
 	-xyz_chemistry	        end
 
 ZONE_BUDGET 1  Surround well
