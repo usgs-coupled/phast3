@@ -10,7 +10,7 @@
 			>
 			<DebugSettings
 				Command="$(TargetPath)"
-				WorkingDirectory="C:\Programs\phastpp\examples\tortuosity"
+				WorkingDirectory="C:\Programs\phastpp\examples\radial"
 				CommandArguments=""
 				Attach="false"
 				DebuggerType="3"
