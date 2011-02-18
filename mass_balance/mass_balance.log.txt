@@ -21,11 +21,11 @@ Processing flow and transport data file.
 	        diffusivity            0.0             #m^2/s
 	GRID
 	        uniform x
-	                      0      1.0    2
+	                0.00000      1.0    2
 	        uniform y
-	                      0      1.0    2
+	                0.00000      1.0    2
 	        uniform z
-	                      0      .08    41
+	                0.00000      .08    41
 	        print_orientation XZ 
 	        chemistry_dimensions XYZ
 	MEDIA

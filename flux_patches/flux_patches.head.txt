@@ -7,7 +7,7 @@
                               X-Direction Node Coordinates    (m)
 
            1           2           3
-              0        0.50        1.00
+           0.00        0.50        1.00
 
 
 
@@ -15,7 +15,7 @@
                               Y-Direction Node Coordinates   (m)
 
            1           2           3
-              0        0.50        1.00
+           0.00        0.50        1.00
 
 
 
@@ -23,7 +23,7 @@
                               Z-Direction Node Coordinates   (m)
 
            1           2           3
-              0        0.50        1.00
+           0.00        0.50        1.00
 
 
 

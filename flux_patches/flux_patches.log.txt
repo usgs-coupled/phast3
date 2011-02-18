@@ -3,12 +3,12 @@ Running PHASTINPUT.
 Processing flow and transport data file.
 
 	SOLUTE_TRANSPORT true
-	    diffusivity  1e-09
+	    diffusivity  1e-009
 	STEADY_FLOW false
 	FREE_SURFACE_BC true
 	SOLUTION_METHOD
 		iterative_solver   true
-		tolerance          1e-10
+		tolerance          1e-010
 		save_directions    20
 		maximum_iterations 500
 		space_differencing 0
@@ -45,7 +45,7 @@ Processing flow and transport data file.
 			active                   1
 			kx                       0.0001
 			ky                       0.0001
-			kz                       1e-05
+			kz                       1e-005
 			porosity                 0.2
 			specific_storage         0.0001
 			long_dispersivity        1
