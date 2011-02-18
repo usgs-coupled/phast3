@@ -116,6 +116,7 @@ void
 Data_source::Init()
 {
 	this->pts.clear();
+	this->pts_user.clear();
 	this->file_name.clear();
 	this->defined = false;
 	this->source_type = Data_source::NONE;
@@ -229,7 +230,6 @@ bool Data_source::Read(std::istream & lines, bool read_num)
 					it->set_v(it->z());
 				}
 			}
-			this->pts_user = this->pts;
 		}
 
 		// Allow single point for 3d interpolator
@@ -290,6 +290,7 @@ bool Data_source::Read(std::istream & lines, bool read_num)
 	}
 	if (success)
 		this->defined = true;
+	this->pts_user = this->pts;
 	return (success);
 }
 bool Data_source::Read_mixture(std::istream & lines)
@@ -688,7 +689,7 @@ Data_source::Tidy(const bool make_nni)
 		break;
 	case Data_source::CONSTANT:
 	case Data_source::POINTS:
-		this->pts_user = this->pts;
+		assert(this->pts.size() == this->pts_user.size() || (this->source_type_user == Data_source::NONE && this->pts_user.size() == 0));
 		break;
 	case Data_source::XYZT:
 		if (Filedata::file_data_map.find(this->file_name) ==
