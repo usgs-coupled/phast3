@@ -7,9 +7,10 @@ if [ $USER == charlton ]; then
 fi
 EXDIR=$PHASTDIR/examples
 # 32 Bit Parallel versions
-#CONFIGURATION=LAM_LAHEY
+CONFIGURATION=LAM_LAHEY
+#CONFIGURATION=LAM_LAHEY_DEBUG
 #CONFIGURATION=LAM_GFORTRAN
-CONFIGURATION=LAM_INTEL
+#CONFIGURATION=LAM_INTEL
 #CONFIGURATION=LAM_INTEL_DEBUG
 #CONFIGURATION=OPENMPI_GFORTRAN
 #CONFIGURATION=OPENMPI_INTEL
@@ -58,8 +59,10 @@ TMPDIR=/z/parkplace/home/dlpark/tmp
 #
 #   run phastinput
 #
-cd 0
 $PHASTDIR/src/phastinput/phastinput $NAME
+cd 0
+cp ../Phast.tmp .
+cp ../$NAME.log.txt .
 echo Done phastinput.
 
 if [ $CONFIGURATION == "LAM_LAHEY" ]; then
@@ -69,6 +72,19 @@ if [ $CONFIGURATION == "LAM_LAHEY" ]; then
     cp ../../schema .
     sed -e "s?WORKING_DIRECTORY?$EXDIR/$NAME/0?" \
 	-e "s^EXECUTABLE^$PHASTDIR/src/phast/lam_lahey/phast^" schema > temp; mv temp schema
+#
+#   run phast
+#
+    lamboot ../../hosts;  time mpirun-lam -O -v schema; wipe ../../hosts
+fi
+
+if [ $CONFIGURATION == "LAM_LAHEY_DEBUG" ]; then
+# 
+#   32 bit lam_lahey_debug
+#
+    cp ../../schema .
+    sed -e "s?WORKING_DIRECTORY?$EXDIR/$NAME/0?" \
+	-e "s^EXECUTABLE^$PHASTDIR/para_trans_chem/src/phast/lam_lahey_debug/phast^" schema > temp; mv temp schema
 #
 #   run phast
 #
@@ -90,7 +106,7 @@ fi
 
 if [ $CONFIGURATION == "LAM_INTEL" ]; then
 # 
-#   32 bit lam_gfortran
+#   32 bit lam_intel
 #
     cp ../../schema .
     sed -e "s?WORKING_DIRECTORY?$EXDIR/$NAME/0?" \
@@ -103,7 +119,7 @@ fi
 
 if [ $CONFIGURATION == "LAM_INTEL_DEBUG" ]; then
 # 
-#   32 bit lam_gfortran
+#   32 bit lam_intel_debug
 #
     cp ../../schema .
     sed -e "s?WORKING_DIRECTORY?$EXDIR/$NAME/0?" \
@@ -127,7 +143,7 @@ if [ $CONFIGURATION == "OPENMPI_INTEL" ]; then
 #
     #LD_LIBRARY_PATH=/z/parkplace/home/charlton/openmpi-1.4.2/grundvand-ifort/lib
     #export LD_LIBRARY_PATH
-    /z/parkplace/home/charlton/openmpi-1.4.2/grundvand-ifort/bin/mpirun -n 2 -H grundvand -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_intel/phast
+    /z/parkplace/home/charlton/openmpi-1.4.2/grundvand-ifort/bin/mpirun -n 2 -H parkplace -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_intel/phast
 fi
 
 if [ $CONFIGURATION == "OPENMPI_INTEL_64" ]; then
@@ -135,7 +151,7 @@ if [ $CONFIGURATION == "OPENMPI_INTEL_64" ]; then
 #   64 bit openmpi_intel_64
 #
 #    /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/bin/mpirun  -n 2 -H robocomp -H lobo -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_intel_64/phast
-    /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/bin/mpirun  -n 4 -H lobo -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_intel_64/phast
+    /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/bin/mpirun  -n 2 -H grundvand -v -wdir $EXDIR/$NAME/0 $PHASTDIR/para_trans_chem/src/phast/openmpi_intel_64/phast
 fi
 
 if [ $CONFIGURATION == "OPENMPI_INTEL_64_DEBUG" ]; then
@@ -143,13 +159,14 @@ if [ $CONFIGURATION == "OPENMPI_INTEL_64_DEBUG" ]; then
 #   64 bit openmpi_intel_64_debug
 #
 #    /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/bin/mpirun  -n 4 -H robocomp -H lobo -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_intel_64_debug/phast
-    /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/bin/mpirun  -n 4 -H lobo -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_intel_64_debug/phast
+#    /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/bin/mpirun  -n 4 -H lobo -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_intel_64_debug/phast
+    /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/bin/mpirun  -n 12 -H grundvand -H robocomp -H lobo -v -wdir $EXDIR/$NAME/0 $PHASTDIR/para_trans_chem/src/phast/openmpi_intel_64_debug/phast
 fi
 
 if [ $CONFIGURATION == "OPENMPI_GFORTRAN_64" ]; then
 # 
 #   64 bit openmpi_gfortran_64
 #
-    /z/parkplace/home/charlton/openmpi-1.4.2/lobo-gfortran-x64/bin/mpirun -n 2 -H robocomp -H lobo -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_gfortran_64/phast
+    /z/parkplace/home/charlton/openmpi-1.4.2/lobo-gfortran-x64/bin/mpirun -n 12 -H grundvand -H robocomp -H lobo -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_gfortran_64/phast
 fi
 
