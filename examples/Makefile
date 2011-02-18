@@ -16,6 +16,8 @@ endif
 #  PHAST=$(TOPDIR)/src/phast/serial_intel_64/phast
 #  PHAST=$(TOPDIR)/src/phast/serial_intel_64_debug/phast
 #  PHAST=$(TOPDIR)/para_trans_chem/src/phast/serial_lahey/phast
+#  PHAST=$(TOPDIR)/para_trans_chem/src/phast/serial_lahey_debug/phast
+#  PHAST=$(TOPDIR)/para_trans_chem/src/phast/serial_intel_debug/phast
   RUN=$(TEST)/run
 endif
 
@@ -29,11 +31,11 @@ ifeq ($(CFG), CYGWIN)
   RUN=$(TEST)/runmpich
 endif
 
-SERIAL = decay diffusion1d diffusion2d disp2d ex3 kindred4.4 leaky leakyx leakyz linear_bc linear_ic ex4 notch phrqex11 ex1 radial river unconf well ex2 free ex4restart print_check_ss print_check_transient ex4_start_time mass_balance simple ex4_noedl ex4_ddl ex4_transient leakysurface flux_patches patches_lf zf property shell # ex5 ex6
+SERIAL = decay diffusion1d diffusion2d disp2d ex3 kindred4.4 leaky leakyx leakyz linear_bc linear_ic ex4 notch phrqex11 ex1 radial river unconf well ex2 free ex4restart print_check_ss print_check_transient ex4_start_time mass_balance simple ex4_noedl ex4_ddl ex4_transient leakysurface flux_patches patches_lf zf property shell ex5 # ex6
 
 PARALLEL =  decay_parallel diffusion1d_parallel diffusion2d_parallel disp2d_parallel ex3_parallel kindred4.4_parallel leaky_parallel leakyx_parallel leakyz_parallel linear_bc_parallel linear_ic_parallel ex4_parallel notch_parallel phrqex11_parallel ex1_parallel radial_parallel river_parallel unconf_parallel well_parallel ex2_parallel \
 	free_parallel ex4restart_parallel print_check_ss_parallel print_check_transient_parallel  ex4_start_time_parallel mass_balance_parallel simple_parallel ex4_noedl_parallel ex4_ddl_parallel ex4_transient_parallel leakysurface_parallel flux_patches_parallel patches_lf_parallel zf_parallel property_parallel shell_parallel \
-	# ex5_parallel ex6_parallel
+	 ex5_parallel # ex6_parallel
 
 CLEAN_SERIAL = decay_clean diffusion1d_clean diffusion2d_clean disp2d_clean ex3_clean \
 	kindred4.4_clean leaky_clean leakyx_clean leakyz_clean \
@@ -58,7 +60,7 @@ CLEAN_PARALLEL = decay_clean_parallel diffusion1d_clean_parallel diffusion2d_cle
 
 CLEAN_CMD =  rm -f *~ *.O.* *.log *.h5 *.h5~ abs* *.h5dump *.sel *.xyz* *backup* *.txt *.tsv Phast.tmp 
 
-all: $(PARALLEL) $(SERIAL) 
+all:  $(SERIAL) $(PARALLEL)
 
 serial: $(SERIAL)
 
@@ -1125,9 +1127,23 @@ clean_parallel: $(CLEAN_PARALLEL)
 #ci: $(CI_PROBLEMS)
 
 diff_parallel:
-	#rcsdiff -bw ./*/0/*
 	for DIR in $(SERIAL); \
 		do diff -r $$DIR $$DIR/0; \
+		done;
+
+ndiff_parallel:
+	for DIR in $(SERIAL); \
+		do echo $$DIR; cd $$DIR/0; \
+			mv $$DIR.log.txt temp; \
+			for FILE in *.dat *.txt *.tsv Phast.tmp; \
+				do \
+					if [ -f $$FILE ]; then \
+						echo "    " $$FILE =====================; \
+						/home/dlpark/bin/ndiff --relative-error 1e-7 $$FILE ../$$FILE; \
+					fi; \
+				done; \
+			mv temp $$DIR.log.txt; \
+			cd ../..; \
 		done;
 
 ci_parallel:
@@ -1135,9 +1151,15 @@ ci_parallel:
 		cd $$FILE/0; ci -l -m"latest" *.dat *.O.* *.xyz.* Phast.tmp; cd ../..; done
 
 diff:
-#	svn diff --diff-cmd diff -x -bw	
 	for DIR in $(SERIAL); \
 		do svn diff --diff-cmd diff -x -ibw $$DIR; \
+		done;
+
+ndiff:	
+	svn status -q
+	for DIR in $(SERIAL); \
+		do \
+			svn diff --diff-cmd /home/dlpark/bin/ndiff -x "--relative-error 1e-7" $$DIR; \
 		done;
 
 zero:
@@ -1213,9 +1235,11 @@ mpich:
 tester:
 	make -f Makefile clean
 	make -f Makefile all >& all.out
-	make -f Makefile zero zero1 zero_parallel zero1_parallel >> all.out
-	make -f Makefile diff >& diff.out
-	make -f Makefile diff_parallel >& diff_parallel.out
+#	make -f Makefile zero zero1 zero_parallel zero1_parallel >> all.out
+#	make -f Makefile diff >& diff.out
+#	make -f Makefile diff_parallel >& diff_parallel.out
+	make -f Makefile ndiff >& diff.out
+	make -f Makefile ndiff_parallel >& diff_parallel.out
 
 tester_serial:
 	make -f Makefile clean_serial
