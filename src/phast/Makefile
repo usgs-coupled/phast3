@@ -61,11 +61,11 @@ parkplace: gfortran lahey
 gfortran: serial_gfortran serial_gfortran_debug lam_gfortran lam_gfortran_debug 
 lahey: serial_lahey serial_lahey_debug lam_lahey lam_lahey_debug
 
-grundvand: intel openmpi
+#grundvand: intel openmpi
 intel: serial_intel serial_intel_debug openmpi_intel openmpi_intel_debug
 openmpi: openmpi_gfortran openmpi_gfortran_debug
 
-stoch: lam_intel lam_intel_debug
+stoch: intel openmpi lam_intel lam_intel_debug
 
 
 robocomp: gfortran_64 intel_64
@@ -269,7 +269,7 @@ lam_intel_debug:
 
 SRC              = ../phreeqcpp/phreeqc
 PHREEQC_INCLUDES = -I../phreeqcpp -I../phreeqcpp/phreeqc
-LAM_INCLUDES     =  
+LAM_INCLUDES     =  -I/usr/include/
 LAM_LIB          =  -L/usr/lib/ -llam
 
 .SUFFIXES : .o .f .F90 .f90 .c .cxx .cpp
@@ -295,7 +295,8 @@ LIBGFORTRAN_64=-L/usr/lib64 -lgfortranbegin -Xlinker -Bstatic -lgfortran -Xlinke
 
 # The following apply to INTEL versions
 FINTEL=ifort
-IF_HOME=/z/robocomp/usr/opt/intel/Compiler/11.0/083/lib
+#IF_HOME=/z/robocomp/usr/opt/intel/Compiler/11.0/083/lib
+IF_HOME=/z/loboraid/raid3/intel/Compiler/11.0/083/lib
 IFORT_LIB=-Xlinker -Bstatic -L$(IF_HOME)/ia32/ -lifport -lifcore -limf -lsvml -lm -lipgo -lirc -lirc_s -Xlinker -Bdynamic -lpthread -ldl
 IFORT_LIB_64=-Xlinker -Bstatic -L$(IF_HOME)/intel64/ -lifport -lifcore -limf -lsvml -lm -lipgo -lirc -lirc_s -libverbs -ltorque -Xlinker -Bdynamic -lpthread -ldl 
 
