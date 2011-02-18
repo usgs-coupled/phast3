@@ -62,7 +62,7 @@
  Fluid outflow ..............................................  3.192788e+11  (kg/yr)     1.277115e+12  (kg)
  Change in fluid in region .................................. -1.757288e+11  (kg/yr)    -7.029154e+11  (kg)
  Residual imbalance .........................................  4.199579e+02  (kg/yr)     1.679832e+03  (kg)
- Fractional imbalance .......................................                                   0
+ Fractional imbalance .......................................                              0.0000
 
                Current Time Step by Boundary Condition Type
                                                                  Rates                     Amounts
@@ -86,7 +86,7 @@
  Fluid outflow ..............................................  3.030600e+11  (kg/yr)     2.424480e+12  (kg)
  Change in fluid in region .................................. -1.595100e+11  (kg/yr)    -1.276080e+12  (kg)
  Residual imbalance .........................................  2.326251e+01  (kg/yr)     1.861001e+02  (kg)
- Fractional imbalance .......................................                                   0
+ Fractional imbalance .......................................                              0.0000
 
                Current Time Step by Boundary Condition Type
                                                                  Rates                     Amounts
@@ -110,7 +110,7 @@
  Fluid outflow ..............................................  2.787826e+11  (kg/yr)     4.460521e+12  (kg)
  Change in fluid in region .................................. -1.352326e+11  (kg/yr)    -2.163721e+12  (kg)
  Residual imbalance .........................................  1.473299e+02  (kg/yr)     2.357278e+03  (kg)
- Fractional imbalance .......................................                                   0
+ Fractional imbalance .......................................                              0.0000
 
                Current Time Step by Boundary Condition Type
                                                                  Rates                     Amounts
@@ -134,7 +134,7 @@
  Fluid outflow ..............................................  2.472973e+11  (kg/yr)     7.913513e+12  (kg)
  Change in fluid in region .................................. -1.037473e+11  (kg/yr)    -3.319913e+12  (kg)
  Residual imbalance .........................................  7.577420e+01  (kg/yr)     2.424774e+03  (kg)
- Fractional imbalance .......................................                                   0
+ Fractional imbalance .......................................                              0.0000
 
                Current Time Step by Boundary Condition Type
                                                                  Rates                     Amounts
@@ -278,7 +278,7 @@
  Fluid outflow ..............................................  1.437512e+11  (kg/yr)     2.944025e+14  (kg)
  Change in fluid in region .................................. -2.058592e+08  (kg/yr)    -4.215997e+11  (kg)
  Residual imbalance ......................................... -4.643803e+06  (kg/yr)    -9.510509e+09  (kg)
- Fractional imbalance .......................................                                   0
+ Fractional imbalance .......................................                              0.0000
 
                Current Time Step by Boundary Condition Type
                                                                  Rates                     Amounts
@@ -302,7 +302,7 @@
  Fluid outflow ..............................................  1.435666e+11  (kg/yr)     5.880487e+14  (kg)
  Change in fluid in region .................................. -1.656506e+07  (kg/yr)    -6.785048e+10  (kg)
  Residual imbalance .........................................  4.429802e+00  (kg/yr)     1.814447e+04  (kg)
- Fractional imbalance .......................................                                   0
+ Fractional imbalance .......................................                              0.0000
 
                Current Time Step by Boundary Condition Type
                                                                  Rates                     Amounts
@@ -326,7 +326,7 @@
  Fluid outflow ..............................................  1.435507e+11  (kg/yr)     1.175967e+15  (kg)
  Change in fluid in region .................................. -6.729568e+05  (kg/yr)    -5.512862e+09  (kg)
  Residual imbalance .........................................  4.521637e-01  (kg/yr)     3.704125e+03  (kg)
- Fractional imbalance .......................................                                   0
+ Fractional imbalance .......................................                              0.0000
 
                Current Time Step by Boundary Condition Type
                                                                  Rates                     Amounts
@@ -350,7 +350,7 @@
  Fluid outflow ..............................................  1.435500e+11  (kg/yr)     2.351923e+15  (kg)
  Change in fluid in region .................................. -1.193955e+04  (kg/yr)    -1.956176e+08  (kg)
  Residual imbalance .........................................  1.748848e-02  (kg/yr)     2.865312e+02  (kg)
- Fractional imbalance .......................................                                   0
+ Fractional imbalance .......................................                              0.0000
 
                Current Time Step by Boundary Condition Type
                                                                  Rates                     Amounts
@@ -374,7 +374,7 @@
  Fluid outflow ..............................................  1.435500e+11  (kg/yr)     4.703846e+15  (kg)
  Change in fluid in region .................................. -6.367739e+01  (kg/yr)    -2.086581e+06  (kg)
  Residual imbalance .........................................  4.615784e-04  (kg/yr)     1.512500e+01  (kg)
- Fractional imbalance .......................................                                   0
+ Fractional imbalance .......................................                              0.0000
 
                Current Time Step by Boundary Condition Type
                                                                  Rates                     Amounts
@@ -398,7 +398,7 @@
  Fluid outflow ..............................................  1.435500e+11  (kg/yr)     9.407693e+15  (kg)
  Change in fluid in region ..................................  2.538295e-01  (kg/yr)     1.663497e+04  (kg)
  Residual imbalance ......................................... -7.677078e-05  (kg/yr)    -5.031250e+00  (kg)
- Fractional imbalance .......................................                                   0
+ Fractional imbalance .......................................                              0.0000
 
                Current Time Step by Boundary Condition Type
                                                                  Rates                     Amounts
@@ -422,7 +422,7 @@
  Fluid outflow ..............................................  1.435500e+11  (kg/yr)     2.871000e+14  (kg)
  Change in fluid in region ..................................  0.000000e+00  (kg/yr)     0.000000e+00  (kg)
  Residual imbalance .........................................  2.674656e+01  (kg/yr)     5.349312e+04  (kg)
- Fractional imbalance .......................................                                   0
+ Fractional imbalance .......................................                              0.0000
 
 
           Component: H         
@@ -432,7 +432,7 @@
  Change in solute in region from reactions ..................  2.403740e+03  (kg/yr)     4.807480e+06  (kg)
  Change in solute in region ................................. -1.480612e+04  (kg/yr)    -2.961224e+07  (kg)
  Residual imbalance ......................................... -6.960392e-06  (kg/yr)    -1.392078e-02  (kg)
- Fractional imbalance .......................................                                   0
+ Fractional imbalance .......................................                              0.0000
 
 
           Component: O         
@@ -442,7 +442,7 @@
  Change in solute in region from reactions ..................  1.811772e+06  (kg/yr)     3.623544e+09  (kg)
  Change in solute in region ................................. -6.511239e+05  (kg/yr)    -1.302248e+09  (kg)
  Residual imbalance .........................................  3.105270e-03  (kg/yr)     6.210541e+00  (kg)
- Fractional imbalance .......................................                                   0
+ Fractional imbalance .......................................                              0.0000
 
 
           Component: As        
@@ -452,7 +452,7 @@
  Change in solute in region from reactions ..................  3.523423e+02  (kg/yr)     7.046846e+05  (kg)
  Change in solute in region .................................  6.405888e+01  (kg/yr)     1.281178e+05  (kg)
  Residual imbalance .........................................  2.226367e-08  (kg/yr)     4.452735e-05  (kg)
- Fractional imbalance .......................................                                   0
+ Fractional imbalance .......................................                              0.0000
 
 
           Component: C         
@@ -462,7 +462,7 @@
  Change in solute in region from reactions ..................  4.533152e+05  (kg/yr)     9.066303e+08  (kg)
  Change in solute in region ................................. -1.627092e+05  (kg/yr)    -3.254183e+08  (kg)
  Residual imbalance .........................................  7.765827e-04  (kg/yr)     1.553165e+00  (kg)
- Fractional imbalance .......................................                                   0
+ Fractional imbalance .......................................                              0.0000
 
 
           Component: Ca        
@@ -472,7 +472,7 @@
  Change in solute in region from reactions .................. -2.913132e+06  (kg/yr)    -5.826264e+09  (kg)
  Change in solute in region .................................  9.719643e+04  (kg/yr)     1.943929e+08  (kg)
  Residual imbalance ......................................... -1.486109e-03  (kg/yr)    -2.972218e+00  (kg)
- Fractional imbalance .......................................                                   0
+ Fractional imbalance .......................................                              0.0000
 
 
           Component: Cl        
@@ -482,7 +482,7 @@
  Change in solute in region from reactions .................. -2.250671e-06  (kg/yr)    -4.501343e-03  (kg)
  Change in solute in region ................................. -3.175680e+06  (kg/yr)    -6.351360e+09  (kg)
  Residual imbalance ......................................... -2.249634e-05  (kg/yr)    -4.499269e-02  (kg)
- Fractional imbalance .......................................                                   0
+ Fractional imbalance .......................................                              0.0000
 
 
           Component: Mg        
@@ -492,7 +492,7 @@
  Change in solute in region from reactions .................. -1.298853e+06  (kg/yr)    -2.597707e+09  (kg)
  Change in solute in region .................................  4.579576e+04  (kg/yr)     9.159152e+07  (kg)
  Residual imbalance ......................................... -6.088285e-04  (kg/yr)    -1.217657e+00  (kg)
- Fractional imbalance .......................................                                   0
+ Fractional imbalance .......................................                              0.0000
 
 
           Component: Na        
@@ -502,7 +502,7 @@
  Change in solute in region from reactions ..................  7.533695e+06  (kg/yr)     1.506739e+10  (kg)
  Change in solute in region ................................. -2.884307e+06  (kg/yr)    -5.768613e+09  (kg)
  Residual imbalance .........................................  2.255803e-02  (kg/yr)     4.511606e+01  (kg)
- Fractional imbalance .......................................                                   0
+ Fractional imbalance .......................................                              0.0000
 
 
           Component: S         
@@ -512,7 +512,7 @@
  Change in solute in region from reactions ..................  1.234388e-05  (kg/yr)     2.468777e-02  (kg)
  Change in solute in region ................................. -1.941681e+03  (kg/yr)    -3.883362e+06  (kg)
  Residual imbalance ......................................... -1.597404e-08  (kg/yr)    -3.194809e-05  (kg)
- Fractional imbalance .......................................                                   0
+ Fractional imbalance .......................................                              0.0000
 
 
           Component: Charge    
@@ -522,7 +522,7 @@
  Change in solute in region from reactions ..................  2.403855e+03  (kg/yr)     4.807711e+06  (kg)
  Change in solute in region ................................. -1.522314e+04  (kg/yr)    -3.044628e+07  (kg)
  Residual imbalance ......................................... -6.817463e-06  (kg/yr)    -1.363493e-02  (kg)
- Fractional imbalance .......................................                                   0
+ Fractional imbalance .......................................                              0.0000
 
                Current Time Step by Boundary Condition Type
                                                                  Amounts
@@ -654,7 +654,7 @@
  Current Fluid in region ....................................  2.784841e+14  (kg)
  Current Fluid volume in region .............................  2.784841e+11  (m ^3)
  Residual imbalance .........................................  2.674623e+06  (kg)
- Fractional imbalance .......................................           0
+ Fractional imbalance .......................................      0.0000
 
 
           Component: H         
@@ -665,7 +665,7 @@
  Cumulative change in solute in region ......................  1.004712e+09  (kg)
  Current solute in region ...................................  2.060266e+09  (kg)
  Residual imbalance..........................................  4.159939e+01  (kg)
- Fractional imbalance .......................................           0
+ Fractional imbalance .......................................      0.0000
 
 
           Component: O         
@@ -676,7 +676,7 @@
  Cumulative change in solute in region ...................... -1.488481e+10  (kg)
  Current solute in region ...................................  1.217344e+11  (kg)
  Residual imbalance..........................................  1.686771e+03  (kg)
- Fractional imbalance .......................................           0
+ Fractional imbalance .......................................      0.0000
 
 
           Component: As        
@@ -687,7 +687,7 @@
  Cumulative change in solute in region ......................  3.147172e+06  (kg)
  Current solute in region ...................................  3.355817e+06  (kg)
  Residual imbalance..........................................  5.090613e-02  (kg)
- Fractional imbalance .......................................           0
+ Fractional imbalance .......................................      0.0000
 
 
           Component: C         
@@ -698,7 +698,7 @@
  Cumulative change in solute in region ......................  1.687391e+10  (kg)
  Current solute in region ...................................  3.011979e+10  (kg)
  Residual imbalance..........................................  4.781936e+02  (kg)
- Fractional imbalance .......................................           0
+ Fractional imbalance .......................................      0.0000
 
 
           Component: Ca        
@@ -709,7 +709,7 @@
  Cumulative change in solute in region ...................... -5.188335e+12  (kg)
  Current solute in region ...................................  6.190562e+09  (kg)
  Residual imbalance..........................................  1.309840e+03  (kg)
- Fractional imbalance .......................................           0
+ Fractional imbalance .......................................      0.0000
 
 
           Component: Cl        
@@ -720,7 +720,7 @@
  Cumulative change in solute in region ...................... -6.552371e+13  (kg)
  Current solute in region ...................................  4.937905e+10  (kg)
  Residual imbalance..........................................  2.727255e+04  (kg)
- Fractional imbalance .......................................           0
+ Fractional imbalance .......................................      0.0000
 
 
           Component: Mg        
@@ -731,7 +731,7 @@
  Cumulative change in solute in region ...................... -1.087382e+12  (kg)
  Current solute in region ...................................  2.732600e+09  (kg)
  Residual imbalance.......................................... -2.081036e+02  (kg)
- Fractional imbalance .......................................           0
+ Fractional imbalance .......................................      0.0000
 
 
           Component: Na        
@@ -742,7 +742,7 @@
  Cumulative change in solute in region ...................... -3.449945e+13  (kg)
  Current solute in region ...................................  8.574356e+10  (kg)
  Residual imbalance..........................................  1.538477e+04  (kg)
- Fractional imbalance .......................................           0
+ Fractional imbalance .......................................      0.0000
 
 
           Component: S         
@@ -753,7 +753,7 @@
  Cumulative change in solute in region ...................... -4.006265e+10  (kg)
  Current solute in region ...................................  2.128365e+09  (kg)
  Residual imbalance..........................................  1.667465e+01  (kg)
- Fractional imbalance .......................................           0
+ Fractional imbalance .......................................      0.0000
 
 
           Component: Charge    
@@ -764,7 +764,7 @@
  Cumulative change in solute in region ......................  3.732759e+08  (kg)
  Current solute in region ...................................  3.732759e+08  (kg)
  Residual imbalance..........................................  4.304596e+01  (kg)
- Fractional imbalance .......................................           0
+ Fractional imbalance .......................................      0.0000
 
                Cumulative Summary by Boundary Condition Type
                                                                  Amounts
