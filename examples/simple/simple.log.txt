@@ -14,7 +14,7 @@ Processing flow and transport data file.
 	FREE_SURFACE_BC false
 	SOLUTION_METHOD
 		iterative_solver   true
-		tolerance          1e-18
+		tolerance          1e-018
 		save_directions    20
 		maximum_iterations 500
 		space_differencing 0

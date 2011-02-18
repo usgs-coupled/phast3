@@ -14,7 +14,7 @@
  Fluid outflow ..............................................  3.703040e+03  (kg/s)     1.599713e+08  (kg)
  Change in fluid in region ..................................  2.110887e-07  (kg/s)     9.119034e-03  (kg)
  Residual imbalance .........................................  7.657541e-11  (kg/s)     3.308058e-06  (kg)
- Fractional imbalance .......................................                                   0
+ Fractional imbalance .......................................                              0.0000
 
                Current Time Step by Boundary Condition Type
                                                                  Amounts
@@ -36,7 +36,7 @@
  Current Fluid in region ....................................  9.599997e+09  (kg)
  Current Fluid volume in region .............................  9.599997e+06  (m ^3)
  Residual imbalance .........................................  5.006790e-06  (kg)
- Fractional imbalance .......................................           0
+ Fractional imbalance .......................................      0.0000
 
                Cumulative Summary by Boundary Condition Type
                                                                  Amounts
