@@ -5,15 +5,15 @@ PHAST, Version @VERSION@ (@VER_DATE@)
 --------
 Svn 4812
 --------
-	Added capability to define a spatially distributed tortuosity 
-	as a media property. Previously, a constant tortuosity-molecular 
-	diffusivity product applied to the entire model domain. Now, 
-	molecular diffusivity is constant, but tortuosity may vary over 
-	the model domain. Tortuosity affects only the molecular 
-	diffusivity terms in the dispersion tensor; it does not
-	multiply the dispersivity term. Usually, tortuosity is 
-	important only for diffusion-only calculations.
-	
+	Added spatially distributed tortuosity as a media property.
+	Previously, a constant tortuosity-molecular diffusivity product
+	applied to the entire model domain. Now, molecular diffusivity
+	is constant, but tortuosity may vary over the model domain.
+	Tortuosity affects only the molecular diffusivity terms in the
+	dispersion tensor; it does not multiply the dispersivity term.
+	Usually, tortuosity is important only for diffusion-only
+	calculations.
+
 	
 	MEDIA
 	-zone 0 0 0 10 10 10 
