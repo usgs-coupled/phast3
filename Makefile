@@ -31,10 +31,10 @@ ifeq ($(CFG), CYGWIN)
   RUN=$(TEST)/runmpich
 endif
 
-SERIAL = decay diffusion1d diffusion2d disp2d ex3 kindred4.4 leaky leakyx leakyz linear_bc linear_ic ex4 notch phrqex11 ex1 radial river unconf well ex2 free ex4restart print_check_ss print_check_transient ex4_start_time mass_balance simple ex4_noedl ex4_ddl ex4_transient leakysurface flux_patches patches_lf zf property shell ex5 ex6
+SERIAL = decay diffusion1d diffusion2d disp2d ex3 kindred4.4 leaky leakyx leakyz linear_bc linear_ic ex4 notch phrqex11 ex1 radial river unconf well ex2 free ex4restart print_check_ss print_check_transient ex4_start_time mass_balance simple ex4_noedl ex4_ddl ex4_transient leakysurface flux_patches patches_lf zf property shell tortuosity ex5 ex6
 
 PARALLEL =  decay_parallel diffusion1d_parallel diffusion2d_parallel disp2d_parallel ex3_parallel kindred4.4_parallel leaky_parallel leakyx_parallel leakyz_parallel linear_bc_parallel linear_ic_parallel ex4_parallel notch_parallel phrqex11_parallel ex1_parallel radial_parallel river_parallel unconf_parallel well_parallel ex2_parallel \
-	free_parallel ex4restart_parallel print_check_ss_parallel print_check_transient_parallel  ex4_start_time_parallel mass_balance_parallel simple_parallel ex4_noedl_parallel ex4_ddl_parallel ex4_transient_parallel leakysurface_parallel flux_patches_parallel patches_lf_parallel zf_parallel property_parallel shell_parallel \
+	free_parallel ex4restart_parallel print_check_ss_parallel print_check_transient_parallel  ex4_start_time_parallel mass_balance_parallel simple_parallel ex4_noedl_parallel ex4_ddl_parallel ex4_transient_parallel leakysurface_parallel flux_patches_parallel patches_lf_parallel zf_parallel property_parallel shell_parallel tortuosity_parallel \
 	 ex5_parallel ex6_parallel
 
 CLEAN_SERIAL = decay_clean diffusion1d_clean diffusion2d_clean disp2d_clean ex3_clean \
@@ -1115,6 +1115,33 @@ shell_clean_parallel:
 	  find $(TEST)/shell/0  -maxdepth 1 -type f  | xargs rm -f; \
 	fi
 
+#
+# Tortuosity definitions
+#
+tortuosity: tortuosity_clean
+	echo ; 
+	echo ============= tortuosity
+	echo ; 
+	cd $(TEST)/tortuosity;
+	cd $(TEST)/tortuosity; $(PHAST_INPUT) tortuosity; time $(PHAST)
+	echo ============= Done tortuosity
+
+tortuosity_parallel: tortuosity_clean_parallel
+	echo ; 
+	echo ============= tortuosity Parallel
+	echo ; 
+	$(RUN) tortuosity
+	echo ============= Done tortuosity Parallel
+
+tortuosity_clean:
+	cd $(TEST)/tortuosity; $(CLEAN_CMD)
+
+tortuosity_clean_parallel:
+	@if [ -d $(TEST)/tortuosity/0 ]; \
+	  then \
+	  find $(TEST)/tortuosity/0  -maxdepth 1 -type f  | xargs rm -f; \
+	fi
+
 clean: clean_serial clean_parallel
 	rm -f all.out
 
@@ -1162,6 +1189,19 @@ ndiff:
 	for DIR in $(SERIAL); \
 		do \
 			svn diff --diff-cmd /home/dlpark/bin/ndiff -x "--relative-error 1e-7" $$DIR; \
+		done;
+
+unix:
+	for DIR in $(SERIAL); \
+		do echo $$DIR; cd $$DIR; \
+			for FILE in *.txt *.tsv; \
+				do \
+					if [ -f $$FILE ]; then \
+						textcp unix $$FILE txx; \
+						mv txx $$FILE; \
+					fi; \
+				done; \
+			cd ..; \
 		done;
 
 zero:

@@ -38,30 +38,30 @@ Initial solution 1.
                                        pH  =   7.000    
                                        pe  =   4.000    
                         Activity of water  =   1.000
-                           Ionic strength  =  1.001e-007
-                       Mass of water (kg)  =  1.000e+000
-                 Total alkalinity (eq/kg)  =  1.082e-010
-                    Total carbon (mol/kg)  =  0.000e+000
-                       Total CO2 (mol/kg)  =  0.000e+000
+                           Ionic strength  =   1.001e-07
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   1.082e-10
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  = -1.082e-010
+                  Electrical balance (eq)  =  -1.082e-10
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.05
                                Iterations  =   0
-                                  Total H  = 1.110124e+002
-                                  Total O  = 5.550622e+001
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
 
 ----------------------------Distribution of species----------------------------
 
                                                    Log       Log         Log 
    Species                 Molality    Activity  Molality  Activity     Gamma
 
-   OH-                   1.002e-007  1.001e-007    -6.999    -6.999    -0.000
-   H+                    1.001e-007  1.000e-007    -7.000    -7.000    -0.000
-   H2O                   5.551e+001  1.000e+000     1.744     0.000     0.000
-H(0)            1.416e-025
-   H2                    7.079e-026  7.079e-026   -25.150   -25.150     0.000
-O(0)            0.000e+000
-   O2                    0.000e+000  0.000e+000   -42.080   -42.080     0.000
+   OH-                    1.002e-07   1.001e-07    -6.999    -6.999    -0.000
+   H+                     1.001e-07   1.000e-07    -7.000    -7.000    -0.000
+   H2O                    5.551e+01   1.000e+00     1.744     0.000     0.000
+H(0)             1.416e-25
+   H2                     7.079e-26   7.079e-26   -25.150   -25.150     0.000
+O(0)             0.000e+00
+   O2                     0.000e+00   0.000e+00   -42.080   -42.080     0.000
 
 ------------------------------Saturation indices-------------------------------
 
@@ -96,43 +96,43 @@ Initial solution 2.
 
 	Elements           Molality       Moles
 
-	Cl               1.000e+000  1.000e+000
-	Na               1.000e+000  1.000e+000
+	Cl                1.000e+00   1.000e+00
+	Na                1.000e+00   1.000e+00
 
 ----------------------------Description of solution----------------------------
 
                                        pH  =   7.000    
                                        pe  =   4.000    
                         Activity of water  =   0.966
-                           Ionic strength  =  1.000e+000
-                       Mass of water (kg)  =  1.000e+000
-                 Total alkalinity (eq/kg)  =  6.866e-008
-                    Total carbon (mol/kg)  =  0.000e+000
-                       Total CO2 (mol/kg)  =  0.000e+000
+                           Ionic strength  =   1.000e+00
+                       Mass of water (kg)  =   1.000e+00
+                 Total alkalinity (eq/kg)  =   6.866e-08
+                    Total carbon (mol/kg)  =   0.000e+00
+                       Total CO2 (mol/kg)  =   0.000e+00
                       Temperature (deg C)  =  25.000
-                  Electrical balance (eq)  = -6.866e-008
+                  Electrical balance (eq)  =  -6.866e-08
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.00
                                Iterations  =   4
-                                  Total H  = 1.110124e+002
-                                  Total O  = 5.550622e+001
+                                  Total H  = 1.110124e+02
+                                  Total O  = 5.550622e+01
 
 ----------------------------Distribution of species----------------------------
 
                                                    Log       Log         Log 
    Species                 Molality    Activity  Molality  Activity     Gamma
 
-   OH-                   1.669e-007  9.670e-008    -6.778    -7.015    -0.237
-   H+                    1.345e-007  1.000e-007    -6.871    -7.000    -0.129
-   H2O                   5.551e+001  9.660e-001     1.744    -0.015     0.000
-Cl              1.000e+000
-   Cl-                   1.000e+000  5.998e-001     0.000    -0.222    -0.222
-H(0)            1.125e-025
-   H2                    5.623e-026  7.079e-026   -25.250   -25.150     0.100
-Na              1.000e+000
-   Na+                   1.000e+000  7.159e-001    -0.000    -0.145    -0.145
-   NaOH                  3.629e-008  4.569e-008    -7.440    -7.340     0.100
-O(0)            0.000e+000
-   O2                    0.000e+000  0.000e+000   -42.210   -42.110     0.100
+   OH-                    1.669e-07   9.670e-08    -6.778    -7.015    -0.237
+   H+                     1.345e-07   1.000e-07    -6.871    -7.000    -0.129
+   H2O                    5.551e+01   9.660e-01     1.744    -0.015     0.000
+Cl               1.000e+00
+   Cl-                    1.000e+00   5.998e-01     0.000    -0.222    -0.222
+H(0)             1.125e-25
+   H2                     5.623e-26   7.079e-26   -25.250   -25.150     0.100
+Na               1.000e+00
+   Na+                    1.000e+00   7.159e-01    -0.000    -0.145    -0.145
+   NaOH                   3.629e-08   4.569e-08    -7.440    -7.340     0.100
+O(0)             0.000e+00
+   O2                     0.000e+00   0.000e+00   -42.210   -42.110     0.100
 
 ------------------------------Saturation indices-------------------------------
 
@@ -160,4 +160,3 @@ List of Components:
 List of master species:
 	1	Cl
 	2	Na
-No memory leaks
