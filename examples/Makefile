@@ -730,8 +730,9 @@ ex5_parallel: ex5_clean_parallel
 	echo ============= Done ex5 Parallel
 
 ex5_clean:
+	cd $(TEST)/ex5; mv plume.heads.xyzt plume.heads.xxx
 	cd $(TEST)/ex5; $(CLEAN_CMD) ex5.head.dat
-	cd $(TEST)/ex5; svn revert plume.heads.xyzt
+	cd $(TEST)/ex5; mv plume.heads.xxx plume.heads.xyzt 
 
 ex5_clean_parallel:
 	@if [ -d $(TEST)/ex5/0 ]; \
