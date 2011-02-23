@@ -24,10 +24,19 @@ endif
 ifeq ($(CFG), CYGWIN)
   TOPDIR=/cygdrive/c/programs/phastpp
   TEST=$(TOPDIR)/examples
-  PHAST_INPUT=$(TOPDIR)/src/phastinput/vc80/Release/phastinput.exe
-  PHAST=$(TOPDIR)/src/phast/win32_2005/ser/phast.exe
+# 32 bit Release
+#  PHAST_INPUT=C:/Program\ Files\ \(x86\)/USGS/phast-2.0.4799/bin/phastinput.exe
+#  PHAST=C:/Program\ Files\ \(x86\)/USGS/phast-2.0.4799/bin/phast-ser.exe
+
+
+# 64 bit Release
+  PHAST_INPUT=C:/Program\ Files/USGS/phast-2.0.4799/bin/phastinput.exe
+  PHAST=C:/Program\ Files/USGS/phast-2.0.4799/bin/phast-ser.exe
+
+  #PHAST_INPUT=$(TOPDIR)/src/phastinput/vc80/Release/phastinput.exe
+  #PHAST=$(TOPDIR)/src/phast/win32_2005/ser/phast.exe
   # only for mpich target
-  PHAST_MPICH=$(TOPDIR)/src/phast/win32_2005/merge_debug/phast.exe
+  #PHAST_MPICH=$(TOPDIR)/src/phast/win32_2005/merge_debug/phast.exe
   RUN=$(TEST)/runmpich
 endif
 
