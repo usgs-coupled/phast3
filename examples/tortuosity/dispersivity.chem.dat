@@ -1,9 +1,0 @@
-SOLUTION 1
-END
-SOLUTION 2
-	-units mol/kgw
-	Na	1
-	Cl	1
-SELECTED_OUTPUT
-	-reset false
-	-tot Cl
