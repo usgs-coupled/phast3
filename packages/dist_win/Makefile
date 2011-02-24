@@ -88,7 +88,7 @@ source : check_version check_date $(TARBALL) ## $(MV_TARBALL)
 
 $(TARBALL) : ../RPM/dist.sh $(DATE_STAMP).tstamp
 	@echo "Creating $(TARBALL)"
-	time ../RPM/dist.sh -v $(VERSION) -r $(RELEASE) -d $(DATE) -pr $(REPOS_PATH) -win 2>&1 | tee dist-$(RELEASE).log
+	time ../RPM/dist.sh -v $(VERSION) -vp $(PHREEQC_VER) -r $(RELEASE) -d $(DATE) -pr $(REPOS_PATH) -win 2>&1 | tee dist-$(RELEASE).log
 	
 $(MV_TARBALL) : $(BUILD_SCRIPT)
 	@echo "Creating $(MV_TARBALL)"
