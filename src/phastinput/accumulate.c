@@ -5139,17 +5139,14 @@ setup_grid_defaults(void)
 	}
 
 	// Make uniform 2x2x2 grid for defaults
-	for (i = 0; i < 2; i++)
+	for (j = 0; j < 3; j++)
 	{
-		for (j = 0; j < 2; j++)
-		{
-			nodes = (double *) malloc((size_t) 2 * sizeof(double));
-			nodes[0] = grid[j].coord[0];
-			nodes[1] = grid[j].coord[grid[j].count_coord - 1];
-			free_check_null(grid[j].coord);
-			grid[j].coord = nodes;
-			grid[j].count_coord = 2;
-		}
+		nodes = (double *) malloc((size_t) 2 * sizeof(double));
+		nodes[0] = grid[j].coord[0];
+		nodes[1] = grid[j].coord[grid[j].count_coord - 1];
+		free_check_null(grid[j].coord);
+		grid[j].coord = nodes;
+		grid[j].count_coord = 2;
 	}
 
 	for (i = 0; i < 3; i++)
