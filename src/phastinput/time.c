@@ -589,7 +589,7 @@ collate_simulation_periods(void)
 	double end_time_simulation = time_end[count_time_end - 1].value * time_end[count_time_end - 1].input_to_user;
 	for (i = 1; i < count_simulation_periods; i++)
 	{
-		if (equal(simulation_periods[k], end_time_simulation, TIME_EPS) == TRUE ||
+		if (equal(simulation_periods[i], end_time_simulation, TIME_EPS) == TRUE ||
 		    simulation_periods[i] >= end_time_simulation)
 		{
 			warning_msg

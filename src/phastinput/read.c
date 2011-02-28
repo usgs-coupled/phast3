@@ -2172,15 +2172,18 @@ read_media(void)
 				opt = next_keyword_or_option(opt_list, count_opt_list);
 				break;
 			}
-			if (grid_elt_ptr->polyh->Get_description()->size() != 0)
+			if (grid_elt_ptr->polyh != NULL) 
 			{
-				sprintf(error_string, "Description has been redefined %s",
+				if (grid_elt_ptr->polyh->Get_description()->size() != 0)
+				{
+					sprintf(error_string, "Description has been redefined %s",
 						tag);
-				warning_msg(error_string);
-				grid_elt_ptr->polyh->Get_description()->clear();
+					warning_msg(error_string);
+					grid_elt_ptr->polyh->Get_description()->clear();
+				}
+				//std::string str(next_char);
+				grid_elt_ptr->polyh->Get_description()->assign(next_char);
 			}
-			//std::string str(next_char);
-			grid_elt_ptr->polyh->Get_description()->assign(next_char);
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		case 42:				/* shell */
@@ -2737,16 +2740,20 @@ read_head_ic(void)
 				opt = next_keyword_or_option(opt_list, count_opt_list);
 				break;
 			}
-			if (head_ic_ptr->polyh->Get_description()->size() != 0)
+			if (head_ic_ptr->polyh != NULL) 
 			{
-				sprintf(error_string, "Description has been redefined %s",
+				if (head_ic_ptr->polyh->Get_description()->size() != 0)
+				{
+					sprintf(error_string, "Description has been redefined %s",
 						tag);
-				warning_msg(error_string);
-				head_ic_ptr->polyh->Get_description()->clear();
+					warning_msg(error_string);
+					head_ic_ptr->polyh->Get_description()->clear();
+				}
+				//std::string str(next_char);
+				head_ic_ptr->polyh->Get_description()->assign(next_char);
 			}
-			//std::string str(next_char);
-			head_ic_ptr->polyh->Get_description()->assign(next_char);
 			opt = next_keyword_or_option(opt_list, count_opt_list);
+
 			break;
 		case 12:			/* domain */
 			/*
@@ -3247,15 +3254,18 @@ read_chemistry_ic(void)
 				opt = next_keyword_or_option(opt_list, count_opt_list);
 				break;
 			}
-			if (chem_ic_ptr->polyh->Get_description()->size() != 0)
+			if (chem_ic_ptr->polyh != NULL)
 			{
-				sprintf(error_string, "Description has been redefined %s",
+				if (chem_ic_ptr->polyh->Get_description()->size() != 0)
+				{
+					sprintf(error_string, "Description has been redefined %s",
 						tag);
-				warning_msg(error_string);
-				chem_ic_ptr->polyh->Get_description()->clear();
+					warning_msg(error_string);
+					chem_ic_ptr->polyh->Get_description()->clear();
+				}
+				//std::string str(next_char);
+				chem_ic_ptr->polyh->Get_description()->assign(next_char);
 			}
-			//std::string str(next_char);
-			chem_ic_ptr->polyh->Get_description()->assign(next_char);
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		case 20:			/* domain */
@@ -4003,15 +4013,18 @@ read_specified_value_bc(void)
 				opt = next_keyword_or_option(opt_list, count_opt_list);
 				break;
 			}
-			if (bc_ptr->polyh->Get_description()->size() != 0)
+			if (bc_ptr->polyh != NULL)
 			{
-				sprintf(error_string, "Description has been redefined %s",
+				if (bc_ptr->polyh->Get_description()->size() != 0)
+				{
+					sprintf(error_string, "Description has been redefined %s",
 						tag);
-				warning_msg(error_string);
-				bc_ptr->polyh->Get_description()->clear();
+					warning_msg(error_string);
+					bc_ptr->polyh->Get_description()->clear();
+				}
+				//std::string str(next_char);
+				bc_ptr->polyh->Get_description()->assign(next_char);
 			}
-			//std::string str(next_char);
-			bc_ptr->polyh->Get_description()->assign(next_char);
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		case 16:				/* exterior_cells_only */
@@ -4424,15 +4437,17 @@ read_flux_bc(void)
 				opt = next_keyword_or_option(opt_list, count_opt_list);
 				break;
 			}
-			if (bc_ptr->polyh->Get_description()->size() != 0)
+			if (bc_ptr->polyh != NULL)
 			{
-				sprintf(error_string, "Description has been redefined %s",
+				if (bc_ptr->polyh->Get_description()->size() != 0)
+				{
+					sprintf(error_string, "Description has been redefined %s",
 						tag);
-				warning_msg(error_string);
-				bc_ptr->polyh->Get_description()->clear();
+					warning_msg(error_string);
+					bc_ptr->polyh->Get_description()->clear();
+				}
+				bc_ptr->polyh->Get_description()->assign(next_char);
 			}
-			//std::string str(next_char);
-			bc_ptr->polyh->Get_description()->assign(next_char);
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		case 14:		/* domain */
@@ -4879,15 +4894,18 @@ read_leaky_bc(void)
 				opt = next_keyword_or_option(opt_list, count_opt_list);
 				break;
 			}
-			if (bc_ptr->polyh->Get_description()->size() != 0)
+			if (bc_ptr->polyh != NULL)
 			{
-				sprintf(error_string, "Description has been redefined %s",
+				if (bc_ptr->polyh->Get_description()->size() != 0)
+				{
+					sprintf(error_string, "Description has been redefined %s",
 						tag);
-				warning_msg(error_string);
-				bc_ptr->polyh->Get_description()->clear();
+					warning_msg(error_string);
+					bc_ptr->polyh->Get_description()->clear();
+				}
+				//std::string str(next_char);
+				bc_ptr->polyh->Get_description()->assign(next_char);
 			}
-			//std::string str(next_char);
-			bc_ptr->polyh->Get_description()->assign(next_char);
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		case 17:			/* domain */
@@ -10078,15 +10096,17 @@ read_print_locations(void)
 				opt = next_keyword_or_option(opt_list, count_opt_list);
 				break;
 			}
-			if (print_zones_ptr->polyh->Get_description()->size() != 0)
+			if (print_zones_ptr->polyh != NULL)
 			{
-				sprintf(error_string, "Description has been redefined %s",
+				if (print_zones_ptr->polyh->Get_description()->size() != 0)
+				{
+					sprintf(error_string, "Description has been redefined %s",
 						tag);
-				warning_msg(error_string);
-				print_zones_ptr->polyh->Get_description()->clear();
+					warning_msg(error_string);
+					print_zones_ptr->polyh->Get_description()->clear();
+				}
+				print_zones_ptr->polyh->Get_description()->assign(next_char);
 			}
-			//std::string str(next_char);
-			print_zones_ptr->polyh->Get_description()->assign(next_char);
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		case 18:			/* domain */
