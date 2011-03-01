@@ -195,7 +195,9 @@ property_time_copy(struct property_time *source)
 	if (target == NULL)
 		malloc_error();
 
-	memcpy(target, source, sizeof(property_time));
+	memcpy(target, source, sizeof(struct property_time));
+	target->time.input = NULL;
+	target->time_value.input = NULL;
 	time_copy(&source->time, &target->time);
 	time_copy(&source->time_value, &target->time_value);
 
@@ -274,7 +276,6 @@ time_series_realloc(struct time_series *time_series_ptr)
 										  sizeof(struct property_time *));
 	if (time_series_ptr->properties == NULL)
 		malloc_error();
-
 	return (OK);
 
 }
