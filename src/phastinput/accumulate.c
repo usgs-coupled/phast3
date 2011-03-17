@@ -1195,7 +1195,7 @@ setup_print_locations(struct print_zones_struct *print_zones_struct_ptr,
 			{
 				sprintf(error_string, "Bad zone or wedge definition %s", tag);
 				warning_msg(error_string);
-				break;
+				continue;
 			}
 			std::list < int >list_of_cells;
 			range_to_list(range_ptr, list_of_cells);
@@ -1208,7 +1208,7 @@ setup_print_locations(struct print_zones_struct *print_zones_struct_ptr,
 			{
 				sprintf(error_string, "Bad zone or wedge definition %s", tag);
 				warning_msg(error_string);
-				break;
+				continue;
 			}
 			if (print_zones_struct_ptr->print_zones[i].print != NULL)
 			{
@@ -1930,7 +1930,7 @@ setup_chem_ic(bool forward)
 			{
 				sprintf(error_string, "Bad zone or wedge definition %s", tag);
 				warning_msg(error_string);
-				break;
+				continue;
 			}
 			std::list < int >list_of_cells;
 			range_to_list(range_ptr, list_of_cells);
@@ -1942,7 +1942,7 @@ setup_chem_ic(bool forward)
 			{
 				sprintf(error_string, "Bad zone or wedge definition %s", tag);
 				warning_msg(error_string);
-				break;
+				continue;
 			}
 
 			/*
@@ -2192,7 +2192,7 @@ setup_bc(void)
 					sprintf(error_string, "Bad zone or wedge definition %s",
 							tag);
 					warning_msg(error_string);
-					break;
+					continue;
 				}
 				if (bc[i]->cell_face == CF_UNKNOWN
 					|| bc[i]->cell_face == CF_NONE)
@@ -2235,7 +2235,7 @@ setup_bc(void)
 			{
 				sprintf(error_string, "Bad zone or wedge definition %s", tag);
 				warning_msg(error_string);
-				break;
+				continue;
 			}
 
 			switch (bc[i]->bc_type)
@@ -2488,7 +2488,7 @@ setup_media(bool forward)
 				{
 					sprintf(error_string, "Bad zone or wedge definition %s", tag);
 					warning_msg(error_string);
-					break;
+					continue;
 				}
 				range_to_list(range_ptr, list_of_elements);
 				free_check_null(range_ptr);
@@ -2501,7 +2501,7 @@ setup_media(bool forward)
 				{
 					sprintf(error_string, "Bad zone or wedge definition for shell %s", tag);
 					warning_msg(error_string);
-					break;
+					continue;
 				}
 			}
 
@@ -2509,7 +2509,7 @@ setup_media(bool forward)
 			{
 				sprintf(error_string, "Bad zone or wedge definition %s", tag);
 				warning_msg(error_string);
-				break;
+				continue;
 			}
 			/*
 			 *   process active 
@@ -4465,9 +4465,11 @@ Tidy_cubes(PHAST_Transform::COORDINATE_SYSTEM target,
 	// Grid_elt
 	for (i = 0; i < count_grid_elt_zones; i++)
 	{
-		if (grid_elt_zones[i]->polyh == 0)
+		assert(grid_elt_zones[i]->polyh);
+		if (Domain *d = dynamic_cast < Domain * >(grid_elt_zones[i]->polyh))
 		{
-			grid_elt_zones[i]->polyh = new Domain(&domain, PHAST_Transform::GRID);
+			d->SetZone(&domain);
+			continue;
 		}
 		Wedge *w = dynamic_cast < Wedge * >(grid_elt_zones[i]->polyh);
 		Cube *c = dynamic_cast < Cube * >(grid_elt_zones[i]->polyh);
@@ -4493,9 +4495,11 @@ Tidy_cubes(PHAST_Transform::COORDINATE_SYSTEM target,
 	//head_ic_ptr
 	for (i = 0; i < count_head_ic; i++)
 	{
-		if (head_ic[i]->polyh == 0)
+		assert(head_ic[i]->polyh);
+		if (Domain *d = dynamic_cast < Domain * >(head_ic[i]->polyh))
 		{
-			head_ic[i]->polyh = new Domain(&domain, PHAST_Transform::GRID);
+			d->SetZone(&domain);
+			continue;
 		}
 		Wedge *w = dynamic_cast < Wedge * >(head_ic[i]->polyh);
 		Cube *c = dynamic_cast < Cube * >(head_ic[i]->polyh);
@@ -4520,9 +4524,11 @@ Tidy_cubes(PHAST_Transform::COORDINATE_SYSTEM target,
 	//chem_ic_ptr
 	for (i = 0; i < count_chem_ic; i++)
 	{
-		if (chem_ic[i]->polyh == 0)
+		assert(chem_ic[i]->polyh);
+		if (Domain *d = dynamic_cast < Domain * >(chem_ic[i]->polyh))
 		{
-			chem_ic[i]->polyh = new Domain(&domain, PHAST_Transform::GRID);
+			d->SetZone(&domain);
+			continue;
 		}
 		Wedge *w = dynamic_cast < Wedge * >(chem_ic[i]->polyh);
 		Cube *c = dynamic_cast < Cube * >(chem_ic[i]->polyh);
@@ -4547,9 +4553,11 @@ Tidy_cubes(PHAST_Transform::COORDINATE_SYSTEM target,
 	//bc_ptr
 	for (i = 0; i < count_bc; i++)
 	{
-		if (bc[i]->polyh == 0)
+		assert(bc[i]->polyh);
+		if (Domain *d = dynamic_cast < Domain * >(bc[i]->polyh))
 		{
-			bc[i]->polyh = new Domain(&domain, PHAST_Transform::GRID);
+			d->SetZone(&domain);
+			continue;
 		}
 		Wedge *w = dynamic_cast < Wedge * >(bc[i]->polyh);
 		Cube *c = dynamic_cast < Cube * >(bc[i]->polyh);
@@ -4574,9 +4582,11 @@ Tidy_cubes(PHAST_Transform::COORDINATE_SYSTEM target,
 	//print_zones_chem
 	for (i = 0; i < print_zones_chem.count_print_zones; i++)
 	{
-		if (print_zones_chem.print_zones[i].polyh == 0)
+		assert(print_zones_chem.print_zones[i].polyh);
+		if (Domain *d = dynamic_cast < Domain * >(print_zones_chem.print_zones[i].polyh))
 		{
-			print_zones_chem.print_zones[i].polyh = new Domain(&domain, PHAST_Transform::GRID);
+			d->SetZone(&domain);
+			continue;
 		}
 		Wedge *w =
 			dynamic_cast < Wedge * >(print_zones_chem.print_zones[i].polyh);
@@ -4603,9 +4613,11 @@ Tidy_cubes(PHAST_Transform::COORDINATE_SYSTEM target,
 	//print_zones_xyz
 	for (i = 0; i < print_zones_chem.count_print_zones; i++)
 	{
-		if (print_zones_xyz.print_zones[i].polyh == 0)
+		assert(print_zones_xyz.print_zones[i].polyh);
+		if (Domain *d = dynamic_cast < Domain * >(print_zones_xyz.print_zones[i].polyh))
 		{
-			print_zones_xyz.print_zones[i].polyh = new Domain(&domain, PHAST_Transform::GRID);
+			d->SetZone(&domain);
+			continue;
 		}
 		Wedge *w =
 			dynamic_cast < Wedge * >(print_zones_xyz.print_zones[i].polyh);
@@ -4635,9 +4647,11 @@ Tidy_cubes(PHAST_Transform::COORDINATE_SYSTEM target,
 	for (it = Zone_budget::zone_budget_map.begin();
 		 it != Zone_budget::zone_budget_map.end(); it++)
 	{
-		if (it->second->Get_polyh() == 0 && it->second->Get_combo().size() == 0)
+		assert(it->second->Get_polyh() || it->second->Get_combo().size() != 0);
+		if (Domain *d = dynamic_cast < Domain * >(it->second->Get_polyh()))
 		{
-			it->second->Set_polyh(new Domain(&domain, PHAST_Transform::GRID));
+			d->SetZone(&domain);
+			continue;
 		}
 		Wedge *w = dynamic_cast < Wedge * >(it->second->Get_polyh());
 		Cube *c = dynamic_cast < Cube * >(it->second->Get_polyh());
@@ -4656,7 +4670,6 @@ Tidy_cubes(PHAST_Transform::COORDINATE_SYSTEM target,
 			p = new Prism(*c);
 		}
 		p->Convert_coordinates(target, map2grid);
-// COMMENT: {2/18/2009 5:45:20 PM}		delete it->second->Get_polyh();
 		it->second->Set_polyh(p);
 	}
 }
@@ -5360,34 +5373,30 @@ accumulate_defaults(void)
 								grid_origin[2], grid_angle, scale_h, scale_h,
 								scale_v);
 
+		assert(::domain.zone_defined);
+
 		for (i = 0; i < count_head_ic; i++)
 		{
-			//if (head_ic[i]->polyh != NULL /*&& head_ic[i]->polyh->get_type() == Polyhedron::PRISM*/)
+			if (head_ic[i]->polyh != NULL && head_ic[i]->polyh->get_type() == Polyhedron::PRISM)
 			{
 				delete head_ic[i]->polyh;
-				//free_check_null(head_ic[i]->polyh);
-				//head_ic[i]->polyh = new Domain();
-				head_ic[i]->polyh = NULL;
+				head_ic[i]->polyh = new Domain(&::domain);
 			}
 		}
 		for (i = 0; i < count_chem_ic; i++)
 		{
-			//if (chem_ic[i]->polyh != NULL /*&& chem_ic[i]->polyh->get_type() == Polyhedron::PRISM*/)
+			if (chem_ic[i]->polyh != NULL && chem_ic[i]->polyh->get_type() == Polyhedron::PRISM)
 			{
 				delete chem_ic[i]->polyh;
-				//free_check_null(chem_ic[i]->polyh);
-				//chem_ic[i]->polyh = new Domain();
-				chem_ic[i]->polyh = NULL;
+				chem_ic[i]->polyh = new Domain(&::domain);
 			}
 		}
 		for (i = 0; i < count_grid_elt_zones; i++)
 		{
-			//if (grid_elt_zones[i]->polyh != NULL /*&& grid_elt_zones[i]->polyh->get_type() == Polyhedron::PRISM*/)
+			if (grid_elt_zones[i]->polyh != NULL && grid_elt_zones[i]->polyh->get_type() == Polyhedron::PRISM)
 			{
 				delete grid_elt_zones[i]->polyh;
-				//free_check_null(grid_elt_zones[i]->polyh);
-				//grid_elt_zones[i]->polyh = new Domain();
-				grid_elt_zones[i]->polyh = NULL;
+				grid_elt_zones[i]->polyh = new Domain(&::domain);
 			}
 		}
 		std::map<int, Zone_budget*>::iterator zit = Zone_budget::zone_budget_map.begin();
@@ -5395,7 +5404,7 @@ accumulate_defaults(void)
 		{
 			if ((*zit).second->Get_polyh() != NULL && (*zit).second->Get_polyh()->get_type() == Polyhedron::PRISM)
 			{
-				(*zit).second->Set_polyh(NULL);
+				(*zit).second->Set_polyh(new Domain(&::domain));
 			}
 		}
 		for (i = 0; i < ::count_bc; ++i)
@@ -5404,7 +5413,7 @@ accumulate_defaults(void)
 			if (bc_ptr->polyh != NULL && bc_ptr->polyh->get_type() == Polyhedron::PRISM)
 			{
 				delete bc_ptr->polyh;
-				bc_ptr->polyh = NULL;
+				bc_ptr->polyh = new Domain(&::domain);
 			}
 		}
 

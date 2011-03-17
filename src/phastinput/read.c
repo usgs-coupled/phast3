@@ -4,6 +4,7 @@
 #include "stddef.h"
 #include "Polyhedron.h"
 #include "Cube.h"
+#include "Domain.h"
 #include "Wedge.h"
 #include "Prism.h"
 #include "XYZfile.h"
@@ -2220,6 +2221,7 @@ read_media(void)
 			grid_elt_ptr = grid_elt_zones[count_grid_elt_zones];
 			count_grid_elt_zones++;
 			sprintf(tag, "in MEDIA, definition %d.", count_grid_elt_zones);
+			grid_elt_ptr->polyh = new Domain();
 
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
@@ -2773,6 +2775,7 @@ read_head_ic(void)
 			sprintf(tag, "in HEAD_IC, definition %d.", count_head_ic);
 			head_ic_init(head_ic_ptr);
 
+			head_ic_ptr->polyh = new Domain();
 			head_ic_ptr->ic_type = ZONE;
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
@@ -3286,8 +3289,7 @@ read_chemistry_ic(void)
 			sprintf(tag, "in CHEMISTRY_IC, definition %d.", count_chem_ic);
 			chem_ic_init(chem_ic_ptr);
 
-			opt = next_keyword_or_option(opt_list, count_opt_list);
-			break;
+			chem_ic_ptr->polyh = new Domain();
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		}
@@ -4092,6 +4094,7 @@ read_specified_value_bc(void)
 					count_specified);
 			count_bc++;
 
+			bc_ptr->polyh = new Domain();
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		}
@@ -4469,6 +4472,7 @@ read_flux_bc(void)
 			count_bc++;
 
 			/* read to next */
+			bc_ptr->polyh = new Domain();
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		}
@@ -4925,6 +4929,7 @@ read_leaky_bc(void)
 			sprintf(tag, "in LEAKY_BC, definition %d.", count_leaky);
 			count_bc++;
 
+			bc_ptr->polyh = new Domain();
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		case 18:				/* elevation */
@@ -10140,6 +10145,7 @@ read_print_locations(void)
 			print_zones_struct_ptr->count_print_zones++;
 			sprintf(tag, "in PRINT_LOCATIONS, definition %d.", count_zones);
 
+			print_zones_ptr->polyh = new Domain();
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		}
@@ -10955,6 +10961,7 @@ read_zone_budget(void)
 			}
 			break;
 		case 10:				/* domain */
+			zb->Set_polyh(new Domain());
 			opt = next_keyword_or_option(opt_list, count_opt_list);
 			break;
 		}
