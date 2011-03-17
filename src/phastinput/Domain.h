@@ -6,8 +6,8 @@ class Domain : public Cube
 {
 public:
 	// constructors
-	Domain(PHAST_Transform::COORDINATE_SYSTEM cs = PHAST_Transform::GRID);
-	Domain(const struct zone *zone_ptr, PHAST_Transform::COORDINATE_SYSTEM cs = PHAST_Transform::GRID);
+	Domain(void);
+	Domain(const struct zone *zone_ptr);
 
 	// destructor
 	virtual ~Domain(void);
@@ -17,6 +17,8 @@ public:
 
 	bool operator==(const Domain &other) const;
 	bool operator!=(const Domain &other) const;
+
+	void SetZone(const struct zone *zone_ptr);
 
 protected:
 	virtual void printOn(std::ostream & os) const;

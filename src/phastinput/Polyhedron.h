@@ -25,7 +25,8 @@ class Polyhedron
 	{
 		CUBE = 0,
 		WEDGE = 1,
-		PRISM = 2
+		PRISM = 2,
+		GRID_DOMAIN = 3
 	};
 
 	// Methods
