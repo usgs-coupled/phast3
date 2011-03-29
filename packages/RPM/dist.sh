@@ -153,30 +153,45 @@ echo "Exporting revision $REVISION of PHAST into sandbox..."
         ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
              "http://internalbrr.cr.usgs.gov/svn_GW/phastpp/$REPOS_PATH" \
              "$DISTNAME")
+if [ $? != 0 ] ; then
+  exit $?;
+fi
 
 echo "Exporting revision $REVISION of external database into sandbox..."
 (cd "$DIST_SANDBOX" && \
         ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
              "http://internalbrr.cr.usgs.gov/svn_GW/phreeqc/trunk/database" \
              "$DISTNAME/database")
+if [ $? != 0 ] ; then
+  exit $?;
+fi
 
 echo "Exporting revision $REVISION of external src/phast/phreeqcpp into sandbox..."
 (cd "$DIST_SANDBOX" && \
         ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
              "http://internalbrr.cr.usgs.gov/svn_GW/phreeqcpp/trunk/src" \
              "$DISTNAME/src/phast/phreeqcpp")
+if [ $? != 0 ] ; then
+  exit $?;
+fi
 
 echo "Exporting revision $REVISION of external src/phast/KDtree into sandbox..."
 (cd "$DIST_SANDBOX" && \
         ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
              "http://internalbrr.cr.usgs.gov/svn_GW/phastpp/trunk/src/phastinput/KDtree" \
              "$DISTNAME/src/phast/KDtree")
+if [ $? != 0 ] ; then
+  exit $?;
+fi
 
 echo "Exporting revision $REVISION of external src/phast/phreeqcpp/phreeqc into sandbox..."
 (cd "$DIST_SANDBOX" && \
         ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
              "http://internalbrr.cr.usgs.gov/svn_GW/phreeqc/trunk/src" \
              "$DISTNAME/src/phast/phreeqcpp/phreeqc")
+if [ $? != 0 ] ; then
+  exit $?;
+fi
 
 if [ -n "$WIN" ]; then
   echo "Exporting revision $REVISION of ModelViewer into sandbox..."
@@ -184,6 +199,9 @@ if [ -n "$WIN" ]; then
           ${SVN:-svn} export -q $EXTRA_EXPORT_OPTIONS --ignore-externals -r "$REVISION" \
                 "http://internalbrr.cr.usgs.gov/svn_GW/ModelViewer/trunk" \
                 "$DISTNAME/ModelViewer")
+  if [ $? != 0 ] ; then
+    exit $?;
+  fi
 fi  
 
 echo "Making examples clean"
