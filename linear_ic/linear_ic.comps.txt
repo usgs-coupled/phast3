@@ -990,7 +990,7 @@
   1  1.0512e-03
 
 
-     Maximum change in Ca        molality .... -1.0340e-03 (mol/kgw)   at location ( 0.000e+00, 0.000e+00, 0.000e+00)(m )
+     Maximum change in Ca        molality .... -1.0340e-03 (mol/kgw)   at location ( 0.000e+00,  10.0    , 0.000e+00)(m )
 
                               Molality (mol/kgw)
 
@@ -1188,7 +1188,7 @@
   1  7.6185e-04
 
 
-     Maximum change in Na        molality .... -3.3619e-02 (mol/kgw)   at location ( 0.000e+00, 0.000e+00, 0.000e+00)(m )
+     Maximum change in Na        molality .... -3.3619e-02 (mol/kgw)   at location ( 0.000e+00,  10.0    , 0.000e+00)(m )
 
                               Molality (mol/kgw)
 
