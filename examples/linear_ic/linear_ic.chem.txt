@@ -477,7 +477,7 @@ Y                1.000e+00 mol
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -3.963e-05
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.01
-                               Iterations  =  34
+                               Iterations  =  33
                                   Total H  = 1.110292e+02
                                   Total O  = 5.630840e+01
 
@@ -2194,8 +2194,8 @@ O2(g)                   -38.50   3.133e-39   1.912e-40   0.000e+00   0.000e+00
                                                       Moles in assemblage
 Phase                  SI log IAP  log KT      Initial       Final       Delta
 
-Calcite             -0.00   -8.48   -8.48    1.110e+00   1.110e+00  -1.551e-04
-Chalcedony          -0.00   -3.55   -3.55    7.505e-04   7.271e-04  -2.348e-05
+Calcite              0.00   -8.48   -8.48    1.110e+00   1.110e+00  -1.551e-04
+Chalcedony           0.00   -3.55   -3.55    7.505e-04   7.271e-04  -2.348e-05
 
 --------------------------------Solid solutions--------------------------------
 
@@ -2314,7 +2314,7 @@ Y                1.000e+00 mol
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -3.758e-05
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.01
-                               Iterations  =  48
+                               Iterations  =  47
                                   Total H  = 1.110277e+02
                                   Total O  = 5.628123e+01
 
@@ -2486,10 +2486,10 @@ Sr               9.467e-06
 	Aragonite        -0.14   -8.48   -8.34  CaCO3
 	Barite           -1.88  -11.85   -9.97  BaSO4
 	Ca-Montmorillonite -12.89  -57.92  -45.03  Ca0.165Al2.33Si3.67O10(OH)2
-	Calcite          -0.00   -8.48   -8.48  CaCO3
+	Calcite           0.00   -8.48   -8.48  CaCO3
 	Celestite        -0.88   -7.51   -6.63  SrSO4
 	CH4(g)          -66.25  -69.11   -2.86  CH4
-	Chalcedony       -0.00   -3.55   -3.55  SiO2
+	Chalcedony        0.00   -3.55   -3.55  SiO2
 	CO2(g)           -2.80   -4.26   -1.47  CO2
 	Fe(OH)3(a)        3.25    8.14    4.89  Fe(OH)3
 	FeS(ppt)        -58.55  -62.47   -3.92  FeS
@@ -2680,7 +2680,7 @@ Y                8.000e-01 mol
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -4.744e-05
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.01
-                               Iterations  =  59
+                               Iterations  =  49
                                   Total H  = 1.110323e+02
                                   Total O  = 5.631159e+01
 
@@ -3046,7 +3046,7 @@ Y                6.000e-01 mol
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -5.522e-05
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.01
-                               Iterations  =  75
+                               Iterations  =  59
                                   Total H  = 1.110355e+02
                                   Total O  = 5.631443e+01
 
@@ -3412,7 +3412,7 @@ Y                4.000e-01 mol
                       Temperature (deg C)  =  25.000
                   Electrical balance (eq)  =  -6.219e-05
  Percent error, 100*(Cat-|An|)/(Cat+|An|)  =  -0.01
-                               Iterations  = 127
+                               Iterations  =  97
                                   Total H  = 1.110386e+02
                                   Total O  = 5.631685e+01
 
