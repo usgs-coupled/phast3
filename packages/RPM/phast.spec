@@ -58,9 +58,9 @@ cd ../..
 #
 # build phast-ser phast-lam and phast-openmpi
 #
-ssh grundvand "cd $RPM_BUILD_DIR/$RPM_PACKAGE_NAME-$RPM_PACKAGE_VERSION-$RPM_PACKAGE_RELEASE/src/phast && make serial_intel"
-ssh grundvand "cd $RPM_BUILD_DIR/$RPM_PACKAGE_NAME-$RPM_PACKAGE_VERSION-$RPM_PACKAGE_RELEASE/src/phast && make openmpi_intel"
-ssh stoch     "cd $RPM_BUILD_DIR/$RPM_PACKAGE_NAME-$RPM_PACKAGE_VERSION-$RPM_PACKAGE_RELEASE/src/phast && make lam_intel"
+ssh stoch "cd $RPM_BUILD_DIR/$RPM_PACKAGE_NAME-$RPM_PACKAGE_VERSION-$RPM_PACKAGE_RELEASE/src/phast && make serial_intel"
+ssh stoch "cd $RPM_BUILD_DIR/$RPM_PACKAGE_NAME-$RPM_PACKAGE_VERSION-$RPM_PACKAGE_RELEASE/src/phast && make openmpi_intel"
+ssh stoch "cd $RPM_BUILD_DIR/$RPM_PACKAGE_NAME-$RPM_PACKAGE_VERSION-$RPM_PACKAGE_RELEASE/src/phast && make lam_intel"
 
 %install
 rm -rf $RPM_BUILD_ROOT
