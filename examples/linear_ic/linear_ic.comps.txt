@@ -792,7 +792,7 @@
                               *** Output at End of Time Step No.     1 ***
 
      Time .......................................................   0.500      (s)
-     Maximum change in H         molality .... -1.6587e-03 (mol/kgw)   at location (  10.0    , 0.000e+00,  10.0    )(m )
+     Maximum change in H         molality .... -1.6587e-03 (mol/kgw)   at location (  10.0    , 0.000e+00, 0.000e+00)(m )
 
                               Molality (mol/kgw)
 
@@ -1122,7 +1122,7 @@
   1  2.0605e-14
 
 
-     Maximum change in Mn        molality ....  4.2608e-07 (mol/kgw)   at location (  10.0    ,  10.0    , 0.000e+00)(m )
+     Maximum change in Mn        molality ....  4.2608e-07 (mol/kgw)   at location (  10.0    , 0.000e+00, 0.000e+00)(m )
 
                               Molality (mol/kgw)
 
@@ -1320,7 +1320,7 @@
   1  7.7921e-06
 
 
-     Maximum change in Charge    molality .... -6.0438e-06 (mol/kgw)   at location (  10.0    , 0.000e+00,  10.0    )(m )
+     Maximum change in Charge    molality .... -6.0438e-06 (mol/kgw)   at location (  10.0    , 0.000e+00, 0.000e+00)(m )
 
                               Molality (mol/kgw)
 
