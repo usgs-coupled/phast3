@@ -10,6 +10,7 @@ class Prism:public Polyhedron
 
   public:
 	Prism(void);
+	Prism(char * char_tag);
 	Prism(Cube & c);
 	Prism(Wedge & w);
 	Prism(const Prism & c);

@@ -38,6 +38,20 @@ Prism::Prism(void)
 	Prism::prism_list.push_back(this);
 }
 
+Prism::Prism(char * char_tag)
+{
+	this->type = PRISM;
+
+	//this->perimeter_poly = NULL;
+	this->prism_dip = Point(0, 0, 1, 0);
+	this->perimeter.Set_coordinate_system(PHAST_Transform::MAP);
+	this->top.Set_coordinate_system(PHAST_Transform::MAP);
+	this->bottom.Set_coordinate_system(PHAST_Transform::MAP);
+	zone_init(&this->box);
+	std::string tag(char_tag);
+	this->Set_tag(tag);
+	Prism::prism_list.push_back(this);
+}
 Prism::Prism(Cube & c)
 {
 	this->type = PRISM;
@@ -379,9 +393,10 @@ bool Prism::Read(PRISM_OPTION p_opt, std::istream & lines)
 			error_msg("Reading perimeter of prism", EA_CONTINUE);
 		}
 		else if (this->perimeter.Get_source_type() != Data_source::POINTS &&
-				 this->perimeter.Get_source_type() != Data_source::SHAPE)
+				 this->perimeter.Get_source_type() != Data_source::SHAPE &&
+				 this->perimeter.Get_source_type() != Data_source::XYZ)
 		{
-			error_msg("Perimeter must be either points or a shape file",
+			error_msg("Perimeter must be points, XYZ file, or a shape file",
 					  EA_CONTINUE);
 		}
 		else if (this->perimeter.Get_source_type() == Data_source::POINTS

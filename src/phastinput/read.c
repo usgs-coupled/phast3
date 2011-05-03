@@ -28,8 +28,8 @@ STATIC int streamify_to_next_keyword_or_option(const char **opt_list, int count_
 STATIC int streamify_prism_piece(const char **opt_list, int count_opt_list,
 				std::istringstream & lines);
 STATIC int read_chemistry_ic(void);
-STATIC Cube *read_cube(char **next_char);
-STATIC Wedge *read_wedge(char **next_char);
+STATIC Cube *read_cube(char **next_char, char *char_tag);
+STATIC Wedge *read_wedge(char **next_char, char *char_tag);
 STATIC int read_flow_only(void);
 STATIC int read_flow(void);
 STATIC int read_fluid_properties(void);
@@ -1955,7 +1955,7 @@ read_media(void)
 			count_grid_elt_zones++;
 			sprintf(tag, "in MEDIA, definition %d.", count_grid_elt_zones);
 
-			grid_elt_ptr->polyh = read_cube(&next_char);
+			grid_elt_ptr->polyh = read_cube(&next_char, tag);
 			if (grid_elt_ptr->polyh == NULL)
 			{
 				sprintf(error_string, "Reading zone %s", tag);
@@ -2100,7 +2100,7 @@ read_media(void)
 			count_grid_elt_zones++;
 			sprintf(tag, "in MEDIA, definition %d.", count_grid_elt_zones);
 
-			grid_elt_ptr->polyh = read_wedge(&next_char);
+			grid_elt_ptr->polyh = read_wedge(&next_char, tag);
 			{
 				Wedge *w_ptr = dynamic_cast < Wedge * >(grid_elt_ptr->polyh);
 				if (grid_elt_ptr->polyh == NULL
@@ -2132,7 +2132,7 @@ read_media(void)
 				count_grid_elt_zones++;
 				sprintf(tag, "in MEDIA, definition %d.",
 						count_grid_elt_zones);
-				prism_ptr = new Prism;
+				prism_ptr = new Prism(tag);
 				grid_elt_ptr->polyh = prism_ptr;
 				opt = next_keyword_or_option(opt_list, count_opt_list);
 				break;
@@ -2308,7 +2308,7 @@ read_zone(char **next_char, struct zone *zone_ptr)
 #endif
 /* ---------------------------------------------------------------------- */
 Cube *
-read_cube(char **next_char)
+read_cube(char **next_char, char *char_tag)
 /* ---------------------------------------------------------------------- */
 {
 	int i, j, l;
@@ -2369,6 +2369,8 @@ read_cube(char **next_char)
 	Cube *c_ptr = new Cube(&z);
 	c_ptr->Set_coordinate_system(coord);
 	c_ptr->Set_user_coordinate_system(coord);
+	std::string tag(char_tag);
+	c_ptr->Set_tag(tag);
 
 	return (c_ptr);
 }
@@ -2376,7 +2378,7 @@ read_cube(char **next_char)
 //template<class InputIterator>
 /* ---------------------------------------------------------------------- */
 Wedge *
-read_wedge(char **next_char)
+read_wedge(char **next_char, char *char_tag)
 /* ---------------------------------------------------------------------- */
 {
 	int i, j, l;
@@ -2449,7 +2451,8 @@ read_wedge(char **next_char)
 	Wedge *w_ptr = new Wedge(&z, s);
 	w_ptr->Set_coordinate_system(coord);
 	w_ptr->Set_user_coordinate_system(coord);
-
+	std::string tag(char_tag);
+	w_ptr->Set_tag(tag);
 	return (w_ptr);
 }
 
@@ -2546,7 +2549,7 @@ read_head_ic(void)
 			sprintf(tag, "in HEAD_IC, definition %d.", count_head_ic);
 			head_ic_init(head_ic_ptr);
 
-			head_ic_ptr->polyh = read_cube(&next_char);
+			head_ic_ptr->polyh = read_cube(&next_char, tag);
 			if (head_ic_ptr->polyh == NULL)
 			{
 				sprintf(error_string, "Reading zone %s", tag);
@@ -2669,7 +2672,7 @@ read_head_ic(void)
 			sprintf(tag, "in HEAD_IC, definition %d.", count_head_ic);
 			head_ic_init(head_ic_ptr);
 
-			head_ic_ptr->polyh = read_wedge(&next_char);
+			head_ic_ptr->polyh = read_wedge(&next_char, tag);
 			{
 				Wedge *w_ptr = dynamic_cast < Wedge * >(head_ic_ptr->polyh);
 				if (head_ic_ptr->polyh == NULL
@@ -2701,7 +2704,7 @@ read_head_ic(void)
 				count_head_ic++;
 				sprintf(tag, "in HEAD_IC, definition %d.", count_head_ic);
 				head_ic_init(head_ic_ptr);
-				prism_ptr = new Prism;
+				prism_ptr = new Prism(tag);
 				head_ic_ptr->polyh = prism_ptr;
 				head_ic_ptr->ic_type = ZONE;
 				opt = next_keyword_or_option(opt_list, count_opt_list);
@@ -2894,7 +2897,7 @@ read_chemistry_ic(void)
 			sprintf(tag, "in CHEMISTRY_IC, definition %d.", count_chem_ic);
 			chem_ic_init(chem_ic_ptr);
 
-			chem_ic_ptr->polyh = read_cube(&next_char);
+			chem_ic_ptr->polyh = read_cube(&next_char, tag);
 			if (chem_ic_ptr->polyh == NULL)
 			{
 				sprintf(error_string, "Reading zone %s", tag);
@@ -3184,7 +3187,7 @@ read_chemistry_ic(void)
 			sprintf(tag, "in CHEMISTRY_IC, definition %d.", count_chem_ic);
 			chem_ic_init(chem_ic_ptr);
 
-			chem_ic_ptr->polyh = read_wedge(&next_char);
+			chem_ic_ptr->polyh = read_wedge(&next_char, tag);
 			{
 				Wedge *w_ptr = dynamic_cast < Wedge * >(chem_ic_ptr->polyh);
 				if (chem_ic_ptr->polyh == NULL
@@ -3217,7 +3220,7 @@ read_chemistry_ic(void)
 						count_chem_ic);
 				chem_ic_init(chem_ic_ptr);
 
-				prism_ptr = new Prism;
+				prism_ptr = new Prism(tag);
 				chem_ic_ptr->polyh = prism_ptr;
 				opt = next_keyword_or_option(opt_list, count_opt_list);
 				break;
@@ -3777,7 +3780,7 @@ read_specified_value_bc(void)
 					count_specified);
 			count_bc++;
 
-			bc_ptr->polyh = read_cube(&next_char);
+			bc_ptr->polyh = read_cube(&next_char, tag);
 			if (bc_ptr->polyh == NULL)
 			{
 				sprintf(error_string, "Reading zone %s", tag);
@@ -3945,7 +3948,7 @@ read_specified_value_bc(void)
 						count_specified);
 				count_bc++;
 
-				bc_ptr->polyh = read_wedge(&next_char);
+				bc_ptr->polyh = read_wedge(&next_char, tag);
 				Wedge *w_ptr = dynamic_cast < Wedge * >(bc_ptr->polyh);
 				if (bc_ptr->polyh == NULL
 					|| w_ptr->orientation == Wedge::WEDGE_ERROR)
@@ -3975,7 +3978,7 @@ read_specified_value_bc(void)
 						count_specified);
 				count_bc++;
 
-				prism_ptr = new Prism;
+				prism_ptr = new Prism(tag);
 				bc_ptr->polyh = prism_ptr;
 				opt = next_keyword_or_option(opt_list, count_opt_list);
 				break;
@@ -4201,7 +4204,7 @@ read_flux_bc(void)
 			count_bc++;
 
 			/* read zone */
-			bc_ptr->polyh = read_cube(&next_char);
+			bc_ptr->polyh = read_cube(&next_char, tag);
 			if (bc_ptr->polyh == NULL)
 			{
 				sprintf(error_string, "Reading zone %s", tag);
@@ -4369,7 +4372,7 @@ read_flux_bc(void)
 			count_bc++;
 
 			/* read wedge */
-			bc_ptr->polyh = read_wedge(&next_char);
+			bc_ptr->polyh = read_wedge(&next_char, tag);
 			{
 				Wedge *w_ptr = dynamic_cast < Wedge * >(bc_ptr->polyh);
 				if (bc_ptr->polyh == NULL
@@ -4400,7 +4403,7 @@ read_flux_bc(void)
 				sprintf(tag, "in FLUX_BC, definition %d.", count_flux);
 				count_bc++;
 
-				prism_ptr = new Prism;
+				prism_ptr = new Prism(tag);
 				bc_ptr->polyh = prism_ptr;
 				opt = next_keyword_or_option(opt_list, count_opt_list);
 				break;
@@ -4582,7 +4585,7 @@ read_leaky_bc(void)
 			sprintf(tag, "in LEAKY_BC, definition %d.", count_leaky);
 			count_bc++;
 
-			bc_ptr->polyh = read_cube(&next_char);
+			bc_ptr->polyh = read_cube(&next_char, tag);
 			if (bc_ptr->polyh == NULL)
 			{
 				sprintf(error_string, "Reading zone %s", tag);
@@ -4829,7 +4832,7 @@ read_leaky_bc(void)
 			sprintf(tag, "in LEAKY_BC, definition %d.", count_leaky);
 			count_bc++;
 
-			bc_ptr->polyh = read_wedge(&next_char);
+			bc_ptr->polyh = read_wedge(&next_char, tag);
 			{
 				Wedge *w_ptr = dynamic_cast < Wedge * >(bc_ptr->polyh);
 				if (bc_ptr->polyh == NULL
@@ -4858,7 +4861,7 @@ read_leaky_bc(void)
 				sprintf(tag, "in LEAKY_BC, definition %d.", count_leaky);
 				count_bc++;
 
-				prism_ptr = new Prism;
+				prism_ptr = new Prism(tag);
 				bc_ptr->polyh = prism_ptr;
 				opt = next_keyword_or_option(opt_list, count_opt_list);
 				break;
@@ -9846,7 +9849,7 @@ read_print_locations(void)
 			print_zones_struct_ptr->count_print_zones++;
 			sprintf(tag, "in PRINT_LOCATIONS, definition %d.", count_zones);
 
-			print_zones_ptr->polyh = read_cube(&next_char);
+			print_zones_ptr->polyh = read_cube(&next_char, tag);
 			if (print_zones_ptr->polyh == NULL)
 			{
 				sprintf(error_string, "Reading zone %s", tag);
@@ -10018,7 +10021,7 @@ read_print_locations(void)
 			print_zones_struct_ptr->count_print_zones++;
 			sprintf(tag, "in PRINT_LOCATIONS, definition %d.", count_zones);
 
-			print_zones_ptr->polyh = read_wedge(&next_char);
+			print_zones_ptr->polyh = read_wedge(&next_char, tag);
 			{
 				Wedge *w_ptr =
 					dynamic_cast < Wedge * >(print_zones_ptr->polyh);
@@ -10061,7 +10064,7 @@ read_print_locations(void)
 				sprintf(tag, "in PRINT_LOCATIONS, definition %d.",
 						count_zones);
 
-				prism_ptr = new Prism;
+				prism_ptr = new Prism(tag);
 				print_zones_ptr->polyh = prism_ptr;
 				opt = next_keyword_or_option(opt_list, count_opt_list);
 				break;
@@ -10834,7 +10837,7 @@ read_zone_budget(void)
 			/*
 			 *   Allocate space for head_ic, read zone data
 			 */
-			zb->Set_polyh(read_cube(&next_char));
+			zb->Set_polyh(read_cube(&next_char, tag));
 			if (zb->Get_polyh() == NULL)
 			{
 				sprintf(error_string, "Reading zone %s", tag);
@@ -10846,7 +10849,7 @@ read_zone_budget(void)
 			/*
 			 *   Allocate space for head_ic, read zone data
 			 */
-			zb->Set_polyh(read_wedge(&next_char));
+			zb->Set_polyh(read_wedge(&next_char, tag));
 			{
 				Wedge *w_ptr = dynamic_cast < Wedge * >(zb->Get_polyh());
 				if (zb->Get_polyh() == NULL
@@ -10865,7 +10868,7 @@ read_zone_budget(void)
 				/*
 				 *   Allocate space for head_ic, read zone data
 				 */
-				prism_ptr = new Prism;
+				prism_ptr = new Prism(tag);
 				zb->Set_polyh(prism_ptr);
 				opt = next_keyword_or_option(opt_list, count_opt_list);
 				break;
