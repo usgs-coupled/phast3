@@ -3,7 +3,7 @@
 #include <list>
 zone::zone()
 {
-	this->zone_defined = 0;		// false
+	this->zone_defined = false;
 	this->x1 = 0;
 	this->y1 = 0;
 	this->z1 = 0;
@@ -14,7 +14,7 @@ zone::zone()
 
 zone::zone(Point min, Point max)
 {
-	this->zone_defined = 1;		// true
+	this->zone_defined = true;
 	this->x1 = min.x();
 	this->y1 = min.y();
 	this->z1 = min.z();
@@ -25,7 +25,7 @@ zone::zone(Point min, Point max)
 
 zone::zone(double l_x1, double l_y1, double l_z1, double l_x2, double l_y2, double l_z2)
 {
-	this->zone_defined = 1;		// true
+	this->zone_defined = true;
 	this->x1 = l_x1;
 	this->y1 = l_y1;
 	this->z1 = l_z1;
@@ -35,7 +35,7 @@ zone::zone(double l_x1, double l_y1, double l_z1, double l_x2, double l_y2, doub
 }
 zone::zone(struct zone *zone_ptr)
 {
-	this->zone_defined = 1;		// true
+	this->zone_defined = true;
 	this->x1 = zone_ptr->x1;
 	this->y1 = zone_ptr->y1;
 	this->z1 = zone_ptr->z1;
@@ -62,7 +62,7 @@ zone::zone(gpc_polygon *poly)
 		zone z1(Point(pts.begin(), pts.end(),  Point::MIN), Point(pts.begin(), pts.end(),  Point::MAX));
 		z = z1;
 	}
-	this->zone_defined = 1;		// true
+	this->zone_defined = true;
 	this->x1 = z.x1;
 	this->y1 = z.y1;
 	this->z1 = z.z1;

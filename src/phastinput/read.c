@@ -2282,7 +2282,7 @@ read_zone(char **next_char, struct zone *zone_ptr)
 /*
  *   read x1, y1, z1, x2, y2, z2
  */
-	zone_ptr->zone_defined = FALSE;
+	zone_ptr->zone_defined = false;
 	for (i = 0; i < 6; i++)
 	{
 		j = copy_token(token, &ptr, &l);
@@ -2302,7 +2302,7 @@ read_zone(char **next_char, struct zone *zone_ptr)
 	zone_ptr->x2 = xyz[3];
 	zone_ptr->y2 = xyz[4];
 	zone_ptr->z2 = xyz[5];
-	zone_ptr->zone_defined = TRUE;
+	zone_ptr->zone_defined = true;
 	return (OK);
 }
 #endif
@@ -2320,7 +2320,7 @@ read_cube(char **next_char, char *char_tag)
 /*
  *   read x1, y1, z1, x2, y2, z2
  */
-	z.zone_defined = FALSE;
+	z.zone_defined = false;
 	for (i = 0; i < 6; i++)
 	{
 		j = copy_token(token, &ptr, &l);
@@ -2340,7 +2340,7 @@ read_cube(char **next_char, char *char_tag)
 	z.x2 = xyz[3];
 	z.y2 = xyz[4];
 	z.z2 = xyz[5];
-	z.zone_defined = TRUE;
+	z.zone_defined = true;
 
 	PHAST_Transform::COORDINATE_SYSTEM coord(PHAST_Transform::GRID);
 	if ((j = copy_token(token, &ptr, &l)) != EMPTY)
@@ -2390,7 +2390,7 @@ read_wedge(char **next_char, char *char_tag)
 /*
  *   read x1, y1, z1, x2, y2, z2
  */
-	z.zone_defined = FALSE;
+	z.zone_defined = false;
 	for (i = 0; i < 6; i++)
 	{
 		j = copy_token(token, &ptr, &l);
@@ -2410,7 +2410,7 @@ read_wedge(char **next_char, char *char_tag)
 	z.x2 = xyz[3];
 	z.y2 = xyz[4];
 	z.z2 = xyz[5];
-	z.zone_defined = TRUE;
+	z.zone_defined = true;
 
 	// Read wedge orientation
 	j = copy_token(token, &ptr, &l);

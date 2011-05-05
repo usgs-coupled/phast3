@@ -477,6 +477,7 @@ setup_grid(void)
 	domain.x2 = grid[0].coord[grid[0].count_coord - 1];
 	domain.y2 = grid[1].coord[grid[1].count_coord - 1];
 	domain.z2 = grid[2].coord[grid[2].count_coord - 1];
+	domain.zone_defined = true;
 
 	return (OK);
 }
@@ -750,7 +751,7 @@ zone_to_range(struct zone *zone_ptr)
 	/* 
 	 *    check zone data
 	 */
-	if (zone_ptr->zone_defined == UNDEFINED || zone_check(zone_ptr) == ERROR)
+	if (zone_ptr->zone_defined == false || zone_check(zone_ptr) == ERROR)
 	{
 		return (NULL);
 	}
@@ -795,7 +796,7 @@ zone_to_elt_range(struct zone *zone_ptr, const bool silent)
 	/* 
 	 *    check zone data
 	 */
-	if (zone_ptr->zone_defined == UNDEFINED || zone_check(zone_ptr) == ERROR)
+	if (zone_ptr->zone_defined == false || zone_check(zone_ptr) == ERROR)
 	{
 		return (NULL);
 	}
@@ -5347,6 +5348,7 @@ setup_grid_defaults(void)
 	domain.x2 = grid[0].coord[grid[0].count_coord - 1];
 	domain.y2 = grid[1].coord[grid[1].count_coord - 1];
 	domain.z2 = grid[2].coord[grid[2].count_coord - 1];
+	domain.zone_defined = true;
 
 	return (OK);
 }

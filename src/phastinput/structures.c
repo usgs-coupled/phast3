@@ -269,7 +269,7 @@ zone_alloc(void)
 	zone_ptr = (struct zone *) malloc(sizeof(struct zone));
 	if (zone_ptr == NULL)
 		malloc_error();
-	zone_ptr->zone_defined = UNDEFINED;
+	zone_ptr->zone_defined = false;
 	return (zone_ptr);
 }
 

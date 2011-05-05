@@ -472,4 +472,5 @@ zone_init(struct zone *zone_ptr)
 	zone_ptr->x2 = 0;
 	zone_ptr->y2 = 0;
 	zone_ptr->z2 = 0;
+	zone_ptr->zone_defined = false;
 }
