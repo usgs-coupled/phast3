@@ -1043,7 +1043,7 @@ Prism::Set_bounding_box(void)
 		if (pbottom.z() > min.z())
 			min.set_z(pbottom.z());
 	}
-	this->box.zone_defined = TRUE;
+	this->box.zone_defined = true;
 	this->box.x1 = min.x();
 	this->box.y1 = min.y();
 	this->box.z1 = min.z();

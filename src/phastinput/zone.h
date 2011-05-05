@@ -7,7 +7,7 @@ class Point;
  * ---------------------------------------------------------------------- */
 struct zone
 {
-	int zone_defined;
+	bool zone_defined;
 	double x1;
 	double y1;
 	double z1;

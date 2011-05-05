@@ -70,7 +70,7 @@ bool Zone_budget::Add_cells(std::vector < bool > &cells_in_budget, zone * z,
 		}
 		else
 		{
-			z->zone_defined = 1;
+			z->zone_defined = true;
 		}
 
 		zone

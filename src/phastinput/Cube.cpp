@@ -66,7 +66,7 @@ Cube::Set_bounding_box()
 	this->box.x2 = this->p[1].x();
 	this->box.y2 = this->p[1].y();
 	this->box.z2 = this->p[1].z();
-	this->box.zone_defined = 1;
+	this->box.zone_defined = true;
 	return &(this->box);
 }
 

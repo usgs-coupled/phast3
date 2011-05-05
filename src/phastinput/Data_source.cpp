@@ -835,7 +835,7 @@ Data_source::Set_bounding_box(void)
 			  Point::MIN);
 	Point max(this->Get_points().begin(), this->Get_points().end(),
 			  Point::MAX);
-	this->box.zone_defined = TRUE;
+	this->box.zone_defined = true;
 	this->box.x1 = min.x();
 	this->box.y1 = min.y();
 	this->box.z1 = min.z();
