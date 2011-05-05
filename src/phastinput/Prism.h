@@ -60,6 +60,7 @@ class Prism:public Polyhedron
 	void Remove_top_bottom(gpc_polygon * polygon, Cell_Face face,
 						   double coord);
 	void Tidy();
+	static bool Polygon_intersects_self(std::vector<Point> &vect);
 	// data
 
 	Data_source perimeter;
