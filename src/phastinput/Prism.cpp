@@ -957,6 +957,17 @@ Prism::Tidy()
 
 	this->perimeter.Tidy(false);
 
+	if (this->perimeter.Get_source_type() == Data_source::XYZ ||
+		this->perimeter.Get_source_type() == Data_source::POINTS)
+	{
+		if (Prism::Polygon_intersects_self(this->perimeter.Get_points()))
+		{
+			std::ostringstream oss;
+			oss << "Perimeter intersects self " << this->tag;
+			error_msg(oss.str().c_str(), EA_STOP);
+		}
+	}
+
 	//if (!this->perimeter.Make_polygons())
 	//{
 	//  error_msg("Failed to make polygons in Prism::tidy.", EA_STOP);
@@ -1301,9 +1312,102 @@ bool Prism::operator==(const Prism &other) const
 	return true;
 }
 
-bool Prism::operator!=(const Prism &other) const
+bool 
+Prism::operator!=(const Prism &other) const
 {
 	return !(*this == other);
+}
+
+bool
+Prism::Polygon_intersects_self(std::vector<Point> &vect)
+{
+	if (vect.size() < 3)
+	{
+		return false;
+	}
+
+	// check if first point is the same as the last point
+	size_t last_vertex = vect.size();
+	if (vect[0].get_coord()[0] == vect[last_vertex - 1].get_coord()[0] &&
+		vect[0].get_coord()[1] == vect[last_vertex - 1].get_coord()[1])
+	{
+		--last_vertex;
+	}
+
+	double *a, *b, *c, *d;
+	if (last_vertex == 3)
+	{
+		// special case (no d)
+		a = vect[0].get_coord();
+		b = vect[1].get_coord();
+		c = vect[2].get_coord();
+
+		// check for 3 collinear points by comparing slopes
+		if ((b[0]-a[0]) == 0 || (c[0]-b[0]) == 0)
+		{
+			if ((b[0]-a[0]) == 0 && (c[0]-b[0]) == 0)
+			{
+				return true;
+			}
+		}
+		else
+		{
+			double mab = (b[1]-a[1])/(b[0]-a[0]);
+			double mbc = (c[1]-b[1])/(c[0]-b[0]);
+			if (mab == mbc)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	double rn, sn, den, r, s;
+	a = vect[0].get_coord();
+	for (size_t i = 0; i < last_vertex; ++i)
+	{
+		// see comp.graphics.algorithms faq 1.03:
+		// How do I find intersections of 2 2D line segments?
+		b = vect[(i + 1) % last_vertex].get_coord();
+		c = vect[(i + 2) % last_vertex].get_coord();
+		for (size_t j = i+2; j <= i+last_vertex-2; ++j)
+		{
+			d   = vect[(j + 1) % last_vertex].get_coord();
+			rn  = (a[1]-c[1])*(d[0]-c[0])-(a[0]-c[0])*(d[1]-c[1]);
+			sn  = (a[1]-c[1])*(b[0]-a[0])-(a[0]-c[0])*(b[1]-a[1]);
+			den = (b[0]-a[0])*(d[1]-c[1])-(b[1]-a[1])*(d[0]-c[0]);
+			if (den != 0)
+			{
+				r = rn/den;
+				s = sn/den;
+				if (r >= 0 && r <= 1 && s >= 0 && s <= 1)
+				{
+					return true;
+				}
+			}
+			else if (rn == 0)
+			{
+				// both AB and CD are collinear (coincident)
+				// project values to each axis to check for overlap
+				for (size_t k = 0; k < 2; ++k)
+				{
+					double minab = (a[k] < b[k]) ? a[k] : b[k];
+					double maxab = (a[k] > b[k]) ? a[k] : b[k];
+					if (minab <= c[k] && c[k] <= maxab)
+					{
+						return true;
+					}
+					if (minab <= d[k] && d[k] <= maxab)
+					{
+						return true;
+					}
+				}
+			}
+			c = d;
+		}
+		a = b;
+	}
+	return false;
 }
 
 #if defined(__WPHAST__) && defined(_DEBUG)
