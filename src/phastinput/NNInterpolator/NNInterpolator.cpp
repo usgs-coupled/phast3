@@ -109,7 +109,7 @@ bool NNInterpolator::preprocess(std::vector < Point > &pts_in,
 {
 	this->coordinate_system = cs;
 
-	if (pts_in.size() == 0)
+	if (pts_in.size() < 3)
 	{
 		return false;
 	}
@@ -215,7 +215,7 @@ NNInterpolator::interpolate(const Point & pt)
 {
 	// Point is in same coordinate units as nni interpolator
 	point pout;
-	if (this->bounds.Point_in_xy_zone(pt))
+	if (this->nn != NULL && this->bounds.Point_in_xy_zone(pt) )
 	{
 		pout.x = pt.x();
 		pout.y = pt.y();
