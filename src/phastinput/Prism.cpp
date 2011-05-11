@@ -399,12 +399,6 @@ bool Prism::Read(PRISM_OPTION p_opt, std::istream & lines)
 			error_msg("Perimeter must be points, XYZ file, or a shape file",
 					  EA_CONTINUE);
 		}
-		else if (this->perimeter.Get_source_type() == Data_source::POINTS
-				 && this->perimeter.Get_points().size() < 3)
-		{
-			error_msg("Perimeter must be defined by at least 3 points.",
-					  EA_CONTINUE);
-		}
 		break;
 	case TOP:
 		if (!this->top.Read(lines, true))
@@ -952,11 +946,32 @@ Prism::Tidy()
 	}
 
 	this->top.Tidy(true);
+	if ((this->top.Get_source_type() == Data_source::POINTS ||
+		this->top.Get_source_type() == Data_source::XYZ)
+		&& this->top.Get_points().size() == 0)
+	{
+		std::string emsg("No points defined for top of prism ");
+		emsg.append(this->tag);
+		error_msg(emsg.c_str(), EA_CONTINUE);
+	}
 
 	this->bottom.Tidy(true);
-
+	if ((this->bottom.Get_source_type() == Data_source::POINTS ||
+		this->bottom.Get_source_type() == Data_source::XYZ)
+		&& this->bottom.Get_points().size() == 0)
+	{
+		std::string emsg("No points defined for bottom of prism ");
+		emsg.append(this->tag);
+		error_msg(emsg.c_str(), EA_CONTINUE);
+	}
 	this->perimeter.Tidy(false);
-
+	if (this->perimeter.Get_source_type() == Data_source::POINTS
+			 && this->perimeter.Get_points().size() < 3)
+	{
+		std::string emsg("Perimeter must be defined by at least 3 points ");
+		emsg.append(this->tag);
+		error_msg(emsg.c_str(), EA_CONTINUE);
+	}
 	if (this->perimeter.Get_source_type() == Data_source::XYZ ||
 		this->perimeter.Get_source_type() == Data_source::POINTS)
 	{
