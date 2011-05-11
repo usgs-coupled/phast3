@@ -1,6 +1,7 @@
 #include "config.h"
 #ifdef TRILIBRARY
 #include "triangle.h"
+#include "../message.h"
 #endif /* TRILIBRARY */
 #define UNSIGNED_LONG size_t
 
@@ -1433,7 +1434,8 @@ int status;
 #endif /* not ANSI_DECLARATORS */
 
 {
-  exit(status);
+  //exit(status);
+	error_msg("Triangle error in triangle.c.", EA_STOP);
 }
 
 #ifdef ANSI_DECLARATORS
