@@ -259,7 +259,7 @@ NNInterpolator::get_tree(void)
 				pts.push_back(p);
 			}
 			//this->tree = new KDtree(this->pin, this->point_count);
-			this->tree = new KDtree(pts);
+			this->tree = new KDtree(pts, 2);
 			KDtree::KDtreeList.push_back(this->tree);
 		}
 	}

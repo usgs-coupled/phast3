@@ -10,7 +10,7 @@ class KDtree
   public:
 	~KDtree();
 	KDtree(const KDtree & t);
-	  KDtree(std::vector < Point > &pts);
+	KDtree(std::vector < Point > &pts, size_t dims = 3);
 	//KDtree(point *pts, size_t count);
 
 	  KDtree & operator=(const KDtree & rhs);
