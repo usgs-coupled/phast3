@@ -17,7 +17,7 @@ v(t.v)
 	this->tree = new kdtree2(this->realdata, true);
 }
 
-KDtree::KDtree(std::vector < Point > &pts):realdata(extents[pts.size()][3])
+KDtree::KDtree(std::vector < Point > &pts, size_t dims):realdata(extents[pts.size()][dims])
 {
 	int
 		n = (int) pts.size();
@@ -27,7 +27,7 @@ KDtree::KDtree(std::vector < Point > &pts):realdata(extents[pts.size()][3])
 	for (i = 0; i < n; i++)
 	{
 		v.push_back(pts[i].get_v());
-		for (j = 0; j < 3; j++)
+		for (j = 0; j < dims; j++)
 		{
 			realdata[i][j] = pts[i].get_coord()[j];
 		}
@@ -67,7 +67,10 @@ KDtree::Nearest(Point pt)
 	vector < double >query(dim);
 	query[0] = pt.x();
 	query[1] = pt.y();
-	query[2] = pt.z();
+	if (dim > 2)
+	{
+		query[2] = pt.z();
+	}
 
 	this->tree->n_nearest(query, 1, result);
 	return (result[0].idx);
