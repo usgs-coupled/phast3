@@ -103,16 +103,10 @@ nnpi_interpolate(std::vector < Point > &pts_in,
 	return true;
 }
 
-// COMMENT: {7/11/2008 9:26:59 PM}bool NNInterpolator::preprocess(std::vector<Point> &pts_in, std::vector<Point> &corners)
 bool NNInterpolator::preprocess(std::vector < Point > &pts_in,
 								PHAST_Transform::COORDINATE_SYSTEM cs)
 {
 	this->coordinate_system = cs;
-
-	if (pts_in.size() < 3)
-	{
-		return false;
-	}
 
 	// set up points in input array
 	this->point_count = pts_in.size();
@@ -146,6 +140,11 @@ bool NNInterpolator::preprocess(std::vector < Point > &pts_in,
 
 	assert(this->delaunay_triangulation == 0);
 	assert(this->nn == 0);
+
+	if (pts_in.size() < 3)
+	{
+		return false;
+	}
 
 	this->delaunay_triangulation =
 		delaunay_build((int) nin, this->pin, 0, NULL, 0, NULL);
