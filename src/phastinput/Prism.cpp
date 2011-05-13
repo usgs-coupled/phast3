@@ -979,7 +979,7 @@ Prism::Tidy()
 		{
 			std::ostringstream oss;
 			oss << "Perimeter intersects self " << this->tag;
-			error_msg(oss.str().c_str(), EA_STOP);
+			error_msg(oss.str().c_str(), EA_CONTINUE);
 		}
 	}
 

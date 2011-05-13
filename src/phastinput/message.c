@@ -63,6 +63,10 @@ output_message(const int type, const char *err_str, const int stop,
 
 	if (stop == STOP)
 	{
+#if defined(__WPHAST__)
+		assert(false);
+		return OK;
+#endif
 		clean_up();
 		exit(1);
 	}
