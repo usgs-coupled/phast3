@@ -1410,11 +1410,17 @@ Prism::Polygon_intersects_self(std::vector<Point> &vect)
 					double maxab = (a[k] > b[k]) ? a[k] : b[k];
 					if (minab <= c[k] && c[k] <= maxab)
 					{
-						return true;
+						if (minab != maxab)
+						{
+							return true;
+						}
 					}
 					if (minab <= d[k] && d[k] <= maxab)
 					{
-						return true;
+						if (minab != maxab)
+						{
+							return true;
+						}
 					}
 				}
 			}
