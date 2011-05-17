@@ -4612,7 +4612,7 @@ Tidy_cubes(PHAST_Transform::COORDINATE_SYSTEM target,
 		print_zones_chem.print_zones[i].polyh = p;
 	}
 	//print_zones_xyz
-	for (i = 0; i < print_zones_chem.count_print_zones; i++)
+	for (i = 0; i < print_zones_xyz.count_print_zones; i++)
 	{
 		assert(print_zones_xyz.print_zones[i].polyh);
 		if (Domain *d = dynamic_cast < Domain * >(print_zones_xyz.print_zones[i].polyh))
