@@ -13,6 +13,7 @@ class Prism:public Polyhedron
 	Prism(char * char_tag);
 	Prism(Cube & c);
 	Prism(Wedge & w);
+	Prism(std::vector < Point > perimeter_pts, PHAST_Transform::COORDINATE_SYSTEM cs = PHAST_Transform::GRID);
 	Prism(const Prism & c);
   public:
 	 ~Prism(void);
