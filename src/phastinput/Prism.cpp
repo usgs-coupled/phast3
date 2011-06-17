@@ -297,6 +297,31 @@ Prism::Prism(Wedge & w)
 	Prism::prism_list.push_back(this);
 }
 
+Prism::Prism(std::vector< Point > perimeter_pts, PHAST_Transform::COORDINATE_SYSTEM cs)
+{
+	this->type = PRISM;
+
+	this->perimeter.Set_coordinate_system(cs);
+	this->top.Set_coordinate_system(cs);
+	this->bottom.Set_coordinate_system(cs);
+
+	this->perimeter.Set_user_coordinate_system(cs);
+	this->top.Set_user_coordinate_system(cs);
+	this->bottom.Set_user_coordinate_system(cs);
+
+	this->prism_dip = Point(0, 0, 1, 0);
+	zone_init(&this->box);
+
+	// define perimeter
+	this->perimeter.Set_defined(true);
+	this->perimeter.Set_source_type(Data_source::POINTS);
+	this->perimeter.Set_user_source_type(Data_source::POINTS);
+	this->perimeter.Set_points(perimeter_pts);
+	this->perimeter.Set_columns(3);
+
+	Prism::prism_list.push_back(this);
+}
+
 Prism::Prism(const Prism & c):
 Polyhedron(c),
 perimeter(c.perimeter),
