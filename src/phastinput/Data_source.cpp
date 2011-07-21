@@ -630,6 +630,15 @@ Data_source::Tidy(const bool make_nni)
 			sf->Set_coordinate_system(this->coordinate_system);
 			Filedata::file_data_map[this->file_name] = (Filedata *) sf;
 		}
+		else
+		{
+			if (this->Get_coordinate_system() != Filedata::file_data_map.find(this->file_name)->second->Get_coordinate_system())
+			{
+				ostringstream oss;
+				oss << "File was previously defined with a different coordinate system. (" << this->file_name << ")";
+				error_msg(oss.str().c_str(), EA_STOP);
+			}
+		}
 		// Add Data_source for attribute
 		{
 			Filedata *f =
@@ -659,6 +668,15 @@ Data_source::Tidy(const bool make_nni)
 			//ar->Set_coordinate_system (this->coordinate_system);
 			Filedata::file_data_map[this->file_name] = (Filedata *) ar;
 		}
+		else
+		{
+			if (this->Get_coordinate_system() != Filedata::file_data_map.find(this->file_name)->second->Get_coordinate_system())
+			{
+				ostringstream oss;
+				oss << "File was previously defined with a different coordinate system. (" << this->file_name << ")";
+				error_msg(oss.str().c_str(), EA_STOP);
+			}
+		}
 		{
 			Filedata *f =
 				Filedata::file_data_map.find(this->file_name)->second;
@@ -670,6 +688,7 @@ Data_source::Tidy(const bool make_nni)
 		}
 		break;
 	case Data_source::XYZ:
+
 		if (Filedata::file_data_map.find(this->file_name) ==
 			Filedata::file_data_map.end())
 		{
@@ -677,6 +696,15 @@ Data_source::Tidy(const bool make_nni)
 				new XYZfile(this->file_name, this->coordinate_system);
 			xyz->Set_coordinate_system(this->coordinate_system);
 			Filedata::file_data_map[this->file_name] = (Filedata *) xyz;
+		}
+		else
+		{
+			if (this->Get_coordinate_system() != Filedata::file_data_map.find(this->file_name)->second->Get_coordinate_system())
+			{
+				ostringstream oss;
+				oss << "File was previously defined with a different coordinate system. (" << this->file_name << ")";
+				error_msg(oss.str().c_str(), EA_STOP);
+			}
 		}
 		{
 			Filedata *f =
@@ -698,6 +726,15 @@ Data_source::Tidy(const bool make_nni)
 			XYZTfile *xyzt = new XYZTfile(this->file_name, this->coordinate_system);
 			xyzt->Set_coordinate_system(this->coordinate_system);
 			Filedata::file_data_map[this->file_name] = (Filedata *) xyzt;
+		}
+		else
+		{
+			if (this->Get_coordinate_system() != Filedata::file_data_map.find(this->file_name)->second->Get_coordinate_system())
+			{
+				ostringstream oss;
+				oss << "File was previously defined with a different coordinate system. (" << this->file_name << ")";
+				error_msg(oss.str().c_str(), EA_STOP);
+			}
 		}
 		{
 			Filedata *f = Filedata::file_data_map.find(this->file_name)->second;
@@ -1172,7 +1209,7 @@ Data_source::Convert_coordinates(PHAST_Transform::COORDINATE_SYSTEM target,
 		}
 		break;
 	case PHAST_Transform::MAP:
-		if (this->coordinate_system == PHAST_Transform::GRID)
+		if (ds->coordinate_system == PHAST_Transform::GRID)
 		{
 			// Points
 			map2grid->Inverse_transform(ds->pts);
