@@ -224,6 +224,7 @@ PHAST_SRC=\
 	phreeqcpp/phreeqc/kinetics.h\
 	phreeqcpp/phreeqc/mainsubs.c\
 	phreeqcpp/phreeqc/model.c\
+	phreeqcpp/phreeqc/NA.h\
 	phreeqcpp/phreeqc/nvector.c\
 	phreeqcpp/phreeqc/nvector.h\
 	phreeqcpp/phreeqc/nvector_serial.c\
