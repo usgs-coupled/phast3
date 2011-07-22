@@ -137,7 +137,6 @@ PHAST_SRC=\
 	write6.f90\
 	zone_flow.f90\
 	zone_flow_ss.f90\
-	phreeqcpp/char_star.h\
 	phreeqcpp/cxxKinetics.cxx\
 	phreeqcpp/cxxKinetics.h\
 	phreeqcpp/cxxMix.cxx\
