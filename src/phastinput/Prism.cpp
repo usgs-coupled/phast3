@@ -1476,3 +1476,43 @@ void Prism::Dump(CDumpContext& dc) const
 	dc << "</Prism>\n";
 }
 #endif
+
+bool Prism::Is_homogeneous(void)const
+{
+	return (this->perimeter.Get_user_coordinate_system() == this->top.Get_user_coordinate_system()
+		&&
+		this->perimeter.Get_user_coordinate_system() == this->bottom.Get_user_coordinate_system());
+}
+
+PHAST_Transform::COORDINATE_SYSTEM Prism::Get_best_coordinate_system(void)const
+{
+	// ARCRASTER > SHAPE > XYZT > XYZ > POINTS > NONE > CONSTANT
+	//
+	const Data_source::DATA_SOURCE_TYPE types[] = { 
+		Data_source::ARCRASTER,
+		Data_source::SHAPE,
+		Data_source::XYZT,
+		Data_source::XYZ,
+		Data_source::POINTS,
+		Data_source::NONE,
+		Data_source::CONSTANT
+	};
+
+	const Data_source *sources[3];
+	sources[0] = &this->top;
+	sources[1] = &this->bottom;
+	sources[2] = &this->perimeter;
+
+	for (int t = 0; t < sizeof(types)/sizeof(types[0]); ++t)
+	{
+		for (int i = 0; i < 3; ++i)
+		{
+			if (sources[i]->Get_user_source_type() == types[t])
+			{
+				return sources[i]->Get_user_coordinate_system();
+			}
+		}
+	}
+
+	return this->perimeter.Get_user_coordinate_system();
+}

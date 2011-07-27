@@ -41,6 +41,9 @@ class Prism:public Polyhedron
 	void Convert_coordinates(PHAST_Transform::COORDINATE_SYSTEM cs,
 							 PHAST_Transform * map2grid);
 
+	bool Is_homogeneous(void)const;
+	PHAST_Transform::COORDINATE_SYSTEM Get_best_coordinate_system(void)const;
+
 #if defined(__WPHAST__) && defined(_DEBUG)
 	virtual void Dump(class CDumpContext& dc) const;
 #endif
