@@ -38,8 +38,8 @@
 			>
 			<DebugSettings
 				Command="$(TargetPath)"
-				WorkingDirectory="C:\Programs\phastpp\examples\class2011"
-				CommandArguments="transport"
+				WorkingDirectory="C:\Programs\phastpp\examples\wade1"
+				CommandArguments=""
 				Attach="false"
 				DebuggerType="3"
 				Remote="1"

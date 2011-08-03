@@ -15,6 +15,7 @@ SUBROUTINE init2_post_ss
   REAL(KIND=kdp) :: viscos  
   REAL(KIND=kdp) :: time_phreeqc, u0, u1, uc, ut
   INTEGER :: imod, iis, iwel, k, l, m, mt, nr, nsa
+  CHARACTER(LEN=130) error_line
 !!$  LOGICAL :: erflg
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
@@ -179,12 +180,20 @@ SUBROUTINE init2_post_ss
   END DO
   frac_icchem = frac
   DO m = 1, nxyz  
-     IF(.NOT.fresur) THEN
-        pv(m) = pv(m) + pmcv(m)*(p(m)-p0)
-     ELSEIF(m <= nxyz-nxy) THEN
-        IF(ABS(frac(m) - 1._kdp) <= 1.e-6_kdp .AND. frac(m+nxy) > 0.)  &
-             pv(m) = pv(m) + pmcv(m)*(p(m)-p0)
-     ENDIF
+!     IF(.NOT.fresur) THEN
+!        pv(m) = pv(m) + pmcv(m)*(p(m)-p0)
+!     ELSEIF(m <= nxyz-nxy) THEN
+!        IF(ABS(frac(m) - 1._kdp) <= 1.e-6_kdp .AND. frac(m+nxy) > 0.)  &
+!             pv(m) = pv(m) + pmcv(m)*(p(m)-p0)
+!     ENDIF
+     if (pv(m) < 0) then
+        WRITE( error_line, *) "Negative pore volume after steady-state calculation, cell ", m
+        CALL errprt_c(error_line)
+        WRITE( error_line, *) "Increase porosity, decrease specific storage, or use free surface boundary."
+        CALL errprt_c(error_line)
+        ERREXE = .TRUE.  
+        RETURN        
+     endif
      ! ... Initial fluid(kg), heat(j), solute(kg) and pore volume(m^3)
      ! ...      in the region
      u0 = pv(m)*frac(m)  
