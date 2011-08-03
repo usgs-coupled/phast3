@@ -207,6 +207,7 @@ cell_init(struct cell *cell_ptr)
 		(River_Polygon *) malloc((size_t) sizeof(River_Polygon));
 	if (cell_ptr->river_polygons == NULL)
 		malloc_error();
+	river_polygon_init(cell_ptr->river_polygons);
 	cell_ptr->count_river_polygons = 0;
 	cell_ptr->river_starting_segment_fortran = 0;
 	cell_ptr->drain_starting_segment_fortran = 0;
