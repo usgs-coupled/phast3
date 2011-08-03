@@ -1,6 +1,7 @@
 #if !defined(RIVER_H_INCLUDED)
 #define RIVER_H_INCLUDED
 #include "PHAST_Transform.h"
+
 /* ----------------------------------------------------------------------
  *   Rivers
  * ---------------------------------------------------------------------- */
@@ -62,4 +63,7 @@ typedef struct
 	int point_number;
 	double w;
 } River_Polygon;
+
+void river_polygon_init(River_Polygon * rp_ptr);
+
 #endif // !defined(RIVER_H_INCLUDED)

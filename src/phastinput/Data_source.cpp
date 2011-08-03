@@ -632,7 +632,8 @@ Data_source::Tidy(const bool make_nni)
 		}
 		else
 		{
-			if (this->Get_coordinate_system() != Filedata::file_data_map.find(this->file_name)->second->Get_coordinate_system())
+			this->filedata = Filedata::file_data_map.find(this->file_name)->second;
+			if (this->Get_coordinate_system() != this->filedata->Get_coordinate_system())
 			{
 				ostringstream oss;
 				oss << "File was previously defined with a different coordinate system. (" << this->file_name << ")";
@@ -670,7 +671,8 @@ Data_source::Tidy(const bool make_nni)
 		}
 		else
 		{
-			if (this->Get_coordinate_system() != Filedata::file_data_map.find(this->file_name)->second->Get_coordinate_system())
+			this->filedata = Filedata::file_data_map.find(this->file_name)->second;
+			if (this->Get_coordinate_system() != this->filedata->Get_coordinate_system())
 			{
 				ostringstream oss;
 				oss << "File was previously defined with a different coordinate system. (" << this->file_name << ")";
@@ -699,7 +701,8 @@ Data_source::Tidy(const bool make_nni)
 		}
 		else
 		{
-			if (this->Get_coordinate_system() != Filedata::file_data_map.find(this->file_name)->second->Get_coordinate_system())
+			this->filedata = Filedata::file_data_map.find(this->file_name)->second;
+			if (this->Get_coordinate_system() != this->filedata->Get_coordinate_system())
 			{
 				ostringstream oss;
 				oss << "File was previously defined with a different coordinate system. (" << this->file_name << ")";
@@ -729,7 +732,8 @@ Data_source::Tidy(const bool make_nni)
 		}
 		else
 		{
-			if (this->Get_coordinate_system() != Filedata::file_data_map.find(this->file_name)->second->Get_coordinate_system())
+			this->filedata = Filedata::file_data_map.find(this->file_name)->second;
+			if (this->Get_coordinate_system() != this->filedata->Get_coordinate_system())
 			{
 				ostringstream oss;
 				oss << "File was previously defined with a different coordinate system. (" << this->file_name << ")";

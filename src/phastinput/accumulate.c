@@ -905,16 +905,16 @@ coords_to_elt_range(double x1, double x2, double *coord, int count_coord,
 		if (!silent)
 		{
 			warning_msg("Zone is outside all element centroids.");
-			return (ERROR);
 		}
+		return (ERROR);
 	}
 	if (x2 + eps < coord[i])
 	{
 		if (!silent)
 		{
 			warning_msg("Zone does not contain centroids of any elements.");
-			return (ERROR);
 		}
+		return (ERROR);
 	}
 	for (; i < count_coord; i++)
 	{
