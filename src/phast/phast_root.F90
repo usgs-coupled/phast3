@@ -42,8 +42,13 @@ SUBROUTINE phast_root(mpi_tasks, mpi_myself)
   ! ... Read the time invariant data
      CALL read2
      CALL init2_1
+     ! geometric pv
+     pv0 = pv     
      CALL init2_2
-     pv0 = pv
+     if (.NOT.steady_flow) then
+        ! pressure corrected pv
+        pv0 = pv
+     endif
      CALL error2
 !     time_phreeqc = 0.d0 
      time_phreeqc = time

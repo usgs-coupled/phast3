@@ -928,6 +928,7 @@ DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
 	 *  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
 	 *  Does nothing if i < 0, i.e. values to be gotten from restart files
 	 */
+	size_t count_negative_porosity = 0;
 	for (k = 0; k < last_cell - first_cell + 1; k++)
 	{
 		j = sort_random_list[k];	/* j is count_chem number */
@@ -935,6 +936,15 @@ DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
 		assert(forward[i] >= 0);
 		assert (volume[i] > 0.0);
 		double porosity = pv0[i] / volume[i];
+		if (pv0[i] < 0 || volume[i] < 0)
+		{
+			sprintf(error_string, "Negative volume in cell %d: volume, %e\t initial volume, %e.",
+					i, volume[i], pv0[i]);
+			input_error++;
+			count_negative_porosity++;
+			error_msg(error_string, CONTINUE);
+			continue;
+		}
 		assert (porosity > 0.0);
 		double porosity_factor = (1.0 - porosity) / porosity;
 		system_cxxInitialize(i, j, initial_conditions1, initial_conditions2,
@@ -942,6 +952,13 @@ DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
 			exchange_units, surface_units, ssassemblage_units,
 			ppassemblage_units, gasphase_units, kinetics_units,
 			porosity_factor);
+	}
+	if (count_negative_porosity > 0)
+	{
+		sprintf(error_string, "Negative initial volumes may be due to initial head distribution.\n"
+			"Make initial heads greater than or equal to the elevation of the node for each cell.\n"
+			"Increase porosity, decrease specific storage, or use free surface boundary.");
+		error_msg(error_string, CONTINUE);
 	}
 	sort_random_list = (int *) free_check_null(sort_random_list);
 	/*
@@ -1326,6 +1343,7 @@ DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
 	 *  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
 	 *  Does nothing for indexes less than 0 (i.e. restart files)
 	 */
+	size_t count_negative_porosity = 0;
 	for (i = 0; i < ixyz; i++)
 	{							/* i is ixyz number */
 		j = forward[i];			/* j is count_chem number */
@@ -1334,6 +1352,15 @@ DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
 		assert(forward[i] >= 0);
 		assert (volume[i] > 0.0);
 		double porosity = pv0[i] / volume[i];
+		if (pv0[i] < 0 || volume[i] < 0)
+		{
+			sprintf(error_string, "Negative volume in cell %d: volume, %e\t initial volume, %e.",
+					i, volume[i], pv0[i]);
+			input_error++;
+			count_negative_porosity++;
+			error_msg(error_string, CONTINUE);
+			continue;
+		}
 		assert (porosity > 0.0);
 		double porosity_factor = (1.0 - porosity) / porosity;
 		system_cxxInitialize(i, j, initial_conditions1, initial_conditions2,
@@ -1341,6 +1368,13 @@ DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
 			exchange_units, surface_units, ssassemblage_units,
 			ppassemblage_units, gasphase_units, kinetics_units,
 			porosity_factor);
+	}
+	if (count_negative_porosity > 0)
+	{
+		sprintf(error_string, "Negative initial volumes may be due to initial head distribution.\n"
+			"Make initial heads greater than or equal to the elevation of the node for each cell.\n"
+			"Increase porosity, decrease specific storage, or use free surface boundary.");
+		error_msg(error_string, CONTINUE);
 	}
 	/*
 	 * Read any restart files
