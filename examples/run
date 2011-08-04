@@ -151,7 +151,7 @@ if [ $CONFIGURATION == "OPENMPI_INTEL_64" ]; then
 #   64 bit openmpi_intel_64
 #
 #    /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/bin/mpirun  -n 2 -H robocomp -H lobo -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_intel_64/phast
-    /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/bin/mpirun  -n 2 -H grundvand -v -wdir $EXDIR/$NAME/0 $PHASTDIR/para_trans_chem/src/phast/openmpi_intel_64/phast
+    /z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64/bin/mpirun  -n 4 -H robocomp -H lobo -v -wdir $EXDIR/$NAME/0 $PHASTDIR/src/phast/openmpi_intel_64/phast
 fi
 
 if [ $CONFIGURATION == "OPENMPI_INTEL_64_DEBUG" ]; then

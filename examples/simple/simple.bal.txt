@@ -182,10 +182,10 @@
 
  Cumulative Fluid inflow ....................................  5.000087e+02  (kg)
  Cumulative Fluid outflow ...................................  5.000087e+02  (kg)
- Cumulative Change in fluid in region ....................... -5.684342e-13  (kg)
+ Cumulative Change in fluid in region .......................  0.000000e+00  (kg)
  Current Fluid in region ....................................  1.000090e+03  (kg)
  Current Fluid volume in region .............................  1.000090e+00  (m ^3)
- Residual imbalance ......................................... -1.989520e-12  (kg)
+ Residual imbalance ......................................... -1.421085e-12  (kg)
  Fractional imbalance .......................................      0.0000
 
 
