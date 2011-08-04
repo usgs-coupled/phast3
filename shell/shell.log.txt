@@ -202,9 +202,9 @@ Beginning time step no.      1
           H
           O
           Cl
-          No. of solver iterations, Relative residual:   16      6.0959088e-11
+          No. of solver iterations, Relative residual:   16      6.2013004e-11
           Na
-          No. of solver iterations, Relative residual:   16      6.0959088e-11
+          No. of solver iterations, Relative residual:   16      6.2013004e-11
           Charge
      Beginning chemistry calculation.
           Total cells: 1221
@@ -216,11 +216,11 @@ Beginning time step no.      1
      End of Time Step No.     1
      Time ..................................................    10000.0     (s)
      Maximum change in potentiometric head   0.0000e+00      (m ) at location (  1.00    ,  1.00    ,  1.00    )(m)
-     Maximum change in H ..................  8.1397e-15 (mol/kgw) at location ( 0.500    ,  1.00    , 0.000e+00)(m)
-     Maximum change in O ..................  4.0770e-15 (mol/kgw) at location ( 0.500    ,  1.00    , 0.000e+00)(m)
-     Maximum change in Cl .................  7.8736e-11 (mol/kgw) at location ( 0.500    ,  1.00    , 0.000e+00)(m)
-     Maximum change in Na .................  7.8736e-11 (mol/kgw) at location ( 0.500    ,  1.00    , 0.000e+00)(m)
-     Maximum change in Charge ............. -1.4365e-17 (mol/kgw) at location ( 0.500    ,  1.00    , 0.000e+00)(m)
+     Maximum change in H ..................  8.2016e-15 (mol/kgw) at location ( 0.500    ,  1.00    , 0.000e+00)(m)
+     Maximum change in O ..................  4.1080e-15 (mol/kgw) at location ( 0.500    ,  1.00    , 0.000e+00)(m)
+     Maximum change in Cl .................  7.9788e-11 (mol/kgw) at location ( 0.500    ,  1.00    , 0.000e+00)(m)
+     Maximum change in Na .................  7.9788e-11 (mol/kgw) at location ( 0.500    ,  1.00    , 0.000e+00)(m)
+     Maximum change in Charge ............. -1.4475e-17 (mol/kgw) at location ( 0.500    ,  1.00    , 0.000e+00)(m)
 Done with transient simulation.
 
                              ***** Simulation Completed *****
