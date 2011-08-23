@@ -7,12 +7,16 @@
 #include <iostream>				// std::cout std::cerr
 #include "StorageBin.h"
 #include "cxxMix.h"
-#include "phreeqc/global.h"
-#include "phreeqc/output.h"
+//#include "phreeqc/global.h"
+#include "PHRQ_global.h"
+//#include "phreeqc/output.h"
+#include "PHRQ_output.h"
 #include "hst.h"
-#include "phreeqc/phqalloc.h"
-#include "phreeqc/phrqproto.h"
-#include "phreeqc/input.h"
+//#include "phreeqc/phqalloc.h"
+#include "PHRQ_alloc.h"
+//#include "phreeqc/phrqproto.h" // PHAST_CLASS
+#include "PHRQ_utilities.h"
+//#include "phreeqc/input.h"
 #include "phast_files.h"
 #include "phastproto.h"
 #include "Dictionary.h"
@@ -223,6 +227,88 @@ extern
 	void
 	WARNPRT_C(char *err_str, long l);
 }
+/* ---------------------------------------------------------------------- */
+void
+ERRPRT_C(char *err_str, long l)
+/* ---------------------------------------------------------------------- */
+{
+	char *
+		e_string;
+
+	e_string = (char *) PHRQ_malloc((size_t) (l + 1) * sizeof(char));
+	strncpy(e_string, err_str, (size_t) (l));
+	e_string[l] = '\0';
+	string_trim_right(e_string);
+	output_msg(OUTPUT_ECHO, "ERROR: %s\n", e_string);
+	output_msg(OUTPUT_SCREEN, "ERROR: %s\n", e_string);
+	free_check_null(e_string);
+	return;
+}
+/* ---------------------------------------------------------------------- */
+void
+WARNPRT_C(char *err_str, long l)
+/* ---------------------------------------------------------------------- */
+{
+	char *
+		e_string;
+
+	e_string = (char *) PHRQ_malloc((size_t) (l + 1) * sizeof(char));
+	strncpy(e_string, err_str, (size_t) (l));
+	e_string[l] = '\0';
+	string_trim_right(e_string);
+	output_msg(OUTPUT_ECHO, "WARNING: %s\n", e_string);
+	output_fflush(OUTPUT_ECHO);
+	output_msg(OUTPUT_SCREEN, "WARNING: %s\n", e_string);
+	output_fflush(OUTPUT_SCREEN);
+	free_check_null(e_string);
+	return;
+}
+
+/* ---------------------------------------------------------------------- */
+void
+LOGPRT_C(char *err_str, long l)
+/* ---------------------------------------------------------------------- */
+{
+	char *
+		e_string;
+
+	if (mpi_myself != 0)
+		return;
+	e_string = (char *) PHRQ_malloc((size_t) (l + 1) * sizeof(char));
+	strncpy(e_string, err_str, (size_t) (l));
+	e_string[l] = '\0';
+	string_trim_right(e_string);
+	output_msg(OUTPUT_ECHO, "%s\n", e_string);
+	output_fflush(OUTPUT_ECHO);
+	/*
+	   fprintf(error_file,"%s\n", e_string);
+	   fflush(error_file);
+	 */
+	free_check_null(e_string);
+	return;
+}
+
+/* ---------------------------------------------------------------------- */
+void
+SCREENPRT_C(char *err_str, long l)
+/* ---------------------------------------------------------------------- */
+{
+	char *
+		e_string;
+
+	if (mpi_myself != 0)
+		return;
+	e_string = (char *) PHRQ_malloc((size_t) (l + 1) * sizeof(char));
+	strncpy(e_string, err_str, (size_t) (l));
+	e_string[l] = '\0';
+	string_trim_right(e_string);
+	output_msg(OUTPUT_SCREEN, "%s\n", e_string);
+	output_fflush(OUTPUT_SCREEN);
+	free_check_null(e_string);
+	return;
+}
+
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 PHREEQC_FREE(int *solute)
@@ -4399,3 +4485,4 @@ STORE_C_POINTERS(int *indx_sol1_ic, double *x_node, double *y_node,
 
 	return;
 }
+#endif

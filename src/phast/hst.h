@@ -1,7 +1,8 @@
 #ifdef PHREEQC_IDENT
 static char const svnid[] = "$Id$";
 #endif
-#include "phreeqc/phrqtype.h"
+//#include "phreeqc/phrqtype.h"
+#include "PHRQ_type.h"
 /* 
  *  STRUCTURES
  */
