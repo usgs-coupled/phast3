@@ -1,12 +1,15 @@
 #define EXTERNAL extern
 #define MAIN
 #include <mpi.h>
-#include "phreeqc/global.h"
-#include "phreeqc/output.h"
+//#include "phreeqc/global.h"
+#include "PHRQ_global.h"
+//#include "phreeqc/output.h"
+#include "PHRQ_output.h"
 #include "hst.h"
-#include "phreeqc/phqalloc.h"
-#include "phreeqc/phrqproto.h"
-#include "phreeqc/input.h"
+//#include "phreeqc/phqalloc.h"
+#include "PHRQ_alloc.h"
+//#include "phreeqc/phrqproto.h"
+//#include "phreeqc/input.h"
 #include "phast_files.h"
 #include "phastproto.h"
 #include <time.h>

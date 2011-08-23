@@ -1,13 +1,17 @@
 #define EXTERNAL
-#include "phreeqc/global.h"
-#include "phreeqc/output.h"
-#include "phreeqc/phrqproto.h"
+//#include "phreeqc/global.h"
+#include "PHRQ_global.h"
+#include "PHRQ_type.h"
+//#include "phreeqc/output.h"
+#include "PHRQ_output.h"
+//#include "phreeqc/phrqproto.h"
 #include "hst.h"
 #include "phastproto.h"
-#include "phreeqc/input.h"
+//#include "phreeqc/input.h"
 #include "phast_files.h"
 #include "Pointers_to_fortran.h"
-#include "phreeqc/phqalloc.h"
+//#include "phreeqc/phqalloc.h"
+#include "PHRQ_alloc.h"
 
 /* following line defines path for default data base file */
 const char *default_data_base = "phast.dat";
@@ -29,7 +33,7 @@ static int rewind_wrapper(FILE * file_ptr);
 
 static char const svnid[] =
 	"$Id$";
-
+#ifdef SKIP_PHAST_CLASS_REWRITE
 /* ---------------------------------------------------------------------- */
 int
 phast_handler(const int action, const int type, const char *err_str,
@@ -913,3 +917,4 @@ open_punch_file(char *prefix, int solute)
 	}
 	return OK;
 }
+#endif /* SKIP_PHAST_CLASS_REWRITE */

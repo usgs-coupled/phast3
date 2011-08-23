@@ -10,6 +10,7 @@
 #include <string.h>				/* strncpy strtok strcat */
 #include <assert.h>				/* assert */
 #include <stdarg.h>				/* va_arg */
+#include "PHRQ_utilities.h"
 #if defined(_MT)
 #define _HDF5USEDLL_			/* reqd for Multithreaded run-time library (Win32) */
 #endif
@@ -25,14 +26,17 @@ static char const DEFINE_USE_MPI[] = "#define USE_MPI 0";
 #endif
 
 #define EXTERNAL extern
-#include "phreeqc/global.h"		/* error_string */
-#include "phreeqc/output.h"
+//#include "phreeqc/global.h"		/* error_string */
+#include "PHRQ_global.h"
+//#include "phreeqc/output.h"
+#include "PHRQ_output.h"
 #include "hst.h"				/* struct back_list */
 #undef EXTERNAL
-#include "phreeqc/phrqproto.h"
+//#include "phreeqc/phrqproto.h"
 #include "phastproto.h"
-#include "phreeqc/phqalloc.h"	/* PHRQ_malloc PHRQ_realloc PHRQ_free */
-
+//#include "phreeqc/phqalloc.h"	/* PHRQ_malloc PHRQ_realloc PHRQ_free */
+#include "PHRQ_alloc.h"
+char error_string[10 * MAX_LENGTH];
 /*
  *   static functions
  */
@@ -573,7 +577,63 @@ HDF_Finalize(void)
 	proc.array = NULL;
 }
 
+#ifdef SKIP_PHAST_CLASS_REWRITE
+/*-------------------------------------------------------------------------
+ * Function          open_hdf_file
+ *
+ * Preconditions:    TODO:
+ *
+ * Postconditions:   TODO:
+ *-------------------------------------------------------------------------
+ */
+static hid_t
+open_hdf_file(char *prefix, int prefix_l)
+{
+#ifdef USE_MPI
+	extern int mpi_myself;
+	extern int mpi_tasks;
+#else
+	const int mpi_myself = 0;
+	const int mpi_tasks = 1;
+#endif
+	hid_t file_id;
+	char hdf_prefix[257];
+	char hdf_file_name[257];
+	char hdf_backup_name[257];
 
+	strncpy(hdf_prefix, prefix, prefix_l);
+	hdf_prefix[prefix_l] = '\0';
+	string_trim(hdf_prefix);
+	if (mpi_tasks == 1)
+	{
+		sprintf(hdf_file_name, "%s%s", hdf_prefix, szHDF5Ext);
+	}
+	else
+	{
+		sprintf(hdf_file_name, "%s%s", hdf_prefix, szHDF5Ext);
+	}
+
+	if (mpi_myself == 0)
+	{
+		if (file_exists(hdf_file_name))
+		{
+			sprintf(hdf_backup_name, "%s%s~", hdf_prefix, szHDF5Ext);
+			if (file_exists(hdf_backup_name))
+				remove(hdf_backup_name);
+			rename(hdf_file_name, hdf_backup_name);
+		}
+	}
+
+	file_id =
+		H5Fcreate(hdf_file_name, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+	if (file_id <= 0)
+	{
+		sprintf(error_string, "Unable to open HDF file:%s\n", hdf_file_name);
+		error_msg(error_string, STOP);
+	}
+	return file_id;
+}
+#endif SKIP_PHAST_CLASS_REWRITE
 /*-------------------------------------------------------------------------
  * Function          open_hdf_file
  *
@@ -1570,7 +1630,7 @@ write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
 	status = H5Sclose(mem_dspace);
 	assert(status >= 0);
 }
-
+#ifdef SKIP_PHAST_CLASS_REWRITE
 /*-------------------------------------------------------------------------
  * Function          get_c_scalar_count
  * 
@@ -1614,7 +1674,23 @@ get_c_scalar_count(int load_names, char **names)
 	pr.punch = prpunch;
 	return g_hdf_scalar_count;
 }
+#endif /* SKIP_PHAST_CLASS_REWRITE */
+/*-------------------------------------------------------------------------
+ * Function          get_c_scalar_count
+ * 
+ * NOTE: May want to rewrite this and call it punch_all_hdf
+ *
+ * Preconditions:    TODO:
+ *
+ * Postconditions:   TODO:
+ *-------------------------------------------------------------------------
+ */
+static int
+get_c_scalar_count(int load_names, char **names)
+{
 
+	return g_hdf_scalar_count;
+}
 /*-------------------------------------------------------------------------
  * Function          HDFWriteHyperSlabV
  *
@@ -1799,7 +1875,7 @@ HDFWriteHyperSlabV(const char *name, const char *format, va_list argptr)
 			/* keep going */
 			break;
 		}
-		assert(pr.hdf == TRUE);	/* should not be called */
+		// assert(pr.hdf == TRUE);	/* should not be called */
 		if (bLongDouble)
 		{
 			value = (double) va_arg(argptr, long double);
@@ -2128,7 +2204,7 @@ hdf_callback(const int action, const int type, const char *name,
 		switch (type)
 		{
 		case OUTPUT_PUNCH:
-			if (pr.hdf == TRUE)
+			//if (pr.hdf == TRUE) // SKIP_PHAST_CLASS_REWRITE
 			{
 				HDFWriteHyperSlabV(name, format, args);
 			}

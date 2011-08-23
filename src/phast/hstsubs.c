@@ -1,16 +1,48 @@
 #define EXTERNAL extern
-#include "phreeqc/global.h"
-#include "phreeqc/output.h"
+//#include "phreeqc/global.h"
+#include "PHRQ_global.h"
+//#include "phreeqc/output.h"
+#include "PHRQ_output.h"
 #include "hst.h"
-#include "phreeqc/phrqproto.h"
+//#include "phreeqc/phrqproto.h"
 #include "phastproto.h"
-#include "phreeqc/phqalloc.h"
+//#include "phreeqc/phqalloc.h"
+#include "PHRQ_alloc.h"
 
 static char const svnid[] =
 	"$Id$";
 
 extern void buffer_to_cxxsolution(int n);
+int
+file_exists(const char *name)
+{
+	FILE *stream;
+	if ((stream = fopen(name, "r")) == NULL)
+	{
+		return 0;				/* doesn't exist */
+	}
+	fclose(stream);
+	return 1;					/* exists */
+}
 
+int
+file_rename(const char *temp_name, const char *name, const char *backup_name)
+{
+	if (file_exists(name))
+	{
+		if (file_exists(backup_name))
+			remove(backup_name);
+		rename(name, backup_name);
+		rename(temp_name, name);
+	}
+	else
+	{
+		rename(temp_name, name);
+	}
+	return (OK);
+}
+
+#ifdef SKIP_PHAST_CLASS_REWRITE
 /* ---------------------------------------------------------------------- */
 void
 add_all_components(void)
@@ -1208,3 +1240,4 @@ file_rename(const char *temp_name, const char *name, const char *backup_name)
 	}
 	return (OK);
 }
+#endif /* SKIP_PHAST_CLASS_REWRITE */
