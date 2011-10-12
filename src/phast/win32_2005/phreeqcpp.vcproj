@@ -45,8 +45,8 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DEV_ZLIB122_INC)&quot;;&quot;$(DEV_HDF5_INC)&quot;;&quot;$(DEV_GMP_INC_MT)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;;&quot;$(ProjectDir)..&quot;;&quot;$(BOOSTROOT)&quot;"
-				PreprocessorDefinitions="GZIP_RESTART;USE_PHRQ_ALLOC;PHREEQC_CPP;_DEBUG;WIN32;_CONSOLE;NO_UNDERSCORES;H5_HAVE_FUNCTION;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
+				AdditionalIncludeDirectories="&quot;$(DEV_ZLIB122_INC)&quot;;&quot;$(DEV_HDF5_INC)&quot;;&quot;$(DEV_GMP_INC_MT)&quot;;&quot;$(ProjectDir)../phreeqcpp&quot;;&quot;$(ProjectDir)..&quot;;&quot;$(BOOSTROOT)&quot;;&quot;$(DEV_IPHREEQC)\include&quot;;&quot;$(ProjectDir)../phreeqcpp/phreeqc&quot;"
+				PreprocessorDefinitions="GZIP_RESTART;USE_PHRQ_ALLOC;PHREEQC_CPP;_DEBUG;WIN32;_CONSOLE;NO_UNDERSCORES;H5_HAVE_FUNCTION;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;PHAST_CLASS;PHREEQC_CLASS"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -686,10 +686,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\hst.cxx"
-					>
-				</File>
-				<File
 					RelativePath="..\hstsubs.c"
 					>
 					<FileConfiguration
@@ -762,15 +758,11 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\PHRQ_alloc.cpp"
+					RelativePath="..\Reaction_module.cxx"
 					>
 				</File>
 				<File
-					RelativePath="..\PHRQ_output.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\PHRQ_utilities.cpp"
+					RelativePath="..\RM_interface.cpp"
 					>
 				</File>
 			</Filter>
@@ -1022,27 +1014,11 @@
 			Filter="h;hpp;hxx;hm;inl;inc"
 			>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\basic.h"
-				>
-			</File>
-			<File
-				RelativePath="..\phreeqcpp\phreeqc\cvdense.h"
-				>
-			</File>
-			<File
-				RelativePath="..\phreeqcpp\phreeqc\cvode.h"
-				>
-			</File>
-			<File
 				RelativePath="..\phreeqcpp\cxxKinetics.h"
 				>
 			</File>
 			<File
 				RelativePath="..\phreeqcpp\cxxMix.h"
-				>
-			</File>
-			<File
-				RelativePath="..\phreeqcpp\phreeqc\dense.h"
 				>
 			</File>
 			<File
@@ -1066,14 +1042,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\global.h"
-				>
-			</File>
-			<File
-				RelativePath="..\phreeqcpp\phreeqc\global_structures.h"
-				>
-			</File>
-			<File
 				RelativePath="..\gzstream.h"
 				>
 			</File>
@@ -1090,19 +1058,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\input.h"
-				>
-			</File>
-			<File
 				RelativePath="..\phreeqcpp\ISolution.h"
 				>
 			</File>
 			<File
 				RelativePath="..\phreeqcpp\ISolutionComp.h"
-				>
-			</File>
-			<File
-				RelativePath="..\phreeqcpp\phreeqc\kinetics.h"
 				>
 			</File>
 			<File
@@ -1118,22 +1078,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\nvector.h"
-				>
-			</File>
-			<File
-				RelativePath="..\phreeqcpp\phreeqc\nvector_serial.h"
-				>
-			</File>
-			<File
-				RelativePath="..\phreeqcpp\phreeqc\output.h"
-				>
-			</File>
-			<File
-				RelativePath="..\phreeqcpp\phreeqc\p2c.h"
-				>
-			</File>
-			<File
 				RelativePath="..\phreeqcpp\Parser.h"
 				>
 			</File>
@@ -1142,23 +1086,23 @@
 				>
 			</File>
 			<File
-				RelativePath="..\phastproto.h"
+				RelativePath="..\PHRQ_alloc.h"
 				>
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\phqalloc.h"
+				RelativePath="..\PHRQ_global.h"
 				>
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\phrqproto.h"
+				RelativePath="..\PHRQ_output.h"
 				>
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\phrqtype.h"
+				RelativePath="..\PHRQ_type.h"
 				>
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\pitzer.h"
+				RelativePath="..\PHRQ_utilities.h"
 				>
 			</File>
 			<File
@@ -1182,19 +1126,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Reaction_module.h"
+				>
+			</File>
+			<File
+				RelativePath="..\RM_interface.h"
+				>
+			</File>
+			<File
 				RelativePath="..\phreeqcpp\runner.h"
-				>
-			</File>
-			<File
-				RelativePath="..\phreeqcpp\SAXPhreeqc.h"
-				>
-			</File>
-			<File
-				RelativePath="..\phreeqcpp\SaxPhreeqcHandlers.h"
-				>
-			</File>
-			<File
-				RelativePath="..\phreeqcpp\phreeqc\smalldense.h"
 				>
 			</File>
 			<File
@@ -1226,19 +1166,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\phreeqcpp\phreeqc\sundialsmath.h"
-				>
-			</File>
-			<File
-				RelativePath="..\phreeqcpp\phreeqc\sundialstypes.h"
-				>
-			</File>
-			<File
 				RelativePath="..\phreeqcpp\Surface.h"
-				>
-			</File>
-			<File
-				RelativePath="..\phreeqcpp\SurfaceCharge.h"
 				>
 			</File>
 			<File
