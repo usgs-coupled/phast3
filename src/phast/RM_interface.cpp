@@ -18,8 +18,10 @@ private:
 std::map<size_t, Reaction_module*> RM_interface::Instances;
 size_t RM_interface::InstancesIndex = 0;
 
+/* ---------------------------------------------------------------------- */
 Reaction_module*
 RM_interface::Get_instance(int id)
+/* ---------------------------------------------------------------------- */
 {
 	std::map<size_t, Reaction_module*>::iterator it = RM_interface::Instances.find(size_t(id));
 	if (it != RM_interface::Instances.end())
@@ -28,8 +30,10 @@ RM_interface::Get_instance(int id)
 	}
 	return 0;
 }
+/* ---------------------------------------------------------------------- */
 int
 RM_interface::Create_reaction_module(void)
+/* ---------------------------------------------------------------------- */
 {
 	int n = IPQ_OUTOFMEMORY;
 	try
@@ -52,8 +56,10 @@ RM_interface::Create_reaction_module(void)
 	}
 	return n;
 }
+/* ---------------------------------------------------------------------- */
 IPQ_RESULT
 RM_interface::Destroy_reaction_module(int id)
+/* ---------------------------------------------------------------------- */
 {
 	IPQ_RESULT retval = IPQ_BADINSTANCE;
 	if (id >= 0)
@@ -181,9 +187,9 @@ RM_pass_data(int *id,
 			 double *time_hst,					// time from transport 
 			 double *time_step_hst,				// time step from transport
 			 double *cnvtmi,					// conversion factor for time
-			 double *x_hst,						// locations of x nodes 
-			 double *y_hst,						// locations of y nodes  
-			 double *z_hst,						// locations of z nodes 
+			 double *x_node,					// nxyz array of X coordinates for nodes 
+			 double *y_node,					// nxyz array of Y coordinates for nodes  
+			 double *z_node,					// nxyz array of Z coordinates for nodes 
 			 double *fraction,					// mass fractions nxyz:components
 			 double *frac,						// saturation fraction
 			 double *pv,						// nxyz current pore volumes 
@@ -206,9 +212,9 @@ RM_pass_data(int *id,
 		Reaction_module_ptr->Set_time_hst(*time_hst);
 		Reaction_module_ptr->Set_time_step_hst(*time_step_hst);
 		Reaction_module_ptr->Set_cnvtmi(*cnvtmi);
-		Reaction_module_ptr->Set_x_hst(x_hst);
-		Reaction_module_ptr->Set_y_hst(y_hst);
-		Reaction_module_ptr->Set_z_hst(z_hst);
+		Reaction_module_ptr->Set_x_node(x_node);
+		Reaction_module_ptr->Set_y_node(y_node);
+		Reaction_module_ptr->Set_z_node(z_node);
 		Reaction_module_ptr->Set_fraction(fraction);
 		Reaction_module_ptr->Set_frac(frac);
 		Reaction_module_ptr->Set_pv(pv);
@@ -271,11 +277,30 @@ RM_distribute_initial_conditions(int *id,
 			initial_conditions1,
 			initial_conditions2,
 			fraction1,
-			exchange_units,
-			surface_units,
-			ssassemblage_units,
-			ppassemblage_units,
-			gasphase_units,
-			kinetics_units);
+			*exchange_units,
+			*surface_units,
+			*ssassemblage_units,
+			*ppassemblage_units,
+			*gasphase_units,
+			*kinetics_units);
+	}
+}
+/* ---------------------------------------------------------------------- */
+void
+RM_get_components(int *id, int *n_comp, char *names, int length)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *   Counts components in any defined solution, gas_phase, exchanger,
+ *   surface, or pure_phase_assemblage
+ *
+ *   Returns:
+ *           n_comp, which is total, including H, O, elements, and Charge
+ *           names, which contains character strings with names of components
+ */
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Get_components(n_comp, names, length);
 	}
 }

@@ -758,6 +758,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\PHAST_IPhreeqc.cxx"
+					>
+				</File>
+				<File
 					RelativePath="..\Reaction_module.cxx"
 					>
 				</File>
@@ -1086,23 +1090,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\PHRQ_alloc.h"
+				RelativePath="..\PHAST_IPhreeqc.h"
 				>
 			</File>
 			<File
-				RelativePath="..\PHRQ_global.h"
+				RelativePath="..\phreeqcpp\PHRQ_base.h"
 				>
 			</File>
 			<File
-				RelativePath="..\PHRQ_output.h"
-				>
-			</File>
-			<File
-				RelativePath="..\PHRQ_type.h"
-				>
-			</File>
-			<File
-				RelativePath="..\PHRQ_utilities.h"
+				RelativePath="..\phreeqcpp\PHRQ_io.h"
 				>
 			</File>
 			<File
