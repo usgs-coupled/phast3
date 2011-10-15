@@ -21,6 +21,8 @@ public:
 	int Initial_phreeqc_run(std::string chemistry_name);
 	void Get_components(int *n_comp, char *names, int length);
 	void Pass_data_reaction_module(
+		bool free_surface,
+		bool steady_flow,
 		int *nx, int *ny, int *nz,
 		double *time_hst, 
 		double *time_step_hst, 
@@ -55,6 +57,12 @@ public:
 		int ppassemblage_units,
 		int gasphase_units,
 		int kinetics_units);
+	void Convert_to_molal(double *c, int n, int dim);
+	void Calculate_well_ph(double *c, double * ph, double * alkalinity);
+	void setup_boundary_conditions(const int n_boundary, int *boundary_solution1,
+						  int *boundary_solution2, double *fraction1,
+						  double *boundary_fraction, int dim);
+	void Run_reactions(void);
 
 	// setters and getters
 	const std::string Get_database_file_name(void) const {return this->database_file_name;};
@@ -64,6 +72,10 @@ public:
 	const int Get_mpi_myself(void) const {return this->mpi_myself;};
 	void Set_mpi_myself(int t) {this->mpi_myself = t;};
 
+	const bool Get_free_surface(void) const {return this->free_surface;};
+	void Set_free_surface(bool t) {this->free_surface = t;};
+	const bool Get_steady_flow(void) const {return this->steady_flow;};
+	void Set_steady_flow(bool t) {this->steady_flow = t;};
 	const int Get_nxyz(void) const {return this->nxyz;};
 	void Set_nxyz(int t) {this->nxyz = t;};
 	const int Get_nx(void) const {return this->nx;};
@@ -73,12 +85,12 @@ public:
 	const int Get_nz(void) const {return this->nz;};
 	void Set_nz(int t) {this->nz = t;};
 	const std::vector<std::string> & Get_components(void) const {return this->components;};
-	const double Get_time_hst(void) const {return this->time_hst;};
-	void Set_time_hst(double t) {this->time_hst = t;};
-	const double Get_time_step_hst(void) const {return this->time_step_hst;};
-	void Set_time_step_hst(double t) {this->time_step_hst = t;};
-	const double Get_cnvtmi(void) const {return this->cnvtmi;};
-	void Set_cnvtmi(double t) {this->cnvtmi = t;};
+	const double * Get_time_hst(void) const {return this->time_hst;};
+	void Set_time_hst(double * t) {this->time_hst = t;};
+	const double *Get_time_step_hst(void) const {return this->time_step_hst;};
+	void Set_time_step_hst(double * t) {this->time_step_hst = t;};
+	const double * Get_cnvtmi(void) const {return this->cnvtmi;};
+	void Set_cnvtmi(double * t) {this->cnvtmi = t;};
 	const double * Get_x_node(void) const {return this->x_node;};
 	void Set_x_node(double * t) {this->x_node = t;};
 	const double * Get_y_node(void) const {return this->y_node;};
@@ -99,8 +111,8 @@ public:
 	void Set_printzone_chem(int * t) {this->printzone_chem = t;};
 	const int * Get_printzone_xyz(void) const {return this->printzone_xyz;};
 	void Set_printzone_xyz(int * t) {this->printzone_xyz = t;};
-	const double Get_rebalance_fraction_hst(void) const {return this->rebalance_fraction_hst;};
-	void Set_rebalance_fraction_hst(double t) {this->rebalance_fraction_hst = t;};
+	const double * Get_rebalance_fraction_hst(void) const {return this->rebalance_fraction_hst;};
+	void Set_rebalance_fraction_hst(double * t) {this->rebalance_fraction_hst = t;};
 
 	const bool Get_prslm(void) const {return this->prslm;};
 	void Set_prslm(bool t) {this->prslm = t;};
@@ -128,9 +140,10 @@ protected:
 		int gasphase_units, 
 		int kinetics_units,
 		double porosity_factor);
-	void unpack_c_array(void);
-	void pack_c_array(void);
+	void Unpack_fraction_array(void);
+	void Pack_fraction_array(void);
 	bool n_to_ijk (int n, int &i, int &j, int &k);
+	void cxxSolution2fraction(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
 
 protected:
 	PHAST_IPhreeqc * phast_iphreeqc_worker;
@@ -141,36 +154,40 @@ protected:
 	std::map < std::string, int > FileMap; 
 	int mpi_myself;
 	int mpi_tasks;
-	std::vector <std::string> components;
-	std::vector <double> gfw;
+	std::vector <std::string> components;	// list of components to be transported
+	std::vector <double> gfw;				// gram formula weights converting mass to moles (1 for each component)
+	std::vector <double> old_frac;			// saturation fraction from previous step
+	double gfw_water;						// gfw of water
+	int count_chem;							// number of cells for chemistry
 
-	// Pointers to Fortran
-	int nxyz;							// number of nodes 
-	int count_chem;                     // number of cells for chemistry
-	int nx, ny, nz;						// number of nodes in each coordinate direction
-	double time_hst;					// scalar time from transport 
-	double time_step_hst;				// scalar time step from transport
-	double cnvtmi;						// scalar conversion factor for time
-	double *x_node;						// nxyz array of X coordinates for nodes
-	double *y_node;						// nxyz array of Y coordinates for nodes 
-	double *z_node;						// nxyz array of Z coordinates for nodes
-	double *fraction;					// nxyz by ncomps mass fractions nxyz:components
-	double *frac;						// nxyz saturation fraction
-	double *pv;							// nxyz current pore volumes 
-	double *pv0;						// nxyz initial pore volumes
-	double *volume;						// nxyz geometric cell volumes 
-	int *printzone_chem;				// nxyz print flags for output file
-	int *printzone_xyz;					// nxyz print flags for chemistry XYZ file 
-	double rebalance_fraction_hst;		// parameter for rebalancing process load for parallel	
-	std::vector <int> forward;			// mapping from nxyz cells to count_chem chemistry cells
-	std::vector <std::vector<int>> back;   // mapping from count_chem chemistry cells to nxyz cells 
+	// From Fortran
+	bool free_surface;                      // free surface calculation
+	bool steady_flow;						// steady-state flow
+	int nxyz;								// number of nodes 
+	int nx, ny, nz;							// number of nodes in each coordinate direction
+	double *time_hst;						// scalar time from transport 
+	double *time_step_hst;					// scalar time step from transport
+	double *cnvtmi;							// scalar conversion factor for time
+	double *x_node;							// nxyz array of X coordinates for nodes
+	double *y_node;							// nxyz array of Y coordinates for nodes 
+	double *z_node;							// nxyz array of Z coordinates for nodes
+	double *fraction;						// nxyz by ncomps mass fractions nxyz:components
+	double *frac;							// nxyz saturation fraction
+	double *pv;								// nxyz current pore volumes 
+	double *pv0;							// nxyz initial pore volumes
+	double *volume;							// nxyz geometric cell volumes 
+	int *printzone_chem;					// nxyz print flags for output file
+	int *printzone_xyz;						// nxyz print flags for chemistry XYZ file 
+	double *rebalance_fraction_hst;			// parameter for rebalancing process load for parallel	
+	std::vector <int> forward;				// mapping from nxyz cells to count_chem chemistry cells
+	std::vector <std::vector<int>> back;	// mapping from count_chem chemistry cells to nxyz cells 
 
 	// print flags
-	bool prslm;							// solution method print flag 
-	bool print_out;						// print flag for output file 
-	bool print_sel;						// print flag for selected output
-	bool print_hdf;						// print flag for hdf file
-	bool print_restart;					// print flag for writing restart file 
+	bool prslm;								// solution method print flag 
+	bool print_out;							// print flag for output file 
+	bool print_sel;							// print flag for selected output
+	bool print_hdf;							// print flag for hdf file
+	bool print_restart;						// print flag for writing restart file 
 
 };
 #endif // !defined(REACTION_MODULE_H_INCLUDED)
