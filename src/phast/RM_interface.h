@@ -44,8 +44,7 @@ extern "C" {
 //logprt_c(int *id, char *err_str, long l);
 //void
 //screeenprt_c(int *id, char *err_str, long l);
-//void
-//initial_phreeqc_run(int *id, char *chemistry_name, int chemistry_l);
+
 void RM_errprt(int id, char *err_str, long l);
 void RM_warnprt(int *id, char *err_str, long l);
 void RM_logprt(int *id, char *err_str, long l);
@@ -88,6 +87,8 @@ void RM_distribute_initial_conditions(int *id,
 							  int *kinetics_units			// water (1) or rock (2)
 							  );
 void RM_get_components(int *id, int *n_comp, char *names, int length);
+void RM_convert_to_molal(int *id, double *c, int *n, int *dim);
+void RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity);
 
 #if defined(__cplusplus)
 }

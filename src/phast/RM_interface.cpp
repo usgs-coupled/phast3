@@ -183,6 +183,8 @@ RM_initial_phreeqc_run(int *id, char *chemistry_name, int l)
 /* ---------------------------------------------------------------------- */
 void
 RM_pass_data(int *id,
+			 int *free_surface,					// free surface calculation
+			 int *steady_flow,					// free surface calculation
 			 int *nx, int *ny, int *nz,			// number of nodes each coordinate direction
 			 double *time_hst,					// time from transport 
 			 double *time_step_hst,				// time step from transport
@@ -205,13 +207,15 @@ RM_pass_data(int *id,
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
+		Reaction_module_ptr->Set_free_surface(*free_surface != 0);
+		Reaction_module_ptr->Set_steady_flow(*steady_flow != 0);
 		Reaction_module_ptr->Set_nxyz(*nx);
 		Reaction_module_ptr->Set_nxyz(*ny);
 		Reaction_module_ptr->Set_nxyz(*nz);
 		Reaction_module_ptr->Set_nxyz((*nx) * (*ny) * (*nz));
-		Reaction_module_ptr->Set_time_hst(*time_hst);
-		Reaction_module_ptr->Set_time_step_hst(*time_step_hst);
-		Reaction_module_ptr->Set_cnvtmi(*cnvtmi);
+		Reaction_module_ptr->Set_time_hst(time_hst);
+		Reaction_module_ptr->Set_time_step_hst(time_step_hst);
+		Reaction_module_ptr->Set_cnvtmi(cnvtmi);
 		Reaction_module_ptr->Set_x_node(x_node);
 		Reaction_module_ptr->Set_y_node(y_node);
 		Reaction_module_ptr->Set_z_node(z_node);
@@ -222,7 +226,7 @@ RM_pass_data(int *id,
 		Reaction_module_ptr->Set_volume(volume);
 		Reaction_module_ptr->Set_printzone_chem(printzone_chem);
 		Reaction_module_ptr->Set_printzone_xyz(printzone_xyz);
-		Reaction_module_ptr->Set_rebalance_fraction_hst(*rebalance_fraction_hst);	
+		Reaction_module_ptr->Set_rebalance_fraction_hst(rebalance_fraction_hst);	
 	}
 }
 
@@ -302,5 +306,35 @@ RM_get_components(int *id, int *n_comp, char *names, int length)
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Get_components(n_comp, names, length);
+	}
+}
+/* ---------------------------------------------------------------------- */
+void
+RM_convert_to_molal(int *id, double *c, int *n, int *dim)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *  Converts data in c from mass fraction to molal
+ *  Assumes c(dim, ncomps) and only first n rows are converted
+ */
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Convert_to_molal(c, *n, *dim);
+	}
+}
+/* ---------------------------------------------------------------------- */
+void
+RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *  Converts data in c from mass fraction to molal
+ *  Assumes c(dim, ncomps) and only first n rows are converted
+ */
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Calculate_well_ph(c, ph, alkalinity);
 	}
 }

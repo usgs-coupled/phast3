@@ -2,13 +2,9 @@
 #include "PHRQ_base.h"
 #include "PHRQ_io.h"
 #include "IPhreeqc.hpp"
+#include "PHAST_IPhreeqc.h"
+#include "Phreeqc.h"
 #include <assert.h>
-enum SURFACE_TYPE
-{ UNKNOWN_DL, NO_EDL, DDL, CD_MUSIC, CCM };
-enum DIFFUSE_LAYER_TYPE
-{ NO_DL, BORKOVEK_DL, DONNAN_DL };
-enum SITES_UNITS
-{ SITES_ABSOLUTE, SITES_DENSITY };
 #include "System.h"
 #include "gzstream.h"
 #include "KDtree/KDtree.h"
@@ -32,29 +28,33 @@ Reaction_module::Reaction_module(PHRQ_io *io)
 	this->mpi_myself = 0;
 	this->mpi_tasks = 1;
 
-	nxyz = 0;							// number of nodes 
-	nx = ny = nz = 0;					// number of nodes in each coordinate direction
-	time_hst = 0;						// scalar time from transport 
-	time_step_hst = 0;					// scalar time step from transport
-	cnvtmi = 1;							// scalar conversion factor for time
-	*x_node = NULL;						// nxyz array of X coordinates for nodes
-	*y_node = NULL;						// nxyz array of Y coordinates for nodes 
-	*z_node = NULL;						// nxyz array of Z coordinates for nodes
-	*fraction = NULL;					// nxyz by ncomps mass fractions nxyz:components
-	*frac = NULL;						// nxyz saturation fraction
-	*pv = NULL;							// nxyz current pore volumes 
-	*pv0 = NULL;						// nxyz initial pore volumes
-	*volume = NULL;						// nxyz geometric cell volumes 
-	*printzone_chem = NULL;				// nxyz print flags for output file
-	*printzone_xyz = NULL;				// nxyz print flags for chemistry XYZ file 
-	rebalance_fraction_hst = 0.5;		// parameter for rebalancing process load for parallel	
+	this->gfw_water = 18.;						// gfw of water
+	this->count_chem = 0;
+	this->free_surface = false;					// free surface calculation
+	this->steady_flow = false;					// steady-state flow calculation
+	this->nxyz = 0;								// number of nodes 
+	this->nx = this->ny = this->nz = 0;					// number of nodes in each coordinate direction
+	this->time_hst = 0;							// scalar time from transport 
+	this->time_step_hst = 0;					// scalar time step from transport
+	this->cnvtmi = NULL;						// scalar conversion factor for time
+	this->x_node = NULL;						// nxyz array of X coordinates for nodes
+	this->y_node = NULL;						// nxyz array of Y coordinates for nodes 
+	this->z_node = NULL;						// nxyz array of Z coordinates for nodes
+	this->fraction = NULL;						// nxyz by ncomps mass fractions nxyz:components
+	this->frac = NULL;							// nxyz saturation fraction
+	this->pv = NULL;							// nxyz current pore volumes 
+	this->pv0 = NULL;							// nxyz initial pore volumes
+	this->volume = NULL;						// nxyz geometric cell volumes 
+	this->printzone_chem = NULL;				// nxyz print flags for output file
+	this->printzone_xyz = NULL;					// nxyz print flags for chemistry XYZ file 
+	this->rebalance_fraction_hst = NULL;		// parameter for rebalancing process load for parallel	
 
 	// print flags
-	prslm = false;						// solution method print flag 
-	print_out = false;					// print flag for output file 
-	print_sel = false;					// print flag for selected output
-	print_hdf = false;					// print flag for hdf file
-	print_restart = false;				// print flag for writing restart file 
+	this->prslm = false;						// solution method print flag 
+	this->print_out = false;					// print flag for output file 
+	this->print_sel = false;					// print flag for selected output
+	this->print_hdf = false;					// print flag for hdf file
+	this->print_restart = false;				// print flag for writing restart file 
 }
 Reaction_module::~Reaction_module(void)
 {
@@ -68,10 +68,11 @@ Reaction_module::Load_database(std::string database_name)
 	if (this->phast_iphreeqc_worker->LoadDatabase(this->database_file_name.c_str()) != 0) 
 	{
 		std::ostringstream errstr;
-		errstr << phast_iphreeqc_worker->GetErrorString() << std::endl;
+		errstr << this->phast_iphreeqc_worker->GetErrorString() << std::endl;
 		error_msg(errstr.str().c_str(), 1);
 		return 0;
 	}
+	this->gfw_water = this->phast_iphreeqc_worker->Get_gfw("H2O");
 	return 1;
 }
 /* ---------------------------------------------------------------------- */
@@ -102,26 +103,28 @@ Reaction_module::Initial_phreeqc_run(std::string chemistry_name)
 	/*
 	 *   Run  input file
 	 */
-	if (mpi_myself == 0)
+	if (this->mpi_myself == 0)
 	{
 		this->Get_io()->output_msg(PHRQ_io::OUTPUT_ECHO, "%s", "Initial PHREEQC run.\n");
 	}
-	phast_iphreeqc_worker->AccumulateLine("PRINT; -status false; -other false");
-	if (phast_iphreeqc_worker->RunAccumulated() != 0)
+	this->phast_iphreeqc_worker->AccumulateLine("PRINT; -status false; -other false");
+	if (this->phast_iphreeqc_worker->RunAccumulated() != 0)
 	{
 		std::ostringstream errstr;
 		errstr << phast_iphreeqc_worker->GetErrorString() << std::endl;
 		error_msg(errstr.str().c_str(), 1);
 	}
 
-	if (phast_iphreeqc_worker->RunFile(chemistry_name.c_str()) != 0) 
+	if (this->phast_iphreeqc_worker->RunFile(chemistry_name.c_str()) != 0) 
 	{
 		std::ostringstream errstr;
-		errstr << phast_iphreeqc_worker->GetErrorString() << std::endl;
+		errstr << this->phast_iphreeqc_worker->GetErrorString() << std::endl;
 		error_msg(errstr.str().c_str(), 1);
 	}
-	//TODO make phreeqc_bin
-	if (mpi_myself == 0)
+	// make phreeqc_bin
+	this->phreeqc_bin.Clear();
+	this->phast_iphreeqc_worker->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(phreeqc_bin);
+	if (this->mpi_myself == 0)
 	{
 		this->Get_io()->output_string(PHRQ_io::OUTPUT_LOG, "\nSuccessfully processed chemistry data file.\n");
 	}
@@ -174,17 +177,17 @@ Reaction_module::Distribute_initial_conditions(
 	size_t count_negative_porosity = 0;
 	for (i = 0; i < this->nxyz; i++)
 	{							/* i is nxyz number */
-		j = forward[i];			/* j is count_chem number */
+		j = this->forward[i];			/* j is count_chem number */
 		if (j < 0)
 			continue;
-		assert(forward[i] >= 0);
-		assert (volume[i] > 0.0);
-		double porosity = pv0[i] / volume[i];
-		if (pv0[i] < 0 || volume[i] < 0)
+		assert(this->forward[i] >= 0);
+		assert (this->volume[i] > 0.0);
+		double porosity = this->pv0[i] / this->volume[i];
+		if (this->pv0[i] < 0 || this->volume[i] < 0)
 		{
 			std::ostringstream errstr;
 			errstr << "Negative volume in cell " << i << ": volume, " 
-				<< volume[i] << "\t initial volume, " << pv0[i] << ".",
+				<< volume[i] << "\t initial volume, " << this->pv0[i] << ".",
 			count_negative_porosity++;
 			error_msg(errstr.str().c_str());
 			continue;
@@ -208,8 +211,8 @@ Reaction_module::Distribute_initial_conditions(
 	/*
 	 * Read any restart files
 	 */
-	for (std::map < std::string, int >::iterator it = FileMap.begin();
-		 it != FileMap.end(); it++)
+	for (std::map < std::string, int >::iterator it = this->FileMap.begin();
+		 it != this->FileMap.end(); it++)
 	{
 		int
 			ifile = -100 - it->second;
@@ -227,8 +230,7 @@ Reaction_module::Distribute_initial_conditions(
 		}
 
 		std::ostringstream oss;
-		CParser
-		cparser(myfile, oss, std::cerr);
+		CParser	cparser(myfile, oss, std::cerr, this->Get_io());
 		cparser.set_echo_file(CParser::EO_NONE);
 		cparser.set_echo_stream(CParser::EO_NONE);
 
@@ -283,21 +285,17 @@ Reaction_module::Distribute_initial_conditions(
 			cparser.get_iss() >> index[i * 7 + 5];
 			cparser.get_iss() >> index[i * 7 + 6];
 		}
-		KDtree
-		index_tree(pts);
+		KDtree index_tree(pts);
 
-		cxxStorageBin
-			tempBin;
+		cxxStorageBin tempBin;
 		tempBin.read_raw(cparser);
 
-		for (j = 0; j < count_chem; j++)	/* j is count_chem number */
+		for (j = 0; j < this->count_chem; j++)	/* j is count_chem number */
 		{
 			//i = back[j].list[0];	/* i is nxyz number */
-			i = back[j][0];
-			Point
-			p(x_node[i], y_node[i], z_node[i]);
-			int
-				k = (int) index_tree.Interpolate3d(p);	// k is index number in tempBin
+			i = this->back[j][0];
+			Point p(this->x_node[i], this->y_node[i], this->z_node[i]);
+			int	k = (int) index_tree.Interpolate3d(p);	// k is index number in tempBin
 
 			// solution
 			if (initial_conditions1[i * 7] == ifile)
@@ -306,7 +304,7 @@ Reaction_module::Distribute_initial_conditions(
 				{
 					if (tempBin.Get_Solution(k) != NULL)
 					{
-						sz_bin.Set_Solution(j, tempBin.Get_Solution(k));
+						this->sz_bin.Set_Solution(j, tempBin.Get_Solution(k));
 					}
 					else
 					{
@@ -322,7 +320,7 @@ Reaction_module::Distribute_initial_conditions(
 				{
 					if (tempBin.Get_PPassemblage(k) != NULL)
 					{
-						sz_bin.Set_PPassemblage(j, tempBin.Get_PPassemblage(k));
+						this->sz_bin.Set_PPassemblage(j, tempBin.Get_PPassemblage(k));
 					}
 					else
 					{
@@ -338,7 +336,7 @@ Reaction_module::Distribute_initial_conditions(
 				{
 					if (tempBin.Get_Exchange(k) != NULL)
 					{
-						sz_bin.Set_Exchange(j, tempBin.Get_Exchange(k));
+						this->sz_bin.Set_Exchange(j, tempBin.Get_Exchange(k));
 					}
 					else
 					{
@@ -354,7 +352,7 @@ Reaction_module::Distribute_initial_conditions(
 				{
 					if (tempBin.Get_Surface(k) != NULL)
 					{
-						sz_bin.Set_Surface(j, tempBin.Get_Surface(k));
+						this->sz_bin.Set_Surface(j, tempBin.Get_Surface(k));
 					}
 					else
 					{
@@ -370,7 +368,7 @@ Reaction_module::Distribute_initial_conditions(
 				{
 					if (tempBin.Get_GasPhase(k) != NULL)
 					{
-						sz_bin.Set_GasPhase(j, tempBin.Get_GasPhase(k));
+						this->sz_bin.Set_GasPhase(j, tempBin.Get_GasPhase(k));
 					}
 					else
 					{
@@ -386,7 +384,7 @@ Reaction_module::Distribute_initial_conditions(
 				{
 					if (tempBin.Get_SSassemblage(k) != NULL)
 					{
-						sz_bin.Set_SSassemblage(j, tempBin.Get_SSassemblage(k));
+						this->sz_bin.Set_SSassemblage(j, tempBin.Get_SSassemblage(k));
 					}
 					else
 					{
@@ -402,7 +400,7 @@ Reaction_module::Distribute_initial_conditions(
 				{
 					if (tempBin.Get_Kinetics(k) != NULL)
 					{
-						sz_bin.Set_Kinetics(j, tempBin.Get_Kinetics(k));
+						this->sz_bin.Set_Kinetics(j, tempBin.Get_Kinetics(k));
 					}
 					else
 					{
@@ -442,7 +440,7 @@ Reaction_module::Forward_and_back(int *initial_conditions, int *naxes)
 	axes[1] = naxes[1] != 0;
 	axes[2] = naxes[2] != 0;
 
-	count_chem = 1;
+	this->count_chem = 1;
 
 	int ixy = this->nx * this->ny;
 	int ixz = this->nx * this->nz;
@@ -454,15 +452,15 @@ Reaction_module::Forward_and_back(int *initial_conditions, int *naxes)
 		error_msg("No active coordinate direction in DIMENSIONS keyword.", 1);
 	}
 	if (axes[0])
-		count_chem *= this->nx;
+		this->count_chem *= this->nx;
 	if (axes[1])
-		count_chem *= this->ny;
+		this->count_chem *= this->ny;
 	if (axes[2])
-		count_chem *= this->nz;
+		this->count_chem *= this->nz;
 /*
  *   malloc space
  */
-	forward.reserve(ixyz);
+	this->forward.reserve(ixyz);
 /*
  *   xyz domain
  */
@@ -474,13 +472,13 @@ Reaction_module::Forward_and_back(int *initial_conditions, int *naxes)
 			if (initial_conditions[7 * i] >= 0
 				|| initial_conditions[7 * i] <= -100)
 			{
-				forward[i] = n;
-				back[n].push_back(i);
+				this->forward[i] = n;
+				this->back[n].push_back(i);
 				n++;
 			}
 			else
 			{
-				forward[i] = -1;
+				this->forward[i] = -1;
 			}
 		}
 		this->count_chem = n;
@@ -499,20 +497,20 @@ Reaction_module::Forward_and_back(int *initial_conditions, int *naxes)
 		n = 0;
 		for (i = 0; i < ixyz; i++)
 		{
-			n_to_ijk(i, ii, jj, kk);
+			this->n_to_ijk(i, ii, jj, kk);
 			if (kk == 0 && (initial_conditions[7 * i] >= 0 || initial_conditions[7 * i] <= -100) )
 			{
-				forward[i] = n;
-				back[n].push_back(i);
-				back[n].push_back(i + ixy);
+				this->forward[i] = n;
+				this->back[n].push_back(i);
+				this->back[n].push_back(i + ixy);
 				n++;
 			}
 			else
 			{
-				forward[i] = -1;
+				this->forward[i] = -1;
 			}
 		}
-		count_chem = n;
+		this->count_chem = n;
 	}
 /*
  *   Copy xz plane
@@ -528,20 +526,20 @@ Reaction_module::Forward_and_back(int *initial_conditions, int *naxes)
 		n = 0;
 		for (i = 0; i < ixyz; i++)
 		{
-			n_to_ijk(i, ii, jj, kk);
+			this->n_to_ijk(i, ii, jj, kk);
 			if (jj == 0	&& (initial_conditions[7 * i] >= 0 || initial_conditions[7 * i] <= -100))
 			{
-				forward[i] = n;
-				back[n].push_back(i);
-				back[n].push_back(i + this->nx);
+				this->forward[i] = n;
+				this->back[n].push_back(i);
+				this->back[n].push_back(i + this->nx);
 				n++;
 			}
 			else
 			{
-				forward[i] = -1;
+				this->forward[i] = -1;
 			}
 		}
-		count_chem = n;
+		this->count_chem = n;
 	}
 /*
  *   Copy yz plane
@@ -558,20 +556,20 @@ Reaction_module::Forward_and_back(int *initial_conditions, int *naxes)
 		n = 0;
 		for (i = 0; i < ixyz; i++)
 		{
-			n_to_ijk(i, ii, jj, kk);
+			this->n_to_ijk(i, ii, jj, kk);
 			if (ii == 0	&& (initial_conditions[7 * i] >= 0 || initial_conditions[7 * i] <= -100))
 			{
-				forward[i] = n;
-				back[n].push_back(i);
-				back[n].push_back(i + 1);
+				this->forward[i] = n;
+				this->back[n].push_back(i);
+				this->back[n].push_back(i + 1);
 				n++;
 			}
 			else
 			{
-				forward[i] = -1;
+				this->forward[i] = -1;
 			}
 		}
-		count_chem = n;
+		this->count_chem = n;
 	}
 /*
  *   Copy x line
@@ -600,14 +598,14 @@ Reaction_module::Forward_and_back(int *initial_conditions, int *naxes)
 				errstr << "Cannot have inactive cells in a 1D simulation.";
 				error_msg(errstr.str().c_str(), 1);
 			}
-			n_to_ijk(i, ii, jj, kk);
+			this->n_to_ijk(i, ii, jj, kk);
 			if (jj == 0 && kk == 0)
 			{
-				forward[i] = n;
-				back[n].push_back(i);
-				back[n].push_back(i + this->nx);
-				back[n].push_back(i + ixy);
-				back[n].push_back(i + ixy + this->nx);
+				this->forward[i] = n;
+				this->back[n].push_back(i);
+				this->back[n].push_back(i + this->nx);
+				this->back[n].push_back(i + ixy);
+				this->back[n].push_back(i + ixy + this->nx);
 				n++;
 			}
 			else
@@ -615,7 +613,7 @@ Reaction_module::Forward_and_back(int *initial_conditions, int *naxes)
 				forward[i] = -1;
 			}
 		}
-		count_chem = n;
+		this->count_chem = n;
 	}
 /*
  *   Copy y line
@@ -644,22 +642,22 @@ Reaction_module::Forward_and_back(int *initial_conditions, int *naxes)
 				errstr << "Cannot have inactive cells in a 1D simulation.";
 				error_msg(errstr.str().c_str(), 1);
 			}
-			n_to_ijk(i, ii, jj, kk);
+			this->n_to_ijk(i, ii, jj, kk);
 			if (ii == 0 && kk == 0)
 			{
-				forward[i] = n;
-				back[n].push_back(i);
-				back[n].push_back(i + 1);
-				back[n].push_back(i + ixy);
-				back[n].push_back(i + ixy + 1);
+				this->forward[i] = n;
+				this->back[n].push_back(i);
+				this->back[n].push_back(i + 1);
+				this->back[n].push_back(i + ixy);
+				this->back[n].push_back(i + ixy + 1);
 				n++;
 			}
 			else
 			{
-				forward[i] = -1;
+				this->forward[i] = -1;
 			}
 		}
-		count_chem = n;
+		this->count_chem = n;
 	}
 /*
  *   Copy z line
@@ -687,22 +685,22 @@ Reaction_module::Forward_and_back(int *initial_conditions, int *naxes)
 				errstr << "Cannot have inactive cells in a 1D simulation.";
 				error_msg(errstr.str().c_str(), 1);
 			}
-			n_to_ijk(i, ii, jj, kk);
+			this->n_to_ijk(i, ii, jj, kk);
 			if (ii == 0 && jj == 0)
 			{
-				forward[i] = n;
-				back[n].push_back(i);
-				back[n].push_back(i + 1);
-				back[n].push_back(i + this->nx);
-				back[n].push_back(i + this->nx + 1);
+				this->forward[i] = n;
+				this->back[n].push_back(i);
+				this->back[n].push_back(i + 1);
+				this->back[n].push_back(i + this->nx);
+				this->back[n].push_back(i + this->nx + 1);
 				n++;
 			}
 			else
 			{
-				forward[i] = -1;
+				this->forward[i] = -1;
 			}
 		}
-		count_chem = n;
+		this->count_chem = n;
 	}
 	return;
 }
@@ -765,8 +763,8 @@ Reaction_module::System_initialize(
 		mx.add(n_old1, f1);
 		if (n_old2 >= 0)
 			mx.add(n_old2, 1 - f1);
-		cxxSolution cxxsoln(phreeqc_bin.Get_Solutions(), mx, n_user_new);
-		sz_bin.Set_Solution(n_user_new, &cxxsoln);
+		cxxSolution cxxsoln(this->phreeqc_bin.Get_Solutions(), mx, n_user_new);
+		this->sz_bin.Set_Solution(n_user_new, &cxxsoln);
 	}
 
 	/*
@@ -785,9 +783,9 @@ Reaction_module::System_initialize(
 		{
 			mx.multiply(porosity_factor);
 		}
-		cxxPPassemblage cxxentity(phreeqc_bin.Get_PPassemblages(), mx,
+		cxxPPassemblage cxxentity(this->phreeqc_bin.Get_PPassemblages(), mx,
 								  n_user_new);
-		sz_bin.Set_PPassemblage(n_user_new, &cxxentity);
+		this->sz_bin.Set_PPassemblage(n_user_new, &cxxentity);
 	}
 	/*
 	 *   Copy exchange assemblage
@@ -806,8 +804,8 @@ Reaction_module::System_initialize(
 		{
 			mx.multiply(porosity_factor);
 		}
-		cxxExchange cxxexch(phreeqc_bin.Get_Exchangers(), mx, n_user_new);
-		sz_bin.Set_Exchange(n_user_new, &cxxexch);
+		cxxExchange cxxexch(this->phreeqc_bin.Get_Exchangers(), mx, n_user_new);
+		this->sz_bin.Set_Exchange(n_user_new, &cxxexch);
 	}
 	/*
 	 *   Copy surface assemblage
@@ -825,8 +823,8 @@ Reaction_module::System_initialize(
 		{
 			mx.multiply(porosity_factor);
 		}
-		cxxSurface cxxentity(phreeqc_bin.Get_Surfaces(), mx, n_user_new);
-		sz_bin.Set_Surface(n_user_new, &cxxentity);
+		cxxSurface cxxentity(this->phreeqc_bin.Get_Surfaces(), mx, n_user_new);
+		this->sz_bin.Set_Surface(n_user_new, &cxxentity);
 	}
 	/*
 	 *   Copy gas phase
@@ -844,8 +842,8 @@ Reaction_module::System_initialize(
 		{
 			mx.multiply(porosity_factor);
 		}
-		cxxGasPhase cxxentity(phreeqc_bin.Get_GasPhases(), mx, n_user_new);
-		sz_bin.Set_GasPhase(n_user_new, &cxxentity);
+		cxxGasPhase cxxentity(this->phreeqc_bin.Get_GasPhases(), mx, n_user_new);
+		this->sz_bin.Set_GasPhase(n_user_new, &cxxentity);
 	}
 	/*
 	 *   Copy solid solution
@@ -863,9 +861,9 @@ Reaction_module::System_initialize(
 		{
 			mx.multiply(porosity_factor);
 		}
-		cxxSSassemblage cxxentity(phreeqc_bin.Get_SSassemblages(), mx,
+		cxxSSassemblage cxxentity(this->phreeqc_bin.Get_SSassemblages(), mx,
 								  n_user_new);
-		sz_bin.Set_SSassemblage(n_user_new, &cxxentity);
+		this->sz_bin.Set_SSassemblage(n_user_new, &cxxentity);
 	}
 	/*
 	 *   Copy kinetics
@@ -883,8 +881,8 @@ Reaction_module::System_initialize(
 		{
 			mx.multiply(porosity_factor);
 		}
-		cxxKinetics cxxentity(phreeqc_bin.Get_Kinetics(), mx, n_user_new);
-		sz_bin.Set_Kinetics(n_user_new, &cxxentity);
+		cxxKinetics cxxentity(this->phreeqc_bin.Get_Kinetics(), mx, n_user_new);
+		this->sz_bin.Set_Kinetics(n_user_new, &cxxentity);
 	}
 
 	return;
@@ -922,22 +920,22 @@ Reaction_module::Get_components(
 		assert (comp != "Charge");
 		assert (comp != "charge");
 
-		components.push_back(comp);
-		char * ptr = &names[(i+4) * length];
+		this->components.push_back(comp);
+		char * ptr = &names[(i+3) * length];
 		strncpy(ptr, comp.c_str(), length);
 	}
-	*n_comp = (int) components.size();
+	*n_comp = (int) this->components.size();
 
 	// Calculate gfw for components
 	for (i = 0; i < components.size(); i++)
 	{
 		if (components[i] == "Charge")
 		{
-			gfw.push_back(1.0);
+			this->gfw.push_back(1.0);
 		}
 		else
 		{
-			gfw.push_back(this->phast_iphreeqc_worker->Get_gfw(components[i].c_str()));
+			this->gfw.push_back(this->phast_iphreeqc_worker->Get_gfw(components[i].c_str()));
 		}
 	}
 	if (this->mpi_myself == 0)
@@ -946,36 +944,30 @@ Reaction_module::Get_components(
 		outstr << "List of Components:\n" << std::endl;
 		for (i = 0; i < this->components.size(); i++)
 		{
-			outstr << "\t" << i + 1 << "\t" << components[i].c_str() << std::endl;
+			outstr << "\t" << i + 1 << "\t" << this->components[i].c_str() << std::endl;
 		}
 	}
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::unpack_c_array(void)
+Reaction_module::Unpack_fraction_array(void)
 /* ---------------------------------------------------------------------- */
 {
 	size_t i, j, k;
 
 	std::vector<double> d;  // scratch space to convert from mass fraction to moles
 
-	double gfw_water = this->phast_iphreeqc_worker->Get_gfw("H2O");
-	for (i = 0; i < (size_t) nxyz; i++)
+	for (i = 0; i < (size_t) this->nxyz; i++)
 	{
-		j = forward[i];
+		// j is count_chem number
+		j = this->forward[i];
 		if (j < 0) continue;
 
-		// store mass fractions in d
-		double *ptr = &fraction[i];
-		for (k = 0; k < components.size(); k++)
+		// get mass fractions and store as moles in d
+		double *ptr = &this->fraction[i];
+		for (k = 0; k < this->components.size(); k++)
 		{	
-			d.push_back(ptr[nxyz * j]);
-		}
-
-		// convert to d to moles
-		for (j = 0; j < components.size(); j++)
-		{
-			d[j] *= 1000.0/gfw[j];
+			d.push_back(ptr[this->nxyz * k] * 1000.0/this->gfw[k]);
 		}
 
 		// update solution sz_bin solution
@@ -984,79 +976,685 @@ Reaction_module::unpack_c_array(void)
 		nd.add("O", d[1] + 1.0/gfw_water);
 		nd.add("Charge", d[2]);
 
-		for (j = 3; j < components.size(); j++)
+		for (k = 3; k < components.size(); k++)
 		{
-			if (d[j] <= 1e-14) d[j] = 0.0;
-			nd.add(components[j].c_str(), d[j]);
+			if (d[k] <= 1e-14) d[k] = 0.0;
+			nd.add(components[k].c_str(), d[k]);
 		}	
-		sz_bin.Get_Solution((int) j)->Update(nd);
+		this->sz_bin.Get_Solution((int) j)->Update(nd);
 	}
 	return;
 }
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Pack_fraction_array(void)
+/* ---------------------------------------------------------------------- */
+{
+
+	std::vector<double> d;  // scratch space to convert from moles to mass fraction
+	cxxNameDouble::iterator it;
+
+	int j; 
+
+	for (j = 0; j < this->count_chem; j++)
+	{
+		// load fractions into d
+		cxxSolution * cxxsoln_ptr = this->sz_bin.Get_Solution(j);
+		this->cxxSolution2fraction(cxxsoln_ptr, d);
+
+		// store in fraction at 1, 2, or 4 places depending on chemistry dimensions
+		std::vector<int>::iterator it;
+		for (it = this->back[j].begin(); it != this->back[j].end(); it++)
+		{
+			double *d_ptr = &this->fraction[*it];
+			size_t i;
+			for (i = 0; i < this->components.size(); i++)
+			{
+				d_ptr[this->nxyz * i] = d[i];
+			}
+		}
+	}
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Convert_to_molal(double *c, int n, int dim)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *  convert c from mass fraction to moles
+ *  The c array is dimensioned c(dim,ns).
+ *  n is the number of rows that are used.
+ *  In f90 dim = n and is often the number of
+ *    cells in the domain.
+ */
+	int i;
+	for (i = 0; i < n; i++)
+	{
+		double *ptr = &c[i];
+		size_t k;
+		for (k = 0; k < this->components.size(); k++)
+		{	
+			ptr[k * dim] *= 1000.0/this->gfw[k];
+		}
+	}
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Calculate_well_ph(double *c, double * pH, double * alkalinity)
+/* ---------------------------------------------------------------------- */
+{
+
+	// convert mass fraction to moles and store in d
+	std::vector<double> d;  
+	size_t k;
+	for (k = 0; k < this->components.size(); k++)
+	{	
+		d.push_back(c[k] * 1000.0/gfw[k]);
+	}
+
+	// Store in NameDouble
+	cxxNameDouble nd;
+	nd.add("H", d[0] + 2.0/gfw_water);
+	nd.add("O", d[1] + 1.0/gfw_water);
+	nd.add("Charge", d[2]);
+
+	for (k = 3; k < components.size(); k++)
+	{
+		if (d[k] <= 1e-14) d[k] = 0.0;
+		nd.add(components[k].c_str(), d[k]);
+	}	
+
+	cxxSolution cxxsoln(this->Get_io());	
+	cxxsoln.Update(nd);
+	cxxStorageBin temp_bin;
+	temp_bin.Set_Solution(1, &cxxsoln);
+
+	// Copy all entities numbered 1 into IPhreeqc
+	this->phast_iphreeqc_worker->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(temp_bin, 1);
+	std::string input;
+	input.append("RUN_CELLS; -cell 1; SELECTED_OUTPUT; -reset false; -pH; -alkalinity; END");
+	this->phast_iphreeqc_worker->RunString(input.c_str());
+
+	VAR pvar;
+	this->phast_iphreeqc_worker->GetSelectedOutputValue(1,0,&pvar);
+	*pH = pvar.dVal;
+	this->phast_iphreeqc_worker->GetSelectedOutputValue(1,1,&pvar);
+	*alkalinity = pvar.dVal;
+
+	// Alternatively
+	//*pH = -(this->phast_iphreeqc_worker->Get_PhreeqcPtr()->s_hplus->la);
+	//*alkalinity = this->phast_iphreeqc_worker->Get_PhreeqcPtr()->total_alkalinity / 
+	//	this->phast_iphreeqc_worker->Get_PhreeqcPtr()->mass_water_aq_x;
+	return;
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::setup_boundary_conditions(const int n_boundary, int *boundary_solution1,
+						  int *boundary_solution2, double *fraction1,
+						  double *boundary_fraction, int dim)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *   Routine takes a list of solution numbers and returns a set of
+ *   mass fractions
+ *   Input: n_boundary - number of boundary conditions in list
+ *          boundary_solution1 - list of first solution numbers to be mixed
+ *          boundary_solution2 - list of second solution numbers to be mixed
+ *          fraction1 - fraction of first solution 0 <= f <= 1
+ *          dim - leading dimension of array boundary mass fractions
+ *                must be >= to n_boundary
+ *
+ *   Output: boundary_fraction - mass fractions for boundary conditions
+ *                             - dimensions must be >= n_boundary x n_comp
+ *
+ */
+	int	i, n_old1, n_old2;
+	double f1, f2;
+
+	for (i = 0; i < n_boundary; i++)
+	{
+		cxxMix mixmap;
+		n_old1 = boundary_solution1[i];
+		n_old2 = boundary_solution2[i];
+		f1 = fraction1[i];
+		f2 = 1 - f1;
+		mixmap.add(n_old1, f1);
+		if (f2 > 0.0)
+		{
+			mixmap.add(n_old2, f2);
+		}
+		
+		// Make mass fractions in d
+		cxxSolution	cxxsoln(phreeqc_bin.Get_Solutions(), mixmap, 0);
+		std::vector<double> d;
+		cxxSolution2fraction(&cxxsoln, d);
+
+		// Put mass fractions in boundary_fraction
+		double *d_ptr = &boundary_fraction[i];
+		size_t j;
+		for (j = 0; j < components.size(); j++)
+		{
+			d_ptr[dim * j] = d[j];
+		}
+	}
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::cxxSolution2fraction(cxxSolution * cxxsoln_ptr, std::vector<double> & d)
+/* ---------------------------------------------------------------------- */
+{
+	d.clear();
+
+	d.push_back((cxxsoln_ptr->Get_total_h() - 2.0 / this->gfw_water) * this->gfw[0]/1000. ); 
+	d.push_back((cxxsoln_ptr->Get_total_o() - 1.0 / this->gfw_water) * this->gfw[1]/1000.);
+	d.push_back(cxxsoln_ptr->Get_cb() * this->gfw[2]/1000.);
+	size_t i;
+	for (i = 3; i < this->components.size(); i++)
+	{
+		d.push_back(cxxsoln_ptr->Get_total_element(components[i].c_str()) * this->gfw[i]/1000.);
+	}
+}
 ///* ---------------------------------------------------------------------- */
 //void
-//Reaction_module::pack_c_array(void)
+//Reaction_module::Run_reactions(void)
 ///* ---------------------------------------------------------------------- */
 //{
-//	size_t i, j, k;
-//
-//	std::vector<double> d;  // scratch space to convert from mass fraction to moles
-//
-//	double gfw_water = this->phast_iphreeqc_worker->Get_gfw("H2O");
-//	for (i = 0; i < (size_t) nxyz; i++)
-//	{
-//		j = forward[i];
-//		if (j < 0) continue;
-//		cxxSolution * sol = sz_bin.Get_Solution((int) j);
-//
-//		// store mass fractions in d
-//		double *ptr = &fraction[i];
-//		for (k = 0; k < components.size(); k++)
-//		{	
-//			d.push_back(ptr[nxyz * j]);
-//		}
-//
-//		// convert to d to moles
-//		for (j = 0; j < components.size(); j++)
-//		{
-//			d[j] *= 1000.0/gfw[j];
-//		}
-//
-//		// update solution sz_bin solution
-//		cxxNameDouble nd;
-//		nd.add("H", d[0] + 2.0/gfw_water);
-//		nd.add("O", d[1] + 1.0/gfw_water);
-//		nd.add("Charge", d[2]);
-//
-//		for (j = 3; j < components.size(); j++)
-//		{
-//			if (d[j] <= 1e-14) d[j] = 0.0;
-//			nd.add(components[j].c_str(), d[j]);
-//		}	
-//		sz_bin.Get_Solution((int) j)->Update(nd);
-//	}
-//
-//
-//	std::vector<double> d;  // scratch space to convert from mass fraction to moles
-//
-//	cxxNameDouble::iterator it;
-//	double gfw_water = this->phast_iphreeqc_worker->Get_gfw("H2O");
-//	double  moles_water;
-//
-//	moles_water = 1.0 / gfw_water;
-//	d.push_back(
-//	buffer[0].moles = cxxsoln_ptr->get_total_h() - 2 * moles_water;
-//	buffer[1].moles = cxxsoln_ptr->get_total_o() - moles_water;
-//	for (i = 2; i < count_total; i++)
-//	{
-//		buffer[i].moles = cxxsoln_ptr->get_total_element(buffer[i].name);
-//	}
 ///*
-// *   Switch in transport of charge
+// *   Routine takes mass fractions from HST, equilibrates each cell,
+// *   and returns new mass fractions to HST
+// *
+// *   Output: fraction - mass fractions of all components in all solutions
+// *                      dimensions must be = nxyz x n_comp
 // */
-//	if (transport_charge == TRUE)
+//	int tot_same = 0;
+//	int tot_iter = 0;
+//	int tot_zero = 0;
+//	int max_iter = 0;
+//
+//	int i, j;
+//	int	active;
+//	int	n_user;
+//	double kin_time;
+//	static int write_headings = 1;
+//
+///*
+// *   Update solution compositions
+// */
+//	Unpack_fraction_array();
+///*
+// *  Print flags should have been set, need to deal with them
+// */
+//	//if (*print_sel == TRUE)
+//	//{
+//	//	simulation++;
+//	//	pr.punch = TRUE;
+//	//}
+//	//else
+//	//{
+//	//	pr.punch = FALSE;
+//	//}
+//	//pr.hdf = *print_hdf;
+///*
+// *   Calculate equilibrium
+// */
+//	kin_time = *this->time_step_hst;
+//	//timest = kin_time;
+//	//state = PHAST;
+//
+//	//BeginTimeStep(*print_sel, *print_out, *print_hdf);
+//	//if (punch.in == TRUE && write_headings)
+//	//{
+//	//	int
+//	//		pr_punch = pr.punch;
+//	//	pr.punch = TRUE;
+//	//	/*
+//	//	 * write headings
+//	//	 */
+//	//	punch.new_def = TRUE;
+//	//	output_msg(OUTPUT_PUNCH, "%15s\t%15s\t%15s\t%15s\t%2s\t", "x", "y",
+//	//			   "z", "time", "in");
+//	//	tidy_punch();
+//	//	write_headings = 0;
+//	//	pr.punch = pr_punch;
+//	//}
+//
+//	//rate_sim_time_start = *time_hst - *time_step_hst;
+//	//rate_sim_time_end = *time_hst;
+//
+//	//initial_total_time = 0;
+//	// free all c structures
+//	////reinitialize();
+//	Phreeqc * phrq = this->phast_iphreeqc_worker->Get_PhreeqcPtr();
+//	for (i = 0; i < count_chem; i++)
+//	{							/* i is count_chem number */
+//		j = back[i][0];	/* j is nxyz number */
+//
+//		// Set cell properties for Basic
+//		phrq->cell_pore_volume = pv0[j] * 1000.0 * frac[j];
+//		phrq->cell_volume = volume[j] * 1000.;
+//		phrq->cell_porosity = phrq->cell_pore_volume / phrq->cell_volume;
+//		phrq->cell_saturation = frac[j];
+//
+//		if (free_surface) partition_uz(i, j, frac[j]);
+//		if (frac[j] <= 1e-10) frac[j] = 0.0;
+//
+//		// set flags
+//		active = FALSE;
+//		if (frac[j] > 0.0) active = TRUE;
+//		//pr.all = FALSE;
+//		//if (*print_out == TRUE && printzone_chem[j] == TRUE)
+//		//	pr.all = TRUE;
+//		//pr.punch = FALSE;
+//		//if (*print_sel == TRUE && printzone_xyz[j] == TRUE
+//		//	&& punch.in == TRUE)
+//		//	pr.punch = TRUE;
+//
+//		//BeginCell(*print_sel, *print_out, *print_hdf, j);
+//
+//		//if (pr.punch == TRUE)
+//		//{
+//		//	output_msg(OUTPUT_PUNCH, "%15g\t%15g\t%15g\t%15g\t%2d\t",
+//		//			   x_hst[j], y_hst[j], z_hst[j], (*time_hst) * (*cnvtmi),
+//		//			   active);
+//		//	if (active == FALSE)
+//		//	{
+//		//		output_msg(OUTPUT_PUNCH, "\n");
+//		//	}
+//		//}
+//		if (active)
+//		{
+//			cell_no = i;
+//			if (free_surface)	scale_cxxsystem(i, 1.0 / frac[j]);
+//			if (!free_surface && !steady_flow)
+//			{
+//				if (pv0[j] != 0 && pv[j] != 0 && pv0[j] != pv[j])
+//				{
+//					cxxSolution *
+//						cxxsol = sz_bin.Get_Solution(i);
+//					cxxsol->multiply(pv[j] / pv0[j]);
+//				}
+//			}
+//
+//			// copy cxx data to c structures
+//			this->phast_iphreeqc_worker->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(sz_bin);
+//			set_use_hst(i);
+//			n_user = i;
+//			set_initial_moles(n_user);
+//			run_reactions(n_user, kin_time, FALSE, 1.0);
+//			if (iterations == 0)
+//				tot_zero++;
+//			if (iterations > max_iter)
+//				max_iter = iterations;
+//			tot_same += same_model;
+//			tot_iter += iterations;
+//			sum_species();
+//			if (pr.all == TRUE)
+//			{
+//				output_msg(PHRQ_io::OUTPUT_MESSAGE,
+//						   "Time %g. Cell %d: x=%15g\ty=%15g\tz=%15g\n",
+//						   (*time_hst) * (*cnvtmi), j + 1, x_node[j], y_node[j],
+//						   z_node[j]);
+//				print_using_hst(j + 1);
+//			}
+//			print_all();
+//			punch_all();
+//			/*
+//			 *   Save data
+//			 */
+//			solution_bsearch(i, &n_solution, TRUE);
+//			if (n_solution == -999)
+//			{
+//				error_msg("How did this happen?", STOP);
+//			}
+//			xsolution_save_hst(n_solution);
+//			if (save.exchange == TRUE)
+//			{
+//				exchange_bsearch(i, &n_exchange);
+//				xexchange_save_hst(n_exchange);
+//			}
+//			if (save.gas_phase == TRUE)
+//			{
+//				gas_phase_bsearch(i, &n_gas_phase);
+//				xgas_save_hst(n_gas_phase);
+//			}
+//			if (save.pp_assemblage == TRUE)
+//			{
+//				pp_assemblage_bsearch(i, &n_pp_assemblage);
+//				xpp_assemblage_save_hst(n_pp_assemblage);
+//			}
+//			if (save.surface == TRUE)
+//			{
+//				surface_bsearch(i, &n_surface);
+//				//xsurface_save_hst(n_surface);
+//				xsurface_save(i);
+//			}
+//			if (save.s_s_assemblage == TRUE)
+//			{
+//				s_s_assemblage_bsearch(i, &n_s_s_assemblage);
+//				xs_s_assemblage_save_hst(n_s_s_assemblage);
+//			}
+//			sz_bin.phreeqc2cxxStorageBin(i);
+//			if (transient_free_surface == TRUE)
+//				scale_cxxsystem(i, frac[j]);
+//
+//			if (transient_free_surface == FALSE && !steady_flow)
+//			{
+//				assert(pv0[j] != 0);
+//				assert(pv[j] != 0);
+//				if (pv0[j] != 0 && pv[j] != 0 && pv0[j] != pv[j])
+//				{
+//					cxxSolution *
+//						cxxsol = sz_bin.Get_Solution(i);
+//					cxxsol->multiply(pv0[j] / pv[j]);
+//				}
+//			}
+//		}
+//		else
+//		{
+//			if (pr.all == TRUE)
+//			{
+//				output_msg(PHRQ_io::OUTPUT_MESSAGE,
+//						   "Time %g. Cell %d: x=%15g\ty=%15g\tz=%15g\n",
+//						   (*time_hst) * (*cnvtmi), j + 1, x_node[j], y_node[j],
+//						   z_node[j]);
+//				output_msg(PHRQ_io::OUTPUT_MESSAGE, "Cell is dry.\n");
+//			}
+//		}
+//		// free phreeqc structures
+//		reinitialize();
+//		EndCell(print_sel, print_out, print_hdf, j);
+//	}
+//	/*
+//	 *  Write restart data
+//	 */
+//	if (print_restart)
+//		write_restart((*time_hst) * (*cnvtmi));
+//
+//	EndTimeStep(print_sel, print_out, print_hdf);
+///*
+// *   Put values back for HST
+// */
+//	PACK_FOR_HST(fraction, dim);
+///*
+// *   Write screen and log messages
+// */
+//	if (prslm)
 //	{
-//		buffer[i].moles = cxxsoln_ptr->get_cb();
+//		sprintf(error_string, "          Total cells: %d", count_chem);
+//		output_msg(PHRQ_io::OUTPUT_SCREEN, "%s\n", error_string);
+//		output_msg(PHRQ_io::OUTPUT_ECHO, "%s\n", error_string);
+//		sprintf(error_string,
+//				"          Number of cells with same aqueous model: %d",
+//				tot_same);
+//		output_msg(PHRQ_io::OUTPUT_SCREEN, "%s\n", error_string);
+//		output_msg(PHRQ_io::OUTPUT_ECHO, "%s\n", error_string);
+//		sprintf(error_string, "          Total iterations all cells: %d",
+//				tot_iter);
+//		output_msg(PHRQ_io::OUTPUT_SCREEN, "%s\n", error_string);
+//		output_msg(PHRQ_io::OUTPUT_ECHO, "%s\n", error_string);
+//		sprintf(error_string,
+//				"          Number of cells with zero iterations: %d",
+//				tot_zero);
+//		output_msg(PHRQ_io::OUTPUT_SCREEN, "%s\n", error_string);
+//		output_msg(PHRQ_io::OUTPUT_ECHO, "%s\n", error_string);
+//		sprintf(error_string, "          Maximum iterations for one cell: %d",
+//				max_iter);
+//		output_msg(PHRQ_io::OUTPUT_SCREEN, "%s\n\n", error_string);
+//		output_msg(PHRQ_io::OUTPUT_ECHO, "%s\n\n", error_string);
 //	}
 //	return;
 //}
+#ifdef NEED_TO_IMPLEMENT
+/* ---------------------------------------------------------------------- */
+int
+write_restart(double time_hst)
+/* ---------------------------------------------------------------------- */
+{
+
+	std::string temp_name("temp_restart_file.gz");
+	string_trim(file_prefix);
+	std::string name(file_prefix);
+	name.append(".restart.gz");
+	std::string backup_name(file_prefix);
+	backup_name.append(".restart.backup.gz");
+	// open file 
+	//std::ofstream ofs(temp_name.c_str());
+	ogzstream ofs_restart;
+	ofs_restart.open(temp_name.c_str());
+	if (!ofs_restart.good())
+	{
+		sprintf(error_string, "File could not be opened: %s.",
+				temp_name.c_str());
+		error_msg(error_string, STOP);
+	}
+
+	// write header
+	ofs_restart << "#PHAST restart file" << std::endl;
+	time_t now = time(NULL);
+	ofs_restart << "#Prefix: " << file_prefix << std::endl;
+	ofs_restart << "#Date: " << ctime(&now);
+	ofs_restart << "#Current model time: " << time_hst << std::endl;
+	ofs_restart << "#nx, ny, nz: " << ix << ", " << iy << ", " << iz << std::
+		endl;
+
+	// write index
+	int i, j;
+	ofs_restart << count_chem << std::endl;
+	for (j = 0; j < count_chem; j++)	/* j is count_chem number */
+	{
+		i = back[j].list[0];	/* i is ixyz number */
+		ofs_restart << x_node_c[i] << "  " << y_node_c[i] << "  " <<
+			z_node_c[i] << "  " << j << "  ";
+		// solution 
+		ofs_restart << initial_conditions1_c[7 * i] << "  ";
+		// pp_assemblage
+		ofs_restart << initial_conditions1_c[7 * i + 1] << "  ";
+		// exchange
+		ofs_restart << initial_conditions1_c[7 * i + 2] << "  ";
+		// surface
+		ofs_restart << initial_conditions1_c[7 * i + 3] << "  ";
+		// gas_phase
+		ofs_restart << initial_conditions1_c[7 * i + 4] << "  ";
+		// solid solution
+		ofs_restart << initial_conditions1_c[7 * i + 5] << "  ";
+		// kinetics
+		ofs_restart << initial_conditions1_c[7 * i + 6] << std::endl;
+	}
+
+	// write data
+	szBin.dump_raw(ofs_restart, 0);
+	ofs_restart.close();
+	// rename files
+	file_rename(temp_name.c_str(), name.c_str(), backup_name.c_str());
+	return (OK);
+}
+
+/* ---------------------------------------------------------------------- */
+int
+scale_cxxsystem(int iphrq, LDBLE frac)
+/* ---------------------------------------------------------------------- */
+{
+	int n_user;
+
+	/* 
+	 * repartition solids for partially saturated cells
+	 */
+
+	//if (equal(old_frac[ihst], new_frac, 1e-8) == TRUE)  return(OK);
+
+	n_user = iphrq;
+	cxxMix cxxmix;
+	cxxmix.add(n_user, frac);
+	/*
+	 *   Scale compositions
+	 */
+	if (szBin.getExchange(n_user) != NULL)
+	{
+		cxxExchange cxxexch(szBin.getExchangers(), cxxmix, n_user);
+		szBin.setExchange(n_user, &cxxexch);
+	}
+	if (szBin.getPPassemblage(n_user) != NULL)
+	{
+		cxxPPassemblage cxxentity(szBin.getPPassemblages(), cxxmix, n_user);
+		szBin.setPPassemblage(n_user, &cxxentity);
+	}
+	if (szBin.getGasPhase(n_user) != NULL)
+	{
+		cxxGasPhase cxxentity(szBin.getGasPhases(), cxxmix, n_user);
+		szBin.setGasPhase(n_user, &cxxentity);
+	}
+	if (szBin.getSSassemblage(n_user) != NULL)
+	{
+		cxxSSassemblage cxxentity(szBin.getSSassemblages(), cxxmix, n_user);
+		szBin.setSSassemblage(n_user, &cxxentity);
+	}
+	if (szBin.getKinetics(n_user) != NULL)
+	{
+		cxxKinetics cxxentity(szBin.getKinetics(), cxxmix, n_user);
+		szBin.setKinetics(n_user, &cxxentity);
+	}
+	if (szBin.getSurface(n_user) != NULL)
+	{
+		cxxSurface cxxentity(szBin.getSurfaces(), cxxmix, n_user);
+		szBin.setSurface(n_user, &cxxentity);
+	}
+	return (OK);
+}
+
+/* ---------------------------------------------------------------------- */
+int
+partition_uz(int iphrq, int ihst, LDBLE new_frac)
+/* ---------------------------------------------------------------------- */
+{
+	int n_user;
+	LDBLE s1, s2, uz1, uz2;
+
+	/* 
+	 * repartition solids for partially saturated cells
+	 */
+
+	if (equal(old_frac[ihst], new_frac, 1e-8) == TRUE)
+		return (OK);
+
+	n_user = iphrq;
+
+
+	if (new_frac >= 1.0)
+	{
+		/* put everything in saturated zone */
+		uz1 = 0;
+		uz2 = 0;
+		s1 = 1.0;
+		s2 = 1.0;
+	}
+	else if (new_frac <= 1e-10)
+	{
+		/* put everything in unsaturated zone */
+		uz1 = 1.0;
+		uz2 = 1.0;
+		s1 = 0.0;
+		s2 = 0.0;
+	}
+	else if (new_frac > old_frac[ihst])
+	{
+		/* wetting cell */
+		uz1 = 0.;
+		uz2 = (1.0 - new_frac) / (1.0 - old_frac[ihst]);
+		s1 = 1.;
+		s2 = 1.0 - uz2;
+	}
+	else
+	{
+		/* draining cell */
+		s1 = new_frac / old_frac[ihst];
+		s2 = 0.0;
+		uz1 = 1.0 - s1;
+		uz2 = 1.0;
+	}
+	cxxMix szmix, uzmix;
+	szmix.add(0, s1);
+	szmix.add(1, s2);
+	uzmix.add(0, uz1);
+	uzmix.add(1, uz2);
+	/*
+	 *   Calculate new compositions
+	 */
+
+//Exchange
+	if (szBin.getExchange(n_user) != NULL)
+	{
+		cxxStorageBin tempBin;
+		tempBin.setExchange(0, szBin.getExchange(n_user));
+		tempBin.setExchange(1, uzBin.getExchange(n_user));
+		cxxExchange newsz(tempBin.getExchangers(), szmix, n_user);
+		cxxExchange newuz(tempBin.getExchangers(), uzmix, n_user);
+		szBin.setExchange(n_user, &newsz);
+		uzBin.setExchange(n_user, &newuz);
+	}
+//PPassemblage
+	if (szBin.getPPassemblage(n_user) != NULL)
+	{
+		cxxStorageBin tempBin;
+		tempBin.setPPassemblage(0, szBin.getPPassemblage(n_user));
+		tempBin.setPPassemblage(1, uzBin.getPPassemblage(n_user));
+		cxxPPassemblage newsz(tempBin.getPPassemblages(), szmix, n_user);
+		cxxPPassemblage newuz(tempBin.getPPassemblages(), uzmix, n_user);
+		szBin.setPPassemblage(n_user, &newsz);
+		uzBin.setPPassemblage(n_user, &newuz);
+	}
+//Gas_phase
+	if (szBin.getGasPhase(n_user) != NULL)
+	{
+		cxxStorageBin tempBin;
+		tempBin.setGasPhase(0, szBin.getGasPhase(n_user));
+		tempBin.setGasPhase(1, uzBin.getGasPhase(n_user));
+		cxxGasPhase newsz(tempBin.getGasPhases(), szmix, n_user);
+		cxxGasPhase newuz(tempBin.getGasPhases(), uzmix, n_user);
+		szBin.setGasPhase(n_user, &newsz);
+		uzBin.setGasPhase(n_user, &newuz);
+	}
+//SSassemblage
+	if (szBin.getSSassemblage(n_user) != NULL)
+	{
+		cxxStorageBin tempBin;
+		tempBin.setSSassemblage(0, szBin.getSSassemblage(n_user));
+		tempBin.setSSassemblage(1, uzBin.getSSassemblage(n_user));
+		cxxSSassemblage newsz(tempBin.getSSassemblages(), szmix, n_user);
+		cxxSSassemblage newuz(tempBin.getSSassemblages(), uzmix, n_user);
+		szBin.setSSassemblage(n_user, &newsz);
+		uzBin.setSSassemblage(n_user, &newuz);
+	}
+//Kinetics
+	if (szBin.getKinetics(n_user) != NULL)
+	{
+		cxxStorageBin tempBin;
+		tempBin.setKinetics(0, szBin.getKinetics(n_user));
+		tempBin.setKinetics(1, uzBin.getKinetics(n_user));
+		cxxKinetics newsz(tempBin.getKinetics(), szmix, n_user);
+		cxxKinetics newuz(tempBin.getKinetics(), uzmix, n_user);
+		szBin.setKinetics(n_user, &newsz);
+		uzBin.setKinetics(n_user, &newuz);
+	}
+//Surface
+	if (szBin.getSurface(n_user) != NULL)
+	{
+		cxxStorageBin tempBin;
+		tempBin.setSurface(0, szBin.getSurface(n_user));
+		tempBin.setSurface(1, uzBin.getSurface(n_user));
+		cxxSurface newsz(tempBin.getSurfaces(), szmix, n_user);
+		cxxSurface newuz(tempBin.getSurfaces(), uzmix, n_user);
+		szBin.setSurface(n_user, &newsz);
+		uzBin.setSurface(n_user, &newuz);
+	}
+	/*
+	 *   Eliminate uz if new fraction 1.0
+	 */
+	if (new_frac >= 1.0)
+	{
+		uzBin.remove(iphrq);
+	}
+
+	old_frac[ihst] = new_frac;
+	return (OK);
+}
+#endif
