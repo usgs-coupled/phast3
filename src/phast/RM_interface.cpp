@@ -199,7 +199,9 @@ RM_pass_data(int *id,
 			 double *volume, 					// nxyz geometric cell volumes 
 			 int *printzone_chem,				// nxyz print flags for output file
 			 int *printzone_xyz,				// nxyz print flags for chemistry XYZ file 
-			 double *rebalance_fraction_hst		// parameter for rebalancing process load for parallel	
+			 double *rebalance_fraction_hst,	// parameter for rebalancing process load for parallel	
+			 char * prefix,                     // prefix for file names
+			 int l_prefix						// length of prefix string
 			 )
 /* ---------------------------------------------------------------------- */
 {
@@ -209,6 +211,7 @@ RM_pass_data(int *id,
 	{
 		Reaction_module_ptr->Set_free_surface(*free_surface != 0);
 		Reaction_module_ptr->Set_steady_flow(*steady_flow != 0);
+		Reaction_module_ptr->Set_transient_free_surface((*free_surface != 0) && (steady_flow == 0));
 		Reaction_module_ptr->Set_nxyz(*nx);
 		Reaction_module_ptr->Set_nxyz(*ny);
 		Reaction_module_ptr->Set_nxyz(*nz);
@@ -226,7 +229,10 @@ RM_pass_data(int *id,
 		Reaction_module_ptr->Set_volume(volume);
 		Reaction_module_ptr->Set_printzone_chem(printzone_chem);
 		Reaction_module_ptr->Set_printzone_xyz(printzone_xyz);
-		Reaction_module_ptr->Set_rebalance_fraction_hst(rebalance_fraction_hst);	
+		Reaction_module_ptr->Set_rebalance_fraction_hst(rebalance_fraction_hst);
+		std::string sprefix(prefix, l_prefix);
+		sprefix = trim(sprefix);
+		Reaction_module_ptr->Set_file_prefix(sprefix);
 	}
 }
 

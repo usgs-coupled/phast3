@@ -20,30 +20,6 @@ public:
 	int Load_database(std::string database_name);
 	int Initial_phreeqc_run(std::string chemistry_name);
 	void Get_components(int *n_comp, char *names, int length);
-	void Pass_data_reaction_module(
-		bool free_surface,
-		bool steady_flow,
-		int *nx, int *ny, int *nz,
-		double *time_hst, 
-		double *time_step_hst, 
-		double *cnvtmi,
-		double *x_hst,	
-		double *y_hst, 
-		double *z_hst, 
-		double *fraction,	
-		double *frac, 
-		double *pv, 
-		double *pv0, 
-		double *volume,
-		int *printzone_chem, 
-		int *printzone_xyz, 
-		double *rebalance_fraction_hst);
-	void Pass_print_flags_reaction_module(
-		 int * prslm,
-		 int * print_out,
-		 int * print_sel,
-		 int * print_hdf,
-		 int * print_restart );
 	void Forward_and_back(
 		int *initial_conditions, 
 		int *axes);
@@ -67,6 +43,8 @@ public:
 	// setters and getters
 	const std::string Get_database_file_name(void) const {return this->database_file_name;};
 	void Set_database_file_name(std::string fn) {this->database_file_name = fn;};
+	const std::string Get_file_prefix(void) const {return this->file_prefix;};
+	void Set_file_prefix(std::string fn) {this->file_prefix = fn;};
 	const int Get_mpi_tasks(void) const {return this->mpi_tasks;};
 	void Set_mpi_tasks(int t) {this->mpi_tasks = t;};
 	const int Get_mpi_myself(void) const {return this->mpi_myself;};
@@ -76,6 +54,8 @@ public:
 	void Set_free_surface(bool t) {this->free_surface = t;};
 	const bool Get_steady_flow(void) const {return this->steady_flow;};
 	void Set_steady_flow(bool t) {this->steady_flow = t;};
+	const bool Get_transient_free_surface(void) const {return this->transient_free_surface;};
+	void Set_transient_free_surface(bool t) {this->transient_free_surface = t;};
 	const int Get_nxyz(void) const {return this->nxyz;};
 	void Set_nxyz(int t) {this->nxyz = t;};
 	const int Get_nx(void) const {return this->nx;};
@@ -144,10 +124,17 @@ protected:
 	void Pack_fraction_array(void);
 	bool n_to_ijk (int n, int &i, int &j, int &k);
 	void cxxSolution2fraction(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
+	void Write_restart(void);
+	bool File_exists(const std::string name);
+	void File_rename(const std::string temp_name, const std::string name, const std::string backup_name);
+	void Scale_cxxsystem(int iphrq, double frac);
+	void Partition_uz(int iphrq, int ihst, double new_frac);
+	void Init_uz(void);
 
 protected:
 	PHAST_IPhreeqc * phast_iphreeqc_worker;
 	std::string database_file_name;
+	std::string file_prefix;
 	cxxStorageBin uz_bin;
 	cxxStorageBin sz_bin;
 	cxxStorageBin phreeqc_bin;
@@ -163,6 +150,7 @@ protected:
 	// From Fortran
 	bool free_surface;                      // free surface calculation
 	bool steady_flow;						// steady-state flow
+	bool transient_free_surface;            // free surface and not steady flow
 	int nxyz;								// number of nodes 
 	int nx, ny, nz;							// number of nodes in each coordinate direction
 	double *time_hst;						// scalar time from transport 
@@ -179,6 +167,7 @@ protected:
 	int *printzone_chem;					// nxyz print flags for output file
 	int *printzone_xyz;						// nxyz print flags for chemistry XYZ file 
 	double *rebalance_fraction_hst;			// parameter for rebalancing process load for parallel	
+	int * ic1;								// reactant number for end member 1; indicates presence in model
 	std::vector <int> forward;				// mapping from nxyz cells to count_chem chemistry cells
 	std::vector <std::vector<int>> back;	// mapping from count_chem chemistry cells to nxyz cells 
 
