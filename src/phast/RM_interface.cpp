@@ -9,10 +9,12 @@ public:
 	static int Create_reaction_module(void);
 	static IPQ_RESULT Destroy_reaction_module(int n);
 	static Reaction_module* Get_instance(int n);
+	static PHRQ_io phast_io;
 
 private:
 	static std::map<size_t, Reaction_module*> Instances;
 	static size_t InstancesIndex;
+
 };
 
 std::map<size_t, Reaction_module*> RM_interface::Instances;
@@ -75,78 +77,6 @@ RM_interface::Destroy_reaction_module(int id)
 	return retval;
 }
 
-/* ---------------------------------------------------------------------- */
-void
-RM_errprt(int id, char *err_str, long l)
-/* ---------------------------------------------------------------------- */
-{
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(id);
-	if (Reaction_module_ptr)
-	{
-		err_str[l] = '\0';
-		std::string e_string(err_str);
-		trim_right(e_string);
-
-		std::ostringstream estr;
-		estr << "ERROR: " << e_string << std::endl;
-		Reaction_module_ptr->Get_io()->output_string(PHRQ_io::OUTPUT_ECHO, estr.str().c_str());
-		Reaction_module_ptr->Get_io()->output_string(PHRQ_io::OUTPUT_SCREEN, estr.str().c_str());
-	}
-	return;
-}
-/* ---------------------------------------------------------------------- */
-void
-RM_warnprt(int *id, char *err_str, long l)
-/* ---------------------------------------------------------------------- */
-{
-
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
-	if (Reaction_module_ptr)
-	{
-		std::string e_string(err_str, l);
-		trim_right(e_string);
-
-		std::ostringstream estr;
-		estr << "WARNING: " << e_string << std::endl;
-		Reaction_module_ptr->Get_io()->output_string(PHRQ_io::OUTPUT_ECHO, estr.str().c_str());
-		Reaction_module_ptr->Get_io()->output_string(PHRQ_io::OUTPUT_SCREEN, estr.str().c_str());
-	}
-	return;
-}
-
-/* ---------------------------------------------------------------------- */
-void
-RM_logprt(int *id, char *err_str, long l)
-/* ---------------------------------------------------------------------- */
-{
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
-	if (Reaction_module_ptr /*&& Reaction_module_ptr->Get_mpi_myself() == 0*/)
-	{
-		std::string e_string(err_str, l);
-		trim_right(e_string);
-
-		std::ostringstream estr;
-		estr << e_string << std::endl;
-		Reaction_module_ptr->Get_io()->output_string(PHRQ_io::OUTPUT_ECHO, estr.str().c_str());
-	}
-}
-
-/* ---------------------------------------------------------------------- */
-void
-RM_screeenprt(int *id, char *err_str, long l)
-/* ---------------------------------------------------------------------- */
-{
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
-	if (Reaction_module_ptr /*&& Reaction_module_ptr->Get_mpi_myself() == 0*/)
-	{
-		std::string e_string(err_str, l);
-		trim_right(e_string);
-
-		std::ostringstream estr;
-		estr << e_string << std::endl;
-		Reaction_module_ptr->Get_io()->output_string(PHRQ_io::OUTPUT_SCREEN, estr.str().c_str());
-	}
-}
 /* ---------------------------------------------------------------------- */
 void
 RM_load_database(int *id, char *database_name, int l)
@@ -251,8 +181,8 @@ RM_pass_print_flags(int *id,
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Set_prslm(prslm != 0);
-		Reaction_module_ptr->Set_print_out(print_out != 0);
-		Reaction_module_ptr->Set_print_sel(print_sel != 0);
+		Reaction_module_ptr->Set_print_chem(print_out != 0);
+		Reaction_module_ptr->Set_print_xyz(print_sel != 0);
 		Reaction_module_ptr->Set_print_hdf(print_hdf != 0);
 		Reaction_module_ptr->Set_print_restart(print_restart != 0);
 	}
@@ -343,4 +273,115 @@ RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity)
 	{
 		Reaction_module_ptr->Calculate_well_ph(c, ph, alkalinity);
 	}
+}
+
+/* ---------------------------------------------------------------------- */
+void
+C_IO_open_files(int * solute, char * prefix, int l_prefix)
+/* ---------------------------------------------------------------------- */
+{
+	// error_file is stderr
+	C_IO_open_error_file();
+	
+	// open echo and log file, prefix.log.txt
+	C_IO_open_log_file(prefix, l_prefix);
+
+
+	if (solute != 0)
+	{
+		// output_file is prefix.chem.txt
+		C_IO_open_output_file(prefix, l_prefix);
+
+		// punch_file is prefix.chem.txt
+		C_IO_open_punch_file(prefix, l_prefix);
+	}
+}
+/* ---------------------------------------------------------------------- */
+void
+C_IO_open_error_file(void)
+/* ---------------------------------------------------------------------- */
+{
+	RM_interface::phast_io.Set_error_file(stderr);
+}
+/* ---------------------------------------------------------------------- */
+void
+C_IO_open_output_file(char * prefix, int l_prefix)
+/* ---------------------------------------------------------------------- */
+{
+	std::string fn(prefix, l_prefix);
+	fn.append(".chem.txt");
+	RM_interface::phast_io.output_open(PHRQ_io::OUTPUT_MESSAGE, fn.c_str());
+}
+/* ---------------------------------------------------------------------- */
+void
+C_IO_open_punch_file(char * prefix, int l_prefix)
+/* ---------------------------------------------------------------------- */
+{
+	std::string fn(prefix, l_prefix);
+	fn.append(".chem.xyz.tsv");
+	RM_interface::phast_io.output_open(PHRQ_io::OUTPUT_MESSAGE, fn.c_str());
+}
+/* ---------------------------------------------------------------------- */
+void
+C_IO_open_log_file(char * prefix, int l_prefix)
+/* ---------------------------------------------------------------------- */
+{
+	std::string fn(prefix, l_prefix);
+	fn.append(".log.txt");
+	RM_interface::phast_io.output_open(PHRQ_io::OUTPUT_MESSAGE, fn.c_str());
+}
+/* ---------------------------------------------------------------------- */
+void
+C_IO_errprt(char *err_str, long l)
+/* ---------------------------------------------------------------------- */
+{
+	std::string e_string(err_str, l);
+	trim_right(e_string);
+
+	std::ostringstream estr;
+	estr << "ERROR: " << e_string << std::endl;
+	RM_interface::phast_io.output_string(PHRQ_io::OUTPUT_ECHO, estr.str().c_str());
+	RM_interface::phast_io.output_string(PHRQ_io::OUTPUT_SCREEN, estr.str().c_str());
+	return;
+}
+/* ---------------------------------------------------------------------- */
+void
+C_IO_warnprt(char *err_str, long l)
+/* ---------------------------------------------------------------------- */
+{
+
+	std::string e_string(err_str, l);
+	trim_right(e_string);
+
+	std::ostringstream estr;
+	estr << "WARNING: " << e_string << std::endl;
+	RM_interface::phast_io.output_string(PHRQ_io::OUTPUT_ECHO, estr.str().c_str());
+	RM_interface::phast_io.output_string(PHRQ_io::OUTPUT_SCREEN, estr.str().c_str());
+
+}
+
+/* ---------------------------------------------------------------------- */
+void
+C_IO_logprt(char *err_str, long l)
+/* ---------------------------------------------------------------------- */
+{
+	std::string e_string(err_str, l);
+	trim_right(e_string);
+
+	std::ostringstream estr;
+	estr << e_string << std::endl;
+	RM_interface::phast_io.output_string(PHRQ_io::OUTPUT_ECHO, estr.str().c_str());
+}
+
+/* ---------------------------------------------------------------------- */
+void
+C_IO_screeenprt(char *err_str, long l)
+/* ---------------------------------------------------------------------- */
+{
+	std::string e_string(err_str, l);
+	trim_right(e_string);
+
+	std::ostringstream estr;
+	estr << e_string << std::endl;
+	RM_interface::phast_io.output_string(PHRQ_io::OUTPUT_SCREEN, estr.str().c_str());
 }

@@ -34,21 +34,27 @@ typedef enum {
 #if defined(__cplusplus)
 extern "C" {
 #endif
-//void 
-//create_reaction_module(void);
-//void
-//errprt_c(int *id, char *err_str, long l);
-//void
-//warnprt_c(int *id, char *err_str, long l);
-//void
-//logprt_c(int *id, char *err_str, long l);
-//void
-//screeenprt_c(int *id, char *err_str, long l);
+void C_IO_open_files(int * solute, char * prefix, int l_prefix);
+void C_IO_open_error_file(void);
+void C_IO_open_output_file(char * prefix, int l_prefix);
+void C_IO_open_punch_file(char * prefix, int l_prefix);
+void C_IO_open_log_file(char * prefix, int l_prefix);
 
-void RM_errprt(int id, char *err_str, long l);
-void RM_warnprt(int *id, char *err_str, long l);
-void RM_logprt(int *id, char *err_str, long l);
-void RM_screeenprt(int *id, char *err_str, long l);
+//void errprt_c(int *id, char *err_str, long l);
+//void warnprt_c(int *id, char *err_str, long l);
+//void logprt_c(int *id, char *err_str, long l);
+//void screeenprt_c(int *id, char *err_str, long l);
+
+//void RM_errprt(int id, char *err_str, long l);
+//void RM_warnprt(int *id, char *err_str, long l);
+//void RM_logprt(int *id, char *err_str, long l);
+//void RM_screeenprt(int *id, char *err_str, long l);
+
+void C_IO_errprt(char *err_str, long l);
+void C_IO_warnprt(char *err_str, long l);
+void C_IO_logprt(char *err_str, long l);
+void C_IO_screeenprt(char *err_str, long l);
+
 void RM_load_database(int *id, char *database_name, int l);
 void RM_initial_phreeqc_run(int *id, char *chemistry_name, int l);
 void RM_pass_data(int *id,

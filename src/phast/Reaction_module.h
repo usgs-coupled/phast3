@@ -96,10 +96,10 @@ public:
 
 	const bool Get_prslm(void) const {return this->prslm;};
 	void Set_prslm(bool t) {this->prslm = t;};
-	const bool Get_print_out(void) const {return this->print_out;};
-	void Set_print_out(bool t) {this->print_out = t;};
-	const bool Get_print_sel(void) const {return this->print_sel;};
-	void Set_print_sel(bool t) {this->print_sel = t;};
+	const bool Get_print_chem(void) const {return this->print_chem;};
+	void Set_print_chem(bool t) {this->print_chem = t;};
+	const bool Get_print_xyz(void) const {return this->print_xyz;};
+	void Set_print_xyz(bool t) {this->print_xyz = t;};
 	const bool Get_print_hdf(void) const {return this->print_hdf;};
 	void Set_print_hdf(bool t) {this->print_hdf = t;};
 	const bool Get_print_restart(void) const {return this->print_restart;};
@@ -173,8 +173,8 @@ protected:
 
 	// print flags
 	bool prslm;								// solution method print flag 
-	bool print_out;							// print flag for output file 
-	bool print_sel;							// print flag for selected output
+	bool print_chem;						// print flag for chemistry output file 
+	bool print_xyz;							// print flag for selected output
 	bool print_hdf;							// print flag for hdf file
 	bool print_restart;						// print flag for writing restart file 
 
