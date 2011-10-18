@@ -53,8 +53,8 @@ Reaction_module::Reaction_module(PHRQ_io *io)
 
 	// print flags
 	this->prslm = false;						// solution method print flag 
-	this->print_out = false;					// print flag for output file 
-	this->print_sel = false;					// print flag for selected output
+	this->print_chem = false;					// print flag for chemistry output file 
+	this->print_xyz = false;					// print flag for selected output
 	this->print_hdf = false;					// print flag for hdf file
 	this->print_restart = false;				// print flag for writing restart file 
 }
@@ -1735,10 +1735,15 @@ Reaction_module::Run_reactions()
  *   Routine takes mass fractions from HST, equilibrates each cell,
  *   and returns new mass fractions to HST
  */
+	// Do not write to files from phreeqc
+	this->phast_iphreeqc_worker->SetLogFileOn(false);
+	this->phast_iphreeqc_worker->SetSelectedOutputFileOn(false);
+	this->phast_iphreeqc_worker->SetDumpFileOn(false);
+	this->phast_iphreeqc_worker->SetOutputFileOn(false);
+
 /*
  *   Update solution compositions in sz_bin
  */
-
 	this->Unpack_fraction_array();
 
 	int i, j;
@@ -1746,8 +1751,10 @@ Reaction_module::Run_reactions()
 	{							/* i is count_chem number */
 		j = back[i][0];			/* j is nxyz number */
 
-		// set pore volume functions for Basic
-		this->phast_iphreeqc_worker->Set_cell_volumes(pv0[j], frac[j], volume[j]);
+		// Set local print flags
+		bool pr_chem = this->print_chem && (this->printzone_chem[j] != 0);
+		bool pr_xyz = this->print_xyz && (this->printzone_xyz[i] != 0);
+		bool pr_hdf = this->print_hdf;
 
 		// partition solids between UZ and SZ
 		if (transient_free_surface)	
@@ -1759,24 +1766,112 @@ Reaction_module::Run_reactions()
 			frac[j] = 0.0;
 		if (frac[j] > 0) 
 			active = true;
-
-		// set printing
-		//pr.all = FALSE;
-		//if (*print_out == TRUE && printzone_chem[j] == TRUE)
-		//	pr.all = TRUE;
-		//pr.punch = FALSE;
-		//if (*print_sel == TRUE && printzone_xyz[j] == TRUE
-		//	&& punch.in == TRUE)
-		//	pr.punch = TRUE;
-		//BeginCell(*print_sel, *print_out, *print_hdf, j);
-		//if (pr.punch == TRUE)
+		if (active)
 		{
+			// set cell number, pore volume functions for Basic
+			this->phast_iphreeqc_worker->Set_cell_volumes(i, pv0[j], frac[j], volume[j]);
+
+			// Adjust for fractional saturation and pore volume
+			if (this->transient_free_surface)
+				this->Scale_cxxsystem(i, 1.0 / frac[j]);
+			if (!transient_free_surface && !steady_flow)
+			{
+				if (pv0[j] != 0 && pv[j] != 0 && pv0[j] != pv[j])
+				{
+					cxxSolution * cxxsol = sz_bin.Get_Solution(i);
+					cxxsol->multiply(pv[j] / pv0[j]);
+				}
+			}
+
+			// Move reactants from sz_bin to phreeqc
+			this->phast_iphreeqc_worker->Set_cell(sz_bin, i);
+
+			// TODO this->phast_iphreeqc_worker->SetOutputStringOn(pr_chem);
+
+			// do the calculation
+			std::ostringstream input;
+			input << "RUN_CELLS" << std::endl;
+			input << "  -start_time " << *this->time_hst << std::endl;
+			input << "  -time_step  " << *this->time_step_hst << std::endl;
+			input << "  -cells      " << i << std::endl;
+			input << "END" << std::endl;
+
+			this->phast_iphreeqc_worker->RunString(input.str().c_str());
+
+			// Save reactants back in sz_bin
+			this->phast_iphreeqc_worker->Get_cell(sz_bin, i);
+
+			// Write chem.txt
+			std::string header;
+			if (pr_chem || pr_xyz)
+			{
+			}
+			if (pr_chem)
+			{
+				std::ostringstream line;
+				char chunk[150];
+				sprintf(chunk, "Time %g. Cell %d: x=%15g\ty=%15g\tz=%15g\n",
+						   (*time_hst) * (*cnvtmi), j + 1, x_node[j], y_node[j],
+						   z_node[j]);
+				line << chunk;
+				//output_msg(OUTPUT_MESSAGE,
+				//		   "Time %g. Cell %d: x=%15g\ty=%15g\tz=%15g\n",
+				//		   (*time_hst) * (*cnvtmi), j + 1, x_hst[j], y_hst[j],
+				//		   z_hst[j]);
+				this->output_msg(line.str().c_str());  // TODO fix for PHAST
+				// TODO? print_using_hst(j + 1);
+				// TODO this->output_msg(this->phast_iphreeqc_worker->GetOutputString());
+			}
+			if (pr_xyz || pr_hdf)
+			{
+				std::vector<double> d;
+				this->phast_iphreeqc_worker->Selected_out_to_double(1, d);
+
+
+				std::vector<double>::iterator it;
+				for (it = d.begin(); it != d.end(); it++)
+				// Write chem.xyz			
+				if (pr_xyz)
+				{
+					char chunk[150];
+					sprintf(chunk, "%15g\t%15g\t%15g\t%15g\t%2d\t",
+					   x_node[j], y_node[j], z_node[j], (*time_hst) * (*cnvtmi),
+					  ((active) ? 1 : 0));
+					std::ostringstream line;
+					line << chunk;
+
+					//output_msg(PHRQ_io::OUTPUT_PUNCH, "%15g\t%15g\t%15g\t%15g\t%2d\t",
+					//   x_node[j], y_node[j], z_node[j], (*time_hst) * (*cnvtmi),
+					//  ((active) ? 1 : 0));					
+				}
+				if (pr_hdf)
+				{
+				}
+			}
+
+		}
+
+
+
+
+
+
+
+		if (this->print_xyz && this->printzone_xyz[i] != 0)
+		{
+			// need to capture selected output to xyz file
 			output_msg(PHRQ_io::OUTPUT_PUNCH, "%15g\t%15g\t%15g\t%15g\t%2d\t",
 					   x_node[j], y_node[j], z_node[j], (*time_hst) * (*cnvtmi),
 					   ((active) ? 1 : 0));
 			if (active == FALSE)
 			{
 				output_msg(PHRQ_io::OUTPUT_PUNCH, "\n");
+			}
+			else
+			{
+				// Go through VARs and write to XYZ file.
+				std::vector<double> d;
+				this->phast_iphreeqc_worker->Selected_out_to_double(1, d);
 			}
 		}
 

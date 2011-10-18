@@ -1094,6 +1094,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\phreeqcpp\Phreeqc.h"
+				>
+			</File>
+			<File
 				RelativePath="..\phreeqcpp\PHRQ_base.h"
 				>
 			</File>
