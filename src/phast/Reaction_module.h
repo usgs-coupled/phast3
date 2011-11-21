@@ -178,5 +178,6 @@ protected:
 	bool print_hdf;							// print flag for hdf file
 	bool print_restart;						// print flag for writing restart file 
 
+	char line_buffer[4096];
 };
 #endif // !defined(REACTION_MODULE_H_INCLUDED)

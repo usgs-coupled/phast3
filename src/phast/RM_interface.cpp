@@ -310,7 +310,7 @@ C_IO_open_output_file(char * prefix, int l_prefix)
 {
 	std::string fn(prefix, l_prefix);
 	fn.append(".chem.txt");
-	RM_interface::phast_io.output_open(PHRQ_io::OUTPUT_MESSAGE, fn.c_str());
+	RM_interface::phast_io.output_open(fn.c_str());
 }
 /* ---------------------------------------------------------------------- */
 void
@@ -319,7 +319,7 @@ C_IO_open_punch_file(char * prefix, int l_prefix)
 {
 	std::string fn(prefix, l_prefix);
 	fn.append(".chem.xyz.tsv");
-	RM_interface::phast_io.output_open(PHRQ_io::OUTPUT_MESSAGE, fn.c_str());
+	RM_interface::phast_io.punch_open(fn.c_str());
 }
 /* ---------------------------------------------------------------------- */
 void
@@ -328,7 +328,7 @@ C_IO_open_log_file(char * prefix, int l_prefix)
 {
 	std::string fn(prefix, l_prefix);
 	fn.append(".log.txt");
-	RM_interface::phast_io.output_open(PHRQ_io::OUTPUT_MESSAGE, fn.c_str());
+	RM_interface::phast_io.log_open(fn.c_str());
 }
 /* ---------------------------------------------------------------------- */
 void
@@ -340,8 +340,8 @@ C_IO_errprt(char *err_str, long l)
 
 	std::ostringstream estr;
 	estr << "ERROR: " << e_string << std::endl;
-	RM_interface::phast_io.output_string(PHRQ_io::OUTPUT_ECHO, estr.str().c_str());
-	RM_interface::phast_io.output_string(PHRQ_io::OUTPUT_SCREEN, estr.str().c_str());
+	RM_interface::phast_io.error_msg(estr.str().c_str());
+	RM_interface::phast_io.log_msg(estr.str().c_str());
 	return;
 }
 /* ---------------------------------------------------------------------- */
@@ -355,8 +355,8 @@ C_IO_warnprt(char *err_str, long l)
 
 	std::ostringstream estr;
 	estr << "WARNING: " << e_string << std::endl;
-	RM_interface::phast_io.output_string(PHRQ_io::OUTPUT_ECHO, estr.str().c_str());
-	RM_interface::phast_io.output_string(PHRQ_io::OUTPUT_SCREEN, estr.str().c_str());
+	RM_interface::phast_io.error_msg(estr.str().c_str());
+	RM_interface::phast_io.log_msg(estr.str().c_str());
 
 }
 
@@ -370,7 +370,7 @@ C_IO_logprt(char *err_str, long l)
 
 	std::ostringstream estr;
 	estr << e_string << std::endl;
-	RM_interface::phast_io.output_string(PHRQ_io::OUTPUT_ECHO, estr.str().c_str());
+	RM_interface::phast_io.log_msg(estr.str().c_str());
 }
 
 /* ---------------------------------------------------------------------- */
@@ -383,5 +383,5 @@ C_IO_screeenprt(char *err_str, long l)
 
 	std::ostringstream estr;
 	estr << e_string << std::endl;
-	RM_interface::phast_io.output_string(PHRQ_io::OUTPUT_SCREEN, estr.str().c_str());
+	RM_interface::phast_io.error_msg(estr.str().c_str());
 }
