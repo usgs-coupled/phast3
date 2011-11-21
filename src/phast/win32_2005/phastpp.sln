@@ -1,9 +1,6 @@
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "phast", "phreeqcpp.vcproj", "{9B65F71A-2D27-4121-9724-6CD0ED7D975A}"
-	ProjectSection(ProjectDependencies) = postProject
-		{12E87AB4-B82A-4104-A74C-379229396B15} = {12E87AB4-B82A-4104-A74C-379229396B15}
-	EndProjectSection
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "phast", "phreeqcpp.vcxproj", "{9B65F71A-2D27-4121-9724-6CD0ED7D975A}"
 EndProject
 Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "phastpp", "phastpp.vfproj", "{12E87AB4-B82A-4104-A74C-379229396B15}"
 EndProject

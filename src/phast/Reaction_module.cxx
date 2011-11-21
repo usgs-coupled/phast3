@@ -107,7 +107,7 @@ Reaction_module::Initial_phreeqc_run(std::string chemistry_name)
 	 */
 	if (this->mpi_myself == 0)
 	{
-		this->Get_io()->output_msg(PHRQ_io::OUTPUT_ECHO, "%s", "Initial PHREEQC run.\n");
+		this->Get_io()->log_msg("Initial PHREEQC run.\n");
 	}
 	this->phast_iphreeqc_worker->AccumulateLine("PRINT; -status false; -other false");
 	if (this->phast_iphreeqc_worker->RunAccumulated() != 0)
@@ -128,7 +128,7 @@ Reaction_module::Initial_phreeqc_run(std::string chemistry_name)
 	this->phast_iphreeqc_worker->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(phreeqc_bin);
 	if (this->mpi_myself == 0)
 	{
-		this->Get_io()->output_string(PHRQ_io::OUTPUT_LOG, "\nSuccessfully processed chemistry data file.\n");
+		this->Get_io()->log_msg("\nSuccessfully processed chemistry data file.\n");
 	}
 
 	return 1;
@@ -1852,20 +1852,16 @@ Reaction_module::Run_reactions()
 		}
 
 
-
-
-
-
-
 		if (this->print_xyz && this->printzone_xyz[i] != 0)
 		{
 			// need to capture selected output to xyz file
-			output_msg(PHRQ_io::OUTPUT_PUNCH, "%15g\t%15g\t%15g\t%15g\t%2d\t",
+			sprintf(this->line_buffer, "%15g\t%15g\t%15g\t%15g\t%2d\t",
 					   x_node[j], y_node[j], z_node[j], (*time_hst) * (*cnvtmi),
 					   ((active) ? 1 : 0));
+			this->io->punch_msg(line_buffer);
 			if (active == FALSE)
 			{
-				output_msg(PHRQ_io::OUTPUT_PUNCH, "\n");
+				this->io->punch_msg("\n");
 			}
 			else
 			{
