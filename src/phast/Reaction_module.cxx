@@ -240,7 +240,7 @@ Reaction_module::Distribute_initial_conditions(
 
 		// skip headers
 		while (cparser.check_line("restart", false, true, true, false) ==
-			   CParser::LT_EMPTY);
+			   PHRQ_io::LT_EMPTY);
 
 		// read number of lines of index
 		int
