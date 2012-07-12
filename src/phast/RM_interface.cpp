@@ -301,7 +301,7 @@ void
 C_IO_open_error_file(void)
 /* ---------------------------------------------------------------------- */
 {
-	RM_interface::phast_io.Set_error_file(stderr);
+	RM_interface::phast_io.Set_error_ostream(&std::cerr);
 }
 /* ---------------------------------------------------------------------- */
 void

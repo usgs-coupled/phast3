@@ -234,7 +234,7 @@ Reaction_module::Distribute_initial_conditions(
 		}
 
 		std::ostringstream oss;
-		CParser	cparser(myfile, oss, std::cerr, this->Get_io());
+		CParser	cparser(myfile, this->Get_io());
 		cparser.set_echo_file(CParser::EO_NONE);
 		cparser.set_echo_stream(CParser::EO_NONE);
 
@@ -764,9 +764,9 @@ Reaction_module::System_initialize(
 	if (n_old1 >= 0)
 	{
 		cxxMix mx;
-		mx.add(n_old1, f1);
+		mx.Add(n_old1, f1);
 		if (n_old2 >= 0)
-			mx.add(n_old2, 1 - f1);
+			mx.Add(n_old2, 1 - f1);
 		cxxSolution cxxsoln(this->phreeqc_bin.Get_Solutions(), mx, n_user_new);
 		this->sz_bin.Set_Solution(n_user_new, &cxxsoln);
 	}
@@ -780,12 +780,12 @@ Reaction_module::System_initialize(
 	if (n_old1 >= 0)
 	{
 		cxxMix mx;
-		mx.add(n_old1, f1);
+		mx.Add(n_old1, f1);
 		if (n_old2 >= 0)
-			mx.add(n_old2, 1 - f1);
+			mx.Add(n_old2, 1 - f1);
 		if (ppassemblage_units == 2)
 		{
-			mx.multiply(porosity_factor);
+			mx.Multiply(porosity_factor);
 		}
 		cxxPPassemblage cxxentity(this->phreeqc_bin.Get_PPassemblages(), mx,
 								  n_user_new);
@@ -801,12 +801,12 @@ Reaction_module::System_initialize(
 	if (n_old1 >= 0)
 	{
 		cxxMix mx;
-		mx.add(n_old1, f1);
+		mx.Add(n_old1, f1);
 		if (n_old2 >= 0)
-			mx.add(n_old2, 1 - f1);
+			mx.Add(n_old2, 1 - f1);
 		if (exchange_units == 2)
 		{
-			mx.multiply(porosity_factor);
+			mx.Multiply(porosity_factor);
 		}
 		cxxExchange cxxexch(this->phreeqc_bin.Get_Exchangers(), mx, n_user_new);
 		this->sz_bin.Set_Exchange(n_user_new, &cxxexch);
@@ -820,12 +820,12 @@ Reaction_module::System_initialize(
 	if (n_old1 >= 0)
 	{
 		cxxMix mx;
-		mx.add(n_old1, f1);
+		mx.Add(n_old1, f1);
 		if (n_old2 >= 0)
-			mx.add(n_old2, 1 - f1);
+			mx.Add(n_old2, 1 - f1);
 		if (surface_units == 2)
 		{
-			mx.multiply(porosity_factor);
+			mx.Multiply(porosity_factor);
 		}
 		cxxSurface cxxentity(this->phreeqc_bin.Get_Surfaces(), mx, n_user_new);
 		this->sz_bin.Set_Surface(n_user_new, &cxxentity);
@@ -839,12 +839,12 @@ Reaction_module::System_initialize(
 	if (n_old1 >= 0)
 	{
 		cxxMix mx;
-		mx.add(n_old1, f1);
+		mx.Add(n_old1, f1);
 		if (n_old2 >= 0)
-			mx.add(n_old2, 1 - f1);
+			mx.Add(n_old2, 1 - f1);
 		if (gasphase_units == 2)
 		{
-			mx.multiply(porosity_factor);
+			mx.Multiply(porosity_factor);
 		}
 		cxxGasPhase cxxentity(this->phreeqc_bin.Get_GasPhases(), mx, n_user_new);
 		this->sz_bin.Set_GasPhase(n_user_new, &cxxentity);
@@ -858,12 +858,12 @@ Reaction_module::System_initialize(
 	if (n_old1 >= 0)
 	{
 		cxxMix mx;
-		mx.add(n_old1, f1);
+		mx.Add(n_old1, f1);
 		if (n_old2 >= 0)
-			mx.add(n_old2, 1 - f1);
+			mx.Add(n_old2, 1 - f1);
 		if (ssassemblage_units == 2)
 		{
-			mx.multiply(porosity_factor);
+			mx.Multiply(porosity_factor);
 		}
 		cxxSSassemblage cxxentity(this->phreeqc_bin.Get_SSassemblages(), mx,
 								  n_user_new);
@@ -878,12 +878,12 @@ Reaction_module::System_initialize(
 	if (n_old1 >= 0)
 	{
 		cxxMix mx;
-		mx.add(n_old1, f1);
+		mx.Add(n_old1, f1);
 		if (n_old2 >= 0)
-			mx.add(n_old2, 1 - f1);
+			mx.Add(n_old2, 1 - f1);
 		if (kinetics_units == 2)
 		{
-			mx.multiply(porosity_factor);
+			mx.Multiply(porosity_factor);
 		}
 		cxxKinetics cxxentity(this->phreeqc_bin.Get_Kinetics(), mx, n_user_new);
 		this->sz_bin.Set_Kinetics(n_user_new, &cxxentity);
@@ -1122,10 +1122,10 @@ Reaction_module::setup_boundary_conditions(const int n_boundary, int *boundary_s
 		n_old2 = boundary_solution2[i];
 		f1 = fraction1[i];
 		f2 = 1 - f1;
-		mixmap.add(n_old1, f1);
+		mixmap.Add(n_old1, f1);
 		if (f2 > 0.0)
 		{
-			mixmap.add(n_old2, f2);
+			mixmap.Add(n_old2, f2);
 		}
 		
 		// Make mass fractions in d
@@ -1261,7 +1261,7 @@ Reaction_module::Scale_cxxsystem(int iphrq, double frac)
 
 	n_user = iphrq;
 	cxxMix cxxmix;
-	cxxmix.add(n_user, frac);
+	cxxmix.Add(n_user, frac);
 	/*
 	 *   Scale compositions
 	 */
@@ -1347,10 +1347,10 @@ Reaction_module::Partition_uz(int iphrq, int ihst, double new_frac)
 		uz2 = 1.0;
 	}
 	cxxMix szmix, uzmix;
-	szmix.add(0, s1);
-	szmix.add(1, s2);
-	uzmix.add(0, uz1);
-	uzmix.add(1, uz2);
+	szmix.Add(0, s1);
+	szmix.Add(1, s2);
+	uzmix.Add(0, uz1);
+	uzmix.Add(1, uz2);
 	/*
 	 *   Calculate new compositions
 	 */

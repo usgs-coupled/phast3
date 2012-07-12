@@ -42,9 +42,6 @@
     <ClCompile Include="..\gzstream.cxx">
       <Filter>Source Files\COMMON_CXXOBJS</Filter>
     </ClCompile>
-    <ClCompile Include="..\hstsubs.c">
-      <Filter>Source Files\COMMON_CXXOBJS</Filter>
-    </ClCompile>
     <ClCompile Include="..\phast_files.c">
       <Filter>Source Files\COMMON_CXXOBJS</Filter>
     </ClCompile>
@@ -53,15 +50,6 @@
     </ClCompile>
     <ClCompile Include="..\RM_interface.cpp">
       <Filter>Source Files\COMMON_CXXOBJS</Filter>
-    </ClCompile>
-    <ClCompile Include="..\slavesubs.c">
-      <Filter>Source Files\MPI_OBJS</Filter>
-    </ClCompile>
-    <ClCompile Include="..\merge.c">
-      <Filter>Source Files\MERGE_OBJS</Filter>
-    </ClCompile>
-    <ClCompile Include="..\hdf.c">
-      <Filter>Source Files\HDF_OBJS</Filter>
     </ClCompile>
     <ClCompile Include="..\KDtree\KDtree.cpp">
       <Filter>Source Files\PHASTINPUT_OBJS</Filter>
@@ -72,11 +60,20 @@
     <ClCompile Include="..\KDtree\Point.cpp">
       <Filter>Source Files\PHASTINPUT_OBJS</Filter>
     </ClCompile>
-    <ClCompile Include="..\PHAST_IPhreeqc.cxx">
-      <Filter>Source Files\COMMON_CXXOBJS</Filter>
-    </ClCompile>
     <ClCompile Include="..\hst.cxx">
       <Filter>Source Files\COMMON_CXXOBJS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\hstsubs.cpp">
+      <Filter>Source Files\COMMON_CXXOBJS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\hdf.cpp">
+      <Filter>Source Files\HDF_OBJS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\merge.cpp">
+      <Filter>Source Files\MERGE_OBJS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\slavesubs.cpp">
+      <Filter>Source Files\MPI_OBJS</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -123,9 +120,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\phreeqcpp\Pe_Data.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\PHAST_IPhreeqc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\phreeqcpp\Phreeqc.h">

@@ -263,6 +263,9 @@
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\SelectedOutput.cpp">
       <Filter>Source Files\IPhreeqc</Filter>
     </ClCompile>
+    <ClCompile Include="..\IPhreeqcPhast\IPhreeqcPhast.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\CVar.hxx">
@@ -446,6 +449,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\Utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IPhreeqcPhast\IPhreeqcPhast.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
