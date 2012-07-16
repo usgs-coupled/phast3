@@ -10,7 +10,6 @@
 #include <string.h>				/* strncpy strtok strcat */
 #include <assert.h>				/* assert */
 #include <stdarg.h>				/* va_arg */
-#include "PHRQ_utilities.h"
 #if defined(_MT)
 #define _HDF5USEDLL_			/* reqd for Multithreaded run-time library (Win32) */
 #endif
@@ -26,17 +25,14 @@ static char const DEFINE_USE_MPI[] = "#define USE_MPI 0";
 #endif
 
 #define EXTERNAL extern
-//#include "phreeqc/global.h"		/* error_string */
-#include "PHRQ_global.h"
-//#include "phreeqc/output.h"
-#include "PHRQ_output.h"
+#include "phreeqc/global.h"		/* error_string */
+#include "phreeqc/output.h"
 #include "hst.h"				/* struct back_list */
 #undef EXTERNAL
-//#include "phreeqc/phrqproto.h"
+#include "phreeqc/phrqproto.h"
 #include "phastproto.h"
-//#include "phreeqc/phqalloc.h"	/* PHRQ_malloc PHRQ_realloc PHRQ_free */
-#include "PHRQ_alloc.h"
-char error_string[10 * MAX_LENGTH];
+#include "phreeqc/phqalloc.h"	/* PHRQ_malloc PHRQ_realloc PHRQ_free */
+
 /*
  *   static functions
  */
@@ -577,63 +573,7 @@ HDF_Finalize(void)
 	proc.array = NULL;
 }
 
-#ifdef SKIP_PHAST_CLASS_REWRITE
-/*-------------------------------------------------------------------------
- * Function          open_hdf_file
- *
- * Preconditions:    TODO:
- *
- * Postconditions:   TODO:
- *-------------------------------------------------------------------------
- */
-static hid_t
-open_hdf_file(char *prefix, int prefix_l)
-{
-#ifdef USE_MPI
-	extern int mpi_myself;
-	extern int mpi_tasks;
-#else
-	const int mpi_myself = 0;
-	const int mpi_tasks = 1;
-#endif
-	hid_t file_id;
-	char hdf_prefix[257];
-	char hdf_file_name[257];
-	char hdf_backup_name[257];
 
-	strncpy(hdf_prefix, prefix, prefix_l);
-	hdf_prefix[prefix_l] = '\0';
-	string_trim(hdf_prefix);
-	if (mpi_tasks == 1)
-	{
-		sprintf(hdf_file_name, "%s%s", hdf_prefix, szHDF5Ext);
-	}
-	else
-	{
-		sprintf(hdf_file_name, "%s%s", hdf_prefix, szHDF5Ext);
-	}
-
-	if (mpi_myself == 0)
-	{
-		if (file_exists(hdf_file_name))
-		{
-			sprintf(hdf_backup_name, "%s%s~", hdf_prefix, szHDF5Ext);
-			if (file_exists(hdf_backup_name))
-				remove(hdf_backup_name);
-			rename(hdf_file_name, hdf_backup_name);
-		}
-	}
-
-	file_id =
-		H5Fcreate(hdf_file_name, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
-	if (file_id <= 0)
-	{
-		sprintf(error_string, "Unable to open HDF file:%s\n", hdf_file_name);
-		error_msg(error_string, STOP);
-	}
-	return file_id;
-}
-#endif SKIP_PHAST_CLASS_REWRITE
 /*-------------------------------------------------------------------------
  * Function          open_hdf_file
  *
@@ -782,6 +722,7 @@ HDF_WRITE_GRID(double x[], double y[], double z[],
 			   int ibc[], char *UTULBL, int UTULBL_l)
 {
 #ifdef USE_MPI
+        extern int solute;
 	extern int mpi_myself;
 #else
 	const int mpi_myself = 0;
@@ -895,7 +836,9 @@ HDF_WRITE_GRID(double x[], double y[], double z[],
 
 #ifdef USE_MPI
 	/* send scalar_count to all procs */
-	MPI_Bcast(&proc.scalar_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	if (solute) {
+	  MPI_Bcast(&proc.scalar_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	}
 #endif
 }
 
@@ -1413,6 +1356,7 @@ void
 HDFEndCTimeStep(void)
 {
 #ifdef USE_MPI
+        extern int solute;
 	const int TAG_HDF_DATA = 5;
 	extern int mpi_myself;
 	extern int mpi_tasks;
@@ -1436,51 +1380,54 @@ HDFEndCTimeStep(void)
 	}
 
 #ifdef USE_MPI
-	for (task_number = 1; task_number < mpi_tasks; ++task_number)
+	if (solute) 
 	{
-		int array_count;
-		if (mpi_myself == task_number)
-		{
-			MPI_Send(&mpi_myself, 1, MPI_INT, 0, TAG_HDF_DATA,
-					 MPI_COMM_WORLD);
-			MPI_Send(&proc.cell_count, 1, MPI_INT, 0, TAG_HDF_DATA,
-					 MPI_COMM_WORLD);
+	  for (task_number = 1; task_number < mpi_tasks; ++task_number)
+	  {
+	    int array_count;
+	    if (mpi_myself == task_number)
+	    {
+	      MPI_Send(&mpi_myself, 1, MPI_INT, 0, TAG_HDF_DATA,
+		       MPI_COMM_WORLD);
+	      MPI_Send(&proc.cell_count, 1, MPI_INT, 0, TAG_HDF_DATA,
+		       MPI_COMM_WORLD);
 
-			array_count = proc.cell_count * proc.scalar_count;
-			MPI_Send((void *) proc.array, array_count, MPI_DOUBLE, 0,
-					 TAG_HDF_DATA, MPI_COMM_WORLD);
-		}
-		if (mpi_myself == 0)
-		{
-			MPI_Status mpi_status;
-			int cell_count;
-			int rank;
+	      array_count = proc.cell_count * proc.scalar_count;
+	      MPI_Send((void *) proc.array, array_count, MPI_DOUBLE, 0,
+		       TAG_HDF_DATA, MPI_COMM_WORLD);
+	    }
+	    if (mpi_myself == 0)
+	    {
+	      MPI_Status mpi_status;
+	      int cell_count;
+	      int rank;
 
-			MPI_Recv(&rank, 1, MPI_INT, MPI_ANY_SOURCE, TAG_HDF_DATA,
-					 MPI_COMM_WORLD, &mpi_status);
-			MPI_Recv(&cell_count, 1, MPI_INT, rank, TAG_HDF_DATA,
-					 MPI_COMM_WORLD, &mpi_status);
+	      MPI_Recv(&rank, 1, MPI_INT, MPI_ANY_SOURCE, TAG_HDF_DATA,
+		       MPI_COMM_WORLD, &mpi_status);
+	      MPI_Recv(&cell_count, 1, MPI_INT, rank, TAG_HDF_DATA,
+		       MPI_COMM_WORLD, &mpi_status);
 
-			array_count = cell_count * proc.scalar_count;
-			if (root.recv_array_count < array_count)
-			{
-				root.recv_array =
-					(double *) PHRQ_realloc(root.recv_array,
-											sizeof(double) * array_count);
-				if (root.recv_array == NULL)
-					malloc_error();
-				root.recv_array_count = array_count;
-			}
-			MPI_Recv((void *) root.recv_array, array_count, MPI_DOUBLE, rank,
-					 TAG_HDF_DATA, MPI_COMM_WORLD, &mpi_status);
-			if (1 /* mpi_status bOK */ )
-			{
-				write_proc_timestep(rank, cell_count,
-									root.current_file_dspace_id,
-									root.current_file_dset_id,
-									root.recv_array);
-			}
-		}
+	      array_count = cell_count * proc.scalar_count;
+	      if (root.recv_array_count < array_count)
+	      {
+		root.recv_array =
+		  (double *) PHRQ_realloc(root.recv_array,
+					  sizeof(double) * array_count);
+		if (root.recv_array == NULL)
+		  malloc_error();
+		root.recv_array_count = array_count;
+	      }
+	      MPI_Recv((void *) root.recv_array, array_count, MPI_DOUBLE, rank,
+		       TAG_HDF_DATA, MPI_COMM_WORLD, &mpi_status);
+	      if (1 /* mpi_status bOK */ )
+	      {
+		write_proc_timestep(rank, cell_count,
+				    root.current_file_dspace_id,
+				    root.current_file_dset_id,
+				    root.recv_array);
+	      }
+	    }
+	  }
 	}
 #endif
 }
@@ -1630,7 +1577,7 @@ write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
 	status = H5Sclose(mem_dspace);
 	assert(status >= 0);
 }
-#ifdef SKIP_PHAST_CLASS_REWRITE
+
 /*-------------------------------------------------------------------------
  * Function          get_c_scalar_count
  * 
@@ -1674,23 +1621,7 @@ get_c_scalar_count(int load_names, char **names)
 	pr.punch = prpunch;
 	return g_hdf_scalar_count;
 }
-#endif /* SKIP_PHAST_CLASS_REWRITE */
-/*-------------------------------------------------------------------------
- * Function          get_c_scalar_count
- * 
- * NOTE: May want to rewrite this and call it punch_all_hdf
- *
- * Preconditions:    TODO:
- *
- * Postconditions:   TODO:
- *-------------------------------------------------------------------------
- */
-static int
-get_c_scalar_count(int load_names, char **names)
-{
 
-	return g_hdf_scalar_count;
-}
 /*-------------------------------------------------------------------------
  * Function          HDFWriteHyperSlabV
  *
@@ -1875,7 +1806,7 @@ HDFWriteHyperSlabV(const char *name, const char *format, va_list argptr)
 			/* keep going */
 			break;
 		}
-		// assert(pr.hdf == TRUE);	/* should not be called */
+		assert(pr.hdf == TRUE);	/* should not be called */
 		if (bLongDouble)
 		{
 			value = (double) va_arg(argptr, long double);
@@ -2204,7 +2135,7 @@ hdf_callback(const int action, const int type, const char *name,
 		switch (type)
 		{
 		case OUTPUT_PUNCH:
-			//if (pr.hdf == TRUE) // SKIP_PHAST_CLASS_REWRITE
+			if (pr.hdf == TRUE)
 			{
 				HDFWriteHyperSlabV(name, format, args);
 			}

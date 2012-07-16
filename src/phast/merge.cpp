@@ -11,16 +11,11 @@ static char const svnid[] = "$Id$";
 
 #define EXTERNAL extern
 #define USE_DEFAULT_FPRINTF
-//#include "phreeqc/global.h"		/* error_string */
-#include "PHRQ_global.h"
-#include "PHRQ_utilities.h"
-extern char *error_string;
+#include "phreeqc/global.h"		/* error_string */
 #include "hst.h"				/* struct back_list */
-//#include "phreeqc/phqalloc.h"	/* PHRQ_malloc PHRQ_realloc PHRQ_free */
-#include "PHRQ_alloc.h"
-//#include "phreeqc/output.h"
-#include "PHRQ_output.h"
-//#include "phreeqc/phrqproto.h"
+#include "phreeqc/phqalloc.h"	/* PHRQ_malloc PHRQ_realloc PHRQ_free */
+#include "phreeqc/output.h"
+#include "phreeqc/phrqproto.h"
 #include "phastproto.h"
 #include "phast_files.h"
 #undef USE_DEFAULT_FPRINTF
@@ -944,7 +939,6 @@ output_handler(const int type, const char *err_str, const int stop,
 		}
 		break;
 	case OUTPUT_WARNING:
-#ifdef SKIP_PHAST_CLASS_REWRITE
 		if (state == TRANSPORT && transport_warnings == FALSE)
 			return (OK);
 		if (state == ADVECTION && advection_warnings == FALSE)
@@ -954,23 +948,19 @@ output_handler(const int type, const char *err_str, const int stop,
 			if (count_warnings > pr.warnings)
 				return (OK);
 		}
-#endif /* SKIP_PHAST_CLASS_REWRITE */
 		Merge_fprintf2(&s_fiOutput, "WARNING: %s\n", err_str);
 		break;
 	case OUTPUT_CHECKLINE:
-#ifdef SKIP_PHAST_CLASS_REWRITE
 		if (pr.echo_input == TRUE)
 		{
 			Merge_vfprintf2(&s_fiOutput, format, args);
 		}
-#endif /* SKIP_PHAST_CLASS_REWRITE */
 		break;
 	case OUTPUT_MESSAGE:
 	case OUTPUT_BASIC:
 		Merge_vfprintf2(&s_fiOutput, format, args);
 		break;
 	case OUTPUT_PUNCH:
-#ifdef SKIP_PHAST_CLASS_REWRITE 
 		if (pr.punch == TRUE && punch.in == TRUE)
 		{
 			if (s_ci.captured == TRUE)
@@ -982,7 +972,6 @@ output_handler(const int type, const char *err_str, const int stop,
 				Merge_vfprintf2(&s_fiPunch, format, args);
 			}
 		}
-#endif /* SKIP_PHAST_CLASS_REWRITE */
 		break;
 	case OUTPUT_ECHO:
 		Merge_vfprintf2(&s_fiEcho, format, args);

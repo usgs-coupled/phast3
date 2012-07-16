@@ -7,16 +7,12 @@
 #include <iostream>				// std::cout std::cerr
 #include "StorageBin.h"
 #include "cxxMix.h"
-//#include "phreeqc/global.h"
-#include "PHRQ_global.h"
-//#include "phreeqc/output.h"
-#include "PHRQ_output.h"
+#include "phreeqc/global.h"
+#include "phreeqc/output.h"
 #include "hst.h"
-//#include "phreeqc/phqalloc.h"
-#include "PHRQ_alloc.h"
-//#include "phreeqc/phrqproto.h" // PHAST_CLASS
-#include "PHRQ_utilities.h"
-//#include "phreeqc/input.h"
+#include "phreeqc/phqalloc.h"
+#include "phreeqc/phrqproto.h"
+#include "phreeqc/input.h"
 #include "phast_files.h"
 #include "phastproto.h"
 #include "Dictionary.h"
@@ -37,6 +33,7 @@ static char const svnid[] = "$Id: hst.cxx,v 1.1 2010/01/21 17:03:04 klkipp Exp $
 #define RANDOM
 #define REBALANCE
 /* #define USE_MPI set in makefile */
+int solute;
 #ifdef USE_MPI
 static int mpi_write_restart(double time_hst);
 static int mpi_rebalance_load_per_cell(double *times_per_cell, double *frac,
@@ -96,7 +93,7 @@ cxxDictionary
 #define CONVERT_TO_MOLAL                 FC_FUNC_ (convert_to_molal,              CONVERT_TO_MOLAL)
 #define CONVERT_TO_MASS_FRACTION         FC_FUNC_ (convert_to_mass_fraction,      CONVERT_TO_MASS_FRACTION)
 #define DISTRIBUTE_INITIAL_CONDITIONS    FC_FUNC_ (distribute_initial_conditions, DISTRIBUTE_INITIAL_CONDITIONS)
-#define EQUILIBRATE                      FC_FUNC  (equilibrate,                   EQUILIBRATE)
+#define EQUILIBRATE                      FC_FUNC_ (equilibrate,                   EQUILIBRATE)
 #define ERRPRT_C                         FC_FUNC_ (errprt_c,                      ERRPRT_C)
 #define FORWARD_AND_BACK                 FC_FUNC_ (forward_and_back,              FORWARD_AND_BACK)
 #define LOGPRT_C                         FC_FUNC_ (logprt_c,                      LOGPRT_C)
@@ -229,88 +226,6 @@ extern
 }
 /* ---------------------------------------------------------------------- */
 void
-ERRPRT_C(char *err_str, long l)
-/* ---------------------------------------------------------------------- */
-{
-	char *
-		e_string;
-
-	e_string = (char *) PHRQ_malloc((size_t) (l + 1) * sizeof(char));
-	strncpy(e_string, err_str, (size_t) (l));
-	e_string[l] = '\0';
-	string_trim_right(e_string);
-	output_msg(OUTPUT_ECHO, "ERROR: %s\n", e_string);
-	output_msg(OUTPUT_SCREEN, "ERROR: %s\n", e_string);
-	free_check_null(e_string);
-	return;
-}
-/* ---------------------------------------------------------------------- */
-void
-WARNPRT_C(char *err_str, long l)
-/* ---------------------------------------------------------------------- */
-{
-	char *
-		e_string;
-
-	e_string = (char *) PHRQ_malloc((size_t) (l + 1) * sizeof(char));
-	strncpy(e_string, err_str, (size_t) (l));
-	e_string[l] = '\0';
-	string_trim_right(e_string);
-	output_msg(OUTPUT_ECHO, "WARNING: %s\n", e_string);
-	output_fflush(OUTPUT_ECHO);
-	output_msg(OUTPUT_SCREEN, "WARNING: %s\n", e_string);
-	output_fflush(OUTPUT_SCREEN);
-	free_check_null(e_string);
-	return;
-}
-
-/* ---------------------------------------------------------------------- */
-void
-LOGPRT_C(char *err_str, long l)
-/* ---------------------------------------------------------------------- */
-{
-	char *
-		e_string;
-
-	if (mpi_myself != 0)
-		return;
-	e_string = (char *) PHRQ_malloc((size_t) (l + 1) * sizeof(char));
-	strncpy(e_string, err_str, (size_t) (l));
-	e_string[l] = '\0';
-	string_trim_right(e_string);
-	output_msg(OUTPUT_ECHO, "%s\n", e_string);
-	output_fflush(OUTPUT_ECHO);
-	/*
-	   fprintf(error_file,"%s\n", e_string);
-	   fflush(error_file);
-	 */
-	free_check_null(e_string);
-	return;
-}
-
-/* ---------------------------------------------------------------------- */
-void
-SCREENPRT_C(char *err_str, long l)
-/* ---------------------------------------------------------------------- */
-{
-	char *
-		e_string;
-
-	if (mpi_myself != 0)
-		return;
-	e_string = (char *) PHRQ_malloc((size_t) (l + 1) * sizeof(char));
-	strncpy(e_string, err_str, (size_t) (l));
-	e_string[l] = '\0';
-	string_trim_right(e_string);
-	output_msg(OUTPUT_SCREEN, "%s\n", e_string);
-	output_fflush(OUTPUT_SCREEN);
-	free_check_null(e_string);
-	return;
-}
-
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void
 PHREEQC_FREE(int *solute)
 /* ---------------------------------------------------------------------- */
 /*
@@ -326,11 +241,15 @@ PHREEQC_FREE(int *solute)
 
 #ifdef USE_MPI
 	MPI_Finalize();
-	free_check_null(mpi_buffer);
-	free_check_null(random_frac);
-	free_check_null(random_pv);
-	free_check_null(random_printzone_chem);
-	free_check_null(random_printzone_xyz);
+	if (solute)
+	{
+		free_check_null(mpi_buffer);
+		free_check_null(random_frac);
+		free_check_null(random_pv);
+		free_check_null(random_printzone_chem);
+		free_check_null(random_printzone_xyz);
+		free_check_null(random_list);
+	}
 #ifdef REPLACED
 	for (i = 0; i < count_chem; i++)
 	{
@@ -375,7 +294,7 @@ PHREEQC_FREE(int *solute)
 
 /* ---------------------------------------------------------------------- */
 void
-PHREEQC_MAIN(int *solute, char *chemistry_name, char *database_name,
+PHREEQC_MAIN(int *solute_fort, char *chemistry_name, char *database_name,
 			 char *prefix, int *mpi_tasks_fort, int *mpi_myself_fort,
 			 int chemistry_l, int database_l, int prefix_l)
 /* ---------------------------------------------------------------------- */
@@ -472,6 +391,7 @@ PHREEQC_MAIN(int *solute, char *chemistry_name, char *database_name,
 	/*
 	 *  MPI stuff
 	 */
+	solute = *solute_fort;
 #ifdef USE_MPI
 	mpi_tasks = *mpi_tasks_fort;
 	mpi_myself = *mpi_myself_fort;
@@ -496,9 +416,9 @@ PHREEQC_MAIN(int *solute, char *chemistry_name, char *database_name,
 	 */
 #if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
 	output_close(OUTPUT_ECHO);
-	MergeInit(prefix, prefix_l, *solute);	/* opens .chem.txt,  .chem.xyz.tsv, .log.txt */
+	MergeInit(prefix, prefix_l, *solute_fort);	/* opens .chem.txt,  .chem.xyz.tsv, .log.txt */
 # else
-	open_output_file(prefix, *solute);
+	open_output_file(prefix, *solute_fort);
 #endif
 	if (errors != 0)
 	{
@@ -513,7 +433,7 @@ PHREEQC_MAIN(int *solute, char *chemistry_name, char *database_name,
 	/*
 	 *  Return if flow only simulation
 	 */
-	if (*solute == FALSE)
+	if (*solute_fort == FALSE)
 	{
 		return /*(0) */ ;
 	}
@@ -601,7 +521,7 @@ PHREEQC_MAIN(int *solute, char *chemistry_name, char *database_name,
 #if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
 	/* do nothing */
 # else
-	open_punch_file(prefix, *solute);
+	open_punch_file(prefix, *solute_fort);
 #endif
 	if (mpi_myself == 0)
 		output_msg(OUTPUT_ECHO, "PHREEQC done.\n");
@@ -1014,7 +934,6 @@ DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
 	 *  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
 	 *  Does nothing if i < 0, i.e. values to be gotten from restart files
 	 */
-	size_t count_negative_porosity = 0;
 	for (k = 0; k < last_cell - first_cell + 1; k++)
 	{
 		j = sort_random_list[k];	/* j is count_chem number */
@@ -1022,15 +941,6 @@ DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
 		assert(forward[i] >= 0);
 		assert (volume[i] > 0.0);
 		double porosity = pv0[i] / volume[i];
-		if (pv0[i] < 0 || volume[i] < 0)
-		{
-			sprintf(error_string, "Negative volume in cell %d: volume, %e\t initial volume, %e.",
-					i, volume[i], pv0[i]);
-			input_error++;
-			count_negative_porosity++;
-			error_msg(error_string, CONTINUE);
-			continue;
-		}
 		assert (porosity > 0.0);
 		double porosity_factor = (1.0 - porosity) / porosity;
 		system_cxxInitialize(i, j, initial_conditions1, initial_conditions2,
@@ -1038,13 +948,6 @@ DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
 			exchange_units, surface_units, ssassemblage_units,
 			ppassemblage_units, gasphase_units, kinetics_units,
 			porosity_factor);
-	}
-	if (count_negative_porosity > 0)
-	{
-		sprintf(error_string, "Negative initial volumes may be due to initial head distribution.\n"
-			"Make initial heads greater than or equal to the elevation of the node for each cell.\n"
-			"Increase porosity, decrease specific storage, or use free surface boundary.");
-		error_msg(error_string, CONTINUE);
 	}
 	sort_random_list = (int *) free_check_null(sort_random_list);
 	/*
@@ -1429,7 +1332,6 @@ DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
 	 *  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
 	 *  Does nothing for indexes less than 0 (i.e. restart files)
 	 */
-	size_t count_negative_porosity = 0;
 	for (i = 0; i < ixyz; i++)
 	{							/* i is ixyz number */
 		j = forward[i];			/* j is count_chem number */
@@ -1438,15 +1340,6 @@ DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
 		assert(forward[i] >= 0);
 		assert (volume[i] > 0.0);
 		double porosity = pv0[i] / volume[i];
-		if (pv0[i] < 0 || volume[i] < 0)
-		{
-			sprintf(error_string, "Negative volume in cell %d: volume, %e\t initial volume, %e.",
-					i, volume[i], pv0[i]);
-			input_error++;
-			count_negative_porosity++;
-			error_msg(error_string, CONTINUE);
-			continue;
-		}
 		assert (porosity > 0.0);
 		double porosity_factor = (1.0 - porosity) / porosity;
 		system_cxxInitialize(i, j, initial_conditions1, initial_conditions2,
@@ -1454,13 +1347,6 @@ DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
 			exchange_units, surface_units, ssassemblage_units,
 			ppassemblage_units, gasphase_units, kinetics_units,
 			porosity_factor);
-	}
-	if (count_negative_porosity > 0)
-	{
-		sprintf(error_string, "Negative initial volumes may be due to initial head distribution.\n"
-			"Make initial heads greater than or equal to the elevation of the node for each cell.\n"
-			"Increase porosity, decrease specific storage, or use free surface boundary.");
-		error_msg(error_string, CONTINUE);
 	}
 	/*
 	 * Read any restart files
@@ -2957,7 +2843,7 @@ LOGPRT_C(char *err_str, long l)
 		e_string;
 
 	if (mpi_myself != 0)
-		return;
+	  return;
 	e_string = (char *) PHRQ_malloc((size_t) (l + 1) * sizeof(char));
 	strncpy(e_string, err_str, (size_t) (l));
 	e_string[l] = '\0';
@@ -4485,4 +4371,3 @@ STORE_C_POINTERS(int *indx_sol1_ic, double *x_node, double *y_node,
 
 	return;
 }
-#endif
