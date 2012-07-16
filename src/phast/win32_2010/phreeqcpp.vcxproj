@@ -331,9 +331,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\hdf.cpp" />
-    <ClCompile Include="..\hst.cxx" />
-    <ClCompile Include="..\hstsubs.cpp" />
+    <ClCompile Include="..\hdf.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='merge_debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='merge|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ser|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\hst.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='merge_debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='merge|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ser|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\hstsubs.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='merge_debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='merge|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ser|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\merge.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ser|Win32'">true</ExcludedFromBuild>
@@ -342,16 +357,6 @@
     </ClCompile>
     <ClCompile Include="..\phast_main.cpp" />
     <ClCompile Include="..\gzstream.cxx" />
-    <ClCompile Include="..\phast_files.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='merge_debug|Win32'">CompileAsCpp</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='merge|Win32'">CompileAsCpp</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">CompileAsCpp</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='ser|Win32'">CompileAsCpp</CompileAs>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='merge_debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='merge|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ser|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\Reaction_module.cxx" />
     <ClCompile Include="..\RM_interface.cpp" />
     <ClCompile Include="..\KDtree\KDtree.cpp">
@@ -359,59 +364,19 @@
     </ClCompile>
     <ClCompile Include="..\KDtree\kdtree2.cpp" />
     <ClCompile Include="..\KDtree\Point.cpp" />
-    <ClCompile Include="..\slavesubs.cpp">
+    <ClCompile Include="..\workersubs.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ser|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ser_debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ser|x64'">true</ExcludedFromBuild>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\phreeqcpp\cxxKinetics.h" />
-    <ClInclude Include="..\phreeqcpp\cxxMix.h" />
-    <ClInclude Include="..\phreeqcpp\dumper.h" />
-    <ClInclude Include="..\phreeqcpp\Exchange.h" />
-    <ClInclude Include="..\phreeqcpp\ExchComp.h" />
-    <ClInclude Include="..\phreeqcpp\GasPhase.h" />
+    <ResourceCompile Include="phast.rc" />
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="..\gzstream.h" />
     <ClInclude Include="..\hst.h" />
-    <ClInclude Include="..\phreeqcpp\ISolution.h" />
-    <ClInclude Include="..\phreeqcpp\ISolutionComp.h" />
-    <ClInclude Include="..\phreeqcpp\KineticsComp.h" />
-    <ClInclude Include="..\phreeqcpp\NameDouble.h" />
-    <ClInclude Include="..\phreeqcpp\NumKeyword.h" />
-    <ClInclude Include="..\phreeqcpp\Parser.h" />
-    <ClInclude Include="..\phreeqcpp\PBasic.h" />
-    <ClInclude Include="..\phreeqcpp\Pe_Data.h" />
-    <ClInclude Include="..\phreeqcpp\Phreeqc.h" />
-    <ClInclude Include="..\phreeqcpp\PHRQ_base.h" />
-    <ClInclude Include="..\phreeqcpp\PHRQ_io.h" />
-    <ClInclude Include="..\Pointers_to_fortran.h" />
-    <ClInclude Include="..\phreeqcpp\PPassemblage.h" />
-    <ClInclude Include="..\phreeqcpp\PPassemblageComp.h" />
-    <ClInclude Include="..\phreeqcpp\Reaction.h" />
     <ClInclude Include="..\Reaction_module.h" />
     <ClInclude Include="..\RM_interface.h" />
-    <ClInclude Include="..\phreeqcpp\runner.h" />
-    <ClInclude Include="..\phreeqcpp\Solution.h" />
-    <ClInclude Include="..\phreeqcpp\SolutionIsotope.h" />
-    <ClInclude Include="..\phreeqcpp\SolutionIsotopeList.h" />
-    <ClInclude Include="..\phreeqcpp\SSassemblage.h" />
-    <ClInclude Include="..\phreeqcpp\SSassemblageSS.h" />
-    <ClInclude Include="..\phreeqcpp\StorageBin.h" />
-    <ClInclude Include="..\phreeqcpp\StorageBinList.h" />
-    <ClInclude Include="..\phreeqcpp\Surface.h" />
-    <ClInclude Include="..\phreeqcpp\SurfaceComp.h" />
-    <ClInclude Include="..\phreeqcpp\System.h" />
-    <ClInclude Include="..\phreeqcpp\Temperature.h" />
-    <ClInclude Include="..\phreeqcpp\Utils.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\ifrd.inc" />
-    <None Include="..\ifwr.inc" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="phast.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

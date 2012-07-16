@@ -1155,7 +1155,7 @@ Reaction_module::cxxSolution2fraction(cxxSolution * cxxsoln_ptr, std::vector<dou
 	size_t i;
 	for (i = 3; i < this->components.size(); i++)
 	{
-		d.push_back(cxxsoln_ptr->Get_total_element(components[i].c_str()) * this->gfw[i]/1000.);
+		d.push_back(cxxsoln_ptr->Get_total(components[i].c_str()) * this->gfw[i]/1000.);
 	}
 }
 
