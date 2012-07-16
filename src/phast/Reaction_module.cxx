@@ -2,7 +2,7 @@
 #include "PHRQ_base.h"
 #include "PHRQ_io.h"
 #include "IPhreeqc.hpp"
-#include "PHAST_IPhreeqc.h"
+#include "IPhreeqcPhast.h"
 #include "Phreeqc.h"
 #include <assert.h>
 #include "System.h"
@@ -24,7 +24,7 @@ Reaction_module::Reaction_module(PHRQ_io *io)
 	//
 : PHRQ_base(io)
 {
-	this->phast_iphreeqc_worker = new PHAST_IPhreeqc;
+	this->phast_iphreeqc_worker = new IPhreeqcPhast;
 	this->mpi_myself = 0;
 	this->mpi_tasks = 1;
 

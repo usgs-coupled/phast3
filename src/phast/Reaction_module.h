@@ -1,7 +1,7 @@
 #if !defined(REACTION_MODULE_H_INCLUDED)
 #define REACTION_MODULE_H_INCLUDED
 #include "PHRQ_base.h"
-#include "PHAST_IPhreeqc.h"
+#include "IPhreeqcPhast.h"
 #include "StorageBin.h"
 #include <vector>
 #include <list>
@@ -132,7 +132,7 @@ protected:
 	void Init_uz(void);
 
 protected:
-	PHAST_IPhreeqc * phast_iphreeqc_worker;
+	IPhreeqcPhast * phast_iphreeqc_worker;
 	std::string database_file_name;
 	std::string file_prefix;
 	cxxStorageBin uz_bin;
