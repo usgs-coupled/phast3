@@ -40,10 +40,10 @@ void C_IO_open_output_file(char * prefix, int l_prefix);
 void C_IO_open_punch_file(char * prefix, int l_prefix);
 void C_IO_open_log_file(char * prefix, int l_prefix);
 
-//void errprt_c(int *id, char *err_str, long l);
-//void warnprt_c(int *id, char *err_str, long l);
-//void logprt_c(int *id, char *err_str, long l);
-//void screeenprt_c(int *id, char *err_str, long l);
+void errprt_c(char *err_str, long l);
+void warnprt_c(char *err_str, long l);
+void logprt_c(char *err_str, long l);
+void screenprt_c(char *err_str, long l);
 
 //void RM_errprt(int id, char *err_str, long l);
 //void RM_warnprt(int *id, char *err_str, long l);
@@ -53,7 +53,7 @@ void C_IO_open_log_file(char * prefix, int l_prefix);
 void C_IO_errprt(char *err_str, long l);
 void C_IO_warnprt(char *err_str, long l);
 void C_IO_logprt(char *err_str, long l);
-void C_IO_screeenprt(char *err_str, long l);
+void C_IO_screenprt(char *err_str, long l);
 
 void RM_load_database(int *id, char *database_name, int l);
 void RM_initial_phreeqc_run(int *id, char *chemistry_name, int l);

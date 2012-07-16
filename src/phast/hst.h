@@ -2,7 +2,7 @@
 static char const svnid[] = "$Id$";
 #endif
 //#include "phreeqc/phrqtype.h"
-#include "PHRQ_type.h"
+#include "phrqtype.h"
 /* 
  *  STRUCTURES
  */

@@ -8,7 +8,7 @@
 #endif
 
 #if defined(_MSC_VER)
-#define FC_FUNC_(name,NAME) NAME
+#define FC_FUNC_(name,NAME) name
 #endif
 
 #if defined(FC_FUNC_)
