@@ -1,0 +1,330 @@
+MODULE XP_module
+  ! ... Storage for transport calculation in a derived type
+  USE machine_constants, ONLY: kdp
+  IMPLICIT NONE
+
+  ! ... Type definition
+  TYPE :: Transporter
+
+     ! ... MODULE mcb_w       
+     REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: csbc, cfbc, clbc, crbc,  &
+          cfbc_n, clbc_n, crbc_n,  &
+          qsflx, qsflx_n
+     REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: sfvlb
+
+     ! ... MODULE mcch_w
+     ! ... character strings for output
+     CHARACTER(LEN=30) :: comp_name
+
+     ! ... MODULE mcm_w
+     ! ... matrix of difference equations information
+     REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: rhssbc
+     REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: vassbc
+     REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: rs, rs1
+     INTEGER :: prcphrqi, prf_chem_phrqi, prslmi, prhdfci, prhdfhi, prhdfvi
+
+     ! ... MODULE mcv_w
+     ! ... dependent variable information
+     REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: dc
+     REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: c_w
+     INTEGER :: is, iis_no
+     INTEGER :: ns=0
+     REAL(KIND=kdp) :: stotsi, stotsp, stsfbc, stslbc, stsrbc, stsdbc
+
+     ! ... MODULE mcw_w
+     ! ... well information
+     REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE ::  &
+          stfwi, sthwi, stfwp, sthwp, tqwsi, tqwsp, u10
+     REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: qslyr, qslyr_n
+     REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: qsw
+     REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: cwk
+     REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: cwkt, cwkts
+     REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: stswi, stswp
+
+  END TYPE Transporter
+  ! ... Set string for use with RCS ident command
+  CHARACTER(LEN=85), PRIVATE :: ident_string=  &
+       '$RCSfile: XP_module.f90,v $//$Revision: 1.4 $//$Date: 2011/01/29 00:18:54 $'
+  TYPE (Transporter), DIMENSION(:), ALLOCATABLE :: xp_list
+
+CONTAINS
+
+  SUBROUTINE XP_create(xp, iis)
+    ! ... Allocates and initializes the components of a derived type structure
+    USE mcch, ONLY: comp_name              ! ... get sizes from modules
+    USE mcg, ONLY: nxyz, nx, ny, nz
+    USE mcw, ONLY: nwel
+    USE mcb, ONLY: nsbc, nsbc_seg, nfbc_seg, nlbc, nlbc_seg, nrbc_seg
+    IMPLICIT NONE
+    TYPE (Transporter), INTENT(INOUT) :: xp
+    INTEGER :: a_err
+    LOGICAL :: init_zero = .TRUE.
+    INTEGER :: iis
+    !--------------------------------------------------------------------------
+    IF (nxyz < 8) STOP "Incorrect grid in XP_create."
+    ! ... init1_xfer
+    ! ...      component arrays
+    ALLOCATE (xp%dc(0:nxyz), xp%c_w(nxyz),  &
+         STAT = a_err)
+    IF (a_err /= 0) THEN
+       PRINT *, "Array allocation failed: XP_create, point 1"  
+       STOP
+    ENDIF
+    IF (init_zero) THEN
+       xp%dc = 0
+       xp%c_w = 0
+    ENDIF
+
+    ! ... Allocate matrix of difference equations arrays: mcm
+    ALLOCATE (xp%rs(nxyz),  &
+         STAT = a_err)
+    IF (a_err /= 0) THEN
+       PRINT *, "Array allocation failed: XP_create, point 2"  
+       STOP
+    ENDIF
+    IF (init_zero) THEN 
+       xp%rs = 0
+    ENDIF
+
+    ! ... Read2_xfer 
+    IF (nsbc_seg > 0) THEN         
+       ! ... Allocate specified value b.c. arrays: mcb and mcb_w
+       ALLOCATE (xp%csbc(nsbc_seg),  &
+            STAT = a_err)
+       IF (a_err /= 0) THEN  
+          PRINT *, "Array allocation failed: XP_create, point 3"
+          STOP
+       ENDIF
+       IF (init_zero) THEN
+          xp%csbc = 0
+       ENDIF
+    ENDIF
+    IF (nfbc_seg > 0) THEN 
+       ! ... Allocate specified flux b.c. arrays: mcb and mcb_w
+       ALLOCATE (xp%qsflx(nfbc_seg), xp%qsflx_n(nfbc_seg),  &
+            xp%cfbc(nfbc_seg), xp%cfbc_n(nfbc_seg),  &
+            STAT = a_err)
+       IF (a_err /= 0) THEN
+          PRINT *, "Array allocation failed: XP_create, point 4"
+          STOP
+       ENDIF
+       IF (init_zero) THEN
+          xp%qsflx = 0
+          xp%qsflx_n = 0
+          xp%cfbc = 0
+          xp%cfbc_n = 0
+       ENDIF
+    ENDIF
+    IF (nlbc_seg > 0) THEN 
+       ! ... Allocate leakage b.c. arrays: mcb and mcb_w
+       ALLOCATE (xp%clbc(nlbc_seg), xp%clbc_n(nlbc_seg),  &
+            STAT = a_err)
+       IF (a_err /= 0) THEN  
+          PRINT *, "Array allocation failed: XP_create, point 5"
+          STOP
+       ENDIF
+       IF (init_zero) THEN
+          xp%clbc = 0
+          xp%clbc_n = 0
+       ENDIF
+    ENDIF
+    IF (nrbc_seg > 0) THEN
+       ! ... Allocate river leakage b.c. arrays: mcb and mcb_w
+       ALLOCATE (xp%crbc(nrbc_seg), xp%crbc_n(nrbc_seg),  &
+            STAT = a_err)
+       IF (a_err /= 0) THEN  
+          PRINT *, "Array allocation failed: XP_create, point 6"
+          STOP
+       ENDIF
+       IF (init_zero) THEN
+          xp%crbc = 0
+          xp%crbc_n = 0
+       ENDIF
+    ENDIF
+!!$    ! ... Allocate component label array: mcch_w
+!!$    !       ALLOCATE (xp%comp_name(xp%ns),  &
+!!$    !            STAT = a_err)
+!!$    !       IF (a_err /= 0) THEN  
+!!$    !          PRINT *, "Array allocation failed: XP_create, point 6.1"
+!!$    !          STOP
+!!$    !       ENDIF
+    ! ... init2_1_xfer 
+    IF (nwel > 0) THEN
+       ! ... Allocate more well arrays: mcw_w
+       ALLOCATE (xp%qslyr(nwel,nz), xp%qslyr_n(nwel,nz), xp%qsw(nwel),  &
+            xp%cwk(nwel,nz), xp%cwkt(nwel), xp%cwkts(nwel),  &
+            xp%stfwi(nwel), xp%sthwi(1), xp%stswi(nwel),  &
+            xp%stfwp(nwel), xp%sthwp(1), xp%stswp(nwel),  &
+            STAT = a_err)
+       IF (a_err /= 0) THEN  
+          PRINT *, "Array allocation failed: XP_create, point 7"
+          STOP  
+       ENDIF
+       IF (init_zero) THEN
+          xp%qslyr = 0._kdp
+          xp%qslyr_n = 0._kdp
+          xp%qsw = 0._kdp
+          xp%cwk = 0._kdp
+          xp%cwkt = 0._kdp
+          xp%cwkts = 0._kdp
+          xp%stfwi = 0._kdp
+          xp%sthwi = 0._kdp
+          xp%stswi = 0._kdp
+          xp%stfwp = 0._kdp
+          xp%sthwp = 0._kdp
+          xp%stswp = 0._kdp
+       ENDIF
+    ENDIF
+    IF (nsbc > 0) THEN
+       ! ... Allocate difference equations arrays: mcm_w
+       ALLOCATE (xp%vassbc(7,nsbc), xp%rhssbc(nsbc),  &
+            STAT = a_err)
+       IF (a_err /= 0) THEN  
+          PRINT *, "Array allocation failed: XP_create, point 8"  
+          STOP
+       ENDIF
+       IF (init_zero) THEN
+          xp%vassbc = 0
+          xp%rhssbc = 0
+       ENDIF
+    ENDIF
+    IF (nlbc > 0) THEN
+       ! ... Allocate leakage b.c. arrays: mcb_m
+       ALLOCATE (xp%sfvlb(nlbc),  &
+            STAT = a_err)
+       IF (a_err /= 0) THEN  
+          PRINT *, "Array allocation failed: XP_create, point 9" 
+          STOP
+       ENDIF
+       IF (init_zero) THEN
+          xp%sfvlb = 0
+       ENDIF
+    ENDIF
+
+    ! ... Set name and number
+    xp%iis_no = iis
+    xp%comp_name = comp_name(iis)
+  END SUBROUTINE XP_create
+
+  SUBROUTINE XP_destroy(xp)
+    ! ... Deletes a derived type
+    USE mcg, ONLY: nxyz, nx, ny, nz              ! ... get sizes from modules
+    USE mcw, ONLY: nwel
+    USE mcb, ONLY: nsbc, nsbc_seg, nfbc_seg, nlbc, nlbc_seg, nrbc_seg
+    IMPLICIT NONE
+    TYPE (Transporter), INTENT(INOUT) :: xp
+    INTEGER :: da_err
+    !------------------------------------------------------------------------------
+    ! ... init1_xfer    
+    ! ...      component arrays    
+    DEALLOCATE (xp%dc, xp%c_w,  &
+         STAT = da_err)
+    IF (da_err /= 0) THEN
+       PRINT *, "Array deallocation failed: XP_destroy, point 1"  
+       STOP
+    ENDIF
+    ! ... Allocate matrix of difference equations arrays: mcm
+    DEALLOCATE (xp%rs,  &
+         STAT = da_err)
+    IF (da_err /= 0) THEN
+       PRINT *, "Array deallocation failed: XP_destroy, point 2"  
+       STOP
+    ENDIF
+
+    ! ... Read2_xfer 
+    IF (nsbc_seg > 0) THEN         
+       ! ... Allocate specified value b.c. arrays: mcb and mcb_w
+       DEALLOCATE (xp%csbc, &
+            STAT = da_err)
+       IF (da_err /= 0) THEN  
+          PRINT *, "Array deallocation failed: XP_destroy, point 3"
+          STOP
+       ENDIF
+    ENDIF
+    IF (nfbc_seg > 0) THEN 
+       ! ... Allocate specified flux b.c. arrays: mcb and mcb_w
+       DEALLOCATE (xp%qsflx, xp%qsflx_n, xp%cfbc, xp%cfbc_n,  &
+            STAT = da_err)
+       IF (da_err /= 0) THEN
+          PRINT *, "Array deallocation failed: XP_destroy, point 4"
+          STOP
+       ENDIF
+    ENDIF
+    IF (nlbc_seg > 0) THEN 
+       ! ... Allocate leakage b.c. arrays: mcb and mcb_w
+       DEALLOCATE (xp%clbc, xp%clbc_n,  &
+            STAT = da_err)
+       IF (da_err /= 0) THEN  
+          PRINT *, "Array deallocation failed: XP_destroy, point 5"
+          STOP
+       ENDIF
+    ENDIF
+    IF (nrbc_seg > 0) THEN
+       ! ... Allocate river leakage b.c. arrays: mcb and mcb_w
+       DEALLOCATE (xp%crbc, xp%crbc_n,  &
+            STAT = da_err)
+       IF (da_err /= 0) THEN  
+          PRINT *, "Array deallocation failed: XP_destroy, point 6"
+          STOP
+       ENDIF
+    ENDIF
+    ! ... init2_1_xfer 
+    IF (nwel > 0) THEN
+       ! ... Allocate more well arrays: mcw_w
+       DEALLOCATE (xp%qslyr, xp%qslyr_n, xp%qsw,  &
+            xp%cwk, xp%cwkt, xp%cwkts,  &
+            xp%stfwi, xp%sthwi, xp%stswi,  &
+            xp%stfwp, xp%sthwp, xp%stswp,  &
+            STAT = da_err)
+       IF (da_err /= 0) THEN  
+          PRINT *, "Array deallocation failed: XP_destroy, point 7"
+          STOP  
+       ENDIF
+    ENDIF
+    IF (nsbc > 0) THEN
+       ! ... Allocate difference equations arrays: mcm_w
+       DEALLOCATE (xp%vassbc, xp%rhssbc,  &
+            STAT = da_err)
+       IF (da_err /= 0) THEN  
+          PRINT *, "Array deallocation failed: XP_destroy, point 8"  
+          STOP
+       ENDIF
+    ENDIF
+    IF (nlbc > 0) THEN
+       ! ... Allocate leakage b.c. arrays: mcb_m
+       DEALLOCATE (xp%sfvlb, &
+            STAT = da_err)
+       IF (da_err /= 0) THEN  
+          PRINT *, "Array deallocation failed: XP_destroy, point 9" 
+          STOP
+       ENDIF
+    ENDIF
+  END SUBROUTINE XP_destroy
+
+END MODULE XP_module
+
+SUBROUTINE create_transporters
+! ... Allocates and initializes an xp derived type
+  USE mcc            ! ... Get sizes from modules
+  USE mcv
+  USE XP_module
+  IMPLICIT NONE
+  INTEGER :: a_err, i
+  !     ------------------------------------------------------------------
+  IF (solute) THEN
+     IF (local_ns > 0) THEN
+        ALLOCATE (xp_list(local_ns),  &
+             STAT = a_err)
+        IF (a_err /= 0) THEN
+           PRINT *, "Array allocation failed: transporters_create"  
+           STOP
+        ENDIF
+
+        DO i = 1, ns
+           IF (local_component_map(i) > 0) THEN
+              CALL XP_create(xp_list(local_component_map(i)), i)
+           ENDIF
+        ENDDO
+     ENDIF
+  ENDIF
+END SUBROUTINE create_transporters
