@@ -266,6 +266,21 @@
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqcPhast.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap4.cpp">
+      <Filter>Source Files\IPhreeqc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap5.cpp">
+      <Filter>Source Files\IPhreeqc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap6.cpp">
+      <Filter>Source Files\IPhreeqc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap7.cpp">
+      <Filter>Source Files\IPhreeqc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap8.cpp">
+      <Filter>Source Files\IPhreeqc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\CVar.hxx">

@@ -3,22 +3,23 @@
 #include "PHRQ_io.h"
 #include <string>
 #include <map>
-class RM_interface
-{
-public:
-	static int Create_reaction_module(void);
-	static IPQ_RESULT Destroy_reaction_module(int n);
-	static Reaction_module* Get_instance(int n);
-	static PHRQ_io phast_io;
 
-private:
-	static std::map<size_t, Reaction_module*> Instances;
-	static size_t InstancesIndex;
-
-};
+//class RM_interface
+//{
+//public:
+//	static int Create_reaction_module(int iphreeqc_id);
+//	static IPQ_RESULT Destroy_reaction_module(int n);
+//	static Reaction_module* Get_instance(int n);
+//	static PHRQ_io phast_io;
+//
+//private:
+//	static std::map<size_t, Reaction_module*> Instances;
+//	static size_t InstancesIndex;
+//};
 
 std::map<size_t, Reaction_module*> RM_interface::Instances;
 size_t RM_interface::InstancesIndex = 0;
+PHRQ_io RM_interface::phast_io;
 
 /* ---------------------------------------------------------------------- */
 Reaction_module*
@@ -33,14 +34,20 @@ RM_interface::Get_instance(int id)
 	return 0;
 }
 /* ---------------------------------------------------------------------- */
+int RM_create(int iphreeqc_id)
+/* ---------------------------------------------------------------------- */
+{
+	return RM_interface::Create_reaction_module(iphreeqc_id);
+}
+/* ---------------------------------------------------------------------- */
 int
-RM_interface::Create_reaction_module(void)
+RM_interface::Create_reaction_module(int iphreeqc_id)
 /* ---------------------------------------------------------------------- */
 {
 	int n = IPQ_OUTOFMEMORY;
 	try
 	{
-		Reaction_module* Reaction_module_ptr = new Reaction_module;
+		Reaction_module* Reaction_module_ptr = new Reaction_module(iphreeqc_id);
 		if (Reaction_module_ptr)
 		{
 			std::map<size_t, Reaction_module*>::value_type instance(RM_interface::InstancesIndex, Reaction_module_ptr);
@@ -57,6 +64,12 @@ RM_interface::Create_reaction_module(void)
 		return IPQ_OUTOFMEMORY;
 	}
 	return n;
+}
+/* ---------------------------------------------------------------------- */
+int RM_destroy(int id)
+/* ---------------------------------------------------------------------- */
+{
+	return RM_interface::Destroy_reaction_module(id);
 }
 /* ---------------------------------------------------------------------- */
 IPQ_RESULT
@@ -411,4 +424,15 @@ C_IO_screenprt(char *err_str, long l)
 	std::ostringstream estr;
 	estr << e_string << std::endl;
 	RM_interface::phast_io.error_msg(estr.str().c_str());
+}
+/* ---------------------------------------------------------------------- */
+void
+RM_send_restart_name(int *id, char *name, long nchar)
+/* ---------------------------------------------------------------------- */
+{
+	std::string stdstring(name, nchar);
+	trim(stdstring);
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module_ptr->Send_restart_name(stdstring);
+
 }

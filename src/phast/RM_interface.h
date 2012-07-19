@@ -1,10 +1,14 @@
 /*! @file IPhreeqc.h
 	@brief C/Fortran Documentation
 */
-#ifndef INC_IPHREEQC_H
-#define INC_IPHREEQC_H
-
+#ifndef RM_INTERFACE_H
+#define RM_INTERFACE_H
+#include "IPhreeqc.h"
 #include "Var.h"
+#define RM_create                             rm_create
+#define RM_destroy                            rm_destroy
+#define RM_distribute_initial_conditions      rm_distribute_initial_conditions
+#define RM_send_restart_name                  rm_send_restart_name
 
 /**
  * @mainpage IPhreeqc Library Documentation
@@ -20,16 +24,28 @@
 
 /*! \brief Enumeration used to return error codes.
 */
-typedef enum {
-	IPQ_OK            =  0,  /*!< Success */
-	IPQ_OUTOFMEMORY   = -1,  /*!< Failure, Out of memory */
-	IPQ_BADVARTYPE    = -2,  /*!< Failure, Invalid VAR type */
-	IPQ_INVALIDARG    = -3,  /*!< Failure, Invalid argument */
-	IPQ_INVALIDROW    = -4,  /*!< Failure, Invalid row */
-	IPQ_INVALIDCOL    = -5,  /*!< Failure, Invalid column */
-	IPQ_BADINSTANCE   = -6   /*!< Failure, Invalid instance id */
-} IPQ_RESULT;
+//typedef enum {
+//	IPQ_OK            =  0,  /*!< Success */
+//	IPQ_OUTOFMEMORY   = -1,  /*!< Failure, Out of memory */
+//	IPQ_BADVARTYPE    = -2,  /*!< Failure, Invalid VAR type */
+//	IPQ_INVALIDARG    = -3,  /*!< Failure, Invalid argument */
+//	IPQ_INVALIDROW    = -4,  /*!< Failure, Invalid row */
+//	IPQ_INVALIDCOL    = -5,  /*!< Failure, Invalid column */
+//	IPQ_BADINSTANCE   = -6   /*!< Failure, Invalid instance id */
+//} IPQ_RESULT;
 
+class RM_interface
+{
+public:
+	static int Create_reaction_module(int iphreeqc_id);
+	static IPQ_RESULT Destroy_reaction_module(int n);
+	static Reaction_module* Get_instance(int n);
+	static PHRQ_io phast_io;
+
+private:
+	static std::map<size_t, Reaction_module*> Instances;
+	static size_t InstancesIndex;
+};
 
 #if defined(__cplusplus)
 extern "C" {
@@ -54,6 +70,10 @@ void C_IO_errprt(char *err_str, long l);
 void C_IO_warnprt(char *err_str, long l);
 void C_IO_logprt(char *err_str, long l);
 void C_IO_screenprt(char *err_str, long l);
+
+int RM_create(int id);
+int RM_destroy(int id);
+void RM_send_restart_name(int *id, char * s, long l);
 
 void RM_load_database(int *id, char *database_name, int l);
 void RM_initial_phreeqc_run(int *id, char *chemistry_name, int l);
@@ -117,4 +137,4 @@ void RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity);
 //	std::string str = source;
 //	return trim_left( trim_right( str , t) , t );
 //} 
-#endif // INC_IPHREEQC_H
+#endif // RM_INTERFACE_H

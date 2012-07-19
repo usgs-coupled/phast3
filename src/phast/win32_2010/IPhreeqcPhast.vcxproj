@@ -207,6 +207,11 @@ copy "$(TargetDir)$(TargetName).lib" "lib\$(TargetName).lib"
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap2.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap3.cpp" />
+    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap4.cpp" />
+    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap5.cpp" />
+    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap6.cpp" />
+    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap7.cpp" />
+    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap8.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\IPhreeqc.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\IPhreeqcLib.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\SelectedOutput.cpp" />
