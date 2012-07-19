@@ -13,7 +13,7 @@ class Reaction_module: public PHRQ_base
 {
 public:
 
-	Reaction_module(PHRQ_io * io=NULL);
+	Reaction_module(int iphreeqc_id, PHRQ_io * io=NULL);
 	~Reaction_module(void);
 
 	// Called through wrappers
@@ -39,6 +39,7 @@ public:
 						  int *boundary_solution2, double *fraction1,
 						  double *boundary_fraction, int dim);
 	void Run_reactions(void);
+	void Send_restart_name(std::string name);
 
 	// setters and getters
 	const std::string Get_database_file_name(void) const {return this->database_file_name;};

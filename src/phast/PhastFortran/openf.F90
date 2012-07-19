@@ -2,6 +2,7 @@ SUBROUTINE openf
   ! ... Opens input and output data files
   USE f_units
   USE mcch
+  USE mcc
 #if defined(USE_MPI)
   USE mpi_mod
 #endif
@@ -30,7 +31,7 @@ SUBROUTINE openf
   READ(fuinc,'(I10)') num_files
   DO i = 1, num_files
      READ(fuinc,'(A)') restart_name
-     CALL SEND_RESTART_NAME(restart_name)
+     CALL RM_send_restart_name(rm_id, restart_name)
   ENDDO
   OPEN(fuins,STATUS='scratch')
   !$$  OPEN(fuins,FILE='stripped.in')

@@ -1,6 +1,8 @@
 #include "Reaction_module.h"
+#include "RM_interface.h"
 #include "PHRQ_base.h"
 #include "PHRQ_io.h"
+#include "IPhreeqc.h"
 #include "IPhreeqc.hpp"
 #include "IPhreeqcPhast.h"
 #include "Phreeqc.h"
@@ -17,14 +19,15 @@
 #include "cxxKinetics.h"
 #include "GasPhase.h"
 #include <time.h>
-
-Reaction_module::Reaction_module(PHRQ_io *io)
+Reaction_module::Reaction_module(int iphreeqc_id, PHRQ_io *io)
 	//
 	// default constructor for cxxExchComp 
 	//
 : PHRQ_base(io)
 {
-	this->phast_iphreeqc_worker = new IPhreeqcPhast;
+	//this->phast_iphreeqc_worker = new IPhreeqcPhast;
+	this->phast_iphreeqc_worker = RM_interface::Get_instance(iphreeqc_id);
+	//this->phast_iphreeqc_worker = IPhreeqcLib::GetInstance(iphreeqc_id);
 	this->mpi_myself = 0;
 	this->mpi_tasks = 1;
 
@@ -1873,4 +1876,12 @@ Reaction_module::Run_reactions()
 
 	}
 
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Send_restart_name(std::string name)
+/* ---------------------------------------------------------------------- */
+{
+	int	i = (int) FileMap.size();
+	FileMap[name] = i;
 }

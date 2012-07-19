@@ -154,7 +154,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>zdll.lib;phastpp.lib;IPhreeqcPhast.lib;gmp.lib;hdf5dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(DEV_GMP_LIB_MT);$(DEV_IFC_LIB);$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(OUTDIR);$(SolutionDir)Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DEV_GMP_LIB_MT);$(DEV_IFC_LIB);$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(SolutionDir)$(OUTDIR);$(SolutionDir)Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
     </Link>
@@ -374,7 +374,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\gzstream.h" />
-    <ClInclude Include="..\hst.h" />
+    <ClInclude Include="..\hst.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\Reaction_module.h" />
     <ClInclude Include="..\RM_interface.h" />
   </ItemGroup>

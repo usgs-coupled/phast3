@@ -82,6 +82,7 @@ MODULE mcc
   INTEGER :: prcphrqi, prf_chem_phrqi, prslmi, prhdfci, prhdfhi, prhdfvi
   INTEGER :: mpi_tasks=1
   INTEGER :: mpi_myself=0
+  INTEGER :: ipp_phrq_id=-1, rm_id=-1, ipp_temp_id=-1, ipp_phast_id=-1
 END MODULE mcc
 
 MODULE mcch
