@@ -15,7 +15,6 @@ public:
 
 	Reaction_module(PHRQ_io * io=NULL);
 	~Reaction_module(void);
-
 	// Called through wrappers
 	int Load_database(std::string database_name);
 	int Initial_phreeqc_run(std::string chemistry_name);

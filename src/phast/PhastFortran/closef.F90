@@ -216,7 +216,7 @@ SUBROUTINE closef
   CALL myclose(fuich, st(fuich))
 
   ! ... Close files and free memory in phreeqc
-  CALL phreeqc_free(solute) 
+  !CALL phreeqc_free(solute) 
 END SUBROUTINE closef
 
 SUBROUTINE myclose(funit, st)

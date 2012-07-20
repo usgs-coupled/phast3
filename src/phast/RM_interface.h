@@ -7,10 +7,13 @@
 #include "Var.h"
 #define RM_create                             rm_create
 #define RM_destroy                            rm_destroy
+#define RM_error                              rm_error
 #define RM_distribute_initial_conditions      rm_distribute_initial_conditions
 #define RM_initial_phreeqc_run                rm_initial_phreeqc_run
 #define RM_load_database                      rm_load_database
+#define RM_open_files                         rm_open_files
 #define RM_send_restart_name                  rm_send_restart_name
+#define RM_write_output                       rm_write_output
 
 /**
  * @mainpage IPhreeqc Library Documentation
@@ -33,6 +36,7 @@ public:
 	static int Create_reaction_module();
 	static IPQ_RESULT Destroy_reaction_module(int n);
 	static Reaction_module* Get_instance(int n);
+	static void CleanupReactionModuleInstances(void);
 	static PHRQ_io phast_io;
 
 private:
@@ -44,30 +48,33 @@ private:
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void C_IO_open_files(int * solute, char * prefix, int l_prefix);
-void C_IO_open_error_file(void);
-void C_IO_open_output_file(char * prefix, int l_prefix);
-void C_IO_open_punch_file(char * prefix, int l_prefix);
-void C_IO_open_log_file(char * prefix, int l_prefix);
+void RM_open_files(int * solute, char * prefix, int l_prefix);
+void RM_open_error_file(void);
+void RM_open_output_file(char * prefix, int l_prefix);
+void RM_open_punch_file(char * prefix, int l_prefix);
+void RM_open_log_file(char * prefix, int l_prefix);
 
 void errprt_c(char *err_str, long l);
-void warnprt_c(char *err_str, long l);
 void logprt_c(char *err_str, long l);
 void screenprt_c(char *err_str, long l);
+void warnprt_c(char *err_str, long l);
 
 //void RM_errprt(int id, char *err_str, long l);
 //void RM_warnprt(int *id, char *err_str, long l);
 //void RM_logprt(int *id, char *err_str, long l);
 //void RM_screeenprt(int *id, char *err_str, long l);
 
-void C_IO_errprt(char *err_str, long l);
-void C_IO_warnprt(char *err_str, long l);
-void C_IO_logprt(char *err_str, long l);
-void C_IO_screenprt(char *err_str, long l);
+void errprt(const std::string & e_string);
+void warnprt(const std::string & e_string);
+void logprt(const std::string & e_string);
+void screenprt(const std::string & e_string);
 
-int RM_create();
-int RM_destroy(int id);
+void RM_cleanup();
+int  RM_create();
+int  RM_destroy(int *id);
+void RM_error(int *id);
 void RM_send_restart_name(int *id, char * s, long l);
+void RM_write_output(int *id);
 
 void RM_load_database(int *id, char *database_name, int l);
 void RM_initial_phreeqc_run(int *id, char *chemistry_name, int l);

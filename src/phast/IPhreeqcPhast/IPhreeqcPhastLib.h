@@ -5,6 +5,7 @@
 class IPhreeqcPhastLib
 {
 public:
+	static void CleanupIPhreeqcPhast(void);
 	static int CreateIPhreeqcPhast(void);
 	static IPQ_RESULT DestroyIPhreeqcPhast(int n);
 	static IPhreeqcPhast* GetInstance(int n);
