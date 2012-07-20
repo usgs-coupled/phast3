@@ -74,3 +74,17 @@ IPhreeqcPhastLib::GetInstance(int id)
 	}
 	return 0;
 }
+//// static method
+void IPhreeqcPhastLib::CleanupIPhreeqcPhast(void)
+{
+	std::map<size_t, IPhreeqcPhast*>::iterator it = IPhreeqcPhast::PhastInstances.begin();
+	std::vector<IPhreeqcPhast*> ipp_list;
+	for ( ; it != IPhreeqcPhast::PhastInstances.end(); it++)
+	{
+		ipp_list.push_back(it->second);
+	}
+	for (size_t i = 0; i < ipp_list.size(); i++)
+	{
+		delete ipp_list[i];
+	}
+}

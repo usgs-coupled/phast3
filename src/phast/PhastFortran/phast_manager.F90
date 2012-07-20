@@ -25,12 +25,17 @@ SUBROUTINE phast_manager
   REAL(KIND=kdp) :: deltim_dummy
   INTEGER :: stop_msg, print_restart_flag, ipp_err
   CHARACTER(LEN=130) :: logline1
-  INTEGER :: i
+  INTEGER :: i, a_err
   INTERFACE
      FUNCTION RM_create() RESULT(iout)
        IMPLICIT NONE
        INTEGER :: iout
      END FUNCTION RM_create
+     FUNCTION RM_destroy(id) RESULT(iout)
+       IMPLICIT NONE
+       INTEGER :: id
+       INTEGER :: iout
+     END FUNCTION RM_destroy
   END INTERFACE
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id: phast_manager.F90,v 1.6 2011/01/29 00:18:54 klkipp Exp klkipp $'
@@ -53,35 +58,48 @@ SUBROUTINE phast_manager
   END IF
 
   !... Call phreeqc, find number of components
-  !CALL phreeqc_main(solute, f1name, f2name, f3name, mpi_tasks, mpi_myself)
-  ! f1, chem.dat; f2, database; f3, prefix
+  ! f1name, chem.dat; f2name, database; f3name, prefix
+  CALL RM_open_files(solute, f3name)
   if (solute) then
+    CALL logprt_c("Initial PHREEQC run.")
+
+    ! Create and load database
     ipp_phrq_id = CreateIPhreeqc()
-    IF (ipp_phrq_id.LT.0) THEN
+    IF (ipp_phrq_id < 0) CALL RM_error(ipp_phrq_id)
+    if (SetOutputStringOn(ipp_phrq_id, .true.) < 0) CALL RM_error(ipp_phrq_id)
+    if (LoadDatabase(ipp_phrq_id, f2name) < 0) CALL RM_error(ipp_phrq_id)
+    CALL RM_write_output(ipp_phrq_id)
+
+    ! Run .chem.dat file
+    if (SetOutputStringOn(ipp_phrq_id, .true.) < 0) CALL RM_error(ipp_phrq_id)
+    if (SetSelectedOutputFileOn(ipp_phrq_id, .true.) < 0) CALL RM_error(ipp_phrq_id)
+    if (RunFile(ipp_phrq_id, f1name) < 0) CALL RM_error(ipp_phrq_id)
+    CALL RM_write_output(ipp_phrq_id)
+
+    ! Set components
+    ns = GetComponentCount(ipp_phrq_id)
+    ALLOCATE(comp_name(ns),  & 
+        STAT = a_err)
+    IF (a_err /= 0) THEN
+        PRINT *, "Array allocation failed: init1, point 5"  
         STOP
-    END IF
-    CALL logprt_c("Initial PHREEQC run.\n")
-    ipp_err = LoadDatabase(ipp_phrq_id, f2name)
-    if (ipp_err < 0) then
-        STOP
-    endif
-    !CALL RM_initial_phreeqc_run(f1name)
-    ipp_err = SetOutputFileOn(ipp_phrq_id, .true.)
-    ipp_err = RunFile(ipp_phrq_id, f1name)
-    if (ipp_err < 0) then
-        STOP
-    endif
+    ENDIF
+    do i = 1, ns
+       CALL GetComponent(ipp_phrq_id, i, comp_name(i))
+    enddo
+    CALL logprt_c("Done with Initial PHREEQC run.")
   endif
 
   ipp_err = 0
-#ifdef SKIP_REWRITE_PHAST
-  CALL on_error_cleanup_and_exit
+  !CALL on_error_cleanup_and_exit
 
   !... Call init1
   CALL init1
   CALL error1
   IF(errexi) GO TO 50
   CALL write1
+
+#ifdef SKIP_REWRITE_PHAST
   CALL set_component_map
 
   ! ... Read the time invariant data
@@ -333,25 +351,29 @@ SUBROUTINE phast_manager
         !
      ENDDO
   ENDIF
-
+#endif
 50 CONTINUE
   !
   ! ...  Cleanup and shutdown
   !
   logline1 = 'Done with transient flow and transport simulation.'
   CALL logprt_c(logline1)
-  CALL screenprt_c(logline1)
+  !CALL screenprt_c(logline1)
   IF(errexe .OR. errexi) THEN
      logline1 = 'ERROR exit.'
      CALL logprt_c(logline1)
-     CALL screenprt_c(logline1)
+     !CALL screenprt_c(logline1)
   END IF
 #ifdef USE_MPI
   CALL MPI_BARRIER(MPI_COMM_WORLD, ierrmpi)
   PRINT *, 'Flow and Transport Simulation Completed; exit manager process ', mpi_myself
 #endif
+  if (solute) then
+    if (DestroyIPhreeqc(ipp_phrq_id) < 0) CALL RM_error(ipp_phrq_id)  
+    if (RM_destroy(rm_id) < 0) CALL RM_error(ipp_phrq_id)     
+  endif
   CALL terminate_phast
-#endif
+
 END SUBROUTINE phast_manager
 SUBROUTINE time_parallel(i)
 INTEGER :: i

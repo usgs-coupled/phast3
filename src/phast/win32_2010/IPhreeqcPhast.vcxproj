@@ -313,7 +313,10 @@ copy "$(TargetDir)$(TargetName).lib" "lib\$(TargetName).lib"
   <ItemGroup>
     <ClInclude Include="..\IPhreeqcPhast\fwrapPhast.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqcPhast.h" />
+    <ClInclude Include="..\IPhreeqcPhast\IPhreeqcPhastLib.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\CVar.hxx" />
+    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\IPhreeqc.h" />
+    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\IPhreeqc.hpp" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\phreeqc\cvdense.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\phreeqc\cvode.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\cxxKinetics.h" />

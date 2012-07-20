@@ -15,6 +15,11 @@ IPhreeqcPhast::IPhreeqcPhast(void)
 }
 IPhreeqcPhast::~IPhreeqcPhast(void)
 {
+	std::map<size_t, IPhreeqcPhast*>::iterator it = IPhreeqcPhast::PhastInstances.find(this->Index);
+	if (it != IPhreeqcPhast::PhastInstances.end())
+	{
+		IPhreeqcPhast::PhastInstances.erase(it);
+	}
 }
 /* ---------------------------------------------------------------------- */
 double

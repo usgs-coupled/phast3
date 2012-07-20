@@ -1,5 +1,6 @@
 #include "Reaction_module.h"
 #include "RM_interface.h"
+#include "IPhreeqcPhastLib.h"
 #include "PHRQ_io.h"
 #include <string>
 #include <map>
@@ -55,10 +56,10 @@ RM_interface::Create_reaction_module()
 	return n;
 }
 /* ---------------------------------------------------------------------- */
-int RM_destroy(int id)
+int RM_destroy(int *id)
 /* ---------------------------------------------------------------------- */
 {
-	return RM_interface::Destroy_reaction_module(id);
+	return RM_interface::Destroy_reaction_module(*id);
 }
 /* ---------------------------------------------------------------------- */
 IPQ_RESULT
@@ -72,47 +73,46 @@ RM_interface::Destroy_reaction_module(int id)
 		if (it != RM_interface::Instances.end())
 		{
 			delete (*it).second;
-			RM_interface::Instances.erase(it);
 			retval = IPQ_OK;
 		}
 	}
 	return retval;
 }
-
+//// static method
 /* ---------------------------------------------------------------------- */
-void
-RM_load_database(int *id, char *database_name, int l)
+void RM_interface::CleanupReactionModuleInstances(void)
 /* ---------------------------------------------------------------------- */
-/*
- *   Main program for PHREEQC
- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
-	if (Reaction_module_ptr)
+	std::map<size_t, Reaction_module*>::iterator it = RM_interface::Instances.begin();
+	std::vector<Reaction_module*> rm_list;
+	for ( ; it != RM_interface::Instances.end(); it++)
 	{
-		std::string db_name(database_name, l);
-		//std::string database_file_name(database_name, l);
-		//Reaction_module_ptr->Load_database(database_file_name);
-		Reaction_module_ptr->Get_phast_iphreeqc_worker()->LoadDatabase(db_name.c_str());
+		rm_list.push_back(it->second);
 	}
-
+	for (size_t i = 0; i < rm_list.size(); i++)
+	{
+		delete rm_list[i];
+	}
 }
-
 /* ---------------------------------------------------------------------- */
-void
-RM_initial_phreeqc_run(int *id, char *chemistry_name, int l)
+void RM_error(int *id)
 /* ---------------------------------------------------------------------- */
-/*
- *   Main program for PHREEQC
- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
-	if (Reaction_module_ptr)
+	std::string e_string;
+	if (id < 0)
 	{
-		std::string chemistry_file_name(chemistry_name, l);
-		Reaction_module_ptr->Initial_phreeqc_run(chemistry_name);
+		e_string = "IPhreeqc module not created.";
 	}
-
+	else
+	{
+		e_string = GetErrorString(*id);
+	}
+	errprt(e_string);
+	errprt("Stopping because of errors.");
+	RM_interface::CleanupReactionModuleInstances();
+	IPhreeqcPhastLib::CleanupIPhreeqcPhast();
+	//IPhreeqcLib::CleanupIPhreeqcInstances();
+	exit(1);
 }
 
 /* ---------------------------------------------------------------------- */
@@ -282,56 +282,59 @@ RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity)
 
 /* ---------------------------------------------------------------------- */
 void
-C_IO_open_files(int * solute, char * prefix, int l_prefix)
+RM_open_files(int * solute, char * prefix, int l_prefix)
 /* ---------------------------------------------------------------------- */
 {
 	// error_file is stderr
-	C_IO_open_error_file();
+	RM_open_error_file();
 	
 	// open echo and log file, prefix.log.txt
-	C_IO_open_log_file(prefix, l_prefix);
+	RM_open_log_file(prefix, l_prefix);
 
 
 	if (solute != 0)
 	{
 		// output_file is prefix.chem.txt
-		C_IO_open_output_file(prefix, l_prefix);
+		RM_open_output_file(prefix, l_prefix);
 
 		// punch_file is prefix.chem.txt
-		C_IO_open_punch_file(prefix, l_prefix);
+		RM_open_punch_file(prefix, l_prefix);
 	}
 }
 /* ---------------------------------------------------------------------- */
 void
-C_IO_open_error_file(void)
+RM_open_error_file(void)
 /* ---------------------------------------------------------------------- */
 {
 	RM_interface::phast_io.Set_error_ostream(&std::cerr);
 }
 /* ---------------------------------------------------------------------- */
 void
-C_IO_open_output_file(char * prefix, int l_prefix)
+RM_open_output_file(char * prefix, int l_prefix)
 /* ---------------------------------------------------------------------- */
 {
 	std::string fn(prefix, l_prefix);
+	trim(fn);
 	fn.append(".chem.txt");
 	RM_interface::phast_io.output_open(fn.c_str());
 }
 /* ---------------------------------------------------------------------- */
 void
-C_IO_open_punch_file(char * prefix, int l_prefix)
+RM_open_punch_file(char * prefix, int l_prefix)
 /* ---------------------------------------------------------------------- */
 {
 	std::string fn(prefix, l_prefix);
+	trim(fn);
 	fn.append(".chem.xyz.tsv");
 	RM_interface::phast_io.punch_open(fn.c_str());
 }
 /* ---------------------------------------------------------------------- */
 void
-C_IO_open_log_file(char * prefix, int l_prefix)
+RM_open_log_file(char * prefix, int l_prefix)
 /* ---------------------------------------------------------------------- */
 {
 	std::string fn(prefix, l_prefix);
+	trim(fn);
 	fn.append(".log.txt");
 	RM_interface::phast_io.log_open(fn.c_str());
 }
@@ -340,16 +343,15 @@ void
 errprt_c(char *err_str, long l)
 /* ---------------------------------------------------------------------- */
 {
-	C_IO_errprt(err_str, l);
+	std::string e_string(err_str, l);
+	trim_right(e_string);
+	errprt(e_string);
 }
 /* ---------------------------------------------------------------------- */
 void
-C_IO_errprt(char *err_str, long l)
+errprt(const std::string & e_string)
 /* ---------------------------------------------------------------------- */
 {
-	std::string e_string(err_str, l);
-	trim_right(e_string);
-
 	std::ostringstream estr;
 	estr << "ERROR: " << e_string << std::endl;
 	RM_interface::phast_io.error_msg(estr.str().c_str());
@@ -361,22 +363,19 @@ void
 warnprt_c(char *err_str, long l)
 /* ---------------------------------------------------------------------- */
 {
-	C_IO_warnprt(err_str, l);
+	std::string e_string(err_str, l);
+	trim_right(e_string);
+	warnprt(e_string);
 }
 /* ---------------------------------------------------------------------- */
 void
-C_IO_warnprt(char *err_str, long l)
+warnprt(const std::string & e_string)
 /* ---------------------------------------------------------------------- */
 {
-
-	std::string e_string(err_str, l);
-	trim_right(e_string);
-
 	std::ostringstream estr;
 	estr << "WARNING: " << e_string << std::endl;
 	RM_interface::phast_io.error_msg(estr.str().c_str());
 	RM_interface::phast_io.log_msg(estr.str().c_str());
-
 }
 
 /* ---------------------------------------------------------------------- */
@@ -384,38 +383,38 @@ void
 logprt_c(char *err_str, long l)
 /* ---------------------------------------------------------------------- */
 {
-	C_IO_logprt(err_str, l);
+	std::string e_string(err_str, l);
+	trim_right(e_string);
+	logprt(e_string);
 }
 /* ---------------------------------------------------------------------- */
 void
-C_IO_logprt(char *err_str, long l)
+logprt(const std::string & e_string)
 /* ---------------------------------------------------------------------- */
 {
-	std::string e_string(err_str, l);
-	trim_right(e_string);
-
-	std::ostringstream estr;
-	estr << e_string << std::endl;
-	RM_interface::phast_io.log_msg(estr.str().c_str());
+	//std::ostringstream estr;
+	//estr << e_string << std::endl;
+	//RM_interface::phast_io.log_msg(estr.str().c_str());
+	RM_interface::phast_io.log_msg(e_string.c_str());
+	RM_interface::phast_io.log_msg("\n");
+	screenprt(e_string);
 }
 /* ---------------------------------------------------------------------- */
 void
 screenprt_c(char *err_str, long l)
 /* ---------------------------------------------------------------------- */
 {
-	C_IO_screenprt(err_str, l);
+	std::string e_string(err_str, l);
+	trim_right(e_string);
+	screenprt(e_string);
 }
 /* ---------------------------------------------------------------------- */
 void
-C_IO_screenprt(char *err_str, long l)
+screenprt(const std::string & e_string)
 /* ---------------------------------------------------------------------- */
 {
-	std::string e_string(err_str, l);
-	trim_right(e_string);
-
-	std::ostringstream estr;
-	estr << e_string << std::endl;
-	RM_interface::phast_io.error_msg(estr.str().c_str());
+	RM_interface::phast_io.screen_msg(e_string.c_str());
+	RM_interface::phast_io.screen_msg("\n");
 }
 /* ---------------------------------------------------------------------- */
 void
@@ -427,4 +426,10 @@ RM_send_restart_name(int *id, char *name, long nchar)
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	Reaction_module_ptr->Send_restart_name(stdstring);
 
+}
+void RM_write_output(int *id)
+{
+	RM_interface::phast_io.output_msg(GetOutputString(*id));
+	RM_interface::phast_io.error_msg(GetErrorString(*id));
+	RM_interface::phast_io.punch_msg(GetSelectedOutputString(*id));
 }

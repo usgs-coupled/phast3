@@ -20,7 +20,7 @@ SUBROUTINE init1
   USE print_control_mod
   IMPLICIT NONE
   INTEGER :: a_err, iis, nsa
-  CHARACTER(LEN=10), DIMENSION(:), ALLOCATABLE :: ucomp_name
+  CHARACTER(LEN=32), DIMENSION(:), ALLOCATABLE :: ucomp_name
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
@@ -175,16 +175,30 @@ SUBROUTINE init1
   ucomp_name=" "
   ! ... Start phreeqec and count number of components
   ! CALL PHREEQC_MAIN(SOLUTE, F1NAME, F2NAME, F3NAME)
-  IF (solute) CALL count_all_components (ns, ucomp_name)
+!  IF (solute) then
+!    !CALL count_all_components (ns, ucomp_name)
+!    CALL GetComponentCount(rm_id, ns)
+!    do i = 1, ns
+!       CALL GetComponent(rm_id, ucomp_name(i))
+!    enddo
+!  endif
     
   nsa = MAX(ns,1)
   ! ... Allocate character strings for output: mcch
-  ALLOCATE(caprnt(nxyz), comp_name(nsa),  & 
+!  ALLOCATE(caprnt(nxyz), comp_name(nsa),  & 
+!       STAT = a_err)
+!  IF (a_err /= 0) THEN
+!     PRINT *, "Array allocation failed: init1, point 5"  
+!     STOP
+!  ENDIF
+! allocate comp_name in phast_manager
+  ALLOCATE(caprnt(nxyz), & 
        STAT = a_err)
   IF (a_err /= 0) THEN
      PRINT *, "Array allocation failed: init1, point 5"  
      STOP
   ENDIF
+
   ! ... Allocate dependent variable arrays: mcv
   ALLOCATE (dzfsdt(nxy), dp(0:nxyz), dt(0:0),  &
        sxx(nxyz), syy(nxyz), szz(nxyz), vxx(nxyz), vyy(nxyz), vzz(nxyz),  &

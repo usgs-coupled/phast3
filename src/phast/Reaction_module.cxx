@@ -66,7 +66,15 @@ Reaction_module::Reaction_module(PHRQ_io *io)
 }
 Reaction_module::~Reaction_module(void)
 {
+	std::map<size_t, Reaction_module*>::iterator it = RM_interface::Instances.find(this->phast_iphreeqc_worker->Get_Index());
+	delete phast_iphreeqc_worker;
+	if (it != RM_interface::Instances.end())
+	{
+		RM_interface::Instances.erase(it);
+	}
+
 }
+
 /* ---------------------------------------------------------------------- */
 int
 Reaction_module::Load_database(std::string database_name)

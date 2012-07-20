@@ -499,5 +499,14 @@
     <ClInclude Include="..\IPhreeqcPhast\fwrapPhast.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\IPhreeqc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\IPhreeqc.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IPhreeqcPhast\IPhreeqcPhastLib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
