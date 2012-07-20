@@ -8,24 +8,21 @@
 std::map<size_t, Reaction_module*> RM_interface::Instances;
 size_t RM_interface::InstancesIndex = 0;
 PHRQ_io RM_interface::phast_io;
-
+//// static RM_interface methods
 /* ---------------------------------------------------------------------- */
-Reaction_module*
-RM_interface::Get_instance(int id)
+void RM_interface::CleanupReactionModuleInstances(void)
 /* ---------------------------------------------------------------------- */
 {
-	std::map<size_t, Reaction_module*>::iterator it = RM_interface::Instances.find(size_t(id));
-	if (it != RM_interface::Instances.end())
+	std::map<size_t, Reaction_module*>::iterator it = RM_interface::Instances.begin();
+	std::vector<Reaction_module*> rm_list;
+	for ( ; it != RM_interface::Instances.end(); it++)
 	{
-		return (*it).second;
+		rm_list.push_back(it->second);
 	}
-	return 0;
-}
-/* ---------------------------------------------------------------------- */
-int RM_create()
-/* ---------------------------------------------------------------------- */
-{
-	return RM_interface::Create_reaction_module();
+	for (size_t i = 0; i < rm_list.size(); i++)
+	{
+		delete rm_list[i];
+	}
 }
 /* ---------------------------------------------------------------------- */
 int
@@ -56,12 +53,6 @@ RM_interface::Create_reaction_module()
 	return n;
 }
 /* ---------------------------------------------------------------------- */
-int RM_destroy(int *id)
-/* ---------------------------------------------------------------------- */
-{
-	return RM_interface::Destroy_reaction_module(*id);
-}
-/* ---------------------------------------------------------------------- */
 IPQ_RESULT
 RM_interface::Destroy_reaction_module(int id)
 /* ---------------------------------------------------------------------- */
@@ -78,20 +69,202 @@ RM_interface::Destroy_reaction_module(int id)
 	}
 	return retval;
 }
-//// static method
 /* ---------------------------------------------------------------------- */
-void RM_interface::CleanupReactionModuleInstances(void)
+Reaction_module*
+RM_interface::Get_instance(int id)
 /* ---------------------------------------------------------------------- */
 {
-	std::map<size_t, Reaction_module*>::iterator it = RM_interface::Instances.begin();
-	std::vector<Reaction_module*> rm_list;
-	for ( ; it != RM_interface::Instances.end(); it++)
+	std::map<size_t, Reaction_module*>::iterator it = RM_interface::Instances.find(size_t(id));
+	if (it != RM_interface::Instances.end())
 	{
-		rm_list.push_back(it->second);
+		return (*it).second;
 	}
-	for (size_t i = 0; i < rm_list.size(); i++)
+	return 0;
+}
+
+// end static RM_interface methods
+
+
+
+/* ---------------------------------------------------------------------- */
+void
+errprt_c(char *err_str, long l)
+/* ---------------------------------------------------------------------- */
+{
+	std::string e_string(err_str, l);
+	trim_right(e_string);
+	errprt(e_string);
+}
+/* ---------------------------------------------------------------------- */
+void
+errprt(const std::string & e_string)
+/* ---------------------------------------------------------------------- */
+{
+	std::ostringstream estr;
+	estr << "ERROR: " << e_string << std::endl;
+	RM_interface::phast_io.error_msg(estr.str().c_str());
+	RM_interface::phast_io.log_msg(estr.str().c_str());
+	return;
+}
+/* ---------------------------------------------------------------------- */
+void
+warnprt_c(char *err_str, long l)
+/* ---------------------------------------------------------------------- */
+{
+	std::string e_string(err_str, l);
+	trim_right(e_string);
+	warnprt(e_string);
+}
+/* ---------------------------------------------------------------------- */
+void
+warnprt(const std::string & e_string)
+/* ---------------------------------------------------------------------- */
+{
+	std::ostringstream estr;
+	estr << "WARNING: " << e_string << std::endl;
+	RM_interface::phast_io.error_msg(estr.str().c_str());
+	RM_interface::phast_io.log_msg(estr.str().c_str());
+}
+
+/* ---------------------------------------------------------------------- */
+void
+logprt_c(char *err_str, long l)
+/* ---------------------------------------------------------------------- */
+{
+	std::string e_string(err_str, l);
+	trim_right(e_string);
+	logprt(e_string);
+}
+/* ---------------------------------------------------------------------- */
+void
+logprt(const std::string & e_string)
+/* ---------------------------------------------------------------------- */
+{
+	RM_interface::phast_io.log_msg(e_string.c_str());
+	RM_interface::phast_io.log_msg("\n");
+}
+
+/* ---------------------------------------------------------------------- */
+void
+screenprt_c(char *err_str, long l)
+/* ---------------------------------------------------------------------- */
+{
+	std::string e_string(err_str, l);
+	trim_right(e_string);
+	screenprt(e_string);
+}
+/* ---------------------------------------------------------------------- */
+void
+screenprt(const std::string & e_string)
+/* ---------------------------------------------------------------------- */
+{
+	RM_interface::phast_io.screen_msg(e_string.c_str());
+	RM_interface::phast_io.screen_msg("\n");
+}
+
+
+
+
+
+
+/* ---------------------------------------------------------------------- */
+void
+RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *  Converts data in c from mass fraction to molal
+ *  Assumes c(dim, ncomps) and only first n rows are converted
+ */
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
 	{
-		delete rm_list[i];
+		Reaction_module_ptr->Calculate_well_ph(c, ph, alkalinity);
+	}
+}
+/* ---------------------------------------------------------------------- */
+void
+RM_close_files(int *solute)
+/* ---------------------------------------------------------------------- */
+{
+	// error_file is stderr
+	
+	// open echo and log file, prefix.log.txt
+	RM_interface::phast_io.log_close();
+
+	if (*solute != 0)
+	{
+		// output_file is prefix.chem.txt
+		RM_interface::phast_io.output_close();
+
+		// punch_file is prefix.chem.txt
+		RM_interface::phast_io.punch_close();
+	}
+}
+/* ---------------------------------------------------------------------- */
+void
+RM_convert_to_molal(int *id, double *c, int *n, int *dim)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *  Converts data in c from mass fraction to molal
+ *  Assumes c(dim, ncomps) and only first n rows are converted
+ */
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Convert_to_molal(c, *n, *dim);
+	}
+}
+/* ---------------------------------------------------------------------- */
+int RM_create()
+/* ---------------------------------------------------------------------- */
+{
+	return RM_interface::Create_reaction_module();
+}
+
+/* ---------------------------------------------------------------------- */
+int RM_destroy(int *id)
+/* ---------------------------------------------------------------------- */
+{
+	return RM_interface::Destroy_reaction_module(*id);
+}
+/* ---------------------------------------------------------------------- */
+void
+RM_distribute_initial_conditions(int *id,
+							  int *initial_conditions1,		// 7 x nxyz end-member 1
+							  int *initial_conditions2,		// 7 x nxyz end-member 2
+							  double *fraction1,			// 7 x nxyz fraction of end-member 1
+							  int *exchange_units,			// water (1) or rock (2)
+							  int *surface_units,			// water (1) or rock (2)
+							  int *ssassemblage_units,		// water (1) or rock (2)		
+							  int *ppassemblage_units,		// water (1) or rock (2)
+							  int *gasphase_units,			// water (1) or rock (2)
+							  int *kinetics_units			// water (1) or rock (2)
+							  )
+/* ---------------------------------------------------------------------- */
+{
+		// 7 indices for initial conditions
+		// 0 solution
+		// 1 ppassemblage
+		// 2 exchange
+		// 3 surface
+		// 4 gas phase
+		// 5 ss_assemblage
+		// 6 kinetics
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Distribute_initial_conditions(
+			initial_conditions1,
+			initial_conditions2,
+			fraction1,
+			*exchange_units,
+			*surface_units,
+			*ssassemblage_units,
+			*ppassemblage_units,
+			*gasphase_units,
+			*kinetics_units);
 	}
 }
 /* ---------------------------------------------------------------------- */
@@ -114,7 +287,94 @@ void RM_error(int *id)
 	//IPhreeqcLib::CleanupIPhreeqcInstances();
 	exit(1);
 }
+/* ---------------------------------------------------------------------- */
+void
+RM_get_components(int *id, int *n_comp, char *names, int length)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *   Counts components in any defined solution, gas_phase, exchanger,
+ *   surface, or pure_phase_assemblage
+ *
+ *   Returns:
+ *           n_comp, which is total, including H, O, elements, and Charge
+ *           names, which contains character strings with names of components
+ */
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Get_components(n_comp, names, length);
+	}
+}
+/* ---------------------------------------------------------------------- */
+void
+RM_log_screen_prt(char *err_str, long l)
+/* ---------------------------------------------------------------------- */
+{
+// writes to log file and screen
+	std::string e_string(err_str, l);
+	trim_right(e_string);
+	logprt(e_string);
+	screenprt(e_string);
+}
+/* ---------------------------------------------------------------------- */
+void
+RM_open_error_file(void)
+/* ---------------------------------------------------------------------- */
+{
+	RM_interface::phast_io.Set_error_ostream(&std::cerr);
+}
+/* ---------------------------------------------------------------------- */
+void
+RM_open_files(int * solute, char * prefix, int l_prefix)
+/* ---------------------------------------------------------------------- */
+{
+	// error_file is stderr
+	RM_open_error_file();
+	
+	// open echo and log file, prefix.log.txt
+	RM_open_log_file(prefix, l_prefix);
 
+
+	if (*solute != 0)
+	{
+		// output_file is prefix.chem.txt
+		RM_open_output_file(prefix, l_prefix);
+
+		// punch_file is prefix.chem.txt
+		RM_open_punch_file(prefix, l_prefix);
+	}
+}
+/* ---------------------------------------------------------------------- */
+void
+RM_open_log_file(char * prefix, int l_prefix)
+/* ---------------------------------------------------------------------- */
+{
+	std::string fn(prefix, l_prefix);
+	trim(fn);
+	fn.append(".log.txt");
+	RM_interface::phast_io.log_open(fn.c_str());
+}
+/* ---------------------------------------------------------------------- */
+void
+RM_open_output_file(char * prefix, int l_prefix)
+/* ---------------------------------------------------------------------- */
+{
+	std::string fn(prefix, l_prefix);
+	trim(fn);
+	fn.append(".chem.txt");
+	RM_interface::phast_io.output_open(fn.c_str());
+}
+/* ---------------------------------------------------------------------- */
+void
+RM_open_punch_file(char * prefix, int l_prefix)
+/* ---------------------------------------------------------------------- */
+{
+	std::string fn(prefix, l_prefix);
+	trim(fn);
+	fn.append(".chem.xyz.tsv");
+	RM_interface::phast_io.punch_open(fn.c_str());
+}
 /* ---------------------------------------------------------------------- */
 void
 RM_pass_data(int *id,
@@ -170,7 +430,6 @@ RM_pass_data(int *id,
 		Reaction_module_ptr->Set_file_prefix(sprefix);
 	}
 }
-
 /* ---------------------------------------------------------------------- */
 void
 RM_pass_print_flags(int *id,
@@ -194,230 +453,6 @@ RM_pass_print_flags(int *id,
 }
 /* ---------------------------------------------------------------------- */
 void
-RM_distribute_initial_conditions(int *id,
-							  int *initial_conditions1,		// 7 x nxyz end-member 1
-							  int *initial_conditions2,		// 7 x nxyz end-member 2
-							  double *fraction1,			// 7 x nxyz fraction of end-member 1
-							  int *exchange_units,			// water (1) or rock (2)
-							  int *surface_units,			// water (1) or rock (2)
-							  int *ssassemblage_units,		// water (1) or rock (2)		
-							  int *ppassemblage_units,		// water (1) or rock (2)
-							  int *gasphase_units,			// water (1) or rock (2)
-							  int *kinetics_units			// water (1) or rock (2)
-							  )
-/* ---------------------------------------------------------------------- */
-{
-		// 7 indices for initial conditions
-		// 0 solution
-		// 1 ppassemblage
-		// 2 exchange
-		// 3 surface
-		// 4 gas phase
-		// 5 ss_assemblage
-		// 6 kinetics
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
-	if (Reaction_module_ptr)
-	{
-		Reaction_module_ptr->Distribute_initial_conditions(
-			initial_conditions1,
-			initial_conditions2,
-			fraction1,
-			*exchange_units,
-			*surface_units,
-			*ssassemblage_units,
-			*ppassemblage_units,
-			*gasphase_units,
-			*kinetics_units);
-	}
-}
-/* ---------------------------------------------------------------------- */
-void
-RM_get_components(int *id, int *n_comp, char *names, int length)
-/* ---------------------------------------------------------------------- */
-{
-/*
- *   Counts components in any defined solution, gas_phase, exchanger,
- *   surface, or pure_phase_assemblage
- *
- *   Returns:
- *           n_comp, which is total, including H, O, elements, and Charge
- *           names, which contains character strings with names of components
- */
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
-	if (Reaction_module_ptr)
-	{
-		Reaction_module_ptr->Get_components(n_comp, names, length);
-	}
-}
-/* ---------------------------------------------------------------------- */
-void
-RM_convert_to_molal(int *id, double *c, int *n, int *dim)
-/* ---------------------------------------------------------------------- */
-{
-/*
- *  Converts data in c from mass fraction to molal
- *  Assumes c(dim, ncomps) and only first n rows are converted
- */
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
-	if (Reaction_module_ptr)
-	{
-		Reaction_module_ptr->Convert_to_molal(c, *n, *dim);
-	}
-}
-/* ---------------------------------------------------------------------- */
-void
-RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity)
-/* ---------------------------------------------------------------------- */
-{
-/*
- *  Converts data in c from mass fraction to molal
- *  Assumes c(dim, ncomps) and only first n rows are converted
- */
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
-	if (Reaction_module_ptr)
-	{
-		Reaction_module_ptr->Calculate_well_ph(c, ph, alkalinity);
-	}
-}
-
-/* ---------------------------------------------------------------------- */
-void
-RM_open_files(int * solute, char * prefix, int l_prefix)
-/* ---------------------------------------------------------------------- */
-{
-	// error_file is stderr
-	RM_open_error_file();
-	
-	// open echo and log file, prefix.log.txt
-	RM_open_log_file(prefix, l_prefix);
-
-
-	if (solute != 0)
-	{
-		// output_file is prefix.chem.txt
-		RM_open_output_file(prefix, l_prefix);
-
-		// punch_file is prefix.chem.txt
-		RM_open_punch_file(prefix, l_prefix);
-	}
-}
-/* ---------------------------------------------------------------------- */
-void
-RM_open_error_file(void)
-/* ---------------------------------------------------------------------- */
-{
-	RM_interface::phast_io.Set_error_ostream(&std::cerr);
-}
-/* ---------------------------------------------------------------------- */
-void
-RM_open_output_file(char * prefix, int l_prefix)
-/* ---------------------------------------------------------------------- */
-{
-	std::string fn(prefix, l_prefix);
-	trim(fn);
-	fn.append(".chem.txt");
-	RM_interface::phast_io.output_open(fn.c_str());
-}
-/* ---------------------------------------------------------------------- */
-void
-RM_open_punch_file(char * prefix, int l_prefix)
-/* ---------------------------------------------------------------------- */
-{
-	std::string fn(prefix, l_prefix);
-	trim(fn);
-	fn.append(".chem.xyz.tsv");
-	RM_interface::phast_io.punch_open(fn.c_str());
-}
-/* ---------------------------------------------------------------------- */
-void
-RM_open_log_file(char * prefix, int l_prefix)
-/* ---------------------------------------------------------------------- */
-{
-	std::string fn(prefix, l_prefix);
-	trim(fn);
-	fn.append(".log.txt");
-	RM_interface::phast_io.log_open(fn.c_str());
-}
-/* ---------------------------------------------------------------------- */
-void
-errprt_c(char *err_str, long l)
-/* ---------------------------------------------------------------------- */
-{
-	std::string e_string(err_str, l);
-	trim_right(e_string);
-	errprt(e_string);
-}
-/* ---------------------------------------------------------------------- */
-void
-errprt(const std::string & e_string)
-/* ---------------------------------------------------------------------- */
-{
-	std::ostringstream estr;
-	estr << "ERROR: " << e_string << std::endl;
-	RM_interface::phast_io.error_msg(estr.str().c_str());
-	RM_interface::phast_io.log_msg(estr.str().c_str());
-	return;
-}
-/* ---------------------------------------------------------------------- */
-void
-warnprt_c(char *err_str, long l)
-/* ---------------------------------------------------------------------- */
-{
-	std::string e_string(err_str, l);
-	trim_right(e_string);
-	warnprt(e_string);
-}
-/* ---------------------------------------------------------------------- */
-void
-warnprt(const std::string & e_string)
-/* ---------------------------------------------------------------------- */
-{
-	std::ostringstream estr;
-	estr << "WARNING: " << e_string << std::endl;
-	RM_interface::phast_io.error_msg(estr.str().c_str());
-	RM_interface::phast_io.log_msg(estr.str().c_str());
-}
-
-/* ---------------------------------------------------------------------- */
-void
-logprt_c(char *err_str, long l)
-/* ---------------------------------------------------------------------- */
-{
-	std::string e_string(err_str, l);
-	trim_right(e_string);
-	logprt(e_string);
-}
-/* ---------------------------------------------------------------------- */
-void
-logprt(const std::string & e_string)
-/* ---------------------------------------------------------------------- */
-{
-	//std::ostringstream estr;
-	//estr << e_string << std::endl;
-	//RM_interface::phast_io.log_msg(estr.str().c_str());
-	RM_interface::phast_io.log_msg(e_string.c_str());
-	RM_interface::phast_io.log_msg("\n");
-	screenprt(e_string);
-}
-/* ---------------------------------------------------------------------- */
-void
-screenprt_c(char *err_str, long l)
-/* ---------------------------------------------------------------------- */
-{
-	std::string e_string(err_str, l);
-	trim_right(e_string);
-	screenprt(e_string);
-}
-/* ---------------------------------------------------------------------- */
-void
-screenprt(const std::string & e_string)
-/* ---------------------------------------------------------------------- */
-{
-	RM_interface::phast_io.screen_msg(e_string.c_str());
-	RM_interface::phast_io.screen_msg("\n");
-}
-/* ---------------------------------------------------------------------- */
-void
 RM_send_restart_name(int *id, char *name, long nchar)
 /* ---------------------------------------------------------------------- */
 {
@@ -430,6 +465,7 @@ RM_send_restart_name(int *id, char *name, long nchar)
 void RM_write_output(int *id)
 {
 	RM_interface::phast_io.output_msg(GetOutputString(*id));
+	RM_interface::phast_io.error_msg(GetWarningString(*id));
 	RM_interface::phast_io.error_msg(GetErrorString(*id));
 	RM_interface::phast_io.punch_msg(GetSelectedOutputString(*id));
 }

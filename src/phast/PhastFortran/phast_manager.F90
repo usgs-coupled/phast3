@@ -36,6 +36,10 @@ SUBROUTINE phast_manager
        INTEGER :: id
        INTEGER :: iout
      END FUNCTION RM_destroy
+     SUBROUTINE RM_log_screen_prt(str) 
+       IMPLICIT NONE
+       CHARACTER :: str
+     END SUBROUTINE RM_log_screen_prt
   END INTERFACE
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id: phast_manager.F90,v 1.6 2011/01/29 00:18:54 klkipp Exp klkipp $'
@@ -61,7 +65,7 @@ SUBROUTINE phast_manager
   ! f1name, chem.dat; f2name, database; f3name, prefix
   CALL RM_open_files(solute, f3name)
   if (solute) then
-    CALL logprt_c("Initial PHREEQC run.")
+    CALL RM_log_screen_prt("Initial PHREEQC run.")
 
     ! Create and load database
     ipp_phrq_id = CreateIPhreeqc()
@@ -87,7 +91,7 @@ SUBROUTINE phast_manager
     do i = 1, ns
        CALL GetComponent(ipp_phrq_id, i, comp_name(i))
     enddo
-    CALL logprt_c("Done with Initial PHREEQC run.")
+    CALL RM_log_screen_prt("Done with Initial PHREEQC run.")
   endif
 
   ipp_err = 0
@@ -99,7 +103,6 @@ SUBROUTINE phast_manager
   IF(errexi) GO TO 50
   CALL write1
 
-#ifdef SKIP_REWRITE_PHAST
   CALL set_component_map
 
   ! ... Read the time invariant data
@@ -113,9 +116,12 @@ SUBROUTINE phast_manager
 
   CALL init2_2
   CALL error2
+
+#ifdef SKIP_REWRITE_PHAST-------------------------------------------------------------------------
 #if defined(HDF5_CREATE)
   CALL hdf_write_invariant(mpi_myself)
   CALL hdf_begin_time_step
+#endif
 #endif
   !
   ! ...  Initialize chemistry 
@@ -129,7 +135,24 @@ SUBROUTINE phast_manager
           exchange_units, surface_units, ssassemblage_units,  &
           ppassemblage_units, gasphase_units, kinetics_units)
 #endif
-     CALL store_c_pointers(indx_sol1_ic, x_node, y_node, z_node)
+     !CALL store_c_pointers(indx_sol1_ic, x_node, y_node, z_node)
+     CALL RM_pass_data(fresur, &
+        steady_flow,                 &
+        nx, ny, nz,                  &
+        time_phreeqc,                &
+        deltim_dummy,                &
+        cnvtmi,                      &
+        x_node, y_node, z_node,      &
+        fraction,                    & 
+        frac,                        &
+        pv,                          &
+        pv0,                         &
+        volume,                      &
+        printzone_chem,              &
+        printzone_xyz,               &
+        rebalance_fraction_hst,      &
+        prefix)
+
      CALL forward_and_back(indx_sol1_ic, naxes, nx, ny, nz)  
      !CALL distribute_initial_conditions(indx_sol1_ic, indx_sol2_ic, ic_mxfrac,  &
      !     exchange_units, surface_units, ssassemblage_units,  &
@@ -153,6 +176,8 @@ SUBROUTINE phast_manager
      CALL pack_for_hst(c,nxyz)
 #endif
   ENDIF        ! ... solute
+
+#ifdef SKIP_REWRITE_PHAST-------------------------------------------------------------------------
   CALL error4
   ! ... write2_1 must be called after distribute_initial_conditions and equilibrate
   ! ... Write initial condition results 
@@ -173,8 +198,7 @@ SUBROUTINE phast_manager
   IF (solute) THEN
      ! ... Equilibrate the initial conditions for component concentrations
      WRITE(logline1,'(a)') 'Equilibration of cells for initial conditions.'
-     CALL logprt_c(logline1)
-     CALL screenprt_c(logline1)
+     CALL RM_log_screen_prt(logline1)
      print_restart_flag = 0 
      stop_msg = 0
      deltim_dummy = 0._kdp
@@ -207,9 +231,7 @@ SUBROUTINE phast_manager
   !    
   IF(solute .OR. .NOT.steady_flow) THEN
      logline1 = 'Beginning transient simulation.'
-     CALL screenprt_c(logline1)
-     CALL logprt_c(' ')
-     CALL logprt_c(logline1)
+     CALL RM_log_screen_prt(logline1)
      fdtmth = fdtmth_tr     ! ... set time differencing method to transient
      DO
         CALL time_parallel(0)
@@ -268,12 +290,10 @@ SUBROUTINE phast_manager
         CALL time_parallel(8)
         IF (solute) THEN
            logline1 =  '     Beginning solute-transport calculation.'
-           CALL logprt_c(logline1)
-           CALL screenprt_c(logline1)
+           CALL RM_log_screen_prt(logline1)
            DO i = 1, ns
               logline1 =  '          '//comp_name(i)
-              CALL logprt_c(logline1)
-              CALL screenprt_c(logline1)
+              CALL RM_log_screen_prt(logline1)
            ENDDO
         ENDIF
 
@@ -322,8 +342,7 @@ SUBROUTINE phast_manager
         IF (solute) THEN
            stop_msg = 0
            WRITE(logline1,'(a)') '     Beginning chemistry calculation.'
-           CALL logprt_c(logline1)
-           CALL screenprt_c(logline1)
+           CALL RM_log_screen_prt(logline1)
            CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time,deltim,prslmi,cnvtmi,  &
                 frac,iprint_chem,iprint_xyz,prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f,  &
                 print_restart%print_flag_integer, pv, pv0, steady_flow, volume)
@@ -356,22 +375,20 @@ SUBROUTINE phast_manager
   !
   ! ...  Cleanup and shutdown
   !
-  logline1 = 'Done with transient flow and transport simulation.'
-  CALL logprt_c(logline1)
-  !CALL screenprt_c(logline1)
-  IF(errexe .OR. errexi) THEN
-     logline1 = 'ERROR exit.'
-     CALL logprt_c(logline1)
-     !CALL screenprt_c(logline1)
-  END IF
+  CALL RM_log_screen_prt('Done with transient flow and transport simulation.')
+  IF(errexe .OR. errexi) CALL RM_log_screen_prt('ERROR exit.')
+
 #ifdef USE_MPI
   CALL MPI_BARRIER(MPI_COMM_WORLD, ierrmpi)
   PRINT *, 'Flow and Transport Simulation Completed; exit manager process ', mpi_myself
 #endif
+
   if (solute) then
     if (DestroyIPhreeqc(ipp_phrq_id) < 0) CALL RM_error(ipp_phrq_id)  
     if (RM_destroy(rm_id) < 0) CALL RM_error(ipp_phrq_id)     
   endif
+  CALL RM_close_files(solute)
+
   CALL terminate_phast
 
 END SUBROUTINE phast_manager
@@ -437,17 +454,13 @@ CHARACTER(LEN=130) :: logline
         cum_chemistry = cum_chemistry + time_chemistry
         
         write (logline,"(t6,a25, f12.2,a17, f13.2)") "Time flow:               ", time_flow, " Cumulative:", cum_flow
-        CALL logprt_c(logline)
-        CALL screenprt_c(logline)
+        CALL RM_log_screen_prt(logline)
         write (logline,"(t6,a25, f12.2,a17, f13.2)") "Time transport:          ", time_transport, " Cumulative:", cum_transport
-        CALL logprt_c(logline)
-        CALL screenprt_c(logline)
+        CALL RM_log_screen_prt(logline)
         write (logline,"(t6,a25, f12.2,a17, f13.2)") "Transport data transfer: ", time_transfer, " Cumulative:", cum_transfer
-        CALL logprt_c(logline)
-        CALL screenprt_c(logline)
+        CALL RM_log_screen_prt(logline)
         write (logline,"(t6,a25, f12.2,a17, f13.2)") "Time chemistry:          ", time_chemistry, " Cumulative:", cum_chemistry
-        CALL logprt_c(logline)
-        CALL screenprt_c(logline)       
+        CALL RM_log_screen_prt(logline)     
     endif
 
 #endif
@@ -565,8 +578,7 @@ SUBROUTINE phast_manager
   IF (solute) THEN
      ! ... Equilibrate the initial conditions for component concentrations
      WRITE(logline1,'(a)') 'Equilibration of cells for initial conditions.'
-     CALL logprt_c(logline1)
-     CALL screenprt_c(logline1)
+     CALL RM_log_screen_prt(logline1)
      print_restart_flag = 0 
      stop_msg = 0
      deltim_dummy = 0._kdp
@@ -599,9 +611,7 @@ SUBROUTINE phast_manager
   !    
   IF(solute .OR. .NOT.steady_flow) THEN
      logline1 = 'Beginning transient simulation.'
-     CALL screenprt_c(logline1)
-     CALL logprt_c(' ')
-     CALL logprt_c(logline1)
+     CALL RM_log_screen_prt(logline1)
      fdtmth = fdtmth_tr     ! ... set time differencing method to transient
      DO
         CALL time_parallel(0)
@@ -660,12 +670,10 @@ SUBROUTINE phast_manager
         CALL time_parallel(8)
         IF (solute) THEN
            logline1 =  '     Beginning solute-transport calculation.'
-           CALL logprt_c(logline1)
-           CALL screenprt_c(logline1)
+           CALL RM_log_screen_prt(logline1)
            DO i = 1, ns
               logline1 =  '          '//comp_name(i)
-              CALL logprt_c(logline1)
-              CALL screenprt_c(logline1)
+              CALL RM_log_screen_prt(logline1)
            ENDDO
         ENDIF
 
@@ -714,8 +722,7 @@ SUBROUTINE phast_manager
         IF (solute) THEN
            stop_msg = 0
            WRITE(logline1,'(a)') '     Beginning chemistry calculation.'
-           CALL logprt_c(logline1)
-           CALL screenprt_c(logline1)
+           CALL RM_log_screen_prt(logline1)
            CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time,deltim,prslmi,cnvtmi,  &
                 frac,iprint_chem,iprint_xyz,prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f,  &
                 print_restart%print_flag_integer, pv, pv0, steady_flow, volume)
@@ -749,12 +756,10 @@ SUBROUTINE phast_manager
   ! ...  Cleanup and shutdown
   !
   logline1 = 'Done with transient flow and transport simulation.'
-  CALL logprt_c(logline1)
-  CALL screenprt_c(logline1)
+  CALL RM_log_screen_prt(logline1)
   IF(errexe .OR. errexi) THEN
      logline1 = 'ERROR exit.'
-     CALL logprt_c(logline1)
-     CALL screenprt_c(logline1)
+     CALL RM_log_screen_prt(logline1)
   END IF
 #ifdef USE_MPI
   CALL MPI_BARRIER(MPI_COMM_WORLD, ierrmpi)
@@ -824,17 +829,13 @@ CHARACTER(LEN=130) :: logline
         cum_chemistry = cum_chemistry + time_chemistry
         
         write (logline,"(t6,a25, f12.2,a17, f13.2)") "Time flow:               ", time_flow, " Cumulative:", cum_flow
-        CALL logprt_c(logline)
-        CALL screenprt_c(logline)
+        CALL RM_log_screen_prt(logline)
         write (logline,"(t6,a25, f12.2,a17, f13.2)") "Time transport:          ", time_transport, " Cumulative:", cum_transport
-        CALL logprt_c(logline)
-        CALL screenprt_c(logline)
+        CALL RM_log_screen_prt(logline)
         write (logline,"(t6,a25, f12.2,a17, f13.2)") "Transport data transfer: ", time_transfer, " Cumulative:", cum_transfer
-        CALL logprt_c(logline)
-        CALL screenprt_c(logline)
+        CALL RM_log_screen_prt(logline)
         write (logline,"(t6,a25, f12.2,a17, f13.2)") "Time chemistry:          ", time_chemistry, " Cumulative:", cum_chemistry
-        CALL logprt_c(logline)
-        CALL screenprt_c(logline)       
+        CALL RM_log_screen_prt(logline)      
     endif
 
 #endif

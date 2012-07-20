@@ -1215,6 +1215,7 @@ SUBROUTINE init2_1
         END DO
      END DO
   ENDIF
+
   ! ... Allocate free surface, water table arrays: mcb and mg2_m
   ALLOCATE (mfsbc(nxy), print_dry_col(nxy), hdprnt(nxyz), wt_elev(nxy),  &
        STAT = a_err)
@@ -1432,8 +1433,12 @@ SUBROUTINE init2_1
            IF(ABS(alphl(ipmz) - alphtv(ipmz)) > 1.e-6_kdp) crosd = .TRUE.
         END DO
      ENDIF
+
+#ifdef SKIP_REWRITE_PHAST
      call calc_volume
+#endif
   ENDIF
+
 !!$  DEALLOCATE (axsav, aysav, azsav, hwt,  &
 !!$       stat = da_err)
 !!$  IF (da_err /= 0) THEN  

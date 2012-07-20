@@ -5,13 +5,16 @@
 #define RM_INTERFACE_H
 #include "IPhreeqc.h"
 #include "Var.h"
+#define RM_close_files                        rm_close_files
 #define RM_create                             rm_create
 #define RM_destroy                            rm_destroy
-#define RM_error                              rm_error
 #define RM_distribute_initial_conditions      rm_distribute_initial_conditions
+#define RM_error                              rm_error
 #define RM_initial_phreeqc_run                rm_initial_phreeqc_run
 #define RM_load_database                      rm_load_database
+#define RM_log_screen_prt                     rm_log_screen_prt
 #define RM_open_files                         rm_open_files
+#define RM_pass_data                          rm_pass_data
 #define RM_send_restart_name                  rm_send_restart_name
 #define RM_write_output                       rm_write_output
 
@@ -48,36 +51,25 @@ private:
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void RM_open_files(int * solute, char * prefix, int l_prefix);
-void RM_open_error_file(void);
-void RM_open_output_file(char * prefix, int l_prefix);
-void RM_open_punch_file(char * prefix, int l_prefix);
-void RM_open_log_file(char * prefix, int l_prefix);
-
-void errprt_c(char *err_str, long l);
-void logprt_c(char *err_str, long l);
-void screenprt_c(char *err_str, long l);
-void warnprt_c(char *err_str, long l);
-
-//void RM_errprt(int id, char *err_str, long l);
-//void RM_warnprt(int *id, char *err_str, long l);
-//void RM_logprt(int *id, char *err_str, long l);
-//void RM_screeenprt(int *id, char *err_str, long l);
-
-void errprt(const std::string & e_string);
-void warnprt(const std::string & e_string);
-void logprt(const std::string & e_string);
-void screenprt(const std::string & e_string);
-
+void RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity);
 void RM_cleanup();
+void RM_close_files(int * solute);
+void RM_convert_to_molal(int *id, double *c, int *n, int *dim);
 int  RM_create();
 int  RM_destroy(int *id);
+void RM_distribute_initial_conditions(int *id,
+		int *initial_conditions1,		// 7 x nxyz end-member 1
+		int *initial_conditions2,		// 7 x nxyz end-member 2
+		double *fraction1,			// 7 x nxyz fraction of end-member 1
+		int *exchange_units,			// water (1) or rock (2)
+		int *surface_units,			// water (1) or rock (2)
+		int *ssassemblage_units,		// water (1) or rock (2)		
+		int *ppassemblage_units,		// water (1) or rock (2)
+		int *gasphase_units,			// water (1) or rock (2)
+		int *kinetics_units			// water (1) or rock (2)
+		);
 void RM_error(int *id);
-void RM_send_restart_name(int *id, char * s, long l);
-void RM_write_output(int *id);
-
-void RM_load_database(int *id, char *database_name, int l);
-void RM_initial_phreeqc_run(int *id, char *chemistry_name, int l);
+void RM_log_screen_prt(char *err_str, long l);
 void RM_pass_data(int *id,
 			 int *nx, int *ny, int *nz,			// number of nodes each coordinate direction
 			 double *time_hst,					// time from transport 
@@ -102,20 +94,33 @@ void RM_pass_print_flags(int *id,
 			 int * print_hdf,						// print flag for hdf file
 			 int * print_restart					// print flag for writing restart file 
 			 );
-void RM_distribute_initial_conditions(int *id,
-							  int *initial_conditions1,		// 7 x nxyz end-member 1
-							  int *initial_conditions2,		// 7 x nxyz end-member 2
-							  double *fraction1,			// 7 x nxyz fraction of end-member 1
-							  int *exchange_units,			// water (1) or rock (2)
-							  int *surface_units,			// water (1) or rock (2)
-							  int *ssassemblage_units,		// water (1) or rock (2)		
-							  int *ppassemblage_units,		// water (1) or rock (2)
-							  int *gasphase_units,			// water (1) or rock (2)
-							  int *kinetics_units			// water (1) or rock (2)
-							  );
-void RM_get_components(int *id, int *n_comp, char *names, int length);
-void RM_convert_to_molal(int *id, double *c, int *n, int *dim);
-void RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity);
+void RM_open_files(int * solute, char * prefix, int l_prefix);
+void RM_open_error_file(void);
+void RM_open_output_file(char * prefix, int l_prefix);
+void RM_open_punch_file(char * prefix, int l_prefix);
+void RM_open_log_file(char * prefix, int l_prefix);
+void RM_send_restart_name(int *id, char * s, long l);
+void RM_write_output(int *id);
+
+
+void errprt_c(char *err_str, long l);
+void logprt_c(char *err_str, long l);
+void screenprt_c(char *err_str, long l);
+void warnprt_c(char *err_str, long l);
+
+//void RM_errprt(int id, char *err_str, long l);
+//void RM_warnprt(int *id, char *err_str, long l);
+//void RM_logprt(int *id, char *err_str, long l);
+//void RM_screeenprt(int *id, char *err_str, long l);
+
+void errprt(const std::string & e_string);
+void warnprt(const std::string & e_string);
+void logprt(const std::string & e_string);
+void screenprt(const std::string & e_string);
+
+
+
+
 
 #if defined(__cplusplus)
 }
