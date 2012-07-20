@@ -4,9 +4,14 @@
 #undef protected
 
 #include <assert.h>
+std::map<size_t, IPhreeqcPhast*> IPhreeqcPhast::PhastInstances;
+size_t IPhreeqcPhast::PhastInstancesIndex = 0;
 
 IPhreeqcPhast::IPhreeqcPhast(void)
 {
+	std::map<size_t, IPhreeqcPhast*>::value_type instance(this->Index, this);
+	//std::pair<std::map<size_t, IPhreeqcPhast*>::iterator, bool> pr = IPhreeqcPhast::PhastInstances.insert(instance);
+	IPhreeqcPhast::PhastInstances.insert(instance);
 }
 IPhreeqcPhast::~IPhreeqcPhast(void)
 {
@@ -85,6 +90,7 @@ void
 IPhreeqcPhast::Get_cell(cxxStorageBin & sb, int i)
 /* ---------------------------------------------------------------------- */
 {
-	Phreeqc * phreeqc_ptr = this->Get_PhreeqcPtr();
+	//Phreeqc * phreeqc_ptr = this->Get_PhreeqcPtr();
+	Phreeqc * phreeqc_ptr = this->PhreeqcPtr;
 	phreeqc_ptr->phreeqc2cxxStorageBin(sb, i);
 }

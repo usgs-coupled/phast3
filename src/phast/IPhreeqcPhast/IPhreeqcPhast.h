@@ -18,9 +18,11 @@ public:
 	void Set_cell(cxxStorageBin & sb, int i);
 	void Get_cell(cxxStorageBin & sb, int i);
 	Phreeqc * Get_PhreeqcPtr(void) {return PhreeqcPtr;};
+	size_t Get_Index() {return (int) this->Index;}
 
 protected:
-
-
+	friend class IPhreeqcPhastLib;
+	static std::map<size_t, IPhreeqcPhast*> PhastInstances;
+	static size_t PhastInstancesIndex;
 };
 #endif // !defined(PHAST_IPHREEQC_H_INCLUDED)

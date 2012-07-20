@@ -158,6 +158,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
     </Link>
+    <PostBuildEvent>
+      <Command>copy $(DEV_ZLIB122_LIB)\..\zlib1.dll $(OutDir)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ser_debug|x64'">
     <Midl>
@@ -205,6 +208,9 @@
       <AdditionalDependencies>zdll.lib;phastpp.lib;IPhreeqcPhast.lib;hdf5dll.lib;gmp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(DEV_GMP_LIB_MT);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)Release</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>copy $(DEV_ZLIB122_LIB)\..\zlib1.dll $(OutDir)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ser|x64'">
     <Midl>
@@ -251,6 +257,9 @@
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>$(DEV_IFC_LIB);$(DEV_ZLIB122_LIB);$(DEV_HDF5_LIBDLL);$(DEV_MPICH2_LIB);$(DEV_GMP_LIB_MT);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)Release</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>copy $(DEV_ZLIB122_LIB)\..\zlib1.dll $(OutDir)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='merge|x64'">
     <Midl>
@@ -301,6 +310,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
     </Link>
+    <PostBuildEvent>
+      <Command>copy $(DEV_ZLIB122_LIB)\..\zlib1.dll $(OutDir)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='merge_debug|x64'">
     <Midl>

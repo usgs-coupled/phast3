@@ -21,9 +21,9 @@ SUBROUTINE phast_manager
   USE print_control_mod
   USE XP_module
   IMPLICIT NONE
-  include "IPhreeqc.f90.inc"
+  include "IPhreeqcPhast.f90.inc"
   REAL(KIND=kdp) :: deltim_dummy
-  INTEGER :: stop_msg, print_restart_flag
+  INTEGER :: stop_msg, print_restart_flag, ipp_err
   CHARACTER(LEN=130) :: logline1
   INTEGER :: i
   INTERFACE
@@ -46,22 +46,35 @@ SUBROUTINE phast_manager
   CALL read1              ! ... Read fundamental information, dimensioning data
   CALL read1_distribute
 
-  ! make IPhreeqc for phreeqc_main
-  ipp_phrq_id = RM_CreateIPhreeqcPhast()
-  IF (ipp_phrq_id.LT.0) THEN
-     STOP
-  END IF
-  ! make a reaction module
-  rm_id = RM_create(ipp_phrq_id)
+  ! make a reaction module; makes instances of IPhreeqc and IPhreeqcPhast with same rm_id
+  rm_id = RM_create()
   IF (rm_id.LT.0) THEN
      STOP
   END IF
 
   !... Call phreeqc, find number of components
-  CALL phreeqc_main(solute, f1name, f2name, f3name, mpi_tasks, mpi_myself)
-  
-#ifdef SKIP_REWRITE_PHAST
+  !CALL phreeqc_main(solute, f1name, f2name, f3name, mpi_tasks, mpi_myself)
+  ! f1, chem.dat; f2, database; f3, prefix
+  if (solute) then
+    ipp_phrq_id = CreateIPhreeqc()
+    IF (ipp_phrq_id.LT.0) THEN
+        STOP
+    END IF
+    CALL logprt_c("Initial PHREEQC run.\n")
+    ipp_err = LoadDatabase(ipp_phrq_id, f2name)
+    if (ipp_err < 0) then
+        STOP
+    endif
+    !CALL RM_initial_phreeqc_run(f1name)
+    ipp_err = SetOutputFileOn(ipp_phrq_id, .true.)
+    ipp_err = RunFile(ipp_phrq_id, f1name)
+    if (ipp_err < 0) then
+        STOP
+    endif
+  endif
 
+  ipp_err = 0
+#ifdef SKIP_REWRITE_PHAST
   CALL on_error_cleanup_and_exit
 
   !... Call init1

@@ -19,15 +19,18 @@
 #include "cxxKinetics.h"
 #include "GasPhase.h"
 #include <time.h>
-Reaction_module::Reaction_module(int iphreeqc_id, PHRQ_io *io)
+Reaction_module::Reaction_module(PHRQ_io *io)
 	//
 	// default constructor for cxxExchComp 
 	//
 : PHRQ_base(io)
 {
-	//this->phast_iphreeqc_worker = new IPhreeqcPhast;
-	this->phast_iphreeqc_worker = RM_interface::Get_instance(iphreeqc_id);
-	//this->phast_iphreeqc_worker = IPhreeqcLib::GetInstance(iphreeqc_id);
+	this->phast_iphreeqc_worker = new IPhreeqcPhast;
+	std::map<size_t, Reaction_module*>::value_type instance(this->phast_iphreeqc_worker->Get_Index(), this);
+	RM_interface::Instances.insert(instance);
+	//RM_interface::Instances[phast_iphreeqc_worker->Index] = Reaction_module_ptr;
+	//std::pair<std::map<size_t, Reaction_module*>::iterator, bool> pr = RM_interface::Instances.insert(instance);
+
 	this->mpi_myself = 0;
 	this->mpi_tasks = 1;
 
@@ -80,6 +83,7 @@ Reaction_module::Load_database(std::string database_name)
 	this->gfw_water = this->phast_iphreeqc_worker->Get_gfw("H2O");
 	return 1;
 }
+
 /* ---------------------------------------------------------------------- */
 int
 Reaction_module::Initial_phreeqc_run(std::string chemistry_name)
@@ -136,6 +140,7 @@ Reaction_module::Initial_phreeqc_run(std::string chemistry_name)
 
 	return 1;
 }
+
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Distribute_initial_conditions(

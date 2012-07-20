@@ -13,7 +13,7 @@ class Reaction_module: public PHRQ_base
 {
 public:
 
-	Reaction_module(int iphreeqc_id, PHRQ_io * io=NULL);
+	Reaction_module(PHRQ_io * io=NULL);
 	~Reaction_module(void);
 
 	// Called through wrappers
@@ -42,8 +42,9 @@ public:
 	void Send_restart_name(std::string name);
 
 	// setters and getters
-	const std::string Get_database_file_name(void) const {return this->database_file_name;};
-	void Set_database_file_name(std::string fn) {this->database_file_name = fn;};
+	IPhreeqcPhast * Get_phast_iphreeqc_worker() {return this->phast_iphreeqc_worker;}
+	const std::string Get_database_file_name(void) const {return this->database_file_name;}
+	void Set_database_file_name(std::string fn) {this->database_file_name = fn;}
 	const std::string Get_file_prefix(void) const {return this->file_prefix;};
 	void Set_file_prefix(std::string fn) {this->file_prefix = fn;};
 	const int Get_mpi_tasks(void) const {return this->mpi_tasks;};
