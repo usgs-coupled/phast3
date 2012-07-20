@@ -4,19 +4,6 @@
 #include <string>
 #include <map>
 
-//class RM_interface
-//{
-//public:
-//	static int Create_reaction_module(int iphreeqc_id);
-//	static IPQ_RESULT Destroy_reaction_module(int n);
-//	static Reaction_module* Get_instance(int n);
-//	static PHRQ_io phast_io;
-//
-//private:
-//	static std::map<size_t, Reaction_module*> Instances;
-//	static size_t InstancesIndex;
-//};
-
 std::map<size_t, Reaction_module*> RM_interface::Instances;
 size_t RM_interface::InstancesIndex = 0;
 PHRQ_io RM_interface::phast_io;
@@ -34,29 +21,31 @@ RM_interface::Get_instance(int id)
 	return 0;
 }
 /* ---------------------------------------------------------------------- */
-int RM_create(int iphreeqc_id)
+int RM_create()
 /* ---------------------------------------------------------------------- */
 {
-	return RM_interface::Create_reaction_module(iphreeqc_id);
+	return RM_interface::Create_reaction_module();
 }
 /* ---------------------------------------------------------------------- */
 int
-RM_interface::Create_reaction_module(int iphreeqc_id)
+RM_interface::Create_reaction_module()
 /* ---------------------------------------------------------------------- */
 {
 	int n = IPQ_OUTOFMEMORY;
 	try
 	{
-		Reaction_module* Reaction_module_ptr = new Reaction_module(iphreeqc_id);
+		Reaction_module* Reaction_module_ptr = new Reaction_module();
 		if (Reaction_module_ptr)
 		{
-			std::map<size_t, Reaction_module*>::value_type instance(RM_interface::InstancesIndex, Reaction_module_ptr);
-			std::pair<std::map<size_t, Reaction_module*>::iterator, bool> pr = RM_interface::Instances.insert(instance);
-			if (pr.second)
-			{
-				n = (int) (*pr.first).first;
-				++RM_interface::InstancesIndex;
-			}
+			//std::map<size_t, Reaction_module*>::value_type instance(RM_interface::InstancesIndex, Reaction_module_ptr);
+			n = Reaction_module_ptr->Get_phast_iphreeqc_worker()->Get_Index();
+			RM_interface::Instances[Reaction_module_ptr->Get_phast_iphreeqc_worker()->Get_Index()] = Reaction_module_ptr;
+			//std::pair<std::map<size_t, Reaction_module*>::iterator, bool> pr = RM_interface::Instances.insert(instance);
+			//if (pr.second)
+			//{
+			//	n = (int) (*pr.first).first;
+			//	++RM_interface::InstancesIndex;
+			//}
 		}
 	}
 	catch(...)
@@ -101,8 +90,10 @@ RM_load_database(int *id, char *database_name, int l)
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
-		std::string database_file_name(database_name, l);
-		Reaction_module_ptr->Load_database(database_file_name);
+		std::string db_name(database_name, l);
+		//std::string database_file_name(database_name, l);
+		//Reaction_module_ptr->Load_database(database_file_name);
+		Reaction_module_ptr->Get_phast_iphreeqc_worker()->LoadDatabase(db_name.c_str());
 	}
 
 }
@@ -123,6 +114,7 @@ RM_initial_phreeqc_run(int *id, char *chemistry_name, int l)
 	}
 
 }
+
 /* ---------------------------------------------------------------------- */
 void
 RM_pass_data(int *id,

@@ -8,6 +8,8 @@
 #define RM_create                             rm_create
 #define RM_destroy                            rm_destroy
 #define RM_distribute_initial_conditions      rm_distribute_initial_conditions
+#define RM_initial_phreeqc_run                rm_initial_phreeqc_run
+#define RM_load_database                      rm_load_database
 #define RM_send_restart_name                  rm_send_restart_name
 
 /**
@@ -24,25 +26,17 @@
 
 /*! \brief Enumeration used to return error codes.
 */
-//typedef enum {
-//	IPQ_OK            =  0,  /*!< Success */
-//	IPQ_OUTOFMEMORY   = -1,  /*!< Failure, Out of memory */
-//	IPQ_BADVARTYPE    = -2,  /*!< Failure, Invalid VAR type */
-//	IPQ_INVALIDARG    = -3,  /*!< Failure, Invalid argument */
-//	IPQ_INVALIDROW    = -4,  /*!< Failure, Invalid row */
-//	IPQ_INVALIDCOL    = -5,  /*!< Failure, Invalid column */
-//	IPQ_BADINSTANCE   = -6   /*!< Failure, Invalid instance id */
-//} IPQ_RESULT;
 
 class RM_interface
 {
 public:
-	static int Create_reaction_module(int iphreeqc_id);
+	static int Create_reaction_module();
 	static IPQ_RESULT Destroy_reaction_module(int n);
 	static Reaction_module* Get_instance(int n);
 	static PHRQ_io phast_io;
 
 private:
+	friend class Reaction_module;
 	static std::map<size_t, Reaction_module*> Instances;
 	static size_t InstancesIndex;
 };
@@ -71,7 +65,7 @@ void C_IO_warnprt(char *err_str, long l);
 void C_IO_logprt(char *err_str, long l);
 void C_IO_screenprt(char *err_str, long l);
 
-int RM_create(int id);
+int RM_create();
 int RM_destroy(int id);
 void RM_send_restart_name(int *id, char * s, long l);
 
