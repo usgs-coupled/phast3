@@ -8,7 +8,8 @@ MODULE f_units
   INTEGER, PARAMETER :: fuins=15, fulp=16, fuplt=7, fuorst=8, fuirst=9, fuinc=10, furde=11, &
        fupmap=13, fuvmap=14, fup=21, fut=29, fuc=22, fuvel=23, fud=30, fuvs=31, fuwel=24, &
        fubal=25, fukd=26, fubcf=27, fuclog=28, fubnfr=32, fupmp2=33, fupzon=34, fuich=35,  &
-       fuzf=36, fuzf_tsv=37, fuwt=38, fupmp3=39, fuzf_heads=40
+       fuzf=36, fuzf_tsv=37, fuwt=38, fupmp3=39, fuzf_heads=40, fuzf_chem_xyzt = 41, &
+       fuzf_chem_raw = 42
   LOGICAL :: print_rde=.FALSE.
 END MODULE f_units
 
@@ -79,7 +80,7 @@ MODULE mcc
   REAL(KIND=kdp) :: dptas=0.0_kdp, dtimmn=0.0_kdp, dtimmx=0.0_kdp, dtimu=0.0_kdp, dttas=0.0_kdp, &
        eps = 1.e-5_kdp, epsfs,  &
        tolden, toldnc, toldnt
-  INTEGER :: prcphrqi, prf_chem_phrqi, prslmi, prhdfci, prhdfhi, prhdfvi
+  INTEGER :: prcphrqi, prf_chem_phrqi, prslmi, prhdfci, prhdfhi, prhdfvi, prhdfii
   INTEGER :: mpi_tasks=1
   INTEGER :: mpi_myself=0
   INTEGER :: ipp_phrq_id=-1, rm_id=-1, ipp_temp_id=-1, ipp_phast_id=-1
