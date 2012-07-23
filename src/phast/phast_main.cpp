@@ -22,6 +22,8 @@ extern "C" void PHAST_SUB(int *mpi_tasks, int *mpi_myself);
 #include "phrqtype.h"
 
 extern "C" void HDF_Finalize(void);
+
+#ifdef SKIP_REWRITE_PHAST //-------------------------------------------------------------------------
 int write_restart(double hst_time);
 
 extern LDBLE rate_sim_time_end;
@@ -56,6 +58,7 @@ BOOL CtrlHandler(DWORD dwCtrlType)
 }
 #endif
 
+#endif // SKIP_REWRITE_PHAST
 
 int main(int argc, char* argv[])
 {
@@ -81,11 +84,11 @@ int main(int argc, char* argv[])
 	mpi_tasks = 1;
 	mpi_myself = 0;
 #endif
-
+#ifdef SKIP_REWRITE_PHAST //-------------------------------------------------------------------------
 #if WIN32
 	SetConsoleCtrlHandler((PHANDLER_ROUTINE) CtrlHandler, TRUE);
 #endif
-
+#endif // SKIP_REWRITE_PHAST
 	//int tmpDbgFlag;
 
  //  _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE | _CRTDBG_MODE_DEBUG);

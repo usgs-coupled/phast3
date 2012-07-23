@@ -10,6 +10,7 @@
 #define RM_destroy                            rm_destroy
 #define RM_distribute_initial_conditions      rm_distribute_initial_conditions
 #define RM_error                              rm_error
+#define RM_forward_and_back                   rm_forward_and_back
 #define RM_initial_phreeqc_run                rm_initial_phreeqc_run
 #define RM_load_database                      rm_load_database
 #define RM_log_screen_prt                     rm_log_screen_prt
@@ -69,8 +70,18 @@ void RM_distribute_initial_conditions(int *id,
 		int *kinetics_units			// water (1) or rock (2)
 		);
 void RM_error(int *id);
+void RM_forward_and_back(int *id,
+		int *initial_conditions, 
+		int *axes);
 void RM_log_screen_prt(char *err_str, long l);
+void RM_open_files(int * solute, char * prefix, int l_prefix);
+void RM_open_error_file(void);
+void RM_open_output_file(char * prefix, int l_prefix);
+void RM_open_punch_file(char * prefix, int l_prefix);
+void RM_open_log_file(char * prefix, int l_prefix);
 void RM_pass_data(int *id,
+             bool *fresur,
+			 bool *steady_flow, 
 			 int *nx, int *ny, int *nz,			// number of nodes each coordinate direction
 			 double *time_hst,					// time from transport 
 			 double *time_step_hst,				// time step from transport
@@ -94,11 +105,6 @@ void RM_pass_print_flags(int *id,
 			 int * print_hdf,						// print flag for hdf file
 			 int * print_restart					// print flag for writing restart file 
 			 );
-void RM_open_files(int * solute, char * prefix, int l_prefix);
-void RM_open_error_file(void);
-void RM_open_output_file(char * prefix, int l_prefix);
-void RM_open_punch_file(char * prefix, int l_prefix);
-void RM_open_log_file(char * prefix, int l_prefix);
 void RM_send_restart_name(int *id, char * s, long l);
 void RM_write_output(int *id);
 
