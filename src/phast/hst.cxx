@@ -3,6 +3,7 @@
 #ifdef USE_MPI
 #include <mpi.h>
 #endif
+#include <set>
 #include <fstream>
 #include <iostream>				// std::cout std::cerr
 #include "StorageBin.h"
@@ -21,6 +22,7 @@
 #include <vector>
 #include "KDtree/Point.h"
 #include "KDtree/KDtree.h"
+#include "Solution.h"
 
 
 extern int xsurface_save(int n_user);
@@ -39,7 +41,7 @@ static int mpi_write_restart(double time_hst);
 static int mpi_rebalance_load_per_cell(double *times_per_cell, double *frac,
 									   int transfer);
 #define MESSAGE_MAX_NUMBERS 1000
-#define MPI_MAX_TASKS 50
+//#define MPI_MAX_TASKS 50
 #include <time.h>
 int mpi_tasks;
 int mpi_myself;
@@ -53,8 +55,11 @@ int *random_printzone_chem, *random_printzone_xyz;
 void *mpi_buffer;
 int mpi_buffer_position, mpi_max_buffer;
 LDBLE mpi_processor_test_time;
-int end_cells[MPI_MAX_TASKS][2];
-int number_cells[MPI_MAX_TASKS];
+//int end_cells[MPI_MAX_TASKS][2];
+std::vector<int> start_cell;
+std::vector<int> end_cell;
+//int number_cells[MPI_MAX_TASKS];
+//std::vector<int> number_cells_v;
 #define TIME
 #ifdef TIME
 LDBLE start_time, end_time, transport_time, transport_time_tot,
@@ -75,7 +80,7 @@ static void EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 							   int *print_out, int *print_hdf,
 							   double *rebalance_fraction_hst,
 							   int *print_restart, double *pv, double *pv0,
-							   int *steady_flow, double *volume);
+							   int *steady_flow, double *volume, int *przf_xyzt);
 #endif /* #ifdef USE_MPI */
 cxxStorageBin uzBin;
 cxxStorageBin szBin;
@@ -107,6 +112,7 @@ cxxDictionary
 #define SETUP_BOUNDARY_CONDITIONS        FC_FUNC_ (setup_boundary_conditions,     SETUP_BOUNDARY_CONDITIONS)
 #define WARNPRT_C                        FC_FUNC_ (warnprt_c,                     WARNPRT_C)
 #define UZ_INIT                          FC_FUNC_ (uz_init,                       UZ_INIT)
+#define WRITE_BC_RAW                     FC_FUNC_ (write_bc_raw,                  WRITE_BC_RAW)
 
 #else /* defined(FC_FUNC_) */
 
@@ -131,6 +137,7 @@ cxxDictionary
 #define SETUP_BOUNDARY_CONDITIONS setup_boundary_conditions
 #define WARNPRT_C warnprt_c
 #define UZ_INIT uz_init
+#define WRITE_BC_RAW write_bc_raw 
 #else
 #define CALCULATE_WELL_PH calculate_well_ph_
 #define COLLECT_FROM_NONROOT collect_from_nonroot_
@@ -152,6 +159,7 @@ cxxDictionary
 #define SETUP_BOUNDARY_CONDITIONS setup_boundary_conditions_
 #define WARNPRT_C warnprt_c_
 #define UZ_INIT uz_init_
+#define WRITE_BC_RAW write_bc_raw_
 #endif
 
 #endif /* defined(FC_FUNC_) */
@@ -189,7 +197,7 @@ extern
 				int *printzone_xyz, int *print_out, int *stop_msg,
 				int *print_hdf, double *rebalance_fraction_hst,
 				int *print_restart, double *pv, double *pv0,
-				int *steady_flow, double *volume);
+				int *steady_flow, double *volume, int *przf_xyzt);
 /*  #endif                                                                             */
 	void
 	ERRPRT_C(char *err_str, long l);
@@ -223,6 +231,8 @@ extern
 	UZ_INIT(int *transient_fresur);
 	void
 	WARNPRT_C(char *err_str, long l);
+	void
+	WRITE_BC_RAW(int *solution_list, int * bc_soln_count, int * solution_number, char *file_name, int file_name_l);
 }
 /* ---------------------------------------------------------------------- */
 void
@@ -265,7 +275,7 @@ PHREEQC_FREE(int *solute)
 		free_model_allocs();
 		free_check_null(buffer);
 		free_check_null(activity_list);
-		free_check_null(forward);
+		free_check_null(forward1);
 		free_check_null(back);
 		//free_check_null(file_prefix);
 		free_check_null(old_frac);
@@ -482,7 +492,13 @@ PHREEQC_MAIN(int *solute_fort, char *chemistry_name, char *database_name,
 	{
 		output_msg(OUTPUT_ECHO, "Processing database file.\n");
 	}
+#if defined(MERGE_INCLUDE_FILES) 
+	set_cookie((std::ifstream *) db_cookie);
+	errors = read_database(istream_getc, db_cookie);
+	clear_cookie();
+#else
 	errors = read_database(getc_callback, db_cookie);
+#endif
 	if (errors != 0)
 	{
 		clean_up();
@@ -500,7 +516,13 @@ PHREEQC_MAIN(int *solute_fort, char *chemistry_name, char *database_name,
 	{
 		output_msg(OUTPUT_ECHO, "\nProcessing chemical data file.\n");
 	}
+#if defined(MERGE_INCLUDE_FILES) 
+	set_cookie((std::ifstream *)input_cookie);
+	errors = run_simulations(istream_getc, input_cookie);
+	clear_cookie();
+#else
 	errors = run_simulations(getc_callback, input_cookie);
+#endif
 	if (errors != 0)
 	{
 		clean_up();
@@ -911,7 +933,8 @@ DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
 
 	for (i = 0; i < mpi_tasks; i++)
 	{
-		for (j = end_cells[i][0]; j <= end_cells[i][1]; j++)
+		//for (j = end_cells[i][0]; j <= end_cells[i][1]; j++)
+		for (j = start_cell[i]; j <= end_cell[i]; j++)
 		{
 			count_chem2task_number[random_list[j]] = i;
 		}
@@ -934,13 +957,23 @@ DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
 	 *  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
 	 *  Does nothing if i < 0, i.e. values to be gotten from restart files
 	 */
+	size_t count_negative_porosity = 0;
 	for (k = 0; k < last_cell - first_cell + 1; k++)
 	{
 		j = sort_random_list[k];	/* j is count_chem number */
 		i = back[j].list[0];	/* i is ixyz number */
-		assert(forward[i] >= 0);
+		assert(forward1[i] >= 0);
 		assert (volume[i] > 0.0);
 		double porosity = pv0[i] / volume[i];
+		if (pv0[i] < 0 || volume[i] < 0)
+		{
+			sprintf(error_string, "Negative volume in cell %d: volume, %e\t initial volume, %e.",
+					i, volume[i], pv0[i]);
+			input_error++;
+			count_negative_porosity++;
+			error_msg(error_string, CONTINUE);
+			continue;
+		}
 		assert (porosity > 0.0);
 		double porosity_factor = (1.0 - porosity) / porosity;
 		system_cxxInitialize(i, j, initial_conditions1, initial_conditions2,
@@ -948,6 +981,13 @@ DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
 			exchange_units, surface_units, ssassemblage_units,
 			ppassemblage_units, gasphase_units, kinetics_units,
 			porosity_factor);
+	}
+	if (count_negative_porosity > 0)
+	{
+		sprintf(error_string, "Negative initial volumes may be due to initial head distribution.\n"
+			"Make initial heads greater than or equal to the elevation of the node for each cell.\n"
+			"Increase porosity, decrease specific storage, or use free surface boundary.");
+		error_msg(error_string, CONTINUE);
 	}
 	sort_random_list = (int *) free_check_null(sort_random_list);
 	/*
@@ -1332,14 +1372,24 @@ DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
 	 *  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
 	 *  Does nothing for indexes less than 0 (i.e. restart files)
 	 */
+	size_t count_negative_porosity = 0;
 	for (i = 0; i < ixyz; i++)
 	{							/* i is ixyz number */
-		j = forward[i];			/* j is count_chem number */
+		j = forward1[i];			/* j is count_chem number */
 		if (j < 0)
 			continue;
-		assert(forward[i] >= 0);
+		assert(forward1[i] >= 0);
 		assert (volume[i] > 0.0);
 		double porosity = pv0[i] / volume[i];
+		if (pv0[i] < 0 || volume[i] < 0)
+		{
+			sprintf(error_string, "Negative volume in cell %d: volume, %e\t initial volume, %e.",
+					i, volume[i], pv0[i]);
+			input_error++;
+			count_negative_porosity++;
+			error_msg(error_string, CONTINUE);
+			continue;
+		}
 		assert (porosity > 0.0);
 		double porosity_factor = (1.0 - porosity) / porosity;
 		system_cxxInitialize(i, j, initial_conditions1, initial_conditions2,
@@ -1347,6 +1397,13 @@ DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
 			exchange_units, surface_units, ssassemblage_units,
 			ppassemblage_units, gasphase_units, kinetics_units,
 			porosity_factor);
+	}
+	if (count_negative_porosity > 0)
+	{
+		sprintf(error_string, "Negative initial volumes may be due to initial head distribution.\n"
+			"Make initial heads greater than or equal to the elevation of the node for each cell.\n"
+			"Increase porosity, decrease specific storage, or use free surface boundary.");
+		error_msg(error_string, CONTINUE);
 	}
 	/*
 	 * Read any restart files
@@ -1657,7 +1714,7 @@ EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 				   double *cnvtmi, double *frac, int *printzone_chem,
 				   int *printzone_xyz, int *print_out, int *print_hdf,
 				   double *rebalance_fraction_hst, int *print_restart,
-				   double *pv, double *pv0, int *steady_flow, double *volume)
+				   double *pv, double *pv0, int *steady_flow, double *volume, int *przf_xyzt)
 /* ---------------------------------------------------------------------- */
 {
 /*
@@ -1732,6 +1789,7 @@ EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 
 	rate_sim_time_start = *time_hst - *time_step_hst;
 	rate_sim_time_end = *time_hst;
+	rate_cnvtmi = *cnvtmi;
 	initial_total_time = 0;
 	// free all c structures
 	reinitialize();
@@ -1936,7 +1994,7 @@ EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 			double *cnvtmi, double *frac, int *printzone_chem,
 			int *printzone_xyz, int *print_out, int *stop_msg, int *print_hdf,
 			double *rebalance_fraction_hst, int *print_restart, double *pv,
-			double *pv0, int *steady_flow, double *volume)
+			double *pv0, int *steady_flow, double *volume, int *przf_xyzt)
 /* ---------------------------------------------------------------------- */
 {
 #ifndef USE_MPI
@@ -1947,7 +2005,7 @@ EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 						   time_hst, time_step_hst, prslm, cnvtmi,
 						   frac, printzone_chem, printzone_xyz, print_out,
 						   print_hdf, rebalance_fraction_hst, print_restart,
-						   pv, pv0, steady_flow, volume);
+						   pv, pv0, steady_flow, volume, przf_xyzt);
 	}
 	return;
 #else /* #ifndef USE_MPI */
@@ -2054,7 +2112,7 @@ EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 	distribute_from_root(fraction, dim, print_sel,
 						 time_hst, time_step_hst, prslm,
 						 frac, printzone_chem, printzone_xyz,
-						 print_out, print_hdf, print_restart, pv, pv0);
+						 print_out, print_hdf, print_restart, pv, pv0, przf_xyzt);
 #ifdef TIME
 	end_time = (LDBLE) MPI_Wtime();
 	time_distribute = end_time - start_time;
@@ -2113,6 +2171,7 @@ EQUILIBRATE(double *fraction, int *dim, int *print_sel,
 
 	rate_sim_time_start = *time_hst - *time_step_hst;
 	rate_sim_time_end = *time_hst;
+	rate_cnvtmi = *cnvtmi;
 	initial_total_time = 0;
 	/*
 	 *  Sort list for processor
@@ -2474,8 +2533,8 @@ FORWARD_AND_BACK(int *initial_conditions, int *axes, int *nx, int *ny,
 /*
  *   malloc space
  */
-	forward = (int *) PHRQ_malloc((size_t) ixyz * sizeof(int));
-	if (forward == NULL)
+	forward1 = (int *) PHRQ_malloc((size_t) ixyz * sizeof(int));
+	if (forward1 == NULL)
 		malloc_error();
 	back =
 		(struct back_list *) PHRQ_malloc((size_t) count_chem *
@@ -2495,13 +2554,13 @@ FORWARD_AND_BACK(int *initial_conditions, int *axes, int *nx, int *ny,
 			if (initial_conditions[7 * i] >= 0
 				|| initial_conditions[7 * i] <= -100)
 			{
-				forward[i] = n;
+				forward1[i] = n;
 				back[n].list[0] = i;
 				n++;
 			}
 			else
 			{
-				forward[i] = -1;
+				forward1[i] = -1;
 			}
 		}
 		count_chem = n;
@@ -2520,14 +2579,14 @@ FORWARD_AND_BACK(int *initial_conditions, int *axes, int *nx, int *ny,
 				&& (initial_conditions[7 * i] >= 0
 					|| initial_conditions[7 * i] <= -100))
 			{
-				forward[i] = n;
+				forward1[i] = n;
 				back[n].list[0] = i;
 				back[n].list[1] = i + ixy;
 				n++;
 			}
 			else
 			{
-				forward[i] = -1;
+				forward1[i] = -1;
 			}
 		}
 		count_chem = n;
@@ -2546,14 +2605,14 @@ FORWARD_AND_BACK(int *initial_conditions, int *axes, int *nx, int *ny,
 				&& (initial_conditions[7 * i] >= 0
 					|| initial_conditions[7 * i] <= -100))
 			{
-				forward[i] = n;
+				forward1[i] = n;
 				back[n].list[0] = i;
 				back[n].list[1] = i + ix;
 				n++;
 			}
 			else
 			{
-				forward[i] = -1;
+				forward1[i] = -1;
 			}
 		}
 		count_chem = n;
@@ -2579,14 +2638,14 @@ FORWARD_AND_BACK(int *initial_conditions, int *axes, int *nx, int *ny,
 				&& (initial_conditions[7 * i] >= 0
 					|| initial_conditions[7 * i] <= -100))
 			{
-				forward[i] = n;
+				forward1[i] = n;
 				back[n].list[0] = i;
 				back[n].list[1] = i + 1;
 				n++;
 			}
 			else
 			{
-				forward[i] = -1;
+				forward1[i] = -1;
 			}
 		}
 		count_chem = n;
@@ -2624,7 +2683,7 @@ FORWARD_AND_BACK(int *initial_conditions, int *axes, int *nx, int *ny,
 			n_to_ijk(i, &ii, &jj, &kk);
 			if (jj == 0 && kk == 0)
 			{
-				forward[i] = n;
+				forward1[i] = n;
 				back[n].list[0] = i;
 				back[n].list[1] = i + ix;
 				back[n].list[2] = i + ixy;
@@ -2633,7 +2692,7 @@ FORWARD_AND_BACK(int *initial_conditions, int *axes, int *nx, int *ny,
 			}
 			else
 			{
-				forward[i] = -1;
+				forward1[i] = -1;
 			}
 		}
 		count_chem = n;
@@ -2671,7 +2730,7 @@ FORWARD_AND_BACK(int *initial_conditions, int *axes, int *nx, int *ny,
 			n_to_ijk(i, &ii, &jj, &kk);
 			if (ii == 0 && kk == 0)
 			{
-				forward[i] = n;
+				forward1[i] = n;
 				back[n].list[0] = i;
 				back[n].list[1] = i + 1;
 				back[n].list[2] = i + ixy;
@@ -2680,7 +2739,7 @@ FORWARD_AND_BACK(int *initial_conditions, int *axes, int *nx, int *ny,
 			}
 			else
 			{
-				forward[i] = -1;
+				forward1[i] = -1;
 			}
 		}
 		count_chem = n;
@@ -2705,7 +2764,7 @@ FORWARD_AND_BACK(int *initial_conditions, int *axes, int *nx, int *ny,
 			n_to_ijk(i, &ii, &jj, &kk);
 			if (ii == 0 && jj == 0)
 			{
-				forward[i] = n;
+				forward1[i] = n;
 				back[n].list[0] = i;
 				back[n].list[1] = i + 1;
 				back[n].list[2] = i + ix;
@@ -2714,7 +2773,7 @@ FORWARD_AND_BACK(int *initial_conditions, int *axes, int *nx, int *ny,
 			}
 			else
 			{
-				forward[i] = -1;
+				forward1[i] = -1;
 			}
 		}
 		count_chem = n;
@@ -2918,13 +2977,17 @@ mpi_set_subcolumn(double *frac)
 	{
 		if (i < num_n_tasks)
 		{
-			end_cells[i][0] = i * n;
-			end_cells[i][1] = end_cells[i][0] + n - 1;
+			//end_cells[i][0] = i * n;
+			start_cell.push_back(i * n);
+			//end_cells[i][1] = end_cells[i][0] + n - 1;
+			end_cell.push_back(start_cell[i] + n - 1);
 		}
 		else
 		{
-			end_cells[i][0] = (num_n_tasks * n) + (i - num_n_tasks) * (n + 1);
-			end_cells[i][1] = end_cells[i][0] + n;
+			//end_cells[i][0] = (num_n_tasks * n) + (i - num_n_tasks) * (n + 1);
+			start_cell.push_back((num_n_tasks * n) + (i - num_n_tasks) * (n + 1));
+			//end_cells[i][1] = end_cells[i][0] + n;
+			end_cell.push_back(start_cell[i] + n);
 		}
 	}
 	/*
@@ -2973,15 +3036,15 @@ mpi_set_subcolumn(double *frac)
 	mpi_rebalance_load(time_exec, frac, FALSE);
 	return (OK);
 }
-
 /* ---------------------------------------------------------------------- */
 int
 mpi_rebalance_load(double time_per_cell, double *frac, int transfer)
 /* ---------------------------------------------------------------------- */
 {
 #include <time.h>
-	double
-		recv_buffer[MPI_MAX_TASKS + 1];
+	//double
+		//recv_buffer[MPI_MAX_TASKS + 1];
+	double *recv_buffer = (double *) PHRQ_malloc(size_t ((mpi_tasks + 1) * sizeof(double)));
 	LDBLE
 		total;
 	int
@@ -2990,10 +3053,18 @@ mpi_rebalance_load(double time_per_cell, double *frac, int transfer)
 		k,
 		min_cell,
 		max_cell;
-	int
-		end_cells_new[MPI_MAX_TASKS][2];
-	int
-		cells[MPI_MAX_TASKS];
+	//int
+		//end_cells_new[MPI_MAX_TASKS][2];
+		std::vector<int> start_cell_new;
+		std::vector<int> end_cell_new;
+	for (i = 0; i < mpi_tasks; i++)
+	{
+		start_cell_new.push_back(0);
+		end_cell_new.push_back(0);
+	}
+	//int
+		//cells[MPI_MAX_TASKS];
+		std::vector<int> cells_v;
 	LDBLE
 		new_n,
 		min_time,
@@ -3060,10 +3131,6 @@ mpi_rebalance_load(double time_per_cell, double *frac, int transfer)
 		}
 	}
 	/*
-	   MPI_Bcast(&error, mpi_tasks, MPI_INT, 0, MPI_COMM_WORLD);
-	   if (error == TRUE) return(FALSE);
-	 */
-	/*
 	 *  Set first and last cells
 	 */
 	if (mpi_myself == 0)
@@ -3078,7 +3145,8 @@ mpi_rebalance_load(double time_per_cell, double *frac, int transfer)
 			n = (int) floor(new_n * recv_buffer[0] / recv_buffer[i]);
 			if (n < 1)
 				n = 1;
-			cells[i] = n;
+			//cells[i] = n;
+			cells_v.push_back(n);
 			total_cells += n;
 		}
 		/*
@@ -3090,16 +3158,16 @@ mpi_rebalance_load(double time_per_cell, double *frac, int transfer)
 			for (j = 0; j < diff_cells; j++)
 			{
 				min_cell = 0;
-				min_time = (cells[0] + 1) * recv_buffer[0];
+				min_time = (cells_v[0] + 1) * recv_buffer[0];
 				for (i = 1; i < mpi_tasks; i++)
 				{
-					if ((cells[i] + 1) * recv_buffer[i] < min_time)
+					if ((cells_v[i] + 1) * recv_buffer[i] < min_time)
 					{
 						min_cell = i;
-						min_time = (cells[i] + 1) * recv_buffer[i];
+						min_time = (cells_v[i] + 1) * recv_buffer[i];
 					}
 				}
-				cells[min_cell] += 1;
+				cells_v[min_cell] += 1;
 			}
 		}
 		else if (diff_cells < 0)
@@ -3110,16 +3178,16 @@ mpi_rebalance_load(double time_per_cell, double *frac, int transfer)
 				max_time = 0;
 				for (i = 0; i < mpi_tasks; i++)
 				{
-					if (cells[i] > 1)
+					if (cells_v[i] > 1)
 					{
-						if ((cells[i] - 1) * recv_buffer[i] > max_time)
+						if ((cells_v[i] - 1) * recv_buffer[i] > max_time)
 						{
 							max_cell = i;
-							max_time = (cells[i] - 1) * recv_buffer[i];
+							max_time = (cells_v[i] - 1) * recv_buffer[i];
 						}
 					}
 				}
-				cells[max_cell] -= 1;
+				cells_v[max_cell] -= 1;
 			}
 		}
 		/*
@@ -3128,23 +3196,29 @@ mpi_rebalance_load(double time_per_cell, double *frac, int transfer)
 		last = -1;
 		for (i = 0; i < mpi_tasks; i++)
 		{
-			end_cells_new[i][0] = last + 1;
-			end_cells_new[i][1] = end_cells_new[i][0] + cells[i] - 1;
-			last = end_cells_new[i][1];
+			//end_cells_new[i][0] = last + 1;
+			start_cell_new[i] = last + 1;
+			//end_cells_new[i][1] = end_cells_new[i][0] + cells[i] - 1;
+			end_cell_new[i] = start_cell_new[i] + cells_v[i] - 1;
+			//last = end_cells_new[i][1];
+			last = end_cell_new[i];
 		}
 		/*
 		 *  Check that all cells are distributed
 		 */
-		if (end_cells_new[mpi_tasks - 1][1] != count_cells - 1)
+		//if (end_cells_new[mpi_tasks - 1][1] != count_cells - 1)
+		if (end_cell_new[mpi_tasks - 1] != count_cells - 1)
 		{
 			output_msg(OUTPUT_STDERR,
 					   "Failed: %d, count_cells %d, last cell %d\n",
 					   diff_cells, count_cells,
-					   end_cells_new[mpi_tasks - 1][1]);
+					   //end_cells_new[mpi_tasks - 1][1]);
+					   end_cell_new[mpi_tasks - 1]);
 			for (i = 0; i < mpi_tasks; i++)
 			{
 				output_msg(OUTPUT_STDERR, "%d: first %d\tlast %d\n", i,
-						   end_cells_new[i][0], end_cells_new[i][1]);
+						   //end_cells_new[i][0], end_cells_new[i][1]);
+						   start_cell_new[i], end_cell_new[i]);
 			}
 			error_msg("Failed to redistribute cells.", STOP);
 		}
@@ -3155,10 +3229,11 @@ mpi_rebalance_load(double time_per_cell, double *frac, int transfer)
 		max_new = 0.0;
 		for (i = 0; i < mpi_tasks; i++)
 		{
-			t = cells[i] * recv_buffer[i];
+			t = cells_v[i] * recv_buffer[i];
 			if (t > max_new)
 				max_new = t;
-			t = (end_cells[i][1] - end_cells[i][0] + 1) * recv_buffer[i];
+			//t = (end_cells[i][1] - end_cells[i][0] + 1) * recv_buffer[i];
+			t = (end_cell[i] - start_cell[i] + 1) * recv_buffer[i];
 			if (t > max_old)
 				max_old = t;
 		}
@@ -3187,8 +3262,10 @@ mpi_rebalance_load(double time_per_cell, double *frac, int transfer)
 			/*          fprintf(stderr,"Stick\n"); */
 			for (i = 0; i < mpi_tasks; i++)
 			{
-				end_cells_new[i][0] = end_cells[i][0];
-				end_cells_new[i][1] = end_cells[i][1];
+				//end_cells_new[i][0] = end_cells[i][0];
+				start_cell_new[i] = start_cell[i];
+				//end_cells_new[i][1] = end_cells[i][1];
+				end_cell_new[i] = end_cell[i];
 			}
 		}
 		else
@@ -3197,12 +3274,15 @@ mpi_rebalance_load(double time_per_cell, double *frac, int transfer)
 			{
 				/*end_cells_new[i][1] = (end_cells_new[i][1] + end_cells[i][1])/2; */
 				/*end_cells_new[i][1] = end_cells_new[i][1]; */
-				icells =
-					(int) ((end_cells_new[i][1] -
-							end_cells[i][1]) * rebalance_fraction);
+				//icells = (int) ((end_cells_new[i][1] -
+				icells = (int) ((end_cell_new[i] -
+							//end_cells[i][1]) * rebalance_fraction);
+							end_cell[i]) * rebalance_fraction);
 				/*fprintf(stderr, "i %d, new %d, old %d, rebal_fraction %g, icells %d\n",i, end_cells_new[i][1], end_cells[i][1], rebalance_fraction, icells); */
-				end_cells_new[i][1] = end_cells[i][1] + icells;
-				end_cells_new[i + 1][0] = end_cells_new[i][1] + 1;
+				//end_cells_new[i][1] = end_cells[i][1] + icells;
+				end_cell_new[i] = end_cell[i] + icells;
+				//end_cells_new[i + 1][0] = end_cells_new[i][1] + 1;
+				start_cell_new[i + 1] = end_cell_new[i] + 1;
 			}
 		}
 #else
@@ -3219,7 +3299,9 @@ mpi_rebalance_load(double time_per_cell, double *frac, int transfer)
 	/*
 	 *   Broadcast new subcolumns
 	 */
-	MPI_Bcast(end_cells_new, 2 * mpi_tasks, MPI_INT, 0, MPI_COMM_WORLD);
+	//MPI_Bcast(end_cells_new, 2 * mpi_tasks, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&(start_cell_new[0]), mpi_tasks, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&(end_cell_new[0]), mpi_tasks, MPI_INT, 0, MPI_COMM_WORLD);
 	/*
 	 *   Redefine columns
 	 */
@@ -3237,11 +3319,13 @@ mpi_rebalance_load(double time_per_cell, double *frac, int transfer)
 			i = random_list[k];
 			iphrq = i;			/* iphrq is 1 to count_chem */
 			ihst = back[i].list[0];	/* ihst is 1 to nxyz */
-			while (k > end_cells[old][1])
+			//while (k > end_cells[old][1])
+			while (k > end_cell[old])
 			{
 				old++;
 			}
-			while (k > end_cells_new[nnew][1])
+			//while (k > end_cells_new[nnew][1])
+			while (k > end_cell_new[nnew])
 			{
 				nnew++;
 			}
@@ -3275,20 +3359,26 @@ mpi_rebalance_load(double time_per_cell, double *frac, int transfer)
 			}
 		}
 	}
-	mpi_first_cell = end_cells_new[mpi_myself][0];
-	mpi_last_cell = end_cells_new[mpi_myself][1];
+	//mpi_first_cell = end_cells_new[mpi_myself][0];
+	mpi_first_cell = start_cell_new[mpi_myself];
+	//mpi_last_cell = end_cells_new[mpi_myself][1];
+	mpi_last_cell = end_cell_new[mpi_myself];
 	for (i = 0; i < mpi_tasks; i++)
 	{
-		end_cells[i][0] = end_cells_new[i][0];
-		end_cells[i][1] = end_cells_new[i][1];
+		//end_cells[i][0] = end_cells_new[i][0];
+		start_cell[i] = start_cell_new[i];
+		//end_cells[i][1] = end_cells_new[i][1];
+		end_cell[i] = end_cell_new[i];
 		if (mpi_myself == 0)
 		{
 			/* fprintf(stderr, "Task %d: %d\t-\t%d\n", i, end_cells[i][0], end_cells[i][1]); */
 		}
 	}
+
+	// free buffer
+	free_check_null(recv_buffer);
 	return (OK);
 }
-
 /* ---------------------------------------------------------------------- */
 int
 mpi_rebalance_load_per_cell(double *times_per_cell, double *frac,
@@ -3311,8 +3401,15 @@ mpi_rebalance_load_per_cell(double *times_per_cell, double *frac,
 		i,
 		j,
 		k;
-	int
-		end_cells_new[MPI_MAX_TASKS][2];
+	//int
+		//end_cells_new[MPI_MAX_TASKS][2];
+	std::vector<int> start_cell_new;
+	std::vector<int> end_cell_new;
+	for (i = 0; i < mpi_tasks; i++)
+	{
+		start_cell_new.push_back(0);
+		end_cell_new.push_back(0);
+	}
 	int
 		nnew,
 		old;
@@ -3330,7 +3427,8 @@ mpi_rebalance_load_per_cell(double *times_per_cell, double *frac,
 	 */
 	if (mpi_myself == 0)
 	{
-		k = end_cells[0][1] - end_cells[0][0] + 1;
+		//k = end_cells[0][1] - end_cells[0][0] + 1;
+		k = end_cell[0] - start_cell[0] + 1;
 		for (i = 0; i < k; i++)
 		{
 			recv_cell_times[i] = times_per_cell[i];
@@ -3341,8 +3439,10 @@ mpi_rebalance_load_per_cell(double *times_per_cell, double *frac,
 	 */
 	for (i = 1; i < mpi_tasks; i++)
 	{
-		j = end_cells[i][0];
-		k = end_cells[i][1] - end_cells[i][0] + 1;
+		//j = end_cells[i][0];
+		j = start_cell[i];
+		//k = end_cells[i][1] - end_cells[i][0] + 1;
+		k = end_cell[i] - start_cell[i] + 1;
 		if (mpi_myself == i)
 		{
 			MPI_Send(times_per_cell, k, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
@@ -3419,7 +3519,8 @@ mpi_rebalance_load_per_cell(double *times_per_cell, double *frac,
 			double
 				tot = 0;
 			//std::cerr << i << "\tNormalizing cells: " << end_cells[i][0] << "  to  " << end_cells[i][1] << std::endl;
-			for (k = end_cells[i][0]; k <= end_cells[i][1]; k++)
+			//for (k = end_cells[i][0]; k <= end_cells[i][1]; k++)
+			for (k = start_cell[i]; k <= end_cell[i]; k++)
 			{
 				//std::cerr << k <<std::endl;
 				tot += recv_cell_times[k];
@@ -3471,11 +3572,13 @@ mpi_rebalance_load_per_cell(double *times_per_cell, double *frac,
 		f_high = 1 + 0.5 / ((double) mpi_tasks);
 		f_low = 1;
 		j = 0;
-		end_cells_new[0][0] = 0;
+		//end_cells_new[0][0] = 0;
+		start_cell_new[0] = 0;
 		for (i = 0; i < mpi_tasks - 1; i++)
 		{
 			if (i > 0)
-				end_cells_new[i][0] = end_cells_new[i - 1][1] + 1;
+				//end_cells_new[i][0] = end_cells_new[i - 1][1] + 1;
+				start_cell_new[i] = end_cell_new[i - 1] + 1;
 			double
 				sum_work = 0;
 			double
@@ -3498,14 +3601,17 @@ mpi_rebalance_load_per_cell(double *times_per_cell, double *frac,
 				}
 				else
 				{
-					if (j == end_cells_new[i][0])
+					//if (j == end_cells_new[i][0])
+					if (j == start_cell_new[i])
 					{
-						end_cells_new[i][1] = j;
+						//end_cells_new[i][1] = j;
+						end_cell_new[i] = j;
 						j++;
 					}
 					else
 					{
-						end_cells_new[i][1] = j - 1;
+						//end_cells_new[i][1] = j - 1;
+						end_cell_new[i] = j - 1;
 					}
 					next = FALSE;
 				}
@@ -3513,18 +3619,22 @@ mpi_rebalance_load_per_cell(double *times_per_cell, double *frac,
 		}
 		assert(j < count_chem);
 		assert(mpi_tasks > 1);
-		end_cells_new[mpi_tasks - 1][0] = end_cells_new[mpi_tasks - 2][1] + 1;
-		end_cells_new[mpi_tasks - 1][1] = count_chem - 1;
+		//end_cells_new[mpi_tasks - 1][0] = end_cells_new[mpi_tasks - 2][1] + 1;
+		start_cell_new[mpi_tasks - 1] = end_cell_new[mpi_tasks - 2] + 1;
+		//end_cells_new[mpi_tasks - 1][1] = count_chem - 1;
+		end_cell_new[mpi_tasks - 1] = count_chem - 1;
 
 		/*
 		 *  Check that all cells are distributed
 		 */
-		if (end_cells_new[mpi_tasks - 1][1] != count_cells - 1)
+		//if (end_cells_new[mpi_tasks - 1][1] != count_cells - 1)
+		if (end_cell_new[mpi_tasks - 1] != count_cells - 1)
 		{
 			for (i = 0; i < mpi_tasks; i++)
 			{
 				output_msg(OUTPUT_STDERR, "%d: first %d\tlast %d\n", i,
-						   end_cells_new[i][0], end_cells_new[i][1]);
+						   //end_cells_new[i][0], end_cells_new[i][1]);
+						   start_cell_new[i], end_cell_new[i]);
 			}
 			error_msg("Failed to redistribute cells.", STOP);
 		}
@@ -3534,18 +3644,25 @@ mpi_rebalance_load_per_cell(double *times_per_cell, double *frac,
 			int
 				icells;
 			icells =
-				(int) ((end_cells_new[i][1] -
-						end_cells[i][1]) * rebalance_fraction);
+				//(int) ((end_cells_new[i][1] -
+				(int) ((end_cell_new[i] -
+						//end_cells[i][1]) * rebalance_fraction);
+						end_cell[i]) * rebalance_fraction);
 			if (icells == 0)
-				icells = end_cells_new[i][1] - end_cells[i][1];
-			end_cells_new[i][1] = end_cells[i][1] + icells;
-			end_cells_new[i + 1][0] = end_cells_new[i][1] + 1;
+				//icells = end_cells_new[i][1] - end_cells[i][1];
+				icells = end_cell_new[i] - end_cell[i];
+			//end_cells_new[i][1] = end_cells[i][1] + icells;
+			end_cell_new[i] = end_cell[i] + icells;
+			//end_cells_new[i + 1][0] = end_cells_new[i][1] + 1;
+			start_cell_new[i + 1] = end_cell_new[i] + 1;
 		}
 	}							// mpi_myself = 0
 	/*
 	 *   Broadcast new subcolumns
 	 */
-	MPI_Bcast(end_cells_new, 2 * mpi_tasks, MPI_INT, 0, MPI_COMM_WORLD);
+	//MPI_Bcast(end_cells_new, 2 * mpi_tasks, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&(start_cell_new[0]), mpi_tasks, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&(end_cell_new[0]), mpi_tasks, MPI_INT, 0, MPI_COMM_WORLD);
 	/*
 	 *   Redefine columns
 	 */
@@ -3563,11 +3680,13 @@ mpi_rebalance_load_per_cell(double *times_per_cell, double *frac,
 			i = random_list[k];
 			iphrq = i;			/* iphrq is 1 to count_chem */
 			ihst = back[i].list[0];	/* ihst is 1 to nxyz */
-			while (k > end_cells[old][1])
+			//while (k > end_cells[old][1])
+			while (k > end_cell[old])
 			{
 				old++;
 			}
-			while (k > end_cells_new[nnew][1])
+			//while (k > end_cells_new[nnew][1])
+			while (k > end_cell_new[nnew])
 			{
 				nnew++;
 			}
@@ -3601,12 +3720,16 @@ mpi_rebalance_load_per_cell(double *times_per_cell, double *frac,
 			}
 		}
 	}
-	mpi_first_cell = end_cells_new[mpi_myself][0];
-	mpi_last_cell = end_cells_new[mpi_myself][1];
+	//mpi_first_cell = end_cells_new[mpi_myself][0];
+	mpi_first_cell = start_cell_new[mpi_myself];
+	//mpi_last_cell = end_cells_new[mpi_myself][1];
+	mpi_last_cell = end_cell_new[mpi_myself];
 	for (i = 0; i < mpi_tasks; i++)
 	{
-		end_cells[i][0] = end_cells_new[i][0];
-		end_cells[i][1] = end_cells_new[i][1];
+		//end_cells[i][0] = end_cells_new[i][0];
+		start_cell[i] = start_cell_new[i];
+        //end_cells[i][1] = end_cells_new[i][1];
+		end_cell[i] = end_cell_new[i];
 		if (mpi_myself == 0)
 		{
 			/* fprintf(stderr, "Task %d: %d\t-\t%d\n", i, end_cells[i][0], end_cells[i][1]); */
@@ -3698,7 +3821,7 @@ distribute_from_root(double *fraction, int *dim, int *print_sel,
 					 double *frac,
 					 int *printzone_chem, int *printzone_xyz,
 					 int *print_out, int *print_hdf, int *print_restart,
-					 double *pv, double *pv0)
+					 double *pv, double *pv0, int *przf_xyzt)
 /* ---------------------------------------------------------------------- */
 {
 	int
@@ -3715,8 +3838,7 @@ distribute_from_root(double *fraction, int *dim, int *print_sel,
 	/*
 	 *  Send from print flags, frac, pv from root to nodes
 	 */
-	MPI_Status
-		mpi_status;
+	MPI_Status mpi_status;
 	MPI_Bcast(print_sel, 1, MPI_INT, 0, MPI_COMM_WORLD);
 	MPI_Bcast(time_hst, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 	MPI_Bcast(time_step_hst, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
@@ -3724,6 +3846,7 @@ distribute_from_root(double *fraction, int *dim, int *print_sel,
 	MPI_Bcast(print_out, 1, MPI_INT, 0, MPI_COMM_WORLD);
 	MPI_Bcast(print_hdf, 1, MPI_INT, 0, MPI_COMM_WORLD);
 	MPI_Bcast(print_restart, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(przf_xyzt, 1, MPI_INT, 0, MPI_COMM_WORLD);
 	if (mpi_myself == 0)
 	{
 		for (k = 0; k < count_chem; k++)
@@ -3738,8 +3861,10 @@ distribute_from_root(double *fraction, int *dim, int *print_sel,
 	}
 	for (task_number = 1; task_number < mpi_tasks; task_number++)
 	{
-		j = end_cells[task_number][0];
-		k = end_cells[task_number][1] - end_cells[task_number][0] + 1;
+		//j = end_cells[task_number][0];
+		j = start_cell[task_number];
+		//k = end_cells[task_number][1] - end_cells[task_number][0] + 1;
+		k = end_cell[task_number] - start_cell[task_number] + 1;
 		if (mpi_myself == 0)
 		{
 			MPI_Send(&(random_frac[j]), k, MPI_DOUBLE, task_number, 0,
@@ -3819,8 +3944,10 @@ distribute_from_root(double *fraction, int *dim, int *print_sel,
 					 &mpi_status);
 			int
 				d = 0;
-			for (k = end_cells[task_number][0];
-				 k <= end_cells[task_number][1]; k++)
+			//for (k = end_cells[task_number][0];
+			for (k = start_cell[task_number];
+				 //k <= end_cells[task_number][1]; k++)
+				 k <= end_cell[task_number]; k++)
 			{
 				for (i = 0; i < count_total; i++)
 				{
@@ -3840,8 +3967,10 @@ distribute_from_root(double *fraction, int *dim, int *print_sel,
 		{
 			std::vector < double >
 				doubles;
-			for (k = end_cells[task_number][0];
-				 k <= end_cells[task_number][1]; k++)
+			//for (k = end_cells[task_number][0];
+			for (k = start_cell[task_number];
+				 //k <= end_cells[task_number][1]; k++)
+				 k <= end_cell[task_number]; k++)
 			{
 				i = random_list[k];	/* 1, count_chem */
 				j = back[i].list[0];
@@ -3866,7 +3995,8 @@ distribute_from_root(double *fraction, int *dim, int *print_sel,
 	if (mpi_myself == 0)
 	{
 		/* unpack root solutions */
-		for (k = end_cells[0][0]; k <= end_cells[0][1]; k++)
+		//for (k = end_cells[0][0]; k <= end_cells[0][1]; k++)
+		for (k = start_cell[0]; k <= end_cell[0]; k++)
 		{
 			i = random_list[k];	/* 1, count_chem */
 			j = back[i].list[0];
@@ -3906,8 +4036,10 @@ COLLECT_FROM_NONROOT(double *fraction, int *dim)
 			mpi_buffer_position = 0;
 			std::vector < double >
 				doubles;
-			for (k = end_cells[task_number][0];
-				 k <= end_cells[task_number][1]; k++)
+			//for (k = end_cells[task_number][0];
+			for (k = start_cell[task_number];
+				 //k <= end_cells[task_number][1]; k++)
+				 k <= end_cell[task_number]; k++)
 			{
 				i = random_list[k];	/* i is 1 to count_chem */
 				cxxsolution_to_buffer(szBin.getSolution(i));
@@ -3938,7 +4070,8 @@ COLLECT_FROM_NONROOT(double *fraction, int *dim)
 					 MPI_COMM_WORLD, &mpi_status);
 			int
 				d = 0;
-			for (k = end_cells[rank][0]; k <= end_cells[rank][1]; k++)
+			//for (k = end_cells[rank][0]; k <= end_cells[rank][1]; k++)
+			for (k = start_cell[rank]; k <= end_cell[rank]; k++)
 			{
 				for (i = 0; i < count_total; i++)
 				{
@@ -3961,7 +4094,8 @@ COLLECT_FROM_NONROOT(double *fraction, int *dim)
 	if (mpi_myself == 0)
 	{
 		/* pack solutions from root process */
-		for (k = end_cells[0][0]; k <= end_cells[0][1]; k++)
+		//for (k = end_cells[0][0]; k <= end_cells[0][1]; k++)
+		for (k = start_cell[0]; k <= end_cell[0]; k++)
 		{
 			i = random_list[k];
 			cxxsolution_to_buffer(szBin.getSolution(i));
@@ -4219,12 +4353,179 @@ ON_ERROR_CLEANUP_AND_EXIT(void)
 	errors = setjmp(mark);
 	if (errors != 0)
 	{
+		HDF_Finalize();
 		clean_up();
 		exit(1);
 	}
+
 	return;
 }
+#ifdef USE_MPI
+void
+	WRITE_BC_RAW(int *solution_list, int * bc_solution_count, int * solution_number, char *prefix, int prefix_l)
+{
+	std::ofstream ofs;
+	std::ostringstream oss;
 
+
+	// solution_list is is Fortran m number
+	MPI_Bcast(solution_number, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+	if (*solution_number == 0) return;
+	MPI_Bcast(bc_solution_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+	int *my_solution_list;
+
+	if (mpi_myself == 0)
+	{
+		MPI_Bcast(solution_list, *bc_solution_count, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+	else
+	{
+		my_solution_list = (int *) PHRQ_malloc((size_t) *bc_solution_count * sizeof(int));
+		if (my_solution_list == NULL) malloc_error();
+		MPI_Bcast(my_solution_list, *bc_solution_count, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+
+	if (mpi_myself == 0) 
+	{
+		std::string fn(prefix, prefix_l);
+		fn = trim_right(fn);
+		ofs.open(fn.c_str(), std::ios_base::app);
+		if (!ofs.is_open())
+		{
+			error_msg(sformatf("Could not open file. %s", fn.c_str()), STOP);
+		}
+	}
+	std::set<int> my_solns;
+	int	first_cell = mpi_first_cell;
+	int last_cell = mpi_last_cell;
+
+	// first and last cell in random_list, count_chem in length
+	for (int k = first_cell; k <= last_cell; k++)
+	{
+		my_solns.insert(random_list[k]);
+	}
+
+	for (int i = 0; i < *bc_solution_count; i++)
+	{
+		int raw_number = *solution_number + i;
+		int n_fort;
+		if (mpi_myself == 0)
+		{
+			n_fort = solution_list[i];
+		}
+		else
+		{
+			n_fort = my_solution_list[i];
+		}
+
+		int n_chem = forward1[n_fort - 1];
+		if (my_solns.find(n_chem) != my_solns.end())
+		{
+			if (szBin.getSolution(n_chem) == NULL) 
+			{
+				cerr << mpi_myself << "Could not find n_chem " << n_chem << std::endl;
+				continue;
+			}
+			if (mpi_myself == 0)
+			{
+
+				ofs << "# Fortran cell " << n_fort << ". Time " << rate_sim_time_end << "\n";
+				szBin.getSolution(n_chem)->dump_raw(ofs, raw_number, 0);
+			}
+			else
+			{
+				oss << "# Fortran cell " << n_fort << ". Time " << rate_sim_time_end << "\n";
+				szBin.getSolution(n_chem)->dump_raw(oss, raw_number, 0);
+			}
+		}
+	}
+
+	// Retrieve from nonroot processes
+
+	char *mpi_buffer;
+	int max_buffer_length = 1028;
+	mpi_buffer = (char *) PHRQ_malloc((size_t) (max_buffer_length + 10) * sizeof (char));
+	for (int task_number = 1; task_number < mpi_tasks; task_number++)
+	{
+		int buffer_length = 0;
+		MPI_Status mpi_status;
+		if (mpi_myself == 0)
+		{
+			MPI_Recv(&buffer_length, 1, MPI_INT, task_number, 0, MPI_COMM_WORLD,
+				&mpi_status);
+			if (buffer_length > 0)
+			{
+				if (max_buffer_length <= buffer_length)
+				{
+					max_buffer_length = buffer_length;
+					mpi_buffer = (char *) PHRQ_realloc(mpi_buffer, (size_t) max_buffer_length + 10);
+				}
+
+				MPI_Recv(mpi_buffer, buffer_length, MPI_CHAR, task_number, 0,
+					MPI_COMM_WORLD, &mpi_status);
+				mpi_buffer[buffer_length] = '\0';
+				ofs << mpi_buffer; // << "\n";
+			}
+		}
+		if (mpi_myself == task_number)
+		{
+			buffer_length = (int) oss.str().size();
+			MPI_Send(&buffer_length, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+			if (buffer_length > 0)
+			{
+				MPI_Send((void *) oss.str().c_str(), buffer_length, MPI_CHAR, 0, 0,
+					MPI_COMM_WORLD);
+			}
+		}
+	}
+	MPI_Barrier(MPI_COMM_WORLD);
+
+	if (mpi_myself == 0)
+	{
+		//*solution_number = raw_number;
+		ofs << "# Done with zone for time step." << std::endl;
+		ofs.close();
+	}
+	free_check_null(mpi_buffer);
+	return;
+}
+#else
+void
+	WRITE_BC_RAW(int *solution_list, int * bc_solution_count, int * solution_number, char *prefix, int prefix_l)
+{
+	if (*solution_number == 0) return;
+	std::string fn(prefix, prefix_l);
+	fn = trim_right(fn);
+	std::ofstream ofs;
+	ofs.open(fn.c_str(), std::ios_base::app);
+	if (!ofs.is_open())
+	{
+		error_msg(sformatf("Could not open file. %s", fn.c_str()), STOP);
+	}
+
+	int raw_number = *solution_number;
+	for (int i = 0; i < *bc_solution_count; i++)
+	{
+		int n_fort = solution_list[i];
+		int n_chem = forward1[n_fort - 1];
+		if (n_chem >= 0)
+		{
+			ofs << "# Fortran cell " << n_fort << ". Time " << rate_sim_time_end << "\n";
+			szBin.getSolution(n_chem)->dump_raw(ofs, raw_number++, 0);
+		}
+		else
+		{
+			assert(false);
+		}
+	}
+	//*solution_number = raw_number;
+	ofs << "# Done with zone for time step." << std::endl;
+	ofs.close();
+	return;
+}
+#endif
 /* ---------------------------------------------------------------------- */
 void
 SEND_RESTART_NAME(char *name, int nchar)
