@@ -492,13 +492,18 @@ Reaction_module::Forward_and_back(int *initial_conditions, int *naxes)
 			if (initial_conditions[7 * i] >= 0
 				|| initial_conditions[7 * i] <= -100)
 			{
-				this->forward[i] = n;
-				this->back[n].push_back(i);
+				//this->forward[i] = n;
+				this->forward.push_back(n);
+				//this->back[n].push_back(i);
+				std::vector <int> temp;
+				this->back.push_back(temp);
+				this->back.back().push_back(i);
 				n++;
 			}
 			else
 			{
-				this->forward[i] = -1;
+				//this->forward[i] = -1;
+				this->forward.push_back(-1);
 			}
 		}
 		this->count_chem = n;

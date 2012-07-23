@@ -287,23 +287,14 @@ void RM_error(int *id)
 	//IPhreeqcLib::CleanupIPhreeqcInstances();
 	exit(1);
 }
-/* ---------------------------------------------------------------------- */
-void
-RM_get_components(int *id, int *n_comp, char *names, int length)
-/* ---------------------------------------------------------------------- */
+void RM_forward_and_back(int *id,
+		int *initial_conditions, 
+		int *axes)
 {
-/*
- *   Counts components in any defined solution, gas_phase, exchanger,
- *   surface, or pure_phase_assemblage
- *
- *   Returns:
- *           n_comp, which is total, including H, O, elements, and Charge
- *           names, which contains character strings with names of components
- */
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->Get_components(n_comp, names, length);
+		Reaction_module_ptr->Forward_and_back(initial_conditions, axes);
 	}
 }
 /* ---------------------------------------------------------------------- */
@@ -378,8 +369,8 @@ RM_open_punch_file(char * prefix, int l_prefix)
 /* ---------------------------------------------------------------------- */
 void
 RM_pass_data(int *id,
-			 int *free_surface,					// free surface calculation
-			 int *steady_flow,					// free surface calculation
+			 bool *free_surface_f,				// free surface calculation
+			 bool *steady_flow_f,				// free surface calculation
 			 int *nx, int *ny, int *nz,			// number of nodes each coordinate direction
 			 double *time_hst,					// time from transport 
 			 double *time_step_hst,				// time step from transport
@@ -394,9 +385,7 @@ RM_pass_data(int *id,
 			 double *volume, 					// nxyz geometric cell volumes 
 			 int *printzone_chem,				// nxyz print flags for output file
 			 int *printzone_xyz,				// nxyz print flags for chemistry XYZ file 
-			 double *rebalance_fraction_hst,	// parameter for rebalancing process load for parallel	
-			 char * prefix,                     // prefix for file names
-			 int l_prefix						// length of prefix string
+			 double *rebalance_fraction_hst  	// parameter for rebalancing process load for parallel	
 			 )
 /* ---------------------------------------------------------------------- */
 {
@@ -404,12 +393,12 @@ RM_pass_data(int *id,
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->Set_free_surface(*free_surface != 0);
-		Reaction_module_ptr->Set_steady_flow(*steady_flow != 0);
-		Reaction_module_ptr->Set_transient_free_surface((*free_surface != 0) && (steady_flow == 0));
-		Reaction_module_ptr->Set_nxyz(*nx);
-		Reaction_module_ptr->Set_nxyz(*ny);
-		Reaction_module_ptr->Set_nxyz(*nz);
+		Reaction_module_ptr->Set_free_surface(*free_surface_f != 0);
+		Reaction_module_ptr->Set_steady_flow(*steady_flow_f != 0);
+		Reaction_module_ptr->Set_transient_free_surface((*free_surface_f != 0) && (steady_flow_f == 0));
+		Reaction_module_ptr->Set_nx(*nx);
+		Reaction_module_ptr->Set_ny(*ny);
+		Reaction_module_ptr->Set_nz(*nz);
 		Reaction_module_ptr->Set_nxyz((*nx) * (*ny) * (*nz));
 		Reaction_module_ptr->Set_time_hst(time_hst);
 		Reaction_module_ptr->Set_time_step_hst(time_step_hst);
@@ -425,9 +414,9 @@ RM_pass_data(int *id,
 		Reaction_module_ptr->Set_printzone_chem(printzone_chem);
 		Reaction_module_ptr->Set_printzone_xyz(printzone_xyz);
 		Reaction_module_ptr->Set_rebalance_fraction_hst(rebalance_fraction_hst);
-		std::string sprefix(prefix, l_prefix);
-		sprefix = trim(sprefix);
-		Reaction_module_ptr->Set_file_prefix(sprefix);
+		//std::string sprefix(prefix, l_prefix);
+		//sprefix = trim(sprefix);
+		//Reaction_module_ptr->Set_file_prefix(sprefix);
 	}
 }
 /* ---------------------------------------------------------------------- */

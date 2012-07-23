@@ -142,28 +142,30 @@ SUBROUTINE phast_manager
           ppassemblage_units, gasphase_units, kinetics_units)
 #endif
      !CALL store_c_pointers(indx_sol1_ic, x_node, y_node, z_node)
-     CALL RM_pass_data(fresur, &
+     CALL RM_pass_data(rm_id,        &
+        fresur,                      &
         steady_flow,                 &
         nx, ny, nz,                  &
         time_phreeqc,                &
         deltim_dummy,                &
         cnvtmi,                      &
         x_node, y_node, z_node,      &
-        fraction,                    & 
+        c,                           & 
         frac,                        &
         pv,                          &
         pv0,                         &
         volume,                      &
-        printzone_chem,              &
-        printzone_xyz,               &
-        rebalance_fraction_hst,      &
-        prefix)
+        iprint_chem,                 &
+        iprint_xyz,                  &
+        rebalance_fraction_f)
+        !prefix)
 
-     CALL forward_and_back(indx_sol1_ic, naxes, nx, ny, nz)  
+     CALL RM_forward_and_back(rm_id, indx_sol1_ic, naxes)  
      !CALL distribute_initial_conditions(indx_sol1_ic, indx_sol2_ic, ic_mxfrac,  &
      !     exchange_units, surface_units, ssassemblage_units,  &
      !     ppassemblage_units, gasphase_units, kinetics_units,  &
      !     pv0, volume)
+#ifdef SKIP
      CALL RM_distribute_initial_conditions(rm_id, &
 	indx_sol1_ic,		& ! 7 x nxyz end-member 1 
 	indx_sol2_ic,		& ! 7 x nxyz end-member 2
@@ -181,6 +183,8 @@ SUBROUTINE phast_manager
 #else
      CALL pack_for_hst(c,nxyz)
 #endif
+
+#endif ! SKIP
   ENDIF        ! ... solute
 
 #ifdef SKIP_REWRITE_PHAST-------------------------------------------------------------------------
