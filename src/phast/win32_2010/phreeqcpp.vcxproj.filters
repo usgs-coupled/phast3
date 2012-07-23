@@ -72,6 +72,9 @@
     <ClCompile Include="..\workersubs.cpp">
       <Filter>Source Files\MERGE_OBJS</Filter>
     </ClCompile>
+    <ClCompile Include="..\cxxHstSubs.cxx">
+      <Filter>Source Files\COMMON_CXXOBJS</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="phast.rc">

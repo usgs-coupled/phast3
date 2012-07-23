@@ -62,7 +62,7 @@ CONTAINS
     CALL pc_init(print_global_flow_balance, .FALSE., "print_global_flow_balance")
     CALL pc_init(print_bc_flows, .FALSE., "print_bc_flows")
     CALL pc_init(print_zone_flows, .FALSE., "print_zone_flows")
-    CALL pc_init(print_zone_flows_xyzt, .FALSE., "print_zone_flows_xyzt"))
+    CALL pc_init(print_zone_flows_xyzt, .FALSE., "print_zone_flows_xyzt")
     CALL pc_init(print_zone_flows_tsv, .FALSE., "print_zone_flows_tsv")
     CALL pc_init(print_conductances, .FALSE., "print_conductances")
     CALL pc_init(print_heads, .TRUE., "print_heads")

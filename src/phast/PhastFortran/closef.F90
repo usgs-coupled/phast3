@@ -164,7 +164,7 @@ SUBROUTINE closef
   ! ... File fuzf_heads opened and closed in zone_flow_write_heads 
   ! ... for multiple files 
 !!$ st(fuzf_heads) = 'delete'    
-!!$ IF(ntprzf_heads > 0) st(fuzf_heads) = 'keep  '  
+!IF(ntprzf_xyzt > 0) st(fuzf_heads) = 'keep  '  
   st(fuzf) = 'delete'  
   IF(ntprzf > 0) st(fuzf) = 'keep  '  
   st(fuzf_tsv) = 'delete'  

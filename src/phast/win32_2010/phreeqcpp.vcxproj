@@ -343,6 +343,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\cxxHstSubs.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\hdf.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='merge_debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='merge|Win32'">true</ExcludedFromBuild>

@@ -249,7 +249,7 @@ unpackcxx_from_hst(double *fraction, int *dim)
 	int i, j;
 	for (i = 0; i < ixyz; i++)
 	{
-		j = forward[i];
+		j = forward1[i];
 		if (j < 0)
 			continue;
 		hst_to_buffer(&fraction[i], *dim);

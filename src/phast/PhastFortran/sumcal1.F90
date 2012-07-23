@@ -51,6 +51,7 @@ SUBROUTINE sumcal1
   CHARACTER(LEN=130) :: logline1
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: cavg, sum_cqm_in
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: qsbc3, qsbc4
+  CHARACTER(LEN=130) error_line
 !!$  REAL(KIND=kdp), DIMENSION(nxy) :: fracn
   INTEGER :: s_blk
   INTEGER, DIMENSION(:), ALLOCATABLE :: blks, displs
@@ -176,6 +177,14 @@ SUBROUTINE sumcal1
      p(m) = p(m) + dp(m)
      ! ... Calculate new pore volumes for confined cells
      pv(m) = pv(m) + pmcv(m)*dp(m)
+     if (pv(m) < 0) then
+        WRITE( error_line, *) "Negative pore volume in transient calculation, cell ", m
+        CALL errprt_c(error_line)
+        WRITE( error_line, *) "Try increasing porosity, decreasing specific storage, or use a free surface." 
+        CALL errprt_c(error_line)
+        ERREXE = .TRUE.  
+        RETURN        
+     endif 
      ! ... Update density, viscosity
      !... *** not needed for PHAST
   END DO

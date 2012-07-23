@@ -90,7 +90,7 @@ SUBROUTINE write2_2
      IF(errexi) GO TO 390
      ! ... Print initial condition distributions and aquifer properties
      DO  m=1,nxyz
-        IF(ibc(m) == -1.OR.frac(m) <= 0.d0) THEN
+        IF(ibc(m) == -1.OR.frac(m) <= 0.0_kdp) THEN
         !IF(ibc(m) == -1) THEN
            lprnt1(m)=-1
         ELSE

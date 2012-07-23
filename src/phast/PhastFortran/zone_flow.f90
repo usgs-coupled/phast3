@@ -645,16 +645,19 @@ SUBROUTINE zone_flow_write_heads
   REAL(KIND=kdp) :: current_time = 0
   INTEGER :: counter = 1
   SAVE current_time, counter
+  CHARACTER * 130 file_name_base, file_name
   !     ------------------------------------------------------------------
   current_time = cnvtmi*time
   DO izn = 1, num_flo_zones
      IF (zone_write_heads(izn)) THEN
+        file_name_base = zone_filename_heads(izn)
+        file_name = trim(file_name_base) // ".heads.xyzt"
         IF (counter == 1) THEN
            ! ... delete file on first write
-           OPEN(fuzf_heads,FILE=zone_filename_heads(izn),IOSTAT=ios,ACTION='WRITE',STATUS='REPLACE')
+           OPEN(fuzf_heads,FILE=file_name,IOSTAT=ios,ACTION='WRITE',STATUS='REPLACE')
            WRITE(fuzf_heads,"(a20,a20,a20,a13,a6,a1,a20)") "X","Y","Z","T(",TRIM(unittm),")","Head"
         ELSE
-           OPEN(fuzf_heads,FILE=zone_filename_heads(izn),IOSTAT=ios,ACTION='WRITE',POSITION='APPEND')
+           OPEN(fuzf_heads,FILE=file_name,IOSTAT=ios,ACTION='WRITE',POSITION='APPEND')
         ENDIF
         DO i = 1, zone_col(izn)%num_xycol
            ii = zone_col(izn)%i_no(i)
@@ -673,3 +676,94 @@ SUBROUTINE zone_flow_write_heads
   counter = counter + 1
 
 END SUBROUTINE zone_flow_write_heads
+!SUBROUTINE zone_flow_write_chem(mpi_tasks, mpi_myself, force_print
+SUBROUTINE zone_flow_write_chem(force_print)
+  ! ... Writes solution_raw for zones for zones 
+  USE machine_constants, ONLY: kdp
+  USE f_units
+  USE mcb2_m
+  USE mcc
+  USE mcc_m
+  USE mcch
+  USE mcg
+  USE mcn, ONLY: x, y, z
+  USE mcp
+  USE mcv
+  IMPLICIT NONE
+  !LOGICAL ex
+  !INTEGER, INTENT(IN) :: mpi_myself, mpi_tasks
+  LOGICAL, INTENT(IN) :: force_print
+  INTEGER ios
+  INTEGER i, ii, jj, kk, m, izn
+  REAL(KIND=kdp) :: current_time = 0
+  INTEGER :: counter = 1
+  INTEGER :: solution_number, solution_number_start, bc_soln_count
+  SAVE current_time, counter, solution_number_start
+  CHARACTER * 130 file_name_base, file_name
+  INTEGER solution_list(nxyz), pos
+ 
+  IF (.not. solute) RETURN
+  IF(.not. przf_xyzt .and. .not. force_print) RETURN
+
+  current_time = cnvtmi*time
+  if (counter == 1) then
+    solution_number_start = 10000000
+  endif
+  bc_soln_count = 1
+  if (mpi_myself == 0) then 
+     do izn = 1, num_flo_zones
+        if (zone_write_heads(izn)) then
+           file_name_base = zone_filename_heads(izn)
+           if (counter == 1) then
+              ! delete file on first write
+              ! xyzt file
+              file_name = trim(file_name_base) // ".soln.xyzt"
+              OPEN(fuzf_chem_xyzt,FILE=file_name,IOSTAT=ios,ACTION='WRITE',STATUS='REPLACE')
+              write(fuzf_chem_xyzt,"(a20,a20,a20,a13,a6,a1,a20)") "X","Y","Z","T(",TRIM(unittm),")","Soln_no"
+              ! chem raw file
+              file_name = trim(file_name_base) // ".soln.bc"
+              OPEN(fuzf_chem_raw,FILE=file_name,IOSTAT=ios,ACTION='WRITE',STATUS='REPLACE')
+              CLOSE(fuzf_chem_raw)
+           else
+              ! xyzt file
+              file_name = trim(file_name_base) // ".soln.xyzt"
+              OPEN(fuzf_chem_xyzt,FILE=file_name,IOSTAT=ios,ACTION='WRITE',POSITION='APPEND')
+           endif
+
+           solution_number = solution_number_start
+           do i = 1, zone_col(izn)%num_xycol
+              ii = zone_col(izn)%i_no(i)
+              jj = zone_col(izn)%j_no(i)
+              do kk = zone_col(izn)%kmin_no(i), zone_col(izn)%kmax_no(i)
+                 m = ii + (jj-1)*nx + (kk-1)*nxy
+                 if (frac(m) > 0.0) then
+                    write(fuzf_chem_xyzt,"(4(G20.10,A1), I20, A1, A15, I10)") cnvli*x(ii), &
+                         ACHAR(9),cnvli*y(jj),ACHAR(9),cnvli*z(kk), &
+                         ACHAR(9),current_time,ACHAR(9),solution_number,ACHAR(9), &
+                         "# Fortran cell ",m 
+                    solution_number = solution_number + 1
+                    solution_list(bc_soln_count) = m
+                    bc_soln_count = bc_soln_count + 1
+                 endif
+              end do
+           end do
+           ! write raw solutions to file
+           file_name = trim(file_name_base) // ".soln.bc"
+           CALL write_bc_raw(solution_list, bc_soln_count - 1, solution_number_start, file_name)
+
+           ! finish xyzt file
+           CLOSE(fuzf_chem_xyzt, status='KEEP')
+           solution_number_start = solution_number
+        endif
+     end do
+     CALL write_bc_raw(solution_list, bc_soln_count - 1, 0, file_name)     
+  else
+     do 
+        CALL write_bc_raw(solution_list, bc_soln_count - 1, solution_number_start, file_name)     
+        if (solution_number_start == 0) EXIT
+     enddo
+  endif
+
+  counter = counter + 1
+
+END SUBROUTINE zone_flow_write_chem

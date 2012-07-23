@@ -175,7 +175,17 @@ CONTAINS
     CALL abmult(w,xx_b)
     CALL vpsv(rhs_r,rhs_r,w,-1.0_kdp,nrn)
     ! ... Set RHS_black equal to X_black
-    rhs_b = xx_b
+!  This construct uses a lot of stack for some reason
+!  Causes stack overflow for large problem  
+!  rhs_b = xx_b
+! Hopefully, this construct is equivalent,
+! Avoids stack overflow
+!  do i = 1, nxyz - nrnp1 + 1
+!    rhs_b(i) = xx_b(i)
+!    enddo
+  do i = nrnp1, nxyz
+    rhs(i) = xx(i)
+    enddo
     NULLIFY(apv, bpv, bpvlp, bpvj)
   END SUBROUTINE gcgris
 

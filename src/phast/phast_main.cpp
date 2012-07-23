@@ -17,6 +17,46 @@
 
 extern "C" void PHAST_SUB(int *mpi_tasks, int *mpi_myself);
 
+#if WIN32
+#include <windows.h>
+#include "phrqtype.h"
+
+extern "C" void HDF_Finalize(void);
+int write_restart(double hst_time);
+
+extern LDBLE rate_sim_time_end;
+extern LDBLE rate_cnvtmi;
+
+BOOL CtrlHandler(DWORD dwCtrlType)
+{
+	try
+	{
+		switch(dwCtrlType)
+		{
+		case CTRL_LOGOFF_EVENT:
+			break;
+		case CTRL_C_EVENT:
+		case CTRL_CLOSE_EVENT:
+		case CTRL_BREAK_EVENT:
+		case CTRL_SHUTDOWN_EVENT:
+			OutputDebugString("CtrlHandler Catch\n");
+			HDF_Finalize();
+			write_restart(rate_sim_time_end * rate_cnvtmi);
+			ExitProcess(1);
+			return TRUE;
+		default:
+			break;
+		}
+	}
+	catch(...)
+	{
+		ExitProcess(1);
+	}
+	return FALSE;
+}
+#endif
+
+
 int main(int argc, char* argv[])
 {
 	int mpi_tasks;
@@ -40,6 +80,10 @@ int main(int argc, char* argv[])
 #else
 	mpi_tasks = 1;
 	mpi_myself = 0;
+#endif
+
+#if WIN32
+	SetConsoleCtrlHandler((PHANDLER_ROUTINE) CtrlHandler, TRUE);
 #endif
 
 	//int tmpDbgFlag;

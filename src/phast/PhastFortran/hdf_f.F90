@@ -399,6 +399,18 @@ CONTAINS
 
 END SUBROUTINE hdf_end_time_step
 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! TODO
+!
+! Preconditions:
+!   TODO
+! Postconditions:
+!   TODO
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+SUBROUTINE write_hdf_intermediate()
+  IMPLICIT NONE
+  CALL HDF_INTERMEDIATE()  
+END SUBROUTINE write_hdf_intermediate
 SUBROUTINE calc_volume
 ! ... Logic for volume weighting copied from init2_1
   USE machine_constants, ONLY: kdp
