@@ -69,6 +69,7 @@ MODULE mcb2_m
   TYPE(zone_bc_cells), DIMENSION(:,:), ALLOCATABLE :: lnk_bc2zon
   TYPE(well_segments), DIMENSION(:), ALLOCATABLE :: seg_well
   CHARACTER(LEN=80), DIMENSION(:), ALLOCATABLE :: zone_title
+  INTEGER, DIMENSION(:), ALLOCATABLE :: zone_number
   CHARACTER(LEN=140), DIMENSION(:), ALLOCATABLE :: zone_filename_heads
   LOGICAL, DIMENSION(:), ALLOCATABLE :: zone_write_heads
   INTEGER :: num_flo_zones
@@ -85,19 +86,19 @@ MODULE mcc_m
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: dctas
   REAL(KIND=kdp), DIMENSION(100) :: dmptm
   REAL(KIND=kdp) :: pribcf, pricpd, pridv,  &
-       prihdf_head, prihdf_vel, prihdf_conc,  &
+       prihdf_head, prihdf_vel, prihdf_conc, prihdf_intermediate, &
        prigfb, prikd, primapcomp, primaphead, primapv, primin, prip, prit, pric,  &
        pricphrq, priforce_chem_phrq, prislm, pri_well_timser, &
        privel, priwel, pri_zf, pri_zf_tsv
   REAL(KIND=kdp) :: timprbcf, timprcpd, timprdv,  &
-       timprhdfh, timprhdfv, timprhdfcph,  &
+       timprhdfh, timprhdfv, timprhdfcph, timprhdfi, &
        timprgfb, timprkd, timprmapc, timprmaph, timprmapv, timprp, timprc, timprcphrq,  &
        timprfchem, timprslm, timprtem, &
        timprvel, timprwel, timprzf, timprzf_tsv, timprtnxt
   ! ... print control flags for zone_flow heads + print_zone_flows_heads    
-  REAL (KIND=kdp) :: pri_zf_heads, timprzf_heads
-  LOGICAL :: przf_heads=.FALSE.
-  INTEGER :: ntprzf_heads
+  REAL (KIND=kdp) :: pri_zf_xyzt, timprzf_xyzt
+  LOGICAL :: przf_xyzt=.false.
+  INTEGER :: ntprzf_xyzt
   LOGICAL :: ichwt, ichydp, pltzon, prtbc, prtdv, prtfp,  &
        prtic, prtichead=.FALSE., prtpmp, prtslm, prtwel, prt_kd, prt_bc, &
        prtic_c, prtic_mapc, prtic_p, prtic_maphead, prtic_conc, prtic_force_chem,  &
@@ -107,7 +108,7 @@ MODULE mcc_m
        savldo, vecmap
   LOGICAL :: prslm=.FALSE., prkd=.FALSE., prp=.FALSE., prc=.FALSE., prcphrq=.FALSE., &
        prf_chem_phrq=.FALSE., prvel=.FALSE., prgfb=.FALSE., prbcf=.FALSE., przf=.FALSE.,  &
-       przf_tsv=.FALSE., prwel=.FALSE.,  &
+       przf_tsv=.FALSE., prwel=.FALSE., prhdfi=.FALSE., &
        prhdfh=.FALSE., prhdfv=.FALSE., prhdfc=.FALSE., prmapc=.FALSE., prmaph=.FALSE., &
        prmapv=.FALSE., prtem=.FALSE., prcpd=.FALSE.
   INTEGER :: ntprbcf, ntprcpd, ntprhdfv, ntprhdfh, ntprgfb, ntprkd, ntprmapcomp,   &

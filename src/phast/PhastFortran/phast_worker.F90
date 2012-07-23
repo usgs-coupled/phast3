@@ -92,7 +92,8 @@ SUBROUTINE phast_worker
      CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time_phreeqc,deltim_dummy,prslmi,  &
           cnvtmi,frac_icchem,iprint_chem,iprint_xyz,  &
           prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f,  &
-          print_restart_flag, pv_phreeqc, pv0, steady_flow, volume)
+          print_restart_flag, pv_phreeqc, pv0, steady_flow, volume, przf_xyzt)
+     CALL zone_flow_write_chem(mpi_tasks, mpi_myself, .true.)
      stop_msg = 0
      deltim_dummy = 0._kdp
      !   
@@ -160,7 +161,8 @@ SUBROUTINE phast_worker
         !
         CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time,deltim,prslmi,cnvtmi,  &
              frac,iprint_chem,iprint_xyz,prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f,  &
-             print_restart%print_flag_integer, pv_phreeqc, pv0, steady_flow, volume)
+             print_restart%print_flag_integer, pv_phreeqc, pv0, steady_flow, volume, przf_xyzt)
+        CALL zone_flow_write_chem(mpi_tasks, mpi_myself, .true.)
         !
         !  Save values for next time step
         !
