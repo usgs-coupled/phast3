@@ -63,7 +63,7 @@ SUBROUTINE write5
      prgfb=.TRUE.
      prbcf=.TRUE.
      przf = .TRUE.
-     przf_heads = .TRUE.
+     przf_xyzt = .TRUE.
      przf_tsv = .TRUE.
      IF(nwel > 0) prwel=.TRUE.
      prslm=.TRUE.
@@ -342,7 +342,7 @@ SUBROUTINE write5
      WRITE(fuzf,2001)  '*** Output at End of Time Step No. ', itime,' ***'
      WRITE(fuzf,2002) 'Time '//dots,cnvtmi*time,'('//TRIM(unittm)//')'
      DO izn=1,num_flo_zones
-        WRITE(fuzf,2310) '*** Zonal Flow Summary, zone:',izn,' ***',  &
+        WRITE(fuzf,2310) '*** Zonal Flow Summary, zone:',zone_number(izn),' ***',  &
              zone_title(izn), 'Current Time Step','Rates'
 2310    FORMAT(/tr40,a,i4,a,/tr10,a/tr25,a,tr25,a)
         WRITE(fuzf,2311) 'Fluid inflow '//dots,cnvmfi*qfzoni(izn),  &
@@ -433,7 +433,7 @@ SUBROUTINE write5
   IF(przf_tsv) THEN  
      ! ... Zonal flow rates to tab separated file, fuzf_tsv
      DO izn=1,num_flo_zones
-        WRITE(fuzf_tsv,2502) cnvtmi*time,ACHAR(9),izn,ACHAR(9),'Water',ACHAR(9),  &
+        WRITE(fuzf_tsv,2502) cnvtmi*time,ACHAR(9),zone_number(izn),ACHAR(9),'Water',ACHAR(9),  &
              cnvmfi*qfzoni(izn),ACHAR(9),cnvmfi*qfzonp(izn),ACHAR(9),  &
              cnvmfi*qfzoni_int(izn),ACHAR(9),cnvmfi*qfzonp_int(izn),ACHAR(9),  &
              cnvmfi*qfzoni_sbc(izn),ACHAR(9),cnvmfi*qfzonp_sbc(izn),ACHAR(9),  &
@@ -445,7 +445,7 @@ SUBROUTINE write5
 2502    FORMAT(tr1,1pg13.6,a,i3,a,a,a,16(1pg14.7,a))
         IF (solute) THEN
            DO  is=1,ns-1                             ! ... No printout of charge flows
-              WRITE(fuzf_tsv,2502) cnvtmi*time,ACHAR(9),izn,ACHAR(9),comp_name(is),ACHAR(9),  &
+              WRITE(fuzf_tsv,2502) cnvtmi*time,ACHAR(9),zone_number(izn),ACHAR(9),comp_name(is),ACHAR(9),  &
                    cnvmfi*qszoni(is,izn),ACHAR(9),cnvmfi*qszonp(is,izn),ACHAR(9),  &
                    cnvmfi*qszoni_int(is,izn),ACHAR(9),cnvmfi*qszonp_int(is,izn),ACHAR(9),  &
                    cnvmfi*qszoni_sbc(is,izn),ACHAR(9),cnvmfi*qszonp_sbc(is,izn),ACHAR(9),  &
@@ -459,11 +459,16 @@ SUBROUTINE write5
      ENDDO
      ntprzf_tsv = ntprzf_tsv+1
   END IF
-  IF(przf_heads) THEN       ! ... Zonal heads to file, fuzf_heads
-     CALL zone_flow_write_heads
-     ntprzf_heads = ntprzf_heads+1
-  END IF
-
+  !IF(przf_xyzt .AND. .NOT.steady_flow) THEN  
+  !   ! ... Zonal heads to file, fuzf_heads
+  !   CALL zone_flow_write_heads
+  !   ntprzf_xyzt = ntprzf_xyzt+1
+  !END IF
+  ! move to phast_root and phast_slave
+  !IF(przf_xyzt .and. solute) THEN  
+  !   ! ... Zonal chem to file, fuzf_chem_xyzt and chem.bc
+  !   CALL zone_flow_write_chem
+  !END IF
   IF(prwel .OR. prtem) THEN
      nsa = MAX(ns,1)
      ALLOCATE (chu10a(nsa), chu11a(nsa), cwkt_mol(nwel,nsa), &

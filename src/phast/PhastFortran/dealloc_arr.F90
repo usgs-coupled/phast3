@@ -225,7 +225,7 @@ SUBROUTINE dealloc_arr
 
   IF(num_flo_zones > 0) THEN
      ! ... Deallocate zone arrays for local flow rates: mcb2_m
-     DEALLOCATE (zone_title,  &
+     DEALLOCATE (zone_title, zone_number, &
           zone_ib, lnk_bc2zon, seg_well,  &
           STAT = da_err)
      IF (da_err /= 0) THEN  

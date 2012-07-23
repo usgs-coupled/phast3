@@ -7,10 +7,11 @@ static char const svnid[] = "$Id$";
 #include <mpi.h>				/* MPI routines */
 #include <hdf5.h>				/* HDF routines */
 #include <stdarg.h>				/* va_start va_list va_end */
-#define MPI_MAX_TASKS 50		/* from hst.c */
+//#define MPI_MAX_TASKS 50		/* from hst.c */
 
 #define EXTERNAL extern
 #define USE_DEFAULT_FPRINTF
+#include <vector>
 #include "phreeqc/global.h"		/* error_string */
 #include "hst.h"				/* struct back_list */
 #include "phreeqc/phqalloc.h"	/* PHRQ_malloc PHRQ_realloc PHRQ_free */
@@ -116,7 +117,10 @@ static void
 FileInfo_merge(struct FileInfo *ptr_info, hid_t xfer_pid, hid_t mem_dspace,
 			   int *cell_to_proc)
 {
-	extern int end_cells[MPI_MAX_TASKS][2];
+	//extern int end_cells[MPI_MAX_TASKS][2];
+	//extern int end_cells[MPI_MAX_TASKS][2];
+	extern std::vector<int> start_cell;
+	extern std::vector<int> end_cell;
 	extern int mpi_myself;
 	extern int count_chem;
 	extern int mpi_tasks;
@@ -135,7 +139,8 @@ FileInfo_merge(struct FileInfo *ptr_info, hid_t xfer_pid, hid_t mem_dspace,
 
 	/* allocate space */
 	local_count_chem =
-		end_cells[mpi_myself][1] - end_cells[mpi_myself][0] + 1;
+		//end_cells[mpi_myself][1] - end_cells[mpi_myself][0] + 1;
+		end_cell[mpi_myself] - start_cell[mpi_myself] + 1;
 	local_record_size_array = NULL;
 	local_record_size_buffer = NULL;
 	root_record_size_array = NULL;
@@ -526,7 +531,9 @@ MergeFinalizeEcho(void)
 void
 MergeBeginTimeStep(int print_sel, int print_out)
 {
-	extern int end_cells[MPI_MAX_TASKS][2];
+	//extern int end_cells[MPI_MAX_TASKS][2];
+	extern std::vector<int> start_cell;
+	extern std::vector<int> end_cell;
 	extern int *random_list;
 	extern int mpi_myself;
 
@@ -566,8 +573,10 @@ MergeBeginTimeStep(int print_sel, int print_out)
 	}
 
 	/* determine space */
-	ptr_beg = &(random_list[end_cells[mpi_myself][0]]);
-	ptr_end = &(random_list[end_cells[mpi_myself][1]]);
+	//ptr_beg = &(random_list[end_cells[mpi_myself][0]]);
+	ptr_beg = &(random_list[start_cell[mpi_myself]]);
+	//ptr_end = &(random_list[end_cells[mpi_myself][1]]);
+	ptr_end = &(random_list[end_cell[mpi_myself]]);
 	dims[0] = ptr_end - ptr_beg + 1;
 
 	/* create the dataspace */
@@ -615,7 +624,9 @@ MergeEndTimeStep(int print_sel, int print_out)
 	extern int mpi_myself;
 	extern int mpi_tasks;
 
-	extern int end_cells[MPI_MAX_TASKS][2];
+	//extern int end_cells[MPI_MAX_TASKS][2];
+	extern std::vector<int> start_cell;
+	extern std::vector<int> end_cell;
 	extern int *random_list;
 
 	int *cell_to_proc;
@@ -633,7 +644,8 @@ MergeEndTimeStep(int print_sel, int print_out)
 		malloc_error();
 	for (task_number = 0; task_number < mpi_tasks; ++task_number)
 	{
-		for (k = end_cells[task_number][0]; k <= end_cells[task_number][1];
+		//for (k = end_cells[task_number][0]; k <= end_cells[task_number][1];
+		for (k = start_cell[task_number]; k <= end_cell[task_number];
 			++k)
 		{
 			cell_to_proc[random_list[k]] = task_number;

@@ -272,24 +272,25 @@ SUBROUTINE read3
   prigfb = -prigfb
   pribcf = -pribcf
   priwel = -priwel
-  READ(fuins,*) prihdf_conc, prihdf_head, prihdf_vel
-  IF (print_rde) WRITE(furde,8108) 'prihdf_conc, prihdf_head, prihdf_vel, [3.8.2]',  &
-       prihdf_conc, prihdf_head, prihdf_vel
+  READ(fuins,*) prihdf_conc, prihdf_head, prihdf_vel, prihdf_intermediate
+  IF (print_rde) WRITE(furde,8108) 'prihdf_conc, prihdf_head, prihdf_vel, prihdf_intermediate [3.8.2]',  &
+       prihdf_conc, prihdf_head, prihdf_vel, prihdf_intermediate
 8108 FORMAT(tr5,A/tr5,11F10.2)
   prihdf_conc = -prihdf_conc
   prihdf_head = -prihdf_head
   prihdf_vel = -prihdf_vel
+  prihdf_intermediate = -prihdf_intermediate
   READ(fuins,*) prtichead
   IF (print_rde) WRITE(furde,8208) 'prtichead, [3.8.2.1]', prtichead
 8208 FORMAT(tr5,A/tr5,l5)
   IF(num_flo_zones > 0) THEN
-     READ(fuins,*) pri_zf, pri_zf_tsv, pri_zf_heads
-     IF (print_rde) WRITE(furde,8111) 'pri_zf, pri_zf_tsv, pri_zf_heads[3.8.2.2]', &
-        pri_zf, pri_zf_tsv, pri_zf_heads
+     READ(fuins,*) pri_zf, pri_zf_tsv, pri_zf_xyzt
+     IF (print_rde) WRITE(furde,8111) 'pri_zf, pri_zf_tsv, pri_zf_xyzt[3.8.2.2]', &
+        pri_zf, pri_zf_tsv, pri_zf_xyzt
      ! ... ***special patch
      pri_zf = -pri_zf
      pri_zf_tsv = -pri_zf_tsv
-     pri_zf_heads = -pri_zf_heads
+     pri_zf_xyzt = -pri_zf_xyzt
   END IF
   READ(fuins,*) chkptd,pricpd,savldo
   IF (print_rde) WRITE(furde,8010) 'CHKPTD,PRICPD,SAVLDO [3.8.3]',  &

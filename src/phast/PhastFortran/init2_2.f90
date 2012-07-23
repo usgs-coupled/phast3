@@ -154,6 +154,6 @@ SUBROUTINE init2_2
   ntprvel = 0
   ntprwel = 0
   ntprtem = 0
-  ntprzf_heads = 0
+  ntprzf_xyzt = 0
   IF(CYLIND) orenpr = 13  
 END SUBROUTINE init2_2

@@ -57,7 +57,7 @@ SUBROUTINE write5_ss_flow
   prp=.FALSE.
   prgfb=.FALSE.
   przf = .FALSE.
-  przf_heads = .FALSE.
+  przf_xyzt = .FALSE.
   przf_tsv = .FALSE.
   prbcf=.FALSE.
   prwel=.FALSE.
@@ -89,9 +89,9 @@ SUBROUTINE write5_ss_flow
      IF(ABS(pri_zf) > 0._kdp) THEN
         IF(converge_ss) przf=.TRUE.
      END IF
-     IF(ABS(pri_zf_heads) > 0._kdp) THEN
-        IF(converge_ss) przf_heads=.TRUE.
-     END IF
+     IF(ABS(pri_zf_xyzt) > 0._kdp) THEN
+        IF(converge_ss) przf_xyzt=.TRUE.
+     END IF 
      IF(ABS(pri_zf_tsv) > 0._kdp) THEN
         IF(converge_ss) przf_tsv=.TRUE.
      END IF     
@@ -260,7 +260,7 @@ SUBROUTINE write5_ss_flow
      WRITE(fuzf,2001)  '*** Output at End of Steady State Iteration No. ', itime,' ***'
      WRITE(fuzf,2002) 'Time '//dots,cnvtmi*time,'('//TRIM(unittm)//')'
      DO izn=1,num_flo_zones
-        WRITE(fuzf,2310) '*** Zonal Flow Summary, zone:',izn,' ***',  &
+        WRITE(fuzf,2310) '*** Zonal Flow Summary, zone:',zone_number(izn),' ***',  &
              zone_title(izn), 'Current Time Step','Rates'
 2310    FORMAT(/tr40,a,i4,a,/tr10,a/tr25,a,tr25,a)
         WRITE(fuzf,2311) 'Fluid inflow '//dots,cnvmfi*qfzoni(izn),  &
@@ -303,15 +303,20 @@ SUBROUTINE write5_ss_flow
      ENDDO
      ntprzf = ntprzf+1
   ENDIF
-  IF(przf_heads) THEN  
-     ! ... Zonal heads to file, fuzf_heads
-     CALL zone_flow_write_heads
-     ntprzf_heads = ntprzf_heads+1
-  END IF
+  !IF(przf_xyzt) THEN  
+  !   ! ... Zonal heads to file, fuzf_heads
+  !   CALL zone_flow_write_heads
+  !   ntprzf_xyzt = ntprzf_xyzt+1
+  !END IF
+  ! move to phast_root and phast_slave
+  !IF(przf_xyzt .and. solute) THEN  
+  !   ! ... Zonal chem to file, fuzf_chem_xyzt and .chem.bc
+  !   CALL zone_flow_write_chem
+  !END IF 
   IF(przf_tsv) THEN
      ! ... Zonal flow rates to tab separated file, fuzf_tsv
      DO izn=1,num_flo_zones
-        WRITE(fuzf_tsv,2502) cnvtmi*time,achar(9),izn,achar(9),'Water',achar(9),  &
+        WRITE(fuzf_tsv,2502) cnvtmi*time,achar(9),zone_number(izn),achar(9),'Water',achar(9),  &
              cnvmfi*qfzoni(izn),achar(9),cnvmfi*qfzonp(izn),achar(9),  &
              cnvmfi*qfzoni_int(izn),achar(9),cnvmfi*qfzonp_int(izn),achar(9),  &
              cnvmfi*qfzoni_sbc(izn),achar(9),cnvmfi*qfzonp_sbc(izn),achar(9),  &

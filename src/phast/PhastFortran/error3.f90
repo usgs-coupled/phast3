@@ -108,7 +108,7 @@ SUBROUTINE error3
   IF(primaphead > 0._kdp .AND. primaphead < udeltim) warnflag = warnflag + 1
   IF(primapcomp > 0._kdp .AND. primapcomp < udeltim) warnflag = warnflag + 1
   IF(primapv > 0._kdp .AND. primapv < udeltim) warnflag = warnflag + 1
-  IF(pri_zf_heads > 0._kdp .AND. pri_zf_heads < udeltim) warnflag = warnflag + 1
+  IF(pri_zf_xyzt > 0._kdp .AND. pri_zf_xyzt < udeltim) warnflag = warnflag + 1
   IF(prip > 0._kdp .AND. prip < udeltim) warnflag = warnflag + 1
   IF(pric > 0._kdp .AND. pric < udeltim) warnflag = warnflag + 1
   IF(pricphrq > 0._kdp .AND. pricphrq < udeltim) warnflag = warnflag + 1
@@ -123,6 +123,7 @@ SUBROUTINE error3
   IF(prihdf_head > 0._kdp .AND. prihdf_head < udeltim) warnflag = warnflag + 1
   IF(prihdf_vel > 0._kdp .AND. prihdf_vel < udeltim) warnflag = warnflag + 1
   IF(prihdf_conc > 0._kdp .AND. prihdf_conc < udeltim) warnflag = warnflag + 1
+  IF(prihdf_intermediate > 0._kdp .AND. prihdf_intermediate < udeltim) warnflag = warnflag + 1
   IF(warnflag > 0) THEN
      WRITE(logline1,'(i2,a)') warnflag,' print control intervals are less than '//  &
           'defined time step length.'

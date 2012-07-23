@@ -108,6 +108,8 @@ SUBROUTINE phast_manager
   ! ... Read the time invariant data
   CALL read2
   CALL init2_1
+     ! geometric pv
+     pv0 = pv 
   ! ... Tranfer data to workers
   CALL group2_distribute
 
@@ -115,6 +117,10 @@ SUBROUTINE phast_manager
   CALL create_transporters
 
   CALL init2_2
+  if (.NOT.steady_flow) then
+     ! pressure corrected pv
+     pv0 = pv
+  endif
   CALL error2
 
 #ifdef SKIP_REWRITE_PHAST-------------------------------------------------------------------------
@@ -190,6 +196,7 @@ SUBROUTINE phast_manager
      CALL simulate_ss_flow          ! ... calls read3 and init3
      CALL init3_distribute
   ENDIF
+  CALL zone_flow_write_heads
 
   IF(errexe .OR. errexi) GO TO 50
   !
@@ -205,7 +212,8 @@ SUBROUTINE phast_manager
      CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time_phreeqc,deltim_dummy,prslmi,  &
           cnvtmi,frac_icchem,iprint_chem,iprint_xyz,  &
           prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f,  &
-          print_restart_flag, pv, pv0, steady_flow, volume)
+          print_restart_flag, pv, pv0, steady_flow, volume, przf_xyzt)
+     CALL zone_flow_write_chem(mpi_tasks, mpi_myself, .true.)
      CALL init2_3        
   ENDIF
   !
@@ -345,17 +353,24 @@ SUBROUTINE phast_manager
            CALL RM_log_screen_prt(logline1)
            CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time,deltim,prslmi,cnvtmi,  &
                 frac,iprint_chem,iprint_xyz,prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f,  &
-                print_restart%print_flag_integer, pv, pv0, steady_flow, volume)
+                print_restart%print_flag_integer, pv, pv0, steady_flow, volume, przf_xyzt)
         ENDIF
         CALL time_parallel(12)
         CALL sumcal2
         CALL time_parallel(13)
         CALL write5
+        IF(przf_xyzt .AND. .NOT.steady_flow) THEN  
+            CALL zone_flow_write_heads
+        ENDIF
+        CALL zone_flow_write_chem(mpi_tasks, mpi_myself, .false.)
         IF (.NOT.steady_flow) THEN
            CALL write4
         ENDIF
 #if defined(HDF5_CREATE)
         CALL hdf_end_time_step
+        IF (prhdfii) THEN
+           CALL write_hdf_intermediate     
+        ENDIF
 #endif            
         CALL update_print_flags          ! ... Update times for next printouts
         !

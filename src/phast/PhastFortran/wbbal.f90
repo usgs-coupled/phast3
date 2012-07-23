@@ -82,6 +82,9 @@ SUBROUTINE wbbal
            ELSE           ! ... injection layer from producing well (not allowed at layer kb, ks=1
               qflyr(iwel,ks) = denwk(iwel,ks)*qwlyr(iwel,ks)  
               uqwm = uqwm - qflyr(iwel,ks)  
+              if (Ks .eq. 1 .and. ns .ge. 1) then
+                STOP "Error in well calculation. Be sure all wells have at least a small pumping/injection rate."
+              endif
               DO 14 iis=1,ns  
                  cwk(iwel,ks,iis) = cwk(iwel,ks-1,iis)  
                  qslyr(iwel,ks,iis) = qflyr(iwel,ks)*cwk(iwel,ks,iis)

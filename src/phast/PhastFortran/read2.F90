@@ -55,6 +55,7 @@ SUBROUTINE read2
   INTEGER, DIMENSION(:), ALLOCATABLE :: uzmbc
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: uabc, ubbbc, ukbc, uzebc
   CHARACTER(LEN=130) :: logline1, logline2
+  INTEGER :: ii
   ! ... set string for use with rcs ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
@@ -863,6 +864,7 @@ SUBROUTINE read2
   ! ... set integer flags
   prhdfci = 0
   IF (prtichdf_conc) prhdfci = 1
+  prhdfii = 0
   prhdfhi = 0
   IF (prtichdf_head) prhdfhi = 1
   prhdfvi = 0
@@ -913,10 +915,10 @@ SUBROUTINE read2
   ENDIF
   ! ... Internal zones for flow rate tabulation
   READ(fuins,*) num_flo_zones
-  IF (print_rde) WRITE(furde, 8011) 'num_flow_zones,[2.23.8]', num_flo_zones
+  IF (print_rde) WRITE(furde, "(tr5,a/tr5,i8)") 'num_flow_zones,[2.23.8]', num_flo_zones
   IF(num_flo_zones > 0) THEN
      ! ... Allocate space for internal boundary zone data: mcb2_m
-     ALLOCATE (zone_title(num_flo_zones),  &
+     ALLOCATE (zone_title(num_flo_zones), zone_number(num_flo_zones), &
           zone_ib(num_flo_zones), lnk_bc2zon(num_flo_zones,4),  &
           seg_well(num_flo_zones),  &
           zone_filename_heads(num_flo_zones),  &
@@ -946,38 +948,49 @@ SUBROUTINE read2
         izn = izn+1
         IF (print_rde) WRITE(furde,8015) '** Flow Zone No.',izn,' **'
 8015    FORMAT(tr25,a,i3,a)
-        READ(line,'(a)') zone_title(izn)
-        IF (print_rde) WRITE(furde,'(tr5,a)') zone_title(izn)
+        line = adjustl(line)
+        ii = INDEX(line, ' ', .false.)
+        !READ(line,'(i, a)') zone_number(izn), zone_title(izn)
+        READ(line(1:ii),'(i)') zone_number(izn)
+        READ(line(ii+1:), '(a)') zone_title(izn)
+        IF (print_rde) WRITE(furde,'(tr5,i,a)') zone_number(izn), zone_title(izn)
         READ(fuins,*) zone_write_heads(izn)
-        IF(zone_write_heads(izn)) then
-           READ(fuins,'(a)') zone_filename_heads(izn)
-           IF (print_rde) WRITE(furde,'(tr5,l2,a)') zone_write_heads(izn), zone_filename_heads(izn)
-           zone_filename_heads(izn) = ADJUSTL(zone_filename_heads(izn))
+        IF(zone_write_heads(izn)) THEN
+            READ(fuins,'(a)') zone_filename_heads(izn)
+            IF (print_rde) WRITE(furde,'(tr5,l2,a)') zone_write_heads(izn), zone_filename_heads(izn)
+            zone_filename_heads(izn) = ADJUSTL(zone_filename_heads(izn))
+        ELSE
+            IF (print_rde) WRITE(furde,'(tr5,l2)') zone_write_heads(izn)
         ENDIF
         IF((fresur .AND. (nfbc > 0 .OR. nrbc > 0)) .OR. zone_write_heads(izn)) THEN
            IF (print_rde) WRITE(furde,8005) '** Flow Zone Volume Parameters **',  &
                 '  (read echo[2.23.10])',' i_no   j_no   kmin_no   kmax_no'
            READ(fuins,*) zone_col(izn)%num_xycol
-           ALLOCATE (zone_col(izn)%i_no(zone_col(izn)%num_xycol),  &
-                zone_col(izn)%j_no(zone_col(izn)%num_xycol),  &
-                zone_col(izn)%kmin_no(zone_col(izn)%num_xycol),  &
-                zone_col(izn)%kmax_no(zone_col(izn)%num_xycol),  &
-                stat = a_err)
-           IF (a_err /= 0) THEN
-              PRINT *, "array allocation failed: read2, flow zones.23.11"
-              STOP
+           IF (print_rde) WRITE(furde,'(tr5,i8)') zone_col(izn)%num_xycol
+           IF (zone_col(izn)%num_xycol > 0) THEN
+               ALLOCATE (zone_col(izn)%i_no(zone_col(izn)%num_xycol),  &
+                    zone_col(izn)%j_no(zone_col(izn)%num_xycol),  &
+                    zone_col(izn)%kmin_no(zone_col(izn)%num_xycol),  &
+                    zone_col(izn)%kmax_no(zone_col(izn)%num_xycol),  &
+                    stat = a_err)
+               IF (a_err /= 0) THEN
+                  PRINT *, "array allocation failed: read2, flow zones.23.11"
+                  STOP
+               ENDIF
+
+               READ(fuins,*) (zone_col(izn)%i_no(icol), zone_col(izn)%j_no(icol),  &
+                    zone_col(izn)%kmin_no(icol), zone_col(izn)%kmax_no(icol),  &
+                    icol=1,zone_col(izn)%num_xycol)
+               IF (print_rde) WRITE(furde,8223) (zone_col(izn)%i_no(icol), zone_col(izn)%j_no(icol),  &
+                    zone_col(izn)%kmin_no(icol), zone_col(izn)%kmax_no(icol),  &
+                    icol=1,zone_col(izn)%num_xycol)
+    8223       FORMAT(tr5,4i6)
            ENDIF
-           READ(fuins,*) (zone_col(izn)%i_no(icol), zone_col(izn)%j_no(icol),  &
-                zone_col(izn)%kmin_no(icol), zone_col(izn)%kmax_no(icol),  &
-                icol=1,zone_col(izn)%num_xycol)
-           IF (print_rde) WRITE(furde,8223) (zone_col(izn)%i_no(icol), zone_col(izn)%j_no(icol),  &
-                zone_col(izn)%kmin_no(icol), zone_col(izn)%kmax_no(icol),  &
-                icol=1,zone_col(izn)%num_xycol)
-8223       FORMAT(tr5,4i6)
         END IF
         IF (print_rde) WRITE(furde,8005) '** Flow Zone Face Parameters **',  &
              '  (read echo[2.23.13])',' cell_no    face index'
         READ(fuins,*) zone_ib(izn)%num_int_faces
+        IF (print_rde) WRITE(furde,'(tr5,i8)') zone_ib(izn)%num_int_faces
         IF(zone_ib(izn)%num_int_faces > 0) THEN
            ALLOCATE (zone_ib(izn)%mcell_no(zone_ib(izn)%num_int_faces),  &
                 zone_ib(izn)%face_indx(zone_ib(izn)%num_int_faces),  &
@@ -990,7 +1003,7 @@ SUBROUTINE read2
            READ(fuins,*) (uzmic(ifc), uziface(ifc), ifc=1,zone_ib(izn)%num_int_faces)
            IF (print_rde) WRITE(furde,8213) (uzmic(ifc), uziface(ifc),  &
                 ifc=1,zone_ib(izn)%num_int_faces)
-8213       FORMAT(tr1,10i6)
+8213       FORMAT(tr1,10i8)
            zone_ib(izn)%mcell_no(:) = uzmic(:)
            zone_ib(izn)%face_indx(:) = uziface(:)
            DEALLOCATE(uzmic, uziface,  &
