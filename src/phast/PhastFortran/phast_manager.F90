@@ -165,8 +165,9 @@ SUBROUTINE phast_manager
      !     exchange_units, surface_units, ssassemblage_units,  &
      !     ppassemblage_units, gasphase_units, kinetics_units,  &
      !     pv0, volume)
-#ifdef SKIP
+
      CALL RM_distribute_initial_conditions(rm_id, &
+       ipp_phrq_id,         &  ! initial condition definitions
 	indx_sol1_ic,		& ! 7 x nxyz end-member 1 
 	indx_sol2_ic,		& ! 7 x nxyz end-member 2
 	ic_mxfrac,		& ! 7 x nxyz fraction of end-member 1
@@ -176,7 +177,7 @@ SUBROUTINE phast_manager
 	ppassemblage_units,  & ! water (1) or rock (2)
 	gasphase_units,	& ! water (1) or rock (2)
 	kinetics_units	)	  ! water (1) or rock (2)
-
+#ifdef SKIP
      CALL uz_init(transient_fresur)
 #if defined(USE_MPI)
      CALL collect_from_nonroot(c, nxyz) ! stores data for transport

@@ -232,6 +232,7 @@ int RM_destroy(int *id)
 /* ---------------------------------------------------------------------- */
 void
 RM_distribute_initial_conditions(int *id,
+	                          int *ip_id,
 							  int *initial_conditions1,		// 7 x nxyz end-member 1
 							  int *initial_conditions2,		// 7 x nxyz end-member 2
 							  double *fraction1,			// 7 x nxyz fraction of end-member 1
@@ -256,6 +257,7 @@ RM_distribute_initial_conditions(int *id,
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Distribute_initial_conditions(
+			*ip_id,
 			initial_conditions1,
 			initial_conditions2,
 			fraction1,
@@ -291,6 +293,11 @@ void RM_forward_and_back(int *id,
 		int *initial_conditions, 
 		int *axes)
 {
+	//
+	// Creates mapping from all grid cells to only cells for chemistry
+	// Excludes inactive cells and cells that are redundant by symmetry
+	// (1D or 2D chemistry)
+	//
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
