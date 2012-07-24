@@ -60,6 +60,7 @@ SUBROUTINE phast_manager
   IF (rm_id.LT.0) THEN
      STOP
   END IF
+ if (LoadDatabase(rm_id, f2name) < 0) CALL RM_error(rm_id)
 
   !... Call phreeqc, find number of components
   ! f1name, chem.dat; f2name, database; f3name, prefix
@@ -123,7 +124,7 @@ SUBROUTINE phast_manager
   endif
   CALL error2
 
-#ifdef SKIP_REWRITE_PHAST-------------------------------------------------------------------------
+#ifdef SKIP_REWRITE_PHAST !-------------------------------------------------------------------------
 #if defined(HDF5_CREATE)
   CALL hdf_write_invariant(mpi_myself)
   CALL hdf_begin_time_step
@@ -188,7 +189,7 @@ SUBROUTINE phast_manager
 #endif ! SKIP
   ENDIF        ! ... solute
 
-#ifdef SKIP_REWRITE_PHAST-------------------------------------------------------------------------
+#ifdef SKIP_REWRITE_PHAST !-------------------------------------------------------------------------
   CALL error4
   ! ... write2_1 must be called after distribute_initial_conditions and equilibrate
   ! ... Write initial condition results 

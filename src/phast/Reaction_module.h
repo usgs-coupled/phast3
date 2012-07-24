@@ -109,7 +109,7 @@ public:
 
 protected:
 	// internal methods
-	void System_initialize(
+	void Cell_initialize(
 		int ip_id,
 		int i, 
 		int n_user_new, 
@@ -149,6 +149,7 @@ protected:
 	std::vector <double> old_frac;			// saturation fraction from previous step
 	double gfw_water;						// gfw of water
 	int count_chem;							// number of cells for chemistry
+	int index;
 
 	// From Fortran
 	bool free_surface;                      // free surface calculation
