@@ -17,12 +17,13 @@ public:
 	~Reaction_module(void);
 	// Called through wrappers
 	int Load_database(std::string database_name);
-	int Initial_phreeqc_run(std::string chemistry_name);
+	//int Initial_phreeqc_run(std::string chemistry_name);
 	void Get_components(int *n_comp, char *names, int length);
 	void Forward_and_back(
 		int *initial_conditions, 
 		int *axes);
 	void Distribute_initial_conditions(
+		int ip_id,
 		int *initial_conditions1,
 		int *initial_conditions2,	
 		double *fraction1,
@@ -109,6 +110,7 @@ public:
 protected:
 	// internal methods
 	void System_initialize(
+		int ip_id,
 		int i, 
 		int n_user_new, 
 		int *initial_conditions1,

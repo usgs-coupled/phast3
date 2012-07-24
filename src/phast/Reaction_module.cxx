@@ -91,7 +91,7 @@ Reaction_module::Load_database(std::string database_name)
 	this->gfw_water = this->phast_iphreeqc_worker->Get_gfw("H2O");
 	return 1;
 }
-
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 int
 Reaction_module::Initial_phreeqc_run(std::string chemistry_name)
@@ -148,10 +148,11 @@ Reaction_module::Initial_phreeqc_run(std::string chemistry_name)
 
 	return 1;
 }
-
+#endif
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Distribute_initial_conditions(
+	    int ip_id,
 		int *initial_conditions1,
 		int *initial_conditions2,	
 		double *fraction1,
@@ -196,7 +197,7 @@ Reaction_module::Distribute_initial_conditions(
 	 */
 	size_t count_negative_porosity = 0;
 	for (i = 0; i < this->nxyz; i++)
-	{							/* i is nxyz number */
+	{							        /* i is nxyz number */
 		j = this->forward[i];			/* j is count_chem number */
 		if (j < 0)
 			continue;
@@ -214,7 +215,7 @@ Reaction_module::Distribute_initial_conditions(
 		}
 		assert (porosity > 0.0);
 		double porosity_factor = (1.0 - porosity) / porosity;
-		this->System_initialize(i, j, initial_conditions1, initial_conditions2,
+		this->System_initialize(ip_id, i, j, initial_conditions1, initial_conditions2,
 			fraction1,
 			exchange_units, surface_units, ssassemblage_units,
 			ppassemblage_units, gasphase_units, kinetics_units,
@@ -494,10 +495,10 @@ Reaction_module::Forward_and_back(int *initial_conditions, int *naxes)
 			{
 				//this->forward[i] = n;
 				this->forward.push_back(n);
-				//this->back[n].push_back(i);
+
 				std::vector <int> temp;
 				this->back.push_back(temp);
-				this->back.back().push_back(i);
+				this->back[n].push_back(i);
 				n++;
 			}
 			else
@@ -525,14 +526,17 @@ Reaction_module::Forward_and_back(int *initial_conditions, int *naxes)
 			this->n_to_ijk(i, ii, jj, kk);
 			if (kk == 0 && (initial_conditions[7 * i] >= 0 || initial_conditions[7 * i] <= -100) )
 			{
-				this->forward[i] = n;
+				this->forward.push_back(n);
+
+				std::vector <int> temp;
+				this->back.push_back(temp);
 				this->back[n].push_back(i);
 				this->back[n].push_back(i + ixy);
 				n++;
 			}
 			else
 			{
-				this->forward[i] = -1;
+				this->forward.push_back(-1);
 			}
 		}
 		this->count_chem = n;
@@ -554,14 +558,17 @@ Reaction_module::Forward_and_back(int *initial_conditions, int *naxes)
 			this->n_to_ijk(i, ii, jj, kk);
 			if (jj == 0	&& (initial_conditions[7 * i] >= 0 || initial_conditions[7 * i] <= -100))
 			{
-				this->forward[i] = n;
+				this->forward.push_back(n);
+
+				std::vector <int> temp;
+				this->back.push_back(temp);
 				this->back[n].push_back(i);
 				this->back[n].push_back(i + this->nx);
 				n++;
 			}
 			else
 			{
-				this->forward[i] = -1;
+				this->forward.push_back(-1);
 			}
 		}
 		this->count_chem = n;
@@ -584,14 +591,17 @@ Reaction_module::Forward_and_back(int *initial_conditions, int *naxes)
 			this->n_to_ijk(i, ii, jj, kk);
 			if (ii == 0	&& (initial_conditions[7 * i] >= 0 || initial_conditions[7 * i] <= -100))
 			{
-				this->forward[i] = n;
+				this->forward.push_back(n);
+
+				std::vector <int> temp;
+				this->back.push_back(temp);
 				this->back[n].push_back(i);
 				this->back[n].push_back(i + 1);
 				n++;
 			}
 			else
 			{
-				this->forward[i] = -1;
+				this->forward.push_back(-1);
 			}
 		}
 		this->count_chem = n;
@@ -626,7 +636,10 @@ Reaction_module::Forward_and_back(int *initial_conditions, int *naxes)
 			this->n_to_ijk(i, ii, jj, kk);
 			if (jj == 0 && kk == 0)
 			{
-				this->forward[i] = n;
+				this->forward.push_back(n);
+
+				std::vector <int> temp;
+				this->back.push_back(temp);
 				this->back[n].push_back(i);
 				this->back[n].push_back(i + this->nx);
 				this->back[n].push_back(i + ixy);
@@ -635,7 +648,7 @@ Reaction_module::Forward_and_back(int *initial_conditions, int *naxes)
 			}
 			else
 			{
-				forward[i] = -1;
+				this->forward.push_back(-1);
 			}
 		}
 		this->count_chem = n;
@@ -670,7 +683,10 @@ Reaction_module::Forward_and_back(int *initial_conditions, int *naxes)
 			this->n_to_ijk(i, ii, jj, kk);
 			if (ii == 0 && kk == 0)
 			{
-				this->forward[i] = n;
+				this->forward.push_back(n);
+
+				std::vector <int> temp;
+				this->back.push_back(temp);
 				this->back[n].push_back(i);
 				this->back[n].push_back(i + 1);
 				this->back[n].push_back(i + ixy);
@@ -679,7 +695,7 @@ Reaction_module::Forward_and_back(int *initial_conditions, int *naxes)
 			}
 			else
 			{
-				this->forward[i] = -1;
+				this->forward.push_back(-1);
 			}
 		}
 		this->count_chem = n;
@@ -713,7 +729,10 @@ Reaction_module::Forward_and_back(int *initial_conditions, int *naxes)
 			this->n_to_ijk(i, ii, jj, kk);
 			if (ii == 0 && jj == 0)
 			{
-				this->forward[i] = n;
+				this->forward.push_back(n);
+				
+				std::vector <int> temp;
+				this->back.push_back(temp);
 				this->back[n].push_back(i);
 				this->back[n].push_back(i + 1);
 				this->back[n].push_back(i + this->nx);
@@ -722,7 +741,7 @@ Reaction_module::Forward_and_back(int *initial_conditions, int *naxes)
 			}
 			else
 			{
-				this->forward[i] = -1;
+				this->forward.push_back(-1);
 			}
 		}
 		this->count_chem = n;
@@ -759,6 +778,7 @@ Reaction_module::n_to_ijk(int n, int &i, int &j, int &k)
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::System_initialize(
+                    int ip_id,
 					int i, 
 					int n_user_new, 
 					int *initial_conditions1,
@@ -912,6 +932,165 @@ Reaction_module::System_initialize(
 
 	return;
 }
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::System_initialize(
+                    int ip_id,
+					int i, 
+					int n_user_new, 
+					int *initial_conditions1,
+					int *initial_conditions2, 
+					double *fraction1,
+					int exchange_units, 
+					int surface_units, 
+					int ssassemblage_units,
+					int ppassemblage_units, 
+					int gasphase_units, 
+					int kinetics_units,
+					double porosity_factor)
+/* ---------------------------------------------------------------------- */
+{
+	int n_old1, n_old2;
+	double f1;
+
+	/*
+	 *   Copy solution
+	 */
+	n_old1 = initial_conditions1[7 * i];
+	n_old2 = initial_conditions2[7 * i];
+	f1 = fraction1[7 * i];
+	if (n_old1 >= 0)
+	{
+		cxxMix mx;
+		mx.Add(n_old1, f1);
+		if (n_old2 >= 0)
+			mx.Add(n_old2, 1 - f1);
+		cxxSolution cxxsoln(this->phreeqc_bin.Get_Solutions(), mx, n_user_new);
+		this->sz_bin.Set_Solution(n_user_new, &cxxsoln);
+	}
+
+	/*
+	 *   Copy pp_assemblage
+	 */
+	n_old1 = initial_conditions1[7 * i + 1];
+	n_old2 = initial_conditions2[7 * i + 1];
+	f1 = fraction1[7 * i + 1];
+	if (n_old1 >= 0)
+	{
+		cxxMix mx;
+		mx.Add(n_old1, f1);
+		if (n_old2 >= 0)
+			mx.Add(n_old2, 1 - f1);
+		if (ppassemblage_units == 2)
+		{
+			mx.Multiply(porosity_factor);
+		}
+		cxxPPassemblage cxxentity(this->phreeqc_bin.Get_PPassemblages(), mx,
+								  n_user_new);
+		this->sz_bin.Set_PPassemblage(n_user_new, &cxxentity);
+	}
+	/*
+	 *   Copy exchange assemblage
+	 */
+
+	n_old1 = initial_conditions1[7 * i + 2];
+	n_old2 = initial_conditions2[7 * i + 2];
+	f1 = fraction1[7 * i + 2];
+	if (n_old1 >= 0)
+	{
+		cxxMix mx;
+		mx.Add(n_old1, f1);
+		if (n_old2 >= 0)
+			mx.Add(n_old2, 1 - f1);
+		if (exchange_units == 2)
+		{
+			mx.Multiply(porosity_factor);
+		}
+		cxxExchange cxxexch(this->phreeqc_bin.Get_Exchangers(), mx, n_user_new);
+		this->sz_bin.Set_Exchange(n_user_new, &cxxexch);
+	}
+	/*
+	 *   Copy surface assemblage
+	 */
+	n_old1 = initial_conditions1[7 * i + 3];
+	n_old2 = initial_conditions2[7 * i + 3];
+	f1 = fraction1[7 * i + 3];
+	if (n_old1 >= 0)
+	{
+		cxxMix mx;
+		mx.Add(n_old1, f1);
+		if (n_old2 >= 0)
+			mx.Add(n_old2, 1 - f1);
+		if (surface_units == 2)
+		{
+			mx.Multiply(porosity_factor);
+		}
+		cxxSurface cxxentity(this->phreeqc_bin.Get_Surfaces(), mx, n_user_new);
+		this->sz_bin.Set_Surface(n_user_new, &cxxentity);
+	}
+	/*
+	 *   Copy gas phase
+	 */
+	n_old1 = initial_conditions1[7 * i + 4];
+	n_old2 = initial_conditions2[7 * i + 4];
+	f1 = fraction1[7 * i + 4];
+	if (n_old1 >= 0)
+	{
+		cxxMix mx;
+		mx.Add(n_old1, f1);
+		if (n_old2 >= 0)
+			mx.Add(n_old2, 1 - f1);
+		if (gasphase_units == 2)
+		{
+			mx.Multiply(porosity_factor);
+		}
+		cxxGasPhase cxxentity(this->phreeqc_bin.Get_GasPhases(), mx, n_user_new);
+		this->sz_bin.Set_GasPhase(n_user_new, &cxxentity);
+	}
+	/*
+	 *   Copy solid solution
+	 */
+	n_old1 = initial_conditions1[7 * i + 5];
+	n_old2 = initial_conditions2[7 * i + 5];
+	f1 = fraction1[7 * i + 5];
+	if (n_old1 >= 0)
+	{
+		cxxMix mx;
+		mx.Add(n_old1, f1);
+		if (n_old2 >= 0)
+			mx.Add(n_old2, 1 - f1);
+		if (ssassemblage_units == 2)
+		{
+			mx.Multiply(porosity_factor);
+		}
+		cxxSSassemblage cxxentity(this->phreeqc_bin.Get_SSassemblages(), mx,
+								  n_user_new);
+		this->sz_bin.Set_SSassemblage(n_user_new, &cxxentity);
+	}
+	/*
+	 *   Copy kinetics
+	 */
+	n_old1 = initial_conditions1[7 * i + 6];
+	n_old2 = initial_conditions2[7 * i + 6];
+	f1 = fraction1[7 * i + 6];
+	if (n_old1 >= 0)
+	{
+		cxxMix mx;
+		mx.Add(n_old1, f1);
+		if (n_old2 >= 0)
+			mx.Add(n_old2, 1 - f1);
+		if (kinetics_units == 2)
+		{
+			mx.Multiply(porosity_factor);
+		}
+		cxxKinetics cxxentity(this->phreeqc_bin.Get_Kinetics(), mx, n_user_new);
+		this->sz_bin.Set_Kinetics(n_user_new, &cxxentity);
+	}
+
+	return;
+}
+#endif
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Get_components(
@@ -1257,7 +1436,8 @@ Reaction_module::File_exists(const std::string name)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::File_rename(const std::string temp_name, const std::string name, const std::string backup_name)
+Reaction_module::File_rename(const std::string temp_name, const std::string name, 
+	const std::string backup_name)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->File_exists(name))

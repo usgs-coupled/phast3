@@ -2677,7 +2677,7 @@ FORWARD_AND_BACK(int *initial_conditions, int *axes, int *nx, int *ny,
 			{
 				input_error++;
 				sprintf(error_string,
-						"Can not have inactive cells in a 1D simulation.");
+						"Cannot have inactive cells in a 1D simulation.");
 				error_msg(error_string, STOP);
 			}
 			n_to_ijk(i, &ii, &jj, &kk);
@@ -2724,7 +2724,7 @@ FORWARD_AND_BACK(int *initial_conditions, int *axes, int *nx, int *ny,
 			{
 				input_error++;
 				sprintf(error_string,
-						"Can not have inactive cells in a 1D simulation.");
+						"Cannot have inactive cells in a 1D simulation.");
 				error_msg(error_string, STOP);
 			}
 			n_to_ijk(i, &ii, &jj, &kk);
@@ -2758,7 +2758,7 @@ FORWARD_AND_BACK(int *initial_conditions, int *axes, int *nx, int *ny,
 			{
 				input_error++;
 				sprintf(error_string,
-						"Can not have inactive cells in a 1D simulation.");
+						"Cannot have inactive cells in a 1D simulation.");
 				error_msg(error_string, STOP);
 			}
 			n_to_ijk(i, &ii, &jj, &kk);

@@ -59,15 +59,16 @@ void RM_convert_to_molal(int *id, double *c, int *n, int *dim);
 int  RM_create();
 int  RM_destroy(int *id);
 void RM_distribute_initial_conditions(int *id,
+	    int *ipp_id,                    // IPhreeqc module id
 		int *initial_conditions1,		// 7 x nxyz end-member 1
 		int *initial_conditions2,		// 7 x nxyz end-member 2
-		double *fraction1,			// 7 x nxyz fraction of end-member 1
+		double *fraction1,			    // 7 x nxyz fraction of end-member 1
 		int *exchange_units,			// water (1) or rock (2)
-		int *surface_units,			// water (1) or rock (2)
+		int *surface_units,			    // water (1) or rock (2)
 		int *ssassemblage_units,		// water (1) or rock (2)		
 		int *ppassemblage_units,		// water (1) or rock (2)
 		int *gasphase_units,			// water (1) or rock (2)
-		int *kinetics_units			// water (1) or rock (2)
+		int *kinetics_units			    // water (1) or rock (2)
 		);
 void RM_error(int *id);
 void RM_forward_and_back(int *id,
