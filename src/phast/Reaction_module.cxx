@@ -28,6 +28,7 @@ Reaction_module::Reaction_module(PHRQ_io *io)
 	this->phast_iphreeqc_worker = new IPhreeqcPhast;
 	std::map<size_t, Reaction_module*>::value_type instance(this->phast_iphreeqc_worker->Get_Index(), this);
 	RM_interface::Instances.insert(instance);
+	this->index = this->phast_iphreeqc_worker->Get_Index();
 	//RM_interface::Instances[phast_iphreeqc_worker->Index] = Reaction_module_ptr;
 	//std::pair<std::map<size_t, Reaction_module*>::iterator, bool> pr = RM_interface::Instances.insert(instance);
 
@@ -215,7 +216,7 @@ Reaction_module::Distribute_initial_conditions(
 		}
 		assert (porosity > 0.0);
 		double porosity_factor = (1.0 - porosity) / porosity;
-		this->System_initialize(ip_id, i, j, initial_conditions1, initial_conditions2,
+		this->Cell_initialize(ip_id, i, j, initial_conditions1, initial_conditions2,
 			fraction1,
 			exchange_units, surface_units, ssassemblage_units,
 			ppassemblage_units, gasphase_units, kinetics_units,
@@ -777,7 +778,7 @@ Reaction_module::n_to_ijk(int n, int &i, int &j, int &k)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::System_initialize(
+Reaction_module::Cell_initialize(
                     int ip_id,
 					int i, 
 					int n_user_new, 
@@ -796,6 +797,14 @@ Reaction_module::System_initialize(
 	int n_old1, n_old2;
 	double f1;
 
+	// Initial IPhreeqc output
+	SetOutputFileOn(ip_id, 0);
+	SetDumpStringOn(ip_id, 1);
+	// Reaction module output
+	SetOutputFileOn(this->index, 0);
+	SetDumpStringOn(this->index, 0);
+
+	std::ostringstream mix_string;
 	/*
 	 *   Copy solution
 	 */
@@ -804,33 +813,49 @@ Reaction_module::System_initialize(
 	f1 = fraction1[7 * i];
 	if (n_old1 >= 0)
 	{
-		cxxMix mx;
-		mx.Add(n_old1, f1);
+		std::ostringstream mix_string;
+		mix_string << "MIX_SOLUTION -1\n";
+		mix_string << n_old1 << "  " << f1 << "\n";
 		if (n_old2 >= 0)
-			mx.Add(n_old2, 1 - f1);
-		cxxSolution cxxsoln(this->phreeqc_bin.Get_Solutions(), mx, n_user_new);
-		this->sz_bin.Set_Solution(n_user_new, &cxxsoln);
+		{
+			mix_string << n_old2 << "  " << 1 - f1 << "\n";
+		}
+		mix_string << "DUMP; -solution -1\n";
+		RunString(ip_id, mix_string.str().c_str());
+		std::ostringstream copy_string;
+		copy_string << GetDumpString(ip_id);
+		copy_string << "COPY solution -1 " << n_user_new << "\n";
+		//screen_msg(copy_string.str().c_str());
+		RunString(this->index, copy_string.str().c_str());
 	}
-
 	/*
 	 *   Copy pp_assemblage
 	 */
 	n_old1 = initial_conditions1[7 * i + 1];
 	n_old2 = initial_conditions2[7 * i + 1];
 	f1 = fraction1[7 * i + 1];
+
 	if (n_old1 >= 0)
 	{
-		cxxMix mx;
-		mx.Add(n_old1, f1);
-		if (n_old2 >= 0)
-			mx.Add(n_old2, 1 - f1);
+		SetDumpStringOn(ip_id, 1);
+		LDBLE pf = 1.0;
 		if (ppassemblage_units == 2)
 		{
-			mx.Multiply(porosity_factor);
+			pf = porosity_factor;
 		}
-		cxxPPassemblage cxxentity(this->phreeqc_bin.Get_PPassemblages(), mx,
-								  n_user_new);
-		this->sz_bin.Set_PPassemblage(n_user_new, &cxxentity);
+		std::ostringstream mix_string;
+		mix_string << "MIX_EQUILIBRIUM_PHASES -1\n";
+		mix_string << n_old1 << "  " << f1*pf << "\n";
+		if (n_old2 >= 0)
+		{
+			mix_string << n_old2 << "  " << (1 - f1)*pf << "\n";
+		}
+		mix_string << "DUMP; -equilibrium_phases -1\n";
+		RunString(ip_id, mix_string.str().c_str());
+		std::ostringstream copy_string;
+		copy_string << GetDumpString(ip_id);
+		copy_string << "COPY equilibrium_phases -1 " << n_user_new << "\n";
+		RunString(this->index, copy_string.str().c_str());
 	}
 	/*
 	 *   Copy exchange assemblage
@@ -841,16 +866,25 @@ Reaction_module::System_initialize(
 	f1 = fraction1[7 * i + 2];
 	if (n_old1 >= 0)
 	{
-		cxxMix mx;
-		mx.Add(n_old1, f1);
-		if (n_old2 >= 0)
-			mx.Add(n_old2, 1 - f1);
+		SetDumpStringOn(ip_id, 1);
+		LDBLE pf = 1.0;
 		if (exchange_units == 2)
 		{
-			mx.Multiply(porosity_factor);
+			pf = porosity_factor;
 		}
-		cxxExchange cxxexch(this->phreeqc_bin.Get_Exchangers(), mx, n_user_new);
-		this->sz_bin.Set_Exchange(n_user_new, &cxxexch);
+		std::ostringstream mix_string;
+		mix_string << "MIX_EXCHANGE -1\n";
+		mix_string << n_old1 << "  " << f1*pf << "\n";
+		if (n_old2 >= 0)
+		{
+			mix_string << n_old2 << "  " << (1 - f1)*pf << "\n";
+		}
+		mix_string << "DUMP; -exchange -1\n";
+		RunString(ip_id, mix_string.str().c_str());
+		std::ostringstream copy_string;
+		copy_string << GetDumpString(ip_id);
+		copy_string << "COPY exchange -1 " << n_user_new << "\n";
+		RunString(this->index, copy_string.str().c_str());
 	}
 	/*
 	 *   Copy surface assemblage
@@ -860,16 +894,25 @@ Reaction_module::System_initialize(
 	f1 = fraction1[7 * i + 3];
 	if (n_old1 >= 0)
 	{
-		cxxMix mx;
-		mx.Add(n_old1, f1);
-		if (n_old2 >= 0)
-			mx.Add(n_old2, 1 - f1);
+		SetDumpStringOn(ip_id, 1);
+		LDBLE pf = 1.0;
 		if (surface_units == 2)
 		{
-			mx.Multiply(porosity_factor);
+			pf = porosity_factor;
 		}
-		cxxSurface cxxentity(this->phreeqc_bin.Get_Surfaces(), mx, n_user_new);
-		this->sz_bin.Set_Surface(n_user_new, &cxxentity);
+		std::ostringstream mix_string;
+		mix_string << "MIX_SURFACE -1\n";
+		mix_string << n_old1 << "  " << f1*pf << "\n";
+		if (n_old2 >= 0)
+		{
+			mix_string << n_old2 << "  " << (1 - f1)*pf << "\n";
+		}
+		mix_string << "DUMP; -surface -1\n";
+		RunString(ip_id, mix_string.str().c_str());
+		std::ostringstream copy_string;
+		copy_string << GetDumpString(ip_id);
+		copy_string << "COPY surface -1 " << n_user_new << "\n";
+		RunString(this->index, copy_string.str().c_str());
 	}
 	/*
 	 *   Copy gas phase
@@ -879,16 +922,25 @@ Reaction_module::System_initialize(
 	f1 = fraction1[7 * i + 4];
 	if (n_old1 >= 0)
 	{
-		cxxMix mx;
-		mx.Add(n_old1, f1);
-		if (n_old2 >= 0)
-			mx.Add(n_old2, 1 - f1);
+		SetDumpStringOn(ip_id, 1);
+		LDBLE pf = 1.0;
 		if (gasphase_units == 2)
 		{
-			mx.Multiply(porosity_factor);
+			pf = porosity_factor;
 		}
-		cxxGasPhase cxxentity(this->phreeqc_bin.Get_GasPhases(), mx, n_user_new);
-		this->sz_bin.Set_GasPhase(n_user_new, &cxxentity);
+		std::ostringstream mix_string;
+		mix_string << "MIX_GAS_PHASE -1\n";
+		mix_string << n_old1 << "  " << f1*pf << "\n";
+		if (n_old2 >= 0)
+		{
+			mix_string << n_old2 << "  " << (1 - f1)*pf << "\n";
+		}
+		mix_string << "DUMP; -gas_phase -1\n";
+		RunString(ip_id, mix_string.str().c_str());
+		std::ostringstream copy_string;
+		copy_string << GetDumpString(ip_id);
+		copy_string << "COPY gas_phase -1 " << n_user_new << "\n";
+		RunString(this->index, copy_string.str().c_str());
 	}
 	/*
 	 *   Copy solid solution
@@ -898,17 +950,25 @@ Reaction_module::System_initialize(
 	f1 = fraction1[7 * i + 5];
 	if (n_old1 >= 0)
 	{
-		cxxMix mx;
-		mx.Add(n_old1, f1);
-		if (n_old2 >= 0)
-			mx.Add(n_old2, 1 - f1);
+		SetDumpStringOn(ip_id, 1);
+		LDBLE pf = 1.0;
 		if (ssassemblage_units == 2)
 		{
-			mx.Multiply(porosity_factor);
+			pf = porosity_factor;
 		}
-		cxxSSassemblage cxxentity(this->phreeqc_bin.Get_SSassemblages(), mx,
-								  n_user_new);
-		this->sz_bin.Set_SSassemblage(n_user_new, &cxxentity);
+		std::ostringstream mix_string;
+		mix_string << "MIX_SOLID_SOLUTION -1\n";
+		mix_string << n_old1 << "  " << f1*pf << "\n";
+		if (n_old2 >= 0)
+		{
+			mix_string << n_old2 << "  " << (1 - f1)*pf << "\n";
+		}
+		mix_string << "DUMP; -solid_solution -1\n";
+		RunString(ip_id, mix_string.str().c_str());
+		std::ostringstream copy_string;
+		copy_string << GetDumpString(ip_id);
+		copy_string << "COPY solid_solution -1 " << n_user_new << "\n";
+		RunString(this->index, copy_string.str().c_str());
 	}
 	/*
 	 *   Copy kinetics
@@ -918,18 +978,26 @@ Reaction_module::System_initialize(
 	f1 = fraction1[7 * i + 6];
 	if (n_old1 >= 0)
 	{
-		cxxMix mx;
-		mx.Add(n_old1, f1);
-		if (n_old2 >= 0)
-			mx.Add(n_old2, 1 - f1);
+		SetDumpStringOn(ip_id, 1);
+		LDBLE pf = 1.0;
 		if (kinetics_units == 2)
 		{
-			mx.Multiply(porosity_factor);
+			pf = porosity_factor;
 		}
-		cxxKinetics cxxentity(this->phreeqc_bin.Get_Kinetics(), mx, n_user_new);
-		this->sz_bin.Set_Kinetics(n_user_new, &cxxentity);
+		std::ostringstream mix_string;
+		mix_string << "MIX_KINETICS -1\n";
+		mix_string << n_old1 << "  " << f1*pf << "\n";
+		if (n_old2 >= 0)
+		{
+			mix_string << n_old2 << "  " << (1 - f1)*pf << "\n";
+		}
+		mix_string << "DUMP; -kinetics -1\n";
+		RunString(ip_id, mix_string.str().c_str());
+		std::ostringstream copy_string;
+		copy_string << GetDumpString(ip_id);
+		copy_string << "COPY kinetics -1 " << n_user_new << "\n";
+		RunString(this->index, copy_string.str().c_str());
 	}
-
 	return;
 }
 #ifdef SKIP
