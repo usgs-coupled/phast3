@@ -8,6 +8,7 @@
 #define RM_close_files                        rm_close_files
 #define RM_create                             rm_create
 #define RM_destroy                            rm_destroy
+#define RM_dump_to_iphreeqc                   rm_dump_to_iphreeqc 
 #define RM_distribute_initial_conditions      rm_distribute_initial_conditions
 #define RM_error                              rm_error
 #define RM_forward_and_back                   rm_forward_and_back
@@ -58,6 +59,7 @@ void RM_close_files(int * solute);
 void RM_convert_to_molal(int *id, double *c, int *n, int *dim);
 int  RM_create();
 int  RM_destroy(int *id);
+void RM_dump_to_iphreeqc(int *rm_id, int *ip_id);
 void RM_distribute_initial_conditions(int *id,
 	    int *ipp_id,                    // IPhreeqc module id
 		int *initial_conditions1,		// 7 x nxyz end-member 1

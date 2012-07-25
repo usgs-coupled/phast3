@@ -110,6 +110,22 @@ public:
 protected:
 	// internal methods
 	void Cell_initialize(
+		std::ostringstream &mix_string,
+		std::ostringstream &copy_string,
+		int i, 
+		int n_user_new, 
+		int *initial_conditions1,
+		int *initial_conditions2, 
+		double *fraction1,
+		int exchange_units, 
+		int surface_units, 
+		int ssassemblage_units,
+		int ppassemblage_units, 
+		int gasphase_units, 
+		int kinetics_units,
+		double porosity_factor);
+	/*
+	void Cell_initialize(
 		int ip_id,
 		int i, 
 		int n_user_new, 
@@ -123,6 +139,7 @@ protected:
 		int gasphase_units, 
 		int kinetics_units,
 		double porosity_factor);
+		*/
 	void Unpack_fraction_array(void);
 	void Pack_fraction_array(void);
 	bool n_to_ijk (int n, int &i, int &j, int &k);
