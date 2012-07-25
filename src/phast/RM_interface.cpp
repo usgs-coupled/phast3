@@ -270,6 +270,15 @@ RM_distribute_initial_conditions(int *id,
 	}
 }
 /* ---------------------------------------------------------------------- */
+void RM_dump_to_iphreeqc(int *rm_id, int *ip_id)
+/* ---------------------------------------------------------------------- */
+{
+	SetDumpStringOn(*rm_id, true);
+	if (RunString(*rm_id, "DUMP; -all") < 0) RM_error(rm_id);
+	if (RunString(*ip_id, GetDumpString(*rm_id)) < 0) RM_error(ip_id);
+	SetDumpStringOn(*rm_id, false);
+}
+/* ---------------------------------------------------------------------- */
 void RM_error(int *id)
 /* ---------------------------------------------------------------------- */
 {
@@ -461,7 +470,9 @@ RM_send_restart_name(int *id, char *name, long nchar)
 void RM_write_output(int *id)
 {
 	RM_interface::phast_io.output_msg(GetOutputString(*id));
-	RM_interface::phast_io.error_msg(GetWarningString(*id));
-	RM_interface::phast_io.error_msg(GetErrorString(*id));
+	RM_interface::phast_io.output_msg(GetWarningString(*id));
+	RM_interface::phast_io.output_msg(GetErrorString(*id));
+	RM_interface::phast_io.screen_msg(GetWarningString(*id));
+	RM_interface::phast_io.screen_msg(GetErrorString(*id));
 	RM_interface::phast_io.punch_msg(GetSelectedOutputString(*id));
 }

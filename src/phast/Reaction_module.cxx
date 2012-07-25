@@ -189,6 +189,311 @@ Reaction_module::Distribute_initial_conditions(
 	int
 		i,
 		j;
+
+	// Initial IPhreeqc output
+	SetOutputFileOn(ip_id, 0);
+	SetDumpStringOn(ip_id, 1);
+	SetSelectedOutputFileOn(ip_id, 0);
+	SetDumpFileOn(ip_id, 0);
+	// Reaction module output
+	SetOutputFileOn(this->index, 0);
+	SetDumpStringOn(this->index, 0);
+	SetSelectedOutputFileOn(this->index, 0);
+	SetDumpFileOn(ip_id, 0);
+
+	std::ostringstream mix_string;
+	std::ostringstream copy_string;
+
+	// Save pointer
+	ic1 = initial_conditions1;
+	/*
+	 *  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
+	 *  Does nothing for indexes less than 0 (i.e. restart files)
+	 */
+	size_t count_negative_porosity = 0;
+	for (i = 0; i < this->nxyz; i++)
+	{							        /* i is nxyz number */
+		j = this->forward[i];			/* j is count_chem number */
+		if (j < 0)
+			continue;
+		assert(this->forward[i] >= 0);
+		assert (this->volume[i] > 0.0);
+		double porosity = this->pv0[i] / this->volume[i];
+		if (this->pv0[i] < 0 || this->volume[i] < 0)
+		{
+			std::ostringstream errstr;
+			errstr << "Negative volume in cell " << i << ": volume, " 
+				<< volume[i] << "\t initial volume, " << this->pv0[i] << ".",
+			count_negative_porosity++;
+			error_msg(errstr.str().c_str());
+			continue;
+		}
+		assert (porosity > 0.0);
+		double porosity_factor = (1.0 - porosity) / porosity;
+		this->Cell_initialize(mix_string, copy_string, i, j, initial_conditions1, initial_conditions2,
+			fraction1,
+			exchange_units, surface_units, ssassemblage_units,
+			ppassemblage_units, gasphase_units, kinetics_units,
+			porosity_factor);
+	}
+	if (count_negative_porosity > 0)
+	{
+		std::ostringstream errstr;
+		errstr << "Negative initial volumes may be due to initial head distribution.\n"
+			"Make initial heads greater than or equal to the elevation of the node for each cell.\n"
+			"Increase porosity, decrease specific storage, or use free surface boundary.";
+		error_msg(errstr.str().c_str());
+	}
+
+	// Make initial conditions
+	if (RunString(this->index, mix_string.str().c_str()) < 0) RM_error(&this->index);
+	if (RunString(this->index, copy_string.str().c_str()) < 0) RM_error(&this->index);
+
+	/*
+	 * Read any restart files
+	 */
+	for (std::map < std::string, int >::iterator it = this->FileMap.begin();
+		 it != this->FileMap.end(); it++)
+	{
+		int
+			ifile = -100 - it->second;
+
+		// use gsztream
+		igzstream myfile;
+		myfile.open(it->first.c_str());
+		if (!myfile.good())
+
+		{
+			std::ostringstream errstr;
+			errstr << "File could not be opened: " << it->first.c_str();
+			error_msg(errstr.str().c_str());
+			break;
+		}
+
+		std::ostringstream oss;
+		CParser	cparser(myfile, this->Get_io());
+		cparser.set_echo_file(CParser::EO_NONE);
+		cparser.set_echo_stream(CParser::EO_NONE);
+
+		// skip headers
+		while (cparser.check_line("restart", false, true, true, false) ==
+			   PHRQ_io::LT_EMPTY);
+
+		// read number of lines of index
+		int
+			n = -1;
+		if (!(cparser.get_iss() >> n) || n < 4)
+		{
+			std::ostringstream errstr;
+			errstr << "File does not have node locations: " << it->first.c_str() << "\nPerhaps it is an old format restart file.";
+			error_msg(errstr.str().c_str());
+			myfile.close();
+			break;
+		}
+
+		// points are x, y, z, cell_no
+		std::vector < Point > pts;
+		// index:
+		// 0 solution
+		// 1 ppassemblage
+		// 2 exchange
+		// 3 surface
+		// 4 gas phase
+		// 5 ss_assemblage
+		// 6 kinetics
+		//int * index = (int *) PHRQ_malloc((size_t) (n * 7 * sizeof(int)));
+		int * index = new int( (n * 7 * sizeof(int)) );
+
+		for (i = 0; i < n; i++)
+		{
+			cparser.check_line("restart", false, false, false, false);
+			double
+				x,
+				y,
+				z,
+				v;
+			cparser.get_iss() >> x;
+			cparser.get_iss() >> y;
+			cparser.get_iss() >> z;
+			cparser.get_iss() >> v;
+			pts.push_back(Point(x, y, z, v));
+
+			cparser.get_iss() >> index[i * 7];
+			cparser.get_iss() >> index[i * 7 + 1];
+			cparser.get_iss() >> index[i * 7 + 2];
+			cparser.get_iss() >> index[i * 7 + 3];
+			cparser.get_iss() >> index[i * 7 + 4];
+			cparser.get_iss() >> index[i * 7 + 5];
+			cparser.get_iss() >> index[i * 7 + 6];
+		}
+		KDtree index_tree(pts);
+
+		cxxStorageBin tempBin;
+		tempBin.read_raw(cparser);
+
+		for (j = 0; j < this->count_chem; j++)	/* j is count_chem number */
+		{
+			//i = back[j].list[0];	/* i is nxyz number */
+			i = this->back[j][0];
+			Point p(this->x_node[i], this->y_node[i], this->z_node[i]);
+			int	k = (int) index_tree.Interpolate3d(p);	// k is index number in tempBin
+
+			// solution
+			if (initial_conditions1[i * 7] == ifile)
+			{
+				if (index[k * 7] != -1)	// entity k should be defined in tempBin
+				{
+					if (tempBin.Get_Solution(k) != NULL)
+					{
+						this->sz_bin.Set_Solution(j, tempBin.Get_Solution(k));
+					}
+					else
+					{
+						initial_conditions1[7 * i] = -1;
+					}
+				}
+			}
+
+			// PPassemblage
+			if (initial_conditions1[i * 7 + 1] == ifile)
+			{
+				if (index[k * 7 + 1] != -1)	// entity k should be defined in tempBin
+				{
+					if (tempBin.Get_PPassemblage(k) != NULL)
+					{
+						this->sz_bin.Set_PPassemblage(j, tempBin.Get_PPassemblage(k));
+					}
+					else
+					{
+						initial_conditions1[7 * i + 1] = -1;
+					}
+				}
+			}
+
+			// Exchange
+			if (initial_conditions1[i * 7 + 2] == ifile)
+			{
+				if (index[k * 7 + 2] != -1)	// entity k should be defined in tempBin
+				{
+					if (tempBin.Get_Exchange(k) != NULL)
+					{
+						this->sz_bin.Set_Exchange(j, tempBin.Get_Exchange(k));
+					}
+					else
+					{
+						initial_conditions1[7 * i + 2] = -1;
+					}
+				}
+			}
+
+			// Surface
+			if (initial_conditions1[i * 7 + 3] == ifile)
+			{
+				if (index[k * 7 + 3] != -1)	// entity k should be defined in tempBin
+				{
+					if (tempBin.Get_Surface(k) != NULL)
+					{
+						this->sz_bin.Set_Surface(j, tempBin.Get_Surface(k));
+					}
+					else
+					{
+						initial_conditions1[7 * i + 3] = -1;
+					}
+				}
+			}
+
+			// Gas phase
+			if (initial_conditions1[i * 7 + 4] == ifile)
+			{
+				if (index[k * 7 + 4] != -1)	// entity k should be defined in tempBin
+				{
+					if (tempBin.Get_GasPhase(k) != NULL)
+					{
+						this->sz_bin.Set_GasPhase(j, tempBin.Get_GasPhase(k));
+					}
+					else
+					{
+						initial_conditions1[7 * i + 4] = -1;
+					}
+				}
+			}
+
+			// Solid solution
+			if (initial_conditions1[i * 7 + 5] == ifile)
+			{
+				if (index[k * 7 + 5] != -1)	// entity k should be defined in tempBin
+				{
+					if (tempBin.Get_SSassemblage(k) != NULL)
+					{
+						this->sz_bin.Set_SSassemblage(j, tempBin.Get_SSassemblage(k));
+					}
+					else
+					{
+						initial_conditions1[7 * i + 5] = -1;
+					}
+				}
+			}
+
+			// Kinetics
+			if (initial_conditions1[i * 7 + 6] == ifile)
+			{
+				if (index[k * 7 + 6] != -1)	// entity k should be defined in tempBin
+				{
+					if (tempBin.Get_Kinetics(k) != NULL)
+					{
+						this->sz_bin.Set_Kinetics(j, tempBin.Get_Kinetics(k));
+					}
+					else
+					{
+						initial_conditions1[7 * i + 6] = -1;
+					}
+				}
+			}
+		}
+		myfile.close();
+		delete index;
+	}
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Distribute_initial_conditions(
+	    int ip_id,
+		int *initial_conditions1,
+		int *initial_conditions2,	
+		double *fraction1,
+		int exchange_units,
+		int surface_units,
+		int ssassemblage_units,
+		int ppassemblage_units,
+		int gasphase_units,
+		int kinetics_units)
+/* ---------------------------------------------------------------------- */
+{
+	/*
+	*  Use indices defined in initial_conditions and fractions
+	*  to mix reactants and store as initial conditions in a StorageBin
+	*/
+	/*
+	 *      nxyz - number of cells
+	 *      initial_conditions1 - Fortran, 7 x nxyz integer array, containing
+	 *           solution number
+	 *           pure_phases number
+	 *           exchange number
+	 *           surface number
+	 *           gas number
+	 *           solid solution number
+	 *           kinetics number
+	 *      initial_conditions2 - Fortran, 7 x nxyz integer array, containing
+	 *      fraction for 1 - Fortran, 7 x nxyz double array, containing
+	 *
+	 *      Routine mixes solutions, pure_phase assemblages,
+	 *      exchangers, surface complexers, gases, solid solution assemblages,
+	 *      and kinetics for each cell.
+	 */
+	int
+		i,
+		j;
 	
 	// Save pointer
 	ic1 = initial_conditions1;
@@ -221,6 +526,7 @@ Reaction_module::Distribute_initial_conditions(
 			exchange_units, surface_units, ssassemblage_units,
 			ppassemblage_units, gasphase_units, kinetics_units,
 			porosity_factor);
+		if (i%100 == 0) screen_msg("100\n");
 	}
 	if (count_negative_porosity > 0)
 	{
@@ -434,12 +740,12 @@ Reaction_module::Distribute_initial_conditions(
 		myfile.close();
 		delete index;
 	}
-	if (this->Get_io()->Get_io_error_count() > 0)
-	{
-		error_msg("Terminating in distribute_initial_conditions.\n", 1);
-	}
+	//if (this->Get_io()->Get_io_error_count() > 0)
+	//{
+	//	error_msg("Terminating in distribute_initial_conditions.\n", 1);
+	//}
 }
-
+#endif
 
 
 /* ---------------------------------------------------------------------- */
@@ -779,7 +1085,8 @@ Reaction_module::n_to_ijk(int n, int &i, int &j, int &k)
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Cell_initialize(
-                    int ip_id,
+                    std::ostringstream & mix_string,
+					std::ostringstream & copy_string,
 					int i, 
 					int n_user_new, 
 					int *initial_conditions1,
@@ -797,14 +1104,10 @@ Reaction_module::Cell_initialize(
 	int n_old1, n_old2;
 	double f1;
 
-	// Initial IPhreeqc output
-	SetOutputFileOn(ip_id, 0);
-	SetDumpStringOn(ip_id, 1);
-	// Reaction module output
-	SetOutputFileOn(this->index, 0);
-	SetDumpStringOn(this->index, 0);
 
-	std::ostringstream mix_string;
+
+	
+	mix_string << "DELETE; -cell " << -n_user_new << "; END\n";
 	/*
 	 *   Copy solution
 	 */
@@ -813,20 +1116,12 @@ Reaction_module::Cell_initialize(
 	f1 = fraction1[7 * i];
 	if (n_old1 >= 0)
 	{
-		std::ostringstream mix_string;
-		mix_string << "MIX_SOLUTION -1\n";
+		mix_string << "MIX_SOLUTION " << -n_user_new << "\n";
 		mix_string << n_old1 << "  " << f1 << "\n";
 		if (n_old2 >= 0)
 		{
 			mix_string << n_old2 << "  " << 1 - f1 << "\n";
 		}
-		mix_string << "DUMP; -solution -1\n";
-		RunString(ip_id, mix_string.str().c_str());
-		std::ostringstream copy_string;
-		copy_string << GetDumpString(ip_id);
-		copy_string << "COPY solution -1 " << n_user_new << "\n";
-		//screen_msg(copy_string.str().c_str());
-		RunString(this->index, copy_string.str().c_str());
 	}
 	/*
 	 *   Copy pp_assemblage
@@ -837,25 +1132,17 @@ Reaction_module::Cell_initialize(
 
 	if (n_old1 >= 0)
 	{
-		SetDumpStringOn(ip_id, 1);
 		LDBLE pf = 1.0;
 		if (ppassemblage_units == 2)
 		{
 			pf = porosity_factor;
 		}
-		std::ostringstream mix_string;
-		mix_string << "MIX_EQUILIBRIUM_PHASES -1\n";
+		mix_string << "MIX_EQUILIBRIUM_PHASES " << -n_user_new << "\n";
 		mix_string << n_old1 << "  " << f1*pf << "\n";
 		if (n_old2 >= 0)
 		{
 			mix_string << n_old2 << "  " << (1 - f1)*pf << "\n";
 		}
-		mix_string << "DUMP; -equilibrium_phases -1\n";
-		RunString(ip_id, mix_string.str().c_str());
-		std::ostringstream copy_string;
-		copy_string << GetDumpString(ip_id);
-		copy_string << "COPY equilibrium_phases -1 " << n_user_new << "\n";
-		RunString(this->index, copy_string.str().c_str());
 	}
 	/*
 	 *   Copy exchange assemblage
@@ -866,25 +1153,17 @@ Reaction_module::Cell_initialize(
 	f1 = fraction1[7 * i + 2];
 	if (n_old1 >= 0)
 	{
-		SetDumpStringOn(ip_id, 1);
 		LDBLE pf = 1.0;
 		if (exchange_units == 2)
 		{
 			pf = porosity_factor;
 		}
-		std::ostringstream mix_string;
-		mix_string << "MIX_EXCHANGE -1\n";
+		mix_string << "MIX_EXCHANGE " << -n_user_new << "\n";
 		mix_string << n_old1 << "  " << f1*pf << "\n";
 		if (n_old2 >= 0)
 		{
 			mix_string << n_old2 << "  " << (1 - f1)*pf << "\n";
 		}
-		mix_string << "DUMP; -exchange -1\n";
-		RunString(ip_id, mix_string.str().c_str());
-		std::ostringstream copy_string;
-		copy_string << GetDumpString(ip_id);
-		copy_string << "COPY exchange -1 " << n_user_new << "\n";
-		RunString(this->index, copy_string.str().c_str());
 	}
 	/*
 	 *   Copy surface assemblage
@@ -894,25 +1173,17 @@ Reaction_module::Cell_initialize(
 	f1 = fraction1[7 * i + 3];
 	if (n_old1 >= 0)
 	{
-		SetDumpStringOn(ip_id, 1);
 		LDBLE pf = 1.0;
 		if (surface_units == 2)
 		{
 			pf = porosity_factor;
 		}
-		std::ostringstream mix_string;
-		mix_string << "MIX_SURFACE -1\n";
+		mix_string << "MIX_SURFACE " << -n_user_new << "\n";
 		mix_string << n_old1 << "  " << f1*pf << "\n";
 		if (n_old2 >= 0)
 		{
 			mix_string << n_old2 << "  " << (1 - f1)*pf << "\n";
 		}
-		mix_string << "DUMP; -surface -1\n";
-		RunString(ip_id, mix_string.str().c_str());
-		std::ostringstream copy_string;
-		copy_string << GetDumpString(ip_id);
-		copy_string << "COPY surface -1 " << n_user_new << "\n";
-		RunString(this->index, copy_string.str().c_str());
 	}
 	/*
 	 *   Copy gas phase
@@ -922,25 +1193,17 @@ Reaction_module::Cell_initialize(
 	f1 = fraction1[7 * i + 4];
 	if (n_old1 >= 0)
 	{
-		SetDumpStringOn(ip_id, 1);
 		LDBLE pf = 1.0;
 		if (gasphase_units == 2)
 		{
 			pf = porosity_factor;
 		}
-		std::ostringstream mix_string;
-		mix_string << "MIX_GAS_PHASE -1\n";
+		mix_string << "MIX_GAS_PHASE " << -n_user_new << "\n";
 		mix_string << n_old1 << "  " << f1*pf << "\n";
 		if (n_old2 >= 0)
 		{
 			mix_string << n_old2 << "  " << (1 - f1)*pf << "\n";
 		}
-		mix_string << "DUMP; -gas_phase -1\n";
-		RunString(ip_id, mix_string.str().c_str());
-		std::ostringstream copy_string;
-		copy_string << GetDumpString(ip_id);
-		copy_string << "COPY gas_phase -1 " << n_user_new << "\n";
-		RunString(this->index, copy_string.str().c_str());
 	}
 	/*
 	 *   Copy solid solution
@@ -950,25 +1213,17 @@ Reaction_module::Cell_initialize(
 	f1 = fraction1[7 * i + 5];
 	if (n_old1 >= 0)
 	{
-		SetDumpStringOn(ip_id, 1);
 		LDBLE pf = 1.0;
 		if (ssassemblage_units == 2)
 		{
 			pf = porosity_factor;
 		}
-		std::ostringstream mix_string;
-		mix_string << "MIX_SOLID_SOLUTION -1\n";
+		mix_string << "MIX_SOLID_SOLUTION " << -n_user_new << "\n";
 		mix_string << n_old1 << "  " << f1*pf << "\n";
 		if (n_old2 >= 0)
 		{
 			mix_string << n_old2 << "  " << (1 - f1)*pf << "\n";
 		}
-		mix_string << "DUMP; -solid_solution -1\n";
-		RunString(ip_id, mix_string.str().c_str());
-		std::ostringstream copy_string;
-		copy_string << GetDumpString(ip_id);
-		copy_string << "COPY solid_solution -1 " << n_user_new << "\n";
-		RunString(this->index, copy_string.str().c_str());
 	}
 	/*
 	 *   Copy kinetics
@@ -978,28 +1233,25 @@ Reaction_module::Cell_initialize(
 	f1 = fraction1[7 * i + 6];
 	if (n_old1 >= 0)
 	{
-		SetDumpStringOn(ip_id, 1);
 		LDBLE pf = 1.0;
 		if (kinetics_units == 2)
 		{
 			pf = porosity_factor;
 		}
-		std::ostringstream mix_string;
-		mix_string << "MIX_KINETICS -1\n";
+		mix_string << "MIX_KINETICS " << -n_user_new << "\n";
 		mix_string << n_old1 << "  " << f1*pf << "\n";
 		if (n_old2 >= 0)
 		{
 			mix_string << n_old2 << "  " << (1 - f1)*pf << "\n";
 		}
-		mix_string << "DUMP; -kinetics -1\n";
-		RunString(ip_id, mix_string.str().c_str());
-		std::ostringstream copy_string;
-		copy_string << GetDumpString(ip_id);
-		copy_string << "COPY kinetics -1 " << n_user_new << "\n";
-		RunString(this->index, copy_string.str().c_str());
 	}
+
+	copy_string << "COPY cell " << -n_user_new << "  " << n_user_new << "\n";
+	copy_string << "DELETE; -cell " << -n_user_new << ";END\n";
+
 	return;
 }
+
 #ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void

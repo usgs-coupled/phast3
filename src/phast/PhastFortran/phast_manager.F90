@@ -60,29 +60,21 @@ SUBROUTINE phast_manager
   IF (rm_id.LT.0) THEN
      STOP
   END IF
- if (LoadDatabase(rm_id, f2name) < 0) CALL RM_error(rm_id)
 
   !... Call phreeqc, find number of components
   ! f1name, chem.dat; f2name, database; f3name, prefix
   CALL RM_open_files(solute, f3name)
   if (solute) then
     CALL RM_log_screen_prt("Initial PHREEQC run.")
-
-    ! Create and load database
-    ipp_phrq_id = CreateIPhreeqc()
-    IF (ipp_phrq_id < 0) CALL RM_error(ipp_phrq_id)
-    if (SetOutputStringOn(ipp_phrq_id, .true.) < 0) CALL RM_error(ipp_phrq_id)
-    if (LoadDatabase(ipp_phrq_id, f2name) < 0) CALL RM_error(ipp_phrq_id)
-    CALL RM_write_output(ipp_phrq_id)
-
-    ! Run .chem.dat file
-    if (SetOutputStringOn(ipp_phrq_id, .true.) < 0) CALL RM_error(ipp_phrq_id)
-    if (SetSelectedOutputFileOn(ipp_phrq_id, .true.) < 0) CALL RM_error(ipp_phrq_id)
-    if (RunFile(ipp_phrq_id, f1name) < 0) CALL RM_error(ipp_phrq_id)
-    CALL RM_write_output(ipp_phrq_id)
+    if (SetOutputStringOn(rm_id, .true.) < 0) CALL RM_error(rm_id)
+    if (SetSelectedOutputFileOn(rm_id, .true.) < 0) CALL RM_error(rm_id)
+    if (LoadDatabase(rm_id, f2name) < 0) CALL RM_error(rm_id)
+    CALL RM_write_output(rm_id)
+    if (RunFile(rm_id, f1name) < 0) CALL RM_error(rm_id)
+    CALL RM_write_output(rm_id)
 
     ! Set components
-    ns = GetComponentCount(ipp_phrq_id)
+    ns = GetComponentCount(rm_id)
     ALLOCATE(comp_name(ns),  & 
         STAT = a_err)
     IF (a_err /= 0) THEN
@@ -90,8 +82,16 @@ SUBROUTINE phast_manager
         STOP
     ENDIF
     do i = 1, ns
-       CALL GetComponent(ipp_phrq_id, i, comp_name(i))
-    enddo
+       CALL GetComponent(rm_id, i, comp_name(i))
+    enddo   
+
+    ! Create an IPhreeqc copy for initial conditions
+    ipp_phrq_id = CreateIPhreeqc()
+    IF (ipp_phrq_id < 0) CALL RM_error(ipp_phrq_id)
+    if (LoadDatabase(ipp_phrq_id, f2name) < 0) CALL RM_error(ipp_phrq_id)
+    !if (RunFile(ipp_phrq_id, f1name) < 0) CALL RM_error(ipp_phrq_id)
+    CALL RM_dump_to_iphreeqc(rm_id, ipp_phrq_id)  ! source, target
+
     CALL RM_log_screen_prt("Done with Initial PHREEQC run.")
   endif
 
