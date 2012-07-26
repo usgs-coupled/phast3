@@ -10,7 +10,7 @@ SUBROUTINE openf
   CHARACTER(LEN=255) :: fname
   INTEGER :: ios, length
   LOGICAL :: lerror 
-  INTEGER :: num_files, i
+  INTEGER :: i, a_err
   CHARACTER(LEN=255) :: restart_name
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
@@ -28,10 +28,15 @@ SUBROUTINE openf
   READ(fuinc,'(A)') f1name
   READ(fuinc,'(A)') f2name
   READ(fuinc,'(A)') f3name
-  READ(fuinc,'(I10)') num_files
-  DO i = 1, num_files
-     READ(fuinc,'(A)') restart_name
-     CALL RM_send_restart_name(rm_id, restart_name)
+  READ(fuinc,'(I10)') num_restart_files
+  ALLOCATE(restart_files(num_restart_files), & 
+       STAT = a_err)
+  IF (a_err /= 0) THEN
+     PRINT *, "Array allocation failed: openf, restart_files"  
+     STOP
+  ENDIF
+  DO i = 1, num_restart_files
+     READ(fuinc,'(A)') restart_files(i)
   ENDDO
   OPEN(fuins,STATUS='scratch')
   !$$  OPEN(fuins,FILE='stripped.in')

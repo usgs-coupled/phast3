@@ -100,6 +100,8 @@ MODULE mcch
   CHARACTER(LEN=3) :: unittm
   CHARACTER(LEN=8) :: utulbl
   CHARACTER(LEN=255) :: f1name, f2name, f3name
+  CHARACTER(LEN=255), DIMENSION(:), ALLOCATABLE :: restart_files
+  INTEGER :: num_restart_files
   CHARACTER(LEN=8) :: version_name="Parallel transport"
   CHARACTER(LEN=30), DIMENSION(:), ALLOCATABLE :: comp_name
 END MODULE mcch
