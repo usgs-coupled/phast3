@@ -75,7 +75,7 @@ Reaction_module::~Reaction_module(void)
 	}
 
 }
-
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 int
 Reaction_module::Load_database(std::string database_name)
@@ -92,6 +92,7 @@ Reaction_module::Load_database(std::string database_name)
 	this->gfw_water = this->phast_iphreeqc_worker->Get_gfw("H2O");
 	return 1;
 }
+#endif
 #ifdef SKIP
 /* ---------------------------------------------------------------------- */
 int
@@ -468,6 +469,15 @@ Reaction_module::Distribute_initial_conditions(
 		// transfer to Reaction Module
 		this->phast_iphreeqc_worker->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(rmBin);
 		myfile.close();
+	}
+
+	// initialize uz
+	if (this->transient_free_surface)
+	{
+		for (i = 0; i < this->nxyz; i++)
+		{
+			this->old_frac.push_back(1.0);
+		}
 	}
 }
 #ifdef SKIP
@@ -1834,6 +1844,44 @@ Reaction_module::Get_components(
 }
 /* ---------------------------------------------------------------------- */
 void
+Reaction_module::Fractions2Solutions(void)
+/* ---------------------------------------------------------------------- */
+{
+	size_t i, j, k;
+
+	std::vector<double> d;  // scratch space to convert from mass fraction to moles
+
+	for (i = 0; i < (size_t) this->nxyz; i++)
+	{
+		// j is count_chem number
+		j = this->forward[i];
+		if (j < 0) continue;
+
+		// get mass fractions and store as moles in d
+		double *ptr = &this->fraction[i];
+		for (k = 0; k < this->components.size(); k++)
+		{	
+			d.push_back(ptr[this->nxyz * k] * 1000.0/this->gfw[k]);
+		}
+
+		// update solution sz_bin solution
+		cxxNameDouble nd;
+		nd.add("H", d[0] + 2.0/gfw_water);
+		nd.add("O", d[1] + 1.0/gfw_water);
+		nd.add("Charge", d[2]);
+
+		for (k = 3; k < components.size(); k++)
+		{
+			if (d[k] <= 1e-14) d[k] = 0.0;
+			nd.add(components[k].c_str(), d[k]);
+		}	
+		this->sz_bin.Get_Solution((int) j)->Update(nd);
+	}
+	return;
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+void
 Reaction_module::Unpack_fraction_array(void)
 /* ---------------------------------------------------------------------- */
 {
@@ -1869,6 +1917,78 @@ Reaction_module::Unpack_fraction_array(void)
 	}
 	return;
 }
+#endif
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Unpack_fraction_array(void)
+/* ---------------------------------------------------------------------- */
+{
+	size_t i, j, k;
+
+	std::vector<double> d;  // scratch space to convert from mass fraction to moles
+
+	for (i = 0; i < (size_t) this->nxyz; i++)
+	{
+		// j is count_chem number
+		j = this->forward[i];
+		if (j < 0) continue;
+
+		// get mass fractions and store as moles in d
+		double *ptr = &this->fraction[i];
+		for (k = 0; k < this->components.size(); k++)
+		{	
+			d.push_back(ptr[this->nxyz * k] * 1000.0/this->gfw[k]);
+		}
+
+		// update solution sz_bin solution
+		cxxNameDouble nd;
+		nd.add("H", d[0] + 2.0/gfw_water);
+		nd.add("O", d[1] + 1.0/gfw_water);
+		nd.add("Charge", d[2]);
+
+		for (k = 3; k < components.size(); k++)
+		{
+			if (d[k] <= 1e-14) d[k] = 0.0;
+			nd.add(components[k].c_str(), d[k]);
+		}	
+		this->sz_bin.Get_Solution((int) j)->Update(nd);
+	}
+	return;
+}
+#endif
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Solutions2Fractions(void)
+/* ---------------------------------------------------------------------- */
+{
+	// convert Reaction module solution data to hst mass fractions
+
+	std::vector<double> d;  // scratch space to convert from moles to mass fraction
+	cxxNameDouble::iterator it;
+
+	int j; 
+
+	for (j = 0; j < this->count_chem; j++)
+	{
+		// load fractions into d
+		cxxSolution * cxxsoln_ptr = this->sz_bin.Get_Solution(j);
+		this->cxxSolution2fraction(cxxsoln_ptr, d);
+
+		// store in fraction at 1, 2, or 4 places depending on chemistry dimensions
+		std::vector<int>::iterator it;
+		for (it = this->back[j].begin(); it != this->back[j].end(); it++)
+		{
+			double *d_ptr = &this->fraction[*it];
+			size_t i;
+			for (i = 0; i < this->components.size(); i++)
+			{
+				d_ptr[this->nxyz * i] = d[i];
+			}
+		}
+	}
+}
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Pack_fraction_array(void)
@@ -1899,6 +2019,7 @@ Reaction_module::Pack_fraction_array(void)
 		}
 	}
 }
+#endif
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Convert_to_molal(double *c, int n, int dim)
@@ -2625,7 +2746,8 @@ Reaction_module::Run_reactions()
 /*
  *   Update solution compositions in sz_bin
  */
-	this->Unpack_fraction_array();
+	this->Fractions2Solutions();
+	//this->Unpack_fraction_array();
 
 	int i, j;
 	for (i = 0; i < this->count_chem; i++)

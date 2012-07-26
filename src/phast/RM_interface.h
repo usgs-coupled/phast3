@@ -8,16 +8,18 @@
 #define RM_close_files                        rm_close_files
 #define RM_create                             rm_create
 #define RM_destroy                            rm_destroy
-#define RM_dump_to_iphreeqc                   rm_dump_to_iphreeqc 
+#define RM_create_phreeqc_bin                 rm_create_phreeqc_bin 
 #define RM_distribute_initial_conditions      rm_distribute_initial_conditions
 #define RM_error                              rm_error
 #define RM_forward_and_back                   rm_forward_and_back
+#define RM_fractions2solutions                rm_fractions2solutions
 #define RM_initial_phreeqc_run                rm_initial_phreeqc_run
 #define RM_load_database                      rm_load_database
 #define RM_log_screen_prt                     rm_log_screen_prt
 #define RM_open_files                         rm_open_files
 #define RM_pass_data                          rm_pass_data
 #define RM_send_restart_name                  rm_send_restart_name
+#define RM_solutions2fractions                rm_solutions2fractions
 #define RM_write_output                       rm_write_output
 
 /**
@@ -58,8 +60,8 @@ void RM_cleanup();
 void RM_close_files(int * solute);
 void RM_convert_to_molal(int *id, double *c, int *n, int *dim);
 int  RM_create();
+void RM_create_phreeqc_bin(int *rm_id);
 int  RM_destroy(int *id);
-void RM_dump_to_iphreeqc(int *rm_id, int *ip_id);
 void RM_distribute_initial_conditions(int *id,
 	    int *ipp_id,                    // IPhreeqc module id
 		int *initial_conditions1,		// 7 x nxyz end-member 1
@@ -76,6 +78,7 @@ void RM_error(int *id);
 void RM_forward_and_back(int *id,
 		int *initial_conditions, 
 		int *axes);
+void RM_fractions2solutons(int *id);
 void RM_log_screen_prt(char *err_str, long l);
 void RM_open_files(int * solute, char * prefix, int l_prefix);
 void RM_open_error_file(void);
@@ -109,6 +112,7 @@ void RM_pass_print_flags(int *id,
 			 int * print_restart					// print flag for writing restart file 
 			 );
 void RM_send_restart_name(int *id, char * s, long l);
+void RM_solutions2fractions(int *id);
 void RM_write_output(int *id);
 
 

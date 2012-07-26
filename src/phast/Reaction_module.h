@@ -16,12 +16,13 @@ public:
 	Reaction_module(PHRQ_io * io=NULL);
 	~Reaction_module(void);
 	// Called through wrappers
-	int Load_database(std::string database_name);
+	//int Load_database(std::string database_name);
 	//int Initial_phreeqc_run(std::string chemistry_name);
 	void Get_components(int *n_comp, char *names, int length);
 	void Forward_and_back(
 		int *initial_conditions, 
 		int *axes);
+	void Fractions2Solutions(void);
 	void Distribute_initial_conditions(
 		int ip_id,
 		int *initial_conditions1,
@@ -39,18 +40,21 @@ public:
 						  int *boundary_solution2, double *fraction1,
 						  double *boundary_fraction, int dim);
 	void Run_reactions(void);
+	void Solutions2Fractions(void);
 	void Send_restart_name(std::string name);
 
 	// setters and getters
 	IPhreeqcPhast * Get_phast_iphreeqc_worker() {return this->phast_iphreeqc_worker;}
 	const std::string Get_database_file_name(void) const {return this->database_file_name;}
 	void Set_database_file_name(std::string fn) {this->database_file_name = fn;}
-	const std::string Get_file_prefix(void) const {return this->file_prefix;};
-	void Set_file_prefix(std::string fn) {this->file_prefix = fn;};
-	const int Get_mpi_tasks(void) const {return this->mpi_tasks;};
-	void Set_mpi_tasks(int t) {this->mpi_tasks = t;};
-	const int Get_mpi_myself(void) const {return this->mpi_myself;};
-	void Set_mpi_myself(int t) {this->mpi_myself = t;};
+	const std::string Get_file_prefix(void) const {return this->file_prefix;}
+	void Set_file_prefix(std::string fn) {this->file_prefix = fn;}
+	cxxStorageBin & Get_phreeqc_bin(void) {return this->phreeqc_bin;}
+	const int Get_mpi_tasks(void) const {return this->mpi_tasks;}
+	void Set_mpi_tasks(int t) {this->mpi_tasks = t;}
+	const int Get_mpi_myself(void) const {return this->mpi_myself;}
+	void Set_mpi_myself(int t) {this->mpi_myself = t;}
+	std::vector<double> & Get_old_frac(void) {return this->old_frac;}
 
 	const bool Get_free_surface(void) const {return this->free_surface;};
 	void Set_free_surface(bool t) {this->free_surface = t;};
@@ -124,22 +128,6 @@ protected:
 		int gasphase_units, 
 		int kinetics_units,
 		double porosity_factor);
-	/*
-	void Cell_initialize(
-		int ip_id,
-		int i, 
-		int n_user_new, 
-		int *initial_conditions1,
-		int *initial_conditions2, 
-		double *fraction1,
-		int exchange_units, 
-		int surface_units, 
-		int ssassemblage_units,
-		int ppassemblage_units, 
-		int gasphase_units, 
-		int kinetics_units,
-		double porosity_factor);
-		*/
 	void Unpack_fraction_array(void);
 	void Pack_fraction_array(void);
 	bool n_to_ijk (int n, int &i, int &j, int &k);

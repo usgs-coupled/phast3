@@ -86,12 +86,8 @@ SUBROUTINE phast_manager
        CALL GetComponent(rm_id, i, comp_name(i))
     enddo   
 
-    ! Create an IPhreeqc copy for initial conditions
-    ipp_phrq_id = CreateIPhreeqc()
-    IF (ipp_phrq_id < 0) CALL RM_error(ipp_phrq_id)
-    if (LoadDatabase(ipp_phrq_id, f2name) < 0) CALL RM_error(ipp_phrq_id)
-    !if (RunFile(ipp_phrq_id, f1name) < 0) CALL RM_error(ipp_phrq_id)
-    CALL RM_dump_to_iphreeqc(rm_id, ipp_phrq_id)  ! source, target
+    ! Create a StorageBin with initial PHREEQC for boundary conditions
+    CALL RM_create_phreeqc_bin(rm_id) 
 
     CALL RM_log_screen_prt("Done with Initial PHREEQC run.")
   endif
@@ -160,7 +156,6 @@ SUBROUTINE phast_manager
         iprint_chem,                 &
         iprint_xyz,                  &
         rebalance_fraction_f)
-        !prefix)
 
      CALL RM_forward_and_back(rm_id, indx_sol1_ic, naxes)  
      !CALL distribute_initial_conditions(indx_sol1_ic, indx_sol2_ic, ic_mxfrac,  &
@@ -182,15 +177,14 @@ SUBROUTINE phast_manager
 	ppassemblage_units,  & ! water (1) or rock (2)
 	gasphase_units,	& ! water (1) or rock (2)
 	kinetics_units	)	  ! water (1) or rock (2)
-#ifdef SKIP
-     CALL uz_init(transient_fresur)
+
+
 #if defined(USE_MPI)
      CALL collect_from_nonroot(c, nxyz) ! stores data for transport
 #else
-     CALL pack_for_hst(c,nxyz)
+     CALL RM_solutions2fractions(rm_id)
 #endif
 
-#endif ! SKIP
   ENDIF        ! ... solute
 
 #ifdef SKIP_REWRITE_PHAST !-------------------------------------------------------------------------
