@@ -1,6 +1,7 @@
 #include "Reaction_module.h"
 #include "RM_interface.h"
 #include "IPhreeqcPhastLib.h"
+#include "Phreeqc.h"
 #include "PHRQ_io.h"
 #include <string>
 #include <map>
@@ -222,7 +223,17 @@ int RM_create()
 {
 	return RM_interface::Create_reaction_module();
 }
-
+/* ---------------------------------------------------------------------- */
+void RM_create_phreeqc_bin(int *rm_id)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	if (Reaction_module_ptr)
+	{
+		Phreeqc * phreeqc_ptr = Reaction_module_ptr->Get_phast_iphreeqc_worker()->Get_PhreeqcPtr();
+		phreeqc_ptr->phreeqc2cxxStorageBin(Reaction_module_ptr->Get_phreeqc_bin());
+	}
+}
 /* ---------------------------------------------------------------------- */
 int RM_destroy(int *id)
 /* ---------------------------------------------------------------------- */
@@ -269,15 +280,7 @@ RM_distribute_initial_conditions(int *id,
 			*kinetics_units);
 	}
 }
-/* ---------------------------------------------------------------------- */
-void RM_dump_to_iphreeqc(int *rm_id, int *ip_id)
-/* ---------------------------------------------------------------------- */
-{
-	SetDumpStringOn(*rm_id, true);
-	if (RunString(*rm_id, "DUMP; -all") < 0) RM_error(rm_id);
-	if (RunString(*ip_id, GetDumpString(*rm_id)) < 0) RM_error(ip_id);
-	SetDumpStringOn(*rm_id, false);
-}
+
 /* ---------------------------------------------------------------------- */
 void RM_error(int *id)
 /* ---------------------------------------------------------------------- */
@@ -311,6 +314,16 @@ void RM_forward_and_back(int *id,
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Forward_and_back(initial_conditions, axes);
+	}
+}
+void
+RM_fractions2solutions(int *id)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Fractions2Solutions();
 	}
 }
 /* ---------------------------------------------------------------------- */
@@ -456,6 +469,16 @@ RM_pass_print_flags(int *id,
 		Reaction_module_ptr->Set_print_restart(print_restart != 0);
 	}
 }
+void
+RM_solutions2fractions(int *id)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Solutions2Fractions();
+	}
+}
 /* ---------------------------------------------------------------------- */
 void
 RM_send_restart_name(int *id, char *name, long nchar)
@@ -467,6 +490,7 @@ RM_send_restart_name(int *id, char *name, long nchar)
 	Reaction_module_ptr->Send_restart_name(stdstring);
 
 }
+
 void RM_write_output(int *id)
 {
 	RM_interface::phast_io.output_msg(GetOutputString(*id));
