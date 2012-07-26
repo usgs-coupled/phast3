@@ -5,7 +5,8 @@ SUBROUTINE phast_manager
   USE mcb
   USE mcc
   USE mcc_m
-  USE mcch, ONLY: f1name, f2name, f3name, version_name, comp_name
+  USE mcch, ONLY: f1name, f2name, f3name, version_name, comp_name,  &
+                  restart_files, num_restart_files
   USE mcch_m
   USE mcg, ONLY: naxes, nx, ny, nz, nxyz, npmz
   USE mcm
@@ -167,6 +168,9 @@ SUBROUTINE phast_manager
      !     ppassemblage_units, gasphase_units, kinetics_units,  &
      !     pv0, volume)
 
+     DO i = 1, num_restart_files
+        CALL RM_send_restart_name(rm_id, restart_files(i))
+     ENDDO
      CALL RM_distribute_initial_conditions(rm_id, &
        ipp_phrq_id,         &  ! initial condition definitions
 	indx_sol1_ic,		& ! 7 x nxyz end-member 1 
