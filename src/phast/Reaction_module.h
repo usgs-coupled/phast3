@@ -17,7 +17,7 @@ public:
 	~Reaction_module(void);
 	// Called through wrappers
 	//int Load_database(std::string database_name);
-	//int Initial_phreeqc_run(std::string chemistry_name);
+	int Initial_phreeqc_run(std::string database_name, std::string chemistry_name);
 	void Get_components(int *n_comp, char *names, int length);
 	void Forward_and_back(
 		int *initial_conditions, 
@@ -154,7 +154,6 @@ protected:
 	std::vector <double> old_frac;			// saturation fraction from previous step
 	double gfw_water;						// gfw of water
 	int count_chem;							// number of cells for chemistry
-	int index;
 
 	// From Fortran
 	bool free_surface;                      // free surface calculation

@@ -28,7 +28,7 @@ Reaction_module::Reaction_module(PHRQ_io *io)
 	this->phast_iphreeqc_worker = new IPhreeqcPhast;
 	std::map<size_t, Reaction_module*>::value_type instance(this->phast_iphreeqc_worker->Get_Index(), this);
 	RM_interface::Instances.insert(instance);
-	this->index = this->phast_iphreeqc_worker->Get_Index();
+
 	//RM_interface::Instances[phast_iphreeqc_worker->Index] = Reaction_module_ptr;
 	//std::pair<std::map<size_t, Reaction_module*>::iterator, bool> pr = RM_interface::Instances.insert(instance);
 
@@ -151,6 +151,50 @@ Reaction_module::Initial_phreeqc_run(std::string chemistry_name)
 	return 1;
 }
 #endif
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+int
+Reaction_module::Initial_phreeqc_run(std::string database_name, std::string chemistry_name)
+/* ---------------------------------------------------------------------- */
+{
+	/*
+	*  Run PHREEQC to obtain PHAST reactants
+	*/
+
+	/*
+	 *   initialize HDF
+	 */
+#ifdef HDF5_CREATE
+// TODO, implement HDF	HDF_Init(prefix.c_str(), prefix.size());
+#endif
+	/*
+	 *   initialize merge
+	 */
+	//TODO MPI and merge
+#if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
+	output_close(OUTPUT_ECHO);
+	MergeInit(prefix, prefix_l, *solute);	/* opens .chem.txt,  .chem.xyz.tsv, .log.txt */
+#endif
+	int rm_id = (int) this->phast_iphreeqc_worker->Get_Index();
+
+	// Load database
+    if (SetOutputStringOn(rm_id, true) < 0) RM_error(&rm_id);
+    if (SetSelectedOutputFileOn(rm_id, true) < 0) RM_error(&rm_id);
+    if (LoadDatabase(rm_id, database_name.c_str()) < 0) RM_error(&rm_id);
+    RM_write_output(&rm_id);
+
+	// Run chemistry file
+    if (RunFile(rm_id, chemistry_name.c_str()) < 0) RM_error(&rm_id);
+    RM_write_output(&rm_id);
+
+
+    // Create a StorageBin with initial PHREEQC for boundary conditions
+	this->phreeqc_bin.Clear();
+	this->phast_iphreeqc_worker->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(phreeqc_bin);
+
+	return 1;
+}
+#endif
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Distribute_initial_conditions(
@@ -197,9 +241,10 @@ Reaction_module::Distribute_initial_conditions(
 	SetSelectedOutputFileOn(ip_id, 0);
 	SetDumpFileOn(ip_id, 0);
 	// Reaction module output
-	SetOutputFileOn(this->index, 0);
-	SetDumpStringOn(this->index, 0);
-	SetSelectedOutputFileOn(this->index, 0);
+	int rm_id = (int) this->phast_iphreeqc_worker->Get_Index();
+	SetOutputFileOn(rm_id, 0);
+	SetDumpStringOn(rm_id, 0);
+	SetSelectedOutputFileOn(rm_id, 0);
 	SetDumpFileOn(ip_id, 0);
 
 	std::ostringstream mix_string;
@@ -249,8 +294,8 @@ Reaction_module::Distribute_initial_conditions(
 	}
 
 	// Make initial conditions
-	if (RunString(this->index, mix_string.str().c_str()) < 0) RM_error(&this->index);
-	if (RunString(this->index, copy_string.str().c_str()) < 0) RM_error(&this->index);
+	if (RunString(rm_id, mix_string.str().c_str()) < 0) RM_error(&rm_id);
+	if (RunString(rm_id, copy_string.str().c_str()) < 0) RM_error(&rm_id);
 
 
 	/*
