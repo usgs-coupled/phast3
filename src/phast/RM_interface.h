@@ -79,6 +79,7 @@ void RM_forward_and_back(int *id,
 		int *initial_conditions, 
 		int *axes);
 void RM_fractions2solutons(int *id);
+void RM_initial_phreeqc_run(int * id, char *db_name, char *chem_name, int l1, int l2);
 void RM_log_screen_prt(char *err_str, long l);
 void RM_open_files(int * solute, char * prefix, int l_prefix);
 void RM_open_error_file(void);

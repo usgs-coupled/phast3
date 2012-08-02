@@ -67,13 +67,7 @@ SUBROUTINE phast_manager
   CALL RM_open_files(solute, f3name)
   if (solute) then
     CALL RM_log_screen_prt("Initial PHREEQC run.")
-    if (SetOutputStringOn(rm_id, .true.) < 0) CALL RM_error(rm_id)
-    if (SetSelectedOutputFileOn(rm_id, .true.) < 0) CALL RM_error(rm_id)
-    if (LoadDatabase(rm_id, f2name) < 0) CALL RM_error(rm_id)
-    CALL RM_write_output(rm_id)
-    if (RunFile(rm_id, f1name) < 0) CALL RM_error(rm_id)
-    CALL RM_write_output(rm_id)
-
+    CALL RM_initial_phreeqc_run(rm_id, f2name, f1name)
     ! Set components
     ns = GetComponentCount(rm_id)
     ALLOCATE(comp_name(ns),  & 
@@ -85,10 +79,6 @@ SUBROUTINE phast_manager
     do i = 1, ns
        CALL GetComponent(rm_id, i, comp_name(i))
     enddo   
-
-    ! Create a StorageBin with initial PHREEQC for boundary conditions
-    CALL RM_create_phreeqc_bin(rm_id) 
-
     CALL RM_log_screen_prt("Done with Initial PHREEQC run.")
   endif
 

@@ -326,6 +326,50 @@ RM_fractions2solutions(int *id)
 		Reaction_module_ptr->Fractions2Solutions();
 	}
 }
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+void RM_initial_phreeqc_run(int *id, char *db_name, char *chem_name, int l1, int l2)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		std::string db_name(db_name, l1);
+		trim_right(db_name);
+		std::string chemistry_name(chem_name, l2);
+		trim_right(chemistry_name);
+		Reaction_module_ptr->Initial_phreeqc_run(db_name, chemistry_name);
+	}
+}
+#endif
+/* ---------------------------------------------------------------------- */
+void RM_initial_phreeqc_run(int *rm_id, char *db_name, char *chem_name, int l1, int l2)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	if (Reaction_module_ptr)
+	{
+		std::string db_name(db_name, l1);
+		trim_right(db_name);
+		std::string chemistry_name(chem_name, l2);
+		trim_right(chemistry_name);
+
+		// Load database
+		if (SetOutputStringOn(*rm_id, true) < 0) RM_error(rm_id);
+		if (SetSelectedOutputFileOn(*rm_id, true) < 0) RM_error(rm_id);
+		if (LoadDatabase(*rm_id, db_name.c_str()) < 0) RM_error(rm_id);
+		RM_write_output(rm_id);
+
+		// Run chemistry file
+		if (RunFile(*rm_id, chemistry_name.c_str()) < 0) RM_error(rm_id);
+		RM_write_output(rm_id);
+
+
+		// Create a StorageBin with initial PHREEQC for boundary conditions
+		Reaction_module_ptr->Get_phreeqc_bin().Clear();
+		Reaction_module_ptr->Get_phast_iphreeqc_worker()->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(Reaction_module_ptr->Get_phreeqc_bin());
+	}
+}
 /* ---------------------------------------------------------------------- */
 void
 RM_log_screen_prt(char *err_str, long l)
