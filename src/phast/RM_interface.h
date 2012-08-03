@@ -10,6 +10,7 @@
 #define RM_destroy                            rm_destroy
 #define RM_create_phreeqc_bin                 rm_create_phreeqc_bin 
 #define RM_distribute_initial_conditions      rm_distribute_initial_conditions
+#define RM_equilibrate                        rm_equilibrate
 #define RM_error                              rm_error
 #define RM_forward_and_back                   rm_forward_and_back
 #define RM_fractions2solutions                rm_fractions2solutions
@@ -17,7 +18,9 @@
 #define RM_load_database                      rm_load_database
 #define RM_log_screen_prt                     rm_log_screen_prt
 #define RM_open_files                         rm_open_files
-#define RM_pass_data                          rm_pass_data
+#define RM_pass_static_data                   rm_pass_static_data
+#define RM_pass_transient_data                rm_pass_transient_data
+//#define RM_pass_print_flags                   rm_pass_print_flags
 #define RM_send_restart_name                  rm_send_restart_name
 #define RM_solutions2fractions                rm_solutions2fractions
 #define RM_write_output                       rm_write_output
@@ -74,6 +77,18 @@ void RM_distribute_initial_conditions(int *id,
 		int *gasphase_units,			// water (1) or rock (2)
 		int *kinetics_units			    // water (1) or rock (2)
 		);
+void RM_equilibrate(int *id,
+			 int * prslm,							// solution method print flag 
+			 int * print_out,						// print flag for output file 
+			 int * print_sel,						// print flag for selected output
+			 int * print_hdf,						// print flag for hdf file
+			 int * print_restart,					// print flag for writing restart file 
+			 double *time_hst,					    // time from transport 
+			 double *time_step_hst,				    // time step from transport
+ 			 double *fraction,					    // mass fractions nxyz:components
+			 double *frac,							// saturation fraction
+			 double *pv                             // nxyz current pore volumes 
+			 );
 void RM_error(int *id);
 void RM_forward_and_back(int *id,
 		int *initial_conditions, 
@@ -86,25 +101,26 @@ void RM_open_error_file(void);
 void RM_open_output_file(char * prefix, int l_prefix);
 void RM_open_punch_file(char * prefix, int l_prefix);
 void RM_open_log_file(char * prefix, int l_prefix);
-void RM_pass_data(int *id,
+void RM_pass_static_data(int *id,
              bool *fresur,
 			 bool *steady_flow, 
 			 int *nx, int *ny, int *nz,			// number of nodes each coordinate direction
-			 double *time_hst,					// time from transport 
-			 double *time_step_hst,				// time step from transport
+			 //double *time_hst,					// time from transport 
+			 //double *time_step_hst,				// time step from transport
 			 double *cnvtmi,					// conversion factor for time
 			 double *x_node,					// nxyz array of X coordinates for nodes 
 			 double *y_node,					// nxyz array of Y coordinates for nodes  
 			 double *z_node,					// nxyz array of Z coordinates for nodes 
-			 double *fraction,					// mass fractions nxyz:components
-			 double *frac,						// saturation fraction
-			 double *pv,						// nxyz current pore volumes 
+			 //double *fraction,					// mass fractions nxyz:components
+			 //double *frac,						// saturation fraction
+			 //double *pv,						// nxyz current pore volumes 
 			 double *pv0,						// nxyz initial pore volumes
 			 double *volume, 					// nxyz geometric cell volumes 
-			 int *printzone_chem,				// nxyz print flags for output file
-			 int *printzone_xyz,				// nxyz print flags for chemistry XYZ file 
+			 int * printzone_chem,				// nxyz print flags for output file
+			 int * printzone_xyz,				// nxyz print flags for chemistry XYZ file
 			 double *rebalance_fraction_hst		// parameter for rebalancing process load for parallel	
 			 );
+#ifdef SKIP
 void RM_pass_print_flags(int *id,
 			 int * prslm,							// solution method print flag 
 			 int * print_out,						// print flag for output file 
@@ -112,6 +128,8 @@ void RM_pass_print_flags(int *id,
 			 int * print_hdf,						// print flag for hdf file
 			 int * print_restart					// print flag for writing restart file 
 			 );
+#endif
+
 void RM_send_restart_name(int *id, char * s, long l);
 void RM_solutions2fractions(int *id);
 void RM_write_output(int *id);

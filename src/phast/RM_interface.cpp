@@ -36,15 +36,8 @@ RM_interface::Create_reaction_module()
 		Reaction_module* Reaction_module_ptr = new Reaction_module();
 		if (Reaction_module_ptr)
 		{
-			//std::map<size_t, Reaction_module*>::value_type instance(RM_interface::InstancesIndex, Reaction_module_ptr);
 			n = Reaction_module_ptr->Get_phast_iphreeqc_worker()->Get_Index();
 			RM_interface::Instances[Reaction_module_ptr->Get_phast_iphreeqc_worker()->Get_Index()] = Reaction_module_ptr;
-			//std::pair<std::map<size_t, Reaction_module*>::iterator, bool> pr = RM_interface::Instances.insert(instance);
-			//if (pr.second)
-			//{
-			//	n = (int) (*pr.first).first;
-			//	++RM_interface::InstancesIndex;
-			//}
 		}
 	}
 	catch(...)
@@ -280,7 +273,38 @@ RM_distribute_initial_conditions(int *id,
 			*kinetics_units);
 	}
 }
+/* ---------------------------------------------------------------------- */
+void RM_equilibrate(int *id,
+			 int * prslm,							// solution method print flag 
+			 int * print_chem,						// print flag for output file 
+			 int * print_xyz,						// print flag for xyz file
+			 int * print_hdf,						// print flag for hdf file
+			 int * print_restart,					// print flag for writing restart file 
+			 double *time_hst,					    // time from transport 
+			 double *time_step_hst,				    // time step from transport
+ 			 double *fraction,					    // mass fractions nxyz:components
+			 double *frac,							// saturation fraction
+			 double *pv                             // nxyz current pore volumes 
+			 )
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Set_prslm(*prslm != 0);	  
+		Reaction_module_ptr->Set_print_chem(*print_chem != 0);
+		Reaction_module_ptr->Set_print_xyz(*print_xyz != 0);
+		Reaction_module_ptr->Set_print_hdf(*print_hdf != 0);
+		Reaction_module_ptr->Set_print_restart(*print_restart != 0);
+		Reaction_module_ptr->Set_time_hst(time_hst);
+		Reaction_module_ptr->Set_time_step_hst(time_step_hst);
+		Reaction_module_ptr->Set_fraction(fraction);
+		Reaction_module_ptr->Set_frac(frac);
+		Reaction_module_ptr->Set_pv(pv);
 
+		Reaction_module_ptr->Equilibrate();
+	}
+}
 /* ---------------------------------------------------------------------- */
 void RM_error(int *id)
 /* ---------------------------------------------------------------------- */
@@ -439,6 +463,7 @@ RM_open_punch_file(char * prefix, int l_prefix)
 	fn.append(".chem.xyz.tsv");
 	RM_interface::phast_io.punch_open(fn.c_str());
 }
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 RM_pass_data(int *id,
@@ -492,6 +517,48 @@ RM_pass_data(int *id,
 		//Reaction_module_ptr->Set_file_prefix(sprefix);
 	}
 }
+#endif
+/* ---------------------------------------------------------------------- */
+void
+RM_pass_static_data(int *id,
+			 bool *free_surface_f,				// free surface calculation
+			 bool *steady_flow_f,				// free surface calculation
+			 int *nx, int *ny, int *nz,			// number of nodes each coordinate direction
+			 double *cnvtmi,					// conversion factor for time
+			 double *x_node,					// nxyz array of X coordinates for nodes 
+			 double *y_node,					// nxyz array of Y coordinates for nodes  
+			 double *z_node,					// nxyz array of Z coordinates for nodes 
+			 double *pv0,						// nxyz initial pore volumes
+			 double *volume, 					// nxyz geometric cell volumes 
+			 int *printzone_chem,				// nxyz print flags for output file
+			 int *printzone_xyz,				// nxyz print flags for chemistry XYZ file 
+			 double *rebalance_fraction_hst  	// parameter for rebalancing process load for parallel	
+			 )
+/* ---------------------------------------------------------------------- */
+{
+	// pass pointers from Fortran to the Reaction module
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Set_free_surface(*free_surface_f != 0);
+		Reaction_module_ptr->Set_steady_flow(*steady_flow_f != 0);
+		Reaction_module_ptr->Set_transient_free_surface((*free_surface_f != 0) && (steady_flow_f == 0));
+		Reaction_module_ptr->Set_nx(*nx);
+		Reaction_module_ptr->Set_ny(*ny);
+		Reaction_module_ptr->Set_nz(*nz);
+		Reaction_module_ptr->Set_nxyz((*nx) * (*ny) * (*nz));
+		Reaction_module_ptr->Set_cnvtmi(cnvtmi);
+		Reaction_module_ptr->Set_x_node(x_node);
+		Reaction_module_ptr->Set_y_node(y_node);
+		Reaction_module_ptr->Set_z_node(z_node);
+		Reaction_module_ptr->Set_pv0(pv0);
+		Reaction_module_ptr->Set_volume(volume);
+		Reaction_module_ptr->Set_printzone_chem(printzone_chem);
+		Reaction_module_ptr->Set_printzone_xyz(printzone_xyz);
+		Reaction_module_ptr->Set_rebalance_fraction_hst(rebalance_fraction_hst);
+	}
+}
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 RM_pass_print_flags(int *id,
@@ -513,6 +580,7 @@ RM_pass_print_flags(int *id,
 		Reaction_module_ptr->Set_print_restart(print_restart != 0);
 	}
 }
+#endif
 void
 RM_solutions2fractions(int *id)
 /* ---------------------------------------------------------------------- */
