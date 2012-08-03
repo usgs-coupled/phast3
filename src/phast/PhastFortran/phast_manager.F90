@@ -37,6 +37,11 @@ SUBROUTINE phast_manager
        INTEGER :: id
        INTEGER :: iout
      END FUNCTION RM_destroy
+     FUNCTION RM_find_components(id) RESULT(iout)
+       IMPLICIT NONE
+       INTEGER :: id
+       INTEGER :: iout
+     END FUNCTION RM_find_components
      SUBROUTINE RM_log_screen_prt(str) 
        IMPLICIT NONE
        CHARACTER :: str
@@ -69,7 +74,8 @@ SUBROUTINE phast_manager
     CALL RM_log_screen_prt("Initial PHREEQC run.")
     CALL RM_initial_phreeqc_run(rm_id, f2name, f1name)
     ! Set components
-    ns = GetComponentCount(rm_id)
+    !ns = GetComponentCount(rm_id)
+    ns = RM_find_components(rm_id)
     ALLOCATE(comp_name(ns),  & 
         STAT = a_err)
     IF (a_err /= 0) THEN
@@ -130,7 +136,7 @@ SUBROUTINE phast_manager
           ppassemblage_units, gasphase_units, kinetics_units)
 #endif
      !CALL store_c_pointers(indx_sol1_ic, x_node, y_node, z_node)
-     CALL RM_pass_static_data(rm_id,        &
+     CALL RM_pass_data(rm_id,        &
         fresur,                      &
         steady_flow,                 &
         nx, ny, nz,                  &
@@ -140,7 +146,8 @@ SUBROUTINE phast_manager
         volume,                      &
         iprint_chem,                 &
         iprint_xyz,                  &
-        rebalance_fraction_f)
+        rebalance_fraction_f,        &
+        c)
 
      CALL RM_forward_and_back(rm_id, indx_sol1_ic, naxes)  
      !CALL distribute_initial_conditions(indx_sol1_ic, indx_sol2_ic, ic_mxfrac,  &
@@ -152,7 +159,6 @@ SUBROUTINE phast_manager
         CALL RM_send_restart_name(rm_id, restart_files(i))
      ENDDO
      CALL RM_distribute_initial_conditions(rm_id, &
-       ipp_phrq_id,         &  ! initial condition definitions
 	indx_sol1_ic,		& ! 7 x nxyz end-member 1 
 	indx_sol2_ic,		& ! 7 x nxyz end-member 2
 	ic_mxfrac,		& ! 7 x nxyz fraction of end-member 1
@@ -172,7 +178,6 @@ SUBROUTINE phast_manager
 
   ENDIF        ! ... solute
 
-#ifdef SKIP_REWRITE_PHAST !-------------------------------------------------------------------------
   CALL error4
   ! ... write2_1 must be called after distribute_initial_conditions and equilibrate
   ! ... Write initial condition results 
@@ -203,20 +208,22 @@ SUBROUTINE phast_manager
      !     cnvtmi,frac_icchem,iprint_chem,iprint_xyz,  &
      !     prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f,  &
      !     print_restart_flag, pv, pv0, steady_flow, volume, przf_xyzt)
-     CALL RM_equilibrate(rm_id, 
-        prslmi, &                ! prslm
+     CALL RM_run_cells( &
+        rm_id,          &
+        prslmi,         &        ! prslm
         prf_chem_phrqi, &        ! print_chem
-        prcphrqi, &              ! print_xyz
-        prhdfci, &               ! print_hdf
+        prcphrqi,       &        ! print_xyz
+        prhdfci,        &        ! print_hdf
         print_restart_flag, &    ! print_restart
         time_phreeqc, &          ! time_hst
         deltim_dummy, &          ! time_step_hst
-        c, &                     ! fraction
-        frac, &                  ! frac
+        c,            &          ! fraction
+        frac,         &          ! frac
         pv)                      ! pv
-     CALL zone_flow_write_chem(mpi_tasks, mpi_myself, .true.)
-     CALL init2_3        
+!TODO:     CALL zone_flow_write_chem(mpi_tasks, mpi_myself, .true.)
+!TODO:     CALL init2_3        
   ENDIF
+#ifdef SKIP_REWRITE_PHAST !-------------------------------------------------------------------------
   !
   ! ...  Write initial results
   !
@@ -399,9 +406,8 @@ SUBROUTINE phast_manager
   PRINT *, 'Flow and Transport Simulation Completed; exit manager process ', mpi_myself
 #endif
 
-  if (solute) then
-    if (DestroyIPhreeqc(ipp_phrq_id) < 0) CALL RM_error(ipp_phrq_id)  
-    if (RM_destroy(rm_id) < 0) CALL RM_error(ipp_phrq_id)     
+  if (solute) then  
+    if (RM_destroy(rm_id) < 0) CALL RM_error(rm_id)     
   endif
   CALL RM_close_files(solute)
 

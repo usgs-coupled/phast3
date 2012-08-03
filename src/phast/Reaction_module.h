@@ -24,7 +24,7 @@ public:
 	void Convert_to_molal(double *c, int n, int dim);
 	void Calculate_well_ph(double *c, double * ph, double * alkalinity);
 	void Distribute_initial_conditions(
-		int ip_id,
+		int id,
 		int *initial_conditions1,
 		int *initial_conditions2,	
 		double *fraction1,
@@ -34,17 +34,27 @@ public:
 		int ppassemblage_units,
 		int gasphase_units,
 		int kinetics_units);
-	void Equilibrate(void);
+	void Error_stop(void);
 	void Forward_and_back(
 		int *initial_conditions, 
 		int *axes);
 	void Fractions2Solutions(void);
-	void setup_boundary_conditions(const int n_boundary, int *boundary_solution1,
+	int Find_components();	
+	void Run_cells(void);
+	void Scale_solids(int iphrq, LDBLE frac);
+
+	void Send_restart_name(std::string name);
+	void Setup_boundary_conditions(const int n_boundary, int *boundary_solution1,
 						  int *boundary_solution2, double *fraction1,
 						  double *boundary_fraction, int dim);
-	void Run_reactions(void);
 	void Solutions2Fractions(void);
-	void Send_restart_name(std::string name);
+	void Write_bc_raw(int *solution_list, int * bc_solution_count, 
+		int * solution_number, const std::string &prefix);
+	void Write_error(std::string item);
+	void Write_log(std::string item);
+	void Write_output(std::string item);
+	void Write_screen(std::string item);
+	void Write_xyz(std::string item);
 
 	// setters and getters
 	IPhreeqcPhast * Get_phast_iphreeqc_worker() {return this->phast_iphreeqc_worker;}
@@ -117,8 +127,8 @@ public:
 protected:
 	// internal methods
 	void Cell_initialize(
-		std::ostringstream &mix_string,
-		std::ostringstream &copy_string,
+	//	std::ostringstream &mix_string,
+	//	std::ostringstream &copy_string,
 		int i, 
 		int n_user_new, 
 		int *initial_conditions1,
@@ -131,14 +141,14 @@ protected:
 		int gasphase_units, 
 		int kinetics_units,
 		double porosity_factor);
-	void Unpack_fraction_array(void);
-	void Pack_fraction_array(void);
+
+	//void Unpack_fraction_array(void);
+	//void Pack_fraction_array(void);
 	bool n_to_ijk (int n, int &i, int &j, int &k);
 	void cxxSolution2fraction(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
 	void Write_restart(void);
 	bool File_exists(const std::string name);
 	void File_rename(const std::string temp_name, const std::string name, const std::string backup_name);
-	void Scale_cxxsystem(int iphrq, double frac);
 	void Partition_uz(int iphrq, int ihst, double new_frac);
 	void Init_uz(void);
 

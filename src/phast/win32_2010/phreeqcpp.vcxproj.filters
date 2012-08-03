@@ -85,9 +85,6 @@
     <ClInclude Include="..\gzstream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\hst.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Reaction_module.h">
       <Filter>Header Files</Filter>
     </ClInclude>

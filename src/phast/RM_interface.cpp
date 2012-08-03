@@ -96,6 +96,7 @@ errprt(const std::string & e_string)
 {
 	std::ostringstream estr;
 	estr << "ERROR: " << e_string << std::endl;
+	RM_interface::phast_io.output_msg(estr.str().c_str());
 	RM_interface::phast_io.error_msg(estr.str().c_str());
 	RM_interface::phast_io.log_msg(estr.str().c_str());
 	return;
@@ -236,7 +237,6 @@ int RM_destroy(int *id)
 /* ---------------------------------------------------------------------- */
 void
 RM_distribute_initial_conditions(int *id,
-	                          int *ip_id,
 							  int *initial_conditions1,		// 7 x nxyz end-member 1
 							  int *initial_conditions2,		// 7 x nxyz end-member 2
 							  double *fraction1,			// 7 x nxyz fraction of end-member 1
@@ -261,7 +261,7 @@ RM_distribute_initial_conditions(int *id,
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Distribute_initial_conditions(
-			*ip_id,
+			*id,
 			initial_conditions1,
 			initial_conditions2,
 			fraction1,
@@ -273,38 +273,7 @@ RM_distribute_initial_conditions(int *id,
 			*kinetics_units);
 	}
 }
-/* ---------------------------------------------------------------------- */
-void RM_equilibrate(int *id,
-			 int * prslm,							// solution method print flag 
-			 int * print_chem,						// print flag for output file 
-			 int * print_xyz,						// print flag for xyz file
-			 int * print_hdf,						// print flag for hdf file
-			 int * print_restart,					// print flag for writing restart file 
-			 double *time_hst,					    // time from transport 
-			 double *time_step_hst,				    // time step from transport
- 			 double *fraction,					    // mass fractions nxyz:components
-			 double *frac,							// saturation fraction
-			 double *pv                             // nxyz current pore volumes 
-			 )
-/* ---------------------------------------------------------------------- */
-{
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
-	if (Reaction_module_ptr)
-	{
-		Reaction_module_ptr->Set_prslm(*prslm != 0);	  
-		Reaction_module_ptr->Set_print_chem(*print_chem != 0);
-		Reaction_module_ptr->Set_print_xyz(*print_xyz != 0);
-		Reaction_module_ptr->Set_print_hdf(*print_hdf != 0);
-		Reaction_module_ptr->Set_print_restart(*print_restart != 0);
-		Reaction_module_ptr->Set_time_hst(time_hst);
-		Reaction_module_ptr->Set_time_step_hst(time_step_hst);
-		Reaction_module_ptr->Set_fraction(fraction);
-		Reaction_module_ptr->Set_frac(frac);
-		Reaction_module_ptr->Set_pv(pv);
 
-		Reaction_module_ptr->Equilibrate();
-	}
-}
 /* ---------------------------------------------------------------------- */
 void RM_error(int *id)
 /* ---------------------------------------------------------------------- */
@@ -350,6 +319,12 @@ RM_fractions2solutions(int *id)
 		Reaction_module_ptr->Fractions2Solutions();
 	}
 }
+int
+RM_find_components(int *id)
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	return (Reaction_module_ptr->Find_components());
+}
 #ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void RM_initial_phreeqc_run(int *id, char *db_name, char *chem_name, int l1, int l2)
@@ -378,9 +353,13 @@ void RM_initial_phreeqc_run(int *rm_id, char *db_name, char *chem_name, int l1, 
 		std::string chemistry_name(chem_name, l2);
 		trim_right(chemistry_name);
 
+		SetOutputFileOn(*rm_id, false);
+		SetErrorFileOn(*rm_id, false);
+		SetLogFileOn(*rm_id, false);
+		SetSelectedOutputFileOn(*rm_id, false);
 		// Load database
 		if (SetOutputStringOn(*rm_id, true) < 0) RM_error(rm_id);
-		if (SetSelectedOutputFileOn(*rm_id, true) < 0) RM_error(rm_id);
+		if (SetSelectedOutputStringOn(*rm_id, true) < 0) RM_error(rm_id);
 		if (LoadDatabase(*rm_id, db_name.c_str()) < 0) RM_error(rm_id);
 		RM_write_output(rm_id);
 
@@ -520,7 +499,7 @@ RM_pass_data(int *id,
 #endif
 /* ---------------------------------------------------------------------- */
 void
-RM_pass_static_data(int *id,
+RM_pass_data(int *id,
 			 bool *free_surface_f,				// free surface calculation
 			 bool *steady_flow_f,				// free surface calculation
 			 int *nx, int *ny, int *nz,			// number of nodes each coordinate direction
@@ -532,7 +511,8 @@ RM_pass_static_data(int *id,
 			 double *volume, 					// nxyz geometric cell volumes 
 			 int *printzone_chem,				// nxyz print flags for output file
 			 int *printzone_xyz,				// nxyz print flags for chemistry XYZ file 
-			 double *rebalance_fraction_hst  	// parameter for rebalancing process load for parallel	
+			 double *rebalance_fraction_hst, 	// parameter for rebalancing process load for parallel	
+			 double *fraction                   // needed for first Solutions2Fractions
 			 )
 /* ---------------------------------------------------------------------- */
 {
@@ -556,6 +536,7 @@ RM_pass_static_data(int *id,
 		Reaction_module_ptr->Set_printzone_chem(printzone_chem);
 		Reaction_module_ptr->Set_printzone_xyz(printzone_xyz);
 		Reaction_module_ptr->Set_rebalance_fraction_hst(rebalance_fraction_hst);
+		Reaction_module_ptr->Set_fraction(fraction);
 	}
 }
 #ifdef SKIP
@@ -581,6 +562,38 @@ RM_pass_print_flags(int *id,
 	}
 }
 #endif
+/* ---------------------------------------------------------------------- */
+void RM_run_cells(int *id,
+			 int * prslm,							// solution method print flag 
+			 int * print_chem,						// print flag for output file 
+			 int * print_xyz,						// print flag for xyz file
+			 int * print_hdf,						// print flag for hdf file
+			 int * print_restart,					// print flag for writing restart file 
+			 double *time_hst,					    // time from transport 
+			 double *time_step_hst,				    // time step from transport
+ 			 double *fraction,					    // mass fractions nxyz:components
+			 double *frac,							// saturation fraction
+			 double *pv                             // nxyz current pore volumes 
+			 )
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Set_prslm(*prslm != 0);	  
+		Reaction_module_ptr->Set_print_chem(*print_chem != 0);
+		Reaction_module_ptr->Set_print_xyz(*print_xyz != 0);
+		Reaction_module_ptr->Set_print_hdf(*print_hdf != 0);
+		Reaction_module_ptr->Set_print_restart(*print_restart != 0);
+		Reaction_module_ptr->Set_time_hst(time_hst);
+		Reaction_module_ptr->Set_time_step_hst(time_step_hst);
+		Reaction_module_ptr->Set_fraction(fraction);
+		Reaction_module_ptr->Set_frac(frac);
+		Reaction_module_ptr->Set_pv(pv);
+
+		Reaction_module_ptr->Run_cells();
+	}
+}
 void
 RM_solutions2fractions(int *id)
 /* ---------------------------------------------------------------------- */
@@ -602,8 +615,69 @@ RM_send_restart_name(int *id, char *name, long nchar)
 	Reaction_module_ptr->Send_restart_name(stdstring);
 
 }
-
+/* ---------------------------------------------------------------------- */
+void
+RM_setup_boundary_conditions(
+			int *id,
+			int *n_boundary, 
+			int *boundary_solution1,  
+			int *boundary_solution2, 
+			double *fraction1,
+			double *boundary_fraction, 
+			int *dim)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *   Routine takes a list of solution numbers and returns a set of
+ *   mass fractions
+ *   Input: n_boundary - number of boundary conditions in list
+ *          boundary_solution1 - list of first solution numbers to be mixed
+ *          boundary_solution2 - list of second solution numbers to be mixed
+ *          fraction1 - fraction of first solution 0 <= f <= 1
+ *          dim - leading dimension of array boundary mass fractions
+ *                must be >= to n_boundary
+ *
+ *   Output: boundary_fraction - mass fractions for boundary conditions
+ *                             - dimensions must be >= n_boundary x n_comp
+ *
+ */
+	
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Setup_boundary_conditions(
+					*n_boundary, 
+					boundary_solution1,
+					boundary_solution2, 
+					fraction1,
+					boundary_fraction, 
+					*dim);
+	}
+}
+/* ---------------------------------------------------------------------- */
+void RM_write_bc_raw(
+			int *id,
+			int *solution_list, 
+			int * bc_solution_count, 
+			int * solution_number, 
+			char *prefix, 
+			int prefix_l)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		std::string fn(prefix, prefix_l);
+		Reaction_module_ptr->Write_bc_raw(
+					solution_list, 
+					bc_solution_count,
+					solution_number, 
+					fn);
+	}
+}
+/* ---------------------------------------------------------------------- */
 void RM_write_output(int *id)
+/* ---------------------------------------------------------------------- */
 {
 	RM_interface::phast_io.output_msg(GetOutputString(*id));
 	RM_interface::phast_io.output_msg(GetWarningString(*id));
