@@ -951,9 +951,9 @@ SUBROUTINE read2
         line = adjustl(line)
         ii = INDEX(line, ' ', .false.)
         !READ(line,'(i, a)') zone_number(izn), zone_title(izn)
-        READ(line(1:ii),'(i)') zone_number(izn)
+        READ(line(1:ii),'(i10)') zone_number(izn)
         READ(line(ii+1:), '(a)') zone_title(izn)
-        IF (print_rde) WRITE(furde,'(tr5,i,a)') zone_number(izn), zone_title(izn)
+        IF (print_rde) WRITE(furde,'(tr5,i10,a)') zone_number(izn), zone_title(izn)
         READ(fuins,*) zone_write_heads(izn)
         IF(zone_write_heads(izn)) THEN
             READ(fuins,'(a)') zone_filename_heads(izn)

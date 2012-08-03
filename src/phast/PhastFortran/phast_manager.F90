@@ -22,7 +22,6 @@ SUBROUTINE phast_manager
   USE print_control_mod
   USE XP_module
   IMPLICIT NONE
-  include "IPhreeqcPhast.f90.inc"
   REAL(KIND=kdp) :: deltim_dummy
   INTEGER :: stop_msg, print_restart_flag, ipp_err
   CHARACTER(LEN=130) :: logline1

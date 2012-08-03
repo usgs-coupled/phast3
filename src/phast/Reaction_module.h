@@ -190,7 +190,7 @@ protected:
 	double *rebalance_fraction_hst;			// parameter for rebalancing process load for parallel	
 	int * ic1;								// reactant number for end member 1; indicates presence in model
 	std::vector <int> forward;				// mapping from nxyz cells to count_chem chemistry cells
-	std::vector <std::vector<int>> back;	// mapping from count_chem chemistry cells to nxyz cells 
+	std::vector <std::vector <int> > back;	// mapping from count_chem chemistry cells to nxyz cells 
 
 	// print flags
 	bool prslm;								// solution method print flag 

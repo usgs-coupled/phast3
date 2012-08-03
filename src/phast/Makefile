@@ -267,8 +267,8 @@ lam_intel_debug:
 # Significant suffixes [assuming Fortran 90 (.F90)  source code, needs to be preprocessed ]:
 # =============================================================================
 
-SRC              = ../phreeqcpp/phreeqc
-PHREEQC_INCLUDES = -I../phreeqcpp -I../phreeqcpp/phreeqc
+SRC              = ../IPHreeqcPhast/IPhreeqc/phreeqcpp/phreeqc
+PHREEQC_INCLUDES = -I.. -I../IPhreeqcPhast -I../IPhreeqcPhast/IPhreeqc -I../IPhreeqcPhast/IPhreeqc/phreeqcpp -I../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc
 LAM_INCLUDES     =  -I/usr/include/
 LAM_LIB          =  -L/usr/lib/ -llam
 
@@ -819,78 +819,237 @@ endif
 #     REQUISITE (.f90,.f) SOURCE FILES]
 #
 
-COMMON_COBJS =  advection.o basic.o basicsubs.o cl1.o input.o integrate.o inverse.o \
-	        isotopes.o kinetics.o mainsubs.o output.o model.o p2clib.o parse.o \
-		phqalloc.o prep.o print.o read.o readtr.o sit.o spread.o step.o structures.o \
-		tally.o tidy.o transport.o utilities.o \
-		cvdense.o cvode.o dense.o nvector.o nvector_serial.o smalldense.o sundialsmath.o \
-		pitzer.o pitzer_structures.o dw.o \
-		hst.o cxxHstSubs.o hstsubs.o phast_files.o 
-
-COMMON_FOBJS =	interpolate_mod.o print_control_mod.o rewi_mod.o \
-		ld_seg_mod.o  \
-		abmult.o aplbce.o aplbce_ss_flow.o aplbci.o armult.o asembl.o\
-		asmslc.o asmslp.o asmslp_ss_flow.o bsode.o calcc.o calc_velocity.o clog.o closef.o\
-		coeff.o coeff_ss_flow.o crsdsp.o d4ord.o d4zord.o dbmult.o dump.o\
-		efact.o ehoftp.o el1slv.o elslv.o error1.o error2.o error3.o error4.o\
-		errprt.o etom1.o etom2.o euslv.o formr.o gcgris.o hunt.o incidx.o\
-		indx_rewi_bc.o indx_rewi.o init1.o init2_1.o init2_2.o init2_3.o\
-		init2_post_ss.o init3.o ldchar.o ldchar_bc.o  ldci.o ldcir.o\
-		ldind.o ldipen.o ldmar1.o lsolv.o media_hdf.o modules.o mtoijk.o\
-		nintrp.o openf.o phast.o phast_root.o \
-		prchar.o  prntar.o rbord.o\
-		read1.o read2.o read3.o reordr.o rfact.o rfactm.o\
-		rhsn.o rhsn_ss_flow.o sbcflo.o scale_jds.o simulate_ss_flow.o stonb.o sumcal1.o sumcal2.o \
-		sumcal_ss_flow.o terminate_phast.o tfrds.o timstp.o timstp_ss_flow.o\
-		update_print_flags.o uppercase.o \
-		usolv.o viscos.o vpsv.o wbbal.o wbcflo.o wellsc.o wellsc_ss_flow.o\
-		wellsr.o wellsr_ss_flow.o welris.o wfdydz.o write1.o write2_1.o write2_2.o write3.o\
-		write3_ss_flow.o write4.o write5.o write5_ss_flow.o write6.o \
-		zone_flow.o zone_flow_ss.o
+COMMON_FOBJS =	\
+	aplbce_flow.o \
+	aplbci_flow.o \
+	asembl_flow.o \
+	asmslp.o \
+	calcc.o \
+	calc_velocity.o \
+	clog.o \
+	closef.o \
+	coeff_flow.o \
+	coeff_trans.o \
+	dealloc_arr.o \
+	dealloc_arr_worker.o \
+	dump.o \
+	error1.o \
+	error2.o \
+	error3.o \
+	error4.o \
+	errprt.o \
+	etom1.o \
+	etom2.o \
+	hdf_f.o \
+	incidx.o \
+	indx_rewi_bc.o \
+	indx_rewi.o \
+	init1.o \
+	init2_1.o \
+	init2_1_xfer.o \
+	init2_2.o \
+	init2_3.o \
+	init2_post_ss.o \
+	init3.o \
+	init3_xfer.o \
+	interpolate_mod.o \
+	ldchar_bc.o \
+	ldchar.o \
+	ld_seg_mod.o \
+	mach_mod.o \
+	modules_g.o \
+	modules_manager.o \
+	mpi_array_mod.o \
+	mpi_mod.o \
+	mtoijk.o \
+	nintrp.o \
+	openf.o \
+	phast_manager.o \
+	phast_spmd.o \
+	phast_worker.o \
+	prchar.o \
+	printar.o \
+	print_control_mod.o \
+	read1.o \
+	read1_xfer.o \
+	read2.o \
+	read2_xfer.o \
+	read3.o \
+	read3_xfer.o \
+	reorder_mod.o \
+	rewi_mod.o \
+	rhsn.o \
+	rhsn_manager.o \
+	rhsn_ss_flow.o \
+	sbcflo.o \
+	scale_jds_mod.o \
+	set_component_map.o \
+	simulate_ss_flow.o \
+	solver_direct_mod.o \
+	solver_iter_mod.o \
+	stonb.o \
+	sumcal1.o \
+	sumcal1_manager.o \
+	sumcal2.o \
+	sumcal_ss_flow.o \
+	terminate_phast.o \
+	terminate_phast_worker.o \
+	timestep.o \
+	time_step_save.o \
+	timestep_ss_flow.o \
+	timestep_worker.o \
+	update_print_flags.o \
+	uppercase.o \
+	wbbal.o \
+	wbcflo.o \
+	wellsc.o \
+	wellsc_ss_flow.o \
+	wellsr.o \
+	wellsr_ss_flow.o \
+	welris.o \
+	wfdydz.o \
+	write1.o \
+	write2_1.o \
+	write2_2.o \
+	write3.o \
+	write3_ss_flow.o \
+	write4.o \
+	write5.o \
+	write5_ss_flow.o \
+	write6.o \
+	xfer_to_manager.o \
+	xfer_to_workers.o \
+	XP_aplbce.o \
+	XP_aplbci.o \
+	XP_asembl.o \
+	XP_asmslc.o \
+	XP_crsdsp.o \
+	XP_etom2.o \
+	XP_module.o \
+	XP_rhsn.o \
+	XP_sumcal1.o \
+	XP_wbcflo.o \
+	XP_wellsc.o \
+	XP_wellsr.o \
+	zone_flow.o \
+	zone_flow_ss.o 
 
 COMMON_CXXOBJS = \
-	       Dictionary.o \
-	       dumper.o \
-	       Exchange.o \
-	       ExchComp.o \
-	       GasPhase.o \
-	       gzstream.o \
-	       ISolution.o \
-	       ISolutionComp.o \
-	       KineticsComp.o \
-	       cxxKinetics.o \
-	       cxxMix.o \
-	       NameDouble.o \
-	       NumKeyword.o \
-	       Parser.o \
-	       phast_main.o \
-	       PPassemblageComp.o \
-	       PPassemblage.o \
-	       Reaction.o \
-	       ReadClass.o \
-	       runner.o \
-	       Solution.o \
-	       SolutionIsotope.o \
-	       SolutionIsotopeList.o \
-	       SSassemblage.o \
-	       SSassemblageSS.o \
-	       StorageBin.o \
-	       StorageBinList.o \
-	       Surface.o \
-	       SurfaceCharge.o \
-	       SurfaceComp.o \
-	       System.o \
-	       Temperature.o \
-	       Utils.o \
-	       KDtree.o \
-	       kdtree2.o \
-	       Point.o
+gzstream.o \
+phast_main.o  \
+Reaction_module.o \
+RM_interface.o \
+\
+fwrap2Phast.o \
+fwrap3Phast.o \
+fwrap4Phast.o \
+fwrap5Phast.o \
+fwrap6Phast.o \
+fwrap7Phast.o \
+fwrap8.Phast.o \
+fwrapPhast.o \
+IPhreeqcPhast.o \
+IPhreeqcPhastLib.o \
+\
+fwrap2.o \
+fwrap3.o \
+fwrap4.o \
+fwrap5.o \
+fwrap6.o \
+fwrap7.o \
+fwrap8.o \
+fwrap.o \
+IPhreeqc.o \
+IPhreeqcLib.o \
+pp_sys.o \
+SelectedOutput.o \
+\
+ChartHandler.o \
+ChartObject.o \
+class_main.o \
+CurveObject.o \
+cxxKinetics.o \
+cxxMix.o \
+dumper.o \
+Exchange.o \
+ExchComp.o \
+GasComp.o \
+GasPhase.o \
+ISolutionComp.o \
+ISolution.o \
+Keywords.o \
+KineticsComp.o \
+NameDouble.o \
+NumKeyword.o \
+Parser.o \
+PBasic.o \
+Phreeqc.o \
+PHRQ_base.o \
+PHRQ_io.o \
+PPassemblageComp.o \
+PPassemblage.o \
+Pressure.o \
+Reaction.o \
+ReadClass.o \
+runner.o \
+Solution.o \
+SolutionIsotope.o \
+SSassemblage.o \
+SScomp.o \
+SS.o \
+StorageBin.o \
+StorageBinList.o \
+SurfaceCharge.o \
+SurfaceComp.o \
+Surface.o \
+System.o \
+Temperature.o \
+Use.o \
+Utils.o \
+\
+advection.o \
+basicsubs.o \
+cl1.o \
+cl1mp.o \
+cvdense.o \
+cvode.o \
+dense.o \
+dw.o \
+gases.o \
+input.o \
+integrate.o \
+inverse.o \
+isotopes.o \
+kinetics.o \
+mainsubs.o \
+model.o \
+nvector.o \
+nvector_serial.o \
+parse.o \
+phqalloc.o \
+PHRQ_io_output.o \
+pitzer.o \
+pitzer_structures.o \
+prep.o \
+print.o \
+read.o \
+readtr.o \
+sit.o \
+smalldense.o \
+spread.o \
+step.o \
+structures.o \
+sundialsmath.o \
+tally.o \
+tidy.o \
+transport.o \
+utilities.o 
 
-HDF_OBJS     =  hdf.o hdf_f.o
+HDF_OBJS     =  #hdf.o hdf_f.o
 
-MERGE_OBJS   =	merge.o
+MERGE_OBJS   =	#merge.o
 
-MPI_OBJS     =	mpimod.o phast_slave.o slavesubs.o
+MPI_OBJS     =	#mpimod.o phast_slave.o slavesubs.o
 
 
 PHASTINPUT_FILES = ../KDtree/KDtree.cpp \
@@ -912,125 +1071,237 @@ ${PROGRAM} : ${OBJECT_FILES}
 #  module_name.mod and module_name.o files are created or
 #  updated before all other source code object files. 
 
-modules.o : modules.f90 
+mach_mod.o: ../PhastFortran/mach_mod.f90
 	${FC} -c ${FFLAGS} $<
-print_control_mod.o : ../print_control_mod.f90 modules.o
+modules_g.o: ../PhastFortran/modules_g.f90 mach_mod.o modules_manager.o
 	${FC} -c ${FFLAGS} $<
-ld_seg_mod.o:      ../ld_seg_mod.f90  modules.o
+modules_manager.o: ../PhastFortran/modules_manager.f90 mach_mod.o
+	${FC} -c ${FFLAGS} $<
+print_control_mod.o: ../PhastFortran/print_control_mod.f90 modules_g.o
+	${FC} -c ${FFLAGS} $<
+ld_seg_mod.o:      ../PhastFortran/ld_seg_mod.f90  modules_g.o modules_manager.o
+	${FC} -c ${FFLAGS} $<
+interpolate_mod.O: ../PhastFortran/interpolate_mod.f90
+	${FC} -c ${FFLAGS} $<
+#mpi_array_mod.F90
+#mpi_mod.F90
+reorder_mod.o: ../PhastFortran/reorder_mod.f90
+	${FC} -c ${FFLAGS} $<
+rewi_mod.o: ../PhastFortran/rewi_mod.f90
+	${FC} -c ${FFLAGS} $<
+scale_jds_mod.o: ../PhastFortran/scale_jds_mod.f90
+	${FC} -c ${FFLAGS} $<
+solver_direct_mod.o: ../PhastFortran/solver_direct_mod.f90
+	${FC} -c ${FFLAGS} $<
+solver_iter_mod.o: ../PhastFortran/solver_iter_mod.f90
+	${FC} -c ${FFLAGS} $<
+XP_module.o: ../PhastFortran/XP_module.f90
+	${FC} -c ${FFLAGS} $<
 
 # -----------------------------------------------------------------------------
 # Module dependency list
 # -----------------------------------------------------------------------------
+aplbce_flow.o: ../PhastFortran/aplbce_flow.f90
+	${FC} -c ${FFLAGS} $<
+aplbci_flow.o: ../PhastFortran/aplbci_flow.F90
+	${FC} -c ${FFLAGS} $<
+asembl_flow.o: ../PhastFortran/asembl_flow.f90
+	${FC} -c ${FFLAGS} $<
+asmslp.o: ../PhastFortran/asmslp.F90
+	${FC} -c ${FFLAGS} $<
+calcc.o: ../PhastFortran/calcc.f90
+	${FC} -c ${FFLAGS} $<
+calc_velocity.o: ../PhastFortran/calc_velocity.f90
+	${FC} -c ${FFLAGS} $<
+clog.o: ../PhastFortran/clog.f90
+	${FC} -c ${FFLAGS} $<
+closef.o: ../PhastFortran/closef.F90
+	${FC} -c ${FFLAGS} $<
+coeff_flow.o: ../PhastFortran/coeff_flow.F90
+	${FC} -c ${FFLAGS} $<
+coeff_trans.o: ../PhastFortran/coeff_trans.F90
+	${FC} -c ${FFLAGS} $<
+dealloc_arr.o: ../PhastFortran/dealloc_arr.F90
+	${FC} -c ${FFLAGS} $<
+dealloc_arr_worker.o: ../PhastFortran/dealloc_arr_worker.F90
+	${FC} -c ${FFLAGS} $<
+dump.o: ../PhastFortran/dump.f90
+	${FC} -c ${FFLAGS} $<
+error1.o: ../PhastFortran/error1.f90
+	${FC} -c ${FFLAGS} $<
+error2.o: ../PhastFortran/error2.f90
+	${FC} -c ${FFLAGS} $<
+error3.o: ../PhastFortran/error3.f90
+	${FC} -c ${FFLAGS} $<
+error4.o: ../PhastFortran/error4.f90
+	${FC} -c ${FFLAGS} $<
+errprt.o: ../PhastFortran/errprt.f90
+	${FC} -c ${FFLAGS} $<
+etom1.o: ../PhastFortran/etom1.f90
+	${FC} -c ${FFLAGS} $<
+etom2.o: ../PhastFortran/etom2.f90
+	${FC} -c ${FFLAGS} $<
+hdf_f.o: ../PhastFortran/hdf_f.F90
+	${FC} -c ${FFLAGS} $<
+incidx.o: ../PhastFortran/incidx.f90
+	${FC} -c ${FFLAGS} $<
+indx_rewi_bc.o: ../PhastFortran/indx_rewi_bc.f90
+	${FC} -c ${FFLAGS} $<
+indx_rewi.o: ../PhastFortran/indx_rewi.f90
+	${FC} -c ${FFLAGS} $<
+init1.o: ../PhastFortran/init1.F90
+	${FC} -c ${FFLAGS} $<
+init2_1.o: ../PhastFortran/init2_1.F90
+	${FC} -c ${FFLAGS} $<
+init2_1_xfer.o: ../PhastFortran/init2_1_xfer.F90
+	${FC} -c ${FFLAGS} $<
+init2_2.o: ../PhastFortran/init2_2.f90
+	${FC} -c ${FFLAGS} $<
+init2_3.o: ../PhastFortran/init2_3.f90
+	${FC} -c ${FFLAGS} $<
+init2_post_ss.o: ../PhastFortran/init2_post_ss.F90
+	${FC} -c ${FFLAGS} $<
+init3.o: ../PhastFortran/init3.F90
+	${FC} -c ${FFLAGS} $<
+init3_xfer.o: ../PhastFortran/init3_xfer.F90
+	${FC} -c ${FFLAGS} $<
+ldchar_bc.o: ../PhastFortran/ldchar_bc.f90
+	${FC} -c ${FFLAGS} $<
+ldchar.o: ../PhastFortran/ldchar.f90
+	${FC} -c ${FFLAGS} $<
+mtoijk.o: ../PhastFortran/mtoijk.f90
+	${FC} -c ${FFLAGS} $<
+nintrp.o: ../PhastFortran/nintrp.f90
+	${FC} -c ${FFLAGS} $<
+openf.o: ../PhastFortran/openf.F90
+	${FC} -c ${FFLAGS} $<
+phast_manager.o: ../PhastFortran/phast_manager.F90
+	${FC} -c ${FFLAGS} $<
+phast_spmd.o: ../PhastFortran/phast_spmd.F90
+	${FC} -c ${FFLAGS} $<
+phast_worker.o: ../PhastFortran/phast_worker.F90
+	${FC} -c ${FFLAGS} $<
+prchar.o: ../PhastFortran/prchar.f90
+	${FC} -c ${FFLAGS} $<
+printar.o: ../PhastFortran/printar.f90
+	${FC} -c ${FFLAGS} $<
+read1.o: ../PhastFortran/read1.F90
+	${FC} -c ${FFLAGS} $<
+read1_xfer.o: ../PhastFortran/read1_xfer.F90
+	${FC} -c ${FFLAGS} $<
+read2.o: ../PhastFortran/read2.F90
+	${FC} -c ${FFLAGS} $<
+read2_xfer.o: ../PhastFortran/read2_xfer.F90
+	${FC} -c ${FFLAGS} $<
+read3.o: ../PhastFortran/read3.F90
+	${FC} -c ${FFLAGS} $<
+read3_xfer.o: ../PhastFortran/read3_xfer.F90
+	${FC} -c ${FFLAGS} $<
+rhsn.o: ../PhastFortran/rhsn.f90
+	${FC} -c ${FFLAGS} $<
+rhsn_manager.o: ../PhastFortran/rhsn_manager.F90
+	${FC} -c ${FFLAGS} $<
+rhsn_ss_flow.o: ../PhastFortran/rhsn_ss_flow.f90
+	${FC} -c ${FFLAGS} $<
+sbcflo.o: ../PhastFortran/sbcflo.f90
+	${FC} -c ${FFLAGS} $<
+set_component_map.o: ../PhastFortran/set_component_map.F90
+	${FC} -c ${FFLAGS} $<
+simulate_ss_flow.o: ../PhastFortran/simulate_ss_flow.f90
+	${FC} -c ${FFLAGS} $<
+stonb.o: ../PhastFortran/stonb.f90
+	${FC} -c ${FFLAGS} $<
+sumcal1.o: ../PhastFortran/sumcal1.F90
+	${FC} -c ${FFLAGS} $<
+sumcal1_manager.o: ../PhastFortran/sumcal1_manager.F90
+	${FC} -c ${FFLAGS} $<
+sumcal2.o: ../PhastFortran/sumcal2.f90
+	${FC} -c ${FFLAGS} $<
+sumcal_ss_flow.o: ../PhastFortran/sumcal_ss_flow.f90
+	${FC} -c ${FFLAGS} $<
+terminate_phast.o: ../PhastFortran/terminate_phast.F90
+	${FC} -c ${FFLAGS} $<
+terminate_phast_worker.o: ../PhastFortran/terminate_phast_worker.F90
+	${FC} -c ${FFLAGS} $<
+timestep.o: ../PhastFortran/timestep.F90
+	${FC} -c ${FFLAGS} $<
+time_step_save.o: ../PhastFortran/time_step_save.F90
+	${FC} -c ${FFLAGS} $<
+timestep_ss_flow.o: ../PhastFortran/timestep_ss_flow.f90
+	${FC} -c ${FFLAGS} $<
+timestep_worker.o: ../PhastFortran/timestep_worker.F90
+	${FC} -c ${FFLAGS} $<
+update_print_flags.o: ../PhastFortran/update_print_flags.f90
+	${FC} -c ${FFLAGS} $<
+uppercase.o: ../PhastFortran/uppercase.f90
+	${FC} -c ${FFLAGS} $<
+wbbal.o: ../PhastFortran/wbbal.f90
+	${FC} -c ${FFLAGS} $<
+wbcflo.o: ../PhastFortran/wbcflo.f90
+	${FC} -c ${FFLAGS} $<
+wellsc.o: ../PhastFortran/wellsc.f90
+	${FC} -c ${FFLAGS} $<
+wellsc_ss_flow.o: ../PhastFortran/wellsc_ss_flow.f90
+	${FC} -c ${FFLAGS} $<
+wellsr.o: ../PhastFortran/wellsr.f90
+	${FC} -c ${FFLAGS} $<
+wellsr_ss_flow.o: ../PhastFortran/wellsr_ss_flow.f90
+	${FC} -c ${FFLAGS} $<
+welris.o: ../PhastFortran/welris.f90
+	${FC} -c ${FFLAGS} $<
+wfdydz.o: ../PhastFortran/wfdydz.f90
+	${FC} -c ${FFLAGS} $<
+write1.o: ../PhastFortran/write1.f90
+	${FC} -c ${FFLAGS} $<
+write2_1.o: ../PhastFortran/write2_1.f90
+	${FC} -c ${FFLAGS} $<
+write2_2.o: ../PhastFortran/write2_2.f90
+	${FC} -c ${FFLAGS} $<
+write3.o: ../PhastFortran/write3.f90
+	${FC} -c ${FFLAGS} $<
+write3_ss_flow.o: ../PhastFortran/write3_ss_flow.f90
+	${FC} -c ${FFLAGS} $<
+write4.o: ../PhastFortran/write4.f90
+	${FC} -c ${FFLAGS} $<
+write5.o: ../PhastFortran/write5.f90
+	${FC} -c ${FFLAGS} $<
+write5_ss_flow.o: ../PhastFortran/write5_ss_flow.f90
+	${FC} -c ${FFLAGS} $<
+write6.o: ../PhastFortran/write6.f90
+	${FC} -c ${FFLAGS} $<
+xfer_to_manager.o: ../PhastFortran/xfer_to_manager.F90
+	${FC} -c ${FFLAGS} $<
+xfer_to_workers.o: ../PhastFortran/xfer_to_workers.F90
+	${FC} -c ${FFLAGS} $<
+XP_aplbce.o: ../PhastFortran/XP_aplbce.f90
+	${FC} -c ${FFLAGS} $<
+XP_aplbci.o: ../PhastFortran/XP_aplbci.F90
+	${FC} -c ${FFLAGS} $<
+XP_asembl.o: ../PhastFortran/XP_asembl.f90
+	${FC} -c ${FFLAGS} $<
+XP_asmslc.o: ../PhastFortran/XP_asmslc.F90
+	${FC} -c ${FFLAGS} $<
+XP_crsdsp.o: ../PhastFortran/XP_crsdsp.f90
+	${FC} -c ${FFLAGS} $<
+XP_etom2.o: ../PhastFortran/XP_etom2.f90
+	${FC} -c ${FFLAGS} $<
+XP_rhsn.o: ../PhastFortran/XP_rhsn.f90
+	${FC} -c ${FFLAGS} $<
+XP_sumcal1.o: ../PhastFortran/XP_sumcal1.f90
+	${FC} -c ${FFLAGS} $<
+XP_wbcflo.o: ../PhastFortran/XP_wbcflo.f90
+	${FC} -c ${FFLAGS} $<
+XP_wellsc.o: ../PhastFortran/XP_wellsc.f90
+	${FC} -c ${FFLAGS} $<
+XP_wellsr.o: ../PhastFortran/XP_wellsr.f90
+	${FC} -c ${FFLAGS} $<
+zone_flow.o: ../PhastFortran/zone_flow.f90
+	${FC} -c ${FFLAGS} $<
+zone_flow_ss.o: ../PhastFortran/zone_flow_ss.f90
+	${FC} -c ${FFLAGS} $<
 #
 #  PHAST Fortran files
 #
-phast.o:	  	../phast.F90		modules.o	mpimod.o
-abmult.o:		../abmult.f90		modules.o
-aplbce.o:		../aplbce.f90		modules.o
-aplbce_ss_flow.o:	../aplbce_ss_flow.f90  	modules.o
-aplbci.o:		../aplbci.f90		modules.o
-armult.o:		../armult.f90		modules.o
-asembl.o:		../asembl.f90		modules.o
-asmslc.o:		../asmslc.f90		modules.o
-asmslp.o:		../asmslp.f90		modules.o
-asmslp_ss_flow.o:	../asmslp_ss_flow.f90  	modules.o
-bsode.o:		../bsode.f90		modules.o
-calcc.o:		../calcc.f90		modules.o
-calc_velocity.o:	../calc_velocity.f90  	modules.o
-clog.o:			../clog.f90		modules.o
-closef.o:		../closef.F90		modules.o	mpimod.o
-coeff.o:		../coeff.f90		modules.o
-coeff_ss_flow.o:	../coeff_ss_flow.f90  	modules.o
-crsdsp.o:		../crsdsp.f90		modules.o
-d4ord.o:		../d4ord.f90		modules.o
-d4zord.o:		../d4zord.f90		modules.o
-dbmult.o:		../dbmult.f90		modules.o
-dump.o:			../dump.f90		modules.o
-efact.o:		../efact.f90		modules.o
-ehoftp.o:		../ehoftp.f90		modules.o
-el1slv.o:		../el1slv.f90		modules.o
-elslv.o:		../elslv.f90		modules.o
-error1.o:		../error1.f90		modules.o
-error2.o:		../error2.f90		modules.o
-error3.o:		../error3.f90		modules.o	print_control_mod.o
-error4.o:		../error4.f90		modules.o	ifwr.inc
-errprt.o:		../errprt.f90		modules.o
-etom1.o:		../etom1.f90		modules.o
-etom2.o:		../etom2.f90		modules.o
-euslv.o:		../euslv.f90		modules.o
-formr.o:		../formr.f90		modules.o
-gcgris.o:		../gcgris.f90		modules.o	print_control_mod.o
-hdf_f.o:		../hdf_f.f90		modules.o	
-hunt.o:			../hunt.f90		modules.o
-incidx.o:		../incidx.f90		modules.o
-indx_rewi.o:		../indx_rewi.f90	modules.o
-indx_rewi_bc.o:		../indx_rewi_bc.f90	modules.o
-init1.o:		../init1.f90		modules.o
-init2_1.o:		../init2_1.f90		modules.o
-init2_2.o:		../init2_2.f90		modules.o
-init2_3.o:		../init2_3.f90		modules.o
-init2_post_ss.o:	../init2_post_ss.f90	modules.o	print_control_mod.o
-init3.o:		../init3.f90		modules.o	print_control_mod.o
-interpolate_mod.o:	../interpolate_mod.f90	modules.o
-ldchar.o:		../ldchar.f90		modules.o
-ldchar_bc.o:		../ldchar_bc.f90	modules.o
-ldci.o:			../ldci.f90		modules.o
-ldcir.o:		../ldcir.f90		modules.o
-ldind.o:		../ldind.f90		modules.o
-ldipen.o:		../ldipen.f90		modules.o
-ldmar1.o:		../ldmar1.f90		modules.o
-lsolv.o:		../lsolv.f90		modules.o
-mpimod.o:               ../mpimod.F90 
-mtoijk.o:		../mtoijk.f90		modules.o
-nintrp.o:		../nintrp.f90		modules.o
-openf.o:		../openf.F90		modules.o	mpimod.o
-phast_root.o:		../phast_root.F90	modules.o	print_control_mod.o
-phast_slave.o:		../phast_slave.F90	modules.o	mpimod.o	print_control_mod.o
-prchar.o:		../prchar.f90		modules.o
-prntar.o:		../prntar.f90		modules.o
-rbord.o:		../rbord.f90		modules.o
-read1.o:		../read1.f90		modules.o
-read2.o:		../read2.f90		modules.o	rewi_mod.o     ifrd.inc 
-read3.o:		../read3.f90		modules.o	print_control_mod.o     rewi_mod.o
-reordr.o:		../reordr.f90		modules.o
-rewi_mod.o:		../rewi_mod.f90		modules.o       interpolate_mod.o
-rfact.o:		../rfact.f90		modules.o
-rfactm.o:		../rfactm.f90		modules.o
-rhsn.o:			../rhsn.f90		modules.o
-rhsn_ss_flow.o:		../rhsn_ss_flow.f90	modules.o
-sbcflo.o:		../sbcflo.f90		modules.o
-scale_jds.o:		../scale_jds.f90	modules.o
-simulate_ss_flow.o:	../simulate_ss_flow.f90 modules.o
-sumcal1.o:		../sumcal1.f90		modules.o
-sumcal2.o:		../sumcal2.f90		modules.o
-sumcal_ss_flow.o:	../sumcal_ss_flow.f90	modules.o
-terminate_phast.o:	../terminate_phast.F90  modules.o	mpimod.o
-tfrds.o:		../tfrds.f90		modules.o
-timstp.o:		../timstp.f90		modules.o	print_control_mod.o
-timstp_ss_flow.o:	../timstp_ss_flow.f90	modules.o	print_control_mod.o
-update_print_flags.o:	../update_print_flags.f90  modules.o    print_control_mod.o
-uppercase.o:		../uppercase.f90	
-usolv.o:		../usolv.f90		modules.o
-viscos.o:		../viscos.f90		modules.o
-wbbal.o:		../wbbal.f90		modules.o
-wbcflo.o:		../wbcflo.f90		modules.o
-wellsc.o:		../wellsc.f90		modules.o
-wellsc_ss_flow.o:	../wellsc_ss_flow.f90	modules.o
-wellsr.o:		../wellsr.f90		modules.o
-wellsr_ss_flow.o:	../wellsr_ss_flow.f90	modules.o
-welris.o:		../welris.f90		modules.o
-wfdydz.o:		../wfdydz.f90		modules.o
-write1.o:		../write1.f90		modules.o
-write2_1.o:		../write2_1.f90		modules.o	ifwr.inc
-write2_2.o:		../write2_2.f90		modules.o	ifwr.inc
-write3.o:		../write3.f90		modules.o	ifwr.inc
-write3_ss_flow.o:	../write3_ss_flow.f90	modules.o	ifwr.inc
-write4.o:		../write4.f90		modules.o	ifwr.inc	print_control_mod.o
-write5.o:		../write5.f90		modules.o	ifwr.inc	print_control_mod.o
-write5_ss_flow.o:	../write5_ss_flow.f90	modules.o	ifwr.inc	print_control_mod.o
-write6.o:		../write6.f90		modules.o	ifwr.inc	print_control_mod.o
-zone_flow.o:		../zone_flow.f90	modules.o
-zone_flow_ss.o:		../zone_flow_ss.f90	modules.o
 
 #
 #  Dependencies
@@ -1042,7 +1313,18 @@ clean:
 
 depends:
 	mkdir -p temp_dependency_dir
-	cd temp_dependency_dir; gcc -MM $(DEFINE_HDF) -I../phreeqcpp -I../phreeqcpp/phreeqc -I../KDtree ../*.cxx ../*.c ../phreeqcpp/*.cxx ../KDtree/*.cpp ../phreeqcpp/*.cpp ../phreeqcpp/phreeqc/*.c $(PHASTINPUT_FILES) > ../dependencies
+	cd temp_dependency_dir; gcc -MM $(DEFINE_HDF) -I.. -I../IPhreeqcPhast \
+	-I../IPhreeqcPhast/IPhreeqc -I../IPhreeqcPhast/IPhreeqc/phreeqcpp \
+	-I../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc -I../KDtree \
+	../*.cxx ../*.cpp \
+	../IPhreeqcPhast/*.cpp 	../IPhreeqcPhast/*.cxx \
+	../IPhreeqcPhast/IPhreeqc/*.cpp \
+	../IPhreeqcPhast/IPhreeqc/phreeqcpp/*.cxx ../IPhreeqcPhast/IPhreeqc/phreeqcpp/*.cpp \
+	../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc/*.cpp \
+	../KDtree/*.cpp $(PHASTINPUT_FILES) > ../dependencies
+#	cd temp_dependency_dir; gfortran -MM $(DEFINE_HDF) -I.. -I../IPhreeqcPhast \
+#	../PhastFortran/*.f90 ../PhastFortran/*.F90 \
+#	$(PHASTINPUT_FILES) > ../dependencies_fort
 	rm -rf temp_dependency_dir
 
 depends_parallel:
