@@ -196,6 +196,7 @@ Reaction_module::Initial_phreeqc_run(std::string database_name, std::string chem
 	return 1;
 }
 #endif
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Distribute_initial_conditions(
@@ -295,8 +296,8 @@ Reaction_module::Distribute_initial_conditions(
 	}
 
 	// Make initial conditions
-	if (RunString(rm_id, mix_string.str().c_str()) < 0) RM_error(&rm_id);
-	if (RunString(rm_id, copy_string.str().c_str()) < 0) RM_error(&rm_id);
+	if (RunString(rm_id, mix_string.str().c_str()) < 0) Error_stop();
+	if (RunString(rm_id, copy_string.str().c_str()) < 0) Error_stop();
 
 
 	/*
@@ -526,29 +527,26 @@ Reaction_module::Distribute_initial_conditions(
 		}
 	}
 }
-#ifdef SKIP
+#endif
+
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Distribute_initial_conditions(
-	    int ip_id,
-		int *initial_conditions1,
-		int *initial_conditions2,	
-		double *fraction1,
-		int exchange_units,
-		int surface_units,
-		int ssassemblage_units,
-		int ppassemblage_units,
-		int gasphase_units,
-		int kinetics_units)
+					int id, 
+					int *initial_conditions1,
+					int *initial_conditions2, 
+					double *fraction1,
+					int exchange_units, 
+					int surface_units, 
+					int ssassemblage_units,
+					int ppassemblage_units, 
+					int gasphase_units, 
+					int kinetics_units)
 /* ---------------------------------------------------------------------- */
 {
 	/*
-	*  Use indices defined in initial_conditions and fractions
-	*  to mix reactants and store as initial conditions in a StorageBin
-	*/
-	/*
 	 *      nxyz - number of cells
-	 *      initial_conditions1 - Fortran, 7 x nxyz integer array, containing
+	 *      initial_conditions1 - Fortran, 7 x n_cell integer array, containing
 	 *           solution number
 	 *           pure_phases number
 	 *           exchange number
@@ -556,58 +554,41 @@ Reaction_module::Distribute_initial_conditions(
 	 *           gas number
 	 *           solid solution number
 	 *           kinetics number
-	 *      initial_conditions2 - Fortran, 7 x nxyz integer array, containing
-	 *      fraction for 1 - Fortran, 7 x nxyz double array, containing
+	 *      initial_conditions2 - Fortran, 7 x n_cell integer array, containing
+	 *      fraction for 1 - Fortran, 7 x n_cell integer array, containing
 	 *
 	 *      Routine mixes solutions, pure_phase assemblages,
 	 *      exchangers, surface complexers, gases, solid solution assemblages,
 	 *      and kinetics for each cell.
+	 *   
+	 *      saves results in sz_bin
 	 */
-	int
-		i,
-		j;
-
-	// Initial IPhreeqc output
-	SetOutputFileOn(ip_id, 0);
-	SetDumpStringOn(ip_id, 1);
-	SetSelectedOutputFileOn(ip_id, 0);
-	SetDumpFileOn(ip_id, 0);
-	// Reaction module output
-	SetOutputFileOn(this->index, 0);
-	SetDumpStringOn(this->index, 0);
-	SetSelectedOutputFileOn(this->index, 0);
-	SetDumpFileOn(ip_id, 0);
-
-	std::ostringstream mix_string;
-	std::ostringstream copy_string;
-
-	// Save pointer
-	ic1 = initial_conditions1;
+	int i, j;
 	/*
 	 *  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
 	 *  Does nothing for indexes less than 0 (i.e. restart files)
 	 */
 	size_t count_negative_porosity = 0;
 	for (i = 0; i < this->nxyz; i++)
-	{							        /* i is nxyz number */
+	{							/* i is ixyz number */
 		j = this->forward[i];			/* j is count_chem number */
 		if (j < 0)
 			continue;
-		assert(this->forward[i] >= 0);
-		assert (this->volume[i] > 0.0);
-		double porosity = this->pv0[i] / this->volume[i];
-		if (this->pv0[i] < 0 || this->volume[i] < 0)
+		assert(forward[i] >= 0);
+		assert (volume[i] > 0.0);
+		double porosity = pv0[i] / volume[i];
+		if (pv0[i] < 0 || volume[i] < 0)
 		{
 			std::ostringstream errstr;
-			errstr << "Negative volume in cell " << i << ": volume, " 
-				<< volume[i] << "\t initial volume, " << this->pv0[i] << ".",
+			errstr << "Negative volume in cell " << i << ": volume, " << volume[i]; 
+			errstr << "\t initial volume, " << this->pv0[i] << ".",
 			count_negative_porosity++;
 			error_msg(errstr.str().c_str());
 			continue;
 		}
 		assert (porosity > 0.0);
 		double porosity_factor = (1.0 - porosity) / porosity;
-		this->Cell_initialize(mix_string, copy_string, i, j, initial_conditions1, initial_conditions2,
+		Cell_initialize(i, j, initial_conditions1, initial_conditions2,
 			fraction1,
 			exchange_units, surface_units, ssassemblage_units,
 			ppassemblage_units, gasphase_units, kinetics_units,
@@ -619,24 +600,20 @@ Reaction_module::Distribute_initial_conditions(
 		errstr << "Negative initial volumes may be due to initial head distribution.\n"
 			"Make initial heads greater than or equal to the elevation of the node for each cell.\n"
 			"Increase porosity, decrease specific storage, or use free surface boundary.";
-		error_msg(errstr.str().c_str());
+		error_msg(errstr.str().c_str(), 1);
 	}
-
-	// Make initial conditions
-	if (RunString(this->index, mix_string.str().c_str()) < 0) RM_error(&this->index);
-	if (RunString(this->index, copy_string.str().c_str()) < 0) RM_error(&this->index);
-
 	/*
 	 * Read any restart files
 	 */
-	for (std::map < std::string, int >::iterator it = this->FileMap.begin();
-		 it != this->FileMap.end(); it++)
+	for (std::map < std::string, int >::iterator it = FileMap.begin();
+		 it != FileMap.end(); it++)
 	{
 		int
 			ifile = -100 - it->second;
 
 		// use gsztream
-		igzstream myfile;
+		igzstream
+			myfile;
 		myfile.open(it->first.c_str());
 		if (!myfile.good())
 
@@ -647,7 +624,6 @@ Reaction_module::Distribute_initial_conditions(
 			break;
 		}
 
-		std::ostringstream oss;
 		CParser	cparser(myfile, this->Get_io());
 		cparser.set_echo_file(CParser::EO_NONE);
 		cparser.set_echo_stream(CParser::EO_NONE);
@@ -657,13 +633,12 @@ Reaction_module::Distribute_initial_conditions(
 			   PHRQ_io::LT_EMPTY);
 
 		// read number of lines of index
-		int
-			n = -1;
+		int	n = -1;
 		if (!(cparser.get_iss() >> n) || n < 4)
 		{
 			std::ostringstream errstr;
 			errstr << "File does not have node locations: " << it->first.c_str() << "\nPerhaps it is an old format restart file.";
-			error_msg(errstr.str().c_str());
+			error_msg(errstr.str().c_str(), 1);
 			myfile.close();
 			break;
 		}
@@ -678,9 +653,8 @@ Reaction_module::Distribute_initial_conditions(
 		// 4 gas phase
 		// 5 ss_assemblage
 		// 6 kinetics
-		//int * index = (int *) PHRQ_malloc((size_t) (n * 7 * sizeof(int)));
-		int * cell_index = new int( (n * 7 * 20 * sizeof(int)) );
 
+		std::vector<int> c_index;
 		for (i = 0; i < n; i++)
 		{
 			cparser.check_line("restart", false, false, false, false);
@@ -689,198 +663,176 @@ Reaction_module::Distribute_initial_conditions(
 				y,
 				z,
 				v;
-			int dummy;
 			cparser.get_iss() >> x;
 			cparser.get_iss() >> y;
 			cparser.get_iss() >> z;
 			cparser.get_iss() >> v;
 			pts.push_back(Point(x, y, z, v));
 
-			//cparser.get_iss() >> cell_index[i * 7];
-			//cparser.get_iss() >> cell_index[i * 7 + 1];
-			//cparser.get_iss() >> cell_index[i * 7 + 2];
-			//cparser.get_iss() >> cell_index[i * 7 + 3];
-			//cparser.get_iss() >> cell_index[i * 7 + 4];
-			//cparser.get_iss() >> cell_index[i * 7 + 5];
-			//cparser.get_iss() >> cell_index[i * 7 + 6];
-			cparser.get_iss() >> dummy;
-			cparser.get_iss() >> dummy;
-			cparser.get_iss() >> dummy;
-			cparser.get_iss() >> dummy;
-			cparser.get_iss() >> dummy;
-			cparser.get_iss() >> dummy;
-			cparser.get_iss() >> dummy;
-			//cell_index[i * 7] = dummy;
-			//cparser.get_iss() >> dummy;
-			//cell_index[i * 7 + 1] = dummy;
-			//cparser.get_iss() >> dummy;
-			//cell_index[i * 7 + 2] = dummy;
-			//cparser.get_iss() >> dummy;
-			//cell_index[i * 7 + 3] = dummy;
-			//cparser.get_iss() >> dummy;
-			//cell_index[i * 7 + 4] = dummy;
-			//cparser.get_iss() >> dummy;
-			////cell_index[i * 7 + 5] = dummy;
-			//cparser.get_iss() >> dummy;
-			//cell_index[i * 7 + 6] = dummy;
+			int dummy;
+			// c_index defines entities present for each cell in restart file
+			for (j = 0; j < 7; j++)
+			{
+				cparser.get_iss() >> dummy;
+				c_index.push_back(dummy);
+			}
 		}
-		KDtree index_tree(pts);
+		KDtree
+		index_tree(pts);
 
-		// make an IPhreeqc
-		int restart_id = CreateIPhreeqc();
-		if (restart_id < 0) RM_error(&restart_id);
-		if (LoadDatabase(restart_id, database_file_name.c_str()) < 0) RM_error(&restart_id);
+		cxxStorageBin tempBin;
+		tempBin.read_raw(cparser);
 
-		while (cparser.check_line("restart", false, false, false, false) !=  PHRQ_io::LT_EOF)
-		{
-			AccumulateLine(restart_id, cparser.line().c_str());
-		}
-		RunAccumulated(restart_id);
-		//cxxStorageBin tempBin;
-		//tempBin.read_raw(cparser);
-
-		std::ostringstream restart_mix_string;
-		std::ostringstream restart_copy_string;
-		std::ostringstream restart_dump_string;
-		restart_dump_string << "DUMP; -cells\n";
-		std::set<int> cell_nos;
-
-		for (j = 0; j < this->count_chem; j++)	/* j is count_chem number */
+		for (j = 0; j < count_chem; j++)	/* j is count_chem number */
 		{
 			i = this->back[j][0];   /* i is nxyz number */
 			Point p(this->x_node[i], this->y_node[i], this->z_node[i]);
 			int	k = (int) index_tree.Interpolate3d(p);	// k is index number in tempBin
-			mix_string << "DELETE; -cell " << -j << "\n";
 
 			// solution
 			if (initial_conditions1[i * 7] == ifile)
 			{
-				if (cell_index[k * 7] != -1)	// entity k should be defined in tempBin
+				if (c_index[k * 7] != -1)	// entity k should be defined in tempBin
 				{
-					restart_mix_string << "MIX_SOLUTION " << -j << "; " << k << "  1.0\n";
-					restart_copy_string << "COPY solution " << -j << "  " << j << "\n";
-					restart_copy_string << "DELETE; -solution " << -j << "\n";
-					cell_nos.insert(-j);
+					if (tempBin.Get_Solution(k) != NULL)
+					{
+						sz_bin.Set_Solution(j, tempBin.Get_Solution(k));
+					}
+					else
+					{
+						assert(false);
+						initial_conditions1[7 * i] = -1;
+					}
 				}
 			}
 
 			// PPassemblage
 			if (initial_conditions1[i * 7 + 1] == ifile)
 			{
-				if (cell_index[k * 7 + 1] != -1)	// entity k should be defined in tempBin
+				if (c_index[k * 7 + 1] != -1)	// entity k should be defined in tempBin
 				{
-					restart_mix_string << "MIX_EQUILIBRIUM_PHASES " << -j << "; " << k << "  1.0\n";
-					restart_copy_string << "COPY equilibrium_phases " << -j << "  " << j << "\n";
-					restart_copy_string << "DELETE; -equilibrium_phases " << -j << "\n";
-					cell_nos.insert(-j);
+					if (tempBin.Get_PPassemblage(k) != NULL)
+					{
+						sz_bin.Set_PPassemblage(j, tempBin.Get_PPassemblage(k));
+					}
+					else
+					{
+						assert(false);
+						initial_conditions1[7 * i + 1] = -1;
+					}
 				}
 			}
 
 			// Exchange
 			if (initial_conditions1[i * 7 + 2] == ifile)
 			{
-				if (cell_index[k * 7 + 2] != -1)	// entity k should be defined in tempBin
+				if (c_index[k * 7 + 2] != -1)	// entity k should be defined in tempBin
 				{
-					restart_mix_string << "MIX_EXCHANGE " << -j << "; " << k << "  1.0\n";
-					restart_copy_string << "COPY exchange " << -j << "  " << j << "\n";
-					restart_copy_string << "DELETE; -exchange " << -j << "\n";
-					cell_nos.insert(-j);
+					if (tempBin.Get_Exchange(k) != NULL)
+					{
+						sz_bin.Set_Exchange(j, tempBin.Get_Exchange(k));
+					}
+					else
+					{
+						assert(false);
+						initial_conditions1[7 * i + 2] = -1;
+					}
 				}
 			}
 
 			// Surface
 			if (initial_conditions1[i * 7 + 3] == ifile)
 			{
-				if (cell_index[k * 7 + 3] != -1)	// entity k should be defined in tempBin
+				if (c_index[k * 7 + 3] != -1)	// entity k should be defined in tempBin
 				{
-					restart_mix_string << "MIX_SURFACE " << -j << "; " << k << "  1.0\n";
-					restart_copy_string << "COPY surface " << -j << "  " << j << "\n";
-					restart_copy_string << "DELETE; -surface " << -j << "\n";
-					cell_nos.insert(-j);
+					if (tempBin.Get_Surface(k) != NULL)
+					{
+						sz_bin.Set_Surface(j, tempBin.Get_Surface(k));
+					}
+					else
+					{
+						assert(false);
+						initial_conditions1[7 * i + 3] = -1;
+					}
 				}
 			}
 
 			// Gas phase
 			if (initial_conditions1[i * 7 + 4] == ifile)
 			{
-				if (cell_index[k * 7 + 4] != -1)	// entity k should be defined in tempBin
+				if (c_index[k * 7 + 4] != -1)	// entity k should be defined in tempBin
 				{
-					restart_mix_string << "MIX_GAS_PHASE " << -j << "; " << k << "  1.0\n";
-					restart_copy_string << "COPY gas_phase " << -j << "  " << j << "\n";
-					restart_copy_string << "DELETE; -gas_phase " << -j << "\n";
-					cell_nos.insert(-j);
+					if (tempBin.Get_GasPhase(k) != NULL)
+					{
+						sz_bin.Set_GasPhase(j, tempBin.Get_GasPhase(k));
+					}
+					else
+					{
+						assert(false);
+						initial_conditions1[7 * i + 4] = -1;
+					}
 				}
 			}
 
 			// Solid solution
 			if (initial_conditions1[i * 7 + 5] == ifile)
 			{
-				if (cell_index[k * 7 + 5] != -1)	// entity k should be defined in tempBin
+				if (c_index[k * 7 + 5] != -1)	// entity k should be defined in tempBin
 				{
-					restart_mix_string << "MIX_SOLID_SOLUTION " << -j << "; " << k << "  1.0\n";
-					restart_copy_string << "COPY solid_solution " << -j << "  " << j << "\n";
-					restart_copy_string << "DELETE; -solid_solution " << -j << "\n";
-					cell_nos.insert(-j);
+					if (tempBin.Get_SSassemblage(k) != NULL)
+					{
+						sz_bin.Set_SSassemblage(j, tempBin.Get_SSassemblage(k));
+					}
+					else
+					{
+						assert(false);
+						initial_conditions1[7 * i + 5] = -1;
+					}
 				}
 			}
 
 			// Kinetics
 			if (initial_conditions1[i * 7 + 6] == ifile)
 			{
-				if (cell_index[k * 7 + 6] != -1)	// entity k should be defined in tempBin
+				if (c_index[k * 7 + 6] != -1)	// entity k should be defined in tempBin
 				{
-					restart_mix_string << "MIX_KINETICS " << -j << "; " << k << "  1.0\n";
-					restart_copy_string << "COPY kinetics " << -j << "  " << j << "\n";
-					restart_copy_string << "DELETE; -kinetics " << -j << "\n";
-					cell_nos.insert(-j);
+					if (tempBin.Get_Kinetics(k) != NULL)
+					{
+						sz_bin.Set_Kinetics(j, tempBin.Get_Kinetics(k));
+					}
+					else
+					{
+						assert(false);
+						initial_conditions1[7 * i + 6] = -1;
+					}
 				}
 			}
-			if (cell_nos.find(-j) != cell_nos.end())
-			{
-				restart_dump_string << -j << "\n";
-				restart_copy_string << "COPY cell " << -j << "  " << j << "\n";
-				restart_copy_string << "DELETE cell " << -j << "\n";
-			}
 		}
-        // generate cells
-		if (RunString(restart_id, restart_mix_string.str().c_str()) < 0) RM_error(&restart_id);
-		// dump cells
-		SetDumpStringOn(restart_id, 1);
-		if (RunString(restart_id, restart_dump_string.str().c_str()) < 0) RM_error(&restart_id);
-		// load cells into Reaction Module
-		if (RunString(this->index, GetDumpString(restart_id)) < 0) RM_error(&restart_id);
-		if (RunString(this->index, restart_copy_string.str().c_str()) < 0) RM_error(&restart_id);
-
-		// clean up
-		DestroyIPhreeqc(restart_id);
 		myfile.close();
-		delete cell_index;
+	}
+
+	// initialize uz
+	if (this->transient_free_surface)
+	{
+		for (i = 0; i < this->nxyz; i++)
+		{
+			this->old_frac.push_back(1.0);
+		}
 	}
 }
-#endif
 #ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Distribute_initial_conditions(
-	    int ip_id,
-		int *initial_conditions1,
-		int *initial_conditions2,	
-		double *fraction1,
-		int exchange_units,
-		int surface_units,
-		int ssassemblage_units,
-		int ppassemblage_units,
-		int gasphase_units,
-		int kinetics_units)
+DISTRIBUTE_INITIAL_CONDITIONS(int *initial_conditions1,
+							  int *initial_conditions2, double *fraction1,
+							  int *exchange_units, int *surface_units, int *ssassemblage_units,
+							  int *ppassemblage_units, int *gasphase_units, int *kinetics_units,
+							  double *pv0, double *volume)
 /* ---------------------------------------------------------------------- */
 {
 	/*
-	*  Use indices defined in initial_conditions and fractions
-	*  to mix reactants and store as initial conditions in a StorageBin
-	*/
-	/*
-	 *      nxyz - number of cells
-	 *      initial_conditions1 - Fortran, 7 x nxyz integer array, containing
+	 *      ixyz - number of cells
+	 *      initial_conditions1 - Fortran, 7 x n_cell integer array, containing
 	 *           solution number
 	 *           pure_phases number
 	 *           exchange number
@@ -888,8 +840,8 @@ Reaction_module::Distribute_initial_conditions(
 	 *           gas number
 	 *           solid solution number
 	 *           kinetics number
-	 *      initial_conditions2 - Fortran, 7 x nxyz integer array, containing
-	 *      fraction for 1 - Fortran, 7 x nxyz double array, containing
+	 *      initial_conditions2 - Fortran, 7 x n_cell integer array, containing
+	 *      fraction for 1 - Fortran, 7 x n_cell integer array, containing
 	 *
 	 *      Routine mixes solutions, pure_phase assemblages,
 	 *      exchangers, surface complexers, gases, solid solution assemblages,
@@ -898,48 +850,32 @@ Reaction_module::Distribute_initial_conditions(
 	int
 		i,
 		j;
-
-	// Initial IPhreeqc output
-	SetOutputFileOn(ip_id, 0);
-	SetDumpStringOn(ip_id, 1);
-	SetSelectedOutputFileOn(ip_id, 0);
-	SetDumpFileOn(ip_id, 0);
-	// Reaction module output
-	SetOutputFileOn(this->index, 0);
-	SetDumpStringOn(this->index, 0);
-	SetSelectedOutputFileOn(this->index, 0);
-	SetDumpFileOn(ip_id, 0);
-
-	std::ostringstream mix_string;
-	std::ostringstream copy_string;
-
-	// Save pointer
-	ic1 = initial_conditions1;
+	//struct system *system_ptr;
 	/*
 	 *  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
 	 *  Does nothing for indexes less than 0 (i.e. restart files)
 	 */
 	size_t count_negative_porosity = 0;
-	for (i = 0; i < this->nxyz; i++)
-	{							        /* i is nxyz number */
-		j = this->forward[i];			/* j is count_chem number */
+	for (i = 0; i < ixyz; i++)
+	{							/* i is ixyz number */
+		j = forward[i];			/* j is count_chem number */
 		if (j < 0)
 			continue;
-		assert(this->forward[i] >= 0);
-		assert (this->volume[i] > 0.0);
-		double porosity = this->pv0[i] / this->volume[i];
-		if (this->pv0[i] < 0 || this->volume[i] < 0)
+		assert(forward[i] >= 0);
+		assert (volume[i] > 0.0);
+		double porosity = pv0[i] / volume[i];
+		if (pv0[i] < 0 || volume[i] < 0)
 		{
-			std::ostringstream errstr;
-			errstr << "Negative volume in cell " << i << ": volume, " 
-				<< volume[i] << "\t initial volume, " << this->pv0[i] << ".",
+			sprintf(error_string, "Negative volume in cell %d: volume, %e\t initial volume, %e.",
+					i, volume[i], pv0[i]);
+			input_error++;
 			count_negative_porosity++;
-			error_msg(errstr.str().c_str());
+			error_msg(error_string, CONTINUE);
 			continue;
 		}
 		assert (porosity > 0.0);
 		double porosity_factor = (1.0 - porosity) / porosity;
-		this->Cell_initialize(mix_string, copy_string, i, j, initial_conditions1, initial_conditions2,
+		system_cxxInitialize(i, j, initial_conditions1, initial_conditions2,
 			fraction1,
 			exchange_units, surface_units, ssassemblage_units,
 			ppassemblage_units, gasphase_units, kinetics_units,
@@ -947,56 +883,55 @@ Reaction_module::Distribute_initial_conditions(
 	}
 	if (count_negative_porosity > 0)
 	{
-		std::ostringstream errstr;
-		errstr << "Negative initial volumes may be due to initial head distribution.\n"
+		sprintf(error_string, "Negative initial volumes may be due to initial head distribution.\n"
 			"Make initial heads greater than or equal to the elevation of the node for each cell.\n"
-			"Increase porosity, decrease specific storage, or use free surface boundary.";
-		error_msg(errstr.str().c_str());
+			"Increase porosity, decrease specific storage, or use free surface boundary.");
+		error_msg(error_string, CONTINUE);
 	}
-
-	// Make initial conditions
-	if (RunString(this->index, mix_string.str().c_str()) < 0) RM_error(&this->index);
-	if (RunString(this->index, copy_string.str().c_str()) < 0) RM_error(&this->index);
-
 	/*
 	 * Read any restart files
 	 */
-	for (std::map < std::string, int >::iterator it = this->FileMap.begin();
-		 it != this->FileMap.end(); it++)
+	for (std::map < std::string, int >::iterator it = FileMap.begin();
+		 it != FileMap.end(); it++)
 	{
 		int
 			ifile = -100 - it->second;
 
 		// use gsztream
-		igzstream myfile;
+		igzstream
+			myfile;
 		myfile.open(it->first.c_str());
 		if (!myfile.good())
 
 		{
-			std::ostringstream errstr;
-			errstr << "File could not be opened: " << it->first.c_str();
-			error_msg(errstr.str().c_str());
+			sprintf(error_string, "File could not be opened: %s.",
+					it->first.c_str());
+			input_error++;
+			error_msg(error_string, CONTINUE);
 			break;
 		}
 
 		std::ostringstream oss;
-		CParser	cparser(myfile, this->Get_io());
+		CParser
+		cparser(myfile, oss, std::cerr);
 		cparser.set_echo_file(CParser::EO_NONE);
 		cparser.set_echo_stream(CParser::EO_NONE);
 
 		// skip headers
 		while (cparser.check_line("restart", false, true, true, false) ==
-			   PHRQ_io::LT_EMPTY);
+			   CParser::LT_EMPTY);
 
 		// read number of lines of index
 		int
 			n = -1;
 		if (!(cparser.get_iss() >> n) || n < 4)
 		{
-			std::ostringstream errstr;
-			errstr << "File does not have node locations: " << it->first.c_str() << "\nPerhaps it is an old format restart file.";
-			error_msg(errstr.str().c_str());
+			sprintf(error_string,
+					"File does not have node locations: %s.\nPerhaps it is an old format restart file.",
+					it->first.c_str());
+			input_error++;
 			myfile.close();
+			error_msg(error_string, CONTINUE);
 			break;
 		}
 
@@ -1010,8 +945,7 @@ Reaction_module::Distribute_initial_conditions(
 		// 4 gas phase
 		// 5 ss_assemblage
 		// 6 kinetics
-		//int * index = (int *) PHRQ_malloc((size_t) (n * 7 * sizeof(int)));
-		int * index = new int( (n * 7 * sizeof(int)) );
+		int * index = (int *) PHRQ_malloc((size_t) (n * 7 * sizeof(int)));
 
 		for (i = 0; i < n; i++)
 		{
@@ -1035,26 +969,29 @@ Reaction_module::Distribute_initial_conditions(
 			cparser.get_iss() >> index[i * 7 + 5];
 			cparser.get_iss() >> index[i * 7 + 6];
 		}
-		KDtree index_tree(pts);
+		KDtree
+		index_tree(pts);
 
-		cxxStorageBin tempBin;
+		cxxStorageBin
+			tempBin;
 		tempBin.read_raw(cparser);
 
-		for (j = 0; j < this->count_chem; j++)	/* j is count_chem number */
+		for (j = 0; j < count_chem; j++)	/* j is count_chem number */
 		{
-			//i = back[j].list[0];	/* i is nxyz number */
-			i = this->back[j][0];
-			Point p(this->x_node[i], this->y_node[i], this->z_node[i]);
-			int	k = (int) index_tree.Interpolate3d(p);	// k is index number in tempBin
+			i = back[j].list[0];	/* i is ixyz number */
+			Point
+			p(x_node_c[i], y_node_c[i], z_node_c[i]);
+			int
+				k = (int) index_tree.Interpolate3d(p);	// k is index number in tempBin
 
 			// solution
 			if (initial_conditions1[i * 7] == ifile)
 			{
 				if (index[k * 7] != -1)	// entity k should be defined in tempBin
 				{
-					if (tempBin.Get_Solution(k) != NULL)
+					if (tempBin.getSolution(k) != NULL)
 					{
-						this->sz_bin.Set_Solution(j, tempBin.Get_Solution(k));
+						szBin.setSolution(j, tempBin.getSolution(k));
 					}
 					else
 					{
@@ -1068,9 +1005,9 @@ Reaction_module::Distribute_initial_conditions(
 			{
 				if (index[k * 7 + 1] != -1)	// entity k should be defined in tempBin
 				{
-					if (tempBin.Get_PPassemblage(k) != NULL)
+					if (tempBin.getPPassemblage(k) != NULL)
 					{
-						this->sz_bin.Set_PPassemblage(j, tempBin.Get_PPassemblage(k));
+						szBin.setPPassemblage(j, tempBin.getPPassemblage(k));
 					}
 					else
 					{
@@ -1084,9 +1021,9 @@ Reaction_module::Distribute_initial_conditions(
 			{
 				if (index[k * 7 + 2] != -1)	// entity k should be defined in tempBin
 				{
-					if (tempBin.Get_Exchange(k) != NULL)
+					if (tempBin.getExchange(k) != NULL)
 					{
-						this->sz_bin.Set_Exchange(j, tempBin.Get_Exchange(k));
+						szBin.setExchange(j, tempBin.getExchange(k));
 					}
 					else
 					{
@@ -1100,9 +1037,9 @@ Reaction_module::Distribute_initial_conditions(
 			{
 				if (index[k * 7 + 3] != -1)	// entity k should be defined in tempBin
 				{
-					if (tempBin.Get_Surface(k) != NULL)
+					if (tempBin.getSurface(k) != NULL)
 					{
-						this->sz_bin.Set_Surface(j, tempBin.Get_Surface(k));
+						szBin.setSurface(j, tempBin.getSurface(k));
 					}
 					else
 					{
@@ -1116,9 +1053,9 @@ Reaction_module::Distribute_initial_conditions(
 			{
 				if (index[k * 7 + 4] != -1)	// entity k should be defined in tempBin
 				{
-					if (tempBin.Get_GasPhase(k) != NULL)
+					if (tempBin.getGasPhase(k) != NULL)
 					{
-						this->sz_bin.Set_GasPhase(j, tempBin.Get_GasPhase(k));
+						szBin.setGasPhase(j, tempBin.getGasPhase(k));
 					}
 					else
 					{
@@ -1132,9 +1069,9 @@ Reaction_module::Distribute_initial_conditions(
 			{
 				if (index[k * 7 + 5] != -1)	// entity k should be defined in tempBin
 				{
-					if (tempBin.Get_SSassemblage(k) != NULL)
+					if (tempBin.getSSassemblage(k) != NULL)
 					{
-						this->sz_bin.Set_SSassemblage(j, tempBin.Get_SSassemblage(k));
+						szBin.setSSassemblage(j, tempBin.getSSassemblage(k));
 					}
 					else
 					{
@@ -1148,9 +1085,9 @@ Reaction_module::Distribute_initial_conditions(
 			{
 				if (index[k * 7 + 6] != -1)	// entity k should be defined in tempBin
 				{
-					if (tempBin.Get_Kinetics(k) != NULL)
+					if (tempBin.getKinetics(k) != NULL)
 					{
-						this->sz_bin.Set_Kinetics(j, tempBin.Get_Kinetics(k));
+						szBin.setKinetics(j, tempBin.getKinetics(k));
 					}
 					else
 					{
@@ -1160,106 +1097,14 @@ Reaction_module::Distribute_initial_conditions(
 			}
 		}
 		myfile.close();
-		delete index;
+		index = (int *) free_check_null(index);
+	}
+	if (input_error > 0)
+	{
+		error_msg("Terminating in distribute_initial_conditions.\n", STOP);
 	}
 }
 #endif
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::Equilibrate()
-/* ---------------------------------------------------------------------- */
-{
-	int	tot_same = 0, tot_iter = 0, tot_zero = 0, max_iter = 0;
-	int i, j;
-
-	// Set print flags
-	IPhreeqcPhast * ip_ptr = this->Get_phast_iphreeqc_worker();
-
-	// Update solutions
-	this->Fractions2Solutions();
-
-	//Todo: BeginTimeStep(*print_sel, *print_out, *print_hdf);
-
-
-
-	// Loop over all chemistry cells
-	LDBLE cell_pore_volume, cell_volume, cell_porosity, cell_saturation;
-	bool active;
-	for (i = 0; i < this->count_chem; i++)
-	{
-		j = this->back[i][0];
-
-		// Set values for Basic functions
-		cell_pore_volume = this->pv0[j] * 1000.0 * this->frac[j];
-		cell_volume = this->volume[j] * 1000.;
-		cell_porosity = cell_pore_volume / cell_volume;
-		cell_saturation = this->frac[j];	
-		ip_ptr->Set_cell_volumes(i, cell_pore_volume, cell_saturation, cell_volume);
-
-		// partition uz
-//Todo:		if (transient_free_surface == TRUE)
-//Todo:			partition_uz(i, j, frac[j]);
-		if (frac[j] <= 1e-10)
-			frac[j] = 0.0;
-
-		active = frac[j] > 0 ? true : false;
-		ip_ptr->SetOutputStringOn(print_chem && printzone_chem[j]);
-		ip_ptr->SetSelectedOutputStringOn(print_xyz && printzone_xyz[j]);
-
-
-//Todo:		BeginCell(*print_sel, *print_out, *print_hdf, j);
-
-
-	// initial time for run_cell is (time_hst - time_step_hst) * cnvtmi
-	// time step for run_cell is time_step_hst * cnvtmi
-		if (active)
-		{
-//Todo:			if (transient_free_surface == TRUE)
-//Todo:				scale_cxxsystem(i, 1.0 / frac[j]);
-//Todo:			if (transient_free_surface == FALSE && *steady_flow == FALSE)
-//Todo:			{
-//Todo:				if (pv0[j] != 0 && pv[j] != 0 && pv0[j] != pv[j])
-//Todo:				{
-//Todo:					cxxSolution *
-//Todo:						cxxsol = szBin.getSolution(i);
-//Todo:					cxxsol->multiply(pv[j] / pv0[j]);
-//Todo:				}
-//Todo:			}
-
-
-
-
-		}
-
-		// write headings to xyz file
-		if (this->print_xyz && this->write_xyz_headings)
-		{
-			std::ostringstream h;
-			h << "               x\t";
-			h << "               y\t";
-			h << "               z\t";
-			h << "            time\t";
-			h << "              in\t";
-			h << ip_ptr->GetSelectedOutputStringLine(0);
-			this->write_xyz_headings = false;
-			RM_interface::phast_io.punch_msg(h.str().c_str());
-		}
-
-		// write xyz file
-		if (this->print_xyz && this->printzone_chem[j])
-		{
-			std::ostringstream h;
-			h << x_node[j] << "\t";
-			h << y_node[j] << "\t";
-			h << z_node[j] << "\t";
-			h << z_node[j] << "\t";
-			h << (*this->time_hst) * (*this->cnvtmi) << "\t";
-//Todo:			h << active << "\t";
-			h << ip_ptr->GetSelectedOutputStringLine(1);
-		}
-	}
-}
-
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Forward_and_back(int *initial_conditions, int *naxes)
@@ -1594,6 +1439,7 @@ Reaction_module::n_to_ijk(int n, int &i, int &j, int &k)
 	}
 	return true;
 }
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Cell_initialize(
@@ -1763,7 +1609,163 @@ Reaction_module::Cell_initialize(
 
 	return;
 }
+#endif
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Cell_initialize(
+					int i, 
+					int n_user_new, 
+					int *initial_conditions1,
+					int *initial_conditions2, 
+					double *fraction1,
+					int exchange_units, 
+					int surface_units, 
+					int ssassemblage_units,
+					int ppassemblage_units, 
+					int gasphase_units, 
+					int kinetics_units,
+					double porosity_factor)
+/* ---------------------------------------------------------------------- */
+{
+	int n_old1, n_old2;
+	double f1;
 
+	/*
+	 *   Copy solution
+	 */
+	n_old1 = initial_conditions1[7 * i];
+	n_old2 = initial_conditions2[7 * i];
+	f1 = fraction1[7 * i];
+	if (n_old1 >= 0)
+	{
+		cxxMix mx;
+		mx.Add(n_old1, f1);
+		if (n_old2 >= 0)
+			mx.Add(n_old2, 1 - f1);
+		cxxSolution cxxsoln(phreeqc_bin.Get_Solutions(), mx, n_user_new);
+		sz_bin.Set_Solution(n_user_new, &cxxsoln);
+	}
+
+	/*
+	 *   Copy pp_assemblage
+	 */
+	n_old1 = initial_conditions1[7 * i + 1];
+	n_old2 = initial_conditions2[7 * i + 1];
+	f1 = fraction1[7 * i + 1];
+	if (n_old1 >= 0)
+	{
+		cxxMix mx;
+		mx.Add(n_old1, f1);
+		if (n_old2 >= 0)
+			mx.Add(n_old2, 1 - f1);
+		if (ppassemblage_units == 2)
+		{
+			mx.Multiply(porosity_factor);
+		}
+		cxxPPassemblage cxxentity(phreeqc_bin.Get_PPassemblages(), mx,
+								  n_user_new);
+		sz_bin.Set_PPassemblage(n_user_new, &cxxentity);
+	}
+	/*
+	 *   Copy exchange assemblage
+	 */
+
+	n_old1 = initial_conditions1[7 * i + 2];
+	n_old2 = initial_conditions2[7 * i + 2];
+	f1 = fraction1[7 * i + 2];
+	if (n_old1 >= 0)
+	{
+		cxxMix mx;
+		mx.Add(n_old1, f1);
+		if (n_old2 >= 0)
+			mx.Add(n_old2, 1 - f1);
+		if (exchange_units == 2)
+		{
+			mx.Multiply(porosity_factor);
+		}
+		cxxExchange cxxexch(phreeqc_bin.Get_Exchangers(), mx, n_user_new);
+		sz_bin.Set_Exchange(n_user_new, &cxxexch);
+	}
+	/*
+	 *   Copy surface assemblage
+	 */
+	n_old1 = initial_conditions1[7 * i + 3];
+	n_old2 = initial_conditions2[7 * i + 3];
+	f1 = fraction1[7 * i + 3];
+	if (n_old1 >= 0)
+	{
+		cxxMix mx;
+		mx.Add(n_old1, f1);
+		if (n_old2 >= 0)
+			mx.Add(n_old2, 1 - f1);
+		if (surface_units == 2)
+		{
+			mx.Multiply(porosity_factor);
+		}
+		cxxSurface cxxentity(phreeqc_bin.Get_Surfaces(), mx, n_user_new);
+		sz_bin.Set_Surface(n_user_new, &cxxentity);
+	}
+	/*
+	 *   Copy gas phase
+	 */
+	n_old1 = initial_conditions1[7 * i + 4];
+	n_old2 = initial_conditions2[7 * i + 4];
+	f1 = fraction1[7 * i + 4];
+	if (n_old1 >= 0)
+	{
+		cxxMix mx;
+		mx.Add(n_old1, f1);
+		if (n_old2 >= 0)
+			mx.Add(n_old2, 1 - f1);
+		if (gasphase_units == 2)
+		{
+			mx.Multiply(porosity_factor);
+		}
+		cxxGasPhase cxxentity(phreeqc_bin.Get_GasPhases(), mx, n_user_new);
+		sz_bin.Set_GasPhase(n_user_new, &cxxentity);
+	}
+	/*
+	 *   Copy solid solution
+	 */
+	n_old1 = initial_conditions1[7 * i + 5];
+	n_old2 = initial_conditions2[7 * i + 5];
+	f1 = fraction1[7 * i + 5];
+	if (n_old1 >= 0)
+	{
+		cxxMix mx;
+		mx.Add(n_old1, f1);
+		if (n_old2 >= 0)
+			mx.Add(n_old2, 1 - f1);
+		if (ssassemblage_units == 2)
+		{
+			mx.Multiply(porosity_factor);
+		}
+		cxxSSassemblage cxxentity(phreeqc_bin.Get_SSassemblages(), mx,
+								  n_user_new);
+		sz_bin.Set_SSassemblage(n_user_new, &cxxentity);
+	}
+	/*
+	 *   Copy kinetics
+	 */
+	n_old1 = initial_conditions1[7 * i + 6];
+	n_old2 = initial_conditions2[7 * i + 6];
+	f1 = fraction1[7 * i + 6];
+	if (n_old1 >= 0)
+	{
+		cxxMix mx;
+		mx.Add(n_old1, f1);
+		if (n_old2 >= 0)
+			mx.Add(n_old2, 1 - f1);
+		if (kinetics_units == 2)
+		{
+			mx.Multiply(porosity_factor);
+		}
+		cxxKinetics cxxentity(phreeqc_bin.Get_Kinetics(), mx, n_user_new);
+		sz_bin.Set_Kinetics(n_user_new, &cxxentity);
+	}
+
+	return;
+}
 #ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
@@ -1926,6 +1928,212 @@ Reaction_module::System_initialize(
 #ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
+system_cxxInitialize(int i, int n_user_new, int *initial_conditions1,
+					 int *initial_conditions2, double *fraction1,
+					 int *exchange_units, int *surface_units, int *ssassemblage_units,
+					 int *ppassemblage_units, int *gasphase_units, int *kinetics_units,
+					 double porosity_factor)
+/* ---------------------------------------------------------------------- */
+{
+	int n_old1, n_old2;
+	double f1;
+
+	/*
+	 *   Copy solution
+	 */
+	n_old1 = initial_conditions1[7 * i];
+	n_old2 = initial_conditions2[7 * i];
+	f1 = fraction1[7 * i];
+	if (n_old1 >= 0)
+	{
+		cxxMix mx;
+		mx.add(n_old1, f1);
+		if (n_old2 >= 0)
+			mx.add(n_old2, 1 - f1);
+		cxxSolution cxxsoln(phreeqcBin.getSolutions(), mx, n_user_new);
+		szBin.setSolution(n_user_new, &cxxsoln);
+	}
+
+	/*
+	 *   Copy pp_assemblage
+	 */
+	n_old1 = initial_conditions1[7 * i + 1];
+	n_old2 = initial_conditions2[7 * i + 1];
+	f1 = fraction1[7 * i + 1];
+	if (n_old1 >= 0)
+	{
+		cxxMix mx;
+		mx.add(n_old1, f1);
+		if (n_old2 >= 0)
+			mx.add(n_old2, 1 - f1);
+		if (*ppassemblage_units == 2)
+		{
+			mx.multiply(porosity_factor);
+		}
+		cxxPPassemblage cxxentity(phreeqcBin.getPPassemblages(), mx,
+								  n_user_new);
+		szBin.setPPassemblage(n_user_new, &cxxentity);
+	}
+	/*
+	 *   Copy exchange assemblage
+	 */
+
+	n_old1 = initial_conditions1[7 * i + 2];
+	n_old2 = initial_conditions2[7 * i + 2];
+	f1 = fraction1[7 * i + 2];
+	if (n_old1 >= 0)
+	{
+		cxxMix mx;
+		mx.add(n_old1, f1);
+		if (n_old2 >= 0)
+			mx.add(n_old2, 1 - f1);
+		if (*exchange_units == 2)
+		{
+			mx.multiply(porosity_factor);
+		}
+		cxxExchange cxxexch(phreeqcBin.getExchangers(), mx, n_user_new);
+		szBin.setExchange(n_user_new, &cxxexch);
+	}
+	/*
+	 *   Copy surface assemblage
+	 */
+	n_old1 = initial_conditions1[7 * i + 3];
+	n_old2 = initial_conditions2[7 * i + 3];
+	f1 = fraction1[7 * i + 3];
+	if (n_old1 >= 0)
+	{
+		cxxMix mx;
+		mx.add(n_old1, f1);
+		if (n_old2 >= 0)
+			mx.add(n_old2, 1 - f1);
+		if (*surface_units == 2)
+		{
+			mx.multiply(porosity_factor);
+		}
+		cxxSurface cxxentity(phreeqcBin.getSurfaces(), mx, n_user_new);
+		szBin.setSurface(n_user_new, &cxxentity);
+	}
+	/*
+	 *   Copy gas phase
+	 */
+	n_old1 = initial_conditions1[7 * i + 4];
+	n_old2 = initial_conditions2[7 * i + 4];
+	f1 = fraction1[7 * i + 4];
+	if (n_old1 >= 0)
+	{
+		cxxMix mx;
+		mx.add(n_old1, f1);
+		if (n_old2 >= 0)
+			mx.add(n_old2, 1 - f1);
+		if (*gasphase_units == 2)
+		{
+			mx.multiply(porosity_factor);
+		}
+		cxxGasPhase cxxentity(phreeqcBin.getGasPhases(), mx, n_user_new);
+		szBin.setGasPhase(n_user_new, &cxxentity);
+	}
+	/*
+	 *   Copy solid solution
+	 */
+	n_old1 = initial_conditions1[7 * i + 5];
+	n_old2 = initial_conditions2[7 * i + 5];
+	f1 = fraction1[7 * i + 5];
+	if (n_old1 >= 0)
+	{
+		cxxMix mx;
+		mx.add(n_old1, f1);
+		if (n_old2 >= 0)
+			mx.add(n_old2, 1 - f1);
+		if (*ssassemblage_units == 2)
+		{
+			mx.multiply(porosity_factor);
+		}
+		cxxSSassemblage cxxentity(phreeqcBin.getSSassemblages(), mx,
+								  n_user_new);
+		szBin.setSSassemblage(n_user_new, &cxxentity);
+	}
+	/*
+	 *   Copy kinetics
+	 */
+	n_old1 = initial_conditions1[7 * i + 6];
+	n_old2 = initial_conditions2[7 * i + 6];
+	f1 = fraction1[7 * i + 6];
+	if (n_old1 >= 0)
+	{
+		cxxMix mx;
+		mx.add(n_old1, f1);
+		if (n_old2 >= 0)
+			mx.add(n_old2, 1 - f1);
+		if (*kinetics_units == 2)
+		{
+			mx.multiply(porosity_factor);
+		}
+		cxxKinetics cxxentity(phreeqcBin.getKinetics(), mx, n_user_new);
+		szBin.setKinetics(n_user_new, &cxxentity);
+	}
+
+	return;
+}
+#endif
+/* ---------------------------------------------------------------------- */
+int
+Reaction_module::Find_components(void)	
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *   Counts components in any defined solution, gas_phase, exchanger,
+ *   surface, or pure_phase_assemblage
+ *
+ *   Returns 
+ *		n_comp, which is total, including H, O, elements, and Charge
+ *      names, which contains character strings with names of components
+ */
+	// Always include H, O, Charge
+	this->components.clear();
+	this->components.push_back("H");
+	this->components.push_back("O");
+	this->components.push_back("Charge");
+
+	// Get other components
+	size_t count_components = this->phast_iphreeqc_worker->GetComponentCount();
+	size_t i;
+	for (i = 0; i < count_components; i++)
+	{
+		std::string comp(this->phast_iphreeqc_worker->GetComponent((int) i));
+		assert (comp != "H");
+		assert (comp != "O");
+		assert (comp != "Charge");
+		assert (comp != "charge");
+
+		this->components.push_back(comp);
+	}
+	// Calculate gfw for components
+	for (i = 0; i < components.size(); i++)
+	{
+		if (components[i] == "Charge")
+		{
+			this->gfw.push_back(1.0);
+		}
+		else
+		{
+			this->gfw.push_back(this->phast_iphreeqc_worker->Get_gfw(components[i].c_str()));
+		}
+	}
+	if (this->mpi_myself == 0)
+	{
+		std::ostringstream outstr;
+		outstr << "List of Components:\n" << std::endl;
+		for (i = 0; i < this->components.size(); i++)
+		{
+			outstr << "\t" << i + 1 << "\t" << this->components[i].c_str() << std::endl;
+		}
+		Write_output(outstr.str());
+	}
+	return (int) this->components.size();
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+void
 Reaction_module::Get_components(
 					int *n_comp,		// returns number of components including H, O, charge
 					char *names,		// array of component names
@@ -1991,11 +2199,11 @@ void
 Reaction_module::Fractions2Solutions(void)
 /* ---------------------------------------------------------------------- */
 {
-	size_t i, j, k;
+	int i, j, k;
 
 	std::vector<double> d;  // scratch space to convert from mass fraction to moles
 
-	for (i = 0; i < (size_t) this->nxyz; i++)
+	for (i = 0; i < this->nxyz; i++)
 	{
 		// j is count_chem number
 		j = this->forward[i];
@@ -2003,7 +2211,7 @@ Reaction_module::Fractions2Solutions(void)
 
 		// get mass fractions and store as moles in d
 		double *ptr = &this->fraction[i];
-		for (k = 0; k < this->components.size(); k++)
+		for (k = 0; k < (int) this->components.size(); k++)
 		{	
 			d.push_back(ptr[this->nxyz * k] * 1000.0/this->gfw[k]);
 		}
@@ -2014,7 +2222,7 @@ Reaction_module::Fractions2Solutions(void)
 		nd.add("O", d[1] + 1.0/gfw_water);
 		nd.add("Charge", d[2]);
 
-		for (k = 3; k < components.size(); k++)
+		for (k = 3; k < (int) components.size(); k++)
 		{
 			if (d[k] <= 1e-14) d[k] = 0.0;
 			nd.add(components[k].c_str(), d[k]);
@@ -2238,9 +2446,13 @@ Reaction_module::Calculate_well_ph(double *c, double * pH, double * alkalinity)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::setup_boundary_conditions(const int n_boundary, int *boundary_solution1,
-						  int *boundary_solution2, double *fraction1,
-						  double *boundary_fraction, int dim)
+Reaction_module::Setup_boundary_conditions(
+					const int n_boundary, 
+					int *boundary_solution1,
+					int *boundary_solution2, 
+					double *fraction1,
+					double *boundary_fraction, 
+					int dim)
 /* ---------------------------------------------------------------------- */
 {
 /*
@@ -2287,6 +2499,7 @@ Reaction_module::setup_boundary_conditions(const int n_boundary, int *boundary_s
 		}
 	}
 }
+
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::cxxSolution2fraction(cxxSolution * cxxsoln_ptr, std::vector<double> & d)
@@ -2304,67 +2517,14 @@ Reaction_module::cxxSolution2fraction(cxxSolution * cxxsoln_ptr, std::vector<dou
 	}
 }
 
+
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Write_restart(void)
+Reaction_module::Error_stop(void)
 /* ---------------------------------------------------------------------- */
 {
-
-	std::string temp_name("temp_restart_file.gz");
-	std::string name(this->file_prefix);
-	name.append(".restart.gz");
-	std::string backup_name(this->file_prefix);
-	backup_name.append(".restart.backup.gz");
-
-	// open file 
-	ogzstream ofs_restart;
-	ofs_restart.open(temp_name.c_str());
-	if (!ofs_restart.good())
-	{
-		std::ostringstream errstr;
-		errstr << "Temporary restart file could not be opened: " << temp_name;
-		error_msg(errstr.str().c_str(), 1);	
-	}
-
-	// write header
-	ofs_restart << "#PHAST restart file" << std::endl;
-	time_t now = time(NULL);
-	ofs_restart << "#Prefix: " << this->file_prefix << std::endl;
-	ofs_restart << "#Date: " << ctime(&now);
-	ofs_restart << "#Current model time: " << this->time_hst << std::endl;
-	ofs_restart << "#nx, ny, nz: " << this->nx << ", " << this->ny << ", " << this->nz << std::
-		endl;
-
-	// write index
-	int i, j;
-	ofs_restart << count_chem << std::endl;
-	for (j = 0; j < count_chem; j++)	/* j is count_chem number */
-	{
-		//i = back[j].list[0];	
-		i = back[j][0];			/* i is nxyz number */
-		ofs_restart << x_node[i] << "  " << y_node[i] << "  " <<
-			z_node[i] << "  " << j << "  ";
-		// solution 
-		ofs_restart << ic1[7 * i] << "  ";
-		// pp_assemblage
-		ofs_restart << ic1[7 * i + 1] << "  ";
-		// exchange
-		ofs_restart << ic1[7 * i + 2] << "  ";
-		// surface
-		ofs_restart << ic1[7 * i + 3] << "  ";
-		// gas_phase
-		ofs_restart << ic1[7 * i + 4] << "  ";
-		// solid solution
-		ofs_restart << ic1[7 * i + 5] << "  ";
-		// kinetics
-		ofs_restart << ic1[7 * i + 6] << std::endl;
-	}
-
-	// write data
-	sz_bin.dump_raw(ofs_restart, 0);
-	ofs_restart.close();
-	// rename files
-	this->File_rename(temp_name.c_str(), name.c_str(), backup_name.c_str());
+	int n = (int) this->Get_phast_iphreeqc_worker()->Get_Index();
+	RM_error(&n);
 }
 /* ---------------------------------------------------------------------- */
 bool
@@ -2396,55 +2556,6 @@ Reaction_module::File_rename(const std::string temp_name, const std::string name
 
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Scale_cxxsystem(int iphrq, double frac)
-/* ---------------------------------------------------------------------- */
-{
-	int n_user;
-
-	/* 
-	 * repartition solids for partially saturated cells
-	 */
-
-	n_user = iphrq;
-	cxxMix cxxmix;
-	cxxmix.Add(n_user, frac);
-	/*
-	 *   Scale compositions
-	 */
-	if (sz_bin.Get_Exchange(n_user) != NULL)
-	{
-		cxxExchange cxxexch(sz_bin.Get_Exchangers(), cxxmix, n_user);
-		sz_bin.Set_Exchange(n_user, &cxxexch);
-	}
-	if (sz_bin.Get_PPassemblage(n_user) != NULL)
-	{
-		cxxPPassemblage cxxentity(sz_bin.Get_PPassemblages(), cxxmix, n_user);
-		sz_bin.Set_PPassemblage(n_user, &cxxentity);
-	}
-	if (sz_bin.Get_GasPhase(n_user) != NULL)
-	{
-		cxxGasPhase cxxentity(sz_bin.Get_GasPhases(), cxxmix, n_user);
-		sz_bin.Set_GasPhase(n_user, &cxxentity);
-	}
-	if (sz_bin.Get_SSassemblage(n_user) != NULL)
-	{
-		cxxSSassemblage cxxentity(sz_bin.Get_SSassemblages(), cxxmix, n_user);
-		sz_bin.Set_SSassemblage(n_user, &cxxentity);
-	}
-	if (sz_bin.Get_Kinetics(n_user) != NULL)
-	{
-		cxxKinetics cxxentity(sz_bin.Get_Kinetics(), cxxmix, n_user);
-		sz_bin.Set_Kinetics(n_user, &cxxentity);
-	}
-	if (sz_bin.Get_Surface(n_user) != NULL)
-	{
-		cxxSurface cxxentity(sz_bin.Get_Surfaces(), cxxmix, n_user);
-		sz_bin.Set_Surface(n_user, &cxxentity);
-	}
-}
-
-/* ---------------------------------------------------------------------- */
-void
 Reaction_module::Partition_uz(int iphrq, int ihst, double new_frac)
 /* ---------------------------------------------------------------------- */
 {
@@ -2455,7 +2566,7 @@ Reaction_module::Partition_uz(int iphrq, int ihst, double new_frac)
 	 * repartition solids for partially saturated cells
 	 */
 
-	if ((fabs(this->old_frac[ihst] - new_frac) <= 1e-8) ? true : false)
+	if ((fabs(this->old_frac[ihst] - new_frac) > 1e-8) ? true : false)
 		return;
 
 	n_user = iphrq;
@@ -2874,7 +2985,7 @@ EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 #endif
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Run_reactions()
+Reaction_module::Run_cells()
 /* ---------------------------------------------------------------------- */
 {
 /*
@@ -2886,12 +2997,11 @@ Reaction_module::Run_reactions()
 	this->phast_iphreeqc_worker->SetSelectedOutputFileOn(false);
 	this->phast_iphreeqc_worker->SetDumpFileOn(false);
 	this->phast_iphreeqc_worker->SetOutputFileOn(false);
-
+	this->phast_iphreeqc_worker->SetErrorFileOn(false);
 /*
  *   Update solution compositions in sz_bin
  */
 	this->Fractions2Solutions();
-	//this->Unpack_fraction_array();
 
 	int i, j;
 	for (i = 0; i < this->count_chem; i++)
@@ -2905,22 +3015,28 @@ Reaction_module::Run_reactions()
 
 		// partition solids between UZ and SZ
 		if (transient_free_surface)	
+		{
 			this->Partition_uz(i, j, frac[j]);
+		}
 
 		// ignore small saturations
-		bool active = false;
+		bool active = true;
 		if (frac[j] <= 1e-10) 
+		{
 			frac[j] = 0.0;
-		if (frac[j] > 0) 
-			active = true;
+			active = false;
+		}
+
 		if (active)
 		{
-			// set cell number, pore volume functions for Basic
+			// set cell number, pore volume got Basic functions
 			this->phast_iphreeqc_worker->Set_cell_volumes(i, pv0[j], frac[j], volume[j]);
 
 			// Adjust for fractional saturation and pore volume
 			if (this->transient_free_surface)
-				this->Scale_cxxsystem(i, 1.0 / frac[j]);
+			{
+				this->Scale_solids(i, 1.0 / frac[j]);
+			}
 			if (!transient_free_surface && !steady_flow)
 			{
 				if (pv0[j] != 0 && pv[j] != 0 && pv0[j] != pv[j])
@@ -2933,93 +3049,132 @@ Reaction_module::Run_reactions()
 			// Move reactants from sz_bin to phreeqc
 			this->phast_iphreeqc_worker->Set_cell(sz_bin, i);
 
-			// TODO this->phast_iphreeqc_worker->SetOutputStringOn(pr_chem);
+			// Set print flags
+			this->phast_iphreeqc_worker->SetOutputStringOn(pr_chem);
+			this->phast_iphreeqc_worker->SetSelectedOutputStringOn(pr_xyz);
 
 			// do the calculation
 			std::ostringstream input;
 			input << "RUN_CELLS" << std::endl;
-			input << "  -start_time " << *this->time_hst << std::endl;
+			input << "  -start_time " << (*this->time_hst - *this->time_step_hst) << std::endl;
 			input << "  -time_step  " << *this->time_step_hst << std::endl;
 			input << "  -cells      " << i << std::endl;
 			input << "END" << std::endl;
-
-			this->phast_iphreeqc_worker->RunString(input.str().c_str());
+			if (this->phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) Error_stop();
 
 			// Save reactants back in sz_bin
 			this->phast_iphreeqc_worker->Get_cell(sz_bin, i);
 
-			// Write chem.txt
-			std::string header;
-			if (pr_chem || pr_xyz)
+			// write headings to xyz file
+			if (pr_xyz && this->write_xyz_headings)
 			{
+				std::ostringstream h;
+				h << "               x\t";
+				h << "               y\t";
+				h << "               z\t";
+				h << "            time\t";
+				h << "              in\t";
+				h << this->phast_iphreeqc_worker->GetSelectedOutputStringLine(0);
+				this->write_xyz_headings = false;
+				Write_xyz(h.str().c_str());
 			}
+
+			// write xyz file
+			if (pr_xyz)
+			{
+				std::ostringstream h;
+				h.width(15);
+				h << x_node[j] << "\t";
+				h << y_node[j] << "\t";
+				h << z_node[j] << "\t";
+				h << z_node[j] << "\t";
+				h << (*this->time_hst) * (*this->cnvtmi) << "\t";
+				h << (active ? 1 : 0) << "\t";
+				h << this->phast_iphreeqc_worker->GetSelectedOutputStringLine(1);
+				Write_xyz(h.str().c_str());
+			}
+
+			// Write output file
 			if (pr_chem)
 			{
 				std::ostringstream line;
-				char chunk[150];
-				sprintf(chunk, "Time %g. Cell %d: x=%15g\ty=%15g\tz=%15g\n",
-						   (*time_hst) * (*cnvtmi), j + 1, x_node[j], y_node[j],
-						   z_node[j]);
-				line << chunk;
-				//output_msg(OUTPUT_MESSAGE,
-				//		   "Time %g. Cell %d: x=%15g\ty=%15g\tz=%15g\n",
-				//		   (*time_hst) * (*cnvtmi), j + 1, x_hst[j], y_hst[j],
-				//		   z_hst[j]);
-				this->output_msg(line.str().c_str());  // TODO fix for PHAST
-				// TODO? print_using_hst(j + 1);
-				// TODO this->output_msg(this->phast_iphreeqc_worker->GetOutputString());
+				line << "Time " << (*time_hst) * (*cnvtmi);
+				line << ". Cell " << j + 1;
+				line << "x= " << x_node[j] << "\t";
+				line << "y= " << y_node[j] << "\t";
+				line << "z= " << z_node[j] << "\t";
+				Write_xyz(line.str().c_str());
+				Write_xyz(this->phast_iphreeqc_worker->GetOutputString());
 			}
-			if (pr_xyz || pr_hdf)
+
+			if (pr_hdf)
 			{
 				std::vector<double> d;
-				this->phast_iphreeqc_worker->Selected_out_to_double(1, d);
-
-
-				std::vector<double>::iterator it;
-				for (it = d.begin(); it != d.end(); it++)
-				// Write chem.xyz			
-				if (pr_xyz)
-				{
-					char chunk[150];
-					sprintf(chunk, "%15g\t%15g\t%15g\t%15g\t%2d\t",
-					   x_node[j], y_node[j], z_node[j], (*time_hst) * (*cnvtmi),
-					  ((active) ? 1 : 0));
-					std::ostringstream line;
-					line << chunk;
-
-					//output_msg(PHRQ_io::OUTPUT_PUNCH, "%15g\t%15g\t%15g\t%15g\t%2d\t",
-					//   x_node[j], y_node[j], z_node[j], (*time_hst) * (*cnvtmi),
-					//  ((active) ? 1 : 0));					
-				}
-				if (pr_hdf)
-				{
-				}
+//todo:				this->phast_iphreeqc_worker->Selected_out_to_double(1, d);
 			}
 
-		}
-
-
-		if (this->print_xyz && this->printzone_xyz[i] != 0)
-		{
-			// need to capture selected output to xyz file
-			sprintf(this->line_buffer, "%15g\t%15g\t%15g\t%15g\t%2d\t",
-					   x_node[j], y_node[j], z_node[j], (*time_hst) * (*cnvtmi),
-					   ((active) ? 1 : 0));
-			this->io->punch_msg(line_buffer);
-			if (active == FALSE)
+			// delete cell from worker
 			{
-				this->io->punch_msg("\n");
+				std::ostringstream input;
+				input << "DELETE; -cell " << i << std::endl;
+				if (this->phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) Error_stop();
 			}
-			else
-			{
-				// Go through VARs and write to XYZ file.
-				std::vector<double> d;
-				this->phast_iphreeqc_worker->Selected_out_to_double(1, d);
-			}
-		}
 
+		} // end active
+
+	} // end one cell
+
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Scale_solids(int iphrq, LDBLE frac)
+/* ---------------------------------------------------------------------- */
+{
+	int n_user;
+
+	/* 
+	 * repartition solids for partially saturated cells
+	 */
+
+	//if (equal(old_frac[ihst], new_frac, 1e-8) == TRUE)  return(OK);
+
+	n_user = iphrq;
+	cxxMix cxxmix;
+	cxxmix.Add(n_user, frac);
+	/*
+	 *   Scale compositions
+	 */
+	if (this->sz_bin.Get_Exchange(n_user) != NULL)
+	{
+		cxxExchange cxxentity(sz_bin.Get_Exchangers(), cxxmix, n_user);
+		sz_bin.Set_Exchange(n_user, &cxxentity);
 	}
-
+	if (sz_bin.Get_PPassemblage(n_user) != NULL)
+	{
+		cxxPPassemblage cxxentity(sz_bin.Get_PPassemblages(), cxxmix, n_user);
+		sz_bin.Set_PPassemblage(n_user, &cxxentity);
+	}
+	if (sz_bin.Get_GasPhase(n_user) != NULL)
+	{
+		cxxGasPhase cxxentity(sz_bin.Get_GasPhases(), cxxmix, n_user);
+		sz_bin.Set_GasPhase(n_user, &cxxentity);
+	}
+	if (sz_bin.Get_SSassemblage(n_user) != NULL)
+	{
+		cxxSSassemblage cxxentity(sz_bin.Get_SSassemblages(), cxxmix, n_user);
+		sz_bin.Set_SSassemblage(n_user, &cxxentity);
+	}
+	if (sz_bin.Get_Kinetics(n_user) != NULL)
+	{
+		cxxKinetics cxxentity(sz_bin.Get_Kinetics(), cxxmix, n_user);
+		sz_bin.Set_Kinetics(n_user, &cxxentity);
+	}
+	if (sz_bin.Get_Surface(n_user) != NULL)
+	{
+		cxxSurface cxxentity(sz_bin.Get_Surfaces(), cxxmix, n_user);
+		sz_bin.Set_Surface(n_user, &cxxentity);
+	}
+	return;
 }
 /* ---------------------------------------------------------------------- */
 void
@@ -3028,4 +3183,137 @@ Reaction_module::Send_restart_name(std::string name)
 {
 	int	i = (int) FileMap.size();
 	FileMap[name] = i;
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Write_bc_raw(int *solution_list, int * bc_solution_count, 
+			int * solution_number, const std::string &fn)
+/* ---------------------------------------------------------------------- */
+{
+	if (*solution_number == 0) return;
+	std::ofstream ofs;
+	ofs.open(fn.c_str(), std::ios_base::app);
+	if (!ofs.is_open())
+	{
+		std::ostringstream e_msg;
+		e_msg << "Could not open file. " << fn;
+		Write_error(e_msg.str());
+		Error_stop();
+	}
+
+	int raw_number = *solution_number;
+	for (int i = 0; i < *bc_solution_count; i++)
+	{
+		int n_fort = solution_list[i];
+		int n_chem = this->forward[n_fort - 1];
+		if (n_chem >= 0)
+		{
+			ofs << "# Fortran cell " << n_fort << ". Time " << (*this->time_hst) * (*this->cnvtmi) << "\n";
+			sz_bin.Get_Solution(n_chem)->dump_raw(ofs, raw_number++, 0);
+		}
+		else
+		{
+			assert(false);
+		}
+	}
+	ofs << "# Done with zone for time step." << std::endl;
+	ofs.close();
+	return;
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module:: Write_error(std::string item)
+/* ---------------------------------------------------------------------- */
+{
+	RM_interface::phast_io.error_msg(item.c_str());
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module:: Write_log(std::string item)
+/* ---------------------------------------------------------------------- */
+{
+	RM_interface::phast_io.log_msg(item.c_str());
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module:: Write_output(std::string item)
+/* ---------------------------------------------------------------------- */
+{
+	RM_interface::phast_io.output_msg(item.c_str());
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Write_restart(void)
+/* ---------------------------------------------------------------------- */
+{
+
+	std::string temp_name("temp_restart_file.gz");
+	std::string name(this->file_prefix);
+	name.append(".restart.gz");
+	std::string backup_name(this->file_prefix);
+	backup_name.append(".restart.backup.gz");
+
+	// open file 
+	ogzstream ofs_restart;
+	ofs_restart.open(temp_name.c_str());
+	if (!ofs_restart.good())
+	{
+		std::ostringstream errstr;
+		errstr << "Temporary restart file could not be opened: " << temp_name;
+		error_msg(errstr.str().c_str(), 1);	
+	}
+
+	// write header
+	ofs_restart << "#PHAST restart file" << std::endl;
+	time_t now = time(NULL);
+	ofs_restart << "#Prefix: " << this->file_prefix << std::endl;
+	ofs_restart << "#Date: " << ctime(&now);
+	ofs_restart << "#Current model time: " << this->time_hst << std::endl;
+	ofs_restart << "#nx, ny, nz: " << this->nx << ", " << this->ny << ", " << this->nz << std::
+		endl;
+
+	// write index
+	int i, j;
+	ofs_restart << count_chem << std::endl;
+	for (j = 0; j < count_chem; j++)	/* j is count_chem number */
+	{
+		//i = back[j].list[0];	
+		i = back[j][0];			/* i is nxyz number */
+		ofs_restart << x_node[i] << "  " << y_node[i] << "  " <<
+			z_node[i] << "  " << j << "  ";
+		// solution 
+		ofs_restart << ic1[7 * i] << "  ";
+		// pp_assemblage
+		ofs_restart << ic1[7 * i + 1] << "  ";
+		// exchange
+		ofs_restart << ic1[7 * i + 2] << "  ";
+		// surface
+		ofs_restart << ic1[7 * i + 3] << "  ";
+		// gas_phase
+		ofs_restart << ic1[7 * i + 4] << "  ";
+		// solid solution
+		ofs_restart << ic1[7 * i + 5] << "  ";
+		// kinetics
+		ofs_restart << ic1[7 * i + 6] << std::endl;
+	}
+
+	// write data
+	sz_bin.dump_raw(ofs_restart, 0);
+	ofs_restart.close();
+	// rename files
+	this->File_rename(temp_name.c_str(), name.c_str(), backup_name.c_str());
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module:: Write_screen(std::string item)
+/* ---------------------------------------------------------------------- */
+{
+	RM_interface::phast_io.screen_msg(item.c_str());
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module:: Write_xyz(std::string item)
+/* ---------------------------------------------------------------------- */
+{
+	RM_interface::phast_io.punch_msg(item.c_str());
 }

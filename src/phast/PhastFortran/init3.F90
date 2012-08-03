@@ -60,7 +60,7 @@ SUBROUTINE init3
            indx2_wel(iwel) = -1
            mxf_wel(iwel) = 1._kdp
         END DO
-        CALL setup_boundary_conditions(nwel,indx1_wel,indx2_wel,  &
+        CALL RM_setup_boundary_conditions(rm_id, nwel,indx1_wel,indx2_wel,  &
              mxf_wel,cwkt,nwel)
      END IF
      DO  iwel=1,nwel
@@ -82,7 +82,7 @@ SUBROUTINE init3
      ! ... The following loads the associated and specified concentrations
      IF(solute) THEN
         !$$        CALL load_indx_bc(1,indx1_sbc,indx2_sbc,mxf_sbc,msbc,nsbc)
-        CALL setup_boundary_conditions(nsbc, indx1_sbc, indx2_sbc, mxf_sbc,  &
+        CALL RM_setup_boundary_conditions(rm_id, nsbc, indx1_sbc, indx2_sbc, mxf_sbc,  &
              csbc, nsbc_seg)
 
         ! ***** special patch for b.c. install for 3 components
@@ -240,7 +240,7 @@ SUBROUTINE init3
      END DO
      IF(solute) THEN                          ! ... Load the associated concentrations
         !$$        CALL load_indx_bc(2, indx1_fbc, indx2_fbc, mxf_fbc, mfbc, nfbc_seg)
-        CALL setup_boundary_conditions(nfbc_seg, indx1_fbc, indx2_fbc, mxf_fbc,  &
+        CALL RM_setup_boundary_conditions(rm_id, nfbc_seg, indx1_fbc, indx2_fbc, mxf_fbc,  &
              cfbc, nfbc_seg)
      END IF
   END IF
@@ -259,7 +259,7 @@ SUBROUTINE init3
         vislbc(ls) = vis0
      END DO
      IF(solute) THEN               ! ... Load the associated concentrations
-        CALL setup_boundary_conditions(nlbc_seg, indx1_lbc, indx2_lbc, mxf_lbc,  &
+        CALL RM_setup_boundary_conditions(rm_id, nlbc_seg, indx1_lbc, indx2_lbc, mxf_lbc,  &
              clbc, nlbc_seg)
      END IF
   END IF
@@ -270,7 +270,7 @@ SUBROUTINE init3
         visrbc(ls) = vis0
      END DO
      IF(solute) THEN               ! ... Load the associated concentrations
-        CALL setup_boundary_conditions(nrbc_seg, indx1_rbc, indx2_rbc, mxf_rbc,  &
+        CALL RM_setup_boundary_conditions(rm_id, nrbc_seg, indx1_rbc, indx2_rbc, mxf_rbc,  &
              crbc, nrbc_seg)
      END IF
   END IF

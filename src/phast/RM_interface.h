@@ -10,19 +10,21 @@
 #define RM_destroy                            rm_destroy
 #define RM_create_phreeqc_bin                 rm_create_phreeqc_bin 
 #define RM_distribute_initial_conditions      rm_distribute_initial_conditions
-#define RM_equilibrate                        rm_equilibrate
 #define RM_error                              rm_error
+#define RM_find_components                    rm_find_components
 #define RM_forward_and_back                   rm_forward_and_back
 #define RM_fractions2solutions                rm_fractions2solutions
 #define RM_initial_phreeqc_run                rm_initial_phreeqc_run
 #define RM_load_database                      rm_load_database
 #define RM_log_screen_prt                     rm_log_screen_prt
 #define RM_open_files                         rm_open_files
-#define RM_pass_static_data                   rm_pass_static_data
+#define RM_pass_data                          rm_pass_data
 #define RM_pass_transient_data                rm_pass_transient_data
-//#define RM_pass_print_flags                   rm_pass_print_flags
+#define RM_run_cells                          rm_run_cells
 #define RM_send_restart_name                  rm_send_restart_name
+#define RM_setup_boundary_conditions          rm_setup_boundary_conditions
 #define RM_solutions2fractions                rm_solutions2fractions
+#define RM_write_bc_raw                       rm_write_bc_raw
 #define RM_write_output                       rm_write_output
 
 /**
@@ -66,7 +68,6 @@ int  RM_create();
 void RM_create_phreeqc_bin(int *rm_id);
 int  RM_destroy(int *id);
 void RM_distribute_initial_conditions(int *id,
-	    int *ipp_id,                    // IPhreeqc module id
 		int *initial_conditions1,		// 7 x nxyz end-member 1
 		int *initial_conditions2,		// 7 x nxyz end-member 2
 		double *fraction1,			    // 7 x nxyz fraction of end-member 1
@@ -77,19 +78,8 @@ void RM_distribute_initial_conditions(int *id,
 		int *gasphase_units,			// water (1) or rock (2)
 		int *kinetics_units			    // water (1) or rock (2)
 		);
-void RM_equilibrate(int *id,
-			 int * prslm,							// solution method print flag 
-			 int * print_out,						// print flag for output file 
-			 int * print_sel,						// print flag for selected output
-			 int * print_hdf,						// print flag for hdf file
-			 int * print_restart,					// print flag for writing restart file 
-			 double *time_hst,					    // time from transport 
-			 double *time_step_hst,				    // time step from transport
- 			 double *fraction,					    // mass fractions nxyz:components
-			 double *frac,							// saturation fraction
-			 double *pv                             // nxyz current pore volumes 
-			 );
 void RM_error(int *id);
+int RM_find_components(int *id);
 void RM_forward_and_back(int *id,
 		int *initial_conditions, 
 		int *axes);
@@ -101,7 +91,7 @@ void RM_open_error_file(void);
 void RM_open_output_file(char * prefix, int l_prefix);
 void RM_open_punch_file(char * prefix, int l_prefix);
 void RM_open_log_file(char * prefix, int l_prefix);
-void RM_pass_static_data(int *id,
+void RM_pass_data(int *id,
              bool *fresur,
 			 bool *steady_flow, 
 			 int *nx, int *ny, int *nz,			// number of nodes each coordinate direction
@@ -118,7 +108,8 @@ void RM_pass_static_data(int *id,
 			 double *volume, 					// nxyz geometric cell volumes 
 			 int * printzone_chem,				// nxyz print flags for output file
 			 int * printzone_xyz,				// nxyz print flags for chemistry XYZ file
-			 double *rebalance_fraction_hst		// parameter for rebalancing process load for parallel	
+			 double *rebalance_fraction_hst,	// parameter for rebalancing process load for parallel	
+			 double *fraction                   // mass fraction array
 			 );
 #ifdef SKIP
 void RM_pass_print_flags(int *id,
@@ -129,9 +120,34 @@ void RM_pass_print_flags(int *id,
 			 int * print_restart					// print flag for writing restart file 
 			 );
 #endif
-
+void RM_run_cells(int *id,
+			 int * prslm,							// solution method print flag 
+			 int * print_out,						// print flag for output file 
+			 int * print_sel,						// print flag for selected output
+			 int * print_hdf,						// print flag for hdf file
+			 int * print_restart,					// print flag for writing restart file 
+			 double *time_hst,					    // time from transport 
+			 double *time_step_hst,				    // time step from transport
+ 			 double *fraction,					    // mass fractions nxyz:components
+			 double *frac,							// saturation fraction
+			 double *pv                             // nxyz current pore volumes 
+			 );
 void RM_send_restart_name(int *id, char * s, long l);
+void RM_setup_boundary_conditions(
+			int *id,
+			int *n_boundary, 
+			int *boundary_solution1,  
+			int *boundary_solution2, 
+			double *fraction1,
+			double *boundary_fraction, 
+			int *dim);
 void RM_solutions2fractions(int *id);
+void RM_write_bc_raw(int *id, 
+			int *solution_list, 
+			int * bc_solution_count, 
+			int * solution_number, 
+			char *prefix, 
+			int prefix_l);
 void RM_write_output(int *id);
 
 
