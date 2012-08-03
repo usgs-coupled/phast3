@@ -21,7 +21,7 @@
 #include <time.h>
 Reaction_module::Reaction_module(PHRQ_io *io)
 	//
-	// default constructor for cxxExchComp 
+	// constructor
 	//
 : PHRQ_base(io)
 {
@@ -64,6 +64,7 @@ Reaction_module::Reaction_module(PHRQ_io *io)
 	this->print_xyz = false;					// print flag for selected output
 	this->print_hdf = false;					// print flag for hdf file
 	this->print_restart = false;				// print flag for writing restart file 
+	write_xyz_headings = true;
 }
 Reaction_module::~Reaction_module(void)
 {
@@ -1165,6 +1166,102 @@ Reaction_module::Distribute_initial_conditions(
 #endif
 /* ---------------------------------------------------------------------- */
 void
+Reaction_module::Equilibrate()
+/* ---------------------------------------------------------------------- */
+{
+	int	tot_same = 0, tot_iter = 0, tot_zero = 0, max_iter = 0;
+	int i, j;
+
+	// Set print flags
+	IPhreeqcPhast * ip_ptr = this->Get_phast_iphreeqc_worker();
+
+	// Update solutions
+	this->Fractions2Solutions();
+
+	//Todo: BeginTimeStep(*print_sel, *print_out, *print_hdf);
+
+
+
+	// Loop over all chemistry cells
+	LDBLE cell_pore_volume, cell_volume, cell_porosity, cell_saturation;
+	bool active;
+	for (i = 0; i < this->count_chem; i++)
+	{
+		j = this->back[i][0];
+
+		// Set values for Basic functions
+		cell_pore_volume = this->pv0[j] * 1000.0 * this->frac[j];
+		cell_volume = this->volume[j] * 1000.;
+		cell_porosity = cell_pore_volume / cell_volume;
+		cell_saturation = this->frac[j];	
+		ip_ptr->Set_cell_volumes(i, cell_pore_volume, cell_saturation, cell_volume);
+
+		// partition uz
+//Todo:		if (transient_free_surface == TRUE)
+//Todo:			partition_uz(i, j, frac[j]);
+		if (frac[j] <= 1e-10)
+			frac[j] = 0.0;
+
+		active = frac[j] > 0 ? true : false;
+		ip_ptr->SetOutputStringOn(print_chem && printzone_chem[j]);
+		ip_ptr->SetSelectedOutputStringOn(print_xyz && printzone_xyz[j]);
+
+
+//Todo:		BeginCell(*print_sel, *print_out, *print_hdf, j);
+
+
+	// initial time for run_cell is (time_hst - time_step_hst) * cnvtmi
+	// time step for run_cell is time_step_hst * cnvtmi
+		if (active)
+		{
+//Todo:			if (transient_free_surface == TRUE)
+//Todo:				scale_cxxsystem(i, 1.0 / frac[j]);
+//Todo:			if (transient_free_surface == FALSE && *steady_flow == FALSE)
+//Todo:			{
+//Todo:				if (pv0[j] != 0 && pv[j] != 0 && pv0[j] != pv[j])
+//Todo:				{
+//Todo:					cxxSolution *
+//Todo:						cxxsol = szBin.getSolution(i);
+//Todo:					cxxsol->multiply(pv[j] / pv0[j]);
+//Todo:				}
+//Todo:			}
+
+
+
+
+		}
+
+		// write headings to xyz file
+		if (this->print_xyz && this->write_xyz_headings)
+		{
+			std::ostringstream h;
+			h << "               x\t";
+			h << "               y\t";
+			h << "               z\t";
+			h << "            time\t";
+			h << "              in\t";
+			h << ip_ptr->GetSelectedOutputStringLine(0);
+			this->write_xyz_headings = false;
+			RM_interface::phast_io.punch_msg(h.str().c_str());
+		}
+
+		// write xyz file
+		if (this->print_xyz && this->printzone_chem[j])
+		{
+			std::ostringstream h;
+			h << x_node[j] << "\t";
+			h << y_node[j] << "\t";
+			h << z_node[j] << "\t";
+			h << z_node[j] << "\t";
+			h << (*this->time_hst) * (*this->cnvtmi) << "\t";
+//Todo:			h << active << "\t";
+			h << ip_ptr->GetSelectedOutputStringLine(1);
+		}
+	}
+}
+
+/* ---------------------------------------------------------------------- */
+void
 Reaction_module::Forward_and_back(int *initial_conditions, int *naxes)
 /* ---------------------------------------------------------------------- */
 {
@@ -1826,6 +1923,7 @@ Reaction_module::System_initialize(
 	return;
 }
 #endif
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Get_components(
@@ -1887,6 +1985,7 @@ Reaction_module::Get_components(
 		}
 	}
 }
+#endif
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Fractions2Solutions(void)

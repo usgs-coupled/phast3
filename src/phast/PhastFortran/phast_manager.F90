@@ -130,17 +130,12 @@ SUBROUTINE phast_manager
           ppassemblage_units, gasphase_units, kinetics_units)
 #endif
      !CALL store_c_pointers(indx_sol1_ic, x_node, y_node, z_node)
-     CALL RM_pass_data(rm_id,        &
+     CALL RM_pass_static_data(rm_id,        &
         fresur,                      &
         steady_flow,                 &
         nx, ny, nz,                  &
-        time_phreeqc,                &
-        deltim_dummy,                &
         cnvtmi,                      &
         x_node, y_node, z_node,      &
-        c,                           & 
-        frac,                        &
-        pv,                          &
         pv0,                         &
         volume,                      &
         iprint_chem,                 &
@@ -203,10 +198,22 @@ SUBROUTINE phast_manager
      print_restart_flag = 0 
      stop_msg = 0
      deltim_dummy = 0._kdp
-     CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time_phreeqc,deltim_dummy,prslmi,  &
-          cnvtmi,frac_icchem,iprint_chem,iprint_xyz,  &
-          prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f,  &
-          print_restart_flag, pv, pv0, steady_flow, volume, przf_xyzt)
+     !CALL RM_pass_print
+     !CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time_phreeqc,deltim_dummy,prslmi,  &
+     !     cnvtmi,frac_icchem,iprint_chem,iprint_xyz,  &
+     !     prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f,  &
+     !     print_restart_flag, pv, pv0, steady_flow, volume, przf_xyzt)
+     CALL RM_equilibrate(rm_id, 
+        prslmi, &                ! prslm
+        prf_chem_phrqi, &        ! print_chem
+        prcphrqi, &              ! print_xyz
+        prhdfci, &               ! print_hdf
+        print_restart_flag, &    ! print_restart
+        time_phreeqc, &          ! time_hst
+        deltim_dummy, &          ! time_step_hst
+        c, &                     ! fraction
+        frac, &                  ! frac
+        pv)                      ! pv
      CALL zone_flow_write_chem(mpi_tasks, mpi_myself, .true.)
      CALL init2_3        
   ENDIF

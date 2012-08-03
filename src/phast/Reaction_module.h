@@ -17,12 +17,12 @@ public:
 	~Reaction_module(void);
 	// Called through wrappers
 	//int Load_database(std::string database_name);
-	int Initial_phreeqc_run(std::string database_name, std::string chemistry_name);
-	void Get_components(int *n_comp, char *names, int length);
-	void Forward_and_back(
-		int *initial_conditions, 
-		int *axes);
-	void Fractions2Solutions(void);
+	//int Initial_phreeqc_run(std::string database_name, std::string chemistry_name);
+	//void Get_components(int *n_comp, char *names, int length);
+
+
+	void Convert_to_molal(double *c, int n, int dim);
+	void Calculate_well_ph(double *c, double * ph, double * alkalinity);
 	void Distribute_initial_conditions(
 		int ip_id,
 		int *initial_conditions1,
@@ -34,8 +34,11 @@ public:
 		int ppassemblage_units,
 		int gasphase_units,
 		int kinetics_units);
-	void Convert_to_molal(double *c, int n, int dim);
-	void Calculate_well_ph(double *c, double * ph, double * alkalinity);
+	void Equilibrate(void);
+	void Forward_and_back(
+		int *initial_conditions, 
+		int *axes);
+	void Fractions2Solutions(void);
 	void setup_boundary_conditions(const int n_boundary, int *boundary_solution1,
 						  int *boundary_solution2, double *fraction1,
 						  double *boundary_fraction, int dim);
@@ -185,6 +188,7 @@ protected:
 	bool print_xyz;							// print flag for selected output
 	bool print_hdf;							// print flag for hdf file
 	bool print_restart;						// print flag for writing restart file 
+	bool write_xyz_headings;                // write xyz headings once
 
 	char line_buffer[4096];
 };

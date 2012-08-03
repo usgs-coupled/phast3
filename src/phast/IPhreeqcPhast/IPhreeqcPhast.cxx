@@ -12,6 +12,7 @@ IPhreeqcPhast::IPhreeqcPhast(void)
 	std::map<size_t, IPhreeqcPhast*>::value_type instance(this->Index, this);
 	//std::pair<std::map<size_t, IPhreeqcPhast*>::iterator, bool> pr = IPhreeqcPhast::PhastInstances.insert(instance);
 	IPhreeqcPhast::PhastInstances.insert(instance);
+	this->Get_PhreeqcPtr()->phast = true;
 }
 IPhreeqcPhast::~IPhreeqcPhast(void)
 {
