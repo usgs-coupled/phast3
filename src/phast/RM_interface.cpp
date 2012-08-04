@@ -157,11 +157,6 @@ RM_screenprt(const std::string & e_string)
 	RM_interface::phast_io.screen_msg("\n");
 }
 
-
-
-
-
-
 /* ---------------------------------------------------------------------- */
 void
 RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity)
@@ -341,6 +336,16 @@ void RM_initial_phreeqc_run(int *id, char *db_name, char *chem_name, int l1, int
 	}
 }
 #endif
+/* ---------------------------------------------------------------------- */
+void RM_get_component(int * rm_id, int * num, char *chem_name, int l1)
+	/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	if (Reaction_module_ptr)
+	{
+		strcpy(chem_name, Reaction_module_ptr->Get_components()[*num - 1].c_str());
+	}
+}
 /* ---------------------------------------------------------------------- */
 void RM_initial_phreeqc_run(int *rm_id, char *db_name, char *chem_name, int l1, int l2)
 /* ---------------------------------------------------------------------- */

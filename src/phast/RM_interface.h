@@ -16,6 +16,7 @@
 #define RM_find_components                    rm_find_components
 #define RM_forward_and_back                   rm_forward_and_back
 #define RM_fractions2solutions                rm_fractions2solutions
+#define RM_get_component                      rm_get_component
 #define RM_initial_phreeqc_run                rm_initial_phreeqc_run
 #define RM_load_database                      rm_load_database
 #define RM_log_screen_prt                     rm_log_screen_prt
@@ -86,6 +87,7 @@ void RM_forward_and_back(int *id,
 		int *initial_conditions, 
 		int *axes);
 void RM_fractions2solutons(int *id);
+void RM_get_component(int * id, int * num, char *chem_name, int l1);
 void RM_initial_phreeqc_run(int * id, char *db_name, char *chem_name, int l1, int l2);
 void RM_log_screen_prt(char *err_str, long l);
 void RM_open_files(int * solute, char * prefix, int l_prefix);
