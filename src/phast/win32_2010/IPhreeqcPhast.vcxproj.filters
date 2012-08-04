@@ -305,7 +305,7 @@
     <ClCompile Include="..\IPhreeqcPhast\fwrapPhast.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\IPhreeqcPhast\fwrap8.Phast.cpp">
+    <ClCompile Include="..\IPhreeqcPhast\fwrap8Phast.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
