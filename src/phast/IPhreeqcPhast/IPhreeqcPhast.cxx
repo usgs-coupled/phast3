@@ -85,7 +85,7 @@ IPhreeqcPhast::Selected_out_to_double(int row, std::vector<double> d)
 }
 /* ---------------------------------------------------------------------- */
 void
-IPhreeqcPhast::Set_cell(cxxStorageBin & sb, int i)
+IPhreeqcPhast::Get_cell_from_storage_bin(cxxStorageBin & sb, int i)
 /* ---------------------------------------------------------------------- */
 {
 	Phreeqc * phreeqc_ptr = this->Get_PhreeqcPtr();
@@ -93,7 +93,7 @@ IPhreeqcPhast::Set_cell(cxxStorageBin & sb, int i)
 }
 /* ---------------------------------------------------------------------- */
 void
-IPhreeqcPhast::Get_cell(cxxStorageBin & sb, int i)
+IPhreeqcPhast::Put_cell_in_storage_bin(cxxStorageBin & sb, int i)
 /* ---------------------------------------------------------------------- */
 {
 	//Phreeqc * phreeqc_ptr = this->Get_PhreeqcPtr();
