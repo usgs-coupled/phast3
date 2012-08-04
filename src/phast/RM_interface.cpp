@@ -87,11 +87,11 @@ errprt_c(char *err_str, long l)
 {
 	std::string e_string(err_str, l);
 	trim_right(e_string);
-	errprt(e_string);
+	RM_errprt(e_string);
 }
 /* ---------------------------------------------------------------------- */
 void
-errprt(const std::string & e_string)
+RM_errprt(const std::string & e_string)
 /* ---------------------------------------------------------------------- */
 {
 	std::ostringstream estr;
@@ -108,11 +108,11 @@ warnprt_c(char *err_str, long l)
 {
 	std::string e_string(err_str, l);
 	trim_right(e_string);
-	warnprt(e_string);
+	RM_warnprt(e_string);
 }
 /* ---------------------------------------------------------------------- */
 void
-warnprt(const std::string & e_string)
+RM_warnprt(const std::string & e_string)
 /* ---------------------------------------------------------------------- */
 {
 	std::ostringstream estr;
@@ -128,11 +128,11 @@ logprt_c(char *err_str, long l)
 {
 	std::string e_string(err_str, l);
 	trim_right(e_string);
-	logprt(e_string);
+	RM_logprt(e_string);
 }
 /* ---------------------------------------------------------------------- */
 void
-logprt(const std::string & e_string)
+RM_logprt(const std::string & e_string)
 /* ---------------------------------------------------------------------- */
 {
 	RM_interface::phast_io.log_msg(e_string.c_str());
@@ -146,11 +146,11 @@ screenprt_c(char *err_str, long l)
 {
 	std::string e_string(err_str, l);
 	trim_right(e_string);
-	screenprt(e_string);
+	RM_screenprt(e_string);
 }
 /* ---------------------------------------------------------------------- */
 void
-screenprt(const std::string & e_string)
+RM_screenprt(const std::string & e_string)
 /* ---------------------------------------------------------------------- */
 {
 	RM_interface::phast_io.screen_msg(e_string.c_str());
@@ -287,8 +287,8 @@ void RM_error(int *id)
 	{
 		e_string = GetErrorString(*id);
 	}
-	errprt(e_string);
-	errprt("Stopping because of errors.");
+	RM_errprt(e_string);
+	RM_errprt("Stopping because of errors.");
 	RM_interface::CleanupReactionModuleInstances();
 	IPhreeqcPhastLib::CleanupIPhreeqcPhast();
 	//IPhreeqcLib::CleanupIPhreeqcInstances();
@@ -381,8 +381,8 @@ RM_log_screen_prt(char *err_str, long l)
 // writes to log file and screen
 	std::string e_string(err_str, l);
 	trim_right(e_string);
-	logprt(e_string);
-	screenprt(e_string);
+	RM_logprt(e_string);
+	RM_screenprt(e_string);
 }
 /* ---------------------------------------------------------------------- */
 void
