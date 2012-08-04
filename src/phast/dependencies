@@ -189,7 +189,7 @@ fwrap7Phast.o: ../IPhreeqcPhast/fwrap7Phast.cpp \
  ../IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp \
  ../IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h
-fwrap8.Phast.o: ../IPhreeqcPhast/fwrap8.Phast.cpp \
+fwrap8Phast.o: ../IPhreeqcPhast/fwrap8Phast.cpp \
  ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../IPhreeqcPhast/IPhreeqc/Var.h \
  ../IPhreeqcPhast/fwrapPhast.h ../IPhreeqcPhast/IPhreeqcPhastLib.h \
  ../IPhreeqcPhast/IPhreeqcPhast.h \

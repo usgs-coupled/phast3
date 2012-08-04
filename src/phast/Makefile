@@ -946,7 +946,7 @@ fwrap4Phast.o \
 fwrap5Phast.o \
 fwrap6Phast.o \
 fwrap7Phast.o \
-fwrap8.Phast.o \
+fwrap8Phast.o \
 fwrapPhast.o \
 IPhreeqcPhast.o \
 IPhreeqcPhastLib.o \
