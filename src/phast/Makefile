@@ -494,13 +494,13 @@ endif
 ifeq ($(CFG), SERIAL_GFORTRAN_DEBUG)
   DEFINES      = $(DEFINE_HDF) -DPHREEQC_CPP -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
+  VPATH        = ..:../PhastFortran:../IPhreeqcPhast:../IPhreeqcPhast/IPhreeqc:../IPhreeqcPhast/IPhreeqc/phreeqcpp:../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc:../KDtree
   FC           = $(FGFORTRAN)
   FFLAGS       = -g -fno-underscoring $(DEFINES)
   CC           = g++
   CFLAGS       = -Wall -g $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS)  $(HDF_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN) -lm ${CL1MP_LIB} ${HDF5_LIBS} ${HASH_STYLE}
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS)  $(HDF_OBJS) # $(CL1MP_OBJS)
+  LD_FLAGS     = $(LIBGFORTRAN) -lm ${HDF5_LIBS} ${HASH_STYLE} # ${CL1MP_LIB} 
   LINKER       = $(CXX)
 endif
 
@@ -963,10 +963,10 @@ IPhreeqc.o \
 IPhreeqcLib.o \
 pp_sys.o \
 SelectedOutput.o \
+Var.o \
 \
 ChartHandler.o \
 ChartObject.o \
-class_main.o \
 CurveObject.o \
 cxxKinetics.o \
 cxxMix.o \
@@ -1010,7 +1010,6 @@ Utils.o \
 advection.o \
 basicsubs.o \
 cl1.o \
-cl1mp.o \
 cvdense.o \
 cvode.o \
 dense.o \
@@ -1043,7 +1042,11 @@ sundialsmath.o \
 tally.o \
 tidy.o \
 transport.o \
-utilities.o 
+utilities.o \
+\
+kdtree2.o \
+KDtree.o \
+Point.o
 
 HDF_OBJS     =  #hdf.o hdf_f.o
 
@@ -1102,203 +1105,104 @@ XP_module.o: ../PhastFortran/XP_module.f90
 # Module dependency list
 # -----------------------------------------------------------------------------
 aplbce_flow.o: ../PhastFortran/aplbce_flow.f90
-	${FC} -c ${FFLAGS} $<
 aplbci_flow.o: ../PhastFortran/aplbci_flow.F90
-	${FC} -c ${FFLAGS} $<
 asembl_flow.o: ../PhastFortran/asembl_flow.f90
-	${FC} -c ${FFLAGS} $<
 asmslp.o: ../PhastFortran/asmslp.F90
-	${FC} -c ${FFLAGS} $<
 calcc.o: ../PhastFortran/calcc.f90
-	${FC} -c ${FFLAGS} $<
 calc_velocity.o: ../PhastFortran/calc_velocity.f90
-	${FC} -c ${FFLAGS} $<
 clog.o: ../PhastFortran/clog.f90
-	${FC} -c ${FFLAGS} $<
 closef.o: ../PhastFortran/closef.F90
-	${FC} -c ${FFLAGS} $<
 coeff_flow.o: ../PhastFortran/coeff_flow.F90
-	${FC} -c ${FFLAGS} $<
 coeff_trans.o: ../PhastFortran/coeff_trans.F90
-	${FC} -c ${FFLAGS} $<
 dealloc_arr.o: ../PhastFortran/dealloc_arr.F90
-	${FC} -c ${FFLAGS} $<
 dealloc_arr_worker.o: ../PhastFortran/dealloc_arr_worker.F90
-	${FC} -c ${FFLAGS} $<
 dump.o: ../PhastFortran/dump.f90
-	${FC} -c ${FFLAGS} $<
 error1.o: ../PhastFortran/error1.f90
-	${FC} -c ${FFLAGS} $<
 error2.o: ../PhastFortran/error2.f90
-	${FC} -c ${FFLAGS} $<
 error3.o: ../PhastFortran/error3.f90
-	${FC} -c ${FFLAGS} $<
 error4.o: ../PhastFortran/error4.f90
-	${FC} -c ${FFLAGS} $<
 errprt.o: ../PhastFortran/errprt.f90
-	${FC} -c ${FFLAGS} $<
 etom1.o: ../PhastFortran/etom1.f90
-	${FC} -c ${FFLAGS} $<
 etom2.o: ../PhastFortran/etom2.f90
-	${FC} -c ${FFLAGS} $<
 hdf_f.o: ../PhastFortran/hdf_f.F90
-	${FC} -c ${FFLAGS} $<
 incidx.o: ../PhastFortran/incidx.f90
-	${FC} -c ${FFLAGS} $<
 indx_rewi_bc.o: ../PhastFortran/indx_rewi_bc.f90
-	${FC} -c ${FFLAGS} $<
 indx_rewi.o: ../PhastFortran/indx_rewi.f90
-	${FC} -c ${FFLAGS} $<
 init1.o: ../PhastFortran/init1.F90
-	${FC} -c ${FFLAGS} $<
 init2_1.o: ../PhastFortran/init2_1.F90
-	${FC} -c ${FFLAGS} $<
 init2_1_xfer.o: ../PhastFortran/init2_1_xfer.F90
-	${FC} -c ${FFLAGS} $<
 init2_2.o: ../PhastFortran/init2_2.f90
-	${FC} -c ${FFLAGS} $<
 init2_3.o: ../PhastFortran/init2_3.f90
-	${FC} -c ${FFLAGS} $<
 init2_post_ss.o: ../PhastFortran/init2_post_ss.F90
-	${FC} -c ${FFLAGS} $<
 init3.o: ../PhastFortran/init3.F90
-	${FC} -c ${FFLAGS} $<
 init3_xfer.o: ../PhastFortran/init3_xfer.F90
-	${FC} -c ${FFLAGS} $<
 ldchar_bc.o: ../PhastFortran/ldchar_bc.f90
-	${FC} -c ${FFLAGS} $<
 ldchar.o: ../PhastFortran/ldchar.f90
-	${FC} -c ${FFLAGS} $<
 mtoijk.o: ../PhastFortran/mtoijk.f90
-	${FC} -c ${FFLAGS} $<
 nintrp.o: ../PhastFortran/nintrp.f90
-	${FC} -c ${FFLAGS} $<
 openf.o: ../PhastFortran/openf.F90
-	${FC} -c ${FFLAGS} $<
 phast_manager.o: ../PhastFortran/phast_manager.F90
-	${FC} -c ${FFLAGS} $<
 phast_spmd.o: ../PhastFortran/phast_spmd.F90
-	${FC} -c ${FFLAGS} $<
 phast_worker.o: ../PhastFortran/phast_worker.F90
-	${FC} -c ${FFLAGS} $<
 prchar.o: ../PhastFortran/prchar.f90
-	${FC} -c ${FFLAGS} $<
 printar.o: ../PhastFortran/printar.f90
-	${FC} -c ${FFLAGS} $<
 read1.o: ../PhastFortran/read1.F90
-	${FC} -c ${FFLAGS} $<
 read1_xfer.o: ../PhastFortran/read1_xfer.F90
-	${FC} -c ${FFLAGS} $<
 read2.o: ../PhastFortran/read2.F90
-	${FC} -c ${FFLAGS} $<
 read2_xfer.o: ../PhastFortran/read2_xfer.F90
-	${FC} -c ${FFLAGS} $<
 read3.o: ../PhastFortran/read3.F90
-	${FC} -c ${FFLAGS} $<
 read3_xfer.o: ../PhastFortran/read3_xfer.F90
-	${FC} -c ${FFLAGS} $<
 rhsn.o: ../PhastFortran/rhsn.f90
-	${FC} -c ${FFLAGS} $<
 rhsn_manager.o: ../PhastFortran/rhsn_manager.F90
-	${FC} -c ${FFLAGS} $<
 rhsn_ss_flow.o: ../PhastFortran/rhsn_ss_flow.f90
-	${FC} -c ${FFLAGS} $<
 sbcflo.o: ../PhastFortran/sbcflo.f90
-	${FC} -c ${FFLAGS} $<
 set_component_map.o: ../PhastFortran/set_component_map.F90
-	${FC} -c ${FFLAGS} $<
 simulate_ss_flow.o: ../PhastFortran/simulate_ss_flow.f90
-	${FC} -c ${FFLAGS} $<
 stonb.o: ../PhastFortran/stonb.f90
-	${FC} -c ${FFLAGS} $<
 sumcal1.o: ../PhastFortran/sumcal1.F90
-	${FC} -c ${FFLAGS} $<
 sumcal1_manager.o: ../PhastFortran/sumcal1_manager.F90
-	${FC} -c ${FFLAGS} $<
 sumcal2.o: ../PhastFortran/sumcal2.f90
-	${FC} -c ${FFLAGS} $<
 sumcal_ss_flow.o: ../PhastFortran/sumcal_ss_flow.f90
-	${FC} -c ${FFLAGS} $<
 terminate_phast.o: ../PhastFortran/terminate_phast.F90
-	${FC} -c ${FFLAGS} $<
 terminate_phast_worker.o: ../PhastFortran/terminate_phast_worker.F90
-	${FC} -c ${FFLAGS} $<
 timestep.o: ../PhastFortran/timestep.F90
-	${FC} -c ${FFLAGS} $<
 time_step_save.o: ../PhastFortran/time_step_save.F90
-	${FC} -c ${FFLAGS} $<
 timestep_ss_flow.o: ../PhastFortran/timestep_ss_flow.f90
-	${FC} -c ${FFLAGS} $<
 timestep_worker.o: ../PhastFortran/timestep_worker.F90
-	${FC} -c ${FFLAGS} $<
 update_print_flags.o: ../PhastFortran/update_print_flags.f90
-	${FC} -c ${FFLAGS} $<
 uppercase.o: ../PhastFortran/uppercase.f90
-	${FC} -c ${FFLAGS} $<
 wbbal.o: ../PhastFortran/wbbal.f90
-	${FC} -c ${FFLAGS} $<
 wbcflo.o: ../PhastFortran/wbcflo.f90
-	${FC} -c ${FFLAGS} $<
 wellsc.o: ../PhastFortran/wellsc.f90
-	${FC} -c ${FFLAGS} $<
 wellsc_ss_flow.o: ../PhastFortran/wellsc_ss_flow.f90
-	${FC} -c ${FFLAGS} $<
 wellsr.o: ../PhastFortran/wellsr.f90
-	${FC} -c ${FFLAGS} $<
 wellsr_ss_flow.o: ../PhastFortran/wellsr_ss_flow.f90
-	${FC} -c ${FFLAGS} $<
 welris.o: ../PhastFortran/welris.f90
-	${FC} -c ${FFLAGS} $<
 wfdydz.o: ../PhastFortran/wfdydz.f90
-	${FC} -c ${FFLAGS} $<
 write1.o: ../PhastFortran/write1.f90
-	${FC} -c ${FFLAGS} $<
 write2_1.o: ../PhastFortran/write2_1.f90
-	${FC} -c ${FFLAGS} $<
 write2_2.o: ../PhastFortran/write2_2.f90
-	${FC} -c ${FFLAGS} $<
 write3.o: ../PhastFortran/write3.f90
-	${FC} -c ${FFLAGS} $<
 write3_ss_flow.o: ../PhastFortran/write3_ss_flow.f90
-	${FC} -c ${FFLAGS} $<
 write4.o: ../PhastFortran/write4.f90
-	${FC} -c ${FFLAGS} $<
 write5.o: ../PhastFortran/write5.f90
-	${FC} -c ${FFLAGS} $<
 write5_ss_flow.o: ../PhastFortran/write5_ss_flow.f90
-	${FC} -c ${FFLAGS} $<
 write6.o: ../PhastFortran/write6.f90
-	${FC} -c ${FFLAGS} $<
 xfer_to_manager.o: ../PhastFortran/xfer_to_manager.F90
-	${FC} -c ${FFLAGS} $<
 xfer_to_workers.o: ../PhastFortran/xfer_to_workers.F90
-	${FC} -c ${FFLAGS} $<
 XP_aplbce.o: ../PhastFortran/XP_aplbce.f90
-	${FC} -c ${FFLAGS} $<
 XP_aplbci.o: ../PhastFortran/XP_aplbci.F90
-	${FC} -c ${FFLAGS} $<
 XP_asembl.o: ../PhastFortran/XP_asembl.f90
-	${FC} -c ${FFLAGS} $<
 XP_asmslc.o: ../PhastFortran/XP_asmslc.F90
-	${FC} -c ${FFLAGS} $<
 XP_crsdsp.o: ../PhastFortran/XP_crsdsp.f90
-	${FC} -c ${FFLAGS} $<
 XP_etom2.o: ../PhastFortran/XP_etom2.f90
-	${FC} -c ${FFLAGS} $<
 XP_rhsn.o: ../PhastFortran/XP_rhsn.f90
-	${FC} -c ${FFLAGS} $<
 XP_sumcal1.o: ../PhastFortran/XP_sumcal1.f90
-	${FC} -c ${FFLAGS} $<
 XP_wbcflo.o: ../PhastFortran/XP_wbcflo.f90
-	${FC} -c ${FFLAGS} $<
 XP_wellsc.o: ../PhastFortran/XP_wellsc.f90
-	${FC} -c ${FFLAGS} $<
 XP_wellsr.o: ../PhastFortran/XP_wellsr.f90
-	${FC} -c ${FFLAGS} $<
 zone_flow.o: ../PhastFortran/zone_flow.f90
-	${FC} -c ${FFLAGS} $<
 zone_flow_ss.o: ../PhastFortran/zone_flow_ss.f90
-	${FC} -c ${FFLAGS} $<
 #
 #  PHAST Fortran files
 #

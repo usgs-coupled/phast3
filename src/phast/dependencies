@@ -346,6 +346,7 @@ SelectedOutput.o: ../IPhreeqcPhast/IPhreeqc/SelectedOutput.cpp \
  ../IPhreeqcPhast/IPhreeqc/Debug.h \
  ../IPhreeqcPhast/IPhreeqc/SelectedOutput.hxx \
  ../IPhreeqcPhast/IPhreeqc/CVar.hxx ../IPhreeqcPhast/IPhreeqc/Var.h
+Var.o: ../IPhreeqcPhast/IPhreeqc/Var.cpp ../IPhreeqcPhast/IPhreeqc/Var.h
 cxxKinetics.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxKinetics.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
