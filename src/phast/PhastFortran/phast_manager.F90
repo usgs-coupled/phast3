@@ -82,7 +82,8 @@ SUBROUTINE phast_manager
         STOP
     ENDIF
     do i = 1, ns
-       CALL GetComponent(rm_id, i, comp_name(i))
+       !CALL GetComponent(rm_id, i, comp_name(i))
+       CALL RM_get_component(rm_id, i, comp_name(i))
     enddo   
     CALL RM_log_screen_prt("Done with Initial PHREEQC run.")
   endif
