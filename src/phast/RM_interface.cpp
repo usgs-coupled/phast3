@@ -353,8 +353,8 @@ void RM_initial_phreeqc_run(int *rm_id, char *db_name, char *chem_name, int l1, 
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
 	if (Reaction_module_ptr)
 	{
-		std::string db_name(db_name, l1);
-		trim_right(db_name);
+		std::string database_name(db_name, l1);
+		trim_right(database_name);
 		std::string chemistry_name(chem_name, l2);
 		trim_right(chemistry_name);
 
@@ -365,7 +365,7 @@ void RM_initial_phreeqc_run(int *rm_id, char *db_name, char *chem_name, int l1, 
 		// Load database
 		if (SetOutputStringOn(*rm_id, true) < 0) RM_error(rm_id);
 		if (SetSelectedOutputStringOn(*rm_id, true) < 0) RM_error(rm_id);
-		if (LoadDatabase(*rm_id, db_name.c_str()) < 0) RM_error(rm_id);
+		if (LoadDatabase(*rm_id, database_name.c_str()) < 0) RM_error(rm_id);
 		RM_write_output(rm_id);
 
 		// Run chemistry file
