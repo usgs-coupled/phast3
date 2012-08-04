@@ -65,7 +65,7 @@ SUBROUTINE write2_2
   nr = nx
   ! ... Load and compute molal concentrations
   c_mol = c
-    CALL convert_to_molal(c_mol,nxyz,nxyz)
+    CALL RM_convert_to_molal(c_mol,nxyz,nxyz)
   IF(nwel > 0) THEN
      IF(solute .AND. prtic_well_timser) THEN
         ! ... Write static data to file 'FUPLT' for temporal plots
@@ -78,7 +78,7 @@ SUBROUTINE write2_2
            u2=p(m)/(den0*gz)+zwt(iwel)
            ! ... Well has ambient cell concentrations at initial conditions
            iis = 1
-            CALL calculate_well_ph(c(m,iis), ph, alk)
+            CALL RM_calculate_well_ph(c(m,iis), ph, alk)
            WRITE(fuplt,fmt2) cnvli*xw(iwel),ACHAR(9),cnvli*yw(iwel),ACHAR(9),  &
                 cnvli*zwt(iwel),ACHAR(9),cnvtmi*time,ACHAR(9),iwel,ACHAR(9),  &
                 (c(m,iis),ACHAR(9),iis=1,ns),ph,ACHAR(9), alk, ACHAR(9)
