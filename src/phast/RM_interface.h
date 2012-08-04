@@ -161,10 +161,10 @@ void warnprt_c(char *err_str, long l);
 //void RM_logprt(int *id, char *err_str, long l);
 //void RM_screeenprt(int *id, char *err_str, long l);
 
-void errprt(const std::string & e_string);
-void warnprt(const std::string & e_string);
-void logprt(const std::string & e_string);
-void screenprt(const std::string & e_string);
+void RM_errprt(const std::string & e_string);
+void RM_warnprt(const std::string & e_string);
+void RM_logprt(const std::string & e_string);
+void RM_screenprt(const std::string & e_string);
 
 
 
