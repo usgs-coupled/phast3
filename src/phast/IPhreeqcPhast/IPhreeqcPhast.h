@@ -15,8 +15,8 @@ public:
 	double Get_gfw(std::string);
 	void Set_cell_volumes(int i, double pore_volume, double f, double v);
 	bool Selected_out_to_double(int row, std::vector<double> d);
-	void Set_cell(cxxStorageBin & sb, int i);
-	void Get_cell(cxxStorageBin & sb, int i);
+	void Get_cell_from_storage_bin(cxxStorageBin & sb, int i);
+	void Put_cell_in_storage_bin(cxxStorageBin & sb, int i);
 	Phreeqc * Get_PhreeqcPtr(void) {return PhreeqcPtr;};
 	size_t Get_Index() {return (int) this->Index;}
 
