@@ -480,13 +480,13 @@ endif
 ifeq ($(CFG), SERIAL_GFORTRAN)
   DEFINES      = $(DEFINE_HDF) -DNDEBUG -DPHREEQC_CPP -DHAVE_ISFINITE
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
+  VPATH        = ..:../PhastFortran:../IPhreeqcPhast:../IPhreeqcPhast/IPhreeqc:../IPhreeqcPhast/IPhreeqc/phreeqcpp:../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc:../KDtree
   FC           = $(FGFORTRAN)
-  FFLAGS       = -O3 $(DEFINES) -fno-underscoring
+  FFLAGS       = -p -O3 $(DEFINES) -fno-underscoring
   CC           = g++
-  CFLAGS       = -Wall  -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
+  CFLAGS       = -Wall  -p -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN) -lm ${CL1MP_LIB} ${HDF5_LIBS} ${HASH_STYLE}
+  LD_FLAGS     = $(LIBGFORTRAN) -lm -p ${CL1MP_LIB} ${HDF5_LIBS} ${HASH_STYLE}
   LINKER       = $(CXX)
 endif
 
@@ -499,8 +499,8 @@ ifeq ($(CFG), SERIAL_GFORTRAN_DEBUG)
   FFLAGS       = -g -fno-underscoring $(DEFINES)
   CC           = g++
   CFLAGS       = -Wall -g $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
-  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS)  $(HDF_OBJS) # $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN) -lm ${HDF5_LIBS} ${HASH_STYLE} # ${CL1MP_LIB} 
+  OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS)  $(HDF_OBJS) $(CL1MP_OBJS)
+  LD_FLAGS     = $(LIBGFORTRAN) -lm ${HDF5_LIBS} ${HASH_STYLE} ${CL1MP_LIB} 
   LINKER       = $(CXX)
 endif
 
@@ -1090,7 +1090,7 @@ interpolate_mod.O: ../PhastFortran/interpolate_mod.f90
 #mpi_mod.F90
 reorder_mod.o: ../PhastFortran/reorder_mod.f90
 	${FC} -c ${FFLAGS} $<
-rewi_mod.o: ../PhastFortran/rewi_mod.f90
+rewi_mod.o: ../PhastFortran/rewi_mod.f90 interpolate_mod.o
 	${FC} -c ${FFLAGS} $<
 scale_jds_mod.o: ../PhastFortran/scale_jds_mod.f90
 	${FC} -c ${FFLAGS} $<
@@ -1104,22 +1104,22 @@ XP_module.o: ../PhastFortran/XP_module.f90
 # -----------------------------------------------------------------------------
 # Module dependency list
 # -----------------------------------------------------------------------------
-aplbce_flow.o: ../PhastFortran/aplbce_flow.f90
+aplbce_flow.o: ../PhastFortran/aplbce_flow.f90 modules_g.o modules_manager.o
 aplbci_flow.o: ../PhastFortran/aplbci_flow.F90
 asembl_flow.o: ../PhastFortran/asembl_flow.f90
-asmslp.o: ../PhastFortran/asmslp.F90
+asmslp.o: ../PhastFortran/asmslp.F90 scale_jds_mod.o
 calcc.o: ../PhastFortran/calcc.f90
 calc_velocity.o: ../PhastFortran/calc_velocity.f90
 clog.o: ../PhastFortran/clog.f90
 closef.o: ../PhastFortran/closef.F90
 coeff_flow.o: ../PhastFortran/coeff_flow.F90
 coeff_trans.o: ../PhastFortran/coeff_trans.F90
-dealloc_arr.o: ../PhastFortran/dealloc_arr.F90
+dealloc_arr.o: ../PhastFortran/dealloc_arr.F90  XP_module.o
 dealloc_arr_worker.o: ../PhastFortran/dealloc_arr_worker.F90
 dump.o: ../PhastFortran/dump.f90
 error1.o: ../PhastFortran/error1.f90
 error2.o: ../PhastFortran/error2.f90
-error3.o: ../PhastFortran/error3.f90
+error3.o: ../PhastFortran/error3.f90 print_control_mod.o
 error4.o: ../PhastFortran/error4.f90
 errprt.o: ../PhastFortran/errprt.f90
 etom1.o: ../PhastFortran/etom1.f90
@@ -1128,27 +1128,27 @@ hdf_f.o: ../PhastFortran/hdf_f.F90
 incidx.o: ../PhastFortran/incidx.f90
 indx_rewi_bc.o: ../PhastFortran/indx_rewi_bc.f90
 indx_rewi.o: ../PhastFortran/indx_rewi.f90
-init1.o: ../PhastFortran/init1.F90
+init1.o: ../PhastFortran/init1.F90 print_control_mod.o
 init2_1.o: ../PhastFortran/init2_1.F90
 init2_1_xfer.o: ../PhastFortran/init2_1_xfer.F90
 init2_2.o: ../PhastFortran/init2_2.f90
 init2_3.o: ../PhastFortran/init2_3.f90
-init2_post_ss.o: ../PhastFortran/init2_post_ss.F90
-init3.o: ../PhastFortran/init3.F90
-init3_xfer.o: ../PhastFortran/init3_xfer.F90
+init2_post_ss.o: ../PhastFortran/init2_post_ss.F90 print_control_mod.o
+init3.o: ../PhastFortran/init3.F90 print_control_mod.o
+init3_xfer.o: ../PhastFortran/init3_xfer.F90 XP_module.o
 ldchar_bc.o: ../PhastFortran/ldchar_bc.f90
 ldchar.o: ../PhastFortran/ldchar.f90
 mtoijk.o: ../PhastFortran/mtoijk.f90
 nintrp.o: ../PhastFortran/nintrp.f90
 openf.o: ../PhastFortran/openf.F90
-phast_manager.o: ../PhastFortran/phast_manager.F90
+phast_manager.o: ../PhastFortran/phast_manager.F90 print_control_mod.o
 phast_spmd.o: ../PhastFortran/phast_spmd.F90
 phast_worker.o: ../PhastFortran/phast_worker.F90
 prchar.o: ../PhastFortran/prchar.f90
 printar.o: ../PhastFortran/printar.f90
 read1.o: ../PhastFortran/read1.F90
 read1_xfer.o: ../PhastFortran/read1_xfer.F90
-read2.o: ../PhastFortran/read2.F90
+read2.o: ../PhastFortran/read2.F90 rewi_mod.o
 read2_xfer.o: ../PhastFortran/read2_xfer.F90
 read3.o: ../PhastFortran/read3.F90
 read3_xfer.o: ../PhastFortran/read3_xfer.F90
@@ -1156,7 +1156,7 @@ rhsn.o: ../PhastFortran/rhsn.f90
 rhsn_manager.o: ../PhastFortran/rhsn_manager.F90
 rhsn_ss_flow.o: ../PhastFortran/rhsn_ss_flow.f90
 sbcflo.o: ../PhastFortran/sbcflo.f90
-set_component_map.o: ../PhastFortran/set_component_map.F90
+set_component_map.o: ../PhastFortran/set_component_map.F90 XP_module.o
 simulate_ss_flow.o: ../PhastFortran/simulate_ss_flow.f90
 stonb.o: ../PhastFortran/stonb.f90
 sumcal1.o: ../PhastFortran/sumcal1.F90
@@ -1166,7 +1166,7 @@ sumcal_ss_flow.o: ../PhastFortran/sumcal_ss_flow.f90
 terminate_phast.o: ../PhastFortran/terminate_phast.F90
 terminate_phast_worker.o: ../PhastFortran/terminate_phast_worker.F90
 timestep.o: ../PhastFortran/timestep.F90
-time_step_save.o: ../PhastFortran/time_step_save.F90
+time_step_save.o: ../PhastFortran/time_step_save.F90 XP_module.o
 timestep_ss_flow.o: ../PhastFortran/timestep_ss_flow.f90
 timestep_worker.o: ../PhastFortran/timestep_worker.F90
 update_print_flags.o: ../PhastFortran/update_print_flags.f90
@@ -1188,14 +1188,14 @@ write4.o: ../PhastFortran/write4.f90
 write5.o: ../PhastFortran/write5.f90
 write5_ss_flow.o: ../PhastFortran/write5_ss_flow.f90
 write6.o: ../PhastFortran/write6.f90
-xfer_to_manager.o: ../PhastFortran/xfer_to_manager.F90
-xfer_to_workers.o: ../PhastFortran/xfer_to_workers.F90
-XP_aplbce.o: ../PhastFortran/XP_aplbce.f90
-XP_aplbci.o: ../PhastFortran/XP_aplbci.F90
-XP_asembl.o: ../PhastFortran/XP_asembl.f90
-XP_asmslc.o: ../PhastFortran/XP_asmslc.F90
-XP_crsdsp.o: ../PhastFortran/XP_crsdsp.f90
-XP_etom2.o: ../PhastFortran/XP_etom2.f90
+xfer_to_manager.o: ../PhastFortran/xfer_to_manager.F90 XP_module.o
+xfer_to_workers.o: ../PhastFortran/xfer_to_workers.F90 XP_module.o
+XP_aplbce.o: ../PhastFortran/XP_aplbce.f90 XP_module.o
+XP_aplbci.o: ../PhastFortran/XP_aplbci.F90 XP_module.o
+XP_asembl.o: ../PhastFortran/XP_asembl.f90 XP_module.o
+XP_asmslc.o: ../PhastFortran/XP_asmslc.F90 XP_module.o
+XP_crsdsp.o: ../PhastFortran/XP_crsdsp.f90 XP_module.o
+XP_etom2.o: ../PhastFortran/XP_etom2.f90 XP_module.o
 XP_rhsn.o: ../PhastFortran/XP_rhsn.f90
 XP_sumcal1.o: ../PhastFortran/XP_sumcal1.f90
 XP_wbcflo.o: ../PhastFortran/XP_wbcflo.f90
