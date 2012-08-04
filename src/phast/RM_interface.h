@@ -5,7 +5,9 @@
 #define RM_INTERFACE_H
 #include "IPhreeqc.h"
 #include "Var.h"
+#define RM_calculate_well_ph                  rm_calculate_well_ph
 #define RM_close_files                        rm_close_files
+#define RM_convert_to_molal                   rm_convert_to_molal
 #define RM_create                             rm_create
 #define RM_destroy                            rm_destroy
 #define RM_create_phreeqc_bin                 rm_create_phreeqc_bin 
