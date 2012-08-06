@@ -2194,6 +2194,8 @@ Reaction_module::Get_components(
 	}
 }
 #endif
+//#define USE_MODIFY
+#ifdef USE_MODIFY
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Fractions2Solutions(void)
@@ -2201,10 +2203,54 @@ Reaction_module::Fractions2Solutions(void)
 {
 	int i, j, k;
 
-	std::vector<double> d;  // scratch space to convert from mass fraction to moles
+	Phreeqc * phreeqc_ptr = this->phast_iphreeqc_worker->Get_PhreeqcPtr();
+	phreeqc_ptr->cxxStorageBin2phreeqc(sz_bin);
+	clock_t t0 = clock();
+	std::cerr << "Start testing modify" << std::endl;
+	std::ostringstream modify;
+	for (i = 0; i < this->nxyz; i++)
+	{
+		std::vector<double> d;  // scratch space to convert from mass fraction to moles
+		// j is count_chem number
+		j = this->forward[i];
+		if (j < 0) continue;
+
+		// get mass fractions and store as moles in d
+		double *ptr = &this->fraction[i];
+		for (k = 0; k < (int) this->components.size(); k++)
+		{	
+			d.push_back(ptr[this->nxyz * k] * 1000.0/this->gfw[k]);
+		}
+		modify << "SOLUTION_MODIFY " << j << "\n";
+		modify << "-total_h " << d[0] + 2.0/gfw_water << "\n";
+		modify << "-total_o " << d[1] + 1.0/gfw_water << "\n";
+		modify << "-cb " << d[2] << "\n";
+		modify << "-totals\n";
+
+		for (k = 3; k < (int) components.size(); k++)
+		{
+			if (d[k] <= 1e-14) d[k] = 0.0;
+			modify << components[k] << " " << d[k] << "\n";
+		}	
+	}
+	RunString(this->phast_iphreeqc_worker->Get_Index(), modify.str().c_str());
+	std::cerr << "End testing modify " << (double) (clock() - t0) << std::endl;
+	phreeqc_ptr->phreeqc2cxxStorageBin(sz_bin);
+	return;
+}
+#else
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Fractions2Solutions(void)
+/* ---------------------------------------------------------------------- */
+{
+	int i, j, k;
+
+	
 
 	for (i = 0; i < this->nxyz; i++)
 	{
+		std::vector<double> d;  // scratch space to convert from mass fraction to moles
 		// j is count_chem number
 		j = this->forward[i];
 		if (j < 0) continue;
@@ -2218,19 +2264,24 @@ Reaction_module::Fractions2Solutions(void)
 
 		// update solution sz_bin solution
 		cxxNameDouble nd;
-		nd.add("H", d[0] + 2.0/gfw_water);
-		nd.add("O", d[1] + 1.0/gfw_water);
-		nd.add("Charge", d[2]);
+		//nd.add("H", d[0] + 2.0/gfw_water);
+		//nd.add("O", d[1] + 1.0/gfw_water);
+		//nd.add("Charge", d[2]);
 
 		for (k = 3; k < (int) components.size(); k++)
 		{
 			if (d[k] <= 1e-14) d[k] = 0.0;
 			nd.add(components[k].c_str(), d[k]);
 		}	
-		this->sz_bin.Get_Solution((int) j)->Update(nd);
+		this->sz_bin.Get_Solution((int) j)->Update(
+			d[0] + 2.0/gfw_water,
+			d[1] + 1.0/gfw_water,
+			d[2],
+			nd);
 	}
 	return;
 }
+#endif
 #ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
@@ -2499,7 +2550,27 @@ Reaction_module::Setup_boundary_conditions(
 		}
 	}
 }
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::cxxSolution2fraction(cxxSolution * cxxsoln_ptr, std::vector<double> & d)
+/* ---------------------------------------------------------------------- */
+{
+	d.clear();
 
+	d.push_back((cxxsoln_ptr->Get_total_h() - 2.0 / this->gfw_water) * this->gfw[0]/1000. ); 
+	d.push_back((cxxsoln_ptr->Get_total_o() - 1.0 / this->gfw_water) * this->gfw[1]/1000.);
+	d.push_back(cxxsoln_ptr->Get_cb() * this->gfw[2]/1000.);
+
+	// Simplify totals
+	cxxsoln_ptr->Set_totals(cxxsoln_ptr->Get_totals().Simplify_redox());
+
+	size_t i;
+	for (i = 3; i < this->components.size(); i++)
+	{
+		d.push_back(cxxsoln_ptr->Get_total(components[i].c_str()) * this->gfw[i]/1000.);
+	}
+}
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::cxxSolution2fraction(cxxSolution * cxxsoln_ptr, std::vector<double> & d)
@@ -2516,7 +2587,7 @@ Reaction_module::cxxSolution2fraction(cxxSolution * cxxsoln_ptr, std::vector<dou
 		d.push_back(cxxsoln_ptr->Get_total(components[i].c_str()) * this->gfw[i]/1000.);
 	}
 }
-
+#endif
 
 /* ---------------------------------------------------------------------- */
 void
@@ -3001,8 +3072,10 @@ Reaction_module::Run_cells()
 /*
  *   Update solution compositions in sz_bin
  */
+	clock_t t0 = clock();
 	this->Fractions2Solutions();
-
+	std::cerr << "Converting: " << (double) (clock() - t0) << std::endl;
+	t0 = clock();
 	int i, j;
 	for (i = 0; i < this->count_chem; i++)
 	{							/* i is count_chem number */
@@ -3047,7 +3120,7 @@ Reaction_module::Run_cells()
 			}
 
 			// Move reactants from sz_bin to phreeqc
-			this->phast_iphreeqc_worker->Set_cell(sz_bin, i);
+			this->phast_iphreeqc_worker->Get_cell_from_storage_bin(sz_bin, i);
 
 			// Set print flags
 			this->phast_iphreeqc_worker->SetOutputStringOn(pr_chem);
@@ -3059,11 +3132,12 @@ Reaction_module::Run_cells()
 			input << "  -start_time " << (*this->time_hst - *this->time_step_hst) << std::endl;
 			input << "  -time_step  " << *this->time_step_hst << std::endl;
 			input << "  -cells      " << i << std::endl;
+			//input << "KNOBS; -debug_model\n";
 			input << "END" << std::endl;
 			if (this->phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) Error_stop();
 
 			// Save reactants back in sz_bin
-			this->phast_iphreeqc_worker->Get_cell(sz_bin, i);
+			this->phast_iphreeqc_worker->Put_cell_in_storage_bin(sz_bin, i);
 
 			// write headings to xyz file
 			if (pr_xyz && this->write_xyz_headings)
@@ -3099,12 +3173,12 @@ Reaction_module::Run_cells()
 			{
 				std::ostringstream line;
 				line << "Time " << (*time_hst) * (*cnvtmi);
-				line << ". Cell " << j + 1;
+				line << ". Cell " << j + 1 << ": ";
 				line << "x= " << x_node[j] << "\t";
 				line << "y= " << y_node[j] << "\t";
-				line << "z= " << z_node[j] << "\t";
-				Write_xyz(line.str().c_str());
-				Write_xyz(this->phast_iphreeqc_worker->GetOutputString());
+				line << "z= " << z_node[j] << "\n";
+				Write_output(line.str().c_str());
+				Write_output(this->phast_iphreeqc_worker->GetOutputString());
 			}
 
 			if (pr_hdf)
@@ -3123,6 +3197,8 @@ Reaction_module::Run_cells()
 		} // end active
 
 	} // end one cell
+	std::cerr << "Running: " << (double) (clock() - t0) << std::endl;
+	Sleep(1000);
 
 }
 /* ---------------------------------------------------------------------- */
