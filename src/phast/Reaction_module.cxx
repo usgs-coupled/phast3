@@ -528,7 +528,6 @@ Reaction_module::Distribute_initial_conditions(
 	}
 }
 #endif
-
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Distribute_initial_conditions(
@@ -561,7 +560,304 @@ Reaction_module::Distribute_initial_conditions(
 	 *      exchangers, surface complexers, gases, solid solution assemblages,
 	 *      and kinetics for each cell.
 	 *   
-	 *      saves results in sz_bin
+	 *      saves results in restart_bin and then the reaction module
+	 */
+	int i, j;
+	/*
+	 *  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
+	 *  Does nothing for indexes less than 0 (i.e. restart files)
+	 */
+	size_t count_negative_porosity = 0;
+	for (i = 0; i < this->nxyz; i++)
+	{							/* i is ixyz number */
+		j = this->forward[i];			/* j is count_chem number */
+		if (j < 0)
+			continue;
+		assert(forward[i] >= 0);
+		assert (volume[i] > 0.0);
+		double porosity = pv0[i] / volume[i];
+		if (pv0[i] < 0 || volume[i] < 0)
+		{
+			std::ostringstream errstr;
+			errstr << "Negative volume in cell " << i << ": volume, " << volume[i]; 
+			errstr << "\t initial volume, " << this->pv0[i] << ".",
+			count_negative_porosity++;
+			error_msg(errstr.str().c_str());
+			continue;
+		}
+		assert (porosity > 0.0);
+		double porosity_factor = (1.0 - porosity) / porosity;
+		Cell_initialize(i, j, initial_conditions1, initial_conditions2,
+			fraction1,
+			exchange_units, surface_units, ssassemblage_units,
+			ppassemblage_units, gasphase_units, kinetics_units,
+			porosity_factor);
+	}
+	if (count_negative_porosity > 0)
+	{
+		std::ostringstream errstr;
+		errstr << "Negative initial volumes may be due to initial head distribution.\n"
+			"Make initial heads greater than or equal to the elevation of the node for each cell.\n"
+			"Increase porosity, decrease specific storage, or use free surface boundary.";
+		error_msg(errstr.str().c_str(), 1);
+	}
+	/*
+	 * Read any restart files
+	 */
+
+	cxxStorageBin restart_bin;
+	for (std::map < std::string, int >::iterator it = FileMap.begin();
+		 it != FileMap.end(); it++)
+	{
+		int
+			ifile = -100 - it->second;
+
+		// use gsztream
+		igzstream
+			myfile;
+		myfile.open(it->first.c_str());
+		if (!myfile.good())
+
+		{
+			std::ostringstream errstr;
+			errstr << "File could not be opened: " << it->first.c_str();
+			error_msg(errstr.str().c_str());
+			break;
+		}
+
+		CParser	cparser(myfile, this->Get_io());
+		cparser.set_echo_file(CParser::EO_NONE);
+		cparser.set_echo_stream(CParser::EO_NONE);
+
+		// skip headers
+		while (cparser.check_line("restart", false, true, true, false) ==
+			   PHRQ_io::LT_EMPTY);
+
+		// read number of lines of index
+		int	n = -1;
+		if (!(cparser.get_iss() >> n) || n < 4)
+		{
+			std::ostringstream errstr;
+			errstr << "File does not have node locations: " << it->first.c_str() << "\nPerhaps it is an old format restart file.";
+			error_msg(errstr.str().c_str(), 1);
+			myfile.close();
+			break;
+		}
+
+		// points are x, y, z, cell_no
+		std::vector < Point > pts;
+		// index:
+		// 0 solution
+		// 1 ppassemblage
+		// 2 exchange
+		// 3 surface
+		// 4 gas phase
+		// 5 ss_assemblage
+		// 6 kinetics
+
+		std::vector<int> c_index;
+		for (i = 0; i < n; i++)
+		{
+			cparser.check_line("restart", false, false, false, false);
+			double
+				x,
+				y,
+				z,
+				v;
+			cparser.get_iss() >> x;
+			cparser.get_iss() >> y;
+			cparser.get_iss() >> z;
+			cparser.get_iss() >> v;
+			pts.push_back(Point(x, y, z, v));
+
+			int dummy;
+			// c_index defines entities present for each cell in restart file
+			for (j = 0; j < 7; j++)
+			{
+				cparser.get_iss() >> dummy;
+				c_index.push_back(dummy);
+			}
+		}
+		KDtree
+		index_tree(pts);
+
+		cxxStorageBin tempBin;
+		tempBin.read_raw(cparser);
+
+		for (j = 0; j < count_chem; j++)	/* j is count_chem number */
+		{
+			i = this->back[j][0];   /* i is nxyz number */
+			Point p(this->x_node[i], this->y_node[i], this->z_node[i]);
+			int	k = (int) index_tree.Interpolate3d(p);	// k is index number in tempBin
+
+			// solution
+			if (initial_conditions1[i * 7] == ifile)
+			{
+				if (c_index[k * 7] != -1)	// entity k should be defined in tempBin
+				{
+					if (tempBin.Get_Solution(k) != NULL)
+					{
+						restart_bin.Set_Solution(j, tempBin.Get_Solution(k));
+					}
+					else
+					{
+						assert(false);
+						initial_conditions1[7 * i] = -1;
+					}
+				}
+			}
+
+			// PPassemblage
+			if (initial_conditions1[i * 7 + 1] == ifile)
+			{
+				if (c_index[k * 7 + 1] != -1)	// entity k should be defined in tempBin
+				{
+					if (tempBin.Get_PPassemblage(k) != NULL)
+					{
+						restart_bin.Set_PPassemblage(j, tempBin.Get_PPassemblage(k));
+					}
+					else
+					{
+						assert(false);
+						initial_conditions1[7 * i + 1] = -1;
+					}
+				}
+			}
+
+			// Exchange
+			if (initial_conditions1[i * 7 + 2] == ifile)
+			{
+				if (c_index[k * 7 + 2] != -1)	// entity k should be defined in tempBin
+				{
+					if (tempBin.Get_Exchange(k) != NULL)
+					{
+						restart_bin.Set_Exchange(j, tempBin.Get_Exchange(k));
+					}
+					else
+					{
+						assert(false);
+						initial_conditions1[7 * i + 2] = -1;
+					}
+				}
+			}
+
+			// Surface
+			if (initial_conditions1[i * 7 + 3] == ifile)
+			{
+				if (c_index[k * 7 + 3] != -1)	// entity k should be defined in tempBin
+				{
+					if (tempBin.Get_Surface(k) != NULL)
+					{
+						restart_bin.Set_Surface(j, tempBin.Get_Surface(k));
+					}
+					else
+					{
+						assert(false);
+						initial_conditions1[7 * i + 3] = -1;
+					}
+				}
+			}
+
+			// Gas phase
+			if (initial_conditions1[i * 7 + 4] == ifile)
+			{
+				if (c_index[k * 7 + 4] != -1)	// entity k should be defined in tempBin
+				{
+					if (tempBin.Get_GasPhase(k) != NULL)
+					{
+						restart_bin.Set_GasPhase(j, tempBin.Get_GasPhase(k));
+					}
+					else
+					{
+						assert(false);
+						initial_conditions1[7 * i + 4] = -1;
+					}
+				}
+			}
+
+			// Solid solution
+			if (initial_conditions1[i * 7 + 5] == ifile)
+			{
+				if (c_index[k * 7 + 5] != -1)	// entity k should be defined in tempBin
+				{
+					if (tempBin.Get_SSassemblage(k) != NULL)
+					{
+						restart_bin.Set_SSassemblage(j, tempBin.Get_SSassemblage(k));
+					}
+					else
+					{
+						assert(false);
+						initial_conditions1[7 * i + 5] = -1;
+					}
+				}
+			}
+
+			// Kinetics
+			if (initial_conditions1[i * 7 + 6] == ifile)
+			{
+				if (c_index[k * 7 + 6] != -1)	// entity k should be defined in tempBin
+				{
+					if (tempBin.Get_Kinetics(k) != NULL)
+					{
+						restart_bin.Set_Kinetics(j, tempBin.Get_Kinetics(k));
+					}
+					else
+					{
+						assert(false);
+						initial_conditions1[7 * i + 6] = -1;
+					}
+				}
+			}
+		}
+		myfile.close();
+	}
+
+	// put restart definitions in reaction module
+	this->phast_iphreeqc_worker->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(restart_bin);
+
+	// initialize uz
+	if (this->transient_free_surface)
+	{
+		for (i = 0; i < this->nxyz; i++)
+		{
+			this->old_frac.push_back(1.0);
+		}
+	}
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Distribute_initial_conditions(
+					int id, 
+					int *initial_conditions1,
+					int *initial_conditions2, 
+					double *fraction1,
+					int exchange_units, 
+					int surface_units, 
+					int ssassemblage_units,
+					int ppassemblage_units, 
+					int gasphase_units, 
+					int kinetics_units)
+/* ---------------------------------------------------------------------- */
+{
+	/*
+	 *      nxyz - number of cells
+	 *      initial_conditions1 - Fortran, 7 x n_cell integer array, containing
+	 *           solution number
+	 *           pure_phases number
+	 *           exchange number
+	 *           surface number
+	 *           gas number
+	 *           solid solution number
+	 *           kinetics number
+	 *      initial_conditions2 - Fortran, 7 x n_cell integer array, containing
+	 *      fraction for 1 - Fortran, 7 x n_cell integer array, containing
+	 *
+	 *      Routine mixes solutions, pure_phase assemblages,
+	 *      exchangers, surface complexers, gases, solid solution assemblages,
+	 *      and kinetics for each cell.
+	 *   
+	 *      saves results in restart_bin and then the reaction module
 	 */
 	int i, j;
 	/*
@@ -820,6 +1116,7 @@ Reaction_module::Distribute_initial_conditions(
 		}
 	}
 }
+#endif
 #ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
@@ -1630,6 +1927,7 @@ Reaction_module::Cell_initialize(
 	int n_old1, n_old2;
 	double f1;
 
+	cxxStorageBin initial_bin;
 	/*
 	 *   Copy solution
 	 */
@@ -1643,7 +1941,7 @@ Reaction_module::Cell_initialize(
 		if (n_old2 >= 0)
 			mx.Add(n_old2, 1 - f1);
 		cxxSolution cxxsoln(phreeqc_bin.Get_Solutions(), mx, n_user_new);
-		sz_bin.Set_Solution(n_user_new, &cxxsoln);
+		initial_bin.Set_Solution(n_user_new, &cxxsoln);
 	}
 
 	/*
@@ -1664,7 +1962,7 @@ Reaction_module::Cell_initialize(
 		}
 		cxxPPassemblage cxxentity(phreeqc_bin.Get_PPassemblages(), mx,
 								  n_user_new);
-		sz_bin.Set_PPassemblage(n_user_new, &cxxentity);
+		initial_bin.Set_PPassemblage(n_user_new, &cxxentity);
 	}
 	/*
 	 *   Copy exchange assemblage
@@ -1684,7 +1982,7 @@ Reaction_module::Cell_initialize(
 			mx.Multiply(porosity_factor);
 		}
 		cxxExchange cxxexch(phreeqc_bin.Get_Exchangers(), mx, n_user_new);
-		sz_bin.Set_Exchange(n_user_new, &cxxexch);
+		initial_bin.Set_Exchange(n_user_new, &cxxexch);
 	}
 	/*
 	 *   Copy surface assemblage
@@ -1703,7 +2001,7 @@ Reaction_module::Cell_initialize(
 			mx.Multiply(porosity_factor);
 		}
 		cxxSurface cxxentity(phreeqc_bin.Get_Surfaces(), mx, n_user_new);
-		sz_bin.Set_Surface(n_user_new, &cxxentity);
+		initial_bin.Set_Surface(n_user_new, &cxxentity);
 	}
 	/*
 	 *   Copy gas phase
@@ -1722,7 +2020,7 @@ Reaction_module::Cell_initialize(
 			mx.Multiply(porosity_factor);
 		}
 		cxxGasPhase cxxentity(phreeqc_bin.Get_GasPhases(), mx, n_user_new);
-		sz_bin.Set_GasPhase(n_user_new, &cxxentity);
+		initial_bin.Set_GasPhase(n_user_new, &cxxentity);
 	}
 	/*
 	 *   Copy solid solution
@@ -1742,7 +2040,7 @@ Reaction_module::Cell_initialize(
 		}
 		cxxSSassemblage cxxentity(phreeqc_bin.Get_SSassemblages(), mx,
 								  n_user_new);
-		sz_bin.Set_SSassemblage(n_user_new, &cxxentity);
+		initial_bin.Set_SSassemblage(n_user_new, &cxxentity);
 	}
 	/*
 	 *   Copy kinetics
@@ -1761,9 +2059,9 @@ Reaction_module::Cell_initialize(
 			mx.Multiply(porosity_factor);
 		}
 		cxxKinetics cxxentity(phreeqc_bin.Get_Kinetics(), mx, n_user_new);
-		sz_bin.Set_Kinetics(n_user_new, &cxxentity);
+		initial_bin.Set_Kinetics(n_user_new, &cxxentity);
 	}
-
+	this->phast_iphreeqc_worker->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(initial_bin);
 	return;
 }
 #ifdef SKIP
@@ -2273,11 +2571,17 @@ Reaction_module::Fractions2Solutions(void)
 			if (d[k] <= 1e-14) d[k] = 0.0;
 			nd.add(components[k].c_str(), d[k]);
 		}	
-		this->sz_bin.Get_Solution((int) j)->Update(
-			d[0] + 2.0/gfw_water,
-			d[1] + 1.0/gfw_water,
-			d[2],
-			nd);
+
+		cxxSolution *soln_ptr = this->phast_iphreeqc_worker->Get_solution(j);
+		//this->sz_bin.Get_Solution((int) j)->Update(
+		if (soln_ptr)
+		{
+			soln_ptr->Update(
+				d[0] + 2.0/gfw_water,
+				d[1] + 1.0/gfw_water,
+				d[2],
+				nd);
+		}
 	}
 	return;
 }
@@ -2375,7 +2679,9 @@ Reaction_module::Solutions2Fractions(void)
 	for (j = 0; j < this->count_chem; j++)
 	{
 		// load fractions into d
-		cxxSolution * cxxsoln_ptr = this->sz_bin.Get_Solution(j);
+		cxxSolution * cxxsoln_ptr = this->phast_iphreeqc_worker->Get_solution(j);
+		assert (cxxsoln_ptr);
+		//cxxSolution * cxxsoln_ptr = this->sz_bin.Get_Solution(j);
 		this->cxxSolution2fraction(cxxsoln_ptr, d);
 
 		// store in fraction at 1, 2, or 4 places depending on chemistry dimensions
@@ -2683,72 +2989,78 @@ Reaction_module::Partition_uz(int iphrq, int ihst, double new_frac)
 	 *   Calculate new compositions
 	 */
 
+	cxxStorageBin sz_bin;
+	this->phast_iphreeqc_worker->Put_cell_in_storage_bin(sz_bin, n_user);
 //Exchange
-	if (this->sz_bin.Get_Exchange(n_user) != NULL)
+	if (sz_bin.Get_Exchange(n_user) != NULL)
 	{
 		cxxStorageBin tempBin;
-		tempBin.Set_Exchange(0, this->sz_bin.Get_Exchange(n_user));
+		tempBin.Set_Exchange(0, sz_bin.Get_Exchange(n_user));
 		tempBin.Set_Exchange(1, this->uz_bin.Get_Exchange(n_user));
 		cxxExchange newsz(tempBin.Get_Exchangers(), szmix, n_user);
 		cxxExchange newuz(tempBin.Get_Exchangers(), uzmix, n_user);
-		this->sz_bin.Set_Exchange(n_user, &newsz);
+		sz_bin.Set_Exchange(n_user, &newsz);
 		this->uz_bin.Set_Exchange(n_user, &newuz);
 	}
 //PPassemblage
-	if (this->sz_bin.Get_PPassemblage(n_user) != NULL)
+	if (sz_bin.Get_PPassemblage(n_user) != NULL)
 	{
 		cxxStorageBin tempBin;
-		tempBin.Set_PPassemblage(0, this->sz_bin.Get_PPassemblage(n_user));
+		tempBin.Set_PPassemblage(0, sz_bin.Get_PPassemblage(n_user));
 		tempBin.Set_PPassemblage(1, this->uz_bin.Get_PPassemblage(n_user));
 		cxxPPassemblage newsz(tempBin.Get_PPassemblages(), szmix, n_user);
 		cxxPPassemblage newuz(tempBin.Get_PPassemblages(), uzmix, n_user);
-		this->sz_bin.Set_PPassemblage(n_user, &newsz);
+		sz_bin.Set_PPassemblage(n_user, &newsz);
 		this->uz_bin.Set_PPassemblage(n_user, &newuz);
 	}
 //Gas_phase
-	if (this->sz_bin.Get_GasPhase(n_user) != NULL)
+	if (sz_bin.Get_GasPhase(n_user) != NULL)
 	{
 		cxxStorageBin tempBin;
-		tempBin.Set_GasPhase(0, this->sz_bin.Get_GasPhase(n_user));
+		tempBin.Set_GasPhase(0, sz_bin.Get_GasPhase(n_user));
 		tempBin.Set_GasPhase(1, this->uz_bin.Get_GasPhase(n_user));
 		cxxGasPhase newsz(tempBin.Get_GasPhases(), szmix, n_user);
 		cxxGasPhase newuz(tempBin.Get_GasPhases(), uzmix, n_user);
-		this->sz_bin.Set_GasPhase(n_user, &newsz);
+		sz_bin.Set_GasPhase(n_user, &newsz);
 		this->uz_bin.Set_GasPhase(n_user, &newuz);
 	}
 //SSassemblage
-	if (this->sz_bin.Get_SSassemblage(n_user) != NULL)
+	if (sz_bin.Get_SSassemblage(n_user) != NULL)
 	{
 		cxxStorageBin tempBin;
-		tempBin.Set_SSassemblage(0, this->sz_bin.Get_SSassemblage(n_user));
+		tempBin.Set_SSassemblage(0, sz_bin.Get_SSassemblage(n_user));
 		tempBin.Set_SSassemblage(1, this->uz_bin.Get_SSassemblage(n_user));
 		cxxSSassemblage newsz(tempBin.Get_SSassemblages(), szmix, n_user);
 		cxxSSassemblage newuz(tempBin.Get_SSassemblages(), uzmix, n_user);
-		this->sz_bin.Set_SSassemblage(n_user, &newsz);
+		sz_bin.Set_SSassemblage(n_user, &newsz);
 		this->uz_bin.Set_SSassemblage(n_user, &newuz);
 	}
 //Kinetics
-	if (this->sz_bin.Get_Kinetics(n_user) != NULL)
+	if (sz_bin.Get_Kinetics(n_user) != NULL)
 	{
 		cxxStorageBin tempBin;
-		tempBin.Set_Kinetics(0, this->sz_bin.Get_Kinetics(n_user));
+		tempBin.Set_Kinetics(0, sz_bin.Get_Kinetics(n_user));
 		tempBin.Set_Kinetics(1, this->uz_bin.Get_Kinetics(n_user));
 		cxxKinetics newsz(tempBin.Get_Kinetics(), szmix, n_user);
 		cxxKinetics newuz(tempBin.Get_Kinetics(), uzmix, n_user);
-		this->sz_bin.Set_Kinetics(n_user, &newsz);
+		sz_bin.Set_Kinetics(n_user, &newsz);
 		this->uz_bin.Set_Kinetics(n_user, &newuz);
 	}
 //Surface
-	if (this->sz_bin.Get_Surface(n_user) != NULL)
+	if (sz_bin.Get_Surface(n_user) != NULL)
 	{
 		cxxStorageBin tempBin;
-		tempBin.Set_Surface(0, this->sz_bin.Get_Surface(n_user));
+		tempBin.Set_Surface(0, sz_bin.Get_Surface(n_user));
 		tempBin.Set_Surface(1, this->uz_bin.Get_Surface(n_user));
 		cxxSurface newsz(tempBin.Get_Surfaces(), szmix, n_user);
 		cxxSurface newuz(tempBin.Get_Surfaces(), uzmix, n_user);
-		this->sz_bin.Set_Surface(n_user, &newsz);
+		sz_bin.Set_Surface(n_user, &newsz);
 		this->uz_bin.Set_Surface(n_user, &newuz);
 	}
+
+	// Put back in reaction module
+	this->phast_iphreeqc_worker->Get_cell_from_storage_bin(sz_bin, n_user);
+
 	/*
 	 *   Eliminate uz if new fraction 1.0
 	 */
@@ -3114,13 +3426,14 @@ Reaction_module::Run_cells()
 			{
 				if (pv0[j] != 0 && pv[j] != 0 && pv0[j] != pv[j])
 				{
-					cxxSolution * cxxsol = sz_bin.Get_Solution(i);
+					//cxxSolution * cxxsol = sz_bin.Get_Solution(i);
+					cxxSolution * cxxsol = this->phast_iphreeqc_worker->Get_solution(i);
 					cxxsol->multiply(pv[j] / pv0[j]);
 				}
 			}
 
 			// Move reactants from sz_bin to phreeqc
-			this->phast_iphreeqc_worker->Get_cell_from_storage_bin(sz_bin, i);
+			//this->phast_iphreeqc_worker->Get_cell_from_storage_bin(sz_bin, i);
 
 			// Set print flags
 			this->phast_iphreeqc_worker->SetOutputStringOn(pr_chem);
@@ -3137,8 +3450,21 @@ Reaction_module::Run_cells()
 			if (this->phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) Error_stop();
 
 			// Save reactants back in sz_bin
-			this->phast_iphreeqc_worker->Put_cell_in_storage_bin(sz_bin, i);
+			//this->phast_iphreeqc_worker->Put_cell_in_storage_bin(sz_bin, i);
+			if (transient_free_surface == TRUE)
+				Scale_solids(i, frac[j]);
 
+			if (!transient_free_surface && !steady_flow)
+			{
+				assert(pv0[j] != 0);
+				assert(pv[j] != 0);
+				if (pv0[j] != 0 && pv[j] != 0 && pv0[j] != pv[j])
+				{
+					cxxSolution * cxxsol = this->phast_iphreeqc_worker->Get_solution(i);
+					//cxxSolution * cxxsol = sz_bin.Get_Solution(i);
+					cxxsol->multiply(pv0[j] / pv[j]);
+				}
+			}
 			// write headings to xyz file
 			if (pr_xyz && this->write_xyz_headings)
 			{
@@ -3188,17 +3514,35 @@ Reaction_module::Run_cells()
 			}
 
 			// delete cell from worker
-			{
-				std::ostringstream input;
-				input << "DELETE; -cell " << i << std::endl;
-				if (this->phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) Error_stop();
-			}
+			//{
+			//	std::ostringstream input;
+			//	input << "DELETE; -cell " << i << std::endl;
+			//	if (this->phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) Error_stop();
+			//}
 
 		} // end active
+		else
+		{
+			if (pr_chem)
+			{
+				std::ostringstream line;
+				line << "Time " << (*time_hst) * (*cnvtmi);
+				line << ". Cell " << j + 1 << ": ";
+				line << "x= " << x_node[j] << "\t";
+				line << "y= " << y_node[j] << "\t";
+				line << "z= " << z_node[j] << "\n";
+				Write_output(line.str().c_str());
+				Write_output(this->phast_iphreeqc_worker->GetOutputString());
+			}
+		}
 
 	} // end one cell
+	
+	this->Solutions2Fractions();
+
 	std::cerr << "Running: " << (double) (clock() - t0) << std::endl;
 	Sleep(1000);
+	exit(4);
 
 }
 /* ---------------------------------------------------------------------- */
@@ -3220,7 +3564,9 @@ Reaction_module::Scale_solids(int iphrq, LDBLE frac)
 	/*
 	 *   Scale compositions
 	 */
-	if (this->sz_bin.Get_Exchange(n_user) != NULL)
+	cxxStorageBin sz_bin;
+	this->phast_iphreeqc_worker->Put_cell_in_storage_bin(sz_bin, n_user);
+	if (sz_bin.Get_Exchange(n_user) != NULL)
 	{
 		cxxExchange cxxentity(sz_bin.Get_Exchangers(), cxxmix, n_user);
 		sz_bin.Set_Exchange(n_user, &cxxentity);
@@ -3250,6 +3596,7 @@ Reaction_module::Scale_solids(int iphrq, LDBLE frac)
 		cxxSurface cxxentity(sz_bin.Get_Surfaces(), cxxmix, n_user);
 		sz_bin.Set_Surface(n_user, &cxxentity);
 	}
+	this->phast_iphreeqc_worker->Get_cell_from_storage_bin(sz_bin, n_user);
 	return;
 }
 /* ---------------------------------------------------------------------- */
@@ -3285,7 +3632,10 @@ Reaction_module::Write_bc_raw(int *solution_list, int * bc_solution_count,
 		if (n_chem >= 0)
 		{
 			ofs << "# Fortran cell " << n_fort << ". Time " << (*this->time_hst) * (*this->cnvtmi) << "\n";
-			sz_bin.Get_Solution(n_chem)->dump_raw(ofs, raw_number++, 0);
+
+			//sz_bin.Get_Solution(n_chem)->dump_raw(ofs, raw_number++, 0);
+			cxxSolution *soln_ptr=  this->phast_iphreeqc_worker->Get_solution(n_chem);
+			soln_ptr->dump_raw(ofs, raw_number++, 0);
 		}
 		else
 		{
@@ -3374,7 +3724,14 @@ Reaction_module::Write_restart(void)
 	}
 
 	// write data
-	sz_bin.dump_raw(ofs_restart, 0);
+	//sz_bin.dump_raw(ofs_restart, 0);
+	for (j = 0; j < count_chem; j++)	/* j is count_chem number */
+	{
+		cxxStorageBin sz_bin;
+		this->phast_iphreeqc_worker->Get_cell_from_storage_bin(sz_bin, j);
+		sz_bin.dump_raw(ofs_restart, 0);
+	}
+
 	ofs_restart.close();
 	// rename files
 	this->File_rename(temp_name.c_str(), name.c_str(), backup_name.c_str());

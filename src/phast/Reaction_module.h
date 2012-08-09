@@ -157,7 +157,7 @@ protected:
 	std::string database_file_name;
 	std::string file_prefix;
 	cxxStorageBin uz_bin;
-	cxxStorageBin sz_bin;
+	//cxxStorageBin sz_bin;
 	cxxStorageBin phreeqc_bin;
 	std::map < std::string, int > FileMap; 
 	int mpi_myself;
