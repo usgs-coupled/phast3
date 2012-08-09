@@ -19,6 +19,7 @@ public:
 	void Put_cell_in_storage_bin(cxxStorageBin & sb, int i);
 	Phreeqc * Get_PhreeqcPtr(void) {return PhreeqcPtr;};
 	size_t Get_Index() {return (int) this->Index;}
+	cxxSolution *Get_solution(int n_user);
 
 protected:
 	friend class IPhreeqcPhastLib;

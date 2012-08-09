@@ -1,6 +1,7 @@
 #include "IPhreeqcPhast.h"
 #define protected public
 #include "Phreeqc.h"
+#include "Solution.h"
 #undef protected
 
 #include <assert.h>
@@ -99,4 +100,11 @@ IPhreeqcPhast::Put_cell_in_storage_bin(cxxStorageBin & sb, int i)
 	//Phreeqc * phreeqc_ptr = this->Get_PhreeqcPtr();
 	Phreeqc * phreeqc_ptr = this->PhreeqcPtr;
 	phreeqc_ptr->phreeqc2cxxStorageBin(sb, i);
+}
+/* ---------------------------------------------------------------------- */
+cxxSolution *
+IPhreeqcPhast::Get_solution(int i)
+/* ---------------------------------------------------------------------- */
+{
+	return Utilities::Rxn_find(this->PhreeqcPtr->Rxn_solution_map, i);
 }
