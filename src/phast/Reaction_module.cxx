@@ -3432,9 +3432,6 @@ Reaction_module::Run_cells()
 				}
 			}
 
-			// Move reactants from sz_bin to phreeqc
-			//this->phast_iphreeqc_worker->Get_cell_from_storage_bin(sz_bin, i);
-
 			// Set print flags
 			this->phast_iphreeqc_worker->SetOutputStringOn(pr_chem);
 			this->phast_iphreeqc_worker->SetSelectedOutputStringOn(pr_xyz);
@@ -3445,38 +3442,47 @@ Reaction_module::Run_cells()
 			input << "  -start_time " << (*this->time_hst - *this->time_step_hst) << std::endl;
 			input << "  -time_step  " << *this->time_step_hst << std::endl;
 			input << "  -cells      " << i << std::endl;
-			//input << "KNOBS; -debug_model\n";
 			input << "END" << std::endl;
 			if (this->phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) Error_stop();
 
-			// Save reactants back in sz_bin
-			//this->phast_iphreeqc_worker->Put_cell_in_storage_bin(sz_bin, i);
+			// Adjust for fractional saturation and pore volume
 			if (transient_free_surface == TRUE)
 				Scale_solids(i, frac[j]);
-
-			if (!transient_free_surface && !steady_flow)
+			assert(pv0[j] != 0);
+			assert(pv[j] != 0);
+			if (pv0[j] != 0 && pv[j] != 0 && pv0[j] != pv[j])
 			{
-				assert(pv0[j] != 0);
-				assert(pv[j] != 0);
-				if (pv0[j] != 0 && pv[j] != 0 && pv0[j] != pv[j])
-				{
-					cxxSolution * cxxsol = this->phast_iphreeqc_worker->Get_solution(i);
-					//cxxSolution * cxxsol = sz_bin.Get_Solution(i);
-					cxxsol->multiply(pv0[j] / pv[j]);
-				}
+				cxxSolution * cxxsol = this->phast_iphreeqc_worker->Get_solution(i);
+				cxxsol->multiply(pv0[j] / pv[j]);
 			}
+
 			// write headings to xyz file
 			if (pr_xyz && this->write_xyz_headings)
 			{
 				std::ostringstream h;
-				h << "               x\t";
-				h << "               y\t";
-				h << "               z\t";
-				h << "            time\t";
-				h << "              in\t";
-				h << this->phast_iphreeqc_worker->GetSelectedOutputStringLine(0);
+				h.width(15);
+				h  << "x\t";
+				h << "y\t";
+				h << "z\t";
+				h << "time\t";
+				h << "in\t";
+				int n = this->phast_iphreeqc_worker->GetSelectedOutputColumnCount();
+				VAR pv;
+				VarInit(&pv);
+				for (int i = 0; i < n; i++)
+				{
+					this->phast_iphreeqc_worker->GetSelectedOutputValue(0, i, &pv);
+					h.width(15);
+					std::string s(pv.sVal);
+					s.append("\t");
+					h.width(15);
+					h << s;
+				}
+				VarClear(&pv);
+				//h << this->phast_iphreeqc_worker->GetSelectedOutputStringLine(0);
 				this->write_xyz_headings = false;
 				Write_xyz(h.str().c_str());
+				Write_xyz("\n");
 			}
 
 			// write xyz file
@@ -3490,8 +3496,10 @@ Reaction_module::Run_cells()
 				h << z_node[j] << "\t";
 				h << (*this->time_hst) * (*this->cnvtmi) << "\t";
 				h << (active ? 1 : 0) << "\t";
-				h << this->phast_iphreeqc_worker->GetSelectedOutputStringLine(1);
 				Write_xyz(h.str().c_str());
+				//h << this->phast_iphreeqc_worker->GetSelectedOutputStringLine(1);
+				Write_xyz(this->phast_iphreeqc_worker->GetSelectedOutputStringLine(0));
+				Write_xyz("\n");
 			}
 
 			// Write output file
@@ -3510,16 +3518,8 @@ Reaction_module::Run_cells()
 			if (pr_hdf)
 			{
 				std::vector<double> d;
-//todo:				this->phast_iphreeqc_worker->Selected_out_to_double(1, d);
+				//todo:				this->phast_iphreeqc_worker->Selected_out_to_double(1, d);
 			}
-
-			// delete cell from worker
-			//{
-			//	std::ostringstream input;
-			//	input << "DELETE; -cell " << i << std::endl;
-			//	if (this->phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) Error_stop();
-			//}
-
 		} // end active
 		else
 		{
@@ -3541,8 +3541,8 @@ Reaction_module::Run_cells()
 	this->Solutions2Fractions();
 
 	std::cerr << "Running: " << (double) (clock() - t0) << std::endl;
-	Sleep(1000);
-	exit(4);
+	//Sleep(1000);
+	//exit(4);
 
 }
 /* ---------------------------------------------------------------------- */
