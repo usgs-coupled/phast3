@@ -343,7 +343,8 @@ void RM_get_component(int * rm_id, int * num, char *chem_name, int l1)
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
 	if (Reaction_module_ptr)
 	{
-		strcpy(chem_name, Reaction_module_ptr->Get_components()[*num - 1].c_str());
+		//strcpy(chem_name, Reaction_module_ptr->Get_components()[*num - 1].c_str());
+		strncpy(chem_name, Reaction_module_ptr->Get_components()[*num - 1].c_str(), Reaction_module_ptr->Get_components()[*num - 1].size());
 	}
 }
 /* ---------------------------------------------------------------------- */
@@ -578,25 +579,27 @@ void RM_run_cells(int *id,
 			 double *time_step_hst,				    // time step from transport
  			 double *fraction,					    // mass fractions nxyz:components
 			 double *frac,							// saturation fraction
-			 double *pv                             // nxyz current pore volumes 
-			 )
+			 double *pv,                            // nxyz current pore volumes 
+			 int * stop_msg)
 /* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
-	if (Reaction_module_ptr)
+	if (*stop_msg == 0)
 	{
-		Reaction_module_ptr->Set_prslm(*prslm != 0);	  
-		Reaction_module_ptr->Set_print_chem(*print_chem != 0);
-		Reaction_module_ptr->Set_print_xyz(*print_xyz != 0);
-		Reaction_module_ptr->Set_print_hdf(*print_hdf != 0);
-		Reaction_module_ptr->Set_print_restart(*print_restart != 0);
-		Reaction_module_ptr->Set_time_hst(time_hst);
-		Reaction_module_ptr->Set_time_step_hst(time_step_hst);
-		Reaction_module_ptr->Set_fraction(fraction);
-		Reaction_module_ptr->Set_frac(frac);
-		Reaction_module_ptr->Set_pv(pv);
-
-		Reaction_module_ptr->Run_cells();
+		Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+		if (Reaction_module_ptr)
+		{
+			Reaction_module_ptr->Set_prslm(*prslm != 0);	  
+			Reaction_module_ptr->Set_print_chem(*print_chem != 0);
+			Reaction_module_ptr->Set_print_xyz(*print_xyz != 0);
+			Reaction_module_ptr->Set_print_hdf(*print_hdf != 0);
+			Reaction_module_ptr->Set_print_restart(*print_restart != 0);
+			Reaction_module_ptr->Set_time_hst(time_hst);
+			Reaction_module_ptr->Set_time_step_hst(time_step_hst);
+			Reaction_module_ptr->Set_fraction(fraction);
+			Reaction_module_ptr->Set_frac(frac);
+			Reaction_module_ptr->Set_pv(pv);
+			Reaction_module_ptr->Run_cells();
+		}
 	}
 }
 void

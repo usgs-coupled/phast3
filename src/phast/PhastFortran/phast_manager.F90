@@ -83,6 +83,7 @@ SUBROUTINE phast_manager
     ENDIF
     do i = 1, ns
        !CALL GetComponent(rm_id, i, comp_name(i))
+       comp_name(i) = ' '
        CALL RM_get_component(rm_id, i, comp_name(i))
     enddo   
     CALL RM_log_screen_prt("Done with Initial PHREEQC run.")
@@ -117,11 +118,9 @@ SUBROUTINE phast_manager
   endif
   CALL error2
 
-#ifdef SKIP_REWRITE_PHAST !-------------------------------------------------------------------------
 #if defined(HDF5_CREATE)
-  CALL hdf_write_invariant(mpi_myself)
-  CALL hdf_begin_time_step
-#endif
+!TODO:  CALL hdf_write_invariant(mpi_myself)
+!TODO:  CALL hdf_begin_time_step
 #endif
   !
   ! ...  Initialize chemistry 
@@ -196,34 +195,33 @@ SUBROUTINE phast_manager
   !
   ! ...  Initial equilibrate
   !
-  IF (solute) THEN
-     ! ... Equilibrate the initial conditions for component concentrations
-     WRITE(logline1,'(a)') 'Equilibration of cells for initial conditions.'
-     CALL RM_log_screen_prt(logline1)
-     print_restart_flag = 0 
-     stop_msg = 0
-     deltim_dummy = 0._kdp
-     !CALL RM_pass_print
-     !CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time_phreeqc,deltim_dummy,prslmi,  &
-     !     cnvtmi,frac_icchem,iprint_chem,iprint_xyz,  &
-     !     prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f,  &
-     !     print_restart_flag, pv, pv0, steady_flow, volume, przf_xyzt)
-     CALL RM_run_cells( &
-        rm_id,          &
-        prslmi,         &        ! prslm
-        prf_chem_phrqi, &        ! print_chem
-        prcphrqi,       &        ! print_xyz
-        prhdfci,        &        ! print_hdf
-        print_restart_flag, &    ! print_restart
-        time_phreeqc, &          ! time_hst
-        deltim_dummy, &          ! time_step_hst
-        c,            &          ! fraction
-        frac,         &          ! frac
-        pv)                      ! pv
-!TODO:     CALL zone_flow_write_chem(mpi_tasks, mpi_myself, .true.)
-!TODO:     CALL init2_3        
-  ENDIF
-#ifdef SKIP_REWRITE_PHAST !-------------------------------------------------------------------------
+    IF (solute) THEN
+        ! ... Equilibrate the initial conditions for component concentrations
+        WRITE(logline1,'(a)') 'Equilibration of cells for initial conditions.'
+        CALL RM_log_screen_prt(logline1)
+        print_restart_flag = 0 
+        stop_msg = 1
+        deltim_dummy = 0._kdp
+        !CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time_phreeqc,deltim_dummy,prslmi,  &
+        !     cnvtmi,frac_icchem,iprint_chem,iprint_xyz,  &
+        !     prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f,  &
+        !     print_restart_flag, pv, pv0, steady_flow, volume, przf_xyzt)
+        CALL RM_run_cells(     &
+            rm_id,              &
+            prslmi,             &        ! prslm
+            prf_chem_phrqi,     &        ! print_chem
+            prcphrqi,           &        ! print_xyz
+            prhdfci,            &        ! print_hdf
+            print_restart_flag, &        ! print_restart
+            time_phreeqc,       &        ! time_hst
+            deltim_dummy,       &        ! time_step_hst
+            c,                  &        ! fraction
+            frac,               &        ! frac
+            pv,                 &        ! pv 
+            stop_msg) 
+        CALL zone_flow_write_chem(mpi_tasks, mpi_myself, .true.)
+        CALL init2_3        
+    ENDIF
   !
   ! ...  Write initial results
   !
@@ -232,8 +230,9 @@ SUBROUTINE phast_manager
      CALL write3
      CALL write4
   ENDIF
+
 #if defined(HDF5_CREATE)
-  CALL hdf_end_time_step          ! ... Print HDF head and velocity fields
+!TODO:  CALL hdf_end_time_step          ! ... Print HDF head and velocity fields
 #endif
   !   
   ! ... distribute  initial p and c_w to workers from manager
@@ -244,7 +243,7 @@ SUBROUTINE phast_manager
   IF(errexe .OR. errexi) GO TO 50
   !
   ! ...  Transient loop
-  !    
+  ! 
   IF(solute .OR. .NOT.steady_flow) THEN
      logline1 = 'Beginning transient simulation.'
      CALL RM_log_screen_prt(logline1)
@@ -350,18 +349,31 @@ SUBROUTINE phast_manager
         ! ... Done with transport for time step
         !
 #if defined(HDF5_CREATE)
-        CALL hdf_begin_time_step
+!TODO:        CALL hdf_begin_time_step
 #endif
         ! ... Equilibrate the solutions with PHREEQC
         ! ... This is the connection to the equilibration step after transport
         CALL time_parallel(11)        
         IF (solute) THEN
-           stop_msg = 0
-           WRITE(logline1,'(a)') '     Beginning chemistry calculation.'
-           CALL RM_log_screen_prt(logline1)
-           CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time,deltim,prslmi,cnvtmi,  &
-                frac,iprint_chem,iprint_xyz,prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f,  &
-                print_restart%print_flag_integer, pv, pv0, steady_flow, volume, przf_xyzt)
+            WRITE(logline1,'(a)') '     Beginning chemistry calculation.'
+            CALL RM_log_screen_prt(logline1)
+            stop_msg = 0
+            CALL RM_run_cells(      &
+                rm_id,              &
+                prslmi,             &        ! prslm
+                prf_chem_phrqi,     &        ! print_chem
+                prcphrqi,           &        ! print_xyz
+                prhdfci,            &        ! print_hdf
+                print_restart_flag, &        ! print_restart
+                time,               &        ! time_hst
+                deltim,             &        ! time_step_hst
+                c,                  &        ! fraction
+                frac,               &        ! frac
+                pv,                 &        ! pv 
+                stop_msg) 
+!           CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time,deltim,prslmi,cnvtmi,  &
+!                frac,iprint_chem,iprint_xyz,prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f,  &
+!                print_restart%print_flag_integer, pv, pv0, steady_flow, volume, przf_xyzt)
         ENDIF
         CALL time_parallel(12)
         CALL sumcal2
@@ -375,9 +387,9 @@ SUBROUTINE phast_manager
            CALL write4
         ENDIF
 #if defined(HDF5_CREATE)
-        CALL hdf_end_time_step
+!TODO:        CALL hdf_end_time_step
         IF (prhdfii) THEN
-           CALL write_hdf_intermediate     
+!TODO:          CALL write_hdf_intermediate     
         ENDIF
 #endif            
         CALL update_print_flags          ! ... Update times for next printouts
@@ -393,6 +405,8 @@ SUBROUTINE phast_manager
         !
      ENDDO
   ENDIF
+#ifdef SKIP_REWRITE_PHAST !-------------------------------------------------------------------------
+ 
 #endif
 50 CONTINUE
   !
@@ -552,8 +566,8 @@ SUBROUTINE phast_manager
   CALL init2_2
   CALL error2
 #if defined(HDF5_CREATE)
-  CALL hdf_write_invariant(mpi_myself)
-  CALL hdf_begin_time_step
+!TODO:  CALL hdf_write_invariant(mpi_myself)
+!TODO:  CALL hdf_begin_time_step
 #endif
   !
   ! ...  Initialize chemistry 
@@ -619,7 +633,7 @@ SUBROUTINE phast_manager
      CALL write4
   ENDIF
 #if defined(HDF5_CREATE)
-  CALL hdf_end_time_step          ! ... Print HDF head and velocity fields
+!TODO:  CALL hdf_end_time_step          ! ... Print HDF head and velocity fields
 #endif
   !   
   ! ... distribute  initial p and c_w to workers from manager
@@ -736,7 +750,7 @@ SUBROUTINE phast_manager
         ! ... Done with transport for time step
         !
 #if defined(HDF5_CREATE)
-        CALL hdf_begin_time_step
+!TODO:        CALL hdf_begin_time_step
 #endif
         ! ... Equilibrate the solutions with PHREEQC
         ! ... This is the connection to the equilibration step after transport
@@ -757,7 +771,7 @@ SUBROUTINE phast_manager
            CALL write4
         ENDIF
 #if defined(HDF5_CREATE)
-        CALL hdf_end_time_step
+!TODO:        CALL hdf_end_time_step
 #endif            
         CALL update_print_flags          ! ... Update times for next printouts
         !

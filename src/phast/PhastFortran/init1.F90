@@ -20,7 +20,7 @@ SUBROUTINE init1
   USE print_control_mod
   IMPLICIT NONE
   INTEGER :: a_err, iis, nsa
-  CHARACTER(LEN=32), DIMENSION(:), ALLOCATABLE :: ucomp_name
+  !CHARACTER(LEN=32), DIMENSION(:), ALLOCATABLE :: ucomp_name
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
@@ -166,13 +166,13 @@ SUBROUTINE init1
   cnvt2i = 0._kdp
   IF (eeunit) cnvt2i = 32.0_kdp
   ! ... Allocate scratch space for component names
-  ALLOCATE (ucomp_name(100),  &
-       STAT = a_err)
-  IF (a_err /= 0) THEN
-     PRINT *, "Array allocation failed: init1, point 4"  
-     STOP  
-  ENDIF
-  ucomp_name=" "
+!  ALLOCATE (ucomp_name(100),  &
+!       STAT = a_err)
+!  IF (a_err /= 0) THEN
+!     PRINT *, "Array allocation failed: init1, point 4"  
+!     STOP  
+!  ENDIF
+!  ucomp_name=" "
   ! ... Start phreeqec and count number of components
   ! CALL PHREEQC_MAIN(SOLUTE, F1NAME, F2NAME, F3NAME)
 !  IF (solute) then
@@ -256,10 +256,11 @@ SUBROUTINE init1
   ENDIF
   c = 0._kdp
   zfs = -1.e20_kdp
-  IF(solute) THEN  
-     DO  iis=1,ns  
-        comp_name(iis) = ucomp_name(iis)
-     END DO
-  ENDIF
+  ! Done in phast_manager
+!  IF(solute) THEN  
+!     DO  iis=1,ns  
+!        comp_name(iis) = ucomp_name(iis)
+!     END DO
+!  ENDIF
   CALL pc_initialize         ! ... Initialize print control flags
 END SUBROUTINE init1

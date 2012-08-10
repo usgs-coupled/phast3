@@ -134,8 +134,8 @@ void RM_run_cells(int *id,
 			 double *time_step_hst,				    // time step from transport
  			 double *fraction,					    // mass fractions nxyz:components
 			 double *frac,							// saturation fraction
-			 double *pv                             // nxyz current pore volumes 
-			 );
+			 double *pv,                            // nxyz current pore volumes 
+			 int * stop_msg);
 void RM_send_restart_name(int *id, char * s, long l);
 void RM_setup_boundary_conditions(
 			int *id,
