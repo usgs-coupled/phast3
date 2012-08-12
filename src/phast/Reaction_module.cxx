@@ -3389,6 +3389,7 @@ Reaction_module::Run_cells()
 	std::cerr << "Converting: " << (double) (clock() - t0) << std::endl;
 	t0 = clock();
 	int i, j;
+
 	for (i = 0; i < this->count_chem; i++)
 	{							/* i is count_chem number */
 		j = back[i][0];			/* j is nxyz number */
@@ -3459,13 +3460,11 @@ Reaction_module::Run_cells()
 			// write headings to xyz file
 			if (pr_xyz && this->write_xyz_headings)
 			{
+				char line_buff[132];
+				sprintf(line_buff, "%15s\t%15s\t%15s\t%15s\t%2s\t", "x", "y",
+						   "z", "time", "in");
+
 				std::ostringstream h;
-				h.width(15);
-				h  << "x\t";
-				h << "y\t";
-				h << "z\t";
-				h << "time\t";
-				h << "in\t";
 				int n = this->phast_iphreeqc_worker->GetSelectedOutputColumnCount();
 				VAR pv;
 				VarInit(&pv);
@@ -3479,8 +3478,9 @@ Reaction_module::Run_cells()
 					h << s;
 				}
 				VarClear(&pv);
-				//h << this->phast_iphreeqc_worker->GetSelectedOutputStringLine(0);
+
 				this->write_xyz_headings = false;
+				Write_xyz(line_buff);
 				Write_xyz(h.str().c_str());
 				Write_xyz("\n");
 			}
@@ -3488,16 +3488,11 @@ Reaction_module::Run_cells()
 			// write xyz file
 			if (pr_xyz)
 			{
-				std::ostringstream h;
-				h.width(15);
-				h << x_node[j] << "\t";
-				h << y_node[j] << "\t";
-				h << z_node[j] << "\t";
-				h << z_node[j] << "\t";
-				h << (*this->time_hst) * (*this->cnvtmi) << "\t";
-				h << (active ? 1 : 0) << "\t";
-				Write_xyz(h.str().c_str());
-				//h << this->phast_iphreeqc_worker->GetSelectedOutputStringLine(1);
+				char line_buff[132];
+				sprintf(line_buff, "%15g\t%15g\t%15g\t%15g\t%2d\t",
+						   x_node[j], y_node[j], z_node[j], (*time_hst) * (*cnvtmi),
+						   active);
+				Write_xyz(line_buff);
 				Write_xyz(this->phast_iphreeqc_worker->GetSelectedOutputStringLine(0));
 				Write_xyz("\n");
 			}
@@ -3505,14 +3500,12 @@ Reaction_module::Run_cells()
 			// Write output file
 			if (pr_chem)
 			{
-				std::ostringstream line;
-				line << "Time " << (*time_hst) * (*cnvtmi);
-				line << ". Cell " << j + 1 << ": ";
-				line << "x= " << x_node[j] << "\t";
-				line << "y= " << y_node[j] << "\t";
-				line << "z= " << z_node[j] << "\n";
-				Write_output(line.str().c_str());
-				Write_output(this->phast_iphreeqc_worker->GetOutputString());
+				char line_buff[132];
+				sprintf(line_buff, "Time %g. Cell %d: x=%15g\ty=%15g\tz=%15g\n",
+						   (*time_hst) * (*cnvtmi), j + 1, x_node[j],  y_node[j],
+						   z_node[j]);
+				Write_output(line_buff);
+				Write_output(this->phast_iphreeqc_worker->GetOutputString());				
 			}
 
 			if (pr_hdf)
