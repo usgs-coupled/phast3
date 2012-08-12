@@ -200,7 +200,7 @@ SUBROUTINE phast_manager
         WRITE(logline1,'(a)') 'Equilibration of cells for initial conditions.'
         CALL RM_log_screen_prt(logline1)
         print_restart_flag = 0 
-        stop_msg = 1
+        stop_msg = 0
         deltim_dummy = 0._kdp
         !CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time_phreeqc,deltim_dummy,prslmi,  &
         !     cnvtmi,frac_icchem,iprint_chem,iprint_xyz,  &

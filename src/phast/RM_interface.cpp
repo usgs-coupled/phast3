@@ -362,10 +362,11 @@ void RM_initial_phreeqc_run(int *rm_id, char *db_name, char *chem_name, int l1, 
 		SetOutputFileOn(*rm_id, false);
 		SetErrorFileOn(*rm_id, false);
 		SetLogFileOn(*rm_id, false);
-		SetSelectedOutputFileOn(*rm_id, false);
+		SetSelectedOutputFileOn(*rm_id, true);
+		SetSelectedOutputStringOn(*rm_id, false);
 		// Load database
 		if (SetOutputStringOn(*rm_id, true) < 0) RM_error(rm_id);
-		if (SetSelectedOutputStringOn(*rm_id, true) < 0) RM_error(rm_id);
+		//if (SetSelectedOutputStringOn(*rm_id, true) < 0) RM_error(rm_id);
 		if (LoadDatabase(*rm_id, database_name.c_str()) < 0) RM_error(rm_id);
 		RM_write_output(rm_id);
 
@@ -687,10 +688,16 @@ void RM_write_bc_raw(
 void RM_write_output(int *id)
 /* ---------------------------------------------------------------------- */
 {
-	RM_interface::phast_io.output_msg(GetOutputString(*id));
+	if (GetOutputStringOn(*id))
+	{
+		RM_interface::phast_io.output_msg(GetOutputString(*id));
+	}
 	RM_interface::phast_io.output_msg(GetWarningString(*id));
 	RM_interface::phast_io.output_msg(GetErrorString(*id));
 	RM_interface::phast_io.screen_msg(GetWarningString(*id));
 	RM_interface::phast_io.screen_msg(GetErrorString(*id));
-	RM_interface::phast_io.punch_msg(GetSelectedOutputString(*id));
+	if (GetSelectedOutputStringOn(*id))
+	{
+		RM_interface::phast_io.punch_msg(GetSelectedOutputString(*id));
+	}
 }
