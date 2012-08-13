@@ -13,7 +13,7 @@ class Reaction_module: public PHRQ_base
 {
 public:
 
-	Reaction_module(PHRQ_io * io=NULL);
+	Reaction_module(int thread_count = 0, PHRQ_io * io=NULL);
 	~Reaction_module(void);
 	// Called through wrappers
 	//int Load_database(std::string database_name);
@@ -39,15 +39,19 @@ public:
 		int *initial_conditions, 
 		int *axes);
 	void Fractions2Solutions(void);
+	void Fractions2Solutions_thread(int n);
 	int Find_components();	
 	void Run_cells(void);
+	void Run_cells_thread(int i);
 	void Scale_solids(int iphrq, LDBLE frac);
 
 	void Send_restart_name(std::string name);
+	void Set_end_cells(void);
 	void Setup_boundary_conditions(const int n_boundary, int *boundary_solution1,
 						  int *boundary_solution2, double *fraction1,
 						  double *boundary_fraction, int dim);
 	void Solutions2Fractions(void);
+	void Solutions2Fractions_thread(int n);
 	void Write_bc_raw(int *solution_list, int * bc_solution_count, 
 		int * solution_number, const std::string &prefix);
 	void Write_error(std::string item);
@@ -56,8 +60,12 @@ public:
 	void Write_screen(std::string item);
 	void Write_xyz(std::string item);
 
+
 	// setters and getters
-	IPhreeqcPhast * Get_phast_iphreeqc_worker() {return this->phast_iphreeqc_worker;}
+	//IPhreeqcPhast * Get_phast_iphreeqc_worker() {return this->phast_iphreeqc_worker;}
+	std::vector<IPhreeqcPhast *> & Get_workers() {return this->workers;}
+	int Get_nthreads() {return this->nthreads;}
+
 	const std::string Get_database_file_name(void) const {return this->database_file_name;}
 	void Set_database_file_name(std::string fn) {this->database_file_name = fn;}
 	const std::string Get_file_prefix(void) const {return this->file_prefix;}
@@ -150,10 +158,11 @@ protected:
 	bool File_exists(const std::string name);
 	void File_rename(const std::string temp_name, const std::string name, const std::string backup_name);
 	void Partition_uz(int iphrq, int ihst, double new_frac);
+	void Partition_uz_thread(int n, int iphrq, int ihst, double new_frac);
 	void Init_uz(void);
 
 protected:
-	IPhreeqcPhast * phast_iphreeqc_worker;
+	//IPhreeqcPhast * phast_iphreeqc_worker;
 	std::string database_file_name;
 	std::string file_prefix;
 	cxxStorageBin uz_bin;
@@ -201,5 +210,10 @@ protected:
 	bool write_xyz_headings;                // write xyz headings once
 
 	char line_buffer[4096];
+	// threading
+	int nthreads;
+	std::vector<IPhreeqcPhast *> workers;
+	std::vector<int> start_cell;
+	std::vector<int> end_cell;
 };
 #endif // !defined(REACTION_MODULE_H_INCLUDED)

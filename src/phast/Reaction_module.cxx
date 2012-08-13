@@ -19,18 +19,40 @@
 #include "cxxKinetics.h"
 #include "GasPhase.h"
 #include <time.h>
-Reaction_module::Reaction_module(PHRQ_io *io)
+#include <boost/thread.hpp>
+
+Reaction_module::Reaction_module(int thread_count, PHRQ_io *io)
 	//
 	// constructor
 	//
 : PHRQ_base(io)
 {
-	this->phast_iphreeqc_worker = new IPhreeqcPhast;
-	std::map<size_t, Reaction_module*>::value_type instance(this->phast_iphreeqc_worker->Get_Index(), this);
-	RM_interface::Instances.insert(instance);
+	int n = 1;
+#ifdef _WIN32
+	if (thread_count == 0)
+	{
+		char *str;
+		str = getenv("NUMBER_OF_PROCESSORS");
+		n = atoi(str);
+	}
+#endif
+	this->nthreads = (thread_count > 0) ? thread_count : n;
 
-	//RM_interface::Instances[phast_iphreeqc_worker->Index] = Reaction_module_ptr;
-	//std::pair<std::map<size_t, Reaction_module*>::iterator, bool> pr = RM_interface::Instances.insert(instance);
+	// last one is to calculate well pH
+	for (int i = 0; i <= this->nthreads; i++)
+	{
+		this->workers.push_back(new IPhreeqcPhast);
+	}
+	if (this->Get_workers()[0])
+	{
+		std::map<size_t, Reaction_module*>::value_type instance(this->Get_workers()[0]->Get_Index(), this);
+		RM_interface::Instances.insert(instance);
+	}
+	else
+	{
+		std::cerr << "Reaction module not created." << std::endl;
+		exit(4);
+	}
 
 	this->mpi_myself = 0;
 	this->mpi_tasks = 1;
@@ -68,8 +90,12 @@ Reaction_module::Reaction_module(PHRQ_io *io)
 }
 Reaction_module::~Reaction_module(void)
 {
-	std::map<size_t, Reaction_module*>::iterator it = RM_interface::Instances.find(this->phast_iphreeqc_worker->Get_Index());
-	delete phast_iphreeqc_worker;
+	std::map<size_t, Reaction_module*>::iterator it = RM_interface::Instances.find(this->Get_workers()[0]->Get_Index());
+	//delete phast_iphreeqc_worker;
+	for (int i = 0; i <= it->second->Get_nthreads(); i++)
+	{
+		delete it->second->Get_workers()[i];
+	}
 	if (it != RM_interface::Instances.end())
 	{
 		RM_interface::Instances.erase(it);
@@ -812,8 +838,26 @@ Reaction_module::Distribute_initial_conditions(
 		myfile.close();
 	}
 
+	// calculate cells for each thread
+	Set_end_cells();
+
 	// put restart definitions in reaction module
-	this->phast_iphreeqc_worker->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(restart_bin);
+	//this->phast_iphreeqc_worker->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(restart_bin);
+	this->Get_workers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(restart_bin);
+
+	for (int n = 1; n < this->nthreads; n++)
+	{
+		std::ostringstream delete_command;
+		delete_command << "DELETE; -cells\n";
+		for (i = this->start_cell[n]; i < this->end_cell[n]; i++)
+		{
+			cxxStorageBin sz_bin;
+			this->Get_workers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(sz_bin, i);
+			this->Get_workers()[n]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(sz_bin, i);
+			delete_command << i << "\n";
+		}
+		if (this->Get_workers()[0]->RunString(delete_command.str().c_str()) < 0) RM_error(0);
+	}
 
 	// initialize uz
 	if (this->transient_free_surface)
@@ -2061,7 +2105,8 @@ Reaction_module::Cell_initialize(
 		cxxKinetics cxxentity(phreeqc_bin.Get_Kinetics(), mx, n_user_new);
 		initial_bin.Set_Kinetics(n_user_new, &cxxentity);
 	}
-	this->phast_iphreeqc_worker->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(initial_bin);
+	//this->phast_iphreeqc_worker->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(initial_bin);
+	this->Get_workers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(initial_bin);
 	return;
 }
 #ifdef SKIP
@@ -2393,11 +2438,12 @@ Reaction_module::Find_components(void)
 	this->components.push_back("Charge");
 
 	// Get other components
-	size_t count_components = this->phast_iphreeqc_worker->GetComponentCount();
+	IPhreeqcPhast * phast_iphreeqc_worker = this->Get_workers()[0];
+	size_t count_components = phast_iphreeqc_worker->GetComponentCount();
 	size_t i;
 	for (i = 0; i < count_components; i++)
 	{
-		std::string comp(this->phast_iphreeqc_worker->GetComponent((int) i));
+		std::string comp(phast_iphreeqc_worker->GetComponent((int) i));
 		assert (comp != "H");
 		assert (comp != "O");
 		assert (comp != "Charge");
@@ -2414,7 +2460,7 @@ Reaction_module::Find_components(void)
 		}
 		else
 		{
-			this->gfw.push_back(this->phast_iphreeqc_worker->Get_gfw(components[i].c_str()));
+			this->gfw.push_back(phast_iphreeqc_worker->Get_gfw(components[i].c_str()));
 		}
 	}
 	if (this->mpi_myself == 0)
@@ -2492,25 +2538,19 @@ Reaction_module::Get_components(
 	}
 }
 #endif
-//#define USE_MODIFY
-#ifdef USE_MODIFY
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Fractions2Solutions(void)
+Reaction_module::Fractions2Solutions_thread(int n)
 /* ---------------------------------------------------------------------- */
 {
 	int i, j, k;
 
-	Phreeqc * phreeqc_ptr = this->phast_iphreeqc_worker->Get_PhreeqcPtr();
-	phreeqc_ptr->cxxStorageBin2phreeqc(sz_bin);
-	clock_t t0 = clock();
-	std::cerr << "Start testing modify" << std::endl;
-	std::ostringstream modify;
-	for (i = 0; i < this->nxyz; i++)
+	for (j = this->start_cell[n]; j < this->end_cell[n]; j++)
 	{
 		std::vector<double> d;  // scratch space to convert from mass fraction to moles
 		// j is count_chem number
-		j = this->forward[i];
+		//j = this->forward[i];
+		i = this->back[j][0];
 		if (j < 0) continue;
 
 		// get mass fractions and store as moles in d
@@ -2519,24 +2559,76 @@ Reaction_module::Fractions2Solutions(void)
 		{	
 			d.push_back(ptr[this->nxyz * k] * 1000.0/this->gfw[k]);
 		}
-		modify << "SOLUTION_MODIFY " << j << "\n";
-		modify << "-total_h " << d[0] + 2.0/gfw_water << "\n";
-		modify << "-total_o " << d[1] + 1.0/gfw_water << "\n";
-		modify << "-cb " << d[2] << "\n";
-		modify << "-totals\n";
 
+		// update solution 
+		cxxNameDouble nd;
 		for (k = 3; k < (int) components.size(); k++)
 		{
 			if (d[k] <= 1e-14) d[k] = 0.0;
-			modify << components[k] << " " << d[k] << "\n";
+			nd.add(components[k].c_str(), d[k]);
 		}	
+
+		cxxSolution *soln_ptr = this->Get_workers()[n]->Get_solution(j);
+		//this->sz_bin.Get_Solution((int) j)->Update(
+		if (soln_ptr)
+		{
+			soln_ptr->Update(
+				d[0] + 2.0/gfw_water,
+				d[1] + 1.0/gfw_water,
+				d[2],
+				nd);
+		}
 	}
-	RunString(this->phast_iphreeqc_worker->Get_Index(), modify.str().c_str());
-	std::cerr << "End testing modify " << (double) (clock() - t0) << std::endl;
-	phreeqc_ptr->phreeqc2cxxStorageBin(sz_bin);
 	return;
 }
-#else
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Fractions2Solutions(void)
+/* ---------------------------------------------------------------------- */
+{
+	int i, j, k;
+
+	for (int n = 0; n < this->nthreads; n++)	
+	{
+
+		for (j = this->start_cell[n]; j < this->end_cell[n]; j++)
+		{
+			std::vector<double> d;  // scratch space to convert from mass fraction to moles
+			// j is count_chem number
+			//j = this->forward[i];
+			i = this->back[j][0];
+			if (j < 0) continue;
+
+			// get mass fractions and store as moles in d
+			double *ptr = &this->fraction[i];
+			for (k = 0; k < (int) this->components.size(); k++)
+			{	
+				d.push_back(ptr[this->nxyz * k] * 1000.0/this->gfw[k]);
+			}
+
+			// update solution 
+			cxxNameDouble nd;
+			for (k = 3; k < (int) components.size(); k++)
+			{
+				if (d[k] <= 1e-14) d[k] = 0.0;
+				nd.add(components[k].c_str(), d[k]);
+			}	
+
+			cxxSolution *soln_ptr = this->Get_workers()[n]->Get_solution(j);
+			//this->sz_bin.Get_Solution((int) j)->Update(
+			if (soln_ptr)
+			{
+				soln_ptr->Update(
+					d[0] + 2.0/gfw_water,
+					d[1] + 1.0/gfw_water,
+					d[2],
+					nd);
+			}
+		}
+	}
+	return;
+}
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Fractions2Solutions(void)
@@ -2666,6 +2758,75 @@ Reaction_module::Unpack_fraction_array(void)
 #endif
 /* ---------------------------------------------------------------------- */
 void
+Reaction_module::Solutions2Fractions_thread(int n)
+/* ---------------------------------------------------------------------- */
+{
+	// convert Reaction module solution data to hst mass fractions
+
+	std::vector<double> d;  // scratch space to convert from moles to mass fraction
+	cxxNameDouble::iterator it;
+	int j; 
+
+	for (j = this->start_cell[n]; j < this->end_cell[n]; j++)
+	{
+		// load fractions into d
+		cxxSolution * cxxsoln_ptr = this->Get_workers()[n]->Get_solution(j);
+		assert (cxxsoln_ptr);
+		//cxxSolution * cxxsoln_ptr = this->sz_bin.Get_Solution(j);
+		this->cxxSolution2fraction(cxxsoln_ptr, d);
+
+		// store in fraction at 1, 2, or 4 places depending on chemistry dimensions
+		std::vector<int>::iterator it;
+		for (it = this->back[j].begin(); it != this->back[j].end(); it++)
+		{
+			double *d_ptr = &this->fraction[*it];
+			size_t i;
+			for (i = 0; i < this->components.size(); i++)
+			{
+				d_ptr[this->nxyz * i] = d[i];
+			}
+		}
+	}
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Solutions2Fractions(void)
+/* ---------------------------------------------------------------------- */
+{
+	// convert Reaction module solution data to hst mass fractions
+
+	std::vector<double> d;  // scratch space to convert from moles to mass fraction
+	cxxNameDouble::iterator it;
+
+	int j; 
+
+	for (int n = 0; n < this->nthreads; n++)
+	{
+		for (j = this->start_cell[n]; j < this->end_cell[n]; j++)
+		{
+			// load fractions into d
+			cxxSolution * cxxsoln_ptr = this->Get_workers()[n]->Get_solution(j);
+			assert (cxxsoln_ptr);
+			//cxxSolution * cxxsoln_ptr = this->sz_bin.Get_Solution(j);
+			this->cxxSolution2fraction(cxxsoln_ptr, d);
+
+			// store in fraction at 1, 2, or 4 places depending on chemistry dimensions
+			std::vector<int>::iterator it;
+			for (it = this->back[j].begin(); it != this->back[j].end(); it++)
+			{
+				double *d_ptr = &this->fraction[*it];
+				size_t i;
+				for (i = 0; i < this->components.size(); i++)
+				{
+					d_ptr[this->nxyz * i] = d[i];
+				}
+			}
+		}
+	}
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+void
 Reaction_module::Solutions2Fractions(void)
 /* ---------------------------------------------------------------------- */
 {
@@ -2697,6 +2858,7 @@ Reaction_module::Solutions2Fractions(void)
 		}
 	}
 }
+#endif
 #ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
@@ -2768,9 +2930,9 @@ Reaction_module::Calculate_well_ph(double *c, double * pH, double * alkalinity)
 
 	// Store in NameDouble
 	cxxNameDouble nd;
-	nd.add("H", d[0] + 2.0/gfw_water);
-	nd.add("O", d[1] + 1.0/gfw_water);
-	nd.add("Charge", d[2]);
+	//nd.add("H", d[0] + 2.0/gfw_water);
+	//nd.add("O", d[1] + 1.0/gfw_water);
+	//nd.add("Charge", d[2]);
 
 	for (k = 3; k < components.size(); k++)
 	{
@@ -2779,20 +2941,20 @@ Reaction_module::Calculate_well_ph(double *c, double * pH, double * alkalinity)
 	}	
 
 	cxxSolution cxxsoln(this->Get_io());	
-	cxxsoln.Update(nd);
+	cxxsoln.Update(d[0] + 2.0/gfw_water, d[1] + 1.0/gfw_water, d[2], nd);
 	cxxStorageBin temp_bin;
-	temp_bin.Set_Solution(1, &cxxsoln);
+	temp_bin.Set_Solution(0, &cxxsoln);
 
 	// Copy all entities numbered 1 into IPhreeqc
-	this->phast_iphreeqc_worker->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(temp_bin, 1);
+	this->Get_workers()[this->nthreads]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(temp_bin, 0);
 	std::string input;
-	input.append("RUN_CELLS; -cell 1; SELECTED_OUTPUT; -reset false; -pH; -alkalinity; END");
-	this->phast_iphreeqc_worker->RunString(input.c_str());
+	input.append("RUN_CELLS; -cell 0; SELECTED_OUTPUT; -reset false; -pH; -alkalinity; END");
+	this->Get_workers()[0]->RunString(input.c_str());
 
 	VAR pvar;
-	this->phast_iphreeqc_worker->GetSelectedOutputValue(1,0,&pvar);
+	this->Get_workers()[this->nthreads]->GetSelectedOutputValue(1,0,&pvar);
 	*pH = pvar.dVal;
-	this->phast_iphreeqc_worker->GetSelectedOutputValue(1,1,&pvar);
+	this->Get_workers()[this->nthreads]->GetSelectedOutputValue(1,1,&pvar);
 	*alkalinity = pvar.dVal;
 
 	// Alternatively
@@ -2900,7 +3062,8 @@ void
 Reaction_module::Error_stop(void)
 /* ---------------------------------------------------------------------- */
 {
-	int n = (int) this->Get_phast_iphreeqc_worker()->Get_Index();
+	//int n = (int) this->Get_phast_iphreeqc_worker()->Get_Index();
+	int n = (int) this->Get_workers()[0]->Get_Index();
 	RM_error(&n);
 }
 /* ---------------------------------------------------------------------- */
@@ -2933,7 +3096,7 @@ Reaction_module::File_rename(const std::string temp_name, const std::string name
 
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Partition_uz(int iphrq, int ihst, double new_frac)
+Reaction_module::Partition_uz_thread(int n, int iphrq, int ihst, double new_frac)
 /* ---------------------------------------------------------------------- */
 {
 	int n_user;
@@ -2990,7 +3153,9 @@ Reaction_module::Partition_uz(int iphrq, int ihst, double new_frac)
 	 */
 
 	cxxStorageBin sz_bin;
-	this->phast_iphreeqc_worker->Put_cell_in_storage_bin(sz_bin, n_user);
+	IPhreeqcPhast *phast_iphreeqc_worker = this->workers[n];
+	phast_iphreeqc_worker->Put_cell_in_storage_bin(sz_bin, n_user);
+
 //Exchange
 	if (sz_bin.Get_Exchange(n_user) != NULL)
 	{
@@ -3059,7 +3224,7 @@ Reaction_module::Partition_uz(int iphrq, int ihst, double new_frac)
 	}
 
 	// Put back in reaction module
-	this->phast_iphreeqc_worker->Get_cell_from_storage_bin(sz_bin, n_user);
+	phast_iphreeqc_worker->Get_cell_from_storage_bin(sz_bin, n_user);
 
 	/*
 	 *   Eliminate uz if new fraction 1.0
@@ -3367,6 +3532,409 @@ EQUILIBRATE_SERIAL(double *fraction, int *dim, int *print_sel,
 }
 #endif
 /* ---------------------------------------------------------------------- */
+void 
+Reaction_module::Run_cells_thread(int n)
+/* ---------------------------------------------------------------------- */
+{
+	/*
+	*   Routine takes mass fractions from HST, equilibrates each cell,
+	*   and returns new mass fractions to HST
+	*/
+
+	/*
+	*   Update solution compositions 
+	*/
+	
+	//int n = (int) n1;
+	this->Fractions2Solutions_thread(n);
+
+	int i, j;
+	IPhreeqcPhast *phast_iphreeqc_worker = this->Get_workers()[n];
+	// Do not write to files from phreeqc
+	phast_iphreeqc_worker->SetLogFileOn(false);
+	phast_iphreeqc_worker->SetSelectedOutputFileOn(false);
+	phast_iphreeqc_worker->SetDumpFileOn(false);
+	phast_iphreeqc_worker->SetOutputFileOn(false);
+	phast_iphreeqc_worker->SetErrorFileOn(false);
+
+	phast_iphreeqc_worker->Set_out_stream(new ostringstream); 
+
+	for (i = this->start_cell[n]; i < this->end_cell[n]; i++)
+	{							/* i is count_chem number */
+		j = back[i][0];			/* j is nxyz number */
+
+		// Set local print flags
+		bool pr_chem = this->print_chem && (this->printzone_chem[j] != 0);
+		bool pr_xyz = this->print_xyz && (this->printzone_xyz[i] != 0);
+		bool pr_hdf = this->print_hdf;
+
+		// partition solids between UZ and SZ
+		if (transient_free_surface)	
+		{
+			this->Partition_uz_thread(n, i, j, frac[j]);
+		}
+
+		// ignore small saturations
+		bool active = true;
+		if (frac[j] <= 1e-10) 
+		{
+			frac[j] = 0.0;
+			active = false;
+		}
+
+		if (active)
+		{
+			// set cell number, pore volume got Basic functions
+			phast_iphreeqc_worker->Set_cell_volumes(i, pv0[j], frac[j], volume[j]);
+
+			// Adjust for fractional saturation and pore volume
+			if (this->transient_free_surface)
+			{
+				this->Scale_solids(i, 1.0 / frac[j]);
+			}
+			if (!transient_free_surface && !steady_flow)
+			{
+				if (pv0[j] != 0 && pv[j] != 0 && pv0[j] != pv[j])
+				{
+					//cxxSolution * cxxsol = sz_bin.Get_Solution(i);
+					cxxSolution * cxxsol = phast_iphreeqc_worker->Get_solution(i);
+					cxxsol->multiply(pv[j] / pv0[j]);
+				}
+			}
+
+			// Set print flags
+			phast_iphreeqc_worker->SetOutputStringOn(pr_chem);
+			phast_iphreeqc_worker->SetSelectedOutputStringOn(pr_xyz);
+
+			// do the calculation
+			std::ostringstream input;
+			input << "RUN_CELLS" << std::endl;
+			input << "  -start_time " << (*this->time_hst - *this->time_step_hst) << std::endl;
+			input << "  -time_step  " << *this->time_step_hst << std::endl;
+			input << "  -cells      " << i << std::endl;
+			input << "END" << std::endl;
+			if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) Error_stop();
+
+			// Adjust for fractional saturation and pore volume
+			if (transient_free_surface == TRUE)
+				Scale_solids(i, frac[j]);
+			assert(pv0[j] != 0);
+			assert(pv[j] != 0);
+			if (pv0[j] != 0 && pv[j] != 0 && pv0[j] != pv[j])
+			{
+				cxxSolution * cxxsol = phast_iphreeqc_worker->Get_solution(i);
+				cxxsol->multiply(pv0[j] / pv[j]);
+			}
+
+			// write headings to xyz file
+			if (pr_xyz && this->write_xyz_headings)
+			{
+				char line_buff[132];
+				sprintf(line_buff, "%15s\t%15s\t%15s\t%15s\t%2s\t", "x", "y",
+					"z", "time", "in");
+
+				std::ostringstream h;
+				int n = phast_iphreeqc_worker->GetSelectedOutputColumnCount();
+				VAR pv;
+				VarInit(&pv);
+				for (int i = 0; i < n; i++)
+				{
+					phast_iphreeqc_worker->GetSelectedOutputValue(0, i, &pv);
+					h.width(15);
+					std::string s(pv.sVal);
+					s.append("\t");
+					h.width(15);
+					h << s;
+				}
+				VarClear(&pv);
+
+				this->write_xyz_headings = false;
+				//Write_xyz(line_buff);
+				phast_iphreeqc_worker->Get_punch_stream() << line_buff;
+				//Write_xyz(h.str().c_str());
+				//Write_xyz("\n");
+				phast_iphreeqc_worker->Get_punch_stream() << h.str().c_str() << "\n";
+			}
+
+			// write xyz file
+			if (pr_xyz)
+			{
+				char line_buff[132];
+				sprintf(line_buff, "%15g\t%15g\t%15g\t%15g\t%2d\t",
+					x_node[j], y_node[j], z_node[j], (*time_hst) * (*cnvtmi),
+					active);
+				//Write_xyz(line_buff);
+				phast_iphreeqc_worker->Get_punch_stream() << line_buff;
+				//Write_xyz(phast_iphreeqc_worker->GetSelectedOutputStringLine(0));
+				//Write_xyz("\n");
+				phast_iphreeqc_worker->Get_punch_stream() << phast_iphreeqc_worker->GetSelectedOutputStringLine(0) << "\n";
+			}
+
+			// Write output file
+			if (pr_chem)
+			{
+				char line_buff[132];
+				sprintf(line_buff, "Time %g. Cell %d: x=%15g\ty=%15g\tz=%15g\n",
+					(*time_hst) * (*cnvtmi), j + 1, x_node[j],  y_node[j],
+					z_node[j]);
+				//Write_output(line_buff);
+				phast_iphreeqc_worker->Get_out_stream() << line_buff;
+				//Write_output(phast_iphreeqc_worker->GetOutputString());
+				phast_iphreeqc_worker->Get_out_stream() << phast_iphreeqc_worker->GetOutputString();
+			}
+			if (pr_hdf)
+			{
+				std::vector<double> d;
+				//todo:				this->phast_iphreeqc_worker->Selected_out_to_double(1, d);
+			}
+		} // end active
+		else
+		{
+			if (pr_chem)
+			{
+				std::ostringstream line;
+				line << "Time " << (*time_hst) * (*cnvtmi);
+				line << ". Cell " << j + 1 << ": ";
+				line << "x= " << x_node[j] << "\t";
+				line << "y= " << y_node[j] << "\t";
+				line << "z= " << z_node[j] << "\n";
+				line << "Dry cell\n";
+				//Write_output(line.str().c_str());
+				//Write_output(phast_iphreeqc_worker->GetOutputString());
+				phast_iphreeqc_worker->Get_out_stream() << line.str().c_str();
+			}
+		}
+
+	} // end one cell
+
+	this->Solutions2Fractions_thread(n);
+}
+//boost::bind(&clientTCP::run, this, pMyParameter)
+//boost::thread your_thread( boost::bind(&your_function, param1, param2, .....) );
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Run_cells()
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *   Routine takes mass fractions from HST, equilibrates each cell,
+ *   and returns new mass fractions to HST
+ */
+
+/*
+ *   Update solution compositions in sz_bin
+ */
+	clock_t t0 = clock();
+	std::vector <boost::thread *> my_threads;
+	for (int n = 0; n < this->nthreads; n++)
+	{
+		boost::thread *thrd = new boost::thread(boost::bind(&Reaction_module::Run_cells_thread, this, n));
+		my_threads.push_back(thrd);
+	} 
+	for (int n = 0; n < this->nthreads; n++)
+	{
+		my_threads[n]->join();
+
+		// write output results
+		if (this->print_chem)
+		{
+			Write_output(this->workers[n]->Get_out_stream().str().c_str());
+		}
+		delete this->workers[n]->Get_out_stream();
+		// write punch results
+		if (this->print_xyz)
+		{
+			Write_xyz(this->workers[n]->Get_punch_stream().str().c_str());
+		}
+		delete this->workers[n]->Get_punch_stream();
+	} 	
+
+	std::cerr << "Running: " << (double) (clock() - t0) << std::endl;
+	//Sleep(1000);
+	//exit(4);
+
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Run_cells()
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *   Routine takes mass fractions from HST, equilibrates each cell,
+ *   and returns new mass fractions to HST
+ */
+
+/*
+ *   Update solution compositions in sz_bin
+ */
+	clock_t t0 = clock();
+	this->Fractions2Solutions();
+	std::cerr << "Converting: " << (double) (clock() - t0) << std::endl;
+	t0 = clock();
+	int i, j;
+
+	for (int n = 0; n < this->nthreads; n++)
+	{
+		IPhreeqcPhast *phast_iphreeqc_worker = this->Get_workers()[n];
+		// Do not write to files from phreeqc
+		phast_iphreeqc_worker->SetLogFileOn(false);
+		phast_iphreeqc_worker->SetSelectedOutputFileOn(false);
+		phast_iphreeqc_worker->SetDumpFileOn(false);
+		phast_iphreeqc_worker->SetOutputFileOn(false);
+		phast_iphreeqc_worker->SetErrorFileOn(false);
+		for (i = this->start_cell[n]; i < this->end_cell[n]; i++)
+		{							/* i is count_chem number */
+			j = back[i][0];			/* j is nxyz number */
+
+			// Set local print flags
+			bool pr_chem = this->print_chem && (this->printzone_chem[j] != 0);
+			bool pr_xyz = this->print_xyz && (this->printzone_xyz[i] != 0);
+			bool pr_hdf = this->print_hdf;
+
+			// partition solids between UZ and SZ
+			if (transient_free_surface)	
+			{
+				this->Partition_uz(i, j, frac[j]);
+			}
+
+			// ignore small saturations
+			bool active = true;
+			if (frac[j] <= 1e-10) 
+			{
+				frac[j] = 0.0;
+				active = false;
+			}
+
+			if (active)
+			{
+				// set cell number, pore volume got Basic functions
+				phast_iphreeqc_worker->Set_cell_volumes(i, pv0[j], frac[j], volume[j]);
+
+				// Adjust for fractional saturation and pore volume
+				if (this->transient_free_surface)
+				{
+					this->Scale_solids(i, 1.0 / frac[j]);
+				}
+				if (!transient_free_surface && !steady_flow)
+				{
+					if (pv0[j] != 0 && pv[j] != 0 && pv0[j] != pv[j])
+					{
+						//cxxSolution * cxxsol = sz_bin.Get_Solution(i);
+						cxxSolution * cxxsol = phast_iphreeqc_worker->Get_solution(i);
+						cxxsol->multiply(pv[j] / pv0[j]);
+					}
+				}
+
+				// Set print flags
+				phast_iphreeqc_worker->SetOutputStringOn(pr_chem);
+				phast_iphreeqc_worker->SetSelectedOutputStringOn(pr_xyz);
+
+				// do the calculation
+				std::ostringstream input;
+				input << "RUN_CELLS" << std::endl;
+				input << "  -start_time " << (*this->time_hst - *this->time_step_hst) << std::endl;
+				input << "  -time_step  " << *this->time_step_hst << std::endl;
+				input << "  -cells      " << i << std::endl;
+				input << "END" << std::endl;
+				if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) Error_stop();
+
+				// Adjust for fractional saturation and pore volume
+				if (transient_free_surface == TRUE)
+					Scale_solids(i, frac[j]);
+				assert(pv0[j] != 0);
+				assert(pv[j] != 0);
+				if (pv0[j] != 0 && pv[j] != 0 && pv0[j] != pv[j])
+				{
+					cxxSolution * cxxsol = phast_iphreeqc_worker->Get_solution(i);
+					cxxsol->multiply(pv0[j] / pv[j]);
+				}
+
+				// write headings to xyz file
+				if (pr_xyz && this->write_xyz_headings)
+				{
+					char line_buff[132];
+					sprintf(line_buff, "%15s\t%15s\t%15s\t%15s\t%2s\t", "x", "y",
+						"z", "time", "in");
+
+					std::ostringstream h;
+					int n = phast_iphreeqc_worker->GetSelectedOutputColumnCount();
+					VAR pv;
+					VarInit(&pv);
+					for (int i = 0; i < n; i++)
+					{
+						phast_iphreeqc_worker->GetSelectedOutputValue(0, i, &pv);
+						h.width(15);
+						std::string s(pv.sVal);
+						s.append("\t");
+						h.width(15);
+						h << s;
+					}
+					VarClear(&pv);
+
+					this->write_xyz_headings = false;
+					Write_xyz(line_buff);
+					Write_xyz(h.str().c_str());
+					Write_xyz("\n");
+				}
+
+				// write xyz file
+				if (pr_xyz)
+				{
+					char line_buff[132];
+					sprintf(line_buff, "%15g\t%15g\t%15g\t%15g\t%2d\t",
+						x_node[j], y_node[j], z_node[j], (*time_hst) * (*cnvtmi),
+						active);
+					Write_xyz(line_buff);
+					Write_xyz(phast_iphreeqc_worker->GetSelectedOutputStringLine(0));
+					Write_xyz("\n");
+				}
+
+				// Write output file
+				if (pr_chem)
+				{
+					char line_buff[132];
+					sprintf(line_buff, "Time %g. Cell %d: x=%15g\ty=%15g\tz=%15g\n",
+						(*time_hst) * (*cnvtmi), j + 1, x_node[j],  y_node[j],
+						z_node[j]);
+					Write_output(line_buff);
+					Write_output(phast_iphreeqc_worker->GetOutputString());				
+				}
+
+				if (pr_hdf)
+				{
+					std::vector<double> d;
+					//todo:				this->phast_iphreeqc_worker->Selected_out_to_double(1, d);
+				}
+			} // end active
+			else
+			{
+				if (pr_chem)
+				{
+					std::ostringstream line;
+					line << "Time " << (*time_hst) * (*cnvtmi);
+					line << ". Cell " << j + 1 << ": ";
+					line << "x= " << x_node[j] << "\t";
+					line << "y= " << y_node[j] << "\t";
+					line << "z= " << z_node[j] << "\n";
+					Write_output(line.str().c_str());
+					Write_output(phast_iphreeqc_worker->GetOutputString());
+				}
+			}
+
+		} // end one cell
+	} // end threads
+	
+	this->Solutions2Fractions();
+
+	std::cerr << "Running: " << (double) (clock() - t0) << std::endl;
+	//Sleep(1000);
+	//exit(4);
+
+}
+#endif
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
 void
 Reaction_module::Run_cells()
 /* ---------------------------------------------------------------------- */
@@ -3538,6 +4106,7 @@ Reaction_module::Run_cells()
 	//exit(4);
 
 }
+#endif
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Scale_solids(int iphrq, LDBLE frac)
@@ -3558,7 +4127,7 @@ Reaction_module::Scale_solids(int iphrq, LDBLE frac)
 	 *   Scale compositions
 	 */
 	cxxStorageBin sz_bin;
-	this->phast_iphreeqc_worker->Put_cell_in_storage_bin(sz_bin, n_user);
+//TODO	this->phast_iphreeqc_worker->Put_cell_in_storage_bin(sz_bin, n_user);
 	if (sz_bin.Get_Exchange(n_user) != NULL)
 	{
 		cxxExchange cxxentity(sz_bin.Get_Exchangers(), cxxmix, n_user);
@@ -3589,7 +4158,7 @@ Reaction_module::Scale_solids(int iphrq, LDBLE frac)
 		cxxSurface cxxentity(sz_bin.Get_Surfaces(), cxxmix, n_user);
 		sz_bin.Set_Surface(n_user, &cxxentity);
 	}
-	this->phast_iphreeqc_worker->Get_cell_from_storage_bin(sz_bin, n_user);
+//TODO	this->phast_iphreeqc_worker->Get_cell_from_storage_bin(sz_bin, n_user);
 	return;
 }
 /* ---------------------------------------------------------------------- */
@@ -3599,6 +4168,29 @@ Reaction_module::Send_restart_name(std::string name)
 {
 	int	i = (int) FileMap.size();
 	FileMap[name] = i;
+}
+void
+Reaction_module::Set_end_cells(void)
+/* ---------------------------------------------------------------------- */
+{
+	int n = this->count_chem / this->nthreads;
+	int extra = this->count_chem - n*this->nthreads;
+	std::vector<int> cells;
+	for (int i = 0; i < extra; i++)
+	{
+		cells.push_back(n+1);
+	}
+	for (int i = extra; i < this->nthreads; i++)
+	{
+		cells.push_back(n);
+	}
+	int cell0 = 0;
+	for (int i = 0; i < this->nthreads; i++)
+	{
+		this->start_cell.push_back(cell0);
+		this->end_cell.push_back(cell0 + cells[i] - 1);
+		cell0 = cell0 + cells[i];
+	}
 }
 /* ---------------------------------------------------------------------- */
 void
@@ -3624,11 +4216,24 @@ Reaction_module::Write_bc_raw(int *solution_list, int * bc_solution_count,
 		int n_chem = this->forward[n_fort - 1];
 		if (n_chem >= 0)
 		{
-			ofs << "# Fortran cell " << n_fort << ". Time " << (*this->time_hst) * (*this->cnvtmi) << "\n";
-
-			//sz_bin.Get_Solution(n_chem)->dump_raw(ofs, raw_number++, 0);
-			cxxSolution *soln_ptr=  this->phast_iphreeqc_worker->Get_solution(n_chem);
-			soln_ptr->dump_raw(ofs, raw_number++, 0);
+			IPhreeqcPhast * phast_iphreeqc_worker = NULL;
+			for (int j = 0; j < this->nthreads; j++)
+			{
+				if (j >= start_cell[j] && j <= end_cell[j])
+				{
+					phast_iphreeqc_worker = this->workers[j];
+				}
+			}
+			if (phast_iphreeqc_worker)
+			{
+				ofs << "# Fortran cell " << n_fort << ". Time " << (*this->time_hst) * (*this->cnvtmi) << "\n";
+				cxxSolution *soln_ptr=  phast_iphreeqc_worker->Get_solution(n_chem);
+				soln_ptr->dump_raw(ofs, raw_number++, 0);
+			}
+			else
+			{
+				assert(false);
+			}
 		}
 		else
 		{
@@ -3717,12 +4322,20 @@ Reaction_module::Write_restart(void)
 	}
 
 	// write data
-	//sz_bin.dump_raw(ofs_restart, 0);
-	for (j = 0; j < count_chem; j++)	/* j is count_chem number */
+	//for (j = 0; j < count_chem; j++)	/* j is count_chem number */
+	//{
+	//	cxxStorageBin sz_bin;
+	//	this->phast_iphreeqc_worker->Get_cell_from_storage_bin(sz_bin, j);
+	//	sz_bin.dump_raw(ofs_restart, 0);
+	//}
+	for (int n = 0; n < this->nthreads; n++)
 	{
-		cxxStorageBin sz_bin;
-		this->phast_iphreeqc_worker->Get_cell_from_storage_bin(sz_bin, j);
-		sz_bin.dump_raw(ofs_restart, 0);
+		for (j = this->start_cell[n]; j < this->end_cell[n]; j++)	/* j is count_chem number */
+		{
+			cxxStorageBin sz_bin;
+			this->Get_workers()[n]->Put_cell_in_storage_bin(sz_bin, j);
+			sz_bin.dump_raw(ofs_restart, 0);
+		}
 	}
 
 	ofs_restart.close();
