@@ -36,6 +36,28 @@ RM_interface::Create_reaction_module()
 		Reaction_module* Reaction_module_ptr = new Reaction_module();
 		if (Reaction_module_ptr)
 		{
+			n = Reaction_module_ptr->Get_workers()[0]->Get_Index();
+			RM_interface::Instances[n] = Reaction_module_ptr;
+		}
+	}
+	catch(...)
+	{
+		return IPQ_OUTOFMEMORY;
+	}
+	return n;
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+int
+RM_interface::Create_reaction_module()
+/* ---------------------------------------------------------------------- */
+{
+	int n = IPQ_OUTOFMEMORY;
+	try
+	{
+		Reaction_module* Reaction_module_ptr = new Reaction_module();
+		if (Reaction_module_ptr)
+		{
 			n = Reaction_module_ptr->Get_phast_iphreeqc_worker()->Get_Index();
 			RM_interface::Instances[Reaction_module_ptr->Get_phast_iphreeqc_worker()->Get_Index()] = Reaction_module_ptr;
 		}
@@ -46,6 +68,7 @@ RM_interface::Create_reaction_module()
 	}
 	return n;
 }
+#endif
 /* ---------------------------------------------------------------------- */
 IPQ_RESULT
 RM_interface::Destroy_reaction_module(int id)
@@ -219,10 +242,23 @@ void RM_create_phreeqc_bin(int *rm_id)
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
 	if (Reaction_module_ptr)
 	{
+		Phreeqc * phreeqc_ptr = Reaction_module_ptr->Get_workers()[0]->Get_PhreeqcPtr();
+		phreeqc_ptr->phreeqc2cxxStorageBin(Reaction_module_ptr->Get_phreeqc_bin());
+	}
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+void RM_create_phreeqc_bin(int *rm_id)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	if (Reaction_module_ptr)
+	{
 		Phreeqc * phreeqc_ptr = Reaction_module_ptr->Get_phast_iphreeqc_worker()->Get_PhreeqcPtr();
 		phreeqc_ptr->phreeqc2cxxStorageBin(Reaction_module_ptr->Get_phreeqc_bin());
 	}
 }
+#endif
 /* ---------------------------------------------------------------------- */
 int RM_destroy(int *id)
 /* ---------------------------------------------------------------------- */
@@ -283,11 +319,10 @@ void RM_error(int *id)
 		e_string = GetErrorString(*id);
 	}
 	RM_errprt(e_string);
-	RM_errprt("Stopping because of errors.");
+	RM_errprt("Stopping because of errors in reaction module.");
 	RM_interface::CleanupReactionModuleInstances();
 	IPhreeqcPhastLib::CleanupIPhreeqcPhast();
-	//IPhreeqcLib::CleanupIPhreeqcInstances();
-	exit(1);
+	exit(4);
 }
 void RM_forward_and_back(int *id,
 		int *initial_conditions, 
@@ -358,6 +393,54 @@ void RM_initial_phreeqc_run(int *rm_id, char *db_name, char *chem_name, int l1, 
 		trim_right(database_name);
 		std::string chemistry_name(chem_name, l2);
 		trim_right(chemistry_name);
+		for (int i = 0; i <= Reaction_module_ptr->Get_nthreads(); i++)
+		{
+			IPhreeqcPhast * ipp_ptr = Reaction_module_ptr->Get_workers()[i];
+			int ipp_id = ipp_ptr->Get_Index();
+			ipp_ptr->SetOutputFileOn(false);
+			ipp_ptr->SetErrorFileOn(false);
+			ipp_ptr->SetLogFileOn(false);
+			ipp_ptr->SetSelectedOutputStringOn(false);
+			if (i == 0)
+			{
+				ipp_ptr->SetSelectedOutputFileOn(true);
+				ipp_ptr->SetOutputStringOn(true);
+			}
+			else
+			{
+				ipp_ptr->SetSelectedOutputFileOn(false);
+				ipp_ptr->SetOutputStringOn(false);
+			}
+			// Load database
+			if (ipp_ptr->LoadDatabase(database_name.c_str()) < 0) RM_error(&ipp_id);
+			RM_write_output(&ipp_id);
+
+			// Run chemistry file
+			if (ipp_ptr->RunFile(chemistry_name.c_str()) < 0) RM_error(&ipp_id);
+			RM_write_output(&ipp_id);
+
+
+			// Create a StorageBin with initial PHREEQC for boundary conditions
+			if (i == 0)
+			{
+				Reaction_module_ptr->Get_phreeqc_bin().Clear();
+				Reaction_module_ptr->Get_workers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(Reaction_module_ptr->Get_phreeqc_bin());
+			}
+		}
+	}
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+void RM_initial_phreeqc_run(int *rm_id, char *db_name, char *chem_name, int l1, int l2)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	if (Reaction_module_ptr)
+	{
+		std::string database_name(db_name, l1);
+		trim_right(database_name);
+		std::string chemistry_name(chem_name, l2);
+		trim_right(chemistry_name);
 
 		SetOutputFileOn(*rm_id, false);
 		SetErrorFileOn(*rm_id, false);
@@ -380,6 +463,7 @@ void RM_initial_phreeqc_run(int *rm_id, char *db_name, char *chem_name, int l1, 
 		Reaction_module_ptr->Get_phast_iphreeqc_worker()->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(Reaction_module_ptr->Get_phreeqc_bin());
 	}
 }
+#endif
 /* ---------------------------------------------------------------------- */
 void
 RM_log_screen_prt(char *err_str, long l)
