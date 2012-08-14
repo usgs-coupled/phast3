@@ -19,7 +19,9 @@
 #include "cxxKinetics.h"
 #include "GasPhase.h"
 #include <time.h>
+#ifdef THREADED_PHAST
 #include <boost/thread.hpp>
+#endif
 
 Reaction_module::Reaction_module(int thread_count, PHRQ_io *io)
 	//
@@ -28,6 +30,7 @@ Reaction_module::Reaction_module(int thread_count, PHRQ_io *io)
 : PHRQ_base(io)
 {
 	int n = 1;
+#ifdef THREADED_PHAST
 #ifdef _WIN32
 	if (thread_count == 0)
 	{
@@ -35,6 +38,7 @@ Reaction_module::Reaction_module(int thread_count, PHRQ_io *io)
 		str = getenv("NUMBER_OF_PROCESSORS");
 		n = atoi(str);
 	}
+#endif
 #endif
 	this->nthreads = (thread_count > 0) ? thread_count : n;
 
@@ -178,16 +182,57 @@ Reaction_module::Initial_phreeqc_run(std::string chemistry_name)
 	return 1;
 }
 #endif
-#ifdef SKIP
 /* ---------------------------------------------------------------------- */
-int
+void
+Reaction_module::Initial_phreeqc_run_thread(int n)
+/* ---------------------------------------------------------------------- */
+{
+		IPhreeqcPhast * iphreeqc_phast_worker = this->Get_workers()[n];
+		int ipp_id = iphreeqc_phast_worker->Get_Index();
+
+		iphreeqc_phast_worker->SetOutputFileOn(false);
+		iphreeqc_phast_worker->SetErrorFileOn(false);
+		iphreeqc_phast_worker->SetLogFileOn(false);
+		iphreeqc_phast_worker->SetSelectedOutputStringOn(false);
+		if (n == 0)
+		{
+			iphreeqc_phast_worker->SetSelectedOutputFileOn(true);
+			iphreeqc_phast_worker->SetOutputStringOn(true);
+		}
+		else
+		{
+			iphreeqc_phast_worker->SetSelectedOutputFileOn(false);
+			iphreeqc_phast_worker->SetOutputStringOn(false);
+		}
+
+		// Load database
+		if (iphreeqc_phast_worker->LoadDatabase(this->database_file_name.c_str()) < 0) RM_error(&ipp_id);
+		if (n == 0)
+		{
+			Write_output(iphreeqc_phast_worker->GetOutputString());
+		}
+
+		// Run chemistry file
+		if (iphreeqc_phast_worker->RunFile(this->chemistry_file_name.c_str()) < 0) RM_error(&ipp_id);
+
+		// Create a StorageBin with initial PHREEQC for boundary conditions
+		if (n == 0)
+		{
+			Write_output(iphreeqc_phast_worker->GetOutputString());
+			this->Get_phreeqc_bin().Clear();
+			this->Get_workers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin());
+		}
+}
+/* ---------------------------------------------------------------------- */
+void
 Reaction_module::Initial_phreeqc_run(std::string database_name, std::string chemistry_name)
 /* ---------------------------------------------------------------------- */
 {
 	/*
 	*  Run PHREEQC to obtain PHAST reactants
 	*/
-
+	this->database_file_name = database_name;
+	this->chemistry_file_name = chemistry_name;
 	/*
 	 *   initialize HDF
 	 */
@@ -202,26 +247,38 @@ Reaction_module::Initial_phreeqc_run(std::string database_name, std::string chem
 	output_close(OUTPUT_ECHO);
 	MergeInit(prefix, prefix_l, *solute);	/* opens .chem.txt,  .chem.xyz.tsv, .log.txt */
 #endif
-	int rm_id = (int) this->phast_iphreeqc_worker->Get_Index();
 
-	// Load database
-    if (SetOutputStringOn(rm_id, true) < 0) RM_error(&rm_id);
-    if (SetSelectedOutputFileOn(rm_id, true) < 0) RM_error(&rm_id);
-    if (LoadDatabase(rm_id, database_name.c_str()) < 0) RM_error(&rm_id);
-    RM_write_output(&rm_id);
+	// make output streams 
+	//for (int n = 0; n < this->nthreads; n++)
+	//{
+	//	IPhreeqcPhast * phast_iphreeqc_worker = this->workers[n];
+	//	phast_iphreeqc_worker->Set_out_stream(new ostringstream); 
+	//	phast_iphreeqc_worker->Set_punch_stream(new ostringstream);
+	//	phast_iphreeqc_worker->Set_dump_stream(new ostringstream);
+	//}
 
-	// Run chemistry file
-    if (RunFile(rm_id, chemistry_name.c_str()) < 0) RM_error(&rm_id);
-    RM_write_output(&rm_id);
+	// load database and run chemistry file
+	// Eventually need an copy operator for IPhreeqcPhast
+#ifdef THREADED_PHAST
+	std::vector <boost::thread *> my_threads;
+	for (int n = 0; n < this->nthreads; n++)
+	{
+		boost::thread *thrd = new boost::thread(boost::bind(&Reaction_module::Initial_phreeqc_run_thread, this, n));
+		my_threads.push_back(thrd);
+	} 
+	for (int n = 0; n < this->nthreads; n++)
+	{
+		my_threads[n]->join();
+		delete my_threads[n];
+	} 
+#else
+	for (int n = 0; n < this->nthreads; n++)
+	{
+		Initial_phreeqc_run_thread(n);
+	} 
+#endif	
 
-
-    // Create a StorageBin with initial PHREEQC for boundary conditions
-	this->phreeqc_bin.Clear();
-	this->phast_iphreeqc_worker->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(phreeqc_bin);
-
-	return 1;
 }
-#endif
 #ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
@@ -849,7 +906,7 @@ Reaction_module::Distribute_initial_conditions(
 	{
 		std::ostringstream delete_command;
 		delete_command << "DELETE; -cells\n";
-		for (i = this->start_cell[n]; i < this->end_cell[n]; i++)
+		for (i = this->start_cell[n]; i <= this->end_cell[n]; i++)
 		{
 			cxxStorageBin sz_bin;
 			this->Get_workers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(sz_bin, i);
@@ -3557,9 +3614,7 @@ Reaction_module::Run_cells_thread(int n)
 	phast_iphreeqc_worker->SetOutputFileOn(false);
 	phast_iphreeqc_worker->SetErrorFileOn(false);
 
-	phast_iphreeqc_worker->Set_out_stream(new ostringstream); 
-
-	for (i = this->start_cell[n]; i < this->end_cell[n]; i++)
+	for (i = this->start_cell[n]; i <= this->end_cell[n]; i++)
 	{							/* i is count_chem number */
 		j = back[i][0];			/* j is nxyz number */
 
@@ -3608,11 +3663,11 @@ Reaction_module::Run_cells_thread(int n)
 
 			// do the calculation
 			std::ostringstream input;
-			input << "RUN_CELLS" << std::endl;
-			input << "  -start_time " << (*this->time_hst - *this->time_step_hst) << std::endl;
-			input << "  -time_step  " << *this->time_step_hst << std::endl;
-			input << "  -cells      " << i << std::endl;
-			input << "END" << std::endl;
+			input << "RUN_CELLS\n";
+			input << "  -start_time " << (*this->time_hst - *this->time_step_hst) << "\n";
+			input << "  -time_step  " << *this->time_step_hst << "\n";
+			input << "  -cells      " << i << "\n";
+			input << "END" << "\n";
 			if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) Error_stop();
 
 			// Adjust for fractional saturation and pore volume
@@ -3663,10 +3718,7 @@ Reaction_module::Run_cells_thread(int n)
 				sprintf(line_buff, "%15g\t%15g\t%15g\t%15g\t%2d\t",
 					x_node[j], y_node[j], z_node[j], (*time_hst) * (*cnvtmi),
 					active);
-				//Write_xyz(line_buff);
 				phast_iphreeqc_worker->Get_punch_stream() << line_buff;
-				//Write_xyz(phast_iphreeqc_worker->GetSelectedOutputStringLine(0));
-				//Write_xyz("\n");
 				phast_iphreeqc_worker->Get_punch_stream() << phast_iphreeqc_worker->GetSelectedOutputStringLine(0) << "\n";
 			}
 
@@ -3698,11 +3750,25 @@ Reaction_module::Run_cells_thread(int n)
 				line << "x= " << x_node[j] << "\t";
 				line << "y= " << y_node[j] << "\t";
 				line << "z= " << z_node[j] << "\n";
-				line << "Dry cell\n";
-				//Write_output(line.str().c_str());
-				//Write_output(phast_iphreeqc_worker->GetOutputString());
+				line << "Cell is dry.\n";
 				phast_iphreeqc_worker->Get_out_stream() << line.str().c_str();
 			}
+			// write xyz file
+			if (pr_xyz)
+			{
+				char line_buff[132];
+				sprintf(line_buff, "%15g\t%15g\t%15g\t%15g\t%2d\t\n",
+					x_node[j], y_node[j], z_node[j], (*time_hst) * (*cnvtmi),
+					active);
+				phast_iphreeqc_worker->Get_punch_stream() << line_buff;
+			}
+		}
+		if (this->print_restart)
+		{
+			std::ostringstream input;
+			input << "DUMP;  -cells " << i << "\n";
+			if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) Error_stop();
+			phast_iphreeqc_worker->Get_dump_stream() << phast_iphreeqc_worker->GetDumpString();
 		}
 
 	} // end one cell
@@ -3725,34 +3791,58 @@ Reaction_module::Run_cells()
  *   Update solution compositions in sz_bin
  */
 	clock_t t0 = clock();
+	for (int n = 0; n < this->nthreads; n++)
+	{
+		IPhreeqcPhast * phast_iphreeqc_worker = this->workers[n];
+		phast_iphreeqc_worker->Set_out_stream(new ostringstream); 
+		phast_iphreeqc_worker->Set_punch_stream(new ostringstream);
+		phast_iphreeqc_worker->Set_dump_stream(new ostringstream);
+	}
+#ifdef THREADED_PHAST
 	std::vector <boost::thread *> my_threads;
 	for (int n = 0; n < this->nthreads; n++)
 	{
 		boost::thread *thrd = new boost::thread(boost::bind(&Reaction_module::Run_cells_thread, this, n));
 		my_threads.push_back(thrd);
 	} 
+#else
 	for (int n = 0; n < this->nthreads; n++)
 	{
+		Run_cells_thread(n);
+	} 
+#endif
+	for (int n = 0; n < this->nthreads; n++)
+	{
+#ifdef THREADED_PHAST
 		my_threads[n]->join();
-
+#endif
 		// write output results
 		if (this->print_chem)
 		{
 			Write_output(this->workers[n]->Get_out_stream().str().c_str());
 		}
-		delete this->workers[n]->Get_out_stream();
+		delete &this->workers[n]->Get_out_stream();
+
 		// write punch results
 		if (this->print_xyz)
 		{
 			Write_xyz(this->workers[n]->Get_punch_stream().str().c_str());
 		}
-		delete this->workers[n]->Get_punch_stream();
+		delete &this->workers[n]->Get_punch_stream();
+
+		// write restart
+		if (this->print_restart)
+		{
+			this->Write_restart();
+		}
+		delete &this->workers[n]->Get_dump_stream();
+
+#ifdef THREADED_PHAST
+		delete my_threads[n];
+#endif
 	} 	
 
 	std::cerr << "Running: " << (double) (clock() - t0) << std::endl;
-	//Sleep(1000);
-	//exit(4);
-
 }
 #ifdef SKIP
 /* ---------------------------------------------------------------------- */
@@ -4322,20 +4412,15 @@ Reaction_module::Write_restart(void)
 	}
 
 	// write data
-	//for (j = 0; j < count_chem; j++)	/* j is count_chem number */
-	//{
-	//	cxxStorageBin sz_bin;
-	//	this->phast_iphreeqc_worker->Get_cell_from_storage_bin(sz_bin, j);
-	//	sz_bin.dump_raw(ofs_restart, 0);
-	//}
 	for (int n = 0; n < this->nthreads; n++)
 	{
-		for (j = this->start_cell[n]; j < this->end_cell[n]; j++)	/* j is count_chem number */
-		{
-			cxxStorageBin sz_bin;
-			this->Get_workers()[n]->Put_cell_in_storage_bin(sz_bin, j);
-			sz_bin.dump_raw(ofs_restart, 0);
-		}
+		//for (j = this->start_cell[n]; j < this->end_cell[n]; j++)	/* j is count_chem number */
+		//{
+		//	cxxStorageBin sz_bin;
+		//	this->Get_workers()[n]->Put_cell_in_storage_bin(sz_bin, j);
+		//	sz_bin.dump_raw(ofs_restart, 0);
+		//}
+		ofs_restart << this->Get_workers()[n]->Get_dump_stream().str().c_str();
 	}
 
 	ofs_restart.close();
