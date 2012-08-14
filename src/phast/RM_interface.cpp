@@ -393,6 +393,21 @@ void RM_initial_phreeqc_run(int *rm_id, char *db_name, char *chem_name, int l1, 
 		trim_right(database_name);
 		std::string chemistry_name(chem_name, l2);
 		trim_right(chemistry_name);
+		Reaction_module_ptr->Initial_phreeqc_run(database_name, chemistry_name);
+	}
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+void RM_initial_phreeqc_run(int *rm_id, char *db_name, char *chem_name, int l1, int l2)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	if (Reaction_module_ptr)
+	{
+		std::string database_name(db_name, l1);
+		trim_right(database_name);
+		std::string chemistry_name(chem_name, l2);
+		trim_right(chemistry_name);
 		for (int i = 0; i <= Reaction_module_ptr->Get_nthreads(); i++)
 		{
 			IPhreeqcPhast * ipp_ptr = Reaction_module_ptr->Get_workers()[i];
@@ -429,6 +444,7 @@ void RM_initial_phreeqc_run(int *rm_id, char *db_name, char *chem_name, int l1, 
 		}
 	}
 }
+#endif
 #ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void RM_initial_phreeqc_run(int *rm_id, char *db_name, char *chem_name, int l1, int l2)

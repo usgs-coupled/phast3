@@ -17,7 +17,8 @@ public:
 	~Reaction_module(void);
 	// Called through wrappers
 	//int Load_database(std::string database_name);
-	//int Initial_phreeqc_run(std::string database_name, std::string chemistry_name);
+	void Initial_phreeqc_run(std::string database_name, std::string chemistry_name);
+	void Initial_phreeqc_run_thread(int n);
 	//void Get_components(int *n_comp, char *names, int length);
 
 
@@ -164,6 +165,7 @@ protected:
 protected:
 	//IPhreeqcPhast * phast_iphreeqc_worker;
 	std::string database_file_name;
+	std::string chemistry_file_name;
 	std::string file_prefix;
 	cxxStorageBin uz_bin;
 	//cxxStorageBin sz_bin;
