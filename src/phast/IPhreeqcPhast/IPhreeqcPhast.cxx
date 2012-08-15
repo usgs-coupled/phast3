@@ -46,6 +46,47 @@ IPhreeqcPhast::Set_cell_volumes(int i, double pore_volume, double f, double v)
 	phreeqc_ptr->cell_saturation = f;
 }
 /* ---------------------------------------------------------------------- */
+void
+IPhreeqcPhast::Selected_out_to_double()
+/* ---------------------------------------------------------------------- */
+{
+	int rows = this->GetSelectedOutputRowCount();
+	int columns = this->GetSelectedOutputColumnCount();
+	this->punch_vector.clear();
+	bool rv = false;
+	for (int row = 1; row < rows; row++)
+	{
+		rv = true;
+		std::vector<LDBLE> d;
+		for (int column = 0; column < columns; column++)
+		{
+			VAR v;
+			if (this->GetSelectedOutputValue(row, column, &v))
+			{
+				switch (v.type)
+				{
+				case TT_LONG:
+					d.push_back(v.lVal);
+					break;
+				case TT_DOUBLE:
+					d.push_back(v.dVal);
+					break;
+				default:
+					d.push_back(0.0);
+					break;
+				}
+			}
+			else
+			{
+				d.push_back(0.0);
+				rv = false;
+			}
+		}
+		this->punch_vector.push_back(d);
+	}
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
 bool
 IPhreeqcPhast::Selected_out_to_double(int row, std::vector<double> d)
 /* ---------------------------------------------------------------------- */
@@ -84,6 +125,7 @@ IPhreeqcPhast::Selected_out_to_double(int row, std::vector<double> d)
 	}
 	return rv;
 }
+#endif
 /* ---------------------------------------------------------------------- */
 void
 IPhreeqcPhast::Get_cell_from_storage_bin(cxxStorageBin & sb, int i)

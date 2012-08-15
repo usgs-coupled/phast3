@@ -311,6 +311,7 @@ copy "$(TargetDir)$(TargetName).lib" "lib\$(TargetName).lib"
     </CustomBuildStep>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\hdf.h" />
     <ClInclude Include="..\IPhreeqcPhast\fwrapPhast.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqcPhast.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqcPhastLib.h" />

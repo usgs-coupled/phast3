@@ -63,9 +63,6 @@
     <ClCompile Include="..\hstsubs.cpp">
       <Filter>Source Files\COMMON_CXXOBJS</Filter>
     </ClCompile>
-    <ClCompile Include="..\hdf.cpp">
-      <Filter>Source Files\HDF_OBJS</Filter>
-    </ClCompile>
     <ClCompile Include="..\merge.cpp">
       <Filter>Source Files\MERGE_OBJS</Filter>
     </ClCompile>
@@ -74,6 +71,9 @@
     </ClCompile>
     <ClCompile Include="..\cxxHstSubs.cxx">
       <Filter>Source Files\COMMON_CXXOBJS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\hdf.cpp">
+      <Filter>Source Files\HDF_OBJS</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

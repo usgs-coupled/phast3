@@ -17,10 +17,6 @@ public:
 	~Reaction_module(void);
 	// Called through wrappers
 	//int Load_database(std::string database_name);
-	void Initial_phreeqc_run(std::string database_name, std::string chemistry_name);
-	void Initial_phreeqc_run_thread(int n);
-	//void Get_components(int *n_comp, char *names, int length);
-
 
 	void Convert_to_molal(double *c, int n, int dim);
 	void Calculate_well_ph(double *c, double * ph, double * alkalinity);
@@ -42,10 +38,11 @@ public:
 	void Fractions2Solutions(void);
 	void Fractions2Solutions_thread(int n);
 	int Find_components();	
+	void Initial_phreeqc_run(std::string database_name, std::string chemistry_name);
+	void Initial_phreeqc_run_thread(int n);
 	void Run_cells(void);
 	void Run_cells_thread(int i);
-	void Scale_solids(int iphrq, LDBLE frac);
-
+	void Scale_solids(int n, int iphrq, LDBLE frac);
 	void Send_restart_name(std::string name);
 	void Set_end_cells(void);
 	void Setup_boundary_conditions(const int n_boundary, int *boundary_solution1,
@@ -61,9 +58,7 @@ public:
 	void Write_screen(std::string item);
 	void Write_xyz(std::string item);
 
-
 	// setters and getters
-	//IPhreeqcPhast * Get_phast_iphreeqc_worker() {return this->phast_iphreeqc_worker;}
 	std::vector<IPhreeqcPhast *> & Get_workers() {return this->workers;}
 	int Get_nthreads() {return this->nthreads;}
 
@@ -136,8 +131,6 @@ public:
 protected:
 	// internal methods
 	void Cell_initialize(
-	//	std::ostringstream &mix_string,
-	//	std::ostringstream &copy_string,
 		int i, 
 		int n_user_new, 
 		int *initial_conditions1,
@@ -150,9 +143,6 @@ protected:
 		int gasphase_units, 
 		int kinetics_units,
 		double porosity_factor);
-
-	//void Unpack_fraction_array(void);
-	//void Pack_fraction_array(void);
 	bool n_to_ijk (int n, int &i, int &j, int &k);
 	void cxxSolution2fraction(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
 	void Write_restart(void);
@@ -163,12 +153,10 @@ protected:
 	void Init_uz(void);
 
 protected:
-	//IPhreeqcPhast * phast_iphreeqc_worker;
 	std::string database_file_name;
 	std::string chemistry_file_name;
 	std::string file_prefix;
 	cxxStorageBin uz_bin;
-	//cxxStorageBin sz_bin;
 	cxxStorageBin phreeqc_bin;
 	std::map < std::string, int > FileMap; 
 	int mpi_myself;
@@ -211,7 +199,6 @@ protected:
 	bool print_restart;						// print flag for writing restart file 
 	bool write_xyz_headings;                // write xyz headings once
 
-	char line_buffer[4096];
 	// threading
 	int nthreads;
 	std::vector<IPhreeqcPhast *> workers;
