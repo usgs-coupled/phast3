@@ -5,7 +5,7 @@
 #include "PHRQ_io.h"
 #include <string>
 #include <map>
-
+#include "hdf.h"
 std::map<size_t, Reaction_module*> RM_interface::Instances;
 size_t RM_interface::InstancesIndex = 0;
 PHRQ_io RM_interface::phast_io;
@@ -200,6 +200,9 @@ void
 RM_close_files(int *solute)
 /* ---------------------------------------------------------------------- */
 {
+#ifdef HDF5_CREATE
+	HDF_Finalize();
+#endif
 	// error_file is stderr
 	
 	// open echo and log file, prefix.log.txt
@@ -520,6 +523,10 @@ RM_open_files(int * solute, char * prefix, int l_prefix)
 		// punch_file is prefix.chem.txt
 		RM_open_punch_file(prefix, l_prefix);
 	}
+
+#ifdef HDF5_CREATE
+	HDF_Init(prefix, l_prefix);
+#endif
 }
 /* ---------------------------------------------------------------------- */
 void

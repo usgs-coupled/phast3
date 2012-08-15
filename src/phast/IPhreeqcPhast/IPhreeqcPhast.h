@@ -15,7 +15,7 @@ public:
 	double Get_gfw(std::string);
 	void Set_cell_volumes(int i, double pore_volume, double f, double v);
 	//bool Selected_out_to_double(int row, std::vector<double> d);void
-	void Selected_out_to_double();
+	void Selected_out_to_double(size_t cols = 0);
 
 	void Get_cell_from_storage_bin(cxxStorageBin & sb, int i);
 	void Put_cell_in_storage_bin(cxxStorageBin & sb, int i);
@@ -42,7 +42,7 @@ protected:
 	//std::ostringstream * dump_stream;
 	std::ostringstream * punch_stream;
 	std::vector < std::vector< LDBLE > > punch_vector;
-	std::vector<LDBLE> d_values;
+	std::vector<std::string> selected_output_names;
 
 };
 #endif // !defined(PHAST_IPHREEQC_H_INCLUDED)

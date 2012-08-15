@@ -47,15 +47,19 @@ IPhreeqcPhast::Set_cell_volumes(int i, double pore_volume, double f, double v)
 }
 /* ---------------------------------------------------------------------- */
 void
-IPhreeqcPhast::Selected_out_to_double()
+IPhreeqcPhast::Selected_out_to_double(size_t cols)
 /* ---------------------------------------------------------------------- */
 {
+	const float INACTIVE_CELL_VALUE = 1.0e30f;
+
 	int rows = this->GetSelectedOutputRowCount();
 	int columns = this->GetSelectedOutputColumnCount();
 	bool rv = false;
 	std::vector<LDBLE> d;
-	for (int row = 1; row < rows; row++)
+	if (cols == 0)
 	{
+		assert(rows >= 2);
+		int row = 1;
 		rv = true;
 		for (int column = 0; column < columns; column++)
 		{
@@ -72,15 +76,23 @@ IPhreeqcPhast::Selected_out_to_double()
 					d.push_back(v.dVal);
 					break;
 				default:
-					d.push_back(0.0);
+					d.push_back(INACTIVE_CELL_VALUE);
 					break;
 				}
 			}
 			else
 			{
-				d.push_back(0.0);
+				d.push_back(INACTIVE_CELL_VALUE);
 				rv = false;
 			}
+		}
+		this->punch_vector.push_back(d);
+	}
+	else
+	{
+		for (size_t column = 0; column < cols; column++)
+		{
+			d.push_back(INACTIVE_CELL_VALUE);
 		}
 		this->punch_vector.push_back(d);
 	}
