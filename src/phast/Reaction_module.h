@@ -17,6 +17,8 @@ public:
 	~Reaction_module(void);
 	// Called through wrappers
 	//int Load_database(std::string database_name);
+	void BeginCell(int index);
+	void BeginTimeStep(void);
 
 	void Convert_to_molal(double *c, int n, int dim);
 	void Calculate_well_ph(double *c, double * ph, double * alkalinity);
@@ -31,6 +33,8 @@ public:
 		int ppassemblage_units,
 		int gasphase_units,
 		int kinetics_units);
+	void EndCell(int index);
+	void EndTimeStep(void);
 	void Error_stop(void);
 	void Forward_and_back(
 		int *initial_conditions, 
@@ -38,7 +42,7 @@ public:
 	void Fractions2Solutions(void);
 	void Fractions2Solutions_thread(int n);
 	int Find_components();	
-	void Initial_phreeqc_run(std::string database_name, std::string chemistry_name);
+	void Initial_phreeqc_run(std::string database_name, std::string chemistry_name, std::string prefix);
 	void Initial_phreeqc_run_thread(int n);
 	void Run_cells(void);
 	void Run_cells_thread(int i);
@@ -54,6 +58,7 @@ public:
 		int * solution_number, const std::string &prefix);
 	void Write_error(std::string item);
 	void Write_log(std::string item);
+	void Write_restart(void);
 	void Write_output(std::string item);
 	void Write_screen(std::string item);
 	void Write_xyz(std::string item);
@@ -145,7 +150,6 @@ protected:
 		double porosity_factor);
 	bool n_to_ijk (int n, int &i, int &j, int &k);
 	void cxxSolution2fraction(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
-	void Write_restart(void);
 	bool File_exists(const std::string name);
 	void File_rename(const std::string temp_name, const std::string name, const std::string backup_name);
 	void Partition_uz(int iphrq, int ihst, double new_frac);

@@ -25,7 +25,7 @@ SUBROUTINE phast_sub(l_mpi_tasks, l_mpi_myself)
   ! ...      FUBCF  - Boundary condition flow rates
   ! ...      FUD  - Density field
   ! ...      FUVS  - Viscosity field
-!!ToDo  USE mcch, ONLY: version_name
+  USE mcch, ONLY: version_name
   USE mcc
 #if defined(USE_MPI)
   USE mpi_mod
@@ -37,7 +37,7 @@ SUBROUTINE phast_sub(l_mpi_tasks, l_mpi_myself)
   !     ------------------------------------------------------------------
   !...
   ! ... Extract the version name for the header
-!!ToDo    version_name = ' @VERSION@'
+  version_name = ' @VERSION@'
   !...
 #if defined(USE_MPI)
   world = MPI_COMM_WORLD

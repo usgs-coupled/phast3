@@ -174,6 +174,7 @@ Reaction_module::Initial_phreeqc_run_thread(int n)
 			for (int i = 0; i < iphreeqc_phast_worker->GetSelectedOutputColumnCount(); i++)
 			{
 				VAR v;
+				VarInit(&v);
 				iphreeqc_phast_worker->GetSelectedOutputValue(0, i, &v);
 				names.push_back(v.sVal);
 			}
@@ -182,7 +183,7 @@ Reaction_module::Initial_phreeqc_run_thread(int n)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Initial_phreeqc_run(std::string database_name, std::string chemistry_name)
+Reaction_module::Initial_phreeqc_run(std::string database_name, std::string chemistry_name, std::string prefix)
 /* ---------------------------------------------------------------------- */
 {
 	/*
@@ -190,12 +191,11 @@ Reaction_module::Initial_phreeqc_run(std::string database_name, std::string chem
 	*/
 	this->database_file_name = database_name;
 	this->chemistry_file_name = chemistry_name;
+	this->file_prefix = prefix;
 	/*
 	 *   initialize HDF
 	 */
 #ifdef HDF5_CREATE
-// TODO, implement HDF	HDF_Init(prefix.c_str(), prefix.size());
-	std::string prefix = "ex4";
 	HDF_Init(prefix.c_str(), prefix.size());
 #endif
 	/*
@@ -211,12 +211,12 @@ Reaction_module::Initial_phreeqc_run(std::string database_name, std::string chem
 	// Eventually need an copy operator for IPhreeqcPhast
 #ifdef THREADED_PHAST
 	std::vector <boost::thread *> my_threads;
-	for (int n = 0; n < this->nthreads; n++)
+	for (int n = 0; n <= this->nthreads; n++)
 	{
 		boost::thread *thrd = new boost::thread(boost::bind(&Reaction_module::Initial_phreeqc_run_thread, this, n));
 		my_threads.push_back(thrd);
 	} 
-	for (int n = 0; n < this->nthreads; n++)
+	for (int n = 0; n <= this->nthreads; n++)
 	{
 		my_threads[n]->join();
 		delete my_threads[n];
@@ -1606,6 +1606,7 @@ Reaction_module::Run_cells_thread(int n)
 	phast_iphreeqc_worker->SetLogFileOn(false);
 	phast_iphreeqc_worker->SetSelectedOutputFileOn(false);
 	phast_iphreeqc_worker->SetDumpFileOn(false);
+	phast_iphreeqc_worker->SetDumpStringOn(false);
 	phast_iphreeqc_worker->SetOutputFileOn(false);
 	phast_iphreeqc_worker->SetErrorFileOn(false);
 
@@ -1727,7 +1728,6 @@ Reaction_module::Run_cells_thread(int n)
 			// Write output file
 			if (pr_hdf)
 			{
-				std::vector<double> d;
 				phast_iphreeqc_worker->Selected_out_to_double();
 			}
 		} // end active
@@ -1754,13 +1754,13 @@ Reaction_module::Run_cells_thread(int n)
 				phast_iphreeqc_worker->Get_punch_stream() << line_buff;
 			}
 		}
-		if (this->print_restart)
-		{
-			std::ostringstream input;
-			input << "DUMP;  -cells " << i << "\n";
-			if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) Error_stop();
-			phast_iphreeqc_worker->Get_dump_stream() << phast_iphreeqc_worker->GetDumpString();
-		}
+		//if (this->print_restart)
+		//{
+		//	std::ostringstream input;
+		//	input << "DUMP;  -cells " << i << "\n";
+		//	if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) Error_stop();
+		//	phast_iphreeqc_worker->Get_dump_stream() << phast_iphreeqc_worker->GetDumpString();
+		//}
 
 	} // end one cell
 
@@ -1786,7 +1786,7 @@ Reaction_module::Run_cells()
 		IPhreeqcPhast * phast_iphreeqc_worker = this->workers[n];
 		phast_iphreeqc_worker->Set_out_stream(new ostringstream); 
 		phast_iphreeqc_worker->Set_punch_stream(new ostringstream);
-		phast_iphreeqc_worker->Set_dump_stream(new ostringstream);
+		//phast_iphreeqc_worker->Set_dump_stream(new ostringstream);
 	}
 #ifdef THREADED_PHAST
 	std::vector <boost::thread *> my_threads;
@@ -1825,13 +1825,25 @@ Reaction_module::Run_cells()
 		{
 			this->Write_restart();
 		}
-		delete &this->workers[n]->Get_dump_stream();
+		//delete &this->workers[n]->Get_dump_stream();
 
 		// write hdf
 		if (this->print_hdf)
 		{
 			// data are stored in punch_vector
+			BeginTimeStep();
+			for (int n = 0; n < this->nthreads; n++)
+			{
+				for (int i = this->start_cell[n]; i <= this->end_cell[n]; i++)
+				{
+					int j = back[i][0]; // j nxyz number
+					BeginCell(j);
+					HDFFillHyperSlab(i, this->workers[n]->Get_punch_vector());
+					EndCell(j);
+				}
+			}
 			//this->workers[n]->Get_punch_vector().clear();
+			EndTimeStep();
 		}
 
 #ifdef THREADED_PHAST
@@ -2057,9 +2069,13 @@ Reaction_module::Write_restart(void)
 	}
 
 	// write data
-	for (int n = 0; n < this->nthreads; n++)
+	for (int n = 0; n < (int) this->workers.size() - 1; n++)
 	{
-		ofs_restart << this->Get_workers()[n]->Get_dump_stream().str().c_str();
+		this->workers[n]->SetDumpStringOn(true); 
+		std::ostringstream in;
+		in << "DUMP; -cells " << this->start_cell[n] << "-" << this->end_cell[n] << "\n";
+		this->workers[n]->RunString(in.str().c_str());
+		ofs_restart << this->Get_workers()[n]->GetDumpString();
 	}
 
 	ofs_restart.close();
@@ -2080,3 +2096,133 @@ Reaction_module:: Write_xyz(std::string item)
 {
 	RM_interface::phast_io.punch_msg(item.c_str());
 }
+/*-------------------------------------------------------------------------
+ * Function          BeginTimeStep
+ *-------------------------------------------------------------------------
+ */
+void
+Reaction_module::BeginTimeStep(void)
+{
+#ifdef HDF5_CREATE
+	HDFBeginCTimeStep(this->count_chem);
+#endif
+#if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
+	/* Always open file for output in case of a warning message */
+	MergeBeginTimeStep(print_sel, print_out);
+#endif
+}
+
+/*-------------------------------------------------------------------------
+ * Function          EndTimeStep
+ *-------------------------------------------------------------------------
+ */
+void
+Reaction_module::EndTimeStep(void)
+{
+#ifdef HDF5_CREATE
+	HDFEndCTimeStep(back);
+#endif
+#if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
+	/* Always open file for output in case of a warning message */
+	MergeEndTimeStep(print_sel, print_out);
+#endif
+}
+/*-------------------------------------------------------------------------
+ * Function          BeginCell
+ *-------------------------------------------------------------------------
+ */
+void
+Reaction_module::BeginCell(int index)
+{
+	// index is nxyz number
+#ifdef HDF5_CREATE
+	HDFSetCell(index, back);
+#endif
+#if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
+	/* Always open file for output in case of a warning message */
+	MergeBeginCell();
+#endif
+}
+
+/*-------------------------------------------------------------------------
+ * Function          EndCell
+ *-------------------------------------------------------------------------
+ */
+void
+Reaction_module::EndCell(int index)
+{
+#if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
+	/* Always open file for output in case of a warning message */
+	MergeEndCell(print_sel, print_out, print_hdf, index);
+#endif
+}
+#ifdef SKIP
+/*-------------------------------------------------------------------------
+ * Function          BeginTimeStep
+ *-------------------------------------------------------------------------
+ */
+void
+BeginTimeStep(int print_sel, int print_out, int print_hdf)
+{
+#ifdef HDF5_CREATE
+	if (print_hdf == TRUE)
+	{
+		HDFBeginCTimeStep();
+	}
+#endif
+#if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
+	/* Always open file for output in case of a warning message */
+	MergeBeginTimeStep(print_sel, print_out);
+#endif
+}
+
+/*-------------------------------------------------------------------------
+ * Function          EndTimeStep
+ *-------------------------------------------------------------------------
+ */
+void
+EndTimeStep(int print_sel, int print_out, int print_hdf)
+{
+#ifdef HDF5_CREATE
+	if (print_hdf == TRUE)
+	{
+		HDFEndCTimeStep();
+	}
+#endif
+#if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
+	/* Always open file for output in case of a warning message */
+	MergeEndTimeStep(print_sel, print_out);
+#endif
+}
+/*-------------------------------------------------------------------------
+ * Function          BeginCell
+ *-------------------------------------------------------------------------
+ */
+void
+BeginCell(int print_sel, int print_out, int print_hdf, int index)
+{
+#ifdef HDF5_CREATE
+	if (print_hdf == TRUE)
+	{
+		HDFSetCell(index);
+	}
+#endif
+#if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
+	/* Always open file for output in case of a warning message */
+	MergeBeginCell();
+#endif
+}
+
+/*-------------------------------------------------------------------------
+ * Function          EndCell
+ *-------------------------------------------------------------------------
+ */
+void
+EndCell(int print_sel, int print_out, int print_hdf, int index)
+{
+#if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
+	/* Always open file for output in case of a warning message */
+	MergeEndCell(print_sel, print_out, print_hdf, index);
+#endif
+}
+#endif

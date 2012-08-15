@@ -52,16 +52,16 @@ IPhreeqcPhast::Selected_out_to_double()
 {
 	int rows = this->GetSelectedOutputRowCount();
 	int columns = this->GetSelectedOutputColumnCount();
-	this->punch_vector.clear();
 	bool rv = false;
+	std::vector<LDBLE> d;
 	for (int row = 1; row < rows; row++)
 	{
 		rv = true;
-		std::vector<LDBLE> d;
 		for (int column = 0; column < columns; column++)
 		{
 			VAR v;
-			if (this->GetSelectedOutputValue(row, column, &v))
+			VarInit(&v);
+			if (this->GetSelectedOutputValue(row, column, &v) == VR_OK)
 			{
 				switch (v.type)
 				{
