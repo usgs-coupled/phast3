@@ -20,10 +20,12 @@ extern "C" void PHAST_SUB(int *mpi_tasks, int *mpi_myself);
 #if WIN32
 #include <windows.h>
 #include "phrqtype.h"
+#include "Reaction_module.h"
+#include "RM_interface.h"
 
 extern "C" void HDF_Finalize(void);
 
-#ifdef SKIP_REWRITE_PHAST //-------------------------------------------------------------------------
+//#ifdef SKIP_REWRITE_PHAST //-------------------------------------------------------------------------
 int write_restart(double hst_time);
 
 extern LDBLE rate_sim_time_end;
@@ -43,7 +45,8 @@ BOOL CtrlHandler(DWORD dwCtrlType)
 		case CTRL_SHUTDOWN_EVENT:
 			OutputDebugString("CtrlHandler Catch\n");
 			HDF_Finalize();
-			write_restart(rate_sim_time_end * rate_cnvtmi);
+			//write_restart(rate_sim_time_end * rate_cnvtmi);
+			RM_write_restart(0);
 			ExitProcess(1);
 			return TRUE;
 		default:
@@ -58,7 +61,7 @@ BOOL CtrlHandler(DWORD dwCtrlType)
 }
 #endif
 
-#endif // SKIP_REWRITE_PHAST
+//#endif // SKIP_REWRITE_PHAST
 
 int main(int argc, char* argv[])
 {

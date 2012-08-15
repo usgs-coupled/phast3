@@ -29,6 +29,7 @@
 #define RM_solutions2fractions                rm_solutions2fractions
 #define RM_write_bc_raw                       rm_write_bc_raw
 #define RM_write_output                       rm_write_output
+#define RM_write_restart					  rm_write_restart
 
 /**
  * @mainpage IPhreeqc Library Documentation
@@ -88,7 +89,7 @@ void RM_forward_and_back(int *id,
 		int *axes);
 void RM_fractions2solutons(int *id);
 void RM_get_component(int * id, int * num, char *chem_name, int l1);
-void RM_initial_phreeqc_run(int * id, char *db_name, char *chem_name, int l1, int l2);
+void RM_initial_phreeqc_run(int * id, char *db_name, char *chem_name, char *prefix_name, int l1, int l2, int l3);
 void RM_log_screen_prt(char *err_str, long l);
 void RM_open_files(int * solute, char * prefix, int l_prefix);
 void RM_open_error_file(void);
@@ -153,6 +154,7 @@ void RM_write_bc_raw(int *id,
 			char *prefix, 
 			int prefix_l);
 void RM_write_output(int *id);
+void RM_write_restart(int *id);
 
 
 void errprt_c(char *err_str, long l);

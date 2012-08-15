@@ -14,7 +14,9 @@
 #include <assert.h>
 #include <iostream>
 
+#include "phrqtype.h"
 #include "hdf.h"
+
 
 #define PHRQ_malloc malloc
 #define PHRQ_free free
@@ -774,8 +776,8 @@ HDF_OPEN_TIME_STEP(double *time, double *cnvtmi, int *print_chem,
 				size_t len = strlen(root.scalar_names[i]) + 1;
 				if (root.scalar_name_max_len < len)
 					root.scalar_name_max_len = len;
-			}
 		}
+	}
 		root.scalar_name_count = proc.scalar_count;
 	}
 
@@ -1253,7 +1255,7 @@ write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
 	 * make the file dataspace selection
 	 */
 	//for (n = 0; n < count_back_list; ++n)
-	for (n = 0; n < back[0].size(); ++n)
+	for (n = 0; n < (int) back[0].size(); ++n)
 	{
 		for (j = 0; j < proc.scalar_count; ++j)
 		{
@@ -1409,6 +1411,27 @@ get_c_scalar_count(int load_names, char **names)
 	return g_hdf_scalar_count;
 }
 #endif
+/*-------------------------------------------------------------------------
+ * Function          FillHyperSlab
+ *
+ * Preconditions:    HDFBeginTimeStep has been called
+ *
+ * Postconditions:   TODO:
+ *-------------------------------------------------------------------------
+ */
+void
+HDFFillHyperSlab(int chem_number, std::vector< std::vector < LDBLE > > &d)
+{
+	for (size_t j = 0; j < d.size(); j++)
+	{
+		int n = j + chem_number;
+		for (size_t i = 0; i < d[j].size(); i++)
+		{
+			assert(proc.array[i * proc.cell_count + n] == (double) INACTIVE_CELL_VALUE);
+			proc.array[i * proc.cell_count + n] = (double) d[j][i];
+		}
+	}
+}
 #ifdef SKIP
 /*-------------------------------------------------------------------------
  * Function          HDFWriteHyperSlabV

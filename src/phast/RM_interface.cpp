@@ -383,7 +383,7 @@ void RM_get_component(int * rm_id, int * num, char *chem_name, int l1)
 	}
 }
 /* ---------------------------------------------------------------------- */
-void RM_initial_phreeqc_run(int *rm_id, char *db_name, char *chem_name, int l1, int l2)
+void RM_initial_phreeqc_run(int *rm_id, char *db_name, char *chem_name, char *prefix, int l1, int l2, int l3)
 /* ---------------------------------------------------------------------- */
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
@@ -393,7 +393,9 @@ void RM_initial_phreeqc_run(int *rm_id, char *db_name, char *chem_name, int l1, 
 		trim_right(database_name);
 		std::string chemistry_name(chem_name, l2);
 		trim_right(chemistry_name);
-		Reaction_module_ptr->Initial_phreeqc_run(database_name, chemistry_name);
+		std::string prefix_name(prefix, l3);
+		trim_right(prefix_name);
+		Reaction_module_ptr->Initial_phreeqc_run(database_name, chemistry_name, prefix_name);
 	}
 }
 #ifdef SKIP
@@ -799,5 +801,15 @@ void RM_write_output(int *id)
 	if (GetSelectedOutputStringOn(*id))
 	{
 		RM_interface::phast_io.punch_msg(GetSelectedOutputString(*id));
+	}
+}
+/* ---------------------------------------------------------------------- */
+void RM_write_restart(int *id)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Write_restart();
 	}
 }
