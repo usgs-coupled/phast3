@@ -160,6 +160,7 @@ protected:
 	std::string database_file_name;
 	std::string chemistry_file_name;
 	std::string file_prefix;
+	std::vector<std::string> selected_output_names;
 	cxxStorageBin uz_bin;
 	cxxStorageBin phreeqc_bin;
 	std::map < std::string, int > FileMap; 

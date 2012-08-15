@@ -72,9 +72,10 @@ static struct root_info
 	int nz;
 	int nxy;
 	int nxyz;
-	int scalar_name_count;		/* 0..proc_info.scalar_count                  chem scalars    */
-	char **scalar_names;		/* proc_info.scalar_count..scalar_name_count  fortran scalars */
+	//int scalar_name_count;		/* 0..proc_info.scalar_count                  chem scalars    */
+	//char **scalar_names;		/* proc_info.scalar_count..scalar_name_count  fortran scalars */
 	size_t scalar_name_max_len;
+	std::vector <std::string> scalar_names;
 #ifdef USE_MPI
 	double *recv_array;
 	int recv_array_count;
@@ -193,8 +194,8 @@ HDF_Init(const char *prefix, int prefix_l)
 		root.print_chem = -1;
 
 		root.time_step_scalar_indices = NULL;
-		root.scalar_names = NULL;
-		root.scalar_name_count = 0;
+		//root.scalar_names = NULL;
+		//root.scalar_name_count = 0;
 		root.scalar_name_max_len = 0;
 
 		root.time_steps = NULL;
@@ -247,18 +248,19 @@ HDF_Finalize(void)
 
 		hdf_finalize_headings();
 
-		if (root.scalar_name_count > 0)
-		{
-			/* free space */
-			for (i = 0; i < root.scalar_name_count; ++i)
-			{
-				PHRQ_free(root.scalar_names[i]);
-			}
-			PHRQ_free(root.scalar_names);
-			root.scalar_names = NULL;
-			root.scalar_name_count = 0;
-			root.scalar_name_max_len = 0;
-		}
+		//if (root.scalar_name_count > 0)
+		//{
+		//	/* free space */
+		//	for (i = 0; i < root.scalar_name_count; ++i)
+		//	{
+		//		PHRQ_free(root.scalar_names[i]);
+		//	}
+		//	PHRQ_free(root.scalar_names);
+		//	root.scalar_names = NULL;
+		//	root.scalar_name_count = 0;
+		//	root.scalar_name_max_len = 0;
+		//}
+		root.scalar_names.clear();
 
 		if (root.vector_name_count > 0)
 		{
@@ -587,7 +589,7 @@ HDF_WRITE_GRID(double x[], double y[], double z[],
 
 		//proc.scalar_count = get_c_scalar_count(0, NULL);
 		proc.scalar_count = g_hdf_scalar_names.size();
-		assert(root.scalar_names == NULL);
+//		assert(root.scalar_names == NULL);
 	}
 
 #ifdef USE_MPI
@@ -757,29 +759,29 @@ HDF_OPEN_TIME_STEP(double *time, double *cnvtmi, int *print_chem,
 	assert(root.current_file_dset_id == -1);	/* shouldn't be open yet */
 	assert(root.current_file_dspace_id == -1);	/* shouldn't be open yet */
 
-	if (root.print_chem == -1)
-	{
-		/* first call */
-		assert(root.scalar_names == NULL);
-		//assert(proc.scalar_count == get_c_scalar_count(0, NULL));
-		assert(proc.scalar_count == g_hdf_scalar_names.size());
-		/* load chemistry scalar names */
-		if (proc.scalar_count > 0)
-		{
-			root.scalar_names =
-				(char **) PHRQ_malloc(sizeof(char *) * proc.scalar_count);
-			if (root.scalar_names == NULL)
-				malloc_error();
-			//get_c_scalar_count(1, root.scalar_names);
-			for (i = 0; i < proc.scalar_count; ++i)
-			{
-				size_t len = strlen(root.scalar_names[i]) + 1;
-				if (root.scalar_name_max_len < len)
-					root.scalar_name_max_len = len;
-		}
-	}
-		root.scalar_name_count = proc.scalar_count;
-	}
+	//if (root.print_chem == -1)
+	//{
+	//	/* first call */
+	//	//assert(root.scalar_names == NULL);
+	//	//assert(proc.scalar_count == get_c_scalar_count(0, NULL));
+	//	assert(proc.scalar_count == g_hdf_scalar_names.size());
+	//	/* load chemistry scalar names */
+	//	if (proc.scalar_count > 0)
+	//	{
+	//		root.scalar_names =
+	//			(char **) PHRQ_malloc(sizeof(char *) * proc.scalar_count);
+	//		if (root.scalar_names == NULL)
+	//			malloc_error();
+	//		//get_c_scalar_count(1, root.scalar_names);
+	//		for (i = 0; i < proc.scalar_count; ++i)
+	//		{
+	//			size_t len = strlen(root.scalar_names[i]) + 1;
+	//			if (root.scalar_name_max_len < len)
+	//				root.scalar_name_max_len = len;
+	//		}
+	//	}
+	//	root.scalar_name_count = proc.scalar_count;
+	//}
 
 	/* determine scalar count for this timestep */
 	root.print_chem = (*print_chem);
@@ -1365,6 +1367,8 @@ void
 HDFSetScalarNames(std::vector<std::string> &names)
 {
 		g_hdf_scalar_names = names;
+		root.scalar_names = names;
+		proc.scalar_count = (int) root.scalar_names.size();
 }
 #ifdef SKIP
 /*-------------------------------------------------------------------------
@@ -1695,6 +1699,20 @@ PRNTAR_HDF(double array[], double frac[], double *cnv, char *name, int name_l)
 	string_trim(name_buffer);
 
 	/* check if this f_scalar has been added to root.scalar_names yet */
+	for (i = 0; i < (int) root.scalar_names.size(); ++i)
+	{
+		//if (strcmp(root.scalar_names[i], name_buffer) == 0)
+		if (root.scalar_names[i] == name_buffer)
+			break;
+	}
+	if (i == (int) root.scalar_names.size())
+	{
+		size_t len = strlen(name_buffer) + 1;
+		if (root.scalar_name_max_len < len)
+			root.scalar_name_max_len = len;
+		root.scalar_names.push_back(name_buffer);
+	}
+#ifdef SKIP
 	for (i = proc.scalar_count; i < root.scalar_name_count; ++i)
 	{
 		if (strcmp(root.scalar_names[i], name_buffer) == 0)
@@ -1719,7 +1737,7 @@ PRNTAR_HDF(double array[], double frac[], double *cnv, char *name, int name_l)
 		strcpy(root.scalar_names[root.scalar_name_count], name_buffer);
 		++root.scalar_name_count;
 	}
-
+#endif
 	/* add this scalar index to the list of scalar indices */
 	assert(((root.print_chem ? proc.scalar_count : 0) + root.f_scalar_index) <
 		   root.time_step_scalar_count);
@@ -2065,7 +2083,8 @@ hdf_finalize_headings(void)
 		}
 
 
-		if (root.scalar_name_count > 0)
+		//if (root.scalar_name_count > 0)
+		if (root.scalar_names.size() > 0)
 		{
 			hsize_t dims[1];
 			hid_t dspace;
@@ -2084,10 +2103,12 @@ hdf_finalize_headings(void)
 				error_msg(error_string, STOP);
 			}
 
-			assert(root.scalar_names != NULL);
+			//assert(root.scalar_names != NULL);
+			assert (root.scalar_names.size() > 0);
 
 			// create the /Scalars dataspace
-			dims[0] = root.scalar_name_count;
+			//dims[0] = root.scalar_name_count;
+			dims[0] = root.scalar_names.size();
 			dspace = H5Screate_simple(1, dims, NULL);
 			if (dspace <= 0)
 			{
@@ -2110,17 +2131,23 @@ hdf_finalize_headings(void)
 						szScalars);
 				error_msg(error_string, STOP);
 			}
+			for (size_t j = 0; j < root.scalar_names.size(); j++)
+			{
+				if (root.scalar_names[j].size() + 1 > root.scalar_name_max_len) 
+					root.scalar_name_max_len = root.scalar_names[j].size() + 1;
+			}
 
 			// copy variable length scalar names to fixed length scalar names
 			scalar_names =
 				(char *) PHRQ_calloc(root.scalar_name_max_len *
-									 root.scalar_name_count, sizeof(char));
+									 root.scalar_names.size(), sizeof(char));
 			// java req'd
-			for (i = 0; i < root.scalar_name_count; ++i)
+			for (i = 0; i < (int) root.scalar_names.size(); ++i)
 			{
 				strcpy(scalar_names + i * root.scalar_name_max_len,
-					   root.scalar_names[i]);
+					   root.scalar_names[i].c_str());
 			}
+
 
 			// write the /Scalars dataset
 			status =

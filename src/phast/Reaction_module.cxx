@@ -179,6 +179,7 @@ Reaction_module::Initial_phreeqc_run_thread(int n)
 				names.push_back(v.sVal);
 			}
 			HDFSetScalarNames(names);
+			this->selected_output_names = names;
 		}
 }
 /* ---------------------------------------------------------------------- */
@@ -195,9 +196,9 @@ Reaction_module::Initial_phreeqc_run(std::string database_name, std::string chem
 	/*
 	 *   initialize HDF
 	 */
-#ifdef HDF5_CREATE
-	HDF_Init(prefix.c_str(), prefix.size());
-#endif
+//#ifdef HDF5_CREATE
+//	HDF_Init(prefix.c_str(), prefix.size());
+//#endif
 	/*
 	 *   initialize merge
 	 */
@@ -1753,15 +1754,12 @@ Reaction_module::Run_cells_thread(int n)
 					active);
 				phast_iphreeqc_worker->Get_punch_stream() << line_buff;
 			}
+			// Write output file
+			if (pr_hdf)
+			{
+				phast_iphreeqc_worker->Selected_out_to_double(this->selected_output_names.size());
+			}
 		}
-		//if (this->print_restart)
-		//{
-		//	std::ostringstream input;
-		//	input << "DUMP;  -cells " << i << "\n";
-		//	if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) Error_stop();
-		//	phast_iphreeqc_worker->Get_dump_stream() << phast_iphreeqc_worker->GetDumpString();
-		//}
-
 	} // end one cell
 
 	this->Solutions2Fractions_thread(n);
@@ -1801,11 +1799,22 @@ Reaction_module::Run_cells()
 		Run_cells_thread(n);
 	} 
 #endif
+
+	// Join theads
 	for (int n = 0; n < this->nthreads; n++)
 	{
 #ifdef THREADED_PHAST
 		my_threads[n]->join();
 #endif
+	}
+
+	// Output
+	if (this->print_hdf)
+	{
+		BeginTimeStep();
+	}
+	for (int n = 0; n < this->nthreads; n++)
+	{
 		// write output results
 		if (this->print_chem)
 		{
@@ -1830,27 +1839,18 @@ Reaction_module::Run_cells()
 		// write hdf
 		if (this->print_hdf)
 		{
-			// data are stored in punch_vector
-			BeginTimeStep();
-			for (int n = 0; n < this->nthreads; n++)
-			{
-				for (int i = this->start_cell[n]; i <= this->end_cell[n]; i++)
-				{
-					int j = back[i][0]; // j nxyz number
-					BeginCell(j);
-					HDFFillHyperSlab(i, this->workers[n]->Get_punch_vector());
-					EndCell(j);
-				}
-			}
-			//this->workers[n]->Get_punch_vector().clear();
-			EndTimeStep();
+			HDFFillHyperSlab(this->start_cell[n], this->workers[n]->Get_punch_vector());
 		}
+		this->workers[n]->Get_punch_vector().clear();
 
 #ifdef THREADED_PHAST
 		delete my_threads[n];
 #endif
 	} 	
-
+	if (this->print_hdf)
+	{
+		EndTimeStep();
+	}
 	std::cerr << "Running: " << (double) (clock() - t0) << std::endl;
 }
 /* ---------------------------------------------------------------------- */
