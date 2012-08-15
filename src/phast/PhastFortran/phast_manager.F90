@@ -405,9 +405,6 @@ SUBROUTINE phast_manager
         !
      ENDDO
   ENDIF
-#ifdef SKIP_REWRITE_PHAST !-------------------------------------------------------------------------
- 
-#endif
 50 CONTINUE
   !
   ! ...  Cleanup and shutdown

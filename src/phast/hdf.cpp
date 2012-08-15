@@ -1,55 +1,56 @@
 /*
-  hdf.c
+  hdf.cpp
 */
 
-#ifdef USE_MPI
-#include <vector>
-//MPICH seems to require mpi.h to be first
-#include <mpi.h>
-#endif
-#include <stdio.h>				/* printf sprintf */
-#include <string.h>				/* strncpy strtok strcat */
-#include <assert.h>				/* assert */
-#include <stdarg.h>				/* va_arg */
+#include <string.h>
+#include <stdlib.h>
 #if defined(_MT)
 #define _HDF5USEDLL_			/* reqd for Multithreaded run-time library (Win32) */
 #endif
-#include <hdf5.h>				/* HDF routines */
+#include <hdf5.h>
 
-static char const svnid[] = "$Id$";
+#include <string>
+#include <vector>
+#include <assert.h>
+#include <iostream>
 
-#ifdef USE_MPI
-//#define MPI_MAX_TASKS 50		/* from hst.c */
-static char const DEFINE_USE_MPI[] = "#define USE_MPI 1";
-#else
-static char const DEFINE_USE_MPI[] = "#define USE_MPI 0";
-#endif
+#include "hdf.h"
 
-#define EXTERNAL extern
-#include "phreeqc/global.h"		/* error_string */
-#include "phreeqc/output.h"
-#include "hst.h"				/* struct back_list */
-#undef EXTERNAL
-#include "phreeqc/phrqproto.h"
-#include "phastproto.h"
-#include "phreeqc/phqalloc.h"	/* PHRQ_malloc PHRQ_realloc PHRQ_free */
+#define PHRQ_malloc malloc
+#define PHRQ_free free
+#define PHRQ_calloc calloc
+#define PHRQ_realloc realloc
+
+#define OK 1
+#define STOP 1
+#define CONTINUE 0
+#define TRUE 1
+#define FALSE 0
+#define EMPTY 2
+#define MAX_PATH 260
+
+#define hssize_t hsize_t
+int string_trim(char *str);
+void malloc_error(void);
+void error_msg(const char * msg, int stop);
+char error_string[1024];
 
 /*
  *   static functions
  */
-extern int file_exists(const char *name);
-static hid_t open_hdf_file(char *prefix, int prefix_l);
+int file_exists(const char *name);
+hid_t open_hdf_file(const char *prefix, int prefix_l);
 static void write_proc_timestep(int rank, int cell_count,
 								hid_t file_dspace_id, hid_t dset_id,
-								double *array);
-static int get_c_scalar_count(int load_names, char **names);
+								double *array, std::vector <std::vector <int> > &back);
+//static int get_c_scalar_count(int load_names, char **names);
 static void write_axis(hid_t loc_id, double *a, int na, const char *name);
 static void write_vector(hid_t loc_id, double a[], int na, const char *name);
 static void write_vector_mask(hid_t loc_id, int a[], int na,
 							  const char *name);
-static int hdf_callback(const int action, const int type, const char *name,
-						const int stop, void *cookie, const char *format,
-						va_list args);
+//static int hdf_callback(const int action, const int type, const char *name,
+//						const int stop, void *cookie, const char *format,
+//						va_list args);
 static void hdf_finalize_headings(void);
 
 
@@ -109,8 +110,9 @@ static struct proc_info
 	double *array;
 } proc;
 
-static int g_hdf_scalar_count;
-static char **g_hdf_scalar_names;
+//static int g_hdf_scalar_count;
+//static char **g_hdf_scalar_names;
+std::vector<std::string> g_hdf_scalar_names;
 
 
 static enum HDF_STATE
@@ -155,7 +157,7 @@ static const float INACTIVE_CELL_VALUE = 1.0e30f;
  *-------------------------------------------------------------------------
  */
 void
-HDF_Init(char *prefix, int prefix_l)
+HDF_Init(const char *prefix, int prefix_l)
 {
 #ifdef USE_MPI
 	extern int mpi_myself;
@@ -169,8 +171,8 @@ HDF_Init(char *prefix, int prefix_l)
 	H5Eset_auto1(NULL, NULL);
 #endif
 #endif
-	if (svnid == NULL)
-		fprintf(stderr, " ");
+	//if (svnid == NULL)
+	//	fprintf(stderr, " ");
 	if (mpi_myself == 0)
 	{
 		/* Open the HDF file */
@@ -212,7 +214,7 @@ HDF_Init(char *prefix, int prefix_l)
 	proc.array = NULL;
 
 	/* add callback */
-	add_output_callback(hdf_callback, NULL);
+	//add_output_callback(hdf_callback, NULL);
 }
 
 /*-------------------------------------------------------------------------
@@ -332,7 +334,7 @@ HDF_Finalize(void)
  *-------------------------------------------------------------------------
  */
 static hid_t
-open_hdf_file(char *prefix, int prefix_l)
+open_hdf_file(const char *prefix, int prefix_l)
 {
 #ifdef USE_MPI
 	extern int mpi_myself;
@@ -581,7 +583,8 @@ HDF_WRITE_GRID(double x[], double y[], double z[],
 			assert(status >= 0);
 		}
 
-		proc.scalar_count = get_c_scalar_count(0, NULL);
+		//proc.scalar_count = get_c_scalar_count(0, NULL);
+		proc.scalar_count = g_hdf_scalar_names.size();
 		assert(root.scalar_names == NULL);
 	}
 
@@ -756,7 +759,8 @@ HDF_OPEN_TIME_STEP(double *time, double *cnvtmi, int *print_chem,
 	{
 		/* first call */
 		assert(root.scalar_names == NULL);
-		assert(proc.scalar_count == get_c_scalar_count(0, NULL));
+		//assert(proc.scalar_count == get_c_scalar_count(0, NULL));
+		assert(proc.scalar_count == g_hdf_scalar_names.size());
 		/* load chemistry scalar names */
 		if (proc.scalar_count > 0)
 		{
@@ -764,7 +768,7 @@ HDF_OPEN_TIME_STEP(double *time, double *cnvtmi, int *print_chem,
 				(char **) PHRQ_malloc(sizeof(char *) * proc.scalar_count);
 			if (root.scalar_names == NULL)
 				malloc_error();
-			get_c_scalar_count(1, root.scalar_names);
+			//get_c_scalar_count(1, root.scalar_names);
 			for (i = 0; i < proc.scalar_count; ++i)
 			{
 				size_t len = strlen(root.scalar_names[i]) + 1;
@@ -971,7 +975,7 @@ HDF_CLOSE_TIME_STEP(void)
  *-------------------------------------------------------------------------
  */
 void
-HDFBeginCTimeStep(void)
+HDFBeginCTimeStep(int count_chem)
 {
 #ifdef USE_MPI
 	//extern int end_cells[MPI_MAX_TASKS][2];
@@ -1034,7 +1038,7 @@ HDFBeginCTimeStep(void)
  *-------------------------------------------------------------------------
  */
 void
-HDFSetCell(const int n)			/* n is the natural cell number */
+HDFSetCell(const int n, std::vector <std::vector <int> > &back)			/* n is the natural cell number */
 {
 	/* reset scalar_index */
 	proc.scalar_index = 0;
@@ -1092,7 +1096,8 @@ HDFSetCell(const int n)			/* n is the natural cell number */
 	}
 #else
 	{
-		assert(n == back[proc.cell_index].list[0]);
+		//assert(n == back[proc.cell_index].list[0]);
+		assert(n == back[proc.cell_index][0]);
 	}
 #endif
 #endif
@@ -1113,7 +1118,7 @@ HDFSetCell(const int n)			/* n is the natural cell number */
  *-------------------------------------------------------------------------
  */
 void
-HDFEndCTimeStep(void)
+HDFEndCTimeStep(std::vector <std::vector <int> > &back)
 {
 #ifdef USE_MPI
         extern int solute;
@@ -1136,7 +1141,7 @@ HDFEndCTimeStep(void)
 		/* write proc 0 data */
 		write_proc_timestep(mpi_myself, proc.cell_count,
 							root.current_file_dspace_id,
-							root.current_file_dset_id, proc.array);
+							root.current_file_dset_id, proc.array, back);
 	}
 
 #ifdef USE_MPI
@@ -1202,7 +1207,7 @@ HDFEndCTimeStep(void)
  */
 static void
 write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
-					hid_t dset_id, double *array)
+					hid_t dset_id, double *array, std::vector <std::vector <int> > &back)
 {
 #ifdef USE_MPI
 	//extern int end_cells[MPI_MAX_TASKS][2];
@@ -1247,14 +1252,16 @@ write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
 	/*
 	 * make the file dataspace selection
 	 */
-	for (n = 0; n < count_back_list; ++n)
+	//for (n = 0; n < count_back_list; ++n)
+	for (n = 0; n < back[0].size(); ++n)
 	{
 		for (j = 0; j < proc.scalar_count; ++j)
 		{
 			for (i = 0; i < cell_count; ++i)
 			{
 				coor[i + j * cell_count][0] =
-					root.natural_to_active[back[i].list[n]] +
+					//root.natural_to_active[back[i].list[n]] +
+					root.natural_to_active[back[i][n]] +
 					j * root.active_count;
 			}
 		}
@@ -1342,7 +1349,22 @@ write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
 	status = H5Sclose(mem_dspace);
 	assert(status >= 0);
 }
-
+/*-------------------------------------------------------------------------
+ * Function          get_c_scalar_count
+ * 
+ * NOTE: May want to rewrite this and call it punch_all_hdf
+ *
+ * Preconditions:    TODO:
+ *
+ * Postconditions:   TODO:
+ *-------------------------------------------------------------------------
+ */
+void
+HDFSetScalarNames(std::vector<std::string> &names)
+{
+		g_hdf_scalar_names = names;
+}
+#ifdef SKIP
 /*-------------------------------------------------------------------------
  * Function          get_c_scalar_count
  * 
@@ -1386,7 +1408,8 @@ get_c_scalar_count(int load_names, char **names)
 	pr.punch = prpunch;
 	return g_hdf_scalar_count;
 }
-
+#endif
+#ifdef SKIP
 /*-------------------------------------------------------------------------
  * Function          HDFWriteHyperSlabV
  *
@@ -1555,16 +1578,18 @@ HDFWriteHyperSlabV(const char *name, const char *format, va_list argptr)
 		switch (g_hdf_state)
 		{
 		case HDF_GET_COUNT:
-			++g_hdf_scalar_count;
+			//++g_hdf_scalar_count;
+			assert(false);
 			return;
 			break;
 		case HDF_GET_NAMES:
-			g_hdf_scalar_names[g_hdf_scalar_count] =
-				(char *) PHRQ_malloc(strlen(name) + 1);
-			if (g_hdf_scalar_names[g_hdf_scalar_count] == NULL)
-				malloc_error();
-			strcpy(g_hdf_scalar_names[g_hdf_scalar_count], name);
-			++g_hdf_scalar_count;
+			//g_hdf_scalar_names[g_hdf_scalar_count] =
+			//	(char *) PHRQ_malloc(strlen(name) + 1);
+			//if (g_hdf_scalar_names[g_hdf_scalar_count] == NULL)
+			//	malloc_error();
+			//strcpy(g_hdf_scalar_names[g_hdf_scalar_count], name);
+			//++g_hdf_scalar_count;
+			assert(false);
 			return;
 			break;
 		case HDF_NORMAL:
@@ -1618,7 +1643,7 @@ HDFWriteHyperSlabV(const char *name, const char *format, va_list argptr)
 		++proc.scalar_index;
 	}
 }
-
+#endif
 /*-------------------------------------------------------------------------
  * Function:         PRNTAR_HDF
  *
@@ -1884,7 +1909,7 @@ write_vector_mask(hid_t loc_id, int a[], int na, const char *name)
 	status = H5Sclose(dspace_id);
 	assert(status >= 0);
 }
-
+#ifdef SKIP
 /*-------------------------------------------------------------------------
  * Function:         hdf_callback
  *
@@ -1912,7 +1937,7 @@ hdf_callback(const int action, const int type, const char *name,
 	}
 	return (OK);
 }
-
+#endif
 void
 HDF_INTERMEDIATE(void)
 {
@@ -2270,4 +2295,98 @@ hdf_finalize_headings(void)
 		sprintf(error_string, "Unable to open HDF file:%s\n", root.hdf_file_name.c_str());
 		error_msg(error_string, STOP);
 	}
+}
+/* ---------------------------------------------------------------------- */
+int 
+string_trim(char *str)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *   Function trims white space from left and right of string
+ *
+ *   Arguments:
+ *      str      string to trime
+ *
+ *   Returns
+ *      TRUE     if string was changed
+ *      FALSE    if string was not changed
+ *      EMPTY    if string is all whitespace
+ */
+	int i, l, start, end, length;
+	char *ptr_start;
+
+	l = (int) strlen(str);
+	/*
+	 *   leading whitespace
+	 */
+	for (i = 0; i < l; i++)
+	{
+		if (isspace((int) str[i]))
+			continue;
+		break;
+	}
+	if (i == l)
+		return (EMPTY);
+	start = i;
+	ptr_start = &(str[i]);
+	/*
+	 *   trailing whitespace
+	 */
+	for (i = l - 1; i >= 0; i--)
+	{
+		if (isspace((int) str[i]))
+			continue;
+		break;
+	}
+	end = i;
+	if (start == 0 && end == l)
+		return (FALSE);
+	length = end - start + 1;
+	memmove((void *) str, (void *) ptr_start, (size_t) length);
+	str[length] = '\0';
+
+	return (TRUE);
+}
+/* ---------------------------------------------------------------------- */
+void 
+malloc_error(void)
+/* ---------------------------------------------------------------------- */
+{
+	//error_msg("NULL pointer returned from malloc or realloc.", CONTINUE);
+	//error_msg("Program terminating.", STOP);
+	std::cerr << "NULL pointer returned from malloc or realloc in hdf.cpp.\n";
+	std::cerr << "Program terminating." << std::endl;
+	exit(4);
+}
+/* ---------------------------------------------------------------------- */
+void 
+error_msg(const char * msg, int stop)
+/* ---------------------------------------------------------------------- */
+{
+
+	std::cerr << msg << "\n";
+	if (stop == STOP)
+	{
+		std::cerr << "Program terminating." << std::endl;
+		exit(4);
+	}
+}
+/*-------------------------------------------------------------------------
+ * Function          file_exists
+ *
+ * Preconditions:    TODO:
+ *
+ * Postconditions:   TODO:
+ *-------------------------------------------------------------------------
+ */
+int
+file_exists(const char *name)
+{
+	FILE *stream;
+	if ((stream = fopen(name, "r")) == NULL)
+	{
+		return 0;				/* doesn't exist */
+	}
+	fclose(stream);
+	return 1;					/* exists */
 }
