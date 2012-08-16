@@ -1653,10 +1653,13 @@ Reaction_module::Run_cells_thread(int n)
 				this->Scale_solids(n, i, frac[j]);
 			assert(pv0[j] != 0);
 			assert(pv[j] != 0);
-			if (pv0[j] != 0 && pv[j] != 0 && pv0[j] != pv[j])
+			if (!transient_free_surface && !steady_flow)
 			{
-				cxxSolution * cxxsol = phast_iphreeqc_worker->Get_solution(i);
-				cxxsol->multiply(pv0[j] / pv[j]);
+				if (pv0[j] != 0 && pv[j] != 0 && pv0[j] != pv[j])
+				{
+					cxxSolution * cxxsol = phast_iphreeqc_worker->Get_solution(i);
+					cxxsol->multiply(pv0[j] / pv[j]);
+				}
 			}
 
 			// write headings to xyz file
@@ -1738,9 +1741,9 @@ Reaction_module::Run_cells_thread(int n)
 			}
 			// Write output file
 			if (pr_hdf)
-			{
-				std::vector<LDBLE> d;
-				phast_iphreeqc_worker->Get_punch_vector().push_back(d);
+			{	
+				std::vector<LDBLE> empty;
+				phast_iphreeqc_worker->Get_punch_vector().push_back(empty);
 			}
 		}
 	} // end one cell
