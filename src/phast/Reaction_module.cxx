@@ -1098,7 +1098,7 @@ Reaction_module::Fractions2Solutions_thread(int n)
 {
 	int i, j, k;
 
-	for (j = this->start_cell[n]; j < this->end_cell[n]; j++)
+	for (j = this->start_cell[n]; j <= this->end_cell[n]; j++)
 	{
 		std::vector<double> d;  // scratch space to convert from mass fraction to moles
 		// j is count_chem number
@@ -1189,7 +1189,7 @@ Reaction_module::Solutions2Fractions_thread(int n)
 	cxxNameDouble::iterator it;
 	int j; 
 
-	for (j = this->start_cell[n]; j < this->end_cell[n]; j++)
+	for (j = this->start_cell[n]; j <= this->end_cell[n]; j++)
 	{
 		// load fractions into d
 		cxxSolution * cxxsoln_ptr = this->Get_workers()[n]->Get_solution(j);
@@ -1223,7 +1223,7 @@ Reaction_module::Solutions2Fractions(void)
 
 	for (int n = 0; n < this->nthreads; n++)
 	{
-		for (j = this->start_cell[n]; j < this->end_cell[n]; j++)
+		for (j = this->start_cell[n]; j <= this->end_cell[n]; j++)
 		{
 			// load fractions into d
 			cxxSolution * cxxsoln_ptr = this->Get_workers()[n]->Get_solution(j);
