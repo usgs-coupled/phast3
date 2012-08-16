@@ -974,9 +974,9 @@ HDFSetCell(const int n, std::vector <std::vector <int> > &back)			/* n is the na
 	if (proc.cell_count == 0)
 		return;
 
-	assert(proc.cell_index >= 0);	/* if (cell_index == 0) than this is
-									   the first call after HDFBeginCTimeStep */
-	assert(proc.cell_index < proc.cell_count);
+	//assert(proc.cell_index >= 0);	/* if (cell_index == 0) than this is
+	//								   the first call after HDFBeginCTimeStep */
+	//assert(proc.cell_index < proc.cell_count);
 
 
 #ifndef NDEBUG
@@ -1016,7 +1016,7 @@ HDFSetCell(const int n, std::vector <std::vector <int> > &back)			/* n is the na
 #else
 	{
 		//assert(n == back[proc.cell_index].list[0]);
-		assert(n == back[proc.cell_index][0]);
+		//assert(n == back[proc.cell_index][0]);
 	}
 #endif
 #endif
