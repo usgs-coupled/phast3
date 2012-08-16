@@ -32,6 +32,39 @@ Reaction_module::Reaction_module(int thread_count, PHRQ_io *io)
 {
 	int n = 1;
 #ifdef THREADED_PHAST
+	
+#ifdef _WIN32
+	SYSTEM_INFO sysinfo;
+	GetSystemInfo( &sysinfo );
+
+	n = sysinfo.dwNumberOfProcessors;
+#else
+	// Linux, Solaris, Aix, Mac 10.4+
+	numCPU = sysconf( _SC_NPROCESSORS_ONLN );
+#endif
+#ifdef OTHERS
+int mib[4];
+size_t len = sizeof(numCPU); 
+
+/* set the mib for hw.ncpu */
+mib[0] = CTL_HW;
+mib[1] = HW_AVAILCPU;  // alternatively, try HW_NCPU;
+
+/* get the number of CPUs from the system */
+sysctl(mib, 2, &numCPU, &len, NULL, 0);
+
+if( numCPU < 1 ) 
+{
+     mib[1] = HW_NCPU;
+     sysctl( mib, 2, &numCPU, &len, NULL, 0 );
+
+     if( numCPU < 1 )
+     {
+          numCPU = 1;
+     }
+}
+#endif
+#ifdef SKIP
 #ifdef _WIN32
 	if (thread_count == 0)
 	{
@@ -39,6 +72,7 @@ Reaction_module::Reaction_module(int thread_count, PHRQ_io *io)
 		str = getenv("NUMBER_OF_PROCESSORS");
 		n = atoi(str);
 	}
+#endif
 #endif
 #endif
 	this->nthreads = (thread_count > 0) ? thread_count : n;
