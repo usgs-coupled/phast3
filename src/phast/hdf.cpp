@@ -45,14 +45,10 @@ hid_t open_hdf_file(const char *prefix, int prefix_l);
 static void write_proc_timestep(int rank, int cell_count,
 								hid_t file_dspace_id, hid_t dset_id,
 								double *array, std::vector <std::vector <int> > &back);
-//static int get_c_scalar_count(int load_names, char **names);
 static void write_axis(hid_t loc_id, double *a, int na, const char *name);
 static void write_vector(hid_t loc_id, double a[], int na, const char *name);
 static void write_vector_mask(hid_t loc_id, int a[], int na,
 							  const char *name);
-//static int hdf_callback(const int action, const int type, const char *name,
-//						const int stop, void *cookie, const char *format,
-//						va_list args);
 static void hdf_finalize_headings(void);
 
 
@@ -72,8 +68,6 @@ static struct root_info
 	int nz;
 	int nxy;
 	int nxyz;
-	//int scalar_name_count;		/* 0..proc_info.scalar_count                  chem scalars    */
-	//char **scalar_names;		/* proc_info.scalar_count..scalar_name_count  fortran scalars */
 	size_t scalar_name_max_len;
 	std::vector <std::string> scalar_names;
 #ifdef USE_MPI
@@ -107,14 +101,10 @@ static struct root_info
 static struct proc_info
 {
 	int cell_count;
-	int cell_index;
 	int scalar_count;			/* chemistry scalar count (doesn't include fortran scalars) */
-	int scalar_index;
 	double *array;
 } proc;
 
-//static int g_hdf_scalar_count;
-//static char **g_hdf_scalar_names;
 std::vector<std::string> g_hdf_scalar_names;
 
 
@@ -174,8 +164,6 @@ HDF_Init(const char *prefix, int prefix_l)
 	H5Eset_auto1(NULL, NULL);
 #endif
 #endif
-	//if (svnid == NULL)
-	//	fprintf(stderr, " ");
 	if (mpi_myself == 0)
 	{
 		/* Open the HDF file */
@@ -194,8 +182,6 @@ HDF_Init(const char *prefix, int prefix_l)
 		root.print_chem = -1;
 
 		root.time_step_scalar_indices = NULL;
-		//root.scalar_names = NULL;
-		//root.scalar_name_count = 0;
 		root.scalar_name_max_len = 0;
 
 		root.time_steps = NULL;
@@ -211,13 +197,8 @@ HDF_Init(const char *prefix, int prefix_l)
 
 	/* init proc */
 	proc.cell_count = 0;
-	proc.cell_index = 0;
 	proc.scalar_count = 0;
-	proc.scalar_index = 0;
 	proc.array = NULL;
-
-	/* add callback */
-	//add_output_callback(hdf_callback, NULL);
 }
 
 /*-------------------------------------------------------------------------
@@ -248,18 +229,6 @@ HDF_Finalize(void)
 
 		hdf_finalize_headings();
 
-		//if (root.scalar_name_count > 0)
-		//{
-		//	/* free space */
-		//	for (i = 0; i < root.scalar_name_count; ++i)
-		//	{
-		//		PHRQ_free(root.scalar_names[i]);
-		//	}
-		//	PHRQ_free(root.scalar_names);
-		//	root.scalar_names = NULL;
-		//	root.scalar_name_count = 0;
-		//	root.scalar_name_max_len = 0;
-		//}
 		root.scalar_names.clear();
 
 		if (root.vector_name_count > 0)
@@ -323,9 +292,7 @@ HDF_Finalize(void)
 	/* free proc resources */
 	PHRQ_free(proc.array);
 	proc.cell_count = 0;
-	proc.cell_index = 0;
 	proc.scalar_count = 0;
-	proc.scalar_index = 0;
 	proc.array = NULL;
 }
 
@@ -485,14 +452,9 @@ HDF_WRITE_GRID(double x[], double y[], double z[],
 	const int mpi_myself = 0;
 #endif
 
-#ifndef NDEBUG
-	/*    fprintf(stdout, "In HDF_WRITE_GRID\n"); */
-#endif
-
 	if (mpi_myself == 0)
 	{
 		int i;
-
 
 		/* copy and trim time units */
 		strncpy(root.timestep_units, UTULBL, UTULBL_l);
@@ -540,9 +502,6 @@ HDF_WRITE_GRID(double x[], double y[], double z[],
 		{
 			error_msg("No active cells in model.", STOP);
 		}
-#ifndef NDEBUG
-		/*      fprintf(stdout, "In HDF_WRITE_GRID root.active_count = %d\n", root.active_count); */
-#endif
 
 		/* allocate space for fortran scalars */
 		assert(root.f_array == NULL);
@@ -587,9 +546,7 @@ HDF_WRITE_GRID(double x[], double y[], double z[],
 			assert(status >= 0);
 		}
 
-		//proc.scalar_count = get_c_scalar_count(0, NULL);
 		proc.scalar_count = g_hdf_scalar_names.size();
-//		assert(root.scalar_names == NULL);
 	}
 
 #ifdef USE_MPI
@@ -754,34 +711,9 @@ HDF_OPEN_TIME_STEP(double *time, double *cnvtmi, int *print_chem,
 	/*    const int mpi_myself = 0; */
 #endif
 
-	/*    assert(mpi_myself == 0); *//* should only be called by proc 0 */
 	assert(root.current_timestep_gr_id == -1);	/* shouldn't be open yet */
 	assert(root.current_file_dset_id == -1);	/* shouldn't be open yet */
 	assert(root.current_file_dspace_id == -1);	/* shouldn't be open yet */
-
-	//if (root.print_chem == -1)
-	//{
-	//	/* first call */
-	//	//assert(root.scalar_names == NULL);
-	//	//assert(proc.scalar_count == get_c_scalar_count(0, NULL));
-	//	assert(proc.scalar_count == g_hdf_scalar_names.size());
-	//	/* load chemistry scalar names */
-	//	if (proc.scalar_count > 0)
-	//	{
-	//		root.scalar_names =
-	//			(char **) PHRQ_malloc(sizeof(char *) * proc.scalar_count);
-	//		if (root.scalar_names == NULL)
-	//			malloc_error();
-	//		//get_c_scalar_count(1, root.scalar_names);
-	//		for (i = 0; i < proc.scalar_count; ++i)
-	//		{
-	//			size_t len = strlen(root.scalar_names[i]) + 1;
-	//			if (root.scalar_name_max_len < len)
-	//				root.scalar_name_max_len = len;
-	//		}
-	//	}
-	//	root.scalar_name_count = proc.scalar_count;
-	//}
 
 	/* determine scalar count for this timestep */
 	root.print_chem = (*print_chem);
@@ -887,13 +819,6 @@ void
 HDF_CLOSE_TIME_STEP(void)
 {
 	herr_t status;
-#ifdef USE_MPI
-	/*extern int mpi_myself; */
-#else
-	/*const int mpi_myself = 0; */
-#endif
-
-	/*assert(mpi_myself == 0); *//* should only be called by proc 0 */
 
 	if (root.current_file_dset_id > 0)
 	{
@@ -982,7 +907,6 @@ void
 HDFBeginCTimeStep(int count_chem)
 {
 #ifdef USE_MPI
-	//extern int end_cells[MPI_MAX_TASKS][2];
 	extern std::vector<int> start_cell;
 	extern std::vector<int> end_cell;
 	extern int *random_list;
@@ -1025,10 +949,6 @@ HDFBeginCTimeStep(int count_chem)
 	{
 		proc.array[i] = INACTIVE_CELL_VALUE;
 	}
-
-	/* init indices */
-	proc.cell_index = -1;
-	proc.scalar_index = 0;
 }
 
 /*-------------------------------------------------------------------------
@@ -1044,11 +964,6 @@ HDFBeginCTimeStep(int count_chem)
 void
 HDFSetCell(const int n, std::vector <std::vector <int> > &back)			/* n is the natural cell number */
 {
-	/* reset scalar_index */
-	proc.scalar_index = 0;
-
-	/* increment timestep cell_index */
-	++proc.cell_index;
 	/*
 	   proc.cell_index
 	   SERIAL  =>  [0..count_chem)
@@ -1353,16 +1268,7 @@ write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
 	status = H5Sclose(mem_dspace);
 	assert(status >= 0);
 }
-/*-------------------------------------------------------------------------
- * Function          get_c_scalar_count
- * 
- * NOTE: May want to rewrite this and call it punch_all_hdf
- *
- * Preconditions:    TODO:
- *
- * Postconditions:   TODO:
- *-------------------------------------------------------------------------
- */
+
 void
 HDFSetScalarNames(std::vector<std::string> &names)
 {
@@ -1370,51 +1276,6 @@ HDFSetScalarNames(std::vector<std::string> &names)
 		root.scalar_names = names;
 		proc.scalar_count = (int) root.scalar_names.size();
 }
-#ifdef SKIP
-/*-------------------------------------------------------------------------
- * Function          get_c_scalar_count
- * 
- * NOTE: May want to rewrite this and call it punch_all_hdf
- *
- * Preconditions:    TODO:
- *
- * Postconditions:   TODO:
- *-------------------------------------------------------------------------
- */
-static int
-get_c_scalar_count(int load_names, char **names)
-{
-	/*FILE* save_punch_file; */
-	int prhdf, prpunch;
-
-	g_hdf_scalar_count = 0;
-	/*
-	   save_punch_file = punch_file;
-	   punch_file = NULL;
-	 */
-	prpunch = pr.punch;
-	pr.punch = FALSE;
-	prhdf = pr.hdf;
-	pr.hdf = TRUE;
-	if (load_names)
-	{
-		g_hdf_state = HDF_GET_NAMES;
-		assert(names != NULL);
-		g_hdf_scalar_names = names;
-	}
-	else
-	{
-		g_hdf_state = HDF_GET_COUNT;
-	}
-
-	punch_all();
-	/* punch_file = save_punch_file; */
-	g_hdf_state = HDF_NORMAL;
-	pr.hdf = prhdf;
-	pr.punch = prpunch;
-	return g_hdf_scalar_count;
-}
-#endif
 /*-------------------------------------------------------------------------
  * Function          FillHyperSlab
  *
@@ -1436,241 +1297,6 @@ HDFFillHyperSlab(int chem_number, std::vector< std::vector < LDBLE > > &d)
 		}
 	}
 }
-#ifdef SKIP
-/*-------------------------------------------------------------------------
- * Function          HDFWriteHyperSlabV
- *
- * Preconditions:    HDFBeginTimeStep has been called
- *
- * Postconditions:   TODO:
- *-------------------------------------------------------------------------
- */
-void
-HDFWriteHyperSlabV(const char *name, const char *format, va_list argptr)
-{
-#ifndef NDEBUG
-#ifdef USE_MPI
-	extern int mpi_myself;
-#else
-	const int mpi_myself = 0;
-#endif
-#endif
-	int bWrite;
-	int state;
-	int bLongDouble;
-	char ch;
-	double value;
-
-	/* state values
-	   0 Haven't found start(%)
-	   1 Just read start(%)
-	   2 Just read Flags(-0+ #) (zero or more)
-	   3 Just read Width
-	   4 Just read Precision start (.)
-	   5 Just read Size modifier
-	   6 Just read Type
-	 */
-
-	if (name == NULL)
-		return;
-
-	bWrite = 0;
-	bLongDouble = 0;
-	state = 0;
-	ch = *format++;
-	while (ch != '\0')
-	{
-		switch (state)
-		{
-		case 0:				/* looking for Start specification (%) */
-			switch (ch)
-			{
-			case '%':
-				state = 1;
-				break;
-			default:
-				break;
-			}
-			ch = *format++;
-			break;
-		case 1:				/* reading Flags (zero or more(-,+,0,# or space)) */
-			switch (ch)
-			{
-			case '-':
-			case '0':
-			case '+':
-			case ' ':
-			case '#':
-				ch = *format++;
-				break;
-			default:
-				state = 2;
-				break;
-			}
-			break;
-		case 2:				/* reading Minimum field width (decimal integer constant) */
-			switch (ch)
-			{
-			case '.':
-				state = 3;
-				ch = *format++;
-				break;
-			case '0':
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			case '8':
-			case '9':
-				ch = *format++;
-				break;
-			default:
-				state = 4;
-				break;
-			}
-			break;
-		case 3:				/* reading Precision specification (period already read) */
-			switch (ch)
-			{
-			case '0':
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			case '8':
-			case '9':
-				ch = *format++;
-				break;
-			default:
-				state = 4;
-				break;
-			}
-			break;
-		case 4:				/* reading Size modifier */
-			switch (ch)
-			{
-			case 'l':
-				ch = *format++;
-				break;
-			case 'L':
-				bLongDouble = 1;
-				ch = *format++;
-				break;
-			case 'h':
-				ch = *format++;
-				break;
-			}
-			state = 5;
-			break;
-		case 5:				/* reading Conversion letter */
-			switch (ch)
-			{
-			case 'c':
-			case 'd':
-			case 'i':
-			case 'n':
-			case 'o':
-			case 'p':
-			case 's':
-			case 'u':
-			case 'x':
-			case 'X':
-			case '%':
-				break;
-			case 'f':
-			case 'e':
-			case 'E':
-			case 'g':
-			case 'G':
-				bWrite = 1;
-				break;
-			default:
-				assert(0);
-				break;
-			}
-			ch = '\0';			/* done */
-			break;
-		}
-	}
-
-	if (bWrite)
-	{
-
-		switch (g_hdf_state)
-		{
-		case HDF_GET_COUNT:
-			//++g_hdf_scalar_count;
-			assert(false);
-			return;
-			break;
-		case HDF_GET_NAMES:
-			//g_hdf_scalar_names[g_hdf_scalar_count] =
-			//	(char *) PHRQ_malloc(strlen(name) + 1);
-			//if (g_hdf_scalar_names[g_hdf_scalar_count] == NULL)
-			//	malloc_error();
-			//strcpy(g_hdf_scalar_names[g_hdf_scalar_count], name);
-			//++g_hdf_scalar_count;
-			assert(false);
-			return;
-			break;
-		case HDF_NORMAL:
-			/* keep going */
-			break;
-		}
-		assert(pr.hdf == TRUE);	/* should not be called */
-		if (bLongDouble)
-		{
-			value = (double) va_arg(argptr, long double);
-		}
-		else
-		{
-			value = va_arg(argptr, double);
-		}
-
-		assert(proc.array != NULL);	/* Has HDFBeginCTimeStep been called?
-									   Is HDF5_CREATE defined in Fortran? */
-		if (proc.array == NULL) return;
-
-		/* validate scalar_index */
-		assert(proc.scalar_index >= 0);
-		assert(proc.scalar_index < proc.scalar_count);
-
-#ifndef NDEBUG
-		if (mpi_myself == 0)
-		{
-			/* verify scalar_count */
-			assert(root.time_step_scalar_count > 0);
-
-			/* verify scalar name */
-			if (strcmp(name, root.scalar_names[proc.scalar_index]) != 0)
-			{
-				output_msg(OUTPUT_STDERR,
-						   "name = \"%s\", root.scalar_names[%d] = \"%s\"\n",
-						   name, proc.scalar_index,
-						   root.scalar_names[proc.scalar_index]);
-			}
-			assert(strcmp(name, root.scalar_names[proc.scalar_index]) == 0);
-		}
-#endif
-
-		/* store value */
-		assert(proc.
-			   array[proc.scalar_index * proc.cell_count + proc.cell_index] ==
-			   (double) INACTIVE_CELL_VALUE);
-		proc.array[proc.scalar_index * proc.cell_count + proc.cell_index] =
-			value;
-
-		/* increment */
-		++proc.scalar_index;
-	}
-}
-#endif
 /*-------------------------------------------------------------------------
  * Function:         PRNTAR_HDF
  *
@@ -1699,9 +1325,9 @@ PRNTAR_HDF(double array[], double frac[], double *cnv, char *name, int name_l)
 	string_trim(name_buffer);
 
 	/* check if this f_scalar has been added to root.scalar_names yet */
-	for (i = 0; i < (int) root.scalar_names.size(); ++i)
+	/* phreeqc scalar count is proc.scalar_count */
+	for (i = proc.scalar_count; i < (int) root.scalar_names.size(); ++i)
 	{
-		//if (strcmp(root.scalar_names[i], name_buffer) == 0)
 		if (root.scalar_names[i] == name_buffer)
 			break;
 	}
@@ -1712,32 +1338,7 @@ PRNTAR_HDF(double array[], double frac[], double *cnv, char *name, int name_l)
 			root.scalar_name_max_len = len;
 		root.scalar_names.push_back(name_buffer);
 	}
-#ifdef SKIP
-	for (i = proc.scalar_count; i < root.scalar_name_count; ++i)
-	{
-		if (strcmp(root.scalar_names[i], name_buffer) == 0)
-			break;
-	}
-	if (i == root.scalar_name_count)
-	{
-		/* new scalar name */
-		size_t len = strlen(name_buffer) + 1;
-		if (root.scalar_name_max_len < len)
-			root.scalar_name_max_len = len;
-		root.scalar_names =
-			(char **) PHRQ_realloc(root.scalar_names,
-								   sizeof(char *) * (root.scalar_name_count +
-													 1));
-		if (root.scalar_names == NULL)
-			malloc_error();
-		root.scalar_names[root.scalar_name_count] =
-			(char *) PHRQ_malloc(strlen(name_buffer) + 1);
-		if (root.scalar_names[root.scalar_name_count] == NULL)
-			malloc_error();
-		strcpy(root.scalar_names[root.scalar_name_count], name_buffer);
-		++root.scalar_name_count;
-	}
-#endif
+
 	/* add this scalar index to the list of scalar indices */
 	assert(((root.print_chem ? proc.scalar_count : 0) + root.f_scalar_index) <
 		   root.time_step_scalar_count);
@@ -1950,35 +1551,6 @@ write_vector_mask(hid_t loc_id, int a[], int na, const char *name)
 	status = H5Sclose(dspace_id);
 	assert(status >= 0);
 }
-#ifdef SKIP
-/*-------------------------------------------------------------------------
- * Function:         hdf_callback
- *
- * Purpose:          
- *
- * Preconditions:    
- *
- * Postconditions:   
- *-------------------------------------------------------------------------
- */
-static int
-hdf_callback(const int action, const int type, const char *name,
-			 const int stop, void *cookie, const char *format, va_list args)
-{
-	if (action == ACTION_OUTPUT)
-	{
-		switch (type)
-		{
-		case OUTPUT_PUNCH:
-			if (pr.hdf == TRUE)
-			{
-				HDFWriteHyperSlabV(name, format, args);
-			}
-		}
-	}
-	return (OK);
-}
-#endif
 void
 HDF_INTERMEDIATE(void)
 {
