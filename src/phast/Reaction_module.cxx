@@ -107,128 +107,280 @@ Reaction_module::~Reaction_module(void)
 	}
 
 }
-#ifdef SKIP
+
+// Reaction_module methods
+
 /* ---------------------------------------------------------------------- */
-int
-Reaction_module::Load_database(std::string database_name)
+void
+Reaction_module::BeginCell(int index)
 /* ---------------------------------------------------------------------- */
 {
-	this->database_file_name = database_name;
-	if (this->phast_iphreeqc_worker->LoadDatabase(this->database_file_name.c_str()) != 0) 
-	{
-		std::ostringstream errstr;
-		errstr << this->phast_iphreeqc_worker->GetErrorString() << std::endl;
-		error_msg(errstr.str().c_str(), 1);
-		return 0;
-	}
-	this->gfw_water = this->phast_iphreeqc_worker->Get_gfw("H2O");
-	return 1;
-}
+	// index is nxyz number
+#ifdef HDF5_CREATE
+	HDFSetCell(index, back);
 #endif
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::Initial_phreeqc_run_thread(int n)
-/* ---------------------------------------------------------------------- */
-{
-		IPhreeqcPhast * iphreeqc_phast_worker = this->Get_workers()[n];
-		int ipp_id = iphreeqc_phast_worker->Get_Index();
-
-		iphreeqc_phast_worker->SetOutputFileOn(false);
-		iphreeqc_phast_worker->SetErrorFileOn(false);
-		iphreeqc_phast_worker->SetLogFileOn(false);
-		iphreeqc_phast_worker->SetSelectedOutputStringOn(false);
-		if (n == 0)
-		{
-			iphreeqc_phast_worker->SetSelectedOutputFileOn(true);
-			iphreeqc_phast_worker->SetOutputStringOn(true);
-		}
-		else
-		{
-			iphreeqc_phast_worker->SetSelectedOutputFileOn(false);
-			iphreeqc_phast_worker->SetOutputStringOn(false);
-		}
-
-		// Load database
-		if (iphreeqc_phast_worker->LoadDatabase(this->database_file_name.c_str()) < 0) RM_error(&ipp_id);
-		if (n == 0)
-		{
-			Write_output(iphreeqc_phast_worker->GetOutputString());
-		}
-
-		// Run chemistry file
-		if (iphreeqc_phast_worker->RunFile(this->chemistry_file_name.c_str()) < 0) RM_error(&ipp_id);
-
-		// Create a StorageBin with initial PHREEQC for boundary conditions
-		if (n == 0)
-		{
-			Write_output(iphreeqc_phast_worker->GetOutputString());
-			this->Get_phreeqc_bin().Clear();
-			this->Get_workers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin());
-		}
-		if (n == this->nthreads)
-		{
-			iphreeqc_phast_worker->SetSelectedOutputStringOn(true);
-			std::string in ="SOLUTION";
-			iphreeqc_phast_worker->RunString(in.c_str());
-			std::vector<std::string> names;
-			for (int i = 0; i < iphreeqc_phast_worker->GetSelectedOutputColumnCount(); i++)
-			{
-				VAR v;
-				VarInit(&v);
-				iphreeqc_phast_worker->GetSelectedOutputValue(0, i, &v);
-				names.push_back(v.sVal);
-			}
-			HDFSetScalarNames(names);
-			this->selected_output_names = names;
-		}
-}
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::Initial_phreeqc_run(std::string database_name, std::string chemistry_name, std::string prefix)
-/* ---------------------------------------------------------------------- */
-{
-	/*
-	*  Run PHREEQC to obtain PHAST reactants
-	*/
-	this->database_file_name = database_name;
-	this->chemistry_file_name = chemistry_name;
-	this->file_prefix = prefix;
-	/*
-	 *   initialize HDF
-	 */
-//#ifdef HDF5_CREATE
-//	HDF_Init(prefix.c_str(), prefix.size());
-//#endif
-	/*
-	 *   initialize merge
-	 */
-	//TODO MPI and merge
 #if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
-	output_close(OUTPUT_ECHO);
-	MergeInit(prefix, prefix_l, *solute);	/* opens .chem.txt,  .chem.xyz.tsv, .log.txt */
+	/* Always open file for output in case of a warning message */
+	MergeBeginCell();
 #endif
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::BeginTimeStep(void)
+/* ---------------------------------------------------------------------- */
+{
+#ifdef HDF5_CREATE
+	HDFBeginCTimeStep(this->count_chem);
+#endif
+#if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
+	/* Always open file for output in case of a warning message */
+	MergeBeginTimeStep(print_sel, print_out);
+#endif
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Calculate_well_ph(double *c, double * pH, double * alkalinity)
+/* ---------------------------------------------------------------------- */
+{
 
-	// load database and run chemistry file
-	// Eventually need an copy operator for IPhreeqcPhast
-#ifdef THREADED_PHAST
-	std::vector <boost::thread *> my_threads;
-	for (int n = 0; n <= this->nthreads; n++)
-	{
-		boost::thread *thrd = new boost::thread(boost::bind(&Reaction_module::Initial_phreeqc_run_thread, this, n));
-		my_threads.push_back(thrd);
-	} 
-	for (int n = 0; n <= this->nthreads; n++)
-	{
-		my_threads[n]->join();
-		delete my_threads[n];
-	} 
-#else
-	for (int n = 0; n < this->nthreads; n++)
-	{
-		Initial_phreeqc_run_thread(n);
-	} 
-#endif	
+	// convert mass fraction to moles and store in d
+	std::vector<double> d;  
+	size_t k;
+	for (k = 0; k < this->components.size(); k++)
+	{	
+		d.push_back(c[k] * 1000.0/gfw[k]);
+	}
 
+	// Store in NameDouble
+	cxxNameDouble nd;
+	for (k = 3; k < components.size(); k++)
+	{
+		if (d[k] <= 1e-14) d[k] = 0.0;
+		nd.add(components[k].c_str(), d[k]);
+	}	
+
+	cxxSolution cxxsoln(this->Get_io());	
+	cxxsoln.Update(d[0] + 2.0/gfw_water, d[1] + 1.0/gfw_water, d[2], nd);
+	cxxStorageBin temp_bin;
+	temp_bin.Set_Solution(0, &cxxsoln);
+
+	// Copy all entities numbered 1 into IPhreeqc
+	this->Get_workers()[this->nthreads]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(temp_bin, 0);
+	std::string input;
+	input.append("RUN_CELLS; -cell 0; SELECTED_OUTPUT; -reset false; -pH; -alkalinity; END");
+	this->Get_workers()[0]->RunString(input.c_str());
+
+	VAR pvar;
+	this->Get_workers()[this->nthreads]->GetSelectedOutputValue(1,0,&pvar);
+	*pH = pvar.dVal;
+	this->Get_workers()[this->nthreads]->GetSelectedOutputValue(1,1,&pvar);
+	*alkalinity = pvar.dVal;
+
+	// Alternatively
+	//*pH = -(this->phast_iphreeqc_worker->Get_PhreeqcPtr()->s_hplus->la);
+	//*alkalinity = this->phast_iphreeqc_worker->Get_PhreeqcPtr()->total_alkalinity / 
+	//	this->phast_iphreeqc_worker->Get_PhreeqcPtr()->mass_water_aq_x;
+	return;
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Cell_initialize(
+					int i, 
+					int n_user_new, 
+					int *initial_conditions1,
+					int *initial_conditions2, 
+					double *fraction1,
+					int exchange_units, 
+					int surface_units, 
+					int ssassemblage_units,
+					int ppassemblage_units, 
+					int gasphase_units, 
+					int kinetics_units,
+					double porosity_factor)
+/* ---------------------------------------------------------------------- */
+{
+	int n_old1, n_old2;
+	double f1;
+
+	cxxStorageBin initial_bin;
+	/*
+	 *   Copy solution
+	 */
+	n_old1 = initial_conditions1[7 * i];
+	n_old2 = initial_conditions2[7 * i];
+	f1 = fraction1[7 * i];
+	if (n_old1 >= 0)
+	{
+		cxxMix mx;
+		mx.Add(n_old1, f1);
+		if (n_old2 >= 0)
+			mx.Add(n_old2, 1 - f1);
+		cxxSolution cxxsoln(phreeqc_bin.Get_Solutions(), mx, n_user_new);
+		initial_bin.Set_Solution(n_user_new, &cxxsoln);
+	}
+
+	/*
+	 *   Copy pp_assemblage
+	 */
+	n_old1 = initial_conditions1[7 * i + 1];
+	n_old2 = initial_conditions2[7 * i + 1];
+	f1 = fraction1[7 * i + 1];
+	if (n_old1 >= 0)
+	{
+		cxxMix mx;
+		mx.Add(n_old1, f1);
+		if (n_old2 >= 0)
+			mx.Add(n_old2, 1 - f1);
+		if (ppassemblage_units == 2)
+		{
+			mx.Multiply(porosity_factor);
+		}
+		cxxPPassemblage cxxentity(phreeqc_bin.Get_PPassemblages(), mx,
+								  n_user_new);
+		initial_bin.Set_PPassemblage(n_user_new, &cxxentity);
+	}
+	/*
+	 *   Copy exchange assemblage
+	 */
+
+	n_old1 = initial_conditions1[7 * i + 2];
+	n_old2 = initial_conditions2[7 * i + 2];
+	f1 = fraction1[7 * i + 2];
+	if (n_old1 >= 0)
+	{
+		cxxMix mx;
+		mx.Add(n_old1, f1);
+		if (n_old2 >= 0)
+			mx.Add(n_old2, 1 - f1);
+		if (exchange_units == 2)
+		{
+			mx.Multiply(porosity_factor);
+		}
+		cxxExchange cxxexch(phreeqc_bin.Get_Exchangers(), mx, n_user_new);
+		initial_bin.Set_Exchange(n_user_new, &cxxexch);
+	}
+	/*
+	 *   Copy surface assemblage
+	 */
+	n_old1 = initial_conditions1[7 * i + 3];
+	n_old2 = initial_conditions2[7 * i + 3];
+	f1 = fraction1[7 * i + 3];
+	if (n_old1 >= 0)
+	{
+		cxxMix mx;
+		mx.Add(n_old1, f1);
+		if (n_old2 >= 0)
+			mx.Add(n_old2, 1 - f1);
+		if (surface_units == 2)
+		{
+			mx.Multiply(porosity_factor);
+		}
+		cxxSurface cxxentity(phreeqc_bin.Get_Surfaces(), mx, n_user_new);
+		initial_bin.Set_Surface(n_user_new, &cxxentity);
+	}
+	/*
+	 *   Copy gas phase
+	 */
+	n_old1 = initial_conditions1[7 * i + 4];
+	n_old2 = initial_conditions2[7 * i + 4];
+	f1 = fraction1[7 * i + 4];
+	if (n_old1 >= 0)
+	{
+		cxxMix mx;
+		mx.Add(n_old1, f1);
+		if (n_old2 >= 0)
+			mx.Add(n_old2, 1 - f1);
+		if (gasphase_units == 2)
+		{
+			mx.Multiply(porosity_factor);
+		}
+		cxxGasPhase cxxentity(phreeqc_bin.Get_GasPhases(), mx, n_user_new);
+		initial_bin.Set_GasPhase(n_user_new, &cxxentity);
+	}
+	/*
+	 *   Copy solid solution
+	 */
+	n_old1 = initial_conditions1[7 * i + 5];
+	n_old2 = initial_conditions2[7 * i + 5];
+	f1 = fraction1[7 * i + 5];
+	if (n_old1 >= 0)
+	{
+		cxxMix mx;
+		mx.Add(n_old1, f1);
+		if (n_old2 >= 0)
+			mx.Add(n_old2, 1 - f1);
+		if (ssassemblage_units == 2)
+		{
+			mx.Multiply(porosity_factor);
+		}
+		cxxSSassemblage cxxentity(phreeqc_bin.Get_SSassemblages(), mx,
+								  n_user_new);
+		initial_bin.Set_SSassemblage(n_user_new, &cxxentity);
+	}
+	/*
+	 *   Copy kinetics
+	 */
+	n_old1 = initial_conditions1[7 * i + 6];
+	n_old2 = initial_conditions2[7 * i + 6];
+	f1 = fraction1[7 * i + 6];
+	if (n_old1 >= 0)
+	{
+		cxxMix mx;
+		mx.Add(n_old1, f1);
+		if (n_old2 >= 0)
+			mx.Add(n_old2, 1 - f1);
+		if (kinetics_units == 2)
+		{
+			mx.Multiply(porosity_factor);
+		}
+		cxxKinetics cxxentity(phreeqc_bin.Get_Kinetics(), mx, n_user_new);
+		initial_bin.Set_Kinetics(n_user_new, &cxxentity);
+	}
+	this->Get_workers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(initial_bin);
+	return;
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Convert_to_molal(double *c, int n, int dim)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *  convert c from mass fraction to moles
+ *  The c array is dimensioned c(dim,ns).
+ *  n is the number of rows that are used.
+ *  In f90 dim = n and is often the number of
+ *    cells in the domain.
+ */
+	int i;
+	for (i = 0; i < n; i++)
+	{
+		double *ptr = &c[i];
+		size_t k;
+		for (k = 0; k < this->components.size(); k++)
+		{	
+			ptr[k * dim] *= 1000.0/this->gfw[k];
+		}
+	}
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::cxxSolution2fraction(cxxSolution * cxxsoln_ptr, std::vector<double> & d)
+/* ---------------------------------------------------------------------- */
+{
+	d.clear();
+
+	d.push_back((cxxsoln_ptr->Get_total_h() - 2.0 / this->gfw_water) * this->gfw[0]/1000. ); 
+	d.push_back((cxxsoln_ptr->Get_total_o() - 1.0 / this->gfw_water) * this->gfw[1]/1000.);
+	d.push_back(cxxsoln_ptr->Get_cb() * this->gfw[2]/1000.);
+
+	// Simplify totals
+	cxxsoln_ptr->Set_totals(cxxsoln_ptr->Get_totals().Simplify_redox());
+
+	size_t i;
+	for (i = 3; i < this->components.size(); i++)
+	{
+		d.push_back(cxxsoln_ptr->Get_total(components[i].c_str()) * this->gfw[i]/1000.);
+	}
 }
 /* ---------------------------------------------------------------------- */
 void
@@ -543,6 +695,65 @@ Reaction_module::Distribute_initial_conditions(
 		}
 	}
 }
+
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::EndCell(int index)
+/* ---------------------------------------------------------------------- */
+{
+#if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
+	/* Always open file for output in case of a warning message */
+	MergeEndCell(print_sel, print_out, print_hdf, index);
+#endif
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::EndTimeStep(void)
+/* ---------------------------------------------------------------------- */
+{
+#ifdef HDF5_CREATE
+	HDFEndCTimeStep(back);
+#endif
+#if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
+	/* Always open file for output in case of a warning message */
+	MergeEndTimeStep(print_sel, print_out);
+#endif
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Error_stop(void)
+/* ---------------------------------------------------------------------- */
+{
+	int n = (int) this->Get_workers()[0]->Get_Index();
+	RM_error(&n);
+}
+/* ---------------------------------------------------------------------- */
+bool
+Reaction_module::File_exists(const std::string name)
+/* ---------------------------------------------------------------------- */
+{
+	FILE *stream;
+	if ((stream = fopen(name.c_str(), "r")) == NULL)
+	{
+		return false;				/* doesn't exist */
+	}
+	fclose(stream);
+	return true;					/* exists */
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::File_rename(const std::string temp_name, const std::string name, 
+	const std::string backup_name)
+/* ---------------------------------------------------------------------- */
+{
+	if (this->File_exists(name))
+	{
+		if (this->File_exists(backup_name.c_str()))
+			remove(backup_name.c_str());
+		rename(name.c_str(), backup_name.c_str());
+	}
+	rename(temp_name.c_str(), name.c_str());
+}
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Forward_and_back(int *initial_conditions, int *naxes)
@@ -851,190 +1062,6 @@ Reaction_module::Forward_and_back(int *initial_conditions, int *naxes)
 	return;
 }
 /* ---------------------------------------------------------------------- */
-bool
-Reaction_module::n_to_ijk(int n, int &i, int &j, int &k) 
-/* ---------------------------------------------------------------------- */
-{
-
-	k = n / (this->nx * this->ny) ;
-	j = (n % (this->nx * this->ny)) / this->nx;
-	i = (n % (this->nx * this->ny)) % this->nx;
-
-	if (k < 0 || k >= this->nz)
-	{
-		error_msg("Z index out of range");
-		return false;
-	}
-	if (j < 0 || j >= this->ny)
-	{
-		error_msg("Y index out of range");
-		return false;
-	}
-	if (i < 0 || i >= this->nx)
-	{
-		error_msg("X index out of range");
-		return false;
-	}
-	return true;
-}
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::Cell_initialize(
-					int i, 
-					int n_user_new, 
-					int *initial_conditions1,
-					int *initial_conditions2, 
-					double *fraction1,
-					int exchange_units, 
-					int surface_units, 
-					int ssassemblage_units,
-					int ppassemblage_units, 
-					int gasphase_units, 
-					int kinetics_units,
-					double porosity_factor)
-/* ---------------------------------------------------------------------- */
-{
-	int n_old1, n_old2;
-	double f1;
-
-	cxxStorageBin initial_bin;
-	/*
-	 *   Copy solution
-	 */
-	n_old1 = initial_conditions1[7 * i];
-	n_old2 = initial_conditions2[7 * i];
-	f1 = fraction1[7 * i];
-	if (n_old1 >= 0)
-	{
-		cxxMix mx;
-		mx.Add(n_old1, f1);
-		if (n_old2 >= 0)
-			mx.Add(n_old2, 1 - f1);
-		cxxSolution cxxsoln(phreeqc_bin.Get_Solutions(), mx, n_user_new);
-		initial_bin.Set_Solution(n_user_new, &cxxsoln);
-	}
-
-	/*
-	 *   Copy pp_assemblage
-	 */
-	n_old1 = initial_conditions1[7 * i + 1];
-	n_old2 = initial_conditions2[7 * i + 1];
-	f1 = fraction1[7 * i + 1];
-	if (n_old1 >= 0)
-	{
-		cxxMix mx;
-		mx.Add(n_old1, f1);
-		if (n_old2 >= 0)
-			mx.Add(n_old2, 1 - f1);
-		if (ppassemblage_units == 2)
-		{
-			mx.Multiply(porosity_factor);
-		}
-		cxxPPassemblage cxxentity(phreeqc_bin.Get_PPassemblages(), mx,
-								  n_user_new);
-		initial_bin.Set_PPassemblage(n_user_new, &cxxentity);
-	}
-	/*
-	 *   Copy exchange assemblage
-	 */
-
-	n_old1 = initial_conditions1[7 * i + 2];
-	n_old2 = initial_conditions2[7 * i + 2];
-	f1 = fraction1[7 * i + 2];
-	if (n_old1 >= 0)
-	{
-		cxxMix mx;
-		mx.Add(n_old1, f1);
-		if (n_old2 >= 0)
-			mx.Add(n_old2, 1 - f1);
-		if (exchange_units == 2)
-		{
-			mx.Multiply(porosity_factor);
-		}
-		cxxExchange cxxexch(phreeqc_bin.Get_Exchangers(), mx, n_user_new);
-		initial_bin.Set_Exchange(n_user_new, &cxxexch);
-	}
-	/*
-	 *   Copy surface assemblage
-	 */
-	n_old1 = initial_conditions1[7 * i + 3];
-	n_old2 = initial_conditions2[7 * i + 3];
-	f1 = fraction1[7 * i + 3];
-	if (n_old1 >= 0)
-	{
-		cxxMix mx;
-		mx.Add(n_old1, f1);
-		if (n_old2 >= 0)
-			mx.Add(n_old2, 1 - f1);
-		if (surface_units == 2)
-		{
-			mx.Multiply(porosity_factor);
-		}
-		cxxSurface cxxentity(phreeqc_bin.Get_Surfaces(), mx, n_user_new);
-		initial_bin.Set_Surface(n_user_new, &cxxentity);
-	}
-	/*
-	 *   Copy gas phase
-	 */
-	n_old1 = initial_conditions1[7 * i + 4];
-	n_old2 = initial_conditions2[7 * i + 4];
-	f1 = fraction1[7 * i + 4];
-	if (n_old1 >= 0)
-	{
-		cxxMix mx;
-		mx.Add(n_old1, f1);
-		if (n_old2 >= 0)
-			mx.Add(n_old2, 1 - f1);
-		if (gasphase_units == 2)
-		{
-			mx.Multiply(porosity_factor);
-		}
-		cxxGasPhase cxxentity(phreeqc_bin.Get_GasPhases(), mx, n_user_new);
-		initial_bin.Set_GasPhase(n_user_new, &cxxentity);
-	}
-	/*
-	 *   Copy solid solution
-	 */
-	n_old1 = initial_conditions1[7 * i + 5];
-	n_old2 = initial_conditions2[7 * i + 5];
-	f1 = fraction1[7 * i + 5];
-	if (n_old1 >= 0)
-	{
-		cxxMix mx;
-		mx.Add(n_old1, f1);
-		if (n_old2 >= 0)
-			mx.Add(n_old2, 1 - f1);
-		if (ssassemblage_units == 2)
-		{
-			mx.Multiply(porosity_factor);
-		}
-		cxxSSassemblage cxxentity(phreeqc_bin.Get_SSassemblages(), mx,
-								  n_user_new);
-		initial_bin.Set_SSassemblage(n_user_new, &cxxentity);
-	}
-	/*
-	 *   Copy kinetics
-	 */
-	n_old1 = initial_conditions1[7 * i + 6];
-	n_old2 = initial_conditions2[7 * i + 6];
-	f1 = fraction1[7 * i + 6];
-	if (n_old1 >= 0)
-	{
-		cxxMix mx;
-		mx.Add(n_old1, f1);
-		if (n_old2 >= 0)
-			mx.Add(n_old2, 1 - f1);
-		if (kinetics_units == 2)
-		{
-			mx.Multiply(porosity_factor);
-		}
-		cxxKinetics cxxentity(phreeqc_bin.Get_Kinetics(), mx, n_user_new);
-		initial_bin.Set_Kinetics(n_user_new, &cxxentity);
-	}
-	this->Get_workers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(initial_bin);
-	return;
-}
-/* ---------------------------------------------------------------------- */
 int
 Reaction_module::Find_components(void)	
 /* ---------------------------------------------------------------------- */
@@ -1180,253 +1207,137 @@ Reaction_module::Fractions2Solutions(void)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Solutions2Fractions_thread(int n)
+Reaction_module::Init_uz(void)
 /* ---------------------------------------------------------------------- */
 {
-	// convert Reaction module solution data to hst mass fractions
+	int	i;
 
-	std::vector<double> d;  // scratch space to convert from moles to mass fraction
-	cxxNameDouble::iterator it;
-	int j; 
-
-	for (j = this->start_cell[n]; j <= this->end_cell[n]; j++)
+	if (transient_free_surface)
 	{
-		// load fractions into d
-		cxxSolution * cxxsoln_ptr = this->Get_workers()[n]->Get_solution(j);
-		assert (cxxsoln_ptr);
-		this->cxxSolution2fraction(cxxsoln_ptr, d);
-
-		// store in fraction at 1, 2, or 4 places depending on chemistry dimensions
-		std::vector<int>::iterator it;
-		for (it = this->back[j].begin(); it != this->back[j].end(); it++)
+		for (i = 0; i < nxyz; i++)
 		{
-			double *d_ptr = &this->fraction[*it];
-			size_t i;
-			for (i = 0; i < this->components.size(); i++)
-			{
-				d_ptr[this->nxyz * i] = d[i];
-			}
+			old_frac.push_back(1.0);
 		}
 	}
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Solutions2Fractions(void)
+Reaction_module::Initial_phreeqc_run_thread(int n)
 /* ---------------------------------------------------------------------- */
 {
-	// convert Reaction module solution data to hst mass fractions
+		IPhreeqcPhast * iphreeqc_phast_worker = this->Get_workers()[n];
+		int ipp_id = iphreeqc_phast_worker->Get_Index();
 
-	std::vector<double> d;  // scratch space to convert from moles to mass fraction
-	cxxNameDouble::iterator it;
+		iphreeqc_phast_worker->SetOutputFileOn(false);
+		iphreeqc_phast_worker->SetErrorFileOn(false);
+		iphreeqc_phast_worker->SetLogFileOn(false);
+		iphreeqc_phast_worker->SetSelectedOutputStringOn(false);
+		if (n == 0)
+		{
+			iphreeqc_phast_worker->SetSelectedOutputFileOn(true);
+			iphreeqc_phast_worker->SetOutputStringOn(true);
+		}
+		else
+		{
+			iphreeqc_phast_worker->SetSelectedOutputFileOn(false);
+			iphreeqc_phast_worker->SetOutputStringOn(false);
+		}
 
-	int j; 
+		// Load database
+		if (iphreeqc_phast_worker->LoadDatabase(this->database_file_name.c_str()) < 0) RM_error(&ipp_id);
+		if (n == 0)
+		{
+			Write_output(iphreeqc_phast_worker->GetOutputString());
+		}
 
+		// Run chemistry file
+		if (iphreeqc_phast_worker->RunFile(this->chemistry_file_name.c_str()) < 0) RM_error(&ipp_id);
+
+		// Create a StorageBin with initial PHREEQC for boundary conditions
+		if (n == 0)
+		{
+			Write_output(iphreeqc_phast_worker->GetOutputString());
+			this->Get_phreeqc_bin().Clear();
+			this->Get_workers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin());
+		}
+		if (n == this->nthreads)
+		{
+			iphreeqc_phast_worker->SetSelectedOutputStringOn(true);
+			std::string in ="SOLUTION";
+			iphreeqc_phast_worker->RunString(in.c_str());
+			std::vector<std::string> names;
+			for (int i = 0; i < iphreeqc_phast_worker->GetSelectedOutputColumnCount(); i++)
+			{
+				VAR v;
+				VarInit(&v);
+				iphreeqc_phast_worker->GetSelectedOutputValue(0, i, &v);
+				names.push_back(v.sVal);
+			}
+			HDFSetScalarNames(names);
+			this->selected_output_names = names;
+		}
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Initial_phreeqc_run(std::string database_name, std::string chemistry_name, std::string prefix)
+/* ---------------------------------------------------------------------- */
+{
+	/*
+	*  Run PHREEQC to obtain PHAST reactants
+	*/
+	this->database_file_name = database_name;
+	this->chemistry_file_name = chemistry_name;
+	this->file_prefix = prefix;
+
+	// load database and run chemistry file
+	// Eventually need an copy operator for IPhreeqcPhast
+#ifdef THREADED_PHAST
+	std::vector <boost::thread *> my_threads;
+	for (int n = 0; n <= this->nthreads; n++)
+	{
+		boost::thread *thrd = new boost::thread(boost::bind(&Reaction_module::Initial_phreeqc_run_thread, this, n));
+		my_threads.push_back(thrd);
+	} 
+	for (int n = 0; n <= this->nthreads; n++)
+	{
+		my_threads[n]->join();
+		delete my_threads[n];
+	} 
+#else
 	for (int n = 0; n < this->nthreads; n++)
 	{
-		for (j = this->start_cell[n]; j <= this->end_cell[n]; j++)
-		{
-			// load fractions into d
-			cxxSolution * cxxsoln_ptr = this->Get_workers()[n]->Get_solution(j);
-			assert (cxxsoln_ptr);
-			this->cxxSolution2fraction(cxxsoln_ptr, d);
+		Initial_phreeqc_run_thread(n);
+	} 
+#endif	
 
-			// store in fraction at 1, 2, or 4 places depending on chemistry dimensions
-			std::vector<int>::iterator it;
-			for (it = this->back[j].begin(); it != this->back[j].end(); it++)
-			{
-				double *d_ptr = &this->fraction[*it];
-				size_t i;
-				for (i = 0; i < this->components.size(); i++)
-				{
-					d_ptr[this->nxyz * i] = d[i];
-				}
-			}
-		}
-	}
-}
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::Convert_to_molal(double *c, int n, int dim)
-/* ---------------------------------------------------------------------- */
-{
-/*
- *  convert c from mass fraction to moles
- *  The c array is dimensioned c(dim,ns).
- *  n is the number of rows that are used.
- *  In f90 dim = n and is often the number of
- *    cells in the domain.
- */
-	int i;
-	for (i = 0; i < n; i++)
-	{
-		double *ptr = &c[i];
-		size_t k;
-		for (k = 0; k < this->components.size(); k++)
-		{	
-			ptr[k * dim] *= 1000.0/this->gfw[k];
-		}
-	}
-}
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::Calculate_well_ph(double *c, double * pH, double * alkalinity)
-/* ---------------------------------------------------------------------- */
-{
-
-	// convert mass fraction to moles and store in d
-	std::vector<double> d;  
-	size_t k;
-	for (k = 0; k < this->components.size(); k++)
-	{	
-		d.push_back(c[k] * 1000.0/gfw[k]);
-	}
-
-	// Store in NameDouble
-	cxxNameDouble nd;
-	//nd.add("H", d[0] + 2.0/gfw_water);
-	//nd.add("O", d[1] + 1.0/gfw_water);
-	//nd.add("Charge", d[2]);
-
-	for (k = 3; k < components.size(); k++)
-	{
-		if (d[k] <= 1e-14) d[k] = 0.0;
-		nd.add(components[k].c_str(), d[k]);
-	}	
-
-	cxxSolution cxxsoln(this->Get_io());	
-	cxxsoln.Update(d[0] + 2.0/gfw_water, d[1] + 1.0/gfw_water, d[2], nd);
-	cxxStorageBin temp_bin;
-	temp_bin.Set_Solution(0, &cxxsoln);
-
-	// Copy all entities numbered 1 into IPhreeqc
-	this->Get_workers()[this->nthreads]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(temp_bin, 0);
-	std::string input;
-	input.append("RUN_CELLS; -cell 0; SELECTED_OUTPUT; -reset false; -pH; -alkalinity; END");
-	this->Get_workers()[0]->RunString(input.c_str());
-
-	VAR pvar;
-	this->Get_workers()[this->nthreads]->GetSelectedOutputValue(1,0,&pvar);
-	*pH = pvar.dVal;
-	this->Get_workers()[this->nthreads]->GetSelectedOutputValue(1,1,&pvar);
-	*alkalinity = pvar.dVal;
-
-	// Alternatively
-	//*pH = -(this->phast_iphreeqc_worker->Get_PhreeqcPtr()->s_hplus->la);
-	//*alkalinity = this->phast_iphreeqc_worker->Get_PhreeqcPtr()->total_alkalinity / 
-	//	this->phast_iphreeqc_worker->Get_PhreeqcPtr()->mass_water_aq_x;
-	return;
-}
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::Setup_boundary_conditions(
-					const int n_boundary, 
-					int *boundary_solution1,
-					int *boundary_solution2, 
-					double *fraction1,
-					double *boundary_fraction, 
-					int dim)
-/* ---------------------------------------------------------------------- */
-{
-/*
- *   Routine takes a list of solution numbers and returns a set of
- *   mass fractions
- *   Input: n_boundary - number of boundary conditions in list
- *          boundary_solution1 - list of first solution numbers to be mixed
- *          boundary_solution2 - list of second solution numbers to be mixed
- *          fraction1 - fraction of first solution 0 <= f <= 1
- *          dim - leading dimension of array boundary mass fractions
- *                must be >= to n_boundary
- *
- *   Output: boundary_fraction - mass fractions for boundary conditions
- *                             - dimensions must be >= n_boundary x n_comp
- *
- */
-	int	i, n_old1, n_old2;
-	double f1, f2;
-
-	for (i = 0; i < n_boundary; i++)
-	{
-		cxxMix mixmap;
-		n_old1 = boundary_solution1[i];
-		n_old2 = boundary_solution2[i];
-		f1 = fraction1[i];
-		f2 = 1 - f1;
-		mixmap.Add(n_old1, f1);
-		if (f2 > 0.0)
-		{
-			mixmap.Add(n_old2, f2);
-		}
-		
-		// Make mass fractions in d
-		cxxSolution	cxxsoln(phreeqc_bin.Get_Solutions(), mixmap, 0);
-		std::vector<double> d;
-		cxxSolution2fraction(&cxxsoln, d);
-
-		// Put mass fractions in boundary_fraction
-		double *d_ptr = &boundary_fraction[i];
-		size_t j;
-		for (j = 0; j < components.size(); j++)
-		{
-			d_ptr[dim * j] = d[j];
-		}
-	}
-}
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::cxxSolution2fraction(cxxSolution * cxxsoln_ptr, std::vector<double> & d)
-/* ---------------------------------------------------------------------- */
-{
-	d.clear();
-
-	d.push_back((cxxsoln_ptr->Get_total_h() - 2.0 / this->gfw_water) * this->gfw[0]/1000. ); 
-	d.push_back((cxxsoln_ptr->Get_total_o() - 1.0 / this->gfw_water) * this->gfw[1]/1000.);
-	d.push_back(cxxsoln_ptr->Get_cb() * this->gfw[2]/1000.);
-
-	// Simplify totals
-	cxxsoln_ptr->Set_totals(cxxsoln_ptr->Get_totals().Simplify_redox());
-
-	size_t i;
-	for (i = 3; i < this->components.size(); i++)
-	{
-		d.push_back(cxxsoln_ptr->Get_total(components[i].c_str()) * this->gfw[i]/1000.);
-	}
-}
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::Error_stop(void)
-/* ---------------------------------------------------------------------- */
-{
-	int n = (int) this->Get_workers()[0]->Get_Index();
-	RM_error(&n);
 }
 /* ---------------------------------------------------------------------- */
 bool
-Reaction_module::File_exists(const std::string name)
+Reaction_module::n_to_ijk(int n, int &i, int &j, int &k) 
 /* ---------------------------------------------------------------------- */
 {
-	FILE *stream;
-	if ((stream = fopen(name.c_str(), "r")) == NULL)
-	{
-		return false;				/* doesn't exist */
-	}
-	fclose(stream);
-	return true;					/* exists */
-}
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::File_rename(const std::string temp_name, const std::string name, 
-	const std::string backup_name)
-/* ---------------------------------------------------------------------- */
-{
-	if (this->File_exists(name))
-	{
-		if (this->File_exists(backup_name.c_str()))
-			remove(backup_name.c_str());
-		rename(name.c_str(), backup_name.c_str());
-	}
-	rename(temp_name.c_str(), name.c_str());
-}
 
+	k = n / (this->nx * this->ny) ;
+	j = (n % (this->nx * this->ny)) / this->nx;
+	i = (n % (this->nx * this->ny)) % this->nx;
+
+	if (k < 0 || k >= this->nz)
+	{
+		error_msg("Z index out of range");
+		return false;
+	}
+	if (j < 0 || j >= this->ny)
+	{
+		error_msg("Y index out of range");
+		return false;
+	}
+	if (i < 0 || i >= this->nx)
+	{
+		error_msg("X index out of range");
+		return false;
+	}
+	return true;
+}
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Partition_uz_thread(int n, int iphrq, int ihst, double new_frac)
@@ -1571,18 +1482,89 @@ Reaction_module::Partition_uz_thread(int n, int iphrq, int ihst, double new_frac
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Init_uz(void)
+Reaction_module::Run_cells()
 /* ---------------------------------------------------------------------- */
 {
-	int	i;
+/*
+ *   Routine takes mass fractions from HST, equilibrates each cell,
+ *   and returns new mass fractions to HST
+ */
 
-	if (transient_free_surface)
+/*
+ *   Update solution compositions in sz_bin
+ */
+	clock_t t0 = clock();
+	for (int n = 0; n < this->nthreads; n++)
 	{
-		for (i = 0; i < nxyz; i++)
-		{
-			old_frac.push_back(1.0);
-		}
+		IPhreeqcPhast * phast_iphreeqc_worker = this->workers[n];
+		phast_iphreeqc_worker->Set_out_stream(new ostringstream); 
+		phast_iphreeqc_worker->Set_punch_stream(new ostringstream);
 	}
+#ifdef THREADED_PHAST
+	std::vector <boost::thread *> my_threads;
+	for (int n = 0; n < this->nthreads; n++)
+	{
+		boost::thread *thrd = new boost::thread(boost::bind(&Reaction_module::Run_cells_thread, this, n));
+		my_threads.push_back(thrd);
+	} 
+#else
+	for (int n = 0; n < this->nthreads; n++)
+	{
+		Run_cells_thread(n);
+	} 
+#endif
+
+	// Join theads
+	for (int n = 0; n < this->nthreads; n++)
+	{
+#ifdef THREADED_PHAST
+		my_threads[n]->join();
+#endif
+	}
+
+	// Output
+	if (this->print_hdf)
+	{
+		BeginTimeStep();
+	}
+	for (int n = 0; n < this->nthreads; n++)
+	{
+		// write output results
+		if (this->print_chem)
+		{
+			Write_output(this->workers[n]->Get_out_stream().str().c_str());
+		}
+		delete &this->workers[n]->Get_out_stream();
+
+		// write punch results
+		if (this->print_xyz)
+		{
+			Write_xyz(this->workers[n]->Get_punch_stream().str().c_str());
+		}
+		delete &this->workers[n]->Get_punch_stream();
+
+		// write restart
+		if (this->print_restart)
+		{
+			this->Write_restart();
+		}
+
+		// write hdf
+		if (this->print_hdf)
+		{
+			HDFFillHyperSlab(this->start_cell[n], this->workers[n]->Get_punch_vector());
+		}
+		this->workers[n]->Get_punch_vector().clear();
+
+#ifdef THREADED_PHAST
+		delete my_threads[n];
+#endif
+	} 	
+	if (this->print_hdf)
+	{
+		EndTimeStep();
+	}
+	std::cerr << "Running: " << (double) (clock() - t0) << std::endl;
 }
 /* ---------------------------------------------------------------------- */
 void 
@@ -1757,101 +1739,13 @@ Reaction_module::Run_cells_thread(int n)
 			// Write output file
 			if (pr_hdf)
 			{
-				phast_iphreeqc_worker->Selected_out_to_double(this->selected_output_names.size());
+				std::vector<LDBLE> d;
+				phast_iphreeqc_worker->Get_punch_vector().push_back(d);
 			}
 		}
 	} // end one cell
 
 	this->Solutions2Fractions_thread(n);
-}
-
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::Run_cells()
-/* ---------------------------------------------------------------------- */
-{
-/*
- *   Routine takes mass fractions from HST, equilibrates each cell,
- *   and returns new mass fractions to HST
- */
-
-/*
- *   Update solution compositions in sz_bin
- */
-	clock_t t0 = clock();
-	for (int n = 0; n < this->nthreads; n++)
-	{
-		IPhreeqcPhast * phast_iphreeqc_worker = this->workers[n];
-		phast_iphreeqc_worker->Set_out_stream(new ostringstream); 
-		phast_iphreeqc_worker->Set_punch_stream(new ostringstream);
-		//phast_iphreeqc_worker->Set_dump_stream(new ostringstream);
-	}
-#ifdef THREADED_PHAST
-	std::vector <boost::thread *> my_threads;
-	for (int n = 0; n < this->nthreads; n++)
-	{
-		boost::thread *thrd = new boost::thread(boost::bind(&Reaction_module::Run_cells_thread, this, n));
-		my_threads.push_back(thrd);
-	} 
-#else
-	for (int n = 0; n < this->nthreads; n++)
-	{
-		Run_cells_thread(n);
-	} 
-#endif
-
-	// Join theads
-	for (int n = 0; n < this->nthreads; n++)
-	{
-#ifdef THREADED_PHAST
-		my_threads[n]->join();
-#endif
-	}
-
-	// Output
-	if (this->print_hdf)
-	{
-		BeginTimeStep();
-	}
-	for (int n = 0; n < this->nthreads; n++)
-	{
-		// write output results
-		if (this->print_chem)
-		{
-			Write_output(this->workers[n]->Get_out_stream().str().c_str());
-		}
-		delete &this->workers[n]->Get_out_stream();
-
-		// write punch results
-		if (this->print_xyz)
-		{
-			Write_xyz(this->workers[n]->Get_punch_stream().str().c_str());
-		}
-		delete &this->workers[n]->Get_punch_stream();
-
-		// write restart
-		if (this->print_restart)
-		{
-			this->Write_restart();
-		}
-		//delete &this->workers[n]->Get_dump_stream();
-
-		// write hdf
-		if (this->print_hdf)
-		{
-			HDFFillHyperSlab(this->start_cell[n], this->workers[n]->Get_punch_vector());
-		}
-		this->workers[n]->Get_punch_vector().clear();
-
-#ifdef THREADED_PHAST
-		delete my_threads[n];
-#endif
-	} 	
-	if (this->print_hdf)
-	{
-		EndTimeStep();
-	}
-	std::cerr << "Running: " << (double) (clock() - t0) << std::endl;
 }
 /* ---------------------------------------------------------------------- */
 void
@@ -1937,6 +1831,127 @@ Reaction_module::Set_end_cells(void)
 		this->start_cell.push_back(cell0);
 		this->end_cell.push_back(cell0 + cells[i] - 1);
 		cell0 = cell0 + cells[i];
+	}
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Setup_boundary_conditions(
+					const int n_boundary, 
+					int *boundary_solution1,
+					int *boundary_solution2, 
+					double *fraction1,
+					double *boundary_fraction, 
+					int dim)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *   Routine takes a list of solution numbers and returns a set of
+ *   mass fractions
+ *   Input: n_boundary - number of boundary conditions in list
+ *          boundary_solution1 - list of first solution numbers to be mixed
+ *          boundary_solution2 - list of second solution numbers to be mixed
+ *          fraction1 - fraction of first solution 0 <= f <= 1
+ *          dim - leading dimension of array boundary mass fractions
+ *                must be >= to n_boundary
+ *
+ *   Output: boundary_fraction - mass fractions for boundary conditions
+ *                             - dimensions must be >= n_boundary x n_comp
+ *
+ */
+	int	i, n_old1, n_old2;
+	double f1, f2;
+
+	for (i = 0; i < n_boundary; i++)
+	{
+		cxxMix mixmap;
+		n_old1 = boundary_solution1[i];
+		n_old2 = boundary_solution2[i];
+		f1 = fraction1[i];
+		f2 = 1 - f1;
+		mixmap.Add(n_old1, f1);
+		if (f2 > 0.0)
+		{
+			mixmap.Add(n_old2, f2);
+		}
+		
+		// Make mass fractions in d
+		cxxSolution	cxxsoln(phreeqc_bin.Get_Solutions(), mixmap, 0);
+		std::vector<double> d;
+		cxxSolution2fraction(&cxxsoln, d);
+
+		// Put mass fractions in boundary_fraction
+		double *d_ptr = &boundary_fraction[i];
+		size_t j;
+		for (j = 0; j < components.size(); j++)
+		{
+			d_ptr[dim * j] = d[j];
+		}
+	}
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Solutions2Fractions(void)
+/* ---------------------------------------------------------------------- */
+{
+	// convert Reaction module solution data to hst mass fractions
+
+	std::vector<double> d;  // scratch space to convert from moles to mass fraction
+	cxxNameDouble::iterator it;
+
+	int j; 
+
+	for (int n = 0; n < this->nthreads; n++)
+	{
+		for (j = this->start_cell[n]; j <= this->end_cell[n]; j++)
+		{
+			// load fractions into d
+			cxxSolution * cxxsoln_ptr = this->Get_workers()[n]->Get_solution(j);
+			assert (cxxsoln_ptr);
+			this->cxxSolution2fraction(cxxsoln_ptr, d);
+
+			// store in fraction at 1, 2, or 4 places depending on chemistry dimensions
+			std::vector<int>::iterator it;
+			for (it = this->back[j].begin(); it != this->back[j].end(); it++)
+			{
+				double *d_ptr = &this->fraction[*it];
+				size_t i;
+				for (i = 0; i < this->components.size(); i++)
+				{
+					d_ptr[this->nxyz * i] = d[i];
+				}
+			}
+		}
+	}
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Solutions2Fractions_thread(int n)
+/* ---------------------------------------------------------------------- */
+{
+	// convert Reaction module solution data to hst mass fractions
+
+	std::vector<double> d;  // scratch space to convert from moles to mass fraction
+	cxxNameDouble::iterator it;
+	int j; 
+
+	for (j = this->start_cell[n]; j <= this->end_cell[n]; j++)
+	{
+		// load fractions into d
+		cxxSolution * cxxsoln_ptr = this->Get_workers()[n]->Get_solution(j);
+		assert (cxxsoln_ptr);
+		this->cxxSolution2fraction(cxxsoln_ptr, d);
+
+		// store in fraction at 1, 2, or 4 places depending on chemistry dimensions
+		std::vector<int>::iterator it;
+		for (it = this->back[j].begin(); it != this->back[j].end(); it++)
+		{
+			double *d_ptr = &this->fraction[*it];
+			size_t i;
+			for (i = 0; i < this->components.size(); i++)
+			{
+				d_ptr[this->nxyz * i] = d[i];
+			}
+		}
 	}
 }
 /* ---------------------------------------------------------------------- */
@@ -2096,133 +2111,7 @@ Reaction_module:: Write_xyz(std::string item)
 {
 	RM_interface::phast_io.punch_msg(item.c_str());
 }
-/*-------------------------------------------------------------------------
- * Function          BeginTimeStep
- *-------------------------------------------------------------------------
- */
-void
-Reaction_module::BeginTimeStep(void)
-{
-#ifdef HDF5_CREATE
-	HDFBeginCTimeStep(this->count_chem);
-#endif
-#if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
-	/* Always open file for output in case of a warning message */
-	MergeBeginTimeStep(print_sel, print_out);
-#endif
-}
 
-/*-------------------------------------------------------------------------
- * Function          EndTimeStep
- *-------------------------------------------------------------------------
- */
-void
-Reaction_module::EndTimeStep(void)
-{
-#ifdef HDF5_CREATE
-	HDFEndCTimeStep(back);
-#endif
-#if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
-	/* Always open file for output in case of a warning message */
-	MergeEndTimeStep(print_sel, print_out);
-#endif
-}
-/*-------------------------------------------------------------------------
- * Function          BeginCell
- *-------------------------------------------------------------------------
- */
-void
-Reaction_module::BeginCell(int index)
-{
-	// index is nxyz number
-#ifdef HDF5_CREATE
-	HDFSetCell(index, back);
-#endif
-#if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
-	/* Always open file for output in case of a warning message */
-	MergeBeginCell();
-#endif
-}
 
-/*-------------------------------------------------------------------------
- * Function          EndCell
- *-------------------------------------------------------------------------
- */
-void
-Reaction_module::EndCell(int index)
-{
-#if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
-	/* Always open file for output in case of a warning message */
-	MergeEndCell(print_sel, print_out, print_hdf, index);
-#endif
-}
-#ifdef SKIP
-/*-------------------------------------------------------------------------
- * Function          BeginTimeStep
- *-------------------------------------------------------------------------
- */
-void
-BeginTimeStep(int print_sel, int print_out, int print_hdf)
-{
-#ifdef HDF5_CREATE
-	if (print_hdf == TRUE)
-	{
-		HDFBeginCTimeStep();
-	}
-#endif
-#if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
-	/* Always open file for output in case of a warning message */
-	MergeBeginTimeStep(print_sel, print_out);
-#endif
-}
 
-/*-------------------------------------------------------------------------
- * Function          EndTimeStep
- *-------------------------------------------------------------------------
- */
-void
-EndTimeStep(int print_sel, int print_out, int print_hdf)
-{
-#ifdef HDF5_CREATE
-	if (print_hdf == TRUE)
-	{
-		HDFEndCTimeStep();
-	}
-#endif
-#if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
-	/* Always open file for output in case of a warning message */
-	MergeEndTimeStep(print_sel, print_out);
-#endif
-}
-/*-------------------------------------------------------------------------
- * Function          BeginCell
- *-------------------------------------------------------------------------
- */
-void
-BeginCell(int print_sel, int print_out, int print_hdf, int index)
-{
-#ifdef HDF5_CREATE
-	if (print_hdf == TRUE)
-	{
-		HDFSetCell(index);
-	}
-#endif
-#if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
-	/* Always open file for output in case of a warning message */
-	MergeBeginCell();
-#endif
-}
 
-/*-------------------------------------------------------------------------
- * Function          EndCell
- *-------------------------------------------------------------------------
- */
-void
-EndCell(int print_sel, int print_out, int print_hdf, int index)
-{
-#if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
-	/* Always open file for output in case of a warning message */
-	MergeEndCell(print_sel, print_out, print_hdf, index);
-#endif
-}
-#endif

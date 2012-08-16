@@ -47,97 +47,43 @@ IPhreeqcPhast::Set_cell_volumes(int i, double pore_volume, double f, double v)
 }
 /* ---------------------------------------------------------------------- */
 void
-IPhreeqcPhast::Selected_out_to_double(size_t cols)
+IPhreeqcPhast::Selected_out_to_double()
 /* ---------------------------------------------------------------------- */
 {
 	const float INACTIVE_CELL_VALUE = 1.0e30f;
 
 	int rows = this->GetSelectedOutputRowCount();
 	int columns = this->GetSelectedOutputColumnCount();
-	bool rv = false;
 	std::vector<LDBLE> d;
-	if (cols == 0)
+
+	assert(rows >= 2);
+	int row = 1;
+	for (int column = 0; column < columns; column++)
 	{
-		assert(rows >= 2);
-		int row = 1;
-		rv = true;
-		for (int column = 0; column < columns; column++)
+		VAR v;
+		VarInit(&v);
+		if (this->GetSelectedOutputValue(row, column, &v) == VR_OK)
 		{
-			VAR v;
-			VarInit(&v);
-			if (this->GetSelectedOutputValue(row, column, &v) == VR_OK)
+			switch (v.type)
 			{
-				switch (v.type)
-				{
-				case TT_LONG:
-					d.push_back(v.lVal);
-					break;
-				case TT_DOUBLE:
-					d.push_back(v.dVal);
-					break;
-				default:
-					d.push_back(INACTIVE_CELL_VALUE);
-					break;
-				}
-			}
-			else
-			{
+			case TT_LONG:
+				d.push_back(v.lVal);
+				break;
+			case TT_DOUBLE:
+				d.push_back(v.dVal);
+				break;
+			default:
 				d.push_back(INACTIVE_CELL_VALUE);
-				rv = false;
+				break;
 			}
 		}
-		this->punch_vector.push_back(d);
-	}
-	else
-	{
-		for (size_t column = 0; column < cols; column++)
+		else
 		{
 			d.push_back(INACTIVE_CELL_VALUE);
 		}
-		this->punch_vector.push_back(d);
 	}
+	this->punch_vector.push_back(d);
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-bool
-IPhreeqcPhast::Selected_out_to_double(int row, std::vector<double> d)
-/* ---------------------------------------------------------------------- */
-{
-	int rows = this->GetSelectedOutputRowCount();
-	bool rv = false;
-	if (row < rows)
-	{
-		rv = true;
-		int columns = this->GetSelectedOutputColumnCount();
-		int column;
-		for (column = 0; column != columns; column++)
-		{
-			VAR v;
-			if (this->GetSelectedOutputValue((int) row, column, &v))
-			{
-				switch (v.type)
-				{
-				case TT_LONG:
-					d.push_back(v.lVal);
-					break;
-				case TT_DOUBLE:
-					d.push_back(v.dVal);
-					break;
-				default:
-					d.push_back(0.0);
-					break;
-				}
-			}
-			else
-			{
-				d.push_back(0.0);
-				rv = false;
-			}
-		}
-	}
-	return rv;
-}
-#endif
 /* ---------------------------------------------------------------------- */
 void
 IPhreeqcPhast::Get_cell_from_storage_bin(cxxStorageBin & sb, int i)
@@ -151,7 +97,6 @@ void
 IPhreeqcPhast::Put_cell_in_storage_bin(cxxStorageBin & sb, int i)
 /* ---------------------------------------------------------------------- */
 {
-	//Phreeqc * phreeqc_ptr = this->Get_PhreeqcPtr();
 	Phreeqc * phreeqc_ptr = this->PhreeqcPtr;
 	phreeqc_ptr->phreeqc2cxxStorageBin(sb, i);
 }
