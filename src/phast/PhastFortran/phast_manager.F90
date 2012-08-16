@@ -388,7 +388,7 @@ SUBROUTINE phast_manager
         ENDIF
 #if defined(HDF5_CREATE)
            CALL hdf_end_time_step
-        IF (prhdfii) THEN
+        IF (prhdfii == 1) THEN
            CALL write_hdf_intermediate     
         ENDIF
 #endif            

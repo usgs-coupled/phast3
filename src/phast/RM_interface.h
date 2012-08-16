@@ -29,7 +29,8 @@
 #define RM_solutions2fractions                rm_solutions2fractions
 #define RM_write_bc_raw                       rm_write_bc_raw
 #define RM_write_output                       rm_write_output
-#define RM_write_restart					  rm_write_restart
+#define RM_write_restart		      rm_write_restart
+
 
 /**
  * @mainpage IPhreeqc Library Documentation

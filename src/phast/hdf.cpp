@@ -41,7 +41,7 @@ char error_string[1024];
  *   static functions
  */
 int file_exists(const char *name);
-hid_t open_hdf_file(const char *prefix, int prefix_l);
+static hid_t open_hdf_file(const char *prefix, int prefix_l);
 static void write_proc_timestep(int rank, int cell_count,
 								hid_t file_dspace_id, hid_t dset_id,
 								double *array, std::vector <std::vector <int> > &back);
@@ -106,15 +106,6 @@ static struct proc_info
 } proc;
 
 std::vector<std::string> g_hdf_scalar_names;
-
-
-static enum HDF_STATE
-{
-	HDF_NORMAL,
-	HDF_GET_COUNT,
-	HDF_GET_NAMES
-} g_hdf_state;
-
 
 /* string constants */
 static const char szTimeSteps[] = "TimeSteps";

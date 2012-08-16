@@ -492,13 +492,13 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_GFORTRAN_DEBUG)
-  DEFINES      = $(DEFINE_HDF) -DPHREEQC_CPP -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC
+  DEFINES      = $(DEFINE_HDF) -DPHREEQC_CPP -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DTHREADED_PHAST
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = ..:../PhastFortran:../IPhreeqcPhast:../IPhreeqcPhast/IPhreeqc:../IPhreeqcPhast/IPhreeqc/phreeqcpp:../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc:../KDtree
   FC           = $(FGFORTRAN)
   FFLAGS       = -g -fno-underscoring $(DEFINES)
   CC           = g++
-  CFLAGS       = -Wall -g $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
+  CFLAGS       = -Wall -g $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) -I/usr/include/boost
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS)  $(HDF_OBJS) $(CL1MP_OBJS)
   LD_FLAGS     = $(LIBGFORTRAN) -lm ${HDF5_LIBS} ${HASH_STYLE} ${CL1MP_LIB} 
   LINKER       = $(CXX)
@@ -939,6 +939,7 @@ gzstream.o \
 phast_main.o  \
 Reaction_module.o \
 RM_interface.o \
+hdf.o \
 \
 fwrap2Phast.o \
 fwrap3Phast.o \

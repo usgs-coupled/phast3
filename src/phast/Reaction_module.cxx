@@ -40,7 +40,7 @@ Reaction_module::Reaction_module(int thread_count, PHRQ_io *io)
 	n = sysinfo.dwNumberOfProcessors;
 #else
 	// Linux, Solaris, Aix, Mac 10.4+
-	numCPU = sysconf( _SC_NPROCESSORS_ONLN );
+	n = sysconf( _SC_NPROCESSORS_ONLN );
 #endif
 #ifdef OTHERS
 int mib[4];
@@ -408,8 +408,10 @@ Reaction_module::cxxSolution2fraction(cxxSolution * cxxsoln_ptr, std::vector<dou
 	d.push_back(cxxsoln_ptr->Get_cb() * this->gfw[2]/1000.);
 
 	// Simplify totals
-	cxxsoln_ptr->Set_totals(cxxsoln_ptr->Get_totals().Simplify_redox());
-
+	{
+	  cxxNameDouble nd = cxxsoln_ptr->Get_totals().Simplify_redox();
+	  cxxsoln_ptr->Set_totals(nd);
+	}
 	size_t i;
 	for (i = 3; i < this->components.size(); i++)
 	{
@@ -811,8 +813,6 @@ Reaction_module::Forward_and_back(int *initial_conditions, int *naxes)
 	this->count_chem = 1;
 
 	int ixy = this->nx * this->ny;
-	int ixz = this->nx * this->nz;
-	int iyz = this->ny * this->nz;
 	int ixyz = this->nxyz;
 
 	if (!axes[0] && !axes[1] && !axes[2])
