@@ -1171,7 +1171,6 @@ write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
 	/*
 	 * make the file dataspace selection
 	 */
-	//for (n = 0; n < count_back_list; ++n)
 	for (n = 0; n < (int) back[0].size(); ++n)
 	{
 		for (j = 0; j < proc.scalar_count; ++j)
@@ -1179,7 +1178,6 @@ write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
 			for (i = 0; i < cell_count; ++i)
 			{
 				coor[i + j * cell_count][0] =
-					//root.natural_to_active[back[i].list[n]] +
 					root.natural_to_active[back[i][n]] +
 					j * root.active_count;
 			}
