@@ -102,6 +102,9 @@ SUBROUTINE dealloc_arr_worker
              mwel, wcfl, wcfu, zwb, zwt,  &
              dwb, dwt,  &
              wfrac, nkswel,  &
+             wrangl, &
+             wrruf, &
+             wrid, &
              STAT = da_err)
         IF (da_err /= 0) THEN  
            PRINT *, "array deallocation failed: dealloc_arr_worker, receive2_trans, point 9"  
