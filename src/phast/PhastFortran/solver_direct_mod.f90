@@ -8,7 +8,97 @@ MODULE solver_direct_mod
 ! ..  PRIVATE :: ident_string
 
 CONTAINS
-
+  SUBROUTINE tfrds_thread(diagra,envlra,envura,xp)
+    ! ... Triangular-factorization, reduced matrix, direct solver
+    ! ... Direct solver for reduced linear equation system using
+    ! ...      LU triangular factorization
+    ! ... Reduced system by D4 reordering
+    ! ... Algorithm adapted from George & Liu
+    ! ... Storage is by envelope method in lower triangular, transposed
+    ! ...      upper triangular, and diagonal arrays
+    USE mcm, only: 
+    USE mcs, only: nbn, ipenv, nrn, ci
+    USE XP_module
+    IMPLICIT NONE
+    TYPE (Transporter) :: xp
+    REAL(KIND=kdp), DIMENSION(:), INTENT(OUT) :: diagra, envlra, envura
+    !
+    REAL(KIND=kdp) :: uva, va7i
+    INTEGER :: i, ibn, ibnrow, ic, ie, irn, jbncol, jc, joff, jrncol, mbnrow, nenvl
+    ! ... Set string for use with RCS ident command
+    CHARACTER(LEN=80) :: ident_string='$Id: solver_direct_mod.f90,v 1.2 2011/01/06 23:10:03 klkipp Exp $'
+    REAL(KIND=kdp), DIMENSION(:), allocatable, target :: my_vector
+    !     ------------------------------------------------------------------
+    !...
+    nenvl=ipenv(nbn+1)-1
+    DO  i=1,nenvl
+       envlra(i)=0._kdp
+       envura(i)=0._kdp
+    END DO
+    ! ... Load diagonal array of reduced, RA (A4), matrix
+    DO  ibn=1,nbn
+       diagra(ibn)=xp%va(7,nrn+ibn)
+    END DO
+    ! ... Scale the red equations by D_r^-1, A1^-1
+    DO  irn=1,nrn
+       va7i = 1.0_kdp/xp%va(7,irn)
+       DO  ic=1,6
+          xp%va(ic,irn) = xp%va(ic,irn)*va7i
+       END DO
+       xp%rhs(irn)=xp%rhs(irn)*va7i
+    END DO
+    ! ... Eliminate A3 and form reduced matrix RA (A4') loading it into
+    ! ...      envelope storage
+    DO  irn=1,nrn
+       DO  ic=1,6
+          mbnrow=ci(ic,irn)
+          IF(mbnrow > 0) THEN
+             uva=xp%va(7-ic,mbnrow)
+             ibnrow=mbnrow-nrn
+             DO  jc=1,6
+                jrncol=ci(jc,irn)
+                IF(jrncol > 0) THEN
+                   IF(jrncol < mbnrow) THEN
+                      ! ... Load into lower triangle matrix
+                      joff=mbnrow-jrncol
+                      ie=ipenv(ibnrow+1)-joff
+                      envlra(ie)=envlra(ie)-uva*xp%va(jc,irn)
+                   ELSE IF(jrncol == mbnrow) THEN
+                      ! ... Load into diagonal matrix
+                      diagra(ibnrow)=diagra(ibnrow)-uva*xp%va(jc,irn)
+                   ELSE IF(jrncol > mbnrow) THEN
+                      ! ... Load into upper triangle matrix
+                      jbncol=jrncol-nrn
+                      joff=jrncol-mbnrow
+                      ie=ipenv(jbncol+1)-joff
+                      envura(ie)=envura(ie)-uva*xp%va(jc,irn)
+                   END IF
+                END IF
+             END DO
+             ! ... Form the rhs of the reduced equation
+             xp%rhs(mbnrow)=xp%rhs(mbnrow)-uva*xp%rhs(irn)
+          END IF
+       END DO
+    END DO
+    ! ... Solve the reduced system by LU factorization
+    ! ...    Factor RA into L and U triangular factors
+    CALL efact(nbn,ipenv,envlra,envura,diagra)
+    my_vector = xp%rhs(nrn+1:nrn+nbn)
+    !rhs_b => xp%rhs(nrn+1:nrn+nbn)
+    xp%rhs_b = my_vector
+    ! ...    Solve Ly=b
+    CALL el1slv(nbn,ipenv,envlra,xp%rhs_b)
+    ! ...    Back solve Ux=y
+    CALL euslv(nbn,ipenv,envura,diagra,xp%rhs_b)
+    ! ...    Back solve the upper half matrix
+    DO  irn=1,nrn
+       DO  jc=1,6
+          ibn=ci(jc,irn)
+          ! ... VA is from upper half, A2'
+          IF(ibn > 0) xp%rhs(irn)=xp%rhs(irn)-xp%va(jc,irn)*xp%rhs(ibn)
+       END DO
+    END DO
+  END SUBROUTINE tfrds_thread
   SUBROUTINE tfrds(diagra,envlra,envura)
     ! ... Triangular-factorization, reduced matrix, direct solver
     ! ... Direct solver for reduced linear equation system using

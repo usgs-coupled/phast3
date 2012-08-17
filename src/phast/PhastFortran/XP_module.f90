@@ -41,6 +41,53 @@ MODULE XP_module
      REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: cwkt, cwkts
      REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: stswi, stswp
 
+     ! extra storage for threading
+
+     ! ... MODULE mcb
+     INTEGER, DIMENSION(:), ALLOCATABLE ::  &
+       mlbc, mrbc, leak_seg_m, river_seg_m, drain_seg_m
+
+     ! ... MODULE mcc
+     INTEGER :: ntsfal, ieq, itrn
+     LOGICAL :: svbc
+
+     ! ... MODULE mcm
+     REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: rhs
+     REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: va
+     REAL(KIND=kdp) :: c11, c12, c13, c21, c22, c23, c24, c31, c32, c33, c34, c35, cfp, csp, &
+       efp, esp
+     REAL(KIND=kdp), DIMENSION(:), POINTER :: rhs_r, rhs_b, rhsbcv
+     REAL(KIND=kdp), DIMENSION(:,:), POINTER :: vasbcv
+
+     ! ... MODULE mcp
+     ! ... parameter information
+    REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE ::  &
+          tfx, tfy, tfz,  &
+          tsx, tsxy, tsxz, tsy, tsyx, tsyz, tsz, tszx, tszy 
+    REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: &
+          sxx, syy, szz, vxx, vyy, vzz
+    REAL(KIND=kdp) :: t0h
+
+    ! ... MODULE mcs
+    ! ... equation solver information
+    REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: diagc, diagr
+
+    ! ... MODULE mcs2
+    ! ... equation solver information
+    REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: diagra, envlra, envura, rr, sss, ww, xx, zz, &
+        sumfil
+    REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: ap, bbp, ra
+
+    ! ... MODULE mcw
+    REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE ::  &
+        qflyr, qwlyr, dqwdpl, pwk
+    REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE ::  &
+        qwv, qwm, pwkt, tfw, wrangl, wrid
+    REAL(KIND=kdp) :: twrend, pwrend, p00, t00, dengl, wridt, gcosth, qwr, eod, &
+        dtadzw, dzmin, tambi
+
+    LOGICAL :: cwatch, wrcalc
+
   END TYPE Transporter
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=85), PRIVATE :: ident_string=  &
@@ -48,7 +95,170 @@ MODULE XP_module
   TYPE (Transporter), DIMENSION(:), ALLOCATABLE :: xp_list
 
 CONTAINS
+SUBROUTINE XP_init(xp)
+    USE mcb
+    USE mcc
+    USE mcg
+    USE mcm
+    USE mcp
+    USE mcs
+    USE mcw
+    IMPLICIT NONE
+    INTEGER a_err;
+    TYPE (Transporter) :: xp
 
+    ! ... MODULE mcb
+    !INTEGER, DIMENSION(:), ALLOCATABLE ::  &
+    !  mlbc, mrbc, leak_seg_m, river_seg_m, drain_seg_m
+    ALLOCATE (xp%mlbc(nlbc_seg), &
+        xp%mrbc(nrbc_seg), &
+        xp%leak_seg_m(nlbc), &
+        xp%river_seg_m(nrbc), &
+        xp%drain_seg_m(ndbc), &
+        STAT = a_err)
+    IF (a_err /= 0) THEN
+        PRINT *, "Array allocation failed: XP_init"  
+        STOP  
+    ENDIF 
+    xp%mlbc = mlbc
+    xp%mrbc = mrbc
+    xp%leak_seg_m = leak_seg_m
+    xp%river_seg_m = river_seg_m
+    xp%drain_seg_m = drain_seg_m
+
+    ! ... MODULE mcc
+    !INTEGER :: ntsfal, ieq, itrn
+    !LOGICAL :: svbc
+    xp%ntsfal = ntsfal
+    xp%ieq = ieq
+    xp%itrn = itrn
+    xp%svbc = svbc
+
+    ! ... MODULE mcm
+!    REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE, TARGET :: rhs
+!    REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: va
+!    REAL(KIND=kdp) :: c11, c12, c13, c21, c22, c23, c24, c31, c32, c33, c34, c35, cfp, csp, &
+!    efp, esp
+    ALLOCATE (xp%rhs(nxyz), rhs(nxyz), &
+        xp%va(7,nxyz), &
+        STAT = a_err)
+    IF (a_err /= 0) THEN
+        PRINT *, "Array allocation failed: XP_init"  
+        STOP  
+    ENDIF 
+!    xp%rhs	  =   rhs
+!    xp%va	  =   va	
+    xp%c11	  =   c11
+    xp%c12	  =   c12
+    xp%c13	  =   c13
+    xp%c21	  =   c21
+    xp%c22	  =   c22
+    xp%c23	  =   c23
+    xp%c24	  =   c24
+    xp%c31	  =   c31
+    xp%c32	  =   c32
+    xp%c33	  =   c33
+    xp%c34	  =   c34
+    xp%c35	  =   c35
+    xp%cfp	  =   cfp
+    xp%csp	  =   csp
+    xp%efp	  =   efp
+    xp%esp	  =   esp
+
+    ! ... MODULE mcp
+    ! ... parameter information
+!    REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE ::  &
+!        tfx, tfy, tfz,  &
+!        tsx, tsxy, tsxz, tsy, tsyx, tsyz, tsz, tszx, tszy 
+!    REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: &
+!        sxx, syy, szz, vxx, vyy, vzz
+!    REAL(KIND=kdp) :: t0h
+
+    ALLOCATE (xp%tfx(nxyz), xp%tfy(nxyz), xp%tfz(nxyz), &
+        xp%tsx(nxyz), xp%tsy(nxyz), xp%tsz(nxyz), xp%tsxy(nxyz), xp%tsxz(nxyz), xp%tsyx(nxyz), xp%tsyz(nxyz),  &
+        xp%tszx(nxyz), xp%tszy(nxyz),  &
+        xp%sxx(nxyz), xp%syy(nxyz), xp%szz(nxyz), xp%vxx(nxyz), xp%vyy(nxyz), xp%vzz(nxyz),  &
+        STAT = a_err)
+    IF (a_err /= 0) THEN
+        PRINT *, "Array allocation failed: XP_init"  
+        STOP  
+    ENDIF
+    xp%t0h = t0h
+
+    ! ... MODULE mcs
+    ! ... equation solver information
+    !REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: diagc, diagr
+    ALLOCATE(xp%diagc(nxyz), xp%diagr(nxyz),  &
+        STAT = a_err)
+    IF (a_err /= 0) THEN  
+        PRINT *, "array allocation failed: XP_init"
+        STOP
+    ENDIF
+    xp%diagc = diagc
+    xp%diagr = diagr
+
+
+    !MODULE mcs2
+    ! ... equation solver data arrays
+    IF(slmeth == 1) THEN
+        ! ... allocate space for the solver: mcs2
+        ALLOCATE(xp%diagra(nbn), xp%envlra(ipenv(nbn+1)), xp%envura(ipenv(nbn+1)),  &
+            STAT = a_err)
+        IF (a_err /= 0) THEN  
+            PRINT *, "array allocation failed: XP_init"
+            STOP
+        ENDIF
+    ELSEIF(slmeth == 3 .OR. slmeth == 5) THEN
+        ! ... allocate space for the solver: mcs2
+        ALLOCATE(xp%ap(nrn,0:nsdr), xp%bbp(nbn,0:nsdr), xp%ra(lrcgd1,nbn), xp%rr(nrn), xp%sss(nbn),  &
+            xp%xx(nxyz), xp%ww(nrn), xp%zz(nbn), xp%sumfil(nbn),  &
+            STAT = a_err)
+        IF (a_err /= 0) THEN
+            PRINT *, "array allocation failed: XP_init"
+            STOP
+        ENDIF
+    ENDIF
+
+    ! ... MODULE mcw
+!    REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE ::  &
+!        qflyr, qwlyr, dqwdpl, pwk, qwv, qwm, pwkt, tfw
+!    REAL(KIND=kdp) :: twrend, pwrend, p00, t00, dengl
+!    LOGICAL :: wrcalc
+    ALLOCATE (xp%qflyr(nwel,nz),  &
+        xp%qwlyr(nwel,nz), xp%dqwdpl(nwel,nz), &
+        xp%pwk(nwel,nz), xp%qwm(nwel), xp%qwv(nwel), xp%pwkt(nwel), xp%tfw(nz), &
+        xp%wrangl(nwel), &
+        xp%wrid(nwel), &
+        STAT = a_err)
+    IF (a_err /= 0) THEN
+        PRINT *, "Array allocation failed: XP_init"  
+        STOP  
+    ENDIF
+    xp%qflyr    =	 qflyr 
+    xp%qwlyr    =	 qwlyr 
+    xp%dqwdpl   =	 dqwdpl
+    xp%pwk      =	 pwk   
+    xp%qwv      =	 qwv   
+    xp%qwm      =	 qwm   
+    xp%pwkt     =	 pwkt  
+    xp%tfw      =	 tfw   
+    xp%pwrend   =	 pwrend
+    xp%twrend   =	 twrend
+    xp%p00      =	 p00   
+    xp%t00      =	 t00   
+    xp%dengl    =	 dengl 
+    xp%wrcalc   =	 wrcalc
+    xp%cwatch   =     cwatch 
+    xp%wridt    =     wridt
+    xp%gcosth   =     gcosth
+    xp%wrangl   =     wrangl
+    xp%wrid     =     wrid
+    xp%qwr      =     qwr
+    xp%eod      =     eod
+    xp%dtadzw   =     dtadzw
+    xp%dzmin    =     dzmin
+    xp%tambi    =     tambi
+END SUBROUTINE XP_init
   SUBROUTINE XP_create(xp, iis)
     ! ... Allocates and initializes the components of a derived type structure
     USE mcch, ONLY: comp_name              ! ... get sizes from modules

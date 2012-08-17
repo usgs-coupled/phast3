@@ -1,8 +1,7 @@
 MODULE solver_iter_mod
-
+    USE mcm
+    USE mcs
   USE machine_constants, ONLY: kdp
-  USE mcm
-  USE mcs
   IMPLICIT NONE
   PRIVATE; PUBLIC :: gcgris
 !$$  PRIVATE :: abmult, armult, dbmult, formr, rfact, rfactm, lsolv, usolv,  &
@@ -18,9 +17,9 @@ CONTAINS
     ! ... A restarted ORTHOMIN method
     ! ... Reduced system by red-black or d4 zig-zag reordering
     USE f_units, ONLY: fuclog
-    USE mcc
-    USE mcc_m
-    USE mcg
+    USE mcc, only: milu, ierr, errexe
+    USE mcc_m, only: prslm
+    USE mcg, only: nxyz
 !!$    USE mcm
 !!$  USE mcp, ONLY: cnvtmi
 !!$    USE mcs

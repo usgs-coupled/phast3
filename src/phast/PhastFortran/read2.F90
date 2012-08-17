@@ -389,6 +389,9 @@ SUBROUTINE read2
           dwb(nwel), dwt(nwel),  &
           wfrac(nwel), nkswel(nwel),  &
           mxf_wel(nwel),  &
+          wrangl(nwel), &
+          wrid(nwel), &
+          wrruf(nwel), &
           STAT = a_err)
      IF (a_err /= 0) THEN  
         PRINT *, "array allocation failed: read2, point 6"  
@@ -410,6 +413,9 @@ SUBROUTINE read2
            wcfu(iwel,ks) = uuwcfu(iwel,ks)
         END DO
         nkswel(iwel) = unkswel(iwel)
+        wrangl(iwel) = 0.0
+        wrid(iwel) = 1
+        wrruf(iwel) = 1
      END DO
      ! ... deallocate scratch space for well data and zones
      DEALLOCATE (ui1z, ui2z, uj1z, uj2z, uk1z, uk2z, &
