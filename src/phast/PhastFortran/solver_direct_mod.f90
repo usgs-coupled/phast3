@@ -191,7 +191,7 @@ CONTAINS
     ! ...      is stored in envelope format. The algorithm is the standard
     ! ...      bordering method from George & Liu (1981) Computer Solution
     ! ...      of Large, Sparse, Positive Definite Systems
-    USE mcc
+    USE mcc, only: ierr
     IMPLICIT NONE
     INTEGER, INTENT(IN) :: neqn
     INTEGER, DIMENSION(:), INTENT(IN), TARGET :: ipenv

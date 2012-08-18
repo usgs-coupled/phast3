@@ -95,7 +95,7 @@ MODULE XP_module
   TYPE (Transporter), DIMENSION(:), ALLOCATABLE :: xp_list
 
 CONTAINS
-SUBROUTINE XP_init(xp)
+SUBROUTINE XP_init_thread(xp)
     USE mcb
     USE mcc
     USE mcg
@@ -117,7 +117,7 @@ SUBROUTINE XP_init(xp)
         xp%drain_seg_m(ndbc), &
         STAT = a_err)
     IF (a_err /= 0) THEN
-        PRINT *, "Array allocation failed: XP_init"  
+        PRINT *, "Array allocation failed: XP_init_thread"  
         STOP  
     ENDIF 
     xp%mlbc = mlbc
@@ -143,7 +143,7 @@ SUBROUTINE XP_init(xp)
         xp%va(7,nxyz), &
         STAT = a_err)
     IF (a_err /= 0) THEN
-        PRINT *, "Array allocation failed: XP_init"  
+        PRINT *, "Array allocation failed: XP_init_thread"  
         STOP  
     ENDIF 
 !    xp%rhs	  =   rhs
@@ -180,7 +180,7 @@ SUBROUTINE XP_init(xp)
         xp%sxx(nxyz), xp%syy(nxyz), xp%szz(nxyz), xp%vxx(nxyz), xp%vyy(nxyz), xp%vzz(nxyz),  &
         STAT = a_err)
     IF (a_err /= 0) THEN
-        PRINT *, "Array allocation failed: XP_init"  
+        PRINT *, "Array allocation failed: XP_init_thread"  
         STOP  
     ENDIF
     xp%t0h = t0h
@@ -191,7 +191,7 @@ SUBROUTINE XP_init(xp)
     ALLOCATE(xp%diagc(nxyz), xp%diagr(nxyz),  &
         STAT = a_err)
     IF (a_err /= 0) THEN  
-        PRINT *, "array allocation failed: XP_init"
+        PRINT *, "array allocation failed: XP_init_thread"
         STOP
     ENDIF
     xp%diagc = diagc
@@ -205,7 +205,7 @@ SUBROUTINE XP_init(xp)
         ALLOCATE(xp%diagra(nbn), xp%envlra(ipenv(nbn+1)), xp%envura(ipenv(nbn+1)),  &
             STAT = a_err)
         IF (a_err /= 0) THEN  
-            PRINT *, "array allocation failed: XP_init"
+            PRINT *, "array allocation failed: XP_init_thread"
             STOP
         ENDIF
     ELSEIF(slmeth == 3 .OR. slmeth == 5) THEN
@@ -214,7 +214,7 @@ SUBROUTINE XP_init(xp)
             xp%xx(nxyz), xp%ww(nrn), xp%zz(nbn), xp%sumfil(nbn),  &
             STAT = a_err)
         IF (a_err /= 0) THEN
-            PRINT *, "array allocation failed: XP_init"
+            PRINT *, "array allocation failed: XP_init_thread"
             STOP
         ENDIF
     ENDIF
@@ -231,7 +231,7 @@ SUBROUTINE XP_init(xp)
         xp%wrid(nwel), &
         STAT = a_err)
     IF (a_err /= 0) THEN
-        PRINT *, "Array allocation failed: XP_init"  
+        PRINT *, "Array allocation failed: XP_init_thread"  
         STOP  
     ENDIF
     xp%qflyr    =	 qflyr 
@@ -258,7 +258,118 @@ SUBROUTINE XP_init(xp)
     xp%dtadzw   =     dtadzw
     xp%dzmin    =     dzmin
     xp%tambi    =     tambi
-END SUBROUTINE XP_init
+END SUBROUTINE XP_init_thread
+SUBROUTINE XP_free_thread(xp)
+    USE mcb
+    USE mcc
+    USE mcg
+    USE mcm
+    USE mcp
+    USE mcs
+    USE mcw
+    IMPLICIT NONE
+    INTEGER a_err;
+    TYPE (Transporter) :: xp
+
+    ! ... MODULE mcb
+    !INTEGER, DIMENSION(:), ALLOCATABLE ::  &
+    !  mlbc, mrbc, leak_seg_m, river_seg_m, drain_seg_m
+    DEALLOCATE (xp%mlbc, &
+        xp%mrbc, &
+        xp%leak_seg_m, &
+        xp%river_seg_m, &
+        xp%drain_seg_m, &
+        STAT = a_err)
+    IF (a_err /= 0) THEN
+        PRINT *, "Array deallocation failed: XP_free_thread"  
+        STOP  
+    ENDIF 
+
+    ! ... MODULE mcc
+    !INTEGER :: ntsfal, ieq, itrn
+    !LOGICAL :: svbc
+
+
+    ! ... MODULE mcm
+!    REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE, TARGET :: rhs
+!    REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: va
+!    REAL(KIND=kdp) :: c11, c12, c13, c21, c22, c23, c24, c31, c32, c33, c34, c35, cfp, csp, &
+!    efp, esp
+    DEALLOCATE (xp%rhs, rhs, &
+        xp%va, &
+        STAT = a_err)
+    IF (a_err /= 0) THEN
+        PRINT *, "Array deallocation failed: XP_free_thread"  
+        STOP  
+    ENDIF 
+
+    ! ... MODULE mcp
+    ! ... parameter information
+!    REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE ::  &
+!        tfx, tfy, tfz,  &
+!        tsx, tsxy, tsxz, tsy, tsyx, tsyz, tsz, tszx, tszy 
+!    REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: &
+!        sxx, syy, szz, vxx, vyy, vzz
+!    REAL(KIND=kdp) :: t0h
+
+    DEALLOCATE (xp%tfx, xp%tfy, xp%tfz, &
+        xp%tsx, xp%tsy, xp%tsz, xp%tsxy, xp%tsxz, xp%tsyx, xp%tsyz,  &
+        xp%tszx, xp%tszy,  &
+        xp%sxx, xp%syy, xp%szz, xp%vxx, xp%vyy, xp%vzz,  &
+        STAT = a_err)
+    IF (a_err /= 0) THEN
+        PRINT *, "Array deallocation failed: XP_free_thread"  
+        STOP  
+    ENDIF
+
+    ! ... MODULE mcs
+    ! ... equation solver information
+    !REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: diagc, diagr
+    DEALLOCATE(xp%diagc, xp%diagr,  &
+        STAT = a_err)
+    IF (a_err /= 0) THEN  
+        PRINT *, "array deallocation failed: XP_free_thread"
+        STOP
+    ENDIF
+
+    !MODULE mcs2
+    ! ... equation solver data arrays
+    IF(slmeth == 1) THEN
+        ! ... allocate space for the solver: mcs2
+        DEALLOCATE(xp%diagra, xp%envlra, xp%envura,  &
+            STAT = a_err)
+        IF (a_err /= 0) THEN  
+            PRINT *, "array deallocation failed: XP_free_thread"
+            STOP
+        ENDIF
+    ELSEIF(slmeth == 3 .OR. slmeth == 5) THEN
+        ! ... allocate space for the solver: mcs2
+        DEALLOCATE(xp%ap, xp%bbp, xp%ra, xp%rr, xp%sss,  &
+            xp%xx, xp%ww, xp%zz, xp%sumfil,  &
+            STAT = a_err)
+        IF (a_err /= 0) THEN
+            PRINT *, "array deallocation failed: XP_free_thread"
+            STOP
+        ENDIF
+    ENDIF
+
+    ! ... MODULE mcw
+!    REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE ::  &
+!        qflyr, qwlyr, dqwdpl, pwk, qwv, qwm, pwkt, tfw
+!    REAL(KIND=kdp) :: twrend, pwrend, p00, t00, dengl
+!    LOGICAL :: wrcalc
+    DEALLOCATE (xp%qflyr,  &
+        xp%qwlyr, xp%dqwdpl, &
+        xp%pwk, xp%qwm, xp%qwv, xp%pwkt, xp%tfw, &
+        xp%wrangl, &
+        xp%wrid, &
+        STAT = a_err)
+    IF (a_err /= 0) THEN
+        PRINT *, "Array deallocation failed: XP_free_thread"  
+        STOP  
+    ENDIF
+END SUBROUTINE XP_free_thread
+
   SUBROUTINE XP_create(xp, iis)
     ! ... Allocates and initializes the components of a derived type structure
     USE mcch, ONLY: comp_name              ! ... get sizes from modules
