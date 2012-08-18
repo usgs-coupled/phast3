@@ -83,8 +83,8 @@ CONTAINS
     ! ... Solve the reduced system by LU factorization
     ! ...    Factor RA into L and U triangular factors
     CALL efact(nbn,ipenv,envlra,envura,diagra)
-    my_vector = xp%rhs(nrn+1:nrn+nbn)
     !rhs_b => xp%rhs(nrn+1:nrn+nbn)
+    my_vector = xp%rhs(nrn+1:nrn+nbn)
     xp%rhs_b = my_vector
     ! ...    Solve Ly=b
     CALL el1slv(nbn,ipenv,envlra,xp%rhs_b)

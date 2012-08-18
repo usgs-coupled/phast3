@@ -9,6 +9,7 @@
 std::map<size_t, Reaction_module*> RM_interface::Instances;
 size_t RM_interface::InstancesIndex = 0;
 PHRQ_io RM_interface::phast_io;
+
 //// static RM_interface methods
 /* ---------------------------------------------------------------------- */
 void RM_interface::CleanupReactionModuleInstances(void)
@@ -779,6 +780,26 @@ RM_setup_boundary_conditions(
 					boundary_fraction, 
 					*dim);
 	}
+}
+/* ---------------------------------------------------------------------- */
+void
+RM_transport(int *ncomps)
+/* ---------------------------------------------------------------------- */
+{
+	// Not really reaction module
+	// Used for threaded transport calculations
+#ifdef THREADED_PHAST
+	for (int i = 1; i <= *ncomps; i++)
+	{
+		//transport_component(&i);
+		transport_component_thread(&i);
+	}
+#else
+	for (int i = 1; i <= *ncomps; i++)
+	{
+		transport_component(&i);
+	}
+#endif
 }
 /* ---------------------------------------------------------------------- */
 void RM_write_bc_raw(
