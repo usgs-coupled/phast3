@@ -57,32 +57,34 @@ IPhreeqcPhast::Selected_out_to_double()
 	int columns = this->GetSelectedOutputColumnCount();
 	std::vector<LDBLE> d;
 
-	assert(rows >= 2);
-	int row = 1;
-	for (int column = 0; column < columns; column++)
+	if (rows >= 2) 
 	{
-		VAR v;
-		VarInit(&v);
-		//if (this->GetSelectedOutputValue(row, column, &v) == VR_OK)
-		// following is much faster
-		if (this->SelectedOutput->Get(row, column, &v) == VR_OK)
+		int row = 1;
+		for (int column = 0; column < columns; column++)
 		{
-			switch (v.type)
+			VAR v;
+			VarInit(&v);
+			//if (this->GetSelectedOutputValue(row, column, &v) == VR_OK)
+			// following is much faster
+			if (this->SelectedOutput->Get(row, column, &v) == VR_OK)
 			{
-			case TT_LONG:
-				d.push_back(v.lVal);
-				break;
-			case TT_DOUBLE:
-				d.push_back(v.dVal);
-				break;
-			default:
-				d.push_back(INACTIVE_CELL_VALUE);
-				break;
+				switch (v.type)
+				{
+				case TT_LONG:
+					d.push_back(v.lVal);
+					break;
+				case TT_DOUBLE:
+					d.push_back(v.dVal);
+					break;
+				default:
+					d.push_back(INACTIVE_CELL_VALUE);
+					break;
+				}
 			}
-		}
-		else
-		{
-			d.push_back(INACTIVE_CELL_VALUE);
+			else
+			{
+				d.push_back(INACTIVE_CELL_VALUE);
+			}
 		}
 	}
 	this->punch_vector.push_back(d);

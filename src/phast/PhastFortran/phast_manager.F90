@@ -314,6 +314,8 @@ SUBROUTINE phast_manager
 
         ! ...  At this point, worker and manager do transport calculations
         IF (local_ns > 0) THEN 
+            CALL RM_transport(local_ns)
+#ifdef SKIP
            DO i = 1, local_ns
               CALL coeff_trans
               CALL XP_rhsn(xp_list(i))
@@ -329,6 +331,7 @@ SUBROUTINE phast_manager
               CALL XP_sumcal1(xp_list(i))
               IF(errexe .OR. errexi) EXIT
            ENDDO
+#endif
         ENDIF
         IF(errexe .OR. errexi) GO TO 50
 #if defined USE_MPI        
@@ -497,5 +500,46 @@ CHARACTER(LEN=130) :: logline
     endif
 
 #endif
-END SUBROUTInE time_parallel
-
+END SUBROUTINE time_parallel
+SUBROUTINE transport_component(i)
+    USE mcc, ONLY: cylind, errexe, errexi, rm_id
+    USE mcw, ONLY: nwel
+    USE XP_module
+    IMPLICIT none
+    INTEGER :: i
+    CALL coeff_trans
+    CALL XP_rhsn(xp_list(i))
+    IF(nwel > 0) THEN
+        IF(cylind) THEN
+            CALL XP_wellsc(xp_list(i))
+        ELSE
+            CALL XP_wellsr(xp_list(i))
+        END IF
+    END IF
+    CALL XP_aplbce(xp_list(i))
+    CALL XP_asmslc(xp_list(i))
+    CALL XP_sumcal1(xp_list(i))
+    IF(errexe .OR. errexi) CALL RM_error(rm_id)
+END SUBROUTINE transport_component
+SUBROUTINE transport_component_thread(i)
+    USE mcc, ONLY: cylind, errexe, errexi, rm_id
+    USE mcw, ONLY: nwel
+    USE XP_module
+    IMPLICIT none
+    INTEGER :: i
+    CALL XP_init_thread(xp_list(i))
+    CALL XP_coeff_trans_thread(xp_list(i))
+    CALL XP_rhsn(xp_list(i))
+    IF(nwel > 0) THEN
+        IF(cylind) THEN
+            CALL XP_wellsc(xp_list(i))
+        ELSE
+            CALL XP_wellsr(xp_list(i))
+        END IF
+    END IF
+    CALL XP_aplbce(xp_list(i))
+    CALL XP_asmslc(xp_list(i))
+    CALL XP_sumcal1(xp_list(i))
+    CALL XP_free_thread(xp_list(i))
+    IF(errexe .OR. errexi) CALL RM_error(rm_id)
+END SUBROUTINE transport_component_thread

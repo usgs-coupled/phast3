@@ -27,45 +27,6 @@ SUBROUTINE XP_asembl_thread(xp)
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id: XP_asembl.f90,v 1.2 2011/01/19 17:50:19 klkipp Exp $'
   integer mimjk, mipjk, mijmk, mijpk, mijkm, mijkp
-  REAL(KIND=kdp), POINTER, DIMENSION(:) :: tfx 
-  REAL(KIND=kdp), POINTER, DIMENSION(:) :: tfy 
-  REAL(KIND=kdp), POINTER, DIMENSION(:) :: tfz 
-  REAL(KIND=kdp), POINTER, DIMENSION(:) :: tsx 
-  REAL(KIND=kdp), POINTER, DIMENSION(:) :: tsy 
-  REAL(KIND=kdp), POINTER, DIMENSION(:) :: tsz 
-  REAL(KIND=kdp), POINTER, DIMENSION(:) :: tsxy
-  REAL(KIND=kdp), POINTER, DIMENSION(:) :: tsxz
-  REAL(KIND=kdp), POINTER, DIMENSION(:) :: tsyx
-  REAL(KIND=kdp), POINTER, DIMENSION(:) :: tsyz
-  REAL(KIND=kdp), POINTER, DIMENSION(:) :: tszx
-  REAL(KIND=kdp), POINTER, DIMENSION(:) :: tszy
-  REAL(KIND=kdp), POINTER, DIMENSION(:) :: sxx
-  REAL(KIND=kdp), POINTER, DIMENSION(:) :: syy
-  REAL(KIND=kdp), POINTER, DIMENSION(:) :: szz
-  REAL(KIND=kdp), POINTER, DIMENSION(:) :: vxx
-  REAL(KIND=kdp), POINTER, DIMENSION(:) :: vyy
-  REAL(KIND=kdp), POINTER, DIMENSION(:) :: vzz
-  INTEGER, POINTER :: ntsfal 
-
-  tfx  =	xp%tfx
-  tfy  =	xp%tfy 
-  tfz  =	xp%tfz
-  tsx  =	xp%tsx
-  tsy  =	xp%tsy 
-  tsz  =	xp%tsz 
-  tsxy =	xp%tsxy
-  tsxz =	xp%tsxz
-  tsyx =	xp%tsyx
-  tsyz =	xp%tsyz
-  tszx =	xp%tszx
-  tszy =	xp%tszy
-  sxx  =	xp%sxx 
-  syy  =	xp%syy 
-  szz  =	xp%szz 
-  vxx  =	xp%vxx 
-  vyy  =	xp%vyy 
-  vzz  =	xp%vzz 
-  ntsfal =    xp%ntsfal
   !     ------------------------------------------------------------------
   ! ... Dimension rs1 to be for one component
   ALLOCATE (xp%rs1(nxyz),  &
@@ -101,9 +62,9 @@ SUBROUTINE XP_asembl_thread(xp)
      sxxm = 0._kdp
      mimjk = ABS(cin(3,m))
      IF(mimjk > 0) THEN
-        tfxm = tfx(mimjk)
-        tsxm = tsx(mimjk)
-        sxxm = sxx(mimjk)
+        tfxm = xp%tfx(mimjk)
+        tsxm = xp%tsx(mimjk)
+        sxxm = xp%sxx(mimjk)
 !!$        ! ... Calculate the spatial weights
 !!$        wtmx = fdsmth
 !!$        IF(sxxm < 0.) wtmx = 1._kdp-wtmx
@@ -113,9 +74,9 @@ SUBROUTINE XP_asembl_thread(xp)
      sxxp = 0._kdp
      mipjk = ABS(cin(4,m))
      IF(mipjk > 0) THEN
-        tfxp = tfx(m)
-        tsxp = tsx(m)
-        sxxp = sxx(m)
+        tfxp = xp%tfx(m)
+        tsxp = xp%tsx(m)
+        sxxp = xp%sxx(m)
 !!$        wtpx = fdsmth
 !!$        IF(sxxp < 0.) wtpx = 1._kdp-wtpx
      END IF
@@ -124,9 +85,9 @@ SUBROUTINE XP_asembl_thread(xp)
      syym = 0._kdp
      mijmk = ABS(cin(2,m))
      IF(mijmk > 0) THEN
-        tfym = tfy(mijmk)
-        tsym = tsy(mijmk)
-        syym = syy(mijmk)
+        tfym = xp%tfy(mijmk)
+        tsym = xp%tsy(mijmk)
+        syym = xp%syy(mijmk)
 !!$        wtmy = fdsmth
 !!$        IF(syym < 0.) wtmy = 1._kdp-wtmy
      END IF
@@ -135,9 +96,9 @@ SUBROUTINE XP_asembl_thread(xp)
      syyp = 0._kdp
      mijpk = ABS(cin(5,m))
      IF(mijpk > 0) THEN
-        tfyp = tfy(m)
-        tsyp = tsy(m)
-        syyp = syy(m)
+        tfyp = xp%tfy(m)
+        tsyp = xp%tsy(m)
+        syyp = xp%syy(m)
 !!$        wtpy = fdsmth
 !!$        IF(syyp < 0.) wtpy = 1._kdp-wtpy
      END IF
@@ -150,13 +111,13 @@ SUBROUTINE XP_asembl_thread(xp)
      ibckm = -1
      mijkm = ABS(cin(1,m))
      IF(mijkm > 0) THEN
-        tfzm = tfz(mijkm)
-        tszm = tsz(mijkm)
+        tfzm = xp%tfz(mijkm)
+        tszm = xp%tsz(mijkm)
         dpmkm = dp(mijkm)
         pmkm = p(mijkm)
         zkm = z(k-1)
         ibckm  =  ibc(mijkm)
-        szzm = szz(mijkm)
+        szzm = xp%szz(mijkm)
 !!$        wtmz = fdsmth
 !!$        IF(szzm < 0.) wtmz = 1._kdp-wtmz
      END IF
@@ -170,14 +131,14 @@ SUBROUTINE XP_asembl_thread(xp)
      fracnzkp = 0._kdp
      mijkp = ABS(cin(6,m))
      IF(mijkp > 0) THEN
-        tfzp = tfz(m)
-        tszp = tsz(m)
+        tfzp = xp%tfz(m)
+        tszp = xp%tsz(m)
         dpmkp = dp(mijkp)
         pmkp = p(mijkp)
         zkp = z(k+1)
         ibckp = ibc(mijkp)
         fracnzkp = frac(mijkp)
-        szzp = szz(m)
+        szzp = xp%szz(m)
 !!$        wtpz = fdsmth
 !!$        IF(szzp < 0.) wtpz = 1._kdp-wtpz
      END IF
@@ -348,9 +309,9 @@ SUBROUTINE XP_asembl(xp)
      sxxm = 0._kdp
      mimjk = ABS(cin(3,m))
      IF(mimjk > 0) THEN
-        tfxm = tfx(mimjk)
-        tsxm = tsx(mimjk)
-        sxxm = sxx(mimjk)
+        tfxm = xp%tfx(mimjk)
+        tsxm = xp%tsx(mimjk)
+        sxxm = xp%sxx(mimjk)
 !!$        ! ... Calculate the spatial weights
 !!$        wtmx = fdsmth
 !!$        IF(sxxm < 0.) wtmx = 1._kdp-wtmx
@@ -360,9 +321,9 @@ SUBROUTINE XP_asembl(xp)
      sxxp = 0._kdp
      mipjk = ABS(cin(4,m))
      IF(mipjk > 0) THEN
-        tfxp = tfx(m)
-        tsxp = tsx(m)
-        sxxp = sxx(m)
+        tfxp = xp%tfx(m)
+        tsxp = xp%tsx(m)
+        sxxp = xp%sxx(m)
 !!$        wtpx = fdsmth
 !!$        IF(sxxp < 0.) wtpx = 1._kdp-wtpx
      END IF
@@ -371,9 +332,9 @@ SUBROUTINE XP_asembl(xp)
      syym = 0._kdp
      mijmk = ABS(cin(2,m))
      IF(mijmk > 0) THEN
-        tfym = tfy(mijmk)
-        tsym = tsy(mijmk)
-        syym = syy(mijmk)
+        tfym = xp%tfy(mijmk)
+        tsym = xp%tsy(mijmk)
+        syym = xp%syy(mijmk)
 !!$        wtmy = fdsmth
 !!$        IF(syym < 0.) wtmy = 1._kdp-wtmy
      END IF
@@ -382,9 +343,9 @@ SUBROUTINE XP_asembl(xp)
      syyp = 0._kdp
      mijpk = ABS(cin(5,m))
      IF(mijpk > 0) THEN
-        tfyp = tfy(m)
-        tsyp = tsy(m)
-        syyp = syy(m)
+        tfyp = xp%tfy(m)
+        tsyp = xp%tsy(m)
+        syyp = xp%syy(m)
 !!$        wtpy = fdsmth
 !!$        IF(syyp < 0.) wtpy = 1._kdp-wtpy
      END IF
@@ -397,13 +358,13 @@ SUBROUTINE XP_asembl(xp)
      ibckm = -1
      mijkm = ABS(cin(1,m))
      IF(mijkm > 0) THEN
-        tfzm = tfz(mijkm)
-        tszm = tsz(mijkm)
+        tfzm = xp%tfz(mijkm)
+        tszm = xp%tsz(mijkm)
         dpmkm = dp(mijkm)
         pmkm = p(mijkm)
         zkm = z(k-1)
         ibckm  =  ibc(mijkm)
-        szzm = szz(mijkm)
+        szzm = xp%szz(mijkm)
 !!$        wtmz = fdsmth
 !!$        IF(szzm < 0.) wtmz = 1._kdp-wtmz
      END IF
@@ -417,14 +378,14 @@ SUBROUTINE XP_asembl(xp)
      fracnzkp = 0._kdp
      mijkp = ABS(cin(6,m))
      IF(mijkp > 0) THEN
-        tfzp = tfz(m)
-        tszp = tsz(m)
+        tfzp = xp%tfz(m)
+        tszp = xp%tsz(m)
         dpmkp = dp(mijkp)
         pmkp = p(mijkp)
         zkp = z(k+1)
         ibckp = ibc(mijkp)
         fracnzkp = frac(mijkp)
-        szzp = szz(m)
+        szzp = xp%szz(m)
 !!$        wtpz = fdsmth
 !!$        IF(szzp < 0.) wtpz = 1._kdp-wtpz
      END IF

@@ -56,8 +56,8 @@ MODULE XP_module
      REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: va
      REAL(KIND=kdp) :: c11, c12, c13, c21, c22, c23, c24, c31, c32, c33, c34, c35, cfp, csp, &
        efp, esp
-     REAL(KIND=kdp), DIMENSION(:), POINTER :: rhs_r, rhs_b, rhsbcv
-     REAL(KIND=kdp), DIMENSION(:,:), POINTER :: vasbcv
+     REAL(KIND=kdp), DIMENSION(:), POINTER :: rhs_r, rhs_b !, rhsbcv
+     !REAL(KIND=kdp), DIMENSION(:,:), POINTER :: vasbcv
 
      ! ... MODULE mcp
      ! ... parameter information
@@ -102,6 +102,7 @@ SUBROUTINE XP_init_thread(xp)
     USE mcm
     USE mcp
     USE mcs
+    USE mcs2
     USE mcw
     IMPLICIT NONE
     INTEGER a_err;
@@ -110,22 +111,37 @@ SUBROUTINE XP_init_thread(xp)
     ! ... MODULE mcb
     !INTEGER, DIMENSION(:), ALLOCATABLE ::  &
     !  mlbc, mrbc, leak_seg_m, river_seg_m, drain_seg_m
-    ALLOCATE (xp%mlbc(nlbc_seg), &
-        xp%mrbc(nrbc_seg), &
-        xp%leak_seg_m(nlbc), &
-        xp%river_seg_m(nrbc), &
-        xp%drain_seg_m(ndbc), &
-        STAT = a_err)
-    IF (a_err /= 0) THEN
-        PRINT *, "Array allocation failed: XP_init_thread"  
-        STOP  
-    ENDIF 
-    xp%mlbc = mlbc
-    xp%mrbc = mrbc
-    xp%leak_seg_m = leak_seg_m
-    xp%river_seg_m = river_seg_m
-    xp%drain_seg_m = drain_seg_m
-
+    if (nlbc > 0) then
+        ALLOCATE (xp%mlbc(nlbc_seg), &
+            xp%leak_seg_m(nlbc), &
+            STAT = a_err)
+        IF (a_err /= 0) THEN
+            PRINT *, "Array allocation failed: XP_init_thread"  
+            STOP  
+        ENDIF 
+        xp%mlbc = mlbc
+        xp%leak_seg_m = leak_seg_m
+    endif
+    if (nrbc > 0) then
+        ALLOCATE (xp%mrbc(nrbc_seg), &
+            xp%river_seg_m(nrbc), &
+            STAT = a_err)
+        IF (a_err /= 0) THEN
+            PRINT *, "Array allocation failed: XP_init_thread"  
+            STOP  
+        ENDIF 
+        xp%mrbc = mrbc
+        xp%river_seg_m = river_seg_m
+    endif
+    if (ndbc > 0) then
+        ALLOCATE (xp%drain_seg_m(ndbc), &
+            STAT = a_err)
+        IF (a_err /= 0) THEN
+            PRINT *, "Array allocation failed: XP_init_thread"  
+            STOP  
+        ENDIF 
+        xp%drain_seg_m = drain_seg_m
+    endif
     ! ... MODULE mcc
     !INTEGER :: ntsfal, ieq, itrn
     !LOGICAL :: svbc
@@ -139,15 +155,15 @@ SUBROUTINE XP_init_thread(xp)
 !    REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: va
 !    REAL(KIND=kdp) :: c11, c12, c13, c21, c22, c23, c24, c31, c32, c33, c34, c35, cfp, csp, &
 !    efp, esp
-    ALLOCATE (xp%rhs(nxyz), rhs(nxyz), &
+    ALLOCATE (xp%rhs(nxyz), &
         xp%va(7,nxyz), &
         STAT = a_err)
     IF (a_err /= 0) THEN
         PRINT *, "Array allocation failed: XP_init_thread"  
         STOP  
     ENDIF 
-!    xp%rhs	  =   rhs
-!    xp%va	  =   va	
+    xp%rhs	  =   rhs
+    xp%va	  =   va	
     xp%c11	  =   c11
     xp%c12	  =   c12
     xp%c13	  =   c13
@@ -183,6 +199,9 @@ SUBROUTINE XP_init_thread(xp)
         PRINT *, "Array allocation failed: XP_init_thread"  
         STOP  
     ENDIF
+    xp%tfx = tfx
+    xp%tfy = tfy
+    xp%tfz = tfz
     xp%t0h = t0h
 
     ! ... MODULE mcs
@@ -208,6 +227,9 @@ SUBROUTINE XP_init_thread(xp)
             PRINT *, "array allocation failed: XP_init_thread"
             STOP
         ENDIF
+        xp%diagra = diagra
+        xp%envlra = envlra
+        xp%envura = envura
     ELSEIF(slmeth == 3 .OR. slmeth == 5) THEN
         ! ... allocate space for the solver: mcs2
         ALLOCATE(xp%ap(nrn,0:nsdr), xp%bbp(nbn,0:nsdr), xp%ra(lrcgd1,nbn), xp%rr(nrn), xp%sss(nbn),  &
@@ -217,47 +239,59 @@ SUBROUTINE XP_init_thread(xp)
             PRINT *, "array allocation failed: XP_init_thread"
             STOP
         ENDIF
+        xp%ap      = ap
+        xp%bbp     = bbp
+        xp%ra      = ra
+        xp%rr      = rr
+        xp%sss     = sss
+        xp%xx      = xx
+        xp%ww      = ww
+        xp%zz      = zz
+        xp%sumfil  = sumfil
     ENDIF
+
 
     ! ... MODULE mcw
 !    REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE ::  &
 !        qflyr, qwlyr, dqwdpl, pwk, qwv, qwm, pwkt, tfw
 !    REAL(KIND=kdp) :: twrend, pwrend, p00, t00, dengl
 !    LOGICAL :: wrcalc
-    ALLOCATE (xp%qflyr(nwel,nz),  &
-        xp%qwlyr(nwel,nz), xp%dqwdpl(nwel,nz), &
-        xp%pwk(nwel,nz), xp%qwm(nwel), xp%qwv(nwel), xp%pwkt(nwel), xp%tfw(nz), &
-        xp%wrangl(nwel), &
-        xp%wrid(nwel), &
-        STAT = a_err)
-    IF (a_err /= 0) THEN
-        PRINT *, "Array allocation failed: XP_init_thread"  
-        STOP  
-    ENDIF
-    xp%qflyr    =	 qflyr 
-    xp%qwlyr    =	 qwlyr 
-    xp%dqwdpl   =	 dqwdpl
-    xp%pwk      =	 pwk   
-    xp%qwv      =	 qwv   
-    xp%qwm      =	 qwm   
-    xp%pwkt     =	 pwkt  
-    xp%tfw      =	 tfw   
-    xp%pwrend   =	 pwrend
-    xp%twrend   =	 twrend
-    xp%p00      =	 p00   
-    xp%t00      =	 t00   
-    xp%dengl    =	 dengl 
-    xp%wrcalc   =	 wrcalc
-    xp%cwatch   =     cwatch 
-    xp%wridt    =     wridt
-    xp%gcosth   =     gcosth
-    xp%wrangl   =     wrangl
-    xp%wrid     =     wrid
-    xp%qwr      =     qwr
-    xp%eod      =     eod
-    xp%dtadzw   =     dtadzw
-    xp%dzmin    =     dzmin
-    xp%tambi    =     tambi
+    if (nwel > 0) then
+        ALLOCATE (xp%qflyr(nwel,nz),  &
+            xp%qwlyr(nwel,nz), xp%dqwdpl(nwel,nz), &
+            xp%pwk(nwel,nz), xp%qwm(nwel), xp%qwv(nwel), xp%pwkt(nwel), xp%tfw(nz), &
+            xp%wrangl(nwel), &
+            xp%wrid(nwel), &
+            STAT = a_err)
+        IF (a_err /= 0) THEN
+            PRINT *, "Array allocation failed: XP_init_thread"  
+            STOP  
+        ENDIF
+        xp%qflyr    =	 qflyr 
+        xp%qwlyr    =	 qwlyr 
+        xp%dqwdpl   =	 dqwdpl
+        xp%pwk      =	 pwk   
+        xp%qwm      =	 qwm   
+        xp%qwv      =	 qwv   
+        xp%pwkt     =	 pwkt  
+        xp%tfw      =	 tfw
+        xp%wrangl   = wrangl
+        xp%wrid     = wrid
+        xp%twrend   =	 twrend
+        xp%pwrend   =	 pwrend
+        xp%p00      =	 p00   
+        xp%t00      =	 t00   
+        xp%dengl    = dengl
+        xp%wridt    = wridt
+        xp%gcosth   =     gcosth
+        xp%qwr      =     qwr
+        xp%eod      =     eod
+        xp%dtadzw   =     dtadzw
+        xp%dzmin    =     dzmin
+        xp%tambi    =     tambi
+        xp%cwatch   =     cwatch
+        xp%wrcalc   =     wrcalc
+    endif
 END SUBROUTINE XP_init_thread
 SUBROUTINE XP_free_thread(xp)
     USE mcb
@@ -274,17 +308,32 @@ SUBROUTINE XP_free_thread(xp)
     ! ... MODULE mcb
     !INTEGER, DIMENSION(:), ALLOCATABLE ::  &
     !  mlbc, mrbc, leak_seg_m, river_seg_m, drain_seg_m
-    DEALLOCATE (xp%mlbc, &
-        xp%mrbc, &
-        xp%leak_seg_m, &
-        xp%river_seg_m, &
-        xp%drain_seg_m, &
-        STAT = a_err)
-    IF (a_err /= 0) THEN
-        PRINT *, "Array deallocation failed: XP_free_thread"  
-        STOP  
-    ENDIF 
-
+    if (nlbc > 0) then
+        DEALLOCATE (xp%mlbc, &
+            xp%leak_seg_m, &
+            STAT = a_err)
+        IF (a_err /= 0) THEN
+            PRINT *, "Array deallocation failed: XP_free_thread"  
+            STOP  
+        ENDIF 
+    endif
+    if (nrbc > 0) then
+        DEALLOCATE (xp%mrbc, &
+            xp%river_seg_m, &
+            STAT = a_err)
+        IF (a_err /= 0) THEN
+            PRINT *, "Array deallocation failed: XP_free_thread"  
+            STOP  
+        ENDIF 
+    endif
+    if (ndbc > 0) then
+        DEALLOCATE ( xp%drain_seg_m, &
+            STAT = a_err)
+        IF (a_err /= 0) THEN
+            PRINT *, "Array deallocation failed: XP_free_thread"  
+            STOP  
+        ENDIF 
+    endif
     ! ... MODULE mcc
     !INTEGER :: ntsfal, ieq, itrn
     !LOGICAL :: svbc
@@ -295,7 +344,7 @@ SUBROUTINE XP_free_thread(xp)
 !    REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: va
 !    REAL(KIND=kdp) :: c11, c12, c13, c21, c22, c23, c24, c31, c32, c33, c34, c35, cfp, csp, &
 !    efp, esp
-    DEALLOCATE (xp%rhs, rhs, &
+    DEALLOCATE (xp%rhs, &
         xp%va, &
         STAT = a_err)
     IF (a_err /= 0) THEN
@@ -321,7 +370,6 @@ SUBROUTINE XP_free_thread(xp)
         PRINT *, "Array deallocation failed: XP_free_thread"  
         STOP  
     ENDIF
-
     ! ... MODULE mcs
     ! ... equation solver information
     !REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: diagc, diagr
@@ -358,16 +406,18 @@ SUBROUTINE XP_free_thread(xp)
 !        qflyr, qwlyr, dqwdpl, pwk, qwv, qwm, pwkt, tfw
 !    REAL(KIND=kdp) :: twrend, pwrend, p00, t00, dengl
 !    LOGICAL :: wrcalc
-    DEALLOCATE (xp%qflyr,  &
-        xp%qwlyr, xp%dqwdpl, &
-        xp%pwk, xp%qwm, xp%qwv, xp%pwkt, xp%tfw, &
-        xp%wrangl, &
-        xp%wrid, &
-        STAT = a_err)
-    IF (a_err /= 0) THEN
-        PRINT *, "Array deallocation failed: XP_free_thread"  
-        STOP  
-    ENDIF
+    if (nwel > 0) then
+        DEALLOCATE (xp%qflyr,  &
+            xp%qwlyr, xp%dqwdpl, &
+            xp%pwk, xp%qwm, xp%qwv, xp%pwkt, xp%tfw, &
+            xp%wrangl, &
+            xp%wrid, &
+            STAT = a_err)
+        IF (a_err /= 0) THEN
+            PRINT *, "Array deallocation failed: XP_free_thread"  
+            STOP  
+        ENDIF
+    endif
 END SUBROUTINE XP_free_thread
 
   SUBROUTINE XP_create(xp, iis)

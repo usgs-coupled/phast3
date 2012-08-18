@@ -27,6 +27,7 @@
 #define RM_send_restart_name                  rm_send_restart_name
 #define RM_setup_boundary_conditions          rm_setup_boundary_conditions
 #define RM_solutions2fractions                rm_solutions2fractions
+#define RM_transport                          rm_transport
 #define RM_write_bc_raw                       rm_write_bc_raw
 #define RM_write_output                       rm_write_output
 #define RM_write_restart		      rm_write_restart
@@ -148,6 +149,7 @@ void RM_setup_boundary_conditions(
 			double *boundary_fraction, 
 			int *dim);
 void RM_solutions2fractions(int *id);
+void RM_transport(int *ncomps);
 void RM_write_bc_raw(int *id, 
 			int *solution_list, 
 			int * bc_solution_count, 
@@ -172,10 +174,8 @@ void RM_errprt(const std::string & e_string);
 void RM_warnprt(const std::string & e_string);
 void RM_logprt(const std::string & e_string);
 void RM_screenprt(const std::string & e_string);
-
-
-
-
+extern void transport_component(int *i);
+extern void transport_component_thread(int *i);
 
 #if defined(__cplusplus)
 }
