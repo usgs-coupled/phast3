@@ -309,9 +309,9 @@ SUBROUTINE XP_asembl(xp)
      sxxm = 0._kdp
      mimjk = ABS(cin(3,m))
      IF(mimjk > 0) THEN
-        tfxm = xp%tfx(mimjk)
-        tsxm = xp%tsx(mimjk)
-        sxxm = xp%sxx(mimjk)
+        tfxm = tfx(mimjk)
+        tsxm = tsx(mimjk)
+        sxxm = sxx(mimjk)
 !!$        ! ... Calculate the spatial weights
 !!$        wtmx = fdsmth
 !!$        IF(sxxm < 0.) wtmx = 1._kdp-wtmx
@@ -321,9 +321,9 @@ SUBROUTINE XP_asembl(xp)
      sxxp = 0._kdp
      mipjk = ABS(cin(4,m))
      IF(mipjk > 0) THEN
-        tfxp = xp%tfx(m)
-        tsxp = xp%tsx(m)
-        sxxp = xp%sxx(m)
+        tfxp = tfx(m)
+        tsxp = tsx(m)
+        sxxp = sxx(m)
 !!$        wtpx = fdsmth
 !!$        IF(sxxp < 0.) wtpx = 1._kdp-wtpx
      END IF
@@ -332,9 +332,9 @@ SUBROUTINE XP_asembl(xp)
      syym = 0._kdp
      mijmk = ABS(cin(2,m))
      IF(mijmk > 0) THEN
-        tfym = xp%tfy(mijmk)
-        tsym = xp%tsy(mijmk)
-        syym = xp%syy(mijmk)
+        tfym = tfy(mijmk)
+        tsym = tsy(mijmk)
+        syym = syy(mijmk)
 !!$        wtmy = fdsmth
 !!$        IF(syym < 0.) wtmy = 1._kdp-wtmy
      END IF
@@ -343,9 +343,9 @@ SUBROUTINE XP_asembl(xp)
      syyp = 0._kdp
      mijpk = ABS(cin(5,m))
      IF(mijpk > 0) THEN
-        tfyp = xp%tfy(m)
-        tsyp = xp%tsy(m)
-        syyp = xp%syy(m)
+        tfyp = tfy(m)
+        tsyp = tsy(m)
+        syyp = syy(m)
 !!$        wtpy = fdsmth
 !!$        IF(syyp < 0.) wtpy = 1._kdp-wtpy
      END IF
@@ -358,13 +358,13 @@ SUBROUTINE XP_asembl(xp)
      ibckm = -1
      mijkm = ABS(cin(1,m))
      IF(mijkm > 0) THEN
-        tfzm = xp%tfz(mijkm)
-        tszm = xp%tsz(mijkm)
+        tfzm = tfz(mijkm)
+        tszm = tsz(mijkm)
         dpmkm = dp(mijkm)
         pmkm = p(mijkm)
         zkm = z(k-1)
         ibckm  =  ibc(mijkm)
-        szzm = xp%szz(mijkm)
+        szzm = szz(mijkm)
 !!$        wtmz = fdsmth
 !!$        IF(szzm < 0.) wtmz = 1._kdp-wtmz
      END IF
@@ -378,14 +378,14 @@ SUBROUTINE XP_asembl(xp)
      fracnzkp = 0._kdp
      mijkp = ABS(cin(6,m))
      IF(mijkp > 0) THEN
-        tfzp = xp%tfz(m)
-        tszp = xp%tsz(m)
+        tfzp = tfz(m)
+        tszp = tsz(m)
         dpmkp = dp(mijkp)
         pmkp = p(mijkp)
         zkp = z(k+1)
         ibckp = ibc(mijkp)
         fracnzkp = frac(mijkp)
-        szzp = xp%szz(m)
+        szzp = szz(m)
 !!$        wtpz = fdsmth
 !!$        IF(szzp < 0.) wtpz = 1._kdp-wtpz
      END IF
