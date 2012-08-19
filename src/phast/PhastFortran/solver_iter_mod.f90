@@ -9,7 +9,7 @@ MODULE solver_iter_mod
 
 CONTAINS
 
-  SUBROUTINE gcgris_thread(ap,bp,ra,rr,ss,xx,w,z,sumfil,xp)
+  SUBROUTINE gcgris_thread(ap,bp,ra,rr,ss,xx,w,z,sumfil,rhs,xp)
     ! ... Iterative solver for reduced linear equation system using
     ! ...      generalized conjugate gradient minimal residual method
     ! ...      with restarts
@@ -23,7 +23,7 @@ CONTAINS
     USE mcm,     ONLY:
     USE mcs,     ONLY: nbn, lrcgd1, nrn, maxit2, epsslv, nsdr
     USE print_control_mod
-    USE XP_module
+    USE XP_module, ONLY: Transporter
     IMPLICIT NONE
     TYPE (Transporter) :: xp
     REAL(KIND=kdp), DIMENSION(:,0:), INTENT(IN OUT), TARGET :: ap
@@ -44,15 +44,17 @@ CONTAINS
     ! ... Set string for use with RCS ident command
     CHARACTER(LEN=80) :: ident_string='$Id: solver_iter_mod.f90,v 1.2 2011/01/06 23:10:03 klkipp Exp $'
     REAL(KIND=kdp), DIMENSION(:), POINTER :: rhs_r, rhs_b
-    REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE, TARGET :: red, black
+    REAL(KIND=kdp), DIMENSION(:), TARGET, INTENT(IN OUT) :: rhs
 
+    !REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE, TARGET :: red, black
+    !ALLOCATE(red(1:nrn), black(1:nxyz - nrnp1 + 1))
     !     ------------------------------------------------------------------
     !...
-    r00 = SQRT(DOT_PRODUCT(xp%rhs,xp%rhs))
+    r00 = SQRT(DOT_PRODUCT(rhs,rhs))
     xx = 0.0_kdp
     ! ... Debug output
     !***  activate debug output to phast fuclog file, if needed
-    !$$  WRITE(fuclog,*) 'Current R00, L2(xp%rhs): ', r00
+    !$$  WRITE(fuclog,*) 'Current R00, L2(rhs): ', r00
     ! ... If R00 is tiny, then xx is a solution, skip out
     IF (r00 <= 2._kdp*EPSILON(1._kdp)) RETURN
     DO  i=1,nbn
@@ -80,22 +82,18 @@ CONTAINS
     ELSE
        CALL rfact(ra)
     END IF
-    ! ... Scale the red xp%rhs by inv(D(R))
+    ! ... Scale the red rhs by inv(D(R))
     DO  i=1,nrn
-       xp%rhs(i) = xp%rhs(i)/xp%va(7,i)
+       rhs(i) = rhs(i)/xp%va(7,i)
     END DO
-    ! ... Form the xp%rhs of the reduced system
+    ! ... Form the RHS of the reduced system
     nrnp1 = nrn+1
-    !rhs_r => xp%rhs(1:nrn)
-    red = xp%rhs(1:nrn)
-    rhs_r => red
-    !rhs_b => xp%rhs(nrnp1:nxyz)
-    black = xp%rhs(nrnp1:nxyz)
-    rhs_b => black
+    rhs_r => rhs(1:nrn)
+    rhs_b => rhs(nrnp1:nxyz)
     xx_b => xx(nrnp1:nxyz)
     CALL armult_thread(w,rhs_r,xp)
     CALL vpsv(rhs_b,rhs_b,w,-1.0_kdp,nbn)
-    ! ... The xp%rhs is now stored in the bottom half of xp%rhs
+    ! ... The rhs is now stored in the bottom half of rhs
     ! ... Start of generalized conjugate gradient solver
     ! ... Form the initial residual
     CALL abmult_thread(rr,xx_b,xp)
@@ -190,7 +188,7 @@ CONTAINS
 !    rhs_b(i) = xx_b(i)
 !    enddo
   do i = nrnp1, nxyz
-    xp%rhs(i) = xx(i)
+    rhs(i) = xx(i)
     enddo
     NULLIFY(apv, bpv, bpvlp, bpvj)
   END SUBROUTINE gcgris_thread
@@ -199,7 +197,7 @@ CONTAINS
     ! ... Multiplies A_r*y for black nodes
     USE mcm, ONLY:
     USE mcs, ONLY: nrn, ci
-    USE XP_module
+    USE XP_module, ONLY: Transporter
     IMPLICIT NONE
     TYPE (Transporter) :: xp
     REAL(KIND=kdp), DIMENSION(:), INTENT(OUT) :: x
@@ -225,7 +223,7 @@ CONTAINS
     ! ... Multiplies A*y for red nodes
     USE mcm, ONLY:
     USE mcs, ONLY: nbn, nrn, ci
-    USE XP_module
+    USE XP_module, ONLY: Transporter
     IMPLICIT NONE
     TYPE (Transporter) :: xp
     REAL(KIND=kdp), DIMENSION(:), INTENT(OUT) :: x
@@ -252,7 +250,7 @@ CONTAINS
     ! ... Multiplies diag_A*Y for the black nodes
     USE mcm, ONLY:
     USE mcs, ONLY: nbn, nrn
-    USE XP_module
+    USE XP_module, ONLY: Transporter
     IMPLICIT NONE
     TYPE (Transporter) :: xp
     REAL(KIND=kdp), DIMENSION(:), INTENT(OUT) :: x
@@ -276,7 +274,7 @@ CONTAINS
     ! ...      the reduced matrix, RA.
     USE mcm, ONLY:
     USE mcs, ONLY: nbn, nrn, mar, ci, cirh, cir
-    USE XP_module
+    USE XP_module, ONLY: Transporter
     IMPLICIT NONE
     TYPE (Transporter) :: xp
     REAL(kind=kdp), DIMENSION(:,:), INTENT(INOUT) :: ra

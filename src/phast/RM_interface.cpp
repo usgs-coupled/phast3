@@ -6,6 +6,9 @@
 #include <string>
 #include <map>
 #include "hdf.h"
+#ifdef THREADED_PHAST
+#include <boost/thread.hpp>
+#endif
 std::map<size_t, Reaction_module*> RM_interface::Instances;
 size_t RM_interface::InstancesIndex = 0;
 PHRQ_io RM_interface::phast_io;
@@ -783,16 +786,16 @@ RM_setup_boundary_conditions(
 }
 /* ---------------------------------------------------------------------- */
 void
-RM_transport(int *ncomps)
+RM_transport(int *id, int *ncomps)
 /* ---------------------------------------------------------------------- */
 {
-	// Not really reaction module
 	// Used for threaded transport calculations
+
 #ifdef THREADED_PHAST
-	for (int i = 1; i <= *ncomps; i++)
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
 	{
-		//transport_component(&i);
-		transport_component_thread(&i);
+		Reaction_module_ptr->Transport(*ncomps);
 	}
 #else
 	for (int i = 1; i <= *ncomps; i++)

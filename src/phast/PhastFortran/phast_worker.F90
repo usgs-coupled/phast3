@@ -17,7 +17,7 @@ SUBROUTINE phast_worker
        ppassemblage_units, gasphase_units, kinetics_units
   USE mcw
   USE print_control_mod
-  USE XP_module
+  USE XP_module, ONLY: Transporter
   USE mpi_mod
   USE mpi_struct_arrays
   IMPLICIT NONE

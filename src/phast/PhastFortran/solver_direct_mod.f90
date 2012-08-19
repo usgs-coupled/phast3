@@ -4,11 +4,13 @@ MODULE solver_direct_mod
   USE machine_constants, ONLY: kdp
   IMPLICIT NONE
   PRIVATE; PUBLIC :: tfrds
+  PUBLIC :: tfrds_thread
+  
 ! ..  PRIVATE :: efact, el1slv, elslv, euslv
 ! ..  PRIVATE :: ident_string
 
 CONTAINS
-  SUBROUTINE tfrds_thread(diagra,envlra,envura,xp)
+  SUBROUTINE tfrds_thread(diagra,envlra,envura,rhs,xp)
     ! ... Triangular-factorization, reduced matrix, direct solver
     ! ... Direct solver for reduced linear equation system using
     ! ...      LU triangular factorization
@@ -18,7 +20,7 @@ CONTAINS
     ! ...      upper triangular, and diagonal arrays
     USE mcm, only: 
     USE mcs, only: nbn, ipenv, nrn, ci
-    USE XP_module
+    USE XP_module, only: Transporter
     IMPLICIT NONE
     TYPE (Transporter) :: xp
     REAL(KIND=kdp), DIMENSION(:), INTENT(OUT) :: diagra, envlra, envura
@@ -27,7 +29,8 @@ CONTAINS
     INTEGER :: i, ibn, ibnrow, ic, ie, irn, jbncol, jc, joff, jrncol, mbnrow, nenvl
     ! ... Set string for use with RCS ident command
     CHARACTER(LEN=80) :: ident_string='$Id: solver_direct_mod.f90,v 1.2 2011/01/06 23:10:03 klkipp Exp $'
-    REAL(KIND=kdp), DIMENSION(:), allocatable, target :: my_vector
+    REAL(KIND=kdp), DIMENSION(:), TARGET, INTENT(IN OUT) :: rhs
+    REAL(KIND=kdp), DIMENSION(:), POINTER :: rhs_b
     !     ------------------------------------------------------------------
     !...
     nenvl=ipenv(nbn+1)-1
@@ -45,7 +48,7 @@ CONTAINS
        DO  ic=1,6
           xp%va(ic,irn) = xp%va(ic,irn)*va7i
        END DO
-       xp%rhs(irn)=xp%rhs(irn)*va7i
+       rhs(irn)=rhs(irn)*va7i
     END DO
     ! ... Eliminate A3 and form reduced matrix RA (A4') loading it into
     ! ...      envelope storage
@@ -76,26 +79,24 @@ CONTAINS
                 END IF
              END DO
              ! ... Form the rhs of the reduced equation
-             xp%rhs(mbnrow)=xp%rhs(mbnrow)-uva*xp%rhs(irn)
+             rhs(mbnrow)=rhs(mbnrow)-uva*rhs(irn)
           END IF
        END DO
     END DO
     ! ... Solve the reduced system by LU factorization
     ! ...    Factor RA into L and U triangular factors
     CALL efact(nbn,ipenv,envlra,envura,diagra)
-    !rhs_b => xp%rhs(nrn+1:nrn+nbn)
-    my_vector = xp%rhs(nrn+1:nrn+nbn)
-    xp%rhs_b = my_vector
+    rhs_b => rhs(nrn+1:nrn+nbn)
     ! ...    Solve Ly=b
-    CALL el1slv(nbn,ipenv,envlra,xp%rhs_b)
+    CALL el1slv(nbn,ipenv,envlra,rhs_b)
     ! ...    Back solve Ux=y
-    CALL euslv(nbn,ipenv,envura,diagra,xp%rhs_b)
+    CALL euslv(nbn,ipenv,envura,diagra,rhs_b)
     ! ...    Back solve the upper half matrix
     DO  irn=1,nrn
        DO  jc=1,6
           ibn=ci(jc,irn)
           ! ... VA is from upper half, A2'
-          IF(ibn > 0) xp%rhs(irn)=xp%rhs(irn)-xp%va(jc,irn)*xp%rhs(ibn)
+          IF(ibn > 0) rhs(irn)=rhs(irn)-xp%va(jc,irn)*rhs(ibn)
        END DO
     END DO
   END SUBROUTINE tfrds_thread

@@ -2,6 +2,7 @@ SUBROUTINE XP_rhsn_thread(xp)
   ! ... Calculates right hand side terms at time level N,
   ! ...      for transport equation for one component
   !
+  USE machine_constants, ONLY: kdp
   USE mcb, ONLY: ibc, fresur, nfbc, nfbc_cells, flux_seg_m, flux_seg_first,  &
        flux_seg_last, leak_seg_first, leak_seg_last,  &
        river_seg_first, river_seg_last,  &
@@ -18,7 +19,7 @@ SUBROUTINE XP_rhsn_thread(xp)
   USE mcp, ONLY: fdsmth, fdtmth, gz, den0
   USE mcv, ONLY: frac, p
   USE mcw, ONLY: nwel, tfw, wqmeth, nkswel, mwel
-  USE XP_module
+  USE XP_module, ONLY: Transporter
   IMPLICIT NONE
   TYPE (Transporter) :: xp
   INTRINSIC INT
@@ -300,7 +301,7 @@ SUBROUTINE XP_rhsn(xp)
   USE mcp
   USE mcv
   USE mcw
-  USE XP_module
+  USE XP_module, ONLY: Transporter
   IMPLICIT NONE
   TYPE (Transporter) :: xp
   INTRINSIC INT

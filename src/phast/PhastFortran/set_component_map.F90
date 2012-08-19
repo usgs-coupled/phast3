@@ -1,7 +1,7 @@
 SUBROUTINE set_component_map
   USE mcc
   USE mcv
-  USE XP_module
+  !USE XP_module, ONLY: xp_list
 #if defined(USE_MPI)
   USE mpi_mod
 #endif

@@ -11,7 +11,7 @@ SUBROUTINE XP_coeff_trans_thread(xp)
   USE mcn, ONLY: x, y, z, rm
   USE mcp, ONLY: den0, vis0, gx, gy, gz, poros, alphl, alphth, alphtv, tort, dm
   USE mcv, ONLY: frac, p
-  USE XP_module
+  USE XP_module, ONLY: Transporter
   USE phys_const
   IMPLICIT NONE
 

@@ -162,8 +162,8 @@ SUBROUTINE XP_init_thread(xp)
         PRINT *, "Array allocation failed: XP_init_thread"  
         STOP  
     ENDIF 
-    xp%rhs	  =   rhs
-    xp%va	  =   va	
+    !xp%rhs	  =   rhs
+    !xp%va	  =   va	
     xp%c11	  =   c11
     xp%c12	  =   c12
     xp%c13	  =   c13
@@ -678,7 +678,7 @@ SUBROUTINE create_transporters
 ! ... Allocates and initializes an xp derived type
   USE mcc            ! ... Get sizes from modules
   USE mcv
-  USE XP_module
+  USE XP_module, only: xp_list, XP_create
   IMPLICIT NONE
   INTEGER :: a_err, i
   !     ------------------------------------------------------------------

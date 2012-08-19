@@ -6,7 +6,7 @@ SUBROUTINE XP_crsdsp_thread(xp, m, ucrosc)
   USE mcg, ONLY: nx, ny, cellno, xd_mask
   USE mcn, ONLY: x, y, z
   USE mcp, ONLY:
-  USE XP_module
+  USE XP_module, ONLY: Transporter
   IMPLICIT NONE
   TYPE (Transporter) :: xp
   INTEGER, INTENT(IN) :: m
@@ -160,7 +160,7 @@ SUBROUTINE XP_crsdsp(xp, m, ucrosc)
   USE mcg
   USE mcn
   USE mcp
-  USE XP_module
+  USE XP_module, only: Transporter
   IMPLICIT NONE
   TYPE (Transporter) :: xp
   INTEGER, INTENT(IN) :: m

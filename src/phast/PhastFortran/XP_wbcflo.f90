@@ -10,7 +10,7 @@ SUBROUTINE XP_wbcflo(xp)
   USE mcs
   USE mcv
   USE mcw
-  USE XP_module
+  USE XP_module, ONLY: Transporter
   IMPLICIT NONE
   TYPE (Transporter) :: xp
   REAL(KIND=kdp) :: uqhw, uqwm, uqsw
