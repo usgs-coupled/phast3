@@ -7,7 +7,7 @@ SUBROUTINE sbc_gather
 #if defined(USE_MPI)
   USE mpi_mod
 #endif
-  USE XP_module
+  USE XP_module, only: xp_list
   IMPLICIT NONE
   INTEGER :: i, tag
   !     ------------------------------------------------------------------
@@ -53,7 +53,7 @@ SUBROUTINE c_gather
 #if defined(USE_MPI)
   USE mpi_mod
 #endif
-  USE XP_module
+  USE XP_module, only: xp_list
   IMPLICIT NONE
   INTEGER :: i, tag
   !     ------------------------------------------------------------------

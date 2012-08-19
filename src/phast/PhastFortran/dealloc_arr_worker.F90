@@ -14,7 +14,7 @@ SUBROUTINE dealloc_arr_worker
   USE mcv
   USE mcw
   USE mg2_m
-  USE XP_module
+  USE XP_module, ONLY: Transporter, xp_list
   IMPLICIT NONE
   INTEGER :: da_err, i
   ! ... Set string for use with RCS ident command

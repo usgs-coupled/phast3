@@ -3,11 +3,11 @@ SUBROUTINE XP_sumcal1(xp)
   ! ...       equations
   ! ... This is the first block of sumcal. The second block follows the
   ! ...      chemical reaction calculations
-  USE mcb
-  USE mcg
-  USE mcp
-  USE mcv
-  USE XP_module
+  USE mcb, ONLY: ibc
+  USE mcg, ONLY: nxyz
+  USE mcp, ONLY:
+  USE mcv, ONLY:
+  USE XP_module, ONLY: Transporter
   IMPLICIT NONE
   TYPE (Transporter) :: xp
   !

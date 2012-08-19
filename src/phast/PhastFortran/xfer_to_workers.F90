@@ -54,7 +54,7 @@ SUBROUTINE c_distribute
   USE mcv_m
   USE mpi_mod
   USE mpi_struct_arrays 
-  USE XP_module
+  USE XP_module, only: xp_list
   IMPLICIT NONE
   INTEGER tag
   INTEGER :: iis

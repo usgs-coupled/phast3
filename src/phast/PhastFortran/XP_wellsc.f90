@@ -17,7 +17,7 @@ SUBROUTINE XP_wellsc_thread(xp)
   USE mcw, ONLY: nwel, wqmeth, nkswel, mwel, wi, pwsurs, pwkts, wrisl, wrangl, &
     twk, twsrkt, twrend, tolfpw, ehwend, mxitqw, eod, tolqw, twsur
   USE phys_const
-  USE XP_module
+  USE XP_module, ONLY: Transporter
   IMPLICIT NONE
   TYPE (Transporter) :: xp
   INTRINSIC INT
@@ -642,7 +642,7 @@ SUBROUTINE XP_wellsc(xp)
   USE mcv
   USE mcw
   USE phys_const
-  USE XP_module
+  USE XP_module, ONLY: Transporter
   IMPLICIT NONE
   TYPE (Transporter) :: xp
   INTRINSIC INT

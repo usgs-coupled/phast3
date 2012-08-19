@@ -1991,6 +1991,46 @@ Reaction_module::Solutions2Fractions_thread(int n)
 		}
 	}
 }
+#ifdef THREADED_PHAST
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Transport(int ncomps)
+/* ---------------------------------------------------------------------- */
+{
+	int c_comp_number = -1;
+	while (c_comp_number < ncomps)
+	{
+		// start up to nthreads
+		std::vector <boost::thread *> my_threads;
+		int threads_started = 0;
+		for (int n = 0; n < this->nthreads; n++)
+		//for (int n = 0; n < 2; n++)
+		{
+			c_comp_number++;
+			if (c_comp_number < ncomps)
+			{
+				threads_started++;
+				boost::thread *thrd = new boost::thread(boost::bind(&Reaction_module::Transport_thread, this, c_comp_number));
+				my_threads.push_back(thrd);
+			}
+		}
+		// Join theads
+		for (int n = 0; n < threads_started; n++)
+		{
+			my_threads[n]->join();
+			delete my_threads[n];
+		}
+	}
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Transport_thread(int n)
+/* ---------------------------------------------------------------------- */
+{
+	int comp_number = n+1;
+	transport_component_thread(&comp_number);
+}
+#endif
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Write_bc_raw(int *solution_list, int * bc_solution_count, 

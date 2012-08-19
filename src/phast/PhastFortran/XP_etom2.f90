@@ -4,7 +4,7 @@ SUBROUTINE XP_etom2(xp)
   USE mcb
   USE mcc
   USE mcp
-  USE XP_module
+  USE XP_module, only: Transporter
   IMPLICIT NONE
   TYPE (Transporter) :: xp
   INTEGER :: ls

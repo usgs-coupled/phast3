@@ -15,7 +15,7 @@ SUBROUTINE XP_aplbce_thread(xp)
   USE mcp, only: fdtmth, den0, gz
   USE mcv, only: frac, p
   USE phys_const
-  USE XP_module
+  USE XP_module, ONLY: Transporter
   IMPLICIT NONE
   TYPE (Transporter) :: xp
   REAL(KIND=kdp) :: qfbc, qn, ufdt2, ufrac, uphim, uzav
@@ -190,7 +190,7 @@ SUBROUTINE XP_aplbce(xp)
   USE mcp, only: fdtmth, den0, gz
   USE mcv, only: frac, p
   USE phys_const
-  USE XP_module
+  USE XP_module, only: Transporter
   IMPLICIT NONE
   TYPE (Transporter) :: xp
   REAL(KIND=kdp) :: qfbc, qn, ufdt2, ufrac, uphim, uzav

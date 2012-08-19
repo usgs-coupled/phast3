@@ -3,7 +3,7 @@ SUBROUTINE init3_distribute
   ! ... Send or receive data from transient read3 group 
   USE mcc              ! ... get sizes from modules
   USE mcv
-  USE XP_module
+  USE XP_module, ONLY: Transporter, xp_list
   IMPLICIT NONE
   INTEGER :: i
   !     ------------------------------------------------------------------
@@ -225,7 +225,7 @@ SUBROUTINE init3_bcast_w
   USE mcw
   USE mpi_mod
   USE mpi_struct_arrays
-  USE XP_module
+  USE XP_module, ONLY: Transporter
   IMPLICIT NONE
   TYPE (Transporter) :: xp
   INTEGER :: ls
@@ -469,7 +469,7 @@ SUBROUTINE XP_init3_xfer(xp)
   USE mcw
   USE mpi_mod
   USE mpi_struct_arrays
-  USE XP_module
+  USE XP_module, ONLY: Transporter
   IMPLICIT NONE
   TYPE (Transporter) :: xp
   INTEGER :: iwel, tag
@@ -529,7 +529,7 @@ SUBROUTINE XP_init3_set(xp)
   USE mcc
   USE mcw
   USE mcw_m
-  USE XP_module
+  USE XP_module, ONLY: Transporter
   IMPLICIT NONE
   TYPE (Transporter) :: xp
   INTEGER :: iis, iwel

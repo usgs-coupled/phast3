@@ -10,7 +10,7 @@ SUBROUTINE XP_asembl_thread(xp)
   USE mcp, only: fdsmth, fdtmth, den0, pmchv, pmcv, pmhv, pv, pvk
   USE mcs, only: mrno, cin
   USE mcv, only: frac, dp, p, den0, dt, deltim, t
-  USE XP_module
+  USE XP_module, ONLY: Transporter
   IMPLICIT NONE
   TYPE (Transporter) :: xp
   CHARACTER(LEN=9) :: cibc
@@ -148,9 +148,9 @@ SUBROUTINE XP_asembl_thread(xp)
      ! ... Solute equation
      ! ... Calculate C's with current p, w
      IF(cibc(7:7) == '1') xp%svbc = .true.
-     CALL calcc(xp%c_w(m),xp%dc(m),den0,dp(m),dpmkm,dpmkp,  &
+     CALL calcc_thread(xp%c_w(m),xp%dc(m),den0,dp(m),dpmkm,dpmkp,  &
           dt(0),frac(m),fracnzkp,ibckm,ibckp,xp%ieq,k,p(m),pmkm,pmkp,pmchv(1),  &
-          pmcv(m),pmhv(1),pv(m),pvk(1),t(1),z(k),zkm,zkp,deltim)
+          pmcv(m),pmhv(1),pv(m),pvk(1),t(1),z(k),zkm,zkp,deltim,xp)
      xp%va(7,ma) = xp%c11
      utxm = 0._kdp
      utxp = 0._kdp
@@ -160,7 +160,7 @@ SUBROUTINE XP_asembl_thread(xp)
      utzp = 0._kdp
      ur1 = 0._kdp
      ucrosc = 0._kdp
-     IF(crosd) CALL XP_crsdsp(xp, m,ucrosc)
+     IF(crosd) CALL XP_crsdsp_thread(xp, m,ucrosc)
      ! ... Save RS with cross derivative dispersive flux terms
      xp%rs1(m) = xp%rs(m) + ucrosc
      ! ... X-direction
@@ -258,7 +258,7 @@ SUBROUTINE XP_asembl(xp)
   USE mcp
   USE mcs, only: mrno, cin
   USE mcv
-  USE XP_module
+  USE XP_module, only: Transporter
   IMPLICIT NONE
   TYPE (Transporter) :: xp
   CHARACTER(LEN=9) :: cibc

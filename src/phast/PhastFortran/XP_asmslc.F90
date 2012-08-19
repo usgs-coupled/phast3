@@ -1,16 +1,17 @@
 SUBROUTINE XP_asmslc_thread(xp)
   ! ... Performs the assembly and solution of the concentration for the
   ! ...     solute transport equations for one selected component
+  USE machine_constants, ONLY: kdp
   USE mcc, only: slmeth, errexe, ierr, crosd, cylind
   USE mcg, only: nxyz
   USE mcm, only:
   USE mcs, only: col_scale, row_scale, ci, ident_diagc, mrno
   USE mcs2, only:
   USE mcw, only: wqmeth
-  USE XP_module
+  USE XP_module, ONLY: Transporter
   USE scale_jds_mod, only: rowscale, colscale
-  USE solver_direct_mod, only: tfrds
-  USE solver_iter_mod, only: gcgris
+  USE solver_direct_mod, only: tfrds_thread
+  USE solver_iter_mod, only: gcgris_thread
   IMPLICIT NONE
   TYPE (Transporter) :: xp
   INTEGER :: m, ma, norm, iierr  
@@ -32,8 +33,8 @@ SUBROUTINE XP_asmslc_thread(xp)
 !  CALL screenprt_c(logline1)
   itrn = 0
 30   itrn = itrn + 1
-  CALL XP_asembl(xp)
-  CALL XP_aplbci(xp)
+  CALL XP_asembl_thread(xp)
+  CALL XP_aplbci_thread(xp)
   ! ... Scale the matrix equations
   ! ...     row scaling only is default
   norm = 0          ! ... use L-infinity norm
@@ -58,10 +59,10 @@ SUBROUTINE XP_asmslc_thread(xp)
   ! ... Solve the matrix equations
   IF(slmeth == 1) THEN  
      ! ... Direct solver
-     CALL tfrds(xp%diagra, xp%envlra, xp%envura)
+     CALL tfrds_thread(xp%diagra, xp%envlra, xp%envura, xp%rhs, xp)
   ELSEIF(slmeth == 3 .OR. slmeth == 5) THEN
      ! ... Iterative solver
-     CALL gcgris(xp%ap, xp%bbp, xp%ra, xp%rr, xp%sss, xp%xx, xp%ww, xp%zz, xp%sumfil)
+     CALL gcgris_thread(xp%ap, xp%bbp, xp%ra, xp%rr, xp%sss, xp%xx, xp%ww, xp%zz, xp%sumfil, xp%rhs, xp)
   ENDIF
   IF(errexe) RETURN
   ! ... Solute equation for one component has just been solved
@@ -97,7 +98,7 @@ SUBROUTINE XP_asmslc(xp)
   USE mcs
   USE mcs2
   USE mcw
-  USE XP_module
+  USE XP_module, only: Transporter
   USE scale_jds_mod
   USE solver_direct_mod
   USE solver_iter_mod

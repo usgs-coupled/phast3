@@ -3,6 +3,7 @@ SUBROUTINE XP_wellsr_thread(xp)
   ! ...       each well
   ! ... Line source/sink version for rectangular coordinates
 !!$  USE machine_constants, ONLY: kdp
+  USE machine_constants, ONLY: kdp
   USE f_units, ONLY: fuwel
   USE mcb, ONLY: fresur
   USE mcc, ONLY: ierr, errexe
@@ -14,7 +15,7 @@ SUBROUTINE XP_wellsr_thread(xp)
   USE mcv, ONLY: itime, frac, p
   USE mcw, ONLY: nwel, wqmeth, nkswel, mwel, wi, pwsurs, pwkts, wrisl, wrangl, &
     twrend, tolfpw, mxitqw, tolqw
-  USE XP_module
+  USE XP_module, ONLY: Transporter
   IMPLICIT NONE
   INTRINSIC INT
   TYPE (Transporter) :: xp
@@ -576,7 +577,7 @@ SUBROUTINE XP_wellsr(xp)
   USE mcp
   USE mcv
   USE mcw
-  USE XP_module
+  USE XP_module, ONLY: Transporter
   IMPLICIT NONE
   INTRINSIC INT
   TYPE (Transporter) :: xp

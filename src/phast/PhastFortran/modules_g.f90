@@ -123,7 +123,7 @@ CONTAINS
   FUNCTION cellno(i,j,k) 
     IMPLICIT NONE
     INTEGER :: cellno
-    INTEGER :: i,j,k
+    INTEGER, INTENT(in) :: i,j,k
     cellno=(k-1)*nxy+(j-1)*nx+i
   END FUNCTION cellno
   !

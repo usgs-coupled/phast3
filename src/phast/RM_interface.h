@@ -149,7 +149,7 @@ void RM_setup_boundary_conditions(
 			double *boundary_fraction, 
 			int *dim);
 void RM_solutions2fractions(int *id);
-void RM_transport(int *ncomps);
+void RM_transport(int *id, int *ncomps);
 void RM_write_bc_raw(int *id, 
 			int *solution_list, 
 			int * bc_solution_count, 

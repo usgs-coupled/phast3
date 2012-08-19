@@ -20,7 +20,7 @@ SUBROUTINE phast_manager
   USE mpi_mod
   USE mpi_struct_arrays
   USE print_control_mod
-  USE XP_module
+  USE XP_module, ONLY: Transporter
   IMPLICIT NONE
   REAL(KIND=kdp) :: deltim_dummy
   INTEGER :: stop_msg, print_restart_flag, ipp_err
@@ -314,7 +314,7 @@ SUBROUTINE phast_manager
 
         ! ...  At this point, worker and manager do transport calculations
         IF (local_ns > 0) THEN 
-            CALL RM_transport(local_ns)
+            CALL RM_transport(rm_id, local_ns)
 #ifdef SKIP
            DO i = 1, local_ns
               CALL coeff_trans
@@ -504,7 +504,7 @@ END SUBROUTINE time_parallel
 SUBROUTINE transport_component(i)
     USE mcc, ONLY: cylind, errexe, errexi, rm_id
     USE mcw, ONLY: nwel
-    USE XP_module
+    USE XP_module,  ONLY: xp_list
     IMPLICIT none
     INTEGER :: i
     CALL coeff_trans
@@ -524,21 +524,21 @@ END SUBROUTINE transport_component
 SUBROUTINE transport_component_thread(i)
     USE mcc, ONLY: cylind, errexe, errexi, rm_id
     USE mcw, ONLY: nwel
-    USE XP_module
+    USE XP_module, ONLY: xp_list, XP_init_thread, XP_free_thread
     IMPLICIT none
     INTEGER :: i
     CALL XP_init_thread(xp_list(i))
     CALL XP_coeff_trans_thread(xp_list(i))
-    CALL XP_rhsn(xp_list(i))
+    CALL XP_rhsn_thread(xp_list(i))
     IF(nwel > 0) THEN
         IF(cylind) THEN
-            CALL XP_wellsc(xp_list(i))
+            CALL XP_wellsc_thread(xp_list(i))
         ELSE
-            CALL XP_wellsr(xp_list(i))
+            CALL XP_wellsr_thread(xp_list(i))
         END IF
     END IF
-    CALL XP_aplbce(xp_list(i))
-    CALL XP_asmslc(xp_list(i))
+    CALL XP_aplbce_thread(xp_list(i))
+    CALL XP_asmslc_thread(xp_list(i))
     CALL XP_sumcal1(xp_list(i))
     CALL XP_free_thread(xp_list(i))
     IF(errexe .OR. errexi) CALL RM_error(rm_id)

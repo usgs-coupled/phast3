@@ -17,7 +17,7 @@ SUBROUTINE XP_welris_thread(iwel,iwfss,uqwmr,xp)
     wbod, htcwr, kthwr, dthawr, kthawr
   USE mcw_m, ONLY: 
   USE phys_const
-  USE XP_module
+  USE XP_module, ONLY: Transporter
   IMPLICIT NONE
   TYPE (Transporter) :: xp
   INTEGER, INTENT(IN) :: iwel
@@ -179,7 +179,7 @@ CONTAINS
     ! ... From Gear program p.96
     USE machine_constants, ONLY: kdp
     USE mcw
-  USE XP_module
+  USE XP_module, ONLY: Transporter
   IMPLICIT NONE
   TYPE (Transporter) :: xp
     REAL(KIND=kdp), INTENT(INOUT) :: zwr
@@ -349,7 +349,7 @@ CONTAINS
     USE mcp
     USE mcw
     USE phys_const
-    USE XP_module
+    USE XP_module, ONLY: Transporter
     IMPLICIT NONE
     TYPE (Transporter) :: xp
     REAL(kind=kdp), INTENT(IN) :: zwk

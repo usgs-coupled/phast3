@@ -8,7 +8,7 @@ SUBROUTINE time_step_save
   USE mcv
   USE mcw
   USE mcw_m
-  USE XP_module
+  USE XP_module, ONLY: xp_list
   IMPLICIT NONE
   INTEGER :: i
   ! ... set string for use with rcs ident command
