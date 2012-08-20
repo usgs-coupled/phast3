@@ -30,7 +30,7 @@ IPhreeqcPhastLib::CreateIPhreeqcPhast(void)
 		{
 			IPhreeqcPhastPtr = new IPhreeqcPhast;
 		}
-		n = IPhreeqcPhastPtr->Index;
+		n = (int) IPhreeqcPhastPtr->Index;
 	}
 	catch(...)
 	{

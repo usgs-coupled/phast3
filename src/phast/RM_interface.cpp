@@ -7,7 +7,8 @@
 #include <map>
 #include "hdf.h"
 #ifdef THREADED_PHAST
-#include <boost/thread.hpp>
+//#include <boost/thread.hpp>
+#include <omp.h>
 #endif
 std::map<size_t, Reaction_module*> RM_interface::Instances;
 size_t RM_interface::InstancesIndex = 0;
@@ -109,7 +110,7 @@ RM_interface::Get_instance(int id)
 
 /* ---------------------------------------------------------------------- */
 void
-errprt_c(char *err_str, long l)
+errprt_c(const char *err_str, long l)
 /* ---------------------------------------------------------------------- */
 {
 	std::string e_string(err_str, l);
@@ -130,7 +131,7 @@ RM_errprt(const std::string & e_string)
 }
 /* ---------------------------------------------------------------------- */
 void
-warnprt_c(char *err_str, long l)
+warnprt_c(const char *err_str, long l)
 /* ---------------------------------------------------------------------- */
 {
 	std::string e_string(err_str, l);
@@ -150,7 +151,7 @@ RM_warnprt(const std::string & e_string)
 
 /* ---------------------------------------------------------------------- */
 void
-logprt_c(char *err_str, long l)
+logprt_c(const char *err_str, long l)
 /* ---------------------------------------------------------------------- */
 {
 	std::string e_string(err_str, l);
@@ -168,7 +169,7 @@ RM_logprt(const std::string & e_string)
 
 /* ---------------------------------------------------------------------- */
 void
-screenprt_c(char *err_str, long l)
+screenprt_c(const char *err_str, long l)
 /* ---------------------------------------------------------------------- */
 {
 	std::string e_string(err_str, l);

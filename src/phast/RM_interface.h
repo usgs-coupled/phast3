@@ -160,10 +160,10 @@ void RM_write_output(int *id);
 void RM_write_restart(int *id);
 
 
-void errprt_c(char *err_str, long l);
-void logprt_c(char *err_str, long l);
-void screenprt_c(char *err_str, long l);
-void warnprt_c(char *err_str, long l);
+void errprt_c(const char *err_str, long l);
+void logprt_c(const char *err_str, long l);
+void screenprt_c(const char *err_str, long l);
+void warnprt_c(const char *err_str, long l);
 
 //void RM_errprt(int id, char *err_str, long l);
 //void RM_warnprt(int *id, char *err_str, long l);
