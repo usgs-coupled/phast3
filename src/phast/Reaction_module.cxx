@@ -21,7 +21,6 @@
 #include <time.h>
 #include "hdf.h"
 #ifdef THREADED_PHAST
-//#include <boost/thread.hpp>
 #include <omp.h>
 #endif
 
@@ -1261,7 +1260,7 @@ Reaction_module::Initial_phreeqc_run_thread(int n)
 /* ---------------------------------------------------------------------- */
 {
 		IPhreeqcPhast * iphreeqc_phast_worker = this->Get_workers()[n];
-		int ipp_id = iphreeqc_phast_worker->Get_Index();
+		int ipp_id = (int) iphreeqc_phast_worker->Get_Index();
 
 		iphreeqc_phast_worker->SetOutputFileOn(false);
 		iphreeqc_phast_worker->SetErrorFileOn(false);
@@ -1337,42 +1336,6 @@ Reaction_module::Initial_phreeqc_run(std::string database_name, std::string chem
 	} 	
 
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::Initial_phreeqc_run(std::string database_name, std::string chemistry_name, std::string prefix)
-/* ---------------------------------------------------------------------- */
-{
-	/*
-	*  Run PHREEQC to obtain PHAST reactants
-	*/
-	this->database_file_name = database_name;
-	this->chemistry_file_name = chemistry_name;
-	this->file_prefix = prefix;
-
-	// load database and run chemistry file
-	// Eventually need an copy operator for IPhreeqcPhast
-#ifdef THREADED_PHAST
-	std::vector <boost::thread *> my_threads;
-	for (int n = 0; n <= this->nthreads; n++)
-	{
-		boost::thread *thrd = new boost::thread(boost::bind(&Reaction_module::Initial_phreeqc_run_thread, this, n));
-		my_threads.push_back(thrd);
-	} 
-	for (int n = 0; n <= this->nthreads; n++)
-	{
-		my_threads[n]->join();
-		delete my_threads[n];
-	} 
-#else
-	for (int n = 0; n <= this->nthreads; n++)
-	{
-		Initial_phreeqc_run_thread(n);
-	} 
-#endif	
-
-}
-#endif
 /* ---------------------------------------------------------------------- */
 bool
 Reaction_module::n_to_ijk(int n, int &i, int &j, int &k) 
@@ -1612,94 +1575,6 @@ Reaction_module::Run_cells()
 	}
 	std::cerr << "Running: " << (double) (clock() - t0) << std::endl;
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::Run_cells()
-/* ---------------------------------------------------------------------- */
-{
-/*
- *   Routine takes mass fractions from HST, equilibrates each cell,
- *   and returns new mass fractions to HST
- */
-
-/*
- *   Update solution compositions in sz_bin
- */
-	clock_t t0 = clock();
-	for (int n = 0; n < this->nthreads; n++)
-	{
-		IPhreeqcPhast * phast_iphreeqc_worker = this->workers[n];
-		phast_iphreeqc_worker->Set_out_stream(new ostringstream); 
-		phast_iphreeqc_worker->Set_punch_stream(new ostringstream);
-	}
-#ifdef THREADED_PHAST
-	std::vector <boost::thread *> my_threads;
-	for (int n = 0; n < this->nthreads; n++)
-	{
-		boost::thread *thrd = new boost::thread(boost::bind(&Reaction_module::Run_cells_thread, this, n));
-		my_threads.push_back(thrd);
-	} 
-#else
-	for (int n = 0; n < this->nthreads; n++)
-	{
-		Run_cells_thread(n);
-	} 
-#endif
-
-	// Join theads
-	for (int n = 0; n < this->nthreads; n++)
-	{
-#ifdef THREADED_PHAST
-		my_threads[n]->join();
-#endif
-	}
-
-	// Output
-	if (this->print_hdf)
-	{
-		BeginTimeStep();
-	}
-	for (int n = 0; n < this->nthreads; n++)
-	{
-		// write output results
-		if (this->print_chem)
-		{
-			Write_output(this->workers[n]->Get_out_stream().str().c_str());
-		}
-		delete &this->workers[n]->Get_out_stream();
-
-		// write punch results
-		if (this->print_xyz)
-		{
-			Write_xyz(this->workers[n]->Get_punch_stream().str().c_str());
-		}
-		delete &this->workers[n]->Get_punch_stream();
-
-		// write restart
-		if (this->print_restart)
-		{
-			this->Write_restart();
-		}
-
-		// write hdf
-		if (this->print_hdf)
-		{
-			HDFFillHyperSlab(this->start_cell[n], this->workers[n]->Get_punch_vector());
-		}
-		this->workers[n]->Get_punch_vector().clear();
-
-#ifdef THREADED_PHAST
-		delete my_threads[n];
-#endif
-	} 	
-	if (this->print_hdf)
-	{
-		EndTimeStep();
-	}
-	std::cerr << "Running: " << (double) (clock() - t0) << std::endl;
-}
-#endif
 /* ---------------------------------------------------------------------- */
 void 
 Reaction_module::Run_cells_thread(int n)
@@ -2091,63 +1966,6 @@ Reaction_module::Solutions2Fractions_thread(int n)
 		}
 	}
 }
-#ifdef SKIP_ALL
-#ifdef THREADED_PHAST
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::Transport(int ncomps)
-/* ---------------------------------------------------------------------- */
-{
-	omp_set_num_threads(this->nthreads);
-	#pragma omp parallel 
-	#pragma omp for
-	for (int n = 0; n < ncomps; n++)
-	{
-		Transport_thread(n);
-	}
-}
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::Transport(int ncomps)
-/* ---------------------------------------------------------------------- */
-{
-	int c_comp_number = -1;
-	while (c_comp_number < ncomps)
-	{
-		// start up to nthreads
-		std::vector <boost::thread *> my_threads;
-		int threads_started = 0;
-		for (int n = 0; n < this->nthreads; n++)
-		//for (int n = 0; n < 10; n++)
-		{
-			c_comp_number++;
-			if (c_comp_number < ncomps)
-			{
-				threads_started++;
-				boost::thread *thrd = new boost::thread(boost::bind(&Reaction_module::Transport_thread, this, c_comp_number));
-				my_threads.push_back(thrd);
-			}
-		}
-		// Join theads
-		for (int n = 0; n < threads_started; n++)
-		{
-			my_threads[n]->join();
-			delete my_threads[n];
-		}
-	}
-}
-#endif
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::Transport_thread(int n)
-/* ---------------------------------------------------------------------- */
-{
-	int comp_number = n+1;
-	transport_component_thread(&comp_number);
-}
-#endif
-#endif
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Write_bc_raw(int *solution_list, int * bc_solution_count, 

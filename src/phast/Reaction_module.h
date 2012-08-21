@@ -71,12 +71,6 @@ public:
 						  double *boundary_fraction, int dim);
 	void Solutions2Fractions(void);
 	void Solutions2Fractions_thread(int n);
-#ifdef SKIP
-#ifdef THREADED_PHAST
-	void Transport(int n);
-	void Transport_thread(int n);
-#endif
-#endif
 	void Write_bc_raw(int *solution_list, int * bc_solution_count, 
 		int * solution_number, const std::string &prefix);
 	void Write_error(std::string item);

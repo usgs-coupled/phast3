@@ -537,7 +537,7 @@ HDF_WRITE_GRID(double x[], double y[], double z[],
 			assert(status >= 0);
 		}
 
-		proc.scalar_count = g_hdf_scalar_names.size();
+		proc.scalar_count = (int) g_hdf_scalar_names.size();
 	}
 
 #ifdef USE_MPI
@@ -1278,7 +1278,7 @@ HDFFillHyperSlab(int chem_number, std::vector< std::vector < LDBLE > > &d)
 {
 	for (size_t j = 0; j < d.size(); j++)
 	{
-		int n = j + chem_number;
+		int n = (int) j + chem_number;
 		for (size_t i = 0; i < d[j].size(); i++)
 		{
 			assert(proc.array[i * proc.cell_count + n] == (double) INACTIVE_CELL_VALUE);
