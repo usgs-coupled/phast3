@@ -51,29 +51,6 @@ RM_interface::Create_reaction_module()
 	}
 	return n;
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-int
-RM_interface::Create_reaction_module()
-/* ---------------------------------------------------------------------- */
-{
-	int n = IPQ_OUTOFMEMORY;
-	try
-	{
-		Reaction_module* Reaction_module_ptr = new Reaction_module();
-		if (Reaction_module_ptr)
-		{
-			n = Reaction_module_ptr->Get_phast_iphreeqc_worker()->Get_Index();
-			RM_interface::Instances[Reaction_module_ptr->Get_phast_iphreeqc_worker()->Get_Index()] = Reaction_module_ptr;
-		}
-	}
-	catch(...)
-	{
-		return IPQ_OUTOFMEMORY;
-	}
-	return n;
-}
-#endif
 /* ---------------------------------------------------------------------- */
 IPQ_RESULT
 RM_interface::Destroy_reaction_module(int id)
@@ -363,22 +340,6 @@ RM_find_components(int *id)
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	return (Reaction_module_ptr->Find_components());
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void RM_initial_phreeqc_run(int *id, char *db_name, char *chem_name, int l1, int l2)
-/* ---------------------------------------------------------------------- */
-{
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
-	if (Reaction_module_ptr)
-	{
-		std::string db_name(db_name, l1);
-		trim_right(db_name);
-		std::string chemistry_name(chem_name, l2);
-		trim_right(chemistry_name);
-		Reaction_module_ptr->Initial_phreeqc_run(db_name, chemistry_name);
-	}
-}
-#endif
 /* ---------------------------------------------------------------------- */
 void RM_get_component(int * rm_id, int * num, char *chem_name, int l1)
 	/* ---------------------------------------------------------------------- */
@@ -406,90 +367,6 @@ void RM_initial_phreeqc_run(int *rm_id, char *db_name, char *chem_name, char *pr
 		Reaction_module_ptr->Initial_phreeqc_run(database_name, chemistry_name, prefix_name);
 	}
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void RM_initial_phreeqc_run(int *rm_id, char *db_name, char *chem_name, int l1, int l2)
-/* ---------------------------------------------------------------------- */
-{
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
-	if (Reaction_module_ptr)
-	{
-		std::string database_name(db_name, l1);
-		trim_right(database_name);
-		std::string chemistry_name(chem_name, l2);
-		trim_right(chemistry_name);
-		for (int i = 0; i <= Reaction_module_ptr->Get_nthreads(); i++)
-		{
-			IPhreeqcPhast * ipp_ptr = Reaction_module_ptr->Get_workers()[i];
-			int ipp_id = ipp_ptr->Get_Index();
-			ipp_ptr->SetOutputFileOn(false);
-			ipp_ptr->SetErrorFileOn(false);
-			ipp_ptr->SetLogFileOn(false);
-			ipp_ptr->SetSelectedOutputStringOn(false);
-			if (i == 0)
-			{
-				ipp_ptr->SetSelectedOutputFileOn(true);
-				ipp_ptr->SetOutputStringOn(true);
-			}
-			else
-			{
-				ipp_ptr->SetSelectedOutputFileOn(false);
-				ipp_ptr->SetOutputStringOn(false);
-			}
-			// Load database
-			if (ipp_ptr->LoadDatabase(database_name.c_str()) < 0) RM_error(&ipp_id);
-			RM_write_output(&ipp_id);
-
-			// Run chemistry file
-			if (ipp_ptr->RunFile(chemistry_name.c_str()) < 0) RM_error(&ipp_id);
-			RM_write_output(&ipp_id);
-
-
-			// Create a StorageBin with initial PHREEQC for boundary conditions
-			if (i == 0)
-			{
-				Reaction_module_ptr->Get_phreeqc_bin().Clear();
-				Reaction_module_ptr->Get_workers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(Reaction_module_ptr->Get_phreeqc_bin());
-			}
-		}
-	}
-}
-#endif
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void RM_initial_phreeqc_run(int *rm_id, char *db_name, char *chem_name, int l1, int l2)
-/* ---------------------------------------------------------------------- */
-{
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
-	if (Reaction_module_ptr)
-	{
-		std::string database_name(db_name, l1);
-		trim_right(database_name);
-		std::string chemistry_name(chem_name, l2);
-		trim_right(chemistry_name);
-
-		SetOutputFileOn(*rm_id, false);
-		SetErrorFileOn(*rm_id, false);
-		SetLogFileOn(*rm_id, false);
-		SetSelectedOutputFileOn(*rm_id, true);
-		SetSelectedOutputStringOn(*rm_id, false);
-		// Load database
-		if (SetOutputStringOn(*rm_id, true) < 0) RM_error(rm_id);
-		//if (SetSelectedOutputStringOn(*rm_id, true) < 0) RM_error(rm_id);
-		if (LoadDatabase(*rm_id, database_name.c_str()) < 0) RM_error(rm_id);
-		RM_write_output(rm_id);
-
-		// Run chemistry file
-		if (RunFile(*rm_id, chemistry_name.c_str()) < 0) RM_error(rm_id);
-		RM_write_output(rm_id);
-
-
-		// Create a StorageBin with initial PHREEQC for boundary conditions
-		Reaction_module_ptr->Get_phreeqc_bin().Clear();
-		Reaction_module_ptr->Get_phast_iphreeqc_worker()->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(Reaction_module_ptr->Get_phreeqc_bin());
-	}
-}
-#endif
 /* ---------------------------------------------------------------------- */
 void
 RM_log_screen_prt(char *err_str, long l)
@@ -571,61 +448,6 @@ RM_open_punch_file(char * prefix, int l_prefix)
 	fn.append(".chem.xyz.tsv");
 	RM_interface::phast_io.punch_open(fn.c_str());
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void
-RM_pass_data(int *id,
-			 bool *free_surface_f,				// free surface calculation
-			 bool *steady_flow_f,				// free surface calculation
-			 int *nx, int *ny, int *nz,			// number of nodes each coordinate direction
-			 double *time_hst,					// time from transport 
-			 double *time_step_hst,				// time step from transport
-			 double *cnvtmi,					// conversion factor for time
-			 double *x_node,					// nxyz array of X coordinates for nodes 
-			 double *y_node,					// nxyz array of Y coordinates for nodes  
-			 double *z_node,					// nxyz array of Z coordinates for nodes 
-			 double *fraction,					// mass fractions nxyz:components
-			 double *frac,						// saturation fraction
-			 double *pv,						// nxyz current pore volumes 
-			 double *pv0,						// nxyz initial pore volumes
-			 double *volume, 					// nxyz geometric cell volumes 
-			 int *printzone_chem,				// nxyz print flags for output file
-			 int *printzone_xyz,				// nxyz print flags for chemistry XYZ file 
-			 double *rebalance_fraction_hst  	// parameter for rebalancing process load for parallel	
-			 )
-/* ---------------------------------------------------------------------- */
-{
-	// pass data from Fortran to the Reaction module
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
-	if (Reaction_module_ptr)
-	{
-		Reaction_module_ptr->Set_free_surface(*free_surface_f != 0);
-		Reaction_module_ptr->Set_steady_flow(*steady_flow_f != 0);
-		Reaction_module_ptr->Set_transient_free_surface((*free_surface_f != 0) && (steady_flow_f == 0));
-		Reaction_module_ptr->Set_nx(*nx);
-		Reaction_module_ptr->Set_ny(*ny);
-		Reaction_module_ptr->Set_nz(*nz);
-		Reaction_module_ptr->Set_nxyz((*nx) * (*ny) * (*nz));
-		Reaction_module_ptr->Set_time_hst(time_hst);
-		Reaction_module_ptr->Set_time_step_hst(time_step_hst);
-		Reaction_module_ptr->Set_cnvtmi(cnvtmi);
-		Reaction_module_ptr->Set_x_node(x_node);
-		Reaction_module_ptr->Set_y_node(y_node);
-		Reaction_module_ptr->Set_z_node(z_node);
-		Reaction_module_ptr->Set_fraction(fraction);
-		Reaction_module_ptr->Set_frac(frac);
-		Reaction_module_ptr->Set_pv(pv);
-		Reaction_module_ptr->Set_pv0(pv0);
-		Reaction_module_ptr->Set_volume(volume);
-		Reaction_module_ptr->Set_printzone_chem(printzone_chem);
-		Reaction_module_ptr->Set_printzone_xyz(printzone_xyz);
-		Reaction_module_ptr->Set_rebalance_fraction_hst(rebalance_fraction_hst);
-		//std::string sprefix(prefix, l_prefix);
-		//sprefix = trim(sprefix);
-		//Reaction_module_ptr->Set_file_prefix(sprefix);
-	}
-}
-#endif
 /* ---------------------------------------------------------------------- */
 void
 RM_pass_data(int *id,
@@ -668,29 +490,6 @@ RM_pass_data(int *id,
 		Reaction_module_ptr->Set_fraction(fraction);
 	}
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void
-RM_pass_print_flags(int *id,
-			 int * prslm,							// solution method print flag 
-			 int * print_out,						// print flag for output file 
-			 int * print_sel,						// print flag for selected output
-			 int * print_hdf,						// print flag for hdf file
-			 int * print_restart					// print flag for writing restart file 
-			 )
-/* ---------------------------------------------------------------------- */
-{
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
-	if (Reaction_module_ptr)
-	{
-		Reaction_module_ptr->Set_prslm(prslm != 0);
-		Reaction_module_ptr->Set_print_chem(print_out != 0);
-		Reaction_module_ptr->Set_print_xyz(print_sel != 0);
-		Reaction_module_ptr->Set_print_hdf(print_hdf != 0);
-		Reaction_module_ptr->Set_print_restart(print_restart != 0);
-	}
-}
-#endif
 /* ---------------------------------------------------------------------- */
 void RM_run_cells(int *id,
 			 int * prslm,							// solution method print flag 
@@ -812,28 +611,6 @@ RM_transport(int *id, int *ncomps)
 	}
 #endif
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void
-RM_transport(int *id, int *ncomps)
-/* ---------------------------------------------------------------------- */
-{
-	// Used for threaded transport calculations
-
-#ifdef THREADED_PHAST
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
-	if (Reaction_module_ptr)
-	{
-		Reaction_module_ptr->Transport(*ncomps);
-	}
-#else
-	for (int i = 1; i <= *ncomps; i++)
-	{
-		transport_component(&i);
-	}
-#endif
-}
-#endif
 /* ---------------------------------------------------------------------- */
 void RM_write_bc_raw(
 			int *id,

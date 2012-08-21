@@ -102,15 +102,10 @@ void RM_pass_data(int *id,
              bool *fresur,
 			 bool *steady_flow, 
 			 int *nx, int *ny, int *nz,			// number of nodes each coordinate direction
-			 //double *time_hst,					// time from transport 
-			 //double *time_step_hst,				// time step from transport
 			 double *cnvtmi,					// conversion factor for time
 			 double *x_node,					// nxyz array of X coordinates for nodes 
 			 double *y_node,					// nxyz array of Y coordinates for nodes  
 			 double *z_node,					// nxyz array of Z coordinates for nodes 
-			 //double *fraction,					// mass fractions nxyz:components
-			 //double *frac,						// saturation fraction
-			 //double *pv,						// nxyz current pore volumes 
 			 double *pv0,						// nxyz initial pore volumes
 			 double *volume, 					// nxyz geometric cell volumes 
 			 int * printzone_chem,				// nxyz print flags for output file
@@ -118,15 +113,6 @@ void RM_pass_data(int *id,
 			 double *rebalance_fraction_hst,	// parameter for rebalancing process load for parallel	
 			 double *fraction                   // mass fraction array
 			 );
-#ifdef SKIP
-void RM_pass_print_flags(int *id,
-			 int * prslm,							// solution method print flag 
-			 int * print_out,						// print flag for output file 
-			 int * print_sel,						// print flag for selected output
-			 int * print_hdf,						// print flag for hdf file
-			 int * print_restart					// print flag for writing restart file 
-			 );
-#endif
 void RM_run_cells(int *id,
 			 int * prslm,							// solution method print flag 
 			 int * print_out,						// print flag for output file 
@@ -164,11 +150,6 @@ void errprt_c(const char *err_str, long l);
 void logprt_c(const char *err_str, long l);
 void screenprt_c(const char *err_str, long l);
 void warnprt_c(const char *err_str, long l);
-
-//void RM_errprt(int id, char *err_str, long l);
-//void RM_warnprt(int *id, char *err_str, long l);
-//void RM_logprt(int *id, char *err_str, long l);
-//void RM_screeenprt(int *id, char *err_str, long l);
 
 void RM_errprt(const std::string & e_string);
 void RM_warnprt(const std::string & e_string);
