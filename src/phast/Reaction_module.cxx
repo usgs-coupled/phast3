@@ -2091,6 +2091,7 @@ Reaction_module::Solutions2Fractions_thread(int n)
 		}
 	}
 }
+#ifdef SKIP_ALL
 #ifdef THREADED_PHAST
 /* ---------------------------------------------------------------------- */
 void
@@ -2145,6 +2146,7 @@ Reaction_module::Transport_thread(int n)
 	int comp_number = n+1;
 	transport_component_thread(&comp_number);
 }
+#endif
 #endif
 /* ---------------------------------------------------------------------- */
 void
@@ -2203,16 +2205,14 @@ void
 Reaction_module:: Write_error(std::string item)
 /* ---------------------------------------------------------------------- */
 {
-	//RM_interface::phast_io.error_msg(item.c_str());
-	errprt_c(item.c_str(), (long) item.size());
+	RM_interface::phast_io.error_msg(item.c_str());
 }
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module:: Write_log(std::string item)
 /* ---------------------------------------------------------------------- */
 {
-	//RM_interface::phast_io.log_msg(item.c_str());
-	logprt_c(item.c_str(), (long) item.size());
+	RM_interface::phast_io.log_msg(item.c_str());
 }
 /* ---------------------------------------------------------------------- */
 void
