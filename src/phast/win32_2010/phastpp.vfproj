@@ -45,7 +45,7 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="ser|x64" ConfigurationType="typeStaticLibrary">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="HDF5_CREATE" EnableRecursion="true" ReentrantCode="reentrancyThreaded" Interfaces="true" CallingConvention="callConventionCRef"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="HDF5_CREATE" EnableRecursion="true" ReentrantCode="reentrancyThreaded" Interfaces="true" OpenMP="OpenMPParallelCode" CallingConvention="callConventionCRef"/>
 				<Tool Name="VFLibrarianTool"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
@@ -55,7 +55,7 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="ser_debug|x64" ConfigurationType="typeStaticLibrary">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" PreprocessorDefinitions="HDF5_CREATE" Interfaces="true" CallingConvention="callConventionCRef" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" PreprocessorDefinitions="HDF5_CREATE" EnableRecursion="true" ReentrantCode="reentrancyThreaded" Interfaces="true" CallingConvention="callConventionCRef" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug"/>
 				<Tool Name="VFLibrarianTool"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
@@ -90,8 +90,8 @@
 		<File RelativePath="..\PhastFortran\ifwr.inc"/>
 		<File RelativePath="..\IPhreeqcPhast\IPhreeqc\IPhreeqc.f90.inc"/>
 		<File RelativePath="..\PhastFortran\mpi_windows.inc">
-			<FileConfiguration Name="ser_debug|Win32" ExcludedFromBuild="true"/>
-			<FileConfiguration Name="ser|Win32" ExcludedFromBuild="true"/></File></Filter>
+			<FileConfiguration Name="ser|Win32" ExcludedFromBuild="true"/>
+			<FileConfiguration Name="ser_debug|Win32" ExcludedFromBuild="true"/></File></Filter>
 		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"/>
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
 		<Filter Name="COMMON_FOBJS">

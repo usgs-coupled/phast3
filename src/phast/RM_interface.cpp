@@ -41,7 +41,7 @@ RM_interface::Create_reaction_module()
 		Reaction_module* Reaction_module_ptr = new Reaction_module();
 		if (Reaction_module_ptr)
 		{
-			n = Reaction_module_ptr->Get_workers()[0]->Get_Index();
+			n = (int) Reaction_module_ptr->Get_workers()[0]->Get_Index();
 			RM_interface::Instances[n] = Reaction_module_ptr;
 		}
 	}
@@ -793,6 +793,34 @@ RM_transport(int *id, int *ncomps)
 	// Used for threaded transport calculations
 
 #ifdef THREADED_PHAST
+	int n = 1;
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr) {
+		n = Reaction_module_ptr->Get_nthreads();
+	}
+	omp_set_num_threads(n);
+	#pragma omp parallel 
+	#pragma omp for
+	for (int i = 1; i <= *ncomps; i++)
+	{
+		transport_component_thread(&i);
+	}
+#else
+	for (int i = 1; i <= *ncomps; i++)
+	{
+		transport_component(&i);
+	}
+#endif
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+void
+RM_transport(int *id, int *ncomps)
+/* ---------------------------------------------------------------------- */
+{
+	// Used for threaded transport calculations
+
+#ifdef THREADED_PHAST
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
@@ -805,6 +833,7 @@ RM_transport(int *id, int *ncomps)
 	}
 #endif
 }
+#endif
 /* ---------------------------------------------------------------------- */
 void RM_write_bc_raw(
 			int *id,
