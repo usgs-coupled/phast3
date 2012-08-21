@@ -324,6 +324,8 @@ HDF5_ROOT=/usr
 HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
 HDF5_LIBS=${HDF5_ROOT}/lib/libhdf5.a  -Xlinker -Bstatic -lz -Xlinker -Bdynamic -lpthread 
 HDF5_LIBS_64=${HDF5_ROOT}/lib64/libhdf5.a -Xlinker -Bstatic -lz -Xlinker -Bdynamic -lpthread 
+#HDF5_LIBS=-lhdf5 -lgomp  -Xlinker -Bstatic -lz -Xlinker -Bdynamic -lpthread 
+#HDF5_LIBS_64=-lhdf5 -L/usr/lib64 -lgomp -Xlinker -Bstatic -lz -Xlinker -Bdynamic -lpthread 
 
 # -----------------------------------------------------------------------------
 DEFINE_HDF=-DHDF5_CREATE -DH5Dcreate_vers=1 -DH5Gcreate_vers=1 -DH5Eset_auto_vers=1
@@ -479,14 +481,14 @@ endif
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_GFORTRAN)
   DEFINES      = $(DEFINE_HDF) -DNDEBUG -DPHREEQC_CPP -DHAVE_ISFINITE
-  FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
+  FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name -DTHREADED_PHAST
   VPATH        = ..:../PhastFortran:../IPhreeqcPhast:../IPhreeqcPhast/IPhreeqc:../IPhreeqcPhast/IPhreeqc/phreeqcpp:../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc:../KDtree
   FC           = $(FGFORTRAN)
-  FFLAGS       = -p -O3 $(DEFINES) -fno-underscoring
+  FFLAGS       = -p -O3 -frecursive -fopenmp $(DEFINES) -fno-underscoring -fopenmp
   CC           = g++
-  CFLAGS       = -Wall  -p -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
+  CFLAGS       = -Wall -fopenmp -p -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN) -lm -p ${CL1MP_LIB} ${HDF5_LIBS} ${HASH_STYLE}
+  LD_FLAGS     = $(LIBGFORTRAN) -lgomp -lm -p ${CL1MP_LIB} ${HDF5_LIBS} ${HASH_STYLE}
   LINKER       = $(CXX)
 endif
 
@@ -496,39 +498,39 @@ ifeq ($(CFG), SERIAL_GFORTRAN_DEBUG)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = ..:../PhastFortran:../IPhreeqcPhast:../IPhreeqcPhast/IPhreeqc:../IPhreeqcPhast/IPhreeqc/phreeqcpp:../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc:../KDtree
   FC           = $(FGFORTRAN)
-  FFLAGS       = -g -fno-underscoring $(DEFINES)
+  FFLAGS       = -g -frecursive -fopenmp -fno-underscoring $(DEFINES) 
   CC           = g++
-  CFLAGS       = -Wall -g $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) -I/usr/include/boost
+  CFLAGS       = -Wall -g -fopenmp $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) # -I/usr/include/boost
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS)  $(HDF_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN) -lm ${HDF5_LIBS} ${HASH_STYLE} ${CL1MP_LIB} 
-  LINKER       = $(CXX)
+  LD_FLAGS     = $(LIBGFORTRAN) -lgomp -lm ${HDF5_LIBS} ${HASH_STYLE} ${CL1MP_LIB} 
+  LINKER       = $(CXX) 
 endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_GFORTRAN_64)
-  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DPHREEQC_CPP -DHAVE_ISFINITE
+  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DPHREEQC_CPP -DHAVE_ISFINITE -DTHREADED_PHAST
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
+  VPATH        = ..:../PhastFortran:../IPhreeqcPhast:../IPhreeqcPhast/IPhreeqc:../IPhreeqcPhast/IPhreeqc/phreeqcpp:../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc:../KDtree
   FC           = $(FGFORTRAN)
-  FFLAGS       = -O3 $(DEFINES) -fno-underscoring
+  FFLAGS       = -O3 -frecursive -fopenmp $(DEFINES) -fno-underscoring
   CC           = g++
-  CFLAGS       = -Wall -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
+  CFLAGS       = -Wall -fopenmp -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN_64) -lm ${CL1MP_LIB} ${HDF5_LIBS_64} ${HASH_STYLE}
+  LD_FLAGS     = $(LIBGFORTRAN_64) -lgomp -lm ${CL1MP_LIB}  ${HASH_STYLE} ${HDF5_LIBS_64}
   LINKER       = $(CXX)
 endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_GFORTRAN_64_DEBUG)
-  DEFINES      = $(DEFINE_HDF) -DPHREEQC_CPP -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC
+  DEFINES      = $(DEFINE_HDF) -DPHREEQC_CPP -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DTHREADED_PHAST
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
   FC           = $(FGFORTRAN)
-  FFLAGS       = -g -fno-underscoring $(DEFINES)
+  FFLAGS       = -g -frecursive -fopenmp -fno-underscoring $(DEFINES)
   CC           = g++
-  CFLAGS       = -Wall  -g $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
+  CFLAGS       = -Wall -fopenmp  -g $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES)
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS)  $(HDF_OBJS) $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN_64) -lm ${CL1MP_LIB} ${HDF5_LIBS_64} ${HASH_STYLE}
+  LD_FLAGS     = $(LIBGFORTRAN_64)-fopenmp  -lm ${CL1MP_LIB} ${HDF5_LIBS_64} ${HASH_STYLE}
   LINKER       = $(CXX)
 endif
 
@@ -1075,6 +1077,10 @@ ${PROGRAM} : ${OBJECT_FILES}
 #  module_name.mod and module_name.o files are created or
 #  updated before all other source code object files. 
 
+modules: mach_mod.o modules_g.o modules_manager.o print_control_mod.o ld_seg_mod.o \
+	interpolate_mod.o reorder_mod.o rewi_mod.o XP_module.o scale_jds_mod.o \
+	solver_direct_mod.o solver_iter_mod.o
+
 mach_mod.o: ../PhastFortran/mach_mod.f90
 	${FC} -c ${FFLAGS} $<
 modules_g.o: ../PhastFortran/modules_g.f90 mach_mod.o modules_manager.o
@@ -1093,13 +1099,13 @@ reorder_mod.o: ../PhastFortran/reorder_mod.f90
 	${FC} -c ${FFLAGS} $<
 rewi_mod.o: ../PhastFortran/rewi_mod.f90 interpolate_mod.o
 	${FC} -c ${FFLAGS} $<
+XP_module.o: ../PhastFortran/XP_module.f90
+	${FC} -c ${FFLAGS} $<
 scale_jds_mod.o: ../PhastFortran/scale_jds_mod.f90
 	${FC} -c ${FFLAGS} $<
-solver_direct_mod.o: ../PhastFortran/solver_direct_mod.f90
+solver_direct_mod.o: ../PhastFortran/solver_direct_mod.f90 ../PhastFortran/XP_module.f90
 	${FC} -c ${FFLAGS} $<
 solver_iter_mod.o: ../PhastFortran/solver_iter_mod.f90
-	${FC} -c ${FFLAGS} $<
-XP_module.o: ../PhastFortran/XP_module.f90
 	${FC} -c ${FFLAGS} $<
 
 # -----------------------------------------------------------------------------
@@ -1108,7 +1114,7 @@ XP_module.o: ../PhastFortran/XP_module.f90
 aplbce_flow.o: ../PhastFortran/aplbce_flow.f90 modules_g.o modules_manager.o
 aplbci_flow.o: ../PhastFortran/aplbci_flow.F90
 asembl_flow.o: ../PhastFortran/asembl_flow.f90
-asmslp.o: ../PhastFortran/asmslp.F90 scale_jds_mod.o
+asmslp.o: ../PhastFortran/asmslp.F90 print_control_mod.o XP_module.o solver_iter_mod.o solver_direct_mod.o scale_jds_mod.o
 calcc.o: ../PhastFortran/calcc.f90
 calc_velocity.o: ../PhastFortran/calc_velocity.f90
 clog.o: ../PhastFortran/clog.f90
@@ -1130,7 +1136,7 @@ incidx.o: ../PhastFortran/incidx.f90
 indx_rewi_bc.o: ../PhastFortran/indx_rewi_bc.f90
 indx_rewi.o: ../PhastFortran/indx_rewi.f90
 init1.o: ../PhastFortran/init1.F90 print_control_mod.o
-init2_1.o: ../PhastFortran/init2_1.F90
+init2_1.o: ../PhastFortran/init2_1.F90 reorder_mod.o
 init2_1_xfer.o: ../PhastFortran/init2_1_xfer.F90
 init2_2.o: ../PhastFortran/init2_2.f90
 init2_3.o: ../PhastFortran/init2_3.f90

@@ -9,7 +9,7 @@ SUBROUTINE XP_asembl_thread(xp)
   USE mcn, only: z
   USE mcp, only: fdsmth, fdtmth, den0, pmchv, pmcv, pmhv, pv, pvk
   USE mcs, only: mrno, cin
-  USE mcv, only: frac, dp, p, den0, dt, deltim, t
+  USE mcv, only: frac, dp, p, dt, deltim, t
   USE XP_module, ONLY: Transporter
   IMPLICIT NONE
   TYPE (Transporter) :: xp
