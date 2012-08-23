@@ -7,7 +7,6 @@
 #include <map>
 #include "hdf.h"
 #ifdef THREADED_PHAST
-//#include <boost/thread.hpp>
 #include <omp.h>
 #endif
 std::map<size_t, Reaction_module*> RM_interface::Instances;
