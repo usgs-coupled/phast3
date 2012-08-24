@@ -1,4 +1,5 @@
 #include <assert.h>				/* assert */
+#ifdef USE_MPI
 static char const svnid[] = "$Id$";
 
 #if defined(_WIN32) && defined(_MT)
@@ -1042,3 +1043,4 @@ Merge_fprintf2(struct FileInfo *pFileInfo, const char *format, ...)
 	va_end(args);
 	return retval;
 }
+#endif
