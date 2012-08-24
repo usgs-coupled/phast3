@@ -1,3 +1,4 @@
+cxxHstSubs.o: ../cxxHstSubs.cxx
 gzstream.o: ../gzstream.cxx ../gzstream.h
 Reaction_module.o: ../Reaction_module.cxx ../Reaction_module.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
@@ -53,7 +54,10 @@ Reaction_module.o: ../Reaction_module.cxx ../Reaction_module.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxKinetics.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/KineticsComp.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/GasPhase.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/GasComp.h
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/GasComp.h ../hdf.h
+hdf.o: ../hdf.cpp ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc/phrqtype.h \
+ ../hdf.h
+merge.o: ../merge.cpp
 phast_main.o: ../phast_main.cpp
 RM_interface.o: ../RM_interface.cpp ../Reaction_module.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
@@ -92,7 +96,8 @@ RM_interface.o: ../RM_interface.cpp ../Reaction_module.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc/global_structures.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc/NA.h
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc/NA.h ../hdf.h
+workersubs.o: ../workersubs.cpp
 fwrap2Phast.o: ../IPhreeqcPhast/fwrap2Phast.cpp \
  ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../IPhreeqcPhast/IPhreeqc/Var.h \
  ../IPhreeqcPhast/fwrapPhast.h ../IPhreeqcPhast/IPhreeqcPhastLib.h \
@@ -272,7 +277,13 @@ IPhreeqcPhast.o: ../IPhreeqcPhast/IPhreeqcPhast.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc/global_structures.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc/NA.h
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc/NA.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Solution.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SolutionIsotope.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolution.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.h \
+ ../IPhreeqcPhast/IPhreeqc/SelectedOutput.hxx \
+ ../IPhreeqcPhast/IPhreeqc/CVar.hxx
 fwrap2.o: ../IPhreeqcPhast/IPhreeqc/fwrap2.cpp \
  ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../IPhreeqcPhast/IPhreeqc/Var.h \
  ../IPhreeqcPhast/IPhreeqc/fwrap.h
@@ -346,7 +357,7 @@ SelectedOutput.o: ../IPhreeqcPhast/IPhreeqc/SelectedOutput.cpp \
  ../IPhreeqcPhast/IPhreeqc/Debug.h \
  ../IPhreeqcPhast/IPhreeqc/SelectedOutput.hxx \
  ../IPhreeqcPhast/IPhreeqc/CVar.hxx ../IPhreeqcPhast/IPhreeqc/Var.h
-Var.o: ../IPhreeqcPhast/IPhreeqc/Var.cpp ../IPhreeqcPhast/IPhreeqc/Var.h
+Var.o: ../IPhreeqcPhast/IPhreeqc/Var.c ../IPhreeqcPhast/IPhreeqc/Var.h
 cxxKinetics.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxKinetics.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
@@ -409,6 +420,7 @@ cxxMix.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc/NA.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc/phqalloc.h
+Dictionary.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Dictionary.cxx
 Exchange.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Exchange.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \

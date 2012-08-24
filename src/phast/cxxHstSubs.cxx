@@ -1,3 +1,4 @@
+#ifdef SKIP
 #include <fstream>
 #include <iostream>				// std::cout std::cerr
 #include <ctime>
@@ -660,3 +661,4 @@ partition_uz(int iphrq, int ihst, LDBLE new_frac)
 	old_frac[ihst] = new_frac;
 	return (OK);
 }
+#endif

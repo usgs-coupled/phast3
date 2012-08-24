@@ -1,3 +1,4 @@
+#ifdef USE_MPI
 #define EXTERNAL extern
 #define MAIN
 #if defined(USE_MPI)
@@ -87,3 +88,4 @@ WORKER_GET_INDEXES(int *indx_sol1_ic, int *indx_sol2_ic, double *mxfrac,
 	return;
 #endif
 }
+#endif
