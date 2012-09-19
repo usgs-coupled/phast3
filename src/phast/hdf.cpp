@@ -1565,9 +1565,9 @@ HDF_INTERMEDIATE(void)
 		// copy to the intermediate file
 		char command[3*MAX_PATH];
 #if WIN32
-		sprintf(command, "copy %s %s", root.hdf_file_name.c_str(), int_fn);
+		sprintf(command, "copy \"%s\" \"%s\"", root.hdf_file_name.c_str(), int_fn);
 #else
-		sprintf(command, "cp %s %s", root.hdf_file_name.c_str(), int_fn);
+		sprintf(command, "cp \"%s\" \"%s\"", root.hdf_file_name.c_str(), int_fn);
 #endif
 		system(command);
 
