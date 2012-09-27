@@ -33,7 +33,7 @@ Reaction_module::Reaction_module(int thread_count, PHRQ_io *io)
 	int n = 1;
 #ifdef THREADED_PHAST
 	
-#ifdef _WIN32
+#if defined(_WIN32)
 	SYSTEM_INFO sysinfo;
 	GetSystemInfo( &sysinfo );
 
@@ -76,7 +76,7 @@ if( numCPU < 1 )
 #endif
 #endif
 	this->nthreads = (thread_count > 0) ? thread_count : n;
-
+	//this->nthreads = 1;
 	// last one is to calculate well pH
 	for (int i = 0; i <= this->nthreads; i++)
 	{
@@ -1588,7 +1588,7 @@ Reaction_module::Run_cells_thread(int n)
 	/*
 	*   Update solution compositions 
 	*/
-
+	clock_t t0 = clock();
 	this->Fractions2Solutions_thread(n);
 
 	int i, j;
@@ -1758,6 +1758,8 @@ Reaction_module::Run_cells_thread(int n)
 	} // end one cell
 
 	this->Solutions2Fractions_thread(n);
+	std::cerr << "Thread: " << n << " Time: " << (double) (clock() - t0) << " Cells: " << this->start_cell[n] << "-" << this->end_cell[n] << std::endl;
+	
 }
 /* ---------------------------------------------------------------------- */
 void
