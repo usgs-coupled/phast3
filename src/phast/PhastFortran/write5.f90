@@ -70,9 +70,9 @@ SUBROUTINE write5
   END IF
   IF(itime == 0) RETURN     ! ... error exit; no results to print
   IF (solute) THEN
-     CALL RM_convert_to_molal(dcmax,1,1)
+     CALL RM_convert_to_molal(rm_id, dcmax,1,1)
      c_mol = c
-     CALL RM_convert_to_molal(c_mol,nxyz,nxyz)
+     CALL RM_convert_to_molal(rm_id, c_mol,nxyz,nxyz)
   ENDIF
 !!$  !  WRITE(*,3001) 'Finished time step no. ',itime,'; Time '//dots(1:30),cnvtmi*time,'('//TRIM(unittm)//')'
 !!$  !3001 FORMAT(tr5,a,I6,a,1PG12.3,tr2,a)
@@ -479,7 +479,7 @@ SUBROUTINE write5
      ENDIF
      IF (solute) THEN
         cwkt_mol = cwkt
-        CALL RM_convert_to_molal(cwkt_mol,nwel,nwel)
+        CALL RM_convert_to_molal(rm_id, cwkt_mol,nwel,nwel)
      ENDIF
      IF(prwel) THEN
         ! ... Well summary tables

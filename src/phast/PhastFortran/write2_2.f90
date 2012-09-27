@@ -65,7 +65,7 @@ SUBROUTINE write2_2
   nr = nx
   ! ... Load and compute molal concentrations
   c_mol = c
-    CALL RM_convert_to_molal(c_mol,nxyz,nxyz)
+    CALL RM_convert_to_molal(rm_id, c_mol, nxyz, nxyz)
   IF(nwel > 0) THEN
      IF(solute .AND. prtic_well_timser) THEN
         ! ... Write static data to file 'FUPLT' for temporal plots
