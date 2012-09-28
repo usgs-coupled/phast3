@@ -65,9 +65,15 @@ SUBROUTINE time_step_save
 !!$  ENDIF
   DO i = 1, ns
      IF (component_map(i) == mpi_myself) THEN
-        xp_list(local_component_map(i))%cfbc_n = xp_list(local_component_map(i))%cfbc
-        xp_list(local_component_map(i))%clbc_n = xp_list(local_component_map(i))%clbc
-        xp_list(local_component_map(i))%crbc_n = xp_list(local_component_map(i))%crbc
+     	if (nfbc > 0) then
+           xp_list(local_component_map(i))%cfbc_n = xp_list(local_component_map(i))%cfbc
+	endif
+     	if (nlbc > 0) then
+	   xp_list(local_component_map(i))%clbc_n = xp_list(local_component_map(i))%clbc
+	endif
+     	if (nlbc > 0) then
+	   xp_list(local_component_map(i))%crbc_n = xp_list(local_component_map(i))%crbc
+	endif
      ENDIF
   ENDDO
 END SUBROUTINE time_step_save
