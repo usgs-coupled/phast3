@@ -719,7 +719,7 @@ Reaction_module::Distribute_initial_conditions(
 			this->Get_workers()[n]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(sz_bin, i);
 			delete_command << i << "\n";
 		}
-		if (this->Get_workers()[0]->RunString(delete_command.str().c_str()) < 0) RM_error(0);
+		if (this->Get_workers()[0]->RunString(delete_command.str().c_str()) > 0) RM_error(0);
 	}
 
 	// initialize uz
@@ -1278,14 +1278,14 @@ Reaction_module::Initial_phreeqc_run_thread(int n)
 		}
 
 		// Load database
-		if (iphreeqc_phast_worker->LoadDatabase(this->database_file_name.c_str()) < 0) RM_error(&ipp_id);
+		if (iphreeqc_phast_worker->LoadDatabase(this->database_file_name.c_str()) > 0) RM_error(&ipp_id);
 		if (n == 0)
 		{
 			Write_output(iphreeqc_phast_worker->GetOutputString());
 		}
 
 		// Run chemistry file
-		if (iphreeqc_phast_worker->RunFile(this->chemistry_file_name.c_str()) < 0) RM_error(&ipp_id);
+		if (iphreeqc_phast_worker->RunFile(this->chemistry_file_name.c_str()) > 0) RM_error(&ipp_id);
 
 		// Create a StorageBin with initial PHREEQC for boundary conditions
 		if (n == 0)
@@ -1504,6 +1504,209 @@ Reaction_module::Partition_uz_thread(int n, int iphrq, int ihst, double new_frac
 	}
 
 	this->old_frac[ihst] = new_frac;
+}
+void
+Reaction_module::Rebalance_load(void)
+/* ---------------------------------------------------------------------- */
+{
+	if (this->nthreads <= 1) return;
+#include <time.h>
+
+	std::vector<int> start_cell_new;
+	std::vector<int> end_cell_new;
+	for (int i = 0; i < this->nthreads; i++)
+	{
+		start_cell_new.push_back(0);
+		end_cell_new.push_back(0);
+	}
+
+	std::vector<int> cells_v;
+	bool error;
+	std::ostringstream error_stream;
+	/*
+	 *  Gather times of all tasks
+	 */
+	std::vector<double> recv_buffer;
+	double total = 0;
+	for (int i = 0; i < this->nthreads; i++)
+	{
+		IPhreeqcPhast * phast_iphreeqc_worker = this->workers[i];
+		recv_buffer.push_back(phast_iphreeqc_worker->Get_thread_clock_time()/(phast_iphreeqc_worker->Get_end_cell() - phast_iphreeqc_worker->Get_start_cell() + 1));
+		if (recv_buffer.back() <= 0)
+			{
+				error_stream << "Time for  cell " << i << ": " << recv_buffer.back() << "\n";
+				error = true;
+				break;
+			}
+			total += recv_buffer[0] / recv_buffer.back();
+	}
+
+	
+	if (error)
+	{
+		error_msg(error_stream.str().c_str(), STOP);
+	}
+
+	/*
+	 *  Set first and last cells
+	 */
+	double new_n = this->count_chem / total; /* new_n is number of cells for root */
+	int	total_cells = 0;
+	int n = 0;
+	/*
+	*  Calculate number of cells per process, rounded to lower number
+	*/
+	for (int i = 0; i < this->nthreads; i++)
+	{
+		n = (int) floor(new_n * recv_buffer[0] / recv_buffer[i]);
+		if (n < 1)
+			n = 1;
+		cells_v.push_back(n);
+		total_cells += n;
+	}
+	/*
+	*  Distribute cells from rounding down
+	*/
+	int diff_cells = this->count_chem - total_cells;
+	if (diff_cells > 0)
+	{
+		for (int j = 0; j < diff_cells; j++)
+		{
+			int min_cell = 0;
+			double min_time = (cells_v[0] + 1) * recv_buffer[0];
+			for (int i = 1; i < this->nthreads; i++)
+			{
+				if ((cells_v[i] + 1) * recv_buffer[i] < min_time)
+				{
+					min_cell = i;
+					min_time = (cells_v[i] + 1) * recv_buffer[i];
+				}
+			}
+			cells_v[min_cell] += 1;
+		}
+	}
+	else if (diff_cells < 0)
+	{
+		for (int j = 0; j < -diff_cells; j++)
+		{
+			int max_cell = -1;
+			double max_time = 0;
+			for (int i = 0; i < mpi_tasks; i++)
+			{
+				if (cells_v[i] > 1)
+				{
+					if ((cells_v[i] - 1) * recv_buffer[i] > max_time)
+					{
+						max_cell = i;
+						max_time = (cells_v[i] - 1) * recv_buffer[i];
+					}
+				}
+			}
+			cells_v[max_cell] -= 1;
+		}
+	}
+	/*
+	*  Fill in subcolumn ends
+	*/
+	int last = -1;
+	for (int i = 0; i < mpi_tasks; i++)
+	{
+		start_cell_new[i] = last + 1;
+		end_cell_new[i] = start_cell_new[i] + cells_v[i] - 1;
+		last = end_cell_new[i];
+	}
+	/*
+	*  Check that all cells are distributed
+	*/
+	if (end_cell_new[mpi_tasks - 1] != this->count_chem - 1)
+	{
+		error_stream << "Failed: " << diff_cells << ", count_cells " << this->count_chem << ", last cell "
+			<< end_cell_new[this->nthreads - 1] << "\n";
+		for (int i = 0; i < this->nthreads; i++)
+		{
+			error_stream << i << ": first " << start_cell_new[i] << "\tlast " << end_cell_new[i] << "\n";
+		}
+		error_stream << "Failed to redistribute cells." << "\n";
+		error_msg(error_stream.str().c_str(), STOP);
+	}
+	/*
+	*   Compare old and new times
+	*/
+	double max_old = 0.0;
+	double max_new = 0.0;
+	for (int i = 0; i < mpi_tasks; i++)
+	{
+		double t = cells_v[i] * recv_buffer[i];
+		if (t > max_new)
+			max_new = t;
+		t = (end_cell[i] - start_cell[i] + 1) * recv_buffer[i];
+		if (t > max_old)
+			max_old = t;
+	}
+	std::cerr << "          Estimated efficiency of chemistry " << (float) ((LDBLE) 100. * max_new / max_old) << "\n";
+
+
+	if ((max_old - max_new) / max_old < 0.01)
+	{
+		for (int i = 0; i < mpi_tasks; i++)
+		{
+			start_cell_new[i] = start_cell[i];
+			end_cell_new[i] = end_cell[i];
+		}
+	}
+	else
+	{
+		for (int i = 0; i < this->nthreads - 1; i++)
+		{
+			int icells = (int) ((end_cell_new[i] - end_cell[i]) * *this->rebalance_fraction_hst);
+			end_cell_new[i] = end_cell[i] + icells;
+			start_cell_new[i + 1] = end_cell_new[i] + 1;
+		}
+	}
+	/*
+	 *   Redefine columns
+	 */
+	int nnew = 0;
+	int old = 0;
+	int change = 0;
+
+	for (int k = 0; k < this->count_chem; k++)
+	{
+		int i = k;
+		int iphrq = i;			/* iphrq is 1 to count_chem */
+		int ihst = this->back[i][0];	/* ihst is 1 to nxyz */
+		while (k > end_cell[old])
+		{
+			old++;
+		}
+		while (k > end_cell_new[nnew])
+		{
+			nnew++;
+		}
+
+		if (old == nnew)
+			continue;
+		change++;
+		IPhreeqcPhast * old_worker = this->workers[old];
+		IPhreeqcPhast * new_worker = this->workers[nnew];
+		cxxStorageBin temp_bin; 
+		old_worker->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(temp_bin, iphrq);
+		new_worker->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(temp_bin, iphrq);
+		std::ostringstream del;
+		del << "DELETE; -cell " << iphrq << "\n";
+		old_worker->RunString(del.str().c_str());
+	}
+
+	for (int i = 0; i < this->nthreads; i++)
+	{
+		start_cell[i] = start_cell_new[i];
+		end_cell[i] = end_cell_new[i];
+		IPhreeqcPhast * worker = this->workers[i];
+		worker->Set_start_cell(start_cell_new[i]);
+		worker->Set_end_cell(end_cell_new[i]);
+	}
+
+	return;
 }
 /* ---------------------------------------------------------------------- */
 void
@@ -1758,8 +1961,8 @@ Reaction_module::Run_cells_thread(int n)
 	} // end one cell
 
 	this->Solutions2Fractions_thread(n);
-	std::cerr << "Thread: " << n << " Time: " << (double) (clock() - t0) << " Cells: " << this->start_cell[n] << "-" << this->end_cell[n] << std::endl;
-	
+	//std::cerr << "Thread: " << n << " Time: " << (double) (clock() - t0) << " Cells: " << this->start_cell[n] << "-" << this->end_cell[n] << std::endl;
+	phast_iphreeqc_worker->Set_thread_clock_time((double) (clock() - t0));
 }
 /* ---------------------------------------------------------------------- */
 void
@@ -2125,6 +2328,7 @@ Reaction_module:: Write_xyz(std::string item)
 {
 	RM_interface::phast_io.punch_msg(item.c_str());
 }
+/* ---------------------------------------------------------------------- */
 
 
 
