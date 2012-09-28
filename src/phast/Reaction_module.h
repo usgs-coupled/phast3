@@ -61,6 +61,7 @@ public:
 	bool n_to_ijk (int n, int &i, int &j, int &k);
 	void Partition_uz(int iphrq, int ihst, double new_frac);
 	void Partition_uz_thread(int n, int iphrq, int ihst, double new_frac);
+	void Rebalance_load(void);
 	void Run_cells(void);
 	void Run_cells_thread(int i);
 	void Scale_solids(int n, int iphrq, LDBLE frac);
@@ -200,5 +201,6 @@ protected:
 	std::vector<IPhreeqcPhast *> workers;
 	std::vector<int> start_cell;
 	std::vector<int> end_cell;
+	
 };
 #endif // !defined(REACTION_MODULE_H_INCLUDED)

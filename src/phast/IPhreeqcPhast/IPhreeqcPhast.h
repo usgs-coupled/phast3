@@ -26,7 +26,12 @@ public:
 	std::ostringstream & Get_out_stream(void) {return *this->out_stream;}
 	std::ostringstream & Get_punch_stream(void) {return *this->punch_stream;}
 	std::vector < std::vector< LDBLE > > & Get_punch_vector(void) {return this->punch_vector;}
-
+	void Set_thread_clock_time(double t) {this->thread_clock_time = t;}
+	double Get_thread_clock_time(void) {return this->thread_clock_time;}
+	void Set_start_cell(int i) {this->start_cell = i;}
+	int Get_start_cell(void) {return this->start_cell;}
+	void Set_end_cell(int i) {this->end_cell = i;}
+	int Get_end_cell(void) {return this->end_cell;}
 protected:
 	friend class IPhreeqcPhastLib;
 	static std::map<size_t, IPhreeqcPhast*> PhastInstances;
@@ -39,6 +44,6 @@ protected:
 	std::ostringstream * punch_stream;
 	std::vector < std::vector< LDBLE > > punch_vector;
 	std::vector<std::string> selected_output_names;
-
+	double thread_clock_time;
 };
 #endif // !defined(PHAST_IPHREEQC_H_INCLUDED)

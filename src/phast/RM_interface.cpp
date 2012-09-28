@@ -520,6 +520,7 @@ void RM_run_cells(int *id,
 			Reaction_module_ptr->Set_frac(frac);
 			Reaction_module_ptr->Set_pv(pv);
 			Reaction_module_ptr->Run_cells();
+			Reaction_module_ptr->Rebalance_load();
 		}
 	}
 }
