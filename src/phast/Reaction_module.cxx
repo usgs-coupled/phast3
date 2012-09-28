@@ -1532,16 +1532,23 @@ Reaction_module::Rebalance_load(void)
 	for (int i = 0; i < this->nthreads; i++)
 	{
 		IPhreeqcPhast * phast_iphreeqc_worker = this->workers[i];
-		recv_buffer.push_back(phast_iphreeqc_worker->Get_thread_clock_time()/(phast_iphreeqc_worker->Get_end_cell() - phast_iphreeqc_worker->Get_start_cell() + 1));
+		int cells = this->end_cell[i] - this->start_cell[i] + 1;
+		//std::cerr << "Time: " << i << "  " << phast_iphreeqc_worker->Get_thread_clock_time() << 
+		//	"Time per cell: " << phast_iphreeqc_worker->Get_thread_clock_time()/ ((double) cells)  << "\n";
+		recv_buffer.push_back(phast_iphreeqc_worker->Get_thread_clock_time()/((double) cells));
 		if (recv_buffer.back() <= 0)
-			{
-				error_stream << "Time for  cell " << i << ": " << recv_buffer.back() << "\n";
-				error = true;
-				break;
-			}
-			total += recv_buffer[0] / recv_buffer.back();
+		{
+			error_stream << "Time for  cell " << i << ": " << recv_buffer.back() << "\n";
+			error = true;
+			break;
+		}
+		total += recv_buffer[0] / recv_buffer.back();
+		//std::cerr << "Total: " << total << "  " << recv_buffer[0] / recv_buffer.back() << "\n";
 	}
+	for (int i = 0; i < this->nthreads; i++)
+	{
 
+	}
 	
 	if (error)
 	{
@@ -1592,7 +1599,7 @@ Reaction_module::Rebalance_load(void)
 		{
 			int max_cell = -1;
 			double max_time = 0;
-			for (int i = 0; i < mpi_tasks; i++)
+			for (int i = 0; i < this->nthreads; i++)
 			{
 				if (cells_v[i] > 1)
 				{
@@ -1610,7 +1617,7 @@ Reaction_module::Rebalance_load(void)
 	*  Fill in subcolumn ends
 	*/
 	int last = -1;
-	for (int i = 0; i < mpi_tasks; i++)
+	for (int i = 0; i < this->nthreads; i++)
 	{
 		start_cell_new[i] = last + 1;
 		end_cell_new[i] = start_cell_new[i] + cells_v[i] - 1;
@@ -1619,7 +1626,7 @@ Reaction_module::Rebalance_load(void)
 	/*
 	*  Check that all cells are distributed
 	*/
-	if (end_cell_new[mpi_tasks - 1] != this->count_chem - 1)
+	if (end_cell_new[this->nthreads - 1] != this->count_chem - 1)
 	{
 		error_stream << "Failed: " << diff_cells << ", count_cells " << this->count_chem << ", last cell "
 			<< end_cell_new[this->nthreads - 1] << "\n";
@@ -1635,7 +1642,7 @@ Reaction_module::Rebalance_load(void)
 	*/
 	double max_old = 0.0;
 	double max_new = 0.0;
-	for (int i = 0; i < mpi_tasks; i++)
+	for (int i = 0; i < this->nthreads; i++)
 	{
 		double t = cells_v[i] * recv_buffer[i];
 		if (t > max_new)
@@ -1649,7 +1656,7 @@ Reaction_module::Rebalance_load(void)
 
 	if ((max_old - max_new) / max_old < 0.01)
 	{
-		for (int i = 0; i < mpi_tasks; i++)
+		for (int i = 0; i < this->nthreads; i++)
 		{
 			start_cell_new[i] = start_cell[i];
 			end_cell_new[i] = end_cell[i];
@@ -1777,7 +1784,7 @@ Reaction_module::Run_cells()
 	{
 		EndTimeStep();
 	}
-	std::cerr << "Running: " << (double) (clock() - t0) << std::endl;
+	//std::cerr << "Running: " << (double) (clock() - t0) << std::endl;
 }
 /* ---------------------------------------------------------------------- */
 void 
@@ -1962,8 +1969,9 @@ Reaction_module::Run_cells_thread(int n)
 	} // end one cell
 
 	this->Solutions2Fractions_thread(n);
-	//std::cerr << "Thread: " << n << " Time: " << (double) (clock() - t0) << " Cells: " << this->start_cell[n] << "-" << this->end_cell[n] << std::endl;
-	phast_iphreeqc_worker->Set_thread_clock_time((double) (clock() - t0));
+	clock_t t_elapsed = clock() - t0;
+	std::cerr << "Thread: " << n << " Time: " << (double) t_elapsed << " Cells: " << this->start_cell[n] << "-" << this->end_cell[n] << std::endl;
+	phast_iphreeqc_worker->Set_thread_clock_time((double) t_elapsed);
 }
 /* ---------------------------------------------------------------------- */
 void
