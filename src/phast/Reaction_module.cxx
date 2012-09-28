@@ -1521,12 +1521,13 @@ Reaction_module::Rebalance_load(void)
 	}
 
 	std::vector<int> cells_v;
-	bool error;
+	bool error = false;
 	std::ostringstream error_stream;
 	/*
 	 *  Gather times of all tasks
 	 */
 	std::vector<double> recv_buffer;
+
 	double total = 0;
 	for (int i = 0; i < this->nthreads; i++)
 	{
