@@ -321,6 +321,7 @@ OPENMPI_IFORT_64=/z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64-NO_
 
 # -----------------------------------------------------------------------------
 #hdf options
+#HDF5_ROOT=/usr
 HDF5_ROOT=/usr
 HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
 HDF5_LIBS=${HDF5_ROOT}/lib/libhdf5.a  -Xlinker -Bstatic -lz -Xlinker -Bdynamic -lpthread 
@@ -668,29 +669,29 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_INTEL_64)
-  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DPHREEQC_CPP -DHAVE_ISFINITE -DTHREADED_PHAST
+  DEFINES      = $(DEFINE_HDF) -DNDEBUG -DHAVE_ISFINITE -DTHREADED_PHAST
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = ..:../PhastFortran:../IPhreeqcPhast:../IPhreeqcPhast/IPhreeqc:../IPhreeqcPhast/IPhreeqc/phreeqcpp:../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc:../KDtree
   FC           = $(FINTEL)
-  FFLAGS       = -O3 -nus -openmp -reentrancy threaded $(DEFINES)
+  FFLAGS       = -O3 -nus -openmp -recursive -reentrancy threaded -openmp-threadprivate compat $(DEFINES)
   CXX          = g++
   CFLAGS       = -Wall -O3 -fopenmp $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS)  $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS) 
-  LD_FLAGS     = ${IFORT_LIB_64} -lgomp ${HDF5_LIBS_64} ${HASH_STYLE} 
+  LD_FLAGS     = ${IFORT_LIB_64} -lgomp -threads ${HDF5_LIBS_64} ${HASH_STYLE} 
   LINKER       = $(CXX)
 endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), SERIAL_INTEL_64_DEBUG)
-  DEFINES      = $(DEFINE_HDF) -DPHREEQC_CPP -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC
+  DEFINES      = $(DEFINE_HDF) -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DTHREADED_PHAST
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
+  VPATH        = ..:../PhastFortran:../IPhreeqcPhast:../IPhreeqcPhast/IPhreeqc:../IPhreeqcPhast/IPhreeqc/phreeqcpp:../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc:../KDtree
   FC           = $(FINTEL)
-  FFLAGS       = -g -nus -frecursive $(DEFINES)
+  FFLAGS       = -g -nus -openmp -recursive -reentrancy threaded $(DEFINES)
   CXX          = g++
   CFLAGS       = -Wall -g -fopenmp $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS)  $(COMMON_CXXOBJS) $(HDF_OBJS) $(CL1MP_OBJS) 
-  LD_FLAGS     = ${IFORT_LIB_64} ${HDF5_LIBS_64} ${HASH_STYLE} 
+  LD_FLAGS     = ${IFORT_LIB_64} -lgomp ${HDF5_LIBS_64} ${HASH_STYLE} 
   LINKER       = $(CXX)
 endif
 
