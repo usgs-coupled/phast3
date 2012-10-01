@@ -1713,6 +1713,7 @@ Reaction_module::Rebalance_load(void)
 		worker->Set_start_cell(start_cell_new[i]);
 		worker->Set_end_cell(end_cell_new[i]);
 	}
+	std::cerr << "          Cells shifted between threads     " << change << "\n";
 
 	return;
 }
