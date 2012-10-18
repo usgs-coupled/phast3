@@ -24,7 +24,7 @@ class Cube:public Polyhedron
 	  virtual ~ Cube(void);
 
 	// methods
-	bool Point_in_polyhedron(const Point & t);
+	bool Point_in_polyhedron(const Point & t)const;
 	void Points_in_polyhedron(std::list < int >&list,
 							  std::vector < Point > &point_coord);
 	//gpc_polygon *Face_polygon(Cell_Face face);

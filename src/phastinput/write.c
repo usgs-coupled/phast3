@@ -731,7 +731,7 @@ write_source_sink(void)
 	output_msg(OUTPUT_HST,
 			   "C..          DZMIN{.01},EPSWR{.001};(O) - NWEL [1.6] >0\n");
 	output_msg(OUTPUT_HST, "C..          and WRCALC(WQMETH[2.14.3] >30)\n");
-	if (well_defined == TRUE)
+	if (well_defined == TRUE && count_wells_in_region > 0)
 	{
 		for (i = 0; i < count_wells; i++)
 		{
@@ -1907,6 +1907,7 @@ write_bc_transient(void)
 		output_msg(OUTPUT_HST,
 				   "C.3.4.2 .. Segment number, flux (relative to cell), solution 1, solution 2, mix factor, cell number\n");
 		int segment = 1;
+		std::ostringstream oss;
 		for (i = 0; i < nxyz; i++)
 		{
 			if (cells[i].cell_active == FALSE)
@@ -1946,13 +1947,17 @@ write_bc_transient(void)
 				}
 				// segment number, flux, solution 1, solution 2, factor
 				// Note: convention is positive flux is into the cell
-				output_msg(OUTPUT_HST, "   %d %20.10e %d %d %e %d\n", segment,
-						   sign * rit->bc_flux * units.flux.input_to_user,
-						   rit->bc_solution.i1, rit->bc_solution.i2,
-						   rit->bc_solution.f1, i + 1);
+				//output_msg(OUTPUT_HST, "   %d %20.10e %d %d %e %d\n", segment,
+				//		   sign * rit->bc_flux * units.flux.input_to_user,
+				//		   rit->bc_solution.i1, rit->bc_solution.i2,
+				//		   rit->bc_solution.f1, i + 1);
+				oss << " " << segment << " " << sign * rit->bc_flux * units.flux.input_to_user;
+				oss << " " << rit->bc_solution.i1 << " " << rit->bc_solution.i2;
+				oss << " " << rit->bc_solution.f1 << " " << i + 1 << "\n";
 				segment++;
 			}
 		}
+		output_msg(OUTPUT_HST, oss.str().c_str());
 		output_msg(OUTPUT_HST, "C .. End 3.4.2\n");
 		output_msg(OUTPUT_HST, "END\n");
 
@@ -2268,11 +2273,12 @@ write_output_transient(void)
 	if (current_print_bc == FALSE)
 		output_msg(OUTPUT_HST, "     F\n");
 	output_msg(OUTPUT_HST,
-			   "C.3.8.2 .. PRIHDF_CONC, PRIHDF_HEAD, PRIHDF_VEL\n");
-	output_msg(OUTPUT_HST, "     %f %f %f\n",
+			   "C.3.8.2 .. PRIHDF_CONC, PRIHDF_HEAD, PRIHDF_VEL, PRIHDF_INTERMEDIATE\n");
+	output_msg(OUTPUT_HST, "     %f %f %f %f\n",
 			   print_value(&current_print_hdf_chem),
 			   print_value(&current_print_hdf_head),
-			   print_value(&current_print_hdf_velocity));
+			   print_value(&current_print_hdf_velocity),
+			   print_value(&current_print_hdf_intermediate));
 	output_msg(OUTPUT_HST, "C.3.8.2.1 .. PRI_ICHEAD; [T/F]\n");
 	if (save_final_heads == TRUE)
 		output_msg(OUTPUT_HST, "     t \n");
@@ -2885,26 +2891,15 @@ write_zone_budget(void)
 {
 
 	// Zone budget information
-	output_msg(OUTPUT_HST,
-			   "C.2.23.8 .. Number of zones for flow rates: num_flo_zones \n");
-	output_msg(OUTPUT_HST, "%d\n", (int) Zone_budget::zone_budget_map.size());
-	if (Zone_budget::zone_budget_map.size() == 0)
-		return (OK);
 
-	int zone_budget_number = 1;
-	std::map < int, Zone_budget * >::iterator it;
+	// count the number of active zones
+	int count_zones = 0;
+	std::map < int, Zone_budget * >::const_iterator it;
 	for (it = Zone_budget::zone_budget_map.begin();
 		 it != Zone_budget::zone_budget_map.end(); it++)
 	{
-
 		// vector of bools
-		std::vector < bool > cells_in_budget;
-		cells_in_budget.reserve(nxyz);
-		int i;
-		for (i = 0; i < nxyz; i++)
-		{
-			cells_in_budget.push_back(false);
-		}
+		std::vector < bool > cells_in_budget(nxyz, false);
 
 		zone z;
 		it->second->Add_cells(cells_in_budget, &z, nxyz, cell_xyz);
@@ -2917,6 +2912,46 @@ write_zone_budget(void)
 		assert(z.zone_defined);
 
 		struct index_range *range_ptr = zone_to_range(&z);
+		if (range_ptr == NULL)
+		{
+			continue;
+		}
+		free_check_null(range_ptr);
+		++count_zones;
+	}
+
+	output_msg(OUTPUT_HST,
+			   "C.2.23.8 .. Number of zones for flow rates: num_flo_zones \n");
+	output_msg(OUTPUT_HST, "%d\n", count_zones);
+
+	if (count_zones == 0)
+		return (OK);
+
+	int zone_budget_number = 1;
+	for (it = Zone_budget::zone_budget_map.begin();
+		 it != Zone_budget::zone_budget_map.end(); it++)
+	{
+
+		// vector of bools
+		std::vector < bool > cells_in_budget(nxyz, false);
+
+		zone z;
+		it->second->Add_cells(cells_in_budget, &z, nxyz, cell_xyz);
+		// cells_in_budget is nxyz list of 0 and 1
+		if (input_error > 0) 
+		{
+			error_msg("Stopping on errors in write zone budget", STOP);
+		}
+
+		assert(z.zone_defined);
+
+		struct index_range *range_ptr = zone_to_range(&z);
+		if (range_ptr == NULL)
+		{
+			sprintf(error_string, "Bad zone definition in ZONE_FLOW %d", it->second->Get_n_user());
+			warning_msg(error_string);
+			continue;
+		}
 
 		std::map < int, bool > budget_map;	// list of cells
 		std::vector < std::pair < int, int > >faces;	// <cell number, face> pair 
@@ -2933,7 +2968,7 @@ write_zone_budget(void)
 		std::vector < int >drain_vector;	// list of cells
 		std::vector < int >well_vector;	// list cells
 
-		int j, k, l, n;
+		int i, j, k, l, n;
 
 		// Need definition of zone for zp flux and river flux
 		std::list < std::vector < int > >zone_def;
@@ -3120,7 +3155,7 @@ write_zone_budget(void)
 		// Write one zone budget 
 
 		output_msg(OUTPUT_HST, "C.2.23.9 .. Title data for zone number %d \n",
-				   zone_budget_number);
+				   zone_budget_number++);
 		output_msg(OUTPUT_HST, " %d %s\n", it->first,
 				   it->second->Get_description().c_str());
 		output_msg(OUTPUT_HST,

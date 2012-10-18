@@ -378,6 +378,18 @@ clean_up(void)
 	}
 	free_check_null(bc);
 
+	bc_list_of_cells.clear();
+	for (size_t j = 0; j < bc_face_areas.size(); j++)
+	{
+		std::map< int, gpc_polygon * >::iterator it = bc_face_areas[j].begin();
+		for ( ; it != bc_face_areas[j].end(); it++)
+		{
+			gpc_free_polygon(it->second);
+			free(it->second);
+		}
+	}
+	bc_face_areas.clear();
+
 	/* Rivers */
 	for (i = 0; i < count_rivers; i++)
 	{
@@ -442,6 +454,7 @@ clean_up(void)
 	time_series_free(&print_zone_budget);
 	time_series_free(&print_zone_budget_tsv);
 	time_series_free(&print_zone_budget_heads);
+	time_series_free(&print_hdf_intermediate);
 
 	time_free(&current_print_flow_balance);
 	time_free(&current_print_hdf_chem);
@@ -460,6 +473,7 @@ clean_up(void)
 	time_free(&current_print_zone_budget);
 	time_free(&current_print_zone_budget_tsv);
 	time_free(&current_print_zone_budget_heads);
+	time_free(&current_print_hdf_intermediate);
 
 	/* print zones */
 	print_zone_struct_free(&print_zones_xyz);
@@ -710,7 +724,7 @@ initialize(void)
 	time_series_init(&print_zone_budget);
 	time_series_init(&print_zone_budget_tsv);
 	time_series_init(&print_zone_budget_heads);
-
+	time_series_init(&print_hdf_intermediate);
 
 	/* print_zones */
 	print_zone_struct_init(&print_zones_xyz);
@@ -784,6 +798,10 @@ initialize(void)
 	current_print_zone_budget_heads.type = UNDEFINED;
 	current_print_zone_budget_heads.value_defined = FALSE;
 	current_print_zone_budget_heads.input = NULL;
+
+	current_print_hdf_intermediate.type = UNDEFINED;
+	current_print_hdf_intermediate.value_defined = FALSE;
+	current_print_hdf_intermediate.input = NULL;
 
 	current_print_velocity.type = UNITS;
 	current_print_velocity.value = 0;

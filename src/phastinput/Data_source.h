@@ -44,6 +44,7 @@ class Data_source
 //   Units are converted in Data_source::Tidy so that this->pts has been converted.
 
 	void Init();
+	void RemoveDuplicatePts(void);
 	bool Read(std::istream & lines, bool read_num);
 	bool Read_mixture(std::istream & lines);
 	void Tidy(const bool make_nni);
@@ -104,6 +105,7 @@ class Data_source
 	};
 
 	std::vector < Point > &Get_points(void);
+	const std::vector < Point > &Get_points(void)const;
 	void Set_points(std::vector < Point > &pts);
 
 	std::vector < Point > &Get_user_points(void);
@@ -114,17 +116,8 @@ class Data_source
 	bool            Test_tree(void);
 	Polygon_tree *  Get_tree(void);
 
-	NNInterpolator *Get_nni(void);
+	NNInterpolator *Get_nni(void)const;
 	void Replace_nni(NNInterpolator *);
-
-	size_t Get_nni_unique(void)
-	{
-		return this->nni_unique;
-	};
-	void Set_nni_unique(size_t i)
-	{
-		this->nni_unique = i;
-	};
 
 	KDtree *Get_tree3d(void);
 
@@ -147,6 +140,7 @@ class Data_source
 	void Set_bounding_box(void);
 
 	Data_source *Get_data_source_with_points(void);
+	const Data_source *Get_data_source_with_points(void)const;
 
 	void Set_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM c)
 	{
@@ -169,6 +163,9 @@ class Data_source
 	bool operator!=(const Data_source &other) const;
 
 	// Data
+  public:
+	static std::map < const Data_source *, NNInterpolator * > NNInterpolatorMap;
+
   protected:
 	bool defined;
 	std::string file_name;
@@ -180,7 +177,6 @@ class Data_source
 	PHAST_polygon phast_polygons;
 	Polygon_tree *tree;
 	//NNInterpolator *   nni;
-	size_t nni_unique;
 	KDtree *tree3d;				/* used for 3D interpolation */
 	int columns;
 	int attribute;

@@ -34,6 +34,8 @@ static char const svnid[] =
 #include <errno.h>
 #include <float.h>
 #include "gpc.h"
+#include <list>
+#include <map>
 
 #include "index_range.h"
 #include "zone.h"
@@ -240,6 +242,8 @@ struct BC
 	struct time_series *bc_solution;
 	struct property *current_bc_solution;
 };
+EXTERNAL std::vector< std::list<int> > bc_list_of_cells;
+EXTERNAL std::vector< std::map<int, gpc_polygon *> > bc_face_areas;
 /* ----------------------------------------------------------------------
  *   Rivers
  * ---------------------------------------------------------------------- */
@@ -782,7 +786,7 @@ EXTERNAL int
 	simulation;
 /*EXTERNAL double *simulation_periods;*/
 EXTERNAL char
-	dimension[3];
+	dimension[4];
 EXTERNAL int
 	nx,
 	ny,
@@ -902,7 +906,8 @@ EXTERNAL struct time
 	current_print_zone_budget_tsv;
 EXTERNAL struct time
 	current_print_zone_budget_heads;
-
+EXTERNAL struct time
+	current_print_hdf_intermediate;
 /* print input data */
 EXTERNAL int
 	print_input_media;

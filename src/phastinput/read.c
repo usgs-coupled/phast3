@@ -49,19 +49,25 @@ int read_line_doubles(char *next_char, double **d, int *count_d,
 extern int read_lines_doubles(char *next_char, double **d, int *count_d,
 							  int *count_alloc, const char **opt_list,
 							  int count_opt_list, int *opt);
+int read_line_doubles_delimited(char *next_char, double **d,
+								int *count_d, int *count_alloc);
+extern int read_lines_doubles_delimited(char *next_char, double **d,
+										int *count_d, int *count_alloc,
+										const char **opt_list,
+										int count_opt_list, int *opt);
 #else
 STATIC int read_line_doubles(char *next_char, double **d, int *count_d,
 							 int *count_alloc);
 STATIC int read_lines_doubles(char *next_char, double **d, int *count_d,
 							  int *count_alloc, const char **opt_list,
 							  int count_opt_list, int *opt);
-#endif
 static int read_line_doubles_delimited(char *next_char, double **d,
 									   int *count_d, int *count_alloc);
 static int read_lines_doubles_delimited(char *next_char, double **d,
 										int *count_d, int *count_alloc,
 										const char **opt_list,
 										int count_opt_list, int *opt);
+#endif
 STATIC double *read_list_doubles(char **ptr, int *count_doubles);
 STATIC int read_media(void);
 STATIC int read_number_description(char *ptr, int *n_user,
@@ -5410,15 +5416,21 @@ read_property(char *ptr, const char **opt_list, int count_opt_list, int *opt,
 		start_of_data_source = ptr1;	/* start_of_data_source is start of constant | points | xyz */
 		p = read_property_only(start_of_data_source, opt_list, count_opt_list, opt,
 			  delimited, allow_restart);
-		p->mix = true;
-		p->mix1 = mix1;
-		p->mix2 = mix2;
+		if (p)
+		{
+			p->mix = true;
+			p->mix1 = mix1;
+			p->mix2 = mix2;
+		}
 	}
 	else
 	{
 		p = read_property_only(start_of_property, opt_list, count_opt_list, opt,
 			  delimited, allow_restart);
-		p->mix = false;
+		if (p)
+		{
+			p->mix = false;
+		}
 	}
 	return (p);
 }
@@ -6135,7 +6147,6 @@ read_lines_doubles(char *next_char, double **d, int *count_d,
 	}
 	return (OK);
 }
-#endif
 /* ---------------------------------------------------------------------- */
 int
 read_lines_doubles_delimited(char *next_char, double **d, int *count_d,
@@ -6231,6 +6242,7 @@ read_lines_doubles_delimited(char *next_char, double **d, int *count_d,
 	}
 	return (OK);
 }
+#endif
 
 /* ---------------------------------------------------------------------- */
 int
@@ -7947,10 +7959,12 @@ read_print_frequency(void)
 		, "heads_zone_flow_rates"	/* 67 */
 		, "heads_zone_flows"		/* 68 */
 		, "zone_flow_heads"	    	/* 69 */
+		, "zone_flow_xyzt"	    	/* 70 */
+		, "hdf_intermediate"	    /* 71 */
 
 
 	};
-	int count_opt_list = 70;
+	int count_opt_list = 72;
 /*
  *   Read flags:
  */
@@ -8383,13 +8397,17 @@ read_print_frequency(void)
 		case 67:				/* heads_zone_flow_rates */
 		case 68:				/* heads_zone_flows */
 		case 69:                /* zone_flow_heads */
+			{
+				warning_msg("Indentifier -zone_flow_heads is obsolete. Using -zone_flow_xyzt.");
+			}
+		case 70:                /* zone_flow_xyzt */
 			if (current_time.value_defined == TRUE)
 			{
 				property_time_ptr =
 					time_series_alloc_property_time(&print_zone_budget_heads);
 				read_frequency_data(&next_char,
 					&(property_time_ptr->time_value),
-					"Print frequency for zone_budget heads, in PRINT_FREQUENCY.");
+					"Print frequency for zone_flow_xyzt, in PRINT_FREQUENCY.");
 				time_copy(&current_time, &(property_time_ptr->time));
 			}
 			else
@@ -8398,6 +8416,22 @@ read_print_frequency(void)
 				error_msg("No start time for print frequency data", CONTINUE);
 			}
 			break;	
+		case 71:				/* hdf_intermediate */
+			if (current_time.value_defined == TRUE)
+			{
+				property_time_ptr =
+					time_series_alloc_property_time(&print_hdf_intermediate);
+				read_frequency_data(&next_char,
+									&(property_time_ptr->time_value),
+									"Print frequency for hdf_intermediate, in PRINT_FREQUENCY.");
+				time_copy(&current_time, &(property_time_ptr->time));
+			}
+			else
+			{
+				input_error++;
+				error_msg("No start time for print frequency data", CONTINUE);
+			}
+			break;
 		}
 		if (return_value == EOF || return_value == KEYWORD)
 			break;
@@ -10788,8 +10822,9 @@ read_zone_budget(void)
 		,"box"                  /* 8 */
 		,"write_heads_xyzt"     /* 9 */
 		,"domain"               /* 10 */
+		,"write_xyzt"           /* 11 */
 	};
-	int count_opt_list = 11;
+	int count_opt_list = 12;
 	/*
 	 *   Read grid data
 	 */
@@ -10940,9 +10975,10 @@ read_zone_budget(void)
 
 			}
 			break;
+#ifdef SKIP	
 		case 9:				/* write_heads_xyzt */
 			{
-				
+
 				zb->Get_filename_heads() = std::string(next_char);
 				size_t begin = zb->Get_filename_heads().find_first_not_of(" \t");
 				size_t end = zb->Get_filename_heads().find_last_not_of(" \t\n\0");
@@ -10963,9 +10999,47 @@ read_zone_budget(void)
 				opt = next_keyword_or_option(opt_list, count_opt_list);
 			}
 			break;
+#endif
 		case 10:				/* domain */
 			zb->Set_polyh(new Domain());
 			opt = next_keyword_or_option(opt_list, count_opt_list);
+			break;
+		case 9:				/* write_heads_xyzt */
+			{
+					sprintf(error_string,
+						"-write_heads_xyzt identifier is obsolete.\n"
+						"Using write_xyzt to give a prefix for .heads.xyzt, .soln.xyzt, and .soln.bc files.\n%s",
+						tag);
+			}
+		case 11:				/* write_xyzt */
+			{
+				std::string temp_str = next_char;
+				size_t startpos = temp_str.find_first_not_of(" \t");
+				size_t endpos = temp_str.find_last_not_of(" \t");
+				if((startpos == string::npos) || (endpos == string::npos))
+				{
+					temp_str = "";
+				}
+				else
+				{
+					temp_str = temp_str.substr(startpos, endpos - startpos + 1);
+				}
+				zb->Set_filename_heads(temp_str);
+				if (zb->Get_filename_heads().size() > 0)
+				{
+					zb->Set_write_heads(true);
+				}
+				else
+				{
+					sprintf(error_string,
+						"No file name for zone flow xyzt files %s",
+						tag);
+					error_msg(error_string, CONTINUE);
+					input_error++;
+					zb->Set_write_heads(false);
+				}
+				opt = next_keyword_or_option(opt_list, count_opt_list);
+			}
 			break;
 		}
 		return_value = check_line_return;

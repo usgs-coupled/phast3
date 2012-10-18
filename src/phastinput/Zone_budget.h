@@ -50,7 +50,7 @@ class Zone_budget
 	{
 		return this->combo;
 	};
-	bool Get_write_heads(void)
+	bool Get_write_heads(void)const
 	{
 		return this->write_heads;
 	};
@@ -58,14 +58,18 @@ class Zone_budget
 	{
 		this->write_heads = tf;
 	};
-	std::string & Get_filename_heads(void)
+	std::string Get_filename_heads(void)
 	{
 		return this->filename_heads;
+	};
+	void Set_filename_heads(const std::string t)
+	{
+		this->filename_heads = t;
 	};
 
 	//bool               Add_cells(std::vector<int> &cells_in_budget, int nxyz, std::vector<Point> *cell_xyz);
 	bool Add_cells(std::vector < bool > &cells_in_budget, zone * z, int nxyz,
-				   std::vector < Point > *cell_xyz);
+				   std::vector < Point > *cell_xyz) const;
 
 	friend std::ostream& operator<< (std::ostream &os, const Zone_budget &a);
 

@@ -11,7 +11,6 @@
 #include "PHAST_polygon.h"
 #include "NNInterpolator/NNInterpolator.h"
 #include "Filedata.h"
-#include "UniqueMap.h"
 
 #if defined(__WPHAST__) && defined(_DEBUG)
 #include <afx.h> // CDumpContext
@@ -26,6 +25,9 @@
 #if defined(_WIN32) && defined(_DEBUG)
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
 #endif
+
+// static
+std::map < const Data_source *, NNInterpolator * > Data_source::NNInterpolatorMap;
 
 Data_source::Data_source(void)
 {
@@ -78,7 +80,6 @@ pts(r.pts),
 pts_user(r.pts_user),
 phast_polygons(r.phast_polygons),
 tree(NULL),
-nni_unique(r.nni_unique),
 tree3d(NULL),
 columns(r.columns),
 attribute(r.attribute),
@@ -86,6 +87,13 @@ box(r.box),
 coordinate_system(r.coordinate_system),
 coordinate_system_user(r.coordinate_system_user)
 {
+	std::map < const Data_source *, NNInterpolator * >::const_iterator cit = Data_source::NNInterpolatorMap.find(&r);
+	if (cit != Data_source::NNInterpolatorMap.end())
+	{
+		Data_source::NNInterpolatorMap.insert(
+			std::map < const Data_source *, NNInterpolator * >::value_type(this, cit->second)
+			);
+	}
 }
 Data_source & Data_source::operator=(const Data_source & rhs)
 {
@@ -100,8 +108,13 @@ Data_source & Data_source::operator=(const Data_source & rhs)
 		this->pts_user = rhs.pts_user;
 		this->phast_polygons = rhs.phast_polygons;
 		this->tree = NULL;		// lazy initialization
-		//this->nni                    = rhs.nni;
-		this->nni_unique = rhs.nni_unique;
+		std::map < const Data_source *, NNInterpolator * >::const_iterator cit = Data_source::NNInterpolatorMap.find(&rhs);
+		if (cit != Data_source::NNInterpolatorMap.end())
+		{
+			Data_source::NNInterpolatorMap.insert(
+				std::map < const Data_source *, NNInterpolator * >::value_type(this, cit->second)
+				);
+		}
 		this->tree3d = NULL;	// lazy initialization
 		this->columns = rhs.columns;
 		this->attribute = rhs.attribute;
@@ -123,7 +136,6 @@ Data_source::Init()
 	this->source_type_user = Data_source::NONE;
 	this->attribute = -1;
 	zone_init(&this->box);
-	this->nni_unique = -1;
 	this->columns = 0;
 	this->tree = NULL;
 	this->tree3d = NULL;
@@ -633,7 +645,7 @@ Data_source::Tidy(const bool make_nni)
 		else
 		{
 			this->filedata = Filedata::file_data_map.find(this->file_name)->second;
-			if (this->Get_coordinate_system() != this->filedata->Get_coordinate_system())
+			if (this->Get_user_coordinate_system() != this->filedata->Get_coordinate_system())
 			{
 				ostringstream oss;
 				oss << "File was previously defined with a different coordinate system. (" << this->file_name << ")";
@@ -672,7 +684,7 @@ Data_source::Tidy(const bool make_nni)
 		else
 		{
 			this->filedata = Filedata::file_data_map.find(this->file_name)->second;
-			if (this->Get_coordinate_system() != this->filedata->Get_coordinate_system())
+			if (this->Get_user_coordinate_system() != this->filedata->Get_coordinate_system())
 			{
 				ostringstream oss;
 				oss << "File was previously defined with a different coordinate system. (" << this->file_name << ")";
@@ -702,7 +714,7 @@ Data_source::Tidy(const bool make_nni)
 		else
 		{
 			this->filedata = Filedata::file_data_map.find(this->file_name)->second;
-			if (this->Get_coordinate_system() != this->filedata->Get_coordinate_system())
+			if (this->Get_user_coordinate_system() != this->filedata->Get_coordinate_system())
 			{
 				ostringstream oss;
 				oss << "File was previously defined with a different coordinate system. (" << this->file_name << ")";
@@ -720,7 +732,7 @@ Data_source::Tidy(const bool make_nni)
 		break;
 	case Data_source::CONSTANT:
 	case Data_source::POINTS:
-		assert(this->pts.size() == this->pts_user.size() || (this->source_type_user == Data_source::NONE && this->pts_user.size() == 0));
+		assert(this->pts.size() == this->pts_user.size() || (this->source_type_user == Data_source::NONE && this->pts_user.size() == 0) || (this->source_type_user == Data_source::CONSTANT && this->pts_user.size() == 0));
 		break;
 	case Data_source::XYZT:
 		if (Filedata::file_data_map.find(this->file_name) ==
@@ -733,7 +745,7 @@ Data_source::Tidy(const bool make_nni)
 		else
 		{
 			this->filedata = Filedata::file_data_map.find(this->file_name)->second;
-			if (this->Get_coordinate_system() != this->filedata->Get_coordinate_system())
+			if (this->Get_user_coordinate_system() != this->filedata->Get_coordinate_system())
 			{
 				ostringstream oss;
 				oss << "File was previously defined with a different coordinate system. (" << this->file_name << ")";
@@ -790,6 +802,34 @@ std::vector < Point > &Data_source::Get_points()
 //      Filedata *f_ptr = it->second;
 //      std::vector<Point> pts = f_ptr->Get_points(this->attribute);
 //    }
+		assert(Filedata::file_data_map.find(this->file_name) != Filedata::file_data_map.end());
+		return (Filedata::file_data_map.find(this->file_name)->second->
+				Get_points(this->attribute));
+		break;
+	default:
+		break;
+	}
+	/*
+	   case Data_source::CONSTANT:
+	   case Data_source::POINTS:
+	   case Data_source::NONE:
+	 */
+	return (this->pts);
+}
+const std::vector < Point > &Data_source::Get_points()const
+{
+	switch (this->source_type)
+	{
+	case Data_source::ARCRASTER:
+	case Data_source::XYZ:
+	case Data_source::SHAPE:
+	case Data_source::XYZT:
+//    {
+//      std::map<std::string,Filedata *>::iterator it = Filedata::file_data_map.find(this->file_name);
+//      Filedata *f_ptr = it->second;
+//      std::vector<Point> pts = f_ptr->Get_points(this->attribute);
+//    }
+		assert(Filedata::file_data_map.find(this->file_name) != Filedata::file_data_map.end());
 		return (Filedata::file_data_map.find(this->file_name)->second->
 				Get_points(this->attribute));
 		break;
@@ -1011,8 +1051,9 @@ Data_source::Get_nni(void)
 	return NULL;
 }
 #endif
+
 NNInterpolator *
-Data_source::Get_nni(void)
+Data_source::Get_nni(void)const
 {
 	/*	switch (this->source_type)
 	{
@@ -1054,15 +1095,17 @@ Data_source::Get_nni(void)
 	case Data_source::XYZ:
 	case Data_source::POINTS:
 		{
-			Data_source * ds = this->Get_data_source_with_points();
+			const Data_source * ds = this->Get_data_source_with_points();
 			if (ds == NULL) return (NULL);
-			if (ds->nni_unique == std::string::npos)
+			if (Data_source::NNInterpolatorMap.find(ds) == Data_source::NNInterpolatorMap.end())
 			{
 				NNInterpolator * nni = new NNInterpolator();
 				nni->preprocess(ds->Get_points(), ds->coordinate_system);
-				ds->Set_nni_unique(NNInterpolator::NNInterpolatorMap.push_back(nni));
+				Data_source::NNInterpolatorMap.insert(
+					std::map < const Data_source *, NNInterpolator * >::value_type(ds, nni)
+					);
 			}
-			return (NNInterpolator::NNInterpolatorMap.at(ds->nni_unique));
+			return (Data_source::NNInterpolatorMap.find(ds)->second);
 		}
 		break;
 	default:
@@ -1073,7 +1116,7 @@ Data_source::Get_nni(void)
 void
 Data_source::Replace_nni(NNInterpolator * nni_ptr)
 {
-	Data_source *ds;
+	Data_source *ds = NULL;
 	switch (this->source_type)
 	{
 	case Data_source::SHAPE:
@@ -1092,14 +1135,17 @@ Data_source::Replace_nni(NNInterpolator * nni_ptr)
 		break;
 	}
 	assert(ds != NULL);
-	if (ds->nni_unique != std::string::npos)
+	if (ds)
 	{
-		NNInterpolator::NNInterpolatorMap.replace(ds->nni_unique, nni_ptr);
-	}
-	else
-	{
-		ds->Set_nni_unique(NNInterpolator::NNInterpolatorMap.
-						   push_back(nni_ptr));
+		std::map < const Data_source *, NNInterpolator * >::iterator it = Data_source::NNInterpolatorMap.find(ds);
+		if (it != Data_source::NNInterpolatorMap.end())
+		{
+			delete it->second;
+			Data_source::NNInterpolatorMap.erase(it);
+		}
+		Data_source::NNInterpolatorMap.insert(
+			std::map < const Data_source *, NNInterpolator * >::value_type(ds, nni_ptr)
+			);
 	}
 	return;
 }
@@ -1198,8 +1244,15 @@ Data_source::Convert_coordinates(PHAST_Transform::COORDINATE_SYSTEM target,
 			//this->Set_bounding_box();
 			ds->Set_bounding_box();
 			ds->Set_coordinate_system(PHAST_Transform::GRID);
-			ds->nni_unique = -1;
 			ds->phast_polygons.Clear();
+
+			// nni (remove from map)
+			std::map < const Data_source *, NNInterpolator * >::iterator it = Data_source::NNInterpolatorMap.find(ds);
+			if (it != Data_source::NNInterpolatorMap.end())
+			{
+				delete (it->second);
+				Data_source::NNInterpolatorMap.erase(it);				
+			}
 
 			// nni
 			//if (ds->Get_nni() != NULL)
@@ -1220,9 +1273,15 @@ Data_source::Convert_coordinates(PHAST_Transform::COORDINATE_SYSTEM target,
 			//this->Set_bounding_box();
 			ds->Set_bounding_box();
 			ds->Set_coordinate_system(PHAST_Transform::MAP);
-			ds->nni_unique = -1;
 			ds->phast_polygons.Clear();
 
+			// nni (remove from map)
+			std::map < const Data_source *, NNInterpolator * >::iterator it = Data_source::NNInterpolatorMap.find(ds);
+			if (it != Data_source::NNInterpolatorMap.end())
+			{
+				delete (it->second);
+				Data_source::NNInterpolatorMap.erase(it);				
+			}
 			// nni
 			/*if (ds->Get_nni() != NULL)
 			{
@@ -1241,6 +1300,7 @@ Data_source::Convert_coordinates(PHAST_Transform::COORDINATE_SYSTEM target,
 		this->Set_bounding_box();
 	}
 }
+
 Data_source *
 Data_source::Get_data_source_with_points(void)
 {
@@ -1265,21 +1325,44 @@ Data_source::Get_data_source_with_points(void)
 	return (ds);
 }
 
+const Data_source *
+Data_source::Get_data_source_with_points(void)const
+{
+	const Data_source *ds = NULL;
+	switch (this->source_type)
+	{
+	case Data_source::SHAPE:
+	case Data_source::ARCRASTER:
+	case Data_source::XYZ:
+	case Data_source::XYZT:
+		assert(this->filedata != NULL);
+		ds = this->filedata->Get_data_source(this->attribute);
+		break;
+	case Data_source::CONSTANT:
+	case Data_source::POINTS:
+		ds = this;
+		break;
+	case NONE:
+		ds = NULL;
+	}
+	assert(ds != NULL);
+	return (ds);
+}
+
 bool Data_source::Make_nni(void)
 {
-	Data_source *
+	const Data_source *
 		ds = this->Get_data_source_with_points();
 	if (ds == NULL)
 		return false;
 
-	//if (ds->nni_unique == -1)
-	if (ds->nni_unique == std::string::npos)
-
+	if (Data_source::NNInterpolatorMap.find(ds) == Data_source::NNInterpolatorMap.end())
 	{
-		NNInterpolator *
-			nni = new NNInterpolator();
+		NNInterpolator * nni = new NNInterpolator();
 		nni->preprocess(ds->Get_points(), ds->coordinate_system);
-		ds->Set_nni_unique(NNInterpolator::NNInterpolatorMap.push_back(nni));
+		Data_source::NNInterpolatorMap.insert(
+			std::map < const Data_source *, NNInterpolator * >::value_type(ds, nni)
+			);
 	}
 	return true;
 }
@@ -1446,7 +1529,38 @@ bool Data_source::operator!=(const Data_source &other) const
 {
 	return !(*this == other);
 }
+void
+Data_source::RemoveDuplicatePts()
+{
+	bool warning_identical = true;
 
+	std::vector<Point>::iterator it = this->pts.begin();
+	std::vector<Point> sublist;
+	sublist.push_back(*it);
+
+	// check for duplicate pts
+	for (it = this->pts.begin() + 1; it != this->pts.end(); it++)
+	{
+		if (it->x() != sublist.back().x() ||
+			it->y() != sublist.back().y())
+		{
+			sublist.push_back(*it);
+		}
+		else
+		{
+			if (warning_identical)
+			{
+				warning_msg	("Identical point removed from point list. ");
+			}
+		}
+	}
+	if (sublist.front().x() == sublist.back().x() &&
+		sublist.front().y() == sublist.back().y())
+	{
+		sublist.pop_back();
+	}
+	this->pts = sublist;
+}
 #if defined(__WPHAST__) && defined(_DEBUG)
 CDumpContext& operator<<(CDumpContext& dc, Data_source::DATA_SOURCE_TYPE st)
 {

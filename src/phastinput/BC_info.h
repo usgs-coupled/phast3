@@ -14,12 +14,12 @@ class BC_info
 		BC_LEAKY = 10,
 		BC_UNDEFINED
 	};
-	  BC_info(void);
-	  BC_info(const BC_info & bcinfo);
-	  BC_info & operator=(const BC_info & bcinfo);
-  public:
-	 ~BC_info(void);
-  public:
+	BC_info(void);
+	BC_info(const BC_info & bcinfo);
+	BC_info & operator=(const BC_info & bcinfo);
+public:
+	~BC_info(void);
+public:
 	// Methods
 	void Free_poly(void);
 

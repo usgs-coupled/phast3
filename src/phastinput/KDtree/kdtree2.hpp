@@ -123,7 +123,7 @@ public:
   // search for n nearest to a given query vector 'qv' usin
   // exhaustive slow search.  For debugging, usually.
 
-  void n_nearest(vector<double>& qv, int nn, kdtree2_result_vector& result);
+  void n_nearest(vector<double>& qv, int nn, kdtree2_result_vector& result)const;
   // search for n nearest to a given query vector 'qv'.
 
   void n_nearest_around_point(int idxin, int correltime, int nn,
@@ -205,18 +205,18 @@ private:
   
   kdtree2_node *left, *right;  // pointers to left and right nodes. 
 
-  void search(searchrecord& sr); 
+  void search(searchrecord& sr)const; 
   // recursive innermost core routine for searching.. 
 
-  bool box_in_search_range(searchrecord& sr);
+  bool box_in_search_range(searchrecord& sr)const;
   // return true if the bounding box for this node is within the
   // search range given by the searchvector and maximum ballsize in 'sr'. 
 public:
   friend void check_query_in_bound(searchrecord& sr); // debugging only
 private:
   // for processing final buckets. 
-  void process_terminal_node(searchrecord& sr);
-  void process_terminal_node_fixedball(searchrecord& sr);
+  void process_terminal_node(searchrecord& sr)const;
+  void process_terminal_node_fixedball(searchrecord& sr)const;
 
 
 };

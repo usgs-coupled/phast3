@@ -26,7 +26,8 @@ class Polyhedron
 		CUBE = 0,
 		WEDGE = 1,
 		PRISM = 2,
-		GRID_DOMAIN = 3
+		GRID_DOMAIN = 3,
+		NONE = 4
 	};
 
 	// Methods
@@ -37,6 +38,10 @@ class Polyhedron
 	//virtual gpc_polygon *Face_polygon(Cell_Face face) = 0;
 	virtual gpc_polygon *Slice(Cell_Face face, double coord) = 0;
 
+	const struct zone *Get_bounding_box()const
+	{
+		return &(this->box);
+	}
 	struct zone *Get_bounding_box()
 	{
 		return &(this->box);
@@ -54,7 +59,7 @@ class Polyhedron
 		this->tag = tag;
 	}
 	//PHAST_Transform::COORDINATE_SYSTEM Get_coordinate_system() {return this->coordinate_system;}
-	bool Point_in_bounding_box(const Point & pt);
+	bool Point_in_bounding_box(const Point & pt) const;
 	enum POLYHEDRON_TYPE get_type(void) const;
 
 	friend std::ostream & operator<<(std::ostream & o, const Polyhedron & p);

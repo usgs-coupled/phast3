@@ -10,6 +10,7 @@ using namespace boost;
 
 // static
 std::list < KDtree * >KDtree::KDtreeList;
+
 KDtree::KDtree(const KDtree & t):
 realdata(t.realdata),
 v(t.v)
@@ -17,7 +18,7 @@ v(t.v)
 	this->tree = new kdtree2(this->realdata, true);
 }
 
-KDtree::KDtree(std::vector < Point > &pts, size_t dims):realdata(extents[pts.size()][dims])
+KDtree::KDtree(const std::vector < Point > &pts, size_t dims):realdata(extents[pts.size()][dims])
 {
 	int
 		n = (int) pts.size();
@@ -27,7 +28,7 @@ KDtree::KDtree(std::vector < Point > &pts, size_t dims):realdata(extents[pts.siz
 	for (i = 0; i < n; i++)
 	{
 		v.push_back(pts[i].get_v());
-		for (j = 0; j < dims; j++)
+		for (j = 0; j < (int) dims; j++)
 		{
 			realdata[i][j] = pts[i].get_coord()[j];
 		}
@@ -48,19 +49,35 @@ KDtree::KDtree(point * pts, size_t count):realdata(extents[count][3])
 	this->tree = new kdtree2(this->realdata, true);
 }
 #endif
+
 KDtree & KDtree::operator=(const KDtree & rhs)
 {
 	if (this != &rhs)
 	{
 		this->v = rhs.v;
+
+#if (_MSC_VER > 1400) && !defined(NDEBUG)
+		// Patch needed for BOOST and Visual Studio 2010
+		assert(rhs.realdata.num_dimensions() == this->realdata.num_dimensions());
+		assert(std::equal(rhs.realdata.shape(),rhs.realdata.shape()+this->realdata.num_dimensions(),
+			this->realdata.shape()));
+
+		multi_array < double, 2 >::const_iterator other_it = rhs.realdata.begin();
+		multi_array < double, 2 >::iterator this_it = this->realdata.begin();
+		for (; this_it != this->realdata.end(); ++this_it, ++other_it)
+			*this_it = *other_it;
+#else
 		this->realdata = rhs.realdata;
+#endif
+
 		this->tree = new kdtree2(this->realdata, true);
 	}
 	return *this;
 }
 
+
 int
-KDtree::Nearest(Point pt)
+KDtree::Nearest(Point pt)const
 {
 	int dim = this->tree->dim;
 	kdtree2_result_vector result;

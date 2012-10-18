@@ -15,6 +15,14 @@ Filedata::Filedata(void)
 	this->file_type = Filedata::NONE;
 }
 
+Filedata::Filedata(FILE_TYPE ft, std::string fn, int attribute, PHAST_Transform::COORDINATE_SYSTEM point_system, const Data_source *ds)
+: file_type(ft)
+, filename(fn)
+, coordinate_system(point_system)
+{
+	this->data_source_map[attribute] = new Data_source(*ds);
+}
+
 Filedata::~Filedata(void)
 {
 	//this->nni_map.clear();
@@ -83,6 +91,16 @@ Filedata::Get_data_source(int attribute)
 	return (NULL);
 }
 
+const Data_source *
+Filedata::Get_data_source(int attribute)const
+{
+	if (this->data_source_map.find(attribute) != this->data_source_map.end())
+	{
+		return (this->data_source_map.find(attribute)->second);
+	}
+	return (NULL);
+}
+
 double
 Filedata::Interpolate(int attribute, Point p,
 					  PHAST_Transform::COORDINATE_SYSTEM point_system,
@@ -120,6 +138,7 @@ Filedata::Interpolate(int attribute, Point p,
 		default:
 			break;
 		}
+		break;
 	case PHAST_Transform::MAP:
 		switch (ds->Get_coordinate_system())
 		{
@@ -135,6 +154,7 @@ Filedata::Interpolate(int attribute, Point p,
 		default:
 			break;
 		}
+		break;
 	case PHAST_Transform::NONE:
 		break;
 	}
@@ -148,9 +168,9 @@ Filedata::Interpolate(int attribute, Point p,
 }
 
 NNInterpolator *
-Filedata::Get_nni(int attribute)
+Filedata::Get_nni(int attribute) const
 {
-	std::map < int, Data_source * >::iterator it =
+	std::map < int, Data_source * >::const_iterator it =
 		this->data_source_map.find(attribute);
 	assert(it->second->Get_source_type() == Data_source::POINTS);
 	if (it != this->data_source_map.end())
