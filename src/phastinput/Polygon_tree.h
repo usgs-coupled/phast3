@@ -31,6 +31,7 @@ class Polygon_tree
 	Polygon_tree(void);
 	Polygon_tree(PHAST_polygon & polys);
 	Polygon_tree(const Polygon_tree & tree);
+	Polygon_tree(gpc_polygon * polys, PHAST_Transform::COORDINATE_SYSTEM cs);
 
   public:
 	  virtual ~ Polygon_tree(void);

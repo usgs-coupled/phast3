@@ -44,6 +44,7 @@ time_series_read_property(char *ptr, const char **opt_list,
 			(next_char, &property_time_ptr, opt_list, count_opt_list,
 			 opt) == ERROR)
 		{
+			property_time_free(property_time_ptr);
 			time_series_free(ts_ptr);
 			free_check_null(ts_ptr);
 			return NULL;
@@ -303,13 +304,25 @@ time_series_free(struct time_series *ts_ptr)
 		return NULL;
 	for (i = 0; i < ts_ptr->count_properties; i++)
 	{
-		property_free(ts_ptr->properties[i]->property);
-		time_free(&ts_ptr->properties[i]->time);
-		time_free(&ts_ptr->properties[i]->time_value);
-		free_check_null(ts_ptr->properties[i]);
+		property_time_free(ts_ptr->properties[i]);
 	};
 	free_check_null(ts_ptr->properties);
 	return NULL;
+}
+
+/* ---------------------------------------------------------------------- */
+int
+property_time_free(struct property_time *pt_ptr)
+/* ---------------------------------------------------------------------- */
+{
+	if (pt_ptr)
+	{
+		property_free(pt_ptr->property);
+		time_free(&pt_ptr->time);
+		time_free(&pt_ptr->time_value);
+		free_check_null(pt_ptr);
+	}
+	return (OK);
 }
 
 /* ---------------------------------------------------------------------- */
@@ -413,6 +426,7 @@ property_time_read(char *next_char, struct property_time **property_time_ptr,
 	{
 		input_error++;
 		error_msg("Reading property for time series", CONTINUE);
+		return (ERROR);
 	} 
 	return (OK);
 }
@@ -568,6 +582,7 @@ collate_simulation_periods(void)
 	accumulate_time_series(&print_zone_budget);
 	accumulate_time_series(&print_zone_budget_tsv);
 	accumulate_time_series(&print_zone_budget_heads);
+	accumulate_time_series(&print_hdf_intermediate);
 
 	/*
 	 *  Add in all but last time_end

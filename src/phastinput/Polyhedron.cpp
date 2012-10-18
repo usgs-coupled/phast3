@@ -8,9 +8,9 @@ Polyhedron::~Polyhedron(void)
 {
 }
 
-bool Polyhedron::Point_in_bounding_box(const Point & s)
+bool Polyhedron::Point_in_bounding_box(const Point & s)const
 {
-	struct zone *
+	const struct zone *
 		zo = this->Get_bounding_box();
 	Point
 		t = s;

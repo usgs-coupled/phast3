@@ -43,4 +43,5 @@ EXTERNAL struct time_series print_restart;
 EXTERNAL struct time_series print_zone_budget;
 EXTERNAL struct time_series print_zone_budget_tsv;
 EXTERNAL struct time_series print_zone_budget_heads;
+EXTERNAL struct time_series print_hdf_intermediate;
 #endif

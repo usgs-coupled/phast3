@@ -59,7 +59,74 @@ Polygon_leaf::~Polygon_leaf()
 		delete this->polygon;
 	}
 }
+bool Polygon_leaf::split()
+{
+	// check number of points
+	if (this->polygon->Get_points().size() < 10)
+		return false;
+	PHAST_Transform::COORDINATE_SYSTEM cs =
+		this->polygon->Get_coordinate_system();
+// COMMENT: {7/7/2008 5:27:11 PM}  if (this->polygon->Get_points().size() < 10) return false;
 
+	gpc_polygon *
+		//whole = PHAST_polygon2gpc_polygon(this->polygon);
+		whole = this->polygon->Get_whole();
+
+	this->left = new Polygon_leaf;
+	this->right = new Polygon_leaf;
+
+	this->left->box = this->box;
+	this->right->box = this->box;
+	if (this->split_x)
+	{
+		this->left->box.x2 = (this->left->box.x1 + this->left->box.x2) / 2.0;
+		this->right->box.x1 =
+			(this->right->box.x1 + this->right->box.x2) / 2.0;
+	}
+	else
+	{
+		this->left->box.y2 = (this->left->box.y1 + this->left->box.y2) / 2.0;
+		this->right->box.y1 =
+			(this->right->box.y1 + this->right->box.y2) / 2.0;
+	}
+	this->left->split_x = !this->split_x;
+	this->right->split_x = !this->split_x;
+
+	// Make left leaf
+	{
+		gpc_polygon *
+			rect = rectangle(this->left->box.x1, this->left->box.y1,
+							 this->left->box.x2, this->left->box.y2);
+		gpc_polygon *
+			gpc_poly = empty_polygon();
+		gpc_polygon_clip(GPC_INT, whole, rect, gpc_poly);
+		this->left->polygon = new PHAST_polygon(gpc_poly, cs);
+		gpc_free_polygon(rect);
+		free_check_null(rect);
+		gpc_free_polygon(gpc_poly);
+		free_check_null(gpc_poly);
+	}
+
+	// Make right leaf
+	{
+		gpc_polygon *
+			rect = rectangle(this->right->box.x1, this->right->box.y1,
+							 this->right->box.x2, this->right->box.y2);
+		gpc_polygon *
+			gpc_poly = empty_polygon();
+		gpc_polygon_clip(GPC_INT, whole, rect, gpc_poly);
+		this->right->polygon = new PHAST_polygon(gpc_poly, cs);
+		gpc_free_polygon(rect);
+		free_check_null(rect);
+		gpc_free_polygon(gpc_poly);
+		free_check_null(gpc_poly);
+	}
+	//gpc_free_polygon(whole);
+	//free_check_null(whole);
+	return true;
+
+}
+#ifdef SKIP
 bool Polygon_leaf::split()
 {
 	// check number of points
@@ -126,7 +193,7 @@ bool Polygon_leaf::split()
 	return true;
 
 }
-
+#endif
 bool Polygon_leaf::Point_in_polygon(Point p)
 {
 	return (this->polygon->Point_in_polygon(p));
@@ -151,7 +218,20 @@ Polygon_tree::Polygon_tree(PHAST_polygon & polys)
 	this->all_leaves.push_back(root);
 
 }
+Polygon_tree::Polygon_tree(gpc_polygon * polys, PHAST_Transform::COORDINATE_SYSTEM cs)
+{
+	this->root = new Polygon_leaf;
+	this->root->polygon = new PHAST_polygon(polys, cs);
+	zone *zone_ptr = this->root->polygon->Get_bounding_box();
+	this->root->box.x1 = zone_ptr->x1;
+	this->root->box.y1 = zone_ptr->y1;
+	this->root->box.z1 = zone_ptr->z1;
+	this->root->box.x2 = zone_ptr->x2;
+	this->root->box.y2 = zone_ptr->y2;
+	this->root->box.z2 = zone_ptr->z2;
+	this->all_leaves.push_back(root);
 
+}
 Polygon_tree::Polygon_tree(const Polygon_tree &tree)
 {
 	this->root = new Polygon_leaf(*tree.root);
@@ -249,12 +329,13 @@ gpc_polygon *Polygon_tree::Intersect(gpc_polygon * cell_polygon)
 				z.y1 > z_leaf->y2 || z.y2 < z_leaf->y1) continue;
 			gpc_polygon *intersection = empty_polygon();
 			//gpc_polygon *sub_polygon = PHAST_polygon2gpc_polygon((*it)->polygon);
-			gpc_polygon *sub_poly = PHAST_polygon2gpc_polygon((*it)->polygon);
+			//gpc_polygon *sub_poly = PHAST_polygon2gpc_polygon((*it)->polygon);
+			gpc_polygon *sub_poly = (*it)->polygon->Get_whole();
 			gpc_polygon_clip(GPC_INT, sub_poly, cell_polygon, intersection);
 			gpc_polygon_clip(GPC_UNION, cummulative_intersection, intersection, cummulative_intersection);
 			/* free space */
-			gpc_free_polygon(sub_poly);
-			free_check_null(sub_poly);
+			//gpc_free_polygon(sub_poly);
+			//free_check_null(sub_poly);
 			gpc_free_polygon(intersection);
 			free_check_null(intersection);
 		}

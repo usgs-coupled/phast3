@@ -23,6 +23,7 @@ class Filedata
 	};
 
 	  Filedata(void);
+	  Filedata(FILE_TYPE ft, std::string filename, int attribute, PHAST_Transform::COORDINATE_SYSTEM point_system, const Data_source *ds);
   public:
 	virtual ~ Filedata(void);
 	virtual bool Make_polygons(int field, PHAST_polygon & polygons) = 0;
@@ -35,7 +36,8 @@ class Filedata
 						 PHAST_Transform::COORDINATE_SYSTEM system);
 
 	Data_source *Get_data_source(int attribute);
-	NNInterpolator *Get_nni(int attribute);
+	const Data_source *Get_data_source(int attribute)const;
+	NNInterpolator *Get_nni(int attribute)const;
 	FILE_TYPE Get_file_type(void)
 	{
 		return this->file_type;

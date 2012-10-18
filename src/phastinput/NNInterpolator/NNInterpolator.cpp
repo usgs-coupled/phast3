@@ -1,12 +1,14 @@
 // This is the main DLL file.
 #include <float.h>
 
+#include <map>
 #include "../KDtree/Point.h"
 #include "config.h"
 #include "nan.h"
 #include "../message.h"
 #include "../KDtree/KDtree.h"
 #include "NNInterpolator.h"
+#include "../Data_source.h"
 
 
 // Note: No header files should follow the next three lines
@@ -15,8 +17,7 @@
 #endif
 
 // static
-//std::list<NNInterpolator*> NNInterpolator::NNInterpolatorList;
-UniqueMap < NNInterpolator * >NNInterpolator::NNInterpolatorMap;
+std::map< const NNInterpolator*, KDtree* > NNInterpolator::KDtreeMap;
 
 // Constructors
 NNInterpolator::NNInterpolator(void)
@@ -24,7 +25,6 @@ NNInterpolator::NNInterpolator(void)
 	this->delaunay_triangulation = NULL;
 	this->nn = NULL;
 	this->pin = NULL;
-	this->tree = NULL;
 	this->point_count = 0;
 	this->coordinate_system = PHAST_Transform::NONE;
 }
@@ -38,7 +38,12 @@ NNInterpolator::~NNInterpolator(void)
 		delaunay_destroy(this->delaunay_triangulation);
 	if (this->pin != NULL)
 		delete this->pin;
-	// this->tree cleaned up in main Clear_KDtreeList()
+	// KDtree* cleaned up in main Clear_KDtreeList()
+	std::map< const NNInterpolator *, KDtree * >::iterator cit = NNInterpolator::KDtreeMap.find(this);
+	if (cit != NNInterpolator::KDtreeMap.end())
+	{
+		NNInterpolator::KDtreeMap.erase(cit);
+	}
 }
 
 bool
@@ -103,7 +108,7 @@ nnpi_interpolate(std::vector < Point > &pts_in,
 	return true;
 }
 
-bool NNInterpolator::preprocess(std::vector < Point > &pts_in,
+bool NNInterpolator::preprocess(const std::vector < Point > &pts_in,
 								PHAST_Transform::COORDINATE_SYSTEM cs)
 {
 	this->coordinate_system = cs;
@@ -160,7 +165,7 @@ bool NNInterpolator::preprocess(std::vector < Point > &pts_in,
 double
 NNInterpolator::interpolate(const Point & p,
 							PHAST_Transform::COORDINATE_SYSTEM point_system,
-							PHAST_Transform * map2grid)
+							PHAST_Transform * map2grid)const
 {
 	switch (point_system)
 	{
@@ -210,7 +215,7 @@ NNInterpolator::interpolate(const Point & p,
 }
 
 double
-NNInterpolator::interpolate(const Point & pt)
+NNInterpolator::interpolate(const Point & pt)const
 {
 	// Point is in same coordinate units as nni interpolator
 	point pout;
@@ -244,10 +249,11 @@ NNInterpolator::interpolate(const Point & pt)
 }
 
 KDtree *
-NNInterpolator::get_tree(void)
+NNInterpolator::get_tree(void)const
 {
-	if (this->tree == 0)
+	if (NNInterpolator::KDtreeMap.find(this) == NNInterpolator::KDtreeMap.end())
 	{
+		KDtree *tree = NULL;
 		if (this->point_count > 0)
 		{
 			assert(this->pin != NULL);
@@ -258,25 +264,33 @@ NNInterpolator::get_tree(void)
 				Point p(this->pin[i].x, this->pin[i].y, this->pin[i].z);
 				pts.push_back(p);
 			}
-			//this->tree = new KDtree(this->pin, this->point_count);
-			this->tree = new KDtree(pts, 2);
-			KDtree::KDtreeList.push_back(this->tree);
+			tree = new KDtree(pts, 2);
+			KDtree::KDtreeList.push_back(tree);
 		}
+		NNInterpolator::KDtreeMap.insert(
+			std::map < const NNInterpolator *, KDtree * >::value_type(this, tree)
+			);
 	}
-	return this->tree;
+
+	std::map< const NNInterpolator *, KDtree * >::iterator it = NNInterpolator::KDtreeMap.find(this);
+	if (it != NNInterpolator::KDtreeMap.end())
+	{
+		return it->second;
+	}
+	else
+	{
+		assert(false);
+	}
+	return NULL;
 }
 
 void
 Clear_NNInterpolatorList(void)
 {
-	//std::list<NNInterpolator*>::iterator it = NNInterpolator::NNInterpolatorList.begin();
-	UniqueMap < NNInterpolator * >::iterator it =
-		NNInterpolator::NNInterpolatorMap.begin();
-	//for (; it != NNInterpolator::NNInterpolatorList.end(); ++it)
-	for (; it != NNInterpolator::NNInterpolatorMap.end(); ++it)
+	std::map < const Data_source *, NNInterpolator * >::iterator it = Data_source::NNInterpolatorMap.begin();
+	for (; it != Data_source::NNInterpolatorMap.end(); ++it)
 	{
-		delete(*it);
+		delete(it->second);
 	}
-	//NNInterpolator::NNInterpolatorList.clear();
-	NNInterpolator::NNInterpolatorMap.clear();
+	Data_source::NNInterpolatorMap.clear();
 }

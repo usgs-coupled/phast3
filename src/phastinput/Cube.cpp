@@ -71,7 +71,7 @@ Cube::Set_bounding_box()
 }
 
 // Methods
-bool Cube::Point_in_polyhedron(const Point & t)
+bool Cube::Point_in_polyhedron(const Point & t)const
 {
 	return (this->Point_in_bounding_box(t));
 }

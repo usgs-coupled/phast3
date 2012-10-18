@@ -1176,6 +1176,8 @@ check_time_series_data(void)
 		check_time_series(&print_zone_budget_tsv, FALSE, "print zone budget tsv");
 	if (print_zone_budget_heads.properties != NULL)
 		check_time_series(&print_zone_budget_heads, FALSE, "print zone budget heads");
+	if (print_hdf_intermediate.properties != NULL)
+		check_time_series(&print_hdf_intermediate, FALSE, "print intermediate hdf");
 	/* 
 	 * check defaults
 	 */

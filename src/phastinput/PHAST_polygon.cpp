@@ -12,11 +12,14 @@
 
 PHAST_polygon::PHAST_polygon(void)
 {
+	this->whole = NULL;
 }
 
 PHAST_polygon::PHAST_polygon(gpc_polygon * poly,
 							 PHAST_Transform::COORDINATE_SYSTEM cs)
 {
+	if (poly)
+	{
 	int i, j;
 	this->coordinate_system = cs;
 	for (i = 0; i < poly->num_contours; i++)
@@ -41,6 +44,8 @@ PHAST_polygon::PHAST_polygon(gpc_polygon * poly,
 	}
 	zone z(Point(this->pts.begin(), this->pts.end(), Point::MIN), Point(this->pts.begin(), this->pts.end(), Point::MAX));
 	this->box = z;
+	this->whole = gpc_polygon_duplicate(poly);
+	}
 }
 PHAST_polygon::PHAST_polygon(const std::vector < Point > &points,
 							 PHAST_Transform::COORDINATE_SYSTEM cs):
@@ -49,6 +54,7 @@ pts(points)
 	this->coordinate_system = cs;
 	this->begin.push_back(this->pts.begin());
 	this->end.push_back(this->pts.end());
+	this->whole = PHAST_polygon2gpc_polygon(this);
 }
 PHAST_polygon::PHAST_polygon(const PHAST_polygon & poly):
 box(poly.box),
@@ -72,6 +78,7 @@ coordinate_system(poly.coordinate_system)
 	assert(this->pts.size() == poly.pts.size());
 	assert(this->begin.size() == poly.begin.size());
 	assert(this->end.size() == poly.end.size());
+	this->whole = PHAST_polygon2gpc_polygon(this);
 }
 PHAST_polygon & PHAST_polygon::operator=(const PHAST_polygon & rhs)
 {
@@ -101,12 +108,22 @@ PHAST_polygon & PHAST_polygon::operator=(const PHAST_polygon & rhs)
 		assert(this->pts.size() == rhs.pts.size());
 		assert(this->begin.size() == rhs.begin.size());
 		assert(this->end.size() == rhs.end.size());
+		this->whole = NULL;
+		if (rhs.whole)
+		{
+			this->whole = gpc_polygon_duplicate(rhs.whole);
+		}
 	}
 	return *this;
 }
 
 PHAST_polygon::~PHAST_polygon(void)
 {
+	if (this->whole)
+	{
+		gpc_free_polygon(this->whole);
+		free(this->whole);
+	}
 }
 void
 PHAST_polygon::set_z(double z)
@@ -438,6 +455,13 @@ void PHAST_polygon::Tidy(void)
 	if (pp.pts.size() == 0)
 	{
 		error_msg("After processing, polygon has no points. ", EA_CONTINUE);
+	}
+	else
+	{
+		if (!this->whole)
+		{
+			this->whole = PHAST_polygon2gpc_polygon(this);
+		}
 	}
 	
 	return;

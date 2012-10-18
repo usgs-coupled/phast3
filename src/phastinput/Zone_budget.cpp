@@ -55,7 +55,7 @@ Zone_budget::~Zone_budget(void)
 }
 
 bool Zone_budget::Add_cells(std::vector < bool > &cells_in_budget, zone * z,
-							int nxyz, std::vector < Point > *cell_xyz)
+							int nxyz, std::vector < Point > *cell_xyz)const
 {
 
 	if (this->polyh != NULL)
@@ -117,7 +117,7 @@ bool Zone_budget::Add_cells(std::vector < bool > &cells_in_budget, zone * z,
 	}
 	if (this->combo.size() > 0)
 	{
-		std::vector < int >::iterator
+		std::vector < int >::const_iterator
 			it;
 		for (it = this->combo.begin(); it != this->combo.end(); it++)
 		{
@@ -145,6 +145,10 @@ bool Zone_budget::Add_cells(std::vector < bool > &cells_in_budget, zone * z,
 std::ostream& operator<< (std::ostream &os, const Zone_budget &a)
 {
 	os << "ZONE_FLOW " << a.n_user << " " << a.description << "\n";
+	if (a.Get_write_heads())
+	{
+		os << "\t-write_xyzt    " << a.filename_heads << "\n";
+	}
 	if (a.combo.size())
 	{
 		os << "\t-combination";

@@ -1203,7 +1203,7 @@ build_rivers(void)
 			if (i > 0 && p[i].x == p[i-1].x && p[i].y == p[i-1].y)
 			{
 				sprintf(error_string,
-					"Duplicate river points %d %d, drain %d %s.",
+					"Duplicate river points %d %d, river %d %s.",
 					i - 1, i, river_ptr->n_user, river_ptr->description);
 				warning_msg(error_string);
 			}

@@ -151,7 +151,7 @@ default_handler(const int type, const char *err_str, const int stop,
 {
 	int flush;
 
-	flush = TRUE;
+	flush = FALSE;
 
 	switch (type)
 	{

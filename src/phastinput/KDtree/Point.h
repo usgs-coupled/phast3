@@ -117,6 +117,10 @@ class Point
 	{
 		return this->coord;
 	}
+	const double *get_coord()const
+	{
+		return this->coord;
+	}
 	double get_v() const
 	{
 		return this->v;

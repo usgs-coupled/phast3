@@ -72,6 +72,15 @@ class Prism:public Polyhedron
 	Data_source bottom;
 	Data_source top;
 
+	// optimization
+	bool last_defined;
+	double last_x;
+	double last_y;
+	bool inside_perimeter;
+	double last_bottom;
+	bool last_top_defined;
+	double last_top;
+
 	static std::list < Prism * >prism_list;
 
 	bool operator==(const Prism &other) const;

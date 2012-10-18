@@ -35,6 +35,15 @@ Prism::Prism(void)
 	this->top.Set_coordinate_system(PHAST_Transform::MAP);
 	this->bottom.Set_coordinate_system(PHAST_Transform::MAP);
 	zone_init(&this->box);
+
+	last_defined = false;
+	last_x = 0;
+	last_y = 0;
+	inside_perimeter = 0;
+	last_bottom = 0;
+	last_top_defined = false;
+	last_top = 0;
+
 	Prism::prism_list.push_back(this);
 }
 
@@ -50,6 +59,15 @@ Prism::Prism(char * char_tag)
 	zone_init(&this->box);
 	std::string tag(char_tag);
 	this->Set_tag(tag);
+	
+	last_defined = false;
+	last_x = 0;
+	last_y = 0;
+	inside_perimeter = 0;
+	last_bottom = 0;
+	last_top_defined = false;
+	last_top = 0;
+
 	Prism::prism_list.push_back(this);
 }
 Prism::Prism(Cube & c)
@@ -98,6 +116,15 @@ Prism::Prism(Cube & c)
 	this->bottom.Set_points(pts);
 
 	this->Set_bounding_box();
+
+	last_defined = false;
+	last_x = 0;
+	last_y = 0;
+	inside_perimeter = 0;
+	last_bottom = 0;
+	last_top_defined = false;
+	last_top = 0;
+
 	Prism::prism_list.push_back(this);
 }
 
@@ -294,6 +321,15 @@ Prism::Prism(Wedge & w)
 	}
 
 	this->Set_bounding_box();
+
+	last_defined = false;
+	last_x = 0;
+	last_y = 0;
+	inside_perimeter = 0;
+	last_bottom = 0;
+	last_top_defined = false;
+	last_top = 0;
+
 	Prism::prism_list.push_back(this);
 }
 
@@ -319,6 +355,14 @@ Prism::Prism(std::vector< Point > perimeter_pts, PHAST_Transform::COORDINATE_SYS
 	this->perimeter.Set_points(perimeter_pts);
 	this->perimeter.Set_columns(3);
 
+	last_defined = false;
+	last_x = 0;
+	last_y = 0;
+	inside_perimeter = 0;
+	last_bottom = 0;
+	last_top_defined = false;
+	last_top = 0;
+
 	Prism::prism_list.push_back(this);
 }
 
@@ -329,6 +373,14 @@ prism_dip(c.prism_dip),
 bottom(c.bottom),
 top(c.top)
 {
+	last_defined = false;
+	last_x = 0;
+	last_y = 0;
+	inside_perimeter = 0;
+	last_bottom = 0;
+	last_top_defined = false;
+	last_top = 0;
+
 	Prism::prism_list.push_back(this);
 }
 Prism::~Prism(void)
@@ -530,7 +582,141 @@ bool Prism::Read(PRISM_OPTION p_opt, std::istream & lines)
 	}
 	return (success);
 }
+void
+Prism::Points_in_polyhedron(std::list < int >&list_of_numbers,
+							std::vector < Point > &point_xyz)
+{
+	
+	// remove points not in bounding box
+	std::list < int >::iterator it = list_of_numbers.begin();
+	while (it != list_of_numbers.end())
+	{
+		if (!this->Point_in_bounding_box(point_xyz[*it]))
+		{
+			it = list_of_numbers.erase(it);
+		}
+		else
+		{
+			it++;
+		}
+	}
 
+	// remove points not inside polygon
+	it = list_of_numbers.begin();
+	this->last_defined = false;
+	while (it != list_of_numbers.end())
+	{
+		Point pt = point_xyz[*it];
+		if (this->last_defined && pt.x() == this->last_x && pt.y() == this->last_y)
+		{
+			if (!this->inside_perimeter)
+			{
+				it = list_of_numbers.erase(it);
+			}
+			else
+			{
+				it++;
+			}
+		}
+		else
+		{
+			this->last_x = pt.x();
+			this->last_y = pt.y();
+			this->last_defined = true;
+			Point p1 = pt;
+			this->Project_point(p1, CF_Z, grid_zone()->z2);
+			if (!this->perimeter.Get_tree()->Point_in_polygon(p1))
+			{
+				this->inside_perimeter = false;
+				it = list_of_numbers.erase(it);
+			}
+			else
+			{
+				this->inside_perimeter = true;
+				it++;
+			}
+		}
+	}
+	// remove points below bottom
+	if (this->bottom.Get_defined())
+	{
+		this->last_defined = false;
+		it = list_of_numbers.begin();
+		while (it != list_of_numbers.end())
+		{
+			Point pt = point_xyz[*it];
+			if (this->last_defined && pt.x() == this->last_x && pt.y() == this->last_y)
+			{
+				if (pt.z() < this->last_bottom)
+				{
+					it = list_of_numbers.erase(it);
+				}
+				else
+				{
+					it++;
+				}
+			}
+			else
+			{
+				this->last_x = pt.x();
+				this->last_y = pt.y();
+				this->last_defined = true;
+				Point p1 = pt;
+				this->Project_point(p1, CF_Z, grid_zone()->z2);
+				this->last_bottom = this->bottom.Interpolate(p1);
+				if (pt.z() < this->last_bottom)
+				{
+					it = list_of_numbers.erase(it);
+				}
+				else
+				{
+					it++;
+				}
+			}
+		}
+	}
+
+	// remove points above top
+	if (this->top.Get_defined())
+	{
+
+		this->last_defined = false;
+		it = list_of_numbers.begin();
+		while (it != list_of_numbers.end())
+		{
+			Point pt = point_xyz[*it];
+			if (this->last_defined && pt.x() == this->last_x && pt.y() == this->last_y)
+			{
+				if (pt.z() > this->last_top)
+				{
+					it = list_of_numbers.erase(it);
+				}
+				else
+				{
+					it++;
+				}
+			}
+			else
+			{
+				this->last_x = pt.x();
+				this->last_y = pt.y();
+				this->last_defined = true;
+				Point p1 = pt;
+				this->Project_point(p1, CF_Z, grid_zone()->z2);
+				this->last_top = this->top.Interpolate(p1);
+				if (pt.z() > this->last_top)
+				{
+					it = list_of_numbers.erase(it);
+				}
+				else
+				{
+					it++;
+				}
+			}
+		}
+	}
+}
+#ifdef SKIP
 void
 Prism::Points_in_polyhedron(std::list < int >&list_of_numbers,
 							std::vector < Point > &point_xyz)
@@ -549,6 +735,7 @@ Prism::Points_in_polyhedron(std::list < int >&list_of_numbers,
 		}
 	}
 }
+#endif
 bool Prism::Point_in_polyhedron(const Point & l_p)
 {
 	Point
@@ -561,8 +748,7 @@ bool Prism::Point_in_polyhedron(const Point & l_p)
 	// Check top
 	if (this->top.Get_defined())
 	{
-		double
-			t = this->top.Interpolate(p1);
+		double t = this->top.Interpolate(p1);
 		if (p1.z() > t)
 		{
 			return false;
@@ -751,7 +937,9 @@ Prism::Slice(Cell_Face face, double coord)
 		//	project.push_back(p);
 		//}
 		//gpc_polygon *slice = points_to_poly(project, face);
-		gpc_polygon *slice = PHAST_polygon2gpc_polygon(&this->perimeter.Get_phast_polygons());
+		//gpc_polygon *slice = PHAST_polygon2gpc_polygon(&this->perimeter.Get_phast_polygons());
+		//gpc_polygon *slice = this->perimeter.Get_phast_polygons().Get_whole();
+		gpc_polygon *slice = gpc_polygon_duplicate(this->perimeter.Get_phast_polygons().Get_whole());
 		return slice;
 	}
 	else
@@ -994,6 +1182,10 @@ Prism::Tidy()
 		error_msg(emsg.c_str(), EA_CONTINUE);
 	}
 	this->perimeter.Tidy(false);
+
+	// Remove duplicate points
+	//this->perimeter.Get_data_source_with_points()->RemoveDuplicatePts();
+
 	if (this->perimeter.Get_source_type() == Data_source::POINTS
 			 && this->perimeter.Get_points().size() < 3)
 	{
@@ -1503,7 +1695,7 @@ PHAST_Transform::COORDINATE_SYSTEM Prism::Get_best_coordinate_system(void)const
 	sources[1] = &this->bottom;
 	sources[2] = &this->perimeter;
 
-	for (int t = 0; t < sizeof(types)/sizeof(types[0]); ++t)
+	for (int t = 0; t <  (int) (sizeof(types)/sizeof(types[0])); ++t)
 	{
 		for (int i = 0; i < 3; ++i)
 		{

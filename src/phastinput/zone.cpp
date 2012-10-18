@@ -76,7 +76,7 @@ zone::~zone(void)
 {
 }
 
-bool zone::Point_in_zone(Point p)
+bool zone::Point_in_zone(const Point &p)const
 {
 	if (p.x() >= this->x1 && p.x() <= this->x2 &&
 		p.y() >= this->y1 && p.y() <= this->y2 &&
@@ -85,7 +85,7 @@ bool zone::Point_in_zone(Point p)
 	return false;
 }
 
-bool zone::Point_in_xy_zone(Point p)
+bool zone::Point_in_xy_zone(const Point &p)const
 {
 	if (p.x() >= this->x1 && p.x() <= this->x2 &&
 		p.y() >= this->y1 && p.y() <= this->y2)

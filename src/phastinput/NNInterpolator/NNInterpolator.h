@@ -2,10 +2,10 @@
 #define NNINTERPOLATOR__H_INCLUDED
 #include <vector>
 #include <list>
+#include <map>
 #include "../KDtree/Point.h"
 #include "../zone.h"
 #include "../PHAST_Transform.h"
-#include "../UniqueMap.h"
 #include "nn.h"
 
 class KDtree;
@@ -19,14 +19,13 @@ class NNInterpolator
 
 	// destructor
 	  virtual ~ NNInterpolator(void);
-// COMMENT: {7/11/2008 9:27:18 PM}  bool preprocess(std::vector<Point> &pts_in, std::vector<Point> &corners);
-	bool preprocess(std::vector < Point > &pts_in,
+	bool preprocess(const std::vector < Point > &pts_in,
 					PHAST_Transform::COORDINATE_SYSTEM cs);
-	double interpolate(const Point & pt);
+	double interpolate(const Point & pt)const;
 	double interpolate(const Point & pt,
 					   PHAST_Transform::COORDINATE_SYSTEM point_system,
-					   PHAST_Transform * map2grid);
-	KDtree *get_tree(void);
+					   PHAST_Transform * map2grid)const;
+	KDtree *get_tree(void)const;
 
 	void Set_coordinate_system(PHAST_Transform::COORDINATE_SYSTEM cs)
 	{
@@ -45,14 +44,14 @@ class NNInterpolator
 	zone bounds;
 	PHAST_Transform::COORDINATE_SYSTEM coordinate_system;
 
-	//static std::list<NNInterpolator*> NNInterpolatorList;
-	static UniqueMap < NNInterpolator * >NNInterpolatorMap;
-
   protected:
-	KDtree * tree;
+	static std::map< const NNInterpolator *, KDtree * > KDtreeMap;
 
 	friend bool nnpi_interpolate(std::vector < Point > &pts_in,
 								 std::vector < Point > &pts_out, double wmin);
+  private:
+	NNInterpolator(const NNInterpolator&);  // Not implemented.
+	void operator=(const NNInterpolator&);  // Not implemented.
 };
 
 void Clear_NNInterpolatorList(void);

@@ -51,6 +51,9 @@ class PHAST_polygon
 	};
 	void Clear(void);
 	PHAST_polygon & operator=(const PHAST_polygon & poly);
+	gpc_polygon *Get_whole(void) {return this->whole;}
+	void Set_whole(gpc_polygon *poly) {this->whole = poly;}
+	void Free_whole(void) {gpc_free_polygon(this->whole); delete this->whole; this->whole = NULL;}
 
 	void Tidy(void);
   protected:
@@ -60,6 +63,7 @@ class PHAST_polygon
 	std::vector < std::vector < Point >::iterator > begin;
 	std::vector < std::vector < Point >::iterator > end;
 	PHAST_Transform::COORDINATE_SYSTEM coordinate_system;
+	gpc_polygon *whole;
 
   public:
 	//friend bool Point_in_simple_polygon(Point p, std::vector<Point>::iterator begin, std::vector<Point>::iterator end);

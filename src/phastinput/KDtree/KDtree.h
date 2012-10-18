@@ -7,15 +7,16 @@
 #include <list>
 class KDtree
 {
-  public:
+public:
 	~KDtree();
 	KDtree(const KDtree & t);
-	KDtree(std::vector < Point > &pts, size_t dims = 3);
+	KDtree(const std::vector < Point > &pts, size_t dims = 3);
 	//KDtree(point *pts, size_t count);
+private:
+	KDtree & operator=(const KDtree & rhs);
+public:
 
-	  KDtree & operator=(const KDtree & rhs);
-
-	int Nearest(Point pt);
+	int Nearest(Point pt)const;
 	//int Nearest(point pt);
 
 	double Interpolate3d(Point pt);
@@ -23,8 +24,8 @@ class KDtree
 
 	// Data
 	kdtree2 *tree;
-	  multi_array < double, 2 > realdata;
-	  std::vector < double >v;
+	multi_array < double, 2 > realdata;
+	std::vector < double >v;
 
 	static std::list < KDtree * >KDtreeList;
 };

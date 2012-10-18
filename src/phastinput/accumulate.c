@@ -17,6 +17,11 @@
 static char const svnid[] =
 	"$Id$";
 int setup_grid(void);
+bool fill_prop_defaults(struct property *p, int nn);
+bool set_gprop_defaults(struct property *p);
+bool set_nprop_defaults(struct property *p);
+bool set_nprop_ts_defaults(struct time_series *ts);
+
 static void distribute_flux_bc(int i, std::list < int >&pts, std::map<int, gpc_polygon *> &face_areas, char *tag);
 static void distribute_leaky_bc(int i, std::list < int >&pts, std::map<int, gpc_polygon *> &face_areas, char *tag);
 static void distribute_specified_bc(int i, std::list < int >&pts, char *tag);
@@ -855,12 +860,12 @@ coords_to_range(double x1, double x2, double *coord, int count_coord,
 	}
 	if (*i1 >= count_coord)
 	{
-		error_msg("Zone is outside domain", CONTINUE);
+		warning_msg("Zone is outside domain");
 		return (ERROR);
 	}
 	if (x2 + eps < coord[i])
 	{
-		error_msg("Zone is empty", CONTINUE);
+		warning_msg("Zone is empty");
 		return (ERROR);
 	}
 	for (; i < count_coord; i++)
@@ -985,6 +990,12 @@ setup_head_ic(bool forward)
 			{
 				struct zone *zone_ptr = head_ic[i]->polyh->Get_bounding_box();
 				range_ptr = zone_to_range(zone_ptr);
+				if (range_ptr == NULL)
+				{
+					sprintf(error_string, "No cells in zone definition %s", tag);
+					warning_msg(error_string);
+					break;
+				}
 				std::list < int >list_of_cells;
 				range_to_list(range_ptr, list_of_cells);
 				free_check_null(range_ptr);
@@ -992,10 +1003,12 @@ setup_head_ic(bool forward)
 				{
 					head_ic[i]->polyh->Points_in_polyhedron(list_of_cells,
 															*cell_xyz);
+					
+					list_of_cells.sort();
 					if (list_of_cells.size() == 0)
 					{
 						sprintf(error_string,
-								"Bad zone or wedge definition %s", tag);
+								"No cells in zone definition %s", tag);
 						warning_msg(error_string);
 						break;
 					}
@@ -1194,7 +1207,7 @@ setup_print_locations(struct print_zones_struct *print_zones_struct_ptr,
 			range_ptr = zone_to_range(zone_ptr);
 			if (range_ptr == NULL)
 			{
-				sprintf(error_string, "Bad zone or wedge definition %s", tag);
+				sprintf(error_string, "No cells in zone  definition %s", tag);
 				warning_msg(error_string);
 				continue;
 			}
@@ -1204,10 +1217,10 @@ setup_print_locations(struct print_zones_struct *print_zones_struct_ptr,
 			range_ptr = NULL;
 			print_zones_struct_ptr->print_zones[i].polyh->
 				Points_in_polyhedron(list_of_cells, *cell_xyz);
-
+			list_of_cells.sort();
 			if (list_of_cells.size() == 0)
 			{
-				sprintf(error_string, "Bad zone or wedge definition %s", tag);
+				sprintf(error_string, "No cells in zone definition %s", tag);
 				warning_msg(error_string);
 				continue;
 			}
@@ -1929,7 +1942,7 @@ setup_chem_ic(bool forward)
 			range_ptr = zone_to_range(zone_ptr);
 			if (range_ptr == NULL)
 			{
-				sprintf(error_string, "Bad zone or wedge definition %s", tag);
+				sprintf(error_string, "No cells in zone definition %s", tag);
 				warning_msg(error_string);
 				continue;
 			}
@@ -1938,10 +1951,10 @@ setup_chem_ic(bool forward)
 			free_check_null(range_ptr);
 			range_ptr = NULL;
 			chem_ic[i]->polyh->Points_in_polyhedron(list_of_cells, *cell_xyz);
-
+			list_of_cells.sort();
 			if (list_of_cells.size() == 0)
 			{
-				sprintf(error_string, "Bad zone or wedge definition %s", tag);
+				sprintf(error_string, "No cells in zone definition %s", tag);
 				warning_msg(error_string);
 				continue;
 			}
@@ -2181,60 +2194,78 @@ setup_bc(void)
 		}
 		else
 		{
-			std::map<int, gpc_polygon *> face_areas;
 			std::list < int >list_of_cells;
-			struct zone *zone_ptr = bc[i]->polyh->Get_bounding_box();
-
-			if (bc[i]->bc_type == BC_info::BC_SPECIFIED)
+			std::map<int, gpc_polygon *> face_areas;
+			if (simulation == 0)
 			{
-				range_ptr = zone_to_range(zone_ptr);
-				if (range_ptr == NULL)
+				struct zone *zone_ptr = bc[i]->polyh->Get_bounding_box();
+				
+				if (bc[i]->bc_type == BC_info::BC_SPECIFIED)
 				{
-					sprintf(error_string, "Bad zone or wedge definition %s",
+					range_ptr = zone_to_range(zone_ptr);
+					if (range_ptr == NULL)
+					{
+						sprintf(error_string, "No cells in zone definition %s",
 							tag);
-					warning_msg(error_string);
-					continue;
-				}
-				if (bc[i]->cell_face == CF_UNKNOWN
-					|| bc[i]->cell_face == CF_NONE)
-				{
-					range_to_list(range_ptr, list_of_cells);
-					bc[i]->polyh->Points_in_polyhedron(list_of_cells,
-													   *cell_xyz);
+						warning_msg(error_string);
+						bc_list_of_cells.push_back(list_of_cells);
+						bc_face_areas.push_back(face_areas);
+						continue;
+					}
+					if (bc[i]->cell_face == CF_UNKNOWN
+						|| bc[i]->cell_face == CF_NONE)
+					{
+						range_to_list(range_ptr, list_of_cells);
+						bc[i]->polyh->Points_in_polyhedron(list_of_cells,
+							*cell_xyz);
+					}
+					else
+					{
+						cells_with_exterior_faces_in_zone(list_of_cells,
+							zone_ptr);
+						any_faces_intersect_polyhedron(i, list_of_cells,
+							bc[i]->cell_face);
+					}
+					free_check_null(range_ptr);
+					//bc[i]->cell_face = CF_NONE;
+					//bc[i]->face = 0;
+					list_of_cells.sort();
+					bc_list_of_cells.push_back(list_of_cells);
+					bc_face_areas.push_back(face_areas);
 				}
 				else
 				{
-					cells_with_exterior_faces_in_zone(list_of_cells,
-													  zone_ptr);
-					any_faces_intersect_polyhedron(i, list_of_cells,
-												   bc[i]->cell_face);
+					cells_with_exterior_faces_in_zone(list_of_cells, zone_ptr);
+					if (bc[i]->cell_face == CF_UNKNOWN)
+					{
+						// Guess face
+						bc[i]->cell_face = guess_face(list_of_cells, zone_ptr);
+						if (bc[i]->cell_face == CF_UNKNOWN)
+						{
+							bc_list_of_cells.push_back(list_of_cells);
+							bc_face_areas.push_back(face_areas);
+							continue;
+						}
+					}
+					bc[i]->face = bc[i]->cell_face;
+					//cells_with_faces(list_of_cells, bc[i]->cell_face); // moved to faces_intersect_polyhedron
+					//faces_intersect_polyhedron(i, list_of_cells,
+					//						   bc[i]->cell_face);
+					//faces_intersect_polyhedron(i, list_of_cells);
+					faces_intersect_polyhedron(i, list_of_cells, face_areas);
+					bc_list_of_cells.push_back(list_of_cells);
+					bc_face_areas.push_back(face_areas);
 				}
-				free_check_null(range_ptr);
-				//bc[i]->cell_face = CF_NONE;
-				//bc[i]->face = 0;
 			}
 			else
 			{
-				cells_with_exterior_faces_in_zone(list_of_cells, zone_ptr);
-				if (bc[i]->cell_face == CF_UNKNOWN)
-				{
-					// Guess face
-					bc[i]->cell_face = guess_face(list_of_cells, zone_ptr);
-					if (bc[i]->cell_face == CF_UNKNOWN)
-						continue;
-				}
-				bc[i]->face = bc[i]->cell_face;
-				//cells_with_faces(list_of_cells, bc[i]->cell_face); // moved to faces_intersect_polyhedron
-				//faces_intersect_polyhedron(i, list_of_cells,
-				//						   bc[i]->cell_face);
-				//faces_intersect_polyhedron(i, list_of_cells);
-				faces_intersect_polyhedron(i, list_of_cells, face_areas);
+				list_of_cells = bc_list_of_cells[i];
+				face_areas = bc_face_areas[i];
 			}
-
 
 			if (list_of_cells.size() == 0)
 			{
-				sprintf(error_string, "Bad zone or wedge definition %s", tag);
+				sprintf(error_string, "No cells in zone definition %s", tag);
 				warning_msg(error_string);
 				continue;
 			}
@@ -2487,7 +2518,7 @@ setup_media(bool forward)
 				range_ptr = zone_to_elt_range(zone_ptr, true);
 				if (range_ptr == NULL)
 				{
-					sprintf(error_string, "Bad zone or wedge definition %s", tag);
+					sprintf(error_string, "No elements in zone definition %s", tag);
 					warning_msg(error_string);
 					continue;
 				}
@@ -2500,15 +2531,15 @@ setup_media(bool forward)
 			{
 				if (!find_shell(grid_elt_zones[i]->polyh, grid_elt_zones[i]->shell_width, list_of_elements))
 				{
-					sprintf(error_string, "Bad zone or wedge definition for shell %s", tag);
+					sprintf(error_string, "No elements in shell definition %s", tag);
 					warning_msg(error_string);
 					continue;
 				}
 			}
-
+			list_of_elements.sort();
 			if (list_of_elements.size() == 0)
 			{
-				sprintf(error_string, "Bad zone or wedge definition %s", tag);
+				sprintf(error_string, "No elements in zone definition %s", tag);
 				warning_msg(error_string);
 				continue;
 			}
@@ -2531,7 +2562,7 @@ setup_media(bool forward)
 															TRUE) == ERROR)
 				{
 					input_error++;
-					sprintf(error_string, "Bad definition of active cells %s",
+					sprintf(error_string, "No points in zone for definition of active cells %s",
 							tag);
 					error_msg(error_string, CONTINUE);
 				}
@@ -3288,6 +3319,11 @@ reset_transient_data(void)
 	{
 		time_copy(&(pt_ptr->time_value), &current_print_zone_budget_heads);
 	}
+	if (get_current_property_position
+		(&print_hdf_intermediate, current_start_time, &pt_ptr) >= 0)
+	{
+		time_copy(&(pt_ptr->time_value), &current_print_hdf_intermediate);
+	}
 
 	return (OK);
 }
@@ -3299,11 +3335,11 @@ range_to_list(struct index_range *range_ptr, std::list < int >&vec)
 {
 	int i, j, k;
 	vec.clear();
-	for (k = range_ptr->k1; k <= range_ptr->k2; k++)
+	for (j = range_ptr->j1; j <= range_ptr->j2; j++)
 	{
-		for (j = range_ptr->j1; j <= range_ptr->j2; j++)
+		for (i = range_ptr->i1; i <= range_ptr->i2; i++)
 		{
-			for (i = range_ptr->i1; i <= range_ptr->i2; i++)
+			for (k = range_ptr->k1; k <= range_ptr->k2; k++)
 			{
 				vec.push_back(ijk_to_n(i, j, k));
 			}
@@ -3776,8 +3812,10 @@ faces_intersect_polyhedron(int i, std::list < int >&list_of_numbers, std::map<in
 	for ( ; coord_it != coord_set.end(); coord_it++)
 	{
 		gpc_polygon *bc_area = bc[i]->polyh->Slice(bc[i]->cell_face, *coord_it);
-		PHAST_polygon bc_area1(bc_area, PHAST_Transform::GRID);
-		Polygon_tree bc_area2(bc_area1);
+		//PHAST_polygon bc_area1(bc_area, PHAST_Transform::GRID);
+		//Polygon_tree bc_area2(bc_area1);
+		if (!bc_area) continue;
+		Polygon_tree bc_area2(bc_area, PHAST_Transform::GRID);
 
 		it = list_of_numbers.begin();
 		while (it != list_of_numbers.end())
@@ -4156,8 +4194,8 @@ distribute_flux_bc(int i,		// bc[i]
 		bc_info.bc_type = BC_info::BC_FLUX;
 
 		// save for all simulation periods to avoid leak
-		bc_info.poly = face_areas[*it];
-
+		//xx bc_info.poly = face_areas[*it];
+		bc_info.poly = gpc_polygon_duplicate(face_areas[*it]);
 		// Store info
 		cells[n].all_bc_info->push_back(bc_info);
 
@@ -4301,7 +4339,8 @@ distribute_leaky_bc(int i,		// bc[i]
 		bc_info.bc_type = BC_info::BC_LEAKY;
 
 		// save for all simulation periods to avoid leak
-		bc_info.poly = face_areas[*it];		
+		//xx bc_info.poly = face_areas[*it];		
+		bc_info.poly = gpc_polygon_duplicate(face_areas[*it]);		
 
 		// Store info
 		cells[n].all_bc_info->push_back(bc_info);
@@ -4690,6 +4729,7 @@ Tidy_properties(PHAST_Transform::COORDINATE_SYSTEM target,
 	}
 	return;
 }
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 bool
 find_shell(Polyhedron *polyh, double *width, std::list<int> &list_of_elements)
@@ -4841,6 +4881,185 @@ find_shell(Polyhedron *polyh, double *width, std::list<int> &list_of_elements)
 	}
 	return true;
 }
+#endif
+/* ---------------------------------------------------------------------- */
+bool
+find_shell(Polyhedron *polyh, double *width, std::list<int> &list_of_elements)
+/* ---------------------------------------------------------------------- */
+{
+	// Modified 8/19/2011
+	// Look for element centroids that are within width/2 of zone for
+	// each coordinate 
+	struct index_range *range_ptr;
+
+	struct zone *zone_ptr =	polyh->Get_bounding_box();
+	range_ptr = zone_to_range(zone_ptr); // list of cells not elements in polyh
+	if (range_ptr == NULL)
+	{
+		return false;
+	}
+
+	/* put cells in list */
+	std::list < int > list_of_cells;
+	range_to_list(range_ptr, list_of_cells);
+	free_check_null(range_ptr);
+
+	// Find cells in polyhedron
+	polyh->Points_in_polyhedron(list_of_cells, *cell_xyz);
+	list_of_cells.sort();
+	if (list_of_cells.size() == 0)
+	{
+		return false;
+	}
+
+	// Make set of cells 
+	std::set < int > set_of_cells;
+	std::list < int >::iterator lit = list_of_cells.begin();
+	for ( ; lit != list_of_cells.end(); lit++)
+	{
+		set_of_cells.insert(*lit);
+	}
+
+	// select cells with adjacent active cells outside of zone
+	std::set<int> set_of_exterior_cells;
+	std::set < int >::iterator sit = set_of_cells.begin();
+
+	bool exterior = true;
+	if (!exterior)
+	{
+		// generate interior shell
+		for ( ; sit != set_of_cells.end(); sit++)
+		{
+			int n = *sit;
+			std::vector < int >stencil;
+			neighbors(n, stencil);
+			int ii;
+			for (ii = 0; ii < 6; ii++)
+			{
+				if (stencil[ii] >= 0)
+				{
+					// adjacent cell is not in set 
+					if (set_of_cells.find(stencil[ii]) == set_of_cells.end() /*&& cells[stencil[ii]].cell_active*/)
+					{
+						break;
+					}
+				}
+			}
+
+			// keep if a neighbor is out of zone
+			if (ii < 6)
+			{
+				set_of_exterior_cells.insert(*sit);
+			}
+		}
+	}
+	else
+    // currently always chooses exterior shell
+	{
+		// generate exterior shell
+		for ( ; sit != set_of_cells.end(); sit++)
+		{
+			int n = *sit;
+			std::vector < int >stencil;
+			neighbors(n, stencil);
+			int ii;
+			for (ii = 0; ii < 6; ii++)
+			{
+				if (stencil[ii] >= 0)
+				{
+					// adjacent cell is not in set, inlcude in shell
+					if (set_of_cells.find(stencil[ii]) == set_of_cells.end())
+					{
+						set_of_exterior_cells.insert(stencil[ii]);
+					}
+				}
+			}
+		}
+	}
+
+	// select all elements that adjoin selected cells
+	std::set<int> set_of_elements;
+	for (sit = set_of_exterior_cells.begin(); sit != set_of_exterior_cells.end(); sit++)
+	{
+		std::vector<int> stencil;
+		elt_neighbors(*sit, stencil);
+		int ii;
+
+		// include elements for cell
+		for(ii = 0; ii < 8; ii++)
+		{
+			if (stencil[ii] >= 0)
+			{
+				set_of_elements.insert(stencil[ii]);
+			}
+		}
+	}
+	// select all elements that are exterior, but close to zone
+
+	zone_ptr =	polyh->Get_bounding_box();
+	zone_ptr->x1 -= width[0]/2.0;
+	zone_ptr->x2 += width[0]/2.0;
+	zone_ptr->y1 -= width[1]/2.0;
+	zone_ptr->y2 += width[1]/2.0;
+	zone_ptr->z1 -= width[2]/2.0;
+	zone_ptr->z2 += width[2]/2.0;
+
+	range_ptr = zone_to_elt_range(zone_ptr, true); // list of cells not elements in polyh
+	if (range_ptr != NULL)
+	{
+		// list of all elements to consider
+		std::list<int> possible_elements;
+		range_to_list(range_ptr, possible_elements);
+		possible_elements.sort();
+		std::list<int>::iterator eit = possible_elements.begin();
+		for ( ; eit != possible_elements.end(); eit++)
+		{
+			// put point plus perturbed points in list
+			Point p = (*element_xyz)[*eit];
+			std::vector<Point> ptest;
+			ptest.push_back(p);
+			Point p1;
+			// X
+			p1 = p;			
+			p1.set_x(p.x() + width[0]/2.0);
+			ptest.push_back(p1);
+			p1 = p;			
+			p1.set_x(p.x() - width[0]/2.0);
+			ptest.push_back(p1);
+			// Y
+			p1 = p;			
+			p1.set_y(p.y() + width[1]/2.0);
+			ptest.push_back(p1);
+			p1 = p;			
+			p1.set_y(p.y() - width[1]/2.0);
+			ptest.push_back(p1);
+			// Z
+			p1 = p;			
+			p1.set_z(p.z() + width[2]/2.0);
+			ptest.push_back(p1);
+			p1 = p;			
+			p1.set_z(p.z() - width[2]/2.0);
+			ptest.push_back(p1);
+
+			std::list<int> pts;
+			for (int i = 0; i < 7; i++)
+			{
+				pts.push_back(i);
+			}
+			polyh->Points_in_polyhedron(pts, ptest);
+			if (pts.size() > 0 && pts.size() < 7)
+			{
+				set_of_elements.insert(*eit);
+			}
+		}
+	}
+	// copy  set_of_elements to list_of_elements  
+	for (sit = set_of_elements.begin(); sit != set_of_elements.end(); sit++)
+	{
+		list_of_elements.push_back(*sit);
+	}
+	return true;
+}
 /* ---------------------------------------------------------------------- */
 bool
 find_cell_shell(Polyhedron *polyh, double *width, std::list<int> &list_of_cells_return)
@@ -4862,6 +5081,7 @@ find_cell_shell(Polyhedron *polyh, double *width, std::list<int> &list_of_cells_
 
 	// Find cells in polyhedron
 	polyh->Points_in_polyhedron(list_of_cells, *cell_xyz);
+	list_of_cells.sort();
 	if (list_of_cells.size() == 0)
 	{
 		return false;
@@ -4956,6 +5176,7 @@ find_cell_shell(Polyhedron *polyh, double *width, std::list<int> &list_of_cells_
 				/* put cells in list */
 				std::list < int > additional_cells;
 				range_to_list(range_ptr, additional_cells);
+				additional_cells.sort();
 				if (additional_cells.size() > 0)
 				{
 					std::list<int>::iterator lit1 = additional_cells.begin();
@@ -5376,35 +5597,62 @@ accumulate_defaults(void)
 								scale_v);
 
 		assert(::domain.zone_defined);
-
+		std::list<int> shells;
 		for (i = 0; i < count_head_ic; i++)
 		{
-			if (head_ic[i]->polyh != NULL && head_ic[i]->polyh->get_type() == Polyhedron::PRISM)
+			if (head_ic[i]->polyh != NULL)
 			{
 				delete head_ic[i]->polyh;
 				head_ic[i]->polyh = new Domain(&::domain);
 			}
+			set_nprop_defaults(head_ic[i]->mask);
+			set_nprop_defaults(head_ic[i]->head);
 		}
 		for (i = 0; i < count_chem_ic; i++)
 		{
-			if (chem_ic[i]->polyh != NULL && chem_ic[i]->polyh->get_type() == Polyhedron::PRISM)
+			if (chem_ic[i]->polyh != NULL)
 			{
 				delete chem_ic[i]->polyh;
 				chem_ic[i]->polyh = new Domain(&::domain);
 			}
+			set_nprop_defaults(chem_ic[i]->mask);
+			set_nprop_defaults(chem_ic[i]->solution);
+			set_nprop_defaults(chem_ic[i]->equilibrium_phases);
+			set_nprop_defaults(chem_ic[i]->exchange);
+			set_nprop_defaults(chem_ic[i]->surface);
+			set_nprop_defaults(chem_ic[i]->gas_phase);
+			set_nprop_defaults(chem_ic[i]->solid_solutions);
+			set_nprop_defaults(chem_ic[i]->kinetics);
 		}
 		for (i = 0; i < count_grid_elt_zones; i++)
 		{
-			if (grid_elt_zones[i]->polyh != NULL && grid_elt_zones[i]->polyh->get_type() == Polyhedron::PRISM)
+			if (grid_elt_zones[i]->polyh != NULL)
 			{
 				delete grid_elt_zones[i]->polyh;
 				grid_elt_zones[i]->polyh = new Domain(&::domain);
+			}
+			set_gprop_defaults(grid_elt_zones[i]->mask);
+			set_gprop_defaults(grid_elt_zones[i]->active);
+			set_gprop_defaults(grid_elt_zones[i]->porosity);
+			set_gprop_defaults(grid_elt_zones[i]->kx);
+			set_gprop_defaults(grid_elt_zones[i]->ky);
+			set_gprop_defaults(grid_elt_zones[i]->kz);
+			set_gprop_defaults(grid_elt_zones[i]->storage);
+			set_gprop_defaults(grid_elt_zones[i]->alpha_long);
+			set_gprop_defaults(grid_elt_zones[i]->alpha_trans);
+			set_gprop_defaults(grid_elt_zones[i]->alpha_horizontal);
+			set_gprop_defaults(grid_elt_zones[i]->alpha_vertical);
+			set_gprop_defaults(grid_elt_zones[i]->tortuosity);
+			if (grid_elt_zones[i]->shell)
+			{
+				grid_elt_zones[i]->shell = false;
+				shells.push_back(i);
 			}
 		}
 		std::map<int, Zone_budget*>::iterator zit = Zone_budget::zone_budget_map.begin();
 		for (; zit != Zone_budget::zone_budget_map.end(); ++zit)
 		{
-			if ((*zit).second->Get_polyh() != NULL && (*zit).second->Get_polyh()->get_type() == Polyhedron::PRISM)
+			if ((*zit).second->Get_polyh() != NULL)
 			{
 				(*zit).second->Set_polyh(new Domain(&::domain));
 			}
@@ -5412,11 +5660,23 @@ accumulate_defaults(void)
 		for (i = 0; i < ::count_bc; ++i)
 		{
 			struct BC* bc_ptr = ::bc[i];
-			if (bc_ptr->polyh != NULL && bc_ptr->polyh->get_type() == Polyhedron::PRISM)
+			if (bc_ptr->polyh != NULL)
 			{
 				delete bc_ptr->polyh;
 				bc_ptr->polyh = new Domain(&::domain);
 			}
+
+			set_nprop_defaults(bc[i]->mask);
+			set_nprop_defaults(bc[i]->current_bc_head);
+			set_nprop_defaults(bc[i]->current_bc_flux);
+			set_nprop_defaults(bc[i]->bc_k);
+			set_nprop_defaults(bc[i]->bc_thick);
+			set_nprop_defaults(bc[i]->bc_z_user);
+			set_nprop_defaults(bc[i]->current_bc_solution);
+
+			set_nprop_ts_defaults(bc[i]->bc_head);
+			set_nprop_ts_defaults(bc[i]->bc_flux);
+			set_nprop_ts_defaults(bc[i]->bc_solution);
 		}
 
 		// Convert units to grid
@@ -5431,6 +5691,13 @@ accumulate_defaults(void)
 		setup_chem_ic(false);
 
 		setup_media(false);
+
+		// reset shells for grid_elt_zones
+		std::list<int>::iterator it = shells.begin();
+		for (; it != shells.end(); ++it)
+		{
+			grid_elt_zones[(*it)]->shell = true;
+		}
 	}
 
 	if (input_error > 0)
@@ -5438,4 +5705,62 @@ accumulate_defaults(void)
 		error_msg("Stopping because of input errors.", STOP);
 	}
 	return (OK);
+}
+
+bool
+set_nprop_defaults(struct property *p)
+{
+	return fill_prop_defaults(p, nxyz);
+}
+
+bool
+set_nprop_ts_defaults(struct time_series *ts)
+{
+	bool b = false;
+	if (ts)
+	{
+		for (int i = 0; i < ts->count_properties; ++i)
+		{
+			b |= set_nprop_defaults(ts->properties[i]->property);
+		}
+	}
+	return b;
+}
+
+bool
+set_gprop_defaults(struct property *p)
+{
+	return fill_prop_defaults(p, (nx-1)*(ny-1)*(nz-1));
+}
+
+bool
+fill_prop_defaults(struct property *p, int nn)
+{
+	if (p && p->type == PROP_ZONE)
+	{
+		if (p->count_v < nn)
+		{
+			if (p->count_alloc < nn)
+			{
+				p->v = (double *) realloc(p->v, nn * sizeof(double)); 
+				if (p->v == NULL)
+				{
+					p->count_alloc = 0;
+					malloc_error();
+				}
+				else
+				{
+					p->count_alloc = nn;
+				}
+			}
+			for (int i = p->count_v; i < nn; ++i)
+			{
+				p->v[i] = p->v[0];
+			}
+			p->count_v = nn;
+		}
+		p->count_v = nn;
+		return true;
+	}
+	return false;
 }

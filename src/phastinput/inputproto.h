@@ -162,6 +162,7 @@ struct print_frequency *print_frequency_alloc(void);
 int print_frequency_compare(const void *ptr1, const void *ptr2);
 int print_frequency_init(struct print_frequency *print_frequency_ptr);
 struct property_time *property_time_alloc(void);
+int property_time_free(struct property_time *pt_ptr);
 struct property_time *property_time_copy(struct property_time *source);
 int property_time_compare(const void *ptr1, const void *ptr2);
 int property_time_read(char *next_char,
