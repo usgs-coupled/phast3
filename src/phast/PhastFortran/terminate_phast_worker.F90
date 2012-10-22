@@ -25,6 +25,7 @@ SUBROUTINE terminate_phast_worker
 !!$       frac, iprint_chem, iprint_xyz, 0, stop_msg, 0, 0)
 !!$  ENDIF  
   ! *** special diagnostic message ***
+#ifdef SKIP_TODO
   IF(col_scale) THEN
      IF (ident_diagc) THEN
         logline1 = '***INFORMATION: all transport column scaling was unnecessary.'
@@ -36,7 +37,8 @@ SUBROUTINE terminate_phast_worker
         CALL screenprt_c(logline1)
      ENDIF
   END IF
-  CALL worker_closef !... this may be reactivated for error files
+#endif
+  !TODO CALL worker_closef !... this may be reactivated for error files
   !****a better routine name for what it does
   IF (solute) CALL dealloc_arr_worker
 END SUBROUTINE terminate_phast_worker

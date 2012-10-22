@@ -217,10 +217,10 @@ RM_convert_to_molal(int *id, double *c, int *n, int *dim)
 	}
 }
 /* ---------------------------------------------------------------------- */
-int RM_create(int nthreads)
+int RM_create(int *nthreads)
 /* ---------------------------------------------------------------------- */
 {
-	return RM_interface::Create_reaction_module(nthreads);
+	return RM_interface::Create_reaction_module(*nthreads);
 }
 /* ---------------------------------------------------------------------- */
 void RM_create_phreeqc_bin(int *rm_id)

@@ -108,11 +108,11 @@ SUBROUTINE phast_manager
 
   !... only root opens files
   CALL RM_open_files(solute, f3name)
-
+  
   !... Call phreeqc, find number of components
   ! f1name, chem.dat; f2name, database; f3name, prefix
   if (solute) then
-    CALL RM_log_screen_prt("Initial PHREEQC run.")
+    CALL RM_log_screen_prt("Initial PHREEQC run.")  
     CALL RM_initial_phreeqc_run(rm_id, f2name, f1name, f3name)
     ! Set components
     !ns = GetComponentCount(rm_id)
@@ -124,7 +124,6 @@ SUBROUTINE phast_manager
         STOP
     ENDIF
     do i = 1, ns
-       !CALL GetComponent(rm_id, i, comp_name(i))
        comp_name(i) = ' '
        CALL RM_get_component(rm_id, i, comp_name(i))
     enddo   
@@ -139,7 +138,7 @@ SUBROUTINE phast_manager
   CALL error1
   IF(errexi) GO TO 50
   CALL write1
-
+  
   CALL set_component_map
 
   ! ... Read the time invariant data
@@ -149,7 +148,7 @@ SUBROUTINE phast_manager
      pv0 = pv 
   ! ... Tranfer data to workers
   CALL group2_distribute
-
+  
   ! ... Create transporters
   CALL create_transporters
 
@@ -161,8 +160,8 @@ SUBROUTINE phast_manager
   CALL error2
 
 #if defined(HDF5_CREATE)
-  CALL hdf_write_invariant(mpi_myself)
-  CALL hdf_begin_time_step
+  ! TODO CALL hdf_write_invariant(mpi_myself)
+  ! TODO CALL hdf_begin_time_step
 #endif
   !
   ! ...  Initialize chemistry 
@@ -176,7 +175,7 @@ SUBROUTINE phast_manager
           exchange_units, surface_units, ssassemblage_units,  &
           ppassemblage_units, gasphase_units, kinetics_units)
 #endif
-     !CALL store_c_pointers(indx_sol1_ic, x_node, y_node, z_node)
+
      CALL RM_pass_data(rm_id,        &
         fresur,                      &
         steady_flow,                 &
@@ -190,7 +189,10 @@ SUBROUTINE phast_manager
         rebalance_fraction_f,        &
         c)
 
+    write (*,*) "Here I am, manager ", ns
      CALL RM_forward_and_back(rm_id, indx_sol1_ic, naxes)  
+    write (*,*) "Here I am, manager 1****************"
+    STOP "Manager end"
      !CALL distribute_initial_conditions(indx_sol1_ic, indx_sol2_ic, ic_mxfrac,  &
      !     exchange_units, surface_units, ssassemblage_units,  &
      !     ppassemblage_units, gasphase_units, kinetics_units,  &
