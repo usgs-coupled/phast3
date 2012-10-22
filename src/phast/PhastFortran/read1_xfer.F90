@@ -1,3 +1,4 @@
+#include 'mpi_fix_case.h'
 SUBROUTINE read1_distribute
 #if defined(USE_MPI)
   USE mcb
@@ -8,7 +9,7 @@ SUBROUTINE read1_distribute
   USE mpi_mod
   USE mpi_struct_arrays
   IMPLICIT NONE
-  INTEGER :: int_real_type
+  INTEGER :: int_real_type, jerr
   INTEGER, DIMENSION(21) :: array_bcst_i
   REAL(KIND=kdp), DIMENSION(1:1) :: array_bcst_r
   ! ... Set string for use with RCS ident command
@@ -37,8 +38,8 @@ SUBROUTINE read1_distribute
   ENDIF
   int_real_type=MPI_struct_array(array_bcst_i,array_bcst_r)
   CALL MPI_BCAST(array_bcst_i, 1, int_real_type, manager, &
-       world, ierr)
-  CALL MPI_TYPE_FREE(int_real_type,ierr)
+       world, jerr)
+  CALL MPI_TYPE_FREE(int_real_type,jerr)
 
   IF (mpi_myself > 0) THEN
      ! ... Load the scalar variables

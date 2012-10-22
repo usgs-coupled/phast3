@@ -1,3 +1,4 @@
+#include 'mpi_fix_case.h'
 ! ... $Id: xfer_to_manager.F90,v 1.5 2011/01/29 00:18:54 klkipp Exp klkipp $
 SUBROUTINE sbc_gather
   USE mcb

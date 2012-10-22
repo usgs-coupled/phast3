@@ -1,3 +1,6 @@
+#define MPI_Bcast                        RM_mpi_bcast
+#define MPI_BCAST                        RM_mpi_bcast
+#include 'mpi_fix_case.h'
 SUBROUTINE phast_manager
   ! ... The top level routine for the manager process that manages the simulation
   ! ...     and does the groundwater flow calculation.
@@ -21,14 +24,16 @@ SUBROUTINE phast_manager
   USE mpi_struct_arrays
   USE print_control_mod
   USE XP_module, ONLY: Transporter
-  IMPLICIT NONE
+  IMPLICIT NONE 
+  SAVE
   REAL(KIND=kdp) :: deltim_dummy
   INTEGER :: stop_msg, print_restart_flag, ipp_err
   CHARACTER(LEN=130) :: logline1
   INTEGER :: i, a_err
   INTERFACE
-     FUNCTION RM_create() RESULT(iout)
+     FUNCTION RM_create(nthreads) RESULT(iout)
        IMPLICIT NONE
+       INTEGER :: nthreads
        INTEGER :: iout
      END FUNCTION RM_create
      FUNCTION RM_destroy(id) RESULT(iout)
@@ -45,6 +50,41 @@ SUBROUTINE phast_manager
        IMPLICIT NONE
        CHARACTER :: str
      END SUBROUTINE RM_log_screen_prt
+#ifdef USE_MPI
+     SUBROUTINE worker_get_indexes(indx_sol1_ic, indx_sol2_ic, &
+		mxfrac, naxes, nxyz, &
+		x_node, y_node, z_node, &
+		cnvtmi, transient_fresur, &
+		steady_flow, pv0, &
+		rebalance_method_f, volume, tort, npmz, &
+		exchange_units, surface_units, ssassemblage_units, &
+		ppassemblage_units, gasphase_units, kinetics_units)
+        USE machine_constants, ONLY: kdp
+        IMPLICIT NONE
+	INTEGER, DIMENSION(:,:), ALLOCATABLE :: indx_sol1_ic 
+	INTEGER, DIMENSION(:,:), ALLOCATABLE :: indx_sol2_ic 
+	REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: mxfrac
+	INTEGER, DIMENSION(3) :: naxes 
+	INTEGER :: nxyz    
+	REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: x_node 
+	REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: y_node
+	REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: z_node 
+	REAL(KIND=kdp) cnvtmi 
+	INTEGER :: transient_fresur 
+	LOGICAL :: steady_flow 
+	REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: pv0 
+	INTEGER :: rebalance_method_f          
+	REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: volume 
+	REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: tort
+	INTEGER :: npmz 
+	INTEGER :: exchange_units 
+	INTEGER :: surface_units 
+	INTEGER :: ssassemblage_units 
+	INTEGER :: ppassemblage_units 
+	INTEGER :: gasphase_units
+	INTEGER :: kinetics_units
+     END SUBROUTINE worker_get_indexes
+#endif
   END INTERFACE
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id: phast_manager.F90,v 1.6 2011/01/29 00:18:54 klkipp Exp klkipp $'
@@ -61,14 +101,16 @@ SUBROUTINE phast_manager
   CALL read1_distribute
 
   ! make a reaction module; makes instances of IPhreeqc and IPhreeqcPhast with same rm_id
-  rm_id = RM_create()
+  rm_id = RM_create(nthreads)
   IF (rm_id.LT.0) THEN
      STOP
   END IF
 
+  !... only root opens files
+  CALL RM_open_files(solute, f3name)
+
   !... Call phreeqc, find number of components
   ! f1name, chem.dat; f2name, database; f3name, prefix
-  CALL RM_open_files(solute, f3name)
   if (solute) then
     CALL RM_log_screen_prt("Initial PHREEQC run.")
     CALL RM_initial_phreeqc_run(rm_id, f2name, f1name, f3name)
@@ -170,7 +212,9 @@ SUBROUTINE phast_manager
 
 
 #if defined(USE_MPI)
+#ifdef SKIP_TODO
      CALL collect_from_nonroot(c, nxyz) ! stores data for transport
+#endif
 #else
      CALL RM_solutions2fractions(rm_id)
 #endif
@@ -416,7 +460,7 @@ SUBROUTINE phast_manager
   IF(errexe .OR. errexi) CALL RM_log_screen_prt('ERROR exit.')
 
 #ifdef USE_MPI
-  CALL MPI_BARRIER(MPI_COMM_WORLD, ierrmpi)
+  CALL MPI_Barrier(MPI_COMM_WORLD, ierrmpi)
   PRINT *, 'Flow and Transport Simulation Completed; exit manager process ', mpi_myself
 #endif
 
@@ -429,18 +473,17 @@ SUBROUTINE phast_manager
 
 END SUBROUTINE phast_manager
 SUBROUTINE time_parallel(i)
-INTEGER :: i
 #if defined(USE_MPI)
 USE mpi_mod
 IMPLICIT none
-integer :: ierr
+integer :: i, ierr
 DOUBLE PRECISION t
 DOUBLE PRECISION, DIMENSION(0:15), save :: times
 DOUBLE PRECISION, save :: time_flow=0, time_transfer, time_transport, time_chemistry
 DOUBLE PRECISION, save :: cum_flow=0, cum_transfer=0, cum_transport=0, cum_chemistry
 CHARACTER(LEN=130) :: logline
 
-    t = MPI_WTIME()
+   ! t = MPI_wtime()
 
     if (i == 0) then
         times = -1.0

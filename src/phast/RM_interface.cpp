@@ -9,6 +9,9 @@
 #ifdef THREADED_PHAST
 #include <omp.h>
 #endif
+#ifdef USE_MPI
+#include "mpi.h"
+#endif
 std::map<size_t, Reaction_module*> RM_interface::Instances;
 size_t RM_interface::InstancesIndex = 0;
 PHRQ_io RM_interface::phast_io;
@@ -31,13 +34,13 @@ void RM_interface::CleanupReactionModuleInstances(void)
 }
 /* ---------------------------------------------------------------------- */
 int
-RM_interface::Create_reaction_module()
+RM_interface::Create_reaction_module(int nthreads)
 /* ---------------------------------------------------------------------- */
 {
 	int n = IPQ_OUTOFMEMORY;
 	try
 	{
-		Reaction_module* Reaction_module_ptr = new Reaction_module();
+		Reaction_module* Reaction_module_ptr = new Reaction_module(nthreads);
 		if (Reaction_module_ptr)
 		{
 			n = (int) Reaction_module_ptr->Get_workers()[0]->Get_Index();
@@ -214,10 +217,10 @@ RM_convert_to_molal(int *id, double *c, int *n, int *dim)
 	}
 }
 /* ---------------------------------------------------------------------- */
-int RM_create()
+int RM_create(int nthreads)
 /* ---------------------------------------------------------------------- */
 {
-	return RM_interface::Create_reaction_module();
+	return RM_interface::Create_reaction_module(nthreads);
 }
 /* ---------------------------------------------------------------------- */
 void RM_create_phreeqc_bin(int *rm_id)
@@ -413,8 +416,8 @@ RM_open_files(int * solute, char * prefix, int l_prefix)
 	 */
 	//TODO MPI and merge
 #if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
-	output_close(OUTPUT_ECHO);
-	MergeInit(prefix, prefix_l, *solute);	/* opens .chem.txt,  .chem.xyz.tsv, .log.txt */
+	//output_close(OUTPUT_ECHO);
+	//MergeInit(prefix, prefix_l, *solute);	/* opens .chem.txt,  .chem.xyz.tsv, .log.txt */
 #endif
 }
 /* ---------------------------------------------------------------------- */
@@ -659,3 +662,57 @@ void RM_write_restart(int *id)
 		Reaction_module_ptr->Write_restart();
 	}
 }
+#ifdef USE_MPI
+void RM_mpi_barrier(int *comm, int *ierr)
+{
+	*ierr = MPI_Barrier(*comm);
+}
+void RM_mpi_bcast(void *buffer, int *count, int *datatype, int *root, int *comm, int *ierr)
+{
+	*ierr = MPI_Bcast(buffer, *count, (MPI_Datatype) *datatype, *root, (MPI_Comm) *comm);
+}
+void RM_mpi_comm_create(int *comm, int *group, int *newcom, int *ierr)
+{
+	*ierr = MPI_Comm_create((MPI_Comm) *comm, (MPI_Group) *group, (MPI_Comm *) newcom);
+}
+void RM_mpi_comm_group(int *comm, int *group, int *ierr)
+{
+	*ierr = MPI_Comm_group((MPI_Comm) *comm, (MPI_Group *) group);
+}
+void RM_mpi_get_address(int *location, int *address, int *ierr)
+{
+	*ierr = MPI_Get_address((void *) location, (MPI_Aint *) address);
+}
+void RM_mpi_group_incl(int *group, int *n, int *ranks, int *newgroup, int *ierr)
+{
+	*ierr = MPI_Group_incl((MPI_Group) *group, *n, ranks, (MPI_Group *) newgroup);
+}
+void RM_mpi_recv(void *buffer, int *count, int *datatype, int *source, int *tag, int *comm, int *status, int *ierr)
+{
+	*ierr = MPI_Recv(buffer, *count, (MPI_Datatype) *datatype, *source, *tag, (MPI_Comm) *comm, (MPI_Status *) status);
+}
+void RM_mpi_send(void *buffer, int *count, int *datatype, int *dest, int *tag, int *comm, int *ierr)
+{
+	*ierr = MPI_Send(buffer, *count, (MPI_Datatype) *datatype, *dest, *tag, (MPI_Comm) *comm);
+}
+void RM_mpi_type_commit(int *datatype, int *ierr)
+{
+	*ierr = MPI_Type_commit((MPI_Datatype *) datatype);
+}
+void RM_mpi_type_create_struct(int *count,
+  int *array_of_blocklengths,
+  int *array_of_displacements,
+  int *array_of_types,
+  int *newtype, int *ierr)
+{
+	*ierr = MPI_Type_create_struct(*count,
+		array_of_blocklengths,
+		(MPI_Aint *) array_of_displacements,
+		(MPI_Datatype *) array_of_types,
+		(MPI_Datatype *) newtype);
+}
+void RM_mpi_type_free(int *datatype, int *ierr)
+{
+	*ierr = MPI_Type_free((MPI_Datatype *) datatype);
+}
+#endif

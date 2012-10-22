@@ -20,6 +20,17 @@
 #define RM_initial_phreeqc_run                rm_initial_phreeqc_run
 #define RM_load_database                      rm_load_database
 #define RM_log_screen_prt                     rm_log_screen_prt
+#define RM_mpi_barrier					      rm_mpi_barrier
+#define RM_mpi_bcast                          rm_mpi_bcast
+#define RM_mpi_comm_create                    rm_mpi_comm_create
+#define RM_mpi_comm_group                     rm_mpi_comm_group
+#define RM_mpi_get_address                    rm_mpi_get_address
+#define RM_mpi_group_incl                     rm_mpi_group_incl
+#define RM_mpi_recv                           rm_mpi_recv
+#define RM_mpi_send                           rm_mpi_send
+#define RM_mpi_type_commit                    rm_mpi_type_commit
+#define RM_mpi_type_create_struct             rm_mpi_type_create_struct
+#define RM_mpi_type_free                      rm_mpi_type_free
 #define RM_open_files                         rm_open_files
 #define RM_pass_data                          rm_pass_data
 #define RM_pass_transient_data                rm_pass_transient_data
@@ -30,7 +41,8 @@
 #define RM_transport                          rm_transport
 #define RM_write_bc_raw                       rm_write_bc_raw
 #define RM_write_output                       rm_write_output
-#define RM_write_restart		      rm_write_restart
+#define RM_write_restart					  rm_write_restart
+
 
 
 /**
@@ -51,7 +63,7 @@
 class RM_interface
 {
 public:
-	static int Create_reaction_module();
+	static int Create_reaction_module(int nthreads);
 	static IPQ_RESULT Destroy_reaction_module(int n);
 	static Reaction_module* Get_instance(int n);
 	static void CleanupReactionModuleInstances(void);
@@ -70,7 +82,7 @@ void RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity);
 void RM_cleanup();
 void RM_close_files(int * solute);
 void RM_convert_to_molal(int *id, double *c, int *n, int *dim);
-int  RM_create();
+int  RM_create(int nthreads);
 void RM_create_phreeqc_bin(int *rm_id);
 int  RM_destroy(int *id);
 void RM_distribute_initial_conditions(int *id,
@@ -93,6 +105,23 @@ void RM_fractions2solutons(int *id);
 void RM_get_component(int * id, int * num, char *chem_name, int l1);
 void RM_initial_phreeqc_run(int * id, char *db_name, char *chem_name, char *prefix_name, int l1, int l2, int l3);
 void RM_log_screen_prt(char *err_str, long l);
+
+void RM_mpi_barrier(int *comm, int *ierr);
+void RM_mpi_bcast(void *buffer, int *count, int *datatype, int *root, int *comm, int *ierr);
+void RM_mpi_comm_create(int *comm, int *group, int *newcom, int *ierr);
+void RM_mpi_comm_group(int *comm, int *group, int *ierr);
+void RM_mpi_get_address(int *location, int *address, int *ierr);
+void RM_mpi_group_incl(int *group, int *n, int *ranks, int *newgroup, int *ierr);
+void RM_mpi_recv(void *buffer, int *count, int *datatype, int *source, int *tag, int *comm, int* status, int *ierr);
+void RM_mpi_send(void *buffer, int *count, int *datatype, int *dest, int *tag, int *comm, int *ierr);
+void RM_mpi_type_commit(int *datatype, int *ierr);
+void RM_mpi_type_create_struct(int *count,
+  int *array_of_blocklengths,
+  int *array_of_displacements,
+  int *array_of_types,
+  int *newtype, int *ierr);
+void RM_mpi_type_free(int *datatype, int *ierr);
+
 void RM_open_files(int * solute, char * prefix, int l_prefix);
 void RM_open_error_file(void);
 void RM_open_output_file(char * prefix, int l_prefix);

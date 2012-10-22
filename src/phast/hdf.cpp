@@ -1,7 +1,10 @@
 /*
   hdf.cpp
 */
-
+#ifdef USE_MPI
+//MPICH seems to require mpi.h to be first
+#include <mpi.h>
+#endif
 #include <string.h>
 #include <stdlib.h>
 #if defined(_MT)
@@ -144,7 +147,9 @@ void
 HDF_Init(const char *prefix, int prefix_l)
 {
 #ifdef USE_MPI
+#ifdef SKIP_TODO
 	extern int mpi_myself;
+#endif
 #else
 	const int mpi_myself = 0;
 #endif
@@ -155,7 +160,9 @@ HDF_Init(const char *prefix, int prefix_l)
 	H5Eset_auto1(NULL, NULL);
 #endif
 #endif
+#ifdef SKIP_TODO
 	if (mpi_myself == 0)
+#endif
 	{
 		/* Open the HDF file */
 		root.hdf_file_id = open_hdf_file(prefix, prefix_l);
@@ -206,12 +213,15 @@ HDF_Finalize(void)
 	int i;
 
 #ifdef USE_MPI
+#ifdef SKIP_TODO
 	extern int mpi_myself;
+#endif
 #else
 	const int mpi_myself = 0;
 #endif
-
+#ifdef SKIP_TODO
 	if (mpi_myself == 0)
+#endif
 	{
 		herr_t status;
 
@@ -299,8 +309,10 @@ static hid_t
 open_hdf_file(const char *prefix, int prefix_l)
 {
 #ifdef USE_MPI
+#ifdef SKIP_TODO
 	extern int mpi_myself;
 	extern int mpi_tasks;
+#endif
 #else
 	const int mpi_myself = 0;
 	const int mpi_tasks = 1;
@@ -313,16 +325,21 @@ open_hdf_file(const char *prefix, int prefix_l)
 	strncpy(hdf_prefix, prefix, prefix_l);
 	hdf_prefix[prefix_l] = '\0';
 	string_trim(hdf_prefix);
+#ifdef SKIP_TODO
 	if (mpi_tasks == 1)
 	{
+#endif
 		sprintf(hdf_file_name, "%s%s", hdf_prefix, szHDF5Ext);
+#ifdef SKIP_TODO
 	}
 	else
 	{
 		sprintf(hdf_file_name, "%s%s", hdf_prefix, szHDF5Ext);
 	}
-
+#endif
+#ifdef SKIP_TODO
 	if (mpi_myself == 0)
+#endif
 	{
 		root.hdf_prefix    = hdf_prefix;
 		root.hdf_file_name = hdf_file_name;
@@ -360,12 +377,17 @@ HDF_INIT_INVARIANT(void)
 {
 #ifndef NDEBUG
 #ifdef USE_MPI
+#ifdef SKIP_TODO
 	extern int mpi_myself;
+#endif
 #else
 	const int mpi_myself = 0;
 #endif
 #endif
+	
+#ifdef SKIP_TODO
 	assert(mpi_myself == 0);
+#endif
 
 	/*
 	 * Create the "/Grid" group
@@ -405,8 +427,10 @@ HDF_FINALIZE_INVARIANT(void)
 	herr_t status;
 #ifdef USE_MPI
 #ifndef NDEBUG
+#ifdef SKIP_TODO
 	extern int mpi_myself;
 	assert(mpi_myself == 0);
+#endif
 #endif
 #endif
 
@@ -437,13 +461,16 @@ HDF_WRITE_GRID(double x[], double y[], double z[],
 			   int ibc[], char *UTULBL, int UTULBL_l)
 {
 #ifdef USE_MPI
+#ifdef SKIP_TODO
         extern int solute;
 	extern int mpi_myself;
+#endif
 #else
 	const int mpi_myself = 0;
 #endif
-
+#ifdef SKIP_TODO
 	if (mpi_myself == 0)
+#endif
 	{
 		int i;
 
@@ -542,9 +569,11 @@ HDF_WRITE_GRID(double x[], double y[], double z[],
 
 #ifdef USE_MPI
 	/* send scalar_count to all procs */
+#ifdef SKIP_TODO
 	if (solute) {
 	  MPI_Bcast(&proc.scalar_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
 	}
+#endif
 #endif
 }
 
@@ -612,7 +641,9 @@ HDF_WRITE_FEATURE(char *feature_name, int *nodes1, int *node_count,
 {
 #ifndef NDEBUG
 #ifdef USE_MPI
+#ifdef SKIP_TODO
 	extern int mpi_myself;
+#endif
 #else
 	const int mpi_myself = 0;
 #endif
@@ -626,7 +657,9 @@ HDF_WRITE_FEATURE(char *feature_name, int *nodes1, int *node_count,
 	herr_t status;
 	int *nodes0;
 
+#ifdef SKIP_TODO
 	assert(mpi_myself == 0);
+#endif
 
 	if (*node_count == 0)
 	{
@@ -898,6 +931,7 @@ void
 HDFBeginCTimeStep(int count_chem)
 {
 #ifdef USE_MPI
+#ifdef TODO
 	extern std::vector<int> start_cell;
 	extern std::vector<int> end_cell;
 	extern int *random_list;
@@ -905,6 +939,7 @@ HDFBeginCTimeStep(int count_chem)
 
 	int *ptr_begin;
 	int *ptr_end;
+#endif
 #endif
 
 	int i;
@@ -914,6 +949,7 @@ HDFBeginCTimeStep(int count_chem)
 		return;
 
 #ifdef USE_MPI
+#ifdef SKIP_TODO
 	assert(count_back_list == 1 || count_back_list == 2
 		   || count_back_list == 4);
 	/* determine how many cells we're going to be doing */
@@ -922,6 +958,7 @@ HDFBeginCTimeStep(int count_chem)
 	//ptr_end = &(random_list[end_cells[mpi_myself][1]]);
 	ptr_end = &(random_list[end_cell[mpi_myself]]);
 	proc.cell_count = (int) (ptr_end - ptr_begin + 1);
+#endif
 #else
 	proc.cell_count = count_chem;
 #endif
@@ -973,6 +1010,7 @@ HDFSetCell(const int n, std::vector <std::vector <int> > &back)			/* n is the na
 #ifndef NDEBUG
 #ifdef USE_MPI
 	{
+#ifdef SKIP_TODO
 		//extern int end_cells[MPI_MAX_TASKS][2];
 		extern std::vector<int> start_cell;
 		extern std::vector<int> end_cell;
@@ -1003,6 +1041,7 @@ HDFSetCell(const int n, std::vector <std::vector <int> > &back)			/* n is the na
 		assert(n == back[sort_random_list[proc.cell_index]].list[0]);
 
 		PHRQ_free(sort_random_list);
+#endif
 	}
 #else
 	{
@@ -1030,8 +1069,9 @@ HDFSetCell(const int n, std::vector <std::vector <int> > &back)			/* n is the na
 void
 HDFEndCTimeStep(std::vector <std::vector <int> > &back)
 {
+#ifdef SKIP_TODO
 #ifdef USE_MPI
-        extern int solute;
+    extern int solute;
 	const int TAG_HDF_DATA = 5;
 	extern int mpi_myself;
 	extern int mpi_tasks;
@@ -1099,11 +1139,12 @@ HDFEndCTimeStep(std::vector <std::vector <int> > &back)
 		write_proc_timestep(rank, cell_count,
 				    root.current_file_dspace_id,
 				    root.current_file_dset_id,
-				    root.recv_array);
+				    root.recv_array, back);
 	      }
 	    }
 	  }
 	}
+#endif
 #endif
 }
 
@@ -1121,11 +1162,13 @@ write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
 {
 #ifdef USE_MPI
 	//extern int end_cells[MPI_MAX_TASKS][2];
+#ifdef SKIP
 	extern std::vector<int> start_cell;
 	extern std::vector<int> end_cell;
 	extern int *random_list;
 	extern int int_compare(const void *, const void *);
-	int *sort_random_list;
+#endif
+	//int *sort_random_list;
 #else
 	/*extern int count_chem; */
 #endif
@@ -1196,6 +1239,7 @@ write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
 	}
 #else
 	/* MPI */
+#ifdef SKIP
 	assert(cell_count ==
 		  // &(random_list[end_cells[rank][1]]) -
 		  &(random_list[end_cell[rank]]) -
@@ -1211,7 +1255,6 @@ write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
 	memcpy(sort_random_list, &random_list[start_cell[rank]],
 		   sizeof(int) * cell_count);
 	qsort(sort_random_list, (size_t) (cell_count), sizeof(int), int_compare);
-
 	/*
 	 * make the file dataspace selection
 	 */
@@ -1250,6 +1293,39 @@ write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
 		}
 	}
 	PHRQ_free(sort_random_list);
+#endif
+	for (n = 0; n < (int) back[0].size(); ++n)
+	{
+		for (j = 0; j < proc.scalar_count; ++j)
+		{
+			for (i = 0; i < cell_count; ++i)
+			{
+				coor[i + j * cell_count][0] =
+					root.natural_to_active[back[i][n]] +
+					j * root.active_count;
+			}
+		}
+
+		/* make the independent points selection for the file dataspace */
+		status =
+			H5Sselect_elements(file_dspace_id, H5S_SELECT_SET,
+							   cell_count * proc.scalar_count,
+#if (H5_VERS_MAJOR>1)||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR>=8))||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR==6)&&(H5_VERS_RELEASE>=7))
+							   (const hssize_t *) coor);
+#else
+							   (const hssize_t **) coor);
+#endif
+		assert(status >= 0);
+
+		status =
+			H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, mem_dspace, file_dspace_id,
+					 H5P_DEFAULT, array);
+		if (status < 0)
+		{
+			sprintf(error_string, "HDF ERROR: Unable to write dataspace\n");
+			error_msg(error_string, STOP);
+		}
+	}
 #endif
 
 	PHRQ_free(coor);
@@ -1544,12 +1620,16 @@ void
 HDF_INTERMEDIATE(void)
 {
 #ifdef USE_MPI
+#ifdef SKIP_TODO
 	extern int mpi_myself;
+#endif
 #else
 	const int mpi_myself = 0;
 #endif
 
+#ifdef SKIP_TODO
 	if (mpi_myself == 0)
+#endif
 	{
 		herr_t status;
 
@@ -1612,12 +1692,16 @@ hdf_finalize_headings(void)
 	int i;
 
 #ifdef USE_MPI
+#ifdef SKIP_TODO
 	extern int mpi_myself;
+#endif
 #else
 	const int mpi_myself = 0;
 #endif
 
+#ifdef SKIP_TODO
 	if (mpi_myself == 0)
+#endif
 	{
 		herr_t status;
 		hid_t fls_type;

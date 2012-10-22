@@ -671,6 +671,7 @@ initialize(void)
 	cross_dispersion = FALSE;
 	rebalance_fraction = 0.5;
 	rebalance_by_cell = FALSE;
+	n_threads = -1;
 /*
  *   print input values set to false, xy true
  */

@@ -830,7 +830,8 @@ EXTERNAL double
 	rebalance_fraction;
 EXTERNAL int
 	rebalance_by_cell;
-
+EXTERNAL int
+	n_threads;
 /* time stepping */
 EXTERNAL struct time_series
 	time_step;

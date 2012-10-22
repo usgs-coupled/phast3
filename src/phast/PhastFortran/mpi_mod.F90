@@ -4,14 +4,12 @@
 ! ... $Id: mpi_mod.F90,v 1.5 2011/01/29 00:18:54 klkipp Exp klkipp $
 MODULE mpi_mod
 #if defined(USE_MPI)
+  USE MPI
   IMPLICIT NONE
   SAVE
-  INCLUDE 'mpif.h' 
-
   INTEGER :: manager=0, world
   INTEGER :: ierrmpi
   INTEGER :: mpi_xp_group, mpi_xp_comm
-
 CONTAINS  
 
   SUBROUTINE get_mpi_filename(fname)

@@ -190,6 +190,7 @@ MODULE mcs
   INTEGER, DIMENSION(19,19) :: mar1
   INTEGER ::  idir, maxit1, maxit2, nbn, nrn, nohst, nd4n, nprist, &
        nral, nsdr, nstslv, nstsor, ntsopt
+  INTEGER :: nthreads
   REAL(KIND=kdp) :: epsomg, epsslv
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: diagc, diagr
   ! ... LRCGD1=37 and LRCGD2=18 if LU fill-in is desired,

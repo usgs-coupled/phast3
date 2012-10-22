@@ -1,3 +1,4 @@
+#include 'mpi_fix_case.h'
 MODULE mpi_struct_arrays
 #if defined USE_MPI
   ! ... generic functions for real and integer MPI array structures

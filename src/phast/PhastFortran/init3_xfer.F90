@@ -1,3 +1,4 @@
+#include 'mpi_fix_case.h'
 ! ... $Id: init3_xfer.F90,v 1.5 2011/01/29 00:18:54 klkipp Exp klkipp $
 SUBROUTINE init3_distribute
   ! ... Send or receive data from transient read3 group 
@@ -238,9 +239,9 @@ SUBROUTINE init3_bcast_w
   !
 !!$! Read Flags From Read3
   Int_real_type = Mpi_struct_array(Array_recv_i,Array_recv_r)
-  CALL Mpi_bcast(Array_recv_i, 1, Int_real_type, Manager,  &
+  CALL MPI_BCAST(Array_recv_i, 1, Int_real_type, Manager,  &
        World, Ierrmpi)
-  CALL Mpi_type_free(Int_real_type,Ierrmpi)
+  CALL MPI_TYPE_FREE(Int_real_type,Ierrmpi)
 
   Thru = .FALSE.
   IF (Array_recv_i(1) == 1) Thru = .TRUE.
