@@ -1,3 +1,4 @@
+#include 'mpi_fix_case.h'
 ! ... $Id: read2_xfer.F90,v 1.5 2011/01/29 00:18:54 klkipp Exp klkipp $
 SUBROUTINE group2_distribute
   USE mcc

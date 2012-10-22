@@ -155,7 +155,7 @@ Reaction_module::BeginCell(int index)
 #endif
 #if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
 	/* Always open file for output in case of a warning message */
-	MergeBeginCell();
+	//TODO MergeBeginCell();
 #endif
 }
 /* ---------------------------------------------------------------------- */
@@ -168,7 +168,7 @@ Reaction_module::BeginTimeStep(void)
 #endif
 #if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
 	/* Always open file for output in case of a warning message */
-	MergeBeginTimeStep(print_sel, print_out);
+	//TODOMergeBeginTimeStep(print_sel, print_out);
 #endif
 }
 /* ---------------------------------------------------------------------- */
@@ -739,7 +739,7 @@ Reaction_module::EndCell(int index)
 {
 #if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
 	/* Always open file for output in case of a warning message */
-	MergeEndCell(print_sel, print_out, print_hdf, index);
+	//TODO MergeEndCell(print_sel, print_out, print_hdf, index);
 #endif
 }
 /* ---------------------------------------------------------------------- */
@@ -752,7 +752,7 @@ Reaction_module::EndTimeStep(void)
 #endif
 #if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
 	/* Always open file for output in case of a warning message */
-	MergeEndTimeStep(print_sel, print_out);
+	//TODO MergeEndTimeStep(print_sel, print_out);
 #endif
 }
 /* ---------------------------------------------------------------------- */
@@ -1967,11 +1967,15 @@ Reaction_module::Run_cells_thread(int n)
 				phast_iphreeqc_worker->Get_punch_vector().push_back(empty);
 			}
 		}
+		if (i%50 == 0 && (n == 1 /*|| n == 2*/))
+		{
+			std::cerr << "\tThread: " << n << " Time: " << (double) (clock() - t0) << " Cell: " << i << "\n";
+		}
 	} // end one cell
 
 	this->Solutions2Fractions_thread(n);
 	clock_t t_elapsed = clock() - t0;
-	std::cerr << "Thread: " << n << " Time: " << (double) t_elapsed << " Cells: " << this->start_cell[n] << "-" << this->end_cell[n] << std::endl;
+	std::cerr << "Thread: " << n << " Time: " << (double) t_elapsed << " Cells: " << this->end_cell[n] - this->start_cell[n] + 1 << std::endl;
 	phast_iphreeqc_worker->Set_thread_clock_time((double) t_elapsed);
 }
 /* ---------------------------------------------------------------------- */

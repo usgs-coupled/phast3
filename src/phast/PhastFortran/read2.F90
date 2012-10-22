@@ -826,30 +826,35 @@ SUBROUTINE read2
   IF(solute) THEN
      ! ... cross dispersion calculation
      READ(fuins,*) crosd
-     IF (print_rde) WRITE(furde,8001) 'crosd,[2.22.1a]', crosd
+     IF (print_rde) WRITE(furde,8001) 'crosd,[2.22.3]', crosd
      ! ... cross dispersion calculation
      READ(fuins,*) rebalance_fraction_f, rebalance_method_f
      IF (print_rde) WRITE(furde,"(tr5,a/tr5,1pg12.5)") 'rebalance_fraction', rebalance_fraction_f
      IF (print_rde) WRITE(furde,"(tr5,a/tr5,i12)") 'rebalance_method', rebalance_method_f
   ENDIF
   READ(fuins,*) tolden, maxitn
-  IF (print_rde) WRITE(furde, 8025) 'tolden,maxitn,[2.22.2]', tolden, maxitn  
+  IF (print_rde) WRITE(furde, 8025) 'tolden,maxitn,[2.22.4]', tolden, maxitn  
 8025 FORMAT(tr5,a/tr5,1pg10.4,i5)  
 
   IF(slmeth == 3) THEN  
      ! ... red-black generalized conjugate gradient solver parameters
      READ(fuins, *) idir, milu, nsdr, epsslv, maxit2  
-     IF (print_rde) WRITE(furde, 8018) 'idir,milu,nsdr,epsslv,maxit2,[2.22.4]', &
+     IF (print_rde) WRITE(furde, 8018) 'idir,milu,nsdr,epsslv,maxit2,[2.22.5]', &
           idir, milu, nsdr, epsslv, maxit2
 8018 FORMAT   (tr5,a/tr5,i5,l5,i5,1pg12.4,i5)  
   ENDIF
   IF(slmeth == 5) THEN  
      ! ... d4 zig-zag generalized conjugate gradient solver data
      READ(fuins, *) idir, milu, nsdr, epsslv, maxit2  
-     IF (print_rde) WRITE(furde, 8018) 'idir,milu,nsdr,epsslv,maxit2,[2.22.4]', &
+     IF (print_rde) WRITE(furde, 8018) 'idir,milu,nsdr,epsslv,maxit2,[2.22.5]', &
           idir, milu, nsdr, epsslv, maxit2
   ENDIF
-
+  ! ... number of threads, multithreaded version only
+  READ(fuins, *) nthreads  
+  IF (print_rde) WRITE(furde, 8018) 'C.2.22.6 .. number of threads', nthreads
+#if defined(USE_MPI)
+  nthreads = -1
+#endif
   ! ...  print requests for tables
   READ(fuins,*) prtpmp, prtfp, prtbc, prtslm, prtwel, prt_kd
   IF (print_rde) WRITE(furde,8019) 'prtpmp,prtfp,prtbc,prtslm,prtwel,prt_kd,[2.23.1]',  &

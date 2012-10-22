@@ -1,3 +1,4 @@
+#include 'mpi_fix_case.h'
 SUBROUTINE set_component_map
   USE mcc
   USE mcv

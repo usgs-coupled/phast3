@@ -1,3 +1,4 @@
+#include 'mpi_fix_case.h'
 SUBROUTINE init2_1
   ! ... initialize after read2
   ! ... initialization block 1 before chemical reactions
