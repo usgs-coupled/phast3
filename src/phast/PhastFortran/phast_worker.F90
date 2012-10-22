@@ -4,7 +4,7 @@ SUBROUTINE phast_worker
   ! ... The top level routine for a worker process that does the 
   ! ...     solute transport calculation for one component
   USE machine_constants, ONLY: kdp, one_plus_eps
-  USE mcb, ONLY: adj_wr_ratio, transient_fresur, qfsbc, nsbc
+  USE mcb, ONLY: fresur, adj_wr_ratio, transient_fresur, qfsbc, nsbc
   USE mcc
   USE mcg
   USE mcch
@@ -55,7 +55,8 @@ SUBROUTINE phast_worker
   errexe=.FALSE.
   tsfail=.FALSE.
 
-  !! CALL openf   
+  CALL openf   
+
   ! ... Receive memory allocation data, solute
   CALL read1_distribute
 
@@ -65,12 +66,12 @@ SUBROUTINE phast_worker
      WRITE(*,*) "Could not create reaction module, worker ", mpi_myself
      STOP 
   END IF
-#ifdef SKIP_FOR_COMPILE
+  
+  CALL RM_open_files(solute, f3name)
+
   IF (solute) THEN
-     !CALL phreeqc_main(solute, f1name, f2name, f3name, mpi_tasks, mpi_myself)
     CALL RM_initial_phreeqc_run(rm_id, f2name, f1name, f3name)
     ! Set components
-    !ns = GetComponentCount(rm_id)
     ns = RM_find_components(rm_id)
     ALLOCATE(comp_name(ns),  & 
         STAT = a_err)
@@ -79,11 +80,11 @@ SUBROUTINE phast_worker
         STOP
     ENDIF
     do i = 1, ns
-        !CALL GetComponent(rm_id, i, comp_name(i))
         comp_name(i) = ' '
         CALL RM_get_component(rm_id, i, comp_name(i))
     enddo   
-    CALL on_error_cleanup_and_exit
+
+    !TODO CALL on_error_cleanup_and_exit
 
     CALL worker_init1 
      ! ... Receive init1 data
@@ -103,7 +104,7 @@ SUBROUTINE phast_worker
      time_phreeqc = 0._kdp
 
 #if defined(HDF5_CREATE)
-     CALL hdf_write_invariant(mpi_myself)
+     ! TODO CALL hdf_write_invariant(mpi_myself)
 #endif
      !
      ! ... Initialize chemistry 
@@ -113,7 +114,24 @@ SUBROUTINE phast_worker
           rebalance_method_f, volume, tort, npmz, &
           exchange_units, surface_units, ssassemblage_units,  &
           ppassemblage_units, gasphase_units, kinetics_units)
-     CALL forward_and_back(indx_sol1_ic, naxes, nx, ny, nz)  
+     CALL RM_pass_data(rm_id,        &
+        fresur,                      &
+        steady_flow,                 &
+        nx, ny, nz,                  &
+        cnvtmi,                      &
+        x_node, y_node, z_node,      &
+        pv0,                         &
+        volume,                      &
+        iprint_chem,                 &
+        iprint_xyz,                  &
+        rebalance_fraction_f,        &
+        c)
+    write (*,*) "Here I am, worker ", ns
+     !CALL forward_and_back(indx_sol1_ic, naxes, nx, ny, nz)  
+    CALL RM_forward_and_back(rm_id, indx_sol1_ic, naxes)  
+    write (*,*) "Here I am, worker 1**************** "
+    STOP "Worker end"
+#ifdef SKIP_FOR_COMPILE
      CALL distribute_initial_conditions(indx_sol1_ic, indx_sol2_ic, ic_mxfrac,  &
           exchange_units, surface_units, ssassemblage_units,  &
           ppassemblage_units, gasphase_units, kinetics_units,  &
@@ -214,7 +232,8 @@ SUBROUTINE phast_worker
 
      ENDDO
      ! ... End of transient loop
-
+     
+#endif !! SKIP_FOR_COMPILE
 50   CONTINUE
      ! ... Cleanup and stop
 !!$     !     logline1 = 'Done with transient simulation of component transport.'
@@ -225,9 +244,8 @@ SUBROUTINE phast_worker
         CALL logprt_c(logline1)
         CALL screenprt_c(logline1)
      END IF
-
+     
   ENDIF        ! ... solute
-#endif !! SKIP_FOR_COMPILE
   !!$  if (solute) CALL XP_destroy(xp_list(1))
   CALL MPI_BARRIER(MPI_COMM_WORLD, ierrmpi)
   CALL terminate_phast_worker
@@ -254,21 +272,24 @@ CONTAINS
        PRINT *, "Array allocation failed: worker_init1 1"  
        STOP  
     ENDIF
-    ucomp_name = " "
-    IF (solute) CALL count_all_components (ns, ucomp_name)  
+    !ucomp_name = " "
+    !IF (solute) CALL count_all_components (ns, ucomp_name)  
     ! ... Allocate component arrays
-    nsa = MAX(ns,1)
+    !nsa = MAX(ns,1)
     ! ... Allocate dependent variable arrays
+ 
+    nsa = MAX(ns,1)
     nxy = nx * ny  
     nxyz = nxy * nz  
 
+    ! print arrays
     ALLOCATE (iprint_chem(nxyz), iprint_xyz(nxyz), &
          STAT = a_err)
     IF (a_err /= 0) THEN  
        PRINT *, "Array allocation failed: worker_init1 2"  
        STOP  
     ENDIF
-    ALLOCATE (comp_name(nsa), &
+    ALLOCATE ( &
          indx_sol1_ic(7,nxyz), indx_sol2_ic(7,nxyz), &
          c(nxyz,nsa), &
          ic_mxfrac(7,nxyz), &
@@ -277,48 +298,13 @@ CONTAINS
        PRINT *, "Array allocation failed: worker_init1 3"  
        STOP  
     ENDIF
-    IF (solute) THEN  
-       DO  iis = 1,ns  
-          comp_name(iis) = ucomp_name(iis)
-       END DO
-    ENDIF
-!!$! ... Zero the output record counters
-!!$!  nrsttp = 0  
-!!$!  nmapr = 0  
-!!$!  ! ... Zero the output time plane counters
-!!$!  ntprbcf = 0
-!!$!  ntprcpd = 0
-!!$!  ntprgfb = 0
-!!$!  ntprzf = 0
-!!$!  ntprzf_tsv = 0
-!!$!  ntprzf_heads = 0
-!!$!  ntprkd = 0
-!!$!  ntprmapcomp = 0
-!!$!  ntprmaphead = 0
-!!$!  ntprmapv = 0
-!!$!  ntprhdfv = 0
-!!$!  ntprhdfh = 0
-!!$!  ntprp = 0
-!!$!  ntprc = 0
-!!$!  ntprvel = 0
-!!$!  ntprwel = 0
-!!$!  ntprtem = 0
-!!$!  prt_kd = .false.
+    write(*,*) "Worker indx_sol1_ic allocated ", nxyz
     print_rde = .FALSE.
-    DEALLOCATE (ucomp_name, &
-         STAT = da_err)
-    IF (da_err /= 0) THEN  
-       PRINT *, "Array deallocation failed: worker_init1"  
-       STOP  
-    ENDIF
 
     ! ... additional init1 for worker (formerly init1_xfer)
-
-    IF (cylind) ny = 1  
-    nxy = nx*ny  
-    nxyz = nxy*nz  
     nxyzh = (nxyz+MOD(nxyz,2))/2
     mtp1 = nxyz - nxy + 1          ! ... first cell in top plane of global mesh
+
     ! ... Allocate node information arrays: mcn
     ALLOCATE (rm(nx), x(nx), y(ny), z(nz), x_node(nxyz), y_node(nxyz), z_node(nxyz),  &
          x_face(nx-1), y_face(ny-1), z_face(nz-1),  &
@@ -337,37 +323,20 @@ CONTAINS
     ENDIF
     pv0 = 0
     ibc = 0
+
     ! ... Set up time marching units and conversion factors
-    IF (tmunit == 1) THEN  
-!!$     unittm = 's'  
-!!$     utulbl = 'seconds'  
+    IF (tmunit == 1) THEN 
        cnvtm = 1._kdp  
-    ELSEIF (tmunit == 2) THEN  
-!!$     unittm = 'min'  
-!!$     utulbl = 'minutes'  
+    ELSEIF (tmunit == 2) THEN   
        cnvtm = 60._kdp  
-    ELSEIF (tmunit == 3) THEN  
-!!$     unittm = 'h'  
-!!$     utulbl = 'hours'  
+    ELSEIF (tmunit == 3) THEN   
        cnvtm = 3600._kdp  
-    ELSEIF (tmunit == 4) THEN  
-!!$     unittm = 'd'  
-!!$     utulbl = 'days'  
+    ELSEIF (tmunit == 4) THEN    
        cnvtm = 86400._kdp  
-    ELSEIF (tmunit == 6) THEN  
-!!$     unittm = 'yr'  
-!!$     utulbl = 'years'  
+    ELSEIF (tmunit == 6) THEN   
        cnvtm = 3.155815d7  
     ENDIF
     cnvtmi = 1._kdp/cnvtm  
-!!$  unitm = 'kg'  
-!!$  unitl = 'm '  
-!!$  unitt = 'c'  
-!!$  unith = 'j  '  
-!!$  unithf = 'w    '  
-!!$  unitp = 'pa '  
-!!$  unitep = 'j/kg'  
-!!$  unitvs = 'pa-s'  
     cnvl = 1._kdp  
     cnvm = 1._kdp  
     cnvp = 1._kdp  
@@ -438,12 +407,76 @@ CONTAINS
     zfs = -1.e20_kdp
     dt = 0._kdp
     t = 0._kdp
-    !*****the following may depend on previous call of phreeqc
-    ! *** receive iis index 
 
   END SUBROUTINE worker_init1
 #endif  ! USE_MPI
 END SUBROUTINE phast_worker
+SUBROUTINE worker_closef
+#if defined(USE_MPI)
+  ! ... Closes and deletes files and writes indices of time values
+  ! ...      at which dependent variables have been saved
+  ! ... Also deallocates the arrays
+  USE f_units
+  USE mcb
+  USE mcc
+  USE mcch
+  USE mcn
+  USE mcp
+  USE mcv
+  USE mpi_mod
+  IMPLICIT NONE
+  CHARACTER(LEN=6), DIMENSION(40) :: st
+  INTEGER :: a_err, da_err
+  !     ------------------------------------------------------------------
+  !...
+#ifdef SKIP
+  ! ... Close and delete the stripped input file
+  CLOSE(fuins,STATUS='DELETE')  
+  ! ... delete the read echo 'furde' file upon successful completion
+  CALL update_status(st)
+  ! ... Close the files
+  IF(print_rde) CLOSE(furde,status='delete')  
+  CLOSE(fuorst, status = st(fuorst))  
+  CLOSE(fulp, status = st(fulp))  
+  CLOSE(fup, status = st(fup)) 
+  CLOSE(fuwt, status = st(fuwt)) 
+  CLOSE(fuc, status = st(fuc))  
+  CLOSE(fuvel, status = st(fuvel))  
+  CLOSE(fuwel, status = st(fuwel))  
+  CLOSE(fubal, status = st(fubal))  
+  CLOSE(fukd, status = st(fukd))  
+  CLOSE(fubcf, status = st(fubcf))  
+  CLOSE(fuzf, status = st(fuzf))  
+  CLOSE(fuzf_tsv, status = st(fuzf_tsv))
+  CLOSE(fuplt, status = st(fuplt))  
+  CLOSE(fupmap, status = st(fupmap))  
+  CLOSE(fupmp2, status = st(fupmp2))
+  CLOSE(fupmp3, status = st(fupmp2))  
+  CLOSE(fuvmap, status = st(fuvmap))  
+!!$  close(fupzon, status = st(fupzon))  
+!!$  close(fubnfr, status = st(fubcf))  
+  CLOSE(fuich, status = st(fuich))
+  ! ... Close files and free memory in phreeqc
+  IF (solute) THEN  
+     CALL phreeqc_free(solute)
+     DEALLOCATE (iprint_chem, iprint_xyz, &
+          STAT = da_err)
+     IF (da_err /= 0) THEN  
+        PRINT *, "Array deallocation failed worker_closef: 1"  
+        STOP  
+     ENDIF
+     DEALLOCATE (c, ic_mxfrac, &
+          STAT = da_err)
+     IF (da_err /= 0) THEN  
+        PRINT *, "Array deallocation failed worker_closef: 2"  
+        STOP  
+     ENDIF
+  ELSE
+    CALL MPI_FINALIZE(ierrmpi)
+  ENDIF
+#endif
+#endif  ! USE_MPI  
+END SUBROUTINE worker_closef
 #ifdef SKIP
 SUBROUTINE phast_worker
 #if defined(USE_MPI)

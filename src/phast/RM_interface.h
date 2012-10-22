@@ -82,7 +82,7 @@ void RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity);
 void RM_cleanup();
 void RM_close_files(int * solute);
 void RM_convert_to_molal(int *id, double *c, int *n, int *dim);
-int  RM_create(int nthreads);
+int  RM_create(int *nthreads);
 void RM_create_phreeqc_bin(int *rm_id);
 int  RM_destroy(int *id);
 void RM_distribute_initial_conditions(int *id,
