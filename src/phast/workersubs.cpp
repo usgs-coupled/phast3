@@ -1,5 +1,6 @@
 #include <mpi.h>
 #include <time.h>
+#include <iostream>
 #if defined(FC_FUNC_)
 //#define WORKER_GET_INDEXES    FC_FUNC_ (worker_get_indexes,     WORKER_GET_INDEXES)
 #endif /*FC_FUNC_*/

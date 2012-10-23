@@ -41,6 +41,39 @@ SUBROUTINE phast_worker
        IMPLICIT NONE
        CHARACTER :: str
      END SUBROUTINE RM_log_screen_prt
+     SUBROUTINE worker_get_indexes(indx_sol1_ic, indx_sol2_ic, &
+		mxfrac, naxes, nxyz, &
+		x_node, y_node, z_node, &
+		cnvtmi, transient_fresur, &
+		steady_flow, pv0, &
+		rebalance_method_f, volume, tort, npmz, &
+		exchange_units, surface_units, ssassemblage_units, &
+		ppassemblage_units, gasphase_units, kinetics_units)
+        USE machine_constants, ONLY: kdp
+        IMPLICIT NONE
+	INTEGER :: indx_sol1_ic 
+	INTEGER :: indx_sol2_ic 
+	REAL(KIND=kdp) :: mxfrac
+	INTEGER :: naxes 
+	INTEGER :: nxyz    
+	REAL(KIND=kdp) x_node 
+	REAL(KIND=kdp) y_node
+	REAL(KIND=kdp) z_node 
+	REAL(KIND=kdp) cnvtmi 
+	INTEGER :: transient_fresur 
+	LOGICAL :: steady_flow 
+	REAL(KIND=kdp) :: pv0 
+	INTEGER :: rebalance_method_f          
+	REAL(KIND=kdp) :: volume 
+	REAL(KIND=kdp) :: tort
+	INTEGER :: npmz 
+	INTEGER :: exchange_units 
+	INTEGER :: surface_units 
+	INTEGER :: ssassemblage_units 
+	INTEGER :: ppassemblage_units 
+	INTEGER :: gasphase_units
+	INTEGER :: kinetics_units
+     END SUBROUTINE worker_get_indexes
   END INTERFACE
   REAL(KIND=kdp) :: deltim_dummy
   INTEGER :: stop_msg=0, print_restart_flag
@@ -109,9 +142,9 @@ SUBROUTINE phast_worker
      !
      ! ... Initialize chemistry 
      !
-     CALL worker_get_indexes(indx_sol1_ic, indx_sol2_ic, ic_mxfrac, naxes, nxyz,  &
-          x_node, y_node, z_node, cnvtmi, transient_fresur, steady_flow, pv0,  &
-          rebalance_method_f, volume, tort, npmz, &
+     CALL worker_get_indexes(indx_sol1_ic(1,1), indx_sol2_ic(1,1), ic_mxfrac(1,1), naxes(1), nxyz,  &
+          x_node(1), y_node(1), z_node(1), cnvtmi, transient_fresur, steady_flow, pv0(1),  &
+          rebalance_method_f, volume(1), tort(1), npmz, &
           exchange_units, surface_units, ssassemblage_units,  &
           ppassemblage_units, gasphase_units, kinetics_units)
      CALL RM_pass_data(rm_id,        &
@@ -125,20 +158,32 @@ SUBROUTINE phast_worker
         iprint_chem,                 &
         iprint_xyz,                  &
         rebalance_fraction_f,        &
-        c)
-    write (*,*) "Here I am, worker ", ns
-     !CALL forward_and_back(indx_sol1_ic, naxes, nx, ny, nz)  
-    CALL RM_forward_and_back(rm_id, indx_sol1_ic, naxes)  
-    write (*,*) "Here I am, worker 1**************** "
-    STOP "Worker end"
-#ifdef SKIP_FOR_COMPILE
-     CALL distribute_initial_conditions(indx_sol1_ic, indx_sol2_ic, ic_mxfrac,  &
-          exchange_units, surface_units, ssassemblage_units,  &
-          ppassemblage_units, gasphase_units, kinetics_units,  &
-          pv0, volume)
+        c,                           &
+        mpi_myself,                  &
+        mpi_tasks)
 
-     CALL uz_init(transient_fresur)
-     CALL collect_from_nonroot(c, nxyz) 
+    CALL RM_forward_and_back(rm_id, indx_sol1_ic, naxes)     
+    DO i = 1, num_restart_files
+        CALL RM_send_restart_name(rm_id, restart_files(i))
+    ENDDO
+!     CALL distribute_initial_conditions(indx_sol1_ic, indx_sol2_ic, ic_mxfrac,  &
+!          exchange_units, surface_units, ssassemblage_units,  &
+!          ppassemblage_units, gasphase_units, kinetics_units,  &
+!          pv0, volume)
+    !write (*,*) "Here I am, worker ", mpi_myself, " ", indx_sol1_ic(1,1)
+     CALL RM_distribute_initial_conditions(rm_id, &
+	indx_sol1_ic,		& ! 7 x nxyz end-member 1 
+	indx_sol2_ic,		& ! 7 x nxyz end-member 2
+	ic_mxfrac,		& ! 7 x nxyz fraction of end-member 1
+	exchange_units,	& ! water (1) or rock (2)
+	surface_units,		& ! water (1) or rock (2)
+	ssassemblage_units,	& ! water (1) or rock (2)		
+	ppassemblage_units,  & ! water (1) or rock (2)
+	gasphase_units,	& ! water (1) or rock (2)
+	kinetics_units	)	  ! water (1) or rock (2)  
+     
+     ! collect solutions for transport
+     CALL RM_solutions2fractions(rm_id)
      !
      ! ... steady flow is calculated here
      !
@@ -151,6 +196,10 @@ SUBROUTINE phast_worker
      !
      adj_wr_ratio = 1
      print_restart_flag = 0 
+    write (*,*) "Here I am, worker"
+    CALL MPI_Barrier(world, ierrmpi)
+    STOP "Worker end"
+#ifdef SKIP_FOR_COMPILE
      CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time_phreeqc,deltim_dummy,prslmi,  &
           cnvtmi,frac_icchem,iprint_chem,iprint_xyz,  &
           prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f,  &
@@ -298,7 +347,7 @@ CONTAINS
        PRINT *, "Array allocation failed: worker_init1 3"  
        STOP  
     ENDIF
-    write(*,*) "Worker indx_sol1_ic allocated ", nxyz
+
     print_rde = .FALSE.
 
     ! ... additional init1 for worker (formerly init1_xfer)
