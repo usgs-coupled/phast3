@@ -5,7 +5,6 @@
 #include "IPhreeqc.h"
 #include "IPhreeqc.hpp"
 #include "IPhreeqcPhast.h"
-#include "Phreeqc.h"
 #include <assert.h>
 #include "System.h"
 #include "gzstream.h"
@@ -23,7 +22,11 @@
 #ifdef THREADED_PHAST
 #include <omp.h>
 #endif
-
+#ifdef USE_MPI
+#include <mpi.h>
+#endif
+#define protected public
+#include "Phreeqc.h"
 Reaction_module::Reaction_module(int thread_count, PHRQ_io *io)
 	//
 	// constructor
@@ -457,9 +460,50 @@ Reaction_module::Distribute_initial_conditions(
 	 *  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
 	 *  Does nothing for indexes less than 0 (i.e. restart files)
 	 */
+
+	// calculate cells for each thread or process
+	Set_end_cells();
+
+#ifdef USE_MPI
+	int begin = this->start_cell[this->mpi_myself];
+	int end = this->end_cell[this->mpi_myself] + 1;
 	size_t count_negative_porosity = 0;
-	for (i = 0; i < this->nxyz; i++)
-	{							/* i is ixyz number */
+	
+	for (int k = begin; k < end; k++)
+	{	
+		j = k;                          /* j is count_chem number */
+		i = this->back[j][0];           /* i is ixyz number */
+		
+		//j = this->forward[i];			/* j is count_chem number */
+		//if (j < 0)
+		//	continue;
+		assert(forward[i] >= 0);
+		assert (volume[i] > 0.0);
+		double porosity = pv0[i] / volume[i];
+		if (pv0[i] < 0 || volume[i] < 0)
+		{
+			std::ostringstream errstr;
+			errstr << "Negative volume in cell " << i << ": volume, " << volume[i]; 
+			errstr << "\t initial volume, " << this->pv0[i] << ".",
+			count_negative_porosity++;
+			error_msg(errstr.str().c_str());
+			continue;
+		}
+		assert (porosity > 0.0);
+		double porosity_factor = (1.0 - porosity) / porosity;
+		Cell_initialize(i, j, initial_conditions1, initial_conditions2,
+			fraction1,
+			exchange_units, surface_units, ssassemblage_units,
+			ppassemblage_units, gasphase_units, kinetics_units,
+			porosity_factor);
+	}
+#else
+	int begin = 0;
+	int end = nxyz;
+	size_t count_negative_porosity = 0;
+	
+	for (i = 0; i < nxyz; i++)
+	{							        /* i is ixyz number */
 		j = this->forward[i];			/* j is count_chem number */
 		if (j < 0)
 			continue;
@@ -483,6 +527,7 @@ Reaction_module::Distribute_initial_conditions(
 			ppassemblage_units, gasphase_units, kinetics_units,
 			porosity_factor);
 	}
+#endif
 	if (count_negative_porosity > 0)
 	{
 		std::ostringstream errstr;
@@ -494,7 +539,6 @@ Reaction_module::Distribute_initial_conditions(
 	/*
 	 * Read any restart files
 	 */
-
 	cxxStorageBin restart_bin;
 	for (std::map < std::string, int >::iterator it = FileMap.begin();
 		 it != FileMap.end(); it++)
@@ -702,9 +746,19 @@ Reaction_module::Distribute_initial_conditions(
 		myfile.close();
 	}
 
-	// calculate cells for each thread
-	Set_end_cells();
-
+#ifdef USE_MPI	for (i = this->start_cell[this->mpi_myself]; i <= this->end_cell[this->mpi_myself]; i++)
+	{
+		this->Get_workers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(restart_bin,i);
+	}
+#else
+	for (int n = 0; n < this->nthreads; n++)
+	{
+		for (i = this->start_cell[n]; i <= this->end_cell[n]; i++)
+		{
+			this->Get_workers()[n]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(restart_bin,i);
+		}
+	}
+#ifdef SKIP
 	// put restart definitions in reaction module
 	this->Get_workers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(restart_bin);
 
@@ -721,7 +775,8 @@ Reaction_module::Distribute_initial_conditions(
 		}
 		if (this->Get_workers()[0]->RunString(delete_command.str().c_str()) > 0) RM_error(0);
 	}
-
+#endif
+#endif
 	// initialize uz
 	if (this->transient_free_surface)
 	{
@@ -2041,6 +2096,32 @@ Reaction_module::Send_restart_name(std::string name)
 	int	i = (int) FileMap.size();
 	FileMap[name] = i;
 }
+#ifdef USE_MPI
+void
+Reaction_module::Set_end_cells(void)
+/* ---------------------------------------------------------------------- */
+{
+	int n = this->count_chem / this->mpi_tasks;
+	int extra = this->count_chem - n*this->mpi_tasks;
+	std::vector<int> cells;
+	for (int i = 0; i < extra; i++)
+	{
+		cells.push_back(n+1);
+	}
+	for (int i = extra; i < this->mpi_tasks; i++)
+	{
+		cells.push_back(n);
+	}
+	int cell0 = 0;
+	for (int i = 0; i < this->mpi_tasks; i++)
+	{
+		this->start_cell.push_back(cell0);
+		this->end_cell.push_back(cell0 + cells[i] - 1);
+		cell0 = cell0 + cells[i];
+	}
+	
+}
+#else
 void
 Reaction_module::Set_end_cells(void)
 /* ---------------------------------------------------------------------- */
@@ -2064,6 +2145,7 @@ Reaction_module::Set_end_cells(void)
 		cell0 = cell0 + cells[i];
 	}
 }
+#endif
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Setup_boundary_conditions(
@@ -2119,6 +2201,84 @@ Reaction_module::Setup_boundary_conditions(
 		}
 	}
 }
+#ifdef USE_MPI
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Solutions2Fractions(void)
+/* ---------------------------------------------------------------------- */
+{
+	// convert Reaction module solution data to hst mass fractions
+	MPI_Status mpi_status;
+	std::vector<double> d;  // scratch space to convert from moles to mass fraction
+	std::vector<double> solns;
+	cxxNameDouble::iterator it;
+
+	int n = this->mpi_myself;
+	for (int j = this->start_cell[n]; j <= this->end_cell[n]; j++)
+	{
+		// load fractions into d
+		cxxSolution * cxxsoln_ptr = this->Get_workers()[0]->Get_solution(j);
+		assert (cxxsoln_ptr);
+		this->cxxSolution2fraction(cxxsoln_ptr, d);
+		for (int i = 0; i < this->components.size(); i++)
+		{
+			solns.push_back(d[i]);
+		}
+	}
+	
+	// make buffer to recv solutions
+	double * recv_solns = new double[(size_t) this->count_chem * this->components.size()];
+
+	// each thread has its own vector of solution components
+	// gather vectors to root
+	for (int n = 1; n < this->mpi_tasks; n++)
+	{
+		int count = this->end_cell[n] - this->start_cell[n] + 1;
+		int num_doubles = count * (int) this->components.size();
+		if (this->mpi_myself == n)
+		{
+			MPI_Send((void *) solns.data(), num_doubles, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
+		}
+		else if (this->mpi_myself == 0)
+		{
+			MPI_Recv(recv_solns, num_doubles, MPI_DOUBLE, n, 0, MPI_COMM_WORLD, &mpi_status);
+			for (int i = 0; i < num_doubles; i++)
+			{
+				solns.push_back(recv_solns[i]);
+			}
+		}
+	}
+
+	// delete recv buffer
+	delete recv_solns;
+
+	// Write vector into fraction
+	if (this->mpi_myself == 0)
+	{
+		assert (solns.size() == this->count_chem*this->components.size());
+		int n = 0;
+		for (int j = 0; j < count_chem; j++)
+		{
+			std::vector<double> d;
+			for (size_t i = 0; i < this->components.size(); i++)
+			{
+				d.push_back(solns[n++]);
+			}
+			std::vector<int>::iterator it;
+			for (it = this->back[j].begin(); it != this->back[j].end(); it++)
+			{
+				double *d_ptr = &this->fraction[*it];
+				size_t i;
+				for (i = 0; i < this->components.size(); i++)
+				{
+					d_ptr[this->nxyz * i] = d[i];
+				}
+			}
+		}
+	}
+
+}
+#else
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Solutions2Fractions(void)
@@ -2154,6 +2314,7 @@ Reaction_module::Solutions2Fractions(void)
 		}
 	}
 }
+#endif
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Solutions2Fractions_thread(int n)

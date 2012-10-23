@@ -61,21 +61,21 @@ SUBROUTINE phast_manager
 		ppassemblage_units, gasphase_units, kinetics_units)
         USE machine_constants, ONLY: kdp
         IMPLICIT NONE
-	INTEGER, DIMENSION(:,:), ALLOCATABLE :: indx_sol1_ic 
-	INTEGER, DIMENSION(:,:), ALLOCATABLE :: indx_sol2_ic 
-	REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: mxfrac
-	INTEGER, DIMENSION(3) :: naxes 
+	INTEGER :: indx_sol1_ic 
+	INTEGER :: indx_sol2_ic 
+	REAL(KIND=kdp) :: mxfrac
+	INTEGER :: naxes 
 	INTEGER :: nxyz    
-	REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: x_node 
-	REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: y_node
-	REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: z_node 
+	REAL(KIND=kdp) x_node 
+	REAL(KIND=kdp) y_node
+	REAL(KIND=kdp) z_node 
 	REAL(KIND=kdp) cnvtmi 
 	INTEGER :: transient_fresur 
 	LOGICAL :: steady_flow 
-	REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: pv0 
+	REAL(KIND=kdp) :: pv0 
 	INTEGER :: rebalance_method_f          
-	REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: volume 
-	REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: tort
+	REAL(KIND=kdp) :: volume 
+	REAL(KIND=kdp) :: tort
 	INTEGER :: npmz 
 	INTEGER :: exchange_units 
 	INTEGER :: surface_units 
@@ -115,12 +115,11 @@ SUBROUTINE phast_manager
     CALL RM_log_screen_prt("Initial PHREEQC run.")  
     CALL RM_initial_phreeqc_run(rm_id, f2name, f1name, f3name)
     ! Set components
-    !ns = GetComponentCount(rm_id)
     ns = RM_find_components(rm_id)
     ALLOCATE(comp_name(ns),  & 
         STAT = a_err)
     IF (a_err /= 0) THEN
-        PRINT *, "Array allocation failed: init1, point 5"  
+        PRINT *, "Array allocation failed: phast_manager, point 0"  
         STOP
     ENDIF
     do i = 1, ns
@@ -131,7 +130,7 @@ SUBROUTINE phast_manager
   endif
 
   ipp_err = 0
-  !CALL on_error_cleanup_and_exit
+  !TODO CALL on_error_cleanup_and_exit
 
   !... Call init1
   CALL init1
@@ -167,11 +166,12 @@ SUBROUTINE phast_manager
   ! ...  Initialize chemistry 
   ! 
   IF(solute) THEN
+    ! easier for MPI to use 1D arrays
 
 #if defined(USE_MPI)
-     CALL worker_get_indexes(indx_sol1_ic, indx_sol2_ic, ic_mxfrac, naxes, nxyz,  &
-          x_node, y_node, z_node, cnvtmi, transient_fresur, steady_flow, pv0,  &
-          rebalance_method_f, volume, tort, npmz, &
+     CALL worker_get_indexes(indx_sol1_ic(1,1), indx_sol2_ic(1,1), ic_mxfrac(1,1), naxes(1), nxyz,  &
+          x_node(1), y_node(1), z_node(1), cnvtmi, transient_fresur, steady_flow, pv0(1),  &
+          rebalance_method_f, volume(1), tort(1), npmz, &
           exchange_units, surface_units, ssassemblage_units,  &
           ppassemblage_units, gasphase_units, kinetics_units)
 #endif
@@ -187,17 +187,10 @@ SUBROUTINE phast_manager
         iprint_chem,                 &
         iprint_xyz,                  &
         rebalance_fraction_f,        &
-        c)
-
-    write (*,*) "Here I am, manager ", ns
-     CALL RM_forward_and_back(rm_id, indx_sol1_ic, naxes)  
-    write (*,*) "Here I am, manager 1****************"
-    STOP "Manager end"
-     !CALL distribute_initial_conditions(indx_sol1_ic, indx_sol2_ic, ic_mxfrac,  &
-     !     exchange_units, surface_units, ssassemblage_units,  &
-     !     ppassemblage_units, gasphase_units, kinetics_units,  &
-     !     pv0, volume)
-
+        c,                           &
+        mpi_myself,                  &
+        mpi_tasks)
+     CALL RM_forward_and_back(rm_id, indx_sol1_ic, naxes) 
      DO i = 1, num_restart_files
         CALL RM_send_restart_name(rm_id, restart_files(i))
      ENDDO
@@ -210,16 +203,10 @@ SUBROUTINE phast_manager
 	ssassemblage_units,	& ! water (1) or rock (2)		
 	ppassemblage_units,  & ! water (1) or rock (2)
 	gasphase_units,	& ! water (1) or rock (2)
-	kinetics_units	)	  ! water (1) or rock (2)
+	kinetics_units	)	  ! water (1) or rock (2) 
 
-
-#if defined(USE_MPI)
-#ifdef SKIP_TODO
-     CALL collect_from_nonroot(c, nxyz) ! stores data for transport
-#endif
-#else
+    ! collect solutions at manager for transport
      CALL RM_solutions2fractions(rm_id)
-#endif
 
   ENDIF        ! ... solute
 
@@ -227,6 +214,7 @@ SUBROUTINE phast_manager
   ! ... write2_1 must be called after distribute_initial_conditions and equilibrate
   ! ... Write initial condition results 
   CALL write2_1
+
   IF(errexi) GO TO 50 
   !
   ! ...  Calculate steady flow
@@ -238,6 +226,10 @@ SUBROUTINE phast_manager
   CALL zone_flow_write_heads
 
   IF(errexe .OR. errexi) GO TO 50
+
+    write (*,*) "Here I am, Manager"
+    CALL MPI_Barrier(world, ierrmpi)
+    STOP "Manager end"
   !
   ! ...  Initial equilibrate
   !
