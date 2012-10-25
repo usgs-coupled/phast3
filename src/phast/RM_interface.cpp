@@ -610,6 +610,19 @@ RM_setup_boundary_conditions(
 					*dim);
 	}
 }
+#ifdef USE_MPI
+/* ---------------------------------------------------------------------- */
+void
+RM_transport(int *id, int *ncomps)
+/* ---------------------------------------------------------------------- */
+{
+	// Used for MPI transport calculations
+	for (int i = 1; i <= *ncomps; i++)
+	{
+		transport_component_thread(&i);
+	}
+}
+#else
 /* ---------------------------------------------------------------------- */
 void
 RM_transport(int *id, int *ncomps)
@@ -637,6 +650,7 @@ RM_transport(int *id, int *ncomps)
 	}
 #endif
 }
+#endif
 /* ---------------------------------------------------------------------- */
 void RM_write_bc_raw(
 			int *id,
@@ -737,5 +751,9 @@ void RM_mpi_type_create_struct(int *count,
 void RM_mpi_type_free(int *datatype, int *ierr)
 {
 	*ierr = MPI_Type_free((MPI_Datatype *) datatype);
+}
+double RM_mpi_wtime()
+{
+	return MPI_Wtime();
 }
 #endif

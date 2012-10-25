@@ -20,3 +20,4 @@
 #define MPI_TYPE_CREATE_STRUCT           RM_mpi_type_create_struct
 #define MPI_Type_free                    RM_mpi_type_free
 #define MPI_TYPE_FREE                    RM_mpi_type_free
+#define MPI_Wtime                        RM_mpi_wtime

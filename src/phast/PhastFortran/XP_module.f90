@@ -313,7 +313,7 @@ SUBROUTINE XP_free_thread(xp)
             xp%leak_seg_m, &
             STAT = a_err)
         IF (a_err /= 0) THEN
-            PRINT *, "Array deallocation failed: XP_free_thread"  
+            PRINT *, "Array deallocation failed: XP_free_thread 1"  
             STOP  
         ENDIF 
     endif
@@ -322,7 +322,7 @@ SUBROUTINE XP_free_thread(xp)
             xp%river_seg_m, &
             STAT = a_err)
         IF (a_err /= 0) THEN
-            PRINT *, "Array deallocation failed: XP_free_thread"  
+            PRINT *, "Array deallocation failed: XP_free_thread 2"  
             STOP  
         ENDIF 
     endif
@@ -330,7 +330,7 @@ SUBROUTINE XP_free_thread(xp)
         DEALLOCATE ( xp%drain_seg_m, &
             STAT = a_err)
         IF (a_err /= 0) THEN
-            PRINT *, "Array deallocation failed: XP_free_thread"  
+            PRINT *, "Array deallocation failed: XP_free_thread 3"  
             STOP  
         ENDIF 
     endif
@@ -348,7 +348,7 @@ SUBROUTINE XP_free_thread(xp)
         xp%va, &
         STAT = a_err)
     IF (a_err /= 0) THEN
-        PRINT *, "Array deallocation failed: XP_free_thread"  
+        PRINT *, "Array deallocation failed: XP_free_thread 4"  
         STOP  
     ENDIF 
 
@@ -367,7 +367,7 @@ SUBROUTINE XP_free_thread(xp)
         xp%sxx, xp%syy, xp%szz, xp%vxx, xp%vyy, xp%vzz,  &
         STAT = a_err)
     IF (a_err /= 0) THEN
-        PRINT *, "Array deallocation failed: XP_free_thread"  
+        PRINT *, "Array deallocation failed: XP_free_thread 5"  
         STOP  
     ENDIF
     ! ... MODULE mcs
@@ -376,7 +376,7 @@ SUBROUTINE XP_free_thread(xp)
     DEALLOCATE(xp%diagc, xp%diagr,  &
         STAT = a_err)
     IF (a_err /= 0) THEN  
-        PRINT *, "array deallocation failed: XP_free_thread"
+        PRINT *, "array deallocation failed: XP_free_thread 6"
         STOP
     ENDIF
 
@@ -387,7 +387,7 @@ SUBROUTINE XP_free_thread(xp)
         DEALLOCATE(xp%diagra, xp%envlra, xp%envura,  &
             STAT = a_err)
         IF (a_err /= 0) THEN  
-            PRINT *, "array deallocation failed: XP_free_thread"
+            PRINT *, "array deallocation failed: XP_free_thread 7"
             STOP
         ENDIF
     ELSEIF(slmeth == 3 .OR. slmeth == 5) THEN
@@ -396,7 +396,7 @@ SUBROUTINE XP_free_thread(xp)
             xp%xx, xp%ww, xp%zz, xp%sumfil,  &
             STAT = a_err)
         IF (a_err /= 0) THEN
-            PRINT *, "array deallocation failed: XP_free_thread"
+            PRINT *, "array deallocation failed: XP_free_thread 8"
             STOP
         ENDIF
     ENDIF
@@ -414,7 +414,7 @@ SUBROUTINE XP_free_thread(xp)
             xp%wrid, &
             STAT = a_err)
         IF (a_err /= 0) THEN
-            PRINT *, "Array deallocation failed: XP_free_thread"  
+            PRINT *, "Array deallocation failed: XP_free_thread 9"  
             STOP  
         ENDIF
     endif
@@ -579,6 +579,7 @@ END SUBROUTINE XP_free_thread
 
   SUBROUTINE XP_destroy(xp)
     ! ... Deletes a derived type
+    USE mcc, ONLY: mpi_myself
     USE mcg, ONLY: nxyz, nx, ny, nz              ! ... get sizes from modules
     USE mcw, ONLY: nwel
     USE mcb, ONLY: nsbc, nsbc_seg, nfbc_seg, nlbc, nlbc_seg, nrbc_seg
@@ -666,8 +667,8 @@ END SUBROUTINE XP_free_thread
        DEALLOCATE (xp%sfvlb, &
             STAT = da_err)
        IF (da_err /= 0) THEN  
-          PRINT *, "Array deallocation failed: XP_destroy, point 9" 
-          STOP
+          PRINT *, "Array deallocation failed: XP_destroy, point 9 " 
+          STOP 
        ENDIF
     ENDIF
   END SUBROUTINE XP_destroy
