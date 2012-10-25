@@ -209,11 +209,7 @@ SUBROUTINE phast_worker
             ns,                 &
             stop_msg) 
 
-    write (*,*) "Here I am, worker"
-    CALL MPI_Barrier(world, ierrmpi)
-    STOP "Worker end"
-#ifdef SKIP_FOR_COMPILE
-        
+        ! ... Write zone chemistry
         CALL zone_flow_write_chem(mpi_tasks, mpi_myself, .true.)
         stop_msg = 0
         deltim_dummy = 0._kdp
@@ -222,13 +218,13 @@ SUBROUTINE phast_worker
         CALL flow_distribute
         deltim_dummy = 0._kdp
 
+        ! ... Error check
         IF(errexe .OR. errexi) GO TO 50
 
-        fdtmth = fdtmth_tr     ! ... set time differencing method to transient
 
         ! ... Transient loop for transport
+        fdtmth = fdtmth_tr     ! ... set time differencing method to transient
         DO
-
             ! ... Transport calculation
             CALL c_distribute
             CALL p_distribute
@@ -244,7 +240,6 @@ SUBROUTINE phast_worker
                 END DO
             ENDIF
             CALL thru_distribute
-
             IF (thru) EXIT          ! ... second step of exit
 
             CALL timestep_worker     ! ... this only receives some data. it is a hold point 
@@ -252,6 +247,8 @@ SUBROUTINE phast_worker
 
             ! ... Processes do transport
             IF (local_ns > 0) THEN 
+                CALL RM_transport(rm_id, local_ns)
+#ifdef SKIP
                 DO i = 1, local_ns
                     CALL coeff_trans
                     CALL XP_rhsn(xp_list(i))
@@ -267,24 +264,44 @@ SUBROUTINE phast_worker
                     CALL XP_sumcal1(xp_list(i))
                     IF(errexe .OR. errexi) EXIT
                 ENDDO
+#endif
+
                 if (mpi_tasks > 1) CALL MPI_Barrier(world, ierrmpi)
                 CALL sbc_gather
                 CALL c_gather
             ENDIF
+
             IF(errexe .OR. errexi) GO TO 50
 
             ! ... Chemistry calculation
-            CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time,deltim,prslmi,cnvtmi,  &
-                 frac,iprint_chem,iprint_xyz,prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f,  &
-                 print_restart%print_flag_integer, pv_phreeqc, pv0, steady_flow, volume, przf_xyzt)
+            CALL RM_run_cells(      &
+                rm_id,              &
+                prslmi,             &        ! prslm
+                prf_chem_phrqi,     &        ! print_chem
+                prcphrqi,           &        ! print_xyz
+                prhdfci,            &        ! print_hdf
+                print_restart_flag, &        ! print_restart
+                time_phreeqc,       &        ! time_hst
+                deltim_dummy,       &        ! time_step_hst
+                c,                  &        ! fraction
+                frac,               &        ! frac
+                pv,                 &        ! pv 
+                nxyz,               &
+                ns,                 &
+                stop_msg)             
+
             CALL zone_flow_write_chem(mpi_tasks, mpi_myself, .true.)
 
             ! ... Save values for next time step
             CALL time_step_save
+
+
+    write (*,*) "Here I am, Worker"
+    CALL MPI_Barrier(world, ierrmpi)
+    STOP "Worker end"
         ENDDO
         ! ... End of transient loop
      
-#endif !! SKIP_FOR_COMPILE
 50      CONTINUE      ! Errors jump to here
 
         ! ... Cleanup and stop
@@ -296,6 +313,7 @@ SUBROUTINE phast_worker
         END IF
      
     ENDIF        ! ... solute
+
     !!$  if (solute) CALL XP_destroy(xp_list(1))
     CALL MPI_BARRIER(MPI_COMM_WORLD, ierrmpi)
     CALL terminate_phast_worker

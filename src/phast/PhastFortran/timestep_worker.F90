@@ -1,3 +1,4 @@
+#include 'mpi_fix_case.h'
 SUBROUTINE timestep_worker
 #if defined(USE_MPI)
   ! ... Calculates the change in time step for automatic time step control

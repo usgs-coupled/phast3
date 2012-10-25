@@ -1994,7 +1994,6 @@ Reaction_module::Run_cells()
 				assert(double_buffer.size()%columns == 0);
 				HDFFillHyperSlab(this->start_cell[n], dd);
 #endif
-				std::cerr << "Vector " << double_buffer.size() << " " << columns << " " << double_buffer.size()/columns << " " << std::endl;
 				assert(this->start_cell[n] + double_buffer.size()/columns - 1 == this->end_cell[n]);
 				HDFFillHyperSlab(this->start_cell[n], double_buffer, columns);
 			}

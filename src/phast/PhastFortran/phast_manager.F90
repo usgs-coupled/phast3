@@ -256,10 +256,6 @@ SUBROUTINE phast_manager
         CALL init2_3        
     ENDIF   ! End solute
 
-    write (*,*) "Here I am, Manager"
-    CALL MPI_Barrier(world, ierrmpi)
-    STOP "Manager end"
-
     ! ...  Write initial results
     CALL write2_2
     IF (steady_flow) THEN
@@ -350,6 +346,7 @@ SUBROUTINE phast_manager
                     CALL RM_log_screen_prt(logline1)
                 ENDDO
             ENDIF
+
             IF (local_ns > 0) THEN 
                 CALL RM_transport(rm_id, local_ns)
 #ifdef SKIP_TODO
@@ -370,6 +367,7 @@ SUBROUTINE phast_manager
                 ENDDO
 #endif
             ENDIF
+
             IF(errexe .OR. errexi) GO TO 50
 #if defined USE_MPI        
             if (solute) CALL MPI_Barrier(world, ierrmpi)
@@ -378,7 +376,6 @@ SUBROUTINE phast_manager
             CALL sbc_gather
             CALL c_gather
             CALL time_parallel(10)
-
             IF (steady_flow) THEN
                 CALL sumcal1_manager
             ELSE
@@ -393,7 +390,8 @@ SUBROUTINE phast_manager
 
             ! ... Equilibrate the solutions with PHREEQC
             ! ... This is the connection to the equilibration step after transport
-            CALL time_parallel(11)        
+            CALL time_parallel(11) 
+    
             IF (solute) THEN
                 WRITE(logline1,'(a)') '     Beginning chemistry calculation.'
                 CALL RM_log_screen_prt(logline1)
@@ -414,6 +412,7 @@ SUBROUTINE phast_manager
                     ns,                 &
                     stop_msg) 
             ENDIF    ! ... Done with chemistry
+
             CALL time_parallel(12)
             CALL sumcal2
             CALL time_parallel(13)
@@ -438,7 +437,10 @@ SUBROUTINE phast_manager
 
             IF(errexe) EXIT
             IF(prcpd) CALL dump_hst
-           
+
+    write (*,*) "Here I am, Manager"
+    CALL MPI_Barrier(world, ierrmpi)
+    STOP "Manager end"              
         ENDDO  ! ... End transient loop
     ENDIF
 50  CONTINUE   ! ... Exit, could be error
@@ -465,7 +467,13 @@ END SUBROUTINE phast_manager
 SUBROUTINE time_parallel(i)
 #if defined(USE_MPI)
 USE mpi_mod
-IMPLICIT none
+USE mpi
+IMPLICIT none   
+INTERFACE
+    FUNCTION MPI_Wtime() RESULT(out)
+        DOUBLE PRECISION out
+    END
+END INTERFACE
 integer :: i, ierr
 DOUBLE PRECISION t
 DOUBLE PRECISION, DIMENSION(0:15), save :: times
@@ -473,7 +481,7 @@ DOUBLE PRECISION, save :: time_flow=0, time_transfer, time_transport, time_chemi
 DOUBLE PRECISION, save :: cum_flow=0, cum_transfer=0, cum_transport=0, cum_chemistry
 CHARACTER(LEN=130) :: logline
 
-   ! t = MPI_wtime()
+    t = MPI_Wtime()
 
     if (i == 0) then
         times = -1.0
@@ -555,7 +563,7 @@ SUBROUTINE transport_component(i)
     IF(errexe .OR. errexi) CALL RM_error(rm_id)
 END SUBROUTINE transport_component
 SUBROUTINE transport_component_thread(i)
-    USE mcc, ONLY: cylind, errexe, errexi, rm_id
+    USE mcc, ONLY: mpi_myself, cylind, errexe, errexi, rm_id
     USE mcw, ONLY: nwel
     USE XP_module, ONLY: xp_list, XP_init_thread, XP_free_thread
     IMPLICIT none

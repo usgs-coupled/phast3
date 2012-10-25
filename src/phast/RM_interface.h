@@ -31,6 +31,7 @@
 #define RM_mpi_type_commit                    rm_mpi_type_commit
 #define RM_mpi_type_create_struct             rm_mpi_type_create_struct
 #define RM_mpi_type_free                      rm_mpi_type_free
+#define RM_mpi_wtime                          rm_mpi_wtime
 #define RM_open_files                         rm_open_files
 #define RM_pass_data                          rm_pass_data
 #define RM_pass_transient_data                rm_pass_transient_data
@@ -121,6 +122,7 @@ void RM_mpi_type_create_struct(int *count,
   int *array_of_types,
   int *newtype, int *ierr);
 void RM_mpi_type_free(int *datatype, int *ierr);
+double RM_mpi_wtime(void);
 
 void RM_open_files(int * solute, char * prefix, int l_prefix);
 void RM_open_error_file(void);
