@@ -349,23 +349,6 @@ SUBROUTINE phast_manager
 
             IF (local_ns > 0) THEN 
                 CALL RM_transport(rm_id, local_ns)
-#ifdef SKIP_TODO
-                DO i = 1, local_ns
-                    CALL coeff_trans
-                    CALL XP_rhsn(xp_list(i))
-                    IF(nwel > 0) THEN
-                        IF(cylind) THEN
-                            CALL XP_wellsc(xp_list(i))
-                        ELSE
-                            CALL XP_wellsr(xp_list(i))
-                        END IF
-                    END IF
-                    CALL XP_aplbce(xp_list(i))
-                    CALL XP_asmslc(xp_list(i))
-                    CALL XP_sumcal1(xp_list(i))
-                    IF(errexe .OR. errexi) EXIT
-                ENDDO
-#endif
             ENDIF
 
             IF(errexe .OR. errexi) GO TO 50
@@ -436,11 +419,7 @@ SUBROUTINE phast_manager
             CALL time_step_save
 
             IF(errexe) EXIT
-            IF(prcpd) CALL dump_hst
-
-    write (*,*) "Here I am, Manager"
-    CALL MPI_Barrier(world, ierrmpi)
-    STOP "Manager end"              
+            IF(prcpd) CALL dump_hst        
         ENDDO  ! ... End transient loop
     ENDIF
 50  CONTINUE   ! ... Exit, could be error

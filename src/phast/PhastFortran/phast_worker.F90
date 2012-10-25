@@ -102,7 +102,7 @@ SUBROUTINE phast_worker
     END IF
  
     ! ... Open C files //TODO error checks
-    CALL RM_open_files(solute, f3name)
+    !CALL RM_open_files(solute, f3name)
 
     IF (solute) THEN
 
@@ -294,11 +294,6 @@ SUBROUTINE phast_worker
 
             ! ... Save values for next time step
             CALL time_step_save
-
-
-    write (*,*) "Here I am, Worker"
-    CALL MPI_Barrier(world, ierrmpi)
-    STOP "Worker end"
         ENDDO
         ! ... End of transient loop
      
@@ -494,9 +489,10 @@ SUBROUTINE worker_closef
   INTEGER :: a_err, da_err
   !     ------------------------------------------------------------------
   !...
-#ifdef SKIP
+
   ! ... Close and delete the stripped input file
   CLOSE(fuins,STATUS='DELETE')  
+#ifdef SKIP
   ! ... delete the read echo 'furde' file upon successful completion
   CALL update_status(st)
   ! ... Close the files
@@ -517,9 +513,7 @@ SUBROUTINE worker_closef
   CLOSE(fupmap, status = st(fupmap))  
   CLOSE(fupmp2, status = st(fupmp2))
   CLOSE(fupmp3, status = st(fupmp2))  
-  CLOSE(fuvmap, status = st(fuvmap))  
-!!$  close(fupzon, status = st(fupzon))  
-!!$  close(fubnfr, status = st(fubcf))  
+  CLOSE(fuvmap, status = st(fuvmap))   
   CLOSE(fuich, status = st(fuich))
   ! ... Close files and free memory in phreeqc
   IF (solute) THEN  
@@ -539,7 +533,7 @@ SUBROUTINE worker_closef
   ELSE
     CALL MPI_FINALIZE(ierrmpi)
   ENDIF
-#endif
+#endif  ! SKIP
 #endif  ! USE_MPI  
 END SUBROUTINE worker_closef
 #ifdef SKIP

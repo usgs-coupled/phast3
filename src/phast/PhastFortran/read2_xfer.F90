@@ -120,14 +120,15 @@ SUBROUTINE read2_xfer_m
      ! ... broadcast of integer 2-D array
      CALL MPI_BCAST(mwel, SIZE(mwel), MPI_INTEGER, manager, &
           world, ierrmpi) 
-          
+         
      ! *** 8a broadcast wrid, wrangl
      ! ... create MPI structure for two real arrays
      mpi_array_type=mpi_struct_array(wrid, wrangl)
      ! ... broadcast real arrays to workers
      CALL MPI_BCAST(wrid, 1, mpi_array_type, manager, &
           world, ierrmpi)
-     CALL MPI_TYPE_FREE(mpi_array_type,ierrmpi)             
+     CALL MPI_TYPE_FREE(mpi_array_type,ierrmpi) 
+           
   ENDIF
   IF(nsbc > 0) THEN      
      ! *** 9 broadcast nsbc_seg, nsbc_cells
@@ -427,6 +428,7 @@ SUBROUTINE read2_xfer_w
           dwb(nwel), dwt(nwel),  &
           wfrac(nwel), nkswel(nwel), &
           wrid(nwel), wrangl(nwel), &
+          wrruf(nwel), &
           STAT = a_err)
      IF (a_err /= 0) THEN  
         PRINT *, "array allocation failed: read2_w, point 6"  
@@ -461,6 +463,7 @@ SUBROUTINE read2_xfer_w
      CALL MPI_BCAST(wrid, 1, mpi_array_type, manager, &
           world, ierrmpi)
      CALL MPI_TYPE_FREE(mpi_array_type,ierrmpi)
+
   ENDIF
   ! ... Boundary conditions
   ! ... Specified p,t,or c b.c.
