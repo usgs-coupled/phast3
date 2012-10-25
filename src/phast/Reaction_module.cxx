@@ -1852,7 +1852,6 @@ Reaction_module::Run_cells()
 	{
 		Run_cells_thread(n);
 	} 
-	MPI_Barrier(MPI_COMM_WORLD);
 	// Output
 	if (this->print_hdf && mpi_myself == 0)
 	{
@@ -2001,11 +2000,14 @@ Reaction_module::Run_cells()
 			}
 		}
 	} 	
-	MPI_Barrier(MPI_COMM_WORLD);
 	if (this->print_hdf && mpi_myself == 0)
 	{
 		EndTimeStep();
 	}
+
+	// Gather fractions back to root and into Fortran array
+	this->Solutions2Fractions();
+
 	//std::cerr << "Running: " << (double) (clock() - t0) << std::endl;
 }
 #else
