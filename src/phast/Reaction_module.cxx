@@ -746,7 +746,8 @@ Reaction_module::Distribute_initial_conditions(
 		myfile.close();
 	}
 
-#ifdef USE_MPI	for (i = this->start_cell[this->mpi_myself]; i <= this->end_cell[this->mpi_myself]; i++)
+#ifdef USE_MPI	
+	for (i = this->start_cell[this->mpi_myself]; i <= this->end_cell[this->mpi_myself]; i++)
 	{
 		this->Get_workers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(restart_bin,i);
 	}
@@ -820,7 +821,7 @@ Reaction_module::Error_stop(void)
 }
 /* ---------------------------------------------------------------------- */
 bool
-Reaction_module::File_exists(const std::string name)
+Reaction_module::File_exists(const std::string &name)
 /* ---------------------------------------------------------------------- */
 {
 	FILE *stream;
@@ -833,8 +834,8 @@ Reaction_module::File_exists(const std::string name)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::File_rename(const std::string temp_name, const std::string name, 
-	const std::string backup_name)
+Reaction_module::File_rename(const std::string &temp_name, const std::string &name, 
+	const std::string &backup_name)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->File_exists(name))
@@ -1203,10 +1204,57 @@ Reaction_module::Find_components(void)
 		{
 			outstr << "\t" << i + 1 << "\t" << this->components[i].c_str() << std::endl;
 		}
-		Write_output(outstr.str());
+		Write_output(outstr.str().c_str());
 	}
 	return (int) this->components.size();
 }
+#ifdef USE_MPI
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Fractions2Solutions_thread(int n)
+/* ---------------------------------------------------------------------- */
+{
+	int i, j, k;
+
+	int start = this->start_cell[this->mpi_myself];
+	int end = this->end_cell[this->mpi_myself];
+
+	for (j = start; j <= end; j++)
+	{
+		std::vector<double> d;  // scratch space to convert from mass fraction to moles
+		// j is count_chem number
+		i = this->back[j][0];
+		if (j < 0) continue;
+
+		// get mass fractions and store as moles in d
+		double *ptr = &this->fraction[i];
+		for (k = 0; k < (int) this->components.size(); k++)
+		{	
+			d.push_back(ptr[this->nxyz * k] * 1000.0/this->gfw[k]);
+		}
+
+		// update solution 
+		cxxNameDouble nd;
+		for (k = 3; k < (int) components.size(); k++)
+		{
+			if (d[k] <= 1e-14) d[k] = 0.0;
+			nd.add(components[k].c_str(), d[k]);
+		}	
+
+		cxxSolution *soln_ptr = this->Get_workers()[n]->Get_solution(j);
+		//this->sz_bin.Get_Solution((int) j)->Update(
+		if (soln_ptr)
+		{
+			soln_ptr->Update(
+				d[0] + 2.0/gfw_water,
+				d[1] + 1.0/gfw_water,
+				d[2],
+				nd);
+		}
+	}
+	return;
+}
+#else
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Fractions2Solutions_thread(int n)
@@ -1250,6 +1298,7 @@ Reaction_module::Fractions2Solutions_thread(int n)
 	}
 	return;
 }
+#endif
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Fractions2Solutions(void)
@@ -1368,7 +1417,7 @@ Reaction_module::Initial_phreeqc_run_thread(int n)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Initial_phreeqc_run(std::string database_name, std::string chemistry_name, std::string prefix)
+Reaction_module::Initial_phreeqc_run(std::string &database_name, std::string &chemistry_name, std::string &prefix)
 /* ---------------------------------------------------------------------- */
 {
 	/*
@@ -1560,6 +1609,7 @@ Reaction_module::Partition_uz_thread(int n, int iphrq, int ihst, double new_frac
 
 	this->old_frac[ihst] = new_frac;
 }
+/* ---------------------------------------------------------------------- */
 void
 Reaction_module::Rebalance_load(void)
 /* ---------------------------------------------------------------------- */
@@ -1772,6 +1822,7 @@ Reaction_module::Rebalance_load(void)
 
 	return;
 }
+#ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Run_cells()
@@ -1801,7 +1852,186 @@ Reaction_module::Run_cells()
 	{
 		Run_cells_thread(n);
 	} 
+	MPI_Barrier(MPI_COMM_WORLD);
+	// Output
+	if (this->print_hdf && mpi_myself == 0)
+	{
+		BeginTimeStep();
+	}
+	std::vector<char> char_buffer;
+	std::vector<double> double_buffer;
+	for (int n = 0; n < this->mpi_tasks; n++)
+	{
 
+		// write output results
+		if (this->print_chem)
+		{		
+			// Need to transfer output stream to root and print
+			if (this->mpi_myself == n)
+			{
+				if (n == 0)
+				{
+					Write_output(this->workers[0]->Get_out_stream().str().c_str());
+					delete &this->workers[0]->Get_out_stream();
+				}
+				else
+				{
+					int size = (int) this->workers[0]->Get_out_stream().str().size();
+					MPI_Send(&size, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+					MPI_Send((void *) this->workers[0]->Get_out_stream().str().c_str(), size, MPI_CHARACTER, 0, 0, MPI_COMM_WORLD);
+					delete &this->workers[0]->Get_out_stream();
+				}	
+			}
+			else if (this->mpi_myself == 0)
+			{
+				MPI_Status mpi_status;
+				int size;
+				MPI_Recv(&size, 1, MPI_INT, n, 0, MPI_COMM_WORLD, &mpi_status);
+				char_buffer.resize(size + 1);
+				MPI_Recv((void *) char_buffer.data(), size, MPI_CHARACTER, n, 0, MPI_COMM_WORLD, &mpi_status);
+				char_buffer[size] = '\0';
+				Write_output(char_buffer.data());
+			}
+		}
+
+		// write punch results
+		if (this->print_xyz)
+		{
+			// Need to transfer output stream to root and print
+			if (this->mpi_myself == n)
+			{
+				if (n == 0)
+				{
+					Write_xyz(this->workers[0]->Get_punch_stream().str().c_str());
+					delete &this->workers[0]->Get_punch_stream();
+				}
+				else
+				{
+					int size = (int) this->workers[0]->Get_punch_stream().str().size();
+					MPI_Send(&size, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+					MPI_Send((void *) this->workers[0]->Get_punch_stream().str().c_str(), size, MPI_CHARACTER, 0, 0, MPI_COMM_WORLD);
+					delete &this->workers[0]->Get_punch_stream();
+				}	
+			}
+			else if (this->mpi_myself == 0)
+			{
+				MPI_Status mpi_status;
+				int size;
+				MPI_Recv(&size, 1, MPI_INT, n, 0, MPI_COMM_WORLD, &mpi_status);
+				char_buffer.resize(size + 1);
+				MPI_Recv((void *) char_buffer.data(), size, MPI_CHARACTER, n, 0, MPI_COMM_WORLD, &mpi_status);
+				char_buffer[size] = '\0';
+				Write_xyz(char_buffer.data());
+			}
+		}
+		// write restart
+		if (this->print_restart)
+		{
+			this->Write_restart();
+		}
+		// write hdf
+		if (this->print_hdf)
+		{
+			size_t columns = this->workers[0]->GetSelectedOutputColumnCount();
+			// Need to transfer output stream to root and print
+			if (this->mpi_myself == n)
+			{
+				if (n == 0)
+				{
+					HDFFillHyperSlab(this->start_cell[0], this->workers[0]->Get_punch_vector());
+					this->workers[0]->Get_punch_vector().clear();
+				}
+				else
+				{
+
+					const float INACTIVE_CELL_VALUE = 1.0e30f;
+					int size = (int) (this->workers[0]->Get_punch_vector().size() * columns );
+					std::vector<double> d;
+					for (size_t i = 0; i < this->workers[0]->Get_punch_vector().size(); i++)
+					{
+						if (this->workers[0]->Get_punch_vector()[i].size() == columns)
+						{
+							d.insert(d.end(), this->workers[0]->Get_punch_vector()[i].begin(),
+								this->workers[0]->Get_punch_vector()[i].end());
+						}
+						else if (this->workers[0]->Get_punch_vector()[i].size() == 0)
+						{
+							std::vector<double> empty(columns, INACTIVE_CELL_VALUE);
+							d.insert(d.end(), empty.begin(), empty.end());
+						}
+						else
+						{
+							assert(false);
+						}
+					}
+					MPI_Send(&size, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+					MPI_Send((void *) this->workers[0]->Get_punch_vector().data(), size, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
+					this->workers[0]->Get_punch_vector().clear();
+				}	
+			}
+			else if (this->mpi_myself == 0)
+			{
+				MPI_Status mpi_status;
+				int size;
+				MPI_Recv(&size, 1, MPI_INT, n, 0, MPI_COMM_WORLD, &mpi_status);
+				double_buffer.resize(size);
+				MPI_Recv((void *) double_buffer.data(), size, MPI_DOUBLE, n, 0, MPI_COMM_WORLD, &mpi_status);
+				
+				std::vector<std::vector<double> > dd;
+				for (size_t i = 0; i < double_buffer.size()/columns; i++)
+				{
+					size_t k = i * columns;
+					std::vector<double> d;
+					//d.insert(d.begin(), &double_buffer[k], &double_buffer[k + columns]);
+					for (size_t j = 0; j < columns; j++)
+					{
+						d.push_back(double_buffer[k + j]);
+					}
+					dd.push_back(d);
+				}
+				std::cerr << "Vector " << dd.size()  << " " << size << " "  << " " << columns << " " << double_buffer.size()/columns << " " << std::endl;
+				assert(double_buffer.size()%columns == 0);
+				HDFFillHyperSlab(this->start_cell[n], dd);
+			}
+		}
+	} 	
+	MPI_Barrier(MPI_COMM_WORLD);
+	if (this->print_hdf && mpi_myself == 0)
+	{
+		EndTimeStep();
+	}
+	//std::cerr << "Running: " << (double) (clock() - t0) << std::endl;
+}
+#else
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Run_cells()
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *   Routine takes mass fractions from HST, equilibrates each cell,
+ *   and returns new mass fractions to HST
+ */
+
+/*
+ *   Update solution compositions in sz_bin
+ */
+	clock_t t0 = clock();
+	for (int n = 0; n < this->nthreads; n++)
+	{
+		IPhreeqcPhast * phast_iphreeqc_worker = this->workers[n];
+		phast_iphreeqc_worker->Set_out_stream(new ostringstream); 
+		phast_iphreeqc_worker->Set_punch_stream(new ostringstream);
+	}
+#ifdef THREADED_PHAST
+	omp_set_num_threads(this->nthreads);
+	#pragma omp parallel 
+	#pragma omp for
+#endif
+	for (int n = 0; n < this->nthreads; n++)
+	{
+		Run_cells_thread(n);
+	} 
 	// Output
 	if (this->print_hdf)
 	{
@@ -1842,6 +2072,7 @@ Reaction_module::Run_cells()
 	}
 	//std::cerr << "Running: " << (double) (clock() - t0) << std::endl;
 }
+#endif
 /* ---------------------------------------------------------------------- */
 void 
 Reaction_module::Run_cells_thread(int n)
@@ -1869,7 +2100,14 @@ Reaction_module::Run_cells_thread(int n)
 	phast_iphreeqc_worker->SetOutputFileOn(false);
 	phast_iphreeqc_worker->SetErrorFileOn(false);
 
-	for (i = this->start_cell[n]; i <= this->end_cell[n]; i++)
+#ifdef USE_MPI
+	int start = this->start_cell[this->mpi_myself];
+	int end = this->end_cell[this->mpi_myself];
+#else
+	int start = this->start_cell[n];
+	int end = this->end_cell[n];
+#endif
+	for (i = start; i <= end; i++)
 	{							/* i is count_chem number */
 		j = back[i][0];			/* j is nxyz number */
 
@@ -1987,7 +2225,7 @@ Reaction_module::Run_cells_thread(int n)
 				phast_iphreeqc_worker->Get_out_stream() << phast_iphreeqc_worker->GetOutputString();
 			}
 
-			// Write output file
+			// Write hdf file
 			if (pr_hdf)
 			{
 				phast_iphreeqc_worker->Selected_out_to_double();
@@ -2015,7 +2253,7 @@ Reaction_module::Run_cells_thread(int n)
 					active);
 				phast_iphreeqc_worker->Get_punch_stream() << line_buff;
 			}
-			// Write output file
+			// Write hdf file
 			if (pr_hdf)
 			{	
 				std::vector<LDBLE> empty;
@@ -2027,8 +2265,9 @@ Reaction_module::Run_cells_thread(int n)
 			std::cerr << "\tThread: " << n << " Time: " << (double) (clock() - t0) << " Cell: " << i << "\n";
 		}
 	} // end one cell
-
+#ifndef USE_MPI
 	this->Solutions2Fractions_thread(n);
+#endif
 	clock_t t_elapsed = clock() - t0;
 	std::cerr << "Thread: " << n << " Time: " << (double) t_elapsed << " Cells: " << this->end_cell[n] - this->start_cell[n] + 1 << std::endl;
 	phast_iphreeqc_worker->Set_thread_clock_time((double) t_elapsed);
@@ -2090,7 +2329,7 @@ Reaction_module::Scale_solids(int n, int iphrq, LDBLE frac)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Send_restart_name(std::string name)
+Reaction_module::Send_restart_name(std::string &name)
 /* ---------------------------------------------------------------------- */
 {
 	int	i = (int) FileMap.size();
@@ -2359,7 +2598,7 @@ Reaction_module::Write_bc_raw(int *solution_list, int * bc_solution_count,
 	{
 		std::ostringstream e_msg;
 		e_msg << "Could not open file. " << fn;
-		Write_error(e_msg.str());
+		Write_error(e_msg.str().c_str());
 		Error_stop();
 	}
 
@@ -2400,82 +2639,118 @@ Reaction_module::Write_bc_raw(int *solution_list, int * bc_solution_count,
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module:: Write_error(std::string item)
+Reaction_module:: Write_error(const char * item)
 /* ---------------------------------------------------------------------- */
 {
-	RM_interface::phast_io.error_msg(item.c_str());
+	RM_interface::phast_io.error_msg(item);
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module:: Write_log(std::string item)
+Reaction_module:: Write_log(const char * item)
 /* ---------------------------------------------------------------------- */
 {
-	RM_interface::phast_io.log_msg(item.c_str());
+	RM_interface::phast_io.log_msg(item);
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module:: Write_output(std::string item)
+Reaction_module:: Write_output(const char * item)
 /* ---------------------------------------------------------------------- */
 {
-	RM_interface::phast_io.output_msg(item.c_str());
+	RM_interface::phast_io.output_msg(item);
 }
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Write_restart(void)
 /* ---------------------------------------------------------------------- */
 {
-
+	std::string char_buffer;
+	ogzstream ofs_restart;
 	std::string temp_name("temp_restart_file.gz");
 	std::string name(this->file_prefix);
-	name.append(".restart.gz");
 	std::string backup_name(this->file_prefix);
-	backup_name.append(".restart.backup.gz");
-
-	// open file 
-	ogzstream ofs_restart;
-	ofs_restart.open(temp_name.c_str());
-	if (!ofs_restart.good())
+	if (mpi_myself == 0)
 	{
-		std::ostringstream errstr;
-		errstr << "Temporary restart file could not be opened: " << temp_name;
-		error_msg(errstr.str().c_str(), 1);	
-	}
+		name.append(".restart.gz");
+		backup_name.append(".restart.backup.gz");
 
-	// write header
-	ofs_restart << "#PHAST restart file" << std::endl;
-	time_t now = time(NULL);
-	ofs_restart << "#Prefix: " << this->file_prefix << std::endl;
-	ofs_restart << "#Date: " << ctime(&now);
-	ofs_restart << "#Current model time: " << this->time_hst << std::endl;
-	ofs_restart << "#nx, ny, nz: " << this->nx << ", " << this->ny << ", " << this->nz << std::
-		endl;
+		// open file 
+		ofs_restart.open(temp_name.c_str());
+		if (!ofs_restart.good())
+		{
+			std::ostringstream errstr;
+			errstr << "Temporary restart file could not be opened: " << temp_name;
+			error_msg(errstr.str().c_str(), 1);	
+		}
 
-	// write index
-	int i, j;
-	ofs_restart << count_chem << std::endl;
-	for (j = 0; j < count_chem; j++)	/* j is count_chem number */
-	{
-		//i = back[j].list[0];	
-		i = back[j][0];			/* i is nxyz number */
-		ofs_restart << x_node[i] << "  " << y_node[i] << "  " <<
-			z_node[i] << "  " << j << "  ";
-		// solution 
-		ofs_restart << ic1[7 * i] << "  ";
-		// pp_assemblage
-		ofs_restart << ic1[7 * i + 1] << "  ";
-		// exchange
-		ofs_restart << ic1[7 * i + 2] << "  ";
-		// surface
-		ofs_restart << ic1[7 * i + 3] << "  ";
-		// gas_phase
-		ofs_restart << ic1[7 * i + 4] << "  ";
-		// solid solution
-		ofs_restart << ic1[7 * i + 5] << "  ";
-		// kinetics
-		ofs_restart << ic1[7 * i + 6] << std::endl;
+		// write header
+		ofs_restart << "#PHAST restart file" << std::endl;
+		time_t now = time(NULL);
+		ofs_restart << "#Prefix: " << this->file_prefix << std::endl;
+		ofs_restart << "#Date: " << ctime(&now);
+		ofs_restart << "#Current model time: " << this->time_hst << std::endl;
+		ofs_restart << "#nx, ny, nz: " << this->nx << ", " << this->ny << ", " << this->nz << std::
+			endl;
+
+		// write index
+		int i, j;
+		ofs_restart << count_chem << std::endl;
+		for (j = 0; j < count_chem; j++)	/* j is count_chem number */
+		{
+			//i = back[j].list[0];	
+			i = back[j][0];			/* i is nxyz number */
+			ofs_restart << x_node[i] << "  " << y_node[i] << "  " <<
+				z_node[i] << "  " << j << "  ";
+			// solution 
+			ofs_restart << ic1[7 * i] << "  ";
+			// pp_assemblage
+			ofs_restart << ic1[7 * i + 1] << "  ";
+			// exchange
+			ofs_restart << ic1[7 * i + 2] << "  ";
+			// surface
+			ofs_restart << ic1[7 * i + 3] << "  ";
+			// gas_phase
+			ofs_restart << ic1[7 * i + 4] << "  ";
+			// solid solution
+			ofs_restart << ic1[7 * i + 5] << "  ";
+			// kinetics
+			ofs_restart << ic1[7 * i + 6] << std::endl;
+		}
 	}
 
 	// write data
+#ifdef USE_MPI
+	this->workers[0]->SetDumpStringOn(true); 
+	std::ostringstream in;
+	in << "DUMP; -cells " << this->start_cell[this->mpi_myself] << "-" << this->end_cell[this->mpi_myself] << "\n";
+	this->workers[0]->RunString(in.str().c_str());
+	for (int n = 0; n < this->mpi_tasks; n++)
+	{
+		// Need to transfer output stream to root and print
+		if (this->mpi_myself == n)
+		{
+			if (n == 0)
+			{
+				ofs_restart << this->Get_workers()[0]->GetDumpString();
+			}
+			else
+			{
+				int size = (int) strlen(this->workers[0]->GetDumpString());
+				MPI_Send(&size, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+				MPI_Send((void *) this->workers[0]->GetDumpString(), size, MPI_CHARACTER, 0, 0, MPI_COMM_WORLD);
+			}	
+		}
+		else if (this->mpi_myself == 0)
+		{
+			MPI_Status mpi_status;
+			int size;
+			MPI_Recv(&size, 1, MPI_INT, n, 0, MPI_COMM_WORLD, &mpi_status);
+			char_buffer.resize(size+1);
+			MPI_Recv((void *) char_buffer.c_str(), size, MPI_CHARACTER, n, 0, MPI_COMM_WORLD, &mpi_status);
+			char_buffer[size] = '\0';
+			ofs_restart << char_buffer;
+		}
+	}
+#else
 	for (int n = 0; n < (int) this->workers.size() - 1; n++)
 	{
 		this->workers[n]->SetDumpStringOn(true); 
@@ -2484,6 +2759,7 @@ Reaction_module::Write_restart(void)
 		this->workers[n]->RunString(in.str().c_str());
 		ofs_restart << this->Get_workers()[n]->GetDumpString();
 	}
+#endif
 
 	ofs_restart.close();
 	// rename files
@@ -2491,17 +2767,17 @@ Reaction_module::Write_restart(void)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module:: Write_screen(std::string item)
+Reaction_module:: Write_screen(const char * item)
 /* ---------------------------------------------------------------------- */
 {
-	RM_interface::phast_io.screen_msg(item.c_str());
+	RM_interface::phast_io.screen_msg(item);
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module:: Write_xyz(std::string item)
+Reaction_module:: Write_xyz(const char * item)
 /* ---------------------------------------------------------------------- */
 {
-	RM_interface::phast_io.punch_msg(item.c_str());
+	RM_interface::phast_io.punch_msg(item);
 }
 /* ---------------------------------------------------------------------- */
 

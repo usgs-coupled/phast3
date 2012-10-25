@@ -196,14 +196,30 @@ SUBROUTINE phast_worker
      !
      adj_wr_ratio = 1
      print_restart_flag = 0 
+
+        CALL RM_run_cells(      &
+            rm_id,              &
+            prslmi,             &        ! prslm
+            prf_chem_phrqi,     &        ! print_chem
+            prcphrqi,           &        ! print_xyz
+            prhdfci,            &        ! print_hdf
+            print_restart_flag, &        ! print_restart
+            time_phreeqc,       &        ! time_hst
+            deltim_dummy,       &        ! time_step_hst
+            c,                  &        ! fraction
+            frac,               &        ! frac
+            pv,                 &        ! pv 
+            nxyz,               &
+            ns,                 &
+            stop_msg) 
     write (*,*) "Here I am, worker"
     CALL MPI_Barrier(world, ierrmpi)
     STOP "Worker end"
 #ifdef SKIP_FOR_COMPILE
-     CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time_phreeqc,deltim_dummy,prslmi,  &
-          cnvtmi,frac_icchem,iprint_chem,iprint_xyz,  &
-          prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f,  &
-          print_restart_flag, pv_phreeqc, pv0, steady_flow, volume, przf_xyzt)
+     !CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time_phreeqc,deltim_dummy,prslmi,  &
+     !     cnvtmi,frac_icchem,iprint_chem,iprint_xyz,  &
+     !     prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f,  &
+     !     print_restart_flag, pv_phreeqc, pv0, steady_flow, volume, przf_xyzt)
      CALL zone_flow_write_chem(mpi_tasks, mpi_myself, .true.)
      stop_msg = 0
      deltim_dummy = 0._kdp

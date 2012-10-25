@@ -159,8 +159,8 @@ SUBROUTINE phast_manager
   CALL error2
 
 #if defined(HDF5_CREATE)
-  ! TODO CALL hdf_write_invariant(mpi_myself)
-  ! TODO CALL hdf_begin_time_step
+  CALL hdf_write_invariant(mpi_myself)
+  CALL hdf_begin_time_step
 #endif
   !
   ! ...  Initialize chemistry 
@@ -227,9 +227,6 @@ SUBROUTINE phast_manager
 
   IF(errexe .OR. errexi) GO TO 50
 
-    write (*,*) "Here I am, Manager"
-    CALL MPI_Barrier(world, ierrmpi)
-    STOP "Manager end"
   !
   ! ...  Initial equilibrate
   !
@@ -256,10 +253,15 @@ SUBROUTINE phast_manager
             c,                  &        ! fraction
             frac,               &        ! frac
             pv,                 &        ! pv 
+            nxyz,               &
+            ns,                 &
             stop_msg) 
         CALL zone_flow_write_chem(mpi_tasks, mpi_myself, .true.)
         CALL init2_3        
     ENDIF
+    write (*,*) "Here I am, Manager"
+    CALL MPI_Barrier(world, ierrmpi)
+    STOP "Manager end"
   !
   ! ...  Write initial results
   !
@@ -411,6 +413,8 @@ SUBROUTINE phast_manager
                 c,                  &        ! fraction
                 frac,               &        ! frac
                 pv,                 &        ! pv 
+                nxyz,               &
+                ns,                 &
                 stop_msg) 
 !           CALL equilibrate(c,nxyz,prcphrqi,x_node,y_node,z_node,time,deltim,prslmi,cnvtmi,  &
 !                frac,iprint_chem,iprint_xyz,prf_chem_phrqi,stop_msg,prhdfci,rebalance_fraction_f,  &

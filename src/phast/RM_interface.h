@@ -155,6 +155,8 @@ void RM_run_cells(int *id,
  			 double *fraction,					    // mass fractions nxyz:components
 			 double *frac,							// saturation fraction
 			 double *pv,                            // nxyz current pore volumes 
+			 int *nxyz,
+			 int *count_comps,
 			 int * stop_msg);
 void RM_send_restart_name(int *id, char * s, long l);
 void RM_setup_boundary_conditions(

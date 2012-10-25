@@ -49,14 +49,14 @@ public:
 	void EndCell(int index);
 	void EndTimeStep(void);
 	void Error_stop(void);
-	bool File_exists(const std::string name);
-	void File_rename(const std::string temp_name, const std::string name, const std::string backup_name);
+	bool File_exists(const std::string &name);
+	void File_rename(const std::string &temp_name, const std::string &name, const std::string &backup_name);
 	int Find_components();
 	void Forward_and_back(int *initial_conditions, int *axes);
 	void Fractions2Solutions(void);
 	void Fractions2Solutions_thread(int n);	
 	void Init_uz(void);
-	void Initial_phreeqc_run(std::string database_name, std::string chemistry_name, std::string prefix);
+	void Initial_phreeqc_run(std::string &database_name, std::string &chemistry_name, std::string &prefix);
 	void Initial_phreeqc_run_thread(int n);
 	bool n_to_ijk (int n, int &i, int &j, int &k);
 	void Partition_uz(int iphrq, int ihst, double new_frac);
@@ -65,7 +65,7 @@ public:
 	void Run_cells(void);
 	void Run_cells_thread(int i);
 	void Scale_solids(int n, int iphrq, LDBLE frac);
-	void Send_restart_name(std::string name);
+	void Send_restart_name(std::string &name);
 	void Set_end_cells(void);
 	void Setup_boundary_conditions(const int n_boundary, int *boundary_solution1,
 						  int *boundary_solution2, double *fraction1,
@@ -74,20 +74,20 @@ public:
 	void Solutions2Fractions_thread(int n);
 	void Write_bc_raw(int *solution_list, int * bc_solution_count, 
 		int * solution_number, const std::string &prefix);
-	void Write_error(std::string item);
-	void Write_log(std::string item);
-	void Write_output(std::string item);
+	void Write_error(const char * item);
+	void Write_log(const char * item);
+	void Write_output(const char * item);
 	void Write_restart(void);
-	void Write_screen(std::string item);
-	void Write_xyz(std::string item);
+	void Write_screen(const char * item);
+	void Write_xyz(const char * item);
 
 	// setters and getters
 	std::vector<IPhreeqcPhast *> & Get_workers() {return this->workers;}
 	int Get_nthreads() {return this->nthreads;}
 	const std::string Get_database_file_name(void) const {return this->database_file_name;}
-	void Set_database_file_name(std::string fn) {this->database_file_name = fn;}
+	void Set_database_file_name(std::string &fn) {this->database_file_name = fn;}
 	const std::string Get_file_prefix(void) const {return this->file_prefix;}
-	void Set_file_prefix(std::string fn) {this->file_prefix = fn;}
+	void Set_file_prefix(std::string &fn) {this->file_prefix = fn;}
 	cxxStorageBin & Get_phreeqc_bin(void) {return this->phreeqc_bin;}
 	const int Get_mpi_tasks(void) const {return this->mpi_tasks;}
 	void Set_mpi_tasks(int t) {this->mpi_tasks = t;}

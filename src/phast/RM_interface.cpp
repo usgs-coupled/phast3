@@ -508,11 +508,30 @@ void RM_run_cells(int *id,
  			 double *fraction,					    // mass fractions nxyz:components
 			 double *frac,							// saturation fraction
 			 double *pv,                            // nxyz current pore volumes 
+			 int *nxyz,
+			 int *count_comps,
 			 int * stop_msg)
 /* ---------------------------------------------------------------------- */
 {
+#ifdef USE_MPI
+	MPI_Bcast(stop_msg, 1, MPI_INT, 0, MPI_COMM_WORLD);
+#endif
+
 	if (*stop_msg == 0)
 	{
+#ifdef USE_MPI
+		// Broadcast data to workers
+		MPI_Bcast(prslm, 1, MPI_INT, 0, MPI_COMM_WORLD);
+		MPI_Bcast(print_chem, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+		MPI_Bcast(print_xyz, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+		MPI_Bcast(print_hdf, 1, MPI_INT, 0, MPI_COMM_WORLD);
+		MPI_Bcast(print_restart, 1, MPI_INT, 0, MPI_COMM_WORLD);
+		MPI_Bcast(time_hst, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+		MPI_Bcast(time_step_hst, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+		MPI_Bcast(fraction, (*nxyz)*(*count_comps), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+		MPI_Bcast(frac, *nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+		MPI_Bcast(pv, *nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+#endif
 		Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 		if (Reaction_module_ptr)
 		{
@@ -527,7 +546,7 @@ void RM_run_cells(int *id,
 			Reaction_module_ptr->Set_frac(frac);
 			Reaction_module_ptr->Set_pv(pv);
 			Reaction_module_ptr->Run_cells();
-			Reaction_module_ptr->Rebalance_load();
+			//TODO Reaction_module_ptr->Rebalance_load();
 		}
 	}
 }

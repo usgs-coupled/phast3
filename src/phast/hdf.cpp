@@ -959,6 +959,7 @@ HDFBeginCTimeStep(int count_chem)
 	ptr_end = &(random_list[end_cell[mpi_myself]]);
 	proc.cell_count = (int) (ptr_end - ptr_begin + 1);
 #endif
+	proc.cell_count = count_chem;
 #else
 	proc.cell_count = count_chem;
 #endif
