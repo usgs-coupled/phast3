@@ -5,6 +5,7 @@
 #include <vector>
 #include <list>
 
+const float INACTIVE_CELL_VALUE = 1.0e30f;
 class PHRQ_io;
 #include "IPhreeqc.hpp"
 class IPhreeqcPhast: public IPhreeqc
@@ -25,7 +26,7 @@ public:
 	void Set_punch_stream(std::ostringstream *s) {this->punch_stream = s;}	
 	std::ostringstream & Get_out_stream(void) {return *this->out_stream;}
 	std::ostringstream & Get_punch_stream(void) {return *this->punch_stream;}
-	std::vector < std::vector< LDBLE > > & Get_punch_vector(void) {return this->punch_vector;}
+	std::vector < double > & Get_punch_vector(void) {return this->punch_vector;}
 	void Set_thread_clock_time(double t) {this->thread_clock_time = t;}
 	double Get_thread_clock_time(void) {return this->thread_clock_time;}
 	void Set_start_cell(int i) {this->start_cell = i;}
@@ -42,7 +43,7 @@ protected:
 	int end_cell;
 	std::ostringstream * out_stream;
 	std::ostringstream * punch_stream;
-	std::vector < std::vector< LDBLE > > punch_vector;
+	std::vector < double > punch_vector;
 	std::vector<std::string> selected_output_names;
 	double thread_clock_time;
 };

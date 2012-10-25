@@ -87,7 +87,7 @@ IPhreeqcPhast::Selected_out_to_double()
 			}
 		}
 	}
-	this->punch_vector.push_back(d);
+	this->punch_vector.insert(punch_vector.end(),d.begin(),d.end());
 }
 /* ---------------------------------------------------------------------- */
 void
