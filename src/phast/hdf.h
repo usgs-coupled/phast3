@@ -62,5 +62,5 @@ void HDFFillHyperSlab(int chem_number, std::vector< std::vector < LDBLE > > &d);
 void HDFSetCell(const int n, std::vector <std::vector <int> > &back);
 void HDFEndCTimeStep(std::vector <std::vector <int> > &back);
 void HDFSetScalarNames(std::vector<std::string> &names);
-void HDFFillHyperSlab(int chem_number, std::vector < LDBLE > &d);
+//void HDFFillHyperSlab(int chem_number, std::vector < LDBLE > &d);
 #endif // !defined(HDF_H_INCLUDED)
