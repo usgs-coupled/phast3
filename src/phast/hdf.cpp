@@ -198,7 +198,6 @@ HDF_Init(const char *prefix, int prefix_l)
 	proc.scalar_count = 0;
 	proc.array = NULL;
 }
-
 /*-------------------------------------------------------------------------
  * Function          HDF_Finalize (called by all procs)
  *
@@ -1070,13 +1069,14 @@ HDFSetCell(const int n, std::vector <std::vector <int> > &back)			/* n is the na
 void
 HDFEndCTimeStep(std::vector <std::vector <int> > &back)
 {
-#ifdef SKIP_TODO
 #ifdef USE_MPI
-    extern int solute;
+    //extern int solute;
 	const int TAG_HDF_DATA = 5;
-	extern int mpi_myself;
-	extern int mpi_tasks;
-	int task_number;
+	//extern int mpi_myself;
+	//extern int mpi_tasks;
+	//int task_number;
+	
+	const int mpi_myself = 0;
 #else
 	const int mpi_myself = 0;
 #endif
@@ -1094,7 +1094,7 @@ HDFEndCTimeStep(std::vector <std::vector <int> > &back)
 							root.current_file_dspace_id,
 							root.current_file_dset_id, proc.array, back);
 	}
-
+#ifdef SKIP
 #ifdef USE_MPI
 	if (solute) 
 	{

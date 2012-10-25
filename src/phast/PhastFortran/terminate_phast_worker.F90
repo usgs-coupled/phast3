@@ -38,7 +38,7 @@ SUBROUTINE terminate_phast_worker
      ENDIF
   END IF
 #endif
-  !TODO CALL worker_closef !... this may be reactivated for error files
+  CALL worker_closef !... this may be reactivated for error files
   !****a better routine name for what it does
-  IF (solute) CALL dealloc_arr_worker
+  CALL dealloc_arr_worker
 END SUBROUTINE terminate_phast_worker

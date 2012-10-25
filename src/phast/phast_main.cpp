@@ -109,6 +109,6 @@ int main(int argc, char* argv[])
 	//_crtBreakAlloc = 198;
 
 	PHAST_SUB(&mpi_tasks, &mpi_myself);
-
+	MPI_Finalize();
 	return EXIT_SUCCESS;
 }
