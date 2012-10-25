@@ -1938,12 +1938,12 @@ Reaction_module::Run_cells()
 			{
 				if (n == 0)
 				{
-					HDFFillHyperSlab(this->start_cell[0], this->workers[0]->Get_punch_vector());
+					HDFFillHyperSlab(this->start_cell[0], this->workers[0]->Get_punch_vector(), columns);
 					this->workers[0]->Get_punch_vector().clear();
 				}
 				else
 				{
-
+#ifdef SKIP
 					const float INACTIVE_CELL_VALUE = 1.0e30f;
 					int size = (int) (this->workers[0]->Get_punch_vector().size() * columns );
 					std::vector<double> d;
@@ -1964,6 +1964,8 @@ Reaction_module::Run_cells()
 							assert(false);
 						}
 					}
+#endif
+					int size = (int) this->workers[0]->Get_punch_vector().size();
 					MPI_Send(&size, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
 					MPI_Send((void *) this->workers[0]->Get_punch_vector().data(), size, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
 					this->workers[0]->Get_punch_vector().clear();
@@ -1976,7 +1978,7 @@ Reaction_module::Run_cells()
 				MPI_Recv(&size, 1, MPI_INT, n, 0, MPI_COMM_WORLD, &mpi_status);
 				double_buffer.resize(size);
 				MPI_Recv((void *) double_buffer.data(), size, MPI_DOUBLE, n, 0, MPI_COMM_WORLD, &mpi_status);
-				
+#ifdef SKIP				
 				std::vector<std::vector<double> > dd;
 				for (size_t i = 0; i < double_buffer.size()/columns; i++)
 				{
@@ -1992,6 +1994,10 @@ Reaction_module::Run_cells()
 				std::cerr << "Vector " << dd.size()  << " " << size << " "  << " " << columns << " " << double_buffer.size()/columns << " " << std::endl;
 				assert(double_buffer.size()%columns == 0);
 				HDFFillHyperSlab(this->start_cell[n], dd);
+#endif
+				std::cerr << "Vector " << double_buffer.size() << " " << columns << " " << double_buffer.size()/columns << " " << std::endl;
+				assert(this->start_cell[n] + double_buffer.size()/columns - 1 == this->end_cell[n]);
+				HDFFillHyperSlab(this->start_cell[n], double_buffer, columns);
 			}
 		}
 	} 	
@@ -2256,8 +2262,10 @@ Reaction_module::Run_cells_thread(int n)
 			// Write hdf file
 			if (pr_hdf)
 			{	
-				std::vector<LDBLE> empty;
-				phast_iphreeqc_worker->Get_punch_vector().push_back(empty);
+				int columns = phast_iphreeqc_worker->GetSelectedOutputColumnCount();
+				std::vector<double> empty(columns, INACTIVE_CELL_VALUE);
+				phast_iphreeqc_worker->Get_punch_vector().insert(phast_iphreeqc_worker->Get_punch_vector().end(),
+					empty.begin(),empty.end());
 			}
 		}
 		if (i%50 == 0 && (n == 1 /*|| n == 2*/))

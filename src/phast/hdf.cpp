@@ -1351,6 +1351,26 @@ HDFSetScalarNames(std::vector<std::string> &names)
  *-------------------------------------------------------------------------
  */
 void
+HDFFillHyperSlab(int chem_number, std::vector< double > &d, size_t columns)
+{
+	if (columns > 0)
+	{
+		assert (d.size()%columns == 0);
+
+		for (size_t j = 0; j < d.size()/columns; j++)
+		{
+			int n = (int) j + chem_number;
+			size_t k = j * columns;
+			for (size_t i = 0; i < columns; i++)
+			{
+				assert(proc.array[i * proc.cell_count + n] == (double) INACTIVE_CELL_VALUE);
+				proc.array[i * proc.cell_count + n] = (double) d[k + i];
+			}
+		}
+	}
+}
+#ifdef SKIP
+void
 HDFFillHyperSlab(int chem_number, std::vector< std::vector < LDBLE > > &d)
 {
 	for (size_t j = 0; j < d.size(); j++)
@@ -1363,6 +1383,7 @@ HDFFillHyperSlab(int chem_number, std::vector< std::vector < LDBLE > > &d)
 		}
 	}
 }
+#endif
 /*-------------------------------------------------------------------------
  * Function:         PRNTAR_HDF
  *
