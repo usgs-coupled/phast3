@@ -45,7 +45,6 @@
 #define RM_write_restart					  rm_write_restart
 
 
-
 /**
  * @mainpage IPhreeqc Library Documentation
  *
@@ -179,7 +178,6 @@ void RM_write_bc_raw(int *id,
 			int prefix_l);
 void RM_write_output(int *id);
 void RM_write_restart(int *id);
-
 
 void errprt_c(const char *err_str, long l);
 void logprt_c(const char *err_str, long l);

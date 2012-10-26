@@ -248,24 +248,6 @@ SUBROUTINE phast_worker
             ! ... Processes do transport
             IF (local_ns > 0) THEN 
                 CALL RM_transport(rm_id, local_ns)
-#ifdef SKIP
-                DO i = 1, local_ns
-                    CALL coeff_trans
-                    CALL XP_rhsn(xp_list(i))
-                    IF(nwel > 0) THEN
-                        IF(cylind) THEN
-                            CALL XP_wellsc(xp_list(i))
-                        ELSE
-                            CALL XP_wellsr(xp_list(i))
-                        END IF
-                    END IF
-                    CALL XP_aplbce(xp_list(i))
-                    CALL XP_asmslc(xp_list(i))
-                    CALL XP_sumcal1(xp_list(i))
-                    IF(errexe .OR. errexi) EXIT
-                ENDDO
-#endif
-
                 if (mpi_tasks > 1) CALL MPI_Barrier(world, ierrmpi)
                 CALL sbc_gather
                 CALL c_gather
@@ -288,8 +270,8 @@ SUBROUTINE phast_worker
                 pv,                 &        ! pv 
                 nxyz,               &
                 ns,                 &
-                stop_msg)             
-
+                stop_msg) 
+                            
             CALL zone_flow_write_chem(mpi_tasks, mpi_myself, .true.)
 
             ! ... Save values for next time step

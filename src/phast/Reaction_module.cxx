@@ -779,13 +779,14 @@ Reaction_module::Distribute_initial_conditions(
 #endif
 #endif
 	// initialize uz
-	if (this->transient_free_surface)
-	{
-		for (i = 0; i < this->nxyz; i++)
-		{
-			this->old_frac.push_back(1.0);
-		}
-	}
+	//if (this->transient_free_surface)
+	//{
+	//	for (i = 0; i < this->nxyz; i++)
+	//	{
+	//		this->old_frac.push_back(1.0);
+	//	}
+	//}
+	old_frac.insert(old_frac.begin(), nxyz, 1.0);
 }
 
 /* ---------------------------------------------------------------------- */
@@ -1629,6 +1630,7 @@ Reaction_module::Rebalance_load(void)
 	std::vector<int> cells_v;
 	bool error = false;
 	std::ostringstream error_stream;
+	bool good_enough = false;
 
 	// Calculate time per cell for this process
 	IPhreeqcPhast * phast_iphreeqc_worker = this->workers[0];
@@ -1744,13 +1746,14 @@ Reaction_module::Rebalance_load(void)
 		std::cerr << "          Estimated efficiency of chemistry " << (float) ((LDBLE) 100. * max_new / max_old) << "\n";
 
 
-		if ((max_old - max_new) / max_old < 0.01)
+		if ((max_old - max_new) / max_old < 0.05)
 		{
 			for (int i = 0; i < this->mpi_tasks; i++)
 			{
 				start_cell_new[i] = start_cell[i];
 				end_cell_new[i] = end_cell[i];
 			}
+			good_enough = true;
 		}
 		else
 		{
@@ -1769,19 +1772,21 @@ Reaction_module::Rebalance_load(void)
 	
 	MPI_Bcast((void *) start_cell_new.data(), mpi_tasks, MPI_INT, 0, MPI_COMM_WORLD);
 	MPI_Bcast((void *) end_cell_new.data(), mpi_tasks, MPI_INT, 0, MPI_COMM_WORLD);
-
+	
 	/*
 	 *   Redefine columns
 	 */
 	int nnew = 0;
 	int old = 0;
 	int change = 0;
+	std::vector<std::vector<int> > change_list;
 
 	for (int k = 0; k < this->count_chem; k++)
 	{
 		int i = k;
 		int iphrq = i;			/* iphrq is 1 to count_chem */
 		int ihst = this->back[i][0];	/* ihst is 1 to nxyz */
+		old_frac[ihst] = frac[ihst];    /* update all old_frac */
 		while (k > end_cell[old])
 		{
 			old++;
@@ -1796,23 +1801,51 @@ Reaction_module::Rebalance_load(void)
 		change++;
 
 		// Need to send cell from old task to nnew task
-		if (this->mpi_myself == old)
-		{
-			cxxStorageBin temp_bin;
-			phast_iphreeqc_worker->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(temp_bin, iphrq);
-			temp_bin.mpi_send(iphrq, nnew);
-			std::ostringstream del;
-			del << "DELETE; -cell " << iphrq << "\n";
-			phast_iphreeqc_worker->RunString(del.str().c_str());
-		}
-		else if (this->mpi_myself == nnew)
-		{
-			cxxStorageBin temp_bin;
-			temp_bin.mpi_recv(old);
-			phast_iphreeqc_worker->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(temp_bin, iphrq);
-		}
+		std::vector<int> ints;
+		ints.push_back(k);
+		ints.push_back(old);
+		ints.push_back(nnew);
+		change_list.push_back(ints);
 	}
 
+	// Transfer cells
+	int transfers = 0;
+	int count=0;
+	if (change_list.size() > 0)
+	{
+		std::vector<std::vector<int> >::const_iterator it = change_list.begin();
+		int pold = (*it)[1];
+		int pnew = (*it)[2];
+		cxxStorageBin t_bin;
+		for (; it != change_list.end(); it++)
+		{
+			int n = (*it)[0];
+			int old = (*it)[1];
+			int nnew = (*it)[2];
+			if (old != pold || nnew != pnew)
+			{
+				transfers++;
+				this->Transfer_cells(t_bin, pold, pnew);
+				t_bin.Clear();
+				pold = old;
+				pnew = nnew;
+				
+			}	
+			count++;
+			// Put cell in t_bin
+			if (this->mpi_myself == pold)
+			{
+				phast_iphreeqc_worker->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(t_bin, n);
+				std::ostringstream del;
+				del << "DELETE; -cell " << n << "\n";
+				phast_iphreeqc_worker->RunString(del.str().c_str());
+			}
+		}
+		// Last transfer
+		transfers++;
+		this->Transfer_cells(t_bin, pold, pnew);
+	}
+	
 	for (int i = 0; i < this->mpi_tasks; i++)
 	{
 		start_cell[i] = start_cell_new[i];
@@ -1822,9 +1855,39 @@ Reaction_module::Rebalance_load(void)
 	if (this->mpi_myself == 0)
 	{
 		std::cerr << "          Cells shifted between threads     " << change << "\n";
+		std::cerr << "          Number of mpi cell transfers      " << transfers << "\n";
 	}
-
+	std::cerr << "End of rebalance  " << mpi_myself << std::endl;
+	MPI_Barrier(MPI_COMM_WORLD);
 	return;
+}
+void
+Reaction_module::Transfer_cells(cxxStorageBin &t_bin, int old, int nnew)
+{
+	if (this->mpi_myself == old)
+	{
+		std::ostringstream raw_stream;
+		t_bin.dump_raw(raw_stream, 0);
+
+		int size = (int) raw_stream.str().size();
+		MPI_Send(&size, 1, MPI_INT, nnew, 0, MPI_COMM_WORLD);
+		MPI_Send((void *) raw_stream.str().c_str(), size, MPI_CHARACTER, nnew, 0, MPI_COMM_WORLD);	
+	}
+	else if (this->mpi_myself == nnew)
+	{	
+		MPI_Status mpi_status;
+		// Transfer cells		
+		int size;
+		MPI_Recv(&size, 1, MPI_INT, old, 0, MPI_COMM_WORLD, &mpi_status);
+		std::vector<char> raw_buffer;
+		raw_buffer.resize(size + 1);
+		MPI_Recv((void *) raw_buffer.data(), size, MPI_CHARACTER, old, 0, MPI_COMM_WORLD, &mpi_status);
+		raw_buffer[size] = '\0';
+
+		// RunString to enter in module
+		IPhreeqcPhast * phast_iphreeqc_worker = this->workers[0];
+		phast_iphreeqc_worker->RunString(raw_buffer.data());
+	}
 }
 #else
 /* ---------------------------------------------------------------------- */
@@ -2055,6 +2118,7 @@ Reaction_module::Run_cells()
 /*
  *   Update solution compositions in sz_bin
  */
+	
 	clock_t t0 = clock();
 	for (int n = 0; n < this->nthreads; n++)
 	{
@@ -2325,7 +2389,6 @@ Reaction_module::Run_cells_thread(int n)
 	phast_iphreeqc_worker->SetDumpStringOn(false);
 	phast_iphreeqc_worker->SetOutputFileOn(false);
 	phast_iphreeqc_worker->SetErrorFileOn(false);
-
 #ifdef USE_MPI
 	int start = this->start_cell[this->mpi_myself];
 	int end = this->end_cell[this->mpi_myself];
@@ -3008,7 +3071,4 @@ Reaction_module:: Write_xyz(const char * item)
 	RM_interface::phast_io.punch_msg(item);
 }
 /* ---------------------------------------------------------------------- */
-
-
-
 

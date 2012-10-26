@@ -72,6 +72,7 @@ public:
 						  double *boundary_fraction, int dim);
 	void Solutions2Fractions(void);
 	void Solutions2Fractions_thread(int n);
+	void Transfer_cells(cxxStorageBin &t_bin, int old, int nnew);
 	void Write_bc_raw(int *solution_list, int * bc_solution_count, 
 		int * solution_number, const std::string &prefix);
 	void Write_error(const char * item);
