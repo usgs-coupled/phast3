@@ -1609,6 +1609,224 @@ Reaction_module::Partition_uz_thread(int n, int iphrq, int ihst, double new_frac
 
 	this->old_frac[ihst] = new_frac;
 }
+#ifdef USE_MPI
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Rebalance_load(void)
+/* ---------------------------------------------------------------------- */
+{
+	if (this->mpi_tasks <= 1) return;
+#include <time.h>
+
+	// working space
+	std::vector<int> start_cell_new;
+	std::vector<int> end_cell_new;
+	for (int i = 0; i < this->mpi_tasks; i++)
+	{
+		start_cell_new.push_back(0);
+		end_cell_new.push_back(0);
+	}
+	std::vector<int> cells_v;
+	bool error = false;
+	std::ostringstream error_stream;
+
+	// Calculate time per cell for this process
+	IPhreeqcPhast * phast_iphreeqc_worker = this->workers[0];
+	int cells = this->end_cell[this->mpi_myself] - this->start_cell[this->mpi_myself] + 1;
+	double time_per_cell = phast_iphreeqc_worker->Get_thread_clock_time()/((double) cells);
+
+	// Gather times at root
+	std::vector<double> recv_buffer;
+	recv_buffer.resize(this->mpi_tasks);
+	MPI_Gather(&time_per_cell, 1, MPI_DOUBLE, recv_buffer.data(), 1, MPI_DOUBLE, 0,
+			   MPI_COMM_WORLD);
+	
+	if (this->mpi_myself == 0)
+	{
+		// Normalize
+		double total = 0;
+		for (int i = 0; i < this->mpi_tasks; i++)
+		{
+			assert(recv_buffer[i] > 0);
+			total += recv_buffer[0] / recv_buffer[i];
+		}
+
+		// Set first and last cells
+		double new_n = this->count_chem / total; /* new_n is number of cells for root */
+
+
+		// Calculate number of cells per process, rounded to lower number
+		int	total_cells = 0;
+		int n = 0;
+		for (int i = 0; i < this->mpi_tasks; i++)
+		{
+			n = (int) floor(new_n * recv_buffer[0] / recv_buffer[i]);
+			if (n < 1)
+				n = 1;
+			cells_v.push_back(n);
+			total_cells += n;
+		}
+
+		// Distribute cells from rounding down
+		int diff_cells = this->count_chem - total_cells;
+		if (diff_cells > 0)
+		{
+			for (int j = 0; j < diff_cells; j++)
+			{
+				int min_cell = 0;
+				double min_time = (cells_v[0] + 1) * recv_buffer[0];
+				for (int i = 1; i < this->mpi_tasks; i++)
+				{
+					if ((cells_v[i] + 1) * recv_buffer[i] < min_time)
+					{
+						min_cell = i;
+						min_time = (cells_v[i] + 1) * recv_buffer[i];
+					}
+				}
+				cells_v[min_cell] += 1;
+			}
+		}
+		else if (diff_cells < 0)
+		{
+			for (int j = 0; j < -diff_cells; j++)
+			{
+				int max_cell = -1;
+				double max_time = 0;
+				for (int i = 0; i < this->mpi_tasks; i++)
+				{
+					if (cells_v[i] > 1)
+					{
+						if ((cells_v[i] - 1) * recv_buffer[i] > max_time)
+						{
+							max_cell = i;
+							max_time = (cells_v[i] - 1) * recv_buffer[i];
+						}
+					}
+				}
+				cells_v[max_cell] -= 1;
+			}
+		}
+
+		// Fill in subcolumn ends
+		int last = -1;
+		for (int i = 0; i < this->mpi_tasks; i++)
+		{
+			start_cell_new[i] = last + 1;
+			end_cell_new[i] = start_cell_new[i] + cells_v[i] - 1;
+			last = end_cell_new[i];
+		}
+
+		// Check that all cells are distributed
+		if (end_cell_new[this->mpi_tasks - 1] != this->count_chem - 1)
+		{
+			error_stream << "Failed: " << diff_cells << ", count_cells " << this->count_chem << ", last cell "
+				<< end_cell_new[this->mpi_tasks - 1] << "\n";
+			for (int i = 0; i < this->mpi_tasks; i++)
+			{
+				error_stream << i << ": first " << start_cell_new[i] << "\tlast " << end_cell_new[i] << "\n";
+			}
+			error_stream << "Failed to redistribute cells." << "\n";
+			error_msg(error_stream.str().c_str(), STOP);
+		}
+
+		// Compare old and new times
+		double max_old = 0.0;
+		double max_new = 0.0;
+		for (int i = 0; i < this->mpi_tasks; i++)
+		{
+			double t = cells_v[i] * recv_buffer[i];
+			if (t > max_new)
+				max_new = t;
+			t = (end_cell[i] - start_cell[i] + 1) * recv_buffer[i];
+			if (t > max_old)
+				max_old = t;
+		}
+		std::cerr << "          Estimated efficiency of chemistry " << (float) ((LDBLE) 100. * max_new / max_old) << "\n";
+
+
+		if ((max_old - max_new) / max_old < 0.01)
+		{
+			for (int i = 0; i < this->mpi_tasks; i++)
+			{
+				start_cell_new[i] = start_cell[i];
+				end_cell_new[i] = end_cell[i];
+			}
+		}
+		else
+		{
+			for (int i = 0; i < this->mpi_tasks - 1; i++)
+			{
+				int icells = (int) ((end_cell_new[i] - end_cell[i]) * *this->rebalance_fraction_hst);
+				end_cell_new[i] = end_cell[i] + icells;
+				start_cell_new[i + 1] = end_cell_new[i] + 1;
+			}
+		}
+	}
+
+	/*
+	 *   Broadcast new subcolumns
+	 */
+	
+	MPI_Bcast((void *) start_cell_new.data(), mpi_tasks, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast((void *) end_cell_new.data(), mpi_tasks, MPI_INT, 0, MPI_COMM_WORLD);
+
+	/*
+	 *   Redefine columns
+	 */
+	int nnew = 0;
+	int old = 0;
+	int change = 0;
+
+	for (int k = 0; k < this->count_chem; k++)
+	{
+		int i = k;
+		int iphrq = i;			/* iphrq is 1 to count_chem */
+		int ihst = this->back[i][0];	/* ihst is 1 to nxyz */
+		while (k > end_cell[old])
+		{
+			old++;
+		}
+		while (k > end_cell_new[nnew])
+		{
+			nnew++;
+		}
+
+		if (old == nnew)
+			continue;
+		change++;
+
+		// Need to send cell from old task to nnew task
+		if (this->mpi_myself == old)
+		{
+			cxxStorageBin temp_bin;
+			phast_iphreeqc_worker->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(temp_bin, iphrq);
+			temp_bin.mpi_send(iphrq, nnew);
+			std::ostringstream del;
+			del << "DELETE; -cell " << iphrq << "\n";
+			phast_iphreeqc_worker->RunString(del.str().c_str());
+		}
+		else if (this->mpi_myself == nnew)
+		{
+			cxxStorageBin temp_bin;
+			temp_bin.mpi_recv(old);
+			phast_iphreeqc_worker->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(temp_bin, iphrq);
+		}
+	}
+
+	for (int i = 0; i < this->mpi_tasks; i++)
+	{
+		start_cell[i] = start_cell_new[i];
+		end_cell[i] = end_cell_new[i];
+	}
+
+	if (this->mpi_myself == 0)
+	{
+		std::cerr << "          Cells shifted between threads     " << change << "\n";
+	}
+
+	return;
+}
+#else
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Rebalance_load(void)
@@ -1822,6 +2040,7 @@ Reaction_module::Rebalance_load(void)
 
 	return;
 }
+#endif
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 void
