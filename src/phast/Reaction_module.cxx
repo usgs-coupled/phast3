@@ -146,21 +146,6 @@ Reaction_module::~Reaction_module(void)
 }
 
 // Reaction_module methods
-
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::BeginCell(int index)
-/* ---------------------------------------------------------------------- */
-{
-	// index is nxyz number
-#ifdef HDF5_CREATE
-	HDFSetCell(index, back);
-#endif
-#if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
-	/* Always open file for output in case of a warning message */
-	//TODO MergeBeginCell();
-#endif
-}
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::BeginTimeStep(void)
@@ -168,10 +153,6 @@ Reaction_module::BeginTimeStep(void)
 {
 #ifdef HDF5_CREATE
 	HDFBeginCTimeStep(this->count_chem);
-#endif
-#if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
-	/* Always open file for output in case of a warning message */
-	//TODOMergeBeginTimeStep(print_sel, print_out);
 #endif
 }
 /* ---------------------------------------------------------------------- */
@@ -473,10 +454,7 @@ Reaction_module::Distribute_initial_conditions(
 	{	
 		j = k;                          /* j is count_chem number */
 		i = this->back[j][0];           /* i is ixyz number */
-		
-		//j = this->forward[i];			/* j is count_chem number */
-		//if (j < 0)
-		//	continue;
+
 		assert(forward[i] >= 0);
 		assert (volume[i] > 0.0);
 		double porosity = pv0[i] / volume[i];
@@ -752,15 +730,6 @@ Reaction_module::Distribute_initial_conditions(
 		this->Get_workers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(restart_bin,i);
 	}
 #else
-#ifdef SKIP
-	for (int n = 0; n < this->nthreads; n++)
-	{
-		for (i = this->start_cell[n]; i <= this->end_cell[n]; i++)
-		{
-			this->Get_workers()[n]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(restart_bin,i);
-		}
-	}
-#endif
 	// put restart definitions in reaction module
 	this->Get_workers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(restart_bin);
 
@@ -779,25 +748,7 @@ Reaction_module::Distribute_initial_conditions(
 	}
 #endif
 	// initialize uz
-	//if (this->transient_free_surface)
-	//{
-	//	for (i = 0; i < this->nxyz; i++)
-	//	{
-	//		this->old_frac.push_back(1.0);
-	//	}
-	//}
 	old_frac.insert(old_frac.begin(), nxyz, 1.0);
-}
-
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::EndCell(int index)
-/* ---------------------------------------------------------------------- */
-{
-#if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
-	/* Always open file for output in case of a warning message */
-	//TODO MergeEndCell(print_sel, print_out, print_hdf, index);
-#endif
 }
 /* ---------------------------------------------------------------------- */
 void
@@ -806,10 +757,6 @@ Reaction_module::EndTimeStep(void)
 {
 #ifdef HDF5_CREATE
 	HDFEndCTimeStep(back);
-#endif
-#if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
-	/* Always open file for output in case of a warning message */
-	//TODO MergeEndTimeStep(print_sel, print_out);
 #endif
 }
 /* ---------------------------------------------------------------------- */
@@ -1827,9 +1774,8 @@ Reaction_module::Rebalance_load(void)
 	if (this->mpi_myself == 0)
 	{
 		std::cerr << "          Cells shifted between threads     " << change << "\n";
-		std::cerr << "          Number of mpi cell transfers      " << transfers << "\n";
+		//std::cerr << "          Number of mpi cell transfers      " << transfers << "\n";
 	}
-	std::cerr << "End of rebalance  " << mpi_myself << std::endl;
 	MPI_Barrier(MPI_COMM_WORLD);
 	return;
 }
@@ -2012,7 +1958,7 @@ Reaction_module::Rebalance_load(void)
 	std::cerr << "          Estimated efficiency of chemistry " << (float) ((LDBLE) 100. * max_new / max_old) << "\n";
 
 
-	if ((max_old - max_new) / max_old < 0.01)
+	if ((max_old - max_new) / max_old < 0.05)
 	{
 		for (int i = 0; i < this->nthreads; i++)
 		{
@@ -2197,28 +2143,6 @@ Reaction_module::Run_cells()
 				}
 				else
 				{
-#ifdef SKIP
-					const float INACTIVE_CELL_VALUE = 1.0e30f;
-					int size = (int) (this->workers[0]->Get_punch_vector().size() * columns );
-					std::vector<double> d;
-					for (size_t i = 0; i < this->workers[0]->Get_punch_vector().size(); i++)
-					{
-						if (this->workers[0]->Get_punch_vector()[i].size() == columns)
-						{
-							d.insert(d.end(), this->workers[0]->Get_punch_vector()[i].begin(),
-								this->workers[0]->Get_punch_vector()[i].end());
-						}
-						else if (this->workers[0]->Get_punch_vector()[i].size() == 0)
-						{
-							std::vector<double> empty(columns, INACTIVE_CELL_VALUE);
-							d.insert(d.end(), empty.begin(), empty.end());
-						}
-						else
-						{
-							assert(false);
-						}
-					}
-#endif
 					int size = (int) this->workers[0]->Get_punch_vector().size();
 					MPI_Send(&size, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
 					MPI_Send((void *) this->workers[0]->Get_punch_vector().data(), size, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
@@ -2232,23 +2156,6 @@ Reaction_module::Run_cells()
 				MPI_Recv(&size, 1, MPI_INT, n, 0, MPI_COMM_WORLD, &mpi_status);
 				double_buffer.resize(size);
 				MPI_Recv((void *) double_buffer.data(), size, MPI_DOUBLE, n, 0, MPI_COMM_WORLD, &mpi_status);
-#ifdef SKIP				
-				std::vector<std::vector<double> > dd;
-				for (size_t i = 0; i < double_buffer.size()/columns; i++)
-				{
-					size_t k = i * columns;
-					std::vector<double> d;
-					//d.insert(d.begin(), &double_buffer[k], &double_buffer[k + columns]);
-					for (size_t j = 0; j < columns; j++)
-					{
-						d.push_back(double_buffer[k + j]);
-					}
-					dd.push_back(d);
-				}
-				std::cerr << "Vector " << dd.size()  << " " << size << " "  << " " << columns << " " << double_buffer.size()/columns << " " << std::endl;
-				assert(double_buffer.size()%columns == 0);
-				HDFFillHyperSlab(this->start_cell[n], dd);
-#endif
 				assert(this->start_cell[n] + double_buffer.size()/columns - 1 == this->end_cell[n]);
 				HDFFillHyperSlab(this->start_cell[n], double_buffer, columns);
 			}
@@ -2524,10 +2431,6 @@ Reaction_module::Run_cells_thread(int n)
 					empty.begin(),empty.end());
 			}
 		}
-		//if (i%50 == 0 && (n == 1 /*|| n == 2*/))
-		//{
-		//	std::cerr << "\tThread: " << n << " Time: " << (double) (clock() - t0) << " Cell: " << i << "\n";
-		//}
 	} // end one cell
 #ifndef USE_MPI
 //	this->Solutions2Fractions_thread(n);
@@ -2535,7 +2438,7 @@ Reaction_module::Run_cells_thread(int n)
 	clock_t t_elapsed = clock() - t0;
 	
 #ifdef USE_MPI
-	std::cerr << "Thread: " << n << " Time: " << (double) t_elapsed << " Cells: " << this->end_cell[this->mpi_myself] - this->start_cell[this->mpi_myself] + 1 << std::endl;
+	std::cerr << "Process: " << this->mpi_myself << " Time: " << (double) t_elapsed << " Cells: " << this->end_cell[this->mpi_myself] - this->start_cell[this->mpi_myself] + 1 << std::endl;
 #else
 	std::cerr << "Thread: " << n << " Time: " << (double) t_elapsed << " Cells: " << this->end_cell[n] - this->start_cell[n] + 1 << std::endl;
 #endif

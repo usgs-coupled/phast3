@@ -25,9 +25,6 @@ extern "C" void PHAST_SUB(int *mpi_tasks, int *mpi_myself);
 
 extern "C" void HDF_Finalize(void);
 
-//#ifdef SKIP_REWRITE_PHAST //-------------------------------------------------------------------------
-int write_restart(double hst_time);
-
 extern LDBLE rate_sim_time_end;
 extern LDBLE rate_cnvtmi;
 
@@ -60,8 +57,6 @@ BOOL CtrlHandler(DWORD dwCtrlType)
 	return FALSE;
 }
 #endif
-
-//#endif // SKIP_REWRITE_PHAST
 
 int main(int argc, char* argv[])
 {

@@ -17,7 +17,7 @@ public:
 	~Reaction_module(void);
 	// Called through wrappers
 	//int Load_database(std::string database_name);
-	void BeginCell(int index);
+	//void BeginCell(int index);
 	void BeginTimeStep(void);
 	void Cell_initialize(
 		int i, 
@@ -46,7 +46,6 @@ public:
 		int ppassemblage_units,
 		int gasphase_units,
 		int kinetics_units);
-	void EndCell(int index);
 	void EndTimeStep(void);
 	void Error_stop(void);
 	bool File_exists(const std::string &name);

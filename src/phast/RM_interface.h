@@ -10,7 +10,6 @@
 #define RM_convert_to_molal                   rm_convert_to_molal
 #define RM_create                             rm_create
 #define RM_destroy                            rm_destroy
-#define RM_create_phreeqc_bin                 rm_create_phreeqc_bin 
 #define RM_distribute_initial_conditions      rm_distribute_initial_conditions
 #define RM_error                              rm_error
 #define RM_find_components                    rm_find_components
@@ -83,7 +82,6 @@ void RM_cleanup();
 void RM_close_files(int * solute);
 void RM_convert_to_molal(int *id, double *c, int *n, int *dim);
 int  RM_create(int *nthreads);
-void RM_create_phreeqc_bin(int *rm_id);
 int  RM_destroy(int *id);
 void RM_distribute_initial_conditions(int *id,
 		int *initial_conditions1,		// 7 x nxyz end-member 1
