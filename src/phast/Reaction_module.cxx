@@ -752,6 +752,7 @@ Reaction_module::Distribute_initial_conditions(
 		this->Get_workers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(restart_bin,i);
 	}
 #else
+#ifdef SKIP
 	for (int n = 0; n < this->nthreads; n++)
 	{
 		for (i = this->start_cell[n]; i <= this->end_cell[n]; i++)
@@ -759,7 +760,7 @@ Reaction_module::Distribute_initial_conditions(
 			this->Get_workers()[n]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(restart_bin,i);
 		}
 	}
-#ifdef SKIP
+#endif
 	// put restart definitions in reaction module
 	this->Get_workers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(restart_bin);
 
@@ -776,7 +777,6 @@ Reaction_module::Distribute_initial_conditions(
 		}
 		if (this->Get_workers()[0]->RunString(delete_command.str().c_str()) > 0) RM_error(0);
 	}
-#endif
 #endif
 	// initialize uz
 	//if (this->transient_free_surface)
@@ -1305,44 +1305,16 @@ void
 Reaction_module::Fractions2Solutions(void)
 /* ---------------------------------------------------------------------- */
 {
-	int i, j, k;
-
-	for (int n = 0; n < this->nthreads; n++)	
+#ifdef THREADED_PHAST
+	omp_set_num_threads(this->nthreads);
+	#pragma omp parallel 
+	#pragma omp for
+#endif
+	// For MPI nthreads = 1
+	for (int n = 0; n < this->nthreads; n++)
 	{
-
-		for (j = this->start_cell[n]; j < this->end_cell[n]; j++)
-		{
-			std::vector<double> d;  // scratch space to convert from mass fraction to moles
-			// j is count_chem number
-			i = this->back[j][0];
-			if (j < 0) continue;
-
-			// get mass fractions and store as moles in d
-			double *ptr = &this->fraction[i];
-			for (k = 0; k < (int) this->components.size(); k++)
-			{	
-				d.push_back(ptr[this->nxyz * k] * 1000.0/this->gfw[k]);
-			}
-
-			// update solution 
-			cxxNameDouble nd;
-			for (k = 3; k < (int) components.size(); k++)
-			{
-				if (d[k] <= 1e-14) d[k] = 0.0;
-				nd.add(components[k].c_str(), d[k]);
-			}
-			cxxSolution *soln_ptr = this->Get_workers()[n]->Get_solution(j);
-			if (soln_ptr)
-			{
-				soln_ptr->Update(
-					d[0] + 2.0/gfw_water,
-					d[1] + 1.0/gfw_water,
-					d[2],
-					nd);
-			}
-		}
-	}
-	return;
+		this->Fractions2Solutions_thread(n);
+	}	
 }
 /* ---------------------------------------------------------------------- */
 void
@@ -2352,7 +2324,8 @@ Reaction_module::Run_cells()
 		// write hdf
 		if (this->print_hdf)
 		{
-			HDFFillHyperSlab(this->start_cell[n], this->workers[n]->Get_punch_vector());
+			size_t columns = this->workers[0]->GetSelectedOutputColumnCount();
+			HDFFillHyperSlab(this->start_cell[n], this->workers[n]->Get_punch_vector(), columns);
 		}
 		this->workers[n]->Get_punch_vector().clear();
 	} 	
@@ -2377,7 +2350,7 @@ Reaction_module::Run_cells_thread(int n)
 	*   Update solution compositions 
 	*/
 	clock_t t0 = clock();
-	this->Fractions2Solutions_thread(n);
+	//this->Fractions2Solutions_thread(n);
 
 	int i, j;
 	IPhreeqcPhast *phast_iphreeqc_worker = this->Get_workers()[n];
@@ -2551,13 +2524,13 @@ Reaction_module::Run_cells_thread(int n)
 					empty.begin(),empty.end());
 			}
 		}
-		if (i%50 == 0 && (n == 1 /*|| n == 2*/))
-		{
-			std::cerr << "\tThread: " << n << " Time: " << (double) (clock() - t0) << " Cell: " << i << "\n";
-		}
+		//if (i%50 == 0 && (n == 1 /*|| n == 2*/))
+		//{
+		//	std::cerr << "\tThread: " << n << " Time: " << (double) (clock() - t0) << " Cell: " << i << "\n";
+		//}
 	} // end one cell
 #ifndef USE_MPI
-	this->Solutions2Fractions_thread(n);
+//	this->Solutions2Fractions_thread(n);
 #endif
 	clock_t t_elapsed = clock() - t0;
 	
@@ -3021,7 +2994,8 @@ Reaction_module::Write_bc_raw(int *solution_list, int * bc_solution_count,
 			{
 				ofs << "# Fortran cell " << n_fort << ". Time " << (*this->time_hst) * (*this->cnvtmi) << "\n";
 				cxxSolution *soln_ptr=  phast_iphreeqc_worker->Get_solution(n_chem);
-				soln_ptr->dump_raw(ofs, 0, raw_number++);
+				soln_ptr->dump_raw(ofs, 0, &raw_number);
+				raw_number++;
 			}
 			else
 			{
