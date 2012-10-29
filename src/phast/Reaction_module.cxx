@@ -2438,9 +2438,9 @@ Reaction_module::Run_cells_thread(int n)
 	clock_t t_elapsed = clock() - t0;
 	
 #ifdef USE_MPI
-	std::cerr << "Process: " << this->mpi_myself << " Time: " << (double) t_elapsed << " Cells: " << this->end_cell[this->mpi_myself] - this->start_cell[this->mpi_myself] + 1 << std::endl;
+	std::cerr << "          Process: " << this->mpi_myself << " Time: " << (double) t_elapsed << " Cells: " << this->end_cell[this->mpi_myself] - this->start_cell[this->mpi_myself] + 1 << std::endl;
 #else
-	std::cerr << "Thread: " << n << " Time: " << (double) t_elapsed << " Cells: " << this->end_cell[n] - this->start_cell[n] + 1 << std::endl;
+	std::cerr << "          Thread: " << n << " Time: " << (double) t_elapsed << " Cells: " << this->end_cell[n] - this->start_cell[n] + 1 << std::endl;
 #endif
 	phast_iphreeqc_worker->Set_thread_clock_time((double) t_elapsed);
 }

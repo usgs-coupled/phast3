@@ -387,14 +387,6 @@ RM_open_files(int * solute, char * prefix, int l_prefix)
 #ifdef HDF5_CREATE
 	HDF_Init(prefix, l_prefix);
 #endif
-	/*
-	 *   initialize merge
-	 */
-	//TODO MPI and merge
-#if defined(USE_MPI) && defined(HDF5_CREATE) && defined(MERGE_FILES)
-	//output_close(OUTPUT_ECHO);
-	//MergeInit(prefix, prefix_l, *solute);	/* opens .chem.txt,  .chem.xyz.tsv, .log.txt */
-#endif
 }
 /* ---------------------------------------------------------------------- */
 void

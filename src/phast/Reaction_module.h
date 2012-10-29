@@ -15,9 +15,7 @@ public:
 
 	Reaction_module(int thread_count = 0, PHRQ_io * io=NULL);
 	~Reaction_module(void);
-	// Called through wrappers
-	//int Load_database(std::string database_name);
-	//void BeginCell(int index);
+
 	void BeginTimeStep(void);
 	void Cell_initialize(
 		int i, 
