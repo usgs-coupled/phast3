@@ -223,30 +223,6 @@ int RM_create(int *nthreads)
 	return RM_interface::Create_reaction_module(*nthreads);
 }
 /* ---------------------------------------------------------------------- */
-void RM_create_phreeqc_bin(int *rm_id)
-/* ---------------------------------------------------------------------- */
-{
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
-	if (Reaction_module_ptr)
-	{
-		Phreeqc * phreeqc_ptr = Reaction_module_ptr->Get_workers()[0]->Get_PhreeqcPtr();
-		phreeqc_ptr->phreeqc2cxxStorageBin(Reaction_module_ptr->Get_phreeqc_bin());
-	}
-}
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void RM_create_phreeqc_bin(int *rm_id)
-/* ---------------------------------------------------------------------- */
-{
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
-	if (Reaction_module_ptr)
-	{
-		Phreeqc * phreeqc_ptr = Reaction_module_ptr->Get_phast_iphreeqc_worker()->Get_PhreeqcPtr();
-		phreeqc_ptr->phreeqc2cxxStorageBin(Reaction_module_ptr->Get_phreeqc_bin());
-	}
-}
-#endif
-/* ---------------------------------------------------------------------- */
 int RM_destroy(int *id)
 /* ---------------------------------------------------------------------- */
 {

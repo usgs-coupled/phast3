@@ -146,13 +146,6 @@ static const float INACTIVE_CELL_VALUE = 1.0e30f;
 void
 HDF_Init(const char *prefix, int prefix_l)
 {
-#ifdef USE_MPI
-#ifdef SKIP_TODO
-	extern int mpi_myself;
-#endif
-#else
-	const int mpi_myself = 0;
-#endif
 #if defined(NDEBUG)
 #ifndef _WIN64
 	H5Eset_auto(NULL, NULL);
@@ -160,38 +153,34 @@ HDF_Init(const char *prefix, int prefix_l)
 	H5Eset_auto1(NULL, NULL);
 #endif
 #endif
-#ifdef SKIP_TODO
-	if (mpi_myself == 0)
-#endif
-	{
-		/* Open the HDF file */
-		root.hdf_file_id = open_hdf_file(prefix, prefix_l);
-		assert(root.hdf_file_id > 0);
+
+	/* Open the HDF file */
+	root.hdf_file_id = open_hdf_file(prefix, prefix_l);
+	assert(root.hdf_file_id > 0);
 
 #ifdef USE_MPI
-		root.recv_array = NULL;
-		root.recv_array_count = 0;
-		root.f_array = NULL;
+	root.recv_array = NULL;
+	root.recv_array_count = 0;
+	root.f_array = NULL;
 #endif
 
-		root.current_timestep_gr_id = -1;
-		root.current_file_dspace_id = -1;
-		root.current_file_dset_id = -1;
-		root.print_chem = -1;
+	root.current_timestep_gr_id = -1;
+	root.current_file_dspace_id = -1;
+	root.current_file_dset_id = -1;
+	root.print_chem = -1;
 
-		root.time_step_scalar_indices = NULL;
-		root.scalar_name_max_len = 0;
+	root.time_step_scalar_indices = NULL;
+	root.scalar_name_max_len = 0;
 
-		root.time_steps = NULL;
-		root.time_step_count = 0;
-		root.time_step_max_len = 0;
+	root.time_steps = NULL;
+	root.time_step_count = 0;
+	root.time_step_max_len = 0;
 
-		root.vector_names = NULL;
-		root.vector_name_count = 0;
-		root.vector_name_max_len = 0;
+	root.vector_names = NULL;
+	root.vector_name_count = 0;
+	root.vector_name_max_len = 0;
 
-		root.intermediate_idx = 0;
-	}
+	root.intermediate_idx = 0;
 
 	/* init proc */
 	proc.cell_count = 0;
@@ -211,83 +200,72 @@ HDF_Finalize(void)
 {
 	int i;
 
-#ifdef USE_MPI
-#ifdef SKIP_TODO
-	extern int mpi_myself;
-#endif
-#else
-	const int mpi_myself = 0;
-#endif
-#ifdef SKIP_TODO
-	if (mpi_myself == 0)
-#endif
+	herr_t status;
+
+	assert(root.current_file_dspace_id == -1);	/* shouldn't be open */
+	assert(root.current_file_dset_id == -1);	/* shouldn't be open */
+
+	hdf_finalize_headings();
+
+	root.scalar_names.clear();
+
+	if (root.vector_name_count > 0)
 	{
-		herr_t status;
-
-		assert(root.current_file_dspace_id == -1);	/* shouldn't be open */
-		assert(root.current_file_dset_id == -1);	/* shouldn't be open */
-
-		hdf_finalize_headings();
-
-		root.scalar_names.clear();
-
-		if (root.vector_name_count > 0)
+		/* free space */
+		for (i = 0; i < root.vector_name_count; ++i)
 		{
-			/* free space */
-			for (i = 0; i < root.vector_name_count; ++i)
-			{
-				PHRQ_free(root.vector_names[i]);
-			}
-			PHRQ_free(root.vector_names);
-			root.vector_names = NULL;
-			root.vector_name_count = 0;
-			root.vector_name_max_len = 0;
+			PHRQ_free(root.vector_names[i]);
 		}
-
-		if (root.time_step_count > 0)
-		{
-			/* free space */
-			for (i = 0; i < root.time_step_count; ++i)
-			{
-				PHRQ_free(root.time_steps[i]);
-			}
-			PHRQ_free(root.time_steps);
-			root.time_steps = NULL;
-			root.time_step_count = 0;
-			root.time_step_max_len = 0;
-		}
-
-		/* free mem */
-#ifdef USE_MPI
-		assert(root.recv_array != NULL || root.recv_array_count == 0);
-		PHRQ_free(root.recv_array);
-		root.recv_array = NULL;
-		root.recv_array_count = 0;
-#endif
-
-#ifdef HDF_ERROR
-		assert(root.f_array != NULL);
-#endif
-		PHRQ_free(root.f_array);
-		root.f_array = NULL;
-
-#ifdef HDF_ERROR
-		assert(root.natural_to_active != NULL);
-#endif
-		PHRQ_free(root.natural_to_active);
-		root.natural_to_active = NULL;
-
-#ifdef HDF_ERROR
-		assert(root.active != NULL);
-#endif
-		PHRQ_free(root.active);
-		root.active = NULL;
-
-		/* close the file */
-		assert(root.hdf_file_id > 0);
-		status = H5Fclose(root.hdf_file_id);
-		assert(status >= 0);
+		PHRQ_free(root.vector_names);
+		root.vector_names = NULL;
+		root.vector_name_count = 0;
+		root.vector_name_max_len = 0;
 	}
+
+	if (root.time_step_count > 0)
+	{
+		/* free space */
+		for (i = 0; i < root.time_step_count; ++i)
+		{
+			PHRQ_free(root.time_steps[i]);
+		}
+		PHRQ_free(root.time_steps);
+		root.time_steps = NULL;
+		root.time_step_count = 0;
+		root.time_step_max_len = 0;
+	}
+
+	/* free mem */
+#ifdef USE_MPI
+	assert(root.recv_array != NULL || root.recv_array_count == 0);
+	PHRQ_free(root.recv_array);
+	root.recv_array = NULL;
+	root.recv_array_count = 0;
+#endif
+
+#ifdef HDF_ERROR
+	assert(root.f_array != NULL);
+#endif
+	PHRQ_free(root.f_array);
+	root.f_array = NULL;
+
+#ifdef HDF_ERROR
+	assert(root.natural_to_active != NULL);
+#endif
+	PHRQ_free(root.natural_to_active);
+	root.natural_to_active = NULL;
+
+#ifdef HDF_ERROR
+	assert(root.active != NULL);
+#endif
+	PHRQ_free(root.active);
+	root.active = NULL;
+
+	/* close the file */
+	assert(root.hdf_file_id > 0);
+	status = H5Fclose(root.hdf_file_id);
+	assert(status >= 0);
+
 
 	/* free proc resources */
 	PHRQ_free(proc.array);
@@ -307,15 +285,7 @@ HDF_Finalize(void)
 static hid_t
 open_hdf_file(const char *prefix, int prefix_l)
 {
-#ifdef USE_MPI
-#ifdef SKIP_TODO
-	extern int mpi_myself;
-	extern int mpi_tasks;
-#endif
-#else
-	const int mpi_myself = 0;
-	const int mpi_tasks = 1;
-#endif
+
 	hid_t file_id;
 	char hdf_prefix[257];
 	char hdf_file_name[257];
@@ -324,32 +294,20 @@ open_hdf_file(const char *prefix, int prefix_l)
 	strncpy(hdf_prefix, prefix, prefix_l);
 	hdf_prefix[prefix_l] = '\0';
 	string_trim(hdf_prefix);
-#ifdef SKIP_TODO
-	if (mpi_tasks == 1)
+
+	sprintf(hdf_file_name, "%s%s", hdf_prefix, szHDF5Ext);
+
+
+	root.hdf_prefix    = hdf_prefix;
+	root.hdf_file_name = hdf_file_name;
+	if (file_exists(hdf_file_name))
 	{
-#endif
-		sprintf(hdf_file_name, "%s%s", hdf_prefix, szHDF5Ext);
-#ifdef SKIP_TODO
+		sprintf(hdf_backup_name, "%s%s~", hdf_prefix, szHDF5Ext);
+		if (file_exists(hdf_backup_name))
+			remove(hdf_backup_name);
+		rename(hdf_file_name, hdf_backup_name);
 	}
-	else
-	{
-		sprintf(hdf_file_name, "%s%s", hdf_prefix, szHDF5Ext);
-	}
-#endif
-#ifdef SKIP_TODO
-	if (mpi_myself == 0)
-#endif
-	{
-		root.hdf_prefix    = hdf_prefix;
-		root.hdf_file_name = hdf_file_name;
-		if (file_exists(hdf_file_name))
-		{
-			sprintf(hdf_backup_name, "%s%s~", hdf_prefix, szHDF5Ext);
-			if (file_exists(hdf_backup_name))
-				remove(hdf_backup_name);
-			rename(hdf_file_name, hdf_backup_name);
-		}
-	}
+
 
 	file_id =
 		H5Fcreate(hdf_file_name, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
@@ -374,20 +332,6 @@ open_hdf_file(const char *prefix, int prefix_l)
 void
 HDF_INIT_INVARIANT(void)
 {
-#ifndef NDEBUG
-#ifdef USE_MPI
-#ifdef SKIP_TODO
-	extern int mpi_myself;
-#endif
-#else
-	const int mpi_myself = 0;
-#endif
-#endif
-	
-#ifdef SKIP_TODO
-	assert(mpi_myself == 0);
-#endif
-
 	/*
 	 * Create the "/Grid" group
 	 */
@@ -424,14 +368,6 @@ void
 HDF_FINALIZE_INVARIANT(void)
 {
 	herr_t status;
-#ifdef USE_MPI
-#ifndef NDEBUG
-#ifdef SKIP_TODO
-	extern int mpi_myself;
-	assert(mpi_myself == 0);
-#endif
-#endif
-#endif
 
 	status = H5Gclose(root.grid_gr_id);
 	assert(status >= 0);
@@ -459,121 +395,100 @@ HDF_WRITE_GRID(double x[], double y[], double z[],
 			   int *nx, int *ny, int *nz,
 			   int ibc[], char *UTULBL, int UTULBL_l)
 {
-#ifdef USE_MPI
-#ifdef SKIP_TODO
-        extern int solute;
-	extern int mpi_myself;
-#endif
-#else
-	const int mpi_myself = 0;
-#endif
-#ifdef SKIP_TODO
-	if (mpi_myself == 0)
-#endif
+	int i;
+
+	/* copy and trim time units */
+	strncpy(root.timestep_units, UTULBL, UTULBL_l);
+	root.timestep_units[UTULBL_l] = '\0';
+	string_trim(root.timestep_units);
+
+	assert(root.grid_gr_id > 0);	/* precondition */
+
+	write_axis(root.grid_gr_id, x, *nx, szX);
+	write_axis(root.grid_gr_id, y, *ny, szY);
+	write_axis(root.grid_gr_id, z, *nz, szZ);
+
+	root.nx = *nx;
+	root.ny = *ny;
+	root.nz = *nz;
+	root.nxy = root.nx * root.ny;
+	root.nxyz = root.nxy * root.nz;
+
+	assert(root.active_count == 0);
+	assert(root.natural_to_active == NULL);
+
+	root.natural_to_active = (int *) PHRQ_malloc(sizeof(int) * root.nxyz);
+	if (root.natural_to_active == NULL)
+		malloc_error();
+
+	root.active = (int *) PHRQ_malloc(sizeof(int) * root.nxyz);
+	if (root.active == NULL)
+		malloc_error();
+
+	root.active_count = 0;
+	for (i = 0; i < root.nxyz; ++i)
 	{
-		int i;
-
-		/* copy and trim time units */
-		strncpy(root.timestep_units, UTULBL, UTULBL_l);
-		root.timestep_units[UTULBL_l] = '\0';
-		string_trim(root.timestep_units);
-
-		assert(root.grid_gr_id > 0);	/* precondition */
-
-		write_axis(root.grid_gr_id, x, *nx, szX);
-		write_axis(root.grid_gr_id, y, *ny, szY);
-		write_axis(root.grid_gr_id, z, *nz, szZ);
-
-		root.nx = *nx;
-		root.ny = *ny;
-		root.nz = *nz;
-		root.nxy = root.nx * root.ny;
-		root.nxyz = root.nxy * root.nz;
-
-		assert(root.active_count == 0);
-		assert(root.natural_to_active == NULL);
-
-		root.natural_to_active = (int *) PHRQ_malloc(sizeof(int) * root.nxyz);
-		if (root.natural_to_active == NULL)
-			malloc_error();
-
-		root.active = (int *) PHRQ_malloc(sizeof(int) * root.nxyz);
-		if (root.active == NULL)
-			malloc_error();
-
-		root.active_count = 0;
-		for (i = 0; i < root.nxyz; ++i)
+		if (ibc[i] >= 0)
 		{
-			if (ibc[i] >= 0)
-			{
-				root.natural_to_active[i] = root.active_count;
-				root.active[root.active_count] = i;
-				++root.active_count;
-			}
-			else
-			{
-				root.natural_to_active[i] = -1;
-			}
+			root.natural_to_active[i] = root.active_count;
+			root.active[root.active_count] = i;
+			++root.active_count;
 		}
-		if (root.active_count <= 0)
+		else
 		{
-			error_msg("No active cells in model.", STOP);
+			root.natural_to_active[i] = -1;
 		}
-
-		/* allocate space for fortran scalars */
-		assert(root.f_array == NULL);
-		root.f_array =
-			(double *) PHRQ_malloc(sizeof(double) * root.active_count);
-		if (root.f_array == NULL)
-			malloc_error();
-
-		if (root.active_count != root.nxyz)
-		{						/* Don't write if all are active */
-			hsize_t dims[2], maxdims[2];
-			hid_t dspace_id;
-			hid_t dset_id;
-			herr_t status;
-
-			/* Create the "/Grid/Active" dataspace. */
-			dims[0] = maxdims[0] = root.active_count;
-			dspace_id = H5Screate_simple(1, dims, maxdims);
-			assert(dspace_id > 0);
-
-			/* Create the "/Grid/Active" dataset */
-			dset_id =
-				H5Dcreate(root.grid_gr_id, szActive, H5T_NATIVE_INT,
-						  dspace_id, H5P_DEFAULT);
-			assert(dset_id > 0);
-
-			/* Write the "/Grid/Active" dataset */
-			if (H5Dwrite
-				(dset_id, H5T_NATIVE_INT, dspace_id, H5S_ALL, H5P_DEFAULT,
-				 root.active) < 0)
-			{
-				printf("HDF Error: Unable to write \"/%s/%s\" dataset\n",
-					   szGrid, szActive);
-			}
-
-			/* Close the "/Grid/Active" dataset */
-			status = H5Dclose(dset_id);
-			assert(status >= 0);
-
-			/* Close the "/Grid/Active" dataspace */
-			status = H5Sclose(dspace_id);
-			assert(status >= 0);
-		}
-
-		proc.scalar_count = (int) g_hdf_scalar_names.size();
+	}
+	if (root.active_count <= 0)
+	{
+		error_msg("No active cells in model.", STOP);
 	}
 
-#ifdef USE_MPI
-	/* send scalar_count to all procs */
-#ifdef SKIP_TODO
-	if (solute) {
-	  MPI_Bcast(&proc.scalar_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	/* allocate space for fortran scalars */
+	assert(root.f_array == NULL);
+	root.f_array =
+		(double *) PHRQ_malloc(sizeof(double) * root.active_count);
+	if (root.f_array == NULL)
+		malloc_error();
+
+	if (root.active_count != root.nxyz)
+	{						/* Don't write if all are active */
+		hsize_t dims[2], maxdims[2];
+		hid_t dspace_id;
+		hid_t dset_id;
+		herr_t status;
+
+		/* Create the "/Grid/Active" dataspace. */
+		dims[0] = maxdims[0] = root.active_count;
+		dspace_id = H5Screate_simple(1, dims, maxdims);
+		assert(dspace_id > 0);
+
+		/* Create the "/Grid/Active" dataset */
+		dset_id =
+			H5Dcreate(root.grid_gr_id, szActive, H5T_NATIVE_INT,
+			dspace_id, H5P_DEFAULT);
+		assert(dset_id > 0);
+
+		/* Write the "/Grid/Active" dataset */
+		if (H5Dwrite
+			(dset_id, H5T_NATIVE_INT, dspace_id, H5S_ALL, H5P_DEFAULT,
+			root.active) < 0)
+		{
+			printf("HDF Error: Unable to write \"/%s/%s\" dataset\n",
+				szGrid, szActive);
+		}
+
+		/* Close the "/Grid/Active" dataset */
+		status = H5Dclose(dset_id);
+		assert(status >= 0);
+
+		/* Close the "/Grid/Active" dataspace */
+		status = H5Sclose(dspace_id);
+		assert(status >= 0);
 	}
-#endif
-#endif
+
+	proc.scalar_count = (int) g_hdf_scalar_names.size();
+
 }
 
 /*-------------------------------------------------------------------------
@@ -638,15 +553,6 @@ void
 HDF_WRITE_FEATURE(char *feature_name, int *nodes1, int *node_count,
 				  int feature_name_l)
 {
-#ifndef NDEBUG
-#ifdef USE_MPI
-#ifdef SKIP_TODO
-	extern int mpi_myself;
-#endif
-#else
-	const int mpi_myself = 0;
-#endif
-#endif
 
 	char feature_name_copy[120];
 	int i;
@@ -655,10 +561,6 @@ HDF_WRITE_FEATURE(char *feature_name, int *nodes1, int *node_count,
 	hid_t dset_id;
 	herr_t status;
 	int *nodes0;
-
-#ifdef SKIP_TODO
-	assert(mpi_myself == 0);
-#endif
 
 	if (*node_count == 0)
 	{
@@ -947,21 +849,7 @@ HDFBeginCTimeStep(int count_chem)
 	if (proc.scalar_count == 0)
 		return;
 
-#ifdef USE_MPI
-#ifdef SKIP_TODO
-	assert(count_back_list == 1 || count_back_list == 2
-		   || count_back_list == 4);
-	/* determine how many cells we're going to be doing */
-	//ptr_begin = &(random_list[end_cells[mpi_myself][0]]);
-	ptr_begin = &(random_list[start_cell[mpi_myself]]);
-	//ptr_end = &(random_list[end_cells[mpi_myself][1]]);
-	ptr_end = &(random_list[end_cell[mpi_myself]]);
-	proc.cell_count = (int) (ptr_end - ptr_begin + 1);
-#endif
 	proc.cell_count = count_chem;
-#else
-	proc.cell_count = count_chem;
-#endif
 
 	/* allocate space for this time step */
 	assert(proc.cell_count > 0);
@@ -978,80 +866,6 @@ HDFBeginCTimeStep(int count_chem)
 		proc.array[i] = INACTIVE_CELL_VALUE;
 	}
 }
-
-/*-------------------------------------------------------------------------
- * Function:         HDFSetCell   (called by all procs)
- *
- * Purpose:          TODO
- *
- * Preconditions:    TODO
- *
- * Postconditions:   TODO
- *-------------------------------------------------------------------------
- */
-void
-HDFSetCell(const int n, std::vector <std::vector <int> > &back)			/* n is the natural cell number */
-{
-	/*
-	   proc.cell_index
-	   SERIAL  =>  [0..count_chem)
-	   MPI     =>  [0..&(random_list[end_cells[rank][1]]) - &(random_list[end_cells[rank][0]]) + 1)
-	   or the current position in sort_random_list
-	 */
-
-	if (proc.cell_count == 0)
-		return;
-
-	//assert(proc.cell_index >= 0);	/* if (cell_index == 0) than this is
-	//								   the first call after HDFBeginCTimeStep */
-	//assert(proc.cell_index < proc.cell_count);
-
-
-#ifndef NDEBUG
-#ifdef USE_MPI
-	{
-#ifdef SKIP_TODO
-		//extern int end_cells[MPI_MAX_TASKS][2];
-		extern std::vector<int> start_cell;
-		extern std::vector<int> end_cell;
-		extern int *random_list;
-		extern int mpi_myself;
-		extern int int_compare(const void *, const void *);
-		int *sort_random_list;
-		int *ptr_begin;
-		int *ptr_end;
-
-		/* verify cell_count */
-		//ptr_begin = &(random_list[end_cells[mpi_myself][0]]);
-		ptr_begin = &(random_list[start_cell[mpi_myself]]);
-		//ptr_end = &(random_list[end_cells[mpi_myself][1]]);
-		ptr_end = &(random_list[end_cell[mpi_myself]]);
-		assert(proc.cell_count == ptr_end - ptr_begin + 1);
-
-		/* verify n (natural cell index) */
-		sort_random_list =
-			(int *) PHRQ_malloc((size_t) (proc.cell_count) * sizeof(int));
-		if (sort_random_list == NULL)
-			malloc_error();
-		//memcpy(sort_random_list, &random_list[end_cells[mpi_myself][0]],
-		memcpy(sort_random_list, &random_list[start_cell[mpi_myself]],
-			   sizeof(int) * proc.cell_count);
-		qsort(sort_random_list, (size_t) (proc.cell_count), sizeof(int),
-			  int_compare);
-		assert(n == back[sort_random_list[proc.cell_index]].list[0]);
-
-		PHRQ_free(sort_random_list);
-#endif
-	}
-#else
-	{
-		//assert(n == back[proc.cell_index].list[0]);
-		//assert(n == back[proc.cell_index][0]);
-	}
-#endif
-#endif
-}
-
 /*-------------------------------------------------------------------------
  * Function:         HDFEndCTimeStep   (called by all procs)
  *
@@ -1070,22 +884,16 @@ void
 HDFEndCTimeStep(std::vector <std::vector <int> > &back)
 {
 #ifdef USE_MPI
-    //extern int solute;
 	const int TAG_HDF_DATA = 5;
-	//extern int mpi_myself;
-	//extern int mpi_tasks;
-	//int task_number;
-	
-	const int mpi_myself = 0;
-#else
-	const int mpi_myself = 0;
 #endif
+	const int mpi_myself = 0;
+
 
 	if (proc.cell_count == 0)
 		return;					/* nothing to do */
 
-	if (mpi_myself == 0)
-	{
+	//if (mpi_myself == 0)
+	//{
 		assert(root.current_file_dspace_id > 0);	/* precondition */
 		assert(root.current_file_dset_id > 0);	/* precondition */
 
@@ -1093,60 +901,7 @@ HDFEndCTimeStep(std::vector <std::vector <int> > &back)
 		write_proc_timestep(mpi_myself, proc.cell_count,
 							root.current_file_dspace_id,
 							root.current_file_dset_id, proc.array, back);
-	}
-#ifdef SKIP
-#ifdef USE_MPI
-	if (solute) 
-	{
-	  for (task_number = 1; task_number < mpi_tasks; ++task_number)
-	  {
-	    int array_count;
-	    if (mpi_myself == task_number)
-	    {
-	      MPI_Send(&mpi_myself, 1, MPI_INT, 0, TAG_HDF_DATA,
-		       MPI_COMM_WORLD);
-	      MPI_Send(&proc.cell_count, 1, MPI_INT, 0, TAG_HDF_DATA,
-		       MPI_COMM_WORLD);
-
-	      array_count = proc.cell_count * proc.scalar_count;
-	      MPI_Send((void *) proc.array, array_count, MPI_DOUBLE, 0,
-		       TAG_HDF_DATA, MPI_COMM_WORLD);
-	    }
-	    if (mpi_myself == 0)
-	    {
-	      MPI_Status mpi_status;
-	      int cell_count;
-	      int rank;
-
-	      MPI_Recv(&rank, 1, MPI_INT, MPI_ANY_SOURCE, TAG_HDF_DATA,
-		       MPI_COMM_WORLD, &mpi_status);
-	      MPI_Recv(&cell_count, 1, MPI_INT, rank, TAG_HDF_DATA,
-		       MPI_COMM_WORLD, &mpi_status);
-
-	      array_count = cell_count * proc.scalar_count;
-	      if (root.recv_array_count < array_count)
-	      {
-		root.recv_array =
-		  (double *) PHRQ_realloc(root.recv_array,
-					  sizeof(double) * array_count);
-		if (root.recv_array == NULL)
-		  malloc_error();
-		root.recv_array_count = array_count;
-	      }
-	      MPI_Recv((void *) root.recv_array, array_count, MPI_DOUBLE, rank,
-		       TAG_HDF_DATA, MPI_COMM_WORLD, &mpi_status);
-	      if (1 /* mpi_status bOK */ )
-	      {
-		write_proc_timestep(rank, cell_count,
-				    root.current_file_dspace_id,
-				    root.current_file_dset_id,
-				    root.recv_array, back);
-	      }
-	    }
-	  }
-	}
-#endif
-#endif
+	//}
 }
 
 /*-------------------------------------------------------------------------
@@ -1161,18 +916,6 @@ static void
 write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
 					hid_t dset_id, double *array, std::vector <std::vector <int> > &back)
 {
-#ifdef USE_MPI
-	//extern int end_cells[MPI_MAX_TASKS][2];
-#ifdef SKIP
-	extern std::vector<int> start_cell;
-	extern std::vector<int> end_cell;
-	extern int *random_list;
-	extern int int_compare(const void *, const void *);
-#endif
-	//int *sort_random_list;
-#else
-	/*extern int count_chem; */
-#endif
 
 	hssize_t(*coor)[1];
 	hid_t mem_dspace;
@@ -1199,13 +942,6 @@ write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
 	if (coor == NULL)
 		malloc_error();
 
-#ifndef USE_MPI
-	/* Non-MPI */
-	/*assert(cell_count == count_chem); */
-
-	/*
-	 * make the file dataspace selection
-	 */
 	for (n = 0; n < (int) back[0].size(); ++n)
 	{
 		for (j = 0; j < proc.scalar_count; ++j)
@@ -1238,96 +974,6 @@ write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
 			error_msg(error_string, STOP);
 		}
 	}
-#else
-	/* MPI */
-#ifdef SKIP
-	assert(cell_count ==
-		  // &(random_list[end_cells[rank][1]]) -
-		  &(random_list[end_cell[rank]]) -
-		  //&(random_list[end_cells[rank][0]]) + 1);
-		  &(random_list[start_cell[rank]]) + 1);
-
-	/* sort random list for this proc (to be used for element selection */
-	sort_random_list =
-		(int *) PHRQ_malloc((size_t) (cell_count) * sizeof(int));
-	if (sort_random_list == NULL)
-		malloc_error();
-	//memcpy(sort_random_list, &random_list[end_cells[rank][0]],
-	memcpy(sort_random_list, &random_list[start_cell[rank]],
-		   sizeof(int) * cell_count);
-	qsort(sort_random_list, (size_t) (cell_count), sizeof(int), int_compare);
-	/*
-	 * make the file dataspace selection
-	 */
-	for (n = 0; n < count_back_list; ++n)
-	{
-		for (j = 0; j < proc.scalar_count; ++j)
-		{
-			for (i = 0; i < cell_count; ++i)
-			{
-				coor[i + j * cell_count][0] =
-					root.natural_to_active[back[sort_random_list[i]].
-										   list[n]] + j * root.active_count;
-			}
-		}
-
-		/* make the independent points selection for the file dataspace */
-		status =
-			H5Sselect_elements(file_dspace_id, H5S_SELECT_SET,
-							   cell_count * proc.scalar_count,
-#if (H5_VERS_MAJOR>1)||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR>=8))||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR==6)&&(H5_VERS_RELEASE>=7))
-							   (const hssize_t *) coor);
-#else
-							   (const hssize_t **) coor);
-#endif
-		assert(status >= 0);
-
-		status =
-			H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, mem_dspace, file_dspace_id,
-					 H5P_DEFAULT, array);
-		if (status < 0)
-		{
-			sprintf(error_string,
-					"HDF ERROR: Unable to write dataspace for process %d\n",
-					rank);
-			error_msg(error_string, STOP);
-		}
-	}
-	PHRQ_free(sort_random_list);
-#endif
-	for (n = 0; n < (int) back[0].size(); ++n)
-	{
-		for (j = 0; j < proc.scalar_count; ++j)
-		{
-			for (i = 0; i < cell_count; ++i)
-			{
-				coor[i + j * cell_count][0] =
-					root.natural_to_active[back[i][n]] +
-					j * root.active_count;
-			}
-		}
-
-		/* make the independent points selection for the file dataspace */
-		status =
-			H5Sselect_elements(file_dspace_id, H5S_SELECT_SET,
-							   cell_count * proc.scalar_count,
-#if (H5_VERS_MAJOR>1)||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR>=8))||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR==6)&&(H5_VERS_RELEASE>=7))
-							   (const hssize_t *) coor);
-#else
-							   (const hssize_t **) coor);
-#endif
-		assert(status >= 0);
-
-		status =
-			H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, mem_dspace, file_dspace_id,
-					 H5P_DEFAULT, array);
-		if (status < 0)
-		{
-			sprintf(error_string, "HDF ERROR: Unable to write dataspace\n");
-			error_msg(error_string, STOP);
-		}
-	}
-#endif
 
 	PHRQ_free(coor);
 
@@ -1369,21 +1015,6 @@ HDFFillHyperSlab(int chem_number, std::vector< double > &d, size_t columns)
 		}
 	}
 }
-#ifdef SKIP
-void
-HDFFillHyperSlab(int chem_number, std::vector< std::vector < LDBLE > > &d)
-{
-	for (size_t j = 0; j < d.size(); j++)
-	{
-		int n = (int) j + chem_number;
-		for (size_t i = 0; i < d[j].size(); i++)
-		{
-			assert(proc.array[i * proc.cell_count + n] == (double) INACTIVE_CELL_VALUE);
-			proc.array[i * proc.cell_count + n] = (double) d[j][i];
-		}
-	}
-}
-#endif
 /*-------------------------------------------------------------------------
  * Function:         PRNTAR_HDF
  *
@@ -1641,54 +1272,43 @@ write_vector_mask(hid_t loc_id, int a[], int na, const char *name)
 void
 HDF_INTERMEDIATE(void)
 {
-#ifdef USE_MPI
-#ifdef SKIP_TODO
-	extern int mpi_myself;
-#endif
-#else
-	const int mpi_myself = 0;
-#endif
 
-#ifdef SKIP_TODO
-	if (mpi_myself == 0)
-#endif
-	{
-		herr_t status;
+	herr_t status;
 
-		// close the file
-		assert(root.hdf_file_id > 0);
-		status = H5Fclose(root.hdf_file_id);
-		assert(status >= 0);
+	// close the file
+	assert(root.hdf_file_id > 0);
+	status = H5Fclose(root.hdf_file_id);
+	assert(status >= 0);
 
-		// create intermediate filename
-		char int_fn[MAX_PATH];
-		sprintf(int_fn, "%s.intermediate%s", root.hdf_prefix.c_str(), szHDF5Ext);
+	// create intermediate filename
+	char int_fn[MAX_PATH];
+	sprintf(int_fn, "%s.intermediate%s", root.hdf_prefix.c_str(), szHDF5Ext);
 		
-		// copy to the intermediate file
-		char command[3*MAX_PATH];
+	// copy to the intermediate file
+	char command[3*MAX_PATH];
 #if WIN32
-		sprintf(command, "copy \"%s\" \"%s\"", root.hdf_file_name.c_str(), int_fn);
+	sprintf(command, "copy \"%s\" \"%s\"", root.hdf_file_name.c_str(), int_fn);
 #else
-		sprintf(command, "cp \"%s\" \"%s\"", root.hdf_file_name.c_str(), int_fn);
+	sprintf(command, "cp \"%s\" \"%s\"", root.hdf_file_name.c_str(), int_fn);
 #endif
-		system(command);
+	system(command);
 
-		// open intermediate file for finalization
-		root.hdf_file_id = H5Fopen(int_fn, H5F_ACC_RDWR , H5P_DEFAULT);
-		if (root.hdf_file_id <= 0)
-		{
-			sprintf(error_string, "Unable to open HDF file:%s\n", int_fn);
-			error_msg(error_string, STOP);
-		}
-
-		// finalize intermediate
-		hdf_finalize_headings();
-
-		// close the file
-		assert(root.hdf_file_id > 0);
-		status = H5Fclose(root.hdf_file_id);
-		assert(status >= 0);
+	// open intermediate file for finalization
+	root.hdf_file_id = H5Fopen(int_fn, H5F_ACC_RDWR , H5P_DEFAULT);
+	if (root.hdf_file_id <= 0)
+	{
+		sprintf(error_string, "Unable to open HDF file:%s\n", int_fn);
+		error_msg(error_string, STOP);
 	}
+
+	// finalize intermediate
+	hdf_finalize_headings();
+
+	// close the file
+	assert(root.hdf_file_id > 0);
+	status = H5Fclose(root.hdf_file_id);
+	assert(status >= 0);
+
 
 	// reopen hdf file
 	root.hdf_file_id = H5Fopen(root.hdf_file_name.c_str(), H5F_ACC_RDWR , H5P_DEFAULT);
@@ -1713,298 +1333,286 @@ hdf_finalize_headings(void)
 {
 	int i;
 
-#ifdef USE_MPI
-#ifdef SKIP_TODO
-	extern int mpi_myself;
-#endif
-#else
-	const int mpi_myself = 0;
-#endif
+	herr_t status;
+	hid_t fls_type;
 
-#ifdef SKIP_TODO
-	if (mpi_myself == 0)
-#endif
+	assert(root.current_file_dspace_id == -1);	// shouldn't be open
+	assert(root.current_file_dset_id == -1);	// shouldn't be open
+
+	// create fixed length string type for /Scalar /TimeSteps and /Vectors
+	fls_type = H5Tcopy(H5T_C_S1);
+	if (fls_type <= 0)
 	{
-		herr_t status;
-		hid_t fls_type;
+		assert(0);
+		sprintf(error_string, "HDF ERROR: Unable to copy H5T_C_S1.\n");
+		error_msg(error_string, STOP);
+	}
+	status = H5Tset_strpad(fls_type, H5T_STR_NULLTERM);
+	if (status < 0)
+	{
+		assert(0);
+		sprintf(error_string,
+			"HDF ERROR: Unable to set size of fixed length string type(size=%d).\n",
+			(int) root.scalar_name_max_len);
+		error_msg(error_string, STOP);
+	}
 
-		assert(root.current_file_dspace_id == -1);	// shouldn't be open
-		assert(root.current_file_dset_id == -1);	// shouldn't be open
 
-		// create fixed length string type for /Scalar /TimeSteps and /Vectors
-		fls_type = H5Tcopy(H5T_C_S1);
-		if (fls_type <= 0)
-		{
-			assert(0);
-			sprintf(error_string, "HDF ERROR: Unable to copy H5T_C_S1.\n");
-			error_msg(error_string, STOP);
-		}
-		status = H5Tset_strpad(fls_type, H5T_STR_NULLTERM);
+	//if (root.scalar_name_count > 0)
+	if (root.scalar_names.size() > 0)
+	{
+		hsize_t dims[1];
+		hid_t dspace;
+		hid_t dset;
+		char *scalar_names;
+
+		// write scalar names to file
+
+		status = H5Tset_size(fls_type, root.scalar_name_max_len);
 		if (status < 0)
 		{
 			assert(0);
 			sprintf(error_string,
-					"HDF ERROR: Unable to set size of fixed length string type(size=%d).\n",
-					(int) root.scalar_name_max_len);
+				"HDF ERROR: Unable to set size of fixed length string type(size=%d).\n",
+				(int) root.scalar_name_max_len);
+			error_msg(error_string, STOP);
+		}
+
+		//assert(root.scalar_names != NULL);
+		assert (root.scalar_names.size() > 0);
+
+		// create the /Scalars dataspace
+		//dims[0] = root.scalar_name_count;
+		dims[0] = root.scalar_names.size();
+		dspace = H5Screate_simple(1, dims, NULL);
+		if (dspace <= 0)
+		{
+			assert(0);
+			sprintf(error_string,
+				"HDF ERROR: Unable to create the /%s dataset dataspace.\n",
+				szScalars);
+			error_msg(error_string, STOP);
+		}
+
+		// create the /Scalars dataset
+		dset =
+			H5Dcreate(root.hdf_file_id, szScalars, fls_type, dspace,
+			H5P_DEFAULT);
+		if (dset <= 0)
+		{
+			assert(0);
+			sprintf(error_string,
+				"HDF ERROR: Unable to create the /%s dataset.\n",
+				szScalars);
+			error_msg(error_string, STOP);
+		}
+		for (size_t j = 0; j < root.scalar_names.size(); j++)
+		{
+			if (root.scalar_names[j].size() + 1 > root.scalar_name_max_len) 
+				root.scalar_name_max_len = root.scalar_names[j].size() + 1;
+		}
+
+		// copy variable length scalar names to fixed length scalar names
+		scalar_names =
+			(char *) PHRQ_calloc(root.scalar_name_max_len *
+			root.scalar_names.size(), sizeof(char));
+		// java req'd
+		for (i = 0; i < (int) root.scalar_names.size(); ++i)
+		{
+			strcpy(scalar_names + i * root.scalar_name_max_len,
+				root.scalar_names[i].c_str());
+		}
+
+
+		// write the /Scalars dataset
+		status =
+			H5Dwrite(dset, fls_type, H5S_ALL, H5S_ALL, H5P_DEFAULT,
+			scalar_names);
+		if (status < 0)
+		{
+			assert(0);
+			sprintf(error_string,
+				"HDF ERROR: Unable to write the /%s dataset.\n",
+				szScalars);
+			error_msg(error_string, STOP);
+		}
+
+		PHRQ_free(scalar_names);
+
+		status = H5Sclose(dspace);
+		assert(status >= 0);
+
+		status = H5Dclose(dset);
+		assert(status >= 0);
+	}
+
+	if (root.vector_name_count > 0)
+	{
+		hsize_t dims[1];
+		hid_t dspace;
+		hid_t dset;
+		char *vector_names;
+
+		// write vector names to file
+
+		assert(root.vector_name_count == 1);	// Has a new vector been added?
+		assert(root.vector_names != NULL);
+
+		status = H5Tset_size(fls_type, root.vector_name_max_len);
+		if (status < 0)
+		{
+			assert(0);
+			sprintf(error_string,
+				"HDF ERROR: Unable to set size of fixed length string type(size=%d).\n",
+				(int) root.scalar_name_max_len);
 			error_msg(error_string, STOP);
 		}
 
 
-		//if (root.scalar_name_count > 0)
-		if (root.scalar_names.size() > 0)
+		// create the /Vectors dataspace
+		dims[0] = root.vector_name_count;
+		dspace = H5Screate_simple(1, dims, NULL);
+		if (dspace <= 0)
 		{
-			hsize_t dims[1];
-			hid_t dspace;
-			hid_t dset;
-			char *scalar_names;
-
-			// write scalar names to file
-
-			status = H5Tset_size(fls_type, root.scalar_name_max_len);
-			if (status < 0)
-			{
-				assert(0);
-				sprintf(error_string,
-						"HDF ERROR: Unable to set size of fixed length string type(size=%d).\n",
-						(int) root.scalar_name_max_len);
-				error_msg(error_string, STOP);
-			}
-
-			//assert(root.scalar_names != NULL);
-			assert (root.scalar_names.size() > 0);
-
-			// create the /Scalars dataspace
-			//dims[0] = root.scalar_name_count;
-			dims[0] = root.scalar_names.size();
-			dspace = H5Screate_simple(1, dims, NULL);
-			if (dspace <= 0)
-			{
-				assert(0);
-				sprintf(error_string,
-						"HDF ERROR: Unable to create the /%s dataset dataspace.\n",
-						szScalars);
-				error_msg(error_string, STOP);
-			}
-
-			// create the /Scalars dataset
-			dset =
-				H5Dcreate(root.hdf_file_id, szScalars, fls_type, dspace,
-						  H5P_DEFAULT);
-			if (dset <= 0)
-			{
-				assert(0);
-				sprintf(error_string,
-						"HDF ERROR: Unable to create the /%s dataset.\n",
-						szScalars);
-				error_msg(error_string, STOP);
-			}
-			for (size_t j = 0; j < root.scalar_names.size(); j++)
-			{
-				if (root.scalar_names[j].size() + 1 > root.scalar_name_max_len) 
-					root.scalar_name_max_len = root.scalar_names[j].size() + 1;
-			}
-
-			// copy variable length scalar names to fixed length scalar names
-			scalar_names =
-				(char *) PHRQ_calloc(root.scalar_name_max_len *
-									 root.scalar_names.size(), sizeof(char));
-			// java req'd
-			for (i = 0; i < (int) root.scalar_names.size(); ++i)
-			{
-				strcpy(scalar_names + i * root.scalar_name_max_len,
-					   root.scalar_names[i].c_str());
-			}
-
-
-			// write the /Scalars dataset
-			status =
-				H5Dwrite(dset, fls_type, H5S_ALL, H5S_ALL, H5P_DEFAULT,
-						 scalar_names);
-			if (status < 0)
-			{
-				assert(0);
-				sprintf(error_string,
-						"HDF ERROR: Unable to write the /%s dataset.\n",
-						szScalars);
-				error_msg(error_string, STOP);
-			}
-
-			PHRQ_free(scalar_names);
-
-			status = H5Sclose(dspace);
-			assert(status >= 0);
-
-			status = H5Dclose(dset);
-			assert(status >= 0);
+			assert(0);
+			sprintf(error_string,
+				"HDF ERROR: Unable to create the /%s dataset dataspace.\n",
+				szVectors);
+			error_msg(error_string, STOP);
 		}
 
-		if (root.vector_name_count > 0)
+		// create the /Vectors dataset
+		dset =
+			H5Dcreate(root.hdf_file_id, szVectors, fls_type, dspace,
+			H5P_DEFAULT);
+		if (dset <= 0)
 		{
-			hsize_t dims[1];
-			hid_t dspace;
-			hid_t dset;
-			char *vector_names;
-
-			// write vector names to file
-
-			assert(root.vector_name_count == 1);	// Has a new vector been added?
-			assert(root.vector_names != NULL);
-
-			status = H5Tset_size(fls_type, root.vector_name_max_len);
-			if (status < 0)
-			{
-				assert(0);
-				sprintf(error_string,
-						"HDF ERROR: Unable to set size of fixed length string type(size=%d).\n",
-						(int) root.scalar_name_max_len);
-				error_msg(error_string, STOP);
-			}
-
-
-			// create the /Vectors dataspace
-			dims[0] = root.vector_name_count;
-			dspace = H5Screate_simple(1, dims, NULL);
-			if (dspace <= 0)
-			{
-				assert(0);
-				sprintf(error_string,
-						"HDF ERROR: Unable to create the /%s dataset dataspace.\n",
-						szVectors);
-				error_msg(error_string, STOP);
-			}
-
-			// create the /Vectors dataset
-			dset =
-				H5Dcreate(root.hdf_file_id, szVectors, fls_type, dspace,
-						  H5P_DEFAULT);
-			if (dset <= 0)
-			{
-				assert(0);
-				sprintf(error_string,
-						"HDF ERROR: Unable to create the /%s dataset.\n",
-						szVectors);
-				error_msg(error_string, STOP);
-			}
-
-			// copy variable length vectors to fixed length strings
-			vector_names =
-				(char *) PHRQ_calloc(root.vector_name_max_len *
-									 root.vector_name_count, sizeof(char));
-			for (i = 0; i < root.vector_name_count; ++i)
-			{
-				strcpy(vector_names + i * root.vector_name_max_len,
-					   root.vector_names[i]);
-			}
-
-			// write the /Vectors dataset
-			status =
-				H5Dwrite(dset, fls_type, H5S_ALL, H5S_ALL, H5P_DEFAULT,
-						 vector_names);
-			if (status < 0)
-			{
-				assert(0);
-				sprintf(error_string,
-						"HDF ERROR: Unable to write the /%s dataset.\n",
-						szVectors);
-				error_msg(error_string, STOP);
-			}
-
-			PHRQ_free(vector_names);
-
-			status = H5Sclose(dspace);
-			assert(status >= 0);
-
-			status = H5Dclose(dset);
-			assert(status >= 0);
+			assert(0);
+			sprintf(error_string,
+				"HDF ERROR: Unable to create the /%s dataset.\n",
+				szVectors);
+			error_msg(error_string, STOP);
 		}
 
-		if (root.time_step_count > 0)
+		// copy variable length vectors to fixed length strings
+		vector_names =
+			(char *) PHRQ_calloc(root.vector_name_max_len *
+			root.vector_name_count, sizeof(char));
+		for (i = 0; i < root.vector_name_count; ++i)
 		{
-			hsize_t dims[1];
-			hid_t dspace;
-			hid_t dset;
-			char *time_steps;
-
-			// write time step names to file
-
-			status = H5Tset_size(fls_type, root.time_step_max_len);
-			if (status < 0)
-			{
-				assert(0);
-				sprintf(error_string,
-						"HDF ERROR: Unable to set size of fixed length string type(size=%d).\n",
-						(int) root.time_step_max_len);
-				error_msg(error_string, STOP);
-			}
-
-			assert(root.time_steps != NULL);
-
-			// create the /TimeSteps (szTimeSteps) dataspace
-			dims[0] = root.time_step_count;
-			dspace = H5Screate_simple(1, dims, NULL);
-			if (dspace <= 0)
-			{
-				assert(0);
-				sprintf(error_string,
-						"HDF ERROR: Unable to create the /%s dataset dataspace.\n",
-						szTimeSteps);
-				error_msg(error_string, STOP);
-			}
-
-			// create the /TimeSteps (szTimeSteps) dataset
-			dset =
-				H5Dcreate(root.hdf_file_id, szTimeSteps, fls_type, dspace,
-						  H5P_DEFAULT);
-			if (dset <= 0)
-			{
-				assert(0);
-				sprintf(error_string,
-						"HDF ERROR: Unable to create the /%s dataset.\n",
-						szTimeSteps);
-				error_msg(error_string, STOP);
-			}
-
-			// copy variable length time steps to fixed length strings
-			time_steps =
-				(char *) PHRQ_calloc(root.time_step_max_len *
-									 root.time_step_count, sizeof(char));
-			for (i = 0; i < root.time_step_count; ++i)
-			{
-				strcpy(time_steps + i * root.time_step_max_len,
-					   root.time_steps[i]);
-			}
-
-			// write the /TimeSteps (szTimeSteps) dataset
-			status =
-				H5Dwrite(dset, fls_type, H5S_ALL, H5S_ALL, H5P_DEFAULT,
-						 time_steps);
-			if (status < 0)
-			{
-				assert(0);
-				sprintf(error_string,
-						"HDF ERROR: Unable to write the /%s dataset.\n",
-						szTimeSteps);
-				error_msg(error_string, STOP);
-			}
-
-			PHRQ_free(time_steps);
-
-			status = H5Sclose(dspace);
-			assert(status >= 0);
-
-			status = H5Dclose(dset);
-			assert(status >= 0);
+			strcpy(vector_names + i * root.vector_name_max_len,
+				root.vector_names[i]);
 		}
 
-		// close the fixed lenght string type
-		status = H5Tclose(fls_type);
+		// write the /Vectors dataset
+		status =
+			H5Dwrite(dset, fls_type, H5S_ALL, H5S_ALL, H5P_DEFAULT,
+			vector_names);
+		if (status < 0)
+		{
+			assert(0);
+			sprintf(error_string,
+				"HDF ERROR: Unable to write the /%s dataset.\n",
+				szVectors);
+			error_msg(error_string, STOP);
+		}
+
+		PHRQ_free(vector_names);
+
+		status = H5Sclose(dspace);
 		assert(status >= 0);
 
-		// close the file
-		assert(root.hdf_file_id > 0);
-		status = H5Fclose(root.hdf_file_id);
+		status = H5Dclose(dset);
 		assert(status >= 0);
 	}
+
+	if (root.time_step_count > 0)
+	{
+		hsize_t dims[1];
+		hid_t dspace;
+		hid_t dset;
+		char *time_steps;
+
+		// write time step names to file
+
+		status = H5Tset_size(fls_type, root.time_step_max_len);
+		if (status < 0)
+		{
+			assert(0);
+			sprintf(error_string,
+				"HDF ERROR: Unable to set size of fixed length string type(size=%d).\n",
+				(int) root.time_step_max_len);
+			error_msg(error_string, STOP);
+		}
+
+		assert(root.time_steps != NULL);
+
+		// create the /TimeSteps (szTimeSteps) dataspace
+		dims[0] = root.time_step_count;
+		dspace = H5Screate_simple(1, dims, NULL);
+		if (dspace <= 0)
+		{
+			assert(0);
+			sprintf(error_string,
+				"HDF ERROR: Unable to create the /%s dataset dataspace.\n",
+				szTimeSteps);
+			error_msg(error_string, STOP);
+		}
+
+		// create the /TimeSteps (szTimeSteps) dataset
+		dset =
+			H5Dcreate(root.hdf_file_id, szTimeSteps, fls_type, dspace,
+			H5P_DEFAULT);
+		if (dset <= 0)
+		{
+			assert(0);
+			sprintf(error_string,
+				"HDF ERROR: Unable to create the /%s dataset.\n",
+				szTimeSteps);
+			error_msg(error_string, STOP);
+		}
+
+		// copy variable length time steps to fixed length strings
+		time_steps =
+			(char *) PHRQ_calloc(root.time_step_max_len *
+			root.time_step_count, sizeof(char));
+		for (i = 0; i < root.time_step_count; ++i)
+		{
+			strcpy(time_steps + i * root.time_step_max_len,
+				root.time_steps[i]);
+		}
+
+		// write the /TimeSteps (szTimeSteps) dataset
+		status =
+			H5Dwrite(dset, fls_type, H5S_ALL, H5S_ALL, H5P_DEFAULT,
+			time_steps);
+		if (status < 0)
+		{
+			assert(0);
+			sprintf(error_string,
+				"HDF ERROR: Unable to write the /%s dataset.\n",
+				szTimeSteps);
+			error_msg(error_string, STOP);
+		}
+
+		PHRQ_free(time_steps);
+
+		status = H5Sclose(dspace);
+		assert(status >= 0);
+
+		status = H5Dclose(dset);
+		assert(status >= 0);
+	}
+
+	// close the fixed lenght string type
+	status = H5Tclose(fls_type);
+	assert(status >= 0);
+
+	// close the file
+	assert(root.hdf_file_id > 0);
+	status = H5Fclose(root.hdf_file_id);
+	assert(status >= 0);
+
 
 	root.hdf_file_id = H5Fopen(root.hdf_file_name.c_str(), H5F_ACC_RDWR , H5P_DEFAULT);
 	if (root.hdf_file_id <= 0)
