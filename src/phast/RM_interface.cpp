@@ -513,28 +513,29 @@ void RM_run_cells(int *id,
 			 int * stop_msg)
 /* ---------------------------------------------------------------------- */
 {
-#ifdef USE_MPI
-	MPI_Bcast(stop_msg, 1, MPI_INT, 0, MPI_COMM_WORLD);
-#endif
-
-	if (*stop_msg == 0)
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
 	{
 #ifdef USE_MPI
-		// Broadcast data to workers
-		MPI_Bcast(prslm, 1, MPI_INT, 0, MPI_COMM_WORLD);
-		MPI_Bcast(print_chem, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-		MPI_Bcast(print_xyz, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-		MPI_Bcast(print_hdf, 1, MPI_INT, 0, MPI_COMM_WORLD);
-		MPI_Bcast(print_restart, 1, MPI_INT, 0, MPI_COMM_WORLD);
-		MPI_Bcast(time_hst, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-		MPI_Bcast(time_step_hst, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-		MPI_Bcast(fraction, (*nxyz)*(*count_comps), MPI_DOUBLE, 0, MPI_COMM_WORLD);
-		MPI_Bcast(frac, *nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-		MPI_Bcast(pv, *nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+		MPI_Bcast(stop_msg, 1, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
-		Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
-		if (Reaction_module_ptr)
+		if (*stop_msg == 0)
 		{
+
+#ifdef USE_MPI
+			// Broadcast data to workers
+			MPI_Bcast(prslm, 1, MPI_INT, 0, MPI_COMM_WORLD);
+			MPI_Bcast(print_chem, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+			MPI_Bcast(print_xyz, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+			MPI_Bcast(print_hdf, 1, MPI_INT, 0, MPI_COMM_WORLD);
+			MPI_Bcast(print_restart, 1, MPI_INT, 0, MPI_COMM_WORLD);
+			MPI_Bcast(time_hst, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+			MPI_Bcast(time_step_hst, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+			MPI_Bcast(fraction, (*nxyz)*(*count_comps), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+			MPI_Bcast(frac, *nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+			MPI_Bcast(pv, *nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+#endif
+			// Transfer data and pointers to Reaction_module
 			Reaction_module_ptr->Set_prslm(*prslm != 0);	  
 			Reaction_module_ptr->Set_print_chem(*print_chem != 0);
 			Reaction_module_ptr->Set_print_xyz(*print_xyz != 0);
@@ -545,7 +546,17 @@ void RM_run_cells(int *id,
 			Reaction_module_ptr->Set_fraction(fraction);
 			Reaction_module_ptr->Set_frac(frac);
 			Reaction_module_ptr->Set_pv(pv);
+
+			// Transfer data Fortran to reaction module
+			Reaction_module_ptr->Fractions2Solutions();
+
+			// Run chemistry calculations
 			Reaction_module_ptr->Run_cells();
+
+			// Transfer data reaction module to Fortran
+			Reaction_module_ptr->Solutions2Fractions();
+
+			// Rebalance load
 			Reaction_module_ptr->Rebalance_load();
 		}
 	}
