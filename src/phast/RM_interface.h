@@ -43,7 +43,7 @@
 #define RM_write_bc_raw                       rm_write_bc_raw
 #define RM_write_output                       rm_write_output
 #define RM_write_restart					  rm_write_restart
-
+#define RM_zone_flow_write_chem               rm_zone_flow_write_chem
 
 /**
  * @mainpage IPhreeqc Library Documentation
@@ -178,6 +178,7 @@ void RM_write_bc_raw(int *id,
 			int prefix_l);
 void RM_write_output(int *id);
 void RM_write_restart(int *id);
+void RM_zone_flow_write_chem(int *);
 
 void errprt_c(const char *err_str, long l);
 void logprt_c(const char *err_str, long l);
@@ -190,6 +191,7 @@ void RM_logprt(const std::string & e_string);
 void RM_screenprt(const std::string & e_string);
 extern void transport_component(int *i);
 extern void transport_component_thread(int *i);
+extern void zone_flow_write_chem(void);
 
 #if defined(__cplusplus)
 }

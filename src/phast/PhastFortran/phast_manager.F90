@@ -234,9 +234,9 @@ SUBROUTINE phast_manager
         ! ... Equilibrate the initial conditions for component concentrations
         WRITE(logline1,'(a)') 'Equilibration of cells for initial conditions.'
         CALL RM_log_screen_prt(logline1)
-            print_restart_flag = 0 
-            stop_msg = 0
-            deltim_dummy = 0._kdp
+        print_restart_flag = 0 
+        stop_msg = 0
+        deltim_dummy = 0._kdp
         CALL RM_run_cells(     &
             rm_id,              &
             prslmi,             &        ! prslm
@@ -252,7 +252,7 @@ SUBROUTINE phast_manager
             nxyz,               &
             ns,                 &
             stop_msg) 
-        CALL zone_flow_write_chem(mpi_tasks, mpi_myself, .true.)
+        CALL RM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
         CALL init2_3        
     ENDIF   ! End solute
 
@@ -403,7 +403,7 @@ SUBROUTINE phast_manager
             IF(przf_xyzt .AND. .NOT.steady_flow) THEN  
                 CALL zone_flow_write_heads
             ENDIF
-            CALL zone_flow_write_chem(mpi_tasks, mpi_myself, .false.)
+            CALL RM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
             IF (.NOT.steady_flow) THEN
                 CALL write4
             ENDIF

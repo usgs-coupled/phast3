@@ -459,16 +459,6 @@ SUBROUTINE write5
      ENDDO
      ntprzf_tsv = ntprzf_tsv+1
   END IF
-  !IF(przf_xyzt .AND. .NOT.steady_flow) THEN  
-  !   ! ... Zonal heads to file, fuzf_heads
-  !   CALL zone_flow_write_heads
-  !   ntprzf_xyzt = ntprzf_xyzt+1
-  !END IF
-  ! move to phast_root and phast_slave
-  !IF(przf_xyzt .and. solute) THEN  
-  !   ! ... Zonal chem to file, fuzf_chem_xyzt and chem.bc
-  !   CALL zone_flow_write_chem
-  !END IF
   IF(prwel .OR. prtem) THEN
      nsa = MAX(ns,1)
      ALLOCATE (chu10a(nsa), chu11a(nsa), cwkt_mol(nwel,nsa), &
