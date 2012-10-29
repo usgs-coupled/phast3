@@ -1,5 +1,4 @@
 ! ... $Id$
-!#ifdef SKIP_REWRITE_PHAST
 SUBROUTINE hdf_write_invariant(l_mpi_myself)
   ! ... Preconditions:
   ! ...   Must be called before first call to EQUILIBRATE
@@ -412,8 +411,6 @@ SUBROUTINE write_hdf_intermediate()
   IMPLICIT NONE
   CALL HDF_INTERMEDIATE()  
 END SUBROUTINE write_hdf_intermediate
-
-!#endif !SKIP_REWRITE_PHAST
 
 SUBROUTINE calc_volume
 ! ... Logic for volume weighting copied from init2_1
