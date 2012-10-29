@@ -2560,7 +2560,12 @@ Reaction_module::Run_cells_thread(int n)
 	this->Solutions2Fractions_thread(n);
 #endif
 	clock_t t_elapsed = clock() - t0;
+	
+#ifdef USE_MPI
+	std::cerr << "Thread: " << n << " Time: " << (double) t_elapsed << " Cells: " << this->end_cell[this->mpi_myself] - this->start_cell[this->mpi_myself] + 1 << std::endl;
+#else
 	std::cerr << "Thread: " << n << " Time: " << (double) t_elapsed << " Cells: " << this->end_cell[n] - this->start_cell[n] + 1 << std::endl;
+#endif
 	phast_iphreeqc_worker->Set_thread_clock_time((double) t_elapsed);
 }
 /* ---------------------------------------------------------------------- */
@@ -2876,6 +2881,110 @@ Reaction_module::Solutions2Fractions_thread(int n)
 		}
 	}
 }
+#ifdef USE_MPI
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Write_bc_raw(int *solution_list, int * bc_solution_count, 
+			int * solution_number, const std::string &fn)
+/* ---------------------------------------------------------------------- */
+{
+	// solution_list is Fortran nxyz number
+	MPI_Bcast(solution_number, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	if (*solution_number == 0) return;
+	MPI_Bcast(bc_solution_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+
+	// Broadcast solution list
+	std::vector<int> my_solution_list;
+	if (mpi_myself == 0)
+	{
+		MPI_Bcast(solution_list, *bc_solution_count, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+	else
+	{
+		my_solution_list.resize((size_t) bc_solution_count);
+		MPI_Bcast(my_solution_list.data(), *bc_solution_count, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+
+	std::ofstream ofs;
+	// Open file on root
+	if (this->mpi_myself == 0)
+	{
+		ofs.open(fn.c_str(), std::ios_base::app);
+		if (!ofs.is_open())
+		{
+			std::ostringstream e_msg;
+			e_msg << "Could not open file. " << fn;
+			Write_error(e_msg.str().c_str());
+			Error_stop();
+		}
+	}
+
+	// dump solutions to oss
+	std::ostringstream oss;
+	for (int i = 0; i < *bc_solution_count; i++)
+	{
+		int raw_number = *solution_number + i;
+		int n_fort = solution_list[i];
+		int n_chem = this->forward[n_fort - 1];
+		if (n_chem >= this->start_cell[this->mpi_myself] || 
+			n_chem <= this->end_cell[this->mpi_myself])
+		{
+			oss << "# Fortran cell " << n_fort << ". Time " << (*this->time_hst) * (*this->cnvtmi) << "\n";
+			this->workers[0]->Get_solution(n_chem)->dump_raw(oss, 0, &raw_number);
+		}
+	}
+
+	// Write root solutions
+	if (this->mpi_myself == 0 && oss.str().size() > 0)
+	{
+		ofs << oss.str();
+	}
+
+	// Retrieve from nonroot processes
+	std::vector<char> char_buffer;
+	for (int i = 1; i < this->mpi_tasks; i++)
+	{
+		int buffer_length = 0;
+		MPI_Status mpi_status;
+
+		// Send dump string to root
+		if (mpi_myself == i)
+		{
+			buffer_length = (int) oss.str().size();
+			MPI_Send(&buffer_length, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+			if (buffer_length > 0)
+			{
+				MPI_Send((void *) oss.str().c_str(), buffer_length, MPI_CHAR, 0, 0,
+					MPI_COMM_WORLD);
+			}
+		}
+		// Write dump string to file
+		else if (mpi_myself == 0)
+		{
+			MPI_Recv(&buffer_length, 1, MPI_INT, i, 0, MPI_COMM_WORLD,
+				&mpi_status);			
+			if (buffer_length > 0)
+			{
+				char_buffer.resize(buffer_length + 1);
+				MPI_Recv(char_buffer.data(), buffer_length, MPI_CHAR, i, 0,
+					MPI_COMM_WORLD, &mpi_status);
+				char_buffer[buffer_length] = '\0';
+				ofs << char_buffer.data(); 
+			}
+		}
+	}
+
+	// Final write
+	if (this->mpi_myself == 0)
+	{
+		ofs << "# Done with zone for time step." << std::endl;
+		ofs.close();
+	}
+
+	return;
+}
+#else
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Write_bc_raw(int *solution_list, int * bc_solution_count, 
@@ -2912,7 +3021,7 @@ Reaction_module::Write_bc_raw(int *solution_list, int * bc_solution_count,
 			{
 				ofs << "# Fortran cell " << n_fort << ". Time " << (*this->time_hst) * (*this->cnvtmi) << "\n";
 				cxxSolution *soln_ptr=  phast_iphreeqc_worker->Get_solution(n_chem);
-				soln_ptr->dump_raw(ofs, raw_number++, 0);
+				soln_ptr->dump_raw(ofs, 0, raw_number++);
 			}
 			else
 			{
@@ -2928,6 +3037,7 @@ Reaction_module::Write_bc_raw(int *solution_list, int * bc_solution_count,
 	ofs.close();
 	return;
 }
+#endif
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module:: Write_error(const char * item)

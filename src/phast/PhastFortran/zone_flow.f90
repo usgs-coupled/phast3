@@ -676,8 +676,7 @@ SUBROUTINE zone_flow_write_heads
   counter = counter + 1
 
 END SUBROUTINE zone_flow_write_heads
-!SUBROUTINE zone_flow_write_chem(mpi_tasks, mpi_myself, force_print
-SUBROUTINE zone_flow_write_chem(force_print)
+SUBROUTINE zone_flow_write_chem
   ! ... Writes solution_raw for zones for zones 
   USE machine_constants, ONLY: kdp
   USE f_units
@@ -692,7 +691,7 @@ SUBROUTINE zone_flow_write_chem(force_print)
   IMPLICIT NONE
   !LOGICAL ex
   !INTEGER, INTENT(IN) :: mpi_myself, mpi_tasks
-  LOGICAL, INTENT(IN) :: force_print
+  !LOGICAL, INTENT(IN) :: force_print
   INTEGER ios
   INTEGER i, ii, jj, kk, m, izn
   REAL(KIND=kdp) :: current_time = 0
@@ -703,7 +702,8 @@ SUBROUTINE zone_flow_write_chem(force_print)
   INTEGER solution_list(nxyz), pos
  
   IF (.not. solute) RETURN
-  IF(.not. przf_xyzt .and. .not. force_print) RETURN
+  !IF(.not. przf_xyzt .and. .not. force_print) RETURN
+  !IF(.not. przf_xyzt) RETURN
 
   current_time = cnvtmi*time
   if (counter == 1) then

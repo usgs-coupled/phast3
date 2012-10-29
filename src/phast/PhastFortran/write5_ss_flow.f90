@@ -303,16 +303,6 @@ SUBROUTINE write5_ss_flow
      ENDDO
      ntprzf = ntprzf+1
   ENDIF
-  !IF(przf_xyzt) THEN  
-  !   ! ... Zonal heads to file, fuzf_heads
-  !   CALL zone_flow_write_heads
-  !   ntprzf_xyzt = ntprzf_xyzt+1
-  !END IF
-  ! move to phast_root and phast_slave
-  !IF(przf_xyzt .and. solute) THEN  
-  !   ! ... Zonal chem to file, fuzf_chem_xyzt and .chem.bc
-  !   CALL zone_flow_write_chem
-  !END IF 
   IF(przf_tsv) THEN
      ! ... Zonal flow rates to tab separated file, fuzf_tsv
      DO izn=1,num_flo_zones
