@@ -78,7 +78,6 @@ private:
 extern "C" {
 #endif
 void RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity);
-void RM_cleanup();
 void RM_close_files(int * solute);
 void RM_convert_to_molal(int *id, double *c, int *n, int *dim);
 int  RM_create(int *nthreads);
@@ -99,7 +98,6 @@ int RM_find_components(int *id);
 void RM_forward_and_back(int *id,
 		int *initial_conditions, 
 		int *axes);
-void RM_fractions2solutons(int *id);
 void RM_get_component(int * id, int * num, char *chem_name, int l1);
 void RM_initial_phreeqc_run(int * id, char *db_name, char *chem_name, char *prefix_name, int l1, int l2, int l3);
 void RM_log_screen_prt(char *err_str, long l);
