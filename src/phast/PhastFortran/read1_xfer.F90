@@ -11,7 +11,8 @@ SUBROUTINE read1_distribute
   USE mpi_mod
   USE mpi_struct_arrays
   IMPLICIT NONE
-  INTEGER :: int_real_type, jerr
+  !INTEGER :: int_real_type, jerr
+  INTEGER :: jerr
   INTEGER, DIMENSION(21) :: array_bcst_i
   REAL(KIND=kdp), DIMENSION(1:1) :: array_bcst_r
   ! ... Set string for use with RCS ident command
@@ -38,10 +39,12 @@ SUBROUTINE read1_distribute
      array_bcst_i(14) = nrbc;  array_bcst_i(15) = ndbc; array_bcst_i(16) = nwel
      array_bcst_i(17) = slmeth; array_bcst_i(18) = nral
   ENDIF
-  int_real_type=MPI_struct_array(array_bcst_i,array_bcst_r)
-  CALL MPI_BCAST(array_bcst_i, 1, int_real_type, manager, &
-       world, jerr)
-  CALL MPI_TYPE_FREE(int_real_type,jerr)
+    CALL MPI_BCAST(array_bcst_i(1), 18, MPI_INTEGER, manager, &
+        world, jerr)
+!  int_real_type=MPI_struct_array(array_bcst_i,array_bcst_r)
+!  CALL MPI_BCAST(array_bcst_i, 1, int_real_type, manager, &
+!       world, jerr)
+!  CALL MPI_TYPE_FREE(int_real_type,jerr)
 
   IF (mpi_myself > 0) THEN
      ! ... Load the scalar variables

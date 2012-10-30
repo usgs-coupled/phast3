@@ -226,7 +226,7 @@ SUBROUTINE phast_worker
 
         ! ... Transient loop for transport
         fdtmth = fdtmth_tr     ! ... set time differencing method to transient
-        DO
+        DO       
             ! ... Transport calculation
             CALL c_distribute
             CALL p_distribute
@@ -234,18 +234,18 @@ SUBROUTINE phast_worker
             ! ... manager calculates flow
 
             ! ... Receive the transient data, if necessary
-            IF (xp_group) THEN
-                DO WHILE(time*one_plus_eps >= timchg)
-                    CALL init3_distribute
+            IF (xp_group) THEN    
+                DO WHILE(time*one_plus_eps >= timchg)  
+                    CALL init3_distribute      
                     IF(thru) EXIT        ! ... Normal exit from time step loop
                     IF(errexi) EXIT
                 END DO
             ENDIF
-            CALL thru_distribute
+            CALL thru_distribute  
             IF (thru) EXIT          ! ... second step of exit
-
-            CALL timestep_worker     ! ... this only receives some data. it is a hold point 
-            IF (.NOT. steady_flow) CALL flow_distribute
+            
+            CALL timestep_worker     ! ... this only receives some data. it is a hold point      
+            IF (.NOT. steady_flow) CALL flow_distribute    
 
             ! ... Processes do transport
             IF (local_ns > 0) THEN 
@@ -254,7 +254,6 @@ SUBROUTINE phast_worker
                 CALL sbc_gather
                 CALL c_gather
             ENDIF
-
             IF(errexe .OR. errexi) GO TO 50
 
             ! ... Chemistry calculation

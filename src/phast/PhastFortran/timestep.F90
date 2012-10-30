@@ -48,11 +48,17 @@ SUBROUTINE timestep
 #ifdef USE_MPI
   !*** broadcast itime, jtime
   IF (solute) THEN
-     array_bcst_i(1) = itime; array_bcst_i(2) = jtime
-     int_real_type = mpi_struct_array(array_bcst_i,array_bcst_r)
-     CALL MPI_BCAST(array_bcst_i, 1, int_real_type, manager,  &
+!    CALL MPI_BCAST(itime, 1, MPI_INTEGER, manager,  &
+!        world, ierrmpi)  
+!    CALL MPI_BCAST(jtime, 1, MPI_INTEGER, manager,  &
+!        world, ierrmpi)    
+     array_bcst_i(1) = itime; array_bcst_i(2) = jtime     
+     CALL MPI_BCAST(array_bcst_i, 2, MPI_INTEGER, manager,  &
           world, ierrmpi)
-     CALL MPI_TYPE_FREE(int_real_type,ierrmpi)
+     !int_real_type = mpi_struct_array(array_bcst_i,array_bcst_r)
+     !CALL MPI_BCAST(array_bcst_i, 1, int_real_type, manager,  &
+     !     world, ierrmpi)
+     !CALL MPI_TYPE_FREE(int_real_type,ierrmpi)
   ENDIF
 #endif
   tsfail=.FALSE.

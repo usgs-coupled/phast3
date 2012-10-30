@@ -294,7 +294,7 @@ SUBROUTINE phast_manager
 
             ! ... Read the transient data, if necessary. The first block was read by the steady flow 
             ! ... simulation section
-
+            
             DO WHILE(time*one_plus_eps >= timchg)     ! ... skip past data blocks until
                 ! ...         restart time is reached
                 CALL read3
@@ -306,7 +306,7 @@ SUBROUTINE phast_manager
                 CALL error3
                 CALL write3
                 IF(errexi) EXIT
-            END DO
+            END DO                
             CALL time_parallel(4)
             CALL thru_distribute
             CALL time_parallel(5)
@@ -350,13 +350,12 @@ SUBROUTINE phast_manager
                     CALL RM_log_screen_prt(logline1)
                 ENDDO
             ENDIF
-
             IF (local_ns > 0) THEN 
                 CALL RM_transport(rm_id, local_ns)
             ENDIF
 
             IF(errexe .OR. errexi) GO TO 50
-#if defined USE_MPI        
+#if defined USE_MPI      
             if (solute) CALL MPI_Barrier(world, ierrmpi)
 #endif
             CALL time_parallel(9)
@@ -369,7 +368,6 @@ SUBROUTINE phast_manager
                 CALL sumcal1
             ENDIF
             IF(tsfail .AND. .NOT.errexe) GO TO 20
-
             ! ... Done with transport for time step
 #if defined(HDF5_CREATE)
             CALL hdf_begin_time_step

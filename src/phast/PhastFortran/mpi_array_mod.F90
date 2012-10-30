@@ -2,6 +2,7 @@
 #include "mpi_fix_case.h"
 #endif
 MODULE mpi_struct_arrays
+#ifdef SKIP
 #if defined USE_MPI
   ! ... generic functions for real and integer MPI array structures
   USE machine_constants, ONLY: kdp
@@ -769,5 +770,7 @@ CONTAINS
   END FUNCTION MPI_struct_int_2_array_3
 #endif 
 !  end USE_MPI
-
+#endif
+! end SKIP
 END MODULE mpi_struct_arrays
+

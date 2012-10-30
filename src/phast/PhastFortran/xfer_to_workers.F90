@@ -20,26 +20,26 @@ SUBROUTINE p_distribute
   IF (.NOT. xp_group) RETURN
   IF (mpi_tasks > 1) THEN
      IF (itime <= 0) THEN
-        CALL MPI_BCAST(p, nxyz, MPI_DOUBLE_PRECISION, manager, &
+        CALL MPI_BCAST(p(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
              world, ierrmpi)   
-        CALL MPI_BCAST(pv, nxyz, MPI_DOUBLE_PRECISION, manager, &
+        CALL MPI_BCAST(pv(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
              world, ierrmpi)   
-        CALL MPI_BCAST(frac, nxyz, MPI_DOUBLE_PRECISION, manager, &
+        CALL MPI_BCAST(frac(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
              world, ierrmpi)   
         IF (fresur) THEN
-           CALL MPI_BCAST(mfsbc, nxy, MPI_INTEGER, manager, &
+           CALL MPI_BCAST(mfsbc(1), nxy, MPI_INTEGER, manager, &
                 world, ierrmpi)   
         ENDIF
      ELSE
         IF (.NOT. steady_flow) THEN
-           CALL MPI_BCAST(p, nxyz, MPI_DOUBLE_PRECISION, manager, &
+           CALL MPI_BCAST(p(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
                 world, ierrmpi)   
-           CALL MPI_BCAST(pv, nxyz, MPI_DOUBLE_PRECISION, manager, &
+           CALL MPI_BCAST(pv(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
                 world, ierrmpi)   
            IF (fresur) THEN
-              CALL MPI_BCAST(frac, nxyz, MPI_DOUBLE_PRECISION, manager, &
+              CALL MPI_BCAST(frac(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
                    world, ierrmpi)   
-              CALL MPI_BCAST(mfsbc, nxy, MPI_INTEGER, manager, &
+              CALL MPI_BCAST(mfsbc(1), nxy, MPI_INTEGER, manager, &
                    world, ierrmpi)   
            ENDIF
         ENDIF
@@ -115,41 +115,46 @@ SUBROUTINE flow_distribute
         ! ... Other data sent from steady_state result
         ! *** broadcast tfx, tfy, tfz from flow solution
         ! ... create MPI structure for three real arrays
-        mpi_array_type = mpi_struct_array(tfx, tfy, tfz)
+!        mpi_array_type = mpi_struct_array(tfx, tfy, tfz)
         ! ... broadcast real arrays to workers
-        CALL MPI_BCAST(tfx, 1, mpi_array_type, manager, &
+!        CALL MPI_BCAST(tfx, 1, mpi_array_type, manager, &
+!            world, ierrmpi)
+!        CALL MPI_TYPE_FREE(mpi_array_type,ierrmpi)
+        CALL MPI_BCAST(tfx(1), nxyz, MPI_DOUBLE, manager, &
             world, ierrmpi)
-        CALL MPI_TYPE_FREE(mpi_array_type,ierrmpi)
-
+        CALL MPI_BCAST(tfy(1), nxyz, MPI_DOUBLE, manager, &
+            world, ierrmpi)
+        CALL MPI_BCAST(tfz(1), nxyz, MPI_DOUBLE, manager, &
+            world, ierrmpi)
         IF (.NOT. steady_flow) THEN
             ! *** broadcast dp
-            CALL MPI_BCAST(dp, nxyz + 1, MPI_DOUBLE_PRECISION, manager, &
+            CALL MPI_BCAST(dp(0), nxyz + 1, MPI_DOUBLE_PRECISION, manager, &
                 world, ierrmpi)
         ENDIF
 
         IF (nsbc > 0) THEN 
             ! *** broadcast qfsbc from flow solution
-            CALL MPI_BCAST(qfsbc, nsbc, MPI_DOUBLE_PRECISION, manager, &
+            CALL MPI_BCAST(qfsbc(1), nsbc, MPI_DOUBLE_PRECISION, manager, &
                 world, ierrmpi)
         ENDIF
         IF (nfbc > 0) THEN 
             ! *** broadcast qffbc from flow solution
-            CALL MPI_BCAST(qffbc, nfbc, MPI_DOUBLE_PRECISION, manager, &
+            CALL MPI_BCAST(qffbc(1), nfbc, MPI_DOUBLE_PRECISION, manager, &
                 world, ierrmpi)
         ENDIF
         IF (nlbc > 0) THEN 
             ! *** broadcast qflbc from flow solution
-            CALL MPI_BCAST(qflbc, nlbc, MPI_DOUBLE_PRECISION, manager, &
+            CALL MPI_BCAST(qflbc(1), nlbc, MPI_DOUBLE_PRECISION, manager, &
                 world, ierrmpi)
         ENDIF
         IF (nrbc > 0) THEN 
             ! *** broadcast qfrbc from flow solution
-            CALL MPI_BCAST(qfrbc, nrbc, MPI_DOUBLE_PRECISION, manager, &
+            CALL MPI_BCAST(qfrbc(1), nrbc, MPI_DOUBLE_PRECISION, manager, &
                 world, ierrmpi)
         ENDIF
         IF (ndbc > 0) THEN 
             ! *** broadcast qfdbc from flow solution
-            CALL MPI_BCAST(qfdbc, ndbc, MPI_DOUBLE_PRECISION, manager, &
+            CALL MPI_BCAST(qfdbc(1), ndbc, MPI_DOUBLE_PRECISION, manager, &
                 world, ierrmpi) 
         ENDIF
         ! *** broadcast transient time step as reset
@@ -163,6 +168,7 @@ SUBROUTINE tfx_distribute
     ! ... Transfers flow conductance arrays to worker processes
 #if defined(USE_MPI)
     USE mcc
+    USE mcg, only: nxyz
     USE mcp
     USE mpi_mod
     USE mpi_struct_arrays
@@ -173,11 +179,17 @@ SUBROUTINE tfx_distribute
     IF(.NOT.steady_flow) THEN
         ! *** broadcast tfx, tfy, tfz
         ! ... create MPI structure for three real arrays
-        mpi_array_type = mpi_struct_array(tfx, tfy, tfz)
+!        mpi_array_type = mpi_struct_array(tfx, tfy, tfz)
         ! ... broadcast real arrays to workers
-        CALL MPI_BCAST(tfx, 1, mpi_array_type, manager, &
+!        CALL MPI_BCAST(tfx, 1, mpi_array_type, manager, &
+!            world, ierrmpi)
+!        CALL MPI_TYPE_FREE(mpi_array_type,ierrmpi)
+        CALL MPI_BCAST(tfx(1), nxyz, MPI_DOUBLE, manager, &
             world, ierrmpi)
-        CALL MPI_TYPE_FREE(mpi_array_type,ierrmpi)
+        CALL MPI_BCAST(tfy(1), nxyz, MPI_DOUBLE, manager, &
+            world, ierrmpi)
+        CALL MPI_BCAST(tfz(1), nxyz, MPI_DOUBLE, manager, &
+            world, ierrmpi)
     END IF
 #endif
 END SUBROUTINE tfx_distribute
