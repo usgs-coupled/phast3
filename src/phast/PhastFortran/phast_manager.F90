@@ -1,5 +1,5 @@
 #ifdef USE_MPI
-#include 'mpi_fix_case.h'
+#include "mpi_fix_case.h"
 #endif
 SUBROUTINE phast_manager
     ! ... The top level routine for the manager process that manages the simulation

@@ -1,5 +1,5 @@
 #if defined(USE_MPI)
-#include 'mpi_fix_case.h'
+#include "mpi_fix_case.h"
 #endif
 ! ... $Id: xfer_to_workers.F90,v 1.5 2011/01/29 00:18:54 klkipp Exp klkipp $
 SUBROUTINE p_distribute
@@ -81,7 +81,8 @@ SUBROUTINE c_distribute
         ENDIF
      ENDIF
   ENDDO
-#endif ! USE_MPI
+#endif 
+! end USE_MPI
 
   ! ... manager to worker transfer
   IF (mpi_myself == 0) THEN

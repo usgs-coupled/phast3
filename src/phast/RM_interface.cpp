@@ -693,7 +693,7 @@ void RM_zone_flow_write_chem(int *print_zone_flows_xyzt)
 #ifdef USE_MPI
 void RM_mpi_barrier(int *comm, int *ierr)
 {
-	*ierr = MPI_Barrier(*comm);
+	*ierr = MPI_Barrier((MPI_Comm) *comm);
 }
 void RM_mpi_bcast(void *buffer, int *count, int *datatype, int *root, int *comm, int *ierr)
 {

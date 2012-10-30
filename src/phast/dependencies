@@ -16,6 +16,30 @@ Reaction_module.o: ../Reaction_module.cxx ../Reaction_module.h \
  ../IPhreeqcPhast/IPhreeqc/Var.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h ../RM_interface.h \
  ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../IPhreeqcPhast/IPhreeqc/Var.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/System.h ../gzstream.h \
+ ../KDtree/KDtree.h ../KDtree/kdtree2.hpp ../KDtree/Point.h \
+ ../KDtree/Cell_Face.h ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Solution.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SolutionIsotope.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolution.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc/global_structures.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc/NA.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Exchange.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ExchComp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblage.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblageComp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SSassemblage.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SS.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SScomp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxKinetics.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/KineticsComp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/GasPhase.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/GasComp.h ../hdf.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc/cvdense.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc/cvode.h \
@@ -28,33 +52,9 @@ Reaction_module.o: ../Reaction_module.cxx ../Reaction_module.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc/global_structures.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc/NA.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/System.h ../gzstream.h \
- ../KDtree/KDtree.h ../KDtree/kdtree2.hpp ../KDtree/Point.h \
- ../KDtree/Cell_Face.h ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Solution.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SolutionIsotope.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolution.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Exchange.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ExchComp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblage.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblageComp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SSassemblage.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SS.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SScomp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxKinetics.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/KineticsComp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/GasPhase.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/GasComp.h ../hdf.h
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h
 hdf.o: ../hdf.cpp ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc/phrqtype.h \
  ../hdf.h
 merge.o: ../merge.cpp
@@ -420,7 +420,6 @@ cxxMix.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc/NA.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc/phqalloc.h
-Dictionary.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Dictionary.cxx
 Exchange.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Exchange.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \

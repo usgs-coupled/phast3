@@ -305,6 +305,7 @@ IFORT_LIB_64=-Xlinker -Bstatic -L$(IF_HOME)/intel64/ -lifport -lifcore -limf -ls
 OPENMPI_GFORTRAN_32=/z/parkplace/home/charlton/openmpi-1.4.2/grundvand-gfortran
 OPENMPI_IFORT_32=/z/parkplace/home/charlton/openmpi-1.4.2/grundvand-ifort
 OPENMPI_GFORTRAN_64=/z/parkplace/home/charlton/openmpi-1.4.2/lobo-gfortran-x64
+#OPENMPI_GFORTRAN_64=/usr/lib64/openmpi
 OPENMPI_IFORT_64=/z/parkplace/home/charlton/openmpi-1.4.2/robocomp-ifort-x64-NO_NUMA
 
 # -----------------------------------------------------------------------------
@@ -332,7 +333,7 @@ HDF5_LIBS_64=${HDF5_ROOT}/lib64/libhdf5.a -Xlinker -Bstatic -lz -Xlinker -Bdynam
 # -----------------------------------------------------------------------------
 DEFINE_HDF=-DHDF5_CREATE -DH5Dcreate_vers=1 -DH5Gcreate_vers=1 -DH5Eset_auto_vers=1
 DEFINE_MPI=-DUSE_MPI
-DEFINE_MERGE=-DMERGE_FILES
+#DEFINE_MERGE=-DMERGE_FILES
 
 # -----------------------------------------------------------------------------
 # #define gmp for inverse modeling
@@ -603,19 +604,20 @@ endif
 # -----------------------------------------------------------------------------
 
 ifeq ($(CFG), OPENMPI_GFORTRAN_64)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP -DHAVE_ISFINITE -DNO_UNDERSCORES
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DHAVE_ISFINITE -DNO_UNDERSCORES
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
+  VPATH        = ..:../PhastFortran:../IPhreeqcPhast:../IPhreeqcPhast/IPhreeqc:../IPhreeqcPhast/IPhreeqc/phreeqcpp:../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc:../KDtree
   HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
   DINVERSE_CL1MP=
 #  FC           = $(OPENMPI_GFORTRAN_64)/bin/mpif90
   FC           = $(FGFORTRAN)
-  FFLAGS       = -O3 -fno-underscoring -I/usr/include $(DEFINES)
+  FFLAGS       = -O3 -fno-underscoring -I/usr/include $(DEFINES) -I$(OPENMPI_GFORTRAN_64)/lib
   CXX          = $(OPENMPI_GFORTRAN_64)/bin/mpiCC
   CC           = $(OPENMPI_GFORTRAN_64)/bin/mpiCC
   CFLAGS       = -Wall  -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) # $(CL1MP_OBJS)
-  LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS_64} -L$(OPENMPI_GFORTRAN_64)/lib -Xlinker -Bstatic -lmpi_f77 -Xlinker -Bdynamic -ldl ${HASH_STYLE} # -lm ${CL1MP_LIB}
+#  LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS_64} -L$(OPENMPI_GFORTRAN_64)/lib -Xlinker -Bstatic -lmpi_f77 -Xlinker -Bdynamic -ldl ${HASH_STYLE} # -lm ${CL1MP_LIB}
+  LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS_64} -L$(OPENMPI_GFORTRAN_64)/lib -lmpi_f90 -ldl ${HASH_STYLE} # -lm ${CL1MP_LIB}  
   LINKER       = $(CXX)
 endif
 
@@ -624,17 +626,17 @@ endif
 ifeq ($(CFG), OPENMPI_GFORTRAN_64_DEBUG)
   DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DPHREEQC_CPP -DHAVE_ISFINITE -DUSE_PHRQ_ALLOC -DNO_UNDERSCORES
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
+  VPATH        = ..:../PhastFortran:../IPhreeqcPhast:../IPhreeqcPhast/IPhreeqc:../IPhreeqcPhast/IPhreeqc/phreeqcpp:../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc:../KDtree
   HDF5_INCLUDES=-I$(HDF5_ROOT)/include 
   DINVERSE_CL1MP=
 #  FC           = $(OPENMPI_GFORTRAN_64)/bin/mpif90
   FC           = $(FGFORTRAN)
-  FFLAGS       = -g  -fno-underscoring -I/usr/include $(DEFINES)
+  FFLAGS       = -g  -fno-underscoring -I/usr/include $(DEFINES) -I$(OPENMPI_GFORTRAN_64)/lib
   CXX          = $(OPENMPI_GFORTRAN_64)/bin/mpiCC
   CC           = $(OPENMPI_GFORTRAN_64)/bin/mpiCC
   CFLAGS       = -Wall  -g $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES)  $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS) $(COMMON_CXXOBJS) $(MPI_OBJS) $(HDF_OBJS) $(MERGE_OBJS) 
-  LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS_64} -lmpi_f77 -ldl ${HASH_STYLE}
+  LD_FLAGS     = $(LIBGFORTRAN_64) ${HDF5_LIBS_64} -lmpi_f77 -ldl ${HASH_STYLE} 
   LINKER       = $(CXX)
 endif
 
@@ -728,12 +730,11 @@ endif
 
 # -----------------------------------------------------------------------------
 ifeq ($(CFG), OPENMPI_INTEL_64)
-  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DPHREEQC_CPP -DHAVE_ISFINITE
+  DEFINES      = $(DEFINE_HDF) $(DEFINE_MPI) $(DEFINE_MERGE) -DNDEBUG -DHAVE_ISFINITE
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
-  VPATH        = ..:../phreeqcpp:../phreeqcpp/phreeqc:../KDtree
-#  FC           = $(OPENMPI_IFORT_64)/bin/mpif90
+  VPATH        = ..:../PhastFortran:../IPhreeqcPhast:../IPhreeqcPhast/IPhreeqc:../IPhreeqcPhast/IPhreeqc/phreeqcpp:../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc:../KDtree
   FC           = $(FINTEL)
-  FFLAGS       = -O3 -nus $(DEFINES)
+  FFLAGS       = -O3 -nus $(DEFINES) -I$(OPENMPI_IFORT_64)/lib
   CXX          = $(OPENMPI_IFORT_64)/bin/mpiCC
   CC           = $(OPENMPI_IFORT_64)/bin/mpiCC
   CFLAGS       = -Wall  -O3 $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
@@ -1057,7 +1058,7 @@ HDF_OBJS     =  #hdf.o hdf_f.o
 
 MERGE_OBJS   =	#merge.o
 
-MPI_OBJS     =	#mpimod.o phast_slave.o slavesubs.o
+MPI_OBJS     =	workersubs.o
 
 
 PHASTINPUT_FILES = ../KDtree/KDtree.cpp \
@@ -1095,8 +1096,10 @@ modules_manager.o: ../PhastFortran/modules_manager.f90 mach_mod.o
 	${FC} -c ${FFLAGS} $<
 print_control_mod.o: ../PhastFortran/print_control_mod.f90 mach_mod.o modules_g.o modules_manager.o
 	${FC} -c ${FFLAGS} $<
-#mpi_array_mod.F90
-#mpi_mod.F90
+mpi_array_mod.o: ../PhastFortran/mpi_array_mod.F90 mach_mod.o mpi_mod.o
+	${FC} -c ${FFLAGS} $<
+mpi_mod.o: ../PhastFortran/mpi_mod.F90 modules_g.o
+	${FC} -c ${FFLAGS} $<
 reorder_mod.o: ../PhastFortran/reorder_mod.f90 modules_g.o
 	${FC} -c ${FFLAGS} $<
 rewi_mod.o: ../PhastFortran/rewi_mod.f90 mach_mod.o modules_g.o modules_manager.o interpolate_mod.o

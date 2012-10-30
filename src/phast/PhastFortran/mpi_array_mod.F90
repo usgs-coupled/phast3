@@ -1,5 +1,5 @@
 #if defined(USE_MPI)
-#include 'mpi_fix_case.h'
+#include "mpi_fix_case.h"
 #endif
 MODULE mpi_struct_arrays
 #if defined USE_MPI
@@ -767,6 +767,7 @@ CONTAINS
     CALL MPI_TYPE_COMMIT(type_int_3, ierr)
     ! ...
   END FUNCTION MPI_struct_int_2_array_3
-#endif !  USE_MPI
+#endif 
+!  end USE_MPI
 
 END MODULE mpi_struct_arrays

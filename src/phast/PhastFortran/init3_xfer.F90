@@ -1,5 +1,5 @@
 #if defined(USE_MPI)
-#include 'mpi_fix_case.h'
+#include "mpi_fix_case.h"
 #endif
 ! ... $Id: init3_xfer.F90,v 1.5 2011/01/29 00:18:54 klkipp Exp klkipp $
 SUBROUTINE init3_distribute
@@ -38,7 +38,8 @@ SUBROUTINE init3_distribute
      ENDIF
   ENDIF
 
-#endif ! USE_MPI
+#endif 
+! end USE_MPI
 
   IF (thru) RETURN
   DO i = 1, ns
@@ -212,7 +213,8 @@ SUBROUTINE init3_bcast_m
        world, ierrmpi)
   CALL MPI_TYPE_FREE(int_real_type,ierrmpi)
 
-#endif ! USE_MPI
+#endif 
+! end USE_MPI
 END SUBROUTINE init3_bcast_m
 
 SUBROUTINE init3_bcast_w
@@ -397,7 +399,8 @@ SUBROUTINE init3_bcast_w
 
   jtime = 0
   deltim = array_recv_r(1); timchg = array_recv_r(2)
-#endif ! USE_MPI
+#endif 
+! end USE_MPI
 END SUBROUTINE init3_bcast_w
 
 SUBROUTINE init3_xfer_m
@@ -461,7 +464,8 @@ SUBROUTINE init3_xfer_m
         ENDIF
      ENDIF
   ENDDO
-#endif ! USE_MPI
+#endif 
+! end USE_MPI
 END SUBROUTINE init3_xfer_m
 
 SUBROUTINE XP_init3_xfer(xp)
@@ -521,7 +525,8 @@ SUBROUTINE XP_init3_xfer(xp)
      CALL MPI_RECV(xp%crbc, nrbc_seg, MPI_DOUBLE_PRECISION, manager, &
           tag, world, MPI_STATUS_IGNORE, ierrmpi)
   END IF
-#endif ! USE_MPI
+#endif 
+! end USE_MPI
 END SUBROUTINE XP_init3_xfer
 
 SUBROUTINE XP_init3_set(xp)

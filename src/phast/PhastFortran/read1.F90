@@ -72,6 +72,13 @@ SUBROUTINE read1
      IF (print_rde) WRITE(FURDE, 8004) 'SLMETH,nral,[1.8]', slmeth, nral  
 8004 FORMAT(TR5,A/TR5,I5,I8)  
 
+     ! ... number of threads, multithreaded version only
+     READ(fuins, *) nthreads  
+     IF (print_rde) WRITE(furde, 8004) 'C.1.9 .. number of threads', nthreads
+#if defined(USE_MPI)
+     nthreads = -1
+#endif
+
      !      ELSE
      !... ****restart is deactivated at present
      ! ... Read back selected common blocks and the partitioned large arrays
