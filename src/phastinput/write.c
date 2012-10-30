@@ -276,6 +276,9 @@ write_initial(void)
 	{
 		error_msg("Solver method not defined", STOP);
 	}
+	output_msg(OUTPUT_HST,
+			   "C.1.9 .. number of threads\n");
+	output_msg(OUTPUT_HST, "     %d\n", n_threads);
 	return (OK);
 }
 
@@ -1557,9 +1560,9 @@ write_calculation_static(void)
 		output_msg(OUTPUT_HST, "     1 t %d %g %d\n", solver_save_directions,
 				   solver_tolerance, solver_maximum);
 	}
-	output_msg(OUTPUT_HST,
-			   "C.2.22.6 .. number of threads\n");
-	output_msg(OUTPUT_HST, "     %d\n", n_threads);
+	//output_msg(OUTPUT_HST,
+	//		   "C.2.22.6 .. number of threads\n");
+	//output_msg(OUTPUT_HST, "     %d\n", n_threads);
 	return (OK);
 }
 
