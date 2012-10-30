@@ -23,7 +23,7 @@ SUBROUTINE timestep_worker
   REAL(KIND=kdp) :: adc, adp, adt, uctc, udtim, uptc, utime, uttc, udeltim, utimchg
   INTEGER :: itime_m, jtime_m
   CHARACTER(LEN=130) :: logline1, logline0='    '
-  INTEGER :: int_real_type, mpi_array_type
+  !INTEGER :: int_real_type, mpi_array_type
   INTEGER, DIMENSION(2) :: array_recv_i
   REAL(KIND=kdp), DIMENSION(2) :: array_recv_r
   ! ... Set string for use with RCS ident command
@@ -35,10 +35,17 @@ SUBROUTINE timestep_worker
   itime = itime+1
   jtime = jtime+1
   ! *** receive itime, jtime from manager
-  int_real_type = mpi_struct_array(array_recv_i,array_recv_r)
-  CALL MPI_BCAST(array_recv_i, 1, int_real_type, manager,  &
-       world, ierrmpi)
-  CALL MPI_TYPE_FREE(int_real_type,ierrmpi)
+!    CALL MPI_BCAST(itime, 1, MPI_INTEGER, manager,  &
+!        world, ierrmpi)  
+!  write (*,*) "Timestep_worker 2"
+!    CALL MPI_BCAST(jtime, 1, MPI_INTEGER, manager,  &
+!        world, ierrmpi) 
+    CALL MPI_BCAST(array_recv_i(1), 2, MPI_INTEGER, manager,  &
+        world, ierrmpi)
+!  int_real_type = mpi_struct_array(array_recv_i,array_recv_r)
+!  CALL MPI_BCAST(array_recv_i, 1, int_real_type, manager,  &
+!       world, ierrmpi)
+!  CALL MPI_TYPE_FREE(int_real_type,ierrmpi)
 
   itime_m = array_recv_i(1); jtime_m = array_recv_i(2)
   CALL MPI_BCAST(deltim, 1, MPI_DOUBLE_PRECISION, manager, world, ierrmpi)
