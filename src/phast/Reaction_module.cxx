@@ -476,8 +476,6 @@ Reaction_module::Distribute_initial_conditions(
 			porosity_factor);
 	}
 #else
-	int begin = 0;
-	int end = nxyz;
 	size_t count_negative_porosity = 0;
 	
 	for (i = 0; i < nxyz; i++)
@@ -1547,7 +1545,6 @@ Reaction_module::Rebalance_load(void)
 		end_cell_new.push_back(0);
 	}
 	std::vector<int> cells_v;
-	bool error = false;
 	std::ostringstream error_stream;
 	bool good_enough = false;
 
@@ -1842,8 +1839,9 @@ Reaction_module::Rebalance_load(void)
 		recv_buffer.push_back(phast_iphreeqc_worker->Get_thread_clock_time()/((double) cells));
 		if (recv_buffer.back() <= 0)
 		{
-			error_stream << "Time for  cell " << i << ": " << recv_buffer.back() << "\n";
-			error = true;
+			error_stream << "Time for cell " << i << ": " << recv_buffer.back() << "\n";
+			recv_buffer.back() = 1;
+			//error = true;
 			break;
 		}
 		total += recv_buffer[0] / recv_buffer.back();
@@ -2037,7 +2035,7 @@ Reaction_module::Run_cells()
  *   Update solution compositions in sz_bin
  */
 	
-	clock_t t0 = clock();
+	//clock_t t0 = clock();
 	for (int n = 0; n < this->nthreads; n++)
 	{
 		IPhreeqcPhast * phast_iphreeqc_worker = this->workers[n];
@@ -2156,7 +2154,7 @@ Reaction_module::Run_cells()
 				MPI_Recv(&size, 1, MPI_INT, n, 0, MPI_COMM_WORLD, &mpi_status);
 				double_buffer.resize(size);
 				MPI_Recv((void *) double_buffer.data(), size, MPI_DOUBLE, n, 0, MPI_COMM_WORLD, &mpi_status);
-				assert(this->start_cell[n] + double_buffer.size()/columns - 1 == this->end_cell[n]);
+				assert((int) (this->start_cell[n] + double_buffer.size()/columns - 1) == this->end_cell[n]);
 				HDFFillHyperSlab(this->start_cell[n], double_buffer, columns);
 			}
 		}
@@ -2631,7 +2629,7 @@ Reaction_module::Solutions2Fractions(void)
 		cxxSolution * cxxsoln_ptr = this->Get_workers()[0]->Get_solution(j);
 		assert (cxxsoln_ptr);
 		this->cxxSolution2fraction(cxxsoln_ptr, d);
-		for (int i = 0; i < this->components.size(); i++)
+		for (int i = 0; i < (int) this->components.size(); i++)
 		{
 			solns.push_back(d[i]);
 		}

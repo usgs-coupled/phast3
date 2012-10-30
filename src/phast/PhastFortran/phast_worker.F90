@@ -1,5 +1,5 @@
 #if defined(USE_MPI)
-#include 'mpi_fix_case.h'
+#include "mpi_fix_case.h"
 #endif
 SUBROUTINE phast_worker
 #if defined(USE_MPI)
@@ -452,7 +452,8 @@ CONTAINS
         t = 0._kdp
 
     END SUBROUTINE worker_init1
-#endif  ! USE_MPI
+#endif  
+! end USE_MPI
 END SUBROUTINE phast_worker
 
 SUBROUTINE worker_closef
@@ -517,6 +518,8 @@ SUBROUTINE worker_closef
   ELSE
     CALL MPI_FINALIZE(ierrmpi)
   ENDIF
-#endif  ! SKIP_TODO
-#endif  ! USE_MPI  
+#endif  
+! end SKIP_TODO
+#endif  
+! end USE_MPI  
 END SUBROUTINE worker_closef

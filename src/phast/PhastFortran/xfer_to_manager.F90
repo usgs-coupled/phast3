@@ -1,5 +1,5 @@
 #if defined(USE_MPI)
-#include 'mpi_fix_case.h'
+#include "mpi_fix_case.h"
 #endif
 ! ... $Id: xfer_to_manager.F90,v 1.5 2011/01/29 00:18:54 klkipp Exp klkipp $
 SUBROUTINE sbc_gather

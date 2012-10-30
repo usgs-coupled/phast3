@@ -850,11 +850,11 @@ SUBROUTINE read2
           idir, milu, nsdr, epsslv, maxit2
   ENDIF
   ! ... number of threads, multithreaded version only
-  READ(fuins, *) nthreads  
-  IF (print_rde) WRITE(furde, 8018) 'C.2.22.6 .. number of threads', nthreads
-#if defined(USE_MPI)
-  nthreads = -1
-#endif
+!  READ(fuins, *) nthreads  
+!  IF (print_rde) WRITE(furde, 8018) 'C.2.22.6 .. number of threads', nthreads
+!#if defined(USE_MPI)
+!  nthreads = -1
+!#endif
   ! ...  print requests for tables
   READ(fuins,*) prtpmp, prtfp, prtbc, prtslm, prtwel, prt_kd
   IF (print_rde) WRITE(furde,8019) 'prtpmp,prtfp,prtbc,prtslm,prtwel,prt_kd,[2.23.1]',  &
