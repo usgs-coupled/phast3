@@ -503,6 +503,7 @@ void RM_run_cells(int *id,
 			MPI_Bcast(frac, *nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 			MPI_Bcast(pv, *nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
+			
 			// Transfer data and pointers to Reaction_module
 			Reaction_module_ptr->Set_prslm(*prslm != 0);	  
 			Reaction_module_ptr->Set_print_chem(*print_chem != 0);

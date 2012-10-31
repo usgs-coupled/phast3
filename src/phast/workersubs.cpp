@@ -15,7 +15,8 @@ extern "C" {
 		int *steady_flow, double *pv0,
 		int *rebalance_method_f, double *volume, double *tort, int *npmz,
 		int *exchange_units, int *surface_units, int *ssassemblage_units, 
-		int *ppassemblage_units, int *gasphase_units, int *kinetics_units);
+		int *ppassemblage_units, int *gasphase_units, int *kinetics_units,
+		int *mpi_myself);
 #if defined(__cplusplus)
 }
 #endif
@@ -42,7 +43,8 @@ WORKER_GET_INDEXES(
 	int    *ssassemblage_units, 
 	int    *ppassemblage_units, 
 	int    *gasphase_units, 
-	int    *kinetics_units)
+	int    *kinetics_units,
+	int    *mpi_myself)
 {
 #ifdef USE_MPI
     // make sure latest npmz for all workers
@@ -59,8 +61,8 @@ WORKER_GET_INDEXES(
 	MPI_Bcast(pv0, *nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 	MPI_Bcast(rebalance_method_f, 1, MPI_INT, 0, MPI_COMM_WORLD);
 	MPI_Bcast(volume, *nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-	MPI_Bcast(tort, *npmz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 	MPI_Bcast(npmz, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(tort, *npmz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 	//rebalance_method = *rebalance_method_f;
 	MPI_Bcast(exchange_units, 1, MPI_INT, 0, MPI_COMM_WORLD);
 	MPI_Bcast(surface_units, 1, MPI_INT, 0, MPI_COMM_WORLD);

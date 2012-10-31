@@ -36,8 +36,8 @@ SUBROUTINE dealloc_arr_worker
     ! ... Deallocate from init1
     ! ... Deallocate node information arrays: mcn
     DEALLOCATE (rm, x, y, z, x_node, y_node, z_node,  &
-        x_face, y_face, z_face,  &
-        pv0, volume, pv_phreeqc, tort, &
+        x_face, y_face, z_face, pv, &
+        pv0, volume, tort, &
         STAT = da_err)
     IF (da_err /= 0) THEN  
         PRINT *, "Array deallocation failed: dealloc_arr_worker, init1_trans, point 1"  
@@ -177,7 +177,7 @@ SUBROUTINE dealloc_arr_worker
         ! ... Deallocate parameter arrays: mcp
         DEALLOCATE (tx, ty, tz, tfx, tfy, tfz,  &
             tsx, tsy, tsz, tsxy, tsxz, tsyx, tsyz, tszx, tszy,  &
-            pv, pmcv, pmhv, pmchv, pvk,  &
+            pmcv, pmhv, pmchv, pvk,  &
             STAT = da_err)
         IF (da_err /= 0) THEN  
             PRINT *, "Array deallocation failed: dealloc_arr_worker, init2.1_trans, number 3"
