@@ -60,7 +60,8 @@ SUBROUTINE phast_manager
             steady_flow, pv0, &
             rebalance_method_f, volume, tort, npmz, &
             exchange_units, surface_units, ssassemblage_units, &
-            ppassemblage_units, gasphase_units, kinetics_units)
+            ppassemblage_units, gasphase_units, kinetics_units, &
+            mpi_myself)
             USE machine_constants, ONLY: kdp
             IMPLICIT NONE
             INTEGER :: indx_sol1_ic 
@@ -85,6 +86,7 @@ SUBROUTINE phast_manager
             INTEGER :: ppassemblage_units 
             INTEGER :: gasphase_units
             INTEGER :: kinetics_units
+            INTEGER :: mpi_myself
         END SUBROUTINE worker_get_indexes
 #endif
     END INTERFACE
@@ -174,7 +176,8 @@ SUBROUTINE phast_manager
         x_node(1), y_node(1), z_node(1), cnvtmi, transient_fresur, steady_flow, pv0(1),  &
         rebalance_method_f, volume(1), tort(1), npmz, &
         exchange_units, surface_units, ssassemblage_units,  &
-        ppassemblage_units, gasphase_units, kinetics_units)
+        ppassemblage_units, gasphase_units, kinetics_units, &
+        mpi_myself)
 #endif
 
         ! ... Send data to threads or workers

@@ -383,7 +383,7 @@ SUBROUTINE init2_1_xfer_w
   ALLOCATE (tx(nxyz), ty(nxyz), tz(nxyz), tfx(nxyz), tfy(nxyz), tfz(nxyz),  &
        tsx(nxyz), tsy(nxyz), tsz(nxyz), tsxy(nxyz), tsxz(nxyz), tsyx(nxyz), tsyz(nxyz),  &
        tszx(nxyz), tszy(nxyz),  &
-       pv(nxyz), pmcv(nxyz), pmhv(1), pmchv(1), pvk(1),  &
+       pmcv(nxyz), pmhv(1), pmchv(1), pvk(1),  &
        STAT = a_err)
   IF (a_err /= 0) THEN  
      PRINT *, "Array allocation failed: init2_1_xfer_w, number 3"

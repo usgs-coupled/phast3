@@ -11,7 +11,7 @@ SUBROUTINE phast_worker
     USE mcg
     USE mcch
     USE mcg
-    USE mcn, ONLY: x_node, y_node, z_node, pv0, volume, pv_phreeqc
+    USE mcn, ONLY: x_node, y_node, z_node, pv0, volume
     USE mcp
     USE mcs
     USE mcv
@@ -50,7 +50,8 @@ SUBROUTINE phast_worker
             steady_flow, pv0, &
             rebalance_method_f, volume, tort, npmz, &
             exchange_units, surface_units, ssassemblage_units, &
-            ppassemblage_units, gasphase_units, kinetics_units)
+            ppassemblage_units, gasphase_units, kinetics_units, &
+            mpi_myself)
             USE machine_constants, ONLY: kdp
         IMPLICIT NONE
             INTEGER :: indx_sol1_ic 
@@ -75,6 +76,7 @@ SUBROUTINE phast_worker
             INTEGER :: ppassemblage_units 
             INTEGER :: gasphase_units
             INTEGER :: kinetics_units
+            INTEGER :: mpi_myself
         END SUBROUTINE worker_get_indexes
     END INTERFACE
     REAL(KIND=kdp) :: deltim_dummy
@@ -147,7 +149,8 @@ SUBROUTINE phast_worker
             x_node(1), y_node(1), z_node(1), cnvtmi, transient_fresur, steady_flow, pv0(1),  &
             rebalance_method_f, volume(1), tort(1), npmz, &
             exchange_units, surface_units, ssassemblage_units,  &
-            ppassemblage_units, gasphase_units, kinetics_units)
+            ppassemblage_units, gasphase_units, kinetics_units, &
+            mpi_myself)
         CALL RM_pass_data(               &
             rm_id,                       &
             fresur,                      &
@@ -348,8 +351,8 @@ CONTAINS
 
         ! ... Allocate node information arrays: mcn
         ALLOCATE (rm(nx), x(nx), y(ny), z(nz), x_node(nxyz), y_node(nxyz), z_node(nxyz),  &
-            x_face(nx-1), y_face(ny-1), z_face(nz-1),  &
-            pv0(nxyz), volume(nxyz), pv_phreeqc(nxyz), tort(npmz), &
+            x_face(nx-1), y_face(ny-1), z_face(nz-1), pv(nxyz), &
+            pv0(nxyz), volume(nxyz), tort(npmz), &
             STAT = a_err)
         IF (a_err /= 0) THEN  
             PRINT *, "Array allocation failed: init1_xfer_w, point 2"  
