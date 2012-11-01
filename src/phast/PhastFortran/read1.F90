@@ -23,7 +23,6 @@ SUBROUTINE read1
   CHARACTER(LEN=255) :: limage  
   CHARACTER(LEN=1) :: uchar
   INTEGER :: ios
-  INTEGER :: int_real_type
   INTEGER, DIMENSION(21) :: array_bcst_i
   REAL(KIND=kdp), DIMENSION(1) :: array_bcst_r
   ! ... Set string for use with RCS ident command
@@ -79,34 +78,5 @@ SUBROUTINE read1
      nthreads = -1
 #endif
 
-     !      ELSE
-     !... ****restart is deactivated at present
-     ! ... Read back selected common blocks and the partitioned large arrays
-     ! ...      from disc for restart
-     !  66  WRITE(*,*) 'Enter i.d. of restart data file'
-     !      READ(*,'(A)') NAME
-     !      IF(NAME.EQ.'Q'.OR.NAME.EQ.'q') STOP
-     !      FNAME='Rst.'//NAME(1:10)
-     !      INQUIRE(FILE=FNAME,EXIST=LEX)
-     !      IF(LEX) THEN
-     !         OPEN(FUIRST,FILE=FNAME,FORM='UNFORMATTED')
-     !         REWIND FUIRST
-     !      ELSE
-     !         WRITE(*,'(2A)') FNAME,' DOES NOT EXIST'
-     !         GO TO 66
-     !      ENDIF
-     !      REWIND FUIRST
-     !      TEMP(1:160)=TITLE(1:160)
-     !   30 READ(FUIRST,END=991) CAIB,CAIC,CAIG,CAIS,CAIW
-     !      READ(FUIRST) CARB,CARC,CARG,CARM,CARP,CARS,CARV,CARW
-     !      READ(FUIRST) CSCP
-     !      READ(FUIRST) CSIB,CSIC,CSIG,CSIP,CSIS,CSIV,CSIW
-     !      READ(FUIRST) CSLB,CSLC,CSLW
-     !      READ(FUIRST) CSRB,CSRC,CSRP,CSRS,CSRV,CSRW
-     !         TIMRST=CNVTM*TIMRST
-     !         IF(ABS(TIME-TIMRST)/TIMRST.GT..001) GO TO 30
-     !  TITLEO(1:160)=TITLE(1:160)
-     !  TITLE(1:160)=TEMP(1:160)
-     !  LTCOMR=LTCOM
   ENDIF
 END SUBROUTINE read1

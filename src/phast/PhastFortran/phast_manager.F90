@@ -1,6 +1,3 @@
-#ifdef USE_MPI
-#include "mpi_fix_case.h"
-#endif
 SUBROUTINE phast_manager
     ! ... The top level routine for the manager process that manages the simulation
     ! ...     and does the groundwater flow calculation.
@@ -22,7 +19,6 @@ SUBROUTINE phast_manager
     USE mcw
 #ifdef USE_MPI
     USE mpi_mod
-    USE mpi_struct_arrays
 #endif
     USE print_control_mod
     USE XP_module, ONLY: Transporter

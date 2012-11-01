@@ -17,7 +17,6 @@ SUBROUTINE coeff_flow
   IMPLICIT NONE
   INTEGER :: i, imm, ipmz, j, k, m, mijmkp, mijpkm, mimjkp, mimjpk, mipjkm, mipjmk,  &
        mipjpk, mipjkp, mijpkp
-  INTEGER :: mpi_array_type
   INTEGER, DIMENSION(4) :: mm
   LOGICAL :: ierrw
   REAL(KIND=kdp) :: tdx, tdxy, tdxz, tdy, tdyx, tdyz, tdz, tdzx,  &

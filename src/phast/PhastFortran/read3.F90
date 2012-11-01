@@ -33,9 +33,6 @@ SUBROUTINE read3
   INTEGER :: ic, icall, isegbc, iis, iwel, uwelseqno, uisolw,  &
        uisolbc1, uisolbc2
   INTEGER, SAVE :: ntd=0
-!!$  INTEGER :: int_real_type, mpi_array_type
-!!$  INTEGER, DIMENSION(2) :: array_bcst_i
-!!$  REAL(KIND=kdp), DIMENSION(2) :: array_bcst_r
   CHARACTER(LEN=130) :: logline1
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
@@ -104,13 +101,6 @@ SUBROUTINE read3
               mxf_sbc(isegbc) = umxfrac
            END IF
         END DO
-     END IF
-     IF(rdscbc) THEN
-        ! ... rdscbc always false, otherwise conflict with previous call to indx_rewi_bc
-        IF(solute) THEN
-           ! ... Read specified b.c. solutions into csbc
-!!$           CALL indx_rewi_bc(indx_sol1_bc,indx_sol2_bc,bc_mxfrac,1, 13,127)
-        END IF
      END IF
   END IF
   ! ... Specified flux b.c.
@@ -200,20 +190,7 @@ SUBROUTINE read3
         END DO
      END IF
   END IF
-  ! ... Drain leakage b.c. transient parameters: none
-!!$  IF(naifc > 0) THEN
-!!$     !...***   not implemented for PHAST
-!!$     READ(fuins,*) rdaif
-!!$     if (print_rde) WRITE(furde,8001) 'RDAIF,[3.7.1]',rdaif
-!!$     ! ... A.I.F. b.c. associated density, temperature and mass fraction
-!!$     ! ...      for outer region
-!!$     IF(rdaif) THEN
-!!$        prtbc=.TRUE.
-!!$        CALL rewi(udenbc,345,121)
-!!$        IF(heat) CALL rewi(utbc,343,122)
-!!$        !            IF(SOLUTE) CALL REWI(UCBC,344,123)
-!!$     END IF
-!!$  END IF
+
   READ(fuins,*) rdcalc
   IF (print_rde) WRITE(furde,8001) 'RDCALC,[3.7.1]',rdcalc
   IF(rdcalc) THEN

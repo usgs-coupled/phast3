@@ -6,9 +6,7 @@ SUBROUTINE read1_distribute
   USE mcs
   USE mcw
   USE mpi_mod
-  USE mpi_struct_arrays
   IMPLICIT NONE
-  !INTEGER :: int_real_type, jerr
   INTEGER :: jerr
   INTEGER, DIMENSION(21) :: array_bcst_i
   REAL(KIND=kdp), DIMENSION(1:1) :: array_bcst_r
@@ -38,10 +36,6 @@ SUBROUTINE read1_distribute
   ENDIF
     CALL MPI_BCAST(array_bcst_i(1), 18, MPI_INTEGER, manager, &
         world, jerr)
-!  int_real_type=MPI_struct_array(array_bcst_i,array_bcst_r)
-!  CALL MPI_BCAST(array_bcst_i, 1, int_real_type, manager, &
-!       world, jerr)
-!  CALL MPI_TYPE_FREE(int_real_type,jerr)
 
   IF (mpi_myself > 0) THEN
      ! ... Load the scalar variables

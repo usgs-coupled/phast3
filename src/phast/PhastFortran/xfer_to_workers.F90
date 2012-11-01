@@ -9,7 +9,6 @@ SUBROUTINE p_distribute
   USE mcv
   USE mcv_m
   USE mpi_mod
-  USE mpi_struct_arrays 
   IMPLICIT NONE
   !     ------------------------------------------------------------------
   ! ... Transfer p, frac, mfsbc
@@ -52,7 +51,6 @@ SUBROUTINE c_distribute
   USE mcv
   USE mcv_m
   USE mpi_mod
-  USE mpi_struct_arrays 
   USE XP_module, only: xp_list
   IMPLICIT NONE
   INTEGER tag
@@ -102,20 +100,14 @@ SUBROUTINE flow_distribute
     USE mcv
     USE mcv_m
     USE mpi_mod
-    USE mpi_struct_arrays 
     IMPLICIT NONE
-    INTEGER :: mpi_array_type 
     !     ------------------------------------------------------------------
     IF (.NOT. solute .OR. .NOT. xp_group) RETURN
     IF (mpi_tasks > 1) THEN
         ! ... Other data sent from steady_state result
         ! *** broadcast tfx, tfy, tfz from flow solution
         ! ... create MPI structure for three real arrays
-!        mpi_array_type = mpi_struct_array(tfx, tfy, tfz)
-        ! ... broadcast real arrays to workers
-!        CALL MPI_BCAST(tfx, 1, mpi_array_type, manager, &
-!            world, ierrmpi)
-!        CALL MPI_TYPE_FREE(mpi_array_type,ierrmpi)
+
         CALL MPI_BCAST(tfx(1), nxyz, MPI_DOUBLE, manager, &
             world, ierrmpi)
         CALL MPI_BCAST(tfy(1), nxyz, MPI_DOUBLE, manager, &
@@ -167,19 +159,13 @@ SUBROUTINE tfx_distribute
     USE mcg, only: nxyz
     USE mcp
     USE mpi_mod
-    USE mpi_struct_arrays
     IMPLICIT NONE
-    INTEGER :: mpi_array_type
     !     ------------------------------------------------------------------
     IF (.NOT.solute) RETURN
     IF(.NOT.steady_flow) THEN
         ! *** broadcast tfx, tfy, tfz
         ! ... create MPI structure for three real arrays
-!        mpi_array_type = mpi_struct_array(tfx, tfy, tfz)
-        ! ... broadcast real arrays to workers
-!        CALL MPI_BCAST(tfx, 1, mpi_array_type, manager, &
-!            world, ierrmpi)
-!        CALL MPI_TYPE_FREE(mpi_array_type,ierrmpi)
+
         CALL MPI_BCAST(tfx(1), nxyz, MPI_DOUBLE, manager, &
             world, ierrmpi)
         CALL MPI_BCAST(tfy(1), nxyz, MPI_DOUBLE, manager, &
