@@ -1,6 +1,3 @@
-#if defined(USE_MPI)
-#include "mpi_fix_case.h"
-#endif
 MODULE mpi_struct_arrays
 #ifdef SKIP
 #if defined USE_MPI

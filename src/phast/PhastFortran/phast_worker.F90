@@ -1,6 +1,3 @@
-#if defined(USE_MPI)
-#include "mpi_fix_case.h"
-#endif
 SUBROUTINE phast_worker
 #if defined(USE_MPI)
     ! ... The top level routine for a worker process that does the 

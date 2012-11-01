@@ -1,10 +1,13 @@
 #include <mpi.h>
 #include <time.h>
 #include <iostream>
+
+#if defined(_MSC_VER)
+#define FC_FUNC_(name,NAME) NAME
+#endif
 #if defined(FC_FUNC_)
-//#define WORKER_GET_INDEXES    FC_FUNC_ (worker_get_indexes,     WORKER_GET_INDEXES)
+#define WORKER_GET_INDEXES    FC_FUNC_ (worker_get_indexes,     WORKER_GET_INDEXES)
 #endif /*FC_FUNC_*/
-#define WORKER_GET_INDEXES      WORKER_GET_INDEXES 
 #if defined(__cplusplus)
 extern "C" {
 #endif

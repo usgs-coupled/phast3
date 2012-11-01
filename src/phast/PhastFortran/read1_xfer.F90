@@ -1,6 +1,3 @@
-#if defined(USE_MPI)
-#include "mpi_fix_case.h"
-#endif
 SUBROUTINE read1_distribute
 #if defined(USE_MPI)
   USE mcb

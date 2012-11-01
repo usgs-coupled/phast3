@@ -1,7 +1,3 @@
-! ... $Id: read3_xfer.F90,v 1.5 2011/01/29 00:18:54 klkipp Exp klkipp $
-#if defined(USE_MPI)
-#include "mpi_fix_case.h"
-#endif
 SUBROUTINE read3_xfer_m
 #if defined(USE_MPI)
   USE machine_constants, ONLY: kdp

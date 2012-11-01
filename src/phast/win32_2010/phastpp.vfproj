@@ -208,7 +208,6 @@
 		<File RelativePath="..\PhastFortran\hdf_f.F90"/></Filter>
 		<Filter Name="MPI_OBJS">
 		<File RelativePath="..\PhastFortran\mpi_array_mod.F90"/>
-		<File RelativePath="..\PhastFortran\mpi_fix_case.h"/>
 		<File RelativePath="..\PhastFortran\mpi_mod.F90"/>
 		<File RelativePath="..\PhastFortran\phast_worker.F90"/></Filter></Filter></Files>
 	<Globals/></VisualStudioProject>

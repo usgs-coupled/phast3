@@ -1,6 +1,3 @@
-#if defined(USE_MPI)
-#include "mpi_fix_case.h"
-#endif
 SUBROUTINE set_component_map
   USE mcc
   USE mcv
