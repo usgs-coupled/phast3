@@ -4,7 +4,7 @@
 #if defined(FC_FUNC_)
 //#define WORKER_GET_INDEXES    FC_FUNC_ (worker_get_indexes,     WORKER_GET_INDEXES)
 #endif /*FC_FUNC_*/
-#define WORKER_GET_INDEXES      worker_get_indexes 
+#define WORKER_GET_INDEXES      WORKER_GET_INDEXES 
 #if defined(__cplusplus)
 extern "C" {
 #endif

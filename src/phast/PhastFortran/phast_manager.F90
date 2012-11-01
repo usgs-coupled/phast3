@@ -453,11 +453,6 @@ SUBROUTINE time_parallel(i)
 USE mpi_mod
 USE mpi
 IMPLICIT none   
-INTERFACE
-    FUNCTION MPI_Wtime() RESULT(out)
-        DOUBLE PRECISION out
-    END
-END INTERFACE
 integer :: i, ierr
 DOUBLE PRECISION t
 DOUBLE PRECISION, DIMENSION(0:15), save :: times
