@@ -1,6 +1,3 @@
-#if defined(USE_MPI)
-#include "mpi_fix_case.h"
-#endif
 ! ... $Id: init2_1_xfer.F90,v 1.5 2011/01/29 00:18:54 klkipp Exp klkipp $
 SUBROUTINE init2_1_xfer_m
 ! ... Transfer calculated group 2 parameters to worker processes

@@ -5,36 +5,47 @@
 #define RM_INTERFACE_H
 #include "IPhreeqc.h"
 #include "Var.h"
-#ifdef WIN32
-#define RM_calculate_well_ph                  RM_CALCULATE_WELL_PH
-#define RM_close_files                        RM_CLOSE_FILES
-#define RM_convert_to_molal                   RM_CONVERT_TO_MOLAL
-#define RM_create                             RM_CREATE
-#define RM_destroy                            RM_DESTROY
-#define RM_distribute_initial_conditions      RM_DISTRIBUTE_INITIAL_CONDITIONS
-#define RM_error                              RM_ERROR
-#define RM_find_components                    RM_FIND_COMPONENTS
-#define RM_forward_and_back                   RM_FORWARD_AND_BACK
-#define RM_fractions2solutions                RM_FRACTIONS2SOLUTIONS
-#define RM_get_component                      RM_GET_COMPONENT
-#define RM_initial_phreeqc_run                RM_INITIAL_PHREEQC_RUN
-#define RM_load_database                      RM_LOAD_DATABASE
-#define RM_log_screen_prt                     RM_LOG_SCREEN_PRT
-#define RM_open_files                         RM_OPEN_FILES
-#define RM_pass_data                          RM_PASS_DATA
-#define RM_pass_transient_data                RM_PASS_TRANSIENT_DATA
-#define RM_run_cells                          RM_RUN_CELLS
-#define RM_send_restart_name                  RM_SEND_RESTART_NAME
-#define RM_setup_boundary_conditions          RM_SETUP_BOUNDARY_CONDITIONS
-#define RM_solutions2fractions                RM_SOLUTIONS2FRACTIONS
-#define RM_transport                          RM_TRANSPORT
-#define RM_write_bc_raw                       RM_WRITE_BC_RAW
-#define RM_write_output                       RM_WRITE_OUTPUT
-#define RM_write_restart					  RM_WRITE_RESTART
-#define RM_zone_flow_write_chem               RM_ZONE_FLOW_WRITE_CHEM
-#define transport_component_thread            TRANSPORT_COMPONENT_THREAD
-#define zone_flow_write_chem                  ZONE_FLOW_WRITE_CHEM
-#else
+#if defined(_MSC_VER)
+#define FC_FUNC_(name,NAME) NAME
+#endif
+
+#if defined(FC_FUNC_)
+// Called from Fortran or C++
+#define RM_calculate_well_ph               FC_FUNC_ (rm_calculate_well_ph,             RM_CALCULATE_WELL_PH)
+#define RM_close_files                     FC_FUNC_ (RM_CLOSE_FILES,                   RM_CLOSE_FILES)    
+#define RM_convert_to_molal                FC_FUNC_ (RM_CONVERT_TO_MOLAL,              RM_CONVERT_TO_MOLAL)   
+#define RM_create                          FC_FUNC_ (RM_CREATE,                        RM_CREATE)
+#define RM_destroy                         FC_FUNC_ (RM_DESTROY,                       RM_DESTROY)
+#define RM_distribute_initial_conditions   FC_FUNC_ (RM_DISTRIBUTE_INITIAL_CONDITIONS, RM_DISTRIBUTE_INITIAL_CONDITIONS)
+#define RM_error                           FC_FUNC_ (RM_ERROR,                         RM_ERROR)
+#define RM_find_components                 FC_FUNC_ (RM_FIND_COMPONENTS,               RM_FIND_COMPONENTS)
+#define RM_forward_and_back                FC_FUNC_ (RM_FORWARD_AND_BACK,              RM_FORWARD_AND_BACK)
+#define RM_fractions2solutions             FC_FUNC_ (RM_FRACTIONS2SOLUTIONS,           RM_FRACTIONS2SOLUTIONS)
+#define RM_get_component                   FC_FUNC_ (RM_GET_COMPONENT,                 RM_GET_COMPONENT)
+#define RM_initial_phreeqc_run             FC_FUNC_ (RM_INITIAL_PHREEQC_RUN,           RM_INITIAL_PHREEQC_RUN)
+#define RM_load_database                   FC_FUNC_ (RM_LOAD_DATABASE,                 RM_LOAD_DATABASE)
+#define RM_log_screen_prt                  FC_FUNC_ (RM_LOG_SCREEN_PRT,                RM_LOG_SCREEN_PRT)
+#define RM_open_files                      FC_FUNC_ (RM_OPEN_FILES,                    RM_OPEN_FILES)
+#define RM_pass_data                       FC_FUNC_ (RM_PASS_DATA,                     RM_PASS_DATA)
+#define RM_pass_transient_data             FC_FUNC_ (RM_PASS_TRANSIENT_DATA,           RM_PASS_TRANSIENT_DATA)
+#define RM_run_cells                       FC_FUNC_ (RM_RUN_CELLS,                     RM_RUN_CELLS)
+#define RM_send_restart_name               FC_FUNC_ (RM_SEND_RESTART_NAME,             RM_SEND_RESTART_NAME)
+#define RM_setup_boundary_conditions       FC_FUNC_ (RM_SETUP_BOUNDARY_CONDITIONS,     RM_SETUP_BOUNDARY_CONDITIONS)
+#define RM_solutions2fractions             FC_FUNC_ (RM_SOLUTIONS2FRACTIONS,           RM_SOLUTIONS2FRACTIONS)
+#define RM_transport                       FC_FUNC_ (RM_TRANSPORT,                     RM_TRANSPORT)
+#define RM_write_bc_raw                    FC_FUNC_ (RM_WRITE_BC_RAW,                  RM_WRITE_BC_RAW)
+#define RM_write_output                    FC_FUNC_ (RM_WRITE_OUTPUT,                  RM_WRITE_OUTPUT)
+#define RM_write_restart				   FC_FUNC_ (RM_WRITE_RESTART,                 RM_WRITE_RESTART)
+#define RM_zone_flow_write_chem            FC_FUNC_ (RM_ZONE_FLOW_WRITE_CHEM,          RM_ZONE_FLOW_WRITE_CHEM)
+// Calls to Fortran
+#define transport_component_thread         FC_FUNC_ (TRANSPORT_COMPONENT_THREAD,       TRANSPORT_COMPONENT_THREAD)
+#define zone_flow_write_chem               FC_FUNC_ (ZONE_FLOW_WRITE_CHEM,             ZONE_FLOW_WRITE_CHEM)
+#define logprt_c                           FC_FUNC_ (logprt_c,                         LOGPRT_C)
+#define screenprt_c                        FC_FUNC_ (screenprt_c,                      SCREENPRT_C)
+#define errprt_c                           FC_FUNC_ (errprt_c,                         ERRPRT_C)
+#define warnprt_c                          FC_FUNC_ (warnprt_c,                        WARNPRT_C)
+#endif
+#ifdef SKIP
 #define RM_calculate_well_ph                  rm_calculate_well_ph
 #define RM_close_files                        rm_close_files
 #define RM_convert_to_molal                   rm_convert_to_molal
@@ -49,18 +60,6 @@
 #define RM_initial_phreeqc_run                rm_initial_phreeqc_run
 #define RM_load_database                      rm_load_database
 #define RM_log_screen_prt                     rm_log_screen_prt
-#define RM_mpi_barrier					      rm_mpi_barrier
-#define RM_mpi_bcast                          rm_mpi_bcast
-#define RM_mpi_comm_create                    rm_mpi_comm_create
-#define RM_mpi_comm_group                     rm_mpi_comm_group
-#define RM_mpi_get_address                    rm_mpi_get_address
-#define RM_mpi_group_incl                     rm_mpi_group_incl
-#define RM_mpi_recv                           rm_mpi_recv
-#define RM_mpi_send                           rm_mpi_send
-#define RM_mpi_type_commit                    rm_mpi_type_commit
-#define RM_mpi_type_create_struct             rm_mpi_type_create_struct
-#define RM_mpi_type_free                      rm_mpi_type_free
-#define RM_mpi_wtime                          rm_mpi_wtime
 #define RM_open_files                         rm_open_files
 #define RM_pass_data                          rm_pass_data
 #define RM_pass_transient_data                rm_pass_transient_data
@@ -75,30 +74,6 @@
 #define RM_zone_flow_write_chem               rm_zone_flow_write_chem
 #define transport_component_thread            transport_component_thread
 #endif
-#if defined(_MSC_VER)
-#define FC_FUNC_(name,NAME) NAME
-#endif
-#if defined(FC_FUNC_)
-#define logprt_c                  FC_FUNC_ (logprt_c,          LOGPRT_C)
-#define screenprt_c               FC_FUNC_ (screenprt_c,       SCREENPRT_C)
-#define errprt_c                  FC_FUNC_ (errprt_c,          ERRPRT_C)
-#define warnprt_c                 FC_FUNC_ (warnprt_c,         WARNPRT_C)
-#endif
-
-/**
- * @mainpage IPhreeqc Library Documentation
- *
- *  @htmlonly
- *  <table>
- *   <tr><td class="indexkey"><a class="el" href="IPhreeqc_8h.html">IPhreeqc.h</a> </td><td class="indexvalue">C/Fortran Documentation </td></tr>
- *   <tr><td class="indexkey"><a class="el" href="IPhreeqc_8hpp.html">IPhreeqc.hpp</a> </td><td class="indexvalue">C++ Documentation </td></tr>
- *   <tr><td class="indexkey"><a class="el" href="Var_8h.html">Var.h</a></td><td class="indexvalue">IPhreeqc VARIANT Documentation </td></tr>
- *  </table>
- *  @endhtmlonly
- */
-
-/*! \brief Enumeration used to return error codes.
-*/
 
 class RM_interface
 {

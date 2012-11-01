@@ -1,6 +1,3 @@
-#if defined(USE_MPI)
-#include "mpi_fix_case.h"
-#endif
 SUBROUTINE init2_1
   ! ... initialize after read2
   ! ... initialization block 1 before chemical reactions
