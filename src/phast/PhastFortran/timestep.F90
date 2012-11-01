@@ -13,7 +13,6 @@ SUBROUTINE timestep
   USE mcw_m
 #if defined(USE_MPI)
   USE mpi_mod
-  USE mpi_struct_arrays
 #endif
   USE print_control_mod
   IMPLICIT NONE
@@ -21,7 +20,6 @@ SUBROUTINE timestep
   REAL(KIND=kdp) :: adc, adp, adt, uctc, udtim, uptc, utime, uttc, udeltim, utimchg
   INTEGER :: iis
 #ifdef USE_MPI
-  INTEGER :: int_real_type, mpi_array_type
   INTEGER, DIMENSION(2) :: array_bcst_i
   REAL(KIND=kdp), DIMENSION(2) :: array_bcst_r
 #endif
@@ -44,18 +42,10 @@ SUBROUTINE timestep
 
 #ifdef USE_MPI
   !*** broadcast itime, jtime
-  IF (solute) THEN
-!    CALL MPI_BCAST(itime, 1, MPI_INTEGER, manager,  &
-!        world, ierrmpi)  
-!    CALL MPI_BCAST(jtime, 1, MPI_INTEGER, manager,  &
-!        world, ierrmpi)    
+  IF (solute) THEN   
      array_bcst_i(1) = itime; array_bcst_i(2) = jtime     
      CALL MPI_BCAST(array_bcst_i, 2, MPI_INTEGER, manager,  &
           world, ierrmpi)
-     !int_real_type = mpi_struct_array(array_bcst_i,array_bcst_r)
-     !CALL MPI_BCAST(array_bcst_i, 1, int_real_type, manager,  &
-     !     world, ierrmpi)
-     !CALL MPI_TYPE_FREE(int_real_type,ierrmpi)
   ENDIF
 #endif
   tsfail=.FALSE.
@@ -110,21 +100,7 @@ SUBROUTINE timestep
      ELSE
         !...special mod
         deltim=udtim
-!!$        ! ... This may go away in the future. It is neat but can cause
-!!$        ! ...      hunting problems
-!!$        ! ... MAKE TIME STEP 1,2 OR 5*10**-N OF THE USER TIME UNIT
-!!$        !..         DELTIM=10.D0**INT(LOG10(UDTIM)-1.)
-!!$        !..         UDTIM=UDTIM/DELTIM
-!!$        !..        IF(UDTIM.GT.1.4.AND.UDTIM.LE.3.2) THEN
-!!$        !..         DELTIM=2.*DELTIM
-!!$        !..         ELSEIF(UDTIM.GT.3.2.AND.UDTIM.LE.7.1) THEN
-!!$        !..         DELTIM=5.*DELTIM
-!!$        !..         ELSEIF(UDTIM.GT.7.1) THEN
-!!$        !..         DELTIM=10.*DELTIM
-!!$        !..        ENDIF
      END IF
-     !!$ ... Make DELTIM to the nearest second...Will not work for large times
-     !!$ ..      deltim=DBLE(INT(cnvtm*deltim))
      deltim=cnvtm*deltim
   END IF
   utime=cnvtmi*(time+deltim)

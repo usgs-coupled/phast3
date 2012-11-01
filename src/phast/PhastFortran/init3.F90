@@ -33,22 +33,11 @@ SUBROUTINE init3
   REAL(KIND=kdp) :: up0, p1, z0, z1, zfsl, zm1, zp1
   INTEGER :: a_err, da_err, ic, icol, imod, iis, iwel, jcol, k, kcol,  &
        l, ls, m, m1, mt, nsa, tag
-  !  INTEGER :: int_real_type, mpi_array_type
-  !  INTEGER, DIMENSION(1) :: array_bcst_i
-  !  REAL(KIND=kdp), DIMENSION(2) :: array_bcst_r
   !$$  REAL(KIND=kdp), PARAMETER :: nodat = bgreal*1.e-15_kdp
-  !  INTEGER, DIMENSION(:), ALLOCATABLE :: req_send
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
   !...
-  !     nsa = MAX(ns,1)
-  !     ALLOCATE(req_send(1:nsa),  &
-  !          STAT = a_err)
-  !     IF (a_err /= 0) THEN
-  !        PRINT *, "Array allocation failed: init3"
-  !        STOP
-  !     ENDIF
   !  ! ... Convert the data to S.I. time units if necessary
   ! ...      even if an error abort is set
   IF(tmunit > 1) CALL etom2
@@ -244,13 +233,6 @@ SUBROUTINE init3
              cfbc, nfbc_seg)
      END IF
   END IF
-!!$  IF(rdflxs) THEN
-!!$     DO  ls=1,nfbc_seg
-!!$        DO  iis=1,ns               ! ... Calculate the flux*area to get flow rates
-!!$           qsfbc(lc,iis) = qsflx(ls,iis)*areafbc(ls)
-!!$        END DO
-!!$     END DO
-!!$  END IF
   ! *** no broadcast of qsflx as no pure diffusive solute b.c. is enabled at present
   ! ... Aquifer leakage b.c.
   IF(rdlbc) THEN
@@ -305,21 +287,6 @@ SUBROUTINE init3
 
   ! ... Set first time for printout of each output file
   ! ... TIMPRTxxx and PRIMIN are in user time marching units
-!!$  IF(nwel == 0) THEN
-!!$     priwel = 0._kdp
-!!$     pri_well_timser = 0._kdp
-!!$  END IF
-!!$  IF(.NOT.chkptd) pricpd=0._kdp
-!!$  IF(.NOT.cntmaph) primaphead=0._kdp
-!!$  IF(.NOT.cntmapc) primapcomp=0._kdp
-!!$  IF(.NOT.vecmap) primapv=0._kdp
-!!$  IF (.NOT.solute) THEN
-!!$     primapcomp = 0._kdp
-!!$     prihdf_conc = 0._kdp
-!!$     pricphrq = 0._kdp
-!!$     priforce_chem_phrq = 0._kdp
-!!$     pri_well_timser = 0._kdp
-!!$  ENDIF
   utime=cnvtmi*time
   utimchg=cnvtmi*timchg
   ! ... Set print_time for each variable and set next_print_time to be the minimum
@@ -327,12 +294,4 @@ SUBROUTINE init3
   CALL pc_set_print_times(utime, utimchg)
   ! ... Set the next time for printout by user time units
   timprtnxt = next_print_time
-
-  !  DEALLOCATE(req_send,  &
-  !       STAT = da_err)
-  !  IF (da_err /= 0) THEN
-  !     PRINT *, "Array deallocation failed: init3"
-  !     STOP
-  !  ENDIF
-
 END SUBROUTINE init3

@@ -57,9 +57,6 @@
     <ClCompile Include="..\KDtree\Point.cpp">
       <Filter>Source Files\PHASTINPUT_OBJS</Filter>
     </ClCompile>
-    <ClCompile Include="..\merge.cpp">
-      <Filter>Source Files\MERGE_OBJS</Filter>
-    </ClCompile>
     <ClCompile Include="..\workersubs.cpp">
       <Filter>Source Files\MERGE_OBJS</Filter>
     </ClCompile>

@@ -54,9 +54,7 @@ SUBROUTINE thru_distribute
   USE mcv
   USE mcw
   USE mpi_mod
-  USE mpi_struct_arrays
   IMPLICIT NONE
-  INTEGER :: int_real_type
   INTEGER, DIMENSION(2) :: array_bcst_i
   REAL(KIND=kdp), DIMENSION(2) :: array_bcst_r
   INTEGER :: i_dummy;
@@ -81,19 +79,6 @@ SUBROUTINE thru_distribute
                 thru = .false.
             ENDIF 
         ENDIF        
-!     IF (mpi_myself == 0) THEN
-!        array_bcst_i(1) = 0
-!        IF (thru) array_bcst_i(1) = 1 
-!     ENDIF
-!     int_real_type = mpi_struct_array(array_bcst_i,array_bcst_r)
-!     ! ... NOTE: broadcast to all processes, not just xp_world
-!     CALL MPI_BCAST(array_bcst_i, 1, int_real_type, manager,  &
-!          MPI_COMM_WORLD, ierrmpi)
-!     CALL MPI_TYPE_FREE(int_real_type,ierrmpi)
-!     IF (mpi_myself > 0) THEN
-!        thru = .FALSE.
-!        IF (array_bcst_i(1) == 1) thru = .TRUE.
-!     ENDIF
   endif
 #endif
 END SUBROUTINE thru_distribute
@@ -108,9 +93,7 @@ SUBROUTINE init3_bcast_m
   USE mcv
   USE mcw
   USE mpi_mod
-  USE mpi_struct_arrays
   IMPLICIT NONE
-  !INTEGER :: int_real_type
   INTEGER, DIMENSION(2) :: array_bcst_i
   REAL(KIND=kdp), DIMENSION(2) :: array_bcst_r
   INTEGER i_dummy
@@ -124,13 +107,6 @@ SUBROUTINE init3_bcast_m
   IF (thru) i_dummy = 1
   CALL MPI_BCAST(i_dummy, 1, MPI_INTEGER, manager,  &
         world, ierrmpi)
-!  array_bcst_i(1) = 0
-!  IF (thru) array_bcst_i(1) = 1 
-!
-!  int_real_type = mpi_struct_array(array_bcst_i,array_bcst_r)
-!  CALL MPI_BCAST(array_bcst_i, 1, int_real_type, manager,  &
-!       world, ierrmpi)
-!  CALL MPI_TYPE_FREE(int_real_type,ierrmpi)
   IF(thru) RETURN
 
   ! ... 2 receive the flag for rdwtd
@@ -230,11 +206,6 @@ SUBROUTINE init3_bcast_m
   array_bcst_r(1) = deltim; array_bcst_r(2) = timchg
     CALL MPI_BCAST(array_bcst_r(1), 2, MPI_DOUBLE, manager, &
         world, ierrmpi)
-!  int_real_type = mpi_struct_array(array_bcst_i,array_bcst_r)
-!  CALL MPI_BCAST(array_bcst_i, 1, int_real_type, manager, &
-!       world, ierrmpi)
-!  CALL MPI_TYPE_FREE(int_real_type,ierrmpi)
-
 #endif 
 ! end USE_MPI
 END SUBROUTINE init3_bcast_m
@@ -251,13 +222,11 @@ SUBROUTINE init3_bcast_w
   USE mcv
   USE mcw
   USE mpi_mod
-  USE mpi_struct_arrays
   USE XP_module, ONLY: Transporter
   IMPLICIT NONE
   TYPE (Transporter) :: xp
   INTEGER :: ls
   INTEGER, SAVE :: ntd=0
-  !INTEGER :: int_real_type
   INTEGER, DIMENSION(2) :: array_recv_i
   REAL(KIND=kdp), DIMENSION(2) :: array_recv_r
   CHARACTER(LEN=130) :: logline1
@@ -267,10 +236,6 @@ SUBROUTINE init3_bcast_w
 !!$! Read Flags From Read3
     CALL MPI_BCAST(array_recv_i(1), 1, MPI_INTEGER, manager,  &
         world, Ierrmpi)
-!  Int_real_type = Mpi_struct_array(Array_recv_i,Array_recv_r)
-!  CALL MPI_BCAST(Array_recv_i, 1, Int_real_type, Manager,  &
-!       World, Ierrmpi)
-!  CALL MPI_TYPE_FREE(Int_real_type,Ierrmpi)
 
   thru = .FALSE.
   IF (array_recv_i(1) == 1) Thru = .TRUE.
@@ -419,10 +384,6 @@ SUBROUTINE init3_bcast_w
   ! *** 13 broadcast deltim, timchg
   CALL MPI_BCAST(array_recv_r(1), 2, MPI_DOUBLE, manager, &
         world, ierrmpi)
-!  int_real_type = mpi_struct_array(array_recv_i,array_recv_r)
-!  CALL MPI_BCAST(array_recv_i, 1, int_real_type, manager, &
-!       world, ierrmpi)
-!  CALL MPI_TYPE_FREE(int_real_type,ierrmpi)
 
   jtime = 0
   deltim = array_recv_r(1); timchg = array_recv_r(2)
@@ -441,7 +402,6 @@ SUBROUTINE init3_xfer_m
   USE mcw
   USE mcw_m
   USE mpi_mod
-  USE mpi_struct_arrays
   IMPLICIT NONE
   INTEGER :: iis, tag
   !--------------------------------------------------------------------------
@@ -502,7 +462,6 @@ SUBROUTINE XP_init3_xfer(xp)
   USE mcc
   USE mcw
   USE mpi_mod
-  USE mpi_struct_arrays
   USE XP_module, ONLY: Transporter
   IMPLICIT NONE
   TYPE (Transporter) :: xp
@@ -559,7 +518,6 @@ END SUBROUTINE XP_init3_xfer
 SUBROUTINE XP_init3_set(xp)
   ! ... Loads transporter derived type with calculated or selected group 3 data
   USE machine_constants, ONLY: bgreal, kdp
-!!$  USE mcb
   USE mcb_m
   USE mcc
   USE mcw

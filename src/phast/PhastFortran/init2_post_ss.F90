@@ -22,7 +22,6 @@ SUBROUTINE init2_post_ss
   REAL(KIND=kdp) :: u0, u1, uc, ut
   INTEGER :: imod, iis, iwel, k, l, m, mt, nr, nsa
   CHARACTER(LEN=130) error_line
-  INTEGER :: int_real_type, mpi_array_type
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------

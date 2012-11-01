@@ -18,7 +18,6 @@ SUBROUTINE phast_worker
     USE print_control_mod
     USE XP_module, ONLY: Transporter
     USE mpi_mod
-    USE mpi_struct_arrays
     IMPLICIT NONE
     INTERFACE
         FUNCTION RM_create(nthreads) RESULT(iout)

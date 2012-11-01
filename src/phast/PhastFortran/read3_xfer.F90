@@ -5,9 +5,7 @@ SUBROUTINE read3_xfer_m
   USE mcc
   USE mcw
   USE mpi_mod
-  USE mpi_struct_arrays
   IMPLICIT NONE
-  !INTEGER :: int_real_type, mpi_array_type
   INTEGER, DIMENSION(2) :: array_bcst_i
   REAL(KIND=kdp), DIMENSION(2) :: array_bcst_r
   !     ------------------------------------------------------------------
@@ -18,10 +16,6 @@ SUBROUTINE read3_xfer_m
   IF (thru) array_bcst_i(1) = 1 
   CALL MPI_BCAST(array_bcst_i(1), 1, MPI_INTEGER, manager,  &
        world, ierrmpi)
-!  int_real_type = mpi_struct_array(array_bcst_i,array_bcst_r)
-!  CALL MPI_BCAST(array_bcst_i, 1, int_real_type, manager,  &
-!       world, ierrmpi)
-!  CALL MPI_TYPE_FREE(int_real_type,ierrmpi)
   IF(thru) RETURN
 
   ! ... 2 receive? broadcast? the flag for rdwtd
@@ -91,14 +85,12 @@ SUBROUTINE read3_xfer_w
   USE mcv
   USE mcw
   USE mpi_mod
-  USE mpi_struct_arrays
   USE print_control_mod
   USE rewi_mod
   IMPLICIT NONE
   INTEGER :: a_err, ic, icall, isegbc, iis, iwel, uwelseqno, uisolw,  &
        uisolbc1, uisolbc2
   INTEGER, SAVE :: ntd=0
-  !INTEGER :: int_real_type, mpi_array_type
   INTEGER, DIMENSION(2) :: array_recv_i
   REAL(KIND=kdp), DIMENSION(2) :: array_recv_r
   CHARACTER(LEN=130) :: logline1
@@ -110,10 +102,6 @@ SUBROUTINE read3_xfer_w
   ! *** 1 broadcast receive thru
     CALL MPI_BCAST(array_recv_i(1), 1, MPI_INTEGER, manager,  &
         world, ierrmpi)
-!  int_real_type = mpi_struct_array(array_recv_i,array_recv_r)
-!  CALL MPI_BCAST(array_recv_i, 1, int_real_type, manager,  &
-!       world, ierrmpi)
-!  CALL MPI_TYPE_FREE(int_real_type,ierrmpi)
 
   thru = .FALSE.
   IF (array_recv_i(1) == 1) thru = .TRUE.
