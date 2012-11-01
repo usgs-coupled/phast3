@@ -5,6 +5,36 @@
 #define RM_INTERFACE_H
 #include "IPhreeqc.h"
 #include "Var.h"
+#ifdef WIN32
+#define RM_calculate_well_ph                  RM_CALCULATE_WELL_PH
+#define RM_close_files                        RM_CLOSE_FILES
+#define RM_convert_to_molal                   RM_CONVERT_TO_MOLAL
+#define RM_create                             RM_CREATE
+#define RM_destroy                            RM_DESTROY
+#define RM_distribute_initial_conditions      RM_DISTRIBUTE_INITIAL_CONDITIONS
+#define RM_error                              RM_ERROR
+#define RM_find_components                    RM_FIND_COMPONENTS
+#define RM_forward_and_back                   RM_FORWARD_AND_BACK
+#define RM_fractions2solutions                RM_FRACTIONS2SOLUTIONS
+#define RM_get_component                      RM_GET_COMPONENT
+#define RM_initial_phreeqc_run                RM_INITIAL_PHREEQC_RUN
+#define RM_load_database                      RM_LOAD_DATABASE
+#define RM_log_screen_prt                     RM_LOG_SCREEN_PRT
+#define RM_open_files                         RM_OPEN_FILES
+#define RM_pass_data                          RM_PASS_DATA
+#define RM_pass_transient_data                RM_PASS_TRANSIENT_DATA
+#define RM_run_cells                          RM_RUN_CELLS
+#define RM_send_restart_name                  RM_SEND_RESTART_NAME
+#define RM_setup_boundary_conditions          RM_SETUP_BOUNDARY_CONDITIONS
+#define RM_solutions2fractions                RM_SOLUTIONS2FRACTIONS
+#define RM_transport                          RM_TRANSPORT
+#define RM_write_bc_raw                       RM_WRITE_BC_RAW
+#define RM_write_output                       RM_WRITE_OUTPUT
+#define RM_write_restart					  RM_WRITE_RESTART
+#define RM_zone_flow_write_chem               RM_ZONE_FLOW_WRITE_CHEM
+#define transport_component_thread            TRANSPORT_COMPONENT_THREAD
+#define zone_flow_write_chem                  ZONE_FLOW_WRITE_CHEM
+#else
 #define RM_calculate_well_ph                  rm_calculate_well_ph
 #define RM_close_files                        rm_close_files
 #define RM_convert_to_molal                   rm_convert_to_molal
@@ -43,6 +73,17 @@
 #define RM_write_output                       rm_write_output
 #define RM_write_restart					  rm_write_restart
 #define RM_zone_flow_write_chem               rm_zone_flow_write_chem
+#define transport_component_thread            transport_component_thread
+#endif
+#if defined(_MSC_VER)
+#define FC_FUNC_(name,NAME) NAME
+#endif
+#if defined(FC_FUNC_)
+#define logprt_c                  FC_FUNC_ (logprt_c,          LOGPRT_C)
+#define screenprt_c               FC_FUNC_ (screenprt_c,       SCREENPRT_C)
+#define errprt_c                  FC_FUNC_ (errprt_c,          ERRPRT_C)
+#define warnprt_c                 FC_FUNC_ (warnprt_c,         WARNPRT_C)
+#endif
 
 /**
  * @mainpage IPhreeqc Library Documentation

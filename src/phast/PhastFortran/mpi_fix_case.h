@@ -1,3 +1,4 @@
+#ifdef SKIP
 #define MPI_Barrier                      RM_mpi_barrier
 #define MPI_BARRIER                      RM_mpi_barrier
 #define MPI_Bcast                        RM_mpi_bcast
@@ -21,3 +22,4 @@
 #define MPI_Type_free                    RM_mpi_type_free
 #define MPI_TYPE_FREE                    RM_mpi_type_free
 #define MPI_Wtime                        RM_mpi_wtime
+#endif

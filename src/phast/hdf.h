@@ -3,6 +3,9 @@
 /*
  *   Functions called from FORTRAN
  */
+#if defined(_MSC_VER)
+#define FC_FUNC_(name,NAME) NAME
+#endif
 #if defined(FC_FUNC_)
 #define HDF_INIT_INVARIANT     FC_FUNC_ (hdf_init_invariant,      HDF_INIT_INVARIANT)
 #define HDF_FINALIZE_INVARIANT FC_FUNC_ (hdf_finalize_invariant,  HDF_FINALIZE_INVARIANT)
