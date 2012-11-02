@@ -356,7 +356,7 @@ CONTAINS
         ENDIF
 
         ! ... Allocate boundary condition information: mcb and mcb_m
-        ALLOCATE(ibc(nxyz),  &
+        ALLOCATE(ibc(nxyz), char_ibc(nxyz), &
             STAT = a_err)
         IF (a_err /= 0) THEN  
             PRINT *, "Array allocation failed: init1_xfer_w, point 3"  

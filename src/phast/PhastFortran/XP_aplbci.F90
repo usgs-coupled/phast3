@@ -3,7 +3,7 @@ SUBROUTINE XP_aplbci_thread(xp)
   ! ...      well source terms to the assembled equation matrix
   ! ...      and right hand side
   USE machine_constants, ONLY: kdp
-  USE mcb, only: nsbc, msbc, ibc, qfsbc, &
+  USE mcb, only: nsbc, msbc, ibc, char_ibc, qfsbc, &
     ifacefbc, ifacelbc, fresur, &
     flux_seg_m, flux_seg_first, flux_seg_last, mfsbc, &
     leak_seg_first, leak_seg_last, denlbc, philbc, zelbc, bblbc, &
@@ -87,7 +87,8 @@ SUBROUTINE XP_aplbci_thread(xp)
      ! ... Apply specified p,t or c b.c. terms
      DO  ls=1,nsbc
         m = msbc(ls)
-        WRITE(cibc,6001) ibc(m)  
+        cibc = char_ibc(m)
+!        WRITE(cibc,6001) ibc(m)  
 6001    FORMAT(i9.9)
         ma = mrno(m)  
         if (frac(m) <= 0.0) cycle
@@ -387,7 +388,8 @@ SUBROUTINE XP_aplbci_thread(xp)
         IF(frac(m) <= 0.) THEN
            ! ... solve trivial equation for transient dry cells
            ma = mrno(m)
-           WRITE(cibc, 6001) ibc(m)
+            cibc = char_ibc(m)
+!           WRITE(cibc, 6001) ibc(m)
            IF(cibc(7:7)  /= '1') THEN
               xp%va(7,ma) = 1._kdp
               xp%rhs(ma) = 0._kdp

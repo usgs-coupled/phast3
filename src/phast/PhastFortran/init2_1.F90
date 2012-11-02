@@ -1438,6 +1438,14 @@ SUBROUTINE init2_1
 
   ENDIF
 
+! write char_ibc; apparently WRITE(cibc,...) is not thread safe in IFORT
+  DO i = 1, nxyz
+    IF (ibc(i) .ne. -1) THEN
+        WRITE(char_ibc(i), 6001) ibc(i)
+6001    FORMAT(i9.9)
+    ENDIF
+  ENDDO 
+
 !!$  DEALLOCATE (axsav, aysav, azsav, hwt,  &
 !!$       stat = da_err)
 !!$  IF (da_err /= 0) THEN  
