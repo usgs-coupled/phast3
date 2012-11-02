@@ -44,7 +44,7 @@ SUBROUTINE dealloc_arr_worker
         STOP
     ENDIF
     ! ... Deallocate boundary condition information: mcb and mcb_m
-    DEALLOCATE(ibc,  &
+    DEALLOCATE(ibc, char_ibc, &
         STAT = da_err)
     IF (da_err /= 0) THEN  
         PRINT *, "Array deallocation failed: dealloc_arr_worker, init1_trans, point 2"  

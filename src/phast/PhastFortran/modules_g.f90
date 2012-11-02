@@ -26,6 +26,7 @@ MODULE mcb
        mdbc_bot, mdseg_bot,  &
        mrbc_bot, mrbc_top, mrseg_bot,  &
        ifacefbc, ifacelbc
+  CHARACTER(LEN=9), DIMENSION(:), ALLOCATABLE :: char_ibc
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: fracnp
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: psbc, psbc_n, tsbc,  &
        areafbc, denfbc, tflx, qfflx, qfflx_n, &

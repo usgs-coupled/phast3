@@ -2,7 +2,7 @@ SUBROUTINE XP_asembl_thread(xp)
   ! ... Assembles the matrix coefficients and right hand side vector
   ! ...      for the solute equation
   USE machine_constants, ONLY: kdp
-  USE mcb, only: ibc
+  USE mcb, only: ibc, char_ibc
   USE mcc, only: crosd
   USE mcg, only: nx, nxyz, ny
   USE mcm, only:
@@ -51,7 +51,8 @@ SUBROUTINE XP_asembl_thread(xp)
         xp%rhs(ma) = 0._kdp
         CYCLE
      END IF
-     WRITE(cibc,6001) ibc(m)
+     cibc = char_ibc(m)
+!     WRITE(cibc,6001) ibc(m)
 6001 FORMAT(i9.9)
      ! ... Conductances and free-surface b.c. treated explicitly
      ! ... Skip dry cells, unless they are specified value b.c.

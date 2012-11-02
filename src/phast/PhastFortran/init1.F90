@@ -49,7 +49,7 @@ SUBROUTINE init1
      STOP  
   ENDIF
   ! ... Allocate boundary condition information: mcb and mcb_m
-  ALLOCATE(ibc(nxyz), ibc_string(nxyz), volume(nxyz),  &
+  ALLOCATE(ibc(nxyz), char_ibc(nxyz), ibc_string(nxyz), volume(nxyz),  &
        STAT = a_err)
   IF (a_err /= 0) THEN  
      PRINT *, "Array allocation failed: init1, point 3"  
@@ -61,6 +61,7 @@ SUBROUTINE init1
   pv0 = 0
   ibc = 0
   ibc_string = '         '
+  char_ibc =   '         '
   ! ... Set up units and metric to english (U.S. customary) conversion
   ! ...      factors, if necessary
   IF (tmunit == 1) THEN
