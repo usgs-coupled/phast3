@@ -15,6 +15,14 @@ IPhreeqcPhast::IPhreeqcPhast(void)
 	//std::pair<std::map<size_t, IPhreeqcPhast*>::iterator, bool> pr = IPhreeqcPhast::PhastInstances.insert(instance);
 	IPhreeqcPhast::PhastInstances.insert(instance);
 	//this->Get_PhreeqcPtr()->phast = true;
+	
+	//static size_t PhastInstancesIndex;
+	//start_cell;
+	//int end_cell;
+	out_stream = NULL;
+	punch_stream = NULL;
+	this->thread_clock_time = 0;
+	this->standard_clock_time = 1;
 }
 IPhreeqcPhast::~IPhreeqcPhast(void)
 {

@@ -432,6 +432,7 @@ RM_pass_data(int *id,
 			 double *volume, 					// nxyz geometric cell volumes 
 			 int *printzone_chem,				// nxyz print flags for output file
 			 int *printzone_xyz,				// nxyz print flags for chemistry XYZ file 
+			 int *rebalance_method,             // method for rebalancing load
 			 double *rebalance_fraction_hst, 	// parameter for rebalancing process load for parallel	
 			 double *fraction,                  // needed for first Solutions2Fractions
 			 int *mpi_myself,
@@ -458,6 +459,7 @@ RM_pass_data(int *id,
 		Reaction_module_ptr->Set_volume(volume);
 		Reaction_module_ptr->Set_printzone_chem(printzone_chem);
 		Reaction_module_ptr->Set_printzone_xyz(printzone_xyz);
+		Reaction_module_ptr->Set_rebalance_method(rebalance_method);
 		Reaction_module_ptr->Set_rebalance_fraction_hst(rebalance_fraction_hst);
 		Reaction_module_ptr->Set_fraction(fraction);
 		Reaction_module_ptr->Set_mpi_myself(*mpi_myself);
@@ -520,7 +522,7 @@ void RM_run_cells(int *id,
 			Reaction_module_ptr->Fractions2Solutions();
 
 			// Run chemistry calculations
-			Reaction_module_ptr->Run_cells();
+			Reaction_module_ptr->Run_cells(); 
 
 			// Transfer data reaction module to Fortran
 			Reaction_module_ptr->Solutions2Fractions();

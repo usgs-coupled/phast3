@@ -29,22 +29,28 @@ public:
 	std::vector < double > & Get_punch_vector(void) {return this->punch_vector;}
 	void Set_thread_clock_time(double t) {this->thread_clock_time = t;}
 	double Get_thread_clock_time(void) {return this->thread_clock_time;}
-	void Set_start_cell(int i) {this->start_cell = i;}
-	int Get_start_cell(void) {return this->start_cell;}
-	void Set_end_cell(int i) {this->end_cell = i;}
-	int Get_end_cell(void) {return this->end_cell;}
+	void Set_standard_clock_time(double t) {this->standard_clock_time = t;}
+	double Get_standard_clock_time(void) {return this->standard_clock_time;}
+
+	//void Set_start_cell(int i) {this->start_cell = i;}
+	//int Get_start_cell(void) {return this->start_cell;}
+	//void Set_end_cell(int i) {this->end_cell = i;}
+	//int Get_end_cell(void) {return this->end_cell;}
+	std::vector < double > & Get_cell_clock_times(void) {return this->cell_clock_times;}
 protected:
 	friend class IPhreeqcPhastLib;
 	static std::map<size_t, IPhreeqcPhast*> PhastInstances;
 	static size_t PhastInstancesIndex;
 
 	// Data members
-	int start_cell;
-	int end_cell;
+	//int start_cell;
+	//int end_cell;
 	std::ostringstream * out_stream;
 	std::ostringstream * punch_stream;
 	std::vector < double > punch_vector;
 	std::vector<std::string> selected_output_names;
 	double thread_clock_time;
+	std::vector<double> cell_clock_times;
+	double standard_clock_time;
 };
 #endif // !defined(PHAST_IPHREEQC_H_INCLUDED)

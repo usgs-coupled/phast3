@@ -187,6 +187,7 @@ SUBROUTINE phast_manager
             volume,                      &
             iprint_chem,                 &
             iprint_xyz,                  &
+            rebalance_method_f,          &
             rebalance_fraction_f,        &
             c,                           &
             mpi_myself,                  &
