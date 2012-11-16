@@ -59,6 +59,7 @@ public:
 	void Partition_uz(int iphrq, int ihst, double new_frac);
 	void Partition_uz_thread(int n, int iphrq, int ihst, double new_frac);
 	void Rebalance_load(void);
+	void Rebalance_load_per_cell(void);
 	void Run_cells(void);
 	void Run_cells_thread(int i);
 	void Scale_solids(int n, int iphrq, LDBLE frac);
@@ -133,6 +134,8 @@ public:
 	void Set_printzone_chem(int * t) {this->printzone_chem = t;};
 	const int * Get_printzone_xyz(void) const {return this->printzone_xyz;};
 	void Set_printzone_xyz(int * t) {this->printzone_xyz = t;};
+	const int * Get_rebalance_method(void) const {return this->rebalance_method;};
+	void Set_rebalance_method(int * t) {this->rebalance_method = t;};
 	const double * Get_rebalance_fraction_hst(void) const {return this->rebalance_fraction_hst;};
 	void Set_rebalance_fraction_hst(double * t) {this->rebalance_fraction_hst = t;};
 	const bool Get_prslm(void) const {return this->prslm;};
@@ -181,6 +184,7 @@ protected:
 	double *volume;							// nxyz geometric cell volumes 
 	int *printzone_chem;					// nxyz print flags for output file
 	int *printzone_xyz;						// nxyz print flags for chemistry XYZ file 
+	int * rebalance_method;                 // rebalance method 0 std, 1 by_cell
 	double *rebalance_fraction_hst;			// parameter for rebalancing process load for parallel	
 	int * ic1;								// reactant number for end member 1; indicates presence in model
 	std::vector <int> forward;				// mapping from nxyz cells to count_chem chemistry cells

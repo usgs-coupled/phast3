@@ -152,6 +152,7 @@ void RM_pass_data(int *id,
 			 double *volume, 					// nxyz geometric cell volumes 
 			 int * printzone_chem,				// nxyz print flags for output file
 			 int * printzone_xyz,				// nxyz print flags for chemistry XYZ file
+			 int * rebalance_method,            // 0 std; 1 by_cell
 			 double *rebalance_fraction_hst,	// parameter for rebalancing process load for parallel	
 			 double *fraction,                  // mass fraction array
 			 int *mpi_myself,                   // let reaction_module know mpi_myself

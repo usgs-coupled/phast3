@@ -65,7 +65,7 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="merge|x64" ConfigurationType="typeStaticLibrary">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Optimization="optimizeFull" Parallelization="true" PrefetchInsertionOpt="prefetchAggressive" BufferedIO="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(DEV_MPICH2_X64_INC);$(ProjectDir)../PhastFortran" PreprocessorDefinitions="MERGE_FILES;HDF5_CREATE;USE_MPI;MPICH_NAME;NO_UNDERSCORES" Interfaces="true" VectorizerDiagLevel="vectorizerDiagLevel5" CallingConvention="callConventionCRef"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Optimization="optimizeFull" Parallelization="true" PrefetchInsertionOpt="prefetchAggressive" BufferedIO="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(DEV_MPICH2_X64_INC);$(ProjectDir)../PhastFortran" PreprocessorDefinitions="MERGE_FILES;HDF5_CREATE;USE_MPI;MPICH_NAME;NO_UNDERSCORES" Interfaces="true" VectorizerDiagLevel="vectorizerDiagLevel5"/>
 				<Tool Name="VFLibrarianTool"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
@@ -90,8 +90,8 @@
 		<File RelativePath="..\PhastFortran\ifwr.inc"/>
 		<File RelativePath="..\IPhreeqcPhast\IPhreeqc\IPhreeqc.f90.inc"/>
 		<File RelativePath="..\PhastFortran\mpi_windows.inc">
-			<FileConfiguration Name="ser_debug|Win32" ExcludedFromBuild="true"/>
-			<FileConfiguration Name="ser|Win32" ExcludedFromBuild="true"/></File></Filter>
+			<FileConfiguration Name="ser|Win32" ExcludedFromBuild="true"/>
+			<FileConfiguration Name="ser_debug|Win32" ExcludedFromBuild="true"/></File></Filter>
 		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"/>
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
 		<Filter Name="COMMON_FOBJS">

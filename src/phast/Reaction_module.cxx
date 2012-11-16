@@ -1530,10 +1530,257 @@ Reaction_module::Partition_uz_thread(int n, int iphrq, int ihst, double new_frac
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 void
+Reaction_module::Rebalance_load_per_cell(void)
+/* ---------------------------------------------------------------------- */
+{
+	if (this->mpi_tasks <= 1) return;
+#include <time.h>
+
+	// vectors for each cell (count_chem)
+	std::vector<double> recv_cell_times, normalized_cell_times;
+	recv_cell_times.resize(this->count_chem);
+	
+	// vectors for each process (mpi_tasks)
+	std::vector<double> standard_time, task_fraction, task_time;
+	
+	// Assume homogeneous cluster for now
+	double tasks_total = 0;
+	for (size_t i = 0; i < mpi_tasks; i++)
+	{
+		standard_time.push_back(1.0);   // For heterogeneous cluster, need times for a standard task here
+		tasks_total += 1.0 / standard_time[i];
+	}
+
+	for (size_t i = 0; i < mpi_tasks; i++)
+	{
+		task_fraction.push_back((1.0 / standard_time[i]) / tasks_total);
+	}
+	// Collect times
+	IPhreeqcPhast * phast_iphreeqc_worker = this->workers[0];
+	// manager
+	if (mpi_myself == 0)
+	{
+		recv_cell_times.insert(recv_cell_times.begin(), 
+			phast_iphreeqc_worker->Get_cell_clock_times().begin(),
+			phast_iphreeqc_worker->Get_cell_clock_times().end());
+	}
+
+	// workers
+	for (int i = 1; i < mpi_tasks; i++)
+	{
+		int n = end_cell[i] - start_cell[i] + 1;
+		if (mpi_myself == i)
+		{
+			MPI_Send(phast_iphreeqc_worker->Get_cell_clock_times().data(), n, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
+		}
+		if (mpi_myself == 0)
+		{
+			MPI_Status mpi_status;
+			MPI_Recv((void *) &recv_cell_times[start_cell[i]], n, MPI_DOUBLE, i, 0, MPI_COMM_WORLD, &mpi_status);
+		}
+	}
+
+	// Root normalizes times, calculates efficiency, rebalances work
+	double normalized_total_time = 0;
+	double max_task_time = 0;
+	// working space
+	std::vector<int> start_cell_new;
+	std::vector<int> end_cell_new;
+	start_cell_new.resize(mpi_tasks, 0);
+	end_cell_new.resize(mpi_tasks, 0);
+
+	if (mpi_myself == 0)
+	{
+		// Normalize times
+		max_task_time = 0;
+		for (size_t i = 0; i < mpi_tasks; i++)
+		{		
+			double task_sum = 0;
+			// normalize cell_times with standard_time
+			for (size_t j = start_cell[i]; j <= end_cell[i]; j++)
+			{
+				task_sum += recv_cell_times[j];
+				normalized_cell_times.push_back(recv_cell_times[j]/standard_time[i]);
+				normalized_total_time += normalized_cell_times.back();
+			}
+			task_time.push_back(task_sum);
+			max_task_time = (task_sum > max_task_time) ? task_sum : max_task_time;
+		}
+
+		// calculate efficiency
+		double efficiency = 0;
+		for (size_t i = 0; i < mpi_tasks; i++)
+		{
+			efficiency += task_time[i] / max_task_time * task_fraction[i];
+		}
+		std::cerr << "          Estimated efficiency of chemistry without communication: " << 
+					   (float) (100. * efficiency);
+
+		// Split up work
+		double f_low, f_high;
+		f_high = 1 + 0.5 / ((double) mpi_tasks);
+		f_low = 1;
+		int j = 0;
+		for (size_t i = 0; i < mpi_tasks - 1; i++)
+		{
+			if (i > 0)
+			{
+				start_cell_new[i] = end_cell_new[i - 1] + 1;
+			}
+			double sum_work = 0;
+			double temp_sum_work = 0;
+			bool next = true;
+			while (next)
+			{
+				temp_sum_work += normalized_cell_times[j] / normalized_total_time;
+				if ((temp_sum_work < task_fraction[i]) && ((count_chem - j) > (mpi_tasks - i)))
+					//(temp_sum_work < f_high * task_fraction[i]) || (sum_work < 0.5 * task_fraction[i])
+					//) 
+					//&&
+					//(count_chem - j) > (mpi_tasks - i)
+					//)
+				{
+					sum_work = temp_sum_work;
+					j++;
+					next = true;
+				}
+				else
+				{
+					if (j == start_cell_new[i])
+					{
+						end_cell_new[i] = j;
+						j++;
+					}
+					else
+					{
+						end_cell_new[i] = j - 1;
+					}
+					next = false;
+				}
+			}
+		}
+		assert(j < count_chem);
+		assert(mpi_tasks > 1);
+		start_cell_new[mpi_tasks - 1] = end_cell_new[mpi_tasks - 2] + 1;
+		end_cell_new[mpi_tasks - 1] = count_chem - 1;
+
+		// Apply rebalance fraction
+		for (size_t i = 0; i < mpi_tasks - 1; i++)
+		{
+			int	icells;
+			icells = (int) (((double) (end_cell_new[i] - end_cell[i])) * (*this->rebalance_fraction_hst) );
+			if (icells == 0)
+			{
+				icells = end_cell_new[i] - end_cell[i];
+			}
+			end_cell_new[i] = end_cell[i] + icells;
+			start_cell_new[i + 1] = end_cell_new[i] + 1;
+		}
+	}
+	
+	/*
+	 *   Broadcast new subcolumns
+	 */
+	
+	MPI_Bcast((void *) start_cell_new.data(), mpi_tasks, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast((void *) end_cell_new.data(), mpi_tasks, MPI_INT, 0, MPI_COMM_WORLD);
+	
+	/*
+	 *   Redefine columns
+	 */
+	int nnew = 0;
+	int old = 0;
+	int change = 0;
+	std::vector<std::vector<int> > change_list;
+
+	for (int k = 0; k < this->count_chem; k++)
+	{
+		int i = k;
+		int iphrq = i;			/* iphrq is 1 to count_chem */
+		int ihst = this->back[i][0];	/* ihst is 1 to nxyz */
+		old_frac[ihst] = frac[ihst];    /* update all old_frac */
+		while (k > end_cell[old])
+		{
+			old++;
+		}
+		while (k > end_cell_new[nnew])
+		{
+			nnew++;
+		}
+
+		if (old == nnew)
+			continue;
+		change++;
+
+		// Need to send cell from old task to nnew task
+		std::vector<int> ints;
+		ints.push_back(k);
+		ints.push_back(old);
+		ints.push_back(nnew);
+		change_list.push_back(ints);
+	}
+
+	// Transfer cells
+	int transfers = 0;
+	int count=0;
+	if (change_list.size() > 0)
+	{
+		std::vector<std::vector<int> >::const_iterator it = change_list.begin();
+		int pold = (*it)[1];
+		int pnew = (*it)[2];
+		cxxStorageBin t_bin;
+		for (; it != change_list.end(); it++)
+		{
+			int n = (*it)[0];
+			int old = (*it)[1];
+			int nnew = (*it)[2];
+			if (old != pold || nnew != pnew)
+			{
+				transfers++;
+				this->Transfer_cells(t_bin, pold, pnew);
+				t_bin.Clear();
+				pold = old;
+				pnew = nnew;
+				
+			}	
+			count++;
+			// Put cell in t_bin
+			if (this->mpi_myself == pold)
+			{
+				phast_iphreeqc_worker->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(t_bin, n);
+				std::ostringstream del;
+				del << "DELETE; -cell " << n << "\n";
+				phast_iphreeqc_worker->RunString(del.str().c_str());
+			}
+		}
+		// Last transfer
+		transfers++;
+		this->Transfer_cells(t_bin, pold, pnew);
+	}
+	
+	for (int i = 0; i < this->mpi_tasks; i++)
+	{
+		start_cell[i] = start_cell_new[i];
+		end_cell[i] = end_cell_new[i];
+	}
+
+	if (this->mpi_myself == 0)
+	{
+		std::cerr << "          Cells shifted between processes   " << change << "\n";
+		//std::cerr << "          Number of mpi cell transfers      " << transfers << "\n";
+	}
+	return;
+}
+/* ---------------------------------------------------------------------- */
+void
 Reaction_module::Rebalance_load(void)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->mpi_tasks <= 1) return;
+	if (this->rebalance_method != 0)
+	{
+		return Rebalance_load_per_cell();
+	}
 #include <time.h>
 
 	// working space
@@ -1773,7 +2020,6 @@ Reaction_module::Rebalance_load(void)
 		std::cerr << "          Cells shifted between threads     " << change << "\n";
 		//std::cerr << "          Number of mpi cell transfers      " << transfers << "\n";
 	}
-	MPI_Barrier(MPI_COMM_WORLD);
 	return;
 }
 void
@@ -2163,9 +2409,8 @@ Reaction_module::Run_cells()
 	{
 		EndTimeStep();
 	}
-
 	// Gather fractions back to root and into Fortran array
-	this->Solutions2Fractions();
+	//this->Solutions2Fractions();
 
 	//std::cerr << "Running: " << (double) (clock() - t0) << std::endl;
 }
@@ -2274,10 +2519,11 @@ Reaction_module::Run_cells_thread(int n)
 	int start = this->start_cell[n];
 	int end = this->end_cell[n];
 #endif
+	phast_iphreeqc_worker->Get_cell_clock_times().clear();
 	for (i = start; i <= end; i++)
 	{							/* i is count_chem number */
 		j = back[i][0];			/* j is nxyz number */
-
+		phast_iphreeqc_worker->Get_cell_clock_times().push_back(- (double) MPI_Wtime());
 		// Set local print flags
 		bool pr_chem = this->print_chem && (this->printzone_chem[j] != 0);
 		bool pr_xyz = this->print_xyz && (this->printzone_xyz[i] != 0);
@@ -2342,7 +2588,6 @@ Reaction_module::Run_cells_thread(int n)
 					cxxsol->multiply(pv0[j] / pv[j]);
 				}
 			}
-
 			// write headings to xyz file
 			if (pr_xyz && this->write_xyz_headings)
 			{
@@ -2429,6 +2674,8 @@ Reaction_module::Run_cells_thread(int n)
 					empty.begin(),empty.end());
 			}
 		}
+		phast_iphreeqc_worker->Get_cell_clock_times().back() += (double) MPI_Wtime();
+
 	} // end one cell
 #ifndef USE_MPI
 //	this->Solutions2Fractions_thread(n);
@@ -2441,6 +2688,7 @@ Reaction_module::Run_cells_thread(int n)
 	std::cerr << "          Thread: " << n << " Time: " << (double) t_elapsed << " Cells: " << this->end_cell[n] - this->start_cell[n] + 1 << std::endl;
 #endif
 	phast_iphreeqc_worker->Set_thread_clock_time((double) t_elapsed);
+	
 }
 /* ---------------------------------------------------------------------- */
 void
@@ -2634,10 +2882,9 @@ Reaction_module::Solutions2Fractions(void)
 			solns.push_back(d[i]);
 		}
 	}
-	
+
 	// make buffer to recv solutions
 	double * recv_solns = new double[(size_t) this->count_chem * this->components.size()];
-
 	// each thread has its own vector of solution components
 	// gather vectors to root
 	for (int n = 1; n < this->mpi_tasks; n++)
@@ -2657,7 +2904,7 @@ Reaction_module::Solutions2Fractions(void)
 			}
 		}
 	}
-
+	
 	// delete recv buffer
 	delete recv_solns;
 
