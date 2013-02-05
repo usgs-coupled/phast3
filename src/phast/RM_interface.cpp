@@ -451,7 +451,7 @@ RM_pass_data(int *id,
 		Reaction_module_ptr->Set_ny(*ny);
 		Reaction_module_ptr->Set_nz(*nz);
 		Reaction_module_ptr->Set_nxyz((*nx) * (*ny) * (*nz));
-		Reaction_module_ptr->Set_cnvtmi(cnvtmi);
+		Reaction_module_ptr->Set_cnvtmi(*cnvtmi);
 		Reaction_module_ptr->Set_x_node(x_node);
 		Reaction_module_ptr->Set_y_node(y_node);
 		Reaction_module_ptr->Set_z_node(z_node);
@@ -459,8 +459,8 @@ RM_pass_data(int *id,
 		Reaction_module_ptr->Set_volume(volume);
 		Reaction_module_ptr->Set_printzone_chem(printzone_chem);
 		Reaction_module_ptr->Set_printzone_xyz(printzone_xyz);
-		Reaction_module_ptr->Set_rebalance_method(rebalance_method);
-		Reaction_module_ptr->Set_rebalance_fraction_hst(rebalance_fraction_hst);
+		Reaction_module_ptr->Set_rebalance_method(*rebalance_method != 0);
+		Reaction_module_ptr->Set_rebalance_fraction(*rebalance_fraction_hst);
 		Reaction_module_ptr->Set_fraction(fraction);
 		Reaction_module_ptr->Set_mpi_myself(*mpi_myself);
 		Reaction_module_ptr->Set_mpi_tasks(*mpi_tasks);
@@ -512,8 +512,8 @@ void RM_run_cells(int *id,
 			Reaction_module_ptr->Set_print_xyz(*print_xyz != 0);
 			Reaction_module_ptr->Set_print_hdf(*print_hdf != 0);
 			Reaction_module_ptr->Set_print_restart(*print_restart != 0);
-			Reaction_module_ptr->Set_time_hst(time_hst);
-			Reaction_module_ptr->Set_time_step_hst(time_step_hst);
+			Reaction_module_ptr->Set_time_hst(*time_hst);
+			Reaction_module_ptr->Set_time_step_hst(*time_step_hst);
 			Reaction_module_ptr->Set_fraction(fraction);
 			Reaction_module_ptr->Set_frac(frac);
 			Reaction_module_ptr->Set_pv(pv);
