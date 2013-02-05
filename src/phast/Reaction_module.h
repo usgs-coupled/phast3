@@ -108,12 +108,12 @@ public:
 	const int Get_nz(void) const {return this->nz;};
 	void Set_nz(int t) {this->nz = t;};
 	const std::vector<std::string> & Get_components(void) const {return this->components;};
-	const double * Get_time_hst(void) const {return this->time_hst;};
-	void Set_time_hst(double * t) {this->time_hst = t;};
-	const double *Get_time_step_hst(void) const {return this->time_step_hst;};
-	void Set_time_step_hst(double * t) {this->time_step_hst = t;};
-	const double * Get_cnvtmi(void) const {return this->cnvtmi;};
-	void Set_cnvtmi(double * t) {this->cnvtmi = t;};
+	double Get_time_hst(void) const {return this->time_hst;};
+	void Set_time_hst(double t) {this->time_hst = t;};
+	double Get_time_step_hst(void) const {return this->time_step_hst;};
+	void Set_time_step_hst(double t) {this->time_step_hst = t;};
+	const double Get_cnvtmi(void) const {return this->cnvtmi;};
+	void Set_cnvtmi(double t) {this->cnvtmi = t;};
 	const double * Get_x_node(void) const {return this->x_node;};
 	void Set_x_node(double * t) {this->x_node = t;};
 	const double * Get_y_node(void) const {return this->y_node;};
@@ -134,10 +134,10 @@ public:
 	void Set_printzone_chem(int * t) {this->printzone_chem = t;};
 	const int * Get_printzone_xyz(void) const {return this->printzone_xyz;};
 	void Set_printzone_xyz(int * t) {this->printzone_xyz = t;};
-	const int * Get_rebalance_method(void) const {return this->rebalance_method;};
-	void Set_rebalance_method(int * t) {this->rebalance_method = t;};
-	const double * Get_rebalance_fraction_hst(void) const {return this->rebalance_fraction_hst;};
-	void Set_rebalance_fraction_hst(double * t) {this->rebalance_fraction_hst = t;};
+	int Get_rebalance_method(void) const {return this->rebalance_method;};
+	void Set_rebalance_method(bool t) {this->rebalance_method = t;};
+	double Get_rebalance_fraction(void) const {return this->rebalance_fraction;};
+	void Set_rebalance_fraction(double t) {this->rebalance_fraction = t;};
 	const bool Get_prslm(void) const {return this->prslm;};
 	void Set_prslm(bool t) {this->prslm = t;};
 	const bool Get_print_chem(void) const {return this->print_chem;};
@@ -171,9 +171,9 @@ protected:
 	bool transient_free_surface;            // free surface and not steady flow
 	int nxyz;								// number of nodes 
 	int nx, ny, nz;							// number of nodes in each coordinate direction
-	double *time_hst;						// scalar time from transport 
-	double *time_step_hst;					// scalar time step from transport
-	double *cnvtmi;							// scalar conversion factor for time
+	double time_hst;						// scalar time from transport 
+	double time_step_hst;					// scalar time step from transport
+	double cnvtmi;							// scalar conversion factor for time
 	double *x_node;							// nxyz array of X coordinates for nodes
 	double *y_node;							// nxyz array of Y coordinates for nodes 
 	double *z_node;							// nxyz array of Z coordinates for nodes
@@ -184,8 +184,8 @@ protected:
 	double *volume;							// nxyz geometric cell volumes 
 	int *printzone_chem;					// nxyz print flags for output file
 	int *printzone_xyz;						// nxyz print flags for chemistry XYZ file 
-	int * rebalance_method;                 // rebalance method 0 std, 1 by_cell
-	double *rebalance_fraction_hst;			// parameter for rebalancing process load for parallel	
+	bool rebalance_method;                  // rebalance method 0 std, 1 by_cell
+	double rebalance_fraction;			    // parameter for rebalancing process load for parallel	
 	int * ic1;								// reactant number for end member 1; indicates presence in model
 	std::vector <int> forward;				// mapping from nxyz cells to count_chem chemistry cells
 	std::vector <std::vector <int> > back;	// mapping from count_chem chemistry cells to nxyz cells 

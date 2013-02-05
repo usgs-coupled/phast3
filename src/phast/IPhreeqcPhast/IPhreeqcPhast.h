@@ -32,10 +32,10 @@ public:
 	void Set_standard_clock_time(double t) {this->standard_clock_time = t;}
 	double Get_standard_clock_time(void) {return this->standard_clock_time;}
 
-	//void Set_start_cell(int i) {this->start_cell = i;}
-	//int Get_start_cell(void) {return this->start_cell;}
-	//void Set_end_cell(int i) {this->end_cell = i;}
-	//int Get_end_cell(void) {return this->end_cell;}
+	void Set_start_cell(int i) {this->start_cell = i;}
+	int Get_start_cell(void) {return this->start_cell;}
+	void Set_end_cell(int i) {this->end_cell = i;}
+	int Get_end_cell(void) {return this->end_cell;}
 	std::vector < double > & Get_cell_clock_times(void) {return this->cell_clock_times;}
 protected:
 	friend class IPhreeqcPhastLib;
@@ -43,8 +43,8 @@ protected:
 	static size_t PhastInstancesIndex;
 
 	// Data members
-	//int start_cell;
-	//int end_cell;
+	int start_cell;
+	int end_cell;
 	std::ostringstream * out_stream;
 	std::ostringstream * punch_stream;
 	std::vector < double > punch_vector;
