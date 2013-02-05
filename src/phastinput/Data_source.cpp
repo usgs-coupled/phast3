@@ -889,6 +889,7 @@ bool Data_source::Make_polygons()
 			this->phast_polygons.Set_coordinate_system(this->
 													   coordinate_system);
 			this->phast_polygons.Set_bounding_box();
+			this->phast_polygons.Set_whole(PHAST_polygon2gpc_polygon(&(this->phast_polygons)));
 			return true;
 		}
 		break;
