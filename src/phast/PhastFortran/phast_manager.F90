@@ -449,6 +449,7 @@ SUBROUTINE time_parallel(i)
 #if defined(USE_MPI)
 USE mpi_mod
 USE mpi
+#endif
 IMPLICIT none   
 integer :: i, ierr
 DOUBLE PRECISION t
@@ -456,9 +457,16 @@ DOUBLE PRECISION, DIMENSION(0:15), save :: times
 DOUBLE PRECISION, save :: time_flow=0, time_transfer, time_transport, time_chemistry
 DOUBLE PRECISION, save :: cum_flow=0, cum_transfer=0, cum_transport=0, cum_chemistry
 CHARACTER(LEN=130) :: logline
+#ifndef USE_MPI
+INTEGER t_ticks, clock_rate, clock_max
+#endif
 
+#if defined(USE_MPI)
     t = MPI_Wtime()
-
+#else    
+    call SYSTEM_CLOCK(t_ticks, clock_rate, clock_max)
+    t = real(t_ticks) / real(clock_rate)
+#endif    
     if (i == 0) then
         times = -1.0
         times(0) = t
@@ -515,8 +523,6 @@ CHARACTER(LEN=130) :: logline
         write (logline,"(t6,a25, f12.2,a17, f13.2)") "Time chemistry:          ", time_chemistry, " Cumulative:", cum_chemistry
         CALL RM_log_screen_prt(logline)     
     endif
-
-#endif
 END SUBROUTINE time_parallel
 SUBROUTINE transport_component(i)
     USE mcc, ONLY: cylind, errexe, errexi, rm_id
