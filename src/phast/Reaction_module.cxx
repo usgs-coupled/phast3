@@ -25,7 +25,6 @@
 #ifdef USE_MPI
 #include <mpi.h>
 #endif
-#define protected public
 #include "Phreeqc.h"
 Reaction_module::Reaction_module(int thread_count, PHRQ_io *io)
 	//

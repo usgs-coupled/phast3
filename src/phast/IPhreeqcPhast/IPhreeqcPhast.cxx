@@ -1,8 +1,6 @@
 #include "IPhreeqcPhast.h"
-#define protected public
 #include "Phreeqc.h"
 #include "Solution.h"
-#undef protected
 #include "SelectedOutput.hxx"       // CSelectedOutput
 
 #include <assert.h>
