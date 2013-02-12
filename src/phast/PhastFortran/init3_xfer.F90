@@ -70,7 +70,7 @@ SUBROUTINE thru_distribute
                 i_dummy = 0
             ENDIF 
         ENDIF
-        CALL MPI_BCAST(i_dummy, 1, MPI_INT, manager,  &
+        CALL MPI_BCAST(i_dummy, 1, MPI_INTEGER, manager,  &
             MPI_COMM_WORLD, ierrmpi)          
         IF (mpi_myself > 0) THEN
             IF (i_dummy .ne. 0) THEN
@@ -204,7 +204,7 @@ SUBROUTINE init3_bcast_m
 
   ! *** 13 broadcast deltim, timchg
   array_bcst_r(1) = deltim; array_bcst_r(2) = timchg
-    CALL MPI_BCAST(array_bcst_r(1), 2, MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(array_bcst_r(1), 2, MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
 #endif 
 ! end USE_MPI
@@ -382,7 +382,7 @@ SUBROUTINE init3_bcast_w
   END IF
 
   ! *** 13 broadcast deltim, timchg
-  CALL MPI_BCAST(array_recv_r(1), 2, MPI_DOUBLE, manager, &
+  CALL MPI_BCAST(array_recv_r(1), 2, MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
 
   jtime = 0

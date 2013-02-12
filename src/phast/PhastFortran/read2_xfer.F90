@@ -51,11 +51,11 @@ SUBROUTINE read2_xfer_m
 
   ! *** 1 broadcast x, y, z
   ! ... create MPI structure for three real arrays
-    CALL MPI_BCAST(x(1), nx, MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(x(1), nx, MPI_DOUBLE_PRECISION, manager, &
             world, ierrmpi)
-    CALL MPI_BCAST(y(1), ny, MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(y(1), ny, MPI_DOUBLE_PRECISION, manager, &
             world, ierrmpi)
-    CALL MPI_BCAST(z(1), nz, MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(z(1), nz, MPI_DOUBLE_PRECISION, manager, &
             world, ierrmpi)
 
   !*** 2 broadcast bp, p0, w0, denf0, visfac, paatm, dm, t0, p0h, t0h
@@ -63,7 +63,7 @@ SUBROUTINE read2_xfer_m
   array_bcst_r(4) = denf0; array_bcst_r(5) = visfac; array_bcst_r(6) = paatm
   array_bcst_r(7) = dm; array_bcst_r(8) = t0
   array_bcst_r(9) = p0h; array_bcst_r(10) = t0h
-  CALL MPI_BCAST(array_bcst_r(1), 10, MPI_DOUBLE, manager, &
+  CALL MPI_BCAST(array_bcst_r(1), 10, MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
 
   !*** 3 broadcast        i1z(npmz), i2z(npmz), j1z(npmz), j2z(npmz), k1z(npmz), k2z(npmz)
@@ -83,18 +83,18 @@ SUBROUTINE read2_xfer_m
 
   !*** 4 broadcast poros, abpm
   ! ... create MPI structure for two real arrays
-    CALL MPI_BCAST(poros(1), SIZE(poros), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(poros(1), SIZE(poros), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(abpm(1), SIZE(abpm), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(abpm(1), SIZE(abpm), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
 
   !*** 5 broadcast alphl, alphth, alphtv
   ! ... create MPI structure for three real arrays
-    CALL MPI_BCAST(alphl(1), SIZE(alphl), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(alphl(1), SIZE(alphl), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(alphth(1), SIZE(alphth), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(alphth(1), SIZE(alphth), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(alphtv(1), SIZE(alphtv), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(alphtv(1), SIZE(alphtv), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
 
   IF(nwel > 0) THEN  
@@ -103,16 +103,16 @@ SUBROUTINE read2_xfer_m
 
      ! *** 6 broadcast wqmeth, nkswel
      ! ... create MPI structure for 2 integer arrays
-    CALL MPI_BCAST(wqmeth(1), SIZE(wqmeth), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(wqmeth(1), SIZE(wqmeth), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(nkswel(1), SIZE(nkswel), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(nkswel(1), SIZE(nkswel), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
 
      ! *** 7 broadcast wbod, wfrac
      ! ... create MPI structure for two real arrays
-    CALL MPI_BCAST(wbod(1), SIZE(wbod), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(wbod(1), SIZE(wbod), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(wfrac(1), SIZE(wfrac), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(wfrac(1), SIZE(wfrac), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
 
      ! *** 8 broadcast mwel
@@ -122,9 +122,9 @@ SUBROUTINE read2_xfer_m
          
      ! *** 8a broadcast wrid, wrangl
      ! ... create MPI structure for two real arrays
-    CALL MPI_BCAST(wrid(1), SIZE(wrid), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(wrid(1), SIZE(wrid), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(wrangl(1), SIZE(wrangl), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(wrangl(1), SIZE(wrangl), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
            
   ENDIF
@@ -158,7 +158,7 @@ SUBROUTINE read2_xfer_m
      ! ... create MPI structure for one integer & one real array
     CALL MPI_BCAST(ifacefbc(1), SIZE(ifacefbc), MPI_INTEGER, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(areafbc(1), SIZE(areafbc), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(areafbc(1), SIZE(areafbc), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)  
   ENDIF
 
@@ -179,16 +179,16 @@ SUBROUTINE read2_xfer_m
      ! ... create MPI structure for one integer & one real array
     CALL MPI_BCAST(ifacelbc(1), SIZE(ifacelbc), MPI_INTEGER, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(arealbc(1), SIZE(arealbc), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(arealbc(1), SIZE(arealbc), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
 
      ! *** 17 broadcast klbc, bblbc, zelbc
      ! ... create MPI structure for three real arrays
-    CALL MPI_BCAST(klbc(1), SIZE(klbc), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(klbc(1), SIZE(klbc), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(bblbc(1), SIZE(bblbc), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(bblbc(1), SIZE(bblbc), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(zelbc(1), SIZE(zelbc), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(zelbc(1), SIZE(zelbc), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi) 
   ENDIF
 
@@ -209,16 +209,16 @@ SUBROUTINE read2_xfer_m
      ! ... create MPI structure for one integer & one real array
     CALL MPI_BCAST(mrseg_bot(1), SIZE(mrseg_bot), MPI_INTEGER, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(arearbc(1), SIZE(arearbc), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(arearbc(1), SIZE(arearbc), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
 
      ! *** 21 broadcast krbc, bbrbc, zerbc
      ! ... create MPI structure for three real arrays
-    CALL MPI_BCAST(krbc(1), SIZE(krbc), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(krbc(1), SIZE(krbc), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(bbrbc(1), SIZE(bbrbc), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(bbrbc(1), SIZE(bbrbc), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(zerbc(1), SIZE(zerbc), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(zerbc(1), SIZE(zerbc), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)  
   ENDIF
 
@@ -239,16 +239,16 @@ SUBROUTINE read2_xfer_m
      ! ... create MPI structure for one integer & one real array
     CALL MPI_BCAST(mdseg_bot(1), SIZE(mdseg_bot), MPI_INTEGER, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(areadbc(1), SIZE(areadbc), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(areadbc(1), SIZE(areadbc), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
 
      ! *** 25 broadcast kdbc, bbdbc, zedbc
      ! ... create MPI structure for three real arrays
-    CALL MPI_BCAST(kdbc(1), SIZE(kdbc), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(kdbc(1), SIZE(kdbc), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(bbdbc(1), SIZE(bbdbc), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(bbdbc(1), SIZE(bbdbc), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(zedbc(1), SIZE(zedbc), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(zedbc(1), SIZE(zedbc), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
   ENDIF
 
@@ -268,7 +268,7 @@ SUBROUTINE read2_xfer_m
   IF (crosd) array_bcst_i(1) = 1
      CALL MPI_BCAST(array_bcst_i(1), 1, MPI_INTEGER, manager, &
           world, ierrmpi)
-     CALL MPI_BCAST(array_bcst_r(1), 2, MPI_DOUBLE, manager, &
+     CALL MPI_BCAST(array_bcst_r(1), 2, MPI_DOUBLE_PRECISION, manager, &
           world, ierrmpi)    
 
   IF(slmeth == 3 .OR. slmeth == 5) THEN
@@ -281,7 +281,7 @@ SUBROUTINE read2_xfer_m
      array_bcst_r(1) = epsslv
      CALL MPI_BCAST(array_bcst_i(1), 4, MPI_INTEGER, manager, &
           world, ierrmpi)
-     CALL MPI_BCAST(epsslv, 1, MPI_DOUBLE, manager, &
+     CALL MPI_BCAST(epsslv, 1, MPI_DOUBLE_PRECISION, manager, &
           world, ierrmpi)
   END IF
 
@@ -325,15 +325,15 @@ SUBROUTINE read2_xfer_w
 !  IF(.NOT.cylind) THEN
      ! ... 1 Receive aquifer description - spatial mesh data
      ! ...      rectangular coordinates
-    CALL MPI_BCAST(x(1), nx, MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(x(1), nx, MPI_DOUBLE_PRECISION, manager, &
             world, ierrmpi)
-    CALL MPI_BCAST(y(1), ny, MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(y(1), ny, MPI_DOUBLE_PRECISION, manager, &
             world, ierrmpi)
-    CALL MPI_BCAST(z(1), nz, MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(z(1), nz, MPI_DOUBLE_PRECISION, manager, &
             world, ierrmpi)
 
   !*** 2 broadcast bp, p0, w0, denf0, visfac, paatm, dm, t0, p0h, t0h
-  CALL MPI_BCAST(array_recv_r(1), 10, MPI_DOUBLE, manager, &
+  CALL MPI_BCAST(array_recv_r(1), 10, MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
 
   bp = array_recv_r(1); p0 = array_recv_r(2); w0 = array_recv_r(3)
@@ -376,18 +376,18 @@ SUBROUTINE read2_xfer_w
   !*** 4 broadcast poros, abpm   
   ! ... Permeability; not needed
   ! ... Porosity & porous media compressibilities
-    CALL MPI_BCAST(poros(1), SIZE(poros), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(poros(1), SIZE(poros), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(abpm(1), SIZE(abpm), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(abpm(1), SIZE(abpm), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
 
   !*** 5 broadcast alphl, alphth, alphtv   
   ! ... Dispersivities for solute
-    CALL MPI_BCAST(alphl(1), SIZE(alphl), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(alphl(1), SIZE(alphl), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(alphth(1), SIZE(alphth), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(alphth(1), SIZE(alphth), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(alphtv(1), SIZE(alphtv), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(alphtv(1), SIZE(alphtv), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
 
   ! ... Well bore model information
@@ -409,15 +409,15 @@ SUBROUTINE read2_xfer_w
      ! ... Well bore location and structural data
      ! ... Read well completion cells and screen lengths in lower and upper parts
      ! ... no well riser calculations allowed in phast
-    CALL MPI_BCAST(wqmeth(1), SIZE(wqmeth), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(wqmeth(1), SIZE(wqmeth), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(nkswel(1), SIZE(nkswel), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(nkswel(1), SIZE(nkswel), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
 
      ! *** 7 broadcast wbod, wfrac
-    CALL MPI_BCAST(wbod(1), SIZE(wbod), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(wbod(1), SIZE(wbod), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(wfrac(1), SIZE(wfrac), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(wfrac(1), SIZE(wfrac), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
 
      ! *** 8 broadcast mwel      
@@ -426,9 +426,9 @@ SUBROUTINE read2_xfer_w
           world, ierrmpi)
 
      ! *** 8a broadcast wrid, wrangl
-    CALL MPI_BCAST(wrid(1), SIZE(wrid), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(wrid(1), SIZE(wrid), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(wrangl(1), SIZE(wrangl), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(wrangl(1), SIZE(wrangl), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
 
   ENDIF
@@ -486,7 +486,7 @@ SUBROUTINE read2_xfer_w
      ! *** 13 broadcast ifacefbc, areafbc   
     CALL MPI_BCAST(ifacefbc(1), SIZE(ifacefbc), MPI_INTEGER, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(areafbc(1), SIZE(areafbc), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(areafbc(1), SIZE(areafbc), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
   ENDIF
 
@@ -521,15 +521,15 @@ SUBROUTINE read2_xfer_w
      ! *** 16 broadcast ifacelbc, arealbc
     CALL MPI_BCAST(ifacelbc(1), SIZE(ifacelbc), MPI_INTEGER, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(arealbc(1), SIZE(arealbc), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(arealbc(1), SIZE(arealbc), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
 
      ! *** 17 broadcast klbc, bblbc, zelbc
-    CALL MPI_BCAST(klbc(1), SIZE(klbc), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(klbc(1), SIZE(klbc), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(bblbc(1), SIZE(bblbc), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(bblbc(1), SIZE(bblbc), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(zelbc(1), SIZE(zelbc), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(zelbc(1), SIZE(zelbc), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
   ENDIF
   ! ... River b.c. 
@@ -564,15 +564,15 @@ SUBROUTINE read2_xfer_w
      ! *** 20 broadcast mrseg_bot,  arearbc   
     CALL MPI_BCAST(mrseg_bot(1), SIZE(mrseg_bot), MPI_INTEGER, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(arearbc(1), SIZE(arearbc), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(arearbc(1), SIZE(arearbc), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)     
 
      ! *** 21 broadcast krbc, bbrbc, zerbc
-    CALL MPI_BCAST(krbc(1), SIZE(krbc), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(krbc(1), SIZE(krbc), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(bbrbc(1), SIZE(bbrbc), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(bbrbc(1), SIZE(bbrbc), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(zerbc(1), SIZE(zerbc), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(zerbc(1), SIZE(zerbc), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
   ENDIF
 
@@ -605,15 +605,15 @@ SUBROUTINE read2_xfer_w
      ! *** 24 broadcast mdseg_bot,  areadbc
     CALL MPI_BCAST(mdseg_bot(1), SIZE(mdseg_bot), MPI_INTEGER, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(areadbc(1), SIZE(areadbc), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(areadbc(1), SIZE(areadbc), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
 
      ! *** 25 broadcast kdbc, bbdbc, zedbc
-    CALL MPI_BCAST(kdbc(1), SIZE(kdbc), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(kdbc(1), SIZE(kdbc), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(bbdbc(1), SIZE(bbdbc), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(bbdbc(1), SIZE(bbdbc), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
-    CALL MPI_BCAST(zedbc(1), SIZE(zedbc), MPI_DOUBLE, manager, &
+    CALL MPI_BCAST(zedbc(1), SIZE(zedbc), MPI_DOUBLE_PRECISION, manager, &
         world, ierrmpi)
   ENDIF
 
@@ -627,7 +627,7 @@ SUBROUTINE read2_xfer_w
   ! *** 27 broadcast fdsmth, fdtmth, crosd
      CALL MPI_BCAST(array_recv_i(1), 1, MPI_INTEGER, manager, &
           world, ierrmpi)
-     CALL MPI_BCAST(array_recv_r(1), 2, MPI_DOUBLE, manager, &
+     CALL MPI_BCAST(array_recv_r(1), 2, MPI_DOUBLE_PRECISION, manager, &
           world, ierrmpi)
 
   fdsmth = array_recv_r(1); fdtmth = array_recv_r(2)
@@ -638,7 +638,7 @@ SUBROUTINE read2_xfer_w
      ! *** broadcast 28 idir, milu, nsdr,  maxit2, epsslv
      CALL MPI_BCAST(array_recv_i(1), 4, MPI_INTEGER, manager, &
           world, ierrmpi)
-     CALL MPI_BCAST(array_recv_r(1), 1, MPI_DOUBLE, manager, &
+     CALL MPI_BCAST(array_recv_r(1), 1, MPI_DOUBLE_PRECISION, manager, &
           world, ierrmpi)
      idir = array_recv_i(1)
      milu = .FALSE.
