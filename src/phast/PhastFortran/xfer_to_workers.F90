@@ -64,8 +64,6 @@ SUBROUTINE c_distribute
 #if defined(USE_MPI)
   ! ... worker to managet transfer
   tag = 0
-  CALL MPI_BCAST(time, 1, MPI_DOUBLE_PRECISION, manager, &
-    world, ierrmpi) 
   DO iis=1,ns
      IF (component_map(iis) > 0) THEN
         IF (mpi_myself == 0) THEN
@@ -110,11 +108,11 @@ SUBROUTINE flow_distribute
         ! *** broadcast tfx, tfy, tfz from flow solution
         ! ... create MPI structure for three real arrays
 
-        CALL MPI_BCAST(tfx(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
+        CALL MPI_BCAST(tfx(1), nxyz, MPI_DOUBLE, manager, &
             world, ierrmpi)
-        CALL MPI_BCAST(tfy(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
+        CALL MPI_BCAST(tfy(1), nxyz, MPI_DOUBLE, manager, &
             world, ierrmpi)
-        CALL MPI_BCAST(tfz(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
+        CALL MPI_BCAST(tfz(1), nxyz, MPI_DOUBLE, manager, &
             world, ierrmpi)
         IF (.NOT. steady_flow) THEN
             ! *** broadcast dp
@@ -168,11 +166,11 @@ SUBROUTINE tfx_distribute
         ! *** broadcast tfx, tfy, tfz
         ! ... create MPI structure for three real arrays
 
-        CALL MPI_BCAST(tfx(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
+        CALL MPI_BCAST(tfx(1), nxyz, MPI_DOUBLE, manager, &
             world, ierrmpi)
-        CALL MPI_BCAST(tfy(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
+        CALL MPI_BCAST(tfy(1), nxyz, MPI_DOUBLE, manager, &
             world, ierrmpi)
-        CALL MPI_BCAST(tfz(1), nxyz, MPI_DOUBLE_PRECISION, manager, &
+        CALL MPI_BCAST(tfz(1), nxyz, MPI_DOUBLE, manager, &
             world, ierrmpi)
     END IF
 #endif

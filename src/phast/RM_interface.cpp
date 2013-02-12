@@ -686,7 +686,7 @@ void RM_zone_flow_write_chem(int *print_zone_flows_xyzt)
 /* ---------------------------------------------------------------------- */
 {
 #ifdef USE_MPI
-	MPI_Bcast(print_zone_flows_xyzt, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(print_zone_flows_xyzt, 1, MPI_INTEGER, 0, MPI_COMM_WORLD);
 #endif
 	if (print_zone_flows_xyzt != 0)
 	{
