@@ -282,6 +282,10 @@ SUBROUTINE phast_manager
         fdtmth = fdtmth_tr     ! ... set time differencing method to transient
         DO
             CALL time_parallel(0)
+#ifdef USE_MPI            
+            a_err = -1
+            CALL MPI_BCAST(a_err, 1, MPI_INTEGER, manager, world, ierrmpi)
+#endif            
             CALL c_distribute
             CALL p_distribute
             CALL time_parallel(1)
@@ -309,6 +313,10 @@ SUBROUTINE phast_manager
             END DO                
             CALL time_parallel(4)
             CALL thru_distribute
+#ifdef USE_MPI            
+            a_err = -2
+            CALL MPI_BCAST(a_err, 1, MPI_INTEGER, manager, world, ierrmpi)
+#endif                        
             CALL time_parallel(5)
             IF (thru) EXIT        ! ... second step of exit
 
@@ -329,7 +337,15 @@ SUBROUTINE phast_manager
                 CALL write5
                 EXIT
             END IF
+#ifdef USE_MPI            
+            a_err = -3
+            CALL MPI_BCAST(a_err, 1, MPI_INTEGER, manager, world, ierrmpi)
+#endif              
 20          CALL timestep
+#ifdef USE_MPI            
+            a_err = -4
+            CALL MPI_BCAST(a_err, 1, MPI_INTEGER, manager, world, ierrmpi)
+#endif  
             CALL write6           ! ... print conductance values
 
             ! .... Send transient flow to workers
