@@ -228,6 +228,10 @@ SUBROUTINE phast_worker
         fdtmth = fdtmth_tr     ! ... set time differencing method to transient
         DO       
             ! ... Transport calculation
+#ifdef USE_MPI            
+            CALL MPI_BCAST(a_err, 1, MPI_INTEGER, manager, world, ierrmpi)
+            if (a_err .ne. -1) STOP "a_err is wrong -1"
+#endif           
             CALL c_distribute
             CALL p_distribute
 
@@ -241,18 +245,31 @@ SUBROUTINE phast_worker
                     IF(errexi) EXIT
                 END DO
             ENDIF
-            CALL thru_distribute  
+            CALL thru_distribute 
+#ifdef USE_MPI            
+            CALL MPI_BCAST(a_err, 1, MPI_INTEGER, manager, world, ierrmpi)
+            if (a_err .ne. -2) STOP "a_err is wrong -2"
+#endif
             IF (thru) EXIT          ! ... second step of exit
-            
-            CALL timestep_worker     ! ... this only receives some data. it is a hold point      
+#ifdef USE_MPI            
+            CALL MPI_BCAST(a_err, 1, MPI_INTEGER, manager, world, ierrmpi)
+            if (a_err .ne. -3) STOP "a_err is wrong -3"
+#endif            
+            CALL timestep_worker     ! ... this only receives some data. it is a hold point
+#ifdef USE_MPI            
+            CALL MPI_BCAST(a_err, 1, MPI_INTEGER, manager, world, ierrmpi)
+            if (a_err .ne. -4) STOP "a_err is wrong -4"
+#endif            
             IF (.NOT. steady_flow) CALL flow_distribute    
 
             ! ... Processes do transport
             IF (local_ns > 0) THEN 
                 CALL RM_transport(rm_id, local_ns)
-                if (mpi_tasks > 1) CALL MPI_Barrier(world, ierrmpi)
+                CALL MPI_Barrier(world, ierrmpi)
                 CALL sbc_gather
                 CALL c_gather
+            ELSE
+                CALL MPI_Barrier(world, ierrmpi)
             ENDIF
             IF(errexe .OR. errexi) GO TO 50
 
