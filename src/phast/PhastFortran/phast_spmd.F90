@@ -48,7 +48,7 @@ SUBROUTINE phast_sub(l_mpi_tasks, l_mpi_myself)
   ELSE                         
      CALL phast_worker         ! ... the worker's tasks
   ENDIF
-  print *, "End of phast_spmd. ", mpi_myself
+  !print *, "End of phast_spmd. ", mpi_myself
 #else
   call phast_manager
 #endif
