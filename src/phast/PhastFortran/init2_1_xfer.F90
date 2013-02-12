@@ -35,7 +35,7 @@ SUBROUTINE init2_1_xfer_m
   !*** 1 broadcast gx, gy, gz
   ! ... Load the scalar variables
   array_bcst_r(1) = gx; array_bcst_r(2) = gy; array_bcst_r(3) = gz
-     CALL MPI_BCAST(array_bcst_r, 3, MPI_DOUBLE, manager, &
+     CALL MPI_BCAST(array_bcst_r, 3, MPI_DOUBLE_PRECISION, manager, &
           world, ierrmpi)
 
   ! *** 2 broadcast xd_mask
@@ -44,18 +44,18 @@ SUBROUTINE init2_1_xfer_m
 
   ! *** 3 broadcast arx, ary, arz
   ! ... create MPI structure for three real arrays
-     CALL MPI_BCAST(arx(1), SIZE(arx), MPI_DOUBLE, manager, &
+     CALL MPI_BCAST(arx(1), SIZE(arx), MPI_DOUBLE_PRECISION, manager, &
           world, ierrmpi)
-     CALL MPI_BCAST(ary(1), SIZE(ary), MPI_DOUBLE, manager, &
+     CALL MPI_BCAST(ary(1), SIZE(ary), MPI_DOUBLE_PRECISION, manager, &
           world, ierrmpi)
-     CALL MPI_BCAST(arz(1), SIZE(arz), MPI_DOUBLE, manager, &
+     CALL MPI_BCAST(arz(1), SIZE(arz), MPI_DOUBLE_PRECISION, manager, &
           world, ierrmpi)
 
   ! *** 4 broadcast pv, pmcv     ***** calculated in init2.1, sumcal
   ! ... create MPI structure for two real arrays
-     CALL MPI_BCAST(pv(1), SIZE(pv), MPI_DOUBLE, manager, &
+     CALL MPI_BCAST(pv(1), SIZE(pv), MPI_DOUBLE_PRECISION, manager, &
           world, ierrmpi)
-     CALL MPI_BCAST(pmcv(1), SIZE(pmcv), MPI_DOUBLE, manager, &
+     CALL MPI_BCAST(pmcv(1), SIZE(pmcv), MPI_DOUBLE_PRECISION, manager, &
           world, ierrmpi)
 
   ! *** 5 broadcast ibc
@@ -258,7 +258,7 @@ SUBROUTINE init2_1_xfer_w
 
   !*** 1 broadcast gx, gy, gz
   ! ... receive gx, gy, gz
-     CALL MPI_BCAST(array_recv_r, 3, MPI_DOUBLE, manager, &
+     CALL MPI_BCAST(array_recv_r, 3, MPI_DOUBLE_PRECISION, manager, &
           world, ierrmpi)
 
   gx = array_recv_r(1); gy = array_recv_r(2); gz = array_recv_r(3)
@@ -306,18 +306,18 @@ SUBROUTINE init2_1_xfer_w
 
   ! *** 3 broadcast arx, ary, arz    
   ! ... receive arx, ary, arz arrays
-     CALL MPI_BCAST(arx(1), SIZE(arx), MPI_DOUBLE, manager, &
+     CALL MPI_BCAST(arx(1), SIZE(arx), MPI_DOUBLE_PRECISION, manager, &
           world, ierrmpi)
-     CALL MPI_BCAST(ary(1), SIZE(ary), MPI_DOUBLE, manager, &
+     CALL MPI_BCAST(ary(1), SIZE(ary), MPI_DOUBLE_PRECISION, manager, &
           world, ierrmpi)
-     CALL MPI_BCAST(arz(1), SIZE(arz), MPI_DOUBLE, manager, &
+     CALL MPI_BCAST(arz(1), SIZE(arz), MPI_DOUBLE_PRECISION, manager, &
           world, ierrmpi)
 
   ! *** 4 broadcast pv, pmcv     ***** calculated in init2.1, sumcal    
   ! ... receive pv, pmcv arrays
-     CALL MPI_BCAST(pv(1), SIZE(pv), MPI_DOUBLE, manager, &
+     CALL MPI_BCAST(pv(1), SIZE(pv), MPI_DOUBLE_PRECISION, manager, &
           world, ierrmpi)
-     CALL MPI_BCAST(pmcv(1), SIZE(pmcv), MPI_DOUBLE, manager, &
+     CALL MPI_BCAST(pmcv(1), SIZE(pmcv), MPI_DOUBLE_PRECISION, manager, &
           world, ierrmpi)
 
   ! *** 5 broadcast ibc    
