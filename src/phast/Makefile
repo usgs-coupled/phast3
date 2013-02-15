@@ -338,7 +338,7 @@ ifeq ($(CFG), SERIAL_INTEL)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FINTEL)
-  FFLAGS       = -g -nus -openmp -recursive -reentrancy threaded $(DEFINES)
+  FFLAGS       = -O3 -nus -openmp -recursive -reentrancy threaded $(DEFINES)
   CXX          = g++
   CFLAGS       = -Wall  -O3 -fopenmp $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS)  $(COMMON_CXXOBJS) $(HDF_OBJS)
@@ -380,11 +380,11 @@ ifeq ($(CFG), SERIAL_INTEL_64_DEBUG)
   FC_FUNC      = -DFC_FUNC\(name,NAME\)=name -DFC_FUNC_\(name,NAME\)=name
   VPATH        = $(PHREEQC_VPATH)
   FC           = $(FINTEL)
-  FFLAGS       = -g -nus -openmp -recursive -reentrancy threaded $(DEFINES)
+  FFLAGS       = -check bounds -check pointer -check arg_temp_created -g -nus -openmp -openmp-threadprivate compat -auto -recursive -reentrancy threaded $(DEFINES) #
   CXX          = g++
   CFLAGS       = -Wall -g -fopenmp $(DEFINES) $(FC_FUNC) $(HDF5_INCLUDES) $(PHREEQC_INCLUDES) 
   OBJECT_FILES = $(COMMON_FOBJS) $(COMMON_COBJS)  $(COMMON_CXXOBJS) $(HDF_OBJS)
-  LD_FLAGS     = ${IFORT_LIB_64} -lgomp ${HDF5_LIBS_64} ${HASH_STYLE} 
+  LD_FLAGS     = -g ${IFORT_LIB_64} -threads /z/loboraid/raid3/intel/Compiler/11.0/083/lib/intel64/libiomp5.a ${HDF5_LIBS_64} ${HASH_STYLE} 
   LINKER       = $(CXX)
 endif
 
@@ -882,12 +882,11 @@ depends:
 	mkdir -p temp_dependency_dir
 	cd temp_dependency_dir; gcc -MM $(DEFINE_HDF) -I.. -I../IPhreeqcPhast \
 	-I../IPhreeqcPhast/IPhreeqc -I../IPhreeqcPhast/IPhreeqc/phreeqcpp \
-	-I../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc -I../KDtree \
+	-I../KDtree \
 	../*.cxx ../*.cpp \
 	../IPhreeqcPhast/*.cpp 	../IPhreeqcPhast/*.cxx \
 	../IPhreeqcPhast/IPhreeqc/*.cpp ../IPhreeqcPhast/IPhreeqc/*.c \
 	../IPhreeqcPhast/IPhreeqc/phreeqcpp/*.cxx ../IPhreeqcPhast/IPhreeqc/phreeqcpp/*.cpp \
-	../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc/*.cpp \
 	../KDtree/*.cpp $(PHASTINPUT_FILES) > ../dependencies
 #	cd temp_dependency_dir; gfortran -MM $(DEFINE_HDF) -I.. -I../IPhreeqcPhast \
 #	../PhastFortran/*.f90 ../PhastFortran/*.F90 \

@@ -1533,6 +1533,7 @@ Reaction_module::Rebalance_load_per_cell(void)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->mpi_tasks <= 1) return;
+	if (this->mpi_tasks > count_chem) return;
 #include <time.h>
 
 	// vectors for each cell (count_chem)
@@ -1776,6 +1777,7 @@ Reaction_module::Rebalance_load(void)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->mpi_tasks <= 1) return;
+	if (this->mpi_tasks > count_chem) return;
 	if (this->rebalance_method != 0)
 	{
 		return Rebalance_load_per_cell();
@@ -2057,6 +2059,7 @@ Reaction_module::Rebalance_load(void)
 {
 	// Threaded version
 	if (this->nthreads <= 1) return;
+	if (this->nthreads > count_chem) return;
 #include <time.h>
 	if (this->rebalance_method != 0)
 	{
@@ -2276,6 +2279,7 @@ Reaction_module::Rebalance_load_per_cell(void)
 {
 	// Threaded version
 	if (this->nthreads <= 1) return;
+	if (this->nthreads > count_chem) return;
 #include <time.h>
 
 	// vectors for each cell (count_chem)

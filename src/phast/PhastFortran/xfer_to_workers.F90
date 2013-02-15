@@ -62,6 +62,7 @@ SUBROUTINE c_distribute
   ! ...     Send iis component of c array to worker process iis using nonblocking
   ! ...         MPI send.
 #if defined(USE_MPI)
+  CALL MPI_BCAST(time, 1, MPI_DOUBLE_PRECISION, manager, world, ierrmpi)
   ! ... worker to managet transfer
   tag = 0
   DO iis=1,ns
