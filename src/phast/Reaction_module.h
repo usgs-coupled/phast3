@@ -5,6 +5,7 @@
 #include "StorageBin.h"
 #include <vector>
 #include <list>
+#include <set>
 
 class PHRQ_io;
 class IPhreeqc;
@@ -29,7 +30,8 @@ public:
 		int ppassemblage_units, 
 		int gasphase_units, 
 		int kinetics_units,
-		double porosity_factor);
+		double porosity_factor,
+		std::set<std::string> error_set);
 	void Calculate_well_ph(double *c, double * ph, double * alkalinity);
 	void Convert_to_molal(double *c, int n, int dim);
 	void cxxSolution2fraction(cxxSolution * cxxsoln_ptr, std::vector<double> & d);

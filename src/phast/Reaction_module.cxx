@@ -213,7 +213,8 @@ Reaction_module::Cell_initialize(
 					int ppassemblage_units, 
 					int gasphase_units, 
 					int kinetics_units,
-					double porosity_factor)
+					double porosity_factor,
+					std::set<std::string> error_set)
 /* ---------------------------------------------------------------------- */
 {
 	int n_old1, n_old2;
@@ -225,6 +226,18 @@ Reaction_module::Cell_initialize(
 	 */
 	n_old1 = initial_conditions1[7 * i];
 	n_old2 = initial_conditions2[7 * i];
+	if (phreeqc_bin.Get_Solutions().find(n_old1) == phreeqc_bin.Get_Solutions().end())
+	{
+		std::ostringstream e_stream;
+		e_stream << "Initial condition SOLUTION " << n_old1 << " not found.";
+		error_set.insert(e_stream.str());
+	}
+	if (n_old2 > 0 && phreeqc_bin.Get_Solutions().find(n_old2) == phreeqc_bin.Get_Solutions().end())
+	{
+		std::ostringstream e_stream;
+		e_stream << "Initial condition SOLUTION " << n_old2 << " not found.";
+		error_set.insert(e_stream.str());
+	}
 	f1 = fraction1[7 * i];
 	if (n_old1 >= 0)
 	{
@@ -241,6 +254,18 @@ Reaction_module::Cell_initialize(
 	 */
 	n_old1 = initial_conditions1[7 * i + 1];
 	n_old2 = initial_conditions2[7 * i + 1];
+	if (n_old1 > 0 && phreeqc_bin.Get_PPassemblages().find(n_old1) == phreeqc_bin.Get_PPassemblages().end())
+	{
+		std::ostringstream e_stream;
+		e_stream << "Initial condition EQUILIBRIUM_PHASES " << n_old1 << " not found.";
+		error_set.insert(e_stream.str());
+	}
+	if (n_old2 > 0 && phreeqc_bin.Get_PPassemblages().find(n_old2) == phreeqc_bin.Get_PPassemblages().end())
+	{
+		std::ostringstream e_stream;
+		e_stream << "Initial condition EQUILIBRIUM_PHASES " << n_old2 << " not found.";
+		error_set.insert(e_stream.str());
+	}
 	f1 = fraction1[7 * i + 1];
 	if (n_old1 >= 0)
 	{
@@ -262,6 +287,18 @@ Reaction_module::Cell_initialize(
 
 	n_old1 = initial_conditions1[7 * i + 2];
 	n_old2 = initial_conditions2[7 * i + 2];
+	if (n_old1 > 0 && phreeqc_bin.Get_Exchangers().find(n_old1) == phreeqc_bin.Get_Exchangers().end())
+	{
+		std::ostringstream e_stream;
+		e_stream << "Initial condition EXCHANGE " << n_old1 << " not found.";
+		error_set.insert(e_stream.str());
+	}
+	if (n_old2 > 0 && phreeqc_bin.Get_Exchangers().find(n_old2) == phreeqc_bin.Get_Exchangers().end())
+	{
+		std::ostringstream e_stream;
+		e_stream << "Initial condition EXCHANGE " << n_old2 << " not found.";
+		error_set.insert(e_stream.str());
+	}
 	f1 = fraction1[7 * i + 2];
 	if (n_old1 >= 0)
 	{
@@ -281,6 +318,18 @@ Reaction_module::Cell_initialize(
 	 */
 	n_old1 = initial_conditions1[7 * i + 3];
 	n_old2 = initial_conditions2[7 * i + 3];
+	if (n_old1 > 0 && phreeqc_bin.Get_Surfaces().find(n_old1) == phreeqc_bin.Get_Surfaces().end())
+	{
+		std::ostringstream e_stream;
+		e_stream << "Initial condition SURFACE " << n_old1 << " not found.";
+		error_set.insert(e_stream.str());
+	}
+	if (n_old2 > 0 && phreeqc_bin.Get_Surfaces().find(n_old2) == phreeqc_bin.Get_Surfaces().end())
+	{
+		std::ostringstream e_stream;
+		e_stream << "Initial condition SURFACE " << n_old2 << " not found.";
+		error_set.insert(e_stream.str());
+	}
 	f1 = fraction1[7 * i + 3];
 	if (n_old1 >= 0)
 	{
@@ -300,6 +349,18 @@ Reaction_module::Cell_initialize(
 	 */
 	n_old1 = initial_conditions1[7 * i + 4];
 	n_old2 = initial_conditions2[7 * i + 4];
+	if (n_old1 > 0 && phreeqc_bin.Get_GasPhases().find(n_old1) == phreeqc_bin.Get_GasPhases().end())
+	{
+		std::ostringstream e_stream;
+		e_stream << "Initial condition GAS_PHASE " << n_old1 << " not found.";
+		error_set.insert(e_stream.str());
+	}
+	if (n_old2 > 0 && phreeqc_bin.Get_GasPhases().find(n_old2) == phreeqc_bin.Get_GasPhases().end())
+	{
+		std::ostringstream e_stream;
+		e_stream << "Initial condition GAS_PHASE " << n_old2 << " not found.";
+		error_set.insert(e_stream.str());
+	}
 	f1 = fraction1[7 * i + 4];
 	if (n_old1 >= 0)
 	{
@@ -319,6 +380,18 @@ Reaction_module::Cell_initialize(
 	 */
 	n_old1 = initial_conditions1[7 * i + 5];
 	n_old2 = initial_conditions2[7 * i + 5];
+	if (n_old1 > 0 && phreeqc_bin.Get_SSassemblages().find(n_old1) == phreeqc_bin.Get_SSassemblages().end())
+	{
+		std::ostringstream e_stream;
+		e_stream << "Initial condition SOLID_SOLUTIONS " << n_old1 << " not found.";
+		error_set.insert(e_stream.str());
+	}
+	if (n_old2 > 0 && phreeqc_bin.Get_SSassemblages().find(n_old2) == phreeqc_bin.Get_SSassemblages().end())
+	{
+		std::ostringstream e_stream;
+		e_stream << "Initial condition SOLID_SOLUTIONS " << n_old2 << " not found.";
+		error_set.insert(e_stream.str());
+	}
 	f1 = fraction1[7 * i + 5];
 	if (n_old1 >= 0)
 	{
@@ -339,6 +412,18 @@ Reaction_module::Cell_initialize(
 	 */
 	n_old1 = initial_conditions1[7 * i + 6];
 	n_old2 = initial_conditions2[7 * i + 6];
+	if (n_old1 > 0 && phreeqc_bin.Get_Kinetics().find(n_old1) == phreeqc_bin.Get_Kinetics().end())
+	{
+		std::ostringstream e_stream;
+		e_stream << "Initial condition KINETICS " << n_old1 << " not found.";
+		error_set.insert(e_stream.str());
+	}
+	if (n_old2 > 0 && phreeqc_bin.Get_SSassemblages().find(n_old2) == phreeqc_bin.Get_SSassemblages().end())
+	{
+		std::ostringstream e_stream;
+		e_stream << "Initial condition KINETICS " << n_old2 << " not found.";
+		error_set.insert(e_stream.str());
+	}
 	f1 = fraction1[7 * i + 6];
 	if (n_old1 >= 0)
 	{
@@ -472,11 +557,12 @@ Reaction_module::Distribute_initial_conditions(
 			fraction1,
 			exchange_units, surface_units, ssassemblage_units,
 			ppassemblage_units, gasphase_units, kinetics_units,
-			porosity_factor);
+			porosity_factor,
+			error_set);
 	}
 #else
 	size_t count_negative_porosity = 0;
-	
+	std::set<std::string> error_set;
 	for (i = 0; i < nxyz; i++)
 	{							        /* i is ixyz number */
 		j = this->forward[i];			/* j is count_chem number */
@@ -500,9 +586,18 @@ Reaction_module::Distribute_initial_conditions(
 			fraction1,
 			exchange_units, surface_units, ssassemblage_units,
 			ppassemblage_units, gasphase_units, kinetics_units,
-			porosity_factor);
+			porosity_factor,
+			error_set);
 	}
 #endif
+	if (error_set.size() > 0)
+	{
+		std::set<std::string>::iterator it = error_set.begin();
+		for (; it != error_set.end(); it++)
+		{
+			error_msg(it->c_str(), 1);
+		}
+	}
 	if (count_negative_porosity > 0)
 	{
 		std::ostringstream errstr;

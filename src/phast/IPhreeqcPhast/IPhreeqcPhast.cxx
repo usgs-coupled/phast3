@@ -66,6 +66,7 @@ IPhreeqcPhast::Selected_out_to_double()
 	if (rows >= 2) 
 	{
 		int row = 1;
+		d.reserve(columns);
 		for (int column = 0; column < columns; column++)
 		{
 			VAR v;
