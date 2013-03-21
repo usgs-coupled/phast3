@@ -13,7 +13,7 @@ STEADY_FLOW false
 FREE_SURFACE_BC false
 SOLUTION_METHOD
 	-iterative_solver   true
-	-tolerance          1e-014
+	-tolerance          1e-016
 	-save_directions    20
 	-maximum_iterations 500
 	-space_differencing 0.5 #0
@@ -199,26 +199,171 @@ PRINT_FREQUENCY
 TIME_CONTROL
 	-time_step
 		0 years 0.01 years
-		0.02 years 0.02 years
-		0.04 years 0.04 years
-		0.08 years 0.08 years
-		0.16 years 0.16 years
-		0.32 years 0.32 years
-		0.64 years 0.64 years
-		1.28 years 1.28 years
-		2.56 years 2.56 years
-		5.12 years 5.12 years
-		10 years 10 years
-		20 years 20 years
-		40 years 40 years
-		80 years 80 years
-		160 years 160 years
-		320 years 320 years
-		640 years 640 years
-		1280 years 1280 years
-		2560 years 2560 years
-		5120 years 5120 years
-		10000 years 10000 years
+#		0.02 years 0.02 years
+#		0.04 years 0.04 years
+#		0.08 years 0.08 years
+#		0.16 years 0.16 years
+#		0.32 years 0.32 years
+#		0.64 years 0.64 years
+#		1.28 years 1.28 years
+#		2.56 years 2.56 years
+#		5.12 years 5.12 years
+#		10 years 10 years
+#		20 years 20 years
+#		40 years 40 years
+#		80 years 80 years
+#		160 years 160 years
+#		320 years 320 years
+#		640 years 640 years
+#		1280 years 1280 years
+#		2560 years 2560 years
+#		5120 years 5120 years
+#		10000 years 10000 years
+0.01 	 years 	10000 	 years 
+0.02 	 years 	10000 	 years 
+0.031 	 years 	10000 	 years 
+0.0431 	 years 	10000 	 years 
+0.05641 	 years 	10000 	 years 
+0.071051 	 years 	10000 	 years 
+0.087156 	 years 	10000 	 years 
+0.104872 	 years 	10000 	 years 
+0.124359 	 years 	10000 	 years 
+0.145795 	 years 	10000 	 years 
+0.169374 	 years 	10000 	 years 
+0.195312 	 years 	10000 	 years 
+0.223843 	 years 	10000 	 years 
+0.255227 	 years 	10000 	 years 
+0.28975 	 years 	10000 	 years 
+0.327725 	 years 	10000 	 years 
+0.369497 	 years 	10000 	 years 
+0.415447 	 years 	10000 	 years 
+0.465992 	 years 	10000 	 years 
+0.521591 	 years 	10000 	 years 
+0.58275 	 years 	10000 	 years 
+0.650025 	 years 	10000 	 years 
+0.724027 	 years 	10000 	 years 
+0.80543 	 years 	10000 	 years 
+0.894973 	 years 	10000 	 years 
+0.993471 	 years 	10000 	 years 
+1.101818 	 years 	10000 	 years 
+1.220999 	 years 	10000 	 years 
+1.352099 	 years 	10000 	 years 
+1.496309 	 years 	10000 	 years 
+1.65494 	 years 	10000 	 years 
+1.829434 	 years 	10000 	 years 
+2.021378 	 years 	10000 	 years 
+2.232515 	 years 	10000 	 years 
+2.464767 	 years 	10000 	 years 
+2.720244 	 years 	10000 	 years 
+3.001268 	 years 	10000 	 years 
+3.310395 	 years 	10000 	 years 
+3.650434 	 years 	10000 	 years 
+4.024478 	 years 	10000 	 years 
+4.435926 	 years 	10000 	 years 
+4.888518 	 years 	10000 	 years 
+5.38637 	 years 	10000 	 years 
+5.934007 	 years 	10000 	 years 
+6.536408 	 years 	10000 	 years 
+7.199048 	 years 	10000 	 years 
+7.927953 	 years 	10000 	 years 
+8.729749 	 years 	10000 	 years 
+9.611723 	 years 	10000 	 years 
+10.581896 	 years 	10000 	 years 
+11.649085 	 years 	10000 	 years 
+12.822994 	 years 	10000 	 years 
+14.114293 	 years 	10000 	 years 
+15.534723 	 years 	10000 	 years 
+17.097195 	 years 	10000 	 years 
+18.815914 	 years 	10000 	 years 
+20.706506 	 years 	10000 	 years 
+22.786156 	 years 	10000 	 years 
+25.073772 	 years 	10000 	 years 
+27.590149 	 years 	10000 	 years 
+30.358164 	 years 	10000 	 years 
+33.40298 	 years 	10000 	 years 
+36.752278 	 years 	10000 	 years 
+40.436506 	 years 	10000 	 years 
+44.489157 	 years 	10000 	 years 
+48.947073 	 years 	10000 	 years 
+53.85078 	 years 	10000 	 years 
+59.244858 	 years 	10000 	 years 
+65.178344 	 years 	10000 	 years 
+71.705178 	 years 	10000 	 years 
+78.884696 	 years 	10000 	 years 
+86.782165 	 years 	10000 	 years 
+95.469382 	 years 	10000 	 years 
+105.02532 	 years 	10000 	 years 
+115.536852 	 years 	10000 	 years 
+127.099537 	 years 	10000 	 years 
+139.818491 	 years 	10000 	 years 
+153.80934 	 years 	10000 	 years 
+169.199274 	 years 	10000 	 years 
+186.128201 	 years 	10000 	 years 
+204.750021 	 years 	10000 	 years 
+225.234024 	 years 	10000 	 years 
+247.766426 	 years 	10000 	 years 
+272.552069 	 years 	10000 	 years 
+299.816275 	 years 	10000 	 years 
+329.806903 	 years 	10000 	 years 
+362.796593 	 years 	10000 	 years 
+399.085253 	 years 	10000 	 years 
+439.002778 	 years 	10000 	 years 
+482.912056 	 years 	10000 	 years 
+531.212261 	 years 	10000 	 years 
+584.342487 	 years 	10000 	 years 
+642.785736 	 years 	10000 	 years 
+707.07331 	 years 	10000 	 years 
+777.789641 	 years 	10000 	 years 
+855.577605 	 years 	10000 	 years 
+941.144365 	 years 	10000 	 years 
+1035.267802 	 years 	10000 	 years 
+1138.803582 	 years 	10000 	 years 
+1252.69294 	 years 	10000 	 years 
+1377.971234 	 years 	10000 	 years 
+1515.777357 	 years 	10000 	 years 
+1667.364093 	 years 	10000 	 years 
+1834.109502 	 years 	10000 	 years 
+2017.529453 	 years 	10000 	 years 
+2219.291398 	 years 	10000 	 years 
+2441.229538 	 years 	10000 	 years 
+2685.361492 	 years 	10000 	 years 
+2953.906641 	 years 	10000 	 years 
+3249.306305 	 years 	10000 	 years 
+3574.245935 	 years 	10000 	 years 
+3931.679529 	 years 	10000 	 years 
+4324.856482 	 years 	10000 	 years 
+4757.35113 	 years 	10000 	 years 
+5233.095243 	 years 	10000 	 years 
+5756.413767 	 years 	10000 	 years 
+6332.064144 	 years 	10000 	 years 
+6965.279558 	 years 	10000 	 years 
+7661.816514 	 years 	10000 	 years 
+8428.007165 	 years 	10000 	 years 
+9270.816882 	 years 	10000 	 years 
+10197.90757 	 years 	10000 	 years 
+11217.707327 	 years 	10000 	 years 
+12339.48706 	 years 	10000 	 years 
+13573.444766 	 years 	10000 	 years 
+14930.798242 	 years 	10000 	 years 
+16423.887066 	 years 	10000 	 years 
+18066.284773 	 years 	10000 	 years 
+19872.92225 	 years 	10000 	 years 
+21860.223475 	 years 	10000 	 years 
+24046.254823 	 years 	10000 	 years 
+26450.889305 	 years 	10000 	 years 
+29095.987236 	 years 	10000 	 years 
+32005.594959 	 years 	10000 	 years 
+35206.163455 	 years 	10000 	 years 
+38726.788801 	 years 	10000 	 years 
+42599.476681 	 years 	10000 	 years 
+46859.433349 	 years 	10000 	 years 
+51545.385684 	 years 	10000 	 years 
+56699.933252 	 years 	10000 	 years 
+62369.935577 	 years 	10000 	 years 
+68606.938135 	 years 	10000 	 years 
+75467.640949 	 years 	10000 	 years 
+83014.414044 	 years 	10000 	 years 
+91315.864448 	 years 	10000 	 years 
 	-time_change
 		100000 years
 	-start_time 0

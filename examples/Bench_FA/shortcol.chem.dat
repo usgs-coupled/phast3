@@ -1391,126 +1391,126 @@ KINETICS 1
 
 Calcite          
 -m0 0
--tol 1e-7
+-tol 1e-8
 Celestite
 -m0 0
--tol 1e-7
+-tol 1e-8
 Dolomite 
 -m0 0
--tol 1e-7
+-tol 1e-8
 Goethite_B
 -m0 0
--tol 1e-7
+-tol 1e-8
 Illite-Mg
 -m0 0
--tol 1e-7
+-tol 1e-8
 Kaolinite_B
 -m0 0
--tol 1e-7
+-tol 1e-8
 Mg-Montmo-Ca_B    
 -m0 0
--tol 1e-7
+-tol 1e-8
 Mg-Montmorillonite-Na  
 -m0 0
--tol 1e-7
+-tol 1e-8
 Microcline       
 -m0 0
--tol 1e-7
+-tol 1e-8
 Pyrite           
 -m0 0
--tol 1e-7
+-tol 1e-8
 Quartz,alpha           
 -m0 0
--tol 1e-7
+-tol 1e-8
 Sideritelt       
 -m0 0
--tol 1e-7
+-tol 1e-8
 
 
 Amorphous_silica
 -m0 0
--tol 1e-7
+-tol 1e-8
 Chalcedony
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-SaponiteCa
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-SaponiteK
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-SaponiteMg
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-SaponiteNa
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-Montmorillonite-Ca
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-Montmorillonite-K
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-Montmorillonite-Mg
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-Montmorillonite-Na
 -m0 0
--tol 1e-7
+-tol 1e-8
 Greenalite
 -m0 0
--tol 1e-7
+-tol 1e-8
 Illite-FeII
 -m0 0
--tol 1e-7
+-tol 1e-8
 Illite-FeIII
 -m0 0
--tol 1e-7
+-tol 1e-8
 Magnetite
 -m0 0
--tol 1e-7
+-tol 1e-8
 Mg-Montmorillonite-K
 -m0 0
--tol 1e-7
+-tol 1e-8
 Mg-Montmorillonite-Mg
 -m0 0
--tol 1e-7
+-tol 1e-8
 NontroniteCa
 -m0 0
--tol 1e-7
+-tol 1e-8
 NontroniteK
 -m0 0
--tol 1e-7
+-tol 1e-8
 NontroniteMg
 -m0 0
--tol 1e-7
+-tol 1e-8
 NontroniteNa
 -m0 0
--tol 1e-7
+-tol 1e-8
 Pyrrhotite
 -m0 0
--tol 1e-7
+-tol 1e-8
 SaponiteCa
 -m0 0
--tol 1e-7
+-tol 1e-8
 SaponiteK
 -m0 0
--tol 1e-7
+-tol 1e-8
 SaponiteMg
 -m0 0
--tol 1e-7
+-tol 1e-8
 SaponiteNa
 -m0 0
--tol 1e-7
+-tol 1e-8
 Siderite
 -m0 0
--tol 1e-7
+-tol 1e-8
 Sepiolite
 -m0 0
--tol 1e-7
+-tol 1e-8
 Gyrolite
 -m0 0
--tol 1e-7
+-tol 1e-8
 
 SAVE SOLUTION 1
 
@@ -1564,128 +1564,132 @@ Iron_kin
 -formula Fe # Fe+2 1 OH- 2 H2 1 H2O -0.66666 #Fe0 + 2H2O = Fe+2 + 2OH- + H2
 -m0 285 # Qté totale
 
+#Glass_kin
+#-formula Ca 0.0952 Na 0.4323 Fe 0.0497 B 0.5323 Al 0.1285 Si 1.0 O 3.3774
+#-m0 285 # Qté totale
+
 Calcite          
 -m0 0
--tol 1e-7
+-tol 1e-8
 Celestite
 -m0 0
--tol 1e-7
+-tol 1e-8
 Dolomite 
 -m0 0
--tol 1e-7
+-tol 1e-8
 Goethite_B
 -m0 0
--tol 1e-7
+-tol 1e-8
 Illite-Mg
 -m0 0
--tol 1e-7
+-tol 1e-8
 Kaolinite_B
 -m0 0
--tol 1e-7
+-tol 1e-8
 Mg-Montmo-Ca_B    
 -m0 0
--tol 1e-7
+-tol 1e-8
 Mg-Montmorillonite-Na  
 -m0 0
--tol 1e-7
+-tol 1e-8
 Microcline       
 -m0 0
--tol 1e-7
+-tol 1e-8
 Pyrite           
 -m0 0
--tol 1e-7
+-tol 1e-8
 Quartz,alpha           
 -m0 0
--tol 1e-7
+-tol 1e-8
 Sideritelt       
 -m0 0
--tol 1e-7
+-tol 1e-8
 
 
 Amorphous_silica
 -m0 0
--tol 1e-7
+-tol 1e-8
 Chalcedony
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-SaponiteCa
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-SaponiteK
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-SaponiteMg
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-SaponiteNa
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-Montmorillonite-Ca
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-Montmorillonite-K
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-Montmorillonite-Mg
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-Montmorillonite-Na
 -m0 0
--tol 1e-7
+-tol 1e-8
 Greenalite
 -m0 0
--tol 1e-7
+-tol 1e-8
 Illite-FeII
 -m0 0
--tol 1e-7
+-tol 1e-8
 Illite-FeIII
 -m0 0
--tol 1e-7
+-tol 1e-8
 Magnetite
 -m0 0
--tol 1e-7
+-tol 1e-8
 Mg-Montmorillonite-K
 -m0 0
--tol 1e-7
+-tol 1e-8
 Mg-Montmorillonite-Mg
 -m0 0
--tol 1e-7
+-tol 1e-8
 NontroniteCa
 -m0 0
--tol 1e-7
+-tol 1e-8
 NontroniteK
 -m0 0
--tol 1e-7
+-tol 1e-8
 NontroniteMg
 -m0 0
--tol 1e-7
+-tol 1e-8
 NontroniteNa
 -m0 0
--tol 1e-7
+-tol 1e-8
 Pyrrhotite
 -m0 0
--tol 1e-7
+-tol 1e-8
 SaponiteCa
 -m0 0
--tol 1e-7
+-tol 1e-8
 SaponiteK
 -m0 0
--tol 1e-7
+-tol 1e-8
 SaponiteMg
 -m0 0
--tol 1e-7
+-tol 1e-8
 SaponiteNa
 -m0 0
--tol 1e-7
+-tol 1e-8
 Siderite
 -m0 0
--tol 1e-7
+-tol 1e-8
 Sepiolite
 -m0 0
--tol 1e-7
+-tol 1e-8
 Gyrolite
 -m0 0
--tol 1e-7
+-tol 1e-8
 
 
 SAVE SOLUTION 2
@@ -1740,126 +1744,126 @@ KINETICS 3
 
 Calcite          
 -m0 3.949E+01
--tol 1e-7
+-tol 1e-8
 Celestite
 -m0 6.727E-02
--tol 1e-7
+-tol 1e-8
 Dolomite 
 -m0 1.026E+00
--tol 1e-7
+-tol 1e-8
 Goethite_B
 -m0 2.668E-03
--tol 1e-7
+-tol 1e-8
 Illite-Mg
 -m0 8.507E+00
--tol 1e-7
+-tol 1e-8
 Kaolinite_B
 -m0 4.790E-01
--tol 1e-7
+-tol 1e-8
 Mg-Montmo-Ca_B    
 -m0 1.870E+00
--tol 1e-7
+-tol 1e-8
 Mg-Montmorillonite-Na  
 -m0 6.408E-01
--tol 1e-7
+-tol 1e-8
 Microcline       
 -m0 2.842E+00
--tol 1e-7
+-tol 1e-8
 Pyrite           
 -m0 1.546E+00
--tol 1e-7
+-tol 1e-8
 Quartz,alpha           
 -m0 4.557E+01
--tol 1e-7
+-tol 1e-8
 Sideritelt       
 -m0 1.116E+00
--tol 1e-7
+-tol 1e-8
 
 
 Amorphous_silica
 -m0 0
--tol 1e-7
+-tol 1e-8
 Chalcedony
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-SaponiteCa
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-SaponiteK
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-SaponiteMg
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-SaponiteNa
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-Montmorillonite-Ca
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-Montmorillonite-K
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-Montmorillonite-Mg
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-Montmorillonite-Na
 -m0 0
--tol 1e-7
+-tol 1e-8
 Greenalite
 -m0 0
--tol 1e-7
+-tol 1e-8
 Illite-FeII
 -m0 0
--tol 1e-7
+-tol 1e-8
 Illite-FeIII
 -m0 0
--tol 1e-7
+-tol 1e-8
 Magnetite
 -m0 0
--tol 1e-7
+-tol 1e-8
 Mg-Montmorillonite-K
 -m0 0
--tol 1e-7
+-tol 1e-8
 Mg-Montmorillonite-Mg
 -m0 0
--tol 1e-7
+-tol 1e-8
 NontroniteCa
 -m0 0
--tol 1e-7
+-tol 1e-8
 NontroniteK
 -m0 0
--tol 1e-7
+-tol 1e-8
 NontroniteMg
 -m0 0
--tol 1e-7
+-tol 1e-8
 NontroniteNa
 -m0 0
--tol 1e-7
+-tol 1e-8
 Pyrrhotite
 -m0 0
--tol 1e-7
+-tol 1e-8
 SaponiteCa
 -m0 0
--tol 1e-7
+-tol 1e-8
 SaponiteK
 -m0 0
--tol 1e-7
+-tol 1e-8
 SaponiteMg
 -m0 0
--tol 1e-7
+-tol 1e-8
 SaponiteNa
 -m0 0
--tol 1e-7
+-tol 1e-8
 Siderite
 -m0 0
--tol 1e-7
+-tol 1e-8
 Sepiolite
 -m0 0
--tol 1e-7
+-tol 1e-8
 Gyrolite
 -m0 0
--tol 1e-7
+-tol 1e-8
 
 
 ################################################################################
