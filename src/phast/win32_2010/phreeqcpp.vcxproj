@@ -238,6 +238,11 @@
       <AdditionalDependencies>zlib1.lib;phastpp.lib;hdf5dll.lib;IPhreeqcPhast.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(DEV_IFC_X64_LIB);$(DEV_ZLIB123_X64_LIB);$(DEV_HDF5_X64_LIBDLL);$(OUTDIR);%(AdditionalLibraryDirectories);$(SolutionDir)$(Platform)\Release</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>copy $(DEV_ZLIB123_X64_LIB)\zlib1.dll  $(OutDir)
+copy $(DEV_HDF5_X64_LIBDLL)\hdf5dll.dll   $(OutDir)
+copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='merge|Win32'">
     <ClCompile>
