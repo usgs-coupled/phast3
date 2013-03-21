@@ -533,6 +533,7 @@ Reaction_module::Distribute_initial_conditions(
 	int begin = this->start_cell[this->mpi_myself];
 	int end = this->end_cell[this->mpi_myself] + 1;
 	size_t count_negative_porosity = 0;
+	std::set<std::string> error_set;
 	
 	for (int k = begin; k < end; k++)
 	{	
