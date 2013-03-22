@@ -45,7 +45,7 @@ Fe0.85Ca0.15CO3 + 1H+ = 1HCO3- + 0.85Fe++ + 0.15 Ca++
 
 KNOBS
 #-iterations  200
--convergence_tolerance 1e-11
+-convergence_tolerance 1e-10
 #-step 10
 #-pe    2
 #-pe_step_size 2
@@ -107,9 +107,14 @@ Calcite
 ########## start nucleation bloc ##########
 #200 if (M <= 0) and (SR("Calcite") > 1) then rate = -1e-12
 240 mole = rate * Time
-#245 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-250 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
 
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 Celestite
@@ -123,8 +128,15 @@ Celestite
 ########## start nucleation bloc ##########
 #200 if (M <= 0) and (SR("Celestite") > 1) then rate = -1e-12
 240 mole = rate * Time
-#245 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-250 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
+
 -end
 
 Dolomite
@@ -140,8 +152,14 @@ Dolomite
 ########## start nucleation bloc ##########
 #200 if (M <= 0) and (SR("Dolomite") > 1) then rate = -1e-12
 240 mole = rate * Time
-#245 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-250 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 Goethite_B
@@ -155,8 +173,14 @@ Goethite_B
 ########## start nucleation bloc ##########
 #200 if (M <= 0) and (SR("Goethite_B") > 1) then rate = -1e-12
 240 mole = rate * Time
-#245 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-250 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 Illite-Mg
@@ -170,8 +194,14 @@ Illite-Mg
 ########## start nucleation bloc ##########
 #200 if (M <= 0) and (SR("Illite-Mg") > 1) then rate = -1e-12
 240 mole = rate * Time
-#245 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-250 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 Kaolinite_B
@@ -191,8 +221,14 @@ Kaolinite_B
 ########## start nucleation bloc ##########
 #200 if (M <= 0) and (SR("Kaolinite_B") > 1) then rate = -1e-12
 240 mole = rate * Time
-#245 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-250 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 Mg-Montmo-Ca_B
@@ -212,8 +248,14 @@ Mg-Montmo-Ca_B
 ########## start nucleation bloc ##########
 #200 if (M <= 0) and (SR("Mg-Montmo-Ca_B") > 1) then rate = -1e-12
 240 mole = rate * Time
-#245 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-250 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 Mg-Montmorillonite-Na
@@ -233,8 +275,14 @@ Mg-Montmorillonite-Na
 ########## start nucleation bloc ##########
 #200 if (M <= 0) and (SR("Mg-Montmorillonite-Na") > 1) then rate = -1e-12
 240 mole = rate * Time
-#245 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-250 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 Microcline
@@ -263,8 +311,14 @@ Pyrite
 ########## start nucleation bloc ##########
 #200 if (M <= 0) and (SR("Pyrite") > 1) then rate = -1e-12
 240 mole = rate * Time
-#245 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-250 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 Quartz,alpha
@@ -278,8 +332,14 @@ Quartz,alpha
 ########## start nucleation bloc ##########
 #200 if (M <= 0) and (SR("Quartz,alpha") > 1) then rate = -1e-12
 240 mole = rate * Time
-#245 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-250 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 Sideritelt
@@ -294,8 +354,14 @@ Sideritelt
 ########## start nucleation bloc ##########
 #200 if (M <= 0) and (SR("Sideritelt") > 1) then rate = -1e-12
 240 mole = rate * Time
-#245 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-250 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 Anhydrite
@@ -323,7 +389,14 @@ Anhydrite
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) moles = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 Amorphous_silica
@@ -351,7 +424,14 @@ Amorphous_silica
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 Chalcedony
@@ -379,7 +459,14 @@ Chalcedony
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 Clinochlore
@@ -407,7 +494,14 @@ Clinochlore
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 
@@ -436,7 +530,14 @@ Cronstedtite_7A,alpha
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 Chamosite(Daphnite)
@@ -464,7 +565,14 @@ Chamosite(Daphnite)
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 
@@ -493,7 +601,14 @@ Ettringite
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 
@@ -522,7 +637,14 @@ Ettringite_Fe
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 
@@ -551,7 +673,14 @@ Fe-SaponiteCa
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 Fe-SaponiteK
@@ -579,7 +708,14 @@ Fe-SaponiteK
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 Fe-SaponiteMg
@@ -607,7 +743,14 @@ Fe-SaponiteMg
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 Fe-SaponiteNa
@@ -635,7 +778,14 @@ Fe-SaponiteNa
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 Fe-Montmorillonite-Ca
@@ -665,7 +815,14 @@ Fe-Montmorillonite-Ca
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 
@@ -695,7 +852,14 @@ Fe-Montmorillonite-K
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 Fe-Montmorillonite-Mg
@@ -724,7 +888,14 @@ Fe-Montmorillonite-Mg
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 
@@ -754,7 +925,14 @@ Fe-Montmorillonite-Na
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 
@@ -782,7 +960,14 @@ Greenalite
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 Gypsum 
@@ -809,7 +994,14 @@ Gypsum
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 Illite-FeII
@@ -836,7 +1028,14 @@ Illite-FeII
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 Illite-FeIII
@@ -863,7 +1062,14 @@ Illite-FeIII
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 Magnetite
@@ -881,8 +1087,14 @@ Magnetite
 210 rate = -1e-12
 ########## end nucleation bloc ##########
 240 mole = rate * Time
-#245 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-250 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 
@@ -912,7 +1124,14 @@ Mg-Montmorillonite-K
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 Mg-Montmorillonite-Mg
@@ -940,8 +1159,14 @@ Mg-Montmorillonite-Mg
 #end nucleation
 ########## end precipitation bloc ##########
 230 mole = rate * Time
-#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 
@@ -968,8 +1193,14 @@ NontroniteCa
 #end nucleation
 ########## end precipitation bloc ##########
 230 mole = rate * Time
-#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 NontroniteK
@@ -996,7 +1227,14 @@ NontroniteK
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 NontroniteMg
@@ -1023,7 +1261,14 @@ NontroniteMg
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 NontroniteNa
@@ -1050,7 +1295,14 @@ NontroniteNa
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 Pyrrhotite 
@@ -1077,7 +1329,14 @@ Pyrrhotite
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 SaponiteCa
@@ -1104,7 +1363,14 @@ SaponiteCa
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 SaponiteK
@@ -1131,7 +1397,14 @@ SaponiteK
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 SaponiteMg
@@ -1158,7 +1431,14 @@ SaponiteMg
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 SaponiteNa
@@ -1185,7 +1465,14 @@ SaponiteNa
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 Siderite
@@ -1205,7 +1492,14 @@ Siderite
 ########## end nucleation bloc ##########
 240 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-250 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 
@@ -1233,7 +1527,14 @@ Huntite
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 Sepiolite 
@@ -1260,7 +1561,14 @@ Sepiolite
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 
@@ -1290,7 +1598,14 @@ Minnesotaite
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 Brucite  
@@ -1317,7 +1632,14 @@ Brucite
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 if (mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 
@@ -1345,7 +1667,17 @@ Gyrolite
 ########## end precipitation bloc ##########
 230 mole = rate * Time
 #235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
-240 Save mole
+245 GOSUB 1000
+250 SAVE mole
+260 END
+
+1000 IF rate > 0 THEN RETURN
+#1010 my_sr = SR("Gyrolite")
+#1020 if my_sr > 
+
+#mole < -.1) THEN rate = -.1 / TIME
+#1020 mole = rate * TIME
+1030 RETURN
 -end
 
 END
@@ -1392,126 +1724,126 @@ KINETICS 1
 
 Calcite          
 -m0 0
--tol 1e-7
+-tol 1e-8
 Celestite
 -m0 0
--tol 1e-7
+-tol 1e-8
 Dolomite 
 -m0 0
--tol 1e-7
+-tol 1e-8
 Goethite_B
 -m0 0
--tol 1e-7
+-tol 1e-8
 Illite-Mg
 -m0 0
--tol 1e-7
+-tol 1e-8
 Kaolinite_B
 -m0 0
--tol 1e-7
+-tol 1e-8
 Mg-Montmo-Ca_B    
 -m0 0
--tol 1e-7
+-tol 1e-8
 Mg-Montmorillonite-Na  
 -m0 0
--tol 1e-7
+-tol 1e-8
 Microcline       
 -m0 0
--tol 1e-7
+-tol 1e-8
 Pyrite           
 -m0 0
--tol 1e-7
+-tol 1e-8
 Quartz,alpha           
 -m0 0
--tol 1e-7
+-tol 1e-8
 Sideritelt       
 -m0 0
--tol 1e-7
+-tol 1e-8
 
 
 Amorphous_silica
 -m0 0
--tol 1e-7
+-tol 1e-8
 Chalcedony
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-SaponiteCa
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-SaponiteK
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-SaponiteMg
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-SaponiteNa
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-Montmorillonite-Ca
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-Montmorillonite-K
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-Montmorillonite-Mg
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-Montmorillonite-Na
 -m0 0
--tol 1e-7
+-tol 1e-8
 Greenalite
 -m0 0
--tol 1e-7
+-tol 1e-8
 Illite-FeII
 -m0 0
--tol 1e-7
+-tol 1e-8
 Illite-FeIII
 -m0 0
--tol 1e-7
+-tol 1e-8
 Magnetite
 -m0 0
--tol 1e-7
+-tol 1e-8
 Mg-Montmorillonite-K
 -m0 0
--tol 1e-7
+-tol 1e-8
 Mg-Montmorillonite-Mg
 -m0 0
--tol 1e-7
+-tol 1e-8
 NontroniteCa
 -m0 0
--tol 1e-7
+-tol 1e-8
 NontroniteK
 -m0 0
--tol 1e-7
+-tol 1e-8
 NontroniteMg
 -m0 0
--tol 1e-7
+-tol 1e-8
 NontroniteNa
 -m0 0
--tol 1e-7
+-tol 1e-8
 Pyrrhotite
 -m0 0
--tol 1e-7
+-tol 1e-8
 SaponiteCa
 -m0 0
--tol 1e-7
+-tol 1e-8
 SaponiteK
 -m0 0
--tol 1e-7
+-tol 1e-8
 SaponiteMg
 -m0 0
--tol 1e-7
+-tol 1e-8
 SaponiteNa
 -m0 0
--tol 1e-7
+-tol 1e-8
 Siderite
 -m0 0
--tol 1e-7
+-tol 1e-8
 Sepiolite
 -m0 0
--tol 1e-7
+-tol 1e-8
 Gyrolite
 -m0 0
--tol 1e-7
+-tol 1e-8
 
 SAVE SOLUTION 1
 
@@ -1571,126 +1903,126 @@ Glass_kin
 
 Calcite          
 -m0 0
--tol 1e-7
+-tol 1e-8
 Celestite
 -m0 0
--tol 1e-7
+-tol 1e-8
 Dolomite 
 -m0 0
--tol 1e-7
+-tol 1e-8
 Goethite_B
 -m0 0
--tol 1e-7
+-tol 1e-8
 Illite-Mg
 -m0 0
--tol 1e-7
+-tol 1e-8
 Kaolinite_B
 -m0 0
--tol 1e-7
+-tol 1e-8
 Mg-Montmo-Ca_B    
 -m0 0
--tol 1e-7
+-tol 1e-8
 Mg-Montmorillonite-Na  
 -m0 0
--tol 1e-7
+-tol 1e-8
 Microcline       
 -m0 0
--tol 1e-7
+-tol 1e-8
 Pyrite           
 -m0 0
--tol 1e-7
+-tol 1e-8
 Quartz,alpha           
 -m0 0
--tol 1e-7
+-tol 1e-8
 Sideritelt       
 -m0 0
--tol 1e-7
+-tol 1e-8
 
 
 Amorphous_silica
 -m0 0
--tol 1e-7
+-tol 1e-8
 Chalcedony
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-SaponiteCa
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-SaponiteK
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-SaponiteMg
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-SaponiteNa
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-Montmorillonite-Ca
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-Montmorillonite-K
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-Montmorillonite-Mg
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-Montmorillonite-Na
 -m0 0
--tol 1e-7
+-tol 1e-8
 Greenalite
 -m0 0
--tol 1e-7
+-tol 1e-8
 Illite-FeII
 -m0 0
--tol 1e-7
+-tol 1e-8
 Illite-FeIII
 -m0 0
--tol 1e-7
+-tol 1e-8
 Magnetite
 -m0 0
--tol 1e-7
+-tol 1e-8
 Mg-Montmorillonite-K
 -m0 0
--tol 1e-7
+-tol 1e-8
 Mg-Montmorillonite-Mg
 -m0 0
--tol 1e-7
+-tol 1e-8
 NontroniteCa
 -m0 0
--tol 1e-7
+-tol 1e-8
 NontroniteK
 -m0 0
--tol 1e-7
+-tol 1e-8
 NontroniteMg
 -m0 0
--tol 1e-7
+-tol 1e-8
 NontroniteNa
 -m0 0
--tol 1e-7
+-tol 1e-8
 Pyrrhotite
 -m0 0
--tol 1e-7
+-tol 1e-8
 SaponiteCa
 -m0 0
--tol 1e-7
+-tol 1e-8
 SaponiteK
 -m0 0
--tol 1e-7
+-tol 1e-8
 SaponiteMg
 -m0 0
--tol 1e-7
+-tol 1e-8
 SaponiteNa
 -m0 0
--tol 1e-7
+-tol 1e-8
 Siderite
 -m0 0
--tol 1e-7
+-tol 1e-8
 Sepiolite
 -m0 0
--tol 1e-7
+-tol 1e-8
 Gyrolite
 -m0 0
--tol 1e-7
+-tol 1e-8
 
 
 SAVE SOLUTION 2
@@ -1745,126 +2077,126 @@ KINETICS 3
 
 Calcite          
 -m0 3.949E+01
--tol 1e-7
+-tol 1e-8
 Celestite
 -m0 6.727E-02
--tol 1e-7
+-tol 1e-8
 Dolomite 
 -m0 1.026E+00
--tol 1e-7
+-tol 1e-8
 Goethite_B
 -m0 2.668E-03
--tol 1e-7
+-tol 1e-8
 Illite-Mg
 -m0 8.507E+00
--tol 1e-7
+-tol 1e-8
 Kaolinite_B
 -m0 4.790E-01
--tol 1e-7
+-tol 1e-8
 Mg-Montmo-Ca_B    
 -m0 1.870E+00
--tol 1e-7
+-tol 1e-8
 Mg-Montmorillonite-Na  
 -m0 6.408E-01
--tol 1e-7
+-tol 1e-8
 Microcline       
 -m0 2.842E+00
--tol 1e-7
+-tol 1e-8
 Pyrite           
 -m0 1.546E+00
--tol 1e-7
+-tol 1e-8
 Quartz,alpha           
 -m0 4.557E+01
--tol 1e-7
+-tol 1e-8
 Sideritelt       
 -m0 1.116E+00
--tol 1e-7
+-tol 1e-8
 
 
 Amorphous_silica
 -m0 0
--tol 1e-7
+-tol 1e-8
 Chalcedony
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-SaponiteCa
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-SaponiteK
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-SaponiteMg
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-SaponiteNa
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-Montmorillonite-Ca
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-Montmorillonite-K
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-Montmorillonite-Mg
 -m0 0
--tol 1e-7
+-tol 1e-8
 Fe-Montmorillonite-Na
 -m0 0
--tol 1e-7
+-tol 1e-8
 Greenalite
 -m0 0
--tol 1e-7
+-tol 1e-8
 Illite-FeII
 -m0 0
--tol 1e-7
+-tol 1e-8
 Illite-FeIII
 -m0 0
--tol 1e-7
+-tol 1e-8
 Magnetite
 -m0 0
--tol 1e-7
+-tol 1e-8
 Mg-Montmorillonite-K
 -m0 0
--tol 1e-7
+-tol 1e-8
 Mg-Montmorillonite-Mg
 -m0 0
--tol 1e-7
+-tol 1e-8
 NontroniteCa
 -m0 0
--tol 1e-7
+-tol 1e-8
 NontroniteK
 -m0 0
--tol 1e-7
+-tol 1e-8
 NontroniteMg
 -m0 0
--tol 1e-7
+-tol 1e-8
 NontroniteNa
 -m0 0
--tol 1e-7
+-tol 1e-8
 Pyrrhotite
 -m0 0
--tol 1e-7
+-tol 1e-8
 SaponiteCa
 -m0 0
--tol 1e-7
+-tol 1e-8
 SaponiteK
 -m0 0
--tol 1e-7
+-tol 1e-8
 SaponiteMg
 -m0 0
--tol 1e-7
+-tol 1e-8
 SaponiteNa
 -m0 0
--tol 1e-7
+-tol 1e-8
 Siderite
 -m0 0
--tol 1e-7
+-tol 1e-8
 Sepiolite
 -m0 0
--tol 1e-7
+-tol 1e-8
 Gyrolite
 -m0 0
--tol 1e-7
+-tol 1e-8
 
 
 ################################################################################
