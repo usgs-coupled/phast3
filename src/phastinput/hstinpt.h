@@ -82,7 +82,7 @@ typedef enum
 #define OPTION 8
 
 #define INIT -1
-#define MAX_LENGTH 100
+#define MAX_LENGTH 256
 
 #define ZONE 4
 #define WATER_TABLE 5
