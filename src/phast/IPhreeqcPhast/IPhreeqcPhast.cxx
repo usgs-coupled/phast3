@@ -35,7 +35,7 @@ double
 IPhreeqcPhast::Get_gfw(std::string formula)
 /* ---------------------------------------------------------------------- */
 {
-	double gfw;
+	LDBLE gfw;
 	this->Get_PhreeqcPtr()->compute_gfw(formula.c_str(), &gfw);
 	return gfw;
 }
