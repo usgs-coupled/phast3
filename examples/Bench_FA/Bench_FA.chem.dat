@@ -1158,7 +1158,7 @@ Siderite
 -start
 10 mole = 0
 30 S = 1e-4 # CEA value in m2/cm3
-40 If (m <= 1) and (SR("Siderite") > 1) Then GoTo  210
+40 If (m <= 0) and (SR("Siderite") > 1) Then GoTo  210
 ########## start dissolution & precipitation bloc ##########
 60 k = 10^-7.53
 #60 k = 10^-7.53 * exp((-12500*4.1855 / 8.314) * ((1 / TK) - (1 / 298.15)))
@@ -1189,7 +1189,7 @@ Huntite
 ########## end dissolution bloc ##########
 ########## start precipitation bloc ##########
 # kinetic data extracted from 97arv/mac 99arv/mac
-130 If (m <= 1e-5) then GoTo 200
+130 If (m <= 0) then GoTo 200
 180 rate = S * m * 122.9 * (-1) * 37.53526626 * (2.95121E-08  )  * (ABS(1 - SR("Huntite") ) )
 195 GoTo 230
 #start nucleation
