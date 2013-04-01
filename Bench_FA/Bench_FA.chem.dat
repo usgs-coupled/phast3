@@ -53,7 +53,7 @@ KNOBS
 #-pe_step_size 2
 
 PRINT
--warnings 10000000
+#-warnings 10000000
    
 
 SOLUTION_SPECIES
@@ -81,7 +81,7 @@ Iron_kin
 20 if (m < 0) then (m = 0)
 30 if (m = 0) then goto 200
 40 rate = 3.61288E-10
-100 mole = rate * Time #* (M / (M + 1e-12))
+100 mole = rate * Time * (M / (M + 1e-12))
 200 save mole
 -end
 
@@ -92,110 +92,85 @@ Glass_kin
 20 if (m < 0) then (m = 0)
 30 if (m = 0) then goto 200
 40 rate = 1.87444E-10
-100 mole = rate * Time #* (M / (M + 1e-12))
+100 mole = rate * Time * (M / (M + 1e-12))
 200 save mole
 -end
 
 Calcite
 -start
-10 phase$ = "Calcite"
-20 GOSUB 1000
-30 s = 1e-5
-40 knu = 10^-5.8*EXP((-5600*4.1855/8.314)*((1/TK)-(1/298.15)))
-50 k1 = 10^-0.3*EXP((-3440*4.1855/8.314)*((1/TK)-(1/298.15)))*(ACT("H+"))
-60 k = knu+k1
-70 rate = s*m1*36.934*k*(1-srv)
-240 mole = rate * TIME
+10 mole = 0
+30 S = 1e-5 # CEA value in m2/cm3
+60 knu = 10^-5.8 * exp((-5600*4.1855 / 8.314) * ((1 / TK) - (1 / 298.15)))
+70 k1 =  10^-0.3 * exp((-3440*4.1855 / 8.314) * ((1 / TK) - (1 / 298.15))) * (ACT("H+"))
+80 k = knu + k1
+110 rate = S * m * 36.934 * k * (1 - SR("Calcite") )
+########## start nucleation bloc ##########
+200 if (M <= 0) and (SR("Calcite") > 1) then rate = -1e-12
+240 mole = rate * Time
 250 SAVE mole
-300 END
+260 END
 
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
 -end
 
 Celestite
 -start
-10 phase$ = "Celestite"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-10 # CEA value in m2/cm3
-60 k = 10^-3.20 * EXP((-3400*4.1855 / 8.314) * ((1 / TK) - (1 / 298.15)))
-110 rate = S * m1 * 46.25 * k * (1 - srv)
-240 mole = rate * TIME
+60 k = 10^-3.20 * exp((-3400*4.1855 / 8.314) * ((1 / TK) - (1 / 298.15)))
+110 rate = S * m * 46.25 * k * (1 - SR("Celestite") )
+########## start nucleation bloc ##########
+200 if (M <= 0) and (SR("Celestite") > 1) then rate = -1e-12
+240 mole = rate * Time
 250 SAVE mole
-300 END
+260 END
 
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
 -end
 
 Dolomite
 -start
-10 phase$ = "Dolomite"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-10 # CEA value in m2/cm3
 60 knu = 10^-7.53 * exp((-12500*4.1855 / 8.314) * ((1 / TK) - (1 / 298.15)))
 70 k1 =  10^-3.19 * exp((-8620*4.1855 / 8.314) * ((1 / TK) - (1 / 298.15))) * (ACT("H+")^0.5)
 80 k = knu + k1
-110 rate = S * m1 * 64.365 * k * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 64.365 * k * (1 - SR("Dolomite") )
+########## start nucleation bloc ##########
+200 if (M <= 0) and (SR("Dolomite") > 1) then rate = -1e-12
+240 mole = rate * Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 Goethite_B
 -start
-10 phase$ = "Goethite_B"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-8 # CEA value in m2/cm3
 60 k = 10^-7.94 * exp((-20700*4.1855 / 8.314) * ((1 / TK) - (1 / 298.15)))
-110 rate = S * m1 * 20.82 * k * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 20.82 * k * (1 - SR("Goethite_B") )
+########## start nucleation bloc ##########
+200 if (M <= 0) and (SR("Goethite_B") > 1) then rate = -1e-12
+240 mole = rate * Time
 250 SAVE mole
-300 END
+260 END
 
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
 -end
-
 
 Illite-Mg
 -start
-10 phase$ = "Illite-Mg"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # CEA value in m2/cm3
 60 k = 10^-14.00 * exp((-12000*4.1855 / 8.314) * ((1 / TK) - (1 / 298.15)))
-110 rate = S * m1 * 144.503 * k * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 144.503 * k * (1 - SR("Illite-Mg") )
+########## start nucleation bloc ##########
+200 if (M <= 0) and (SR("Illite-Mg") > 1) then rate = -1e-12
+240 mole = rate * Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
-
 
 Kaolinite_B
 -start
-10 phase$ = "Kaolinite_B"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-5 # CEA value in m2/cm3
 60 knu = 10^-13.18
 #60 knu = 10^-13.18 * exp((-5300*4.1855 / 8.314) * ((1 / TK) - (1 / 298.15)))
@@ -204,23 +179,17 @@ Kaolinite_B
 80 k2 =  10^-17.05 *(ACT("OH-")^-0.472)
 #80 k2 =  10^-17.05 * exp((-4270*4.1855 / 8.314) * ((1 / TK) - (1 / 298.15))) * (ACT("OH-")^-0.472)
 90 k = knu + k1 + k2
-110 rate = S * m1 * 99.52 * k * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 99.52 * k * (1 - SR("Kaolinite_B") )
+########## start nucleation bloc ##########
+200 if (M <= 0) and (SR("Kaolinite_B") > 1) then rate = -1e-12
+240 mole = rate * Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
-
 
 Mg-Montmo-Ca_B
 -start
-10 phase$ = "Mg-Montmo-Ca_B"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # CEA value in m2/cm3
 60 knu = 10^-14.41
 #60 knu = 10^-14.41 * exp((-12000*4.1855 / 8.314) * ((1 / TK) - (1 / 298.15)))
@@ -229,23 +198,17 @@ Mg-Montmo-Ca_B
 80 k2 =   10^-14.41 *(ACT("H+")^-0.13)
 #80 k2 =  10^-14.41 * exp((-12000*4.1855 / 8.314) * ((1 / TK) - (1 / 298.15))) * (ACT("H+")^-0.13)
 90 k = knu + k1 + k2
-110 rate = S * m1 * 133.08 * k * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 133.08 * k * (1 - SR("Mg-Montmo-Ca_B") )
+########## start nucleation bloc ##########
+200 if (M <= 0) and (SR("Mg-Montmo-Ca_B") > 1) then rate = -1e-12
+240 mole = rate * Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
-
 
 Mg-Montmorillonite-Na
 -start
-10 phase$ = "Mg-Montmorillonite-Na"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # CEA value in m2/cm3
 60 knu = 10^-14.41
 #60 knu = 10^-14.41 * exp((-12000*4.1855 / 8.314) * ((1 / TK) - (1 / 298.15)))
@@ -254,16 +217,12 @@ Mg-Montmorillonite-Na
 80 k2 =   10^-14.41 *(ACT("H+")^-0.13)
 #80 k2 =  10^-14.41 * exp((-12000*4.1855 / 8.314) * ((1 / TK) - (1 / 298.15))) * (ACT("H+")^-0.13)
 90 k = knu + k1 + k2
-110 rate = S * m1 * 133.08 * k * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 133.08 * k * (1 - SR("Mg-Montmorillonite-Na") )
+########## start nucleation bloc ##########
+200 if (M <= 0) and (SR("Mg-Montmorillonite-Na") > 1) then rate = -1e-12
+240 mole = rate * Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 Microcline
@@ -281,827 +240,1079 @@ Microcline
 
 Pyrite
 -start
-10 phase$ = "Pyrite"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-8 # CEA value in m2/cm3
 60 k1 = 10^-4.55 * exp((-13600*4.1855 / 8.314) * ((1 / TK) - (1 / 298.15))) * (ACT("O2(aq)")^0.5)
 70 k2 = 10^-7.52 * exp((-13600*4.1855 / 8.314) * ((1 / TK) - (1 / 298.15))) * (ACT("H+")^-0.5) * (ACT("Fe+++")^0.5)
 80 k = k1 + k2
-110 rate = S * m1 * 23.94 * k * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 23.94 * k * (1 - SR("Pyrite") )
+########## start nucleation bloc ##########
+200 if (M <= 0) and (SR("Pyrite") > 1) then rate = -1e-12
+240 mole = rate * Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 Quartz,alpha
 -start
-10 phase$ = "Quartz,alpha"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-5 # CEA value in m2/cm3
 60 k = 10^-13.99 * exp((-20900*4.1855 / 8.314) * ((1 / TK) - (1 / 298.15)))
-110 rate = S * m1 * 22.69 * k * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 22.69 * k * (1 - SR("Quartz,alpha") )
+########## start nucleation bloc ##########
+200 if (M <= 0) and (SR("Quartz,alpha") > 1) then rate = -1e-12
+240 mole = rate * Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 Sideritelt
 -start
-10 phase$ = "Sideritelt"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-8 # CEA value in m2/cm3
 60 k = 10^-7.53
 #60 k = 10^-7.53 * exp((-12500*4.1855 / 8.314) * ((1 / TK) - (1 / 298.15)))
-110 rate = S * m1 * 29.378 * k * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 29.378 * k * (1 - SR("Sideritelt") )
+########## start nucleation bloc ##########
+200 if (M <= 0) and (SR("Sideritelt") > 1) then rate = -1e-12
+240 mole = rate * Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 Anhydrite
 -start
-10 phase$ = "Anhydrite"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 3.4kcal/mol
+50 If (SR("Anhydrite") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -3.2
-110 rate = S * m1 * 46.01 * 2.793130273 * 0.000630957 * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 46.01 * 2.793130273 * 0.000630957 * (ABS(1 - SR("Anhydrite")))
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 46.01 * (-1) * 2.793130273 * 0.000630957 * (ABS(1 - SR("Anhydrite")))
+190 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) moles = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 Amorphous_silica
 -start
-10 phase$ = "Amorphous_silica"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 11.9kcal/mol
+50 If (SR("Amorphous_silica") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -9.42
-110 rate = S * m1 * 29 * 36.41825829 * 3.8e-10 * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 29 * 36.41825829 * 3.8e-10 * (ABS(1 - SR("Amorphous_silica")))
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 29 * (-1) * 36.41825829 * 3.8e-10 * (ABS(1 - SR("Amorphous_silica")))
+190 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 Chalcedony
 -start
-10 phase$ = "Chalcedony"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 11.9kcal/mol
+50 If (SR("Chalcedony") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -9.42
-110 rate = S * m1 * 22.688 * 36.41825829 * 3.98E-10 * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 22.688 * 36.41825829 * 3.98E-10 * (ABS(1 - SR("Chalcedony")))
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 22.688 * (-1) * 36.41825829 * 3.98E-10 * (ABS(1 - SR("Chalcedony")))
+190 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 Clinochlore
 -start
-10 phase$ = "Clinochlore"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("Clinochlore") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -14
-110 rate = S * m1 * 207.11 * 37.53526626 * 1e-14 * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 207.11 * 37.53526626 * 1e-14 * (ABS(1 - SR("Clinochlore")))
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 207.11 * (-1) * 37.53526626 * 1e-14 * (ABS(1 - SR("Clinochlore")))
+190 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 
 Cronstedtite_7A,alpha
 -start
-10 phase$ = "Cronstedtite_7A,alpha"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("Cronstedtite_7A,alpha") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -14
-110 rate = S * m1 * 110.9 * 37.53526626 * 1e-14 * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 110.9 * 37.53526626 * 1e-14 * (ABS(1 - SR("Cronstedtite_7A,alpha")))
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 110.9 * (-1) * 37.53526626 * 1e-14 * (ABS(1 - SR("Cronstedtite_7A,alpha")))
+190 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 Chamosite(Daphnite)
 -start
-10 phase$ = "Chamosite(Daphnite)"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("Chamosite(Daphnite)") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -14
-110 rate = S * m1 * 213.42 * 37.53526626 * 1e-14 * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 213.42 * 37.53526626 * 1e-14 * (ABS(1 - SR("Chamosite(Daphnite)")))
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 213.42 * (-1) * 37.53526626 * 1e-14 * (ABS(1 - SR("Chamosite(Daphnite)")))
+190 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
+
 
 Ettringite
 -start
-10 phase$ = "Ettringite"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("Ettringite") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -14
-110 rate = S * m1 * 710.32 * 37.53526626 * 1e-14 * (1 - srv)
-110 rate = S * m1 * 46.25 * k * (1 - srv )
-240 mole = rate * TIME
+110 rate = S * m * 710.32 * 37.53526626 * 1e-14 * (ABS(1 - SR("Ettringite")))
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 710.32 * (-1) * 37.53526626 * 1e-14 * (ABS(1 - SR("Ettringite")))
+190 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
+
 
 Ettringite_Fe
 -start
-10 phase$ = "Ettringite_Fe"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("Ettringite_Fe") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -14
-110 rate = S * m1 * 711.8 * 37.53526626 * 1e-14 * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 711.8 * 37.53526626 * 1e-14 * (ABS(1 - SR("Ettringite_Fe")))
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 711.8 * (-1) * 37.53526626 * 1e-14 * (ABS(1 - SR("Ettringite_Fe")))
+190 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
+
 
 Fe-SaponiteCa
 -start
-10 phase$ = "Fe-SaponiteCa"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("Fe-SaponiteCa") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -14
-110 rate = S * m1 * 141.51 * 37.53526626 * 1e-14 * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 141.51 * 37.53526626 * 1e-14 * (ABS(1 - SR("Fe-SaponiteCa")))
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 141.51 * (-1) * 37.53526626 * 1e-14 * (ABS(1 - SR("Fe-SaponiteCa")))
+195 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 Fe-SaponiteK
 -start
-10 phase$ = "Fe-SaponiteK"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("Fe-SaponiteK") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -14
-110 rate = S * m1 * 141.51 * 37.53526626 * 1e-14 * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 141.51 * 37.53526626 * 1e-14 * (ABS(1 - SR("Fe-SaponiteK")))
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 141.51 * (-1) * 37.53526626 * 1e-14 * (ABS(1 - SR("Fe-SaponiteK")))
+195 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 Fe-SaponiteMg
 -start
-10 phase$ = "Fe-SaponiteMg"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("Fe-SaponiteMg") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -14
-110 rate = S * m1 * 141.51 * 37.53526626 * 1e-14 * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 141.51 * 37.53526626 * 1e-14 * (ABS(1 - SR("Fe-SaponiteMg")))
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 141.51 * (-1) * 37.53526626 * 1e-14 * (ABS(1 - SR("Fe-SaponiteMg")))
+195 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 Fe-SaponiteNa
 -start
-10 phase$ = "Fe-SaponiteNa"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("Fe-SaponiteNa") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -14
-110 rate = S * m1 * 141.51 * 37.53526626 * 1e-14 * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 141.51 * 37.53526626 * 1e-14 * (ABS(1 - SR("Fe-SaponiteNa")))
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 141.51 * (-1) * 37.53526626 * 1e-14 * (ABS(1 - SR("Fe-SaponiteNa")))
+195 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 Fe-Montmorillonite-Ca
 -start
-10 phase$ = "Fe-Montmorillonite-Ca"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 8.5 # ESA (06has/vil 03tou/nea 05yok/kur); suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("Fe-Montmorillonite-Ca") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA 
-110 rate = S * m1 * 132.14 * 37.53526626 * 1e-14 * (1 - srv)
+110 rate = S * m * 132.14 * 37.53526626 * 1e-14 * (ABS(1 - SR("Fe-Montmorillonite-Ca")))
 #110 rate = S * m * 376.644 * (3.89045E-15 +( 1.94984E-13  * (ACT("H+") ^ 0.22))+(3.89045E-15 * (ACT("OH-") ^ 0.339))) * (ABS(1 - SR("Fe-Montmorillonite-Ca") ) )
-240 mole = rate * TIME
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 132.14 * (-1) * 37.53526626 * 1e-14 * (ABS(1 - SR("Fe-Montmorillonite-Ca")))
+#180 rate = S * m * 376.644 * (-1) * (3.89045E-15 +( 1.94984E-13  * (ACT("H+") ^ 0.22))+(3.89045E-15 * (ACT("OH-") ^ 0.339))) * (ABS(1 - SR("Fe-Montmorillonite-Ca") ) )
+190 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
+
 
 Fe-Montmorillonite-K
 -start
-10 phase$ = "Fe-Montmorillonite-K"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 8.5 # ESA (06has/vil 03tou/nea 05yok/kur); suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("Fe-Montmorillonite-K") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA 
-110 rate = S * m1 * 132.14 * 37.53526626 * 1e-14 * (1 - srv)
+110 rate = S * m * 132.14 * 37.53526626 * 1e-14 * (ABS(1 - SR("Fe-Montmorillonite-K")))
 #110 rate = S * m * 382.745 * (3.89045E-15 +( 1.94984E-13  * (ACT("H+") ^ 0.22))+(3.89045E-15 * (ACT("OH-") ^ 0.339))) * (ABS(1 - SR("Fe-Montmorillonite-K") ) )
-240 mole = rate * TIME
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 132.14 * (-1) * 37.53526626 * 1e-14 * (ABS(1 - SR("Fe-Montmorillonite-K")))
+#180 rate = S * m * 382.745 * (-1) * (3.89045E-15 +( 1.94984E-13  * (ACT("H+") ^ 0.22))+(3.89045E-15 * (ACT("OH-") ^ 0.339))) * (ABS(1 - SR("Fe-Montmorillonite-K") ) )
+190 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 Fe-Montmorillonite-Mg
 -start
-10 phase$ = "Fe-Montmorillonite-Mg"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 8.5 # ESA (06has/vil 03tou/nea 05yok/kur); suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("Fe-Montmorillonite-Mg") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA 
-110 rate = S * m1 * 132.14 * 37.53526626 * 1e-14 * (1 - srv)
+110 rate = S * m * 132.14 * 37.53526626 * 1e-14 * (ABS(1 - SR("Fe-Montmorillonite-Mg")))
 #110 rate = S * m * 373.963 * (3.89045E-15 +( 1.94984E-13  * (ACT("H+") ^ 0.22))+(3.89045E-15 * (ACT("OH-") ^ 0.339))) * (ABS(1 - SR("Fe-Montmorillonite-Mg") ) )
-240 mole = rate * TIME
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 132.14 * (-1) * 37.53526626 * 1e-14 * (ABS(1 - SR("Fe-Montmorillonite-Mg")))
+#180 rate = S * m * 373.963 * (-1) * (3.89045E-15 +( 1.94984E-13  * (ACT("H+") ^ 0.22))+(3.89045E-15 * (ACT("OH-") ^ 0.339))) * (ABS(1 - SR("Fe-Montmorillonite-Mg") ) )
+190 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
+
 
 Fe-Montmorillonite-Na
 -start
-10 phase$ = "Fe-Montmorillonite-Na"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 8.5 # ESA (06has/vil 03tou/nea 05yok/kur); suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("Fe-Montmorillonite-Na") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA 
-110 rate = S * m1 * 132.14 * 37.53526626 * 1e-14 * (1 - SR("Fe-Montmorillonite-Na"))
+110 rate = S * m * 132.14 * 37.53526626 * 1e-14 * (ABS(1 - SR("Fe-Montmorillonite-Na")))
 #110 rate = S * m * 377.428 * (3.89045E-15 +( 1.94984E-13  * (ACT("H+") ^ 0.22))+(3.89045E-15 * (ACT("OH-") ^ 0.339))) * (ABS(1 - SR("Fe-Montmorillonite-Na") ) )
-240 mole = rate * TIME
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 132.14 * (-1) * 37.53526626 * 1e-14 * (ABS(1 - SR("Fe-Montmorillonite-Na")))
+#180 rate = S * m * 377.428 * (-1) * (3.89045E-15 +( 1.94984E-13  * (ACT("H+") ^ 0.22))+(3.89045E-15 * (ACT("OH-") ^ 0.339))) * (ABS(1 - SR("Fe-Montmorillonite-Na") ) )
+190 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
+
 
 Greenalite 
 -start
-10 phase$ = "Greenalite"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("Greenalite") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -14
-110 rate = S * m1 * 115 * 37.53526626 * 1e-14 * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 115 * 37.53526626 * 1e-14 * (ABS(1 - SR("Greenalite")))
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 115 * (-1) * 37.53526626 * 1e-14 * (ABS(1 - SR("Greenalite")))
+190 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
-
 
 Gypsum 
 -start
-10 phase$ = "Gypsum"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 0kcal/mol
+50 If (SR("Gypsum") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -2.79
-110 rate = S * m1 * 74.69 * 0.00162181 * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 74.69 * 0.00162181 * (ABS(1 - SR("Gypsum")))
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 74.69 * (-1) * 0.00162181 * (ABS(1 - SR("Gypsum")))
+190 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 Illite-FeII
 -start
-10 phase$ = "Illite-FeII"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("Illite-FeII") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -14
-110 rate = S * m1 * 143.778 * 37.53526626 * 1e-14 * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 143.778 * 37.53526626 * 1e-14 * (ABS(1 - SR("Illite-FeII")))
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 143.778 * (-1) * 37.53526626 * 1e-14 * (ABS(1 - SR("Illite-FeII")))
+195 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 Illite-FeIII
 -start
-10 phase$ = "Illite-FeIII"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("Illite-FeIII") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -14
-110 rate = S * m1 * 144.246 * 37.53526626 * 1e-14 * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 144.246 * 37.53526626 * 1e-14 * (ABS(1 - SR("Illite-FeIII")))
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 144.246 * (-1) * 37.53526626 * 1e-14 * (ABS(1 - SR("Illite-FeIII")))
+195 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-##1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 Magnetite
 -start
-10 phase$ = "Magnetite"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # CEA value in m2/cm3
+40 If (m <= 0) and (SR("Magnetite") > 1) Then GoTo  210
+########## start dissolution & precipitation bloc ##########
 60 k = 10^-10.78 * exp((-4400*4.1855 / 8.314) * ((1 / TK) - (1 / 298.15)))
-110 rate = S * m1 * 44.524 * k * (1 - srv )
-240 mole = rate * TIME
+110 rate = S * m * 44.524 * k * (1 - SR("Magnetite") )
+120 GoTo 240
+########## end dissolution & precipitation bloc ##########
+########## start nucleation bloc ##########
+210 rate = -1e-12
+########## end nucleation bloc ##########
+240 mole = rate * Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 
 Mg-Montmorillonite-K
 -start
-10 phase$ = "Mg-Montmorillonite-K"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 8.5 # ESA (06has/vil 03tou/nea 05yok/kur); suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("Mg-Montmorillonite-K") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA 
-110 rate = S * m1 * 133.08 * 37.53526626 * 1e-14 * (1 - srv)
+110 rate = S * m * 133.08 * 37.53526626 * 1e-14 * (ABS(1 - SR("Mg-Montmorillonite-K")))
 #110 rate = S * m * 372.338 * (3.89045E-15 +( 1.94984E-13  * (ACT("H+") ^ 0.22))+(3.89045E-15 * (ACT("OH-") ^ 0.339))) * (ABS(1 - SR("Mg-Montmorillonite-K") ) )
-240 mole = rate * TIME
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 133.08 * (-1) * 37.53526626 * 1e-14 * (ABS(1 - SR("Mg-Montmorillonite-K")))
+#180 rate = S * m * 372.338 * (-1) * (3.89045E-15 +( 1.94984E-13  * (ACT("H+") ^ 0.22))+(3.89045E-15 * (ACT("OH-") ^ 0.339))) * (ABS(1 - SR("Mg-Montmorillonite-K") ) )
+190 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 Mg-Montmorillonite-Mg
 -start
-10 phase$ = "Mg-Montmorillonite-Mg"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 8.5 # ESA (06has/vil 03tou/nea 05yok/kur); suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("Mg-Montmorillonite-Mg") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA 
-110 rate = S * m1 * 133.08 * 37.53526626 * 1e-14 * (1 - srv)
+110 rate = S * m * 133.08 * 37.53526626 * 1e-14 * (ABS(1 - SR("Mg-Montmorillonite-Mg")))
 #110 rate = S * m * 363.557 * (3.89045E-15 +( 1.94984E-13  * (ACT("H+") ^ 0.22))+(3.89045E-15 * (ACT("OH-") ^ 0.339))) * (ABS(1 - SR("Mg-Montmorillonite-Mg") ) )
-240 mole = rate * TIME
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 133.08 * (-1) * 37.53526626 * 1e-14 * (ABS(1 - SR("Mg-Montmorillonite-Mg")))
+#180 rate = S * m * 363.557 * (-1) * (3.89045E-15 +( 1.94984E-13  * (ACT("H+") ^ 0.22))+(3.89045E-15 * (ACT("OH-") ^ 0.339))) * (ABS(1 - SR("Mg-Montmorillonite-Mg") ) )
+190 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
+
 
 NontroniteCa
 -start
-10 phase$ = "NontroniteCa"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("NontroniteCa") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -14
-110 rate = S * m1 * 131.6 * 37.53526626 * 1e-14 * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 131.6 * 37.53526626 * 1e-14 * (ABS(1 - SR("NontroniteCa")))
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 131.6 * (-1) * 37.53526626 * 1e-14 * (ABS(1 - SR("NontroniteCa")))
+190 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 NontroniteK
 -start
-10 phase$ = "NontroniteK"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("NontroniteK") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -14
-110 rate = S * m1 * 131.6 * 37.53526626 * 1e-14 * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 131.6 * 37.53526626 * 1e-14 * (ABS(1 - SR("NontroniteK")))
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 131.6 * (-1) * 37.53526626 * 1e-14 * (ABS(1 - SR("NontroniteK")))
+190 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 NontroniteMg
 -start
-10 phase$ = "NontroniteMg"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("NontroniteMg") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -14
-110 rate = S * m1 * 131.6 * 37.53526626 * 1e-14 * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 131.6 * 37.53526626 * 1e-14 * (ABS(1 - SR("NontroniteMg")))
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 131.6 * (-1) * 37.53526626 * 1e-14 * (ABS(1 - SR("NontroniteMg")))
+190 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 NontroniteNa
 -start
-10 phase$ = "NontroniteNa"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("NontroniteNa") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -14
-110 rate = S * m1 * 131.6 * 37.53526626 * 1e-14 * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 131.6 * 37.53526626 * 1e-14 * (ABS(1 - SR("NontroniteNa")))
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 131.6 * (-1) * 37.53526626 * 1e-14 * (ABS(1 - SR("NontroniteNa")))
+190 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 Pyrrhotite 
 -start
-10 phase$ = "Pyrrhotite"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 13.6kcal/mol
+50 If (SR("Pyrrhotite") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -10
-110 rate = S * m1 * 18.2 * 60.86459938 * 1e-10 * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 18.2 * 60.86459938 * 1e-10 * (ABS(1 - SR("Pyrrhotite")))
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 18.2 * (-1) * 60.86459938 * 1e-10 * (ABS(1 - SR("Pyrrhotite")))
+190 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 SaponiteCa
 -start
-10 phase$ = "SaponiteCa"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("SaponiteCa") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -14
-110 rate = S * m1 * 150.59 * 37.53526626 * 1e-14 * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 150.59 * 37.53526626 * 1e-14 * (ABS(1 - SR("SaponiteCa")))
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 150.59 * (-1) * 37.53526626 * 1e-14 * (ABS(1 - SR("SaponiteCa")))
+195 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 SaponiteK
 -start
-10 phase$ = "SaponiteK"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("SaponiteK") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -14
-110 rate = S * m1 * 150.59 * 37.53526626 * 1e-14 * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 150.59 * 37.53526626 * 1e-14 * (ABS(1 - SR("SaponiteK")))
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 150.59 * (-1) * 37.53526626 * 1e-14 * (ABS(1 - SR("SaponiteK")))
+195 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 SaponiteMg
 -start
-10 phase$ = "SaponiteMg"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("SaponiteMg") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -14
-110 rate = S * m1 * 150.59 * 37.53526626 * 1e-14 * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 150.59 * 37.53526626 * 1e-14 * (ABS(1 - SR("SaponiteMg")))
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 150.59 * (-1) * 37.53526626 * 1e-14 * (ABS(1 - SR("SaponiteMg")))
+195 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 SaponiteNa
 -start
-10 phase$ = "SaponiteNa"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("SaponiteNa") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -14
-110 rate = S * m1 * 150.59 * 37.53526626 * 1e-14 * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 150.59 * 37.53526626 * 1e-14 * (ABS(1 - SR("SaponiteNa")))
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 150.59 * (-1) * 37.53526626 * 1e-14 * (ABS(1 - SR("SaponiteNa")))
+195 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 Siderite
 -start
-10 phase$ = "Siderite"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # CEA value in m2/cm3
+40 If (m <= 1) and (SR("Siderite") > 1) Then GoTo  210
+########## start dissolution & precipitation bloc ##########
 60 k = 10^-7.53
 #60 k = 10^-7.53 * exp((-12500*4.1855 / 8.314) * ((1 / TK) - (1 / 298.15)))
-110 rate = S * m1 * 29.378 * k * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 29.378 * k * (1 - SR("Siderite") )
+120 GoTo 240
+########## end dissolution & precipitation bloc ##########
+########## start nucleation bloc ##########
+210 rate = -1e-12
+########## end nucleation bloc ##########
+240 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
+
 
 Huntite
 -start
-10 phase$ = "Huntite"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("Huntite") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA 1e-7.53
-110 rate = S * m1 * 122.9 * 37.53526626 * (2.95121E-08 ) * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 122.9 * 37.53526626 * (2.95121E-08 ) * (ABS(1 - SR("Huntite") ) )
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted from 97arv/mac 99arv/mac
+130 If (m <= 1e-5) then GoTo 200
+180 rate = S * m * 122.9 * (-1) * 37.53526626 * (2.95121E-08  )  * (ABS(1 - SR("Huntite") ) )
+195 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 Sepiolite 
 -start
-10 phase$ = "Sepiolite"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("Sepiolite") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -7
-110 rate = S * m1 * 285.6 * 37.53526626 * 3.89E-15 * (1 - srv)
-240 mole = rate * TIME
-250 SAVE mole
-300 END
+110 rate = S * m * 285.6 * 37.53526626 * 3.89E-15 * (ABS(1 - SR("Sepiolite")))
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
 
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+180 rate = S * m * 285.6 * (-1) * 37.53526626 * 3.89E-15 * (ABS(1 - SR("Sepiolite")))
+190 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
+250 SAVE mole
+260 END
 -end
+
 
 Minnesotaite
 -start
-10 phase$ = "Minnesotaite"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 12kcal/mol
+50 If (SR("Minnesotaite") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -14
-110 rate = S * m1 * 147.86 * 3.89E-15 * (1 - srv)
+110 rate = S * m * 147.86 * 3.89E-15 * (ABS(1 - SR("Minnesotaite")))
 #110 rate = S * m * 473.894 * 37.53526626 * 3.89E-15 * (ABS(1 - SR("Minnesotaite")))
-240 mole = rate * TIME
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 147.86 * (-1) * 3.89E-15 * (ABS(1 - SR("Minnesotaite")))
+#180 rate = S * m * 473.894 * (-1) * 37.53526626 * 3.89E-15 * (ABS(1 - SR("Minnesotaite")))
+190 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 Brucite  
 -start
-10 phase$ = "Brucite"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 15kcal/mol
+50 If (SR("Brucite") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -7
-110 rate = S * m1 * 24.63 * 92.90720097 * 1e-7 * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 24.63 * 92.90720097 * 1e-7 * (ABS(1 - SR("Brucite")))
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 24.63 * (-1) * 92.90720097 * 1e-7 * (ABS(1 - SR("Brucite")))
+190 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
+
 
 Gyrolite 
 -start
-10 phase$ = "Gyrolite"
-20 GOSUB 1000
+10 mole = 0
 30 S = 1e-4 # m2/cm3
 #30 S = 40 # average BET; suggested value in m2/g
 # Ea = 15kcal/mol
+50 If (SR("Gyrolite") > 1) Then GoTo 130
+########## start dissolution bloc ##########
 # kinetic data extracted from CEA rate = -7
-110 rate = S * m1 * 137.34 * 92.90720097 * 1e-7 * (1 - srv)
-240 mole = rate * TIME
+110 rate = S * m * 137.34 * 92.90720097 * 1e-7 * (ABS(1 - SR("Gyrolite")))
+120 GoTo 230
+########## end dissolution bloc ##########
+########## start precipitation bloc ##########
+# kinetic data extracted 
+130 If (m <= 0) then GoTo 200
+180 rate = S * m * 137.34 * (-1) * 92.90720097 * 1e-7 * (ABS(1 - SR("Gyrolite")))
+190 GoTo 230
+#start nucleation
+200 rate = -1e-12
+#end nucleation
+########## end precipitation bloc ##########
+230 mole = rate * Time
+#235 if (rate < 0 and rate > -1e-12) then mole = -1e-12*Time
 250 SAVE mole
-300 END
-
-1000 REM Subroutine to limit SR
-1010 srv = SR(phase$)
-#1020 if (srv > 5) THEN srv = 5.0
-1030 IF(M <= 0) AND (srv > 1) THEN m1 = 1e-10 ELSE m1 = M
-1040 RETURN
+260 END
 -end
 
 END
@@ -1142,7 +1353,7 @@ Huntite                     0 0
 Brucite                     0 0
 
 KINETICS 1
--bad_step_max 10
+-bad_step_max 100
 -cvode
 -cvode_steps 500
 
@@ -1313,13 +1524,18 @@ Huntite                     0 0
 Brucite                     0 0
 
 KINETICS 2
--bad_step_max 10
+-bad_step_max 100
 -cvode
 -cvode_steps 500
 
 Iron_kin
 -formula Fe # Fe+2 1 OH- 2 H2 1 H2O -0.66666 #Fe0 + 2H2O = Fe+2 + 2OH- + H2
 -m0 285 # Qté totale
+
+Glass_kin
+-formula Ca 0.0952 Na 0.4323 Fe 0.0497 B 0.5323 Al 0.1285 Si 1.0 O 3.3774
+-m0 285 # Qté totale
+-tol 1e-8
 
 Calcite          
 -m0 0
@@ -1493,7 +1709,7 @@ Brucite                     0 0
 
 
 KINETICS 3
--bad_step_max 10
+-bad_step_max 100
 -cvode
 -cvode_steps 500
 

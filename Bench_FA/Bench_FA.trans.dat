@@ -19,8 +19,8 @@ SOLUTION_METHOD
 	-space_differencing 0
 	-time_differencing  1
 	-cross_dispersion   false
-	-rebalance_fraction 0.3
-	-rebalance_by_cell  true
+	-rebalance_fraction 0.5
+	-rebalance_by_cell  false
 	-threads            3
 UNITS
 	-time                             years # s
@@ -200,7 +200,7 @@ PRINT_FREQUENCY
 		-conductances           0
 		-end_of_period_default  false 
 		-flow_balance           0
-		-force_chemistry_print  end 
+		-force_chemistry_print  0 
 		-HDF_chemistry          end # 10    years
 		-HDF_heads              0
 		-HDF_velocities         0
@@ -270,9 +270,9 @@ TIME_CONTROL
 		1.28  years  1.28 years
 		2.56  years  2.56 years
 		5.12  years  5.12 years
-		10   years   10 years
-		20   years   20 years
-		40   years   40 years
+		10   years   1 years
+#		20   years   20 years
+#		40   years   40 years
 		80   years   80 years
 		160  years   160 years
 		320  years   320 years
