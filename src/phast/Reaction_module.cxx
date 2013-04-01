@@ -2333,7 +2333,7 @@ Reaction_module::Rebalance_load(void)
 	{
 		int i = k;
 		int iphrq = i;			/* iphrq is 1 to count_chem */
-		int ihst = this->back[i][0];	/* ihst is 1 to nxyz */
+		//int ihst = this->back[i][0];	/* ihst is 1 to nxyz */
 		while (k > end_cell[old])
 		{
 			old++;
@@ -2386,19 +2386,19 @@ Reaction_module::Rebalance_load_per_cell(void)
 	
 	// Assume homogeneous cluster for now
 	double tasks_total = 0;
-	for (size_t i = 0; i < this->nthreads; i++)
+	for (size_t i = 0; i < (size_t) this->nthreads; i++)
 	{
 		standard_time.push_back(1.0);   // For heterogeneous cluster, need times for a standard task here
 		tasks_total += 1.0 / standard_time[i];
 	}
 
-	for (size_t i = 0; i < this->nthreads; i++)
+	for (size_t i = 0; i < (size_t) this->nthreads; i++)
 	{
 		task_fraction.push_back((1.0 / standard_time[i]) / tasks_total);
 	}
 
 
-	for (size_t i = 0; i < this->nthreads; i++)
+	for (size_t i = 0; i < (size_t) this->nthreads; i++)
 	{
 		IPhreeqcPhast * phast_iphreeqc_worker = this->workers[i];
 		//std::cerr << "Thread: " << i << " " << phast_iphreeqc_worker->Get_cell_clock_times().size() << std::endl;
@@ -2425,11 +2425,11 @@ Reaction_module::Rebalance_load_per_cell(void)
 	{
 		// Normalize times
 		max_task_time = 0;
-		for (size_t i = 0; i < this->nthreads; i++)
+		for (size_t i = 0; i < (size_t) this->nthreads; i++)
 		{		
 			double task_sum = 0;
 			// normalize cell_times with standard_time
-			for (size_t j = start_cell[i]; j <= end_cell[i]; j++)
+			for (size_t j = (size_t) start_cell[i]; j <= (size_t) end_cell[i]; j++)
 			{
 				task_sum += recv_cell_times[j];
 				normalized_cell_times.push_back(recv_cell_times[j]/standard_time[i]);
@@ -2441,7 +2441,7 @@ Reaction_module::Rebalance_load_per_cell(void)
 
 		// calculate efficiency
 		double efficiency = 0;
-		for (size_t i = 0; i < this->nthreads; i++)
+		for (size_t i = 0; i < (size_t) this->nthreads; i++)
 		{
 			efficiency += task_time[i] / max_task_time * task_fraction[i];
 		}
@@ -2453,7 +2453,7 @@ Reaction_module::Rebalance_load_per_cell(void)
 		f_high = 1 + 0.5 / ((double) this->nthreads);
 		f_low = 1;
 		int j = 0;
-		for (size_t i = 0; i < this->nthreads - 1; i++)
+		for (size_t i = 0; i < (size_t) this->nthreads - 1; i++)
 		{
 			if (i > 0)
 			{
@@ -2465,7 +2465,7 @@ Reaction_module::Rebalance_load_per_cell(void)
 			while (next)
 			{
 				temp_sum_work += normalized_cell_times[j] / normalized_total_time;
-				if ((temp_sum_work < task_fraction[i]) && ((count_chem - j) > (this->nthreads - i)))
+				if ((temp_sum_work < task_fraction[i]) && ((count_chem - (int) j) > (this->nthreads - (int) i)))
 				{
 					sum_work = temp_sum_work;
 					j++;
@@ -2492,7 +2492,7 @@ Reaction_module::Rebalance_load_per_cell(void)
 		end_cell_new[this->nthreads - 1] = count_chem - 1;
 
 		// Apply rebalance fraction
-		for (size_t i = 0; i < this->nthreads - 1; i++)
+		for (size_t i = 0; i < (size_t) this->nthreads - 1; i++)
 		{
 			int	icells;
 			icells = (int) (((double) (end_cell_new[i] - end_cell[i])) * (this->rebalance_fraction) );
@@ -2517,7 +2517,7 @@ Reaction_module::Rebalance_load_per_cell(void)
 	{
 		int i = k;
 		int iphrq = i;			/* iphrq is 1 to count_chem */
-		int ihst = this->back[i][0];	/* ihst is 1 to nxyz */
+		//int ihst = this->back[i][0];	/* ihst is 1 to nxyz */
 		while (k > end_cell[old])
 		{
 			old++;
