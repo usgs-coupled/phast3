@@ -22,7 +22,6 @@ SUBROUTINE sumcal_ss_flow
   REAL(KIND=kdp) :: denmfs, frac_flowresid, p1, pmfs, qfbc,  &
        qlim, qm_net, qn, qnp, u0, u1, u2, u6, uc,  &
        ufdt1, ufrac, up0, z0, z1, z2, zfsl, zm1, zmfs, zp1
-  REAL(KIND=kdp) :: hrbc
   INTEGER :: a_err, da_err, i, icol, imod, iwel, j, jcol, k, kcol, kfs,  &
        l, l1, lc, ls, m, m0, m1, m1kp, mfs, mpmax, mt
   LOGICAL :: ierrw
@@ -627,30 +626,16 @@ SUBROUTINE sumcal_ss_flow
      ! ... Calculate current net river leakage flow rate
      qm_net = 0._kdp
      DO ls=river_seg_first(lc),river_seg_last(lc)
-         qnp = arbc(ls) - brbc(ls)*dp(m)
-         hrbc = phirbc(ls)/gz
-         if(hrbc > zerbc(ls)) then      ! ... treat as river
-             IF(qnp <= 0._kdp) THEN          ! ... Outflow
-                 qm_net = qm_net + den0*qnp
-             ELSE                            ! ... Inflow
-                 ! ... Limit the flow rate for a river leakage
-                 qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &
-                 - 0.5_kdp*den0*bbrbc(ls)))
-                 qnp = MIN(qnp,qlim)
-                 qm_net = qm_net + denrbc(ls)*qnp
-             ENDIF
-
-         else                           ! ... treat as drain 
-             IF(qnp <= 0._kdp) THEN           ! ... Outflow
-                 qfbc = den0*qnp
-                 qfrbc(lc) = qfrbc(lc) + qfbc
-                 stotfp = stotfp-ufdt1*qfbc
-             ELSE                            ! ... Inflow
-                 qfbc = 0._kdp
-                 qfrbc(lc) = qfrbc(lc) + qfbc
-                 stotfi = stotfi+ufdt1*qfbc
-             end IF
-         end if            
+        qnp = arbc(ls) - brbc(ls)*dp(m)
+        IF(qnp <= 0._kdp) THEN          ! ... Outflow
+           qm_net = qm_net + den0*qnp
+        ELSE                            ! ... Inflow
+           ! ... Limit the flow rate for a river leakage
+           qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &
+                - 0.5_kdp*den0*bbrbc(ls)))
+           qnp = MIN(qnp,qlim)
+           qm_net = qm_net + denrbc(ls)*qnp
+        ENDIF
      END DO
      qfrbc(lc) = qm_net
      stfrbc = stfrbc + ufdt1*qfrbc(lc)

@@ -22,7 +22,6 @@ SUBROUTINE XP_aplbce_thread(xp)
   INTEGER :: imod, k, ks, l1, lc, ls, m, mc, ms  
   LOGICAL :: erflg  
   REAL(KIND=kdp) :: qsbc, qsbc2
-  REAL(KIND=kdp) :: hrbc
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id: XP_aplbce.f90,v 1.3 2011/01/22 00:06:20 klkipp Exp $'
   !     ------------------------------------------------------------------
@@ -102,13 +101,7 @@ SUBROUTINE XP_aplbce_thread(xp)
         ks = (ms - imod)/nxy + MIN(1,imod)
         uphim = p(ms) + gz*(denrbc(ls) - den0)*uzav
         brbc(ls) = krbc(ls)/visrbc(ls)
-        ! switch to drain if necessary
-        hrbc = phirbc(ls)/gz
-        if(hrbc > zerbc(ls)) then      ! ... treat as river
-           arbc(ls) = brbc(ls)*((denrbc(ls)*phirbc(ls) - den0*gz*z(ks)) - uphim)
-        else                           ! ... treat as drain 
-           arbc(ls) = brbc(ls)*(denrbc(ls)*gz*zerbc(ls) - (p(ms) + den0*gz*z(ks)))
-        end if     
+        arbc(ls) = brbc(ls)*((denrbc(ls)*phirbc(ls) - den0*gz*z(ks)) - uphim)
      END DO
   END DO
 !!$  DO ls=1,nrbc_seg
@@ -204,7 +197,6 @@ SUBROUTINE XP_aplbce(xp)
   INTEGER :: imod, k, ks, l1, lc, ls, m, mc, ms  
   LOGICAL :: erflg  
   REAL(KIND=kdp) :: qsbc, qsbc2
-  REAL(KIND=kdp) :: hrbc
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id: XP_aplbce.f90,v 1.3 2011/01/22 00:06:20 klkipp Exp $'
   !     ------------------------------------------------------------------
@@ -284,12 +276,7 @@ SUBROUTINE XP_aplbce(xp)
         ks = (ms - imod)/nxy + MIN(1,imod)
         uphim = p(ms) + gz*(denrbc(ls) - den0)*uzav
         brbc(ls) = krbc(ls)/visrbc(ls)
-        hrbc = phirbc(ls)/gz
-        if(hrbc > zerbc(ls)) then      ! ... treat as river
-           arbc(ls) = brbc(ls)*((denrbc(ls)*phirbc(ls) - den0*gz*z(ks)) - uphim)
-        else                           ! ... treat as drain 
-           arbc(ls) = brbc(ls)*(denrbc(ls)*gz*zerbc(ls) - (p(ms) + den0*gz*z(ks)))
-        end if  
+        arbc(ls) = brbc(ls)*((denrbc(ls)*phirbc(ls) - den0*gz*z(ks)) - uphim)
      END DO
   END DO
 !!$  DO ls=1,nrbc_seg
