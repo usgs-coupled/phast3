@@ -43,7 +43,6 @@ SUBROUTINE sumcal1_manager
        qlim, qm_in, qm_net, qn, qnp,  &
        u0, u1, ufdt0, ufdt1,  &
        ufrac, up0, z0, zfsl, zm1, zp1
-  REAL(KIND=kdp) :: hrbc
   REAL(KIND=kdp) :: u6
   REAL(KIND=kdp), PARAMETER :: epssat = 1.e-6_kdp  
   INTEGER :: a_err, da_err, i, iis, imod, iwel, j, k, l, lc, l1, ls, m, mt, nsa
@@ -493,37 +492,24 @@ SUBROUTINE sumcal1_manager
      ! ... Calculate current net aquifer leakage flow rate
      qm_net = 0._kdp
      DO ls=river_seg_first(lc),river_seg_last(lc)
-         qnp = arbc(ls) - brbc(ls)*dp(m)
-         hrbc = phirbc(ls)/gz
-         if(hrbc > zerbc(ls)) then      ! ... treat as river
-             IF(qnp <= 0._kdp) THEN          ! ... Outflow
-                 qm_net = qm_net + den0*qnp
-                 sfvrb(lc) = sfvrb(lc) + qnp
-             ELSE                            ! ... Inflow
-                 ! ... Limit the flow rate for a river leakage
-                 qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &
-                 - 0.5_kdp*den0*bbrbc(ls)))
-                 qnp = MIN(qnp,qlim)
-                 qm_net = qm_net + denrbc(ls)*qnp
-                 sfvrb(lc) = sfvrb(lc) + qnp
-             ENDIF
-         else                           ! ... treat as drain 
-             IF(qnp <= 0._kdp) THEN           ! ... Outflow
-                 qfbc = den0*qnp
-                 qfrbc(lc) = qfrbc(lc) + qfbc
-                 stotfp = stotfp-ufdt1*qfbc
-             ELSE                            ! ... Inflow
-                 qfbc = 0._kdp
-                 qfrbc(lc) = qfrbc(lc) + qfbc
-                 stotfi = stotfi+ufdt1*qfbc
-             end IF
-         end if            
+        qnp = arbc(ls) - brbc(ls)*dp(m)
+        IF(qnp <= 0._kdp) THEN          ! ... Outflow
+           qm_net = qm_net + den0*qnp
+           sfvrb(lc) = sfvrb(lc) + qnp
+        ELSE                            ! ... Inflow
+           ! ... Limit the flow rate for a river leakage
+           qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &
+                - 0.5_kdp*den0*bbrbc(ls)))
+           qnp = MIN(qnp,qlim)
+           qm_net = qm_net + denrbc(ls)*qnp
+           sfvrb(lc) = sfvrb(lc) + qnp
+        ENDIF
      END DO
      qfrbc(lc) = qm_net
      sfrb(lc) = sfrb(lc) + qfrbc(lc)
      stfrbc = stfrbc + ufdt1*qfrbc(lc)
      IF(qm_net <= 0._kdp) THEN           ! ... net outflow
-	    stotfp = stotfp - ufdt1*qfrbc(lc)
+	stotfp = stotfp - ufdt1*qfrbc(lc)
         DO  iis=1,ns
            qsrbc(lc,iis) = qfrbc(lc)*c(m,iis)
            stotsp(iis) = stotsp(iis) - ufdt1*qsrbc(lc,iis)

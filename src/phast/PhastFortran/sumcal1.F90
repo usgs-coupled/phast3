@@ -43,7 +43,6 @@ SUBROUTINE sumcal1
        u0, u1, ufdt0, ufdt1,  &
        ufrac, up0, z0, zfsl, zm1, zp1
   REAL(KIND=kdp) :: u6
-  REAL(KIND=kdp) :: hrbc
   REAL(KIND=kdp), PARAMETER :: epssat = 1.e-6_kdp  
   INTEGER :: a_err, da_err, i, iis, imod, iwel, j, k, l, lc, l1, ls, m, mt, nsa
   INTEGER :: mpmax
@@ -779,13 +778,6 @@ SUBROUTINE sumcal1
      PRINT *, "Array allocation failed: sumcal1, point 3"  
      STOP
   ENDIF
-   ! ... Allocate scratch space
-  ALLOCATE (qsbc3(nsa), qsbc4(nsa),  &
-       stat = a_err)
-  IF (a_err /= 0) THEN  
-     PRINT *, "Array allocation failed: sumcal1, point 3.1"  
-     STOP
-  ENDIF 
   DO lc=1,nrbc_cells
      m = river_seg_m(lc)
      qfrbc(lc) = 0._kdp
@@ -798,40 +790,17 @@ SUBROUTINE sumcal1
      qm_net = 0._kdp
      DO ls=river_seg_first(lc),river_seg_last(lc)
         qnp = arbc(ls) - brbc(ls)*dp(m)
-        hrbc = phirbc(ls)/gz
-        if(hrbc > zerbc(ls)) then      ! ... treat as river
-            IF(qnp <= 0._kdp) THEN          ! ... Outflow
-                qm_net = qm_net + den0*qnp
-                sfvrb(lc) = sfvrb(lc) + qnp
-            ELSE                            ! ... Inflow
-                ! ... Limit the flow rate for a river leakage
-                qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &
+        IF(qnp <= 0._kdp) THEN          ! ... Outflow
+           qm_net = qm_net + den0*qnp
+           sfvrb(lc) = sfvrb(lc) + qnp
+        ELSE                            ! ... Inflow
+           ! ... Limit the flow rate for a river leakage
+           qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &
                 - 0.5_kdp*den0*bbrbc(ls)))
-                qnp = MIN(qnp,qlim)
-                qm_net = qm_net + denrbc(ls)*qnp
-                sfvrb(lc) = sfvrb(lc) + qnp
-            ENDIF
-        else                           ! ... treat as drain 
-            IF(qnp <= 0._kdp) THEN           ! ... Outflow
-                qfbc = den0*qnp
-                qfrbc(lc) = qfrbc(lc) + qfbc
-                stotfp = stotfp-ufdt1*qfbc
-                DO  iis=1,ns
-                    qsbc3(iis) = qfbc*c(m,iis)
-                    qsrbc(lc,iis) = qsrbc(lc,iis) + qsbc3(iis)
-                    stotsp(iis) = stotsp(iis)-ufdt1*qsbc3(iis)
-                END DO
-            ELSE                            ! ... Inflow
-                qfbc = 0._kdp
-                qfrbc(lc) = qfrbc(lc) + qfbc
-                stotfi = stotfi+ufdt1*qfbc
-                DO  iis=1,ns
-                    qsbc3(iis) = 0._kdp
-                    qsrbc(lc,iis) = qsrbc(lc,iis) + qsbc3(iis)
-                    stotsi(iis) = stotsi(iis) + ufdt1*qsbc3(iis)
-                END DO
-            ENDIF
-        end if            
+           qnp = MIN(qnp,qlim)
+           qm_net = qm_net + denrbc(ls)*qnp
+           sfvrb(lc) = sfvrb(lc) + qnp
+        ENDIF
      END DO
      qfrbc(lc) = qm_net
      sfrb(lc) = sfrb(lc) + qfrbc(lc)
@@ -896,7 +865,13 @@ SUBROUTINE sumcal1
   ENDIF
   ! ... Drain leakage b.c.
 !$$  erflg=.FALSE.
-  qsbc3 = 0.0 ! in case used in rivers
+  ! ... Allocate scratch space
+  ALLOCATE (qsbc3(nsa), qsbc4(nsa),  &
+       stat = a_err)
+  IF (a_err /= 0) THEN  
+     PRINT *, "Array allocation failed: sumcal1, point 3.1"  
+     STOP
+  ENDIF
   DO lc=1,ndbc_cells
      m = drain_seg_m(lc)
      qfdbc(lc) = 0._kdp

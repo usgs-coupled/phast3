@@ -27,7 +27,6 @@ SUBROUTINE XP_aplbci_thread(xp)
        dqhwdt, dqsbc, dqsdc, dqsdp, dqswdc, dqswdp, dqwlyr, ehaif, ehlbc,  &
        qfbc, qfwav, qfwn, qhbc, qhwm, qlim, qm_in, qm_net, qn, qnp, qsbc, qsbc3, qsbc4,  &
        qswm, qwn, qwnp, sum_cqm_in, ufrac
-  REAL(KIND=kdp) :: hrbc
   INTEGER :: a_err, awqm, da_err, i, ic, iczm, iczp, iwel, j, k, ks, l, l1, lc, ls,  &
        m, ma, mac, mks
   LOGICAL :: erflg
@@ -273,38 +272,26 @@ SUBROUTINE XP_aplbci_thread(xp)
      DO ls=river_seg_first(lc),river_seg_last(lc)
         qn = arbc(ls)
         qnp = qn - brbc(ls)*dp(m)      ! ... with steady state flow, qnp = qn always
-        hrbc = phirbc(ls)/gz
-        if(hrbc > zerbc(ls)) then      ! ... treat as river
-            IF(qnp <= 0._kdp) THEN           ! ... outflow
-                qm_net = qm_net + den0*qnp
-                qfbc = qfbc + den0*qn
-                dqfdp = dqfdp - den0*brbc(ls)
-            ELSE                             ! ... inflow
-                ! ... limit the flow rate for a river leakage
-                qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &
+        IF(qnp <= 0._kdp) THEN           ! ... outflow
+           qm_net = qm_net + den0*qnp
+           qfbc = qfbc + den0*qn
+           dqfdp = dqfdp - den0*brbc(ls)
+        ELSE                             ! ... inflow
+           ! ... limit the flow rate for a river leakage
+           qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &
                 - 0.5_kdp*den0*bbrbc(ls)))
-                IF(qnp <= qlim) THEN
-                    qm_net = qm_net + denrbc(ls)*qnp
-                    qfbc = qfbc + denrbc(ls)*qn  
-                    dqfdp = dqfdp - denrbc(ls)*brbc(ls)
-                ELSEIF(qnp > qlim) THEN
-                    qm_net = qm_net + denrbc(ls)*qlim
-                    qfbc = qfbc + denrbc(ls)*qlim
-                    ! .. hack for instability from the kink in q vs h relation
-                    IF (steady_flow) dqfdp = dqfdp - denrbc(ls)*brbc(ls)
-                    ! ... add nothing to dqfdp
-                ENDIF
-            ENDIF
-        else                           ! ... treat as drain 
-            ma = mrno(m)
-            IF(qnp <= 0.) THEN           ! ... outflow
-                qsbc4 = den0*qnp*xp%c_w(m)
-                dqsdc = den0*qnp
-            ELSE                            ! ... inflow, not allowed
-                qsbc4 = 0._kdp
-                dqsdc = 0._kdp
-            END IF
-        end if            
+           IF(qnp <= qlim) THEN
+              qm_net = qm_net + denrbc(ls)*qnp
+              qfbc = qfbc + denrbc(ls)*qn  
+              dqfdp = dqfdp - denrbc(ls)*brbc(ls)
+           ELSEIF(qnp > qlim) THEN
+              qm_net = qm_net + denrbc(ls)*qlim
+              qfbc = qfbc + denrbc(ls)*qlim
+              ! .. hack for instability from the kink in q vs h relation
+              IF (steady_flow) dqfdp = dqfdp - denrbc(ls)*brbc(ls)
+              ! ... add nothing to dqfdp
+           ENDIF
+        ENDIF
      END DO
      ma = mrno(m)
      IF(qm_net <= 0._kdp) THEN           ! ... net outflow
@@ -439,7 +426,6 @@ SUBROUTINE XP_aplbci(xp)
        dqhwdt, dqsbc, dqsdc, dqsdp, dqswdc, dqswdp, dqwlyr, ehaif, ehlbc,  &
        qfbc, qfwav, qfwn, qhbc, qhwm, qlim, qm_in, qm_net, qn, qnp, qsbc, qsbc3, qsbc4,  &
        qswm, qwn, qwnp, sum_cqm_in, ufrac
-  REAL(KIND=kdp) :: hrbc
   INTEGER :: a_err, awqm, da_err, i, ic, iczm, iczp, iwel, j, k, ks, l, l1, lc, ls,  &
        m, ma, mac, mks
   LOGICAL :: erflg
@@ -683,38 +669,26 @@ SUBROUTINE XP_aplbci(xp)
      DO ls=river_seg_first(lc),river_seg_last(lc)
         qn = arbc(ls)
         qnp = qn - brbc(ls)*dp(m)      ! ... with steady state flow, qnp = qn always
-        hrbc = phirbc(ls)/gz
-        if(hrbc > zerbc(ls)) then      ! ... treat as river
-            IF(qnp <= 0._kdp) THEN           ! ... outflow
-                qm_net = qm_net + den0*qnp
-                qfbc = qfbc + den0*qn
-                dqfdp = dqfdp - den0*brbc(ls)
-            ELSE                             ! ... inflow
-                ! ... limit the flow rate for a river leakage
-                qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &
+        IF(qnp <= 0._kdp) THEN           ! ... outflow
+           qm_net = qm_net + den0*qnp
+           qfbc = qfbc + den0*qn
+           dqfdp = dqfdp - den0*brbc(ls)
+        ELSE                             ! ... inflow
+           ! ... limit the flow rate for a river leakage
+           qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &
                 - 0.5_kdp*den0*bbrbc(ls)))
-                IF(qnp <= qlim) THEN
-                    qm_net = qm_net + denrbc(ls)*qnp
-                    qfbc = qfbc + denrbc(ls)*qn  
-                    dqfdp = dqfdp - denrbc(ls)*brbc(ls)
-                ELSEIF(qnp > qlim) THEN
-                    qm_net = qm_net + denrbc(ls)*qlim
-                    qfbc = qfbc + denrbc(ls)*qlim
-                    ! .. hack for instability from the kink in q vs h relation
-                    IF (steady_flow) dqfdp = dqfdp - denrbc(ls)*brbc(ls)
-                    ! ... add nothing to dqfdp
-                ENDIF
-            ENDIF
-        else                           ! ... treat as drain 
-            ma = mrno(m)
-            IF(qnp <= 0.) THEN           ! ... outflow
-                qsbc4 = den0*qnp*xp%c_w(m)
-                dqsdc = den0*qnp
-            ELSE                            ! ... inflow, not allowed
-                qsbc4 = 0._kdp
-                dqsdc = 0._kdp
-            END IF
-        end if            
+           IF(qnp <= qlim) THEN
+              qm_net = qm_net + denrbc(ls)*qnp
+              qfbc = qfbc + denrbc(ls)*qn  
+              dqfdp = dqfdp - denrbc(ls)*brbc(ls)
+           ELSEIF(qnp > qlim) THEN
+              qm_net = qm_net + denrbc(ls)*qlim
+              qfbc = qfbc + denrbc(ls)*qlim
+              ! .. hack for instability from the kink in q vs h relation
+              IF (steady_flow) dqfdp = dqfdp - denrbc(ls)*brbc(ls)
+              ! ... add nothing to dqfdp
+           ENDIF
+        ENDIF
      END DO
      ma = mrno(m)
      IF(qm_net <= 0._kdp) THEN           ! ... net outflow

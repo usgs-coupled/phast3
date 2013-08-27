@@ -25,7 +25,6 @@ SUBROUTINE rhsn
        lc, ls, m, mc0, mfs, mkt, nks, nsa
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: cavg, sum_cqm_in
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: qsbc3, qsbc4
-  REAL(KIND=kdp) :: hrbc
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
   !     ------------------------------------------------------------------
@@ -311,7 +310,6 @@ SUBROUTINE rhsn
      ENDIF
   END IF
 
-  ! ... Calculate river leakage b.c. terms
   IF(nrbc > 0) THEN
      ! ... Calculate river leakage b.c. terms
      ! ... Allocate scratch space
@@ -346,39 +344,17 @@ SUBROUTINE rhsn
         qm_net = 0._kdp
         DO ls=river_seg_first(lc),river_seg_last(lc)
            qn = arbc(ls)
-           hrbc = phirbc(ls)/gz
-           if(hrbc > zerbc(ls)) then      ! ... treat as river
-               IF(qn <= 0._kdp) THEN           ! ... Outflow
-                  qm_net = qm_net + den0*qn
-                  sfvrb(lc) = sfvrb(lc) + qn
-               ELSE                            ! ... Inflow
-                  ! ... Limit the flow rate for a river leakage
-                  qlim = brbc(ls)*(denrbc(ls)*phirbc_n(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &
-                       - 0.5_kdp*den0*bbrbc(ls)))
-                  qn = MIN(qn,qlim)
-                  qm_net = qm_net + denrbc(ls)*qn
-                  sfvrb(lc) = sfvrb(lc) + qn
-               END IF
-           else                           ! ... treat as drain 
-               IF(qn <= 0._kdp) THEN      ! ... Outflow
-                  qfbc = den0*qn
-                  stotfp = stotfp - ufdt0*qfbc
-                  sfvrb(lc) = sfvrb(lc) + qn
-                  DO  iis=1,ns
-                     qsbc3(iis) = qfbc*c(m,iis)
-                     stotsp(iis) = stotsp(iis) - ufdt0*qsbc3(iis)
-                  END DO
-               ELSE                        ! ... Inflow, none allowed
-                  qn = 0._kdp
-                  qfbc = 0._kdp
-                  stotfi = stotfi + ufdt0*qfbc
-                  sfvrb(lc) = sfvrb(lc) + qn
-                  DO  iis=1,ns
-                     qsbc3(iis) = 0._kdp
-                     stotsi(iis) = stotsi(iis) + ufdt0*qsbc3(iis)
-                  END DO
-               END IF
-           end if
+           IF(qn <= 0._kdp) THEN           ! ... Outflow
+              qm_net = qm_net + den0*qn
+              sfvrb(lc) = sfvrb(lc) + qn
+           ELSE                            ! ... Inflow
+              ! ... Limit the flow rate for a river leakage
+              qlim = brbc(ls)*(denrbc(ls)*phirbc_n(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &
+                   - 0.5_kdp*den0*bbrbc(ls)))
+              qn = MIN(qn,qlim)
+              qm_net = qm_net + denrbc(ls)*qn
+              sfvrb(lc) = sfvrb(lc) + qn
+           END IF
         END DO
         rf(m) = rf(m) + ufdt0*qm_net
         qfrbc(lc) = qm_net
