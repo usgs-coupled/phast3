@@ -213,6 +213,7 @@ copy "$(TargetDir)$(TargetName).lib" "lib\$(TargetName).lib"
     <ClCompile Include="..\IPhreeqcPhast\fwrapPhast.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqcPhast.cxx" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqcPhastLib.cpp" />
+    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\CSelectedOutput.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap2.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\fwrap3.cpp" />
@@ -252,6 +253,7 @@ copy "$(TargetDir)$(TargetName).lib" "lib\$(TargetName).lib"
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\print.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\read.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\readtr.cpp" />
+    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\SelectedOutput.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\sit.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\smalldense.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\spread.cpp" />
@@ -261,8 +263,8 @@ copy "$(TargetDir)$(TargetName).lib" "lib\$(TargetName).lib"
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\tally.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\tidy.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\transport.cpp" />
+    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\UserPunch.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\utilities.cpp" />
-    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\SelectedOutput.cpp" />
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\Var.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsCpp</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsCpp</CompileAs>
@@ -318,6 +320,7 @@ copy "$(TargetDir)$(TargetName).lib" "lib\$(TargetName).lib"
     <ClInclude Include="..\IPhreeqcPhast\fwrapPhast.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqcPhast.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqcPhastLib.h" />
+    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\CSelectedOutput.hxx" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\CVar.hxx" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\IPhreeqc.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\IPhreeqc.hpp" />
@@ -362,7 +365,8 @@ copy "$(TargetDir)$(TargetName).lib" "lib\$(TargetName).lib"
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\Pressure.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\Reaction.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\runner.h" />
-    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\SelectedOutput.hxx" />
+    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\SelectedOutput.h" />
+    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\UserPunch.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\phreeqc\smalldense.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\Solution.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\SolutionIsotope.h" />

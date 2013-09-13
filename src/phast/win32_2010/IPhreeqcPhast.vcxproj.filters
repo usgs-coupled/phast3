@@ -149,9 +149,6 @@
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\IPhreeqcLib.cpp">
       <Filter>Source Files\IPhreeqc</Filter>
     </ClCompile>
-    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\SelectedOutput.cpp">
-      <Filter>Source Files\IPhreeqc</Filter>
-    </ClCompile>
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqcPhast.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -314,6 +311,15 @@
     <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\utilities.cpp">
       <Filter>Source Files\phreeqcpp</Filter>
     </ClCompile>
+    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\SelectedOutput.cpp">
+      <Filter>Source Files\phreeqcpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\UserPunch.cpp">
+      <Filter>Source Files\phreeqcpp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\IPhreeqcPhast\IPhreeqc\CSelectedOutput.cpp">
+      <Filter>Source Files\IPhreeqc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\CVar.hxx">
@@ -442,9 +448,6 @@
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\runner.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\SelectedOutput.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\phreeqc\smalldense.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -515,6 +518,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\hdf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\SelectedOutput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\UserPunch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\CSelectedOutput.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

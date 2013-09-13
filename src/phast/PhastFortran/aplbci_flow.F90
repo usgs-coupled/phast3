@@ -31,6 +31,7 @@ SUBROUTINE aplbci_flow
        dqsbc, dqwlyr, &
        qfbc, qfwav, qfwn, qlim, qm_net, qn, qnp, qwn, qwnp, &
        ufrac
+  REAL(KIND=kdp) :: hrbc
   INTEGER :: awqm, i, ic, iczm, iczp, iwel, j, k, ks, l, l1, lc, ls,  &
        m, ma, mac, mks
   LOGICAL :: erflg
@@ -168,6 +169,7 @@ SUBROUTINE aplbci_flow
               ! *** hack for instability from the kink in q vs h relation
               IF (steady_flow) dqfdp = dqfdp - denlbc(ls)*blbc(ls)
               ! ... add nothing to dqfdp
+              dqfdp = dqfdp - denlbc(ls)*blbc(ls)
            ENDIF
         ELSE          ! ... x or y face
            IF(qnp <= 0._kdp) THEN           ! ... outflow
@@ -196,31 +198,48 @@ SUBROUTINE aplbci_flow
      qfbc = 0._kdp
      dqfdp = 0._kdp
      DO ls=river_seg_first(lc),river_seg_last(lc)
+        if (arbc(ls) .gt. 1e50_kdp) cycle
         qn = arbc(ls)
         qnp = qn - brbc(ls)*dp(m)      ! ... with steady state flow, qnp = qn always
-        IF(qnp <= 0._kdp) THEN           ! ... outflow
-           qm_net = qm_net + den0*qnp
-           qfbc = qfbc + den0*qn
-           dqfdp = dqfdp - den0*brbc(ls)
-           !$$          write(*,*) 1, qfbc, dqfdp, qnp, brbc(ls), p(m)/9807.0_kdp, m, arbc(ls)
-        ELSE                             ! ... inflow
-           ! ... limit the flow rate for a river leakage
-           qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &
-                - 0.5_kdp*den0*bbrbc(ls)))
-           IF(qnp <= qlim) THEN
-              qm_net = qm_net + denrbc(ls)*qnp
-              qfbc = qfbc + denrbc(ls)*qn  
-              dqfdp = dqfdp - denrbc(ls)*brbc(ls)
-              !$$              write(*,*) 2, qfbc, dqfdp, qnp, brbc(ls), p(m)/9807.0_kdp, m, qlim
-           ELSEIF(qnp > qlim) THEN
-              qm_net = qm_net + denrbc(ls)*qlim
-              qfbc = qfbc + denrbc(ls)*qlim
-              ! hack for instability from the kink in q vs h relation
-              IF (steady_flow) dqfdp = dqfdp - denrbc(ls)*brbc(ls)
-              !$$              write(*,*) 3, qfbc, dqfdp, qnp, brbc(ls), p(m)/9807.0_kdp, m, qlim
-              ! ... add nothing to dqfdp
-           ENDIF
-        ENDIF
+        hrbc = phirbc(ls)/gz
+        ! continuity as a function of (hrbc - zerbc(ls))
+        if(hrbc > zerbc(ls)) then      ! ... treat as river
+            IF(qnp <= 0._kdp) THEN           ! ... outflow
+                qm_net = qm_net + den0*qnp
+                qfbc = qfbc + den0*qn
+                dqfdp = dqfdp - den0*brbc(ls)
+            ELSE                             ! ... inflow
+                ! ... limit the flow rate for a river leakage
+                qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &
+                    - 0.5_kdp*den0*bbrbc(ls)))
+                IF(qnp <= qlim) THEN
+                    qm_net = qm_net + denrbc(ls)*qnp
+                    qfbc = qfbc + denrbc(ls)*qn  
+                    dqfdp = dqfdp - denrbc(ls)*brbc(ls)
+                ELSEIF(qnp > qlim) THEN
+                    qm_net = qm_net + denrbc(ls)*qlim
+                    qfbc = qfbc + denrbc(ls)*qlim
+                    ! hack for instability from the kink in q vs h relation
+                    IF (steady_flow) dqfdp = dqfdp - denrbc(ls)*brbc(ls)
+                    ! ... add nothing to dqfdp
+                    dqfdp = dqfdp - denrbc(ls)*brbc(ls)
+                ENDIF
+            ENDIF
+        else                           ! ... treat as drain 
+           !IF(qnp <= 0._kdp) THEN           ! ... outflow
+           IF(qnp <= 0._kdp) THEN
+              qm_net = qm_net + den0*qnp
+              qfbc = qfbc + den0*qn
+              dqfdp = dqfdp - den0*brbc(ls)
+           ELSE                             ! ... inflow, not allowed
+              !qfbc = 0._kdp
+              !dqfdp = 0._kdp
+              !write(*,*) "Mass loss spot ",qnp, qn, dp(m), hrbc, zerbc(ls)
+              !qm_net = qm_net + den(m)*qnp
+              !qfbc = qfbc + den(m)*qn              
+              dqfdp = dqfdp - den0*brbc(ls)
+           END IF
+        end if
      END DO
      ma = mrno(m)
      va(7,ma) = va(7,ma) - fdtmth*dqfdp
@@ -234,6 +253,7 @@ SUBROUTINE aplbci_flow
      dqfdp = 0._kdp
      IF(m == 0) CYCLE
      DO ls=drain_seg_first(lc),drain_seg_last(lc)
+        if (adbc(ls) .gt. 1.0e50_kdp) cycle
         qn = adbc(ls)
         qnp = qn - bdbc(ls)*dp(m)      ! ... with steady state flow equation solution qnp = qn always
         ma = mrno(m)

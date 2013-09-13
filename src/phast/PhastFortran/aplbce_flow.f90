@@ -20,6 +20,7 @@ SUBROUTINE aplbce_flow
   REAL(KIND=kdp) ::  delp2, dpudt, dqetdp, dzfsdp, eta, &
        ltd, p00, p1, pu, qfbc, qn, timed, &
        timedn, ufdt2, ufrac, uphim, uzav, z0, z1, zfsa
+  REAL(KIND=kdp) :: hrbc
   REAL(KIND=kdp), DIMENSION(10) :: beta(10), gamma(10)
   INTEGER :: a_err, da_err, imod, iis, k, ks, l, l1, lc, ll, ls, lll, m, mc, ms  
   LOGICAL :: erflg  
@@ -116,7 +117,15 @@ SUBROUTINE aplbce_flow
         ks = (ms - imod)/nxy + MIN(1,imod)
         uphim = p(ms) + gz*(denrbc(ls) - den0)*uzav
         brbc(ls) = krbc(ls)/visrbc(ls)
-        arbc(ls) = brbc(ls)*((denrbc(ls)*phirbc(ls) - den0*gz*z(ks)) - uphim)
+        hrbc = phirbc(ls)/gz
+        if(hrbc > zerbc(ls)) then      ! ... treat as river
+           arbc(ls) = brbc(ls)*((denrbc(ls)*phirbc(ls) - den0*gz*z(ks)) - uphim)
+        else                           ! ... treat as drain 
+           arbc(ls) = brbc(ls)*(denrbc(ls)*gz*zerbc(ls) - (p(ms) + den0*gz*z(ks)))
+           if (arbc(ls) .gt. 0.0_kdp) then
+               arbc(ls) = 1e51_kdp
+           endif
+        end if
      END DO
   END DO
 !!$  DO ls=1,nrbc_seg
@@ -193,6 +202,9 @@ SUBROUTINE aplbce_flow
         ks = (ms - imod)/nxy + MIN(1,imod)
         bdbc(ls) = kdbc(ls)/visdbc
         adbc(ls) = bdbc(ls)*(den0*gz*zedbc(ls) - (p(ms) + den0*gz*z(ks)))
+        if (adbc(ls) .gt. 0.0_kdp) then
+            adbc(ls) = 1e51_kdp
+        endif 
      END DO
   END DO
 ! ... Aquifer influence function

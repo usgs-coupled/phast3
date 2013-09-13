@@ -18,6 +18,7 @@ SUBROUTINE calc_velocity
   INTEGER :: i, ibf, ic, ij, ipmz, j, k, l, lc, ls, l1, m, mbc
   REAL(KIND=kdp) :: uden, ufrac, uvis, wt
   REAL(KIND=kdp) :: qface, qlim, qn, sumq, vapp, vzfs
+  REAL(KIND=kdp) :: hrbc
   REAL(KIND=kdp), DIMENSION(3) :: pa, qs
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=80) :: ident_string='$Id$'
@@ -190,23 +191,33 @@ SUBROUTINE calc_velocity
      DO  lc=1,num_bndy_cells
         mbc = b_cell(lc)%m_cell
         IF(mbc == m) THEN               ! ... found the b.c. cell
-           DO ls=river_seg_first(l),river_seg_last(l)
-              qn = arbc(ls) - brbc(ls)*dp(mbc)  
-              IF(qn <= 0._kdp) THEN           ! ... Outflow
-                 qface = den0*qn
-              ELSE                            ! ... Inflow
-                 ! ... Limit the flow rate for a river leakage
-                 qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &
-                      - 0.5_kdp*den0*bbrbc(ls)))
-                 qn = MIN(qn,qlim)
-                 qface = denrbc(ls)*qn
-              ENDIF
-              DO ibf=1,b_cell(lc)%num_faces
-                 IF(b_cell(lc)%face_indx(ibf) == 1 .OR. b_cell(lc)%face_indx(ibf) == 6) EXIT
-              END DO
-              b_cell(lc)%qfbc(ibf) = b_cell(lc)%qfbc(ibf) + qface
-           END DO
-           EXIT
+            DO ls=river_seg_first(l),river_seg_last(l)
+                if (arbc(ls) .gt. 1.0d50) cycle
+                qn = arbc(ls) - brbc(ls)*dp(mbc)  
+                hrbc = phirbc(ls)/gz
+                if(hrbc > zerbc(ls)) then      ! ... treat as river
+                    IF(qn <= 0._kdp) THEN           ! ... Outflow
+                        qface = den0*qn
+                    ELSE                            ! ... Inflow
+                        ! ... Limit the flow rate for a river leakage
+                        qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &
+                            - 0.5_kdp*den0*bbrbc(ls)))
+                        qn = MIN(qn,qlim)
+                        qface = denrbc(ls)*qn
+                    ENDIF
+                else                            ! ... treat as drain
+                    IF(qn <= 0._kdp) THEN           ! ... Outflow
+                        qface = den0*qn
+                    ELSE                            ! ... Inflow, not allowed
+                        qface = 0._kdp
+                    ENDIF
+                end if                   
+                DO ibf=1,b_cell(lc)%num_faces
+                    IF(b_cell(lc)%face_indx(ibf) == 1 .OR. b_cell(lc)%face_indx(ibf) == 6) EXIT
+                END DO
+                b_cell(lc)%qfbc(ibf) = b_cell(lc)%qfbc(ibf) + qface
+            END DO
+            EXIT
         END IF
      END DO
   END DO
@@ -218,6 +229,7 @@ SUBROUTINE calc_velocity
         mbc = b_cell(lc)%m_cell
         IF(mbc == m) THEN               ! ... found the b.c. cell
            DO ls=drain_seg_first(l),drain_seg_last(l)
+              if (adbc(ls) .gt. 1.0e50_kdp) cycle
               qn = adbc(ls) - bdbc(ls)*dp(mbc)
               IF(qn <= 0._kdp) THEN           ! ... Outflow
                  qface = den0*qn
