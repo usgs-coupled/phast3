@@ -1,7 +1,7 @@
 #include "IPhreeqcPhast.h"
 #include "Phreeqc.h"
 #include "Solution.h"
-#include "SelectedOutput.hxx"       // CSelectedOutput
+#include "CSelectedOutput.hxx"       // CSelectedOutput
 
 #include <assert.h>
 std::map<size_t, IPhreeqcPhast*> IPhreeqcPhast::PhastInstances;
@@ -73,7 +73,8 @@ IPhreeqcPhast::Selected_out_to_double()
 			VarInit(&v);
 			//if (this->GetSelectedOutputValue(row, column, &v) == VR_OK)
 			// following is much faster
-			if (this->SelectedOutput->Get(row, column, &v) == VR_OK)
+			//if (this->SelectedOutput->Get(row, column, &v) == VR_OK)
+			if (this->SelectedOutputMap[this->CurrentSelectedOutputUserNumber]->Get(row, column, &v)  == VR_OK)
 			{
 				switch (v.type)
 				{
