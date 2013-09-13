@@ -27,6 +27,7 @@ SUBROUTINE XP_aplbci_thread(xp)
        dqhwdt, dqsbc, dqsdc, dqsdp, dqswdc, dqswdp, dqwlyr, ehaif, ehlbc,  &
        qfbc, qfwav, qfwn, qhbc, qhwm, qlim, qm_in, qm_net, qn, qnp, qsbc, qsbc3, qsbc4,  &
        qswm, qwn, qwnp, sum_cqm_in, ufrac
+  REAL(KIND=kdp) :: hrbc
   INTEGER :: a_err, awqm, da_err, i, ic, iczm, iczp, iwel, j, k, ks, l, l1, lc, ls,  &
        m, ma, mac, mks
   LOGICAL :: erflg
@@ -171,6 +172,7 @@ SUBROUTINE XP_aplbci_thread(xp)
                  ! hack for instability from the kink in q vs h relation
                  IF (steady_flow) dqfdp = dqfdp - denlbc(ls)*blbc(ls)
                  ! ... add nothing to dqfdp
+                 dqfdp = dqfdp - denlbc(ls)*blbc(ls)
               ENDIF
            ELSE          ! ... x or y face
               qm_net = qm_net + denlbc(ls)*qnp
@@ -262,62 +264,83 @@ SUBROUTINE XP_aplbci_thread(xp)
   ! ... Apply river leakage terms
   ! ...      Net segment method for solute
   DO lc=1,nrbc_cells
-     m = xp%river_seg_m(lc)       ! ... current river communication cell
-     ! ... calculate current net river leakage flow rate
-     ! ...      possible attenuation included explicitly
-     IF(m == 0) CYCLE              ! ... dry column, skip to next river b.c. cell 
-     qm_net = 0._kdp
-     qfbc = 0._kdp
-     dqfdp = 0._kdp
-     DO ls=river_seg_first(lc),river_seg_last(lc)
-        qn = arbc(ls)
-        qnp = qn - brbc(ls)*dp(m)      ! ... with steady state flow, qnp = qn always
-        IF(qnp <= 0._kdp) THEN           ! ... outflow
-           qm_net = qm_net + den0*qnp
-           qfbc = qfbc + den0*qn
-           dqfdp = dqfdp - den0*brbc(ls)
-        ELSE                             ! ... inflow
-           ! ... limit the flow rate for a river leakage
-           qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &
-                - 0.5_kdp*den0*bbrbc(ls)))
-           IF(qnp <= qlim) THEN
-              qm_net = qm_net + denrbc(ls)*qnp
-              qfbc = qfbc + denrbc(ls)*qn  
-              dqfdp = dqfdp - denrbc(ls)*brbc(ls)
-           ELSEIF(qnp > qlim) THEN
-              qm_net = qm_net + denrbc(ls)*qlim
-              qfbc = qfbc + denrbc(ls)*qlim
-              ! .. hack for instability from the kink in q vs h relation
-              IF (steady_flow) dqfdp = dqfdp - denrbc(ls)*brbc(ls)
-              ! ... add nothing to dqfdp
-           ENDIF
-        ENDIF
-     END DO
-     ma = mrno(m)
-     IF(qm_net <= 0._kdp) THEN           ! ... net outflow
-        qsbc4 = qm_net*xp%c_w(m)  
-        dqsdc = qm_net  
-     ELSE                                ! ... net inflow
-        ! ... calculate flow weighted average concentrations for inflow segments
-        qm_in = 0._kdp
-        sum_cqm_in = 0._kdp
-        DO ls=river_seg_first(lc),river_seg_last(lc)
-           qnp = arbc(ls) - brbc(ls)*dp(m)
-           IF(qnp > 0._kdp) THEN                   ! ... inflow
-              ! ... limit the flow rate for a river leakage
-              qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*  &
-                   (zerbc(ls)-0.5_kdp*bbrbc(ls)) - 0.5_kdp*den0*bbrbc(ls)))
-              qnp = MIN(qnp,qlim)
-              qm_in = qm_in + denrbc(ls)*qnp
-              sum_cqm_in = sum_cqm_in + denrbc(ls)*qnp*xp%crbc(ls)  
-           ENDIF
-        END DO
-        cavg = sum_cqm_in/qm_in
-        qsbc4 = qm_net*cavg
-        dqsdc = 0._kdp
-     ENDIF
-     xp%va(7,ma) = xp%va(7,ma) - fdtmth*dqsdc 
-     xp%rhs(ma) = xp%rhs(ma) + fdtmth*qsbc4
+      m = xp%river_seg_m(lc)       ! ... current river communication cell
+      ! ... calculate current net river leakage flow rate
+      ! ...      possible attenuation included explicitly
+      IF(m == 0) CYCLE              ! ... dry column, skip to next river b.c. cell 
+      qm_net = 0._kdp
+      qfbc = 0._kdp
+      dqfdp = 0._kdp
+      DO ls=river_seg_first(lc),river_seg_last(lc)
+          if (arbc(ls) .gt. 1.0e50_kdp) cycle
+          qn = arbc(ls)
+          qnp = qn - brbc(ls)*dp(m)      ! ... with steady state flow, qnp = qn always
+          hrbc = phirbc(ls)/gz
+          ! continuity as a function of (hrbc - zerbc(ls))
+          if(hrbc > zerbc(ls)) then      ! ... treat as river
+              IF(qnp <= 0._kdp) THEN           ! ... outflow
+                  qm_net = qm_net + den0*qnp
+                  qfbc = qfbc + den0*qn
+                  dqfdp = dqfdp - den0*brbc(ls)
+              ELSE                             ! ... inflow
+                  ! ... limit the flow rate for a river leakage
+                  qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &
+                  - 0.5_kdp*den0*bbrbc(ls)))
+                  IF(qnp <= qlim) THEN
+                      qm_net = qm_net + denrbc(ls)*qnp
+                      qfbc = qfbc + denrbc(ls)*qn  
+                      dqfdp = dqfdp - denrbc(ls)*brbc(ls)
+                  ELSEIF(qnp > qlim) THEN
+                      qm_net = qm_net + denrbc(ls)*qlim
+                      qfbc = qfbc + denrbc(ls)*qlim
+                      ! .. hack for instability from the kink in q vs h relation
+                      IF (steady_flow) dqfdp = dqfdp - denrbc(ls)*brbc(ls)
+                      ! ... add nothing to dqfdp
+                      dqfdp = dqfdp - denrbc(ls)*brbc(ls)
+                  ENDIF
+              ENDIF
+          else                           ! ... treat as drain 
+              !IF(qnp <= 0._kdp) THEN           ! ... outflow
+              IF(qnp <= 0._kdp) THEN
+                  qm_net = qm_net + den0*qnp
+                  qfbc = qfbc + den0*qn
+                  dqfdp = dqfdp - den0*brbc(ls)
+              ELSE                             ! ... inflow, not allowed
+                  !qfbc = 0._kdp
+                  !dqfdp = 0._kdp
+                  !write(*,*) "Mass loss spot ",qnp, qn, dp(m), hrbc, zerbc(ls)
+                  !qm_net = qm_net + den(m)*qnp
+                  !qfbc = qfbc + den(m)*qn              
+                  dqfdp = dqfdp - den0*brbc(ls)
+              END IF
+          end if            
+      END DO
+      ma = mrno(m)
+      IF(qm_net <= 0._kdp) THEN           ! ... net outflow
+          qsbc4 = qm_net*xp%c_w(m)  
+          dqsdc = qm_net  
+      ELSE                                ! ... net inflow
+          ! ... calculate flow weighted average concentrations for inflow segments
+          qm_in = 0._kdp
+          sum_cqm_in = 0._kdp
+          DO ls=river_seg_first(lc),river_seg_last(lc)
+              if (arbc(ls) .gt. 1.0e50_kdp) cycle
+              qnp = arbc(ls) - brbc(ls)*dp(m)
+              IF(qnp > 0._kdp) THEN                   ! ... inflow
+                  ! ... limit the flow rate for a river leakage
+                  qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*  &
+                  (zerbc(ls)-0.5_kdp*bbrbc(ls)) - 0.5_kdp*den0*bbrbc(ls)))
+                  qnp = MIN(qnp,qlim)
+                  qm_in = qm_in + denrbc(ls)*qnp
+                  sum_cqm_in = sum_cqm_in + denrbc(ls)*qnp*xp%crbc(ls)  
+              ENDIF
+          END DO
+          cavg = sum_cqm_in/qm_in
+          qsbc4 = qm_net*cavg
+          dqsdc = 0._kdp
+      ENDIF
+      xp%va(7,ma) = xp%va(7,ma) - fdtmth*dqsdc 
+      xp%rhs(ma) = xp%rhs(ma) + fdtmth*qsbc4
   END DO
 !!$  ! ... Apply each segment
 !!$  DO lc=1,nrbc_cells
@@ -366,6 +389,7 @@ SUBROUTINE XP_aplbci_thread(xp)
      dqfdp = 0._kdp
      IF(m == 0) CYCLE
      DO ls=drain_seg_first(lc),drain_seg_last(lc)
+        if (adbc(ls) .gt. 1.0e50_kdp) cycle
         qn = adbc(ls)
         qnp = qn - bdbc(ls)*dp(m)      ! ... with steady state flow equation solution qnp = qn always
         ma = mrno(m)
@@ -426,6 +450,7 @@ SUBROUTINE XP_aplbci(xp)
        dqhwdt, dqsbc, dqsdc, dqsdp, dqswdc, dqswdp, dqwlyr, ehaif, ehlbc,  &
        qfbc, qfwav, qfwn, qhbc, qhwm, qlim, qm_in, qm_net, qn, qnp, qsbc, qsbc3, qsbc4,  &
        qswm, qwn, qwnp, sum_cqm_in, ufrac
+  REAL(KIND=kdp) :: hrbc
   INTEGER :: a_err, awqm, da_err, i, ic, iczm, iczp, iwel, j, k, ks, l, l1, lc, ls,  &
        m, ma, mac, mks
   LOGICAL :: erflg
@@ -568,6 +593,7 @@ SUBROUTINE XP_aplbci(xp)
                  ! hack for instability from the kink in q vs h relation
                  IF (steady_flow) dqfdp = dqfdp - denlbc(ls)*blbc(ls)
                  ! ... add nothing to dqfdp
+                 dqfdp = dqfdp - denlbc(ls)*blbc(ls)
               ENDIF
            ELSE          ! ... x or y face
               qm_net = qm_net + denlbc(ls)*qnp
@@ -659,62 +685,83 @@ SUBROUTINE XP_aplbci(xp)
   ! ... Apply river leakage terms
   ! ...      Net segment method for solute
   DO lc=1,nrbc_cells
-     m = river_seg_m(lc)       ! ... current river communication cell
-     ! ... calculate current net river leakage flow rate
-     ! ...      possible attenuation included explicitly
-     IF(m == 0) CYCLE              ! ... dry column, skip to next river b.c. cell 
-     qm_net = 0._kdp
-     qfbc = 0._kdp
-     dqfdp = 0._kdp
-     DO ls=river_seg_first(lc),river_seg_last(lc)
-        qn = arbc(ls)
-        qnp = qn - brbc(ls)*dp(m)      ! ... with steady state flow, qnp = qn always
-        IF(qnp <= 0._kdp) THEN           ! ... outflow
-           qm_net = qm_net + den0*qnp
-           qfbc = qfbc + den0*qn
-           dqfdp = dqfdp - den0*brbc(ls)
-        ELSE                             ! ... inflow
-           ! ... limit the flow rate for a river leakage
-           qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &
-                - 0.5_kdp*den0*bbrbc(ls)))
-           IF(qnp <= qlim) THEN
-              qm_net = qm_net + denrbc(ls)*qnp
-              qfbc = qfbc + denrbc(ls)*qn  
-              dqfdp = dqfdp - denrbc(ls)*brbc(ls)
-           ELSEIF(qnp > qlim) THEN
-              qm_net = qm_net + denrbc(ls)*qlim
-              qfbc = qfbc + denrbc(ls)*qlim
-              ! .. hack for instability from the kink in q vs h relation
-              IF (steady_flow) dqfdp = dqfdp - denrbc(ls)*brbc(ls)
-              ! ... add nothing to dqfdp
-           ENDIF
-        ENDIF
-     END DO
-     ma = mrno(m)
-     IF(qm_net <= 0._kdp) THEN           ! ... net outflow
-        qsbc4 = qm_net*xp%c_w(m)  
-        dqsdc = qm_net  
-     ELSE                                ! ... net inflow
-        ! ... calculate flow weighted average concentrations for inflow segments
-        qm_in = 0._kdp
-        sum_cqm_in = 0._kdp
-        DO ls=river_seg_first(lc),river_seg_last(lc)
-           qnp = arbc(ls) - brbc(ls)*dp(m)
-           IF(qnp > 0._kdp) THEN                   ! ... inflow
-              ! ... limit the flow rate for a river leakage
-              qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*  &
-                   (zerbc(ls)-0.5_kdp*bbrbc(ls)) - 0.5_kdp*den0*bbrbc(ls)))
-              qnp = MIN(qnp,qlim)
-              qm_in = qm_in + denrbc(ls)*qnp
-              sum_cqm_in = sum_cqm_in + denrbc(ls)*qnp*xp%crbc(ls)  
-           ENDIF
-        END DO
-        cavg = sum_cqm_in/qm_in
-        qsbc4 = qm_net*cavg
-        dqsdc = 0._kdp
-     ENDIF
-     va(7,ma) = va(7,ma) - fdtmth*dqsdc 
-     rhs(ma) = rhs(ma) + fdtmth*qsbc4
+      m = river_seg_m(lc)       ! ... current river communication cell
+      ! ... calculate current net river leakage flow rate
+      ! ...      possible attenuation included explicitly
+      IF(m == 0) CYCLE              ! ... dry column, skip to next river b.c. cell 
+      qm_net = 0._kdp
+      qfbc = 0._kdp
+      dqfdp = 0._kdp
+      DO ls=river_seg_first(lc),river_seg_last(lc)
+          if (arbc(ls) .gt. 1.0e50_kdp) cycle
+          qn = arbc(ls)
+          qnp = qn - brbc(ls)*dp(m)      ! ... with steady state flow, qnp = qn always
+          hrbc = phirbc(ls)/gz
+          ! continuity as a function of (hrbc - zerbc(ls))
+          if(hrbc > zerbc(ls)) then      ! ... treat as river
+              IF(qnp <= 0._kdp) THEN           ! ... outflow
+                  qm_net = qm_net + den0*qnp
+                  qfbc = qfbc + den0*qn
+                  dqfdp = dqfdp - den0*brbc(ls)
+              ELSE                             ! ... inflow
+                  ! ... limit the flow rate for a river leakage
+                  qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &
+                  - 0.5_kdp*den0*bbrbc(ls)))
+                  IF(qnp <= qlim) THEN
+                      qm_net = qm_net + denrbc(ls)*qnp
+                      qfbc = qfbc + denrbc(ls)*qn  
+                      dqfdp = dqfdp - denrbc(ls)*brbc(ls)
+                  ELSEIF(qnp > qlim) THEN
+                      qm_net = qm_net + denrbc(ls)*qlim
+                      qfbc = qfbc + denrbc(ls)*qlim
+                      ! .. hack for instability from the kink in q vs h relation
+                      IF (steady_flow) dqfdp = dqfdp - denrbc(ls)*brbc(ls)
+                      ! ... add nothing to dqfdp
+                      dqfdp = dqfdp - denrbc(ls)*brbc(ls)
+                  ENDIF
+              ENDIF
+          else                           ! ... treat as drain 
+              !IF(qnp <= 0._kdp) THEN           ! ... outflow
+              IF(qnp <= 0._kdp) THEN
+                  qm_net = qm_net + den0*qnp
+                  qfbc = qfbc + den0*qn
+                  dqfdp = dqfdp - den0*brbc(ls)
+              ELSE                             ! ... inflow, not allowed
+                  !qfbc = 0._kdp
+                  !dqfdp = 0._kdp
+                  !write(*,*) "Mass loss spot ",qnp, qn, dp(m), hrbc, zerbc(ls)
+                  !qm_net = qm_net + den(m)*qnp
+                  !qfbc = qfbc + den(m)*qn              
+                  dqfdp = dqfdp - den0*brbc(ls)
+              END IF
+          end if            
+      END DO
+      ma = mrno(m)
+      IF(qm_net <= 0._kdp) THEN           ! ... net outflow
+          qsbc4 = qm_net*xp%c_w(m)  
+          dqsdc = qm_net  
+      ELSE                                ! ... net inflow
+          ! ... calculate flow weighted average concentrations for inflow segments
+          qm_in = 0._kdp
+          sum_cqm_in = 0._kdp
+          DO ls=river_seg_first(lc),river_seg_last(lc)
+              if (arbc(ls) .gt. 1.0e50_kdp) cycle
+              qnp = arbc(ls) - brbc(ls)*dp(m)
+              IF(qnp > 0._kdp) THEN                   ! ... inflow
+                  ! ... limit the flow rate for a river leakage
+                  qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*  &
+                  (zerbc(ls)-0.5_kdp*bbrbc(ls)) - 0.5_kdp*den0*bbrbc(ls)))
+                  qnp = MIN(qnp,qlim)
+                  qm_in = qm_in + denrbc(ls)*qnp
+                  sum_cqm_in = sum_cqm_in + denrbc(ls)*qnp*xp%crbc(ls)  
+              ENDIF
+          END DO
+          cavg = sum_cqm_in/qm_in
+          qsbc4 = qm_net*cavg
+          dqsdc = 0._kdp
+      ENDIF
+      va(7,ma) = va(7,ma) - fdtmth*dqsdc 
+      rhs(ma) = rhs(ma) + fdtmth*qsbc4
   END DO
 !!$  ! ... Apply each segment
 !!$  DO lc=1,nrbc_cells
@@ -763,6 +810,7 @@ SUBROUTINE XP_aplbci(xp)
      dqfdp = 0._kdp
      IF(m == 0) CYCLE
      DO ls=drain_seg_first(lc),drain_seg_last(lc)
+        if (adbc(ls) .gt. 1.0e50_kdp) cycle
         qn = adbc(ls)
         qnp = qn - bdbc(ls)*dp(m)      ! ... with steady state flow equation solution qnp = qn always
         ma = mrno(m)

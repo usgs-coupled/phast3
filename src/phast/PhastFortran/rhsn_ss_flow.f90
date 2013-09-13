@@ -21,6 +21,7 @@ SUBROUTINE rhsn_ss_flow
   IMPLICIT NONE
   INTRINSIC INT
   REAL(KIND=kdp) :: qfbc, qlim, qm_net, qn, szzw, ufdt0, ufrac, wt
+  REAL(KIND=kdp) :: hrbc
   INTEGER :: a_err, da_err, i, iwel, iwfss, j, k, ks, l, lc0, l1, lc, ls,  &
        m, mc0, mfs, mkt, nks
 !!$  REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: qsbc3, qsbc4
@@ -231,26 +232,42 @@ SUBROUTINE rhsn_ss_flow
      ! ... Calculate current net aquifer leakage flow rate
      qm_net = 0._kdp
      DO ls=river_seg_first(lc),river_seg_last(lc)
+        if (arbc(ls) .gt. 1.0e50_kdp) cycle
         qn = arbc(ls)
-        IF(qn <= 0.) THEN         ! ... Outflow
-           qm_net = qm_net + den0*qn
-           sfvrb(lc) = sfvrb(lc) + qn
-        ELSE                             ! ... Inflow
-           ! ... Limit the flow rate for a river leakage
-           qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &
+        hrbc = phirbc(ls)/gz
+        if(hrbc > zerbc(ls)) then      ! ... treat as river
+            IF(qn <= 0.) THEN         ! ... Outflow
+                qm_net = qm_net + den0*qn
+                sfvrb(lc) = sfvrb(lc) + qn
+            ELSE                             ! ... Inflow
+                ! ... Limit the flow rate for a river leakage
+                qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &
                 - 0.5_kdp*den0*bbrbc(ls)))
-           qn = MIN(qn,qlim)
-           qm_net = qm_net + denrbc(ls)*qn
-           sfvrb(lc) = sfvrb(lc) + qn
-        END IF
+                qn = MIN(qn,qlim)
+                qm_net = qm_net + denrbc(ls)*qn
+                sfvrb(lc) = sfvrb(lc) + qn
+            END IF
+        else                           ! ... treat as drain 
+           IF(qn <= 0._kdp) THEN         ! ... Outflow
+              !qfbc = den(m)*qn
+              qm_net = qm_net + den0*qn
+              !stotfp = stotfp - ufdt0*qfbc
+              sfvrb(lc) = sfvrb(lc) + qn
+           ELSE                             ! ... Inflow, none allowed
+              !qn = 0._kdp
+              !qfbc = 0._kdp
+              !stotfi = stotfi + ufdt0*qfbc
+              !sfvrb(lc) = sfvrb(lc) + qn
+           END IF
+        end if            
      END DO
      rf(m) = rf(m) + ufdt0*qm_net
      sfrb(lc) = sfrb(lc) + qm_net
      stfrbc = stfrbc + ufdt0*qm_net
      IF(qm_net <= 0._kdp) THEN           ! ... net outflow
-	stotfp = stotfp - ufdt0*qfrbc(lc)
+         stotfp = stotfp - ufdt0*qfrbc(lc)
      ELSEIF(qm_net > 0._kdp) THEN        ! ... net inflow
-        stotfi = stotfi + ufdt0*qfrbc(lc)
+         stotfi = stotfi + ufdt0*qfrbc(lc)
      END IF
   END DO
   ! ... Calculate drain leakage b.c. terms
@@ -276,6 +293,7 @@ SUBROUTINE rhsn_ss_flow
      sfvdb(lc) = 0._kdp
      IF(m == 0) CYCLE              ! ... empty column 
      DO ls=drain_seg_first(lc),drain_seg_last(lc)
+        if (adbc(ls) .gt. 1.0e50_kdp) cycle
         qn = adbc(ls)
         IF(qn <= 0.) THEN         ! ... Outflow
            qfbc = den0*qn
@@ -284,8 +302,8 @@ SUBROUTINE rhsn_ss_flow
         ELSE                             ! ... Inflow, none allowed
            qn = 0._kdp
            qfbc = 0._kdp
-           stotfi = stotfi + ufdt0*qfbc
-           sfvdb(lc) = sfvdb(lc) + qn
+           !stotfi = stotfi + ufdt0*qfbc
+           !sfvdb(lc) = sfvdb(lc) + qn
         END IF
         rf(m) = rf(m) + ufdt0*qfbc
         sfdb(lc) = sfdb(lc) + qfbc

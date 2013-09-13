@@ -43,6 +43,7 @@ SUBROUTINE sumcal1
        u0, u1, ufdt0, ufdt1,  &
        ufrac, up0, z0, zfsl, zm1, zp1
   REAL(KIND=kdp) :: u6
+  REAL(KIND=kdp) :: hrbc
   REAL(KIND=kdp), PARAMETER :: epssat = 1.e-6_kdp  
   INTEGER :: a_err, da_err, i, iis, imod, iwel, j, k, l, lc, l1, ls, m, mt, nsa
   INTEGER :: mpmax
@@ -789,51 +790,87 @@ SUBROUTINE sumcal1
      ! ... Calculate current net river leakage flow rate
      qm_net = 0._kdp
      DO ls=river_seg_first(lc),river_seg_last(lc)
-        qnp = arbc(ls) - brbc(ls)*dp(m)
-        IF(qnp <= 0._kdp) THEN          ! ... Outflow
-           qm_net = qm_net + den0*qnp
-           sfvrb(lc) = sfvrb(lc) + qnp
-        ELSE                            ! ... Inflow
-           ! ... Limit the flow rate for a river leakage
-           qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &
-                - 0.5_kdp*den0*bbrbc(ls)))
-           qnp = MIN(qnp,qlim)
-           qm_net = qm_net + denrbc(ls)*qnp
-           sfvrb(lc) = sfvrb(lc) + qnp
-        ENDIF
+         if (arbc(ls) .gt. 1.0e50_kdp) cycle
+         qnp = arbc(ls) - brbc(ls)*dp(m)
+         hrbc = phirbc(ls)/gz
+         if(hrbc > zerbc(ls)) then      ! ... treat as river
+             IF(qnp <= 0._kdp) THEN          ! ... Outflow
+                 qm_net = qm_net + den0*qnp
+                 sfvrb(lc) = sfvrb(lc) + qnp
+             ELSE                            ! ... Inflow
+                 ! ... Limit the flow rate for a river leakage
+                 qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*(zerbc(ls)-0.5_kdp*bbrbc(ls))  &
+                 - 0.5_kdp*den0*bbrbc(ls)))
+                 qnp = MIN(qnp,qlim)
+                 qm_net = qm_net + denrbc(ls)*qnp
+                 sfvrb(lc) = sfvrb(lc) + qnp
+             ENDIF
+         else                           ! ... treat as drain 
+             IF(qnp <= 0._kdp) THEN           ! ... Outflow
+                 qm_net = qm_net + den0*qnp
+                 sfvrb(lc) = sfvrb(lc) + qnp
+                 !qfbc = den(m)*qnp
+                 !qfrbc(lc) = qfrbc(lc) + qfbc
+                 !stotfp = stotfp-ufdt1*qfbc
+                 !DO  iis=1,ns
+                 !    qsbc3(iis) = qfbc*c(m,iis)
+                 !    qsrbc(lc,iis) = qsrbc(lc,iis) + qsbc3(iis)
+                 !    stotsp(iis) = stotsp(iis)-ufdt1*qsbc3(iis)
+                 !END DO
+             ELSE                            ! ... Inflow
+                 !qfbc = 0._kdp
+                 !qfrbc(lc) = qfrbc(lc) + qfbc
+                 !stotfi = stotfi+ufdt1*qfbc
+                 !DO  iis=1,ns
+                 !    qsbc3(iis) = 0._kdp
+                 !    qsrbc(lc,iis) = qsrbc(lc,iis) + qsbc3(iis)
+                 !    stotsi(iis) = stotsi(iis) + ufdt1*qsbc3(iis)
+                 !END DO
+             ENDIF
+         end if             
      END DO
      qfrbc(lc) = qm_net
      sfrb(lc) = sfrb(lc) + qfrbc(lc)
      stfrbc = stfrbc + ufdt1*qfrbc(lc)
      IF(qm_net <= 0._kdp) THEN           ! ... net outflow
-	stotfp = stotfp - ufdt1*qfrbc(lc)
-        DO  iis=1,ns
-           qsrbc(lc,iis) = qfrbc(lc)*c(m,iis)
-           stotsp(iis) = stotsp(iis) - ufdt1*qsrbc(lc,iis)
-        END DO
+         stotfp = stotfp - ufdt1*qfrbc(lc)
+         DO  iis=1,ns
+             qsrbc(lc,iis) = qfrbc(lc)*c(m,iis)
+             stotsp(iis) = stotsp(iis) - ufdt1*qsrbc(lc,iis)
+         END DO
      ELSEIF(qm_net > 0._kdp) THEN        ! ... net inflow
-        stotfi = stotfi + ufdt1*qfrbc(lc)
-        ! ... calculate flow weighted average concentrations for inflow segments
-        qm_in = 0._kdp
-        sum_cqm_in = 0._kdp
-        DO ls=river_seg_first(lc),river_seg_last(lc)
-           qnp = arbc(ls) - brbc(ls)*dp(m)
-           IF(qnp > 0._kdp) THEN                   ! ... inflow
-              ! ... limit the flow rate for a river leakage
-              qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*  &
-                   (zerbc(ls)-0.5_kdp*bbrbc(ls)) - 0.5_kdp*den0*bbrbc(ls)))
-              qnp = MIN(qnp,qlim)
-              qm_in = qm_in + denrbc(ls)*qnp
-              DO  iis=1,ns
-                 sum_cqm_in(iis) = sum_cqm_in(iis) + denrbc(ls)*qnp*crbc(ls,iis)
-              END DO
-           ENDIF
-        END DO
-        DO iis=1,ns
-           cavg(iis) = sum_cqm_in(iis)/qm_in
-           qsrbc(lc,iis) = qfrbc(lc)*cavg(iis)
-           stotsi(iis) = stotsi(iis) + ufdt1*qsrbc(lc,iis)
-	END DO
+         stotfi = stotfi + ufdt1*qfrbc(lc)
+         ! ... calculate flow weighted average concentrations for inflow segments
+         qm_in = 0._kdp
+         sum_cqm_in = 0._kdp
+         DO ls=river_seg_first(lc),river_seg_last(lc)
+             if (arbc(ls) .gt. 1.0e50_kdp) cycle
+             qnp = arbc(ls) - brbc(ls)*dp(m)
+             IF(qnp > 0._kdp) THEN                   ! ... inflow
+                 ! ... limit the flow rate for a river leakage
+                 qlim = brbc(ls)*(denrbc(ls)*phirbc(ls) - gz*(denrbc(ls)*  &
+                 (zerbc(ls)-0.5_kdp*bbrbc(ls)) - 0.5_kdp*den0*bbrbc(ls)))
+                 qnp = MIN(qnp,qlim)
+                 qm_in = qm_in + denrbc(ls)*qnp
+                 DO  iis=1,ns
+                     sum_cqm_in(iis) = sum_cqm_in(iis) + denrbc(ls)*qnp*crbc(ls,iis)
+                 END DO
+             ENDIF
+         END DO
+         DO iis=1,ns
+             cavg(iis) = sum_cqm_in(iis)/qm_in
+             qsrbc(lc,iis) = qfrbc(lc)*cavg(iis)
+             stotsi(iis) = stotsi(iis) + ufdt1*qsrbc(lc,iis)
+         END DO
+     else                       ! ... no inflow or outflow; treat as drain
+         qnp = 0._kdp
+         qfbc = 0._kdp
+         !stotfi = stotfi + ufdt0*qfbc
+         !sfvrb(lc) = sfvrb(lc) + qnp
+         !DO  iis=1,ns
+         !    qsbc3(iis) = 0._kdp
+         !    stotsi(iis) = stotsi(iis) + ufdt0*qsbc3(iis)
+         !END DO
      ENDIF
      DO  iis=1,ns
         ssrb(lc,iis)=ssrb(lc,iis) + qsrbc(lc,iis)
@@ -881,6 +918,7 @@ SUBROUTINE sumcal1
      ssdb(lc,:) = 0._kdp
      IF(m == 0) CYCLE
      DO ls=drain_seg_first(lc),drain_seg_last(lc)
+        if (adbc(ls) .gt. 1.0e50_kdp) cycle
         qnp = adbc(ls) - bdbc(ls)*dp(m)
         IF(qnp <= 0._kdp) THEN           ! ... Outflow
            qfbc = den0*qnp
@@ -893,13 +931,13 @@ SUBROUTINE sumcal1
            END DO
         ELSE                            ! ... Inflow
            qfbc = 0._kdp
-           qfdbc(lc) = qfdbc(lc) + qfbc
-           stotfi = stotfi+ufdt1*qfbc
-           DO  iis=1,ns
-              qsbc3(iis) = 0._kdp
-              qsdbc(lc,iis) = qsdbc(lc,iis) + qsbc3(iis)
-              stotsi(iis) = stotsi(iis) + ufdt1*qsbc3(iis)
-           END DO
+           !qfdbc(lc) = qfdbc(lc) + qfbc
+           !stotfi = stotfi+ufdt1*qfbc
+           !DO  iis=1,ns
+           !   qsbc3(iis) = 0._kdp
+           !   qsdbc(lc,iis) = qsdbc(lc,iis) + qsbc3(iis)
+           !   stotsi(iis) = stotsi(iis) + ufdt1*qsbc3(iis)
+           !END DO
         ENDIF
      END DO
      sfdb(lc) = sfdb(lc) + qfdbc(lc)

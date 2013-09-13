@@ -19,6 +19,7 @@ SUBROUTINE XP_aplbce_thread(xp)
   IMPLICIT NONE
   TYPE (Transporter) :: xp
   REAL(KIND=kdp) :: qfbc, qn, ufdt2, ufrac, uphim, uzav
+  REAL(KIND=kdp) :: hrbc
   INTEGER :: imod, k, ks, l1, lc, ls, m, mc, ms  
   LOGICAL :: erflg  
   REAL(KIND=kdp) :: qsbc, qsbc2
@@ -101,7 +102,15 @@ SUBROUTINE XP_aplbce_thread(xp)
         ks = (ms - imod)/nxy + MIN(1,imod)
         uphim = p(ms) + gz*(denrbc(ls) - den0)*uzav
         brbc(ls) = krbc(ls)/visrbc(ls)
-        arbc(ls) = brbc(ls)*((denrbc(ls)*phirbc(ls) - den0*gz*z(ks)) - uphim)
+        hrbc = phirbc(ls)/gz
+        if(hrbc > zerbc(ls)) then      ! ... treat as river
+            arbc(ls) = brbc(ls)*((denrbc(ls)*phirbc(ls) - den0*gz*z(ks)) - uphim)
+        else                           ! ... treat as drain 
+            arbc(ls) = brbc(ls)*(denrbc(ls)*gz*zerbc(ls) - (p(ms) + den0*gz*z(ks)))
+            if (arbc(ls) .gt. 0.0_kdp) then
+                arbc(ls) = 1.0e51_kdp
+            endif
+        end if
      END DO
   END DO
 !!$  DO ls=1,nrbc_seg
@@ -178,6 +187,9 @@ SUBROUTINE XP_aplbce_thread(xp)
         ks = (ms - imod)/nxy + MIN(1,imod)
         bdbc(ls) = kdbc(ls)/visdbc
         adbc(ls) = bdbc(ls)*(den0*gz*zedbc(ls) - (p(ms) + den0*gz*z(ks)))
+        if (adbc(ls) .gt. 0.0_kdp) then
+            adbc(ls) = 1.0e51_kdp
+        endif  
      END DO
   END DO
 END SUBROUTINE XP_aplbce_thread
@@ -194,6 +206,7 @@ SUBROUTINE XP_aplbce(xp)
   IMPLICIT NONE
   TYPE (Transporter) :: xp
   REAL(KIND=kdp) :: qfbc, qn, ufdt2, ufrac, uphim, uzav
+  REAL(KIND=kdp) :: hrbc
   INTEGER :: imod, k, ks, l1, lc, ls, m, mc, ms  
   LOGICAL :: erflg  
   REAL(KIND=kdp) :: qsbc, qsbc2
@@ -276,7 +289,15 @@ SUBROUTINE XP_aplbce(xp)
         ks = (ms - imod)/nxy + MIN(1,imod)
         uphim = p(ms) + gz*(denrbc(ls) - den0)*uzav
         brbc(ls) = krbc(ls)/visrbc(ls)
-        arbc(ls) = brbc(ls)*((denrbc(ls)*phirbc(ls) - den0*gz*z(ks)) - uphim)
+        hrbc = phirbc(ls)/gz
+        if(hrbc > zerbc(ls)) then      ! ... treat as river
+            arbc(ls) = brbc(ls)*((denrbc(ls)*phirbc(ls) - den0*gz*z(ks)) - uphim)
+        else                           ! ... treat as drain 
+            arbc(ls) = brbc(ls)*(denrbc(ls)*gz*zerbc(ls) - (p(ms) + den0*gz*z(ks)))
+            if (arbc(ls) .gt. 0.0_kdp) then
+                arbc(ls) = 1.0e51_kdp
+            endif  
+        endif
      END DO
   END DO
 !!$  DO ls=1,nrbc_seg
@@ -353,6 +374,9 @@ SUBROUTINE XP_aplbce(xp)
         ks = (ms - imod)/nxy + MIN(1,imod)
         bdbc(ls) = kdbc(ls)/visdbc
         adbc(ls) = bdbc(ls)*(den0*gz*zedbc(ls) - (p(ms) + den0*gz*z(ks)))
+        if (adbc(ls) .gt. 0.0_kdp) then
+            adbc(ls) = 1.0e51_kdp
+        endif     
      END DO
   END DO
 END SUBROUTINE XP_aplbce
