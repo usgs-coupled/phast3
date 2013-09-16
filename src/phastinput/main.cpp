@@ -1,6 +1,7 @@
 #define EXTERNAL
 #define MAIN
 #include <sstream>				// basic_ostringstream
+#include <fstream>
 #include "hstinpt.h"
 #include "message.h"
 #include "NNInterpolator/NNInterpolator.h"
@@ -63,7 +64,10 @@ main(int argc, char *argv[])
  */
 	output_msg(OUTPUT_STDERR, "Process file names...\n");
 	process_file_names(argc, argv);
+#ifndef PHRQ_IO_INPUT
 	input_file = transport_file;
+	input = input_file;
+#endif
 /*	fprintf(std_error, "Done process file names...\n"); */
 	output_msg(OUTPUT_ECHO,
 			   "Running PHASTINPUT.\n\nProcessing flow and transport data file.\n\n");
@@ -77,7 +81,7 @@ main(int argc, char *argv[])
 /*
  *   Read input data for simulation
  */
-	input = input_file;
+
 	if (read_input() == EOF)
 	{
 		error_msg("No data defined.", STOP);
@@ -199,6 +203,27 @@ process_file_names(int argc, char *argv[])
 /*
  *   open transport file
  */
+#ifdef PHRQ_IO_INPUT
+	if (transport_name == NULL)
+	{
+		strcpy(name, prefix);
+		strcat(name, ".trans.dat");
+		transport_name = string_duplicate(name);
+		std::ifstream * new_stream = new std::ifstream(transport_name, std::ios_base::in);
+		if (new_stream == NULL || !new_stream->is_open())
+		{
+			sprintf(error_string, "Can't open transport data file, %s.\n",
+					name);
+			error_msg(error_string, STOP);
+		}
+		else
+		{
+			output_msg(OUTPUT_STDERR, "\tFlow and transport data file: %s\n",
+					   transport_name);
+			input_phrq_io.push_istream(new_stream);
+		}
+	}
+#else
 	if (transport_name == NULL)
 	{
 		strcpy(name, prefix);
@@ -217,6 +242,7 @@ process_file_names(int argc, char *argv[])
 			transport_file = new_file;
 		}
 	}
+#endif
 /*
  *  chemistry file name
  */
@@ -497,8 +523,12 @@ clean_up(void)
 	Zone_budget::zone_budget_map.clear();
 
 /* files */
+#ifdef PHRQ_IO_INPUT
+	input_phrq_io.clear_istream();
+#else
 	if (input != NULL)
 		fclose(input);
+#endif
 	if (echo_file != NULL)
 		fclose(echo_file);
 	if (std_error != NULL && std_error != stderr)
@@ -671,7 +701,6 @@ initialize(void)
 	cross_dispersion = FALSE;
 	rebalance_fraction = 0.5;
 	rebalance_by_cell = FALSE;
-	n_threads = -1;
 /*
  *   print input values set to false, xy true
  */
@@ -885,5 +914,11 @@ initialize(void)
 	gasphase_units = WATER;
 	kinetics_units = WATER; 
 
+#ifdef PHRQ_IO_INPUT
+	for (int i = 0; i < Keywords::KEY_COUNT_KEYWORDS; i++)
+	{
+		keycount.push_back(0);
+	}
+#endif
 	return;
 }

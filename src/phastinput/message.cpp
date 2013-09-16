@@ -4,9 +4,10 @@
 #include <stddef.h>
 static char const svnid[] =
 	"$Id$";
-
+#ifndef PHRQ_IO_INPUT
 FILE *input_file;
 FILE *input;
+#endif
 FILE *output;
 FILE *database_file;
 char *user_database;

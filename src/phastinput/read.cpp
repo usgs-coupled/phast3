@@ -108,6 +108,9 @@ STATIC int find_option(char *item, int *n, const char **list, int count_list,
 extern int get_line(FILE * fp);
 #else
 STATIC int get_line(FILE * fp);
+#ifdef PHRQ_IO_INPUT
+STATIC int get_line();
+#endif
 STATIC int get_logical_line(FILE * fp, int *l);
 STATIC int add_char_to_line(int *i, char c);
 #endif
@@ -119,7 +122,120 @@ STATIC int get_true_false(char *string, int default_value);
 #define OPTION_ERROR -3
 #define OPTION_DEFAULT -4
 #define OPTION_DEFAULT2 -5
+#ifdef PHRQ_IO_INPUT
+/* ---------------------------------------------------------------------- */
+int
+read_input(void)
+/* ---------------------------------------------------------------------- */
+{
+	int i, j;
 
+	input_error = 0;
+	next_keyword = Keywords::KEY_NONE;
+/*
+ *  Initialize keyword flags
+ */
+	for (i = 0; i < Keywords::KEY_COUNT_KEYWORDS; i++)
+	{
+		keycount[i] = 0;
+	}
+
+	free_check_null(title_x);
+	title_x = NULL;
+
+	while ((i =	check_line("Subroutine Read", FALSE, TRUE, TRUE, FALSE)) != KEYWORD)
+	{
+		/* empty, eof, keyword, print */
+		if (i == EOF)
+			return (EOF);
+		sprintf(error_string, "Unknown input: %s", line);
+		warning_msg(error_string);
+	}
+	for (;;)
+	{
+		// mark keyword read
+		if (next_keyword > 0 && next_keyword < Keywords::KEY_COUNT_KEYWORDS)
+		{
+			keycount[next_keyword]++;
+		}
+		switch (next_keyword)
+		{
+		case Keywords::KEY_NONE:				/* Have not read line with keyword */
+			do
+				j = check_line("No keyword", FALSE, TRUE, TRUE, FALSE);
+			while (j != KEYWORD && j != EOF);
+			break;
+		case Keywords::KEY_END:
+			goto END_OF_SIMULATION_INPUT;
+		case Keywords::KEY_TITLE:
+			read_title();
+			break;
+		case Keywords::KEY_GRID:
+			read_grid();
+			break;
+		case Keywords::KEY_MEDIA:
+			read_media();
+			break;
+		case Keywords::KEY_HEAD_IC:
+			read_head_ic();
+			break;
+		case Keywords::KEY_CHEMISTRY_IC:
+			read_chemistry_ic();
+			break;
+		case Keywords::KEY_FREE_SURFACE_BC:
+			read_free_surface_bc();
+			break;
+		case Keywords::KEY_SPECIFIED_HEAD_BC:
+			read_specified_value_bc();
+			break;
+		case Keywords::KEY_FLUX_BC:
+			read_flux_bc();
+			break;
+		case Keywords::KEY_LEAKY_BC:
+			read_leaky_bc();
+			break;
+		case Keywords::KEY_UNITS:
+			read_units();
+			break;
+		case Keywords::KEY_SOLUTION_METHOD:
+			read_solution_method();
+			break;
+		case Keywords::KEY_TIME_CONTROL:
+			read_time_control();
+			break;
+		case Keywords::KEY_PRINT_FREQUENCY:
+			read_print_frequency();
+			break;
+		case Keywords::KEY_PRINT_INITIAL:
+			read_print_input();
+			break;
+		case Keywords::KEY_RIVER:
+			read_river();
+			break;
+		case Keywords::KEY_WELL:
+			read_well();
+			break;
+		case Keywords::KEY_PRINT_LOCATIONS:
+			read_print_locations();
+			break;
+		case Keywords::KEY_STEADY_FLOW:
+			read_steady_flow();
+			break;
+		case Keywords::KEY_SOLUTE_TRANSPORT:
+			read_solute_transport();
+			break;
+		case Keywords::KEY_DRAIN:
+			read_drain();
+			break;
+		case Keywords::KEY_ZONE_FLOW:
+			read_zone_budget();
+			break;
+		}
+	}
+  END_OF_SIMULATION_INPUT:
+	return (OK);
+}
+#else
 /* ---------------------------------------------------------------------- */
 int
 read_input(void)
@@ -300,7 +416,7 @@ read_input(void)
   END_OF_SIMULATION_INPUT:
 	return (OK);
 }
-
+#endif
 /* ---------------------------------------------------------------------- */
 int
 read_title(void)
@@ -448,7 +564,11 @@ check_line(const char *string, int allow_empty, int allow_eof,
 /* Get line */
 	do
 	{
+#ifdef PHRQ_IO_INPUT
+		i = get_line();
+#else
 		i = get_line(input);
+#endif
 		if (pr.echo_input == TRUE)
 		{
 			if ((print == TRUE && i != EOF) || i == KEYWORD)
@@ -926,6 +1046,47 @@ get_line(FILE * fp)
 	}
 	return (return_value);
 }
+#ifdef PHRQ_IO_INPUT
+/* ---------------------------------------------------------------------- */
+int
+get_line()
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *   Read a line from input file put in "line".
+ *   Copy of input line is stored in "line_save".
+ *   Characters after # are discarded in line but retained in "line_save"
+ *
+ *   Arguments:
+ *      fp is file name
+ *   Returns:
+ *      EMPTY,
+ *      EOF,
+ *      KEYWORD,
+ *      OK,
+ *      OPTION
+ */
+	int return_value =	input_phrq_io.get_line();
+	// check_key sets next_keyword
+	next_keyword = input_phrq_io.Get_m_next_keyword();
+
+	size_t l = input_phrq_io.Get_m_line().size();
+	if ((int) (l + 20) >= max_line)
+	{
+		max_line *= 2;
+		line_save =	(char *) realloc(line_save, (size_t) max_line * sizeof(char));
+		if (line_save == NULL)
+			malloc_error();
+		line = (char *) realloc(line, (size_t) max_line * sizeof(char));
+		if (line == NULL)
+			malloc_error();
+	}
+	strncpy(line, input_phrq_io.Get_m_line().c_str(), max_line);
+	strncpy(line_save, input_phrq_io.Get_m_line().c_str(), max_line);
+	//int return_value = input_phrq_io.check_key(input_phrq_io.Get_m_line().begin(), input_phrq_io.Get_m_line().end());
+	return (return_value);
+}
+#endif /* PHRQ_IO_INPUT */
 #endif /* __WPHAST__ */
 /* ---------------------------------------------------------------------- */
 int
@@ -5312,6 +5473,8 @@ read_property_only(char *ptr, const char **opt_list, int count_opt_list, int *op
 			p->v[0] = -100 - j;
 			p->count_v = 1;
 			p->type = PROP_FIXED;
+			p->type = PROP_RESTART;
+			p->restart_filename = stdtoken;
 		}
 		else
 		{
@@ -5783,6 +5946,7 @@ read_property(char *ptr, const char **opt_list, int count_opt_list, int *opt,
 			p->v[0] = -100 - j;
 			p->count_v = 1;
 			p->type = PROP_FIXED;
+			p->type = PROP_RESTART;
 		}
 		else
 		{
@@ -7425,10 +7589,9 @@ read_solution_method(void)
 		"time",					/* 13 */
 		"cross_dispersion",		/* 14 */
 		"rebalance_fraction",	/* 15 */
-		"rebalance_by_cell",	/* 16 */
-		"threads"				/* 17 */
+		"rebalance_by_cell"		/* 16 */
 	};
-	int count_opt_list = 18;
+	int count_opt_list = 17;
 /*
  *   Read flags:
  */
@@ -7546,16 +7709,6 @@ read_solution_method(void)
 			break;
 		case 16:				/* rebalance_by_cell */
 			rebalance_by_cell = get_true_false(next_char, TRUE);
-			break;
-		case 17:				/* threads */
-			if (copy_token(token, &next_char, &l) != DIGIT ||
-				(sscanf(token, "%d", &n_threads) != 1))
-			{
-				input_error++;
-				sprintf(error_string,
-						"Expected number of threads for multi-threaded version in SOLUTION_METHOD.");
-				error_msg(error_string, CONTINUE);
-			}
 			break;
 		}
 		if (return_value == EOF || return_value == KEYWORD)

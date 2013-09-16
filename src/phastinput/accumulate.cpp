@@ -1510,6 +1510,7 @@ get_double_property_for_cell(struct cell *cell_ptr,
 		return (ERROR);
 		break;
 	case PROP_FIXED:
+	case PROP_RESTART:
 		*value = property_ptr->v[0];
 		break;
 	case PROP_ZONE:
@@ -1626,6 +1627,7 @@ get_mix_property_for_cell(struct cell *cell_ptr,
 	PROP_MIX_XYZ = 108,
 	//PROP_MIX_CONSTANT = 109,
 	PROP_XYZT = 110,
+	PROP_RESTART = 112
 	*/
 
 	if (!property_ptr->mix)
@@ -1633,6 +1635,7 @@ get_mix_property_for_cell(struct cell *cell_ptr,
 		switch (property_ptr->type)
 		{
 		case PROP_FIXED:
+		case PROP_RESTART:
 			mix_ptr->i1 = (int) floor(property_ptr->v[0] + 1e-8);
 			mix_ptr->i2 = -1;
 			mix_ptr->f1 = 1.0;
@@ -1725,6 +1728,7 @@ get_mix_property_for_cell(struct cell *cell_ptr,
 		switch (property_ptr->type)
 		{
 		case PROP_FIXED:
+		case PROP_RESTART:
 			mix_ptr->i1 = (int) floor(property_ptr->mix1 + 1e-8);
 			mix_ptr->i2 = (int) floor(property_ptr->mix2 + 1e-8);
 			mix_ptr->f1 = property_ptr->v[0];
@@ -1826,6 +1830,7 @@ get_property_for_element(struct cell *cell_ptr, struct property *property_ptr,
 		return (ERROR);
 		break;
 	case PROP_FIXED:
+	case PROP_RESTART:
 		*value = property_ptr->v[0];
 		break;
 	case PROP_ZONE:
@@ -3156,15 +3161,22 @@ reset_transient_data(void)
 				(rivers[i].points[j].solution, current_start_time,
 				 &pt_ptr) >= 0)
 			{
-				rivers[i].points[j].current_solution =
-					(int) pt_ptr->property->v[0];
+				//rivers[i].points[j].current_solution = (int) pt_ptr->property->v[0];
+				// uncomment to use XYZT file
+				rivers[i].points[j].current_solution = (int) get_river_value(pt_ptr->property,
+					rivers[i].points[j].x_grid,
+					rivers[i].points[j].x_grid);
 				update = TRUE;
 				rivers[i].update = TRUE;
 			}
 			if (get_current_property_position
 				(rivers[i].points[j].head, current_start_time, &pt_ptr) >= 0)
 			{
-				rivers[i].points[j].current_head = pt_ptr->property->v[0];
+				//rivers[i].points[j].current_head = pt_ptr->property->v[0];
+				// uncomment to use XYZT file
+				rivers[i].points[j].current_head = get_river_value(pt_ptr->property,
+					rivers[i].points[j].x_grid,
+					rivers[i].points[j].x_grid);
 				update = TRUE;
 				rivers[i].update = TRUE;
 			}
@@ -5763,4 +5775,59 @@ fill_prop_defaults(struct property *p, int nn)
 		return true;
 	}
 	return false;
+}
+/* ---------------------------------------------------------------------- */
+double
+get_river_value(struct property *property_ptr, double x, double y)
+/* ---------------------------------------------------------------------- */
+{
+	double value = -999.;
+	if (property_ptr->mix)
+	{
+		input_error++;
+		error_msg("MIXTURE option not allowed for this property", CONTINUE);
+		return value;
+	}
+	switch (property_ptr->type)
+	{
+	case PROP_UNDEFINED:
+		input_error++;
+		error_msg("Property type is not defined", CONTINUE);
+		break;
+	case PROP_FIXED:
+	case PROP_RESTART:
+		value = property_ptr->v[0];
+		break;
+	default:
+	case PROP_ZONE:
+	case PROP_LINEAR:
+	case PROP_POINTS:
+	case PROP_XYZ:
+		error_msg("OOPS in get_property_value", CONTINUE);
+		return (ERROR);
+		break;
+	case PROP_XYZT:
+		{
+			Filedata *f = property_ptr->data_source->Get_filedata();
+			XYZTfile *xyzt = dynamic_cast < XYZTfile * > (f);
+			assert (xyzt != NULL);
+			if (xyzt != NULL)
+			{
+				Point pt(x, y, 0.0);
+				xyzt->Read(current_start_time);
+				if (property_ptr->data_source->Get_tree3d()->v.size() == 0)
+				{
+					sprintf(error_string, "No points to interpolate from xyzt file %s", xyzt->Get_filename().c_str());
+					error_msg(error_string, CONTINUE);
+					return (ERROR);
+				}
+				else
+				{
+					value = property_ptr->data_source->Get_tree3d()->Interpolate3d(pt);
+				}
+			}
+		}
+		break;
+	}
+	return value;
 }

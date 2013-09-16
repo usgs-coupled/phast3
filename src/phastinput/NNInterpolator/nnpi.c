@@ -833,7 +833,7 @@ nnpi_interpolate_points(int nin, point pin[], double wmin, int nout,
 		{
 			point *p = &pout[i];
 
-			fprintf(stderr, "  %d:%15.7g %15.7g %15.7g\n", i, p->x, p->y,
+			fprintf(stderr, "  %d:%15.7g %15.7g %15.7g\n", (int) i, p->x, p->y,
 					p->z);
 		}
 	}

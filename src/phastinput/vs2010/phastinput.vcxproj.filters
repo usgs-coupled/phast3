@@ -15,16 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\accumulate.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\ArcRaster.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\BC_info.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\check.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Cube.cpp">
@@ -51,15 +45,6 @@
     <ClCompile Include="..\Filedata.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\getopt.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gpc.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gpc_helper.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\NNInterpolator\hash.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -73,12 +58,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\NNInterpolator\lpi.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\main.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\message.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\NNInterpolator\minell.c">
@@ -120,12 +99,6 @@
     <ClCompile Include="..\Prism.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\read.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\rivers.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Shapefiles\Shapefile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -133,12 +106,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Shapefiles\shptree.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\structures.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\time.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\NNInterpolator\triangle.c">
@@ -150,16 +117,7 @@
     <ClCompile Include="..\units_impl.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\utilities.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Wedge.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\wells.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\write.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\XYZfile.cpp">
@@ -172,6 +130,63 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Zone_budget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FromPhreeqc\Keywords.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FromPhreeqc\Parser.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FromPhreeqc\PHRQ_base.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FromPhreeqc\PHRQ_io.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FromPhreeqc\Utils.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\accumulate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\check.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\getopt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gpc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gpc_helper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\message.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\read.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\rivers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\structures.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\time.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\utilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\wells.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\write.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -333,6 +348,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Zone_budget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FromPhreeqc\Keywords.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FromPhreeqc\Parser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FromPhreeqc\PHRQ_base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FromPhreeqc\PHRQ_io.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FromPhreeqc\phrqtype.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
