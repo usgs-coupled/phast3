@@ -7589,9 +7589,10 @@ read_solution_method(void)
 		"time",					/* 13 */
 		"cross_dispersion",		/* 14 */
 		"rebalance_fraction",	/* 15 */
-		"rebalance_by_cell"		/* 16 */
+		"rebalance_by_cell",	/* 16 */
+		"threads"				/* 17 */
 	};
-	int count_opt_list = 17;
+	int count_opt_list = 18;
 /*
  *   Read flags:
  */
@@ -7709,6 +7710,16 @@ read_solution_method(void)
 			break;
 		case 16:				/* rebalance_by_cell */
 			rebalance_by_cell = get_true_false(next_char, TRUE);
+			break;
+		case 17:				/* threads */
+			if (copy_token(token, &next_char, &l) != DIGIT ||
+				(sscanf(token, "%d", &n_threads) != 1))
+			{
+				input_error++;
+				sprintf(error_string,
+						"Expected number of threads for multi-threaded version in SOLUTION_METHOD.");
+				error_msg(error_string, CONTINUE);
+			}
 			break;
 		}
 		if (return_value == EOF || return_value == KEYWORD)

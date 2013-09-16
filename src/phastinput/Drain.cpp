@@ -731,7 +731,7 @@ build_drains(void)
 			{
 				sprintf(error_string,
 					"Duplicate drain points %d %d, drain %d %s.",
-					(int) i - 1, (int) i, drain_ptr->n_user, drain_ptr->description.c_str());
+					(int) (i - 1), (int) i, drain_ptr->n_user, drain_ptr->description.c_str());
 				warning_msg(error_string);
 
 			}

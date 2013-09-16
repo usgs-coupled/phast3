@@ -1,6 +1,7 @@
 #ifndef _INC_PROPERTY
 #define _INC_PROPERTY
 #include <list>
+#include <string>
 class Data_source;
 enum PROP_TYPE
 {
@@ -14,8 +15,9 @@ enum PROP_TYPE
 	//PROP_MIX_POINTS = 107,
 	//PROP_MIX_XYZ = 108,
 	//PROP_MIX_CONSTANT = 109,
-	PROP_XYZT = 110
+	PROP_XYZT = 110,
 	//PROP_MIX_XYZT = 111
+	PROP_RESTART = 112
 };
 /* ----------------------------------------------------------------------
  *   Property structure
@@ -35,6 +37,7 @@ struct property
 	bool mix;
 	double mix1, mix2;
 	Data_source *data_source;
+	std::string restart_filename;
 };
 EXTERNAL std::list < property * >properties_with_data_source;
 #endif /* _INC_PROPERTY */

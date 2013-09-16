@@ -276,6 +276,9 @@ write_initial(void)
 	{
 		error_msg("Solver method not defined", STOP);
 	}
+	output_msg(OUTPUT_HST,
+			   "C.1.9 .. number of threads\n");
+	output_msg(OUTPUT_HST, "     %d\n", n_threads);
 	return (OK);
 }
 
