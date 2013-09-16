@@ -579,10 +579,10 @@ property_alloc(void)
 {
 	struct property *property_ptr;
 
-	property_ptr = (struct property *) malloc(sizeof(struct property));
+	property_ptr = new struct property;
 	if (property_ptr == NULL)
 		malloc_error();
-	property_ptr->v = (double *) malloc((size_t) 2 * sizeof(double));
+	property_ptr->v = new double[2];
 	if (property_ptr->v == NULL)
 		malloc_error();
 	property_ptr->count_v = 0;
@@ -624,15 +624,15 @@ property_copy(struct property *source)
 	Data_source *data_source;
 	*/
 
-	target = (struct property *) malloc(sizeof(struct property));
+	target = new property;
 	if (target == NULL)
 		malloc_error();
-	memcpy(target, source, sizeof(struct property));
+	*target = *source;
 
 	// copy v
 	size_t count = 2;
 	if (source->count_v > 2) count = (size_t) source->count_v;
-	target->v = (double *) malloc((size_t) count * sizeof(double));
+	target->v = new double[count];
 	if (target->v == NULL)
 		malloc_error();
 	size_t i;
@@ -674,9 +674,9 @@ property_free(struct property *property_ptr)
 			break;
 		}
 	}
-	free_check_null(property_ptr->v);
+	delete property_ptr->v;
 	delete property_ptr->data_source;
-	free_check_null(property_ptr);
+	delete property_ptr;
 
 	return (OK);
 }

@@ -1169,6 +1169,9 @@ gpc_polygon_clip(gpc_op op, gpc_polygon * subj, gpc_polygon * clip,
 	int vclass, bl, br, tl, tr;
 	double *sbt = NULL, xb, px, yb, yt = 0, dy = 0, ix, iy;
 
+	contributing = 0;
+	bl = 0; br = 0; tl = 0; tr = 0;
+
 	/* Test for trivial NULL result cases */
 	if (((subj->num_contours == 0) && (clip->num_contours == 0))
 		|| ((subj->num_contours == 0)
@@ -1850,6 +1853,9 @@ gpc_tristrip_clip(gpc_op op, gpc_polygon * subj, gpc_polygon * clip,
 	int s, v, contributing, search, scanbeam = 0, sbt_entries = 0;
 	int vclass, bl, br, tl, tr;
 	double *sbt = NULL, xb, px, nx, yb, yt = 0, dy = 0, ix, iy;
+
+	contributing = 0;
+	bl = 0; br = 0; tl = 0; tr = 0;
 
 	/* Test for trivial NULL result cases */
 	if (((subj->num_contours == 0) && (clip->num_contours == 0))
