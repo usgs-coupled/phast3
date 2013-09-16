@@ -78,11 +78,11 @@ SUBROUTINE error3
      END DO
   END IF
   ! ... River leakage b.c.
-  IF(rdrbc) THEN
-     DO  ls=1,nrbc_seg
-        IF(phirbc(ls) < gz*zerbc(ls)) ierr(74)=.TRUE.
-     END DO
-  END IF
+  !IF(rdrbc) THEN
+  !   DO  ls=1,nrbc_seg
+  !      IF(phirbc(ls) < gz*zerbc(ls)) ierr(74)=.TRUE.
+  !   END DO
+  !END IF
   ! ... Drain b.c.: nothing to be done
   ! ... Check well data
   DO  iwel=1,nwel

@@ -53,6 +53,7 @@ int get_mix_property_for_cell(struct cell *cell_ptr,
 int get_property_for_element(struct cell *cell_ptr,
 							 struct property *property_ptr, int node_sequence,
 							 double *value, int *integer_value);
+double get_river_value(struct property *property_ptr, double x, double y);
 Cell_Face guess_face(std::list < int >&list_of_numbers,
 					 struct zone *zone_ptr);
 int ijk_to_n(int i, int j, int k);
