@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{ac54a884-4290-4a60-aa3b-a35f55c48248}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm</Extensions>
+    </Filter>
+    <Filter Include="Source Files\COMMON_COBJS">
+      <UniqueIdentifier>{27e6a46a-e411-496b-8df0-b050e44a8ed4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\COMMON_CXXOBJS">
+      <UniqueIdentifier>{5d189165-b46c-4b9f-85dd-b4f436c3a7f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\MPI_OBJS">
+      <UniqueIdentifier>{c955dc02-7322-4108-977a-965f5b542c5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\MERGE_OBJS">
+      <UniqueIdentifier>{2de0c415-ad7f-4a09-9313-5229d4ce6a50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\HDF_OBJS">
+      <UniqueIdentifier>{fbd19430-b833-49f3-aa00-aad281f23178}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CL1MP_OBJS">
+      <UniqueIdentifier>{b35ec951-9b27-4f54-b846-f749fb18412c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\PHASTINPUT_OBJS">
+      <UniqueIdentifier>{42755120-3bc6-41cb-9d9e-16436a12cae6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{331d9e3c-c850-4516-a7ad-36f0bd6ca8b0}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{499f1dbc-fe10-4d7b-a3e4-d8eccc9840fe}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\phast_main.cpp">
+      <Filter>Source Files\COMMON_COBJS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gzstream.cxx">
+      <Filter>Source Files\COMMON_CXXOBJS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Reaction_module.cxx">
+      <Filter>Source Files\COMMON_CXXOBJS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RM_interface.cpp">
+      <Filter>Source Files\COMMON_CXXOBJS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\KDtree\KDtree.cpp">
+      <Filter>Source Files\PHASTINPUT_OBJS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\KDtree\kdtree2.cpp">
+      <Filter>Source Files\PHASTINPUT_OBJS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\KDtree\Point.cpp">
+      <Filter>Source Files\PHASTINPUT_OBJS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\workersubs.cpp">
+      <Filter>Source Files\MERGE_OBJS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\hdf.cpp">
+      <Filter>Source Files\HDF_OBJS</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="phast.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\gzstream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Reaction_module.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RM_interface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
