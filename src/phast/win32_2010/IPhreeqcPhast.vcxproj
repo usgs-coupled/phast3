@@ -101,8 +101,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Bscmake>
     <PostBuildEvent>
-      <Command>IF NOT EXIST lib mkdir lib
-copy "$(TargetDir)$(TargetName).lib" "lib\$(TargetName).lib"
+      <Command>
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
