@@ -3695,27 +3695,27 @@ struct otri *t;
   struct osub printsh;
   vertex printvertex;
 
-  printf("triangle x"PRIdS" with orientation %d:\n", (UNSIGNED_LONG) t->tri,
+  printf("triangle x"PRIdS" with orientation %d:\n", (int)(UNSIGNED_LONG) t->tri,
          t->orient);
   decode(t->tri[0], printtri);
   if (printtri.tri == m->dummytri) {
     printf("    [0] = Outer space\n");
   } else {
-    printf("    [0] = x"PRIdS"  %d\n", (UNSIGNED_LONG) printtri.tri,
+    printf("    [0] = x"PRIdS"  %d\n", (int)(UNSIGNED_LONG) printtri.tri,
            printtri.orient);
   }
   decode(t->tri[1], printtri);
   if (printtri.tri == m->dummytri) {
     printf("    [1] = Outer space\n");
   } else {
-    printf("    [1] = x"PRIdS"  %d\n", (UNSIGNED_LONG) printtri.tri,
+    printf("    [1] = x"PRIdS"  %d\n", (int)(UNSIGNED_LONG) printtri.tri,
            printtri.orient);
   }
   decode(t->tri[2], printtri);
   if (printtri.tri == m->dummytri) {
     printf("    [2] = Outer space\n");
   } else {
-    printf("    [2] = x"PRIdS"  %d\n", (UNSIGNED_LONG) printtri.tri,
+    printf("    [2] = x"PRIdS"  %d\n", (int)(UNSIGNED_LONG) printtri.tri,
            printtri.orient);
   }
 
@@ -3724,37 +3724,37 @@ struct otri *t;
     printf("    Origin[%d] = NULL\n", (t->orient + 1) % 3 + 3);
   else
     printf("    Origin[%d] = x"PRIdS"  (%.12g, %.12g)\n",
-           (t->orient + 1) % 3 + 3, (UNSIGNED_LONG) printvertex,
+           (t->orient + 1) % 3 + 3, (int)(UNSIGNED_LONG) printvertex,
            printvertex[0], printvertex[1]);
   dest(*t, printvertex);
   if (printvertex == (vertex) NULL)
     printf("    Dest  [%d] = NULL\n", (t->orient + 2) % 3 + 3);
   else
     printf("    Dest  [%d] = x"PRIdS"  (%.12g, %.12g)\n",
-           (t->orient + 2) % 3 + 3, (UNSIGNED_LONG) printvertex,
+           (t->orient + 2) % 3 + 3, (int)(UNSIGNED_LONG) printvertex,
            printvertex[0], printvertex[1]);
   apex(*t, printvertex);
   if (printvertex == (vertex) NULL)
     printf("    Apex  [%d] = NULL\n", t->orient + 3);
   else
     printf("    Apex  [%d] = x"PRIdS"  (%.12g, %.12g)\n",
-           t->orient + 3, (UNSIGNED_LONG) printvertex,
+           t->orient + 3, (int)(UNSIGNED_LONG) printvertex,
            printvertex[0], printvertex[1]);
 
   if (b->usesegments) {
     sdecode(t->tri[6], printsh);
     if (printsh.ss != m->dummysub) {
-      printf("    [6] = x"PRIdS"  %d\n", (UNSIGNED_LONG) printsh.ss,
+      printf("    [6] = x"PRIdS"  %d\n", (int)(UNSIGNED_LONG) printsh.ss,
              printsh.ssorient);
     }
     sdecode(t->tri[7], printsh);
     if (printsh.ss != m->dummysub) {
-      printf("    [7] = x"PRIdS"  %d\n", (UNSIGNED_LONG) printsh.ss,
+      printf("    [7] = x"PRIdS"  %d\n", (int)(UNSIGNED_LONG) printsh.ss,
              printsh.ssorient);
     }
     sdecode(t->tri[8], printsh);
     if (printsh.ss != m->dummysub) {
-      printf("    [8] = x"PRIdS"  %d\n", (UNSIGNED_LONG) printsh.ss,
+      printf("    [8] = x"PRIdS"  %d\n", (int)(UNSIGNED_LONG) printsh.ss,
              printsh.ssorient);
     }
   }
@@ -3790,19 +3790,19 @@ struct osub *s;
   vertex printvertex;
 
   printf("subsegment x"PRIdS" with orientation %d and mark %d:\n",
-         (UNSIGNED_LONG) s->ss, s->ssorient, mark(*s));
+         (int)(UNSIGNED_LONG) s->ss, s->ssorient, mark(*s));
   sdecode(s->ss[0], printsh);
   if (printsh.ss == m->dummysub) {
     printf("    [0] = No subsegment\n");
   } else {
-    printf("    [0] = x"PRIdS"  %d\n", (UNSIGNED_LONG) printsh.ss,
+    printf("    [0] = x"PRIdS"  %d\n", (int)(UNSIGNED_LONG) printsh.ss,
            printsh.ssorient);
   }
   sdecode(s->ss[1], printsh);
   if (printsh.ss == m->dummysub) {
     printf("    [1] = No subsegment\n");
   } else {
-    printf("    [1] = x"PRIdS"  %d\n", (UNSIGNED_LONG) printsh.ss,
+    printf("    [1] = x"PRIdS"  %d\n", (int)(UNSIGNED_LONG) printsh.ss,
            printsh.ssorient);
   }
 
@@ -3811,28 +3811,28 @@ struct osub *s;
     printf("    Origin[%d] = NULL\n", 2 + s->ssorient);
   else
     printf("    Origin[%d] = x"PRIdS"  (%.12g, %.12g)\n",
-           2 + s->ssorient, (UNSIGNED_LONG) printvertex,
+           2 + s->ssorient, (int)(UNSIGNED_LONG) printvertex,
            printvertex[0], printvertex[1]);
   sdest(*s, printvertex);
   if (printvertex == (vertex) NULL)
     printf("    Dest  [%d] = NULL\n", 3 - s->ssorient);
   else
     printf("    Dest  [%d] = x"PRIdS"  (%.12g, %.12g)\n",
-           3 - s->ssorient, (UNSIGNED_LONG) printvertex,
+           3 - s->ssorient, (int)(UNSIGNED_LONG) printvertex,
            printvertex[0], printvertex[1]);
 
   decode(s->ss[6], printtri);
   if (printtri.tri == m->dummytri) {
     printf("    [6] = Outer space\n");
   } else {
-    printf("    [6] = x"PRIdS"  %d\n", (UNSIGNED_LONG) printtri.tri,
+    printf("    [6] = x"PRIdS"  %d\n", (int)(UNSIGNED_LONG) printtri.tri,
            printtri.orient);
   }
   decode(s->ss[7], printtri);
   if (printtri.tri == m->dummytri) {
     printf("    [7] = Outer space\n");
   } else {
-    printf("    [7] = x"PRIdS"  %d\n", (UNSIGNED_LONG) printtri.tri,
+    printf("    [7] = x"PRIdS"  %d\n", (int)(UNSIGNED_LONG) printtri.tri,
            printtri.orient);
   }
 
@@ -3841,14 +3841,14 @@ struct osub *s;
     printf("    Segment origin[%d] = NULL\n", 4 + s->ssorient);
   else
     printf("    Segment origin[%d] = x"PRIdS"  (%.12g, %.12g)\n",
-           4 + s->ssorient, (UNSIGNED_LONG) printvertex,
+           4 + s->ssorient, (int)(UNSIGNED_LONG) printvertex,
            printvertex[0], printvertex[1]);
   segdest(*s, printvertex);
   if (printvertex == (vertex) NULL)
     printf("    Segment dest  [%d] = NULL\n", 5 - s->ssorient);
   else
     printf("    Segment dest  [%d] = x"PRIdS"  (%.12g, %.12g)\n",
-           5 - s->ssorient, (UNSIGNED_LONG) printvertex,
+           5 - s->ssorient, (int)(UNSIGNED_LONG) printvertex,
            printvertex[0], printvertex[1]);
 }
 

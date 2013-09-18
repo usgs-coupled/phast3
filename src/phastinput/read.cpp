@@ -1237,7 +1237,7 @@ read_grid(void)
 	double *temp;
 	char *ptr;
 	char token[MAX_LENGTH];
-	struct grid *grid_ptr;
+	struct grid *grid_ptr=NULL;
 
 	int return_value, opt, opt_save;
 	char *next_char;
