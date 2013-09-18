@@ -35,36 +35,36 @@ LOADFLAGS+=$(call ld-option, -Wl$(comma)--hash-style=sysv)
 #LOADFLAGS+= -lefence
 
 FILES=\
-	accumulate.c \
+	accumulate.cpp \
 	ArcRaster.cpp \
 	BC_info.cpp \
-	check.c \
+	check.cpp \
 	Cube.cpp \
 	Data_source.cpp \
 	Domain.cpp \
 	Drain.cpp \
 	Exterior_cell.cpp \
 	Filedata.cpp \
-	getopt.c \
-	gpc.c \
-	main.c \
-	message.c \
+	getopt.cpp \
+	gpc.cpp \
+	main.cpp \
+	message.cpp \
 	PHAST_Transform.cpp \
 	PHAST_polygon.cpp \
 	Point.cpp \
 	Polygon_tree.cpp \
 	Polyhedron.cpp \
 	Prism.cpp \
-	read.c \
-	rivers.c \
-	structures.c \
-	time.c \
+	read.cpp \
+	rivers.cpp \
+	structures.cpp \
+	time.cpp \
 	unit_impl.cxx \
 	units_impl.cxx \
-	utilities.c \
+	utilities.cpp \
 	Wedge.cpp \
-	wells.c \
-	write.c  \
+	wells.cpp \
+	write.cpp  \
 	XYZfile.cpp \
 	XYZTfile.cpp \
 	zone.cpp \
@@ -138,23 +138,23 @@ KDTREE_OBJECTS= \
 $(PROGRAM): $(ALL_OBJECTS)  
 	$(CC) -o $(PROGRAM) $(ALL_OBJECTS) $(LOADFLAGS) 
 
-accumulate.o: accumulate.c hstinpt.h gpc.h gpc_helper.h \
+accumulate.o: accumulate.cpp hstinpt.h gpc.h gpc_helper.h \
   KDtree/Cell_Face.h index_range.h zone.h property.h Polyhedron.h \
   KDtree/Point.h KDtree/Cell_Face.h PHAST_Transform.h Exterior_cell.h \
   BC_info.h Mix.h River.h Drain.h Utilities.h unit_impl.h timepi.h \
   inputproto.h wphast.h message.h Prism.h Data_source.h PHAST_polygon.h \
   Polygon_tree.h KDtree/KDtree.h KDtree/kdtree2.hpp KDtree/Point.h Cube.h \
   Wedge.h Domain.h Zone_budget.h Filedata.h XYZTfile.h
-check.o: check.c hstinpt.h gpc.h gpc_helper.h KDtree/Cell_Face.h \
+check.o: check.cpp hstinpt.h gpc.h gpc_helper.h KDtree/Cell_Face.h \
   index_range.h zone.h property.h Polyhedron.h KDtree/Point.h \
   KDtree/Cell_Face.h PHAST_Transform.h Exterior_cell.h BC_info.h Mix.h \
   River.h Drain.h Utilities.h unit_impl.h timepi.h inputproto.h wphast.h
-getopt.o: getopt.c
-gpc.o: gpc.c gpc.h gpc_helper.h KDtree/Cell_Face.h wphast.h
-gpc_helper.o: gpc_helper.c message.h gpc.h gpc_helper.h \
+getopt.o: getopt.cpp
+gpc.o: gpc.cpp gpc.h gpc_helper.h KDtree/Cell_Face.h wphast.h
+gpc_helper.o: gpc_helper.cpp message.h gpc.h gpc_helper.h \
   KDtree/Cell_Face.h KDtree/Point.h KDtree/Cell_Face.h Utilities.h \
   PHAST_polygon.h zone.h PHAST_Transform.h wphast.h
-main.o: main.c hstinpt.h gpc.h gpc_helper.h KDtree/Cell_Face.h \
+main.o: main.cpp hstinpt.h gpc.h gpc_helper.h KDtree/Cell_Face.h \
   index_range.h zone.h property.h Polyhedron.h KDtree/Point.h \
   KDtree/Cell_Face.h PHAST_Transform.h Exterior_cell.h BC_info.h Mix.h \
   River.h Drain.h Utilities.h unit_impl.h timepi.h inputproto.h wphast.h \
@@ -164,45 +164,45 @@ main.o: main.c hstinpt.h gpc.h gpc_helper.h KDtree/Cell_Face.h \
   NNInterpolator/nn.h KDtree/KDtree.h KDtree/kdtree2.hpp KDtree/Point.h \
   ArcRaster.h Filedata.h Data_source.h PHAST_polygon.h Polygon_tree.h \
   Zone_budget.h
-message.o: message.c hstinpt.h gpc.h gpc_helper.h KDtree/Cell_Face.h \
+message.o: message.cpp hstinpt.h gpc.h gpc_helper.h KDtree/Cell_Face.h \
   index_range.h zone.h property.h Polyhedron.h KDtree/Point.h \
   KDtree/Cell_Face.h PHAST_Transform.h Exterior_cell.h BC_info.h Mix.h \
   River.h Drain.h Utilities.h unit_impl.h timepi.h inputproto.h wphast.h \
   message.h
-read.o: read.c hstinpt.h gpc.h gpc_helper.h KDtree/Cell_Face.h \
+read.o: read.cpp hstinpt.h gpc.h gpc_helper.h KDtree/Cell_Face.h \
   index_range.h zone.h property.h Polyhedron.h KDtree/Point.h \
   KDtree/Cell_Face.h PHAST_Transform.h Exterior_cell.h BC_info.h Mix.h \
   River.h Drain.h Utilities.h unit_impl.h timepi.h inputproto.h wphast.h \
   message.h Cube.h Wedge.h Prism.h Data_source.h PHAST_polygon.h \
   Polygon_tree.h KDtree/KDtree.h KDtree/kdtree2.hpp KDtree/Point.h \
   XYZfile.h Filedata.h Zone_budget.h
-rivers.o: rivers.c hstinpt.h gpc.h gpc_helper.h KDtree/Cell_Face.h \
+rivers.o: rivers.cpp hstinpt.h gpc.h gpc_helper.h KDtree/Cell_Face.h \
   index_range.h zone.h property.h Polyhedron.h KDtree/Point.h \
   KDtree/Cell_Face.h PHAST_Transform.h Exterior_cell.h BC_info.h Mix.h \
   River.h Drain.h Utilities.h unit_impl.h timepi.h inputproto.h wphast.h \
   message.h
-structures.o: structures.c hstinpt.h gpc.h gpc_helper.h \
+structures.o: structures.cpp hstinpt.h gpc.h gpc_helper.h \
   KDtree/Cell_Face.h index_range.h zone.h property.h Polyhedron.h \
   KDtree/Point.h KDtree/Cell_Face.h PHAST_Transform.h Exterior_cell.h \
   BC_info.h Mix.h River.h Drain.h Utilities.h unit_impl.h timepi.h \
   inputproto.h wphast.h Data_source.h PHAST_polygon.h Polygon_tree.h \
   KDtree/KDtree.h KDtree/kdtree2.hpp KDtree/Point.h
-time.o: time.c hstinpt.h gpc.h gpc_helper.h KDtree/Cell_Face.h \
+time.o: time.cpp hstinpt.h gpc.h gpc_helper.h KDtree/Cell_Face.h \
   index_range.h zone.h property.h Polyhedron.h KDtree/Point.h \
   KDtree/Cell_Face.h PHAST_Transform.h Exterior_cell.h BC_info.h Mix.h \
   River.h Drain.h Utilities.h unit_impl.h timepi.h inputproto.h wphast.h \
   Filedata.h Data_source.h PHAST_polygon.h Polygon_tree.h KDtree/KDtree.h \
   KDtree/kdtree2.hpp KDtree/Point.h XYZTfile.h
-utilities.o: utilities.c message.h hstinpt.h gpc.h gpc_helper.h \
+utilities.o: utilities.cpp message.h hstinpt.h gpc.h gpc_helper.h \
   KDtree/Cell_Face.h index_range.h zone.h property.h Polyhedron.h \
   KDtree/Point.h KDtree/Cell_Face.h PHAST_Transform.h Exterior_cell.h \
   BC_info.h Mix.h River.h Drain.h Utilities.h unit_impl.h timepi.h \
   inputproto.h wphast.h
-wells.o: wells.c hstinpt.h gpc.h gpc_helper.h KDtree/Cell_Face.h \
+wells.o: wells.cpp hstinpt.h gpc.h gpc_helper.h KDtree/Cell_Face.h \
   index_range.h zone.h property.h Polyhedron.h KDtree/Point.h \
   KDtree/Cell_Face.h PHAST_Transform.h Exterior_cell.h BC_info.h Mix.h \
   River.h Drain.h Utilities.h unit_impl.h timepi.h inputproto.h wphast.h
-write.o: write.c hstinpt.h gpc.h gpc_helper.h KDtree/Cell_Face.h \
+write.o: write.cpp hstinpt.h gpc.h gpc_helper.h KDtree/Cell_Face.h \
   index_range.h zone.h property.h Polyhedron.h KDtree/Point.h \
   KDtree/Cell_Face.h PHAST_Transform.h Exterior_cell.h BC_info.h Mix.h \
   River.h Drain.h Utilities.h unit_impl.h timepi.h inputproto.h wphast.h \
@@ -283,33 +283,33 @@ Zone_budget.o: Zone_budget.cpp Zone_budget.h Polyhedron.h KDtree/Point.h \
   PHAST_Transform.h message.h
 zone.o: zone.cpp zone.h gpc.h gpc_helper.h KDtree/Cell_Face.h \
   KDtree/Point.h KDtree/Cell_Face.h
-delaunay.o: NNInterpolator/delaunay.c NNInterpolator/triangle.h \
+delaunay.o: NNInterpolator/delaunay.cpp NNInterpolator/triangle.h \
   NNInterpolator/istack.h NNInterpolator/nan.h NNInterpolator/delaunay.h \
   NNInterpolator/nn.h NNInterpolator/nn_internal.h NNInterpolator/config.h
-hash.o: NNInterpolator/hash.c NNInterpolator/hash.h \
+hash.o: NNInterpolator/hash.cpp NNInterpolator/hash.h \
   NNInterpolator/config.h
-istack.o: NNInterpolator/istack.c NNInterpolator/istack.h
-lpi.o: NNInterpolator/lpi.c NNInterpolator/nan.h \
+istack.o: NNInterpolator/istack.cpp NNInterpolator/istack.h
+lpi.o: NNInterpolator/lpi.cpp NNInterpolator/nan.h \
   NNInterpolator/delaunay.h NNInterpolator/nn.h \
   NNInterpolator/nn_internal.h
-minell.o: NNInterpolator/minell.c NNInterpolator/config.h \
+minell.o: NNInterpolator/minell.cpp NNInterpolator/config.h \
   NNInterpolator/nan.h NNInterpolator/minell.h
-nnai.o: NNInterpolator/nnai.c NNInterpolator/nan.h \
+nnai.o: NNInterpolator/nnai.cpp NNInterpolator/nan.h \
   NNInterpolator/delaunay.h NNInterpolator/nn.h \
   NNInterpolator/nn_internal.h
-nncommon.o: NNInterpolator/nncommon.c NNInterpolator/config.h \
+nncommon.o: NNInterpolator/nncommon.cpp NNInterpolator/config.h \
   NNInterpolator/delaunay.h NNInterpolator/nn.h NNInterpolator/nan.h \
   NNInterpolator/nn_internal.h NNInterpolator/version.h
-nncommon-vulnerable.o: NNInterpolator/nncommon-vulnerable.c \
+nncommon-vulnerable.o: NNInterpolator/nncommon-vulnerable.cpp \
   NNInterpolator/nn.h NNInterpolator/delaunay.h NNInterpolator/nan.h \
   NNInterpolator/nn_internal.h NNInterpolator/config.h
-nnpi.o: NNInterpolator/nnpi.c NNInterpolator/nan.h NNInterpolator/hash.h \
+nnpi.o: NNInterpolator/nnpi.cpp NNInterpolator/nan.h NNInterpolator/hash.h \
   NNInterpolator/istack.h NNInterpolator/delaunay.h NNInterpolator/nn.h \
   NNInterpolator/nn_internal.h NNInterpolator/config.h
-preader.o: NNInterpolator/preader.c NNInterpolator/config.h \
+preader.o: NNInterpolator/preader.cpp NNInterpolator/config.h \
   NNInterpolator/nan.h NNInterpolator/delaunay.h NNInterpolator/nn.h \
   NNInterpolator/nn_internal.h NNInterpolator/preader.h
-triangle.o: NNInterpolator/triangle.c NNInterpolator/config.h
+triangle.o: NNInterpolator/triangle.cpp NNInterpolator/config.h
 NNInterpolator.o: NNInterpolator/NNInterpolator.cpp \
   NNInterpolator/../KDtree/Point.h NNInterpolator/../KDtree/Cell_Face.h \
   NNInterpolator/config.h NNInterpolator/nan.h NNInterpolator/../message.h \
@@ -321,7 +321,7 @@ NNInterpolator.o: NNInterpolator/NNInterpolator.cpp \
   NNInterpolator/../UniqueMap.h NNInterpolator/nn.h
 dbfopen.o: Shapefiles/dbfopen.c Shapefiles/shapefil.h
 shpopen.o: Shapefiles/shpopen.c Shapefiles/shapefil.h
-shptree.o: Shapefiles/shptree.c Shapefiles/shapefil.h
+shptree.o: Shapefiles/shptree.cpp Shapefiles/shapefil.h
 Shapefile.o: Shapefiles/Shapefile.cpp Shapefiles/../zone.h \
   Shapefiles/../gpc.h Shapefiles/../gpc_helper.h \
   Shapefiles/../KDtree/Cell_Face.h Shapefiles/Shapefile.h \
