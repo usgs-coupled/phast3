@@ -156,8 +156,8 @@ openmpi_intel_64_debug:
 # =============================================================================
 
 SRC              = ../IPHreeqcPhast/IPhreeqc/phreeqcpp/phreeqc
-PHREEQC_INCLUDES = -I.. -I../IPhreeqcPhast -I../IPhreeqcPhast/IPhreeqc -I../IPhreeqcPhast/IPhreeqc/phreeqcpp -I../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc
-PHREEQC_VPATH    = ..:../PhastFortran:../IPhreeqcPhast:../IPhreeqcPhast/IPhreeqc:../IPhreeqcPhast/IPhreeqc/phreeqcpp:../IPhreeqcPhast/IPhreeqc/phreeqcpp/phreeqc:../KDtree
+PHREEQC_INCLUDES = -I.. -I../IPhreeqcPhast -I../IPhreeqcPhast/IPhreeqc -I../IPhreeqcPhast/IPhreeqc/phreeqcpp 
+PHREEQC_VPATH    = ..:../PhastFortran:../IPhreeqcPhast:../IPhreeqcPhast/IPhreeqc:../IPhreeqcPhast/IPhreeqc/phreeqcpp:../KDtree
 
 .SUFFIXES : .o .f .F90 .f90 .c .cxx .cpp
 
@@ -623,7 +623,7 @@ fwrap.o \
 IPhreeqc.o \
 IPhreeqcLib.o \
 pp_sys.o \
-SelectedOutput.o \
+CSelectedOutput.o \
 Var.o \
 \
 ChartHandler.o \
@@ -653,6 +653,7 @@ Pressure.o \
 Reaction.o \
 ReadClass.o \
 runner.o \
+SelectedOutput.o \
 Solution.o \
 SolutionIsotope.o \
 SSassemblage.o \
@@ -666,6 +667,7 @@ Surface.o \
 System.o \
 Temperature.o \
 Use.o \
+UserPunch.o \
 Utils.o \
 \
 advection.o \
