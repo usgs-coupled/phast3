@@ -20,7 +20,7 @@ SUBROUTINE error3
   INTEGER :: i, ic, iis, iwel, l, l2, ls, m, m1, mt, warnflag
   REAL(KIND=kdp) :: udeltim
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id$'
+  CHARACTER(LEN=80) :: ident_string='$Id: error3.f90 8039 2013-09-16 16:48:13Z dlpark $'
   !     ------------------------------------------------------------------
   !...
   ! ... Specified pressure and unconfined b.c.

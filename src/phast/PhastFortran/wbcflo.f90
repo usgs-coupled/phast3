@@ -24,7 +24,7 @@ SUBROUTINE wbcflo
   INTEGER, PARAMETER :: icxm=3, icxp=4, icym=2, icyp=5, iczm=1, iczp=6
   CHARACTER(LEN=130) :: logline1, logline2
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id$'
+  CHARACTER(LEN=80) :: ident_string='$Id: wbcflo.f90 4973 2010-12-14 23:01:39Z dlpark $'
   !     ------------------------------------------------------------------
   !...
   iwel=1

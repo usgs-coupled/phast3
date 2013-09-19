@@ -14,7 +14,7 @@ SUBROUTINE update_print_flags
   IMPLICIT NONE
   REAL(KIND=kdp) :: utime, udeltim, utimchg
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id$'
+  CHARACTER(LEN=80) :: ident_string='$Id: update_print_flags.f90 3780 2009-11-18 21:28:13Z dlpark $'
   !     ------------------------------------------------------------------
   !...
   utime=cnvtmi*time*one_plus_eps

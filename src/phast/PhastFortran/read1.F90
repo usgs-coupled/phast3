@@ -26,7 +26,7 @@ SUBROUTINE read1
   INTEGER, DIMENSION(21) :: array_bcst_i
   REAL(KIND=kdp), DIMENSION(1) :: array_bcst_r
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id$'
+  CHARACTER(LEN=80) :: ident_string='$Id: read1.F90 7061 2012-11-01 14:57:37Z dlpark $'
   ! ------------------------------------------------------------------------
   !...
   ! ... Pre-read of data file to strip out comments

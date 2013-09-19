@@ -38,7 +38,7 @@ SUBROUTINE wellsc_ss_flow
   INTEGER, DIMENSION(:), ALLOCATABLE :: jwell
   CHARACTER(LEN=130) :: logline1, logline2, logline3, logline4, logline5, logline6
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id$'
+  CHARACTER(LEN=80) :: ident_string='$Id: wellsc_ss_flow.f90 4973 2010-12-14 23:01:39Z dlpark $'
   !     ------------------------------------------------------------------
   !...
 !!$  erflg=.FALSE.

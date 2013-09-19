@@ -59,7 +59,7 @@ SUBROUTINE write2_1
   !!  type(rbc_indices), dimension(:), pointer :: ptr
   CHARACTER(LEN=130) :: logline1, logline2, logline3, logline4
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id$'
+  CHARACTER(LEN=80) :: ident_string='$Id: write2_1.f90 5050 2011-01-13 15:51:53Z dlpark $'
   !     ------------------------------------------------------------------
   nsa = MAX(ns,1)
   ! ... Allocate temporary arrays for output: mct_m and local
@@ -1137,7 +1137,7 @@ CONTAINS
     !
     INTEGER :: imod
     ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id$'
+    CHARACTER(LEN=80) :: ident_string='$Id: write2_1.f90 5050 2011-01-13 15:51:53Z dlpark $'
     !     ------------------------------------------------------------------
     !...
     imod = MOD(m,ni)

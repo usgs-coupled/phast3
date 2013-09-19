@@ -1,4 +1,4 @@
-! ... $Id$
+! ... $Id: hdf_f.F90 7045 2012-10-29 23:16:27Z dlpark $
 SUBROUTINE hdf_write_invariant(l_mpi_myself)
   ! ... Preconditions:
   ! ...   Must be called before first call to EQUILIBRATE

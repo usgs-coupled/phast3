@@ -30,7 +30,7 @@ SUBROUTINE prchar(ndim,carray,lprnt,fu,nnoppr)
        npr3, nxpr, nypr, nzpr
   LOGICAL :: prwin
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id$'
+  CHARACTER(LEN=80) :: ident_string='$Id: prchar.f90 3377 2009-02-26 05:28:10Z charlton $'
   !     ------------------------------------------------------------------
   !...
   iform = blank

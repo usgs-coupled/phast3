@@ -7,7 +7,7 @@ SUBROUTINE errprt(ie1,ie2)
   INTEGER :: ie
   CHARACTER(LEN=130) :: erline
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id$'
+  CHARACTER(LEN=80) :: ident_string='$Id: errprt.f90 5031 2011-01-06 23:19:03Z klkipp $'
   !     ------------------------------------------------------------------
   !...
   DO  ie=ie1,ie2

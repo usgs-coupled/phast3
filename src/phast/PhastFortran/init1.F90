@@ -22,7 +22,7 @@ SUBROUTINE init1
   INTEGER :: a_err, iis, nsa
   !CHARACTER(LEN=32), DIMENSION(:), ALLOCATABLE :: ucomp_name
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id$'
+  CHARACTER(LEN=80) :: ident_string='$Id: init1.F90 7067 2012-11-02 20:22:09Z dlpark $'
   !     ------------------------------------------------------------------
   !...
   IF (cylind) ny = 1  

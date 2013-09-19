@@ -35,7 +35,7 @@ SUBROUTINE init3
        l, ls, m, m1, mt, nsa, tag
   !$$  REAL(KIND=kdp), PARAMETER :: nodat = bgreal*1.e-15_kdp
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id$'
+  CHARACTER(LEN=80) :: ident_string='$Id: init3.F90 7061 2012-11-01 14:57:37Z dlpark $'
   !     ------------------------------------------------------------------
   !...
   !  ! ... Convert the data to S.I. time units if necessary

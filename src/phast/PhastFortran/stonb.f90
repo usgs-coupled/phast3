@@ -9,7 +9,7 @@ SUBROUTINE stonb(c,j,incj)
   CHARACTER(LEN=1), PARAMETER :: sp=' '
   INTEGER :: ncol
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id$'
+  CHARACTER(LEN=80) :: ident_string='$Id: stonb.f90 3377 2009-02-26 05:28:10Z charlton $'
   !     ------------------------------------------------------------------
   !...
   ncol = len(c)

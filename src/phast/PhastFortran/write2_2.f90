@@ -51,7 +51,7 @@ SUBROUTINE write2_2
   INTEGER :: da_err
   INTEGER :: a_err
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id$'
+  CHARACTER(LEN=80) :: ident_string='$Id: write2_2.f90 6993 2012-09-27 20:45:41Z dlpark $'
   !     ------------------------------------------------------------------
   !...
   ALLOCATE (lprnt3(nxyz),  &

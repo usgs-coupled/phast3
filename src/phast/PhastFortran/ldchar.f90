@@ -15,7 +15,7 @@ SUBROUTINE ldchar(indx1,indx2,mfrac,ip,cmask,mask,indxdim)
   CHARACTER(LEN=3), DIMENSION(2) :: cindx
   INTEGER :: ib, id, jc, m
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id$'
+  CHARACTER(LEN=80) :: ident_string='$Id: ldchar.f90 3377 2009-02-26 05:28:10Z charlton $'
   !     ------------------------------------------------------------------
   !...
   DO  m=1,nxyz
