@@ -29,7 +29,7 @@ SUBROUTINE simulate_ss_flow
   DO
      CALL coeff_flow
 !$$    CALL write4
-     CALL rhsn_ss_flow
+     CALL rhsn_flow
      ! ... Read the transient data, if first pass
      IF(itime == 0) THEN
         CALL read3

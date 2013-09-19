@@ -1,4 +1,4 @@
-! ... $Id: init3_xfer.F90,v 1.5 2011/01/29 00:18:54 klkipp Exp klkipp $
+! ... $Id: init3_xfer.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $
 SUBROUTINE init3_distribute
   ! ... Send or receive data from transient read3 group 
   USE mcc              ! ... get sizes from modules

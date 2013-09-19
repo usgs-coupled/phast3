@@ -28,7 +28,7 @@ CONTAINS
     REAL(KIND=kdp) :: uva, va7i
     INTEGER :: i, ibn, ibnrow, ic, ie, irn, jbncol, jc, joff, jrncol, mbnrow, nenvl
     ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id: solver_direct_mod.f90,v 1.2 2011/01/06 23:10:03 klkipp Exp $'
+    CHARACTER(LEN=80) :: ident_string='$Id: solver_direct_mod.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $'
     REAL(KIND=kdp), DIMENSION(:), TARGET, INTENT(IN OUT) :: rhs
     REAL(KIND=kdp), DIMENSION(:), POINTER :: rhs_b
     !     ------------------------------------------------------------------
@@ -116,7 +116,7 @@ CONTAINS
     REAL(KIND=kdp) :: uva, va7i
     INTEGER :: i, ibn, ibnrow, ic, ie, irn, jbncol, jc, joff, jrncol, mbnrow, nenvl
     ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id: solver_direct_mod.f90,v 1.2 2011/01/06 23:10:03 klkipp Exp $'
+    CHARACTER(LEN=80) :: ident_string='$Id: solver_direct_mod.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $'
     !     ------------------------------------------------------------------
     !...
     nenvl=ipenv(nbn+1)-1
@@ -204,7 +204,7 @@ CONTAINS
     INTEGER, DIMENSION(:), POINTER :: ipenvv
     REAL(KIND=kdp), DIMENSION(:), POINTER :: envlv, envutv, diagv
     ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id: solver_direct_mod.f90,v 1.2 2011/01/06 23:10:03 klkipp Exp $'
+    CHARACTER(LEN=80) :: ident_string='$Id: solver_direct_mod.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $'
     !     ------------------------------------------------------------------
     !...
     count=0
@@ -263,7 +263,7 @@ CONTAINS
     REAL(KIND=kdp) :: s  
     INTEGER :: i, iband, ifirst, k, kstop, kstrt, l, last  
     ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id: solver_direct_mod.f90,v 1.2 2011/01/06 23:10:03 klkipp Exp $'
+    CHARACTER(LEN=80) :: ident_string='$Id: solver_direct_mod.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $'
     !     ------------------------------------------------------------------
     !...
     ! ... Find the position of the first non-zero in rhs and put it in IFIRST
@@ -314,7 +314,7 @@ CONTAINS
     REAL(KIND=kdp) :: s
     INTEGER :: i, iband, ifirst, k, kstop, kstrt, l, last
     ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id: solver_direct_mod.f90,v 1.2 2011/01/06 23:10:03 klkipp Exp $'
+    CHARACTER(LEN=80) :: ident_string='$Id: solver_direct_mod.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $'
     !     ------------------------------------------------------------------
     !...
     ! ... Find the position of the first non-zero in rhs and put it in IFIRS
@@ -364,7 +364,7 @@ CONTAINS
     REAL(KIND=kdp) :: s
     INTEGER :: i, iband, k, kstop, kstrt, l
     ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id: solver_direct_mod.f90,v 1.2 2011/01/06 23:10:03 klkipp Exp $'
+    CHARACTER(LEN=80) :: ident_string='$Id: solver_direct_mod.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $'
     !     ------------------------------------------------------------------
     !...
     i=neqn+1

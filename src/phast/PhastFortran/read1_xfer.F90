@@ -11,7 +11,7 @@ SUBROUTINE read1_distribute
   INTEGER, DIMENSION(21) :: array_bcst_i
   REAL(KIND=kdp), DIMENSION(1:1) :: array_bcst_r
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: read1_xfer.F90,v 1.5 2011/01/29 00:18:54 klkipp Exp klkipp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: read1_xfer.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $'
   ! ------------------------------------------------------------------------
   !...
   ! ... send the read1 parameter data
