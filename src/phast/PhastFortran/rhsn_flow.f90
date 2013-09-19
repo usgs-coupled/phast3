@@ -118,7 +118,6 @@ SUBROUTINE rhsn_flow
               qfbc = denfbc(ls)*qn*ufrac
            END IF
            rf(m) = rf(m) + ufdt0*qfbc
-           END DO
         END DO
      END DO
   END IF

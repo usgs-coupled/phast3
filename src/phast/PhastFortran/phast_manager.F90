@@ -333,7 +333,7 @@ SUBROUTINE phast_manager
 
             ! .... Send transient flow to workers
             IF(.NOT.steady_flow) THEN
-                CALL asmslp
+                CALL asmslp_flow
                 CALL time_parallel(6)
                 CALL flow_distribute
                 CALL time_parallel(7)
