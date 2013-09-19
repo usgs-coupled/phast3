@@ -52,7 +52,7 @@ SUBROUTINE simulate_ss_flow
      END IF
 20   CALL timestep_ss_flow
      IF(.NOT.solute) CALL write6
-     CALL asmslp
+     CALL asmslp_flow
      CALL sumcal_ss_flow
      IF(tsfail .AND. .NOT.errexe) GO TO 20
      CALL write5_ss_flow
