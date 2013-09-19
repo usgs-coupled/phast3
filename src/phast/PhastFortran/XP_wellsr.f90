@@ -31,7 +31,7 @@ SUBROUTINE XP_wellsr_thread(xp)
   INTEGER my_itime
   CHARACTER(LEN=130) :: logline1, logline2, logline3, logline4, logline5, logline6
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: XP_wellsr.f90,v 1.3 2011/01/29 00:18:54 klkipp Exp klkipp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: XP_wellsr.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $'
   INTEGER nshut
   !     ------------------------------------------------------------------
   !...
@@ -593,7 +593,7 @@ SUBROUTINE XP_wellsr(xp)
   INTEGER my_itime
   CHARACTER(LEN=130) :: logline1, logline2, logline3, logline4, logline5, logline6
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: XP_wellsr.f90,v 1.3 2011/01/29 00:18:54 klkipp Exp klkipp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: XP_wellsr.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $'
   !     ------------------------------------------------------------------
   !...
   my_itime = itime - 1          ! ... local time index

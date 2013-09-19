@@ -16,7 +16,7 @@ SUBROUTINE terminate_phast_worker
   !
   CHARACTER(LEN=130) :: logline1
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: terminate_phast_worker.F90,v 1.2 2011/01/29 00:18:54 klkipp Exp klkipp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: terminate_phast_worker.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $'
   !     ------------------------------------------------------------------
   !...
 !!$  IF (mpi_myself == 0) THEN   *** this processor is never root

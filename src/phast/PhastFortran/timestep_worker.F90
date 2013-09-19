@@ -20,7 +20,7 @@ SUBROUTINE timestep_worker
   INTEGER, DIMENSION(2) :: array_recv_i
   REAL(KIND=kdp), DIMENSION(2) :: array_recv_r
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: timestep_worker.F90,v 1.1 2011/01/29 00:18:54 klkipp Exp klkipp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: timestep_worker.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $'
   !     ------------------------------------------------------------------
   !...
   ! ... Update time step counter

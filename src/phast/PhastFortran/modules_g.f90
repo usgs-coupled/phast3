@@ -1,6 +1,6 @@
 ! ... Module files used for phast for definition of data groups
 ! ... These modules are used by both manager and worker programs
-! ... $Id: modules_g.f90,v 1.6 2011/01/29 00:18:54 klkipp Exp klkipp $
+! ... $Id: modules_g.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $
 MODULE f_units
   ! ... fortran unit assignments
   IMPLICIT NONE

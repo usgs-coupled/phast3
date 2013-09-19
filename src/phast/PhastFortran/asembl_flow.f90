@@ -31,7 +31,7 @@ SUBROUTINE asembl_flow
   INTEGER :: a_err, da_err, i, ibckm, ibckp, ic, j, k, m, ma, nsa
   INTEGER, PARAMETER :: icxm = 3, icxp = 4, icym = 2, icyp = 5, iczm = 1, iczp = 6
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: asembl_flow.f90,v 1.2 2011/01/12 23:39:37 klkipp Exp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: asembl_flow.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $'
   !     ------------------------------------------------------------------
   !...
   ! ... Compute and assemble coefficients in difference equations

@@ -1,4 +1,4 @@
-SUBROUTINE asmslp  
+SUBROUTINE asmslp_flow  
   ! ... Performs the assembly and solution of the pressure equation
   ! ...      for one time step
   USE machine_constants, ONLY: kdp
@@ -189,4 +189,4 @@ SUBROUTINE asmslp
 !     p(m)=p(m)+dp(m)
 !  END DO
 
-END SUBROUTINE asmslp
+END SUBROUTINE asmslp_flow
