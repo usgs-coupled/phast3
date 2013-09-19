@@ -484,7 +484,7 @@ COMMON_FOBJS =	\
 	aplbce_flow.o \
 	aplbci_flow.o \
 	asembl_flow.o \
-	asmslp.o \
+	asmslp_flow.o \
 	calcc.o \
 	calc_velocity.o \
 	clog.o \
@@ -538,9 +538,7 @@ COMMON_FOBJS =	\
 	read3_xfer.o \
 	reorder_mod.o \
 	rewi_mod.o \
-	rhsn.o \
-	rhsn_manager.o \
-	rhsn_ss_flow.o \
+	rhsn_flow.o \
 	sbcflo.o \
 	scale_jds_mod.o \
 	set_component_map.o \
@@ -548,6 +546,7 @@ COMMON_FOBJS =	\
 	solver_direct_mod.o \
 	solver_iter_mod.o \
 	stonb.o \
+	sumcal0_manager.o \
 	sumcal1.o \
 	sumcal1_manager.o \
 	sumcal2.o \

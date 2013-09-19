@@ -1,5 +1,3 @@
-cxxHstSubs.o: ../cxxHstSubs.cxx
-gzstream.o: ../gzstream.cxx ../gzstream.h
 Reaction_module.o: ../Reaction_module.cxx ../Reaction_module.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
  ../IPhreeqcPhast/IPhreeqcPhast.h \
@@ -56,8 +54,8 @@ Reaction_module.o: ../Reaction_module.cxx ../Reaction_module.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h
-hdf.o: ../hdf.cpp ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h ../hdf.h
-phast_main.o: ../phast_main.cpp
+cxxHstSubs.o: ../cxxHstSubs.cxx
+gzstream.o: ../gzstream.cxx ../gzstream.h
 RM_interface.o: ../RM_interface.cpp ../Reaction_module.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
  ../IPhreeqcPhast/IPhreeqcPhast.h \
@@ -96,7 +94,25 @@ RM_interface.o: ../RM_interface.cpp ../Reaction_module.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h ../hdf.h
+hdf.o: ../hdf.cpp ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h ../hdf.h
+phast_main.o: ../phast_main.cpp
 workersubs.o: ../workersubs.cpp
+IPhreeqcPhastLib.o: ../IPhreeqcPhast/IPhreeqcPhastLib.cpp \
+ ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../IPhreeqcPhast/IPhreeqc/Var.h \
+ ../IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp \
+ ../IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
+ ../IPhreeqcPhast/IPhreeqcPhast.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBin.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/System.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
+ ../IPhreeqcPhast/IPhreeqcPhastLib.h
 fwrap2Phast.o: ../IPhreeqcPhast/fwrap2Phast.cpp \
  ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../IPhreeqcPhast/IPhreeqc/Var.h \
  ../IPhreeqcPhast/fwrapPhast.h ../IPhreeqcPhast/IPhreeqcPhastLib.h \
@@ -226,22 +242,6 @@ fwrapPhast.o: ../IPhreeqcPhast/fwrapPhast.cpp \
  ../IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
  ../IPhreeqcPhast/fwrapPhast.h ../IPhreeqcPhast/IPhreeqcPhastLib.h
-IPhreeqcPhastLib.o: ../IPhreeqcPhast/IPhreeqcPhastLib.cpp \
- ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../IPhreeqcPhast/IPhreeqc/Var.h \
- ../IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp \
- ../IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
- ../IPhreeqcPhast/IPhreeqcPhast.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBin.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/System.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
- ../IPhreeqcPhast/IPhreeqcPhastLib.h
 IPhreeqcPhast.o: ../IPhreeqcPhast/IPhreeqcPhast.cxx \
  ../IPhreeqcPhast/IPhreeqcPhast.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
@@ -288,31 +288,6 @@ CSelectedOutput.o: ../IPhreeqcPhast/IPhreeqc/CSelectedOutput.cpp \
  ../IPhreeqcPhast/IPhreeqc/Debug.h \
  ../IPhreeqcPhast/IPhreeqc/CSelectedOutput.hxx \
  ../IPhreeqcPhast/IPhreeqc/CVar.hxx ../IPhreeqcPhast/IPhreeqc/Var.h
-fwrap2.o: ../IPhreeqcPhast/IPhreeqc/fwrap2.cpp \
- ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../IPhreeqcPhast/IPhreeqc/Var.h \
- ../IPhreeqcPhast/IPhreeqc/fwrap.h
-fwrap3.o: ../IPhreeqcPhast/IPhreeqc/fwrap3.cpp \
- ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../IPhreeqcPhast/IPhreeqc/Var.h \
- ../IPhreeqcPhast/IPhreeqc/fwrap.h
-fwrap4.o: ../IPhreeqcPhast/IPhreeqc/fwrap4.cpp \
- ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../IPhreeqcPhast/IPhreeqc/Var.h \
- ../IPhreeqcPhast/IPhreeqc/fwrap.h
-fwrap5.o: ../IPhreeqcPhast/IPhreeqc/fwrap5.cpp \
- ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../IPhreeqcPhast/IPhreeqc/Var.h \
- ../IPhreeqcPhast/IPhreeqc/fwrap.h
-fwrap6.o: ../IPhreeqcPhast/IPhreeqc/fwrap6.cpp \
- ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../IPhreeqcPhast/IPhreeqc/Var.h \
- ../IPhreeqcPhast/IPhreeqc/fwrap.h
-fwrap7.o: ../IPhreeqcPhast/IPhreeqc/fwrap7.cpp \
- ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../IPhreeqcPhast/IPhreeqc/Var.h \
- ../IPhreeqcPhast/IPhreeqc/fwrap.h
-fwrap8.o: ../IPhreeqcPhast/IPhreeqc/fwrap8.cpp \
- ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../IPhreeqcPhast/IPhreeqc/Var.h \
- ../IPhreeqcPhast/IPhreeqc/fwrap.h
-fwrap.o: ../IPhreeqcPhast/IPhreeqc/fwrap.cpp \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
- ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../IPhreeqcPhast/IPhreeqc/Var.h \
- ../IPhreeqcPhast/IPhreeqc/fwrap.h
 IPhreeqc.o: ../IPhreeqcPhast/IPhreeqc/IPhreeqc.cpp \
  ../IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp \
  ../IPhreeqcPhast/IPhreeqc/IPhreeqcCallbacks.h \
@@ -358,9 +333,34 @@ IPhreeqcLib.o: ../IPhreeqcPhast/IPhreeqc/IPhreeqcLib.cpp \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
  ../IPhreeqcPhast/IPhreeqc/thread.h
+fwrap.o: ../IPhreeqcPhast/IPhreeqc/fwrap.cpp \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
+ ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../IPhreeqcPhast/IPhreeqc/Var.h \
+ ../IPhreeqcPhast/IPhreeqc/fwrap.h
+fwrap2.o: ../IPhreeqcPhast/IPhreeqc/fwrap2.cpp \
+ ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../IPhreeqcPhast/IPhreeqc/Var.h \
+ ../IPhreeqcPhast/IPhreeqc/fwrap.h
+fwrap3.o: ../IPhreeqcPhast/IPhreeqc/fwrap3.cpp \
+ ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../IPhreeqcPhast/IPhreeqc/Var.h \
+ ../IPhreeqcPhast/IPhreeqc/fwrap.h
+fwrap4.o: ../IPhreeqcPhast/IPhreeqc/fwrap4.cpp \
+ ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../IPhreeqcPhast/IPhreeqc/Var.h \
+ ../IPhreeqcPhast/IPhreeqc/fwrap.h
+fwrap5.o: ../IPhreeqcPhast/IPhreeqc/fwrap5.cpp \
+ ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../IPhreeqcPhast/IPhreeqc/Var.h \
+ ../IPhreeqcPhast/IPhreeqc/fwrap.h
+fwrap6.o: ../IPhreeqcPhast/IPhreeqc/fwrap6.cpp \
+ ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../IPhreeqcPhast/IPhreeqc/Var.h \
+ ../IPhreeqcPhast/IPhreeqc/fwrap.h
+fwrap7.o: ../IPhreeqcPhast/IPhreeqc/fwrap7.cpp \
+ ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../IPhreeqcPhast/IPhreeqc/Var.h \
+ ../IPhreeqcPhast/IPhreeqc/fwrap.h
+fwrap8.o: ../IPhreeqcPhast/IPhreeqc/fwrap8.cpp \
+ ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../IPhreeqcPhast/IPhreeqc/Var.h \
+ ../IPhreeqcPhast/IPhreeqc/fwrap.h
 pp_sys.o: ../IPhreeqcPhast/IPhreeqc/pp_sys.cpp
 Var.o: ../IPhreeqcPhast/IPhreeqc/Var.c ../IPhreeqcPhast/IPhreeqc/Var.h
-cxxKinetics.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxKinetics.cxx \
+ExchComp.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ExchComp.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
@@ -389,38 +389,7 @@ cxxKinetics.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxKinetics.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxKinetics.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/KineticsComp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
-cxxMix.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.cxx \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialstypes.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ExchComp.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
 Exchange.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Exchange.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
@@ -452,37 +421,6 @@ Exchange.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Exchange.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Exchange.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ExchComp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
-ExchComp.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ExchComp.cxx \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialstypes.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ExchComp.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
 GasComp.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/GasComp.cxx \
@@ -548,25 +486,6 @@ GasPhase.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/GasPhase.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/GasPhase.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/GasComp.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
-ISolutionComp.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.cxx \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Solution.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SolutionIsotope.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolution.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
 ISolution.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolution.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
@@ -598,6 +517,25 @@ ISolution.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolution.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolution.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
+ISolutionComp.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.cxx \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Solution.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SolutionIsotope.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolution.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
 KineticsComp.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/KineticsComp.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
@@ -669,49 +607,10 @@ NumKeyword.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h
-Parser.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.cxx \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h
 PHRQ_base.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h
-PPassemblageComp.o: \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblageComp.cxx \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialstypes.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblageComp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
 PPassemblage.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblage.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
@@ -744,6 +643,45 @@ PPassemblage.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblage.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblage.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblageComp.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
+PPassemblageComp.o: \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblageComp.cxx \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialstypes.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblageComp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
+Parser.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.cxx \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h
 Pressure.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
@@ -852,6 +790,102 @@ ReadClass.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ReadClass.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Reaction.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Temperature.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
+SS.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SS.cxx \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialstypes.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SS.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SScomp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
+SSassemblage.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SSassemblage.cxx \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialstypes.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SSassemblage.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SS.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SScomp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
+SScomp.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SScomp.cxx \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialstypes.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SScomp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
 Solution.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Solution.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
@@ -918,102 +952,6 @@ SolutionIsotope.o: \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SolutionIsotope.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
-SSassemblage.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SSassemblage.cxx \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialstypes.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SSassemblage.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SS.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SScomp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
-SScomp.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SScomp.cxx \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialstypes.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SScomp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
-SS.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SS.cxx \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialstypes.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SS.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SScomp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
 StorageBin.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBin.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
@@ -1063,6 +1001,36 @@ StorageBin.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBin.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Reaction.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Temperature.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
+Surface.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.cxx \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialstypes.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
 SurfaceCharge.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
@@ -1094,36 +1062,6 @@ SurfaceCharge.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
 SurfaceComp.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.cxx \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialstypes.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
-Surface.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
@@ -1237,6 +1175,229 @@ Utils.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.cxx \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h
+cxxKinetics.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxKinetics.cxx \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialstypes.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxKinetics.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/KineticsComp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
+cxxMix.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.cxx \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialstypes.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
+ChartHandler.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ChartHandler.cpp
+ChartObject.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ChartObject.cpp
+CurveObject.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/CurveObject.cpp
+Keywords.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.cpp \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h
+PBasic.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PBasic.cpp \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PBasic.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialstypes.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Solution.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SolutionIsotope.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolution.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.h
+PHRQ_io.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.cpp \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h
+PHRQ_io_output.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io_output.cpp \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialstypes.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
+Phreeqc.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.cpp \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialstypes.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Solution.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SolutionIsotope.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolution.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Reaction.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblage.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblageComp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Exchange.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ExchComp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/GasPhase.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/GasComp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SSassemblage.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SS.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SScomp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxKinetics.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/KineticsComp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PBasic.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Temperature.h
+SelectedOutput.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.cpp \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h
+StorageBinList.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.cpp \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h
+Use.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.cpp \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h
+UserPunch.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.cpp \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialstypes.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
+ ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h
 advection.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/advection.cpp \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
@@ -1315,8 +1476,6 @@ basicsubs.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/basicsubs.cpp \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SScomp.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxKinetics.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/KineticsComp.h
-ChartHandler.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ChartHandler.cpp
-ChartObject.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ChartObject.cpp
 cl1.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cl1.cpp \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
@@ -1419,7 +1578,6 @@ class_main.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/class_main.cpp \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SScomp.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxKinetics.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/KineticsComp.h
-CurveObject.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/CurveObject.cpp
 cvdense.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.cpp \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h \
@@ -1683,8 +1841,6 @@ isotopes.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/isotopes.cpp \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SolutionIsotope.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolution.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.h
-Keywords.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.cpp \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h
 kinetics.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/kinetics.cpp \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
@@ -1865,41 +2021,6 @@ parse.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/parse.cpp \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
-PBasic.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PBasic.cpp \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PBasic.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialstypes.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Solution.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SolutionIsotope.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolution.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.h
 phqalloc.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.cpp \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
@@ -1928,87 +2049,6 @@ phqalloc.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.cpp \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h
-Phreeqc.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.cpp \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialstypes.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Solution.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SolutionIsotope.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolution.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Reaction.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblage.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PPassemblageComp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Exchange.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ExchComp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/GasPhase.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/GasComp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SSassemblage.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SS.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SScomp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxKinetics.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/KineticsComp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PBasic.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Temperature.h
-PHRQ_io.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.cpp \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h
-PHRQ_io_output.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io_output.cpp \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialstypes.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phqalloc.h
 pitzer.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/pitzer.cpp \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
@@ -2255,10 +2295,6 @@ runner.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.cpp \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h
-SelectedOutput.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.cpp \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h
 sit.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/sit.cpp \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
@@ -2382,12 +2418,6 @@ step.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/step.cpp \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Reaction.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxKinetics.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/KineticsComp.h
-StorageBinList.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.cpp \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h
 structures.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/structures.cpp \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
@@ -2578,36 +2608,6 @@ transport.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/transport.cpp \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SolutionIsotope.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolution.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.h
-Use.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.cpp \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h
-UserPunch.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.cpp \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/UserPunch.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NumKeyword.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_base.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Phreeqc.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvdense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cvode.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/sundialstypes.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/nvector.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/smalldense.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/runner.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/StorageBinList.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/dumper.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/PHRQ_io.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Keywords.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SelectedOutput.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Pressure.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/cxxMix.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Use.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Surface.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceComp.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NameDouble.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Parser.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SurfaceCharge.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/global_structures.h \
- ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h
 utilities.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/utilities.cpp \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/Utils.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h \
@@ -2644,10 +2644,10 @@ utilities.o: ../IPhreeqcPhast/IPhreeqc/phreeqcpp/utilities.cpp \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/SolutionIsotope.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolution.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/ISolutionComp.h
-kdtree2.o: ../KDtree/kdtree2.cpp ../KDtree/kdtree2.hpp
 KDtree.o: ../KDtree/KDtree.cpp ../KDtree/KDtree.h ../KDtree/kdtree2.hpp \
  ../KDtree/Point.h ../KDtree/Cell_Face.h
 Point.o: ../KDtree/Point.cpp ../KDtree/Point.h ../KDtree/Cell_Face.h
+kdtree2.o: ../KDtree/kdtree2.cpp ../KDtree/kdtree2.hpp
 KDtree.o: ../KDtree/KDtree.cpp ../KDtree/KDtree.h ../KDtree/kdtree2.hpp \
  ../KDtree/Point.h ../KDtree/Cell_Face.h
 kdtree2.o: ../KDtree/kdtree2.cpp ../KDtree/kdtree2.hpp
