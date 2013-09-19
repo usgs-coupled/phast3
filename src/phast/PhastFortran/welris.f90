@@ -31,7 +31,7 @@ SUBROUTINE XP_welris_thread(iwel,iwfss,uqwmr,xp)
   INTEGER, PARAMETER :: kmax=200
   CHARACTER(LEN=130) :: logline1, logline2, logline3, logline4, logline5
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id$'
+  CHARACTER(LEN=80) :: ident_string='$Id: welris.f90 6888 2012-08-19 21:59:06Z dlpark $'
   REAL(KIND=kdp) :: gcosth
   !     ------------------------------------------------------------------
   !...
@@ -205,7 +205,7 @@ CONTAINS
     INTEGER :: i, j, jhvsv, jhvsv1, jodd, k, l, m, m2, mnext, mtwo
     LOGICAL :: convrg
     ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id$'
+    CHARACTER(LEN=80) :: ident_string='$Id: welris.f90 6888 2012-08-19 21:59:06Z dlpark $'
     !     ------------------------------------------------------------------
     !...
     IF(jstart > 0) THEN
@@ -361,7 +361,7 @@ CONTAINS
     REAL(KIND=kdp) :: c11, c12, c21, c22, det, ffphl, frfac, lgren,  &
          pwrk, qhwrk, ren, tambk, twrk, velwrk, y1, yo
     ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id$'
+    CHARACTER(LEN=80) :: ident_string='$Id: welris.f90 6888 2012-08-19 21:59:06Z dlpark $'
     !     ------------------------------------------------------------------
     !...
     pwrk=yy(1)
@@ -448,7 +448,7 @@ SUBROUTINE welris(iwel,iwfss,uqwmr)
   INTEGER, PARAMETER :: kmax=200
   CHARACTER(LEN=130) :: logline1, logline2, logline3, logline4, logline5
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id$'
+  CHARACTER(LEN=80) :: ident_string='$Id: welris.f90 6888 2012-08-19 21:59:06Z dlpark $'
   !     ------------------------------------------------------------------
   !...
   ! ... Initialize
@@ -619,7 +619,7 @@ CONTAINS
     INTEGER :: i, j, jhvsv, jhvsv1, jodd, k, l, m, m2, mnext, mtwo
     LOGICAL :: convrg
     ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id$'
+    CHARACTER(LEN=80) :: ident_string='$Id: welris.f90 6888 2012-08-19 21:59:06Z dlpark $'
     !     ------------------------------------------------------------------
     !...
     IF(jstart > 0) THEN
@@ -773,7 +773,7 @@ CONTAINS
     REAL(KIND=kdp) :: c11, c12, c21, c22, det, ffphl, frfac, lgren,  &
          pwrk, qhwrk, ren, tambk, twrk, velwrk, y1, yo
     ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id$'
+    CHARACTER(LEN=80) :: ident_string='$Id: welris.f90 6888 2012-08-19 21:59:06Z dlpark $'
     !     ------------------------------------------------------------------
     !...
     pwrk=yy(1)

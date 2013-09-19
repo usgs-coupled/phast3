@@ -16,7 +16,7 @@ SUBROUTINE wfdydz(zwk,yy,dyy)
   REAL(KIND=kdp) :: c11, c12, c21, c22, det, ffphl, frfac, lgren,  &
        pwrk, qhwrk, ren, tambk, twrk, velwrk, y1, yo
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id$'
+  CHARACTER(LEN=80) :: ident_string='$Id: wfdydz.f90 3781 2009-11-19 15:31:39Z dlpark $'
   !     ------------------------------------------------------------------
   !...
   pwrk=yy(1)

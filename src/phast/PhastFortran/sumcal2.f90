@@ -30,7 +30,7 @@ SUBROUTINE sumcal2
        m, m0, m1, m1kp, mfs, mt
   LOGICAL :: ierrw
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id$'
+  CHARACTER(LEN=80) :: ident_string='$Id: sumcal2.f90 5060 2011-01-14 22:27:49Z dlpark $'
   !     ------------------------------------------------------------------
   !...
   ufdt0 = 1._kdp - fdtmth

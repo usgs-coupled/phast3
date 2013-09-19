@@ -23,7 +23,7 @@ SUBROUTINE dump_hst
   IMPLICIT NONE
   CHARACTER(LEN=130) :: logline1, logline2, logline3
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id$'
+  CHARACTER(LEN=80) :: ident_string='$Id: dump.f90 4971 2010-12-14 17:55:01Z dlpark $'
   !     ------------------------------------------------------------------
   !...
   IF(savldo) REWIND fuorst

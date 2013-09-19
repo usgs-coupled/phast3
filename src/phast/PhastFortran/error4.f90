@@ -25,7 +25,7 @@ SUBROUTINE error4
   LOGICAL :: allout
   LOGICAL, DIMENSION(:), ALLOCATABLE :: inzone
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id$'
+  CHARACTER(LEN=80) :: ident_string='$Id: error4.f90 4971 2010-12-14 17:55:01Z dlpark $'
   !     ------------------------------------------------------------------
   !...
   IF(ichwt) THEN

@@ -17,7 +17,7 @@ SUBROUTINE write1
   CHARACTER(LEN=11) :: fmt1
   CHARACTER(LEN=130) :: logline1, logline2
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id$'
+  CHARACTER(LEN=80) :: ident_string='$Id: write1.f90 4971 2010-12-14 17:55:01Z dlpark $'
   !     ------------------------------------------------------------------
   !...
   WRITE (fulp,2001)  &
