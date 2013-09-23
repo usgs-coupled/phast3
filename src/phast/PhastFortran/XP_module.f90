@@ -21,7 +21,6 @@ MODULE XP_module
      REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: rhssbc
      REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: vassbc
      REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: rs, rs1
-     INTEGER :: prcphrqi, prf_chem_phrqi, prslmi, prhdfci, prhdfhi, prhdfvi
 
      ! ... MODULE mcv_w
      ! ... dependent variable information

@@ -103,7 +103,6 @@ END SUBROUTINE hdf_write_invariant
 SUBROUTINE hdf_begin_time_step
   USE mcc, ONLY: solute
   USE mcc, ONLY: prhdfhi, prhdfci, prhdfvi
-  !USE mcc_m, ONLY: prhdfhi, prhdfci, prhdfvi
   USE mcv, ONLY: time
   USE mcp, ONLY: cnvtmi
   USE hdf_media_m, ONLY: pr_hdf_media
