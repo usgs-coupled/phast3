@@ -4,7 +4,6 @@ SUBROUTINE terminate_phast_worker
   USE f_units, ONLY: fuich
   USE machine_constants, ONLY: kdp
   USE mcb, ONLY: ibc
-  USE mcc, ONLY: iprint_chem, iprint_xyz, oldstyle_head_file, solute, prslmi 
   USE mcc_m, ONLY: prtichead
   USE mcch, ONLY: f3name
   USE mcg, ONLY: nxyz, nxy
@@ -19,11 +18,6 @@ SUBROUTINE terminate_phast_worker
   CHARACTER(LEN=80) :: ident_string='$Id: terminate_phast_worker.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $'
   !     ------------------------------------------------------------------
   !...
-!!$  IF (mpi_myself == 0) THEN   *** this processor is never root
-!!$     stop_msg = 1
-!!$     CALL equilibrate(c,nxyz,0,x_node,y_node,z_node,time,deltim,prslmi,cnvtmi,  &
-!!$       frac, iprint_chem, iprint_xyz, 0, stop_msg, 0, 0)
-!!$  ENDIF  
   ! *** special diagnostic message ***
 #ifdef SKIP_TODO
   IF(col_scale) THEN
