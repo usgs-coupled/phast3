@@ -200,7 +200,7 @@ SUBROUTINE phast_worker
             print_force_chemistry%print_flag_integer,     &        ! print_chem
             print_xyz_chemistry%print_flag_integer,       &        ! print_xyz
             print_hdf_chemistry%print_flag_integer,       &        ! print_hdf
-            0,                                            &        ! print_restart
+            print_restart%print_flag_integer,             &        ! print_restart
             time_phreeqc,                                 &        ! time_hst
             deltim_dummy,                                 &        ! time_step_hst
             c,                                            &        ! fraction
