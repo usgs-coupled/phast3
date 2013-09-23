@@ -33,7 +33,10 @@
 #include <iostream>
 #include <fstream>
 #include <zlib.h>
-
+#if defined(_MSC_VER)
+#pragma warning(push)
+#pragma warning(disable: 4250 )
+#endif
 #ifdef GZSTREAM_NAMESPACE
 namespace GZSTREAM_NAMESPACE {
 #endif
@@ -114,7 +117,9 @@ public:
 #ifdef GZSTREAM_NAMESPACE
 } // namespace GZSTREAM_NAMESPACE
 #endif
-
+#if defined(_MSC_VER)
+#pragma warning(pop)
+#endif
 #endif // GZSTREAM_H
 // ============================================================================
 // EOF //
