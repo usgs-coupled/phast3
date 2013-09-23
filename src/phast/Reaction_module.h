@@ -188,7 +188,14 @@ protected:
 	int *printzone_xyz;						// nxyz print flags for chemistry XYZ file 
 	bool rebalance_method;                  // rebalance method 0 std, 1 by_cell
 	double rebalance_fraction;			    // parameter for rebalancing process load for parallel	
-	int * ic1;								// reactant number for end member 1; indicates presence in model
+	//int * ic1;							// indicates presence in model, used for restart files
+	std::vector<int> have_Solution;
+	std::vector<int> have_PPassemblage;
+	std::vector<int> have_Exchange;
+	std::vector<int> have_Surface;
+	std::vector<int> have_GasPhase;
+	std::vector<int> have_SSassemblage;
+	std::vector<int> have_Kinetics;
 	std::vector <int> forward;				// mapping from nxyz cells to count_chem chemistry cells
 	std::vector <std::vector <int> > back;	// mapping from count_chem chemistry cells to nxyz cells 
 
