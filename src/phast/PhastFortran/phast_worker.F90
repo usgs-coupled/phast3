@@ -76,7 +76,7 @@ SUBROUTINE phast_worker
         END SUBROUTINE worker_get_indexes
     END INTERFACE
     REAL(KIND=kdp) :: deltim_dummy
-    INTEGER :: stop_msg=0, print_restart_flag
+    INTEGER :: stop_msg=0
     INTEGER :: i, a_err
     CHARACTER(LEN=130) :: logline1
     ! ... Set string for use with RCS ident command
@@ -194,14 +194,13 @@ SUBROUTINE phast_worker
 
         ! ... Initial equilibration
         adj_wr_ratio = 1
-        print_restart_flag = 0 
         CALL RM_run_cells(      &
             rm_id,              &
             prslmi,             &        ! prslm
             prf_chem_phrqi,     &        ! print_chem
             prcphrqi,           &        ! print_xyz
             prhdfci,            &        ! print_hdf
-            print_restart_flag, &        ! print_restart
+            0,                  &        ! print_restart
             time_phreeqc,       &        ! time_hst
             deltim_dummy,       &        ! time_step_hst
             c,                  &        ! fraction
@@ -263,7 +262,7 @@ SUBROUTINE phast_worker
                 prf_chem_phrqi,     &        ! print_chem
                 prcphrqi,           &        ! print_xyz
                 prhdfci,            &        ! print_hdf
-                print_restart_flag, &        ! print_restart
+                print_restart%print_flag_integer, &        ! print_restart
                 time_phreeqc,       &        ! time_hst
                 deltim_dummy,       &        ! time_step_hst
                 c,                  &        ! fraction

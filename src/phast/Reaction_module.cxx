@@ -118,7 +118,7 @@ if( numCPU < 1 )
 	this->volume = NULL;						// nxyz geometric cell volumes 
 	this->printzone_chem = NULL;				// nxyz print flags for output file
 	this->printzone_xyz = NULL;					// nxyz print flags for chemistry XYZ file 
-	this->ic1 = NULL;							// reactant number for end member 1
+	//this->ic1 = NULL;							// reactant number for end member 1
 	this->rebalance_fraction = 0.5;		// parameter for rebalancing process load for parallel	
 
 	// print flags
@@ -503,7 +503,8 @@ Reaction_module::Distribute_initial_conditions(
 {
 	/*
 	 *      nxyz - number of cells
-	 *      initial_conditions1 - Fortran, 7 x n_cell integer array, containing
+	 *      initial_conditions1 - Fortran, 7 x nxyz integer array, containing
+	 *      entity numbers for
 	 *           solution number
 	 *           pure_phases number
 	 *           exchange number
@@ -511,8 +512,9 @@ Reaction_module::Distribute_initial_conditions(
 	 *           gas number
 	 *           solid solution number
 	 *           kinetics number
-	 *      initial_conditions2 - Fortran, 7 x n_cell integer array, containing
-	 *      fraction for 1 - Fortran, 7 x n_cell integer array, containing
+	 *      initial_conditions2 - Fortran, 7 x nxyz integer array, containing
+	 *			 entity numbers
+	 *      fraction1 - Fortran 7 x n_cell  double array, fraction for entity 1  
 	 *
 	 *      Routine mixes solutions, pure_phase assemblages,
 	 *      exchangers, surface complexers, gases, solid solution assemblages,
@@ -521,6 +523,26 @@ Reaction_module::Distribute_initial_conditions(
 	 *      saves results in restart_bin and then the reaction module
 	 */
 	int i, j;
+	/*
+	* Make copy of initial conditions for use in restart file
+	*/
+	for (i = 0; i < nxyz; i++)
+	{
+		j = 7 * i;
+		have_Solution.push_back(initial_conditions1[j]);
+		j++;
+		have_PPassemblage.push_back(initial_conditions1[j]);
+		j++;
+		have_Exchange.push_back(initial_conditions1[j]);
+		j++;
+		have_Surface.push_back(initial_conditions1[j]);
+		j++;
+		have_GasPhase.push_back(initial_conditions1[j]);
+		j++;
+		have_SSassemblage.push_back(initial_conditions1[j]);
+		j++;
+		have_Kinetics.push_back(initial_conditions1[j]);
+	}
 	/*
 	 *  Copy solution, exchange, surface, gas phase, kinetics, solid solution for each active cell.
 	 *  Does nothing for indexes less than 0 (i.e. restart files)
@@ -3515,24 +3537,26 @@ Reaction_module::Write_restart(void)
 		ofs_restart << count_chem << std::endl;
 		for (j = 0; j < count_chem; j++)	/* j is count_chem number */
 		{
-			//i = back[j].list[0];	
-			i = back[j][0];			/* i is nxyz number */
-			ofs_restart << x_node[i] << "  " << y_node[i] << "  " <<
-				z_node[i] << "  " << j << "  ";
-			// solution 
-			ofs_restart << ic1[7 * i] << "  ";
-			// pp_assemblage
-			ofs_restart << ic1[7 * i + 1] << "  ";
-			// exchange
-			ofs_restart << ic1[7 * i + 2] << "  ";
-			// surface
-			ofs_restart << ic1[7 * i + 3] << "  ";
-			// gas_phase
-			ofs_restart << ic1[7 * i + 4] << "  ";
-			// solid solution
-			ofs_restart << ic1[7 * i + 5] << "  ";
-			// kinetics
-			ofs_restart << ic1[7 * i + 6] << std::endl;
+			for (size_t k = 0; k < back[j].size(); k++)
+			{
+				i = back[j][k];			/* i is nxyz number */
+				ofs_restart << x_node[i] << "  " << y_node[i] << "  " <<
+					z_node[i] << "  " << j << "  ";
+				// solution 
+				ofs_restart << have_Solution[i] << "  ";
+				// pp_assemblage
+				ofs_restart << have_PPassemblage[i] << "  ";
+				// exchange
+				ofs_restart << have_Exchange[i] << "  ";
+				// surface
+				ofs_restart << have_Surface[i] << "  ";
+				// gas_phase
+				ofs_restart << have_GasPhase[i] << "  ";
+				// solid solution
+				ofs_restart << have_SSassemblage[i] << "  ";
+				// kinetics
+				ofs_restart << have_Kinetics[i] << std::endl;
+			}
 		}
 	}
 
@@ -3540,8 +3564,20 @@ Reaction_module::Write_restart(void)
 #ifdef USE_MPI
 	this->workers[0]->SetDumpStringOn(true); 
 	std::ostringstream in;
-	in << "DUMP; -cells " << this->start_cell[this->mpi_myself] << "-" << this->end_cell[this->mpi_myself] << "\n";
-	this->workers[0]->RunString(in.str().c_str());
+
+	// write raw to ostringstream
+	for (int j = this->start_cell[this->mpi_myself]; j <= this->end_cell[this->mpi_myself]; j++)
+	{
+		cxxStorageBin temp_bin;
+		this->Get_workers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(temp_bin, j);
+		for (size_t k = 0; k < back[j].size(); k++)
+		{
+			int i = back[j][k];			/* i is nxyz number */ 
+			temp_bin.dump_raw(in, j, 0, &i);
+		}
+	}
+	//in << "DUMP; -cells " << this->start_cell[this->mpi_myself] << "-" << this->end_cell[this->mpi_myself] << "\n";
+	//this->workers[0]->RunString(in.str().c_str());
 	for (int n = 0; n < this->mpi_tasks; n++)
 	{
 		// Need to transfer output stream to root and print
@@ -3549,13 +3585,17 @@ Reaction_module::Write_restart(void)
 		{
 			if (n == 0)
 			{
-				ofs_restart << this->Get_workers()[0]->GetDumpString();
+				//ofs_restart << this->Get_workers()[0]->GetDumpString();
+				ofs_restart << in.str().c_str();
 			}
 			else
 			{
-				int size = (int) strlen(this->workers[0]->GetDumpString());
+				//int size = (int) strlen(this->workers[0]->GetDumpString());
+				//MPI_Send(&size, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+				//MPI_Send((void *) this->workers[0]->GetDumpString(), size, MPI_CHARACTER, 0, 0, MPI_COMM_WORLD);
+				int size = (int) strlen(in.str().c_str());
 				MPI_Send(&size, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
-				MPI_Send((void *) this->workers[0]->GetDumpString(), size, MPI_CHARACTER, 0, 0, MPI_COMM_WORLD);
+				MPI_Send((void *) in.str().c_str(), size, MPI_CHARACTER, 0, 0, MPI_COMM_WORLD);
 			}	
 		}
 		else if (this->mpi_myself == 0)
@@ -3572,11 +3612,22 @@ Reaction_module::Write_restart(void)
 #else
 	for (int n = 0; n < (int) this->workers.size() - 1; n++)
 	{
-		this->workers[n]->SetDumpStringOn(true); 
-		std::ostringstream in;
-		in << "DUMP; -cells " << this->start_cell[n] << "-" << this->end_cell[n] << "\n";
-		this->workers[n]->RunString(in.str().c_str());
-		ofs_restart << this->Get_workers()[n]->GetDumpString();
+		//this->workers[n]->SetDumpStringOn(true); 
+		for (int j = this->start_cell[n]; j <= this->end_cell[n]; j++)
+		{
+			cxxStorageBin temp_bin;
+			this->workers[n]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(temp_bin, j);
+			for (size_t k = 0; k < back[j].size(); k++)
+			{
+				int i = back[j][k];			/* i is nxyz number */ 
+				temp_bin.dump_raw(ofs_restart, j, 0, &i);
+			}
+		}
+		//this->workers[n]->SetDumpStringOn(true); 
+		//std::ostringstream in;
+		//in << "DUMP; -cells " << this->start_cell[n] << "-" << this->end_cell[n] << "\n";
+		//this->workers[n]->RunString(in.str().c_str());
+		//ofs_restart << this->Get_workers()[n]->GetDumpString();
 	}
 #endif
 

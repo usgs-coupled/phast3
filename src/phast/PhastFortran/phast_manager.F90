@@ -25,7 +25,7 @@ SUBROUTINE phast_manager
     IMPLICIT NONE 
     SAVE
     REAL(KIND=kdp) :: deltim_dummy
-    INTEGER :: stop_msg, print_restart_flag, ipp_err
+    INTEGER :: stop_msg, ipp_err
     CHARACTER(LEN=130) :: logline1
     INTEGER :: i, a_err
     INTERFACE
@@ -238,7 +238,6 @@ SUBROUTINE phast_manager
         ! ... Equilibrate the initial conditions for component concentrations
         WRITE(logline1,'(a)') 'Equilibration of cells for initial conditions.'
         CALL RM_log_screen_prt(logline1)
-        print_restart_flag = 0 
         stop_msg = 0
         deltim_dummy = 0._kdp
         CALL RM_run_cells(     &
@@ -247,7 +246,7 @@ SUBROUTINE phast_manager
             prf_chem_phrqi,     &        ! print_chem
             prcphrqi,           &        ! print_xyz
             prhdfci,            &        ! print_hdf
-            print_restart_flag, &        ! print_restart
+            0,                  &        ! print_restart
             time_phreeqc,       &        ! time_hst
             deltim_dummy,       &        ! time_step_hst
             c,                  &        ! fraction
@@ -386,7 +385,7 @@ SUBROUTINE phast_manager
                     prf_chem_phrqi,     &        ! print_chem
                     prcphrqi,           &        ! print_xyz
                     prhdfci,            &        ! print_hdf
-                    print_restart_flag, &        ! print_restart
+                    print_restart%print_flag_integer, &        ! print_restart
                     time,               &        ! time_hst
                     deltim,             &        ! time_step_hst
                     c,                  &        ! fraction
