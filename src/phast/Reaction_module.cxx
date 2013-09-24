@@ -2903,7 +2903,7 @@ Reaction_module::Run_cells_thread(int n)
 				}
 			}
 			// write headings to xyz file
-			if (pr_xyz && this->write_xyz_headings)
+			if (pr_xyz && this->write_xyz_headings && n == 0 && mpi_myself == 0)
 			{
 				char line_buff[132];
 				sprintf(line_buff, "%15s\t%15s\t%15s\t%15s\t%2s\t", "x", "y",
