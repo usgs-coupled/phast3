@@ -3164,7 +3164,7 @@ Reaction_module::Set_mapping(int *grid2chem)
 			back[n].push_back(i);
 		}
 	}
-
+	
 	// set -1 for back items > 0
 	for (int i = 0; i < this->count_chem; i++)
 	{

@@ -39,6 +39,15 @@ SUBROUTINE phast_worker
             IMPLICIT NONE
             CHARACTER :: str
         END SUBROUTINE RM_log_screen_prt
+        SUBROUTINE RM_set_mapping(id, grid2chem)   
+            IMPLICIT NONE
+            INTEGER :: id
+            INTEGER :: grid2chem
+        END SUBROUTINE RM_set_mapping         
+        SUBROUTINE create_mapping(ic)
+            implicit none
+            INTEGER, DIMENSION(:,:), INTENT(INOUT) :: ic
+        END SUBROUTINE create_mapping        
         SUBROUTINE xfer_indices(indx_sol1_ic, indx_sol2_ic, &
             mxfrac, naxes, nxyz, &
             x_node, y_node, z_node, &
@@ -167,7 +176,7 @@ SUBROUTINE phast_worker
         ! ... Mapping from full 3D domain to chemistry
         !CALL RM_forward_and_back(rm_id, indx_sol1_ic, naxes) 
         CALL create_mapping(indx_sol1_ic)
-        CALL RM_set_mapping(grid2chem)
+        CALL RM_set_mapping(rm_id, grid2chem(1))
         
         ! ... Distribute initial conditions for chemistry    
         DO i = 1, num_restart_files
