@@ -287,6 +287,7 @@ void RM_error(int *id)
 	IPhreeqcPhastLib::CleanupIPhreeqcPhast();
 	exit(4);
 }
+#ifdef SKIP
 void RM_forward_and_back(int *id,
 		int *initial_conditions, 
 		int *axes)
@@ -302,6 +303,7 @@ void RM_forward_and_back(int *id,
 		Reaction_module_ptr->Forward_and_back(initial_conditions, axes);
 	}
 }
+#endif
 void
 RM_fractions2solutions(int *id)
 /* ---------------------------------------------------------------------- */
@@ -590,6 +592,20 @@ RM_setup_boundary_conditions(
 					fraction1,
 					boundary_fraction, 
 					*dim);
+	}
+}
+void RM_set_mapping(int *id,
+		int *grid2chem)
+{
+	//
+	// Creates mapping from all grid cells to only cells for chemistry
+	// Excludes inactive cells and cells that are redundant by symmetry
+	// (1D or 2D chemistry)
+	//
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Set_mapping(grid2chem);
 	}
 }
 #ifdef USE_MPI
