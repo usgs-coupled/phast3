@@ -48,6 +48,12 @@ SUBROUTINE phast_manager
             IMPLICIT NONE
             CHARACTER :: str
         END SUBROUTINE RM_log_screen_prt
+        SUBROUTINE RM_set_mapping(id, grid2chem)   
+            IMPLICIT NONE
+            INTEGER :: id
+            INTEGER :: grid2chem
+        END SUBROUTINE RM_set_mapping   
+ 
         SUBROUTINE create_mapping(ic)
             implicit none
             INTEGER, DIMENSION(:,:), INTENT(INOUT) :: ic
@@ -200,7 +206,7 @@ SUBROUTINE phast_manager
         ! ... Define mapping from 3D domain to chemistry
         !CALL RM_forward_and_back(rm_id, indx_sol1_ic, naxes) 
         CALL create_mapping(indx_sol1_ic)
-        CALL RM_set_mapping(rm_id, grid2chem)
+        CALL RM_set_mapping(rm_id, grid2chem(1))
         
         DO i = 1, num_restart_files
             CALL RM_send_restart_name(rm_id, restart_files(i))

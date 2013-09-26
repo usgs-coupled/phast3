@@ -1,5 +1,6 @@
 SUBROUTINE create_mapping(initial_conditions)
       USE mcg, only: nx, ny, nz, nxy, nxyz, naxes, grid2chem
+      USE mcc, only: mpi_myself
       IMPLICIT NONE
 ! 
 ! calculate mapping from full set of cells to subset needed for chemistry
@@ -10,7 +11,7 @@ SUBROUTINE create_mapping(initial_conditions)
 	integer i, m, n, ii, jj, kk
     integer count_chem
     logical axes(0:2)
-    
+  
 	axes(0) = (naxes(1) .ne. 0)
 	axes(1) = (naxes(2) .ne. 0)
 	axes(2) = (naxes(3) .ne. 0)
