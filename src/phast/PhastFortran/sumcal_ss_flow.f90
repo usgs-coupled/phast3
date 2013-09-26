@@ -28,7 +28,7 @@ SUBROUTINE sumcal_ss_flow
   LOGICAL :: ierrw
   CHARACTER(LEN=130) :: logline1, logline2
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: sumcal_ss_flow.f90 8034 2013-09-13 21:18:23Z dlpark $'
+  CHARACTER(LEN=80) :: ident_string='$Id: sumcal_ss_flow.f90,v 1.2 2013/09/26 22:49:48 klkipp Exp klkipp $'
   !     ------------------------------------------------------------------
   !...
   ufdt1 = fdtmth
@@ -478,7 +478,7 @@ SUBROUTINE sumcal_ss_flow
      totwfp=0._kdp
      totwhi=0._kdp
      totwhp=0._kdp
-     DO  is=1,ns
+o     DO  is=1,ns
         tqwsp(is)=0._kdp
         tqwsi(is)=0._kdp
         totwsi(is)=0._kdp
@@ -731,7 +731,7 @@ SUBROUTINE sumcal_ss_flow
 !!$  !...            STFAIF=STFAIF*DELTIM
 !!$!  tcfaif=tcfaif+stfaif
   ! ... Calculate the internal zone flow rates if requested
-  IF(ABS(pri_zf) > 0. .or. ABS(pri_zf_tsv) > 0.) CALL zone_flow_ss
+  IF(ABS(pri_zf) > 0. .or. ABS(pri_zf_tsv) > 0.) CALL zone_flow
   ! ... Calculate total fluid mass, fluid volume in region
   ! ... Calculate head field and water-table elevation (if desired for printout)
   fir=0._kdp

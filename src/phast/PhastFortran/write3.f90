@@ -34,7 +34,7 @@ SUBROUTINE write3
   REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: c_mol_bc
   CHARACTER(LEN=130) :: logline1, logline2, logline3, logline4, logline5
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: write3.f90 6993 2012-09-27 20:45:41Z dlpark $'
+  CHARACTER(LEN=80) :: ident_string='$Id: write3.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ! ... Allocate scratch space

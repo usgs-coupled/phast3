@@ -23,7 +23,7 @@ SUBROUTINE rhsn_flow
        lc, ls, m, mc0, mfs, mkt, nks, nsa
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: cavg, sum_cqm_in
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: rhsn_flow.f90 8062 2013-09-19 23:00:37Z dlpark $'
+  CHARACTER(LEN=80) :: ident_string='$Id: rhsn_flow.f90,v 1.1 2013/09/19 23:15:13 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ufdt0 = 1._kdp-fdtmth

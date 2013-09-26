@@ -15,7 +15,7 @@ SUBROUTINE terminate_phast_worker
   !
   CHARACTER(LEN=130) :: logline1
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: terminate_phast_worker.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: terminate_phast_worker.F90,v 1.2 2013/09/26 22:49:48 klkipp Exp klkipp $'
   !     ------------------------------------------------------------------
   !...
   ! *** special diagnostic message ***

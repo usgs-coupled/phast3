@@ -14,7 +14,7 @@ FUNCTION nintrp(xarg,nx,xs,erflg)
   REAL(KIND=kdp) :: a1, xarga
   INTEGER :: i
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: nintrp.f90 3377 2009-02-26 05:28:10Z charlton $'
+  CHARACTER(LEN=80) :: ident_string='$Id: nintrp.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   xarga=xarg

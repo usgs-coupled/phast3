@@ -10,7 +10,7 @@ SUBROUTINE set_component_map
   INTEGER, DIMENSION(:), ALLOCATABLE :: members
   INTEGER :: mpi_xp_group_world
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: set_component_map.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: set_component_map.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   IF (.NOT. solute) RETURN

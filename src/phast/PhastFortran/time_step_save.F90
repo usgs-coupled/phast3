@@ -12,7 +12,7 @@ SUBROUTINE time_step_save
   IMPLICIT NONE
   INTEGER :: i
   ! ... set string for use with rcs ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: time_step_save.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: time_step_save.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   IF (.NOT. xp_group) RETURN
   IF (nwel > 0) THEN

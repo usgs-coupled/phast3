@@ -1,4 +1,4 @@
-SUBROUTINE sumcal0
+SUBROUTINE sumcal0_manager
   ! ... Calculates and loads the step cumulative totals for the first portion
   ! ...      of the time step
   USE machine_constants, ONLY: kdp
@@ -26,7 +26,7 @@ SUBROUTINE sumcal0
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: cavg, sum_cqm_in
   REAL(KIND=kdp), DIMENSION(:), ALLOCATABLE :: qsbc3, qsbc4
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: rhsn.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: sumcal0_manager.F90,v 1.2 2013/09/26 22:49:48 klkipp Exp klkipp $'
   !     ------------------------------------------------------------------
   !...
   ufdt0 = 1._kdp-fdtmth
@@ -66,7 +66,7 @@ SUBROUTINE sumcal0
   ALLOCATE (qsbc3(nsa), qsbc4(nsa), &
        stat = a_err)
   IF (a_err /= 0) THEN  
-     PRINT *, "Array allocation failed: sumcal0"  
+     PRINT *, "Array allocation failed: sumcal0_manager"  
      STOP  
   ENDIF
   ! ... Load current total fluid mass, heat, solute amounts into storage
@@ -156,7 +156,7 @@ SUBROUTINE sumcal0
      ALLOCATE (cavg(nsa), sum_cqm_in(nsa),  &
           stat = a_err)
      IF (a_err /= 0) THEN  
-        PRINT *, "Array allocation failed: sumcal0, point 2"  
+        PRINT *, "Array allocation failed: sumcal0_manager, point 2"  
         STOP
      ENDIF
      IF(fresur) THEN
@@ -239,7 +239,7 @@ SUBROUTINE sumcal0
      DEALLOCATE (cavg, sum_cqm_in, &
           stat = da_err)
      IF (da_err /= 0) THEN  
-        PRINT *, "Array deallocation failed, sumcal0"  
+        PRINT *, "Array deallocation failed, sumcal0_manager"  
         STOP
      ENDIF
   END IF
@@ -250,7 +250,7 @@ SUBROUTINE sumcal0
       ALLOCATE (cavg(nsa), sum_cqm_in(nsa),  &
       stat = a_err)
       IF (a_err /= 0) THEN  
-          PRINT *, "Array allocation failed: sumcal0, point 3"
+          PRINT *, "Array allocation failed: sumcal0_manager, point 3"
           STOP
       ENDIF
       DO lc=1,nrbc
@@ -340,7 +340,7 @@ SUBROUTINE sumcal0
       DEALLOCATE (cavg, sum_cqm_in, &
       stat = da_err)
       IF (da_err /= 0) THEN
-          PRINT *, "Array deallocation failed, sumcal0"
+          PRINT *, "Array deallocation failed, sumcal0_manager"
           STOP
       ENDIF
   END IF
@@ -391,7 +391,7 @@ SUBROUTINE sumcal0
   DEALLOCATE (qsbc3, qsbc4,  &
        stat = da_err)
   IF (da_err /= 0) THEN
-     PRINT *, "Array deallocation failed, sumcal0"
+     PRINT *, "Array deallocation failed, sumcal0_manager"
      STOP
   ENDIF
-END SUBROUTINE sumcal0
+END SUBROUTINE sumcal0_manager

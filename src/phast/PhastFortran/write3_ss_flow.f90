@@ -20,7 +20,7 @@ SUBROUTINE write3_ss_flow
   INTEGER :: iwel, ls, m
   CHARACTER(LEN=130) :: logline1, logline2, logline3, logline4
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: write3_ss_flow.f90 4971 2010-12-14 17:55:01Z dlpark $'
+  CHARACTER(LEN=80) :: ident_string='$Id: write3_ss_flow.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ! ... Well data

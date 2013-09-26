@@ -35,7 +35,7 @@ SUBROUTINE read3
   INTEGER, SAVE :: ntd=0
   CHARACTER(LEN=130) :: logline1
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: read3.F90 7061 2012-11-01 14:57:37Z dlpark $'
+  CHARACTER(LEN=80) :: ident_string='$Id: read3.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !-----------------------------------------------------------------------
   !...
   ! ... Check for end of simulation

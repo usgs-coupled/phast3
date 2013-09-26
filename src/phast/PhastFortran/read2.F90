@@ -57,7 +57,7 @@ SUBROUTINE read2
   CHARACTER(LEN=130) :: logline1, logline2
   INTEGER :: ii
   ! ... set string for use with rcs ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: read2.F90 7050 2012-10-30 18:35:24Z dlpark $'
+  CHARACTER(LEN=80) :: ident_string='$Id: read2.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ! ... allocate space for read group 2 arrays

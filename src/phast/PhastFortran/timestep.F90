@@ -25,7 +25,7 @@ SUBROUTINE timestep
 #endif
   CHARACTER(LEN=130) :: logline1, logline0='    '
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: timestep.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: timestep.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ! ... Update time step counter

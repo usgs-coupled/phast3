@@ -97,7 +97,7 @@ SUBROUTINE phast_manager
 #endif
     END INTERFACE
     ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id: phast_manager.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $'
+    CHARACTER(LEN=80) :: ident_string='$Id: phast_manager.F90,v 1.3 2013/09/26 22:49:48 klkipp Exp klkipp $'
     !     ------------------------------------------------------------------
 
     !...
@@ -301,7 +301,7 @@ SUBROUTINE phast_manager
                 CALL coeff_flow
                 CALL rhsn_flow
             ENDIF
-                CALL sumcal0
+                CALL sumcal0_manager
 
             ! ... Read the transient data, if necessary. The first block was read by the steady flow 
             ! ... simulation section

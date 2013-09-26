@@ -9,7 +9,7 @@ SUBROUTINE error1
   IMPLICIT NONE
   INTEGER :: i
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: error1.f90 3780 2009-11-18 21:28:13Z dlpark $'
+  CHARACTER(LEN=80) :: ident_string='$Id: error1.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   errexi = .FALSE.  

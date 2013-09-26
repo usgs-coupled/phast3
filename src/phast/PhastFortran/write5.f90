@@ -46,7 +46,7 @@ SUBROUTINE write5
   REAL(KIND=kdp) :: ph, alk
   CHARACTER(LEN=130) :: logline1, logline2
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: write5.f90 7042 2012-10-29 19:23:57Z dlpark $'
+  CHARACTER(LEN=80) :: ident_string='$Id: write5.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ALLOCATE (lprnt3(nxyz), lprnt4(nxyz),  &

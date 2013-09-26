@@ -24,7 +24,7 @@ SUBROUTINE XP_aplbce_thread(xp)
   LOGICAL :: erflg  
   REAL(KIND=kdp) :: qsbc, qsbc2
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: XP_aplbce.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: XP_aplbce.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ufdt2 = fdtmth  
@@ -211,7 +211,7 @@ SUBROUTINE XP_aplbce(xp)
   LOGICAL :: erflg  
   REAL(KIND=kdp) :: qsbc, qsbc2
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: XP_aplbce.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: XP_aplbce.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ufdt2 = fdtmth  

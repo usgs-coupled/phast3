@@ -60,7 +60,7 @@ SUBROUTINE init2_1
   TYPE(cell_subdom), DIMENSION(:), ALLOCATABLE :: cell_sd
   LOGICAL :: all_dry, some_dry
   ! ... set string for use with rcs ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: init2_1.F90 7067 2012-11-02 20:22:09Z dlpark $'
+  CHARACTER(LEN=80) :: ident_string='$Id: init2_1.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
 !!$  ALLOCATE (axsav(nxyz), aysav(nxyz), azsav(nxyz),  &
 !!$       stat = a_err)

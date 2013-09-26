@@ -1,4 +1,4 @@
-! ... $Id: init2_1_xfer.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $
+! ... $Id: init2_1_xfer.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $
 SUBROUTINE init2_1_xfer_m
 ! ... Transfer calculated group 2 parameters to worker processes
 #if defined(USE_MPI)

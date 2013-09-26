@@ -1,4 +1,4 @@
-! ... $Id: hdf_f.F90 7045 2012-10-29 23:16:27Z dlpark $
+! ... $Id: hdf_f.F90,v 1.2 2013/09/26 22:49:48 klkipp Exp klkipp $
 SUBROUTINE hdf_write_invariant(l_mpi_myself)
   ! ... Preconditions:
   ! ...   Must be called before first call to EQUILIBRATE
