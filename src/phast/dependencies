@@ -96,7 +96,7 @@ RM_interface.o: ../RM_interface.cpp ../Reaction_module.h \
  ../IPhreeqcPhast/IPhreeqc/phreeqcpp/NA.h ../hdf.h
 hdf.o: ../hdf.cpp ../IPhreeqcPhast/IPhreeqc/phreeqcpp/phrqtype.h ../hdf.h
 phast_main.o: ../phast_main.cpp
-workersubs.o: ../workersubs.cpp
+xfer_indices.o: ../xfer_indices.cpp
 IPhreeqcPhastLib.o: ../IPhreeqcPhast/IPhreeqcPhastLib.cpp \
  ../IPhreeqcPhast/IPhreeqc/IPhreeqc.h ../IPhreeqcPhast/IPhreeqc/Var.h \
  ../IPhreeqcPhast/IPhreeqc/IPhreeqc.hpp \
