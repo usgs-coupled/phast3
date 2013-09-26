@@ -51,7 +51,7 @@ public:
 	bool File_exists(const std::string &name);
 	void File_rename(const std::string &temp_name, const std::string &name, const std::string &backup_name);
 	int Find_components();
-	void Forward_and_back(int *initial_conditions, int *axes);
+	//void Forward_and_back(int *initial_conditions, int *axes);
 	void Fractions2Solutions(void);
 	void Fractions2Solutions_thread(int n);	
 	void Init_uz(void);
@@ -67,6 +67,7 @@ public:
 	void Scale_solids(int n, int iphrq, LDBLE frac);
 	void Send_restart_name(std::string &name);
 	void Set_end_cells(void);
+	void Set_mapping(int *grid2chem);
 	void Setup_boundary_conditions(const int n_boundary, int *boundary_solution1,
 						  int *boundary_solution2, double *fraction1,
 						  double *boundary_fraction, int dim);

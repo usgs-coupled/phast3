@@ -909,6 +909,7 @@ Reaction_module::File_rename(const std::string &temp_name, const std::string &na
 	}
 	rename(temp_name.c_str(), name.c_str());
 }
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Forward_and_back(int *initial_conditions, int *naxes)
@@ -1214,6 +1215,7 @@ Reaction_module::Forward_and_back(int *initial_conditions, int *naxes)
 	}
 	return;
 }
+#endif
 /* ---------------------------------------------------------------------- */
 int
 Reaction_module::Find_components(void)	
@@ -3121,6 +3123,67 @@ Reaction_module::Set_end_cells(void)
 	}
 }
 #endif
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Set_mapping(int *grid2chem)
+/* ---------------------------------------------------------------------- */
+{
+	back.clear();
+
+	// find count_chem
+	this->count_chem = 0;
+	for (int i = 0; i < this->nxyz; i++)
+	{
+		if (grid2chem[i] > count_chem)
+		{
+			count_chem = grid2chem[i];
+		}
+	}
+	count_chem ++; 
+
+	for (size_t i = 0; i < count_chem; i++)
+	{
+		std::vector<int> temp;
+		back.push_back(temp);
+	}
+	for (int i = 0; i < this->nxyz; i++)
+	{
+		int n = grid2chem[i];
+		if (n >= count_chem)
+		{
+			error_msg("Error in cell out of range in mapping (grid to chem).", STOP);
+		}
+
+		// copy to forward
+		forward.push_back(n);
+
+		// add to back
+		if (n >= 0) 
+		{
+			back[n].push_back(i);
+		}
+	}
+
+	// set -1 for back items > 0
+	for (int i = 0; i < this->count_chem; i++)
+	{
+		// add to back
+		for (size_t j = 1; j < back[i].size(); j++)
+		{
+			int n = back[i][j];
+			forward[n] = -1;
+		}
+	}
+	// check that all count_chem have at least 1 cell
+	for (int i = 0; i < this->count_chem; i++)
+	{
+		if (back[i].size() == 0)
+		{
+			error_msg("Error in building inverse mapping (chem to grid).", STOP);
+		}
+	}
+	
+}
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Setup_boundary_conditions(

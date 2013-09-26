@@ -253,7 +253,7 @@ SUBROUTINE dealloc_arr
   ENDIF
 
   ! ... Deallocate geometry information: mcg 
-  DEALLOCATE (arx, ary, arz,  &
+  DEALLOCATE (arx, ary, arz, grid2chem, &
        STAT = da_err)
   IF (da_err /= 0) THEN  
      PRINT *, "Array deallocation failed: dealloc_arr, init2.1, number 2"

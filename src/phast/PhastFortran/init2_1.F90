@@ -141,7 +141,7 @@ SUBROUTINE init2_1
   denc = 0._kdp  
   vis0 = abs(visfac)
   ! ... Allocate geometry information: mcg 
-  ALLOCATE (arx(nxyz), ary(nxyz), arz(nxyz),  &
+  ALLOCATE (arx(nxyz), ary(nxyz), arz(nxyz), grid2chem(nxyz), &
        STAT = a_err)
   IF (a_err /= 0) THEN  
      PRINT *, "Array allocation failed: init2.1, number 2"

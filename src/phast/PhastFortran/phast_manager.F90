@@ -8,7 +8,7 @@ SUBROUTINE phast_manager
     USE mcch, ONLY: f1name, f2name, f3name, version_name, comp_name,  &
         restart_files, num_restart_files
     USE mcch_m
-    USE mcg, ONLY: naxes, nx, ny, nz, nxyz, npmz
+    USE mcg, ONLY: naxes, nx, ny, nz, nxyz, npmz, grid2chem
     USE mcm
     USE mcm_m
     USE mcn, ONLY: x_node, y_node, z_node, pv0, volume
@@ -48,6 +48,10 @@ SUBROUTINE phast_manager
             IMPLICIT NONE
             CHARACTER :: str
         END SUBROUTINE RM_log_screen_prt
+        SUBROUTINE create_mapping(ic)
+            implicit none
+            INTEGER, DIMENSION(:,:), INTENT(INOUT) :: ic
+        END SUBROUTINE create_mapping
 #ifdef USE_MPI
         SUBROUTINE worker_get_indexes(indx_sol1_ic, indx_sol2_ic, &
             mxfrac, naxes, nxyz, &
@@ -194,7 +198,10 @@ SUBROUTINE phast_manager
             mpi_tasks)
 
         ! ... Define mapping from 3D domain to chemistry
-        CALL RM_forward_and_back(rm_id, indx_sol1_ic, naxes) 
+        !CALL RM_forward_and_back(rm_id, indx_sol1_ic, naxes) 
+        CALL create_mapping(indx_sol1_ic)
+        CALL RM_set_mapping(rm_id, grid2chem)
+        
         DO i = 1, num_restart_files
             CALL RM_send_restart_name(rm_id, restart_files(i))
         ENDDO

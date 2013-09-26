@@ -19,7 +19,7 @@
 #define RM_distribute_initial_conditions   FC_FUNC_ (rm_distribute_initial_conditions, RM_DISTRIBUTE_INITIAL_CONDITIONS)
 #define RM_error                           FC_FUNC_ (rm_error,                         RM_ERROR)
 #define RM_find_components                 FC_FUNC_ (rm_find_components,               RM_FIND_COMPONENTS)
-#define RM_forward_and_back                FC_FUNC_ (rm_forward_and_back,              RM_FORWARD_AND_BACK)
+//#define RM_forward_and_back                FC_FUNC_ (rm_forward_and_back,              RM_FORWARD_AND_BACK)
 #define RM_fractions2solutions             FC_FUNC_ (rm_fractions2solutions,           RM_FRACTIONS2SOLUTIONS)
 #define RM_get_component                   FC_FUNC_ (rm_get_component,                 RM_GET_COMPONENT)
 #define RM_initial_phreeqc_run             FC_FUNC_ (rm_initial_phreeqc_run,           RM_INITIAL_PHREEQC_RUN)
@@ -31,6 +31,7 @@
 #define RM_run_cells                       FC_FUNC_ (rm_run_cells,                     RM_RUN_CELLS)
 #define RM_send_restart_name               FC_FUNC_ (rm_send_restart_name,             RM_SEND_RESTART_NAME)
 #define RM_setup_boundary_conditions       FC_FUNC_ (rm_setup_boundary_conditions,     RM_SETUP_BOUNDARY_CONDITIONS)
+#define RM_set_mapping                     FC_FUNC_ (rm_set_mapping,                   RM_SET_MAPPING)
 #define RM_solutions2fractions             FC_FUNC_ (rm_solutions2fractions,           RM_SOLUTIONS2FRACTIONS)
 #define RM_transport                       FC_FUNC_ (rm_transport,                     RM_TRANSPORT)
 #define RM_write_bc_raw                    FC_FUNC_ (rm_write_bc_raw,                  RM_WRITE_BC_RAW)
@@ -181,6 +182,7 @@ void RM_setup_boundary_conditions(
 			double *fraction1,
 			double *boundary_fraction, 
 			int *dim);
+void RM_set_mapping (int *id, int *grid2chem); 
 void RM_solutions2fractions(int *id);
 void RM_transport(int *id, int *ncomps);
 void RM_write_bc_raw(int *id, 

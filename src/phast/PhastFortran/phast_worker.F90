@@ -165,7 +165,9 @@ SUBROUTINE phast_worker
             mpi_tasks)
 
         ! ... Mapping from full 3D domain to chemistry
-        CALL RM_forward_and_back(rm_id, indx_sol1_ic, naxes) 
+        !CALL RM_forward_and_back(rm_id, indx_sol1_ic, naxes) 
+        CALL create_mapping(indx_sol1_ic)
+        CALL RM_set_mapping(grid2chem)
         
         ! ... Distribute initial conditions for chemistry    
         DO i = 1, num_restart_files

@@ -119,6 +119,7 @@ MODULE mcg
   INTEGER :: mijkm, mijkp, mijmk, mijpk, mimjk, mipjk
   INTEGER :: mtp1
   INTEGER :: npmz, nx, nxy, nxyz, ny, nz, nxyzh
+  INTEGER, DIMENSION(:), ALLOCATABLE :: grid2chem
   !
 CONTAINS
   FUNCTION cellno(i,j,k) 
