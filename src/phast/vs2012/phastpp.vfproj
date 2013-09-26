@@ -188,8 +188,6 @@
 		<File RelativePath="..\PhastFortran\write5.f90"/>
 		<File RelativePath="..\PhastFortran\write5_ss_flow.f90"/>
 		<File RelativePath="..\PhastFortran\write6.f90"/>
-		<File RelativePath="..\PhastFortran\xfer_to_manager.F90"/>
-		<File RelativePath="..\PhastFortran\xfer_to_workers.F90"/>
 		<File RelativePath="..\PhastFortran\XP_aplbce.f90"/>
 		<File RelativePath="..\PhastFortran\XP_aplbci.F90"/>
 		<File RelativePath="..\PhastFortran\XP_asembl.f90"/>
@@ -208,5 +206,7 @@
 		<File RelativePath="..\PhastFortran\hdf_f.F90"/></Filter>
 		<Filter Name="MPI_OBJS">
 		<File RelativePath="..\PhastFortran\mpi_mod.F90"/>
-		<File RelativePath="..\PhastFortran\phast_worker.F90"/></Filter></Filter></Files>
+		<File RelativePath="..\PhastFortran\phast_worker.F90"/>
+		<File RelativePath="..\PhastFortran\xfer_to_manager.F90"/>
+		<File RelativePath="..\PhastFortran\xfer_to_workers.F90"/></Filter></Filter></Files>
 	<Globals/></VisualStudioProject>

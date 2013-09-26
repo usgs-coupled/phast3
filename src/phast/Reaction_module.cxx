@@ -3129,6 +3129,7 @@ Reaction_module::Set_mapping(int *grid2chem)
 /* ---------------------------------------------------------------------- */
 {
 	back.clear();
+	forward.clear();
 
 	// find count_chem
 	this->count_chem = 0;

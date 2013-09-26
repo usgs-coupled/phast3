@@ -11,12 +11,6 @@
     <Filter Include="Source Files\COMMON_CXXOBJS">
       <UniqueIdentifier>{5d189165-b46c-4b9f-85dd-b4f436c3a7f3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\MPI_OBJS">
-      <UniqueIdentifier>{c955dc02-7322-4108-977a-965f5b542c5f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\MERGE_OBJS">
-      <UniqueIdentifier>{2de0c415-ad7f-4a09-9313-5229d4ce6a50}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\HDF_OBJS">
       <UniqueIdentifier>{fbd19430-b833-49f3-aa00-aad281f23178}</UniqueIdentifier>
     </Filter>
@@ -33,6 +27,9 @@
     <Filter Include="Resource Files">
       <UniqueIdentifier>{499f1dbc-fe10-4d7b-a3e4-d8eccc9840fe}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+    <Filter Include="Source Files\MPI_OBJS">
+      <UniqueIdentifier>{96851506-91ac-403d-9489-fd7556a3794a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -57,11 +54,11 @@
     <ClCompile Include="..\KDtree\Point.cpp">
       <Filter>Source Files\PHASTINPUT_OBJS</Filter>
     </ClCompile>
-    <ClCompile Include="..\workersubs.cpp">
-      <Filter>Source Files\MERGE_OBJS</Filter>
-    </ClCompile>
     <ClCompile Include="..\hdf.cpp">
       <Filter>Source Files\HDF_OBJS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xfer_indices.cpp">
+      <Filter>Source Files\MPI_OBJS</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
