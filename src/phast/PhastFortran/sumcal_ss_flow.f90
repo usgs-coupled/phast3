@@ -478,7 +478,7 @@ SUBROUTINE sumcal_ss_flow
      totwfp=0._kdp
      totwhi=0._kdp
      totwhp=0._kdp
-o     DO  is=1,ns
+     DO  is=1,ns
         tqwsp(is)=0._kdp
         tqwsi(is)=0._kdp
         totwsi(is)=0._kdp

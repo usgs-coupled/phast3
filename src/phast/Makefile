@@ -590,8 +590,7 @@ COMMON_FOBJS =	\
 	XP_wbcflo.o \
 	XP_wellsc.o \
 	XP_wellsr.o \
-	zone_flow.o \
-	zone_flow_ss.o 
+	zone_flow.o 
 
 COMMON_CXXOBJS = \
 gzstream.o \
@@ -712,7 +711,7 @@ Point.o
 
 HDF_OBJS     =  #hdf.o hdf_f.o
 
-MPI_OBJS     =	workersubs.o
+MPI_OBJS     =	xfer_indices.o
 
 
 PHASTINPUT_FILES = ../KDtree/KDtree.cpp \
@@ -816,13 +815,12 @@ read2.o: ../PhastFortran/read2.F90 module_dummy.o
 read2_xfer.o: ../PhastFortran/read2_xfer.F90 module_dummy.o
 read3.o: ../PhastFortran/read3.F90 module_dummy.o
 read3_xfer.o: ../PhastFortran/read3_xfer.F90 module_dummy.o
-rhsn.o: ../PhastFortran/rhsn.f90 module_dummy.o
-rhsn_manager.o: ../PhastFortran/rhsn_manager.F90 module_dummy.o
-rhsn_ss_flow.o: ../PhastFortran/rhsn_ss_flow.f90 module_dummy.o
+rhsn_flow.o: ../PhastFortran/rhsn_flow.f90 module_dummy.o
 sbcflo.o: ../PhastFortran/sbcflo.f90 module_dummy.o
 set_component_map.o: ../PhastFortran/set_component_map.F90 module_dummy.o
 simulate_ss_flow.o: ../PhastFortran/simulate_ss_flow.f90 module_dummy.o
 stonb.o: ../PhastFortran/stonb.f90 module_dummy.o
+sumcal0_manager.o: ../PhastFortran/sumcal0_manager.F90 module_dummy.o
 sumcal1.o: ../PhastFortran/sumcal1.F90 module_dummy.o
 sumcal1_manager.o: ../PhastFortran/sumcal1_manager.F90 module_dummy.o
 sumcal2.o: ../PhastFortran/sumcal2.f90 module_dummy.o
@@ -866,7 +864,6 @@ XP_wbcflo.o: ../PhastFortran/XP_wbcflo.f90 module_dummy.o
 XP_wellsc.o: ../PhastFortran/XP_wellsc.f90 module_dummy.o
 XP_wellsr.o: ../PhastFortran/XP_wellsr.f90 module_dummy.o
 zone_flow.o: ../PhastFortran/zone_flow.f90 module_dummy.o
-zone_flow_ss.o: ../PhastFortran/zone_flow_ss.f90 module_dummy.o
 #
 #  PHAST Fortran files
 #
