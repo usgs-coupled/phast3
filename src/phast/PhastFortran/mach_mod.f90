@@ -1,5 +1,5 @@
 ! ... This module is used by both manager and worker programs
-! ... $Id: mach_mod.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $
+! ... $Id: mach_mod.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $
 
 MODULE machine_constants
   ! ... machine dependent parameters

@@ -28,7 +28,7 @@ SUBROUTINE calcc_thread(c, dc, denn, dp, dpkm, dpkp, dt, fracn, fracnzkp,  &
        pvkdtn, tnp, ufd, ufd2, upct, upv, zfsnp, zk
   REAL(KIND=kdp), PARAMETER :: epssat = 1.e-6_kdp  
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: calcc.f90 6888 2012-08-19 21:59:06Z dlpark $'
+  CHARACTER(LEN=80) :: ident_string='$Id: calcc.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   pnp = p+dp
@@ -189,7 +189,7 @@ SUBROUTINE calcc(c, dc, denn, dp, dpkm, dpkp, dt, fracn, fracnzkp,  &
        pvkdtn, tnp, ufd, ufd2, upct, upv, zfsnp, zk
   REAL(KIND=kdp), PARAMETER :: epssat = 1.e-6_kdp  
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: calcc.f90 6888 2012-08-19 21:59:06Z dlpark $'
+  CHARACTER(LEN=80) :: ident_string='$Id: calcc.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   pnp = p+dp

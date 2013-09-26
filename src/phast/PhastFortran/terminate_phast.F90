@@ -25,7 +25,7 @@ SUBROUTINE terminate_phast
   INTEGER :: m, imod, k
   INTEGER :: ios
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: terminate_phast.F90 5096 2011-01-29 00:23:31Z klkipp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: terminate_phast.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ! ... Print initial condition head distribution to file

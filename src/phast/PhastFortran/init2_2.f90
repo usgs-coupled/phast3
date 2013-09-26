@@ -28,7 +28,7 @@ SUBROUTINE init2_2
 !$$  REAL(kind=kdp), DIMENSION(:), ALLOCATABLE :: ukbc, uzbc, ubbbc
 !$$  REAL(KIND=kdp), DIMENSION(nxyz) :: frac_icchem
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: init2_2.f90 6808 2012-07-23 20:54:31Z dlpark $'
+  CHARACTER(LEN=80) :: ident_string='$Id: init2_2.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   nr=nx

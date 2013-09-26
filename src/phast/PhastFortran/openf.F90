@@ -13,7 +13,7 @@ SUBROUTINE openf
   INTEGER :: i, a_err
   CHARACTER(LEN=255) :: restart_name
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: openf.F90 7044 2012-10-29 22:55:01Z dlpark $'
+  CHARACTER(LEN=80) :: ident_string='$Id: openf.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ! ... 'Phast.tmp' contains chemistry data filename, chemistry data-base

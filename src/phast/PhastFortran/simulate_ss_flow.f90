@@ -14,7 +14,7 @@ SUBROUTINE simulate_ss_flow
   IMPLICIT NONE
   CHARACTER(LEN=130) :: logline1, logline2
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: simulate_ss_flow.f90 8062 2013-09-19 23:00:37Z dlpark $'
+  CHARACTER(LEN=80) :: ident_string='$Id: simulate_ss_flow.f90,v 1.2 2013/09/19 23:15:13 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ! ... Start of the transient loop for marching to steady state

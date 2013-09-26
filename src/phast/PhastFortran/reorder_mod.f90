@@ -17,7 +17,7 @@ CONTAINS
     !
     INTEGER :: i, n1, n2, n3
     ! ... Set string for use with RCS ident command
-    CHARACTER(LEN=80) :: ident_string='$Id: reorder_mod.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $'
+    CHARACTER(LEN=80) :: ident_string='$Id: reorder_mod.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
     !     ------------------------------------------------------------------
     !...
     IF(slmeth == 1) THEN

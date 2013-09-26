@@ -18,7 +18,7 @@ SUBROUTINE dealloc_arr_worker
   IMPLICIT NONE
   INTEGER :: da_err, i
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: dealloc_arr_worker.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: dealloc_arr_worker.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
     IF (.not.solute) THEN

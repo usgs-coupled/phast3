@@ -33,7 +33,7 @@ SUBROUTINE phast_sub(l_mpi_tasks, l_mpi_myself)
   IMPLICIT NONE
   INTEGER :: l_mpi_tasks, l_mpi_myself
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: phast_spmd.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: phast_spmd.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ! ... Extract the version name for the header

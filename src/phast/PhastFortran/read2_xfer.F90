@@ -1,4 +1,4 @@
-! ... $Id: read2_xfer.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $
+! ... $Id: read2_xfer.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $
 SUBROUTINE group2_distribute
   USE mcc
   USE mcv
@@ -307,7 +307,7 @@ SUBROUTINE read2_xfer_w
   INTEGER, DIMENSION(1:4) :: array_recv_i
   REAL(KIND=kdp), DIMENSION(1:10) :: array_recv_r
   ! ... set string for use with rcs ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: read2_xfer.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: read2_xfer.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   nr = nx

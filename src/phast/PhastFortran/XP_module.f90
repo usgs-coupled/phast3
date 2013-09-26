@@ -90,7 +90,7 @@ MODULE XP_module
   END TYPE Transporter
   ! ... Set string for use with RCS ident command
   CHARACTER(LEN=85), PRIVATE :: ident_string=  &
-       '$RCSfile: XP_module.f90,v $//$Revision: 1.1 $//$Date: 2013/09/19 20:41:58 $'
+       '$RCSfile: XP_module.f90,v $//$Revision: 1.2 $//$Date: 2013/09/26 22:49:48 $'
   TYPE (Transporter), DIMENSION(:), ALLOCATABLE :: xp_list
 
 CONTAINS

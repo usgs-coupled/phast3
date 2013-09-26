@@ -13,7 +13,7 @@ SUBROUTINE incidx(x1,x2,nx,xs,i1,i2,erflg)
   !
   REAL(KIND=kdp) :: eps, x1m, x2p
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: incidx.f90 5095 2011-01-28 00:08:01Z klkipp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: incidx.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   !  eps=1.d-6*(x2-x1)+1.d-6

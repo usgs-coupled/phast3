@@ -25,7 +25,7 @@ SUBROUTINE XP_coeff_trans_thread(xp)
        tdzy, u1, u2, u3, uden, udx, udxdy, udxdyi, udxdyo, udxdz,  &
        udy, udydz, udz, ufr, ufrac, updxdy, updxdz, updydz, uvel, uvis
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: coeff_trans.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: coeff_trans.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ! ... Prepare to update solute conductances
@@ -350,7 +350,7 @@ SUBROUTINE coeff_trans
        tdzy, u1, u2, u3, uden, udx, udxdy, udxdyi, udxdyo, udxdz,  &
        udy, udydz, udz, ufr, ufrac, updxdy, updxdz, updydz, uvel, uvis
   ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: coeff_trans.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp klkipp $'
+  CHARACTER(LEN=80) :: ident_string='$Id: coeff_trans.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   ! ... Prepare to update solute conductances
