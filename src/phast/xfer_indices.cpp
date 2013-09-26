@@ -1,3 +1,4 @@
+#ifdef USE_MPI
 #include <mpi.h>
 #include <time.h>
 #include <iostream>
@@ -6,12 +7,12 @@
 #define FC_FUNC_(name,NAME) NAME
 #endif
 #if defined(FC_FUNC_)
-#define WORKER_GET_INDEXES    FC_FUNC_ (worker_get_indexes,     WORKER_GET_INDEXES)
+#define XFER_INDICES    FC_FUNC_ (xfer_indices,     XFER_INDICES)
 #endif /*FC_FUNC_*/
 #if defined(__cplusplus)
 extern "C" {
 #endif
-	void WORKER_GET_INDEXES(int *indx_sol1_ic, int *indx_sol2_ic,
+	void XFER_INDICES(int *indx_sol1_ic, int *indx_sol2_ic,
 		double *mxfrac, int *naxes, int *nxyz,
 		double *x_node, double *y_node, double *z_node,
 		double *cnvtmi, int *transient_fresur,
@@ -24,7 +25,7 @@ extern "C" {
 }
 #endif
 void
-WORKER_GET_INDEXES(
+XFER_INDICES(
 	int    *indx_sol1_ic, 
 	int    *indx_sol2_ic, 
 	double *mxfrac,
@@ -49,7 +50,6 @@ WORKER_GET_INDEXES(
 	int    *kinetics_units,
 	int    *mpi_myself)
 {
-#ifdef USE_MPI
     // make sure latest npmz for all workers
 	MPI_Bcast(indx_sol1_ic, 7 * (*nxyz), MPI_INT, 0, MPI_COMM_WORLD);
 	MPI_Bcast(indx_sol2_ic, 7 * (*nxyz), MPI_INT, 0, MPI_COMM_WORLD);
@@ -74,6 +74,5 @@ WORKER_GET_INDEXES(
 	MPI_Bcast(gasphase_units, 1, MPI_INT, 0, MPI_COMM_WORLD);
 	MPI_Bcast(kinetics_units, 1, MPI_INT, 0, MPI_COMM_WORLD);
 	return;
-#endif
 }
-
+#endif // USE_MPI

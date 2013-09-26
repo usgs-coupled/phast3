@@ -398,12 +398,7 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)
     </ClCompile>
     <ClCompile Include="..\KDtree\kdtree2.cpp" />
     <ClCompile Include="..\KDtree\Point.cpp" />
-    <ClCompile Include="..\workersubs.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ser|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ser|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ser_debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="..\xfer_indices.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="phast.rc" />

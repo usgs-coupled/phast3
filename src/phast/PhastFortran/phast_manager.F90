@@ -53,7 +53,7 @@ SUBROUTINE phast_manager
             INTEGER, DIMENSION(:,:), INTENT(INOUT) :: ic
         END SUBROUTINE create_mapping
 #ifdef USE_MPI
-        SUBROUTINE worker_get_indexes(indx_sol1_ic, indx_sol2_ic, &
+        SUBROUTINE xfer_indices(indx_sol1_ic, indx_sol2_ic, &
             mxfrac, naxes, nxyz, &
             x_node, y_node, z_node, &
             cnvtmi, transient_fresur, &
@@ -87,7 +87,7 @@ SUBROUTINE phast_manager
             INTEGER :: gasphase_units
             INTEGER :: kinetics_units
             INTEGER :: mpi_myself
-        END SUBROUTINE worker_get_indexes
+        END SUBROUTINE xfer_indices
 #endif
     END INTERFACE
     ! ... Set string for use with RCS ident command
@@ -172,7 +172,7 @@ SUBROUTINE phast_manager
 
 #if defined(USE_MPI)
         ! ... Send data to workers
-        CALL worker_get_indexes(indx_sol1_ic(1,1), indx_sol2_ic(1,1), ic_mxfrac(1,1), naxes(1), nxyz,  &
+        CALL xfer_indices(indx_sol1_ic(1,1), indx_sol2_ic(1,1), ic_mxfrac(1,1), naxes(1), nxyz,  &
         x_node(1), y_node(1), z_node(1), cnvtmi, transient_fresur, steady_flow, pv0(1),  &
         rebalance_method_f, volume(1), tort(1), npmz, &
         exchange_units, surface_units, ssassemblage_units,  &
