@@ -65,8 +65,6 @@ SUBROUTINE phast_manager
             cnvtmi, transient_fresur, &
             steady_flow, pv0, &
             rebalance_method_f, volume, tort, npmz, &
-            exchange_units, surface_units, ssassemblage_units, &
-            ppassemblage_units, gasphase_units, kinetics_units, &
             mpi_myself)
             USE machine_constants, ONLY: kdp
             IMPLICIT NONE
@@ -181,8 +179,6 @@ SUBROUTINE phast_manager
         CALL xfer_indices(indx_sol1_ic(1,1), indx_sol2_ic(1,1), ic_mxfrac(1,1), naxes(1), nxyz,  &
         x_node(1), y_node(1), z_node(1), cnvtmi, transient_fresur, steady_flow, pv0(1),  &
         rebalance_method_f, volume(1), tort(1), npmz, &
-        exchange_units, surface_units, ssassemblage_units,  &
-        ppassemblage_units, gasphase_units, kinetics_units, &
         mpi_myself)
 #endif
 
@@ -213,16 +209,10 @@ SUBROUTINE phast_manager
         ENDDO
 
         ! ... Distribute chemistry initial conditions
-        CALL RM_distribute_initial_conditions(rm_id, &
+        CALL RM_distribute_initial_conditions_mix(rm_id, &
             indx_sol1_ic,           & ! 7 x nxyz end-member 1 
             indx_sol2_ic,           & ! 7 x nxyz end-member 2
-            ic_mxfrac,              & ! 7 x nxyz fraction of end-member 1
-            exchange_units,         & ! water (1) or rock (2)
-            surface_units,          & ! water (1) or rock (2)
-            ssassemblage_units,     & ! water (1) or rock (2)		
-            ppassemblage_units,     & ! water (1) or rock (2)
-            gasphase_units,         & ! water (1) or rock (2)
-            kinetics_units)	          ! water (1) or rock (2) 
+            ic_mxfrac)                ! 7 x nxyz fraction of end-member 1
 
         ! collect solutions at manager for transport
         CALL RM_solutions2fractions(rm_id)

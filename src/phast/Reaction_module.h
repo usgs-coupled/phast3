@@ -35,17 +35,11 @@ public:
 	void Calculate_well_ph(double *c, double * ph, double * alkalinity);
 	void Convert_to_molal(double *c, int n, int dim);
 	void cxxSolution2fraction(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
-	void Distribute_initial_conditions(
+	void Distribute_initial_conditions_mix(
 		int id,
 		int *initial_conditions1,
 		int *initial_conditions2,	
-		double *fraction1,
-		int exchange_units,
-		int surface_units,
-		int ssassemblage_units,
-		int ppassemblage_units,
-		int gasphase_units,
-		int kinetics_units);
+		double *fraction1);
 	void EndTimeStep(void);
 	void Error_stop(void);
 	bool File_exists(const std::string &name);
@@ -152,6 +146,22 @@ public:
 	const bool Get_print_restart(void) const {return this->print_restart;};
 	void Set_print_restart(bool t) {this->print_restart = t;};
 
+	int Get_input_units_Solution(void) {return this->input_units_Solution;}
+	int Get_input_units_PPassemblage(void) {return this->input_units_PPassemblage;}
+	int Get_input_units_Exchange(void) {return this->input_units_Exchange;}
+	int Get_input_units_Surface(void) {return this->input_units_Surface;}
+	int Get_input_units_GasPhase(void) {return this->input_units_GasPhase;}
+	int Get_input_units_SSassemblage(void) {return this->input_units_SSassemblage;}
+	int Get_input_units_Kinetics(void) {return this->input_units_Kinetics;}
+
+	void Set_input_units_Solution(int i) {this->input_units_Solution = i;}
+	void Set_input_units_PPassemblage(int i) {this->input_units_PPassemblage = i;}
+	void Set_input_units_Exchange(int i) {this->input_units_Exchange = i;}
+	void Set_input_units_Surface(int i) {this->input_units_Surface = i;}
+	void Set_input_units_GasPhase(int i) {this->input_units_GasPhase = i;}
+	void Set_input_units_SSassemblage(int i) {this->input_units_SSassemblage = i;}
+	void Set_input_units_Kinetics(int i) {this->input_units_Kinetics = i;}
+	void Set_input_units(int sol, int pp, int ex, int surf, int gas, int ss, int k);
 protected:
 	std::string database_file_name;
 	std::string chemistry_file_name;
@@ -197,6 +207,13 @@ protected:
 	std::vector<int> have_GasPhase;
 	std::vector<int> have_SSassemblage;
 	std::vector<int> have_Kinetics;
+	int input_units_Solution;
+	int input_units_PPassemblage;
+	int input_units_Exchange;
+	int input_units_Surface;
+	int input_units_GasPhase;
+	int input_units_SSassemblage;
+	int input_units_Kinetics;
 	std::vector <int> forward;				// mapping from nxyz cells to count_chem chemistry cells
 	std::vector <std::vector <int> > back;	// mapping from count_chem chemistry cells to nxyz cells 
 

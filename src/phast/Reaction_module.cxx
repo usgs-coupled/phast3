@@ -128,6 +128,13 @@ if( numCPU < 1 )
 	this->print_hdf = false;					// print flag for hdf file
 	this->print_restart = false;				// print flag for writing restart file 
 	write_xyz_headings = true;
+	this->input_units_Solution = 0;				// not defined yet
+	this->input_units_PPassemblage = 1;			// water 1, rock 2
+	this->input_units_Exchange = 1;			    // water 1, rock 2
+	this->input_units_Surface = 1;			    // water 1, rock 2
+	this->input_units_GasPhase = 1;			    // water 1, rock 2
+	this->input_units_SSassemblage = 1;			// water 1, rock 2
+	this->input_units_Kinetics = 1;			    // water 1, rock 2
 }
 Reaction_module::~Reaction_module(void)
 {
@@ -488,17 +495,11 @@ Reaction_module::cxxSolution2fraction(cxxSolution * cxxsoln_ptr, std::vector<dou
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Distribute_initial_conditions(
+Reaction_module::Distribute_initial_conditions_mix(
 					int id, 
 					int *initial_conditions1,
 					int *initial_conditions2, 
-					double *fraction1,
-					int exchange_units, 
-					int surface_units, 
-					int ssassemblage_units,
-					int ppassemblage_units, 
-					int gasphase_units, 
-					int kinetics_units)
+					double *fraction1)
 /* ---------------------------------------------------------------------- */
 {
 	/*
@@ -578,8 +579,8 @@ Reaction_module::Distribute_initial_conditions(
 		double porosity_factor = (1.0 - porosity) / porosity;
 		Cell_initialize(i, j, initial_conditions1, initial_conditions2,
 			fraction1,
-			exchange_units, surface_units, ssassemblage_units,
-			ppassemblage_units, gasphase_units, kinetics_units,
+			this->input_units_Exchange, this->input_units_Surface, this->input_units_SSassemblage,
+			this->input_units_PPassemblage, this->input_units_GasPhase, this->input_units_Kinetics,
 			porosity_factor,
 			error_set);
 	}
@@ -607,8 +608,8 @@ Reaction_module::Distribute_initial_conditions(
 		double porosity_factor = (1.0 - porosity) / porosity;
 		Cell_initialize(i, j, initial_conditions1, initial_conditions2,
 			fraction1,
-			exchange_units, surface_units, ssassemblage_units,
-			ppassemblage_units, gasphase_units, kinetics_units,
+			this->input_units_Exchange, this->input_units_Surface, this->input_units_SSassemblage,
+			this->input_units_PPassemblage, this->input_units_GasPhase, this->input_units_Kinetics,
 			porosity_factor,
 			error_set);
 	}
@@ -3123,6 +3124,39 @@ Reaction_module::Set_end_cells(void)
 	}
 }
 #endif
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Set_input_units(int sol, int pp, int ex, int surf, int gas, int ss, int kin)
+{
+	if (sol >= 0)
+	{
+		Set_input_units_Solution(sol);
+	}
+	if (pp >= 0)
+	{
+		Set_input_units_PPassemblage(pp);
+	}
+	if (ex >= 0)
+	{
+		Set_input_units_Exchange(ex);
+	}
+	if (surf >= 0)
+	{
+		Set_input_units_Surface(surf);
+	}	
+	if (gas >= 0)
+	{
+		Set_input_units_GasPhase(gas);
+	}
+	if (ss >= 0)
+	{
+		Set_input_units_SSassemblage(ss);
+	}
+	if (kin >= 0)
+	{
+		Set_input_units_Kinetics(kin);
+	}
+}
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Set_mapping(int *grid2chem)

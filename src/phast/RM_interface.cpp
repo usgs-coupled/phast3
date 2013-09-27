@@ -231,16 +231,7 @@ int RM_destroy(int *id)
 /* ---------------------------------------------------------------------- */
 void
 RM_distribute_initial_conditions(int *id,
-							  int *initial_conditions1,		// 7 x nxyz end-member 1
-							  int *initial_conditions2,		// 7 x nxyz end-member 2
-							  double *fraction1,			// 7 x nxyz fraction of end-member 1
-							  int *exchange_units,			// water (1) or rock (2)
-							  int *surface_units,			// water (1) or rock (2)
-							  int *ssassemblage_units,		// water (1) or rock (2)		
-							  int *ppassemblage_units,		// water (1) or rock (2)
-							  int *gasphase_units,			// water (1) or rock (2)
-							  int *kinetics_units			// water (1) or rock (2)
-							  )
+							  int *initial_conditions1)		// 7 x nxyz end-member 1
 /* ---------------------------------------------------------------------- */
 {
 		// 7 indices for initial conditions
@@ -254,17 +245,43 @@ RM_distribute_initial_conditions(int *id,
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->Distribute_initial_conditions(
+		int nxyz = Reaction_module_ptr->Get_nxyz();
+		std::vector<int> initial_conditions2; 
+		initial_conditions2.assign(nxyz, -1);
+		std::vector<double> fraction1; 
+		fraction1.assign(nxyz, 1.0);
+
+		Reaction_module_ptr->Distribute_initial_conditions_mix(
+			*id,
+			initial_conditions1,
+			initial_conditions2.data(),
+			fraction1.data());
+	}
+}
+/* ---------------------------------------------------------------------- */
+void
+RM_distribute_initial_conditions_mix(int *id,
+							  int *initial_conditions1,		// 7 x nxyz end-member 1
+							  int *initial_conditions2,		// 7 x nxyz end-member 2
+							  double *fraction1)			// 7 x nxyz fraction of end-member 1
+/* ---------------------------------------------------------------------- */
+{
+		// 7 indices for initial conditions
+		// 0 solution
+		// 1 ppassemblage
+		// 2 exchange
+		// 3 surface
+		// 4 gas phase
+		// 5 ss_assemblage
+		// 6 kinetics
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Distribute_initial_conditions_mix(
 			*id,
 			initial_conditions1,
 			initial_conditions2,
-			fraction1,
-			*exchange_units,
-			*surface_units,
-			*ssassemblage_units,
-			*ppassemblage_units,
-			*gasphase_units,
-			*kinetics_units);
+			fraction1);
 	}
 }
 
@@ -594,6 +611,27 @@ RM_setup_boundary_conditions(
 					*dim);
 	}
 }
+void 
+RM_set_input_units (int *id, int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *kin)
+{
+	//
+	// Sets units for reaction_module
+	//
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+#ifdef USE_MPI
+		MPI_Bcast(sol, 1, MPI_INT, 0, MPI_COMM_WORLD);
+		MPI_Bcast(pp, 1, MPI_INT, 0, MPI_COMM_WORLD);
+		MPI_Bcast(ex, 1, MPI_INT, 0, MPI_COMM_WORLD);
+		MPI_Bcast(surf, 1, MPI_INT, 0, MPI_COMM_WORLD);
+		MPI_Bcast(gas, 1, MPI_INT, 0, MPI_COMM_WORLD);
+		MPI_Bcast(ss, 1, MPI_INT, 0, MPI_COMM_WORLD);
+		MPI_Bcast(kin, 1, MPI_INT, 0, MPI_COMM_WORLD);
+#endif
+		Reaction_module_ptr->Set_input_units(*sol, *pp, *ex, *surf, *gas, *ss, *kin);
+	}
+}
 void RM_set_mapping(int *id,
 		int *grid2chem)
 {
@@ -605,6 +643,10 @@ void RM_set_mapping(int *id,
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
+		int nxyz = Reaction_module_ptr->Get_nxyz();
+#ifdef USE_MPI
+		MPI_Bcast(grid2chem, nxyz, MPI_INT, 0, MPI_COMM_WORLD);
+#endif
 		Reaction_module_ptr->Set_mapping(grid2chem);
 	}
 }

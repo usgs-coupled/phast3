@@ -54,8 +54,6 @@ SUBROUTINE phast_worker
             cnvtmi, transient_fresur, &
             steady_flow, pv0, &
             rebalance_method_f, volume, tort, npmz, &
-            exchange_units, surface_units, ssassemblage_units, &
-            ppassemblage_units, gasphase_units, kinetics_units, &
             mpi_myself)
             USE machine_constants, ONLY: kdp
         IMPLICIT NONE
@@ -153,8 +151,6 @@ SUBROUTINE phast_worker
         CALL xfer_indices(indx_sol1_ic(1,1), indx_sol2_ic(1,1), ic_mxfrac(1,1), naxes(1), nxyz,  &
             x_node(1), y_node(1), z_node(1), cnvtmi, transient_fresur, steady_flow, pv0(1),  &
             rebalance_method_f, volume(1), tort(1), npmz, &
-            exchange_units, surface_units, ssassemblage_units,  &
-            ppassemblage_units, gasphase_units, kinetics_units, &
             mpi_myself)
         CALL RM_pass_data(               &
             rm_id,                       &
@@ -175,25 +171,23 @@ SUBROUTINE phast_worker
 
         ! ... Mapping from full 3D domain to chemistry
         !CALL RM_forward_and_back(rm_id, indx_sol1_ic, naxes) 
-        CALL create_mapping(indx_sol1_ic)
+        !CALL create_mapping(indx_sol1_ic)
         CALL RM_set_mapping(rm_id, grid2chem(1))
         
         ! ... Distribute initial conditions for chemistry    
         DO i = 1, num_restart_files
             CALL RM_send_restart_name(rm_id, restart_files(i))
         ENDDO
-        CALL RM_distribute_initial_conditions( &
+        !CALL RM_distribute_initial_conditions_mix( &
+        !    rm_id,                  &
+        !    indx_sol1_ic,           & ! 7 x nxyz end-member 1 
+        !    indx_sol2_ic,           & ! 7 x nxyz end-member 2
+        !    ic_mxfrac)                ! 7 x nxyz fraction of end-member 1 
+        
+        CALL RM_distribute_initial_conditions_mix( &
             rm_id,                  &
-            indx_sol1_ic,           & ! 7 x nxyz end-member 1 
-            indx_sol2_ic,           & ! 7 x nxyz end-member 2
-            ic_mxfrac,              & ! 7 x nxyz fraction of end-member 1
-            exchange_units,	        & ! water (1) or rock (2)
-            surface_units,          & ! water (1) or rock (2)
-            ssassemblage_units,     & ! water (1) or rock (2)		
-            ppassemblage_units,     & ! water (1) or rock (2)
-            gasphase_units,         & ! water (1) or rock (2)
-            kinetics_units	)	  ! water (1) or rock (2)  
-     
+            indx_sol1_ic)
+        
         ! ... collect solutions for transport
         CALL RM_solutions2fractions(rm_id)
 
