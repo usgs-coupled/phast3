@@ -17,6 +17,7 @@
 #define RM_create                          FC_FUNC_ (rm_create,                        RM_CREATE)
 #define RM_destroy                         FC_FUNC_ (rm_destroy,                       RM_DESTROY)
 #define RM_distribute_initial_conditions   FC_FUNC_ (rm_distribute_initial_conditions, RM_DISTRIBUTE_INITIAL_CONDITIONS)
+#define RM_distribute_initial_conditions_mix  FC_FUNC_ (rm_distribute_initial_conditions_mix, RM_DISTRIBUTE_INITIAL_CONDITIONS_MIX)
 #define RM_error                           FC_FUNC_ (rm_error,                         RM_ERROR)
 #define RM_find_components                 FC_FUNC_ (rm_find_components,               RM_FIND_COMPONENTS)
 //#define RM_forward_and_back                FC_FUNC_ (rm_forward_and_back,              RM_FORWARD_AND_BACK)
@@ -32,6 +33,7 @@
 #define RM_send_restart_name               FC_FUNC_ (rm_send_restart_name,             RM_SEND_RESTART_NAME)
 #define RM_setup_boundary_conditions       FC_FUNC_ (rm_setup_boundary_conditions,     RM_SETUP_BOUNDARY_CONDITIONS)
 #define RM_set_mapping                     FC_FUNC_ (rm_set_mapping,                   RM_SET_MAPPING)
+#define RM_set_input_units                 FC_FUNC_ (rm_set_input_units,               RM_SET_INPUT_UNITS)
 #define RM_solutions2fractions             FC_FUNC_ (rm_solutions2fractions,           RM_SOLUTIONS2FRACTIONS)
 #define RM_transport                       FC_FUNC_ (rm_transport,                     RM_TRANSPORT)
 #define RM_write_bc_raw                    FC_FUNC_ (rm_write_bc_raw,                  RM_WRITE_BC_RAW)
@@ -100,15 +102,11 @@ void RM_convert_to_molal(int *id, double *c, int *n, int *dim);
 int  RM_create(int *nthreads);
 int  RM_destroy(int *id);
 void RM_distribute_initial_conditions(int *id,
+		int *initial_conditions1);		// 7 x nxyz end-member 1
+void RM_distribute_initial_conditions_mix(int *id,
 		int *initial_conditions1,		// 7 x nxyz end-member 1
 		int *initial_conditions2,		// 7 x nxyz end-member 2
-		double *fraction1,			    // 7 x nxyz fraction of end-member 1
-		int *exchange_units,			// water (1) or rock (2)
-		int *surface_units,			    // water (1) or rock (2)
-		int *ssassemblage_units,		// water (1) or rock (2)		
-		int *ppassemblage_units,		// water (1) or rock (2)
-		int *gasphase_units,			// water (1) or rock (2)
-		int *kinetics_units			    // water (1) or rock (2)
+		double *fraction1			    // 7 x nxyz fraction of end-member 1
 		);
 void RM_error(int *id);
 int RM_find_components(int *id);
@@ -183,6 +181,7 @@ void RM_setup_boundary_conditions(
 			double *boundary_fraction, 
 			int *dim);
 void RM_set_mapping (int *id, int *grid2chem); 
+void RM_set_input_units (int *id, int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *kin);
 void RM_solutions2fractions(int *id);
 void RM_transport(int *id, int *ncomps);
 void RM_write_bc_raw(int *id, 
