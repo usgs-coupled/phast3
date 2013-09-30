@@ -14,9 +14,6 @@
     <Filter Include="Source Files\HDF_OBJS">
       <UniqueIdentifier>{fbd19430-b833-49f3-aa00-aad281f23178}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\CL1MP_OBJS">
-      <UniqueIdentifier>{b35ec951-9b27-4f54-b846-f749fb18412c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\PHASTINPUT_OBJS">
       <UniqueIdentifier>{42755120-3bc6-41cb-9d9e-16436a12cae6}</UniqueIdentifier>
     </Filter>
@@ -30,6 +27,9 @@
     </Filter>
     <Filter Include="Source Files\MPI_OBJS">
       <UniqueIdentifier>{96851506-91ac-403d-9489-fd7556a3794a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\PHASTINPUT_HEADERS">
+      <UniqueIdentifier>{9ae3f962-844b-4c60-a52f-a5ab4289d7ae}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -75,6 +75,15 @@
     </ClInclude>
     <ClInclude Include="..\RM_interface.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\KDtree\Cell_Face.h">
+      <Filter>Header Files\PHASTINPUT_HEADERS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\KDtree\KDtree.h">
+      <Filter>Header Files\PHASTINPUT_HEADERS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\KDtree\Point.h">
+      <Filter>Header Files\PHASTINPUT_HEADERS</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

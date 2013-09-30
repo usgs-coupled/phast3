@@ -316,7 +316,6 @@
     </CustomBuildStep>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\hdf.h" />
     <ClInclude Include="..\IPhreeqcPhast\fwrapPhast.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqcPhast.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqcPhastLib.h" />
@@ -324,21 +323,21 @@
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\CVar.hxx" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\IPhreeqc.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\IPhreeqc.hpp" />
+    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\IPhreeqcCallbacks.h" />
+    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\GasComp.h" />
+    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\NA.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\phreeqc\cvdense.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\phreeqc\cvode.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\cxxKinetics.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\cxxMix.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\phreeqc\dense.h" />
-    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\Dictionary.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\dumper.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\ErrorReporter.hxx" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\Exchange.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\ExchComp.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\fwrap.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\GasPhase.h" />
-    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\phreeqc\global.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\phreeqc\global_structures.h" />
-    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\phreeqc\input.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\ISolution.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\ISolutionComp.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\Keywords.h" />
@@ -348,18 +347,14 @@
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\NumKeyword.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\phreeqc\nvector.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\phreeqc\nvector_serial.h" />
-    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\phreeqc\output.h" />
-    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\phreeqc\p2c.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\Parser.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\PBasic.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\phreeqc\phqalloc.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\Phreeqc.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\Phreeqc_class.h" />
+    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\phrqtype.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\PHRQ_base.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\PHRQ_io.h" />
-    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\phreeqc\phrqtype.h" />
-    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\phreeqc\pitzer.h" />
-    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\phreeqc\pitzer_structures.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\PPassemblage.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\PPassemblageComp.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\Pressure.h" />
@@ -385,6 +380,7 @@
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\Temperature.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\Use.h" />
     <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\phreeqcpp\Utils.h" />
+    <ClInclude Include="..\IPhreeqcPhast\IPhreeqc\Var.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
