@@ -15,7 +15,7 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="ser_debug|Win32" ConfigurationType="typeStaticLibrary">
-				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/MTd" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" ParallelDebugChecks="true" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)../IPhreeqcPhast;$(ProjectDir)../IPhreeqcPhast/IPhreeqc" PreprocessorDefinitions="HDF5_CREATE" EnableRecursion="true" ReentrantCode="reentrancyThreaded" Interfaces="true" WarnDeclarations="true" WarnUnusedVariables="true" WarnTruncateSource="true" FloatingPointModel="strict" FloatingPointExceptionsModel="enable" FloatingPointSpeculation="fpSpeculationStrict" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug"/>
+				<Tool Name="VFFortranCompilerTool" AdditionalOptions="/MTd" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" ParallelDebugChecks="true" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(ProjectDir)../IPhreeqcPhast;$(ProjectDir)../IPhreeqcPhast/IPhreeqc" PreprocessorDefinitions="HDF5_CREATE" EnableRecursion="true" ReentrantCode="reentrancyThreaded" WarnDeclarations="true" WarnUnusedVariables="true" WarnTruncateSource="true" FloatingPointModel="strict" FloatingPointExceptionsModel="enable" FloatingPointSpeculation="fpSpeculationStrict" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" Interfaces="true"/>
 				<Tool Name="VFLibrarianTool"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
@@ -35,7 +35,7 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="merge_debug|Win32" ConfigurationType="typeStaticLibrary">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(DEV_MPICH2_INC);$(ProjectDir)../PhastFortran" PreprocessorDefinitions="MERGE_FILES;HDF5_CREATE;USE_MPI;MPICH_NAME;NO_UNDERSCORES" Interfaces="true" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(DEV_MPICH2_INC);$(ProjectDir)../PhastFortran" PreprocessorDefinitions="MERGE_FILES;HDF5_CREATE;USE_MPI;MPICH_NAME;NO_UNDERSCORES" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" Interfaces="true"/>
 				<Tool Name="VFLibrarianTool"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
@@ -45,7 +45,7 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="ser|x64" ConfigurationType="typeStaticLibrary">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="HDF5_CREATE" EnableRecursion="true" ReentrantCode="reentrancyThreaded" Interfaces="true" OpenMP="OpenMPParallelCode"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="HDF5_CREATE" EnableRecursion="true" ReentrantCode="reentrancyThreaded" OpenMP="OpenMPParallelCode" Interfaces="true"/>
 				<Tool Name="VFLibrarianTool"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
@@ -55,7 +55,7 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="ser_debug|x64" ConfigurationType="typeStaticLibrary">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" PreprocessorDefinitions="HDF5_CREATE" EnableRecursion="true" ReentrantCode="reentrancyThreaded" Interfaces="true" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" PreprocessorDefinitions="HDF5_CREATE" EnableRecursion="true" ReentrantCode="reentrancyThreaded" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" Interfaces="true"/>
 				<Tool Name="VFLibrarianTool"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
@@ -65,7 +65,7 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="merge|x64" ConfigurationType="typeStaticLibrary">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Optimization="optimizeFull" Parallelization="true" PrefetchInsertionOpt="prefetchAggressive" BufferedIO="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(DEV_MPICH2_X64_INC);$(ProjectDir)../PhastFortran" PreprocessorDefinitions="MERGE_FILES;HDF5_CREATE;USE_MPI;MPICH_NAME;NO_UNDERSCORES" Interfaces="true" VectorizerDiagLevel="vectorizerDiagLevel5"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Optimization="optimizeFull" Parallelization="true" PrefetchInsertionOpt="prefetchAggressive" BufferedIO="true" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(DEV_MPICH2_X64_INC);$(ProjectDir)../PhastFortran" PreprocessorDefinitions="MERGE_FILES;HDF5_CREATE;USE_MPI;MPICH_NAME;NO_UNDERSCORES" VectorizerDiagLevel="vectorizerDiagLevel5" Interfaces="true"/>
 				<Tool Name="VFLibrarianTool"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
@@ -75,7 +75,7 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="merge_debug|x64" ConfigurationType="typeStaticLibrary">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(DEV_MPICH2_X64_INC);$(ProjectDir)../PhastFortran" PreprocessorDefinitions="MERGE_FILES;HDF5_CREATE;USE_MPI;MPICH_NAME;NO_UNDERSCORES" Interfaces="true" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug"/>
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" AdditionalIncludeDirectories="$(DEV_MPICH2_X64_INC);$(ProjectDir)../PhastFortran" PreprocessorDefinitions="MERGE_FILES;HDF5_CREATE;USE_MPI;MPICH_NAME;NO_UNDERSCORES" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" Interfaces="true"/>
 				<Tool Name="VFLibrarianTool"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
@@ -90,21 +90,22 @@
 		<File RelativePath="..\PhastFortran\ifwr.inc"/>
 		<File RelativePath="..\IPhreeqcPhast\IPhreeqc\IPhreeqc.f90.inc"/>
 		<File RelativePath="..\PhastFortran\mpi_windows.inc">
-			<FileConfiguration Name="ser|Win32" ExcludedFromBuild="true"/>
-			<FileConfiguration Name="ser_debug|Win32" ExcludedFromBuild="true"/></File></Filter>
+			<FileConfiguration Name="ser_debug|Win32" ExcludedFromBuild="true"/>
+			<FileConfiguration Name="ser|Win32" ExcludedFromBuild="true"/></File></Filter>
 		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"/>
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
 		<Filter Name="COMMON_FOBJS">
 		<File RelativePath="..\PhastFortran\aplbce_flow.f90"/>
 		<File RelativePath="..\PhastFortran\aplbci_flow.F90"/>
 		<File RelativePath="..\PhastFortran\asembl_flow.f90"/>
-		<File RelativePath="..\PhastFortran\asmslp.F90"/>
+		<File RelativePath="..\PhastFortran\asmslp_flow.F90"/>
 		<File RelativePath="..\PhastFortran\calc_velocity.f90"/>
 		<File RelativePath="..\PhastFortran\calcc.f90"/>
 		<File RelativePath="..\PhastFortran\clog.f90"/>
 		<File RelativePath="..\PhastFortran\closef.F90"/>
 		<File RelativePath="..\PhastFortran\coeff_flow.F90"/>
 		<File RelativePath="..\PhastFortran\coeff_trans.F90"/>
+		<File RelativePath="..\PhastFortran\create_mapping.f90"/>
 		<File RelativePath="..\PhastFortran\dealloc_arr.F90"/>
 		<File RelativePath="..\PhastFortran\dealloc_arr_worker.F90"/>
 		<File RelativePath="..\PhastFortran\dump.f90"/>
@@ -131,6 +132,7 @@
 		<File RelativePath="..\PhastFortran\ldchar.f90"/>
 		<File RelativePath="..\PhastFortran\ldchar_bc.f90"/>
 		<File RelativePath="..\PhastFortran\mach_mod.f90"/>
+		<File RelativePath="..\PhastFortran\module_dummy.f90"/>
 		<File RelativePath="..\PhastFortran\modules_g.f90"/>
 		<File RelativePath="..\PhastFortran\modules_manager.f90"/>
 		<File RelativePath="..\PhastFortran\mtoijk.f90"/>
@@ -149,9 +151,7 @@
 		<File RelativePath="..\PhastFortran\read3_xfer.F90"/>
 		<File RelativePath="..\PhastFortran\reorder_mod.f90"/>
 		<File RelativePath="..\PhastFortran\rewi_mod.f90"/>
-		<File RelativePath="..\PhastFortran\rhsn.f90"/>
-		<File RelativePath="..\PhastFortran\rhsn_manager.F90"/>
-		<File RelativePath="..\PhastFortran\rhsn_ss_flow.f90"/>
+		<File RelativePath="..\PhastFortran\rhsn_flow.f90"/>
 		<File RelativePath="..\PhastFortran\sbcflo.f90"/>
 		<File RelativePath="..\PhastFortran\scale_jds_mod.f90"/>
 		<File RelativePath="..\PhastFortran\set_component_map.F90"/>
@@ -159,6 +159,7 @@
 		<File RelativePath="..\PhastFortran\solver_direct_mod.f90"/>
 		<File RelativePath="..\PhastFortran\solver_iter_mod.f90"/>
 		<File RelativePath="..\PhastFortran\stonb.f90"/>
+		<File RelativePath="..\PhastFortran\sumcal0_manager.F90"/>
 		<File RelativePath="..\PhastFortran\sumcal1.F90"/>
 		<File RelativePath="..\PhastFortran\sumcal1_manager.F90"/>
 		<File RelativePath="..\PhastFortran\sumcal2.f90"/>
