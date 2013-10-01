@@ -160,8 +160,9 @@
       <AssemblyDebug>true</AssemblyDebug>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(DEV_ZLIB122_LIB)\..\zlib1.dll $(OutDir)
-copy $(DEV_HDF5_LIBDLL)\hdf5dll.dll $(OutDir)</Command>
+      <Command>copy $(DEV_HDF5_LIBDLL)\hdf5dll.dll $(OutDir)
+copy $(DEV_HDF5_LIBDLL)\..\bin\zlib1.dll $(OutDir)
+copy $(DEV_HDF5_LIBDLL)\..\bin\szlibdll.dll $(OutDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ser_debug|x64'">
