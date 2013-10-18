@@ -613,32 +613,7 @@ RM_set_input_units (int *id, int *sol, int *pp, int *ex, int *surf, int *gas, in
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
-#ifdef USE_MPI
-		if (MPI_COMM_SELF > 0)
-		{
-			int local_sol, local_pp, local_ex, local_surf, local_gas, local_ss, local_kin
-			MPI_Bcast(local_sol, 1, MPI_INT, 0, MPI_COMM_WORLD);
-			MPI_Bcast(local_pp, 1, MPI_INT, 0, MPI_COMM_WORLD);
-			MPI_Bcast(local_ex, 1, MPI_INT, 0, MPI_COMM_WORLD);
-			MPI_Bcast(local_surf, 1, MPI_INT, 0, MPI_COMM_WORLD);
-			MPI_Bcast(local_gas, 1, MPI_INT, 0, MPI_COMM_WORLD);
-			MPI_Bcast(local_ss, 1, MPI_INT, 0, MPI_COMM_WORLD);
-			MPI_Bcast(local_kin, 1, MPI_INT, 0, MPI_COMM_WORLD);
-			Reaction_module_ptr->Set_input_units(local_sol, local_pp, local_ex, local_surf, local_gas, local_ss, local_kin);
-			return;
-		}
-		else
-		{
-			MPI_Bcast(sol, 1, MPI_INT, 0, MPI_COMM_WORLD);
-			MPI_Bcast(pp, 1, MPI_INT, 0, MPI_COMM_WORLD);
-			MPI_Bcast(ex, 1, MPI_INT, 0, MPI_COMM_WORLD);
-			MPI_Bcast(surf, 1, MPI_INT, 0, MPI_COMM_WORLD);
-			MPI_Bcast(gas, 1, MPI_INT, 0, MPI_COMM_WORLD);
-			MPI_Bcast(ss, 1, MPI_INT, 0, MPI_COMM_WORLD);
-			MPI_Bcast(kin, 1, MPI_INT, 0, MPI_COMM_WORLD);
-		}
-#endif
-		Reaction_module_ptr->Set_input_units(*sol, *pp, *ex, *surf, *gas, *ss, *kin);
+		Reaction_module_ptr->Set_input_units(sol, pp, ex, surf, gas, ss, kin);
 	}
 }
 void RM_set_mapping(int *id,

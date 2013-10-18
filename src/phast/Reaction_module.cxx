@@ -3106,35 +3106,56 @@ Reaction_module::Set_end_cells(void)
 #endif
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Set_input_units(int sol, int pp, int ex, int surf, int gas, int ss, int kin)
+Reaction_module::Set_input_units(int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *kin)
 {
+	int local_sol, local_pp, local_ex, local_surf, local_gas, local_ss, local_kin;
+	if (mpi_myself == 0)
+	{
+		local_sol = *sol;
+		local_pp = *pp;
+		local_ex = *ex;
+		local_surf = *surf;
+		local_gas = *gas;
+		local_ss = *ss;
+		local_kin = *kin;
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&local_sol, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&local_pp, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&local_ex, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&local_surf, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&local_gas, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&local_ss, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&local_kin, 1, MPI_INT, 0, MPI_COMM_WORLD);
+#endif
+
 	if (sol >= 0)
 	{
-		Set_input_units_Solution(sol);
+		Set_input_units_Solution(local_sol);
 	}
 	if (pp >= 0)
 	{
-		Set_input_units_PPassemblage(pp);
+		Set_input_units_PPassemblage(local_pp);
 	}
 	if (ex >= 0)
 	{
-		Set_input_units_Exchange(ex);
+		Set_input_units_Exchange(local_ex);
 	}
 	if (surf >= 0)
 	{
-		Set_input_units_Surface(surf);
+		Set_input_units_Surface(local_surf);
 	}	
 	if (gas >= 0)
 	{
-		Set_input_units_GasPhase(gas);
+		Set_input_units_GasPhase(local_gas);
 	}
 	if (ss >= 0)
 	{
-		Set_input_units_SSassemblage(ss);
+		Set_input_units_SSassemblage(local_ss);
 	}
 	if (kin >= 0)
 	{
-		Set_input_units_Kinetics(kin);
+		Set_input_units_Kinetics(local_kin);
 	}
 }
 /* ---------------------------------------------------------------------- */
