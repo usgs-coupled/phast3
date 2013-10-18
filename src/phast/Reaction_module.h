@@ -90,11 +90,9 @@ public:
 	void Set_mpi_myself(int t) {this->mpi_myself = t;}
 	std::vector<double> & Get_old_saturation(void) {return this->old_saturation;}
 	const bool Get_free_surface(void) const {return this->free_surface;};
-	void Set_free_surface(bool t) {this->free_surface = t;};
+	void Set_free_surface(bool t); 
 	const bool Get_steady_flow(void) const {return this->steady_flow;};
-	void Set_steady_flow(bool t) {this->steady_flow = t;};
-	const bool Get_transient_free_surface(void) const {return this->transient_free_surface;};
-	void Set_transient_free_surface(bool t) {this->transient_free_surface = t;};
+	void Set_steady_flow(bool t);
 	const int Get_nxyz(void) const {return this->nxyz;};
 	void Set_nxyz(int t) {this->nxyz = t;};
 	const std::vector<std::string> & Get_components(void) const {return this->components;};
@@ -121,9 +119,9 @@ public:
 	std::vector<double> & Get_volume(void) {return this->volume;};
 	void Set_volume(double * t); 
 	std::vector<int> & Get_print_chem_mask (void) {return this->print_chem_mask;}
-	void Set_print_chem_mask(int * t); // {this->printzone_chem = t;}
+	void Set_print_chem_mask(int * t); 
 	std::vector<int> & Get_print_xyz_mask (void) {return this->print_xyz_mask;}
-	void Set_print_xyz_mask (int * t); // {this->printzone_xyz = t;};
+	void Set_print_xyz_mask (int * t); 
 	int Get_rebalance_method(void) const {return this->rebalance_method;};
 	void Set_rebalance_method(bool t) {this->rebalance_method = t;};
 	double Get_rebalance_fraction(void) const {return this->rebalance_fraction;};
@@ -171,7 +169,6 @@ protected:
 
 	bool free_surface;                      // free surface calculation
 	bool steady_flow;						// steady-state flow
-	bool transient_free_surface;            // free surface and not steady flow
 	int nxyz;								// number of nodes 
 	int count_chem;							// number of cells for chemistry
 	double time;						    // time from transport, sec 
