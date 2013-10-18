@@ -153,9 +153,7 @@ void RM_pass_data(int *id,
 			 int * printzone_xyz,				// nxyz print flags for chemistry XYZ file
 			 int * rebalance_method,            // 0 std; 1 by_cell
 			 double *rebalance_fraction_hst,	// parameter for rebalancing process load for parallel	
-			 double *fraction,                  // mass fraction array
-			 int *mpi_myself,                   // let reaction_module know mpi_myself
-			 int *mpi_tasks                     // let reaction_module know mpi_myself
+			 double *fraction                   // mass fraction array
 			 );
 void RM_run_cells(int *id,
 			 int * print_out,						// print flag for output file 
