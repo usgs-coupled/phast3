@@ -152,7 +152,7 @@ public:
 	void Set_input_units_GasPhase(int i) {this->input_units_GasPhase = i;}
 	void Set_input_units_SSassemblage(int i) {this->input_units_SSassemblage = i;}
 	void Set_input_units_Kinetics(int i) {this->input_units_Kinetics = i;}
-	void Set_input_units(int sol, int pp, int ex, int surf, int gas, int ss, int k);
+	void Set_input_units(int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *k);
 protected:
 	std::string database_file_name;
 	std::string chemistry_file_name;
