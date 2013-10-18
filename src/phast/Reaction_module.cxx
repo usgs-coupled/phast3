@@ -3262,7 +3262,45 @@ Reaction_module::Set_mapping(int *grid2chem_arg)
 		}
 	}
 }
-
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Set_time(double t)
+/* ---------------------------------------------------------------------- */
+{
+	if (mpi_myself == 0)
+	{
+		this->time = t;
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&this->time, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+#endif
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Set_time_conversion(double t)
+/* ---------------------------------------------------------------------- */
+{
+	if (mpi_myself == 0)
+	{
+		this->time_conversion = t;
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&this->time_conversion, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+#endif
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Set_time_step(double t)
+/* ---------------------------------------------------------------------- */
+{
+	if (mpi_myself == 0)
+	{
+		this->time_step = t;
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&this->time_step, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+#endif
+}
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Set_x_node(double * t)
@@ -3589,7 +3627,7 @@ Reaction_module::Write_bc_raw(int *solution_list, int * bc_solution_count,
 		if (n_chem >= this->start_cell[this->mpi_myself] || 
 			n_chem <= this->end_cell[this->mpi_myself])
 		{
-			oss << "# Fortran cell " << n_fort << ". Time " << (this->time_hst) * (this->cnvtmi) << "\n";
+			oss << "# Fortran cell " << n_fort << ". Time " << (this->time) * (this->time_conversion) << "\n";
 			this->workers[0]->Get_solution(n_chem)->dump_raw(oss, 0, &raw_number);
 		}
 	}

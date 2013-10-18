@@ -20,7 +20,6 @@
 #define RM_distribute_initial_conditions_mix  FC_FUNC_ (rm_distribute_initial_conditions_mix, RM_DISTRIBUTE_INITIAL_CONDITIONS_MIX)
 #define RM_error                           FC_FUNC_ (rm_error,                         RM_ERROR)
 #define RM_find_components                 FC_FUNC_ (rm_find_components,               RM_FIND_COMPONENTS)
-//#define RM_forward_and_back                FC_FUNC_ (rm_forward_and_back,              RM_FORWARD_AND_BACK)
 #define RM_fractions2solutions             FC_FUNC_ (rm_fractions2solutions,           RM_FRACTIONS2SOLUTIONS)
 #define RM_get_component                   FC_FUNC_ (rm_get_component,                 RM_GET_COMPONENT)
 #define RM_initial_phreeqc_run             FC_FUNC_ (rm_initial_phreeqc_run,           RM_INITIAL_PHREEQC_RUN)
@@ -35,6 +34,7 @@
 #define RM_set_input_units                 FC_FUNC_ (rm_set_input_units,               RM_SET_INPUT_UNITS)
 #define RM_set_mapping                     FC_FUNC_ (rm_set_mapping,                   RM_SET_MAPPING)
 #define RM_set_nodes                       FC_FUNC_ (rm_set_nodes,                     RM_SET_NODES)
+#define RM_set_time_conversion             FC_FUNC_ (rm_set_time_conversion,           RM_SET_TIME_CONVERSION)
 #define RM_solutions2fractions             FC_FUNC_ (rm_solutions2fractions,           RM_SOLUTIONS2FRACTIONS)
 #define RM_transport                       FC_FUNC_ (rm_transport,                     RM_TRANSPORT)
 #define RM_write_bc_raw                    FC_FUNC_ (rm_write_bc_raw,                  RM_WRITE_BC_RAW)
@@ -73,6 +73,7 @@
 #define RM_set_input_units                    rm_set_input_units
 #define RM_set_mapping                        rm_set_mapping
 #define RM_set_nodes                          rm_set_nodes
+#define RM_set_time_conversion                rm_set_time_conversion
 #define RM_solutions2fractions                rm_solutions2fractions
 #define RM_transport                          rm_transport
 #define RM_write_bc_raw                       rm_write_bc_raw
@@ -121,23 +122,6 @@ void RM_get_component(int * id, int * num, char *chem_name, int l1);
 void RM_initial_phreeqc_run(int * id, char *db_name, char *chem_name, char *prefix_name, int l1, int l2, int l3);
 void RM_log_screen_prt(char *err_str, long l);
 
-void RM_mpi_barrier(int *comm, int *ierr);
-void RM_mpi_bcast(void *buffer, int *count, int *datatype, int *root, int *comm, int *ierr);
-void RM_mpi_comm_create(int *comm, int *group, int *newcom, int *ierr);
-void RM_mpi_comm_group(int *comm, int *group, int *ierr);
-void RM_mpi_get_address(int *location, int *address, int *ierr);
-void RM_mpi_group_incl(int *group, int *n, int *ranks, int *newgroup, int *ierr);
-void RM_mpi_recv(void *buffer, int *count, int *datatype, int *source, int *tag, int *comm, int* status, int *ierr);
-void RM_mpi_send(void *buffer, int *count, int *datatype, int *dest, int *tag, int *comm, int *ierr);
-void RM_mpi_type_commit(int *datatype, int *ierr);
-void RM_mpi_type_create_struct(int *count,
-  int *array_of_blocklengths,
-  int *array_of_displacements,
-  int *array_of_types,
-  int *newtype, int *ierr);
-void RM_mpi_type_free(int *datatype, int *ierr);
-double RM_mpi_wtime(void);
-
 void RM_open_files(int * solute, char * prefix, int l_prefix);
 void RM_open_error_file(void);
 void RM_open_output_file(char * prefix, int l_prefix);
@@ -146,7 +130,7 @@ void RM_open_log_file(char * prefix, int l_prefix);
 void RM_pass_data(int *id,
              bool *fresur,
 			 bool *steady_flow, 
-			 double *cnvtmi,					// conversion factor for time
+			 //double *cnvtmi,					// conversion factor for time
 			 double *pv0,						// nxyz initial pore volumes
 			 double *volume, 					// nxyz geometric cell volumes 
 			 int * printzone_chem,				// nxyz print flags for output file
@@ -160,8 +144,8 @@ void RM_run_cells(int *id,
 			 int * print_sel,						// print flag for selected output
 			 int * print_hdf,						// print flag for hdf file
 			 int * print_restart,					// print flag for writing restart file 
-			 double *time_hst,					    // time from transport 
-			 double *time_step_hst,				    // time step from transport
+			 double *time,					        // time from transport 
+			 double *time_step,				        // time step from transport
  			 double *fraction,					    // mass fractions nxyz:components
 			 double *frac,							// saturation fraction
 			 double *pv,                            // nxyz current pore volumes 
@@ -180,8 +164,8 @@ void RM_setup_boundary_conditions(
 void RM_set_input_units (int *id, 
 	int *sol=NULL, int *pp=NULL, int *ex=NULL, int *surf=NULL, int *gas=NULL, int *ss=NULL, int *kin=NULL);
 void RM_set_mapping (int *id, int *grid2chem=NULL); 
-void RM_set_nodes(int *id, 
-	double *x_node, double *y_node, double *z_node);
+void RM_set_nodes(int *id, double *x_node, double *y_node, double *z_node);
+void RM_set_time_conversion(int *id, double *t);
 void RM_solutions2fractions(int *id);
 void RM_transport(int *id, int *ncomps);
 void RM_write_bc_raw(int *id, 

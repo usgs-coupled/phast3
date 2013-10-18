@@ -52,8 +52,12 @@ SUBROUTINE phast_manager
             IMPLICIT NONE
             INTEGER :: id
             INTEGER :: grid2chem
-        END SUBROUTINE RM_set_mapping   
- 
+        END SUBROUTINE RM_set_mapping 
+        SUBROUTINE RM_set_time_conversion(id, t)   
+            IMPLICIT NONE
+            INTEGER :: id
+            DOUBLE PRECISION :: t
+        END SUBROUTINE RM_set_time_conversion         
         SUBROUTINE create_mapping(ic)
             implicit none
             INTEGER, DIMENSION(:,:), INTENT(INOUT) :: ic
@@ -61,7 +65,6 @@ SUBROUTINE phast_manager
         SUBROUTINE RM_pass_data(rm_id,        &
             fresur,                      &
             steady_flow,                 &
-            cnvtmi,                      &
             pv0,                         &
             volume,                      &
             iprint_chem,                 &
@@ -72,7 +75,7 @@ SUBROUTINE phast_manager
             IMPLICIT NONE 
             logical, INTENT(INOUT) :: fresur, steady_flow
             INTEGER, INTENT(INOUT) :: rm_id, iprint_chem, iprint_xyz, rebalance_method_f 
-            double precision, INTENT(INOUT) :: cnvtmi, pv0, volume 
+            double precision, INTENT(INOUT) :: pv0, volume 
             double precision, INTENT(INOUT) :: c, rebalance_fraction_f
         END SUBROUTINE RM_pass_data
 #ifdef USE_MPI
@@ -203,10 +206,10 @@ SUBROUTINE phast_manager
         
         CALL RM_set_input_units (rm_id, 1, 1, 1, 1, 1, 1, 1)
         CALL RM_set_nodes(rm_id, x_node, y_node, z_node)
+        CALL RM_set_time_conversion(rm_id, cnvtmi)
         CALL RM_pass_data(rm_id,        &
             fresur,                      &
             steady_flow,                 &
-            cnvtmi,                      &
             pv0(1),                         &
             volume(1),                      &
             iprint_chem(1),                 &

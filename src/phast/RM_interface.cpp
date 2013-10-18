@@ -442,7 +442,6 @@ void
 RM_pass_data(int *id,
 			 bool *free_surface_f,				// free surface calculation
 			 bool *steady_flow_f,				// free surface calculation
-			 double *cnvtmi,					// conversion factor for time
 			 double *pv0,						// nxyz initial pore volumes
 			 double *volume, 					// nxyz geometric cell volumes 
 			 int *printzone_chem,				// nxyz print flags for output file
@@ -460,7 +459,6 @@ RM_pass_data(int *id,
 		Reaction_module_ptr->Set_free_surface(*free_surface_f != 0);
 		Reaction_module_ptr->Set_steady_flow(*steady_flow_f != 0);
 		Reaction_module_ptr->Set_transient_free_surface((*free_surface_f != 0) && (steady_flow_f == 0));
-		Reaction_module_ptr->Set_time_conversion(*cnvtmi);
 		Reaction_module_ptr->Set_pv0(pv0);
 		Reaction_module_ptr->Set_volume(volume);
 		Reaction_module_ptr->Set_printzone_chem(printzone_chem);
@@ -476,8 +474,8 @@ void RM_run_cells(int *id,
 			 int * print_xyz,						// print flag for xyz file
 			 int * print_hdf,						// print flag for hdf file
 			 int * print_restart,					// print flag for writing restart file 
-			 double *time_hst,					    // time from transport 
-			 double *time_step_hst,				    // time step from transport
+			 double *time,					        // time from transport 
+			 double *time_step,		   		        // time step from transport
  			 double *fraction,					    // mass fractions nxyz:components
 			 double *frac,							// saturation fraction
 			 double *pv,                            // nxyz current pore volumes 
@@ -502,8 +500,6 @@ void RM_run_cells(int *id,
 			MPI_Bcast(print_xyz, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 			MPI_Bcast(print_hdf, 1, MPI_INT, 0, MPI_COMM_WORLD);
 			MPI_Bcast(print_restart, 1, MPI_INT, 0, MPI_COMM_WORLD);
-			MPI_Bcast(time_hst, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-			MPI_Bcast(time_step_hst, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 			MPI_Bcast(fraction, (*nxyz)*(*count_comps), MPI_DOUBLE, 0, MPI_COMM_WORLD);
 			MPI_Bcast(frac, *nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 			MPI_Bcast(pv, *nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
@@ -514,8 +510,8 @@ void RM_run_cells(int *id,
 			Reaction_module_ptr->Set_print_xyz(*print_xyz != 0);
 			Reaction_module_ptr->Set_print_hdf(*print_hdf != 0);
 			Reaction_module_ptr->Set_print_restart(*print_restart != 0);
-			Reaction_module_ptr->Set_time(*time_hst);
-			Reaction_module_ptr->Set_time_step(*time_step_hst);
+			Reaction_module_ptr->Set_time(*time);
+			Reaction_module_ptr->Set_time_step(*time_step);
 			Reaction_module_ptr->Set_fraction(fraction);
 			Reaction_module_ptr->Set_frac(frac);
 			Reaction_module_ptr->Set_pv(pv);
@@ -639,6 +635,17 @@ void RM_set_mapping(int *id,
 		Reaction_module_ptr->Set_mapping(grid2chem);
 	}
 }
+void RM_set_time_conversion(int *id, double *t)
+{
+	//
+	// multiply seconds to convert to user time units
+	//
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Set_time_conversion(*t);
+	}
+}
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 void
@@ -740,61 +747,3 @@ void RM_zone_flow_write_chem(int *print_zone_flows_xyzt)
 		zone_flow_write_chem();
 	}
 }
-#ifdef USE_MPI
-void RM_mpi_barrier(int *comm, int *ierr)
-{
-	*ierr = MPI_Barrier((MPI_Comm) *comm);
-}
-void RM_mpi_bcast(void *buffer, int *count, int *datatype, int *root, int *comm, int *ierr)
-{
-	*ierr = MPI_Bcast(buffer, *count, (MPI_Datatype) *datatype, *root, (MPI_Comm) *comm);
-}
-void RM_mpi_comm_create(int *comm, int *group, int *newcom, int *ierr)
-{
-	*ierr = MPI_Comm_create((MPI_Comm) *comm, (MPI_Group) *group, (MPI_Comm *) newcom);
-}
-void RM_mpi_comm_group(int *comm, int *group, int *ierr)
-{
-	*ierr = MPI_Comm_group((MPI_Comm) *comm, (MPI_Group *) group);
-}
-void RM_mpi_get_address(int *location, int *address, int *ierr)
-{
-	*ierr = MPI_Get_address((void *) location, (MPI_Aint *) address);
-}
-void RM_mpi_group_incl(int *group, int *n, int *ranks, int *newgroup, int *ierr)
-{
-	*ierr = MPI_Group_incl((MPI_Group) *group, *n, ranks, (MPI_Group *) newgroup);
-}
-void RM_mpi_recv(void *buffer, int *count, int *datatype, int *source, int *tag, int *comm, int *status, int *ierr)
-{
-	*ierr = MPI_Recv(buffer, *count, (MPI_Datatype) *datatype, *source, *tag, (MPI_Comm) *comm, (MPI_Status *) status);
-}
-void RM_mpi_send(void *buffer, int *count, int *datatype, int *dest, int *tag, int *comm, int *ierr)
-{
-	*ierr = MPI_Send(buffer, *count, (MPI_Datatype) *datatype, *dest, *tag, (MPI_Comm) *comm);
-}
-void RM_mpi_type_commit(int *datatype, int *ierr)
-{
-	*ierr = MPI_Type_commit((MPI_Datatype *) datatype);
-}
-void RM_mpi_type_create_struct(int *count,
-  int *array_of_blocklengths,
-  int *array_of_displacements,
-  int *array_of_types,
-  int *newtype, int *ierr)
-{
-	*ierr = MPI_Type_create_struct(*count,
-		array_of_blocklengths,
-		(MPI_Aint *) array_of_displacements,
-		(MPI_Datatype *) array_of_types,
-		(MPI_Datatype *) newtype);
-}
-void RM_mpi_type_free(int *datatype, int *ierr)
-{
-	*ierr = MPI_Type_free((MPI_Datatype *) datatype);
-}
-double RM_mpi_wtime()
-{
-	return MPI_Wtime();
-}
-#endif
