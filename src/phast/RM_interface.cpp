@@ -304,6 +304,7 @@ void RM_error(int *id)
 	IPhreeqcPhastLib::CleanupIPhreeqcPhast();
 	exit(4);
 }
+#ifdef SKIP
 void
 RM_fractions2solutions(int *id)
 /* ---------------------------------------------------------------------- */
@@ -314,6 +315,7 @@ RM_fractions2solutions(int *id)
 		Reaction_module_ptr->Fractions2Solutions();
 	}
 }
+#endif
 int
 RM_find_components(int *id)
 {
@@ -440,7 +442,8 @@ void RM_run_cells(int *id,
 			Reaction_module_ptr->Set_concentration(concentration);
 
 			// Transfer data Fortran to reaction module
-			Reaction_module_ptr->Fractions2Solutions();
+			//Reaction_module_ptr->Fractions2Solutions();
+			Reaction_module_ptr->Concentrations2Solutions();
 
 			// Run chemistry calculations
 			Reaction_module_ptr->Run_cells(); 

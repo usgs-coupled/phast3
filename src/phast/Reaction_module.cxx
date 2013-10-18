@@ -144,7 +144,7 @@ if( numCPU < 1 )
 	this->print_hdf = false;					// print flag for hdf file
 	this->print_restart = false;				// print flag for writing restart file 
 	write_xyz_headings = true;
-	this->input_units_Solution = 0;				// not defined yet
+	this->input_units_Solution = 3;				// 1 mg/L, 2 mmol/L, 3 kg/kgs
 	this->input_units_PPassemblage = 1;			// water 1, rock 2
 	this->input_units_Exchange = 1;			    // water 1, rock 2
 	this->input_units_Surface = 1;			    // water 1, rock 2
@@ -170,6 +170,9 @@ if( numCPU < 1 )
 		volume.push_back(1.0);
 		print_chem_mask.push_back(0);
 		print_xyz_mask.push_back(1);
+		density.push_back(1.0);
+		pressure.push_back(1.0);
+		tempc.push_back(25.0);
 	}
 }
 Reaction_module::~Reaction_module(void)
@@ -1003,7 +1006,6 @@ Reaction_module::Find_components(void)
 	}
 	return (int) this->components.size();
 }
-#ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Fractions2Solutions_thread(int n)
@@ -1011,57 +1013,18 @@ Reaction_module::Fractions2Solutions_thread(int n)
 {
 	int i, j, k;
 
+#ifdef USE_MPI
 	int start = this->start_cell[this->mpi_myself];
 	int end = this->end_cell[this->mpi_myself];
+#else
+	int start = this->start_cell[n];
+	int end = this->end_cell[n];
+#endif
 
 	for (j = start; j <= end; j++)
 	{
 		std::vector<double> d;  // scratch space to convert from mass fraction to moles
 		// j is count_chem number
-		i = this->back[j][0];
-		if (j < 0) continue;
-
-		// get mass fractions and store as moles in d
-		double *ptr = &this->fraction[i];
-		for (k = 0; k < (int) this->components.size(); k++)
-		{	
-			d.push_back(ptr[this->nxyz * k] * 1000.0/this->gfw[k]);
-		}
-
-		// update solution 
-		cxxNameDouble nd;
-		for (k = 3; k < (int) components.size(); k++)
-		{
-			if (d[k] <= 1e-14) d[k] = 0.0;
-			nd.add(components[k].c_str(), d[k]);
-		}	
-
-		cxxSolution *soln_ptr = this->Get_workers()[n]->Get_solution(j);
-		//this->sz_bin.Get_Solution((int) j)->Update(
-		if (soln_ptr)
-		{
-			soln_ptr->Update(
-				d[0] + 2.0/gfw_water,
-				d[1] + 1.0/gfw_water,
-				d[2],
-				nd);
-		}
-	}
-	return;
-}
-#else
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::Fractions2Solutions_thread(int n)
-/* ---------------------------------------------------------------------- */
-{
-	int i, j, k;
-
-	for (j = this->start_cell[n]; j <= this->end_cell[n]; j++)
-	{
-		std::vector<double> d;  // scratch space to convert from mass fraction to moles
-		// j is count_chem number
-		//j = this->forward[i];
 		i = this->back[j][0];
 		if (j < 0) continue;
 
@@ -1093,7 +1056,84 @@ Reaction_module::Fractions2Solutions_thread(int n)
 	}
 	return;
 }
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Concentrations2Solutions_thread(int n)
+/* ---------------------------------------------------------------------- */
+{
+	int i, j, k;
+
+#ifdef USE_MPI
+	int start = this->start_cell[this->mpi_myself];
+	int end = this->end_cell[this->mpi_myself];
+#else
+	int start = this->start_cell[n];
+	int end = this->end_cell[n];
 #endif
+
+	for (j = start; j <= end; j++)
+	{
+		std::vector<double> d;  // scratch space to convert from mass fraction to moles
+		// j is count_chem number
+		i = this->back[j][0];
+		if (j < 0) continue;
+
+		switch (this->input_units_Solution)
+		{
+		case 1:  // mg/L
+			break;
+		case 2:  // mol/L
+			break;
+		case 3:  // mass fraction  kg/kg solution
+			{
+				// get mass fractions and store as moles in d
+				double *ptr = &this->concentration[i];
+				for (k = 0; k < (int) this->components.size(); k++)
+				{	
+					d.push_back(ptr[this->nxyz * k] * 1000.0/this->gfw[k]);
+				}
+
+				// update solution 
+				cxxNameDouble nd;
+				for (k = 3; k < (int) components.size(); k++)
+				{
+					if (d[k] <= 1e-14) d[k] = 0.0;
+					nd.add(components[k].c_str(), d[k]);
+				}	
+
+				cxxSolution *soln_ptr = this->Get_workers()[n]->Get_solution(j);
+				//this->sz_bin.Get_Solution((int) j)->Update(
+				if (soln_ptr)
+				{
+					soln_ptr->Update(
+						d[0] + 2.0/gfw_water,
+						d[1] + 1.0/gfw_water,
+						d[2],
+						nd);
+				}
+			}
+			break;
+		}
+	}
+	return;
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Concentrations2Solutions(void)
+/* ---------------------------------------------------------------------- */
+{
+#ifdef THREADED_PHAST
+	omp_set_num_threads(this->nthreads);
+	#pragma omp parallel 
+	#pragma omp for
+#endif
+	// For MPI nthreads = 1
+	for (int n = 0; n < this->nthreads; n++)
+	{
+		this->Concentrations2Solutions_thread(n);
+		//this->Fractions2Solutions_thread(n);
+	}	
+}
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Fractions2Solutions(void)
@@ -2804,7 +2844,10 @@ Reaction_module::Set_concentration(double *t)
 /* ---------------------------------------------------------------------- */
 {
 	size_t ncomps = this->components.size();
-	this->concentration.reserve(this->nxyz * ncomps);
+	if (this->concentration.size() < this->nxyz)
+	{
+		this->concentration.resize(this->nxyz * ncomps, 0.0);	
+	}
 	if (mpi_myself == 0)
 	{
 		if (t == NULL) error_msg("NULL pointer in Set_concentration", 1);
@@ -2937,7 +2980,10 @@ Reaction_module::Set_mapping(int *t)
 	if (mpi_myself == 0)
 	{
 		if (t == NULL) error_msg("NULL pointer in Set_mapping", 1);
-		memcpy(grid2chem.data(), t, (size_t) (this->nxyz * sizeof(int)));
+		for (int i = 0; i < this->nxyz; i++)
+		{
+			grid2chem.push_back(t[i]);
+		}
 	}
 #ifdef USE_MPI
 	MPI_Bcast(grid2chem.data(), this->nxyz, MPI_INT, 0, MPI_COMM_WORLD);

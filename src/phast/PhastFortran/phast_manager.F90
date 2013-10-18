@@ -163,7 +163,7 @@ SUBROUTINE phast_manager
 
         ! ... Send data to threads or workers
         
-        CALL RM_set_input_units (rm_id, 1, 1, 1, 1, 1, 1, 1)
+        CALL RM_set_input_units (rm_id, 3, 1, 1, 1, 1, 1, 1)
         CALL RM_set_nodes(rm_id, x_node(1), y_node(1), z_node(1))
         CALL RM_set_time_conversion(rm_id, cnvtmi)
         CALL RM_set_pv0(rm_id, pv0(1))

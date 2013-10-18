@@ -20,7 +20,7 @@
 #define RM_distribute_initial_conditions_mix  FC_FUNC_ (rm_distribute_initial_conditions_mix, RM_DISTRIBUTE_INITIAL_CONDITIONS_MIX)
 #define RM_error                           FC_FUNC_ (rm_error,                         RM_ERROR)
 #define RM_find_components                 FC_FUNC_ (rm_find_components,               RM_FIND_COMPONENTS)
-#define RM_fractions2solutions             FC_FUNC_ (rm_fractions2solutions,           RM_FRACTIONS2SOLUTIONS)
+//#define RM_fractions2solutions             FC_FUNC_ (rm_fractions2solutions,           RM_FRACTIONS2SOLUTIONS)
 #define RM_get_component                   FC_FUNC_ (rm_get_component,                 RM_GET_COMPONENT)
 #define RM_initial_phreeqc_run             FC_FUNC_ (rm_initial_phreeqc_run,           RM_INITIAL_PHREEQC_RUN)
 #define RM_load_database                   FC_FUNC_ (rm_load_database,                 RM_LOAD_DATABASE)
@@ -66,7 +66,7 @@
 #define RM_distribute_initial_conditions      rm_distribute_initial_conditions
 #define RM_error                              rm_error
 #define RM_find_components                    rm_find_components
-#define RM_fractions2solutions                rm_fractions2solutions
+//#define RM_fractions2solutions                rm_fractions2solutions
 #define RM_get_component                      rm_get_component
 #define RM_initial_phreeqc_run                rm_initial_phreeqc_run
 #define RM_load_database                      rm_load_database

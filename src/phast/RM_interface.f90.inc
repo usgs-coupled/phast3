@@ -55,7 +55,7 @@
         
         SUBROUTINE RM_initial_phreeqc_run(id, db_name, chem_name, prefix)
             IMPLICIT NONE
-            INTEGER :: id, num
+            INTEGER :: id
             CHARACTER :: db_name, chem_name, prefix
         END SUBROUTINE RM_initial_phreeqc_run        
         
