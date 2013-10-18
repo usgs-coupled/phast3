@@ -38,11 +38,11 @@
 #define RM_set_pv0                         FC_FUNC_ (rm_set_pv0,                       RM_SET_PV0)
 #define RM_set_pv                          FC_FUNC_ (rm_set_pv,                        RM_SET_PV)
 #define RM_set_time_conversion             FC_FUNC_ (rm_set_time_conversion,           RM_SET_TIME_CONVERSION)
-#define RM_solutions2fractions             FC_FUNC_ (rm_solutions2fractions,           RM_SOLUTIONS2FRACTIONS)
+#define RM_phreeqc2concentrations          FC_FUNC_ (rm_phreeqc2concentrations,        RM_PHREEQC2CONCENTRATIONS)
 #define RM_transport                       FC_FUNC_ (rm_transport,                     RM_TRANSPORT)
 #define RM_write_bc_raw                    FC_FUNC_ (rm_write_bc_raw,                  RM_WRITE_BC_RAW)
 #define RM_write_output                    FC_FUNC_ (rm_write_output,                  RM_WRITE_OUTPUT)
-#define RM_write_restart		   FC_FUNC_ (rm_write_restart,                 RM_WRITE_RESTART)
+#define RM_write_restart				   FC_FUNC_ (rm_write_restart,                 RM_WRITE_RESTART)
 #define RM_zone_flow_write_chem            FC_FUNC_ (rm_zone_flow_write_chem,          RM_ZONE_FLOW_WRITE_CHEM)
 // Calls to Fortran
 #define transport_component_thread         FC_FUNC_ (transport_component_thread,       TRANSPORT_COMPONENT_THREAD)
@@ -80,7 +80,7 @@
 #define RM_set_pv0                            rm_set_pv0
 #define RM_set_pv                             rm_set_pv
 #define RM_set_time_conversion                rm_set_time_conversion
-#define RM_solutions2fractions                rm_solutions2fractions
+#define RM_phreeqc2concentrations             rm_phreeqc2concentrations
 #define RM_transport                          rm_transport
 #define RM_write_bc_raw                       rm_write_bc_raw
 #define RM_write_output                       rm_write_output
@@ -166,7 +166,7 @@ void RM_set_printing(int *id, int *print_chem, int *print_xyz, int *print_hdf, i
 void RM_set_pv(int *id, double *t);
 void RM_set_pv0(int *id, double *t);
 void RM_set_time_conversion(int *id, double *t);
-void RM_solutions2fractions(int *id);
+void RM_phreeqc2concentrations(int *id);
 void RM_transport(int *id, int *ncomps);
 void RM_write_bc_raw(int *id, 
 			int *solution_list, 

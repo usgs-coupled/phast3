@@ -3601,7 +3601,7 @@ Reaction_module::Setup_boundary_conditions(
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Solutions2Fractions(void)
+Reaction_module::Phreeqc2Concentrations(void)
 /* ---------------------------------------------------------------------- */
 {
 	// convert Reaction module solution data to hst mass fractions
@@ -3677,7 +3677,7 @@ Reaction_module::Solutions2Fractions(void)
 #else
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Solutions2Fractions(void)
+Reaction_module::Phreeqc2Concentrations(void)
 /* ---------------------------------------------------------------------- */
 {
 	// convert Reaction module solution data to hst mass fractions
@@ -3713,7 +3713,7 @@ Reaction_module::Solutions2Fractions(void)
 #endif
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Solutions2Fractions_thread(int n)
+Reaction_module::Phreeqc2Concentrations_thread(int n)
 /* ---------------------------------------------------------------------- */
 {
 	// convert Reaction module solution data to hst mass fractions
