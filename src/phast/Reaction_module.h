@@ -136,7 +136,9 @@ public:
 	void Set_print_hdf(bool t = false); 
 	const bool Get_print_restart(void) const {return this->print_restart;};
 	void Set_print_restart(bool t = false); 
-
+	const bool Get_stop_message(void) const {return this->stop_message;};
+	void Set_stop_message(bool t = false); 
+	
 	int Get_input_units_Solution(void) {return this->input_units_Solution;}
 	int Get_input_units_PPassemblage(void) {return this->input_units_PPassemblage;}
 	int Get_input_units_Exchange(void) {return this->input_units_Exchange;}
@@ -215,6 +217,8 @@ protected:
 	bool print_hdf;							// print flag for hdf file
 	bool print_restart;						// print flag for writing restart file 
 	bool write_xyz_headings;                // write xyz headings once
+
+	bool stop_message;
 
 	// threading
 	int nthreads;
