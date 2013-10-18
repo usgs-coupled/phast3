@@ -69,14 +69,6 @@
             INTEGER :: solute
             CHARACTER :: prefix
         END SUBROUTINE RM_open_files
-        
-        SUBROUTINE RM_pass_data(rm_id,        &
-            rebalance_method_f,          &
-            rebalance_fraction_f) 
-            IMPLICIT NONE 
-            INTEGER, INTENT(INOUT) :: rm_id, rebalance_method_f 
-            double precision, INTENT(INOUT) :: rebalance_fraction_f
-        END SUBROUTINE RM_pass_data        
 
         SUBROUTINE RM_phreeqc2concentrations(id, c)   
             IMPLICIT NONE
@@ -152,6 +144,13 @@
             DOUBLE PRECISION :: t
         END SUBROUTINE RM_set_pv0
         
+        SUBROUTINE RM_set_rebalance(id, method, f)
+            IMPLICIT NONE
+            INTEGER :: id
+            INTEGER :: method
+            DOUBLE PRECISION :: f
+        END SUBROUTINE RM_set_rebalance
+
         SUBROUTINE RM_set_saturation(id, t)
             IMPLICIT NONE
             INTEGER :: id

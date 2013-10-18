@@ -26,7 +26,6 @@
 #define RM_load_database                   FC_FUNC_ (rm_load_database,                 RM_LOAD_DATABASE)
 #define RM_log_screen_prt                  FC_FUNC_ (rm_log_screen_prt,                RM_LOG_SCREEN_PRT)
 #define RM_open_files                      FC_FUNC_ (rm_open_files,                    RM_OPEN_FILES)
-#define RM_pass_data                       FC_FUNC_ (rm_pass_data,                     RM_PASS_DATA)
 #define RM_pass_transient_data             FC_FUNC_ (rm_pass_transient_data,           RM_PASS_TRANSIENT_DATA)
 #define RM_run_cells                       FC_FUNC_ (rm_run_cells,                     RM_RUN_CELLS)
 #define RM_send_restart_name               FC_FUNC_ (rm_send_restart_name,             RM_SEND_RESTART_NAME)
@@ -40,6 +39,7 @@
 #define RM_set_print_xyz_mask              FC_FUNC_ (rm_set_print_xyz_mask,            RM_SET_PRINT_XYZ_MASK)
 #define RM_set_pv0                         FC_FUNC_ (rm_set_pv0,                       RM_SET_PV0)
 #define RM_set_pv                          FC_FUNC_ (rm_set_pv,                        RM_SET_PV)
+#define RM_set_rebalance                   FC_FUNC_ (rm_set_rebalance,                 RM_SET_REBALANCE)
 #define RM_set_saturation                  FC_FUNC_ (rm_set_saturation,                RM_SET_SATURATION)
 #define RM_set_steady_flow                 FC_FUNC_ (rm_set_steady_flow,               RM_SET_STEADY_FLOW)
 #define RM_set_time_conversion             FC_FUNC_ (rm_set_time_conversion,           RM_SET_TIME_CONVERSION)
@@ -74,7 +74,6 @@
 #define RM_load_database                      rm_load_database
 #define RM_log_screen_prt                     rm_log_screen_prt
 #define RM_open_files                         rm_open_files
-#define RM_pass_data                          rm_pass_data
 #define RM_pass_transient_data                rm_pass_transient_data
 #define RM_run_cells                          rm_run_cells
 #define RM_send_restart_name                  rm_send_restart_name
@@ -87,6 +86,7 @@
 #define RM_set_print_xyz_mask                 rm_set_print_xyz_mask
 #define RM_set_pv0                            rm_set_pv0
 #define RM_set_pv                             rm_set_pv
+#define RM_set_rebalance                      rm_set_rebalance
 #define RM_set_saturation                     rm_set_saturation
 #define RM_set_time_conversion                rm_set_time_conversion
 #define RM_set_volume                         rm_set_volume
@@ -143,9 +143,6 @@ void RM_open_error_file(void);
 void RM_open_output_file(char * prefix, int l_prefix);
 void RM_open_punch_file(char * prefix, int l_prefix);
 void RM_open_log_file(char * prefix, int l_prefix);
-void RM_pass_data(int *id,
-			 int * rebalance_method,            // 0 std; 1 by_cell
-			 double *rebalance_fraction_hst);	// parameter for rebalancing process load for parallel	
 void RM_phreeqc2concentrations(int *id, double *c = NULL);
 void RM_run_cells(int *id,
 			 double *time,					        // time from transport 
@@ -171,6 +168,7 @@ void RM_set_print_chem_mask(int *id, int *t);
 void RM_set_print_xyz_mask(int *id, int *t);
 void RM_set_pv(int *id, double *t);
 void RM_set_pv0(int *id, double *t);
+void RM_set_rebalance(int *id, int *method, double *f);
 void RM_set_saturation(int *id, double *t);
 void RM_set_steady_flow(int *id, int *t);
 void RM_set_time_conversion(int *id, double *t);

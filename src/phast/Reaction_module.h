@@ -123,9 +123,9 @@ public:
 	std::vector<int> & Get_print_xyz_mask (void) {return this->print_xyz_mask;}
 	void Set_print_xyz_mask (int * t); 
 	int Get_rebalance_method(void) const {return this->rebalance_method;};
-	void Set_rebalance_method(bool t) {this->rebalance_method = t;};
+	void Set_rebalance_method(int * t); 
 	double Get_rebalance_fraction(void) const {return this->rebalance_fraction;};
-	void Set_rebalance_fraction(double t) {this->rebalance_fraction = t;};
+	void Set_rebalance_fraction(double * t); 
 	const bool Get_print_chem(void) const {return this->print_chem;};
 	void Set_print_chem(bool t = false); 
 	const bool Get_print_xyz(void) const {return this->print_xyz;};
