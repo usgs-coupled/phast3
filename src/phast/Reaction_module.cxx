@@ -3139,9 +3139,23 @@ Reaction_module::Set_input_units(int sol, int pp, int ex, int surf, int gas, int
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Set_mapping(int *grid2chem)
+Reaction_module::Set_mapping(int *grid2chem_arg)
 /* ---------------------------------------------------------------------- */
 {
+	std::vector<int> grid2chem;
+	grid2chem.reserve(this->nxyz);
+	if (mpi_myself == 0)
+	{
+		for (int i = 0; i < this->nxyz; i++)
+		{
+			grid2chem.push_back(grid2chem_arg[i]);
+		}
+	}
+#ifdef USE_MPI
+	MPI_Bcast(grid2chem.data(), nxyz, MPI_INT, 0, MPI_COMM_WORLD);
+#endif
+
+
 	back.clear();
 	forward.clear();
 
