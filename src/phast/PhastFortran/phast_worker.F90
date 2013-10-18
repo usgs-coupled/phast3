@@ -19,54 +19,12 @@ SUBROUTINE phast_worker
     USE XP_module, ONLY: Transporter
     USE mpi_mod
     IMPLICIT NONE
+    INCLUDE 'RM_interface.f90.inc'
     INTERFACE
-        FUNCTION RM_create(nxyz, nthreads) RESULT(iout)
-            IMPLICIT NONE
-            INTEGER :: nxyz, nthreads
-            INTEGER :: iout
-        END FUNCTION RM_create
-        FUNCTION RM_destroy(id) RESULT(iout)
-            IMPLICIT NONE
-            INTEGER :: id
-            INTEGER :: iout
-        END FUNCTION RM_destroy
-        FUNCTION RM_find_components(id) RESULT(iout)
-            IMPLICIT NONE
-            INTEGER :: id
-            INTEGER :: iout
-        END FUNCTION RM_find_components
-        SUBROUTINE RM_log_screen_prt(str) 
-            IMPLICIT NONE
-            CHARACTER :: str
-        END SUBROUTINE RM_log_screen_prt
-        SUBROUTINE RM_set_mapping(id, grid2chem)   
-            IMPLICIT NONE
-            INTEGER :: id
-            INTEGER :: grid2chem
-        END SUBROUTINE RM_set_mapping         
-        SUBROUTINE RM_set_printing(id, print_chem, print_xyz, print_hdf, print_restart)   
-            IMPLICIT NONE
-            INTEGER :: id
-            INTEGER :: print_chem, print_xyz, print_hdf, print_restart
-        END SUBROUTINE RM_set_printing 
         SUBROUTINE create_mapping(ic)
             implicit none
             INTEGER, DIMENSION(:,:), INTENT(INOUT) :: ic
         END SUBROUTINE create_mapping    
-        SUBROUTINE RM_pass_data(rm_id,        &
-            fresur,                      &
-            steady_flow,                 &
-            x_node, y_node, z_node,      &
-            volume,                      &
-            rebalance_method_f,          &
-            rebalance_fraction_f) 
-            IMPLICIT NONE 
-            logical, INTENT(INOUT) :: fresur, steady_flow
-            INTEGER, INTENT(INOUT) :: rm_id, rebalance_method_f 
-            INTEGER, INTENT(INOUT) :: mpi_myself, mpi_tasks
-            double precision, INTENT(INOUT) :: volume 
-            double precision, INTENT(INOUT) :: rebalance_fraction_f
-        END SUBROUTINE RM_pass_data        
         SUBROUTINE xfer_indices(indx_sol1_ic, indx_sol2_ic, &
             mxfrac, naxes, nxyz, &
             x_node, y_node, z_node, &
@@ -175,12 +133,12 @@ SUBROUTINE phast_worker
         CALL RM_set_nodes(rm_id)
         CALL RM_set_time_conversion(rm_id)
         CALL RM_set_pv0(rm_id)
-        CALL RM_set_print_chem_mask(rm_id, iprint_chem(1))
-        CALL RM_set_print_xyz_mask(rm_id, iprint_xyz(1))
+        CALL RM_set_print_chem_mask(rm_id)
+        CALL RM_set_print_xyz_mask(rm_id)
+        CALL RM_set_free_surface(rm_id)
+        CALL RM_set_steady_flow(rm_id)
         CALL RM_pass_data(               &
             rm_id,                       &
-            fresur,                      &
-            steady_flow,                 &
             volume(1),                      &
             rebalance_method_f,          &
             rebalance_fraction_f)

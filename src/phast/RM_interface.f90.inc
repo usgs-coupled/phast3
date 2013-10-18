@@ -71,13 +71,10 @@
         END SUBROUTINE RM_open_files
         
         SUBROUTINE RM_pass_data(rm_id,        &
-            fresur,                      &
-            steady_flow,                 &
             volume,                      &
             rebalance_method_f,          &
             rebalance_fraction_f) 
             IMPLICIT NONE 
-            logical, INTENT(INOUT) :: fresur, steady_flow
             INTEGER, INTENT(INOUT) :: rm_id, rebalance_method_f 
             double precision, INTENT(INOUT) :: volume 
             double precision, INTENT(INOUT) :: rebalance_fraction_f
@@ -102,6 +99,12 @@
 	            INTEGER :: n_boundary, bc_sol1, bc_sol2, dim
 	            DOUBLE PRECISION :: f1, c
         END SUBROUTINE RM_setup_boundary_conditions  
+		
+        SUBROUTINE RM_set_free_surface(id, t)   
+            IMPLICIT NONE
+            INTEGER :: id
+            INTEGER :: t
+        END SUBROUTINE RM_set_free_surface 
 
         SUBROUTINE RM_set_input_units(id, sol, pp, ex, surf, gas, ss, kin)   
             IMPLICIT NONE
@@ -156,7 +159,13 @@
             INTEGER :: id
             DOUBLE PRECISION :: t
         END SUBROUTINE RM_set_saturation 
-		       
+				
+        SUBROUTINE RM_set_steady_flow(id, t)   
+            IMPLICIT NONE
+            INTEGER :: id
+            INTEGER :: t
+        END SUBROUTINE RM_set_steady_flow   
+		     
         SUBROUTINE RM_set_time_conversion(id, t)   
             IMPLICIT NONE
             INTEGER :: id
