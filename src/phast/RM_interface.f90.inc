@@ -91,10 +91,10 @@
             DOUBLE PRECISION :: c
         END SUBROUTINE RM_phreeqc2concentrations  
         
-        SUBROUTINE RM_run_cells(id, time, time_step, c, sat, stop_msg)   
+        SUBROUTINE RM_run_cells(id, time, time_step, c, stop_msg)   
             IMPLICIT NONE
             INTEGER :: id
-            DOUBLE PRECISION :: time, time_step, c, sat
+            DOUBLE PRECISION :: time, time_step, c
             INTEGER :: stop_msg
         END SUBROUTINE RM_run_cells  
 
@@ -141,6 +141,12 @@
             DOUBLE PRECISION :: t
         END SUBROUTINE RM_set_pv0
         
+        SUBROUTINE RM_set_saturation(id, t)
+            IMPLICIT NONE
+            INTEGER :: id
+            DOUBLE PRECISION :: t
+        END SUBROUTINE RM_set_saturation 
+		       
         SUBROUTINE RM_set_time_conversion(id, t)   
             IMPLICIT NONE
             INTEGER :: id

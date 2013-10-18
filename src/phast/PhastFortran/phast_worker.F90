@@ -218,13 +218,13 @@ SUBROUTINE phast_worker
         ! ... Initial equilibration
         adj_wr_ratio = 1
         CALL RM_set_pv(rm_id)
+        CALL RM_set_saturation(rm_id)
         CALL RM_set_printing(rm_id)
         CALL RM_run_cells(                                &
             rm_id,                                        &
             time_phreeqc,                                 &        ! time_hst
             deltim_dummy,                                 &        ! time_step_hst
             c,                                            &        ! fraction
-            frac,                                         &        ! frac
             stop_msg) 
 
         ! ... Write zone chemistry
@@ -274,13 +274,13 @@ SUBROUTINE phast_worker
 
             ! ... Chemistry calculation
             CALL RM_set_pv(rm_id)
+            CALL RM_set_saturation(rm_id)
             CALL RM_set_printing(rm_id)
             CALL RM_run_cells(                                &
                 rm_id,                                        &
                 time_phreeqc,                                 &        ! time_hst
                 deltim_dummy,                                 &        ! time_step_hst
                 c,                                            &        ! fraction
-                frac,                                         &        ! frac
                 stop_msg) 
                             
             CALL RM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)

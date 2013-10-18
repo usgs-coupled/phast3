@@ -37,6 +37,7 @@
 #define RM_set_printing                    FC_FUNC_ (rm_set_printing,                  RM_SET_PRINTING)
 #define RM_set_pv0                         FC_FUNC_ (rm_set_pv0,                       RM_SET_PV0)
 #define RM_set_pv                          FC_FUNC_ (rm_set_pv,                        RM_SET_PV)
+#define RM_set_saturation                  FC_FUNC_ (rm_set_saturation,                RM_SET_SATURATION)
 #define RM_set_time_conversion             FC_FUNC_ (rm_set_time_conversion,           RM_SET_TIME_CONVERSION)
 #define RM_phreeqc2concentrations          FC_FUNC_ (rm_phreeqc2concentrations,        RM_PHREEQC2CONCENTRATIONS)
 #define RM_transport                       FC_FUNC_ (rm_transport,                     RM_TRANSPORT)
@@ -79,6 +80,7 @@
 #define RM_set_printing                       rm_set_printing
 #define RM_set_pv0                            rm_set_pv0
 #define RM_set_pv                             rm_set_pv
+#define RM_set_saturation                     rm_set_saturation
 #define RM_set_time_conversion                rm_set_time_conversion
 #define RM_phreeqc2concentrations             rm_phreeqc2concentrations
 #define RM_transport                          rm_transport
@@ -146,7 +148,6 @@ void RM_run_cells(int *id,
 			 double *time,					        // time from transport 
 			 double *time_step,				        // time step from transport
  			 double *concentration,					// mass fractions nxyz:components
-			 double *saturation,					// saturation fraction
 			 int * stop_msg);
 void RM_send_restart_name(int *id, char * s, long l);
 void RM_setup_boundary_conditions(
@@ -164,6 +165,7 @@ void RM_set_nodes(int *id, double *x_node, double *y_node, double *z_node);
 void RM_set_printing(int *id, int *print_chem, int *print_xyz, int *print_hdf, int *print_restart);
 void RM_set_pv(int *id, double *t);
 void RM_set_pv0(int *id, double *t);
+void RM_set_saturation(int *id, double *t);
 void RM_set_time_conversion(int *id, double *t);
 void RM_transport(int *id, int *ncomps);
 void RM_write_bc_raw(int *id, 
