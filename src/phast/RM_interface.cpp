@@ -487,7 +487,6 @@ RM_pass_data(int *id,
 }
 /* ---------------------------------------------------------------------- */
 void RM_run_cells(int *id,
-			 int * prslm,							// solution method print flag 
 			 int * print_chem,						// print flag for output file 
 			 int * print_xyz,						// print flag for xyz file
 			 int * print_hdf,						// print flag for hdf file
@@ -513,7 +512,7 @@ void RM_run_cells(int *id,
 
 #ifdef USE_MPI
 			// Broadcast data to workers
-			MPI_Bcast(prslm, 1, MPI_INT, 0, MPI_COMM_WORLD);
+			//MPI_Bcast(prslm, 1, MPI_INT, 0, MPI_COMM_WORLD);
 			MPI_Bcast(print_chem, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 			MPI_Bcast(print_xyz, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 			MPI_Bcast(print_hdf, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -525,8 +524,7 @@ void RM_run_cells(int *id,
 			MPI_Bcast(pv, *nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 			
-			// Transfer data and pointers to Reaction_module
-			Reaction_module_ptr->Set_prslm(*prslm != 0);	  
+			// Transfer data and pointers to Reaction_module	  
 			Reaction_module_ptr->Set_print_chem(*print_chem != 0);
 			Reaction_module_ptr->Set_print_xyz(*print_xyz != 0);
 			Reaction_module_ptr->Set_print_hdf(*print_hdf != 0);
@@ -621,13 +619,29 @@ RM_set_input_units (int *id, int *sol, int *pp, int *ex, int *surf, int *gas, in
 	if (Reaction_module_ptr)
 	{
 #ifdef USE_MPI
-		MPI_Bcast(sol, 1, MPI_INT, 0, MPI_COMM_WORLD);
-		MPI_Bcast(pp, 1, MPI_INT, 0, MPI_COMM_WORLD);
-		MPI_Bcast(ex, 1, MPI_INT, 0, MPI_COMM_WORLD);
-		MPI_Bcast(surf, 1, MPI_INT, 0, MPI_COMM_WORLD);
-		MPI_Bcast(gas, 1, MPI_INT, 0, MPI_COMM_WORLD);
-		MPI_Bcast(ss, 1, MPI_INT, 0, MPI_COMM_WORLD);
-		MPI_Bcast(kin, 1, MPI_INT, 0, MPI_COMM_WORLD);
+		if (MPI_COMM_SELF > 0)
+		{
+			int local_sol, local_pp, local_ex, local_surf, local_gas, local_ss, local_kin
+			MPI_Bcast(local_sol, 1, MPI_INT, 0, MPI_COMM_WORLD);
+			MPI_Bcast(local_pp, 1, MPI_INT, 0, MPI_COMM_WORLD);
+			MPI_Bcast(local_ex, 1, MPI_INT, 0, MPI_COMM_WORLD);
+			MPI_Bcast(local_surf, 1, MPI_INT, 0, MPI_COMM_WORLD);
+			MPI_Bcast(local_gas, 1, MPI_INT, 0, MPI_COMM_WORLD);
+			MPI_Bcast(local_ss, 1, MPI_INT, 0, MPI_COMM_WORLD);
+			MPI_Bcast(local_kin, 1, MPI_INT, 0, MPI_COMM_WORLD);
+			Reaction_module_ptr->Set_input_units(local_sol, local_pp, local_ex, local_surf, local_gas, local_ss, local_kin);
+			return;
+		}
+		else
+		{
+			MPI_Bcast(sol, 1, MPI_INT, 0, MPI_COMM_WORLD);
+			MPI_Bcast(pp, 1, MPI_INT, 0, MPI_COMM_WORLD);
+			MPI_Bcast(ex, 1, MPI_INT, 0, MPI_COMM_WORLD);
+			MPI_Bcast(surf, 1, MPI_INT, 0, MPI_COMM_WORLD);
+			MPI_Bcast(gas, 1, MPI_INT, 0, MPI_COMM_WORLD);
+			MPI_Bcast(ss, 1, MPI_INT, 0, MPI_COMM_WORLD);
+			MPI_Bcast(kin, 1, MPI_INT, 0, MPI_COMM_WORLD);
+		}
 #endif
 		Reaction_module_ptr->Set_input_units(*sol, *pp, *ex, *surf, *gas, *ss, *kin);
 	}
@@ -645,7 +659,22 @@ void RM_set_mapping(int *id,
 	{
 		int nxyz = Reaction_module_ptr->Get_nxyz();
 #ifdef USE_MPI
-		MPI_Bcast(grid2chem, nxyz, MPI_INT, 0, MPI_COMM_WORLD);
+		std::vector<int> local_grid2chem;
+		if (MPI_COMM_SELF > 0)
+		{
+			local_grid2chem.reserve(nxyz);
+			MPI_Bcast(&local_grid2chem.data[0], nxyz, MPI_INT, 0, MPI_COMM_WORLD);
+			Reaction_module_ptr->Set_mapping(&local_grid2chem.data[0]);
+			return;
+		}
+		else
+		{
+			if (grid2chem == NULL)
+			{
+				Reaction_module_ptr->error_msg("Null argument grid2chem, RM_set_mapping.", 1);
+			}
+			MPI_Bcast(grid2chem, nxyz, MPI_INT, 0, MPI_COMM_WORLD);
+		}
 #endif
 		Reaction_module_ptr->Set_mapping(grid2chem);
 	}

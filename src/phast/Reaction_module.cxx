@@ -122,7 +122,6 @@ if( numCPU < 1 )
 	this->rebalance_fraction = 0.5;		// parameter for rebalancing process load for parallel	
 
 	// print flags
-	this->prslm = false;						// solution method print flag 
 	this->print_chem = false;					// print flag for chemistry output file 
 	this->print_xyz = false;					// print flag for selected output
 	this->print_hdf = false;					// print flag for hdf file
@@ -3176,7 +3175,7 @@ Reaction_module::Set_mapping(int *grid2chem)
 	}
 	count_chem ++; 
 
-	for (size_t i = 0; i < count_chem; i++)
+	for (int i = 0; i < count_chem; i++)
 	{
 		std::vector<int> temp;
 		back.push_back(temp);

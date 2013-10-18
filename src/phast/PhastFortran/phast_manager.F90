@@ -245,7 +245,6 @@ SUBROUTINE phast_manager
         deltim_dummy = 0._kdp
         CALL RM_run_cells(      &
             rm_id,              &
-            prslmi,             &        ! prslm
             prf_chem_phrqi,     &        ! print_chem
             prcphrqi,           &        ! print_xyz
             prhdfci,            &        ! print_hdf
@@ -384,7 +383,6 @@ SUBROUTINE phast_manager
                 stop_msg = 0
                 CALL RM_run_cells(                                &
                     rm_id,                                        &
-                    print_progress_statistics%print_flag_integer, &        ! prslm
                     print_force_chemistry%print_flag_integer,     &        ! print_chem
                     print_xyz_chemistry%print_flag_integer,       &        ! print_xyz
                     print_hdf_chemistry%print_flag_integer,       &        ! print_hdf

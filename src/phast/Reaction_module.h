@@ -135,8 +135,6 @@ public:
 	void Set_rebalance_method(bool t) {this->rebalance_method = t;};
 	double Get_rebalance_fraction(void) const {return this->rebalance_fraction;};
 	void Set_rebalance_fraction(double t) {this->rebalance_fraction = t;};
-	const bool Get_prslm(void) const {return this->prslm;};
-	void Set_prslm(bool t) {this->prslm = t;};
 	const bool Get_print_chem(void) const {return this->print_chem;};
 	void Set_print_chem(bool t) {this->print_chem = t;};
 	const bool Get_print_xyz(void) const {return this->print_xyz;};
@@ -218,7 +216,6 @@ protected:
 	std::vector <std::vector <int> > back;	// mapping from count_chem chemistry cells to nxyz cells 
 
 	// print flags
-	bool prslm;								// solution method print flag 
 	bool print_chem;						// print flag for chemistry output file 
 	bool print_xyz;							// print flag for selected output
 	bool print_hdf;							// print flag for hdf file
