@@ -3097,7 +3097,7 @@ Reaction_module::Set_concentration(double *t)
 	else
 	{
 		this->c_worker.reserve(this->nxyz);
-		MPI_Bcast(this->concentration, nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+		MPI_Bcast(this->c_worker.data(), nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 		this->concentration = this->c_worker.data();
 	}
 #endif
@@ -3107,61 +3107,63 @@ void
 Reaction_module::Send_restart_name(std::string &name)
 /* ---------------------------------------------------------------------- */
 {
-	int	i = (int) FileMap.size();
-	FileMap[name] = i;
-}
+	if (mpi_myself == 0)
+	{
+		int	i = (int) this->FileMap.size();
+		this->FileMap[name] = i;
+	}
 #ifdef USE_MPI
-void
-Reaction_module::Set_end_cells(void)
-/* ---------------------------------------------------------------------- */
-{
-	int n = this->count_chem / this->mpi_tasks;
-	int extra = this->count_chem - n*this->mpi_tasks;
-	std::vector<int> cells;
-	for (int i = 0; i < extra; i++)
+	if (mpi_myself == 0)
 	{
-		cells.push_back(n+1);
+		int n = int) name.size();
+		MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
+		MPI_Bcast(name.c_str(), (int) name.size(), MPI_CHARACTER, 0, MPI_COMM_WORLD);
 	}
-	for (int i = extra; i < this->mpi_tasks; i++)
+	else
 	{
-		cells.push_back(n);
+		int n;
+		MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
+		std::string str;
+		str.reserve(n);
+		MPI_Bcast(str.c_str(), n, MPI_CHARACTER, 0, MPI_COMM_WORLD);
+		int	i = (int) this->FileMap.size();
+		this->FileMap[str] = i;	
 	}
-	int cell0 = 0;
-	for (int i = 0; i < this->mpi_tasks; i++)
-	{
-		this->start_cell.push_back(cell0);
-		this->end_cell.push_back(cell0 + cells[i] - 1);
-		cell0 = cell0 + cells[i];
-	}
-	
-}
-#else
-void
-Reaction_module::Set_end_cells(void)
-/* ---------------------------------------------------------------------- */
-{
-	int n = this->count_chem / this->nthreads;
-	int extra = this->count_chem - n*this->nthreads;
-	std::vector<int> cells;
-	for (int i = 0; i < extra; i++)
-	{
-		cells.push_back(n+1);
-	}
-	for (int i = extra; i < this->nthreads; i++)
-	{
-		cells.push_back(n);
-	}
-	int cell0 = 0;
-	for (int i = 0; i < this->nthreads; i++)
-	{
-		this->start_cell.push_back(cell0);
-		this->end_cell.push_back(cell0 + cells[i] - 1);
-		cell0 = cell0 + cells[i];
-	}
-}
 #endif
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Set_end_cells(void)
+/* ---------------------------------------------------------------------- */
+{
+#ifdef USE_MPI
+	int ntasks = this->mpi_tasks;
+#else
+	int ntasks = this->nthreads;
+#endif
+	int n = this->count_chem / ntasks;
+	int extra = this->count_chem - n*ntasks;
+	std::vector<int> cells;
+	for (int i = 0; i < extra; i++)
+	{
+		cells.push_back(n+1);
+	}
+	for (int i = extra; i < ntasks; i++)
+	{
+		cells.push_back(n);
+	}
+	int cell0 = 0;
+	for (int i = 0; i < ntasks; i++)
+	{
+		this->start_cell.push_back(cell0);
+		this->end_cell.push_back(cell0 + cells[i] - 1);
+		cell0 = cell0 + cells[i];
+	}
+}
+/* ---------------------------------------------------------------------- */
 void 
 Reaction_module::Set_free_surface(int * t)
+/* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0)
 	{
@@ -3179,49 +3181,49 @@ Reaction_module::Set_input_units(int *sol, int *pp, int *ex, int *surf, int *gas
 	int local_sol, local_pp, local_ex, local_surf, local_gas, local_ss, local_kin;
 	if (mpi_myself == 0)
 	{
-		local_sol = *sol;
-		local_pp = *pp;
-		local_ex = *ex;
-		local_surf = *surf;
-		local_gas = *gas;
-		local_ss = *ss;
-		local_kin = *kin;
+		local_sol  = (sol  != NULL) ? *sol  : -1;
+		local_pp   = (pp   != NULL) ? *pp   : -1;
+		local_ex   = (ex   != NULL) ? *ex   : -1;
+		local_surf = (surf != NULL) ? *surf : -1;
+		local_gas  = (gas  != NULL) ? *gas  : -1;
+		local_ss   = (ss   != NULL) ? *ss   : -1;
+		local_kin  = (kin  != NULL) ? *kin  : -1;
 	}
 #ifdef USE_MPI
-	MPI_Bcast(&local_sol, 1, MPI_INT, 0, MPI_COMM_WORLD);
-	MPI_Bcast(&local_pp, 1, MPI_INT, 0, MPI_COMM_WORLD);
-	MPI_Bcast(&local_ex, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&local_sol,  1, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&local_pp,   1, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&local_ex,   1, MPI_INT, 0, MPI_COMM_WORLD);
 	MPI_Bcast(&local_surf, 1, MPI_INT, 0, MPI_COMM_WORLD);
-	MPI_Bcast(&local_gas, 1, MPI_INT, 0, MPI_COMM_WORLD);
-	MPI_Bcast(&local_ss, 1, MPI_INT, 0, MPI_COMM_WORLD);
-	MPI_Bcast(&local_kin, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&local_gas,  1, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&local_ss,   1, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&local_kin,  1, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
 
-	if (sol >= 0)
+	if (local_sol >= 0)
 	{
 		Set_input_units_Solution(local_sol);
 	}
-	if (pp >= 0)
+	if (local_pp >= 0)
 	{
 		Set_input_units_PPassemblage(local_pp);
 	}
-	if (ex >= 0)
+	if (local_ex >= 0)
 	{
 		Set_input_units_Exchange(local_ex);
 	}
-	if (surf >= 0)
+	if (local_surf >= 0)
 	{
 		Set_input_units_Surface(local_surf);
 	}	
-	if (gas >= 0)
+	if (local_gas >= 0)
 	{
 		Set_input_units_GasPhase(local_gas);
 	}
-	if (ss >= 0)
+	if (local_ss >= 0)
 	{
 		Set_input_units_SSassemblage(local_ss);
 	}
-	if (kin >= 0)
+	if (local_kin >= 0)
 	{
 		Set_input_units_Kinetics(local_kin);
 	}
@@ -3241,9 +3243,8 @@ Reaction_module::Set_mapping(int *grid2chem_arg)
 		}
 	}
 #ifdef USE_MPI
-	MPI_Bcast(grid2chem.data(), nxyz, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(grid2chem.data(), this->nxyz, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
-
 
 	back.clear();
 	forward.clear();
@@ -3301,8 +3302,10 @@ Reaction_module::Set_mapping(int *grid2chem_arg)
 		}
 	}
 }
+/* ---------------------------------------------------------------------- */
 void 
 Reaction_module::Set_print_chem(bool t)
+/* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0)
 	{
@@ -3395,12 +3398,12 @@ Reaction_module::Set_pv(double *t)
 #ifdef USE_MPI
 	if (mpi_myself == 0)
 	{
-		MPI_Bcast(this->pv, nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+		MPI_Bcast(this->pv, this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 	}
 	else
 	{
 		this->pv_worker.reserve(this->nxyz);
-		MPI_Bcast(this->pv_worker.data(), nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+		MPI_Bcast(this->pv_worker.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 		this->pv = this->pv_worker.data();
 	}
 #endif
