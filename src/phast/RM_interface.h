@@ -34,6 +34,7 @@
 #define RM_set_input_units                 FC_FUNC_ (rm_set_input_units,               RM_SET_INPUT_UNITS)
 #define RM_set_mapping                     FC_FUNC_ (rm_set_mapping,                   RM_SET_MAPPING)
 #define RM_set_nodes                       FC_FUNC_ (rm_set_nodes,                     RM_SET_NODES)
+#define RM_set_printing                    FC_FUNC_ (rm_set_printing,                  RM_SET_PRINTING)
 #define RM_set_pv0                         FC_FUNC_ (rm_set_pv0,                       RM_SET_PV0)
 #define RM_set_pv                          FC_FUNC_ (rm_set_pv,                        RM_SET_PV)
 #define RM_set_time_conversion             FC_FUNC_ (rm_set_time_conversion,           RM_SET_TIME_CONVERSION)
@@ -75,6 +76,7 @@
 #define RM_set_input_units                    rm_set_input_units
 #define RM_set_mapping                        rm_set_mapping
 #define RM_set_nodes                          rm_set_nodes
+#define RM_set_printing                       rm_set_printing
 #define RM_set_pv0                            rm_set_pv0
 #define RM_set_pv                             rm_set_pv
 #define RM_set_time_conversion                rm_set_time_conversion
@@ -142,16 +144,10 @@ void RM_pass_data(int *id,
 			 double *fraction                   // mass fraction array
 			 );
 void RM_run_cells(int *id,
-			 int * print_out,						// print flag for output file 
-			 int * print_sel,						// print flag for selected output
-			 int * print_hdf,						// print flag for hdf file
-			 int * print_restart,					// print flag for writing restart file 
 			 double *time,					        // time from transport 
 			 double *time_step,				        // time step from transport
  			 double *fraction,					    // mass fractions nxyz:components
 			 double *frac,							// saturation fraction
-			 int *nxyz,
-			 int *count_comps,
 			 int * stop_msg);
 void RM_send_restart_name(int *id, char * s, long l);
 void RM_setup_boundary_conditions(
@@ -166,6 +162,7 @@ void RM_set_input_units (int *id,
 	int *sol=NULL, int *pp=NULL, int *ex=NULL, int *surf=NULL, int *gas=NULL, int *ss=NULL, int *kin=NULL);
 void RM_set_mapping (int *id, int *grid2chem=NULL); 
 void RM_set_nodes(int *id, double *x_node, double *y_node, double *z_node);
+void RM_set_printing(int *id, int *print_chem, int *print_xyz, int *print_hdf, int *print_restart);
 void RM_set_pv(int *id, double *t);
 void RM_set_pv0(int *id, double *t);
 void RM_set_time_conversion(int *id, double *t);

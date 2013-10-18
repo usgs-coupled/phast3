@@ -129,13 +129,13 @@ public:
 	double Get_rebalance_fraction(void) const {return this->rebalance_fraction;};
 	void Set_rebalance_fraction(double t) {this->rebalance_fraction = t;};
 	const bool Get_print_chem(void) const {return this->print_chem;};
-	void Set_print_chem(bool t) {this->print_chem = t;};
+	void Set_print_chem(bool t); 
 	const bool Get_print_xyz(void) const {return this->print_xyz;};
-	void Set_print_xyz(bool t) {this->print_xyz = t;};
+	void Set_print_xyz(bool t); 
 	const bool Get_print_hdf(void) const {return this->print_hdf;};
-	void Set_print_hdf(bool t) {this->print_hdf = t;};
+	void Set_print_hdf(bool t); 
 	const bool Get_print_restart(void) const {return this->print_restart;};
-	void Set_print_restart(bool t) {this->print_restart = t;};
+	void Set_print_restart(bool t); 
 
 	int Get_input_units_Solution(void) {return this->input_units_Solution;}
 	int Get_input_units_PPassemblage(void) {return this->input_units_PPassemblage;}
