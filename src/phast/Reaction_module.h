@@ -112,8 +112,8 @@ public:
 	void Set_z_node(double * t);
 	double * Get_fraction(void) const {return this->fraction;};
 	void Set_fraction(double * t) {this->fraction = t;};
-	const double * Get_frac(void) const {return this->frac;};
-	void Set_frac(double * t) {this->frac = t;};
+	std::vector<double> & Get_saturation(void) {return this->saturation;};
+	void Set_saturation(double * t); 
 	std::vector<double> & Get_pv(void) {return this->pv;};
 	void Set_pv(double * t = NULL); 
 	std::vector<double> & Get_pv0(void) {return this->pv0;};
@@ -181,7 +181,7 @@ protected:
 	std::vector<double> y_node;				// y node location, nxyz array
 	std::vector<double> z_node;             // z node location, nxyz array
 	double *fraction;						// nxyz by ncomps mass fractions nxyz:components
-	double *frac;							// nxyz saturation fraction
+	std::vector<double> saturation;		// nxyz saturation fraction
 	std::vector<double> pv;					// nxyz current pore volumes 
 	std::vector<double> pv0;				// nxyz initial pore volumes
 	double *volume;							// nxyz geometric cell volumes 
