@@ -114,10 +114,10 @@ public:
 	void Set_fraction(double * t) {this->fraction = t;};
 	const double * Get_frac(void) const {return this->frac;};
 	void Set_frac(double * t) {this->frac = t;};
-	const double * Get_pv(void) const {return this->pv;};
-	void Set_pv(double * t) {this->pv = t;};
-	const double * Get_pv0(void) const {return this->pv0;};
-	void Set_pv0(double * t) {this->pv0 = t;};
+	std::vector<double> & Get_pv(void) {return this->pv;};
+	void Set_pv(double * t = NULL); 
+	std::vector<double> & Get_pv0(void) {return this->pv0;};
+	void Set_pv0(double * t = NULL); 
 	const double * Get_volume(void) const {return this->volume;};
 	void Set_volume(double * t) {this->volume = t;};
 	const int * Get_printzone_chem(void) const {return this->printzone_chem;};
@@ -182,8 +182,8 @@ protected:
 	std::vector<double> z_node;             // z node location, nxyz array
 	double *fraction;						// nxyz by ncomps mass fractions nxyz:components
 	double *frac;							// nxyz saturation fraction
-	double *pv;								// nxyz current pore volumes 
-	double *pv0;							// nxyz initial pore volumes
+	std::vector<double> pv;					// nxyz current pore volumes 
+	std::vector<double> pv0;				// nxyz initial pore volumes
 	double *volume;							// nxyz geometric cell volumes 
 	int *printzone_chem;					// nxyz print flags for output file
 	int *printzone_xyz;						// nxyz print flags for chemistry XYZ file 
