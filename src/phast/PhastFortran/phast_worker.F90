@@ -216,7 +216,7 @@ SUBROUTINE phast_worker
 
             ! ... Processes do transport
             IF (local_ns > 0) THEN 
-                CALL RM_transport(rm_id, local_ns)
+                CALL TM_transport(rm_id, local_ns, nthreads)
                 if (mpi_tasks > 1) CALL MPI_Barrier(world, ierrmpi)
                 CALL sbc_gather
                 CALL c_gather

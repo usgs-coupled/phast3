@@ -383,6 +383,7 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)
     </ClCompile>
     <ClCompile Include="..\KDtree\kdtree2.cpp" />
     <ClCompile Include="..\KDtree\Point.cpp" />
+    <ClCompile Include="..\TM_interface.cpp" />
     <ClCompile Include="..\xfer_indices.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -392,6 +393,7 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)
     <ClInclude Include="..\gzstream.h" />
     <ClInclude Include="..\Reaction_module.h" />
     <ClInclude Include="..\RM_interface.h" />
+    <ClInclude Include="..\TM_interface.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

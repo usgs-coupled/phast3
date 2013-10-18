@@ -322,7 +322,7 @@ SUBROUTINE phast_manager
                 ENDDO
             ENDIF
             IF (local_ns > 0) THEN 
-                CALL RM_transport(rm_id, local_ns)
+                CALL TM_transport(rm_id, local_ns, nthreads)
             ENDIF
 
             IF(errexe .OR. errexi) GO TO 50
