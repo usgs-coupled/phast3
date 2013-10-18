@@ -248,7 +248,7 @@ SUBROUTINE phast_manager
             ic_mxfrac)                ! 7 x nxyz fraction of end-member 1
 
         ! collect solutions at manager for transport
-        CALL RM_solutions2fractions(rm_id)
+        CALL RM_phreeqc2concentrations(rm_id)
     ENDIF        ! ... solute
 
     CALL error4

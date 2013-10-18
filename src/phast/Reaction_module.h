@@ -64,8 +64,8 @@ public:
 	void Setup_boundary_conditions(const int n_boundary, int *boundary_solution1,
 						  int *boundary_solution2, double *fraction1,
 						  double *boundary_fraction, int dim);
-	void Solutions2Fractions(void);
-	void Solutions2Fractions_thread(int n);
+	void Phreeqc2Concentrations(void);
+	void Phreeqc2Concentrations_thread(int n);
 	void Transfer_cells(cxxStorageBin &t_bin, int old, int nnew);
 	void Write_bc_raw(int *solution_list, int * bc_solution_count, 
 		int * solution_number, const std::string &prefix);

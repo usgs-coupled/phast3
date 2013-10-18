@@ -209,7 +209,7 @@ SUBROUTINE phast_worker
             indx_sol1_ic)
         
         ! ... collect solutions for transport
-        CALL RM_solutions2fractions(rm_id)
+        CALL RM_phreeqc2concentrations(rm_id)
 
         ! ... steady flow is calculated here
         IF (steady_flow) THEN

@@ -494,7 +494,7 @@ void RM_run_cells(int *id,
 			Reaction_module_ptr->Run_cells(); 
 
 			// Transfer data reaction module to Fortran
-			Reaction_module_ptr->Solutions2Fractions();
+			Reaction_module_ptr->Phreeqc2Concentrations();
 
 			// Rebalance load
 			Reaction_module_ptr->Rebalance_load();
@@ -502,13 +502,13 @@ void RM_run_cells(int *id,
 	}
 }
 void
-RM_solutions2fractions(int *id)
+RM_phreeqc2concentrations(int *id)
 /* ---------------------------------------------------------------------- */
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->Solutions2Fractions();
+		Reaction_module_ptr->Phreeqc2Concentrations();
 	}
 }
 /* ---------------------------------------------------------------------- */
