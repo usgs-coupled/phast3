@@ -84,13 +84,12 @@ SUBROUTINE phast_manager
             iprint_chem,                 &
             iprint_xyz,                  &
             rebalance_method_f,          &
-            rebalance_fraction_f,        &
-            c) 
+            rebalance_fraction_f) 
             IMPLICIT NONE 
             logical, INTENT(INOUT) :: fresur, steady_flow
             INTEGER, INTENT(INOUT) :: rm_id, iprint_chem, iprint_xyz, rebalance_method_f 
             double precision, INTENT(INOUT) :: volume 
-            double precision, INTENT(INOUT) :: c, rebalance_fraction_f
+            double precision, INTENT(INOUT) :: rebalance_fraction_f
         END SUBROUTINE RM_pass_data
 #ifdef USE_MPI
         SUBROUTINE xfer_indices(indx_sol1_ic, indx_sol2_ic, &
@@ -229,8 +228,7 @@ SUBROUTINE phast_manager
             iprint_chem(1),                 &
             iprint_xyz(1),                  &
             rebalance_method_f,          &
-            rebalance_fraction_f,        &
-            c(1,1))
+            rebalance_fraction_f)
 
         ! ... Define mapping from 3D domain to chemistry
         !CALL RM_forward_and_back(rm_id, indx_sol1_ic, naxes) 
@@ -248,7 +246,7 @@ SUBROUTINE phast_manager
             ic_mxfrac)                ! 7 x nxyz fraction of end-member 1
 
         ! collect solutions at manager for transport
-        CALL RM_phreeqc2concentrations(rm_id)
+        CALL RM_phreeqc2concentrations(rm_id, c)
     ENDIF        ! ... solute
 
     CALL error4
