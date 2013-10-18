@@ -682,47 +682,6 @@ void RM_set_volume(int *id, double *t)
 		Reaction_module_ptr->Set_volume(t);
 	}
 }
-#ifdef USE_MPI
-/* ---------------------------------------------------------------------- */
-void
-RM_transport(int *id, int *ncomps)
-/* ---------------------------------------------------------------------- */
-{
-	// Used for MPI transport calculations
-	for (int i = 1; i <= *ncomps; i++)
-	{
-		transport_component_thread(&i);
-	}
-}
-#else
-/* ---------------------------------------------------------------------- */
-void
-RM_transport(int *id, int *ncomps)
-/* ---------------------------------------------------------------------- */
-{
-	// Used for threaded transport calculations
-
-#ifdef THREADED_PHAST
-	int n = 1;
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
-	if (Reaction_module_ptr) {
-		n = Reaction_module_ptr->Get_nthreads();
-	}
-	omp_set_num_threads(n);
-	#pragma omp parallel 
-	#pragma omp for
-	for (int i = 1; i <= *ncomps; i++)
-	{
-		transport_component_thread(&i);
-	}
-#else
-	for (int i = 1; i <= *ncomps; i++)
-	{
-		transport_component(&i);
-	}
-#endif
-}
-#endif
 /* ---------------------------------------------------------------------- */
 void RM_write_bc_raw(
 			int *id,

@@ -60,6 +60,9 @@
     <ClCompile Include="..\xfer_indices.cpp">
       <Filter>Source Files\MPI_OBJS</Filter>
     </ClCompile>
+    <ClCompile Include="..\TM_interface.cpp">
+      <Filter>Source Files\COMMON_CXXOBJS</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="phast.rc">
@@ -74,6 +77,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\RM_interface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\TM_interface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

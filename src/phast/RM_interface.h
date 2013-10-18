@@ -45,13 +45,11 @@
 #define RM_set_time_conversion             FC_FUNC_ (rm_set_time_conversion,           RM_SET_TIME_CONVERSION)
 #define RM_set_volume					   FC_FUNC_ (rm_set_volume,                    RM_SET_VOLUME)
 #define RM_phreeqc2concentrations          FC_FUNC_ (rm_phreeqc2concentrations,        RM_PHREEQC2CONCENTRATIONS)
-#define RM_transport                       FC_FUNC_ (rm_transport,                     RM_TRANSPORT)
 #define RM_write_bc_raw                    FC_FUNC_ (rm_write_bc_raw,                  RM_WRITE_BC_RAW)
 #define RM_write_output                    FC_FUNC_ (rm_write_output,                  RM_WRITE_OUTPUT)
 #define RM_write_restart				   FC_FUNC_ (rm_write_restart,                 RM_WRITE_RESTART)
 #define RM_zone_flow_write_chem            FC_FUNC_ (rm_zone_flow_write_chem,          RM_ZONE_FLOW_WRITE_CHEM)
 // Calls to Fortran
-#define transport_component_thread         FC_FUNC_ (transport_component_thread,       TRANSPORT_COMPONENT_THREAD)
 #define zone_flow_write_chem               FC_FUNC_ (zone_flow_write_chem,             ZONE_FLOW_WRITE_CHEM)
 #define logprt_c                           FC_FUNC_ (logprt_c,                         LOGPRT_C)
 #define screenprt_c                        FC_FUNC_ (screenprt_c,                      SCREENPRT_C)
@@ -90,12 +88,10 @@
 #define RM_set_time_conversion                rm_set_time_conversion
 #define RM_set_volume                         rm_set_volume
 #define RM_phreeqc2concentrations             rm_phreeqc2concentrations
-#define RM_transport                          rm_transport
 #define RM_write_bc_raw                       rm_write_bc_raw
 #define RM_write_output                       rm_write_output
 #define RM_write_restart					  rm_write_restart
 #define RM_zone_flow_write_chem               rm_zone_flow_write_chem
-#define transport_component_thread            transport_component_thread
 #endif
 
 class RM_interface
@@ -169,7 +165,6 @@ void RM_set_saturation(int *id, double *t);
 void RM_set_steady_flow(int *id, int *t);
 void RM_set_time_conversion(int *id, double *t);
 void RM_set_volume(int *id, double *t);
-void RM_transport(int *id, int *ncomps);
 void RM_write_bc_raw(int *id, 
 			int *solution_list, 
 			int * bc_solution_count, 
@@ -189,8 +184,6 @@ void RM_errprt(const std::string & e_string);
 void RM_warnprt(const std::string & e_string);
 void RM_logprt(const std::string & e_string);
 void RM_screenprt(const std::string & e_string);
-extern void transport_component(int *i);
-extern void transport_component_thread(int *i);
 extern void zone_flow_write_chem(void);
 
 #if defined(__cplusplus)
