@@ -34,13 +34,13 @@ void RM_interface::CleanupReactionModuleInstances(void)
 }
 /* ---------------------------------------------------------------------- */
 int
-RM_interface::Create_reaction_module(int nxyz, int nthreads)
+RM_interface::Create_reaction_module(int *nxyz, int *nthreads)
 /* ---------------------------------------------------------------------- */
 {
 	int n = IPQ_OUTOFMEMORY;
 	try
 	{
-		Reaction_module* Reaction_module_ptr = new Reaction_module(nxyz, nthreads);
+		Reaction_module * Reaction_module_ptr = new Reaction_module(nxyz, nthreads);
 		if (Reaction_module_ptr)
 		{
 			n = (int) Reaction_module_ptr->Get_workers()[0]->Get_Index();
@@ -220,7 +220,7 @@ RM_convert_to_molal(int *id, double *c, int *n, int *dim)
 int RM_create(int *nxyz, int *nthreads)
 /* ---------------------------------------------------------------------- */
 {
-	return RM_interface::Create_reaction_module(*nxyz, *nthreads);
+	return RM_interface::Create_reaction_module(nxyz, nthreads);
 }
 /* ---------------------------------------------------------------------- */
 int RM_destroy(int *id)

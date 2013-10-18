@@ -26,7 +26,7 @@
 #include <mpi.h>
 #endif
 #include "Phreeqc.h"
-Reaction_module::Reaction_module(int nxyz, int thread_count, PHRQ_io *io)
+Reaction_module::Reaction_module(int *nxyz_arg, int *thread_count, PHRQ_io *io)
 	//
 	// constructor
 	//
@@ -77,8 +77,41 @@ if( numCPU < 1 )
 #endif
 #endif
 #endif
-	this->nthreads = (thread_count > 0) ? thread_count : n;
-	//this->nthreads = 1;
+	// Determine mpi_myself
+	this->mpi_myself = 0;
+	this->mpi_tasks = 1;
+#ifdef USE_MPI
+	if (MPI_Comm_size(MPI_COMM_WORLD, &this->mpi_tasks) != MPI_SUCCESS)
+	{
+		return EXIT_FAILURE;
+	}
+
+	if (MPI_Comm_rank(MPI_COMM_WORLD, &this->mpi_myself) != MPI_SUCCESS)
+	{
+		return EXIT_FAILURE;
+	}
+#endif
+	if (mpi_myself == 0)
+	{
+		if (*nxyz_arg == NULL)
+		{
+			std::ostringstream errstr;
+			errstr << "Number of grid cells (nxyz) not defined in creating Reaction_module"; 
+			error_msg(errstr.str().c_str(), 1);
+		}
+		this->nxyz = *nxyz_arg;
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&this->nxyz, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	this->nthreads = 1;
+#else
+	this->nthreads = n;
+	if (*thread_count != NULL)
+	{
+		this->nthreads = (*thread_count > 0) ? *thread_count : n;
+	}
+#endif
+
 	// last one is to calculate well pH
 	for (int i = 0; i <= this->nthreads; i++)
 	{
@@ -95,15 +128,12 @@ if( numCPU < 1 )
 		exit(4);
 	}
 
-	this->mpi_myself = 0;
-	this->mpi_tasks = 1;
 
 	this->gfw_water = 18.;						// gfw of water
 	this->count_chem = 0;
 	this->free_surface = false;					// free surface calculation
 	this->steady_flow = false;					// steady-state flow calculation
-	this->transient_free_surface = false;		// free surface and not steady flow
-	this->nxyz = 0;								// number of nodes 
+	this->transient_free_surface = false;		// free surface and not steady flow 
 	this->time_hst = 0;							// scalar time from transport 
 	this->time_step_hst = 0;					// scalar time step from transport
 	this->cnvtmi = NULL;						// scalar conversion factor for time
@@ -117,7 +147,6 @@ if( numCPU < 1 )
 	this->volume = NULL;						// nxyz geometric cell volumes 
 	this->printzone_chem = NULL;				// nxyz print flags for output file
 	this->printzone_xyz = NULL;					// nxyz print flags for chemistry XYZ file 
-	//this->ic1 = NULL;							// reactant number for end member 1
 	this->rebalance_fraction = 0.5;		// parameter for rebalancing process load for parallel	
 
 	// print flags
@@ -134,8 +163,7 @@ if( numCPU < 1 )
 	this->input_units_SSassemblage = 1;			// water 1, rock 2
 	this->input_units_Kinetics = 1;			    // water 1, rock 2
 
-	this->nxyz = nxyz;
-	for (int i = 0; i < nxyz; i++)
+	for (int i = 0; i < this->nxyz; i++)
 	{
 		forward.push_back(i);
 		std::vector<int> temp;
