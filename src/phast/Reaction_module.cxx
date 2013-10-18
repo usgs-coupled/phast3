@@ -137,11 +137,13 @@ if( numCPU < 1 )
 	this->time = 0;							    // scalar time from transport 
 	this->time_step = 0;					    // scalar time step from transport
 	this->time_conversion = NULL;				// scalar conversion factor for time
-	this->fraction = NULL;						// nxyz by ncomps mass fractions nxyz:components
+	this->concentration = NULL;					// nxyz by ncomps mass fractions nxyz:components
 	this->volume = NULL;						// nxyz geometric cell volumes 
 	this->printzone_chem = NULL;				// nxyz print flags for output file
 	this->printzone_xyz = NULL;					// nxyz print flags for chemistry XYZ file 
 	this->rebalance_fraction = 0.5;		// parameter for rebalancing process load for parallel	
+	this->saturation = NULL;
+	this->pv = NULL;
 
 	// print flags
 	this->print_chem = false;					// print flag for chemistry output file 
@@ -167,9 +169,7 @@ if( numCPU < 1 )
 		x_node.push_back((double) i);
 		y_node.push_back(0.0);
 		z_node.push_back(0.0);
-		pv.push_back(1.0);
 		pv0.push_back(1.0);
-		saturation.push_back(1.0);
 	}
 }
 Reaction_module::~Reaction_module(void)
@@ -1373,7 +1373,7 @@ Reaction_module::Fractions2Solutions_thread(int n)
 		if (j < 0) continue;
 
 		// get mass fractions and store as moles in d
-		double *ptr = &this->fraction[i];
+		double *ptr = &this->concentration[i];
 		for (k = 0; k < (int) this->components.size(); k++)
 		{	
 			d.push_back(ptr[this->nxyz * k] * 1000.0/this->gfw[k]);
@@ -3077,6 +3077,29 @@ Reaction_module::Scale_solids(int n, int iphrq, LDBLE frac)
 }
 /* ---------------------------------------------------------------------- */
 void
+Reaction_module::Set_concentration(double *t)
+/* ---------------------------------------------------------------------- */
+{
+	if (mpi_myself == 0)
+	{
+		if (t == NULL) error_msg("NULL pointer in Set_concentration", 1);
+		this->concentration = t;
+	}
+#ifdef USE_MPI
+	if (mpi_myself == 0)
+	{
+		MPI_Bcast(this->concentration, nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	}
+	else
+	{
+		this->c_worker.reserve(this->nxyz);
+		MPI_Bcast(this->concentration, nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+		this->concentration = this->c_worker.data();
+	}
+#endif
+}
+/* ---------------------------------------------------------------------- */
+void
 Reaction_module::Send_restart_name(std::string &name)
 /* ---------------------------------------------------------------------- */
 {
@@ -3311,17 +3334,22 @@ void
 Reaction_module::Set_pv(double *t)
 /* ---------------------------------------------------------------------- */
 {
-	this->pv.clear();
-	this->pv.reserve(this->nxyz);
 	if (mpi_myself == 0)
 	{
-		for (int i = 0; i < this->nxyz; i++)
-		{
-			this->pv.push_back(t[i]);
-		}
+		if (t == NULL) error_msg("NULL pointer in Set_pv", 1);
+		this->pv = t;
 	}
 #ifdef USE_MPI
-	MPI_Bcast(this->pv.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	if (mpi_myself == 0)
+	{
+		MPI_Bcast(this->pv, nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	}
+	else
+	{
+		this->pv_worker.reserve(this->nxyz);
+		MPI_Bcast(this->pv_worker.data(), nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+		this->pv = this->pv_worker.data();
+	}
 #endif
 }
 /* ---------------------------------------------------------------------- */
@@ -3347,18 +3375,22 @@ void
 Reaction_module::Set_saturation(double *t)
 /* ---------------------------------------------------------------------- */
 {
-	this->saturation.clear();
-	this->saturation.reserve(this->nxyz);
 	if (mpi_myself == 0)
 	{
 		if (t == NULL) error_msg("NULL pointer in Set_saturation", 1);
-		for (int i = 0; i < this->nxyz; i++)
-		{
-			this->saturation.push_back(t[i]);
-		}
+		this->saturation = t;
 	}
 #ifdef USE_MPI
-	MPI_Bcast(this->saturation.data(), nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	if (mpi_myself == 0)
+	{
+		MPI_Bcast(this->saturation(), nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	}
+	else
+	{
+		this->saturation_worker.reserve(this->nxyz);
+		MPI_Bcast(this->saturation_worker.data(), nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+		this->saturation = this->saturation_worker.data();
+	}
 #endif
 }
 /* ---------------------------------------------------------------------- */
@@ -3635,7 +3667,7 @@ Reaction_module::Solutions2Fractions(void)
 			std::vector<int>::iterator it;
 			for (it = this->back[j].begin(); it != this->back[j].end(); it++)
 			{
-				double *d_ptr = &this->fraction[*it];
+				double *d_ptr = &this->concentration[*it];
 				size_t i;
 				for (i = 0; i < this->components.size(); i++)
 				{
@@ -3668,7 +3700,7 @@ Reaction_module::Solutions2Fractions_thread(int n)
 		std::vector<int>::iterator it;
 		for (it = this->back[j].begin(); it != this->back[j].end(); it++)
 		{
-			double *d_ptr = &this->fraction[*it];
+			double *d_ptr = &this->concentration[*it];
 			size_t i;
 			for (i = 0; i < this->components.size(); i++)
 			{

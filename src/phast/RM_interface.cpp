@@ -447,7 +447,7 @@ RM_pass_data(int *id,
 			 int *printzone_xyz,				// nxyz print flags for chemistry XYZ file 
 			 int *rebalance_method,             // method for rebalancing load
 			 double *rebalance_fraction_hst, 	// parameter for rebalancing process load for parallel	
-			 double *fraction                   // needed for first Solutions2Fractions
+			 double *c                          // needed for first Solutions2Fractions
 			 )
 /* ---------------------------------------------------------------------- */
 {
@@ -463,14 +463,14 @@ RM_pass_data(int *id,
 		Reaction_module_ptr->Set_printzone_xyz(printzone_xyz);
 		Reaction_module_ptr->Set_rebalance_method(*rebalance_method != 0);
 		Reaction_module_ptr->Set_rebalance_fraction(*rebalance_fraction_hst);
-		Reaction_module_ptr->Set_fraction(fraction);
+		Reaction_module_ptr->Set_concentration(c);
 	}
 }
 /* ---------------------------------------------------------------------- */
 void RM_run_cells(int *id,
 			 double *time,					        // time from transport 
 			 double *time_step,		   		        // time step from transport
- 			 double *fraction,					    // mass fractions nxyz:components
+ 			 double *concentration,					// mass fractions nxyz:components
 			 double *saturation,					// saturation fraction
 			 int * stop_msg)
 /* ---------------------------------------------------------------------- */
@@ -492,7 +492,7 @@ void RM_run_cells(int *id,
 			// Transfer data and pointers to Reaction_module	  
 			Reaction_module_ptr->Set_time(*time);
 			Reaction_module_ptr->Set_time_step(*time_step);
-			Reaction_module_ptr->Set_fraction(fraction);
+			Reaction_module_ptr->Set_concentration(concentration);
 			Reaction_module_ptr->Set_saturation(saturation);
 
 			// Transfer data Fortran to reaction module
