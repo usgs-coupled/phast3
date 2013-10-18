@@ -53,6 +53,16 @@ SUBROUTINE phast_manager
             INTEGER :: id
             INTEGER :: grid2chem
         END SUBROUTINE RM_set_mapping 
+        SUBROUTINE RM_set_pv(id, t)   
+            IMPLICIT NONE
+            INTEGER :: id
+            DOUBLE PRECISION :: t
+        END SUBROUTINE RM_set_pv 
+        SUBROUTINE RM_set_pv0(id, t)
+            IMPLICIT NONE
+            INTEGER :: id
+            DOUBLE PRECISION :: t
+        END SUBROUTINE RM_set_pv0
         SUBROUTINE RM_set_time_conversion(id, t)   
             IMPLICIT NONE
             INTEGER :: id
@@ -65,7 +75,6 @@ SUBROUTINE phast_manager
         SUBROUTINE RM_pass_data(rm_id,        &
             fresur,                      &
             steady_flow,                 &
-            pv0,                         &
             volume,                      &
             iprint_chem,                 &
             iprint_xyz,                  &
@@ -75,7 +84,7 @@ SUBROUTINE phast_manager
             IMPLICIT NONE 
             logical, INTENT(INOUT) :: fresur, steady_flow
             INTEGER, INTENT(INOUT) :: rm_id, iprint_chem, iprint_xyz, rebalance_method_f 
-            double precision, INTENT(INOUT) :: pv0, volume 
+            double precision, INTENT(INOUT) :: volume 
             double precision, INTENT(INOUT) :: c, rebalance_fraction_f
         END SUBROUTINE RM_pass_data
 #ifdef USE_MPI
@@ -207,10 +216,10 @@ SUBROUTINE phast_manager
         CALL RM_set_input_units (rm_id, 1, 1, 1, 1, 1, 1, 1)
         CALL RM_set_nodes(rm_id, x_node, y_node, z_node)
         CALL RM_set_time_conversion(rm_id, cnvtmi)
+        CALL RM_set_pv0(rm_id, pv0(1))
         CALL RM_pass_data(rm_id,        &
             fresur,                      &
             steady_flow,                 &
-            pv0(1),                         &
             volume(1),                      &
             iprint_chem(1),                 &
             iprint_xyz(1),                  &
@@ -262,6 +271,7 @@ SUBROUTINE phast_manager
         CALL RM_log_screen_prt(logline1)
         stop_msg = 0
         deltim_dummy = 0._kdp
+        CALL RM_set_pv(rm_id, pv(1))
         CALL RM_run_cells(      &
             rm_id,              &
             prf_chem_phrqi,     &        ! print_chem
@@ -272,7 +282,6 @@ SUBROUTINE phast_manager
             deltim_dummy,       &        ! time_step_hst
             c,                  &        ! fraction
             frac,               &        ! frac
-            pv,                 &        ! pv 
             nxyz,               &
             ns,                 &
             stop_msg) 
@@ -400,6 +409,7 @@ SUBROUTINE phast_manager
                 WRITE(logline1,'(a)') '     Beginning chemistry calculation.'
                 CALL RM_log_screen_prt(logline1)
                 stop_msg = 0
+                CALL RM_set_pv(rm_id, pv(1))
                 CALL RM_run_cells(                                &
                     rm_id,                                        &
                     print_force_chemistry%print_flag_integer,     &        ! print_chem
@@ -410,7 +420,6 @@ SUBROUTINE phast_manager
                     deltim,                                       &        ! time_step_hst
                     c,                                            &        ! fraction
                     frac,                                         &        ! frac
-                    pv,                                           &        ! pv 
                     nxyz,                                         &
                     ns,                                           &
                     stop_msg) 

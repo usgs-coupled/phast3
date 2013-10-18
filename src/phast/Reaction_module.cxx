@@ -139,8 +139,6 @@ if( numCPU < 1 )
 	this->time_conversion = NULL;				// scalar conversion factor for time
 	this->fraction = NULL;						// nxyz by ncomps mass fractions nxyz:components
 	this->frac = NULL;							// nxyz saturation fraction
-	this->pv = NULL;							// nxyz current pore volumes 
-	this->pv0 = NULL;							// nxyz initial pore volumes
 	this->volume = NULL;						// nxyz geometric cell volumes 
 	this->printzone_chem = NULL;				// nxyz print flags for output file
 	this->printzone_xyz = NULL;					// nxyz print flags for chemistry XYZ file 
@@ -170,6 +168,8 @@ if( numCPU < 1 )
 		x_node.push_back((double) i);
 		y_node.push_back(0.0);
 		z_node.push_back(0.0);
+		pv.push_back(1.0);
+		pv0.push_back(1.0);
 	}
 }
 Reaction_module::~Reaction_module(void)
@@ -3261,6 +3261,42 @@ Reaction_module::Set_mapping(int *grid2chem_arg)
 			error_msg("Error in building inverse mapping (chem to grid).", STOP);
 		}
 	}
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Set_pv(double *t)
+/* ---------------------------------------------------------------------- */
+{
+	this->pv.clear();
+	this->pv.reserve(this->nxyz);
+	if (mpi_myself == 0)
+	{
+		for (int i = 0; i < this->nxyz; i++)
+		{
+			this->pv.push_back(t[i]);
+		}
+	}
+#ifdef USE_MPI
+	MPI_Bcast(pv.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+#endif
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Set_pv0(double *t)
+/* ---------------------------------------------------------------------- */
+{
+	this->pv0.clear();
+	this->pv0.reserve(this->nxyz);
+	if (mpi_myself == 0)
+	{
+		for (int i = 0; i < this->nxyz; i++)
+		{
+			this->pv0.push_back(t[i]);
+		}
+	}
+#ifdef USE_MPI
+	MPI_Bcast(pv0.data(), nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+#endif
 }
 /* ---------------------------------------------------------------------- */
 void

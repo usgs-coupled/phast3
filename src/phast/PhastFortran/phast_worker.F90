@@ -52,7 +52,6 @@ SUBROUTINE phast_worker
             fresur,                      &
             steady_flow,                 &
             x_node, y_node, z_node,      &
-            pv0,                         &
             volume,                      &
             iprint_chem,                 &
             iprint_xyz,                  &
@@ -63,7 +62,7 @@ SUBROUTINE phast_worker
             logical, INTENT(INOUT) :: fresur, steady_flow
             INTEGER, INTENT(INOUT) :: rm_id, iprint_chem, iprint_xyz, rebalance_method_f 
             INTEGER, INTENT(INOUT) :: mpi_myself, mpi_tasks
-            double precision, INTENT(INOUT) :: pv0, volume 
+            double precision, INTENT(INOUT) :: volume 
             double precision, INTENT(INOUT) :: c, rebalance_fraction_f
         END SUBROUTINE RM_pass_data        
         SUBROUTINE xfer_indices(indx_sol1_ic, indx_sol2_ic, &
@@ -173,11 +172,11 @@ SUBROUTINE phast_worker
         CALL RM_set_input_units (rm_id)
         CALL RM_set_nodes(rm_id)
         CALL RM_set_time_conversion(rm_id)
+        CALL RM_set_pv0(rm_id)
         CALL RM_pass_data(               &
             rm_id,                       &
             fresur,                      &
             steady_flow,                 &
-            pv0(1),                         &
             volume(1),                      &
             iprint_chem(1),                 &
             iprint_xyz(1),                  &
@@ -215,6 +214,7 @@ SUBROUTINE phast_worker
 
         ! ... Initial equilibration
         adj_wr_ratio = 1
+        CALL RM_set_pv(rm_id)
         CALL RM_run_cells(                                &
             rm_id,                                        &
             print_force_chemistry%print_flag_integer,     &        ! print_chem
@@ -225,7 +225,6 @@ SUBROUTINE phast_worker
             deltim_dummy,                                 &        ! time_step_hst
             c,                                            &        ! fraction
             frac,                                         &        ! frac
-            pv,                                           &        ! pv 
             nxyz,                                         &
             ns,                                           &
             stop_msg) 
@@ -276,6 +275,7 @@ SUBROUTINE phast_worker
             IF(errexe .OR. errexi) GO TO 50
 
             ! ... Chemistry calculation
+            CALL RM_set_pv(rm_id)
             CALL RM_run_cells(                                &
                 rm_id,                                        &
                 print_force_chemistry%print_flag_integer,     &        ! print_chem
@@ -286,7 +286,6 @@ SUBROUTINE phast_worker
                 deltim_dummy,                                 &        ! time_step_hst
                 c,                                            &        ! fraction
                 frac,                                         &        ! frac
-                pv,                                           &        ! pv 
                 nxyz,                                         &
                 ns,                                           &
                 stop_msg) 

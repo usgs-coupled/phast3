@@ -442,7 +442,6 @@ void
 RM_pass_data(int *id,
 			 bool *free_surface_f,				// free surface calculation
 			 bool *steady_flow_f,				// free surface calculation
-			 double *pv0,						// nxyz initial pore volumes
 			 double *volume, 					// nxyz geometric cell volumes 
 			 int *printzone_chem,				// nxyz print flags for output file
 			 int *printzone_xyz,				// nxyz print flags for chemistry XYZ file 
@@ -459,7 +458,6 @@ RM_pass_data(int *id,
 		Reaction_module_ptr->Set_free_surface(*free_surface_f != 0);
 		Reaction_module_ptr->Set_steady_flow(*steady_flow_f != 0);
 		Reaction_module_ptr->Set_transient_free_surface((*free_surface_f != 0) && (steady_flow_f == 0));
-		Reaction_module_ptr->Set_pv0(pv0);
 		Reaction_module_ptr->Set_volume(volume);
 		Reaction_module_ptr->Set_printzone_chem(printzone_chem);
 		Reaction_module_ptr->Set_printzone_xyz(printzone_xyz);
@@ -478,7 +476,6 @@ void RM_run_cells(int *id,
 			 double *time_step,		   		        // time step from transport
  			 double *fraction,					    // mass fractions nxyz:components
 			 double *frac,							// saturation fraction
-			 double *pv,                            // nxyz current pore volumes 
 			 int *nxyz,
 			 int *count_comps,
 			 int * stop_msg)
@@ -502,7 +499,6 @@ void RM_run_cells(int *id,
 			MPI_Bcast(print_restart, 1, MPI_INT, 0, MPI_COMM_WORLD);
 			MPI_Bcast(fraction, (*nxyz)*(*count_comps), MPI_DOUBLE, 0, MPI_COMM_WORLD);
 			MPI_Bcast(frac, *nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-			MPI_Bcast(pv, *nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 			
 			// Transfer data and pointers to Reaction_module	  
@@ -514,7 +510,6 @@ void RM_run_cells(int *id,
 			Reaction_module_ptr->Set_time_step(*time_step);
 			Reaction_module_ptr->Set_fraction(fraction);
 			Reaction_module_ptr->Set_frac(frac);
-			Reaction_module_ptr->Set_pv(pv);
 
 			// Transfer data Fortran to reaction module
 			Reaction_module_ptr->Fractions2Solutions();
@@ -633,6 +628,28 @@ void RM_set_mapping(int *id,
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Set_mapping(grid2chem);
+	}
+}
+void RM_set_pv(int *id, double *t)
+{
+	//
+	// multiply seconds to convert to user time units
+	//
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Set_pv(t);
+	}
+}
+void RM_set_pv0(int *id, double *t)
+{
+	//
+	// multiply seconds to convert to user time units
+	//
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Set_pv0(t);
 	}
 }
 void RM_set_time_conversion(int *id, double *t)
