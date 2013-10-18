@@ -58,13 +58,11 @@ SUBROUTINE phast_worker
             steady_flow,                 &
             x_node, y_node, z_node,      &
             volume,                      &
-            iprint_chem,                 &
-            iprint_xyz,                  &
             rebalance_method_f,          &
             rebalance_fraction_f) 
             IMPLICIT NONE 
             logical, INTENT(INOUT) :: fresur, steady_flow
-            INTEGER, INTENT(INOUT) :: rm_id, iprint_chem, iprint_xyz, rebalance_method_f 
+            INTEGER, INTENT(INOUT) :: rm_id, rebalance_method_f 
             INTEGER, INTENT(INOUT) :: mpi_myself, mpi_tasks
             double precision, INTENT(INOUT) :: volume 
             double precision, INTENT(INOUT) :: rebalance_fraction_f
@@ -177,13 +175,13 @@ SUBROUTINE phast_worker
         CALL RM_set_nodes(rm_id)
         CALL RM_set_time_conversion(rm_id)
         CALL RM_set_pv0(rm_id)
+        CALL RM_set_print_chem_mask(rm_id, iprint_chem(1))
+        CALL RM_set_print_xyz_mask(rm_id, iprint_xyz(1))
         CALL RM_pass_data(               &
             rm_id,                       &
             fresur,                      &
             steady_flow,                 &
             volume(1),                      &
-            iprint_chem(1),                 &
-            iprint_xyz(1),                  &
             rebalance_method_f,          &
             rebalance_fraction_f)
 

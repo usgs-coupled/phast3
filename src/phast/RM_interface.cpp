@@ -443,8 +443,6 @@ RM_pass_data(int *id,
 			 bool *free_surface_f,				// free surface calculation
 			 bool *steady_flow_f,				// free surface calculation
 			 double *volume, 					// nxyz geometric cell volumes 
-			 int *printzone_chem,				// nxyz print flags for output file
-			 int *printzone_xyz,				// nxyz print flags for chemistry XYZ file 
 			 int *rebalance_method,             // method for rebalancing load
 			 double *rebalance_fraction_hst) 	// parameter for rebalancing process load for parallel
 /* ---------------------------------------------------------------------- */
@@ -457,8 +455,6 @@ RM_pass_data(int *id,
 		Reaction_module_ptr->Set_steady_flow(*steady_flow_f != 0);
 		Reaction_module_ptr->Set_transient_free_surface((*free_surface_f != 0) && (steady_flow_f == 0));
 		Reaction_module_ptr->Set_volume(volume);
-		Reaction_module_ptr->Set_print_chem_mask(printzone_chem);
-		Reaction_module_ptr->Set_print_xyz_mask(printzone_xyz);
 		Reaction_module_ptr->Set_rebalance_method(*rebalance_method != 0);
 		Reaction_module_ptr->Set_rebalance_fraction(*rebalance_fraction_hst);
 	}
@@ -620,6 +616,28 @@ RM_set_printing(int *id,
 		Reaction_module_ptr->Set_print_xyz(*print_xyz != 0);
 		Reaction_module_ptr->Set_print_hdf(*print_hdf != 0);
 		Reaction_module_ptr->Set_print_restart(*print_restart != 0);
+	}
+}
+void RM_set_print_chem_mask(int *id, int *t)
+{
+	//
+	// multiply seconds to convert to user time units
+	//
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Set_print_chem_mask(t);
+	}
+}
+void RM_set_print_xyz_mask(int *id, int *t)
+{
+	//
+	// multiply seconds to convert to user time units
+	//
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Set_print_xyz_mask(t);
 	}
 }
 void RM_set_pv(int *id, double *t)
