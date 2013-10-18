@@ -118,8 +118,8 @@ public:
 	void Set_pv(double * t = NULL); 
 	std::vector<double> & Get_pv0(void) {return this->pv0;};
 	void Set_pv0(double * t = NULL); 
-	const double * Get_volume(void) const {return this->volume;};
-	void Set_volume(double * t) {this->volume = t;};
+	std::vector<double> & Get_volume(void) {return this->volume;};
+	void Set_volume(double * t); // {this->volume = t;};
 	const int * Get_printzone_chem(void) const {return this->printzone_chem;};
 	void Set_printzone_chem(int * t) {this->printzone_chem = t;};
 	const int * Get_printzone_xyz(void) const {return this->printzone_xyz;};
@@ -189,7 +189,7 @@ protected:
 	std::vector<double> saturation_worker;	// nxyz saturation fraction
 	std::vector<double> pv_worker;			// nxyz current pore volumes 
 	std::vector<double> pv0;				// nxyz initial pore volumes
-	double *volume;							// nxyz geometric cell volumes 
+	std::vector<double> volume;				// nxyz geometric cell volumes 
 	int *printzone_chem;					// nxyz print flags for output file
 	int *printzone_xyz;						// nxyz print flags for chemistry XYZ file 
 	bool rebalance_method;                  // rebalance method 0 std, 1 by_cell

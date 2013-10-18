@@ -138,7 +138,6 @@ if( numCPU < 1 )
 	this->time_step = 0;					    // scalar time step from transport
 	this->time_conversion = NULL;				// scalar conversion factor for time
 	this->concentration = NULL;					// nxyz by ncomps mass fractions nxyz:components
-	this->volume = NULL;						// nxyz geometric cell volumes 
 	this->printzone_chem = NULL;				// nxyz print flags for output file
 	this->printzone_xyz = NULL;					// nxyz print flags for chemistry XYZ file 
 	this->rebalance_fraction = 0.5;		// parameter for rebalancing process load for parallel	
@@ -171,7 +170,8 @@ if( numCPU < 1 )
 		x_node.push_back((double) i);
 		y_node.push_back(0.0);
 		z_node.push_back(0.0);
-		pv0.push_back(1.0);
+		pv0.push_back(0.1);
+		volume.push_back(1.0);
 	}
 }
 Reaction_module::~Reaction_module(void)
@@ -3385,7 +3385,7 @@ Reaction_module::Set_saturation(double *t)
 #ifdef USE_MPI
 	if (mpi_myself == 0)
 	{
-		MPI_Bcast(this->saturation(), nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+		MPI_Bcast(this->saturation.data(), nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 	}
 	else
 	{
@@ -3443,6 +3443,26 @@ Reaction_module::Set_time_step(double t)
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->time_step, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+#endif
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Set_volume(double *t)
+/* ---------------------------------------------------------------------- */
+{
+	if (mpi_myself == 0)
+	{
+		if (t == NULL) error_msg("NULL pointer in Set_volume", 1);
+		for (int i = 0; i < this->nxyz; i++)
+		{
+			this->volume.push_back(t[i]);
+		}
+	}
+#ifdef USE_MPI
+	if (mpi_myself == 0)
+	{
+		MPI_Bcast(this->volume.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	}
 #endif
 }
 /* ---------------------------------------------------------------------- */
