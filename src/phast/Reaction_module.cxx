@@ -134,9 +134,9 @@ if( numCPU < 1 )
 	this->free_surface = false;					// free surface calculation
 	this->steady_flow = false;					// steady-state flow calculation
 	this->transient_free_surface = false;		// free surface and not steady flow 
-	this->time_hst = 0;							// scalar time from transport 
-	this->time_step_hst = 0;					// scalar time step from transport
-	this->cnvtmi = NULL;						// scalar conversion factor for time
+	this->time = 0;							    // scalar time from transport 
+	this->time_step = 0;					    // scalar time step from transport
+	this->time_conversion = NULL;				// scalar conversion factor for time
 	this->fraction = NULL;						// nxyz by ncomps mass fractions nxyz:components
 	this->frac = NULL;							// nxyz saturation fraction
 	this->pv = NULL;							// nxyz current pore volumes 
@@ -2895,8 +2895,8 @@ Reaction_module::Run_cells_thread(int n)
 			// do the calculation
 			std::ostringstream input;
 			input << "RUN_CELLS\n";
-			input << "  -start_time " << (this->time_hst - this->time_step_hst) << "\n";
-			input << "  -time_step  " << this->time_step_hst << "\n";
+			input << "  -start_time " << (this->time - this->time_step) << "\n";
+			input << "  -time_step  " << this->time_step << "\n";
 			input << "  -cells      " << i << "\n";
 			input << "END" << "\n";
 			if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) Error_stop();
@@ -2946,7 +2946,7 @@ Reaction_module::Run_cells_thread(int n)
 			{
 				char line_buff[132];
 				sprintf(line_buff, "%15g\t%15g\t%15g\t%15g\t%2d\t",
-					x_node[j], y_node[j], z_node[j], (time_hst) * (cnvtmi),
+					x_node[j], y_node[j], z_node[j], (this->time) * (this->time_conversion),
 					active);
 				phast_iphreeqc_worker->Get_punch_stream() << line_buff;
 				phast_iphreeqc_worker->Get_punch_stream() << phast_iphreeqc_worker->GetSelectedOutputStringLine(0) << "\n";
@@ -2957,7 +2957,7 @@ Reaction_module::Run_cells_thread(int n)
 			{
 				char line_buff[132];
 				sprintf(line_buff, "Time %g. Cell %d: x=%15g\ty=%15g\tz=%15g\n",
-					(time_hst) * (cnvtmi), j + 1, x_node[j],  y_node[j],
+					(this->time) * (this->time_conversion), j + 1, x_node[j],  y_node[j],
 					z_node[j]);
 				phast_iphreeqc_worker->Get_out_stream() << line_buff;
 				phast_iphreeqc_worker->Get_out_stream() << phast_iphreeqc_worker->GetOutputString();
@@ -2974,7 +2974,7 @@ Reaction_module::Run_cells_thread(int n)
 			if (pr_chem)
 			{
 				std::ostringstream line;
-				line << "Time " << (time_hst) * (cnvtmi);
+				line << "Time " << (this->time) * (this->time_conversion);
 				line << ". Cell " << j + 1 << ": ";
 				line << "x= " << x_node[j] << "\t";
 				line << "y= " << y_node[j] << "\t";
@@ -2987,7 +2987,7 @@ Reaction_module::Run_cells_thread(int n)
 			{
 				char line_buff[132];
 				sprintf(line_buff, "%15g\t%15g\t%15g\t%15g\t%2d\t\n",
-					x_node[j], y_node[j], z_node[j], (time_hst) * (cnvtmi),
+					x_node[j], y_node[j], z_node[j], (this->time) * (this->time_conversion),
 					active);
 				phast_iphreeqc_worker->Get_punch_stream() << line_buff;
 			}
@@ -3678,7 +3678,7 @@ Reaction_module::Write_bc_raw(int *solution_list, int * bc_solution_count,
 			}
 			if (phast_iphreeqc_worker)
 			{
-				ofs << "# Fortran cell " << n_fort << ". Time " << (this->time_hst) * (this->cnvtmi) << "\n";
+				ofs << "# Fortran cell " << n_fort << ". Time " << (this->time) * (this->time_conversion) << "\n";
 				cxxSolution *soln_ptr=  phast_iphreeqc_worker->Get_solution(n_chem);
 				soln_ptr->dump_raw(ofs, 0, &raw_number);
 				raw_number++;
@@ -3745,10 +3745,10 @@ Reaction_module::Write_restart(void)
 
 		// write header
 		ofs_restart << "#PHAST restart file" << std::endl;
-		time_t now = time(NULL);
+		time_t now = ::time(NULL);
 		ofs_restart << "#Prefix: " << this->file_prefix << std::endl;
 		ofs_restart << "#Date: " << ctime(&now);
-		ofs_restart << "#Current model time: " << this->time_hst << std::endl;
+		ofs_restart << "#Current model time: " << this->time << std::endl;
 		ofs_restart << "#nyz: " << this->nxyz << std::endl;
 
 		// write index

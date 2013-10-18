@@ -98,12 +98,12 @@ public:
 	const int Get_nxyz(void) const {return this->nxyz;};
 	void Set_nxyz(int t) {this->nxyz = t;};
 	const std::vector<std::string> & Get_components(void) const {return this->components;};
-	double Get_time_hst(void) const {return this->time_hst;};
-	void Set_time_hst(double t) {this->time_hst = t;};
-	double Get_time_step_hst(void) const {return this->time_step_hst;};
-	void Set_time_step_hst(double t) {this->time_step_hst = t;};
-	const double Get_cnvtmi(void) const {return this->cnvtmi;};
-	void Set_cnvtmi(double t) {this->cnvtmi = t;};
+	double Get_time(void) const {return this->time;};
+	void Set_time(double t) {this->time = t;};
+	double Get_time_step(void) const {return this->time_step;};
+	void Set_time_step(double t) {this->time_step = t;};
+	const double Get_time_conversion(void) const {return this->time_conversion;};
+	void Set_time_conversion(double t) {this->time_conversion = t;};
 	const std::vector<double> & Get_x_node(void) const {return this->x_node;};
 	void Set_x_node(double * t);
 	const std::vector<double> & Get_y_node(void) const {return this->y_node;};
@@ -174,15 +174,12 @@ protected:
 	bool steady_flow;						// steady-state flow
 	bool transient_free_surface;            // free surface and not steady flow
 	int nxyz;								// number of nodes 
-	double time_hst;						// scalar time from transport 
-	double time_step_hst;					// scalar time step from transport
-	double cnvtmi;							// scalar conversion factor for time
-	std::vector<double> x_node;
-	std::vector<double> y_node;
-	std::vector<double> z_node;
-	//double *x_node;							// nxyz array of X coordinates for nodes
-	//double *y_node;							// nxyz array of Y coordinates for nodes 
-	//double *z_node;							// nxyz array of Z coordinates for nodes
+	double time;						    // time from transport, sec 
+	double time_step;					    // time step from transport, sec
+	double time_conversion;					// time conversion factor, multiply to convert to preferred time unit for output
+	std::vector<double> x_node;             // x node location, nxyz array
+	std::vector<double> y_node;				// y node location, nxyz array
+	std::vector<double> z_node;             // z node location, nxyz array
 	double *fraction;						// nxyz by ncomps mass fractions nxyz:components
 	double *frac;							// nxyz saturation fraction
 	double *pv;								// nxyz current pore volumes 
@@ -192,7 +189,6 @@ protected:
 	int *printzone_xyz;						// nxyz print flags for chemistry XYZ file 
 	bool rebalance_method;                  // rebalance method 0 std, 1 by_cell
 	double rebalance_fraction;			    // parameter for rebalancing process load for parallel	
-	//int * ic1;							// indicates presence in model, used for restart files
 	std::vector<int> have_Solution;
 	std::vector<int> have_PPassemblage;
 	std::vector<int> have_Exchange;
