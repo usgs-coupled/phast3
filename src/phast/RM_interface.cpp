@@ -652,25 +652,6 @@ void RM_set_mapping(int *id,
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
-		int nxyz = Reaction_module_ptr->Get_nxyz();
-#ifdef USE_MPI
-		if (MPI_COMM_SELF > 0)
-		{
-			std::vector<int> local_grid2chem;
-			local_grid2chem.reserve(nxyz);
-			MPI_Bcast(&local_grid2chem.data[0], nxyz, MPI_INT, 0, MPI_COMM_WORLD);
-			Reaction_module_ptr->Set_mapping(&local_grid2chem.data[0]);
-			return;
-		}
-		else
-		{
-			if (grid2chem == NULL)
-			{
-				Reaction_module_ptr->error_msg("Null argument grid2chem, RM_set_mapping.", 1);
-			}
-			MPI_Bcast(grid2chem, nxyz, MPI_INT, 0, MPI_COMM_WORLD);
-		}
-#endif
 		Reaction_module_ptr->Set_mapping(grid2chem);
 	}
 }
