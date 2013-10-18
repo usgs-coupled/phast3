@@ -45,7 +45,6 @@ public:
 	bool File_exists(const std::string &name);
 	void File_rename(const std::string &temp_name, const std::string &name, const std::string &backup_name);
 	int Find_components();
-	//void Forward_and_back(int *initial_conditions, int *axes);
 	void Fractions2Solutions(void);
 	void Fractions2Solutions_thread(int n);	
 	void Init_uz(void);
