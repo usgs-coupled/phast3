@@ -140,14 +140,12 @@ void RM_pass_data(int *id,
 			 int * printzone_chem,				// nxyz print flags for output file
 			 int * printzone_xyz,				// nxyz print flags for chemistry XYZ file
 			 int * rebalance_method,            // 0 std; 1 by_cell
-			 double *rebalance_fraction_hst,	// parameter for rebalancing process load for parallel	
-			 double *fraction                   // mass fraction array
-			 );
+			 double *rebalance_fraction_hst);	// parameter for rebalancing process load for parallel	
 void RM_run_cells(int *id,
 			 double *time,					        // time from transport 
 			 double *time_step,				        // time step from transport
- 			 double *fraction,					    // mass fractions nxyz:components
-			 double *frac,							// saturation fraction
+ 			 double *concentration,					// mass fractions nxyz:components
+			 double *saturation,					// saturation fraction
 			 int * stop_msg);
 void RM_send_restart_name(int *id, char * s, long l);
 void RM_setup_boundary_conditions(
@@ -166,7 +164,7 @@ void RM_set_printing(int *id, int *print_chem, int *print_xyz, int *print_hdf, i
 void RM_set_pv(int *id, double *t);
 void RM_set_pv0(int *id, double *t);
 void RM_set_time_conversion(int *id, double *t);
-void RM_phreeqc2concentrations(int *id);
+void RM_phreeqc2concentrations(int *id, double *c = NULL);
 void RM_transport(int *id, int *ncomps);
 void RM_write_bc_raw(int *id, 
 			int *solution_list, 

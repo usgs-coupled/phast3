@@ -3601,7 +3601,7 @@ Reaction_module::Setup_boundary_conditions(
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Phreeqc2Concentrations(void)
+Reaction_module::Phreeqc2Concentrations(double * c)
 /* ---------------------------------------------------------------------- */
 {
 	// convert Reaction module solution data to hst mass fractions
@@ -3610,6 +3610,11 @@ Reaction_module::Phreeqc2Concentrations(void)
 	std::vector<double> solns;
 	cxxNameDouble::iterator it;
 
+	if (mpi_myself == 0)
+	{
+		if (c == NULL) error_msg("NULL pointer in Phreeqc2Concentrations", 1);
+		this->concentration = c;
+	}
 	int n = this->mpi_myself;
 	for (int j = this->start_cell[n]; j <= this->end_cell[n]; j++)
 	{
@@ -3663,7 +3668,7 @@ Reaction_module::Phreeqc2Concentrations(void)
 			std::vector<int>::iterator it;
 			for (it = this->back[j].begin(); it != this->back[j].end(); it++)
 			{
-				double *d_ptr = &this->fraction[*it];
+				double *d_ptr = &this->concentration[*it];
 				size_t i;
 				for (i = 0; i < this->components.size(); i++)
 				{
@@ -3677,7 +3682,7 @@ Reaction_module::Phreeqc2Concentrations(void)
 #else
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Phreeqc2Concentrations(void)
+Reaction_module::Phreeqc2Concentrations(double * c)
 /* ---------------------------------------------------------------------- */
 {
 	// convert Reaction module solution data to hst mass fractions
@@ -3686,7 +3691,8 @@ Reaction_module::Phreeqc2Concentrations(void)
 	cxxNameDouble::iterator it;
 
 	int j; 
-
+	if (c == NULL) error_msg("NULL pointer in Phreeqc2Concentrations", 1);
+	this->concentration = c;
 	for (int n = 0; n < this->nthreads; n++)
 	{
 		for (j = this->start_cell[n]; j <= this->end_cell[n]; j++)
