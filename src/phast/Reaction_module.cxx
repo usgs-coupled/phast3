@@ -3400,6 +3400,34 @@ Reaction_module::Set_pv0(double *t)
 }
 /* ---------------------------------------------------------------------- */
 void
+Reaction_module::Set_rebalance_fraction(double *t)
+/* ---------------------------------------------------------------------- */
+{
+	if (mpi_myself == 0)
+	{
+		if (t == NULL) error_msg("NULL pointer in Set_rebalance_fraction", 1);
+		this->rebalance_fraction = *t;
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&(this->rebalance_fraction), 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+#endif
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Set_rebalance_method(int *t)
+/* ---------------------------------------------------------------------- */
+{
+	if (mpi_myself == 0)
+	{
+		if (t == NULL) error_msg("NULL pointer in Set_rebalance_method", 1);
+		this->rebalance_method = (*t != 0);
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&(this->rebalance_method), 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
+#endif
+}
+/* ---------------------------------------------------------------------- */
+void
 Reaction_module::Set_saturation(double *t)
 /* ---------------------------------------------------------------------- */
 {

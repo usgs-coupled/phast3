@@ -438,21 +438,6 @@ RM_open_punch_file(char * prefix, int l_prefix)
 	RM_interface::phast_io.punch_open(fn.c_str());
 }
 /* ---------------------------------------------------------------------- */
-void
-RM_pass_data(int *id,
-			 int *rebalance_method,             // method for rebalancing load
-			 double *rebalance_fraction_hst) 	// parameter for rebalancing process load for parallel
-/* ---------------------------------------------------------------------- */
-{
-	// pass pointers from Fortran to the Reaction module
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
-	if (Reaction_module_ptr)
-	{
-		Reaction_module_ptr->Set_rebalance_method(*rebalance_method != 0);
-		Reaction_module_ptr->Set_rebalance_fraction(*rebalance_fraction_hst);
-	}
-}
-/* ---------------------------------------------------------------------- */
 void RM_run_cells(int *id,
 			 double *time,					        // time from transport 
 			 double *time_step,		   		        // time step from transport
@@ -662,6 +647,14 @@ void RM_set_pv0(int *id, double *t)
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Set_pv0(t);
+	}
+}void RM_set_rebalance(int *id, int *method, double *f)
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Set_rebalance_method(method);
+		Reaction_module_ptr->Set_rebalance_fraction(f);
 	}
 }
 void RM_set_saturation(int *id, double *t)

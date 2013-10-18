@@ -138,10 +138,7 @@ SUBROUTINE phast_worker
         CALL RM_set_free_surface(rm_id)
         CALL RM_set_steady_flow(rm_id)
         CALL RM_set_volume(rm_id)
-        CALL RM_pass_data(               &
-            rm_id,                       &
-            rebalance_method_f,          &
-            rebalance_fraction_f)
+        CALL RM_set_rebalance(rm_id)
 
         ! ... Mapping from full 3D domain to chemistry
         CALL RM_set_mapping(rm_id)
