@@ -228,7 +228,7 @@ SUBROUTINE phast_manager
             deltim_dummy,       &        ! time_step
             c(1,1),             &        ! fraction
             stop_msg) 
-        CALL RM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
+        CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
         CALL init2_3        
     ENDIF   ! End solute
 
@@ -374,7 +374,7 @@ SUBROUTINE phast_manager
             IF(przf_xyzt .AND. .NOT.steady_flow) THEN  
                 CALL zone_flow_write_heads
             ENDIF
-            CALL RM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
+            CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
             IF (.NOT.steady_flow) THEN
                 CALL write4
             ENDIF

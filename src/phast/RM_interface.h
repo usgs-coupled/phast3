@@ -48,9 +48,7 @@
 #define RM_write_bc_raw                    FC_FUNC_ (rm_write_bc_raw,                  RM_WRITE_BC_RAW)
 #define RM_write_output                    FC_FUNC_ (rm_write_output,                  RM_WRITE_OUTPUT)
 #define RM_write_restart				   FC_FUNC_ (rm_write_restart,                 RM_WRITE_RESTART)
-#define RM_zone_flow_write_chem            FC_FUNC_ (rm_zone_flow_write_chem,          RM_ZONE_FLOW_WRITE_CHEM)
 // Calls to Fortran
-#define zone_flow_write_chem               FC_FUNC_ (zone_flow_write_chem,             ZONE_FLOW_WRITE_CHEM)
 #define logprt_c                           FC_FUNC_ (logprt_c,                         LOGPRT_C)
 #define screenprt_c                        FC_FUNC_ (screenprt_c,                      SCREENPRT_C)
 #define errprt_c                           FC_FUNC_ (errprt_c,                         ERRPRT_C)
@@ -91,7 +89,6 @@
 #define RM_write_bc_raw                       rm_write_bc_raw
 #define RM_write_output                       rm_write_output
 #define RM_write_restart					  rm_write_restart
-#define RM_zone_flow_write_chem               rm_zone_flow_write_chem
 #endif
 
 class RM_interface
@@ -173,7 +170,6 @@ void RM_write_bc_raw(int *id,
 			int prefix_l);
 void RM_write_output(int *id);
 void RM_write_restart(int *id);
-void RM_zone_flow_write_chem(int *);
 
 void errprt_c(const char *err_str, long l);
 void logprt_c(const char *err_str, long l);
@@ -184,7 +180,6 @@ void RM_errprt(const std::string & e_string);
 void RM_warnprt(const std::string & e_string);
 void RM_logprt(const std::string & e_string);
 void RM_screenprt(const std::string & e_string);
-extern void zone_flow_write_chem(void);
 
 #if defined(__cplusplus)
 }
