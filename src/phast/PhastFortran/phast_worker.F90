@@ -66,7 +66,7 @@ SUBROUTINE phast_worker
             logical, INTENT(INOUT) :: fresur, steady_flow
             INTEGER, INTENT(INOUT) :: rm_id, iprint_chem, iprint_xyz, rebalance_method_f 
             INTEGER, INTENT(INOUT) :: mpi_myself, mpi_tasks
-            double precision, INTENT(INOUT) :: cnvtmi, x_node, y_node, z_node, pv0, volume 
+            double precision, INTENT(INOUT) :: cnvtmi, pv0, volume 
             double precision, INTENT(INOUT) :: c, rebalance_fraction_f
         END SUBROUTINE RM_pass_data        
         SUBROUTINE xfer_indices(indx_sol1_ic, indx_sol2_ic, &
@@ -173,12 +173,13 @@ SUBROUTINE phast_worker
             x_node(1), y_node(1), z_node(1), cnvtmi, transient_fresur, steady_flow, pv0(1),  &
             rebalance_method_f, volume(1), tort(1), npmz, &
             mpi_myself)
+        CALL RM_set_input_units (rm_id)
+        CALL RM_set_nodes(rm_id)
         CALL RM_pass_data(               &
             rm_id,                       &
             fresur,                      &
             steady_flow,                 &
             cnvtmi,                      &
-            x_node(1), y_node(1), z_node(1),      &
             pv0(1),                         &
             volume(1),                      &
             iprint_chem(1),                 &
