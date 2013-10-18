@@ -141,6 +141,7 @@ void RM_pass_data(int *id,
 			 int * printzone_xyz,				// nxyz print flags for chemistry XYZ file
 			 int * rebalance_method,            // 0 std; 1 by_cell
 			 double *rebalance_fraction_hst);	// parameter for rebalancing process load for parallel	
+void RM_phreeqc2concentrations(int *id, double *c = NULL);
 void RM_run_cells(int *id,
 			 double *time,					        // time from transport 
 			 double *time_step,				        // time step from transport
@@ -154,7 +155,7 @@ void RM_setup_boundary_conditions(
 			int *boundary_solution1,  
 			int *boundary_solution2, 
 			double *fraction1,
-			double *boundary_fraction, 
+			double *boundary_c, 
 			int *dim);
 void RM_set_input_units (int *id, 
 	int *sol=NULL, int *pp=NULL, int *ex=NULL, int *surf=NULL, int *gas=NULL, int *ss=NULL, int *kin=NULL);
@@ -164,7 +165,6 @@ void RM_set_printing(int *id, int *print_chem, int *print_xyz, int *print_hdf, i
 void RM_set_pv(int *id, double *t);
 void RM_set_pv0(int *id, double *t);
 void RM_set_time_conversion(int *id, double *t);
-void RM_phreeqc2concentrations(int *id, double *c = NULL);
 void RM_transport(int *id, int *ncomps);
 void RM_write_bc_raw(int *id, 
 			int *solution_list, 

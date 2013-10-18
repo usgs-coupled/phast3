@@ -24,73 +24,17 @@ SUBROUTINE phast_manager
     USE XP_module, ONLY: Transporter
     IMPLICIT NONE 
     SAVE
+    INCLUDE '../RM_interface.f90.inc'
     REAL(KIND=kdp) :: deltim_dummy
     INTEGER :: stop_msg, ipp_err
     CHARACTER(LEN=130) :: logline1
-    INTEGER :: i, a_err
+    INTEGER :: i, a_err, isolute
     INTERFACE
-        FUNCTION RM_create(nxyz, nthreads) RESULT(iout)
-            IMPLICIT NONE
-            INTEGER :: nxyz, nthreads
-            INTEGER :: iout
-        END FUNCTION RM_create
-        FUNCTION RM_destroy(id) RESULT(iout)
-            IMPLICIT NONE
-            INTEGER :: id
-            INTEGER :: iout
-        END FUNCTION RM_destroy
-        FUNCTION RM_find_components(id) RESULT(iout)
-            IMPLICIT NONE
-            INTEGER :: id
-            INTEGER :: iout
-        END FUNCTION RM_find_components
-        SUBROUTINE RM_log_screen_prt(str) 
-            IMPLICIT NONE
-            CHARACTER :: str
-        END SUBROUTINE RM_log_screen_prt
-        SUBROUTINE RM_set_mapping(id, grid2chem)   
-            IMPLICIT NONE
-            INTEGER :: id
-            INTEGER :: grid2chem
-        END SUBROUTINE RM_set_mapping 
-        SUBROUTINE RM_set_printing(id, print_chem, print_xyz, print_hdf, print_restart)   
-            IMPLICIT NONE
-            INTEGER :: id
-            INTEGER :: print_chem, print_xyz, print_hdf, print_restart
-        END SUBROUTINE RM_set_printing 
-        SUBROUTINE RM_set_pv(id, t)   
-            IMPLICIT NONE
-            INTEGER :: id
-            DOUBLE PRECISION :: t
-        END SUBROUTINE RM_set_pv 
-        SUBROUTINE RM_set_pv0(id, t)
-            IMPLICIT NONE
-            INTEGER :: id
-            DOUBLE PRECISION :: t
-        END SUBROUTINE RM_set_pv0
-        SUBROUTINE RM_set_time_conversion(id, t)   
-            IMPLICIT NONE
-            INTEGER :: id
-            DOUBLE PRECISION :: t
-        END SUBROUTINE RM_set_time_conversion         
         SUBROUTINE create_mapping(ic)
             implicit none
             INTEGER, DIMENSION(:,:), INTENT(INOUT) :: ic
         END SUBROUTINE create_mapping
-        SUBROUTINE RM_pass_data(rm_id,        &
-            fresur,                      &
-            steady_flow,                 &
-            volume,                      &
-            iprint_chem,                 &
-            iprint_xyz,                  &
-            rebalance_method_f,          &
-            rebalance_fraction_f) 
-            IMPLICIT NONE 
-            logical, INTENT(INOUT) :: fresur, steady_flow
-            INTEGER, INTENT(INOUT) :: rm_id, iprint_chem, iprint_xyz, rebalance_method_f 
-            double precision, INTENT(INOUT) :: volume 
-            double precision, INTENT(INOUT) :: rebalance_fraction_f
-        END SUBROUTINE RM_pass_data
+
 #ifdef USE_MPI
         SUBROUTINE xfer_indices(indx_sol1_ic, indx_sol2_ic, &
             mxfrac, naxes, nxyz, &
@@ -148,9 +92,10 @@ SUBROUTINE phast_manager
     IF (rm_id.LT.0) THEN
         STOP
     END IF
-
+    
     !... only root opens files
-    CALL RM_open_files(solute, f3name)
+    isolute = solute
+    CALL RM_open_files(isolute, f3name)
   
     !... Call phreeqc, find number of components; f1name, chem.dat; f2name, database; f3name, prefix
     IF (solute) THEN
@@ -218,7 +163,7 @@ SUBROUTINE phast_manager
         ! ... Send data to threads or workers
         
         CALL RM_set_input_units (rm_id, 1, 1, 1, 1, 1, 1, 1)
-        CALL RM_set_nodes(rm_id, x_node, y_node, z_node)
+        CALL RM_set_nodes(rm_id, x_node(1), y_node(1), z_node(1))
         CALL RM_set_time_conversion(rm_id, cnvtmi)
         CALL RM_set_pv0(rm_id, pv0(1))
         CALL RM_pass_data(rm_id,        &
@@ -241,12 +186,12 @@ SUBROUTINE phast_manager
 
         ! ... Distribute chemistry initial conditions
         CALL RM_distribute_initial_conditions_mix(rm_id, &
-            indx_sol1_ic,           & ! 7 x nxyz end-member 1 
-            indx_sol2_ic,           & ! 7 x nxyz end-member 2
-            ic_mxfrac)                ! 7 x nxyz fraction of end-member 1
+            indx_sol1_ic(1,1),           & ! 7 x nxyz end-member 1 
+            indx_sol2_ic(1,1),           & ! 7 x nxyz end-member 2
+            ic_mxfrac(1,1))                ! 7 x nxyz fraction of end-member 1
 
         ! collect solutions at manager for transport
-        CALL RM_phreeqc2concentrations(rm_id, c)
+        CALL RM_phreeqc2concentrations(rm_id, c(1,1))
     ENDIF        ! ... solute
 
     CALL error4
@@ -279,9 +224,9 @@ SUBROUTINE phast_manager
         CALL RM_run_cells(      &
             rm_id,              &
             time_phreeqc,       &        ! time_hst
-            deltim_dummy,       &        ! time_step_hst
-            c,                  &        ! fraction
-            frac,               &        ! frac
+            deltim_dummy,       &        ! time_step
+            c(1,1),             &        ! fraction
+            frac(1),            &        ! saturation frac
             stop_msg) 
         CALL RM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
         CALL init2_3        
@@ -417,8 +362,8 @@ SUBROUTINE phast_manager
                     rm_id,                                        &
                     time,                                         &        ! time_hst
                     deltim,                                       &        ! time_step_hst
-                    c,                                            &        ! fraction
-                    frac,                                         &        ! frac
+                    c(1,1),                                       &        ! fraction
+                    frac(1),                                      &        ! frac
                     stop_msg) 
             ENDIF    ! ... Done with chemistry
 
@@ -463,7 +408,7 @@ SUBROUTINE phast_manager
     IF (solute) THEN  
         if (RM_destroy(rm_id) < 0) CALL RM_error(rm_id)     
     ENDIF
-    CALL RM_close_files(solute)
+    CALL RM_close_files(isolute)
 
     ! ... Cleanup PHAST
     CALL terminate_phast
