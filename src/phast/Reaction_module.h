@@ -90,9 +90,9 @@ public:
 	void Set_mpi_myself(int t) {this->mpi_myself = t;}
 	std::vector<double> & Get_old_saturation(void) {return this->old_saturation;}
 	const bool Get_free_surface(void) const {return this->free_surface;};
-	void Set_free_surface(bool t); 
+	void Set_free_surface(int * t); 
 	const bool Get_steady_flow(void) const {return this->steady_flow;};
-	void Set_steady_flow(bool t);
+	void Set_steady_flow(int * t);
 	const int Get_nxyz(void) const {return this->nxyz;};
 	void Set_nxyz(int t) {this->nxyz = t;};
 	const std::vector<std::string> & Get_components(void) const {return this->components;};

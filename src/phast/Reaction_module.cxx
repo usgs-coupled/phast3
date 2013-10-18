@@ -3161,11 +3161,12 @@ Reaction_module::Set_end_cells(void)
 }
 #endif
 void 
-Reaction_module::Set_free_surface(bool t)
+Reaction_module::Set_free_surface(int * t)
 {
 	if (mpi_myself == 0)
 	{
-		this->free_surface = t;
+		if (t == NULL) error_msg("NULL pointer in Set_free_surface", 1);
+		this->free_surface = (*t != 0);
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->free_surface, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
@@ -3446,11 +3447,12 @@ Reaction_module::Set_saturation(double *t)
 #endif
 }
 void 
-Reaction_module::Set_steady_flow(bool t)
+Reaction_module::Set_steady_flow(int *t)
 {
 	if (mpi_myself == 0)
 	{
-		this->steady_flow = t;
+		if (t == NULL) error_msg("NULL pointer in Set_steady_flow", 1);
+		this->steady_flow = (*t != 0);
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->steady_flow, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
