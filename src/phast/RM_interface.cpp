@@ -527,7 +527,7 @@ RM_setup_boundary_conditions(
 			int *boundary_solution1,  
 			int *boundary_solution2, 
 			double *fraction1,
-			double *boundary_fraction, 
+			double *boundary_c, 
 			int *dim)
 /* ---------------------------------------------------------------------- */
 {
@@ -538,11 +538,12 @@ RM_setup_boundary_conditions(
  *          boundary_solution1 - list of first solution numbers to be mixed
  *          boundary_solution2 - list of second solution numbers to be mixed
  *          fraction1 - fraction of first solution 0 <= f <= 1
- *          dim - leading dimension of array boundary mass fractions
+ *          boundary_c - n_boundary x ncomps concentrations
+ *          dim - leading dimension of concentrations
  *                must be >= to n_boundary
  *
- *   Output: boundary_fraction - mass fractions for boundary conditions
- *                             - dimensions must be >= n_boundary x n_comp
+ *   Output: boundary_c - concentrations for boundary conditions
+ *                      - dimensions must be >= n_boundary x n_comp
  *
  */
 	
@@ -554,7 +555,7 @@ RM_setup_boundary_conditions(
 					boundary_solution1,
 					boundary_solution2, 
 					fraction1,
-					boundary_fraction, 
+					boundary_c, 
 					*dim);
 	}
 }
