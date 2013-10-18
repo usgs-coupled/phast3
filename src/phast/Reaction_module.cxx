@@ -136,12 +136,7 @@ if( numCPU < 1 )
 	this->time = 0;							    // scalar time from transport 
 	this->time_step = 0;					    // scalar time step from transport
 	this->time_conversion = NULL;				// scalar conversion factor for time
-	this->concentration = NULL;					// nxyz by ncomps mass fractions nxyz:components
-	//this->printzone_chem = NULL;				// nxyz print flags for output file
-	//this->printzone_xyz = NULL;					// nxyz print flags for chemistry XYZ file 
-	this->rebalance_fraction = 0.5;		// parameter for rebalancing process load for parallel	
-	this->saturation = NULL;
-	this->pv = NULL;
+	this->rebalance_fraction = 0.5;				// parameter for rebalancing process load for parallel	
 
 	// print flags
 	this->print_chem = false;					// print flag for chemistry output file 
@@ -169,6 +164,8 @@ if( numCPU < 1 )
 		x_node.push_back((double) i);
 		y_node.push_back(0.0);
 		z_node.push_back(0.0);
+		saturation.push_back(1.0);
+		pv.push_back(0.1);
 		pv0.push_back(0.1);
 		volume.push_back(1.0);
 		print_chem_mask.push_back(0);
@@ -3081,29 +3078,6 @@ Reaction_module::Scale_solids(int n, int iphrq, LDBLE frac)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Set_concentration(double *t)
-/* ---------------------------------------------------------------------- */
-{
-	if (mpi_myself == 0)
-	{
-		if (t == NULL) error_msg("NULL pointer in Set_concentration", 1);
-		this->concentration = t;
-	}
-#ifdef USE_MPI
-	if (mpi_myself == 0)
-	{
-		MPI_Bcast(this->concentration, nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-	}
-	else
-	{
-		this->c_worker.reserve(this->nxyz);
-		MPI_Bcast(this->c_worker.data(), nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-		this->concentration = this->c_worker.data();
-	}
-#endif
-}
-/* ---------------------------------------------------------------------- */
-void
 Reaction_module::Send_restart_name(std::string &name)
 /* ---------------------------------------------------------------------- */
 {
@@ -3129,6 +3103,22 @@ Reaction_module::Send_restart_name(std::string &name)
 		int	i = (int) this->FileMap.size();
 		this->FileMap[str] = i;	
 	}
+#endif
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Set_concentration(double *t)
+/* ---------------------------------------------------------------------- */
+{
+	size_t ncomps = this->components.size();
+	this->concentration.reserve(this->nxyz * ncomps);
+	if (mpi_myself == 0)
+	{
+		if (t == NULL) error_msg("NULL pointer in Set_concentration", 1);
+		memcpy(this->concentration.data(), t, (size_t) (this->nxyz * ncomps * sizeof(double)));
+	}
+#ifdef USE_MPI
+	MPI_Bcast(this->concentration.data(), this->nxyz * ncomps, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 }
 /* ---------------------------------------------------------------------- */
@@ -3177,6 +3167,7 @@ Reaction_module::Set_free_surface(int * t)
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Set_input_units(int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *kin)
+/* ---------------------------------------------------------------------- */
 {
 	int local_sol, local_pp, local_ex, local_surf, local_gas, local_ss, local_kin;
 	if (mpi_myself == 0)
@@ -3230,17 +3221,15 @@ Reaction_module::Set_input_units(int *sol, int *pp, int *ex, int *surf, int *gas
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Set_mapping(int *grid2chem_arg)
+Reaction_module::Set_mapping(int *t)
 /* ---------------------------------------------------------------------- */
 {
 	std::vector<int> grid2chem;
 	grid2chem.reserve(this->nxyz);
 	if (mpi_myself == 0)
 	{
-		for (int i = 0; i < this->nxyz; i++)
-		{
-			grid2chem.push_back(grid2chem_arg[i]);
-		}
+		if (t == NULL) error_msg("NULL pointer in Set_mapping", 1);
+		memcpy(grid2chem.data(), t, (size_t) (this->nxyz * sizeof(int)));
 	}
 #ifdef USE_MPI
 	MPI_Bcast(grid2chem.data(), this->nxyz, MPI_INT, 0, MPI_COMM_WORLD);
@@ -3320,17 +3309,14 @@ void
 Reaction_module::Set_print_chem_mask(int * t)
 /* ---------------------------------------------------------------------- */
 {
+	this->print_chem_mask.reserve(this->nxyz);
 	if (this->mpi_myself == 0)
 	{
 		if (t == NULL) error_msg("NULL pointer in Set_print_chem_mask", 1);
-		this->print_chem_mask.clear();
-		for (int i = 0; i < this->nxyz; i++)
-		{
-			this->print_chem_mask.push_back(t[i]);
-		}
+		memcpy(this->print_chem_mask.data(), t, (size_t) (this->nxyz * sizeof(int)));
 	}
 #ifdef USE_MPI	
-	MPI_Bcast(this->print_chem_mask.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	MPI_Bcast(this->print_chem_mask.data(), this->nxyz, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
 }
 void 
@@ -3349,17 +3335,14 @@ void
 Reaction_module::Set_print_xyz_mask(int * t)
 /* ---------------------------------------------------------------------- */
 {
+	this->print_xyz_mask.reserve(this->nxyz);
 	if (this->mpi_myself == 0)
 	{
 		if (t == NULL) error_msg("NULL pointer in Set_print_xyz_mask", 1);
-		this->print_xyz_mask.clear();
-		for (int i = 0; i < this->nxyz; i++)
-		{
-			this->print_xyz_mask.push_back(t[i]);
-		}
+		memcpy(this->print_xyz_mask.data(), t, (size_t) (this->nxyz * sizeof(int)));
 	}
 #ifdef USE_MPI	
-	MPI_Bcast(this->print_xyz_mask.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	MPI_Bcast(this->print_xyz_mask.data(), this->nxyz, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
 }
 void 
@@ -3390,22 +3373,14 @@ void
 Reaction_module::Set_pv(double *t)
 /* ---------------------------------------------------------------------- */
 {
+	this->pv.reserve(this->nxyz);
 	if (mpi_myself == 0)
 	{
 		if (t == NULL) error_msg("NULL pointer in Set_pv", 1);
-		this->pv = t;
+		memcpy(this->pv.data(), t, (size_t) (this->nxyz * sizeof(double)));
 	}
 #ifdef USE_MPI
-	if (mpi_myself == 0)
-	{
-		MPI_Bcast(this->pv, this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-	}
-	else
-	{
-		this->pv_worker.reserve(this->nxyz);
-		MPI_Bcast(this->pv_worker.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-		this->pv = this->pv_worker.data();
-	}
+	MPI_Bcast(this->pv.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 }
 /* ---------------------------------------------------------------------- */
@@ -3413,17 +3388,14 @@ void
 Reaction_module::Set_pv0(double *t)
 /* ---------------------------------------------------------------------- */
 {
-	this->pv0.clear();
 	this->pv0.reserve(this->nxyz);
 	if (mpi_myself == 0)
 	{
-		for (int i = 0; i < this->nxyz; i++)
-		{
-			this->pv0.push_back(t[i]);
-		}
+		if (t == NULL) error_msg("NULL pointer in Set_pv0", 1);
+		memcpy(this->pv0.data(), t, (size_t) (this->nxyz * sizeof(double)));
 	}
 #ifdef USE_MPI
-	MPI_Bcast(pv0.data(), nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	MPI_Bcast(pv0.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 }
 /* ---------------------------------------------------------------------- */
@@ -3431,22 +3403,14 @@ void
 Reaction_module::Set_saturation(double *t)
 /* ---------------------------------------------------------------------- */
 {
+	this->saturation.reserve(this->nxyz);
 	if (mpi_myself == 0)
 	{
 		if (t == NULL) error_msg("NULL pointer in Set_saturation", 1);
-		this->saturation = t;
+		memcpy(this->saturation.data(), t, (size_t) (this->nxyz * sizeof(double)));
 	}
 #ifdef USE_MPI
-	if (mpi_myself == 0)
-	{
-		MPI_Bcast(this->saturation.data(), nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-	}
-	else
-	{
-		this->saturation_worker.reserve(this->nxyz);
-		MPI_Bcast(this->saturation_worker.data(), nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-		this->saturation = this->saturation_worker.data();
-	}
+	MPI_Bcast(this->saturation.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 }
 void 
@@ -3516,13 +3480,11 @@ void
 Reaction_module::Set_volume(double *t)
 /* ---------------------------------------------------------------------- */
 {
+	this->volume.reserve(this->nxyz);
 	if (mpi_myself == 0)
 	{
 		if (t == NULL) error_msg("NULL pointer in Set_volume", 1);
-		for (int i = 0; i < this->nxyz; i++)
-		{
-			this->volume.push_back(t[i]);
-		}
+		memcpy(this->volume.data(), t, (size_t) (this->nxyz * sizeof(double)));
 	}
 #ifdef USE_MPI
 	MPI_Bcast(this->volume.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
@@ -3533,25 +3495,14 @@ void
 Reaction_module::Set_x_node(double * t)
 /* ---------------------------------------------------------------------- */
 {
-	int transfer = 0;
+	this->x_node.reserve(this->nxyz);
 	if (this->mpi_myself == 0)
 	{
-		if (t != NULL)
-		{
-			transfer = 1;
-			this->x_node.clear();
-			for (int i = 0; i < this->nxyz; i++)
-			{
-				x_node.push_back(t[i]);
-			}
-		}
+		if (t == NULL) error_msg("NULL pointer in Set_x_node", 1);
+		memcpy(this->x_node.data(), t, (size_t) (this->nxyz * sizeof(double)));
 	}
 #ifdef USE_MPI	
-	MPI_Bcast(&transfer, 1, MPI_INT, 0, MPI_COMM_WORLD);
-	if (transfer == 1)
-	{
-		MPI_Bcast(this->x_node.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-	}
+	MPI_Bcast(this->x_node.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 }
 /* ---------------------------------------------------------------------- */
@@ -3559,25 +3510,14 @@ void
 Reaction_module::Set_y_node(double * t)
 /* ---------------------------------------------------------------------- */
 {
-	int transfer = 0;
+	this->y_node.reserve(this->nxyz);
 	if (this->mpi_myself == 0)
 	{
-		if (t != NULL)
-		{
-			transfer = 1;
-			this->y_node.clear();
-			for (int i = 0; i < this->nxyz; i++)
-			{
-				y_node.push_back(t[i]);
-			}
-		}
+		if (t == NULL) error_msg("NULL pointer in Set_y_node", 1);
+		memcpy(this->y_node.data(), t, (size_t) (this->nxyz * sizeof(double)));
 	}
 #ifdef USE_MPI	
-	MPI_Bcast(&transfer, 1, MPI_INT, 0, MPI_COMM_WORLD);
-	if (transfer == 1)
-	{
-		MPI_Bcast(this->y_node.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-	}
+	MPI_Bcast(this->y_node.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 }
 /* ---------------------------------------------------------------------- */
@@ -3585,25 +3525,14 @@ void
 Reaction_module::Set_z_node(double * t)
 /* ---------------------------------------------------------------------- */
 {
-	int transfer = 0;
+	this->z_node.reserve(this->nxyz);
 	if (this->mpi_myself == 0)
 	{
-		if (t != NULL)
-		{
-			transfer = 1;
-			this->z_node.clear();
-			for (int i = 0; i < this->nxyz; i++)
-			{
-				z_node.push_back(t[i]);
-			}
-		}
+		if (t == NULL) error_msg("NULL pointer in Set_z_node", 1);
+		memcpy(this->z_node.data(), t, (size_t) (this->nxyz * sizeof(double)));
 	}
 #ifdef USE_MPI	
-	MPI_Bcast(&transfer, 1, MPI_INT, 0, MPI_COMM_WORLD);
-	if (transfer == 1)
-	{
-		MPI_Bcast(this->z_node.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-	}
+	MPI_Bcast(this->z_node.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 }
 /* ---------------------------------------------------------------------- */
@@ -3755,7 +3684,7 @@ Reaction_module::Phreeqc2Concentrations(double * c)
 
 	int j; 
 	if (c == NULL) error_msg("NULL pointer in Phreeqc2Concentrations", 1);
-	this->concentration = c;
+	//this->concentration = c;
 	for (int n = 0; n < this->nthreads; n++)
 	{
 		for (j = this->start_cell[n]; j <= this->end_cell[n]; j++)
@@ -3769,7 +3698,8 @@ Reaction_module::Phreeqc2Concentrations(double * c)
 			std::vector<int>::iterator it;
 			for (it = this->back[j].begin(); it != this->back[j].end(); it++)
 			{
-				double *d_ptr = &this->concentration[*it];
+				//double *d_ptr = &this->concentration[*it];
+				double *d_ptr = &c[*it];
 				size_t i;
 				for (i = 0; i < this->components.size(); i++)
 				{
