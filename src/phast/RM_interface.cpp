@@ -446,9 +446,7 @@ RM_pass_data(int *id,
 			 int *printzone_chem,				// nxyz print flags for output file
 			 int *printzone_xyz,				// nxyz print flags for chemistry XYZ file 
 			 int *rebalance_method,             // method for rebalancing load
-			 double *rebalance_fraction_hst, 	// parameter for rebalancing process load for parallel	
-			 double *c                          // needed for first Solutions2Fractions
-			 )
+			 double *rebalance_fraction_hst) 	// parameter for rebalancing process load for parallel
 /* ---------------------------------------------------------------------- */
 {
 	// pass pointers from Fortran to the Reaction module
@@ -463,7 +461,6 @@ RM_pass_data(int *id,
 		Reaction_module_ptr->Set_printzone_xyz(printzone_xyz);
 		Reaction_module_ptr->Set_rebalance_method(*rebalance_method != 0);
 		Reaction_module_ptr->Set_rebalance_fraction(*rebalance_fraction_hst);
-		Reaction_module_ptr->Set_concentration(c);
 	}
 }
 /* ---------------------------------------------------------------------- */
@@ -494,7 +491,7 @@ void RM_run_cells(int *id,
 			Reaction_module_ptr->Run_cells(); 
 
 			// Transfer data reaction module to Fortran
-			Reaction_module_ptr->Phreeqc2Concentrations();
+			Reaction_module_ptr->Phreeqc2Concentrations(concentration);
 
 			// Rebalance load
 			Reaction_module_ptr->Rebalance_load();
@@ -502,13 +499,13 @@ void RM_run_cells(int *id,
 	}
 }
 void
-RM_phreeqc2concentrations(int *id)
+RM_phreeqc2concentrations(int *id, double * c)
 /* ---------------------------------------------------------------------- */
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->Phreeqc2Concentrations();
+		Reaction_module_ptr->Phreeqc2Concentrations(c);
 	}
 }
 /* ---------------------------------------------------------------------- */

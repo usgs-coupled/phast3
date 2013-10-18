@@ -64,7 +64,7 @@ public:
 	void Setup_boundary_conditions(const int n_boundary, int *boundary_solution1,
 						  int *boundary_solution2, double *fraction1,
 						  double *boundary_fraction, int dim);
-	void Phreeqc2Concentrations(void);
+	void Phreeqc2Concentrations(double * c);
 	void Phreeqc2Concentrations_thread(int n);
 	void Transfer_cells(cxxStorageBin &t_bin, int old, int nnew);
 	void Write_bc_raw(int *solution_list, int * bc_solution_count, 
@@ -111,7 +111,7 @@ public:
 	const std::vector<double> & Get_z_node(void) const {return this->z_node;};
 	void Set_z_node(double * t = NULL);
 	double * Get_concentration(void) const {return this->concentration;};
-	void Set_concentration(double * t = NULL); // {this->fraction = t;};
+	void Set_concentration(double * t = NULL); 
 	double * Get_saturation(void) {return this->saturation;};
 	void Set_saturation(double * t); 
 	double * Get_pv(void) {return this->pv;};
@@ -119,7 +119,7 @@ public:
 	std::vector<double> & Get_pv0(void) {return this->pv0;};
 	void Set_pv0(double * t = NULL); 
 	std::vector<double> & Get_volume(void) {return this->volume;};
-	void Set_volume(double * t); // {this->volume = t;};
+	void Set_volume(double * t); 
 	const int * Get_printzone_chem(void) const {return this->printzone_chem;};
 	void Set_printzone_chem(int * t) {this->printzone_chem = t;};
 	const int * Get_printzone_xyz(void) const {return this->printzone_xyz;};

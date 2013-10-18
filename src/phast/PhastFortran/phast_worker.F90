@@ -61,14 +61,13 @@ SUBROUTINE phast_worker
             iprint_chem,                 &
             iprint_xyz,                  &
             rebalance_method_f,          &
-            rebalance_fraction_f,        &
-            c) 
+            rebalance_fraction_f) 
             IMPLICIT NONE 
             logical, INTENT(INOUT) :: fresur, steady_flow
             INTEGER, INTENT(INOUT) :: rm_id, iprint_chem, iprint_xyz, rebalance_method_f 
             INTEGER, INTENT(INOUT) :: mpi_myself, mpi_tasks
             double precision, INTENT(INOUT) :: volume 
-            double precision, INTENT(INOUT) :: c, rebalance_fraction_f
+            double precision, INTENT(INOUT) :: rebalance_fraction_f
         END SUBROUTINE RM_pass_data        
         SUBROUTINE xfer_indices(indx_sol1_ic, indx_sol2_ic, &
             mxfrac, naxes, nxyz, &
@@ -186,8 +185,7 @@ SUBROUTINE phast_worker
             iprint_chem(1),                 &
             iprint_xyz(1),                  &
             rebalance_method_f,          &
-            rebalance_fraction_f,        &
-            c(1,1))
+            rebalance_fraction_f)
 
         ! ... Mapping from full 3D domain to chemistry
         !CALL RM_forward_and_back(rm_id, indx_sol1_ic, naxes) 
