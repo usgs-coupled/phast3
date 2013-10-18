@@ -74,13 +74,11 @@
             fresur,                      &
             steady_flow,                 &
             volume,                      &
-            iprint_chem,                 &
-            iprint_xyz,                  &
             rebalance_method_f,          &
             rebalance_fraction_f) 
             IMPLICIT NONE 
             logical, INTENT(INOUT) :: fresur, steady_flow
-            INTEGER, INTENT(INOUT) :: rm_id, iprint_chem, iprint_xyz, rebalance_method_f 
+            INTEGER, INTENT(INOUT) :: rm_id, rebalance_method_f 
             double precision, INTENT(INOUT) :: volume 
             double precision, INTENT(INOUT) :: rebalance_fraction_f
         END SUBROUTINE RM_pass_data        
@@ -128,6 +126,18 @@
             INTEGER :: id
             INTEGER :: print_chem, print_xyz, print_hdf, print_restart
         END SUBROUTINE RM_set_printing 
+
+        SUBROUTINE RM_set_print_chem_mask(id, t)   
+            IMPLICIT NONE
+            INTEGER :: id
+            INTEGER :: t
+        END SUBROUTINE RM_set_print_chem_mask 
+		
+        SUBROUTINE RM_set_print_xyz_mask(id, t)   
+            IMPLICIT NONE
+            INTEGER :: id
+            INTEGER :: t
+        END SUBROUTINE RM_set_print_xyz_mask 
 
         SUBROUTINE RM_set_pv(id, t)   
             IMPLICIT NONE

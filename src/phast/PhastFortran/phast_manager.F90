@@ -166,12 +166,12 @@ SUBROUTINE phast_manager
         CALL RM_set_nodes(rm_id, x_node(1), y_node(1), z_node(1))
         CALL RM_set_time_conversion(rm_id, cnvtmi)
         CALL RM_set_pv0(rm_id, pv0(1))
+        CALL RM_set_print_chem_mask(rm_id, iprint_chem(1))
+        CALL RM_set_print_xyz_mask(rm_id, iprint_xyz(1))
         CALL RM_pass_data(rm_id,        &
             fresur,                      &
             steady_flow,                 &
             volume(1),                      &
-            iprint_chem(1),                 &
-            iprint_xyz(1),                  &
             rebalance_method_f,          &
             rebalance_fraction_f)
 

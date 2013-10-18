@@ -35,6 +35,8 @@
 #define RM_set_mapping                     FC_FUNC_ (rm_set_mapping,                   RM_SET_MAPPING)
 #define RM_set_nodes                       FC_FUNC_ (rm_set_nodes,                     RM_SET_NODES)
 #define RM_set_printing                    FC_FUNC_ (rm_set_printing,                  RM_SET_PRINTING)
+#define RM_set_print_chem_mask             FC_FUNC_ (rm_set_print_chem_mask,           RM_SET_PRINT_CHEM_MASK)
+#define RM_set_print_xyz_mask              FC_FUNC_ (rm_set_print_xyz_mask,            RM_SET_PRINT_XYZ_MASK)
 #define RM_set_pv0                         FC_FUNC_ (rm_set_pv0,                       RM_SET_PV0)
 #define RM_set_pv                          FC_FUNC_ (rm_set_pv,                        RM_SET_PV)
 #define RM_set_saturation                  FC_FUNC_ (rm_set_saturation,                RM_SET_SATURATION)
@@ -78,6 +80,8 @@
 #define RM_set_mapping                        rm_set_mapping
 #define RM_set_nodes                          rm_set_nodes
 #define RM_set_printing                       rm_set_printing
+#define RM_set_print_chem_mask                rm_set_print_chem_mask
+#define RM_set_print_xyz_mask                 rm_set_print_xyz_mask
 #define RM_set_pv0                            rm_set_pv0
 #define RM_set_pv                             rm_set_pv
 #define RM_set_saturation                     rm_set_saturation
@@ -139,8 +143,6 @@ void RM_pass_data(int *id,
              bool *fresur,
 			 bool *steady_flow, 
 			 double *volume, 					// nxyz geometric cell volumes 
-			 int * printzone_chem,				// nxyz print flags for output file
-			 int * printzone_xyz,				// nxyz print flags for chemistry XYZ file
 			 int * rebalance_method,            // 0 std; 1 by_cell
 			 double *rebalance_fraction_hst);	// parameter for rebalancing process load for parallel	
 void RM_phreeqc2concentrations(int *id, double *c = NULL);
@@ -163,6 +165,8 @@ void RM_set_input_units (int *id,
 void RM_set_mapping (int *id, int *grid2chem=NULL); 
 void RM_set_nodes(int *id, double *x_node, double *y_node, double *z_node);
 void RM_set_printing(int *id, int *print_chem, int *print_xyz, int *print_hdf, int *print_restart);
+void RM_set_print_chem_mask(int *id, int *t);
+void RM_set_print_xyz_mask(int *id, int *t);
 void RM_set_pv(int *id, double *t);
 void RM_set_pv0(int *id, double *t);
 void RM_set_saturation(int *id, double *t);
