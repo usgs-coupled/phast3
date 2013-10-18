@@ -468,7 +468,6 @@ void RM_run_cells(int *id,
 			 double *time,					        // time from transport 
 			 double *time_step,		   		        // time step from transport
  			 double *concentration,					// mass fractions nxyz:components
-			 double *saturation,					// saturation fraction
 			 int * stop_msg)
 /* ---------------------------------------------------------------------- */
 {
@@ -482,7 +481,6 @@ void RM_run_cells(int *id,
 			Reaction_module_ptr->Set_time(*time);
 			Reaction_module_ptr->Set_time_step(*time_step);
 			Reaction_module_ptr->Set_concentration(concentration);
-			Reaction_module_ptr->Set_saturation(saturation);
 
 			// Transfer data Fortran to reaction module
 			Reaction_module_ptr->Fractions2Solutions();
@@ -644,6 +642,17 @@ void RM_set_pv0(int *id, double *t)
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Set_pv0(t);
+	}
+}
+void RM_set_saturation(int *id, double *t)
+{
+	//
+	// multiply seconds to convert to user time units
+	//
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Set_saturation(t);
 	}
 }
 void RM_set_time_conversion(int *id, double *t)

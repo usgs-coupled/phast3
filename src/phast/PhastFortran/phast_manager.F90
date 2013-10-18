@@ -220,13 +220,13 @@ SUBROUTINE phast_manager
         stop_msg = 0
         deltim_dummy = 0._kdp
         CALL RM_set_pv(rm_id, pv(1))
+        CALL RM_set_saturation(rm_id, frac(1))
         CALL RM_set_printing(rm_id, prf_chem_phrqi, prcphrqi, prhdfci, 0)
         CALL RM_run_cells(      &
             rm_id,              &
             time_phreeqc,       &        ! time_hst
             deltim_dummy,       &        ! time_step
             c(1,1),             &        ! fraction
-            frac(1),            &        ! saturation frac
             stop_msg) 
         CALL RM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
         CALL init2_3        
@@ -353,6 +353,7 @@ SUBROUTINE phast_manager
                 CALL RM_log_screen_prt(logline1)
                 stop_msg = 0
                 CALL RM_set_pv(rm_id, pv(1))
+                CALL RM_set_saturation(rm_id, frac(1))
                 CALL RM_set_printing(rm_id,                     &
                     print_force_chemistry%print_flag_integer,   & 
                     print_xyz_chemistry%print_flag_integer,     & 
@@ -363,7 +364,6 @@ SUBROUTINE phast_manager
                     time,                                         &        ! time_hst
                     deltim,                                       &        ! time_step_hst
                     c(1,1),                                       &        ! fraction
-                    frac(1),                                      &        ! frac
                     stop_msg) 
             ENDIF    ! ... Done with chemistry
 
