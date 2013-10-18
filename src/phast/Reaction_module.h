@@ -14,7 +14,7 @@ class Reaction_module: public PHRQ_base
 {
 public:
 
-	Reaction_module(int thread_count = 0, PHRQ_io * io=NULL);
+	Reaction_module(int nxyz, int thread_count = 0, PHRQ_io * io=NULL);
 	~Reaction_module(void);
 
 	void BeginTimeStep(void);

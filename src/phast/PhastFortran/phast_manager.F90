@@ -29,9 +29,9 @@ SUBROUTINE phast_manager
     CHARACTER(LEN=130) :: logline1
     INTEGER :: i, a_err
     INTERFACE
-        FUNCTION RM_create(nthreads) RESULT(iout)
+        FUNCTION RM_create(nxyz, nthreads) RESULT(iout)
             IMPLICIT NONE
-            INTEGER :: nthreads
+            INTEGER :: nxyz, nthreads
             INTEGER :: iout
         END FUNCTION RM_create
         FUNCTION RM_destroy(id) RESULT(iout)
@@ -111,7 +111,7 @@ SUBROUTINE phast_manager
     CALL read1_distribute
 
     ! ... make a reaction module; makes instances of IPhreeqc and IPhreeqcPhast with same rm_id
-    rm_id = RM_create(nthreads)
+    rm_id = RM_create(nxyz, nthreads)
     IF (rm_id.LT.0) THEN
         STOP
     END IF
