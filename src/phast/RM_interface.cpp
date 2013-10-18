@@ -34,13 +34,13 @@ void RM_interface::CleanupReactionModuleInstances(void)
 }
 /* ---------------------------------------------------------------------- */
 int
-RM_interface::Create_reaction_module(int nthreads)
+RM_interface::Create_reaction_module(int nxyz, int nthreads)
 /* ---------------------------------------------------------------------- */
 {
 	int n = IPQ_OUTOFMEMORY;
 	try
 	{
-		Reaction_module* Reaction_module_ptr = new Reaction_module(nthreads);
+		Reaction_module* Reaction_module_ptr = new Reaction_module(nxyz, nthreads);
 		if (Reaction_module_ptr)
 		{
 			n = (int) Reaction_module_ptr->Get_workers()[0]->Get_Index();
@@ -217,10 +217,10 @@ RM_convert_to_molal(int *id, double *c, int *n, int *dim)
 	}
 }
 /* ---------------------------------------------------------------------- */
-int RM_create(int *nthreads)
+int RM_create(int *nxyz, int *nthreads)
 /* ---------------------------------------------------------------------- */
 {
-	return RM_interface::Create_reaction_module(*nthreads);
+	return RM_interface::Create_reaction_module(*nxyz, *nthreads);
 }
 /* ---------------------------------------------------------------------- */
 int RM_destroy(int *id)
@@ -659,9 +659,9 @@ void RM_set_mapping(int *id,
 	{
 		int nxyz = Reaction_module_ptr->Get_nxyz();
 #ifdef USE_MPI
-		std::vector<int> local_grid2chem;
 		if (MPI_COMM_SELF > 0)
 		{
+			std::vector<int> local_grid2chem;
 			local_grid2chem.reserve(nxyz);
 			MPI_Bcast(&local_grid2chem.data[0], nxyz, MPI_INT, 0, MPI_COMM_WORLD);
 			Reaction_module_ptr->Set_mapping(&local_grid2chem.data[0]);

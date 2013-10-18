@@ -20,9 +20,9 @@ SUBROUTINE phast_worker
     USE mpi_mod
     IMPLICIT NONE
     INTERFACE
-        FUNCTION RM_create(nthreads) RESULT(iout)
+        FUNCTION RM_create(nxyz, nthreads) RESULT(iout)
             IMPLICIT NONE
-            INTEGER :: nthreads
+            INTEGER :: nxyz, nthreads
             INTEGER :: iout
         END FUNCTION RM_create
         FUNCTION RM_destroy(id) RESULT(iout)
@@ -102,7 +102,7 @@ SUBROUTINE phast_worker
     CALL read1_distribute
 
     ! ... Make a Reaction_module
-    rm_id = RM_create(nthreads)
+    rm_id = RM_create(nxyz, nthreads)
     IF (rm_id.LT.0) THEN
         WRITE(*,*) "Could not create reaction module, worker ", mpi_myself
         STOP 

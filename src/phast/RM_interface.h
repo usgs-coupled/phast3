@@ -81,7 +81,7 @@
 class RM_interface
 {
 public:
-	static int Create_reaction_module(int nthreads);
+	static int Create_reaction_module(int nxyz, int nthreads);
 	static IPQ_RESULT Destroy_reaction_module(int n);
 	static Reaction_module* Get_instance(int n);
 	static void CleanupReactionModuleInstances(void);
@@ -99,7 +99,7 @@ extern "C" {
 void RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity);
 void RM_close_files(int * solute);
 void RM_convert_to_molal(int *id, double *c, int *n, int *dim);
-int  RM_create(int *nthreads);
+int  RM_create(int *nxyz, int *nthreads);
 int  RM_destroy(int *id);
 void RM_distribute_initial_conditions(int *id,
 		int *initial_conditions1);		// 7 x nxyz end-member 1
@@ -179,8 +179,8 @@ void RM_setup_boundary_conditions(
 			double *fraction1,
 			double *boundary_fraction, 
 			int *dim);
-void RM_set_mapping (int *id, int *grid2chem=NULL); 
 void RM_set_input_units (int *id, int *sol=NULL, int *pp=NULL, int *ex=NULL, int *surf=NULL, int *gas=NULL, int *ss=NULL, int *kin=NULL);
+void RM_set_mapping (int *id, int *grid2chem=NULL); 
 void RM_solutions2fractions(int *id);
 void RM_transport(int *id, int *ncomps);
 void RM_write_bc_raw(int *id, 

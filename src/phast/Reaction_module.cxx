@@ -26,7 +26,7 @@
 #include <mpi.h>
 #endif
 #include "Phreeqc.h"
-Reaction_module::Reaction_module(int thread_count, PHRQ_io *io)
+Reaction_module::Reaction_module(int nxyz, int thread_count, PHRQ_io *io)
 	//
 	// constructor
 	//
@@ -134,6 +134,15 @@ if( numCPU < 1 )
 	this->input_units_GasPhase = 1;			    // water 1, rock 2
 	this->input_units_SSassemblage = 1;			// water 1, rock 2
 	this->input_units_Kinetics = 1;			    // water 1, rock 2
+
+	this->nxyz = nxyz;
+	for (int i = 0; i < nxyz; i++)
+	{
+		forward.push_back(i);
+		std::vector<int> temp;
+		temp.push_back(i);
+		back.push_back(temp);
+	}
 }
 Reaction_module::~Reaction_module(void)
 {
