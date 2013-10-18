@@ -173,8 +173,8 @@ SUBROUTINE phast_manager
         CALL RM_set_free_surface(rm_id, ifresur)
         isteady_flow = steady_flow
         CALL RM_set_steady_flow(rm_id, isteady_flow)
+        CALL RM_set_volume(rm_id, volume(1))
         CALL RM_pass_data(rm_id,        &
-            volume(1),                      &
             rebalance_method_f,          &
             rebalance_fraction_f)
 

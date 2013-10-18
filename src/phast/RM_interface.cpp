@@ -440,7 +440,6 @@ RM_open_punch_file(char * prefix, int l_prefix)
 /* ---------------------------------------------------------------------- */
 void
 RM_pass_data(int *id,
-			 double *volume, 					// nxyz geometric cell volumes 
 			 int *rebalance_method,             // method for rebalancing load
 			 double *rebalance_fraction_hst) 	// parameter for rebalancing process load for parallel
 /* ---------------------------------------------------------------------- */
@@ -449,7 +448,6 @@ RM_pass_data(int *id,
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->Set_volume(volume);
 		Reaction_module_ptr->Set_rebalance_method(*rebalance_method != 0);
 		Reaction_module_ptr->Set_rebalance_fraction(*rebalance_fraction_hst);
 	}
@@ -695,6 +693,17 @@ void RM_set_time_conversion(int *id, double *t)
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Set_time_conversion(*t);
+	}
+}
+void RM_set_volume(int *id, double *t)
+{
+	//
+	// multiply seconds to convert to user time units
+	//
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Set_volume(t);
 	}
 }
 #ifdef USE_MPI

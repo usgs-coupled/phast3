@@ -71,12 +71,10 @@
         END SUBROUTINE RM_open_files
         
         SUBROUTINE RM_pass_data(rm_id,        &
-            volume,                      &
             rebalance_method_f,          &
             rebalance_fraction_f) 
             IMPLICIT NONE 
             INTEGER, INTENT(INOUT) :: rm_id, rebalance_method_f 
-            double precision, INTENT(INOUT) :: volume 
             double precision, INTENT(INOUT) :: rebalance_fraction_f
         END SUBROUTINE RM_pass_data        
 
