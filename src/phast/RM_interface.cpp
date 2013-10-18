@@ -457,8 +457,8 @@ RM_pass_data(int *id,
 		Reaction_module_ptr->Set_steady_flow(*steady_flow_f != 0);
 		Reaction_module_ptr->Set_transient_free_surface((*free_surface_f != 0) && (steady_flow_f == 0));
 		Reaction_module_ptr->Set_volume(volume);
-		Reaction_module_ptr->Set_printzone_chem(printzone_chem);
-		Reaction_module_ptr->Set_printzone_xyz(printzone_xyz);
+		Reaction_module_ptr->Set_print_chem_mask(printzone_chem);
+		Reaction_module_ptr->Set_print_xyz_mask(printzone_xyz);
 		Reaction_module_ptr->Set_rebalance_method(*rebalance_method != 0);
 		Reaction_module_ptr->Set_rebalance_fraction(*rebalance_fraction_hst);
 	}

@@ -138,8 +138,8 @@ if( numCPU < 1 )
 	this->time_step = 0;					    // scalar time step from transport
 	this->time_conversion = NULL;				// scalar conversion factor for time
 	this->concentration = NULL;					// nxyz by ncomps mass fractions nxyz:components
-	this->printzone_chem = NULL;				// nxyz print flags for output file
-	this->printzone_xyz = NULL;					// nxyz print flags for chemistry XYZ file 
+	//this->printzone_chem = NULL;				// nxyz print flags for output file
+	//this->printzone_xyz = NULL;					// nxyz print flags for chemistry XYZ file 
 	this->rebalance_fraction = 0.5;		// parameter for rebalancing process load for parallel	
 	this->saturation = NULL;
 	this->pv = NULL;
@@ -172,6 +172,8 @@ if( numCPU < 1 )
 		z_node.push_back(0.0);
 		pv0.push_back(0.1);
 		volume.push_back(1.0);
+		print_chem_mask.push_back(0);
+		print_xyz_mask.push_back(1);
 	}
 }
 Reaction_module::~Reaction_module(void)
@@ -2853,8 +2855,8 @@ Reaction_module::Run_cells_thread(int n)
 		phast_iphreeqc_worker->Get_cell_clock_times().push_back(- (double) clock());
 #endif
 		// Set local print flags
-		bool pr_chem = this->print_chem && (this->printzone_chem[j] != 0);
-		bool pr_xyz = this->print_xyz && (this->printzone_xyz[i] != 0);
+		bool pr_chem = this->print_chem && (this->print_chem_mask[j] != 0);
+		bool pr_xyz = this->print_xyz && (this->print_xyz_mask[i] != 0);
 		bool pr_hdf = this->print_hdf;
 
 		// partition solids between UZ and SZ
@@ -3298,6 +3300,24 @@ Reaction_module::Set_print_chem(bool t)
 	MPI_Bcast(&this->print_chem, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
 #endif
 }
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Set_print_chem_mask(int * t)
+/* ---------------------------------------------------------------------- */
+{
+	if (this->mpi_myself == 0)
+	{
+		if (t == NULL) error_msg("NULL pointer in Set_print_chem_mask", 1);
+		this->print_chem_mask.clear();
+		for (int i = 0; i < this->nxyz; i++)
+		{
+			this->print_chem_mask.push_back(t[i]);
+		}
+	}
+#ifdef USE_MPI	
+	MPI_Bcast(this->print_chem_mask.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+#endif
+}
 void 
 Reaction_module::Set_print_xyz(bool t)
 {
@@ -3307,6 +3327,24 @@ Reaction_module::Set_print_xyz(bool t)
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->print_xyz, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
+#endif
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Set_print_xyz_mask(int * t)
+/* ---------------------------------------------------------------------- */
+{
+	if (this->mpi_myself == 0)
+	{
+		if (t == NULL) error_msg("NULL pointer in Set_print_xyz_mask", 1);
+		this->print_xyz_mask.clear();
+		for (int i = 0; i < this->nxyz; i++)
+		{
+			this->print_xyz_mask.push_back(t[i]);
+		}
+	}
+#ifdef USE_MPI	
+	MPI_Bcast(this->print_xyz_mask.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 }
 void 
@@ -3331,6 +3369,7 @@ Reaction_module::Set_print_restart(bool t)
 	MPI_Bcast(&this->print_restart, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
 #endif
 }
+
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Set_pv(double *t)
