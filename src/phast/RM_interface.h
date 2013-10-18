@@ -142,7 +142,6 @@ void RM_open_log_file(char * prefix, int l_prefix);
 void RM_pass_data(int *id,
              bool *fresur,
 			 bool *steady_flow, 
-			 int *nx, int *ny, int *nz,			// number of nodes each coordinate direction
 			 double *cnvtmi,					// conversion factor for time
 			 double *x_node,					// nxyz array of X coordinates for nodes 
 			 double *y_node,					// nxyz array of Y coordinates for nodes  
