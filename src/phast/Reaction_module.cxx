@@ -138,7 +138,6 @@ if( numCPU < 1 )
 	this->time_step = 0;					    // scalar time step from transport
 	this->time_conversion = NULL;				// scalar conversion factor for time
 	this->fraction = NULL;						// nxyz by ncomps mass fractions nxyz:components
-	this->frac = NULL;							// nxyz saturation fraction
 	this->volume = NULL;						// nxyz geometric cell volumes 
 	this->printzone_chem = NULL;				// nxyz print flags for output file
 	this->printzone_xyz = NULL;					// nxyz print flags for chemistry XYZ file 
@@ -170,6 +169,7 @@ if( numCPU < 1 )
 		z_node.push_back(0.0);
 		pv.push_back(1.0);
 		pv0.push_back(1.0);
+		saturation.push_back(1.0);
 	}
 }
 Reaction_module::~Reaction_module(void)
@@ -2858,26 +2858,26 @@ Reaction_module::Run_cells_thread(int n)
 		// partition solids between UZ and SZ
 		if (transient_free_surface)	
 		{
-			this->Partition_uz_thread(n, i, j, frac[j]);
+			this->Partition_uz_thread(n, i, j, this->saturation[j]);
 		}
 
 		// ignore small saturations
 		bool active = true;
-		if (frac[j] <= 1e-10) 
+		if (this->saturation[j] <= 1e-10) 
 		{
-			frac[j] = 0.0;
+			this->saturation[j] = 0.0;
 			active = false;
 		}
 
 		if (active)
 		{
 			// set cell number, pore volume got Basic functions
-			phast_iphreeqc_worker->Set_cell_volumes(i, pv0[j], frac[j], volume[j]);
+			phast_iphreeqc_worker->Set_cell_volumes(i, pv0[j], this->saturation[j], volume[j]);
 
 			// Adjust for fractional saturation and pore volume
 			if (this->transient_free_surface)
 			{
-				this->Scale_solids(n, i, 1.0 / frac[j]);
+				this->Scale_solids(n, i, 1.0 / this->saturation[j]);
 			}
 			if (!transient_free_surface && !steady_flow)
 			{
@@ -2903,7 +2903,7 @@ Reaction_module::Run_cells_thread(int n)
 
 			// Adjust for fractional saturation and pore volume
 			if (transient_free_surface == TRUE)
-				this->Scale_solids(n, i, frac[j]);
+				this->Scale_solids(n, i, this->saturation[j]);
 			assert(pv0[j] != 0);
 			assert(pv[j] != 0);
 			if (!transient_free_surface && !steady_flow)
@@ -3340,6 +3340,25 @@ Reaction_module::Set_pv0(double *t)
 	}
 #ifdef USE_MPI
 	MPI_Bcast(pv0.data(), nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+#endif
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Set_saturation(double *t)
+/* ---------------------------------------------------------------------- */
+{
+	this->saturation.clear();
+	this->saturation.reserve(this->nxyz);
+	if (mpi_myself == 0)
+	{
+		if (t == NULL) error_msg("NULL pointer in Set_saturation", 1);
+		for (int i = 0; i < this->nxyz; i++)
+		{
+			this->saturation.push_back(t[i]);
+		}
+	}
+#ifdef USE_MPI
+	MPI_Bcast(this->saturation.data(), nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 }
 /* ---------------------------------------------------------------------- */

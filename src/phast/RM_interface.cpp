@@ -471,7 +471,7 @@ void RM_run_cells(int *id,
 			 double *time,					        // time from transport 
 			 double *time_step,		   		        // time step from transport
  			 double *fraction,					    // mass fractions nxyz:components
-			 double *frac,							// saturation fraction
+			 double *saturation,					// saturation fraction
 			 int * stop_msg)
 /* ---------------------------------------------------------------------- */
 {
@@ -487,14 +487,13 @@ void RM_run_cells(int *id,
 #ifdef USE_MPI
 			// Broadcast data to workers
 			MPI_Bcast(fraction, (*nxyz)*(*count_comps), MPI_DOUBLE, 0, MPI_COMM_WORLD);
-			MPI_Bcast(frac, *nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 			
 			// Transfer data and pointers to Reaction_module	  
 			Reaction_module_ptr->Set_time(*time);
 			Reaction_module_ptr->Set_time_step(*time_step);
 			Reaction_module_ptr->Set_fraction(fraction);
-			Reaction_module_ptr->Set_frac(frac);
+			Reaction_module_ptr->Set_saturation(saturation);
 
 			// Transfer data Fortran to reaction module
 			Reaction_module_ptr->Fractions2Solutions();
