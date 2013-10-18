@@ -68,13 +68,10 @@ SUBROUTINE phast_manager
             iprint_xyz,                  &
             rebalance_method_f,          &
             rebalance_fraction_f,        &
-            c,                           &
-            mpi_myself,                  &
-            mpi_tasks) 
+            c) 
             IMPLICIT NONE 
             logical, INTENT(INOUT) :: fresur, steady_flow
             INTEGER, INTENT(INOUT) :: rm_id, iprint_chem, iprint_xyz, rebalance_method_f 
-            INTEGER, INTENT(INOUT) :: mpi_myself, mpi_tasks
             double precision, INTENT(INOUT) :: cnvtmi, pv0, volume 
             double precision, INTENT(INOUT) :: c, rebalance_fraction_f
         END SUBROUTINE RM_pass_data
@@ -216,9 +213,7 @@ SUBROUTINE phast_manager
             iprint_xyz(1),                  &
             rebalance_method_f,          &
             rebalance_fraction_f,        &
-            c(1,1),                           &
-            mpi_myself,                  &
-            mpi_tasks)
+            c(1,1))
 
         ! ... Define mapping from 3D domain to chemistry
         !CALL RM_forward_and_back(rm_id, indx_sol1_ic, naxes) 

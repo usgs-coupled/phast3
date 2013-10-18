@@ -449,9 +449,7 @@ RM_pass_data(int *id,
 			 int *printzone_xyz,				// nxyz print flags for chemistry XYZ file 
 			 int *rebalance_method,             // method for rebalancing load
 			 double *rebalance_fraction_hst, 	// parameter for rebalancing process load for parallel	
-			 double *fraction,                  // needed for first Solutions2Fractions
-			 int *mpi_myself,
-			 int *mpi_tasks
+			 double *fraction                   // needed for first Solutions2Fractions
 			 )
 /* ---------------------------------------------------------------------- */
 {
@@ -470,8 +468,6 @@ RM_pass_data(int *id,
 		Reaction_module_ptr->Set_rebalance_method(*rebalance_method != 0);
 		Reaction_module_ptr->Set_rebalance_fraction(*rebalance_fraction_hst);
 		Reaction_module_ptr->Set_fraction(fraction);
-		Reaction_module_ptr->Set_mpi_myself(*mpi_myself);
-		Reaction_module_ptr->Set_mpi_tasks(*mpi_tasks);
 	}
 }
 /* ---------------------------------------------------------------------- */
