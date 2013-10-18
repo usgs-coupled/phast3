@@ -201,7 +201,6 @@ SUBROUTINE phast_worker
         adj_wr_ratio = 1
         CALL RM_run_cells(                                &
             rm_id,                                        &
-            print_progress_statistics%print_flag_integer, &        ! prslm
             print_force_chemistry%print_flag_integer,     &        ! print_chem
             print_xyz_chemistry%print_flag_integer,       &        ! print_xyz
             print_hdf_chemistry%print_flag_integer,       &        ! print_hdf
@@ -263,7 +262,6 @@ SUBROUTINE phast_worker
             ! ... Chemistry calculation
             CALL RM_run_cells(                                &
                 rm_id,                                        &
-                print_progress_statistics%print_flag_integer, &        ! prslm
                 print_force_chemistry%print_flag_integer,     &        ! print_chem
                 print_xyz_chemistry%print_flag_integer,       &        ! print_xyz
                 print_hdf_chemistry%print_flag_integer,       &        ! print_hdf

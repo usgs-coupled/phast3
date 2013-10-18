@@ -158,7 +158,6 @@ void RM_pass_data(int *id,
 			 int *mpi_tasks                     // let reaction_module know mpi_myself
 			 );
 void RM_run_cells(int *id,
-			 int * prslm,							// solution method print flag 
 			 int * print_out,						// print flag for output file 
 			 int * print_sel,						// print flag for selected output
 			 int * print_hdf,						// print flag for hdf file
@@ -180,8 +179,8 @@ void RM_setup_boundary_conditions(
 			double *fraction1,
 			double *boundary_fraction, 
 			int *dim);
-void RM_set_mapping (int *id, int *grid2chem); 
-void RM_set_input_units (int *id, int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *kin);
+void RM_set_mapping (int *id, int *grid2chem=NULL); 
+void RM_set_input_units (int *id, int *sol=NULL, int *pp=NULL, int *ex=NULL, int *surf=NULL, int *gas=NULL, int *ss=NULL, int *kin=NULL);
 void RM_solutions2fractions(int *id);
 void RM_transport(int *id, int *ncomps);
 void RM_write_bc_raw(int *id, 
