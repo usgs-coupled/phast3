@@ -51,7 +51,6 @@ public:
 	void Init_uz(void);
 	void Initial_phreeqc_run(std::string &database_name, std::string &chemistry_name, std::string &prefix);
 	void Initial_phreeqc_run_thread(int n);
-	bool n_to_ijk (int n, int &i, int &j, int &k);
 	void Partition_uz(int iphrq, int ihst, double new_frac);
 	void Partition_uz_thread(int n, int iphrq, int ihst, double new_frac);
 	void Rebalance_load(void);
@@ -98,12 +97,6 @@ public:
 	void Set_transient_free_surface(bool t) {this->transient_free_surface = t;};
 	const int Get_nxyz(void) const {return this->nxyz;};
 	void Set_nxyz(int t) {this->nxyz = t;};
-	const int Get_nx(void) const {return this->nx;};
-	void Set_nx(int t) {this->nx = t;};
-	const int Get_ny(void) const {return this->ny;};
-	void Set_ny(int t) {this->ny = t;};
-	const int Get_nz(void) const {return this->nz;};
-	void Set_nz(int t) {this->nz = t;};
 	const std::vector<std::string> & Get_components(void) const {return this->components;};
 	double Get_time_hst(void) const {return this->time_hst;};
 	void Set_time_hst(double t) {this->time_hst = t;};
@@ -181,7 +174,6 @@ protected:
 	bool steady_flow;						// steady-state flow
 	bool transient_free_surface;            // free surface and not steady flow
 	int nxyz;								// number of nodes 
-	int nx, ny, nz;							// number of nodes in each coordinate direction
 	double time_hst;						// scalar time from transport 
 	double time_step_hst;					// scalar time step from transport
 	double cnvtmi;							// scalar conversion factor for time

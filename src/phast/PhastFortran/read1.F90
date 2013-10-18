@@ -59,6 +59,7 @@ SUBROUTINE read1
      READ(FUINS,*) tmunit
      IF (print_rde) WRITE(FURDE, 8003) 'TMUNIT,[1.5]', tmunit
      READ(FUINS,*) nx, ny, nz, nhcn, npmz  
+     nxyz = nx * ny * nz
      IF (print_rde) WRITE(FURDE, 8003) 'NX,NY,NZ,NHCN,NPMZ,[1.6]', nx, ny, nz,  &
           nhcn, npmz
 8003 FORMAT(TR5,A/TR5,4I5,I8)  

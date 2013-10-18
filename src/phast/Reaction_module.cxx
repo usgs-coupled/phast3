@@ -104,7 +104,6 @@ if( numCPU < 1 )
 	this->steady_flow = false;					// steady-state flow calculation
 	this->transient_free_surface = false;		// free surface and not steady flow
 	this->nxyz = 0;								// number of nodes 
-	this->nx = this->ny = this->nz = 0;			// number of nodes in each coordinate direction
 	this->time_hst = 0;							// scalar time from transport 
 	this->time_step_hst = 0;					// scalar time step from transport
 	this->cnvtmi = NULL;						// scalar conversion factor for time
@@ -1485,33 +1484,6 @@ Reaction_module::Initial_phreeqc_run(std::string &database_name, std::string &ch
 		Initial_phreeqc_run_thread(n);
 	} 	
 
-}
-/* ---------------------------------------------------------------------- */
-bool
-Reaction_module::n_to_ijk(int n, int &i, int &j, int &k) 
-/* ---------------------------------------------------------------------- */
-{
-
-	k = n / (this->nx * this->ny) ;
-	j = (n % (this->nx * this->ny)) / this->nx;
-	i = (n % (this->nx * this->ny)) % this->nx;
-
-	if (k < 0 || k >= this->nz)
-	{
-		error_msg("Z index out of range");
-		return false;
-	}
-	if (j < 0 || j >= this->ny)
-	{
-		error_msg("Y index out of range");
-		return false;
-	}
-	if (i < 0 || i >= this->nx)
-	{
-		error_msg("X index out of range");
-		return false;
-	}
-	return true;
 }
 /* ---------------------------------------------------------------------- */
 void
@@ -3635,8 +3607,7 @@ Reaction_module::Write_restart(void)
 		ofs_restart << "#Prefix: " << this->file_prefix << std::endl;
 		ofs_restart << "#Date: " << ctime(&now);
 		ofs_restart << "#Current model time: " << this->time_hst << std::endl;
-		ofs_restart << "#nx, ny, nz: " << this->nx << ", " << this->ny << ", " << this->nz << std::
-			endl;
+		ofs_restart << "#nyz: " << this->nxyz << std::endl;
 
 		// write index
 		int i, j;

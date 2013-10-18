@@ -58,6 +58,27 @@ SUBROUTINE phast_manager
             implicit none
             INTEGER, DIMENSION(:,:), INTENT(INOUT) :: ic
         END SUBROUTINE create_mapping
+        SUBROUTINE RM_pass_data(rm_id,        &
+            fresur,                      &
+            steady_flow,                 &
+            cnvtmi,                      &
+            x_node, y_node, z_node,      &
+            pv0,                         &
+            volume,                      &
+            iprint_chem,                 &
+            iprint_xyz,                  &
+            rebalance_method_f,          &
+            rebalance_fraction_f,        &
+            c,                           &
+            mpi_myself,                  &
+            mpi_tasks) 
+            IMPLICIT NONE 
+            logical, INTENT(INOUT) :: fresur, steady_flow
+            INTEGER, INTENT(INOUT) :: rm_id, iprint_chem, iprint_xyz, rebalance_method_f 
+            INTEGER, INTENT(INOUT) :: mpi_myself, mpi_tasks
+            double precision, INTENT(INOUT) :: cnvtmi, x_node, y_node, z_node, pv0, volume 
+            double precision, INTENT(INOUT) :: c, rebalance_fraction_f
+        END SUBROUTINE RM_pass_data
 #ifdef USE_MPI
         SUBROUTINE xfer_indices(indx_sol1_ic, indx_sol2_ic, &
             mxfrac, naxes, nxyz, &
@@ -186,16 +207,15 @@ SUBROUTINE phast_manager
         CALL RM_pass_data(rm_id,        &
             fresur,                      &
             steady_flow,                 &
-            nx, ny, nz,                  &
             cnvtmi,                      &
-            x_node, y_node, z_node,      &
-            pv0,                         &
-            volume,                      &
-            iprint_chem,                 &
-            iprint_xyz,                  &
+            x_node(1), y_node(1), z_node(1),      &
+            pv0(1),                         &
+            volume(1),                      &
+            iprint_chem(1),                 &
+            iprint_xyz(1),                  &
             rebalance_method_f,          &
             rebalance_fraction_f,        &
-            c,                           &
+            c(1,1),                           &
             mpi_myself,                  &
             mpi_tasks)
 

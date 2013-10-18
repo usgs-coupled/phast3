@@ -442,7 +442,6 @@ void
 RM_pass_data(int *id,
 			 bool *free_surface_f,				// free surface calculation
 			 bool *steady_flow_f,				// free surface calculation
-			 int *nx, int *ny, int *nz,			// number of nodes each coordinate direction
 			 double *cnvtmi,					// conversion factor for time
 			 double *x_node,					// nxyz array of X coordinates for nodes 
 			 double *y_node,					// nxyz array of Y coordinates for nodes  
@@ -466,10 +465,6 @@ RM_pass_data(int *id,
 		Reaction_module_ptr->Set_free_surface(*free_surface_f != 0);
 		Reaction_module_ptr->Set_steady_flow(*steady_flow_f != 0);
 		Reaction_module_ptr->Set_transient_free_surface((*free_surface_f != 0) && (steady_flow_f == 0));
-		Reaction_module_ptr->Set_nx(*nx);
-		Reaction_module_ptr->Set_ny(*ny);
-		Reaction_module_ptr->Set_nz(*nz);
-		Reaction_module_ptr->Set_nxyz((*nx) * (*ny) * (*nz));
 		Reaction_module_ptr->Set_cnvtmi(*cnvtmi);
 		Reaction_module_ptr->Set_x_node(x_node);
 		Reaction_module_ptr->Set_y_node(y_node);
