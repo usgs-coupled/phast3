@@ -108,11 +108,11 @@ public:
 	void Set_y_node(double * t = NULL);
 	const std::vector<double> & Get_z_node(void) const {return this->z_node;};
 	void Set_z_node(double * t = NULL);
-	double * Get_concentration(void) const {return this->concentration;};
+	std::vector<double> & Get_concentration(void) {return this->concentration;}
 	void Set_concentration(double * t = NULL); 
-	double * Get_saturation(void) {return this->saturation;};
+	std::vector<double> & Get_saturation(void) {return this->saturation;};
 	void Set_saturation(double * t); 
-	double * Get_pv(void) {return this->pv;};
+	std::vector<double> & Get_pv(void) {return this->pv;};
 	void Set_pv(double * t = NULL); 
 	std::vector<double> & Get_pv0(void) {return this->pv0;};
 	void Set_pv0(double * t = NULL); 
@@ -177,13 +177,10 @@ protected:
 	std::vector<double> x_node;             // x node location, nxyz array
 	std::vector<double> y_node;				// y node location, nxyz array
 	std::vector<double> z_node;             // z node location, nxyz array
-	double *concentration;					// nxyz by ncomps concentrations nxyz:components
-	double *saturation;						// current saturation fraction
+	std::vector<double> concentration;		// nxyz by ncomps concentrations nxyz:components
 	std::vector <double> old_saturation;	// saturation fraction from previous step
-	double *pv;
-	std::vector<double> c_worker;           // storage for concentrations for workers
-	std::vector<double> saturation_worker;	// nxyz saturation fraction
-	std::vector<double> pv_worker;			// nxyz current pore volumes 
+	std::vector<double> saturation;	        // nxyz saturation fraction
+	std::vector<double> pv;			        // nxyz current pore volumes 
 	std::vector<double> pv0;				// nxyz initial pore volumes
 	std::vector<double> volume;				// nxyz geometric cell volumes 
 	std::vector<int> print_chem_mask;		// nxyz print flags for output file
