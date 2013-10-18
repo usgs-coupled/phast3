@@ -81,7 +81,7 @@
 class RM_interface
 {
 public:
-	static int Create_reaction_module(int nxyz, int nthreads);
+	static int Create_reaction_module(int *nxyz, int *nthreads);
 	static IPQ_RESULT Destroy_reaction_module(int n);
 	static Reaction_module* Get_instance(int n);
 	static void CleanupReactionModuleInstances(void);
