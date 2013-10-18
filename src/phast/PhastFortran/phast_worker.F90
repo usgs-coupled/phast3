@@ -179,7 +179,7 @@ SUBROUTINE phast_worker
             stop_msg) 
 
         ! ... Write zone chemistry
-        CALL RM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
+        CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
         stop_msg = 0
         deltim_dummy = 0._kdp
  
@@ -234,7 +234,7 @@ SUBROUTINE phast_worker
                 c,                                            &        ! fraction
                 stop_msg) 
                             
-            CALL RM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
+            CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
 
             ! ... Save values for next time step
             CALL time_step_save
