@@ -1058,7 +1058,87 @@ Reaction_module::Fractions2Solutions_thread(int n)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Concentrations2Solutions_thread(int n)
+Reaction_module::Concentrations2Phreeqc_thread(int n)
+/* ---------------------------------------------------------------------- */
+{
+	int i, j, k;
+
+#ifdef USE_MPI
+	int start = this->start_cell[this->mpi_myself];
+	int end = this->end_cell[this->mpi_myself];
+#else
+	int start = this->start_cell[n];
+	int end = this->end_cell[n];
+#endif
+
+	for (j = start; j <= end; j++)
+	{
+		std::vector<double> d;  // scratch space to convert from mass fraction to moles
+		// j is count_chem number
+		i = this->back[j][0];
+		if (j < 0) continue;
+
+		switch (this->input_units_Solution)
+		{
+		case 1:  // mg/L
+			break;
+		case 2:  // mol/L
+			break;
+		case 3:  // mass fraction  kg/kg solution
+			{
+				double *ptr = &this->concentration[i];
+
+				// kgw/kgs
+				double kgw = 1.0;
+				for (k = 0; k < (int) this->components.size(); k++)
+				{	
+					kgw -= ptr[this->nxyz * k];
+				}
+				// kgw per cell
+				kgw *= density[i] * this->pv[i] / this->pv0[i]; // * saturation[i];
+
+				// mol/L
+				for (k = 0; k < (int) this->components.size(); k++)
+				{	
+					d.push_back(ptr[this->nxyz * k] * 1000.0/this->gfw[k] * density[i]);
+				}
+
+				// moles per cell
+				for (k = 0; k < (int) this->components.size(); k++)
+				{	
+					d[k] *= this->pv[i] / this->pv0[i]; // * saturation[i];
+				}
+				
+				// update solution 
+				cxxNameDouble nd;
+				for (k = 3; k < (int) components.size(); k++)
+				{
+					if (d[k] <= 1e-14) d[k] = 0.0;
+					nd.add(components[k].c_str(), d[k]);
+				}	
+
+				cxxSolution *soln_ptr = this->Get_workers()[n]->Get_solution(j);
+				//this->sz_bin.Get_Solution((int) j)->Update(
+				if (soln_ptr)
+				{
+					soln_ptr->Update(
+						d[0] + kgw * 2.0 / gfw_water,
+						d[1] + kgw * 1.0 / gfw_water,
+						d[2],
+						nd);
+					soln_ptr->Set_patm(this->pressure[i]);
+					soln_ptr->Set_tc(this->tempc[i]);
+				}
+			}
+			break;
+		}
+	}
+	return;
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Concentrations2Phreeqc_thread(int n)
 /* ---------------------------------------------------------------------- */
 {
 	int i, j, k;
@@ -1117,9 +1197,10 @@ Reaction_module::Concentrations2Solutions_thread(int n)
 	}
 	return;
 }
+#endif
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Concentrations2Solutions(void)
+Reaction_module::Concentrations2Phreeqc(void)
 /* ---------------------------------------------------------------------- */
 {
 #ifdef THREADED_PHAST
@@ -1130,7 +1211,7 @@ Reaction_module::Concentrations2Solutions(void)
 	// For MPI nthreads = 1
 	for (int n = 0; n < this->nthreads; n++)
 	{
-		this->Concentrations2Solutions_thread(n);
+		this->Concentrations2Phreeqc_thread(n);
 		//this->Fractions2Solutions_thread(n);
 	}	
 }
