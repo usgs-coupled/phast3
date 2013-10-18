@@ -89,6 +89,12 @@
 	            INTEGER :: n_boundary, bc_sol1, bc_sol2, dim
 	            DOUBLE PRECISION :: f1, c
         END SUBROUTINE RM_setup_boundary_conditions  
+
+        SUBROUTINE RM_set_density(id, t)
+            IMPLICIT NONE
+            INTEGER :: id
+            DOUBLE PRECISION :: t
+        END SUBROUTINE RM_set_density 
 		
         SUBROUTINE RM_set_free_surface(id, t)   
             IMPLICIT NONE
@@ -132,6 +138,12 @@
             INTEGER :: t
         END SUBROUTINE RM_set_print_xyz_mask 
 
+        SUBROUTINE RM_set_pressure(id, t)   
+            IMPLICIT NONE
+            INTEGER :: id
+            DOUBLE PRECISION :: t
+        END SUBROUTINE RM_set_pressure 
+
         SUBROUTINE RM_set_pv(id, t)   
             IMPLICIT NONE
             INTEGER :: id
@@ -162,6 +174,12 @@
             INTEGER :: id
             INTEGER :: t
         END SUBROUTINE RM_set_steady_flow   
+
+        SUBROUTINE RM_set_tempc(id, t)
+            IMPLICIT NONE
+            INTEGER :: id
+            DOUBLE PRECISION :: t
+        END SUBROUTINE RM_set_tempc 
 		     
         SUBROUTINE RM_set_time_conversion(id, t)   
             IMPLICIT NONE

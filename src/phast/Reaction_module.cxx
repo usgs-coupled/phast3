@@ -2816,6 +2816,21 @@ Reaction_module::Set_concentration(double *t)
 }
 /* ---------------------------------------------------------------------- */
 void
+Reaction_module::Set_density(double *t)
+/* ---------------------------------------------------------------------- */
+{
+	this->density.reserve(this->nxyz);
+	if (mpi_myself == 0)
+	{
+		if (t == NULL) error_msg("NULL pointer in Set_density", 1);
+		memcpy(this->density.data(), t, (size_t) (this->nxyz * sizeof(double)));
+	}
+#ifdef USE_MPI
+	MPI_Bcast(this->density.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+#endif
+}
+/* ---------------------------------------------------------------------- */
+void
 Reaction_module::Set_end_cells(void)
 /* ---------------------------------------------------------------------- */
 {
@@ -3060,7 +3075,21 @@ Reaction_module::Set_print_restart(bool t)
 	MPI_Bcast(&this->print_restart, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
 #endif
 }
-
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Set_pressure(double *t)
+/* ---------------------------------------------------------------------- */
+{
+	this->pressure.reserve(this->nxyz);
+	if (mpi_myself == 0)
+	{
+		if (t == NULL) error_msg("NULL pointer in Set_pressure", 1);
+		memcpy(this->pressure.data(), t, (size_t) (this->nxyz * sizeof(double)));
+	}
+#ifdef USE_MPI
+	MPI_Bcast(this->pressure.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+#endif
+}
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Set_pv(double *t)
@@ -3155,6 +3184,22 @@ Reaction_module::Set_stop_message(bool t)
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->stop_message, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
+#endif
+}
+
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Set_tempc(double *t)
+/* ---------------------------------------------------------------------- */
+{
+	this->tempc.reserve(this->nxyz);
+	if (mpi_myself == 0)
+	{
+		if (t == NULL) error_msg("NULL pointer in Set_tempc", 1);
+		memcpy(this->tempc.data(), t, (size_t) (this->nxyz * sizeof(double)));
+	}
+#ifdef USE_MPI
+	MPI_Bcast(this->tempc.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 }
 /* ---------------------------------------------------------------------- */

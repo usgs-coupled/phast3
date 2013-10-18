@@ -107,15 +107,21 @@ public:
 	void Set_y_node(double * t = NULL);
 	const std::vector<double> & Get_z_node(void) const {return this->z_node;};
 	void Set_z_node(double * t = NULL);
+	std::vector<double> & Get_density(void) {return this->density;};
+	void Set_density(double * t = NULL); 
 	std::vector<double> & Get_concentration(void) {return this->concentration;}
 	void Set_concentration(double * t = NULL); 
-	std::vector<double> & Get_saturation(void) {return this->saturation;};
+	std::vector<double> & Get_saturation(void) {return this->saturation;}
 	void Set_saturation(double * t); 
-	std::vector<double> & Get_pv(void) {return this->pv;};
+	std::vector<double> & Get_pv(void) {return this->pv;}
+	void Set_pressure(double * t = NULL); 
+	std::vector<double> & Get_pressure(void) {return this->pressure;}
 	void Set_pv(double * t = NULL); 
-	std::vector<double> & Get_pv0(void) {return this->pv0;};
-	void Set_pv0(double * t = NULL); 
-	std::vector<double> & Get_volume(void) {return this->volume;};
+	std::vector<double> & Get_pv0(void) {return this->pv0;}
+	void Set_pv0(double * t = NULL);
+	std::vector<double> & Get_tempc(void) {return this->tempc;}
+	void Set_tempc(double * t = NULL); 
+	std::vector<double> & Get_volume(void) {return this->volume;}
 	void Set_volume(double * t); 
 	std::vector<int> & Get_print_chem_mask (void) {return this->print_chem_mask;}
 	void Set_print_chem_mask(int * t); 
@@ -179,9 +185,12 @@ protected:
 	std::vector<double> concentration;		// nxyz by ncomps concentrations nxyz:components
 	std::vector <double> old_saturation;	// saturation fraction from previous step
 	std::vector<double> saturation;	        // nxyz saturation fraction
+	std::vector<double> pressure;			// nxyz current pressure
 	std::vector<double> pv;			        // nxyz current pore volumes 
 	std::vector<double> pv0;				// nxyz initial pore volumes
-	std::vector<double> volume;				// nxyz geometric cell volumes 
+	std::vector<double> volume;				// nxyz geometric cell volumes
+	std::vector<double> tempc;				// nxyz temperature Celsius
+	std::vector<double> density;			// nxyz density
 	std::vector<int> print_chem_mask;		// nxyz print flags for output file
 	std::vector<int> print_xyz_mask;		// nxyz print flags for chemistry XYZ file 
 	bool rebalance_method;                  // rebalance method 0 std, 1 by_cell
