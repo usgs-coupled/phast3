@@ -554,7 +554,7 @@ RM_set_free_surface(int *id, int *t)
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->Set_free_surface(t != 0);
+		Reaction_module_ptr->Set_free_surface(t);
 	}
 }
 void 
@@ -683,7 +683,7 @@ RM_set_steady_flow(int *id, int *t)
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->Set_steady_flow(t != 0);
+		Reaction_module_ptr->Set_steady_flow(t);
 	}
 }
 void RM_set_time_conversion(int *id, double *t)
