@@ -137,9 +137,6 @@ if( numCPU < 1 )
 	this->time_hst = 0;							// scalar time from transport 
 	this->time_step_hst = 0;					// scalar time step from transport
 	this->cnvtmi = NULL;						// scalar conversion factor for time
-	this->x_node = NULL;						// nxyz array of X coordinates for nodes
-	this->y_node = NULL;						// nxyz array of Y coordinates for nodes 
-	this->z_node = NULL;						// nxyz array of Z coordinates for nodes
 	this->fraction = NULL;						// nxyz by ncomps mass fractions nxyz:components
 	this->frac = NULL;							// nxyz saturation fraction
 	this->pv = NULL;							// nxyz current pore volumes 
@@ -163,12 +160,16 @@ if( numCPU < 1 )
 	this->input_units_SSassemblage = 1;			// water 1, rock 2
 	this->input_units_Kinetics = 1;			    // water 1, rock 2
 
+	// initialize arrays
 	for (int i = 0; i < this->nxyz; i++)
 	{
 		forward.push_back(i);
 		std::vector<int> temp;
 		temp.push_back(i);
 		back.push_back(temp);
+		x_node.push_back((double) i);
+		y_node.push_back(0.0);
+		z_node.push_back(0.0);
 	}
 }
 Reaction_module::~Reaction_module(void)
@@ -3260,7 +3261,85 @@ Reaction_module::Set_mapping(int *grid2chem_arg)
 			error_msg("Error in building inverse mapping (chem to grid).", STOP);
 		}
 	}
-	
+}
+
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Set_x_node(double * t)
+/* ---------------------------------------------------------------------- */
+{
+	int transfer = 0;
+	if (this->mpi_myself == 0)
+	{
+		if (t != NULL)
+		{
+			transfer = 1;
+			this->x_node.clear();
+			for (int i = 0; i < this->nxyz; i++)
+			{
+				x_node.push_back(t[i]);
+			}
+		}
+	}
+#ifdef USE_MPI	
+	MPI_Bcast(&transfer, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	if (transfer == 1)
+	{
+		MPI_Bcast(this->x_node.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	}
+#endif
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Set_y_node(double * t)
+/* ---------------------------------------------------------------------- */
+{
+	int transfer = 0;
+	if (this->mpi_myself == 0)
+	{
+		if (t != NULL)
+		{
+			transfer = 1;
+			this->y_node.clear();
+			for (int i = 0; i < this->nxyz; i++)
+			{
+				y_node.push_back(t[i]);
+			}
+		}
+	}
+#ifdef USE_MPI	
+	MPI_Bcast(&transfer, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	if (transfer == 1)
+	{
+		MPI_Bcast(this->y_node.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	}
+#endif
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Set_z_node(double * t)
+/* ---------------------------------------------------------------------- */
+{
+	int transfer = 0;
+	if (this->mpi_myself == 0)
+	{
+		if (t != NULL)
+		{
+			transfer = 1;
+			this->z_node.clear();
+			for (int i = 0; i < this->nxyz; i++)
+			{
+				z_node.push_back(t[i]);
+			}
+		}
+	}
+#ifdef USE_MPI	
+	MPI_Bcast(&transfer, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	if (transfer == 1)
+	{
+		MPI_Bcast(this->z_node.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	}
+#endif
 }
 /* ---------------------------------------------------------------------- */
 void

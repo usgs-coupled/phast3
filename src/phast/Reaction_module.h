@@ -104,12 +104,12 @@ public:
 	void Set_time_step_hst(double t) {this->time_step_hst = t;};
 	const double Get_cnvtmi(void) const {return this->cnvtmi;};
 	void Set_cnvtmi(double t) {this->cnvtmi = t;};
-	const double * Get_x_node(void) const {return this->x_node;};
-	void Set_x_node(double * t) {this->x_node = t;};
-	const double * Get_y_node(void) const {return this->y_node;};
-	void Set_y_node(double * t) {this->y_node = t;};
-	const double * Get_z_node(void) const {return this->z_node;};
-	void Set_z_node(double * t) {this->z_node = t;};
+	const std::vector<double> & Get_x_node(void) const {return this->x_node;};
+	void Set_x_node(double * t);
+	const std::vector<double> & Get_y_node(void) const {return this->y_node;};
+	void Set_y_node(double * t);
+	const std::vector<double> & Get_z_node(void) const {return this->z_node;};
+	void Set_z_node(double * t);
 	double * Get_fraction(void) const {return this->fraction;};
 	void Set_fraction(double * t) {this->fraction = t;};
 	const double * Get_frac(void) const {return this->frac;};
@@ -177,9 +177,12 @@ protected:
 	double time_hst;						// scalar time from transport 
 	double time_step_hst;					// scalar time step from transport
 	double cnvtmi;							// scalar conversion factor for time
-	double *x_node;							// nxyz array of X coordinates for nodes
-	double *y_node;							// nxyz array of Y coordinates for nodes 
-	double *z_node;							// nxyz array of Z coordinates for nodes
+	std::vector<double> x_node;
+	std::vector<double> y_node;
+	std::vector<double> z_node;
+	//double *x_node;							// nxyz array of X coordinates for nodes
+	//double *y_node;							// nxyz array of Y coordinates for nodes 
+	//double *z_node;							// nxyz array of Z coordinates for nodes
 	double *fraction;						// nxyz by ncomps mass fractions nxyz:components
 	double *frac;							// nxyz saturation fraction
 	double *pv;								// nxyz current pore volumes 

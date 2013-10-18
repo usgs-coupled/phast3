@@ -443,9 +443,6 @@ RM_pass_data(int *id,
 			 bool *free_surface_f,				// free surface calculation
 			 bool *steady_flow_f,				// free surface calculation
 			 double *cnvtmi,					// conversion factor for time
-			 double *x_node,					// nxyz array of X coordinates for nodes 
-			 double *y_node,					// nxyz array of Y coordinates for nodes  
-			 double *z_node,					// nxyz array of Z coordinates for nodes 
 			 double *pv0,						// nxyz initial pore volumes
 			 double *volume, 					// nxyz geometric cell volumes 
 			 int *printzone_chem,				// nxyz print flags for output file
@@ -466,9 +463,6 @@ RM_pass_data(int *id,
 		Reaction_module_ptr->Set_steady_flow(*steady_flow_f != 0);
 		Reaction_module_ptr->Set_transient_free_surface((*free_surface_f != 0) && (steady_flow_f == 0));
 		Reaction_module_ptr->Set_cnvtmi(*cnvtmi);
-		Reaction_module_ptr->Set_x_node(x_node);
-		Reaction_module_ptr->Set_y_node(y_node);
-		Reaction_module_ptr->Set_z_node(z_node);
 		Reaction_module_ptr->Set_pv0(pv0);
 		Reaction_module_ptr->Set_volume(volume);
 		Reaction_module_ptr->Set_printzone_chem(printzone_chem);
@@ -613,7 +607,26 @@ RM_set_input_units (int *id, int *sol, int *pp, int *ex, int *surf, int *gas, in
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
+		// WATER = 1, ROCK = 2, as is < 0
 		Reaction_module_ptr->Set_input_units(sol, pp, ex, surf, gas, ss, kin);
+	}
+}
+/* ---------------------------------------------------------------------- */
+void
+RM_set_nodes(int *id,
+			 double *x_node,					// nxyz array of X coordinates for nodes 
+			 double *y_node,					// nxyz array of Y coordinates for nodes  
+			 double *z_node 					// nxyz array of Z coordinates for nodes 
+			 )
+/* ---------------------------------------------------------------------- */
+{
+	// pass pointers from Fortran to the Reaction module
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Set_x_node(x_node);
+		Reaction_module_ptr->Set_y_node(y_node);
+		Reaction_module_ptr->Set_z_node(z_node);
 	}
 }
 void RM_set_mapping(int *id,

@@ -32,8 +32,9 @@
 #define RM_run_cells                       FC_FUNC_ (rm_run_cells,                     RM_RUN_CELLS)
 #define RM_send_restart_name               FC_FUNC_ (rm_send_restart_name,             RM_SEND_RESTART_NAME)
 #define RM_setup_boundary_conditions       FC_FUNC_ (rm_setup_boundary_conditions,     RM_SETUP_BOUNDARY_CONDITIONS)
-#define RM_set_mapping                     FC_FUNC_ (rm_set_mapping,                   RM_SET_MAPPING)
 #define RM_set_input_units                 FC_FUNC_ (rm_set_input_units,               RM_SET_INPUT_UNITS)
+#define RM_set_mapping                     FC_FUNC_ (rm_set_mapping,                   RM_SET_MAPPING)
+#define RM_set_nodes                       FC_FUNC_ (rm_set_nodes,                     RM_SET_NODES)
 #define RM_solutions2fractions             FC_FUNC_ (rm_solutions2fractions,           RM_SOLUTIONS2FRACTIONS)
 #define RM_transport                       FC_FUNC_ (rm_transport,                     RM_TRANSPORT)
 #define RM_write_bc_raw                    FC_FUNC_ (rm_write_bc_raw,                  RM_WRITE_BC_RAW)
@@ -69,6 +70,9 @@
 #define RM_run_cells                          rm_run_cells
 #define RM_send_restart_name                  rm_send_restart_name
 #define RM_setup_boundary_conditions          rm_setup_boundary_conditions
+#define RM_set_input_units                    rm_set_input_units
+#define RM_set_mapping                        rm_set_mapping
+#define RM_set_nodes                          rm_set_nodes
 #define RM_solutions2fractions                rm_solutions2fractions
 #define RM_transport                          rm_transport
 #define RM_write_bc_raw                       rm_write_bc_raw
@@ -143,9 +147,6 @@ void RM_pass_data(int *id,
              bool *fresur,
 			 bool *steady_flow, 
 			 double *cnvtmi,					// conversion factor for time
-			 double *x_node,					// nxyz array of X coordinates for nodes 
-			 double *y_node,					// nxyz array of Y coordinates for nodes  
-			 double *z_node,					// nxyz array of Z coordinates for nodes 
 			 double *pv0,						// nxyz initial pore volumes
 			 double *volume, 					// nxyz geometric cell volumes 
 			 int * printzone_chem,				// nxyz print flags for output file
@@ -178,8 +179,11 @@ void RM_setup_boundary_conditions(
 			double *fraction1,
 			double *boundary_fraction, 
 			int *dim);
-void RM_set_input_units (int *id, int *sol=NULL, int *pp=NULL, int *ex=NULL, int *surf=NULL, int *gas=NULL, int *ss=NULL, int *kin=NULL);
+void RM_set_input_units (int *id, 
+	int *sol=NULL, int *pp=NULL, int *ex=NULL, int *surf=NULL, int *gas=NULL, int *ss=NULL, int *kin=NULL);
 void RM_set_mapping (int *id, int *grid2chem=NULL); 
+void RM_set_nodes(int *id, 
+	double *x_node, double *y_node, double *z_node);
 void RM_solutions2fractions(int *id);
 void RM_transport(int *id, int *ncomps);
 void RM_write_bc_raw(int *id, 

@@ -62,7 +62,6 @@ SUBROUTINE phast_manager
             fresur,                      &
             steady_flow,                 &
             cnvtmi,                      &
-            x_node, y_node, z_node,      &
             pv0,                         &
             volume,                      &
             iprint_chem,                 &
@@ -76,7 +75,7 @@ SUBROUTINE phast_manager
             logical, INTENT(INOUT) :: fresur, steady_flow
             INTEGER, INTENT(INOUT) :: rm_id, iprint_chem, iprint_xyz, rebalance_method_f 
             INTEGER, INTENT(INOUT) :: mpi_myself, mpi_tasks
-            double precision, INTENT(INOUT) :: cnvtmi, x_node, y_node, z_node, pv0, volume 
+            double precision, INTENT(INOUT) :: cnvtmi, pv0, volume 
             double precision, INTENT(INOUT) :: c, rebalance_fraction_f
         END SUBROUTINE RM_pass_data
 #ifdef USE_MPI
@@ -204,11 +203,13 @@ SUBROUTINE phast_manager
 #endif
 
         ! ... Send data to threads or workers
+        
+        CALL RM_set_input_units (rm_id, 1, 1, 1, 1, 1, 1, 1)
+        CALL RM_set_nodes(rm_id, x_node, y_node, z_node)
         CALL RM_pass_data(rm_id,        &
             fresur,                      &
             steady_flow,                 &
             cnvtmi,                      &
-            x_node(1), y_node(1), z_node(1),      &
             pv0(1),                         &
             volume(1),                      &
             iprint_chem(1),                 &
