@@ -105,16 +105,16 @@ public:
 	const double Get_time_conversion(void) const {return this->time_conversion;};
 	void Set_time_conversion(double t); 
 	const std::vector<double> & Get_x_node(void) const {return this->x_node;};
-	void Set_x_node(double * t);
+	void Set_x_node(double * t = NULL);
 	const std::vector<double> & Get_y_node(void) const {return this->y_node;};
-	void Set_y_node(double * t);
+	void Set_y_node(double * t = NULL);
 	const std::vector<double> & Get_z_node(void) const {return this->z_node;};
-	void Set_z_node(double * t);
-	double * Get_fraction(void) const {return this->fraction;};
-	void Set_fraction(double * t) {this->fraction = t;};
-	std::vector<double> & Get_saturation(void) {return this->saturation;};
+	void Set_z_node(double * t = NULL);
+	double * Get_concentration(void) const {return this->concentration;};
+	void Set_concentration(double * t = NULL); // {this->fraction = t;};
+	double * Get_saturation(void) {return this->saturation;};
 	void Set_saturation(double * t); 
-	std::vector<double> & Get_pv(void) {return this->pv;};
+	double * Get_pv(void) {return this->pv;};
 	void Set_pv(double * t = NULL); 
 	std::vector<double> & Get_pv0(void) {return this->pv0;};
 	void Set_pv0(double * t = NULL); 
@@ -129,13 +129,13 @@ public:
 	double Get_rebalance_fraction(void) const {return this->rebalance_fraction;};
 	void Set_rebalance_fraction(double t) {this->rebalance_fraction = t;};
 	const bool Get_print_chem(void) const {return this->print_chem;};
-	void Set_print_chem(bool t); 
+	void Set_print_chem(bool t = false); 
 	const bool Get_print_xyz(void) const {return this->print_xyz;};
-	void Set_print_xyz(bool t); 
+	void Set_print_xyz(bool t = false); 
 	const bool Get_print_hdf(void) const {return this->print_hdf;};
-	void Set_print_hdf(bool t); 
+	void Set_print_hdf(bool t = false); 
 	const bool Get_print_restart(void) const {return this->print_restart;};
-	void Set_print_restart(bool t); 
+	void Set_print_restart(bool t = false); 
 
 	int Get_input_units_Solution(void) {return this->input_units_Solution;}
 	int Get_input_units_PPassemblage(void) {return this->input_units_PPassemblage;}
@@ -180,9 +180,12 @@ protected:
 	std::vector<double> x_node;             // x node location, nxyz array
 	std::vector<double> y_node;				// y node location, nxyz array
 	std::vector<double> z_node;             // z node location, nxyz array
-	double *fraction;						// nxyz by ncomps mass fractions nxyz:components
-	std::vector<double> saturation;		// nxyz saturation fraction
-	std::vector<double> pv;					// nxyz current pore volumes 
+	double *concentration;					// nxyz by ncomps concentrations nxyz:components
+	double *saturation;
+	double *pv;
+	std::vector<double> c_worker;           // storage for concentrations for workers
+	std::vector<double> saturation_worker;	// nxyz saturation fraction
+	std::vector<double> pv_worker;			// nxyz current pore volumes 
 	std::vector<double> pv0;				// nxyz initial pore volumes
 	double *volume;							// nxyz geometric cell volumes 
 	int *printzone_chem;					// nxyz print flags for output file
