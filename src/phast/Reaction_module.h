@@ -88,7 +88,7 @@ public:
 	void Set_mpi_tasks(int t) {this->mpi_tasks = t;}
 	const int Get_mpi_myself(void) const {return this->mpi_myself;}
 	void Set_mpi_myself(int t) {this->mpi_myself = t;}
-	std::vector<double> & Get_old_frac(void) {return this->old_frac;}
+	std::vector<double> & Get_old_saturation(void) {return this->old_saturation;}
 	const bool Get_free_surface(void) const {return this->free_surface;};
 	void Set_free_surface(bool t) {this->free_surface = t;};
 	const bool Get_steady_flow(void) const {return this->steady_flow;};
@@ -167,15 +167,13 @@ protected:
 	int mpi_tasks;
 	std::vector <std::string> components;	// list of components to be transported
 	std::vector <double> gfw;				// gram formula weights converting mass to moles (1 for each component)
-	std::vector <double> old_frac;			// saturation fraction from previous step
 	double gfw_water;						// gfw of water
-	int count_chem;							// number of cells for chemistry
 
-	// From Fortran
 	bool free_surface;                      // free surface calculation
 	bool steady_flow;						// steady-state flow
 	bool transient_free_surface;            // free surface and not steady flow
 	int nxyz;								// number of nodes 
+	int count_chem;							// number of cells for chemistry
 	double time;						    // time from transport, sec 
 	double time_step;					    // time step from transport, sec
 	double time_conversion;					// time conversion factor, multiply to convert to preferred time unit for output
@@ -183,7 +181,8 @@ protected:
 	std::vector<double> y_node;				// y node location, nxyz array
 	std::vector<double> z_node;             // z node location, nxyz array
 	double *concentration;					// nxyz by ncomps concentrations nxyz:components
-	double *saturation;
+	double *saturation;						// current saturation fraction
+	std::vector <double> old_saturation;	// saturation fraction from previous step
 	double *pv;
 	std::vector<double> c_worker;           // storage for concentrations for workers
 	std::vector<double> saturation_worker;	// nxyz saturation fraction
