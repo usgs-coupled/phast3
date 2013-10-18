@@ -478,17 +478,9 @@ void RM_run_cells(int *id,
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
-#ifdef USE_MPI
-		MPI_Bcast(stop_msg, 1, MPI_INT, 0, MPI_COMM_WORLD);
-#endif
-		if (*stop_msg == 0)
+		Reaction_module_ptr->Set_stop_message(*stop_msg != 0);
+		if (!Reaction_module_ptr->Get_stop_message())
 		{
-
-#ifdef USE_MPI
-			// Broadcast data to workers
-			MPI_Bcast(fraction, (*nxyz)*(*count_comps), MPI_DOUBLE, 0, MPI_COMM_WORLD);
-#endif
-			
 			// Transfer data and pointers to Reaction_module	  
 			Reaction_module_ptr->Set_time(*time);
 			Reaction_module_ptr->Set_time_step(*time_step);

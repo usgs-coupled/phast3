@@ -159,6 +159,8 @@ if( numCPU < 1 )
 	this->input_units_SSassemblage = 1;			// water 1, rock 2
 	this->input_units_Kinetics = 1;			    // water 1, rock 2
 
+	this->stop_message = false;
+
 	// initialize arrays
 	for (int i = 0; i < this->nxyz; i++)
 	{
@@ -3391,6 +3393,17 @@ Reaction_module::Set_saturation(double *t)
 		MPI_Bcast(this->saturation_worker.data(), nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 		this->saturation = this->saturation_worker.data();
 	}
+#endif
+}
+void 
+Reaction_module::Set_stop_message(bool t)
+{
+	if (mpi_myself == 0)
+	{
+		this->stop_message = t;
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&this->stop_message, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
 #endif
 }
 /* ---------------------------------------------------------------------- */
