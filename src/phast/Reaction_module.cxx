@@ -3262,6 +3262,50 @@ Reaction_module::Set_mapping(int *grid2chem_arg)
 		}
 	}
 }
+void 
+Reaction_module::Set_print_chem(bool t)
+{
+	if (mpi_myself == 0)
+	{
+		this->print_chem = t;
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&this->print_chem, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
+#endif
+}
+void 
+Reaction_module::Set_print_xyz(bool t)
+{
+	if (mpi_myself == 0)
+	{
+		this->print_xyz = t;
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&this->print_xyz, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
+#endif
+}
+void 
+Reaction_module::Set_print_hdf(bool t)
+{
+	if (mpi_myself == 0)
+	{
+		this->print_hdf = t;
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&this->print_hdf, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
+#endif
+}
+void 
+Reaction_module::Set_print_restart(bool t)
+{
+	if (mpi_myself == 0)
+	{
+		this->print_restart = t;
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&this->print_restart, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
+#endif
+}
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Set_pv(double *t)
@@ -3277,7 +3321,7 @@ Reaction_module::Set_pv(double *t)
 		}
 	}
 #ifdef USE_MPI
-	MPI_Bcast(pv.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	MPI_Bcast(this->pv.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 }
 /* ---------------------------------------------------------------------- */

@@ -468,16 +468,10 @@ RM_pass_data(int *id,
 }
 /* ---------------------------------------------------------------------- */
 void RM_run_cells(int *id,
-			 int * print_chem,						// print flag for output file 
-			 int * print_xyz,						// print flag for xyz file
-			 int * print_hdf,						// print flag for hdf file
-			 int * print_restart,					// print flag for writing restart file 
 			 double *time,					        // time from transport 
 			 double *time_step,		   		        // time step from transport
  			 double *fraction,					    // mass fractions nxyz:components
 			 double *frac,							// saturation fraction
-			 int *nxyz,
-			 int *count_comps,
 			 int * stop_msg)
 /* ---------------------------------------------------------------------- */
 {
@@ -492,20 +486,11 @@ void RM_run_cells(int *id,
 
 #ifdef USE_MPI
 			// Broadcast data to workers
-			//MPI_Bcast(prslm, 1, MPI_INT, 0, MPI_COMM_WORLD);
-			MPI_Bcast(print_chem, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-			MPI_Bcast(print_xyz, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-			MPI_Bcast(print_hdf, 1, MPI_INT, 0, MPI_COMM_WORLD);
-			MPI_Bcast(print_restart, 1, MPI_INT, 0, MPI_COMM_WORLD);
 			MPI_Bcast(fraction, (*nxyz)*(*count_comps), MPI_DOUBLE, 0, MPI_COMM_WORLD);
 			MPI_Bcast(frac, *nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 			
 			// Transfer data and pointers to Reaction_module	  
-			Reaction_module_ptr->Set_print_chem(*print_chem != 0);
-			Reaction_module_ptr->Set_print_xyz(*print_xyz != 0);
-			Reaction_module_ptr->Set_print_hdf(*print_hdf != 0);
-			Reaction_module_ptr->Set_print_restart(*print_restart != 0);
 			Reaction_module_ptr->Set_time(*time);
 			Reaction_module_ptr->Set_time_step(*time_step);
 			Reaction_module_ptr->Set_fraction(fraction);
@@ -598,6 +583,20 @@ RM_set_input_units (int *id, int *sol, int *pp, int *ex, int *surf, int *gas, in
 		Reaction_module_ptr->Set_input_units(sol, pp, ex, surf, gas, ss, kin);
 	}
 }
+void RM_set_mapping(int *id,
+		int *grid2chem)
+{
+	//
+	// Creates mapping from all grid cells to only cells for chemistry
+	// Excludes inactive cells and cells that are redundant by symmetry
+	// (1D or 2D chemistry)
+	//
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Set_mapping(grid2chem);
+	}
+}
 /* ---------------------------------------------------------------------- */
 void
 RM_set_nodes(int *id,
@@ -616,18 +615,24 @@ RM_set_nodes(int *id,
 		Reaction_module_ptr->Set_z_node(z_node);
 	}
 }
-void RM_set_mapping(int *id,
-		int *grid2chem)
+/* ---------------------------------------------------------------------- */
+void
+RM_set_printing(int *id,
+			 int *print_chem,
+			 int *print_xyz,
+			 int *print_hdf,
+			 int *print_restart 
+			 )
+/* ---------------------------------------------------------------------- */
 {
-	//
-	// Creates mapping from all grid cells to only cells for chemistry
-	// Excludes inactive cells and cells that are redundant by symmetry
-	// (1D or 2D chemistry)
-	//
+	// pass pointers from Fortran to the Reaction module
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->Set_mapping(grid2chem);
+		Reaction_module_ptr->Set_print_chem(*print_chem != 0);
+		Reaction_module_ptr->Set_print_xyz(*print_xyz != 0);
+		Reaction_module_ptr->Set_print_hdf(*print_hdf != 0);
+		Reaction_module_ptr->Set_print_restart(*print_restart != 0);
 	}
 }
 void RM_set_pv(int *id, double *t)
