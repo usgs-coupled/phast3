@@ -440,8 +440,6 @@ RM_open_punch_file(char * prefix, int l_prefix)
 /* ---------------------------------------------------------------------- */
 void
 RM_pass_data(int *id,
-			 bool *free_surface_f,				// free surface calculation
-			 bool *steady_flow_f,				// free surface calculation
 			 double *volume, 					// nxyz geometric cell volumes 
 			 int *rebalance_method,             // method for rebalancing load
 			 double *rebalance_fraction_hst) 	// parameter for rebalancing process load for parallel
@@ -451,8 +449,6 @@ RM_pass_data(int *id,
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->Set_free_surface(*free_surface_f != 0);
-		Reaction_module_ptr->Set_steady_flow(*steady_flow_f != 0);
 		Reaction_module_ptr->Set_volume(volume);
 		Reaction_module_ptr->Set_rebalance_method(*rebalance_method != 0);
 		Reaction_module_ptr->Set_rebalance_fraction(*rebalance_fraction_hst);
@@ -550,6 +546,15 @@ RM_setup_boundary_conditions(
 					fraction1,
 					boundary_c, 
 					*dim);
+	}
+}
+void 
+RM_set_free_surface(int *id, int *t)
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Set_free_surface(t != 0);
 	}
 }
 void 
@@ -670,6 +675,15 @@ void RM_set_saturation(int *id, double *t)
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Set_saturation(t);
+	}
+}
+void 
+RM_set_steady_flow(int *id, int *t)
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Set_steady_flow(t != 0);
 	}
 }
 void RM_set_time_conversion(int *id, double *t)

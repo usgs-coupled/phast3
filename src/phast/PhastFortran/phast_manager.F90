@@ -28,7 +28,8 @@ SUBROUTINE phast_manager
     REAL(KIND=kdp) :: deltim_dummy
     INTEGER :: stop_msg, ipp_err
     CHARACTER(LEN=130) :: logline1
-    INTEGER :: i, a_err, isolute
+    INTEGER :: i, a_err
+    INTEGER isolute, ifresur, isteady_flow
     INTERFACE
         SUBROUTINE create_mapping(ic)
             implicit none
@@ -168,9 +169,11 @@ SUBROUTINE phast_manager
         CALL RM_set_pv0(rm_id, pv0(1))
         CALL RM_set_print_chem_mask(rm_id, iprint_chem(1))
         CALL RM_set_print_xyz_mask(rm_id, iprint_xyz(1))
+        ifresur = fresur
+        CALL RM_set_free_surface(rm_id, ifresur)
+        isteady_flow = steady_flow
+        CALL RM_set_steady_flow(rm_id, isteady_flow)
         CALL RM_pass_data(rm_id,        &
-            fresur,                      &
-            steady_flow,                 &
             volume(1),                      &
             rebalance_method_f,          &
             rebalance_fraction_f)

@@ -31,6 +31,7 @@
 #define RM_run_cells                       FC_FUNC_ (rm_run_cells,                     RM_RUN_CELLS)
 #define RM_send_restart_name               FC_FUNC_ (rm_send_restart_name,             RM_SEND_RESTART_NAME)
 #define RM_setup_boundary_conditions       FC_FUNC_ (rm_setup_boundary_conditions,     RM_SETUP_BOUNDARY_CONDITIONS)
+#define RM_set_free_surface                FC_FUNC_ (rm_set_free_surface,              RM_SET_FREE_SURFACE)
 #define RM_set_input_units                 FC_FUNC_ (rm_set_input_units,               RM_SET_INPUT_UNITS)
 #define RM_set_mapping                     FC_FUNC_ (rm_set_mapping,                   RM_SET_MAPPING)
 #define RM_set_nodes                       FC_FUNC_ (rm_set_nodes,                     RM_SET_NODES)
@@ -40,6 +41,7 @@
 #define RM_set_pv0                         FC_FUNC_ (rm_set_pv0,                       RM_SET_PV0)
 #define RM_set_pv                          FC_FUNC_ (rm_set_pv,                        RM_SET_PV)
 #define RM_set_saturation                  FC_FUNC_ (rm_set_saturation,                RM_SET_SATURATION)
+#define RM_set_steady_flow                 FC_FUNC_ (rm_set_steady_flow,               RM_SET_STEADY_FLOW)
 #define RM_set_time_conversion             FC_FUNC_ (rm_set_time_conversion,           RM_SET_TIME_CONVERSION)
 #define RM_phreeqc2concentrations          FC_FUNC_ (rm_phreeqc2concentrations,        RM_PHREEQC2CONCENTRATIONS)
 #define RM_transport                       FC_FUNC_ (rm_transport,                     RM_TRANSPORT)
@@ -140,8 +142,6 @@ void RM_open_output_file(char * prefix, int l_prefix);
 void RM_open_punch_file(char * prefix, int l_prefix);
 void RM_open_log_file(char * prefix, int l_prefix);
 void RM_pass_data(int *id,
-             bool *fresur,
-			 bool *steady_flow, 
 			 double *volume, 					// nxyz geometric cell volumes 
 			 int * rebalance_method,            // 0 std; 1 by_cell
 			 double *rebalance_fraction_hst);	// parameter for rebalancing process load for parallel	
@@ -160,6 +160,7 @@ void RM_setup_boundary_conditions(
 			double *fraction1,
 			double *boundary_c, 
 			int *dim);
+void RM_set_free_surface(int *id, int *t);
 void RM_set_input_units (int *id, 
 	int *sol=NULL, int *pp=NULL, int *ex=NULL, int *surf=NULL, int *gas=NULL, int *ss=NULL, int *kin=NULL);
 void RM_set_mapping (int *id, int *grid2chem=NULL); 
@@ -170,6 +171,7 @@ void RM_set_print_xyz_mask(int *id, int *t);
 void RM_set_pv(int *id, double *t);
 void RM_set_pv0(int *id, double *t);
 void RM_set_saturation(int *id, double *t);
+void RM_set_steady_flow(int *id, int *t);
 void RM_set_time_conversion(int *id, double *t);
 void RM_transport(int *id, int *ncomps);
 void RM_write_bc_raw(int *id, 
