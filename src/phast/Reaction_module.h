@@ -120,10 +120,10 @@ public:
 	void Set_pv0(double * t = NULL); 
 	std::vector<double> & Get_volume(void) {return this->volume;};
 	void Set_volume(double * t); 
-	const int * Get_printzone_chem(void) const {return this->printzone_chem;};
-	void Set_printzone_chem(int * t) {this->printzone_chem = t;};
-	const int * Get_printzone_xyz(void) const {return this->printzone_xyz;};
-	void Set_printzone_xyz(int * t) {this->printzone_xyz = t;};
+	std::vector<int> & Get_print_chem_mask (void) {return this->print_chem_mask;}
+	void Set_print_chem_mask(int * t); // {this->printzone_chem = t;}
+	std::vector<int> & Get_print_xyz_mask (void) {return this->print_xyz_mask;}
+	void Set_print_xyz_mask (int * t); // {this->printzone_xyz = t;};
 	int Get_rebalance_method(void) const {return this->rebalance_method;};
 	void Set_rebalance_method(bool t) {this->rebalance_method = t;};
 	double Get_rebalance_fraction(void) const {return this->rebalance_fraction;};
@@ -190,8 +190,8 @@ protected:
 	std::vector<double> pv_worker;			// nxyz current pore volumes 
 	std::vector<double> pv0;				// nxyz initial pore volumes
 	std::vector<double> volume;				// nxyz geometric cell volumes 
-	int *printzone_chem;					// nxyz print flags for output file
-	int *printzone_xyz;						// nxyz print flags for chemistry XYZ file 
+	std::vector<int> print_chem_mask;		// nxyz print flags for output file
+	std::vector<int> print_xyz_mask;		// nxyz print flags for chemistry XYZ file 
 	bool rebalance_method;                  // rebalance method 0 std, 1 by_cell
 	double rebalance_fraction;			    // parameter for rebalancing process load for parallel	
 	std::vector<int> have_Solution;
