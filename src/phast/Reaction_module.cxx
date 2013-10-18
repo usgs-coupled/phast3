@@ -904,7 +904,7 @@ Reaction_module::Distribute_initial_conditions_mix(
 	}
 #endif
 	// initialize uz
-	old_frac.insert(old_frac.begin(), nxyz, 1.0);
+	old_saturation.insert(old_saturation.begin(), nxyz, 1.0);
 }
 /* ---------------------------------------------------------------------- */
 void
@@ -1432,7 +1432,7 @@ Reaction_module::Init_uz(void)
 	{
 		for (i = 0; i < nxyz; i++)
 		{
-			old_frac.push_back(1.0);
+			old_saturation.push_back(1.0);
 		}
 	}
 }
@@ -1530,7 +1530,7 @@ Reaction_module::Partition_uz_thread(int n, int iphrq, int ihst, double new_frac
 	 * repartition solids for partially saturated cells
 	 */
 
-	if ((fabs(this->old_frac[ihst] - new_frac) > 1e-8) ? true : false)
+	if ((fabs(this->old_saturation[ihst] - new_frac) > 1e-8) ? true : false)
 		return;
 
 	n_user = iphrq;
@@ -1551,18 +1551,18 @@ Reaction_module::Partition_uz_thread(int n, int iphrq, int ihst, double new_frac
 		s1 = 0.0;
 		s2 = 0.0;
 	}
-	else if (new_frac > this->old_frac[ihst])
+	else if (new_frac > this->old_saturation[ihst])
 	{
 		/* wetting cell */
 		uz1 = 0.;
-		uz2 = (1.0 - new_frac) / (1.0 - this->old_frac[ihst]);
+		uz2 = (1.0 - new_frac) / (1.0 - this->old_saturation[ihst]);
 		s1 = 1.;
 		s2 = 1.0 - uz2;
 	}
 	else
 	{
 		/* draining cell */
-		s1 = new_frac / this->old_frac[ihst];
+		s1 = new_frac / this->old_saturation[ihst];
 		s2 = 0.0;
 		uz1 = 1.0 - s1;
 		uz2 = 1.0;
@@ -1658,7 +1658,7 @@ Reaction_module::Partition_uz_thread(int n, int iphrq, int ihst, double new_frac
 		this->uz_bin.Remove(iphrq);
 	}
 
-	this->old_frac[ihst] = new_frac;
+	this->old_saturation[ihst] = new_frac;
 }
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
