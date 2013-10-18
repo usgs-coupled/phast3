@@ -460,7 +460,7 @@ RM_pass_data(int *id,
 		Reaction_module_ptr->Set_free_surface(*free_surface_f != 0);
 		Reaction_module_ptr->Set_steady_flow(*steady_flow_f != 0);
 		Reaction_module_ptr->Set_transient_free_surface((*free_surface_f != 0) && (steady_flow_f == 0));
-		Reaction_module_ptr->Set_cnvtmi(*cnvtmi);
+		Reaction_module_ptr->Set_time_conversion(*cnvtmi);
 		Reaction_module_ptr->Set_pv0(pv0);
 		Reaction_module_ptr->Set_volume(volume);
 		Reaction_module_ptr->Set_printzone_chem(printzone_chem);
@@ -514,8 +514,8 @@ void RM_run_cells(int *id,
 			Reaction_module_ptr->Set_print_xyz(*print_xyz != 0);
 			Reaction_module_ptr->Set_print_hdf(*print_hdf != 0);
 			Reaction_module_ptr->Set_print_restart(*print_restart != 0);
-			Reaction_module_ptr->Set_time_hst(*time_hst);
-			Reaction_module_ptr->Set_time_step_hst(*time_step_hst);
+			Reaction_module_ptr->Set_time(*time_hst);
+			Reaction_module_ptr->Set_time_step(*time_step_hst);
 			Reaction_module_ptr->Set_fraction(fraction);
 			Reaction_module_ptr->Set_frac(frac);
 			Reaction_module_ptr->Set_pv(pv);
