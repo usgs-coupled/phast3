@@ -30,6 +30,7 @@
 #define RM_run_cells                       FC_FUNC_ (rm_run_cells,                     RM_RUN_CELLS)
 #define RM_send_restart_name               FC_FUNC_ (rm_send_restart_name,             RM_SEND_RESTART_NAME)
 #define RM_setup_boundary_conditions       FC_FUNC_ (rm_setup_boundary_conditions,     RM_SETUP_BOUNDARY_CONDITIONS)
+#define RM_set_density                     FC_FUNC_ (rm_set_density,                   RM_SET_DENSITY)
 #define RM_set_free_surface                FC_FUNC_ (rm_set_free_surface,              RM_SET_FREE_SURFACE)
 #define RM_set_input_units                 FC_FUNC_ (rm_set_input_units,               RM_SET_INPUT_UNITS)
 #define RM_set_mapping                     FC_FUNC_ (rm_set_mapping,                   RM_SET_MAPPING)
@@ -37,11 +38,13 @@
 #define RM_set_printing                    FC_FUNC_ (rm_set_printing,                  RM_SET_PRINTING)
 #define RM_set_print_chem_mask             FC_FUNC_ (rm_set_print_chem_mask,           RM_SET_PRINT_CHEM_MASK)
 #define RM_set_print_xyz_mask              FC_FUNC_ (rm_set_print_xyz_mask,            RM_SET_PRINT_XYZ_MASK)
+#define RM_set_pressure                    FC_FUNC_ (rm_set_pressure,                  RM_SET_PRESSURE)
 #define RM_set_pv0                         FC_FUNC_ (rm_set_pv0,                       RM_SET_PV0)
 #define RM_set_pv                          FC_FUNC_ (rm_set_pv,                        RM_SET_PV)
 #define RM_set_rebalance                   FC_FUNC_ (rm_set_rebalance,                 RM_SET_REBALANCE)
 #define RM_set_saturation                  FC_FUNC_ (rm_set_saturation,                RM_SET_SATURATION)
 #define RM_set_steady_flow                 FC_FUNC_ (rm_set_steady_flow,               RM_SET_STEADY_FLOW)
+#define RM_set_tempc                       FC_FUNC_ (rm_set_tempc,                     RM_SET_TEMPC)
 #define RM_set_time_conversion             FC_FUNC_ (rm_set_time_conversion,           RM_SET_TIME_CONVERSION)
 #define RM_set_volume					   FC_FUNC_ (rm_set_volume,                    RM_SET_VOLUME)
 #define RM_phreeqc2concentrations          FC_FUNC_ (rm_phreeqc2concentrations,        RM_PHREEQC2CONCENTRATIONS)
@@ -73,16 +76,19 @@
 #define RM_run_cells                          rm_run_cells
 #define RM_send_restart_name                  rm_send_restart_name
 #define RM_setup_boundary_conditions          rm_setup_boundary_conditions
+#define RM_set_density	                      rm_set_density
 #define RM_set_input_units                    rm_set_input_units
 #define RM_set_mapping                        rm_set_mapping
 #define RM_set_nodes                          rm_set_nodes
 #define RM_set_printing                       rm_set_printing
 #define RM_set_print_chem_mask                rm_set_print_chem_mask
 #define RM_set_print_xyz_mask                 rm_set_print_xyz_mask
+#define RM_set_pressure                       rm_set_pressure
 #define RM_set_pv0                            rm_set_pv0
 #define RM_set_pv                             rm_set_pv
 #define RM_set_rebalance                      rm_set_rebalance
 #define RM_set_saturation                     rm_set_saturation
+#define RM_set_tempc	                      rm_set_tempc
 #define RM_set_time_conversion                rm_set_time_conversion
 #define RM_set_volume                         rm_set_volume
 #define RM_phreeqc2concentrations             rm_phreeqc2concentrations
@@ -147,6 +153,7 @@ void RM_setup_boundary_conditions(
 			double *fraction1,
 			double *boundary_c, 
 			int *dim);
+void RM_set_density(int *id, double *t);
 void RM_set_free_surface(int *id, int *t);
 void RM_set_input_units (int *id, 
 	int *sol=NULL, int *pp=NULL, int *ex=NULL, int *surf=NULL, int *gas=NULL, int *ss=NULL, int *kin=NULL);
@@ -155,11 +162,13 @@ void RM_set_nodes(int *id, double *x_node, double *y_node, double *z_node);
 void RM_set_printing(int *id, int *print_chem, int *print_xyz, int *print_hdf, int *print_restart);
 void RM_set_print_chem_mask(int *id, int *t);
 void RM_set_print_xyz_mask(int *id, int *t);
+void RM_set_pressure(int *id, double *t);
 void RM_set_pv(int *id, double *t);
 void RM_set_pv0(int *id, double *t);
 void RM_set_rebalance(int *id, int *method, double *f);
 void RM_set_saturation(int *id, double *t);
 void RM_set_steady_flow(int *id, int *t);
+void RM_set_tempc(int *id, double *t);
 void RM_set_time_conversion(int *id, double *t);
 void RM_set_volume(int *id, double *t);
 void RM_write_bc_raw(int *id, 

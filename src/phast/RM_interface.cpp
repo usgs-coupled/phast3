@@ -514,6 +514,14 @@ RM_setup_boundary_conditions(
 					*dim);
 	}
 }
+void RM_set_density(int *id, double *t)
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Set_density(t);
+	}
+}
 void 
 RM_set_free_surface(int *id, int *t)
 {
@@ -610,6 +618,14 @@ void RM_set_print_xyz_mask(int *id, int *t)
 		Reaction_module_ptr->Set_print_xyz_mask(t);
 	}
 }
+void RM_set_pressure(int *id, double *t)
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Set_pressure(t);
+	}
+}
 void RM_set_pv(int *id, double *t)
 {
 	//
@@ -658,6 +674,14 @@ RM_set_steady_flow(int *id, int *t)
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Set_steady_flow(t);
+	}
+}
+void RM_set_tempc(int *id, double *t)
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Set_tempc(t);
 	}
 }
 void RM_set_time_conversion(int *id, double *t)
