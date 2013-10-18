@@ -133,7 +133,6 @@ if( numCPU < 1 )
 	this->count_chem = 0;
 	this->free_surface = false;					// free surface calculation
 	this->steady_flow = false;					// steady-state flow calculation
-	this->transient_free_surface = false;		// free surface and not steady flow 
 	this->time = 0;							    // scalar time from transport 
 	this->time_step = 0;					    // scalar time step from transport
 	this->time_conversion = NULL;				// scalar conversion factor for time
@@ -1428,7 +1427,7 @@ Reaction_module::Init_uz(void)
 {
 	int	i;
 
-	if (transient_free_surface)
+	if (this->free_surface && !this->steady_flow)
 	{
 		for (i = 0; i < nxyz; i++)
 		{
@@ -2860,7 +2859,7 @@ Reaction_module::Run_cells_thread(int n)
 		bool pr_hdf = this->print_hdf;
 
 		// partition solids between UZ and SZ
-		if (transient_free_surface)	
+		if (this->free_surface && !this->steady_flow)	
 		{
 			this->Partition_uz_thread(n, i, j, this->saturation[j]);
 		}
@@ -2879,11 +2878,12 @@ Reaction_module::Run_cells_thread(int n)
 			phast_iphreeqc_worker->Set_cell_volumes(i, pv0[j], this->saturation[j], volume[j]);
 
 			// Adjust for fractional saturation and pore volume
-			if (this->transient_free_surface)
+			if (this->free_surface && !this->steady_flow)
 			{
 				this->Scale_solids(n, i, 1.0 / this->saturation[j]);
 			}
-			if (!transient_free_surface && !steady_flow)
+			
+			if (!(this->free_surface && !this->steady_flow) && !steady_flow)
 			{
 				if (pv0[j] != 0 && pv[j] != 0 && pv0[j] != pv[j])
 				{
@@ -2906,11 +2906,11 @@ Reaction_module::Run_cells_thread(int n)
 			if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) Error_stop();
 
 			// Adjust for fractional saturation and pore volume
-			if (transient_free_surface == TRUE)
+			if (this->free_surface && !this->steady_flow)
 				this->Scale_solids(n, i, this->saturation[j]);
 			assert(pv0[j] != 0);
 			assert(pv[j] != 0);
-			if (!transient_free_surface && !steady_flow)
+			if (!(this->free_surface && !this->steady_flow) && !steady_flow)
 			{
 				if (pv0[j] != 0 && pv[j] != 0 && pv0[j] != pv[j])
 				{
@@ -3160,6 +3160,17 @@ Reaction_module::Set_end_cells(void)
 	}
 }
 #endif
+void 
+Reaction_module::Set_free_surface(bool t)
+{
+	if (mpi_myself == 0)
+	{
+		this->free_surface = t;
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&this->free_surface, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
+#endif
+}
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Set_input_units(int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *kin)
@@ -3432,6 +3443,17 @@ Reaction_module::Set_saturation(double *t)
 		MPI_Bcast(this->saturation_worker.data(), nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 		this->saturation = this->saturation_worker.data();
 	}
+#endif
+}
+void 
+Reaction_module::Set_steady_flow(bool t)
+{
+	if (mpi_myself == 0)
+	{
+		this->steady_flow = t;
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&this->steady_flow, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
 #endif
 }
 void 
