@@ -3522,10 +3522,7 @@ Reaction_module::Set_volume(double *t)
 		}
 	}
 #ifdef USE_MPI
-	if (mpi_myself == 0)
-	{
-		MPI_Bcast(this->volume.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-	}
+	MPI_Bcast(this->volume.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 }
 /* ---------------------------------------------------------------------- */

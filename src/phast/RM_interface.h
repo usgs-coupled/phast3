@@ -43,6 +43,7 @@
 #define RM_set_saturation                  FC_FUNC_ (rm_set_saturation,                RM_SET_SATURATION)
 #define RM_set_steady_flow                 FC_FUNC_ (rm_set_steady_flow,               RM_SET_STEADY_FLOW)
 #define RM_set_time_conversion             FC_FUNC_ (rm_set_time_conversion,           RM_SET_TIME_CONVERSION)
+#define RM_set_volume					   FC_FUNC_ (rm_set_volume,                    RM_SET_VOLUME)
 #define RM_phreeqc2concentrations          FC_FUNC_ (rm_phreeqc2concentrations,        RM_PHREEQC2CONCENTRATIONS)
 #define RM_transport                       FC_FUNC_ (rm_transport,                     RM_TRANSPORT)
 #define RM_write_bc_raw                    FC_FUNC_ (rm_write_bc_raw,                  RM_WRITE_BC_RAW)
@@ -88,6 +89,7 @@
 #define RM_set_pv                             rm_set_pv
 #define RM_set_saturation                     rm_set_saturation
 #define RM_set_time_conversion                rm_set_time_conversion
+#define RM_set_volume                         rm_set_volume
 #define RM_phreeqc2concentrations             rm_phreeqc2concentrations
 #define RM_transport                          rm_transport
 #define RM_write_bc_raw                       rm_write_bc_raw
@@ -142,7 +144,6 @@ void RM_open_output_file(char * prefix, int l_prefix);
 void RM_open_punch_file(char * prefix, int l_prefix);
 void RM_open_log_file(char * prefix, int l_prefix);
 void RM_pass_data(int *id,
-			 double *volume, 					// nxyz geometric cell volumes 
 			 int * rebalance_method,            // 0 std; 1 by_cell
 			 double *rebalance_fraction_hst);	// parameter for rebalancing process load for parallel	
 void RM_phreeqc2concentrations(int *id, double *c = NULL);
@@ -173,6 +174,7 @@ void RM_set_pv0(int *id, double *t);
 void RM_set_saturation(int *id, double *t);
 void RM_set_steady_flow(int *id, int *t);
 void RM_set_time_conversion(int *id, double *t);
+void RM_set_volume(int *id, double *t);
 void RM_transport(int *id, int *ncomps);
 void RM_write_bc_raw(int *id, 
 			int *solution_list, 
