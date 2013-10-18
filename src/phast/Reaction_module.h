@@ -45,9 +45,9 @@ public:
 	bool File_exists(const std::string &name);
 	void File_rename(const std::string &temp_name, const std::string &name, const std::string &backup_name);
 	int Find_components();
-	void Concentrations2Solutions(void);
+	void Concentrations2Phreeqc(void);
 	void Fractions2Solutions(void);
-	void Concentrations2Solutions_thread(int n);	
+	void Concentrations2Phreeqc_thread(int n);	
 	void Fractions2Solutions_thread(int n);	
 	void Init_uz(void);
 	void Initial_phreeqc_run(std::string &database_name, std::string &chemistry_name, std::string &prefix);
