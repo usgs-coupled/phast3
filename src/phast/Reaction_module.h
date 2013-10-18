@@ -99,11 +99,11 @@ public:
 	void Set_nxyz(int t) {this->nxyz = t;};
 	const std::vector<std::string> & Get_components(void) const {return this->components;};
 	double Get_time(void) const {return this->time;};
-	void Set_time(double t) {this->time = t;};
+	void Set_time(double t); 
 	double Get_time_step(void) const {return this->time_step;};
-	void Set_time_step(double t) {this->time_step = t;};
+	void Set_time_step(double t); 
 	const double Get_time_conversion(void) const {return this->time_conversion;};
-	void Set_time_conversion(double t) {this->time_conversion = t;};
+	void Set_time_conversion(double t); 
 	const std::vector<double> & Get_x_node(void) const {return this->x_node;};
 	void Set_x_node(double * t);
 	const std::vector<double> & Get_y_node(void) const {return this->y_node;};
