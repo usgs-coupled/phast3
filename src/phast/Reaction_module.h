@@ -98,11 +98,11 @@ public:
 	void Set_nxyz(int t) {this->nxyz = t;};
 	const std::vector<std::string> & Get_components(void) const {return this->components;};
 	double Get_time(void) const {return this->time;};
-	void Set_time(double t); 
+	void Set_time(double *t = NULL); 
 	double Get_time_step(void) const {return this->time_step;};
-	void Set_time_step(double t); 
+	void Set_time_step(double *t = NULL); 
 	const double Get_time_conversion(void) const {return this->time_conversion;};
-	void Set_time_conversion(double t); 
+	void Set_time_conversion(double *t); 
 	const std::vector<double> & Get_x_node(void) const {return this->x_node;};
 	void Set_x_node(double * t = NULL);
 	const std::vector<double> & Get_y_node(void) const {return this->y_node;};
@@ -134,13 +134,13 @@ public:
 	double Get_rebalance_fraction(void) const {return this->rebalance_fraction;};
 	void Set_rebalance_fraction(double * t); 
 	const bool Get_print_chem(void) const {return this->print_chem;};
-	void Set_print_chem(bool t = false); 
+	void Set_print_chem(int *t); 
 	const bool Get_print_xyz(void) const {return this->print_xyz;};
-	void Set_print_xyz(bool t = false); 
+	void Set_print_xyz(int *t); 
 	const bool Get_print_hdf(void) const {return this->print_hdf;};
-	void Set_print_hdf(bool t = false); 
+	void Set_print_hdf(int *t); 
 	const bool Get_print_restart(void) const {return this->print_restart;};
-	void Set_print_restart(bool t = false); 
+	void Set_print_restart(int *t); 
 	const bool Get_stop_message(void) const {return this->stop_message;};
 	void Set_stop_message(bool t = false); 
 	

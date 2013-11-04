@@ -65,6 +65,7 @@ TM_transport(int *id, int *ncomps, int *nthreads)
 	}
 #endif
 }
+#endif
 /* ---------------------------------------------------------------------- */
 void TM_zone_flow_write_chem(int *print_zone_flows_xyzt)
 /* ---------------------------------------------------------------------- */
@@ -77,6 +78,5 @@ void TM_zone_flow_write_chem(int *print_zone_flows_xyzt)
 		zone_flow_write_chem();
 	}
 }
-#endif
 
 

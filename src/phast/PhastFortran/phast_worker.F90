@@ -19,7 +19,7 @@ SUBROUTINE phast_worker
     USE XP_module, ONLY: Transporter
     USE mpi_mod
     IMPLICIT NONE
-    INCLUDE 'RM_interface.f90.inc'
+    INCLUDE '../RM_interface.f90.inc'
     INTERFACE
         SUBROUTINE create_mapping(ic)
             implicit none
@@ -147,15 +147,12 @@ SUBROUTINE phast_worker
         DO i = 1, num_restart_files
             CALL RM_send_restart_name(rm_id, restart_files(i))
         ENDDO
-        !CALL RM_distribute_initial_conditions_mix( &
-        !    rm_id,                  &
-        !    indx_sol1_ic,           & ! 7 x nxyz end-member 1 
-        !    indx_sol2_ic,           & ! 7 x nxyz end-member 2
-        !    ic_mxfrac)                ! 7 x nxyz fraction of end-member 1 
-        
         CALL RM_distribute_initial_conditions_mix( &
             rm_id,                  &
-            indx_sol1_ic)
+            indx_sol1_ic(1,1),           & ! 7 x nxyz end-member 1 
+            indx_sol2_ic(1,1),           & ! 7 x nxyz end-member 2
+            ic_mxfrac(1,1))                ! 7 x nxyz fraction of end-member 1 
+
         
         ! ... collect solutions for transport
         CALL RM_phreeqc2concentrations(rm_id)
@@ -175,7 +172,7 @@ SUBROUTINE phast_worker
             rm_id,                                        &
             time_phreeqc,                                 &        ! time_hst
             deltim_dummy,                                 &        ! time_step_hst
-            c,                                            &        ! fraction
+            c(1,1),                                       &        ! fraction
             stop_msg) 
 
         ! ... Write zone chemistry
@@ -231,7 +228,7 @@ SUBROUTINE phast_worker
                 rm_id,                                        &
                 time_phreeqc,                                 &        ! time_hst
                 deltim_dummy,                                 &        ! time_step_hst
-                c,                                            &        ! fraction
+                c(1,1),                                       &        ! fraction
                 stop_msg) 
                             
             CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)

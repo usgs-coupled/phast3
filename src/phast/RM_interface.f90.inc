@@ -26,14 +26,14 @@
         SUBROUTINE RM_distribute_initial_conditions(id, ic1)
             IMPLICIT NONE
             INTEGER :: id
-            INTEGER :: ic1
+            INTEGER, OPTIONAL :: ic1
         END SUBROUTINE RM_distribute_initial_conditions 
         
         SUBROUTINE RM_distribute_initial_conditions_mix(id, ic1, ic2, f1)
             IMPLICIT NONE
             INTEGER :: id
-            INTEGER :: ic1, ic2
-            DOUBLE PRECISION :: f1
+            INTEGER, OPTIONAL :: ic1, ic2
+            DOUBLE PRECISION, OPTIONAL :: f1
         END SUBROUTINE RM_distribute_initial_conditions_mix
         
         SUBROUTINE RM_error(id)
@@ -73,7 +73,7 @@
         SUBROUTINE RM_phreeqc2concentrations(id, c)   
             IMPLICIT NONE
             INTEGER :: id
-            DOUBLE PRECISION :: c
+            DOUBLE PRECISION, OPTIONAL :: c
         END SUBROUTINE RM_phreeqc2concentrations  
         
         SUBROUTINE RM_run_cells(id, time, time_step, c, stop_msg)   
@@ -99,7 +99,7 @@
         SUBROUTINE RM_set_free_surface(id, t)   
             IMPLICIT NONE
             INTEGER :: id
-            INTEGER :: t
+            INTEGER, OPTIONAL :: t
         END SUBROUTINE RM_set_free_surface 
 
         SUBROUTINE RM_set_input_units(id, sol, pp, ex, surf, gas, ss, kin)   
@@ -111,68 +111,68 @@
         SUBROUTINE RM_set_mapping(id, grid2chem)   
             IMPLICIT NONE
             INTEGER :: id
-            INTEGER :: grid2chem
+            INTEGER, OPTIONAL :: grid2chem
         END SUBROUTINE RM_set_mapping  
         
         SUBROUTINE RM_set_nodes(id, x_node, y_node, z_node)   
             IMPLICIT NONE
             INTEGER :: id
-            DOUBLE PRECISION :: x_node, y_node, z_node
+            DOUBLE PRECISION, OPTIONAL :: x_node, y_node, z_node
         END SUBROUTINE RM_set_nodes         
         
         SUBROUTINE RM_set_printing(id, print_chem, print_xyz, print_hdf, print_restart)   
             IMPLICIT NONE
             INTEGER :: id
-            INTEGER :: print_chem, print_xyz, print_hdf, print_restart
+            INTEGER, OPTIONAL :: print_chem, print_xyz, print_hdf, print_restart
         END SUBROUTINE RM_set_printing 
 
         SUBROUTINE RM_set_print_chem_mask(id, t)   
             IMPLICIT NONE
             INTEGER :: id
-            INTEGER :: t
+            INTEGER, OPTIONAL :: t
         END SUBROUTINE RM_set_print_chem_mask 
 		
         SUBROUTINE RM_set_print_xyz_mask(id, t)   
             IMPLICIT NONE
             INTEGER :: id
-            INTEGER :: t
+            INTEGER, OPTIONAL :: t
         END SUBROUTINE RM_set_print_xyz_mask 
 
         SUBROUTINE RM_set_pressure(id, t)   
             IMPLICIT NONE
             INTEGER :: id
-            DOUBLE PRECISION :: t
+            DOUBLE PRECISION, OPTIONAL :: t
         END SUBROUTINE RM_set_pressure 
 
         SUBROUTINE RM_set_pv(id, t)   
             IMPLICIT NONE
             INTEGER :: id
-            DOUBLE PRECISION :: t
+            DOUBLE PRECISION, OPTIONAL :: t
         END SUBROUTINE RM_set_pv 
         
         SUBROUTINE RM_set_pv0(id, t)
             IMPLICIT NONE
             INTEGER :: id
-            DOUBLE PRECISION :: t
+            DOUBLE PRECISION, OPTIONAL :: t
         END SUBROUTINE RM_set_pv0
         
         SUBROUTINE RM_set_rebalance(id, method, f)
             IMPLICIT NONE
             INTEGER :: id
-            INTEGER :: method
-            DOUBLE PRECISION :: f
+            INTEGER, OPTIONAL  :: method
+            DOUBLE PRECISION, OPTIONAL  :: f
         END SUBROUTINE RM_set_rebalance
 
         SUBROUTINE RM_set_saturation(id, t)
             IMPLICIT NONE
             INTEGER :: id
-            DOUBLE PRECISION :: t
+            DOUBLE PRECISION, OPTIONAL :: t
         END SUBROUTINE RM_set_saturation 
 				
         SUBROUTINE RM_set_steady_flow(id, t)   
             IMPLICIT NONE
             INTEGER :: id
-            INTEGER :: t
+            INTEGER, OPTIONAL :: t
         END SUBROUTINE RM_set_steady_flow   
 
         SUBROUTINE RM_set_tempc(id, t)
@@ -184,7 +184,13 @@
         SUBROUTINE RM_set_time_conversion(id, t)   
             IMPLICIT NONE
             INTEGER :: id
-            DOUBLE PRECISION :: t
+            DOUBLE PRECISION, OPTIONAL :: t
         END SUBROUTINE RM_set_time_conversion         
- 
+ 		     
+        SUBROUTINE RM_set_volume(id, t)   
+            IMPLICIT NONE
+            INTEGER :: id
+            DOUBLE PRECISION, OPTIONAL :: t
+        END SUBROUTINE RM_set_volume
+		 
     END INTERFACE

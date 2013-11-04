@@ -198,7 +198,7 @@ SUBROUTINE rhsn_flow
       ALLOCATE (cavg(nsa), sum_cqm_in(nsa),  &
       stat = a_err)
       IF (a_err /= 0) THEN  
-          PRINT *, "Array allocation failed: rhsn, point 3"
+          PRINT *, "Array allocation failed: rhsn_flow, point 3"
           STOP
       ENDIF
       DO lc=1,nrbc
