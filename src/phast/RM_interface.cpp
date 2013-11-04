@@ -437,8 +437,8 @@ void RM_run_cells(int *id,
 		if (!Reaction_module_ptr->Get_stop_message())
 		{
 			// Transfer data and pointers to Reaction_module	  
-			Reaction_module_ptr->Set_time(*time);
-			Reaction_module_ptr->Set_time_step(*time_step);
+			Reaction_module_ptr->Set_time(time);
+			Reaction_module_ptr->Set_time_step(time_step);
 			Reaction_module_ptr->Set_concentration(concentration);
 
 			// Transfer data Fortran to reaction module
@@ -593,10 +593,10 @@ RM_set_printing(int *id,
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->Set_print_chem(*print_chem != 0);
-		Reaction_module_ptr->Set_print_xyz(*print_xyz != 0);
-		Reaction_module_ptr->Set_print_hdf(*print_hdf != 0);
-		Reaction_module_ptr->Set_print_restart(*print_restart != 0);
+		Reaction_module_ptr->Set_print_chem(print_chem);
+		Reaction_module_ptr->Set_print_xyz(print_xyz);
+		Reaction_module_ptr->Set_print_hdf(print_hdf);
+		Reaction_module_ptr->Set_print_restart(print_restart);
 	}
 }
 void RM_set_print_chem_mask(int *id, int *t)
@@ -695,7 +695,7 @@ void RM_set_time_conversion(int *id, double *t)
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->Set_time_conversion(*t);
+		Reaction_module_ptr->Set_time_conversion(t);
 	}
 }
 void RM_set_volume(int *id, double *t)

@@ -90,8 +90,9 @@
 		<File RelativePath="..\PhastFortran\ifwr.inc"/>
 		<File RelativePath="..\IPhreeqcPhast\IPhreeqc\IPhreeqc.f90.inc"/>
 		<File RelativePath="..\PhastFortran\mpi_windows.inc">
-			<FileConfiguration Name="ser|Win32" ExcludedFromBuild="true"/>
-			<FileConfiguration Name="ser_debug|Win32" ExcludedFromBuild="true"/></File></Filter>
+			<FileConfiguration Name="ser_debug|Win32" ExcludedFromBuild="true"/>
+			<FileConfiguration Name="ser|Win32" ExcludedFromBuild="true"/></File>
+		<File RelativePath="..\RM_interface.f90.inc"/></Filter>
 		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"/>
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
 		<Filter Name="COMMON_FOBJS">
