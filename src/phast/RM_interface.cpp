@@ -442,7 +442,6 @@ void RM_run_cells(int *id,
 			Reaction_module_ptr->Set_concentration(concentration);
 
 			// Transfer data Fortran to reaction module
-			//Reaction_module_ptr->Fractions2Solutions();
 			Reaction_module_ptr->Concentrations2Phreeqc();
 
 			// Run chemistry calculations

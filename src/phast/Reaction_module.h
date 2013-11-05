@@ -35,7 +35,6 @@ public:
 	void Calculate_well_ph(double *c, double * ph, double * alkalinity);
 	void Convert_to_molal(double *c, int n, int dim);
 	void cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
-	void cxxSolution2fraction(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
 	void Distribute_initial_conditions_mix(
 		int id,
 		int *initial_conditions1,
@@ -47,9 +46,7 @@ public:
 	void File_rename(const std::string &temp_name, const std::string &name, const std::string &backup_name);
 	int Find_components();
 	void Concentrations2Phreeqc(void);
-	void Fractions2Solutions(void);
 	void Concentrations2Phreeqc_thread(int n);	
-	void Fractions2Solutions_thread(int n);	
 	void Init_uz(void);
 	void Initial_phreeqc_run(std::string &database_name, std::string &chemistry_name, std::string &prefix);
 	void Initial_phreeqc_run_thread(int n);
