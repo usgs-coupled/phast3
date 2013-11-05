@@ -1131,6 +1131,7 @@ Reaction_module::Concentrations2Phreeqc(void)
 		this->Concentrations2Phreeqc_thread(n);
 	}	
 }
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Init_uz(void)
@@ -1146,6 +1147,7 @@ Reaction_module::Init_uz(void)
 		}
 	}
 }
+#endif
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Initial_phreeqc_run_thread(int n)

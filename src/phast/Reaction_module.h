@@ -16,64 +16,27 @@ public:
 
 	Reaction_module(int *nxyz = NULL, int *thread_count = NULL, PHRQ_io * io=NULL);
 	~Reaction_module(void);
-
-	void BeginTimeStep(void);
-	void Cell_initialize(
-		int i, 
-		int n_user_new, 
-		int *initial_conditions1,
-		int *initial_conditions2, 
-		double *fraction1,
-		int exchange_units, 
-		int surface_units, 
-		int ssassemblage_units,
-		int ppassemblage_units, 
-		int gasphase_units, 
-		int kinetics_units,
-		double porosity_factor,
-		std::set<std::string> error_set);
 	void Calculate_well_ph(double *c, double * ph, double * alkalinity);
 	void Convert_to_molal(double *c, int n, int dim);
-	void cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
 	void Distribute_initial_conditions_mix(
 		int id,
 		int *initial_conditions1,
 		int *initial_conditions2,	
 		double *fraction1);
-	void EndTimeStep(void);
-	void Error_stop(void);
-	bool File_exists(const std::string &name);
-	void File_rename(const std::string &temp_name, const std::string &name, const std::string &backup_name);
 	int Find_components();
-	void Concentrations2Phreeqc(void);
-	void Concentrations2Phreeqc_thread(int n);	
-	void Init_uz(void);
+	void Concentrations2Phreeqc(void);	
 	void Initial_phreeqc_run(std::string &database_name, std::string &chemistry_name, std::string &prefix);
-	void Initial_phreeqc_run_thread(int n);
-	void Partition_uz(int iphrq, int ihst, double new_frac);
-	void Partition_uz_thread(int n, int iphrq, int ihst, double new_frac);
 	void Rebalance_load(void);
-	void Rebalance_load_per_cell(void);
 	void Run_cells(void);
-	void Run_cells_thread(int i);
-	void Scale_solids(int n, int iphrq, LDBLE frac);
 	void Send_restart_name(std::string &name);
-	void Set_end_cells(void);
 	void Set_mapping(int *grid2chem);
 	void Setup_boundary_conditions(const int n_boundary, int *boundary_solution1,
 						  int *boundary_solution2, double *fraction1,
 						  double *boundary_fraction, int dim);
 	void Phreeqc2Concentrations(double * c);
-	void Phreeqc2Concentrations_thread(int n);
-	void Transfer_cells(cxxStorageBin &t_bin, int old, int nnew);
 	void Write_bc_raw(int *solution_list, int * bc_solution_count, 
 		int * solution_number, const std::string &prefix);
-	void Write_error(const char * item);
-	void Write_log(const char * item);
-	void Write_output(const char * item);
 	void Write_restart(void);
-	void Write_screen(const char * item);
-	void Write_xyz(const char * item);
 
 	// setters and getters
 	std::vector<IPhreeqcPhast *> & Get_workers() {return this->workers;}
@@ -158,6 +121,45 @@ public:
 	void Set_input_units_SSassemblage(int i) {this->input_units_SSassemblage = i;}
 	void Set_input_units_Kinetics(int i) {this->input_units_Kinetics = i;}
 	void Set_input_units(int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *k);
+protected:
+	void BeginTimeStep(void);
+	void Cell_initialize(
+		int i, 
+		int n_user_new, 
+		int *initial_conditions1,
+		int *initial_conditions2, 
+		double *fraction1,
+		int exchange_units, 
+		int surface_units, 
+		int ssassemblage_units,
+		int ppassemblage_units, 
+		int gasphase_units, 
+		int kinetics_units,
+		double porosity_factor,
+		std::set<std::string> error_set);
+	void Concentrations2Phreeqc_thread(int n);
+	void cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
+	void EndTimeStep(void);
+	void Error_stop(void);
+	bool File_exists(const std::string &name);
+	void File_rename(const std::string &temp_name, const std::string &name, const std::string &backup_name);
+	void Partition_uz(int iphrq, int ihst, double new_frac);
+	void Partition_uz_thread(int n, int iphrq, int ihst, double new_frac);
+	void Write_error(const char * item);
+	void Write_log(const char * item);
+	void Write_output(const char * item);
+	void Write_screen(const char * item);
+	void Write_xyz(const char * item);
+#ifdef SKIP
+	void Init_uz(void);
+#endif
+	void Initial_phreeqc_run_thread(int n);
+	void Rebalance_load_per_cell(void);
+	void Run_cells_thread(int i);
+	void Scale_solids(int n, int iphrq, LDBLE frac);
+	void Set_end_cells(void);
+	void Transfer_cells(cxxStorageBin &t_bin, int old, int nnew);
+
 protected:
 	std::string database_file_name;
 	std::string chemistry_file_name;
