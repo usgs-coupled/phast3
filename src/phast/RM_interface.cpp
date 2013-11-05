@@ -451,7 +451,7 @@ void RM_run_cells(int *id,
 			Reaction_module_ptr->Phreeqc2Concentrations(concentration);
 
 			// Rebalance load
-			Reaction_module_ptr->Rebalance_load();
+			//Reaction_module_ptr->Rebalance_load();
 		}
 	}
 }

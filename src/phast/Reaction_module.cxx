@@ -2446,6 +2446,9 @@ Reaction_module::Run_cells()
 	{
 		EndTimeStep();
 	}
+
+	// Rebalance load
+	this->Rebalance_load();
 	//std::cerr << "Running: " << (double) (clock() - t0) << std::endl;
 }
 #else
@@ -2517,7 +2520,9 @@ Reaction_module::Run_cells()
 	if (this->print_hdf)
 	{
 		EndTimeStep();
-	}
+
+	}	// Rebalance load
+	this->Rebalance_load();
 	//std::cerr << "Running: " << (double) (clock() - t0) << std::endl;
 }
 #endif
