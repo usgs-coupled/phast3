@@ -34,6 +34,7 @@ public:
 		std::set<std::string> error_set);
 	void Calculate_well_ph(double *c, double * ph, double * alkalinity);
 	void Convert_to_molal(double *c, int n, int dim);
+	void cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
 	void cxxSolution2fraction(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
 	void Distribute_initial_conditions_mix(
 		int id,

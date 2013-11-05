@@ -512,6 +512,56 @@ Reaction_module::Convert_to_molal(double *c, int n, int dim)
 }
 /* ---------------------------------------------------------------------- */
 void
+Reaction_module::cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d)
+/* ---------------------------------------------------------------------- */
+{
+	d.clear();
+
+	// Simplify totals
+	{
+	  cxxNameDouble nd = cxxsoln_ptr->Get_totals().Simplify_redox();
+	  cxxsoln_ptr->Set_totals(nd);
+	}
+
+	// convert units
+	switch (this->input_units_Solution)
+	{
+	case 1:  // convert to mg/L 
+			d.push_back(cxxsoln_ptr->Get_total_h() * this->gfw[0] * 1000. / cxxsoln_ptr->Get_soln_vol()); 
+			d.push_back(cxxsoln_ptr->Get_total_o() * this->gfw[1] * 1000. / cxxsoln_ptr->Get_soln_vol()); 
+			d.push_back(cxxsoln_ptr->Get_cb() * this->gfw[2] * 1000. / cxxsoln_ptr->Get_soln_vol()); 
+			for (size_t i = 3; i < this->components.size(); i++)
+			{
+				d.push_back(cxxsoln_ptr->Get_total(components[i].c_str()) * this->gfw[i] / 1000. / cxxsoln_ptr->Get_soln_vol()); 
+			}
+		break;
+	case 2:  // convert to mol/L
+		{
+			d.push_back(cxxsoln_ptr->Get_total_h() / cxxsoln_ptr->Get_soln_vol()); 
+			d.push_back(cxxsoln_ptr->Get_total_o() / cxxsoln_ptr->Get_soln_vol()); 
+			d.push_back(cxxsoln_ptr->Get_cb()  / cxxsoln_ptr->Get_soln_vol()); 
+			for (size_t i = 3; i < this->components.size(); i++)
+			{
+				d.push_back(cxxsoln_ptr->Get_total(components[i].c_str())  / cxxsoln_ptr->Get_soln_vol()); 
+			}	
+		}
+		break;
+	case 3:  // convert to mass fraction kg/kgs
+		{
+			double kgs = cxxsoln_ptr->Get_soln_vol() * cxxsoln_ptr->Get_density();
+			d.push_back(cxxsoln_ptr->Get_total_h() * this->gfw[0] / 1000. / kgs); 
+			d.push_back(cxxsoln_ptr->Get_total_o() * this->gfw[1] / 1000. / kgs); 
+			d.push_back(cxxsoln_ptr->Get_cb() * this->gfw[2] / 1000. / kgs); 
+			for (size_t i = 3; i < this->components.size(); i++)
+			{
+				d.push_back(cxxsoln_ptr->Get_total(components[i].c_str()) * this->gfw[i] / 1000. / kgs); 
+			}	
+		}
+		break;
+	}
+}
+/* ---------------------------------------------------------------------- */
+void
 Reaction_module::cxxSolution2fraction(cxxSolution * cxxsoln_ptr, std::vector<double> & d)
 /* ---------------------------------------------------------------------- */
 {
@@ -1061,6 +1111,88 @@ void
 Reaction_module::Concentrations2Phreeqc_thread(int n)
 /* ---------------------------------------------------------------------- */
 {
+	// assumes total H, total O, and charge are transported
+	int i, j, k;
+
+#ifdef USE_MPI
+	int start = this->start_cell[this->mpi_myself];
+	int end = this->end_cell[this->mpi_myself];
+#else
+	int start = this->start_cell[n];
+	int end = this->end_cell[n];
+#endif
+
+	for (j = start; j <= end; j++)
+	{
+		std::vector<double> d;  // scratch space to convert from mass fraction to moles
+		// j is count_chem number
+		i = this->back[j][0];
+		if (j < 0) continue;
+
+		switch (this->input_units_Solution)
+		{
+		case 1:  // mg/L to mol/L
+			{
+				double *ptr = &this->concentration[i];
+				// convert to mol/L
+				for (k = 0; k < (int) this->components.size(); k++)
+				{	
+					d.push_back(ptr[this->nxyz * k] * 1e-3 / this->gfw[k]);
+				}	
+			}
+			break;
+		case 2:  // mol/L
+			{
+				double *ptr = &this->concentration[i];
+				// convert to mol/L
+				for (k = 0; k < (int) this->components.size(); k++)
+				{	
+					d.push_back(ptr[this->nxyz * k]);
+				}	
+			}
+			break;
+		case 3:  // mass fraction, kg/kg solution to mol/L
+			{
+				double *ptr = &this->concentration[i];
+				// convert to mol/L
+				for (k = 0; k < (int) this->components.size(); k++)
+				{	
+					d.push_back(ptr[this->nxyz * k] * 1000.0 / this->gfw[k] * density[i]);
+				}	
+			}
+			break;
+		}
+
+		// convert mol/L to moles per cell
+		for (k = 0; k < (int) this->components.size(); k++)
+		{	
+			d[k] *= this->pv[i] / this->pv0[i]; // * saturation[i];
+		}
+				
+		// update solution 
+		cxxNameDouble nd;
+		for (k = 3; k < (int) components.size(); k++)
+		{
+			if (d[k] <= 1e-14) d[k] = 0.0;
+			nd.add(components[k].c_str(), d[k]);
+		}	
+
+		cxxSolution *soln_ptr = this->Get_workers()[n]->Get_solution(j);
+		if (soln_ptr)
+		{
+			soln_ptr->Update(d[0], d[1], d[2], nd);
+			soln_ptr->Set_patm(this->pressure[i]);
+			soln_ptr->Set_tc(this->tempc[i]);
+		}
+	}
+	return;
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Concentrations2Phreeqc_thread(int n)
+/* ---------------------------------------------------------------------- */
+{
 	int i, j, k;
 
 #ifdef USE_MPI
@@ -1135,6 +1267,7 @@ Reaction_module::Concentrations2Phreeqc_thread(int n)
 	}
 	return;
 }
+#endif
 #ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
@@ -3508,7 +3641,8 @@ Reaction_module::Setup_boundary_conditions(
 		// Make mass fractions in d
 		cxxSolution	cxxsoln(phreeqc_bin.Get_Solutions(), mixmap, 0);
 		std::vector<double> d;
-		cxxSolution2fraction(&cxxsoln, d);
+		cxxSolution2concentration(&cxxsoln, d);
+		//cxxSolution2fraction(&cxxsoln, d);
 
 		// Put mass fractions in boundary_fraction
 		double *d_ptr = &boundary_fraction[i];
@@ -3542,7 +3676,8 @@ Reaction_module::Phreeqc2Concentrations(double * c)
 		// load fractions into d
 		cxxSolution * cxxsoln_ptr = this->Get_workers()[0]->Get_solution(j);
 		assert (cxxsoln_ptr);
-		this->cxxSolution2fraction(cxxsoln_ptr, d);
+		this->cxxSolution2concentration(cxxsoln_ptr, d);
+		//this->cxxSolution2fraction(cxxsoln_ptr, d);
 		for (int i = 0; i < (int) this->components.size(); i++)
 		{
 			solns.push_back(d[i]);
@@ -3614,7 +3749,43 @@ Reaction_module::Phreeqc2Concentrations(double * c)
 
 	int j; 
 	if (c == NULL) error_msg("NULL pointer in Phreeqc2Concentrations", 1);
-	//this->concentration = c;
+	for (int n = 0; n < this->nthreads; n++)
+	{
+		for (j = this->start_cell[n]; j <= this->end_cell[n]; j++)
+		{
+			// load fractions into d
+			cxxSolution * cxxsoln_ptr = this->Get_workers()[n]->Get_solution(j);
+			assert (cxxsoln_ptr);
+			this->cxxSolution2concentration(cxxsoln_ptr, d);
+			//this->cxxSolution2fraction(cxxsoln_ptr, d);
+
+			// store in fraction at 1, 2, or 4 places depending on chemistry dimensions
+			std::vector<int>::iterator it;
+			for (it = this->back[j].begin(); it != this->back[j].end(); it++)
+			{
+				double *d_ptr = &c[*it];
+				size_t i;
+				for (i = 0; i < this->components.size(); i++)
+				{
+					d_ptr[this->nxyz * i] = d[i];
+				}
+			}
+		}
+	}
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Phreeqc2Concentrations(double * c)
+/* ---------------------------------------------------------------------- */
+{
+	// convert Reaction module solution data to hst mass fractions
+
+	std::vector<double> d;  // scratch space to convert from moles to mass fraction
+	cxxNameDouble::iterator it;
+
+	int j; 
+	if (c == NULL) error_msg("NULL pointer in Phreeqc2Concentrations", 1);
 	for (int n = 0; n < this->nthreads; n++)
 	{
 		for (j = this->start_cell[n]; j <= this->end_cell[n]; j++)
@@ -3623,12 +3794,12 @@ Reaction_module::Phreeqc2Concentrations(double * c)
 			cxxSolution * cxxsoln_ptr = this->Get_workers()[n]->Get_solution(j);
 			assert (cxxsoln_ptr);
 			this->cxxSolution2fraction(cxxsoln_ptr, d);
+			//this->cxxSolution2fraction(cxxsoln_ptr, d);
 
 			// store in fraction at 1, 2, or 4 places depending on chemistry dimensions
 			std::vector<int>::iterator it;
 			for (it = this->back[j].begin(); it != this->back[j].end(); it++)
 			{
-				//double *d_ptr = &this->concentration[*it];
 				double *d_ptr = &c[*it];
 				size_t i;
 				for (i = 0; i < this->components.size(); i++)
@@ -3640,6 +3811,8 @@ Reaction_module::Phreeqc2Concentrations(double * c)
 	}
 }
 #endif
+#endif
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Phreeqc2Concentrations_thread(int n)
@@ -3657,6 +3830,7 @@ Reaction_module::Phreeqc2Concentrations_thread(int n)
 		cxxSolution * cxxsoln_ptr = this->Get_workers()[n]->Get_solution(j);
 		assert (cxxsoln_ptr);
 		this->cxxSolution2fraction(cxxsoln_ptr, d);
+		//this->cxxSolution2fraction(cxxsoln_ptr, d);
 
 		// store in fraction at 1, 2, or 4 places depending on chemistry dimensions
 		std::vector<int>::iterator it;
@@ -3671,6 +3845,7 @@ Reaction_module::Phreeqc2Concentrations_thread(int n)
 		}
 	}
 }
+#endif
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 void
