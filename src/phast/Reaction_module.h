@@ -26,7 +26,6 @@ public:
 	int Find_components();
 	void Concentrations2Phreeqc(void);	
 	void Initial_phreeqc_run(std::string &database_name, std::string &chemistry_name, std::string &prefix);
-	void Rebalance_load(void);
 	void Run_cells(void);
 	void Send_restart_name(std::string &name);
 	void Set_mapping(int *grid2chem);
@@ -145,6 +144,7 @@ protected:
 	void File_rename(const std::string &temp_name, const std::string &name, const std::string &backup_name);
 	void Partition_uz(int iphrq, int ihst, double new_frac);
 	void Partition_uz_thread(int n, int iphrq, int ihst, double new_frac);
+	void Rebalance_load(void);
 	void Write_error(const char * item);
 	void Write_log(const char * item);
 	void Write_output(const char * item);
