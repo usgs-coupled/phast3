@@ -39,6 +39,7 @@ public:
 	std::vector < double > & Get_cell_clock_times(void) {return this->cell_clock_times;}
 protected:
 	friend class IPhreeqcPhastLib;
+	friend class Reaction_module;
 	static std::map<size_t, IPhreeqcPhast*> PhastInstances;
 	static size_t PhastInstancesIndex;
 
