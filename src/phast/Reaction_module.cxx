@@ -17,6 +17,7 @@
 #include "SSassemblage.h"
 #include "cxxKinetics.h"
 #include "GasPhase.h"
+#include "CSelectedOutput.hxx"
 #include <time.h>
 #include "hdf.h"
 #ifdef THREADED_PHAST
@@ -178,6 +179,9 @@ if( numCPU < 1 )
 Reaction_module::~Reaction_module(void)
 {
 	std::map<size_t, Reaction_module*>::iterator it = RM_interface::Instances.find(this->Get_workers()[0]->Get_Index());
+	// delete selected output 
+	this->CSelectedOutputMapClear();
+
 	//delete phast_iphreeqc_worker;
 	for (int i = 0; i <= it->second->Get_nthreads(); i++)
 	{
@@ -509,6 +513,18 @@ Reaction_module::Convert_to_molal(double *c, int n, int dim)
 			ptr[k * dim] *= 1000.0/this->gfw[k];
 		}
 	}
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::CSelectedOutputMapClear()
+/* ---------------------------------------------------------------------- */
+{
+	std::map< int, CSelectedOutput* >::iterator sit = this->CSelectedOutputMap.begin();
+	for (; sit != this->CSelectedOutputMap.end(); ++sit)
+	{
+		delete (*sit).second;
+	}
+	this->CSelectedOutputMap.clear();
 }
 /* ---------------------------------------------------------------------- */
 void
@@ -2313,7 +2329,10 @@ Reaction_module::Run_cells()
  *   Routine takes mass fractions from HST, equilibrates each cell,
  *   and returns new mass fractions to HST
  */
-
+	if (mpi_myself == 0)
+	{
+		CSelectedOutputMapClear();
+	}
 /*
  *   Update solution compositions in sz_bin
  */
@@ -2410,6 +2429,84 @@ Reaction_module::Run_cells()
 		{
 			this->Write_restart();
 		}
+		
+		if (this->print_hdf)
+		// collect selected_output
+		{			
+			if (this->mpi_myself == n)
+			{
+
+				std::map< int, CSelectedOutput* >::iterator it = this->workers[0]->SelectedOutputMap.begin();
+				for ( ; it != this->workers[0]->SelectedOutputMap.end(); it++)
+				{
+					std::vector<int> types;
+					std::vector<long> longs;
+					std::vector<double> doubles;
+					std::string strings;
+					it->second->Serialize(types, longs, doubles, strings);
+
+					int iso = it->first;
+					std::map< int, CSelectedOutput* >::iterator rm_it = this->CSelectedOutputMap.find(iso);
+					if (rm_it == this->CSelectedOutputMap.end())
+					{
+						CSelectedOutput * cso = new CSelectedOutput;
+						this->CSelectedOutputMap[n] = cso;
+						rm_it = this->CSelectedOutputMap.find(iso);
+					}
+					
+					if (n == 0)
+					{
+						// write reaction_module selected_output
+						rm_it->second->DeSerialize(types, longs, doubles, strings);
+					}
+					else
+					{					
+						int lengths[4];
+						lengths[0] = (int) types.size();
+						lengths[1] = (int) longs.size();
+						lengths[2] = (int) doubles.size();
+						lengths[3] = (int) strings.size();
+						// transfer to root 
+						MPI_Send(lengths, 4, MPI_INT, 0, 0, MPI_COMM_WORLD);
+						MPI_Send(types.data(), lengths[0], MPI_INT, 0, 0, MPI_COMM_WORLD);
+						MPI_Send(longs.data(), lengths[1], MPI_LONG, 0, 0, MPI_COMM_WORLD);
+						MPI_Send(doubles.data(), lengths[2], MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
+						MPI_Send((void *) strings.c_str(), lengths[3], MPI_CHARACTER, 0, 0, MPI_COMM_WORLD);
+					}
+				}
+			}
+			else if (this->mpi_myself == 0)
+			{
+				// Receive messages from workers, update selected_output maps
+				std::map< int, CSelectedOutput* >::iterator it = this->workers[0]->SelectedOutputMap.begin();
+				for ( ; it != this->workers[0]->SelectedOutputMap.end(); it++)
+				{
+					MPI_Status mpi_status;
+					int iso = it->first;
+					std::map< int, CSelectedOutput* >::iterator rm_it = this->CSelectedOutputMap.find(iso);
+					int lengths[4];
+					MPI_Recv(lengths, 4, MPI_INT, n, 0, MPI_COMM_WORLD, &mpi_status);
+
+					// Make space and transfer
+					std::vector<int> types;
+					types.resize(lengths[0]);
+					std::vector<long> longs;
+					longs.resize(lengths[1]);
+					std::vector<double> doubles;
+					doubles.resize(lengths[2]);
+					std::string strings;
+					strings.reserve(lengths[3] + 1);
+
+					MPI_Recv(types.data(), lengths[0], MPI_INT, n, 0, MPI_COMM_WORLD, &mpi_status);
+					MPI_Recv(longs.data(), lengths[1], MPI_LONG, n, 0, MPI_COMM_WORLD, &mpi_status);
+					MPI_Recv(doubles.data(), lengths[2], MPI_DOUBLE, n, 0, MPI_COMM_WORLD, &mpi_status);
+					MPI_Recv((void *) strings.data(), lengths[3], MPI_CHARACTER, n, 0, MPI_COMM_WORLD, &mpi_status);
+
+					// write to reaction_module selected_output
+					rm_it->second->DeSerialize(types, longs, doubles, strings);
+				}
+			}
+		}
 		// write hdf
 		if (this->print_hdf)
 		{
@@ -2466,6 +2563,8 @@ Reaction_module::Run_cells()
  *   Update solution compositions in sz_bin
  */
 	//clock_t t0 = clock();
+	// Clear selected output map
+	CSelectedOutputMapClear();
 
 	for (int n = 0; n < this->nthreads; n++)
 	{
@@ -2507,6 +2606,29 @@ Reaction_module::Run_cells()
 		if (this->print_restart)
 		{
 			this->Write_restart();
+		}
+		
+		if (this->print_hdf)
+		// collect selected_output
+		{
+			std::map< int, CSelectedOutput* >::iterator it = this->workers[n]->SelectedOutputMap.begin();
+			for ( ; it != this->workers[n]->SelectedOutputMap.end(); it++)
+			{
+				int iso = it->first;
+				std::map< int, CSelectedOutput* >::iterator rm_it = this->CSelectedOutputMap.find(iso);
+				if (rm_it == this->CSelectedOutputMap.end())
+				{
+					CSelectedOutput * cso = new CSelectedOutput;
+					this->CSelectedOutputMap[n] = cso;
+					rm_it = this->CSelectedOutputMap.find(iso);
+				}
+				std::vector<int> types;
+				std::vector<long> longs;
+				std::vector<double> doubles;
+				std::string strings;
+				it->second->Serialize(types, longs, doubles, strings);
+				rm_it->second->DeSerialize(types, longs, doubles, strings);
+			}
 		}
 
 		// write hdf

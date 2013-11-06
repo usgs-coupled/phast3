@@ -137,6 +137,7 @@ protected:
 		double porosity_factor,
 		std::set<std::string> error_set);
 	void Concentrations2Phreeqc_thread(int n);
+	void CSelectedOutputMapClear();
 	void cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
 	void EndTimeStep(void);
 	void Error_stop(void);
@@ -222,6 +223,7 @@ protected:
 	bool write_xyz_headings;                // write xyz headings once
 
 	bool stop_message;
+	std::map< int, CSelectedOutput* > CSelectedOutputMap;
 
 	// threading
 	int nthreads;
