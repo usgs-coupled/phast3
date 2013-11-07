@@ -323,6 +323,78 @@ RM_find_components(int *id)
 	return (Reaction_module_ptr->Find_components());
 }
 /* ---------------------------------------------------------------------- */
+int RM_GetNthSelectedOutputUserNumber(int * rm_id, int * i)
+	/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->GetNthSelectedOutputUserNumber(i);
+	}
+	return -1;
+}
+/* ---------------------------------------------------------------------- */
+int RM_GetSelectedOutput(int * rm_id, double * so)
+	/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->GetSelectedOutput(so);
+	}
+	return -1;
+}
+/* ---------------------------------------------------------------------- */
+int RM_GetSelectedOutputColumnCount(int * rm_id)
+	/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->GetSelectedOutputColumnCount();
+	}
+	return -1;
+}
+/* ---------------------------------------------------------------------- */
+int RM_GetSelectedOutputCount(int * rm_id)
+	/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->GetSelectedOutputCount();
+	}
+	return -1;
+}
+/* ---------------------------------------------------------------------- */
+int RM_GetSelectedOutputHeading(int * rm_id, int *icol, char *heading, int length)
+	/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	if (Reaction_module_ptr)
+	{
+		std::string head;
+		int rtn = Reaction_module_ptr->GetSelectedOutputHeading(icol, head);
+		if (rtn >= 0)
+		{
+			strncpy(heading, head.c_str(), length);
+		}
+		return rtn;
+	}
+	return -1;
+}
+/* ---------------------------------------------------------------------- */
+int RM_GetSelectedOutputRowCount(int * rm_id)
+	/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->GetSelectedOutputRowCount();
+	}
+	return -1;
+}
+/* ---------------------------------------------------------------------- */
 void RM_get_component(int * rm_id, int * num, char *chem_name, int l1)
 	/* ---------------------------------------------------------------------- */
 {
@@ -475,6 +547,17 @@ RM_send_restart_name(int *id, char *name, long nchar)
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	Reaction_module_ptr->Send_restart_name(stdstring);
 
+}
+/* ---------------------------------------------------------------------- */
+int RM_SetCurrentSelectedOutputUserNumber(int * rm_id, int * i)
+	/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->SetCurrentSelectedOutputUserNumber(i);
+	}
+	return -1;
 }
 /* ---------------------------------------------------------------------- */
 void

@@ -179,8 +179,10 @@ if( numCPU < 1 )
 Reaction_module::~Reaction_module(void)
 {
 	std::map<size_t, Reaction_module*>::iterator it = RM_interface::Instances.find(this->Get_workers()[0]->Get_Index());
+#ifdef SKIP
 	// delete selected output 
 	this->CSelectedOutputMapClear();
+#endif
 
 	//delete phast_iphreeqc_worker;
 	for (int i = 0; i <= it->second->Get_nthreads(); i++)
@@ -514,6 +516,7 @@ Reaction_module::Convert_to_molal(double *c, int n, int dim)
 		}
 	}
 }
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::CSelectedOutputMapClear()
@@ -526,6 +529,7 @@ Reaction_module::CSelectedOutputMapClear()
 	}
 	this->CSelectedOutputMap.clear();
 }
+#endif
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d)
@@ -1049,6 +1053,67 @@ Reaction_module::Find_components(void)
 		Write_output(outstr.str().c_str());
 	}
 	return (int) this->components.size();
+}
+/* ---------------------------------------------------------------------- */
+int
+Reaction_module::GetNthSelectedOutputUserNumber(int *i)
+/* ---------------------------------------------------------------------- */
+{
+	if (i != NULL && this->workers[0]->GetNthSelectedOutputUserNumber(*i) == VR_OK)
+	{
+		return this->workers[0]->GetNthSelectedOutputUserNumber(*i);
+	}
+	return VR_INVALIDARG;
+}
+/* ---------------------------------------------------------------------- */
+int
+Reaction_module::GetSelectedOutput(double *so)
+/* ---------------------------------------------------------------------- */
+{
+	std::map< int, std::vector<double> >::iterator it;
+	it = this->SelectedOutputMapDoubles.find(this->workers[0]->GetCurrentSelectedOutputUserNumber());
+	if (it != SelectedOutputMapDoubles.end())
+	{
+		memcpy(so, it->second.data(), it->second.size() * sizeof(double));
+	}
+	return VR_INVALIDARG;
+}
+/* ---------------------------------------------------------------------- */
+int
+Reaction_module::GetSelectedOutputColumnCount()
+/* ---------------------------------------------------------------------- */
+{
+	return this->workers[0]->GetSelectedOutputColumnCount();
+}
+/* ---------------------------------------------------------------------- */
+int 
+Reaction_module::GetSelectedOutputCount(void)
+/* ---------------------------------------------------------------------- */
+{
+	return this->workers[0]->GetSelectedOutputCount();
+}
+/* ---------------------------------------------------------------------- */
+int
+Reaction_module::GetSelectedOutputHeading(int *icol, std::string &heading)
+/* ---------------------------------------------------------------------- */
+{
+	VAR pVar;
+	if (icol != NULL && this->workers[0]->GetSelectedOutputValue(0, *icol, &pVar) == VR_OK)
+	{
+		if (pVar.type == TT_STRING)
+		{
+			heading = pVar.sVal;
+			return VR_OK;
+		}
+	}
+	return VR_INVALIDARG;
+}
+/* ---------------------------------------------------------------------- */
+int
+Reaction_module::GetSelectedOutputRowCount()
+/* ---------------------------------------------------------------------- */
+{
+	return this->workers[0]->GetSelectedOutputRowCount();
 }
 /* ---------------------------------------------------------------------- */
 void
@@ -2331,7 +2396,10 @@ Reaction_module::Run_cells()
  */
 	if (mpi_myself == 0)
 	{
+#ifdef SKIP
 		CSelectedOutputMapClear();
+#endif 
+		this->SelectedOutputMapDoubles.clear();
 	}
 /*
  *   Update solution compositions in sz_bin
@@ -2430,6 +2498,7 @@ Reaction_module::Run_cells()
 			this->Write_restart();
 		}
 		
+#ifdef SKIP
 		if (this->print_hdf)
 		// collect selected_output
 		{			
@@ -2507,6 +2576,7 @@ Reaction_module::Run_cells()
 				}
 			}
 		}
+#endif
 		// write hdf
 		if (this->print_hdf)
 		{
@@ -2564,7 +2634,10 @@ Reaction_module::Run_cells()
  */
 	//clock_t t0 = clock();
 	// Clear selected output map
+#ifdef SKIP
 	CSelectedOutputMapClear();
+#endif
+	this->SelectedOutputMapDoubles.clear();
 
 	for (int n = 0; n < this->nthreads; n++)
 	{
@@ -2607,7 +2680,7 @@ Reaction_module::Run_cells()
 		{
 			this->Write_restart();
 		}
-		
+#ifdef SKIP		
 		if (this->print_hdf)
 		// collect selected_output
 		{
@@ -2630,7 +2703,23 @@ Reaction_module::Run_cells()
 				rm_it->second->DeSerialize(types, longs, doubles, strings);
 			}
 		}
-
+#endif
+		if (this->print_hdf)
+		// collect selected_output
+		{
+			std::map< int, CSelectedOutput* >::iterator it = this->workers[n]->SelectedOutputMap.begin();
+			for ( ; it != this->workers[n]->SelectedOutputMap.end(); it++)
+			{
+				int iso = it->first;
+				std::map< int, std::vector<double> >::iterator rm_it = this->SelectedOutputMapDoubles.find(iso);
+				if (rm_it == this->SelectedOutputMapDoubles.end())
+				{
+					std::vector<double> so_double; 
+					this->SelectedOutputMapDoubles[n] = so_double;
+					rm_it = this->SelectedOutputMapDoubles.find(iso);
+				}
+			}
+		}
 		// write hdf
 		if (this->print_hdf)
 		{
@@ -2944,6 +3033,16 @@ Reaction_module::Send_restart_name(std::string &name)
 		this->FileMap[str] = i;	
 	}
 #endif
+}
+/* ---------------------------------------------------------------------- */
+int 
+Reaction_module::SetCurrentSelectedOutputUserNumber(int *i)
+{
+	if (i != NULL)
+	{
+		return this->workers[0]->SetCurrentSelectedOutputUserNumber(*i);
+	}
+	return -1;
 }
 /* ---------------------------------------------------------------------- */
 void

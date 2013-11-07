@@ -384,6 +384,7 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)
     <ClCompile Include="..\phast_main.cpp" />
     <ClCompile Include="..\gzstream.cxx" />
     <ClCompile Include="..\Reaction_module.cxx" />
+    <ClCompile Include="..\RMHelper.cpp" />
     <ClCompile Include="..\RM_interface.cpp" />
     <ClCompile Include="..\KDtree\KDtree.cpp">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">Level3</WarningLevel>
@@ -402,6 +403,7 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)
     <ClInclude Include="..\KDtree\KDtree.h" />
     <ClInclude Include="..\KDtree\Point.h" />
     <ClInclude Include="..\Reaction_module.h" />
+    <ClInclude Include="..\RMHelper.h" />
     <ClInclude Include="..\RM_interface.h" />
     <ClInclude Include="..\TM_interface.h" />
   </ItemGroup>
