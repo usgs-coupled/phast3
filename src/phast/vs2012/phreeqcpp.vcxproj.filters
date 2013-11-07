@@ -63,6 +63,9 @@
     <ClCompile Include="..\TM_interface.cpp">
       <Filter>Source Files\COMMON_CXXOBJS</Filter>
     </ClCompile>
+    <ClCompile Include="..\RMHelper.cpp">
+      <Filter>Source Files\COMMON_CXXOBJS</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="phast.rc">
@@ -89,6 +92,9 @@
       <Filter>Header Files\PHASTINPUT_HEADERS</Filter>
     </ClInclude>
     <ClInclude Include="..\TM_interface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RMHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

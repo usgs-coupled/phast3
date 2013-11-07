@@ -25,8 +25,17 @@ public:
 		double *fraction1);
 	int Find_components();
 	void Concentrations2Phreeqc(void);	
+	
+	int GetNthSelectedOutputUserNumber(int *i);
+	int GetSelectedOutput(double *so);
+	int GetSelectedOutputColumnCount(void);
+	int GetSelectedOutputCount(void);
+	int GetSelectedOutputHeading(int *icol, std::string &heading);
+	int GetSelectedOutputRowCount(void);
+
 	void Initial_phreeqc_run(std::string &database_name, std::string &chemistry_name, std::string &prefix);
 	void Run_cells(void);
+	int SetCurrentSelectedOutputUserNumber(int *i);
 	void Send_restart_name(std::string &name);
 	void Set_mapping(int *grid2chem);
 	void Setup_boundary_conditions(const int n_boundary, int *boundary_solution1,
@@ -137,7 +146,9 @@ protected:
 		double porosity_factor,
 		std::set<std::string> error_set);
 	void Concentrations2Phreeqc_thread(int n);
+#ifdef SKIP
 	void CSelectedOutputMapClear();
+#endif
 	void cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
 	void EndTimeStep(void);
 	void Error_stop(void);
@@ -223,7 +234,7 @@ protected:
 	bool write_xyz_headings;                // write xyz headings once
 
 	bool stop_message;
-	std::map< int, CSelectedOutput* > CSelectedOutputMap;
+	std::map< int, std::vector<double> > SelectedOutputMapDoubles;
 
 	// threading
 	int nthreads;

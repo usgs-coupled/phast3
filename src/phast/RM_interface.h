@@ -22,12 +22,19 @@
 #define RM_find_components                 FC_FUNC_ (rm_find_components,               RM_FIND_COMPONENTS)
 //#define RM_fractions2solutions             FC_FUNC_ (rm_fractions2solutions,           RM_FRACTIONS2SOLUTIONS)
 #define RM_get_component                   FC_FUNC_ (rm_get_component,                 RM_GET_COMPONENT)
+#define RM_GetNthSelectedOutputUserNumber  FC_FUNC_ (rm_getnthselectedoutputusernumber, RM_GETNTHSELECTEDOUTPUTUSERNUMBER)
+#define RM_GetSelectedOutput               FC_FUNC_ (rm_getselectedoutput,             RM_GETSELECTEDOUTPUT)
+#define RM_GetSelectedOutputColumnCount    FC_FUNC_ (rm_getselectedoutputcolumncount,  RM_GETSELECTEDOUTPUTCOLUMNCOUNT)
+#define RM_GetSelectedOutputCount          FC_FUNC_ (rm_getselectedoutputcount,        RM_GETSELECTEDOUTPUTCOUNT)
+#define RM_GetSelectedOutputHeading        FC_FUNC_ (rm_getselectedoutputheading,      RM_GETSELECTEDOUTPUTHEADING)
+#define RM_GetSelectedOutputRowCount       FC_FUNC_ (rm_getselectedoutputrowcount,     RM_GETSELECTEDOUTPUTROWCOUNT)
 #define RM_initial_phreeqc_run             FC_FUNC_ (rm_initial_phreeqc_run,           RM_INITIAL_PHREEQC_RUN)
 #define RM_load_database                   FC_FUNC_ (rm_load_database,                 RM_LOAD_DATABASE)
 #define RM_log_screen_prt                  FC_FUNC_ (rm_log_screen_prt,                RM_LOG_SCREEN_PRT)
 #define RM_open_files                      FC_FUNC_ (rm_open_files,                    RM_OPEN_FILES)
 #define RM_run_cells                       FC_FUNC_ (rm_run_cells,                     RM_RUN_CELLS)
 #define RM_send_restart_name               FC_FUNC_ (rm_send_restart_name,             RM_SEND_RESTART_NAME)
+#define RM_SetCurrentSelectedOutputUserNumber  FC_FUNC_ (rm_setcurrentselectedoutputusernumber, RM_SETCURRENTSELECTEDOUTPUTUSERNUMBER)
 #define RM_setup_boundary_conditions       FC_FUNC_ (rm_setup_boundary_conditions,     RM_SETUP_BOUNDARY_CONDITIONS)
 #define RM_set_density                     FC_FUNC_ (rm_set_density,                   RM_SET_DENSITY)
 #define RM_set_free_surface                FC_FUNC_ (rm_set_free_surface,              RM_SET_FREE_SURFACE)
@@ -128,6 +135,12 @@ void RM_distribute_initial_conditions_mix(int *id,
 void RM_error(int *id);
 int RM_find_components(int *id);
 void RM_get_component(int * id, int * num, char *chem_name, int l1);
+int RM_GetNthSelectedOutputUserNumber(int *id, int *i);
+int RM_GetSelectedOutput(int *id, double *so);
+int RM_GetSelectedOutputColumnCount(int *id);
+int RM_GetSelectedOutputCount(int *id);
+int RM_GetSelectedOutputHeading(int *id, int * icol, char * heading, int length);
+int RM_GetSelectedOutputRowCount(int *id);
 void RM_initial_phreeqc_run(int * id, char *db_name, char *chem_name, char *prefix_name, int l1, int l2, int l3);
 void RM_log_screen_prt(char *err_str, long l);
 
@@ -143,6 +156,7 @@ void RM_run_cells(int *id,
  			 double *concentration,					// mass fractions nxyz:components
 			 int * stop_msg);
 void RM_send_restart_name(int *id, char * s, long l);
+int RM_SetCurrentSelectedOutputUserNumber(int *id, int *i);
 void RM_setup_boundary_conditions(
 			int *id,
 			int *n_boundary, 
