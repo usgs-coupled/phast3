@@ -48,6 +48,7 @@ protected:
 	int end_cell;
 	std::ostringstream * out_stream;
 	std::ostringstream * punch_stream;
+	std::map< int, CSelectedOutput > CSelectedOutputMap;
 	std::vector < double > punch_vector;
 	std::vector<std::string> selected_output_names;
 	double thread_clock_time;
