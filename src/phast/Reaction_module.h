@@ -17,6 +17,7 @@ public:
 	Reaction_module(int *nxyz = NULL, int *thread_count = NULL, PHRQ_io * io=NULL);
 	~Reaction_module(void);
 	void Calculate_well_ph(double *c, double * ph, double * alkalinity);
+	int CheckSelectedOutput();
 	void Convert_to_molal(double *c, int n, int dim);
 	void Distribute_initial_conditions_mix(
 		int id,
@@ -234,7 +235,7 @@ protected:
 	bool write_xyz_headings;                // write xyz headings once
 
 	bool stop_message;
-	std::map< int, std::vector<double> > SelectedOutputMapDoubles;
+	//std::map< int, std::vector<double> > SelectedOutputMapDoubles;
 
 	// threading
 	int nthreads;

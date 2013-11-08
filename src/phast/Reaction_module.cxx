@@ -494,6 +494,206 @@ Reaction_module::Cell_initialize(
 	return;
 }
 /* ---------------------------------------------------------------------- */
+int 
+Reaction_module::CheckSelectedOutput()
+/* ---------------------------------------------------------------------- */
+{
+#ifdef USE_MPI
+	if (this->mpi_tasks <= 1) return VR_OK;
+	
+	// check number of selected output
+	{
+		int nso = (int) this->workers[0]->CSelectedOutputMap.size();
+		// Gather number of selected output at root
+		std::vector<int> recv_buffer;
+		recv_buffer.resize(this->mpi_tasks);
+		MPI_Gather(&nso, 1, MPI_INT, recv_buffer.data(), 1, MPI_INT, 0, MPI_COMM_WORLD);
+		for (int i = 1; i < this->mpi_tasks; i++)
+		{
+			if (recv_buffer[i] != recv_buffer[0])
+			{
+				error_msg("MPI processes have different number of selected output definitions.", STOP);
+			}
+		}
+	}
+
+	// check number of columns
+	{
+		std::map < int, CSelectedOutput >::iterator it = this->workers[0]->CSelectedOutputMap.begin();
+		for ( ; it != this->workers[0]->CSelectedOutputMap.end(); it++)
+		{
+			int col = (int) it->second.GetColCount();
+			// Gather number of columns at root
+			std::vector<int> recv_buffer;
+			recv_buffer.resize(this->mpi_tasks);
+			MPI_Gather(&col, 1, MPI_INT, recv_buffer.data(), 1, MPI_INT, 0, MPI_COMM_WORLD);
+			for (int i = 1; i < this->mpi_tasks; i++)
+			{
+				if (recv_buffer[i] != recv_buffer[0])
+				{
+					error_msg("MPI processes have different number of selected output columns.", STOP);
+				}
+			}
+		}
+	}
+
+	// check headings
+	{
+		std::map < int, CSelectedOutput >::iterator it = this->workers[0]->CSelectedOutputMap.begin();
+		for ( ; it != this->workers[0]->CSelectedOutputMap.end(); it++)
+		{
+			std::string headings;
+			int length;
+			// Make string with headings
+			int col = (int) it->second.GetColCount();
+			for (int i = 0; i < col; i++)
+			{
+				CVar cvar;
+				cvar = it->second.Get(0, i);
+				if (cvar.type == TT_STRING)
+				{
+					headings.append(cvar.sVal);
+				}
+				else
+				{
+					error_msg("MPI processes has selected output column that is not a string.", STOP);
+				}
+			}
+			
+
+			if (this->mpi_myself == 0)
+			{
+				length = (int) headings.size();
+			}
+			MPI_Bcast(&length,  1, MPI_INT, 0, MPI_COMM_WORLD);
+
+			// Broadcast string
+			char *headings_bcast = new char[length + 1];
+			if (this->mpi_myself == 0)
+			{
+				strcpy(headings_bcast, headings.c_str());
+			}
+
+			MPI_Bcast(headings_bcast, length + 1, MPI_CHARACTER, 0, MPI_COMM_WORLD);
+			
+			int equal = strcmp(headings_bcast, headings.c_str()) == 0 ? 1 : 0;
+
+			std::vector<int> recv_buffer;
+			recv_buffer.resize(this->mpi_tasks);
+			MPI_Gather(&equal, 1, MPI_INT, recv_buffer.data(), 1, MPI_INT, 0, MPI_COMM_WORLD);
+			if (mpi_myself == 0)
+			{
+				for (int i = 1; i < this->mpi_tasks; i++)
+				{
+					if (recv_buffer[i] == 0)
+					{
+						error_msg("MPI processes have different column headings.", STOP);
+					}
+				}
+			}
+		}
+	}
+	// Count rows
+	{	
+		std::map < int, CSelectedOutput >::iterator it = this->workers[0]->CSelectedOutputMap.begin();
+		for ( ; it != this->workers[0]->CSelectedOutputMap.end(); it++)
+		{
+			int rows = it->second.GetRowCount() - 1;
+			std::vector<int> recv_buffer;
+			recv_buffer.resize(this->mpi_tasks);
+			MPI_Gather(&rows, 1, MPI_INT, recv_buffer.data(), 1, MPI_INT, 0, MPI_COMM_WORLD);
+			if (this->mpi_myself == 0) 
+			{
+				int count = 0;
+				for (int n = 0; n < this->mpi_tasks; n++)
+				{ 
+					count += recv_buffer[n];
+				}
+				if (count != this->count_chem)
+				{
+					error_msg("Sum of rows is not equal to count_chem.", STOP);
+				}
+			}
+		}
+	}
+#else
+	if (this->nthreads <= 1) return VR_OK;
+	
+	// check number of selected output
+	{
+		for (int i = 1; i < this->mpi_tasks; i++)
+		{
+			if (this->workers[i]->CSelectedOutputMap.size() != this->workers[0]->CSelectedOutputMap.size())
+			{
+				error_msg("Threads have different number of selected output definitions.", STOP);
+			}
+		}
+	}
+
+	// check number of columns
+	{		
+		for (int n = 1; n < this->mpi_tasks; n++)
+		{
+			std::map < int, CSelectedOutput >::iterator root_it = this->workers[0]->CSelectedOutputMap.begin();
+			std::map < int, CSelectedOutput >::iterator n_it = this->workers[n]->CSelectedOutputMap.begin();
+			for( ; root_it != this->workers[0]->CSelectedOutputMap.end(); root_it++, n_it++)
+			{
+				if (root_it->second.GetColCount() != n_it->second.GetColCount())
+				{
+					error_msg("Threads have different number of selected output columns.", STOP);
+				}
+			}
+		}
+	}
+
+	// check headings
+	{		
+		for (int n = 1; n < this->mpi_tasks; n++)
+		{
+			std::map < int, CSelectedOutput >::iterator root_it = this->workers[0]->CSelectedOutputMap.begin();
+			std::map < int, CSelectedOutput >::iterator n_it = this->workers[n]->CSelectedOutputMap.begin();
+			for( ; root_it != this->workers[0]->CSelectedOutputMap.end(); root_it++, n_it++)
+			{
+				for (int i = 0; i < root_it->second.GetColCount(); i++)
+				{
+					CVar root_cvar;
+					root_it->second.Get(0, i, &root_cvar);
+					CVar n_cvar;
+					n_it->second.Get(0, i, &n_cvar);
+					if (root_cvar.type != TT_STRING || n_cvar.type != TT_STRING)
+					{
+						error_msg("Threads has selected output column that is not a string.", STOP);
+					}
+					if (strcmp(root_cvar.sVal, n_cvar.sVal) != 0)
+					{
+						error_msg("Threads have different column headings.", STOP);
+					}
+				}
+			}
+		}
+	}
+
+	// Count rows
+	{			
+		for (int nso = 0; nso < (int) this->workers[0]->CSelectedOutputMap.size(); nso++)
+		{
+			int n_user = this->GetNthSelectedOutputUserNumber(&nso);
+			int count = 0;
+			for (int n = 0; n < this->nthreads; n++)
+			{ 
+				std::map < int, CSelectedOutput >::iterator n_it = this->workers[n]->CSelectedOutputMap.find(n_user);
+				count += (int) n_it->second.GetRowCount() - 1;
+			}
+			if (count != this->count_chem)
+			{
+				error_msg("Sum of rows is not equal to count_chem.", STOP);
+			}
+		}
+	}
+#endif
+	return VR_OK;
+}
+/* ---------------------------------------------------------------------- */
 void
 Reaction_module::Convert_to_molal(double *c, int n, int dim)
 /* ---------------------------------------------------------------------- */
@@ -1059,7 +1259,7 @@ int
 Reaction_module::GetNthSelectedOutputUserNumber(int *i)
 /* ---------------------------------------------------------------------- */
 {
-	if (i != NULL && this->workers[0]->GetNthSelectedOutputUserNumber(*i) == VR_OK)
+	if (i != NULL && *i >= 0) 
 	{
 		return this->workers[0]->GetNthSelectedOutputUserNumber(*i);
 	}
@@ -1070,40 +1270,119 @@ int
 Reaction_module::GetSelectedOutput(double *so)
 /* ---------------------------------------------------------------------- */
 {
-	std::map< int, std::vector<double> >::iterator it;
-	it = this->SelectedOutputMapDoubles.find(this->workers[0]->GetCurrentSelectedOutputUserNumber());
-	if (it != SelectedOutputMapDoubles.end())
+#ifdef USE_MPI
+	int n_user = this->workers[0]->GetCurrentSelectedOutputUserNumber();
+	MPI_Bcast(&n_user,  1, MPI_INT, 0, MPI_COMM_WORLD);
+	if (n_user >= 0)
 	{
-		memcpy(so, it->second.data(), it->second.size() * sizeof(double));
+		size_t pos = 0;
+		for (int n = 0; n < this->mpi_tasks; n++)
+		{
+			if (this->mpi_myself == n)
+			{					
+				std::map< int, CSelectedOutput >::iterator it = this->workers[0]->CSelectedOutputMap.find(n_user);
+				int nrow = (int) it->second.GetRowCount();
+				int ncol = (int) it->second.GetColCount();
+				if (it != this->workers[0]->CSelectedOutputMap.end())
+				{
+					if (this->mpi_myself == 0) 
+					{	
+						it->second.Doublize(nrow, ncol, &so[pos]);
+						pos += (size_t) (nrow*ncol);
+					}
+					else
+					{
+						std::vector<double> doubles;	
+						doubles.resize(nrow*ncol);
+						it->second.Doublize(nrow, ncol, &doubles[0]);
+						int length = nrow*ncol;
+						MPI_Send(&length, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+						MPI_Send(doubles.data(), length, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
+					}
+				}
+				else
+				{
+					error_msg("Did not find current selected output in CSelectedOutputMap in  GetSelectedOutput", STOP);
+				}
+			}
+			else if (this->mpi_myself == 0)
+			{					
+				MPI_Status mpi_status;
+				int length;
+				MPI_Recv(&length, 1, MPI_INT, n, 0, MPI_COMM_WORLD, &mpi_status);
+				MPI_Recv(&so[pos], length, MPI_DOUBLE, n, 0, MPI_COMM_WORLD, &mpi_status);
+				pos += (size_t) length;
+			}
+		}
 	}
+#else
+	int n_user = this->workers[0]->GetCurrentSelectedOutputUserNumber();
+	if (n_user >= 0)
+	{
+		size_t pos = 0;
+		int nrow, ncol;
+		for (int n = 0; n < this->nthreads; n++)
+		{
+			std::map< int, CSelectedOutput>::iterator cso_it = this->workers[n]->CSelectedOutputMap.find(n_user);
+			if (cso_it != this->workers[n]->CSelectedOutputMap.end())
+			{
+				cso_it->second.Doublize(nrow, ncol, &so[pos]);
+				pos += nrow*ncol;
+			}
+			else
+			{
+				return VR_INVALIDARG;
+			}
+		}
+		return VR_OK;
+	}
+#endif
 	return VR_INVALIDARG;
 }
 /* ---------------------------------------------------------------------- */
 int
 Reaction_module::GetSelectedOutputColumnCount()
 /* ---------------------------------------------------------------------- */
-{
-	return this->workers[0]->GetSelectedOutputColumnCount();
+{	
+	if (this->workers[0]->CurrentSelectedOutputUserNumber >= 0)
+	{
+		std::map< int, CSelectedOutput >::iterator it = this->workers[0]->CSelectedOutputMap.find(
+			this->workers[0]->CurrentSelectedOutputUserNumber);
+		if (it != this->workers[0]->CSelectedOutputMap.end())
+		{
+			return (int) it->second.GetColCount();
+		}
+	}
+	return VR_INVALIDARG;
 }
 /* ---------------------------------------------------------------------- */
 int 
 Reaction_module::GetSelectedOutputCount(void)
 /* ---------------------------------------------------------------------- */
-{
-	return this->workers[0]->GetSelectedOutputCount();
+{	
+	return (int) this->workers[0]->CSelectedOutputMap.size();
 }
 /* ---------------------------------------------------------------------- */
 int
 Reaction_module::GetSelectedOutputHeading(int *icol, std::string &heading)
 /* ---------------------------------------------------------------------- */
 {
-	VAR pVar;
-	if (icol != NULL && this->workers[0]->GetSelectedOutputValue(0, *icol, &pVar) == VR_OK)
+	if (this->workers[0]->CurrentSelectedOutputUserNumber >= 0)
 	{
-		if (pVar.type == TT_STRING)
+		std::map< int, CSelectedOutput >::iterator it = this->workers[0]->CSelectedOutputMap.find(
+			this->workers[0]->CurrentSelectedOutputUserNumber);
+		if (it != this->workers[0]->CSelectedOutputMap.end())
 		{
-			heading = pVar.sVal;
-			return VR_OK;
+			VAR pVar;
+			VarInit(&pVar);
+			if (icol != NULL && it->second.Get(0, *icol, &pVar) == VR_OK)
+			{
+				if (pVar.type == TT_STRING)
+				{
+					heading = pVar.sVal;
+					return VR_OK;
+				}
+			}
 		}
 	}
 	return VR_INVALIDARG;
@@ -1113,7 +1392,7 @@ int
 Reaction_module::GetSelectedOutputRowCount()
 /* ---------------------------------------------------------------------- */
 {
-	return this->workers[0]->GetSelectedOutputRowCount();
+	return this->count_chem;
 }
 /* ---------------------------------------------------------------------- */
 void
@@ -2394,13 +2673,7 @@ Reaction_module::Run_cells()
  *   Routine takes mass fractions from HST, equilibrates each cell,
  *   and returns new mass fractions to HST
  */
-	if (mpi_myself == 0)
-	{
-#ifdef SKIP
-		CSelectedOutputMapClear();
-#endif 
-		this->SelectedOutputMapDoubles.clear();
-	}
+
 /*
  *   Update solution compositions in sz_bin
  */
@@ -2497,86 +2770,7 @@ Reaction_module::Run_cells()
 		{
 			this->Write_restart();
 		}
-		
-#ifdef SKIP
-		if (this->print_hdf)
-		// collect selected_output
-		{			
-			if (this->mpi_myself == n)
-			{
 
-				std::map< int, CSelectedOutput* >::iterator it = this->workers[0]->SelectedOutputMap.begin();
-				for ( ; it != this->workers[0]->SelectedOutputMap.end(); it++)
-				{
-					std::vector<int> types;
-					std::vector<long> longs;
-					std::vector<double> doubles;
-					std::string strings;
-					it->second->Serialize(types, longs, doubles, strings);
-
-					int iso = it->first;
-					std::map< int, CSelectedOutput* >::iterator rm_it = this->CSelectedOutputMap.find(iso);
-					if (rm_it == this->CSelectedOutputMap.end())
-					{
-						CSelectedOutput * cso = new CSelectedOutput;
-						this->CSelectedOutputMap[n] = cso;
-						rm_it = this->CSelectedOutputMap.find(iso);
-					}
-					
-					if (n == 0)
-					{
-						// write reaction_module selected_output
-						rm_it->second->DeSerialize(types, longs, doubles, strings);
-					}
-					else
-					{					
-						int lengths[4];
-						lengths[0] = (int) types.size();
-						lengths[1] = (int) longs.size();
-						lengths[2] = (int) doubles.size();
-						lengths[3] = (int) strings.size();
-						// transfer to root 
-						MPI_Send(lengths, 4, MPI_INT, 0, 0, MPI_COMM_WORLD);
-						MPI_Send(types.data(), lengths[0], MPI_INT, 0, 0, MPI_COMM_WORLD);
-						MPI_Send(longs.data(), lengths[1], MPI_LONG, 0, 0, MPI_COMM_WORLD);
-						MPI_Send(doubles.data(), lengths[2], MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
-						MPI_Send((void *) strings.c_str(), lengths[3], MPI_CHARACTER, 0, 0, MPI_COMM_WORLD);
-					}
-				}
-			}
-			else if (this->mpi_myself == 0)
-			{
-				// Receive messages from workers, update selected_output maps
-				std::map< int, CSelectedOutput* >::iterator it = this->workers[0]->SelectedOutputMap.begin();
-				for ( ; it != this->workers[0]->SelectedOutputMap.end(); it++)
-				{
-					MPI_Status mpi_status;
-					int iso = it->first;
-					std::map< int, CSelectedOutput* >::iterator rm_it = this->CSelectedOutputMap.find(iso);
-					int lengths[4];
-					MPI_Recv(lengths, 4, MPI_INT, n, 0, MPI_COMM_WORLD, &mpi_status);
-
-					// Make space and transfer
-					std::vector<int> types;
-					types.resize(lengths[0]);
-					std::vector<long> longs;
-					longs.resize(lengths[1]);
-					std::vector<double> doubles;
-					doubles.resize(lengths[2]);
-					std::string strings;
-					strings.reserve(lengths[3] + 1);
-
-					MPI_Recv(types.data(), lengths[0], MPI_INT, n, 0, MPI_COMM_WORLD, &mpi_status);
-					MPI_Recv(longs.data(), lengths[1], MPI_LONG, n, 0, MPI_COMM_WORLD, &mpi_status);
-					MPI_Recv(doubles.data(), lengths[2], MPI_DOUBLE, n, 0, MPI_COMM_WORLD, &mpi_status);
-					MPI_Recv((void *) strings.data(), lengths[3], MPI_CHARACTER, n, 0, MPI_COMM_WORLD, &mpi_status);
-
-					// write to reaction_module selected_output
-					rm_it->second->DeSerialize(types, longs, doubles, strings);
-				}
-			}
-		}
-#endif
 		// write hdf
 		if (this->print_hdf)
 		{
@@ -2614,6 +2808,8 @@ Reaction_module::Run_cells()
 		EndTimeStep();
 	}
 
+	this->CheckSelectedOutput();
+
 	// Rebalance load
 	this->Rebalance_load();
 	//std::cerr << "Running: " << (double) (clock() - t0) << std::endl;
@@ -2633,11 +2829,7 @@ Reaction_module::Run_cells()
  *   Update solution compositions in sz_bin
  */
 	//clock_t t0 = clock();
-	// Clear selected output map
-#ifdef SKIP
-	CSelectedOutputMapClear();
-#endif
-	this->SelectedOutputMapDoubles.clear();
+
 
 	for (int n = 0; n < this->nthreads; n++)
 	{
@@ -2680,46 +2872,7 @@ Reaction_module::Run_cells()
 		{
 			this->Write_restart();
 		}
-#ifdef SKIP		
-		if (this->print_hdf)
-		// collect selected_output
-		{
-			std::map< int, CSelectedOutput* >::iterator it = this->workers[n]->SelectedOutputMap.begin();
-			for ( ; it != this->workers[n]->SelectedOutputMap.end(); it++)
-			{
-				int iso = it->first;
-				std::map< int, CSelectedOutput* >::iterator rm_it = this->CSelectedOutputMap.find(iso);
-				if (rm_it == this->CSelectedOutputMap.end())
-				{
-					CSelectedOutput * cso = new CSelectedOutput;
-					this->CSelectedOutputMap[n] = cso;
-					rm_it = this->CSelectedOutputMap.find(iso);
-				}
-				std::vector<int> types;
-				std::vector<long> longs;
-				std::vector<double> doubles;
-				std::string strings;
-				it->second->Serialize(types, longs, doubles, strings);
-				rm_it->second->DeSerialize(types, longs, doubles, strings);
-			}
-		}
-#endif
-		if (this->print_hdf)
-		// collect selected_output
-		{
-			std::map< int, CSelectedOutput* >::iterator it = this->workers[n]->SelectedOutputMap.begin();
-			for ( ; it != this->workers[n]->SelectedOutputMap.end(); it++)
-			{
-				int iso = it->first;
-				std::map< int, std::vector<double> >::iterator rm_it = this->SelectedOutputMapDoubles.find(iso);
-				if (rm_it == this->SelectedOutputMapDoubles.end())
-				{
-					std::vector<double> so_double; 
-					this->SelectedOutputMapDoubles[n] = so_double;
-					rm_it = this->SelectedOutputMapDoubles.find(iso);
-				}
-			}
-		}
+
 		// write hdf
 		if (this->print_hdf)
 		{
@@ -2732,7 +2885,11 @@ Reaction_module::Run_cells()
 	{
 		EndTimeStep();
 
-	}	// Rebalance load
+	}	
+	
+	this->CheckSelectedOutput();
+
+	// Rebalance load
 	this->Rebalance_load();
 	//std::cerr << "Running: " << (double) (clock() - t0) << std::endl;
 }
@@ -2755,6 +2912,13 @@ Reaction_module::Run_cells_thread(int n)
 
 	int i, j;
 	IPhreeqcPhast *phast_iphreeqc_worker = this->Get_workers()[n];
+
+	// selected output IPhreeqcPhast
+	phast_iphreeqc_worker->CSelectedOutputMap.clear();
+	std::vector<int> types;
+	std::vector<long> longs;
+	std::vector<double> doubles;
+	std::string strings;
 
 	// Do not write to files from phreeqc, run_cells writes files
 	phast_iphreeqc_worker->SetLogFileOn(false);
@@ -2897,6 +3061,26 @@ Reaction_module::Run_cells_thread(int n)
 			if (pr_hdf)
 			{
 				phast_iphreeqc_worker->Selected_out_to_double();
+
+				// Add selected output values to IPhreeqcPhast CSelectedOutputMap's
+				std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
+				for ( ; it != phast_iphreeqc_worker->SelectedOutputMap.end(); it++)
+				{
+					int n_user = it->first;
+					std::map< int, CSelectedOutput >::iterator ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(n_user);
+					if (ipp_it == phast_iphreeqc_worker->CSelectedOutputMap.end())
+					{
+						CSelectedOutput cso;
+						phast_iphreeqc_worker->CSelectedOutputMap[n_user] = cso;
+						ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(n_user);
+					}
+					types.clear();
+					longs.clear();
+					doubles.clear();
+					strings.clear();
+					it->second->Serialize(types, longs, doubles, strings);
+					ipp_it->second.DeSerialize(types, longs, doubles, strings);
+				}
 			}
 		} // end active
 		else
@@ -2928,6 +3112,20 @@ Reaction_module::Run_cells_thread(int n)
 				std::vector<double> empty(columns, INACTIVE_CELL_VALUE);
 				phast_iphreeqc_worker->Get_punch_vector().insert(phast_iphreeqc_worker->Get_punch_vector().end(),
 					empty.begin(),empty.end());
+				// Add selected output values to IPhreeqcPhast CSelectedOutputMap's
+				std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
+				for ( ; it != phast_iphreeqc_worker->SelectedOutputMap.end(); it++)
+				{
+					int iso = it->first;
+					std::map< int, CSelectedOutput >::iterator ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(iso);
+					if (ipp_it == phast_iphreeqc_worker->CSelectedOutputMap.end())
+					{
+						CSelectedOutput cso;
+						phast_iphreeqc_worker->CSelectedOutputMap[n] = cso;
+						ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(iso);
+					}
+					ipp_it->second.EndRow();
+				}
 			}
 		}
 #ifdef USE_MPI
@@ -3038,11 +3236,11 @@ Reaction_module::Send_restart_name(std::string &name)
 int 
 Reaction_module::SetCurrentSelectedOutputUserNumber(int *i)
 {
-	if (i != NULL)
+	if (i != NULL && *i >= 0)
 	{
 		return this->workers[0]->SetCurrentSelectedOutputUserNumber(*i);
 	}
-	return -1;
+	return VR_INVALIDARG;
 }
 /* ---------------------------------------------------------------------- */
 void

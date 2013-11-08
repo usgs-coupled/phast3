@@ -323,7 +323,8 @@ RM_find_components(int *id)
 	return (Reaction_module_ptr->Find_components());
 }
 /* ---------------------------------------------------------------------- */
-int RM_GetNthSelectedOutputUserNumber(int * rm_id, int * i)
+int 
+RM_GetNthSelectedOutputUserNumber(int * rm_id, int * i)
 	/* ---------------------------------------------------------------------- */
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);

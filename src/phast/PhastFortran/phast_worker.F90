@@ -174,7 +174,7 @@ SUBROUTINE phast_worker
             deltim_dummy,                                 &        ! time_step_hst
             c(1,1),                                       &        ! fraction
             stop_msg) 
-
+        CALL RMH_write_hdf(rm_id, 0)
         ! ... Write zone chemistry
         CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
         stop_msg = 0
