@@ -185,7 +185,9 @@ RM_close_files(int *solute)
 /* ---------------------------------------------------------------------- */
 {
 #ifdef HDF5_CREATE
+#ifdef OLD_HDF
 	HDF_Finalize();
+#endif
 #endif
 	// error_file is stderr
 	
@@ -462,7 +464,9 @@ RM_open_files(int * solute, char * prefix, int l_prefix)
 	}
 
 #ifdef HDF5_CREATE
+#ifdef OLD_HDF
 	HDF_Init(prefix, l_prefix);
+#endif
 #endif
 }
 /* ---------------------------------------------------------------------- */

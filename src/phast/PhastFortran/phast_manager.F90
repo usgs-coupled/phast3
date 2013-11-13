@@ -73,6 +73,7 @@ SUBROUTINE phast_manager
 #endif
     END INTERFACE
     ! ... Set string for use with RCS ident command
+    INTEGER hdf_initialized, hdf_invariant
     CHARACTER(LEN=80) :: ident_string='$Id: phast_manager.F90,v 1.3 2013/09/26 22:49:48 klkipp Exp klkipp $'
     !     ------------------------------------------------------------------
 
@@ -80,6 +81,8 @@ SUBROUTINE phast_manager
 #ifdef USE_MPI
     PRINT *, 'Starting manager process ', mpi_myself
 #endif
+    hdf_initialized = 0
+    hdf_invariant = 0
     errexi=.FALSE.
     errexe=.FALSE.
 
@@ -146,8 +149,10 @@ SUBROUTINE phast_manager
     CALL error2
 
 #if defined(HDF5_CREATE)
+#ifdef OLD_HDF
     CALL hdf_write_invariant(mpi_myself)
     CALL hdf_begin_time_step
+#endif    
 #endif
 
     ! ...  Initialize chemistry 
@@ -228,7 +233,9 @@ SUBROUTINE phast_manager
             deltim_dummy,       &        ! time_step
             c(1,1),             &        ! fraction
             stop_msg) 
-        CALL RMH_write_hdf(rm_id, 0)
+#ifndef OLD_HDF
+        CALL RMH_write_hdf(rm_id, hdf_initialized, hdf_invariant, prhdfci)
+#endif        
         CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
         CALL init2_3        
     ENDIF   ! End solute
@@ -240,7 +247,9 @@ SUBROUTINE phast_manager
         CALL write4
     ENDIF
 #if defined(HDF5_CREATE)
+#ifdef OLD_HDF
     CALL hdf_end_time_step          ! ... Print HDF head and velocity fields
+#endif    
 #endif
 
     ! ... distribute  initial p and c_w to workers from manager
@@ -342,7 +351,9 @@ SUBROUTINE phast_manager
             IF(tsfail .AND. .NOT.errexe) GO TO 20
             ! ... Done with transport for time step
 #if defined(HDF5_CREATE)
+#ifdef OLD_HDF
             CALL hdf_begin_time_step
+#endif            
 #endif
 
             ! ... Equilibrate the solutions with PHREEQC
@@ -366,6 +377,9 @@ SUBROUTINE phast_manager
                     deltim,                                       &        ! time_step_hst
                     c(1,1),                                       &        ! fraction
                     stop_msg) 
+#ifndef OLD_HDF
+                CALL RMH_write_hdf(rm_id, hdf_initialized, hdf_invariant, prhdfci)
+#endif   
             ENDIF    ! ... Done with chemistry
 
             CALL time_parallel(12)
@@ -380,7 +394,9 @@ SUBROUTINE phast_manager
                 CALL write4
             ENDIF
 #if defined(HDF5_CREATE)
+#ifdef OLD_HDF
             CALL hdf_end_time_step
+#endif            
             IF (prhdfii == 1) THEN
                 CALL write_hdf_intermediate     
             ENDIF
@@ -406,6 +422,7 @@ SUBROUTINE phast_manager
 #endif
 
     ! ... Cleanup reaction module
+	CALL RMH_HDF_Finalize();
     IF (solute) THEN  
         if (RM_destroy(rm_id) < 0) CALL RM_error(rm_id)     
     ENDIF

@@ -45,9 +45,12 @@ char error_string[1024];
  */
 int file_exists(const char *name);
 static hid_t open_hdf_file(const char *prefix, int prefix_l);
+//static void write_proc_timestep(int rank, int cell_count,
+//								hid_t file_dspace_id, hid_t dset_id,
+//								double *array, std::vector <std::vector <int> > &back);
 static void write_proc_timestep(int rank, int cell_count,
 								hid_t file_dspace_id, hid_t dset_id,
-								double *array, std::vector <std::vector <int> > &back);
+								std::vector<double> &array, std::vector <std::vector <int> > &back);
 static void write_axis(hid_t loc_id, double *a, int na, const char *name);
 static void write_vector(hid_t loc_id, double a[], int na, const char *name);
 static void write_vector_mask(hid_t loc_id, int a[], int na,
@@ -105,7 +108,8 @@ static struct proc_info
 {
 	int cell_count;
 	int scalar_count;			/* chemistry scalar count (doesn't include fortran scalars) */
-	double *array;
+	//double *array;
+	std::vector<double> array;
 } proc;
 
 std::vector<std::string> g_hdf_scalar_names;
@@ -185,7 +189,7 @@ HDF_Init(const char *prefix, int prefix_l)
 	/* init proc */
 	proc.cell_count = 0;
 	proc.scalar_count = 0;
-	proc.array = NULL;
+	//proc.array = NULL;
 }
 /*-------------------------------------------------------------------------
  * Function          HDF_Finalize (called by all procs)
@@ -268,10 +272,10 @@ HDF_Finalize(void)
 
 
 	/* free proc resources */
-	PHRQ_free(proc.array);
+	//PHRQ_free(proc.array);
 	proc.cell_count = 0;
 	proc.scalar_count = 0;
-	proc.array = NULL;
+	//proc.array = NULL;
 }
 
 /*-------------------------------------------------------------------------
@@ -855,10 +859,11 @@ HDFBeginCTimeStep(int count_chem)
 	assert(proc.cell_count > 0);
 	assert(proc.scalar_count > 0);
 	array_count = proc.cell_count * proc.scalar_count;
-	proc.array =
-		(double *) PHRQ_realloc(proc.array, sizeof(double) * array_count);
-	if (proc.array == NULL)
-		malloc_error();
+	//proc.array =
+	//	(double *) PHRQ_realloc(proc.array, sizeof(double) * array_count);
+	//if (proc.array == NULL)
+	//	malloc_error();
+	proc.array.resize(array_count);
 
 	/* init entire array to inactive */
 	for (i = 0; i < array_count; ++i)
@@ -914,7 +919,8 @@ HDFEndCTimeStep(std::vector <std::vector <int> > &back)
  */
 static void
 write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
-					hid_t dset_id, double *array, std::vector <std::vector <int> > &back)
+//					hid_t dset_id, double *array, std::vector <std::vector <int> > &back)
+					hid_t dset_id, std::vector<double> &array, std::vector <std::vector <int> > &back)
 {
 
 	hssize_t(*coor)[1];
@@ -967,7 +973,7 @@ write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
 
 		status =
 			H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, mem_dspace, file_dspace_id,
-					 H5P_DEFAULT, array);
+					 H5P_DEFAULT, array.data());
 		if (status < 0)
 		{
 			sprintf(error_string, "HDF ERROR: Unable to write dataspace\n");
@@ -980,7 +986,6 @@ write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
 	status = H5Sclose(mem_dspace);
 	assert(status >= 0);
 }
-
 void
 HDFSetScalarNames(std::vector<std::string> &names)
 {

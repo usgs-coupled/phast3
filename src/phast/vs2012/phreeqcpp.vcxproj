@@ -399,6 +399,7 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\gzstream.h" />
+    <ClInclude Include="..\hdf.h" />
     <ClInclude Include="..\KDtree\Cell_Face.h" />
     <ClInclude Include="..\KDtree\KDtree.h" />
     <ClInclude Include="..\KDtree\Point.h" />

@@ -97,5 +97,8 @@
     <ClInclude Include="..\RMHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\hdf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

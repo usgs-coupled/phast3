@@ -598,7 +598,7 @@ Reaction_module::CheckSelectedOutput()
 		std::map < int, CSelectedOutput >::iterator it = this->workers[0]->CSelectedOutputMap.begin();
 		for ( ; it != this->workers[0]->CSelectedOutputMap.end(); it++)
 		{
-			int rows = it->second.GetRowCount() - 1;
+			int rows = (int) it->second.GetRowCount() - 1;
 			std::vector<int> recv_buffer;
 			recv_buffer.resize(this->mpi_tasks);
 			MPI_Gather(&rows, 1, MPI_INT, recv_buffer.data(), 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -1270,69 +1270,118 @@ int
 Reaction_module::GetSelectedOutput(double *so)
 /* ---------------------------------------------------------------------- */
 {
-#ifdef USE_MPI
 	int n_user = this->workers[0]->GetCurrentSelectedOutputUserNumber();
+#ifdef USE_MPI
 	MPI_Bcast(&n_user,  1, MPI_INT, 0, MPI_COMM_WORLD);
 	if (n_user >= 0)
 	{
-		size_t pos = 0;
-		for (int n = 0; n < this->mpi_tasks; n++)
+		std::map< int, CSelectedOutput >::iterator it = this->workers[0]->CSelectedOutputMap.find(n_user);
+		if (it != this->workers[0]->CSelectedOutputMap.end())
 		{
-			if (this->mpi_myself == n)
-			{					
-				std::map< int, CSelectedOutput >::iterator it = this->workers[0]->CSelectedOutputMap.find(n_user);
-				int nrow = (int) it->second.GetRowCount();
-				int ncol = (int) it->second.GetColCount();
-				if (it != this->workers[0]->CSelectedOutputMap.end())
-				{
+			this->SetCurrentSelectedOutputUserNumber(&n_user);
+			int ncol = this->GetSelectedOutputColumnCount();
+			int local_start_cell = 0;
+			std::vector<double> dbuffer;
+			dbuffer.resize(this->nxyz*ncol);
+			for (int n = 0; n < this->mpi_tasks; n++)
+			{
+				int nrow;	
+				if (this->mpi_myself == n)
+				{	
 					if (this->mpi_myself == 0) 
 					{	
-						it->second.Doublize(nrow, ncol, &so[pos]);
-						pos += (size_t) (nrow*ncol);
+						it->second.Doublize(nrow, ncol, dbuffer.data());
 					}
 					else
 					{
-						std::vector<double> doubles;	
-						doubles.resize(nrow*ncol);
-						it->second.Doublize(nrow, ncol, &doubles[0]);
-						int length = nrow*ncol;
-						MPI_Send(&length, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
-						MPI_Send(doubles.data(), length, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
+						it->second.Doublize(nrow, ncol, dbuffer.data());
+						int length[2];
+						length[0] = nrow;
+						length[1] = ncol;
+						MPI_Send(length, 2, MPI_INT, 0, 0, MPI_COMM_WORLD);
+						MPI_Send(dbuffer.data(), nrow*ncol, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
 					}
+
 				}
-				else
+				else if (this->mpi_myself == 0)
+				{					
+					MPI_Status mpi_status;
+					int length[2];
+					MPI_Recv(length, 2, MPI_INT, n, 0, MPI_COMM_WORLD, &mpi_status);
+					nrow = length[0];
+					ncol = length[1];
+					MPI_Recv(dbuffer.data(), nrow*ncol, MPI_DOUBLE, n, 0, MPI_COMM_WORLD, &mpi_status);
+				}
+				std::cerr << "GetSelectedOutput A " << this->mpi_myself << std::endl;
+				if (mpi_myself == 0)
 				{
-					error_msg("Did not find current selected output in CSelectedOutputMap in  GetSelectedOutput", STOP);
+					// Now write data from the process to so
+					for (size_t icol = 0; icol < ncol; icol++)
+					{
+						for (size_t irow = 0; irow < nrow; irow++)
+						{
+							int ichem = local_start_cell + (int) irow;
+							so[ichem*ncol + icol] = dbuffer[icol*nrow + irow];
+#ifdef SKIP
+							for (size_t k = 0; k < back[ichem].size(); k++)
+							{
+								int ixyz = back[ichem][k];
+								so[icol*this->nxyz + ixyz] = dbuffer[icol*nrow + irow];
+							}
+#endif
+						}
+					}
+					local_start_cell += nrow;
 				}
+				std::cerr << "GetSelectedOutput B " << this->mpi_myself << std::endl;
 			}
-			else if (this->mpi_myself == 0)
-			{					
-				MPI_Status mpi_status;
-				int length;
-				MPI_Recv(&length, 1, MPI_INT, n, 0, MPI_COMM_WORLD, &mpi_status);
-				MPI_Recv(&so[pos], length, MPI_DOUBLE, n, 0, MPI_COMM_WORLD, &mpi_status);
-				pos += (size_t) length;
-			}
+		}
+		else
+		{
+			error_msg("Did not find current selected output in CSelectedOutputMap in  GetSelectedOutput", STOP);
 		}
 	}
 #else
-	int n_user = this->workers[0]->GetCurrentSelectedOutputUserNumber();
+
 	if (n_user >= 0)
 	{
-		size_t pos = 0;
-		int nrow, ncol;
+		std::vector<double> dbuffer;
+		dbuffer.resize(this->nxyz*ncol);
+		int local_start_cell = 0;
 		for (int n = 0; n < this->nthreads; n++)
 		{
+			int nrow_x, ncol_x;
 			std::map< int, CSelectedOutput>::iterator cso_it = this->workers[n]->CSelectedOutputMap.find(n_user);
 			if (cso_it != this->workers[n]->CSelectedOutputMap.end())
 			{
-				cso_it->second.Doublize(nrow, ncol, &so[pos]);
-				pos += nrow*ncol;
+				cso_it->second.Doublize(nrow_x, ncol_x, dbuffer.data());
+				//assert(nrow_x == nrow);
+				assert(ncol_x = ncol);
+
+				// Now write data from thread to so
+				for (size_t icol = 0; icol < ncol; icol++)
+				{
+					for (size_t irow = 0; irow < nrow_x; irow++)
+					{
+						int ichem = local_start_cell + (int) irow;
+						//so[icol*this->count_chem + ichem] = dbuffer[icol*nrow_x + irow];
+						//so[irow*ncol + icol] = dbuffer[icol*nrow_x + irow];
+						so[ichem*ncol + icol] = dbuffer[icol*nrow_x + irow];
+#ifdef SKIP
+						for (size_t k = 0; k < back[ichem].size(); k++)
+						{
+							int ixyz = back[ichem][k];
+							so[icol*this->nxyz + ixyz] = dbuffer[icol*nrow + irow];
+						}
+#endif
+					}
+				}
 			}
 			else
 			{
 				return VR_INVALIDARG;
 			}
+			local_start_cell += nrow_x;
 		}
 		return VR_OK;
 	}
@@ -1561,8 +1610,10 @@ Reaction_module::Initial_phreeqc_run_thread(int n)
 				iphreeqc_phast_worker->GetSelectedOutputValue(0, i, &v);
 				names.push_back(v.sVal);
 			}
+#ifdef OLD_HDF
 			HDFSetScalarNames(names);
-			this->selected_output_names = names;
+#endif
+			//this->selected_output_names = names;
 		}
 }
 /* ---------------------------------------------------------------------- */
@@ -2694,11 +2745,13 @@ Reaction_module::Run_cells()
 	{
 		Run_cells_thread(n);
 	} 
+#ifdef HDF_OLD
 	// Output
 	if (this->print_hdf && mpi_myself == 0)
 	{
 		BeginTimeStep();
 	}
+#endif
 	std::vector<char> char_buffer;
 	std::vector<double> double_buffer;
 	for (int n = 0; n < this->mpi_tasks; n++)
@@ -2770,7 +2823,8 @@ Reaction_module::Run_cells()
 		{
 			this->Write_restart();
 		}
-
+		
+#ifdef OLD_HDF
 		// write hdf
 		if (this->print_hdf)
 		{
@@ -2802,11 +2856,15 @@ Reaction_module::Run_cells()
 				HDFFillHyperSlab(this->start_cell[n], double_buffer, columns);
 			}
 		}
+#endif
+
 	} 	
+#ifdef OLD_HDF
 	if (this->print_hdf && mpi_myself == 0)
 	{
 		EndTimeStep();
 	}
+#endif
 
 	this->CheckSelectedOutput();
 
@@ -2849,7 +2907,9 @@ Reaction_module::Run_cells()
 	// Output
 	if (this->print_hdf)
 	{
+#ifdef OLD_HDF	
 		BeginTimeStep();
+#endif
 	}
 	for (int n = 0; n < this->nthreads; n++)
 	{
@@ -2877,13 +2937,17 @@ Reaction_module::Run_cells()
 		if (this->print_hdf)
 		{
 			size_t columns = this->workers[0]->GetSelectedOutputColumnCount();
+#ifdef OLD_HDF
 			HDFFillHyperSlab(this->start_cell[n], this->workers[n]->Get_punch_vector(), columns);
+#endif
 		}
 		this->workers[n]->Get_punch_vector().clear();
 	} 	
 	if (this->print_hdf)
 	{
+#ifdef OLD_HDF
 		EndTimeStep();
+#endif
 
 	}	
 	
