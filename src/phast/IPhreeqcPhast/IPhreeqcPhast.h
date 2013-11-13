@@ -50,7 +50,6 @@ protected:
 	std::ostringstream * punch_stream;
 	std::map< int, CSelectedOutput > CSelectedOutputMap;
 	std::vector < double > punch_vector;
-	std::vector<std::string> selected_output_names;
 	double thread_clock_time;
 	std::vector<double> cell_clock_times;
 	double standard_clock_time;

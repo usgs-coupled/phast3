@@ -64,10 +64,13 @@ SUBROUTINE phast_worker
     INTEGER :: i, a_err
     CHARACTER(LEN=130) :: logline1
     ! ... Set string for use with RCS ident command
+    INTEGER hdf_initialized, hdf_invariant
     CHARACTER(LEN=80) :: ident_string='$Id: phast_worker.F90,v 1.2 2013/09/26 22:49:48 klkipp Exp klkipp $'
     !     ------------------------------------------------------------------
 
     !...
+    hdf_initialized = 0
+    hdf_invariant = 0
     errexi=.FALSE.
     errexe=.FALSE.
     tsfail=.FALSE.
@@ -174,7 +177,9 @@ SUBROUTINE phast_worker
             deltim_dummy,                                 &        ! time_step_hst
             c(1,1),                                       &        ! fraction
             stop_msg) 
-        CALL RMH_write_hdf(rm_id, 0)
+#ifndef OLD_HDF
+            CALL RMH_write_hdf(rm_id, hdf_initialized, hdf_invariant, prhdfci)
+#endif       
         ! ... Write zone chemistry
         CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
         stop_msg = 0
@@ -230,7 +235,9 @@ SUBROUTINE phast_worker
                 deltim_dummy,                                 &        ! time_step_hst
                 c(1,1),                                       &        ! fraction
                 stop_msg) 
-                            
+#ifndef OLD_HDF
+            CALL RMH_write_hdf(rm_id, hdf_initialized, hdf_invariant, prhdfci)
+#endif         
             CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
 
             ! ... Save values for next time step

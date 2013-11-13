@@ -151,7 +151,9 @@ protected:
 	void CSelectedOutputMapClear();
 #endif
 	void cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
+public:
 	void EndTimeStep(void);
+protected:
 	void Error_stop(void);
 	bool File_exists(const std::string &name);
 	void File_rename(const std::string &temp_name, const std::string &name, const std::string &backup_name);
@@ -177,7 +179,7 @@ protected:
 	std::string database_file_name;
 	std::string chemistry_file_name;
 	std::string file_prefix;
-	std::vector<std::string> selected_output_names;
+	//std::vector<std::string> selected_output_names;
 	cxxStorageBin uz_bin;
 	cxxStorageBin phreeqc_bin;
 	std::map < std::string, int > FileMap; 
