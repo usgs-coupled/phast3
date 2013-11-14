@@ -23,10 +23,45 @@ extern void HDF_END_TIME_STEP(void);
 #if defined(__cplusplus)
 }
 #endif
+class RMHelper: public PHRQ_base
+{
+public:
+	RMHelper();
+	~RMHelper(void);
+	bool GetHDFInitialized(void) {return this->HDFInitialized;}
+	void SetHDFInitialized(bool tf) {this->HDFInitialized = tf;}
+	bool GetHDFInvariant(void) {return this->HDFInvariant;}
+	void SetHDFInvariant(bool tf) {this->HDFInvariant = tf;}
+	bool GetXYZInitialized(void) {return this->XYZInitialized;}
+	void SetXYZInitialized(bool tf) {this->XYZInitialized = tf;}
+	std::vector< std::string > &GetHeadings(void) {return this->Headings;}
+	void SetHeadings(std::vector< std::string > &h) {this->Headings = h;}
 
+protected:
+	bool HDFInitialized;
+	bool HDFInvariant;
+	bool XYZInitialized;
+	std::vector< std::string > Headings;
+};
+RMHelper rmhelper;
+// Constructor
+RMHelper::RMHelper()
+{
+	this->io = new PHRQ_io;
+	HDFInitialized = false;
+	HDFInvariant = false;
+	XYZInitialized = false;
+}
+// Destructor
+RMHelper::~RMHelper()
+{
+	delete this->io;
+}
 /* ---------------------------------------------------------------------- */
 void
-RMH_Write_HDF(int *id, int *hdf_initialized, int *hdf_invariant, int *print_hdf)
+RMH_Write_Files(int *id, int *print_hdf, int *print_xyz, 
+	double *x_node, double *y_node, double *z_node, int *xyz_mask,
+	double *saturation, int *mapping)
 /* ---------------------------------------------------------------------- */
 {
 	//H5::H5File *file = new H5::H5File( FILE_NAME, H5F_ACC_RDWR );
@@ -37,13 +72,39 @@ RMH_Write_HDF(int *id, int *hdf_initialized, int *hdf_invariant, int *print_hdf)
 	{	
 		int local_mpi_myself = Reaction_module_ptr->Get_mpi_myself();
 		int count_chem = Reaction_module_ptr->GetSelectedOutputRowCount();
-
+		int nxyz = Reaction_module_ptr->Get_nxyz();
+		double current_time = Reaction_module_ptr->Get_time_conversion() *  Reaction_module_ptr->Get_time();
 		if (local_mpi_myself == 0)
 		{
 			int nsel = RM_GetSelectedOutputCount(id);
 
-			// Do initialization
-			if (*hdf_initialized == 0 && nsel > 0)
+			// Set headings
+			if (rmhelper.GetHeadings().size() == 0)
+			{				
+				for (int i = 0; i < nsel; i++)
+				{
+					int status;
+					int n_user = RM_GetNthSelectedOutputUserNumber(id, &i);
+					if (n_user >= 0)
+					{
+						status = RM_SetCurrentSelectedOutputUserNumber(id, &n_user);
+						if (status >= 0)
+						{						
+							// add Headings
+							int ncol = RM_GetSelectedOutputColumnCount(id);
+							for (int icol = 0; icol < ncol; icol++)
+							{
+								char head[100];
+								status = RM_GetSelectedOutputHeading(id, &icol, head, 100);
+								rmhelper.GetHeadings().push_back(head);
+							}
+						}
+					}
+				}
+			}
+
+			// Initialize HDF
+			if (!rmhelper.GetHDFInitialized() && nsel > 0 && *print_hdf != 0)
 			{
 				for (int i = 0; i < nsel; i++)
 				{
@@ -55,34 +116,66 @@ RMH_Write_HDF(int *id, int *hdf_initialized, int *hdf_invariant, int *print_hdf)
 						if (status >= 0)
 						{
 							// open file
+							std::string pre = Reaction_module_ptr->Get_file_prefix();
+							// need Reaction_module_ptr->GetFilePrefix();
+							std::ostringstream oss;
+							oss << "_" << n_user;
+							pre.append(oss.str());
+							HDF_Init(pre.c_str(), (int) pre.size());
+
+							// Set HDF scalars
+							HDFSetScalarNames(rmhelper.GetHeadings());
+							rmhelper.SetHDFInitialized(true);
+						}
+					}
+				}
+			}
+
+			// Initialize xyz
+			if (!rmhelper.GetXYZInitialized() && nsel > 0 && *print_xyz != 0)
+			{				
+				for (int i = 0; i < nsel; i++)
+				{
+					int n_user = RM_GetNthSelectedOutputUserNumber(id, &i);
+					if (n_user >= 0)
+					{
+						int status = RM_SetCurrentSelectedOutputUserNumber(id, &n_user);
+						if (status >= 0)
+						{
+							// Open file
+							//std::string filename = Reaction_module_ptr->Get_file_prefix();
+							std::ostringstream filename;
+							filename << Reaction_module_ptr->Get_file_prefix() << "_" << n_user << ".chem.xyz.tsv";
+							if (!rmhelper.Get_io()->punch_open(filename.str().c_str()))
 							{
-								std::string pre = Reaction_module_ptr->Get_file_prefix();
-								// need Reaction_module_ptr->GetFilePrefix();
-								std::ostringstream oss;
-								oss << "_" << n_user;
-								pre.append(oss.str());
-								HDF_Init(pre.c_str(), (int) pre.size());
+								rmhelper.Get_io()->error_msg("Could not open xyz file.", 1);
 							}
-							// add scalars
+
+							// write first headings
+							char line_buff[132];
+							sprintf(line_buff, "%15s\t%15s\t%15s\t%15s\t%2s\t", "x", "y",
+								"z", "time", "in");
+							rmhelper.Get_io()->punch_msg(line_buff);
+							
+							// create chemistry headings
+							int ncol = RM_GetSelectedOutputColumnCount(id);
+							std::ostringstream h;
+							for (int i = 0; i < ncol; i++)
 							{
-								std::vector< std::string > headings;
-								int ncol = RM_GetSelectedOutputColumnCount(id);
-								for (int icol = 0; icol < ncol; icol++)
-								{
-									char head[100];
-									status = RM_GetSelectedOutputHeading(id, &icol, head, 100);
-									headings.push_back(head);
-								}
-								HDFSetScalarNames(headings);
+								std::string s(rmhelper.GetHeadings()[i]);
+								s.append("\t");
+								h.width(20);
+								h << s;
 							}
-							*hdf_initialized = 1;
+							h << "\n";
+							rmhelper.Get_io()->punch_msg(h.str().c_str());
+							rmhelper.SetXYZInitialized(true);
 						}
 					}
 				}
 			}
 		}
-
-		
+	
 		// Write H5 file
 		if (print_hdf != 0)
 		{
@@ -101,10 +194,10 @@ RMH_Write_HDF(int *id, int *hdf_initialized, int *hdf_invariant, int *print_hdf)
 						{
 							local_selected_out.resize((size_t) (count_chem*ncol));
 							int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
-							if ( *hdf_invariant == 0)
+							if ( !rmhelper.GetHDFInvariant())
 							{
 								HDF_WRITE_INVARIANT(&local_mpi_myself);
-								*hdf_invariant = 1;
+								rmhelper.SetHDFInvariant(true);
 							}
 							// Now write HDF file
 							HDF_BEGIN_TIME_STEP();
@@ -112,6 +205,68 @@ RMH_Write_HDF(int *id, int *hdf_initialized, int *hdf_invariant, int *print_hdf)
 							HDFFillHyperSlab(0, local_selected_out, ncol);
 							Reaction_module_ptr->EndTimeStep();
 							HDF_END_TIME_STEP();
+						}
+						else
+						{
+							int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
+						}
+					}
+				}
+			}
+		}
+
+		// Write xyz file
+		if (*print_xyz != 0)
+		{
+			std::vector<double> local_selected_out;
+			int status;
+			for (int i = 0; i < RM_GetSelectedOutputCount(id); i++)
+			{
+				int n_user = RM_GetNthSelectedOutputUserNumber(id, &i);
+				int ncol = RM_GetSelectedOutputColumnCount(id);
+				if (n_user >= 0)
+				{
+					status = RM_SetCurrentSelectedOutputUserNumber(id, &n_user);
+					if (status >= 0)
+					{
+						if (local_mpi_myself == 0)
+						{
+							local_selected_out.resize((size_t) (count_chem*ncol));
+							int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
+
+							// write xyz file
+							for (int irow = 0; irow < nxyz; irow++)
+							{
+								int active = 1;
+								if (mapping[irow] < 0 || saturation[irow] <= 0)
+								{
+									active = 0;
+								}
+
+								// write x,y,z
+								std::ostringstream ln;
+
+								char line_buff[132];
+								sprintf(line_buff, "%15g\t%15g\t%15g\t%15g\t%2d\t",
+									x_node[irow], y_node[irow], z_node[irow], current_time,
+									active);
+								ln << line_buff;
+								
+								if (active)
+								{
+									// write chemistry values
+									char token[19];
+									for (int jcol = 0; jcol < ncol; jcol++)
+									{		
+										sprintf(token,"%19.10e\t", local_selected_out[irow * ncol + jcol ]);
+										ln.width(20);
+										//ln << local_selected_out[jcol * nxyz + irow ] << "\t";
+										ln << token;
+									}
+								}
+								ln << "\n";
+								rmhelper.Get_io()->punch_msg(ln.str().c_str());
+							}
 						}
 						else
 						{
