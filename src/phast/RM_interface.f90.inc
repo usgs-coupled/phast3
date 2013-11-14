@@ -131,12 +131,6 @@
             INTEGER :: id
             INTEGER, OPTIONAL :: t
         END SUBROUTINE RM_set_print_chem_mask 
-		
-        SUBROUTINE RM_set_print_xyz_mask(id, t)   
-            IMPLICIT NONE
-            INTEGER :: id
-            INTEGER, OPTIONAL :: t
-        END SUBROUTINE RM_set_print_xyz_mask 
 
         SUBROUTINE RM_set_pressure(id, t)   
             IMPLICIT NONE

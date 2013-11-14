@@ -97,16 +97,12 @@ public:
 	void Set_volume(double * t); 
 	std::vector<int> & Get_print_chem_mask (void) {return this->print_chem_mask;}
 	void Set_print_chem_mask(int * t); 
-	std::vector<int> & Get_print_xyz_mask (void) {return this->print_xyz_mask;}
-	void Set_print_xyz_mask (int * t); 
 	int Get_rebalance_method(void) const {return this->rebalance_method;};
 	void Set_rebalance_method(int * t); 
 	double Get_rebalance_fraction(void) const {return this->rebalance_fraction;};
 	void Set_rebalance_fraction(double * t); 
 	const bool Get_print_chem(void) const {return this->print_chem;};
 	void Set_print_chem(int *t); 
-	const bool Get_print_xyz(void) const {return this->print_xyz;};
-	void Set_print_xyz(int *t); 
 	const bool Get_print_hdf(void) const {return this->print_hdf;};
 	void Set_print_hdf(int *t); 
 	const bool Get_print_restart(void) const {return this->print_restart;};
@@ -209,7 +205,6 @@ protected:
 	std::vector<double> tempc;				// nxyz temperature Celsius
 	std::vector<double> density;			// nxyz density
 	std::vector<int> print_chem_mask;		// nxyz print flags for output file
-	std::vector<int> print_xyz_mask;		// nxyz print flags for chemistry XYZ file 
 	bool rebalance_method;                  // rebalance method 0 std, 1 by_cell
 	double rebalance_fraction;			    // parameter for rebalancing process load for parallel	
 	std::vector<int> have_Solution;
@@ -231,10 +226,8 @@ protected:
 
 	// print flags
 	bool print_chem;						// print flag for chemistry output file 
-	bool print_xyz;							// print flag for selected output
 	bool print_hdf;							// print flag for hdf file
 	bool print_restart;						// print flag for writing restart file 
-	bool write_xyz_headings;                // write xyz headings once
 
 	bool stop_message;
 	//std::map< int, std::vector<double> > SelectedOutputMapDoubles;

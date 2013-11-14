@@ -231,7 +231,7 @@ RMH_Write_Files(int *id, int *print_hdf, int *print_xyz,
 					{
 						if (local_mpi_myself == 0)
 						{
-							local_selected_out.resize((size_t) (count_chem*ncol));
+							local_selected_out.resize((size_t) (nxyz*ncol));
 							int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
 
 							// write xyz file
@@ -256,7 +256,7 @@ RMH_Write_Files(int *id, int *print_hdf, int *print_xyz,
 								if (active)
 								{
 									// write chemistry values
-									char token[19];
+									char token[21];
 									for (int jcol = 0; jcol < ncol; jcol++)
 									{		
 										sprintf(token,"%19.10e\t", local_selected_out[irow * ncol + jcol ]);
@@ -271,7 +271,7 @@ RMH_Write_Files(int *id, int *print_hdf, int *print_xyz,
 						}
 						else
 						{
-							int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
+								int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
 						}
 					}
 				}

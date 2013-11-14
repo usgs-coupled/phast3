@@ -141,10 +141,8 @@ if( numCPU < 1 )
 
 	// print flags
 	this->print_chem = false;					// print flag for chemistry output file 
-	this->print_xyz = false;					// print flag for selected output
 	this->print_hdf = false;					// print flag for hdf file
 	this->print_restart = false;				// print flag for writing restart file 
-	write_xyz_headings = true;
 	this->input_units_Solution = 3;				// 1 mg/L, 2 mmol/L, 3 kg/kgs
 	this->input_units_PPassemblage = 1;			// water 1, rock 2
 	this->input_units_Exchange = 1;			    // water 1, rock 2
@@ -170,7 +168,6 @@ if( numCPU < 1 )
 		pv0.push_back(0.1);
 		volume.push_back(1.0);
 		print_chem_mask.push_back(0);
-		print_xyz_mask.push_back(1);
 		density.push_back(1.0);
 		pressure.push_back(1.0);
 		tempc.push_back(25.0);
@@ -2787,37 +2784,6 @@ Reaction_module::Run_cells()
 				Write_output(char_buffer.data());
 			}
 		}
-
-		// write punch results
-		if (this->print_xyz)
-		{
-			// Need to transfer output stream to root and print
-			if (this->mpi_myself == n)
-			{
-				if (n == 0)
-				{
-					Write_xyz(this->workers[0]->Get_punch_stream().str().c_str());
-					delete &this->workers[0]->Get_punch_stream();
-				}
-				else
-				{
-					int size = (int) this->workers[0]->Get_punch_stream().str().size();
-					MPI_Send(&size, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
-					MPI_Send((void *) this->workers[0]->Get_punch_stream().str().c_str(), size, MPI_CHARACTER, 0, 0, MPI_COMM_WORLD);
-					delete &this->workers[0]->Get_punch_stream();
-				}	
-			}
-			else if (this->mpi_myself == 0)
-			{
-				MPI_Status mpi_status;
-				int size;
-				MPI_Recv(&size, 1, MPI_INT, n, 0, MPI_COMM_WORLD, &mpi_status);
-				char_buffer.resize(size + 1);
-				MPI_Recv((void *) char_buffer.data(), size, MPI_CHARACTER, n, 0, MPI_COMM_WORLD, &mpi_status);
-				char_buffer[size] = '\0';
-				Write_xyz(char_buffer.data());
-			}
-		}
 		// write restart
 		if (this->print_restart)
 		{
@@ -2919,14 +2885,6 @@ Reaction_module::Run_cells()
 			Write_output(this->workers[n]->Get_out_stream().str().c_str());
 		}
 		delete &this->workers[n]->Get_out_stream();
-
-		// write punch results
-		if (this->print_xyz)
-		{
-			Write_xyz(this->workers[n]->Get_punch_stream().str().c_str());
-		}
-		delete &this->workers[n]->Get_punch_stream();
-
 		// write restart
 		if (this->print_restart)
 		{
@@ -3008,7 +2966,6 @@ Reaction_module::Run_cells_thread(int n)
 #endif
 		// Set local print flags
 		bool pr_chem = this->print_chem && (this->print_chem_mask[j] != 0);
-		bool pr_xyz = this->print_xyz && (this->print_xyz_mask[i] != 0);
 		bool pr_hdf = this->print_hdf;
 
 		// partition solids between UZ and SZ
@@ -3047,7 +3004,6 @@ Reaction_module::Run_cells_thread(int n)
 
 			// Set print flags
 			phast_iphreeqc_worker->SetOutputStringOn(pr_chem);
-			phast_iphreeqc_worker->SetSelectedOutputStringOn(pr_xyz);
 
 			// do the calculation
 			std::ostringstream input;
@@ -3071,44 +3027,6 @@ Reaction_module::Run_cells_thread(int n)
 					cxxsol->multiply(pv0[j] / pv[j]);
 				}
 			}
-			// write headings to xyz file
-			if (pr_xyz && this->write_xyz_headings && n == 0 && mpi_myself == 0)
-			{
-				char line_buff[132];
-				sprintf(line_buff, "%15s\t%15s\t%15s\t%15s\t%2s\t", "x", "y",
-					"z", "time", "in");
-
-				std::ostringstream h;
-				int n = phast_iphreeqc_worker->GetSelectedOutputColumnCount();
-				VAR pv;
-				VarInit(&pv);
-				for (int i = 0; i < n; i++)
-				{
-					phast_iphreeqc_worker->GetSelectedOutputValue(0, i, &pv);
-					h.width(15);
-					std::string s(pv.sVal);
-					s.append("\t");
-					h.width(15);
-					h << s;
-				}
-				VarClear(&pv);
-
-				this->write_xyz_headings = false;
-				phast_iphreeqc_worker->Get_punch_stream() << line_buff;
-				phast_iphreeqc_worker->Get_punch_stream() << h.str().c_str() << "\n";
-			}
-
-			// write xyz file
-			if (pr_xyz)
-			{
-				char line_buff[132];
-				sprintf(line_buff, "%15g\t%15g\t%15g\t%15g\t%2d\t",
-					x_node[j], y_node[j], z_node[j], (this->time) * (this->time_conversion),
-					active);
-				phast_iphreeqc_worker->Get_punch_stream() << line_buff;
-				phast_iphreeqc_worker->Get_punch_stream() << phast_iphreeqc_worker->GetSelectedOutputStringLine(0) << "\n";
-			}
-
 			// Write output file
 			if (pr_chem)
 			{
@@ -3158,15 +3076,6 @@ Reaction_module::Run_cells_thread(int n)
 				line << "z= " << z_node[j] << "\n";
 				line << "Cell is dry.\n";
 				phast_iphreeqc_worker->Get_out_stream() << line.str().c_str();
-			}
-			// write xyz file
-			if (pr_xyz)
-			{
-				char line_buff[132];
-				sprintf(line_buff, "%15g\t%15g\t%15g\t%15g\t%2d\t\n",
-					x_node[j], y_node[j], z_node[j], (this->time) * (this->time_conversion),
-					active);
-				phast_iphreeqc_worker->Get_punch_stream() << line_buff;
 			}
 			// Write hdf file
 			if (pr_hdf)
@@ -3549,35 +3458,6 @@ Reaction_module::Set_print_chem_mask(int * t)
 	}
 #ifdef USE_MPI	
 	MPI_Bcast(this->print_chem_mask.data(), this->nxyz, MPI_INT, 0, MPI_COMM_WORLD);
-#endif
-}
-void 
-Reaction_module::Set_print_xyz(int *t)
-{
-	if (mpi_myself == 0 && t != NULL)
-	{
-		this->print_xyz = *t != 0;
-	}
-#ifdef USE_MPI
-	MPI_Bcast(&this->print_xyz, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
-#endif
-}
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::Set_print_xyz_mask(int * t)
-/* ---------------------------------------------------------------------- */
-{
-	if (this->print_xyz_mask.size() < this->nxyz)
-	{
-		this->print_xyz_mask.resize(this->nxyz);
-	}
-	if (this->mpi_myself == 0)
-	{
-		if (t == NULL) error_msg("NULL pointer in Set_print_xyz_mask", 1);
-		memcpy(this->print_xyz_mask.data(), t, (size_t) (this->nxyz * sizeof(int)));
-	}
-#ifdef USE_MPI	
-	MPI_Bcast(this->print_xyz_mask.data(), this->nxyz, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
 }
 void 

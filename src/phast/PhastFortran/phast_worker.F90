@@ -137,7 +137,6 @@ SUBROUTINE phast_worker
         CALL RM_set_time_conversion(rm_id)
         CALL RM_set_pv0(rm_id)
         CALL RM_set_print_chem_mask(rm_id)
-        CALL RM_set_print_xyz_mask(rm_id)
         CALL RM_set_free_surface(rm_id)
         CALL RM_set_steady_flow(rm_id)
         CALL RM_set_volume(rm_id)
@@ -178,9 +177,11 @@ SUBROUTINE phast_worker
             c(1,1),                                       &        ! fraction
             stop_msg) 
 #ifndef OLD_HDF
-            !CALL RMH_write_hdf(rm_id, hdf_initialized, hdf_invariant, prhdfci)
-            CALL RMH_Write_Files(rm_id), prhdfci, prcphrqi, &
-	            x_node(1), y_node(1), z_node(1), iprint_xyz(1)&
+            !CALL RMH_write_hdf(rm_id, hdf_initialized, hdf_invariant, prhdfci)            
+            CALL MPI_BCAST(prcphrqi, 1, MPI_INTEGER, manager, &
+                 world, ierrmpi)
+            CALL RMH_Write_Files(rm_id, prhdfci, prcphrqi, &
+	            x_node(1), y_node(1), z_node(1), iprint_xyz(1), &
 	            frac(1), grid2chem(1))             
 #endif       
         ! ... Write zone chemistry
@@ -240,8 +241,11 @@ SUBROUTINE phast_worker
                 stop_msg) 
 #ifndef OLD_HDF
             !CALL RMH_write_hdf(rm_id, hdf_initialized, hdf_invariant, prhdfci)
-            CALL RMH_Write_Files(rm_id), prhdfci, prcphrqi, &
-	            x_node(1), y_node(1), z_node(1), iprint_xyz(1)&
+           
+            CALL MPI_BCAST(prcphrqi, 1, MPI_INTEGER, manager, &
+                 world, ierrmpi)
+            CALL RMH_Write_Files(rm_id, prhdfci, prcphrqi, &
+	            x_node(1), y_node(1), z_node(1), iprint_xyz(1), &
 	            frac(1), grid2chem(1))             
 #endif         
             CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
