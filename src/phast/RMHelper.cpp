@@ -237,6 +237,7 @@ RMH_Write_Files(int *id, int *print_hdf, int *print_xyz,
 							// write xyz file
 							for (int irow = 0; irow < nxyz; irow++)
 							{
+								if (xyz_mask[irow] <= 0) continue;
 								int active = 1;
 								if (mapping[irow] < 0 || saturation[irow] <= 0)
 								{
