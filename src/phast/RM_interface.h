@@ -43,7 +43,6 @@
 #define RM_set_nodes                       FC_FUNC_ (rm_set_nodes,                     RM_SET_NODES)
 #define RM_set_printing                    FC_FUNC_ (rm_set_printing,                  RM_SET_PRINTING)
 #define RM_set_print_chem_mask             FC_FUNC_ (rm_set_print_chem_mask,           RM_SET_PRINT_CHEM_MASK)
-#define RM_set_print_xyz_mask              FC_FUNC_ (rm_set_print_xyz_mask,            RM_SET_PRINT_XYZ_MASK)
 #define RM_set_pressure                    FC_FUNC_ (rm_set_pressure,                  RM_SET_PRESSURE)
 #define RM_set_pv0                         FC_FUNC_ (rm_set_pv0,                       RM_SET_PV0)
 #define RM_set_pv                          FC_FUNC_ (rm_set_pv,                        RM_SET_PV)
@@ -87,7 +86,6 @@
 #define RM_set_nodes                          rm_set_nodes
 #define RM_set_printing                       rm_set_printing
 #define RM_set_print_chem_mask                rm_set_print_chem_mask
-#define RM_set_print_xyz_mask                 rm_set_print_xyz_mask
 #define RM_set_pressure                       rm_set_pressure
 #define RM_set_pv0                            rm_set_pv0
 #define RM_set_pv                             rm_set_pv
@@ -171,9 +169,8 @@ void RM_set_input_units (int *id,
 	int *sol=NULL, int *pp=NULL, int *ex=NULL, int *surf=NULL, int *gas=NULL, int *ss=NULL, int *kin=NULL);
 void RM_set_mapping (int *id, int *grid2chem=NULL); 
 void RM_set_nodes(int *id, double *x_node, double *y_node, double *z_node);
-void RM_set_printing(int *id, int *print_chem, int *print_xyz, int *print_hdf, int *print_restart);
+void RM_set_printing(int *id, int *print_chem, int *print_hdf, int *print_restart);
 void RM_set_print_chem_mask(int *id, int *t);
-void RM_set_print_xyz_mask(int *id, int *t);
 void RM_set_pressure(int *id, double *t);
 void RM_set_pv(int *id, double *t);
 void RM_set_pv0(int *id, double *t);

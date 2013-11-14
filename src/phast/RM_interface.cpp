@@ -670,7 +670,6 @@ RM_set_nodes(int *id,
 void
 RM_set_printing(int *id,
 			 int *print_chem,
-			 int *print_xyz,
 			 int *print_hdf,
 			 int *print_restart 
 			 )
@@ -681,7 +680,6 @@ RM_set_printing(int *id,
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Set_print_chem(print_chem);
-		Reaction_module_ptr->Set_print_xyz(print_xyz);
 		Reaction_module_ptr->Set_print_hdf(print_hdf);
 		Reaction_module_ptr->Set_print_restart(print_restart);
 	}
@@ -695,17 +693,6 @@ void RM_set_print_chem_mask(int *id, int *t)
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Set_print_chem_mask(t);
-	}
-}
-void RM_set_print_xyz_mask(int *id, int *t)
-{
-	//
-	// multiply seconds to convert to user time units
-	//
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
-	if (Reaction_module_ptr)
-	{
-		Reaction_module_ptr->Set_print_xyz_mask(t);
 	}
 }
 void RM_set_pressure(int *id, double *t)

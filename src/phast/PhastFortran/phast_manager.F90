@@ -173,7 +173,6 @@ SUBROUTINE phast_manager
         CALL RM_set_time_conversion(rm_id, cnvtmi)
         CALL RM_set_pv0(rm_id, pv0(1))
         CALL RM_set_print_chem_mask(rm_id, iprint_chem(1))
-        CALL RM_set_print_xyz_mask(rm_id, iprint_xyz(1))
         ifresur = fresur
         CALL RM_set_free_surface(rm_id, ifresur)
         isteady_flow = steady_flow
@@ -234,7 +233,11 @@ SUBROUTINE phast_manager
             c(1,1),             &        ! fraction
             stop_msg) 
 #ifndef OLD_HDF
-        !CALL RMH_write_hdf(rm_id, hdf_initialized, hdf_invariant, prhdfci)
+        !CALL RMH_write_hdf(rm_id, hdf_initialized, hdf_invariant, prhdfci)   
+#ifdef USE_MPI        
+        CALL MPI_BCAST(prcphrqi, 1, MPI_INTEGER, manager, &
+                world, ierrmpi)
+#endif
         CALL RMH_Write_Files(rm_id, prhdfci, prcphrqi, &
 	        x_node(1), y_node(1), z_node(1), iprint_xyz(1), &
 	        frac(1), grid2chem(1));        
@@ -381,7 +384,11 @@ SUBROUTINE phast_manager
                     c(1,1),                                       &        ! fraction
                     stop_msg) 
 #ifndef OLD_HDF
-                !CALL RMH_write_hdf(rm_id, hdf_initialized, hdf_invariant, prhdfci)
+                !CALL RMH_write_hdf(rm_id, hdf_initialized, hdf_invariant, prhdfci)    
+#ifdef USE_MPI                
+                CALL MPI_BCAST(prcphrqi, 1, MPI_INTEGER, manager, &
+                        world, ierrmpi)
+#endif
                 CALL RMH_Write_Files(rm_id, prhdfci, prcphrqi, &
 	                x_node(1), y_node(1), z_node(1), iprint_xyz(1), &
 	                frac(1), grid2chem(1))                 
