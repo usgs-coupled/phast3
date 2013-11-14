@@ -234,7 +234,10 @@ SUBROUTINE phast_manager
             c(1,1),             &        ! fraction
             stop_msg) 
 #ifndef OLD_HDF
-        CALL RMH_write_hdf(rm_id, hdf_initialized, hdf_invariant, prhdfci)
+        !CALL RMH_write_hdf(rm_id, hdf_initialized, hdf_invariant, prhdfci)
+        CALL RMH_Write_Files(rm_id, prhdfci, prcphrqi, &
+	        x_node(1), y_node(1), z_node(1), iprint_xyz(1), &
+	        frac(1), grid2chem(1));        
 #endif        
         CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
         CALL init2_3        
@@ -378,7 +381,10 @@ SUBROUTINE phast_manager
                     c(1,1),                                       &        ! fraction
                     stop_msg) 
 #ifndef OLD_HDF
-                CALL RMH_write_hdf(rm_id, hdf_initialized, hdf_invariant, prhdfci)
+                !CALL RMH_write_hdf(rm_id, hdf_initialized, hdf_invariant, prhdfci)
+                CALL RMH_Write_Files(rm_id, prhdfci, prcphrqi, &
+	                x_node(1), y_node(1), z_node(1), iprint_xyz(1), &
+	                frac(1), grid2chem(1))                 
 #endif   
             ENDIF    ! ... Done with chemistry
 
