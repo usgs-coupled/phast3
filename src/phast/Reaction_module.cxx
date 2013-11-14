@@ -1312,7 +1312,6 @@ Reaction_module::GetSelectedOutput(double *so)
 					ncol = length[1];
 					MPI_Recv(dbuffer.data(), nrow*ncol, MPI_DOUBLE, n, 0, MPI_COMM_WORLD, &mpi_status);
 				}
-				std::cerr << "GetSelectedOutput A " << this->mpi_myself << std::endl;
 				if (mpi_myself == 0)
 				{
 					// Now write data from the process to so
@@ -1333,7 +1332,6 @@ Reaction_module::GetSelectedOutput(double *so)
 					}
 					local_start_cell += nrow;
 				}
-				std::cerr << "GetSelectedOutput B " << this->mpi_myself << std::endl;
 			}
 		}
 		else
@@ -1345,6 +1343,8 @@ Reaction_module::GetSelectedOutput(double *so)
 
 	if (n_user >= 0)
 	{
+		this->SetCurrentSelectedOutputUserNumber(&n_user);
+		int ncol = this->GetSelectedOutputColumnCount();
 		std::vector<double> dbuffer;
 		dbuffer.resize(this->nxyz*ncol);
 		int local_start_cell = 0;
@@ -2943,13 +2943,12 @@ Reaction_module::Run_cells()
 		}
 		this->workers[n]->Get_punch_vector().clear();
 	} 	
+#ifdef OLD_HDF
 	if (this->print_hdf)
 	{
-#ifdef OLD_HDF
 		EndTimeStep();
-#endif
-
 	}	
+#endif
 	
 	this->CheckSelectedOutput();
 
@@ -3185,8 +3184,16 @@ Reaction_module::Run_cells_thread(int n)
 					if (ipp_it == phast_iphreeqc_worker->CSelectedOutputMap.end())
 					{
 						CSelectedOutput cso;
-						phast_iphreeqc_worker->CSelectedOutputMap[n] = cso;
+						phast_iphreeqc_worker->CSelectedOutputMap[iso] = cso;
 						ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(iso);
+						for (int i = 0; i < columns; i++)
+						{
+							VAR pvar, pvar1;
+							VarInit(&pvar);
+							VarInit(&pvar1);
+							phast_iphreeqc_worker->GetSelectedOutputValue(0, i, &pvar);
+							ipp_it->second.PushBack(pvar.sVal, pvar1);
+						}
 					}
 					ipp_it->second.EndRow();
 				}

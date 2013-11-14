@@ -1,10 +1,6 @@
 /*
-  hdf.cpp
+  hdfcpp.cpp
 */
-#ifdef USE_MPI
-//MPICH seems to require mpi.h to be first
-#include <mpi.h>
-#endif
 #include <string.h>
 #include <stdlib.h>
 #if defined(_MT)
@@ -19,7 +15,6 @@
 
 #include "phrqtype.h"
 #include "hdf.h"
-
 
 #define PHRQ_malloc malloc
 #define PHRQ_free free
@@ -76,10 +71,6 @@ static struct root_info
 	int nxyz;
 	size_t scalar_name_max_len;
 	std::vector <std::string> scalar_names;
-#ifdef USE_MPI
-	double *recv_array;
-	int recv_array_count;
-#endif
 	char timestep_units[40];
 	char timestep_buffer[120];
 	int active_count;
@@ -162,12 +153,6 @@ HDF_Init(const char *prefix, int prefix_l)
 	root.hdf_file_id = open_hdf_file(prefix, prefix_l);
 	assert(root.hdf_file_id > 0);
 
-#ifdef USE_MPI
-	root.recv_array = NULL;
-	root.recv_array_count = 0;
-	root.f_array = NULL;
-#endif
-
 	root.current_timestep_gr_id = -1;
 	root.current_file_dspace_id = -1;
 	root.current_file_dset_id = -1;
@@ -240,12 +225,6 @@ HDF_Finalize(void)
 	}
 
 	/* free mem */
-#ifdef USE_MPI
-	assert(root.recv_array != NULL || root.recv_array_count == 0);
-	PHRQ_free(root.recv_array);
-	root.recv_array = NULL;
-	root.recv_array_count = 0;
-#endif
 
 #ifdef HDF_ERROR
 	assert(root.f_array != NULL);
@@ -634,12 +613,6 @@ HDF_OPEN_TIME_STEP(double *time, double *cnvtmi, int *print_chem,
 	int i;
 	size_t len;
 
-#ifdef USE_MPI
-	/*    extern int mpi_myself; */
-#else
-	/*    const int mpi_myself = 0; */
-#endif
-
 	assert(root.current_timestep_gr_id == -1);	/* shouldn't be open yet */
 	assert(root.current_file_dset_id == -1);	/* shouldn't be open yet */
 	assert(root.current_file_dspace_id == -1);	/* shouldn't be open yet */
@@ -835,18 +808,6 @@ HDF_CLOSE_TIME_STEP(void)
 void
 HDFBeginCTimeStep(int count_chem)
 {
-#ifdef USE_MPI
-#ifdef TODO
-	extern std::vector<int> start_cell;
-	extern std::vector<int> end_cell;
-	extern int *random_list;
-	extern int mpi_myself;
-
-	int *ptr_begin;
-	int *ptr_end;
-#endif
-#endif
-
 	int i;
 	int array_count;
 
@@ -888,17 +849,12 @@ HDFBeginCTimeStep(int count_chem)
 void
 HDFEndCTimeStep(std::vector <std::vector <int> > &back)
 {
-#ifdef USE_MPI
-	const int TAG_HDF_DATA = 5;
-#endif
 	const int mpi_myself = 0;
 
 
 	if (proc.cell_count == 0)
 		return;					/* nothing to do */
 
-	//if (mpi_myself == 0)
-	//{
 		assert(root.current_file_dspace_id > 0);	/* precondition */
 		assert(root.current_file_dset_id > 0);	/* precondition */
 
@@ -906,7 +862,6 @@ HDFEndCTimeStep(std::vector <std::vector <int> > &back)
 		write_proc_timestep(mpi_myself, proc.cell_count,
 							root.current_file_dspace_id,
 							root.current_file_dset_id, proc.array, back);
-	//}
 }
 
 /*-------------------------------------------------------------------------
