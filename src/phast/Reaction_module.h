@@ -143,9 +143,6 @@ protected:
 		double porosity_factor,
 		std::set<std::string> error_set);
 	void Concentrations2Phreeqc_thread(int n);
-#ifdef SKIP
-	void CSelectedOutputMapClear();
-#endif
 	void cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
 public:
 	void EndTimeStep(void);

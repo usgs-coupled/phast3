@@ -176,12 +176,7 @@ if( numCPU < 1 )
 Reaction_module::~Reaction_module(void)
 {
 	std::map<size_t, Reaction_module*>::iterator it = RM_interface::Instances.find(this->Get_workers()[0]->Get_Index());
-#ifdef SKIP
-	// delete selected output 
-	this->CSelectedOutputMapClear();
-#endif
 
-	//delete phast_iphreeqc_worker;
 	for (int i = 0; i <= it->second->Get_nthreads(); i++)
 	{
 		delete it->second->Get_workers()[i];
@@ -713,20 +708,6 @@ Reaction_module::Convert_to_molal(double *c, int n, int dim)
 		}
 	}
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::CSelectedOutputMapClear()
-/* ---------------------------------------------------------------------- */
-{
-	std::map< int, CSelectedOutput* >::iterator sit = this->CSelectedOutputMap.begin();
-	for (; sit != this->CSelectedOutputMap.end(); ++sit)
-	{
-		delete (*sit).second;
-	}
-	this->CSelectedOutputMap.clear();
-}
-#endif
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d)
@@ -1593,24 +1574,6 @@ Reaction_module::Initial_phreeqc_run_thread(int n)
 			Write_output(iphreeqc_phast_worker->GetOutputString());
 			this->Get_phreeqc_bin().Clear();
 			this->Get_workers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin());
-		}
-		if (n == this->nthreads)
-		{
-			iphreeqc_phast_worker->SetSelectedOutputStringOn(true);
-			std::string in ="SOLUTION";
-			iphreeqc_phast_worker->RunString(in.c_str());
-			std::vector<std::string> names;
-			for (int i = 0; i < iphreeqc_phast_worker->GetSelectedOutputColumnCount(); i++)
-			{
-				VAR v;
-				VarInit(&v);
-				iphreeqc_phast_worker->GetSelectedOutputValue(0, i, &v);
-				names.push_back(v.sVal);
-			}
-#ifdef OLD_HDF
-			HDFSetScalarNames(names);
-#endif
-			//this->selected_output_names = names;
 		}
 }
 /* ---------------------------------------------------------------------- */
@@ -2789,49 +2752,7 @@ Reaction_module::Run_cells()
 		{
 			this->Write_restart();
 		}
-		
-#ifdef OLD_HDF
-		// write hdf
-		if (this->print_hdf)
-		{
-			size_t columns = this->workers[0]->GetSelectedOutputColumnCount();
-			// Need to transfer output stream to root and print
-			if (this->mpi_myself == n)
-			{
-				if (n == 0)
-				{
-					HDFFillHyperSlab(this->start_cell[0], this->workers[0]->Get_punch_vector(), columns);
-					this->workers[0]->Get_punch_vector().clear();
-				}
-				else
-				{
-					int size = (int) this->workers[0]->Get_punch_vector().size();
-					MPI_Send(&size, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
-					MPI_Send((void *) this->workers[0]->Get_punch_vector().data(), size, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
-					this->workers[0]->Get_punch_vector().clear();
-				}	
-			}
-			else if (this->mpi_myself == 0)
-			{
-				MPI_Status mpi_status;
-				int size;
-				MPI_Recv(&size, 1, MPI_INT, n, 0, MPI_COMM_WORLD, &mpi_status);
-				double_buffer.resize(size);
-				MPI_Recv((void *) double_buffer.data(), size, MPI_DOUBLE, n, 0, MPI_COMM_WORLD, &mpi_status);
-				assert((int) (this->start_cell[n] + double_buffer.size()/columns - 1) == this->end_cell[n]);
-				HDFFillHyperSlab(this->start_cell[n], double_buffer, columns);
-			}
-		}
-#endif
-
 	} 	
-#ifdef OLD_HDF
-	if (this->print_hdf && mpi_myself == 0)
-	{
-		EndTimeStep();
-	}
-#endif
-
 	this->CheckSelectedOutput();
 
 	// Rebalance load
@@ -2870,13 +2791,6 @@ Reaction_module::Run_cells()
 	{
 		Run_cells_thread(n);
 	} 
-	// Output
-	if (this->print_hdf)
-	{
-#ifdef OLD_HDF	
-		BeginTimeStep();
-#endif
-	}
 	for (int n = 0; n < this->nthreads; n++)
 	{
 		// write output results
@@ -2890,24 +2804,7 @@ Reaction_module::Run_cells()
 		{
 			this->Write_restart();
 		}
-
-		// write hdf
-		if (this->print_hdf)
-		{
-			size_t columns = this->workers[0]->GetSelectedOutputColumnCount();
-#ifdef OLD_HDF
-			HDFFillHyperSlab(this->start_cell[n], this->workers[n]->Get_punch_vector(), columns);
-#endif
-		}
-		this->workers[n]->Get_punch_vector().clear();
 	} 	
-#ifdef OLD_HDF
-	if (this->print_hdf)
-	{
-		EndTimeStep();
-	}	
-#endif
-	
 	this->CheckSelectedOutput();
 
 	// Rebalance load
