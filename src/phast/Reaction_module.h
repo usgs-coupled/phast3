@@ -103,8 +103,8 @@ public:
 	void Set_rebalance_fraction(double * t); 
 	const bool Get_print_chem(void) const {return this->print_chem;};
 	void Set_print_chem(int *t); 
-	const bool Get_print_hdf(void) const {return this->print_hdf;};
-	void Set_print_hdf(int *t); 
+	const bool GetSelectedOutputOn(void) const {return this->selected_output_on;};
+	void SetSelectedOutputOn(int *t);
 	const bool Get_print_restart(void) const {return this->print_restart;};
 	void Set_print_restart(int *t); 
 	const bool Get_stop_message(void) const {return this->stop_message;};
@@ -172,7 +172,6 @@ protected:
 	std::string database_file_name;
 	std::string chemistry_file_name;
 	std::string file_prefix;
-	//std::vector<std::string> selected_output_names;
 	cxxStorageBin uz_bin;
 	cxxStorageBin phreeqc_bin;
 	std::map < std::string, int > FileMap; 
@@ -223,11 +222,10 @@ protected:
 
 	// print flags
 	bool print_chem;						// print flag for chemistry output file 
-	bool print_hdf;							// print flag for hdf file
+	bool selected_output_on;				// create selected output
 	bool print_restart;						// print flag for writing restart file 
 
 	bool stop_message;
-	//std::map< int, std::vector<double> > SelectedOutputMapDoubles;
 
 	// threading
 	int nthreads;
