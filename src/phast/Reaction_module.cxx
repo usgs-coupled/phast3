@@ -141,7 +141,7 @@ if( numCPU < 1 )
 
 	// print flags
 	this->print_chem = false;					// print flag for chemistry output file 
-	this->print_hdf = false;					// print flag for hdf file
+	this->selected_output_on = false;			// Create selected output
 	this->print_restart = false;				// print flag for writing restart file 
 	this->input_units_Solution = 3;				// 1 mg/L, 2 mmol/L, 3 kg/kgs
 	this->input_units_PPassemblage = 1;			// water 1, rock 2
@@ -189,15 +189,7 @@ Reaction_module::~Reaction_module(void)
 }
 
 // Reaction_module methods
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::BeginTimeStep(void)
-/* ---------------------------------------------------------------------- */
-{
-#ifdef HDF5_CREATE
-	HDFBeginCTimeStep(this->count_chem);
-#endif
-}
+
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Calculate_well_ph(double *c, double * pH, double * alkalinity)
@@ -2705,13 +2697,7 @@ Reaction_module::Run_cells()
 	{
 		Run_cells_thread(n);
 	} 
-#ifdef HDF_OLD
-	// Output
-	if (this->print_hdf && mpi_myself == 0)
-	{
-		BeginTimeStep();
-	}
-#endif
+
 	std::vector<char> char_buffer;
 	std::vector<double> double_buffer;
 	for (int n = 0; n < this->mpi_tasks; n++)
@@ -2863,7 +2849,6 @@ Reaction_module::Run_cells_thread(int n)
 #endif
 		// Set local print flags
 		bool pr_chem = this->print_chem && (this->print_chem_mask[j] != 0);
-		bool pr_hdf = this->print_hdf;
 
 		// partition solids between UZ and SZ
 		if (this->free_surface && !this->steady_flow)	
@@ -2936,9 +2921,8 @@ Reaction_module::Run_cells_thread(int n)
 			}
 
 			// Write hdf file
-			if (pr_hdf)
+			if (this->selected_output_on)
 			{
-				phast_iphreeqc_worker->Selected_out_to_double();
 
 				// Add selected output values to IPhreeqcPhast CSelectedOutputMap's
 				std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
@@ -2975,13 +2959,10 @@ Reaction_module::Run_cells_thread(int n)
 				phast_iphreeqc_worker->Get_out_stream() << line.str().c_str();
 			}
 			// Write hdf file
-			if (pr_hdf)
+			if (this->selected_output_on)
 			{	
-				int columns = phast_iphreeqc_worker->GetSelectedOutputColumnCount();
-				std::vector<double> empty(columns, INACTIVE_CELL_VALUE);
-				phast_iphreeqc_worker->Get_punch_vector().insert(phast_iphreeqc_worker->Get_punch_vector().end(),
-					empty.begin(),empty.end());
 				// Add selected output values to IPhreeqcPhast CSelectedOutputMap's
+				int columns = phast_iphreeqc_worker->GetSelectedOutputColumnCount();
 				std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
 				for ( ; it != phast_iphreeqc_worker->SelectedOutputMap.end(); it++)
 				{
@@ -3357,15 +3338,15 @@ Reaction_module::Set_print_chem_mask(int * t)
 	MPI_Bcast(this->print_chem_mask.data(), this->nxyz, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
 }
-void 
-Reaction_module::Set_print_hdf(int *t)
+void
+Reaction_module::SetSelectedOutputOn(int *t)
 {
 	if (mpi_myself == 0 && t != NULL)
 	{
-		this->print_hdf = *t != 0;
+		this->selected_output_on = *t != 0;
 	}
 #ifdef USE_MPI
-	MPI_Bcast(&this->print_hdf, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&this->selected_output_on, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
 #endif
 }
 void 
