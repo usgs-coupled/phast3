@@ -184,11 +184,6 @@ void
 RM_close_files(int *solute)
 /* ---------------------------------------------------------------------- */
 {
-#ifdef HDF5_CREATE
-#ifdef OLD_HDF
-	HDF_Finalize();
-#endif
-#endif
 	// error_file is stderr
 	
 	// open echo and log file, prefix.log.txt
@@ -306,18 +301,6 @@ void RM_error(int *id)
 	IPhreeqcPhastLib::CleanupIPhreeqcPhast();
 	exit(4);
 }
-#ifdef SKIP
-void
-RM_fractions2solutions(int *id)
-/* ---------------------------------------------------------------------- */
-{
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
-	if (Reaction_module_ptr)
-	{
-		Reaction_module_ptr->Fractions2Solutions();
-	}
-}
-#endif
 int
 RM_find_components(int *id)
 {
@@ -462,12 +445,6 @@ RM_open_files(int * solute, char * prefix, int l_prefix)
 		// punch_file is prefix.chem.txt
 		RM_open_punch_file(prefix, l_prefix);
 	}
-
-#ifdef HDF5_CREATE
-#ifdef OLD_HDF
-	HDF_Init(prefix, l_prefix);
-#endif
-#endif
 }
 /* ---------------------------------------------------------------------- */
 void

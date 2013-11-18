@@ -148,13 +148,6 @@ SUBROUTINE phast_manager
     ENDIF
     CALL error2
 
-#if defined(HDF5_CREATE)
-#ifdef OLD_HDF
-    CALL hdf_write_invariant(mpi_myself)
-    CALL hdf_begin_time_step
-#endif    
-#endif
-
     ! ...  Initialize chemistry 
     IF(solute) THEN
 
@@ -232,16 +225,14 @@ SUBROUTINE phast_manager
             deltim_dummy,       &        ! time_step
             c(1,1),             &        ! fraction
             stop_msg) 
-#ifndef OLD_HDF
-        !CALL RMH_write_hdf(rm_id, hdf_initialized, hdf_invariant, prhdfci)   
 #ifdef USE_MPI        
         CALL MPI_BCAST(prcphrqi, 1, MPI_INTEGER, manager, &
                 world, ierrmpi)
 #endif
         CALL RMH_Write_Files(rm_id, prhdfci, prcphrqi, &
 	        x_node(1), y_node(1), z_node(1), iprint_xyz(1), &
-	        frac(1), grid2chem(1));        
-#endif        
+	        frac(1), grid2chem(1));   
+       
         CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
         CALL init2_3        
     ENDIF   ! End solute
@@ -252,11 +243,6 @@ SUBROUTINE phast_manager
         CALL write3
         CALL write4
     ENDIF
-#if defined(HDF5_CREATE)
-#ifdef OLD_HDF
-    CALL hdf_end_time_step          ! ... Print HDF head and velocity fields
-#endif    
-#endif
 
     ! ... distribute  initial p and c_w to workers from manager
     CALL flow_distribute
@@ -356,11 +342,6 @@ SUBROUTINE phast_manager
             ENDIF
             IF(tsfail .AND. .NOT.errexe) GO TO 20
             ! ... Done with transport for time step
-#if defined(HDF5_CREATE)
-#ifdef OLD_HDF
-            CALL hdf_begin_time_step
-#endif            
-#endif
 
             ! ... Equilibrate the solutions with PHREEQC
             ! ... This is the connection to the equilibration step after transport
@@ -383,16 +364,15 @@ SUBROUTINE phast_manager
                     deltim,                                       &        ! time_step_hst
                     c(1,1),                                       &        ! fraction
                     stop_msg) 
-#ifndef OLD_HDF
-                !CALL RMH_write_hdf(rm_id, hdf_initialized, hdf_invariant, prhdfci)    
+              
 #ifdef USE_MPI                
                 CALL MPI_BCAST(prcphrqi, 1, MPI_INTEGER, manager, &
                         world, ierrmpi)
 #endif
                 CALL RMH_Write_Files(rm_id, prhdfci, prcphrqi, &
 	                x_node(1), y_node(1), z_node(1), iprint_xyz(1), &
-	                frac(1), grid2chem(1))                 
-#endif   
+	                frac(1), grid2chem(1)) 
+ 
             ENDIF    ! ... Done with chemistry
 
             CALL time_parallel(12)
@@ -406,14 +386,11 @@ SUBROUTINE phast_manager
             IF (.NOT.steady_flow) THEN
                 CALL write4
             ENDIF
-#if defined(HDF5_CREATE)
-#ifdef OLD_HDF
-            CALL hdf_end_time_step
-#endif            
+
             IF (prhdfii == 1) THEN
                 CALL write_hdf_intermediate     
             ENDIF
-#endif            
+            
             CALL update_print_flags          ! ... Update times for next printouts
 
             ! ... Save values for next time step
