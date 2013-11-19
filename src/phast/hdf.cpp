@@ -82,8 +82,7 @@ static struct root_info
 	std::vector < int > time_step_scalar_indices;
 	std::vector < std::string > time_steps;
 	size_t time_step_max_len;
-	int vector_name_count;
-	char **vector_names;
+	std::vector < std::string > vector_names;
 	size_t vector_name_max_len;
 	size_t intermediate_idx;
 	std::string hdf_prefix;
@@ -161,8 +160,7 @@ HDF_Init(const char *prefix, int prefix_l)
 	root.time_steps.clear();
 	root.time_step_max_len = 0;
 
-	root.vector_names = NULL;
-	root.vector_name_count = 0;
+	root.vector_names.clear();
 	root.vector_name_max_len = 0;
 
 	root.intermediate_idx = 0;
@@ -182,7 +180,6 @@ HDF_Init(const char *prefix, int prefix_l)
 void
 HDF_Finalize(void)
 {
-	int i;
 
 	herr_t status;
 
@@ -193,16 +190,10 @@ HDF_Finalize(void)
 
 	root.scalar_names.clear();
 
-	if (root.vector_name_count > 0)
+	if (root.vector_names.size() > 0)
 	{
 		/* free space */
-		for (i = 0; i < root.vector_name_count; ++i)
-		{
-			PHRQ_free(root.vector_names[i]);
-		}
-		PHRQ_free(root.vector_names);
-		root.vector_names = NULL;
-		root.vector_name_count = 0;
+		root.vector_names.clear();
 		root.vector_name_max_len = 0;
 	}
 
@@ -1051,28 +1042,18 @@ HDF_VEL(double vx_node[], double vy_node[], double vz_node[], int vmask[])
 	const char name[] = "Velocities";
 
 	/* check if the vector "Velocities" has been added to root.vector_names yet */
-	for (i = 0; i < root.vector_name_count; ++i)
+	for (i = 0; i < (int) root.vector_names.size(); ++i)
 	{
-		if (strcmp(root.vector_names[i], name) == 0)
+		if (strcmp(root.vector_names[i].c_str(), name) == 0)
 			break;
 	}
-	if (i == root.vector_name_count)
+	if (i == root.vector_names.size())
 	{
 		/* new scalar name */
 		size_t len = strlen(name) + 1;
-		root.vector_names =
-			(char **) PHRQ_realloc(root.vector_names,
-								   sizeof(char *) * (root.vector_name_count +
-													 1));
-		if (root.vector_names == NULL)
-			malloc_error();
 		if (root.vector_name_max_len < len)
 			root.vector_name_max_len = len;
-		root.vector_names[root.vector_name_count] = (char *) PHRQ_malloc(len);
-		if (root.vector_names[root.vector_name_count] == NULL)
-			malloc_error();
-		strcpy(root.vector_names[root.vector_name_count], name);
-		++root.vector_name_count;
+		root.vector_names.push_back(name);
 	}
 	assert(root.vector_name_count == 1);	/* Has a new vector been added? */
 
@@ -1353,7 +1334,7 @@ hdf_finalize_headings(void)
 		assert(status >= 0);
 	}
 
-	if (root.vector_name_count > 0)
+	if (root.vector_names.size() > 0)
 	{
 		hsize_t dims[1];
 		hid_t dspace;
@@ -1377,7 +1358,7 @@ hdf_finalize_headings(void)
 
 
 		// create the /Vectors dataspace
-		dims[0] = root.vector_name_count;
+		dims[0] = root.vector_names.size();
 		dspace = H5Screate_simple(1, dims, NULL);
 		if (dspace <= 0)
 		{
@@ -1404,11 +1385,11 @@ hdf_finalize_headings(void)
 		// copy variable length vectors to fixed length strings
 		vector_names =
 			(char *) PHRQ_calloc(root.vector_name_max_len *
-			root.vector_name_count, sizeof(char));
-		for (i = 0; i < root.vector_name_count; ++i)
+			root.vector_names.size(), sizeof(char));
+		for (i = 0; i < root.vector_names.size(); ++i)
 		{
 			strcpy(vector_names + i * root.vector_name_max_len,
-				root.vector_names[i]);
+				root.vector_names[i].c_str());
 		}
 
 		// write the /Vectors dataset
