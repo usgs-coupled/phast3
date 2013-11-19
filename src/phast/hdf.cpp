@@ -73,10 +73,9 @@ static struct root_info
 	std::vector <std::string> scalar_names;
 	char timestep_units[40];
 	char timestep_buffer[120];
-	int active_count;
-	int *active;
-	int *natural_to_active;
-	double *f_array;
+	std::vector < int > active;
+	std::vector < int > natural_to_active;
+	std::vector < double > f_array;
 	int print_chem;
 	int f_scalar_index;
 	int time_step_scalar_count;
@@ -99,7 +98,6 @@ static struct proc_info
 {
 	int cell_count;
 	int scalar_count;			/* chemistry scalar count (doesn't include fortran scalars) */
-	//double *array;
 	std::vector<double> array;
 } proc;
 
@@ -174,7 +172,6 @@ HDF_Init(const char *prefix, int prefix_l)
 	/* init proc */
 	proc.cell_count = 0;
 	proc.scalar_count = 0;
-	//proc.array = NULL;
 }
 /*-------------------------------------------------------------------------
  * Function          HDF_Finalize (called by all procs)
@@ -226,23 +223,14 @@ HDF_Finalize(void)
 
 	/* free mem */
 
-#ifdef HDF_ERROR
-	assert(root.f_array != NULL);
-#endif
-	PHRQ_free(root.f_array);
-	root.f_array = NULL;
 
-#ifdef HDF_ERROR
-	assert(root.natural_to_active != NULL);
-#endif
-	PHRQ_free(root.natural_to_active);
-	root.natural_to_active = NULL;
+	root.f_array.clear();
 
-#ifdef HDF_ERROR
-	assert(root.active != NULL);
-#endif
-	PHRQ_free(root.active);
-	root.active = NULL;
+
+	root.natural_to_active.clear();
+
+
+	root.active.clear();
 
 	/* close the file */
 	assert(root.hdf_file_id > 0);
@@ -251,10 +239,8 @@ HDF_Finalize(void)
 
 
 	/* free proc resources */
-	//PHRQ_free(proc.array);
 	proc.cell_count = 0;
 	proc.scalar_count = 0;
-	//proc.array = NULL;
 }
 
 /*-------------------------------------------------------------------------
@@ -397,44 +383,33 @@ HDF_WRITE_GRID(double x[], double y[], double z[],
 	root.nxy = root.nx * root.ny;
 	root.nxyz = root.nxy * root.nz;
 
-	assert(root.active_count == 0);
-	assert(root.natural_to_active == NULL);
-
-	root.natural_to_active = (int *) PHRQ_malloc(sizeof(int) * root.nxyz);
-	if (root.natural_to_active == NULL)
-		malloc_error();
-
-	root.active = (int *) PHRQ_malloc(sizeof(int) * root.nxyz);
-	if (root.active == NULL)
-		malloc_error();
-
-	root.active_count = 0;
+	assert(root.active.size() == 0);
+	assert(root.natural_to_active.size() == 0);
+	root.natural_to_active.resize(root.nxyz);
+	int active_count = 0;
 	for (i = 0; i < root.nxyz; ++i)
 	{
 		if (ibc[i] >= 0)
 		{
-			root.natural_to_active[i] = root.active_count;
-			root.active[root.active_count] = i;
-			++root.active_count;
+			root.natural_to_active[i] = active_count;
+			root.active.push_back(i);
+			++active_count;
 		}
 		else
 		{
 			root.natural_to_active[i] = -1;
 		}
 	}
-	if (root.active_count <= 0)
+	if (root.active.size() <= 0)
 	{
 		error_msg("No active cells in model.", STOP);
 	}
 
 	/* allocate space for fortran scalars */
-	assert(root.f_array == NULL);
-	root.f_array =
-		(double *) PHRQ_malloc(sizeof(double) * root.active_count);
-	if (root.f_array == NULL)
-		malloc_error();
+	assert(root.f_array.size() == 0);
+	root.f_array.resize(root.active.size());
 
-	if (root.active_count != root.nxyz)
+	if ((int) root.active.size() != root.nxyz)
 	{						/* Don't write if all are active */
 		hsize_t dims[2], maxdims[2];
 		hid_t dspace_id;
@@ -442,7 +417,7 @@ HDF_WRITE_GRID(double x[], double y[], double z[],
 		herr_t status;
 
 		/* Create the "/Grid/Active" dataspace. */
-		dims[0] = maxdims[0] = root.active_count;
+		dims[0] = maxdims[0] = root.active.size();
 		dspace_id = H5Screate_simple(1, dims, maxdims);
 		assert(dspace_id > 0);
 
@@ -455,7 +430,7 @@ HDF_WRITE_GRID(double x[], double y[], double z[],
 		/* Write the "/Grid/Active" dataset */
 		if (H5Dwrite
 			(dset_id, H5T_NATIVE_INT, dspace_id, H5S_ALL, H5P_DEFAULT,
-			root.active) < 0)
+			root.active.data()) < 0)
 		{
 			printf("HDF Error: Unable to write \"/%s/%s\" dataset\n",
 				szGrid, szActive);
@@ -677,7 +652,7 @@ HDF_OPEN_TIME_STEP(double *time, double *cnvtmi, int *print_chem,
 		}
 
 		/* Create the "/<timestep string>/ActiveArray" file dataspace. */
-		dims[0] = root.active_count * root.time_step_scalar_count;
+		dims[0] = root.active.size() * root.time_step_scalar_count;
 		root.current_file_dspace_id = H5Screate_simple(1, dims, NULL);
 		if (root.current_file_dspace_id < 0)
 		{
@@ -820,10 +795,6 @@ HDFBeginCTimeStep(int count_chem)
 	assert(proc.cell_count > 0);
 	assert(proc.scalar_count > 0);
 	array_count = proc.cell_count * proc.scalar_count;
-	//proc.array =
-	//	(double *) PHRQ_realloc(proc.array, sizeof(double) * array_count);
-	//if (proc.array == NULL)
-	//	malloc_error();
 	proc.array.resize(array_count);
 
 	/* init entire array to inactive */
@@ -911,7 +882,7 @@ write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
 			{
 				coor[i + j * cell_count][0] =
 					root.natural_to_active[back[i][n]] +
-					j * root.active_count;
+					j * root.active.size();
 			}
 		}
 
@@ -1024,11 +995,11 @@ PRNTAR_HDF(double array[], double frac[], double *cnv, char *name, int name_l)
 								  root.f_scalar_index] = i;
 
 	/* copy the fortran scalar array into the active scalar array (f_array) */
-	assert(root.f_array != NULL);
-	assert(root.active_count > 0);
-	if (root.active && root.f_array && frac)
+	assert(root.f_array.size() > 0);
+	assert(root.active.size() > 0);
+	if ((root.active.size() > 0) && (root.f_array.size() > 0) && frac)
 	{
-		for (i = 0; i < root.active_count; ++i)
+		for (i = 0; i < (int) root.active.size(); ++i)
 		{
 			assert(root.active[i] >= 0 && root.active[i] < root.nxyz);
 			if (frac[root.active[i]] <= 0.0001)
@@ -1043,7 +1014,7 @@ PRNTAR_HDF(double array[], double frac[], double *cnv, char *name, int name_l)
 	}
 
 	/* create the memory dataspace */
-	dims[0] = root.active_count;
+	dims[0] = root.active.size();
 	mem_dspace = H5Screate_simple(1, dims, NULL);
 	if (mem_dspace <= 0)
 	{
@@ -1057,8 +1028,8 @@ PRNTAR_HDF(double array[], double frac[], double *cnv, char *name, int name_l)
 
 	start[0] =
 		(root.f_scalar_index +
-		 (root.print_chem ? proc.scalar_count : 0)) * root.active_count;
-	count[0] = root.active_count;
+		 (root.print_chem ? proc.scalar_count : 0)) * root.active.size();
+	count[0] = root.active.size();
 
 	assert(root.current_file_dspace_id > 0);	/* precondition */
 	status =
@@ -1070,7 +1041,7 @@ PRNTAR_HDF(double array[], double frac[], double *cnv, char *name, int name_l)
 	assert(root.current_file_dset_id > 0);	/* precondition */
 	if (H5Dwrite
 		(root.current_file_dset_id, H5T_NATIVE_DOUBLE, mem_dspace,
-		 root.current_file_dspace_id, H5P_DEFAULT, root.f_array) < 0)
+		 root.current_file_dspace_id, H5P_DEFAULT, root.f_array.data()) < 0)
 	{
 		assert(0);
 		sprintf(error_string, "HDF Error: Unable to write dataset\n");
@@ -1338,11 +1309,9 @@ hdf_finalize_headings(void)
 			error_msg(error_string, STOP);
 		}
 
-		//assert(root.scalar_names != NULL);
 		assert (root.scalar_names.size() > 0);
 
 		// create the /Scalars dataspace
-		//dims[0] = root.scalar_name_count;
 		dims[0] = root.scalar_names.size();
 		dspace = H5Screate_simple(1, dims, NULL);
 		if (dspace <= 0)
