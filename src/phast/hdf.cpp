@@ -9,6 +9,7 @@
 #include <hdf5.h>
 
 #include <string>
+#include <sstream>
 #include <vector>
 #include <assert.h>
 #include <iostream>
@@ -78,10 +79,8 @@ static struct root_info
 	std::vector < double > f_array;
 	int print_chem;
 	int f_scalar_index;
-	int time_step_scalar_count;
-	int *time_step_scalar_indices;
-	int time_step_count;
-	char **time_steps;
+	std::vector < int > time_step_scalar_indices;
+	std::vector < std::string > time_steps;
 	size_t time_step_max_len;
 	int vector_name_count;
 	char **vector_names;
@@ -156,11 +155,10 @@ HDF_Init(const char *prefix, int prefix_l)
 	root.current_file_dset_id = -1;
 	root.print_chem = -1;
 
-	root.time_step_scalar_indices = NULL;
+	root.time_step_scalar_indices.clear();
 	root.scalar_name_max_len = 0;
 
-	root.time_steps = NULL;
-	root.time_step_count = 0;
+	root.time_steps.clear();
 	root.time_step_max_len = 0;
 
 	root.vector_names = NULL;
@@ -208,16 +206,9 @@ HDF_Finalize(void)
 		root.vector_name_max_len = 0;
 	}
 
-	if (root.time_step_count > 0)
+	if (root.time_steps.size() > 0)
 	{
-		/* free space */
-		for (i = 0; i < root.time_step_count; ++i)
-		{
-			PHRQ_free(root.time_steps[i]);
-		}
-		PHRQ_free(root.time_steps);
-		root.time_steps = NULL;
-		root.time_step_count = 0;
+		root.time_steps.clear();
 		root.time_step_max_len = 0;
 	}
 
@@ -594,9 +585,9 @@ HDF_OPEN_TIME_STEP(double *time, double *cnvtmi, int *print_chem,
 
 	/* determine scalar count for this timestep */
 	root.print_chem = (*print_chem);
-	root.time_step_scalar_count =
+	int time_step_scalar_count =
 		(root.print_chem ? proc.scalar_count : 0) + (*f_scalar_count);
-	if (root.time_step_scalar_count == 0 && *print_vel == 0)
+	if (time_step_scalar_count == 0 && *print_vel == 0)
 	{
 		return;					/* no hdf scalar or vector output for this time step */
 	}
@@ -605,20 +596,11 @@ HDF_OPEN_TIME_STEP(double *time, double *cnvtmi, int *print_chem,
 	sprintf(root.timestep_buffer, szTimeStepFormat, (*time) * (*cnvtmi),
 			root.timestep_units);
 
-	/* add time step string to list */
-	root.time_steps =
-		(char **) PHRQ_realloc(root.time_steps,
-							   sizeof(char *) * (root.time_step_count + 1));
-	if (root.time_steps == NULL)
-		malloc_error();
+	/* add time step string to list */;
 	len = strlen(root.timestep_buffer) + 1;
 	if (root.time_step_max_len < len)
-		root.time_step_max_len = len;
-	root.time_steps[root.time_step_count] = (char *) PHRQ_malloc(len);
-	if (root.time_steps[root.time_step_count] == NULL)
-		malloc_error();
-	strcpy(root.time_steps[root.time_step_count], root.timestep_buffer);
-	++root.time_step_count;
+		root.time_step_max_len = len;;
+	root.time_steps.push_back(root.timestep_buffer);
 
 	/* Create the /<timestep string> group */
 	assert(root.timestep_buffer && strlen(root.timestep_buffer));
@@ -632,15 +614,12 @@ HDF_OPEN_TIME_STEP(double *time, double *cnvtmi, int *print_chem,
 		error_msg(error_string, STOP);
 	}
 
-	if (root.time_step_scalar_count != 0)
+	if (time_step_scalar_count != 0)
 	{
 
 		/* allocate space for time step scalar indices */
-		assert(root.time_step_scalar_indices == NULL);
-		root.time_step_scalar_indices =
-			(int *) PHRQ_malloc(sizeof(int) * root.time_step_scalar_count);
-		if (root.time_step_scalar_indices == NULL)
-			malloc_error();
+		assert(root.time_step_scalar_indices.size() == 0);
+		root.time_step_scalar_indices.resize(time_step_scalar_count);
 
 		/* add cscalar indices (fortran indices are added one by one in PRNARR_HDF) */
 		if (root.print_chem)
@@ -652,7 +631,7 @@ HDF_OPEN_TIME_STEP(double *time, double *cnvtmi, int *print_chem,
 		}
 
 		/* Create the "/<timestep string>/ActiveArray" file dataspace. */
-		dims[0] = root.active.size() * root.time_step_scalar_count;
+		dims[0] = root.active.size() * root.time_step_scalar_indices.size();
 		root.current_file_dspace_id = H5Screate_simple(1, dims, NULL);
 		if (root.current_file_dspace_id < 0)
 		{
@@ -711,14 +690,14 @@ HDF_CLOSE_TIME_STEP(void)
 	}
 	root.current_file_dspace_id = -1;
 
-	if (root.time_step_scalar_count > 0)
+	if (root.time_step_scalar_indices.size() > 0)
 	{
 		/* write the scalar indices for this timestep */
 		hsize_t dims[1];
 		hid_t dspace, dset;
 		herr_t status;
 
-		dims[0] = root.time_step_scalar_count;
+		dims[0] = root.time_step_scalar_indices.size();
 		dspace = H5Screate_simple(1, dims, NULL);
 		if (dspace <= 0)
 		{
@@ -741,7 +720,7 @@ HDF_CLOSE_TIME_STEP(void)
 		}
 		status =
 			H5Dwrite(dset, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT,
-					 root.time_step_scalar_indices);
+					 root.time_step_scalar_indices.data());
 		if (status < 0)
 		{
 			assert(0);
@@ -753,8 +732,7 @@ HDF_CLOSE_TIME_STEP(void)
 		status = H5Dclose(dset);
 		assert(status >= 0);
 
-		PHRQ_free(root.time_step_scalar_indices);
-		root.time_step_scalar_indices = NULL;
+		root.time_step_scalar_indices.clear();
 
 		status = H5Sclose(dspace);
 		assert(status >= 0);
@@ -966,7 +944,7 @@ PRNTAR_HDF(double array[], double frac[], double *cnv, char *name, int name_l)
 	herr_t status;
 	int i;
 
-	assert(root.time_step_scalar_count > 0);
+	assert(root.time_step_scalar_indices.size() > 0);
 
 	/* copy and trim scalar name label */
 	strncpy(name_buffer, name, name_l);
@@ -990,7 +968,7 @@ PRNTAR_HDF(double array[], double frac[], double *cnv, char *name, int name_l)
 
 	/* add this scalar index to the list of scalar indices */
 	assert(((root.print_chem ? proc.scalar_count : 0) + root.f_scalar_index) <
-		   root.time_step_scalar_count);
+		   root.time_step_scalar_indices.size());
 	root.time_step_scalar_indices[(root.print_chem ? proc.scalar_count : 0) +
 								  root.f_scalar_index] = i;
 
@@ -1455,7 +1433,7 @@ hdf_finalize_headings(void)
 		assert(status >= 0);
 	}
 
-	if (root.time_step_count > 0)
+	if (root.time_steps.size() > 0)
 	{
 		hsize_t dims[1];
 		hid_t dspace;
@@ -1474,10 +1452,10 @@ hdf_finalize_headings(void)
 			error_msg(error_string, STOP);
 		}
 
-		assert(root.time_steps != NULL);
+		assert(root.time_steps.size() > 0);
 
 		// create the /TimeSteps (szTimeSteps) dataspace
-		dims[0] = root.time_step_count;
+		dims[0] = root.time_steps.size();
 		dspace = H5Screate_simple(1, dims, NULL);
 		if (dspace <= 0)
 		{
@@ -1500,15 +1478,15 @@ hdf_finalize_headings(void)
 				szTimeSteps);
 			error_msg(error_string, STOP);
 		}
-
+		
 		// copy variable length time steps to fixed length strings
 		time_steps =
 			(char *) PHRQ_calloc(root.time_step_max_len *
-			root.time_step_count, sizeof(char));
-		for (i = 0; i < root.time_step_count; ++i)
+			root.time_steps.size(), sizeof(char));
+		for (i = 0; i < root.time_steps.size(); ++i)
 		{
 			strcpy(time_steps + i * root.time_step_max_len,
-				root.time_steps[i]);
+				root.time_steps[i].c_str());
 		}
 
 		// write the /TimeSteps (szTimeSteps) dataset
