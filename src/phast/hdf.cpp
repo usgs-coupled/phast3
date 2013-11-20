@@ -41,12 +41,9 @@ char error_string[1024];
  */
 int file_exists(const char *name);
 static hid_t open_hdf_file(const char *prefix, int prefix_l);
-//static void write_proc_timestep(int rank, int cell_count,
-//								hid_t file_dspace_id, hid_t dset_id,
-//								double *array, std::vector <std::vector <int> > &back);
 static void write_proc_timestep(int rank, int cell_count,
 								hid_t file_dspace_id, hid_t dset_id,
-								std::vector<double> &array, std::vector <std::vector <int> > &back);
+								std::vector<double> &array);
 static void write_axis(hid_t loc_id, double *a, int na, const char *name);
 static void write_vector(hid_t loc_id, double a[], int na, const char *name);
 static void write_vector_mask(hid_t loc_id, int a[], int na,
@@ -788,7 +785,7 @@ HDFBeginCTimeStep(int count_chem)
  *-------------------------------------------------------------------------
  */
 void
-HDFEndCTimeStep(std::vector <std::vector <int> > &back)
+HDFEndCTimeStep()
 {
 	const int mpi_myself = 0;
 
@@ -802,7 +799,7 @@ HDFEndCTimeStep(std::vector <std::vector <int> > &back)
 		/* write proc 0 data */
 		write_proc_timestep(mpi_myself, (int) root.active.size(),
 							root.current_file_dspace_id,
-							root.current_file_dset_id, proc.array, back);
+							root.current_file_dset_id, proc.array);
 }
 
 /*-------------------------------------------------------------------------
@@ -815,17 +812,14 @@ HDFEndCTimeStep(std::vector <std::vector <int> > &back)
  */
 static void
 write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
-					hid_t dset_id, std::vector<double> &array, std::vector <std::vector <int> > &back)
+					hid_t dset_id, std::vector<double> &array)
 {
-
-	//hssize_t(*coor)[1];
 
 	hid_t mem_dspace;
 	herr_t status;
 	hsize_t dims[1];
 	hsize_t count[1];
 	hssize_t start[1];
-	//int i, j, n;
 
 	/* create the memory dataspace */
 	dims[0] = root.active.size() * proc.scalar_count;
@@ -839,37 +833,10 @@ write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
 		error_msg(error_string, STOP);
 	}
 
-	/* allocate coordinates for file dataspace selection */
-	//coor =
-	//	(hssize_t(*)[1]) PHRQ_malloc(sizeof(hssize_t[1]) * cell_count *
-	//								 proc.scalar_count);
-	//if (coor == NULL)
-	//	malloc_error();
-
-	//for (n = 0; n < (int) back[0].size(); ++n)
-	//{
-	//	for (j = 0; j < proc.scalar_count; ++j)
-	//	{
-	//		for (i = 0; i < cell_count; ++i)
-	//		{
-	//			coor[i + j * cell_count][0] =
-	//				root.natural_to_active[back[i][n]] +
-	//				j * root.active.size();
-	//		}
-	//	}
 	start[0] = 0;
 	count[0] = root.active.size() * proc.scalar_count;
 	status = H5Sselect_hyperslab(root.current_file_dspace_id, H5S_SELECT_SET,
 		start, NULL, count, NULL);
-//	/* make the independent points selection for the file dataspace */
-//		status =
-//			H5Sselect_elements(file_dspace_id, H5S_SELECT_SET,
-//							   cell_count * proc.scalar_count,
-//#if (H5_VERS_MAJOR>1)||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR>=8))||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR==6)&&(H5_VERS_RELEASE>=7))
-//							   (const hssize_t *) coor);
-//#else
-//							   (const hssize_t **) coor);
-//#endif
 	assert(status >= 0);
 
 	status = H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, mem_dspace, file_dspace_id,
@@ -879,83 +846,10 @@ write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
 		sprintf(error_string, "HDF ERROR: Unable to write dataspace\n");
 		error_msg(error_string, STOP);
 	}
-	//}
-
-	//PHRQ_free(coor);
 
 	status = H5Sclose(mem_dspace);
 	assert(status >= 0);
 }
-#ifdef SKIP
-static void
-write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
-					hid_t dset_id, std::vector<double> &array, std::vector <std::vector <int> > &back)
-{
-
-	hssize_t(*coor)[1];
-	hid_t mem_dspace;
-	herr_t status;
-	hsize_t dims[1];
-	int i, j, n;
-
-	/* create the memory dataspace */
-	dims[0] = cell_count * proc.scalar_count;
-	assert(dims[0] > 0);
-	mem_dspace = H5Screate_simple(1, dims, NULL);
-	if (mem_dspace < 0)
-	{
-		sprintf(error_string,
-				"HDF ERROR: Unable to create memory dataspace for process %d\n",
-				rank);
-		error_msg(error_string, STOP);
-	}
-
-	/* allocate coordinates for file dataspace selection */
-	coor =
-		(hssize_t(*)[1]) PHRQ_malloc(sizeof(hssize_t[1]) * cell_count *
-									 proc.scalar_count);
-	if (coor == NULL)
-		malloc_error();
-
-	for (n = 0; n < (int) back[0].size(); ++n)
-	{
-		for (j = 0; j < proc.scalar_count; ++j)
-		{
-			for (i = 0; i < cell_count; ++i)
-			{
-				coor[i + j * cell_count][0] =
-					root.natural_to_active[back[i][n]] +
-					j * root.active.size();
-			}
-		}
-
-		/* make the independent points selection for the file dataspace */
-		status =
-			H5Sselect_elements(file_dspace_id, H5S_SELECT_SET,
-							   cell_count * proc.scalar_count,
-#if (H5_VERS_MAJOR>1)||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR>=8))||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR==6)&&(H5_VERS_RELEASE>=7))
-							   (const hssize_t *) coor);
-#else
-							   (const hssize_t **) coor);
-#endif
-		assert(status >= 0);
-
-		status =
-			H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, mem_dspace, file_dspace_id,
-					 H5P_DEFAULT, array.data());
-		if (status < 0)
-		{
-			sprintf(error_string, "HDF ERROR: Unable to write dataspace\n");
-			error_msg(error_string, STOP);
-		}
-	}
-
-	PHRQ_free(coor);
-
-	status = H5Sclose(mem_dspace);
-	assert(status >= 0);
-}
-#endif
 void
 HDFSetScalarNames(std::vector<std::string> &names)
 {

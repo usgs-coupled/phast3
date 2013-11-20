@@ -1125,15 +1125,6 @@ Reaction_module::Distribute_initial_conditions_mix(
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::EndTimeStep(void)
-/* ---------------------------------------------------------------------- */
-{
-#ifdef HDF5_CREATE
-	HDFEndCTimeStep(back);
-#endif
-}
-/* ---------------------------------------------------------------------- */
-void
 Reaction_module::Error_stop(void)
 /* ---------------------------------------------------------------------- */
 {
@@ -1331,8 +1322,6 @@ Reaction_module::GetSelectedOutput(double *so)
 					for (size_t irow = 0; irow < nrow_x; irow++)
 					{
 						int ichem = local_start_cell + (int) irow;
-						//so[icol*this->count_chem + ichem] = dbuffer[icol*nrow_x + irow];
-						//so[irow*ncol + icol] = dbuffer[icol*nrow_x + irow];
 						for (size_t k = 0; k < back[ichem].size(); k++)
 						{
 							int ixyz = back[ichem][k];

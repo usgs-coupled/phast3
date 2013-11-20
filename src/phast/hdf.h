@@ -58,12 +58,9 @@ extern "C"
 					int name_l);
 }
 
-
 void HDF_Init(const char *prefix, int prefix_l);
 void HDFBeginCTimeStep(int n);
 void HDFFillHyperSlab(int chem_number, std::vector< double > &d, size_t columns);
-//void HDFSetCell(const int n, std::vector <std::vector <int> > &back);
-void HDFEndCTimeStep(std::vector <std::vector <int> > &back);
+void HDFEndCTimeStep();
 void HDFSetScalarNames(std::vector<std::string> &names);
-//void HDFFillHyperSlab(int chem_number, std::vector < LDBLE > &d);
 #endif // !defined(HDF_H_INCLUDED)
