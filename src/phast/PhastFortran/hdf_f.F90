@@ -32,7 +32,7 @@ SUBROUTINE hdf_write_invariant(l_mpi_myself)
   !     ------------------------------------------------------------------
   !...
   IF (l_mpi_myself == 0) THEN
-     CALL HDF_INIT_INVARIANT
+     CALL HDF_INITIALIZE_INVARIANT
   ENDIF
   CALL HDF_WRITE_GRID(x, y, z, nx, ny, nz, ibc, utulbl)
   IF (l_mpi_myself == 0) THEN
@@ -141,7 +141,7 @@ SUBROUTINE hdf_end_time_step
   IF (prhdfhi == 1) THEN
      ! ... Write HDF current fluid head array
      ! ... NOTE: Don't need IBC array since hdf_write_invariant accounts for inactive cells
-     CALL prntar_hdf(hdprnt, frac, cnvli, 'Fluid Head('//unitl//')')
+     CALL HDF_PRNTAR(hdprnt, frac, cnvli, 'Fluid Head('//unitl//')')
      ntprhdfh = ntprhdfh+1
   END IF
 
@@ -157,7 +157,7 @@ SUBROUTINE hdf_end_time_step
      vx_node = vx_node*cnvvli
      vy_node = vy_node*cnvvli
      vz_node = vz_node*cnvvli
-     CALL hdf_vel(vx_node, vy_node, vz_node, vmask)
+     CALL HDF_VEL(vx_node, vy_node, vz_node, vmask)
      ntprhdfv = ntprhdfv+1
   END IF
   ! ... Close HDF file
@@ -329,34 +329,34 @@ CONTAINS
        aprnt(m) = cell_props(m)%kxx
     END DO
     name = 'Kx '//TRIM(k_units)//' (cell vol avg)'
-    CALL prntar_hdf(aprnt, full, conv, name)
+    CALL HDF_PRNTAR(aprnt, full, conv, name)
 
     ! ...  Kyy
     DO m = 1, nxyz
        aprnt(m) = cell_props(m)%kyy
     END DO
     name = 'Ky '//TRIM(k_units)//' (cell vol avg)'
-    CALL prntar_hdf(aprnt, full, conv, name)
+    CALL HDF_PRNTAR(aprnt, full, conv, name)
 
     ! ...  Kzz
     DO m = 1, nxyz
        aprnt(m) = cell_props(m)%kzz
     END DO
     name = 'Kz '//TRIM(k_units)//' (cell vol avg)'
-    CALL prntar_hdf(aprnt, full, conv, name)
+    CALL HDF_PRNTAR(aprnt, full, conv, name)
 
     ! ...  Porosity
     DO m = 1, nxyz
        aprnt(m) = cell_props(m)%poros
     END DO
-    CALL prntar_hdf(aprnt, full, conv, 'Porosity (cell vol avg)')
+    CALL HDF_PRNTAR(aprnt, full, conv, 'Porosity (cell vol avg)')
 
     ! ...  Storage
     DO m = 1, nxyz
        aprnt(m) = cell_props(m)%storage
     END DO
     name = 'Specific Storage '//TRIM(s_units)//' (cell vol avg)'
-    CALL prntar_hdf(aprnt, full, conv, name)
+    CALL HDF_PRNTAR(aprnt, full, conv, name)
 
     IF (solute) THEN  
        ! ...  Alpha l
@@ -364,28 +364,28 @@ CONTAINS
           aprnt(m) = cell_props(m)%alphl
        END DO
        name = 'Long disp '//TRIM(alpha_units)//' (cell vol avg)'
-       CALL prntar_hdf(aprnt, full, conv, name)
+       CALL HDF_PRNTAR(aprnt, full, conv, name)
 
        ! ...  Alpha th
        DO m = 1, nxyz
           aprnt(m) = cell_props(m)%alphth
        END DO
        name = 'Trans horiz disp '//TRIM(alpha_units)//' (cell vol avg)'
-       CALL prntar_hdf(aprnt, full, conv, name)
+       CALL HDF_PRNTAR(aprnt, full, conv, name)
 
        ! ...  Alpha tv
        DO m = 1, nxyz
           aprnt(m) = cell_props(m)%alphtv
        END DO
        name = 'Trans vert disp '//TRIM(alpha_units)//' (cell vol avg)'
-       CALL prntar_hdf(aprnt, full, conv, name)
+       CALL HDF_PRNTAR(aprnt, full, conv, name)
 
        ! ... Tortuosity
        DO m = 1, nxyz
           aprnt(m) = cell_props(m)%tort
        END DO
        name = 'Tortuosity (cell vol avg)'
-       CALL prntar_hdf(aprnt, full, conv, name)     
+       CALL HDF_PRNTAR(aprnt, full, conv, name)     
     ENDIF
 
     DEALLOCATE (cell_props, aprnt, full,  &
