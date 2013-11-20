@@ -139,7 +139,7 @@ RMH_Write_Files(int *id, int *print_hdf, int *print_xyz,
 							std::ostringstream oss;
 							oss << "_" << n_user;
 							pre.append(oss.str());
-							HDF_Init(pre.c_str(), (int) pre.size());
+							HDFInitialize(pre.c_str(), (int) pre.size());
 
 							// Set HDF scalars
 							HDFSetScalarNames(rmhelper.GetHeadings());
@@ -298,56 +298,6 @@ RMH_Write_Files(int *id, int *print_hdf, int *print_xyz,
 		}	
 	}
 #endif
-/*		
-	RM_open_files	 		
-		HDF_Init
-	RM_initial_phreeqc_run	 	
-		Initial_phreeqc_run_thread
-			HDFSetScalarNames
-	hdf_write_invariant 		
-		HDF_INIT_INVARIANT
-		HDF_WRITE_GRID
-		HDF_WRITE_FEATURE
-		HDF_FINALIZE_INVARIANT	
-		
-!! initial conditions	
-	hdf_begin_time_step 		
-		HDF_OPEN_TIME_STEP
-	RM_run_cells 	
-		Run_cells
-			BeginTimeStep
-				HDFBeginCTimeStep
-			HDFFillHyperSlab	
-			EndTimeStep
-				HDFEndCTimeStep
-	hdf_end_time_step	
-		PRNTAR_HDF
-		MEDIA_HDF
-			PRNTAR_HDF
-		HDF_VEL
-		HDF_CLOSE_TIME_STEP	
-		
-!! transient loop
-	hdf_begin_time_step 		
-		HDF_OPEN_TIME_STEP
-	RM_run_cells 	
-		Run_cells
-			BeginTimeStep
-				HDFBeginCTimeStep
-			HDFFillHyperSlab	
-			EndTimeStep
-				HDFEndCTimeStep
-	hdf_end_time_step	
-		PRNTAR_HDF
-		MEDIA_HDF
-			PRNTAR_HDF
-		HDF_VEL
-		HDF_CLOSE_TIME_STEP
-	write_hdf_intermediate
-		HDF_INTERMEDIATE
-	RM_close_files
-		HDF_Finalize
-*/
 }
 /* ---------------------------------------------------------------------- */
 void
@@ -355,6 +305,6 @@ RMH_HDF_Finalize()
 /* ---------------------------------------------------------------------- */
 {
 #ifdef HDF5_CREATE
-		HDF_Finalize();
+		HDFFinalize();
 #endif
 }

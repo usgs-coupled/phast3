@@ -1,5 +1,7 @@
 #include <stdlib.h>
-
+#include <string>
+#include <vector>
+#include "hdf.h"
 //#define _CRTDBG_MAP_ALLOC
 //#include <crtdbg.h>
 
@@ -23,8 +25,6 @@ extern "C" void PHAST_SUB(int *mpi_tasks, int *mpi_myself);
 #include "Reaction_module.h"
 #include "RM_interface.h"
 
-extern "C" void HDF_Finalize(void);
-
 extern LDBLE rate_sim_time_end;
 extern LDBLE rate_cnvtmi;
 
@@ -41,7 +41,7 @@ BOOL CtrlHandler(DWORD dwCtrlType)
 		case CTRL_BREAK_EVENT:
 		case CTRL_SHUTDOWN_EVENT:
 			OutputDebugString("CtrlHandler Catch\n");
-			HDF_Finalize();
+			HDFFinalize();
 			//write_restart(rate_sim_time_end * rate_cnvtmi);
 			RM_write_restart(0);
 			ExitProcess(1);
