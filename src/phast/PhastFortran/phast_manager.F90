@@ -231,7 +231,7 @@ SUBROUTINE phast_manager
 #endif
         CALL RMH_Write_Files(rm_id, prhdfci, prcphrqi, &
 	        x_node(1), y_node(1), z_node(1), iprint_xyz(1), &
-	        frac(1), grid2chem(1));   
+	        frac(1), grid2chem(1)); 
        
         CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
         CALL init2_3        

@@ -182,6 +182,8 @@ HDF_Finalize(void)
 {
 
 	herr_t status;
+	if (root.hdf_file_id == 0)
+		return;
 
 	assert(root.current_file_dspace_id == -1);	/* shouldn't be open */
 	assert(root.current_file_dset_id == -1);	/* shouldn't be open */
@@ -753,7 +755,6 @@ void
 HDFBeginCTimeStep(int count_chem)
 {
 	int i;
-	int array_count;
 
 	if (proc.scalar_count == 0)
 		return;
@@ -763,7 +764,7 @@ HDFBeginCTimeStep(int count_chem)
 	/* allocate space for this time step */
 	assert(proc.cell_count > 0);
 	assert(proc.scalar_count > 0);
-	array_count = proc.cell_count * proc.scalar_count;
+	size_t array_count = root.active.size() * proc.scalar_count;
 	proc.array.resize(array_count);
 
 	/* init entire array to inactive */
@@ -799,7 +800,7 @@ HDFEndCTimeStep(std::vector <std::vector <int> > &back)
 		assert(root.current_file_dset_id > 0);	/* precondition */
 
 		/* write proc 0 data */
-		write_proc_timestep(mpi_myself, proc.cell_count,
+		write_proc_timestep(mpi_myself, (int) root.active.size(),
 							root.current_file_dspace_id,
 							root.current_file_dset_id, proc.array, back);
 }
@@ -814,7 +815,80 @@ HDFEndCTimeStep(std::vector <std::vector <int> > &back)
  */
 static void
 write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
-//					hid_t dset_id, double *array, std::vector <std::vector <int> > &back)
+					hid_t dset_id, std::vector<double> &array, std::vector <std::vector <int> > &back)
+{
+
+	//hssize_t(*coor)[1];
+
+	hid_t mem_dspace;
+	herr_t status;
+	hsize_t dims[1];
+	hsize_t count[1];
+	hssize_t start[1];
+	//int i, j, n;
+
+	/* create the memory dataspace */
+	dims[0] = root.active.size() * proc.scalar_count;
+	assert(dims[0] > 0);
+	mem_dspace = H5Screate_simple(1, dims, NULL);
+	if (mem_dspace < 0)
+	{
+		sprintf(error_string,
+				"HDF ERROR: Unable to create memory dataspace for process %d\n",
+				rank);
+		error_msg(error_string, STOP);
+	}
+
+	/* allocate coordinates for file dataspace selection */
+	//coor =
+	//	(hssize_t(*)[1]) PHRQ_malloc(sizeof(hssize_t[1]) * cell_count *
+	//								 proc.scalar_count);
+	//if (coor == NULL)
+	//	malloc_error();
+
+	//for (n = 0; n < (int) back[0].size(); ++n)
+	//{
+	//	for (j = 0; j < proc.scalar_count; ++j)
+	//	{
+	//		for (i = 0; i < cell_count; ++i)
+	//		{
+	//			coor[i + j * cell_count][0] =
+	//				root.natural_to_active[back[i][n]] +
+	//				j * root.active.size();
+	//		}
+	//	}
+	start[0] = 0;
+	count[0] = root.active.size() * proc.scalar_count;
+	status = H5Sselect_hyperslab(root.current_file_dspace_id, H5S_SELECT_SET,
+		start, NULL, count, NULL);
+//	/* make the independent points selection for the file dataspace */
+//		status =
+//			H5Sselect_elements(file_dspace_id, H5S_SELECT_SET,
+//							   cell_count * proc.scalar_count,
+//#if (H5_VERS_MAJOR>1)||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR>=8))||((H5_VERS_MAJOR==1)&&(H5_VERS_MINOR==6)&&(H5_VERS_RELEASE>=7))
+//							   (const hssize_t *) coor);
+//#else
+//							   (const hssize_t **) coor);
+//#endif
+	assert(status >= 0);
+
+	status = H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, mem_dspace, file_dspace_id,
+		H5P_DEFAULT, array.data());
+	if (status < 0)
+	{
+		sprintf(error_string, "HDF ERROR: Unable to write dataspace\n");
+		error_msg(error_string, STOP);
+	}
+	//}
+
+	//PHRQ_free(coor);
+
+	status = H5Sclose(mem_dspace);
+	assert(status >= 0);
+}
+#ifdef SKIP
+static void
+write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
 					hid_t dset_id, std::vector<double> &array, std::vector <std::vector <int> > &back)
 {
 
@@ -881,6 +955,7 @@ write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
 	status = H5Sclose(mem_dspace);
 	assert(status >= 0);
 }
+#endif
 void
 HDFSetScalarNames(std::vector<std::string> &names)
 {
@@ -896,6 +971,29 @@ HDFSetScalarNames(std::vector<std::string> &names)
  * Postconditions:   TODO:
  *-------------------------------------------------------------------------
  */
+void
+HDFFillHyperSlab(int chem_number, std::vector< double > &d, size_t columns)
+{
+	// d is nxyz x columns, column dominant
+	// writes data to proc.array, which is nactive x columns
+	if (columns > 0)
+	{
+		assert (d.size()%columns == 0);
+		size_t nrow = d.size()/columns;
+		for (size_t icol = 0; icol < columns; icol++)
+		{
+			for (size_t irow = 0; irow < root.nxyz; irow++)
+			{
+				int iactive = root.natural_to_active[irow];
+				if (iactive >= 0)
+				{
+					proc.array[icol * root.active.size() + iactive] = d[icol * root.nxyz + irow];
+				}
+			}
+		}
+	}
+}
+#ifdef SKIP
 void
 HDFFillHyperSlab(int chem_number, std::vector< double > &d, size_t columns)
 {
@@ -915,6 +1013,7 @@ HDFFillHyperSlab(int chem_number, std::vector< double > &d, size_t columns)
 		}
 	}
 }
+#endif
 /*-------------------------------------------------------------------------
  * Function:         PRNTAR_HDF
  *
@@ -1055,7 +1154,7 @@ HDF_VEL(double vx_node[], double vy_node[], double vz_node[], int vmask[])
 			root.vector_name_max_len = len;
 		root.vector_names.push_back(name);
 	}
-	assert(root.vector_name_count == 1);	/* Has a new vector been added? */
+	assert(root.vector_names.size() == 1);	/* Has a new vector been added? */
 
 
 	write_vector(root.current_timestep_gr_id, vx_node, root.nxyz, szVx_node);
@@ -1343,8 +1442,8 @@ hdf_finalize_headings(void)
 
 		// write vector names to file
 
-		assert(root.vector_name_count == 1);	// Has a new vector been added?
-		assert(root.vector_names != NULL);
+		assert(root.vector_names.size() == 1);	// Has a new vector been added?
+		assert(root.vector_names.size() > 0);
 
 		status = H5Tset_size(fls_type, root.vector_name_max_len);
 		if (status < 0)

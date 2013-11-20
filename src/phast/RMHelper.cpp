@@ -67,10 +67,29 @@ RMH_Write_Files(int *id, int *print_hdf, int *print_xyz,
 	//H5::H5File *file = new H5::H5File( FILE_NAME, H5F_ACC_RDWR );
 #ifdef HDF5_CREATE
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
-
 	if (Reaction_module_ptr)
 	{	
 		int local_mpi_myself = Reaction_module_ptr->Get_mpi_myself();
+#ifdef USE_MPI
+	int flags[2];
+	if (local_mpi_myself == 0)
+	{
+		if (print_hdf == 0 || print_xyz == 0)
+		{
+			Reaction_module_ptr->error_msg("Null pointer in RMH_Write_Files", 1);
+		}
+		flags[0] = *print_hdf;
+		flags[1] = *print_xyz;
+		MPI_Bcast(flags, 2, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+	else
+	{
+		MPI_Bcast(flags, 2, MPI_INT, 0, MPI_COMM_WORLD);
+	}
+	*print_hdf = flags[0];
+	*print_xyz = flags[1];
+#endif
+	std::cerr << "RMH_Write_Files 1, " << local_mpi_myself << std::endl;
 		int count_chem = Reaction_module_ptr->GetSelectedOutputRowCount();
 		int nxyz = Reaction_module_ptr->Get_nxyz();
 		double current_time = Reaction_module_ptr->Get_time_conversion() *  Reaction_module_ptr->Get_time();
@@ -177,7 +196,7 @@ RMH_Write_Files(int *id, int *print_hdf, int *print_xyz,
 		}
 	
 		// Write H5 file
-		if (print_hdf != 0)
+		if (*print_hdf != 0)
 		{
 			std::vector<double> local_selected_out;
 			int status;
@@ -277,7 +296,7 @@ RMH_Write_Files(int *id, int *print_hdf, int *print_xyz,
 				}
 			}
 
-		}
+		}	
 	}
 #endif
 /*		
