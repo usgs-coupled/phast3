@@ -89,7 +89,6 @@ RMH_Write_Files(int *id, int *print_hdf, int *print_xyz,
 	*print_hdf = flags[0];
 	*print_xyz = flags[1];
 #endif
-	std::cerr << "RMH_Write_Files 1, " << local_mpi_myself << std::endl;
 		int count_chem = Reaction_module_ptr->GetSelectedOutputRowCount();
 		int nxyz = Reaction_module_ptr->Get_nxyz();
 		double current_time = Reaction_module_ptr->Get_time_conversion() *  Reaction_module_ptr->Get_time();
@@ -222,7 +221,7 @@ RMH_Write_Files(int *id, int *print_hdf, int *print_xyz,
 							HDF_BEGIN_TIME_STEP();
 							HDFBeginCTimeStep(count_chem);
 							HDFFillHyperSlab(0, local_selected_out, ncol);
-							Reaction_module_ptr->EndTimeStep();
+							HDFEndCTimeStep();
 							HDF_END_TIME_STEP();
 						}
 						else

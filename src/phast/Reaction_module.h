@@ -144,9 +144,6 @@ protected:
 		std::set<std::string> error_set);
 	void Concentrations2Phreeqc_thread(int n);
 	void cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
-public:
-	void EndTimeStep(void);
-protected:
 	void Error_stop(void);
 	bool File_exists(const std::string &name);
 	void File_rename(const std::string &temp_name, const std::string &name, const std::string &backup_name);
