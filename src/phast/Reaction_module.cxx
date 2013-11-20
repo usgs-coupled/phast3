@@ -1274,7 +1274,7 @@ Reaction_module::GetSelectedOutput(double *so)
 
 				}
 				else if (this->mpi_myself == 0)
-				{					
+				{	
 					MPI_Status mpi_status;
 					int length[2];
 					MPI_Recv(length, 2, MPI_INT, n, 0, MPI_COMM_WORLD, &mpi_status);
@@ -1290,14 +1290,11 @@ Reaction_module::GetSelectedOutput(double *so)
 						for (size_t irow = 0; irow < nrow; irow++)
 						{
 							int ichem = local_start_cell + (int) irow;
-							so[ichem*ncol + icol] = dbuffer[icol*nrow + irow];
-#ifdef SKIP
 							for (size_t k = 0; k < back[ichem].size(); k++)
 							{
 								int ixyz = back[ichem][k];
 								so[icol*this->nxyz + ixyz] = dbuffer[icol*nrow + irow];
 							}
-#endif
 						}
 					}
 					local_start_cell += nrow;
@@ -1336,14 +1333,11 @@ Reaction_module::GetSelectedOutput(double *so)
 						int ichem = local_start_cell + (int) irow;
 						//so[icol*this->count_chem + ichem] = dbuffer[icol*nrow_x + irow];
 						//so[irow*ncol + icol] = dbuffer[icol*nrow_x + irow];
-						so[ichem*ncol + icol] = dbuffer[icol*nrow_x + irow];
-#ifdef SKIP
 						for (size_t k = 0; k < back[ichem].size(); k++)
 						{
 							int ixyz = back[ichem][k];
-							so[icol*this->nxyz + ixyz] = dbuffer[icol*nrow + irow];
+							so[icol*this->nxyz + ixyz] = dbuffer[icol*nrow_x + irow];
 						}
-#endif
 					}
 				}
 			}
@@ -1411,7 +1405,7 @@ int
 Reaction_module::GetSelectedOutputRowCount()
 /* ---------------------------------------------------------------------- */
 {
-	return this->count_chem;
+	return this->nxyz;
 }
 /* ---------------------------------------------------------------------- */
 void
