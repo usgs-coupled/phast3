@@ -63,8 +63,8 @@
     <ClCompile Include="..\TM_interface.cpp">
       <Filter>Source Files\COMMON_CXXOBJS</Filter>
     </ClCompile>
-    <ClCompile Include="..\RMHelper.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\FileWriter.cpp">
+      <Filter>Source Files\COMMON_CXXOBJS</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -94,10 +94,10 @@
     <ClInclude Include="..\TM_interface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\RMHelper.h">
+    <ClInclude Include="..\hdf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\hdf.h">
+    <ClInclude Include="..\FileWriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

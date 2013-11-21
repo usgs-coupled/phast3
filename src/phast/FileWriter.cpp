@@ -2,7 +2,7 @@
 #include <string>
 #include <map>
 #include <iostream>
-#include "RMHelper.h"
+#include "FileWriter.h"
 #include "Reaction_module.h"
 #include "RM_interface.h"
 #include "H5Cpp.h"
