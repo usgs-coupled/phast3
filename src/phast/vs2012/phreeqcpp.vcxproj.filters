@@ -64,7 +64,7 @@
       <Filter>Source Files\COMMON_CXXOBJS</Filter>
     </ClCompile>
     <ClCompile Include="..\RMHelper.cpp">
-      <Filter>Source Files\COMMON_CXXOBJS</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

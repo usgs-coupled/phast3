@@ -225,11 +225,7 @@ SUBROUTINE phast_manager
             deltim_dummy,       &        ! time_step
             c(1,1),             &        ! fraction
             stop_msg) 
-#ifdef USE_MPI        
-        CALL MPI_BCAST(prcphrqi, 1, MPI_INTEGER, manager, &
-                world, ierrmpi)
-#endif
-        CALL RMH_Write_Files(rm_id, prhdfci, prcphrqi, &
+        CALL WriteFiles(rm_id, prhdfci, prcphrqi, &
 	        x_node(1), y_node(1), z_node(1), iprint_xyz(1), &
 	        frac(1), grid2chem(1)); 
        
@@ -364,12 +360,7 @@ SUBROUTINE phast_manager
                     deltim,                                       &        ! time_step_hst
                     c(1,1),                                       &        ! fraction
                     stop_msg) 
-              
-#ifdef USE_MPI                
-                CALL MPI_BCAST(prcphrqi, 1, MPI_INTEGER, manager, &
-                        world, ierrmpi)
-#endif
-                CALL RMH_Write_Files(rm_id, prhdfci, prcphrqi, &
+                CALL WriteFiles(rm_id, prhdfci, prcphrqi, &
 	                x_node(1), y_node(1), z_node(1), iprint_xyz(1), &
 	                frac(1), grid2chem(1)) 
  
@@ -408,11 +399,11 @@ SUBROUTINE phast_manager
 
 #ifdef USE_MPI
     CALL MPI_Barrier(MPI_COMM_WORLD, ierrmpi)
-    PRINT *, 'Flow and Transport Simulation Completed; exit manager process ', mpi_myself
+    CALL RM_log_screen_prt('Exit manager process.')
 #endif
 
     ! ... Cleanup reaction module
-	CALL RMH_HDF_Finalize();
+	CALL FinalizeFiles();
     IF (solute) THEN  
         if (RM_destroy(rm_id) < 0) CALL RM_error(rm_id)     
     ENDIF
