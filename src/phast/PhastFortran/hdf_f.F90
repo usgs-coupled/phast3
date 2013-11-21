@@ -1,5 +1,5 @@
 ! ... $Id: hdf_f.F90,v 1.2 2013/09/26 22:49:48 klkipp Exp klkipp $
-SUBROUTINE hdf_write_invariant(l_mpi_myself)
+SUBROUTINE hdf_write_invariant(iso, l_mpi_myself)
   ! ... Preconditions:
   ! ...   Must be called before first call to EQUILIBRATE
   ! ...   
@@ -29,12 +29,13 @@ SUBROUTINE hdf_write_invariant(l_mpi_myself)
   INTEGER, DIMENSION(nlbc_cells) :: temp_lbc
   INTEGER, DIMENSION(nrbc_seg) :: temp_rbc
   INTEGER, DIMENSION(ndbc_seg) :: temp_dbc
+  INTEGER, INTENT(in) :: iso
   !     ------------------------------------------------------------------
   !...
   IF (l_mpi_myself == 0) THEN
-     CALL HDF_INITIALIZE_INVARIANT
+     CALL HDF_INITIALIZE_INVARIANT(iso)
   ENDIF
-  CALL HDF_WRITE_GRID(x, y, z, nx, ny, nz, ibc, utulbl)
+  CALL HDF_WRITE_GRID(iso, x, y, z, nx, ny, nz, ibc, utulbl)
   IF (l_mpi_myself == 0) THEN
      ! ... Count Well nodes
      nwbc = 0
@@ -58,32 +59,32 @@ SUBROUTINE hdf_write_invariant(l_mpi_myself)
            index = index + 1
         END DO
      END DO
-     IF(nwbc > 0) CALL HDF_WRITE_FEATURE('Wells', mwbc, nwbc)
-     IF(nsbc > 0) CALL HDF_WRITE_FEATURE('Specified', msbc, nsbc)
+     IF(nwbc > 0) CALL HDF_WRITE_FEATURE(iso, 'Wells', mwbc, nwbc)
+     IF(nsbc > 0) CALL HDF_WRITE_FEATURE(iso, 'Specified', msbc, nsbc)
      !$$ if(nfbc > 0) CALL HDF_WRITE_FEATURE('Flux', mfbc, nfbc)
      IF(nfbc_cells > 0) THEN
         DO i = 1,nfbc_cells
            temp_fbc(i) = flux_seg_m(i)
         ENDDO
-        CALL HDF_WRITE_FEATURE('Flux', temp_fbc, nfbc_cells)
+        CALL HDF_WRITE_FEATURE(iso, 'Flux', temp_fbc, nfbc_cells)
      ENDIF
      IF(nlbc_cells > 0) THEN
         DO i = 1,nlbc_cells
            temp_lbc(i) = leak_seg_m(i)
         ENDDO
-        CALL HDF_WRITE_FEATURE('Leaky', temp_lbc, nlbc_cells)
+        CALL HDF_WRITE_FEATURE(iso, 'Leaky', temp_lbc, nlbc_cells)
      ENDIF
      IF(nrbc_seg > 0) THEN
         DO i = 1,nrbc_seg
            temp_rbc(i) = mrbc(i)
         ENDDO
-        CALL HDF_WRITE_FEATURE('River', temp_rbc, nrbc_seg)
+        CALL HDF_WRITE_FEATURE(iso, 'River', temp_rbc, nrbc_seg)
      ENDIF
      IF(ndbc_seg > 0) THEN
         DO i = 1,ndbc_seg
            temp_dbc(i) = mdbc(i)
         ENDDO
-        CALL HDF_WRITE_FEATURE('Drain', temp_dbc, ndbc_seg)
+        CALL HDF_WRITE_FEATURE(iso, 'Drain', temp_dbc, ndbc_seg)
      END IF
      ! 
      ! ... Deallocate the Well Nodes
@@ -96,11 +97,11 @@ SUBROUTINE hdf_write_invariant(l_mpi_myself)
      ENDIF
   ENDIF
   IF (l_mpi_myself == 0) THEN
-     CALL HDF_FINALIZE_INVARIANT
+     CALL HDF_FINALIZE_INVARIANT(iso)
   ENDIF
 END SUBROUTINE hdf_write_invariant
 
-SUBROUTINE hdf_begin_time_step
+SUBROUTINE hdf_begin_time_step(iso)
   USE mcc, ONLY: solute
   USE mcc, ONLY: prhdfhi, prhdfci, prhdfvi
   USE mcv, ONLY: time
@@ -108,6 +109,7 @@ SUBROUTINE hdf_begin_time_step
   USE hdf_media_m, ONLY: pr_hdf_media
   IMPLICIT NONE
   INTEGER :: time_step_fscalar_count
+  INTEGER, INTENT(in) :: iso
   !     ------------------------------------------------------------------
   !...
   !*****seems like this could be simplified with direct pass of integer flag***
@@ -123,10 +125,10 @@ SUBROUTINE hdf_begin_time_step
      ENDIF
   ENDIF
   ! ... Open HDF file
-  CALL HDF_OPEN_TIME_STEP(time, cnvtmi, prhdfci, prhdfvi, time_step_fscalar_count)
+  CALL HDF_OPEN_TIME_STEP(iso, time, cnvtmi, prhdfci, prhdfvi, time_step_fscalar_count)
 END SUBROUTINE hdf_begin_time_step
 
-SUBROUTINE hdf_end_time_step
+SUBROUTINE hdf_end_time_step(iso)
 !!$  USE machine_constants, ONLY: kdp
   USE mcc,               ONLY:  prhdfhi, prhdfvi
   USE mcc_m,             ONLY: vmask, ntprhdfv, ntprhdfh
@@ -137,17 +139,18 @@ SUBROUTINE hdf_end_time_step
   USE mg2_m,             ONLY: hdprnt
   USE hdf_media_m,       ONLY: pr_hdf_media
   IMPLICIT NONE
+  INTEGER, INTENT(in) :: iso
   !     ------------------------------------------------------------------
   IF (prhdfhi == 1) THEN
      ! ... Write HDF current fluid head array
      ! ... NOTE: Don't need IBC array since hdf_write_invariant accounts for inactive cells
-     CALL HDF_PRNTAR(hdprnt, frac, cnvli, 'Fluid Head('//unitl//')')
+     CALL HDF_PRNTAR(iso, hdprnt, frac, cnvli, 'Fluid Head('//unitl//')')
      ntprhdfh = ntprhdfh+1
   END IF
 
   IF (pr_hdf_media) THEN
      ! ... Write HDF media properties arrays
-     CALL media_hdf
+     CALL media_hdf(iso)
      pr_hdf_media = .FALSE.
   ENDIF
 
@@ -157,15 +160,15 @@ SUBROUTINE hdf_end_time_step
      vx_node = vx_node*cnvvli
      vy_node = vy_node*cnvvli
      vz_node = vz_node*cnvvli
-     CALL HDF_VEL(vx_node, vy_node, vz_node, vmask)
+     CALL HDF_VEL(iso, vx_node, vy_node, vz_node, vmask)
      ntprhdfv = ntprhdfv+1
   END IF
   ! ... Close HDF file
-  CALL HDF_CLOSE_TIME_STEP
+  CALL HDF_CLOSE_TIME_STEP(iso)
 
 CONTAINS
 
-  SUBROUTINE media_hdf
+  SUBROUTINE media_hdf(iso)
     ! ... Logic for volume weighting copied from init2_1
     USE machine_constants, ONLY: kdp
     USE mcb
@@ -224,6 +227,7 @@ CONTAINS
     REAL(KIND=kdp) :: conv
     CHARACTER (LEN=119) :: name
     TYPE(cell_properties), DIMENSION(:), ALLOCATABLE :: cell_props
+    INTEGER, INTENT(in) :: iso
     !     ------------------------------------------------------------------
     ALLOCATE (cell_props(nxyz), &
          stat = a_err)
@@ -329,34 +333,34 @@ CONTAINS
        aprnt(m) = cell_props(m)%kxx
     END DO
     name = 'Kx '//TRIM(k_units)//' (cell vol avg)'
-    CALL HDF_PRNTAR(aprnt, full, conv, name)
+    CALL HDF_PRNTAR(iso, aprnt, full, conv, name)
 
     ! ...  Kyy
     DO m = 1, nxyz
        aprnt(m) = cell_props(m)%kyy
     END DO
     name = 'Ky '//TRIM(k_units)//' (cell vol avg)'
-    CALL HDF_PRNTAR(aprnt, full, conv, name)
+    CALL HDF_PRNTAR(iso, aprnt, full, conv, name)
 
     ! ...  Kzz
     DO m = 1, nxyz
        aprnt(m) = cell_props(m)%kzz
     END DO
     name = 'Kz '//TRIM(k_units)//' (cell vol avg)'
-    CALL HDF_PRNTAR(aprnt, full, conv, name)
+    CALL HDF_PRNTAR(iso, aprnt, full, conv, name)
 
     ! ...  Porosity
     DO m = 1, nxyz
        aprnt(m) = cell_props(m)%poros
     END DO
-    CALL HDF_PRNTAR(aprnt, full, conv, 'Porosity (cell vol avg)')
+    CALL HDF_PRNTAR(iso, aprnt, full, conv, 'Porosity (cell vol avg)')
 
     ! ...  Storage
     DO m = 1, nxyz
        aprnt(m) = cell_props(m)%storage
     END DO
     name = 'Specific Storage '//TRIM(s_units)//' (cell vol avg)'
-    CALL HDF_PRNTAR(aprnt, full, conv, name)
+    CALL HDF_PRNTAR(iso, aprnt, full, conv, name)
 
     IF (solute) THEN  
        ! ...  Alpha l
@@ -364,28 +368,28 @@ CONTAINS
           aprnt(m) = cell_props(m)%alphl
        END DO
        name = 'Long disp '//TRIM(alpha_units)//' (cell vol avg)'
-       CALL HDF_PRNTAR(aprnt, full, conv, name)
+       CALL HDF_PRNTAR(iso, aprnt, full, conv, name)
 
        ! ...  Alpha th
        DO m = 1, nxyz
           aprnt(m) = cell_props(m)%alphth
        END DO
        name = 'Trans horiz disp '//TRIM(alpha_units)//' (cell vol avg)'
-       CALL HDF_PRNTAR(aprnt, full, conv, name)
+       CALL HDF_PRNTAR(iso, aprnt, full, conv, name)
 
        ! ...  Alpha tv
        DO m = 1, nxyz
           aprnt(m) = cell_props(m)%alphtv
        END DO
        name = 'Trans vert disp '//TRIM(alpha_units)//' (cell vol avg)'
-       CALL HDF_PRNTAR(aprnt, full, conv, name)
+       CALL HDF_PRNTAR(iso, aprnt, full, conv, name)
 
        ! ... Tortuosity
        DO m = 1, nxyz
           aprnt(m) = cell_props(m)%tort
        END DO
        name = 'Tortuosity (cell vol avg)'
-       CALL HDF_PRNTAR(aprnt, full, conv, name)     
+       CALL HDF_PRNTAR(iso, aprnt, full, conv, name)     
     ENDIF
 
     DEALLOCATE (cell_props, aprnt, full,  &

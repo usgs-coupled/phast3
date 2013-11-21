@@ -40,21 +40,20 @@ char error_string[1024];
  *   static functions
  */
 int file_exists(const char *name);
-static void hdf_finalize_headings(void);
-static hid_t open_hdf_file(const char *prefix, int prefix_l);
-static void write_proc_timestep(int rank, int cell_count,
+static void hdf_finalize_headings(int iso);
+static hid_t open_hdf_file(int iso, const char *prefix, int prefix_l);
+static void write_axis(hid_t loc_id, double *a, int na, const char *name);
+static void write_proc_timestep(int iso, int rank, int cell_count,
 								hid_t file_dspace_id, hid_t dset_id,
 								std::vector<double> &array);
-static void write_axis(hid_t loc_id, double *a, int na, const char *name);
-static void write_vector(hid_t loc_id, double a[], int na, const char *name);
-static void write_vector_mask(hid_t loc_id, int a[], int na,
+static void write_vector(int iso, hid_t loc_id, double a[], int na, const char *name);
+static void write_vector_mask(int iso, hid_t loc_id, int a[], int na,
 							  const char *name);
-
 
 /*
  *   statics used only by process 0
  */
-static struct root_info
+struct root_info
 {
 	hid_t hdf_file_id;
 	hid_t grid_gr_id;
@@ -84,7 +83,8 @@ static struct root_info
 	size_t intermediate_idx;
 	std::string hdf_prefix;
 	std::string hdf_file_name;
-} root;
+};
+static std::vector < root_info > root;
 
 /*
  *   statics used by all processes (including process 0)
@@ -132,23 +132,21 @@ static const float INACTIVE_CELL_VALUE = 1.0e30f;
  *-------------------------------------------------------------------------
  */
 void
-HDFBeginCTimeStep(int count_chem)
+HDFBeginCTimeStep(int iso)
 {
-	int i;
-
 	if (proc.scalar_count == 0)
 		return;
 
-	proc.cell_count = count_chem;
+	proc.cell_count = (int) root[iso].active.size();
 
 	/* allocate space for this time step */
 	assert(proc.cell_count > 0);
 	assert(proc.scalar_count > 0);
-	size_t array_count = root.active.size() * proc.scalar_count;
+	size_t array_count = root[iso].active.size() * proc.scalar_count;
 	proc.array.resize(array_count);
 
 	/* init entire array to inactive */
-	for (i = 0; i < array_count; ++i)
+	for (int i = 0; i < array_count; ++i)
 	{
 		proc.array[i] = INACTIVE_CELL_VALUE;
 	}
@@ -169,7 +167,7 @@ HDFBeginCTimeStep(int count_chem)
  *-------------------------------------------------------------------------
  */
 void
-HDFEndCTimeStep()
+HDFEndCTimeStep(int iso)
 {
 	const int mpi_myself = 0;
 
@@ -177,13 +175,13 @@ HDFEndCTimeStep()
 	if (proc.cell_count == 0)
 		return;					/* nothing to do */
 
-		assert(root.current_file_dspace_id > 0);	/* precondition */
-		assert(root.current_file_dset_id > 0);	/* precondition */
+		assert(root[iso].current_file_dspace_id > 0);	/* precondition */
+		assert(root[iso].current_file_dset_id > 0);	/* precondition */
 
 		/* write proc 0 data */
-		write_proc_timestep(mpi_myself, (int) root.active.size(),
-							root.current_file_dspace_id,
-							root.current_file_dset_id, proc.array);
+		write_proc_timestep(iso, mpi_myself, (int) root[iso].active.size(),
+							root[iso].current_file_dspace_id,
+							root[iso].current_file_dset_id, proc.array);
 }
 
 /*-------------------------------------------------------------------------
@@ -195,7 +193,7 @@ HDFEndCTimeStep()
  *-------------------------------------------------------------------------
  */
 void
-HDFFillHyperSlab(int chem_number, std::vector< double > &d, size_t columns)
+HDFFillHyperSlab(int iso, std::vector< double > &d, size_t columns)
 {
 	// d is nxyz x columns, column dominant
 	// writes data to proc.array, which is nactive x columns
@@ -205,12 +203,12 @@ HDFFillHyperSlab(int chem_number, std::vector< double > &d, size_t columns)
 		size_t nrow = d.size()/columns;
 		for (size_t icol = 0; icol < columns; icol++)
 		{
-			for (size_t irow = 0; irow < root.nxyz; irow++)
+			for (size_t irow = 0; irow < root[iso].nxyz; irow++)
 			{
-				int iactive = root.natural_to_active[irow];
+				int iactive = root[iso].natural_to_active[irow];
 				if (iactive >= 0)
 				{
-					proc.array[icol * root.active.size() + iactive] = d[icol * root.nxyz + irow];
+					proc.array[icol * root[iso].active.size() + iactive] = d[icol * root[iso].nxyz + irow];
 				}
 			}
 		}
@@ -230,49 +228,52 @@ HDFFinalize(void)
 {
 
 	herr_t status;
-	if (root.hdf_file_id == 0)
-		return;
-
-	assert(root.current_file_dspace_id == -1);	/* shouldn't be open */
-	assert(root.current_file_dset_id == -1);	/* shouldn't be open */
-
-	hdf_finalize_headings();
-
-	root.scalar_names.clear();
-
-	if (root.vector_names.size() > 0)
+	for (int iso = 0; iso < (int) root.size(); iso++)
 	{
-		/* free space */
-		root.vector_names.clear();
-		root.vector_name_max_len = 0;
+		if (root[iso].hdf_file_id == 0)
+			return;
+
+		assert(root[iso].current_file_dspace_id == -1);	/* shouldn't be open */
+		assert(root[iso].current_file_dset_id == -1);	/* shouldn't be open */
+
+		hdf_finalize_headings(iso);
+
+		root[iso].scalar_names.clear();
+
+		if (root[iso].vector_names.size() > 0)
+		{
+			/* free space */
+			root[iso].vector_names.clear();
+			root[iso].vector_name_max_len = 0;
+		}
+
+		if (root[iso].time_steps.size() > 0)
+		{
+			root[iso].time_steps.clear();
+			root[iso].time_step_max_len = 0;
+		}
+
+		/* free mem */
+
+
+		root[iso].f_array.clear();
+
+
+		root[iso].natural_to_active.clear();
+
+
+		root[iso].active.clear();
+
+		/* close the file */
+		assert(root[iso].hdf_file_id > 0);
+		status = H5Fclose(root[iso].hdf_file_id);
+		assert(status >= 0);
+
+
+		/* free proc resources */
+		proc.cell_count = 0;
+		proc.scalar_count = 0;
 	}
-
-	if (root.time_steps.size() > 0)
-	{
-		root.time_steps.clear();
-		root.time_step_max_len = 0;
-	}
-
-	/* free mem */
-
-
-	root.f_array.clear();
-
-
-	root.natural_to_active.clear();
-
-
-	root.active.clear();
-
-	/* close the file */
-	assert(root.hdf_file_id > 0);
-	status = H5Fclose(root.hdf_file_id);
-	assert(status >= 0);
-
-
-	/* free proc resources */
-	proc.cell_count = 0;
-	proc.scalar_count = 0;
 }
 
 /*-------------------------------------------------------------------------
@@ -286,7 +287,7 @@ HDFFinalize(void)
  *-------------------------------------------------------------------------
  */
 void
-HDFInitialize(const char *prefix, int prefix_l)
+HDFInitialize(int iso, const char *prefix, int prefix_l)
 {
 #if defined(NDEBUG)
 #ifndef _WIN64
@@ -295,37 +296,43 @@ HDFInitialize(const char *prefix, int prefix_l)
 	H5Eset_auto1(NULL, NULL);
 #endif
 #endif
+	if ((int) root.size() <= iso)
+	{
+		struct root_info tr;
+		root.push_back(tr);
+	}
+	assert ((int) root.size() > iso);
 
 	/* Open the HDF file */
-	root.hdf_file_id = open_hdf_file(prefix, prefix_l);
-	assert(root.hdf_file_id > 0);
+	root[iso].hdf_file_id = open_hdf_file(iso, prefix, prefix_l);
+	assert(root[iso].hdf_file_id > 0);
 
-	root.current_timestep_gr_id = -1;
-	root.current_file_dspace_id = -1;
-	root.current_file_dset_id = -1;
-	root.print_chem = -1;
+	root[iso].current_timestep_gr_id = -1;
+	root[iso].current_file_dspace_id = -1;
+	root[iso].current_file_dset_id = -1;
+	root[iso].print_chem = -1;
 
-	root.time_step_scalar_indices.clear();
-	root.scalar_name_max_len = 0;
+	root[iso].time_step_scalar_indices.clear();
+	root[iso].scalar_name_max_len = 0;
 
-	root.time_steps.clear();
-	root.time_step_max_len = 0;
+	root[iso].time_steps.clear();
+	root[iso].time_step_max_len = 0;
 
-	root.vector_names.clear();
-	root.vector_name_max_len = 0;
+	root[iso].vector_names.clear();
+	root[iso].vector_name_max_len = 0;
 
-	root.intermediate_idx = 0;
+	root[iso].intermediate_idx = 0;
 
 	/* init proc */
 	proc.cell_count = 0;
 	proc.scalar_count = 0;
 }
 void
-HDFSetScalarNames(std::vector<std::string> &names)
+HDFSetScalarNames(int iso, std::vector<std::string> &names)
 {
 		g_hdf_scalar_names = names;
-		root.scalar_names = names;
-		proc.scalar_count = (int) root.scalar_names.size();
+		root[iso].scalar_names = names;
+		proc.scalar_count = (int) root[iso].scalar_names.size();
 }
 
 /*-------------------------------------------------------------------------
@@ -339,79 +346,80 @@ HDFSetScalarNames(std::vector<std::string> &names)
  *-------------------------------------------------------------------------
  */
 void
-HDF_CLOSE_TIME_STEP(void)
+HDF_CLOSE_TIME_STEP(int *iso_in)
 {
 	herr_t status;
-
-	if (root.current_file_dset_id > 0)
-	{
-		status = H5Dclose(root.current_file_dset_id);
-		assert(status >= 0);
-	}
-	root.current_file_dset_id = -1;
-
-	if (root.current_file_dspace_id > 0)
-	{
-		status = H5Sclose(root.current_file_dspace_id);
-		assert(status >= 0);
-	}
-	root.current_file_dspace_id = -1;
-
-	if (root.time_step_scalar_indices.size() > 0)
-	{
-		/* write the scalar indices for this timestep */
-		hsize_t dims[1];
-		hid_t dspace, dset;
-		herr_t status;
-
-		dims[0] = root.time_step_scalar_indices.size();
-		dspace = H5Screate_simple(1, dims, NULL);
-		if (dspace <= 0)
+	int iso = *iso_in;
+		if (root[iso].current_file_dset_id > 0)
 		{
-			assert(0);
-			sprintf(error_string,
+			status = H5Dclose(root[iso].current_file_dset_id);
+			assert(status >= 0);
+		}
+		root[iso].current_file_dset_id = -1;
+
+		if (root[iso].current_file_dspace_id > 0)
+		{
+			status = H5Sclose(root[iso].current_file_dspace_id);
+			assert(status >= 0);
+		}
+		root[iso].current_file_dspace_id = -1;
+
+		if (root[iso].time_step_scalar_indices.size() > 0)
+		{
+			/* write the scalar indices for this timestep */
+			hsize_t dims[1];
+			hid_t dspace, dset;
+			herr_t status;
+
+			dims[0] = root[iso].time_step_scalar_indices.size();
+			dspace = H5Screate_simple(1, dims, NULL);
+			if (dspace <= 0)
+			{
+				assert(0);
+				sprintf(error_string,
 					"HDF ERROR: Unable to create file dataspace(DIM(%d)) for dataset /%s/%s\n",
-					(int) dims[0], root.timestep_buffer, szScalars);
-			error_msg(error_string, STOP);
-		}
-		dset =
-			H5Dcreate(root.current_timestep_gr_id, szScalars, H5T_NATIVE_INT,
-					  dspace, H5P_DEFAULT);
-		if (dset <= 0)
-		{
-			assert(0);
-			sprintf(error_string,
+					(int) dims[0], root[iso].timestep_buffer, szScalars);
+				error_msg(error_string, STOP);
+			}
+			dset =
+				H5Dcreate(root[iso].current_timestep_gr_id, szScalars, H5T_NATIVE_INT,
+				dspace, H5P_DEFAULT);
+			if (dset <= 0)
+			{
+				assert(0);
+				sprintf(error_string,
 					"HDF ERROR: Unable to create dataset /%s/%s\n",
-					root.timestep_buffer, szScalars);
-			error_msg(error_string, STOP);
-		}
-		status =
-			H5Dwrite(dset, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT,
-					 root.time_step_scalar_indices.data());
-		if (status < 0)
-		{
-			assert(0);
-			sprintf(error_string,
+					root[iso].timestep_buffer, szScalars);
+				error_msg(error_string, STOP);
+			}
+			status =
+				H5Dwrite(dset, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT,
+				root[iso].time_step_scalar_indices.data());
+			if (status < 0)
+			{
+				assert(0);
+				sprintf(error_string,
 					"HDF ERROR: Unable to write dataset /%s/%s\n",
-					root.timestep_buffer, szScalars);
-			error_msg(error_string, STOP);
+					root[iso].timestep_buffer, szScalars);
+				error_msg(error_string, STOP);
+			}
+			status = H5Dclose(dset);
+			assert(status >= 0);
+
+			root[iso].time_step_scalar_indices.clear();
+
+			status = H5Sclose(dspace);
+			assert(status >= 0);
 		}
-		status = H5Dclose(dset);
-		assert(status >= 0);
 
-		root.time_step_scalar_indices.clear();
+		/* close the time step group */
+		if (root[iso].current_timestep_gr_id > 0)
+		{
+			status = H5Gclose(root[iso].current_timestep_gr_id);
+			assert(status >= 0);
+		}
+		root[iso].current_timestep_gr_id = -1;
 
-		status = H5Sclose(dspace);
-		assert(status >= 0);
-	}
-
-	/* close the time step group */
-	if (root.current_timestep_gr_id > 0)
-	{
-		status = H5Gclose(root.current_timestep_gr_id);
-		assert(status >= 0);
-	}
-	root.current_timestep_gr_id = -1;
 }
 
 /*-------------------------------------------------------------------------
@@ -423,15 +431,15 @@ HDF_CLOSE_TIME_STEP(void)
  *-------------------------------------------------------------------------
  */
 static void
-hdf_finalize_headings(void)
+hdf_finalize_headings(int iso)
 {
 	int i;
 
 	herr_t status;
 	hid_t fls_type;
 
-	assert(root.current_file_dspace_id == -1);	// shouldn't be open
-	assert(root.current_file_dset_id == -1);	// shouldn't be open
+	assert(root[iso].current_file_dspace_id == -1);	// shouldn't be open
+	assert(root[iso].current_file_dset_id == -1);	// shouldn't be open
 
 	// create fixed length string type for /Scalar /TimeSteps and /Vectors
 	fls_type = H5Tcopy(H5T_C_S1);
@@ -447,13 +455,11 @@ hdf_finalize_headings(void)
 		assert(0);
 		sprintf(error_string,
 			"HDF ERROR: Unable to set size of fixed length string type(size=%d).\n",
-			(int) root.scalar_name_max_len);
+			(int) root[iso].scalar_name_max_len);
 		error_msg(error_string, STOP);
 	}
 
-
-	//if (root.scalar_name_count > 0)
-	if (root.scalar_names.size() > 0)
+	if (root[iso].scalar_names.size() > 0)
 	{
 		hsize_t dims[1];
 		hid_t dspace;
@@ -462,20 +468,20 @@ hdf_finalize_headings(void)
 
 		// write scalar names to file
 
-		status = H5Tset_size(fls_type, root.scalar_name_max_len);
+		status = H5Tset_size(fls_type, root[iso].scalar_name_max_len);
 		if (status < 0)
 		{
 			assert(0);
 			sprintf(error_string,
 				"HDF ERROR: Unable to set size of fixed length string type(size=%d).\n",
-				(int) root.scalar_name_max_len);
+				(int) root[iso].scalar_name_max_len);
 			error_msg(error_string, STOP);
 		}
 
-		assert (root.scalar_names.size() > 0);
+		assert (root[iso].scalar_names.size() > 0);
 
 		// create the /Scalars dataspace
-		dims[0] = root.scalar_names.size();
+		dims[0] = root[iso].scalar_names.size();
 		dspace = H5Screate_simple(1, dims, NULL);
 		if (dspace <= 0)
 		{
@@ -488,7 +494,7 @@ hdf_finalize_headings(void)
 
 		// create the /Scalars dataset
 		dset =
-			H5Dcreate(root.hdf_file_id, szScalars, fls_type, dspace,
+			H5Dcreate(root[iso].hdf_file_id, szScalars, fls_type, dspace,
 			H5P_DEFAULT);
 		if (dset <= 0)
 		{
@@ -498,21 +504,21 @@ hdf_finalize_headings(void)
 				szScalars);
 			error_msg(error_string, STOP);
 		}
-		for (size_t j = 0; j < root.scalar_names.size(); j++)
+		for (size_t j = 0; j < root[iso].scalar_names.size(); j++)
 		{
-			if (root.scalar_names[j].size() + 1 > root.scalar_name_max_len) 
-				root.scalar_name_max_len = root.scalar_names[j].size() + 1;
+			if (root[iso].scalar_names[j].size() + 1 > root[iso].scalar_name_max_len) 
+				root[iso].scalar_name_max_len = root[iso].scalar_names[j].size() + 1;
 		}
 
 		// copy variable length scalar names to fixed length scalar names
 		scalar_names =
-			(char *) PHRQ_calloc(root.scalar_name_max_len *
-			root.scalar_names.size(), sizeof(char));
+			(char *) PHRQ_calloc(root[iso].scalar_name_max_len *
+			root[iso].scalar_names.size(), sizeof(char));
 		// java req'd
-		for (i = 0; i < (int) root.scalar_names.size(); ++i)
+		for (i = 0; i < (int) root[iso].scalar_names.size(); ++i)
 		{
-			strcpy(scalar_names + i * root.scalar_name_max_len,
-				root.scalar_names[i].c_str());
+			strcpy(scalar_names + i * root[iso].scalar_name_max_len,
+				root[iso].scalar_names[i].c_str());
 		}
 
 
@@ -538,7 +544,7 @@ hdf_finalize_headings(void)
 		assert(status >= 0);
 	}
 
-	if (root.vector_names.size() > 0)
+	if (root[iso].vector_names.size() > 0)
 	{
 		hsize_t dims[1];
 		hid_t dspace;
@@ -547,22 +553,22 @@ hdf_finalize_headings(void)
 
 		// write vector names to file
 
-		assert(root.vector_names.size() == 1);	// Has a new vector been added?
-		assert(root.vector_names.size() > 0);
+		assert(root[iso].vector_names.size() == 1);	// Has a new vector been added?
+		assert(root[iso].vector_names.size() > 0);
 
-		status = H5Tset_size(fls_type, root.vector_name_max_len);
+		status = H5Tset_size(fls_type, root[iso].vector_name_max_len);
 		if (status < 0)
 		{
 			assert(0);
 			sprintf(error_string,
 				"HDF ERROR: Unable to set size of fixed length string type(size=%d).\n",
-				(int) root.scalar_name_max_len);
+				(int) root[iso].scalar_name_max_len);
 			error_msg(error_string, STOP);
 		}
 
 
 		// create the /Vectors dataspace
-		dims[0] = root.vector_names.size();
+		dims[0] = root[iso].vector_names.size();
 		dspace = H5Screate_simple(1, dims, NULL);
 		if (dspace <= 0)
 		{
@@ -575,7 +581,7 @@ hdf_finalize_headings(void)
 
 		// create the /Vectors dataset
 		dset =
-			H5Dcreate(root.hdf_file_id, szVectors, fls_type, dspace,
+			H5Dcreate(root[iso].hdf_file_id, szVectors, fls_type, dspace,
 			H5P_DEFAULT);
 		if (dset <= 0)
 		{
@@ -588,12 +594,12 @@ hdf_finalize_headings(void)
 
 		// copy variable length vectors to fixed length strings
 		vector_names =
-			(char *) PHRQ_calloc(root.vector_name_max_len *
-			root.vector_names.size(), sizeof(char));
-		for (i = 0; i < root.vector_names.size(); ++i)
+			(char *) PHRQ_calloc(root[iso].vector_name_max_len *
+			root[iso].vector_names.size(), sizeof(char));
+		for (i = 0; i < root[iso].vector_names.size(); ++i)
 		{
-			strcpy(vector_names + i * root.vector_name_max_len,
-				root.vector_names[i].c_str());
+			strcpy(vector_names + i * root[iso].vector_name_max_len,
+				root[iso].vector_names[i].c_str());
 		}
 
 		// write the /Vectors dataset
@@ -618,7 +624,7 @@ hdf_finalize_headings(void)
 		assert(status >= 0);
 	}
 
-	if (root.time_steps.size() > 0)
+	if (root[iso].time_steps.size() > 0)
 	{
 		hsize_t dims[1];
 		hid_t dspace;
@@ -627,20 +633,20 @@ hdf_finalize_headings(void)
 
 		// write time step names to file
 
-		status = H5Tset_size(fls_type, root.time_step_max_len);
+		status = H5Tset_size(fls_type, root[iso].time_step_max_len);
 		if (status < 0)
 		{
 			assert(0);
 			sprintf(error_string,
 				"HDF ERROR: Unable to set size of fixed length string type(size=%d).\n",
-				(int) root.time_step_max_len);
+				(int) root[iso].time_step_max_len);
 			error_msg(error_string, STOP);
 		}
 
-		assert(root.time_steps.size() > 0);
+		assert(root[iso].time_steps.size() > 0);
 
 		// create the /TimeSteps (szTimeSteps) dataspace
-		dims[0] = root.time_steps.size();
+		dims[0] = root[iso].time_steps.size();
 		dspace = H5Screate_simple(1, dims, NULL);
 		if (dspace <= 0)
 		{
@@ -653,7 +659,7 @@ hdf_finalize_headings(void)
 
 		// create the /TimeSteps (szTimeSteps) dataset
 		dset =
-			H5Dcreate(root.hdf_file_id, szTimeSteps, fls_type, dspace,
+			H5Dcreate(root[iso].hdf_file_id, szTimeSteps, fls_type, dspace,
 			H5P_DEFAULT);
 		if (dset <= 0)
 		{
@@ -666,12 +672,12 @@ hdf_finalize_headings(void)
 		
 		// copy variable length time steps to fixed length strings
 		time_steps =
-			(char *) PHRQ_calloc(root.time_step_max_len *
-			root.time_steps.size(), sizeof(char));
-		for (i = 0; i < root.time_steps.size(); ++i)
+			(char *) PHRQ_calloc(root[iso].time_step_max_len *
+			root[iso].time_steps.size(), sizeof(char));
+		for (i = 0; i < root[iso].time_steps.size(); ++i)
 		{
-			strcpy(time_steps + i * root.time_step_max_len,
-				root.time_steps[i].c_str());
+			strcpy(time_steps + i * root[iso].time_step_max_len,
+				root[iso].time_steps[i].c_str());
 		}
 
 		// write the /TimeSteps (szTimeSteps) dataset
@@ -701,15 +707,15 @@ hdf_finalize_headings(void)
 	assert(status >= 0);
 
 	// close the file
-	assert(root.hdf_file_id > 0);
-	status = H5Fclose(root.hdf_file_id);
+	assert(root[iso].hdf_file_id > 0);
+	status = H5Fclose(root[iso].hdf_file_id);
 	assert(status >= 0);
 
 
-	root.hdf_file_id = H5Fopen(root.hdf_file_name.c_str(), H5F_ACC_RDWR , H5P_DEFAULT);
-	if (root.hdf_file_id <= 0)
+	root[iso].hdf_file_id = H5Fopen(root[iso].hdf_file_name.c_str(), H5F_ACC_RDWR , H5P_DEFAULT);
+	if (root[iso].hdf_file_id <= 0)
 	{
-		sprintf(error_string, "Unable to open HDF file:%s\n", root.hdf_file_name.c_str());
+		sprintf(error_string, "Unable to open HDF file:%s\n", root[iso].hdf_file_name.c_str());
 		error_msg(error_string, STOP);
 	}
 }
@@ -725,13 +731,14 @@ hdf_finalize_headings(void)
  *-------------------------------------------------------------------------
  */
 void
-HDF_FINALIZE_INVARIANT(void)
+HDF_FINALIZE_INVARIANT(int *iso_in)
 {
 	herr_t status;
+	int iso = *iso_in;
 
-	status = H5Gclose(root.grid_gr_id);
+	status = H5Gclose(root[iso].grid_gr_id);
 	assert(status >= 0);
-	status = H5Gclose(root.features_gr_id);
+	status = H5Gclose(root[iso].features_gr_id);
 	assert(status >= 0);
 }
 
@@ -745,24 +752,25 @@ HDF_FINALIZE_INVARIANT(void)
  *-------------------------------------------------------------------------
  */
 void
-HDF_INITIALIZE_INVARIANT(void)
+HDF_INITIALIZE_INVARIANT(int * iso_in)
 {
+	int iso = *iso_in;
 	/*
-	 * Create the "/Grid" group
-	 */
-	assert(root.hdf_file_id > 0);	/* precondition */
-	root.grid_gr_id = H5Gcreate(root.hdf_file_id, szGrid, 0);
-	if (root.grid_gr_id <= 0)
+	* Create the "/Grid" group
+	*/
+	assert(root[iso].hdf_file_id > 0);	/* precondition */
+	root[iso].grid_gr_id = H5Gcreate(root[iso].hdf_file_id, szGrid, 0);
+	if (root[iso].grid_gr_id <= 0)
 	{
 		sprintf(error_string, "Unable to create /%s group\n", szGrid);
 		error_msg(error_string, STOP);
 	}
 
 	/*
-	 * Create the "/szFeatures" group
-	 */
-	root.features_gr_id = H5Gcreate(root.hdf_file_id, szFeatures, 0);
-	if (root.grid_gr_id <= 0)
+	* Create the "/szFeatures" group
+	*/
+	root[iso].features_gr_id = H5Gcreate(root[iso].hdf_file_id, szFeatures, 0);
+	if (root[iso].grid_gr_id <= 0)
 	{
 		sprintf(error_string, "Unable to create /%s group\n", szFeatures);
 		error_msg(error_string, STOP);
@@ -775,47 +783,50 @@ HDF_INTERMEDIATE(void)
 
 	herr_t status;
 
-	// close the file
-	assert(root.hdf_file_id > 0);
-	status = H5Fclose(root.hdf_file_id);
-	assert(status >= 0);
+	for (int iso = 0; iso < (int) root.size(); iso++)
+	{
+		// close the file
+		assert(root[iso].hdf_file_id > 0);
+		status = H5Fclose(root[iso].hdf_file_id);
+		assert(status >= 0);
 
-	// create intermediate filename
-	char int_fn[MAX_PATH];
-	sprintf(int_fn, "%s.intermediate%s", root.hdf_prefix.c_str(), szHDF5Ext);
-		
-	// copy to the intermediate file
-	char command[3*MAX_PATH];
+		// create intermediate filename
+		char int_fn[MAX_PATH];
+		sprintf(int_fn, "%s.intermediate%s", root[iso].hdf_prefix.c_str(), szHDF5Ext);
+
+		// copy to the intermediate file
+		char command[3*MAX_PATH];
 #if WIN32
-	sprintf(command, "copy \"%s\" \"%s\"", root.hdf_file_name.c_str(), int_fn);
+		sprintf(command, "copy \"%s\" \"%s\"", root[iso].hdf_file_name.c_str(), int_fn);
 #else
-	sprintf(command, "cp \"%s\" \"%s\"", root.hdf_file_name.c_str(), int_fn);
+		sprintf(command, "cp \"%s\" \"%s\"", root[iso].hdf_file_name.c_str(), int_fn);
 #endif
-	system(command);
+		system(command);
 
-	// open intermediate file for finalization
-	root.hdf_file_id = H5Fopen(int_fn, H5F_ACC_RDWR , H5P_DEFAULT);
-	if (root.hdf_file_id <= 0)
-	{
-		sprintf(error_string, "Unable to open HDF file:%s\n", int_fn);
-		error_msg(error_string, STOP);
-	}
+		// open intermediate file for finalization
+		root[iso].hdf_file_id = H5Fopen(int_fn, H5F_ACC_RDWR , H5P_DEFAULT);
+		if (root[iso].hdf_file_id <= 0)
+		{
+			sprintf(error_string, "Unable to open HDF file:%s\n", int_fn);
+			error_msg(error_string, STOP);
+		}
 
-	// finalize intermediate
-	hdf_finalize_headings();
+		// finalize intermediate
+		hdf_finalize_headings(iso);
 
-	// close the file
-	assert(root.hdf_file_id > 0);
-	status = H5Fclose(root.hdf_file_id);
-	assert(status >= 0);
+		// close the file
+		assert(root[iso].hdf_file_id > 0);
+		status = H5Fclose(root[iso].hdf_file_id);
+		assert(status >= 0);
 
 
-	// reopen hdf file
-	root.hdf_file_id = H5Fopen(root.hdf_file_name.c_str(), H5F_ACC_RDWR , H5P_DEFAULT);
-	if (root.hdf_file_id <= 0)
-	{
-		sprintf(error_string, "Unable to open HDF file:%s\n", root.hdf_file_name.c_str());
-		error_msg(error_string, STOP);
+		// reopen hdf file
+		root[iso].hdf_file_id = H5Fopen(root[iso].hdf_file_name.c_str(), H5F_ACC_RDWR , H5P_DEFAULT);
+		if (root[iso].hdf_file_id <= 0)
+		{
+			sprintf(error_string, "Unable to open HDF file:%s\n", root[iso].hdf_file_name.c_str());
+			error_msg(error_string, STOP);
+		}
 	}
 }
 
@@ -830,45 +841,46 @@ HDF_INTERMEDIATE(void)
  *-------------------------------------------------------------------------
  */
 void
-HDF_OPEN_TIME_STEP(double *time, double *cnvtmi, int *print_chem,
+HDF_OPEN_TIME_STEP(int *iso_in, double *time, double *cnvtmi, int *print_chem,
 				   int *print_vel, int *f_scalar_count)
 {
 	hsize_t dims[1];
 	int i;
 	size_t len;
+	int iso = *iso_in;
 
-	assert(root.current_timestep_gr_id == -1);	/* shouldn't be open yet */
-	assert(root.current_file_dset_id == -1);	/* shouldn't be open yet */
-	assert(root.current_file_dspace_id == -1);	/* shouldn't be open yet */
+	assert(root[iso].current_timestep_gr_id == -1);	/* shouldn't be open yet */
+	assert(root[iso].current_file_dset_id == -1);	/* shouldn't be open yet */
+	assert(root[iso].current_file_dspace_id == -1);	/* shouldn't be open yet */
 
 	/* determine scalar count for this timestep */
-	root.print_chem = (*print_chem);
+	root[iso].print_chem = (*print_chem);
 	int time_step_scalar_count =
-		(root.print_chem ? proc.scalar_count : 0) + (*f_scalar_count);
+		(root[iso].print_chem ? proc.scalar_count : 0) + (*f_scalar_count);
 	if (time_step_scalar_count == 0 && *print_vel == 0)
 	{
 		return;					/* no hdf scalar or vector output for this time step */
 	}
 
 	/* format timestep string */
-	sprintf(root.timestep_buffer, szTimeStepFormat, (*time) * (*cnvtmi),
-			root.timestep_units);
+	sprintf(root[iso].timestep_buffer, szTimeStepFormat, (*time) * (*cnvtmi),
+		root[iso].timestep_units);
 
 	/* add time step string to list */;
-	len = strlen(root.timestep_buffer) + 1;
-	if (root.time_step_max_len < len)
-		root.time_step_max_len = len;;
-	root.time_steps.push_back(root.timestep_buffer);
+	len = strlen(root[iso].timestep_buffer) + 1;
+	if (root[iso].time_step_max_len < len)
+		root[iso].time_step_max_len = len;;
+	root[iso].time_steps.push_back(root[iso].timestep_buffer);
 
 	/* Create the /<timestep string> group */
-	assert(root.timestep_buffer && strlen(root.timestep_buffer));
-	root.current_timestep_gr_id =
-		H5Gcreate(root.hdf_file_id, root.timestep_buffer, 0);
-	if (root.current_timestep_gr_id < 0)
+	assert(root[iso].timestep_buffer && strlen(root[iso].timestep_buffer));
+	root[iso].current_timestep_gr_id =
+		H5Gcreate(root[iso].hdf_file_id, root[iso].timestep_buffer, 0);
+	if (root[iso].current_timestep_gr_id < 0)
 	{
 		assert(0);
 		sprintf(error_string, "HDF ERROR: Unable to create group /%s\n",
-				root.timestep_buffer);
+			root[iso].timestep_buffer);
 		error_msg(error_string, STOP);
 	}
 
@@ -876,47 +888,75 @@ HDF_OPEN_TIME_STEP(double *time, double *cnvtmi, int *print_chem,
 	{
 
 		/* allocate space for time step scalar indices */
-		assert(root.time_step_scalar_indices.size() == 0);
-		root.time_step_scalar_indices.resize(time_step_scalar_count);
+		assert(root[iso].time_step_scalar_indices.size() == 0);
+		root[iso].time_step_scalar_indices.resize(time_step_scalar_count);
 
 		/* add cscalar indices (fortran indices are added one by one in PRNARR_HDF) */
-		if (root.print_chem)
+		if (root[iso].print_chem)
 		{
 			for (i = 0; i < proc.scalar_count; ++i)
 			{
-				root.time_step_scalar_indices[i] = i;
+				root[iso].time_step_scalar_indices[i] = i;
 			}
 		}
 
 		/* Create the "/<timestep string>/ActiveArray" file dataspace. */
-		dims[0] = root.active.size() * root.time_step_scalar_indices.size();
-		root.current_file_dspace_id = H5Screate_simple(1, dims, NULL);
-		if (root.current_file_dspace_id < 0)
+		dims[0] = root[iso].active.size() * root[iso].time_step_scalar_indices.size();
+		root[iso].current_file_dspace_id = H5Screate_simple(1, dims, NULL);
+		if (root[iso].current_file_dspace_id < 0)
 		{
 			assert(0);
 			sprintf(error_string,
-					"HDF ERROR: Unable to create dataspace(DIM=%d) for /%s/%s\n",
-					(int) dims[0], root.timestep_buffer, szActiveArray);
+				"HDF ERROR: Unable to create dataspace(DIM=%d) for /%s/%s\n",
+				(int) dims[0], root[iso].timestep_buffer, szActiveArray);
 			error_msg(error_string, STOP);
 		}
 
+#ifdef SKIP_COMPRESSION			
+		hid_t    plist_id; 
+		hsize_t  cdims[2];
+		plist_id  = H5Pcreate (H5P_DATASET_CREATE);
+
+		/* Dataset must be chunked for compression */
+		cdims[0] = 20;
+		cdims[1] = 20;
+		status = H5Pset_chunk (plist_id, 2, cdims);
+
+		/* Set ZLIB / DEFLATE Compression using compression level 6.
+		* To use SZIP Compression comment out these lines. 
+		*/ 
+		status = H5Pset_deflate (plist_id, 6); 
+
+		/* Uncomment these lines to set SZIP Compression 
+		szip_options_mask = H5_SZIP_NN_OPTION_MASK;
+		szip_pixels_per_block = 16;
+		status = H5Pset_szip (plist_id, szip_options_mask, szip_pixels_per_block);
+		*/
+
+		dataset_id = H5Dcreate2 (file_id, "Compressed_Data", H5T_STD_I32BE, 
+			dataspace_id, H5P_DEFAULT, plist_id, H5P_DEFAULT); 
+#endif
+
+
+
+
 		/* Create the "/<timestep string>/ActiveArray" dataset */
-		root.current_file_dset_id =
-			H5Dcreate(root.current_timestep_gr_id, szActiveArray,
-					  H5T_NATIVE_FLOAT, root.current_file_dspace_id,
-					  H5P_DEFAULT);
-		if (root.current_file_dset_id < 0)
+		root[iso].current_file_dset_id =
+			H5Dcreate(root[iso].current_timestep_gr_id, szActiveArray,
+			H5T_NATIVE_FLOAT, root[iso].current_file_dspace_id,
+			H5P_DEFAULT);
+		if (root[iso].current_file_dset_id < 0)
 		{
 			assert(0);
 			sprintf(error_string,
-					"HDF ERROR: Unable to create dataset /%s/%s\n",
-					root.timestep_buffer, szActiveArray);
+				"HDF ERROR: Unable to create dataset /%s/%s\n",
+				root[iso].timestep_buffer, szActiveArray);
 			error_msg(error_string, STOP);
 		}
 	}
 
 	/* reset fortran scalar index */
-	root.f_scalar_index = 0;
+	root[iso].f_scalar_index = 0;
 }
 
 /*-------------------------------------------------------------------------
@@ -930,7 +970,7 @@ HDF_OPEN_TIME_STEP(double *time, double *cnvtmi, int *print_chem,
  *-------------------------------------------------------------------------
  */
 void
-HDF_PRNTAR(double array[], double frac[], double *cnv, char *name, int name_l)
+HDF_PRNTAR(int *iso_in, double array[], double frac[], double *cnv, char *name, int name_l)
 {
 	char name_buffer[120];
 	hssize_t start[1];
@@ -938,8 +978,8 @@ HDF_PRNTAR(double array[], double frac[], double *cnv, char *name, int name_l)
 	hid_t mem_dspace;
 	herr_t status;
 	int i;
-
-	assert(root.time_step_scalar_indices.size() > 0);
+	int iso = *iso_in;
+	assert(root[iso].time_step_scalar_indices.size() > 0);
 
 	/* copy and trim scalar name label */
 	strncpy(name_buffer, name, name_l);
@@ -948,73 +988,73 @@ HDF_PRNTAR(double array[], double frac[], double *cnv, char *name, int name_l)
 
 	/* check if this f_scalar has been added to root.scalar_names yet */
 	/* phreeqc scalar count is proc.scalar_count */
-	for (i = proc.scalar_count; i < (int) root.scalar_names.size(); ++i)
+	for (i = proc.scalar_count; i < (int) root[iso].scalar_names.size(); ++i)
 	{
-		if (root.scalar_names[i] == name_buffer)
+		if (root[iso].scalar_names[i] == name_buffer)
 			break;
 	}
-	if (i == (int) root.scalar_names.size())
+	if (i == (int) root[iso].scalar_names.size())
 	{
 		size_t len = strlen(name_buffer) + 1;
-		if (root.scalar_name_max_len < len)
-			root.scalar_name_max_len = len;
-		root.scalar_names.push_back(name_buffer);
+		if (root[iso].scalar_name_max_len < len)
+			root[iso].scalar_name_max_len = len;
+		root[iso].scalar_names.push_back(name_buffer);
 	}
 
 	/* add this scalar index to the list of scalar indices */
-	assert(((root.print_chem ? proc.scalar_count : 0) + root.f_scalar_index) <
-		   root.time_step_scalar_indices.size());
-	root.time_step_scalar_indices[(root.print_chem ? proc.scalar_count : 0) +
-								  root.f_scalar_index] = i;
+	assert(((root[iso].print_chem ? proc.scalar_count : 0) + root[iso].f_scalar_index) <
+		root[iso].time_step_scalar_indices.size());
+	root[iso].time_step_scalar_indices[(root[iso].print_chem ? proc.scalar_count : 0) +
+		root[iso].f_scalar_index] = i;
 
 	/* copy the fortran scalar array into the active scalar array (f_array) */
-	assert(root.f_array.size() > 0);
-	assert(root.active.size() > 0);
-	if ((root.active.size() > 0) && (root.f_array.size() > 0) && frac)
+	assert(root[iso].f_array.size() > 0);
+	assert(root[iso].active.size() > 0);
+	if ((root[iso].active.size() > 0) && (root[iso].f_array.size() > 0) && frac)
 	{
-		for (i = 0; i < (int) root.active.size(); ++i)
+		for (i = 0; i < (int) root[iso].active.size(); ++i)
 		{
-			assert(root.active[i] >= 0 && root.active[i] < root.nxyz);
-			if (frac[root.active[i]] <= 0.0001)
+			assert(root[iso].active[i] >= 0 && root[iso].active[i] < root[iso].nxyz);
+			if (frac[root[iso].active[i]] <= 0.0001)
 			{
-				root.f_array[i] = INACTIVE_CELL_VALUE;
+				root[iso].f_array[i] = INACTIVE_CELL_VALUE;
 			}
 			else
 			{
-				root.f_array[i] = array[root.active[i]] * (*cnv);
+				root[iso].f_array[i] = array[root[iso].active[i]] * (*cnv);
 			}
 		}
 	}
 
 	/* create the memory dataspace */
-	dims[0] = root.active.size();
+	dims[0] = root[iso].active.size();
 	mem_dspace = H5Screate_simple(1, dims, NULL);
 	if (mem_dspace <= 0)
 	{
 		assert(0);
 		sprintf(error_string,
-				"HDF Error: Unable to create memory dataspace\n");
+			"HDF Error: Unable to create memory dataspace\n");
 		error_msg(error_string, STOP);
 	}
 
 	/* select within the file dataspace the hyperslab to write to */
 
 	start[0] =
-		(root.f_scalar_index +
-		 (root.print_chem ? proc.scalar_count : 0)) * root.active.size();
-	count[0] = root.active.size();
+		(root[iso].f_scalar_index +
+		(root[iso].print_chem ? proc.scalar_count : 0)) * root[iso].active.size();
+	count[0] = root[iso].active.size();
 
-	assert(root.current_file_dspace_id > 0);	/* precondition */
+	assert(root[iso].current_file_dspace_id > 0);	/* precondition */
 	status =
-		H5Sselect_hyperslab(root.current_file_dspace_id, H5S_SELECT_SET,
-							start, NULL, count, NULL);
+		H5Sselect_hyperslab(root[iso].current_file_dspace_id, H5S_SELECT_SET,
+		start, NULL, count, NULL);
 	assert(status >= 0);
 
 	/* Write the "/<timestep>/ActiveArray" dataset selection for this scalar */
-	assert(root.current_file_dset_id > 0);	/* precondition */
+	assert(root[iso].current_file_dset_id > 0);	/* precondition */
 	if (H5Dwrite
-		(root.current_file_dset_id, H5T_NATIVE_DOUBLE, mem_dspace,
-		 root.current_file_dspace_id, H5P_DEFAULT, root.f_array.data()) < 0)
+		(root[iso].current_file_dset_id, H5T_NATIVE_DOUBLE, mem_dspace,
+		root[iso].current_file_dspace_id, H5P_DEFAULT, root[iso].f_array.data()) < 0)
 	{
 		assert(0);
 		sprintf(error_string, "HDF Error: Unable to write dataset\n");
@@ -1026,7 +1066,7 @@ HDF_PRNTAR(double array[], double frac[], double *cnv, char *name, int name_l)
 	assert(status >= 0);
 
 	/* increment f_scalar_index */
-	++root.f_scalar_index;
+	++root[iso].f_scalar_index;
 }
 
 /*-------------------------------------------------------------------------
@@ -1040,32 +1080,33 @@ HDF_PRNTAR(double array[], double frac[], double *cnv, char *name, int name_l)
  *-------------------------------------------------------------------------
  */
 void
-HDF_VEL(double vx_node[], double vy_node[], double vz_node[], int vmask[])
+HDF_VEL(int *iso_in, double vx_node[], double vy_node[], double vz_node[], int vmask[])
 {
 	int i;
 	const char name[] = "Velocities";
+	int iso = *iso_in;
 
 	/* check if the vector "Velocities" has been added to root.vector_names yet */
-	for (i = 0; i < (int) root.vector_names.size(); ++i)
+	for (i = 0; i < (int) root[iso].vector_names.size(); ++i)
 	{
-		if (strcmp(root.vector_names[i].c_str(), name) == 0)
+		if (strcmp(root[iso].vector_names[i].c_str(), name) == 0)
 			break;
 	}
-	if (i == root.vector_names.size())
+	if (i == root[iso].vector_names.size())
 	{
 		/* new scalar name */
 		size_t len = strlen(name) + 1;
-		if (root.vector_name_max_len < len)
-			root.vector_name_max_len = len;
-		root.vector_names.push_back(name);
+		if (root[iso].vector_name_max_len < len)
+			root[iso].vector_name_max_len = len;
+		root[iso].vector_names.push_back(name);
 	}
-	assert(root.vector_names.size() == 1);	/* Has a new vector been added? */
+	assert(root[iso].vector_names.size() == 1);	/* Has a new vector been added? */
 
 
-	write_vector(root.current_timestep_gr_id, vx_node, root.nxyz, szVx_node);
-	write_vector(root.current_timestep_gr_id, vy_node, root.nxyz, szVy_node);
-	write_vector(root.current_timestep_gr_id, vz_node, root.nxyz, szVz_node);
-	write_vector_mask(root.current_timestep_gr_id, vmask, root.nxyz, szVmask);
+	write_vector(iso, root[iso].current_timestep_gr_id, vx_node, root[iso].nxyz, szVx_node);
+	write_vector(iso, root[iso].current_timestep_gr_id, vy_node, root[iso].nxyz, szVy_node);
+	write_vector(iso, root[iso].current_timestep_gr_id, vz_node, root[iso].nxyz, szVz_node);
+	write_vector_mask(iso, root[iso].current_timestep_gr_id, vmask, root[iso].nxyz, szVmask);
 }
 
 /*-------------------------------------------------------------------------
@@ -1079,7 +1120,7 @@ HDF_VEL(double vx_node[], double vy_node[], double vz_node[], int vmask[])
  *-------------------------------------------------------------------------
  */
 void
-HDF_WRITE_FEATURE(char *feature_name, int *nodes1, int *node_count,
+HDF_WRITE_FEATURE(int *iso_in, char *feature_name, int *nodes1, int *node_count,
 				  int feature_name_l)
 {
 
@@ -1090,6 +1131,7 @@ HDF_WRITE_FEATURE(char *feature_name, int *nodes1, int *node_count,
 	hid_t dset_id;
 	herr_t status;
 	int *nodes0;
+	int iso = *iso_in;
 
 	if (*node_count == 0)
 	{
@@ -1108,8 +1150,8 @@ HDF_WRITE_FEATURE(char *feature_name, int *nodes1, int *node_count,
 
 	/* Create the "/szFeatures/feature_name" dataset */
 	dset_id =
-		H5Dcreate(root.features_gr_id, feature_name_copy, H5T_NATIVE_INT,
-				  dspace_id, H5P_DEFAULT);
+		H5Dcreate(root[iso].features_gr_id, feature_name_copy, H5T_NATIVE_INT,
+		dspace_id, H5P_DEFAULT);
 
 	/* Convert from 1-based to 0-based */
 	nodes0 = (int *) PHRQ_malloc(sizeof(int) * (*node_count));
@@ -1123,10 +1165,10 @@ HDF_WRITE_FEATURE(char *feature_name, int *nodes1, int *node_count,
 	/* Write the "/szFeatures/feature_name" dataset. */
 	if (H5Dwrite
 		(dset_id, H5T_NATIVE_INT, dspace_id, H5S_ALL, H5P_DEFAULT,
-		 nodes0) < 0)
+		nodes0) < 0)
 	{
 		printf("HDF Error: Unable to write \"/%s/%s\" dataset.\n", szFeatures,
-			   feature_name_copy);
+			feature_name_copy);
 		assert(0);
 	}
 
@@ -1157,56 +1199,55 @@ HDF_WRITE_FEATURE(char *feature_name, int *nodes1, int *node_count,
  *-------------------------------------------------------------------------
  */
 void
-HDF_WRITE_GRID(double x[], double y[], double z[],
+HDF_WRITE_GRID(int *iso_in, double x[], double y[], double z[],
 			   int *nx, int *ny, int *nz,
 			   int ibc[], char *UTULBL, int UTULBL_l)
 {
-	int i;
-
+	int iso = *iso_in;
 	/* copy and trim time units */
-	strncpy(root.timestep_units, UTULBL, UTULBL_l);
-	root.timestep_units[UTULBL_l] = '\0';
-	string_trim(root.timestep_units);
+	strncpy(root[iso].timestep_units, UTULBL, UTULBL_l);
+	root[iso].timestep_units[UTULBL_l] = '\0';
+	string_trim(root[iso].timestep_units);
 
-	assert(root.grid_gr_id > 0);	/* precondition */
+	assert(root[iso].grid_gr_id > 0);	/* precondition */
 
-	write_axis(root.grid_gr_id, x, *nx, szX);
-	write_axis(root.grid_gr_id, y, *ny, szY);
-	write_axis(root.grid_gr_id, z, *nz, szZ);
+	write_axis(root[iso].grid_gr_id, x, *nx, szX);
+	write_axis(root[iso].grid_gr_id, y, *ny, szY);
+	write_axis(root[iso].grid_gr_id, z, *nz, szZ);
 
-	root.nx = *nx;
-	root.ny = *ny;
-	root.nz = *nz;
-	root.nxy = root.nx * root.ny;
-	root.nxyz = root.nxy * root.nz;
+	root[iso].nx = *nx;
+	root[iso].ny = *ny;
+	root[iso].nz = *nz;
+	root[iso].nxy = root[iso].nx * root[iso].ny;
+	root[iso].nxyz = root[iso].nxy * root[iso].nz;
 
-	assert(root.active.size() == 0);
-	assert(root.natural_to_active.size() == 0);
-	root.natural_to_active.resize(root.nxyz);
+	assert(root[iso].active.size() == 0);
+	assert(root[iso].natural_to_active.size() == 0);
+	root[iso].natural_to_active.resize(root[iso].nxyz);
 	int active_count = 0;
-	for (i = 0; i < root.nxyz; ++i)
+	for (int i = 0; i < root[iso].nxyz; ++i)
 	{
 		if (ibc[i] >= 0)
 		{
-			root.natural_to_active[i] = active_count;
-			root.active.push_back(i);
+			root[iso].natural_to_active[i] = active_count;
+			root[iso].active.push_back(i);
 			++active_count;
 		}
 		else
 		{
-			root.natural_to_active[i] = -1;
+			root[iso].natural_to_active[i] = -1;
 		}
 	}
-	if (root.active.size() <= 0)
+	if (root[iso].active.size() <= 0)
 	{
 		error_msg("No active cells in model.", STOP);
 	}
 
 	/* allocate space for fortran scalars */
-	assert(root.f_array.size() == 0);
-	root.f_array.resize(root.active.size());
+	assert(root[iso].f_array.size() == 0);
+	root[iso].f_array.resize(root[iso].active.size());
 
-	if ((int) root.active.size() != root.nxyz)
+	if ((int) root[iso].active.size() != root[iso].nxyz)
 	{						/* Don't write if all are active */
 		hsize_t dims[2], maxdims[2];
 		hid_t dspace_id;
@@ -1214,20 +1255,20 @@ HDF_WRITE_GRID(double x[], double y[], double z[],
 		herr_t status;
 
 		/* Create the "/Grid/Active" dataspace. */
-		dims[0] = maxdims[0] = root.active.size();
+		dims[0] = maxdims[0] = root[iso].active.size();
 		dspace_id = H5Screate_simple(1, dims, maxdims);
 		assert(dspace_id > 0);
 
 		/* Create the "/Grid/Active" dataset */
 		dset_id =
-			H5Dcreate(root.grid_gr_id, szActive, H5T_NATIVE_INT,
+			H5Dcreate(root[iso].grid_gr_id, szActive, H5T_NATIVE_INT,
 			dspace_id, H5P_DEFAULT);
 		assert(dset_id > 0);
 
 		/* Write the "/Grid/Active" dataset */
 		if (H5Dwrite
 			(dset_id, H5T_NATIVE_INT, dspace_id, H5S_ALL, H5P_DEFAULT,
-			root.active.data()) < 0)
+			root[iso].active.data()) < 0)
 		{
 			printf("HDF Error: Unable to write \"/%s/%s\" dataset\n",
 				szGrid, szActive);
@@ -1243,7 +1284,6 @@ HDF_WRITE_GRID(double x[], double y[], double z[],
 	}
 
 	proc.scalar_count = (int) g_hdf_scalar_names.size();
-
 }
 
 /*-------------------------------------------------------------------------
@@ -1255,7 +1295,7 @@ HDF_WRITE_GRID(double x[], double y[], double z[],
  *-------------------------------------------------------------------------
  */
 static hid_t
-open_hdf_file(const char *prefix, int prefix_l)
+open_hdf_file(int iso, const char *prefix, int prefix_l)
 {
 
 	hid_t file_id;
@@ -1270,8 +1310,8 @@ open_hdf_file(const char *prefix, int prefix_l)
 	sprintf(hdf_file_name, "%s%s", hdf_prefix, szHDF5Ext);
 
 
-	root.hdf_prefix    = hdf_prefix;
-	root.hdf_file_name = hdf_file_name;
+	root[iso].hdf_prefix    = hdf_prefix;
+	root[iso].hdf_file_name = hdf_file_name;
 	if (file_exists(hdf_file_name))
 	{
 		sprintf(hdf_backup_name, "%s%s~", hdf_prefix, szHDF5Ext);
@@ -1348,7 +1388,7 @@ write_axis(hid_t loc_id, double *a, int na, const char *name)
  *-------------------------------------------------------------------------
  */
 static void
-write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
+write_proc_timestep(int iso, int rank, int cell_count, hid_t file_dspace_id,
 					hid_t dset_id, std::vector<double> &array)
 {
 
@@ -1359,7 +1399,7 @@ write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
 	hssize_t start[1];
 
 	/* create the memory dataspace */
-	dims[0] = root.active.size() * proc.scalar_count;
+	dims[0] = root[iso].active.size() * proc.scalar_count;
 	assert(dims[0] > 0);
 	mem_dspace = H5Screate_simple(1, dims, NULL);
 	if (mem_dspace < 0)
@@ -1371,8 +1411,8 @@ write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
 	}
 
 	start[0] = 0;
-	count[0] = root.active.size() * proc.scalar_count;
-	status = H5Sselect_hyperslab(root.current_file_dspace_id, H5S_SELECT_SET,
+	count[0] = root[iso].active.size() * proc.scalar_count;
+	status = H5Sselect_hyperslab(root[iso].current_file_dspace_id, H5S_SELECT_SET,
 		start, NULL, count, NULL);
 	assert(status >= 0);
 
@@ -1399,7 +1439,7 @@ write_proc_timestep(int rank, int cell_count, hid_t file_dspace_id,
  *-------------------------------------------------------------------------
  */
 static void
-write_vector(hid_t loc_id, double a[], int na, const char *name)
+write_vector(int iso, hid_t loc_id, double a[], int na, const char *name)
 {
 	hsize_t dims[1];
 	hid_t dspace_id;
@@ -1423,7 +1463,7 @@ write_vector(hid_t loc_id, double a[], int na, const char *name)
 	{
 		sprintf(error_string,
 				"HDF Error: Unable to write \"/%s/%s\" dataset\n",
-				root.timestep_buffer, name);
+				root[iso].timestep_buffer, name);
 		error_msg(error_string, STOP);
 	}
 
@@ -1447,7 +1487,7 @@ write_vector(hid_t loc_id, double a[], int na, const char *name)
  *-------------------------------------------------------------------------
  */
 static void
-write_vector_mask(hid_t loc_id, int a[], int na, const char *name)
+write_vector_mask(int iso, hid_t loc_id, int a[], int na, const char *name)
 {
 	hsize_t dims[1];
 	hid_t dspace_id;
@@ -1470,7 +1510,7 @@ write_vector_mask(hid_t loc_id, int a[], int na, const char *name)
 	{
 		sprintf(error_string,
 				"HDF Error: Unable to write \"/%s/%s\" dataset\n",
-				root.timestep_buffer, name);
+				root[iso].timestep_buffer, name);
 		error_msg(error_string, STOP);
 	}
 
