@@ -17,9 +17,9 @@
 #if defined(__cplusplus)
 extern "C" {
 #endif
-extern void HDF_WRITE_INVARIANT(int * mpi_myself);
-extern void HDF_BEGIN_TIME_STEP(void);
-extern void HDF_END_TIME_STEP(void);
+extern void HDF_WRITE_INVARIANT(int *iso, int * mpi_myself);
+extern void HDF_BEGIN_TIME_STEP(int *iso);
+extern void HDF_END_TIME_STEP(int *iso);
 #if defined(__cplusplus)
 }
 #endif
@@ -57,6 +57,128 @@ RMHelper::~RMHelper()
 {
 	delete this->io;
 }
+
+/* ---------------------------------------------------------------------- */
+void
+RMH_Write_Files(int *id, int *print_hdf, int *print_xyz, 
+	double *x_node, double *y_node, double *z_node, int *xyz_mask,
+	double *saturation, int *mapping)
+	/* ---------------------------------------------------------------------- */
+{
+	//H5::H5File *file = new H5::H5File( FILE_NAME, H5F_ACC_RDWR );
+#ifdef HDF5_CREATE
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{	
+		int local_mpi_myself = Reaction_module_ptr->Get_mpi_myself();
+#ifdef USE_MPI
+		int flags[2];
+		if (local_mpi_myself == 0)
+		{
+			if (print_hdf == 0 || print_xyz == 0)
+			{
+				Reaction_module_ptr->error_msg("Null pointer in RMH_Write_Files", 1);
+			}
+			flags[0] = *print_hdf;
+			flags[1] = *print_xyz;
+			MPI_Bcast(flags, 2, MPI_INT, 0, MPI_COMM_WORLD);
+		}
+		else
+		{
+			MPI_Bcast(flags, 2, MPI_INT, 0, MPI_COMM_WORLD);
+		}
+		*print_hdf = flags[0];
+		*print_xyz = flags[1];
+#endif
+			
+		int nso = RM_GetSelectedOutputCount(id);
+		int nxyz = Reaction_module_ptr->Get_nxyz(); // need RM method
+		double current_time = Reaction_module_ptr->Get_time_conversion() *  Reaction_module_ptr->Get_time();
+		//
+		// Initialize HDF
+		//
+		if (!rmhelper.GetHDFInitialized() && nso > 0 && *print_hdf != 0)
+		{
+			if (local_mpi_myself == 0)
+			{
+				for (int iso = 0; iso < nso; iso++)
+				{
+					int status;
+					int n_user = RM_GetNthSelectedOutputUserNumber(id, &iso);
+					if (n_user >= 0)
+					{
+						status = RM_SetCurrentSelectedOutputUserNumber(id, &n_user);
+						if (status >= 0)
+						{
+							// open file
+							std::string pre = Reaction_module_ptr->Get_file_prefix();
+							// need Reaction_module_ptr->GetFilePrefix();
+							std::ostringstream oss;
+							oss << "_" << n_user;
+							pre.append(oss.str());
+							std::cerr << "Initializing HDF... " << std::endl;
+							HDFInitialize(iso, pre.c_str(), (int) pre.size());
+
+							// Set HDF scalars
+							std::vector < std::string > headings;
+							int ncol = RM_GetSelectedOutputColumnCount(id);
+							for (int icol = 0; icol < ncol; icol++)
+							{
+								char head[100];
+								status = RM_GetSelectedOutputHeading(id, &icol, head, 100);
+								headings.push_back(head);
+							}
+							HDFSetScalarNames(iso, headings);
+						}
+					}
+				}
+				rmhelper.SetHDFInitialized(true);
+			}
+		}
+		//	
+		// Write H5 file
+		//
+		if (*print_hdf != 0)
+		{
+			std::vector<double> local_selected_out;
+			int status;
+			for (int iso = 0; iso < nso; iso++)
+			{
+				int n_user = RM_GetNthSelectedOutputUserNumber(id, &iso);
+				int ncol = RM_GetSelectedOutputColumnCount(id);
+				if (n_user >= 0)
+				{
+					status = RM_SetCurrentSelectedOutputUserNumber(id, &n_user);
+					if (status >= 0)
+					{
+						if (local_mpi_myself == 0)
+						{
+							local_selected_out.resize((size_t) (nxyz*ncol));
+							int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
+							if ( !rmhelper.GetHDFInvariant())
+							{
+								HDF_WRITE_INVARIANT(&iso, &local_mpi_myself);
+								rmhelper.SetHDFInvariant(true);
+							}
+							// Now write HDF file
+							HDF_BEGIN_TIME_STEP(&iso);
+							HDFBeginCTimeStep(iso);
+							HDFFillHyperSlab(iso, local_selected_out, ncol);
+							HDFEndCTimeStep(iso);
+							HDF_END_TIME_STEP(&iso);
+						}
+						else
+						{
+							int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
+						}
+					}
+				}
+			}
+		}
+	}
+#endif
+}
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 RMH_Write_Files(int *id, int *print_hdf, int *print_xyz, 
@@ -139,7 +261,7 @@ RMH_Write_Files(int *id, int *print_hdf, int *print_xyz,
 							std::ostringstream oss;
 							oss << "_" << n_user;
 							pre.append(oss.str());
-							HDFInitialize(pre.c_str(), (int) pre.size());
+							HDFInitialize(i, pre.c_str(), (int) pre.size());
 
 							// Set HDF scalars
 							HDFSetScalarNames(rmhelper.GetHeadings());
@@ -214,14 +336,14 @@ RMH_Write_Files(int *id, int *print_hdf, int *print_xyz,
 							int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
 							if ( !rmhelper.GetHDFInvariant())
 							{
-								HDF_WRITE_INVARIANT(&local_mpi_myself);
+								HDF_WRITE_INVARIANT(iso, &local_mpi_myself);
 								rmhelper.SetHDFInvariant(true);
 							}
 							// Now write HDF file
 							HDF_BEGIN_TIME_STEP();
-							HDFBeginCTimeStep(count_chem);
-							HDFFillHyperSlab(0, local_selected_out, ncol);
-							HDFEndCTimeStep();
+							HDFBeginCTimeStep(i);
+							HDFFillHyperSlab(i, local_selected_out, ncol);
+							HDFEndCTimeStep(i);
 							HDF_END_TIME_STEP();
 						}
 						else
@@ -299,6 +421,7 @@ RMH_Write_Files(int *id, int *print_hdf, int *print_xyz,
 	}
 #endif
 }
+#endif
 /* ---------------------------------------------------------------------- */
 void
 RMH_HDF_Finalize()
