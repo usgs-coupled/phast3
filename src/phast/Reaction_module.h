@@ -52,8 +52,8 @@ public:
 	int Get_nthreads() {return this->nthreads;}
 	const std::string Get_database_file_name(void) const {return this->database_file_name;}
 	void Set_database_file_name(std::string &fn) {this->database_file_name = fn;}
-	const std::string Get_file_prefix(void) const {return this->file_prefix;}
-	void Set_file_prefix(std::string &fn) {this->file_prefix = fn;}
+	const std::string GetFilePrefix(void) const {return this->file_prefix;}
+	void SetFilePrefix(std::string &fn) {this->file_prefix = fn;}
 	cxxStorageBin & Get_phreeqc_bin(void) {return this->phreeqc_bin;}
 	const int Get_mpi_tasks(void) const {return this->mpi_tasks;}
 	void Set_mpi_tasks(int t) {this->mpi_tasks = t;}

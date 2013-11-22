@@ -21,6 +21,7 @@
 #define RM_Error                           FC_FUNC_ (rm_error,                         RM_ERROR)
 #define RM_find_components                 FC_FUNC_ (rm_find_components,               RM_FIND_COMPONENTS)
 #define RM_get_component                   FC_FUNC_ (rm_get_component,                 RM_GET_COMPONENT)
+#define RM_GetFilePrefix                   FC_FUNC_ (rm_getfileprefix,                 RM_GETFILEPREFIX)
 #define RM_GetMpiMyself                    FC_FUNC_ (rm_getmpimyself,                  RM_GETMPIMYSELF)
 #define RM_GetNthSelectedOutputUserNumber  FC_FUNC_ (rm_getnthselectedoutputusernumber, RM_GETNTHSELECTEDOUTPUTUSERNUMBER)
 #define RM_GetSelectedOutput               FC_FUNC_ (rm_getselectedoutput,             RM_GETSELECTEDOUTPUT)
@@ -28,6 +29,9 @@
 #define RM_GetSelectedOutputCount          FC_FUNC_ (rm_getselectedoutputcount,        RM_GETSELECTEDOUTPUTCOUNT)
 #define RM_GetSelectedOutputHeading        FC_FUNC_ (rm_getselectedoutputheading,      RM_GETSELECTEDOUTPUTHEADING)
 #define RM_GetSelectedOutputRowCount       FC_FUNC_ (rm_getselectedoutputrowcount,     RM_GETSELECTEDOUTPUTROWCOUNT)
+#define RM_GetTime                         FC_FUNC_ (rm_gettime,                       RM_GETTIME)
+#define RM_GetTimeConversion               FC_FUNC_ (rm_gettimeconversion,             RM_GETTIMECONVERSION)
+#define RM_GetTimeStep                     FC_FUNC_ (rm_gettimestep,                   RM_GETTIMESTEP)
 #define RM_initial_phreeqc_run             FC_FUNC_ (rm_initial_phreeqc_run,           RM_INITIAL_PHREEQC_RUN)
 #define RM_load_database                   FC_FUNC_ (rm_load_database,                 RM_LOAD_DATABASE)
 #define RM_log_screen_prt                  FC_FUNC_ (rm_log_screen_prt,                RM_LOG_SCREEN_PRT)
@@ -133,6 +137,7 @@ void RM_distribute_initial_conditions_mix(int *id,
 void RM_Error(int *id);
 int RM_find_components(int *id);
 void RM_get_component(int * id, int * num, char *chem_name, int l1);
+int RM_GetFilePrefix(int *id, char *prefix, long l = -1);
 int RM_GetMpiMyself(int *id);
 int RM_GetNthSelectedOutputUserNumber(int *id, int *i);
 int RM_GetSelectedOutput(int *id, double *so);
@@ -140,6 +145,9 @@ int RM_GetSelectedOutputColumnCount(int *id);
 int RM_GetSelectedOutputCount(int *id);
 int RM_GetSelectedOutputHeading(int *id, int * icol, char * heading, int length);
 int RM_GetSelectedOutputRowCount(int *id);
+double RM_GetTime(int *id);
+double RM_GetTimeConversion(int *id);
+double RM_GetTimeStep(int *id);
 void RM_initial_phreeqc_run(int * id, char *db_name, char *chem_name, char *prefix_name, int l1, int l2, int l3);
 void RM_log_screen_prt(char *err_str, long l);
 

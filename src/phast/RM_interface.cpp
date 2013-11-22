@@ -321,6 +321,27 @@ RM_find_components(int *id)
 }
 /* ---------------------------------------------------------------------- */
 int 
+RM_GetFilePrefix(int * rm_id, char *prefix, long l)
+	/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	if (Reaction_module_ptr)
+	{
+		std::string str = Reaction_module_ptr->GetFilePrefix();
+		strncpy(prefix, str.c_str(), l);
+		if (l >= (long) str.size())
+		{
+			return (int) str.size();
+		}
+		else
+		{
+			return -((int) str.size());
+		}
+	}
+	return -1;
+}
+/* ---------------------------------------------------------------------- */
+int 
 RM_GetMpiMyself(int * rm_id)
 	/* ---------------------------------------------------------------------- */
 {
@@ -401,6 +422,39 @@ int RM_GetSelectedOutputRowCount(int * rm_id)
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->GetSelectedOutputRowCount();
+	}
+	return -1;
+}
+/* ---------------------------------------------------------------------- */
+double RM_GetTime(int * rm_id)
+	/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->GetTime();
+	}
+	return -1;
+}
+/* ---------------------------------------------------------------------- */
+double RM_GetTimeConversion(int * rm_id)
+	/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->GetTimeConversion();
+	}
+	return -1;
+}
+/* ---------------------------------------------------------------------- */
+double RM_GetTimeStep(int * rm_id)
+	/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->GetTimeStep();
 	}
 	return -1;
 }

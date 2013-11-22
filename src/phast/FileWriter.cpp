@@ -75,6 +75,7 @@ WriteFiles(int *id, int *print_hdf, int *print_xyz, int *print_media,
 			if (print_hdf == 0 || print_xyz == 0)
 			{
 				RM_ErrorMessage("Null pointer in WriteFiles");
+				RM_Error(id);
 			}
 			flags[0] = *print_hdf;
 			flags[1] = *print_xyz;
@@ -112,7 +113,7 @@ WriteHDF(int *id, int *print_hdf, int *print_media)
 			
 		int nso = RM_GetSelectedOutputCount(id);
 		int nxyz = RM_GetSelectedOutputRowCount(id); 
-		double current_time = Reaction_module_ptr->GetTimeConversion() *  Reaction_module_ptr->GetTime();
+		double current_time = RM_GetTimeConversion(id) * RM_GetTime(id);
 		//
 		// Initialize HDF
 		//
@@ -130,12 +131,11 @@ WriteHDF(int *id, int *print_hdf, int *print_media)
 						if (status >= 0)
 						{
 							// open file
-							std::string pre = Reaction_module_ptr->Get_file_prefix();
-							// need Reaction_module_ptr->GetFilePrefix();
-							std::ostringstream oss;
-							oss << "_" << n_user;
-							pre.append(oss.str());
-							HDFInitialize(iso, pre.c_str(), (int) pre.size());
+							char prefix[256];
+							RM_GetFilePrefix(id, prefix, 256);
+							std::ostringstream filename;
+							filename << prefix << "_" << n_user;
+							HDFInitialize(iso, filename.str().c_str(), (int) strlen(filename.str().c_str()));
 
 							// Set HDF scalars
 							std::vector < std::string > headings;
@@ -212,7 +212,7 @@ WriteXYZ(int *id, int *print_xyz,
 			
 		int nso = RM_GetSelectedOutputCount(id);
 		int nxyz = RM_GetSelectedOutputRowCount(id); 
-		double current_time = Reaction_module_ptr->GetTimeConversion() *  Reaction_module_ptr->GetTime();
+		double current_time = RM_GetTimeConversion(id) * RM_GetTime(id);
 		//
 		// Initialize XYZ
 		//
@@ -229,14 +229,15 @@ WriteXYZ(int *id, int *print_xyz,
 						status = RM_SetCurrentSelectedOutputUserNumber(id, &n_user);
 						if (status >= 0)
 						{
-							// open file
-							std::string pre = Reaction_module_ptr->Get_file_prefix();
-							// need Reaction_module_ptr->GetFilePrefix();
+							// open file							
+							char prefix[256];
+							RM_GetFilePrefix(id, prefix, 256);
 							std::ostringstream filename;
-							filename << Reaction_module_ptr->Get_file_prefix() << "_" << n_user << ".chem.xyz.tsv";
+							filename << prefix << "_" << n_user << ".chem.xyz.tsv";
 							if (!FileWriter.Get_io()->punch_open(filename.str().c_str()))
 							{
-								FileWriter.Get_io()->error_msg("Could not open xyz file.", 1);
+								RM_ErrorMessage("Could not open xyz file.");
+								RM_Error(id);
 							}
 
 							// write first headings
@@ -313,7 +314,6 @@ WriteXYZ(int *id, int *print_xyz,
 									{		
 										sprintf(token,"%19.10e\t", local_selected_out[jcol * nxyz + irow]);
 										ln.width(20);
-										//ln << local_selected_out[jcol * nxyz + irow ] << "\t";
 										ln << token;
 									}
 								}
