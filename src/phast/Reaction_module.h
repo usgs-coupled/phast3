@@ -58,14 +58,15 @@ public:
 	const int Get_mpi_tasks(void) const {return this->mpi_tasks;}
 	void Set_mpi_tasks(int t) {this->mpi_tasks = t;}
 	const int GetMpiMyself(void) const {return this->mpi_myself;}
-	void Set_mpi_myself(int t) {this->mpi_myself = t;}
+	//void Set_mpi_myself(int t) {this->mpi_myself = t;}
 	std::vector<double> & Get_old_saturation(void) {return this->old_saturation;}
 	const bool Get_free_surface(void) const {return this->free_surface;};
 	void Set_free_surface(int * t); 
 	const bool Get_steady_flow(void) const {return this->steady_flow;};
 	void Set_steady_flow(int * t);
-	const int Get_nxyz(void) const {return this->nxyz;};
-	void Set_nxyz(int t) {this->nxyz = t;};
+	const int GetChemistryCellCount(void) const {return this->count_chem;}
+	const int GetGridCellCount(void) const {return this->nxyz;};
+	//void SetNxyz(int t) {this->nxyz = t;};
 	const std::vector<std::string> & Get_components(void) const {return this->components;};
 	double GetTime(void) const {return this->time;};
 	void SetTime(double *t = NULL); 
@@ -91,14 +92,14 @@ public:
 	void SetPv(double * t = NULL); 
 	std::vector<double> & GetPv0(void) {return this->pv0;}
 	void SetPv0(double * t = NULL);
-	std::vector<double> & GetTempc(void) {return this->tempc;}
-	void SetTempc(double * t = NULL); 
+	std::vector<double> & GetTemperature(void) {return this->tempc;}
+	void SetTemperature(double * t = NULL); 
 	std::vector<double> & GetVolume(void) {return this->volume;}
 	void SetVolume(double * t); 
 	std::vector<int> & Get_print_chem_mask (void) {return this->print_chem_mask;}
 	void Set_print_chem_mask(int * t); 
-	int Get_rebalance_method(void) const {return this->rebalance_method;};
-	void Set_rebalance_method(int * t); 
+	int GetRebalanceMethod(void) const {return this->rebalance_method;};
+	void SetRebalanceMethod(int * t); 
 	double Get_rebalance_fraction(void) const {return this->rebalance_fraction;};
 	void Set_rebalance_fraction(double * t); 
 	const bool Get_print_chem(void) const {return this->print_chem;};

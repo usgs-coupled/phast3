@@ -64,7 +64,7 @@ WriteFiles(int *id, int *print_hdf, int *print_xyz, int *print_media,
 	double *saturation, int *mapping)
 	/* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{	
 		int local_mpi_myself = RM_GetMpiMyself(id);
@@ -106,7 +106,7 @@ WriteHDF(int *id, int *print_hdf, int *print_media)
 /* ---------------------------------------------------------------------- */
 {
 #ifdef HDF5_CREATE
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{	
 		int local_mpi_myself = RM_GetMpiMyself(id);
@@ -205,7 +205,7 @@ WriteXYZ(int *id, int *print_xyz,
 	double *saturation, int *mapping)
 /* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{	
 		int local_mpi_myself = RM_GetMpiMyself(id);

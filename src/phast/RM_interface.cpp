@@ -72,7 +72,7 @@ RM_interface::DestroyReactionModule(int id)
 }
 /* ---------------------------------------------------------------------- */
 Reaction_module*
-RM_interface::Get_instance(int id)
+RM_interface::GetInstance(int id)
 /* ---------------------------------------------------------------------- */
 {
 	std::map<size_t, Reaction_module*>::iterator it = RM_interface::Instances.find(size_t(id));
@@ -201,7 +201,7 @@ RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity)
  *  Converts data in c from mass fraction to molal
  *  Assumes c(dim, ncomps) and only first n rows are converted
  */
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Calculate_well_ph(c, ph, alkalinity);
@@ -235,7 +235,7 @@ RM_convert_to_molal(int *id, double *c, int *n, int *dim)
  *  Converts data in c from mass fraction to molal
  *  Assumes c(dim, ncomps) and only first n rows are converted
  */
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Convert_to_molal(c, *n, *dim);
@@ -267,10 +267,10 @@ RM_distribute_initial_conditions(int *id,
 		// 4 gas phase
 		// 5 ss_assemblage
 		// 6 kinetics
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
-		int nxyz = Reaction_module_ptr->Get_nxyz();
+		int nxyz = Reaction_module_ptr->GetGridCellCount();
 		std::vector<int> initial_conditions2; 
 		initial_conditions2.assign(nxyz, -1);
 		std::vector<double> fraction1; 
@@ -299,7 +299,7 @@ RM_distribute_initial_conditions_mix(int *id,
 		// 4 gas phase
 		// 5 ss_assemblage
 		// 6 kinetics
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Distribute_initial_conditions_mix(
@@ -335,7 +335,7 @@ void RM_Error(int *id)
 int
 RM_FindComponents(int *id)
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	return (Reaction_module_ptr->Find_components());
 }
 /* ---------------------------------------------------------------------- */
@@ -343,7 +343,7 @@ int
 RM_GetFilePrefix(int * rm_id, char *prefix, long l)
 	/* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
 	if (Reaction_module_ptr)
 	{
 		std::string str = Reaction_module_ptr->GetFilePrefix();
@@ -364,7 +364,7 @@ int
 RM_GetMpiMyself(int * rm_id)
 	/* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->GetMpiMyself();
@@ -376,7 +376,7 @@ int
 RM_GetNthSelectedOutputUserNumber(int * rm_id, int * i)
 	/* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->GetNthSelectedOutputUserNumber(i);
@@ -384,10 +384,32 @@ RM_GetNthSelectedOutputUserNumber(int * rm_id, int * i)
 	return -1;
 }
 /* ---------------------------------------------------------------------- */
+int RM_GetChemistryCellCount(int * rm_id)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->GetChemistryCellCount();
+	}
+	return -1;
+}
+/* ---------------------------------------------------------------------- */
+int RM_GetGridCellCount(int * rm_id)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->GetGridCellCount();
+	}
+	return -1;
+}
+/* ---------------------------------------------------------------------- */
 int RM_GetSelectedOutput(int * rm_id, double * so)
 	/* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->GetSelectedOutput(so);
@@ -398,7 +420,7 @@ int RM_GetSelectedOutput(int * rm_id, double * so)
 int RM_GetSelectedOutputColumnCount(int * rm_id)
 	/* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->GetSelectedOutputColumnCount();
@@ -409,7 +431,7 @@ int RM_GetSelectedOutputColumnCount(int * rm_id)
 int RM_GetSelectedOutputCount(int * rm_id)
 	/* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->GetSelectedOutputCount();
@@ -420,7 +442,7 @@ int RM_GetSelectedOutputCount(int * rm_id)
 int RM_GetSelectedOutputHeading(int * rm_id, int *icol, char *heading, int length)
 	/* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
 	if (Reaction_module_ptr)
 	{
 		std::string head;
@@ -437,7 +459,7 @@ int RM_GetSelectedOutputHeading(int * rm_id, int *icol, char *heading, int lengt
 int RM_GetSelectedOutputRowCount(int * rm_id)
 	/* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->GetSelectedOutputRowCount();
@@ -448,7 +470,7 @@ int RM_GetSelectedOutputRowCount(int * rm_id)
 double RM_GetTime(int * rm_id)
 	/* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->GetTime();
@@ -459,7 +481,7 @@ double RM_GetTime(int * rm_id)
 double RM_GetTimeConversion(int * rm_id)
 	/* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->GetTimeConversion();
@@ -470,7 +492,7 @@ double RM_GetTimeConversion(int * rm_id)
 double RM_GetTimeStep(int * rm_id)
 	/* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->GetTimeStep();
@@ -481,7 +503,7 @@ double RM_GetTimeStep(int * rm_id)
 void RM_GetComponent(int * rm_id, int * num, char *chem_name, int l1)
 	/* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
 	if (Reaction_module_ptr)
 	{
 		//strcpy(chem_name, Reaction_module_ptr->Get_components()[*num - 1].c_str());
@@ -492,7 +514,7 @@ void RM_GetComponent(int * rm_id, int * num, char *chem_name, int l1)
 void RM_InitialPhreeqcRun(int *rm_id, char *db_name, char *chem_name, char *prefix, int l1, int l2, int l3)
 /* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
 	if (Reaction_module_ptr)
 	{
 		std::string database_name(db_name, l1);
@@ -591,7 +613,7 @@ void RM_RunCells(int *id,
 			 int * stop_msg)
 /* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Set_stop_message(*stop_msg != 0);
@@ -620,7 +642,7 @@ void
 RM_Module2Concentrations(int *id, double * c)
 /* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Module2Concentrations(c);
@@ -631,7 +653,7 @@ int
 RM_SetFilePrefix(int *id, const char *name, long nchar)
 /* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		if (name != NULL)
@@ -659,7 +681,7 @@ RM_send_restart_name(int *id, char *name, long nchar)
 {
 	std::string stdstring(name, nchar);
 	trim(stdstring);
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	Reaction_module_ptr->Send_restart_name(stdstring);
 
 }
@@ -667,7 +689,7 @@ RM_send_restart_name(int *id, char *name, long nchar)
 int RM_SetCurrentSelectedOutputUserNumber(int * rm_id, int * i)
 	/* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->SetCurrentSelectedOutputUserNumber(i);
@@ -702,7 +724,7 @@ RM_setup_boundary_conditions(
  *
  */
 	
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Setup_boundary_conditions(
@@ -716,7 +738,7 @@ RM_setup_boundary_conditions(
 }
 void RM_SetDensity(int *id, double *t)
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->SetDensity(t);
@@ -725,7 +747,7 @@ void RM_SetDensity(int *id, double *t)
 void 
 RM_set_free_surface(int *id, int *t)
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Set_free_surface(t);
@@ -737,7 +759,7 @@ RM_SetInputUnits (int *id, int *sol, int *pp, int *ex, int *surf, int *gas, int 
 	//
 	// Sets units for reaction_module
 	//
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		// WATER = 1, ROCK = 2, as is < 0
@@ -752,7 +774,7 @@ void RM_CreateMapping(int *id,
 	// Excludes inactive cells and cells that are redundant by symmetry
 	// (1D or 2D chemistry)
 	//
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Set_mapping(grid2chem);
@@ -768,7 +790,7 @@ RM_set_nodes(int *id,
 /* ---------------------------------------------------------------------- */
 {
 	// pass pointers from Fortran to the Reaction module
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Set_x_node(x_node);
@@ -786,7 +808,7 @@ RM_set_printing(int *id,
 /* ---------------------------------------------------------------------- */
 {
 	// pass pointers from Fortran to the Reaction module
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Set_print_chem(print_chem);
@@ -799,7 +821,7 @@ void RM_set_print_chem_mask(int *id, int *t)
 	//
 	// multiply seconds to convert to user time units
 	//
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Set_print_chem_mask(t);
@@ -807,7 +829,7 @@ void RM_set_print_chem_mask(int *id, int *t)
 }
 void RM_SetPressure(int *id, double *t)
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->SetPressure(t);
@@ -818,7 +840,7 @@ void RM_SetPv(int *id, double *t)
 	//
 	// multiply seconds to convert to user time units
 	//
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->SetPv(t);
@@ -829,17 +851,17 @@ void RM_SetPv0(int *id, double *t)
 	//
 	// multiply seconds to convert to user time units
 	//
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->SetPv0(t);
 	}
-}void RM_set_rebalance(int *id, int *method, double *f)
+}void RM_SetRebalance(int *id, int *method, double *f)
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->Set_rebalance_method(method);
+		Reaction_module_ptr->SetRebalanceMethod(method);
 		Reaction_module_ptr->Set_rebalance_fraction(f);
 	}
 }
@@ -848,7 +870,7 @@ void RM_SetSaturation(int *id, double *t)
 	//
 	// multiply seconds to convert to user time units
 	//
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->SetSaturation(t);
@@ -857,18 +879,18 @@ void RM_SetSaturation(int *id, double *t)
 void 
 RM_set_steady_flow(int *id, int *t)
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Set_steady_flow(t);
 	}
 }
-void RM_SetTempc(int *id, double *t)
+void RM_SetTemperature(int *id, double *t)
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->SetTempc(t);
+		Reaction_module_ptr->SetTemperature(t);
 	}
 }
 void RM_SetTimeConversion(int *id, double *t)
@@ -876,7 +898,7 @@ void RM_SetTimeConversion(int *id, double *t)
 	//
 	// multiply seconds to convert to user time units
 	//
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->SetTimeConversion(t);
@@ -887,7 +909,7 @@ void RM_SetVolume(int *id, double *t)
 	//
 	// multiply seconds to convert to user time units
 	//
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->SetVolume(t);
@@ -903,7 +925,7 @@ void RM_write_bc_raw(
 			int prefix_l)
 /* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		std::string fn(prefix, prefix_l);
@@ -935,7 +957,7 @@ void RM_write_output(int *id)
 void RM_write_restart(int *id)
 /* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Write_restart();

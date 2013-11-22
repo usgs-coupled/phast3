@@ -22,9 +22,11 @@
 #define RM_Error                           FC_FUNC_ (rm_error,                         RM_ERROR)
 #define RM_ErrorMessage                    FC_FUNC_ (rm_errormessage,                  RM_ERRORMESSAGE)
 #define RM_FindComponents                  FC_FUNC_ (rm_findcomponents,                RM_FINDCOMPONENTS)
+#define RM_GetChemistryCellCount           FC_FUNC_ (rm_getchemistrycellcount,         RM_GETNCHEMISTRYCELLCOUNT)
 #define RM_GetComponent                    FC_FUNC_ (rm_getcomponent,                  RM_GETCOMPONENT)
 #define RM_GetFilePrefix                   FC_FUNC_ (rm_getfileprefix,                 RM_GETFILEPREFIX)
 #define RM_GetMpiMyself                    FC_FUNC_ (rm_getmpimyself,                  RM_GETMPIMYSELF)
+#define RM_GetGridCellCount                FC_FUNC_ (rm_getgridcellcount,              RM_GETGRIDCELLCOUNT)
 #define RM_GetNthSelectedOutputUserNumber  FC_FUNC_ (rm_getnthselectedoutputusernumber, RM_GETNTHSELECTEDOUTPUTUSERNUMBER)
 #define RM_GetSelectedOutput               FC_FUNC_ (rm_getselectedoutput,             RM_GETSELECTEDOUTPUT)
 #define RM_GetSelectedOutputColumnCount    FC_FUNC_ (rm_getselectedoutputcolumncount,  RM_GETSELECTEDOUTPUTCOLUMNCOUNT)
@@ -54,10 +56,10 @@
 #define RM_SetPressure                     FC_FUNC_ (rm_setpressure,                   RM_SETPRESSURE)
 #define RM_SetPv0                          FC_FUNC_ (rm_setpv0,                        RM_SETPV0)
 #define RM_SetPv                           FC_FUNC_ (rm_setpv,                         RM_SETPV)
-#define RM_set_rebalance                   FC_FUNC_ (rm_set_rebalance,                 RM_SET_REBALANCE)
+#define RM_SetRebalance                    FC_FUNC_ (rm_setrebalance,                  RM_SETREBALANCE)
 #define RM_SetSaturation                   FC_FUNC_ (rm_setsaturation,                 RM_SETSATURATION)
 #define RM_set_steady_flow                 FC_FUNC_ (rm_set_steady_flow,               RM_SET_STEADY_FLOW)
-#define RM_SetTempc                        FC_FUNC_ (rm_settempc,                      RM_SETTEMPC)
+#define RM_SetTemperature                  FC_FUNC_ (rm_settemperature,                RM_SETTEMPERATURE)
 #define RM_SetTimeConversion               FC_FUNC_ (rm_settimeconversion,             RM_SETTIMECONVERSION)
 #define RM_SetVolume					   FC_FUNC_ (rm_setvolume,                     RM_SETVOLUME)
 #define RM_Module2Concentrations           FC_FUNC_ (rm_module2concentrations,         RM_MODULE2CONCENTRATIONS)
@@ -93,9 +95,9 @@
 #define RM_set_pressure                       rm_set_pressure
 #define RM_SetPv0                             rm_setpv0
 #define RM_SetPv                              rm_setpv
-#define RM_set_rebalance                      rm_set_rebalance
+#define RM_SetRebalance                      RM_SetRebalance
 #define RM_SetSaturation                      rm_setsaturation
-#define RM_SetTempc	                      rm_settempc
+#define RM_SetTemperature	                      RM_SetTemperature
 #define RM_SetTimeConversion				  rm_settimeconversion
 #define RM_SetVolume                          rm_setvolume
 #define RM_Module2Concentrations              rm_module2concentrations
@@ -109,7 +111,7 @@ class RM_interface
 public:
 	static int CreateReactionModule(int *nxyz, int *nthreads);
 	static IPQ_RESULT DestroyReactionModule(int n);
-	static Reaction_module* Get_instance(int n);
+	static Reaction_module* GetInstance(int n);
 	static void CleanupReactionModuleInstances(void);
 	static PHRQ_io phast_io;
 
@@ -141,6 +143,8 @@ int RM_FindComponents(int *id);
 void RM_GetComponent(int * id, int * num, char *chem_name, int l1);
 int RM_GetFilePrefix(int *id, char *prefix, long l = -1);
 int RM_GetMpiMyself(int *id);
+int RM_GetChemistryCellCount(int *id);
+int RM_GetGridCellCount(int *id);
 int RM_GetNthSelectedOutputUserNumber(int *id, int *i);
 int RM_GetSelectedOutput(int *id, double *so);
 int RM_GetSelectedOutputColumnCount(int *id);
@@ -186,10 +190,10 @@ void RM_set_print_chem_mask(int *id, int *t);
 void RM_SetPressure(int *id, double *t);
 void RM_SetPv(int *id, double *t);
 void RM_SetPv0(int *id, double *t);
-void RM_set_rebalance(int *id, int *method, double *f);
+void RM_SetRebalance(int *id, int *method, double *f);
 void RM_SetSaturation(int *id, double *t);
 void RM_set_steady_flow(int *id, int *t);
-void RM_SetTempc(int *id, double *t);
+void RM_SetTemperature(int *id, double *t);
 void RM_SetTimeConversion(int *id, double *t);
 void RM_SetVolume(int *id, double *t);
 void RM_WarningMessage(const char *err_str, long l = -1);
