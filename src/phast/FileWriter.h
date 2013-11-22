@@ -15,7 +15,7 @@
 #if defined(__cplusplus)
 extern "C" {
 #endif
-void WriteFiles(int *id, int *print_hdf, int *print_xyz, 
+void WriteFiles(int *id, int *print_hdf, int *print_xyz, int *print_media,
 	double *x_node, double *y_node, double *z_node, int *xyz_mask,
 	double *saturation, int *mapping);
 void FinalizeFiles();
@@ -23,8 +23,8 @@ void FinalizeFiles();
 #if defined(__cplusplus)
 }
 #endif
-void WriteHDF(int *id, int *print_hdf);void
-WriteXYZ(int *id, int *print_xyz, 
+void WriteHDF(int *id, int *print_hdf, int *print_media);
+void WriteXYZ(int *id, int *print_xyz, 
 	double *x_node, double *y_node, double *z_node, int *xyz_mask,
 	double *saturation, int *mapping);
 #endif // FileWriter_H

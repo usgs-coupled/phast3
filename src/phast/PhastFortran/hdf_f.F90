@@ -151,7 +151,7 @@ SUBROUTINE hdf_end_time_step(iso)
   IF (pr_hdf_media) THEN
      ! ... Write HDF media properties arrays
      CALL media_hdf(iso)
-     pr_hdf_media = .FALSE.
+     !pr_hdf_media = .FALSE.
   ENDIF
 
   IF (prhdfvi == 1) THEN

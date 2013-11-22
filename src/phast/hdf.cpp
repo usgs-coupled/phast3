@@ -83,6 +83,8 @@ struct root_info
 	size_t intermediate_idx;
 	std::string hdf_prefix;
 	std::string hdf_file_name;
+	int scalar_count;			/* chemistry scalar count (doesn't include fortran scalars) */
+	std::vector<std::string> g_hdf_scalar_names;
 };
 static std::vector < root_info > root;
 
@@ -91,12 +93,9 @@ static std::vector < root_info > root;
  */
 static struct proc_info
 {
-	int cell_count;
-	int scalar_count;			/* chemistry scalar count (doesn't include fortran scalars) */
 	std::vector<double> array;
 } proc;
 
-std::vector<std::string> g_hdf_scalar_names;
 
 /* string constants */
 static const char szTimeSteps[] = "TimeSteps";
@@ -134,15 +133,13 @@ static const float INACTIVE_CELL_VALUE = 1.0e30f;
 void
 HDFBeginCTimeStep(int iso)
 {
-	if (proc.scalar_count == 0)
-		return;
-
-	proc.cell_count = (int) root[iso].active.size();
+	if (root[iso].scalar_count == 0)
+		return;;
 
 	/* allocate space for this time step */
-	assert(proc.cell_count > 0);
-	assert(proc.scalar_count > 0);
-	size_t array_count = root[iso].active.size() * proc.scalar_count;
+	assert(root[iso].active.size() > 0);
+	assert(root[iso].scalar_count > 0);
+	size_t array_count = root[iso].active.size() * root[iso].scalar_count;
 	proc.array.resize(array_count);
 
 	/* init entire array to inactive */
@@ -172,7 +169,7 @@ HDFEndCTimeStep(int iso)
 	const int mpi_myself = 0;
 
 
-	if (proc.cell_count == 0)
+	if (root[iso].active.size() == 0)
 		return;					/* nothing to do */
 
 		assert(root[iso].current_file_dspace_id > 0);	/* precondition */
@@ -235,7 +232,7 @@ HDFFinalize(void)
 
 		assert(root[iso].current_file_dspace_id == -1);	/* shouldn't be open */
 		assert(root[iso].current_file_dset_id == -1);	/* shouldn't be open */
-
+		
 		hdf_finalize_headings(iso);
 
 		root[iso].scalar_names.clear();
@@ -270,9 +267,8 @@ HDFFinalize(void)
 		assert(status >= 0);
 
 
-		/* free proc resources */
-		proc.cell_count = 0;
-		proc.scalar_count = 0;
+		/* set scalar count */
+		root[iso].scalar_count = 0;
 	}
 }
 
@@ -324,15 +320,14 @@ HDFInitialize(int iso, const char *prefix, int prefix_l)
 	root[iso].intermediate_idx = 0;
 
 	/* init proc */
-	proc.cell_count = 0;
-	proc.scalar_count = 0;
+	root[iso].scalar_count = 0;
 }
 void
 HDFSetScalarNames(int iso, std::vector<std::string> &names)
 {
-		g_hdf_scalar_names = names;
+		root[iso].g_hdf_scalar_names = names;
 		root[iso].scalar_names = names;
-		proc.scalar_count = (int) root[iso].scalar_names.size();
+		root[iso].scalar_count = (int) root[iso].scalar_names.size();
 }
 
 /*-------------------------------------------------------------------------
@@ -454,7 +449,7 @@ hdf_finalize_headings(int iso)
 	{
 		assert(0);
 		sprintf(error_string,
-			"HDF ERROR: Unable to set size of fixed length string type(size=%d).\n",
+			"HDF ERROR: Unable to set size of fixed length string type(size=%d), 0.\n",
 			(int) root[iso].scalar_name_max_len);
 		error_msg(error_string, STOP);
 	}
@@ -473,7 +468,7 @@ hdf_finalize_headings(int iso)
 		{
 			assert(0);
 			sprintf(error_string,
-				"HDF ERROR: Unable to set size of fixed length string type(size=%d).\n",
+				"HDF ERROR: Unable to set size of fixed length string type(size=%d), 1.\n",
 				(int) root[iso].scalar_name_max_len);
 			error_msg(error_string, STOP);
 		}
@@ -561,7 +556,7 @@ hdf_finalize_headings(int iso)
 		{
 			assert(0);
 			sprintf(error_string,
-				"HDF ERROR: Unable to set size of fixed length string type(size=%d).\n",
+				"HDF ERROR: Unable to set size of fixed length string type(size=%d), 2.\n",
 				(int) root[iso].scalar_name_max_len);
 			error_msg(error_string, STOP);
 		}
@@ -638,7 +633,7 @@ hdf_finalize_headings(int iso)
 		{
 			assert(0);
 			sprintf(error_string,
-				"HDF ERROR: Unable to set size of fixed length string type(size=%d).\n",
+				"HDF ERROR: Unable to set size of fixed length string type(size=%d), 3.\n",
 				(int) root[iso].time_step_max_len);
 			error_msg(error_string, STOP);
 		}
@@ -856,7 +851,7 @@ HDF_OPEN_TIME_STEP(int *iso_in, double *time, double *cnvtmi, int *print_chem,
 	/* determine scalar count for this timestep */
 	root[iso].print_chem = (*print_chem);
 	int time_step_scalar_count =
-		(root[iso].print_chem ? proc.scalar_count : 0) + (*f_scalar_count);
+		(root[iso].print_chem ? root[iso].scalar_count : 0) + (*f_scalar_count);
 	if (time_step_scalar_count == 0 && *print_vel == 0)
 	{
 		return;					/* no hdf scalar or vector output for this time step */
@@ -894,7 +889,7 @@ HDF_OPEN_TIME_STEP(int *iso_in, double *time, double *cnvtmi, int *print_chem,
 		/* add cscalar indices (fortran indices are added one by one in PRNARR_HDF) */
 		if (root[iso].print_chem)
 		{
-			for (i = 0; i < proc.scalar_count; ++i)
+			for (i = 0; i < root[iso].scalar_count; ++i)
 			{
 				root[iso].time_step_scalar_indices[i] = i;
 			}
@@ -988,7 +983,7 @@ HDF_PRNTAR(int *iso_in, double array[], double frac[], double *cnv, char *name, 
 
 	/* check if this f_scalar has been added to root.scalar_names yet */
 	/* phreeqc scalar count is proc.scalar_count */
-	for (i = proc.scalar_count; i < (int) root[iso].scalar_names.size(); ++i)
+	for (i = root[iso].scalar_count; i < (int) root[iso].scalar_names.size(); ++i)
 	{
 		if (root[iso].scalar_names[i] == name_buffer)
 			break;
@@ -1002,9 +997,9 @@ HDF_PRNTAR(int *iso_in, double array[], double frac[], double *cnv, char *name, 
 	}
 
 	/* add this scalar index to the list of scalar indices */
-	assert(((root[iso].print_chem ? proc.scalar_count : 0) + root[iso].f_scalar_index) <
+	assert(((root[iso].print_chem ? root[iso].scalar_count : 0) + root[iso].f_scalar_index) <
 		root[iso].time_step_scalar_indices.size());
-	root[iso].time_step_scalar_indices[(root[iso].print_chem ? proc.scalar_count : 0) +
+	root[iso].time_step_scalar_indices[(root[iso].print_chem ? root[iso].scalar_count : 0) +
 		root[iso].f_scalar_index] = i;
 
 	/* copy the fortran scalar array into the active scalar array (f_array) */
@@ -1041,7 +1036,7 @@ HDF_PRNTAR(int *iso_in, double array[], double frac[], double *cnv, char *name, 
 
 	start[0] =
 		(root[iso].f_scalar_index +
-		(root[iso].print_chem ? proc.scalar_count : 0)) * root[iso].active.size();
+		(root[iso].print_chem ? root[iso].scalar_count : 0)) * root[iso].active.size();
 	count[0] = root[iso].active.size();
 
 	assert(root[iso].current_file_dspace_id > 0);	/* precondition */
@@ -1283,7 +1278,7 @@ HDF_WRITE_GRID(int *iso_in, double x[], double y[], double z[],
 		assert(status >= 0);
 	}
 
-	proc.scalar_count = (int) g_hdf_scalar_names.size();
+	root[iso].scalar_count = (int) root[iso].g_hdf_scalar_names.size();
 }
 
 /*-------------------------------------------------------------------------
@@ -1399,7 +1394,7 @@ write_proc_timestep(int iso, int rank, int cell_count, hid_t file_dspace_id,
 	hssize_t start[1];
 
 	/* create the memory dataspace */
-	dims[0] = root[iso].active.size() * proc.scalar_count;
+	dims[0] = root[iso].active.size() * root[iso].scalar_count;
 	assert(dims[0] > 0);
 	mem_dspace = H5Screate_simple(1, dims, NULL);
 	if (mem_dspace < 0)
@@ -1411,7 +1406,7 @@ write_proc_timestep(int iso, int rank, int cell_count, hid_t file_dspace_id,
 	}
 
 	start[0] = 0;
-	count[0] = root[iso].active.size() * proc.scalar_count;
+	count[0] = root[iso].active.size() * root[iso].scalar_count;
 	status = H5Sselect_hyperslab(root[iso].current_file_dspace_id, H5S_SELECT_SET,
 		start, NULL, count, NULL);
 	assert(status >= 0);
