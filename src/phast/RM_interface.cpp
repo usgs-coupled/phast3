@@ -34,7 +34,7 @@ void RM_interface::CleanupReactionModuleInstances(void)
 }
 /* ---------------------------------------------------------------------- */
 int
-RM_interface::Create_reaction_module(int *nxyz, int *nthreads)
+RM_interface::CreateReactionModule(int *nxyz, int *nthreads)
 /* ---------------------------------------------------------------------- */
 {
 	int n = IPQ_OUTOFMEMORY;
@@ -55,7 +55,7 @@ RM_interface::Create_reaction_module(int *nxyz, int *nthreads)
 }
 /* ---------------------------------------------------------------------- */
 IPQ_RESULT
-RM_interface::Destroy_reaction_module(int id)
+RM_interface::DestroyReactionModule(int id)
 /* ---------------------------------------------------------------------- */
 {
 	IPQ_RESULT retval = IPQ_BADINSTANCE;
@@ -92,49 +92,56 @@ void
 RM_ErrorMessage(const char *err_str, long l)
 /* ---------------------------------------------------------------------- */
 {
-	if (l >= 0)
+	if (err_str)
 	{
-		std::string e_string(err_str, l);
-		trim_right(e_string);
-		RM_errprt(e_string);
+		if (l >= 0)
+		{
+			std::string e_string(err_str, l);
+			trim_right(e_string);
+			std::ostringstream estr;
+			estr << "ERROR: " << e_string << std::endl;
+			RM_interface::phast_io.output_msg(estr.str().c_str());
+			RM_interface::phast_io.error_msg(estr.str().c_str());
+			RM_interface::phast_io.log_msg(estr.str().c_str());
+		}
+		else
+		{
+			std::string e_string(err_str);
+			trim_right(e_string);
+			std::ostringstream estr;
+			estr << "ERROR: " << e_string << std::endl;
+			RM_interface::phast_io.output_msg(estr.str().c_str());
+			RM_interface::phast_io.error_msg(estr.str().c_str());
+			RM_interface::phast_io.log_msg(estr.str().c_str());
+		} 
 	}
-	else
-	{
-		std::string e_string(err_str);
-		trim_right(e_string);
-		RM_errprt(e_string);
-	}
-}
-/* ---------------------------------------------------------------------- */
-void
-RM_errprt(const std::string & e_string)
-/* ---------------------------------------------------------------------- */
-{
-	std::ostringstream estr;
-	estr << "ERROR: " << e_string << std::endl;
-	RM_interface::phast_io.output_msg(estr.str().c_str());
-	RM_interface::phast_io.error_msg(estr.str().c_str());
-	RM_interface::phast_io.log_msg(estr.str().c_str());
-	return;
 }
 /* ---------------------------------------------------------------------- */
 void
 RM_WarningMessage(const char *err_str, long l)
 /* ---------------------------------------------------------------------- */
 {
-	std::string e_string(err_str, l);
-	trim_right(e_string);
-	RM_warnprt(e_string);
-}
-/* ---------------------------------------------------------------------- */
-void
-RM_warnprt(const std::string & e_string)
-/* ---------------------------------------------------------------------- */
-{
-	std::ostringstream estr;
-	estr << "WARNING: " << e_string << std::endl;
-	RM_interface::phast_io.error_msg(estr.str().c_str());
-	RM_interface::phast_io.log_msg(estr.str().c_str());
+	if (err_str)
+	{
+		if (l >= 0)
+		{
+			std::string e_string(err_str, l);
+			trim_right(e_string);
+			std::ostringstream estr;
+			estr << "WARNING: " << e_string << std::endl;
+			RM_interface::phast_io.error_msg(estr.str().c_str());
+			RM_interface::phast_io.log_msg(estr.str().c_str());
+		}
+		else
+		{
+			std::string e_string(err_str);
+			trim_right(e_string);
+			std::ostringstream estr;
+			estr << "WARNING: " << e_string << std::endl;
+			RM_interface::phast_io.error_msg(estr.str().c_str());
+			RM_interface::phast_io.log_msg(estr.str().c_str());
+		}
+	}
 }
 
 /* ---------------------------------------------------------------------- */
@@ -142,17 +149,23 @@ void
 RM_LogMessage(const char *err_str, long l)
 /* ---------------------------------------------------------------------- */
 {
-	std::string e_string(err_str, l);
-	trim_right(e_string);
-	RM_logprt(e_string);
-}
-/* ---------------------------------------------------------------------- */
-void
-RM_logprt(const std::string & e_string)
-/* ---------------------------------------------------------------------- */
-{
-	RM_interface::phast_io.log_msg(e_string.c_str());
-	RM_interface::phast_io.log_msg("\n");
+	if (err_str)
+	{
+		if (l >= 0)
+		{
+			std::string e_string(err_str, l);
+			trim_right(e_string);
+			RM_interface::phast_io.log_msg(e_string.c_str());
+			RM_interface::phast_io.log_msg("\n");
+		}
+		else
+		{
+			std::string e_string(err_str);
+			trim_right(e_string);
+			RM_interface::phast_io.log_msg(e_string.c_str());
+			RM_interface::phast_io.log_msg("\n");
+		}
+	}
 }
 
 /* ---------------------------------------------------------------------- */
@@ -160,17 +173,23 @@ void
 RM_ScreenMessage(const char *err_str, long l)
 /* ---------------------------------------------------------------------- */
 {
-	std::string e_string(err_str, l);
-	trim_right(e_string);
-	RM_screenprt(e_string);
-}
-/* ---------------------------------------------------------------------- */
-void
-RM_screenprt(const std::string & e_string)
-/* ---------------------------------------------------------------------- */
-{
-	RM_interface::phast_io.screen_msg(e_string.c_str());
-	RM_interface::phast_io.screen_msg("\n");
+	if (err_str)
+	{
+		if (l >= 0)
+		{
+			std::string e_string(err_str, l);
+			trim_right(e_string);
+			RM_interface::phast_io.screen_msg(e_string.c_str());
+			RM_interface::phast_io.screen_msg("\n");
+		}
+		else
+		{	
+			std::string e_string(err_str);
+			trim_right(e_string);
+			RM_interface::phast_io.screen_msg(e_string.c_str());
+			RM_interface::phast_io.screen_msg("\n");
+		}
+	}
 }
 
 /* ---------------------------------------------------------------------- */
@@ -226,13 +245,13 @@ RM_convert_to_molal(int *id, double *c, int *n, int *dim)
 int RM_Create(int *nxyz, int *nthreads)
 /* ---------------------------------------------------------------------- */
 {
-	return RM_interface::Create_reaction_module(nxyz, nthreads);
+	return RM_interface::CreateReactionModule(nxyz, nthreads);
 }
 /* ---------------------------------------------------------------------- */
 int RM_Destroy(int *id)
 /* ---------------------------------------------------------------------- */
 {
-	return RM_interface::Destroy_reaction_module(*id);
+	return RM_interface::DestroyReactionModule(*id);
 }
 /* ---------------------------------------------------------------------- */
 void
@@ -307,8 +326,8 @@ void RM_Error(int *id)
 			e_string = GetErrorString(*id);
 		}
 	}
-	RM_errprt(e_string);
-	RM_errprt("Stopping because of errors in reaction module.");
+	RM_ErrorMessage(e_string.c_str());
+	RM_ErrorMessage("Stopping because of errors in reaction module.");
 	RM_interface::CleanupReactionModuleInstances();
 	IPhreeqcPhastLib::CleanupIPhreeqcPhast();
 	exit(4);
@@ -491,10 +510,23 @@ RM_LogScreenMessage(char *err_str, long l)
 /* ---------------------------------------------------------------------- */
 {
 // writes to log file and screen
-	std::string e_string(err_str, l);
-	trim_right(e_string);
-	RM_logprt(e_string);
-	RM_screenprt(e_string);
+	if (err_str)
+	{
+		if (l >= 0)
+		{
+			std::string e_string(err_str, l);
+			trim_right(e_string);
+			RM_LogMessage(e_string.c_str());
+			RM_ScreenMessage(e_string.c_str());
+		}
+		else
+		{
+			std::string e_string(err_str);
+			trim_right(e_string);
+			RM_LogMessage(e_string.c_str());
+			RM_ScreenMessage(e_string.c_str());
+		}
+	}
 }
 /* ---------------------------------------------------------------------- */
 void

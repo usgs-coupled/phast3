@@ -35,15 +35,17 @@
 #define RM_GetTimeConversion               FC_FUNC_ (rm_gettimeconversion,             RM_GETTIMECONVERSION)
 #define RM_GetTimeStep                     FC_FUNC_ (rm_gettimestep,                   RM_GETTIMESTEP)
 #define RM_InitialPhreeqcRun               FC_FUNC_ (rm_initialphreeqcrun,             RM_INITIALPHREEQCRUN)
-#define RM_load_database                   FC_FUNC_ (rm_load_database,                 RM_LOAD_DATABASE)
+#define RM_LoadDatabase                    FC_FUNC_ (rm_loaddatabase,                  RM_LOADDATABASE)
 #define RM_LogMessage                      FC_FUNC_ (rm_logmessage,                    RM_LOGMESSAGE)
 #define RM_LogScreenMessage                FC_FUNC_ (rm_logscreenmessage,              RM_LOGSCREENMESSAGE)
 #define RM_OpenFiles                       FC_FUNC_ (rm_openfiles,                     RM_OPENFILES)
 #define RM_RunCells                        FC_FUNC_ (rm_runcells,                      RM_RUNCELLS)
+#define RM_ScreenMessage                   FC_FUNC_ (rm_screenmessage,                 RM_SCREENMESSAGE)
 #define RM_send_restart_name               FC_FUNC_ (rm_send_restart_name,             RM_SEND_RESTART_NAME)
 #define RM_SetCurrentSelectedOutputUserNumber  FC_FUNC_ (rm_setcurrentselectedoutputusernumber, RM_SETCURRENTSELECTEDOUTPUTUSERNUMBER)
 #define RM_setup_boundary_conditions       FC_FUNC_ (rm_setup_boundary_conditions,     RM_SETUP_BOUNDARY_CONDITIONS)
 #define RM_SetDensity                      FC_FUNC_ (rm_setdensity,                    RM_SETDENSITY)
+#define RM_SetFilePrefix                   FC_FUNC_ (rm_setfileprefix,                 RM_SETFILEPREFIX)
 #define RM_set_free_surface                FC_FUNC_ (rm_set_free_surface,              RM_SET_FREE_SURFACE)
 #define RM_SetInputUnits                   FC_FUNC_ (rm_setinputunits,                 RM_SETINPUTUNITS)
 #define RM_set_nodes                       FC_FUNC_ (rm_set_nodes,                     RM_SET_NODES)
@@ -62,8 +64,6 @@
 #define RM_write_bc_raw                    FC_FUNC_ (rm_write_bc_raw,                  RM_WRITE_BC_RAW)
 #define RM_write_output                    FC_FUNC_ (rm_write_output,                  RM_WRITE_OUTPUT)
 #define RM_write_restart				   FC_FUNC_ (rm_write_restart,                 RM_WRITE_RESTART)
-#define RM_ScreenMessage                   FC_FUNC_ (rm_screenmessage,                 RM_SCREENMESSAGE)
-#define RM_SetFilePrefix                   FC_FUNC_ (rm_setfileprefix,                 RM_SETFILEPREFIX)
 #define RM_WarningMessage                  FC_FUNC_ (rm_warningmessage,                RM_WARNINGMESSAGE)
 #endif
 #ifdef SKIP
@@ -78,7 +78,7 @@
 //#define RM_fractions2solutions                rm_fractions2solutions
 #define RM_GetComponent                      RM_GetComponent
 #define RM_InitialPhreeqcRun                RM_InitialPhreeqcRun
-#define RM_load_database                      rm_load_database
+#define RM_LoadDatabase                      RM_LoadDatabase
 #define RM_LogScreenMessage                     RM_LogScreenMessage
 #define RM_OpenFiles                         RM_OpenFiles
 #define RM_RunCells                          RM_RunCells
@@ -107,8 +107,8 @@
 class RM_interface
 {
 public:
-	static int Create_reaction_module(int *nxyz, int *nthreads);
-	static IPQ_RESULT Destroy_reaction_module(int n);
+	static int CreateReactionModule(int *nxyz, int *nthreads);
+	static IPQ_RESULT DestroyReactionModule(int n);
 	static Reaction_module* Get_instance(int n);
 	static void CleanupReactionModuleInstances(void);
 	static PHRQ_io phast_io;
@@ -126,6 +126,7 @@ void RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity);
 void RM_close_files(int * solute);
 void RM_convert_to_molal(int *id, double *c, int *n, int *dim);
 int  RM_Create(int *nxyz, int *nthreads);
+void RM_CreateMapping (int *id, int *grid2chem=NULL); 
 int  RM_Destroy(int *id);
 void RM_distribute_initial_conditions(int *id,
 		int *initial_conditions1);		// 7 x nxyz end-member 1
@@ -135,6 +136,7 @@ void RM_distribute_initial_conditions_mix(int *id,
 		double *fraction1			    // 7 x nxyz fraction of end-member 1
 		);
 void RM_Error(int *id);
+void RM_ErrorMessage(const char *err_str, long l = -1);
 int RM_FindComponents(int *id);
 void RM_GetComponent(int * id, int * num, char *chem_name, int l1);
 int RM_GetFilePrefix(int *id, char *prefix, long l = -1);
@@ -149,8 +151,8 @@ double RM_GetTime(int *id);
 double RM_GetTimeConversion(int *id);
 double RM_GetTimeStep(int *id);
 void RM_InitialPhreeqcRun(int * id, char *db_name, char *chem_name, char *prefix_name, int l1, int l2, int l3);
-void RM_LogScreenMessage(char *err_str, long l);
-
+void RM_LogMessage(const char *err_str, long l = -1);
+void RM_LogScreenMessage(char *err_str, long l = -1);
 void RM_OpenFiles(int * solute, char * prefix, int l_prefix);
 void RM_open_error_file(void);
 void RM_open_output_file(char * prefix, int l_prefix);
@@ -162,7 +164,7 @@ void RM_RunCells(int *id,
 			 double *time_step,				        // time step from transport
  			 double *concentration,					// mass fractions nxyz:components
 			 int * stop_msg);
-void RM_ScreenMessage(const char *err_str, long l);
+void RM_ScreenMessage(const char *err_str, long l = -1);
 void RM_send_restart_name(int *id, char * s, long l);
 int  RM_SetCurrentSelectedOutputUserNumber(int *id, int *i);
 void RM_setup_boundary_conditions(
@@ -178,7 +180,6 @@ int  RM_SetFilePrefix(int *id, const char *prefix, long l = -1);
 void RM_set_free_surface(int *id, int *t);
 void RM_SetInputUnits (int *id, int *sol=NULL, int *pp=NULL, int *ex=NULL, 
 						 int *surf=NULL, int *gas=NULL, int *ss=NULL, int *kin=NULL);
-void RM_CreateMapping (int *id, int *grid2chem=NULL); 
 void RM_set_nodes(int *id, double *x_node, double *y_node, double *z_node);
 void RM_set_printing(int *id, int *print_chem, int *print_hdf, int *print_restart);
 void RM_set_print_chem_mask(int *id, int *t);
@@ -191,6 +192,7 @@ void RM_set_steady_flow(int *id, int *t);
 void RM_SetTempc(int *id, double *t);
 void RM_SetTimeConversion(int *id, double *t);
 void RM_SetVolume(int *id, double *t);
+void RM_WarningMessage(const char *err_str, long l = -1);
 void RM_write_bc_raw(int *id, 
 			int *solution_list, 
 			int * bc_solution_count, 
@@ -200,16 +202,9 @@ void RM_write_bc_raw(int *id,
 void RM_write_output(int *id);
 void RM_write_restart(int *id);
 
-void RM_ErrorMessage(const char *err_str, long l = -1);
-void RM_LogMessage(const char *err_str, long l);
-void RM_WarningMessage(const char *err_str, long l);
 #if defined(__cplusplus)
 }
 #endif
-void RM_errprt(const std::string & e_string);
-void RM_warnprt(const std::string & e_string);
-void RM_logprt(const std::string & e_string);
-void RM_screenprt(const std::string & e_string);
 
 // Global functions
 //inline std::string trim_right(const std::string &source , const std::string& t = " \t")
