@@ -25,7 +25,7 @@ public:
 		int *initial_conditions2,	
 		double *fraction1);
 	int Find_components();
-	void Concentrations2Phreeqc(void);	
+	void Concentrations2Module(void);	
 	
 	int GetNthSelectedOutputUserNumber(int *i);
 	int GetSelectedOutput(double *so);
@@ -34,15 +34,15 @@ public:
 	int GetSelectedOutputHeading(int *icol, std::string &heading);
 	int GetSelectedOutputRowCount(void);
 
-	void Initial_phreeqc_run(std::string &database_name, std::string &chemistry_name, std::string &prefix);
-	void Run_cells(void);
+	void InitialPhreeqcRun(std::string &database_name, std::string &chemistry_name, std::string &prefix);
+	void RunCells(void);
 	int SetCurrentSelectedOutputUserNumber(int *i);
 	void Send_restart_name(std::string &name);
 	void Set_mapping(int *grid2chem);
 	void Setup_boundary_conditions(const int n_boundary, int *boundary_solution1,
 						  int *boundary_solution2, double *fraction1,
 						  double *boundary_fraction, int dim);
-	void Phreeqc2Concentrations(double * c);
+	void Module2Concentrations(double * c);
 	void Write_bc_raw(int *solution_list, int * bc_solution_count, 
 		int * solution_number, const std::string &prefix);
 	void Write_restart(void);
@@ -53,7 +53,7 @@ public:
 	const std::string Get_database_file_name(void) const {return this->database_file_name;}
 	void Set_database_file_name(std::string &fn) {this->database_file_name = fn;}
 	const std::string GetFilePrefix(void) const {return this->file_prefix;}
-	void SetFilePrefix(std::string &fn) {this->file_prefix = fn;}
+	int SetFilePrefix(std::string &fn); 
 	cxxStorageBin & Get_phreeqc_bin(void) {return this->phreeqc_bin;}
 	const int Get_mpi_tasks(void) const {return this->mpi_tasks;}
 	void Set_mpi_tasks(int t) {this->mpi_tasks = t;}
@@ -79,22 +79,22 @@ public:
 	void Set_y_node(double * t = NULL);
 	const std::vector<double> & Get_z_node(void) const {return this->z_node;};
 	void Set_z_node(double * t = NULL);
-	std::vector<double> & Get_density(void) {return this->density;};
-	void Set_density(double * t = NULL); 
-	std::vector<double> & Get_concentration(void) {return this->concentration;}
-	void Set_concentration(double * t = NULL); 
-	std::vector<double> & Get_saturation(void) {return this->saturation;}
-	void Set_saturation(double * t); 
+	std::vector<double> & GetDensity(void) {return this->density;};
+	void SetDensity(double * t = NULL); 
+	std::vector<double> & GetConcentration(void) {return this->concentration;}
+	void SetConcentration(double * t = NULL); 
+	std::vector<double> & GetSaturation(void) {return this->saturation;}
+	void SetSaturation(double * t); 
 	std::vector<double> & Get_pv(void) {return this->pv;}
-	void Set_pressure(double * t = NULL); 
-	std::vector<double> & Get_pressure(void) {return this->pressure;}
-	void Set_pv(double * t = NULL); 
-	std::vector<double> & Get_pv0(void) {return this->pv0;}
-	void Set_pv0(double * t = NULL);
-	std::vector<double> & Get_tempc(void) {return this->tempc;}
-	void Set_tempc(double * t = NULL); 
-	std::vector<double> & Get_volume(void) {return this->volume;}
-	void Set_volume(double * t); 
+	void SetPressure(double * t = NULL); 
+	std::vector<double> & GetPressure(void) {return this->pressure;}
+	void SetPv(double * t = NULL); 
+	std::vector<double> & GetPv0(void) {return this->pv0;}
+	void SetPv0(double * t = NULL);
+	std::vector<double> & GetTempc(void) {return this->tempc;}
+	void SetTempc(double * t = NULL); 
+	std::vector<double> & GetVolume(void) {return this->volume;}
+	void SetVolume(double * t); 
 	std::vector<int> & Get_print_chem_mask (void) {return this->print_chem_mask;}
 	void Set_print_chem_mask(int * t); 
 	int Get_rebalance_method(void) const {return this->rebalance_method;};
@@ -142,7 +142,7 @@ protected:
 		int kinetics_units,
 		double porosity_factor,
 		std::set<std::string> error_set);
-	void Concentrations2Phreeqc_thread(int n);
+	void Concentrations2Threads(int n);
 	void cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
 	void Error_stop(void);
 	bool File_exists(const std::string &name);
