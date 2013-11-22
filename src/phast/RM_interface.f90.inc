@@ -11,17 +11,17 @@
             INTEGER :: n, dim
         END SUBROUTINE RM_convert_to_molal  
         
-        FUNCTION RM_create(nxyz, nthreads) RESULT(iout)
+        FUNCTION RM_Create(nxyz, nthreads) RESULT(iout)
             IMPLICIT NONE
             INTEGER :: nxyz, nthreads
             INTEGER :: iout
-        END FUNCTION RM_create
+        END FUNCTION RM_Create
         
-        FUNCTION RM_destroy(id) RESULT(iout)
+        FUNCTION RM_Destroy(id) RESULT(iout)
             IMPLICIT NONE
             INTEGER :: id
             INTEGER :: iout
-        END FUNCTION RM_destroy
+        END FUNCTION RM_Destroy
         
         SUBROUTINE RM_distribute_initial_conditions(id, ic1)
             IMPLICIT NONE
@@ -41,47 +41,53 @@
             INTEGER :: id
         END SUBROUTINE RM_Error
         
-        FUNCTION RM_find_components(id) RESULT(iout)
+        FUNCTION RM_FindComponents(id) RESULT(iout)
             IMPLICIT NONE
             INTEGER :: id
             INTEGER :: iout
-        END FUNCTION RM_find_components  
+        END FUNCTION RM_FindComponents  
         
-        SUBROUTINE RM_get_component(id, num, comp_name)
+        SUBROUTINE RM_GetComponent(id, num, comp_name)
             IMPLICIT NONE
             INTEGER :: id, num
             CHARACTER, INTENT(out) :: comp_name
-        END SUBROUTINE RM_get_component
+        END SUBROUTINE RM_GetComponent
         
-        SUBROUTINE RM_initial_phreeqc_run(id, db_name, chem_name, prefix)
+        SUBROUTINE RM_InitialPhreeqcRun(id, db_name, chem_name, prefix)
             IMPLICIT NONE
             INTEGER :: id
             CHARACTER :: db_name, chem_name, prefix
-        END SUBROUTINE RM_initial_phreeqc_run        
+        END SUBROUTINE RM_InitialPhreeqcRun        
         
         SUBROUTINE RM_LogScreenMessage(str) 
             IMPLICIT NONE
             CHARACTER :: str
         END SUBROUTINE RM_LogScreenMessage
         
-        SUBROUTINE RM_open_files(solute, prefix) 
+        SUBROUTINE RM_OpenFiles(solute, prefix) 
             IMPLICIT NONE
             INTEGER :: solute
             CHARACTER :: prefix
-        END SUBROUTINE RM_open_files
+        END SUBROUTINE RM_OpenFiles
 
-        SUBROUTINE RM_phreeqc2concentrations(id, c)   
+        SUBROUTINE RM_Module2Concentrations(id, c)   
             IMPLICIT NONE
             INTEGER :: id
             DOUBLE PRECISION, OPTIONAL :: c
-        END SUBROUTINE RM_phreeqc2concentrations  
+        END SUBROUTINE RM_Module2Concentrations  
         
-        SUBROUTINE RM_run_cells(id, time, time_step, c, stop_msg)   
+        SUBROUTINE RM_RunCells(id, time, time_step, c, stop_msg)   
             IMPLICIT NONE
             INTEGER :: id
             DOUBLE PRECISION :: time, time_step, c
             INTEGER :: stop_msg
-        END SUBROUTINE RM_run_cells  
+        END SUBROUTINE RM_RunCells  
+        
+        FUNCTION RM_SetFilePrefix(id, prefix) RESULT(iout)
+            IMPLICIT NONE
+            INTEGER :: id, iout
+            CHARACTER :: prefix
+        END FUNCTION RM_SetFilePrefix
 
         SUBROUTINE RM_setup_boundary_conditions(id, n_boundary, bc_sol1, bc_sol2, f1, c, dim)   
 	            IMPLICIT NONE
@@ -90,11 +96,11 @@
 	            DOUBLE PRECISION :: f1, c
         END SUBROUTINE RM_setup_boundary_conditions  
 
-        SUBROUTINE RM_set_density(id, t)
+        SUBROUTINE RM_SetDensity(id, t)
             IMPLICIT NONE
             INTEGER :: id
             DOUBLE PRECISION :: t
-        END SUBROUTINE RM_set_density 
+        END SUBROUTINE RM_SetDensity 
 		
         SUBROUTINE RM_set_free_surface(id, t)   
             IMPLICIT NONE
@@ -102,17 +108,17 @@
             INTEGER, OPTIONAL :: t
         END SUBROUTINE RM_set_free_surface 
 
-        SUBROUTINE RM_set_input_units(id, sol, pp, ex, surf, gas, ss, kin)   
+        SUBROUTINE RM_SetInputUnits(id, sol, pp, ex, surf, gas, ss, kin)   
             IMPLICIT NONE
             INTEGER :: id
             INTEGER, OPTIONAL :: sol, pp, ex, surf, gas, ss, kin
-        END SUBROUTINE RM_set_input_units  
+        END SUBROUTINE RM_SetInputUnits  
         
-        SUBROUTINE RM_set_mapping(id, grid2chem)   
+        SUBROUTINE RM_CreateMapping(id, grid2chem)   
             IMPLICIT NONE
             INTEGER :: id
             INTEGER, OPTIONAL :: grid2chem
-        END SUBROUTINE RM_set_mapping  
+        END SUBROUTINE RM_CreateMapping  
         
         SUBROUTINE RM_set_nodes(id, x_node, y_node, z_node)   
             IMPLICIT NONE
@@ -132,23 +138,23 @@
             INTEGER, OPTIONAL :: t
         END SUBROUTINE RM_set_print_chem_mask 
 
-        SUBROUTINE RM_set_pressure(id, t)   
+        SUBROUTINE RM_SetPressure(id, t)   
             IMPLICIT NONE
             INTEGER :: id
             DOUBLE PRECISION, OPTIONAL :: t
-        END SUBROUTINE RM_set_pressure 
+        END SUBROUTINE RM_SetPressure 
 
-        SUBROUTINE RM_set_pv(id, t)   
+        SUBROUTINE RM_SetPv(id, t)   
             IMPLICIT NONE
             INTEGER :: id
             DOUBLE PRECISION, OPTIONAL :: t
-        END SUBROUTINE RM_set_pv 
+        END SUBROUTINE RM_SetPv 
         
-        SUBROUTINE RM_set_pv0(id, t)
+        SUBROUTINE RM_SetPv0(id, t)
             IMPLICIT NONE
             INTEGER :: id
             DOUBLE PRECISION, OPTIONAL :: t
-        END SUBROUTINE RM_set_pv0
+        END SUBROUTINE RM_SetPv0
         
         SUBROUTINE RM_set_rebalance(id, method, f)
             IMPLICIT NONE
@@ -157,11 +163,11 @@
             DOUBLE PRECISION, OPTIONAL  :: f
         END SUBROUTINE RM_set_rebalance
 
-        SUBROUTINE RM_set_saturation(id, t)
+        SUBROUTINE RM_SetSaturation(id, t)
             IMPLICIT NONE
             INTEGER :: id
             DOUBLE PRECISION, OPTIONAL :: t
-        END SUBROUTINE RM_set_saturation 
+        END SUBROUTINE RM_SetSaturation 
 				
         SUBROUTINE RM_set_steady_flow(id, t)   
             IMPLICIT NONE
@@ -169,11 +175,11 @@
             INTEGER, OPTIONAL :: t
         END SUBROUTINE RM_set_steady_flow   
 
-        SUBROUTINE RM_set_tempc(id, t)
+        SUBROUTINE RM_SetTempc(id, t)
             IMPLICIT NONE
             INTEGER :: id
             DOUBLE PRECISION :: t
-        END SUBROUTINE RM_set_tempc 
+        END SUBROUTINE RM_SetTempc 
 		     
         SUBROUTINE RM_SetTimeConversion(id, t)   
             IMPLICIT NONE
@@ -181,10 +187,10 @@
             DOUBLE PRECISION, OPTIONAL :: t
         END SUBROUTINE RM_SetTimeConversion         
  		     
-        SUBROUTINE RM_set_volume(id, t)   
+        SUBROUTINE RM_SetVolume(id, t)   
             IMPLICIT NONE
             INTEGER :: id
             DOUBLE PRECISION, OPTIONAL :: t
-        END SUBROUTINE RM_set_volume
+        END SUBROUTINE RM_SetVolume
 		 
     END INTERFACE

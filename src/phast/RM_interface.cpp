@@ -223,13 +223,13 @@ RM_convert_to_molal(int *id, double *c, int *n, int *dim)
 	}
 }
 /* ---------------------------------------------------------------------- */
-int RM_create(int *nxyz, int *nthreads)
+int RM_Create(int *nxyz, int *nthreads)
 /* ---------------------------------------------------------------------- */
 {
 	return RM_interface::Create_reaction_module(nxyz, nthreads);
 }
 /* ---------------------------------------------------------------------- */
-int RM_destroy(int *id)
+int RM_Destroy(int *id)
 /* ---------------------------------------------------------------------- */
 {
 	return RM_interface::Destroy_reaction_module(*id);
@@ -314,7 +314,7 @@ void RM_Error(int *id)
 	exit(4);
 }
 int
-RM_find_components(int *id)
+RM_FindComponents(int *id)
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	return (Reaction_module_ptr->Find_components());
@@ -459,7 +459,7 @@ double RM_GetTimeStep(int * rm_id)
 	return -1;
 }
 /* ---------------------------------------------------------------------- */
-void RM_get_component(int * rm_id, int * num, char *chem_name, int l1)
+void RM_GetComponent(int * rm_id, int * num, char *chem_name, int l1)
 	/* ---------------------------------------------------------------------- */
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
@@ -470,7 +470,7 @@ void RM_get_component(int * rm_id, int * num, char *chem_name, int l1)
 	}
 }
 /* ---------------------------------------------------------------------- */
-void RM_initial_phreeqc_run(int *rm_id, char *db_name, char *chem_name, char *prefix, int l1, int l2, int l3)
+void RM_InitialPhreeqcRun(int *rm_id, char *db_name, char *chem_name, char *prefix, int l1, int l2, int l3)
 /* ---------------------------------------------------------------------- */
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
@@ -482,7 +482,7 @@ void RM_initial_phreeqc_run(int *rm_id, char *db_name, char *chem_name, char *pr
 		trim_right(chemistry_name);
 		std::string prefix_name(prefix, l3);
 		trim_right(prefix_name);
-		Reaction_module_ptr->Initial_phreeqc_run(database_name, chemistry_name, prefix_name);
+		Reaction_module_ptr->InitialPhreeqcRun(database_name, chemistry_name, prefix_name);
 	}
 }
 /* ---------------------------------------------------------------------- */
@@ -505,7 +505,7 @@ RM_open_error_file(void)
 }
 /* ---------------------------------------------------------------------- */
 void
-RM_open_files(int * solute, char * prefix, int l_prefix)
+RM_OpenFiles(int * solute, char * prefix, int l_prefix)
 /* ---------------------------------------------------------------------- */
 {
 	// error_file is stderr
@@ -519,9 +519,6 @@ RM_open_files(int * solute, char * prefix, int l_prefix)
 	{
 		// output_file is prefix.chem.txt
 		RM_open_output_file(prefix, l_prefix);
-
-		// punch_file is prefix.chem.txt
-		RM_open_punch_file(prefix, l_prefix);
 	}
 }
 /* ---------------------------------------------------------------------- */
@@ -555,7 +552,7 @@ RM_open_punch_file(char * prefix, int l_prefix)
 	RM_interface::phast_io.punch_open(fn.c_str());
 }
 /* ---------------------------------------------------------------------- */
-void RM_run_cells(int *id,
+void RM_RunCells(int *id,
 			 double *time,					        // time from transport 
 			 double *time_step,		   		        // time step from transport
  			 double *concentration,					// mass fractions nxyz:components
@@ -571,16 +568,16 @@ void RM_run_cells(int *id,
 			// Transfer data and pointers to Reaction_module	  
 			Reaction_module_ptr->SetTime(time);
 			Reaction_module_ptr->SetTimeStep(time_step);
-			Reaction_module_ptr->Set_concentration(concentration);
+			Reaction_module_ptr->SetConcentration(concentration);
 
 			// Transfer data Fortran to reaction module
-			Reaction_module_ptr->Concentrations2Phreeqc();
+			Reaction_module_ptr->Concentrations2Module();
 
 			// Run chemistry calculations
-			Reaction_module_ptr->Run_cells(); 
+			Reaction_module_ptr->RunCells(); 
 
 			// Transfer data reaction module to Fortran
-			Reaction_module_ptr->Phreeqc2Concentrations(concentration);
+			Reaction_module_ptr->Module2Concentrations(concentration);
 
 			// Rebalance load
 			//Reaction_module_ptr->Rebalance_load();
@@ -588,14 +585,40 @@ void RM_run_cells(int *id,
 	}
 }
 void
-RM_phreeqc2concentrations(int *id, double * c)
+RM_Module2Concentrations(int *id, double * c)
 /* ---------------------------------------------------------------------- */
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->Phreeqc2Concentrations(c);
+		Reaction_module_ptr->Module2Concentrations(c);
 	}
+}
+/* ---------------------------------------------------------------------- */
+int
+RM_SetFilePrefix(int *id, const char *name, long nchar)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
+	if (Reaction_module_ptr)
+	{
+		if (name != NULL)
+		{
+			if (nchar >= 0)
+			{
+				std::string str(name, nchar);
+				trim(str);
+				return Reaction_module_ptr->SetFilePrefix(str);
+			}
+			else
+			{
+				std::string str(name);
+				trim(str);
+				return Reaction_module_ptr->SetFilePrefix(str);
+			}
+		}
+	}
+	return -1;
 }
 /* ---------------------------------------------------------------------- */
 void
@@ -659,12 +682,12 @@ RM_setup_boundary_conditions(
 					*dim);
 	}
 }
-void RM_set_density(int *id, double *t)
+void RM_SetDensity(int *id, double *t)
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->Set_density(t);
+		Reaction_module_ptr->SetDensity(t);
 	}
 }
 void 
@@ -677,7 +700,7 @@ RM_set_free_surface(int *id, int *t)
 	}
 }
 void 
-RM_set_input_units (int *id, int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *kin)
+RM_SetInputUnits (int *id, int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *kin)
 {
 	//
 	// Sets units for reaction_module
@@ -689,7 +712,7 @@ RM_set_input_units (int *id, int *sol, int *pp, int *ex, int *surf, int *gas, in
 		Reaction_module_ptr->Set_input_units(sol, pp, ex, surf, gas, ss, kin);
 	}
 }
-void RM_set_mapping(int *id,
+void RM_CreateMapping(int *id,
 		int *grid2chem)
 {
 	//
@@ -750,15 +773,15 @@ void RM_set_print_chem_mask(int *id, int *t)
 		Reaction_module_ptr->Set_print_chem_mask(t);
 	}
 }
-void RM_set_pressure(int *id, double *t)
+void RM_SetPressure(int *id, double *t)
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->Set_pressure(t);
+		Reaction_module_ptr->SetPressure(t);
 	}
 }
-void RM_set_pv(int *id, double *t)
+void RM_SetPv(int *id, double *t)
 {
 	//
 	// multiply seconds to convert to user time units
@@ -766,10 +789,10 @@ void RM_set_pv(int *id, double *t)
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->Set_pv(t);
+		Reaction_module_ptr->SetPv(t);
 	}
 }
-void RM_set_pv0(int *id, double *t)
+void RM_SetPv0(int *id, double *t)
 {
 	//
 	// multiply seconds to convert to user time units
@@ -777,7 +800,7 @@ void RM_set_pv0(int *id, double *t)
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->Set_pv0(t);
+		Reaction_module_ptr->SetPv0(t);
 	}
 }void RM_set_rebalance(int *id, int *method, double *f)
 {
@@ -788,7 +811,7 @@ void RM_set_pv0(int *id, double *t)
 		Reaction_module_ptr->Set_rebalance_fraction(f);
 	}
 }
-void RM_set_saturation(int *id, double *t)
+void RM_SetSaturation(int *id, double *t)
 {
 	//
 	// multiply seconds to convert to user time units
@@ -796,7 +819,7 @@ void RM_set_saturation(int *id, double *t)
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->Set_saturation(t);
+		Reaction_module_ptr->SetSaturation(t);
 	}
 }
 void 
@@ -808,12 +831,12 @@ RM_set_steady_flow(int *id, int *t)
 		Reaction_module_ptr->Set_steady_flow(t);
 	}
 }
-void RM_set_tempc(int *id, double *t)
+void RM_SetTempc(int *id, double *t)
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->Set_tempc(t);
+		Reaction_module_ptr->SetTempc(t);
 	}
 }
 void RM_SetTimeConversion(int *id, double *t)
@@ -827,7 +850,7 @@ void RM_SetTimeConversion(int *id, double *t)
 		Reaction_module_ptr->SetTimeConversion(t);
 	}
 }
-void RM_set_volume(int *id, double *t)
+void RM_SetVolume(int *id, double *t)
 {
 	//
 	// multiply seconds to convert to user time units
@@ -835,7 +858,7 @@ void RM_set_volume(int *id, double *t)
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->Set_volume(t);
+		Reaction_module_ptr->SetVolume(t);
 	}
 }
 /* ---------------------------------------------------------------------- */

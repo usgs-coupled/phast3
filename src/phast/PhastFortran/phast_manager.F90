@@ -75,6 +75,7 @@ SUBROUTINE phast_manager
     END INTERFACE
     ! ... Set string for use with RCS ident command
     INTEGER hdf_initialized, hdf_invariant
+    INTEGER status
     CHARACTER(LEN=80) :: ident_string='$Id: phast_manager.F90,v 1.3 2013/09/26 22:49:48 klkipp Exp klkipp $'
     !     ------------------------------------------------------------------
 
@@ -93,21 +94,22 @@ SUBROUTINE phast_manager
     CALL read1_distribute
 
     ! ... make a reaction module; makes instances of IPhreeqc and IPhreeqcPhast with same rm_id
-    rm_id = RM_create(nxyz, nthreads)
+    rm_id = RM_Create(nxyz, nthreads)
     IF (rm_id.LT.0) THEN
         STOP
     END IF
     
     !... only root opens files
     isolute = solute
-    CALL RM_open_files(isolute, f3name)
+    status = RM_SetFilePrefix(rm_id, f3name)
+    CALL RM_OpenFiles(isolute, f3name)
   
     !... Call phreeqc, find number of components; f1name, chem.dat; f2name, database; f3name, prefix
     IF (solute) THEN
         CALL RM_LogScreenMessage("Initial PHREEQC run.")  
-        CALL RM_initial_phreeqc_run(rm_id, f2name, f1name, f3name)
+        CALL RM_InitialPhreeqcRun(rm_id, f2name, f1name, f3name)
         ! Set components
-        ns = RM_find_components(rm_id)
+        ns = RM_FindComponents(rm_id)
         ALLOCATE(comp_name(ns),  & 
             STAT = a_err)
         IF (a_err /= 0) THEN
@@ -116,7 +118,7 @@ SUBROUTINE phast_manager
         ENDIF
         DO i = 1, ns
             comp_name(i) = ' '
-            CALL RM_get_component(rm_id, i, comp_name(i))
+            CALL RM_GetComponent(rm_id, i, comp_name(i))
         ENDDO   
         CALL RM_LogScreenMessage("Done with Initial PHREEQC run.")
     ENDIF
@@ -162,21 +164,21 @@ SUBROUTINE phast_manager
 
         ! ... Send data to threads or workers
         
-        CALL RM_set_input_units (rm_id, 3, 1, 1, 1, 1, 1, 1)
+        CALL RM_SetInputUnits (rm_id, 3, 1, 1, 1, 1, 1, 1)
         CALL RM_set_nodes(rm_id, x_node(1), y_node(1), z_node(1))
         CALL RM_SetTimeConversion(rm_id, cnvtmi)
-        CALL RM_set_pv0(rm_id, pv0(1))
+        CALL RM_SetPv0(rm_id, pv0(1))
         CALL RM_set_print_chem_mask(rm_id, iprint_chem(1))
         ifresur = fresur
         CALL RM_set_free_surface(rm_id, ifresur)
         isteady_flow = steady_flow
         CALL RM_set_steady_flow(rm_id, isteady_flow)
-        CALL RM_set_volume(rm_id, volume(1))
+        CALL RM_SetVolume(rm_id, volume(1))
         CALL RM_set_rebalance(rm_id, rebalance_method_f, rebalance_fraction_f)
 
         ! ... Define mapping from 3D domain to chemistry
         CALL create_mapping(indx_sol1_ic)
-        CALL RM_set_mapping(rm_id, grid2chem(1))
+        CALL RM_CreateMapping(rm_id, grid2chem(1))
         
         DO i = 1, num_restart_files
             CALL RM_send_restart_name(rm_id, restart_files(i))
@@ -189,7 +191,7 @@ SUBROUTINE phast_manager
             ic_mxfrac(1,1))                ! 7 x nxyz fraction of end-member 1
 
         ! collect solutions at manager for transport
-        CALL RM_phreeqc2concentrations(rm_id, c(1,1))
+        CALL RM_Module2Concentrations(rm_id, c(1,1))
     ENDIF        ! ... solute
 
     CALL error4
@@ -217,10 +219,10 @@ SUBROUTINE phast_manager
         CALL RM_LogScreenMessage(logline1)
         stop_msg = 0
         deltim_dummy = 0._kdp
-        CALL RM_set_pv(rm_id, pv(1))
-        CALL RM_set_saturation(rm_id, frac(1))
+        CALL RM_SetPv(rm_id, pv(1))
+        CALL RM_SetSaturation(rm_id, frac(1))
         CALL RM_set_printing(rm_id, prf_chem_phrqi, prhdfci, 0)
-        CALL RM_run_cells(      &
+        CALL RM_RunCells(      &
             rm_id,              &
             time_phreeqc,       &        ! time_hst
             deltim_dummy,       &        ! time_step
@@ -348,13 +350,13 @@ SUBROUTINE phast_manager
                 WRITE(logline1,'(a)') '     Beginning chemistry calculation.'
                 CALL RM_LogScreenMessage(logline1)
                 stop_msg = 0
-                CALL RM_set_pv(rm_id, pv(1))
-                CALL RM_set_saturation(rm_id, frac(1))
+                CALL RM_SetPv(rm_id, pv(1))
+                CALL RM_SetSaturation(rm_id, frac(1))
                 CALL RM_set_printing(rm_id,                     &
                     print_force_chemistry%print_flag_integer,   & 
                     print_hdf_chemistry%print_flag_integer,     & 
                     print_restart%print_flag_integer)
-                CALL RM_run_cells(                                &
+                CALL RM_RunCells(                                &
                     rm_id,                                        &
                     time,                                         &        ! time_hst
                     deltim,                                       &        ! time_step_hst
@@ -405,7 +407,7 @@ SUBROUTINE phast_manager
     ! ... Cleanup reaction module
 	CALL FinalizeFiles();
     IF (solute) THEN  
-        if (RM_destroy(rm_id) < 0) CALL RM_error(rm_id)     
+        if (RM_Destroy(rm_id) < 0) CALL RM_error(rm_id)     
     ENDIF
     CALL RM_close_files(isolute)
 

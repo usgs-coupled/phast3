@@ -83,21 +83,21 @@ SUBROUTINE phast_worker
     CALL read1_distribute
 
     ! ... Make a Reaction_module
-    rm_id = RM_create(nxyz, nthreads)
+    rm_id = RM_Create(nxyz, nthreads)
     IF (rm_id.LT.0) THEN
         WRITE(*,*) "Could not create reaction module, worker ", mpi_myself
         STOP 
     END IF
  
     ! ... Open C files //TODO error checks
-    !CALL RM_open_files(solute, f3name)
+    !CALL RM_OpenFiles(solute, f3name)
 
     IF (solute) THEN
 
         ! ... initial PHREEQC run to define reactants
-        CALL RM_initial_phreeqc_run(rm_id, f2name, f1name, f3name)
+        CALL RM_InitialPhreeqcRun(rm_id, f2name, f1name, f3name)
         ! Set components
-        ns = RM_find_components(rm_id)
+        ns = RM_FindComponents(rm_id)
         ALLOCATE(comp_name(ns),  & 
             STAT = a_err)
         IF (a_err /= 0) THEN
@@ -106,7 +106,7 @@ SUBROUTINE phast_worker
         ENDIF
         DO i = 1, ns
             comp_name(i) = ' '
-            CALL RM_get_component(rm_id, i, comp_name(i))
+            CALL RM_GetComponent(rm_id, i, comp_name(i))
         ENDDO   
 
         !TODO CALL on_error_cleanup_and_exit
@@ -133,18 +133,18 @@ SUBROUTINE phast_worker
             x_node(1), y_node(1), z_node(1), cnvtmi, transient_fresur, steady_flow, pv0(1),  &
             rebalance_method_f, volume(1), tort(1), npmz, &
             mpi_myself)
-        CALL RM_set_input_units (rm_id)
+        CALL RM_SetInputUnits (rm_id)
         CALL RM_set_nodes(rm_id)
         CALL RM_SetTimeConversion(rm_id)
-        CALL RM_set_pv0(rm_id)
+        CALL RM_SetPv0(rm_id)
         CALL RM_set_print_chem_mask(rm_id)
         CALL RM_set_free_surface(rm_id)
         CALL RM_set_steady_flow(rm_id)
-        CALL RM_set_volume(rm_id)
+        CALL RM_SetVolume(rm_id)
         CALL RM_set_rebalance(rm_id)
 
         ! ... Mapping from full 3D domain to chemistry
-        CALL RM_set_mapping(rm_id)
+        CALL RM_CreateMapping(rm_id)
         
         ! ... Distribute initial conditions for chemistry    
         DO i = 1, num_restart_files
@@ -158,7 +158,7 @@ SUBROUTINE phast_worker
 
         
         ! ... collect solutions for transport
-        CALL RM_phreeqc2concentrations(rm_id)
+        CALL RM_Module2Concentrations(rm_id)
 
         ! ... steady flow is calculated here
         IF (steady_flow) THEN
@@ -168,10 +168,10 @@ SUBROUTINE phast_worker
 
         ! ... Initial equilibration
         adj_wr_ratio = 1
-        CALL RM_set_pv(rm_id)
-        CALL RM_set_saturation(rm_id)
+        CALL RM_SetPv(rm_id)
+        CALL RM_SetSaturation(rm_id)
         CALL RM_set_printing(rm_id)
-        CALL RM_run_cells(                                &
+        CALL RM_RunCells(                                &
             rm_id,                                        &
             time_phreeqc,                                 &        ! time_hst
             deltim_dummy,                                 &        ! time_step_hst
@@ -227,10 +227,10 @@ SUBROUTINE phast_worker
             IF(errexe .OR. errexi) GO TO 50
 
             ! ... Chemistry calculation
-            CALL RM_set_pv(rm_id)
-            CALL RM_set_saturation(rm_id)
+            CALL RM_SetPv(rm_id)
+            CALL RM_SetSaturation(rm_id)
             CALL RM_set_printing(rm_id)
-            CALL RM_run_cells(                                &
+            CALL RM_RunCells(                                &
                 rm_id,                                        &
                 time_phreeqc,                                 &        ! time_hst
                 deltim_dummy,                                 &        ! time_step_hst

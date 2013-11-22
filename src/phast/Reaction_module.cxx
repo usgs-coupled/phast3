@@ -1398,7 +1398,7 @@ Reaction_module::GetSelectedOutputRowCount()
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Concentrations2Phreeqc_thread(int n)
+Reaction_module::Concentrations2Threads(int n)
 /* ---------------------------------------------------------------------- */
 {
 	// assumes total H, total O, and charge are transported
@@ -1479,7 +1479,7 @@ Reaction_module::Concentrations2Phreeqc_thread(int n)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Concentrations2Phreeqc(void)
+Reaction_module::Concentrations2Module(void)
 /* ---------------------------------------------------------------------- */
 {
 #ifdef THREADED_PHAST
@@ -1490,7 +1490,7 @@ Reaction_module::Concentrations2Phreeqc(void)
 	// For MPI nthreads = 1
 	for (int n = 0; n < this->nthreads; n++)
 	{
-		this->Concentrations2Phreeqc_thread(n);
+		this->Concentrations2Threads(n);
 	}	
 }
 #ifdef SKIP
@@ -1553,7 +1553,7 @@ Reaction_module::Initial_phreeqc_run_thread(int n)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Initial_phreeqc_run(std::string &database_name, std::string &chemistry_name, std::string &prefix)
+Reaction_module::InitialPhreeqcRun(std::string &database_name, std::string &chemistry_name, std::string &prefix)
 /* ---------------------------------------------------------------------- */
 {
 	/*
@@ -2652,7 +2652,7 @@ Reaction_module::Rebalance_load_per_cell(void)
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Run_cells()
+Reaction_module::RunCells()
 /* ---------------------------------------------------------------------- */
 {
 /*
@@ -2731,7 +2731,7 @@ Reaction_module::Run_cells()
 #else
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Run_cells()
+Reaction_module::RunCells()
 /* ---------------------------------------------------------------------- */
 {
 /*
@@ -3082,10 +3082,22 @@ Reaction_module::SetCurrentSelectedOutputUserNumber(int *i)
 		return this->workers[0]->SetCurrentSelectedOutputUserNumber(*i);
 	}
 	return VR_INVALIDARG;
+}/* ---------------------------------------------------------------------- */
+int
+Reaction_module::SetFilePrefix(std::string &prefix)
+/* ---------------------------------------------------------------------- */
+{
+	this->file_prefix.clear();
+	this->file_prefix = prefix;
+	if (this->file_prefix.size() == 0)
+	{
+		return -1;
+	}
+	return (int) (this->file_prefix.size());
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Set_concentration(double *t)
+Reaction_module::SetConcentration(double *t)
 /* ---------------------------------------------------------------------- */
 {
 	size_t ncomps = this->components.size();
@@ -3104,7 +3116,7 @@ Reaction_module::Set_concentration(double *t)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Set_density(double *t)
+Reaction_module::SetDensity(double *t)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->density.size() < this->nxyz)
@@ -3345,7 +3357,7 @@ Reaction_module::Set_print_restart(int *t)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Set_pressure(double *t)
+Reaction_module::SetPressure(double *t)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->pressure.size() < this->nxyz)
@@ -3363,7 +3375,7 @@ Reaction_module::Set_pressure(double *t)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Set_pv(double *t)
+Reaction_module::SetPv(double *t)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->pv.size() < this->nxyz)
@@ -3381,7 +3393,7 @@ Reaction_module::Set_pv(double *t)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Set_pv0(double *t)
+Reaction_module::SetPv0(double *t)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->pv0.size() < this->nxyz)
@@ -3427,7 +3439,7 @@ Reaction_module::Set_rebalance_method(int *t)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Set_saturation(double *t)
+Reaction_module::SetSaturation(double *t)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->saturation.size() < this->nxyz)
@@ -3469,7 +3481,7 @@ Reaction_module::Set_stop_message(bool t)
 
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Set_tempc(double *t)
+Reaction_module::SetTempc(double *t)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->tempc.size() < this->nxyz)
@@ -3529,7 +3541,7 @@ Reaction_module::SetTimeStep(double *t)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Set_volume(double *t)
+Reaction_module::SetVolume(double *t)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->volume.size() < this->nxyz)
@@ -3658,7 +3670,7 @@ Reaction_module::Setup_boundary_conditions(
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Phreeqc2Concentrations(double * c)
+Reaction_module::Module2Concentrations(double * c)
 /* ---------------------------------------------------------------------- */
 {
 	// convert Reaction module solution data to concentrations for transport
@@ -3669,7 +3681,7 @@ Reaction_module::Phreeqc2Concentrations(double * c)
 
 	if (mpi_myself == 0)
 	{
-		if (c == NULL) error_msg("NULL pointer in Phreeqc2Concentrations", 1);
+		if (c == NULL) error_msg("NULL pointer in Module2Concentrations", 1);
 	}
 	int n = this->mpi_myself;
 	for (int j = this->start_cell[n]; j <= this->end_cell[n]; j++)
@@ -3739,7 +3751,7 @@ Reaction_module::Phreeqc2Concentrations(double * c)
 #else
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Phreeqc2Concentrations(double * c)
+Reaction_module::Module2Concentrations(double * c)
 /* ---------------------------------------------------------------------- */
 {
 	// convert Reaction module solution data to hst mass fractions
@@ -3748,7 +3760,7 @@ Reaction_module::Phreeqc2Concentrations(double * c)
 	cxxNameDouble::iterator it;
 
 	int j; 
-	if (c == NULL) error_msg("NULL pointer in Phreeqc2Concentrations", 1);
+	if (c == NULL) error_msg("NULL pointer in Module2Concentrations", 1);
 	for (int n = 0; n < this->nthreads; n++)
 	{
 		for (j = this->start_cell[n]; j <= this->end_cell[n]; j++)
