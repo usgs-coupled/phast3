@@ -51,8 +51,8 @@ SUBROUTINE write1
   WRITE(logline1,5013) title(1:80)
   WRITE(logline2,5013) title(81:160)
 5013 FORMAT(a80)
-    CALL logprt_c(logline1)
-    CALL logprt_c(logline2)
+    CALL RM_LogMessage(logline1)
+    CALL RM_LogMessage(logline2)
   WRITE(fulp,2004)
 2004 FORMAT(/tr25,'*** Fundamental Information ***')
 !!$  IF(heat) THEN
@@ -114,11 +114,11 @@ SUBROUTINE write1
 !!$  WRITE(logline3,5009) 'Number of nodes in y-direction '//dots,' NY ... ',ny
 !!$  WRITE(logline4,5009) 'Number of nodes in z-direction '//dots,' NZ ... ',nz
 !!$  WRITE(logline5,5009) 'Total number of nodes '//dots,' NXYZ . ',nxyz
-!!$  call logprt_c(logline1)
-!!$  call logprt_c(logline2)
-!!$  call logprt_c(logline3)
-!!$  call logprt_c(logline4)
-!!$  call logprt_c(logline5)
+!!$  call RM_LogMessage(logline1)
+!!$  call RM_LogMessage(logline2)
+!!$  call RM_LogMessage(logline3)
+!!$  call RM_LogMessage(logline4)
+!!$  call RM_LogMessage(logline5)
   IF(solute) THEN
      ! ... Write static data to file 'FUPMAP' for screen or plotter maps
      ! ... Write header to file 'Fupmap' for component xyz field plots

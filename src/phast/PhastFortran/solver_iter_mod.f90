@@ -169,11 +169,11 @@ CONTAINS
 !!$     WRITE(*,9002) 'No. of solver iterations, Relative residual: ',icount,rat
        WRITE(logline1,9002) '          No. of solver iterations, Relative residual: ',icount,rat
 9002   FORMAT(a,i4,tr4,1pe15.7)
-        CALL logprt_c(logline1)
+        CALL RM_LogMessage(logline1)
     ENDIF
     IF(icount < 2) THEN
        logline1 = '  Number of iterations is too few (<2); check convergence tolerance'
-        CALL warnprt_c(logline1)
+        CALL RM_WarningMessage(logline1)
     ENDIF
     ! ... Backsolve for the red solution from the black half
     CALL abmult_thread(w,xx_b,xp)
@@ -460,11 +460,11 @@ CONTAINS
 !!$     WRITE(*,9002) 'No. of solver iterations, Relative residual: ',icount,rat
        WRITE(logline1,9002) '          No. of solver iterations, Relative residual: ',icount,rat
 9002   FORMAT(a,i4,tr4,1pe15.7)
-        CALL logprt_c(logline1)
+        CALL RM_LogMessage(logline1)
     ENDIF
     IF(icount < 2) THEN
        logline1 = '  Number of iterations is too few (<2); check convergence tolerance'
-        CALL warnprt_c(logline1)
+        CALL RM_WarningMessage(logline1)
     ENDIF
     ! ... Backsolve for the red solution from the black half
     CALL abmult(w,xx_b)

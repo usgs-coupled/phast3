@@ -119,7 +119,7 @@ RM_errprt(const std::string & e_string)
 }
 /* ---------------------------------------------------------------------- */
 void
-warnprt_c(const char *err_str, long l)
+RM_WarningMessage(const char *err_str, long l)
 /* ---------------------------------------------------------------------- */
 {
 	std::string e_string(err_str, l);
@@ -139,7 +139,7 @@ RM_warnprt(const std::string & e_string)
 
 /* ---------------------------------------------------------------------- */
 void
-logprt_c(const char *err_str, long l)
+RM_LogMessage(const char *err_str, long l)
 /* ---------------------------------------------------------------------- */
 {
 	std::string e_string(err_str, l);
@@ -157,7 +157,7 @@ RM_logprt(const std::string & e_string)
 
 /* ---------------------------------------------------------------------- */
 void
-screenprt_c(const char *err_str, long l)
+RM_ScreenMessage(const char *err_str, long l)
 /* ---------------------------------------------------------------------- */
 {
 	std::string e_string(err_str, l);
@@ -487,7 +487,7 @@ void RM_initial_phreeqc_run(int *rm_id, char *db_name, char *chem_name, char *pr
 }
 /* ---------------------------------------------------------------------- */
 void
-RM_log_screen_prt(char *err_str, long l)
+RM_LogScreenMessage(char *err_str, long l)
 /* ---------------------------------------------------------------------- */
 {
 // writes to log file and screen

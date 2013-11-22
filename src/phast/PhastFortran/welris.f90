@@ -98,11 +98,11 @@ SUBROUTINE XP_welris_thread(iwel,iwfss,uqwmr,xp)
 5004 FORMAT(a,0pf10.1)
      WRITE(logline5,5005) 'Total Fluid Flow Rate (kg/s) .....',xp%qwr
 5005 FORMAT(a,1pg10.2)
-    call logprt_c(logline1)
-    call logprt_c(logline2)
-    call logprt_c(logline3)
-    call logprt_c(logline4)
-    call logprt_c(logline5)
+    call RM_LogMessage(logline1)
+    call RM_LogMessage(logline2)
+    call RM_LogMessage(logline3)
+    call RM_LogMessage(logline4)
+    call RM_LogMessage(logline5)
      WRITE(fuwel,2002)  'Distance    Well Riser    Well Riser  ',  &
           'Porous Medium', 'along Well   Pressure   Temperature   Temperature',  &
           '(m)           (Pa)       (Deg.C)        (Deg.C)',dash
@@ -115,10 +115,10 @@ SUBROUTINE XP_welris_thread(iwel,iwfss,uqwmr,xp)
      WRITE(logline3,5006) '(m)           (Pa)       (Deg.C)        (Deg.C)'
      WRITE(logline4,5007) dash
 5007 FORMAT(a60)
-    call logprt_c(logline1)
-    call logprt_c(logline2)
-    call logprt_c(logline3)
-    call logprt_c(logline4)
+    call RM_LogMessage(logline1)
+    call RM_LogMessage(logline2)
+    call RM_LogMessage(logline3)
+    call RM_LogMessage(logline4)
      WRITE(fuwel,2003) zwk,xp%p00,xp%t00,tambk
 2003 FORMAT(tr15,f10.2,1PG15.3,2(0PF10.1))
      WRITE(logline1,5008) zwk,xp%p00,xp%t00,tambk
@@ -514,11 +514,11 @@ SUBROUTINE welris(iwel,iwfss,uqwmr)
 5004 FORMAT(a,0pf10.1)
      WRITE(logline5,5005) 'Total Fluid Flow Rate (kg/s) .....',qwr
 5005 FORMAT(a,1pg10.2)
-    call logprt_c(logline1)
-    call logprt_c(logline2)
-    call logprt_c(logline3)
-    call logprt_c(logline4)
-    call logprt_c(logline5)
+    call RM_LogMessage(logline1)
+    call RM_LogMessage(logline2)
+    call RM_LogMessage(logline3)
+    call RM_LogMessage(logline4)
+    call RM_LogMessage(logline5)
      WRITE(fuwel,2002)  'Distance    Well Riser    Well Riser  ',  &
           'Porous Medium', 'along Well   Pressure   Temperature   Temperature',  &
           '(m)           (Pa)       (Deg.C)        (Deg.C)',dash
@@ -531,10 +531,10 @@ SUBROUTINE welris(iwel,iwfss,uqwmr)
      WRITE(logline3,5006) '(m)           (Pa)       (Deg.C)        (Deg.C)'
      WRITE(logline4,5007) dash
 5007 FORMAT(a60)
-    call logprt_c(logline1)
-    call logprt_c(logline2)
-    call logprt_c(logline3)
-    call logprt_c(logline4)
+    call RM_LogMessage(logline1)
+    call RM_LogMessage(logline2)
+    call RM_LogMessage(logline3)
+    call RM_LogMessage(logline4)
      WRITE(fuwel,2003) zwk,p00,t00,tambk
 2003 FORMAT(tr15,f10.2,1PG15.3,2(0PF10.1))
      WRITE(logline1,5008) zwk,p00,t00,tambk

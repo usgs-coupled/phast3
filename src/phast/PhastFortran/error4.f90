@@ -48,7 +48,7 @@ SUBROUTINE error4
 !!              ierr(148) = .true.       !   warning not fatal error
               WRITE(logline1,'(a)') 'Multiple free surfaces in column of cells;'//  &
                    ' Check initial condition on head field.'
-                    CALL warnprt_c(logline1)
+                    CALL RM_WarningMessage(logline1)
               EXIT chk_fs
            END IF
         END DO

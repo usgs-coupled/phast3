@@ -325,7 +325,7 @@ SUBROUTINE XP_coeff_trans_thread(xp)
      !$$      if(ierr(171)) errexe = .true.
      !$$      IF(ierrw) WRITE(*,*) 'WARNING: One or more negative dispersion coefficients computed'
      !***** warning output, retain here or move to root? 
-     !**     IF(ierrw) CALL screenprt_c('WARNING: One or more negative dispersion coefficients computed');
+     !**     IF(ierrw) CALL RM_ScreenMessage('WARNING: One or more negative dispersion coefficients computed');
   ENDIF
 END SUBROUTINE XP_coeff_trans_thread
 SUBROUTINE coeff_trans
@@ -650,7 +650,7 @@ SUBROUTINE coeff_trans
      !$$      if(ierr(171)) errexe = .true.
      !$$      IF(ierrw) WRITE(*,*) 'WARNING: One or more negative dispersion coefficients computed'
      !***** warning output, retain here or move to root? 
-     !**     IF(ierrw) CALL screenprt_c('WARNING: One or more negative dispersion coefficients computed');
+     !**     IF(ierrw) CALL RM_ScreenMessage('WARNING: One or more negative dispersion coefficients computed');
   ENDIF
 END SUBROUTINE coeff_trans
 

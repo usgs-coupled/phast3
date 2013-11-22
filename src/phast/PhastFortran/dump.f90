@@ -118,11 +118,11 @@ SUBROUTINE dump_hst
 2001 FORMAT(a,1PG12.4,A)
   WRITE(fulp,2011) trim(logline1)
 2011 FORMAT(/tr10,a)
-     CALL logprt_c(logline1)
+     CALL RM_LogMessage(logline1)
   IF(savldo) THEN
      logline1 = 'Dump File from Previous Time was Overwritten'
      WRITE(fulp,2012) trim(logline1)
 2012 FORMAT(tr15,2A)
-    CALL logprt_c(logline1)
+    CALL RM_LogMessage(logline1)
   END IF
 END SUBROUTINE dump_hst

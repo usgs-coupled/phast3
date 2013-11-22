@@ -22,10 +22,10 @@ SUBROUTINE timestep_ss_flow
   itime = itime+1
   WRITE(logline1,5011) 'Beginning steady state time step no. ',itime
 5011 FORMAT(a,i6)
-    CALL logprt_c(logline0)
-    CALL logprt_c(logline1)
-    CALL screenprt_c(logline0)
-    CALL screenprt_c(logline1)
+    CALL RM_LogMessage(logline0)
+    CALL RM_LogMessage(logline1)
+    CALL RM_ScreenMessage(logline0)
+    CALL RM_ScreenMessage(logline1)
   jtime = jtime+1
   tsfail=.FALSE.
   ! ... Adjust the time step if automatic or print time control
@@ -103,7 +103,7 @@ SUBROUTINE timestep_ss_flow
      WRITE(logline1,5001) '     Current time step length .........................'//  &
           '..........',cnvtmi*deltim,' ('//TRIM(unittm)//')'
 5001 FORMAT(a,1PG12.3,a)
-    CALL logprt_c(logline1)
-    CALL screenprt_c(logline1)
+    CALL RM_LogMessage(logline1)
+    CALL RM_ScreenMessage(logline1)
   ENDIF
 END SUBROUTINE timestep_ss_flow

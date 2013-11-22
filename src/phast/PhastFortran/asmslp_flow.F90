@@ -58,8 +58,8 @@ SUBROUTINE asmslp_flow
   is = 1
   if (.not. steady_flow) then
      logline1 =  '     Beginning flow calculation.'
-     CALL logprt_c(logline1)
-     CALL screenprt_c(logline1)
+     CALL RM_LogMessage(logline1)
+     CALL RM_ScreenMessage(logline1)
   endif
 40 CONTINUE
   CALL asembl_flow  

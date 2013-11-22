@@ -137,29 +137,29 @@ SUBROUTINE sumcal1
         END IF
         WRITE(logline1,2001) 'Current time step length '//dots,cnvtmi*deltim,'  ('//unittm//')'
 2001    FORMAT(a60,1PG12.3,A)
-        CALL logprt_c(logline1)
+        CALL RM_LogMessage(logline1)
         WRITE(logline1,2002) 'Current time step length .....',cnvtmi*deltim,'  ('//unittm//')'
 2002    FORMAT(a,1PG12.3,A)
-        CALL screenprt_c(logline1)
+        CALL RM_ScreenMessage(logline1)
         WRITE(logline1,5001) 'Maximum change in potentiometric head '//dots,  &
              cnvpi*dhmax,' ('//unitl//')',' at location (',  &
              cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax), ')(',unitl//')'
 5001    FORMAT(A45,1PE14.4,A8,A,3(1PG10.3,A),A)
-        CALL logprt_c(logline1)
-        CALL screenprt_c(logline1)
+        CALL RM_LogMessage(logline1)
+        CALL RM_ScreenMessage(logline1)
         DO  iis=1,ns
            WRITE(logline1,3102) 'Component no. ',iis,'  ',comp_name(iis)
 3102       FORMAT(a,i4,a,a)
-            CALL logprt_c(logline1)
-            CALL screenprt_c(logline1)
+            CALL RM_LogMessage(logline1)
+            CALL RM_ScreenMessage(logline1)
            !$$           WRITE(*,2102) 'Component no. ',iis,comp_name(iis)
            !2102       FORMAT(/tr10,a,i4,tr2,a)
            u6=dcmax(iis)
            WRITE(logline1,5001) 'Maximum change in '//mflbl//'fraction '//dots,  &
                 u6,'(-)','at location (',cnvli*x(icmax(iis)),',',cnvli*y(jcmax(iis)),',',  &
                 cnvli*z(kcmax(iis)),' )(',unitl//')'
-                CALL logprt_c(logline1)
-                CALL screenprt_c(logline1)
+                CALL RM_LogMessage(logline1)
+                CALL RM_ScreenMessage(logline1)
            !$$           WRITE(*,aformt) 'Maximum change in '//mflbl//'fraction '//dots,  &
            !$$                u6,'(-)','at location (',  &
            !$$                cnvli*x(icmax(iis)),',',cnvli*y(jcmax(iis)),',',  &

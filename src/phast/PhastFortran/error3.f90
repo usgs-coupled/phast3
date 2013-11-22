@@ -47,7 +47,7 @@ SUBROUTINE error3
               !!              ierr(148) = .true.       !   warning not fatal error
               WRITE(logline1,'(a)') 'Multiple free surfaces in column of cells;'//  &
                    ' Check boundary condition on head field.'
-                CALL warnprt_c(logline1)
+                CALL RM_WarningMessage(logline1)
               EXIT chk_fs
            END IF
         END DO
@@ -127,7 +127,7 @@ SUBROUTINE error3
   IF(warnflag > 0) THEN
      WRITE(logline1,'(i2,a)') warnflag,' print control intervals are less than '//  &
           'defined time step length.'
-            CALL warnprt_c(logline1)
+            CALL RM_WarningMessage(logline1)
   END IF
   DO  i=70,170
      IF(ierr(i)) errexi=.TRUE.

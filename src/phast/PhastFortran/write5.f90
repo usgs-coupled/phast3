@@ -82,32 +82,32 @@ SUBROUTINE write5
 5001 FORMAT(a,i5)
   WRITE(logline2,5002) '     Time '//dots,cnvtmi*time,' ('//TRIM(TRIM(unittm))//')'
 5002 FORMAT(a60,1PG15.6,a)
-  CALL logprt_c(logline1)
-  CALL logprt_c(logline2)
+  CALL RM_LogMessage(logline1)
+  CALL RM_LogMessage(logline2)
   IF(prslm) THEN
 !!$     IF(heat .OR. solute) WRITE(logline1,5003) '     No. of P,T,C loop iterations used ',dots,itrn
 !!$5003 format(a,a26,i4)
 !!$2003 FORMAT(/tr5,'No. of P,T,C loop iterations used ',26('.'),i4)
-!!$     call logprt_c(logline1)
+!!$     call RM_LogMessage(logline1)
      IF(autots .AND. ntsfal > 0) THEN 
         WRITE(logline1,5007)  &
              'Number of repeats of time step to achieve ','truncation error'//dots,ntsfal
 5007    FORMAT(a42,a23,i4)
-        CALL logprt_c(logline1)
+        CALL RM_LogMessage(logline1)
      ENDIF
      IF(.NOT.steady_flow) THEN
         WRITE(logline1,5027) '     Maximum change in potentiometric head '//dots,  &
              cnvpi*dhmax,' ('//unitl//')',' at location (',  &
              cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax),')(',TRIM(unitl)//')'
 5027    FORMAT(A43,1PE12.4,A10,A,3(1PG10.3,A),A)
-        CALL logprt_c(logline1)
+        CALL RM_LogMessage(logline1)
 !!$        !      WRITE(*,aformt) 'Maximum change in potentiometric head '//dots,  &
 !!$        !           cnvpi*dhmax,'('//unitl//')','at location (',  &
 !!$        !           cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax),')(',TRIM(unitl),')'
         WRITE(logline1,aformt) 'Maximum change in potentiometric head '//dots,  &
              cnvpi*dhmax,'('//unitl//')','at (',  &
              cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax),')(',TRIM(unitl),')'
-        CALL screenprt_c(logline1)
+        CALL RM_ScreenMessage(logline1)
      END IF
      IF (solute) THEN
         DO  is=1,ns
@@ -115,11 +115,11 @@ SUBROUTINE write5
            WRITE(logline1,5027) '     Maximum change in '//TRIM(comp_name(is))//' '//  &
                 dots, u6,' (mol/kgw)',' at location (',  &
                 cnvli*x(icmax(is)),',',cnvli*y(jcmax(is)),',', cnvli*z(kcmax(is)),')(',TRIM(unitl)//')'
-           CALL logprt_c(logline1)
+           CALL RM_LogMessage(logline1)
            WRITE(logline1,aformt) 'Maximum change in '//TRIM(comp_name(is))  &
                 //dots, u6,'(mol/kgw)','at (',  &
                 cnvli*x(icmax(is)),',',cnvli*y(jcmax(is)),',', cnvli*z(kcmax(is)),')(',TRIM(unitl),')'
-           CALL screenprt_c(logline1)
+           CALL RM_ScreenMessage(logline1)
         END DO
      END IF
   END IF
@@ -1326,7 +1326,7 @@ SUBROUTINE write5
 !!$        !.. ** not implemented in PHAST
   WRITE(logline1,3001) 'Finished time step no. ',itime,'; Time '//dots(1:30),cnvtmi*time,'('//TRIM(unittm)//')'
 3001 FORMAT(a,I6,a,1PG18.9,tr2,a)
-  CALL screenprt_c(logline1)
+  CALL RM_ScreenMessage(logline1)
 !!$     IF(nhcbc > 0) THEN
 !!$        !... ** not implemented in PHAST
   ! ... Set the next time for printout if by user time units

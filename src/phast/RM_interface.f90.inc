@@ -59,10 +59,10 @@
             CHARACTER :: db_name, chem_name, prefix
         END SUBROUTINE RM_initial_phreeqc_run        
         
-        SUBROUTINE RM_log_screen_prt(str) 
+        SUBROUTINE RM_LogScreenMessage(str) 
             IMPLICIT NONE
             CHARACTER :: str
-        END SUBROUTINE RM_log_screen_prt
+        END SUBROUTINE RM_LogScreenMessage
         
         SUBROUTINE RM_open_files(solute, prefix) 
             IMPLICIT NONE

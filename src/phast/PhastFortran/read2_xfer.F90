@@ -312,7 +312,7 @@ SUBROUTINE read2_xfer_w
   !...
   nr = nx
   WRITE(logline1,'(a)') 'Receiving static data for flow and transport simulation'
-  CALL logprt_c(logline1)
+  CALL RM_LogMessage(logline1)
 
   ! *** 0 broadcast npmz
   ! ... receive broadcast of b.c. integer counts

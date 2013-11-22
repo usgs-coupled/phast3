@@ -66,10 +66,10 @@ SUBROUTINE closef
     WRITE(fuzf,2003) TRIM(logline1)
     WRITE(fuzf,2004) TRIM(logline2)
     WRITE(fuzf,2004) TRIM(logline3)
-    CALL logprt_c(' ')
-    CALL logprt_c(logline1)
-    CALL logprt_c(logline2)
-    CALL logprt_c(logline3)
+    CALL RM_LogMessage(' ')
+    CALL RM_LogMessage(logline1)
+    CALL RM_LogMessage(logline2)
+    CALL RM_LogMessage(logline3)
     WRITE(fulp,2003) TRIM(logline1)
     WRITE(fulp,2004) TRIM(logline2)
     WRITE(fulp,2004) TRIM(logline3)
@@ -77,14 +77,14 @@ SUBROUTINE closef
         WRITE(logline1,5005) '     Number of map records written '//dots, &
             nmapr
  5005   FORMAT(A70,I8)
-        CALL logprt_c(logline1)
+        CALL RM_LogMessage(logline1)
     ENDIF
 
     IF(chkptd) THEN  
         IF(ABS(pricpd) > 0._kdp) THEN
             logline1 = '     Check point dump made at the following times ('//TRIM(unittm)//')'
             WRITE(FULP,2004) TRIM(logline1)
-            CALL logprt_c(logline1)
+            CALL RM_LogMessage(logline1)
             i1p = - 9  
 20          i1p = i1p + 10  
             i2p = MIN(i1p+9,nrsttp)  
@@ -98,15 +98,15 @@ SUBROUTINE closef
             logline1 = '     Check point dump made at last time step'
             WRITE(fulp,2009) TRIM(logline1)
 2009        FORMAT(tr10,2a)  
-            CALL logprt_c(logline1)
+            CALL RM_LogMessage(logline1)
         ENDIF
         WRITE(logline1,5005) '     Number of restart time planes written '//dots,nrsttp
         WRITE(fulp,2009) TRIM(logline1)
-        CALL logprt_c(logline1)
+        CALL RM_LogMessage(logline1)
         IF(savldo) THEN  
             logline1 = '     Only the most recent dump has been saved'
             WRITE(fulp,2009) TRIM(logline1)
-            CALL logprt_c(logline1)
+            CALL RM_LogMessage(logline1)
         ENDIF
     ENDIF
     ! ... delete file 'fuplt' if no plot data written

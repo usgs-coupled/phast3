@@ -355,23 +355,23 @@ SUBROUTINE sumcal2
                CALL mtoijk(mt,icol,jcol,kcol,nx,ny)
                WRITE(logline1,'(a)')  &
                     'WARNING: Free surface has moved more than one layer of cells in sumcal2'
-               CALL screenprt_c(logline1)
-               CALL logprt_c(logline1)
+               CALL RM_ScreenMessage(logline1)
+               CALL RM_LogMessage(logline1)
                WRITE(logline1,'(tr5,a,i6,a,i5,a,i5)')   &
                     'Cell column:', mt,' (i,j):', icol, ',', jcol
-               CALL screenprt_c(logline1)
-               CALL logprt_c(logline1)
+               CALL RM_ScreenMessage(logline1)
+               CALL RM_LogMessage(logline1)
             END IF
             IF(m1 == 0 .AND. .NOT.print_dry_col(mt)) THEN
                CALL mtoijk(mt,icol,jcol,kcol,nx,ny)
                WRITE(logline1,'(a)')  &
                     'WARNING: A column of cells has gone dry in sumcal2'
-               CALL screenprt_c(logline1)
-               CALL logprt_c(logline1)
+               CALL RM_ScreenMessage(logline1)
+               CALL RM_LogMessage(logline1)
                WRITE(logline1,'(tr5,a,i6,a,i5,a,i5)')  &
                     'Cell column:', mt,' (i,j):', icol, ',', jcol
-               CALL screenprt_c(logline1)
-               CALL logprt_c(logline1)
+               CALL RM_ScreenMessage(logline1)
+               CALL RM_LogMessage(logline1)
                print_dry_col(mt) = .TRUE.
             END IF
          END DO

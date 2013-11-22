@@ -24,13 +24,13 @@ SUBROUTINE XP_asmslc_thread(xp)
   IF (errexe) RETURN
 ! ***** some progress output
 !  logline1 =  '     Beginning solute-transport calculation.'
-!  CALL logprt_c(logline1)
-!  CALL screenprt_c(logline1)
+!  CALL RM_LogMessage(logline1)
+!  CALL RM_ScreenMessage(logline1)
   xp%dc = 0._kdp
   xp%ieq = 3
 !  logline1 =  '          '//xp%comp_name
-!  CALL logprt_c(logline1)
-!  CALL screenprt_c(logline1)
+!  CALL RM_LogMessage(logline1)
+!  CALL RM_ScreenMessage(logline1)
   itrn = 0
 30   itrn = itrn + 1
   CALL XP_asembl_thread(xp)
@@ -114,13 +114,13 @@ SUBROUTINE XP_asmslc(xp)
   IF (errexe) RETURN
 ! ***** some progress output
 !  logline1 =  '     Beginning solute-transport calculation.'
-!  CALL logprt_c(logline1)
-!  CALL screenprt_c(logline1)
+!  CALL RM_LogMessage(logline1)
+!  CALL RM_ScreenMessage(logline1)
   xp%dc = 0._kdp
   ieq = 3
 !  logline1 =  '          '//xp%comp_name
-!  CALL logprt_c(logline1)
-!  CALL screenprt_c(logline1)
+!  CALL RM_LogMessage(logline1)
+!  CALL RM_ScreenMessage(logline1)
   itrn = 0
 30   itrn = itrn + 1
   CALL XP_asembl(xp)
