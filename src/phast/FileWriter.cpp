@@ -59,7 +59,7 @@ FileWriterInfo::~FileWriterInfo()
 }
 /* ---------------------------------------------------------------------- */
 void
-WriteFiles(int *id, int *print_hdf, int *print_xyz, 
+WriteFiles(int *id, int *print_hdf, int *print_xyz, int *print_media,
 	double *x_node, double *y_node, double *z_node, int *xyz_mask,
 	double *saturation, int *mapping)
 	/* ---------------------------------------------------------------------- */
@@ -89,7 +89,7 @@ WriteFiles(int *id, int *print_hdf, int *print_xyz,
 #endif
 		if (*print_hdf != 0)
 		{
-			WriteHDF(id, print_hdf);
+			WriteHDF(id, print_hdf, print_media);
 		}
 		if (*print_xyz != 0)
 		{
@@ -101,7 +101,7 @@ WriteFiles(int *id, int *print_hdf, int *print_xyz,
 
 /* ---------------------------------------------------------------------- */
 void
-WriteHDF(int *id, int *print_hdf)
+WriteHDF(int *id, int *print_hdf, int *print_media)
 /* ---------------------------------------------------------------------- */
 {
 #ifdef HDF5_CREATE
@@ -163,10 +163,10 @@ WriteHDF(int *id, int *print_hdf)
 			for (int iso = 0; iso < nso; iso++)
 			{
 				int n_user = RM_GetNthSelectedOutputUserNumber(id, &iso);
-				int ncol = RM_GetSelectedOutputColumnCount(id);
 				if (n_user >= 0)
 				{
 					status = RM_SetCurrentSelectedOutputUserNumber(id, &n_user);
+					int ncol = RM_GetSelectedOutputColumnCount(id);
 					if (status >= 0)
 					{
 						if (local_mpi_myself == 0)
@@ -176,7 +176,6 @@ WriteHDF(int *id, int *print_hdf)
 							if ( !FileWriter.GetHDFInvariant())
 							{
 								HDF_WRITE_INVARIANT(&iso, &local_mpi_myself);
-								FileWriter.SetHDFInvariant(true);
 							}
 							// Now write HDF file
 							HDF_BEGIN_TIME_STEP(&iso);
@@ -192,6 +191,8 @@ WriteHDF(int *id, int *print_hdf)
 					}
 				}
 			}
+			*print_media = 0;
+			FileWriter.SetHDFInvariant(true);
 		}
 	}
 #endif
@@ -274,10 +275,10 @@ WriteXYZ(int *id, int *print_xyz,
 			for (int iso = 0; iso < nso; iso++)
 			{
 				int n_user = RM_GetNthSelectedOutputUserNumber(id, &iso);
-				int ncol = RM_GetSelectedOutputColumnCount(id);
 				if (n_user >= 0)
 				{
 					status = RM_SetCurrentSelectedOutputUserNumber(id, &n_user);
+					int ncol = RM_GetSelectedOutputColumnCount(id);
 					if (status >= 0)
 					{
 						if (local_mpi_myself == 0)

@@ -17,6 +17,7 @@ SUBROUTINE phast_manager
     USE mcv
     USE mcv_m
     USE mcw
+    USE hdf_media_m,       ONLY: pr_hdf_media
 #ifdef USE_MPI
     USE mpi_mod
 #endif
@@ -218,14 +219,14 @@ SUBROUTINE phast_manager
         deltim_dummy = 0._kdp
         CALL RM_set_pv(rm_id, pv(1))
         CALL RM_set_saturation(rm_id, frac(1))
-        CALL RM_set_printing(rm_id, prf_chem_phrqi, prcphrqi, prhdfci, 0)
+        CALL RM_set_printing(rm_id, prf_chem_phrqi, prhdfci, 0)
         CALL RM_run_cells(      &
             rm_id,              &
             time_phreeqc,       &        ! time_hst
             deltim_dummy,       &        ! time_step
             c(1,1),             &        ! fraction
             stop_msg) 
-        CALL WriteFiles(rm_id, prhdfci, prcphrqi, &
+        CALL WriteFiles(rm_id, prhdfci, prcphrqi,  pr_hdf_media, &
 	        x_node(1), y_node(1), z_node(1), iprint_xyz(1), &
 	        frac(1), grid2chem(1)); 
        
@@ -351,7 +352,6 @@ SUBROUTINE phast_manager
                 CALL RM_set_saturation(rm_id, frac(1))
                 CALL RM_set_printing(rm_id,                     &
                     print_force_chemistry%print_flag_integer,   & 
-                    print_xyz_chemistry%print_flag_integer,     & 
                     print_hdf_chemistry%print_flag_integer,     & 
                     print_restart%print_flag_integer)
                 CALL RM_run_cells(                                &
@@ -360,7 +360,7 @@ SUBROUTINE phast_manager
                     deltim,                                       &        ! time_step_hst
                     c(1,1),                                       &        ! fraction
                     stop_msg) 
-                CALL WriteFiles(rm_id, prhdfci, prcphrqi, &
+                CALL WriteFiles(rm_id, prhdfci, prcphrqi,  pr_hdf_media, &
 	                x_node(1), y_node(1), z_node(1), iprint_xyz(1), &
 	                frac(1), grid2chem(1)) 
  

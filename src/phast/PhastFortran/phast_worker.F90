@@ -65,6 +65,7 @@ SUBROUTINE phast_worker
     CHARACTER(LEN=130) :: logline1
     ! ... Set string for use with RCS ident command
     INTEGER hdf_initialized, hdf_invariant
+    INTEGER PR_HDF_MEDIA
     CHARACTER(LEN=80) :: ident_string='$Id: phast_worker.F90,v 1.2 2013/09/26 22:49:48 klkipp Exp klkipp $'
     !     ------------------------------------------------------------------
 
@@ -176,7 +177,7 @@ SUBROUTINE phast_worker
             deltim_dummy,                                 &        ! time_step_hst
             c(1,1),                                       &        ! fraction
             stop_msg) 
-        CALL WriteFiles(rm_id, prhdfci, prcphrqi, &
+        CALL WriteFiles(rm_id, prhdfci, prcphrqi,  pr_hdf_media, &
 	        x_node(1), y_node(1), z_node(1), iprint_xyz(1), &
 	        frac(1), grid2chem(1))   
      
@@ -235,7 +236,7 @@ SUBROUTINE phast_worker
                 deltim_dummy,                                 &        ! time_step_hst
                 c(1,1),                                       &        ! fraction
                 stop_msg) 
-            CALL WriteFiles(rm_id, prhdfci, prcphrqi, &
+            CALL WriteFiles(rm_id, prhdfci, prcphrqi,  pr_hdf_media, &
 	            x_node(1), y_node(1), z_node(1), iprint_xyz(1), &
 	            frac(1), grid2chem(1))   
        

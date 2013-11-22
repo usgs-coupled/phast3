@@ -120,10 +120,10 @@
             DOUBLE PRECISION, OPTIONAL :: x_node, y_node, z_node
         END SUBROUTINE RM_set_nodes         
         
-        SUBROUTINE RM_set_printing(id, print_chem, print_xyz, print_hdf, print_restart)   
+        SUBROUTINE RM_set_printing(id, print_chem, print_hdf, print_restart)   
             IMPLICIT NONE
             INTEGER :: id
-            INTEGER, OPTIONAL :: print_chem, print_xyz, print_hdf, print_restart
+            INTEGER, OPTIONAL :: print_chem, print_hdf, print_restart
         END SUBROUTINE RM_set_printing 
 
         SUBROUTINE RM_set_print_chem_mask(id, t)   
