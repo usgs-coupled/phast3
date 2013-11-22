@@ -169,9 +169,9 @@ SUBROUTINE init2_post_ss
 !     ENDIF
      if (pv(m) < 0) then
         WRITE( error_line, *) "Negative pore volume after steady-state calculation, cell ", m
-        CALL errprt_c(error_line)
+        CALL RM_ErrorMessage(error_line)
         WRITE( error_line, *) "Increase porosity, decrease specific storage, or use free surface boundary."
-        CALL errprt_c(error_line)
+        CALL RM_ErrorMessage(error_line)
         ERREXE = .TRUE.  
         RETURN        
      endif

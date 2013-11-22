@@ -89,12 +89,21 @@ RM_interface::Get_instance(int id)
 
 /* ---------------------------------------------------------------------- */
 void
-errprt_c(const char *err_str, long l)
+RM_ErrorMessage(const char *err_str, long l)
 /* ---------------------------------------------------------------------- */
 {
-	std::string e_string(err_str, l);
-	trim_right(e_string);
-	RM_errprt(e_string);
+	if (l >= 0)
+	{
+		std::string e_string(err_str, l);
+		trim_right(e_string);
+		RM_errprt(e_string);
+	}
+	else
+	{
+		std::string e_string(err_str);
+		trim_right(e_string);
+		RM_errprt(e_string);
+	}
 }
 /* ---------------------------------------------------------------------- */
 void
@@ -283,17 +292,20 @@ RM_distribute_initial_conditions_mix(int *id,
 }
 
 /* ---------------------------------------------------------------------- */
-void RM_error(int *id)
+void RM_Error(int *id)
 /* ---------------------------------------------------------------------- */
 {
 	std::string e_string;
-	if (id < 0)
+	if (id != NULL)
 	{
-		e_string = "IPhreeqc module not created.";
-	}
-	else
-	{
-		e_string = GetErrorString(*id);
+		if (id < 0)
+		{
+			e_string = "IPhreeqc module not created.";
+		}
+		else
+		{
+			e_string = GetErrorString(*id);
+		}
 	}
 	RM_errprt(e_string);
 	RM_errprt("Stopping because of errors in reaction module.");
@@ -306,6 +318,18 @@ RM_find_components(int *id)
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	return (Reaction_module_ptr->Find_components());
+}
+/* ---------------------------------------------------------------------- */
+int 
+RM_GetMpiMyself(int * rm_id)
+	/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*rm_id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->GetMpiMyself();
+	}
+	return -1;
 }
 /* ---------------------------------------------------------------------- */
 int 
@@ -491,8 +515,8 @@ void RM_run_cells(int *id,
 		if (!Reaction_module_ptr->Get_stop_message())
 		{
 			// Transfer data and pointers to Reaction_module	  
-			Reaction_module_ptr->Set_time(time);
-			Reaction_module_ptr->Set_time_step(time_step);
+			Reaction_module_ptr->SetTime(time);
+			Reaction_module_ptr->SetTimeStep(time_step);
 			Reaction_module_ptr->Set_concentration(concentration);
 
 			// Transfer data Fortran to reaction module
@@ -738,7 +762,7 @@ void RM_set_tempc(int *id, double *t)
 		Reaction_module_ptr->Set_tempc(t);
 	}
 }
-void RM_set_time_conversion(int *id, double *t)
+void RM_SetTimeConversion(int *id, double *t)
 {
 	//
 	// multiply seconds to convert to user time units
@@ -746,7 +770,7 @@ void RM_set_time_conversion(int *id, double *t)
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->Set_time_conversion(t);
+		Reaction_module_ptr->SetTimeConversion(t);
 	}
 }
 void RM_set_volume(int *id, double *t)

@@ -36,10 +36,10 @@
             DOUBLE PRECISION, OPTIONAL :: f1
         END SUBROUTINE RM_distribute_initial_conditions_mix
         
-        SUBROUTINE RM_error(id)
+        SUBROUTINE RM_Error(id)
             IMPLICIT NONE
             INTEGER :: id
-        END SUBROUTINE RM_error
+        END SUBROUTINE RM_Error
         
         FUNCTION RM_find_components(id) RESULT(iout)
             IMPLICIT NONE
@@ -175,11 +175,11 @@
             DOUBLE PRECISION :: t
         END SUBROUTINE RM_set_tempc 
 		     
-        SUBROUTINE RM_set_time_conversion(id, t)   
+        SUBROUTINE RM_SetTimeConversion(id, t)   
             IMPLICIT NONE
             INTEGER :: id
             DOUBLE PRECISION, OPTIONAL :: t
-        END SUBROUTINE RM_set_time_conversion         
+        END SUBROUTINE RM_SetTimeConversion         
  		     
         SUBROUTINE RM_set_volume(id, t)   
             IMPLICIT NONE

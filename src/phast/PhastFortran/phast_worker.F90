@@ -135,7 +135,7 @@ SUBROUTINE phast_worker
             mpi_myself)
         CALL RM_set_input_units (rm_id)
         CALL RM_set_nodes(rm_id)
-        CALL RM_set_time_conversion(rm_id)
+        CALL RM_SetTimeConversion(rm_id)
         CALL RM_set_pv0(rm_id)
         CALL RM_set_print_chem_mask(rm_id)
         CALL RM_set_free_surface(rm_id)

@@ -75,7 +75,7 @@ SUBROUTINE asmslp_flow
      WRITE(logline1,*) 'Error in scaling; equation:', iierr
      !$$        WRITE(*,3001) TRIM(logline1)
      !$$3001    FORMAT(/a)
-     !***     CALL errprt_c(logline1)
+     !***     CALL RM_ErrorMessage(logline1)
      RETURN
   END IF
   IF(col_scale) THEN
@@ -161,15 +161,15 @@ SUBROUTINE asmslp_flow
         WRITE(logline2,5013) '          Calculating for Time ..... ',cnvtmi*timenp,'  ('//unittm//')'
 5013    FORMAT(a,1PG12.5,a)
 !!$        WRITE(*,'(//TR10,a/TR15,a/)') logline1,logline2
-        CALL errprt_c(logline1)
-        CALL errprt_c(logline2)
+        CALL RM_ErrorMessage(logline1)
+        CALL RM_ErrorMessage(logline2)
 !!$        WRITE(FULP, 9003) MAXITN, CNVTMI* TIMENP, UNITTM  
 !!$        9003 FORMAT(//TR10, 'Maximum No.(',I4,') of Iterations Reached', &
 !!$             ' for Well Bore Pressure Loop'/TR15, &
 !!$             'Calculating for Time =',1PG12.5,'  (',A,')'/)
         logline1 =  '          A printout of current data was done.'
 !!$        WRITE(*,'(a)') logline1
-        CALL errprt_c(logline1)
+        CALL RM_ErrorMessage(logline1)
         ERREXE = .TRUE.  
         RETURN  
      ENDIF

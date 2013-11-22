@@ -18,10 +18,10 @@
 #define RM_destroy                         FC_FUNC_ (rm_destroy,                       RM_DESTROY)
 #define RM_distribute_initial_conditions   FC_FUNC_ (rm_distribute_initial_conditions, RM_DISTRIBUTE_INITIAL_CONDITIONS)
 #define RM_distribute_initial_conditions_mix  FC_FUNC_ (rm_distribute_initial_conditions_mix, RM_DISTRIBUTE_INITIAL_CONDITIONS_MIX)
-#define RM_error                           FC_FUNC_ (rm_error,                         RM_ERROR)
+#define RM_Error                           FC_FUNC_ (rm_error,                         RM_ERROR)
 #define RM_find_components                 FC_FUNC_ (rm_find_components,               RM_FIND_COMPONENTS)
-//#define RM_fractions2solutions             FC_FUNC_ (rm_fractions2solutions,           RM_FRACTIONS2SOLUTIONS)
 #define RM_get_component                   FC_FUNC_ (rm_get_component,                 RM_GET_COMPONENT)
+#define RM_GetMpiMyself                    FC_FUNC_ (rm_getmpimyself,                  RM_GETMPIMYSELF)
 #define RM_GetNthSelectedOutputUserNumber  FC_FUNC_ (rm_getnthselectedoutputusernumber, RM_GETNTHSELECTEDOUTPUTUSERNUMBER)
 #define RM_GetSelectedOutput               FC_FUNC_ (rm_getselectedoutput,             RM_GETSELECTEDOUTPUT)
 #define RM_GetSelectedOutputColumnCount    FC_FUNC_ (rm_getselectedoutputcolumncount,  RM_GETSELECTEDOUTPUTCOLUMNCOUNT)
@@ -50,7 +50,7 @@
 #define RM_set_saturation                  FC_FUNC_ (rm_set_saturation,                RM_SET_SATURATION)
 #define RM_set_steady_flow                 FC_FUNC_ (rm_set_steady_flow,               RM_SET_STEADY_FLOW)
 #define RM_set_tempc                       FC_FUNC_ (rm_set_tempc,                     RM_SET_TEMPC)
-#define RM_set_time_conversion             FC_FUNC_ (rm_set_time_conversion,           RM_SET_TIME_CONVERSION)
+#define RM_SetTimeConversion               FC_FUNC_ (rm_settimeconversion,             RM_SETTIMECONVERSION)
 #define RM_set_volume					   FC_FUNC_ (rm_set_volume,                    RM_SET_VOLUME)
 #define RM_phreeqc2concentrations          FC_FUNC_ (rm_phreeqc2concentrations,        RM_PHREEQC2CONCENTRATIONS)
 #define RM_write_bc_raw                    FC_FUNC_ (rm_write_bc_raw,                  RM_WRITE_BC_RAW)
@@ -59,7 +59,7 @@
 // Calls to Fortran
 #define logprt_c                           FC_FUNC_ (logprt_c,                         LOGPRT_C)
 #define screenprt_c                        FC_FUNC_ (screenprt_c,                      SCREENPRT_C)
-#define errprt_c                           FC_FUNC_ (errprt_c,                         ERRPRT_C)
+#define RM_ErrorMessage                    FC_FUNC_ (rm_errormessage,                  RM_ERRORMESSAGE)
 #define warnprt_c                          FC_FUNC_ (warnprt_c,                        WARNPRT_C)
 #endif
 #ifdef SKIP
@@ -69,7 +69,7 @@
 #define RM_create                             rm_create
 #define RM_destroy                            rm_destroy
 #define RM_distribute_initial_conditions      rm_distribute_initial_conditions
-#define RM_error                              rm_error
+#define RM_Error                              rm_error
 #define RM_find_components                    rm_find_components
 //#define RM_fractions2solutions                rm_fractions2solutions
 #define RM_get_component                      rm_get_component
@@ -92,7 +92,7 @@
 #define RM_set_rebalance                      rm_set_rebalance
 #define RM_set_saturation                     rm_set_saturation
 #define RM_set_tempc	                      rm_set_tempc
-#define RM_set_time_conversion                rm_set_time_conversion
+#define RM_SetTimeConversion				  rm_settimeconversion
 #define RM_set_volume                         rm_set_volume
 #define RM_phreeqc2concentrations             rm_phreeqc2concentrations
 #define RM_write_bc_raw                       rm_write_bc_raw
@@ -130,9 +130,10 @@ void RM_distribute_initial_conditions_mix(int *id,
 		int *initial_conditions2,		// 7 x nxyz end-member 2
 		double *fraction1			    // 7 x nxyz fraction of end-member 1
 		);
-void RM_error(int *id);
+void RM_Error(int *id);
 int RM_find_components(int *id);
 void RM_get_component(int * id, int * num, char *chem_name, int l1);
+int RM_GetMpiMyself(int *id);
 int RM_GetNthSelectedOutputUserNumber(int *id, int *i);
 int RM_GetSelectedOutput(int *id, double *so);
 int RM_GetSelectedOutputColumnCount(int *id);
@@ -178,7 +179,7 @@ void RM_set_rebalance(int *id, int *method, double *f);
 void RM_set_saturation(int *id, double *t);
 void RM_set_steady_flow(int *id, int *t);
 void RM_set_tempc(int *id, double *t);
-void RM_set_time_conversion(int *id, double *t);
+void RM_SetTimeConversion(int *id, double *t);
 void RM_set_volume(int *id, double *t);
 void RM_write_bc_raw(int *id, 
 			int *solution_list, 
@@ -189,19 +190,18 @@ void RM_write_bc_raw(int *id,
 void RM_write_output(int *id);
 void RM_write_restart(int *id);
 
-void errprt_c(const char *err_str, long l);
+void RM_ErrorMessage(const char *err_str, long l = -1);
 void logprt_c(const char *err_str, long l);
 void screenprt_c(const char *err_str, long l);
 void warnprt_c(const char *err_str, long l);
-
+#if defined(__cplusplus)
+}
+#endif
 void RM_errprt(const std::string & e_string);
 void RM_warnprt(const std::string & e_string);
 void RM_logprt(const std::string & e_string);
 void RM_screenprt(const std::string & e_string);
 
-#if defined(__cplusplus)
-}
-#endif
 // Global functions
 //inline std::string trim_right(const std::string &source , const std::string& t = " \t")
 //{

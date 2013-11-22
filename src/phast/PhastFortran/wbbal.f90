@@ -162,8 +162,8 @@ SUBROUTINE wbbal
                 ' has >1% residual flow through well bottom',  &
                    '; time plane n =', itime-1
               WRITE(logline2,9022) ' Flow Rate =',uqwm
-                CALL errprt_c(logline1)
-                CALL errprt_c(logline2)
+                CALL RM_ErrorMessage(logline1)
+                CALL RM_ErrorMessage(logline2)
            WRITE(fuwel, 9002) 'Injection Well No. ', iwel, ' has >1% residual'//  &
                 'flow through well bottom', '; time plane n =', itime-1,  &
                 ' Flow Rate =', uqwm
@@ -171,7 +171,7 @@ SUBROUTINE wbbal
      ENDIF
      IF(florev) THEN
         logline1 =  'Well solute concentrations may be poor approximations (wbbal)'
-        CALL errprt_c(logline1)
+        CALL RM_ErrorMessage(logline1)
         WRITE(fuwel,9003) 'Well solute concentrations may be poor approximations (wbbal)'
 9003    FORMAT(tr10,a)  
         ierr(142) = .TRUE.

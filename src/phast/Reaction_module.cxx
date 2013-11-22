@@ -1117,7 +1117,7 @@ Reaction_module::Distribute_initial_conditions_mix(
 			this->Get_workers()[n]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(sz_bin, i);
 			delete_command << i << "\n";
 		}
-		if (this->Get_workers()[0]->RunString(delete_command.str().c_str()) > 0) RM_error(0);
+		if (this->Get_workers()[0]->RunString(delete_command.str().c_str()) > 0) RM_Error(0);
 	}
 #endif
 	// initialize uz
@@ -1129,7 +1129,7 @@ Reaction_module::Error_stop(void)
 /* ---------------------------------------------------------------------- */
 {
 	int n = (int) this->Get_workers()[0]->Get_Index();
-	RM_error(&n);
+	RM_Error(&n);
 }
 /* ---------------------------------------------------------------------- */
 bool
@@ -1534,14 +1534,14 @@ Reaction_module::Initial_phreeqc_run_thread(int n)
 		}
 
 		// Load database
-		if (iphreeqc_phast_worker->LoadDatabase(this->database_file_name.c_str()) > 0) RM_error(&ipp_id);
+		if (iphreeqc_phast_worker->LoadDatabase(this->database_file_name.c_str()) > 0) RM_Error(&ipp_id);
 		if (n == 0)
 		{
 			Write_output(iphreeqc_phast_worker->GetOutputString());
 		}
 
 		// Run chemistry file
-		if (iphreeqc_phast_worker->RunFile(this->chemistry_file_name.c_str()) > 0) RM_error(&ipp_id);
+		if (iphreeqc_phast_worker->RunFile(this->chemistry_file_name.c_str()) > 0) RM_Error(&ipp_id);
 
 		// Create a StorageBin with initial PHREEQC for boundary conditions
 		if (n == 0)
@@ -3487,7 +3487,7 @@ Reaction_module::Set_tempc(double *t)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Set_time(double *t)
+Reaction_module::SetTime(double *t)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0)
@@ -3501,12 +3501,12 @@ Reaction_module::Set_time(double *t)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Set_time_conversion(double *t)
+Reaction_module::SetTimeConversion(double *t)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0)
 	{
-		if (t == NULL) error_msg("NULL pointer in Set_time_conversion", 1);
+		if (t == NULL) error_msg("NULL pointer in SetTimeConversion", 1);
 		this->time_conversion = *t;
 	}
 #ifdef USE_MPI
@@ -3515,10 +3515,10 @@ Reaction_module::Set_time_conversion(double *t)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Set_time_step(double *t)
+Reaction_module::SetTimeStep(double *t)
 /* ---------------------------------------------------------------------- */
 {
-	if (mpi_myself == 0)
+	if (this->mpi_myself == 0)
 	{
 		if (t == NULL) error_msg("NULL pointer in Set_time_step", 1);
 		this->time_step = *t;

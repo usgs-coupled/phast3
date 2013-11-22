@@ -107,7 +107,7 @@ SUBROUTINE wbcflo
   END IF
   IF(florev) THEN
      logline1 =  'Well solute concentrations may be poor approximations (WBBAL)'
-        CALL errprt_c(logline1)
+        CALL RM_ErrorMessage(logline1)
      WRITE(fuwel,9003) 'Well solute concentrations may be poor approximations (WBBAL)'
 9003 FORMAT(tr10,a)  
   END IF

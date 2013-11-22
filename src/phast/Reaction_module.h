@@ -57,7 +57,7 @@ public:
 	cxxStorageBin & Get_phreeqc_bin(void) {return this->phreeqc_bin;}
 	const int Get_mpi_tasks(void) const {return this->mpi_tasks;}
 	void Set_mpi_tasks(int t) {this->mpi_tasks = t;}
-	const int Get_mpi_myself(void) const {return this->mpi_myself;}
+	const int GetMpiMyself(void) const {return this->mpi_myself;}
 	void Set_mpi_myself(int t) {this->mpi_myself = t;}
 	std::vector<double> & Get_old_saturation(void) {return this->old_saturation;}
 	const bool Get_free_surface(void) const {return this->free_surface;};
@@ -67,12 +67,12 @@ public:
 	const int Get_nxyz(void) const {return this->nxyz;};
 	void Set_nxyz(int t) {this->nxyz = t;};
 	const std::vector<std::string> & Get_components(void) const {return this->components;};
-	double Get_time(void) const {return this->time;};
-	void Set_time(double *t = NULL); 
-	double Get_time_step(void) const {return this->time_step;};
-	void Set_time_step(double *t = NULL); 
-	const double Get_time_conversion(void) const {return this->time_conversion;};
-	void Set_time_conversion(double *t); 
+	double GetTime(void) const {return this->time;};
+	void SetTime(double *t = NULL); 
+	double GetTimeStep(void) const {return this->time_step;};
+	void SetTimeStep(double *t = NULL); 
+	const double GetTimeConversion(void) const {return this->time_conversion;};
+	void SetTimeConversion(double *t); 
 	const std::vector<double> & Get_x_node(void) const {return this->x_node;};
 	void Set_x_node(double * t = NULL);
 	const std::vector<double> & Get_y_node(void) const {return this->y_node;};

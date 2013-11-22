@@ -134,12 +134,12 @@ SUBROUTINE XP_welris_thread(iwel,iwfss,uqwmr,xp)
 9001 FORMAT(/tr10,2A)
      WRITE(logline1,5001) 'Well Riser Integration Step Reached ',  &
           'Minimum DZ Without Reaching Desired Accuracy'
-        call errprt_c(logline1)
+        call RM_ErrorMessage(logline1)
      RETURN
   END IF
   IF(prtwel) THEN
      WRITE(logline1,5008) zwk,yy(1),yy(2),tambk
-        call errprt_c(logline1)
+        call RM_ErrorMessage(logline1)
      WRITE(fuwel,2003) zwk,yy(1),yy(2),tambk
   ENDIF
   IF(zwk > wrisl(iwel) .OR. zwk < 0.) GO TO 20
@@ -150,7 +150,7 @@ SUBROUTINE XP_welris_thread(iwel,iwfss,uqwmr,xp)
 9002 FORMAT(tr2,a,i4,a)
   WRITE(logline1,5012) 'Failed to Complete the Well Riser Calculation in ',kmax,' Steps'
 5012 FORMAT(a,i4,a)
-        call errprt_c(logline1)
+        call RM_ErrorMessage(logline1)
   ! ... Finished the calculation
   ! ... Linearly extrapolate the pressure, temperature to the end
   ! ...      of the riser pipe
@@ -550,12 +550,12 @@ SUBROUTINE welris(iwel,iwfss,uqwmr)
 9001 FORMAT(/tr10,2A)
      WRITE(logline1,5001) 'Well Riser Integration Step Reached ',  &
           'Minimum DZ Without Reaching Desired Accuracy'
-        call errprt_c(logline1)
+        call RM_ErrorMessage(logline1)
      RETURN
   END IF
   IF(prtwel) THEN
      WRITE(logline1,5008) zwk,yy(1),yy(2),tambk
-        call errprt_c(logline1)
+        call RM_ErrorMessage(logline1)
      WRITE(fuwel,2003) zwk,yy(1),yy(2),tambk
   ENDIF
   IF(zwk > wrisl(iwel) .OR. zwk < 0.) GO TO 20
@@ -566,7 +566,7 @@ SUBROUTINE welris(iwel,iwfss,uqwmr)
 9002 FORMAT(tr2,a,i4,a)
   WRITE(logline1,5012) 'Failed to Complete the Well Riser Calculation in ',kmax,' Steps'
 5012 FORMAT(a,i4,a)
-        call errprt_c(logline1)
+        call RM_ErrorMessage(logline1)
   ! ... Finished the calculation
   ! ... Linearly extrapolate the pressure, temperature to the end
   ! ...      of the riser pipe

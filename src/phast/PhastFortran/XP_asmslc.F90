@@ -44,7 +44,7 @@ SUBROUTINE XP_asmslc_thread(xp)
   IF(iierr /= 0) THEN
      ierr(81) = .TRUE.
      WRITE(logline1,*) 'Error in scaling; component:',xp%iis_no,'  equation:', iierr
-    CALL errprt_c(logline1)
+    CALL RM_ErrorMessage(logline1)
      RETURN
   END IF
   IF(col_scale) THEN
@@ -134,7 +134,7 @@ SUBROUTINE XP_asmslc(xp)
   IF(iierr /= 0) THEN
      ierr(81) = .TRUE.
      WRITE(logline1,*) 'Error in scaling; component:',xp%iis_no,'  equation:', iierr
-    CALL errprt_c(logline1)
+    CALL RM_ErrorMessage(logline1)
      RETURN
   END IF
   IF(col_scale) THEN
