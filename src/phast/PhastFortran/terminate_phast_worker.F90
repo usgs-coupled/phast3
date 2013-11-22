@@ -23,12 +23,12 @@ SUBROUTINE terminate_phast_worker
   IF(col_scale) THEN
      IF (ident_diagc) THEN
         logline1 = '***INFORMATION: all transport column scaling was unnecessary.'
-        CALL logprt_c(logline1)
-        CALL screenprt_c(logline1)
+        CALL RM_LogMessage(logline1)
+        CALL RM_ScreenMessage(logline1)
      ELSE
         logline1 = '***INFORMATION: transport column scaling was necessary!'
-        CALL logprt_c(logline1)
-        CALL screenprt_c(logline1)
+        CALL RM_LogMessage(logline1)
+        CALL RM_ScreenMessage(logline1)
      ENDIF
   END IF
 #endif

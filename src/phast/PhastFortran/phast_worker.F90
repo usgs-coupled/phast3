@@ -253,8 +253,8 @@ SUBROUTINE phast_worker
 
         IF(errexe .OR. errexi) THEN
             logline1 = 'ERROR exit.'
-            CALL logprt_c(logline1)
-            CALL screenprt_c(logline1)
+            CALL RM_LogMessage(logline1)
+            CALL RM_ScreenMessage(logline1)
         END IF
      
     ENDIF        ! ... solute

@@ -118,19 +118,19 @@ SUBROUTINE write5_ss_flow
 !!$5001 FORMAT(a,i5,a)
 !!$     WRITE(logline2,5002) 'Time '//dots,cnvtmi*time,'  ('//TRIM(unittm)//')'
 !!$5002 FORMAT(a60,1PG12.3,a)
-!!$     call logprt_c(logline1)
-!!$     call logprt_c(logline2)
+!!$     call RM_LogMessage(logline1)
+!!$     call RM_LogMessage(logline2)
      IF(ntsfal > 0) THEN 
         WRITE(logline1,5007) 'Number of repeats of time step to achieve ','truncation error'//dots,ntsfal
 5007    FORMAT(a42,a23,i4)
-        CALL logprt_c(logline1)
+        CALL RM_LogMessage(logline1)
      ENDIF
      !       Already printed in sumcal_ss_flow
 !!$     WRITE(logline1,5027) 'Maximum change in potentiometric head '//dots,  &
 !!$          cnvpi*dhmax,' ('//TRIM(unitl)//')',' at location (',  &
 !!$          cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax),')(',TRIM(unitl)//')'
 !!$5027 format(A43,1PE12.4,A10,A,3(1PG10.3,A),A)
-!!$     call logprt_c(logline1)
+!!$     call RM_LogMessage(logline1)
 !!$     WRITE(*,aformt) 'Maximum change in potentiometric head '//dots,  &
 !!$          cnvpi*dhmax,'('//unitl//')','at location (',  &
 !!$          cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax),')(',TRIM(unitl),')'

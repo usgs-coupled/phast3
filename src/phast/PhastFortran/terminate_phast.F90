@@ -69,12 +69,12 @@ SUBROUTINE terminate_phast
   IF(col_scale) THEN
      IF (ident_diagc) THEN
         logline1 = '***INFORMATION: all flow column scaling was unnecessary.'
-        CALL logprt_c(logline1)
-        CALL screenprt_c(logline1)
+        CALL RM_LogMessage(logline1)
+        CALL RM_ScreenMessage(logline1)
      ELSE
         logline1 = '***INFORMATION: flow column scaling was necessary!'
-        CALL logprt_c(logline1)
-        CALL screenprt_c(logline1)
+        CALL RM_LogMessage(logline1)
+        CALL RM_ScreenMessage(logline1)
      ENDIF
   END IF
   CALL closef

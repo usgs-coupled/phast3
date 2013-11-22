@@ -166,10 +166,10 @@ SUBROUTINE wellsc_ss_flow
                 '   (Deg.C)    (Pa)             (Deg.C)'
            WRITE(logline4,5021) dots
 5021       FORMAT(a80)
-            call logprt_c(logline1)
-            call logprt_c(logline2)
-            call logprt_c(logline3)
-            call logprt_c(logline4)
+            call RM_LogMessage(logline1)
+            call RM_LogMessage(logline2)
+            call RM_LogMessage(logline3)
+            call RM_LogMessage(logline4)
            WRITE(fuwel,2001) 'well iteration mass flow  riser inlet',  &
                 '   riser inlet   riser outlet riser outlet',  &
                 'no.              rate        pressure ',  &
@@ -179,7 +179,7 @@ SUBROUTINE wellsc_ss_flow
 2001       FORMAT(/tr5,2A/tr5,2A/tr5,2A/tr5,a80)
            WRITE(logline1,2032) iwel,itrn2,uqwmr,p00,t00,pwrend,twrend
 2032       FORMAT(i5,i12,2(1PG14.6),0PF10.1,1PG14.6,0PF10.1)
-            call logprt_c(logline1)
+            call RM_LogMessage(logline1)
            WRITE(fuwel,2002)  iwel,itrn2,uqwmr,p00,t00,pwrend,twrend
 2002       FORMAT(i5,i12,2(1PG14.6),0PF10.1,1PG14.6,0PF10.1)
         END IF
@@ -403,10 +403,10 @@ SUBROUTINE wellsc_ss_flow
               WRITE(logline3,5011) '                        (kg/s)        (Pa)      ',  &
                    '   (Deg.C)    (Pa)             (Deg.C)'
               WRITE(logline4,5021) dots
-                call logprt_c(logline1)
-                call logprt_c(logline2)
-                call logprt_c(logline3)
-                call logprt_c(logline4)
+                call RM_LogMessage(logline1)
+                call RM_LogMessage(logline2)
+                call RM_LogMessage(logline3)
+                call RM_LogMessage(logline4)
               WRITE(fuwel,2001) 'well  iteration mass flow  riser inlet ',  &
                    '   riser inlet   riser outlet riser outlet',  &
                    'no.               rate        pressure ',  &
@@ -414,7 +414,7 @@ SUBROUTINE wellsc_ss_flow
                    '                        (kg/s)        (Pa)    ',  &
                    '    (Deg.C)    (Pa)             (Deg.C)', dots
               WRITE(logline1,2032) iwel,itrn2,uqwmr,p00,t00,pwrend,twrend
-                call logprt_c(logline1)
+                call RM_LogMessage(logline1)
               WRITE(fuwel,2002) iwel,itrn2,uqwmr,p00,t00,pwrend,twrend
            END IF
            IF(pwrend <= pwsurs(iwel)) THEN
@@ -450,10 +450,10 @@ SUBROUTINE wellsc_ss_flow
                  WRITE(logline3,5011) '                        (kg/s)        (Pa)      ',  &
                       '   (Deg.C)    (Pa)             (Deg.C)'
                  WRITE(logline4,5021) dots
-                call logprt_c(logline1)
-                call logprt_c(logline2)
-                call logprt_c(logline3)
-                call logprt_c(logline4)
+                call RM_LogMessage(logline1)
+                call RM_LogMessage(logline2)
+                call RM_LogMessage(logline3)
+                call RM_LogMessage(logline4)
                  WRITE(fuwel,2001) 'well  iteration mass flow  riser inlet ',  &
                       '   riser inlet   riser outlet riser outlet',  &
                       'no.               rate        pressure ',  &
@@ -461,7 +461,7 @@ SUBROUTINE wellsc_ss_flow
                       '                    (kg/s)        (Pa)     ',  &
                       '    (Deg.C)    (Pa)             (Deg.C)', dots
                  WRITE(logline1,2032) iwel,itrn2,uqwmr,p00,t00,pwrend,twrend
-                call logprt_c(logline1)
+                call RM_LogMessage(logline1)
                  WRITE(fuwel,2002) iwel,itrn2,uqwmr,p00,t00,pwrend, twrend
               END IF
               IF(ABS(pwrend-pwsurs(iwel)) > tolfpw*pwsurs(iwel)) THEN
@@ -484,10 +484,10 @@ SUBROUTINE wellsc_ss_flow
                  WRITE(logline3,5011) '                        (kg/s)        (Pa)      ',  &
                       '   (Deg.C)    (Pa)             (Deg.C)'
                  WRITE(logline4,5021) dots
-                call logprt_c(logline1)
-                call logprt_c(logline2)
-                call logprt_c(logline3)
-                call logprt_c(logline4)
+                call RM_LogMessage(logline1)
+                call RM_LogMessage(logline2)
+                call RM_LogMessage(logline3)
+                call RM_LogMessage(logline4)
                  WRITE(fuwel,2001) 'well  iteration mass flow  riser inlet ',  &
                       '   riser inlet   riser outlet riser outlet',  &
                       'no.               rate        pressure ',  &
@@ -495,7 +495,7 @@ SUBROUTINE wellsc_ss_flow
                       '                    (kg/s)        (Pa)     ',  &
                       '    (Deg.C)    (Pa)             (Deg.C)', dots
                  WRITE(logline1,2032) iwel,itrn2,uqwmr,p00,t00,pwrend,twrend
-                call logprt_c(logline1)
+                call RM_LogMessage(logline1)
                  WRITE(fuwel,2002)  iwel,itrn2,uqwmr,p00,t00,pwrend, twrend
               END IF
               IF(ABS(pwrend-upwkt) > tolfpw*upwkt) THEN
@@ -570,12 +570,12 @@ SUBROUTINE wellsc_ss_flow
      WRITE(logline5,8017) '          or production concentration limit reached'
      WRITE(logline6,8018) (jwell(i),i=1,nshut)
 8018 format(25i4)
-        call warnprt_c(logline1)
-        call warnprt_c(logline2)
-        call warnprt_c(logline3)
-        call warnprt_c(logline4)
-        call warnprt_c(logline5)
-        call warnprt_c(logline6)
+        call RM_WarningMessage(logline1)
+        call RM_WarningMessage(logline2)
+        call RM_WarningMessage(logline3)
+        call RM_WarningMessage(logline4)
+        call RM_WarningMessage(logline5)
+        call RM_WarningMessage(logline6)
   END IF
   DEALLOCATE (jwell, mobw, r,  &
        STAT = da_err)

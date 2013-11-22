@@ -100,12 +100,12 @@ SUBROUTINE write2_1
 !!$  WRITE(logline5,5009) 'Number of drain leakage cells '//dots,' NDBC . ',ndbc
 !!$  WRITE(logline6,5009) 'Number of wells '//dots,' NWEL . ',nwel
 !!$5009 format(a65,a,i6)
-!!$  call logprt_c(logline1)
-!!$  call logprt_c(logline2)
-!!$  call logprt_c(logline3)
-!!$  call logprt_c(logline4)
-!!$  call logprt_c(logline5)
-!!$  call logprt_c(logline6)
+!!$  call RM_LogMessage(logline1)
+!!$  call RM_LogMessage(logline2)
+!!$  call RM_LogMessage(logline3)
+!!$  call RM_LogMessage(logline4)
+!!$  call RM_LogMessage(logline5)
+!!$  call RM_LogMessage(logline6)
   IF(.NOT.restrt) THEN
      IF(slmeth == 1) THEN
         WRITE(fulp,2002) 'Linear solver array dimension requirement (D4 direct solver)'//  &
@@ -116,9 +116,9 @@ SUBROUTINE write2_1
              dots,' NPRIST ',nprist,' elements'
         WRITE(logline3,5001) 'Overhead storage requirement (D4 direct solver)'//  &
              dots,' NOHST .',nohst,' elements'
-        CALL logprt_c(logline1)
-        CALL logprt_c(logline2)
-        CALL logprt_c(logline3)
+        CALL RM_LogMessage(logline1)
+        CALL RM_LogMessage(logline2)
+        CALL RM_LogMessage(logline3)
      ELSE IF(slmeth == 3) THEN
         WRITE(fulp,2002) 'Linear solver array dimension requirement (RBGCG iterative solver)'//  &
              dots,' NSTSLV ',nstslv,' elements'
@@ -128,9 +128,9 @@ SUBROUTINE write2_1
              dots,' NPRIST ',nprist,' elements'
         WRITE(logline3,5001) 'Overhead storage requirement (RBGCG iterative solver)'//  &
              dots,' NOHST .',nohst,' elements'
-        CALL logprt_c(logline1)
-        CALL logprt_c(logline2)
-        CALL logprt_c(logline3)
+        CALL RM_LogMessage(logline1)
+        CALL RM_LogMessage(logline2)
+        CALL RM_LogMessage(logline3)
      ELSE IF(slmeth >= 5) THEN
         WRITE(fulp,2002) 'Linear solver array dimension requirement (D4ZGCG iterative '//  &
              'solver)'//dots,' NSTSLV ',nstslv,' elements'
@@ -140,9 +140,9 @@ SUBROUTINE write2_1
              dots,' NPRIST ',nprist,' elements'
         WRITE(logline3,5001) 'Overhead storage requirement (D4ZGCG iterative solver)'//  &
              dots,' NOHST .',nohst,' elements'
-        CALL logprt_c(logline1)
-        CALL logprt_c(logline2)
-        CALL logprt_c(logline3)
+        CALL RM_LogMessage(logline1)
+        CALL RM_LogMessage(logline2)
+        CALL RM_LogMessage(logline3)
      END IF
   END IF
 2002 FORMAT(/(tr10,a70,a,i8,a))
@@ -154,7 +154,7 @@ SUBROUTINE write2_1
 2003 FORMAT(tr1,a120)
 !!$  WRITE(logline3,5103) dash
 !!$5103 FORMAT(a120)
-!!$  call logprt_c(logline3)
+!!$  call RM_LogMessage(logline3)
   WRITE(fulp,2004) '***  Static Data ***'
 2004 FORMAT(//tr30,a)
   ! ... Spatial mesh information
@@ -761,7 +761,7 @@ SUBROUTINE write2_1
 2063 FORMAT(/tr40,a)
      WRITE(logline1,5053) '                    *** Calculation Information ***'
 5053 FORMAT(a)
-     CALL logprt_c(logline1)
+     CALL RM_LogMessage(logline1)
      ! ...    Iteration parameters
      !      IF(HEAT.OR.SOLUTE) THEN
      !         WRITE(FULP,2054)
@@ -782,13 +782,13 @@ SUBROUTINE write2_1
 2064    FORMAT(tr10,a)
 !!$     WRITE(logline1,5053) 'Backwards-in-time (implicit) differencing for '//  &
 !!$          'temporal derivative'
-!!$     call logprt_c(logline1)
+!!$     call RM_LogMessage(logline1)
      ELSE
         WRITE(fulp,2064) 'Centered-in-time (Crank-Nicholson) differencing '//  &
              'for temporal derivative'
 !!$     WRITE(logline1,5053) 'Centered-in-time (Crank-Nicholson) differencing '//  &
 !!$          'for temporal derivative'
-!!$     call logprt_c(logline1)
+!!$     call RM_LogMessage(logline1)
      END IF
      IF(heat .OR. solute) THEN
         IF(fdsmth < 0.5) THEN
@@ -800,7 +800,7 @@ SUBROUTINE write2_1
            WRITE(fulp,2064) 'Centered-in-space differencing for advective terms'
 !!$        WRITE(logline1,5053) 'Centered-in-space differencing for advective terms'
         END IF
-!!$     call logprt_c(logline1)
+!!$     call RM_LogMessage(logline1)
         IF(crosd) THEN
            WRITE(fulp,2064) 'The cross-derivative solute flux terms '//  &
                 'will be calculated explicitly'
@@ -812,7 +812,7 @@ SUBROUTINE write2_1
 !!$        WRITE(logline1,5053) 'The cross-derivative solute flux terms '//  &
 !!$             'will NOT BE calculated'
         ENDIF
-!!$     call logprt_c(logline1)
+!!$     call RM_LogMessage(logline1)
      END IF
      IF(row_scale .AND. col_scale) THEN
         WRITE(fulp,2159) 'Row and column scaling, using L-inf norm, will be done'
@@ -820,17 +820,17 @@ SUBROUTINE write2_1
         WRITE(logline1,5201)  &
              '          Row and column scaling, using L-inf norm, will be done'
 5201    FORMAT(a)
-        CALL logprt_c(logline1)
+        CALL RM_LogMessage(logline1)
      ELSEIF(row_scale .AND. .NOT.col_scale) THEN
         WRITE(fulp,2159) 'Row scaling only, using L-inf norm, will be done'
         WRITE(logline1,5201)  &
              '          Row scaling only, using L-inf norm, will be done'
-        CALL logprt_c(logline1)
+        CALL RM_LogMessage(logline1)
      ELSEIF(.NOT.row_scale .AND. col_scale) THEN
         WRITE(fulp,2159) 'Column scaling only, using L-inf norm, will be done'
         WRITE(logline1,5201)  &
              '          Column scaling only, using L-inf norm, will be done'
-        CALL logprt_c(logline1)
+        CALL RM_LogMessage(logline1)
      END IF
      IF(slmeth == 3) THEN
         WRITE(fulp,2059) 'Direction index for red-black renumbering '//dots,' IDIR..',idir,  &
@@ -849,10 +849,10 @@ SUBROUTINE write2_1
         WRITE(logline4,5060)  &
              '          Tolerance on iterative solution '//dots,' EPSSLV',epsslv
 5060    FORMAT(a65,a,1pe8.1)
-        CALL logprt_c(logline1)
-        CALL logprt_c(logline2)
-        CALL logprt_c(logline3)
-        CALL logprt_c(logline4)
+        CALL RM_LogMessage(logline1)
+        CALL RM_LogMessage(logline2)
+        CALL RM_LogMessage(logline3)
+        CALL RM_LogMessage(logline4)
      ELSE IF(slmeth == 5) THEN
         WRITE(fulp,2059) 'Direction index for d4 zig-zag renumbering '//dots,' IDIR..',idir,  &
              'Incomplete LU [f] or modified ILU [t] factorization '//dots,' MILU..',milu,  &
@@ -866,10 +866,10 @@ SUBROUTINE write2_1
              '          Number of search directions before restart '//dots,' NSDR..',nsdr
         WRITE(logline4,5060)  &
              '          Tolerance on iterative solution '//dots,' EPSSLV',epsslv
-        CALL logprt_c(logline1)
-        CALL logprt_c(logline2)
-        CALL logprt_c(logline3)
-        CALL logprt_c(logline4)
+        CALL RM_LogMessage(logline1)
+        CALL RM_LogMessage(logline2)
+        CALL RM_LogMessage(logline3)
+        CALL RM_LogMessage(logline4)
      END IF
   ENDIF
   WRITE(fulp,'(/tr1,a120)') dash

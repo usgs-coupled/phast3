@@ -99,8 +99,8 @@ SUBROUTINE wbbal
 9012          FORMAT(a,i4,a,i2,a,i2,a,i4)
               WRITE(logline2,9022) ' Flow Rate =', uqwm
 9022          FORMAT(a,1pg10.2)
-                CALL warnprt_c(logline1)
-                CALL warnprt_c(logline2)
+                CALL RM_WarningMessage(logline1)
+                CALL RM_WarningMessage(logline2)
               WRITE(fuwel,9002) 'Production Well No. ', iwel, &
                    ' has down bore flow from level ', ks + 1, ' to ', ks, &
                    '; time plane n =', itime-1, ' Flow Rate =', uqwm
@@ -148,8 +148,8 @@ SUBROUTINE wbbal
                    ' has up bore flow from level ', ks + 1, ' to ', ks, &
                    '; time plane n =', itime-1
               WRITE(logline2,9022) ' Flow Rate =', uqwm
-                CALL warnprt_c(logline1)
-                CALL warnprt_c(logline2)
+                CALL RM_WarningMessage(logline1)
+                CALL RM_WarningMessage(logline2)
               WRITE(fuwel, 9002) 'Injection Well No. ', iwel,  &
                    ' has up bore flow from level ', ks - 1, ' to ', ks,  &
                    '; time plane n =', itime,' Flow Rate =',uqwm

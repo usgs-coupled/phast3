@@ -46,7 +46,7 @@ SUBROUTINE read3
   IF(thru) RETURN
   ntd = ntd+1
   WRITE(logline1,'(a,i2)') 'Reading transient data for simulation: Set ',ntd
-    CALL logprt_c(logline1)
+    CALL RM_LogMessage(logline1)
   prtbc=.FALSE.
   prtslm=.FALSE.
   prtwel=.FALSE.

@@ -74,8 +74,8 @@ SUBROUTINE write3_ss_flow
           tr10,a65,a,1PG10.2,tr2,a/tr10,a65,a,1PG10.2,tr2,a)
 5014 format(a)
 5114 FORMAT(a65,a,1PG10.2,a)
-    call logprt_c(logline1)
-    call logprt_c(logline2)
-    call logprt_c(logline3)
-    call logprt_c(logline4)
+    call RM_LogMessage(logline1)
+    call RM_LogMessage(logline2)
+    call RM_LogMessage(logline3)
+    call RM_LogMessage(logline4)
 END SUBROUTINE write3_ss_flow

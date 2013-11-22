@@ -33,10 +33,10 @@ SUBROUTINE timestep
 
   WRITE(logline1,5011) 'Beginning time step no. ',itime
 5011 FORMAT(a,i6)
-  CALL logprt_c(logline0)
-  CALL logprt_c(logline1)
-  CALL screenprt_c(logline0)
-  CALL screenprt_c(logline1)
+  CALL RM_LogMessage(logline0)
+  CALL RM_LogMessage(logline1)
+  CALL RM_ScreenMessage(logline0)
+  CALL RM_ScreenMessage(logline1)
 
   jtime = jtime+1
 
@@ -145,7 +145,7 @@ SUBROUTINE timestep
      WRITE(logline1,5001) '     Current time step length .........................'//  &
           '..........',cnvtmi*deltim,' ('//TRIM(unittm)//')'
 5001 FORMAT(a,1PG12.3,a)
-     CALL logprt_c(logline1)
-     CALL screenprt_c(logline1)
+     CALL RM_LogMessage(logline1)
+     CALL RM_ScreenMessage(logline1)
   ENDIF
 END SUBROUTINE timestep

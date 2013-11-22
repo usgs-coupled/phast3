@@ -21,10 +21,10 @@ SUBROUTINE simulate_ss_flow
   time = 0.0_kdp
   logline1 = '     '
   logline2 = 'Beginning flow calculation for steady-state i.c.'
-    CALL logprt_c(logline1)
-    CALL logprt_c(logline2)
-    CALL screenprt_c(logline1)
-    CALL screenprt_c(logline2)
+    CALL RM_LogMessage(logline1)
+    CALL RM_LogMessage(logline2)
+    CALL RM_ScreenMessage(logline1)
+    CALL RM_ScreenMessage(logline2)
   fdtmth = fdtmth_ssflow     ! ... set time differencing method to flow ss 
   DO
      CALL coeff_flow
@@ -64,13 +64,13 @@ SUBROUTINE simulate_ss_flow
      IF(errexe) EXIT
   END DO
   logline2 = 'Done with steady-state flow.'
-    CALL logprt_c(' ')
-    CALL logprt_c(logline2)
-    CALL screenprt_c(logline2)
+    CALL RM_LogMessage(' ')
+    CALL RM_LogMessage(logline2)
+    CALL RM_ScreenMessage(logline2)
   IF(errexe .OR. errexi) THEN
      logline1 = 'ERROR exit.'
-        CALL logprt_c(logline1)
-        CALL screenprt_c(logline1)
+        CALL RM_LogMessage(logline1)
+        CALL RM_ScreenMessage(logline1)
   END IF
   ! CALL write4               ! ... calculate and print velocity fields if requested
   CALL init2_post_ss

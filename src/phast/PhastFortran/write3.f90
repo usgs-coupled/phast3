@@ -434,11 +434,11 @@ SUBROUTINE write3
           cnvtmi*dtimmn,'  ('//TRIM(unittm)//')'
      WRITE(logline5,5114) 'Maximum time step allowed '//dots,' DTIMMX ',  &
           cnvtmi*dtimmx,'('//TRIM(unittm)//')'
-     CALL logprt_c(logline1)
-     CALL logprt_c(logline2)
-     CALL logprt_c(logline3)
-     CALL logprt_c(logline4)
-     CALL logprt_c(logline5)
+     CALL RM_LogMessage(logline1)
+     CALL RM_LogMessage(logline2)
+     CALL RM_LogMessage(logline3)
+     CALL RM_LogMessage(logline4)
+     CALL RM_LogMessage(logline5)
   END IF
   !....***replace with ht type time step reasons
 !!$  IF(primin > 0) THEN
@@ -450,7 +450,7 @@ SUBROUTINE write3
 !!$          'Maximum time step determined by print frequency '//dots,  &
 !!$          'PRIMIN',ABS(primin),'  ('//unittm//')'
 !!$5015 FORMAT(a65,a,i8,a)
-!!$     call logprt_c(logline1)
+!!$     call RM_LogMessage(logline1)
 !!$  END IF
 300 WRITE(fulp,2016) 'Time at which next set of transient',  &
        'parameters will be read '//dots,' TIMCHG ', cnvtmi*timchg,  &
@@ -460,12 +460,12 @@ SUBROUTINE write3
        'parameters will be read '//dots,' TIMCHG ', cnvtmi*timchg,  &
        '  ('//TRIM(unittm)//')'
 5116 FORMAT(a75,a,1PG10.3,a)
-  CALL logprt_c(logline1)
+  CALL RM_LogMessage(logline1)
   WRITE(fulp,2017) dash
 2017 FORMAT(/tr1,a120)
   WRITE(logline1,5017) dash
 5017 FORMAT(a95)
-  !**  ! call logprt_c(logline1)
+  !**  ! call RM_LogMessage(logline1)
   DEALLOCATE (csolmask, solmask, &
        stat = da_err)
   IF (da_err /= 0) THEN  

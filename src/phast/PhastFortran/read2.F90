@@ -71,7 +71,7 @@ SUBROUTINE read2
   nsa = MAX(ns,1)
   nr = nx
   WRITE(logline1,'(a)') 'Reading static data for flow and transport simulation'
-    CALL logprt_c(logline1)
+    CALL RM_LogMessage(logline1)
   IF(.NOT.cylind) THEN  
      ! ... read aquifer description - spatial mesh data
      ! ...      rectangular coordinates

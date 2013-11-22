@@ -649,7 +649,7 @@ SUBROUTINE init2_1_xfer_w
   END DO
   IF (all_dry) ierr(40) = .TRUE.
   IF (some_dry) THEN
-     !**     CALL warnprt_c('One or more columns are dry.')
+     !**     CALL RM_WarningMessage('One or more columns are dry.')
   ENDIF
 
   IF(crosd) THEN

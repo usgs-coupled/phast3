@@ -110,7 +110,7 @@ SUBROUTINE read3_xfer_w
   ntd = ntd+1
   !***** Progress output message
   WRITE(logline1,'(a,i2)') 'Receiving transient data for simulation: Set ',ntd
-  CALL logprt_c(logline1)
+  CALL RM_LogMessage(logline1)
 
   ! ... 2 receive the flag for rdwtd
   IF(nwel > 0) THEN

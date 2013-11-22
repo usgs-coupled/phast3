@@ -19,6 +19,7 @@
 #define RM_distribute_initial_conditions   FC_FUNC_ (rm_distribute_initial_conditions, RM_DISTRIBUTE_INITIAL_CONDITIONS)
 #define RM_distribute_initial_conditions_mix  FC_FUNC_ (rm_distribute_initial_conditions_mix, RM_DISTRIBUTE_INITIAL_CONDITIONS_MIX)
 #define RM_Error                           FC_FUNC_ (rm_error,                         RM_ERROR)
+#define RM_ErrorMessage                    FC_FUNC_ (rm_errormessage,                  RM_ERRORMESSAGE)
 #define RM_find_components                 FC_FUNC_ (rm_find_components,               RM_FIND_COMPONENTS)
 #define RM_get_component                   FC_FUNC_ (rm_get_component,                 RM_GET_COMPONENT)
 #define RM_GetFilePrefix                   FC_FUNC_ (rm_getfileprefix,                 RM_GETFILEPREFIX)
@@ -34,7 +35,8 @@
 #define RM_GetTimeStep                     FC_FUNC_ (rm_gettimestep,                   RM_GETTIMESTEP)
 #define RM_initial_phreeqc_run             FC_FUNC_ (rm_initial_phreeqc_run,           RM_INITIAL_PHREEQC_RUN)
 #define RM_load_database                   FC_FUNC_ (rm_load_database,                 RM_LOAD_DATABASE)
-#define RM_log_screen_prt                  FC_FUNC_ (rm_log_screen_prt,                RM_LOG_SCREEN_PRT)
+#define RM_LogMessage                      FC_FUNC_ (rm_logmessage,                    RM_LOGMESSAGE)
+#define RM_LogScreenMessage                FC_FUNC_ (rm_logscreenmessage,              RM_LOGSCREENMESSAGE)
 #define RM_open_files                      FC_FUNC_ (rm_open_files,                    RM_OPEN_FILES)
 #define RM_run_cells                       FC_FUNC_ (rm_run_cells,                     RM_RUN_CELLS)
 #define RM_send_restart_name               FC_FUNC_ (rm_send_restart_name,             RM_SEND_RESTART_NAME)
@@ -60,11 +62,8 @@
 #define RM_write_bc_raw                    FC_FUNC_ (rm_write_bc_raw,                  RM_WRITE_BC_RAW)
 #define RM_write_output                    FC_FUNC_ (rm_write_output,                  RM_WRITE_OUTPUT)
 #define RM_write_restart				   FC_FUNC_ (rm_write_restart,                 RM_WRITE_RESTART)
-// Calls to Fortran
-#define logprt_c                           FC_FUNC_ (logprt_c,                         LOGPRT_C)
-#define screenprt_c                        FC_FUNC_ (screenprt_c,                      SCREENPRT_C)
-#define RM_ErrorMessage                    FC_FUNC_ (rm_errormessage,                  RM_ERRORMESSAGE)
-#define warnprt_c                          FC_FUNC_ (warnprt_c,                        WARNPRT_C)
+#define RM_ScreenMessage                   FC_FUNC_ (rm_screenmessage,                 RM_SCREENMESSAGE)
+#define RM_WarningMessage                  FC_FUNC_ (rm_warningmessage,                RM_WARNINGMESSAGE)
 #endif
 #ifdef SKIP
 #define RM_calculate_well_ph                  rm_calculate_well_ph
@@ -79,7 +78,7 @@
 #define RM_get_component                      rm_get_component
 #define RM_initial_phreeqc_run                rm_initial_phreeqc_run
 #define RM_load_database                      rm_load_database
-#define RM_log_screen_prt                     rm_log_screen_prt
+#define RM_LogScreenMessage                     RM_LogScreenMessage
 #define RM_open_files                         rm_open_files
 #define RM_run_cells                          rm_run_cells
 #define RM_send_restart_name                  rm_send_restart_name
@@ -149,7 +148,7 @@ double RM_GetTime(int *id);
 double RM_GetTimeConversion(int *id);
 double RM_GetTimeStep(int *id);
 void RM_initial_phreeqc_run(int * id, char *db_name, char *chem_name, char *prefix_name, int l1, int l2, int l3);
-void RM_log_screen_prt(char *err_str, long l);
+void RM_LogScreenMessage(char *err_str, long l);
 
 void RM_open_files(int * solute, char * prefix, int l_prefix);
 void RM_open_error_file(void);
@@ -199,9 +198,9 @@ void RM_write_output(int *id);
 void RM_write_restart(int *id);
 
 void RM_ErrorMessage(const char *err_str, long l = -1);
-void logprt_c(const char *err_str, long l);
-void screenprt_c(const char *err_str, long l);
-void warnprt_c(const char *err_str, long l);
+void RM_LogMessage(const char *err_str, long l);
+void RM_ScreenMessage(const char *err_str, long l);
+void RM_WarningMessage(const char *err_str, long l);
 #if defined(__cplusplus)
 }
 #endif

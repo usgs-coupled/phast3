@@ -104,7 +104,7 @@ SUBROUTINE phast_manager
   
     !... Call phreeqc, find number of components; f1name, chem.dat; f2name, database; f3name, prefix
     IF (solute) THEN
-        CALL RM_log_screen_prt("Initial PHREEQC run.")  
+        CALL RM_LogScreenMessage("Initial PHREEQC run.")  
         CALL RM_initial_phreeqc_run(rm_id, f2name, f1name, f3name)
         ! Set components
         ns = RM_find_components(rm_id)
@@ -118,7 +118,7 @@ SUBROUTINE phast_manager
             comp_name(i) = ' '
             CALL RM_get_component(rm_id, i, comp_name(i))
         ENDDO   
-        CALL RM_log_screen_prt("Done with Initial PHREEQC run.")
+        CALL RM_LogScreenMessage("Done with Initial PHREEQC run.")
     ENDIF
 
     ipp_err = 0
@@ -214,7 +214,7 @@ SUBROUTINE phast_manager
     IF (solute) THEN
         ! ... Equilibrate the initial conditions for component concentrations
         WRITE(logline1,'(a)') 'Equilibration of cells for initial conditions.'
-        CALL RM_log_screen_prt(logline1)
+        CALL RM_LogScreenMessage(logline1)
         stop_msg = 0
         deltim_dummy = 0._kdp
         CALL RM_set_pv(rm_id, pv(1))
@@ -249,7 +249,7 @@ SUBROUTINE phast_manager
     ! ...  Transient loop
     IF(solute .OR. .NOT.steady_flow) THEN
         logline1 = 'Beginning transient simulation.'
-        CALL RM_log_screen_prt(logline1)
+        CALL RM_LogScreenMessage(logline1)
         fdtmth = fdtmth_tr     ! ... set time differencing method to transient
         DO
             CALL time_parallel(0)
@@ -314,10 +314,10 @@ SUBROUTINE phast_manager
             ! ... At this point, worker and manager do transport calculations
             IF (solute) THEN
                 logline1 =  '     Beginning solute-transport calculation.'
-                CALL RM_log_screen_prt(logline1)
+                CALL RM_LogScreenMessage(logline1)
                 DO i = 1, ns
                     logline1 =  '          '//comp_name(i)
-                    CALL RM_log_screen_prt(logline1)
+                    CALL RM_LogScreenMessage(logline1)
                 ENDDO
             ENDIF
             IF (local_ns > 0) THEN 
@@ -346,7 +346,7 @@ SUBROUTINE phast_manager
     
             IF (solute) THEN
                 WRITE(logline1,'(a)') '     Beginning chemistry calculation.'
-                CALL RM_log_screen_prt(logline1)
+                CALL RM_LogScreenMessage(logline1)
                 stop_msg = 0
                 CALL RM_set_pv(rm_id, pv(1))
                 CALL RM_set_saturation(rm_id, frac(1))
@@ -394,12 +394,12 @@ SUBROUTINE phast_manager
 50  CONTINUE   ! ... Exit, could be error
 
     ! ...  Cleanup and shutdown
-    CALL RM_log_screen_prt('Done with transient flow and transport simulation.')
-    IF(errexe .OR. errexi) CALL RM_log_screen_prt('ERROR exit.')
+    CALL RM_LogScreenMessage('Done with transient flow and transport simulation.')
+    IF(errexe .OR. errexi) CALL RM_LogScreenMessage('ERROR exit.')
 
 #ifdef USE_MPI
     CALL MPI_Barrier(MPI_COMM_WORLD, ierrmpi)
-    CALL RM_log_screen_prt('Exit manager process.')
+    CALL RM_LogScreenMessage('Exit manager process.')
 #endif
 
     ! ... Cleanup reaction module
@@ -483,13 +483,13 @@ INTEGER t_ticks, clock_rate, clock_max
         cum_chemistry = cum_chemistry + time_chemistry
         
         write (logline,"(t6,a25, f12.2,a17, f13.2)") "Time flow:               ", time_flow, " Cumulative:", cum_flow
-        CALL RM_log_screen_prt(logline)
+        CALL RM_LogScreenMessage(logline)
         write (logline,"(t6,a25, f12.2,a17, f13.2)") "Time transport:          ", time_transport, " Cumulative:", cum_transport
-        CALL RM_log_screen_prt(logline)
+        CALL RM_LogScreenMessage(logline)
         write (logline,"(t6,a25, f12.2,a17, f13.2)") "Transport data transfer: ", time_transfer, " Cumulative:", cum_transfer
-        CALL RM_log_screen_prt(logline)
+        CALL RM_LogScreenMessage(logline)
         write (logline,"(t6,a25, f12.2,a17, f13.2)") "Time chemistry:          ", time_chemistry, " Cumulative:", cum_chemistry
-        CALL RM_log_screen_prt(logline)     
+        CALL RM_LogScreenMessage(logline)     
     endif
 END SUBROUTINE time_parallel
 SUBROUTINE transport_component(i)
