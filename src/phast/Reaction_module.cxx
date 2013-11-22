@@ -3425,12 +3425,12 @@ Reaction_module::Set_rebalance_fraction(double *t)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Set_rebalance_method(int *t)
+Reaction_module::SetRebalanceMethod(int *t)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0)
 	{
-		if (t == NULL) error_msg("NULL pointer in Set_rebalance_method", 1);
+		if (t == NULL) error_msg("NULL pointer in SetRebalanceMethod", 1);
 		this->rebalance_method = (*t != 0);
 	}
 #ifdef USE_MPI
@@ -3481,7 +3481,7 @@ Reaction_module::Set_stop_message(bool t)
 
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::SetTempc(double *t)
+Reaction_module::SetTemperature(double *t)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->tempc.size() < this->nxyz)

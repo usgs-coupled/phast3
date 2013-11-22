@@ -156,12 +156,12 @@
             DOUBLE PRECISION, OPTIONAL :: t
         END SUBROUTINE RM_SetPv0
         
-        SUBROUTINE RM_set_rebalance(id, method, f)
+        SUBROUTINE RM_SetRebalance(id, method, f)
             IMPLICIT NONE
             INTEGER :: id
             INTEGER, OPTIONAL  :: method
             DOUBLE PRECISION, OPTIONAL  :: f
-        END SUBROUTINE RM_set_rebalance
+        END SUBROUTINE RM_SetRebalance
 
         SUBROUTINE RM_SetSaturation(id, t)
             IMPLICIT NONE
@@ -175,11 +175,11 @@
             INTEGER, OPTIONAL :: t
         END SUBROUTINE RM_set_steady_flow   
 
-        SUBROUTINE RM_SetTempc(id, t)
+        SUBROUTINE RM_SetTemperature(id, t)
             IMPLICIT NONE
             INTEGER :: id
             DOUBLE PRECISION :: t
-        END SUBROUTINE RM_SetTempc 
+        END SUBROUTINE RM_SetTemperature 
 		     
         SUBROUTINE RM_SetTimeConversion(id, t)   
             IMPLICIT NONE
