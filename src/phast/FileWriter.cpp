@@ -67,14 +67,14 @@ WriteFiles(int *id, int *print_hdf, int *print_xyz, int *print_media,
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{	
-		int local_mpi_myself = Reaction_module_ptr->Get_mpi_myself();
+		int local_mpi_myself = RM_GetMpiMyself(id);
 #ifdef USE_MPI
 		int flags[2];
 		if (local_mpi_myself == 0)
 		{
 			if (print_hdf == 0 || print_xyz == 0)
 			{
-				Reaction_module_ptr->error_msg("Null pointer in WriteFiles", 1);
+				RM_ErrorMessage("Null pointer in WriteFiles");
 			}
 			flags[0] = *print_hdf;
 			flags[1] = *print_xyz;
@@ -108,11 +108,11 @@ WriteHDF(int *id, int *print_hdf, int *print_media)
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{	
-		int local_mpi_myself = Reaction_module_ptr->Get_mpi_myself();
+		int local_mpi_myself = RM_GetMpiMyself(id);
 			
 		int nso = RM_GetSelectedOutputCount(id);
-		int nxyz = Reaction_module_ptr->Get_nxyz(); // need RM method
-		double current_time = Reaction_module_ptr->Get_time_conversion() *  Reaction_module_ptr->Get_time();
+		int nxyz = RM_GetSelectedOutputRowCount(id); 
+		double current_time = Reaction_module_ptr->GetTimeConversion() *  Reaction_module_ptr->GetTime();
 		//
 		// Initialize HDF
 		//
@@ -208,11 +208,11 @@ WriteXYZ(int *id, int *print_xyz,
 	Reaction_module * Reaction_module_ptr = RM_interface::Get_instance(*id);
 	if (Reaction_module_ptr)
 	{	
-		int local_mpi_myself = Reaction_module_ptr->Get_mpi_myself();
+		int local_mpi_myself = RM_GetMpiMyself(id);
 			
 		int nso = RM_GetSelectedOutputCount(id);
-		int nxyz = Reaction_module_ptr->Get_nxyz(); // need RM method
-		double current_time = Reaction_module_ptr->Get_time_conversion() *  Reaction_module_ptr->Get_time();
+		int nxyz = RM_GetSelectedOutputRowCount(id); 
+		double current_time = Reaction_module_ptr->GetTimeConversion() *  Reaction_module_ptr->GetTime();
 		//
 		// Initialize XYZ
 		//

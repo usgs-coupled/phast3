@@ -545,7 +545,7 @@ SUBROUTINE wellsc_ss_flow
      WRITE(logline1,9015) 'Well No. ',iwel,' did not converge on riser',  &
           'calculation for WELLSC, ITIME =',itime
 9015 FORMAT(a,i3,2A,i5)
-        call errprt_c(logline1)
+        call RM_ErrorMessage(logline1)
      errexe=.TRUE.
   END DO
   ! ... End of well loop

@@ -160,7 +160,7 @@ CONTAINS
     WRITE(logline1,9001) 'Restarted Conjugate-Gradient Solver Reached Maximum Iterations: ',maxit2
 9001 FORMAT(A,i5)
 !!$  WRITE(fulp,'(/tr10,A)') logline1
-    CALL errprt_c(logline1)
+    CALL RM_ErrorMessage(logline1)
     ierr(139) = .TRUE.
     errexe = .TRUE.
     ! ... Convergence achieved
@@ -451,7 +451,7 @@ CONTAINS
     WRITE(logline1,9001) 'Restarted Conjugate-Gradient Solver Reached Maximum Iterations: ',maxit2
 9001 FORMAT(A,i5)
 !!$  WRITE(fulp,'(/tr10,A)') logline1
-    CALL errprt_c(logline1)
+    CALL RM_ErrorMessage(logline1)
     ierr(139) = .TRUE.
     errexe = .TRUE.
     ! ... Convergence achieved

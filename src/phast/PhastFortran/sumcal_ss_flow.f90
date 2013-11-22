@@ -66,12 +66,12 @@ SUBROUTINE sumcal_ss_flow
         END IF
         WRITE(logline1,2001) '     Current time step length '//dots, cnvtmi*deltim,' ('//unittm//')'
 2001    FORMAT(a60,1PG12.3,A)
-        CALL errprt_c(logline1)
+        CALL RM_ErrorMessage(logline1)
         WRITE(logline1,3001) 'Maximum change in potentiometric head '//dots,  &
              cnvpi*dhmax,' ('//unitl//')',' at location (',  &
              cnvli*x(ipmax),',',cnvli*y(jpmax),',',cnvli*z(kpmax),')(',unitl//')'
 3001    FORMAT(A45,1PE14.4,A8,A,3(1PG10.3,A),A)
-        CALL errprt_c(logline1)
+        CALL RM_ErrorMessage(logline1)
         DEALLOCATE (zfsn, &
              STAT = da_err)
         IF (da_err /= 0) THEN  

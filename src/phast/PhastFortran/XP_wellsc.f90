@@ -585,7 +585,7 @@ SUBROUTINE XP_wellsc_thread(xp)
      WRITE(logline1,9015) 'Well No. ',iwel,' did not converge on riser',  &
           'calculation for WELLSC, ITIME =',my_itime
 9015 FORMAT(a,i3,2A,i5)
-     CALL errprt_c(logline1)
+     CALL RM_ErrorMessage(logline1)
      errexe = .TRUE.
   END DO
   ! ... End of well loop
@@ -1203,7 +1203,7 @@ SUBROUTINE XP_wellsc(xp)
      WRITE(logline1,9015) 'Well No. ',iwel,' did not converge on riser',  &
           'calculation for WELLSC, ITIME =',my_itime
 9015 FORMAT(a,i3,2A,i5)
-     CALL errprt_c(logline1)
+     CALL RM_ErrorMessage(logline1)
      errexe = .TRUE.
   END DO
   ! ... End of well loop

@@ -123,7 +123,7 @@ SUBROUTINE XP_wbcflo(xp)
   END IF
   IF(florev) THEN
      logline1 =  'Well solute concentrations may be poor approximations (XP_wbcflo)'
-     !**     CALL errprt_c(logline1)
+     !**     CALL RM_ErrorMessage(logline1)
      WRITE(fuwel,9003) 'Well solute concentrations may be poor approximations (XP_wbcflo)'
 9003 FORMAT(tr10,a)
   END IF

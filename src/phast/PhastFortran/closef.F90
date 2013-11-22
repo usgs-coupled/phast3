@@ -37,7 +37,7 @@ SUBROUTINE closef
     IF(errexi) THEN
         logline1 = '          *** Simulation Aborted Due to Input Errors ***'
         logline2 = '               Please examine log file'
-        CALL errprt_c(logline1)
+        CALL RM_ErrorMessage(logline1)
         CALL errprt(1,200)  
         RETURN  
     ENDIF
@@ -45,8 +45,8 @@ SUBROUTINE closef
         logline1 = '          *** Simulation Aborted Due to Execution Errors ***'
         WRITE(logline2,3101) '               Time ..... ',cnvtmi*time,' ('//TRIM(unittm)//')'
 3101    FORMAT(a,1pg12.4,a)
-        CALL errprt_c(logline1)
-        CALL errprt_c(logline2)
+        CALL RM_ErrorMessage(logline1)
+        CALL RM_ErrorMessage(logline2)
         CALL errprt(1,200)  
         RETURN  
     ENDIF

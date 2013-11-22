@@ -20,7 +20,7 @@ SUBROUTINE create_mapping(initial_conditions)
 
 	if (.not.axes(0) .and. .not.axes(1) .and. .not.axes(2)) then
         erline = 'No active coordinate direction in DIMENSIONS keyword.'
-		CALL errprt_c(erline)
+		CALL RM_ErrorMessage(erline)
 	endif
 	if (axes(0)) count_chem = count_chem * nx
 	if (axes(1)) count_chem = count_chem * ny
@@ -46,7 +46,7 @@ SUBROUTINE create_mapping(initial_conditions)
 	else if (axes(0) .and. axes(1) .and. .not.axes(2)) then
 		if (nz .ne. 2) then
             erline = 'Z direction should contain only two nodes for this 2D problem.'
-            CALL errprt_c(erline)
+            CALL RM_ErrorMessage(erline)
 		endif
 		n = 0
 		do m = 1, nxyz
@@ -64,7 +64,7 @@ SUBROUTINE create_mapping(initial_conditions)
 	else if (axes(0) .and. .not.axes(1) .and. axes(2)) then
 		if (ny .ne. 2) then
             erline = 'Y direction should contain only two nodes for this 2D problem.'
-            CALL errprt_c(erline)
+            CALL RM_ErrorMessage(erline)
 		endif
 		n = 0;
 		do m = 1, nxyz
@@ -82,7 +82,7 @@ SUBROUTINE create_mapping(initial_conditions)
 	else if (.not.axes(0) .and. axes(1) .and. axes(2)) then
 		if (nx .ne. 2) then
             erline = 'X direction should contain only two nodes for this 2D problem.'
-            CALL errprt_c(erline)
+            CALL RM_ErrorMessage(erline)
 		endif
 		n = 0
 		do m = 1, nxyz
@@ -100,17 +100,17 @@ SUBROUTINE create_mapping(initial_conditions)
 	else if (axes(0) .and. .not.axes(1) .and. .not.axes(2)) then
 		if (ny .ne. 2) then
             erline = 'Y direction should contain only two nodes for this 1D problem.'
-            CALL errprt_c(erline)
+            CALL RM_ErrorMessage(erline)
 		endif
 		if (nz .ne. 2) then
             erline = 'Z direction should contain only two nodes for this 1D problem.'
-            CALL errprt_c(erline)
+            CALL RM_ErrorMessage(erline)
         endif
 		n = 0
 		do m = 1, nxyz
 			if (initial_conditions(1, m) < 0 .and. initial_conditions(1, m) > -100) then
                 erline = 'Cannot have inactive cells in a 1D simulation.'
-                CALL errprt_c(erline)
+                CALL RM_ErrorMessage(erline)
             endif
 			CALL mtoijk(m, ii, jj, kk, nx, ny)
 			if (jj == 1 .and. kk == 1) then
@@ -128,18 +128,18 @@ SUBROUTINE create_mapping(initial_conditions)
 	else if (.not.axes(0) .and. axes(1) .and. .not.axes(2)) then
 		if (nx .ne. 2) then
             erline = 'X direction should contain only two nodes for this 1D problem.'
-            CALL errprt_c(erline)
+            CALL RM_ErrorMessage(erline)
 		endif
 		if (nz .ne. 2) then
             erline = 'Z direction should contain only two nodes for this 1D problem.'
-            CALL errprt_c(erline)
+            CALL RM_ErrorMessage(erline)
 		endif
 
 		n = 0
 		do m = 1, nxyz
 			if (initial_conditions(1, m) < 0 .and. initial_conditions(1, m) > -100) then
                 erline = 'Cannot have inactive cells in a 1D simulation.'
-                CALL errprt_c(erline)
+                CALL RM_ErrorMessage(erline)
 		    endif
 			CALL mtoijk(m, ii, jj, kk, nx, ny)
 			if (ii == 1 .and. kk == 1) then
@@ -157,17 +157,17 @@ SUBROUTINE create_mapping(initial_conditions)
 	else if (.not.axes(0) .and. .not.axes(1) .and. axes(2)) then
 		if (nx .ne. 2) then
             erline = 'X direction should contain only two nodes for this 1D problem.'
-            CALL errprt_c(erline)
+            CALL RM_ErrorMessage(erline)
         endif
 		if (ny .ne. 2) then
             erline = 'Y direction should contain only two nodes for this 1D problem.'
-            CALL errprt_c(erline)
+            CALL RM_ErrorMessage(erline)
         endif
 		n = 0
 		do m = 1, nxyz
 			if (initial_conditions(1, m) < 0 .and. initial_conditions(1, m) > -100) then
                 erline = 'Cannot have inactive cells in a 1D simulation.'
-                CALL errprt_c(erline)
+                CALL RM_ErrorMessage(erline)
 		    endif
 			CALL mtoijk(m, ii, jj, kk, nx, ny)
 			if (ii == 1 .and. jj == 1) then

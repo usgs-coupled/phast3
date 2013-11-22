@@ -83,7 +83,7 @@ SUBROUTINE error4
         WRITE(logline1,9001) '** Active Cell Not In Defined Zone;'//  &
              ' Cell I,J,K:M -',i,j,k,m
 9001    FORMAT(a,4I5)
-        CALL errprt_c(logline1)
+        CALL RM_ErrorMessage(logline1)
      END IF
   END DO
   DEALLOCATE (inzone, &

@@ -485,7 +485,7 @@ SUBROUTINE wellsr_ss_flow
           'Well No. ',iwel,' did not converge on density in WELLSR; ITIME =',itime
      WRITE(logline1,9015) 'Well No. ',iwel,' did not converge on  density in WELLSR'//  &
           '; ITIME =',itime
-        CALL errprt_c(logline1)
+        CALL RM_ErrorMessage(logline1)
      errexe=.TRUE.
   END DO
   ! ... End of well loop
@@ -524,7 +524,7 @@ SUBROUTINE wellsr_ss_flow
 200 CONTINUE
   WRITE(fuwel,9005) 'Well no. ',iwel,' has all zero mobility factors; WELLSR, ITIME =',itime
   WRITE(logline1,9015) 'Well no. ',iwel,' has all zero mobility factors; WELLSR, ITIME =',itime
-    call errprt_c(logline1)
+    call RM_ErrorMessage(logline1)
   DEALLOCATE (jwell, mobw, ucwkt, uqsw, &
        stat = da_err)
   IF (da_err /= 0) THEN  

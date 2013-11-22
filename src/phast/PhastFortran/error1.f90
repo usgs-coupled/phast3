@@ -24,7 +24,7 @@ SUBROUTINE error1
 !!$     WRITE (ERMESS, 9001) 'Dimensioning error: NSDR[', NSDR, '] is greater than LSDR[',  &
 !!$          LSDR, '];param5.inc'
 !!$     9001 FORMAT(TR2,A,I5,A,I5,A)
-!!$     CALL ERRPRT_C (ERMESS)  
+!!$     CALL RM_ErrorMessage (ERMESS)  
 !!$  ENDIF
   IF (slmeth /= 1 .AND. slmeth /= 5) ierr(7) = .TRUE.  
 !$$  IF (RESTRT.AND. (LTCOMR.NE.LTCOM) ) IERR(8) = .TRUE.  

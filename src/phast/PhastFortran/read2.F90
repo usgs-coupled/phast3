@@ -230,11 +230,11 @@ SUBROUTINE read2
   uk2z(ipmz) = uk2z(ipmz) + 1
   IF(erflg) THEN
      logline1 = 'incidx interpolation error in read2, porous media zones'
-        CALL errprt_c(logline1)
+        CALL RM_ErrorMessage(logline1)
      WRITE(logline2, 9002) cnvli*x1z, cnvli*x2z, cnvli*y1z, cnvli*y2z,  &
           cnvli*z1z, cnvli*z2z
 9002 FORMAT(6(1pg13.4))
-        CALL errprt_c(logline2)
+        CALL RM_ErrorMessage(logline2)
      ierr(138) = .TRUE.
      errexe = .TRUE.
   ENDIF

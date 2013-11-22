@@ -179,9 +179,9 @@ SUBROUTINE sumcal1
      pv(m) = pv(m) + pmcv(m)*dp(m)
      if (pv(m) < 0) then
         WRITE( error_line, *) "Negative pore volume in transient calculation, cell ", m
-        CALL errprt_c(error_line)
+        CALL RM_ErrorMessage(error_line)
         WRITE( error_line, *) "Try increasing porosity, decreasing specific storage, or use a free surface." 
-        CALL errprt_c(error_line)
+        CALL RM_ErrorMessage(error_line)
         ERREXE = .TRUE.  
         RETURN        
      endif 
