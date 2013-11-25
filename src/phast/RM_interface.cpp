@@ -85,113 +85,6 @@ RM_interface::GetInstance(int id)
 
 // end static RM_interface methods
 
-
-
-/* ---------------------------------------------------------------------- */
-void
-RM_ErrorMessage(const char *err_str, long l)
-/* ---------------------------------------------------------------------- */
-{
-	if (err_str)
-	{
-		if (l >= 0)
-		{
-			std::string e_string(err_str, l);
-			trim_right(e_string);
-			std::ostringstream estr;
-			estr << "ERROR: " << e_string << std::endl;
-			RM_interface::phast_io.output_msg(estr.str().c_str());
-			RM_interface::phast_io.error_msg(estr.str().c_str());
-			RM_interface::phast_io.log_msg(estr.str().c_str());
-		}
-		else
-		{
-			std::string e_string(err_str);
-			trim_right(e_string);
-			std::ostringstream estr;
-			estr << "ERROR: " << e_string << std::endl;
-			RM_interface::phast_io.output_msg(estr.str().c_str());
-			RM_interface::phast_io.error_msg(estr.str().c_str());
-			RM_interface::phast_io.log_msg(estr.str().c_str());
-		} 
-	}
-}
-/* ---------------------------------------------------------------------- */
-void
-RM_WarningMessage(const char *err_str, long l)
-/* ---------------------------------------------------------------------- */
-{
-	if (err_str)
-	{
-		if (l >= 0)
-		{
-			std::string e_string(err_str, l);
-			trim_right(e_string);
-			std::ostringstream estr;
-			estr << "WARNING: " << e_string << std::endl;
-			RM_interface::phast_io.error_msg(estr.str().c_str());
-			RM_interface::phast_io.log_msg(estr.str().c_str());
-		}
-		else
-		{
-			std::string e_string(err_str);
-			trim_right(e_string);
-			std::ostringstream estr;
-			estr << "WARNING: " << e_string << std::endl;
-			RM_interface::phast_io.error_msg(estr.str().c_str());
-			RM_interface::phast_io.log_msg(estr.str().c_str());
-		}
-	}
-}
-
-/* ---------------------------------------------------------------------- */
-void
-RM_LogMessage(const char *err_str, long l)
-/* ---------------------------------------------------------------------- */
-{
-	if (err_str)
-	{
-		if (l >= 0)
-		{
-			std::string e_string(err_str, l);
-			trim_right(e_string);
-			RM_interface::phast_io.log_msg(e_string.c_str());
-			RM_interface::phast_io.log_msg("\n");
-		}
-		else
-		{
-			std::string e_string(err_str);
-			trim_right(e_string);
-			RM_interface::phast_io.log_msg(e_string.c_str());
-			RM_interface::phast_io.log_msg("\n");
-		}
-	}
-}
-
-/* ---------------------------------------------------------------------- */
-void
-RM_ScreenMessage(const char *err_str, long l)
-/* ---------------------------------------------------------------------- */
-{
-	if (err_str)
-	{
-		if (l >= 0)
-		{
-			std::string e_string(err_str, l);
-			trim_right(e_string);
-			RM_interface::phast_io.screen_msg(e_string.c_str());
-			RM_interface::phast_io.screen_msg("\n");
-		}
-		else
-		{	
-			std::string e_string(err_str);
-			trim_right(e_string);
-			RM_interface::phast_io.screen_msg(e_string.c_str());
-			RM_interface::phast_io.screen_msg("\n");
-		}
-	}
-}
-
 /* ---------------------------------------------------------------------- */
 void
 RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity)
@@ -226,6 +119,7 @@ RM_close_files(int *solute)
 		RM_interface::phast_io.punch_close();
 	}
 }
+
 /* ---------------------------------------------------------------------- */
 void
 RM_convert_to_molal(int *id, double *c, int *n, int *dim)
@@ -241,11 +135,29 @@ RM_convert_to_molal(int *id, double *c, int *n, int *dim)
 		Reaction_module_ptr->Convert_to_molal(c, *n, *dim);
 	}
 }
+
 /* ---------------------------------------------------------------------- */
 int RM_Create(int *nxyz, int *nthreads)
 /* ---------------------------------------------------------------------- */
 {
 	return RM_interface::CreateReactionModule(nxyz, nthreads);
+}
+
+/* ---------------------------------------------------------------------- */
+void RM_CreateMapping(int *id,
+		int *grid2chem)
+/* ---------------------------------------------------------------------- */
+{
+	//
+	// Creates mapping from all grid cells to only cells for chemistry
+	// Excludes inactive cells and cells that are redundant by symmetry
+	// (1D or 2D chemistry)
+	//
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Set_mapping(grid2chem);
+	}
 }
 /* ---------------------------------------------------------------------- */
 int RM_Destroy(int *id)
@@ -253,6 +165,7 @@ int RM_Destroy(int *id)
 {
 	return RM_interface::DestroyReactionModule(*id);
 }
+
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 RM_distribute_initial_conditions(int *id,
@@ -284,6 +197,7 @@ RM_distribute_initial_conditions(int *id,
 	}
 	return IRM_BADINSTANCE;
 }
+
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 RM_distribute_initial_conditions_mix(int *id,
@@ -334,12 +248,70 @@ void RM_Error(int *id)
 	IPhreeqcPhastLib::CleanupIPhreeqcPhast();
 	exit(4);
 }
+
+/* ---------------------------------------------------------------------- */
+void
+RM_ErrorMessage(const char *err_str, long l)
+/* ---------------------------------------------------------------------- */
+{
+	if (err_str)
+	{
+		if (l >= 0)
+		{
+			std::string e_string(err_str, l);
+			trim_right(e_string);
+			std::ostringstream estr;
+			estr << "ERROR: " << e_string << std::endl;
+			RM_interface::phast_io.output_msg(estr.str().c_str());
+			RM_interface::phast_io.error_msg(estr.str().c_str());
+			RM_interface::phast_io.log_msg(estr.str().c_str());
+		}
+		else
+		{
+			std::string e_string(err_str);
+			trim_right(e_string);
+			std::ostringstream estr;
+			estr << "ERROR: " << e_string << std::endl;
+			RM_interface::phast_io.output_msg(estr.str().c_str());
+			RM_interface::phast_io.error_msg(estr.str().c_str());
+			RM_interface::phast_io.log_msg(estr.str().c_str());
+		} 
+	}
+}
+
+/* ---------------------------------------------------------------------- */
 int
 RM_FindComponents(int *id)
+/* ---------------------------------------------------------------------- */
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	return (Reaction_module_ptr->Find_components());
 }
+
+/* ---------------------------------------------------------------------- */
+int RM_GetChemistryCellCount(int * rm_id)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->GetChemistryCellCount();
+	}
+	return -1;
+}
+
+/* ---------------------------------------------------------------------- */
+void RM_GetComponent(int * rm_id, int * num, char *chem_name, int l1)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
+	if (Reaction_module_ptr)
+	{
+		//strcpy(chem_name, Reaction_module_ptr->Get_components()[*num - 1].c_str());
+		strncpy(chem_name, Reaction_module_ptr->Get_components()[*num - 1].c_str(), Reaction_module_ptr->Get_components()[*num - 1].size());
+	}
+}
+
 /* ---------------------------------------------------------------------- */
 int 
 RM_GetFilePrefix(int * rm_id, char *prefix, long l)
@@ -361,6 +333,7 @@ RM_GetFilePrefix(int * rm_id, char *prefix, long l)
 	}
 	return -1;
 }
+
 /* ---------------------------------------------------------------------- */
 int 
 RM_GetMpiMyself(int * rm_id)
@@ -373,6 +346,7 @@ RM_GetMpiMyself(int * rm_id)
 	}
 	return -1;
 }
+
 /* ---------------------------------------------------------------------- */
 int 
 RM_GetNthSelectedOutputUserNumber(int * rm_id, int * i)
@@ -385,17 +359,7 @@ RM_GetNthSelectedOutputUserNumber(int * rm_id, int * i)
 	}
 	return -1;
 }
-/* ---------------------------------------------------------------------- */
-int RM_GetChemistryCellCount(int * rm_id)
-/* ---------------------------------------------------------------------- */
-{
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
-	if (Reaction_module_ptr)
-	{
-		return Reaction_module_ptr->GetChemistryCellCount();
-	}
-	return -1;
-}
+
 /* ---------------------------------------------------------------------- */
 int RM_GetGridCellCount(int * rm_id)
 /* ---------------------------------------------------------------------- */
@@ -407,6 +371,7 @@ int RM_GetGridCellCount(int * rm_id)
 	}
 	return -1;
 }
+
 /* ---------------------------------------------------------------------- */
 int RM_GetSelectedOutput(int * rm_id, double * so)
 	/* ---------------------------------------------------------------------- */
@@ -429,6 +394,7 @@ int RM_GetSelectedOutputColumnCount(int * rm_id)
 	}
 	return -1;
 }
+
 /* ---------------------------------------------------------------------- */
 int RM_GetSelectedOutputCount(int * rm_id)
 	/* ---------------------------------------------------------------------- */
@@ -440,6 +406,7 @@ int RM_GetSelectedOutputCount(int * rm_id)
 	}
 	return -1;
 }
+
 /* ---------------------------------------------------------------------- */
 int RM_GetSelectedOutputHeading(int * rm_id, int *icol, char *heading, int length)
 	/* ---------------------------------------------------------------------- */
@@ -457,6 +424,7 @@ int RM_GetSelectedOutputHeading(int * rm_id, int *icol, char *heading, int lengt
 	}
 	return -1;
 }
+
 /* ---------------------------------------------------------------------- */
 int RM_GetSelectedOutputRowCount(int * rm_id)
 	/* ---------------------------------------------------------------------- */
@@ -468,6 +436,7 @@ int RM_GetSelectedOutputRowCount(int * rm_id)
 	}
 	return -1;
 }
+
 /* ---------------------------------------------------------------------- */
 double RM_GetTime(int * rm_id)
 	/* ---------------------------------------------------------------------- */
@@ -479,6 +448,7 @@ double RM_GetTime(int * rm_id)
 	}
 	return -1;
 }
+
 /* ---------------------------------------------------------------------- */
 double RM_GetTimeConversion(int * rm_id)
 	/* ---------------------------------------------------------------------- */
@@ -490,6 +460,7 @@ double RM_GetTimeConversion(int * rm_id)
 	}
 	return -1;
 }
+
 /* ---------------------------------------------------------------------- */
 double RM_GetTimeStep(int * rm_id)
 	/* ---------------------------------------------------------------------- */
@@ -501,17 +472,7 @@ double RM_GetTimeStep(int * rm_id)
 	}
 	return -1;
 }
-/* ---------------------------------------------------------------------- */
-void RM_GetComponent(int * rm_id, int * num, char *chem_name, int l1)
-	/* ---------------------------------------------------------------------- */
-{
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
-	if (Reaction_module_ptr)
-	{
-		//strcpy(chem_name, Reaction_module_ptr->Get_components()[*num - 1].c_str());
-		strncpy(chem_name, Reaction_module_ptr->Get_components()[*num - 1].c_str(), Reaction_module_ptr->Get_components()[*num - 1].size());
-	}
-}
+
 /* ---------------------------------------------------------------------- */
 void RM_InitialPhreeqcRun(int *rm_id, char *db_name, char *chem_name, char *prefix, int l1, int l2, int l3)
 /* ---------------------------------------------------------------------- */
@@ -528,6 +489,31 @@ void RM_InitialPhreeqcRun(int *rm_id, char *db_name, char *chem_name, char *pref
 		Reaction_module_ptr->InitialPhreeqcRun(database_name, chemistry_name, prefix_name);
 	}
 }
+
+/* ---------------------------------------------------------------------- */
+void
+RM_LogMessage(const char *err_str, long l)
+/* ---------------------------------------------------------------------- */
+{
+	if (err_str)
+	{
+		if (l >= 0)
+		{
+			std::string e_string(err_str, l);
+			trim_right(e_string);
+			RM_interface::phast_io.log_msg(e_string.c_str());
+			RM_interface::phast_io.log_msg("\n");
+		}
+		else
+		{
+			std::string e_string(err_str);
+			trim_right(e_string);
+			RM_interface::phast_io.log_msg(e_string.c_str());
+			RM_interface::phast_io.log_msg("\n");
+		}
+	}
+}
+
 /* ---------------------------------------------------------------------- */
 void
 RM_LogScreenMessage(char *err_str, long l)
@@ -552,6 +538,19 @@ RM_LogScreenMessage(char *err_str, long l)
 		}
 	}
 }
+
+/* ---------------------------------------------------------------------- */
+void
+RM_Module2Concentrations(int *id, double * c)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->Module2Concentrations(c);
+	}
+}
+
 /* ---------------------------------------------------------------------- */
 void
 RM_open_error_file(void)
@@ -559,6 +558,7 @@ RM_open_error_file(void)
 {
 	RM_interface::phast_io.Set_error_ostream(&std::cerr);
 }
+
 /* ---------------------------------------------------------------------- */
 void
 RM_OpenFiles(int * solute, char * prefix, int l_prefix)
@@ -577,6 +577,7 @@ RM_OpenFiles(int * solute, char * prefix, int l_prefix)
 		RM_open_output_file(prefix, l_prefix);
 	}
 }
+
 /* ---------------------------------------------------------------------- */
 void
 RM_open_log_file(char * prefix, int l_prefix)
@@ -587,6 +588,7 @@ RM_open_log_file(char * prefix, int l_prefix)
 	fn.append(".log.txt");
 	RM_interface::phast_io.log_open(fn.c_str());
 }
+
 /* ---------------------------------------------------------------------- */
 void
 RM_open_output_file(char * prefix, int l_prefix)
@@ -597,6 +599,7 @@ RM_open_output_file(char * prefix, int l_prefix)
 	fn.append(".chem.txt");
 	RM_interface::phast_io.output_open(fn.c_str());
 }
+
 /* ---------------------------------------------------------------------- */
 void
 RM_open_punch_file(char * prefix, int l_prefix)
@@ -607,6 +610,7 @@ RM_open_punch_file(char * prefix, int l_prefix)
 	fn.append(".chem.xyz.tsv");
 	RM_interface::phast_io.punch_open(fn.c_str());
 }
+
 /* ---------------------------------------------------------------------- */
 void RM_RunCells(int *id,
 			 double *time,					        // time from transport 
@@ -640,16 +644,43 @@ void RM_RunCells(int *id,
 		}
 	}
 }
+
+/* ---------------------------------------------------------------------- */
 void
-RM_Module2Concentrations(int *id, double * c)
+RM_ScreenMessage(const char *err_str, long l)
 /* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
-	if (Reaction_module_ptr)
+	if (err_str)
 	{
-		Reaction_module_ptr->Module2Concentrations(c);
+		if (l >= 0)
+		{
+			std::string e_string(err_str, l);
+			trim_right(e_string);
+			RM_interface::phast_io.screen_msg(e_string.c_str());
+			RM_interface::phast_io.screen_msg("\n");
+		}
+		else
+		{	
+			std::string e_string(err_str);
+			trim_right(e_string);
+			RM_interface::phast_io.screen_msg(e_string.c_str());
+			RM_interface::phast_io.screen_msg("\n");
+		}
 	}
 }
+
+/* ---------------------------------------------------------------------- */
+void
+RM_send_restart_name(int *id, char *name, long nchar)
+/* ---------------------------------------------------------------------- */
+{
+	std::string stdstring(name, nchar);
+	trim(stdstring);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
+	Reaction_module_ptr->Send_restart_name(stdstring);
+
+}
+
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 RM_SetFilePrefix(int *id, const char *name, long nchar)
@@ -662,17 +693,7 @@ RM_SetFilePrefix(int *id, const char *name, long nchar)
 	}
 	return IRM_BADINSTANCE;
 }
-/* ---------------------------------------------------------------------- */
-void
-RM_send_restart_name(int *id, char *name, long nchar)
-/* ---------------------------------------------------------------------- */
-{
-	std::string stdstring(name, nchar);
-	trim(stdstring);
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
-	Reaction_module_ptr->Send_restart_name(stdstring);
 
-}
 /* ---------------------------------------------------------------------- */
 int RM_SetCurrentSelectedOutputUserNumber(int * rm_id, int * i)
 	/* ---------------------------------------------------------------------- */
@@ -684,6 +705,18 @@ int RM_SetCurrentSelectedOutputUserNumber(int * rm_id, int * i)
 	}
 	return -1;
 }
+
+/* ---------------------------------------------------------------------- */
+void RM_SetDensity(int *id, double *t)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->SetDensity(t);
+	}
+}
+
 /* ---------------------------------------------------------------------- */
 void
 RM_setup_boundary_conditions(
@@ -724,16 +757,11 @@ RM_setup_boundary_conditions(
 					*dim);
 	}
 }
-void RM_SetDensity(int *id, double *t)
-{
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
-	if (Reaction_module_ptr)
-	{
-		Reaction_module_ptr->SetDensity(t);
-	}
-}
+
+/* ---------------------------------------------------------------------- */
 void 
 RM_set_free_surface(int *id, int *t)
+/* ---------------------------------------------------------------------- */
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
@@ -741,8 +769,11 @@ RM_set_free_surface(int *id, int *t)
 		Reaction_module_ptr->Set_free_surface(t);
 	}
 }
+
+/* ---------------------------------------------------------------------- */
 void 
 RM_SetInputUnits (int *id, int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *kin)
+/* ---------------------------------------------------------------------- */
 {
 	//
 	// Sets units for reaction_module
@@ -754,20 +785,7 @@ RM_SetInputUnits (int *id, int *sol, int *pp, int *ex, int *surf, int *gas, int 
 		Reaction_module_ptr->Set_input_units(sol, pp, ex, surf, gas, ss, kin);
 	}
 }
-void RM_CreateMapping(int *id,
-		int *grid2chem)
-{
-	//
-	// Creates mapping from all grid cells to only cells for chemistry
-	// Excludes inactive cells and cells that are redundant by symmetry
-	// (1D or 2D chemistry)
-	//
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
-	if (Reaction_module_ptr)
-	{
-		Reaction_module_ptr->Set_mapping(grid2chem);
-	}
-}
+
 /* ---------------------------------------------------------------------- */
 void
 RM_set_nodes(int *id,
@@ -786,6 +804,18 @@ RM_set_nodes(int *id,
 		Reaction_module_ptr->Set_z_node(z_node);
 	}
 }
+
+/* ---------------------------------------------------------------------- */
+void RM_SetPressure(int *id, double *t)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->SetPressure(t);
+	}
+}
+
 /* ---------------------------------------------------------------------- */
 void
 RM_set_printing(int *id,
@@ -804,7 +834,10 @@ RM_set_printing(int *id,
 		Reaction_module_ptr->Set_print_restart(print_restart);
 	}
 }
+
+/* ---------------------------------------------------------------------- */
 void RM_set_print_chem_mask(int *id, int *t)
+/* ---------------------------------------------------------------------- */
 {
 	//
 	// multiply seconds to convert to user time units
@@ -815,15 +848,10 @@ void RM_set_print_chem_mask(int *id, int *t)
 		Reaction_module_ptr->Set_print_chem_mask(t);
 	}
 }
-void RM_SetPressure(int *id, double *t)
-{
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
-	if (Reaction_module_ptr)
-	{
-		Reaction_module_ptr->SetPressure(t);
-	}
-}
+
+/* ---------------------------------------------------------------------- */
 void RM_SetPv(int *id, double *t)
+/* ---------------------------------------------------------------------- */
 {
 	//
 	// multiply seconds to convert to user time units
@@ -834,7 +862,10 @@ void RM_SetPv(int *id, double *t)
 		Reaction_module_ptr->SetPv(t);
 	}
 }
+
+/* ---------------------------------------------------------------------- */
 void RM_SetPv0(int *id, double *t)
+/* ---------------------------------------------------------------------- */
 {
 	//
 	// multiply seconds to convert to user time units
@@ -844,7 +875,11 @@ void RM_SetPv0(int *id, double *t)
 	{
 		Reaction_module_ptr->SetPv0(t);
 	}
-}void RM_SetRebalance(int *id, int *method, double *f)
+}
+
+/* ---------------------------------------------------------------------- */
+void RM_SetRebalance(int *id, int *method, double *f)
+/* ---------------------------------------------------------------------- */
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
@@ -853,7 +888,10 @@ void RM_SetPv0(int *id, double *t)
 		Reaction_module_ptr->Set_rebalance_fraction(f);
 	}
 }
+
+/* ---------------------------------------------------------------------- */
 void RM_SetSaturation(int *id, double *t)
+/* ---------------------------------------------------------------------- */
 {
 	//
 	// multiply seconds to convert to user time units
@@ -864,8 +902,11 @@ void RM_SetSaturation(int *id, double *t)
 		Reaction_module_ptr->SetSaturation(t);
 	}
 }
+
+/* ---------------------------------------------------------------------- */
 void 
 RM_set_steady_flow(int *id, int *t)
+/* ---------------------------------------------------------------------- */
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
@@ -873,7 +914,10 @@ RM_set_steady_flow(int *id, int *t)
 		Reaction_module_ptr->Set_steady_flow(t);
 	}
 }
+
+/* ---------------------------------------------------------------------- */
 void RM_SetTemperature(int *id, double *t)
+/* ---------------------------------------------------------------------- */
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
@@ -881,7 +925,10 @@ void RM_SetTemperature(int *id, double *t)
 		Reaction_module_ptr->SetTemperature(t);
 	}
 }
+
+/* ---------------------------------------------------------------------- */
 void RM_SetTimeConversion(int *id, double *t)
+/* ---------------------------------------------------------------------- */
 {
 	//
 	// multiply seconds to convert to user time units
@@ -892,7 +939,10 @@ void RM_SetTimeConversion(int *id, double *t)
 		Reaction_module_ptr->SetTimeConversion(t);
 	}
 }
+
+/* ---------------------------------------------------------------------- */
 void RM_SetVolume(int *id, double *t)
+/* ---------------------------------------------------------------------- */
 {
 	//
 	// multiply seconds to convert to user time units
@@ -903,6 +953,35 @@ void RM_SetVolume(int *id, double *t)
 		Reaction_module_ptr->SetVolume(t);
 	}
 }
+
+/* ---------------------------------------------------------------------- */
+void
+RM_WarningMessage(const char *err_str, long l)
+/* ---------------------------------------------------------------------- */
+{
+	if (err_str)
+	{
+		if (l >= 0)
+		{
+			std::string e_string(err_str, l);
+			trim_right(e_string);
+			std::ostringstream estr;
+			estr << "WARNING: " << e_string << std::endl;
+			RM_interface::phast_io.error_msg(estr.str().c_str());
+			RM_interface::phast_io.log_msg(estr.str().c_str());
+		}
+		else
+		{
+			std::string e_string(err_str);
+			trim_right(e_string);
+			std::ostringstream estr;
+			estr << "WARNING: " << e_string << std::endl;
+			RM_interface::phast_io.error_msg(estr.str().c_str());
+			RM_interface::phast_io.log_msg(estr.str().c_str());
+		}
+	}
+}
+
 /* ---------------------------------------------------------------------- */
 void RM_write_bc_raw(
 			int *id,
@@ -924,6 +1003,7 @@ void RM_write_bc_raw(
 					fn);
 	}
 }
+
 /* ---------------------------------------------------------------------- */
 void RM_write_output(int *id)
 /* ---------------------------------------------------------------------- */
@@ -941,6 +1021,7 @@ void RM_write_output(int *id)
 		RM_interface::phast_io.punch_msg(GetSelectedOutputString(*id));
 	}
 }
+
 /* ---------------------------------------------------------------------- */
 void RM_write_restart(int *id)
 /* ---------------------------------------------------------------------- */
