@@ -19,7 +19,7 @@ SUBROUTINE phast_worker
     USE XP_module, ONLY: Transporter
     USE mpi_mod
     IMPLICIT NONE
-    INCLUDE '../RM_interface.f90.inc'
+    INCLUDE 'RM_interface.f90.inc'
     INTERFACE
         SUBROUTINE create_mapping(ic)
             implicit none
@@ -97,7 +97,7 @@ SUBROUTINE phast_worker
     IF (solute) THEN
 
         ! ... initial PHREEQC run to define reactants
-        CALL RM_InitialPhreeqcRun(rm_id, f2name, f1name, f3name)
+        status = RM_InitialPhreeqcRun(rm_id, f2name, f1name, f3name)
         ! Set components
         ns = RM_FindComponents(rm_id)
         ALLOCATE(comp_name(ns),  & 
@@ -146,7 +146,7 @@ SUBROUTINE phast_worker
         CALL RM_SetRebalance(rm_id)
 
         ! ... Mapping from full 3D domain to chemistry
-        CALL RM_CreateMapping(rm_id)
+        status = RM_CreateMapping(rm_id)
         
         ! ... Distribute initial conditions for chemistry    
         DO i = 1, num_restart_files

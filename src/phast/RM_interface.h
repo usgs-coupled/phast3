@@ -154,7 +154,7 @@ int RM_GetSelectedOutputRowCount(int *id);
 double RM_GetTime(int *id);
 double RM_GetTimeConversion(int *id);
 double RM_GetTimeStep(int *id);
-void RM_InitialPhreeqcRun(int * id, char *db_name, char *chem_name, char *prefix_name, int l1, int l2, int l3);
+IRM_RESULT RM_InitialPhreeqcRun(int * id, char *db_name, char *chem_name, char *prefix_name, int l1, int l2, int l3);
 void RM_LogMessage(const char *err_str, long l = -1);
 void RM_LogScreenMessage(char *err_str, long l = -1);
 void RM_OpenFiles(int * solute, char * prefix, int l_prefix);

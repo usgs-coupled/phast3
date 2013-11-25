@@ -47,7 +47,7 @@ public:
 	IRM_RESULT GetSelectedOutputHeading(int *icol, std::string &heading);
 	int GetSelectedOutputRowCount(void);
 
-	void InitialPhreeqcRun(std::string &database_name, std::string &chemistry_name, std::string &prefix);
+	IRM_RESULT InitialPhreeqcRun(std::string &database_name, std::string &chemistry_name, std::string &prefix);
 	void RunCells(void);
 	int SetCurrentSelectedOutputUserNumber(int *i);
 	void Send_restart_name(std::string &name);
