@@ -37,7 +37,7 @@ int
 RM_interface::CreateReactionModule(int *nxyz, int *nthreads)
 /* ---------------------------------------------------------------------- */
 {
-	int n = IPQ_OUTOFMEMORY;
+	int n = IRM_OUTOFMEMORY;
 	try
 	{
 		Reaction_module * Reaction_module_ptr = new Reaction_module(nxyz, nthreads);
@@ -45,27 +45,28 @@ RM_interface::CreateReactionModule(int *nxyz, int *nthreads)
 		{
 			n = (int) Reaction_module_ptr->Get_workers()[0]->Get_Index();
 			RM_interface::Instances[n] = Reaction_module_ptr;
+			return n;
 		}
 	}
 	catch(...)
 	{
-		return IPQ_OUTOFMEMORY;
+		return IRM_OUTOFMEMORY;
 	}
-	return n;
+	return IRM_OUTOFMEMORY; 
 }
 /* ---------------------------------------------------------------------- */
-IPQ_RESULT
-RM_interface::DestroyReactionModule(int id)
+IRM_RESULT
+RM_interface::DestroyReactionModule(int *id)
 /* ---------------------------------------------------------------------- */
 {
-	IPQ_RESULT retval = IPQ_BADINSTANCE;
-	if (id >= 0)
+	IRM_RESULT retval = IRM_BADINSTANCE;
+	if (id)
 	{
-		std::map<size_t, Reaction_module*>::iterator it = RM_interface::Instances.find(size_t(id));
+		std::map<size_t, Reaction_module*>::iterator it = RM_interface::Instances.find(size_t(*id));
 		if (it != RM_interface::Instances.end())
 		{
 			delete (*it).second;
-			retval = IPQ_OK;
+			retval = IRM_OK;
 		}
 	}
 	return retval;
@@ -82,8 +83,11 @@ RM_interface::GetInstance(int id)
 	}
 	return 0;
 }
-
+/*
+//
 // end static RM_interface methods
+//
+*/
 
 /* ---------------------------------------------------------------------- */
 void
@@ -144,8 +148,7 @@ int RM_Create(int *nxyz, int *nthreads)
 }
 
 /* ---------------------------------------------------------------------- */
-void RM_CreateMapping(int *id,
-		int *grid2chem)
+IRM_RESULT RM_CreateMapping(int *id, int *grid2chem)
 /* ---------------------------------------------------------------------- */
 {
 	//
@@ -156,14 +159,16 @@ void RM_CreateMapping(int *id,
 	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->Set_mapping(grid2chem);
+		return Reaction_module_ptr->CreateMapping(grid2chem);
 	}
+	return IRM_BADINSTANCE;
 }
+
 /* ---------------------------------------------------------------------- */
-int RM_Destroy(int *id)
+IRM_RESULT RM_Destroy(int *id)
 /* ---------------------------------------------------------------------- */
 {
-	return RM_interface::DestroyReactionModule(*id);
+	return RM_interface::DestroyReactionModule(id);
 }
 
 /* ---------------------------------------------------------------------- */
@@ -285,7 +290,11 @@ RM_FindComponents(int *id)
 /* ---------------------------------------------------------------------- */
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
-	return (Reaction_module_ptr->Find_components());
+	if (Reaction_module_ptr)
+	{
+		return (Reaction_module_ptr->Find_components());
+	}
+	return IRM_BADINSTANCE;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -297,41 +306,45 @@ int RM_GetChemistryCellCount(int * rm_id)
 	{
 		return Reaction_module_ptr->GetChemistryCellCount();
 	}
-	return -1;
+	return IRM_BADINSTANCE;
 }
 
 /* ---------------------------------------------------------------------- */
-void RM_GetComponent(int * rm_id, int * num, char *chem_name, int l1)
+IRM_RESULT RM_GetComponent(int * rm_id, int * num, char *chem_name, int l1)
 /* ---------------------------------------------------------------------- */
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
 	if (Reaction_module_ptr)
 	{
-		//strcpy(chem_name, Reaction_module_ptr->Get_components()[*num - 1].c_str());
-		strncpy(chem_name, Reaction_module_ptr->Get_components()[*num - 1].c_str(), Reaction_module_ptr->Get_components()[*num - 1].size());
+		if (chem_name != NULL)
+		{
+			if (l1 >= 0)
+			{
+				strncpy(chem_name, Reaction_module_ptr->Get_components()[*num - 1].c_str(), l1);
+			}
+			else
+			{
+				strcpy(chem_name, Reaction_module_ptr->Get_components()[*num - 1].c_str());
+			}
+			return IRM_OK;
+		}
+		return IRM_INVALIDARG;
 	}
+	return IRM_BADINSTANCE;
 }
 
 /* ---------------------------------------------------------------------- */
-int 
+IRM_RESULT 
 RM_GetFilePrefix(int * rm_id, char *prefix, long l)
 	/* ---------------------------------------------------------------------- */
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
 	if (Reaction_module_ptr)
 	{
-		std::string str = Reaction_module_ptr->GetFilePrefix();
-		strncpy(prefix, str.c_str(), l);
-		if (l >= (long) str.size())
-		{
-			return (int) str.size();
-		}
-		else
-		{
-			return -((int) str.size());
-		}
+		strncpy(prefix, Reaction_module_ptr->GetFilePrefix().c_str(), l);
+		return IRM_OK;
 	}
-	return -1;
+	return IRM_BADINSTANCE;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -344,7 +357,7 @@ RM_GetMpiMyself(int * rm_id)
 	{
 		return Reaction_module_ptr->GetMpiMyself();
 	}
-	return -1;
+	return IRM_BADINSTANCE;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -357,7 +370,7 @@ RM_GetNthSelectedOutputUserNumber(int * rm_id, int * i)
 	{
 		return Reaction_module_ptr->GetNthSelectedOutputUserNumber(i);
 	}
-	return -1;
+	return IRM_BADINSTANCE;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -369,11 +382,11 @@ int RM_GetGridCellCount(int * rm_id)
 	{
 		return Reaction_module_ptr->GetGridCellCount();
 	}
-	return -1;
+	return IRM_BADINSTANCE;
 }
 
 /* ---------------------------------------------------------------------- */
-int RM_GetSelectedOutput(int * rm_id, double * so)
+IRM_RESULT RM_GetSelectedOutput(int * rm_id, double * so)
 	/* ---------------------------------------------------------------------- */
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
@@ -381,18 +394,20 @@ int RM_GetSelectedOutput(int * rm_id, double * so)
 	{
 		return Reaction_module_ptr->GetSelectedOutput(so);
 	}
-	return -1;
+	return IRM_BADINSTANCE;
 }
+
 /* ---------------------------------------------------------------------- */
-int RM_GetSelectedOutputColumnCount(int * rm_id)
-	/* ---------------------------------------------------------------------- */
+int 
+RM_GetSelectedOutputColumnCount(int * rm_id)
+/* ---------------------------------------------------------------------- */
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->GetSelectedOutputColumnCount();
 	}
-	return -1;
+	return IRM_BADINSTANCE;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -404,25 +419,25 @@ int RM_GetSelectedOutputCount(int * rm_id)
 	{
 		return Reaction_module_ptr->GetSelectedOutputCount();
 	}
-	return -1;
+	return IRM_BADINSTANCE;
 }
 
 /* ---------------------------------------------------------------------- */
-int RM_GetSelectedOutputHeading(int * rm_id, int *icol, char *heading, int length)
+IRM_RESULT RM_GetSelectedOutputHeading(int * rm_id, int *icol, char *heading, int length)
 	/* ---------------------------------------------------------------------- */
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
 	if (Reaction_module_ptr)
 	{
 		std::string head;
-		int rtn = Reaction_module_ptr->GetSelectedOutputHeading(icol, head);
+		IRM_RESULT rtn = Reaction_module_ptr->GetSelectedOutputHeading(icol, head);
 		if (rtn >= 0)
 		{
 			strncpy(heading, head.c_str(), length);
 		}
 		return rtn;
 	}
-	return -1;
+	return IRM_BADINSTANCE;
 }
 
 /* ---------------------------------------------------------------------- */

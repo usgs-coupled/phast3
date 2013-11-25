@@ -1232,13 +1232,16 @@ Reaction_module::GetNthSelectedOutputUserNumber(int *i)
 	{
 		return this->workers[0]->GetNthSelectedOutputUserNumber(*i);
 	}
-	return VR_INVALIDARG;
+	return IRM_INVALIDARG;
 }
+
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 Reaction_module::GetSelectedOutput(double *so)
 /* ---------------------------------------------------------------------- */
 {
+	
+	IRM_RESULT rtn = IRM_OK;
 	int n_user = this->workers[0]->GetCurrentSelectedOutputUserNumber();
 #ifdef USE_MPI
 	MPI_Bcast(&n_user,  1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -1283,27 +1286,37 @@ Reaction_module::GetSelectedOutput(double *so)
 				}
 				if (mpi_myself == 0)
 				{
-					// Now write data from the process to so
-					for (size_t icol = 0; icol < ncol; icol++)
+					if (so)
 					{
-						for (size_t irow = 0; irow < nrow; irow++)
+						// Now write data from the process to so
+						for (size_t icol = 0; icol < ncol; icol++)
 						{
-							int ichem = local_start_cell + (int) irow;
-							for (size_t k = 0; k < back[ichem].size(); k++)
+							for (size_t irow = 0; irow < nrow; irow++)
 							{
-								int ixyz = back[ichem][k];
-								so[icol*this->nxyz + ixyz] = dbuffer[icol*nrow + irow];
+								int ichem = local_start_cell + (int) irow;
+								for (size_t k = 0; k < back[ichem].size(); k++)
+								{
+									int ixyz = back[ichem][k];
+									so[icol*this->nxyz + ixyz] = dbuffer[icol*nrow + irow];
+								}
 							}
 						}
+						local_start_cell += nrow;
 					}
-					local_start_cell += nrow;
+					else
+					{
+						error_msg("NULL pointer in argument to GetSelectedOutput", 0);
+						rtn = IRM_INVALIDARG;
+					}
 				}
 			}
 		}
 		else
 		{
-			error_msg("Did not find current selected output in CSelectedOutputMap in  GetSelectedOutput", STOP);
+			error_msg("Did not find current selected output in CSelectedOutputMap in  GetSelectedOutput", 0);
+			rtn = IRM_INVALIDARG;
 		}
+		return rtn;
 	}
 #else
 
@@ -1325,29 +1338,37 @@ Reaction_module::GetSelectedOutput(double *so)
 				assert(ncol_x = ncol);
 
 				// Now write data from thread to so
-				for (size_t icol = 0; icol < ncol; icol++)
+				if (so)
 				{
-					for (size_t irow = 0; irow < nrow_x; irow++)
+					for (size_t icol = 0; icol < ncol; icol++)
 					{
-						int ichem = local_start_cell + (int) irow;
-						for (size_t k = 0; k < back[ichem].size(); k++)
+						for (size_t irow = 0; irow < nrow_x; irow++)
 						{
-							int ixyz = back[ichem][k];
-							so[icol*this->nxyz + ixyz] = dbuffer[icol*nrow_x + irow];
+							int ichem = local_start_cell + (int) irow;
+							for (size_t k = 0; k < back[ichem].size(); k++)
+							{
+								int ixyz = back[ichem][k];
+								so[icol*this->nxyz + ixyz] = dbuffer[icol*nrow_x + irow];
+							}
 						}
 					}
+				}
+				else
+				{
+					error_msg("NULL pointer in argument to GetSelectedOutput", 0);
+					rtn = IRM_INVALIDARG;
 				}
 			}
 			else
 			{
-				return VR_INVALIDARG;
+				return IRM_INVALIDARG;
 			}
 			local_start_cell += nrow_x;
 		}
-		return VR_OK;
+		return rtn;
 	}
 #endif
-	return VR_INVALIDARG;
+	return IRM_INVALIDARG;
 }
 /* ---------------------------------------------------------------------- */
 int
@@ -1363,7 +1384,7 @@ Reaction_module::GetSelectedOutputColumnCount()
 			return (int) it->second.GetColCount();
 		}
 	}
-	return VR_INVALIDARG;
+	return IRM_INVALIDARG;
 }
 /* ---------------------------------------------------------------------- */
 int 
@@ -1373,7 +1394,7 @@ Reaction_module::GetSelectedOutputCount(void)
 	return (int) this->workers[0]->CSelectedOutputMap.size();
 }
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 Reaction_module::GetSelectedOutputHeading(int *icol, std::string &heading)
 /* ---------------------------------------------------------------------- */
 {
@@ -1385,17 +1406,17 @@ Reaction_module::GetSelectedOutputHeading(int *icol, std::string &heading)
 		{
 			VAR pVar;
 			VarInit(&pVar);
-			if (icol != NULL && it->second.Get(0, *icol, &pVar) == VR_OK)
+			if (icol != NULL && it->second.Get(0, *icol, &pVar) == IRM_OK)
 			{
 				if (pVar.type == TT_STRING)
 				{
 					heading = pVar.sVal;
-					return VR_OK;
+					return IRM_OK;
 				}
 			}
 		}
 	}
-	return VR_INVALIDARG;
+	return IRM_INVALIDARG;
 }
 /* ---------------------------------------------------------------------- */
 int
@@ -3296,15 +3317,16 @@ Reaction_module::Set_input_units(int *sol, int *pp, int *ex, int *surf, int *gas
 	}
 }
 /* ---------------------------------------------------------------------- */
-void
-Reaction_module::Set_mapping(int *t)
+IRM_RESULT
+Reaction_module::CreateMapping(int *t)
 /* ---------------------------------------------------------------------- */
 {
+	IRM_RESULT rtn = IRM_OK;
 	std::vector<int> grid2chem;
 	grid2chem.resize(this->nxyz);
 	if (mpi_myself == 0)
 	{
-		if (t == NULL) error_msg("NULL pointer in Set_mapping", 1);
+		if (t == NULL) error_msg("NULL pointer in CreateMapping", 1);
 		memcpy(grid2chem.data(), t, (size_t) (this->nxyz * sizeof(int)));
 	}
 #ifdef USE_MPI
@@ -3335,7 +3357,8 @@ Reaction_module::Set_mapping(int *t)
 		int n = grid2chem[i];
 		if (n >= count_chem)
 		{
-			error_msg("Error in cell out of range in mapping (grid to chem).", STOP);
+			error_msg("Error in cell out of range in mapping (grid to chem).", 0);
+			rtn = IRM_INVALIDARG;
 		}
 
 		// copy to forward
@@ -3363,9 +3386,11 @@ Reaction_module::Set_mapping(int *t)
 	{
 		if (back[i].size() == 0)
 		{
-			error_msg("Error in building inverse mapping (chem to grid).", STOP);
+			error_msg("Error in building inverse mapping (chem to grid).", 0);
+			rtn = IRM_INVALIDARG;
 		}
 	}
+	return rtn;
 }
 /* ---------------------------------------------------------------------- */
 void 

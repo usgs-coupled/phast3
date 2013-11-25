@@ -110,7 +110,7 @@ class RM_interface
 {
 public:
 	static int CreateReactionModule(int *nxyz, int *nthreads);
-	static IPQ_RESULT DestroyReactionModule(int n);
+	static IRM_RESULT DestroyReactionModule(int *n);
 	static Reaction_module* GetInstance(int n);
 	static void CleanupReactionModuleInstances(void);
 	static PHRQ_io phast_io;
@@ -128,8 +128,8 @@ void RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity);
 void RM_close_files(int * solute);
 void RM_convert_to_molal(int *id, double *c, int *n, int *dim);
 int  RM_Create(int *nxyz, int *nthreads);
-void RM_CreateMapping (int *id, int *grid2chem=NULL); 
-int  RM_Destroy(int *id);
+IRM_RESULT RM_CreateMapping (int *id, int *grid2chem=NULL); 
+IRM_RESULT  RM_Destroy(int *id);
 IRM_RESULT RM_distribute_initial_conditions(int *id,
 		int *initial_conditions1);		// 7 x nxyz end-member 1
 IRM_RESULT RM_distribute_initial_conditions_mix(int *id,
@@ -140,16 +140,16 @@ IRM_RESULT RM_distribute_initial_conditions_mix(int *id,
 void RM_Error(int *id);
 void RM_ErrorMessage(const char *err_str, long l = -1);
 int RM_FindComponents(int *id);
-void RM_GetComponent(int * id, int * num, char *chem_name, int l1);
-int RM_GetFilePrefix(int *id, char *prefix, long l = -1);
+IRM_RESULT RM_GetComponent(int * id, int * num, char *chem_name, int l1 = -1);
+IRM_RESULT RM_GetFilePrefix(int *id, char *prefix, long l = -1);
 int RM_GetMpiMyself(int *id);
 int RM_GetChemistryCellCount(int *id);
 int RM_GetGridCellCount(int *id);
 int RM_GetNthSelectedOutputUserNumber(int *id, int *i);
-int RM_GetSelectedOutput(int *id, double *so);
+IRM_RESULT RM_GetSelectedOutput(int *id, double *so = NULL);
 int RM_GetSelectedOutputColumnCount(int *id);
 int RM_GetSelectedOutputCount(int *id);
-int RM_GetSelectedOutputHeading(int *id, int * icol, char * heading, int length);
+IRM_RESULT RM_GetSelectedOutputHeading(int *id, int * icol, char * heading, int length);
 int RM_GetSelectedOutputRowCount(int *id);
 double RM_GetTime(int *id);
 double RM_GetTimeConversion(int *id);

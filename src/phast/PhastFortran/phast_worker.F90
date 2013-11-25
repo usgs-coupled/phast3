@@ -108,7 +108,7 @@ SUBROUTINE phast_worker
         ENDIF
         DO i = 1, ns
             comp_name(i) = ' '
-            CALL RM_GetComponent(rm_id, i, comp_name(i))
+            status = RM_GetComponent(rm_id, i, comp_name(i))
         ENDDO   
 
         !TODO CALL on_error_cleanup_and_exit

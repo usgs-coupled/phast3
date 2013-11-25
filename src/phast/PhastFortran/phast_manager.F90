@@ -118,7 +118,7 @@ SUBROUTINE phast_manager
         ENDIF
         DO i = 1, ns
             comp_name(i) = ' '
-            CALL RM_GetComponent(rm_id, i, comp_name(i))
+            status = RM_GetComponent(rm_id, i, comp_name(i))
         ENDDO   
         CALL RM_LogScreenMessage("Done with Initial PHREEQC run.")
     ENDIF
