@@ -254,7 +254,7 @@ int RM_Destroy(int *id)
 	return RM_interface::DestroyReactionModule(*id);
 }
 /* ---------------------------------------------------------------------- */
-void
+IRM_RESULT
 RM_distribute_initial_conditions(int *id,
 							  int *initial_conditions1)		// 7 x nxyz end-member 1
 /* ---------------------------------------------------------------------- */
@@ -276,15 +276,16 @@ RM_distribute_initial_conditions(int *id,
 		std::vector<double> fraction1; 
 		fraction1.assign(nxyz, 1.0);
 
-		Reaction_module_ptr->Distribute_initial_conditions_mix(
+		return Reaction_module_ptr->Distribute_initial_conditions_mix(
 			*id,
 			initial_conditions1,
 			initial_conditions2.data(),
 			fraction1.data());
 	}
+	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-void
+IRM_RESULT
 RM_distribute_initial_conditions_mix(int *id,
 							  int *initial_conditions1,		// 7 x nxyz end-member 1
 							  int *initial_conditions2,		// 7 x nxyz end-member 2
@@ -302,12 +303,13 @@ RM_distribute_initial_conditions_mix(int *id,
 	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->Distribute_initial_conditions_mix(
+		return Reaction_module_ptr->Distribute_initial_conditions_mix(
 			*id,
 			initial_conditions1,
 			initial_conditions2,
 			fraction1);
 	}
+	return IRM_BADINSTANCE;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -649,30 +651,16 @@ RM_Module2Concentrations(int *id, double * c)
 	}
 }
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RM_SetFilePrefix(int *id, const char *name, long nchar)
 /* ---------------------------------------------------------------------- */
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
-		if (name != NULL)
-		{
-			if (nchar >= 0)
-			{
-				std::string str(name, nchar);
-				trim(str);
-				return Reaction_module_ptr->SetFilePrefix(str);
-			}
-			else
-			{
-				std::string str(name);
-				trim(str);
-				return Reaction_module_ptr->SetFilePrefix(str);
-			}
-		}
+		return Reaction_module_ptr->SetFilePrefix(name, nchar);
 	}
-	return -1;
+	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
 void

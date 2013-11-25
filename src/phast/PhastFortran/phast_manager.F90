@@ -185,7 +185,7 @@ SUBROUTINE phast_manager
         ENDDO
 
         ! ... Distribute chemistry initial conditions
-        CALL RM_distribute_initial_conditions_mix(rm_id, &
+        status = RM_distribute_initial_conditions_mix(rm_id, &
             indx_sol1_ic(1,1),           & ! 7 x nxyz end-member 1 
             indx_sol2_ic(1,1),           & ! 7 x nxyz end-member 2
             ic_mxfrac(1,1))                ! 7 x nxyz fraction of end-member 1

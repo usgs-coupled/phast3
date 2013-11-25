@@ -66,6 +66,7 @@ SUBROUTINE phast_worker
     ! ... Set string for use with RCS ident command
     INTEGER hdf_initialized, hdf_invariant
     INTEGER PR_HDF_MEDIA
+    INTEGER status
     CHARACTER(LEN=80) :: ident_string='$Id: phast_worker.F90,v 1.2 2013/09/26 22:49:48 klkipp Exp klkipp $'
     !     ------------------------------------------------------------------
 
@@ -90,6 +91,7 @@ SUBROUTINE phast_worker
     END IF
  
     ! ... Open C files //TODO error checks
+    status = RM_SetFilePrefix(rm_id)
     !CALL RM_OpenFiles(solute, f3name)
 
     IF (solute) THEN
@@ -150,7 +152,7 @@ SUBROUTINE phast_worker
         DO i = 1, num_restart_files
             CALL RM_send_restart_name(rm_id, restart_files(i))
         ENDDO
-        CALL RM_distribute_initial_conditions_mix( &
+        status = RM_distribute_initial_conditions_mix( &
             rm_id,                  &
             indx_sol1_ic(1,1),           & ! 7 x nxyz end-member 1 
             indx_sol2_ic(1,1),           & ! 7 x nxyz end-member 2

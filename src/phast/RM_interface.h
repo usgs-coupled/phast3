@@ -130,9 +130,9 @@ void RM_convert_to_molal(int *id, double *c, int *n, int *dim);
 int  RM_Create(int *nxyz, int *nthreads);
 void RM_CreateMapping (int *id, int *grid2chem=NULL); 
 int  RM_Destroy(int *id);
-void RM_distribute_initial_conditions(int *id,
+IRM_RESULT RM_distribute_initial_conditions(int *id,
 		int *initial_conditions1);		// 7 x nxyz end-member 1
-void RM_distribute_initial_conditions_mix(int *id,
+IRM_RESULT RM_distribute_initial_conditions_mix(int *id,
 		int *initial_conditions1,		// 7 x nxyz end-member 1
 		int *initial_conditions2,		// 7 x nxyz end-member 2
 		double *fraction1			    // 7 x nxyz fraction of end-member 1
@@ -180,7 +180,7 @@ void RM_setup_boundary_conditions(
 			double *boundary_c, 
 			int *dim);
 void RM_SetDensity(int *id, double *t);
-int  RM_SetFilePrefix(int *id, const char *prefix, long l = -1);
+IRM_RESULT RM_SetFilePrefix(int *id, const char *prefix, long l = -1);
 void RM_set_free_surface(int *id, int *t);
 void RM_SetInputUnits (int *id, int *sol=NULL, int *pp=NULL, int *ex=NULL, 
 						 int *surf=NULL, int *gas=NULL, int *ss=NULL, int *kin=NULL);
