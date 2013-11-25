@@ -13,13 +13,13 @@ class IPhreeqc;
 */
 typedef enum {
 	IRM_OK            =  0,  /*!< Success */
-	IRM_FAIL          = -1,  /*!< Failure, Unspecified */
-	IRM_BADINSTANCE   = -2,  /*!< Failure, Invalid rm instance id */
-	IRM_OUTOFMEMORY   = -3,  /*!< Failure, Out of memory */
-	IRM_BADVARTYPE    = -4,  /*!< Failure, Invalid VAR type */
-	IRM_INVALIDARG    = -5,  /*!< Failure, Invalid argument */
-	IRM_INVALIDROW    = -6,  /*!< Failure, Invalid row */
-	IRM_INVALIDCOL    = -7,  /*!< Failure, Invalid column */
+	IRM_OUTOFMEMORY   = -1,  /*!< Failure, Out of memory */
+	IRM_BADVARTYPE    = -2,  /*!< Failure, Invalid VAR type */
+	IRM_INVALIDARG    = -3,  /*!< Failure, Invalid argument */
+	IRM_INVALIDROW    = -4,  /*!< Failure, Invalid row */
+	IRM_INVALIDCOL    = -5,  /*!< Failure, Invalid column */
+	IRM_BADINSTANCE   = -6,  /*!< Failure, Invalid rm instance id */
+	IRM_FAIL          = -7,  /*!< Failure, Unspecified */
 } IRM_RESULT;
 
 class Reaction_module: public PHRQ_base
@@ -38,19 +38,20 @@ public:
 		double *fraction1);
 	int Find_components();
 	void Concentrations2Module(void);	
+	static std::string Cptr2TrimString(const char * str, long l = -1);
 	
 	int GetNthSelectedOutputUserNumber(int *i);
-	int GetSelectedOutput(double *so);
+	IRM_RESULT GetSelectedOutput(double *so);
 	int GetSelectedOutputColumnCount(void);
 	int GetSelectedOutputCount(void);
-	int GetSelectedOutputHeading(int *icol, std::string &heading);
+	IRM_RESULT GetSelectedOutputHeading(int *icol, std::string &heading);
 	int GetSelectedOutputRowCount(void);
 
 	void InitialPhreeqcRun(std::string &database_name, std::string &chemistry_name, std::string &prefix);
 	void RunCells(void);
 	int SetCurrentSelectedOutputUserNumber(int *i);
 	void Send_restart_name(std::string &name);
-	void Set_mapping(int *grid2chem);
+	IRM_RESULT CreateMapping(int *grid2chem);
 	void Setup_boundary_conditions(const int n_boundary, int *boundary_solution1,
 						  int *boundary_solution2, double *fraction1,
 						  double *boundary_fraction, int dim);
@@ -156,7 +157,6 @@ protected:
 		int kinetics_units,
 		double porosity_factor,
 		std::set<std::string> error_set);
-	static std::string Cptr2TrimString(const char * str, long l = -1);
 	void Concentrations2Threads(int n);
 	void cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
 	void Error_stop(void);

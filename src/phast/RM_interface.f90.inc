@@ -41,21 +41,32 @@
             INTEGER :: id
         END SUBROUTINE RM_Error
         
-        FUNCTION RM_FindComponents(id) RESULT(iout)
+        INTEGER FUNCTION RM_FindComponents(id) 
             IMPLICIT NONE
-            INTEGER :: id
-            INTEGER :: iout
+            INTEGER, INTENT(in) :: id
         END FUNCTION RM_FindComponents  
         
-        SUBROUTINE RM_GetComponent(id, num, comp_name)
+        INTEGER FUNCTION RM_GetComponent(id, num, comp_name)
             IMPLICIT NONE
-            INTEGER :: id, num
+            INTEGER, INTENT(in) :: id, num
             CHARACTER, INTENT(out) :: comp_name
-        END SUBROUTINE RM_GetComponent
+        END FUNCTION RM_GetComponent
+        
+        INTEGER FUNCTION RM_GetSelectedOutput(id, d)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            DOUBLE PRECISION, OPTIONAL, INTENT(out) :: d
+        END FUNCTION RM_GetSelectedOutput
+        
+        INTEGER FUNCTION RM_GetSelectedOutputHeading(id, icol, heading)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id, icol
+            CHARACTER(*), INTENT(out) :: heading
+        END FUNCTION RM_GetSelectedOutputHeading
         
         SUBROUTINE RM_InitialPhreeqcRun(id, db_name, chem_name, prefix)
             IMPLICIT NONE
-            INTEGER :: id
+            INTEGER, INTENT(in) :: id
             CHARACTER :: db_name, chem_name, prefix
         END SUBROUTINE RM_InitialPhreeqcRun        
         
