@@ -751,7 +751,7 @@ Reaction_module::cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vecto
 	}
 }
 /* ---------------------------------------------------------------------- */
-void
+IRM_RESULT
 Reaction_module::Distribute_initial_conditions_mix(
 					int id, 
 					int *initial_conditions1,
@@ -781,6 +781,7 @@ Reaction_module::Distribute_initial_conditions_mix(
 	 *      saves results in restart_bin and then the reaction module
 	 */
 	int i, j;
+	IRM_RESULT rtn = IRM_OK;
 	/*
 	* Make copy of initial conditions for use in restart file
 	*/
@@ -830,6 +831,7 @@ Reaction_module::Distribute_initial_conditions_mix(
 			errstr << "\t initial volume, " << this->pv0[i] << ".",
 			count_negative_porosity++;
 			error_msg(errstr.str().c_str());
+			rtn = IRM_FAIL;
 			continue;
 		}
 		assert (porosity > 0.0);
@@ -859,6 +861,7 @@ Reaction_module::Distribute_initial_conditions_mix(
 			errstr << "\t initial volume, " << this->pv0[i] << ".",
 			count_negative_porosity++;
 			error_msg(errstr.str().c_str());
+			rtn = IRM_FAIL;
 			continue;
 		}
 		assert (porosity > 0.0);
@@ -873,14 +876,16 @@ Reaction_module::Distribute_initial_conditions_mix(
 #endif
 	if (error_set.size() > 0)
 	{
+		rtn = IRM_FAIL;
 		std::set<std::string>::iterator it = error_set.begin();
 		for (; it != error_set.end(); it++)
 		{
-			error_msg(it->c_str(), 1);
+			error_msg(it->c_str(), 0);
 		}
 	}
 	if (count_negative_porosity > 0)
 	{
+		rtn = IRM_FAIL;
 		std::ostringstream errstr;
 		errstr << "Negative initial volumes may be due to initial head distribution.\n"
 			"Make initial heads greater than or equal to the elevation of the node for each cell.\n"
@@ -904,6 +909,7 @@ Reaction_module::Distribute_initial_conditions_mix(
 		if (!myfile.good())
 
 		{
+			rtn = IRM_FAIL;
 			std::ostringstream errstr;
 			errstr << "File could not be opened: " << it->first.c_str();
 			error_msg(errstr.str().c_str());
@@ -922,6 +928,7 @@ Reaction_module::Distribute_initial_conditions_mix(
 		int	n = -1;
 		if (!(cparser.get_iss() >> n) || n < 4)
 		{
+			rtn = IRM_FAIL;
 			std::ostringstream errstr;
 			errstr << "File does not have node locations: " << it->first.c_str() << "\nPerhaps it is an old format restart file.";
 			error_msg(errstr.str().c_str(), 1);
@@ -1122,6 +1129,7 @@ Reaction_module::Distribute_initial_conditions_mix(
 #endif
 	// initialize uz
 	old_saturation.insert(old_saturation.begin(), nxyz, 1.0);
+	return rtn;
 }
 /* ---------------------------------------------------------------------- */
 void
@@ -1396,6 +1404,27 @@ Reaction_module::GetSelectedOutputRowCount()
 {
 	return this->nxyz;
 }
+/* ---------------------------------------------------------------------- */
+std::string 
+Reaction_module::Cptr2TrimString(const char * str, long l)
+/* ---------------------------------------------------------------------- */
+{
+	std::string stdstr;
+	if (str)
+	{
+		if (l >= 0)
+		{
+			std::string tstr(str, l);
+			stdstr = tstr;
+		}
+		else
+		{
+			stdstr = str;
+		}
+	}
+	stdstr = trim(stdstr);
+	return stdstr;
+};
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Concentrations2Threads(int n)
@@ -3082,18 +3111,54 @@ Reaction_module::SetCurrentSelectedOutputUserNumber(int *i)
 		return this->workers[0]->SetCurrentSelectedOutputUserNumber(*i);
 	}
 	return VR_INVALIDARG;
-}/* ---------------------------------------------------------------------- */
-int
+}
+
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+Reaction_module::SetFilePrefix(const char * prefix, long l)
+/* ---------------------------------------------------------------------- */
+{
+	if (this->mpi_myself == 0)
+	{	
+		this->file_prefix = Cptr2TrimString(prefix, l);
+	}
+#ifdef USE_MPI
+	int l1 = 0;
+	if (mpi_myself == 0)
+	{
+		l1 = (int) this->file_prefix.size();
+	}
+	MPI_Bcast(&l1, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	this->file_prefix.resize(l1);
+	MPI_Bcast((void *) this->file_prefix.c_str(), l1, MPI_CHARACTER, 0, MPI_COMM_WORLD);
+#endif
+	if (this->file_prefix.size() > 0)
+	{
+		return IRM_OK;
+	}
+	return IRM_INVALIDARG;
+}
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
 Reaction_module::SetFilePrefix(std::string &prefix)
 /* ---------------------------------------------------------------------- */
 {
 	this->file_prefix.clear();
-	this->file_prefix = prefix;
-	if (this->file_prefix.size() == 0)
+	if (mpi_myself == 0)
 	{
-		return -1;
+		this->file_prefix = trim(prefix);
 	}
-	return (int) (this->file_prefix.size());
+#ifdef USE_MPI
+	int l = 0;
+	if (mpi_myself == 0)
+	{
+		l = (int) prefix.size();
+	}
+	MPI_Bcast(&l, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	this->file_prefix.resize(l);
+	MPI_Bcast((void *) this->file_prefix.c_str(), l, MPI_CHARACTER, 0, MPI_COMM_WORLD);
+#endif
+	return IRM_OK;
 }
 /* ---------------------------------------------------------------------- */
 void

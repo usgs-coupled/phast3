@@ -23,18 +23,18 @@
             INTEGER :: iout
         END FUNCTION RM_Destroy
         
-        SUBROUTINE RM_distribute_initial_conditions(id, ic1)
+        INTEGER FUNCTION RM_distribute_initial_conditions(id, ic1)
             IMPLICIT NONE
             INTEGER :: id
             INTEGER, OPTIONAL :: ic1
-        END SUBROUTINE RM_distribute_initial_conditions 
+        END FUNCTION RM_distribute_initial_conditions 
         
-        SUBROUTINE RM_distribute_initial_conditions_mix(id, ic1, ic2, f1)
+        INTEGER FUNCTION RM_distribute_initial_conditions_mix(id, ic1, ic2, f1)
             IMPLICIT NONE
             INTEGER :: id
             INTEGER, OPTIONAL :: ic1, ic2
             DOUBLE PRECISION, OPTIONAL :: f1
-        END SUBROUTINE RM_distribute_initial_conditions_mix
+        END FUNCTION RM_distribute_initial_conditions_mix
         
         SUBROUTINE RM_Error(id)
             IMPLICIT NONE
@@ -86,7 +86,7 @@
         FUNCTION RM_SetFilePrefix(id, prefix) RESULT(iout)
             IMPLICIT NONE
             INTEGER :: id, iout
-            CHARACTER :: prefix
+            CHARACTER, OPTIONAL :: prefix
         END FUNCTION RM_SetFilePrefix
 
         SUBROUTINE RM_setup_boundary_conditions(id, n_boundary, bc_sol1, bc_sol2, f1, c, dim)   

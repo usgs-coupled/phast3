@@ -9,6 +9,18 @@
 
 class PHRQ_io;
 class IPhreeqc;
+/*! @brief Enumeration used to return error codes.
+*/
+typedef enum {
+	IRM_OK            =  0,  /*!< Success */
+	IRM_FAIL          = -1,  /*!< Failure, Unspecified */
+	IRM_BADINSTANCE   = -2,  /*!< Failure, Invalid rm instance id */
+	IRM_OUTOFMEMORY   = -3,  /*!< Failure, Out of memory */
+	IRM_BADVARTYPE    = -4,  /*!< Failure, Invalid VAR type */
+	IRM_INVALIDARG    = -5,  /*!< Failure, Invalid argument */
+	IRM_INVALIDROW    = -6,  /*!< Failure, Invalid row */
+	IRM_INVALIDCOL    = -7,  /*!< Failure, Invalid column */
+} IRM_RESULT;
 
 class Reaction_module: public PHRQ_base
 {
@@ -19,7 +31,7 @@ public:
 	void Calculate_well_ph(double *c, double * ph, double * alkalinity);
 	int CheckSelectedOutput();
 	void Convert_to_molal(double *c, int n, int dim);
-	void Distribute_initial_conditions_mix(
+	IRM_RESULT Distribute_initial_conditions_mix(
 		int id,
 		int *initial_conditions1,
 		int *initial_conditions2,	
@@ -53,7 +65,8 @@ public:
 	const std::string Get_database_file_name(void) const {return this->database_file_name;}
 	void Set_database_file_name(std::string &fn) {this->database_file_name = fn;}
 	const std::string GetFilePrefix(void) const {return this->file_prefix;}
-	int SetFilePrefix(std::string &fn); 
+	IRM_RESULT SetFilePrefix(std::string &fn); 
+	IRM_RESULT SetFilePrefix(const char * prefix, long l = -1);
 	cxxStorageBin & Get_phreeqc_bin(void) {return this->phreeqc_bin;}
 	const int Get_mpi_tasks(void) const {return this->mpi_tasks;}
 	void Set_mpi_tasks(int t) {this->mpi_tasks = t;}
@@ -143,6 +156,7 @@ protected:
 		int kinetics_units,
 		double porosity_factor,
 		std::set<std::string> error_set);
+	static std::string Cptr2TrimString(const char * str, long l = -1);
 	void Concentrations2Threads(int n);
 	void cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
 	void Error_stop(void);
