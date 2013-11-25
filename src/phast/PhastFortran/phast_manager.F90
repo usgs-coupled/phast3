@@ -25,7 +25,7 @@ SUBROUTINE phast_manager
     USE XP_module, ONLY: Transporter
     IMPLICIT NONE 
     SAVE
-    INCLUDE '../RM_interface.f90.inc'
+    INCLUDE 'RM_interface.f90.inc'
     REAL(KIND=kdp) :: deltim_dummy
     INTEGER :: stop_msg, ipp_err
     CHARACTER(LEN=130) :: logline1
@@ -107,7 +107,7 @@ SUBROUTINE phast_manager
     !... Call phreeqc, find number of components; f1name, chem.dat; f2name, database; f3name, prefix
     IF (solute) THEN
         CALL RM_LogScreenMessage("Initial PHREEQC run.")  
-        CALL RM_InitialPhreeqcRun(rm_id, f2name, f1name, f3name)
+        status = RM_InitialPhreeqcRun(rm_id, f2name, f1name, f3name)
         ! Set components
         ns = RM_FindComponents(rm_id)
         ALLOCATE(comp_name(ns),  & 
@@ -178,7 +178,7 @@ SUBROUTINE phast_manager
 
         ! ... Define mapping from 3D domain to chemistry
         CALL create_mapping(indx_sol1_ic)
-        CALL RM_CreateMapping(rm_id, grid2chem(1))
+        status = RM_CreateMapping(rm_id, grid2chem(1))
         
         DO i = 1, num_restart_files
             CALL RM_send_restart_name(rm_id, restart_files(i))

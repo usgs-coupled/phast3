@@ -1602,7 +1602,7 @@ Reaction_module::Initial_phreeqc_run_thread(int n)
 		}
 }
 /* ---------------------------------------------------------------------- */
-void
+IRM_RESULT
 Reaction_module::InitialPhreeqcRun(std::string &database_name, std::string &chemistry_name, std::string &prefix)
 /* ---------------------------------------------------------------------- */
 {
@@ -1624,7 +1624,7 @@ Reaction_module::InitialPhreeqcRun(std::string &database_name, std::string &chem
 	{
 		Initial_phreeqc_run_thread(n);
 	} 	
-
+	return IRM_OK;
 }
 /* ---------------------------------------------------------------------- */
 void

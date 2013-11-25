@@ -11,35 +11,45 @@
             INTEGER :: n, dim
         END SUBROUTINE RM_convert_to_molal  
         
-        FUNCTION RM_Create(nxyz, nthreads) RESULT(iout)
+        INTEGER FUNCTION RM_Create(nxyz, nthreads) 
             IMPLICIT NONE
             INTEGER :: nxyz, nthreads
-            INTEGER :: iout
         END FUNCTION RM_Create
+
+		INTEGER FUNCTION RM_CreateMapping(id, grid2chem)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            INTEGER, OPTIONAL :: grid2chem
+        END FUNCTION RM_CreateMapping
         
         FUNCTION RM_Destroy(id) RESULT(iout)
             IMPLICIT NONE
-            INTEGER :: id
+            INTEGER, INTENT(in) :: id
             INTEGER :: iout
         END FUNCTION RM_Destroy
         
         INTEGER FUNCTION RM_distribute_initial_conditions(id, ic1)
             IMPLICIT NONE
-            INTEGER :: id
+            INTEGER, INTENT(in) :: id
             INTEGER, OPTIONAL :: ic1
         END FUNCTION RM_distribute_initial_conditions 
         
         INTEGER FUNCTION RM_distribute_initial_conditions_mix(id, ic1, ic2, f1)
             IMPLICIT NONE
-            INTEGER :: id
+            INTEGER, INTENT(in) :: id
             INTEGER, OPTIONAL :: ic1, ic2
             DOUBLE PRECISION, OPTIONAL :: f1
         END FUNCTION RM_distribute_initial_conditions_mix
         
         SUBROUTINE RM_Error(id)
             IMPLICIT NONE
-            INTEGER :: id
+            INTEGER, INTENT(in) :: id
         END SUBROUTINE RM_Error
+        
+        SUBROUTINE RM_ErrorMessage(errstr)
+            IMPLICIT NONE
+            CHARACTER(*), INTENT(in) :: errstr
+        END SUBROUTINE RM_ErrorMessage
         
         INTEGER FUNCTION RM_FindComponents(id) 
             IMPLICIT NONE
@@ -50,7 +60,23 @@
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id, num
             CHARACTER, INTENT(out) :: comp_name
-        END FUNCTION RM_GetComponent
+        END FUNCTION RM_GetComponent 
+        
+        INTEGER FUNCTION RM_GetFilePrefix(id, prefix)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            CHARACTER, INTENT(out) :: prefix
+        END FUNCTION RM_GetFilePrefix
+        
+        INTEGER FUNCTION RM_GetMpiMyself(id)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+        END FUNCTION RM_GetMpiMyself
+        
+        INTEGER FUNCTION RM_GetNthSelectedOutputUserNumber(id, n)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id, n
+        END FUNCTION RM_GetNthSelectedOutputUserNumber 
         
         INTEGER FUNCTION RM_GetSelectedOutput(id, d)
             IMPLICIT NONE
@@ -58,28 +84,52 @@
             DOUBLE PRECISION, OPTIONAL, INTENT(out) :: d
         END FUNCTION RM_GetSelectedOutput
         
+        INTEGER FUNCTION RM_GetSelectedOutputColumnCount(id)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+        END FUNCTION RM_GetSelectedOutputColumnCount
+        
+        INTEGER FUNCTION RM_GetSelectedOutputCount(id)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+        END FUNCTION RM_GetSelectedOutputCount
+        
         INTEGER FUNCTION RM_GetSelectedOutputHeading(id, icol, heading)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id, icol
             CHARACTER(*), INTENT(out) :: heading
         END FUNCTION RM_GetSelectedOutputHeading
         
-        SUBROUTINE RM_InitialPhreeqcRun(id, db_name, chem_name, prefix)
+        INTEGER FUNCTION RM_GetSelectedOutputRowCount(id)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+        END FUNCTION RM_GetSelectedOutputRowCount
+        
+        DOUBLE PRECISION FUNCTION RM_GetTime(id)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+        END FUNCTION RM_GetTime
+        
+        DOUBLE PRECISION FUNCTION RM_GetTimeConversion(id)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+        END FUNCTION RM_GetTimeConversion
+        
+        DOUBLE PRECISION FUNCTION RM_GetTimeStep(id)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+        END FUNCTION RM_GetTimeStep
+        
+        INTEGER FUNCTION RM_InitialPhreeqcRun(id, db_name, chem_name, prefix)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
             CHARACTER :: db_name, chem_name, prefix
-        END SUBROUTINE RM_InitialPhreeqcRun        
+        END FUNCTION RM_InitialPhreeqcRun        
         
         SUBROUTINE RM_LogScreenMessage(str) 
             IMPLICIT NONE
             CHARACTER :: str
         END SUBROUTINE RM_LogScreenMessage
-        
-        SUBROUTINE RM_OpenFiles(solute, prefix) 
-            IMPLICIT NONE
-            INTEGER :: solute
-            CHARACTER :: prefix
-        END SUBROUTINE RM_OpenFiles
 
         SUBROUTINE RM_Module2Concentrations(id, c)   
             IMPLICIT NONE
@@ -87,31 +137,30 @@
             DOUBLE PRECISION, OPTIONAL :: c
         END SUBROUTINE RM_Module2Concentrations  
         
+        SUBROUTINE RM_OpenFiles(solute, prefix) 
+            IMPLICIT NONE
+            INTEGER :: solute
+            CHARACTER :: prefix
+        END SUBROUTINE RM_OpenFiles
+        
         SUBROUTINE RM_RunCells(id, time, time_step, c, stop_msg)   
             IMPLICIT NONE
             INTEGER :: id
             DOUBLE PRECISION :: time, time_step, c
             INTEGER :: stop_msg
-        END SUBROUTINE RM_RunCells  
-        
-        FUNCTION RM_SetFilePrefix(id, prefix) RESULT(iout)
-            IMPLICIT NONE
-            INTEGER :: id, iout
-            CHARACTER, OPTIONAL :: prefix
-        END FUNCTION RM_SetFilePrefix
-
-        SUBROUTINE RM_setup_boundary_conditions(id, n_boundary, bc_sol1, bc_sol2, f1, c, dim)   
-	            IMPLICIT NONE
-	            INTEGER :: id
-	            INTEGER :: n_boundary, bc_sol1, bc_sol2, dim
-	            DOUBLE PRECISION :: f1, c
-        END SUBROUTINE RM_setup_boundary_conditions  
+        END SUBROUTINE RM_RunCells 
 
         SUBROUTINE RM_SetDensity(id, t)
             IMPLICIT NONE
             INTEGER :: id
             DOUBLE PRECISION :: t
-        END SUBROUTINE RM_SetDensity 
+        END SUBROUTINE RM_SetDensity  
+        
+        FUNCTION RM_SetFilePrefix(id, prefix) RESULT(iout)
+            IMPLICIT NONE
+            INTEGER :: id, iout
+            CHARACTER, OPTIONAL :: prefix
+        END FUNCTION RM_SetFilePrefix 
 		
         SUBROUTINE RM_set_free_surface(id, t)   
             IMPLICIT NONE
@@ -125,17 +174,17 @@
             INTEGER, OPTIONAL :: sol, pp, ex, surf, gas, ss, kin
         END SUBROUTINE RM_SetInputUnits  
         
-        SUBROUTINE RM_CreateMapping(id, grid2chem)   
-            IMPLICIT NONE
-            INTEGER :: id
-            INTEGER, OPTIONAL :: grid2chem
-        END SUBROUTINE RM_CreateMapping  
-        
         SUBROUTINE RM_set_nodes(id, x_node, y_node, z_node)   
             IMPLICIT NONE
             INTEGER :: id
             DOUBLE PRECISION, OPTIONAL :: x_node, y_node, z_node
-        END SUBROUTINE RM_set_nodes         
+        END SUBROUTINE RM_set_nodes  
+
+        SUBROUTINE RM_SetPressure(id, t)   
+            IMPLICIT NONE
+            INTEGER :: id
+            DOUBLE PRECISION, OPTIONAL :: t
+        END SUBROUTINE RM_SetPressure        
         
         SUBROUTINE RM_set_printing(id, print_chem, print_hdf, print_restart)   
             IMPLICIT NONE
@@ -148,12 +197,6 @@
             INTEGER :: id
             INTEGER, OPTIONAL :: t
         END SUBROUTINE RM_set_print_chem_mask 
-
-        SUBROUTINE RM_SetPressure(id, t)   
-            IMPLICIT NONE
-            INTEGER :: id
-            DOUBLE PRECISION, OPTIONAL :: t
-        END SUBROUTINE RM_SetPressure 
 
         SUBROUTINE RM_SetPv(id, t)   
             IMPLICIT NONE
@@ -196,7 +239,14 @@
             IMPLICIT NONE
             INTEGER :: id
             DOUBLE PRECISION, OPTIONAL :: t
-        END SUBROUTINE RM_SetTimeConversion         
+        END SUBROUTINE RM_SetTimeConversion  
+
+        SUBROUTINE RM_setup_boundary_conditions(id, n_boundary, bc_sol1, bc_sol2, f1, c, dim)   
+	            IMPLICIT NONE
+	            INTEGER :: id
+	            INTEGER :: n_boundary, bc_sol1, bc_sol2, dim
+	            DOUBLE PRECISION :: f1, c
+        END SUBROUTINE RM_setup_boundary_conditions        
  		     
         SUBROUTINE RM_SetVolume(id, t)   
             IMPLICIT NONE

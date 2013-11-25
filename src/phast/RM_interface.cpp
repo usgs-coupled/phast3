@@ -449,7 +449,7 @@ int RM_GetSelectedOutputRowCount(int * rm_id)
 	{
 		return Reaction_module_ptr->GetSelectedOutputRowCount();
 	}
-	return -1;
+	return IRM_BADINSTANCE;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -461,7 +461,7 @@ double RM_GetTime(int * rm_id)
 	{
 		return Reaction_module_ptr->GetTime();
 	}
-	return -1;
+	return (double) IRM_BADINSTANCE;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -473,7 +473,7 @@ double RM_GetTimeConversion(int * rm_id)
 	{
 		return Reaction_module_ptr->GetTimeConversion();
 	}
-	return -1;
+	return (double) IRM_BADINSTANCE;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -485,11 +485,12 @@ double RM_GetTimeStep(int * rm_id)
 	{
 		return Reaction_module_ptr->GetTimeStep();
 	}
-	return -1;
+	return (double) IRM_BADINSTANCE;
 }
 
 /* ---------------------------------------------------------------------- */
-void RM_InitialPhreeqcRun(int *rm_id, char *db_name, char *chem_name, char *prefix, int l1, int l2, int l3)
+IRM_RESULT 
+RM_InitialPhreeqcRun(int *rm_id, char *db_name, char *chem_name, char *prefix, int l1, int l2, int l3)
 /* ---------------------------------------------------------------------- */
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
@@ -501,8 +502,9 @@ void RM_InitialPhreeqcRun(int *rm_id, char *db_name, char *chem_name, char *pref
 		trim_right(chemistry_name);
 		std::string prefix_name(prefix, l3);
 		trim_right(prefix_name);
-		Reaction_module_ptr->InitialPhreeqcRun(database_name, chemistry_name, prefix_name);
+		return Reaction_module_ptr->InitialPhreeqcRun(database_name, chemistry_name, prefix_name);
 	}
+	return IRM_BADINSTANCE;
 }
 
 /* ---------------------------------------------------------------------- */
