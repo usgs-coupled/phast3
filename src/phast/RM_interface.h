@@ -127,8 +127,8 @@ extern "C" {
 void RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity);
 void RM_close_files(int * solute);
 void RM_convert_to_molal(int *id, double *c, int *n, int *dim);
-int  RM_Create(int *nxyz, int *nthreads);
-IRM_RESULT RM_CreateMapping (int *id, int *grid2chem=NULL); 
+int  RM_Create(int *nxyz, int *nthreads = NULL);
+IRM_RESULT RM_CreateMapping (int *id, int *grid2chem = NULL); 
 IRM_RESULT  RM_Destroy(int *id);
 IRM_RESULT RM_distribute_initial_conditions(int *id,
 		int *initial_conditions1);		// 7 x nxyz end-member 1
@@ -154,14 +154,16 @@ int RM_GetSelectedOutputRowCount(int *id);
 double RM_GetTime(int *id);
 double RM_GetTimeConversion(int *id);
 double RM_GetTimeStep(int *id);
-IRM_RESULT RM_InitialPhreeqcRun(int * id, char *db_name, char *chem_name, char *prefix_name, int l1, int l2, int l3);
+//int  RM_InitialPhreeqcRun(int * id, char *db_name, char *chem_name, char *prefix_name, int l1, int l2, int l3);
+int  RM_InitialPhreeqcRun(int *id, const char *chem_name = NULL, long l = -1);
+int  RM_LoadDatabase(int *id, const char *db_name = NULL, long l = -1);
 void RM_LogMessage(const char *err_str, long l = -1);
-void RM_LogScreenMessage(char *err_str, long l = -1);
-void RM_OpenFiles(int * solute, char * prefix, int l_prefix);
-void RM_open_error_file(void);
-void RM_open_output_file(char * prefix, int l_prefix);
-void RM_open_punch_file(char * prefix, int l_prefix);
-void RM_open_log_file(char * prefix, int l_prefix);
+void RM_LogScreenMessage(const char *err_str, long l = -1);
+void RM_OpenFiles(int * solute, const char * prefix = NULL, int l_prefix = -1);
+//void RM_open_error_file(void);
+//void RM_open_output_file(const char * prefix, int l_prefix = -1);
+//void RM_open_punch_file(const char * prefix, int l_prefix = -1);
+//void RM_open_log_file(const char * prefix, int l_prefix = -1);
 void RM_Module2Concentrations(int *id, double *c = NULL);
 void RM_RunCells(int *id,
 			 double *time,					        // time from transport 
@@ -180,7 +182,7 @@ void RM_setup_boundary_conditions(
 			double *boundary_c, 
 			int *dim);
 void RM_SetDensity(int *id, double *t);
-IRM_RESULT RM_SetFilePrefix(int *id, const char *prefix, long l = -1);
+IRM_RESULT RM_SetFilePrefix(int *id, const char *prefix = NULL, long l = -1);
 void RM_set_free_surface(int *id, int *t);
 void RM_SetInputUnits (int *id, int *sol=NULL, int *pp=NULL, int *ex=NULL, 
 						 int *surf=NULL, int *gas=NULL, int *ss=NULL, int *kin=NULL);

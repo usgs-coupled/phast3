@@ -47,7 +47,9 @@ public:
 	IRM_RESULT GetSelectedOutputHeading(int *icol, std::string &heading);
 	int GetSelectedOutputRowCount(void);
 
-	IRM_RESULT InitialPhreeqcRun(std::string &database_name, std::string &chemistry_name, std::string &prefix);
+	//IRM_RESULT InitialPhreeqcRun(std::string &database_name, std::string &chemistry_name, std::string &prefix);
+	int InitialPhreeqcRun(const char *chemistry_name, long l = -1);
+	int LoadDatabase(const char * database, long l = -1);
 	void RunCells(void);
 	int SetCurrentSelectedOutputUserNumber(int *i);
 	void Send_restart_name(std::string &name);
@@ -63,8 +65,8 @@ public:
 	// setters and getters
 	std::vector<IPhreeqcPhast *> & Get_workers() {return this->workers;}
 	int Get_nthreads() {return this->nthreads;}
-	const std::string Get_database_file_name(void) const {return this->database_file_name;}
-	void Set_database_file_name(std::string &fn) {this->database_file_name = fn;}
+	IRM_RESULT SetChemistryFileName(const char * prefix, long l = -1);
+	const std::string GetDatabaseFileName(void) const {return this->database_file_name;}
 	const std::string GetFilePrefix(void) const {return this->file_prefix;}
 	IRM_RESULT SetFilePrefix(std::string &fn); 
 	IRM_RESULT SetFilePrefix(const char * prefix, long l = -1);
@@ -173,7 +175,7 @@ protected:
 #ifdef SKIP
 	void Init_uz(void);
 #endif
-	void Initial_phreeqc_run_thread(int n);
+	int Initial_phreeqc_run_thread(int n);
 	void Rebalance_load_per_cell(void);
 	void Run_cells_thread(int i);
 	void Scale_solids(int n, int iphrq, LDBLE frac);

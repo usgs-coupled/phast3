@@ -1561,6 +1561,49 @@ Reaction_module::Init_uz(void)
 }
 #endif
 /* ---------------------------------------------------------------------- */
+int
+Reaction_module::Initial_phreeqc_run_thread(int n)
+/* ---------------------------------------------------------------------- */
+{
+		IPhreeqcPhast * iphreeqc_phast_worker = this->Get_workers()[n];
+		int ipp_id = (int) iphreeqc_phast_worker->Get_Index();
+
+		iphreeqc_phast_worker->SetOutputFileOn(false);
+		iphreeqc_phast_worker->SetErrorFileOn(false);
+		iphreeqc_phast_worker->SetLogFileOn(false);
+		iphreeqc_phast_worker->SetSelectedOutputStringOn(false);
+		if (n == 0)
+		{
+			iphreeqc_phast_worker->SetSelectedOutputFileOn(true);
+			iphreeqc_phast_worker->SetOutputStringOn(true);
+		}
+		else
+		{
+			iphreeqc_phast_worker->SetSelectedOutputFileOn(false);
+			iphreeqc_phast_worker->SetOutputStringOn(false);
+		}
+
+		// Load database
+		if (iphreeqc_phast_worker->LoadDatabase(this->database_file_name.c_str()) > 0) RM_Error(&ipp_id);
+		if (n == 0)
+		{
+			Write_output(iphreeqc_phast_worker->GetOutputString());
+		}
+
+		// Run chemistry file
+		if (iphreeqc_phast_worker->RunFile(this->chemistry_file_name.c_str()) > 0) RM_Error(&ipp_id);
+
+		// Create a StorageBin with initial PHREEQC for boundary conditions
+		if (n == 0)
+		{
+			Write_output(iphreeqc_phast_worker->GetOutputString());
+			this->Get_phreeqc_bin().Clear();
+			this->Get_workers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin());
+		}
+		return -1;
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
 void
 Reaction_module::Initial_phreeqc_run_thread(int n)
 /* ---------------------------------------------------------------------- */
@@ -1601,6 +1644,29 @@ Reaction_module::Initial_phreeqc_run_thread(int n)
 			this->Get_workers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin());
 		}
 }
+#endif
+/* ---------------------------------------------------------------------- */
+int
+Reaction_module::InitialPhreeqcRun(const char * chemistry_name, long l)
+/* ---------------------------------------------------------------------- */
+{
+	/*
+	*  Run PHREEQC to obtain PHAST reactants
+	*/
+	this->SetChemistryFileName(chemistry_name, l);
+
+#ifdef THREADED_PHAST
+	omp_set_num_threads(this->nthreads+1);
+	#pragma omp parallel 
+	#pragma omp for
+#endif
+	for (int n = 0; n <= this->nthreads; n++)
+	{
+		Initial_phreeqc_run_thread(n);
+	} 	
+	return IRM_OK;
+}
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 Reaction_module::InitialPhreeqcRun(std::string &database_name, std::string &chemistry_name, std::string &prefix)
@@ -1626,6 +1692,58 @@ Reaction_module::InitialPhreeqcRun(std::string &database_name, std::string &chem
 	} 	
 	return IRM_OK;
 }
+#endif
+/* ---------------------------------------------------------------------- */
+int
+Reaction_module::LoadDatabase(const char * database, long l)
+/* ---------------------------------------------------------------------- */
+{
+	if (this->mpi_myself == 0)
+	{	
+		this->database_file_name = Cptr2TrimString(database, l);
+	}
+#ifdef USE_MPI
+	int l1 = 0;
+	if (mpi_myself == 0)
+	{
+		l1 = (int) this->database_file_name.size();
+	}
+	MPI_Bcast(&l1, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	this->database_file_name.resize(l1);
+	MPI_Bcast((void *) this->database_file_name.c_str(), l1, MPI_CHARACTER, 0, MPI_COMM_WORLD);
+#endif
+	if (this->database_file_name.size() <= 0)
+	{
+		return IRM_INVALIDARG;
+	}
+
+#ifdef USE_MPI
+	return this->workers[0]->LoadDatabase(this->database_file_name.c_str());
+#else
+	std::vector< int > rtn;
+	rtn.resize(this->nthreads + 1);
+#ifdef THREADED_PHAST
+	omp_set_num_threads(this->nthreads+1);
+	#pragma omp parallel 
+	#pragma omp for
+#endif
+	for (int n = 0; n <= this->nthreads; n++)
+	{
+		rtn[n] = this->workers[n]->LoadDatabase(this->database_file_name.c_str());
+	} 	
+	int rtn_value = 0;
+	for (int n = 0; n <= this->nthreads; n++)
+	{
+		rtn_value += rtn[n];
+		if (rtn[n] != 0)
+		{
+			error_msg(this->workers[n]->GetErrorString(), 0);
+		}
+	}
+	return rtn_value;
+#endif
+}
+
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Partition_uz_thread(int n, int iphrq, int ihst, double new_frac)
@@ -3159,6 +3277,7 @@ Reaction_module::SetFilePrefix(const char * prefix, long l)
 	}
 	return IRM_INVALIDARG;
 }
+
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 Reaction_module::SetFilePrefix(std::string &prefix)
@@ -3181,6 +3300,34 @@ Reaction_module::SetFilePrefix(std::string &prefix)
 #endif
 	return IRM_OK;
 }
+
+
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+Reaction_module::SetChemistryFileName(const char * cn, long l)
+/* ---------------------------------------------------------------------- */
+{
+	if (this->mpi_myself == 0)
+	{	
+		this->chemistry_file_name = Cptr2TrimString(cn, l);
+	}
+#ifdef USE_MPI
+	int l1 = 0;
+	if (mpi_myself == 0)
+	{
+		l1 = (int) this->chemistry_file_name.size();
+	}
+	MPI_Bcast(&l1, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	this->chemistry_file_name.resize(l1);
+	MPI_Bcast((void *) this->chemistry_file_name.c_str(), l1, MPI_CHARACTER, 0, MPI_COMM_WORLD);
+#endif
+	if (this->chemistry_file_name.size() > 0)
+	{
+		return IRM_OK;
+	}
+	return IRM_INVALIDARG;
+}
+
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::SetConcentration(double *t)

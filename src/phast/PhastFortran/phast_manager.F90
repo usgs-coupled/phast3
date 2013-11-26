@@ -99,15 +99,15 @@ SUBROUTINE phast_manager
         STOP
     END IF
     
+    status = RM_LoadDatabase(rm_id, f2name);
     !... only root opens files
     isolute = solute
-    status = RM_SetFilePrefix(rm_id, f3name)
-    CALL RM_OpenFiles(isolute, f3name)
+    CALL RM_OpenFiles(rm_id, f3name)
   
     !... Call phreeqc, find number of components; f1name, chem.dat; f2name, database; f3name, prefix
     IF (solute) THEN
         CALL RM_LogScreenMessage("Initial PHREEQC run.")  
-        status = RM_InitialPhreeqcRun(rm_id, f2name, f1name, f3name)
+        status = RM_InitialPhreeqcRun(rm_id, f1name) 
         ! Set components
         ns = RM_FindComponents(rm_id)
         ALLOCATE(comp_name(ns),  & 
