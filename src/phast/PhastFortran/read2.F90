@@ -782,8 +782,6 @@ SUBROUTINE read2
   IF (print_rde) WRITE(furde, 8001) 'fresur,[2.20], adjust_wr_ratio', fresur, temp_logical
   adj_wr_ratio = 0 
   IF (temp_logical) adj_wr_ratio = 1 
-  transient_fresur = 0
-  IF (fresur .AND. .NOT.steady_flow) transient_fresur = 1
   ! ... initial conditions
   ichydp = .FALSE.
   ichwt = .FALSE.

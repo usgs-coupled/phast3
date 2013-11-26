@@ -754,9 +754,9 @@ Reaction_module::cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vecto
 IRM_RESULT
 Reaction_module::Distribute_initial_conditions_mix(
 					int id, 
-					int *initial_conditions1,
-					int *initial_conditions2, 
-					double *fraction1)
+					int *initial_conditions1_in,
+					int *initial_conditions2_in, 
+					double *fraction1_in)
 /* ---------------------------------------------------------------------- */
 {
 	/*
@@ -782,6 +782,36 @@ Reaction_module::Distribute_initial_conditions_mix(
 	 */
 	int i, j;
 	IRM_RESULT rtn = IRM_OK;
+
+	std::vector < int > initial_conditions1, initial_conditions2;
+	std::vector < double > fraction1;
+	initial_conditions1.resize(7 * this->nxyz);
+	initial_conditions2.resize(7 * this->nxyz);
+	fraction1.resize(7 * this->nxyz);
+	size_t array_size = (size_t) (7 * this->nxyz);
+	if (this->mpi_myself == 0)
+	{
+		if (initial_conditions1_in == NULL ||
+			initial_conditions2_in == NULL ||
+			fraction1_in == NULL)
+		{
+			std::ostringstream errstr;
+			errstr << "NULL pointer in call to DistributeInitialConditions\n";
+			error_msg(errstr.str().c_str(), 1);
+		}
+
+		memcpy(initial_conditions1.data(), initial_conditions1_in, array_size * sizeof(int));
+		memcpy(initial_conditions2.data(), initial_conditions2_in, array_size * sizeof(int));
+		memcpy(fraction1.data(),           fraction1_in,           array_size * sizeof(double));
+	}
+#ifdef USE_MPI
+	//
+	// Transfer arrays
+	//
+	MPI_Bcast(initial_conditions1.data(), 7 * (this->nxyz), MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(initial_conditions2.data(), 7 * (this->nxyz), MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(fraction1.data(),           7 * (this->nxyz), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+#endif
 	/*
 	* Make copy of initial conditions for use in restart file
 	*/
@@ -836,8 +866,8 @@ Reaction_module::Distribute_initial_conditions_mix(
 		}
 		assert (porosity > 0.0);
 		double porosity_factor = (1.0 - porosity) / porosity;
-		Cell_initialize(i, j, initial_conditions1, initial_conditions2,
-			fraction1,
+		Cell_initialize(i, j, initial_conditions1.data(), initial_conditions2.data(),
+			fraction1.data(),
 			this->input_units_Exchange, this->input_units_Surface, this->input_units_SSassemblage,
 			this->input_units_PPassemblage, this->input_units_GasPhase, this->input_units_Kinetics,
 			porosity_factor,
@@ -866,8 +896,8 @@ Reaction_module::Distribute_initial_conditions_mix(
 		}
 		assert (porosity > 0.0);
 		double porosity_factor = (1.0 - porosity) / porosity;
-		Cell_initialize(i, j, initial_conditions1, initial_conditions2,
-			fraction1,
+		Cell_initialize(i, j, initial_conditions1.data(), initial_conditions2.data(),
+			fraction1.data(),
 			this->input_units_Exchange, this->input_units_Surface, this->input_units_SSassemblage,
 			this->input_units_PPassemblage, this->input_units_GasPhase, this->input_units_Kinetics,
 			porosity_factor,

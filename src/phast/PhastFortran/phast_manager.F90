@@ -41,7 +41,7 @@ SUBROUTINE phast_manager
         SUBROUTINE xfer_indices(indx_sol1_ic, indx_sol2_ic, &
             mxfrac, naxes, nxyz, &
             x_node, y_node, z_node, &
-            cnvtmi, transient_fresur, &
+            cnvtmi, &
             steady_flow, pv0, &
             rebalance_method_f, volume, tort, npmz, &
             mpi_myself)
@@ -56,7 +56,6 @@ SUBROUTINE phast_manager
             REAL(KIND=kdp) y_node
             REAL(KIND=kdp) z_node 
             REAL(KIND=kdp) cnvtmi 
-            INTEGER :: transient_fresur 
             LOGICAL :: steady_flow 
             REAL(KIND=kdp) :: pv0 
             INTEGER :: rebalance_method_f          
@@ -154,10 +153,10 @@ SUBROUTINE phast_manager
 
 #if defined(USE_MPI)
         ! ... Send data to workers
-        CALL xfer_indices(indx_sol1_ic(1,1), indx_sol2_ic(1,1), ic_mxfrac(1,1), naxes(1), nxyz,  &
-        x_node(1), y_node(1), z_node(1), cnvtmi, transient_fresur, steady_flow, pv0(1),  &
-        rebalance_method_f, volume(1), tort(1), npmz, &
-        mpi_myself)
+        !CALL xfer_indices(indx_sol1_ic(1,1), indx_sol2_ic(1,1), ic_mxfrac(1,1), naxes(1), nxyz,  &
+        !x_node(1), y_node(1), z_node(1), cnvtmi, steady_flow, pv0(1),  &
+        !rebalance_method_f, volume(1), tort(1), npmz, &
+        !mpi_myself)
 #endif
 
         ! ... Send data to threads or workers
@@ -534,3 +533,51 @@ SUBROUTINE transport_component_thread(i)
     CALL XP_free_thread(xp_list(i))
     IF(errexe .OR. errexi) CALL RM_error(rm_id)
 END SUBROUTINE transport_component_thread
+#ifdef SKIP    
+SUBROUTINE ChemistryInitialize 
+    USE mcc, only: solute
+    USE mcv, only: indx_sol1_ic, indx_sol2_ic, ic_mxfrac
+    IF(solute) THEN
+
+#if defined(USE_MPI)
+        ! ... Send data to workers
+        !CALL xfer_indices(indx_sol1_ic(1,1), indx_sol2_ic(1,1), ic_mxfrac(1,1), naxes(1), nxyz,  &
+        !x_node(1), y_node(1), z_node(1), cnvtmi, steady_flow, pv0(1),  &
+        !rebalance_method_f, volume(1), tort(1), npmz, &
+        !mpi_myself)
+#endif
+
+        ! ... Send data to threads or workers
+        
+        CALL RM_SetInputUnits (rm_id, 3, 1, 1, 1, 1, 1, 1)
+        CALL RM_set_nodes(rm_id, x_node(1), y_node(1), z_node(1))
+        CALL RM_SetTimeConversion(rm_id, cnvtmi)
+        CALL RM_SetPv0(rm_id, pv0(1))
+        CALL RM_set_print_chem_mask(rm_id, iprint_chem(1))
+        ifresur = fresur
+        CALL RM_set_free_surface(rm_id, ifresur)
+        isteady_flow = steady_flow
+        CALL RM_set_steady_flow(rm_id, isteady_flow)
+        CALL RM_SetVolume(rm_id, volume(1))
+        CALL RM_SetRebalance(rm_id, rebalance_method_f, rebalance_fraction_f)
+
+        ! ... Define mapping from 3D domain to chemistry
+        CALL create_mapping(indx_sol1_ic)
+        status = RM_CreateMapping(rm_id, grid2chem(1))
+        
+        DO i = 1, num_restart_files
+            CALL RM_send_restart_name(rm_id, restart_files(i))
+        ENDDO
+
+        ! ... Distribute chemistry initial conditions
+        status = RM_distribute_initial_conditions_mix(rm_id, &
+            indx_sol1_ic(1,1),           & ! 7 x nxyz end-member 1 
+            indx_sol2_ic(1,1),           & ! 7 x nxyz end-member 2
+            ic_mxfrac(1,1))                ! 7 x nxyz fraction of end-member 1
+
+        ! collect solutions at manager for transport
+        CALL RM_Module2Concentrations(rm_id, c(1,1))
+    ENDIF        ! ... solute
+    
+    END SUBROUTINE ChemistryInitialize
+#endif  
