@@ -92,7 +92,7 @@ SUBROUTINE phast_worker
  
     status = RM_LoadDatabase(rm_id, f2name);
     ! ... Open C files 
-    CALL RM_OpenFiles(rm_id)
+    status = RM_OpenFiles(rm_id)
 
     IF (solute) THEN
 

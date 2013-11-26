@@ -12,7 +12,7 @@
 #if defined(FC_FUNC_)
 // Called from Fortran or C++
 #define RM_calculate_well_ph               FC_FUNC_ (rm_calculate_well_ph,             RM_CALCULATE_WELL_PH)
-#define RM_close_files                     FC_FUNC_ (rm_close_files,                   RM_CLOSE_FILES)    
+#define RM_CloseFiles                      FC_FUNC_ (rm_closefiles,                    RM_CLOSEFILES)    
 #define RM_convert_to_molal                FC_FUNC_ (rm_convert_to_molal,              RM_CONVERT_TO_MOLAL)   
 #define RM_Create                          FC_FUNC_ (rm_create,                        RM_CREATE)
 #define RM_CreateMapping                   FC_FUNC_ (rm_createmapping,                 RM_CREATEMAPPING)
@@ -70,7 +70,7 @@
 #endif
 #ifdef SKIP
 #define RM_calculate_well_ph                  rm_calculate_well_ph
-#define RM_close_files                        rm_close_files
+#define RM_CloseFiles                         rm_closefiles
 #define RM_convert_to_molal                   rm_convert_to_molal
 #define RM_Create                             RM_Create
 #define RM_Destroy                            rm_destroy
@@ -125,7 +125,7 @@ private:
 extern "C" {
 #endif
 void RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity);
-void RM_close_files(int * solute);
+void RM_CloseFiles(void);
 void RM_convert_to_molal(int *id, double *c, int *n, int *dim);
 int  RM_Create(int *nxyz, int *nthreads = NULL);
 IRM_RESULT RM_CreateMapping (int *id, int *grid2chem = NULL); 
@@ -154,16 +154,11 @@ int RM_GetSelectedOutputRowCount(int *id);
 double RM_GetTime(int *id);
 double RM_GetTimeConversion(int *id);
 double RM_GetTimeStep(int *id);
-//int  RM_InitialPhreeqcRun(int * id, char *db_name, char *chem_name, char *prefix_name, int l1, int l2, int l3);
 int  RM_InitialPhreeqcRun(int *id, const char *chem_name = NULL, long l = -1);
 int  RM_LoadDatabase(int *id, const char *db_name = NULL, long l = -1);
 void RM_LogMessage(const char *err_str, long l = -1);
 void RM_LogScreenMessage(const char *err_str, long l = -1);
-void RM_OpenFiles(int * solute, const char * prefix = NULL, int l_prefix = -1);
-//void RM_open_error_file(void);
-//void RM_open_output_file(const char * prefix, int l_prefix = -1);
-//void RM_open_punch_file(const char * prefix, int l_prefix = -1);
-//void RM_open_log_file(const char * prefix, int l_prefix = -1);
+IRM_RESULT RM_OpenFiles(int * solute, const char * prefix = NULL, int l_prefix = -1);
 void RM_Module2Concentrations(int *id, double *c = NULL);
 void RM_RunCells(int *id,
 			 double *time,					        // time from transport 

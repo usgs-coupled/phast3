@@ -1602,49 +1602,7 @@ Reaction_module::Initial_phreeqc_run_thread(int n)
 		}
 		return -1;
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::Initial_phreeqc_run_thread(int n)
-/* ---------------------------------------------------------------------- */
-{
-		IPhreeqcPhast * iphreeqc_phast_worker = this->Get_workers()[n];
-		int ipp_id = (int) iphreeqc_phast_worker->Get_Index();
 
-		iphreeqc_phast_worker->SetOutputFileOn(false);
-		iphreeqc_phast_worker->SetErrorFileOn(false);
-		iphreeqc_phast_worker->SetLogFileOn(false);
-		iphreeqc_phast_worker->SetSelectedOutputStringOn(false);
-		if (n == 0)
-		{
-			iphreeqc_phast_worker->SetSelectedOutputFileOn(true);
-			iphreeqc_phast_worker->SetOutputStringOn(true);
-		}
-		else
-		{
-			iphreeqc_phast_worker->SetSelectedOutputFileOn(false);
-			iphreeqc_phast_worker->SetOutputStringOn(false);
-		}
-
-		// Load database
-		if (iphreeqc_phast_worker->LoadDatabase(this->database_file_name.c_str()) > 0) RM_Error(&ipp_id);
-		if (n == 0)
-		{
-			Write_output(iphreeqc_phast_worker->GetOutputString());
-		}
-
-		// Run chemistry file
-		if (iphreeqc_phast_worker->RunFile(this->chemistry_file_name.c_str()) > 0) RM_Error(&ipp_id);
-
-		// Create a StorageBin with initial PHREEQC for boundary conditions
-		if (n == 0)
-		{
-			Write_output(iphreeqc_phast_worker->GetOutputString());
-			this->Get_phreeqc_bin().Clear();
-			this->Get_workers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin());
-		}
-}
-#endif
 /* ---------------------------------------------------------------------- */
 int
 Reaction_module::InitialPhreeqcRun(const char * chemistry_name, long l)
@@ -1666,33 +1624,7 @@ Reaction_module::InitialPhreeqcRun(const char * chemistry_name, long l)
 	} 	
 	return IRM_OK;
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
-Reaction_module::InitialPhreeqcRun(std::string &database_name, std::string &chemistry_name, std::string &prefix)
-/* ---------------------------------------------------------------------- */
-{
-	/*
-	*  Run PHREEQC to obtain PHAST reactants
-	*/
-	this->database_file_name = database_name;
-	this->chemistry_file_name = chemistry_name;
-	this->file_prefix = prefix;
 
-	// load database and run chemistry file
-	// Eventually need an copy operator for IPhreeqcPhast
-#ifdef THREADED_PHAST
-	omp_set_num_threads(this->nthreads+1);
-	#pragma omp parallel 
-	#pragma omp for
-#endif
-	for (int n = 0; n <= this->nthreads; n++)
-	{
-		Initial_phreeqc_run_thread(n);
-	} 	
-	return IRM_OK;
-}
-#endif
 /* ---------------------------------------------------------------------- */
 int
 Reaction_module::LoadDatabase(const char * database, long l)

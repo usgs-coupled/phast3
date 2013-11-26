@@ -1,8 +1,7 @@
     INTERFACE
-        SUBROUTINE RM_close_files(solute)
+        SUBROUTINE RM_CloseFiles()
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: solute
-        END SUBROUTINE RM_close_files
+        END SUBROUTINE RM_CloseFiles
         
         SUBROUTINE RM_convert_to_molal(id, c, n, dim)
             IMPLICIT NONE
@@ -126,7 +125,7 @@
             CHARACTER, OPTIONAL, INTENT(in) :: chem_name
         END FUNCTION RM_InitialPhreeqcRun          
         
-        INTEGER FUNCTION  RM_LoadDatabase(id, db) 
+        INTEGER FUNCTION RM_LoadDatabase(id, db) 
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
             CHARACTER, OPTIONAL, INTENT(in) :: db
@@ -143,11 +142,11 @@
             DOUBLE PRECISION, OPTIONAL :: c
         END SUBROUTINE RM_Module2Concentrations  
         
-        SUBROUTINE RM_OpenFiles(id, prefix) 
+        INTEGER FUNCTION RM_OpenFiles(id, prefix) 
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
             CHARACTER, OPTIONAL, INTENT(in) :: prefix
-        END SUBROUTINE RM_OpenFiles
+        END FUNCTION RM_OpenFiles
         
         SUBROUTINE RM_RunCells(id, time, time_step, c, stop_msg)   
             IMPLICIT NONE
