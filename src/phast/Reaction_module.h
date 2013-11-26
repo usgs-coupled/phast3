@@ -28,121 +28,119 @@ public:
 
 	Reaction_module(int *nxyz = NULL, int *thread_count = NULL, PHRQ_io * io=NULL);
 	~Reaction_module(void);
-	void Calculate_well_ph(double *c, double * ph, double * alkalinity);
-	int CheckSelectedOutput();
-	void Convert_to_molal(double *c, int n, int dim);
-	IRM_RESULT Distribute_initial_conditions_mix(
+	void                           Calculate_well_ph(double *c, double * ph, double * alkalinity);
+	int                            CheckSelectedOutput();
+	void                           Convert_to_molal(double *c, int n, int dim);
+	IRM_RESULT                     Distribute_initial_conditions_mix(
 		int id,
 		int *initial_conditions1,
 		int *initial_conditions2,	
 		double *fraction1);
-	int Find_components();
-	void Concentrations2Module(void);	
-	static std::string Cptr2TrimString(const char * str, long l = -1);
-	
-	int GetNthSelectedOutputUserNumber(int *i);
-	IRM_RESULT GetSelectedOutput(double *so);
-	int GetSelectedOutputColumnCount(void);
-	int GetSelectedOutputCount(void);
-	IRM_RESULT GetSelectedOutputHeading(int *icol, std::string &heading);
-	int GetSelectedOutputRowCount(void);
-
-	//IRM_RESULT InitialPhreeqcRun(std::string &database_name, std::string &chemistry_name, std::string &prefix);
-	int InitialPhreeqcRun(const char *chemistry_name, long l = -1);
-	int LoadDatabase(const char * database, long l = -1);
-	void RunCells(void);
-	int SetCurrentSelectedOutputUserNumber(int *i);
-	void Send_restart_name(std::string &name);
-	IRM_RESULT CreateMapping(int *grid2chem);
-	void Setup_boundary_conditions(const int n_boundary, int *boundary_solution1,
-						  int *boundary_solution2, double *fraction1,
-						  double *boundary_fraction, int dim);
-	void Module2Concentrations(double * c);
-	void Write_bc_raw(int *solution_list, int * bc_solution_count, 
-		int * solution_number, const std::string &prefix);
+	int                            Find_components();
+	void                           Concentrations2Module(void);	
+	static std::string             Cptr2TrimString(const char * str, long l = -1);
+	int                            GetNthSelectedOutputUserNumber(int *i);
+	IRM_RESULT                     GetSelectedOutput(double *so);
+	int                            GetSelectedOutputColumnCount(void);
+	int                            GetSelectedOutputCount(void);
+	IRM_RESULT                     GetSelectedOutputHeading(int *icol, std::string &heading);
+	int                            GetSelectedOutputRowCount(void);
+	int                            InitialPhreeqcRun(const char *chemistry_name, long l = -1);
+	int                            LoadDatabase(const char * database, long l = -1);
+	void                           Module2Concentrations(double * c);
+	void                           RunCells(void);
+	int                            SetCurrentSelectedOutputUserNumber(int *i);
+	void                           Send_restart_name(std::string &name);
+	IRM_RESULT                     CreateMapping(int *grid2chem);
+	void                           Setup_boundary_conditions(const int n_boundary, int *boundary_solution1,
+		int *boundary_solution2, 
+		double *fraction1,
+		double *boundary_fraction, 
+		int dim);
+	void                           Write_bc_raw(int *solution_list, int * bc_solution_count, 
+		int * solution_number, 
+		const std::string &prefix);
 	void Write_restart(void);
 
 	// setters and getters
 	std::vector<IPhreeqcPhast *> & Get_workers() {return this->workers;}
-	int Get_nthreads() {return this->nthreads;}
-	IRM_RESULT SetChemistryFileName(const char * prefix, long l = -1);
-	const std::string GetDatabaseFileName(void) const {return this->database_file_name;}
-	const std::string GetFilePrefix(void) const {return this->file_prefix;}
-	IRM_RESULT SetFilePrefix(std::string &fn); 
-	IRM_RESULT SetFilePrefix(const char * prefix, long l = -1);
-	cxxStorageBin & Get_phreeqc_bin(void) {return this->phreeqc_bin;}
-	const int Get_mpi_tasks(void) const {return this->mpi_tasks;}
-	void Set_mpi_tasks(int t) {this->mpi_tasks = t;}
-	const int GetMpiMyself(void) const {return this->mpi_myself;}
-	//void Set_mpi_myself(int t) {this->mpi_myself = t;}
-	std::vector<double> & Get_old_saturation(void) {return this->old_saturation;}
-	const bool Get_free_surface(void) const {return this->free_surface;};
-	void Set_free_surface(int * t); 
-	const bool Get_steady_flow(void) const {return this->steady_flow;};
-	void Set_steady_flow(int * t);
-	const int GetChemistryCellCount(void) const {return this->count_chem;}
-	const int GetGridCellCount(void) const {return this->nxyz;};
-	//void SetNxyz(int t) {this->nxyz = t;};
-	const std::vector<std::string> & Get_components(void) const {return this->components;};
-	double GetTime(void) const {return this->time;};
-	void SetTime(double *t = NULL); 
-	double GetTimeStep(void) const {return this->time_step;};
-	void SetTimeStep(double *t = NULL); 
-	const double GetTimeConversion(void) const {return this->time_conversion;};
-	void SetTimeConversion(double *t); 
-	const std::vector<double> & Get_x_node(void) const {return this->x_node;};
-	void Set_x_node(double * t = NULL);
-	const std::vector<double> & Get_y_node(void) const {return this->y_node;};
-	void Set_y_node(double * t = NULL);
-	const std::vector<double> & Get_z_node(void) const {return this->z_node;};
-	void Set_z_node(double * t = NULL);
-	std::vector<double> & GetDensity(void) {return this->density;};
-	void SetDensity(double * t = NULL); 
-	std::vector<double> & GetConcentration(void) {return this->concentration;}
-	void SetConcentration(double * t = NULL); 
-	std::vector<double> & GetSaturation(void) {return this->saturation;}
-	void SetSaturation(double * t); 
-	std::vector<double> & Get_pv(void) {return this->pv;}
-	void SetPressure(double * t = NULL); 
-	std::vector<double> & GetPressure(void) {return this->pressure;}
-	void SetPv(double * t = NULL); 
-	std::vector<double> & GetPv0(void) {return this->pv0;}
-	void SetPv0(double * t = NULL);
-	std::vector<double> & GetTemperature(void) {return this->tempc;}
-	void SetTemperature(double * t = NULL); 
-	std::vector<double> & GetVolume(void) {return this->volume;}
-	void SetVolume(double * t); 
-	std::vector<int> & Get_print_chem_mask (void) {return this->print_chem_mask;}
-	void Set_print_chem_mask(int * t); 
-	int GetRebalanceMethod(void) const {return this->rebalance_method;};
-	void SetRebalanceMethod(int * t); 
-	double Get_rebalance_fraction(void) const {return this->rebalance_fraction;};
-	void Set_rebalance_fraction(double * t); 
-	const bool Get_print_chem(void) const {return this->print_chem;};
-	void Set_print_chem(int *t); 
-	const bool GetSelectedOutputOn(void) const {return this->selected_output_on;};
-	void SetSelectedOutputOn(int *t);
-	const bool Get_print_restart(void) const {return this->print_restart;};
-	void Set_print_restart(int *t); 
-	const bool Get_stop_message(void) const {return this->stop_message;};
-	void Set_stop_message(bool t = false); 
+	int                            Get_nthreads() {return this->nthreads;}
+	IRM_RESULT                     SetChemistryFileName(const char * prefix, long l = -1);
+	const std::string              GetDatabaseFileName(void) const {return this->database_file_name;}
+	const std::string              GetFilePrefix(void) const {return this->file_prefix;}
+	IRM_RESULT                     SetFilePrefix(std::string &fn); 
+	IRM_RESULT                     SetFilePrefix(const char * prefix, long l = -1);
+	cxxStorageBin &                Get_phreeqc_bin(void) {return this->phreeqc_bin;}
+	const int                      Get_mpi_tasks(void) const {return this->mpi_tasks;}
+	void                           Set_mpi_tasks(int t) {this->mpi_tasks = t;}
+	const int                      GetMpiMyself(void) const {return this->mpi_myself;}
+	std::vector<double> &          Get_old_saturation(void) {return this->old_saturation;}
+	const bool                     Get_free_surface(void) const {return this->free_surface;}
+	void                           Set_free_surface(int * t); 
+	const bool                     Get_steady_flow(void) const {return this->steady_flow;}
+	void                           Set_steady_flow(int * t);
+	const int                      GetChemistryCellCount(void) const {return this->count_chem;}
+	const int                      GetGridCellCount(void) const {return this->nxyz;}
+	const std::vector<std::string> & Get_components(void) const {return this->components;}
+	double                         GetTime(void) const {return this->time;}
+	void                           SetTime(double *t = NULL); 
+	double                         GetTimeStep(void) const {return this->time_step;}
+	void                           SetTimeStep(double *t = NULL); 
+	const double                   GetTimeConversion(void) const {return this->time_conversion;}
+	void                           SetTimeConversion(double *t); 
+	const std::vector<double> &    Get_x_node(void) const {return this->x_node;}
+	void                           Set_x_node(double * t = NULL);
+	const std::vector<double> &    Get_y_node(void) const {return this->y_node;}
+	void                           Set_y_node(double * t = NULL);
+	const std::vector<double> &    Get_z_node(void) const {return this->z_node;}
+	void                           Set_z_node(double * t = NULL);
+	std::vector<double> &          GetDensity(void) {return this->density;}
+	void                           SetDensity(double * t = NULL); 
+	std::vector<double> &          GetConcentration(void) {return this->concentration;}
+	void                           SetConcentration(double * t = NULL); 
+	std::vector<double> &          GetSaturation(void) {return this->saturation;}
+	void                           SetSaturation(double * t); 
+	std::vector<double> &          Get_pv(void) {return this->pv;}
+	void                           SetPressure(double * t = NULL); 
+	std::vector<double> &          GetPressure(void) {return this->pressure;}
+	void                           SetPv(double * t = NULL); 
+	std::vector<double> &          GetPv0(void) {return this->pv0;}
+	void                           SetPv0(double * t = NULL);
+	std::vector<double> &          GetTemperature(void) {return this->tempc;}
+	void                           SetTemperature(double * t = NULL); 
+	std::vector<double> &          GetVolume(void) {return this->volume;}
+	void                           SetVolume(double * t); 
+	std::vector<int> &             Get_print_chem_mask (void) {return this->print_chem_mask;}
+	void                           Set_print_chem_mask(int * t); 
+	int                            GetRebalanceMethod(void) const {return this->rebalance_method;}
+	void                           SetRebalanceMethod(int * t); 
+	double                         Get_rebalance_fraction(void) const {return this->rebalance_fraction;}
+	void                           Set_rebalance_fraction(double * t); 
+	const bool                     Get_print_chem(void) const {return this->print_chem;}
+	void                           Set_print_chem(int *t); 
+	const bool                     GetSelectedOutputOn(void) const {return this->selected_output_on;}
+	void                           SetSelectedOutputOn(int *t);
+	const bool                     Get_print_restart(void) const {return this->print_restart;}
+	void                           Set_print_restart(int *t); 
+	const bool                     Get_stop_message(void) const {return this->stop_message;}
+	void                           Set_stop_message(bool t = false); 
 	
-	int Get_input_units_Solution(void) {return this->input_units_Solution;}
-	int Get_input_units_PPassemblage(void) {return this->input_units_PPassemblage;}
-	int Get_input_units_Exchange(void) {return this->input_units_Exchange;}
-	int Get_input_units_Surface(void) {return this->input_units_Surface;}
-	int Get_input_units_GasPhase(void) {return this->input_units_GasPhase;}
-	int Get_input_units_SSassemblage(void) {return this->input_units_SSassemblage;}
-	int Get_input_units_Kinetics(void) {return this->input_units_Kinetics;}
+	int                            Get_input_units_Solution(void) {return this->input_units_Solution;}
+	int                            Get_input_units_PPassemblage(void) {return this->input_units_PPassemblage;}
+	int                            Get_input_units_Exchange(void) {return this->input_units_Exchange;}
+	int                            Get_input_units_Surface(void) {return this->input_units_Surface;}
+	int                            Get_input_units_GasPhase(void) {return this->input_units_GasPhase;}
+	int                            Get_input_units_SSassemblage(void) {return this->input_units_SSassemblage;}
+	int                            Get_input_units_Kinetics(void) {return this->input_units_Kinetics;}
 
-	void Set_input_units_Solution(int i) {this->input_units_Solution = i;}
-	void Set_input_units_PPassemblage(int i) {this->input_units_PPassemblage = i;}
-	void Set_input_units_Exchange(int i) {this->input_units_Exchange = i;}
-	void Set_input_units_Surface(int i) {this->input_units_Surface = i;}
-	void Set_input_units_GasPhase(int i) {this->input_units_GasPhase = i;}
-	void Set_input_units_SSassemblage(int i) {this->input_units_SSassemblage = i;}
-	void Set_input_units_Kinetics(int i) {this->input_units_Kinetics = i;}
-	void Set_input_units(int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *k);
+	void                           Set_input_units_Solution(int i) {this->input_units_Solution = i;}
+	void                           Set_input_units_PPassemblage(int i) {this->input_units_PPassemblage = i;}
+	void                           Set_input_units_Exchange(int i) {this->input_units_Exchange = i;}
+	void                           Set_input_units_Surface(int i) {this->input_units_Surface = i;}
+	void                           Set_input_units_GasPhase(int i) {this->input_units_GasPhase = i;}
+	void                           Set_input_units_SSassemblage(int i) {this->input_units_SSassemblage = i;}
+	void                           Set_input_units_Kinetics(int i) {this->input_units_Kinetics = i;}
+	void                           Set_input_units(int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *k);
 protected:
 	void BeginTimeStep(void);
 	void Cell_initialize(

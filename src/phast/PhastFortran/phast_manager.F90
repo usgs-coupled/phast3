@@ -30,7 +30,7 @@ SUBROUTINE phast_manager
     INTEGER :: stop_msg, ipp_err
     CHARACTER(LEN=130) :: logline1
     INTEGER :: i, a_err
-    INTEGER isolute, ifresur, isteady_flow
+    INTEGER ifresur, isteady_flow
     INTERFACE
         SUBROUTINE create_mapping(ic)
             implicit none
@@ -100,9 +100,7 @@ SUBROUTINE phast_manager
     END IF
     
     status = RM_LoadDatabase(rm_id, f2name);
-    !... only root opens files
-    isolute = solute
-    CALL RM_OpenFiles(rm_id, f3name)
+    status = RM_OpenFiles(rm_id, f3name)
   
     !... Call phreeqc, find number of components; f1name, chem.dat; f2name, database; f3name, prefix
     IF (solute) THEN
@@ -409,7 +407,7 @@ SUBROUTINE phast_manager
     IF (solute) THEN  
         if (RM_Destroy(rm_id) < 0) CALL RM_error(rm_id)     
     ENDIF
-    CALL RM_close_files(isolute)
+    CALL RM_CloseFiles()
 
     ! ... Cleanup PHAST
     CALL terminate_phast

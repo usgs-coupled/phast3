@@ -106,7 +106,7 @@ RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity)
 }
 /* ---------------------------------------------------------------------- */
 void
-RM_close_files(int *solute)
+RM_CloseFiles(void)
 /* ---------------------------------------------------------------------- */
 {
 	// error_file is stderr
@@ -114,14 +114,8 @@ RM_close_files(int *solute)
 	// open echo and log file, prefix.log.txt
 	RM_interface::phast_io.log_close();
 
-	if (*solute != 0)
-	{
-		// output_file is prefix.chem.txt
-		RM_interface::phast_io.output_close();
-
-		// punch_file is prefix.chem.txt
-		RM_interface::phast_io.punch_close();
-	}
+	// output_file is prefix.chem.txt
+	RM_interface::phast_io.output_close();
 }
 
 /* ---------------------------------------------------------------------- */
@@ -499,26 +493,7 @@ RM_InitialPhreeqcRun(int *rm_id, const char *chem_name, long l)
 	}
 	return IRM_BADINSTANCE;
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-IRM_RESULT 
-RM_InitialPhreeqcRun(int *rm_id, char *db_name, char *chem_name, char *prefix, int l1, int l2, int l3)
-/* ---------------------------------------------------------------------- */
-{
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
-	if (Reaction_module_ptr)
-	{
-		std::string database_name(db_name, l1);
-		trim_right(database_name);
-		std::string chemistry_name(chem_name, l2);
-		trim_right(chemistry_name);
-		std::string prefix_name(prefix, l3);
-		trim_right(prefix_name);
-		return Reaction_module_ptr->InitialPhreeqcRun(database_name, chemistry_name, prefix_name);
-	}
-	return IRM_BADINSTANCE;
-}
-#endif
+
 /* ---------------------------------------------------------------------- */
 void
 RM_LogMessage(const char *err_str, long l)
@@ -602,14 +577,16 @@ RM_open_error_file(void)
 }
 
 /* ---------------------------------------------------------------------- */
-void
+IRM_RESULT
 RM_OpenFiles(int *id, const char * prefix_in, int l)
 /* ---------------------------------------------------------------------- */
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->SetFilePrefix(prefix_in, l);
+		
+		IRM_RESULT rtn;
+		rtn = Reaction_module_ptr->SetFilePrefix(prefix_in, l);
 
 		// Files opened by root
 		if (Reaction_module_ptr->GetMpiMyself() == 0)
@@ -630,42 +607,11 @@ RM_OpenFiles(int *id, const char * prefix_in, int l)
 			//RM_open_output_file(Reaction_module_ptr->GetFilePrefix().c_str(), l);
 			RM_interface::phast_io.output_open(cn.c_str());
 		}
+		return rtn;
 	}
-}
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void
-RM_open_log_file(const char * prefix, int l_prefix)
-/* ---------------------------------------------------------------------- */
-{
-	std::string fn(prefix, l_prefix);
-	trim(fn);
-	fn.append(".log.txt");
-	RM_interface::phast_io.log_open(fn.c_str());
+	return IRM_BADINSTANCE;
 }
 
-/* ---------------------------------------------------------------------- */
-void
-RM_open_output_file(const char * prefix, int l_prefix)
-/* ---------------------------------------------------------------------- */
-{
-	std::string fn(prefix, l_prefix);
-	trim(fn);
-	fn.append(".chem.txt");
-	RM_interface::phast_io.output_open(fn.c_str());
-}
-
-/* ---------------------------------------------------------------------- */
-void
-RM_open_punch_file(const char * prefix, int l_prefix)
-/* ---------------------------------------------------------------------- */
-{
-	std::string fn(prefix, l_prefix);
-	trim(fn);
-	fn.append(".chem.xyz.tsv");
-	RM_interface::phast_io.punch_open(fn.c_str());
-}
-#endif
 /* ---------------------------------------------------------------------- */
 void RM_RunCells(int *id,
 			 double *time,					        // time from transport 
@@ -733,7 +679,6 @@ RM_send_restart_name(int *id, char *name, long nchar)
 	trim(stdstring);
 	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	Reaction_module_ptr->Send_restart_name(stdstring);
-
 }
 
 /* ---------------------------------------------------------------------- */
