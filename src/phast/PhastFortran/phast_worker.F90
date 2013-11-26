@@ -3,7 +3,7 @@ SUBROUTINE phast_worker
     ! ... The top level routine for a worker process that does the 
     ! ...     solute transport calculation for one component
     USE machine_constants, ONLY: kdp, one_plus_eps
-    USE mcb, ONLY: fresur, adj_wr_ratio, transient_fresur, qfsbc, nsbc
+    USE mcb, ONLY: fresur, adj_wr_ratio, qfsbc, nsbc
     USE mcc
     USE mcg
     USE mcch
@@ -28,7 +28,7 @@ SUBROUTINE phast_worker
         SUBROUTINE xfer_indices(indx_sol1_ic, indx_sol2_ic, &
             mxfrac, naxes, nxyz, &
             x_node, y_node, z_node, &
-            cnvtmi, transient_fresur, &
+            cnvtmi, &
             steady_flow, pv0, &
             rebalance_method_f, volume, tort, npmz, &
             mpi_myself)
@@ -43,7 +43,6 @@ SUBROUTINE phast_worker
             REAL(KIND=kdp) y_node
             REAL(KIND=kdp) z_node 
             REAL(KIND=kdp) cnvtmi 
-            INTEGER :: transient_fresur 
             LOGICAL :: steady_flow 
             REAL(KIND=kdp) :: pv0 
             INTEGER :: rebalance_method_f          
@@ -131,10 +130,10 @@ SUBROUTINE phast_worker
         time_phreeqc = 0._kdp
 
         ! ... Initialize chemistry 
-        CALL xfer_indices(indx_sol1_ic(1,1), indx_sol2_ic(1,1), ic_mxfrac(1,1), naxes(1), nxyz,  &
-            x_node(1), y_node(1), z_node(1), cnvtmi, transient_fresur, steady_flow, pv0(1),  &
-            rebalance_method_f, volume(1), tort(1), npmz, &
-            mpi_myself)
+        !CALL xfer_indices(indx_sol1_ic(1,1), indx_sol2_ic(1,1), ic_mxfrac(1,1), naxes(1), nxyz,  &
+        !    x_node(1), y_node(1), z_node(1), cnvtmi, steady_flow, pv0(1),  &
+        !    rebalance_method_f, volume(1), tort(1), npmz, &
+        !    mpi_myself)
         CALL RM_SetInputUnits (rm_id)
         CALL RM_set_nodes(rm_id)
         CALL RM_SetTimeConversion(rm_id)
@@ -318,7 +317,7 @@ CONTAINS
         ! ... Allocate node information arrays: mcn
         ALLOCATE (rm(nx), x(nx), y(ny), z(nz), x_node(nxyz), y_node(nxyz), z_node(nxyz),  &
             x_face(nx-1), y_face(ny-1), z_face(nz-1), pv(nxyz), &
-            pv0(nxyz), volume(nxyz), tort(npmz), &
+            pv0(nxyz), volume(nxyz), & ! tort(npmz), &
             STAT = a_err)
         IF (a_err /= 0) THEN  
             PRINT *, "Array allocation failed: init1_xfer_w, point 2"  

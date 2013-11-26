@@ -42,7 +42,7 @@ MODULE mcb
        netbc=0, naifc=0,  &
        nhcbc=0, nhcn=0, nztphc=0, num_bndy_cells=0
   LOGICAL :: fresur
-  INTEGER :: adj_wr_ratio, transient_fresur
+  INTEGER :: adj_wr_ratio
   REAL(KIND=kdp) :: visdbc
   INTEGER, DIMENSION(:), ALLOCATABLE :: flux_seg_m, flux_seg_first,  &
        flux_seg_last, leak_seg_m, leak_seg_first, leak_seg_last,  &

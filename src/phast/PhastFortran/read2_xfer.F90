@@ -81,11 +81,13 @@ SUBROUTINE read2_xfer_m
     CALL MPI_BCAST(k2z(1), SIZE(k2z), MPI_INTEGER, manager, &
         world, ierrmpi) 
 
-  !*** 4 broadcast poros, abpm
+  !*** 4 broadcast poros, abpm, tort
   ! ... create MPI structure for two real arrays
     CALL MPI_BCAST(poros(1), SIZE(poros), MPI_DOUBLE, manager, &
         world, ierrmpi)
     CALL MPI_BCAST(abpm(1), SIZE(abpm), MPI_DOUBLE, manager, &
+        world, ierrmpi)
+    CALL MPI_BCAST(tort(1), SIZE(tort), MPI_DOUBLE, manager, &
         world, ierrmpi)
 
   !*** 5 broadcast alphl, alphth, alphtv
@@ -345,14 +347,14 @@ SUBROUTINE read2_xfer_w
   ! ...      Porous media zones
   ! ... Allocate the parameter arrays: mcp
   ALLOCATE (rcppm(1),  &
-       abpm(npmz), alphl(npmz), alphth(npmz), alphtv(npmz), poros(npmz), & ! tort(npmz), &
+       abpm(npmz), alphl(npmz), alphth(npmz), alphtv(npmz), poros(npmz), tort(npmz), &
        STAT = a_err)
   IF(a_err /= 0) THEN  
      PRINT * , "array allocation failed: read2_w, point 2"
      STOP
   ENDIF
   ! ... Allocate region geometry information: mcg
-  ALLOCATE(i1z(npmz), i2z(npmz), j1z(npmz), j2z(npmz), k1z(npmz), k2z(npmz),  &
+  ALLOCATE(i1z(npmz), i2z(npmz), j1z(npmz), j2z(npmz), k1z(npmz), k2z(npmz), &
        STAT = a_err)
   IF(a_err /= 0) THEN  
      PRINT * , "array allocation failed: read2_w, point 4"
@@ -373,12 +375,14 @@ SUBROUTINE read2_xfer_w
     CALL MPI_BCAST(k2z(1), SIZE(k2z), MPI_INTEGER, manager, &
         world, ierrmpi)
 
-  !*** 4 broadcast poros, abpm   
+  !*** 4 broadcast poros, abpm, tort  
   ! ... Permeability; not needed
   ! ... Porosity & porous media compressibilities
     CALL MPI_BCAST(poros(1), SIZE(poros), MPI_DOUBLE, manager, &
         world, ierrmpi)
     CALL MPI_BCAST(abpm(1), SIZE(abpm), MPI_DOUBLE, manager, &
+        world, ierrmpi)
+    CALL MPI_BCAST(tort(1), SIZE(tort), MPI_DOUBLE, manager, &
         world, ierrmpi)
 
   !*** 5 broadcast alphl, alphth, alphtv   
