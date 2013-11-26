@@ -120,11 +120,17 @@
             INTEGER, INTENT(in) :: id
         END FUNCTION RM_GetTimeStep
         
-        INTEGER FUNCTION RM_InitialPhreeqcRun(id, db_name, chem_name, prefix)
+        INTEGER FUNCTION RM_InitialPhreeqcRun(id, chem_name)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            CHARACTER :: db_name, chem_name, prefix
-        END FUNCTION RM_InitialPhreeqcRun        
+            CHARACTER, OPTIONAL, INTENT(in) :: chem_name
+        END FUNCTION RM_InitialPhreeqcRun          
+        
+        INTEGER FUNCTION  RM_LoadDatabase(id, db) 
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            CHARACTER, OPTIONAL, INTENT(in) :: db
+        END FUNCTION RM_LoadDatabase 
         
         SUBROUTINE RM_LogScreenMessage(str) 
             IMPLICIT NONE
@@ -137,10 +143,10 @@
             DOUBLE PRECISION, OPTIONAL :: c
         END SUBROUTINE RM_Module2Concentrations  
         
-        SUBROUTINE RM_OpenFiles(solute, prefix) 
+        SUBROUTINE RM_OpenFiles(id, prefix) 
             IMPLICIT NONE
-            INTEGER :: solute
-            CHARACTER :: prefix
+            INTEGER, INTENT(in) :: id
+            CHARACTER, OPTIONAL, INTENT(in) :: prefix
         END SUBROUTINE RM_OpenFiles
         
         SUBROUTINE RM_RunCells(id, time, time_step, c, stop_msg)   

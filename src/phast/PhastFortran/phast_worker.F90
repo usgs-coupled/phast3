@@ -90,14 +90,14 @@ SUBROUTINE phast_worker
         STOP 
     END IF
  
-    ! ... Open C files //TODO error checks
-    status = RM_SetFilePrefix(rm_id)
-    !CALL RM_OpenFiles(solute, f3name)
+    status = RM_LoadDatabase(rm_id, f2name);
+    ! ... Open C files 
+    CALL RM_OpenFiles(rm_id)
 
     IF (solute) THEN
 
-        ! ... initial PHREEQC run to define reactants
-        status = RM_InitialPhreeqcRun(rm_id, f2name, f1name, f3name)
+        ! ... initial PHREEQC run to define reactants 
+        status = RM_InitialPhreeqcRun(rm_id) 
         ! Set components
         ns = RM_FindComponents(rm_id)
         ALLOCATE(comp_name(ns),  & 

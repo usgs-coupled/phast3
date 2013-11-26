@@ -487,7 +487,19 @@ double RM_GetTimeStep(int * rm_id)
 	}
 	return (double) IRM_BADINSTANCE;
 }
-
+/* ---------------------------------------------------------------------- */
+int 
+RM_InitialPhreeqcRun(int *rm_id, const char *chem_name, long l)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->InitialPhreeqcRun(chem_name, l);
+	}
+	return IRM_BADINSTANCE;
+}
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 IRM_RESULT 
 RM_InitialPhreeqcRun(int *rm_id, char *db_name, char *chem_name, char *prefix, int l1, int l2, int l3)
@@ -506,7 +518,7 @@ RM_InitialPhreeqcRun(int *rm_id, char *db_name, char *chem_name, char *prefix, i
 	}
 	return IRM_BADINSTANCE;
 }
-
+#endif
 /* ---------------------------------------------------------------------- */
 void
 RM_LogMessage(const char *err_str, long l)
@@ -532,8 +544,21 @@ RM_LogMessage(const char *err_str, long l)
 }
 
 /* ---------------------------------------------------------------------- */
+int 
+RM_LoadDatabase(int * rm_id, const char *db_name, long l)
+	/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*rm_id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->LoadDatabase(db_name, l);
+	}
+	return IRM_BADINSTANCE;
+}
+
+/* ---------------------------------------------------------------------- */
 void
-RM_LogScreenMessage(char *err_str, long l)
+RM_LogScreenMessage(const char *err_str, long l)
 /* ---------------------------------------------------------------------- */
 {
 // writes to log file and screen
@@ -578,26 +603,39 @@ RM_open_error_file(void)
 
 /* ---------------------------------------------------------------------- */
 void
-RM_OpenFiles(int * solute, char * prefix, int l_prefix)
+RM_OpenFiles(int *id, const char * prefix_in, int l)
 /* ---------------------------------------------------------------------- */
 {
-	// error_file is stderr
-	RM_open_error_file();
-	
-	// open echo and log file, prefix.log.txt
-	RM_open_log_file(prefix, l_prefix);
-
-
-	if (*solute != 0)
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
+	if (Reaction_module_ptr)
 	{
-		// output_file is prefix.chem.txt
-		RM_open_output_file(prefix, l_prefix);
+		Reaction_module_ptr->SetFilePrefix(prefix_in, l);
+
+		// Files opened by root
+		if (Reaction_module_ptr->GetMpiMyself() == 0)
+		{
+			// error_file is stderr
+			//RM_open_error_file();
+			RM_interface::phast_io.Set_error_ostream(&std::cerr);
+
+			// open echo and log file, prefix.log.txt
+			//RM_open_log_file(Reaction_module_ptr->GetFilePrefix().c_str(), l);
+			std::string ln = Reaction_module_ptr->GetFilePrefix();
+			ln.append(".log.txt");
+			RM_interface::phast_io.log_open(ln.c_str());
+
+			// prefix.chem.txt
+			std::string cn = Reaction_module_ptr->GetFilePrefix();
+			cn.append(".chem.txt");
+			//RM_open_output_file(Reaction_module_ptr->GetFilePrefix().c_str(), l);
+			RM_interface::phast_io.output_open(cn.c_str());
+		}
 	}
 }
-
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
-RM_open_log_file(char * prefix, int l_prefix)
+RM_open_log_file(const char * prefix, int l_prefix)
 /* ---------------------------------------------------------------------- */
 {
 	std::string fn(prefix, l_prefix);
@@ -608,7 +646,7 @@ RM_open_log_file(char * prefix, int l_prefix)
 
 /* ---------------------------------------------------------------------- */
 void
-RM_open_output_file(char * prefix, int l_prefix)
+RM_open_output_file(const char * prefix, int l_prefix)
 /* ---------------------------------------------------------------------- */
 {
 	std::string fn(prefix, l_prefix);
@@ -619,7 +657,7 @@ RM_open_output_file(char * prefix, int l_prefix)
 
 /* ---------------------------------------------------------------------- */
 void
-RM_open_punch_file(char * prefix, int l_prefix)
+RM_open_punch_file(const char * prefix, int l_prefix)
 /* ---------------------------------------------------------------------- */
 {
 	std::string fn(prefix, l_prefix);
@@ -627,7 +665,7 @@ RM_open_punch_file(char * prefix, int l_prefix)
 	fn.append(".chem.xyz.tsv");
 	RM_interface::phast_io.punch_open(fn.c_str());
 }
-
+#endif
 /* ---------------------------------------------------------------------- */
 void RM_RunCells(int *id,
 			 double *time,					        // time from transport 
