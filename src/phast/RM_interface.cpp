@@ -481,6 +481,48 @@ double RM_GetTimeStep(int * rm_id)
 	}
 	return (double) IRM_BADINSTANCE;
 }
+
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+RM_InitialPhreeqcConcentrations(
+			int *id,
+			double *boundary_c,
+			int *n_boundary,
+			int *dim,
+			int *boundary_solution1,  
+			int *boundary_solution2, 
+			double *fraction1)
+/* ---------------------------------------------------------------------- */
+{
+/*
+ *   Routine takes a list of solution numbers and returns a set of
+ *   mass fractions
+ *   Input: n_boundary - number of boundary conditions in list
+ *          boundary_solution1 - list of first solution numbers to be mixed
+ *          boundary_solution2 - list of second solution numbers to be mixed
+ *          fraction1 - fraction of first solution 0 <= f <= 1
+ *          boundary_c - n_boundary x ncomps concentrations
+ *          dim - leading dimension of concentrations
+ *                must be >= to n_boundary
+ *
+ *   Output: boundary_c - concentrations for boundary conditions
+ *                      - dimensions must be >= n_boundary x n_comp
+ *
+ */
+	
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+			return Reaction_module_ptr->InitialPhreeqcConcentrations(
+						boundary_c,
+						n_boundary, 
+						dim,
+						boundary_solution1,
+						boundary_solution2,
+						fraction1 );
+	}
+	return IRM_BADINSTANCE;
+}
 /* ---------------------------------------------------------------------- */
 int 
 RM_InitialPhreeqcRun(int *rm_id, const char *chem_name, long l)
@@ -725,47 +767,6 @@ void RM_SetDensity(int *id, double *t)
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->SetDensity(t);
-	}
-}
-
-/* ---------------------------------------------------------------------- */
-void
-RM_setup_boundary_conditions(
-			int *id,
-			int *n_boundary, 
-			int *boundary_solution1,  
-			int *boundary_solution2, 
-			double *fraction1,
-			double *boundary_c, 
-			int *dim)
-/* ---------------------------------------------------------------------- */
-{
-/*
- *   Routine takes a list of solution numbers and returns a set of
- *   mass fractions
- *   Input: n_boundary - number of boundary conditions in list
- *          boundary_solution1 - list of first solution numbers to be mixed
- *          boundary_solution2 - list of second solution numbers to be mixed
- *          fraction1 - fraction of first solution 0 <= f <= 1
- *          boundary_c - n_boundary x ncomps concentrations
- *          dim - leading dimension of concentrations
- *                must be >= to n_boundary
- *
- *   Output: boundary_c - concentrations for boundary conditions
- *                      - dimensions must be >= n_boundary x n_comp
- *
- */
-	
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
-	if (Reaction_module_ptr)
-	{
-		Reaction_module_ptr->Setup_boundary_conditions(
-					*n_boundary, 
-					boundary_solution1,
-					boundary_solution2, 
-					fraction1,
-					boundary_c, 
-					*dim);
 	}
 }
 

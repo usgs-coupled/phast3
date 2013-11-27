@@ -36,6 +36,7 @@
 #define RM_GetTime                         FC_FUNC_ (rm_gettime,                       RM_GETTIME)
 #define RM_GetTimeConversion               FC_FUNC_ (rm_gettimeconversion,             RM_GETTIMECONVERSION)
 #define RM_GetTimeStep                     FC_FUNC_ (rm_gettimestep,                   RM_GETTIMESTEP)
+#define RM_InitialPhreeqcConcentrations    FC_FUNC_ (rm_initialphreeqcconcentrations,  RM_INITIALPHREEQCCONCENTRATIONS)
 #define RM_InitialPhreeqcRun               FC_FUNC_ (rm_initialphreeqcrun,             RM_INITIALPHREEQCRUN)
 #define RM_LoadDatabase                    FC_FUNC_ (rm_loaddatabase,                  RM_LOADDATABASE)
 #define RM_LogMessage                      FC_FUNC_ (rm_logmessage,                    RM_LOGMESSAGE)
@@ -45,7 +46,6 @@
 #define RM_ScreenMessage                   FC_FUNC_ (rm_screenmessage,                 RM_SCREENMESSAGE)
 #define RM_send_restart_name               FC_FUNC_ (rm_send_restart_name,             RM_SEND_RESTART_NAME)
 #define RM_SetCurrentSelectedOutputUserNumber  FC_FUNC_ (rm_setcurrentselectedoutputusernumber, RM_SETCURRENTSELECTEDOUTPUTUSERNUMBER)
-#define RM_setup_boundary_conditions       FC_FUNC_ (rm_setup_boundary_conditions,     RM_SETUP_BOUNDARY_CONDITIONS)
 #define RM_SetDensity                      FC_FUNC_ (rm_setdensity,                    RM_SETDENSITY)
 #define RM_SetFilePrefix                   FC_FUNC_ (rm_setfileprefix,                 RM_SETFILEPREFIX)
 #define RM_set_free_surface                FC_FUNC_ (rm_set_free_surface,              RM_SET_FREE_SURFACE)
@@ -72,23 +72,22 @@
 #define RM_calculate_well_ph                  rm_calculate_well_ph
 #define RM_CloseFiles                         rm_closefiles
 #define RM_convert_to_molal                   rm_convert_to_molal
-#define RM_Create                             RM_Create
+#define RM_Create                             rm_create
 #define RM_Destroy                            rm_destroy
 #define RM_distribute_initial_conditions      rm_distribute_initial_conditions
 #define RM_Error                              rm_error
-#define RM_FindComponents                    RM_FindComponents
-//#define RM_fractions2solutions                rm_fractions2solutions
-#define RM_GetComponent                      RM_GetComponent
-#define RM_InitialPhreeqcRun                RM_InitialPhreeqcRun
-#define RM_LoadDatabase                      RM_LoadDatabase
-#define RM_LogScreenMessage                     RM_LogScreenMessage
-#define RM_OpenFiles                         RM_OpenFiles
-#define RM_RunCells                          RM_RunCells
+#define RM_FindComponents                     rm_findcomponents
+#define RM_GetComponent                       rm_getcomponent
+#define RM_InitialPhreeqcRun                  rm_initialphreeqcrun
+#define RM_InitialPhreeqcConcentrations       rm_initialphreeqcconcentrations
+#define RM_LoadDatabase                       rm_loaddatabase
+#define RM_LogScreenMessage                   rm_logscreenmessage
+#define RM_OpenFiles                          rm_openfiles
+#define RM_RunCells                           rm_runcells
 #define RM_send_restart_name                  rm_send_restart_name
-#define RM_setup_boundary_conditions          rm_setup_boundary_conditions
-#define RM_SetDensity	                      RM_SetDensity
-#define RM_SetInputUnits                    RM_SetInputUnits
-#define RM_CreateMapping                        RM_CreateMapping
+#define RM_SetDensity	                      rm_setdensity
+#define RM_SetInputUnits                      rm_setinputunits
+#define RM_CreateMapping                      rm_createmapping
 #define RM_set_nodes                          rm_set_nodes
 #define RM_set_printing                       rm_set_printing
 #define RM_set_print_chem_mask                rm_set_print_chem_mask
@@ -154,6 +153,14 @@ int RM_GetSelectedOutputRowCount(int *id);
 double RM_GetTime(int *id);
 double RM_GetTimeConversion(int *id);
 double RM_GetTimeStep(int *id);
+IRM_RESULT RM_InitialPhreeqcConcentrations(
+			int *id,
+			double *c,
+			int *n_boundary,
+			int *dim, 
+			int *boundary_solution1,  
+			int *boundary_solution2 = NULL, 
+			double *fraction = NULL);
 int  RM_InitialPhreeqcRun(int *id, const char *chem_name = NULL, long l = -1);
 int  RM_LoadDatabase(int *id, const char *db_name = NULL, long l = -1);
 void RM_LogMessage(const char *err_str, long l = -1);
@@ -185,14 +192,6 @@ void RM_SetSaturation(int *id, double *t);
 void RM_set_steady_flow(int *id, int *t);
 void RM_SetTemperature(int *id, double *t);
 void RM_SetTimeConversion(int *id, double *t);
-void RM_setup_boundary_conditions(
-			int *id,
-			int *n_boundary, 
-			int *boundary_solution1,  
-			int *boundary_solution2, 
-			double *fraction1,
-			double *boundary_c, 
-			int *dim);
 void RM_WarningMessage(const char *err_str, long l = -1);
 void RM_write_bc_raw(int *id, 
 			int *solution_list, 
