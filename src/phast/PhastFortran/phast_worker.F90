@@ -20,44 +20,7 @@ SUBROUTINE phast_worker
     USE mpi_mod
     IMPLICIT NONE
     INCLUDE 'RM_interface.f90.inc'
-    INTERFACE
-        SUBROUTINE create_mapping(ic)
-            implicit none
-            INTEGER, DIMENSION(:,:), INTENT(INOUT) :: ic
-        END SUBROUTINE create_mapping    
-        SUBROUTINE xfer_indices(indx_sol1_ic, indx_sol2_ic, &
-            mxfrac, naxes, nxyz, &
-            x_node, y_node, z_node, &
-            cnvtmi, &
-            steady_flow, pv0, &
-            rebalance_method_f, volume, tort, npmz, &
-            mpi_myself)
-            USE machine_constants, ONLY: kdp
-        IMPLICIT NONE
-            INTEGER :: indx_sol1_ic 
-            INTEGER :: indx_sol2_ic 
-            REAL(KIND=kdp) :: mxfrac
-            INTEGER :: naxes 
-            INTEGER :: nxyz    
-            REAL(KIND=kdp) x_node 
-            REAL(KIND=kdp) y_node
-            REAL(KIND=kdp) z_node 
-            REAL(KIND=kdp) cnvtmi 
-            LOGICAL :: steady_flow 
-            REAL(KIND=kdp) :: pv0 
-            INTEGER :: rebalance_method_f          
-            REAL(KIND=kdp) :: volume 
-            REAL(KIND=kdp) :: tort
-            INTEGER :: npmz 
-            INTEGER :: exchange_units 
-            INTEGER :: surface_units 
-            INTEGER :: ssassemblage_units 
-            INTEGER :: ppassemblage_units 
-            INTEGER :: gasphase_units
-            INTEGER :: kinetics_units
-            INTEGER :: mpi_myself
-        END SUBROUTINE xfer_indices
-    END INTERFACE
+
     REAL(KIND=kdp) :: deltim_dummy
     INTEGER :: stop_msg=0
     INTEGER :: i, a_err
@@ -81,7 +44,9 @@ SUBROUTINE phast_worker
 
     ! ... Receive memory allocation data, solute
     CALL read1_distribute
-
+!    
+! start CreateRM
+!
     ! ... Make a Reaction_module
     rm_id = RM_Create(nxyz, nthreads)
     IF (rm_id.LT.0) THEN
@@ -92,9 +57,8 @@ SUBROUTINE phast_worker
     status = RM_LoadDatabase(rm_id, f2name);
     ! ... Open C files 
     status = RM_OpenFiles(rm_id)
-
+    
     IF (solute) THEN
-
         ! ... initial PHREEQC run to define reactants 
         status = RM_InitialPhreeqcRun(rm_id) 
         ! Set components
@@ -108,10 +72,13 @@ SUBROUTINE phast_worker
         DO i = 1, ns
             comp_name(i) = ' '
             status = RM_GetComponent(rm_id, i, comp_name(i))
-        ENDDO   
-
-        !TODO CALL on_error_cleanup_and_exit
-
+        ENDDO  
+    ENDIF
+!
+! end CreateRM
+!
+    IF (solute) THEN
+        
         ! ... Receive init1 data
         CALL worker_init1 
 
@@ -128,7 +95,9 @@ SUBROUTINE phast_worker
 
         deltim_dummy = 0._kdp
         time_phreeqc = 0._kdp
-
+!
+! start of InitializeRM
+!
         ! ... Initialize chemistry 
         !CALL xfer_indices(indx_sol1_ic(1,1), indx_sol2_ic(1,1), ic_mxfrac(1,1), naxes(1), nxyz,  &
         !    x_node(1), y_node(1), z_node(1), cnvtmi, steady_flow, pv0(1),  &
@@ -160,6 +129,9 @@ SUBROUTINE phast_worker
         
         ! ... collect solutions for transport
         CALL RM_Module2Concentrations(rm_id)
+!        
+!end  of InitializeRM
+!
 
         ! ... steady flow is calculated here
         IF (steady_flow) THEN
@@ -167,8 +139,11 @@ SUBROUTINE phast_worker
             CALL init3_distribute
         ENDIF
 
-        ! ... Initial equilibration
         adj_wr_ratio = 1
+!        
+!start  of InitialEquilibrationRM
+!
+        ! ... Initial equilibration
         CALL RM_SetPv(rm_id)
         CALL RM_SetSaturation(rm_id)
         CALL RM_set_printing(rm_id)
@@ -181,7 +156,9 @@ SUBROUTINE phast_worker
         CALL WriteFiles(rm_id, prhdfci, prcphrqi,  pr_hdf_media, &
 	        x_node(1), y_node(1), z_node(1), iprint_xyz(1), &
 	        frac(1), grid2chem(1))   
-     
+!        
+!end  of InitialEquilibrationRM
+!     
         ! ... Write zone chemistry
         CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
         stop_msg = 0
@@ -226,7 +203,9 @@ SUBROUTINE phast_worker
                 CALL c_gather
             ENDIF
             IF(errexe .OR. errexi) GO TO 50
-
+!        
+!Start  of TimeStepRM
+! 
             ! ... Chemistry calculation
             CALL RM_SetPv(rm_id)
             CALL RM_SetSaturation(rm_id)
@@ -240,7 +219,9 @@ SUBROUTINE phast_worker
             CALL WriteFiles(rm_id, prhdfci, prcphrqi,  pr_hdf_media, &
 	            x_node(1), y_node(1), z_node(1), iprint_xyz(1), &
 	            frac(1), grid2chem(1))   
-       
+!        
+!Start  of TimeStepRM
+!       
             CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
 
             ! ... Save values for next time step
