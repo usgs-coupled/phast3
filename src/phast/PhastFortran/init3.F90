@@ -17,6 +17,8 @@ SUBROUTINE init3
   USE mg3_m
   USE print_control_mod
   IMPLICIT NONE
+  SAVE
+  INCLUDE 'RM_interface.f90.inc'
   INTERFACE
      SUBROUTINE load_indx_bc(ibct,indx1_bc,indx2_bc,mxf_bc,mbc,nbc)
        USE machine_constants, ONLY: kdp
@@ -33,9 +35,7 @@ SUBROUTINE init3
   REAL(KIND=kdp) :: up0, p1, z0, z1, zfsl, zm1, zp1
   INTEGER :: a_err, da_err, ic, icol, imod, iis, iwel, jcol, k, kcol,  &
        l, ls, m, m1, mt, nsa, tag
-  !$$  REAL(KIND=kdp), PARAMETER :: nodat = bgreal*1.e-15_kdp
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: init3.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
+  INTEGER :: status
   !     ------------------------------------------------------------------
   !...
   !  ! ... Convert the data to S.I. time units if necessary
@@ -49,8 +49,8 @@ SUBROUTINE init3
            indx2_wel(iwel) = -1
            mxf_wel(iwel) = 1._kdp
         END DO
-        CALL RM_setup_boundary_conditions(rm_id, nwel,indx1_wel,indx2_wel,  &
-             mxf_wel,cwkt,nwel)
+        status = RM_InitialPhreeqcConcentrations(rm_id, cwkt(1,1), nwel, nwel, &
+            indx1_wel(1), indx2_wel(1), mxf_wel(1))
      END IF
      DO  iwel=1,nwel
         IF(wqmeth(iwel) == 12 .OR. wqmeth(iwel) == 13) THEN
@@ -71,8 +71,8 @@ SUBROUTINE init3
      ! ... The following loads the associated and specified concentrations
      IF(solute) THEN
         !$$        CALL load_indx_bc(1,indx1_sbc,indx2_sbc,mxf_sbc,msbc,nsbc)
-        CALL RM_setup_boundary_conditions(rm_id, nsbc, indx1_sbc, indx2_sbc, mxf_sbc,  &
-             csbc, nsbc_seg)
+        status = RM_InitialPhreeqcConcentrations(rm_id, csbc(1,1), nsbc, nsbc_seg, &
+            indx1_sbc(1), indx2_sbc(1), mxf_sbc(1))
 
         ! ***** special patch for b.c. install for 3 components
         !        csbc(1:nsbc_seg,1) = mxf_sbc(1:nsbc_seg)
@@ -229,8 +229,8 @@ SUBROUTINE init3
      END DO
      IF(solute) THEN                          ! ... Load the associated concentrations
         !$$        CALL load_indx_bc(2, indx1_fbc, indx2_fbc, mxf_fbc, mfbc, nfbc_seg)
-        CALL RM_setup_boundary_conditions(rm_id, nfbc_seg, indx1_fbc, indx2_fbc, mxf_fbc,  &
-             cfbc, nfbc_seg)
+        status = RM_InitialPhreeqcConcentrations(rm_id, cfbc(1,1), nfbc_seg, nfbc_seg, &
+            indx1_fbc(1), indx2_fbc(1), mxf_fbc(1))
      END IF
   END IF
   ! *** no broadcast of qsflx as no pure diffusive solute b.c. is enabled at present
@@ -241,8 +241,8 @@ SUBROUTINE init3
         vislbc(ls) = vis0
      END DO
      IF(solute) THEN               ! ... Load the associated concentrations
-        CALL RM_setup_boundary_conditions(rm_id, nlbc_seg, indx1_lbc, indx2_lbc, mxf_lbc,  &
-             clbc, nlbc_seg)
+        status = RM_InitialPhreeqcConcentrations(rm_id, clbc(1,1), nlbc_seg, nlbc_seg, &
+            indx1_lbc(1), indx2_lbc(1), mxf_lbc(1))
      END IF
   END IF
   ! ... River leakage b.c.
@@ -252,8 +252,8 @@ SUBROUTINE init3
         visrbc(ls) = vis0
      END DO
      IF(solute) THEN               ! ... Load the associated concentrations
-        CALL RM_setup_boundary_conditions(rm_id, nrbc_seg, indx1_rbc, indx2_rbc, mxf_rbc,  &
-             crbc, nrbc_seg)
+        status = RM_InitialPhreeqcConcentrations(rm_id, crbc(1,1), nrbc_seg, nrbc_seg, &
+            indx1_rbc(1), indx2_rbc(1), mxf_rbc(1))
      END IF
   END IF
   ! ... Drain leakage b.c.

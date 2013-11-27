@@ -117,7 +117,16 @@
         DOUBLE PRECISION FUNCTION RM_GetTimeStep(id)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-        END FUNCTION RM_GetTimeStep
+        END FUNCTION RM_GetTimeStep 
+
+        INTEGER FUNCTION RM_InitialPhreeqcConcentrations(id, c, n_boundary, dim, bc_sol1, bc_sol2, f1)   
+                IMPLICIT NONE
+                INTEGER :: id
+                DOUBLE PRECISION, INTENT(OUT) :: c
+                INTEGER, INTENT(IN) :: n_boundary, dim, bc_sol1
+                INTEGER, INTENT(IN), OPTIONAL :: bc_sol2
+                DOUBLE PRECISION, INTENT(IN), OPTIONAL :: f1
+        END FUNCTION RM_InitialPhreeqcConcentrations    
         
         INTEGER FUNCTION RM_InitialPhreeqcRun(id, chem_name)
             IMPLICIT NONE
@@ -250,13 +259,6 @@
             IMPLICIT NONE
             INTEGER :: id
             DOUBLE PRECISION, OPTIONAL :: t
-        END SUBROUTINE RM_SetTimeConversion  
-
-        SUBROUTINE RM_setup_boundary_conditions(id, n_boundary, bc_sol1, bc_sol2, f1, c, dim)   
-	            IMPLICIT NONE
-	            INTEGER :: id
-	            INTEGER :: n_boundary, bc_sol1, bc_sol2, dim
-	            DOUBLE PRECISION :: f1, c
-        END SUBROUTINE RM_setup_boundary_conditions    
+        END SUBROUTINE RM_SetTimeConversion 
 		 
     END INTERFACE

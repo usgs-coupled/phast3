@@ -30,15 +30,16 @@ public:
 	~Reaction_module(void);
 	void                           Calculate_well_ph(double *c, double * ph, double * alkalinity);
 	int                            CheckSelectedOutput();
-	void                           Convert_to_molal(double *c, int n, int dim);
-	IRM_RESULT                     Distribute_initial_conditions_mix(
-		int id,
-		int *initial_conditions1,
-		int *initial_conditions2,	
-		double *fraction1);
-	int                            Find_components();
 	void                           Concentrations2Module(void);	
+	void                           Convert_to_molal(double *c, int n, int dim);
 	static std::string             Cptr2TrimString(const char * str, long l = -1);
+	IRM_RESULT                     CreateMapping(int *grid2chem);
+	IRM_RESULT                     Distribute_initial_conditions_mix(
+                                        int id,
+                                        int *initial_conditions1,
+                                        int *initial_conditions2,	
+                                        double *fraction1);
+	int                            Find_components();
 	int                            GetNthSelectedOutputUserNumber(int *i);
 	IRM_RESULT                     GetSelectedOutput(double *so);
 	int                            GetSelectedOutputColumnCount(void);
@@ -46,21 +47,22 @@ public:
 	IRM_RESULT                     GetSelectedOutputHeading(int *icol, std::string &heading);
 	int                            GetSelectedOutputRowCount(void);
 	int                            InitialPhreeqcRun(const char *chemistry_name, long l = -1);
+	IRM_RESULT                     InitialPhreeqcConcentrations( 
+                                        double *c,
+                                        int *n_boundary, 
+                                        int *dim, 
+                                        int *boundary_solution1,
+                                        int *boundary_solution2 = NULL,
+                                        double *boundary_fraction = NULL);
 	int                            LoadDatabase(const char * database, long l = -1);
 	void                           Module2Concentrations(double * c);
 	void                           RunCells(void);
-	int                            SetCurrentSelectedOutputUserNumber(int *i);
 	void                           Send_restart_name(std::string &name);
-	IRM_RESULT                     CreateMapping(int *grid2chem);
-	void                           Setup_boundary_conditions(const int n_boundary, int *boundary_solution1,
-		int *boundary_solution2, 
-		double *fraction1,
-		double *boundary_fraction, 
-		int dim);
+	int                            SetCurrentSelectedOutputUserNumber(int *i);
 	void                           Write_bc_raw(int *solution_list, int * bc_solution_count, 
-		int * solution_number, 
-		const std::string &prefix);
-	void Write_restart(void);
+                                        int * solution_number, 
+                                        const std::string &prefix);
+	void                           Write_restart(void);
 
 	// setters and getters
 	std::vector<IPhreeqcPhast *> & Get_workers() {return this->workers;}

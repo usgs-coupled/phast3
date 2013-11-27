@@ -3956,16 +3956,15 @@ Reaction_module::Set_z_node(double * t)
 	MPI_Bcast(this->z_node.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 }
-
 /* ---------------------------------------------------------------------- */
-void
-Reaction_module::Setup_boundary_conditions(
-					const int n_boundary, 
+IRM_RESULT
+Reaction_module::InitialPhreeqcConcentrations(
+					double *c, 
+					int *n_boundary_in, 
+					int *dim_in,
 					int *boundary_solution1,
 					int *boundary_solution2, 
-					double *fraction1,
-					double *boundary_fraction, 
-					int dim)
+					double *fraction1)
 /* ---------------------------------------------------------------------- */
 {
 /*
@@ -3978,42 +3977,51 @@ Reaction_module::Setup_boundary_conditions(
  *          dim - leading dimension of array boundary mass fractions
  *                must be >= to n_boundary
  *
- *   Output: boundary_fraction - mass fractions for boundary conditions
- *                             - dimensions must be >= n_boundary x n_comp
+ *   Output: c - concentrations for boundary conditions
+ *             - dimensions must be >= n_boundary x n_comp
  *
  */
-	int	i, n_old1, n_old2;
-	double f1, f2;
-
-	for (i = 0; i < n_boundary; i++)
+	if (this->mpi_myself == 0) 
 	{
-		cxxMix mixmap;
-		n_old1 = boundary_solution1[i];
-		n_old2 = boundary_solution2[i];
-		f1 = fraction1[i];
-		f2 = 1 - f1;
-		mixmap.Add(n_old1, f1);
-		if (f2 > 0.0)
+		if (c == NULL || n_boundary_in == NULL || dim_in == NULL || boundary_solution1 == NULL)
 		{
-			mixmap.Add(n_old2, f2);
-		}
-		
-		// Make mass fractions in d
-		cxxSolution	cxxsoln(phreeqc_bin.Get_Solutions(), mixmap, 0);
-		std::vector<double> d;
-		cxxSolution2concentration(&cxxsoln, d);
-		//cxxSolution2fraction(&cxxsoln, d);
+			int n_boundary = *n_boundary_in;
+			int dim = *dim_in;
+			int	i, n_old1, n_old2;
+			double f1, f2;
 
-		// Put mass fractions in boundary_fraction
-		double *d_ptr = &boundary_fraction[i];
-		size_t j;
-		for (j = 0; j < components.size(); j++)
-		{
-			d_ptr[dim * j] = d[j];
+			for (i = 0; i < n_boundary; i++)
+			{
+				cxxMix mixmap;
+				n_old1 = boundary_solution1[i];
+				n_old2 = (boundary_solution2) ? -1 : boundary_solution2[i];
+				f1 = (fraction1) ? 1.0 : fraction1[i];
+				f2 = 1 - f1;
+				mixmap.Add(n_old1, f1);
+				if (f2 > 0.0)
+				{
+					mixmap.Add(n_old2, f2);
+				}
+
+				// Make mass fractions in d
+				cxxSolution	cxxsoln(phreeqc_bin.Get_Solutions(), mixmap, 0);
+				std::vector<double> d;
+				cxxSolution2concentration(&cxxsoln, d);
+
+				// Put mass fractions in c
+				double *d_ptr = &c[i];
+				size_t j;
+				for (j = 0; j < components.size(); j++)
+				{
+					d_ptr[dim * j] = d[j];
+				}
+			}
+			return IRM_OK;
 		}
+		return IRM_INVALIDARG;
 	}
+	return IRM_OK;
 }
-
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 void
