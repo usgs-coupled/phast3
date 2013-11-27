@@ -153,7 +153,13 @@
             INTEGER :: id
             DOUBLE PRECISION :: time, time_step, c
             INTEGER :: stop_msg
-        END SUBROUTINE RM_RunCells 
+        END SUBROUTINE RM_RunCells     
+ 		     
+        SUBROUTINE RM_SetCellVolume(id, t)   
+            IMPLICIT NONE
+            INTEGER :: id
+            DOUBLE PRECISION, OPTIONAL :: t
+        END SUBROUTINE RM_SetCellVolume
 
         SUBROUTINE RM_SetDensity(id, t)
             IMPLICIT NONE
@@ -185,6 +191,18 @@
             DOUBLE PRECISION, OPTIONAL :: x_node, y_node, z_node
         END SUBROUTINE RM_set_nodes  
 
+        SUBROUTINE RM_SetPoreVolume(id, t)   
+            IMPLICIT NONE
+            INTEGER :: id
+            DOUBLE PRECISION, OPTIONAL :: t
+        END SUBROUTINE RM_SetPoreVolume 
+        
+        SUBROUTINE RM_SetPoreVolumeZero(id, t)
+            IMPLICIT NONE
+            INTEGER :: id
+            DOUBLE PRECISION, OPTIONAL :: t
+        END SUBROUTINE RM_SetPoreVolumeZero
+
         SUBROUTINE RM_SetPressure(id, t)   
             IMPLICIT NONE
             INTEGER :: id
@@ -202,18 +220,6 @@
             INTEGER :: id
             INTEGER, OPTIONAL :: t
         END SUBROUTINE RM_set_print_chem_mask 
-
-        SUBROUTINE RM_SetPv(id, t)   
-            IMPLICIT NONE
-            INTEGER :: id
-            DOUBLE PRECISION, OPTIONAL :: t
-        END SUBROUTINE RM_SetPv 
-        
-        SUBROUTINE RM_SetPv0(id, t)
-            IMPLICIT NONE
-            INTEGER :: id
-            DOUBLE PRECISION, OPTIONAL :: t
-        END SUBROUTINE RM_SetPv0
         
         SUBROUTINE RM_SetRebalance(id, method, f)
             IMPLICIT NONE
@@ -251,12 +257,6 @@
 	            INTEGER :: id
 	            INTEGER :: n_boundary, bc_sol1, bc_sol2, dim
 	            DOUBLE PRECISION :: f1, c
-        END SUBROUTINE RM_setup_boundary_conditions        
- 		     
-        SUBROUTINE RM_SetVolume(id, t)   
-            IMPLICIT NONE
-            INTEGER :: id
-            DOUBLE PRECISION, OPTIONAL :: t
-        END SUBROUTINE RM_SetVolume
+        END SUBROUTINE RM_setup_boundary_conditions    
 		 
     END INTERFACE

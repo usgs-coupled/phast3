@@ -106,11 +106,11 @@ SUBROUTINE phast_worker
         CALL RM_SetInputUnits (rm_id)
         CALL RM_set_nodes(rm_id)
         CALL RM_SetTimeConversion(rm_id)
-        CALL RM_SetPv0(rm_id)
+        CALL RM_SetPoreVolumeZero(rm_id)
         CALL RM_set_print_chem_mask(rm_id)
         CALL RM_set_free_surface(rm_id)
         CALL RM_set_steady_flow(rm_id)
-        CALL RM_SetVolume(rm_id)
+        CALL RM_SetCellVolume(rm_id)
         CALL RM_SetRebalance(rm_id)
 
         ! ... Mapping from full 3D domain to chemistry
@@ -144,7 +144,7 @@ SUBROUTINE phast_worker
 !start  of InitialEquilibrationRM
 !
         ! ... Initial equilibration
-        CALL RM_SetPv(rm_id)
+        CALL RM_SetPoreVolume(rm_id)
         CALL RM_SetSaturation(rm_id)
         CALL RM_set_printing(rm_id)
         CALL RM_RunCells(                                &
@@ -207,7 +207,7 @@ SUBROUTINE phast_worker
 !Start  of TimeStepRM
 ! 
             ! ... Chemistry calculation
-            CALL RM_SetPv(rm_id)
+            CALL RM_SetPoreVolume(rm_id)
             CALL RM_SetSaturation(rm_id)
             CALL RM_set_printing(rm_id)
             CALL RM_RunCells(                                &

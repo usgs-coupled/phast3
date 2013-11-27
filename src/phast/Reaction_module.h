@@ -65,8 +65,11 @@ public:
 	// setters and getters
 	std::vector<IPhreeqcPhast *> & Get_workers() {return this->workers;}
 	int                            Get_nthreads() {return this->nthreads;}
+	std::vector<double> &          GetCellVolume(void) {return this->cell_volume;}
+	void                           SetCellVolume(double * t);
 	IRM_RESULT                     SetChemistryFileName(const char * prefix, long l = -1);
 	const std::string              GetDatabaseFileName(void) const {return this->database_file_name;}
+	IRM_RESULT                     SetDatabaseFileName(const char * prefix, long l = -1);
 	const std::string              GetFilePrefix(void) const {return this->file_prefix;}
 	IRM_RESULT                     SetFilePrefix(std::string &fn); 
 	IRM_RESULT                     SetFilePrefix(const char * prefix, long l = -1);
@@ -74,7 +77,6 @@ public:
 	const int                      Get_mpi_tasks(void) const {return this->mpi_tasks;}
 	void                           Set_mpi_tasks(int t) {this->mpi_tasks = t;}
 	const int                      GetMpiMyself(void) const {return this->mpi_myself;}
-	std::vector<double> &          Get_old_saturation(void) {return this->old_saturation;}
 	const bool                     Get_free_surface(void) const {return this->free_surface;}
 	void                           Set_free_surface(int * t); 
 	const bool                     Get_steady_flow(void) const {return this->steady_flow;}
@@ -100,16 +102,14 @@ public:
 	void                           SetConcentration(double * t = NULL); 
 	std::vector<double> &          GetSaturation(void) {return this->saturation;}
 	void                           SetSaturation(double * t); 
-	std::vector<double> &          Get_pv(void) {return this->pv;}
-	void                           SetPressure(double * t = NULL); 
+	std::vector<double> &          GetPoreVolume(void) {return this->pore_volume;}
+	void                           SetPoreVolume(double * t = NULL); 
+	std::vector<double> &          GetPoreVolumeZero(void) {return this->pore_volume_zero;}
+	void                           SetPoreVolumeZero(double * t = NULL); 
 	std::vector<double> &          GetPressure(void) {return this->pressure;}
-	void                           SetPv(double * t = NULL); 
-	std::vector<double> &          GetPv0(void) {return this->pv0;}
-	void                           SetPv0(double * t = NULL);
+	void                           SetPressure(double * t = NULL);
 	std::vector<double> &          GetTemperature(void) {return this->tempc;}
-	void                           SetTemperature(double * t = NULL); 
-	std::vector<double> &          GetVolume(void) {return this->volume;}
-	void                           SetVolume(double * t); 
+	void                           SetTemperature(double * t = NULL);  
 	std::vector<int> &             Get_print_chem_mask (void) {return this->print_chem_mask;}
 	void                           Set_print_chem_mask(int * t); 
 	int                            GetRebalanceMethod(void) const {return this->rebalance_method;}
@@ -207,9 +207,9 @@ protected:
 	std::vector <double> old_saturation;	// saturation fraction from previous step
 	std::vector<double> saturation;	        // nxyz saturation fraction
 	std::vector<double> pressure;			// nxyz current pressure
-	std::vector<double> pv;			        // nxyz current pore volumes 
-	std::vector<double> pv0;				// nxyz initial pore volumes
-	std::vector<double> volume;				// nxyz geometric cell volumes
+	std::vector<double> pore_volume;		// nxyz current pore volumes 
+	std::vector<double> pore_volume_zero;	// nxyz initial pore volumes
+	std::vector<double> cell_volume;		// nxyz geometric cell volumes
 	std::vector<double> tempc;				// nxyz temperature Celsius
 	std::vector<double> density;			// nxyz density
 	std::vector<int> print_chem_mask;		// nxyz print flags for output file

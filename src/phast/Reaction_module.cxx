@@ -164,9 +164,9 @@ if( numCPU < 1 )
 		y_node.push_back(0.0);
 		z_node.push_back(0.0);
 		saturation.push_back(1.0);
-		pv.push_back(0.1);
-		pv0.push_back(0.1);
-		volume.push_back(1.0);
+		pore_volume.push_back(0.1);
+		pore_volume_zero.push_back(0.1);
+		cell_volume.push_back(1.0);
 		print_chem_mask.push_back(0);
 		density.push_back(1.0);
 		pressure.push_back(1.0);
@@ -700,6 +700,84 @@ Reaction_module::Convert_to_molal(double *c, int n, int dim)
 		}
 	}
 }
+
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+Reaction_module::CreateMapping(int *t)
+/* ---------------------------------------------------------------------- */
+{
+	IRM_RESULT rtn = IRM_OK;
+	std::vector<int> grid2chem;
+	grid2chem.resize(this->nxyz);
+	if (mpi_myself == 0)
+	{
+		if (t == NULL) error_msg("NULL pointer in CreateMapping", 1);
+		memcpy(grid2chem.data(), t, (size_t) (this->nxyz * sizeof(int)));
+	}
+#ifdef USE_MPI
+	MPI_Bcast(grid2chem.data(), this->nxyz, MPI_INT, 0, MPI_COMM_WORLD);
+#endif
+
+	back.clear();
+	forward.clear();
+
+	// find count_chem
+	this->count_chem = 0;
+	for (int i = 0; i < this->nxyz; i++)
+	{
+		if (grid2chem[i] > count_chem)
+		{
+			count_chem = grid2chem[i];
+		}
+	}
+	count_chem ++; 
+
+	for (int i = 0; i < count_chem; i++)
+	{
+		std::vector<int> temp;
+		back.push_back(temp);
+	}
+	for (int i = 0; i < this->nxyz; i++)
+	{
+		int n = grid2chem[i];
+		if (n >= count_chem)
+		{
+			error_msg("Error in cell out of range in mapping (grid to chem).", 0);
+			rtn = IRM_INVALIDARG;
+		}
+
+		// copy to forward
+		forward.push_back(n);
+
+		// add to back
+		if (n >= 0) 
+		{
+			back[n].push_back(i);
+		}
+	}
+	
+	// set -1 for back items > 0
+	for (int i = 0; i < this->count_chem; i++)
+	{
+		// add to back
+		for (size_t j = 1; j < back[i].size(); j++)
+		{
+			int n = back[i][j];
+			forward[n] = -1;
+		}
+	}
+	// check that all count_chem have at least 1 cell
+	for (int i = 0; i < this->count_chem; i++)
+	{
+		if (back[i].size() == 0)
+		{
+			error_msg("Error in building inverse mapping (chem to grid).", 0);
+			rtn = IRM_INVALIDARG;
+		}
+	}
+	return rtn;
+}
+
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d)
@@ -750,6 +828,7 @@ Reaction_module::cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vecto
 		break;
 	}
 }
+
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 Reaction_module::Distribute_initial_conditions_mix(
@@ -853,12 +932,12 @@ Reaction_module::Distribute_initial_conditions_mix(
 
 		assert(forward[i] >= 0);
 		assert (volume[i] > 0.0);
-		double porosity = pv0[i] / volume[i];
-		if (pv0[i] < 0 || volume[i] < 0)
+		double porosity = pore_volume_zero[i] / cell_volume[i];
+		if (pore_volume_zero[i] < 0 || cell_volume[i] < 0)
 		{
 			std::ostringstream errstr;
-			errstr << "Negative volume in cell " << i << ": volume, " << volume[i]; 
-			errstr << "\t initial volume, " << this->pv0[i] << ".",
+			errstr << "Negative volume in cell " << i << ": volume, " << cell_volume[i]; 
+			errstr << "\t initial volume, " << this->pore_volume_zero[i] << ".",
 			count_negative_porosity++;
 			error_msg(errstr.str().c_str());
 			rtn = IRM_FAIL;
@@ -882,13 +961,13 @@ Reaction_module::Distribute_initial_conditions_mix(
 		if (j < 0)
 			continue;
 		assert(forward[i] >= 0);
-		assert (volume[i] > 0.0);
-		double porosity = pv0[i] / volume[i];
-		if (pv0[i] < 0 || volume[i] < 0)
+		assert (cell_volume[i] > 0.0);
+		double porosity = pore_volume_zero[i] / cell_volume[i];
+		if (pore_volume_zero[i] < 0 || cell_volume[i] < 0)
 		{
 			std::ostringstream errstr;
-			errstr << "Negative volume in cell " << i << ": volume, " << volume[i]; 
-			errstr << "\t initial volume, " << this->pv0[i] << ".",
+			errstr << "Negative volume in cell " << i << ": volume, " << cell_volume[i]; 
+			errstr << "\t initial volume, " << this->pore_volume_zero[i] << ".",
 			count_negative_porosity++;
 			error_msg(errstr.str().c_str());
 			rtn = IRM_FAIL;
@@ -1536,7 +1615,7 @@ Reaction_module::Concentrations2Threads(int n)
 		// convert mol/L to moles per cell
 		for (k = 0; k < (int) this->components.size(); k++)
 		{	
-			d[k] *= this->pv[i] / this->pv0[i]; // * saturation[i];
+			d[k] *= this->pore_volume[i] / this->pore_volume_zero[i]; // * saturation[i];
 		}
 				
 		// update solution 
@@ -1614,11 +1693,11 @@ Reaction_module::Initial_phreeqc_run_thread(int n)
 		}
 
 		// Load database
-		if (iphreeqc_phast_worker->LoadDatabase(this->database_file_name.c_str()) > 0) RM_Error(&ipp_id);
-		if (n == 0)
-		{
-			Write_output(iphreeqc_phast_worker->GetOutputString());
-		}
+		//if (iphreeqc_phast_worker->LoadDatabase(this->database_file_name.c_str()) > 0) RM_Error(&ipp_id);
+		//if (n == 0)
+		//{
+		//	Write_output(iphreeqc_phast_worker->GetOutputString());
+		//}
 
 		// Run chemistry file
 		if (iphreeqc_phast_worker->RunFile(this->chemistry_file_name.c_str()) > 0) RM_Error(&ipp_id);
@@ -1660,28 +1739,12 @@ int
 Reaction_module::LoadDatabase(const char * database, long l)
 /* ---------------------------------------------------------------------- */
 {
-	if (this->mpi_myself == 0)
-	{	
-		this->database_file_name = Cptr2TrimString(database, l);
-	}
-#ifdef USE_MPI
-	int l1 = 0;
-	if (mpi_myself == 0)
+	int rtn1 = this->SetDatabaseFileName(database, l);
+	if (rtn1 < 0) 
 	{
-		l1 = (int) this->database_file_name.size();
-	}
-	MPI_Bcast(&l1, 1, MPI_INT, 0, MPI_COMM_WORLD);
-	this->database_file_name.resize(l1);
-	MPI_Bcast((void *) this->database_file_name.c_str(), l1, MPI_CHARACTER, 0, MPI_COMM_WORLD);
-#endif
-	if (this->database_file_name.size() <= 0)
-	{
-		return IRM_INVALIDARG;
+			error_msg("Reaction_module.LoadDatabase: Could not open database.", 0);
 	}
 
-#ifdef USE_MPI
-	return this->workers[0]->LoadDatabase(this->database_file_name.c_str());
-#else
 	std::vector< int > rtn;
 	rtn.resize(this->nthreads + 1);
 #ifdef THREADED_PHAST
@@ -1703,8 +1766,126 @@ Reaction_module::LoadDatabase(const char * database, long l)
 		}
 	}
 	return rtn_value;
-#endif
 }
+
+#ifdef USE_MPI
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Module2Concentrations(double * c)
+/* ---------------------------------------------------------------------- */
+{
+	// convert Reaction module solution data to concentrations for transport
+	MPI_Status mpi_status;
+	std::vector<double> d;  // scratch space to convert from moles to mass fraction
+	std::vector<double> solns;
+	cxxNameDouble::iterator it;
+
+	if (mpi_myself == 0)
+	{
+		if (c == NULL) error_msg("NULL pointer in Module2Concentrations", 1);
+	}
+	int n = this->mpi_myself;
+	for (int j = this->start_cell[n]; j <= this->end_cell[n]; j++)
+	{
+		// load fractions into d
+		cxxSolution * cxxsoln_ptr = this->Get_workers()[0]->Get_solution(j);
+		assert (cxxsoln_ptr);
+		this->cxxSolution2concentration(cxxsoln_ptr, d);
+		for (int i = 0; i < (int) this->components.size(); i++)
+		{
+			solns.push_back(d[i]);
+		}
+	}
+
+	// make buffer to recv solutions
+	double * recv_solns = new double[(size_t) this->count_chem * this->components.size()];
+
+	// each process has its own vector of solution components
+	// gather vectors to root
+	for (int n = 1; n < this->mpi_tasks; n++)
+	{
+		int count = this->end_cell[n] - this->start_cell[n] + 1;
+		int num_doubles = count * (int) this->components.size();
+		if (this->mpi_myself == n)
+		{
+			MPI_Send((void *) solns.data(), num_doubles, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
+		}
+		else if (this->mpi_myself == 0)
+		{
+			MPI_Recv(recv_solns, num_doubles, MPI_DOUBLE, n, 0, MPI_COMM_WORLD, &mpi_status);
+			for (int i = 0; i < num_doubles; i++)
+			{
+				solns.push_back(recv_solns[i]);
+			}
+		}
+	}
+	
+	// delete recv buffer
+	delete recv_solns;
+
+	// Write vector into c
+	if (this->mpi_myself == 0)
+	{
+		assert (solns.size() == this->count_chem*this->components.size());
+		int n = 0;
+		for (int j = 0; j < count_chem; j++)
+		{
+			std::vector<double> d;
+			for (size_t i = 0; i < this->components.size(); i++)
+			{
+				d.push_back(solns[n++]);
+			}
+			std::vector<int>::iterator it;
+			for (it = this->back[j].begin(); it != this->back[j].end(); it++)
+			{
+				double *d_ptr = &c[*it];
+				size_t i;
+				for (i = 0; i < this->components.size(); i++)
+				{
+					d_ptr[this->nxyz * i] = d[i];
+				}
+			}
+		}
+	}
+
+}
+#else
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Module2Concentrations(double * c)
+/* ---------------------------------------------------------------------- */
+{
+	// convert Reaction module solution data to hst mass fractions
+
+	std::vector<double> d;  // scratch space to convert from moles to mass fraction
+	cxxNameDouble::iterator it;
+
+	int j; 
+	if (c == NULL) error_msg("NULL pointer in Module2Concentrations", 1);
+	for (int n = 0; n < this->nthreads; n++)
+	{
+		for (j = this->start_cell[n]; j <= this->end_cell[n]; j++)
+		{
+			// load fractions into d
+			cxxSolution * cxxsoln_ptr = this->Get_workers()[n]->Get_solution(j);
+			assert (cxxsoln_ptr);
+			this->cxxSolution2concentration(cxxsoln_ptr, d);
+
+			// store in fraction at 1, 2, or 4 places depending on chemistry dimensions
+			std::vector<int>::iterator it;
+			for (it = this->back[j].begin(); it != this->back[j].end(); it++)
+			{
+				double *d_ptr = &c[*it];
+				size_t i;
+				for (i = 0; i < this->components.size(); i++)
+				{
+					d_ptr[this->nxyz * i] = d[i];
+				}
+			}
+		}
+	}
+}
+#endif
 
 /* ---------------------------------------------------------------------- */
 void
@@ -2980,7 +3161,7 @@ Reaction_module::Run_cells_thread(int n)
 		if (active)
 		{
 			// set cell number, pore volume got Basic functions
-			phast_iphreeqc_worker->Set_cell_volumes(i, pv0[j], this->saturation[j], volume[j]);
+			phast_iphreeqc_worker->Set_cell_volumes(i, pore_volume_zero[j], this->saturation[j], cell_volume[j]);
 
 			// Adjust for fractional saturation and pore volume
 			if (this->free_surface && !this->steady_flow)
@@ -2990,10 +3171,10 @@ Reaction_module::Run_cells_thread(int n)
 			
 			if (!(this->free_surface && !this->steady_flow) && !steady_flow)
 			{
-				if (pv0[j] != 0 && pv[j] != 0 && pv0[j] != pv[j])
+				if (pore_volume_zero[j] != 0 && pore_volume[j] != 0 && pore_volume_zero[j] != pore_volume[j])
 				{
 					cxxSolution * cxxsol = phast_iphreeqc_worker->Get_solution(i);
-					cxxsol->multiply(pv[j] / pv0[j]);
+					cxxsol->multiply(pore_volume[j] / pore_volume_zero[j]);
 				}
 			}
 
@@ -3012,14 +3193,14 @@ Reaction_module::Run_cells_thread(int n)
 			// Adjust for fractional saturation and pore volume
 			if (this->free_surface && !this->steady_flow)
 				this->Scale_solids(n, i, this->saturation[j]);
-			assert(pv0[j] != 0);
-			assert(pv[j] != 0);
+			assert(pore_volume_zero[j] != 0);
+			assert(pore_volume[j] != 0);
 			if (!(this->free_surface && !this->steady_flow) && !steady_flow)
 			{
-				if (pv0[j] != 0 && pv[j] != 0 && pv0[j] != pv[j])
+				if (pore_volume_zero[j] != 0 && pore_volume[j] != 0 && pore_volume_zero[j] != pore_volume[j])
 				{
 					cxxSolution * cxxsol = phast_iphreeqc_worker->Get_solution(i);
-					cxxsol->multiply(pv0[j] / pv[j]);
+					cxxsol->multiply(pore_volume_zero[j] / pore_volume[j]);
 				}
 			}
 			// Write output file
@@ -3241,28 +3422,23 @@ Reaction_module::SetFilePrefix(const char * prefix, long l)
 }
 
 /* ---------------------------------------------------------------------- */
-IRM_RESULT
-Reaction_module::SetFilePrefix(std::string &prefix)
+void
+Reaction_module::SetCellVolume(double *t)
 /* ---------------------------------------------------------------------- */
 {
-	this->file_prefix.clear();
+	if (this->cell_volume.size() < this->nxyz)
+	{
+		this->cell_volume.resize(this->nxyz);
+	}
 	if (mpi_myself == 0)
 	{
-		this->file_prefix = trim(prefix);
+		if (t == NULL) error_msg("NULL pointer in Set_volume", 1);
+		memcpy(this->cell_volume.data(), t, (size_t) (this->nxyz * sizeof(double)));
 	}
 #ifdef USE_MPI
-	int l = 0;
-	if (mpi_myself == 0)
-	{
-		l = (int) prefix.size();
-	}
-	MPI_Bcast(&l, 1, MPI_INT, 0, MPI_COMM_WORLD);
-	this->file_prefix.resize(l);
-	MPI_Bcast((void *) this->file_prefix.c_str(), l, MPI_CHARACTER, 0, MPI_COMM_WORLD);
+	MPI_Bcast(this->cell_volume.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
-	return IRM_OK;
 }
-
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
@@ -3309,6 +3485,33 @@ Reaction_module::SetConcentration(double *t)
 	MPI_Bcast(this->concentration.data(), this->nxyz * (int) ncomps, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 }
+
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+Reaction_module::SetDatabaseFileName(const char * db, long l)
+/* ---------------------------------------------------------------------- */
+{
+	if (this->mpi_myself == 0)
+	{	
+		this->database_file_name = Cptr2TrimString(db, l);
+	}
+#ifdef USE_MPI
+	int l1 = 0;
+	if (mpi_myself == 0)
+	{
+		l1 = (int) this->database_file_name.size();
+	}
+	MPI_Bcast(&l1, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	this->database_file_name.resize(l1);
+	MPI_Bcast((void *) this->database_file_name.c_str(), l1, MPI_CHARACTER, 0, MPI_COMM_WORLD);
+#endif
+	if (this->database_file_name.size() > 0)
+	{
+		return IRM_OK;
+	}
+	return IRM_INVALIDARG;
+}
+
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::SetDensity(double *t)
@@ -3327,6 +3530,7 @@ Reaction_module::SetDensity(double *t)
 	MPI_Bcast(this->density.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 }
+
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Set_end_cells(void)
@@ -3356,6 +3560,30 @@ Reaction_module::Set_end_cells(void)
 		cell0 = cell0 + cells[i];
 	}
 }
+
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+Reaction_module::SetFilePrefix(std::string &prefix)
+/* ---------------------------------------------------------------------- */
+{
+	this->file_prefix.clear();
+	if (mpi_myself == 0)
+	{
+		this->file_prefix = trim(prefix);
+	}
+#ifdef USE_MPI
+	int l = 0;
+	if (mpi_myself == 0)
+	{
+		l = (int) prefix.size();
+	}
+	MPI_Bcast(&l, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	this->file_prefix.resize(l);
+	MPI_Bcast((void *) this->file_prefix.c_str(), l, MPI_CHARACTER, 0, MPI_COMM_WORLD);
+#endif
+	return IRM_OK;
+}
+
 /* ---------------------------------------------------------------------- */
 void 
 Reaction_module::Set_free_surface(int * t)
@@ -3426,80 +3654,58 @@ Reaction_module::Set_input_units(int *sol, int *pp, int *ex, int *surf, int *gas
 	}
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT
-Reaction_module::CreateMapping(int *t)
+void
+Reaction_module::SetPoreVolume(double *t)
 /* ---------------------------------------------------------------------- */
 {
-	IRM_RESULT rtn = IRM_OK;
-	std::vector<int> grid2chem;
-	grid2chem.resize(this->nxyz);
+	if (this->pore_volume.size() < this->nxyz)
+	{
+		this->pore_volume.resize(this->nxyz);
+	}
 	if (mpi_myself == 0)
 	{
-		if (t == NULL) error_msg("NULL pointer in CreateMapping", 1);
-		memcpy(grid2chem.data(), t, (size_t) (this->nxyz * sizeof(int)));
+		if (t == NULL) error_msg("NULL pointer in Set_pv", 1);
+		memcpy(this->pore_volume.data(), t, (size_t) (this->nxyz * sizeof(double)));
 	}
 #ifdef USE_MPI
-	MPI_Bcast(grid2chem.data(), this->nxyz, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(this->pore_volume.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
-
-	back.clear();
-	forward.clear();
-
-	// find count_chem
-	this->count_chem = 0;
-	for (int i = 0; i < this->nxyz; i++)
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::SetPoreVolumeZero(double *t)
+/* ---------------------------------------------------------------------- */
+{
+	if (this->pore_volume_zero.size() < this->nxyz)
 	{
-		if (grid2chem[i] > count_chem)
-		{
-			count_chem = grid2chem[i];
-		}
+		this->pore_volume_zero.resize(this->nxyz);
 	}
-	count_chem ++; 
-
-	for (int i = 0; i < count_chem; i++)
+	if (mpi_myself == 0)
 	{
-		std::vector<int> temp;
-		back.push_back(temp);
+		if (t == NULL) error_msg("NULL pointer in Set_pv0", 1);
+		memcpy(this->pore_volume_zero.data(), t, (size_t) (this->nxyz * sizeof(double)));
 	}
-	for (int i = 0; i < this->nxyz; i++)
+#ifdef USE_MPI
+	MPI_Bcast(pore_volume_zero.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+#endif
+}
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::SetPressure(double *t)
+/* ---------------------------------------------------------------------- */
+{
+	if (this->pressure.size() < this->nxyz)
 	{
-		int n = grid2chem[i];
-		if (n >= count_chem)
-		{
-			error_msg("Error in cell out of range in mapping (grid to chem).", 0);
-			rtn = IRM_INVALIDARG;
-		}
-
-		// copy to forward
-		forward.push_back(n);
-
-		// add to back
-		if (n >= 0) 
-		{
-			back[n].push_back(i);
-		}
+		this->pressure.resize(this->nxyz);
 	}
-	
-	// set -1 for back items > 0
-	for (int i = 0; i < this->count_chem; i++)
+	if (mpi_myself == 0)
 	{
-		// add to back
-		for (size_t j = 1; j < back[i].size(); j++)
-		{
-			int n = back[i][j];
-			forward[n] = -1;
-		}
+		if (t == NULL) error_msg("NULL pointer in Set_pressure", 1);
+		memcpy(this->pressure.data(), t, (size_t) (this->nxyz * sizeof(double)));
 	}
-	// check that all count_chem have at least 1 cell
-	for (int i = 0; i < this->count_chem; i++)
-	{
-		if (back[i].size() == 0)
-		{
-			error_msg("Error in building inverse mapping (chem to grid).", 0);
-			rtn = IRM_INVALIDARG;
-		}
-	}
-	return rtn;
+#ifdef USE_MPI
+	MPI_Bcast(this->pressure.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+#endif
 }
 /* ---------------------------------------------------------------------- */
 void 
@@ -3532,19 +3738,10 @@ Reaction_module::Set_print_chem_mask(int * t)
 	MPI_Bcast(this->print_chem_mask.data(), this->nxyz, MPI_INT, 0, MPI_COMM_WORLD);
 #endif
 }
-void
-Reaction_module::SetSelectedOutputOn(int *t)
-{
-	if (mpi_myself == 0 && t != NULL)
-	{
-		this->selected_output_on = *t != 0;
-	}
-#ifdef USE_MPI
-	MPI_Bcast(&this->selected_output_on, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
-#endif
-}
+/* ---------------------------------------------------------------------- */
 void 
 Reaction_module::Set_print_restart(int *t)
+/* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0 && t != NULL)
 	{
@@ -3552,60 +3749,6 @@ Reaction_module::Set_print_restart(int *t)
 	}
 #ifdef USE_MPI
 	MPI_Bcast(&this->print_restart, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
-#endif
-}
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::SetPressure(double *t)
-/* ---------------------------------------------------------------------- */
-{
-	if (this->pressure.size() < this->nxyz)
-	{
-		this->pressure.resize(this->nxyz);
-	}
-	if (mpi_myself == 0)
-	{
-		if (t == NULL) error_msg("NULL pointer in Set_pressure", 1);
-		memcpy(this->pressure.data(), t, (size_t) (this->nxyz * sizeof(double)));
-	}
-#ifdef USE_MPI
-	MPI_Bcast(this->pressure.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-#endif
-}
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::SetPv(double *t)
-/* ---------------------------------------------------------------------- */
-{
-	if (this->pv.size() < this->nxyz)
-	{
-		this->pv.resize(this->nxyz);
-	}
-	if (mpi_myself == 0)
-	{
-		if (t == NULL) error_msg("NULL pointer in Set_pv", 1);
-		memcpy(this->pv.data(), t, (size_t) (this->nxyz * sizeof(double)));
-	}
-#ifdef USE_MPI
-	MPI_Bcast(this->pv.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-#endif
-}
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::SetPv0(double *t)
-/* ---------------------------------------------------------------------- */
-{
-	if (this->pv0.size() < this->nxyz)
-	{
-		this->pv0.resize(this->nxyz);
-	}
-	if (mpi_myself == 0)
-	{
-		if (t == NULL) error_msg("NULL pointer in Set_pv0", 1);
-		memcpy(this->pv0.data(), t, (size_t) (this->nxyz * sizeof(double)));
-	}
-#ifdef USE_MPI
-	MPI_Bcast(pv0.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 }
 /* ---------------------------------------------------------------------- */
@@ -3666,8 +3809,23 @@ Reaction_module::Set_steady_flow(int *t)
 	MPI_Bcast(&this->steady_flow, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
 #endif
 }
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::SetSelectedOutputOn(int *t)
+/* ---------------------------------------------------------------------- */
+{
+	if (mpi_myself == 0 && t != NULL)
+	{
+		this->selected_output_on = *t != 0;
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&this->selected_output_on, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
+#endif
+}
+/* ---------------------------------------------------------------------- */
 void 
 Reaction_module::Set_stop_message(bool t)
+/* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0)
 	{
@@ -3696,6 +3854,7 @@ Reaction_module::SetTemperature(double *t)
 	MPI_Bcast(this->tempc.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 }
+
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::SetTime(double *t)
@@ -3710,6 +3869,7 @@ Reaction_module::SetTime(double *t)
 	MPI_Bcast(&this->time, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 }
+
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::SetTimeConversion(double *t)
@@ -3724,6 +3884,7 @@ Reaction_module::SetTimeConversion(double *t)
 	MPI_Bcast(&this->time_conversion, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 }
+
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::SetTimeStep(double *t)
@@ -3738,24 +3899,7 @@ Reaction_module::SetTimeStep(double *t)
 	MPI_Bcast(&this->time_step, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 }
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::SetVolume(double *t)
-/* ---------------------------------------------------------------------- */
-{
-	if (this->volume.size() < this->nxyz)
-	{
-		this->volume.resize(this->nxyz);
-	}
-	if (mpi_myself == 0)
-	{
-		if (t == NULL) error_msg("NULL pointer in Set_volume", 1);
-		memcpy(this->volume.data(), t, (size_t) (this->nxyz * sizeof(double)));
-	}
-#ifdef USE_MPI
-	MPI_Bcast(this->volume.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-#endif
-}
+
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Set_x_node(double * t)
@@ -3774,6 +3918,7 @@ Reaction_module::Set_x_node(double * t)
 	MPI_Bcast(this->x_node.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 }
+
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Set_y_node(double * t)
@@ -3792,6 +3937,7 @@ Reaction_module::Set_y_node(double * t)
 	MPI_Bcast(this->y_node.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 }
+
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Set_z_node(double * t)
@@ -3810,6 +3956,7 @@ Reaction_module::Set_z_node(double * t)
 	MPI_Bcast(this->z_node.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 }
+
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Setup_boundary_conditions(
@@ -3866,124 +4013,7 @@ Reaction_module::Setup_boundary_conditions(
 		}
 	}
 }
-#ifdef USE_MPI
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::Module2Concentrations(double * c)
-/* ---------------------------------------------------------------------- */
-{
-	// convert Reaction module solution data to concentrations for transport
-	MPI_Status mpi_status;
-	std::vector<double> d;  // scratch space to convert from moles to mass fraction
-	std::vector<double> solns;
-	cxxNameDouble::iterator it;
 
-	if (mpi_myself == 0)
-	{
-		if (c == NULL) error_msg("NULL pointer in Module2Concentrations", 1);
-	}
-	int n = this->mpi_myself;
-	for (int j = this->start_cell[n]; j <= this->end_cell[n]; j++)
-	{
-		// load fractions into d
-		cxxSolution * cxxsoln_ptr = this->Get_workers()[0]->Get_solution(j);
-		assert (cxxsoln_ptr);
-		this->cxxSolution2concentration(cxxsoln_ptr, d);
-		for (int i = 0; i < (int) this->components.size(); i++)
-		{
-			solns.push_back(d[i]);
-		}
-	}
-
-	// make buffer to recv solutions
-	double * recv_solns = new double[(size_t) this->count_chem * this->components.size()];
-
-	// each process has its own vector of solution components
-	// gather vectors to root
-	for (int n = 1; n < this->mpi_tasks; n++)
-	{
-		int count = this->end_cell[n] - this->start_cell[n] + 1;
-		int num_doubles = count * (int) this->components.size();
-		if (this->mpi_myself == n)
-		{
-			MPI_Send((void *) solns.data(), num_doubles, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
-		}
-		else if (this->mpi_myself == 0)
-		{
-			MPI_Recv(recv_solns, num_doubles, MPI_DOUBLE, n, 0, MPI_COMM_WORLD, &mpi_status);
-			for (int i = 0; i < num_doubles; i++)
-			{
-				solns.push_back(recv_solns[i]);
-			}
-		}
-	}
-	
-	// delete recv buffer
-	delete recv_solns;
-
-	// Write vector into c
-	if (this->mpi_myself == 0)
-	{
-		assert (solns.size() == this->count_chem*this->components.size());
-		int n = 0;
-		for (int j = 0; j < count_chem; j++)
-		{
-			std::vector<double> d;
-			for (size_t i = 0; i < this->components.size(); i++)
-			{
-				d.push_back(solns[n++]);
-			}
-			std::vector<int>::iterator it;
-			for (it = this->back[j].begin(); it != this->back[j].end(); it++)
-			{
-				double *d_ptr = &c[*it];
-				size_t i;
-				for (i = 0; i < this->components.size(); i++)
-				{
-					d_ptr[this->nxyz * i] = d[i];
-				}
-			}
-		}
-	}
-
-}
-#else
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::Module2Concentrations(double * c)
-/* ---------------------------------------------------------------------- */
-{
-	// convert Reaction module solution data to hst mass fractions
-
-	std::vector<double> d;  // scratch space to convert from moles to mass fraction
-	cxxNameDouble::iterator it;
-
-	int j; 
-	if (c == NULL) error_msg("NULL pointer in Module2Concentrations", 1);
-	for (int n = 0; n < this->nthreads; n++)
-	{
-		for (j = this->start_cell[n]; j <= this->end_cell[n]; j++)
-		{
-			// load fractions into d
-			cxxSolution * cxxsoln_ptr = this->Get_workers()[n]->Get_solution(j);
-			assert (cxxsoln_ptr);
-			this->cxxSolution2concentration(cxxsoln_ptr, d);
-
-			// store in fraction at 1, 2, or 4 places depending on chemistry dimensions
-			std::vector<int>::iterator it;
-			for (it = this->back[j].begin(); it != this->back[j].end(); it++)
-			{
-				double *d_ptr = &c[*it];
-				size_t i;
-				for (i = 0; i < this->components.size(); i++)
-				{
-					d_ptr[this->nxyz * i] = d[i];
-				}
-			}
-		}
-	}
-}
-#endif
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 void
