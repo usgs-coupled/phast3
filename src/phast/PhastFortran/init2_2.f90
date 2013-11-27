@@ -25,10 +25,6 @@ SUBROUTINE init2_2
   INTEGER :: iis, iwel, m, nr, nsa
   LOGICAL :: erflg, exbc
   INTEGER :: mp, n
-!$$  REAL(kind=kdp), DIMENSION(:), ALLOCATABLE :: ukbc, uzbc, ubbbc
-!$$  REAL(KIND=kdp), DIMENSION(nxyz) :: frac_icchem
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: init2_2.f90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   nr=nx
@@ -36,7 +32,6 @@ SUBROUTINE init2_2
   ! ... Initialize accumulation arrays and time counting and summation
   ! ...      variables
   fdtmth_tr = fdtmth     ! ... save the input time difference weight
-!  time = 0._kdp
   time = timrst*cnvtm
   time_phreeqc = time
   deltim_sav = 0._kdp

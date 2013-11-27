@@ -11,7 +11,7 @@ SUBROUTINE phast_manager
     USE mcg, ONLY: naxes, nx, ny, nz, nxyz, npmz, grid2chem
     USE mcm
     USE mcm_m
-    USE mcn, ONLY: x_node, y_node, z_node, pv0, volume
+    USE mcn, ONLY: pv0
     USE mcp
     USE mcs
     USE mcv
@@ -26,59 +26,47 @@ SUBROUTINE phast_manager
     IMPLICIT NONE 
     SAVE
     INCLUDE 'RM_interface.f90.inc'
-    !REAL(KIND=kdp) :: deltim_dummy
-    INTEGER :: stop_msg, ipp_err
     CHARACTER(LEN=130) :: logline1
     INTEGER :: i, a_err
-    ! ... Set string for use with RCS ident command
-    INTEGER hdf_initialized, hdf_invariant
     INTEGER status
-    CHARACTER(LEN=80) :: ident_string='$Id: phast_manager.F90,v 1.3 2013/09/26 22:49:48 klkipp Exp klkipp $'
     !     ------------------------------------------------------------------
 
     !...
-#ifdef USE_MPI
-    PRINT *, 'Starting manager process ', mpi_myself
-#endif
-    hdf_initialized = 0
-    hdf_invariant = 0
+
     errexi=.FALSE.
     errexe=.FALSE.
-
-    ! ... static data
+!
+! ... static data, group 1
+!
     CALL openf
     CALL read1              ! ... Read fundamental information, dimensioning data
     CALL read1_distribute
     
     ! Create Reaction Module(s)
     CALL CreateRM
-
-    ipp_err = 0
-    !TODO CALL on_error_cleanup_and_exit
+    ! ... Map components to processes for transport calculations
+    CALL set_component_map
 
     !... Call init1
     CALL init1
     CALL error1
     IF(errexi) GO TO 50
     CALL write1
-  
-    ! ... Map components to processes for transport calculations
-    CALL set_component_map
-
-    ! ... Read the time invariant data
+!
+! ... time-invariant data, group 2
+!    
     CALL read2
     CALL init2_1
-    pv0 = pv                           ! geometric pv
+    !pv0 = pv                           ! geometric pv
     CALL group2_distribute             ! Tranfer data to workers
   
     ! ... Create transporters
     CALL create_transporters
 
-    ! ... Finish time invariant data
     CALL init2_2
-    IF (.NOT.steady_flow) THEN
-        pv0 = pv                       ! pressure corrected pv
-    ENDIF
+    !IF (.NOT.steady_flow) THEN
+    !    pv0 = pv                       ! pressure corrected pv
+    !ENDIF
     CALL error2
 
     ! ...  Initialize Reaction Module
@@ -108,7 +96,7 @@ SUBROUTINE phast_manager
     IF (solute) THEN
         CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
         CALL init2_3        
-    ENDIF   ! End solute
+    ENDIF
 
     ! ...  Write initial results
     CALL write2_2
@@ -121,8 +109,9 @@ SUBROUTINE phast_manager
     CALL flow_distribute
 
     IF(errexe .OR. errexi) GO TO 50
-
-    ! ...  Transient loop
+!
+! ...  Transient loop
+!
     IF(solute .OR. .NOT.steady_flow) THEN
         logline1 = 'Beginning transient simulation.'
         CALL RM_LogScreenMessage(logline1)
@@ -455,7 +444,7 @@ SUBROUTINE InitialEquilibrationRM
         CALL RM_LogScreenMessage(logline1)
         stop_msg = 0
         deltim_dummy = 0._kdp
-        CALL RM_SetPv(rm_id, pv(1))
+        CALL RM_SetPoreVolume(rm_id, pv(1))
         CALL RM_SetSaturation(rm_id, frac(1))
         CALL RM_set_printing(rm_id, prf_chem_phrqi, prhdfci, 0)
         CALL RM_RunCells(      &
@@ -500,11 +489,11 @@ SUBROUTINE InitializeRM
         CALL RM_SetInputUnits (rm_id, 3, 1, 1, 1, 1, 1, 1)
         CALL RM_set_nodes(rm_id, x_node(1), y_node(1), z_node(1))
         CALL RM_SetTimeConversion(rm_id, cnvtmi)
-        CALL RM_SetPv0(rm_id, pv0(1))
+        CALL RM_SetPoreVolumeZero(rm_id, pv0(1))
         CALL RM_set_print_chem_mask(rm_id, iprint_chem(1))
         CALL RM_set_free_surface(rm_id, ifresur)
         CALL RM_set_steady_flow(rm_id, isteady_flow)
-        CALL RM_SetVolume(rm_id, volume(1))
+        CALL RM_SetCellVolume(rm_id, volume(1))
         CALL RM_SetRebalance(rm_id, rebalance_method_f, rebalance_fraction_f)
 
         ! ... Define mapping from 3D domain to chemistry
@@ -544,7 +533,7 @@ SUBROUTINE TimeStepRM
     IF (solute) THEN
         WRITE(logline1,'(a)') '     Beginning chemistry calculation.'
         CALL RM_LogScreenMessage(logline1)
-        CALL RM_SetPv(rm_id, pv(1))
+        CALL RM_SetPoreVolume(rm_id, pv(1))
         CALL RM_SetSaturation(rm_id, frac(1))
         CALL RM_set_printing(rm_id,                     &
             print_force_chemistry%print_flag_integer,   & 

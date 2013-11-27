@@ -695,6 +695,17 @@ RM_SetFilePrefix(int *id, const char *name, long nchar)
 }
 
 /* ---------------------------------------------------------------------- */
+void RM_SetCellVolume(int *id, double *t)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->SetCellVolume(t);
+	}
+}
+
+/* ---------------------------------------------------------------------- */
 int RM_SetCurrentSelectedOutputUserNumber(int * rm_id, int * i)
 	/* ---------------------------------------------------------------------- */
 {
@@ -806,6 +817,28 @@ RM_set_nodes(int *id,
 }
 
 /* ---------------------------------------------------------------------- */
+void RM_SetPoreVolume(int *id, double *t)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->SetPoreVolume(t);
+	}
+}
+
+/* ---------------------------------------------------------------------- */
+void RM_SetPoreVolumeZero(int *id, double *t)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->SetPoreVolumeZero(t);
+	}
+}
+
+/* ---------------------------------------------------------------------- */
 void RM_SetPressure(int *id, double *t)
 /* ---------------------------------------------------------------------- */
 {
@@ -839,41 +872,10 @@ RM_set_printing(int *id,
 void RM_set_print_chem_mask(int *id, int *t)
 /* ---------------------------------------------------------------------- */
 {
-	//
-	// multiply seconds to convert to user time units
-	//
 	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->Set_print_chem_mask(t);
-	}
-}
-
-/* ---------------------------------------------------------------------- */
-void RM_SetPv(int *id, double *t)
-/* ---------------------------------------------------------------------- */
-{
-	//
-	// multiply seconds to convert to user time units
-	//
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
-	if (Reaction_module_ptr)
-	{
-		Reaction_module_ptr->SetPv(t);
-	}
-}
-
-/* ---------------------------------------------------------------------- */
-void RM_SetPv0(int *id, double *t)
-/* ---------------------------------------------------------------------- */
-{
-	//
-	// multiply seconds to convert to user time units
-	//
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
-	if (Reaction_module_ptr)
-	{
-		Reaction_module_ptr->SetPv0(t);
 	}
 }
 
@@ -893,9 +895,6 @@ void RM_SetRebalance(int *id, int *method, double *f)
 void RM_SetSaturation(int *id, double *t)
 /* ---------------------------------------------------------------------- */
 {
-	//
-	// multiply seconds to convert to user time units
-	//
 	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
@@ -937,20 +936,6 @@ void RM_SetTimeConversion(int *id, double *t)
 	if (Reaction_module_ptr)
 	{
 		Reaction_module_ptr->SetTimeConversion(t);
-	}
-}
-
-/* ---------------------------------------------------------------------- */
-void RM_SetVolume(int *id, double *t)
-/* ---------------------------------------------------------------------- */
-{
-	//
-	// multiply seconds to convert to user time units
-	//
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
-	if (Reaction_module_ptr)
-	{
-		Reaction_module_ptr->SetVolume(t);
 	}
 }
 

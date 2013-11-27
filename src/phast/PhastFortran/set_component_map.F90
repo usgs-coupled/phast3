@@ -9,8 +9,6 @@ SUBROUTINE set_component_map
   INTEGER a_err, i, j, nmembers
   INTEGER, DIMENSION(:), ALLOCATABLE :: members
   INTEGER :: mpi_xp_group_world
-  ! ... Set string for use with RCS ident command
-  CHARACTER(LEN=80) :: ident_string='$Id: set_component_map.F90,v 1.1 2013/09/19 20:41:58 klkipp Exp $'
   !     ------------------------------------------------------------------
   !...
   IF (.NOT. solute) RETURN
@@ -76,7 +74,6 @@ SUBROUTINE set_component_map
         ENDIF
      ENDDO
   ENDIF
-  !!$    write(*,*) "set_component_map: ", mpi_myself, xp_group, local_ns, component_map, local_component_map
   DEALLOCATE (members, & 
        STAT = a_err)
   IF (a_err /= 0) THEN  
