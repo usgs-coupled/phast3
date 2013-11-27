@@ -392,7 +392,6 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)
     <ClCompile Include="..\KDtree\kdtree2.cpp" />
     <ClCompile Include="..\KDtree\Point.cpp" />
     <ClCompile Include="..\TM_interface.cpp" />
-    <ClCompile Include="..\xfer_indices.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="phast.rc" />

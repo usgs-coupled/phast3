@@ -25,9 +25,6 @@
       <UniqueIdentifier>{499f1dbc-fe10-4d7b-a3e4-d8eccc9840fe}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
-    <Filter Include="Source Files\MPI_OBJS">
-      <UniqueIdentifier>{96851506-91ac-403d-9489-fd7556a3794a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\PHASTINPUT_HEADERS">
       <UniqueIdentifier>{9ae3f962-844b-4c60-a52f-a5ab4289d7ae}</UniqueIdentifier>
     </Filter>
@@ -56,9 +53,6 @@
     </ClCompile>
     <ClCompile Include="..\hdf.cpp">
       <Filter>Source Files\HDF_OBJS</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xfer_indices.cpp">
-      <Filter>Source Files\MPI_OBJS</Filter>
     </ClCompile>
     <ClCompile Include="..\TM_interface.cpp">
       <Filter>Source Files\COMMON_CXXOBJS</Filter>

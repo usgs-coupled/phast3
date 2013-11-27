@@ -1,4 +1,4 @@
-SUBROUTINE create_mapping(initial_conditions)
+SUBROUTINE CreateMappingFortran(initial_conditions)
       USE mcg, only: nx, ny, nz, nxy, nxyz, naxes, grid2chem
       USE mcc, only: mpi_myself
       IMPLICIT NONE
@@ -7,7 +7,7 @@ SUBROUTINE create_mapping(initial_conditions)
 !
     CHARACTER(LEN=130) :: erline
     
-    INTEGER, DIMENSION(:,:), INTENT(INOUT) :: initial_conditions
+    INTEGER, DIMENSION(:,:), ALLOCATABLE, INTENT(INOUT) :: initial_conditions
 	integer i, m, n, ii, jj, kk
     integer count_chem
     logical axes(0:2)
@@ -181,4 +181,4 @@ SUBROUTINE create_mapping(initial_conditions)
 		count_chem = n
     endif
 	return
-END SUBROUTINE create_mapping
+END SUBROUTINE CreateMappingFortran

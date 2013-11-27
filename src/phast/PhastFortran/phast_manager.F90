@@ -26,52 +26,10 @@ SUBROUTINE phast_manager
     IMPLICIT NONE 
     SAVE
     INCLUDE 'RM_interface.f90.inc'
-    REAL(KIND=kdp) :: deltim_dummy
+    !REAL(KIND=kdp) :: deltim_dummy
     INTEGER :: stop_msg, ipp_err
     CHARACTER(LEN=130) :: logline1
     INTEGER :: i, a_err
-    INTEGER ifresur, isteady_flow
-    INTERFACE
-        SUBROUTINE create_mapping(ic)
-            implicit none
-            INTEGER, DIMENSION(:,:), INTENT(INOUT) :: ic
-        END SUBROUTINE create_mapping
-
-#ifdef USE_MPI
-        SUBROUTINE xfer_indices(indx_sol1_ic, indx_sol2_ic, &
-            mxfrac, naxes, nxyz, &
-            x_node, y_node, z_node, &
-            cnvtmi, &
-            steady_flow, pv0, &
-            rebalance_method_f, volume, tort, npmz, &
-            mpi_myself)
-            USE machine_constants, ONLY: kdp
-            IMPLICIT NONE
-            INTEGER :: indx_sol1_ic 
-            INTEGER :: indx_sol2_ic 
-            REAL(KIND=kdp) :: mxfrac
-            INTEGER :: naxes 
-            INTEGER :: nxyz    
-            REAL(KIND=kdp) x_node 
-            REAL(KIND=kdp) y_node
-            REAL(KIND=kdp) z_node 
-            REAL(KIND=kdp) cnvtmi 
-            LOGICAL :: steady_flow 
-            REAL(KIND=kdp) :: pv0 
-            INTEGER :: rebalance_method_f          
-            REAL(KIND=kdp) :: volume 
-            REAL(KIND=kdp) :: tort
-            INTEGER :: npmz 
-            INTEGER :: exchange_units 
-            INTEGER :: surface_units 
-            INTEGER :: ssassemblage_units 
-            INTEGER :: ppassemblage_units 
-            INTEGER :: gasphase_units
-            INTEGER :: kinetics_units
-            INTEGER :: mpi_myself
-        END SUBROUTINE xfer_indices
-#endif
-    END INTERFACE
     ! ... Set string for use with RCS ident command
     INTEGER hdf_initialized, hdf_invariant
     INTEGER status
@@ -91,34 +49,9 @@ SUBROUTINE phast_manager
     CALL openf
     CALL read1              ! ... Read fundamental information, dimensioning data
     CALL read1_distribute
-
-    ! ... make a reaction module; makes instances of IPhreeqc and IPhreeqcPhast with same rm_id
-    rm_id = RM_Create(nxyz, nthreads)
-    IF (rm_id.LT.0) THEN
-        STOP
-    END IF
     
-    status = RM_LoadDatabase(rm_id, f2name);
-    status = RM_OpenFiles(rm_id, f3name)
-  
-    !... Call phreeqc, find number of components; f1name, chem.dat; f2name, database; f3name, prefix
-    IF (solute) THEN
-        CALL RM_LogScreenMessage("Initial PHREEQC run.")  
-        status = RM_InitialPhreeqcRun(rm_id, f1name) 
-        ! Set components
-        ns = RM_FindComponents(rm_id)
-        ALLOCATE(comp_name(ns),  & 
-            STAT = a_err)
-        IF (a_err /= 0) THEN
-            PRINT *, "Array allocation failed: phast_manager, point 0"  
-            STOP
-        ENDIF
-        DO i = 1, ns
-            comp_name(i) = ' '
-            status = RM_GetComponent(rm_id, i, comp_name(i))
-        ENDDO   
-        CALL RM_LogScreenMessage("Done with Initial PHREEQC run.")
-    ENDIF
+    ! Create Reaction Module(s)
+    CALL CreateRM
 
     ipp_err = 0
     !TODO CALL on_error_cleanup_and_exit
@@ -148,49 +81,9 @@ SUBROUTINE phast_manager
     ENDIF
     CALL error2
 
-    ! ...  Initialize chemistry 
-    IF(solute) THEN
-
-#if defined(USE_MPI)
-        ! ... Send data to workers
-        !CALL xfer_indices(indx_sol1_ic(1,1), indx_sol2_ic(1,1), ic_mxfrac(1,1), naxes(1), nxyz,  &
-        !x_node(1), y_node(1), z_node(1), cnvtmi, steady_flow, pv0(1),  &
-        !rebalance_method_f, volume(1), tort(1), npmz, &
-        !mpi_myself)
-#endif
-
-        ! ... Send data to threads or workers
-        
-        CALL RM_SetInputUnits (rm_id, 3, 1, 1, 1, 1, 1, 1)
-        CALL RM_set_nodes(rm_id, x_node(1), y_node(1), z_node(1))
-        CALL RM_SetTimeConversion(rm_id, cnvtmi)
-        CALL RM_SetPv0(rm_id, pv0(1))
-        CALL RM_set_print_chem_mask(rm_id, iprint_chem(1))
-        ifresur = fresur
-        CALL RM_set_free_surface(rm_id, ifresur)
-        isteady_flow = steady_flow
-        CALL RM_set_steady_flow(rm_id, isteady_flow)
-        CALL RM_SetVolume(rm_id, volume(1))
-        CALL RM_SetRebalance(rm_id, rebalance_method_f, rebalance_fraction_f)
-
-        ! ... Define mapping from 3D domain to chemistry
-        CALL create_mapping(indx_sol1_ic)
-        status = RM_CreateMapping(rm_id, grid2chem(1))
-        
-        DO i = 1, num_restart_files
-            CALL RM_send_restart_name(rm_id, restart_files(i))
-        ENDDO
-
-        ! ... Distribute chemistry initial conditions
-        status = RM_distribute_initial_conditions_mix(rm_id, &
-            indx_sol1_ic(1,1),           & ! 7 x nxyz end-member 1 
-            indx_sol2_ic(1,1),           & ! 7 x nxyz end-member 2
-            ic_mxfrac(1,1))                ! 7 x nxyz fraction of end-member 1
-
-        ! collect solutions at manager for transport
-        CALL RM_Module2Concentrations(rm_id, c(1,1))
-    ENDIF        ! ... solute
-
+    ! ...  Initialize Reaction Module
+    CALL InitializeRM
+ 
     CALL error4
     ! ... write2_1 must be called after distribute_initial_conditions and equilibrate
     ! ... Write initial condition results 
@@ -209,26 +102,10 @@ SUBROUTINE phast_manager
 
     IF(errexe .OR. errexi) GO TO 50
 
-    ! ...  Initial equilibrate
+    ! ... Use Reaction Module to equilbrate cells    
+    CALL InitialEquilibrationRM
+
     IF (solute) THEN
-        ! ... Equilibrate the initial conditions for component concentrations
-        WRITE(logline1,'(a)') 'Equilibration of cells for initial conditions.'
-        CALL RM_LogScreenMessage(logline1)
-        stop_msg = 0
-        deltim_dummy = 0._kdp
-        CALL RM_SetPv(rm_id, pv(1))
-        CALL RM_SetSaturation(rm_id, frac(1))
-        CALL RM_set_printing(rm_id, prf_chem_phrqi, prhdfci, 0)
-        CALL RM_RunCells(      &
-            rm_id,              &
-            time_phreeqc,       &        ! time_hst
-            deltim_dummy,       &        ! time_step
-            c(1,1),             &        ! fraction
-            stop_msg) 
-        CALL WriteFiles(rm_id, prhdfci, prcphrqi,  pr_hdf_media, &
-	        x_node(1), y_node(1), z_node(1), iprint_xyz(1), &
-	        frac(1), grid2chem(1)); 
-       
         CALL TM_zone_flow_write_chem(print_zone_flows_xyzt%print_flag_integer)
         CALL init2_3        
     ENDIF   ! End solute
@@ -342,28 +219,9 @@ SUBROUTINE phast_manager
             ! ... Equilibrate the solutions with PHREEQC
             ! ... This is the connection to the equilibration step after transport
             CALL time_parallel(11) 
-    
-            IF (solute) THEN
-                WRITE(logline1,'(a)') '     Beginning chemistry calculation.'
-                CALL RM_LogScreenMessage(logline1)
-                stop_msg = 0
-                CALL RM_SetPv(rm_id, pv(1))
-                CALL RM_SetSaturation(rm_id, frac(1))
-                CALL RM_set_printing(rm_id,                     &
-                    print_force_chemistry%print_flag_integer,   & 
-                    print_hdf_chemistry%print_flag_integer,     & 
-                    print_restart%print_flag_integer)
-                CALL RM_RunCells(                                &
-                    rm_id,                                        &
-                    time,                                         &        ! time_hst
-                    deltim,                                       &        ! time_step_hst
-                    c(1,1),                                       &        ! fraction
-                    stop_msg) 
-                CALL WriteFiles(rm_id, prhdfci, prcphrqi,  pr_hdf_media, &
-	                x_node(1), y_node(1), z_node(1), iprint_xyz(1), &
-	                frac(1), grid2chem(1)) 
- 
-            ENDIF    ! ... Done with chemistry
+            
+            ! ... Run cells in Reaction Module
+            CALL TimeStepRM
 
             CALL time_parallel(12)
             CALL sumcal2
@@ -532,20 +390,110 @@ SUBROUTINE transport_component_thread(i)
     CALL XP_sumcal1(xp_list(i))
     CALL XP_free_thread(xp_list(i))
     IF(errexe .OR. errexi) CALL RM_error(rm_id)
-END SUBROUTINE transport_component_thread
-#ifdef SKIP    
-SUBROUTINE ChemistryInitialize 
-    USE mcc, only: solute
-    USE mcv, only: indx_sol1_ic, indx_sol2_ic, ic_mxfrac
-    IF(solute) THEN
+    END SUBROUTINE transport_component_thread
+    
+SUBROUTINE CreateRM 
+    USE mcc,  ONLY: rm_id, solute
+    USE mcch, ONLY: f1name, f2name, f3name, comp_name
+    USE mcg,  ONLY: nxyz
+    USE mcs,  ONLY: nthreads
+    USE mcv,  ONLY: ns
+    IMPLICIT NONE
+    SAVE
+    INCLUDE 'RM_interface.f90.inc'
+    INTEGER i, a_err, status
+    
+    ! ... make a reaction module; makes instances of IPhreeqc and IPhreeqcPhast with same rm_id
+    rm_id = RM_Create(nxyz, nthreads)
+    IF (rm_id.LT.0) THEN
+        STOP
+    END IF
+    
+    status = RM_LoadDatabase(rm_id, f2name);
+    status = RM_OpenFiles(rm_id, f3name)
+  
+    !... Call phreeqc, find number of components; f1name, chem.dat; f2name, database; f3name, prefix
+    IF (solute) THEN
+        CALL RM_LogScreenMessage("Initial PHREEQC run.")  
+        status = RM_InitialPhreeqcRun(rm_id, f1name) 
+        ! Set components
+        ns = RM_FindComponents(rm_id)
+        ALLOCATE(comp_name(ns),  & 
+            STAT = a_err)
+        IF (a_err /= 0) THEN
+            PRINT *, "Array allocation failed: phast_manager, point 0"  
+            STOP
+        ENDIF
+        DO i = 1, ns
+            comp_name(i) = ' '
+            status = RM_GetComponent(rm_id, i, comp_name(i))
+        ENDDO   
+        CALL RM_LogScreenMessage("Done with Initial PHREEQC run.")
+    ENDIF
+END SUBROUTINE CreateRM
+  
+SUBROUTINE InitialEquilibrationRM 
+    USE machine_constants, ONLY: kdp
+    USE mcc, only: iprint_xyz, prcphrqi, prf_chem_phrqi, prhdfci, rm_id, solute, steady_flow
+    USE mcg, only: grid2chem
+    USE mcn, only: x_node, y_node, z_node
+    USE mcp, only: pv
+    USE mcv, only: c, frac, time_phreeqc
+    USE hdf_media_m, only: pr_hdf_media
+    IMPLICIT NONE
+    SAVE
+    INCLUDE 'RM_interface.f90.inc' 
+    DOUBLE PRECISION :: deltim_dummy
+    CHARACTER(LEN=130) :: logline1
+    INTEGER :: stop_msg
+    
+    ! ...  Initial equilibrate
+    IF (solute) THEN
+        deltim_dummy = 0._kdp
+        ! ... Equilibrate the initial conditions for component concentrations
+        WRITE(logline1,'(a)') 'Equilibration of cells for initial conditions.'
+        CALL RM_LogScreenMessage(logline1)
+        stop_msg = 0
+        deltim_dummy = 0._kdp
+        CALL RM_SetPv(rm_id, pv(1))
+        CALL RM_SetSaturation(rm_id, frac(1))
+        CALL RM_set_printing(rm_id, prf_chem_phrqi, prhdfci, 0)
+        CALL RM_RunCells(      &
+            rm_id,              &
+            time_phreeqc,       &        ! time_hst
+            deltim_dummy,       &        ! time_step
+            c(1,1),             &        ! fraction
+            stop_msg) 
+        CALL WriteFiles(rm_id, prhdfci, prcphrqi,  pr_hdf_media, &
+	        x_node(1), y_node(1), z_node(1), iprint_xyz(1), &
+	        frac(1), grid2chem(1)); 
+    ENDIF       
+END SUBROUTINE InitialEquilibrationRM
+    
+SUBROUTINE InitializeRM 
+    USE mcb, only: fresur
+    USE mcc, only: iprint_chem, rebalance_fraction_f, rebalance_method_f, rm_id, solute, steady_flow
+    USE mcch, only: num_restart_files, restart_files
+    USE mcg, only: grid2chem
+    USE mcn, only: x_node, y_node, z_node, pv0, volume
+    USE mcp, only: cnvtmi
+    USE mcv, only: c, indx_sol1_ic, indx_sol2_ic, ic_mxfrac 
 
-#if defined(USE_MPI)
-        ! ... Send data to workers
-        !CALL xfer_indices(indx_sol1_ic(1,1), indx_sol2_ic(1,1), ic_mxfrac(1,1), naxes(1), nxyz,  &
-        !x_node(1), y_node(1), z_node(1), cnvtmi, steady_flow, pv0(1),  &
-        !rebalance_method_f, volume(1), tort(1), npmz, &
-        !mpi_myself)
-#endif
+    IMPLICIT NONE
+    SAVE
+    INCLUDE 'RM_interface.f90.inc'
+    INTERFACE
+        SUBROUTINE CreateMappingFortran(ic)
+            implicit none
+            INTEGER, DIMENSION(:,:), ALLOCATABLE, INTENT(INOUT) :: ic
+        END SUBROUTINE CreateMappingFortran
+    END INTERFACE
+    INTEGER i, status
+    INTEGER ifresur, isteady_flow
+    
+    ifresur = fresur
+    isteady_flow = steady_flow   
+    IF(solute) THEN
 
         ! ... Send data to threads or workers
         
@@ -554,15 +502,13 @@ SUBROUTINE ChemistryInitialize
         CALL RM_SetTimeConversion(rm_id, cnvtmi)
         CALL RM_SetPv0(rm_id, pv0(1))
         CALL RM_set_print_chem_mask(rm_id, iprint_chem(1))
-        ifresur = fresur
         CALL RM_set_free_surface(rm_id, ifresur)
-        isteady_flow = steady_flow
         CALL RM_set_steady_flow(rm_id, isteady_flow)
         CALL RM_SetVolume(rm_id, volume(1))
         CALL RM_SetRebalance(rm_id, rebalance_method_f, rebalance_fraction_f)
 
         ! ... Define mapping from 3D domain to chemistry
-        CALL create_mapping(indx_sol1_ic)
+        CALL CreateMappingFortran(indx_sol1_ic)
         status = RM_CreateMapping(rm_id, grid2chem(1))
         
         DO i = 1, num_restart_files
@@ -578,6 +524,41 @@ SUBROUTINE ChemistryInitialize
         ! collect solutions at manager for transport
         CALL RM_Module2Concentrations(rm_id, c(1,1))
     ENDIF        ! ... solute
+END SUBROUTINE InitializeRM
     
-    END SUBROUTINE ChemistryInitialize
-#endif  
+SUBROUTINE TimeStepRM    
+    USE mcc, only: iprint_xyz, prcphrqi, prhdfci, rm_id, solute
+    USE mcg, only: grid2chem
+    USE mcn, only: x_node, y_node, z_node
+    USE mcp, only: pv
+    USE mcv, only: c, deltim, frac, time
+    USE hdf_media_m,       ONLY: pr_hdf_media
+    USE print_control_mod, only: print_force_chemistry, print_hdf_chemistry, print_restart
+    IMPLICIT NONE
+    SAVE
+    INCLUDE 'RM_interface.f90.inc' 
+    INTEGER stop_msg
+    CHARACTER(LEN=130) :: logline1
+    
+    stop_msg = 0
+    IF (solute) THEN
+        WRITE(logline1,'(a)') '     Beginning chemistry calculation.'
+        CALL RM_LogScreenMessage(logline1)
+        CALL RM_SetPv(rm_id, pv(1))
+        CALL RM_SetSaturation(rm_id, frac(1))
+        CALL RM_set_printing(rm_id,                     &
+            print_force_chemistry%print_flag_integer,   & 
+            print_hdf_chemistry%print_flag_integer,     & 
+            print_restart%print_flag_integer)
+        CALL RM_RunCells(                               &
+            rm_id,                                      &
+            time,                                       &        ! time_hst
+            deltim,                                     &        ! time_step_hst
+            c(1,1),                                     &        ! fraction
+            stop_msg) 
+        CALL WriteFiles(rm_id, prhdfci, prcphrqi,  pr_hdf_media, &
+            x_node(1), y_node(1), z_node(1), iprint_xyz(1), &
+            frac(1), grid2chem(1)) 
+
+    ENDIF    ! ... Done with chemistry    
+END SUBROUTINE TimeStepRM    
