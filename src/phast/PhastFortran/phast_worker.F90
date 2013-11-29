@@ -146,7 +146,7 @@ SUBROUTINE phast_worker
         ! ... Initial equilibration
         CALL RM_SetPoreVolume(rm_id)
         CALL RM_SetSaturation(rm_id)
-        CALL RM_set_printing(rm_id)
+        status = RM_SetPrintChemistryOn(rm_id)
         CALL RM_RunCells(                                &
             rm_id,                                        &
             time_phreeqc,                                 &        ! time_hst
@@ -209,7 +209,7 @@ SUBROUTINE phast_worker
             ! ... Chemistry calculation
             CALL RM_SetPoreVolume(rm_id)
             CALL RM_SetSaturation(rm_id)
-            CALL RM_set_printing(rm_id)
+            status = RM_SetPrintChemistryOn(rm_id)
             CALL RM_RunCells(                                &
                 rm_id,                                        &
                 time_phreeqc,                                 &        ! time_hst

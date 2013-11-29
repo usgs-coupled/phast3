@@ -140,7 +140,7 @@ if( numCPU < 1 )
 	this->rebalance_fraction = 0.5;				// parameter for rebalancing process load for parallel	
 
 	// print flags
-	this->print_chem = false;					// print flag for chemistry output file 
+	this->print_chemistry_on = false;					// print flag for chemistry output file 
 	this->selected_output_on = false;			// Create selected output
 	this->print_restart = false;				// print flag for writing restart file 
 	this->input_units_Solution = 3;				// 1 mg/L, 2 mmol/L, 3 kg/kgs
@@ -2998,7 +2998,7 @@ Reaction_module::RunCells()
 	{
 
 		// write output results
-		if (this->print_chem)
+		if (this->print_chemistry_on)
 		{		
 			// Need to transfer output stream to root and print
 			if (this->mpi_myself == n)
@@ -3074,7 +3074,7 @@ Reaction_module::RunCells()
 	for (int n = 0; n < this->nthreads; n++)
 	{
 		// write output results
-		if (this->print_chem)
+		if (this->print_chemistry_on)
 		{
 			Write_output(this->workers[n]->Get_out_stream().str().c_str());
 		}
@@ -3142,7 +3142,7 @@ Reaction_module::Run_cells_thread(int n)
 		phast_iphreeqc_worker->Get_cell_clock_times().push_back(- (double) clock());
 #endif
 		// Set local print flags
-		bool pr_chem = this->print_chem && (this->print_chem_mask[j] != 0);
+		bool pr_chem = this->print_chemistry_on && (this->print_chem_mask[j] != 0);
 
 		// partition solids between UZ and SZ
 		if (this->free_surface && !this->steady_flow)	
@@ -3709,15 +3709,15 @@ Reaction_module::SetPressure(double *t)
 }
 /* ---------------------------------------------------------------------- */
 void 
-Reaction_module::Set_print_chem(int *t)
+Reaction_module::SetPrintChemistryOn(int *t)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0 && t != NULL)
 	{
-		this->print_chem = (*t != 0);
+		this->print_chemistry_on = (*t != 0);
 	}
 #ifdef USE_MPI
-	MPI_Bcast(&this->print_chem, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&this->print_chemistry_on, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
 #endif
 }
 /* ---------------------------------------------------------------------- */

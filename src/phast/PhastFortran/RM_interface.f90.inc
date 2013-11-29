@@ -218,11 +218,11 @@
             DOUBLE PRECISION, OPTIONAL :: t
         END SUBROUTINE RM_SetPressure        
         
-        SUBROUTINE RM_set_printing(id, print_chem, print_hdf, print_restart)   
+        INTEGER FUNCTION RM_SetPrintChemistryOn(id, print_chem)   
             IMPLICIT NONE
             INTEGER :: id
-            INTEGER, OPTIONAL :: print_chem, print_hdf, print_restart
-        END SUBROUTINE RM_set_printing 
+            INTEGER, OPTIONAL :: print_chem
+        END FUNCTION RM_SetPrintChemistryOn 
 
         SUBROUTINE RM_set_print_chem_mask(id, t)   
             IMPLICIT NONE
