@@ -67,7 +67,7 @@ public:
 	// setters and getters
 	std::vector<double> &          GetCellVolume(void) {return this->cell_volume;}
 	void                           SetCellVolume(double * t);
-	const int                      GetChemistryCellCount(void) const {return this->count_chem;}
+	const int                      GetChemistryCellCount(void) const {return this->count_chemistry;}
 	IRM_RESULT                     SetChemistryFileName(const char * prefix, long l = -1);
 	const std::vector<std::string> & GetComponents(void) const {return this->components;}
 	const std::string              GetDatabaseFileName(void) const {return this->database_file_name;}
@@ -196,7 +196,7 @@ protected:
 	bool free_surface;                      // free surface calculation
 	bool steady_flow;						// steady-state flow
 	int nxyz;								// number of nodes 
-	int count_chem;							// number of cells for chemistry
+	int count_chemistry;					// number of cells for chemistry
 	double time;						    // time from transport, sec 
 	double time_step;					    // time step from transport, sec
 	double time_conversion;					// time conversion factor, multiply to convert to preferred time unit for output

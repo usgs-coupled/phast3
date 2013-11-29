@@ -131,7 +131,7 @@ if( numCPU < 1 )
 
 
 	this->gfw_water = 18.;						// gfw of water
-	this->count_chem = 0;
+	this->count_chemistry = 0;
 	this->free_surface = false;					// free surface calculation
 	this->steady_flow = false;					// steady-state flow calculation
 	this->time = 0;							    // scalar time from transport 
@@ -593,7 +593,7 @@ Reaction_module::CheckSelectedOutput()
 				{ 
 					count += recv_buffer[n];
 				}
-				if (count != this->count_chem)
+				if (count != this->count_chemistry)
 				{
 					error_msg("Sum of rows is not equal to count_chem.", STOP);
 				}
@@ -668,7 +668,7 @@ Reaction_module::CheckSelectedOutput()
 				std::map < int, CSelectedOutput >::iterator n_it = this->workers[n]->CSelectedOutputMap.find(n_user);
 				count += (int) n_it->second.GetRowCount() - 1;
 			}
-			if (count != this->count_chem)
+			if (count != this->count_chemistry)
 			{
 				error_msg("Sum of rows is not equal to count_chem.", STOP);
 			}
@@ -722,17 +722,17 @@ Reaction_module::CreateMapping(int *t)
 	forward.clear();
 
 	// find count_chem
-	this->count_chem = 0;
+	this->count_chemistry = 0;
 	for (int i = 0; i < this->nxyz; i++)
 	{
-		if (grid2chem[i] > count_chem)
+		if (grid2chem[i] > count_chemistry)
 		{
-			count_chem = grid2chem[i];
+			count_chemistry = grid2chem[i];
 		}
 	}
-	count_chem ++; 
+	count_chemistry ++; 
 
-	for (int i = 0; i < count_chem; i++)
+	for (int i = 0; i < count_chemistry; i++)
 	{
 		std::vector<int> temp;
 		back.push_back(temp);
@@ -740,7 +740,7 @@ Reaction_module::CreateMapping(int *t)
 	for (int i = 0; i < this->nxyz; i++)
 	{
 		int n = grid2chem[i];
-		if (n >= count_chem)
+		if (n >= count_chemistry)
 		{
 			error_msg("Error in cell out of range in mapping (grid to chem).", 0);
 			rtn = IRM_INVALIDARG;
@@ -757,7 +757,7 @@ Reaction_module::CreateMapping(int *t)
 	}
 	
 	// set -1 for back items > 0
-	for (int i = 0; i < this->count_chem; i++)
+	for (int i = 0; i < this->count_chemistry; i++)
 	{
 		// add to back
 		for (size_t j = 1; j < back[i].size(); j++)
@@ -767,7 +767,7 @@ Reaction_module::CreateMapping(int *t)
 		}
 	}
 	// check that all count_chem have at least 1 cell
-	for (int i = 0; i < this->count_chem; i++)
+	for (int i = 0; i < this->count_chemistry; i++)
 	{
 		if (back[i].size() == 0)
 		{
@@ -1085,7 +1085,7 @@ Reaction_module::Distribute_initial_conditions_mix(
 		cxxStorageBin tempBin;
 		tempBin.read_raw(cparser);
 
-		for (j = 0; j < count_chem; j++)	/* j is count_chem number */
+		for (j = 0; j < count_chemistry; j++)	/* j is count_chem number */
 		{
 			i = this->back[j][0];   /* i is nxyz number */
 			Point p(this->x_node[i], this->y_node[i], this->z_node[i]);
@@ -1798,7 +1798,7 @@ Reaction_module::Module2Concentrations(double * c)
 	}
 
 	// make buffer to recv solutions
-	double * recv_solns = new double[(size_t) this->count_chem * this->components.size()];
+	double * recv_solns = new double[(size_t) this->count_chemistry * this->components.size()];
 
 	// each process has its own vector of solution components
 	// gather vectors to root
@@ -1828,7 +1828,7 @@ Reaction_module::Module2Concentrations(double * c)
 	{
 		assert (solns.size() == this->count_chem*this->components.size());
 		int n = 0;
-		for (int j = 0; j < count_chem; j++)
+		for (int j = 0; j < count_chemistry; j++)
 		{
 			std::vector<double> d;
 			for (size_t i = 0; i < this->components.size(); i++)
@@ -2036,12 +2036,12 @@ Reaction_module::Rebalance_load_per_cell(void)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->mpi_tasks <= 1) return;
-	if (this->mpi_tasks > count_chem) return;
+	if (this->mpi_tasks > count_chemistry) return;
 #include <time.h>
 
 	// vectors for each cell (count_chem)
 	std::vector<double> recv_cell_times, normalized_cell_times;
-	recv_cell_times.resize(this->count_chem);
+	recv_cell_times.resize(this->count_chemistry);
 	
 	// vectors for each process (mpi_tasks)
 	std::vector<double> standard_time, task_fraction, task_time;
@@ -2136,7 +2136,7 @@ Reaction_module::Rebalance_load_per_cell(void)
 			while (next)
 			{
 				temp_sum_work += normalized_cell_times[j] / normalized_total_time;
-				if ((temp_sum_work < task_fraction[i]) && (((size_t) count_chem - j) > (size_t) (mpi_tasks - i)))
+				if ((temp_sum_work < task_fraction[i]) && (((size_t) count_chemistry - j) > (size_t) (mpi_tasks - i)))
 					//(temp_sum_work < f_high * task_fraction[i]) || (sum_work < 0.5 * task_fraction[i])
 					//) 
 					//&&
@@ -2165,7 +2165,7 @@ Reaction_module::Rebalance_load_per_cell(void)
 		assert(j < count_chem);
 		assert(mpi_tasks > 1);
 		start_cell_new[mpi_tasks - 1] = end_cell_new[mpi_tasks - 2] + 1;
-		end_cell_new[mpi_tasks - 1] = count_chem - 1;
+		end_cell_new[mpi_tasks - 1] = count_chemistry - 1;
 
 		// Apply rebalance fraction
 		for (size_t i = 0; i < (size_t) mpi_tasks - 1; i++)
@@ -2196,7 +2196,7 @@ Reaction_module::Rebalance_load_per_cell(void)
 	int change = 0;
 	std::vector<std::vector<int> > change_list;
 
-	for (int k = 0; k < this->count_chem; k++)
+	for (int k = 0; k < this->count_chemistry; k++)
 	{
 		int i = k;
 		//int iphrq = i;			/* iphrq is 1 to count_chem */
@@ -2280,7 +2280,7 @@ Reaction_module::Rebalance_load(void)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->mpi_tasks <= 1) return;
-	if (this->mpi_tasks > count_chem) return;
+	if (this->mpi_tasks > count_chemistry) return;
 	if (this->rebalance_method != 0)
 	{
 		return Rebalance_load_per_cell();
@@ -2321,7 +2321,7 @@ Reaction_module::Rebalance_load(void)
 		}
 
 		// Set first and last cells
-		double new_n = this->count_chem / total; /* new_n is number of cells for root */
+		double new_n = this->count_chemistry / total; /* new_n is number of cells for root */
 
 
 		// Calculate number of cells per process, rounded to lower number
@@ -2337,7 +2337,7 @@ Reaction_module::Rebalance_load(void)
 		}
 
 		// Distribute cells from rounding down
-		int diff_cells = this->count_chem - total_cells;
+		int diff_cells = this->count_chemistry - total_cells;
 		if (diff_cells > 0)
 		{
 			for (int j = 0; j < diff_cells; j++)
@@ -2386,9 +2386,9 @@ Reaction_module::Rebalance_load(void)
 		}
 
 		// Check that all cells are distributed
-		if (end_cell_new[this->mpi_tasks - 1] != this->count_chem - 1)
+		if (end_cell_new[this->mpi_tasks - 1] != this->count_chemistry - 1)
 		{
-			error_stream << "Failed: " << diff_cells << ", count_cells " << this->count_chem << ", last cell "
+			error_stream << "Failed: " << diff_cells << ", count_cells " << this->count_chemistry << ", last cell "
 				<< end_cell_new[this->mpi_tasks - 1] << "\n";
 			for (int i = 0; i < this->mpi_tasks; i++)
 			{
@@ -2448,7 +2448,7 @@ Reaction_module::Rebalance_load(void)
 	int change = 0;
 	std::vector<std::vector<int> > change_list;
 
-	for (int k = 0; k < this->count_chem; k++)
+	for (int k = 0; k < this->count_chemistry; k++)
 	{
 		int i = k;
 		//int iphrq = i;			/* iphrq is 1 to count_chem */
@@ -2562,7 +2562,7 @@ Reaction_module::Rebalance_load(void)
 {
 	// Threaded version
 	if (this->nthreads <= 1) return;
-	if (this->nthreads > count_chem) return;
+	if (this->nthreads > count_chemistry) return;
 #include <time.h>
 	if (this->rebalance_method != 0)
 	{
@@ -2616,7 +2616,7 @@ Reaction_module::Rebalance_load(void)
 	/*
 	 *  Set first and last cells
 	 */
-	double new_n = this->count_chem / total; /* new_n is number of cells for root */
+	double new_n = this->count_chemistry / total; /* new_n is number of cells for root */
 	int	total_cells = 0;
 	int n = 0;
 	/*
@@ -2633,7 +2633,7 @@ Reaction_module::Rebalance_load(void)
 	/*
 	*  Distribute cells from rounding down
 	*/
-	int diff_cells = this->count_chem - total_cells;
+	int diff_cells = this->count_chemistry - total_cells;
 	if (diff_cells > 0)
 	{
 		for (int j = 0; j < diff_cells; j++)
@@ -2684,9 +2684,9 @@ Reaction_module::Rebalance_load(void)
 	/*
 	*  Check that all cells are distributed
 	*/
-	if (end_cell_new[this->nthreads - 1] != this->count_chem - 1)
+	if (end_cell_new[this->nthreads - 1] != this->count_chemistry - 1)
 	{
-		error_stream << "Failed: " << diff_cells << ", count_cells " << this->count_chem << ", last cell "
+		error_stream << "Failed: " << diff_cells << ", count_cells " << this->count_chemistry << ", last cell "
 			<< end_cell_new[this->nthreads - 1] << "\n";
 		for (int i = 0; i < this->nthreads; i++)
 		{
@@ -2736,7 +2736,7 @@ Reaction_module::Rebalance_load(void)
 	int old = 0;
 	int change = 0;
 
-	for (int k = 0; k < this->count_chem; k++)
+	for (int k = 0; k < this->count_chemistry; k++)
 	{
 		int i = k;
 		int iphrq = i;			/* iphrq is 1 to count_chem */
@@ -2782,7 +2782,7 @@ Reaction_module::Rebalance_load_per_cell(void)
 {
 	// Threaded version
 	if (this->nthreads <= 1) return;
-	if (this->nthreads > count_chem) return;
+	if (this->nthreads > count_chemistry) return;
 #include <time.h>
 
 	// vectors for each cell (count_chem)
@@ -2872,7 +2872,7 @@ Reaction_module::Rebalance_load_per_cell(void)
 			while (next)
 			{
 				temp_sum_work += normalized_cell_times[j] / normalized_total_time;
-				if ((temp_sum_work < task_fraction[i]) && ((count_chem - (int) j) > (this->nthreads - (int) i)))
+				if ((temp_sum_work < task_fraction[i]) && ((count_chemistry - (int) j) > (this->nthreads - (int) i)))
 				{
 					sum_work = temp_sum_work;
 					j++;
@@ -2896,7 +2896,7 @@ Reaction_module::Rebalance_load_per_cell(void)
 		assert(j < count_chem);
 		assert(this->nthreads > 1);
 		start_cell_new[this->nthreads - 1] = end_cell_new[this->nthreads - 2] + 1;
-		end_cell_new[this->nthreads - 1] = count_chem - 1;
+		end_cell_new[this->nthreads - 1] = count_chemistry - 1;
 
 		// Apply rebalance fraction
 		for (size_t i = 0; i < (size_t) this->nthreads - 1; i++)
@@ -2920,7 +2920,7 @@ Reaction_module::Rebalance_load_per_cell(void)
 	int old = 0;
 	int change = 0;
 
-	for (int k = 0; k < this->count_chem; k++)
+	for (int k = 0; k < this->count_chemistry; k++)
 	{
 		int i = k;
 		int iphrq = i;			/* iphrq is 1 to count_chem */
@@ -3541,8 +3541,8 @@ Reaction_module::Set_end_cells(void)
 #else
 	int ntasks = this->nthreads;
 #endif
-	int n = this->count_chem / ntasks;
-	int extra = this->count_chem - n*ntasks;
+	int n = this->count_chemistry / ntasks;
+	int extra = this->count_chemistry - n*ntasks;
 	std::vector<int> cells;
 	for (int i = 0; i < extra; i++)
 	{
@@ -4235,8 +4235,8 @@ Reaction_module::Write_restart(void)
 
 		// write index
 		int i, j;
-		ofs_restart << count_chem << std::endl;
-		for (j = 0; j < count_chem; j++)	/* j is count_chem number */
+		ofs_restart << count_chemistry << std::endl;
+		for (j = 0; j < count_chemistry; j++)	/* j is count_chem number */
 		{
 			for (size_t k = 0; k < back[j].size(); k++)
 			{
