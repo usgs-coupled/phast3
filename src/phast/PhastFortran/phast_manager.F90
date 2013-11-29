@@ -434,7 +434,7 @@ SUBROUTINE InitialEquilibrationRM
     INCLUDE 'RM_interface.f90.inc' 
     DOUBLE PRECISION :: deltim_dummy
     CHARACTER(LEN=130) :: logline1
-    INTEGER :: stop_msg
+    INTEGER :: stop_msg, status
     
     ! ...  Initial equilibrate
     IF (solute) THEN
@@ -446,7 +446,8 @@ SUBROUTINE InitialEquilibrationRM
         deltim_dummy = 0._kdp
         CALL RM_SetPoreVolume(rm_id, pv(1))
         CALL RM_SetSaturation(rm_id, frac(1))
-        CALL RM_set_printing(rm_id, prf_chem_phrqi, prhdfci, 0)
+        !CALL RM_set_printing(rm_id, prf_chem_phrqi, prhdfci, 0)
+        status = RM_SetPrintChemistryOn(rm_id, prf_chem_phrqi)
         CALL RM_RunCells(      &
             rm_id,              &
             time_phreeqc,       &        ! time_hst
@@ -526,7 +527,7 @@ SUBROUTINE TimeStepRM
     IMPLICIT NONE
     SAVE
     INCLUDE 'RM_interface.f90.inc' 
-    INTEGER stop_msg
+    INTEGER stop_msg, status
     CHARACTER(LEN=130) :: logline1
     
     stop_msg = 0
@@ -535,10 +536,12 @@ SUBROUTINE TimeStepRM
         CALL RM_LogScreenMessage(logline1)
         CALL RM_SetPoreVolume(rm_id, pv(1))
         CALL RM_SetSaturation(rm_id, frac(1))
-        CALL RM_set_printing(rm_id,                     &
-            print_force_chemistry%print_flag_integer,   & 
-            print_hdf_chemistry%print_flag_integer,     & 
-            print_restart%print_flag_integer)
+        !CALL RM_set_printing(rm_id,                     &
+        !    print_force_chemistry%print_flag_integer,   & 
+        !    print_hdf_chemistry%print_flag_integer,     & 
+        !    print_restart%print_flag_integer)
+        
+        status = RM_SetPrintChemistryOn(rm_id, print_force_chemistry%print_flag_integer)
         CALL RM_RunCells(                               &
             rm_id,                                      &
             time,                                       &        ! time_hst

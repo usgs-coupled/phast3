@@ -115,8 +115,8 @@ public:
 	void                           SetRebalanceMethod(int * t); 
 	double                         Get_rebalance_fraction(void) const {return this->rebalance_fraction;}
 	void                           Set_rebalance_fraction(double * t); 
-	const bool                     Get_print_chem(void) const {return this->print_chem;}
-	void                           Set_print_chem(int *t); 
+	const bool                     GetPrintChemistryOn(void) const {return this->print_chemistry_on;}
+	void                           SetPrintChemistryOn(int *t); 
 	const bool                     GetSelectedOutputOn(void) const {return this->selected_output_on;}
 	void                           SetSelectedOutputOn(int *t);
 	const bool                     Get_print_restart(void) const {return this->print_restart;}
@@ -233,7 +233,7 @@ protected:
 	std::vector <std::vector <int> > back;	// mapping from count_chem chemistry cells to nxyz cells 
 
 	// print flags
-	bool print_chem;						// print flag for chemistry output file 
+	bool print_chemistry_on;				// print flag for chemistry output file 
 	bool selected_output_on;				// create selected output
 	bool print_restart;						// print flag for writing restart file 
 

@@ -51,7 +51,7 @@
 #define RM_set_free_surface                FC_FUNC_ (rm_set_free_surface,              RM_SET_FREE_SURFACE)
 #define RM_SetInputUnits                   FC_FUNC_ (rm_setinputunits,                 RM_SETINPUTUNITS)
 #define RM_set_nodes                       FC_FUNC_ (rm_set_nodes,                     RM_SET_NODES)
-#define RM_set_printing                    FC_FUNC_ (rm_set_printing,                  RM_SET_PRINTING)
+#define RM_SetPrintChemistryOn             FC_FUNC_ (rm_setprintchemistryon,           RM_SETPRINTCHEMISTRYON)
 #define RM_set_print_chem_mask             FC_FUNC_ (rm_set_print_chem_mask,           RM_SET_PRINT_CHEM_MASK)
 #define RM_SetPressure                     FC_FUNC_ (rm_setpressure,                   RM_SETPRESSURE)
 #define RM_SetPoreVolume                   FC_FUNC_ (rm_setporevolume,                 RM_SETPOREVOLUME)
@@ -89,7 +89,7 @@
 #define RM_SetInputUnits                      rm_setinputunits
 #define RM_CreateMapping                      rm_createmapping
 #define RM_set_nodes                          rm_set_nodes
-#define RM_set_printing                       rm_set_printing
+#define RM_SetPrintChemistryOn                rm_setprintchemistryon
 #define RM_set_print_chem_mask                rm_set_print_chem_mask
 #define RM_set_pressure                       rm_set_pressure
 #define RM_SetPoreVolumeZero                  rm_setporevolumezero
@@ -184,7 +184,8 @@ void RM_SetInputUnits (int *id, int *sol=NULL, int *pp=NULL, int *ex=NULL,
 void RM_set_nodes(int *id, double *x_node, double *y_node, double *z_node);
 void RM_SetPoreVolume(int *id, double *t);
 void RM_SetPoreVolumeZero(int *id, double *t);
-void RM_set_printing(int *id, int *print_chem, int *print_hdf, int *print_restart);
+//void RM_set_printing(int *id, int *print_chem, int *print_hdf, int *print_restart);
+int RM_SetPrintChemistryOn(int *id, int *print_chem);
 void RM_set_print_chem_mask(int *id, int *t);
 void RM_SetPressure(int *id, double *t);
 void RM_SetRebalance(int *id, int *method, double *f);

@@ -849,7 +849,21 @@ void RM_SetPressure(int *id, double *t)
 		Reaction_module_ptr->SetPressure(t);
 	}
 }
+/* ---------------------------------------------------------------------- */
+int
+RM_SetPrintChemistryOn(int *id,	 int *print_chem)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->SetPrintChemistryOn(print_chem);
+		return IRM_OK;
+	}
+	return IRM_BADINSTANCE;
 
+}
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 RM_set_printing(int *id,
@@ -863,12 +877,12 @@ RM_set_printing(int *id,
 	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->Set_print_chem(print_chem);
+		Reaction_module_ptr->SetPrintChemistryOn(print_chem);
 		Reaction_module_ptr->SetSelectedOutputOn(selected_output_on);
 		Reaction_module_ptr->Set_print_restart(print_restart);
 	}
 }
-
+#endif
 /* ---------------------------------------------------------------------- */
 void RM_set_print_chem_mask(int *id, int *t)
 /* ---------------------------------------------------------------------- */
