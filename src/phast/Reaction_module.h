@@ -65,33 +65,30 @@ public:
 	void                           Write_restart(void);
 
 	// setters and getters
-	std::vector<IPhreeqcPhast *> & Get_workers() {return this->workers;}
-	int                            Get_nthreads() {return this->nthreads;}
 	std::vector<double> &          GetCellVolume(void) {return this->cell_volume;}
 	void                           SetCellVolume(double * t);
+	const int                      GetChemistryCellCount(void) const {return this->count_chem;}
 	IRM_RESULT                     SetChemistryFileName(const char * prefix, long l = -1);
+	const std::vector<std::string> & GetComponents(void) const {return this->components;}
 	const std::string              GetDatabaseFileName(void) const {return this->database_file_name;}
 	IRM_RESULT                     SetDatabaseFileName(const char * prefix, long l = -1);
 	const std::string              GetFilePrefix(void) const {return this->file_prefix;}
 	IRM_RESULT                     SetFilePrefix(std::string &fn); 
 	IRM_RESULT                     SetFilePrefix(const char * prefix, long l = -1);
-	cxxStorageBin &                Get_phreeqc_bin(void) {return this->phreeqc_bin;}
-	const int                      Get_mpi_tasks(void) const {return this->mpi_tasks;}
-	void                           Set_mpi_tasks(int t) {this->mpi_tasks = t;}
-	const int                      GetMpiMyself(void) const {return this->mpi_myself;}
+	const int                      GetGridCellCount(void) const {return this->nxyz;}
 	const bool                     Get_free_surface(void) const {return this->free_surface;}
 	void                           Set_free_surface(int * t); 
 	const bool                     Get_steady_flow(void) const {return this->steady_flow;}
 	void                           Set_steady_flow(int * t);
-	const int                      GetChemistryCellCount(void) const {return this->count_chem;}
-	const int                      GetGridCellCount(void) const {return this->nxyz;}
-	const std::vector<std::string> & Get_components(void) const {return this->components;}
+	const int                      GetMpiMyself(void) const {return this->mpi_myself;}
+	int                            GetNthreads() {return this->nthreads;}
 	double                         GetTime(void) const {return this->time;}
 	void                           SetTime(double *t = NULL); 
 	double                         GetTimeStep(void) const {return this->time_step;}
 	void                           SetTimeStep(double *t = NULL); 
 	const double                   GetTimeConversion(void) const {return this->time_conversion;}
 	void                           SetTimeConversion(double *t); 
+	std::vector<IPhreeqcPhast *> & GetWorkers() {return this->workers;}
 	const std::vector<double> &    Get_x_node(void) const {return this->x_node;}
 	void                           Set_x_node(double * t = NULL);
 	const std::vector<double> &    Get_y_node(void) const {return this->y_node;}
@@ -144,34 +141,35 @@ public:
 	void                           Set_input_units_Kinetics(int i) {this->input_units_Kinetics = i;}
 	void                           Set_input_units(int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *k);
 protected:
-	void BeginTimeStep(void);
-	void Cell_initialize(
-		int i, 
-		int n_user_new, 
-		int *initial_conditions1,
-		int *initial_conditions2, 
-		double *fraction1,
-		int exchange_units, 
-		int surface_units, 
-		int ssassemblage_units,
-		int ppassemblage_units, 
-		int gasphase_units, 
-		int kinetics_units,
-		double porosity_factor,
-		std::set<std::string> error_set);
-	void Concentrations2Threads(int n);
-	void cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
-	void Error_stop(void);
-	bool File_exists(const std::string &name);
-	void File_rename(const std::string &temp_name, const std::string &name, const std::string &backup_name);
-	void Partition_uz(int iphrq, int ihst, double new_frac);
-	void Partition_uz_thread(int n, int iphrq, int ihst, double new_frac);
-	void Rebalance_load(void);
-	void Write_error(const char * item);
-	void Write_log(const char * item);
-	void Write_output(const char * item);
-	void Write_screen(const char * item);
-	void Write_xyz(const char * item);
+	void                           BeginTimeStep(void);
+	void                           Cell_initialize(
+		                               int i, 
+		                               int n_user_new, 
+		                               int *initial_conditions1,
+		                               int *initial_conditions2, 
+		                               double *fraction1,
+		                               int exchange_units, 
+		                               int surface_units, 
+		                               int ssassemblage_units,
+		                               int ppassemblage_units, 
+		                               int gasphase_units, 
+		                               int kinetics_units,
+		                               double porosity_factor,
+		                               std::set<std::string> error_set);
+	void                           Concentrations2Threads(int n);
+	void                           cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
+	void                           Error_stop(void);
+	bool                           File_exists(const std::string &name);
+	void                           File_rename(const std::string &temp_name, const std::string &name, const std::string &backup_name);
+	cxxStorageBin &                Get_phreeqc_bin(void) {return this->phreeqc_bin;}
+	void                           Partition_uz(int iphrq, int ihst, double new_frac);
+	void                           Partition_uz_thread(int n, int iphrq, int ihst, double new_frac);
+	void                           Rebalance_load(void);
+	void                           Write_error(const char * item);
+	void                           Write_log(const char * item);
+	void                           Write_output(const char * item);
+	void                           Write_screen(const char * item);
+	void                           Write_xyz(const char * item);
 #ifdef SKIP
 	void Init_uz(void);
 #endif

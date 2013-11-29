@@ -118,9 +118,9 @@ if( numCPU < 1 )
 	{
 		this->workers.push_back(new IPhreeqcPhast);
 	}
-	if (this->Get_workers()[0])
+	if (this->GetWorkers()[0])
 	{
-		std::map<size_t, Reaction_module*>::value_type instance(this->Get_workers()[0]->Get_Index(), this);
+		std::map<size_t, Reaction_module*>::value_type instance(this->GetWorkers()[0]->Get_Index(), this);
 		RM_interface::Instances.insert(instance);
 	}
 	else
@@ -175,11 +175,11 @@ if( numCPU < 1 )
 }
 Reaction_module::~Reaction_module(void)
 {
-	std::map<size_t, Reaction_module*>::iterator it = RM_interface::Instances.find(this->Get_workers()[0]->Get_Index());
+	std::map<size_t, Reaction_module*>::iterator it = RM_interface::Instances.find(this->GetWorkers()[0]->Get_Index());
 
-	for (int i = 0; i <= it->second->Get_nthreads(); i++)
+	for (int i = 0; i <= it->second->GetNthreads(); i++)
 	{
-		delete it->second->Get_workers()[i];
+		delete it->second->GetWorkers()[i];
 	}
 	if (it != RM_interface::Instances.end())
 	{
@@ -218,15 +218,15 @@ Reaction_module::Calculate_well_ph(double *c, double * pH, double * alkalinity)
 	temp_bin.Set_Solution(0, &cxxsoln);
 
 	// Copy all entities numbered 1 into IPhreeqc
-	this->Get_workers()[this->nthreads]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(temp_bin, 0);
+	this->GetWorkers()[this->nthreads]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(temp_bin, 0);
 	std::string input;
 	input.append("RUN_CELLS; -cell 0; SELECTED_OUTPUT; -reset false; -pH; -alkalinity; END");
-	this->Get_workers()[0]->RunString(input.c_str());
+	this->GetWorkers()[0]->RunString(input.c_str());
 
 	VAR pvar;
-	this->Get_workers()[this->nthreads]->GetSelectedOutputValue(1,0,&pvar);
+	this->GetWorkers()[this->nthreads]->GetSelectedOutputValue(1,0,&pvar);
 	*pH = pvar.dVal;
-	this->Get_workers()[this->nthreads]->GetSelectedOutputValue(1,1,&pvar);
+	this->GetWorkers()[this->nthreads]->GetSelectedOutputValue(1,1,&pvar);
 	*alkalinity = pvar.dVal;
 
 	// Alternatively
@@ -474,7 +474,7 @@ Reaction_module::Cell_initialize(
 		cxxKinetics cxxentity(phreeqc_bin.Get_Kinetics(), mx, n_user_new);
 		initial_bin.Set_Kinetics(n_user_new, &cxxentity);
 	}
-	this->Get_workers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(initial_bin);
+	this->GetWorkers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(initial_bin);
 	return;
 }
 /* ---------------------------------------------------------------------- */
@@ -1216,11 +1216,11 @@ Reaction_module::Distribute_initial_conditions_mix(
 #ifdef USE_MPI	
 	for (i = this->start_cell[this->mpi_myself]; i <= this->end_cell[this->mpi_myself]; i++)
 	{
-		this->Get_workers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(restart_bin,i);
+		this->GetWorkers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(restart_bin,i);
 	}
 #else
 	// put restart definitions in reaction module
-	this->Get_workers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(restart_bin);
+	this->GetWorkers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(restart_bin);
 
 	for (int n = 1; n < this->nthreads; n++)
 	{
@@ -1229,11 +1229,11 @@ Reaction_module::Distribute_initial_conditions_mix(
 		for (i = this->start_cell[n]; i <= this->end_cell[n]; i++)
 		{
 			cxxStorageBin sz_bin;
-			this->Get_workers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(sz_bin, i);
-			this->Get_workers()[n]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(sz_bin, i);
+			this->GetWorkers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(sz_bin, i);
+			this->GetWorkers()[n]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(sz_bin, i);
 			delete_command << i << "\n";
 		}
-		if (this->Get_workers()[0]->RunString(delete_command.str().c_str()) > 0) RM_Error(0);
+		if (this->GetWorkers()[0]->RunString(delete_command.str().c_str()) > 0) RM_Error(0);
 	}
 #endif
 	// initialize uz
@@ -1245,7 +1245,7 @@ void
 Reaction_module::Error_stop(void)
 /* ---------------------------------------------------------------------- */
 {
-	int n = (int) this->Get_workers()[0]->Get_Index();
+	int n = (int) this->GetWorkers()[0]->Get_Index();
 	RM_Error(&n);
 }
 /* ---------------------------------------------------------------------- */
@@ -1295,7 +1295,7 @@ Reaction_module::Find_components(void)
 	this->components.push_back("Charge");
 
 	// Get other components
-	IPhreeqcPhast * phast_iphreeqc_worker = this->Get_workers()[0];
+	IPhreeqcPhast * phast_iphreeqc_worker = this->GetWorkers()[0];
 	size_t count_components = phast_iphreeqc_worker->GetComponentCount();
 	size_t i;
 	for (i = 0; i < count_components; i++)
@@ -1626,7 +1626,7 @@ Reaction_module::Concentrations2Threads(int n)
 			nd.add(components[k].c_str(), d[k]);
 		}	
 
-		cxxSolution *soln_ptr = this->Get_workers()[n]->Get_solution(j);
+		cxxSolution *soln_ptr = this->GetWorkers()[n]->Get_solution(j);
 		if (soln_ptr)
 		{
 			soln_ptr->Update(d[0], d[1], d[2], nd);
@@ -1674,7 +1674,7 @@ int
 Reaction_module::Initial_phreeqc_run_thread(int n)
 /* ---------------------------------------------------------------------- */
 {
-		IPhreeqcPhast * iphreeqc_phast_worker = this->Get_workers()[n];
+		IPhreeqcPhast * iphreeqc_phast_worker = this->GetWorkers()[n];
 		int ipp_id = (int) iphreeqc_phast_worker->Get_Index();
 
 		iphreeqc_phast_worker->SetOutputFileOn(false);
@@ -1707,7 +1707,7 @@ Reaction_module::Initial_phreeqc_run_thread(int n)
 		{
 			Write_output(iphreeqc_phast_worker->GetOutputString());
 			this->Get_phreeqc_bin().Clear();
-			this->Get_workers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin());
+			this->GetWorkers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(this->Get_phreeqc_bin());
 		}
 		return -1;
 }
@@ -1788,7 +1788,7 @@ Reaction_module::Module2Concentrations(double * c)
 	for (int j = this->start_cell[n]; j <= this->end_cell[n]; j++)
 	{
 		// load fractions into d
-		cxxSolution * cxxsoln_ptr = this->Get_workers()[0]->Get_solution(j);
+		cxxSolution * cxxsoln_ptr = this->GetWorkers()[0]->Get_solution(j);
 		assert (cxxsoln_ptr);
 		this->cxxSolution2concentration(cxxsoln_ptr, d);
 		for (int i = 0; i < (int) this->components.size(); i++)
@@ -1867,7 +1867,7 @@ Reaction_module::Module2Concentrations(double * c)
 		for (j = this->start_cell[n]; j <= this->end_cell[n]; j++)
 		{
 			// load fractions into d
-			cxxSolution * cxxsoln_ptr = this->Get_workers()[n]->Get_solution(j);
+			cxxSolution * cxxsoln_ptr = this->GetWorkers()[n]->Get_solution(j);
 			assert (cxxsoln_ptr);
 			this->cxxSolution2concentration(cxxsoln_ptr, d);
 
@@ -3109,7 +3109,7 @@ Reaction_module::Run_cells_thread(int n)
 	//this->Fractions2Solutions_thread(n);
 
 	int i, j;
-	IPhreeqcPhast *phast_iphreeqc_worker = this->Get_workers()[n];
+	IPhreeqcPhast *phast_iphreeqc_worker = this->GetWorkers()[n];
 
 	// selected output IPhreeqcPhast
 	phast_iphreeqc_worker->CSelectedOutputMap.clear();
@@ -4270,7 +4270,7 @@ Reaction_module::Write_restart(void)
 	for (int j = this->start_cell[this->mpi_myself]; j <= this->end_cell[this->mpi_myself]; j++)
 	{
 		cxxStorageBin temp_bin;
-		this->Get_workers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(temp_bin, j);
+		this->GetWorkers()[0]->Get_PhreeqcPtr()->phreeqc2cxxStorageBin(temp_bin, j);
 		for (size_t k = 0; k < back[j].size(); k++)
 		{
 			int i = back[j][k];			/* i is nxyz number */ 
@@ -4286,7 +4286,7 @@ Reaction_module::Write_restart(void)
 		{
 			if (n == 0)
 			{
-				//ofs_restart << this->Get_workers()[0]->GetDumpString();
+				//ofs_restart << this->GetWorkers()[0]->GetDumpString();
 				ofs_restart << in.str().c_str();
 			}
 			else
@@ -4328,7 +4328,7 @@ Reaction_module::Write_restart(void)
 		//std::ostringstream in;
 		//in << "DUMP; -cells " << this->start_cell[n] << "-" << this->end_cell[n] << "\n";
 		//this->workers[n]->RunString(in.str().c_str());
-		//ofs_restart << this->Get_workers()[n]->GetDumpString();
+		//ofs_restart << this->GetWorkers()[n]->GetDumpString();
 	}
 #endif
 

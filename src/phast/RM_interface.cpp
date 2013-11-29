@@ -43,7 +43,7 @@ RM_interface::CreateReactionModule(int *nxyz, int *nthreads)
 		Reaction_module * Reaction_module_ptr = new Reaction_module(nxyz, nthreads);
 		if (Reaction_module_ptr)
 		{
-			n = (int) Reaction_module_ptr->Get_workers()[0]->Get_Index();
+			n = (int) Reaction_module_ptr->GetWorkers()[0]->Get_Index();
 			RM_interface::Instances[n] = Reaction_module_ptr;
 			return n;
 		}
@@ -314,11 +314,11 @@ IRM_RESULT RM_GetComponent(int * rm_id, int * num, char *chem_name, int l1)
 		{
 			if (l1 >= 0)
 			{
-				strncpy(chem_name, Reaction_module_ptr->Get_components()[*num - 1].c_str(), l1);
+				strncpy(chem_name, Reaction_module_ptr->GetComponents()[*num - 1].c_str(), l1);
 			}
 			else
 			{
-				strcpy(chem_name, Reaction_module_ptr->Get_components()[*num - 1].c_str());
+				strcpy(chem_name, Reaction_module_ptr->GetComponents()[*num - 1].c_str());
 			}
 			return IRM_OK;
 		}
