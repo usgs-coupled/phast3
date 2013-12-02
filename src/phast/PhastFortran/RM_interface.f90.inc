@@ -193,12 +193,6 @@
             INTEGER :: id
             INTEGER, OPTIONAL :: sol, pp, ex, surf, gas, ss, kin
         END SUBROUTINE RM_SetInputUnits  
-        
-        SUBROUTINE RM_set_nodes(id, x_node, y_node, z_node)   
-            IMPLICIT NONE
-            INTEGER :: id
-            DOUBLE PRECISION, OPTIONAL :: x_node, y_node, z_node
-        END SUBROUTINE RM_set_nodes  
 
         SUBROUTINE RM_SetPoreVolume(id, t)   
             IMPLICIT NONE
@@ -242,6 +236,12 @@
             INTEGER :: id
             DOUBLE PRECISION, OPTIONAL :: t
         END SUBROUTINE RM_SetSaturation 
+
+        INTEGER FUNCTION RM_SetSelectedOutputOn(id, tf)
+            IMPLICIT NONE
+            INTEGER :: id
+            INTEGER, OPTIONAL :: tf
+        END FUNCTION RM_SetSelectedOutputOn 
 				
         SUBROUTINE RM_set_steady_flow(id, t)   
             IMPLICIT NONE

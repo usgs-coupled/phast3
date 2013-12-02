@@ -57,7 +57,6 @@ public:
 	int                            LoadDatabase(const char * database, long l = -1);
 	void                           Module2Concentrations(double * c);
 	void                           RunCells(void);
-	void                           Send_restart_name(std::string &name);
 	int                            SetCurrentSelectedOutputUserNumber(int *i);
 	void                           Write_bc_raw(int *solution_list, int * bc_solution_count, 
                                         int * solution_number, 
@@ -65,6 +64,7 @@ public:
 	void                           Write_restart(void);
 
 	// setters and getters
+	const std::vector < std::vector <int> > & GetBack(void) {return this->back;}
 	std::vector<double> &          GetCellVolume(void) {return this->cell_volume;}
 	void                           SetCellVolume(double * t);
 	const int                      GetChemistryCellCount(void) const {return this->count_chemistry;}
@@ -82,19 +82,15 @@ public:
 	void                           Set_steady_flow(int * t);
 	const int                      GetMpiMyself(void) const {return this->mpi_myself;}
 	int                            GetNthreads() {return this->nthreads;}
+	const std::vector < int> &     GetStartCell(void) const {return this->start_cell;} 
+	const std::vector < int> &     GetEndCell(void) const {return this->start_cell;} 
 	double                         GetTime(void) const {return this->time;}
 	void                           SetTime(double *t = NULL); 
 	double                         GetTimeStep(void) const {return this->time_step;}
 	void                           SetTimeStep(double *t = NULL); 
 	const double                   GetTimeConversion(void) const {return this->time_conversion;}
 	void                           SetTimeConversion(double *t); 
-	std::vector<IPhreeqcPhast *> & GetWorkers() {return this->workers;}
-	const std::vector<double> &    Get_x_node(void) const {return this->x_node;}
-	void                           Set_x_node(double * t = NULL);
-	const std::vector<double> &    Get_y_node(void) const {return this->y_node;}
-	void                           Set_y_node(double * t = NULL);
-	const std::vector<double> &    Get_z_node(void) const {return this->z_node;}
-	void                           Set_z_node(double * t = NULL);
+	std::vector<IPhreeqcPhast *> & GetWorkers() {return this->workers;};
 	std::vector<double> &          GetDensity(void) {return this->density;}
 	void                           SetDensity(double * t = NULL); 
 	std::vector<double> &          GetConcentration(void) {return this->concentration;}
@@ -186,7 +182,6 @@ protected:
 	std::string file_prefix;
 	cxxStorageBin uz_bin;
 	cxxStorageBin phreeqc_bin;
-	std::map < std::string, int > FileMap; 
 	int mpi_myself;
 	int mpi_tasks;
 	std::vector <std::string> components;	// list of components to be transported
@@ -200,9 +195,6 @@ protected:
 	double time;						    // time from transport, sec 
 	double time_step;					    // time step from transport, sec
 	double time_conversion;					// time conversion factor, multiply to convert to preferred time unit for output
-	std::vector<double> x_node;             // x node location, nxyz array
-	std::vector<double> y_node;				// y node location, nxyz array
-	std::vector<double> z_node;             // z node location, nxyz array
 	std::vector<double> concentration;		// nxyz by ncomps concentrations nxyz:components
 	std::vector <double> old_saturation;	// saturation fraction from previous step
 	std::vector<double> saturation;	        // nxyz saturation fraction
@@ -215,13 +207,6 @@ protected:
 	std::vector<int> print_chem_mask;		// nxyz print flags for output file
 	bool rebalance_method;                  // rebalance method 0 std, 1 by_cell
 	double rebalance_fraction;			    // parameter for rebalancing process load for parallel	
-	std::vector<int> have_Solution;
-	std::vector<int> have_PPassemblage;
-	std::vector<int> have_Exchange;
-	std::vector<int> have_Surface;
-	std::vector<int> have_GasPhase;
-	std::vector<int> have_SSassemblage;
-	std::vector<int> have_Kinetics;
 	int input_units_Solution;
 	int input_units_PPassemblage;
 	int input_units_Exchange;

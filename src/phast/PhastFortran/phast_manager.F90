@@ -448,6 +448,7 @@ SUBROUTINE InitialEquilibrationRM
         CALL RM_SetSaturation(rm_id, frac(1))
         !CALL RM_set_printing(rm_id, prf_chem_phrqi, prhdfci, 0)
         status = RM_SetPrintChemistryOn(rm_id, prf_chem_phrqi)
+        status = RM_SetSelectedOutputOn(rm_id, prhdfci .or. prcphrqi)
         CALL RM_RunCells(      &
             rm_id,              &
             time_phreeqc,       &        ! time_hst
@@ -477,6 +478,11 @@ SUBROUTINE InitializeRM
             implicit none
             INTEGER, DIMENSION(:,:), ALLOCATABLE, INTENT(INOUT) :: ic
         END SUBROUTINE CreateMappingFortran
+
+        INTEGER FUNCTION RMH_SetRestartName(fn)
+            IMPLICIT NONE
+            CHARACTER, INTENT(in) :: fn
+        END FUNCTION RMH_SetRestartName 
     END INTERFACE
     INTEGER i, status
     INTEGER ifresur, isteady_flow
@@ -488,7 +494,6 @@ SUBROUTINE InitializeRM
         ! ... Send data to threads or workers
         
         CALL RM_SetInputUnits (rm_id, 3, 1, 1, 1, 1, 1, 1)
-        CALL RM_set_nodes(rm_id, x_node(1), y_node(1), z_node(1))
         CALL RM_SetTimeConversion(rm_id, cnvtmi)
         CALL RM_SetPoreVolumeZero(rm_id, pv0(1))
         CALL RM_set_print_chem_mask(rm_id, iprint_chem(1))
@@ -502,7 +507,7 @@ SUBROUTINE InitializeRM
         status = RM_CreateMapping(rm_id, grid2chem(1))
         
         DO i = 1, num_restart_files
-            CALL RM_send_restart_name(rm_id, restart_files(i))
+            status = RMH_SetRestartName(restart_files(i))
         ENDDO
 
         ! ... Distribute chemistry initial conditions
@@ -542,6 +547,7 @@ SUBROUTINE TimeStepRM
         !    print_restart%print_flag_integer)
         
         status = RM_SetPrintChemistryOn(rm_id, print_force_chemistry%print_flag_integer)
+        status = RM_SetSelectedOutputOn(rm_id, prhdfci .or. prcphrqi)
         CALL RM_RunCells(                               &
             rm_id,                                      &
             time,                                       &        ! time_hst
