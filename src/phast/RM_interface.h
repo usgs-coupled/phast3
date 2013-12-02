@@ -44,13 +44,11 @@
 #define RM_OpenFiles                       FC_FUNC_ (rm_openfiles,                     RM_OPENFILES)
 #define RM_RunCells                        FC_FUNC_ (rm_runcells,                      RM_RUNCELLS)
 #define RM_ScreenMessage                   FC_FUNC_ (rm_screenmessage,                 RM_SCREENMESSAGE)
-#define RM_send_restart_name               FC_FUNC_ (rm_send_restart_name,             RM_SEND_RESTART_NAME)
 #define RM_SetCurrentSelectedOutputUserNumber  FC_FUNC_ (rm_setcurrentselectedoutputusernumber, RM_SETCURRENTSELECTEDOUTPUTUSERNUMBER)
 #define RM_SetDensity                      FC_FUNC_ (rm_setdensity,                    RM_SETDENSITY)
 #define RM_SetFilePrefix                   FC_FUNC_ (rm_setfileprefix,                 RM_SETFILEPREFIX)
 #define RM_set_free_surface                FC_FUNC_ (rm_set_free_surface,              RM_SET_FREE_SURFACE)
 #define RM_SetInputUnits                   FC_FUNC_ (rm_setinputunits,                 RM_SETINPUTUNITS)
-#define RM_set_nodes                       FC_FUNC_ (rm_set_nodes,                     RM_SET_NODES)
 #define RM_SetPrintChemistryOn             FC_FUNC_ (rm_setprintchemistryon,           RM_SETPRINTCHEMISTRYON)
 #define RM_set_print_chem_mask             FC_FUNC_ (rm_set_print_chem_mask,           RM_SET_PRINT_CHEM_MASK)
 #define RM_SetPressure                     FC_FUNC_ (rm_setpressure,                   RM_SETPRESSURE)
@@ -58,6 +56,7 @@
 #define RM_SetPoreVolumeZero               FC_FUNC_ (rm_setporevolumezero,             RM_SETPOREVOLUMEZERO)
 #define RM_SetRebalance                    FC_FUNC_ (rm_setrebalance,                  RM_SETREBALANCE)
 #define RM_SetSaturation                   FC_FUNC_ (rm_setsaturation,                 RM_SETSATURATION)
+#define RM_SetSelectedOutputOn             FC_FUNC_ (rm_setselectedoutputon,           RM_SETSELECTEDOUTPUTON)
 #define RM_set_steady_flow                 FC_FUNC_ (rm_set_steady_flow,               RM_SET_STEADY_FLOW)
 #define RM_SetTemperature                  FC_FUNC_ (rm_settemperature,                RM_SETTEMPERATURE)
 #define RM_SetTimeConversion               FC_FUNC_ (rm_settimeconversion,             RM_SETTIMECONVERSION)
@@ -84,11 +83,9 @@
 #define RM_LogScreenMessage                   rm_logscreenmessage
 #define RM_OpenFiles                          rm_openfiles
 #define RM_RunCells                           rm_runcells
-#define RM_send_restart_name                  rm_send_restart_name
 #define RM_SetDensity	                      rm_setdensity
 #define RM_SetInputUnits                      rm_setinputunits
 #define RM_CreateMapping                      rm_createmapping
-#define RM_set_nodes                          rm_set_nodes
 #define RM_SetPrintChemistryOn                rm_setprintchemistryon
 #define RM_set_print_chem_mask                rm_set_print_chem_mask
 #define RM_set_pressure                       rm_set_pressure
@@ -110,7 +107,7 @@ class RM_interface
 public:
 	static int CreateReactionModule(int *nxyz, int *nthreads);
 	static IRM_RESULT DestroyReactionModule(int *n);
-	static Reaction_module* GetInstance(int n);
+	static Reaction_module* GetInstance(int *n);
 	static void CleanupReactionModuleInstances(void);
 	static PHRQ_io phast_io;
 
@@ -173,7 +170,6 @@ void RM_RunCells(int *id,
  			 double *concentration,					// mass fractions nxyz:components
 			 int * stop_msg);
 void RM_ScreenMessage(const char *err_str, long l = -1);
-void RM_send_restart_name(int *id, char * s, long l);
 void RM_SetCellVolume(int *id, double *t);
 int  RM_SetCurrentSelectedOutputUserNumber(int *id, int *i);
 void RM_SetDensity(int *id, double *t);
@@ -181,7 +177,6 @@ IRM_RESULT RM_SetFilePrefix(int *id, const char *prefix = NULL, long l = -1);
 void RM_set_free_surface(int *id, int *t);
 void RM_SetInputUnits (int *id, int *sol=NULL, int *pp=NULL, int *ex=NULL, 
 						 int *surf=NULL, int *gas=NULL, int *ss=NULL, int *kin=NULL);
-void RM_set_nodes(int *id, double *x_node, double *y_node, double *z_node);
 void RM_SetPoreVolume(int *id, double *t);
 void RM_SetPoreVolumeZero(int *id, double *t);
 //void RM_set_printing(int *id, int *print_chem, int *print_hdf, int *print_restart);
@@ -190,6 +185,7 @@ void RM_set_print_chem_mask(int *id, int *t);
 void RM_SetPressure(int *id, double *t);
 void RM_SetRebalance(int *id, int *method, double *f);
 void RM_SetSaturation(int *id, double *t);
+IRM_RESULT RM_SetSelectedOutputOn(int *id, int *selected_output = NULL);
 void RM_set_steady_flow(int *id, int *t);
 void RM_SetTemperature(int *id, double *t);
 void RM_SetTimeConversion(int *id, double *t);

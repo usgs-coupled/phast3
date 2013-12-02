@@ -57,6 +57,15 @@ SUBROUTINE read2_xfer_m
             world, ierrmpi)
     CALL MPI_BCAST(z(1), nz, MPI_DOUBLE, manager, &
             world, ierrmpi)
+    
+  ! *** 1.1 broadcast x_node, y_node, z_node
+  ! ... create MPI structure for three real arrays
+    CALL MPI_BCAST(x_node(1), nxyz, MPI_DOUBLE, manager, &
+            world, ierrmpi)
+    CALL MPI_BCAST(y_node(1), nxyz, MPI_DOUBLE, manager, &
+            world, ierrmpi)
+    CALL MPI_BCAST(z_node(1), nxyz, MPI_DOUBLE, manager, &
+            world, ierrmpi)
 
   !*** 2 broadcast bp, p0, w0, denf0, visfac, paatm, dm, t0, p0h, t0h
   array_bcst_r(1) = bp; array_bcst_r(2) = p0; array_bcst_r(3) = w0
@@ -333,6 +342,15 @@ SUBROUTINE read2_xfer_w
             world, ierrmpi)
     CALL MPI_BCAST(z(1), nz, MPI_DOUBLE, manager, &
             world, ierrmpi)
+    
+  ! *** 1.1 broadcast x_node, y_node, z_node
+  ! ... create MPI structure for three real arrays
+    CALL MPI_BCAST(x_node(1), nxyz, MPI_DOUBLE, manager, &
+            world, ierrmpi)
+    CALL MPI_BCAST(y_node(1), nxyz, MPI_DOUBLE, manager, &
+            world, ierrmpi)
+    CALL MPI_BCAST(z_node(1), nxyz, MPI_DOUBLE, manager, &
+            world, ierrmpi)    
 
   !*** 2 broadcast bp, p0, w0, denf0, visfac, paatm, dm, t0, p0h, t0h
   CALL MPI_BCAST(array_recv_r(1), 10, MPI_DOUBLE, manager, &

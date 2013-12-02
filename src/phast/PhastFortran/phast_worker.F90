@@ -20,7 +20,12 @@ SUBROUTINE phast_worker
     USE mpi_mod
     IMPLICIT NONE
     INCLUDE 'RM_interface.f90.inc'
-
+    INTERFACE
+        INTEGER FUNCTION RMH_SetRestartName(fn)
+            IMPLICIT NONE
+            CHARACTER, INTENT(in) :: fn
+        END FUNCTION RMH_SetRestartName 
+    END INTERFACE
     REAL(KIND=kdp) :: deltim_dummy
     INTEGER :: stop_msg=0
     INTEGER :: i, a_err
@@ -104,7 +109,6 @@ SUBROUTINE phast_worker
         !    rebalance_method_f, volume(1), tort(1), npmz, &
         !    mpi_myself)
         CALL RM_SetInputUnits (rm_id)
-        CALL RM_set_nodes(rm_id)
         CALL RM_SetTimeConversion(rm_id)
         CALL RM_SetPoreVolumeZero(rm_id)
         CALL RM_set_print_chem_mask(rm_id)
@@ -118,7 +122,7 @@ SUBROUTINE phast_worker
         
         ! ... Distribute initial conditions for chemistry    
         DO i = 1, num_restart_files
-            CALL RM_send_restart_name(rm_id, restart_files(i))
+            status = RMH_SetRestartName(restart_files(i))
         ENDDO
         status = RM_distribute_initial_conditions_mix( &
             rm_id,                  &
@@ -147,6 +151,7 @@ SUBROUTINE phast_worker
         CALL RM_SetPoreVolume(rm_id)
         CALL RM_SetSaturation(rm_id)
         status = RM_SetPrintChemistryOn(rm_id)
+        status = RM_SetSelectedOutputOn(rm_id, prhdfci .or. prcphrqi)
         CALL RM_RunCells(                                &
             rm_id,                                        &
             time_phreeqc,                                 &        ! time_hst
@@ -210,6 +215,7 @@ SUBROUTINE phast_worker
             CALL RM_SetPoreVolume(rm_id)
             CALL RM_SetSaturation(rm_id)
             status = RM_SetPrintChemistryOn(rm_id)
+            status = RM_SetSelectedOutputOn(rm_id, prhdfci .or. prcphrqi)
             CALL RM_RunCells(                                &
                 rm_id,                                        &
                 time_phreeqc,                                 &        ! time_hst

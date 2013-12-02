@@ -34,6 +34,7 @@ public:
 	void SetHDFInvariant(bool tf) {this->HDFInvariant = tf;}
 	bool GetXYZInitialized(void) {return this->XYZInitialized;}
 	void SetXYZInitialized(bool tf) {this->XYZInitialized = tf;}
+	std::vector< std::ostream * > &GetXYZOstreams(void) {return this->XYZOstreams;}
 	std::vector< std::string > &GetHeadings(void) {return this->Headings;}
 	void SetHeadings(std::vector< std::string > &h) {this->Headings = h;}
 
@@ -42,6 +43,7 @@ protected:
 	bool HDFInvariant;
 	bool XYZInitialized;
 	std::vector< std::string > Headings;
+	std::vector < std::ostream * > XYZOstreams;
 };
 FileWriterInfo FileWriter;
 // Constructor
@@ -64,7 +66,7 @@ WriteFiles(int *id, int *print_hdf, int *print_xyz, int *print_media,
 	double *saturation, int *mapping)
 	/* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
 	if (Reaction_module_ptr)
 	{	
 		int local_mpi_myself = RM_GetMpiMyself(id);
@@ -106,7 +108,7 @@ WriteHDF(int *id, int *print_hdf, int *print_media)
 /* ---------------------------------------------------------------------- */
 {
 #ifdef HDF5_CREATE
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
 	if (Reaction_module_ptr)
 	{	
 		int local_mpi_myself = RM_GetMpiMyself(id);
@@ -205,7 +207,7 @@ WriteXYZ(int *id, int *print_xyz,
 	double *saturation, int *mapping)
 /* ---------------------------------------------------------------------- */
 {
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(*id);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
 	if (Reaction_module_ptr)
 	{	
 		int local_mpi_myself = RM_GetMpiMyself(id);
@@ -239,7 +241,7 @@ WriteXYZ(int *id, int *print_xyz,
 								RM_ErrorMessage("Could not open xyz file.");
 								RM_Error(id);
 							}
-
+							FileWriter.GetXYZOstreams().push_back(FileWriter.Get_io()->Get_punch_ostream());
 							// write first headings
 							char line_buff[132];
 							sprintf(line_buff, "%15s\t%15s\t%15s\t%15s\t%2s\t", "x", "y",
@@ -284,6 +286,7 @@ WriteXYZ(int *id, int *print_xyz,
 					{
 						if (local_mpi_myself == 0)
 						{
+							FileWriter.Get_io()->Set_punch_ostream(FileWriter.GetXYZOstreams()[iso]);
 							local_selected_out.resize((size_t) (nxyz*ncol));
 							int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
 
@@ -340,4 +343,9 @@ FinalizeFiles()
 #ifdef HDF5_CREATE
 		HDFFinalize();
 #endif
+	for (int iso = 0; iso < (int) FileWriter.GetXYZOstreams().size(); iso++)
+	{
+		FileWriter.GetXYZOstreams()[iso]->clear();
+	}
+	FileWriter.GetXYZOstreams().clear();
 }
