@@ -111,7 +111,7 @@ SUBROUTINE phast_worker
         CALL RM_SetInputUnits (rm_id)
         CALL RM_SetTimeConversion(rm_id)
         CALL RM_SetPoreVolumeZero(rm_id)
-        CALL RM_set_print_chem_mask(rm_id)
+        CALL RM_SetPrintChemistryMask(rm_id)
         CALL RM_set_free_surface(rm_id)
         CALL RM_set_steady_flow(rm_id)
         CALL RM_SetCellVolume(rm_id)

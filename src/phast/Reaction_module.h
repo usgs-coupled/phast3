@@ -34,7 +34,7 @@ public:
 	void                           Convert_to_molal(double *c, int n, int dim);
 	static std::string             Cptr2TrimString(const char * str, long l = -1);
 	IRM_RESULT                     CreateMapping(int *grid2chem);
-	int                            Find_components();
+	int                            FindComponents();
 	int                            GetNthSelectedOutputUserNumber(int *i);
 	IRM_RESULT                     GetSelectedOutput(double *so);
 	int                            GetSelectedOutputColumnCount(void);
@@ -70,8 +70,12 @@ public:
 	const int                      GetChemistryCellCount(void) const {return this->count_chemistry;}
 	IRM_RESULT                     SetChemistryFileName(const char * prefix, long l = -1);
 	const std::vector<std::string> & GetComponents(void) const {return this->components;}
+	std::vector<double> &          GetConcentration(void) {return this->concentration;}
+	void                           SetConcentration(double * t = NULL); 
 	const std::string              GetDatabaseFileName(void) const {return this->database_file_name;}
 	IRM_RESULT                     SetDatabaseFileName(const char * prefix, long l = -1);
+	std::vector<double> &          GetDensity(void) {return this->density;}
+	void                           SetDensity(double * t = NULL); 
 	const std::string              GetFilePrefix(void) const {return this->file_prefix;}
 	IRM_RESULT                     SetFilePrefix(std::string &fn); 
 	IRM_RESULT                     SetFilePrefix(const char * prefix, long l = -1);
@@ -91,10 +95,6 @@ public:
 	const double                   GetTimeConversion(void) const {return this->time_conversion;}
 	void                           SetTimeConversion(double *t); 
 	std::vector<IPhreeqcPhast *> & GetWorkers() {return this->workers;};
-	std::vector<double> &          GetDensity(void) {return this->density;}
-	void                           SetDensity(double * t = NULL); 
-	std::vector<double> &          GetConcentration(void) {return this->concentration;}
-	void                           SetConcentration(double * t = NULL); 
 	std::vector<double> &          GetSaturation(void) {return this->saturation;}
 	void                           SetSaturation(double * t); 
 	std::vector<double> &          GetPoreVolume(void) {return this->pore_volume;}
@@ -102,43 +102,43 @@ public:
 	std::vector<double> &          GetPoreVolumeZero(void) {return this->pore_volume_zero;}
 	void                           SetPoreVolumeZero(double * t = NULL); 
 	std::vector<double> &          GetPressure(void) {return this->pressure;}
-	void                           SetPressure(double * t = NULL);
-	std::vector<double> &          GetTemperature(void) {return this->tempc;}
-	void                           SetTemperature(double * t = NULL);  
-	std::vector<int> &             Get_print_chem_mask (void) {return this->print_chem_mask;}
-	void                           Set_print_chem_mask(int * t); 
+	void                           SetPressure(double * t = NULL);  
+	std::vector<int> &             GetPrintChemistryMask (void) {return this->print_chem_mask;}
+	void                           SetPrintChemistryMask(int * t);
+	const bool                     GetPrintChemistryOn(void) const {return this->print_chemistry_on;}
+	void                           SetPrintChemistryOn(int *t); 
+	const bool                     Get_print_restart(void) const {return this->print_restart;}
+	void                           Set_print_restart(int *t);  
 	int                            GetRebalanceMethod(void) const {return this->rebalance_method;}
 	void                           SetRebalanceMethod(int * t); 
 	double                         Get_rebalance_fraction(void) const {return this->rebalance_fraction;}
 	void                           Set_rebalance_fraction(double * t); 
-	const bool                     GetPrintChemistryOn(void) const {return this->print_chemistry_on;}
-	void                           SetPrintChemistryOn(int *t); 
 	const bool                     GetSelectedOutputOn(void) const {return this->selected_output_on;}
 	void                           SetSelectedOutputOn(int *t);
-	const bool                     Get_print_restart(void) const {return this->print_restart;}
-	void                           Set_print_restart(int *t); 
-	const bool                     Get_stop_message(void) const {return this->stop_message;}
-	void                           Set_stop_message(bool t = false); 
+	std::vector<double> &          GetTemperature(void) {return this->tempc;}
+	void                           SetTemperature(double * t = NULL);
+	const bool                     GetStopMessage(void) const {return this->stop_message;}
+	void                           SetStopMessage(bool t = false); 
 	
-	int                            Get_input_units_Solution(void) {return this->input_units_Solution;}
-	int                            Get_input_units_PPassemblage(void) {return this->input_units_PPassemblage;}
-	int                            Get_input_units_Exchange(void) {return this->input_units_Exchange;}
-	int                            Get_input_units_Surface(void) {return this->input_units_Surface;}
-	int                            Get_input_units_GasPhase(void) {return this->input_units_GasPhase;}
-	int                            Get_input_units_SSassemblage(void) {return this->input_units_SSassemblage;}
-	int                            Get_input_units_Kinetics(void) {return this->input_units_Kinetics;}
+	int                            GetInputUnitsSolution(void) {return this->input_units_Solution;}
+	int                            GetInputUnitsPPassemblage(void) {return this->input_units_PPassemblage;}
+	int                            GetiInputUnitsExchange(void) {return this->input_units_Exchange;}
+	int                            GetInputUnitsSurface(void) {return this->input_units_Surface;}
+	int                            GetInputUnitsGasPhase(void) {return this->input_units_GasPhase;}
+	int                            GetInputUnitsSSassemblage(void) {return this->input_units_SSassemblage;}
+	int                            GetInputUnitsKinetics(void) {return this->input_units_Kinetics;}
 
-	void                           Set_input_units_Solution(int i) {this->input_units_Solution = i;}
-	void                           Set_input_units_PPassemblage(int i) {this->input_units_PPassemblage = i;}
-	void                           Set_input_units_Exchange(int i) {this->input_units_Exchange = i;}
-	void                           Set_input_units_Surface(int i) {this->input_units_Surface = i;}
-	void                           Set_input_units_GasPhase(int i) {this->input_units_GasPhase = i;}
-	void                           Set_input_units_SSassemblage(int i) {this->input_units_SSassemblage = i;}
-	void                           Set_input_units_Kinetics(int i) {this->input_units_Kinetics = i;}
-	void                           Set_input_units(int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *k);
+	void                           SetInputUnitsSolution(int i) {this->input_units_Solution = i;}
+	void                           SetInputUnitsPPassemblage(int i) {this->input_units_PPassemblage = i;}
+	void                           SetInputUnitsExchange(int i) {this->input_units_Exchange = i;}
+	void                           SetInputUnitsSurface(int i) {this->input_units_Surface = i;}
+	void                           SetInputUnitsGasPhase(int i) {this->input_units_GasPhase = i;}
+	void                           SetInputUnitsSSassemblage(int i) {this->input_units_SSassemblage = i;}
+	void                           SetInputUnitsKinetics(int i) {this->input_units_Kinetics = i;}
+	void                           SetInputUnits(int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *k);
 protected:
 	void                           BeginTimeStep(void);
-	void                           Cell_initialize(
+	void                           CellInitialize(
 		                               int i, 
 		                               int n_user_new, 
 		                               int *initial_conditions1,
@@ -169,12 +169,12 @@ protected:
 #ifdef SKIP
 	void Init_uz(void);
 #endif
-	int Initial_phreeqc_run_thread(int n);
-	void Rebalance_load_per_cell(void);
-	void Run_cells_thread(int i);
+	int InitialPhreeqcRunThread(int n);
+	void RebalanceLoadPerCell(void);
+	void RunCellsThread(int i);
 	void Scale_solids(int n, int iphrq, LDBLE frac);
-	void Set_end_cells(void);
-	void Transfer_cells(cxxStorageBin &t_bin, int old, int nnew);
+	void SetEndCells(void);
+	void TransferCells(cxxStorageBin &t_bin, int old, int nnew);
 
 protected:
 	std::string database_file_name;

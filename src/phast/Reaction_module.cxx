@@ -172,7 +172,7 @@ if( numCPU < 1 )
 	}
 
 	// set work for each thread or process
-	Set_end_cells();
+	SetEndCells();
 }
 Reaction_module::~Reaction_module(void)
 {
@@ -238,7 +238,7 @@ Reaction_module::Calculate_well_ph(double *c, double * pH, double * alkalinity)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Cell_initialize(
+Reaction_module::CellInitialize(
 					int i, 
 					int n_user_new, 
 					int *initial_conditions1,
@@ -778,7 +778,7 @@ Reaction_module::CreateMapping(int *t)
 	}
 	
 	// Distribute work with new count_chemistry
-	Set_end_cells();
+	SetEndCells();
 
 	return rtn;
 }
@@ -871,7 +871,7 @@ Reaction_module::File_rename(const std::string &temp_name, const std::string &na
 }
 /* ---------------------------------------------------------------------- */
 int
-Reaction_module::Find_components(void)	
+Reaction_module::FindComponents(void)	
 /* ---------------------------------------------------------------------- */
 {
 /*
@@ -1265,7 +1265,7 @@ Reaction_module::Init_uz(void)
 #endif
 /* ---------------------------------------------------------------------- */
 int
-Reaction_module::Initial_phreeqc_run_thread(int n)
+Reaction_module::InitialPhreeqcRunThread(int n)
 /* ---------------------------------------------------------------------- */
 {
 		IPhreeqcPhast * iphreeqc_phast_worker = this->GetWorkers()[n];
@@ -1469,7 +1469,7 @@ Reaction_module::InitialPhreeqc2Module(
 		}
 		assert (porosity > 0.0);
 		double porosity_factor = (1.0 - porosity) / porosity;
-		Cell_initialize(i, j, initial_conditions1.data(), initial_conditions2.data(),
+		this->CellInitialize(i, j, initial_conditions1.data(), initial_conditions2.data(),
 			fraction1.data(),
 			this->input_units_Exchange, this->input_units_Surface, this->input_units_SSassemblage,
 			this->input_units_PPassemblage, this->input_units_GasPhase, this->input_units_Kinetics,
@@ -1499,7 +1499,7 @@ Reaction_module::InitialPhreeqc2Module(
 		}
 		assert (porosity > 0.0);
 		double porosity_factor = (1.0 - porosity) / porosity;
-		Cell_initialize(i, j, initial_conditions1.data(), initial_conditions2.data(),
+		this->CellInitialize(i, j, initial_conditions1.data(), initial_conditions2.data(),
 			fraction1.data(),
 			this->input_units_Exchange, this->input_units_Surface, this->input_units_SSassemblage,
 			this->input_units_PPassemblage, this->input_units_GasPhase, this->input_units_Kinetics,
@@ -1560,7 +1560,7 @@ Reaction_module::InitialPhreeqcRunFile(const char * chemistry_name, long l)
 #endif
 	for (int n = 0; n <= this->nthreads; n++)
 	{
-		Initial_phreeqc_run_thread(n);
+		InitialPhreeqcRunThread(n);
 	} 	
 	return IRM_OK;
 }
@@ -1863,7 +1863,7 @@ Reaction_module::Partition_uz_thread(int n, int iphrq, int ihst, double new_frac
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Rebalance_load_per_cell(void)
+Reaction_module::RebalanceLoadPerCell(void)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->mpi_tasks <= 1) return;
@@ -2071,7 +2071,7 @@ Reaction_module::Rebalance_load_per_cell(void)
 			if (old != pold || nnew != pnew)
 			{
 				transfers++;
-				this->Transfer_cells(t_bin, pold, pnew);
+				this->TransferCells(t_bin, pold, pnew);
 				t_bin.Clear();
 				pold = old;
 				pnew = nnew;
@@ -2089,7 +2089,7 @@ Reaction_module::Rebalance_load_per_cell(void)
 		}
 		// Last transfer
 		transfers++;
-		this->Transfer_cells(t_bin, pold, pnew);
+		this->TransferCells(t_bin, pold, pnew);
 	}
 	
 	for (int i = 0; i < this->mpi_tasks; i++)
@@ -2114,7 +2114,7 @@ Reaction_module::Rebalance_load(void)
 	if (this->mpi_tasks > count_chemistry) return;
 	if (this->rebalance_method != 0)
 	{
-		return Rebalance_load_per_cell();
+		return RebalanceLoadPerCell();
 	}
 #include <time.h>
 
@@ -2323,7 +2323,7 @@ Reaction_module::Rebalance_load(void)
 			if (old != pold || nnew != pnew)
 			{
 				transfers++;
-				this->Transfer_cells(t_bin, pold, pnew);
+				this->TransferCells(t_bin, pold, pnew);
 				t_bin.Clear();
 				pold = old;
 				pnew = nnew;
@@ -2341,7 +2341,7 @@ Reaction_module::Rebalance_load(void)
 		}
 		// Last transfer
 		transfers++;
-		this->Transfer_cells(t_bin, pold, pnew);
+		this->TransferCells(t_bin, pold, pnew);
 	}
 	
 	for (int i = 0; i < this->mpi_tasks; i++)
@@ -2358,7 +2358,7 @@ Reaction_module::Rebalance_load(void)
 	return;
 }
 void
-Reaction_module::Transfer_cells(cxxStorageBin &t_bin, int old, int nnew)
+Reaction_module::TransferCells(cxxStorageBin &t_bin, int old, int nnew)
 {
 	if (this->mpi_myself == old)
 	{
@@ -2397,7 +2397,7 @@ Reaction_module::Rebalance_load(void)
 #include <time.h>
 	if (this->rebalance_method != 0)
 	{
-		Rebalance_load_per_cell();
+		RebalanceLoadPerCell();
 		return; 
 	}
 	std::vector<int> start_cell_new;
@@ -2608,7 +2608,7 @@ Reaction_module::Rebalance_load(void)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Rebalance_load_per_cell(void)
+Reaction_module::RebalanceLoadPerCell(void)
 /* ---------------------------------------------------------------------- */
 {
 	// Threaded version
@@ -2820,7 +2820,7 @@ Reaction_module::RunCells()
 #endif
 	for (int n = 0; n < this->nthreads; n++)
 	{
-		Run_cells_thread(n);
+		RunCellsThread(n);
 	} 
 
 	std::vector<char> char_buffer;
@@ -2900,7 +2900,7 @@ Reaction_module::RunCells()
 #endif
 	for (int n = 0; n < this->nthreads; n++)
 	{
-		Run_cells_thread(n);
+		RunCellsThread(n);
 	} 
 	for (int n = 0; n < this->nthreads; n++)
 	{
@@ -2925,7 +2925,7 @@ Reaction_module::RunCells()
 #endif
 /* ---------------------------------------------------------------------- */
 void 
-Reaction_module::Run_cells_thread(int n)
+Reaction_module::RunCellsThread(int n)
 /* ---------------------------------------------------------------------- */
 {
 	/*
@@ -3343,7 +3343,7 @@ Reaction_module::SetDensity(double *t)
 
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Set_end_cells(void)
+Reaction_module::SetEndCells(void)
 /* ---------------------------------------------------------------------- */
 {
 #ifdef USE_MPI
@@ -3412,7 +3412,7 @@ Reaction_module::Set_free_surface(int * t)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Set_input_units(int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *kin)
+Reaction_module::SetInputUnits(int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *kin)
 /* ---------------------------------------------------------------------- */
 {
 	int local_sol, local_pp, local_ex, local_surf, local_gas, local_ss, local_kin;
@@ -3438,31 +3438,31 @@ Reaction_module::Set_input_units(int *sol, int *pp, int *ex, int *surf, int *gas
 
 	if (local_sol >= 0)
 	{
-		Set_input_units_Solution(local_sol);
+		SetInputUnitsSolution(local_sol);
 	}
 	if (local_pp >= 0)
 	{
-		Set_input_units_PPassemblage(local_pp);
+		SetInputUnitsPPassemblage(local_pp);
 	}
 	if (local_ex >= 0)
 	{
-		Set_input_units_Exchange(local_ex);
+		SetInputUnitsExchange(local_ex);
 	}
 	if (local_surf >= 0)
 	{
-		Set_input_units_Surface(local_surf);
+		SetInputUnitsSurface(local_surf);
 	}	
 	if (local_gas >= 0)
 	{
-		Set_input_units_GasPhase(local_gas);
+		SetInputUnitsGasPhase(local_gas);
 	}
 	if (local_ss >= 0)
 	{
-		Set_input_units_SSassemblage(local_ss);
+		SetInputUnitsSSassemblage(local_ss);
 	}
 	if (local_kin >= 0)
 	{
-		Set_input_units_Kinetics(local_kin);
+		SetInputUnitsKinetics(local_kin);
 	}
 }
 /* ---------------------------------------------------------------------- */
@@ -3534,7 +3534,7 @@ Reaction_module::SetPrintChemistryOn(int *t)
 }
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::Set_print_chem_mask(int * t)
+Reaction_module::SetPrintChemistryMask(int * t)
 /* ---------------------------------------------------------------------- */
 {
 	if (this->print_chem_mask.size() < this->nxyz)
@@ -3636,7 +3636,7 @@ Reaction_module::SetSelectedOutputOn(int *t)
 }
 /* ---------------------------------------------------------------------- */
 void 
-Reaction_module::Set_stop_message(bool t)
+Reaction_module::SetStopMessage(bool t)
 /* ---------------------------------------------------------------------- */
 {
 	if (mpi_myself == 0)

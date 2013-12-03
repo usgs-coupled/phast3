@@ -230,7 +230,7 @@ RM_FindComponents(int *id)
 	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		return (Reaction_module_ptr->Find_components());
+		return (Reaction_module_ptr->FindComponents());
 	}
 	return IRM_BADINSTANCE;
 }
@@ -634,8 +634,8 @@ void RM_RunCells(int *id,
 	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->Set_stop_message(*stop_msg != 0);
-		if (!Reaction_module_ptr->Get_stop_message())
+		Reaction_module_ptr->SetStopMessage(*stop_msg != 0);
+		if (!Reaction_module_ptr->GetStopMessage())
 		{
 			// Transfer data and pointers to Reaction_module	  
 			Reaction_module_ptr->SetTime(time);
@@ -752,7 +752,7 @@ RM_SetInputUnits (int *id, int *sol, int *pp, int *ex, int *surf, int *gas, int 
 	if (Reaction_module_ptr)
 	{
 		// WATER = 1, ROCK = 2, as is < 0
-		Reaction_module_ptr->Set_input_units(sol, pp, ex, surf, gas, ss, kin);
+		Reaction_module_ptr->SetInputUnits(sol, pp, ex, surf, gas, ss, kin);
 	}
 }
 /* ---------------------------------------------------------------------- */
@@ -802,13 +802,13 @@ RM_SetPrintChemistryOn(int *id,	 int *print_chem)
 
 }
 /* ---------------------------------------------------------------------- */
-void RM_set_print_chem_mask(int *id, int *t)
+void RM_SetPrintChemistryMask(int *id, int *t)
 /* ---------------------------------------------------------------------- */
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-		Reaction_module_ptr->Set_print_chem_mask(t);
+		Reaction_module_ptr->SetPrintChemistryMask(t);
 	}
 }
 
