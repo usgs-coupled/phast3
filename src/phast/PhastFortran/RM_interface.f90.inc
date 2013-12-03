@@ -59,6 +59,11 @@
             INTEGER, INTENT(in) :: id
         END FUNCTION RM_GetMpiMyself
         
+        INTEGER FUNCTION RM_GetMpiTasks(id)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+        END FUNCTION RM_GetMpiTasks
+        
         INTEGER FUNCTION RM_GetNthSelectedOutputUserNumber(id, n)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id, n

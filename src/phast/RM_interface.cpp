@@ -312,6 +312,18 @@ RM_GetMpiMyself(int * rm_id)
 
 /* ---------------------------------------------------------------------- */
 int 
+RM_GetMpiTasks(int * rm_id)
+	/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(rm_id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->GetMpiTasks();
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
+int 
 RM_GetNthSelectedOutputUserNumber(int * rm_id, int * i)
 	/* ---------------------------------------------------------------------- */
 {
@@ -952,7 +964,7 @@ void RM_write_output(int *id)
 		RM_interface::phast_io.punch_msg(GetSelectedOutputString(*id));
 	}
 }
-
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void RM_write_restart(int *id)
 /* ---------------------------------------------------------------------- */
@@ -963,4 +975,4 @@ void RM_write_restart(int *id)
 		Reaction_module_ptr->Write_restart();
 	}
 }
-
+#endif

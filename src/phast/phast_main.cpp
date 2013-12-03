@@ -43,7 +43,7 @@ BOOL CtrlHandler(DWORD dwCtrlType)
 			OutputDebugString("CtrlHandler Catch\n");
 			HDFFinalize();
 			//write_restart(rate_sim_time_end * rate_cnvtmi);
-			RM_write_restart(0);
+			//WriteRestartFile(0);
 			ExitProcess(1);
 			return TRUE;
 		default:

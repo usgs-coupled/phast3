@@ -61,7 +61,7 @@ public:
 	void                           Write_bc_raw(int *solution_list, int * bc_solution_count, 
                                         int * solution_number, 
                                         const std::string &prefix);
-	void                           Write_restart(void);
+	//void                           Write_restart(void);
 
 	// setters and getters
 	const std::vector < std::vector <int> > & GetBack(void) {return this->back;}
@@ -85,9 +85,10 @@ public:
 	const bool                     Get_steady_flow(void) const {return this->steady_flow;}
 	void                           Set_steady_flow(int * t);
 	const int                      GetMpiMyself(void) const {return this->mpi_myself;}
+	const int                      GetMpiTasks(void) const {return this->mpi_tasks;}
 	int                            GetNthreads() {return this->nthreads;}
 	const std::vector < int> &     GetStartCell(void) const {return this->start_cell;} 
-	const std::vector < int> &     GetEndCell(void) const {return this->start_cell;} 
+	const std::vector < int> &     GetEndCell(void) const {return this->end_cell;} 
 	double                         GetTime(void) const {return this->time;}
 	void                           SetTime(double *t = NULL); 
 	double                         GetTimeStep(void) const {return this->time_step;}
@@ -106,9 +107,7 @@ public:
 	std::vector<int> &             GetPrintChemistryMask (void) {return this->print_chem_mask;}
 	void                           SetPrintChemistryMask(int * t);
 	const bool                     GetPrintChemistryOn(void) const {return this->print_chemistry_on;}
-	void                           SetPrintChemistryOn(int *t); 
-	const bool                     Get_print_restart(void) const {return this->print_restart;}
-	void                           Set_print_restart(int *t);  
+	void                           SetPrintChemistryOn(int *t);  
 	int                            GetRebalanceMethod(void) const {return this->rebalance_method;}
 	void                           SetRebalanceMethod(int * t); 
 	double                         Get_rebalance_fraction(void) const {return this->rebalance_fraction;}
@@ -155,8 +154,8 @@ protected:
 	void                           Concentrations2Threads(int n);
 	void                           cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
 	void                           Error_stop(void);
-	bool                           File_exists(const std::string &name);
-	void                           File_rename(const std::string &temp_name, const std::string &name, const std::string &backup_name);
+	//bool                           File_exists(const std::string &name);
+	//void                           File_rename(const std::string &temp_name, const std::string &name, const std::string &backup_name);
 	cxxStorageBin &                Get_phreeqc_bin(void) {return this->phreeqc_bin;}
 	void                           Partition_uz(int iphrq, int ihst, double new_frac);
 	void                           Partition_uz_thread(int n, int iphrq, int ihst, double new_frac);
@@ -220,7 +219,6 @@ protected:
 	// print flags
 	bool print_chemistry_on;				// print flag for chemistry output file 
 	bool selected_output_on;				// create selected output
-	bool print_restart;						// print flag for writing restart file 
 
 	bool stop_message;
 

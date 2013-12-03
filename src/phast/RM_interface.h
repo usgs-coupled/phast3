@@ -24,6 +24,7 @@
 #define RM_GetComponent                    FC_FUNC_ (rm_getcomponent,                  RM_GETCOMPONENT)
 #define RM_GetFilePrefix                   FC_FUNC_ (rm_getfileprefix,                 RM_GETFILEPREFIX)
 #define RM_GetMpiMyself                    FC_FUNC_ (rm_getmpimyself,                  RM_GETMPIMYSELF)
+#define RM_GetMpiTasks                     FC_FUNC_ (rm_getmpitasks,                   RM_GETMPITASKS)
 #define RM_GetGridCellCount                FC_FUNC_ (rm_getgridcellcount,              RM_GETGRIDCELLCOUNT)
 #define RM_GetNthSelectedOutputUserNumber  FC_FUNC_ (rm_getnthselectedoutputusernumber, RM_GETNTHSELECTEDOUTPUTUSERNUMBER)
 #define RM_GetSelectedOutput               FC_FUNC_ (rm_getselectedoutput,             RM_GETSELECTEDOUTPUT)
@@ -63,7 +64,7 @@
 #define RM_Module2Concentrations           FC_FUNC_ (rm_module2concentrations,         RM_MODULE2CONCENTRATIONS)
 #define RM_write_bc_raw                    FC_FUNC_ (rm_write_bc_raw,                  RM_WRITE_BC_RAW)
 #define RM_write_output                    FC_FUNC_ (rm_write_output,                  RM_WRITE_OUTPUT)
-#define RM_write_restart				   FC_FUNC_ (rm_write_restart,                 RM_WRITE_RESTART)
+//#define RM_write_restart				   FC_FUNC_ (rm_write_restart,                 RM_WRITE_RESTART)
 #define RM_WarningMessage                  FC_FUNC_ (rm_warningmessage,                RM_WARNINGMESSAGE)
 #endif
 #ifdef SKIP
@@ -96,7 +97,6 @@
 #define RM_Module2Concentrations              rm_module2concentrations
 #define RM_write_bc_raw                       rm_write_bc_raw
 #define RM_write_output                       rm_write_output
-#define RM_write_restart					  rm_write_restart
 #endif
 
 class RM_interface
@@ -131,6 +131,7 @@ IRM_RESULT RM_GetComponent(int * id, int * num, char *chem_name, int l1 = -1);
 IRM_RESULT RM_GetFilePrefix(int *id, char *prefix, long l = -1);
 int RM_GetGridCellCount(int *id);
 int RM_GetMpiMyself(int *id);
+int RM_GetMpiTasks(int *id);
 int RM_GetNthSelectedOutputUserNumber(int *id, int *i);
 IRM_RESULT RM_GetSelectedOutput(int *id, double *so = NULL);
 int RM_GetSelectedOutputColumnCount(int *id);
@@ -191,7 +192,7 @@ void RM_write_bc_raw(int *id,
 			char *prefix, 
 			int prefix_l);
 void RM_write_output(int *id);
-void RM_write_restart(int *id);
+//void RM_write_restart(int *id);
 
 #if defined(__cplusplus)
 }
