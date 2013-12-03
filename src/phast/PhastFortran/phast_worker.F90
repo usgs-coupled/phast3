@@ -25,6 +25,12 @@ SUBROUTINE phast_worker
             IMPLICIT NONE
             CHARACTER, INTENT(in) :: fn
         END FUNCTION RMH_SetRestartName 
+        
+        INTEGER FUNCTION WriteRestartFile(id, print_restart, index_ic)
+            IMPLICIT NONE
+            INTEGER, INTENT(IN) :: id 
+            INTEGER, OPTIONAL, INTENT(IN) :: index_ic, print_restart
+        END FUNCTION WriteRestartFile         
     END INTERFACE
     REAL(KIND=kdp) :: deltim_dummy
     INTEGER :: stop_msg=0
@@ -124,7 +130,9 @@ SUBROUTINE phast_worker
         DO i = 1, num_restart_files
             status = RMH_SetRestartName(restart_files(i))
         ENDDO
+        CALL SetNodes(x_node(1), y_node(1), z_node(1))
         status = RM_InitialPhreeqc2Module(rm_id)
+        CALL ProcessRestartFiles(rm_id)
         
         ! ... collect solutions for transport
         CALL RM_Module2Concentrations(rm_id)
@@ -219,7 +227,8 @@ SUBROUTINE phast_worker
                 stop_msg) 
             CALL WriteFiles(rm_id, prhdfci, prcphrqi,  pr_hdf_media, &
 	            x_node(1), y_node(1), z_node(1), iprint_xyz(1), &
-	            frac(1), grid2chem(1))   
+	            frac(1), grid2chem(1))  
+            status = WriteRestartFile(rm_id)
 !        
 !Start  of TimeStepRM
 !       

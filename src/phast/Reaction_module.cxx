@@ -142,7 +142,6 @@ if( numCPU < 1 )
 	// print flags
 	this->print_chemistry_on = false;			// print flag for chemistry output file 
 	this->selected_output_on = true;			// Create selected output
-	this->print_restart = false;				// print flag for writing restart file 
 	this->input_units_Solution = 3;				// 1 mg/L, 2 mmol/L, 3 kg/kgs
 	this->input_units_PPassemblage = 1;			// water 1, rock 2
 	this->input_units_Exchange = 1;			    // water 1, rock 2
@@ -842,6 +841,7 @@ Reaction_module::Error_stop(void)
 	int n = (int) this->GetWorkers()[0]->Get_Index();
 	RM_Error(&n);
 }
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 bool
 Reaction_module::File_exists(const std::string &name)
@@ -855,6 +855,7 @@ Reaction_module::File_exists(const std::string &name)
 	fclose(stream);
 	return true;					/* exists */
 }
+
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::File_rename(const std::string &temp_name, const std::string &name, 
@@ -869,6 +870,7 @@ Reaction_module::File_rename(const std::string &temp_name, const std::string &na
 	}
 	rename(temp_name.c_str(), name.c_str());
 }
+#endif
 /* ---------------------------------------------------------------------- */
 int
 Reaction_module::FindComponents(void)	
@@ -2858,11 +2860,6 @@ Reaction_module::RunCells()
 				Write_output(char_buffer.data());
 			}
 		}
-		// write restart
-		if (this->print_restart)
-		{
-			this->Write_restart();
-		}
 	} 	
 	this->CheckSelectedOutput();
 
@@ -2910,11 +2907,6 @@ Reaction_module::RunCells()
 			Write_output(this->workers[n]->Get_out_stream().str().c_str());
 		}
 		delete &this->workers[n]->Get_out_stream();
-		// write restart
-		if (this->print_restart)
-		{
-			this->Write_restart();
-		}
 	} 	
 	this->CheckSelectedOutput();
 
@@ -3551,19 +3543,6 @@ Reaction_module::SetPrintChemistryMask(int * t)
 #endif
 }
 /* ---------------------------------------------------------------------- */
-void 
-Reaction_module::Set_print_restart(int *t)
-/* ---------------------------------------------------------------------- */
-{
-	if (mpi_myself == 0 && t != NULL)
-	{
-		this->print_restart = *t != 0;
-	}
-#ifdef USE_MPI
-	MPI_Bcast(&this->print_restart, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
-#endif
-}
-/* ---------------------------------------------------------------------- */
 void
 Reaction_module::Set_rebalance_fraction(double *t)
 /* ---------------------------------------------------------------------- */
@@ -3891,12 +3870,90 @@ Reaction_module:: Write_output(const char * item)
 {
 	RM_interface::phast_io.output_msg(item);
 }
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Write_restart(void)
 /* ---------------------------------------------------------------------- */
 {
-#ifdef SKIP_TODO
+	std::string char_buffer;
+	ogzstream ofs_restart;
+	//ofstream ofs_restart;
+	std::string temp_name("temp_restart_file.gz");
+	std::string name(this->file_prefix);
+	std::string backup_name(this->file_prefix);
+	if (mpi_myself == 0)
+	{
+		name.append(".restart.gz");
+		backup_name.append(".restart.backup.gz");
+
+		// open file 
+		//int mode = std::ofstream::out;
+		ofs_restart.open(temp_name.c_str(), std::ofstream::app);
+		if (!ofs_restart.good())
+		{
+			std::ostringstream errstr;
+			errstr << "Temporary restart file could not be opened: " << temp_name;
+			error_msg(errstr.str().c_str(), 1);	
+		}
+	}
+
+	// write data
+#ifdef USE_MPI
+	this->workers[0]->SetDumpStringOn(true); 
+	std::ostringstream in;
+
+	in << "DUMP; -cells " << this->start_cell[this->mpi_myself] << "-" << this->end_cell[this->mpi_myself] << "\n";
+	this->workers[0]->RunString(in.str().c_str());
+	for (int n = 0; n < this->mpi_tasks; n++)
+	{
+		// Need to transfer output stream to root and print
+		if (this->mpi_myself == n)
+		{
+			if (n == 0)
+			{
+				ofs_restart << this->GetWorkers()[0]->GetDumpString();
+			}
+			else
+			{
+				int size = (int) strlen(this->workers[0]->GetDumpString());
+				MPI_Send(&size, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+				MPI_Send((void *) this->workers[0]->GetDumpString(), size, MPI_CHARACTER, 0, 0, MPI_COMM_WORLD);
+			}	
+		}
+		else if (this->mpi_myself == 0)
+		{
+			MPI_Status mpi_status;
+			int size;
+			MPI_Recv(&size, 1, MPI_INT, n, 0, MPI_COMM_WORLD, &mpi_status);
+			char_buffer.resize(size+1);
+			MPI_Recv((void *) char_buffer.c_str(), size, MPI_CHARACTER, n, 0, MPI_COMM_WORLD, &mpi_status);
+			char_buffer[size] = '\0';
+			ofs_restart << char_buffer;
+		}
+	}
+#else
+	for (int n = 0; n < (int) this->workers.size() - 1; n++)
+	{
+		this->workers[n]->SetDumpStringOn(true); 
+		std::ostringstream in;
+		in << "DUMP; -cells " << this->start_cell[n] << "-" << this->end_cell[n] << "\n";
+		this->workers[n]->RunString(in.str().c_str());
+		ofs_restart << this->GetWorkers()[n]->GetDumpString();
+	}
+#endif
+
+	ofs_restart.close();
+	// rename files
+	this->File_rename(temp_name.c_str(), name.c_str(), backup_name.c_str());
+}
+#endif
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::Write_restart(void)
+/* ---------------------------------------------------------------------- */
+{
 	std::string char_buffer;
 	ogzstream ofs_restart;
 	std::string temp_name("temp_restart_file.gz");
@@ -3951,7 +4008,6 @@ Reaction_module::Write_restart(void)
 			}
 		}
 	}
-
 	// write data
 #ifdef USE_MPI
 	this->workers[0]->SetDumpStringOn(true); 
@@ -4026,8 +4082,9 @@ Reaction_module::Write_restart(void)
 	ofs_restart.close();
 	// rename files
 	this->File_rename(temp_name.c_str(), name.c_str(), backup_name.c_str());
-#endif // ToDo
+
 }
+#endif
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module:: Write_screen(const char * item)

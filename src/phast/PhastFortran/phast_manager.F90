@@ -478,7 +478,7 @@ SUBROUTINE InitializeRM
             implicit none
             INTEGER, DIMENSION(:,:), ALLOCATABLE, INTENT(INOUT) :: ic
         END SUBROUTINE CreateMappingFortran
-
+        
         INTEGER FUNCTION RMH_SetRestartName(fn)
             IMPLICIT NONE
             CHARACTER, INTENT(in) :: fn
@@ -509,12 +509,16 @@ SUBROUTINE InitializeRM
         DO i = 1, num_restart_files
             status = RMH_SetRestartName(restart_files(i))
         ENDDO
-
+        CALL SetNodes(x_node(1), y_node(1), z_node(1))
         ! ... Distribute chemistry initial conditions
         status = RM_InitialPhreeqc2Module(rm_id, &
             indx_sol1_ic(1,1),           & ! 7 x nxyz end-member 1 
             indx_sol2_ic(1,1),           & ! 7 x nxyz end-member 2
             ic_mxfrac(1,1))                ! 7 x nxyz fraction of end-member 1
+        CALL ProcessRestartFiles(rm_id, &
+	        indx_sol1_ic(1,1),            &
+	        indx_sol2_ic(1,1),            & 
+	        ic_mxfrac(1,1))
         ! collect solutions at manager for transport
         CALL RM_Module2Concentrations(rm_id, c(1,1))
     ENDIF        ! ... solute
@@ -525,10 +529,17 @@ SUBROUTINE TimeStepRM
     USE mcg, only: grid2chem
     USE mcn, only: x_node, y_node, z_node
     USE mcp, only: pv
-    USE mcv, only: c, deltim, frac, time
+    USE mcv, only: c, deltim, frac, indx_sol1_ic, time
     USE hdf_media_m,       ONLY: pr_hdf_media
     USE print_control_mod, only: print_force_chemistry, print_hdf_chemistry, print_restart
     IMPLICIT NONE
+    INTERFACE
+        INTEGER FUNCTION WriteRestartFile(id, print_restart, index_ic)
+            IMPLICIT NONE
+            INTEGER, INTENT(IN) :: id 
+            INTEGER, OPTIONAL, INTENT(IN) :: index_ic, print_restart
+        END FUNCTION WriteRestartFile 
+    END INTERFACE    
     SAVE
     INCLUDE 'RM_interface.f90.inc' 
     INTEGER stop_msg, status
@@ -556,6 +567,7 @@ SUBROUTINE TimeStepRM
         CALL WriteFiles(rm_id, prhdfci, prcphrqi,  pr_hdf_media, &
             x_node(1), y_node(1), z_node(1), iprint_xyz(1), &
             frac(1), grid2chem(1)) 
+        status = WriteRestartFile(rm_id, print_restart%print_flag_integer, indx_sol1_ic(1,1))
 
     ENDIF    ! ... Done with chemistry    
 END SUBROUTINE TimeStepRM    

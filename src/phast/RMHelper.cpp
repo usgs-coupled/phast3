@@ -19,25 +19,20 @@ class RMHelperInfo: public PHRQ_base
 public:
 	RMHelperInfo();
 	~RMHelperInfo();
-	IRM_RESULT ProcesseRestartFiles(
+	IRM_RESULT ProcessRestartFiles(
 		int *id, 
 		int *initial_conditions1_in,
 		int *initial_conditions2_in, 
-		double *fraction1_in,
-		double *x_node_in,
-		double *y_node_in,
-		double *z_node_in);
-	int SetRestartName(std::string str);
+		double *fraction1_in);
+	IRM_RESULT SetRestartName(const char *name, long nchar);
+	IRM_RESULT WriteRestartFile(int *id, int *print_restart = NULL, int *indices_ic = NULL);
+	void SetNodes(double *x_node, double *y_node, double *z_node);
 
 protected:
 	std::map < std::string, int > FileMap; 
-	std::vector<int> have_Solution;
-	std::vector<int> have_PPassemblage;
-	std::vector<int> have_Exchange;
-	std::vector<int> have_Surface;
-	std::vector<int> have_GasPhase;
-	std::vector<int> have_SSassemblage;
-	std::vector<int> have_Kinetics;
+	double * x_node;
+	double * y_node;
+	double * z_node;
 };
 RMHelperInfo rmhelper; 
 
@@ -53,15 +48,23 @@ RMHelperInfo::~RMHelperInfo()
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-	RMHelperInfo::ProcesseRestartFiles(
+ProcessRestartFiles(
 	int *id, 
 	int *initial_conditions1_in,
 	int *initial_conditions2_in, 
-	double *fraction1_in,
-	double *x_node,
-	double *y_node,
-	double *z_node
-	)
+	double *fraction1_in)
+/* ---------------------------------------------------------------------- */
+{
+	return rmhelper.ProcessRestartFiles(id, initial_conditions1_in, 
+		initial_conditions2_in, fraction1_in);
+}
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+RMHelperInfo::ProcessRestartFiles(
+	int *id, 
+	int *initial_conditions1_in,
+	int *initial_conditions2_in, 
+	double *fraction1_in)
 	/* ---------------------------------------------------------------------- */
 {
 	/*
@@ -120,27 +123,14 @@ IRM_RESULT
 			memcpy(initial_conditions2.data(), initial_conditions2_in, array_size * sizeof(int));
 			memcpy(fraction1.data(),           fraction1_in,           array_size * sizeof(double));
 		}
-		/*
-		* Make copy of initial conditions for use in restart file
-		*/
-		for (int i = 0; i < nxyz; i++)
-		{
-			int j = 7 * i;
-			have_Solution.push_back(initial_conditions1[j]);
-			j++;
-			have_PPassemblage.push_back(initial_conditions1[j]);
-			j++;
-			have_Exchange.push_back(initial_conditions1[j]);
-			j++;
-			have_Surface.push_back(initial_conditions1[j]);
-			j++;
-			have_GasPhase.push_back(initial_conditions1[j]);
-			j++;
-			have_SSassemblage.push_back(initial_conditions1[j]);
-			j++;
-			have_Kinetics.push_back(initial_conditions1[j]);
-		}
-
+#ifdef USE_MPI
+	//
+	// Transfer arrays
+	//
+	MPI_Bcast(initial_conditions1.data(), (int) array_size, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(initial_conditions2.data(), (int) array_size, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(fraction1.data(),           (int) array_size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+#endif
 		int begin = Reaction_module_ptr->GetStartCell()[mpi_myself];
 		int end =   Reaction_module_ptr->GetEndCell()[mpi_myself] + 1;
 
@@ -207,6 +197,15 @@ IRM_RESULT
 				cparser.get_iss() >> z;
 				cparser.get_iss() >> v;
 				pts.push_back(Point(x, y, z, v));
+
+				int dummy;
+				// c_index defines entities present for each cell in restart file
+				for (int j = 0; j < 7; j++)
+				{
+					cparser.get_iss() >> dummy;
+					c_index.push_back(dummy);
+				}
+
 			}
 			// Make Kd tree
 			KDtree index_tree(pts);
@@ -371,22 +370,232 @@ IRM_RESULT
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-int
+IRM_RESULT
 RMH_SetRestartName(const char *name, long nchar)
 /* ---------------------------------------------------------------------- */
 {
 	if (name)
 	{
-		std::string stdstring(name, nchar);
-		trim(stdstring);
-		return rmhelper.SetRestartName(stdstring);
+		return rmhelper.SetRestartName(name, nchar);
 	}
-	return -1;
-}
-int
-RMHelperInfo::SetRestartName(std::string str)
-{
-	int	i = (int) this->FileMap.size();
-	this->FileMap[str] = i;
 	return IRM_OK;
+}
+IRM_RESULT
+RMHelperInfo::SetRestartName(const char *name, long nchar)
+{
+	std::string str = Reaction_module::Cptr2TrimString(name, nchar);
+	if (str.size() > 0)
+	{
+		int	i = (int) this->FileMap.size();
+		this->FileMap[str] = i;
+		return IRM_OK;
+	}
+	return IRM_INVALIDARG;
+}
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+WriteRestartFile(int *id, int *print_restart, int *indices_ic)
+/* ---------------------------------------------------------------------- */
+{
+	return rmhelper.WriteRestartFile(id, print_restart, indices_ic);
+}
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+RMHelperInfo::WriteRestartFile(int *id, int *print_restart_in, int *indices_ic)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		int mpi_myself = Reaction_module_ptr->GetMpiMyself();
+		int print_restart;
+		if (mpi_myself == 0)
+		{
+			if (print_restart_in == NULL ||
+				x_node == NULL ||
+				y_node == NULL ||
+				z_node == NULL ||
+				indices_ic == NULL)
+			{
+				//rtn = IRM_FAIL;
+				std::ostringstream errstr;
+				errstr << "NULL pointer in WriteRestartFile";
+				error_msg(errstr.str().c_str(), 1);
+			}
+			print_restart = *print_restart_in;
+		}
+#ifdef USE_MPI
+		MPI_Bcast(&print_restart, 1, MPI_INT, 0, MPI_COMM_WORLD);
+#endif
+		if (print_restart != 0)
+		{
+			int mpi_tasks = Reaction_module_ptr->GetMpiTasks();
+			std::string char_buffer;
+
+			ogzstream ofs_restart;
+			//ofstream ofs_restart;
+
+			std::string temp_name("temp_restart_file.gz");
+			std::string name(Reaction_module_ptr->GetFilePrefix());
+			std::string backup_name(name);
+			if (mpi_myself == 0)
+			{
+				name.append(".restart.gz");
+				backup_name.append(".restart.backup.gz");
+
+				// open file 
+				ofs_restart.open(temp_name.c_str());
+				if (!ofs_restart.good())
+				{
+					std::ostringstream errstr;
+					errstr << "Temporary restart file could not be opened: " << temp_name;
+					rmhelper.error_msg(errstr.str().c_str(), 1);	
+				}
+
+				// write header
+				int count_chemistry = Reaction_module_ptr->GetChemistryCellCount();
+				ofs_restart << "#PHAST restart file" << std::endl;
+				ofs_restart << "#Prefix: " << Reaction_module_ptr->GetFilePrefix() << std::endl;
+				time_t now = ::time(NULL);
+				ofs_restart << "#Date: " << ctime(&now);
+				ofs_restart << "#Current model time: " << Reaction_module_ptr->GetTime() << std::endl;
+				ofs_restart << "#Grid cells: " << Reaction_module_ptr->GetGridCellCount() << std::endl;
+				ofs_restart << "#Chemistry cells: " << count_chemistry << std::endl;
+
+				// write index
+				ofs_restart << Reaction_module_ptr->GetChemistryCellCount() << std::endl;
+				for (int j = 0; j < count_chemistry; j++)	/* j is count_chem number */
+				{
+					for (size_t k = 0; k < Reaction_module_ptr->GetBack()[j].size(); k++)
+					{
+						int i = Reaction_module_ptr->GetBack()[j][k];			/* i is nxyz number */
+						ofs_restart << x_node[i] << "  " << y_node[i] << "  " << z_node[i] << "  " << j << "  ";
+						// solution 
+						//ofs_restart << rmhelper.have_Solution[i] << "  ";
+						ofs_restart << indices_ic[7 * i] << "  ";
+						// pp_assemblage
+						//ofs_restart << have_PPassemblage[i] << "  ";
+						ofs_restart << indices_ic[7 * i + 1] << "  ";
+						// exchange
+						//ofs_restart << have_Exchange[i] << "  ";
+						ofs_restart << indices_ic[7 * i + 2] << "  ";
+						// surface
+						//ofs_restart << have_Surface[i] << "  ";
+						ofs_restart << indices_ic[7 * i + 3] << "  ";
+						// gas_phase
+						//ofs_restart << have_GasPhase[i] << "  ";
+						ofs_restart << indices_ic[7 * i + 4] << "  ";
+						// solid solution
+						//ofs_restart << have_SSassemblage[i] << "  ";
+						ofs_restart << indices_ic[7 * i + 5] << "  ";
+						// kinetics
+						//ofs_restart << have_Kinetics[i] << std::endl;
+						ofs_restart << indices_ic[7 * i + 6] << std::endl;
+					}
+				}
+			}
+
+			// write data
+#ifdef USE_MPI
+			Reaction_module_ptr->GetWorkers()[0]->SetDumpStringOn(true); 
+			std::ostringstream in;
+			std::cerr << "Start of writing " << mpi_myself << std::endl;
+			in << "DUMP; -cells " << Reaction_module_ptr->GetStartCell()[mpi_myself] << "-" << Reaction_module_ptr->GetEndCell()[mpi_myself] << "\n";
+			Reaction_module_ptr->GetWorkers()[0]->RunString(in.str().c_str());
+			for (int n = 0; n < mpi_tasks; n++)
+			{
+				// Need to transfer output stream to root and print
+				if (mpi_myself == n)
+				{
+					if (n == 0)
+					{
+						ofs_restart << Reaction_module_ptr->GetWorkers()[0]->GetDumpString();
+					}
+					else
+					{
+						int size = (int) strlen(Reaction_module_ptr->GetWorkers()[0]->GetDumpString());
+						MPI_Send(&size, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+						MPI_Send((void *) Reaction_module_ptr->GetWorkers()[0]->GetDumpString(), size, MPI_CHARACTER, 0, 0, MPI_COMM_WORLD);
+					}	
+				}
+				else if (mpi_myself == 0)
+				{
+					MPI_Status mpi_status;
+					int size;
+					MPI_Recv(&size, 1, MPI_INT, n, 0, MPI_COMM_WORLD, &mpi_status);
+					char_buffer.resize(size+1);
+					MPI_Recv((void *) char_buffer.c_str(), size, MPI_CHARACTER, n, 0, MPI_COMM_WORLD, &mpi_status);
+					char_buffer[size] = '\0';
+					ofs_restart << char_buffer;
+				}
+			}
+#else
+			for (int n = 0; n < (int) Reaction_module_ptr->GetWorkers().size() - 1; n++)
+			{
+				// Create DUMP and write
+				Reaction_module_ptr->GetWorkers()[n]->SetDumpStringOn(true); 
+				std::ostringstream in;
+				in << "DUMP; -cells " << Reaction_module_ptr->GetStartCell()[n] << "-" << Reaction_module_ptr->GetEndCell()[n] << "\n";
+				Reaction_module_ptr->GetWorkers()[n]->RunString(in.str().c_str());
+				ofs_restart << Reaction_module_ptr->GetWorkers()[n]->GetDumpString();
+				// Clear dump string to save space
+				std::ostringstream clr;
+				clr << "END\n";
+				Reaction_module_ptr->GetWorkers()[n]->RunString(clr.str().c_str());
+			}
+#endif
+
+			ofs_restart.close();
+			// rename files
+			FileRename(temp_name.c_str(), name.c_str(), backup_name.c_str());
+			return IRM_OK;
+		}
+		return IRM_INVALIDARG;
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
+bool
+FileExists(const std::string &name)
+/* ---------------------------------------------------------------------- */
+{
+	FILE *stream;
+	if ((stream = fopen(name.c_str(), "r")) == NULL)
+	{
+		return false;				/* doesn't exist */
+	}
+	fclose(stream);
+	return true;					/* exists */
+}
+
+/* ---------------------------------------------------------------------- */
+void
+FileRename(const std::string &temp_name, const std::string &name, 
+	const std::string &backup_name)
+/* ---------------------------------------------------------------------- */
+{
+	if (FileExists(name))
+	{
+		if (FileExists(backup_name.c_str()))
+			remove(backup_name.c_str());
+		rename(name.c_str(), backup_name.c_str());
+	}
+	rename(temp_name.c_str(), name.c_str());
+}
+/* ---------------------------------------------------------------------- */
+void
+SetNodes(double *x_node, double *y_node, double *z_node)
+/* ---------------------------------------------------------------------- */
+{
+	rmhelper.SetNodes(x_node, y_node, z_node);
+}
+/* ---------------------------------------------------------------------- */
+void
+RMHelperInfo::SetNodes(double *x_node_in, double *y_node_in, double *z_node_in)
+/* ---------------------------------------------------------------------- */
+{
+	this->x_node = x_node_in;
+	this->y_node = y_node_in;
+	this->z_node = z_node_in;
+
 }
