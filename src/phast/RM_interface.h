@@ -17,8 +17,6 @@
 #define RM_Create                          FC_FUNC_ (rm_create,                        RM_CREATE)
 #define RM_CreateMapping                   FC_FUNC_ (rm_createmapping,                 RM_CREATEMAPPING)
 #define RM_Destroy                         FC_FUNC_ (rm_destroy,                       RM_DESTROY)
-#define RM_distribute_initial_conditions   FC_FUNC_ (rm_distribute_initial_conditions, RM_DISTRIBUTE_INITIAL_CONDITIONS)
-#define RM_distribute_initial_conditions_mix  FC_FUNC_ (rm_distribute_initial_conditions_mix, RM_DISTRIBUTE_INITIAL_CONDITIONS_MIX)
 #define RM_Error                           FC_FUNC_ (rm_error,                         RM_ERROR)
 #define RM_ErrorMessage                    FC_FUNC_ (rm_errormessage,                  RM_ERRORMESSAGE)
 #define RM_FindComponents                  FC_FUNC_ (rm_findcomponents,                RM_FINDCOMPONENTS)
@@ -36,8 +34,9 @@
 #define RM_GetTime                         FC_FUNC_ (rm_gettime,                       RM_GETTIME)
 #define RM_GetTimeConversion               FC_FUNC_ (rm_gettimeconversion,             RM_GETTIMECONVERSION)
 #define RM_GetTimeStep                     FC_FUNC_ (rm_gettimestep,                   RM_GETTIMESTEP)
-#define RM_InitialPhreeqcConcentrations    FC_FUNC_ (rm_initialphreeqcconcentrations,  RM_INITIALPHREEQCCONCENTRATIONS)
-#define RM_InitialPhreeqcRun               FC_FUNC_ (rm_initialphreeqcrun,             RM_INITIALPHREEQCRUN)
+#define RM_InitialPhreeqc2Concentrations   FC_FUNC_ (rm_initialphreeqc2concentrations, RM_INITIALPHREEQC2CONCENTRATIONS)
+#define RM_InitialPhreeqc2Module           FC_FUNC_ (rm_initialphreeqc2module,         RM_INITIALPHREEQC2MODULE)
+#define RM_InitialPhreeqcRunFile           FC_FUNC_ (rm_initialphreeqcrunfile,         RM_INITIALPHREEQCRUNFILE)
 #define RM_LoadDatabase                    FC_FUNC_ (rm_loaddatabase,                  RM_LOADDATABASE)
 #define RM_LogMessage                      FC_FUNC_ (rm_logmessage,                    RM_LOGMESSAGE)
 #define RM_LogScreenMessage                FC_FUNC_ (rm_logscreenmessage,              RM_LOGSCREENMESSAGE)
@@ -73,12 +72,11 @@
 #define RM_convert_to_molal                   rm_convert_to_molal
 #define RM_Create                             rm_create
 #define RM_Destroy                            rm_destroy
-#define RM_distribute_initial_conditions      rm_distribute_initial_conditions
 #define RM_Error                              rm_error
 #define RM_FindComponents                     rm_findcomponents
 #define RM_GetComponent                       rm_getcomponent
-#define RM_InitialPhreeqcRun                  rm_initialphreeqcrun
-#define RM_InitialPhreeqcConcentrations       rm_initialphreeqcconcentrations
+#define RM_InitialPhreeqcRunFile              rm_initialphreeqcrunfile
+#define RM_InitialPhreeqc2Concentrations      rm_initialphreeqc2concentrations
 #define RM_LoadDatabase                       rm_loaddatabase
 #define RM_LogScreenMessage                   rm_logscreenmessage
 #define RM_OpenFiles                          rm_openfiles
@@ -125,22 +123,15 @@ void RM_CloseFiles(void);
 void RM_convert_to_molal(int *id, double *c, int *n, int *dim);
 int  RM_Create(int *nxyz, int *nthreads = NULL);
 IRM_RESULT RM_CreateMapping (int *id, int *grid2chem = NULL); 
-IRM_RESULT  RM_Destroy(int *id);
-IRM_RESULT RM_distribute_initial_conditions(int *id,
-		int *initial_conditions1);		// 7 x nxyz end-member 1
-IRM_RESULT RM_distribute_initial_conditions_mix(int *id,
-		int *initial_conditions1,		// 7 x nxyz end-member 1
-		int *initial_conditions2,		// 7 x nxyz end-member 2
-		double *fraction1			    // 7 x nxyz fraction of end-member 1
-		);
+IRM_RESULT RM_Destroy(int *id);
 void RM_Error(int *id);
 void RM_ErrorMessage(const char *err_str, long l = -1);
 int RM_FindComponents(int *id);
+int RM_GetChemistryCellCount(int *id);
 IRM_RESULT RM_GetComponent(int * id, int * num, char *chem_name, int l1 = -1);
 IRM_RESULT RM_GetFilePrefix(int *id, char *prefix, long l = -1);
-int RM_GetMpiMyself(int *id);
-int RM_GetChemistryCellCount(int *id);
 int RM_GetGridCellCount(int *id);
+int RM_GetMpiMyself(int *id);
 int RM_GetNthSelectedOutputUserNumber(int *id, int *i);
 IRM_RESULT RM_GetSelectedOutput(int *id, double *so = NULL);
 int RM_GetSelectedOutputColumnCount(int *id);
@@ -150,7 +141,7 @@ int RM_GetSelectedOutputRowCount(int *id);
 double RM_GetTime(int *id);
 double RM_GetTimeConversion(int *id);
 double RM_GetTimeStep(int *id);
-IRM_RESULT RM_InitialPhreeqcConcentrations(
+IRM_RESULT RM_InitialPhreeqc2Concentrations(
 			int *id,
 			double *c,
 			int *n_boundary,
@@ -158,12 +149,16 @@ IRM_RESULT RM_InitialPhreeqcConcentrations(
 			int *boundary_solution1,  
 			int *boundary_solution2 = NULL, 
 			double *fraction = NULL);
-int  RM_InitialPhreeqcRun(int *id, const char *chem_name = NULL, long l = -1);
+IRM_RESULT RM_InitialPhreeqc2Module(int *id,
+		int *initial_conditions1 = NULL,		// 7 x nxyz end-member 1
+		int *initial_conditions2 = NULL,		// 7 x nxyz end-member 2
+		double *fraction1 = NULL);			    // 7 x nxyz fraction of end-member 1
+int  RM_InitialPhreeqcRunFile(int *id, const char *chem_name = NULL, long l = -1);
 int  RM_LoadDatabase(int *id, const char *db_name = NULL, long l = -1);
 void RM_LogMessage(const char *err_str, long l = -1);
 void RM_LogScreenMessage(const char *err_str, long l = -1);
-IRM_RESULT RM_OpenFiles(int * solute, const char * prefix = NULL, int l_prefix = -1);
 void RM_Module2Concentrations(int *id, double *c = NULL);
+IRM_RESULT RM_OpenFiles(int * solute, const char * prefix = NULL, int l_prefix = -1);
 void RM_RunCells(int *id,
 			 double *time,					        // time from transport 
 			 double *time_step,				        // time step from transport

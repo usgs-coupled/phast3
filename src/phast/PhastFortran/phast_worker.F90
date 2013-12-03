@@ -65,7 +65,7 @@ SUBROUTINE phast_worker
     
     IF (solute) THEN
         ! ... initial PHREEQC run to define reactants 
-        status = RM_InitialPhreeqcRun(rm_id) 
+        status = RM_InitialPhreeqcRunFile(rm_id) 
         ! Set components
         ns = RM_FindComponents(rm_id)
         ALLOCATE(comp_name(ns),  & 
@@ -124,12 +124,7 @@ SUBROUTINE phast_worker
         DO i = 1, num_restart_files
             status = RMH_SetRestartName(restart_files(i))
         ENDDO
-        status = RM_distribute_initial_conditions_mix( &
-            rm_id,                  &
-            indx_sol1_ic(1,1),           & ! 7 x nxyz end-member 1 
-            indx_sol2_ic(1,1),           & ! 7 x nxyz end-member 2
-            ic_mxfrac(1,1))                ! 7 x nxyz fraction of end-member 1 
-
+        status = RM_InitialPhreeqc2Module(rm_id)
         
         ! ... collect solutions for transport
         CALL RM_Module2Concentrations(rm_id)
