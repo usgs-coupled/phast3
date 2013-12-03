@@ -34,26 +34,26 @@ public:
 	void                           Convert_to_molal(double *c, int n, int dim);
 	static std::string             Cptr2TrimString(const char * str, long l = -1);
 	IRM_RESULT                     CreateMapping(int *grid2chem);
-	IRM_RESULT                     Distribute_initial_conditions_mix(
-                                        int id,
-                                        int *initial_conditions1,
-                                        int *initial_conditions2,	
-                                        double *fraction1);
 	int                            Find_components();
 	int                            GetNthSelectedOutputUserNumber(int *i);
 	IRM_RESULT                     GetSelectedOutput(double *so);
 	int                            GetSelectedOutputColumnCount(void);
 	int                            GetSelectedOutputCount(void);
 	IRM_RESULT                     GetSelectedOutputHeading(int *icol, std::string &heading);
-	int                            GetSelectedOutputRowCount(void);
-	int                            InitialPhreeqcRun(const char *chemistry_name, long l = -1);
-	IRM_RESULT                     InitialPhreeqcConcentrations( 
+	int                            GetSelectedOutputRowCount(void);	
+	IRM_RESULT                     InitialPhreeqc2Concentrations( 
                                         double *c,
                                         int *n_boundary, 
                                         int *dim, 
                                         int *boundary_solution1,
                                         int *boundary_solution2 = NULL,
                                         double *boundary_fraction = NULL);
+	IRM_RESULT                     InitialPhreeqc2Module(
+                                        int id,
+                                        int *initial_conditions1 = NULL,
+                                        int *initial_conditions2 = NULL,	
+                                        double *fraction1 = NULL);
+	int                            InitialPhreeqcRunFile(const char *chemistry_name, long l = -1);
 	int                            LoadDatabase(const char * database, long l = -1);
 	void                           Module2Concentrations(double * c);
 	void                           RunCells(void);

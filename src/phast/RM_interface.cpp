@@ -168,65 +168,6 @@ IRM_RESULT RM_Destroy(int *id)
 	return RM_interface::DestroyReactionModule(id);
 }
 
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
-RM_distribute_initial_conditions(int *id,
-							  int *initial_conditions1)		// 7 x nxyz end-member 1
-/* ---------------------------------------------------------------------- */
-{
-		// 7 indices for initial conditions
-		// 0 solution
-		// 1 ppassemblage
-		// 2 exchange
-		// 3 surface
-		// 4 gas phase
-		// 5 ss_assemblage
-		// 6 kinetics
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
-	if (Reaction_module_ptr)
-	{
-		int nxyz = Reaction_module_ptr->GetGridCellCount();
-		std::vector<int> initial_conditions2; 
-		initial_conditions2.assign(nxyz, -1);
-		std::vector<double> fraction1; 
-		fraction1.assign(nxyz, 1.0);
-
-		return Reaction_module_ptr->Distribute_initial_conditions_mix(
-			*id,
-			initial_conditions1,
-			initial_conditions2.data(),
-			fraction1.data());
-	}
-	return IRM_BADINSTANCE;
-}
-
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
-RM_distribute_initial_conditions_mix(int *id,
-							  int *initial_conditions1,		// 7 x nxyz end-member 1
-							  int *initial_conditions2,		// 7 x nxyz end-member 2
-							  double *fraction1)			// 7 x nxyz fraction of end-member 1
-/* ---------------------------------------------------------------------- */
-{
-		// 7 indices for initial conditions
-		// 0 solution
-		// 1 ppassemblage
-		// 2 exchange
-		// 3 surface
-		// 4 gas phase
-		// 5 ss_assemblage
-		// 6 kinetics
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
-	if (Reaction_module_ptr)
-	{
-		return Reaction_module_ptr->Distribute_initial_conditions_mix(
-			*id,
-			initial_conditions1,
-			initial_conditions2,
-			fraction1);
-	}
-	return IRM_BADINSTANCE;
-}
 
 /* ---------------------------------------------------------------------- */
 void RM_Error(int *id)
@@ -345,6 +286,18 @@ RM_GetFilePrefix(int * rm_id, char *prefix, long l)
 }
 
 /* ---------------------------------------------------------------------- */
+int RM_GetGridCellCount(int * rm_id)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(rm_id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->GetGridCellCount();
+	}
+	return IRM_BADINSTANCE;
+}
+
+/* ---------------------------------------------------------------------- */
 int 
 RM_GetMpiMyself(int * rm_id)
 	/* ---------------------------------------------------------------------- */
@@ -366,18 +319,6 @@ RM_GetNthSelectedOutputUserNumber(int * rm_id, int * i)
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->GetNthSelectedOutputUserNumber(i);
-	}
-	return IRM_BADINSTANCE;
-}
-
-/* ---------------------------------------------------------------------- */
-int RM_GetGridCellCount(int * rm_id)
-/* ---------------------------------------------------------------------- */
-{
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(rm_id);
-	if (Reaction_module_ptr)
-	{
-		return Reaction_module_ptr->GetGridCellCount();
 	}
 	return IRM_BADINSTANCE;
 }
@@ -487,7 +428,7 @@ double RM_GetTimeStep(int * rm_id)
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-RM_InitialPhreeqcConcentrations(
+RM_InitialPhreeqc2Concentrations(
 			int *id,
 			double *boundary_c,
 			int *n_boundary,
@@ -516,7 +457,7 @@ RM_InitialPhreeqcConcentrations(
 	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
-			return Reaction_module_ptr->InitialPhreeqcConcentrations(
+			return Reaction_module_ptr->InitialPhreeqc2Concentrations(
 						boundary_c,
 						n_boundary, 
 						dim,
@@ -527,14 +468,41 @@ RM_InitialPhreeqcConcentrations(
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
+IRM_RESULT
+RM_InitialPhreeqc2Module(int *id,
+							  int *initial_conditions1,		// 7 x nxyz end-member 1
+							  int *initial_conditions2,		// 7 x nxyz end-member 2
+							  double *fraction1)			// 7 x nxyz fraction of end-member 1
+/* ---------------------------------------------------------------------- */
+{
+		// 7 indices for initial conditions
+		// 0 solution
+		// 1 ppassemblage
+		// 2 exchange
+		// 3 surface
+		// 4 gas phase
+		// 5 ss_assemblage
+		// 6 kinetics
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->InitialPhreeqc2Module(
+			*id,
+			initial_conditions1,
+			initial_conditions2,
+			fraction1);
+	}
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
 int 
-RM_InitialPhreeqcRun(int *rm_id, const char *chem_name, long l)
+RM_InitialPhreeqcRunFile(int *rm_id, const char *chem_name, long l)
 /* ---------------------------------------------------------------------- */
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(rm_id);
 	if (Reaction_module_ptr)
 	{
-		return Reaction_module_ptr->InitialPhreeqcRun(chem_name, l);
+		return Reaction_module_ptr->InitialPhreeqcRunFile(chem_name, l);
 	}
 	return IRM_BADINSTANCE;
 }
@@ -641,7 +609,6 @@ RM_OpenFiles(int *id, const char * prefix_in, int l)
 			RM_interface::phast_io.Set_error_ostream(&std::cerr);
 
 			// open echo and log file, prefix.log.txt
-			//RM_open_log_file(Reaction_module_ptr->GetFilePrefix().c_str(), l);
 			std::string ln = Reaction_module_ptr->GetFilePrefix();
 			ln.append(".log.txt");
 			RM_interface::phast_io.log_open(ln.c_str());
@@ -649,7 +616,6 @@ RM_OpenFiles(int *id, const char * prefix_in, int l)
 			// prefix.chem.txt
 			std::string cn = Reaction_module_ptr->GetFilePrefix();
 			cn.append(".chem.txt");
-			//RM_open_output_file(Reaction_module_ptr->GetFilePrefix().c_str(), l);
 			RM_interface::phast_io.output_open(cn.c_str());
 		}
 		return rtn;
@@ -714,18 +680,6 @@ RM_ScreenMessage(const char *err_str, long l)
 		}
 	}
 }
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
-RM_SetFilePrefix(int *id, const char *name, long nchar)
-/* ---------------------------------------------------------------------- */
-{
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
-	if (Reaction_module_ptr)
-	{
-		return Reaction_module_ptr->SetFilePrefix(name, nchar);
-	}
-	return IRM_BADINSTANCE;
-}
 
 /* ---------------------------------------------------------------------- */
 void RM_SetCellVolume(int *id, double *t)
@@ -759,6 +713,19 @@ void RM_SetDensity(int *id, double *t)
 	{
 		Reaction_module_ptr->SetDensity(t);
 	}
+}
+
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+RM_SetFilePrefix(int *id, const char *name, long nchar)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		return Reaction_module_ptr->SetFilePrefix(name, nchar);
+	}
+	return IRM_BADINSTANCE;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -834,26 +801,6 @@ RM_SetPrintChemistryOn(int *id,	 int *print_chem)
 	return IRM_BADINSTANCE;
 
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void
-RM_set_printing(int *id,
-			 int *print_chem,
-			 int *selected_output_on,
-			 int *print_restart 
-			 )
-/* ---------------------------------------------------------------------- */
-{
-	// pass pointers from Fortran to the Reaction module
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
-	if (Reaction_module_ptr)
-	{
-		Reaction_module_ptr->SetPrintChemistryOn(print_chem);
-		Reaction_module_ptr->SetSelectedOutputOn(selected_output_on);
-		Reaction_module_ptr->Set_print_restart(print_restart);
-	}
-}
-#endif
 /* ---------------------------------------------------------------------- */
 void RM_set_print_chem_mask(int *id, int *t)
 /* ---------------------------------------------------------------------- */

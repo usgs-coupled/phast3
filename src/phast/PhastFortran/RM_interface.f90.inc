@@ -27,19 +27,6 @@
             INTEGER :: iout
         END FUNCTION RM_Destroy
         
-        INTEGER FUNCTION RM_distribute_initial_conditions(id, ic1)
-            IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, OPTIONAL :: ic1
-        END FUNCTION RM_distribute_initial_conditions 
-        
-        INTEGER FUNCTION RM_distribute_initial_conditions_mix(id, ic1, ic2, f1)
-            IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
-            INTEGER, OPTIONAL :: ic1, ic2
-            DOUBLE PRECISION, OPTIONAL :: f1
-        END FUNCTION RM_distribute_initial_conditions_mix
-        
         SUBROUTINE RM_Error(id)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
@@ -119,20 +106,27 @@
             INTEGER, INTENT(in) :: id
         END FUNCTION RM_GetTimeStep 
 
-        INTEGER FUNCTION RM_InitialPhreeqcConcentrations(id, c, n_boundary, dim, bc_sol1, bc_sol2, f1)   
+        INTEGER FUNCTION RM_InitialPhreeqc2Concentrations(id, c, n_boundary, dim, bc_sol1, bc_sol2, f1)   
                 IMPLICIT NONE
                 INTEGER :: id
                 DOUBLE PRECISION, INTENT(OUT) :: c
                 INTEGER, INTENT(IN) :: n_boundary, dim, bc_sol1
                 INTEGER, INTENT(IN), OPTIONAL :: bc_sol2
                 DOUBLE PRECISION, INTENT(IN), OPTIONAL :: f1
-        END FUNCTION RM_InitialPhreeqcConcentrations    
+        END FUNCTION RM_InitialPhreeqc2Concentrations    
         
-        INTEGER FUNCTION RM_InitialPhreeqcRun(id, chem_name)
+        INTEGER FUNCTION RM_InitialPhreeqc2Module(id, ic1, ic2, f1)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            INTEGER, OPTIONAL :: ic1, ic2
+            DOUBLE PRECISION, OPTIONAL :: f1
+        END FUNCTION RM_InitialPhreeqc2Module
+        
+        INTEGER FUNCTION RM_InitialPhreeqcRunFile(id, chem_name)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
             CHARACTER, OPTIONAL, INTENT(in) :: chem_name
-        END FUNCTION RM_InitialPhreeqcRun          
+        END FUNCTION RM_InitialPhreeqcRunFile          
         
         INTEGER FUNCTION RM_LoadDatabase(id, db) 
             IMPLICIT NONE

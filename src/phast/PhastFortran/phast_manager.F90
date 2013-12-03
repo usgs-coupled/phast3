@@ -404,7 +404,7 @@ SUBROUTINE CreateRM
     !... Call phreeqc, find number of components; f1name, chem.dat; f2name, database; f3name, prefix
     IF (solute) THEN
         CALL RM_LogScreenMessage("Initial PHREEQC run.")  
-        status = RM_InitialPhreeqcRun(rm_id, f1name) 
+        status = RM_InitialPhreeqcRunFile(rm_id, f1name) 
         ! Set components
         ns = RM_FindComponents(rm_id)
         ALLOCATE(comp_name(ns),  & 
@@ -511,11 +511,10 @@ SUBROUTINE InitializeRM
         ENDDO
 
         ! ... Distribute chemistry initial conditions
-        status = RM_distribute_initial_conditions_mix(rm_id, &
+        status = RM_InitialPhreeqc2Module(rm_id, &
             indx_sol1_ic(1,1),           & ! 7 x nxyz end-member 1 
             indx_sol2_ic(1,1),           & ! 7 x nxyz end-member 2
             ic_mxfrac(1,1))                ! 7 x nxyz fraction of end-member 1
-
         ! collect solutions at manager for transport
         CALL RM_Module2Concentrations(rm_id, c(1,1))
     ENDIF        ! ... solute
