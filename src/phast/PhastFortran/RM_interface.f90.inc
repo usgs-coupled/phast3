@@ -212,11 +212,11 @@
             INTEGER, OPTIONAL :: print_chem
         END FUNCTION RM_SetPrintChemistryOn 
 
-        SUBROUTINE RM_set_print_chem_mask(id, t)   
+        SUBROUTINE RM_SetPrintChemistryMask(id, t)   
             IMPLICIT NONE
             INTEGER :: id
             INTEGER, OPTIONAL :: t
-        END SUBROUTINE RM_set_print_chem_mask 
+        END SUBROUTINE RM_SetPrintChemistryMask 
         
         SUBROUTINE RM_SetRebalance(id, method, f)
             IMPLICIT NONE

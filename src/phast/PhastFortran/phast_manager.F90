@@ -496,7 +496,7 @@ SUBROUTINE InitializeRM
         CALL RM_SetInputUnits (rm_id, 3, 1, 1, 1, 1, 1, 1)
         CALL RM_SetTimeConversion(rm_id, cnvtmi)
         CALL RM_SetPoreVolumeZero(rm_id, pv0(1))
-        CALL RM_set_print_chem_mask(rm_id, iprint_chem(1))
+        CALL RM_SetPrintChemistryMask(rm_id, iprint_chem(1))
         CALL RM_set_free_surface(rm_id, ifresur)
         CALL RM_set_steady_flow(rm_id, isteady_flow)
         CALL RM_SetCellVolume(rm_id, volume(1))
