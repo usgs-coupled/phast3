@@ -249,7 +249,7 @@ SUBROUTINE phast_manager
 #endif
 
     ! ... Cleanup reaction module
-	CALL FinalizeFiles();
+	CALL FH_FinalizeFiles();
     IF (solute) THEN  
         if (RM_Destroy(rm_id) < 0) CALL RM_error(rm_id)     
     ENDIF
@@ -455,9 +455,8 @@ SUBROUTINE InitialEquilibrationRM
             deltim_dummy,       &        ! time_step
             c(1,1),             &        ! fraction
             stop_msg) 
-        CALL WriteFiles(rm_id, prhdfci, prcphrqi,  pr_hdf_media, &
-	        x_node(1), y_node(1), z_node(1), iprint_xyz(1), &
-	        frac(1), grid2chem(1)); 
+        CALL FH_WriteFiles(rm_id, prhdfci,  pr_hdf_media, prcphrqi, &
+	        iprint_xyz(1), 0); 
     ENDIF       
 END SUBROUTINE InitialEquilibrationRM
     
@@ -468,7 +467,7 @@ SUBROUTINE InitializeRM
     USE mcg, only: grid2chem
     USE mcn, only: x_node, y_node, z_node, pv0, volume
     USE mcp, only: cnvtmi
-    USE mcv, only: c, indx_sol1_ic, indx_sol2_ic, ic_mxfrac 
+    USE mcv, only: c, frac, indx_sol1_ic, indx_sol2_ic, ic_mxfrac 
 
     IMPLICIT NONE
     SAVE
@@ -478,11 +477,6 @@ SUBROUTINE InitializeRM
             implicit none
             INTEGER, DIMENSION(:,:), ALLOCATABLE, INTENT(INOUT) :: ic
         END SUBROUTINE CreateMappingFortran
-        
-        INTEGER FUNCTION RMH_SetRestartName(fn)
-            IMPLICIT NONE
-            CHARACTER, INTENT(in) :: fn
-        END FUNCTION RMH_SetRestartName 
     END INTERFACE
     INTEGER i, status
     INTEGER ifresur, isteady_flow
@@ -507,15 +501,15 @@ SUBROUTINE InitializeRM
         status = RM_CreateMapping(rm_id, grid2chem(1))
         
         DO i = 1, num_restart_files
-            status = RMH_SetRestartName(restart_files(i))
+            CALL FH_SetRestartName(restart_files(i))
         ENDDO
-        CALL SetNodes(x_node(1), y_node(1), z_node(1))
+        CALL FH_SetPointers(x_node(1), y_node(1), z_node(1), indx_sol1_ic(1,1), frac(1), grid2chem(1))
         ! ... Distribute chemistry initial conditions
         status = RM_InitialPhreeqc2Module(rm_id, &
             indx_sol1_ic(1,1),           & ! 7 x nxyz end-member 1 
             indx_sol2_ic(1,1),           & ! 7 x nxyz end-member 2
             ic_mxfrac(1,1))                ! 7 x nxyz fraction of end-member 1
-        CALL ProcessRestartFiles(rm_id, &
+        CALL FH_ProcessRestartFiles(rm_id, &
 	        indx_sol1_ic(1,1),            &
 	        indx_sol2_ic(1,1),            & 
 	        ic_mxfrac(1,1))
@@ -533,13 +527,6 @@ SUBROUTINE TimeStepRM
     USE hdf_media_m,       ONLY: pr_hdf_media
     USE print_control_mod, only: print_force_chemistry, print_hdf_chemistry, print_restart
     IMPLICIT NONE
-    INTERFACE
-        INTEGER FUNCTION WriteRestartFile(id, print_restart, index_ic)
-            IMPLICIT NONE
-            INTEGER, INTENT(IN) :: id 
-            INTEGER, OPTIONAL, INTENT(IN) :: index_ic, print_restart
-        END FUNCTION WriteRestartFile 
-    END INTERFACE    
     SAVE
     INCLUDE 'RM_interface.f90.inc' 
     INTEGER stop_msg, status
@@ -564,10 +551,8 @@ SUBROUTINE TimeStepRM
             deltim,                                     &        ! time_step_hst
             c(1,1),                                     &        ! fraction
             stop_msg) 
-        CALL WriteFiles(rm_id, prhdfci, prcphrqi,  pr_hdf_media, &
-            x_node(1), y_node(1), z_node(1), iprint_xyz(1), &
-            frac(1), grid2chem(1)) 
-        status = WriteRestartFile(rm_id, print_restart%print_flag_integer, indx_sol1_ic(1,1))
+        CALL FH_WriteFiles(rm_id, prhdfci, pr_hdf_media, prcphrqi, &
+            iprint_xyz(1), print_restart%print_flag_integer) 
 
     ENDIF    ! ... Done with chemistry    
 END SUBROUTINE TimeStepRM    

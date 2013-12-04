@@ -32,8 +32,10 @@ public:
 	int                            CheckSelectedOutput();
 	void                           Concentrations2Module(void);	
 	void                           Convert_to_molal(double *c, int n, int dim);
-	static std::string             Cptr2TrimString(const char * str, long l = -1);
+	static std::string             Char2TrimString(const char * str, long l = -1);
 	IRM_RESULT                     CreateMapping(int *grid2chem);
+	static bool                    FileExists(const std::string &name);
+	static void                    FileRename(const std::string &temp_name, const std::string &name, const std::string &backup_name);
 	int                            FindComponents();
 	int                            GetNthSelectedOutputUserNumber(int *i);
 	IRM_RESULT                     GetSelectedOutput(double *so);
@@ -154,8 +156,6 @@ protected:
 	void                           Concentrations2Threads(int n);
 	void                           cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
 	void                           Error_stop(void);
-	//bool                           File_exists(const std::string &name);
-	//void                           File_rename(const std::string &temp_name, const std::string &name, const std::string &backup_name);
 	cxxStorageBin &                Get_phreeqc_bin(void) {return this->phreeqc_bin;}
 	void                           Partition_uz(int iphrq, int ihst, double new_frac);
 	void                           Partition_uz_thread(int n, int iphrq, int ihst, double new_frac);

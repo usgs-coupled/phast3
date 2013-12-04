@@ -1,66 +1,90 @@
 #include <windows.h>
 #include <string>
 #include <map>
-#include "RMHelper.h"
+#include <iostream>
+#include "FileHandler.h"
 #include "Reaction_module.h"
 #include "RM_interface.h"
 #include "gzstream.h"
 #include "KDtree/KDtree.h"
 #include "Phreeqc.h"
 #include "IPhreeqc.h"
+#include "H5Cpp.h"
+#include "hdf.h"
 #ifdef THREADED_PHAST
 #include <omp.h>
 #endif
 #ifdef USE_MPI
 #include "mpi.h"
 #endif
-class RMHelperInfo: public PHRQ_base
+
+#if defined(__cplusplus)
+extern "C" {
+#endif
+extern void HDF_WRITE_INVARIANT(int *iso, int * mpi_myself);
+extern void HDF_BEGIN_TIME_STEP(int *iso);
+extern void HDF_END_TIME_STEP(int *iso);
+#if defined(__cplusplus)
+}
+#endif
+class FileHandler: public PHRQ_base
 {
 public:
-	RMHelperInfo();
-	~RMHelperInfo();
+	FileHandler();
+	~FileHandler(void);	
 	IRM_RESULT ProcessRestartFiles(
 		int *id, 
 		int *initial_conditions1_in,
 		int *initial_conditions2_in, 
 		double *fraction1_in);
+	bool GetHDFInitialized(void) {return this->HDFInitialized;}
+	void SetHDFInitialized(bool tf) {this->HDFInitialized = tf;}
+	bool GetHDFInvariant(void) {return this->HDFInvariant;}
+	void SetHDFInvariant(bool tf) {this->HDFInvariant = tf;}
+	bool GetXYZInitialized(void) {return this->XYZInitialized;}
+	void SetXYZInitialized(bool tf) {this->XYZInitialized = tf;}
+	std::vector< std::ostream * > &GetXYZOstreams(void) {return this->XYZOstreams;}
+	std::vector< std::string > &GetHeadings(void) {return this->Headings;}
+	void SetHeadings(std::vector< std::string > &h) {this->Headings = h;}
+	void SetPointers(double *x_node, double *y_node, double *z_node, int *ic, double *saturation = NULL, int *mapping = NULL);
 	IRM_RESULT SetRestartName(const char *name, long nchar);
 	IRM_RESULT WriteRestartFile(int *id, int *print_restart = NULL, int *indices_ic = NULL);
-	void SetNodes(double *x_node, double *y_node, double *z_node);
+	IRM_RESULT WriteFiles(int *id, int *print_hdf = NULL, int *print_media = NULL, int *print_xyz = NULL, int *xyz_mask = NULL, int *print_restart = NULL);
+	IRM_RESULT WriteHDF(int *id, int *print_hdf, int *print_media);
+	IRM_RESULT WriteRestart(int *id, int *print_restart);
+	IRM_RESULT WriteXYZ(int *id, int *print_xyz, int *xyz_mask);
 
 protected:
-	std::map < std::string, int > FileMap; 
+	bool HDFInitialized;
+	bool HDFInvariant;
+	bool XYZInitialized;
+	std::vector< std::string > Headings;
+	std::vector < std::ostream * > XYZOstreams;	
+	std::map < std::string, int > RestartFileMap; 
 	double * x_node;
 	double * y_node;
 	double * z_node;
+	double * saturation;  // only root
+	int    * mapping;     // only root
+	int    * ic;
 };
-RMHelperInfo rmhelper; 
-
+FileHandler file_handler;
 // Constructor
-RMHelperInfo::RMHelperInfo()
+FileHandler::FileHandler()
 {
 	this->io = new PHRQ_io;
+	HDFInitialized = false;
+	HDFInvariant = false;
+	XYZInitialized = false;
 }
 // Destructor
-RMHelperInfo::~RMHelperInfo()
+FileHandler::~FileHandler()
 {
 	delete this->io;
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-ProcessRestartFiles(
-	int *id, 
-	int *initial_conditions1_in,
-	int *initial_conditions2_in, 
-	double *fraction1_in)
-/* ---------------------------------------------------------------------- */
-{
-	return rmhelper.ProcessRestartFiles(id, initial_conditions1_in, 
-		initial_conditions2_in, fraction1_in);
-}
-/* ---------------------------------------------------------------------- */
-IRM_RESULT
-RMHelperInfo::ProcessRestartFiles(
+FileHandler::ProcessRestartFiles(
 	int *id, 
 	int *initial_conditions1_in,
 	int *initial_conditions2_in, 
@@ -108,25 +132,17 @@ RMHelperInfo::ProcessRestartFiles(
 		{
 			if (initial_conditions1_in == NULL ||
 				initial_conditions2_in == NULL ||
-				fraction1_in == NULL ||
-				x_node == NULL ||
-				y_node == NULL ||
-				z_node == NULL 
-				)
+				fraction1_in == NULL)
 			{
-				std::ostringstream errstr;
-				errstr << "NULL pointer in call to DistributeInitialConditions\n";
-				error_msg(errstr.str().c_str(), 1);
+				RM_ErrorMessage("NULL pointer in call to DistributeInitialConditions");
+				RM_Error(id);
 			}
-
 			memcpy(initial_conditions1.data(), initial_conditions1_in, array_size * sizeof(int));
 			memcpy(initial_conditions2.data(), initial_conditions2_in, array_size * sizeof(int));
 			memcpy(fraction1.data(),           fraction1_in,           array_size * sizeof(double));
 		}
 #ifdef USE_MPI
-	//
 	// Transfer arrays
-	//
 	MPI_Bcast(initial_conditions1.data(), (int) array_size, MPI_INT, 0, MPI_COMM_WORLD);
 	MPI_Bcast(initial_conditions2.data(), (int) array_size, MPI_INT, 0, MPI_COMM_WORLD);
 	MPI_Bcast(fraction1.data(),           (int) array_size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
@@ -138,7 +154,7 @@ RMHelperInfo::ProcessRestartFiles(
 		* Read any restart files
 		*/
 		cxxStorageBin restart_bin;
-		for (std::map < std::string, int >::iterator it = FileMap.begin(); it != FileMap.end(); it++)
+		for (std::map < std::string, int >::iterator it = RestartFileMap.begin(); it != RestartFileMap.end(); it++)
 		{
 			int	ifile = -100 - it->second;
 			// Open file, use gsztream
@@ -150,8 +166,8 @@ RMHelperInfo::ProcessRestartFiles(
 				rtn = IRM_FAIL;
 				std::ostringstream errstr;
 				errstr << "File could not be opened: " << it->first.c_str();
-				error_msg(errstr.str().c_str());
-				break;
+				RM_ErrorMessage(errstr.str().c_str());
+				continue;
 			}
 			// read file
 			CParser	cparser(myfile, this->Get_io());
@@ -165,12 +181,11 @@ RMHelperInfo::ProcessRestartFiles(
 			int	n = -1;
 			if (!(cparser.get_iss() >> n) || n < 4)
 			{
-				rtn = IRM_FAIL;
+				myfile.close();
 				std::ostringstream errstr;
 				errstr << "File does not have node locations: " << it->first.c_str() << "\nPerhaps it is an old format restart file.";
-				error_msg(errstr.str().c_str(), 1);
-				myfile.close();
-				break;
+				RM_ErrorMessage(errstr.str().c_str());
+				RM_Error(id);
 			}
 
 			// points are x, y, z, cell_no
@@ -370,70 +385,211 @@ RMHelperInfo::ProcessRestartFiles(
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-IRM_RESULT
-RMH_SetRestartName(const char *name, long nchar)
+void
+FileHandler::SetPointers(double *x_node_in, double *y_node_in, double *z_node_in, int *ic_in,
+	double * saturation_in, int *mapping_in)
 /* ---------------------------------------------------------------------- */
 {
-	if (name)
+	this->x_node = x_node_in;
+	this->y_node = y_node_in;
+	this->z_node = z_node_in;
+	this->saturation = saturation_in;
+	this->mapping = mapping_in;  // only root
+	this->ic = ic_in;
+	if (this->x_node == NULL ||
+		this->y_node == NULL ||
+		this->z_node == NULL ||
+		this->ic == NULL)
 	{
-		return rmhelper.SetRestartName(name, nchar);
+		error_msg("NULL pointer in FileHandler.SetPointers ", 1);
 	}
-	return IRM_OK;
 }
+/* ---------------------------------------------------------------------- */
 IRM_RESULT
-RMHelperInfo::SetRestartName(const char *name, long nchar)
+FileHandler::SetRestartName(const char *name, long nchar)
+/* ---------------------------------------------------------------------- */
 {
-	std::string str = Reaction_module::Cptr2TrimString(name, nchar);
+	std::string str = Reaction_module::Char2TrimString(name, nchar);
 	if (str.size() > 0)
 	{
-		int	i = (int) this->FileMap.size();
-		this->FileMap[str] = i;
+		int	i = (int) this->RestartFileMap.size();
+		this->RestartFileMap[str] = i;
 		return IRM_OK;
 	}
 	return IRM_INVALIDARG;
 }
+
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-WriteRestartFile(int *id, int *print_restart, int *indices_ic)
+FileHandler::WriteFiles(int *id, int *print_hdf_in, int *print_media_in, int *print_xyz_in, int *xyz_mask, int *print_restart_in)
 /* ---------------------------------------------------------------------- */
 {
-	return rmhelper.WriteRestartFile(id, print_restart, indices_ic);
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
+	if (Reaction_module_ptr)
+	{	
+		IRM_RESULT rtn = IRM_OK;
+		int local_mpi_myself = RM_GetMpiMyself(id);
+		int print_hdf, print_media, print_xyz, print_restart;
+		if (local_mpi_myself == 0)
+		{
+			if (print_hdf_in == 0 || 
+				print_media_in == 0 ||
+				print_xyz_in == 0 ||
+				xyz_mask == 0 ||
+				print_restart_in == 0)
+			{
+				RM_ErrorMessage("Null pointer in WriteFiles");
+				RM_Error(id);
+			}
+			print_media = *print_media_in;		
+			print_hdf = *print_hdf_in;
+			print_xyz = *print_xyz_in;
+			print_restart = *print_restart_in;
+		}
+#ifdef USE_MPI	
+		int flags[3];
+		if (local_mpi_myself == 0)
+		{
+			flags[0] = *print_hdf_in;
+			flags[1] = *print_xyz_in;
+			flags[2] = *print_restart_in;
+		}
+		MPI_Bcast(flags, 3, MPI_INT, 0, MPI_COMM_WORLD);
+		print_hdf = flags[0];
+		print_xyz = flags[1];
+		print_restart = flags[2];
+#endif
+		if (print_hdf != 0)
+		{
+			IRM_RESULT result = WriteHDF(id, &print_hdf, &print_media);
+			if (result) rtn = result;
+		}
+		if (print_xyz != 0)
+		{
+			IRM_RESULT result = WriteXYZ(id, &print_xyz, xyz_mask);
+			if (result) rtn = result;
+		}		
+		if (print_restart != 0)
+		{
+			IRM_RESULT result = WriteRestart(id, &print_restart);
+			if (result) rtn = result;
+		}
+		return rtn;
+	}
+	return IRM_BADINSTANCE;
+}
+
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+FileHandler::WriteHDF(int *id, int *print_hdf, int *print_media)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
+	if (Reaction_module_ptr)
+	{	
+		int local_mpi_myself = RM_GetMpiMyself(id);
+		int nso = RM_GetSelectedOutputCount(id);
+		int nxyz = RM_GetSelectedOutputRowCount(id); 
+		double current_time = RM_GetTimeConversion(id) * RM_GetTime(id);
+		//
+		// Initialize HDF
+		//
+		if (!this->GetHDFInitialized() && nso > 0 && *print_hdf != 0)
+		{
+			if (local_mpi_myself == 0)
+			{
+				for (int iso = 0; iso < nso; iso++)
+				{
+					int status;
+					int n_user = RM_GetNthSelectedOutputUserNumber(id, &iso);
+					if (n_user >= 0)
+					{
+						status = RM_SetCurrentSelectedOutputUserNumber(id, &n_user);
+						if (status >= 0)
+						{
+							// open file
+							char prefix[256];
+							RM_GetFilePrefix(id, prefix, 256);
+							std::ostringstream filename;
+							filename << prefix << "_" << n_user;
+							HDFInitialize(iso, filename.str().c_str(), (int) strlen(filename.str().c_str()));
+
+							// Set HDF scalars
+							std::vector < std::string > headings;
+							int ncol = RM_GetSelectedOutputColumnCount(id);
+							for (int icol = 0; icol < ncol; icol++)
+							{
+								char head[100];
+								status = RM_GetSelectedOutputHeading(id, &icol, head, 100);
+								headings.push_back(head);
+							}
+							HDFSetScalarNames(iso, headings);
+						}
+					}
+				}
+				this->SetHDFInitialized(true);
+			}
+		}
+		//	
+		// Write H5 file
+		//
+		if (*print_hdf != 0)
+		{
+			std::vector<double> local_selected_out;
+			int status;
+			for (int iso = 0; iso < nso; iso++)
+			{
+				int n_user = RM_GetNthSelectedOutputUserNumber(id, &iso);
+				if (n_user >= 0)
+				{
+					status = RM_SetCurrentSelectedOutputUserNumber(id, &n_user);
+					int ncol = RM_GetSelectedOutputColumnCount(id);
+					if (status >= 0)
+					{
+						if (local_mpi_myself == 0)
+						{
+							local_selected_out.resize((size_t) (nxyz*ncol));
+							int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
+							if ( !this->GetHDFInvariant())
+							{
+								HDF_WRITE_INVARIANT(&iso, &local_mpi_myself);
+							}
+							// Now write HDF file
+							HDF_BEGIN_TIME_STEP(&iso);
+							HDFBeginCTimeStep(iso);
+							HDFFillHyperSlab(iso, local_selected_out, ncol);
+							HDFEndCTimeStep(iso);
+							HDF_END_TIME_STEP(&iso);
+						}
+						else
+						{
+							int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
+						}
+					}
+				}
+			}
+			*print_media = 0;
+			this->SetHDFInvariant(true);
+		}
+		return IRM_OK;
+	}
+	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-RMHelperInfo::WriteRestartFile(int *id, int *print_restart_in, int *indices_ic)
+FileHandler::WriteRestart(int *id, int *print_restart)
 /* ---------------------------------------------------------------------- */
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
 		int mpi_myself = Reaction_module_ptr->GetMpiMyself();
-		int print_restart;
-		if (mpi_myself == 0)
-		{
-			if (print_restart_in == NULL ||
-				x_node == NULL ||
-				y_node == NULL ||
-				z_node == NULL ||
-				indices_ic == NULL)
-			{
-				//rtn = IRM_FAIL;
-				std::ostringstream errstr;
-				errstr << "NULL pointer in WriteRestartFile";
-				error_msg(errstr.str().c_str(), 1);
-			}
-			print_restart = *print_restart_in;
-		}
-#ifdef USE_MPI
-		MPI_Bcast(&print_restart, 1, MPI_INT, 0, MPI_COMM_WORLD);
-#endif
 		if (print_restart != 0)
 		{
 			int mpi_tasks = Reaction_module_ptr->GetMpiTasks();
 			std::string char_buffer;
 
 			ogzstream ofs_restart;
-			//ofstream ofs_restart;
 
 			std::string temp_name("temp_restart_file.gz");
 			std::string name(Reaction_module_ptr->GetFilePrefix());
@@ -449,7 +605,7 @@ RMHelperInfo::WriteRestartFile(int *id, int *print_restart_in, int *indices_ic)
 				{
 					std::ostringstream errstr;
 					errstr << "Temporary restart file could not be opened: " << temp_name;
-					rmhelper.error_msg(errstr.str().c_str(), 1);	
+					error_msg(errstr.str().c_str(), 1);	
 				}
 
 				// write header
@@ -471,26 +627,19 @@ RMHelperInfo::WriteRestartFile(int *id, int *print_restart_in, int *indices_ic)
 						int i = Reaction_module_ptr->GetBack()[j][k];			/* i is nxyz number */
 						ofs_restart << x_node[i] << "  " << y_node[i] << "  " << z_node[i] << "  " << j << "  ";
 						// solution 
-						//ofs_restart << rmhelper.have_Solution[i] << "  ";
-						ofs_restart << indices_ic[7 * i] << "  ";
+						ofs_restart << this->ic[7 * i] << "  ";
 						// pp_assemblage
-						//ofs_restart << have_PPassemblage[i] << "  ";
-						ofs_restart << indices_ic[7 * i + 1] << "  ";
+						ofs_restart << this->ic[7 * i + 1] << "  ";
 						// exchange
-						//ofs_restart << have_Exchange[i] << "  ";
-						ofs_restart << indices_ic[7 * i + 2] << "  ";
+						ofs_restart << this->ic[7 * i + 2] << "  ";
 						// surface
-						//ofs_restart << have_Surface[i] << "  ";
-						ofs_restart << indices_ic[7 * i + 3] << "  ";
+						ofs_restart << this->ic[7 * i + 3] << "  ";
 						// gas_phase
-						//ofs_restart << have_GasPhase[i] << "  ";
-						ofs_restart << indices_ic[7 * i + 4] << "  ";
+						ofs_restart << this->ic[7 * i + 4] << "  ";
 						// solid solution
-						//ofs_restart << have_SSassemblage[i] << "  ";
-						ofs_restart << indices_ic[7 * i + 5] << "  ";
+						ofs_restart << this->ic[7 * i + 5] << "  ";
 						// kinetics
-						//ofs_restart << have_Kinetics[i] << std::endl;
-						ofs_restart << indices_ic[7 * i + 6] << std::endl;
+						ofs_restart << this->ic[7 * i + 6] << std::endl;
 					}
 				}
 			}
@@ -499,7 +648,6 @@ RMHelperInfo::WriteRestartFile(int *id, int *print_restart_in, int *indices_ic)
 #ifdef USE_MPI
 			Reaction_module_ptr->GetWorkers()[0]->SetDumpStringOn(true); 
 			std::ostringstream in;
-			std::cerr << "Start of writing " << mpi_myself << std::endl;
 			in << "DUMP; -cells " << Reaction_module_ptr->GetStartCell()[mpi_myself] << "-" << Reaction_module_ptr->GetEndCell()[mpi_myself] << "\n";
 			Reaction_module_ptr->GetWorkers()[0]->RunString(in.str().c_str());
 			for (int n = 0; n < mpi_tasks; n++)
@@ -529,6 +677,10 @@ RMHelperInfo::WriteRestartFile(int *id, int *print_restart_in, int *indices_ic)
 					ofs_restart << char_buffer;
 				}
 			}
+			// Clear dump string to save space
+			std::ostringstream clr;
+			clr << "END\n";
+			Reaction_module_ptr->GetWorkers()[0]->RunString(clr.str().c_str());
 #else
 			for (int n = 0; n < (int) Reaction_module_ptr->GetWorkers().size() - 1; n++)
 			{
@@ -547,7 +699,7 @@ RMHelperInfo::WriteRestartFile(int *id, int *print_restart_in, int *indices_ic)
 
 			ofs_restart.close();
 			// rename files
-			FileRename(temp_name.c_str(), name.c_str(), backup_name.c_str());
+			Reaction_module::FileRename(temp_name.c_str(), name.c_str(), backup_name.c_str());
 			return IRM_OK;
 		}
 		return IRM_INVALIDARG;
@@ -555,47 +707,192 @@ RMHelperInfo::WriteRestartFile(int *id, int *print_restart_in, int *indices_ic)
 	return IRM_BADINSTANCE;
 }
 /* ---------------------------------------------------------------------- */
-bool
-FileExists(const std::string &name)
+IRM_RESULT
+FileHandler::WriteXYZ(int *id, int *print_xyz, int *xyz_mask)
 /* ---------------------------------------------------------------------- */
 {
-	FILE *stream;
-	if ((stream = fopen(name.c_str(), "r")) == NULL)
-	{
-		return false;				/* doesn't exist */
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
+	if (Reaction_module_ptr)
+	{	
+		int local_mpi_myself = RM_GetMpiMyself(id);
+			
+		int nso = RM_GetSelectedOutputCount(id);
+		int nxyz = RM_GetSelectedOutputRowCount(id); 
+		double current_time = RM_GetTimeConversion(id) * RM_GetTime(id);
+		//
+		// Initialize XYZ
+		//
+		if (!this->GetXYZInitialized() && nso > 0 && *print_xyz != 0)
+		{
+			if (local_mpi_myself == 0)
+			{
+				for (int iso = 0; iso < nso; iso++)
+				{
+					int status;
+					int n_user = RM_GetNthSelectedOutputUserNumber(id, &iso);
+					if (n_user >= 0)
+					{
+						status = RM_SetCurrentSelectedOutputUserNumber(id, &n_user);
+						if (status >= 0)
+						{
+							// open file							
+							char prefix[256];
+							RM_GetFilePrefix(id, prefix, 256);
+							std::ostringstream filename;
+							filename << prefix << "_" << n_user << ".chem.xyz.tsv";
+							if (!this->Get_io()->punch_open(filename.str().c_str()))
+							{
+								RM_ErrorMessage("Could not open xyz file.");
+								RM_Error(id);
+							}
+							this->GetXYZOstreams().push_back(this->Get_io()->Get_punch_ostream());
+							// write first headings
+							char line_buff[132];
+							sprintf(line_buff, "%15s\t%15s\t%15s\t%15s\t%2s\t", "x", "y",
+								"z", "time", "in");
+							this->Get_io()->punch_msg(line_buff);
+							
+							// create chemistry headings
+							int ncol = RM_GetSelectedOutputColumnCount(id);
+							std::ostringstream h;
+							for (int icol = 0; icol < ncol; icol++)
+							{
+								char head[100];
+								status = RM_GetSelectedOutputHeading(id, &icol, head, 100);
+								std::string s(head);
+								s.append("\t");
+								h.width(20);
+								h << s;
+							}
+							h << "\n";
+							this->Get_io()->punch_msg(h.str().c_str());
+						}
+					}
+				}
+				this->SetXYZInitialized(true);
+			}
+		}
+		//	
+		// Write XYZ file
+		//
+		if (*print_xyz != 0)
+		{
+			std::vector<double> local_selected_out;
+			int status;
+			for (int iso = 0; iso < nso; iso++)
+			{
+				int n_user = RM_GetNthSelectedOutputUserNumber(id, &iso);
+				if (n_user >= 0)
+				{
+					status = RM_SetCurrentSelectedOutputUserNumber(id, &n_user);
+					int ncol = RM_GetSelectedOutputColumnCount(id);
+					if (status >= 0)
+					{
+						if (local_mpi_myself == 0)
+						{
+							this->Get_io()->Set_punch_ostream(this->GetXYZOstreams()[iso]);
+							local_selected_out.resize((size_t) (nxyz*ncol));
+							int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
+
+							// write xyz file
+							for (int irow = 0; irow < nxyz; irow++)
+							{
+								if (xyz_mask[irow] <= 0) continue;
+								int active = 1;
+								if (mapping[irow] < 0 || saturation[irow] <= 0)
+								{
+									active = 0;
+								}
+
+								// write x,y,z
+								std::ostringstream ln;
+
+								char line_buff[132];
+								sprintf(line_buff, "%15g\t%15g\t%15g\t%15g\t%2d\t",
+									x_node[irow], y_node[irow], z_node[irow], current_time,
+									active);
+								ln << line_buff;
+								
+								if (active)
+								{
+									// write chemistry values
+									char token[21];
+									for (int jcol = 0; jcol < ncol; jcol++)
+									{		
+										sprintf(token,"%19.10e\t", local_selected_out[jcol * nxyz + irow]);
+										ln.width(20);
+										ln << token;
+									}
+								}
+								ln << "\n";
+								this->Get_io()->punch_msg(ln.str().c_str());
+							}
+
+						}
+						else
+						{
+							int so_error = RM_GetSelectedOutput(id, local_selected_out.data());
+						}
+					}
+				}
+			}
+		}
+		return IRM_OK;
 	}
-	fclose(stream);
-	return true;					/* exists */
+	return IRM_BADINSTANCE;
+}
+/* ---------------------------------------------------------------------- */
+void
+FH_FinalizeFiles()
+/* ---------------------------------------------------------------------- */
+{
+#ifdef HDF5_CREATE
+	HDFFinalize();
+#endif
+	file_handler.Get_io()->Set_punch_ostream(NULL);
+	for (int iso = 0; iso < (int) file_handler.GetXYZOstreams().size(); iso++)
+	{
+		delete file_handler.GetXYZOstreams()[iso];
+	}
+	file_handler.GetXYZOstreams().clear();
+}
+//
+// Wrappers
+//
+/* ---------------------------------------------------------------------- */
+void
+FH_ProcessRestartFiles(
+	int *id, 
+	int *initial_conditions1_in,
+	int *initial_conditions2_in, 
+	double *fraction1_in)
+/* ---------------------------------------------------------------------- */
+{
+	file_handler.ProcessRestartFiles(id, initial_conditions1_in, 
+		initial_conditions2_in, fraction1_in);
 }
 
 /* ---------------------------------------------------------------------- */
 void
-FileRename(const std::string &temp_name, const std::string &name, 
-	const std::string &backup_name)
+FH_SetPointers(double *x_node, double *y_node, double *z_node, int *ic, double *saturation, int *mapping)
 /* ---------------------------------------------------------------------- */
 {
-	if (FileExists(name))
+	file_handler.SetPointers(x_node, y_node, z_node, ic, saturation, mapping);
+}
+/* ---------------------------------------------------------------------- */
+void
+FH_SetRestartName(const char *name, long nchar)
+/* ---------------------------------------------------------------------- */
+{
+	if (name)
 	{
-		if (FileExists(backup_name.c_str()))
-			remove(backup_name.c_str());
-		rename(name.c_str(), backup_name.c_str());
+		file_handler.SetRestartName(name, nchar);
 	}
-	rename(temp_name.c_str(), name.c_str());
 }
 /* ---------------------------------------------------------------------- */
 void
-SetNodes(double *x_node, double *y_node, double *z_node)
+FH_WriteFiles(int *id, int *print_hdf, int *print_media, int *print_xyz, int *xyz_mask, int *print_restart)
 /* ---------------------------------------------------------------------- */
 {
-	rmhelper.SetNodes(x_node, y_node, z_node);
-}
-/* ---------------------------------------------------------------------- */
-void
-RMHelperInfo::SetNodes(double *x_node_in, double *y_node_in, double *z_node_in)
-/* ---------------------------------------------------------------------- */
-{
-	this->x_node = x_node_in;
-	this->y_node = y_node_in;
-	this->z_node = z_node_in;
-
+	file_handler.WriteFiles(id, print_hdf, print_media, print_xyz, xyz_mask, print_restart);
 }
