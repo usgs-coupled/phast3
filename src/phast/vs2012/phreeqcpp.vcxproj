@@ -380,12 +380,11 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\FileWriter.cpp" />
+    <ClCompile Include="..\FileHandler.cpp" />
     <ClCompile Include="..\hdf.cpp" />
     <ClCompile Include="..\phast_main.cpp" />
     <ClCompile Include="..\gzstream.cxx" />
     <ClCompile Include="..\Reaction_module.cxx" />
-    <ClCompile Include="..\RMHelper.cpp" />
     <ClCompile Include="..\RM_interface.cpp" />
     <ClCompile Include="..\KDtree\KDtree.cpp">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='ser_debug|Win32'">Level3</WarningLevel>
@@ -398,14 +397,13 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)
     <ResourceCompile Include="phast.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\FileWriter.h" />
+    <ClInclude Include="..\FileHandler.h" />
     <ClInclude Include="..\gzstream.h" />
     <ClInclude Include="..\hdf.h" />
     <ClInclude Include="..\KDtree\Cell_Face.h" />
     <ClInclude Include="..\KDtree\KDtree.h" />
     <ClInclude Include="..\KDtree\Point.h" />
     <ClInclude Include="..\Reaction_module.h" />
-    <ClInclude Include="..\RMHelper.h" />
     <ClInclude Include="..\RM_interface.h" />
     <ClInclude Include="..\TM_interface.h" />
   </ItemGroup>

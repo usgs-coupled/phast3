@@ -8,9 +8,6 @@
     <Filter Include="Source Files\COMMON_COBJS">
       <UniqueIdentifier>{27e6a46a-e411-496b-8df0-b050e44a8ed4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\COMMON_CXXOBJS">
-      <UniqueIdentifier>{5d189165-b46c-4b9f-85dd-b4f436c3a7f3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\HDF_OBJS">
       <UniqueIdentifier>{fbd19430-b833-49f3-aa00-aad281f23178}</UniqueIdentifier>
     </Filter>
@@ -33,15 +30,6 @@
     <ClCompile Include="..\phast_main.cpp">
       <Filter>Source Files\COMMON_COBJS</Filter>
     </ClCompile>
-    <ClCompile Include="..\gzstream.cxx">
-      <Filter>Source Files\COMMON_CXXOBJS</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Reaction_module.cxx">
-      <Filter>Source Files\COMMON_CXXOBJS</Filter>
-    </ClCompile>
-    <ClCompile Include="..\RM_interface.cpp">
-      <Filter>Source Files\COMMON_CXXOBJS</Filter>
-    </ClCompile>
     <ClCompile Include="..\KDtree\KDtree.cpp">
       <Filter>Source Files\PHASTINPUT_OBJS</Filter>
     </ClCompile>
@@ -54,14 +42,20 @@
     <ClCompile Include="..\hdf.cpp">
       <Filter>Source Files\HDF_OBJS</Filter>
     </ClCompile>
+    <ClCompile Include="..\FileHandler.cpp">
+      <Filter>Source Files\COMMON_COBJS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gzstream.cxx">
+      <Filter>Source Files\COMMON_COBJS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Reaction_module.cxx">
+      <Filter>Source Files\COMMON_COBJS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RM_interface.cpp">
+      <Filter>Source Files\COMMON_COBJS</Filter>
+    </ClCompile>
     <ClCompile Include="..\TM_interface.cpp">
-      <Filter>Source Files\COMMON_CXXOBJS</Filter>
-    </ClCompile>
-    <ClCompile Include="..\FileWriter.cpp">
-      <Filter>Source Files\COMMON_CXXOBJS</Filter>
-    </ClCompile>
-    <ClCompile Include="..\RMHelper.cpp">
-      <Filter>Source Files\COMMON_CXXOBJS</Filter>
+      <Filter>Source Files\COMMON_COBJS</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -94,10 +88,7 @@
     <ClInclude Include="..\hdf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\FileWriter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\RMHelper.h">
+    <ClInclude Include="..\FileHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

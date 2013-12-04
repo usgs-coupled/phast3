@@ -20,18 +20,6 @@ SUBROUTINE phast_worker
     USE mpi_mod
     IMPLICIT NONE
     INCLUDE 'RM_interface.f90.inc'
-    INTERFACE
-        INTEGER FUNCTION RMH_SetRestartName(fn)
-            IMPLICIT NONE
-            CHARACTER, INTENT(in) :: fn
-        END FUNCTION RMH_SetRestartName 
-        
-        INTEGER FUNCTION WriteRestartFile(id, print_restart, index_ic)
-            IMPLICIT NONE
-            INTEGER, INTENT(IN) :: id 
-            INTEGER, OPTIONAL, INTENT(IN) :: index_ic, print_restart
-        END FUNCTION WriteRestartFile         
-    END INTERFACE
     REAL(KIND=kdp) :: deltim_dummy
     INTEGER :: stop_msg=0
     INTEGER :: i, a_err
@@ -128,11 +116,11 @@ SUBROUTINE phast_worker
         
         ! ... Distribute initial conditions for chemistry    
         DO i = 1, num_restart_files
-            status = RMH_SetRestartName(restart_files(i))
+            CALL FH_SetRestartName(restart_files(i))
         ENDDO
-        CALL SetNodes(x_node(1), y_node(1), z_node(1))
+        CALL FH_SetPointers(x_node(1), y_node(1), z_node(1), indx_sol1_ic(1,1))
         status = RM_InitialPhreeqc2Module(rm_id)
-        CALL ProcessRestartFiles(rm_id)
+        CALL FH_ProcessRestartFiles(rm_id)
         
         ! ... collect solutions for transport
         CALL RM_Module2Concentrations(rm_id)
@@ -161,9 +149,8 @@ SUBROUTINE phast_worker
             deltim_dummy,                                 &        ! time_step_hst
             c(1,1),                                       &        ! fraction
             stop_msg) 
-        CALL WriteFiles(rm_id, prhdfci, prcphrqi,  pr_hdf_media, &
-	        x_node(1), y_node(1), z_node(1), iprint_xyz(1), &
-	        frac(1), grid2chem(1))   
+        CALL FH_WriteFiles(rm_id) !, prhdfci, pr_hdf_media, prcphrqi, &
+	    !    iprint_xyz(1))   
 !        
 !end  of InitialEquilibrationRM
 !     
@@ -225,10 +212,7 @@ SUBROUTINE phast_worker
                 deltim_dummy,                                 &        ! time_step_hst
                 c(1,1),                                       &        ! fraction
                 stop_msg) 
-            CALL WriteFiles(rm_id, prhdfci, prcphrqi,  pr_hdf_media, &
-	            x_node(1), y_node(1), z_node(1), iprint_xyz(1), &
-	            frac(1), grid2chem(1))  
-            status = WriteRestartFile(rm_id)
+            CALL FH_WriteFiles(rm_id)
 !        
 !Start  of TimeStepRM
 !       

@@ -841,10 +841,9 @@ Reaction_module::Error_stop(void)
 	int n = (int) this->GetWorkers()[0]->Get_Index();
 	RM_Error(&n);
 }
-#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 bool
-Reaction_module::File_exists(const std::string &name)
+Reaction_module::FileExists(const std::string &name)
 /* ---------------------------------------------------------------------- */
 {
 	FILE *stream;
@@ -858,19 +857,18 @@ Reaction_module::File_exists(const std::string &name)
 
 /* ---------------------------------------------------------------------- */
 void
-Reaction_module::File_rename(const std::string &temp_name, const std::string &name, 
+Reaction_module::FileRename(const std::string &temp_name, const std::string &name, 
 	const std::string &backup_name)
 /* ---------------------------------------------------------------------- */
 {
-	if (this->File_exists(name))
+	if (Reaction_module::FileExists(name))
 	{
-		if (this->File_exists(backup_name.c_str()))
+		if (Reaction_module::FileExists(backup_name.c_str()))
 			remove(backup_name.c_str());
 		rename(name.c_str(), backup_name.c_str());
 	}
 	rename(temp_name.c_str(), name.c_str());
 }
-#endif
 /* ---------------------------------------------------------------------- */
 int
 Reaction_module::FindComponents(void)	
@@ -1132,7 +1130,7 @@ Reaction_module::GetSelectedOutputRowCount()
 }
 /* ---------------------------------------------------------------------- */
 std::string 
-Reaction_module::Cptr2TrimString(const char * str, long l)
+Reaction_module::Char2TrimString(const char * str, long l)
 /* ---------------------------------------------------------------------- */
 {
 	std::string stdstr;
@@ -3204,7 +3202,7 @@ Reaction_module::SetFilePrefix(const char * prefix, long l)
 {
 	if (this->mpi_myself == 0)
 	{	
-		this->file_prefix = Cptr2TrimString(prefix, l);
+		this->file_prefix = Char2TrimString(prefix, l);
 	}
 #ifdef USE_MPI
 	int l1 = 0;
@@ -3249,7 +3247,7 @@ Reaction_module::SetChemistryFileName(const char * cn, long l)
 {
 	if (this->mpi_myself == 0)
 	{	
-		this->chemistry_file_name = Cptr2TrimString(cn, l);
+		this->chemistry_file_name = Char2TrimString(cn, l);
 	}
 #ifdef USE_MPI
 	int l1 = 0;
@@ -3295,7 +3293,7 @@ Reaction_module::SetDatabaseFileName(const char * db, long l)
 {
 	if (this->mpi_myself == 0)
 	{	
-		this->database_file_name = Cptr2TrimString(db, l);
+		this->database_file_name = Char2TrimString(db, l);
 	}
 #ifdef USE_MPI
 	int l1 = 0;
