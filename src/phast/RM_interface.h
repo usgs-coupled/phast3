@@ -17,6 +17,7 @@
 #define RM_Create                          FC_FUNC_ (rm_create,                        RM_CREATE)
 #define RM_CreateMapping                   FC_FUNC_ (rm_createmapping,                 RM_CREATEMAPPING)
 #define RM_Destroy                         FC_FUNC_ (rm_destroy,                       RM_DESTROY)
+#define RM_DumpModule                      FC_FUNC_ (rm_dumpmodule,                    RM_DUMPMODULE)
 #define RM_Error                           FC_FUNC_ (rm_error,                         RM_ERROR)
 #define RM_ErrorMessage                    FC_FUNC_ (rm_errormessage,                  RM_ERRORMESSAGE)
 #define RM_FindComponents                  FC_FUNC_ (rm_findcomponents,                RM_FINDCOMPONENTS)
@@ -67,37 +68,6 @@
 //#define RM_write_restart				   FC_FUNC_ (rm_write_restart,                 RM_WRITE_RESTART)
 #define RM_WarningMessage                  FC_FUNC_ (rm_warningmessage,                RM_WARNINGMESSAGE)
 #endif
-#ifdef SKIP
-#define RM_calculate_well_ph                  rm_calculate_well_ph
-#define RM_CloseFiles                         rm_closefiles
-#define RM_convert_to_molal                   rm_convert_to_molal
-#define RM_Create                             rm_create
-#define RM_Destroy                            rm_destroy
-#define RM_Error                              rm_error
-#define RM_FindComponents                     rm_findcomponents
-#define RM_GetComponent                       rm_getcomponent
-#define RM_InitialPhreeqcRunFile              rm_initialphreeqcrunfile
-#define RM_InitialPhreeqc2Concentrations      rm_initialphreeqc2concentrations
-#define RM_LoadDatabase                       rm_loaddatabase
-#define RM_LogScreenMessage                   rm_logscreenmessage
-#define RM_OpenFiles                          rm_openfiles
-#define RM_RunCells                           rm_runcells
-#define RM_SetDensity	                      rm_setdensity
-#define RM_SetInputUnits                      rm_setinputunits
-#define RM_CreateMapping                      rm_createmapping
-#define RM_SetPrintChemistryOn                rm_setprintchemistryon
-#define RM_set_pressure                       rm_set_pressure
-#define RM_SetPoreVolumeZero                  rm_setporevolumezero
-#define RM_SetPoreVolume                      rm_setporevolume
-#define RM_SetRebalance                       rm_setrebalance
-#define RM_SetSaturation                      rm_setsaturation
-#define RM_SetTemperature	                  rm_settemperature
-#define RM_SetTimeConversion				  rm_settimeconversion
-#define RM_SetCellVolume                      rm_setcellvolume
-#define RM_Module2Concentrations              rm_module2concentrations
-#define RM_write_bc_raw                       rm_write_bc_raw
-#define RM_write_output                       rm_write_output
-#endif
 
 class RM_interface
 {
@@ -123,6 +93,7 @@ void RM_convert_to_molal(int *id, double *c, int *n, int *dim);
 int  RM_Create(int *nxyz, int *nthreads = NULL);
 IRM_RESULT RM_CreateMapping (int *id, int *grid2chem = NULL); 
 IRM_RESULT RM_Destroy(int *id);
+IRM_RESULT RM_DumpModule(int *id, int *dump_on = NULL, int *use_gz = NULL);
 void RM_Error(int *id);
 void RM_ErrorMessage(const char *err_str, long l = -1);
 int RM_FindComponents(int *id);
@@ -168,6 +139,7 @@ void RM_ScreenMessage(const char *err_str, long l = -1);
 void RM_SetCellVolume(int *id, double *t);
 int  RM_SetCurrentSelectedOutputUserNumber(int *id, int *i);
 void RM_SetDensity(int *id, double *t);
+void RM_SetDumpModuleOn(int *id, int *dump_on = NULL);
 IRM_RESULT RM_SetFilePrefix(int *id, const char *prefix = NULL, long l = -1);
 void RM_set_free_surface(int *id, int *t);
 void RM_SetInputUnits (int *id, int *sol=NULL, int *pp=NULL, int *ex=NULL, 

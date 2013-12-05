@@ -553,6 +553,7 @@ SUBROUTINE TimeStepRM
             stop_msg) 
         CALL FH_WriteFiles(rm_id, prhdfci, pr_hdf_media, prcphrqi, &
             iprint_xyz(1), print_restart%print_flag_integer) 
-
+        status = RM_DumpModule(rm_id, print_restart%print_flag_integer, 1)
+        
     ENDIF    ! ... Done with chemistry    
 END SUBROUTINE TimeStepRM    

@@ -213,6 +213,7 @@ SUBROUTINE phast_worker
                 c(1,1),                                       &        ! fraction
                 stop_msg) 
             CALL FH_WriteFiles(rm_id)
+            status = RM_DumpModule(rm_id)
 !        
 !Start  of TimeStepRM
 !       

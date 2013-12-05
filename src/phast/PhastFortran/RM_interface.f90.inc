@@ -21,11 +21,16 @@
             INTEGER, OPTIONAL :: grid2chem
         END FUNCTION RM_CreateMapping
         
-        FUNCTION RM_Destroy(id) RESULT(iout)
+        INTEGER FUNCTION RM_Destroy(id)
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            INTEGER :: iout
         END FUNCTION RM_Destroy
+        
+        INTEGER FUNCTION RM_DumpModule(id, dump_on, use_gz) 
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            INTEGER, OPTIONAL, INTENT(in) :: dump_on, use_gz
+        END FUNCTION RM_DumpModule
         
         SUBROUTINE RM_Error(id)
             IMPLICIT NONE
@@ -171,8 +176,8 @@
 
         SUBROUTINE RM_SetDensity(id, t)
             IMPLICIT NONE
-            INTEGER :: id
-            DOUBLE PRECISION :: t
+            INTEGER, INTENT(in) :: id
+            DOUBLE PRECISION, OPTIONAL, INTENT(in) :: t
         END SUBROUTINE RM_SetDensity  
         
         FUNCTION RM_SetFilePrefix(id, prefix) RESULT(iout)
