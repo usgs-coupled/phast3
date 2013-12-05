@@ -463,6 +463,12 @@ hdf_finalize_headings(int iso)
 
 		// write scalar names to file
 
+		for (size_t j = 0; j < root[iso].scalar_names.size(); j++)
+		{
+			if (root[iso].scalar_names[j].size() + 1 > root[iso].scalar_name_max_len) 
+				root[iso].scalar_name_max_len = root[iso].scalar_names[j].size() + 1;
+		}
+
 		status = H5Tset_size(fls_type, root[iso].scalar_name_max_len);
 		if (status < 0)
 		{
@@ -498,11 +504,6 @@ hdf_finalize_headings(int iso)
 				"HDF ERROR: Unable to create the /%s dataset.\n",
 				szScalars);
 			error_msg(error_string, STOP);
-		}
-		for (size_t j = 0; j < root[iso].scalar_names.size(); j++)
-		{
-			if (root[iso].scalar_names[j].size() + 1 > root[iso].scalar_name_max_len) 
-				root[iso].scalar_name_max_len = root[iso].scalar_names[j].size() + 1;
 		}
 
 		// copy variable length scalar names to fixed length scalar names
