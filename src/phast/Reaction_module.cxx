@@ -3138,34 +3138,6 @@ Reaction_module::RunCellsThread(int n)
 					ipp_it->second.EndRow();
 				}
 			}
-#ifdef SKIP
-			if (this->selected_output_on)
-			{	
-				// Add selected output values to IPhreeqcPhast CSelectedOutputMap's
-				int columns = phast_iphreeqc_worker->GetSelectedOutputColumnCount();
-				std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
-				for ( ; it != phast_iphreeqc_worker->SelectedOutputMap.end(); it++)
-				{
-					int iso = it->first;
-					std::map< int, CSelectedOutput >::iterator ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(iso);
-					if (ipp_it == phast_iphreeqc_worker->CSelectedOutputMap.end())
-					{
-						CSelectedOutput cso;
-						phast_iphreeqc_worker->CSelectedOutputMap[iso] = cso;
-						ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(iso);
-						for (int i = 0; i < columns; i++)
-						{
-							VAR pvar, pvar1;
-							VarInit(&pvar);
-							VarInit(&pvar1);
-							phast_iphreeqc_worker->GetSelectedOutputValue(0, i, &pvar);
-							ipp_it->second.PushBack(pvar.sVal, pvar1);
-						}
-					}
-					ipp_it->second.EndRow();
-				}
-			}
-#endif
 		}
 #ifdef USE_MPI
 		phast_iphreeqc_worker->Get_cell_clock_times().back() += (double) MPI_Wtime();
