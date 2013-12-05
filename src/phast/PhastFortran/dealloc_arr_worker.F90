@@ -35,9 +35,36 @@ SUBROUTINE dealloc_arr_worker
     ENDIF
     ! ... Deallocate from init1
     ! ... Deallocate node information arrays: mcn
+    if (allocated(pv)) then
+        DEALLOCATE (pv, STAT = da_err)     
+        IF (da_err /= 0) THEN  
+            PRINT *, "Array deallocation failed: dealloc_arr_worker, init1_trans, point 0"  
+            STOP
+        ENDIF
+    endif
+    if (allocated(pv0)) then
+        DEALLOCATE (pv0, STAT = da_err)     
+        IF (da_err /= 0) THEN  
+            PRINT *, "Array deallocation failed: dealloc_arr_worker, init1_trans, point 0.1"  
+            STOP
+        ENDIF
+    endif
+    if (allocated(volume)) then
+        DEALLOCATE (volume, STAT = da_err)     
+        IF (da_err /= 0) THEN  
+            PRINT *, "Array deallocation failed: dealloc_arr_worker, init1_trans, point 0.2"  
+            STOP
+        ENDIF
+    endif 
+    if (allocated(tort)) then
+        DEALLOCATE (tort, STAT = da_err)     
+        IF (da_err /= 0) THEN  
+            PRINT *, "Array deallocation failed: dealloc_arr_worker, init1_trans, point 0.3"  
+            STOP
+        ENDIF
+    endif    
     DEALLOCATE (rm, x, y, z, x_node, y_node, z_node,  &
-        x_face, y_face, z_face, pv, &
-        pv0, volume, tort, &
+        x_face, y_face, z_face, &
         STAT = da_err)
     IF (da_err /= 0) THEN  
         PRINT *, "Array deallocation failed: dealloc_arr_worker, init1_trans, point 1"  

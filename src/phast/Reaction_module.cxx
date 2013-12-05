@@ -2136,11 +2136,18 @@ Reaction_module::RebalanceLoad(void)
 	
 	if (this->mpi_myself == 0)
 	{
-		// Normalize
 		double total = 0;
 		for (int i = 0; i < this->mpi_tasks; i++)
 		{
-			assert(recv_buffer[i] > 0);
+			total += recv_buffer[i];
+		}
+		double avg = total / (double) this->mpi_tasks;
+		// Normalize
+		total = 0;
+		for (int i = 0; i < this->mpi_tasks; i++)
+		{
+			assert(recv_buffer[i] >= 0);
+			if (recv_buffer[i] == 0) recv_buffer[i] = 0.25*avg;
 			total += recv_buffer[0] / recv_buffer[i];
 		}
 
@@ -3076,6 +3083,64 @@ Reaction_module::RunCellsThread(int n)
 			// Write hdf file
 			if (this->selected_output_on)
 			{	
+				bool fail = true;
+				bool failed_once = false;
+				// some problem with iterators required breaking loop
+				while (fail)
+				{
+					fail = false;
+					std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
+					for ( ; it != phast_iphreeqc_worker->SelectedOutputMap.end(); it++)
+					{
+						int iso = it->first;
+						std::map< int, CSelectedOutput >::iterator ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(it->first);
+						if (ipp_it == phast_iphreeqc_worker->CSelectedOutputMap.end())
+						{	
+							// Add new item to CSelectedOutputMap
+							CSelectedOutput cso;
+							phast_iphreeqc_worker->CSelectedOutputMap[iso] = cso;
+							fail = true;
+							failed_once = true;
+							break;
+						}
+					}
+				}
+				if (failed_once)
+				{
+					// Make a dummy run to fill in headings of selected output
+					std::ostringstream input;
+					input << "SOLUTION " << n + 1 << "; DELETE; -solution " << n + 1 << "\n";
+					if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) ErrorStop();
+				}
+				// Add selected output values to IPhreeqcPhast CSelectedOutputMap
+				std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
+				for ( ; it != phast_iphreeqc_worker->SelectedOutputMap.end(); it++)
+				{
+					int iso = it->first;
+					std::map< int, CSelectedOutput >::iterator ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(iso);
+
+					// if IPhreeqcPhast selected output not found
+					if (ipp_it == phast_iphreeqc_worker->CSelectedOutputMap.end())
+					{
+						std::cerr << "How can this be?  " << iso << std::endl;
+					}
+					phast_iphreeqc_worker->SetCurrentSelectedOutputUserNumber(iso);
+					int columns = phast_iphreeqc_worker->GetSelectedOutputColumnCount();
+					// Fill in columns
+					for (int i = 0; i < columns; i++)
+					{
+						VAR pvar, pvar1;
+						VarInit(&pvar);
+						VarInit(&pvar1);
+						phast_iphreeqc_worker->GetSelectedOutputValue(0, i, &pvar);
+						ipp_it->second.PushBack(pvar.sVal, pvar1);
+					}
+					ipp_it->second.EndRow();
+				}
+			}
+#ifdef SKIP
+			if (this->selected_output_on)
+			{	
 				// Add selected output values to IPhreeqcPhast CSelectedOutputMap's
 				int columns = phast_iphreeqc_worker->GetSelectedOutputColumnCount();
 				std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
@@ -3100,6 +3165,7 @@ Reaction_module::RunCellsThread(int n)
 					ipp_it->second.EndRow();
 				}
 			}
+#endif
 		}
 #ifdef USE_MPI
 		phast_iphreeqc_worker->Get_cell_clock_times().back() += (double) MPI_Wtime();
