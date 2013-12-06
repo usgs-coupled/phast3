@@ -189,7 +189,7 @@ FileHandler::ProcessRestartFiles(
 			}
 
 			// points are x, y, z, cell_no
-			std::vector < Point > pts;
+			std::vector < Point > pts, soln_pts;
 			// index:
 			// 0 solution
 			// 1 ppassemblage
@@ -208,15 +208,22 @@ FileHandler::ProcessRestartFiles(
 					z,
 					v;
 				cparser.get_iss() >> x;
-				if (x < -1e39) break;
 				cparser.get_iss() >> y;
 				cparser.get_iss() >> z;
 				cparser.get_iss() >> v;
 				pts.push_back(Point(x, y, z, v));
 
 				int dummy;
+				
+				// Solution
+				cparser.get_iss() >> dummy;
+				c_index.push_back(dummy);
+				// Don't put location in soln_pts if solution undefined
+				if (dummy != -1)
+					soln_pts.push_back(Point(x, y, z, v));
+
 				// c_index defines entities present for each cell in restart file
-				for (int j = 0; j < 7; j++)
+				for (int j = 1; j < 7; j++)
 				{
 					cparser.get_iss() >> dummy;
 					c_index.push_back(dummy);
@@ -225,6 +232,7 @@ FileHandler::ProcessRestartFiles(
 			}
 			// Make Kd tree
 			KDtree index_tree(pts);
+			KDtree index_tree_soln(soln_pts);
 
 			cxxStorageBin tempBin;
 			tempBin.read_raw(cparser);
@@ -233,22 +241,21 @@ FileHandler::ProcessRestartFiles(
 			{
 				int i = Reaction_module_ptr->GetBack()[j][0];   /* i is nxyz number */
 				Point p(x_node[i], y_node[i], z_node[i]);
-				int	k = (int) index_tree.Interpolate3d(p);	// k is index number in tempBin
+				int	k = (int) index_tree.Interpolate3d(p);	            // k is index number in tempBin
+				int	k_soln = (int) index_tree_soln.Interpolate3d(p);	// k is index number in tempBin
 
 				// solution
 				if (initial_conditions1[i * 7] == ifile)
 				{
-					if (c_index[k * 7] != -1)	// entity k should be defined in tempBin
+					// All solutions must be defined
+					if (tempBin.Get_Solution(k_soln) != NULL)
 					{
-						if (tempBin.Get_Solution(k) != NULL)
-						{
-							restart_bin.Set_Solution(j, tempBin.Get_Solution(k));
-						}
-						else
-						{
-							assert(false);
-							initial_conditions1[7 * i] = -1;
-						}
+						restart_bin.Set_Solution(j, tempBin.Get_Solution(k_soln));
+					}
+					else
+					{
+						assert(false);
+						initial_conditions1[7 * i] = -1;
 					}
 				}
 
@@ -623,31 +630,31 @@ FileHandler::WriteRestart(int *id, int *print_restart)
 				ofs_restart << Reaction_module_ptr->GetChemistryCellCount() << std::endl;
 				for (int j = 0; j < count_chemistry; j++)	/* j is count_chem number */
 				{
-					//for (size_t k = 0; k < Reaction_module_ptr->GetBack()[j].size(); k++)
-					//{
-						int i = Reaction_module_ptr->GetBack()[j][0];			/* i is nxyz number */
-						if (this->saturation[i] > 0.0)
-						{
-							ofs_restart << x_node[i] << "  " << y_node[i] << "  " << z_node[i] << "  " << j << "  ";
-							// solution 
-							ofs_restart << this->ic[7 * i] << "  ";
-							// pp_assemblage
-							ofs_restart << this->ic[7 * i + 1] << "  ";
-							// exchange
-							ofs_restart << this->ic[7 * i + 2] << "  ";
-							// surface
-							ofs_restart << this->ic[7 * i + 3] << "  ";
-							// gas_phase
-							ofs_restart << this->ic[7 * i + 4] << "  ";
-							// solid solution
-							ofs_restart << this->ic[7 * i + 5] << "  ";
-							// kinetics
-							ofs_restart << this->ic[7 * i + 6] << "\n";
-						}
-					//}
+					int i = Reaction_module_ptr->GetBack()[j][0];			/* i is nxyz number */
+					ofs_restart << x_node[i] << "  " << y_node[i] << "  " << z_node[i] << "  " << j << "  ";
+					// solution, use -1 if cell is dry
+					if (this->saturation[i] > 0.0)
+					{
+						ofs_restart << this->ic[7 * i] << "  ";
+					}
+					else
+					{
+						ofs_restart << -1 << "  ";
+					}
+					// pp_assemblage
+					ofs_restart << this->ic[7 * i + 1] << "  ";
+					// exchange
+					ofs_restart << this->ic[7 * i + 2] << "  ";
+					// surface
+					ofs_restart << this->ic[7 * i + 3] << "  ";
+					// gas_phase
+					ofs_restart << this->ic[7 * i + 4] << "  ";
+					// solid solution
+					ofs_restart << this->ic[7 * i + 5] << "  ";
+					// kinetics
+					ofs_restart << this->ic[7 * i + 6] << "\n";
 				}
 			}
-			ofs_restart << "-1e40       END OF INDEX\n";
 			// write data
 #ifdef USE_MPI
 			Reaction_module_ptr->GetWorkers()[0]->SetDumpStringOn(true); 

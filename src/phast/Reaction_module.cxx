@@ -1105,7 +1105,6 @@ Reaction_module::GetSelectedOutput(double *so)
 			int ncol = this->GetSelectedOutputColumnCount();
 			int local_start_cell = 0;
 			std::vector<double> dbuffer;
-			dbuffer.resize(this->nxyz*ncol);
 			for (int n = 0; n < this->mpi_tasks; n++)
 			{
 				int nrow;	
@@ -1113,11 +1112,11 @@ Reaction_module::GetSelectedOutput(double *so)
 				{	
 					if (this->mpi_myself == 0) 
 					{	
-						it->second.Doublize(nrow, ncol, dbuffer.data());
+						it->second.Doublize(nrow, ncol, dbuffer);
 					}
 					else
 					{
-						it->second.Doublize(nrow, ncol, dbuffer.data());
+						it->second.Doublize(nrow, ncol, dbuffer);
 						int length[2];
 						length[0] = nrow;
 						length[1] = ncol;
@@ -1133,6 +1132,7 @@ Reaction_module::GetSelectedOutput(double *so)
 					MPI_Recv(length, 2, MPI_INT, n, 0, MPI_COMM_WORLD, &mpi_status);
 					nrow = length[0];
 					ncol = length[1];
+					dbuffer.resize(nrow*ncol);
 					MPI_Recv(dbuffer.data(), nrow*ncol, MPI_DOUBLE, n, 0, MPI_COMM_WORLD, &mpi_status);
 				}
 				if (mpi_myself == 0)
@@ -1176,7 +1176,6 @@ Reaction_module::GetSelectedOutput(double *so)
 		this->SetCurrentSelectedOutputUserNumber(&n_user);
 		int ncol = this->GetSelectedOutputColumnCount();
 		std::vector<double> dbuffer;
-		dbuffer.resize(this->nxyz*ncol);
 		int local_start_cell = 0;
 		for (int n = 0; n < this->nthreads; n++)
 		{
@@ -1184,7 +1183,7 @@ Reaction_module::GetSelectedOutput(double *so)
 			std::map< int, CSelectedOutput>::iterator cso_it = this->workers[n]->CSelectedOutputMap.find(n_user);
 			if (cso_it != this->workers[n]->CSelectedOutputMap.end())
 			{
-				cso_it->second.Doublize(nrow_x, ncol_x, dbuffer.data());
+				cso_it->second.Doublize(nrow_x, ncol_x, dbuffer);
 				//assert(nrow_x == nrow);
 				assert(ncol_x = ncol);
 
@@ -3126,7 +3125,7 @@ Reaction_module::RunCellsThread(int n)
 			this->saturation[j] = 0.0;
 			active = false;
 		}
-
+		
 		if (active)
 		{
 			// set cell number, pore volume got Basic functions
@@ -3198,6 +3197,7 @@ Reaction_module::RunCellsThread(int n)
 				{
 					int n_user = it->first;
 					std::map< int, CSelectedOutput >::iterator ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(n_user);
+					assert(it->second->GetRowCount() == 2);
 					if (ipp_it == phast_iphreeqc_worker->CSelectedOutputMap.end())
 					{
 						CSelectedOutput cso;
@@ -3230,25 +3230,34 @@ Reaction_module::RunCellsThread(int n)
 			}
 			// Write hdf file
 			if (this->selected_output_on)
-			{	
-				bool fail = true;
-				bool need_phreeqc_run = true;
-				// some problem with iterators required breaking loop
-				while (fail)
+			{
+				bool add_to_cselectedoutputmap = false;
+				// Make dummy run if CSelectedOutputMap not complete	
 				{
-					fail = false;
+					std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
+					for ( ; it != phast_iphreeqc_worker->SelectedOutputMap.end(); it++)
+					{
+						std::map< int, CSelectedOutput >::iterator ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(it->first);
+						if (ipp_it == phast_iphreeqc_worker->CSelectedOutputMap.end())
+						{
+							// Make a dummy run to fill in headings of selected output
+							std::ostringstream input;
+							input << "SOLUTION " << n + 1 << "; DELETE; -solution " << n + 1 << "\n";
+							if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) ErrorStop();
+							add_to_cselectedoutputmap = true;
+							break;
+						}
+					}
+				}
+				if (add_to_cselectedoutputmap)
+				{
 					std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
 					for ( ; it != phast_iphreeqc_worker->SelectedOutputMap.end(); it++)
 					{
 						int iso = it->first;
 						std::map< int, CSelectedOutput >::iterator ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(it->first);
 						if (ipp_it == phast_iphreeqc_worker->CSelectedOutputMap.end())
-						{	
-							// Make a dummy run to fill in headings of selected output
-							std::ostringstream input;
-							input << "SOLUTION " << n + 1 << "; DELETE; -solution " << n + 1 << "\n";
-							if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) ErrorStop();
-
+						{
 							// Add new item to CSelectedOutputMap
 							CSelectedOutput cso;
 							// Fill in columns
@@ -3263,7 +3272,6 @@ Reaction_module::RunCellsThread(int n)
 								cso.PushBack(pvar.sVal, pvar1);
 							}
 							phast_iphreeqc_worker->CSelectedOutputMap[iso] = cso;
-							fail = true;
 						}
 					}
 				}
