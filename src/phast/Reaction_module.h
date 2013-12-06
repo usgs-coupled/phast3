@@ -43,10 +43,10 @@ public:
 	// TODO ///////////////////////////
 	void                           Calculate_well_ph(double *c, double * ph, double * alkalinity);
 	void                           Convert_to_molal(double *c, int n, int dim);
-	const bool                     Get_free_surface(void) const {return this->free_surface;}
-	void                           Set_free_surface(int * t); 
-	const bool                     Get_steady_flow(void) const {return this->steady_flow;}
-	void                           Set_steady_flow(int * t);
+	//const bool                     Get_free_surface(void) const {return this->free_surface;}
+	//void                           Set_free_surface(int * t); 
+	//const bool                     Get_steady_flow(void) const {return this->steady_flow;}
+	//void                           Set_steady_flow(int * t);
 	void                           Write_bc_raw(int *solution_list, int * bc_solution_count, 
                                         int * solution_number, 
                                         const std::string &prefix);
@@ -73,6 +73,7 @@ public:
 	const int                                 GetMpiTasks(void) const {return this->mpi_tasks;}
 	int                                       GetNthreads() {return this->nthreads;}
 	int                                       GetNthSelectedOutputUserNumber(int *i);
+	const bool                                GetPartitionUZSolids(void) const {return this->partition_uz_solids;}
 	std::vector<double> &                     GetPoreVolume(void) {return this->pore_volume;}
 	std::vector<double> &                     GetPoreVolumeZero(void) {return this->pore_volume_zero;} 
 	std::vector<double> &                     GetPressure(void) {return this->pressure;}
@@ -130,6 +131,7 @@ public:
 	void                                      SetInputUnitsSSassemblage(int i) {this->input_units_SSassemblage = i;}
 	void                                      SetInputUnitsKinetics(int i) {this->input_units_Kinetics = i;}
 	void                                      SetInputUnits(int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *k);
+	void                                      SetPartitionUZSolids(int * t);
 	void                                      SetPoreVolume(double * t = NULL); 
 	void                                      SetPoreVolumeZero(double * t = NULL);
 	void                                      SetPrintChemistryMask(int * t);
@@ -191,9 +193,9 @@ protected:
 	std::vector <std::string> components;	// list of components to be transported
 	std::vector <double> gfw;				// gram formula weights converting mass to moles (1 for each component)
 	double gfw_water;						// gfw of water
-
-	bool free_surface;                      // free surface calculation
-	bool steady_flow;						// steady-state flow
+	bool partition_uz_solids;
+	//bool free_surface;                      // free surface calculation
+	//bool steady_flow;						// steady-state flow
 	int nxyz;								// number of nodes 
 	int count_chemistry;					// number of cells for chemistry
 	double time;						    // time from transport, sec 

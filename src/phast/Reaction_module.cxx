@@ -132,8 +132,9 @@ if( numCPU < 1 )
 
 	this->gfw_water = 18.;						// gfw of water
 	this->count_chemistry = this->nxyz;
-	this->free_surface = false;					// free surface calculation
-	this->steady_flow = false;					// steady-state flow calculation
+	//this->free_surface = false;					// free surface calculation
+	//this->steady_flow = false;					// steady-state flow calculation
+	this->partition_uz_solids = false;
 	this->time = 0;							    // scalar time from transport 
 	this->time_step = 0;					    // scalar time step from transport
 	this->time_conversion = NULL;				// scalar conversion factor for time
@@ -278,9 +279,13 @@ Reaction_module::CellInitialize(
 	if (n_old1 >= 0)
 	{
 		cxxMix mx;
-		mx.Add(n_old1, f1);
+		// Account for saturation of cell
+		double sat = 1.0;
+		if (saturation[i] > 0) 
+			sat = saturation[i];
+		mx.Add(n_old1, f1 * sat);
 		if (n_old2 >= 0)
-			mx.Add(n_old2, 1 - f1);
+			mx.Add(n_old2, (1 - f1) * sat);
 		cxxSolution cxxsoln(phreeqc_bin.Get_Solutions(), mx, n_user_new);
 		initial_bin.Set_Solution(n_user_new, &cxxsoln);
 	}
@@ -1313,7 +1318,7 @@ Reaction_module::Concentrations2Threads(int n)
 #endif
 
 	for (j = start; j <= end; j++)
-	{
+	{		
 		std::vector<double> d;  // scratch space to convert from mass fraction to moles
 		// j is count_chem number
 		i = this->back[j][0];
@@ -1356,7 +1361,7 @@ Reaction_module::Concentrations2Threads(int n)
 		// convert mol/L to moles per cell
 		for (k = 0; k < (int) this->components.size(); k++)
 		{	
-			d[k] *= this->pore_volume[i] / this->pore_volume_zero[i]; // * saturation[i];
+			d[k] *= this->pore_volume[i] / this->pore_volume_zero[i] * saturation[i];
 		}
 				
 		// update solution 
@@ -3113,6 +3118,252 @@ Reaction_module::RunCellsThread(int n)
 		bool pr_chem = this->print_chemistry_on && (this->print_chem_mask[j] != 0);
 
 		// partition solids between UZ and SZ
+		//if (this->free_surface && !this->steady_flow)	
+		if (this->partition_uz_solids)
+		{
+			this->Partition_uz_thread(n, i, j, this->saturation[j]);
+		}
+
+		// ignore small saturations
+		bool active = true;
+		if (this->saturation[j] <= 1e-10) 
+		{
+			this->saturation[j] = 0.0;
+			active = false;
+		}
+		
+		if (active)
+		{
+			// set cell number, pore volume got Basic functions
+			phast_iphreeqc_worker->Set_cell_volumes(i, pore_volume_zero[j], this->saturation[j], cell_volume[j]);
+
+			// Adjust for fractional saturation and pore volume
+			//if (this->free_surface && !this->steady_flow)
+			//{
+			//	this->Scale_solids(n, i, 1.0 / this->saturation[j]);
+			//}
+			
+			//if (!(this->free_surface && !this->steady_flow) && !steady_flow)
+			//{
+			//	if (pore_volume_zero[j] != 0 && pore_volume[j] != 0 && pore_volume_zero[j] != pore_volume[j])
+			//	{
+			//		cxxSolution * cxxsol = phast_iphreeqc_worker->Get_solution(i);
+			//		cxxsol->multiply(pore_volume[j] / pore_volume_zero[j]);
+			//	}
+			//}
+
+			// Set print flags
+			phast_iphreeqc_worker->SetOutputStringOn(pr_chem);
+
+			// do the calculation
+			std::ostringstream input;
+			input << "RUN_CELLS\n";
+			input << "  -start_time " << (this->time - this->time_step) << "\n";
+			input << "  -time_step  " << this->time_step << "\n";
+			input << "  -cells      " << i << "\n";
+			input << "END" << "\n";
+			if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) ErrorStop();
+
+			// Adjust for fractional saturation and pore volume
+			//if (this->free_surface && !this->steady_flow)
+			//	this->Scale_solids(n, i, this->saturation[j]);
+			assert(pore_volume_zero[j] != 0);
+			assert(pore_volume[j] != 0);
+			//if (!(this->free_surface && !this->steady_flow) && !steady_flow)
+			//{
+			//	if (pore_volume_zero[j] != 0 && pore_volume[j] != 0 && pore_volume_zero[j] != pore_volume[j])
+			//	{
+			//		cxxSolution * cxxsol = phast_iphreeqc_worker->Get_solution(i);
+			//		cxxsol->multiply(pore_volume_zero[j] / pore_volume[j]);
+			//	}
+			//}
+			// Write output file
+			if (pr_chem)
+			{
+				std::ostringstream line_buff;
+				line_buff << "Time:           " << (this->time) * (this->time_conversion) << "\n";
+                line_buff << "Chemistry cell: " << j + 1 << "\n";
+				line_buff << "Grid cell(s):   ";
+				for (size_t ib = 0; ib < this->back[j].size(); ib++)
+				{
+					line_buff << back[j][ib] << " ";
+				}
+				line_buff << "\n";
+				phast_iphreeqc_worker->Get_out_stream() << line_buff.str();
+				phast_iphreeqc_worker->Get_out_stream() << phast_iphreeqc_worker->GetOutputString();
+			}
+
+			// Write hdf file
+			if (this->selected_output_on)
+			{
+
+				// Add selected output values to IPhreeqcPhast CSelectedOutputMap's
+				std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
+				for ( ; it != phast_iphreeqc_worker->SelectedOutputMap.end(); it++)
+				{
+					int n_user = it->first;
+					std::map< int, CSelectedOutput >::iterator ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(n_user);
+					assert(it->second->GetRowCount() == 2);
+					if (ipp_it == phast_iphreeqc_worker->CSelectedOutputMap.end())
+					{
+						CSelectedOutput cso;
+						phast_iphreeqc_worker->CSelectedOutputMap[n_user] = cso;
+						ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(n_user);
+					}
+					types.clear();
+					longs.clear();
+					doubles.clear();
+					strings.clear();
+					it->second->Serialize(types, longs, doubles, strings);
+					ipp_it->second.DeSerialize(types, longs, doubles, strings);
+				}
+			}
+		} // end active
+		else
+		{
+			if (pr_chem)
+			{
+				std::ostringstream line_buff;
+				line_buff << "Time:           " << (this->time) * (this->time_conversion) << "\n";
+                line_buff << "Chemistry cell: " << j + 1 << "\n";
+				line_buff << "Grid cell(s):   ";
+				for (size_t ib = 0; ib < this->back[j].size(); ib++)
+				{
+					line_buff << back[j][ib] << " ";
+				}
+				line_buff << "\nCell is dry.\n";
+				phast_iphreeqc_worker->Get_out_stream() << line_buff.str();
+			}
+			// Write hdf file
+			if (this->selected_output_on)
+			{
+				bool add_to_cselectedoutputmap = false;
+				// Make dummy run if CSelectedOutputMap not complete	
+				{
+					std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
+					for ( ; it != phast_iphreeqc_worker->SelectedOutputMap.end(); it++)
+					{
+						std::map< int, CSelectedOutput >::iterator ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(it->first);
+						if (ipp_it == phast_iphreeqc_worker->CSelectedOutputMap.end())
+						{
+							// Make a dummy run to fill in headings of selected output
+							std::ostringstream input;
+							input << "SOLUTION " << n + 1 << "; DELETE; -solution " << n + 1 << "\n";
+							if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) ErrorStop();
+							add_to_cselectedoutputmap = true;
+							break;
+						}
+					}
+				}
+				if (add_to_cselectedoutputmap)
+				{
+					std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
+					for ( ; it != phast_iphreeqc_worker->SelectedOutputMap.end(); it++)
+					{
+						int iso = it->first;
+						std::map< int, CSelectedOutput >::iterator ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(it->first);
+						if (ipp_it == phast_iphreeqc_worker->CSelectedOutputMap.end())
+						{
+							// Add new item to CSelectedOutputMap
+							CSelectedOutput cso;
+							// Fill in columns
+							phast_iphreeqc_worker->SetCurrentSelectedOutputUserNumber(iso);
+							int columns = phast_iphreeqc_worker->GetSelectedOutputColumnCount();
+							for (int i = 0; i < columns; i++)
+							{
+								VAR pvar, pvar1;
+								VarInit(&pvar);
+								VarInit(&pvar1);
+								phast_iphreeqc_worker->GetSelectedOutputValue(0, i, &pvar);
+								cso.PushBack(pvar.sVal, pvar1);
+							}
+							phast_iphreeqc_worker->CSelectedOutputMap[iso] = cso;
+						}
+					}
+				}
+				// Add selected output values to IPhreeqcPhast CSelectedOutputMap
+				std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
+				for ( ; it != phast_iphreeqc_worker->SelectedOutputMap.end(); it++)
+				{
+					int iso = it->first;
+					std::map< int, CSelectedOutput >::iterator ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(iso);
+					ipp_it->second.EndRow();
+				}
+			}
+		}
+#ifdef USE_MPI
+		phast_iphreeqc_worker->Get_cell_clock_times().back() += (double) MPI_Wtime();
+#else
+		phast_iphreeqc_worker->Get_cell_clock_times().back() += (double) clock();
+#endif
+	} // end one cell
+#ifndef USE_MPI
+//	this->Solutions2Fractions_thread(n);
+#endif
+	clock_t t_elapsed = clock() - t0;
+
+#ifdef USE_MPI
+	//std::cerr << "          Process: " << this->mpi_myself << " Time: " << (double) t_elapsed << " Cells: " << this->end_cell[this->mpi_myself] - this->start_cell[this->mpi_myself] + 1 << std::endl;
+#else
+	//std::cerr << "          Thread: " << n << " Time: " << (double) t_elapsed << " Cells: " << this->end_cell[n] - this->start_cell[n] + 1 << "\n";
+#endif
+	phast_iphreeqc_worker->Set_thread_clock_time((double) t_elapsed);
+}
+
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+void 
+Reaction_module::RunCellsThread(int n)
+/* ---------------------------------------------------------------------- */
+{
+	/*
+	*   Routine takes mass fractions from HST, equilibrates each cell,
+	*   and returns new mass fractions to HST
+	*/
+
+	/*
+	*   Update solution compositions 
+	*/
+	clock_t t0 = clock();
+	//this->Fractions2Solutions_thread(n);
+
+	int i, j;
+	IPhreeqcPhast *phast_iphreeqc_worker = this->GetWorkers()[n];
+
+	// selected output IPhreeqcPhast
+	phast_iphreeqc_worker->CSelectedOutputMap.clear();
+	std::vector<int> types;
+	std::vector<long> longs;
+	std::vector<double> doubles;
+	std::string strings;
+
+	// Do not write to files from phreeqc, run_cells writes files
+	phast_iphreeqc_worker->SetLogFileOn(false);
+	phast_iphreeqc_worker->SetSelectedOutputFileOn(false);
+	phast_iphreeqc_worker->SetDumpFileOn(false);
+	phast_iphreeqc_worker->SetDumpStringOn(false);
+	phast_iphreeqc_worker->SetOutputFileOn(false);
+	phast_iphreeqc_worker->SetErrorFileOn(false);
+#ifdef USE_MPI
+	int start = this->start_cell[this->mpi_myself];
+	int end = this->end_cell[this->mpi_myself];
+#else
+	int start = this->start_cell[n];
+	int end = this->end_cell[n];
+#endif
+	phast_iphreeqc_worker->Get_cell_clock_times().clear();
+	for (i = start; i <= end; i++)
+	{							/* i is count_chem number */
+		j = back[i][0];			/* j is nxyz number */
+#ifdef USE_MPI
+		phast_iphreeqc_worker->Get_cell_clock_times().push_back(- (double) MPI_Wtime());
+#else
+		phast_iphreeqc_worker->Get_cell_clock_times().push_back(- (double) clock());
+#endif
+		// Set local print flags
+		bool pr_chem = this->print_chemistry_on && (this->print_chem_mask[j] != 0);
+
+		// partition solids between UZ and SZ
 		if (this->free_surface && !this->steady_flow)	
 		{
 			this->Partition_uz_thread(n, i, j, this->saturation[j]);
@@ -3303,8 +3554,8 @@ Reaction_module::RunCellsThread(int n)
 	//std::cerr << "          Thread: " << n << " Time: " << (double) t_elapsed << " Cells: " << this->end_cell[n] - this->start_cell[n] + 1 << "\n";
 #endif
 	phast_iphreeqc_worker->Set_thread_clock_time((double) t_elapsed);
-	
 }
+#endif
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Scale_solids(int n, int iphrq, LDBLE frac)
@@ -3562,7 +3813,7 @@ Reaction_module::SetFilePrefix(std::string &prefix)
 #endif
 	return IRM_OK;
 }
-
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void 
 Reaction_module::Set_free_surface(int * t)
@@ -3577,6 +3828,7 @@ Reaction_module::Set_free_surface(int * t)
 	MPI_Bcast(&this->free_surface, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
 #endif
 }
+#endif
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::SetInputUnits(int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *kin)
@@ -3631,6 +3883,20 @@ Reaction_module::SetInputUnits(int *sol, int *pp, int *ex, int *surf, int *gas, 
 	{
 		SetInputUnitsKinetics(local_kin);
 	}
+}
+/* ---------------------------------------------------------------------- */
+void 
+Reaction_module::SetPartitionUZSolids(int * t)
+/* ---------------------------------------------------------------------- */
+{
+	if (mpi_myself == 0)
+	{
+		if (t == NULL) error_msg("NULL pointer in Set_free_surface", 1);
+		this->partition_uz_solids = (*t != 0);
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&this->partition_uz_solids, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
+#endif
 }
 /* ---------------------------------------------------------------------- */
 void
@@ -3763,6 +4029,7 @@ Reaction_module::SetSaturation(double *t)
 	MPI_Bcast(this->saturation.data(), this->nxyz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 }
+#ifdef SKIP
 void 
 Reaction_module::Set_steady_flow(int *t)
 {
@@ -3775,6 +4042,7 @@ Reaction_module::Set_steady_flow(int *t)
 	MPI_Bcast(&this->steady_flow, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD);
 #endif
 }
+#endif
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::SetSelectedOutputOn(int *t)
