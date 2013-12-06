@@ -750,19 +750,6 @@ RM_SetFilePrefix(int *id, const char *name, long nchar)
 	}
 	return IRM_BADINSTANCE;
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void 
-RM_set_free_surface(int *id, int *t)
-/* ---------------------------------------------------------------------- */
-{
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
-	if (Reaction_module_ptr)
-	{
-		Reaction_module_ptr->Set_free_surface(t);
-	}
-}
-#endif
 
 /* ---------------------------------------------------------------------- */
 void 
@@ -883,19 +870,7 @@ RM_SetSelectedOutputOn(int *id, int *selected_output_on)
 	}
 	return IRM_BADINSTANCE;
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void 
-RM_set_steady_flow(int *id, int *t)
-/* ---------------------------------------------------------------------- */
-{
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
-	if (Reaction_module_ptr)
-	{
-		Reaction_module_ptr->Set_steady_flow(t);
-	}
-}
-#endif
+
 /* ---------------------------------------------------------------------- */
 void RM_SetTemperature(int *id, double *t)
 /* ---------------------------------------------------------------------- */
@@ -988,15 +963,3 @@ void RM_write_output(int *id)
 		RM_interface::phast_io.punch_msg(GetSelectedOutputString(*id));
 	}
 }
-#ifdef SKIP
-/* ---------------------------------------------------------------------- */
-void RM_write_restart(int *id)
-/* ---------------------------------------------------------------------- */
-{
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
-	if (Reaction_module_ptr)
-	{
-		Reaction_module_ptr->Write_restart();
-	}
-}
-#endif
