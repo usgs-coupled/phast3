@@ -185,18 +185,18 @@
             INTEGER :: id, iout
             CHARACTER, OPTIONAL :: prefix
         END FUNCTION RM_SetFilePrefix 
-		
-        SUBROUTINE RM_set_free_surface(id, t)   
-            IMPLICIT NONE
-            INTEGER :: id
-            INTEGER, OPTIONAL :: t
-        END SUBROUTINE RM_set_free_surface 
 
         SUBROUTINE RM_SetInputUnits(id, sol, pp, ex, surf, gas, ss, kin)   
             IMPLICIT NONE
             INTEGER :: id
             INTEGER, OPTIONAL :: sol, pp, ex, surf, gas, ss, kin
         END SUBROUTINE RM_SetInputUnits  
+				
+        SUBROUTINE RM_SetPartitionUZSolids(id, t)   
+            IMPLICIT NONE
+            INTEGER :: id
+            INTEGER, OPTIONAL :: t
+        END SUBROUTINE RM_SetPartitionUZSolids 
 
         SUBROUTINE RM_SetPoreVolume(id, t)   
             IMPLICIT NONE
@@ -245,13 +245,7 @@
             IMPLICIT NONE
             INTEGER :: id
             INTEGER, OPTIONAL :: tf
-        END FUNCTION RM_SetSelectedOutputOn 
-				
-        SUBROUTINE RM_set_steady_flow(id, t)   
-            IMPLICIT NONE
-            INTEGER :: id
-            INTEGER, OPTIONAL :: t
-        END SUBROUTINE RM_set_steady_flow   
+        END FUNCTION RM_SetSelectedOutputOn   
 
         SUBROUTINE RM_SetTemperature(id, t)
             IMPLICIT NONE

@@ -94,6 +94,11 @@ SUBROUTINE phast_worker
 
         deltim_dummy = 0._kdp
         time_phreeqc = 0._kdp
+        ! ... steady flow is calculated here
+        IF (steady_flow) THEN
+            ! ... steady flow calculation calls read3 and init3
+            CALL init3_distribute
+        ENDIF
 !
 ! start of InitializeRM
 !
@@ -105,9 +110,11 @@ SUBROUTINE phast_worker
         CALL RM_SetInputUnits (rm_id)
         CALL RM_SetTimeConversion(rm_id)
         CALL RM_SetPoreVolumeZero(rm_id)
+        CALL RM_SetSaturation(rm_id)
         CALL RM_SetPrintChemistryMask(rm_id)
-        CALL RM_set_free_surface(rm_id)
-        CALL RM_set_steady_flow(rm_id)
+        CALL RM_SetPartitionUZSolids(rm_id)
+        !CALL RM_set_free_surface(rm_id)
+        !CALL RM_set_steady_flow(rm_id)
         CALL RM_SetCellVolume(rm_id)
         CALL RM_SetRebalance(rm_id)
 
@@ -127,13 +134,6 @@ SUBROUTINE phast_worker
 !        
 !end  of InitializeRM
 !
-
-        ! ... steady flow is calculated here
-        IF (steady_flow) THEN
-            ! ... steady flow calculation calls read3 and init3
-            CALL init3_distribute
-        ENDIF
-
         adj_wr_ratio = 1
 !        
 !start  of InitialEquilibrationRM

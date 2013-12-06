@@ -68,14 +68,7 @@ SUBROUTINE phast_manager
     !    pv0 = pv                       ! pressure corrected pv
     !ENDIF
     CALL error2
-
-    ! ...  Initialize Reaction Module
-    CALL InitializeRM
  
-    CALL error4
-    ! ... write2_1 must be called after distribute_initial_conditions and equilibrate
-    ! ... Write initial condition results 
-    CALL write2_1
 
     IF(errexi) GO TO 50 
 
@@ -84,6 +77,12 @@ SUBROUTINE phast_manager
         CALL simulate_ss_flow          ! ... calls read3 and init3
         CALL init3_distribute
     ENDIF
+    ! ...  Initialize Reaction Module
+    CALL InitializeRM
+    CALL error4
+    ! ... write2_1 must be called after distribute_initial_conditions and equilibrate
+    ! ... Write initial condition results 
+    CALL write2_1
 
     ! ... Write zone flows 
     CALL zone_flow_write_heads
@@ -479,10 +478,8 @@ SUBROUTINE InitializeRM
         END SUBROUTINE CreateMappingFortran
     END INTERFACE
     INTEGER i, status
-    INTEGER ifresur, isteady_flow
-    
-    ifresur = fresur
-    isteady_flow = steady_flow   
+    INTEGER ipartition_uz_solids
+ 
     IF(solute) THEN
 
         ! ... Send data to threads or workers
@@ -490,9 +487,16 @@ SUBROUTINE InitializeRM
         CALL RM_SetInputUnits (rm_id, 3, 1, 1, 1, 1, 1, 1)
         CALL RM_SetTimeConversion(rm_id, cnvtmi)
         CALL RM_SetPoreVolumeZero(rm_id, pv0(1))
+        CALL RM_SetSaturation(rm_id, frac(1))
         CALL RM_SetPrintChemistryMask(rm_id, iprint_chem(1))
-        CALL RM_set_free_surface(rm_id, ifresur)
-        CALL RM_set_steady_flow(rm_id, isteady_flow)
+        if (fresur .and. .not. steady_flow) then
+            ipartition_uz_solids = 1
+        else
+            ipartition_uz_solids = 0
+        endif
+        CALL RM_SetPartitionUZSolids(rm_id, ipartition_uz_solids)
+        !CALL RM_set_free_surface(rm_id, ifresur)
+        !CALL RM_set_steady_flow(rm_id, isteady_flow)
         CALL RM_SetCellVolume(rm_id, volume(1))
         CALL RM_SetRebalance(rm_id, rebalance_method_f, rebalance_fraction_f)
 

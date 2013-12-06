@@ -750,7 +750,7 @@ RM_SetFilePrefix(int *id, const char *name, long nchar)
 	}
 	return IRM_BADINSTANCE;
 }
-
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void 
 RM_set_free_surface(int *id, int *t)
@@ -762,6 +762,7 @@ RM_set_free_surface(int *id, int *t)
 		Reaction_module_ptr->Set_free_surface(t);
 	}
 }
+#endif
 
 /* ---------------------------------------------------------------------- */
 void 
@@ -776,6 +777,17 @@ RM_SetInputUnits (int *id, int *sol, int *pp, int *ex, int *surf, int *gas, int 
 	{
 		// WATER = 1, ROCK = 2, as is < 0
 		Reaction_module_ptr->SetInputUnits(sol, pp, ex, surf, gas, ss, kin);
+	}
+}
+/* ---------------------------------------------------------------------- */
+void 
+RM_SetPartitionUZSolids(int *id, int *t)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->SetPartitionUZSolids(t);
 	}
 }
 /* ---------------------------------------------------------------------- */
@@ -871,6 +883,7 @@ RM_SetSelectedOutputOn(int *id, int *selected_output_on)
 	}
 	return IRM_BADINSTANCE;
 }
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void 
 RM_set_steady_flow(int *id, int *t)
@@ -882,7 +895,7 @@ RM_set_steady_flow(int *id, int *t)
 		Reaction_module_ptr->Set_steady_flow(t);
 	}
 }
-
+#endif
 /* ---------------------------------------------------------------------- */
 void RM_SetTemperature(int *id, double *t)
 /* ---------------------------------------------------------------------- */
