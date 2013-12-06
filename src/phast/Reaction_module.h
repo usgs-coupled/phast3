@@ -148,19 +148,12 @@ public:
 	void                                      SetTimeStep(double *t = NULL); 
 protected:
 	void                                      BeginTimeStep(void);
-	void                                      CellInitialize(
+	IRM_RESULT                                CellInitialize(
 		                                          int i, 
 		                                          int n_user_new, 
 		                                          int *initial_conditions1,
 		                                          int *initial_conditions2, 
 		                                          double *fraction1,
-		                                          int exchange_units, 
-		                                          int surface_units, 
-		                                          int ssassemblage_units,
-		                                          int ppassemblage_units, 
-		                                          int gasphase_units, 
-		                                          int kinetics_units,
-		                                          double porosity_factor,
 		                                          std::set<std::string> error_set);
 	int                                       CheckSelectedOutput();
 	void                                      Concentrations2Threads(int n);

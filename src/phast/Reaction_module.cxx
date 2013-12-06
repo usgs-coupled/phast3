@@ -237,20 +237,13 @@ Reaction_module::Calculate_well_ph(double *c, double * pH, double * alkalinity)
 	return;
 }
 /* ---------------------------------------------------------------------- */
-void
+IRM_RESULT
 Reaction_module::CellInitialize(
 					int i, 
 					int n_user_new, 
 					int *initial_conditions1,
 					int *initial_conditions2, 
 					double *fraction1,
-					int exchange_units, 
-					int surface_units, 
-					int ssassemblage_units,
-					int ppassemblage_units, 
-					int gasphase_units, 
-					int kinetics_units,
-					double porosity_factor,
 					std::set<std::string> error_set)
 /* ---------------------------------------------------------------------- */
 {
@@ -258,6 +251,11 @@ Reaction_module::CellInitialize(
 	double f1;
 
 	cxxStorageBin initial_bin;
+
+	IRM_RESULT rtn = IRM_OK;
+	double cell_porosity_local = pore_volume_zero[i] / cell_volume[i];
+	double porosity_factor = (1.0 - cell_porosity_local) / cell_porosity_local;
+
 	/*
 	 *   Copy solution
 	 */
@@ -268,12 +266,14 @@ Reaction_module::CellInitialize(
 		std::ostringstream e_stream;
 		e_stream << "Initial condition SOLUTION " << n_old1 << " not found.";
 		error_set.insert(e_stream.str());
+		rtn = IRM_FAIL;
 	}
 	if (n_old2 > 0 && phreeqc_bin.Get_Solutions().find(n_old2) == phreeqc_bin.Get_Solutions().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition SOLUTION " << n_old2 << " not found.";
 		error_set.insert(e_stream.str());
+		rtn = IRM_FAIL;
 	}
 	f1 = fraction1[7 * i];
 	if (n_old1 >= 0)
@@ -300,12 +300,14 @@ Reaction_module::CellInitialize(
 		std::ostringstream e_stream;
 		e_stream << "Initial condition EQUILIBRIUM_PHASES " << n_old1 << " not found.";
 		error_set.insert(e_stream.str());
+		rtn = IRM_FAIL;
 	}
 	if (n_old2 > 0 && phreeqc_bin.Get_PPassemblages().find(n_old2) == phreeqc_bin.Get_PPassemblages().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition EQUILIBRIUM_PHASES " << n_old2 << " not found.";
 		error_set.insert(e_stream.str());
+		rtn = IRM_FAIL;
 	}
 	f1 = fraction1[7 * i + 1];
 	if (n_old1 >= 0)
@@ -314,7 +316,7 @@ Reaction_module::CellInitialize(
 		mx.Add(n_old1, f1);
 		if (n_old2 >= 0)
 			mx.Add(n_old2, 1 - f1);
-		if (ppassemblage_units == 2)
+		if (this->input_units_PPassemblage == 2)
 		{
 			mx.Multiply(porosity_factor);
 		}
@@ -333,12 +335,14 @@ Reaction_module::CellInitialize(
 		std::ostringstream e_stream;
 		e_stream << "Initial condition EXCHANGE " << n_old1 << " not found.";
 		error_set.insert(e_stream.str());
+		rtn = IRM_FAIL;
 	}
 	if (n_old2 > 0 && phreeqc_bin.Get_Exchangers().find(n_old2) == phreeqc_bin.Get_Exchangers().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition EXCHANGE " << n_old2 << " not found.";
 		error_set.insert(e_stream.str());
+		rtn = IRM_FAIL;
 	}
 	f1 = fraction1[7 * i + 2];
 	if (n_old1 >= 0)
@@ -347,7 +351,7 @@ Reaction_module::CellInitialize(
 		mx.Add(n_old1, f1);
 		if (n_old2 >= 0)
 			mx.Add(n_old2, 1 - f1);
-		if (exchange_units == 2)
+		if (this->input_units_Exchange == 2)
 		{
 			mx.Multiply(porosity_factor);
 		}
@@ -364,12 +368,14 @@ Reaction_module::CellInitialize(
 		std::ostringstream e_stream;
 		e_stream << "Initial condition SURFACE " << n_old1 << " not found.";
 		error_set.insert(e_stream.str());
+		rtn = IRM_FAIL;
 	}
 	if (n_old2 > 0 && phreeqc_bin.Get_Surfaces().find(n_old2) == phreeqc_bin.Get_Surfaces().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition SURFACE " << n_old2 << " not found.";
 		error_set.insert(e_stream.str());
+		rtn = IRM_FAIL;
 	}
 	f1 = fraction1[7 * i + 3];
 	if (n_old1 >= 0)
@@ -378,7 +384,7 @@ Reaction_module::CellInitialize(
 		mx.Add(n_old1, f1);
 		if (n_old2 >= 0)
 			mx.Add(n_old2, 1 - f1);
-		if (surface_units == 2)
+		if (this->input_units_Surface == 2)
 		{
 			mx.Multiply(porosity_factor);
 		}
@@ -395,12 +401,14 @@ Reaction_module::CellInitialize(
 		std::ostringstream e_stream;
 		e_stream << "Initial condition GAS_PHASE " << n_old1 << " not found.";
 		error_set.insert(e_stream.str());
+		rtn = IRM_FAIL;
 	}
 	if (n_old2 > 0 && phreeqc_bin.Get_GasPhases().find(n_old2) == phreeqc_bin.Get_GasPhases().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition GAS_PHASE " << n_old2 << " not found.";
 		error_set.insert(e_stream.str());
+		rtn = IRM_FAIL;
 	}
 	f1 = fraction1[7 * i + 4];
 	if (n_old1 >= 0)
@@ -409,7 +417,7 @@ Reaction_module::CellInitialize(
 		mx.Add(n_old1, f1);
 		if (n_old2 >= 0)
 			mx.Add(n_old2, 1 - f1);
-		if (gasphase_units == 2)
+		if (this->input_units_GasPhase == 2)
 		{
 			mx.Multiply(porosity_factor);
 		}
@@ -426,12 +434,14 @@ Reaction_module::CellInitialize(
 		std::ostringstream e_stream;
 		e_stream << "Initial condition SOLID_SOLUTIONS " << n_old1 << " not found.";
 		error_set.insert(e_stream.str());
+		rtn = IRM_FAIL;
 	}
 	if (n_old2 > 0 && phreeqc_bin.Get_SSassemblages().find(n_old2) == phreeqc_bin.Get_SSassemblages().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition SOLID_SOLUTIONS " << n_old2 << " not found.";
 		error_set.insert(e_stream.str());
+		rtn = IRM_FAIL;
 	}
 	f1 = fraction1[7 * i + 5];
 	if (n_old1 >= 0)
@@ -440,7 +450,7 @@ Reaction_module::CellInitialize(
 		mx.Add(n_old1, f1);
 		if (n_old2 >= 0)
 			mx.Add(n_old2, 1 - f1);
-		if (ssassemblage_units == 2)
+		if (this->input_units_SSassemblage == 2)
 		{
 			mx.Multiply(porosity_factor);
 		}
@@ -458,12 +468,14 @@ Reaction_module::CellInitialize(
 		std::ostringstream e_stream;
 		e_stream << "Initial condition KINETICS " << n_old1 << " not found.";
 		error_set.insert(e_stream.str());
+		rtn = IRM_FAIL;
 	}
 	if (n_old2 > 0 && phreeqc_bin.Get_SSassemblages().find(n_old2) == phreeqc_bin.Get_SSassemblages().end())
 	{
 		std::ostringstream e_stream;
 		e_stream << "Initial condition KINETICS " << n_old2 << " not found.";
 		error_set.insert(e_stream.str());
+		rtn = IRM_FAIL;
 	}
 	f1 = fraction1[7 * i + 6];
 	if (n_old1 >= 0)
@@ -472,7 +484,7 @@ Reaction_module::CellInitialize(
 		mx.Add(n_old1, f1);
 		if (n_old2 >= 0)
 			mx.Add(n_old2, 1 - f1);
-		if (kinetics_units == 2)
+		if (this->input_units_Kinetics == 2)
 		{
 			mx.Multiply(porosity_factor);
 		}
@@ -480,7 +492,7 @@ Reaction_module::CellInitialize(
 		initial_bin.Set_Kinetics(n_user_new, &cxxentity);
 	}
 	this->GetWorkers()[0]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(initial_bin);
-	return;
+	return rtn;
 }
 /* ---------------------------------------------------------------------- */
 int 
@@ -1588,70 +1600,46 @@ Reaction_module::InitialPhreeqc2Module(
 	 *  Does nothing for indexes less than 0 (i.e. restart files)
 	 */
 
+	size_t count_negative_porosity = 0;
+	std::set<std::string> error_set;
+
 #ifdef USE_MPI
 	int begin = this->start_cell[this->mpi_myself];
 	int end = this->end_cell[this->mpi_myself] + 1;
-	size_t count_negative_porosity = 0;
-	std::set<std::string> error_set;
+#else
+	int begin = 0;
+	int end = this->nxyz;
+#endif
 	
 	for (int k = begin; k < end; k++)
 	{	
+#ifdef USE_MPI
+		i = this->back[k][0];           /* i is ixyz number */
 		j = k;                          /* j is count_chem number */
-		i = this->back[j][0];           /* i is ixyz number */
-
-		assert(forward[i] >= 0);
-		assert (cell_volume[i] > 0.0);
-		double porosity = pore_volume_zero[i] / cell_volume[i];
-		if (pore_volume_zero[i] < 0 || cell_volume[i] < 0)
-		{
-			std::ostringstream errstr;
-			errstr << "Negative volume in cell " << i << ": volume, " << cell_volume[i]; 
-			errstr << "\t initial volume, " << this->pore_volume_zero[i] << ".",
-			count_negative_porosity++;
-			error_msg(errstr.str().c_str());
-			rtn = IRM_FAIL;
-			continue;
-		}
-		assert (porosity > 0.0);
-		double porosity_factor = (1.0 - porosity) / porosity;
-		this->CellInitialize(i, j, initial_conditions1.data(), initial_conditions2.data(),
-			fraction1.data(),
-			this->input_units_Exchange, this->input_units_Surface, this->input_units_SSassemblage,
-			this->input_units_PPassemblage, this->input_units_GasPhase, this->input_units_Kinetics,
-			porosity_factor,
-			error_set);
-	}
 #else
-	size_t count_negative_porosity = 0;
-	std::set<std::string> error_set;
-	for (i = 0; i < nxyz; i++)
-	{							        /* i is ixyz number */
+		i = k;                          /* i is ixyz number */   
 		j = this->forward[i];			/* j is count_chem number */
-		if (j < 0)
-			continue;
+		if (j < 0)	continue;
+#endif
 		assert(forward[i] >= 0);
 		assert (cell_volume[i] > 0.0);
-		double porosity = pore_volume_zero[i] / cell_volume[i];
-		if (pore_volume_zero[i] < 0 || cell_volume[i] < 0)
+		if (pore_volume_zero[i] < 0 || cell_volume[i] <= 0)
 		{
 			std::ostringstream errstr;
-			errstr << "Negative volume in cell " << i << ": volume, " << cell_volume[i]; 
+			errstr << "Nonpositive volume in cell " << i << ": volume, " << cell_volume[i]; 
 			errstr << "\t initial volume, " << this->pore_volume_zero[i] << ".",
 			count_negative_porosity++;
 			error_msg(errstr.str().c_str());
 			rtn = IRM_FAIL;
 			continue;
 		}
-		assert (porosity > 0.0);
-		double porosity_factor = (1.0 - porosity) / porosity;
-		this->CellInitialize(i, j, initial_conditions1.data(), initial_conditions2.data(),
-			fraction1.data(),
-			this->input_units_Exchange, this->input_units_Surface, this->input_units_SSassemblage,
-			this->input_units_PPassemblage, this->input_units_GasPhase, this->input_units_Kinetics,
-			porosity_factor,
-			error_set);
+		if (this->CellInitialize(i, j, initial_conditions1.data(), initial_conditions2.data(),
+			fraction1.data(), error_set) != IRM_OK)
+		{
+			rtn = IRM_FAIL;
+		}
 	}
-#endif
+
 	if (error_set.size() > 0)
 	{
 		rtn = IRM_FAIL;
