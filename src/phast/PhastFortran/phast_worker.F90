@@ -103,18 +103,13 @@ SUBROUTINE phast_worker
 ! start of InitializeRM
 !
         ! ... Initialize chemistry 
-        !CALL xfer_indices(indx_sol1_ic(1,1), indx_sol2_ic(1,1), ic_mxfrac(1,1), naxes(1), nxyz,  &
-        !    x_node(1), y_node(1), z_node(1), cnvtmi, steady_flow, pv0(1),  &
-        !    rebalance_method_f, volume(1), tort(1), npmz, &
-        !    mpi_myself)
+
         CALL RM_SetInputUnits (rm_id)
         CALL RM_SetTimeConversion(rm_id)
         CALL RM_SetPoreVolumeZero(rm_id)
         CALL RM_SetSaturation(rm_id)
         CALL RM_SetPrintChemistryMask(rm_id)
         CALL RM_SetPartitionUZSolids(rm_id)
-        !CALL RM_set_free_surface(rm_id)
-        !CALL RM_set_steady_flow(rm_id)
         CALL RM_SetCellVolume(rm_id)
         CALL RM_SetRebalance(rm_id)
 
@@ -149,8 +144,7 @@ SUBROUTINE phast_worker
             deltim_dummy,                                 &        ! time_step_hst
             c(1,1),                                       &        ! fraction
             stop_msg) 
-        CALL FH_WriteFiles(rm_id) !, prhdfci, pr_hdf_media, prcphrqi, &
-	    !    iprint_xyz(1))   
+        CALL FH_WriteFiles(rm_id)  
 !        
 !end  of InitialEquilibrationRM
 !     
@@ -236,10 +230,8 @@ SUBROUTINE phast_worker
      
     ENDIF        ! ... solute
 
-    !!$  if (solute) CALL XP_destroy(xp_list(1))
     CALL MPI_BARRIER(MPI_COMM_WORLD, ierrmpi)
     CALL terminate_phast_worker
-    !!$ PRINT *, 'Transport Simulation Completed; exit worker process ', mpi_myself
 
 CONTAINS
 

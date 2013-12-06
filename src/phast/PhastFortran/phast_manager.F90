@@ -30,9 +30,6 @@ SUBROUTINE phast_manager
     INTEGER :: i, a_err
     INTEGER status
     !     ------------------------------------------------------------------
-
-    !...
-
     errexi=.FALSE.
     errexe=.FALSE.
 !
@@ -57,19 +54,13 @@ SUBROUTINE phast_manager
 !    
     CALL read2
     CALL init2_1
-    !pv0 = pv                           ! geometric pv
     CALL group2_distribute             ! Tranfer data to workers
   
     ! ... Create transporters
     CALL create_transporters
-
     CALL init2_2
-    !IF (.NOT.steady_flow) THEN
-    !    pv0 = pv                       ! pressure corrected pv
-    !ENDIF
     CALL error2
  
-
     IF(errexi) GO TO 50 
 
     ! ... Calculate steady flow
@@ -260,18 +251,18 @@ END SUBROUTINE phast_manager
 
 SUBROUTINE time_parallel(i)
 #if defined(USE_MPI)
-USE mpi_mod
-USE mpi
+    USE mpi_mod
+    USE mpi
 #endif
-IMPLICIT none   
-integer :: i, ierr
-DOUBLE PRECISION t
-DOUBLE PRECISION, DIMENSION(0:15), save :: times
-DOUBLE PRECISION, save :: time_flow=0, time_transfer, time_transport, time_chemistry
-DOUBLE PRECISION, save :: cum_flow=0, cum_transfer=0, cum_transport=0, cum_chemistry
-CHARACTER(LEN=130) :: logline
+    IMPLICIT none   
+    integer :: i, ierr
+    DOUBLE PRECISION t
+    DOUBLE PRECISION, DIMENSION(0:15), save :: times
+    DOUBLE PRECISION, save :: time_flow=0, time_transfer, time_transport, time_chemistry
+    DOUBLE PRECISION, save :: cum_flow=0, cum_transfer=0, cum_transport=0, cum_chemistry
+    CHARACTER(LEN=130) :: logline
 #ifndef USE_MPI
-INTEGER t_ticks, clock_rate, clock_max
+    INTEGER t_ticks, clock_rate, clock_max
 #endif
 
 #if defined(USE_MPI)
@@ -289,7 +280,7 @@ INTEGER t_ticks, clock_rate, clock_max
     if (i == 13) then
         ! C_distribute + p_distribute
         time_transfer = times(1) - times(0)
-        
+
         ! logic for read3
         if (times(2) > 0) then
             time_flow = times(2) - times(1)
@@ -299,10 +290,10 @@ INTEGER t_ticks, clock_rate, clock_max
         else
             time_flow = times(4) - times(1)
         endif
-        
+
         ! thru distribute
         time_transfer = time_transfer + (times(5) - times(4))
-        
+
         ! not steady flow
         if (times(6) > 0) then
             time_flow = time_flow + (times(6) - times(5))
@@ -311,22 +302,19 @@ INTEGER t_ticks, clock_rate, clock_max
         else
             time_flow = time_flow + (times(8) - times(5))
         endif
-                
+
         ! transport
         time_transport = times(9) - times(8)
         time_transfer = time_transfer + (times(10) - times(9))
         time_flow = time_flow + (times(11) - times(10))
         time_chemistry = times(12) - times(11)
         time_flow = time_flow + (times(13) - times(12))
-        
-        
-        
-        
+
         cum_flow = cum_flow + time_flow
         cum_transport = cum_transport + time_transport
         cum_transfer = cum_transfer + time_transfer
         cum_chemistry = cum_chemistry + time_chemistry
-        
+
         write (logline,"(t6,a25, f12.2,a17, f13.2)") "Time flow:               ", time_flow, " Cumulative:", cum_flow
         CALL RM_LogScreenMessage(logline)
         write (logline,"(t6,a25, f12.2,a17, f13.2)") "Time transport:          ", time_transport, " Cumulative:", cum_transport
@@ -337,6 +325,7 @@ INTEGER t_ticks, clock_rate, clock_max
         CALL RM_LogScreenMessage(logline)     
     endif
 END SUBROUTINE time_parallel
+
 SUBROUTINE transport_component(i)
     USE mcc, ONLY: cylind, errexe, errexi, rm_id
     USE mcw, ONLY: nwel
@@ -357,9 +346,10 @@ SUBROUTINE transport_component(i)
     CALL XP_sumcal1(xp_list(i))
     IF(errexe .OR. errexi) CALL RM_error(rm_id)
 END SUBROUTINE transport_component
+    
 SUBROUTINE transport_component_thread(i)
-    USE mcc, ONLY: mpi_myself, cylind, errexe, errexi, rm_id
-    USE mcw, ONLY: nwel
+    USE mcc, ONLY:       mpi_myself, cylind, errexe, errexi, rm_id
+    USE mcw, ONLY:       nwel
     USE XP_module, ONLY: xp_list, XP_init_thread, XP_free_thread
     IMPLICIT none
     INTEGER :: i
@@ -422,12 +412,12 @@ END SUBROUTINE CreateRM
   
 SUBROUTINE InitialEquilibrationRM 
     USE machine_constants, ONLY: kdp
-    USE mcc, only: iprint_xyz, prcphrqi, prf_chem_phrqi, prhdfci, rm_id, solute, steady_flow
-    USE mcg, only: grid2chem
-    USE mcn, only: x_node, y_node, z_node
-    USE mcp, only: pv
-    USE mcv, only: c, frac, time_phreeqc
-    USE hdf_media_m, only: pr_hdf_media
+    USE mcc, ONLY:               iprint_xyz, prcphrqi, prf_chem_phrqi, prhdfci, rm_id, solute, steady_flow
+    USE mcg, ONLY:               grid2chem
+    USE mcn, ONLY:               x_node, y_node, z_node
+    USE mcp, ONLY:               pv
+    USE mcv, ONLY:               c, frac, time_phreeqc
+    USE hdf_media_m, ONLY:       pr_hdf_media
     IMPLICIT NONE
     SAVE
     INCLUDE 'RM_interface.f90.inc' 
@@ -445,7 +435,6 @@ SUBROUTINE InitialEquilibrationRM
         deltim_dummy = 0._kdp
         CALL RM_SetPoreVolume(rm_id, pv(1))
         CALL RM_SetSaturation(rm_id, frac(1))
-        !CALL RM_set_printing(rm_id, prf_chem_phrqi, prhdfci, 0)
         status = RM_SetPrintChemistryOn(rm_id, prf_chem_phrqi)
         status = RM_SetSelectedOutputOn(rm_id, prhdfci .or. prcphrqi)
         CALL RM_RunCells(      &
@@ -460,13 +449,13 @@ SUBROUTINE InitialEquilibrationRM
 END SUBROUTINE InitialEquilibrationRM
     
 SUBROUTINE InitializeRM 
-    USE mcb, only: fresur
-    USE mcc, only: iprint_chem, rebalance_fraction_f, rebalance_method_f, rm_id, solute, steady_flow
-    USE mcch, only: num_restart_files, restart_files
-    USE mcg, only: grid2chem
-    USE mcn, only: x_node, y_node, z_node, pv0, volume
-    USE mcp, only: cnvtmi
-    USE mcv, only: c, frac, indx_sol1_ic, indx_sol2_ic, ic_mxfrac 
+    USE mcb, ONLY:  fresur
+    USE mcc, ONLY:  iprint_chem, rebalance_fraction_f, rebalance_method_f, rm_id, solute, steady_flow
+    USE mcch, ONLY: num_restart_files, restart_files
+    USE mcg, ONLY:  grid2chem
+    USE mcn, ONLY:  x_node, y_node, z_node, pv0, volume
+    USE mcp, ONLY:  cnvtmi
+    USE mcv, ONLY:  c, frac, indx_sol1_ic, indx_sol2_ic, ic_mxfrac 
 
     IMPLICIT NONE
     SAVE
@@ -495,8 +484,6 @@ SUBROUTINE InitializeRM
             ipartition_uz_solids = 0
         endif
         CALL RM_SetPartitionUZSolids(rm_id, ipartition_uz_solids)
-        !CALL RM_set_free_surface(rm_id, ifresur)
-        !CALL RM_set_steady_flow(rm_id, isteady_flow)
         CALL RM_SetCellVolume(rm_id, volume(1))
         CALL RM_SetRebalance(rm_id, rebalance_method_f, rebalance_fraction_f)
 
@@ -523,13 +510,13 @@ SUBROUTINE InitializeRM
 END SUBROUTINE InitializeRM
     
 SUBROUTINE TimeStepRM    
-    USE mcc, only: iprint_xyz, prcphrqi, prhdfci, rm_id, solute
-    USE mcg, only: grid2chem
-    USE mcn, only: x_node, y_node, z_node
-    USE mcp, only: pv
-    USE mcv, only: c, deltim, frac, indx_sol1_ic, time
-    USE hdf_media_m,       ONLY: pr_hdf_media
-    USE print_control_mod, only: print_force_chemistry, print_hdf_chemistry, print_restart
+    USE mcc, ONLY:               iprint_xyz, prcphrqi, prhdfci, rm_id, solute
+    USE mcg, ONLY:               grid2chem
+    USE mcn, ONLY:               x_node, y_node, z_node
+    USE mcp, ONLY:               pv
+    USE mcv,  ONLY:              c, deltim, frac, indx_sol1_ic, time
+    USE hdf_media_m, ONLY:       pr_hdf_media
+    USE print_control_mod, ONLY: print_force_chemistry, print_hdf_chemistry, print_restart
     IMPLICIT NONE
     SAVE
     INCLUDE 'RM_interface.f90.inc' 
@@ -542,10 +529,6 @@ SUBROUTINE TimeStepRM
         CALL RM_LogScreenMessage(logline1)
         CALL RM_SetPoreVolume(rm_id, pv(1))
         CALL RM_SetSaturation(rm_id, frac(1))
-        !CALL RM_set_printing(rm_id,                     &
-        !    print_force_chemistry%print_flag_integer,   & 
-        !    print_hdf_chemistry%print_flag_integer,     & 
-        !    print_restart%print_flag_integer)
         
         status = RM_SetPrintChemistryOn(rm_id, print_force_chemistry%print_flag_integer)
         status = RM_SetSelectedOutputOn(rm_id, prhdfci .or. prcphrqi)

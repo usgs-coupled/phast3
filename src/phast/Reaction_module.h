@@ -43,10 +43,6 @@ public:
 	// TODO ///////////////////////////
 	void                           Calculate_well_ph(double *c, double * ph, double * alkalinity);
 	void                           Convert_to_molal(double *c, int n, int dim);
-	//const bool                     Get_free_surface(void) const {return this->free_surface;}
-	//void                           Set_free_surface(int * t); 
-	//const bool                     Get_steady_flow(void) const {return this->steady_flow;}
-	//void                           Set_steady_flow(int * t);
 	void                           Write_bc_raw(int *solution_list, int * bc_solution_count, 
                                         int * solution_number, 
                                         const std::string &prefix);
@@ -160,14 +156,10 @@ protected:
 	void                                      cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
 	void                                      ErrorStop(void);
 	cxxStorageBin &                           Get_phreeqc_bin(void) {return this->phreeqc_bin;}
-	void                                      Partition_uz(int iphrq, int ihst, double new_frac);
-	void                                      Partition_uz_thread(int n, int iphrq, int ihst, double new_frac);
+	void                                      PartitionUZ(int n, int iphrq, int ihst, double new_frac);
 	void                                      RebalanceLoad(void);
 	void                                      WriteError(const char * item);
 	void                                      WriteOutput(const char * item);
-#ifdef SKIP
-	void Init_uz(void);
-#endif
 	int                                       InitialPhreeqcRunThread(int n);
 	void                                      RebalanceLoadPerCell(void);
 	void                                      RunCellsThread(int i);
