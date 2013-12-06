@@ -208,6 +208,7 @@ FileHandler::ProcessRestartFiles(
 					z,
 					v;
 				cparser.get_iss() >> x;
+				if (x < -1e39) break;
 				cparser.get_iss() >> y;
 				cparser.get_iss() >> z;
 				cparser.get_iss() >> v;
@@ -622,28 +623,31 @@ FileHandler::WriteRestart(int *id, int *print_restart)
 				ofs_restart << Reaction_module_ptr->GetChemistryCellCount() << std::endl;
 				for (int j = 0; j < count_chemistry; j++)	/* j is count_chem number */
 				{
-					for (size_t k = 0; k < Reaction_module_ptr->GetBack()[j].size(); k++)
-					{
-						int i = Reaction_module_ptr->GetBack()[j][k];			/* i is nxyz number */
-						ofs_restart << x_node[i] << "  " << y_node[i] << "  " << z_node[i] << "  " << j << "  ";
-						// solution 
-						ofs_restart << this->ic[7 * i] << "  ";
-						// pp_assemblage
-						ofs_restart << this->ic[7 * i + 1] << "  ";
-						// exchange
-						ofs_restart << this->ic[7 * i + 2] << "  ";
-						// surface
-						ofs_restart << this->ic[7 * i + 3] << "  ";
-						// gas_phase
-						ofs_restart << this->ic[7 * i + 4] << "  ";
-						// solid solution
-						ofs_restart << this->ic[7 * i + 5] << "  ";
-						// kinetics
-						ofs_restart << this->ic[7 * i + 6] << std::endl;
-					}
+					//for (size_t k = 0; k < Reaction_module_ptr->GetBack()[j].size(); k++)
+					//{
+						int i = Reaction_module_ptr->GetBack()[j][0];			/* i is nxyz number */
+						if (this->saturation[i] > 0.0)
+						{
+							ofs_restart << x_node[i] << "  " << y_node[i] << "  " << z_node[i] << "  " << j << "  ";
+							// solution 
+							ofs_restart << this->ic[7 * i] << "  ";
+							// pp_assemblage
+							ofs_restart << this->ic[7 * i + 1] << "  ";
+							// exchange
+							ofs_restart << this->ic[7 * i + 2] << "  ";
+							// surface
+							ofs_restart << this->ic[7 * i + 3] << "  ";
+							// gas_phase
+							ofs_restart << this->ic[7 * i + 4] << "  ";
+							// solid solution
+							ofs_restart << this->ic[7 * i + 5] << "  ";
+							// kinetics
+							ofs_restart << this->ic[7 * i + 6] << "\n";
+						}
+					//}
 				}
 			}
-
+			ofs_restart << "-1e40       END OF INDEX\n";
 			// write data
 #ifdef USE_MPI
 			Reaction_module_ptr->GetWorkers()[0]->SetDumpStringOn(true); 

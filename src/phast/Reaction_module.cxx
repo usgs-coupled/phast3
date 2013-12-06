@@ -3244,34 +3244,26 @@ Reaction_module::RunCellsThread(int n)
 						std::map< int, CSelectedOutput >::iterator ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(it->first);
 						if (ipp_it == phast_iphreeqc_worker->CSelectedOutputMap.end())
 						{	
+							// Make a dummy run to fill in headings of selected output
+							std::ostringstream input;
+							input << "SOLUTION " << n + 1 << "; DELETE; -solution " << n + 1 << "\n";
+							if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) ErrorStop();
+
 							// Add new item to CSelectedOutputMap
 							CSelectedOutput cso;
-							phast_iphreeqc_worker->CSelectedOutputMap[iso] = cso;
-							fail = true;
-						}
-						if (fail)
-						{				
-							if (need_phreeqc_run)
-							{
-								// Make a dummy run to fill in headings of selected output
-								std::ostringstream input;
-								input << "SOLUTION " << n + 1 << "; DELETE; -solution " << n + 1 << "\n";
-								if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) ErrorStop();
-								need_phreeqc_run = false;
-							}
-							ipp_it = phast_iphreeqc_worker->CSelectedOutputMap.find(it->first);
+							// Fill in columns
 							phast_iphreeqc_worker->SetCurrentSelectedOutputUserNumber(iso);
 							int columns = phast_iphreeqc_worker->GetSelectedOutputColumnCount();
-							// Fill in columns
 							for (int i = 0; i < columns; i++)
 							{
 								VAR pvar, pvar1;
 								VarInit(&pvar);
 								VarInit(&pvar1);
 								phast_iphreeqc_worker->GetSelectedOutputValue(0, i, &pvar);
-								ipp_it->second.PushBack(pvar.sVal, pvar1);
+								cso.PushBack(pvar.sVal, pvar1);
 							}
-							break;
+							phast_iphreeqc_worker->CSelectedOutputMap[iso] = cso;
+							fail = true;
 						}
 					}
 				}
