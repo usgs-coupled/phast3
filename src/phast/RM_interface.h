@@ -85,6 +85,7 @@ private:
 #if defined(__cplusplus)
 extern "C" {
 #endif
+
 void       RM_calculate_well_ph(int *id, double *c, double * ph, double * alkalinity);
 void       RM_CloseFiles(void);
 void       RM_convert_to_molal(int *id, double *c, int *n, int *dim);
@@ -118,22 +119,161 @@ IRM_RESULT RM_InitialPhreeqc2Concentrations(
                 int *boundary_solution1,  
                 int *boundary_solution2 = NULL, 
                 double *fraction = NULL);
+/**
+ *  Transfer results from the InitialPhreeqc IPhreeqc instance to the reaction module workers. 
+ *  @param id                   The instance id returned from @ref RM_Create.
+ *  @param initial_conditions1  Array containing index numbers of solutions and reactants.
+ *  @param initial_conditions2  Array containing index numbers of solutions and reactants (optional).
+ *  @param fraction1            Array containing fraction of initial_condition1 when initial_conditions2 is defined (optional).
+ *
+ *  The structure of the initial condition arrays are 
+ *  @see                 ???
+ *  MPI:
+ *     Except for id, arguments are optional for non-root processes.
+ *  @par Fortran90 Interface:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+        INTEGER FUNCTION RM_InitialPhreeqcRunFile(id, chem_name)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            CHARACTER, OPTIONAL, INTENT(in) :: chem_name
+        END FUNCTION RM_InitialPhreeqcRunFile 
+ *  </PRE>
+ *  </CODE>
+ *  @endhtmlonly
+ */
 IRM_RESULT RM_InitialPhreeqc2Module(int *id,
                 int *initial_conditions1 = NULL,		// 7 x nxyz end-member 1
                 int *initial_conditions2 = NULL,		// 7 x nxyz end-member 2
                 double *fraction1 = NULL);			    // 7 x nxyz fraction of end-member 1
+/**
+ *  Run a PHREEQC file by the InitialPhreeqc (and all worker IPhreeqc instances, currently). 
+ *  @param id            The instance id returned from @ref RM_Create.
+ *  @param chem_name     String containing the name of the PHREEQC file to run.
+ *  @param l             Length of the chem_name string buffer (automatic in Fortran, optional in C).
+ *  @see                 ???
+ *  MPI:
+ *     Except for id, arguments are optional for non-root processes.
+ *  @par Fortran90 Interface:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+        INTEGER FUNCTION RM_InitialPhreeqcRunFile(id, chem_name)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            CHARACTER, OPTIONAL, INTENT(in) :: chem_name
+        END FUNCTION RM_InitialPhreeqcRunFile 
+ *  </PRE>
+ *  </CODE>
+ *  @endhtmlonly
+ */
 int        RM_InitialPhreeqcRunFile(int *id, const char *chem_name = NULL, long l = -1);
+/**
+ *  Load a database for the InitialPhreeqc and all worker IPhreeqc instances. 
+ *  @param id            The instance id returned from @ref RM_Create.
+ *  @param db_name       String containing the database name.
+ *  @param l             Length of the db_name string buffer (automatic in Fortran, optional in C).
+ *  @see                 ???
+ *  MPI:
+ *     Except for id, arguments are optional for non-root processes.
+ *  @par Fortran90 Interface:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>  
+        INTEGER FUNCTION RM_LoadDatabase(id, db) 
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+            CHARACTER, OPTIONAL, INTENT(in) :: db
+        END FUNCTION RM_LoadDatabase 
+ *  </PRE>
+ *  </CODE>
+ *  @endhtmlonly
+ */
 int        RM_LoadDatabase(int *id, const char *db_name = NULL, long l = -1);
-void       RM_LogMessage(const char *err_str, long l = -1);
-void       RM_LogScreenMessage(const char *err_str, long l = -1);
+/**
+ *  Send a message to the log file. 
+ *  @param str           String to be sent.
+ *  @param l             Length of the string buffer (automatic in Fortran, optional in C).
+ *  @see                 ???
+ *  @par Fortran90 Interface:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>
+        SUBROUTINE RM_LogMessage(str) 
+            IMPLICIT NONE
+            CHARACTER :: str
+        END SUBROUTINE RM_LogMessage  
+ *  </PRE>
+ *  </CODE>
+ *  @endhtmlonly
+ */
+void       RM_LogMessage(const char *str, long l = -1);
+/**
+ *  Send a message to the screen and the log file. 
+ *  @param str           String to be sent.
+ *  @param l             Length of the string buffer (automatic in Fortran, optional in C).
+ *  @see                 ???
+ *  @par Fortran90 Interface:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>
+        SUBROUTINE RM_LogMessage(str) 
+            IMPLICIT NONE
+            CHARACTER :: str
+        END SUBROUTINE RM_LogMessage  
+ *  </PRE>
+ *  </CODE>
+ *  @endhtmlonly
+ */
+void       RM_LogScreenMessage(const char *str, long l = -1);
 void       RM_Module2Concentrations(int *id, double *c = NULL);
 IRM_RESULT RM_OpenFiles(int * solute, const char * prefix = NULL, int l_prefix = -1);
+/**
+ *  Transfer array of concentrations to the reaction module workers. 
+ *  @param id            The instance id returned from @ref RM_Create.
+ *  @param time          The current time of the simulation, in seconds.
+ *  @param time_step     The time over which kinetic reactions will be integrated, in seconds.
+ *  @param concentration The array of concentrations to be transferred (nxyz of component 1, nxyz component 2, ...)
+ *  @param stop_msg      Signal the end of the simulation (1 stop, 0 continue).
+ *  @see                 ???
+ *  @par Fortran90 Interface:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>
+        SUBROUTINE RM_RunCells(id, time, time_step, c, stop_msg)   
+            IMPLICIT NONE
+            INTEGER :: id
+            DOUBLE PRECISION :: time, time_step, c
+            INTEGER :: stop_msg
+        END SUBROUTINE RM_RunCells     
+ *  </PRE>
+ *  </CODE>
+ *  @endhtmlonly
+ */
 void       RM_RunCells(int *id,
                 double *time,					        // time from transport 
                 double *time_step,				        // time step from transport
                 double *concentration,					// mass fractions nxyz:components
                 int * stop_msg);
-void       RM_ScreenMessage(const char *err_str, long l = -1);
+/**
+ *  Send a message to the screen. 
+ *  @param str           String to be sent to the screen.
+ *  @param l             Length of the string buffer (automatic in Fortran, optional in C).
+ *  @see                 ???
+ *  @par Fortran90 Interface:
+ *  @htmlonly
+ *  <CODE>
+ *  <PRE>
+        SUBROUTINE RM_ScreenMessage(str) 
+            IMPLICIT NONE
+            CHARACTER :: str
+        END SUBROUTINE RM_ScreenMessage     
+ *  </PRE>
+ *  </CODE>
+ *  @endhtmlonly
+ */
+void       RM_ScreenMessage(const char *str, long l = -1);
 void       RM_SetCellVolume(int *id, double *t);
 int        RM_SetCurrentSelectedOutputUserNumber(int *id, int *i);
 void       RM_SetDensity(int *id, double *t);
@@ -152,7 +292,7 @@ void       RM_SetSaturation(int *id, double *t);
 IRM_RESULT RM_SetSelectedOutputOn(int *id, int *selected_output = NULL);
 void       RM_SetTemperature(int *id, double *t);
 void       RM_SetTimeConversion(int *id, double *t);
-void       RM_WarningMessage(const char *err_str, long l = -1);
+void       RM_WarningMessage(const char *warn_str, long l = -1);
 void       RM_write_bc_raw(int *id, 
                 int *solution_list, 
                 int * bc_solution_count, 

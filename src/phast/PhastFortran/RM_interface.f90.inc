@@ -144,6 +144,11 @@
             CHARACTER, OPTIONAL, INTENT(in) :: db
         END FUNCTION RM_LoadDatabase 
         
+        SUBROUTINE RM_LogMessage(str) 
+            IMPLICIT NONE
+            CHARACTER :: str
+        END SUBROUTINE RM_LogMessage
+        
         SUBROUTINE RM_LogScreenMessage(str) 
             IMPLICIT NONE
             CHARACTER :: str
@@ -166,7 +171,12 @@
             INTEGER :: id
             DOUBLE PRECISION :: time, time_step, c
             INTEGER :: stop_msg
-        END SUBROUTINE RM_RunCells     
+        END SUBROUTINE RM_RunCells  
+        
+        SUBROUTINE RM_ScreenMessage(str) 
+            IMPLICIT NONE
+            CHARACTER :: str
+        END SUBROUTINE RM_ScreenMessage   
  		     
         SUBROUTINE RM_SetCellVolume(id, t)   
             IMPLICIT NONE
