@@ -225,7 +225,6 @@ MODULE mcv
   REAL(KIND=kdp) :: deltim, deltim_sav, deltim_transient, time, time_phreeqc
   REAL(KIND=kdp), DIMENSION(:,:), ALLOCATABLE :: c, ic_mxfrac 
   INTEGER, DIMENSION(:,:), ALLOCATABLE :: indx_sol1_ic, indx_sol2_ic
-  INTEGER, DIMENSION(:,:), ALLOCATABLE :: ic1_reordered, ic2_reordered
   INTEGER :: ns=0
   INTEGER, DIMENSION(:), ALLOCATABLE :: component_map, local_component_map
   INTEGER :: local_ns=0

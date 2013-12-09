@@ -452,7 +452,7 @@ SUBROUTINE InitializeRM
     USE mcb, ONLY:  fresur
     USE mcc, ONLY:  iprint_chem, rebalance_fraction_f, rebalance_method_f, rm_id, solute, steady_flow
     USE mcch, ONLY: num_restart_files, restart_files
-    USE mcg, ONLY:  grid2chem
+    USE mcg, ONLY:  grid2chem, nxyz
     USE mcn, ONLY:  x_node, y_node, z_node, pv0, volume
     USE mcp, ONLY:  cnvtmi
     USE mcv, ONLY:  c, frac, indx_sol1_ic, indx_sol2_ic, ic_mxfrac 
@@ -466,8 +466,10 @@ SUBROUTINE InitializeRM
             INTEGER, DIMENSION(:,:), ALLOCATABLE, INTENT(INOUT) :: ic
         END SUBROUTINE CreateMappingFortran
     END INTERFACE
-    INTEGER i, status
+    INTEGER a_err, i, j, status
     INTEGER ipartition_uz_solids
+    INTEGER, DIMENSION(:,:), ALLOCATABLE :: ic1_reordered, ic2_reordered
+    DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: f1_reordered
  
     IF(solute) THEN
 
@@ -496,16 +498,42 @@ SUBROUTINE InitializeRM
         ENDDO
         CALL FH_SetPointers(x_node(1), y_node(1), z_node(1), indx_sol1_ic(1,1), frac(1), grid2chem(1))
         ! ... Distribute chemistry initial conditions
+        
+        ALLOCATE(ic1_reordered(nxyz,7), ic2_reordered(nxyz,7), f1_reordered(nxyz,7),   &
+        STAT = a_err)
+        IF (a_err /= 0) THEN
+            PRINT *, "Array allocation failed: InitializeRM"  
+            STOP
+        ENDIF
+        DO i = 1, nxyz
+            do j = 1, 7
+                ic1_reordered(i,j) = indx_sol1_ic(j,i)
+                ic2_reordered(i,j) = indx_sol2_ic(j,i)
+                f1_reordered(i,j) = ic_mxfrac(j,i)
+            enddo
+        enddo
+                    
+        !status = RM_InitialPhreeqc2Module(rm_id, &
+        !    indx_sol1_ic(1,1),           & ! 7 x nxyz end-member 1 
+        !    indx_sol2_ic(1,1),           & ! 7 x nxyz end-member 2
+        !    ic_mxfrac(1,1))                ! 7 x nxyz fraction of end-member 1
         status = RM_InitialPhreeqc2Module(rm_id, &
-            indx_sol1_ic(1,1),           & ! 7 x nxyz end-member 1 
-            indx_sol2_ic(1,1),           & ! 7 x nxyz end-member 2
-            ic_mxfrac(1,1))                ! 7 x nxyz fraction of end-member 1
+            ic1_reordered(1,1),           & ! 7 x nxyz end-member 1 
+            ic2_reordered(1,1),           & ! 7 x nxyz end-member 2
+            f1_reordered(1,1))                ! 7 x nxyz fraction of end-member 1        
         CALL FH_ProcessRestartFiles(rm_id, &
 	        indx_sol1_ic(1,1),            &
 	        indx_sol2_ic(1,1),            & 
 	        ic_mxfrac(1,1))
         ! collect solutions at manager for transport
-        CALL RM_Module2Concentrations(rm_id, c(1,1))
+        CALL RM_Module2Concentrations(rm_id, c(1,1))   
+        
+        DEALLOCATE (ic1_reordered, ic2_reordered, f1_reordered, &
+            STAT = a_err)
+        IF (a_err /= 0) THEN
+            PRINT *, "Array deallocation failed: InitializeRM"  
+            STOP
+        ENDIF
     ENDIF        ! ... solute
 END SUBROUTINE InitializeRM
     
