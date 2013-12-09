@@ -55,6 +55,7 @@ SUBROUTINE phast_worker
  
     status = RM_LoadDatabase(rm_id, f2name);
     ! ... Open C files 
+    status = RM_SetFilePrefix(rm_id)
     status = RM_OpenFiles(rm_id)
     
     IF (solute) THEN
@@ -104,7 +105,7 @@ SUBROUTINE phast_worker
 !
         ! ... Initialize chemistry 
 
-        CALL RM_SetInputUnits (rm_id)
+        CALL RM_SetUnits (rm_id)
         CALL RM_SetTimeConversion(rm_id)
         CALL RM_SetPoreVolumeZero(rm_id)
         CALL RM_SetSaturation(rm_id)

@@ -614,32 +614,32 @@ RM_open_error_file(void)
 
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
-RM_OpenFiles(int *id, const char * prefix_in, int l)
+RM_OpenFiles(int *id)
 /* ---------------------------------------------------------------------- */
 {
 	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
 	if (Reaction_module_ptr)
 	{
 		
-		IRM_RESULT rtn;
-		rtn = Reaction_module_ptr->SetFilePrefix(prefix_in, l);
+		IRM_RESULT rtn = IRM_OK;
 
 		// Files opened by root
 		if (Reaction_module_ptr->GetMpiMyself() == 0)
 		{
 			// error_file is stderr
-			//RM_open_error_file();
 			RM_interface::phast_io.Set_error_ostream(&std::cerr);
 
 			// open echo and log file, prefix.log.txt
 			std::string ln = Reaction_module_ptr->GetFilePrefix();
 			ln.append(".log.txt");
-			RM_interface::phast_io.log_open(ln.c_str());
+			if (!RM_interface::phast_io.log_open(ln.c_str()))
+				rtn = IRM_FAIL;
 
 			// prefix.chem.txt
 			std::string cn = Reaction_module_ptr->GetFilePrefix();
 			cn.append(".chem.txt");
-			RM_interface::phast_io.output_open(cn.c_str());
+			if(RM_interface::phast_io.output_open(cn.c_str()))
+				rtn = IRM_FAIL;
 		}
 		return rtn;
 	}
@@ -751,21 +751,6 @@ RM_SetFilePrefix(int *id, const char *name, long nchar)
 	return IRM_BADINSTANCE;
 }
 
-/* ---------------------------------------------------------------------- */
-void 
-RM_SetInputUnits (int *id, int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *kin)
-/* ---------------------------------------------------------------------- */
-{
-	//
-	// Sets units for reaction_module
-	//
-	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
-	if (Reaction_module_ptr)
-	{
-		// WATER = 1, ROCK = 2, as is < 0
-		Reaction_module_ptr->SetInputUnits(sol, pp, ex, surf, gas, ss, kin);
-	}
-}
 /* ---------------------------------------------------------------------- */
 void 
 RM_SetPartitionUZSolids(int *id, int *t)
@@ -897,6 +882,22 @@ void RM_SetTimeConversion(int *id, double *t)
 }
 
 /* ---------------------------------------------------------------------- */
+void 
+RM_SetUnits (int *id, int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *kin)
+/* ---------------------------------------------------------------------- */
+{
+	//
+	// Sets units for reaction_module
+	//
+	Reaction_module * Reaction_module_ptr = RM_interface::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		// WATER = 1, ROCK = 2, as is < 0
+		Reaction_module_ptr->SetUnits(sol, pp, ex, surf, gas, ss, kin);
+	}
+}
+/* -
+--------------------------------------------------------------------- */
 void
 RM_WarningMessage(const char *err_str, long l)
 /* ---------------------------------------------------------------------- */

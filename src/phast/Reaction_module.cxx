@@ -3769,61 +3769,6 @@ Reaction_module::SetFilePrefix(std::string &prefix)
 }
 
 /* ---------------------------------------------------------------------- */
-void
-Reaction_module::SetInputUnits(int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *kin)
-/* ---------------------------------------------------------------------- */
-{
-	int local_sol, local_pp, local_ex, local_surf, local_gas, local_ss, local_kin;
-	if (mpi_myself == 0)
-	{
-		local_sol  = (sol  != NULL) ? *sol  : -1;
-		local_pp   = (pp   != NULL) ? *pp   : -1;
-		local_ex   = (ex   != NULL) ? *ex   : -1;
-		local_surf = (surf != NULL) ? *surf : -1;
-		local_gas  = (gas  != NULL) ? *gas  : -1;
-		local_ss   = (ss   != NULL) ? *ss   : -1;
-		local_kin  = (kin  != NULL) ? *kin  : -1;
-	}
-#ifdef USE_MPI
-	MPI_Bcast(&local_sol,  1, MPI_INT, 0, MPI_COMM_WORLD);
-	MPI_Bcast(&local_pp,   1, MPI_INT, 0, MPI_COMM_WORLD);
-	MPI_Bcast(&local_ex,   1, MPI_INT, 0, MPI_COMM_WORLD);
-	MPI_Bcast(&local_surf, 1, MPI_INT, 0, MPI_COMM_WORLD);
-	MPI_Bcast(&local_gas,  1, MPI_INT, 0, MPI_COMM_WORLD);
-	MPI_Bcast(&local_ss,   1, MPI_INT, 0, MPI_COMM_WORLD);
-	MPI_Bcast(&local_kin,  1, MPI_INT, 0, MPI_COMM_WORLD);
-#endif
-
-	if (local_sol >= 0)
-	{
-		SetInputUnitsSolution(local_sol);
-	}
-	if (local_pp >= 0)
-	{
-		SetInputUnitsPPassemblage(local_pp);
-	}
-	if (local_ex >= 0)
-	{
-		SetInputUnitsExchange(local_ex);
-	}
-	if (local_surf >= 0)
-	{
-		SetInputUnitsSurface(local_surf);
-	}	
-	if (local_gas >= 0)
-	{
-		SetInputUnitsGasPhase(local_gas);
-	}
-	if (local_ss >= 0)
-	{
-		SetInputUnitsSSassemblage(local_ss);
-	}
-	if (local_kin >= 0)
-	{
-		SetInputUnitsKinetics(local_kin);
-	}
-}
-/* ---------------------------------------------------------------------- */
 void 
 Reaction_module::SetPartitionUZSolids(int * t)
 /* ---------------------------------------------------------------------- */
@@ -4060,6 +4005,61 @@ Reaction_module::SetTimeStep(double *t)
 #endif
 }
 
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::SetUnits(int *sol, int *pp, int *ex, int *surf, int *gas, int *ss, int *kin)
+/* ---------------------------------------------------------------------- */
+{
+	int local_sol, local_pp, local_ex, local_surf, local_gas, local_ss, local_kin;
+	if (mpi_myself == 0)
+	{
+		local_sol  = (sol  != NULL) ? *sol  : -1;
+		local_pp   = (pp   != NULL) ? *pp   : -1;
+		local_ex   = (ex   != NULL) ? *ex   : -1;
+		local_surf = (surf != NULL) ? *surf : -1;
+		local_gas  = (gas  != NULL) ? *gas  : -1;
+		local_ss   = (ss   != NULL) ? *ss   : -1;
+		local_kin  = (kin  != NULL) ? *kin  : -1;
+	}
+#ifdef USE_MPI
+	MPI_Bcast(&local_sol,  1, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&local_pp,   1, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&local_ex,   1, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&local_surf, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&local_gas,  1, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&local_ss,   1, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&local_kin,  1, MPI_INT, 0, MPI_COMM_WORLD);
+#endif
+
+	if (local_sol >= 0)
+	{
+		SetUnitsSolution(local_sol);
+	}
+	if (local_pp >= 0)
+	{
+		SetUnitsPPassemblage(local_pp);
+	}
+	if (local_ex >= 0)
+	{
+		SetUnitsExchange(local_ex);
+	}
+	if (local_surf >= 0)
+	{
+		SetUnitsSurface(local_surf);
+	}	
+	if (local_gas >= 0)
+	{
+		SetUnitsGasPhase(local_gas);
+	}
+	if (local_ss >= 0)
+	{
+		SetUnitsSSassemblage(local_ss);
+	}
+	if (local_kin >= 0)
+	{
+		SetUnitsKinetics(local_kin);
+	}
+}
 #ifdef USE_MPI
 /* ---------------------------------------------------------------------- */
 void
