@@ -388,7 +388,8 @@ SUBROUTINE CreateRM
     END IF
     
     status = RM_LoadDatabase(rm_id, f2name);
-    status = RM_OpenFiles(rm_id, f3name)
+    status = RM_SetFilePrefix(rm_id, f3name)
+    status = RM_OpenFiles(rm_id)
   
     !... Call phreeqc, find number of components; f1name, chem.dat; f2name, database; f3name, prefix
     IF (solute) THEN
@@ -475,7 +476,7 @@ SUBROUTINE InitializeRM
 
         ! ... Send data to threads or workers
         
-        CALL RM_SetInputUnits (rm_id, 3, 1, 1, 1, 1, 1, 1)
+        CALL RM_SetUnits (rm_id, 3, 1, 1, 1, 1, 1, 1)
         CALL RM_SetTimeConversion(rm_id, cnvtmi)
         CALL RM_SetPoreVolumeZero(rm_id, pv0(1))
         CALL RM_SetSaturation(rm_id, frac(1))
@@ -497,8 +498,8 @@ SUBROUTINE InitializeRM
             CALL FH_SetRestartName(restart_files(i))
         ENDDO
         CALL FH_SetPointers(x_node(1), y_node(1), z_node(1), indx_sol1_ic(1,1), frac(1), grid2chem(1))
-        ! ... Distribute chemistry initial conditions
         
+        ! ... Make arrays in the correct order
         ALLOCATE(ic1_reordered(nxyz,7), ic2_reordered(nxyz,7), f1_reordered(nxyz,7),   &
         STAT = a_err)
         IF (a_err /= 0) THEN
@@ -512,15 +513,12 @@ SUBROUTINE InitializeRM
                 f1_reordered(i,j) = ic_mxfrac(j,i)
             enddo
         enddo
-                    
-        !status = RM_InitialPhreeqc2Module(rm_id, &
-        !    indx_sol1_ic(1,1),           & ! 7 x nxyz end-member 1 
-        !    indx_sol2_ic(1,1),           & ! 7 x nxyz end-member 2
-        !    ic_mxfrac(1,1))                ! 7 x nxyz fraction of end-member 1
+        
+        ! ... Distribute chemistry initial conditions
         status = RM_InitialPhreeqc2Module(rm_id, &
-            ic1_reordered(1,1),           & ! 7 x nxyz end-member 1 
-            ic2_reordered(1,1),           & ! 7 x nxyz end-member 2
-            f1_reordered(1,1))                ! 7 x nxyz fraction of end-member 1        
+            ic1_reordered(1,1),           & ! Fortran nxyz x 7 end-member 1 
+            ic2_reordered(1,1),           & ! Fortran nxyz x 7 end-member 2
+            f1_reordered(1,1))              ! Fortran nxyz x 7 fraction of end-member 1        
         CALL FH_ProcessRestartFiles(rm_id, &
 	        indx_sol1_ic(1,1),            &
 	        indx_sol2_ic(1,1),            & 

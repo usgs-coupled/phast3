@@ -12,7 +12,8 @@
         
         INTEGER FUNCTION RM_Create(nxyz, nthreads) 
             IMPLICIT NONE
-            INTEGER :: nxyz, nthreads
+            INTEGER, INTENT(in) :: nxyz
+			INTEGER, OPTIONAL, INTENT(in) :: nthreads
         END FUNCTION RM_Create
 
 		INTEGER FUNCTION RM_CreateMapping(id, grid2chem)
@@ -34,7 +35,7 @@
         
         SUBROUTINE RM_Error(id)
             IMPLICIT NONE
-            INTEGER, INTENT(in) :: id
+            INTEGER, OPTIONAL, INTENT(in) :: id
         END SUBROUTINE RM_Error
         
         SUBROUTINE RM_ErrorMessage(errstr)
@@ -58,6 +59,11 @@
             INTEGER, INTENT(in) :: id
             CHARACTER, INTENT(out) :: prefix
         END FUNCTION RM_GetFilePrefix
+
+        INTEGER FUNCTION RM_GetGridCellCount(id)
+            IMPLICIT NONE
+            INTEGER, INTENT(in) :: id
+        END FUNCTION RM_GetGridCellCount
         
         INTEGER FUNCTION RM_GetMpiMyself(id)
             IMPLICIT NONE
@@ -160,10 +166,9 @@
             DOUBLE PRECISION, OPTIONAL :: c
         END SUBROUTINE RM_Module2Concentrations  
         
-        INTEGER FUNCTION RM_OpenFiles(id, prefix) 
+        INTEGER FUNCTION RM_OpenFiles(id) 
             IMPLICIT NONE
             INTEGER, INTENT(in) :: id
-            CHARACTER, OPTIONAL, INTENT(in) :: prefix
         END FUNCTION RM_OpenFiles
         
         SUBROUTINE RM_RunCells(id, time, time_step, c, stop_msg)   
@@ -194,13 +199,7 @@
             IMPLICIT NONE
             INTEGER :: id, iout
             CHARACTER, OPTIONAL :: prefix
-        END FUNCTION RM_SetFilePrefix 
-
-        SUBROUTINE RM_SetInputUnits(id, sol, pp, ex, surf, gas, ss, kin)   
-            IMPLICIT NONE
-            INTEGER :: id
-            INTEGER, OPTIONAL :: sol, pp, ex, surf, gas, ss, kin
-        END SUBROUTINE RM_SetInputUnits  
+        END FUNCTION RM_SetFilePrefix  
 				
         SUBROUTINE RM_SetPartitionUZSolids(id, t)   
             IMPLICIT NONE
@@ -268,5 +267,11 @@
             INTEGER :: id
             DOUBLE PRECISION, OPTIONAL :: t
         END SUBROUTINE RM_SetTimeConversion 
+
+        SUBROUTINE RM_SetUnits(id, sol, pp, ex, surf, gas, ss, kin)   
+            IMPLICIT NONE
+            INTEGER :: id
+            INTEGER, OPTIONAL :: sol, pp, ex, surf, gas, ss, kin
+        END SUBROUTINE RM_SetUnits 
 		 
     END INTERFACE
