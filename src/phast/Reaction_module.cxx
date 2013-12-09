@@ -3051,7 +3051,6 @@ Reaction_module::RunCellsThread(int n)
 	*   Update solution compositions 
 	*/
 	clock_t t0 = clock();
-	//this->Fractions2Solutions_thread(n);
 
 	int i, j;
 	IPhreeqcPhast *phast_iphreeqc_worker = this->GetWorkers()[n];
@@ -3090,7 +3089,6 @@ Reaction_module::RunCellsThread(int n)
 		bool pr_chem = this->print_chemistry_on && (this->print_chem_mask[j] != 0);
 
 		// partition solids between UZ and SZ
-		//if (this->free_surface && !this->steady_flow)	
 		if (this->partition_uz_solids)
 		{
 			this->PartitionUZ(n, i, j, this->saturation[j]);
@@ -3109,21 +3107,6 @@ Reaction_module::RunCellsThread(int n)
 			// set cell number, pore volume got Basic functions
 			phast_iphreeqc_worker->Set_cell_volumes(i, pore_volume_zero[j], this->saturation[j], cell_volume[j]);
 
-			// Adjust for fractional saturation and pore volume
-			//if (this->free_surface && !this->steady_flow)
-			//{
-			//	this->Scale_solids(n, i, 1.0 / this->saturation[j]);
-			//}
-			
-			//if (!(this->free_surface && !this->steady_flow) && !steady_flow)
-			//{
-			//	if (pore_volume_zero[j] != 0 && pore_volume[j] != 0 && pore_volume_zero[j] != pore_volume[j])
-			//	{
-			//		cxxSolution * cxxsol = phast_iphreeqc_worker->Get_solution(i);
-			//		cxxsol->multiply(pore_volume[j] / pore_volume_zero[j]);
-			//	}
-			//}
-
 			// Set print flags
 			phast_iphreeqc_worker->SetOutputStringOn(pr_chem);
 
@@ -3136,19 +3119,6 @@ Reaction_module::RunCellsThread(int n)
 			input << "END" << "\n";
 			if (phast_iphreeqc_worker->RunString(input.str().c_str()) < 0) ErrorStop();
 
-			// Adjust for fractional saturation and pore volume
-			//if (this->free_surface && !this->steady_flow)
-			//	this->Scale_solids(n, i, this->saturation[j]);
-			assert(pore_volume_zero[j] != 0);
-			assert(pore_volume[j] != 0);
-			//if (!(this->free_surface && !this->steady_flow) && !steady_flow)
-			//{
-			//	if (pore_volume_zero[j] != 0 && pore_volume[j] != 0 && pore_volume_zero[j] != pore_volume[j])
-			//	{
-			//		cxxSolution * cxxsol = phast_iphreeqc_worker->Get_solution(i);
-			//		cxxsol->multiply(pore_volume_zero[j] / pore_volume[j]);
-			//	}
-			//}
 			// Write output file
 			if (pr_chem)
 			{
@@ -3165,10 +3135,9 @@ Reaction_module::RunCellsThread(int n)
 				phast_iphreeqc_worker->Get_out_stream() << phast_iphreeqc_worker->GetOutputString();
 			}
 
-			// Write hdf file
+			// Save selected output data
 			if (this->selected_output_on)
 			{
-
 				// Add selected output values to IPhreeqcPhast CSelectedOutputMap's
 				std::map< int, CSelectedOutput* >::iterator it = phast_iphreeqc_worker->SelectedOutputMap.begin();
 				for ( ; it != phast_iphreeqc_worker->SelectedOutputMap.end(); it++)
@@ -3270,7 +3239,6 @@ Reaction_module::RunCellsThread(int n)
 #endif
 	} // end one cell
 #ifndef USE_MPI
-//	this->Solutions2Fractions_thread(n);
 #endif
 	clock_t t_elapsed = clock() - t0;
 
@@ -3602,7 +3570,7 @@ Reaction_module::SetPartitionUZSolids(int * t)
 {
 	if (mpi_myself == 0)
 	{
-		if (t == NULL) error_msg("NULL pointer in Set_free_surface", 1);
+		if (t == NULL) error_msg("NULL pointer in SetPartitionUZSolids", 1);
 		this->partition_uz_solids = (*t != 0);
 	}
 #ifdef USE_MPI

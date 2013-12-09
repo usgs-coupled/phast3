@@ -9,6 +9,7 @@
 
 class PHRQ_io;
 class IPhreeqc;
+
 /*! @brief Enumeration used to return error codes.
 */
 typedef enum {
@@ -29,16 +30,33 @@ public:
 	Reaction_module(int *nxyz = NULL, int *thread_count = NULL, PHRQ_io * io=NULL);
 	~Reaction_module(void);
 	
-	// Key method
+	// Key methods
 	void                                      Concentrations2Module(void);	
-	static std::string                        Char2TrimString(const char * str, long l = -1);
-	// Key method
 	IRM_RESULT                                CreateMapping(int *grid2chem);
 	IRM_RESULT                                DumpModule(int *dump_on, int *use_gz = NULL);
-	static bool                               FileExists(const std::string &name);
-	static void                               FileRename(const std::string &temp_name, const std::string &name, const std::string &backup_name);
-	// Key method
 	int                                       FindComponents();
+	IRM_RESULT                                InitialPhreeqc2Concentrations( 
+                                                   double *c,
+                                                   int *n_boundary, 
+                                                   int *dim, 
+                                                   int *boundary_solution1,
+                                                   int *boundary_solution2 = NULL,
+                                                   double *boundary_fraction = NULL);
+	IRM_RESULT                                InitialPhreeqc2Module(
+                                                   int id,
+                                                   int *initial_conditions1 = NULL,
+                                                   int *initial_conditions2 = NULL,	
+                                                   double *fraction1 = NULL);
+	int                                       InitialPhreeqcRunFile(const char *chemistry_name, long l = -1);
+	int                                       LoadDatabase(const char * database, long l = -1);
+	void                                      Module2Concentrations(double * c);
+	void                                      RunCells(void);
+
+	// Utilities
+	static std::string                        Char2TrimString(const char * str, long l = -1);
+	static bool                               FileExists(const std::string &name);
+	static void                               FileRename(const std::string &temp_name, const std::string &name, 
+		                                           const std::string &backup_name);
 
 	// TODO ///////////////////////////
 	void                           Calculate_well_ph(double *c, double * ph, double * alkalinity);
@@ -46,7 +64,7 @@ public:
 	void                           Write_bc_raw(int *solution_list, int * bc_solution_count, 
                                         int * solution_number, 
                                         const std::string &prefix);
-	
+
 	// Getters 
 	const std::vector < std::vector <int> > & GetBack(void) {return this->back;}
 	std::vector<double> &                     GetCellVolume(void) {return this->cell_volume;}
@@ -91,24 +109,6 @@ public:
 	double                                    GetTimeStep(void) const {return this->time_step;}
 	const double                              GetTimeConversion(void) const {return this->time_conversion;} 
 	std::vector<IPhreeqcPhast *> &            GetWorkers() {return this->workers;}
-
-	// Key Methods
-	IRM_RESULT                                InitialPhreeqc2Concentrations( 
-                                                   double *c,
-                                                   int *n_boundary, 
-                                                   int *dim, 
-                                                   int *boundary_solution1,
-                                                   int *boundary_solution2 = NULL,
-                                                   double *boundary_fraction = NULL);
-	IRM_RESULT                                InitialPhreeqc2Module(
-                                                   int id,
-                                                   int *initial_conditions1 = NULL,
-                                                   int *initial_conditions2 = NULL,	
-                                                   double *fraction1 = NULL);
-	int                                       InitialPhreeqcRunFile(const char *chemistry_name, long l = -1);
-	int                                       LoadDatabase(const char * database, long l = -1);
-	void                                      Module2Concentrations(double * c);
-	void                                      RunCells(void);	
 
 	// Setters 
 	IRM_RESULT                                SetChemistryFileName(const char * prefix, long l = -1);
@@ -179,8 +179,6 @@ protected:
 	std::vector <double> gfw;				// gram formula weights converting mass to moles (1 for each component)
 	double gfw_water;						// gfw of water
 	bool partition_uz_solids;
-	//bool free_surface;                      // free surface calculation
-	//bool steady_flow;						// steady-state flow
 	int nxyz;								// number of nodes 
 	int count_chemistry;					// number of cells for chemistry
 	double time;						    // time from transport, sec 
