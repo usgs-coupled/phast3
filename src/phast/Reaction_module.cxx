@@ -1,10 +1,11 @@
 #include "Reaction_module.h"
-#include "RM_interface.h"
+#include "Reaction_module.h"
 #include "PHRQ_base.h"
 #include "PHRQ_io.h"
 #include "IPhreeqc.h"
 #include "IPhreeqc.hpp"
 #include "IPhreeqcPhast.h"
+#include "IPhreeqcPhastLib.h"
 #include <assert.h>
 #include "System.h"
 #include "gzstream.h"
@@ -27,6 +28,114 @@
 #include <mpi.h>
 #endif
 #include "Phreeqc.h"
+
+std::map<size_t, Reaction_module*> Reaction_module::Instances;
+size_t Reaction_module::InstancesIndex = 0;
+PHRQ_io Reaction_module::phast_io;
+
+//// static Reaction_module methods
+/* ---------------------------------------------------------------------- */
+void Reaction_module::CleanupReactionModuleInstances(void)
+/* ---------------------------------------------------------------------- */
+{
+	std::map<size_t, Reaction_module*>::iterator it = Reaction_module::Instances.begin();
+	std::vector<Reaction_module*> rm_list;
+	for ( ; it != Reaction_module::Instances.end(); it++)
+	{
+		rm_list.push_back(it->second);
+	}
+	for (size_t i = 0; i < rm_list.size(); i++)
+	{
+		delete rm_list[i];
+	}
+}
+/* ---------------------------------------------------------------------- */
+int
+Reaction_module::CreateReactionModule(int *nxyz, int *nthreads)
+/* ---------------------------------------------------------------------- */
+{
+	int n = IRM_OUTOFMEMORY;
+	try
+	{
+		Reaction_module * Reaction_module_ptr = new Reaction_module(nxyz, nthreads);
+		if (Reaction_module_ptr)
+		{
+			n = (int) Reaction_module_ptr->GetWorkers()[0]->Get_Index();
+			Reaction_module::Instances[n] = Reaction_module_ptr;
+			return n;
+		}
+	}
+	catch(...)
+	{
+		return IRM_OUTOFMEMORY;
+	}
+	return IRM_OUTOFMEMORY; 
+}
+/* ---------------------------------------------------------------------- */
+IRM_RESULT
+Reaction_module::DestroyReactionModule(int *id)
+/* ---------------------------------------------------------------------- */
+{
+	IRM_RESULT retval = IRM_BADINSTANCE;
+	if (id)
+	{
+		std::map<size_t, Reaction_module*>::iterator it = Reaction_module::Instances.find(size_t(*id));
+		if (it != Reaction_module::Instances.end())
+		{
+			delete (*it).second;
+			retval = IRM_OK;
+		}
+	}
+	return retval;
+}
+
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::ErrorStop(const char *err_str, long l)
+/* ---------------------------------------------------------------------- */
+{
+	//
+	// Delete all Reaction_module instances
+	//
+	std::string error_string;
+	error_string = "Stopping in Reaction_module::ErrorStop\n";
+	if (err_str)
+	{
+		error_string.append(Char2TrimString(err_str, l));
+	}
+	else
+	{
+	}
+#ifdef MPI
+	MPI_Abort(MPI_COMM_WORLD);
+#endif
+	PHRQ_io io = Reaction_module::GetRmIo();
+	io.error_msg(error_string.c_str(), false);
+	Reaction_module::CleanupReactionModuleInstances();
+	IPhreeqcPhastLib::CleanupIPhreeqcPhast();
+	exit(4);
+}
+/* ---------------------------------------------------------------------- */
+Reaction_module*
+Reaction_module::GetInstance(int *id)
+/* ---------------------------------------------------------------------- */
+{
+	if (id != NULL)
+	{
+		std::map<size_t, Reaction_module*>::iterator it = Reaction_module::Instances.find(size_t(*id));
+		if (it != Reaction_module::Instances.end())
+		{
+			return (*it).second;
+		}
+	}
+	return 0;
+}
+/*
+//
+// end static Reaction_module methods
+//
+*/
+
 Reaction_module::Reaction_module(int *nxyz_arg, int *thread_count, PHRQ_io *io)
 	//
 	// constructor
@@ -121,7 +230,7 @@ if( numCPU < 1 )
 	if (this->GetWorkers()[0])
 	{
 		std::map<size_t, Reaction_module*>::value_type instance(this->GetWorkers()[0]->Get_Index(), this);
-		RM_interface::Instances.insert(instance);
+		Reaction_module::Instances.insert(instance);
 	}
 	else
 	{
@@ -176,15 +285,15 @@ if( numCPU < 1 )
 }
 Reaction_module::~Reaction_module(void)
 {
-	std::map<size_t, Reaction_module*>::iterator it = RM_interface::Instances.find(this->GetWorkers()[0]->Get_Index());
+	std::map<size_t, Reaction_module*>::iterator it = Reaction_module::Instances.find(this->GetWorkers()[0]->Get_Index());
 
 	for (int i = 0; i <= it->second->GetNthreads(); i++)
 	{
 		delete it->second->GetWorkers()[i];
 	}
-	if (it != RM_interface::Instances.end())
+	if (it != Reaction_module::Instances.end())
 	{
-		RM_interface::Instances.erase(it);
+		Reaction_module::Instances.erase(it);
 	}
 
 }
@@ -1259,14 +1368,6 @@ Reaction_module::DumpModule(int *dump_on, int *use_gz_in)
 
 
 /* ---------------------------------------------------------------------- */
-void
-Reaction_module::ErrorStop(void)
-/* ---------------------------------------------------------------------- */
-{
-	int n = (int) this->GetWorkers()[0]->Get_Index();
-	RM_Error(&n);
-}
-/* ---------------------------------------------------------------------- */
 bool
 Reaction_module::FileExists(const std::string &name)
 /* ---------------------------------------------------------------------- */
@@ -1695,7 +1796,7 @@ Reaction_module::InitialPhreeqcRunThread(int n)
 		}
 
 		// Run chemistry file
-		if (iphreeqc_phast_worker->RunFile(this->chemistry_file_name.c_str()) > 0) RM_Error(&ipp_id);
+		if (iphreeqc_phast_worker->RunFile(this->chemistry_file_name.c_str()) > 0) ErrorStop("RunFile failed");
 
 		// Create a StorageBin with initial PHREEQC for boundary conditions
 		if (n == 0)
@@ -1915,7 +2016,7 @@ Reaction_module::InitialPhreeqc2Module(
 			this->GetWorkers()[n]->Get_PhreeqcPtr()->cxxStorageBin2phreeqc(sz_bin, i);
 			delete_command << i << "\n";
 		}
-		if (this->GetWorkers()[0]->RunString(delete_command.str().c_str()) > 0) RM_Error(0);
+		if (this->GetWorkers()[0]->RunString(delete_command.str().c_str()) > 0) ErrorStop("RunString failed");
 	}
 #endif
 	return rtn;
@@ -4223,13 +4324,13 @@ void
 Reaction_module:: WriteError(const char * item)
 /* ---------------------------------------------------------------------- */
 {
-	RM_interface::phast_io.error_msg(item);
+	Reaction_module::phast_io.error_msg(item);
 }
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module:: WriteOutput(const char * item)
 /* ---------------------------------------------------------------------- */
 {
-	RM_interface::phast_io.output_msg(item);
+	Reaction_module::phast_io.output_msg(item);
 }
 

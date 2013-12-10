@@ -26,6 +26,12 @@ typedef enum {
 class Reaction_module: public PHRQ_base
 {
 public:
+	static void             CleanupReactionModuleInstances(void);
+	static int              CreateReactionModule(int *nxyz, int *nthreads = NULL);
+	static IRM_RESULT       DestroyReactionModule(int *n);
+    static void             ErrorStop(const char * str = NULL, long l = -1);
+	static Reaction_module* GetInstance(int *n);
+	static PHRQ_io &        GetRmIo(void) {return Reaction_module::phast_io;};
 
 	Reaction_module(int *nxyz = NULL, int *thread_count = NULL, PHRQ_io * io=NULL);
 	~Reaction_module(void);
@@ -154,7 +160,6 @@ protected:
 	int                                       CheckSelectedOutput();
 	void                                      Concentrations2Threads(int n);
 	void                                      cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
-	void                                      ErrorStop(void);
 	cxxStorageBin &                           Get_phreeqc_bin(void) {return this->phreeqc_bin;}
 	void                                      PartitionUZ(int n, int iphrq, int ihst, double new_frac);
 	void                                      RebalanceLoad(void);
@@ -217,6 +222,13 @@ protected:
 	std::vector<IPhreeqcPhast *> workers;
 	std::vector<int> start_cell;
 	std::vector<int> end_cell;
+
+private:
+	friend class RM_interface;
+	static PHRQ_io phast_io;
+	static std::map<size_t, Reaction_module*> Instances;
+	static size_t InstancesIndex;
+
 	
 };
 #endif // !defined(REACTION_MODULE_H_INCLUDED)

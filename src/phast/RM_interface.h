@@ -1,10 +1,12 @@
-/*! @file IPhreeqc.h
+/*! @file RM_interface.h
 	@brief C/Fortran Documentation
 */
 #ifndef RM_INTERFACE_H
 #define RM_INTERFACE_H
 #include "IPhreeqc.h"
 #include "Var.h"
+
+
 #if defined(_MSC_VER)
 #define FC_FUNC_(name,NAME) NAME
 #endif
@@ -65,22 +67,7 @@
 #define RM_write_bc_raw                    FC_FUNC_ (rm_write_bc_raw,                  RM_WRITE_BC_RAW)
 #define RM_write_output                    FC_FUNC_ (rm_write_output,                  RM_WRITE_OUTPUT)
 #define RM_WarningMessage                  FC_FUNC_ (rm_warningmessage,                RM_WARNINGMESSAGE)
-#endif
-
-class RM_interface
-{
-public:
-	static int CreateReactionModule(int *nxyz, int *nthreads = NULL);
-	static IRM_RESULT DestroyReactionModule(int *n);
-	static Reaction_module* GetInstance(int *n);
-	static void CleanupReactionModuleInstances(void);
-	static PHRQ_io phast_io;
-
-private:
-	friend class Reaction_module;
-	static std::map<size_t, Reaction_module*> Instances;
-	static size_t InstancesIndex;
-};
+#endif;
 
 #if defined(__cplusplus)
 extern "C" {
@@ -207,7 +194,7 @@ IRM_RESULT RM_DumpModule(int *id, int *dump_on = NULL, int *use_gz = NULL);
  *  @htmlonly
  *  <CODE>
  *  <PRE>    
- *       SUBROUTINE RM_Error(id)
+ *      SUBROUTINE RM_Error(id)
  *          IMPLICIT NONE
  *          INTEGER, OPTIONAL, INTENT(in) :: id
  *      END SUBROUTINE RM_Error
@@ -215,7 +202,7 @@ IRM_RESULT RM_DumpModule(int *id, int *dump_on = NULL, int *use_gz = NULL);
  *  </CODE>
  *  @endhtmlonly
  */
-void       RM_Error(int *id = NULL);
+void       RM_Error(const char * err_str = NULL, long l = -1);
 /**
  *  Send an error message to the screen, output file, and log file. 
  *  @param str           String to be sent.
