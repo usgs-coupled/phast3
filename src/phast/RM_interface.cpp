@@ -437,7 +437,6 @@ RM_InitialPhreeqc2Module(int *id,
 	if (Reaction_module_ptr)
 	{
 		return Reaction_module_ptr->InitialPhreeqc2Module(
-			*id,
 			initial_conditions1,
 			initial_conditions2,
 			fraction1);

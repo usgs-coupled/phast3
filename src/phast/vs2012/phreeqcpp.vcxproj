@@ -380,6 +380,7 @@ copy $(DEV_HDF5_X64_LIBDLL)\..\bin\szlibdll.dll $(OutDir)
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Advection\advection_example.cpp" />
     <ClCompile Include="..\FileHandler.cpp" />
     <ClCompile Include="..\hdf.cpp" />
     <ClCompile Include="..\phast_main.cpp" />

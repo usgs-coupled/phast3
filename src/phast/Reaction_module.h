@@ -49,7 +49,6 @@ public:
                                                    int *boundary_solution2 = NULL,
                                                    double *boundary_fraction = NULL);
 	IRM_RESULT                                InitialPhreeqc2Module(
-                                                   int id,
                                                    int *initial_conditions1 = NULL,
                                                    int *initial_conditions2 = NULL,	
                                                    double *fraction1 = NULL);
@@ -78,7 +77,7 @@ public:
 	const std::vector<std::string> &          GetComponents(void) const {return this->components;}
 	std::vector<double> &                     GetConcentration(void) {return this->concentration;}
 	const std::string                         GetDatabaseFileName(void) const {return this->database_file_name;}
-	std::vector<double> &                     GetDensity(void) {return this->density;}
+	std::vector<double> &                     GetDensity(void); 
 	const std::vector < int> &                GetEndCell(void) const {return this->end_cell;} 
 	const std::string                         GetFilePrefix(void) const {return this->file_prefix;}
 	const int                                 GetGridCellCount(void) const {return this->nxyz;}
