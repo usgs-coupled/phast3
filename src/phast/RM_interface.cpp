@@ -210,6 +210,18 @@ IRM_RESULT RM_GetComponent(int * id, int * num, char *chem_name, int l1)
 }
 
 /* ---------------------------------------------------------------------- */
+void
+RM_GetConcentrations(int *id, double * c)
+/* ---------------------------------------------------------------------- */
+{
+	Reaction_module * Reaction_module_ptr = Reaction_module::GetInstance(id);
+	if (Reaction_module_ptr)
+	{
+		Reaction_module_ptr->GetConcentrations(c);
+	}
+}
+
+/* ---------------------------------------------------------------------- */
 IRM_RESULT 
 RM_GetFilePrefix(int * id, char *prefix, long l)
 	/* ---------------------------------------------------------------------- */
@@ -520,18 +532,6 @@ RM_LogScreenMessage(const char *err_str, long l)
 
 /* ---------------------------------------------------------------------- */
 void
-RM_Module2Concentrations(int *id, double * c)
-/* ---------------------------------------------------------------------- */
-{
-	Reaction_module * Reaction_module_ptr = Reaction_module::GetInstance(id);
-	if (Reaction_module_ptr)
-	{
-		Reaction_module_ptr->Module2Concentrations(c);
-	}
-}
-
-/* ---------------------------------------------------------------------- */
-void
 RM_open_error_file(void)
 /* ---------------------------------------------------------------------- */
 {
@@ -589,16 +589,17 @@ void RM_RunCells(int *id,
 			// Transfer data and pointers to Reaction_module	  
 			Reaction_module_ptr->SetTime(time);
 			Reaction_module_ptr->SetTimeStep(time_step);
-			Reaction_module_ptr->SetConcentration(concentration);
+			Reaction_module_ptr->SetConcentrations(concentration);
+			//Reaction_module_ptr->SetConcentration(concentration);
 
 			// Transfer data Fortran to reaction module
-			Reaction_module_ptr->Concentrations2Module();
+			//Reaction_module_ptr->Concentrations2Module();
 
 			// Run chemistry calculations
 			Reaction_module_ptr->RunCells(); 
 
 			// Transfer data reaction module to Fortran
-			Reaction_module_ptr->Module2Concentrations(concentration);
+			Reaction_module_ptr->GetConcentrations(concentration);
 
 			// Rebalance load
 			//Reaction_module_ptr->Rebalance_load();

@@ -53,6 +53,12 @@
             INTEGER, INTENT(in) :: id, num
             CHARACTER, INTENT(out) :: comp_name
         END FUNCTION RM_GetComponent 
+
+        SUBROUTINE RM_GetConcentrations(id, c)   
+            IMPLICIT NONE
+            INTEGER :: id
+            DOUBLE PRECISION, OPTIONAL :: c
+        END SUBROUTINE RM_GetConcentrations 
         
         INTEGER FUNCTION RM_GetFilePrefix(id, prefix)
             IMPLICIT NONE
@@ -158,13 +164,7 @@
         SUBROUTINE RM_LogScreenMessage(str) 
             IMPLICIT NONE
             CHARACTER :: str
-        END SUBROUTINE RM_LogScreenMessage
-
-        SUBROUTINE RM_Module2Concentrations(id, c)   
-            IMPLICIT NONE
-            INTEGER :: id
-            DOUBLE PRECISION, OPTIONAL :: c
-        END SUBROUTINE RM_Module2Concentrations  
+        END SUBROUTINE RM_LogScreenMessage 
         
         INTEGER FUNCTION RM_OpenFiles(id) 
             IMPLICIT NONE

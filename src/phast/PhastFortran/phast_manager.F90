@@ -526,7 +526,7 @@ SUBROUTINE InitializeRM
 	        indx_sol2_ic(1,1),            & 
 	        ic_mxfrac(1,1))
         ! collect solutions at manager for transport
-        CALL RM_Module2Concentrations(rm_id, c(1,1))   
+        CALL RM_GetConcentrations(rm_id, c(1,1))   
         
         DEALLOCATE (ic1_reordered, ic2_reordered, f1_reordered, &
             STAT = a_err)

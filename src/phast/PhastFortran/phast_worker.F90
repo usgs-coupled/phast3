@@ -126,7 +126,7 @@ SUBROUTINE phast_worker
         CALL FH_ProcessRestartFiles(rm_id)
         
         ! ... collect solutions for transport
-        CALL RM_Module2Concentrations(rm_id)
+        CALL RM_GetConcentrations(rm_id)
 !        
 !end  of InitializeRM
 !

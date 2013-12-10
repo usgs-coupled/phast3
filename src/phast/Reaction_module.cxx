@@ -1452,7 +1452,124 @@ Reaction_module::FindComponents(void)
 	}
 	return (int) this->components.size();
 }
+#ifdef USE_MPI
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::GetConcentrations(double * c)
+/* ---------------------------------------------------------------------- */
+{
+	// convert Reaction module solution data to concentrations for transport
+	MPI_Status mpi_status;
+	std::vector<double> d;  // scratch space to convert from moles to mass fraction
+	std::vector<double> solns;
+	cxxNameDouble::iterator it;
 
+	if (mpi_myself == 0)
+	{
+		if (c == NULL) error_msg("NULL pointer in Module2Concentrations", 1);
+	}
+	int n = this->mpi_myself;
+	for (int j = this->start_cell[n]; j <= this->end_cell[n]; j++)
+	{
+		// load fractions into d
+		cxxSolution * cxxsoln_ptr = this->GetWorkers()[0]->Get_solution(j);
+		assert (cxxsoln_ptr);
+		this->cxxSolution2concentration(cxxsoln_ptr, d);
+		for (int i = 0; i < (int) this->components.size(); i++)
+		{
+			solns.push_back(d[i]);
+		}
+	}
+
+	// make buffer to recv solutions
+	double * recv_solns = new double[(size_t) this->count_chemistry * this->components.size()];
+
+	// each process has its own vector of solution components
+	// gather vectors to root
+	for (int n = 1; n < this->mpi_tasks; n++)
+	{
+		int count = this->end_cell[n] - this->start_cell[n] + 1;
+		int num_doubles = count * (int) this->components.size();
+		if (this->mpi_myself == n)
+		{
+			MPI_Send((void *) solns.data(), num_doubles, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
+		}
+		else if (this->mpi_myself == 0)
+		{
+			MPI_Recv(recv_solns, num_doubles, MPI_DOUBLE, n, 0, MPI_COMM_WORLD, &mpi_status);
+			for (int i = 0; i < num_doubles; i++)
+			{
+				solns.push_back(recv_solns[i]);
+			}
+		}
+	}
+	
+	// delete recv buffer
+	delete recv_solns;
+
+	// Write vector into c
+	if (this->mpi_myself == 0)
+	{
+		assert (solns.size() == this->count_chemistry*this->components.size());
+		int n = 0;
+		for (int j = 0; j < count_chemistry; j++)
+		{
+			std::vector<double> d;
+			for (size_t i = 0; i < this->components.size(); i++)
+			{
+				d.push_back(solns[n++]);
+			}
+			std::vector<int>::iterator it;
+			for (it = this->back[j].begin(); it != this->back[j].end(); it++)
+			{
+				double *d_ptr = &c[*it];
+				size_t i;
+				for (i = 0; i < this->components.size(); i++)
+				{
+					d_ptr[this->nxyz * i] = d[i];
+				}
+			}
+		}
+	}
+
+}
+#else
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::GetConcentrations(double * c)
+/* ---------------------------------------------------------------------- */
+{
+	// convert Reaction module solution data to hst mass fractions
+
+	std::vector<double> d;  // scratch space to convert from moles to mass fraction
+	cxxNameDouble::iterator it;
+
+	int j; 
+	if (c == NULL) ErrorStop("NULL pointer in Module2Concentrations");
+	for (int n = 0; n < this->nthreads; n++)
+	{
+		for (j = this->start_cell[n]; j <= this->end_cell[n]; j++)
+		{
+			// load fractions into d
+			cxxSolution * cxxsoln_ptr = this->GetWorkers()[n]->Get_solution(j);
+			assert (cxxsoln_ptr);
+			this->cxxSolution2concentration(cxxsoln_ptr, d);
+
+			// store in fraction at 1, 2, or 4 places depending on chemistry dimensions
+			std::vector<int>::iterator it;
+			for (it = this->back[j].begin(); it != this->back[j].end(); it++)
+			{
+				double *d_ptr = &c[*it];
+				size_t i;
+				for (i = 0; i < this->components.size(); i++)
+				{
+					d_ptr[this->nxyz * i] = d[i];
+				}
+			}
+		}
+	}
+}
+#endif
 /* ---------------------------------------------------------------------- */
 std::vector<double> &
 Reaction_module::GetDensity(void)
@@ -1742,6 +1859,88 @@ Reaction_module::Char2TrimString(const char * str, long l)
 };
 /* ---------------------------------------------------------------------- */
 void
+Reaction_module::Concentrations2Solutions(int n, std::vector<double> &c)
+/* ---------------------------------------------------------------------- */
+{
+	// assumes total H, total O, and charge are transported
+	int i, j, k;
+
+#ifdef USE_MPI
+	int start = this->start_cell[this->mpi_myself];
+	int end = this->end_cell[this->mpi_myself];
+#else
+	int start = this->start_cell[n];
+	int end = this->end_cell[n];
+#endif
+
+	for (j = start; j <= end; j++)
+	{		
+		std::vector<double> d;  // scratch space to convert from mass fraction to moles
+		// j is count_chem number
+		i = this->back[j][0];
+		if (j < 0) continue;
+
+		switch (this->input_units_Solution)
+		{
+		case 1:  // mg/L to mol/L
+			{
+				double *ptr = &c[i];
+				// convert to mol/L
+				for (k = 0; k < (int) this->components.size(); k++)
+				{	
+					d.push_back(ptr[this->nxyz * k] * 1e-3 / this->gfw[k]);
+				}	
+			}
+			break;
+		case 2:  // mol/L
+			{
+				double *ptr = &c[i];
+				// convert to mol/L
+				for (k = 0; k < (int) this->components.size(); k++)
+				{	
+					d.push_back(ptr[this->nxyz * k]);
+				}	
+			}
+			break;
+		case 3:  // mass fraction, kg/kg solution to mol/L
+			{
+				double *ptr = &c[i];
+				// convert to mol/L
+				for (k = 0; k < (int) this->components.size(); k++)
+				{	
+					d.push_back(ptr[this->nxyz * k] * 1000.0 / this->gfw[k] * density[i]);
+				}	
+			}
+			break;
+		}
+
+		// convert mol/L to moles per cell
+		for (k = 0; k < (int) this->components.size(); k++)
+		{	
+			d[k] *= this->pore_volume[i] / this->pore_volume_zero[i] * saturation[i];
+		}
+				
+		// update solution 
+		cxxNameDouble nd;
+		for (k = 3; k < (int) components.size(); k++)
+		{
+			if (d[k] <= 1e-14) d[k] = 0.0;
+			nd.add(components[k].c_str(), d[k]);
+		}	
+
+		cxxSolution *soln_ptr = this->GetWorkers()[n]->Get_solution(j);
+		if (soln_ptr)
+		{
+			soln_ptr->Update(d[0], d[1], d[2], nd);
+			soln_ptr->Set_patm(this->pressure[i]);
+			soln_ptr->Set_tc(this->tempc[i]);
+		}
+	}
+	return;
+}
+#ifdef SKIP
+/* ---------------------------------------------------------------------- */
+void
 Reaction_module::Concentrations2Threads(int n)
 /* ---------------------------------------------------------------------- */
 {
@@ -1821,6 +2020,8 @@ Reaction_module::Concentrations2Threads(int n)
 	}
 	return;
 }
+#endif
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::Concentrations2Module(void)
@@ -1837,7 +2038,7 @@ Reaction_module::Concentrations2Module(void)
 		this->Concentrations2Threads(n);
 	}	
 }
-
+#endif
 /* ---------------------------------------------------------------------- */
 int
 Reaction_module::InitialPhreeqcRunThread(int n)
@@ -2141,125 +2342,6 @@ Reaction_module::LoadDatabase(const char * database, long l)
 	}
 	return rtn_value;
 }
-
-#ifdef USE_MPI
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::Module2Concentrations(double * c)
-/* ---------------------------------------------------------------------- */
-{
-	// convert Reaction module solution data to concentrations for transport
-	MPI_Status mpi_status;
-	std::vector<double> d;  // scratch space to convert from moles to mass fraction
-	std::vector<double> solns;
-	cxxNameDouble::iterator it;
-
-	if (mpi_myself == 0)
-	{
-		if (c == NULL) error_msg("NULL pointer in Module2Concentrations", 1);
-	}
-	int n = this->mpi_myself;
-	for (int j = this->start_cell[n]; j <= this->end_cell[n]; j++)
-	{
-		// load fractions into d
-		cxxSolution * cxxsoln_ptr = this->GetWorkers()[0]->Get_solution(j);
-		assert (cxxsoln_ptr);
-		this->cxxSolution2concentration(cxxsoln_ptr, d);
-		for (int i = 0; i < (int) this->components.size(); i++)
-		{
-			solns.push_back(d[i]);
-		}
-	}
-
-	// make buffer to recv solutions
-	double * recv_solns = new double[(size_t) this->count_chemistry * this->components.size()];
-
-	// each process has its own vector of solution components
-	// gather vectors to root
-	for (int n = 1; n < this->mpi_tasks; n++)
-	{
-		int count = this->end_cell[n] - this->start_cell[n] + 1;
-		int num_doubles = count * (int) this->components.size();
-		if (this->mpi_myself == n)
-		{
-			MPI_Send((void *) solns.data(), num_doubles, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
-		}
-		else if (this->mpi_myself == 0)
-		{
-			MPI_Recv(recv_solns, num_doubles, MPI_DOUBLE, n, 0, MPI_COMM_WORLD, &mpi_status);
-			for (int i = 0; i < num_doubles; i++)
-			{
-				solns.push_back(recv_solns[i]);
-			}
-		}
-	}
-	
-	// delete recv buffer
-	delete recv_solns;
-
-	// Write vector into c
-	if (this->mpi_myself == 0)
-	{
-		assert (solns.size() == this->count_chemistry*this->components.size());
-		int n = 0;
-		for (int j = 0; j < count_chemistry; j++)
-		{
-			std::vector<double> d;
-			for (size_t i = 0; i < this->components.size(); i++)
-			{
-				d.push_back(solns[n++]);
-			}
-			std::vector<int>::iterator it;
-			for (it = this->back[j].begin(); it != this->back[j].end(); it++)
-			{
-				double *d_ptr = &c[*it];
-				size_t i;
-				for (i = 0; i < this->components.size(); i++)
-				{
-					d_ptr[this->nxyz * i] = d[i];
-				}
-			}
-		}
-	}
-
-}
-#else
-/* ---------------------------------------------------------------------- */
-void
-Reaction_module::Module2Concentrations(double * c)
-/* ---------------------------------------------------------------------- */
-{
-	// convert Reaction module solution data to hst mass fractions
-
-	std::vector<double> d;  // scratch space to convert from moles to mass fraction
-	cxxNameDouble::iterator it;
-
-	int j; 
-	if (c == NULL) error_msg("NULL pointer in Module2Concentrations", 1);
-	for (int n = 0; n < this->nthreads; n++)
-	{
-		for (j = this->start_cell[n]; j <= this->end_cell[n]; j++)
-		{
-			// load fractions into d
-			cxxSolution * cxxsoln_ptr = this->GetWorkers()[n]->Get_solution(j);
-			assert (cxxsoln_ptr);
-			this->cxxSolution2concentration(cxxsoln_ptr, d);
-
-			// store in fraction at 1, 2, or 4 places depending on chemistry dimensions
-			std::vector<int>::iterator it;
-			for (it = this->back[j].begin(); it != this->back[j].end(); it++)
-			{
-				double *d_ptr = &c[*it];
-				size_t i;
-				for (i = 0; i < this->components.size(); i++)
-				{
-					d_ptr[this->nxyz * i] = d[i];
-				}
-			}
-		}
-	}
-}
-#endif
 
 /* ---------------------------------------------------------------------- */
 void
@@ -3813,7 +3895,29 @@ Reaction_module::SetChemistryFileName(const char * cn, long l)
 	}
 	return IRM_INVALIDARG;
 }
-
+/* ---------------------------------------------------------------------- */
+void
+Reaction_module::SetConcentrations(double *t)
+/* ---------------------------------------------------------------------- */
+{
+	// Distribute data
+	size_t ncomps = this->components.size();
+	std::vector<double> c;
+	c.resize(ncomps * nxyz, INACTIVE_CELL_VALUE);
+	if (mpi_myself == 0)
+	{
+		if (t == NULL) ErrorStop("NULL pointer in SetConcentrations");
+		memcpy(c.data(), t, (size_t) (this->nxyz * ncomps * sizeof(double)));
+	}
+#ifdef USE_MPI
+	MPI_Bcast(c.data(), this->nxyz * (int) ncomps, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+#endif
+	for (int n = 0; n < nthreads; n++)
+	{
+		this->Concentrations2Solutions(n, c);
+	}
+}
+#ifdef SKIP
 /* ---------------------------------------------------------------------- */
 void
 Reaction_module::SetConcentration(double *t)
@@ -3833,7 +3937,7 @@ Reaction_module::SetConcentration(double *t)
 	MPI_Bcast(this->concentration.data(), this->nxyz * (int) ncomps, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 #endif
 }
-
+#endif
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 Reaction_module::SetDatabaseFileName(const char * db, long l)
