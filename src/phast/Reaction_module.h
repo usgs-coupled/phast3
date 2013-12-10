@@ -36,8 +36,7 @@ public:
 	Reaction_module(int *nxyz = NULL, int *thread_count = NULL, PHRQ_io * io=NULL);
 	~Reaction_module(void);
 	
-	// Key methods
-	//void                                      Concentrations2Module(void);	
+	// Key methods	
 	IRM_RESULT                                CreateMapping(int *grid2chem);
 	IRM_RESULT                                DumpModule(int *dump_on, int *use_gz = NULL);
 	int                                       FindComponents();
@@ -75,7 +74,6 @@ public:
 	std::vector<double> &                     GetCellVolume(void) {return this->cell_volume;}
 	const int                                 GetChemistryCellCount(void) const {return this->count_chemistry;}
 	const std::vector<std::string> &          GetComponents(void) const {return this->components;}
-	//std::vector<double> &                     GetConcentration(void) {return this->concentration;}
 	const std::string                         GetDatabaseFileName(void) const {return this->database_file_name;}
 	std::vector<double> &                     GetDensity(void); 
 	const std::vector < int> &                GetEndCell(void) const {return this->end_cell;} 
@@ -117,7 +115,6 @@ public:
 
 	// Setters 
 	IRM_RESULT                                SetChemistryFileName(const char * prefix, long l = -1);
-	void                                      SetConcentration(double * t = NULL); // delete 
 	void                                      SetConcentrations(double * t = NULL); 
 	int										  SetCurrentSelectedOutputUserNumber(int *i);
 	IRM_RESULT                                SetDatabaseFileName(const char * prefix, long l = -1);
@@ -158,21 +155,19 @@ protected:
 		                                          double *fraction1,
 		                                          std::set<std::string> error_set);
 	int                                       CheckSelectedOutput();
-	//void                                      Concentrations2Solutions(double * c);
-	//void                                      Concentrations2Threads(int n); // delete
 	void                                      Concentrations2Solutions(int n, std::vector<double> &c);
 	void                                      cxxSolution2concentration(cxxSolution * cxxsoln_ptr, std::vector<double> & d);
 	cxxStorageBin &                           Get_phreeqc_bin(void) {return this->phreeqc_bin;}
+	int                                       InitialPhreeqcRunThread(int n);
 	void                                      PartitionUZ(int n, int iphrq, int ihst, double new_frac);
 	void                                      RebalanceLoad(void);
-	void                                      WriteError(const char * item);
-	void                                      WriteOutput(const char * item);
-	int                                       InitialPhreeqcRunThread(int n);
 	void                                      RebalanceLoadPerCell(void);
 	void                                      RunCellsThread(int i);
 	void                                      Scale_solids(int n, int iphrq, LDBLE frac);
 	void                                      SetEndCells(void);
 	void                                      TransferCells(cxxStorageBin &t_bin, int old, int nnew);
+	void                                      WriteError(const char * item);
+	void                                      WriteOutput(const char * item);
 
 protected:
 	std::string database_file_name;
