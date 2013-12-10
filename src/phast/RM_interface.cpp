@@ -590,19 +590,12 @@ void RM_RunCells(int *id,
 			Reaction_module_ptr->SetTime(time);
 			Reaction_module_ptr->SetTimeStep(time_step);
 			Reaction_module_ptr->SetConcentrations(concentration);
-			//Reaction_module_ptr->SetConcentration(concentration);
-
-			// Transfer data Fortran to reaction module
-			//Reaction_module_ptr->Concentrations2Module();
 
 			// Run chemistry calculations
 			Reaction_module_ptr->RunCells(); 
 
 			// Transfer data reaction module to Fortran
 			Reaction_module_ptr->GetConcentrations(concentration);
-
-			// Rebalance load
-			//Reaction_module_ptr->Rebalance_load();
 		}
 	}
 }
