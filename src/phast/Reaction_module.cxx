@@ -1452,6 +1452,72 @@ Reaction_module::FindComponents(void)
 	}
 	return (int) this->components.size();
 }
+
+/* ---------------------------------------------------------------------- */
+std::vector<double> &
+Reaction_module::GetDensity(void)
+/* ---------------------------------------------------------------------- */
+{
+
+	this->density.clear();
+	this->density.resize(this->nxyz, INACTIVE_CELL_VALUE);
+	std::vector<double> dbuffer;
+
+#ifdef USE_MPI
+	int n = this->mpi_myself;
+	for (int i = this->start_cell[n]; i <= this->end_cell[n]; i++)
+	{
+		double d = this->workers[0]->Get_solution(i)->Get_density();
+		for(size_t j = 0; j < back[i].size(); j++)
+		{
+			int n = back[i][j];
+			this->density[n] = d;
+		}
+	}
+	for (int n = 0; n < this->mpi_tasks; n++)
+	{
+		if (this->mpi_myself == n)
+		{
+			if (this->mpi_myself = 0)
+			{
+				continue;
+			}
+			else
+			{
+				int l = this->end_cell[n] - this->start_cell[n] + 1;
+				MPI_Send((void *) &this->density[this->start_cell[n]], l, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
+			}
+		}
+		else if (this->mpi_myself == 0)
+		{	
+			std::vector<double> dbuffer;
+			MPI_Status mpi_status;
+			int l = this->end_cell[n] - this->start_cell[n] + 1;
+			dbuffer.resize(l);
+			MPI_Recv(dbuffer.data(), l, MPI_DOUBLE, n, 0, MPI_COMM_WORLD, &mpi_status);
+			for (int i = 0; i < l; i++)
+			{
+				this->density[this->start_cell[n] +i] = dbuffer[i];
+			}
+		}
+	}
+#else
+	for (int n = 0; n < this->nthreads; n++)
+	{
+		for (int i = start_cell[n]; i <= this->end_cell[n]; i++)
+		{
+			cxxSolution *soln_ptr = this->workers[n]->Get_solution(i);
+			double d = this->workers[n]->Get_solution(i)->Get_density();
+			for(size_t j = 0; j < back[i].size(); j++)
+			{
+				int n = back[i][j];
+				this->density[n] = d;
+			}
+		}
+	}
+#endif
+	return this->density;
+}
 /* ---------------------------------------------------------------------- */
 int
 Reaction_module::GetNthSelectedOutputUserNumber(int *i)
@@ -1877,7 +1943,6 @@ Reaction_module::InitialPhreeqc2Concentrations(
 /* ---------------------------------------------------------------------- */
 IRM_RESULT
 Reaction_module::InitialPhreeqc2Module(
-					int id, 
 					int *initial_conditions1_in,
 					int *initial_conditions2_in, 
 					double *fraction1_in)
@@ -3485,7 +3550,7 @@ Reaction_module::RunCellsThread(int n)
 			{
 				std::ostringstream line_buff;
 				line_buff << "Time:           " << (this->time) * (this->time_conversion) << "\n";
-                line_buff << "Chemistry cell: " << j + 1 << "\n";
+                line_buff << "Chemistry cell: " << j << "\n";
 				line_buff << "Grid cell(s):   ";
 				for (size_t ib = 0; ib < this->back[j].size(); ib++)
 				{

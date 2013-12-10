@@ -57,6 +57,9 @@
     <ClCompile Include="..\TM_interface.cpp">
       <Filter>Source Files\COMMON_COBJS</Filter>
     </ClCompile>
+    <ClCompile Include="..\Advection\advection_example.cpp">
+      <Filter>Source Files\COMMON_COBJS</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="phast.rc">
